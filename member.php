@@ -947,7 +947,14 @@ elseif($mybb->input['action'] == "profile")
 	}
 	else
 	{
-		$uid = $mybb->input['uid'];
+		if($mybb->input['uid'])
+		{
+			$uid = $mybb->input['uid'];
+		}
+		else
+		{
+			$uid = $mybb->user['uid'];
+		}
 	}
 
 	$query = $db->query("SELECT u.* FROM ".TABLE_PREFIX."users u WHERE u.uid='$uid'");
