@@ -1,0 +1,634 @@
+<?php
+/**
+ * MyBB 1.0
+ * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.com
+ * License: http://www.mybboard.com/eula.html
+ *
+ * $Id$
+ */
+
+$tables[] = "CREATE TABLE mybb_adminlog (
+  uid int unsigned NOT NULL default '0',
+  dateline bigint(30) NOT NULL default '0',
+  scriptname varchar(50) NOT NULL default '',
+  action varchar(50) NOT NULL default '',
+  querystring varchar(150) NOT NULL default '',
+  ipaddress varchar(50) NOT NULL default ''
+) TYPE=MyISAM;";
+
+
+
+$tables[] = "CREATE TABLE mybb_adminoptions (
+  uid int unsigned NOT NULL default '0',
+  cpstyle varchar(50) NOT NULL default '',
+  notes text NOT NULL,
+  permsset int(1) NOT NULL default '0',
+  caneditsettings char(3) NOT NULL default '',
+  caneditann char(3) NOT NULL default '',
+  caneditforums char(3) NOT NULL default '',
+  canmodposts char(3) NOT NULL default '',
+  caneditsmilies char(3) NOT NULL default '',
+  caneditpicons char(3) NOT NULL default '',
+  caneditthemes char(3) NOT NULL default '',
+  canedittemps char(3) NOT NULL default '',
+  caneditusers char(3) NOT NULL default '',
+  caneditpfields char(3) NOT NULL default '',
+  caneditugroups char(3) NOT NULL default '',
+  caneditaperms char(3) NOT NULL default '',
+  caneditutitles char(3) NOT NULL default '',
+  caneditattach char(3) NOT NULL default '',
+  canedithelp char(3) NOT NULL default '',
+  canrunmaint char(3) NOT NULL default '',
+  PRIMARY KEY  (uid)
+) TYPE=MyISAM;";
+
+
+
+$tables[] = "CREATE TABLE mybb_announcements (
+  aid int unsigned NOT NULL auto_increment,
+  fid int unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  subject varchar(120) NOT NULL default '',
+  message text NOT NULL,
+  startdate bigint(30) NOT NULL default '0',
+  enddate bigint(30) NOT NULL default '0',
+  allowhtml char(3) NOT NULL default '',
+  allowmycode char(3) NOT NULL default '',
+  allowsmilies char(3) NOT NULL default '',
+  PRIMARY KEY  (aid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_attachments (
+  aid int unsigned NOT NULL auto_increment,
+  pid int(10) NOT NULL default '0',
+  posthash varchar(50) NOT NULL default '',
+  uid int unsigned NOT NULL default '0',
+  filename varchar(120) NOT NULL default '',
+  filetype varchar(120) NOT NULL default '',
+  filesize int(10) NOT NULL default '0',
+  attachname varchar(120) NOT NULL default '',
+  downloads int unsigned NOT NULL default '0',
+  visible int(1) NOT NULL default '0',
+  thumbnail varchar(120) NOT NULL default '',
+  PRIMARY KEY  (aid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_attachtypes (
+  atid int unsigned NOT NULL auto_increment,
+  name varchar(120) NOT NULL default '',
+  mimetype varchar(120) NOT NULL default '',
+  extension varchar(4) NOT NULL default '',
+  maxsize int(15) NOT NULL default '0',
+  icon varchar(100) NOT NULL default '',
+  PRIMARY KEY  (atid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_awaitingactivation (
+  aid int unsigned NOT NULL auto_increment,
+  uid int unsigned NOT NULL default '0',
+  dateline bigint(30) NOT NULL default '0',
+  code varchar(100) NOT NULL default '',
+  type char(1) NOT NULL default '',
+  oldgroup bigint(30) NOT NULL default '0',
+  misc varchar(255) NOT NULL default '',
+  PRIMARY KEY  (aid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_badwords (
+  bid int unsigned NOT NULL auto_increment,
+  badword varchar(100) NOT NULL default '',
+  replacement varchar(100) NOT NULL default '',
+  PRIMARY KEY  (bid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_banned (
+  uid int unsigned NOT NULL default '0',
+  gid int unsigned NOT NULL default '0',
+  oldgroup int unsigned NOT NULL default '0',
+  admin int unsigned NOT NULL default '0',
+  dateline bigint(30) NOT NULL default '0',
+  bantime varchar(50) NOT NULL default '',
+  lifted bigint(30) NOT NULL default '0'
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_events (
+  eid int unsigned NOT NULL auto_increment,
+  subject varchar(120) NOT NULL default '',
+  author int unsigned NOT NULL default '0',
+  date varchar(50) NOT NULL default '',
+  description text NOT NULL,
+  private char(3) NOT NULL default '',
+  PRIMARY KEY  (eid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_favorites (
+  fid int unsigned NOT NULL auto_increment,
+  uid int unsigned NOT NULL default '0',
+  tid int unsigned NOT NULL default '0',
+  type char(1) NOT NULL default '',
+  PRIMARY KEY  (fid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_forumpermissions (
+  pid int unsigned NOT NULL auto_increment,
+  fid int unsigned NOT NULL default '0',
+  gid int unsigned NOT NULL default '0',
+  canview char(3) NOT NULL default '',
+  candlattachments char(3) NOT NULL default '',
+  canpostthreads char(3) NOT NULL default '',
+  canpostreplys char(3) NOT NULL default '',
+  canpostattachments char(3) NOT NULL default '',
+  canratethreads char(3) NOT NULL default '',
+  caneditposts char(3) NOT NULL default '',
+  candeleteposts char(3) NOT NULL default '',
+  candeletethreads char(3) NOT NULL default '',
+  caneditattachments char(3) NOT NULL default '',
+  canpostpolls char(3) NOT NULL default '',
+  canvotepolls char(3) NOT NULL default '',
+  cansearch char(3) NOT NULL default '',
+  PRIMARY KEY  (pid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_forums (
+  fid smallint unsigned NOT NULL auto_increment,
+  name varchar(120) NOT NULL default '',
+  description text NOT NULL,
+  linkto varchar(180) NOT NULL default '',
+  type char(1) NOT NULL default '',
+  pid smallint unsigned NOT NULL default '0',
+  parentlist text NOT NULL,
+  disporder smallint unsigned NOT NULL default '0',
+  active char(3) NOT NULL default '',
+  open char(3) NOT NULL default '',
+  threads int unsigned NOT NULL default '0',
+  posts int unsigned NOT NULL default '0',
+  moderators text NOT NULL,
+  lastpost int(10) unsigned NOT NULL default '0',
+  lastposter varchar(120) NOT NULL default '',
+  lastposttid int(10) NOT NULL default '0',
+  allowhtml char(3) NOT NULL default '',
+  allowmycode char(3) NOT NULL default '',
+  allowsmilies char(3) NOT NULL default '',
+  allowimgcode char(3) NOT NULL default '',
+  allowpicons char(3) NOT NULL default '',
+  allowtratings char(3) NOT NULL default '',
+  status int(4) NOT NULL default '1',
+  usepostcounts char(3) NOT NULL default '',
+  password varchar(50) NOT NULL default '',
+  showinjump char(3) NOT NULL default '',
+  modposts char(3) NOT NULL default '',
+  modthreads char(3) NOT NULL default '',
+  modattachments char(3) NOT NULL default '',
+  style smallint unsigned NOT NULL default '0',
+  overridestyle char(3) NOT NULL default '',
+  rulestype smallint(1) NOT NULL default '0',
+  rulestitle varchar(200) NOT NULL default '',
+  rules text NOT NULL,
+  PRIMARY KEY  (fid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_forumsubscriptions (
+  fsid int unsigned NOT NULL auto_increment,
+  fid smallint unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  PRIMARY KEY  (fsid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_groupleaders (
+  lid smallint unsigned NOT NULL auto_increment,
+  gid smallint unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  PRIMARY KEY  (lid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_helpdocs (
+  hid smallint unsigned NOT NULL auto_increment,
+  sid smallint unsigned NOT NULL default '0',
+  name varchar(120) NOT NULL default '',
+  description text NOT NULL,
+  document text NOT NULL,
+  disporder smallint unsigned NOT NULL default '0',
+  PRIMARY KEY  (hid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_helpsections (
+  sid smallint unsigned NOT NULL auto_increment,
+  name varchar(120) NOT NULL default '',
+  description text NOT NULL,
+  disporder smallint unsigned NOT NULL default '0',
+  PRIMARY KEY  (sid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_icons (
+  iid smallint unsigned NOT NULL auto_increment,
+  name varchar(120) NOT NULL default '',
+  path varchar(220) NOT NULL default '',
+  PRIMARY KEY  (iid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_joinrequests (
+  rid int unsigned NOT NULL auto_increment,
+  uid int unsigned NOT NULL default '0',
+  gid smallint unsigned NOT NULL default '0',
+  reason varchar(250) NOT NULL default '',
+  dateline bigint(30) NOT NULL default '0',
+  PRIMARY KEY  (rid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_moderatorlog (
+  uid int unsigned NOT NULL default '0',
+  dateline bigint(30) NOT NULL default '0',
+  fid smallint unsigned NOT NULL default '0',
+  tid int unsigned NOT NULL default '0',
+  pid int unsigned NOT NULL default '0',
+  action text NOT NULL,
+  ipaddress varchar(50) NOT NULL default ''
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_moderators (
+  mid smallint unsigned NOT NULL auto_increment,
+  fid smallint unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  caneditposts char(3) NOT NULL default '',
+  candeleteposts char(3) NOT NULL default '',
+  canviewips char(3) NOT NULL default '',
+  canopenclosethreads char(3) NOT NULL default '',
+  canmanagethreads char(3) NOT NULL default '',
+  PRIMARY KEY  (mid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_online (
+  sid varchar(32) NOT NULL default '',
+  uid int unsigned NOT NULL default '0',
+  ip varchar(40) NOT NULL default '',
+  time bigint(30) NOT NULL default '0',
+  location varchar(150) NOT NULL default '',
+  useragent varchar(100) NOT NULL default ''
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_polls (
+  pid int unsigned NOT NULL auto_increment,
+  tid int unsigned NOT NULL default '0',
+  question varchar(200) NOT NULL default '',
+  dateline bigint(30) NOT NULL default '0',
+  options text NOT NULL,
+  votes text NOT NULL,
+  numoptions smallint unsigned NOT NULL default '0',
+  numvotes smallint unsigned NOT NULL default '0',
+  timeout bigint(30) NOT NULL default '0',
+  closed char(3) NOT NULL default '',
+  multiple char(3) NOT NULL default '',
+  public char(3) NOT NULL default '',
+  PRIMARY KEY  (pid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_pollvotes (
+  vid int unsigned NOT NULL auto_increment,
+  pid int unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  voteoption smallint unsigned NOT NULL default '0',
+  dateline bigint(30) NOT NULL default '0',
+  PRIMARY KEY  (vid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_posts (
+  pid int unsigned NOT NULL auto_increment,
+  tid int unsigned NOT NULL default '0',
+  replyto int unsigned NOT NULL default '0',
+  fid smallint unsigned NOT NULL default '0',
+  subject varchar(120) NOT NULL default '',
+  icon smallint unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  username varchar(80) NOT NULL default '',
+  dateline bigint(30) NOT NULL default '0',
+  message text NOT NULL,
+  ipaddress varchar(30) NOT NULL default '',
+  includesig char(3) NOT NULL default '',
+  smilieoff char(3) NOT NULL default '',
+  edituid int unsigned NOT NULL default '0',
+  edittime int(10) NOT NULL default '0',
+  visible int(1) NOT NULL default '0',
+  PRIMARY KEY  (pid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_privatemessages (
+  pmid int unsigned NOT NULL auto_increment,
+  uid int unsigned NOT NULL default '0',
+  toid int unsigned NOT NULL default '0',
+  fromid int unsigned NOT NULL default '0',
+  folder smallint unsigned NOT NULL default '1',
+  subject varchar(120) NOT NULL default '',
+  icon smallint unsigned NOT NULL default '0',
+  message text NOT NULL,
+  dateline bigint(30) NOT NULL default '0',
+  status int(1) NOT NULL default '0',
+  includesig char(3) NOT NULL default '',
+  smilieoff char(3) NOT NULL default '',
+  receipt int(1) NOT NULL default '0',
+  readtime bigint(30) NOT NULL default '0',
+  PRIMARY KEY  (pmid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_profilefields (
+  fid smallint unsigned NOT NULL auto_increment,
+  name varchar(100) NOT NULL default '',
+  description text NOT NULL,
+  disporder smallint unsigned NOT NULL default '0',
+  type text NOT NULL,
+  length smallint unsigned NOT NULL default '0',
+  maxlength smallint unsigned NOT NULL default '0',
+  required char(3) NOT NULL default '',
+  editable char(3) NOT NULL default '',
+  hidden char(3) NOT NULL default '',
+  PRIMARY KEY  (fid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_regimages (
+  imagehash varchar(32) NOT NULL default '',
+  imagestring varchar(8) NOT NULL default '',
+  dateline bigint(30) NOT NULL default '0'
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_reportedposts (
+  rid int unsigned NOT NULL auto_increment,
+  pid int unsigned NOT NULL default '0',
+  tid int unsigned NOT NULL default '0',
+  fid int unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  reportstatus int(1) NOT NULL default '0',
+  reason varchar(250) NOT NULL default '',
+  dateline bigint(30) NOT NULL default '0',
+  PRIMARY KEY  (rid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_reputation (
+  uid int unsigned NOT NULL default '0',
+  pid int unsigned NOT NULL default '0',
+  adduid int unsigned NOT NULL default '0',
+  reputation bigint(30) NOT NULL default '0',
+  dateline bigint(30) NOT NULL default '0',
+  comments text NOT NULL
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_searchlog (
+  sid int unsigned NOT NULL auto_increment,
+  uid int unsigned NOT NULL default '0',
+  dateline bigint(30) NOT NULL default '0',
+  ipaddress varchar(120) NOT NULL default '',
+  wheresql text NOT NULL,
+  lookin varchar(50) NOT NULL default '',
+  showposts smallint(1) NOT NULL default '0',
+  limitto smallint(4) NOT NULL default '0',
+  PRIMARY KEY  (sid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_settinggroups (
+  gid smallint unsigned NOT NULL auto_increment,
+  name varchar(220) NOT NULL default '',
+  description text NOT NULL,
+  disporder smallint unsigned NOT NULL default '0',
+  isdefault char(3) NOT NULL default '',
+  PRIMARY KEY  (gid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_settings (
+  sid smallint unsigned NOT NULL auto_increment,
+  name varchar(120) NOT NULL default '',
+  title varchar(120) NOT NULL default '',
+  description text NOT NULL,
+  optionscode text NOT NULL,
+  value text NOT NULL,
+  disporder smallint unsigned NOT NULL default '0',
+  gid smallint unsigned NOT NULL default '0',
+  PRIMARY KEY  (sid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_smilies (
+  sid smallint unsigned NOT NULL auto_increment,
+  name varchar(120) NOT NULL default '',
+  find varchar(120) NOT NULL default '',
+  image varchar(220) NOT NULL default '',
+  disporder smallint unsigned NOT NULL default '0',
+  showclickable char(3) NOT NULL default '',
+  PRIMARY KEY  (sid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_templates (
+  tid int unsigned NOT NULL auto_increment,
+  title varchar(120) NOT NULL default '',
+  template text NOT NULL,
+  sid smallint(6) NOT NULL default '0',
+  PRIMARY KEY  (tid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_templatesets (
+  sid smallint unsigned NOT NULL auto_increment,
+  title varchar(120) NOT NULL default '',
+  PRIMARY KEY  (sid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_themes (
+  tid smallint unsigned NOT NULL auto_increment,
+  name varchar(100) NOT NULL default '',
+  pid smallint unsigned NOT NULL default '0',
+  def smallint(1) NOT NULL default '0',
+  css text NOT NULL,
+  cssbits text NOT NULL,
+  themebits text NOT NULL,
+  extracss text NOT NULL,
+  PRIMARY KEY  (tid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_threadratings (
+  rid int unsigned NOT NULL auto_increment,
+  tid int unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  rating smallint unsigned NOT NULL default '0',
+  ipaddress varchar(30) NOT NULL default '',
+  PRIMARY KEY  (rid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_threads (
+  tid int unsigned NOT NULL auto_increment,
+  fid smallint unsigned NOT NULL default '0',
+  subject varchar(120) NOT NULL default '',
+  icon smallint unsigned NOT NULL default '0',
+  poll int unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  username varchar(80) NOT NULL default '',
+  dateline bigint(30) NOT NULL default '0',
+  lastpost bigint(30) NOT NULL default '0',
+  lastposter varchar(120) NOT NULL default '',
+  views int(100) NOT NULL default '0',
+  replies int(100) NOT NULL default '0',
+  closed varchar(30) NOT NULL default '',
+  sticky int(1) NOT NULL default '0',
+  numratings smallint unsigned NOT NULL default '0',
+  totalratings smallint unsigned NOT NULL default '0',
+  notes text NOT NULL,
+  visible int(1) NOT NULL default '0',
+  messageindex text NOT NULL,
+  subjectindex text NOT NULL,
+  PRIMARY KEY  (tid),
+  KEY subject (subject),
+  FULLTEXT KEY subject_2 (subject)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_threadsread (
+  tid int unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  dateline int(10) NOT NULL default '0',
+  UNIQUE KEY tiduid (tid,uid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_userfields (
+  ufid int unsigned NOT NULL default '0',
+  fid1 text NOT NULL,
+  fid2 text NOT NULL,
+  fid3 text NOT NULL,
+  PRIMARY KEY  (ufid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_usergroups (
+  gid smallint unsigned NOT NULL auto_increment,
+  type smallint(2) NOT NULL default '2',
+  title varchar(120) NOT NULL default '',
+  description text NOT NULL,
+  namestyle varchar(200) NOT NULL default '{username}',
+  usertitle varchar(120) NOT NULL default '',
+  stars smallint(4) NOT NULL default '0',
+  starimage varchar(120) NOT NULL default '',
+  image varchar(120) NOT NULL default '',
+  isbannedgroup char(3) NOT NULL default '',
+  canview char(3) NOT NULL default '',
+  canviewprofiles char(3) NOT NULL default '',
+  candlattachments char(3) NOT NULL default '',
+  canpostthreads char(3) NOT NULL default '',
+  canpostreplys char(3) NOT NULL default '',
+  canpostattachments char(3) NOT NULL default '',
+  canratethreads char(3) NOT NULL default '',
+  caneditposts char(3) NOT NULL default '',
+  candeleteposts char(3) NOT NULL default '',
+  candeletethreads char(3) NOT NULL default '',
+  caneditattachments char(3) NOT NULL default '',
+  canpostpolls char(3) NOT NULL default '',
+  canvotepolls char(3) NOT NULL default '',
+  canusepms char(3) NOT NULL default '',
+  cansendpms char(3) NOT NULL default '',
+  cantrackpms char(3) NOT NULL default '',
+  candenypmreceipts char(3) NOT NULL default '',
+  pmquota int(3) NOT NULL default '0',
+  cansendemail char(3) NOT NULL default '',
+  canviewmemberlist char(3) NOT NULL default '',
+  canviewcalendar char(3) NOT NULL default '',
+  canaddpublicevents char(3) NOT NULL default '',
+  canaddprivateevents char(3) NOT NULL default '',
+  canviewonline char(3) NOT NULL default '',
+  canviewwolinvis char(3) NOT NULL default '',
+  canviewonlineips char(3) NOT NULL default '',
+  cancp char(3) NOT NULL default '',
+  issupermod char(3) NOT NULL default '',
+  cansearch char(3) NOT NULL default '',
+  canusercp char(3) NOT NULL default '',
+  canuploadavatars char(3) NOT NULL default '',
+  canratemembers char(3) NOT NULL default '',
+  canchangename char(3) NOT NULL default '',
+  showforumteam char(3) NOT NULL default '',
+  usereputationsystem char(3) NOT NULL default '',
+  cangivereputations char(3) NOT NULL default '',
+  reputationpower bigint(30) NOT NULL default '0',
+  maxreputationsday bigint(30) NOT NULL default '0',
+  candisplaygroup char(3) NOT NULL default '',
+  attachquota bigint(30) NOT NULL default '0',
+  cancustomtitle char(3) NOT NULL default '',
+  PRIMARY KEY  (gid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_users (
+  uid int unsigned NOT NULL auto_increment,
+  username varchar(120) NOT NULL default '',
+  password varchar(120) NOT NULL default '',
+  salt varchar(10) NOT NULL default '',
+  email varchar(220) NOT NULL default '',
+  postnum int(10) NOT NULL default '0',
+  avatar varchar(200) NOT NULL default '',
+  avatartype smallint(10) NOT NULL default '0',
+  usergroup smallint unsigned NOT NULL default '0',
+  additionalgroups varchar(200) NOT NULL default '',
+  displaygroup smallint unsigned NOT NULL default '0',
+  usertitle varchar(250) NOT NULL default '',
+  regdate bigint(30) NOT NULL default '0',
+  lastactive bigint(30) NOT NULL default '0',
+  lastvisit bigint(30) NOT NULL default '0',
+  lastpost bigint(30) NOT NULL default '0',
+  website varchar(200) NOT NULL default '',
+  icq varchar(10) NOT NULL default '',
+  aim varchar(50) NOT NULL default '',
+  yahoo varchar(50) NOT NULL default '',
+  msn varchar(75) NOT NULL default '',
+  birthday varchar(15) NOT NULL default '',
+  signature text NOT NULL,
+  allownotices char(3) NOT NULL default '',
+  hideemail char(3) NOT NULL default '',
+  emailnotify char(3) NOT NULL default '',
+  invisible char(3) NOT NULL default '',
+  receivepms char(3) NOT NULL default '',
+  pmpopup char(3) NOT NULL default '',
+  pmnotify char(3) NOT NULL default '',
+  remember char(3) NOT NULL default '',
+  threadmode varchar(8) NOT NULL default '',
+  showsigs char(3) NOT NULL default '',
+  showavatars char(3) NOT NULL default '',
+  showquickreply char(3) NOT NULL default '',
+  ppp smallint(6) NOT NULL default '0',
+  tpp smallint(6) NOT NULL default '0',
+  daysprune smallint(6) NOT NULL default '0',
+  dateformat varchar(4) NOT NULL default '',
+  timeformat varchar(4) NOT NULL default '',
+  timezone varchar(4) NOT NULL default '',
+  dst varchar(4) NOT NULL default '',
+  buddylist text NOT NULL,
+  ignorelist text NOT NULL,
+  style smallint unsigned NOT NULL default '0',
+  away char(3) NOT NULL default '',
+  awaydate int(10) unsigned NOT NULL default '0',
+  returndate varchar(15) NOT NULL default '',
+  awayreason varchar(200) NOT NULL default '',
+  pmfolders text NOT NULL,
+  notepad text NOT NULL,
+  rating text NOT NULL,
+  referrer int unsigned NOT NULL default '0',
+  reputation bigint(30) NOT NULL default '0',
+  regip varchar(50) NOT NULL default '',
+  language varchar(50) NOT NULL default '',
+  timeonline bigint(30) NOT NULL default '0',
+  showcodebuttons int(1) NOT NULL default '1',
+  PRIMARY KEY  (uid)
+) TYPE=MyISAM;";
+
+
+$tables[] = "CREATE TABLE mybb_usertitles (
+  utid smallint unsigned NOT NULL auto_increment,
+  posts int unsigned NOT NULL default '0',
+  title varchar(250) NOT NULL default '',
+  stars smallint(4) NOT NULL default '0',
+  starimage varchar(120) NOT NULL default '',
+  PRIMARY KEY  (utid)
+) TYPE=MyISAM;";
+
+?>

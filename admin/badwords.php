@@ -1,0 +1,128 @@
+<?php
+/**
+ * MyBB 1.0
+ * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.com
+ * License: http://www.mybboard.com/eula.html
+ *
+ * $Id$
+ */
+
+require "./global.php";
+
+// Load language packs for this section
+global $lang;
+$lang->load("badwords");
+
+
+// A temporary permission!
+checkadminpermissions("caneditsmilies");
+logadmin();
+
+addacpnav($lang->nav_badwords, "badwords.php");
+switch($action)
+{
+	case "add":
+		addacpnav($lang->nav_add_badword);
+		break;
+	case "edit":
+		addacpnav($lang->nav_edit_badword);
+		break;
+	case "delete":
+		addacpnav($lang->nav_delete_badword);
+		break;
+}
+
+if($action == "do_add")
+{
+	$badword = addslashes($badword);
+	$replacement = addslashes($replacement);
+	$db->query("INSERT INTO ".TABLE_PREFIX."badwords (bid,badword,replacement) VALUES (NULL,'$badword','$replacement')");
+	$cache->updatebadwords();
+	cpredirect("badwords.php", $lang->badword_added);
+}
+
+if($action == "do_edit")
+{
+	$bid = $_POST['bid'];
+	$badword = addslashes($badword);
+	$replacement = addslashes($replacement);
+	$db->query("UPDATE ".TABLE_PREFIX."badwords SET badword='$badword', replacement='$replacement' WHERE bid='$bid'");
+	$cache->updatebadwords();
+	cpredirect("badwords.php", $lang->badword_edited);
+}
+
+if($action == "edit")
+{
+	$bid = $_POST['bid'];
+	if($delete)
+	{
+		$query = $db->query("DELETE FROM ".TABLE_PREFIX."badwords WHERE bid='$bid'");
+		cpredirect("badwords.php", $lang->badword_deleted);
+		$cache->updatebadwords();
+		exit;
+	}
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."badwords WHERE bid='$bid'");
+	$badword = $db->fetch_array($query);
+	cpheader();
+	startform("badwords.php", "", "do_edit");
+	makehiddencode("bid", $bid);
+	starttable();
+	tableheader($lang->modify_badword);
+	makeinputcode($lang->badword, "badword", $badword['badword']);
+	makeinputcode($lang->replacement, "replacement", $badword['replacement']);
+	endtable();
+	endform($lang->update_badword, $lang->reset_button);
+	cpfooter();
+}
+
+if($action == "add")
+{
+	cpheader();
+	startform("badwords.php", "", "do_add");
+	makehiddencode("bid", $bid);
+	starttable();
+	tableheader($lang->add_badword);
+	makeinputcode($lang->badword, "badword");
+	makeinputcode($lang->replacement, "replacement");
+	endtable();
+	endform($lang->insert_badword, $lang->reset_button);
+	cpfooter();
+}
+
+if($action == "modify" || $action == "")
+{
+	cpheader();
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_badword_filter\" onclick=\"hopto('badwords.php?action=add');\" class=\"hoptobutton\">";
+	makehoptolinks($hopto);
+	starttable();
+	tableheader($lang->badwords, "", 4);
+	echo "<tr>\n";
+	echo "<td class=\"subheader\" align=\"center\">$lang->badword</td>\n";
+	echo "<td class=\"subheader\" align=\"center\">$lang->replacement</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" colspan=\"2\">$lang->options</td>\n";
+	echo "</tr>\n";
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."badwords ORDER BY badword ASC");
+	while($badword = $db->fetch_array($query))
+	{
+		$bgcolor = getaltbg();
+		startform("badwords.php", "", "edit");
+		makehiddencode("bid", $badword['bid']);
+		echo "<tr>\n";
+		echo "<td class=\"$bgcolor\" width=\"42%\">".$badword['badword']."</td>\n";
+		echo "<td class=\"$bgcolor\" width=\"42%\">".$badword['replacement']."</td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"submit\" name=\"edit\" value=\"$lang->edit\" class=\"submitbutton\"></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"submit\" name=\"delete\" value=\"$lang->delete\" class=\"submitbutton\"></td>\n";
+		echo "</tr>\n";
+		endform();
+		$done = 1;
+	}
+	if(!$done)
+	{
+		makelabelcode("<center>$lang->no_badwords</center>", "", 4);
+	}
+	endtable();
+	cpfooter();
+}
+?>

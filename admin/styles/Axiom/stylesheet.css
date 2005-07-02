@@ -1,0 +1,255 @@
+/* main styles */
+
+body {
+ padding-top: 14px;
+ font-family: Verdana,Arial,Helvetica;
+ color: #000000;
+ font-size: 12px;
+ background-color: #FFFFFF;
+}
+
+a:link, a:visited, a:active {
+color: #000000;
+text-decoration: none;
+}
+
+a:hover {
+text-decoration: underline;
+}
+
+/* table classes */
+.header {
+ color: #FFFFFF;
+ background: #013c74 url("thead_bg.gif");
+ font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+ font-weight: bold;
+ font-size: 11px;
+ vertical-align: center;
+}
+
+.subheader {
+ border: outset 1px;
+ color: #000000;
+ background: #013c74 url("tsubheader_bg.gif");
+ font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+ font-weight: bold;
+ font-size: 11px;
+ vertical-align: middle;
+}
+
+.subtext {
+ color: #000000;
+ font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+ font-weight: bold;
+ font-size: 11px;
+ vertical-align: middle;
+}
+
+.bordercolor {
+ background-color: #000000;
+}
+
+.tback {
+ background-color: #ffffff;
+}
+
+table {
+ font-family: Verdana;
+ color: #000000;
+ font-size: 12px;
+}
+
+.altbg1 {
+ background-color: #efefef;
+}
+
+.altbg2 {
+ background-color: #f7f7f7;
+}
+
+
+.nav {
+ border: outset 1px;
+ color: #000000;
+ background: #EEEEEE url("thead_bg.gif");
+ font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+ font-weight: bold;
+ font-size: 11px;
+}
+
+/* highlight classes */
+
+.highlight1 {
+ color: red;
+}
+
+.highlight2 {
+ color: blue;
+}
+.highlight3 {
+ color: green;
+}
+
+
+/* left navigation menu styles */
+
+.lnav body {
+ color: #000000;
+ font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+ font-weight: bold;
+ font-size: 9px;
+}
+
+.lnav td {
+	font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+	font-size: 9px;
+}
+
+.lnav a:link, .lnav a:visited, .lnav a:active {
+	text-decoration: none;
+}
+.lnav a:hover {
+	text-decoration: underline;
+}
+
+.lnavhead {
+ color: #FFFFFF;
+ background: #013c74 url("thead_bg.gif");
+ font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+ font-weight: bold;
+ font-size: 11px
+}
+
+.lnavitem {
+ background-color: #efefef;
+ font-family: Verdana;
+ color: #000000;
+ font-size: 11px;
+}
+
+.lnavbordercolor {
+ background-color: #000000;
+}
+
+/* control panel header */
+
+#logo {
+ background : #e3e3e3 url('logo_bg.png') repeat-x;
+ margin: 0;
+ padding: 0;
+}
+
+#logo h1 {
+ margin-right: 20px;
+ background: url("logo.png") no-repeat right;
+ height: 54px;
+ margin: 0;
+ padding: 0;
+}
+
+#header-links {
+ border-top: 1px solid #000000;
+ border-bottom: 1px solid #000000;
+ background : #4874a3;
+ padding-top: 4px;
+ padding-bottom: 4px;
+ color:  #e5ecf4;
+ text-align: right;
+}
+
+#header-links a {
+ color:  #e5ecf4;
+ padding-left: 10px;
+ padding-right: 10px;
+ padding-top: 4px;
+ padding-bottom: 4px;
+}
+
+#header-links a:hover {
+ background : #618ab4 ;
+ color : #ffffff;
+ text-decoration: none;
+}
+
+/* navigation styles */
+
+.navigation {
+ width: 90%;
+ margin: auto auto;
+ text-align: left;
+ font: 8pt Verdana;
+}
+
+.navigation a:link, .navigation a:active, .navigation a:visited, .navigation a:hover {
+ text-decoration: none;
+}
+
+.navigation .active {
+ font: 9pt Verdana;
+ font-weight: bold;
+}	
+
+/* input and form objects */
+
+select {
+ font-family: Arial, Helvetica;
+ font-size: 12px;
+ color: #000000;
+ background-color: #ecece4;
+}
+
+textarea, input, object {
+ margin-left: 4px;
+ font-size: 12px;
+ font-family: Arial, Helvetica;
+ color: #000000;
+}
+
+.formbuttons {
+ width: 90%;
+ margin: auto auto;
+ text-align: right;
+}
+
+.hoptobutton {
+ font-weight: bold;
+ margin-left: 4px;
+ margin-bottom: 5px;
+ padding: 2px;
+ border: 1px solid #013c74;
+ color: #000000;
+ background-color: #efefef;
+}
+
+.submitbutton {
+ margin-left: 4px;
+}
+
+.hoptobuttons {
+ text-align: right;
+ font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+ font-weight: bold;
+ font-size: 12px
+
+}
+
+.smalltext {
+font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+font-size: 11px;
+}
+
+.hidden {
+ display : none;
+ float : none;
+ width : 1%;
+}
+
+.lnavitem ul {
+	list-style: inside;
+	padding: 0;
+	margin: 0;
+}
+
+.lnavitem li {
+	padding: 1px;
+}

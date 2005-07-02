@@ -1,0 +1,37 @@
+<head>
+<style>
+
+	.autocomplete {
+  position: absolute;
+  color: #000;
+  background-color: #fff;
+  border: solid 1px black;
+  visibility: hidden;
+  z-index: 10;
+}
+
+.autocomplete ul {
+  padding: 0;
+  margin: 0;
+}
+ 
+.autocomplete li {
+  display: block;
+  cursor: pointer;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.autocomplete li.selected {
+ background-color: #efefef;
+}
+</style>
+<script type="text/javascript" src="xmlhttp.js"></script>
+</head>
+<body>
+		<input autocomplete="off" id="to" value="" type="text"/>
+
+        <div id="to-popup" class="autocomplete"><span>blah</span></div>
+        <script type="text/javascript">
+          autoComplete("to", "private.php?action=getbuddies");
+        </script>
