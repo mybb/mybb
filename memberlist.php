@@ -8,8 +8,9 @@
  *
  * $Id$
  */
- 
- $templatelist = "memberlist,memberlist_row";
+ define("KILL_GLOBALS", 1);
+
+$templatelist = "memberlist,memberlist_row";
 require "./global.php";
 
 // Load global language phrases
@@ -22,35 +23,35 @@ if($mybb->usergroup['canviewmemberlist'] == "no")
 	nopermission();
 }
 
-if($by != "regdate" && $by != "postnum" && $by != "username")
+if($mybb->input['by'] != "regdate" && $mybb->input['by'] != "postnum" && $mybb->input['by'] != "username")
 {
-	if($usersearch)
+	if($mybb->input['usersearch'])
 	{
-		$by = "username";
+		$mybb->input['by'] = "username";
 	}
 	else
 	{
-		$by = "regdate";
+		$mybb->input['by'] = "regdate";
 	}
 }
 
-if($order != "DESC" && $order != "ASC")
+if($mybb->input['order'] != "DESC" && $mybb->input['order'] != "ASC")
 {
 	// top posters first
-	if($by == "postnum")
+	if($mybb->input['by'] == "postnum")
 	{
-		$order = "DESC";
+		$mybb->input['order'] = "DESC";
 	}
 	else
 	{
-		$order = "ASC";
+		$mybb->input['order']= "ASC";
 	}
 }
 
-if($usersearch)
+if($mybb->input['usersearch'])
 {
-	$query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE username LIKE '%".addslashes($usersearch)."%'");
-	$linkaddon = "&usersearch=$usersearch";
+	$query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE username LIKE '%".addslashes($mybb->input['usersearch'])."%'");
+	$linkaddon = "&usersearch=".mybb->input['usersearch'];
 }
 else
 {
@@ -59,7 +60,7 @@ else
 }
 
 $num = $db->result($query, 0);
-$multipage = multipage($num, $mybb->settings['membersperpage'], $page, "memberlist.php?by=$by&order=$order$linkaddon");
+$multipage = multipage($num, $mybb->settings['membersperpage'], $page, "memberlist.php?by=".$mybb->input['by']."&order=".$mybb->input['order'].$linkaddon);
 if(is_numeric($page))
 {
 	$start = ($page - 1) * $mybb->settings['membersperpage'];
@@ -70,11 +71,11 @@ else
 	$page = 1;
 }
 
-if($by == "postnum")
+if($mybb->input['by'] == "postnum")
 {
 	$postnumsel = " selected=\"selected\"";
 }
-elseif($by == "username")
+elseif($mybb->input['by'] == "username")
 {
 	$usernamesel = " selected=\"selected\"";
 }
@@ -91,13 +92,13 @@ else
 	$ascsel = " selected=\"selected\"";
 }
 
-if($usersearch)
+if($mybb->input['usersearch'])
 {
-	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) WHERE u.username LIKE '%".addslashes($usersearch)."%' ORDER BY u.$by $order LIMIT $start, ".$mybb->settings[membersperpage]);
+	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) WHERE u.username LIKE '%".addslashes($mybb->input['usersearch'])."%' ORDER BY u.".$mybb->input['by']." ".$mybb['order']." LIMIT $start, ".$mybb->settings[membersperpage]);
 }
 else
 {
-	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) ORDER BY u.$by $order LIMIT $start, ".$mybb->settings[membersperpage]);
+	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) ORDER BY u.".$mybb->input['by']." ".$mybb->input['order']." LIMIT $start, ".$mybb->settings[membersperpage]);
 }
 
 while($users = $db->fetch_array($query))
@@ -131,7 +132,7 @@ if(!$member)
 {
 	$member = "<tr>\n<td colspan=\"6\" align=\"center\" class=\"trow1\">$lang->error_no_members</td>\n</tr>";
 }
-$usersearch = htmlspecialchars($usersearch);
+$usersearch = htmlspecialchars($mybb->input['usersearch']);
 eval("\$memberlist = \"".$templates->get("memberlist")."\";");
 outputpage($memberlist);
 ?>
