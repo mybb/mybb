@@ -210,6 +210,8 @@ $tables[] = "CREATE TABLE mybb_helpdocs (
   name varchar(120) NOT NULL default '',
   description text NOT NULL,
   document text NOT NULL,
+  usetranslation char(3) NOT NULL default '',
+  enabled char(3) NOT NULL default '',
   disporder smallint unsigned NOT NULL default '0',
   PRIMARY KEY  (hid)
 ) TYPE=MyISAM;";
@@ -219,6 +221,8 @@ $tables[] = "CREATE TABLE mybb_helpsections (
   sid smallint unsigned NOT NULL auto_increment,
   name varchar(120) NOT NULL default '',
   description text NOT NULL,
+  usetranslation char(3) NOT NULL default '',
+  enabled char(3) NOT NULL default '',
   disporder smallint unsigned NOT NULL default '0',
   PRIMARY KEY  (sid)
 ) TYPE=MyISAM;";

@@ -58,11 +58,11 @@ function stripslashesarray(&$array)
 @extract($_SERVER, EXTR_OVERWRITE);
 
 // Include the files necessary for installation
-require "../inc/timers.php";
+require "../inc/class_timers.php";
 require "../inc/constants.php";
 require "../inc/functions.php";
 require "../admin/adminfunctions.php";
-require "../inc/xml.php";
+require "../inc/class_xml.php";
 
 // Include the installation resources
 require "./resources/output.php";
@@ -297,7 +297,7 @@ function insert_templates()
 	$db->select_db($config[database]);
 
 
-	require "../inc/datacache.php";
+	require "../inc/class_datacache.php";
 	$cache = new datacache;
 
 	$output->print_header("Default Template Installation");
@@ -390,7 +390,7 @@ function install_done()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD FULLTEXT KEY subject_2 (subject)", 1);
 
 	$contents .= "<p>Building cache's...";
-	require "../inc/datacache.php";
+	require "../inc/class_datacache.php";
 	$cache = new datacache;
 	$cache->updateversion();
 	$cache->updateattachtypes();

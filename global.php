@@ -32,7 +32,7 @@ if(is_dir("install") && !file_exists("install/lock"))
 }
 
 //
-// Create this users ession
+// Create this users session
 //
 
 require "./inc/sessions.php";
