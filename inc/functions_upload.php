@@ -58,7 +58,7 @@ function upload_avatar()
 	}
 
 	// Next check the file size
-	if($avatat['ize'] > ($settings['avatarsize']*1024) && $settings['avatarsize'] > 0)
+	if($avatar['size'] > ($settings['avatarsize']*1024) && $settings['avatarsize'] > 0)
 	{
 		$ret['error'] = $lang->error_uploadsize;
 		return $ret;
