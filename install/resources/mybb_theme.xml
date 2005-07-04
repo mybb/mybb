@@ -2014,7 +2014,7 @@ $footer
 		<template name="usercp_avatar_gallery_avatar"><![CDATA[<td width="20%" align="center"><label for="avatar-$avatar"><img src="$avatarpath" alt="$avatar" /><br /><input type="radio" name="avatar" value="$avatar" id="avatar-$avatar" /><strong>$avatarname</strong></td>]]></template>
 		<template name="usercp_avatar_current"><![CDATA[<td class="trow1" width="150" align="right"><img src="$urltoavatar" alt="$lang->avatar" /></td>]]></template>
 		<template name="headerinclude"><![CDATA[<meta http-equiv="Content-Type" content="text/html; charset=$charset" />
-<script type="text/javascript" src="general.js"></script>
+<script type="text/javascript" src="jscripts/general.js"></script>
 <link rel="stylesheet" type="text/css" href="css.php?theme=$theme[tid]" />
 $newpmmsg]]></template>
 		<template name="showthread_similarthreads"><![CDATA[<br />
@@ -3373,7 +3373,7 @@ var php_prompt = "$lang->php_prompt";
 <tr>
 <td bgcolor="#F0F0F0" colspan="2"><span class="smalltext"><input type="radio" name="mode" value="normal" onClick="changeMode('normal')"> $lang->normal_mode&nbsp;&nbsp;<input type="radio" name="mode" value="advanced" onClick="changeMode('advanced')"> $lang->advanced_mode</span></td>
 </tr>
-<script language='Javascript' src='codebuttons.js'></script>]]></template>
+<script language='Javascript' src='jscripts/codebuttons.js'></script>]]></template>
 		<template name="showthread_quickreply"><![CDATA[<br />
 <form method="post" action="newreply.php" name="input">
 <input type="hidden" name="subject" value="RE: $thread[subject]" />
