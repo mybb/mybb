@@ -341,7 +341,7 @@ function configure()
 	$output->print_header("Board Configuration and Administrator Account Setup");
 	$contents = "<p>Now that we have managed to install the default templates, as well as populate the database we need you to specify the basic board configuration below as well as create an Administrator account.</p>";
 	$contents .= "<p>Board Name:<br /><input type=\"text\" name=\"boardname\" value=\"\" /></p>\n";
-	$contents .= "<p>Board URL:<br /><input type=\"text\" name=\"boardurl\" value=\"http://\" />(Enter the full URL to your board without the trailing slash.)</p>\n";
+	$contents .= "<p>Board URL: (Enter the full URL to your board without the trailing slash.)<br /><input type=\"text\" name=\"boardurl\" value=\"http://\" /></p>\n";
 	$contents .= "<p>&nbsp;</p>";
 	$contents .= "<p>Administrator Username:<br /><input type=\"text\" name=\"adminuser\" value=\"\" /></p>\n";
 	$contents .= "<p>Administrator Password:<br /><input type=\"password\" name=\"adminpass\" value=\"\" /></p>\n";
