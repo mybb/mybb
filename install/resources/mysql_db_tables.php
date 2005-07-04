@@ -112,6 +112,7 @@ $tables[] = "CREATE TABLE mybb_banned (
   dateline bigint(30) NOT NULL default '0',
   bantime varchar(50) NOT NULL default '',
   lifted bigint(30) NOT NULL default '0'
+  reason varchar(255) NOT NULL default '',
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_events (

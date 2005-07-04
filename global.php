@@ -220,6 +220,33 @@ else
 	$charset = "iso-8859-1";
 }
 
+// Banned warning
+if($mybb->usergroup['isbannedgroup'] == "yes")
+{
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid = ".$mybb->user['uid']." LIMIT 1");
+	if($query)
+	{
+		$ban = $db->fetch_array($query);
+		if($ban['lifted'] > 0)
+		{
+			$banlift = mydate($mybb->settings['dateformat'], $ban['lifted']) . ", " . mydate($mybb->settings['timeformat'], $ban['lifted']);
+		}
+		else {
+			$banlift = $lang->permanent;
+		}
+		$reason = htmlspecialchars_uni($ban['reason']);
+	}
+	if(empty($reason))
+	{
+		$reason = $lang->unknown;
+	}
+	if(empty($banlift))
+	{
+		$banlift = $lang->unknown;
+	}
+	eval("\$bannedwarning = \"".$templates->get("global_bannedwarning")."\";");
+}
+$bannedwarning = 'ooga booga aye aye';
 eval("\$headerinclude = \"".$templates->get("headerinclude")."\";");
 eval("\$gobutton = \"".$templates->get("gobutton")."\";");
 eval("\$htmldoctype = \"".$templates->get("htmldoctype")."\";");
@@ -228,7 +255,7 @@ $copyyear = date("Y");
 eval("\$footer = \"".$templates->get("footer")."\";");
 
 $navbits[0]['name'] = $mybb->settings['bbname'];
-$navbits[0]['url'] = $mybb->settings[bburl]."/index.php";
+$navbits[0]['url'] = $mybb->settings['bburl']."/index.php";
 
 // Check banned ip addresses
 $bannedips = explode(" ", $mybb->settings['ipban']);
@@ -242,7 +269,7 @@ if(is_array($bannedips))
 			if(strstr("$ipaddress", $bannedip))
 			{
 				error($lang->error_banned);
-				$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE WHERE ip='$ipaddress' OR uid='$mybb[uid]'");
+				$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE ip='$ipaddress' OR uid='$mybb[uid]'");
 			}
 		}
 	}
@@ -270,7 +297,7 @@ if($uptime = @exec('uptime'))
 	}
 }
 
-// Referals system
+// Referrals system
 if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && intval($mybb->input['referrer']) > 0 && !$_COOKIE['mybb']['referrer'])
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['referrer']."'");
@@ -285,7 +312,6 @@ if($mybb->usergroup['canview'] != "yes" && $mybb->input['action'] != "register" 
 {
 	nopermission();
 }
-
 
 // work out which items the user has collapsed
 $colcookie = $_COOKIE['collapsed'];

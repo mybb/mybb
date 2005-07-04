@@ -1509,18 +1509,19 @@ if($action == "do_manageban")
 	{
 		$liftdate = date2timestamp($liftafter);
 	}
+	$banreason = addslashes($_POST['banreason']);
 	$lang->ban_updated = sprintf($lang->ban_updated, $user['username']);
 	$lang->ban_added = sprintf($lang->ban_added, $user['username']);
 	$now = time();
 	$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='$usergroup' WHERE uid='$user[uid]'");
-	if($bancheck[uid])
+	if($bancheck['uid'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."banned SET admin='$mybbadmin[uid]', dateline='$now', gid='$usergroup', bantime='$liftafter', lifted='$liftdate' WHERE uid='$user[uid]'");
+		$db->query("UPDATE ".TABLE_PREFIX."banned SET admin='$mybbadmin[uid]', dateline='$now', gid='$usergroup', bantime='$liftafter', lifted='$liftdate', reason='$banreason' WHERE uid='$user[uid]'");
 		cpredirect("users.php?action=banned", $lang->ban_updated);
 	}
 	else
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."banned (uid,admin,gid,oldgroup,dateline,bantime,lifted) VALUES ('$user[uid]','$mybbadmin[uid]','$usergroup','$user[usergroup]','$now','$liftafter','$liftdate')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."banned (uid,admin,gid,oldgroup,dateline,bantime,lifted,reason) VALUES ('$user[uid]','$mybbadmin[uid]','$usergroup','$user[usergroup]','$now','$liftafter','$liftdate','$banreason')");
 		cpredirect("users.php?action=banned", $lang->ban_added);
 	}
 }
@@ -1573,7 +1574,8 @@ if($action == "manageban")
 		$ban[bantime] = "1-0-0";
 		makeinputcode($lang->username, "username", $user['username']);
 	}
-	makeselectcode($lang->move_banned_group, "usergroup", "usergroups", "gid", "title", $user[usergroup], "", "", "isbannedgroup='yes'");
+	makeinputcode($lang->ban_reason, "banreason", $ban['banreason']);
+	makeselectcode($lang->move_banned_group, "usergroup", "usergroups", "gid", "title", $user['usergroup'], "", "", "isbannedgroup='yes'");
 	reset($bantimes);
 	while(list($time, $title) = each($bantimes))
 	{
@@ -1642,8 +1644,9 @@ if($action == "banned")
 				$timeremaining = getbanremaining($user[lifted]);
 				$liftedon = mydate($settings[dateformat], $user[lifted]);
 			}
+			$user['banreason'] = htmlspecialchars_uni($user['banreason']);
 			$bannedon = mydate($settings['dateformat'], $user['dateline']);
-			echo "<tr>\n";
+			echo "<tr title='$user[reason]'>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"users.php?action=edit&uid=$user[uid]\">$user[username]</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$user[adminuser]</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$bannedon</td>\n";

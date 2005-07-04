@@ -166,6 +166,7 @@ $l['lifted_on'] = "Lifted on";
 $l['time_remaining'] = "Time remaining";
 $l['permanent'] = "Permanent";
 $l['never'] = "Never";
+$l['ban_reason'] = "Ban Reason";
 
 $l['quick_search_listing'] = "Quick Search and Listing Options";
 $l['sorting_misc_options'] = "Sorting and Misc. Options";
