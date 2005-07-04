@@ -1152,13 +1152,14 @@ switch($action)
 				{
 					$message .= "[hr]$post[message]";
 				}
+
+				deletepost($post['pid']);
 			}
 			$first = 0;
 		}
 		$message = addslashes($message);
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET message='$message' WHERE pid='$masterpid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid IN($pidin) AND pid!='$masterpid'");
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET pid='$masterpid' WHERE pid IN($pidin)");
+		$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$masterpid' WHERE pid IN($pidin)");
 		updatethreadcount($tid);
 		updateforumcount($fid);
 		markreports($plist, "posts");
