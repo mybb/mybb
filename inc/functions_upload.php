@@ -42,7 +42,7 @@ function remove_avatars($uid, $exclude="")
 
 function upload_avatar()
 {
-	global $db, $settings, $mybbuser, $mybbgroup, $lang, $_FILES;
+	global $db, $settings, $mybb, $lang, $_FILES;
 	$avatar = $_FILES['avatarupload'];
 	if(!is_uploaded_file($avatar['tmp_name']))
 	{
@@ -64,7 +64,7 @@ function upload_avatar()
 		return $ret;
 	}
 
-	$filename = "avatar_".$mybbuser['uid'].".".$ext;
+	$filename = "avatar_".$mybb->user['uid'].".".$ext;
 	$file = upload_file($avatar, $settings['avataruploadpath'], $filename);
 	if($file['error'])
 	{
@@ -93,7 +93,7 @@ function upload_avatar()
 	}
 
 	// Everything is okay so lets delete old avatars for this user
-	remove_avatars($mybbuser['uid'], $filename);
+	remove_avatars($mybb->user['uid'], $filename);
 
 	$ret['avatar'] = $settings['avataruploadpath']."/".$filename;
 	return $ret;
@@ -101,7 +101,7 @@ function upload_avatar()
 
 function upload_attachment($attachment)
 {
-	global $db, $settings, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $mybbuser, $mybbgroup, $lang;
+	global $db, $settings, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang;
 	if(!is_uploaded_file($attachment['tmp_name']))
 	{
 		$ret['error'] = $lang->error_uploadfailed;
@@ -124,14 +124,14 @@ function upload_attachment($attachment)
 	}
 
 	// Double check attachment space usage
-	if($mybbgroup['attachquota'] > 0)
+	if($mybb->usergroup['attachquota'] > 0)
 	{
 		$query = $db->query("SELECT SUM(filesize) AS ausage FROM ".TABLE_PREFIX."attachments WHERE uid='".$mybb['uid']."'");
 		$usage = $db->fetch_array($query);
 		$usage = $usage['ausage']+$attachment['size'];
-		if($usage > ($mybbgroup['attachquota']*1000))
+		if($usage > ($mybb->usergroup['attachquota']*1000))
 		{
-			$friendlyquota = getfriendlysize($mybbgroup['attachquota']*1000);
+			$friendlyquota = getfriendlysize($mybb->usergroup['attachquota']*1000);
 			$ret['error'] = sprintf($lang->error_reachedattachquota, $friendlyquota);
 			return $ret;
 		}
@@ -147,7 +147,7 @@ function upload_attachment($attachment)
 	}
 
 	// All seems to be good, lets move the attachment!
-	$filename = "post_".$mybb['uid']."_".time().".attach";
+	$filename = "post_".$mybb->user['uid']."_".time().".attach";
 	$file = upload_file($attachment, $settings['uploadspath'], $filename);
 	if($file['error'])
 	{
@@ -174,7 +174,7 @@ function upload_attachment($attachment)
 			$thumbadd2 = ",'".$thumbnail['filename']."'";
 		}
 	}
-	if($forum['modattachments'] == "yes" && $mybbgroup['cancp'] != "yes")
+	if($forum['modattachments'] == "yes" && $mybb->usergroup['cancp'] != "yes")
 	{
 		$attvisible = 0;
 	}
@@ -182,7 +182,7 @@ function upload_attachment($attachment)
 	{
 		$attvisible = 1;
 	}
-	$db->query("INSERT INTO ".TABLE_PREFIX."attachments (aid,pid,posthash,uid,filename,filetype,filesize,attachname,downloads,visible$thumbadd) VALUES ('','$pid','$posthash','".$mybb['uid']."','".$file['original_filename']."','".$file['type']."','".$file['size']."','$filename','0','$attvisible'$thumbadd2)");
+	$db->query("INSERT INTO ".TABLE_PREFIX."attachments (aid,pid,posthash,uid,filename,filetype,filesize,attachname,downloads,visible$thumbadd) VALUES ('','$pid','$posthash','".$mybb->user['uid']."','".$file['original_filename']."','".$file['type']."','".$file['size']."','$filename','0','$attvisible'$thumbadd2)");
 	$aid = $db->insert_id();
 	$ret['aid'] = $aid;
 	return $ret;
