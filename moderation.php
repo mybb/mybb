@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("KILL_GLOBALS", 1);
+
 require "./global.php";
 require "./inc/functions_post.php";
 
@@ -17,13 +19,16 @@ $lang->load("moderation");
 
 
 // Get some navigation if we need it
-switch($action)
+switch($mybb->input['action'])
 {
 	case "reports":
 //		addnav($lang->moderator_cp, "moderation.php");
 		addnav($lang->reported_posts);
 		break;
 }
+$tid = intval($mybb->input['tid']);
+$pid = intval($mybb->input['pid']);
+$fid = intval($mybb->input['fid']);
 
 if($pid)
 {
@@ -79,7 +84,7 @@ else
 }
 
 // Begin!
-switch($action)
+switch($mybb->input['action'])
 {
 	// Open or close a thread
 	case "openclosethread":
@@ -316,6 +321,7 @@ switch($action)
 			nopermission();
 		}
 		$deletethread = "1";
+		$deletepost = $mybb->input['deletepost'];
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
 		while($post = $db->fetch_array($query))
 		{
@@ -391,6 +397,7 @@ switch($action)
 		{
 			nopermission();
 		}
+		$mergepost = $mybb->input['mergepost']);
 		if(count($mergepost) <= 1)
 		{
 			error($lang->error_nomergeposts);
@@ -445,6 +452,9 @@ switch($action)
 
 	// Lets get this thing moving!
 	case "do_move":
+		$moveto = intval($mybb->input['moveto']);
+		$method = $mybb->input['method'];
+
 		if(ismod($fid, "canmanagethreads") != "yes")
 		{
 			nopermission();
@@ -575,8 +585,8 @@ switch($action)
 			nopermission();
 		}
 		logmod($modlogdata, $lang->thread_notes_edited);
-		$thread['notes'] = addslashes($threadnotes);
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET notes='$thread[notes]' WHERE tid='$tid'");
+		$thread['notes'] = addslashes($mybb->input['threadnotes']);
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET notes='".$thread['notes']."' WHERE tid='$tid'");
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadnotesupdated);
 		break;
 
@@ -616,7 +626,7 @@ switch($action)
 		}
 	
 		// get thread to merge's tid
-		$splitloc = explode(".php", $threadurl);
+		$splitloc = explode(".php", $mybb->input['threadurl']);
 		$temp = explode("&", substr($splitloc[1], 1));
 		for ($i = 0; $i < count($temp); $i++)
 		{
@@ -664,7 +674,11 @@ switch($action)
 				$db->query("DELETE FROM ".TABLE_PREFIX."pollvotes WHERE pid='$mergethread[poll]'");
 			}
 		}
-		if(!$subject)
+		if($subject)
+		{
+			$subject = $mybb->input['subject'];
+		}
+		else
 		{
 			$subject = $thread['subject'];
 		}
@@ -677,8 +691,6 @@ switch($action)
 		logmod($modlogdata, $lang->thread_merged);
 		deletethread($mergetid);
 		updatethreadcount($tid);
-		echo '<b>Debug: </b>'.$fid.'<br />';
-		echo '<b>Debug: </b>'.$mergethread['fid'].'<br />';
 		if($fid != $mergethread['fid'])
 		{
 			updateforumcount($mergethread['fid']);
@@ -739,7 +751,7 @@ switch($action)
 		}
 		$numyes = "0";
 		$numno = "0";
-		while(list($key, $val) = each($splitpost))
+		while(list($key, $val) = each($mybb->input['splitpost']))
 		{
 			if($val == "yes")
 			{
@@ -758,11 +770,15 @@ switch($action)
 		{
 			error($lang->error_cantsplitall);
 		}
-		if(!$moveto)
+		if($mybb->input['moveto'])
+		{
+			$moveto = $mybb->input['moveto'];
+		} 
+		else
 		{
 			$moveto = $fid;
 		}
-		$newsubject = addslashes($newsubject);
+		$newsubject = addslashes($mybb->input['newsubject']);
 		$db->query("INSERT INTO ".TABLE_PREFIX."threads (tid,fid,subject,icon,uid,username,dateline,lastpost,lastposter,replies,visible) VALUES (NULL,'$moveto','$newsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$numyes','1')");
 		$newtid = $db->insert_id();
 		// move the selected posts over
@@ -816,7 +832,7 @@ switch($action)
 				nopermission();
 			}
 		}
-		$threadlist = explode("|", $threads);
+		$threadlist = explode("|", $mybb->input['threads']);
 		foreach($threadlist as $tid)
 		{
 			deletethread($tid);
@@ -994,7 +1010,8 @@ switch($action)
 			nopermission();
 		}
 		$q = "tid='-1'";
-		$threadlist = explode("|", $threads);
+		$moveto = intval($mybb->input['moveto']);
+		$threadlist = explode("|", $mybb->input['threads']);
 		foreach($threadlist as $tid)
 		{
 			$q .= " OR tid='$tid'";
@@ -1073,7 +1090,7 @@ switch($action)
 		{
 			nopermission();
 		}
-		$postlist = explode("|", $posts);
+		$postlist = explode("|", $mybb->input['posts']);
 		$deletecount = 0;
 		foreach($postlist as $pid)
 		{
@@ -1126,7 +1143,7 @@ switch($action)
 		{
 			nopermission();
 		}
-		$postlist = explode("|", $posts);
+		$postlist = explode("|", $mybb->input['posts']);
 		foreach($postlist as $pid)
 		{
 				$pidin .= "$comma'$pid'";
@@ -1144,7 +1161,7 @@ switch($action)
 			}
 			else
 			{ // these are the selected posts
-				if($sep == "new_line")
+				if($mybb->input['sep'] == "new_line")
 				{
 					$message .= "\n\n$post[message]";
 				}
@@ -1209,18 +1226,22 @@ switch($action)
 		{
 			nopermission();
 		}
-		$postlist = explode("|", $posts);
+		$postlist = explode("|", $mybb->input['posts']);
 		foreach($postlist as $pid)
 		{
 			$pidin .= "$comma'$pid'";
 			$comma = ",";
 			$plist[] = $pid;
 		}
-		if(!$moveto)
+		if($mybb->input['moveto'])
+		{
+			$moveto = intval($mybb->input['moveto']);
+		{
+		else
 		{
 			$moveto = $fid;
 		}
-		$newsubject = addslashes($newsubject);
+		$newsubject = addslashes($mybb->input['newsubject']);
 		$db->query("INSERT INTO ".TABLE_PREFIX."threads (tid,fid,subject,icon,uid,username,dateline,lastpost,lastposter,replies,visible) VALUES (NULL,'$moveto','$newsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$numyes','1')");
 		$newtid = $db->insert_id();
 		// move the selected posts over
@@ -1340,11 +1361,11 @@ switch($action)
 		{
 			$flist = "AND fid IN (0$flist)";
 		}
-		if(!is_array($reports))
+		if(!is_array($mybb->input['reports']))
 		{
 			error($lang->error_noselected_reports);
 		}
-		$rids = implode($reports, "','");
+		$rids = implode($mybb->input['reports'], "','");
 		$rids = "'0','$rids'";
 		$db->query("UPDATE ".TABLE_PREFIX."reportedposts SET reportstatus='1' WHERE rid IN ($rids)");
 		$cache->updatereportedposts();
@@ -1406,9 +1427,9 @@ switch($action)
 // Some little handy functions for our inline moderation
 function getids($id, $type)
 {
-	global $HTTP_COOKIE_VARS;
+	global $_COOKIE;
 	$cookie = "inlinemod_".$type.$id;
-	$ids = explode("|", $HTTP_COOKIE_VARS[$cookie]);
+	$ids = explode("|", $_COOKIE[$cookie]);
 	foreach($ids as $id)
 	{
 		if($id != "")
