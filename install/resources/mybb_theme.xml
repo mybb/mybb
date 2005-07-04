@@ -4561,11 +4561,15 @@ $lang->online_users<br /><strong>&raquo;</strong> $lang->online_counts<br />$onl
 <tr>
 <td class="trow1" align="center">
 <span class="smalltext"><br />
-<form method="POST" action="$settings[bburl]/search.php"><input type="hidden" name="action" value="do_login">
-<input type="hidden" name="do_search">
-<input type="text" name="keywords" value="">
+<form method="POST" action="$settings[bburl]/search.php">
+<input type="hidden" name="action" value="do_search" />
+<input type="hidden" name="postthread" value="1" />
+<input type="hidden" name="forums" value="all" />
+<input type="hidden" name="showresults" value="threads" />
+<input type="text" name="keywords" value="" />
 $gobutton<br />
 (<a href="$settings[bburl]/search.php">$lang->advanced_search</a>)
+</form>
 </span>
 </td>
 </tr>
