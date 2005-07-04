@@ -119,7 +119,7 @@ if($action == "profile")
 	}
 	else
 	{
-		$user['website'] = htmlspecialchars($user['website']);
+		$user['website'] = htmlspecialchars_uni($user['website']);
 	}
 	if($mybb->settings['allowaway'] != "no")
 	{
@@ -155,7 +155,7 @@ if($action == "profile")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield['type'] = htmlspecialchars(stripslashes($profilefield['type']));
+		$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = $thing[0];
 		$options = $thing[1];
@@ -260,12 +260,12 @@ if($action == "profile")
 		}
 		elseif($type == "textarea")
 		{
-			$value = htmlspecialchars($mybb->user[$field]);
+			$value = htmlspecialchars_uni($mybb->user[$field]);
 			$code = "<textarea name=\"$field\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
 		}
 		else
 		{
-			$value = htmlspecialchars($mybb->user[$field]);
+			$value = htmlspecialchars_uni($mybb->user[$field]);
 			$code = "<input type=\"text\" name=\"$field\" size=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
 		}
 		if($profilefield['required'] == "yes")
@@ -356,7 +356,7 @@ elseif($action == "do_profile")
 	{
 		if($usertitle <= $mybb->settings['customtitlemaxlength'])
 		{
-			$usertitle = addslashes(htmlspecialchars($usertitle));
+			$usertitle = addslashes(htmlspecialchars_uni($usertitle));
 			$titleup = ", usertitle='$usertitle'";
 		}
 		else
@@ -364,11 +364,11 @@ elseif($action == "do_profile")
 			error($lang->error_customtitle_length);
 		}
 	}
-	$website = addslashes(htmlspecialchars($website));
-	$icq = addslashes(htmlspecialchars($icq));
-	$aim = addslashes(htmlspecialchars($aim));
-	$yahoo = addslashes(htmlspecialchars($yahoo));
-	$msn = addslashes(htmlspecialchars($msn));
+	$website = addslashes(htmlspecialchars_uni($website));
+	$icq = addslashes(htmlspecialchars_uni($icq));
+	$aim = addslashes(htmlspecialchars_uni($aim));
+	$yahoo = addslashes(htmlspecialchars_uni($yahoo));
+	$msn = addslashes(htmlspecialchars_uni($msn));
 	$signature = addslashes($signature);
 	$bio = addslashes($bio);
 	if($away == "yes" && $mybb->settings['allowaway'] != "no")
@@ -394,7 +394,7 @@ elseif($action == "do_profile")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield['type'] = htmlspecialchars(stripslashes($profilefield['type']));
+		$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = $thing[0];
 		$field = "fid$profilefield[fid]";
@@ -900,7 +900,7 @@ elseif($action == "favorites")
 			if(!$favorite['username']) {
 				$favorite['username'] = $favorite['threadusername'];
 			}
-			$favorite['subject'] = htmlspecialchars(stripslashes(dobadwords($favorite['subject'])));
+			$favorite['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($favorite['subject'])));
 			if($favorite['iconpath']) {
 				$icon = "<img src=\"$favorite[iconpath]\" alt=\"$favorite[iconname]\">";
 			} else {
@@ -963,7 +963,7 @@ elseif($action == "favorites")
 			if(!$subscription['username']) {
 				$subscription['username'] = $subscription['threadusername'];
 			}
-			$subscription['subject'] = htmlspecialchars(stripslashes(dobadwords($subscription['subject'])));
+			$subscription['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($subscription['subject'])));
 			if($subscription['iconpath']) {
 				$icon = "<img src=\"$subscription[iconpath]\" alt=\"$subscription[iconname]\">";
 			} else {
@@ -1186,9 +1186,9 @@ elseif($action == "avatar")
 		elseif($mybb->user['avatartype'] == "remote" || strstr(strtolower($mybb->user['avatar']), "http://") !== false)
 		{
 			$avatarmsg = "<br /><strong>".$lang->using_remote_avatar."</strong>";
-			$avatarurl = htmlspecialchars($mybb->user['avatar']);
+			$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);
 		}
-		$urltoavatar = htmlspecialchars($mybb->user['avatar']);
+		$urltoavatar = htmlspecialchars_uni($mybb->user['avatar']);
 		if($mybb->user['avatar'])
 		{
 			eval("\$currentavatar = \"".$templates->get("usercp_avatar_current")."\";");
@@ -1348,19 +1348,19 @@ elseif($action == "drafts")
 		}
 		if($draft['threadvisible'] == 1) // We're looking at a draft post
 		{
-			$detail = $lang->thread." <a href=\"showthread.php?tid=".$draft['tid']."\">".htmlspecialchars($draft['threadsubject'])."</a>";
+			$detail = $lang->thread." <a href=\"showthread.php?tid=".$draft['tid']."\">".htmlspecialchars_uni($draft['threadsubject'])."</a>";
 			$editurl = "newreply.php?action=editdraft&pid=$draft[pid]";
 			$id = $draft['pid'];
 			$type = "post";
 		}
 		elseif($draft['threadvisible'] == -2) // We're looking at a draft thread
 		{
-			$detail = $lang->forum." <a href=\"forumdisplay.php?fid=".$draft['fid']."\">".htmlspecialchars($draft['forumname'])."</a>";
+			$detail = $lang->forum." <a href=\"forumdisplay.php?fid=".$draft['fid']."\">".htmlspecialchars_uni($draft['forumname'])."</a>";
 			$editurl = "newthread.php?action=editdraft&tid=$draft[tid]";
 			$id = $draft['tid'];
 			$type = "thread";
 		}
-		$draft['subject'] = htmlspecialchars($draft['subject']);
+		$draft['subject'] = htmlspecialchars_uni($draft['subject']);
 		$savedate = mydate($mybb->settings['dateformat'], $draft['dateline']);
 		$savetime = mydate($mybb->settings['timeformat'], $draft['dateline']);
 		eval("\$drafts .= \"".$templates->get("usercp_drafts_draft")."\";");

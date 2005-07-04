@@ -206,7 +206,7 @@ if($action == "do_add")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield[type] = htmlspecialchars(stripslashes($profilefield[type]));
+		$profilefield[type] = htmlspecialchars_uni(stripslashes($profilefield[type]));
 		$thing = explode("\n", $profilefield[type], "2");
 		$type = trim($thing[0]);
 		$field = "fid$profilefield[fid]";
@@ -282,7 +282,7 @@ if($action == "do_edit")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield[type] = htmlspecialchars(stripslashes($profilefield[type]));
+		$profilefield[type] = htmlspecialchars_uni(stripslashes($profilefield[type]));
 		$thing = explode("\n", $profilefield[type], "2");
 		$type = trim($thing[0]);
 		$field = "fid$profilefield[fid]";
@@ -610,7 +610,7 @@ if($action == "add")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield[type] = htmlspecialchars(stripslashes($profilefield[type]));
+		$profilefield[type] = htmlspecialchars_uni(stripslashes($profilefield[type]));
 		$thing = explode("\n", $profilefield[type], "2");
 		$type = trim($thing[0]);
 		$options = $thing[1];
@@ -679,7 +679,7 @@ if($action == "add")
 		}
 		else
 		{
-			$value = htmlspecialchars($mybbuser[$field]);
+			$value = htmlspecialchars_uni($mybbuser[$field]);
 			$code = "<input type=\"text\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\">";
 		}
 		makelabelcode("$profilefield[name]", $code);
@@ -776,7 +776,7 @@ if($action == "edit")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield['type'] = htmlspecialchars(stripslashes($profilefield['type']));
+		$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = trim($thing[0]);
 		$options = $thing[1];
@@ -882,12 +882,12 @@ if($action == "edit")
 		}
 		elseif($type == "textarea")
 		{
-			$value = htmlspecialchars($userfields[$field]);
+			$value = htmlspecialchars_uni($userfields[$field]);
 			$code = "<textarea name=\"$field\" rows=\"6\" cols=\"50\">$value</textarea>";
 		}
 		else
 		{
-			$value = htmlspecialchars($userfields[$field]);
+			$value = htmlspecialchars_uni($userfields[$field]);
 			$code = "<input type=\"text\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\">";
 		}
 		makelabelcode($profilefield[name], $code);
@@ -911,7 +911,7 @@ if($action == "edit")
 	makeyesnocode($lang->pm_notify, "pmnotify", $user['pmnotify']);
 	makeinputcode($lang->time_offset, "timezoneoffset", $user[timezone]);
 	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user[style], $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
-	$user[signature] = htmlspecialchars($user[signature]);
+	$user[signature] = htmlspecialchars_uni($user[signature]);
 	maketextareacode($lang->signature, "signature", $user[signature], 6, 50);
 	if(!$user['regip']) { $user['regip'] = " "; }
 	makelabelcode($lang->reg_ip, $user[regip]);

@@ -126,7 +126,7 @@ if($action == "send")
 
 	$posticons = getposticons();
 	$previewmessage = $message;
-	$message = htmlspecialchars($message);
+	$message = htmlspecialchars_uni($message);
 
 	if($preview)
 	{
@@ -157,8 +157,8 @@ if($action == "send")
 		{
 			$optionschecked['readreceipt'] = "checked";
 		}
-		$to = htmlspecialchars($_POST['to']);
-		$subject = htmlspecialchars($_POST['subject']);
+		$to = htmlspecialchars_uni($_POST['to']);
+		$subject = htmlspecialchars_uni($_POST['subject']);
 	}
 	else
 	{
@@ -177,9 +177,9 @@ if($action == "send")
 		$query = $db->query("SELECT pm.*, u.username AS quotename FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) WHERE pm.pmid='$pmid' AND pm.uid='".$mybb->user[uid]."'");
 		$pm = $db->fetch_array($query);
 		$message = stripslashes($pm['message']);
-		$message = htmlspecialchars($message);
+		$message = htmlspecialchars_uni($message);
 		$subject = stripslashes($pm['subject']);
-		$subject = htmlspecialchars($subject);
+		$subject = htmlspecialchars_uni($subject);
 		if($pm['folder'] == "3")
 		{ // message saved in drafts
 			$uid = $pm['toid'];
@@ -409,7 +409,7 @@ elseif($action == "read")
 		$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='1' $receiptadd WHERE pmid='$pmid'");
 	}
 	$pm['userusername'] = $pm['username'];
-	$pm['subject'] = htmlspecialchars($pm['subject']);
+	$pm['subject'] = htmlspecialchars_uni($pm['subject']);
 	if($pm['fromid'] == -2)
 	{
 		$pm['username'] = "myBB Engine";
@@ -426,7 +426,7 @@ elseif($action == "tracking")
 	while($readmessage = $db->fetch_array($query))
 	{
 		$readmessage['subject'] = stripslashes($readmessage['subject']);
-		$readmessage['subject'] = htmlspecialchars($readmessage['subject']);
+		$readmessage['subject'] = htmlspecialchars_uni($readmessage['subject']);
 		$readdate = mydate($mybb->settings['dateformat'], $readmessage['readtime']);
 		$readtime = mydate($mybb->settings['timeformat'], $readmessage['readtime']);
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
@@ -435,7 +435,7 @@ elseif($action == "tracking")
 	while($unreadmessage = $db->fetch_array($query))
 	{
 		$unreadmessage['subject'] = stripslashes($unreadmessage['subject']);
-		$unreadmessage['subject'] = htmlspecialchars($unreadmessage['subject']);
+		$unreadmessage['subject'] = htmlspecialchars_uni($unreadmessage['subject']);
 		$senddate = mydate($mybb->settings['dateformat'], $unreadmessage['dateline']);
 		$sendtime = mydate($mybb->settings['timeformat'], $unreadmessage['dateline']);
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
@@ -539,7 +539,7 @@ elseif($action == "do_folders")
 			if($val != "")
 			{
 				$foldername = $val;
-				$foldername = addslashes(htmlspecialchars($foldername));
+				$foldername = addslashes(htmlspecialchars_uni($foldername));
 				if(strpos($foldername, "$%%$") === false)
 				{
 					if($folders != "")
@@ -985,7 +985,7 @@ else
 		{
 			$icon = "";
 		}
-		$message['subject'] = htmlspecialchars($message['subject']);
+		$message['subject'] = htmlspecialchars_uni($message['subject']);
 		if($message['folder'] != "3")
 		{
 			$senddate = mydate($mybb->settings['dateformat'], $message['dateline']);

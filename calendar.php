@@ -84,7 +84,7 @@ if($mybb->input['action'] == "event")
 		$editbutton = "<a href=\"calendar.php?action=editevent&eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"Edit this event\" /></a>";
 		$deletebutton = "<a href=\"javascript:deleteEvent($event[eid]);\"><img src=\"$theme[imgdir]/postbit_delete.gif\" border=\"0\" alt=\"Delete this event\" /></a>";
 	}
-	$event['subject'] = htmlspecialchars(stripslashes($event['subject']));
+	$event['subject'] = htmlspecialchars_uni(stripslashes($event['subject']));
 	$event['description'] = postify($event['description'], "no", "yes", "yes", "yes");
 	if($event['username'])
 	{
@@ -139,7 +139,7 @@ elseif($mybb->input['action'] == "dayview")
 			$editbutton = "<a href=\"calendar.php?action=editevent&eid=$event[eid]\"><img src=\"$theme[imgdir]/postbit_edit.gif\" border=\"0\" /></a>";
 			$deletebutton = "<a href=\"javascript:deleteEvent($event[eid]);\"><img src=\"$theme[imgdir]/postbit_delete.gif\" border=\"0\" alt=\"Delete this event\" /></a>";
 		}
-		$event['subject'] = htmlspecialchars(stripslashes($event['subject']));
+		$event['subject'] = htmlspecialchars_uni(stripslashes($event['subject']));
 		$event['description'] = postify(stripslashes($event['description']), "no", "yes", "yes", "yes");
 		if($event['username'])
 		{
@@ -272,8 +272,8 @@ elseif($mybb->input['action'] == "editevent")
 			$yearopts .= "<option value=\"$i\">$i</option>\n";
 		}
 	}
-	$event['subject'] = htmlspecialchars($event['subject']);
-	$event['description'] = htmlspecialchars($event['description']);
+	$event['subject'] = htmlspecialchars_uni($event['subject']);
+	$event['description'] = htmlspecialchars_uni($event['description']);
 
 	if($event['private'] == "yes")
 	{
@@ -352,7 +352,7 @@ else
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."events WHERE date LIKE '%-$month-$year' AND ((author='".$mybb->user[uid]."' AND private='yes') OR (private!='yes'))");
 	while($event = $db->fetch_array($query))
 	{
-		$event['subject'] = htmlspecialchars(stripslashes($event['subject']));
+		$event['subject'] = htmlspecialchars_uni(stripslashes($event['subject']));
 		if(strlen($event['subject']) > 15)
 		{
 			$event['subject'] = substr($event['subject'], 0, 15) . "...";

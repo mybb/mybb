@@ -162,8 +162,8 @@ if($action == "newthread" || $action == "editdraft")
 	}
 	elseif($action == "editdraft" && $mybb->user['uid'])
 	{
-		$message = htmlspecialchars($post['message']);
-		$subject = htmlspecialchars($post['subject']);
+		$message = htmlspecialchars_uni($post['message']);
+		$subject = htmlspecialchars_uni($post['subject']);
 		if($post['includesig'] != "no")
 		{
 			$postoptionschecked['signature'] = "checked";
@@ -223,8 +223,8 @@ if($action == "newthread" || $action == "editdraft")
 		$post['dateline'] = time();
 		$postbit = makepostbit($post, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
-		$message = htmlspecialchars($message);
-		$subject = htmlspecialchars($subject);
+		$message = htmlspecialchars_uni($message);
+		$subject = htmlspecialchars_uni($subject);
 	}
 
 	// Setup a unique posthash for attachment management
@@ -332,7 +332,7 @@ if($action == "do_newthread")
 {
 	if($mybb->user['uid'] == 0)
 	{
-		$username = htmlspecialchars($username);
+		$username = htmlspecialchars_uni($username);
 		$username = addslashes($username);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$username'");
 		$member = $db->fetch_array($query);

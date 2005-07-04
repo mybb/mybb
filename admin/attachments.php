@@ -311,7 +311,7 @@ if($action == "edit")
 		// form for editing an attachment type
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes WHERE atid='$atid'");
 		$type = $db->fetch_array($query);
-		$type['name'] = htmlspecialchars(stripslashes($type['name']));
+		$type['name'] = htmlspecialchars_uni(stripslashes($type['name']));
 		cpheader();
 		startform("attachments.php", "", "do_edit");
 		makehiddencode("atid", $atid);

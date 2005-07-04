@@ -288,7 +288,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 							{
 								$lastpostsubject = substr($lastpostsubject, 0, 25) . "...";
 							}
-							$lastpostsubject = htmlspecialchars(dobadwords($lastpostsubject));
+							$lastpostsubject = htmlspecialchars_uni(dobadwords($lastpostsubject));
 							eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
 						}
 					}

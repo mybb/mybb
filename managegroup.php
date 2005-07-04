@@ -67,7 +67,7 @@ elseif($mybb->input['action'] == "joinrequests")
 	$query = $db->query("SELECT j.*, u.uid, u.username, u.postnum, u.regdate FROM ".TABLE_PREFIX."joinrequests j LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid) WHERE j.gid='".$mybb->input['gid']."' ORDER BY u.username ASC");
 	while($user = $db->fetch_array($query))
 	{
-		$user['reason'] = htmlspecialchars($user['reason']);
+		$user['reason'] = htmlspecialchars_uni($user['reason']);
 		$altbg = alt_trow();
 		$regdate = mydate($mybb->settings['dateformat'], $user['regdate']);
 		eval("\$users .= \"".$templates->get("managegroup_joinrequests_request")."\";");

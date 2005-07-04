@@ -81,7 +81,7 @@ if($action == "newpoll")
 	{
 		$polloptions = "2";
 	}
-	$question = htmlspecialchars($question);
+	$question = htmlspecialchars_uni($question);
 	if($postoptions['multiple'] == "yes")
 	{
 		$postoptionschecked['multiple'] = "checked";
@@ -94,7 +94,7 @@ if($action == "newpoll")
 	for($i=1;$i<=$polloptions;$i++)
 	{
 		$option = $options[$i];
-		$option = htmlspecialchars($option);
+		$option = htmlspecialchars_uni($option);
 		eval("\$optionbits .= \"".$templates->get("polls_newpoll_option")."\";");
 		$option = "";
 	}
@@ -272,14 +272,14 @@ if($action == "editpoll")
 		{
 			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 		}
-		$question = htmlspecialchars($poll['question']);
+		$question = htmlspecialchars_uni($poll['question']);
 		$numoptions = $poll['numoptions'] + 2;
 		$optionbits = "";
 		for($i=0;$i<$numoptions;$i++)
 		{
 			$counter = $i + 1;
 			$option = $optionsarray[$i];
-			$option = htmlspecialchars($option);
+			$option = htmlspecialchars_uni($option);
 			$optionvotes = intval($votesarray[$i]);
 			if(!$optionvotes)
 			{
@@ -308,7 +308,7 @@ if($action == "editpoll")
 		{
 			$numoptions = "2";
 		}
-		$question = htmlspecialchars($question);
+		$question = htmlspecialchars_uni($question);
 		if($postoptions['multiple'] == "yes")
 		{
 			$postoptionschecked['multiple'] = "checked";
@@ -325,7 +325,7 @@ if($action == "editpoll")
 		{
 			$counter = $i;
 			$option = $options[$i];
-			$option = htmlspecialchars($option);
+			$option = htmlspecialchars_uni($option);
 			$optionvotes = $votes[$i];
 			if(!$optionvotes)
 			{
@@ -334,7 +334,7 @@ if($action == "editpoll")
 			eval("\$optionbits .= \"".$templates->get("polls_editpoll_option")."\";");
 			$option = "";
 		}
-		$question = htmlspecialchars($question);
+		$question = htmlspecialchars_uni($question);
 		if(!$timeout)
 		{
 			$timeout = 0;

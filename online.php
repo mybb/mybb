@@ -171,7 +171,7 @@ else
 		$query = $db->query("SELECT fid,tid,subject FROM ".TABLE_PREFIX."threads WHERE tid IN(0$tidsql) $fidnot");
 		while($thread = $db->fetch_array($query))
 		{
-			$threads[$thread['tid']] = htmlspecialchars(stripslashes($thread['subject']));
+			$threads[$thread['tid']] = htmlspecialchars_uni(stripslashes($thread['subject']));
 			$fidsql .= ",$thread[fid]";
 		}
 	}
@@ -188,7 +188,7 @@ else
 		$query = $db->query("SELECT eid,subject FROM ".TABLE_PREFIX."events WHERE eid IN (0$eidsql)");
 		while($event = $db->fetch_array($query))
 		{
-			$events[$event['eid']] = htmlspecialchars($event['subject']);
+			$events[$event['eid']] = htmlspecialchars_uni($event['subject']);
 		}
 	}
 

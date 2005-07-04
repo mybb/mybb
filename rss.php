@@ -83,8 +83,8 @@ switch($type)
 $query = $db->query("SELECT t.*, f.name AS forumname FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE 1=1 $forumlist $unviewable ORDER BY t.dateline DESC LIMIT 0, $limit");
 while($thread = $db->fetch_array($query))
 {
-	$thread['subject'] = htmlspecialchars(stripslashes($thread['subject']));
-	$thread['forumnanme'] = htmlspecialchars(stripslashes($thread['forumname']));
+	$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
+	$thread['forumnanme'] = htmlspecialchars_uni(stripslashes($thread['forumname']));
 	$postdate = mydate($mybb->settings['dateformat'], $thread['dateline'], "", 0);
 	$posttime = mydate($mybb->settings['timeformat'], $thread['dateline'], "", 0);
 	$pubdate = mydate("r", $thread['dateline'], "", 0);

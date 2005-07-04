@@ -156,7 +156,7 @@ if($action == "threads" || $action == "threadsposts") {
 		tableheader($lang->threads_awaiting);
 	}
 	while($thread = $db->fetch_array($query)) {
-		$thread['subject'] = htmlspecialchars(stripslashes($thread['subject']));
+		$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 		$done = 1;
 		makeinputcode($lang->thread_subject, "threadsubject[$thread[tid]]", "$thread[subject]");		
 		makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&uid=$thread[uid]\" target=\"_blank\">$thread[username]</a>");
@@ -196,7 +196,7 @@ if($action == "posts" || $action == "threadsposts") {
 	while($post = $db->fetch_array($query)) {
 		if(!$donepid[$post[pid]]) { // so we dont show new threads main post again
 			$done = 1;
-			$thread['subject'] = htmlspecialchars(stripslashes($thread['subject']));
+			$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 			makeinputcode($lang->post_subject, "postsubject[$post[pid]]", "$post[subject]");	
 			makelabelcode($lang->thread, "<a href=\"../showthread.php?tid=$post[tid]\" target=\"_blank\">$post[threadsubject]</a>");	
 			makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&uid=$post[uid]\" target=\"_blank\">$post[username]</a>");

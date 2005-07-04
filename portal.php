@@ -221,7 +221,7 @@ if($mybb->settings[portal_showdiscussions] != "no" && $mybb->settings[portal_sho
 		{
 			$thread['subject'] = substr($thread['subject'], 0, 25) . "...";
 		}
-		$thread['subject'] = htmlspecialchars($thread['subject']);
+		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
 		if($altbg == "trow1")
 		{
@@ -264,7 +264,7 @@ while($announcement = $db->fetch_array($query))
 	{
 		$announcement['username'] = $announcement['threadusername'];
 	}
-	$announcement['subject'] = htmlspecialchars(stripslashes($announcement['subject']));
+	$announcement['subject'] = htmlspecialchars_uni(stripslashes($announcement['subject']));
 	if($announcement['iconpath'])
 	{
 		$icon = "<img src=\"$announcement[iconpath]\" alt=\"$announcement[iconname]\">";
@@ -300,7 +300,7 @@ while($announcement = $db->fetch_array($query))
 		{
 			if($attachment['visible'])
 			{ // There is an attachment thats visible!
-				$attachment['name'] = htmlspecialchars($attachment['name']);
+				$attachment['name'] = htmlspecialchars_uni($attachment['name']);
 				// Support for [attachment=id] code
 				if(stripos($announcement['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{

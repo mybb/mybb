@@ -259,7 +259,7 @@ if($mybb->input['action'] == "do_register")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield['type'] = htmlspecialchars(stripslashes($profilefield['type']));
+		$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = trim($thing[0]);
 		$field = "fid$profilefield[fid]";
@@ -322,10 +322,10 @@ if($mybb->input['action'] == "do_register")
 
 	if(is_array($errors))
 	{
-		$username = htmlspecialchars($mybb->input['username']);
-		$email = htmlspecialchars($mybb->input['email']);
-		$email2 = htmlspecialchars($mybb->input['email']);
-		$referrername = htmlspecialchars($mybb->input['referrername']);
+		$username = htmlspecialchars_uni($mybb->input['username']);
+		$email = htmlspecialchars_uni($mybb->input['email']);
+		$email2 = htmlspecialchars_uni($mybb->input['email']);
+		$referrername = htmlspecialchars_uni($mybb->input['referrername']);
 		$regerrors = inlineerror($errors);
 		$mybb->input['action'] = "register";
 		$fromreg = 1;
@@ -560,7 +560,7 @@ if($mybb->input['action'] == "register")
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 		while($profilefield = $db->fetch_array($query))
 		{
-			$profilefield['type'] = htmlspecialchars(stripslashes($profilefield['type']));
+			$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
 			$thing = explode("\n", $profilefield['type'], "2");
 			$type = trim($thing[0]);
 			$options = $thing[1];
@@ -978,7 +978,7 @@ elseif($mybb->input['action'] == "profile")
 
 	if($memprofile['avatar'])
 	{
-		$memprofile['avatar'] = htmlspecialchars($memprofile['avatar']);
+		$memprofile['avatar'] = htmlspecialchars_uni($memprofile['avatar']);
 		$avatar = "<img src=\"$memprofile[avatar]\">";
 	}
 	else
@@ -995,7 +995,7 @@ elseif($mybb->input['action'] == "profile")
 	}
 	if($memprofile['website'])
 	{
-		$memprofile['website'] = htmlspecialchars($memprofile['website']);
+		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
 		$website = "<a href=\"$memprofile[website]\" target=\"_blank\">$memprofile[website]</a>";
 	}
 	else
@@ -1039,7 +1039,7 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
 		$awaydate = mydate($mybb->settings['dateformat'], $memprofile['awaydate']);
-		$memprofile['awayreason'] = htmlspecialchars(stripslashes($memprofile['awayreason']));
+		$memprofile['awayreason'] = htmlspecialchars_uni(stripslashes($memprofile['awayreason']));
 		if($memprofile['returndate'] == "")
 		{
 			$returndate = "Unknown";
@@ -1186,11 +1186,11 @@ elseif($mybb->input['action'] == "profile")
 		{
 			if($customfield['type'] == "textarea")
 			{
-				$customfieldval = nl2br(htmlspecialchars($userfields[$field]));
+				$customfieldval = nl2br(htmlspecialchars_uni($userfields[$field]));
 			}
 			else
 			{
-				$customfieldval = htmlspecialchars($userfields[$field]);
+				$customfieldval = htmlspecialchars_uni($userfields[$field]);
 			}
 		}
 		eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");

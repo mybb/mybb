@@ -89,7 +89,7 @@ elseif($action == "do_report")
 	else
 	{
 		// Reported posts in the db!
-		$reason = addslashes(htmlspecialchars($reason));
+		$reason = addslashes(htmlspecialchars_uni($reason));
 		$now = time();
 		$db->query("INSERT INTO ".TABLE_PREFIX."reportedposts (rid,pid,tid,fid,uid,dateline,reportstatus,reason) VALUES (NULL,'$pid','$thread[tid]','$thread[fid]','".$mybb->user[uid]."','$now','0','$reason')");
 		$cache->updatereportedposts();

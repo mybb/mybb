@@ -40,7 +40,7 @@ addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
 addnav($lang->nav_newreply);
 
 $forumpermissions = forum_permissions($fid);
-$thread['subject'] = htmlspecialchars(stripslashes($thread['subject']));
+$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 
 if(!$thread['subject'])
 {
@@ -154,7 +154,7 @@ if($action == "newreply" || $action == "editdraft")
 		$query = $db->query("SELECT p.*, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.pid='$pid' AND p.tid='$tid' AND p.visible='1'");
 		$quoted = $db->fetch_array($query);
 		$quoted['subject'] = preg_replace("#RE:#i", "", stripslashes($quoted['subject']));
-		$subject = "RE: " . htmlspecialchars($quoted['subject']);
+		$subject = "RE: " . htmlspecialchars_uni($quoted['subject']);
 		$quoted['message'] = preg_replace('#^/me (.*)$#im', "* $quoted[username] \\1", $quoted['message']);
 		if($quoted['username'])
 		{
@@ -171,7 +171,7 @@ if($action == "newreply" || $action == "editdraft")
 	}
 
 	$previewmessage = $message;
-	$message = htmlspecialchars($message);
+	$message = htmlspecialchars_uni($message);
 	$editdraftpid = "";
 
 	if($previewpost || $maximageserror)
@@ -191,8 +191,8 @@ if($action == "newreply" || $action == "editdraft")
 	}
 	elseif($action == "editdraft" && $mybb->user['uid'])
 	{
-		$message = htmlspecialchars($post['message']);
-		$subject = htmlspecialchars($post['subject']);
+		$message = htmlspecialchars_uni($post['message']);
+		$subject = htmlspecialchars_uni($post['subject']);
 		if($post['includesig'] != "no")
 		{
 			$postoptionschecked['signature'] = "checked";
@@ -397,7 +397,7 @@ if($action == "do_newreply" )
 {
 	if($mybb->user['uid'] == 0)
 	{
-		$username = htmlspecialchars($username);
+		$username = htmlspecialchars_uni($username);
 		$username = addslashes($username);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$username'");
 		$member = $db->fetch_array($query);

@@ -18,7 +18,7 @@ $lang->load("sendthread");
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 $thread = $db->fetch_array($query);
-$thread['subject'] = htmlspecialchars(stripslashes(dobadwords($thread['subject'])));
+$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
 if(!$thread['tid']) {
 	error($lang->error_invalidthread);
 }

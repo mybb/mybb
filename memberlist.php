@@ -109,11 +109,11 @@ while($users = $db->fetch_array($query))
 	}
 	else
 	{
-		$users['website'] = htmlspecialchars($users['website']);
+		$users['website'] = htmlspecialchars_uni($users['website']);
 		$usersite = "<a href=\"$users[website]\" target=\"_blank\"><img src=\"$theme[imglangdir]/postbit_www.gif\" border=0></a>";
 	}
 	$users['location'] = $users[fid1];
-	$users['location'] = htmlspecialchars(stripslashes($users['location']));
+	$users['location'] = htmlspecialchars_uni(stripslashes($users['location']));
 	if($users['hideemail'] == "yes")
 	{
 		$useremail = "";
@@ -132,7 +132,7 @@ if(!$member)
 {
 	$member = "<tr>\n<td colspan=\"6\" align=\"center\" class=\"trow1\">$lang->error_no_members</td>\n</tr>";
 }
-$usersearch = htmlspecialchars($mybb->input['usersearch']);
+$usersearch = htmlspecialchars_uni($mybb->input['usersearch']);
 eval("\$memberlist = \"".$templates->get("memberlist")."\";");
 outputpage($memberlist);
 ?>

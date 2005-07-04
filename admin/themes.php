@@ -373,7 +373,7 @@ if($action == "edit") {
 	tablesubheader($lang->master_css_note, "", 1);
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" align=\"center\">\n";
-	echo "<textarea style=\"width: 98%; padding: 4px;\"	rows=\"9\"name=\"extracss\">".htmlspecialchars($master['extracss'])."</textarea>\n";
+	echo "<textarea style=\"width: 98%; padding: 4px;\"	rows=\"9\"name=\"extracss\">".htmlspecialchars_uni($master['extracss'])."</textarea>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	tablesubheader($lang->additional_css_note, "", 1);

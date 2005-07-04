@@ -509,7 +509,7 @@ function makepostbit($post, $pmprevann=0)
 
 		if($post['avatar'] != "" && $mybb->user['showavatars'] != "no")
 		{
-			$post['avatar'] = htmlspecialchars($post['avatar']);
+			$post['avatar'] = htmlspecialchars_uni($post['avatar']);
 			eval("\$avatar = \"".$templates->get("postbit_avatar")."\";");
 		}
 		else
@@ -521,7 +521,7 @@ function makepostbit($post, $pmprevann=0)
 		eval("\$pm = \"".$templates->get("postbit_pm")."\";");
 		if($post['website'] != "")
 		{
-			$post['website'] = htmlspecialchars($post['website']);
+			$post['website'] = htmlspecialchars_uni($post['website']);
 			eval("\$www = \"".$templates->get("postbit_www")."\";");
 		}
 		else
@@ -668,7 +668,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			if($attachment['visible'])
 			{ // There is an attachment thats visible!
-				$attachment['name'] = htmlspecialchars($attachment['name']);
+				$attachment['name'] = htmlspecialchars_uni($attachment['name']);
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{

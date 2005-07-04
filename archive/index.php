@@ -17,7 +17,7 @@ $lang->load("index");
 switch($action)
 {
 	case "thread":
-		$thread['subject'] = htmlspecialchars(dobadwords($thread['subject']));
+		$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
 
 		// Fetch the forum this thread is in
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."' AND active='yes' AND type='f' AND password=''");
@@ -154,7 +154,7 @@ switch($action)
 		$query = $db->query("SELECT t.* FROM ".TABLE_PREFIX."threads t WHERE t.fid='$id' AND t.visible='1' ORDER BY t.sticky DESC, t.lastpost DESC LIMIT $start, $perpage");
 		while($thread = $db->fetch_array($query))
 		{
-			$thread['subject'] = htmlspecialchars(dobadwords($thread['subject']));
+			$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
 			$prefix = "";
 			if($thread['sticky'] == 1)
 			{

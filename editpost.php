@@ -28,7 +28,7 @@ $tid = $post['tid'];
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 $thread = $db->fetch_array($query);
-$thread['subject'] = htmlspecialchars($thread['subject']);
+$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
 $fid = $thread['fid'];
 
@@ -357,8 +357,8 @@ elseif($mybb->input['action'] == "do_editpost") {
 		
 	if($mybb->input['previewpost']) {
 		$previewmessage = $message;
-		$message = htmlspecialchars($message);
-		$subject = htmlspecialchars($subject);
+		$message = htmlspecialchars_uni($message);
+		$subject = htmlspecialchars_uni($subject);
 
 		$postoptions = $mybb->input['postoptions'];
 
@@ -377,7 +377,7 @@ elseif($mybb->input['action'] == "do_editpost") {
 		}
 		else
 		{
-			$username = htmlspecialchars($mybb->input['username']);
+			$username = htmlspecialchars_uni($mybb->input['username']);
 		}
 
 		if($username && !$mybb->user['uid']) {
@@ -407,8 +407,8 @@ elseif($mybb->input['action'] == "do_editpost") {
 		$postbit = makepostbit($postinfo, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	} else {
-		$message = htmlspecialchars($message);
-		$subject = htmlspecialchars($subject);
+		$message = htmlspecialchars_uni($message);
+		$subject = htmlspecialchars_uni($subject);
 
 		if($post['includesig'] != "no") {
 			$postoptionschecked['signature'] = "checked";

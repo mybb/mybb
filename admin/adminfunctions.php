@@ -171,7 +171,7 @@ function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxleng
 {
 	$bgcolor = getaltbg();
 	$value = stripslashes($value);
-	$value = htmlspecialchars($value);
+	$value = htmlspecialchars_uni($value);
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"text\" class=\"inputbox\" name=\"$name\" value=\"$value\" size=\"$size\" maxlength=\"$maxlength\">$extra</td>\n</tr>\n";
 }
 function makeuploadcode($title, $name, $size="25", $extra="")
@@ -182,20 +182,20 @@ function makeuploadcode($title, $name, $size="25", $extra="")
 function makepasswordcode($title, $name, $value="", $size="25")
 {
 	$bgcolor = getaltbg();
-	$value = htmlspecialchars($value);
+	$value = htmlspecialchars_uni($value);
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"password\" class=\"inputbox\" name=\"$name\" value=\"$value\" size=\"$size\"></td>\n</tr>\n";
 }
 function maketextareacode($title, $name, $value="", $rows="4", $columns="40")
 {
 	$bgcolor = getaltbg();
 	$value = stripslashes($value);
-	$value = htmlspecialchars($value);
+	$value = htmlspecialchars_uni($value);
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><textarea name=\"$name\" rows=\"$rows\" cols=\"$columns\">$value</textarea></td>\n</tr>\n";
 }
 function makehiddencode($name, $value="")
 {
 	$value = stripslashes($value);
-	$value = htmlspecialchars($value);
+	$value = htmlspecialchars_uni($value);
 	echo "<input type=\"hidden\" name=\"$name\" value=\"$value\">\n";
 }
 function makeyesnocode($title, $name, $value="yes")
@@ -369,7 +369,7 @@ function makecssedit($css, $selector, $name, $description="", $showfonts=1, $sho
 	{
 		echo "rows=\"4\"";
 	}
-	echo "name=\"css[$selector][extra]\" class=\"$highlight\">".htmlspecialchars($css['extra'])."</textarea>\n";
+	echo "name=\"css[$selector][extra]\" class=\"$highlight\">".htmlspecialchars_uni($css['extra'])."</textarea>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	if($showlinks == 1)
@@ -557,13 +557,13 @@ function startnav()
 function makenavoption($name, $url)
 {
 	global $noframes, $navoptions;
-	$name = htmlspecialchars($name);
+	$name = htmlspecialchars_uni($name);
 	$navoptions .= "<li><a href=\"$url\">$name</small></a></li>\n";
 }
 function makenavselect($name)
 {
 	global $noframes, $navoptions, $navselects;
-	$name = htmlspecialchars($name);
+	$name = htmlspecialchars_uni($name);
 	echo "<table cellpadding=\"1\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"100%\" class=\"lnavbordercolor\">\n";
 	echo "<tr><td>\n";
 	echo "<table cellpadding=\"6\" cellspacing=\"0\" border=\"0\" width=\"100%\">";
@@ -1298,14 +1298,14 @@ function makethemebitedit($title, $name)
 		}
 		echo "<tr>\n";
 		echo "<td class=\"altbg1\" align=\"center\">\n";
-		echo "<textarea style=\"width: 98%; padding: 4px;\"	class=\"$highlight\" rows=\"9\"name=\"themebits[extracss]\">".htmlspecialchars($theme['extracss'])."</textarea>$revcustom\n";
+		echo "<textarea style=\"width: 98%; padding: 4px;\"	class=\"$highlight\" rows=\"9\"name=\"themebits[extracss]\">".htmlspecialchars_uni($theme['extracss'])."</textarea>$revcustom\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
 	else
 	{
 		$value = $themebits[$name];
-		$value = htmlspecialchars($value);
+		$value = htmlspecialchars_uni($value);
 		echo "<input type=\"text\" name=\"themebits[$name]\" value=\"$value\" size=\"20\" class=\"$highlight\" />\n";
 	}
 	if($name != "extracss")

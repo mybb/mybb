@@ -388,7 +388,7 @@ while($announcement = $db->fetch_array($query))
 	{
 		$folder = "folder.gif";
 	}
-	$announcement['subject'] = htmlspecialchars($announcement['subject']);
+	$announcement['subject'] = htmlspecialchars_uni(dobadwords($announcement['subject']));
 	$postdate = mydate($mybb->settings['dateformat'], $announcement['startdate']);
 	if($foruminfo['allowtratings'] != "no")
 	{
@@ -731,7 +731,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 							{
 								$lastpostsubject = substr($lastpostsubject, 0, 25) . "...";
 							}
-							$lastpostsubject = htmlspecialchars($lastpostsubject);
+							$lastpostsubject = htmlspecialchars_uni(dobadwords($lastpostsubject));
 							eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
 						}
 					}

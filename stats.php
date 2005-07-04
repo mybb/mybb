@@ -47,7 +47,7 @@ if($unviewableforums) {
 $query = $db->query("SELECT tid, subject, replies FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY replies DESC LIMIT 0, ".$mybb->settings[statslimit]);
 while($thread = $db->fetch_array($query)) {
 	$viewreply = "replies";
-	$thread['subject'] = htmlspecialchars(stripslashes($thread['subject']));
+	$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 	eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
 }
 
@@ -55,7 +55,7 @@ while($thread = $db->fetch_array($query)) {
 $query = $db->query("SELECT tid, subject, views FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY views DESC LIMIT 0, ".$mybb->settings[statslimit]);
 while($thread = $db->fetch_array($query)) {
 	$viewreply = "views";
-	$thread['subject'] = htmlspecialchars(stripslashes($thread['subject']));
+	$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 	eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");
 }
 
@@ -67,7 +67,7 @@ if(!$forum['posts']) {
 	$topforumposts = $lang->no;
 	$topforumthreads = $lang->no;
 } else {
-	$forum['name'] = htmlspecialchars(stripslashes($forum['name']));
+	$forum['name'] = htmlspecialchars_uni(stripslashes($forum['name']));
 	$topforum = "<a href=\"forumdisplay.php?fid=$forum[fid]\">$forum[name]</a>";
 	$topforumposts = $forum['posts'];
 	$topforumthreads = $forum['threads'];

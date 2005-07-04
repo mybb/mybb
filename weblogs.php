@@ -136,7 +136,7 @@ elseif($action == "manage")
 
 	if($blog['bid']) // This user already has a log
 	{
-		$description = htmlspecialchars($blog['description']);
+		$description = htmlspecialchars_uni($blog['description']);
 		$type = $blog['type'];
 		$private = $blog['private'];
 		$epp = $blog['epp'];
@@ -148,7 +148,7 @@ elseif($action == "manage")
 	else // Get default settings
 	{
 		$type = 0;
-		$description = htmlspecialchars($settings['weblogs_default_description']);
+		$description = htmlspecialchars_uni($settings['weblogs_default_description']);
 		$private = $settings['weblogs_default_private'];
 		$epp = $settings['weblogs_default_epp'];
 		$cpp = $settings['weblogs_default_cpp'];
@@ -249,7 +249,7 @@ elseif($action == "do_editcategories")
 			}
 		}
 	}
-	$catlist = htmlspecialchars(implode("\n", $catlist));
+	$catlist = htmlspecialchars_uni(implode("\n", $catlist));
 	$db->query("UPDATE ".TABLE_PREFIX."weblogs SET categories='$catlist' WHERE uid='$mybb[uid]'");
 	redirect("weblogs.php?action=editcategories", $lang->redirect_categories_updated);
 }
@@ -324,8 +324,8 @@ elseif($action == "newpost")
 	}
 	if($preview) // Prepare the preview if we have one
 	{
-		$title = htmlspecialchars($_POST['title']);
-		$message = htmlspecialchars($_POST['message']);
+		$title = htmlspecialchars_uni($_POST['title']);
+		$message = htmlspecialchars_uni($_POST['message']);
 		if($_POST['disablemycode'] == 1)
 		{
 			$enablemycode = "no";
@@ -352,8 +352,8 @@ elseif($bid)
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."weblogs WHERE bid='$bid'");
 	$blog = $db->fetch_array($query);
-	$blog['name'] = htmlspecialchars($blog['name']);
-	$blog['description'] = htmlspecialchars($blog['description']);
+	$blog['name'] = htmlspecialchars_uni($blog['name']);
+	$blog['description'] = htmlspecialchars_uni($blog['description']);
 
 	addnav($blog['name'], $settings['bburl']."/weblogs.php?bid=$bid");
 
@@ -421,7 +421,7 @@ $settings['weblogs_default_epp'] = "10";
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."weblogs_entries WHERE 1=1 $publishedwhere ORDER BY dateline DESC LIMIT $start, ".$blog['epp']);
 		while($entry = $db->fetch_array($query))
 		{
-			$entry['title'] = htmlspecialchars($entry['title']);
+			$entry['title'] = htmlspecialchars_uni($entry['title']);
 			$entrydate = mydate($settings['dateformat'], $entry['dateline']);
 			$entrytime = mydate($settings['timeformat'], $entry['dateline']);
 			if($entry['disablemycode'] == 1)
@@ -485,8 +485,8 @@ else
 	$query = $db->query("SELECT b.*, u.username FROM ".TABLE_PREFIX."weblogs b LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=b.uid) WHERE b.private='0' ORDER BY lastpost DESC LIMIT $start, ".$settings['blogs_per_page']);
 	while($blog = $db->fetch_array($query))
 	{
-		$blog['name'] = htmlspecialchars($blog['name']);
-		$blog['description'] = htmlspecialchars($blog['description']);
+		$blog['name'] = htmlspecialchars_uni($blog['name']);
+		$blog['description'] = htmlspecialchars_uni($blog['description']);
 		if($blog['lastpost'] && $blog['entries'] > 0)
 		{
 			$lastpostdate = mydate($settings['dateformat'], $blog['lastpost']);
@@ -496,7 +496,7 @@ else
 			{
 				$lastposttitle = substr($lastposttitle, 0, 25)."...";
 			}
-			$lastposttitle = htmlspecialchars($lastpostitle);
+			$lastposttitle = htmlspecialchars_uni($lastpostitle);
 			eval("\$lastpost = \"".$templates->get("weblogs_listing_blog_lastpost")."\";");
 		}
 		else

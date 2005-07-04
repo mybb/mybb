@@ -233,9 +233,9 @@ if($action == "results")
 
 		if($search['showposts'] == 2)
 		{
-			$result['tsubject'] = htmlspecialchars(stripslashes($result['tsubject']));
-			$result['subject'] = htmlspecialchars(stripslashes($result['subject']));
-			$result['message'] = htmlspecialchars(stripslashes($result['message']));
+			$result['tsubject'] = htmlspecialchars_uni(stripslashes($result['tsubject']));
+			$result['subject'] = htmlspecialchars_uni(stripslashes($result['subject']));
+			$result['message'] = htmlspecialchars_uni(stripslashes($result['message']));
 			if(!$result['subject'])
 			{
 				$result['subject'] = $result['message'];
@@ -270,7 +270,7 @@ if($action == "results")
 			{
 				$result['username'] = $result['threadusername'];
 			}
-			$result['subject'] = htmlspecialchars($result['subject']);
+			$result['subject'] = htmlspecialchars_uni($result['subject']);
 
 			$result['pages'] = 0;
 			$result['multipage'] = "";

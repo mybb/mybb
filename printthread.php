@@ -19,7 +19,7 @@ $lang->load("printthread");
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid' AND visible='1'");
 $thread = $db->fetch_array($query);
-$thread['subject'] = htmlspecialchars(stripslashes(dobadwords($thread['subject'])));
+$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
 if(!$thread['tid'])
 {
 	error($lang->error_invalidthread);
@@ -57,7 +57,7 @@ while($postrow = $db->fetch_array($query))
 	{
 		$postrow['username'] = $postrow['userusername'];
 	}
-	$postrow['subject'] = htmlspecialchars(stripslashes(dobadwords($postrow['subject'])));
+	$postrow['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($postrow['subject'])));
 	$postrow['date'] = mydate($mybb->settings['dateformat'], $postrow['dateline']);
 	$postrow['time'] = mydate($mybb->settings['timeformat'], $postrow['dateline']);
 	$postrow['message'] = postify(stripslashes($postrow['message']), $forum['allowmycode'], $forum['allowsmilies'], $forum['allowimgcode']);

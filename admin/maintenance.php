@@ -47,7 +47,7 @@ if($action == "do_cache")
 		}
 		ob_start();
 		print_r($cachecontents);
-		$data = htmlspecialchars(ob_get_contents());
+		$data = htmlspecialchars_uni(ob_get_contents());
 		ob_end_clean();
 		makelabelcode("<pre>$data</pre>", "");
 		endtable();

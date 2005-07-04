@@ -530,7 +530,7 @@ switch($action)
 		{
 			nopermission();
 		}
-		$thread['notes'] = htmlspecialchars(dobadwords($thread['notes']));
+		$thread['notes'] = htmlspecialchars_uni(dobadwords($thread['notes']));
 		$trow = "trow1";
 		$query = $db->query("SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid) WHERE t.tid='$tid' ORDER BY l.dateline DESC LIMIT  0, 20");
 		while($modaction = $db->fetch_array($query))
