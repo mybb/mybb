@@ -373,7 +373,7 @@ function install_done()
 	$now = time();
 
 	$adminuser = addslashes($_POST['adminuser']);
-	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,usergroup,regdate) VALUES (NULL,'".$adminuser."','".md5($adminpass)."','$email','4','$now')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,usergroup,regdate) VALUES (NULL,'".$adminuser."','".md5($adminpass)."','$adminemail','4','$now')");
 	$uid = $db->insert_id();
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('$uid','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
 	$contents .= "done</p>";
