@@ -1738,7 +1738,7 @@ $footer
 <td class="tcat" align="center" width="40%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=subject&amp;order=asc">$lang->thread</a> $orderarrow[subject]</strong></span></td>
 <td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=starter&amp;order=asc">$lang->author</a> $orderarrow[starter]</strong></span></td>
 <td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=replies&amp;order=desc">$lang->replies</a> $orderarrow[replies]</strong></span></td>
-<td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=views&amp;order=desc">$lang->views</a></strong> $orderarrow[views]</span></td>
+<td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=views&amp;order=desc">$lang->views</a> $orderarrow[views]</strong></span></td>
 $ratingcol
 <td class="tcat" align="center" width="200"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=lastpost&amp;order=desc">$lang->lastpost</a> $orderarrow[lastpost]</strong></span></td>
 $inlinemodcol
