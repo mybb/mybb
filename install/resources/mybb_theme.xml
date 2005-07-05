@@ -309,6 +309,17 @@ margin: 0;
 padding: 1px;
 font-family: Verdana;
 font-size:11px
+}
+
+.usercpnav .pmfolders {
+list-style-type: square;
+}
+
+.separator {
+margin: 4px;
+padding: 0;
+height: 0px;
+font-size: 1px;
 }]]></extracss>
 	</themebits>
 	<templates>
@@ -805,6 +816,7 @@ $yourblog
 <td class="trow1">
 <ul class="usercpnav">
 $folderlinks
+<div class="separator">&nbsp;</div>
 <li><a href="private.php?action=send">$lang->ucp_nav_compose</a></li>
 <li><a href="private.php?action=tracking">$lang->ucp_nav_tracking</a></li>
 <li><a href="private.php?action=folders">$lang->ucp_nav_edit_folders</a></li>
@@ -838,7 +850,9 @@ $changenameop
 <li><a href="usercp.php?action=favorites">$lang->ucp_nav_favorite_threads</a></li>
 <li><a href="usercp.php?action=subscriptions">$lang->ucp_nav_subscribed_threads</a></li>
 <li><a href="usercp.php?action=forumsubscriptions">$lang->ucp_nav_forum_subscriptions</a></li>
+<div class="separator">&nbsp;</div>
 <li><a href="usercp.php?action=notepad">$lang->ucp_nav_notepad</a></li>
+<div class="separator">&nbsp;</div>
 <li><a href="member.php?action=profile&amp;uid=$mybb[uid]">$lang->ucp_nav_view_profile</a></li>
 <li><a href="usercp.php">$lang->ucp_nav_home</a></li>
 </ul>
