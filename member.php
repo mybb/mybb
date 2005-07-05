@@ -400,7 +400,7 @@ if($mybb->input['action'] == "do_register")
 		if($mybb->settings['regtype'] != "randompass")
 		{
 			// Log them in
-			mysetcookie("mybbuser", $user['uid']."_".md5($md5password.md5($salt)));
+			mysetcookie("mybbuser", $uid."_".md5($md5password.md5($salt)));
 		}
 
 		// Update forum stats
