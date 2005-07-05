@@ -1865,7 +1865,7 @@ function makeucpnav()
 		$draftstart = "<strong>";
 		$draftend = "</strong>";
 	}
-	$foldersexploded = explode("$%%$", $mybbuser['pmfolders']);
+	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	while(list($key, $folders) = each($foldersexploded))
 	{
 		$folderinfo = explode("**", $folders, 2);
