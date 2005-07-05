@@ -5932,7 +5932,7 @@ $postrow[message]
 </tr>
 <tr>
 <td class="trow1"><strong>$lang->username</strong></td>
-<td class="trow1">$mybb[username]</td>
+<td class="trow1">$mybbuser[username]</td>
 </tr>
 </table>
 </td></tr></table>
