@@ -201,7 +201,7 @@ if($mybb->input['action'] == "do_register")
 		$allownoticescheck = "checked=\"checked\"";
 	}
 
-	if(!$mybb->input['invisible'] != "yes")
+	if($mybb->input['invisible'] != "yes")
 	{
 		$invisible = "no";
 	}
