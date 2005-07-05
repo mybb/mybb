@@ -2305,6 +2305,7 @@ $footer
 		<hr class="hidden" />
 		<br class="clear" />
 		<div id="content">
+			$bannedwarning
 			$bbclosedwarning
 			$unreadreports
 			<navigation>
@@ -6710,5 +6711,18 @@ $regimage
 $footer
 </body>
 </html>]]></template>
+		<template name="global_bannedwarning"><![CDATA[<br />
+<table cellspacing="0" cellpadding="0" border="0" width="50%" align="center">
+<tr><td class="tborder">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<tr>
+<td class="trow1" align="center"><font color="red"><strong>$lang->banned_warning</strong><br />
+$lang->banned_warning2: $reason<br />
+$lang->banned_warning3: $banlift<br />
+</font></td>
+</tr>
+</table>
+</td></tr></table>
+<br />]]></template>
 	</templates>
 </theme>
