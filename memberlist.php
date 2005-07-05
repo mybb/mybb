@@ -51,7 +51,7 @@ if($mybb->input['order'] != "DESC" && $mybb->input['order'] != "ASC")
 if($mybb->input['usersearch'])
 {
 	$query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE username LIKE '%".addslashes($mybb->input['usersearch'])."%'");
-	$linkaddon = "&usersearch=".mybb->input['usersearch'];
+	$linkaddon = "&usersearch=".$mybb->input['usersearch'];
 }
 else
 {
