@@ -307,7 +307,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && intval($my
 	}
 }
 
-if($mybb->usergroup['canview'] != "yes" && $mybb->input['action'] != "register" && $mybb->input['action'] != "do_register" && $mybb->input['action'] != "login" && $mybb->input['action'] != "do_login")
+if($mybb->usergroup['canview'] != "yes" && $mybb->input['action'] != "register" && $mybb->input['action'] != "do_register" && $mybb->input['action'] != "login" && $mybb->input['action'] != "do_login" && $mybb->input['action'] != "logout")
 {
 	nopermission();
 }
