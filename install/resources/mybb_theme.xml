@@ -312,7 +312,7 @@ font-size:11px
 }
 
 .usercpnav .pmfolders {
-list-style-type: square;
+/* PM folders on the UCP Nav menu */
 }
 
 .separator {
