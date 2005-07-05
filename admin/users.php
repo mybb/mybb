@@ -1574,7 +1574,7 @@ if($action == "manageban")
 		$ban[bantime] = "1-0-0";
 		makeinputcode($lang->username, "username", $user['username']);
 	}
-	makeinputcode($lang->ban_reason, "banreason", $ban['banreason']);
+	makeinputcode($lang->ban_reason, "banreason", $ban['reason']);
 	makeselectcode($lang->move_banned_group, "usergroup", "usergroups", "gid", "title", $user['usergroup'], "", "", "isbannedgroup='yes'");
 	reset($bantimes);
 	while(list($time, $title) = each($bantimes))
