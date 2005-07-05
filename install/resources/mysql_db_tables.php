@@ -111,7 +111,7 @@ $tables[] = "CREATE TABLE mybb_banned (
   admin int unsigned NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
   bantime varchar(50) NOT NULL default '',
-  lifted bigint(30) NOT NULL default '0'
+  lifted bigint(30) NOT NULL default '0',
   reason varchar(255) NOT NULL default '',
 ) TYPE=MyISAM;";
 
