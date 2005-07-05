@@ -123,7 +123,7 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 	}
 }
 if($mybb->input['removeattachment'])
-{ // Lets remove the attachmen
+{ // Lets remove the attachment
 	require_once "./inc/functions_upload.php";
 	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['removeattachment']);
 	if(!$mybb->input['submit'])
@@ -179,7 +179,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	if($mybb->input['previewpost'])
 	{
-		$previewmessage = $mybb->input['message']);
+		$previewmessage = $mybb->input['message'];
 	}
 	$message = htmlspecialchars_uni($mybb->input['message']);
 	$editdraftpid = "";
@@ -624,7 +624,7 @@ if($mybb->input['action'] == "do_newreply" )
 			"smilieoff" => $postoptions['disablesmilies'],
 			"visible" => $visible
 			);
-		$db->insert_query(TABLE_PREFIX."posts", $newreply)
+		$db->insert_query(TABLE_PREFIX."posts", $newreply);
 		$pid = $db->insert_id();
 	}
 	
