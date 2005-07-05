@@ -162,6 +162,24 @@ function requirements_check()
 	{
 		$contents .= "<p>Settings File Writable: Yes</p>";
 	}
+	$uploadswritable = is_writeable("../uploads");
+	if(!$uploadswritable)
+	{
+		$contents .= "<p><b>Warning: The uploads (uploads/) directory is not writable. You will be able to proceed to the next step, however, users will not be able to upload attachments until you create an 'uploads' folder in the MyBB root directory and/or chmod it to allow it to be written to.</b></p>";
+	}
+	else
+	{
+		$contents .= "<p>Uploads Directory Writable: Yes</p>";
+	}
+	$avatarswritable = is_writeable("../uploads/avatars");
+	if(!$avatarswritable)
+	{
+		$contents .= "<p><b>Warning: The avatar uploads (uploads/avatars/) directory is not writable. You will be able to proceed to the next step, however, users will not be able to upload avatars until you create an 'avatars' subfolder in the 'uploads' folder and/or chmod it to allow it to be written to.</b></p>";
+	}
+	else
+	{
+		$contents .= "<p>Avatar Uploads Directory Writable: Yes</p>";
+	}
 	// Done requirement checks
 	if($showerror == 1)
 	{
