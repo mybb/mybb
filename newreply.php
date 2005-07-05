@@ -494,13 +494,31 @@ if($action == "do_newreply" )
 		$excerpt = substr(dobadwords(stripslashes($message)), 0, $mybb->settings['subscribeexcerpt'])."... (visit the thread to read more..)";
 		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline DESC LIMIT 1");
 		$lastpost = $db->fetch_array($query);
-		$query = $db->query("SELECT u.username, u.email, u.uid FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user[uid]."' AND u.lastactive>'$lastpost[dateline]'");
+		error_reporting(E_ALL);
+		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'$lastpost[dateline]'");
 		while($subscribedmember = $db->fetch_array($query))
 		{
-			$emailsubject = sprintf($lang->emailsubject_subscription, $subject);
-			$emailmessage = sprintf($lang->email_subscription, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
+			if(empty($subscribedmember['language']) && !empty($mybb->user['language']))
+			{
+				$subscribedmember['language'] = $mybb->settings['bblanguage'];
+			}
+			if($subscribedmember['language'] == $mybb->user['language'])
+			{
+				$userlang = &$lang;
+			}
+			else
+			{
+				$userlang = new MyLanguage;
+				$userlang->setPath("./inc/languages");
+				$userlang->setLanguage($subscribedmember['language']);
+				$userlang->load("messages");
+			}
+			$emailsubject = sprintf($userlang->emailsubject_subscription, $subject);
+			$emailmessage = sprintf($userlang->email_subscription, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
 			mymail($subscribedmember['email'], $emailsubject, $emailmessage);
+			unset($userlang);
 		}
+		error_reporting(0);
 		// Start Auto Subscribe
 		if($postoptions['emailnotify'] != "no")
 		{

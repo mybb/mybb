@@ -493,12 +493,28 @@ if($action == "do_newthread")
 		$message = stripslashes($message);
 		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."threads WHERE fid='$fid' ORDER BY dateline DESC LIMIT 1");
 		$lastpost = $db->fetch_array($query);
-		$query = $db->query("SELECT u.username, u.email, u.uid FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u WHERE fs.fid='$fid' AND u.uid=fs.uid AND fs.uid!='".$mybb->user[uid]."' AND u.lastactive>'$lastpost[dateline]'");
+		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u WHERE fs.fid='$fid' AND u.uid=fs.uid AND fs.uid!='".$mybb->user[uid]."' AND u.lastactive>'$lastpost[dateline]'");
 		while($subscribedmember = $db->fetch_array($query))
 		{
-			$emailsubject = sprintf($lang->emailsubject_forumsubscription, $forum['name']);
-			$emailmessage = sprintf($lang->email_forumsubcription, $subscribedmember['username'], $username, $forum['name'], $mybb->settings['bbname'],  $subject, $excerpt, $mybb->settings['bburl'], $tid);
+			if(empty($subscribedmember['language']) && !empty($mybb->user['language']))
+			{
+				$subscribedmember['language'] = $mybb->settings['bblanguage'];
+			}
+			if($subscribedmember['language'] == $mybb->user['language'])
+			{
+				$userlang = &$lang;
+			}
+			else
+			{
+				$userlang = new MyLanguage;
+				$userlang->setPath("./inc/languages");
+				$userlang->setLanguage($subscribedmember['language']);
+				$userlang->load("messages");
+			}
+			$emailsubject = sprintf($userlang->emailsubject_forumsubscription, $forum['name']);
+			$emailmessage = sprintf($userlang->email_forumsubcription, $subscribedmember['username'], $username, $forum['name'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
 			mymail($subscribedmember['email'], $emailsubject, $emailmessage);
+			unset($userlang);
 		}
 
 		// Start Auto Subscribe
