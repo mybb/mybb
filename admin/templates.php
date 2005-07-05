@@ -228,7 +228,7 @@ if($action == "delete") {
 	tableheader($lang->delete_template, "", 1);
 	$yes = makebuttoncode("deletesubmit", "Yes");
 	$no = makebuttoncode("no", "No");
-	makelabelcode("<center>$lang->delete_template_set<br><br>$yes$no</center>", "");
+	makelabelcode("<center>$lang->delete_template<br><br>$yes$no</center>", "");
 	endtable();
 	endform();
 	cpfooter();
