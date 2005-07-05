@@ -320,7 +320,7 @@ function insert_templates()
 
 	$output->print_header("Default Template Installation");
 
-	$page = "<p>Loading amd importing theme and template file..</p>";
+	$page = "<p>Loading and importing theme and template file..</p>";
 
 	$db->query("DELETE FROM ".TABLE_PREFIX."themes");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates");
@@ -423,7 +423,7 @@ function install_done()
 	$cache->updatereportedposts();
 	$contents .= "done</p>";
 
-	$contents .= "<p><b>Installation has successfully been completed.</b></p><p><b><font color=\"red\">Please remove this directory before exploring your copy of MyBB.</font></b></p>";
+	$contents .= "<p><b>Installation has successfully been completed.</b></p><p><b><font color=\"red\">Please remove this directory before exploring your copy of MyBB.</font></b></p><p>Start <a href=\"../\">$boardname</a>! Or visit the <a href=\"../admin\">Admin Control Panel</a></p>";
 	$output->print_contents($contents);
 	$output->print_footer("");
 }

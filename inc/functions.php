@@ -1869,7 +1869,7 @@ function makeucpnav()
 	while(list($key, $folders) = each($foldersexploded))
 	{
 		$folderinfo = explode("**", $folders, 2);
-		$folderlinks .= "<li><a href=\"private.php?fid=$folderinfo[0]\">$folderinfo[1]</a></li>\n";
+		$folderlinks .= "<li class=\"pmfolders\"><a href=\"private.php?fid=$folderinfo[0]\">$folderinfo[1]</a></li>\n";
 	}
 	eval("\$usercpnav = \"".$templates->get("usercp_nav")."\";");
 }
