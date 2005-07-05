@@ -87,6 +87,7 @@ function getforums($pid=0, $depth=1)
 					}
 					echo "<div style=\"float: right;\">";
 					echo "<input type=\"button\" value=\"$lang->add_child_forum\" onclick=\"hopto('forums.php?action=add&pid=".$forum['fid']."');\" class=\"submitbutton\">";
+					echo "<input type=\"button\" value=\"$lang->getforums_details\" onclick=\"hopto('forums.php?fid=".$forum['fid']."');\" class=\"submitbutton\">";
 					echo "<input type=\"button\" value=\"$lang->getforums_edit\" onclick=\"hopto('forums.php?action=edit&fid=".$forum['fid']."');\" class=\"submitbutton\">";
 					echo "<input type=\"button\" value=\"$lang->permissions\" onclick=\"hopto('forumpermissions.php?action=quickperms&fid=".$forum['fid']."');\" class=\"submitbutton\">";
 					echo "<input type=\"button\" value=\"$lang->getforums_delete\" onclick=\"hopto('forums.php?action=delete&fid=".$forum['fid']."');\" class=\"submitbutton\">";
@@ -138,6 +139,7 @@ function getforums($pid=0, $depth=1)
 					}
 					echo "</span></td>\n";
 					echo "<td class=\"$altbg\" align=\"right\">";
+					echo "<input type=\"button\" value=\"$lang->getforums_details\" onclick=\"hopto('forums.php?fid=".$forum['fid']."');\" class=\"submitbutton\">";
 					echo "<input type=\"button\" value=\"$lang->getforums_edit\" onclick=\"hopto('forums.php?action=edit&fid=".$forum['fid']."');\" class=\"submitbutton\">";
 					echo "<input type=\"button\" value=\"$lang->permissions\" onclick=\"hopto('forumpermissions.php?action=quickperms&fid=".$forum['fid']."');\" class=\"submitbutton\">";
 					echo "<input type=\"button\" value=\"$lang->getforums_delete\" onclick=\"hopto('forums.php?action=delete&fid=".$forum['fid']."');\" class=\"submitbutton\">";

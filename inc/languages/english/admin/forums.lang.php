@@ -18,6 +18,7 @@ $l['forum_moderators'] = "Forum Moderators";
 $l['edit_forum2'] = "Edit Forum";
 $l['getforums_edit'] = "Edit";
 $l['getforums_delete'] = "Delete";
+$l['getforums_details'] = "Subforums / Moderators";
 $l['edit_forum_settings'] = "Edit Forum Settings";
 $l['delete_forum2'] = "Delete Forum";
 $l['forum_information'] = "Forum Information";
