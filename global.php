@@ -246,7 +246,6 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 	}
 	eval("\$bannedwarning = \"".$templates->get("global_bannedwarning")."\";");
 }
-$bannedwarning = 'ooga booga aye aye';
 eval("\$headerinclude = \"".$templates->get("headerinclude")."\";");
 eval("\$gobutton = \"".$templates->get("gobutton")."\";");
 eval("\$htmldoctype = \"".$templates->get("htmldoctype")."\";");
