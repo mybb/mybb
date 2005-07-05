@@ -316,7 +316,7 @@ list-style-type: square;
 }
 
 .separator {
-margin: 4px;
+margin: 5px;
 padding: 0;
 height: 0px;
 font-size: 1px;
@@ -850,7 +850,6 @@ $changenameop
 <li><a href="usercp.php?action=favorites">$lang->ucp_nav_favorite_threads</a></li>
 <li><a href="usercp.php?action=subscriptions">$lang->ucp_nav_subscribed_threads</a></li>
 <li><a href="usercp.php?action=forumsubscriptions">$lang->ucp_nav_forum_subscriptions</a></li>
-<div class="separator">&nbsp;</div>
 <li><a href="usercp.php?action=notepad">$lang->ucp_nav_notepad</a></li>
 <div class="separator">&nbsp;</div>
 <li><a href="member.php?action=profile&amp;uid=$mybb[uid]">$lang->ucp_nav_view_profile</a></li>
