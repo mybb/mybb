@@ -232,7 +232,7 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 			$banlift = mydate($mybb->settings['dateformat'], $ban['lifted']) . ", " . mydate($mybb->settings['timeformat'], $ban['lifted']);
 		}
 		else {
-			$banlift = $lang->permanent;
+			$banlift = $lang->banned_lifted_never;
 		}
 		$reason = htmlspecialchars_uni($ban['reason']);
 	}
