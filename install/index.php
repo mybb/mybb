@@ -423,7 +423,7 @@ function install_done()
 	$cache->updatereportedposts();
 	$contents .= "done</p>";
 
-	$contents .= "<p><b>Installation has successfully been completed.</b></p><p><b><font color=\"red\">Please remove this directory before exploring your copy of MyBB.</font></b></p><p>Start <a href=\"../\">$boardname</a>! Or visit the <a href=\"../admin\">Admin Control Panel</a></p>";
+	$contents .= "<p><b>Installation has successfully been completed.</b></p><p><b><font color=\"red\">Please remove this directory before exploring your copy of MyBB.</font></b></p>";
 	$output->print_contents($contents);
 	$output->print_footer("");
 }
