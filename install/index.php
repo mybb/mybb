@@ -425,6 +425,12 @@ function install_done()
 	$cache->updatereportedposts();
 	$contents .= "done</p>";
 
+	//Automatic Login
+	$query = $db->query("SELECT uid,password,salt FROM ".TABLE_PREFIX."users WHERE uid = 1 LIMIT 1");
+	$user = $db->fetch_array($query);
+	mysetcookie("mybbadmin", $user['uid']."_".md5($user['password'].md5($user['salt'])));
+	mysetcookie("mybbuser", $user['uid']."_".md5($user['password'].md5($user['salt'])));
+
 	$contents .= "<p><b>Congratulations on a successful completion of the installation!</b></p>";
 	$written = 0;
 	if(is_writable("./"))
