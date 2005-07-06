@@ -165,7 +165,7 @@ function requirements_check()
 	$uploadswritable = is_writeable("../uploads");
 	if(!$uploadswritable)
 	{
-		$errors[] "<p><b>Warning: The uploads (uploads/) directory is not writable. You will be able to proceed to the next step, however, users will not be able to upload attachments until you create an 'uploads' folder in the MyBB root directory and/or chmod it to allow it to be written to.</b></p>";
+		$errors[] "<p><b>Warning: The uploads (uploads/) directory is not writable. Please adjust the chmod permissions to allow it to be written to.</b></p>";
 		$showerror = 1;
 	}
 	else
@@ -175,7 +175,7 @@ function requirements_check()
 	$avatarswritable = is_writeable("../uploads/avatars");
 	if(!$avatarswritable)
 	{
-		$errors[] =  "<p><b>Warning: The avatar uploads (uploads/avatars/) directory is not writable. You will be able to proceed to the next step, however, users will not be able to upload avatars until you create an 'avatars' subfolder in the 'uploads' folder and/or chmod it to allow it to be written to.</b></p>";
+		$errors[] =  "<p><b>Warning: The avatar uploads (uploads/avatars/) directory is not writable. Please adjust the chmod permissions to allow it to be written to.</b></p>";
 		$showerror = 1;
 	}
 	else
