@@ -16,7 +16,9 @@ require "./global.php";
 // Load language files
 $lang->load("managegroup");
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".$mybb->input['gid']."' AND type='4' OR type='3'");
+$gid = intval($mybb->input['gid']);
+
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid' AND type='4' OR type='3'");
 $usergroup = $db->fetch_array($query);
 if(!$usergroup['gid'])
 {
