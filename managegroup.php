@@ -31,7 +31,7 @@ if($mybb->input['action'] == "joinrequests")
 }
 
 // Check that this user is actually a leader of this group
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."groupleaders WHERE uid='".$mybb->user[uid]."' AND gid='$gid'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."groupleaders WHERE uid='".$mybb->user['uid']."' AND gid='$gid'");
 $groupleader = $db->fetch_array($query);
 if(!$groupleader['uid'])
 {
