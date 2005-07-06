@@ -18,7 +18,7 @@ $lang->load("managegroup");
 
 $gid = intval($mybb->input['gid']);
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid' AND type='4' OR type='3'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid' AND type <> 1");
 $usergroup = $db->fetch_array($query);
 if(!$usergroup['gid'])
 {
@@ -41,7 +41,21 @@ if(!$groupleader['uid'])
 	error($lang->not_leader_of_this_group);
 }
 
-if($mybb->input['action'] == "do_joinrequests")
+if($mybb->input['action'] == "do_add")
+{
+	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users u WHERE username = '".addslashes($mybb->input['username'])."' LIMIT 1");
+	$user = $db->fetch_array($query);
+	if($user['uid'])
+	{
+		join_usergroup($user['uid'], $gid);
+		redirect("managegroup.php?gid=".$gid, $lang->user_added);
+	}
+	else
+	{
+		error($lang->error_invalidusername);
+	}
+}
+elseif($mybb->input['action'] == "do_joinrequests")
 {
 	if(is_array($mybb->input['request']))
 	{
@@ -97,6 +111,7 @@ elseif($mybb->input['action'] == "do_manageusers")
 else
 {
 	$lang->members_of = sprintf($lang->members_of, $usergroup['title']);
+	$lang->add_member = sprintf($lang->add_member, $usergroup['title']);
 	if($usergroup['type'] == 4)
 	{
 		$query = $db->query("SELECT COUNT(*) AS req FROM ".TABLE_PREFIX."joinrequests WHERE gid='".$mybb->input['gid']."'");
@@ -111,10 +126,10 @@ else
 	$uquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' ORDER BY username ASC";
 	$query = $db->query($uquery);
 	$numusers = $db->num_rows($query);
-	if(!$numusers && !$numrequests)
+	/*if(!$numusers && !$numrequests)
 	{
 		error($lang->group_no_members);
-	}
+	}*/
 	$perpage = $mybb->settings['membersperpage'];
 	if($page)
 	{

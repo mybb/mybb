@@ -1511,15 +1511,16 @@ elseif($action == "usergroups")
 	}
 
 	// List of groups this user is a leader of
-	$query = $db->query("SELECT g.title, g.gid, COUNT(u.uid) AS users, COUNT(j.rid) AS joinrequests FROM ".TABLE_PREFIX."groupleaders l LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=l.gid) LEFT JOIN ".TABLE_PREFIX."users u ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')))) LEFT JOIN ".TABLE_PREFIX."joinrequests j ON (j.gid=g.gid) WHERE l.uid='".$mybb->user[uid]."' GROUP BY l.gid");
+	$query = $db->query("SELECT g.title, g.gid, g.type, COUNT(u.uid) AS users, COUNT(j.rid) AS joinrequests FROM ".TABLE_PREFIX."groupleaders l LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=l.gid) LEFT JOIN ".TABLE_PREFIX."users u ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')))) LEFT JOIN ".TABLE_PREFIX."joinrequests j ON (j.gid=g.gid) WHERE l.uid='".$mybb->user[uid]."' GROUP BY l.gid");
 	while($usergroup = $db->fetch_array($query))
 	{
 		$memberlistlink = $moderaterequestslink = "";
-		if($usergroup['users'] > 0)
+		$memberlistlink = " [<a href=\"managegroup.php?gid=".$usergroup['gid']."\">".$lang->view_members."</a>]";
+		if($usergroup['type'] == 2)
 		{
-			$memberlistlink = " [<a href=\"managegroup.php?gid=".$usergroup['gid']."\">".$lang->view_members."</a>]";
+			$usergroup['joinrequests'] = '--';
 		}
-		if($usergroup['joinrequests'] > 0)
+		elseif($usergroup['joinrequests'] > 0)
 		{
 			$moderaterequestslink = " [<a href=\"managegroup.php?action=joinrequests&gid=".$usergroup['gid']."\">".$lang->view_requests."</a>]";
 		}

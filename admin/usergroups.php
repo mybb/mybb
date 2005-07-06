@@ -293,8 +293,8 @@ if($action == "edit")
 		$joinable = "no";
 		$moderate = "no";
 	}
-	$usergroup[description] = stripslashes($usergroup[description]);
-	$usergroup[namestyle] = stripslashes($usergroup[namestyle]);
+	$usergroup[description] = stripslashes($usergroup['description']);
+	$usergroup[namestyle] = stripslashes($usergroup['namestyle']);
 	$lang->edit_group = sprintf($lang->edit_group, $usergroup['title']);
 	cpheader();
 	startform("usergroups.php", "", "do_edit");
@@ -302,19 +302,19 @@ if($action == "edit")
 	starttable();
 	tableheader($lang->edit_group);
 	makeinputcode($lang->title, "title", $usergroup[title]);
-	maketextareacode($lang->description, "description", $usergroup[description]);
-	makeinputcode($lang->namestyle, "namestyle", $usergroup[namestyle]);
-	makeinputcode($lang->usertitle, "usertitle", $usergroup[usertitle]);
-	makeinputcode($lang->stars, "stars", $usergroup[stars]);
-	makeinputcode($lang->star_image, "starimage", $usergroup[starimage]);
-	makeinputcode($lang->group_image, "image", $usergroup[image]);
+	maketextareacode($lang->description, "description", $usergroup['description']);
+	makeinputcode($lang->namestyle, "namestyle", $usergroup['namestyle']);
+	makeinputcode($lang->usertitle, "usertitle", $usergroup['usertitle']);
+	makeinputcode($lang->stars, "stars", $usergroup['stars']);
+	makeinputcode($lang->star_image, "starimage", $usergroup['starimage']);
+	makeinputcode($lang->group_image, "image", $usergroup['image']);
 
 	tablesubheader($lang->group_options);
-	if($usergroup[gid] != "1" && $usergroup[gid] != "5" && $usergroup[gid] != "6")
+	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5" && $usergroup['gid'] != "6")
 	{
-		makeyesnocode($lang->show_team_page, "showforumteam", $usergroup[showforumteam]);
+		makeyesnocode($lang->show_team_page, "showforumteam", $usergroup['showforumteam']);
 	}
-	makeyesnocode($lang->banned_group, "isbannedgroup", $usergroup[isbannedgroup]);
+	makeyesnocode($lang->banned_group, "isbannedgroup", $usergroup['isbannedgroup']);
 
 	if($usergroup['type'] != 1)
 	{
@@ -325,25 +325,25 @@ if($action == "edit")
 	}
 
 	tablesubheader($lang->perms_viewing);
-	makeyesnocode($lang->can_view_board, "canview", $usergroup[canview]);
-	makeyesnocode($lang->can_search_forums, "cansearch", $usergroup[cansearch]);
-	makeyesnocode($lang->can_view_profiles, "canviewprofiles", $usergroup[canviewprofiles]);
-	makeyesnocode($lang->can_download_attachments, "candlattachments", $usergroup[candlattachments]);
+	makeyesnocode($lang->can_view_board, "canview", $usergroup['canview']);
+	makeyesnocode($lang->can_search_forums, "cansearch", $usergroup['cansearch']);
+	makeyesnocode($lang->can_view_profiles, "canviewprofiles", $usergroup['canviewprofiles']);
+	makeyesnocode($lang->can_download_attachments, "candlattachments", $usergroup['candlattachments']);
 	
 	tablesubheader($lang->perms_posting);
-	makeyesnocode($lang->can_post_threads, "canpostthreads", $usergroup[canpostthreads]);
-	makeyesnocode($lang->can_post_replies, "canpostreplys", $usergroup[canpostreplys]);
-	makeyesnocode($lang->can_rate_threads, "canratethreads", $usergroup[canratethreads]);
+	makeyesnocode($lang->can_post_threads, "canpostthreads", $usergroup['canpostthreads']);
+	makeyesnocode($lang->can_post_replies, "canpostreplys", $usergroup['canpostreplys']);
+	makeyesnocode($lang->can_rate_threads, "canratethreads", $usergroup['canratethreads']);
 
 	tablesubheader($lang->perms_attachments);
-	makeyesnocode($lang->can_post_attachments, "canpostattachments", $usergroup[canpostattachments]);
+	makeyesnocode($lang->can_post_attachments, "canpostattachments", $usergroup['canpostattachments']);
 	makeinputcode($lang->attach_quota, "attachquota", $usergroup['attachquota']);
 	
 	tablesubheader($lang->perms_editing);
-	makeyesnocode($lang->can_edit_posts, "caneditposts", $usergroup[caneditposts]);
-	makeyesnocode($lang->can_delete_posts, "candeleteposts", $usergroup[candeleteposts]);
-	makeyesnocode($lang->can_delete_threads, "candeletethreads", $usergroup[candeletethreads]);
-	makeyesnocode($lang->can_edit_attachments, "caneditattachments", $usergroup[caneditattachments]);
+	makeyesnocode($lang->can_edit_posts, "caneditposts", $usergroup['caneditposts']);
+	makeyesnocode($lang->can_delete_posts, "candeleteposts", $usergroup['candeleteposts']);
+	makeyesnocode($lang->can_delete_threads, "candeletethreads", $usergroup['candeletethreads']);
+	makeyesnocode($lang->can_edit_attachments, "caneditattachments", $usergroup['caneditattachments']);
 	
 	tablesubheader($lang->perms_reputations);
 
@@ -353,40 +353,40 @@ if($action == "edit")
 	makeinputcode($lang->max_reputations_day, "maxreputationsday", $usergroup['maxreputationsday'], 4);
 
 	tablesubheader($lang->perms_polls);
-	makeyesnocode($lang->can_post_polls, "canpostpolls", $usergroup[canpostpolls]);
-	makeyesnocode($lang->can_vote_polls, "canvotepolls", $usergroup[canvotepolls]);
+	makeyesnocode($lang->can_post_polls, "canpostpolls", $usergroup['canpostpolls']);
+	makeyesnocode($lang->can_vote_polls, "canvotepolls", $usergroup['canvotepolls']);
 	
 	tablesubheader($lang->perms_pms);
-	makeyesnocode($lang->can_use_pms, "canusepms", $usergroup[canusepms]);
-	makeyesnocode($lang->can_send_pms, "cansendpms", $usergroup[cansendpms]);
-	makeyesnocode($lang->can_track_pms, "cantrackpms", $usergroup[cantrackpms]);
-	makeyesnocode($lang->can_deny_pms, "candenypmreceipts", $usergroup[candenypmreceipts]);
-	makeinputcode($lang->pm_quota, "pmquota", $usergroup[pmquota], 4);
+	makeyesnocode($lang->can_use_pms, "canusepms", $usergroup['canusepms']);
+	makeyesnocode($lang->can_send_pms, "cansendpms", $usergroup['cansendpms']);
+	makeyesnocode($lang->can_track_pms, "cantrackpms", $usergroup['cantrackpms']);
+	makeyesnocode($lang->can_deny_pms, "candenypmreceipts", $usergroup['candenypmreceipts']);
+	makeinputcode($lang->pm_quota, "pmquota", $usergroup['pmquota'], 4);
 	
 	tablesubheader($lang->perms_calendar);
-	makeyesnocode($lang->can_view_calendar, "canviewcalendar", $usergroup[canviewcalendar]);
-	makeyesnocode($lang->can_add_public, "canaddpublicevents", $usergroup[canaddpublicevents]);
-	makeyesnocode($lang->can_add_private, "canaddprivateevents", $usergroup[canaddprivateevents]);
+	makeyesnocode($lang->can_view_calendar, "canviewcalendar", $usergroup['canviewcalendar']);
+	makeyesnocode($lang->can_add_public, "canaddpublicevents", $usergroup['canaddpublicevents']);
+	makeyesnocode($lang->can_add_private, "canaddprivateevents", $usergroup['canaddprivateevents']);
 	
 	tablesubheader($lang->perms_wol);
-	makeyesnocode($lang->can_view_wol, "canviewonline", $usergroup[canviewonline]);
-	makeyesnocode($lang->can_view_invisible, "canviewwolinvis", $usergroup[canviewwolinvis]);
-	makeyesnocode($lang->can_view_ips, "canviewonlineips", $usergroup[canviewonlineips]);
+	makeyesnocode($lang->can_view_wol, "canviewonline", $usergroup['canviewonline']);
+	makeyesnocode($lang->can_view_invisible, "canviewwolinvis", $usergroup['canviewwolinvis']);
+	makeyesnocode($lang->can_view_ips, "canviewonlineips", $usergroup['canviewonlineips']);
 	
 	tablesubheader($lang->perms_account);
-	makeyesnocode($lang->can_access_ucp, "canusercp", $usergroup[canusercp]);
-	makeyesnocode($lang->can_change_name, "canchangename", $usergroup[canchangename]);
+	makeyesnocode($lang->can_access_ucp, "canusercp", $usergroup['canusercp']);
+	makeyesnocode($lang->can_change_name, "canchangename", $usergroup['canchangename']);
 	makeyesnocode($lang->can_custom_titles, "cancustomtitle", $usergroup['cancustomtitle']);
-	makeyesnocode($lang->can_upload_avatars, "canuploadavatars", $usergroup[canuploadavatars]);
+	makeyesnocode($lang->can_upload_avatars, "canuploadavatars", $usergroup['canuploadavatars']);
 
 	tablesubheader($lang->perms_admin);
-	makeyesnocode($lang->can_access_acp, "cancp", $usergroup[cancp]);
-	makeyesnocode($lang->is_smod, "issupermod", $usergroup[issupermod]);
+	makeyesnocode($lang->can_access_acp, "cancp", $usergroup['cancp']);
+	makeyesnocode($lang->is_smod, "issupermod", $usergroup['issupermod']);
 	
 	tablesubheader($lang->perms_misc);
-	makeyesnocode($lang->can_view_mlist, "canviewmemberlist", $usergroup[canviewmemberlist]);
-	makeyesnocode($lang->can_send_emails, "cansendemail", $usergroup[cansendemail]);
-	makeyesnocode($lang->can_rate_members, "canratemembers", $usergroup[canratemembers]);
+	makeyesnocode($lang->can_view_mlist, "canviewmemberlist", $usergroup['canviewmemberlist']);
+	makeyesnocode($lang->can_send_emails, "cansendemail", $usergroup['cansendemail']);
+	makeyesnocode($lang->can_rate_members, "canratemembers", $usergroup['canratemembers']);
 	endtable();
 	endform($lang->update_group, $lang->reset_button);
 	cpfooter();
@@ -590,6 +590,7 @@ function usergroup_hop(gid)
 			echo "<option value=\"delete\">$lang->select_delete</option>\n";
 			echo "<option value=\"listusers\">$lang->list_users</option>\n";
 			echo "<option value=\"listsecondaryusers\">$lang->list_secondary_users</option>\n";
+			echo "<option value=\"groupleaders\">$lang->group_leaders</option>\n";
 			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"Go\"></td>\n";
 			echo "</tr>\n";
 			$donecustom = 1;
@@ -613,7 +614,7 @@ function usergroup_hop(gid)
 		{
 			$bgcolor = getaltbg();
 			startform("usergroups.php");
-			makehiddencode("gid", $usergroup[gid]);
+			makehiddencode("gid", $usergroup['gid']);
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\">$usergroup[title]</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$usergroup[users]";

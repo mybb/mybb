@@ -14,6 +14,8 @@ $l['contact'] = "Contact";
 $l['reg_date'] = "Registered";
 $l['post_count'] = "Posts";
 $l['remove_selected'] = "Remove Selected Users from Group";
+$l['add_member'] = "Add Member to \"{1}\"";
+$l['add_member_submit'] = "Add Member to Group";
 $l['join_requests'] = "Join Requests";
 $l['join_requests_title'] = "Join Requests for \"{1}\"";
 $l['leader'] = "(Leader)";
@@ -24,6 +26,7 @@ $l['decline'] = "Decline";
 $l['action_requests'] = "Action Requests";
 $l['join_requests_moderated'] = "The join requests have been moderated.<br />You will now be taken to the request listing.";
 $l['no_requests'] = "There are currently no pending join requests for this group.";
+$l['user_added'] = "The user has been added to the usergroup.";
 $l['users_removed'] = "The selected users have been removed from the user group.";
 $l['group_no_members'] = "There are currently no members in this group.<br />To return to the group management page, click <a href=\"usercp.php?action=usergroups\">here</a>.";
 ?>
