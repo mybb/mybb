@@ -425,7 +425,7 @@ function install_done()
 	$cache->updatereportedposts();
 	$contents .= "done</p>";
 
-	$contents .= "<p><b>Installation has successfully been completed.</b></p>";
+	$contents .= "<p><b>Congratulations on a successful completion of the installation!</b></p>";
 	$written = 0;
 	if(is_writable("./"))
 	{
@@ -434,7 +434,7 @@ function install_done()
 		@fclose($lock);
 		if($written)
 		{
-			$contents .= "<p><b>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</b></p>";
+			$contents .= "<p><b>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</b></p><p>You may now proceed to your new <a href=\"../\">MyBBoard</a> or its <a href=\"../admin\">Admin Control Panel</a>.</p>";
 		}
 	}
 	if(!$written)
