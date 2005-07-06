@@ -9,6 +9,8 @@
  * $Id$
  */
 
+ define("KILL_GLOBALS", 1);
+
 $templatelist = "poll_newpoll,redirect_pollposted,redirect_pollupdated,redirect_votethanks";
 require "./global.php";
 require "./inc/functions_post.php";
@@ -25,20 +27,22 @@ else
 	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 }
 
-if($preview || $updateoptions)
+if($mybb->input['preview'] || $mybb->input['updateoptions'])
 {
-	if($action == "do_editpoll") 
+	if($mybb->input['action'] == "do_editpoll") 
 	{
-		$action = "editpoll";
+		$mybb->input['action'] = "editpoll";
 	}
 	else
 	{
-		$action = "newpoll";
+		$mybb->input['action'] = "newpoll";
 	}
 }
-if($action == "newpoll")
+if($mybb->input['action'] == "newpoll")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
+	$tid = intval($mybb->input['tid']);
+
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
@@ -72,16 +76,22 @@ if($action == "newpoll")
 		error($lang->error_pollalready);
 	}
 
-	if($mybb->settings['maxpolloptions'] && $polloptions > $mybb->settings['maxpolloptions'])
+	if($mybb->settings['maxpolloptions'] && $mybb->input['polloptions'] > $mybb->settings['maxpolloptions'])
 	{
 		$polloptions = $mybb->settings['maxpolloptions'];
 	}
-
-	if($polloptions < 2)
+	elseif($mybb->input['polloptions'])
 	{
-		$polloptions = "2";
+		$polloptions = 2;
 	}
-	$question = htmlspecialchars_uni($question);
+	else
+	{
+		$polloptions = intval($mybb->input['polloptions']);
+	}
+
+	$question = htmlspecialchars_uni($mybb->input['question']);
+
+	$postoptions = $mybb->input['postoptions'];
 	if($postoptions['multiple'] == "yes")
 	{
 		$postoptionschecked['multiple'] = "checked";
@@ -91,6 +101,7 @@ if($action == "newpoll")
 		$postoptionschecked['public'] = "checked";
 	}
 
+	$options = $mybb->input['options'];
 	for($i=1;$i<=$polloptions;$i++)
 	{
 		$option = $options[$i];
@@ -98,18 +109,21 @@ if($action == "newpoll")
 		eval("\$optionbits .= \"".$templates->get("polls_newpoll_option")."\";");
 		$option = "";
 	}
-	if(!$timeout)
+	if($timeout)
 	{
-		$timeout = "0";
+		$timeout = $mybb->input['timeout'];
+	}
+	else
+	{
+		$timeout = 0;
 	}
 
 	eval("\$newpoll = \"".$templates->get("polls_newpoll")."\";");
-	outputpage($newpoll);
-		
+	outputpage($newpoll);		
 }
-if($action == "do_newpoll")
+if($mybb->input['action'] == "do_newpoll")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
@@ -121,17 +135,17 @@ if($action == "do_newpoll")
 
 	if($thread['uid'] != $mybb->user['uid'] && ismod($fid) != "yes")
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='$tid'");
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='".$thread['tid']."'");
 		nopermission();
 	}
 	if($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no")
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='$tid'");
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='".$thread['tid']."'");
 		nopermission();
 	}
 	if($forumpermissions['canpostpolls'] == "no")
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='$tid'");
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='".$thread['tid']."'");
 		nopermission();
 	}
 	if($thread['poll'])
@@ -139,10 +153,13 @@ if($action == "do_newpoll")
 		error($lang->error_pollalready);
 	}
 
+	$polloptions = $mybb->input['polloptions'];
 	if($mybb->settings['maxpolloptions'] && $polloptions > $mybb->settings['maxpolloptions'])
 	{
 		$polloptions = $mybb->settings['maxpolloptions'];
 	}
+
+	$postoptions = $mybb->input['postoptions'];
 	if($postoptions['multiple'] != "yes")
 	{
 		$postoptions['multiple'] = "no";
@@ -157,6 +174,7 @@ if($action == "do_newpoll")
 		$polloptions = "2";
 	}
 	$optioncount = "0";
+	$options = $mybb->input['options'];
 	for($i=1;$i<=$polloptions;$i++)
 	{
 		if(trim($options[$i]) != "")
@@ -173,7 +191,7 @@ if($action == "do_newpoll")
 	{
 		error($lang->error_polloptiontoolong);
 	}
-	if($question == "" || $optioncount < 2)
+	if($mybb->input['question'] == "" || $optioncount < 2)
 	{
 		error($lang->error_noquestionoptions);
 	}
@@ -192,18 +210,32 @@ if($action == "do_newpoll")
 			$voteslist .= "0";
 		}
 	}
-	if($timeout < 1)
+	if($timeout > 0)
+	{
+		$timeout = $mybb->input['timeout'];
+	}
+	else
 	{
 		$timeout = 0;
 	}
-	$now = time();
-	$question = addslashes($question);
-	$optionslist = addslashes($optionslist);
-	$voteslist = addslashes($voteslist);
-	$db->query("INSERT INTO ".TABLE_PREFIX."polls (pid,tid,question,dateline,options,votes,numoptions,numvotes,timeout,closed,multiple,public) VALUES (NULL,'$tid','$question','$now','$optionslist','$voteslist','$optioncount','0','$timeout','no','$postoptions[multiple]','$postoptions[public]')");
+	$newpoll = array(
+		"pid" => "NULL",
+		"tid" => $thread['tid'],
+		"question" => addslashes($mybb->input['question']),
+		"dateline" => now(),
+		"options" => addslashes($optionslist),
+		"votes" => addslashes($voteslist),
+		"numoptions" => intval($optioncount),
+		"numvotes" => 0,
+		"timeout" => $timeout,
+		"closed" => "no",
+		"multiple" => $postoptions['multiple'],
+		"public" => $postoptions['public']
+		);
+	$db->insert_query(TABLE_PREFIX."polls", $newpoll);
 	$pid = $db->insert_id();
 
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET poll='$pid', visible='1' WHERE tid='$tid'");
+	$db->query("UPDATE ".TABLE_PREFIX."threads SET poll='$pid', visible='1' WHERE tid='".$thread['tid']."'");
 	updateforumcount($fid);
 
 	$now = time();
@@ -215,12 +247,14 @@ if($action == "do_newpoll")
 	{
 		$queryadd = "";
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='$thread[uid]'");
+	$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$thread['uid']."'");
 	$cache->updatestats();
-	redirect("showthread.php?tid=$tid", $lang->redirect_pollposted);
+	redirect("showthread.php?tid=".$thread['tid'], $lang->redirect_pollposted);
 }
-if($action == "editpoll")
+if($mybb->input['action'] == "editpoll")
 {
+	$pid = intval($mybb->input['pid']);
+
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='$pid'");
 	$poll = $db->fetch_array($query);
 
@@ -249,7 +283,7 @@ if($action == "editpoll")
 		nopermission();
 	}
 	$polldate = mydate($mybb->settings['dateformat'], $poll['dateline']);	
-	if(!$preview && !$updateoptions)
+	if(!$mybb->input['preview'] && !$mybb->input['updateoptions'])
 	{
 		if($poll['closed'] == "yes")
 		{
@@ -300,15 +334,21 @@ if($action == "editpoll")
 	}
 	else
 	{
-		if($mybb->settings['maxpolloptions'] && $numoptions > $mybb->settings['maxpolloptions'])
+		if($mybb->settings['maxpolloptions'] && $mybb->input['numoptions'] > $mybb->settings['maxpolloptions'])
 		{
 			$numoptions = $mybb->settings['maxpolloptions'];
 		}
-		if($numoptions < 2)
+		elseif($mybb->input['numoptions'] < 2)
 		{
 			$numoptions = "2";
 		}
-		$question = htmlspecialchars_uni($question);
+		else
+		{
+			$numoptions = $mybb->input['numoptions'];
+		}
+		$question = htmlspecialchars_uni($mybb->input['question']);
+		
+		$postoptions = $mybb->input['postoptions'];
 		if($postoptions['multiple'] == "yes")
 		{
 			$postoptionschecked['multiple'] = "checked";
@@ -321,6 +361,10 @@ if($action == "editpoll")
 		{
 			$postoptionschecked['closed'] = "checked";
 		}
+
+		$options = $mybb->input['options'];
+		$votes = $mybb->input['votes'];
+
 		for($i=1;$i<=$numoptions;$i++)
 		{
 			$counter = $i;
@@ -334,8 +378,12 @@ if($action == "editpoll")
 			eval("\$optionbits .= \"".$templates->get("polls_editpoll_option")."\";");
 			$option = "";
 		}
-		$question = htmlspecialchars_uni($question);
-		if(!$timeout)
+
+		if($timeout > 0)
+		{
+			$timeout = $mybb->input['timeout'];
+		}
+		else
 		{
 			$timeout = 0;
 		}
@@ -344,17 +392,17 @@ if($action == "editpoll")
 	eval("\$editpoll = \"".$templates->get("polls_editpoll")."\";");
 	outputpage($editpoll);
 }
-if($action == "do_editpoll")
+if($mybb->input['action'] == "do_editpoll")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='$pid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='$pid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='".intval($mybb->input['pid'])."'");
 	$thread = $db->fetch_array($query);
 
 	$forumpermissions = forumpermissions($thread['fid']);
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."'");
 	$forum = $db->fetch_array($query);
 	
 	if($thread['visible'] == "no" || !$thread['tid'])
@@ -366,10 +414,20 @@ if($action == "do_editpoll")
 		nopermission();
 	}
 
-	if($mybb->settings['maxpolloptions'] && $numoptions > $mybb->settings['maxpolloptions'])
+	if($mybb->settings['maxpolloptions'] && $mybb->input['numoptions'] > $mybb->settings['maxpolloptions'])
 	{
 		$numoptions = $mybb->settings['maxpolloptions'];
 	}
+	elseif($mybb->input['numoptions'])
+	{
+		$numoptions = 2;
+	}
+	else
+	{
+		$numoptions = $mybb->input['numoptions'];
+	}
+
+	$postoptions = $mybb->input['postoptions'];
 	if($postoptions['multiple'] != "yes")
 	{
 		$postoptions['multiple'] = "no";
@@ -383,14 +441,11 @@ if($action == "do_editpoll")
 	{
 		$postoptions['closed'] = "no";
 	}
-	$polloptions = $numoptions;
-	if($polloptions < 2)
-	{
-		$polloptions = "3";
-	}
 	$optioncount = "0";
 	$optioncount = "0";
-	for($i=1;$i<=$polloptions;$i++)
+	$options = $mybb->input['options'];
+
+	for($i=1;$i<=$numoptions;$i++)
 	{
 		if(trim($options[$i]) != "")
 		{
@@ -406,13 +461,15 @@ if($action == "do_editpoll")
 	{
 		error($lang->error_polloptiontoolong);
 	}
-	if($question == "" || $optioncount < 2)
+	
+	if(trim($mybb->input['question']) == "" || $optioncount < 2)
 	{
 		error($lang->error_noquestionoptions);
 	}
 	$optionslist = "";
 	$voteslist = "";
 	$numvotes = "";
+	$votes = $mybb->input['votes'];
 	for($i=1;$i<=$optioncount;$i++)
 	{
 		if(trim($options[$i]) != "")
@@ -422,7 +479,7 @@ if($action == "do_editpoll")
 				$optionslist .= "||~|~||";
 				$voteslist .= "||~|~||";
 			}
-			$optionslist .= "$options[$i]";
+			$optionslist .= $options[$i];
 			if(intval($votes[$i]) <= 0)
 			{
 				$votes[$i] = "0";
@@ -431,18 +488,24 @@ if($action == "do_editpoll")
 			$numvotes = $numvotes + $votes[$i];
 		}
 	}
-	$question = addslashes($question);
-	$optionslist = addslashes($optionslist);
-	$voteslist = addslashes($voteslist);
+	$updatedpoll = array(
+		"question" => addslashes($mybb->input['question']),
+		"options" => addslashes($optionslist),
+		"votes" => addslashes($voteslist),
+		"numoptions" => intval($numoptions),
+		"numvotes" => $numvotes,
+		"timeout" => $timeout,
+		"closed" => "no",
+		"multiple" => $postoptions['multiple'],
+		"public" => $postoptions['public']
+		);
+	$db->update_query(TABLE_PREFIX."polls", $updatedpoll, "pid='".intval($mybb->input['pid'])."'");
 
-	$db->query("UPDATE ".TABLE_PREFIX."polls SET question='$question', options='$optionslist', votes='$voteslist', numoptions='$optioncount', numvotes='$numvotes', timeout='$timeout', closed='$postoptions[closed]', multiple='$postoptions[multiple]', public='$postoptions[public]' WHERE pid='$pid'");
-
-	redirect("showthread.php?tid=$thread[tid]", $lang->redirect_pollupdated);
+	redirect("showthread.php?tid=".$thread['tid'], $lang->redirect_pollupdated);
 }
-if($action == "showresults")
+if($mybb->input['action'] == "showresults")
 {
-	//These queries need to be optimized later
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='$pid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 	$tid = $poll['tid'];
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
@@ -547,9 +610,9 @@ if($action == "showresults")
 	eval("\$showresults = \"".$templates->get("polls_showresults")."\";");
 	outputpage($showresults);
 }
-if($action == "vote")
+if($mybb->input['action'] == "vote")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='$pid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['poll']."'");
 	$poll = $db->fetch_array($query);
 	$poll['timeout'] = $poll['timeout']*60*60*24;
 	if(!$poll['pid'])
@@ -557,7 +620,7 @@ if($action == "vote")
 		error($lang->error_invalidpoll);
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='$pid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='".$poll['pid']."'");
 	$thread = $db->fetch_array($query);
 
 	if(!$thread['tid'])
@@ -582,7 +645,7 @@ if($action == "vote")
 		error($lang->error_nopolloptions);
 	}
 	// Check if the user has voted before...
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user[uid]."' AND pid='$pid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user[uid]."' AND pid='".$poll['pid']."'");
 	$votecheck = $db->fetch_array($query);
 	if($votecheck['vid'] || $pollvotes[$poll['pid']])
 	{
@@ -598,6 +661,7 @@ if($action == "vote")
 	$votesql = "";
 	$now = time();
 	$votesarray = explode("||~|~||", $poll['votes']);
+	$option = $mybb->input['option'];
 	if($poll['multiple'] == "yes")
 	{
 		while(list($voteoption, $vote) = each($option))
@@ -608,14 +672,14 @@ if($action == "vote")
 				{
 					$votesql .= ",";
 				}
-				$votesql .= "(NULL,'$pid','".$mybb->user[uid]."','$voteoption','$now')";
+				$votesql .= "(NULL,'".$poll['pid']."','".$mybb->user[uid]."','$voteoption','$now')";
 				$votesarray[$voteoption-1]++;
 			}
 		}
 	}
 	else
 	{
-		$votesql = "(NULL,'$pid','".$mybb->user[uid]."','$option','$now')";
+		$votesql = "(NULL,'".$poll['pid']."','".$mybb->user[uid]."','".addslashes($option)."','$now')";
 		$votesarray[$option-1]++;
 	}
 	$db->query("INSERT INTO ".TABLE_PREFIX."pollvotes VALUES $votesql");
@@ -628,9 +692,12 @@ if($action == "vote")
 		}
 		$voteslist .= $votesarray[$i-1];
 	}
-	$voteslist = addslashes($voteslist);
-	$db->query("UPDATE ".TABLE_PREFIX."polls SET votes='$voteslist', numvotes=numvotes+1 WHERE pid='$pid'");
+	$updatedpoll = array(
+		"votes" => addslashes($votes),
+		"numvotes" => "numvotes+1"
+	);
+	$db->update_query(TABLE_PREFIX."polls", $updatedpoll, "pid='".$poll['pid']."'");
 
-	redirect("showthread.php?tid=$poll[tid]", $lang->redirect_votethanks);
+	redirect("showthread.php?tid=".$poll['tid'], $lang->redirect_votethanks);
 }
 ?>

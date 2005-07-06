@@ -8,6 +8,7 @@
  *
  * $Id$
  */
+ define("KILL_GLOBALS", 1);
 
  $templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_iplookup,mostonline,posticons";
 require "./global.php";
@@ -23,7 +24,7 @@ if($mybb->usergroup['canviewonline'] == "no")
 // Make navigation
 addnav($lang->nav_online, "online.php");
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "today":
 		addnav($lang->nav_onlinetoday);
@@ -33,7 +34,7 @@ switch($action)
 		break;
 }
 
-if($action == "today")
+if($mybb->input['action'] == "today")
 {
 	$todaycount = 0;
 	$stime = time()-(60*60*24);
@@ -62,12 +63,13 @@ if($action == "today")
 	eval("\$today = \"".$templates->get("online_today")."\";");
 	outputpage($today);
 }
-elseif($action == "iplookup")
+elseif($mybb->input['action'] == "iplookup")
 {
 	if($mybb->usergroup['canviewonlineips'] == "no")
 	{
 		nopermission();
 	}
+	$ip = $mybb->input['ip'];
 	$host = @gethostbyaddr($ip);
 	if(!$host || $host == $ip)
 	{
@@ -84,11 +86,11 @@ else
 	$tidsql = '';
 	$fidsql = '';
 	$eidsql = '';
-	if($sortby == "username")
+	if($mybb->input['sortby'] == "username")
 	{
 		$sql = "u.username ASC, o.time DESC";
 	}
-	elseif($sortby == "location")
+	elseif($mybb->input['sortby'] == "location")
 	{
 		$sql = "o.location, o.time DESC";
 	}

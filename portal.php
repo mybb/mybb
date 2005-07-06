@@ -9,6 +9,8 @@
  * $Id$
  */
 
+ define("KILL_GLOBALS", 1);
+
 // set the path to your forums directory here (without trailing slash)
 $forumdir = "./";
 
@@ -29,21 +31,33 @@ $lang->load("portal");
 addnav($lang->nav_portal, "portal.php");
 
 // This allows users to login if the portal is stored offsite or in a different directory
-if($action == "do_login")
+if($mybb->input['action'] == "do_login")
 {
 	$username = addslashes($username);
-	$query = $db->query("SELECT uid, username, password FROM ".TABLE_PREFIX."users WHERE username='$username'");
+	$query = $db->query("SELECT uid, username, password FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
 	$user = $db->fetch_array($query);
+
 	if(!$user['uid'])
 	{
 		error($lang->error_invalidusername);
 	}
-	if($user['password'] != md5($password))
+	if($user['password'] != md5($mybb->input['password']))
 	{
 		error($lang->error_invalidpassword);
 	}
-	mysetcookie("mybb[uid]", $user['uid']);
-	mysetcookie("mybb[password]", $user['password']);
+	if(!$user['salt'])
+	{
+		$user['salt'] = random_str();
+		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='".$user['salt']."' WHERE uid='".$user['uid']."'");
+	}
+	mysetcookie("mybbuser", $user['uid']."_".md5($user['password'].md5($user['salt'])));
+
+	if(function_exists("loggedIn"))
+	{
+		loggedIn($user['uid']);
+	}
+	$plugins->run_hooks("logged_in", $user['uid']);
+	
 	redirect($PHP_SELF, $lang->redirect_loggedin);
 }
 

@@ -9,6 +9,8 @@
  * $Id$
  */
 
+ define("KILL_GLOBALS", 1);
+
 $templatelist = "printthread,printthread_post";
 
 require "./global.php";
@@ -17,15 +19,16 @@ require "./inc/functions_post.php";
 // Load global language phrases
 $lang->load("printthread");
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid' AND visible='1'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."' AND visible='1'");
 $thread = $db->fetch_array($query);
-$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
+$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
 if(!$thread['tid'])
 {
 	error($lang->error_invalidthread);
 }
 $fid = $thread['fid'];
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]' AND active!='no'");
+$tid = $thread['tid'];
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."' AND active!='no'");
 $forum = $db->fetch_array($query);
 $breadcrumb = makeprintablenav();
 
