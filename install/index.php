@@ -165,7 +165,7 @@ function requirements_check()
 	$uploadswritable = is_writeable("../uploads");
 	if(!$uploadswritable)
 	{
-		$errors[] "<p><b>Warning: The uploads (uploads/) directory is not writable. Please adjust the chmod permissions to allow it to be written to.</b></p>";
+		$errors[] = "<p><b>Warning: The uploads (uploads/) directory is not writable. Please adjust the chmod permissions to allow it to be written to.</b></p>";
 		$showerror = 1;
 	}
 	else
