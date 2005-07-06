@@ -31,5 +31,5 @@ $l['users_removed'] = "The selected users have been removed from the user group.
 $l['group_no_members'] = "There are currently no members in this group.<br />To return to the group management page, click <a href=\"usercp.php?action=usergroups\">here</a>.";
 $l['group_public_moderated'] = "This usergroup is a public usergroup that anyone can join.  All join requests must be moderated by a group leader.";
 $l['group_public_not_moderated'] = "This usergroup is a public usergroup that anyone can join freely.";
-$l['group_private'] = "This usergroup is a public usergroup that anyone can join freely.";
+$l['group_private'] = "This usergroup is a private usergroup.  Only users added by the group leader can be part of this group.";
 ?>

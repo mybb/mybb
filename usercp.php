@@ -1544,7 +1544,7 @@ elseif($action == "usergroups")
 
 	if($mybb->user['additionalgroups'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user[usergroup]."' ORDER BY title ASC");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user['usergroup']."' ORDER BY title ASC");
 		while($usergroup = $db->fetch_array($query))
 		{
 			$showmemberof = true;
@@ -1554,11 +1554,11 @@ elseif($action == "usergroups")
 			}
 			else
 			{
-				$leavelink = "<a href=\"usercp.php?action=usergroups&leavegroup=".$usergroup['gid']."\">".$lang->usergroup_leave."</a>";
+				$leavelink = "<center><a href=\"usercp.php?action=usergroups&leavegroup=".$usergroup['gid']."\">".$lang->usergroup_leave."</a></center>";
 			}
 			if($usergroup['description'])
 			{
-				$description = "<br /><span class=\"smallfont\">".$usergroup['description']."</span>";
+				$description = "<br /><span class=\"smalltext\">".$usergroup['description']."</span>";
 			}
 			else
 			{

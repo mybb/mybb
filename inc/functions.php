@@ -1898,7 +1898,7 @@ function join_usergroup($uid, $joingroup)
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+		$query = $db->query("SELECT additionalgroups, usergroup FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 		$user = $db->fetch_array($query);
 	}
 
@@ -1933,7 +1933,7 @@ function leave_usergroup($uid, $leavegroup)
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 		$user = $db->fetch_array($query);
 	}
-	$user['additionalgrouos'] .= ",";
+	$user['additionalgroups'] .= ",";
 	$groups = explode(",", $user['additionalgroups']);
 	if(is_array($groups))
 	{

@@ -427,7 +427,7 @@ if($action == "groupleaders")
 	cpfooter();
 }
 
-if($actopm == "do_joinrequests")
+if($action == "do_joinrequests")
 {
 	if(is_array($request))
 	{
@@ -435,7 +435,7 @@ if($actopm == "do_joinrequests")
 		{
 			if($what == "accept")
 			{
-				join_usergroup($uid, $gid);
+				join_usergroup(intval($uid), $gid);
 				$uidin[] = $uid;
 			}
 			elseif($what == "decline")
@@ -637,6 +637,7 @@ function usergroup_hop(gid)
 			echo "<option value=\"listusers\">$lang->list_users</option>\n";
 			echo "<option value=\"listsecondaryusers\">$lang->list_secondary_users</option>\n";
 			echo "<option value=\"groupleaders\">$lang->group_leaders</option>\n";
+			echo "<option value=\"joinrequests\">$lang->moderate_join_requests</option>\n";
 			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"Go\"></td>\n";
 			echo "</tr>\n";
 		}

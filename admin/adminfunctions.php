@@ -120,7 +120,7 @@ function tablesubheader($titles, $anchor="", $colspan=2, $align="center")
 {
 	global $bgcolor;
 	echo "<tr>\n";
-	if(!is_array($title))
+	if(!is_array($titles))
 	{
 		$title[] = $titles;
 	}

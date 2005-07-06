@@ -43,12 +43,19 @@ if(!$groupleader['uid'])
 
 if($mybb->input['action'] == "do_add")
 {
-	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users u WHERE username = '".addslashes($mybb->input['username'])."' LIMIT 1");
+	$query = $db->query("SELECT uid, additionalgroups, usergroup FROM ".TABLE_PREFIX."users WHERE username = '".addslashes($mybb->input['username'])."' LIMIT 1");
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{
-		join_usergroup($user['uid'], $gid);
-		redirect("managegroup.php?gid=".$gid, $lang->user_added);
+		$additionalgroups = explode(',', $user['additionalgroups']);
+		if ($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
+		{
+			join_usergroup($user['uid'], $gid);
+			redirect("managegroup.php?gid=".$gid, $lang->user_added);
+		}
+		else {
+			error($lang->error_alreadyingroup);
+		}
 	}
 	else
 	{
