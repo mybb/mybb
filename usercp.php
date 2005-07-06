@@ -1541,32 +1541,35 @@ elseif($action == "usergroups")
 	eval("\$memberoflist = \"".$templates->get("usercp_usergroups_memberof_usergroup")."\";");
 	$showmemberof = false;
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user[usergroup]."' ORDER BY title ASC");
-	while($usergroup = $db->fetch_array($query))
+	if($mybb->user['additionalgroups'])
 	{
-		$showmemberof = true;
-		if($groupleader[$usergroup['gid']])
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user[usergroup]."' ORDER BY title ASC");
+		while($usergroup = $db->fetch_array($query))
 		{
-			$leavelink = "<span class=\"smalltext\"><center>$lang->usergroup_leave_leader</center></span>";
+			$showmemberof = true;
+			if($groupleader[$usergroup['gid']])
+			{
+				$leavelink = "<span class=\"smalltext\"><center>$lang->usergroup_leave_leader</center></span>";
+			}
+			else
+			{
+				$leavelink = "<a href=\"usercp.php?action=usergroups&leavegroup=".$usergroup['gid']."\">".$lang->usergroup_leave."</a>";
+			}
+			if($usergroup['description'])
+			{
+				$description = "<br /><span class=\"smallfont\">".$usergroup['description']."</span>";
+			}
+			else
+			{
+				$description = "";
+			}
+			if(!$usergroup['usertitle'])
+			{
+				// fetch title here
+			}
+			$trow = alt_trow();
+			eval("\$memberoflist .= \"".$templates->get("usercp_usergroups_memberof_usergroup")."\";");
 		}
-		else
-		{
-			$leavelink = "<a href=\"usercp.php?action=usergroups&leavegroup=".$usergroup['gid']."\">".$lang->usergroup_leave."</a>";
-		}
-		if($usergroup['description'])
-		{
-			$description = "<br /><span class=\"smallfont\">".$usergroup['description']."</span>";
-		}
-		else
-		{
-			$description = "";
-		}
-		if(!$usergroup['usertitle'])
-		{
-			// fetch title here
-		}
-		$trow = alt_trow();
-		eval("\$memberoflist .= \"".$templates->get("usercp_usergroups_memberof_usergroup")."\";");
 	}
 	eval("\$membergroups = \"".$templates->get("usercp_usergroups_memberof")."\";");
 
