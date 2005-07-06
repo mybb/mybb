@@ -25,6 +25,7 @@ if(!$usergroup['gid'])
 	error($lang->invalid_group);
 }
 $lang->nav_group_management = sprintf($lang->nav_group_management, $usergroup['title']);
+addnav($lang->nav_group_memberships, "usercp.php?action=usergroups");
 addnav($lang->nav_group_management, "managegroup.php?gid=$gid");
 
 if($mybb->input['action'] == "joinrequests")
@@ -146,7 +147,11 @@ else
 		$user['username'] = formatname($user['username'], $user['usergroup']);
 		if($isleader['uid'])
 		{
-			$user['username'] .= ' ' . $lang->leader;
+			$leader = $lang->leader;
+		}
+		else
+		{
+			$leader = '';
 		}
 		eval("\$users .= \"".$templates->get("managegroup_user")."\";");
 	}

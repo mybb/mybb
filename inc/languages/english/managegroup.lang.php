@@ -1,6 +1,7 @@
 <?php
 $l['nav_group_management'] = "{1} Group Management";
 $l['nav_join_requests'] = "Join Requests";
+$l['nav_group_memberships'] = "Group Memberships";
 
 $l['not_leader_of_this_group'] = "Sorry, but you are not a leader of this user group.";
 $l['invalid_group'] = "This user group does not exist or is not a publically joinable user group.";

@@ -2571,7 +2571,7 @@ $footer
 </body>
 </html>]]></template>
 		<template name="managegroup_user"><![CDATA[<tr>
-<td class="$altbg"><a href="member.php?action=profile&uid=$user[uid]">$user[username]</a></td>
+<td class="$altbg"><a href="member.php?action=profile&uid=$user[uid]">$user[username]</a> $leader</td>
 <td class="$altbg" align="center">$email</td>
 <td class="$altbg" align="center">$sendpm</td>
 <td class="$altbg" align="center">$regdate</td>
