@@ -350,6 +350,7 @@ function create_guest_session()
 	}
 	// Legacy code
 	$mybbuser = $mybb->user;
+	$mybbgroup = $mybb->usergroup;
 }
 
 function create_spider_session($spider)
