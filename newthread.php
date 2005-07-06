@@ -552,7 +552,7 @@ if($mybb->input['action'] == "do_newthread")
 	// Start Forum Subscriptions
 	if(!$savedraft)
 	{
-		$excerpt = substr($mybb->input['message'], 0, $mybb->settings['subscribeexcerpt'])."... (visit the thread to read more..)";
+		$excerpt = substr($mybb->input['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."threads WHERE fid='$fid' ORDER BY dateline DESC LIMIT 1");
 		$lastpost = $db->fetch_array($query);
 		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u WHERE fs.fid='$fid' AND u.uid=fs.uid AND fs.uid!='".$mybb->user[uid]."' AND u.lastactive>'$lastpost[dateline]'");

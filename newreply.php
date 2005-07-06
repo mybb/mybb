@@ -500,7 +500,7 @@ if($mybb->input['action'] == "do_newreply" )
 	if(!$savedraft)
 	{
 		$subject = dobadwords($thread['subject']);
-		$excerpt = substr(dobadwords(stripslashes($mybb->input['message'])), 0, $mybb->settings['subscribeexcerpt'])."... (visit the thread to read more..)";
+		$excerpt = substr(dobadwords(stripslashes($mybb->input['message'])), 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline DESC LIMIT 1");
 		$lastpost = $db->fetch_array($query);
 		error_reporting(E_ALL);

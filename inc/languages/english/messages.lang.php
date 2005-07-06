@@ -203,6 +203,7 @@ $l['emailsubject_reportpost'] = "Reported post at {1}";
 $l['emailsubject_reachedpmquota'] = "Private Messaging Quota Reached at {1}";
 $l['emailsubject_changeemail'] = "Change of Email at {1}";
 $l['emailsubject_newpm'] = "New Private Message at {1}";
+$l['emailbit_viewthread'] = "... (visit the thread to read more..)";
 
 $l['email_lostpw'] = "{1},
 
