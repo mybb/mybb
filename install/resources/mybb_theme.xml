@@ -853,7 +853,7 @@ $changenameop
 <li><a href="usercp.php?action=forumsubscriptions">$lang->ucp_nav_forum_subscriptions</a></li>
 <li><a href="usercp.php?action=notepad">$lang->ucp_nav_notepad</a></li>
 <li class="separator">&nbsp;</li>
-<li><a href="member.php?action=profile&amp;uid=$mybb[uid]">$lang->ucp_nav_view_profile</a></li>
+<li><a href="member.php?action=profile&amp;uid=$mybbuser[uid]">$lang->ucp_nav_view_profile</a></li>
 <li><a href="usercp.php">$lang->ucp_nav_home</a></li>
 </ul>
 </td>
@@ -5575,7 +5575,7 @@ $usercpnav
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>$lang->new_username</strong></td>
-<td class="trow2" width="60%"><input type="text" name="username" size="25" maxlength="15" value="$mybb[username]"></td>
+<td class="trow2" width="60%"><input type="text" name="username" size="25" maxlength="15" value="$mybbuser[username]"></td>
 </tr>
 </table>
 </td></tr></table>
