@@ -121,7 +121,17 @@ else
 			$lang->num_requests_pending = sprintf($lang->num_requests_pending, $numrequests['req']);
 			eval("\$joinrequests = \"".$templates->get("managegroup_requestnote")."\";");
 		}
+		$usergrouptype = $lang->group_public_moderated;
 	}
+	elseif($usergroup['type'] == 3)
+	{
+		$usergrouptype = $lang->group_public_not_moderated;
+	}
+	elseif($usergroup['type'] == 2)
+	{
+		$usergrouptype = $lang->group_private;
+	}
+		
 
 	$uquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' ORDER BY username ASC";
 	$query = $db->query($uquery);

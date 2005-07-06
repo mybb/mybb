@@ -2548,6 +2548,7 @@ $headerinclude
 <body>
 $header
 $joinrequests
+<p>$usergrouptype</p>
 <form method="post" action="managegroup.php">
 <input type="hidden" name="action" value="do_manageusers" />
 <input type="hidden" name="gid" value="$gid" />

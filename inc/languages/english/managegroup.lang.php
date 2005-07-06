@@ -4,7 +4,7 @@ $l['nav_join_requests'] = "Join Requests";
 $l['nav_group_memberships'] = "Group Memberships";
 
 $l['not_leader_of_this_group'] = "Sorry, but you are not a leader of this user group.";
-$l['invalid_group'] = "This user group does not exist or is not a publically joinable user group.";
+$l['invalid_group'] = "This user group does not exist.";
 $l['pending_requests'] ="Pending Join Requests";
 $l['num_requests_pending'] = "There are currently <strong>{1}</strong> pending join requests for this user group.";
 $l['group_management'] = "Group Management";
@@ -29,4 +29,7 @@ $l['no_requests'] = "There are currently no pending join requests for this group
 $l['user_added'] = "The user has been added to the usergroup.";
 $l['users_removed'] = "The selected users have been removed from the user group.";
 $l['group_no_members'] = "There are currently no members in this group.<br />To return to the group management page, click <a href=\"usercp.php?action=usergroups\">here</a>.";
+$l['group_public_moderated'] = "This usergroup is a public usergroup that anyone can join.  All join requests must be moderated by a group leader.";
+$l['group_public_not_moderated'] = "This usergroup is a public usergroup that anyone can join freely.";
+$l['group_private'] = "This usergroup is a public usergroup that anyone can join freely.";
 ?>

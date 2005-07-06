@@ -1516,7 +1516,7 @@ elseif($action == "usergroups")
 	{
 		$memberlistlink = $moderaterequestslink = "";
 		$memberlistlink = " [<a href=\"managegroup.php?gid=".$usergroup['gid']."\">".$lang->view_members."</a>]";
-		if($usergroup['type'] == 2)
+		if($usergroup['type'] != 4)
 		{
 			$usergroup['joinrequests'] = '--';
 		}
