@@ -283,7 +283,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$attachwhere = "posthash='$posthash'";
+			$attachwhere = "posthash='".addslashes($mybb->input['posthash'])."'";
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
 		while($attachment = $db->fetch_array($query))

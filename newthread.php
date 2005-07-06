@@ -18,11 +18,11 @@ require "./inc/functions_post.php";
 // Load global language phrases
 $lang->load("newthread");
 
-if($action == "editdraft" || ($savedraft && $tid) || ($tid && $pid))
+if($mybb->input['action'] == "editdraft" || ($mybb->inputp['savedraft'] && $mybb->input['tid']) || ($mybb->input['tid'] && $mybb->input['pid']))
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid' AND visible='-2'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."' AND visible='-2'");
 	$thread = $db->fetch_array($query);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND visible='-2' ORDER BY dateline ASC LIMIT 0, 1");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='".intval($mybb->input['tid'])."' AND visible='-2' ORDER BY dateline ASC LIMIT 0, 1");
 	$post = $db->fetch_array($query);
 	if(!$thread['tid'] || !$post['pid'])
 	{
@@ -30,7 +30,13 @@ if($action == "editdraft" || ($savedraft && $tid) || ($tid && $pid))
 	}
 	$pid = $post['pid'];
 	$fid = $thread['fid'];
+	$tid = $thread['tid'];
 }
+else
+{
+	$fid = intval($mybb->input['fid']);
+}
+
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid' AND active!='no'");
 $forum = $db->fetch_array($query);
 
@@ -52,7 +58,7 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] =
 // Password protected forums ......... yhummmmy!
 checkpwforum($fid, $forum['password']);
 
-if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user[showcodebuttons] != 0)
+if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
 {
 	$codebuttons = makebbcodeinsert();
 }
@@ -72,23 +78,27 @@ if($mybb->user['uid'] != 0)
 }
 else
 {
-	if(!$previewpost && $action != "do_newthread")
+	if(!$mybb->input['previewpost'] && $mybb->input['action'] != "do_newthread")
 	{
 		$username = "Guest";
 	}
+	else
+	{
+		$username = $mybb->input['username'];
+	}
 	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 }
-if($action != "do_newthread" && $action != "editdraft")
+if($mybb->input['action'] != "do_newthread" && $mybb->input['action'] != "editdraft")
 {
-	$action = "newthread";
+	$mybb->input['action'] = "newthread";
 }
 
-if($previewpost)
+if($mybb->input['previewpost'])
 {
-	$action = "newthread";
+	$mybb->input['action'] = "newthread";
 }
 
-if(!$removeattachment && ($newattachment || ($action == "do_newthread" && $submit && $HTTP_POST_FILES['attachment'])))
+if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newthread" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
@@ -99,25 +109,24 @@ if(!$removeattachment && ($newattachment || ($action == "do_newthread" && $submi
 	if($attachedfile['error'])
 	{
 		eval("\$attacherror = \"".$templates->get("error_attacherror")."\";");
-		$action = "newthread";
+		$mybb->input['action'] = "newthread";
 	}
-	if(!$submit)
+	if(!$mybb->input['submit'])
 	{
-		$action = "newthread";
+		$mybb->input['action'] = "newthread";
 	}
 }
-if($removeattachment)
+if($mybb->input['removeattachment'])
 { // Lets remove the attachment
 	require_once "./inc/functions_upload.php";
-	remove_attachment(0, $posthash, $removeattachment);
-	if(!$submit)
+	remove_attachment(0, $posthash, $mybb->input['removeattachment']);
+	if(!$mybb->input['submit'])
 	{
-		$action = "newthread";
+		$mybb->input['action'] = "newthread";
 	}
-//	die($removeattachment);
 }
 // Max images check
-if($action == "do_newthread" && !$savedraft)
+if($mybb->input['action'] == "do_newthread" && !$mybb->input['savedraft'])
 {
 	if($mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes")
 	{
@@ -129,19 +138,20 @@ if($action == "do_newthread" && !$savedraft)
 		{
 			$allowsmilies = $forum['allowsmilies'];
 		}
-		$imagecheck = postify($message, $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
+		$imagecheck = postify($mybb->input['message'], $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
 		if(substr_count($imagecheck, "<img") > $mybb->settings['maxpostimages'])
 		{
 			eval("\$maximageserror = \"".$templates->get("error_maxpostimages")."\";");
-			$action = "newthread";
+			$mybb->input['action'] = "newthread";
 		}
 	}
 }
 
-if($action == "newthread" || $action == "editdraft")
+if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft")
 {
-	if($previewpost || $maximageserror)
+	if($mybb->input['previewpost'] || $maximageserror)
 	{
+		$postoptions = $mybb->input['postoptions'];
 		if($postoptions['signature'] == "yes")
 		{
 			$postoptionschecked['signature'] = "checked";
@@ -158,9 +168,9 @@ if($action == "newthread" || $action == "editdraft")
 		{
 			$postpollchecked = "checked";
 		}
-		$numpolloptions = intval($_POST['numpolloptions']);
+		$numpolloptions = intval($mybb->input['numpolloptions']);
 	}
-	elseif($action == "editdraft" && $mybb->user['uid'])
+	elseif($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
 	{
 		$message = htmlspecialchars_uni($post['message']);
 		$subject = htmlspecialchars_uni($post['subject']);
@@ -188,34 +198,34 @@ if($action == "newthread" || $action == "editdraft")
 		$numpolloptions = "2";
 	}
 
-	if($previewpost)
+	if($mybb->input['previewpost'])
 	{
-		if(!$username)
+		if(!$mybb->input['username'])
 		{
-			$username = "Guest";
+			$mybb->input['username'] = "Guest";
 		}
-		if($username && !$mybb->user['uid'])
+		if($mybb->input['username'] && !$mybb->user['uid'])
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$username'");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
 			$user = $db->fetch_array($query);
-			if($user['password'] == md5($password) && $user['username'])
+			if($user['password'] == md5($mybb->input['password']) && $user['username'])
 			{
 				$mybb->user['username'] = $user['username'];
 				$mybb->user['uid'] = $user['uid'];
 			}
 		}
-		$query = $db->query("SELECT u.*, f.*, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='$icon') WHERE u.uid='".$mybb->user[uid]."'");
+		$query = $db->query("SELECT u.*, f.*, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".$mybb->input['icon']."') WHERE u.uid='".$mybb->user[uid]."'");
 		$post = $db->fetch_array($query);
 		if(!$mybb->user['uid'] || !$post['username'])
 		{
-			$post['username'] = $username;
+			$post['username'] = $mybb->input['username'];
 		}
 		else
 		{
 			$post['userusername'] = $mybb->user['username'];
 			$post['username'] = $mybb->user['username'];
 		}
-		$previewmessage = $message;
+		$previewmessage = $mybb->input['message'];
 		$post['message'] = $previewmessage;
 		$post['subject'] = $subject;
 		$post['icon'] = $icon;
@@ -223,15 +233,19 @@ if($action == "newthread" || $action == "editdraft")
 		$post['dateline'] = time();
 		$postbit = makepostbit($post, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
-		$message = htmlspecialchars_uni($message);
-		$subject = htmlspecialchars_uni($subject);
+		$message = htmlspecialchars_uni($mybb->input['message']);
+		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
 
 	// Setup a unique posthash for attachment management
-	if(!$posthash && $action != "editdraft")
+	if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
 	{
 	    mt_srand ((double) microtime() * 1000000);
 	    $posthash = md5($mybb->user['uid'].mt_rand());
+	}
+	else
+	{
+		$posthash = htmlspecialchars($mybb->input['posthash']);
 	}
 
 	// Can we disable smilies or are they disabled already?
@@ -247,6 +261,7 @@ if($action == "newthread" || $action == "editdraft")
 	// Show the moderator options
 	if(ismod($fid) == "yes")
 	{
+		$modoptions = $mybb->input['modoptions'];
 		if($modoptions['closethread'] == "yes")
 		{
 			$closecheck = "checked=\"checked\"";
@@ -270,13 +285,13 @@ if($action == "newthread" || $action == "editdraft")
 	if($forumpermissions['canpostattachments'] != "no")
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		if($action == "editdraft")
+		if($mybb->input['action'] == "editdraft")
 		{
 			$attachwhere = "pid='$pid'";
 		}
 		else
 		{
-			$attachwhere = "posthash='$posthash'";
+			$attachwhere = "posthash='".addslashes($mybb->input['posthash'])."'";
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
 		while($attachment = $db->fetch_array($query))
@@ -328,59 +343,59 @@ if($action == "newthread" || $action == "editdraft")
 	outputpage($newthread);
 		
 }
-if($action == "do_newthread")
+if($mybb->input['action'] == "do_newthread")
 {
 	if($mybb->user['uid'] == 0)
 	{
-		$username = htmlspecialchars_uni($username);
-		$username = addslashes($username);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$username'");
+		$username = htmlspecialchars_uni($mybb->input['username']);
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
 		$member = $db->fetch_array($query);
 		if($member['uid'])
 		{
-			if(!$password)
+			if(!$mybb->input['password'])
 			{
 				error($lang->error_usernametaken);
 			}
-			elseif($member['password'] != md5($password))
+			elseif($member['password'] != md5($mybb->input['password']))
 			{
 				error($lang->error_invalidpass);
 			}
-			$author = $member['uid'];
 			$username = $member['username'];
 			$uid = $member['uid'];
-			$mybb = $member;
 			$mybb->user = $member;
 			mysetcookie("mybb[uid]", $member['uid']);
 			mysetcookie("mybb[password]", $member['password']);
 		}
 		else
 		{
-			if(!$username)
+			if(!$mybb->input['username'])
 			{
 				$username = "Guest";
 			}
-			$author = 0;
+			else
+			{
+				$username = $mybb->input['username'];
+			}
+			$uid = 0;
 		}
 	}
 	else
 	{
-		$author = $mybb->user['uid'];
 		$username = $mybb->user['username'];
 		$uid = $mybb->user['uid'];
 	}
 	$updatepost = 0;
-	if(!$savedraft || !$mybb->user['uid'])
+	if(!$mybb->input['savedraft'] || !$mybb->user['uid'])
 	{
-		if(trim($subject) == "")
+		if(trim($mybb->input['subject']) == "")
 		{
 			error($lang->error_nosubject);
 		}
-		if(strlen(trim($subject)) > 85)
+		if(strlen(trim($mybb->input['subject'])) > 85)
 		{
 			error($lang->error_subjecttolong);
 		}
-		if(strlen(trim($message)) == 0)
+		if(strlen(trim($mybb->input['message'])) == 0)
 		{
 			error($lang->error_nomessage);
 		}
@@ -394,13 +409,13 @@ if($action == "do_newthread")
 				error($lang->error_postflooding);
 			}
 		}
-		if(strlen($message) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($fid) != "yes")
+		if(strlen($mybb->input['message']) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($fid) != "yes")
 		{
 			error($lang->error_messagelength);
 		}
 		$savedraft = 0;
 	}
-	elseif($savedraft && $mybb->user['uid'])
+	elseif($mybb->input['savedraft'] && $mybb->user['uid'])
 	{
 		$savedraft = 1;
 	}
@@ -412,11 +427,11 @@ if($action == "do_newthread")
 	{
 		$updatepost = 0;
 	}
-	if(!$icon)
+	if(!$mybb->input['icon'])
 	{
-		$icon = "0";
+		$mybb->input['icon'] = "0";
 	}
-
+	$postoptions = $mybb->input['postoptions'];
 	if($postoptions['signature'] != "yes")
 	{
 		$postoptions['signature'] = "no";
@@ -429,10 +444,6 @@ if($action == "do_newthread")
 	{
 		$postoptions['disablesmilies'] = "no";
 	}
-
-	$message = addslashes($_POST['message']);
-	$subject = addslashes($_POST['subject']);
-	$username = addslashes($username);
 
 	if($savedraft)
 	{
@@ -449,14 +460,66 @@ if($action == "do_newthread")
 	$now = time();
 	if($updatepost)
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='$subject', icon='$icon', username='$username', dateline='$now', lastpost='$now', username='$username', visible='$visible' WHERE tid='$tid'");
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET subject='$subject', icon='$icon', username='$username', dateline='$now', message='$message', ipaddress='$ipaddress', includesig='$postoptions[signature]', smilieoff='$postoptions[disablesmilies]', visible='$visible' WHERE pid='$pid'");
+		$newthread = array(
+			"subject" => addslashes($mybb->input['subject']),
+			"icon" => intval($mybb->input['icon']),
+			"username" => addslashes(htmlspecialchars_uni($mybb->user['username'])),
+			"dateline" => time(),
+			"lastpost" => time(),
+			"lastposter" => addslashes(htmlspecialchars_uni($mybb->user['username'])),
+			"visible" => $visible
+			);
+		$db->update_query(TABLE_PREFIX."threads", $newthread, "tid='$tid'");
+		
+		$newpost = array(
+			"subject" => addslashes($mybb->input['subject']),
+			"icon" => intval($mybb->input['icon']),
+			"username" => addslashes(htmlspecialchars_uni($mybb->user['username'])),
+			"dateline" => time(),
+			"message" => addslashes($mybb->input['message']),
+			"ipaddress" => $ipaddress,
+			"includesig" => $postoptions['signature'],
+			"smilieoff" => $postoptions['disablesmilies'],
+			"visible" => $visible
+			);
+
+		$db->update_query(TABLE_PREFIX."posts", $newpost, "pid='$pid'");
 	}
 	else
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."threads (tid,fid,subject,icon,uid,username,dateline,lastpost,lastposter,views,replies,visible) VALUES	(NULL,'$fid','$subject','$icon','$author','$username','$now','$now','$username','0','0','$visible')");
+		$newthread = array(
+			"tid" => "NULL",
+			"fid" => $fid,
+			"subject" => addslashes($mybb->input['subject']),
+			"icon" => intval($mybb->input['icon']),
+			"uid" => $mybb->user['uid'],
+			"username" => addslashes(htmlspecialchars_uni($mybb->user['username'])),
+			"dateline" => time(),
+			"lastpost" => time(),
+			"lastposter" => addslashes(htmlspecialchars_uni($mybb->user['username'])),
+			"views" => 0,
+			"replies" => 0,
+			"visible" => $visible
+			);
+		$db->insert_query(TABLE_PREFIX."threads", $newthread);
 		$tid = $db->insert_id();
-		$db->query("INSERT INTO ".TABLE_PREFIX."posts (pid,tid,fid,subject,icon,uid,username,dateline,message,ipaddress,includesig,smilieoff,visible) VALUES (NULL,'$tid','$fid','$subject','$icon','$author','$username','$now','$message','$ipaddress','$postoptions[signature]','$postoptions[disablesmilies]','$visible')");
+
+		$newpost = array(
+			"pid" => "NULL",
+			"tid" => $tid,
+			"fid" => $fid,
+			"subject" => addslashes($mybb->input['subject']),
+			"icon" => intval($mybb->input['icon']),
+			"uid" => $mybb->user['uid'],
+			"username" => addslashes(htmlspecialchars_uni($mybb->user['username'])),
+			"dateline" => time(),
+			"message" => addslashes($mybb->input['message']),
+			"ipaddress" => $ipaddress,
+			"includesig" => $postoptions['signature'],
+			"smilieoff" => $postoptions['disablesmilies'],
+			"visible" => $visible
+			);
+		$db->insert_query(TABLE_PREFIX."posts", $newpost);
 		$pid = $db->insert_id();
 	}
 	
@@ -465,6 +528,7 @@ if($action == "do_newthread")
 	{
 		$modlogdata['fid'] = $thread['fid'];
 		$modlogdata['tid'] = $thread['tid'];
+		$modoptions = $mybb->input['modoptions'];
 		if($modoptions['closethread'] == "yes")
 		{
 			$newclosed = "closed='yes'";
@@ -483,14 +547,12 @@ if($action == "do_newthread")
 	}
 
 	// Setup the correct ownership of the attachments
-	$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$pid' WHERE posthash='$posthash'");
+	$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$pid' WHERE posthash='".addslashes($mybb->input['posthash'])."'");
 
 	// Start Forum Subscriptions
 	if(!$savedraft)
 	{
-		$excerpt = substr($message, 0, $mybb->settings['subscribeexcerpt'])."... (visit the thread to read more..)";
-		$subject = stripslashes($subject);
-		$message = stripslashes($message);
+		$excerpt = substr($mybb->input['message'], 0, $mybb->settings['subscribeexcerpt'])."... (visit the thread to read more..)";
 		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."threads WHERE fid='$fid' ORDER BY dateline DESC LIMIT 1");
 		$lastpost = $db->fetch_array($query);
 		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u WHERE fs.fid='$fid' AND u.uid=fs.uid AND fs.uid!='".$mybb->user[uid]."' AND u.lastactive>'$lastpost[dateline]'");
@@ -512,7 +574,7 @@ if($action == "do_newthread")
 				$userlang->load("messages");
 			}
 			$emailsubject = sprintf($userlang->emailsubject_forumsubscription, $forum['name']);
-			$emailmessage = sprintf($userlang->email_forumsubcription, $subscribedmember['username'], $username, $forum['name'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
+			$emailmessage = sprintf($userlang->email_forumsubcription, $subscribedmember['username'], $mybb->user['username'], $forum['name'], $mybb->settings['bbname'], $mybb->input['subject'], $excerpt, $mybb->settings['bburl'], $tid);
 			mymail($subscribedmember['email'], $emailsubject, $emailmessage);
 			unset($userlang);
 		}
@@ -520,10 +582,9 @@ if($action == "do_newthread")
 		// Start Auto Subscribe
 		if($postoptions['emailnotify'] != "no")
 		{
-			$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$mybb->user[uid]."','$tid','s')");
+			$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$mybb->user['uid']."','$tid','s')");
 		}
-
-		if(!$postpoll)
+		if(!$mybb->input['postpoll'])
 		{
 			if($forum['usepostcounts'] != "no")
 			{
@@ -533,7 +594,7 @@ if($action == "do_newthread")
 			{
 				$queryadd = "";
 			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='$author'");
+			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$mybb->user['uid']."'");
 		}
 	}
 
@@ -542,9 +603,9 @@ if($action == "do_newthread")
 		$lang->redirect_newthread = $lang->draft_saved;
 		$url = "usercp.php?action=drafts";
 	}
-	elseif($postpoll && $forumpermissions['canpostpolls'])
+	elseif($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
 	{
-		$url = "polls.php?action=newpoll&tid=$tid&polloptions=$numpolloptions";
+		$url = "polls.php?action=newpoll&tid=$tid&polloptions=".intval($mybb->input['numpolloptions']);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='-1' WHERE tid='$tid'");
 		$lang->redirect_newthread .= $lang->redirect_newthread_poll;
 	}
