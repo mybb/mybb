@@ -78,6 +78,7 @@ elseif($mybb->input['action'] == "joinrequests")
 	{
 		error($lang->no_requests);
 	}
+	$lang->join_requests = sprintf($lang->join_requests_title,htmlspecialchars_uni($usergroup['title']));
 	eval("\$joinrequests = \"".$templates->get("managegroup_joinrequests")."\";");
 	outputpage($joinrequests);
 }
@@ -139,6 +140,13 @@ else
 		else
 		{
 			$email = "";
+		}
+		$query1 = $db->query("SELECT uid FROM ".TABLE_PREFIX."groupleaders WHERE uid='$user[uid]' AND gid='$gid'");
+		$isleader = $db->fetch_array($query);
+		$user['username'] = formatname($user['username'], $user['usergroup']);
+		if($isleader['uid'])
+		{
+			$user['username'] .= ' ' . $lang->leader;
 		}
 		eval("\$users .= \"".$templates->get("managegroup_user")."\";");
 	}
