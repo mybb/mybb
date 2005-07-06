@@ -381,9 +381,10 @@ function install_done()
 	$db=new bbDB;
 	// Connect to Database
 	define("TABLE_PREFIX", $config['table_prefix']);
-	$db->connect($config[hostname], $config[username], $config[password]);
-	$db->select_db($config[database]);
+	$db->connect($config['hostname'], $config['username'], $config['password']);
+	$db->select_db($config['database']);
 
+	ob_start();
 	$output->print_header("Final Steps");
 	$contents = "<p>Inserting MyBB settings...";
 //	require "./resources/settings.php";
@@ -397,6 +398,14 @@ function install_done()
 	$uid = $db->insert_id();
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('$uid','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
 	$contents .= "done</p>";
+	
+	//Automatic Login
+	$query = $db->query("SELECT uid,password,salt FROM ".TABLE_PREFIX."users WHERE uid = 1 LIMIT 1");
+	$user = $db->fetch_array($query);
+	mysetcookie("mybbadmin", $user['uid']."_".md5($user['password'].md5($user['salt'])));
+	mysetcookie("mybbuser", $user['uid']."_".md5($user['password'].md5($user['salt'])));
+
+	ob_end_flush();
 
 	$contents .= "<p>Setting up basic board settings...";
 	$boardname = addslashes($_POST['boardname']);
@@ -424,12 +433,6 @@ function install_done()
 	$cache->updateusertitles();
 	$cache->updatereportedposts();
 	$contents .= "done</p>";
-
-	//Automatic Login
-	$query = $db->query("SELECT uid,password,salt FROM ".TABLE_PREFIX."users WHERE uid = 1 LIMIT 1");
-	$user = $db->fetch_array($query);
-	mysetcookie("mybbadmin", $user['uid']."_".md5($user['password'].md5($user['salt'])));
-	mysetcookie("mybbuser", $user['uid']."_".md5($user['password'].md5($user['salt'])));
 
 	$contents .= "<p><b>Congratulations on a successful completion of the installation!</b></p>";
 	$written = 0;
