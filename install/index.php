@@ -425,7 +425,22 @@ function install_done()
 	$cache->updatereportedposts();
 	$contents .= "done</p>";
 
-	$contents .= "<p><b>Installation has successfully been completed.</b></p><p><b><font color=\"red\">Please remove this directory before exploring your copy of MyBB.</font></b></p>";
+	$contents .= "<p><b>Installation has successfully been completed.</b></p>";
+	$written = 0;
+	if(is_writable("./"))
+	{
+		$lock = @fopen("./lock", "w");
+		$written = @fwrite($lock, "1");
+		@fclose($lock);
+		if($written)
+		{
+			$contents .= "<p><b>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</b></p>";
+		}
+	}
+	if(!$written)
+	{
+		$contents .= "<p><b><font color=\"red\">Please remove this directory before exploring your copy of MyBB.</font></b></p>";
+	}
 	$output->print_contents($contents);
 	$output->print_footer("");
 }
