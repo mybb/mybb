@@ -121,7 +121,7 @@ else
 		$start = 0;
 		$page = 1;
 	}
-	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$mybb->input['gid'];
+	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$mybb->input['gid']);
 	$uquery .= " LIMIT $start, $perpage";
 
 	while($user = $db->fetch_array($query))
