@@ -896,21 +896,27 @@ else if($mybb->input['action'] == "do_login")
 }
 else if($mybb->input['action'] == "logout")
 {
-	mysetcookie("mybbuser", "");
-
-	if($mybb->user['uid'])
+	if($mybb->input['uid'] == $mybb->user['uid'])
 	{
-		$time = time();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time-900', lastvisit='$time' WHERE uid='".$mybb->user[uid]."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE uid='".$mybb->user['uid']."' OR ip='$ipaddress'");
-
-		if(function_exists("loggedOut"))
+		mysetcookie("mybbuser", "");
+	
+		if($mybb->user['uid'])
 		{
-			loggedOut($mybb->user['uid']);
+			$time = time();
+			$db->query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time-900', lastvisit='$time' WHERE uid='".$mybb->user[uid]."'");
+			$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE uid='".$mybb->user['uid']."' OR ip='$ipaddress'");
+	
+			if(function_exists("loggedOut"))
+			{
+				loggedOut($mybb->user['uid']);
+			}
+			$plugins->run_hooks("logged_out");
 		}
-		$plugins->run_hooks("logged_out");
+		redirect("index.php", $lang->redirect_loggedout);
 	}
-	redirect("index.php", $lang->redirect_loggedout);
+	else {
+		error($lang->error_notloggedout);
+	}
 }
 elseif($mybb->input['action'] == "profile")
 {
