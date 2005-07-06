@@ -218,6 +218,7 @@ makenavselect("");
 
 makenavoption($lang->nav_change, "settings.php?action=change");
 makenavoption($lang->nav_add_setting, "settings.php?action=add");
+makenavoption($lang->nav_plugin_manager, "plugins.php");
 makenavselect($lang->nav_settings);
 
 makenavoption($lang->nav_add_forum, "forums.php?action=add");

@@ -120,7 +120,10 @@ $lang->setPath("./inc/languages");
 $cache->cache();
 
 // Load plugins
-$plugins->load();
+if(!defined("NO_PLUGINS"))
+{
+	$plugins->load();
+}
 
 if(!NO_SHUTDOWN)
 {

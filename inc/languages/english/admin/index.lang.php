@@ -69,6 +69,7 @@ $l['nav_message_filters'] = "Message Filters";
 $l['nav_change'] = "Change";
 $l['nav_add'] = "Add";
 $l['nav_modify_delete'] = "Modify / Delete";
+$l['nav_plugin_manager'] = "Plugin Manager";
 $l['nav_settings'] = "Board Settings";
 $l['nav_announcements'] = "Announcements";
 $l['nav_forums'] = "Forum Management";

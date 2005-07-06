@@ -203,14 +203,6 @@ class datacache
 		$this->update("moderators", $mods);
 	}
 
-	function updatemodules()
-	{
-		global $db;
-		$modules['weblogs']['active'] = 1;
-		$modules['gallery']['active'] = 1;
-		$modules['shoutbox']['active'] = 1;
-		$this->update("modules", $modules);
-	}
 
 	function updateforums()
 	{
