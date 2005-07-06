@@ -2,7 +2,7 @@
 
 $l['admin_center'] = "MyBB Admin Center";
 $l['cp_home'] = "Control Panel Home";
-$l['view_forums'] = "Vew Your Forums";
+$l['view_forums'] = "View Your Forums";
 $l['logout_cp'] = "Logout, {1}";
 
 $l['welcome'] = "Welcome to the myBulletinBoard Administration Control Panel";
