@@ -29,6 +29,7 @@ if($mybb->input['action'] == "markread")
 			error($lang->error_invalidforum);
 		}
 		mysetarraycookie("forumread", $mybb->input['fid'], time());
+		$plugins->run_hooks("mark_forum_read", $mybb->input['fid']);
 		redirect("forumdisplay.php?fid=".$mybb->input['fid'], $lang->redirect_markforumread);
 	}
 	else
@@ -41,6 +42,7 @@ if($mybb->input['action'] == "markread")
 		{
 			mysetcookie("mybb[lastvisit]", time());
 		}
+		$plugins->run_hooks("mark_forums_read");
 		redirect("index.php", $lang->redirect_markforumsread);
 	}
 }
