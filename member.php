@@ -1290,7 +1290,7 @@ elseif($mybb->input['action'] == "do_emailuser")
 	{
 		error($lang->error_hideemail);
 	}
-	if(!$subject || !$message)
+	if(!$mybb->input['subject'] || !$mybb->input['message'])
 	{
 		error($lang->error_incompletefields);
 	}
