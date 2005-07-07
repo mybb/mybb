@@ -55,7 +55,7 @@ function outputpage($contents)
 		$other = "PHP version: $phpversion / Server Load: $serverload / GZip Compression: $gzipen";
 		$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% MySQL)<br />MySQL Queries: $db->query_count / Parsing $parsetime / Global Parsing Time: $globaltime<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
 		$contents = str_replace("<debugstuff>", $debugstuff, $contents);
-		if($debug)
+		if($mybb->input['debug'])
 		{
 			debugpage();
 		}
