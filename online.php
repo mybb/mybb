@@ -213,11 +213,10 @@ else
 		reset($guests);
 	}
 	$usercount = $membercount + $guestcount + $anoncount;
-	$mostonline = $templates->get("mostonline");
-	$mostonline = explode("|||", $mostonline);
-	$recordcount = $mostonline[0];
-	$recorddate = mydate($mybb->settings['dateformat'], $mostonline[1]);
-	$recordtime = mydate($mybb->settings['timeformat'], $mostonline[1]);
+	$mostonline = $cache->read("mostonline");
+	$recordcount = $mostonline['numusers'];
+	$recorddate = mydate($mybb->settings['dateformat'], $mostonline['time']);
+	$recordtime = mydate($mybb->settings['timeformat'], $mostonline['time']);
 	if($mybb->settings['refreshwol'] != "no")
 	{
 		$refresh = "<meta http-equiv=\"refresh\" content=\"60;URL=online.php\">";
