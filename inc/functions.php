@@ -2080,6 +2080,7 @@ function htmlspecialchars_uni($message)
 		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicide
 		$message = str_replace("<","&lt;",$message);
 		$message = str_replace(">","&gt;",$message);
+		$message = str_replace("\"","&quot;",$message);
 		$message = str_replace("  ", "&nbsp;&nbsp;", $message);
 		return $message;
 }
