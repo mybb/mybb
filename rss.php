@@ -8,6 +8,7 @@
  *
  * $Id$
  */
+ define("KILL_GLOBALS", 1);
 
 $noonline = 1;
 require "./global.php";
@@ -15,9 +16,9 @@ require "./global.php";
 // Load global language phrases
 $lang->load("rss");
 
-if($timeoffset)
+if($mybb->input['timeoffset'])
 {
-	$mybb->settings['timezoneoffset'] = $timeoffset;
+	$mybb->settings['timezoneoffset'] = $mybb->input['timeoffset'];
 }
 
 $unviewable = getunviewableforums();
@@ -26,13 +27,13 @@ if($unviewable)
 	$unviewable = "AND f.fid NOT IN($unviewable)";
 }
 
-if(trim($fid) > 0)
+if(trim($mybb->input['fid']) > 0)
 {
-	$forums = explode(",", $fid);
+	$forums = explode(",", $mybb->input['fid']);
 	$fidq = "'-1'";
 	foreach($forums as $fid)
 	{
-		$fidq .= ",'$fid'";
+		$fidq .= ",'".intval($fid)."'";
 	}
 	$forumlist = "AND f.fid IN ($fidq) $unviewable";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums f WHERE 1=1 $forumlist");
@@ -46,18 +47,18 @@ if(trim($fid) > 0)
 }
 $title = htmlentities($mybb->settings['bbname'].$title);
 
-$limit = intval($limit);
-if($limit < 1 || !$limit)
+$mybb->input['limit'] = intval($mybb->input['limit']);
+if($mybb->input['limit'] < 1 || !$mybb->input['limit'])
 {
-	$limit = 15;
+	$mybb->input['limit'] = 15;
 }
 
-if($type == "rss2")
+if($mybb->input['type'] == "rss2")
 {
-	$type = "rss2.0";
+	$mybb->input['type'] = "rss2.0";
 }
 
-switch($type)
+switch($mybb->input['type'])
 {
 	case "rss2.0":
 		header("Content-Type: text/xml");	
@@ -80,15 +81,15 @@ switch($type)
 		break;
 }
 
-$query = $db->query("SELECT t.*, f.name AS forumname FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE 1=1 $forumlist $unviewable ORDER BY t.dateline DESC LIMIT 0, $limit");
+$query = $db->query("SELECT t.*, f.name AS forumname FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE 1=1 $forumlist $unviewable ORDER BY t.dateline DESC LIMIT 0, ".$mybb->input['limit']);
 while($thread = $db->fetch_array($query))
 {
-	$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
-	$thread['forumnanme'] = htmlspecialchars_uni(stripslashes($thread['forumname']));
+	$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+	$thread['forumnanme'] = htmlspecialchars_uni($thread['forumname']);
 	$postdate = mydate($mybb->settings['dateformat'], $thread['dateline'], "", 0);
 	$posttime = mydate($mybb->settings['timeformat'], $thread['dateline'], "", 0);
 	$pubdate = mydate("r", $thread['dateline'], "", 0);
-	switch($type)
+	switch($mybb->input['type'])
 	{
 		case "rss2.0";
 			echo "\t\t<item>\n";
@@ -111,7 +112,7 @@ while($thread = $db->fetch_array($query))
 			break;
 	}
 }
-switch($type)
+switch($mybb->input['type'])
 {
 	case "rss2.0":
 		echo "\t</channel>\n";

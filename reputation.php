@@ -8,6 +8,7 @@
  *
  * $Id$
  */
+ define("KILL_GLOBALS", 1);
 
 $templatesused = "";
 require "./global.php";
@@ -15,9 +16,9 @@ require "./global.php";
 // Load global language phrases
 $lang->load("reputation");
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='".intval($mybb->input['pid'])."'");
 $post = $db->fetch_array($query);
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$post[uid]'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$post[uid]."'");
 $user = $db->fetch_array($query);
 $usergroup = getuserpermissions($post['uid']);
 
@@ -25,7 +26,7 @@ if(!$post['pid'])
 {
 	error($lang->error_invalidpost);
 }
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$post[fid]' AND active!='no'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$post[fid]."' AND active!='no'");
 $forum = $db->fetch_array($query);
 
 $permissions = forum_permissions($forum['fid']);
@@ -34,19 +35,18 @@ if($permissions['canview'] != "yes")
 {
 	nopermission();
 }
-$query = $db->query("SELECT g.usereputationsystem FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g WHERE u.uid='$post[uid]' AND g.gid=u.usergroup");
+$query = $db->query("SELECT g.usereputationsystem FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g WHERE u.uid='".$post[uid]."' AND g.gid=u.usergroup");
 $usergroup = $db->fetch_array($query);
 if($usergroup['usereputationsystem'] != "yes" || $mybb->usergroup['cangivereputations'] != "yes")
 {
 	error($lang->error_reputationdisabled);
 }
 
-// Password protected forums ......... yhummmmy!
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$post[fid]'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$post[fid]."'");
 $foruminfo = $db->fetch_array($query);
 checkpwforum($fid, $foruminfo['password']);
 
-if($action == "do_add")
+if($mybb->input['action'] == "do_add")
 {
 	if($post['uid'] == $mybb->user['uid'])
 	{ // let the user view their reputation
@@ -62,7 +62,7 @@ if($action == "do_add")
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user[uid]."' AND dateline>'$timesearch'");
 			$numtoday = $db->num_rows($query);
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='$pid' AND adduid='".$mybb->user[uid]."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='".$post['pid']."' AND adduid='".$mybb->user[uid]."'");
 		$reputation = $db->fetch_array($query);
 		if($reputation['uid'])
 		{
@@ -74,15 +74,21 @@ if($action == "do_add")
 		}
 		else
 		{
-			$now = time();
-			$comments = addslashes($comments);
 			// work out new reputation
 			$rep = $mybb->usergroup['reputationpower'];
-			if($add == "neg")
+			if($mybb->input['add'] == "neg")
 			{
 				$rep = "-".$rep;
 			}
-			$db->query("INSERT INTO ".TABLE_PREFIX."reputation (uid,pid,adduid,reputation,dateline,comments) VALUES ('$post[uid]','$post[pid]','".$mybb->user[uid]."','$rep','$now','$comments')");
+			$reputation = array(
+				"uid" => $post['uid'],
+				"pid" => $post['pid'],
+				"adduid" => $mybb->user['uid'],
+				"reputation" => $rep,
+				"dateline" => time(),
+				"comments" => addslashes($mybb->input['comments'])
+				);
+			$db->insert_query(TABLE_PREFIX."reputation", $reputation);
 			$db->query("UPDATE ".TABLE_PREFIX."users SET reputation=reputation+'$rep' WHERE uid='$post[uid]'");
 			$reputationbit = "<script type=\"text/javascript\">window.close();</script>";
 		}
@@ -107,7 +113,7 @@ else
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user[uid]."' AND dateline>'$timesearch'");
 			$numtoday = $db->num_rows($query);
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='$pid' AND adduid='".$mybb->user[uid]."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='".$mybb->input['pid']."' AND adduid='".$mybb->user[uid]."'");
 		$reputation = $db->fetch_array($query);
 		if($reputation['uid'])
 		{
@@ -119,7 +125,7 @@ else
 		}
 		else
 		{
-			if($type == "n")
+			if($mybb->input['type'] == "n")
 			{
 				$negcheck = "checked";
 			}

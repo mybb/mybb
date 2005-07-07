@@ -8,11 +8,12 @@
  *
  * $Id$
  */
+ define("KILL_GLOBALS", 1);
 
 $templatelist = "";
 require "./global.php";
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
 $thread = $db->fetch_array($query);
 if(!$thread['tid'])
 {
@@ -26,7 +27,7 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canratethreads'] =
 }
 
 // Password protected forums ......... yhummmmy!
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread[fid]."'");
 $forum = $db->fetch_array($query);
 checkpwforum($forum['fid'], $forum['password']);
 
@@ -34,7 +35,7 @@ if($forum['allowtratings'] == "no")
 {
 	nopermission();
 }
-if($rating < 1 || $rating > 5)
+if($mybb->input['rating'] < 1 || $mybb->input['rating'] > 5)
 {
 	error($lang->error_invalidrating);
 }
@@ -47,7 +48,7 @@ else
 {
 	$whereclause = "ipaddress='$ipaddress'";
 }
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threadratings WHERE $whereclause AND tid='$tid'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threadratings WHERE $whereclause AND tid='".intval($mybb->input['tid'])."'");
 $ratecheck = $db->fetch_array($query);
 
 if($ratecheck['rid'])
@@ -56,21 +57,21 @@ if($ratecheck['rid'])
 }
 else
 {
-	if($mybbthreadrate[$tid])
+	if($_COOKIE['mybbthreadrate'][$mybb->input['tid']])
 	{
 		error($lang->error_alreadyratedthread);
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET numratings=numratings+1, totalratings=totalratings+'$rating' WHERE tid='$tid'");
+	$db->query("UPDATE ".TABLE_PREFIX."threads SET numratings=numratings+1, totalratings=totalratings+'".$mybb->input['rating']."' WHERE tid='".intval($mybb->input['tid'])."'");
 	if($mybb->user['uid'] != "0")
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."threadratings (rid,tid,uid,rating,ipaddress) VALUES (NULL,'$tid','".$mybb->user[uid]."','$rating','$ipaddress')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."threadratings (rid,tid,uid,rating,ipaddress) VALUES (NULL,'".intval($mybb->input['tid'])."','".$mybb->user[uid]."','".$mybb->input['rating']."','$ipaddress')");
 	}
 	else
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."threadratings (rid,tid,rating,ipaddress) VALUES (NULL,'$tid','$rating','$ipaddress')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."threadratings (rid,tid,rating,ipaddress) VALUES (NULL,'".intval($mybb->input['tid'])."','".$mybb->input['rating']."','$ipaddress')");
 		$time = time();
-		mysetcookie("mybbratethread[$tid]", "$rating");
+		mysetcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
 	}
 }
-redirect("showthread.php?tid=$tid", $lang->redirect_threadrated);
+redirect("showthread.php?tid=".$mybb->input['tid'], $lang->redirect_threadrated);
 ?>

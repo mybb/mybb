@@ -8,6 +8,7 @@
  *
  * $Id$
  */
+ define("KILL_GLOBALS", 1);
 
 $templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage";
 $templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav_changename,usercp_nav,private_empty_folder,private_empty,posticons";
@@ -17,14 +18,13 @@ require "./inc/functions_post.php";
 
 $autocomplete = "on";
 // Autocomplete for buddy list when composing PM's
-if($_GET['action'] == "getbuddies" && $mybb->user['uid'])
+if($mybb->input['action'] == "getbuddies" && $mybb->user['uid'])
 {
 	if($mybb->user['buddylist'])
 	{
 		header("Content-Type: text/xml");
 		$users = "";
-		$query = addslashes($_GET['query']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username LIKE '$query%' AND uid IN (".$mybb->user[buddylist].") ORDER BY username ASC");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username LIKE '".addslashes($mybb->input['query'])."%' AND uid IN (".$mybb->user[buddylist].") ORDER BY username ASC");
 		while($user = $db->fetch_array($query))
 		{
 			$users .= "<li>".$user['username']."</li>";
@@ -91,7 +91,7 @@ makeucpnav();
 // Make navigation
 addnav($lang->nav_pms, "private.php");
 
-switch($action) {
+switch($mybb->input['action']) {
 	case "send":
 		addnav($lang->nav_send);
 		break;
@@ -108,11 +108,11 @@ switch($action) {
 		addnav($lang->nav_export);
 		break;
 }
-if($preview)
+if($mybb->input['preview'])
 {
-	$action = "send";
+	$mybb->input['action'] = "send";
 }
-if($action == "send")
+if($mybb->input['action'] == "send")
 {
 
 	if($mybb->settings['bbcodeinserter'] != "off" && $mybb->settings['pmsallowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
@@ -125,22 +125,23 @@ if($action == "send")
 	}
 
 	$posticons = getposticons();
-	$previewmessage = $message;
-	$message = htmlspecialchars_uni($message);
+	$previewmessage = $mybb->input['message'];
+	$message = htmlspecialchars_uni($mybb->input['message']);
 
-	if($preview)
+	if($mybb->input['preview'])
 	{
-		$query = $db->query("SELECT u.username AS userusername, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.namestyle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.usereputationsystem FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='$icon') LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE u.uid='".$mybb->user[uid]."'");
+		$query = $db->query("SELECT u.username AS userusername, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.namestyle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.usereputationsystem FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".intval($mybb->input['icon'])."') LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE u.uid='".$mybb->user[uid]."'");
 		$post = $db->fetch_array($query);
 		$post['userusername'] = $mybb->user['username'];
 		$post['postusername'] = $mybb->user['username'];
 		$post['message'] = $previewmessage;
-		$post['subject'] = $subject;
-		$post['icon'] = $icon;
+		$post['subject'] = $mybb->input['subject'];
+		$post['icon'] = $mybb->input['icon'];
 		$post['dateline'] = time();
 		$postbit = makepostbit($post, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 
+		$options = $mybb->input['options'];
 		if($options['signature'] == "yes")
 		{
 			$optionschecked['signature'] = "checked";
@@ -157,8 +158,8 @@ if($action == "send")
 		{
 			$optionschecked['readreceipt'] = "checked";
 		}
-		$to = htmlspecialchars_uni($_POST['to']);
-		$subject = htmlspecialchars_uni($_POST['subject']);
+		$to = htmlspecialchars_uni($mybb->input['to']);
+		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
 	else
 	{
@@ -172,9 +173,9 @@ if($action == "send")
 		}
 		$optionschecked['savecopy'] = "checked";
 	}
-	if($pmid && !$preview)
+	if($mybb->input['pmid'] && !$mybb->input['preview'])
 	{
-		$query = $db->query("SELECT pm.*, u.username AS quotename FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) WHERE pm.pmid='$pmid' AND pm.uid='".$mybb->user[uid]."'");
+		$query = $db->query("SELECT pm.*, u.username AS quotename FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user[uid]."'");
 		$pm = $db->fetch_array($query);
 		$message = stripslashes($pm['message']);
 		$message = htmlspecialchars_uni($message);
@@ -205,21 +206,20 @@ if($action == "send")
 			$message = "[quote=$pm[quotename]]\n$message\n[/quote]";
 			$quoted['message'] = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $quoted['message']);
 
-			if($do == "forward")
+			if($mybb->input['do'] == "forward")
 			{
 				$subject = "Fw: $subject";
 			}
-			elseif($do == "reply")
+			elseif($mybb->input['do'] == "reply")
 			{
 				$uid = $pm['fromid'];
 				$subject = "Re: $subject";
 			}
 		}
 	}
-	if($uid && !$preview)
+	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
-		$uid = intval($uid);
-		$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+		$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 		$to = $user['username'];
 	}
@@ -254,25 +254,24 @@ if($action == "send")
 	eval("\$send = \"".$templates->get("private_send")."\";");
 	outputpage($send);
 }
-elseif($action == "do_send")
+elseif($mybb->input['action'] == "do_send")
 {
-	if($subject == "")
+	if($mybb->input['subject'] == "")
 	{
-		$subject = "[no subject]";
+		$mybb->input['subject'] = "[no subject]";
 	}
-	if(strlen($subject) > 85)
+	if(strlen($mybb->input['subject']) > 85)
 	{
 		error($lang->error_subjecttolong);
 	}
-	if($message == "")
+	if(trim($mybb->input['message']) == "")
 	{
 		error($lang->error_pmnomessage);
 	}
-	$to = addslashes($_POST['to']);
-	$query = $db->query("SELECT u.uid, u.username, u.email, u.usergroup, u.pmnotify, u.pmpopup, u.receivepms, u.ignorelist, COUNT(pms.pmid) AS pms_total, g.canusepms, g.pmquota, g.cancp  FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g LEFT JOIN ".TABLE_PREFIX."privatemessages pms ON (pms.uid=u.uid) WHERE u.username='$to' AND g.gid=u.usergroup GROUP BY u.uid");
+	$query = $db->query("SELECT u.uid, u.username, u.email, u.usergroup, u.pmnotify, u.pmpopup, u.receivepms, u.ignorelist, COUNT(pms.pmid) AS pms_total, g.canusepms, g.pmquota, g.cancp  FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g LEFT JOIN ".TABLE_PREFIX."privatemessages pms ON (pms.uid=u.uid) WHERE u.username='".addslashes($mybb->input['to'])."' AND g.gid=u.usergroup GROUP BY u.uid");
 	$touser = $db->fetch_array($query);
 
-	if(!$touser['uid'] && !$saveasdraft)
+	if(!$touser['uid'] && !$mybb->input['saveasdraft'])
 	{
 		error($lang->error_invalidpmrecipient);
 	}
@@ -282,6 +281,7 @@ elseif($action == "do_send")
 		if($uid == $mybb->user['uid'] && $mybb->usergroup['cancp'] != "yes")
 		{
 			$nosend = true;
+			break;
 		}
 	}
 	$lang->error_recipientpmturnedoff = sprintf($lang->error_recipientpmturnedoff, $to);
@@ -290,10 +290,11 @@ elseif($action == "do_send")
 	{
 		error($lang->error_recipientignoring);
 	}
-	if($touser['receivepms'] == "no" || $touser['canusepms'] == "no" && !$saveasdraft)
+	if($touser['receivepms'] == "no" || $touser['canusepms'] == "no" && !$mybb->input['saveasdraft'])
 	{
 		error($lang->error_recipientpmturnedoff);
 	}
+	$options = $mybb->input['options'];
 	if($options['signature'] != "yes")
 	{
 		$options['signature'] = "no";
@@ -314,16 +315,14 @@ elseif($action == "do_send")
 	{
 		$options['readreceipt'] = "1";
 	}
-	$message = addslashes($message);
-	$subject = addslashes($subject);
-	if($touser['pmquota'] != "0" && $touser['pms_total'] >= $touser['pmquota'] && $touser['cancp'] != "yes" && $mybb->usergroup['cancp'] != "yes" && !$saveasdraft)
+	if($touser['pmquota'] != "0" && $touser['pms_total'] >= $touser['pmquota'] && $touser['cancp'] != "yes" && $mybb->usergroup['cancp'] != "yes" && !$mybb->input['saveasdraft'])
 	{
 		$lang->email_reachedpmquota = sprintf($lang->email_reachedpmquota, $touser['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 		$lang->emailsubject_reachedpmquota = sprintf($lang->emailsubject_reachpmquota, $mybb->settings['bbname']);
 		mymail($touser['email'], $lang->email_reachedpmquota, $lang->emailsubject_reachedpmquta);
 		error($lang->error_pmrecipientreachedquota);
 	}
-	$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."privatemessages WHERE uid='$uid' AND folder='1' ORDER BY dateline DESC LIMIT 1");
+	$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$touser['uid']."' AND folder='1' ORDER BY dateline DESC LIMIT 1");
 	$lastpm = $db->fetch_array($query);
 	if($touser['pmnotify'] == "yes" && $touser['lastactive'] > $lastpm['dateline'])
 	{
@@ -333,9 +332,9 @@ elseif($action == "do_send")
 	}
 
 	$now = time();
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."privatemessages WHERE folder='3' AND uid='".$mybb->user[uid]."' AND pmid='$pmid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."privatemessages WHERE folder='3' AND uid='".$mybb->user[uid]."' AND pmid='".addslashes($mybb->input['pmid'])."'");
 	$draftcheck = $db->fetch_array($query);
-	if($saveasdraft)
+	if($mybb->input['saveasdraft'])
 	{
 		$sendfolder = "3";
 	}
@@ -345,32 +344,77 @@ elseif($action == "do_send")
 	}
 	if($draftcheck['pmid'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET toid='$touser[uid]', fromid='".$mybb->user[uid]."', folder='$sendfolder', subject='$subject', icon='$icon', message='$message', dateline='$now', status='0', includesig='$options[signature]', smilieoff='$options[disablesmilies]', receipt='$options[readreceipt]', readtime='0' WHERE pmid='$pmid' AND uid='".$mybb->user[uid]."'");
+		$updateddraft = array(
+			"toid" => $touser['uid'],
+			"fromid" => $mybb->user['uid'],
+			"folder" => $sendfolder,
+			"subject" => addslashes($mybb->input['subject']),
+			"icon" => intval($mybb->input['icon']),
+			"message" => addslashes($mybb->input['message']),
+			"dateline" => time(),
+			"status" => 0,
+			"includesig" => $options['signature'],
+			"smilieoff" => $options['disablesmilies'],
+			"receipt" => $options['receipt'],
+			"readtime" => 0
+			);
+
+		$db->update_query(TABLE_PREFIX."privatemessages", $updateddraft, "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."'");
 	}
 	else
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."privatemessages(pmid,uid,toid,fromid,folder,subject,icon,message,dateline,status,includesig,smilieoff,receipt,readtime) VALUES(NULL,'$touser[uid]','$touser[uid]','".$mybb->user[uid]."','$sendfolder','$subject','$icon','$message','$now','0','$options[signature]','$options[disablesmilies]','$options[readreceipt]','0');");
+		$newpm = array(
+			"pmid" => "NULL",
+			"uid" => $touser['uid'],
+			"toid" => $touser['uid'],
+			"fromid" => $mybb->user['uid'],
+			"folder" => $sendfolder,
+			"subject" => addslashes($mybb->input['subject']),
+			"icon" => intval($mybb->input['icon']),
+			"message" => addslashes($mybb->input['message']),
+			"dateline" => time(),
+			"status" => 0,
+			"includesig" => $options['signature'],
+			"smilieoff" => $options['disablesmilies'],
+			"receipt" => $options['receipt'],
+			"readtime" => 0
+			);
+		$db->insert_query(TABLE_PREFIX."privatemessages", $newpm);
 	}
-	if($pmid && !$saveasdraft)
+	if($mybb->input['pmid'] && !$mybb->input['saveasdraft'])
 	{
-		if($do == "reply")
+		if($mybb->input['do'] == "reply")
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='3' WHERE pmid='$pmid' AND uid='".$mybb->user[uid]."'");
+			$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='3' WHERE pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'");
 		}
-		elseif($do == "forward")
+		elseif($mybb->input['do'] == "forward")
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='4' WHERE pmid='$pmid' AND uid='".$mybb->user[uid]."'");
+			$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='4' WHERE pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'");
 		}
 	}
-	if($options['savecopy'] != "no" && !$saveasdraft)
+	if($options['savecopy'] != "no" && !$mybb->input['saveasdraft'])
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."privatemessages(pmid,uid,toid,fromid,folder,subject,icon,message,dateline,status,includesig,smilieoff) VALUES (NULL,'".$mybb->user[uid]."','$touser[uid]','".$mybb->user[uid]."','2','$subject','$icon','$message','$now','1','$options[signature]','$options[disablesmilies]');");
+		$savedcopy = array(
+			"pmid" => "NULL",
+			"uid" => $mybb->user['uid'],
+			"toid" => $touser['uid'],
+			"fromid" => $mybb->user['uid'],
+			"folder" => 2,
+			"subject" => addslashes($mybb->input['subject']),
+			"icon" => intval($mybb->input['icon']),
+			"message" => addslashes($mybb->input['message']),
+			"dateline" => time(),
+			"status" => 1,
+			"includesig" => $options['signature'],
+			"smilieoff" => $options['disablesmilies']
+			);
+		$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
 	}
-	if($touser['pmpopup'] != "no" && !$saveasdraft)
+	if($touser['pmpopup'] != "no" && !$mybb->input['saveasdraft'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET pmpopup='new' WHERE uid='$touser[uid]'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET pmpopup='new' WHERE uid='".$touser[uid]."'");
 	}
-	if($saveasdraft)
+	if($mybb->input['saveasdraft'])
 	{
 		redirect("private.php", $lang->redirect_pmsaved);
 	}
@@ -379,8 +423,10 @@ elseif($action == "do_send")
 		redirect("private.php", $lang->redirect_pmsent);
 	}
 }
-elseif($action == "read")
+elseif($mybb->input['action'] == "read")
 {
+	$pmid = intval($mybb->input['pid']);
+
 	$query = $db->query("SELECT pm.*, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE pm.pmid='$pmid' AND pm.uid='".$mybb->user[uid]."'");
 	$pm = $db->fetch_array($query);
 	if($pm['folder'] == 3)
@@ -395,7 +441,7 @@ elseif($action == "read")
 	if($pm['receipt'] == "1")
 	{
 		$time = time();
-		if($mybb->usergroup['cantrackpms'] && $mybb->usergroup['candenypmreceipts'] && $denyreceipt == "yes")
+		if($mybb->usergroup['cantrackpms'] && $mybb->usergroup['candenypmreceipts'] && $mybb->input['denyreceipt'] == "yes")
 		{
 			$receiptadd = ", receipt='0', readtime='$time'";
 		}
@@ -412,7 +458,7 @@ elseif($action == "read")
 	$pm['subject'] = htmlspecialchars_uni($pm['subject']);
 	if($pm['fromid'] == -2)
 	{
-		$pm['username'] = "myBB Engine";
+		$pm['username'] = "MyBB Engine";
 	}
 	
 	addnav($pm['subject']);
@@ -420,7 +466,7 @@ elseif($action == "read")
 	eval("\$read = \"".$templates->get("private_read")."\";");
 	outputpage($read);
 }	
-elseif($action == "tracking")
+elseif($mybb->input['action'] == "tracking")
 {
 	$query = $db->query("SELECT pm.*, u.username as tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid) WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user[uid]."'");
 	while($readmessage = $db->fetch_array($query))
@@ -443,32 +489,32 @@ elseif($action == "tracking")
 	eval("\$tracking = \"".$templates->get("private_tracking")."\";");
 	outputpage($tracking);
 }
-elseif($action == "do_tracking")
+elseif($mybb->input['action'] == "do_tracking")
 {
-	if($stoptracking)
+	if($mybb->input['stoptracking'])
 	{
-		if(is_array($readcheck))
+		if(is_array($mybb->input['readcheck']))
 		{
-			while(list($key, $val) = each($readcheck))
+			while(list($key, $val) = each($mybb->input['readcheck']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='$key'");
+				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."'");
 			}
 		}
 		redirect("private.php", $lang->redirect_pmstrackingstopped);
 	}
-	elseif($cancel)
+	elseif($mybb->input['cancel'])
 	{
-		if(is_array($unreadcheck))
+		if(is_array($mybb->input['unreadcheck']))
 		{
-			while(list($key, $val) = each($unreadcheck))
+			while(list($key, $val) = each($mybb->input['unreadcheck']))
 			{
-				$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='$key'");
+				$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='".intval($key)."'");
 			}
 		}
 		redirect("private.php", $lang->redirect_pmstrackingcancelled);
 	}
 }
-elseif($action == "folders")
+elseif($mybb->input['action'] == "folders")
 {
 	// echo $mybb->user['pmfolders'];
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
@@ -498,12 +544,12 @@ elseif($action == "folders")
 	eval("\$folders = \"".$templates->get("private_folders")."\";");
 	outputpage($folders);
 }
-elseif($action == "do_folders")
+elseif($mybb->input['action'] == "do_folders")
 {
 	$highestid = 2;
 	$folders = "";
-	@reset($folder);
-	while(list($key, $val) = each($folder))
+	@reset($mybb->input['folder']);
+	while(list($key, $val) = each($mybb->input['folder']))
 	{
 		if(!$donefolders[$val])
 		{
@@ -562,7 +608,7 @@ elseif($action == "do_folders")
 	$db->query("UPDATE ".TABLE_PREFIX."users SET pmfolders='$folders' WHERE uid='".$mybb->user[uid]."'");
 	redirect("private.php", $lang->redirect_pmfoldersupdated);
 }
-elseif($action == "empty")
+elseif($mybb->input['action'] == "empty")
 {
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	while(list($key, $folders) = each($foldersexploded))
@@ -578,12 +624,12 @@ elseif($action == "empty")
 	eval("\$folders = \"".$templates->get("private_empty")."\";");
 	outputpage($folders);
 }
-elseif($action == "do_empty")
+elseif($mybb->input['action'] == "do_empty")
 {
 	$emptyq = "";
-	if(is_array($empty))
+	if(is_array($mybb->input['empty']))
 	{
-		while(list($key, $val) = each($empty))
+		while(list($key, $val) = each($mybb->input['empty']))
 		{
 			if($val == "yes")
 			{
@@ -594,7 +640,7 @@ elseif($action == "do_empty")
 				$emptyq .= "folder='$key'";
 			}
 		}
-		if($keepunread == "yes")
+		if($mybb->input['keepunread'] == "yes")
 		{
 			$keepunreadq = " AND status!='0'";
 		}
@@ -602,43 +648,43 @@ elseif($action == "do_empty")
 	}
 	redirect("private.php", $lang->redirect_pmfoldersemptied);
 }
-elseif($action == "do_stuff")
+elseif($mybb->input['action'] == "do_stuff")
 {
-	if($hop)
+	if($mybb->input['hop'])
 	{
-		header("Location: private.php?fid=$jumpto");
+		header("Location: private.php?fid=".$mybb->input['jumpto']);
 	}
-	elseif($moveto)
+	elseif($mybb->input['moveto'])
 	{
-		if(is_array($check))
+		if(is_array($mybb->input['check']))
 		{
-			while(list($key, $val) = each($check))
+			while(list($key, $val) = each($mybb->input['check']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='$fid' WHERE pmid='$key'");
+				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='".intval($mybb->input['fid'])."' WHERE pmid='".intval($key)."'");
 			}
 		}
-		redirect("private.php?fid=$fid", $lang->redirect_pmsmoved);
+		redirect("private.php?fid=".$mybb->input['fid'], $lang->redirect_pmsmoved);
 	}
-	elseif($delete)
+	elseif($mybb->input['delete'])
 	{
-		if(is_array($check))
+		if(is_array($mybb->input['check']))
 		{
 			$pmssql = "";
-			while(list($key, $val) = each($check))
+			while(list($key, $val) = each($mybb->input['check']))
 			{
 				if($pmssql)
 				{
 					$pmssql .= ",";
 				}
-				$pmssql .= "'$key'";
+				$pmssql .= "'".intval($key)."'";
 			}
 			$query = $db->query("SELECT pmid, folder FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN ($pmssql) AND uid='".$mybb->user[uid]."' AND folder='4' ORDER BY pmid");
 			while($delpm = $db->fetch_array($query))
 			{
 				$deletepms[$delpm['pmid']] = 1;
 			}
-			reset($check);
-			while(list($key, $val) = each($check))
+			reset($mybb->input['check']);
+			while(list($key, $val) = each($mybb->input['check']))
 			{
 				if($deletepms[$key])
 				{
@@ -653,12 +699,12 @@ elseif($action == "do_stuff")
 		redirect("private.php", $lang->redirect_pmsdeleted);
 	}
 }
-elseif($action == "delete")
+elseif($mybb->input['action'] == "delete")
 {
-	$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='4' WHERE pmid='$pmid' AND uid='".$mybb->user[uid]."'");
+	$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='4' WHERE pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'");
 	redirect("private.php", $lang->redirect_pmsdeleted);
 }
-elseif($action == "export")
+elseif($mybb->input['action'] == "export")
 {
 	$folderlist = "<select name=\"exportfolders[]\" multiple>\n";
 	$folderlist .= "<option value=\"all\" selected>$lang->all_folders</option>";
@@ -672,28 +718,28 @@ elseif($action == "export")
 	eval("\$archive = \"".$templates->get("private_archive")."\";");
 	outputpage($archive);
 }
-elseif($action == "do_export")
+elseif($mybb->input['action'] == "do_export")
 {
 	$lang->private_messages_for = sprintf($lang->private_messages_for, $mybb->user['username']);
 	$exdate = mydate($mybb->settings['dateformat'], time(), 0, 0);
 	$extime = mydate($mybb->settings['timeformat'], time(), 0, 0);
 	$lang->exported_date = sprintf($lang->exported_date, $exdate, $extime);
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	if($pmid)
+	if($mybb->input['pmid'])
 	{
-		$wsql = "pmid='$pmid' AND uid='".$mybb->user[uid]."'";
+		$wsql = "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'";
 	}
 	else
 	{
-		if($daycut && ($dayway != "all"))
+		if($mybb->input['daycut'] && ($mybb->input['dayway'] != "all"))
 		{
 			$datecut = time()-($daycut * 86400);
 			$wsql = "pm.dateline";
-			if($dayway == "older")
+			if($mybb->input['dayway'] == "older")
 			{
 				$wsql .= "<=";
 			}
-			elseif($dayway == "newer")
+			elseif($mybb->input['dayway'] == "newer")
 			{
 				$wsql .= ">=";
 			}
@@ -703,10 +749,10 @@ elseif($action == "do_export")
 		{
 			$wsql = "1=1";
 		}
-		if(is_array($exportfolders))
+		if(is_array($mybb->input['exportfolders']))
 		{
-			reset($exportfolders);
-			while(list($key, $val) = each($exportfolders))
+			reset($mybb->input['exportfolders']);
+			while(list($key, $val) = each($mybb->input['exportfolders']))
 			{
 				if($val == "all")
 				{
@@ -735,12 +781,12 @@ elseif($action == "do_export")
 		{
 			error($lang->error_pmnoarchivefolders);
 		}
-		if($exportunread != "yes")
+		if($mybb->input['exportunread'] != "yes")
 		{
 			$wsql .= " AND pm.status!='0'";
 		}
 	}
-	if($exporttype != "html" && $exporttype != "csv")
+	if($mybb->input['exporttype'] != "html" && $mybb->input['exporttype'] != "csv")
 	{
 		$exporttype = "txt";
 	}
@@ -784,7 +830,7 @@ elseif($action == "do_export")
 			$message['tousername'] = $lang->not_sent;
 		}
 
-		$message['subject'] = stripslashes($message['subject']);
+		$message['subject'] = $message['subject'];
 		if($message['folder'] != "3")
 		{
 			$senddate = mydate($mybb->settings['dateformat'], $message['dateline'], 0, 0);
@@ -795,7 +841,7 @@ elseif($action == "do_export")
 		{
 			$senddate = $lang->not_sent;
 		}
-		if($exporttype == "html")
+		if($mybb->input['exporttype'] == "html")
 		{
 			$message['message'] = postify($message['message'], $mybb->settings['pmsallowhtml'], $mybb->settings['pmsallowmycode'], "no", $mybb->settings['pmsallowimgcode']);
 			// do me code
@@ -804,7 +850,7 @@ elseif($action == "do_export")
 				$message['message'] = domecode($message['message'], $message['username']);
 			}
 		}
-		if($exporttype == "txt" || $exporttype == "csv")
+		if($mybb->input['exporttype'] == "txt" || $mybb->input['exporttype'] == "csv")
 		{
 			$message['message'] = str_replace("\r\n", "\n", $message['message']);
 			$message['message'] = str_replace("\n", "\r\n", $message['message']);
@@ -831,16 +877,17 @@ elseif($action == "do_export")
 	}
 	$query = $db->query("SELECT css FROM ".TABLE_PREFIX."themes WHERE tid='$theme[tid]'");
 	$css = $db->result($query, 0);
+
 	eval("\$archived = \"".$templates->get("private_archive_".$exporttype, 1, 0)."\";");
-	if($deletepms == "yes")
+	if($mybb->input['deletepms'] == "yes")
 	{ // delete the archived pms
 		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN (''$ids)");
 	}
-	if($exporttype == "html")
+	if($mybb->input['exporttype'] == "html")
 	{
 		$filename = "pm-archive.html";
 	}
-	elseif($exporttype == "csv")
+	elseif($mybb->input['exporttype'] == "csv")
 	{
 		$filename = "pm-archive.csv";
 	}
@@ -850,9 +897,8 @@ elseif($action == "do_export")
 	}
 	$archived = ereg_replace("\\\'","'",$archived);
 	header("Content-disposition: filename=$filename");
-//	header("Content-length: ".strlen($archived)."");
 	header("Content-type: unknown/unknown");
-	if($exporttype == "html")
+	if($mybb->input['exporttype'] == "html")
 	{
 		outputpage($archived);
 	}
@@ -863,15 +909,15 @@ elseif($action == "do_export")
 }
 else
 {
-	if(!$fid)
+	if(!$mybb->input['fid'])
 	{
-		$fid = 1;
+		$mybb->input['fid'] = 1;
 	}
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	while(list($key, $folders) = each($foldersexploded))
 	{
 		$folderinfo = explode("**", $folders, 2);
-		if($folderinfo[0] == $fid)
+		if($folderinfo[0] == $mybb->input['fid'])
 		{
 			$foldername = $folderinfo[1];
 			$folder = $folderinfo[0];
