@@ -344,6 +344,7 @@ elseif($mybb->input['action'] == "do_send")
 	}
 	if($draftcheck['pmid'])
 	{
+
 		$updateddraft = array(
 			"toid" => $touser['uid'],
 			"fromid" => $mybb->user['uid'],
@@ -358,7 +359,16 @@ elseif($mybb->input['action'] == "do_send")
 			"receipt" => $options['receipt'],
 			"readtime" => 0
 			);
-
+			
+		if($mybb->input['saveasdraft'])
+		{
+			$updateddraft['uid'] = $mybb->user['uid'];
+		}
+		else
+		{
+			$updateddraft['uid'] = $touser['uid'];
+		}
+			
 		$db->update_query(TABLE_PREFIX."privatemessages", $updateddraft, "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."'");
 	}
 	else
@@ -379,6 +389,10 @@ elseif($mybb->input['action'] == "do_send")
 			"receipt" => $options['receipt'],
 			"readtime" => 0
 			);
+			if($mybb->input['saveasdraft'])
+			{
+				$newpm['uid'] = $mybb->user['uid'];
+			}
 		$db->insert_query(TABLE_PREFIX."privatemessages", $newpm);
 	}
 	if($mybb->input['pmid'] && !$mybb->input['saveasdraft'])
@@ -427,7 +441,7 @@ elseif($mybb->input['action'] == "read")
 {
 	$pmid = intval($mybb->input['pid']);
 
-	$query = $db->query("SELECT pm.*, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE pm.pmid='$pmid' AND pm.uid='".$mybb->user[uid]."'");
+	$query = $db->query("SELECT pm.*, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE pm.pmid='".$mybb->input['pmid']."' AND pm.uid='".$mybb->user[uid]."'");
 	$pm = $db->fetch_array($query);
 	if($pm['folder'] == 3)
 	{
@@ -1036,6 +1050,7 @@ else
 		{
 			$senddate = mydate($mybb->settings['dateformat'], $message['dateline']);
 			$sendtime = mydate($mybb->settings['timeformat'], $message['dateline']);
+			$senddate = $senddate.", ".$sendtime;
 		}
 		else
 		{
