@@ -394,7 +394,8 @@ function install_done()
 	$now = time();
 
 	$adminuser = addslashes($_POST['adminuser']);
-	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,usergroup,regdate) VALUES (NULL,'".$adminuser."','".md5($adminpass)."','$adminemail','4','$now')");
+	$adminemail = addslashes($_POST['adminemail']);
+	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,usergroup,regdate) VALUES (NULL,'".$adminuser."','".md5($adminpass)."','".$adminemail."','4','$now')");
 	$uid = $db->insert_id();
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('$uid','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
 	$contents .= "done</p>";
@@ -409,9 +410,14 @@ function install_done()
 
 	$contents .= "<p>Setting up basic board settings...";
 	$boardname = addslashes($_POST['boardname']);
-	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$boardname' WHERE name='bbname'");
-	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$boardurl' WHERE name='bburl'");
-	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$adminemail' WHERE name='adminemail'");
+	$boardurl = addslashes($_POST['boardurl']);
+	$adminemail = addslashes($_POST['adminemail']);
+	if (substr($boardurl, -1, 1) == "/") {
+		$boardurl = substr($boardurl, 0, -1);
+	}
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$boardname."' WHERE name='bbname'");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$boardurl."' WHERE name='bburl'");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$adminemail."' WHERE name='adminemail'");
 	write_settings();
 	$contents .= "done</p>";
 
