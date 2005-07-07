@@ -141,6 +141,7 @@ $templatelist .= ",header_toplinks_weblogs,header_toplinks_gallery,header_toplin
 $templatelist .= ",nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active";
 $templates->cache($templatelist);
 
+$datenow = mydate($mybb->settings['dateformat'], time(), '', false);
 $timenow = mydate($mybb->settings['timeformat'], time());
 
 // Make the users last visit look purtty
@@ -179,6 +180,9 @@ if($modulecache['shoutbox']['active'] == 1)
 
 // Prepare the main templates for use
 unset($admincplink);
+
+$lang->welcome_current_time = sprintf($lang->welcome_current_time, $datenow.' '.$timenow);
+
 if($mybb->user['uid'] != 0)
 {
 	if($mybb->usergroup['cancp'] == "yes")
