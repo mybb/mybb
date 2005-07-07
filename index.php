@@ -22,28 +22,6 @@ $lang->load("index");
 
 if($mybb->user['uid'] != 0)
 {
-	if($mybb->user['receivepms'] != "no" && $mybb->usergroup['canusepms'] != "no")
-	{
-		$query = $db->query("SELECT COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$mybb->user[uid]."'");
-		$messages = $db->fetch_array($query);
-		if($messages['pms_new'] > 0)
-		{
-			$pmfolder = "on.gif";
-		}
-		else
-		{
-			$pmfolder = "off.gif";
-			$messages['pms_new'] = 0;
-		}
-		// the SUM() thing returns "" instead of 0
-		if($messages['pms_unread'] == "")
-		{
-			$messages['pms_unread'] = 0;
-		}
-		$lang->pms_new = sprintf($lang->pms_new, $messages['pms_new']);
-		$lang->pms_unread_total = sprintf($lang->pms_unread_total, $messages['pms_unread'], $messages['pms_total']);
-		eval("\$pms = \"".$templates->get("index_pms")."\";");
-	}
 	eval("\$logoutlink = \"".$templates->get("index_logoutlink")."\";");
 }
 else
