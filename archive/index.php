@@ -185,7 +185,7 @@ switch($action)
 
 		// Build our forum listing
 		$forums = getforums();
-		archive_header("", $settings['bbname'], $settings['bburl']);
+		archive_header("", $settings['bbname'], $settings['bburl']."/index.php");
 ?>
 <div class="forumlist">
 <div class="header"><?php echo $settings['bbname']; ?></div>
