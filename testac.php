@@ -44,7 +44,7 @@ if($_GET['instantupdate'] == 1)
  background-color: #efefef;
 }
 </style>
-<script type="text/javascript" src="xmlhttp.js"></script>
+<script type="text/javascript" src="jscripts/xmlhttp.js"></script>
 </head>
 <body>
 <h1>Auto complete test:</h1><br />
