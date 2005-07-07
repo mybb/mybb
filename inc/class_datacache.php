@@ -46,11 +46,11 @@ class datacache
 		{
 			if($hard)
 			{
-				require "./inc/cache/".$name.".php";
+				@require "./inc/cache/".$name.".php";
 			}
 			else
 			{
-				require_once "./inc/cache/".$name.".php";
+				@require_once "./inc/cache/".$name.".php";
 			}
 			$this->cache[$name] = $$name;
 			unset($$name);
