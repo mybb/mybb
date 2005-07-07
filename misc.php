@@ -29,7 +29,6 @@ if($mybb->input['action'] == "markread")
 			error($lang->error_invalidforum);
 		}
 		mysetarraycookie("forumread", $mybb->input['fid'], time());
-		$plugins->run_hooks("mark_forum_read", $mybb->input['fid']);
 		redirect("forumdisplay.php?fid=".$mybb->input['fid'], $lang->redirect_markforumread);
 	}
 	else
@@ -42,7 +41,6 @@ if($mybb->input['action'] == "markread")
 		{
 			mysetcookie("mybb[lastvisit]", time());
 		}
-		$plugins->run_hooks("mark_forums_read");
 		redirect("index.php", $lang->redirect_markforumsread);
 	}
 }
@@ -89,7 +87,7 @@ elseif($mybb->input['action'] == "help")
 	
 	addnav($lang->nav_helpdocs, "misc.php?action=help");
 
-	$query = $db->query("SELECT h.*, s.enabled AS section FROM ".TABLE_PREFIX."helpdocs h LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid) WHERE h.hid='$hid'");
+	$query = $db->query("SELECT h.*, s.enabled AS section FROM ".TABLE_PREFIX."helpdocs h LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid) WHERE h.hid='".$mybb->input['hid']."'");
 	$helpdoc = $db->fetch_array($query);
 	if($helpdoc['hid'])
 	{
@@ -140,7 +138,7 @@ elseif($mybb->input['action'] == "help")
 			else
 			{
 				$section['name'] = stripslashes($section['name']);
-				$section['description'] = $section['description'];
+				$section['description'] = stripslashes($section['description']);
 			}
 			if(is_array($helpdocs[$section['sid']]))
 			{
@@ -172,8 +170,8 @@ elseif($mybb->input['action'] == "help")
 							}
 							else
 							{
-								$helpdoc['name'] = $helpdoc['name'];
-								$helpdoc['description'] = $helpdoc['description'];
+								$helpdoc['name'] = stripslashes($helpdoc['name']);
+								$helpdoc['description'] = stripslashes($helpdoc['description']);
 							}
 							eval("\$helpbits .= \"".$templates->get("misc_help_section_bit")."\";");
 							if($altbg == "trow2")
@@ -211,7 +209,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	{
 		nopermission();
 	}
-	if($mybb->input['removebuddy'])
+	if($removebuddy)
 	{
 		$buddies = $mybb->user['buddylist'];
 		$namesarray = explode(",",$buddies);
@@ -219,7 +217,7 @@ elseif($mybb->input['action'] == "buddypopup")
 		{
 			while(list($key, $buddyid) = each($namesarray))
 			{
-				if($buddyid == $mybb->input['removebuddy'])
+				if($buddyid == $removebuddy)
 				{
 					unset($namesarray[$key]);
 				}
