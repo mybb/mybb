@@ -403,7 +403,7 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$mergepost = $mybb->input['mergepost']);
+		$mergepost = $mybb->input['mergepost'];
 		if(count($mergepost) <= 1)
 		{
 			error($lang->error_nomergeposts);
@@ -1255,7 +1255,7 @@ switch($mybb->input['action'])
 		if($mybb->input['moveto'])
 		{
 			$moveto = intval($mybb->input['moveto']);
-		{
+		}
 		else
 		{
 			$moveto = $fid;
