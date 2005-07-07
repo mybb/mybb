@@ -354,7 +354,7 @@ elseif($action == "do_profile")
 	$titleup == "";
 	if($mybb->usergroup['cancustomtitle'] == "yes")
 	{
-		if($usertitle <= $mybb->settings['customtitlemaxlength'])
+		if(strlen($usertitle) > $mybb->settings['customtitlemaxlength'])
 		{
 			$usertitle = addslashes(htmlspecialchars_uni($usertitle));
 			$titleup = ", usertitle='$usertitle'";
@@ -376,6 +376,11 @@ elseif($action == "do_profile")
 		$awaydate = time();
 		if($awayday && $awaymonth && $awayyear)
 		{
+			$returntimestamp = gmmktime(0, 0, 0, $awaymonth, $awayday, $awayyear);
+			$awaytimestamp = gmmktime(0, 0, 0, mydate('n', $awaydate), mydate('j', $awaydate), mydate('Y', $awaydate));
+			if ($returntimestamp < $awaytimestamp) {
+				error($lang->error_usercp_return_date_past);
+			}
 			$returndate = "$awayday-$awaymonth-$awayyear";
 		}
 		else

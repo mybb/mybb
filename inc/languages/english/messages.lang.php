@@ -195,6 +195,7 @@ $l['error_noselected_reports'] = "Sorry, but you did not select any reported pos
 $l['error_reachedattachquota'] = "Sorry but you cannot attach this file because you have reached your attachment quota of {1}";
 $l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malacious Javascript was attempting to log you out automatically.  If you intended to logout, please click the Logout button at the top menu.";
 $l['error_alreadyingroup'] = "The user specified already is part of the usergroup.";
+$l['error_usercp_return_date_past'] = "You cannot return in the past!";
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";
