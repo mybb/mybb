@@ -30,6 +30,9 @@ switch($action)
 			addacpnav($lang->nav_view_cache);
 		}
 		break;
+	case "rebuildstats":
+		addacpnav($lang->rebuildstats);
+		break;
 }
 
 if($action == "do_cache")
