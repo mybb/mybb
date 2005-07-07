@@ -15,41 +15,87 @@ class datacache
 
 	function cache()
 	{
-		global $db;
-		$query = $db->query("SELECT title,template FROM ".TABLE_PREFIX."templates WHERE sid='-3'");
-		while($data = $db->fetch_array($query))
+		global $db, $mybb;
+		if($mybb->config['cachestore'] == "files")
 		{
-			$this->cache[$data['title']] = unserialize($data['template']);
-
+			// Check if no files exist in cache directory, if not we need to create them (possible move from db to files)
+			if(!file_exists("./inc/cache/version.php"))
+			{
+				$query = $db->query("SELECT title,template FROM ".TABLE_PREFIX."templates WHERE sid='-3'");
+				while($data = $db->fetch_array($query))
+				{
+					$this->update($data['title'], unserialize($data['template']));
+				}
+			}
+			return;
+		}
+		else
+		{
+			$query = $db->query("SELECT title,template FROM ".TABLE_PREFIX."templates WHERE sid='-3'");
+			while($data = $db->fetch_array($query))
+			{
+				$this->cache[$data['title']] = unserialize($data['template']);
+			}
 		}
 	}
 
 	function read($name, $hard="")
 	{
-		global $db, $test;
-		if($hard)
+		global $db, $test, $mybb;
+		if($mybb->config['cachestore'] == "files")
 		{
-			$query = $db->query("SELECT title,template FROM ".TABLE_PREFIX."templates WHERE sid='-3' AND title='$name'");
-			$data = $db->fetch_array($query);
-			$this->cache[$data['title']] = unserialize($data['template']);
+			if($hard)
+			{
+				require "./inc/cache/".$name.".php";
+			}
+			else
+			{
+				require_once "./inc/cache/".$name.".php";
+			}
+			$this->cache[$name] = $$name;
+			unset($$name);
+		}
+		else
+		{
+			if($hard)
+			{
+				$query = $db->query("SELECT title,template FROM ".TABLE_PREFIX."templates WHERE sid='-3' AND title='$name'");
+				$data = $db->fetch_array($query);
+				$this->cache[$data['title']] = unserialize($data['template']);
+			}
 		}
 		return $this->cache[$name];
 	}
 
 	function update($name, $contents)
 	{
-		global $db;
+		global $db, $mybb;
 		$this->cache[$name] = $contents;
-		$contents = addslashes(serialize($contents));
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$name' AND sid='-3'");
-		$cache = $db->fetch_array($query);
-		if($cache['title'])
+		if($mybb->config['cachestore'] == "files")
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."templates SET template='$contents' WHERE title='$name' AND sid='-3'");
+			if(!@is_writable("./inc/cache/"))
+			{
+				$mybb->trigger_generic_error("cache_no_write");
+			}
+			$cachefile = fopen("./inc/cache/$name.php", "w");
+			$cachecontents = "<?php\n\n/** MyBB Generated Cache - Do Not Alter\n * Cache Name: $name\n * Generated: ".gmdate("r")."\n*/\n\n";
+			$cachecontents .= "\$$name = ".var_export($contents, true).";\n\n ?>";
+			fwrite($cachefile, $cachecontents);
+			fclose($cachefile);
 		}
 		else
 		{
-			$db->query("INSERT INTO ".TABLE_PREFIX."templates (tid,title,template,sid) VALUES (NULL,'$name','$contents','-3')");
+			$contents = addslashes(serialize($contents));
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$name' AND sid='-3'");
+			$cache = $db->fetch_array($query);
+			if($cache['title'])
+			{
+				$db->query("UPDATE ".TABLE_PREFIX."templates SET template='$contents' WHERE title='$name' AND sid='-3'");
+			}
+			else
+			{
+				$db->query("INSERT INTO ".TABLE_PREFIX."templates (tid,title,template,sid) VALUES (NULL,'$name','$contents','-3')");
+			}
 		}
 	}
 

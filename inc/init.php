@@ -24,66 +24,9 @@ $mybb = new MyBB;
 			@extract($_GET, EXTR_OVERWRITE);
 		}
 
-/*
-// start our main timer! :)
-require "./inc/class_timers.php";
-
-$maintimer = new timer();
-
-unset($templatecache);
-$templatecache = array();
-
-// This cheap little trick was found over at php.net
-if(PHP_VERSION < "4.1.0")
-{
-	$_COOKIE = $HTTP_COOKIE_VARS;
-	$_GET = $HTTP_GET_VARS;
-	$_POST = $HTTP_POST_VARS;
-	$_SERVER = $HTTP_SERVER_VARS;
-	$_FILES = $HTTP_POST_FILES;
-}
-
-// Magic quotes, the sum of all evil
-if(get_magic_quotes_gpc())
-{
-	stripslashesarray($_POST);
-	stripslashesarray($_GET);
-	stripslashesarray($_COOKIE);
-}
-
-function stripslashesarray(&$array)
-{
-	while(list($key, $val) = each($array))
-	{
-		if(is_array($array[$key]))
-		{
-			stripslashesarray($array[$key]);
-		}
-		else
-		{
-			$array[$key] = stripslashes($array[$key]);
-		}
-	}
-}
-
-// Disable magic quotes
-@set_magic_quotes_runtime(0);
-@ini_set("magic_quotes_gpc", 0);
-@ini_set("magic_quotes_runtime", 0); 
-
-
-// Fix register_globals
-@extract($_POST, EXTR_OVERWRITE);
-@extract($_FILES, EXTR_OVERWRITE);
-@extract($_GET, EXTR_OVERWRITE);
-@extract($_ENV, EXTR_OVERWRITE);
-@extract($_COOKIE, EXTR_OVERWRITE);
-@extract($_SERVER, EXTR_OVERWRITE);
-
-*/
-
 // Include the required core files
 require "./inc/config.php";
+$mybb->config = $config;
 
 require "./inc/db_".$config['dbtype'].".php";
 $db = new bbDB;

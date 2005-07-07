@@ -16,6 +16,7 @@ class MyBB {
 	var $usergroup = array();
 	var $settings = array();
 	var $magicquotes = 0;
+	var $config = array();
 
 	var $clean_variables = array (
 		"int" => array("tid", "pid", "uid", "eid", "pmid", "sid")
@@ -125,6 +126,23 @@ class MyBB {
 		$handle = fopen($file, 'a');
 		fwrite($handle, $message);
 		fclose($handle);
+	}
+
+	function trigger_generic_error($code, $halt=true)
+	{
+		switch($code)
+		{
+			case "cache_no_write":
+				$message = "The data cache directory (inc/cache/) needs exist and be writable by the web server. Change its permissions so that it is writable (777 on Unix based servers).";
+				break;
+			default:
+				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.com\">MyBB Website</a>";
+		}
+		include "./inc/generic_error.html";
+		if($halt)
+		{
+			exit;
+		}
 	}
 }
 ?>
