@@ -78,5 +78,6 @@ $l['ip_lookup'] = "IP Address Lookup";
 $l['ip'] = "IP:";
 $l['resolves_to'] = "Resolves To:";
 $l['lookup'] = "[lookup]";
+$l['member_online_today'] = "<strong>1</strong> Member Was Online Today";
 $l['members_were_online_today'] = "<strong>{1}</strong> Members Were Online Today";
 ?>

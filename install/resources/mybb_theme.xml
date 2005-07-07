@@ -3223,7 +3223,7 @@ $header
 </tr>
 $todayrows
 <tr>
-<td align="center" colspan="2" class="trow1" nowrap="nowrap">$lang->members_were_online_today</td>
+<td align="center" colspan="2" class="trow1" nowrap="nowrap">$onlinetoday</td>
 </tr>
 </table>
 </td></tr>

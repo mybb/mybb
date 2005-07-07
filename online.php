@@ -60,7 +60,14 @@ if($mybb->input['action'] == "today")
 		}
 		$todaycount++;
 	}
-	$lang->members_were_online_today = sprintf($lang->members_were_online_today, $todaycount);
+	if($todaycount == 1)
+	{
+		$onlinetoday = $lang->member_online_today;
+	}
+	else
+	{
+		$onlinetoday = sprintf($lang->members_were_online_today, $todaycount);
+	}
 	eval("\$today = \"".$templates->get("online_today")."\";");
 	outputpage($today);
 }
