@@ -351,7 +351,7 @@ $forums
 <thead>
 <tr>
 <td class="thead">
-<div class="expcolimage"><a href="javascript:expandCollapse('boardstats');"><img src="images/collapse$collapsedimg[boardstats].gif" id="boardstats_collapseimg" border="0" alt="[-]" /></a></div>
+<div class="expcolimage"><a href="javascript:expandCollapse('boardstats');"><img src="$theme[imgdir]/collapse$collapsedimg[boardstats].gif" id="boardstats_collapseimg" border="0" alt="[-]" /></a></div>
 <div><strong>$lang->boardstats</strong></div>
 </td>
 </tr>
