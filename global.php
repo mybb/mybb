@@ -13,7 +13,6 @@ require "./inc/init.php";
 
 $groupscache = $cache->read("usergroups");
 $mcache = $cache->read("moderators");
-$modulecache = $cache->read("modules");
 
 if(!is_array($groupscache))
 {
