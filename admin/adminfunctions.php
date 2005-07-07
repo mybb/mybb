@@ -530,7 +530,7 @@ function cpfooter()
 	global $mybboard, $db, $maintimer;
 	echo "<center><br><br>\n";
 	$totaltime = $maintimer->stop();
-	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">Powered by: <b>myBB $mybboard[internalver]</b><br>Copyright &copy; 2004 MyBulletinBoard Group<br />Generted in: $totaltime seconds with $db->query_count queries.</font></center>\n";
+	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">Powered by: <b>myBB $mybboard[internalver]</b><br>Copyright &copy; 2004 MyBulletinBoard Group<br />Generated in: $totaltime seconds with $db->query_count queries.</font></center>\n";
 	echo "</body>\n";
 	echo "</html>";
 }
