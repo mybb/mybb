@@ -53,13 +53,14 @@ else
 if($mybb->settings['showwol'] != "no")
 {
 	// Get the online users
-	$timesearch = time() - $mybb->settings['wolcutoff'];
+	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
 	$comma = "";
-	$query = $db->query("SELECT DISTINCT o.sid, o.ip, o.uid, o.time, o.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."online o LEFT JOIN ".TABLE_PREFIX."users u ON (o.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE o.time>'$timesearch' ORDER BY u.username ASC, o.time DESC");
+	$query = $db->query("SELECT DISTINCT o.sid, o.ip, o.uid, o.time, o.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."online o LEFT JOIN ".TABLE_PREFIX."users u ON (o.uid=u.uid) WHERE o.time>'$timesearch' ORDER BY u.username ASC, o.time DESC");
 	$membercount = 0;
 	$guestcount = 0;
 	$anoncount = 0;
 	$doneusers = array();
+
 	while($user = $db->fetch_array($query))
 	{
 		if($user['uid'] > 0)
