@@ -61,7 +61,7 @@ if($fid)
 
 if($tid)
 {
-	addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
+	addnav(dobadwords($thread['subject']), "showthread.php?tid=$thread[tid]");
 	$modlogdata['tid'] = $tid;
 }
 

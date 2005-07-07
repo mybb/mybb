@@ -1654,6 +1654,8 @@ elseif($action == "attachments")
 	{
 		if($attachment['dateline'] && $attachment['tid'])
 		{
+			$attachment['subject'] = htmlspecialchars_uni(dobadwords($attachment['subject']));
+			$attachment['threadsubject'] = htmlspecialchars_uni(dobadwords($attachment['threadsubject']));
 			$size = getfriendlysize($attachment['filesize']);
 			$icon = getattachicon(getextention($attachment['filename']));
 			$sizedownloads = sprintf($lang->attachment_size_downloads, $size, $attachment['downloads']);

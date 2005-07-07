@@ -12,6 +12,7 @@
 $templatelist = "search,redirect,redirect_searchnomore,redirect_searchnotfound,search_results,search_showresults,search_showcalres,search_showhlpres";
 $templatelist .= "";
 require "./global.php";
+require "./inc/functions_post.php";
 
 // Load global language phrases
 $lang->load("search");
@@ -233,9 +234,9 @@ if($action == "results")
 
 		if($search['showposts'] == 2)
 		{
-			$result['tsubject'] = htmlspecialchars_uni(stripslashes($result['tsubject']));
-			$result['subject'] = htmlspecialchars_uni(stripslashes($result['subject']));
-			$result['message'] = htmlspecialchars_uni(stripslashes($result['message']));
+			$result['tsubject'] = htmlspecialchars_uni(stripslashes(dobadwords($result['tsubject'])));
+			$result['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($result['subject'])));
+			$result['message'] = htmlspecialchars_uni(stripslashes(dobadwords($result['message'])));
 			if(!$result['subject'])
 			{
 				$result['subject'] = $result['message'];

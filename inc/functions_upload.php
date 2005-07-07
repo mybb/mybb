@@ -102,6 +102,9 @@ function upload_avatar()
 function upload_attachment($attachment)
 {
 	global $db, $settings, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang;
+	
+	$posthash = addslashes($mybb->input['posthash']);
+
 	if(!is_uploaded_file($attachment['tmp_name']))
 	{
 		$ret['error'] = $lang->error_uploadfailed;
