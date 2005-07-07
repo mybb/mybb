@@ -456,7 +456,7 @@ function install_done()
 		@fclose($lock);
 		if($written)
 		{
-			$contents .= "<p><b>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</b></p><p>You may now proceed to your new <a href=\"../\">MyBBoard</a> or its <a href=\"../admin\">Admin Control Panel</a>.</p>";
+			$contents .= "<p><b>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</b></p><p>You may now proceed to your new copy of <a href=\"../index.php\">MyBB</a> or its <a href=\"../admin/index.php\">Admin Control Panel</a>.</p>";
 		}
 	}
 	if(!$written)
