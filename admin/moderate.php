@@ -167,7 +167,10 @@ if($action == "threads" || $action == "threadsposts") {
 		$donepid[$thread[postpid]] = 1;
 		echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\"></td>\n</tr>\n";
 	}
-	endtable();
+	if($tcount)
+	{
+		endtable();
+	}
 	if($action != "threadsposts") {
 		endform($lang->moderate_threads, $lang->reset_button);
 		cpfooter();
