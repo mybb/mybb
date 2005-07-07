@@ -287,6 +287,14 @@ makenavselect($lang->nav_maintenance);
 <?php
 }
 else {
+	if(!empty($_REQUEST['goto']))
+	{
+		$goto = htmlspecialchars_uni($_GET['goto']);
+	}
+	else
+	{
+		$goto = 'index.php?action=home';
+	}
 	echo "<html>\n";
 	echo "<head>\n";
 	echo "<title>$lang->mybb_admin</title>\n";
@@ -295,7 +303,7 @@ else {
 	echo "<frame name=\"header\" noresize scrolling=\"no\" src=\"index.php?action=header\">\n";
 	echo "<frameset cols=\"200, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
 	echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?action=navigation\">\n";
-	echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"index.php?action=home\">\n";
+	echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\">\n";
 	echo "</frameset>\n";
 	echo "</frameset>\n";
 	echo "</html>\n";

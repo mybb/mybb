@@ -2,7 +2,8 @@
 
 $l['setup_warning'] = "Please remove the install directory from your server, or create a file called 'lock' in the install directory. Until you do so, your board will remain unaccessable";
 $l['administration_login'] = "Administration Login";
-$l['invalid_admin'] = "You are either not a valid administrator or have not logged in. Please login below.";
+$l['invalid_admin'] = "You are either not a valid administrator or have not logged in.<br />Please login below.";
+$l['logged_out_admin'] = "You have been logged out of the Admin Control Panel.<br />If you wish to login again, please login below.";
 $l['login_username'] = "Username";
 $l['login_password'] = "Password";
 $l['login'] = "Login";

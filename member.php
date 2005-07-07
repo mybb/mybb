@@ -1069,8 +1069,19 @@ elseif($mybb->input['action'] == "profile")
 	$memregdate = mydate($mybb->settings['dateformat'], $memprofile['regdate']);
 	$memlocaldate = gmdate($mybb->settings['dateformat'], time() + ($memprofile['timezone'] * 3600));
 	$memlocaltime = gmdate($mybb->settings['timeformat'], time() + ($memprofile['timezone'] * 3600));
-	$memlastvisitdate = mydate($mybb->settings['dateformat'], $memprofile['lastvisit']);
-	$memlastvisittime = mydate($mybb->settings['timeformat'], $memprofile['lastvisit']);
+
+	if($memprofile['lastvisit'])
+	{
+		$memlastvisitdate = mydate($mybb->settings['dateformat'], $memprofile['lastvisit']);
+		$memlastvisitsep = ', ';
+		$memlastvisittime = mydate($mybb->settings['timeformat'], $memprofile['lastvisit']);
+	}
+	else
+	{
+		$memlastvisitdate = $lang->lastvisit_never;
+		$memlastvisitsep = '';
+		$memlastvisittime = '';
+	}
 
 	if($memprofile['birthday'])
 	{
@@ -1223,6 +1234,16 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$timeonline = $lang->none_registered;
 	}
+
+	if($mybb->usergroup['cancp'] == "yes")
+	{
+		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
+	}
+	else
+	{
+		$adminoptions = '';
+	}
+
 	eval("\$profile = \"".$templates->get("member_profile")."\";");
 	$plugins->run_hooks("output_profile");
 	outputpage($profile);

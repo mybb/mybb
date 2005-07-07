@@ -2359,7 +2359,7 @@ $awaybit
 </tr>
 <tr>
 <td class="trow2"><strong>$lang->lastvisit</strong></td>
-<td class="trow2">$memlastvisitdate, $memlastvisittime</td>
+<td class="trow2">$memlastvisitdate $memlastvisittime</td>
 </tr>
 <tr>
 <td class="trow1"><strong>$lang->total_posts</strong></td>
@@ -2414,12 +2414,31 @@ $sendemail
 <td width="50%" valign="top">
 $profilefields
 $signature
+$adminoptions
 </td>
 </tr>
 </table>
 $footer
 </body>
 </html>]]></template>
+		<template name="member_profile_adminoptions"><![CDATA[
+<br /><table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
+<tr><td class="tborder">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<tr>
+<td colspan="2" class="thead"><strong>$lang->admin_options</strong></td>
+</tr>
+<tr>
+<td class="trow1">
+<ul>
+<li><a href="admin/index.php?goto=users%2Ephp%3Faction%3Dedit%26uid=$uid">$lang->admin_edit_in_acp</a></li>
+<li><a href="admin/index.php?goto=users%2Ephp%3Faction%3Dmanageban%26auid=$uid">$lang->admin_ban_in_acp</a></li>
+</ul>
+</td>
+</tr>
+</table>
+</td></tr></table>
+]]></template>
 		<template name="header_welcomeblock_guest"><![CDATA[				<div style="float:right">$lang->welcome_current_time</div>$lang->welcome_guest (<a href="$settings[bburl]/member.php?action=login">$lang->welcome_login</a> &mdash; <a href="$settings[bburl]/member.php?action=register">$lang->welcome_register</a>)]]></template>
 		<template name="header"><![CDATA[	<script language="Javascript" type="text/javascript">
 		 var cookieDomain = "$settings[cookiedomain]";

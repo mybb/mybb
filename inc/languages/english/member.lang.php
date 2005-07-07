@@ -106,4 +106,7 @@ $l['none_registered'] = "None Registered";
 $l['not_rated'] = "Not Yet Rated";
 $l['not_specified'] = "Not Specified";
 $l['membdayage'] = "({1} years old)";
+$l['admin_options'] = "Admin Options";
+$l['admin_edit_in_acp'] = "Edit this user in Admin CP";
+$l['admin_ban_in_acp'] = "Ban this user in Admin CP";
 ?>

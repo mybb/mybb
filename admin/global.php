@@ -37,9 +37,10 @@ if(is_dir("./install") && !file_exists("./install/lock")) {
 }
 if($action == "logout")
 {
-	$expires = $time-1;
-	setcookie("mybbadmin[", "", $expires);
+	$expires = $time-86400;
+	setcookie("mybbadmin", "", $expires);
 	unset($mybbadmin);
+	$lang->invalid_admin = $lang->logged_out_admin;
 }
 
 $showlogin = 1;
@@ -54,7 +55,7 @@ if($do == "login")
 	$user = $db->fetch_array($query);
 	$failcheck = 1;
 }
-else
+elseif($action != "logout")
 {
 	$logon = explode("_", $_COOKIE['mybbadmin'], 2);
 	$query = $db->query("SELECT username, uid, password, usergroup FROM ".TABLE_PREFIX."users WHERE uid='$logon[0]'");
@@ -95,6 +96,15 @@ if($user['uid'])
 		$message="A user has tried to access the Administration Control Panel for $settings[bbname]. They were unable to succeed in doing so.\nBelow are the login details:\n\nUsername: $username\nPassword: $password (MD5: $md5pw)\n\nIP Address: $ipaddress\nHostname: $iphost\n\nThank you.";
 		mail($settings[adminemail], "Warning: $settings[bbname] Login Attempt", $message, "From: \"$settings[bbname] Admin CP\" <$settings[adminemail]>");
 	}
+
+	if(!empty($_REQUEST['goto']))
+	{
+		$goto = htmlspecialchars_uni($_GET['goto']);
+	}
+	else
+	{
+		$goto = '';
+	}
 	cpheader("", 0, "javascript:document.loginform.username.focus();");
 	echo "<br />\n<br />\n<br />";
 	echo "<form action=\"$PHP_SELF\" method=\"post\" name=\"loginform\">\n";
@@ -105,7 +115,7 @@ if($user['uid'])
 	echo "<td class=\"header\" align=\"center\">".$lang->administration_login."</td>\n";
 	echo "</tr>";
 	echo "<tr>\n";
-	echo "<td id=\"logo\"><h1><span class=\"hidden\">MyBB>td>\n";
+	echo "<td id=\"logo\"><h1><span class=\"hidden\">MyBB</span></h1></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" align=\"center\">".$lang->invalid_admin."</td>\n";
@@ -131,6 +141,7 @@ if($user['uid'])
 	echo "</td></tr></table>\n";
 	echo "</td></tr></table>\n";
 	echo "<input type=\"hidden\" name=\"do\" value=\"login\">\n";
+	echo "<input type=\"hidden\" name=\"goto\" value=\"".$goto."\">\n";
 	echo "</form>\n";
 	cpfooter();
 	exit;
