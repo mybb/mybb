@@ -101,9 +101,22 @@ if($action == "cache")
 	cpfooter();
 }
 
-if($action == "rebuildstats") {
+if($action == "do_rebuildstats")
+{
 	$cache->updatestats();
 	cpmessage($lang->stats_rebuilt);
 }
 
+if($action == "rebuildstats")
+{
+	cpheader();
+	startform("maintenance.php", "" , "do_rebuildstats");
+	starttable();
+	tableheader($lang->rebuildstats);
+	$button = makebuttoncode("rebuildstatssubmit", $lang->proceed);
+	makelabelcode("<center>$lang->rebuildstats_notice<br><br>$button</center>");
+	endtable();
+	endform();
+	cpfooter();
+}
 ?>
