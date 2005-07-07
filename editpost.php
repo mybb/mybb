@@ -228,7 +228,7 @@ elseif($mybb->input['action'] == "do_editpost") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
 	$firstcheck = $db->fetch_array($query);
 	if($firstcheck['pid'] == $pid) {
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='".$mybb->input['subject']."', icon='".$mybb->input['icon']."' WHERE tid='$tid'");
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='".addslashes($mybb->input['subject'])."', icon='".$mybb->input['icon']."' WHERE tid='$tid'");
 	}
 
 	$now = time();
