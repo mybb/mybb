@@ -29,6 +29,7 @@ if($mybb->input['action'] == "markread")
 			error($lang->error_invalidforum);
 		}
 		mysetarraycookie("forumread", $mybb->input['fid'], time());
+		$plugins->run_hooks("mark_forum_read", $mybb->input['fid']);
 		redirect("forumdisplay.php?fid=".$mybb->input['fid'], $lang->redirect_markforumread);
 	}
 	else
@@ -41,6 +42,7 @@ if($mybb->input['action'] == "markread")
 		{
 			mysetcookie("mybb[lastvisit]", time());
 		}
+		$plugins->run_hooks("mark_forums_read");
 		redirect("index.php", $lang->redirect_markforumsread);
 	}
 }
@@ -138,7 +140,7 @@ elseif($mybb->input['action'] == "help")
 			else
 			{
 				$section['name'] = stripslashes($section['name']);
-				$section['description'] = stripslashes($section['description']);
+				$section['description'] = $section['description'];
 			}
 			if(is_array($helpdocs[$section['sid']]))
 			{
@@ -170,8 +172,8 @@ elseif($mybb->input['action'] == "help")
 							}
 							else
 							{
-								$helpdoc['name'] = stripslashes($helpdoc['name']);
-								$helpdoc['description'] = stripslashes($helpdoc['description']);
+								$helpdoc['name'] = $helpdoc['name'];
+								$helpdoc['description'] = $helpdoc['description'];
 							}
 							eval("\$helpbits .= \"".$templates->get("misc_help_section_bit")."\";");
 							if($altbg == "trow2")
@@ -209,7 +211,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	{
 		nopermission();
 	}
-	if($removebuddy)
+	if($mybb->input['removebuddy'])
 	{
 		$buddies = $mybb->user['buddylist'];
 		$namesarray = explode(",",$buddies);
@@ -217,7 +219,7 @@ elseif($mybb->input['action'] == "buddypopup")
 		{
 			while(list($key, $buddyid) = each($namesarray))
 			{
-				if($buddyid == $removebuddy)
+				if($buddyid == $mybb->input['removebuddy'])
 				{
 					unset($namesarray[$key]);
 				}

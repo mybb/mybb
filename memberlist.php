@@ -124,6 +124,7 @@ while($users = $db->fetch_array($query))
 	}
 	$users['regdate'] = mydate($mybb->settings['dateformat'], $users['regdate']);
 	$users['username'] = formatname($users['username'], $users['usergroup'], $users['displaygroup']);
+	$plugins->run_hooks("member_list_member", $user);
 	eval("\$member .= \"".$templates->get("memberlist_row")."\";");
 }
 
@@ -134,5 +135,6 @@ if(!$member)
 }
 $usersearch = htmlspecialchars_uni($mybb->input['usersearch']);
 eval("\$memberlist = \"".$templates->get("memberlist")."\";");
+$plugins->run_hooks("output_member_list");
 outputpage($memberlist);
 ?>
