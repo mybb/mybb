@@ -243,13 +243,20 @@ function create_tables()
 	}
 	// Write the configuration file
 	$configdata = "<?php\n".
-	"\$config['dbtype'] = \"".$dbinfo['engine']."\";\n".
-	"\$config['hostname'] = \"".$dbinfo['host']."\";\n".
-	"\$config['username'] = \"".$dbinfo['username']."\";\n".
-	"\$config['password'] = \"".$dbinfo['password']."\";\n".
-	"\$config['database'] = \"".$dbinfo['name']."\";\n".
-	"\$config['table_prefix'] = \"".$dbinfo['prefix']."\";\n".
-	"?>";
+		"/* Database Configuration */\n".
+		"\$config['dbtype'] = \"".$dbinfo['engine']."\";\n".
+		"\$config['hostname'] = \"".$dbinfo['host']."\";\n".
+		"\$config['username'] = \"".$dbinfo['username']."\";\n".
+		"\$config['password'] = \"".$dbinfo['password']."\";\n".
+		"\$config['database'] = \"".$dbinfo['name']."\";\n".
+		"\$config['table_prefix'] = \"".$dbinfo['prefix']."\";\n".
+		"\n/* Admin CP URL */\n".
+		"\$config['admindir'] = \"admin\";\n".
+		"\n/* Datacache Configuration */\n".
+		"\n/* files = Stores datacache in files inside /inc/cache/ (Must be writable)*/\n".
+		"\n/* db = Stores datacache in the database*/\n".
+		"\$config['cachestore'] = \"db\";\n". 
+		"?>";
 	$file = fopen("../inc/config.php", "w");
 	fwrite($file, $configdata);
 	fclose($file);
