@@ -333,7 +333,7 @@ $perpage = $mybb->settings['threadsperpage'];
 
 if(intval($mybb->input['page']) > 0)
 {
-	$page = $_mybb->input['page'];
+	$page = $mybb->input['page'];
 	$start = ($page-1) *$perpage;
 }
 else
