@@ -35,7 +35,7 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 </head>
 <body>
 <div id="container">
-<h1><a href="<?php echo $settings['bburl']; ?>"><?php echo $settings['bbname']; ?></a></h1>
+<h1><a href="<?php echo $settings['bburl']; ?>/index.php"><?php echo $settings['bbname']; ?></a></h1>
 <div class="navigation"><?php echo $nav; ?></div>
 <div id="fullversion"><strong><?php echo $lang->archive_fullversion; ?></strong> <a href="<?php echo $fullurl; ?>"><?php echo $fulltitle; ?></a></div>
 <div id="infobox"><?php echo sprintf($lang->archive_note, $fullurl); ?></div>
