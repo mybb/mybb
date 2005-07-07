@@ -288,8 +288,8 @@ function populate_tables()
 	$db=new bbDB;
 	// Connect to Database
 	define("TABLE_PREFIX", $config['table_prefix']);
-	$db->connect($config[hostname], $config[username], $config[password]);
-	$db->select_db($config[database]);
+	$db->connect($config['hostname'], $config['username'], $config['password']);
+	$db->select_db($config['database']);
 	
 	$output->print_header("Table Population");
 	$contents = "<p>Now that the basic tables have been created we need to insert the default data.</p>";
@@ -313,8 +313,8 @@ function insert_templates()
 	$db=new bbDB;
 	// Connect to Database
 	define("TABLE_PREFIX", $config['table_prefix']);
-	$db->connect($config[hostname], $config[username], $config[password]);
-	$db->select_db($config[database]);
+	$db->connect($config['hostname'], $config['username'], $config['password']);
+	$db->select_db($config['database']);
 
 
 	require "../inc/class_datacache.php";
