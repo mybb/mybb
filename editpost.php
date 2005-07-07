@@ -155,7 +155,7 @@ if($mybb->input['removeattachment']) { // Lets remove the attachmen
 }
 
 if($mybb->input['action'] == "deletepost") {
-	if($delete == "yes") {
+	if($mybb->input['delete'] == "yes") {
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $pid) {
