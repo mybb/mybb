@@ -325,7 +325,7 @@ if($action == "modify" || $action == "") {
 	if($pagelist || $prevpage  || $nextpage) {
 		echo "<tr><td class=\"altbg1\" colspan=\"5\">$prevpage $pagelist $nextpage</td></tr>";
 	}
-	echo "<form action=\"smilies.php?page=$page\" method=\"post\"><tr><td class=\"altbg2\" colspan=\"5\">$lang->smilies_per_page <input type=\"text\" name=\"perpage\" value=\"$perpage\"> <input type=\"submit\" name=\"submit\" value=\"Go\"></td></tr></form>";
+	echo "<form action=\"smilies.php?page=$page\" method=\"post\"><tr><td class=\"altbg2\" colspan=\"5\">$lang->smilies_per_page <input type=\"text\" name=\"perpage\" value=\"$perpage\"> <input type=\"submit\" name=\"submit\" value=\"$lang->go\"></td></tr></form>";
 ?>
 </table>
 </td></tr></table>

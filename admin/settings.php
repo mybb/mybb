@@ -314,13 +314,13 @@ if($action == "modify") {
 	startform("settings.php", "", "do_modify");
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
 	while($group = $db->fetch_array($query)) {
-		$settinglist .= "<li><b>$group[name]</b> ($lang->disp_order <input type=\"text\" name=\"dispordercats[$group[gid]]\" size=\"4\" value=\"$group[disporder]\"> ".
+		$settinglist .= "<li><b>$group[name]</b> ($lang->disp_order_list <input type=\"text\" name=\"dispordercats[$group[gid]]\" size=\"4\" value=\"$group[disporder]\"> ".
 			makelinkcode($lang->edit, "settings.php?action=edit&gid=$group[gid]").
 			makelinkcode($lang->delete, "settings.php?action=delete&gid=$group[gid]").
 			"</li>\n<ul>\n";
 		$query2 = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE gid='$group[gid]' ORDER BY disporder");
 		while($setting = $db->fetch_array($query2)) {
-			$settinglist .= "<li>$setting[title] ($lang->disp_order <input type=\"text\" name=\"disporder[$setting[sid]]\" size=\"4\" value=\"$setting[disporder]\">".
+			$settinglist .= "<li>$setting[title] ($lang->disp_order <input type=\"text\" name=\"disporder[$setting[sid]]\" size=\"4\" value=\"$setting[disporder]\">)".
 				makelinkcode($lang->edit, "settings.php?action=edit&sid=$setting[sid]").
 				makelinkcode($lang->delete, "settings.php?action=delete&sid=$setting[sid]").
 				"</li>\n";

@@ -21,6 +21,7 @@ $l['submit_changes'] = "Submit Changes";
 $l['settings_management'] = "Settings Management";
 $l['select_edit_delete'] = "Please select a setting or group from the list below to edit or delete<br><br><b>Note:</b> Please submit the form at the bottom to update the orders.";
 $l['disp_order'] = "Display Order:";
+$l['disp_order_list'] = "Display Order:";
 $l['update_orders'] = "Update Orders";
 $l['edit'] = "edit";
 $l['delete'] = "delete";

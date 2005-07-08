@@ -116,9 +116,9 @@ if($action == "edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
 	$profilefield = $db->fetch_array($query);
 
-	$profilefield[name] = stripslashes($profilefield[name]);
-	$profilefield[description] = stripslashes($profilefield[description]);
-	$profilefield[type] = stripslashes($profilefield[type]);
+	$profilefield['name'] = stripslashes($profilefield[name]);
+	$profilefield['description'] = stripslashes($profilefield[description]);
+	$profilefield['type'] = stripslashes($profilefield[type]);
 
 	$type = explode("\n", $profilefield[type], "2");
 	$typesel[$type[0]] = "selected";
@@ -126,7 +126,7 @@ if($action == "edit") {
 
 	cpheader();
 	startform("profilefields.php", "" , "do_edit");
-	makehiddencode("fid", $profilefield[fid]);
+	makehiddencode("fid", $profilefield['fid']);
 	starttable();
 	$lang->edit_custom_field = sprintf($lang->edit_custom_field, $profilefield[name]);
 	tableheader($lang->edit_custom_field);
@@ -165,7 +165,10 @@ if($action == "modify" || $action == "") {
 	while($profilefield = $db->fetch_array($query)) {
 		$bgcolor = getaltbg();
 		startform("profilefields.php");
-		makehiddencode("fid", $profilefield[fid]);
+		makehiddencode("fid", $profilefield['fid']);
+		$profilefield['required'] = ($profilefield['required'] == "yes") ? $lang->yes : $lang->no;
+		$profilefield['editable'] = ($profilefield['editable'] == "yes") ? $lang->yes : $lang->no;
+		$profilefield['hidden'] = ($profilefield['hidden'] == "yes") ? $lang->yes : $lang->no;
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\">$profilefield[name]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\">$profilefield[fid]</td>\n";
