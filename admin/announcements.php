@@ -226,14 +226,14 @@ if($action == "delete")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE aid='$aid'");
 	$announcement = $db->fetch_array($query);
-	$announcement[subject] = stripslashes($announcement[subject]);
+	$announcement[subject] = stripslashes($announcement['subject']);
 	cpheader();
 	startform("announcements.php", "", "do_delete");
 	makehiddencode("aid", $aid);
 	starttable();
 
-	$lang->delete_announcement2 = sprintf($lang->delete_announcement2, $announcement[subject]);
-	$lang->delete_announcement_confirm = sprintf($lang->delete_announcement_confirm, $announcement[subject]);
+	$lang->delete_announcement2 = sprintf($lang->delete_announcement2, $announcement['subject']);
+	$lang->delete_announcement_confirm = sprintf($lang->delete_announcement_confirm, $announcement['subject']);
 
 	tableheader($lang->delete_announcement2, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
@@ -247,8 +247,8 @@ if($action == "edit")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE aid='$aid'");
 	$announcement = $db->fetch_array($query);
-	$announcement[subject] = stripslashes($announcement[subject]);
-	$announcement[message] = stripslashes($announcement[message]);
+	$announcement['subject'] = stripslashes($announcement['subject']);
+	$announcement['message'] = stripslashes($announcement['message']);
 	$lang->nav_edit_announcement = sprintf($lang->nav_edit_announcement, $announcement['subject']);
 	addacpnav($lang->nav_edit_announcement);
 	if(!$noheader)
@@ -263,8 +263,8 @@ if($action == "edit")
 
 	tableheader("Edit Announcement: $announcement[subject]");
 	makeinputcode($lang->subject, "subject", "$announcement[subject]");
-	$startdate = explode("-", gmdate("j-m-Y-g-i-a", $announcement[startdate]));
-	$enddate = explode("-", gmdate("j-m-Y-g-i-a", $announcement[enddate]));
+	$startdate = explode("-", gmdate("j-m-Y-g-i-a", $announcement['startdate']));
+	$enddate = explode("-", gmdate("j-m-Y-g-i-a", $announcement['enddate']));
 
 	for($h=1;$h<=12;$h++)
 	{
@@ -381,7 +381,7 @@ if($action == "edit")
 	makeyesnocode($lang->allow_html, "allowhtml", "$announcement[allowhtml]");
 	makeyesnocode($lang->allow_mycode, "allowmycode", "$announcement[allowmycode]");
 	makeyesnocode($lang->allow_smilies, "allowsmilies", "$announcement[allowsmilies]");
-	makelabelcode($lang->parent_forum, forumselect("fid", $announcement[fid], "", "", "0", $lang->global_to_all));
+	makelabelcode($lang->parent_forum, forumselect("fid", $announcement['fid'], "", "", "0", $lang->global_to_all));
 	endtable();
 	endform($lang->update_announcement, $lang->reset_button);
 	cpfooter();
@@ -395,8 +395,8 @@ if($action == "modify" || $action == "")
 	starttable();
 	tableheader($lang->forum_announcements);
 	$forumlist = getforums();
-	$globallist = "\n<li><b>$lang->global_announcements</b>".makelinkcode($lang->add_announcement, "announcements.php?action=add&fid=-1")."\n<ul>";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE fid='-1'");
+	$globallist = "\n<li><b>$lang->global_announcements</b>".makelinkcode($lang->add_announcement, "announcements.php?action=add&fid=0")."\n<ul>";
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE fid='0'");
 	while($globannouncement = $db->fetch_array($query))
 	{
 		$globallist .= "<li>$globannouncement[subject]".
