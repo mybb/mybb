@@ -539,7 +539,8 @@ if($action == "do_do_merge")
 	$db->query("UPDATE ".TABLE_PREFIX."threadratings SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
 	$db->query("UPDATE ".TABLE_PREFIX."threads SET uid='".$destuser['uid']."', username='".$destuser['username']."' WHERE uid='".$sourceuser['uid']."'");
 	$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".$destuser['username']."', username='".$destuser['username']."' WHERE lastposter='".$sourceuser['username']."'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='$sourceuser[uid]'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='".$sourceuser['uid']."'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$sourceuser['uid']."'");
 	$query = $db->query("SELECT COUNT(*) AS postnum FROM ".TABLE_PREFIX."posts WHERE uid='".$destuser['uid']."'");
 	$num = $db->fetch_array($query);
 	$db->query("UPDATE ".TABLE_PREFIX."users SET postnum='".$num['postnum']."' WHERE uid='".$destuser['uid']."'");

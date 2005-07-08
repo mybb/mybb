@@ -482,7 +482,7 @@ function cperror($message="")
 	if(!$message) { $message = $lang->error_msg; }
 	cpheader("", 0);
 	starttable("65%");
-	tableheader($lang->cp_message_header);
+	tableheader($lang->cp_error_header);
 	makelabelcode($message);
 	endtable();
 	cpfooter();
@@ -506,7 +506,7 @@ function cpredirect($url, $message="")
 	if(!$message) { $message = $lang->redirect_msg; }
 	cpheader("", 0);
 	starttable("65%");
-	tableheader($lang->cp_message);
+	tableheader($lang->cp_message_header);
 	makelabelcode($message);
 	echo "<script type=\"text/javascript\">\n";
 	echo "timeout = 10;\n";

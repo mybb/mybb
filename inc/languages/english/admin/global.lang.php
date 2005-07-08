@@ -23,7 +23,8 @@ $l['go'] = "Go";
 $l['unknown'] = "Unknown";
 
 $l['redirect_msg'] = "You will now be redirected";
-$l['cp_message_header'] = "Message";
+$l['cp_message_header'] = "MyBB Message";
+$l['cp_error_header'] = "MyBB Error";
 $l['cp_message'] = "The operation completed successfully.";
 $l['error_msg'] = "An unexpected error has occurred.";
 $l['message'] = "MyBB Message";

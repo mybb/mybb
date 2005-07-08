@@ -201,7 +201,7 @@ $l['user_deleted'] = "The user has successfully been deleted.";
 $l['ban_added'] = "The ban on {1} has successfully been added.";
 $l['ban_lifted'] = "The ban on {1} has successfully been lifted.";
 $l['ban_updated'] = "The ban on {1} has successfully been updated.";
-$l['users_merged'] = "The two user accounts have successfully been merged and the user {1} has been deleted.<br><br>Any old forum permissions or moderator permissions {2} had, you will need to recreate again for {3} if you want them to work.";
+$l['users_merged'] = "The two user accounts have successfully been merged and the user {1} has been deleted.<br><br>Any old forum permissions, moderator permissions, or bans {2} had, you will need to recreate again for {3} if you want them to work.";
 $l['confirm_merge'] = "Are you sure you want to merge the account <b>{1}</b> into the account <b>{2}</b>? <br><br><b>{3}</b> will be deleted after the accounts have been merged.";
 
 $l['done'] = "Done!";
