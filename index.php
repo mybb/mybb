@@ -17,6 +17,8 @@ $templatelist .= ",index_birthdays_birthday,index_birthdays,index_pms,index_logi
 require "./global.php";
 require "./inc/functions_post.php";
 
+$plugins->run_hooks("index_start");
+
 // Load global language phrases
 $lang->load("index");
 
@@ -208,6 +210,8 @@ function getforums($pid="0", $depth=1, $permissions="")
 				$perms = $forumpermissions[$forum['fid']];
 				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
 				{
+					$plugins->run_hooks("index_forum");
+
 					if($depth == 3)
 					{
 						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
@@ -349,7 +353,9 @@ function getforums($pid="0", $depth=1, $permissions="")
 	}
 	return $forumlisting;
 }
+
+$plugins->run_hooks("index_end");
+
 eval("\$index = \"".$templates->get("index")."\";");
-$plugins->run_hooks("output_index");
 outputpage($index);
 ?>

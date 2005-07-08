@@ -155,6 +155,9 @@ if($mybb->input['removeattachment']) { // Lets remove the attachmen
 }
 
 if($mybb->input['action'] == "deletepost") {
+
+	$plugins->run_hooks("editpost_deletepost");
+	
 	if($mybb->input['delete'] == "yes") {
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
 		$firstcheck = $db->fetch_array($query);
@@ -199,7 +202,11 @@ if($mybb->input['action'] == "deletepost") {
 		redirect("showthread.php?tid=$tid", $lang->redirect_nodelete);
 	}
 }
-elseif($mybb->input['action'] == "do_editpost") {
+elseif($mybb->input['action'] == "do_editpost")
+{
+
+	$plugins->run_hooks("editpost_do_editpost_start");
+	
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
 	$firstcheck = $db->fetch_array($query);
 	if($firstcheck['pid'] == $pid) {
@@ -272,7 +279,7 @@ elseif($mybb->input['action'] == "do_editpost") {
 		"includesig" => $postoptions['signature']
 		);
 
-	$plugins->run_hooks("pre_update_post", $newpost);
+	$plugins->run_hooks("editpost_do_editpost_action");
 
 	if(($mybb->settings['showeditedby'] == "yes" && ismod($fid, "caneditposts") != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && ismod($fid, "caneditposts") == "yes")) {
 		$newpost['edituid'] = $mybb->user['uid'];
@@ -281,10 +288,13 @@ elseif($mybb->input['action'] == "do_editpost") {
 
 	$db->update_query(TABLE_PREFIX."posts", $newpost, "pid=$pid");
 
-	$plugins->run_hooks("post_update_post", $newpost);
+	$plugins->run_hooks("editpost_do_editpost_end");
 
 	redirect($url, $lang->redirect_postedited);
 } else {
+
+	$plugins->run_hooks("editpost_start");
+	
 	if(!$mybb->input['previewpost']) {
 		$icon = $post['icon'];
 	}
@@ -434,8 +444,10 @@ elseif($mybb->input['action'] == "do_editpost") {
 			$postoptionschecked['emailnotify'] = "checked";
 		}
 	}
+
+	$plugins->run_hooks("editpost_end");
+
 	eval("\$editpost = \"".$templates->get("editpost")."\";");
-	$plugins->run_hooks("output_edit_post");
 	outputpage($editpost);
 }
 ?>

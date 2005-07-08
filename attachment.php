@@ -20,6 +20,9 @@ else
 {
 	$aid = intval($mybb->input['aid']);
 }
+
+$plugins->run_hooks("attachment_start");
+
 $pid = intval($mybb->input['pid']);
 
 if($aid)
@@ -64,8 +67,10 @@ if(!$thumbnail) // Only increment the download count if this is not a thumbnail
 	$db->query("UPDATE ".TABLE_PREFIX."attachments SET downloads=downloads+1 WHERE aid='$attachment[aid]'");
 }
 $attachment['filename'] = rawurlencode($attachment['filename']);
-header("Content-disposition: filename=$attachment[filename]");
 
+$plugins->run_hooks("attachment_end");
+
+header("Content-disposition: filename=$attachment[filename]");
 if($thumbnail)
 {
 	$ext = getextention($attachment['thumbnail']);

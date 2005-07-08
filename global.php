@@ -36,6 +36,8 @@ if(is_dir("install") && !file_exists("install/lock"))
 
 require "./inc/sessions.php";
 
+$plugins->run_hooks("global_start");
+
 //
 // Set and load the language
 //
@@ -340,5 +342,5 @@ $globaltime = $maintimer->gettime();
 
 $rand = rand(1,10);
 
-$plugins->run_hooks("end_global");
+$plugins->run_hooks("global_end");
 ?>

@@ -22,6 +22,8 @@ require "./inc/functions_post.php";
 // Load global language phrases
 $lang->load("forumdisplay");
 
+$plugins->run_hooks("forumdisplay_start");
+
 $fid = $mybb->input['fid'];
 
 if($fid == "index" || $fid == "private" || $fid == "usercp" || $fid == "online" || $fid == "search")
@@ -467,6 +469,9 @@ if($threadcache)
 {
 	foreach($threadcache as $thread)
 	{
+
+		$plugins->run_hooks("forumdisplay_thread");
+
 		if($thread['visible'] == 0)
 		{
 			$bgcolor = "trow_shaded";
@@ -821,6 +826,7 @@ if($rand == 5 && $mybb->settings['threadreadcut'] > 0)
 	$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."threadsread WHERE dateline < '$cut'");
 }
 	
+$plugins->run_hooks("forumdisplay_end");
 
 eval("\$forums = \"".$templates->get("forumdisplay")."\";");
 outputpage($forums);

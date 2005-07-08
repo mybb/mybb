@@ -70,6 +70,8 @@ if($month && $year)
 
 if($mybb->input['action'] == "event")
 {
+	$plugins->run_hooks("calendar_event_start");
+
 	$eid = $mybb->input['eid'];
 
 	$query = $db->query("SELECT e.*, u.username, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."events e LEFT JOIN ".TABLE_PREFIX."users u ON (e.author=u.uid) WHERE e.eid='$eid'");
@@ -99,12 +101,16 @@ if($mybb->input['action'] == "event")
 	$eventdate = mydate($mybb->settings['dateformat'], $eventdate);
 
 	addnav($lang->nav_viewevent);
-	$plugins->run_hooks("view_calendar_event", $event['eid']);
+
+	$plugins->run_hooks("calendar_event_end");
+
 	eval("\$eventpage = \"".$templates->get("calendar_event")."\";");
 	outputpage($eventpage);
 }
 elseif($mybb->input['action'] == "dayview")
 {
+	$plugins->run_hooks("calendar_dayview_start");
+
 	// Load Birthdays
 	$query = $db->query("SELECT u.uid, u.username, u.birthday, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."users u WHERE u.birthday LIKE '$day-$month-%'");
 	$alterbg = $theme['trow1'];
@@ -134,6 +140,8 @@ elseif($mybb->input['action'] == "dayview")
 	$query = $db->query("SELECT e.*, u.username, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."events e LEFT JOIN ".TABLE_PREFIX."users u ON (e.author=u.uid) WHERE date LIKE '$day-$month-$year' AND ((author='".$mybb->user[uid]."' AND private='yes') OR (private!='yes'))");
 	while($event = $db->fetch_array($query))
 	{
+		$plugins->run_hooks("calendar_dayview_event");
+
 		if($event['uid'] == $mybb->user['uid'] || $mybb->usergroup['cancp'] == "yes")
 		{
 			$editbutton = "<a href=\"calendar.php?action=editevent&eid=$event[eid]\"><img src=\"$theme[imgdir]/postbit_edit.gif\" border=\"0\" /></a>";
@@ -164,12 +172,16 @@ elseif($mybb->input['action'] == "dayview")
 		eval("\$bdaylist = \"".$templates->get("calendar_dayview_birthdays")."\";");
 	}
 	addnav($lang->nav_dayview);
-	$plugins->run_hooks("calendar_day_view");
+
+	$plugins->run_hooks("calendar_dayview_end");
+
 	eval("\$dayview = \"".$templates->get("calendar_dayview")."\";");
 	outputpage($dayview);
 }
 elseif($mybb->input['action'] == "addevent")
 {
+	$plugins->run_hooks("calendar_addevent_start");
+
 	for($i = date("Y"); $i < (date("Y") + 5); $i++)
 	{
 		if($i == $year)
@@ -198,12 +210,16 @@ elseif($mybb->input['action'] == "addevent")
 		}
 	}
 	addnav($lang->nav_addevent);
-	$plugins->run_hooks("new_calendar_event");
+
+	$plugins->run_hooks("calendar_addevent_end");
+
 	eval("\$addevent = \"".$templates->get("calendar_addevent")."\";");
 	outputpage($addevent);
 }
 elseif($mybb->input['action'] == "do_addevent")
 {
+	$plugins->run_hooks("calendar_do_addevent_start");
+
 	$day = intval($mybb->input['day']);
 	$month = intval($mybb->input['month']);
 	$year = intval($mybb->input['year']);
@@ -238,14 +254,19 @@ elseif($mybb->input['action'] == "do_addevent")
 		"private" => $mybb->input['private']
 		);
 
-	$plugins->run_hooks("pre_insert_calendar_event", $newevent);
+	$plugins->run_hooks("calendar_do_addevent_action");
+
 	$db->insert_query(TABLE_PREFIX."events", $newevent);
 	$eid = $db->insert_id();
-	$plugins->run_hooks("post_insert_calendar_event", $eid);
+
+	$plugins->run_hooks("calendar_do_addevent_end");
+
 	redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventadded);
 }
 elseif($mybb->input['action'] == "editevent")
 {
+	$plugins->run_hooks("calendar_editevent_start");
+	
 	$eid = $mybb->input['eid'];
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."events WHERE eid='$eid'");
@@ -280,13 +301,17 @@ elseif($mybb->input['action'] == "editevent")
 		$privatecheck = " checked=\"checked\"";
 	}
 	addnav($lang->nav_editevent);
+
+	$plugins->run_hooks("calendar_editevent_end");
+
 	eval("\$editevent = \"".$templates->get("calendar_editevent")."\";");
-	$plugins->run_hooks("edit_calendar_event");
 	outputpage($editevent);
 }
 elseif($mybb->input['action'] == "do_editevent")
 {
 	$eid = $mybb->input['eid'];
+
+	$plugins->run_hooks("calendar_do_editevent_start");
 
 	$query = $db->query("SELECT author FROM ".TABLE_PREFIX."events WHERE eid='$eid'");
 	$event = $db->fetch_array($query);
@@ -301,7 +326,6 @@ elseif($mybb->input['action'] == "do_editevent")
 	}
 	if($mybb->input['delete'] == "yes")
 	{
-		$plugins->run_hooks("delete_calendar_event", $mybb->input['eid']);
 		$db->query("DELETE FROM ".TABLE_PREFIX."events WHERE eid='$eid'");
 		redirect("calendar.php", $lang->redirect_eventdeleted);
 	}
@@ -328,14 +352,20 @@ elseif($mybb->input['action'] == "do_editevent")
 			"private" => $mybb->input['private']
 			);
 
-		$plugins->run_hooks("pre_update_calendar_event", $newevent);
+		$plugins->run_hooks("calendar_do_editevent_action");
+	
 		$db->update_query(TABLE_PREFIX."events", $newevent, "eid=$eid");
-		$plugins->run_hooks("post_update_calendar_event", $newevent);
+		
+		$plugins->run_hooks("calendar_do_editevent_end");
+
 		redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventupdated);
 	}
 }
 else
 {
+
+	$plugins->run_hooks("calendar_start");
+
 	$time = mktime(0, 0, 0, $month, 1, $year);
 	$days = date("t", $time);
 	$bdays = array();
@@ -458,7 +488,9 @@ else
 	{
 		$neweventsep = " | ";
 	}
-	$plugins->run_hooks("output_calendar");
+	
+	$plugins->run_hooks("calendar_end");
+
 	eval("\$calendar = \"".$templates->get("calendar")."\";");
 	outputpage($calendar);
 }

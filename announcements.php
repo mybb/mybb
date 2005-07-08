@@ -19,6 +19,8 @@ $lang->load("announcements");
 
 $aid = $mybb->input['aid'];
 
+$plugins->run_hooks("announcements_start");
+
 $query = $db->query("SELECT a.fid, f.* FROM ".TABLE_PREFIX."announcements a LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=a.fid) WHERE aid='$aid'");
 $forum = $db->fetch_array($query);
 
@@ -47,6 +49,8 @@ $announcementarray['dateline'] = $announcementarray['startdate'];
 $announcementarray['userusername'] = $announcementarray['username'];
 $announcement = makepostbit($announcementarray, 2);
 $lang->forum_announcement = sprintf($lang->forum_announcement, $announcementarray['subject']);
+
+$plugins->run_hooks("announcements_end");
 
 eval("\$forumannouncement = \"".$templates->get("announcement")."\";");
 outputpage($forumannouncement);
