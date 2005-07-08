@@ -93,8 +93,11 @@ if($user['uid'])
 		$ipaddress = getip();
 		$iphost = @gethostbyaddr($ipaddress);
 		
-		$message="A user has tried to access the Administration Control Panel for $settings[bbname]. They were unable to succeed in doing so.\nBelow are the login details:\n\nUsername: $username\nPassword: $password (MD5: $md5pw)\n\nIP Address: $ipaddress\nHostname: $iphost\n\nThank you.";
-		mail($settings[adminemail], "Warning: $settings[bbname] Login Attempt", $message, "From: \"$settings[bbname] Admin CP\" <$settings[adminemail]>");
+		$message=
+		$lang->invalidlogin_message = sprintf($lang->invalidlogin_message, $settings['bbname'], $username, $password, $md5pw, $ipaddress, $iphost);
+		$lang->invalidlogin_subject = sprintf($lang->invalidlogin_subject, $settings['bbname']);
+		$lang->invalidlogin_headers = sprintf($lang->invalidlogin_headers, $settings['bbname'], $settings['adminemail']);
+		mail($settings['adminemail'], $lang->invalidlogin_subject, $message, $lang->invalidlogin_headers);
 	}
 
 	if(!empty($_REQUEST['goto']))
@@ -107,7 +110,7 @@ if($user['uid'])
 	}
 	cpheader("", 0, "javascript:document.loginform.username.focus();");
 	echo "<br />\n<br />\n<br />";
-	echo "<form action=\"$PHP_SELF\" method=\"post\" name=\"loginform\">\n";
+	echo "<form action=\"$_SERVER[PHP_SELF]\" method=\"post\" name=\"loginform\">\n";
 	echo "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"450\" align=\"center\">\n";
 	echo "<tr><td class=\"bordercolor\">\n";
 	echo "<table border=\"0\" cellspacing=\"1\" cellpadding=\"4\" width=\"100%\">\n";
