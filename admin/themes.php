@@ -96,7 +96,7 @@ if($action == "do_delete")
 if($action == "default")
 {
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='0'");
-	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='1' WHERE tid='$tid'");
+	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='1' WHERE tid='".intval($tid)'");
 	cpredirect("themes.php", $lang->default_updated);
 }
 if($action == "do_download")
