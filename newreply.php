@@ -157,6 +157,8 @@ if($mybb->input['action'] == "do_newreply" && !$mybb->input['savedraft'])
 
 if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft")
 {
+	$plugins->run_hooks("newreply_start");
+
 	if($pid && !$mybb->input['previewpost'] && $mybb->input['action'] != "editdraft")
 	{
 		$query = $db->query("SELECT p.*, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.pid='$pid' AND p.tid='$tid' AND p.visible='1'");
@@ -401,11 +403,16 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	$lang->post_reply_to = sprintf($lang->post_reply_to, $thread['subject']);
 	$lang->reply_to = sprintf($lang->reply_to, $thread['subject']);
+
+	$plugins->run_hooks("newreply_end");
+
 	eval("\$newreply = \"".$templates->get("newreply")."\";");
 	outputpage($newreply);
 }
 if($mybb->input['action'] == "do_newreply" )
 {
+	$plugins->run_hooks("newreply_do_newreply_start");
+
 	if($mybb->user['uid'] == 0)
 	{
 		$username = htmlspecialchars_uni($mybb->input['username']);
@@ -624,6 +631,9 @@ if($mybb->input['action'] == "do_newreply" )
 			"smilieoff" => $postoptions['disablesmilies'],
 			"visible" => $visible
 			);
+
+		$plugins->run_hooks("newreply_do_newreply_action");
+
 		$db->insert_query(TABLE_PREFIX."posts", $newreply);
 		$pid = $db->insert_id();
 	}
@@ -664,6 +674,8 @@ if($mybb->input['action'] == "do_newreply" )
 		{
 			replyPosted($pid);
 		}
+
+		$plugins->run_hooks("newreply_do_newrpely-end");
 	}
 	// Setup the correct ownership of the attachments
 	if($mybb->input['posthash'])

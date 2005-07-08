@@ -19,6 +19,8 @@ require "./global.php";
 // Load global language phrases
 $lang->load("misc");
 
+$plugins->run_hooks("misc_start");
+
 if($mybb->input['action'] == "markread")
 {
 	if($mybb->input['fid'])
@@ -29,7 +31,9 @@ if($mybb->input['action'] == "markread")
 			error($lang->error_invalidforum);
 		}
 		mysetarraycookie("forumread", $mybb->input['fid'], time());
-		$plugins->run_hooks("mark_forum_read", $mybb->input['fid']);
+
+		$plugins->run_hooks("misc_markread_forum");
+
 		redirect("forumdisplay.php?fid=".$mybb->input['fid'], $lang->redirect_markforumread);
 	}
 	else
@@ -42,12 +46,16 @@ if($mybb->input['action'] == "markread")
 		{
 			mysetcookie("mybb[lastvisit]", time());
 		}
-		$plugins->run_hooks("mark_forums_read");
+
+		$plugins->run_hooks("misc_markread_end");
+
 		redirect("index.php", $lang->redirect_markforumsread);
 	}
 }
 elseif($mybb->input['action'] == "clearpass")
 {
+	$plugins->run_hooks("misc_clearpass");
+
 	if($mybb->input['fid'])
 	{
 		mysetcookie("forumpass[".$mybb->input['fid']."]", "");
@@ -58,6 +66,8 @@ elseif($mybb->input['action'] == "rules")
 {
 	if($mybb->input['fid'])
 	{
+		$plugins->run_hooks("misc_rules_start");
+
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$mybb->input['fid']."' AND active!='no'");
 		$forum = $db->fetch_array($query);
 
@@ -77,6 +87,9 @@ elseif($mybb->input['action'] == "rules")
 		// Make navigation
 		makeforumnav($mybb->input['fid']);
 		addnav($forum['rulestitle']);
+
+		$plugins->run_hooks("misc_rules_end");
+
 		eval("\$rules = \"".$templates->get("misc_rules_forum")."\";");
 		outputpage($rules);
 	}
@@ -95,6 +108,8 @@ elseif($mybb->input['action'] == "help")
 	{
 		if($helpdoc['section'] != "no" && $helpdoc['enabled'] != "no")
 		{
+			$plugins->run_hooks("misc_help_helpdoc_start");
+
 			if($helpdoc['usetranslation'] == "yes" || $helpdoc['hid'] <= 7)
 			{
 				$langnamevar = $helpdoc['hid']."_name";
@@ -104,13 +119,10 @@ elseif($mybb->input['action'] == "help")
 				$helpdoc['description'] = $lang->$langdescvar;
 				$helpdoc['document'] = $lang->$langdocvar;
 			}
-			else
-			{
-				$helpdoc['name'] = stripslashes($helpdoc['name']);
-				$helpdoc['description'] = stripslashes($helpdoc['description']);
-				$helpdoc['document'] = stripslashes($helpdoc['document']);
-			}
 			addnav($helpdoc['name']);
+
+			$plugins->run_hooks("misc_help_helpdoc_end");
+
 			eval("\$helppage = \"".$templates->get("misc_help_helpdoc")."\";");
 			outputpage($helppage);
 		}
@@ -121,6 +133,8 @@ elseif($mybb->input['action'] == "help")
 	}
 	else
 	{
+		$plugins->run_hooks("misc_help_section_start");
+
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs ORDER BY sid, disporder");
 		while($helpdoc = $db->fetch_array($query))
 		{
@@ -201,12 +215,17 @@ elseif($mybb->input['action'] == "help")
 				eval("\$sections .= \"".$templates->get("misc_help_section")."\";");
 			}
 		}
+
+		$plugins->run_hooks("misc_help_section_end");
+
 		eval("\$help = \"".$templates->get("misc_help")."\";");
 		outputpage($help);
 	}
 }
 elseif($mybb->input['action'] == "buddypopup")
 {
+	$plugins->run_hooks("misc_buddypopup_start");
+
 	if($mybb->user['uid'] == 0)
 	{
 		nopermission();
@@ -261,6 +280,9 @@ elseif($mybb->input['action'] == "buddypopup")
 			}
 		}
 	}
+
+	$plugins->run_hooks("misc_buddypopup_end");
+
 	eval("\$buddylist = \"".$templates->get("misc_buddypopup")."\";");
 	outputpage($buddylist);
 }
@@ -396,6 +418,9 @@ elseif($mybb->input['action'] == "imcenter")
 }
 elseif($mybb->input['action'] == "syndication")
 {
+
+	$plugins->run_hooks("misc_syndication_start");
+
 	$fid = $mybb->input['fid'];
 	$version = $mybb->input['version'];
 	$limit = $mybb->input['limit'];
@@ -484,6 +509,9 @@ elseif($mybb->input['action'] == "syndication")
 		$rsscheck = "checked=\"checked\"";
 	}
 	$forumselect = makesyndicateforums("", $blah);
+
+	$plugins->run_hooks("misc_syndication_end");
+
 	eval("\$syndication = \"".$templates->get("misc_syndication")."\";");
 	outputpage($syndication);
 }
@@ -491,6 +519,8 @@ elseif($mybb->input['action'] == "syndication")
 
 if($mybb->input['action'] == "clearcookies")
 {
+	$plugins->run_hooks("misc_clearcookies");
+
 	if($mybb->settings['cookiedomain'])
 	{
 		@setcookie("mybb[uid]", "", time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);

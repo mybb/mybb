@@ -64,6 +64,8 @@ if($mybb->input['action'] == "do_add")
 }
 elseif($mybb->input['action'] == "do_joinrequests")
 {
+	$plugins->run_hooks("managegroup_do_joinrequests_start");
+
 	if(is_array($mybb->input['request']))
 	{
 		foreach($mybb->input['request'] as $uid => $what)
@@ -84,10 +86,15 @@ elseif($mybb->input['action'] == "do_joinrequests")
 		$uids = implode(",", $uidin);
 		$db->query("DELETE FROM ".TABLE_PREFIX."joinrequests WHERE uid IN($uids)");
 	}
+
+	$plugins->run_hooks("managegroup_do_joinrequests_end");
+
 	redirect("usercp.php?action=usergroups", $lang->join_requests_moderated);
 }
 elseif($mybb->input['action'] == "joinrequests")
 {
+	$plugins->run_hooks("managegroup_joinrequests_start");
+
 	$query = $db->query("SELECT j.*, u.uid, u.username, u.postnum, u.regdate FROM ".TABLE_PREFIX."joinrequests j LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid) WHERE j.gid='".$mybb->input['gid']."' ORDER BY u.username ASC");
 	while($user = $db->fetch_array($query))
 	{
@@ -101,11 +108,16 @@ elseif($mybb->input['action'] == "joinrequests")
 		error($lang->no_requests);
 	}
 	$lang->join_requests = sprintf($lang->join_requests_title,htmlspecialchars_uni($usergroup['title']));
+
+	$plugins->run_hooks("managegroup_joinrequests_end");
+
 	eval("\$joinrequests = \"".$templates->get("managegroup_joinrequests")."\";");
 	outputpage($joinrequests);
 }
 elseif($mybb->input['action'] == "do_manageusers")
 {
+	$plugins->run_hooks("managegroup_do_manageusers_start");
+
 	if(is_array($mybb->input['removeuser']))
 	{
 		foreach($mybb->input['removeuser'] as $uid)
@@ -113,10 +125,15 @@ elseif($mybb->input['action'] == "do_manageusers")
 			leave_usergroup($uid, $mybb->input['gid']);
 		}
 	}
+
+	$plugins->run_hooks("managegroup_do_manageusers_end");
+
 	redirect("usercp.php?action=usergroups", $lang->users_removed);
 }
 else
 {
+	$plugins->run_hooks("managegroup_start");
+
 	$lang->members_of = sprintf($lang->members_of, $usergroup['title']);
 	$lang->add_member = sprintf($lang->add_member, $usergroup['title']);
 	if($usergroup['type'] == 4)
@@ -187,6 +204,9 @@ else
 		}
 		eval("\$users .= \"".$templates->get("managegroup_user")."\";");
 	}
+
+	$plugins->run_hooks("managegroup_end");
+
 	eval("\$manageusers = \"".$templates->get("managegroup")."\";");
 	outputpage($manageusers);
 }

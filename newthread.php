@@ -149,6 +149,9 @@ if($mybb->input['action'] == "do_newthread" && !$mybb->input['savedraft'])
 
 if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft")
 {
+
+	$plugins->run_hooks("newthread_start");
+
 	if($mybb->input['previewpost'] || $maximageserror)
 	{
 		$postoptions = $mybb->input['postoptions'];
@@ -339,12 +342,17 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
 	$lang->newthread_in = sprintf($lang->newthread_in, $thread['subject']);
+
+	$plugins->run_hooks("newthread_end");
+
 	eval("\$newthread = \"".$templates->get("newthread")."\";");
 	outputpage($newthread);
 		
 }
 if($mybb->input['action'] == "do_newthread")
 {
+	$plugins->run_hooks("newthread_do_newthread_start");
+
 	if($mybb->user['uid'] == 0)
 	{
 		$username = htmlspecialchars_uni($mybb->input['username']);
@@ -501,6 +509,9 @@ if($mybb->input['action'] == "do_newthread")
 			"replies" => 0,
 			"visible" => $visible
 			);
+
+		$plugins->run_hooks("newthread_do_newthread_action");
+
 		$db->insert_query(TABLE_PREFIX."threads", $newthread);
 		$tid = $db->insert_id();
 
@@ -622,6 +633,8 @@ if($mybb->input['action'] == "do_newthread")
 		updateforumcount($fid);
 	}
 
+	$plugins->run_hooks("newthread_do_newthread_end");
+	
 	if(function_exists("threadPosted") && !$savedraft)
 	{
 		threadPosted($tid);

@@ -37,6 +37,9 @@ switch($mybb->input['action'])
 
 if($mybb->input['action'] == "today")
 {
+
+	$plugins->run_hooks("online_today_start");
+
 	$todaycount = 0;
 	$stime = time()-(60*60*24);
 	
@@ -68,6 +71,9 @@ if($mybb->input['action'] == "today")
 	{
 		$onlinetoday = sprintf($lang->members_were_online_today, $todaycount);
 	}
+
+	$plugins->run_hooks("online_today_end");
+
 	eval("\$today = \"".$templates->get("online_today")."\";");
 	outputpage($today);
 }
@@ -88,6 +94,8 @@ elseif($mybb->input['action'] == "iplookup")
 }
 else
 {
+	$plugins->run_hooks("online_start");
+
 	$aidsql = '';
 	$pidsql = '';
 	$uidsql = '';
@@ -113,6 +121,8 @@ else
 	$anoncount = 0;
 	while($user = $db->fetch_array($query))
 	{
+		$plugins->run_hooks("online_user");
+
 		if($user['uid'] > 0)
 		{
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
@@ -230,6 +240,9 @@ else
 		$refresh = "<meta http-equiv=\"refresh\" content=\"60;URL=online.php\">";
 	}
 	$lang->online_count = sprintf($lang->online_count, $usercount, $membercount, $anoncount, $guestcount);
+
+	$plugins->run_hooks("online_end");
+
 	eval("\$online = \"".$templates->get("online")."\";");
 	outputpage($online);
 }

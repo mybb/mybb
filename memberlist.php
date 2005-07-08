@@ -16,6 +16,8 @@ require "./global.php";
 // Load global language phrases
 $lang->load("memberlist");
 
+$plugins->run_hooks("memberlist_start");
+
 addnav($lang->nav_memberlist);
 
 if($mybb->usergroup['canviewmemberlist'] == "no")
@@ -103,6 +105,8 @@ else
 
 while($users = $db->fetch_array($query))
 {
+	$plugins->run_hooks("memberlist_user");
+
 	if($users['website'] == "" || $users['website'] == "http://")
 	{
 		$usersite = "";
@@ -124,7 +128,6 @@ while($users = $db->fetch_array($query))
 	}
 	$users['regdate'] = mydate($mybb->settings['dateformat'], $users['regdate']);
 	$users['username'] = formatname($users['username'], $users['usergroup'], $users['displaygroup']);
-	$plugins->run_hooks("member_list_member", $user);
 	eval("\$member .= \"".$templates->get("memberlist_row")."\";");
 }
 
@@ -134,7 +137,9 @@ if(!$member)
 	$member = "<tr>\n<td colspan=\"6\" align=\"center\" class=\"trow1\">$lang->error_no_members</td>\n</tr>";
 }
 $usersearch = htmlspecialchars_uni($mybb->input['usersearch']);
+
+$plugins->run_hooks("memberlist_end");
+
 eval("\$memberlist = \"".$templates->get("memberlist")."\";");
-$plugins->run_hooks("output_member_list");
 outputpage($memberlist);
 ?>

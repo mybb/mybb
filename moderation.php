@@ -17,6 +17,7 @@ require "./inc/functions_post.php";
 // Load global language phrases
 $lang->load("moderation");
 
+$plugins->run_hooks("moderation_start");
 
 // Get some navigation if we need it
 switch($mybb->input['action'])
@@ -107,14 +108,15 @@ switch($mybb->input['action'])
 		if($openclose == "open")
 		{
 			$openclose = $lang->opened;
-			$plugins->run_hooks("thread_opened", $tid);
 		}
 		else
 		{
 			$openclose = $lang->closed;
-			$plugins->run_hooks("thread_closed", $tid);
 		}
 		$lang->mod_action = sprintf($lang->mod_action, $openclose);
+
+		$plugins->run_hooks("moderation_openclosethread");
+
 		logmod($modlogdata, $lang->mod_action);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET closed='$thread[closed]' WHERE tid='$tid'");
 		redirect("showthread.php?tid=$tid", $redirect);
@@ -141,14 +143,15 @@ switch($mybb->input['action'])
 		if($stuckunstuck == "unstuck")
 		{
 			$stuckunstuck = $lang->unstuck;
-			$plugins->run_hooks("thread_unstuck", $tid);
 		}
 		else
 		{
 			$stuckunstuck = $lang->stuck;
-			$plugins->run_hooks("thread_stuck", $tid);
 		}
 		$lang->mod_action = sprintf($lang->mod_action, $stuckunstuck);
+
+		$plugins->run_hooks("moderation_stick");
+
 		logmod($modlogdata, $lang->mod_action);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET sticky='$thread[sticky]' WHERE tid='$tid'");
 		redirect("showthread.php?tid=$tid", $redirect);
@@ -160,6 +163,9 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+
+		$plugins->run_hooks("moderation_removeredirects");
+
 		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE closed='moved|$tid'");
 	
 		updateforumcount($fid);
@@ -179,6 +185,8 @@ switch($mybb->input['action'])
 			}
 		}
 
+		$plugins->run_hooks("moderation_deletethread");
+
 		eval("\$deletethread = \"".$templates->get("moderation_deletethread")."\";");
 		outputpage($deletethread);
 		break;
@@ -192,6 +200,9 @@ switch($mybb->input['action'])
 				nopermission();
 			}
 		}
+
+		$plugins->run_hooks("moderation_do_deletethread");
+
 		$thread['subject'] = addslashes($thread['subject']);
 		$lang->thread_deleted = sprintf($lang->thread_deleted, $thread['subject']);
 		logmod($modlogdata, $lang->thread_deleted);
@@ -212,6 +223,9 @@ switch($mybb->input['action'])
 				nopermission();
 			}
 		}
+
+		$plugins->run_hooks("moderation_deletepoll");
+
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE tid='$tid'");
 		$poll = $db->fetch_array($query);
 		if(!$poll['pid'])
@@ -239,7 +253,8 @@ switch($mybb->input['action'])
 			error($lang->error_invalidpoll);
 		}
 
-		$plugins->run_hooks("delete_poll", $poll['pid']);
+		$plugins->run_hooks("moderation_do_deletepoll");
+
 		$lang->poll_deleted = sprintf($lang->poll_deleted, $thread['subject']);
 		logmod($modlogdata, $lang->poll_deleted);
 		$db->query("DELETE FROM ".TABLE_PREFIX."polls WHERE pid='$poll[pid]'");
@@ -256,11 +271,13 @@ switch($mybb->input['action'])
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 		$thread = $db->fetch_array($query);
+
+		$plugins->run_hooks("moderation_approvethread");
+
 		$lang->thread_approved = sprintf($lang->thread_approved, $thread['subject']);
 		logmod($modlogdata, $lang->thread_approved);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='$tid'");
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='1' WHERE tid='$tid' AND replyto='0'");
-		$plugins->run_hooks("thread_approved", $tid);
 		$cache->updatestats();
 		updateforumcount($fid);
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadapproved);
@@ -274,11 +291,13 @@ switch($mybb->input['action'])
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='tid'");
 		$thread = $db->fetch_array($query);
+
+		$plugins->run_hooks("moderation_unapprovethread");
+
 		$lang->thread_unapproved = sprintf($lang->thread_unapproved, $thread['subject']);
 		logmod($modlogdata, $lang->thread_unapproved);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='0' WHERE tid='$tid'");
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='0' WHERE tid='$tid' AND replyto='0'");
-		$plugins->run_hooks("thread_unapproved", $tid);
 		updateforumcount($fid);
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadunapproved);
 		break;
@@ -316,6 +335,9 @@ switch($mybb->input['action'])
 				$altbg = "trow1";
 			}
 		}
+
+		$plugins->run_hooks("moderation_deleteposts");
+
 		eval("\$deleteposts = \"".$templates->get("moderation_deleteposts")."\";");
 		outputpage($deleteposts);
 		break;
@@ -326,6 +348,9 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+
+		$plugins->run_hooks("moderation_do_deleteposts");
+
 		$deletethread = "1";
 		$deletepost = $mybb->input['deletepost'];
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
@@ -363,6 +388,7 @@ switch($mybb->input['action'])
 	// Merge selected posts selection screen
 	case "mergeposts":
 		addnav($lang->nav_mergeposts);
+
 		if(ismod($fid, "canmanagethreads") != "yes")
 		{
 			nopermission();
@@ -393,6 +419,9 @@ switch($mybb->input['action'])
 				$altbg = "trow1";
 			}
 		}
+
+		$plugins->run_hooks("moderation_mergeposts");
+
 		eval("\$mergeposts = \"".$templates->get("moderation_mergeposts")."\";");
 		outputpage($mergeposts);
 		break;
@@ -403,6 +432,9 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+
+		$plugins->run_hooks("moderation_do_mergeposts");
+
 		$mergepost = $mybb->input['mergepost'];
 		if(count($mergepost) <= 1)
 		{
@@ -451,6 +483,9 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+
+		$plugins->run_hooks("moderation_move");
+
 		$forumselect = makeforumjump("", "", 1, "", 0, "", "moveto");
 		eval("\$movethread = \"".$templates->get("moderation_move")."\";");
 		outputpage($movethread);
@@ -487,14 +522,18 @@ switch($mybb->input['action'])
 		}
 		if($method == "move")
 		{ // plain move thread
-			$plugins->run_hooks("thread_moved", $tid);
+
+			$plugins->run_hooks("moderation_do_move_simple");
+
 			$db->query("UPDATE ".TABLE_PREFIX."threads SET fid='$moveto' WHERE tid='$tid'");
 			$db->query("UPDATE ".TABLE_PREFIX."posts SET fid='$moveto' WHERE tid='$tid'");
 			logmod($modlogdata, $lang->thread_moved);
 		}
 		elseif($method == "redirect")
 		{ // move (and leave redirect) thread
-			$plugins->run_hooks("thread_moved", $tid);
+
+			$plugins->run_hooks("moderation_do_move_redirect");
+
 			$db->query("UPDATE ".TABLE_PREFIX."threads SET fid='$moveto' WHERE tid='$tid'");
 			$db->query("UPDATE ".TABLE_PREFIX."posts SET fid='$moveto' WHERE tid='$tid'");
 			$rsubject = addslashes($thread['subject']);
@@ -504,7 +543,9 @@ switch($mybb->input['action'])
 		else
 		{ // copy thread
 		// we need to add code to copy attachments(?), polls, etc etc here
-			$plugins->run_hooks("thread_copied", $tid);
+
+			$plugins->run_hooks("moderation_do_move_copy");
+			
 			$db->query("INSERT INTO ".TABLE_PREFIX."threads (tid,fid,subject,icon,uid,username,dateline,lastpost,lastposter,views,replies,closed,sticky,notes,visible) VALUES (NULL,'$moveto','$thread[subject]','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$thread[views]','$thread[replies]','$thread[closed]','$thread[sticky]','$thread[notes]','1')");
 			$newtid = $db->insert_id();
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
@@ -583,6 +624,9 @@ switch($mybb->input['action'])
 		{
 			$modactions = "<tr><td class=\"trow1\" colspan=\"4\">$lang->no_mod_options</td></tr>";
 		}
+
+		$plugins->run_hooks("moderation_threadnotes");
+
 		eval("\$threadnotes = \"".$templates->get("moderation_threadnotes")."\";");
 		outputpage($threadnotes);
 		break;
@@ -593,6 +637,9 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+
+		$plugins->run_hooks("moderation_do_threadnotes");
+
 		logmod($modlogdata, $lang->thread_notes_edited);
 		$thread['notes'] = addslashes($mybb->input['threadnotes']);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET notes='".$thread['notes']."' WHERE tid='$tid'");
@@ -623,6 +670,9 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+
+		$plugins->run_hooks("moderation_merge");
+
 		eval("\$merge = \"".$templates->get("moderation_merge")."\";");
 		outputpage($merge);
 		break;
@@ -633,6 +683,8 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+
+		$plugins->run_hooks("moderation_do_merge");
 	
 		// get thread to merge's tid
 		$splitloc = explode(".php", $mybb->input['threadurl']);
@@ -692,7 +744,6 @@ switch($mybb->input['action'])
 			$subject = $thread['subject'];
 		}
 		$subject = addslashes($subject);
-		$plugins->run_hooks("thread_merged", $mergetid);
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET tid='$tid', fid='$fid' WHERE tid='$mergetid'");
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='$subject' $pollcode WHERE tid='$tid'");
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET closed='moved|$tid' WHERE closed='moved|$mergetid'");
@@ -749,6 +800,9 @@ switch($mybb->input['action'])
 			}
 		}
 		$forumselect = makeforumjump("", $fid, 1, "", 0, "", "moveto");
+
+		$plugins->run_hooks("moderation_split");
+
 		eval("\$split = \"".$templates->get("moderation_split")."\";");
 		outputpage($split);
 		break;
@@ -759,6 +813,9 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+
+		$plugins->run_hooks("moderation_do_split");
+
 		$numyes = "0";
 		$numno = "0";
 		while(list($key, $val) = each($mybb->input['splitpost']))
@@ -801,7 +858,6 @@ switch($mybb->input['action'])
 			}
 			markreports($post['pid'], "post");
 		}
-		$plugins->run_hooks("thread_split", $tid);
 		logmod($modlogdata, $lang->thread_split);
 		updatethreadcount($tid);
 		updatethreadcount($newtid);
@@ -872,7 +928,6 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$plugins->run_hooks("multi_opened_threads", $threads);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET closed='no' WHERE $q");
 		logmod($modlogdata, $lang->multi_opened_threads);
 		clearinline($fid, "forum");
@@ -895,7 +950,6 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$plugins->run_hooks("multi_closed_threads", $threads);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET closed='yes' WHERE $q");
 		logmod($modlogdata, $lang->multi_closed_threads);
 		clearinline($fid, "forum");
@@ -918,7 +972,6 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$plugins->run_hooks("multi_approved_threads", $threads);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE $q");
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='1' WHERE $q AND replyto='0'");
 		logmod($modlogdata, $lang->multi_approved_threads);
@@ -944,7 +997,6 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$plugins->run_hooks("multi_unapproved_threads", $threads);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='0' WHERE $q");
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='0' WHERE $q AND replyto='0'");
 		logmod($modlogdata, $lang->multi_unapproved_threads);
@@ -970,7 +1022,6 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$plugins->run_hooks("multi_stuck_threads", $threads);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET sticky='1' WHERE $q");
 		logmod($modlogdata, $lang->multi_stuck_threads);
 		clearinline($fid, "forum");
@@ -993,7 +1044,6 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$plugins->run_hooks("multi_unstuck_threads", $threads);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET sticky='0' WHERE $q");
 		logmod($modlogdata, $lang->multi_unstuck_threads);
 		clearinline($fid, "forum");
@@ -1052,7 +1102,6 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_movetosameforum);
 		}
-		$plugins->run_hooks("multi_moved_threads", $threads);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET fid='$moveto' WHERE $q");
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET fid='$moveto' WHERE $q");
 		logmod($modlogdata, $lang->multi_moved_threads);
@@ -1193,7 +1242,6 @@ switch($mybb->input['action'])
 			$first = 0;
 		}
 		$message = addslashes($message);
-		$plugins->run_hooks("multi_merged_posts", $postlist);
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET message='$message' WHERE pid='$masterpid'");
 		$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$masterpid' WHERE pid IN($pidin)");
 		updatethreadcount($tid);
@@ -1260,7 +1308,6 @@ switch($mybb->input['action'])
 		{
 			$moveto = $fid;
 		}
-		$plugins->run_hooks("multi_split_posts", $postlist);
 		$newsubject = addslashes($mybb->input['newsubject']);
 		$db->query("INSERT INTO ".TABLE_PREFIX."threads (tid,fid,subject,icon,uid,username,dateline,lastpost,lastposter,replies,visible) VALUES (NULL,'$moveto','$newsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$numyes','1')");
 		$newtid = $db->insert_id();
@@ -1312,7 +1359,6 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR pid='$pid'";
 		}
-		$plugins->run_hooks("multi_approved_posts", $posts);
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='1' WHERE $q");
 		// If this is the first post of the thread, also approve the thread
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE $q");
@@ -1346,7 +1392,6 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR pid='$pid'";
 		}
-		$plugins->run_hooks("multi_unapproved_posts", $posts);
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='0' WHERE $q");
 		// If this is the first post of the thread, also unapprove the thread
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE $q");
@@ -1389,8 +1434,9 @@ switch($mybb->input['action'])
 		}
 		$rids = implode($mybb->input['reports'], "','");
 		$rids = "'0','$rids'";
-		$plugins->run_hooks("mark_reports", $mybb->input['reports']);
 
+		$plugins->run_hooks("moderation_do_reports");
+		
 		$db->query("UPDATE ".TABLE_PREFIX."reportedposts SET reportstatus='1' WHERE rid IN ($rids)");
 		$cache->updatereportedposts();
 		redirect("moderation.php?action=reports", $lang->redirect_reportsmarked);
@@ -1441,6 +1487,9 @@ switch($mybb->input['action'])
 		{
 			eval("\$reports = \"".$templates->get("moderation_reports_noreports")."\";");
 		}
+
+		$plugins->run_hooks("moderation_reports");
+
 		eval("\$reportedposts = \"".$templates->get("moderation_reports")."\";");
 		outputpage($reportedposts);
 		break;

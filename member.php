@@ -80,6 +80,9 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 
 if($mybb->input['action'] == "do_register")
 {
+
+	$plugins->run_hooks("member_do_register_start");
+
 	$username = $mybb->input['username'];
 
 	// Remove multiple spaces from the username
@@ -384,13 +387,13 @@ if($mybb->input['action'] == "do_register")
 		{
 			$newuser['referrer'] = $refuid;
 		}
-		$plugins->run_hooks("pre_new_user", $newuser);
+
+		$plugins->run_hooks("member_do_register_action");
+
 		$db->insert_query(TABLE_PREFIX."users", $newuser);
 		$uid = $db->insert_id();
 	
 		$db->query("INSERT INTO ".TABLE_PREFIX."userfields (ufid,$querypart1) VALUES ('$uid',$querypart2)");
-
-		$plugins->run_hooks("post_new_user", $uid);
 	
 		if(function_exists("accountCreated"))
 		{
@@ -414,6 +417,9 @@ if($mybb->input['action'] == "do_register")
 			$emailmessage = sprintf($lang->email_activeateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
 			mymail($email, $emailsubject, $emailmessage);
 			$lang->redirect_registered_activation = sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $username);
+
+			$plugins->run_hooks("member_do_register_end");
+
 			error($lang->redirect_registered_activation);
 		}
 		else if($mybb->settings['regtype'] == "randompass")
@@ -421,24 +427,36 @@ if($mybb->input['action'] == "do_register")
 			$emailsubject = sprintf($lang->emailsubject_randompassword, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_randompassword, $username, $mybb->settings['bbname'], $username, $password);
 			mymail($email, $emailsubject, $emailmessage);
+
+			$plugins->run_hooks("member_do_register_end");
+
 			error($lang->redirect_registered_passwordsent);
 		}
 		else
 		{
 			$lang->redirect_registered = sprintf($lang->redirect_registered, $mybb->settings['bbname'], $username);
+
+			$plugins->run_hooks("member_do_register_end");
+
 			redirect("index.php", $lang->redirect_registered);
 		}
 	}
 }
 if($mybb->input['action'] == "register")
 {
+
 	if(!$mybb->input['agree'] && !$mybb->input['regsubmit'])
 	{
-		eval("\$agreement .= \"".$templates->get("member_register_agreement")."\";");
+		$plugins->run_hooks("member_register_agreement");
+
+		eval("\$agreement = \"".$templates->get("member_register_agreement")."\";");
 		outputpage($agreement);
 	}
 	else
 	{
+
+		$plugins->run_hooks("member_register_start");
+
 		for($i=1;$i<=31;$i++)
 		{
 			$bdaydaysel .= "<option value=\"$i\">$i</option>\n";
@@ -669,13 +687,18 @@ if($mybb->input['action'] == "register")
 		{
 			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
 		}
+
+		$plugins->run_hooks("member_register_end");
+
 		eval("\$registration = \"".$templates->get("member_register")."\";");
-		$plugins->run_hooks("output_registration");
 		outputpage($registration);
 	}
 }
 elseif($mybb->input['action'] == "activate")
 {
+
+	$plugins->run_hooks("member_activate_start");
+
 	if($mybb->input['username'])
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
@@ -716,7 +739,9 @@ elseif($mybb->input['action'] == "activate")
 			{
 				emailChanged($mybb->user['uid'], $email);
 			}
-			$plugins->run_hooks("email_changed");
+
+			$plugins->run_hooks("member_activate_emailupdated");
+
 			redirect("usercp.php", $lang->redirect_emailupdated);
 		}
 		else
@@ -725,23 +750,31 @@ elseif($mybb->input['action'] == "activate")
 			{
 				accountActivated($user['uid']);
 			}
-			$plugins->run_hooks("account_activated");
+
+			$plugins->run_hooks("member_activate_accountactivated");
+
 			redirect("index.php", $lang->redirect_accountactivated);
 		}
 	}
 	else
 	{
+		$plugins->run_hooks("member_activate_form");
+
 		eval("\$activate = \"".$templates->get("member_activate")."\";");
 		outputpage($activate);
 	}
 }
 elseif($mybb->input['action'] == "resendactivation")
 {
+	$plugins->run_hooks("member_resendactivation");
+
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
 	outputpage($activate);
 }
 elseif($mybb->input['action'] == "do_resendactivation")
 {
+	$plugins->run_hooks("member_do_resendactivation_start");
+
 	$query = $db->query("SELECT u.uid, u.username, u.usergroup, u.email, a.code FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r') WHERE u.email='".addslashes($mybb->input['email'])."'");
 	$numusers = $db->num_rows($query);
 	if($numusers < 1)
@@ -769,16 +802,22 @@ elseif($mybb->input['action'] == "do_resendactivation")
 				mymail($email, $emailsubject, $emailmessage);
 			}
 		}
+		$plugins->run_hooks("member_do_resendactivation_end");
+
 		redirect("index.php", $lang->redirect_activationresent);
 	}
 }
 elseif($mybb->input['action'] == "lostpw")
 {
+	$plugins->run_hooks("member_lostpw");
+
 	eval("\$lostpw = \"".$templates->get("member_lostpw")."\";");
 	outputpage($lostpw);
 }
 elseif($mybb->input['action'] == "do_lostpw")
 {
+	$plugins->run_hooks("member_do_lostpw_start");
+
 	$email = addslashes($email);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE email='".addslashes($mybb->input['email'])."'");
 	$numusers = $db->num_rows($query);
@@ -798,16 +837,19 @@ elseif($mybb->input['action'] == "do_lostpw")
 			$username = $user['username'];
 			$email = $user['email'];
 			$activationcode = $user['activationcode'];
-			$plugins->run_hooks("sent_lost_password", $uid);
 			$emailsubject = sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
 			mymail($email, $emailsubject, $emailmessage);
 		}
 	}
+	$plugins->run_hooks("member_do_lostpw_end");
+
 	redirect("index.php", $lang->redirect_lostpwsent);
 }
 elseif($mybb->input['action'] == "resetpassword")
 {
+	$plugins->run_hooks("member_resetpassword_start");
+
 	if($mybb->input['username'])
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
@@ -837,32 +879,42 @@ elseif($mybb->input['action'] == "resetpassword")
 		$password = random_str();
 		$newpassword = md5($password);
 		$email = $user['email'];
+		
+		$plugins->run_hooks("member_resetpassword_action");
+
 		$db->query("UPDATE ".TABLE_PREFIX."users SET password='$newpassword' WHERE uid='".$user[uid]."'");
 
 		if(function_exists("passwordChanged"))
 		{
 			passwordChanged($user['uid'], $newpasswords);
 		}
-		$plugins->run_hooks("password_changed", $user['uid']);
 		$emailsubject = sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
 		$emailmessage = sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
 		mymail($email, $emailsubject, $emailmessage);
+
+		$plugins->run_hooks("member_resetpassword_reset");
 
 		error($lang->redirect_passwordreset);
 	}
 	else
 	{
+		$plugins->run_hooks("member_resetpassword_form");
+
 		eval("\$activate = \"".$templates->get("member_resetpassword")."\";");
 		outputpage($activate);
 	}
 }
 else if($mybb->input['action'] == "login")
 {
+	$plugins->run_hooks("member_login");
+
 	eval("\$login = \"".$templates->get("member_login")."\";");
 	outputpage($login);
 }
 else if($mybb->input['action'] == "do_login")
 {
+	$plugins->run_hooks("member_do_login_start");
+
 	$query = $db->query("SELECT uid, username,password,salt FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
@@ -884,7 +936,9 @@ else if($mybb->input['action'] == "do_login")
 	{
 		loggedIn($user['uid']);
 	}
-	$plugins->run_hooks("logged_in", $user['uid']);
+
+	$plugins->run_hooks("member_do_login_end");
+
 	if($url)
 	{
 		redirect($url, $lang->redirect_loggedin);
@@ -896,6 +950,8 @@ else if($mybb->input['action'] == "do_login")
 }
 else if($mybb->input['action'] == "logout")
 {
+	$plugins->run_hooks("member_logout_start");
+
 	if($mybb->input['uid'] == $mybb->user['uid'])
 	{
 		mysetcookie("mybbuser", "");
@@ -910,8 +966,10 @@ else if($mybb->input['action'] == "logout")
 			{
 				loggedOut($mybb->user['uid']);
 			}
-			$plugins->run_hooks("logged_out");
 		}
+
+		$plugins->run_hooks("member_logout_end");
+
 		redirect("index.php", $lang->redirect_loggedout);
 	}
 	else {
@@ -920,6 +978,8 @@ else if($mybb->input['action'] == "logout")
 }
 elseif($mybb->input['action'] == "profile")
 {
+	$plugins->run_hooks("member_profile_start");
+
 	if($mybb->usergroup['canviewprofiles'] == "no")
 	{
 		nopermission();
@@ -1244,12 +1304,15 @@ elseif($mybb->input['action'] == "profile")
 		$adminoptions = '';
 	}
 
+	$plugins->run_hooks("member_profile_end");
+
 	eval("\$profile = \"".$templates->get("member_profile")."\";");
-	$plugins->run_hooks("output_profile");
 	outputpage($profile);
 }
 elseif($mybb->input['action'] == "emailuser")
 {
+	$plugins->run_hooks("member_emailuser_start");
+
 	if($mybb->usergroup['cansendemail'] == "no")
 	{
 		nopermission();
@@ -1271,11 +1334,16 @@ elseif($mybb->input['action'] == "emailuser")
 	{
 		eval("\$guestfields = \"".$templates->get("member_emailuser_guest")."\";");
 	}
+
+	$plugins->run_hooks("member_emailuser_end");
+
 	eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
 	outputpage($emailuser);
 }
 elseif($mybb->input['action'] == "do_emailuser")
 {
+	$plugins->run_hooks("member_do_emailuser_start");
+
 	if($mybb->usergroup['cansendemail'] == "no")
 	{
 		nopermission();
@@ -1311,10 +1379,15 @@ elseif($mybb->input['action'] == "do_emailuser")
 		$from = $mybb->user['username'] . " <" . $mybb->user['email'] . ">";
 	}
 	mymail($emailto['email'], $mybb->input['subject'], $mybb->input['message'], $from);
+
+	$plugins->run_hooks("member_do_emailuser_end");
+
 	redirect("member.php?action=profile&uid=$emailto[uid]", $lang->redirect_emailsent);
 }
 elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 {
+	$plugins->run_hooks("member_rate_start");
+
 	$query = $db->query("SELECT uid, username, rating FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['uid']."'");
 	$member = $db->fetch_array($query);
 	if(!$member['username'])
@@ -1333,6 +1406,8 @@ elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 	}
 	if($mybb->input['action'] == "rate")
 	{
+		$plugins->run_hooks("member_rate_end");
+
 		eval("\$rate = \"".$templates->get("member_rate")."\";");
 		outputpage($rate);
 	}
@@ -1360,6 +1435,9 @@ elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 			$newrating = $newrating1 . "|" . $newrating2 . "|" . $newrating3;
 		}
 		$db->query("UPDATE ".TABLE_PREFIX."users SET rating='$newrating' WHERE uid='".$mybb->input['uid']."'");
+
+		$plugins->run_hooks("member_do_rate_end");
+
 		redirect("member.php?action=profile&uid=$uid", $lang->redirect_memberrated);
 	}
 }
