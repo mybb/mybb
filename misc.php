@@ -211,21 +211,21 @@ elseif($mybb->input['action'] == "buddypopup")
 	{
 		nopermission();
 	}
-	if($removebuddy)
+	if($mybb->input['removebuddy'])
 	{
 		$buddies = $mybb->user['buddylist'];
 		$namesarray = explode(",",$buddies);
 		if(is_array($namesarray))
 		{
-			while(list($key, $buddyid) = each($namesarray))
+			foreach($namesarray as $key => $buddyid)
 			{
-				if($buddyid == $removebuddy)
+				if($buddyid == $mybb->input['removebuddy'])
 				{
 					unset($namesarray[$key]);
 				}
 			}
 			$buddylist = implode(",", $namesarray);
-			$query = $db->query("UPDATE ".TABLE_PREFIX."users SET buddylist='$buddylist' WHERE uid='".$mybb->user[uid]."'");
+			$query = $db->query("UPDATE ".TABLE_PREFIX."users SET buddylist='$buddylist' WHERE uid='".$mybb->user['uid']."'");
 			$mybb->user['buddylist'] = $buddylist;
 		}
 	}

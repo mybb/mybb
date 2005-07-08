@@ -2968,11 +2968,11 @@ $buddys[offline]
 </body>
 </html>]]></template>
 		<template name="misc_buddypopup_user_offline"><![CDATA[<tr>
-<td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid=$buddy[uid]" target="_parent">$buddy[username]</a></span></td>
+<td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid=$buddy[uid]" target="_blank">$buddy[username]</a></span></td>
 <td class="trow1" align="right" nowrap="nowrap"<span class="smalltext">$pmbuddy<a href="misc.php?action=buddypopup&removebuddy=$buddy[uid]">$lang->delete_buddy</a></span></td>
 </tr>]]></template>
 		<template name="misc_buddypopup_user_online"><![CDATA[<tr>
-<td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid=$buddy[uid]" target="_parent">$buddy[username]</a></span></td>
+<td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid=$buddy[uid]" target="_blank">$buddy[username]</a></span></td>
 <td class="trow1" align="right" nowrap="nowrap"<span class="smalltext">$pmbuddy<a href="misc.php?action=buddypopup&removebuddy=$buddy[uid]">$lang->delete_buddy</a></span></td>
 </tr>]]></template>
 		<template name="private_archive_txt"><![CDATA[$lang->private_messages_for
