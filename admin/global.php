@@ -25,7 +25,7 @@ if(!file_exists($config['admindir']."/".$style))
 	$style = "./styles/Axiom/stylesheet.css";
 }
 
-$lang->setLanguage($settings[cplanguage], "admin");
+$lang->setLanguage($settings['cplanguage'], "admin");
 
 // Load global language phrases
 $lang->load("global");

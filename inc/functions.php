@@ -880,6 +880,7 @@ function mysetarraycookie($name, $id, $value) {
 
 function serverload()
 {
+	global $lang;
 	if(@file_exists("/proc/loadavg"))
 	{
 		$file = @fopen("/proc/loadavg", "r");
@@ -895,7 +896,7 @@ function serverload()
 	} 
 	elseif(substr(@php_uname(), 0, 7) == "Windows")
 	{
-		return "Unknown";
+		return $lang->unknown;
 	}
 	else
 	{
@@ -906,7 +907,7 @@ function serverload()
 	$returnload = trim($serverload[0]);
 	if(!$returnload)
 	{
-		$returnload = "Unkown";
+		$returnload = $lang->unknown;
 	}
 	return $returnload;
 }

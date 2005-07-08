@@ -73,7 +73,7 @@ $l['allow_smilies'] = "Allow Smilies";
 $l['allow_img_code'] = "Allow [img] Code";
 $l['allow_posticons'] = "Allow Post Icons";
 $l['allow_ratings'] = "Allow Thread Ratings";
-$l['show_forum_jump'] = "Show in Forum Jump?<br><small>If no the forum will not be shown in the forum jump menu.";
+$l['show_forum_jump'] = "Show in Forum Jump?";
 $l['use_postcounts'] = "Make posts in this forum count towards user post counts";
 
 $l['update_forum'] = "Update Forum";
@@ -102,6 +102,7 @@ $l['forum_updated'] = "The forum has successfully been updated.";
 $l['forum_parent_itself'] = "The forum parent cannot be the forum itself.";
 
 $l['mod_added'] = "The moderator has sucessfully been added to the forum.";
+$l['mod_alreadyismod'] = "The user is already a moderator of the forum.";
 $l['mod_user_notfound'] = "The user was not found.";
 $l['mod_deleted'] = "The moderator has successfully been deleted.";
 $l['mod_updated'] = "The moderator has successfully been modified.";

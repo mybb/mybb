@@ -528,9 +528,11 @@ function cpredirect($url, $message="")
 function cpfooter()
 {
 	global $mybboard, $db, $maintimer;
+	global $lang;
 	echo "<center><br><br>\n";
 	$totaltime = $maintimer->stop();
-	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">Powered by: <b>myBB $mybboard[internalver]</b><br>Copyright &copy; 2004 MyBulletinBoard Group<br />Generated in: $totaltime seconds with $db->query_count queries.</font></center>\n";
+	$lang->footer_stats = sprintf($lang->footer_stats, $totaltime, $db->query_count);
+	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">".$lang->footer_powered_by." <b>myBB $mybboard[internalver]</b><br>".$lang->footer_copyright." &copy; 2004 MyBulletinBoard Group<br />".$lang->footer_stats."</font></center>\n";
 	echo "</body>\n";
 	echo "</html>";
 }
@@ -840,12 +842,12 @@ function getElemRefs(id) {
 	}
 	echo "<tr>\n";
 	echo "<td class=\"subheader\">User Group</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">View</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">Post Threads</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">Post Replies</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">Post Polls</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">Upload</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">All</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_view."</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_postthreads."</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_postreplies."</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_postpolls."</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_upload."</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_all."</td>\n";
 	echo "</tr>\n";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title");
 	while($usergroup = $db->fetch_array($query))
@@ -926,7 +928,7 @@ function getElemRefs(id) {
 			$allcheck = "";
 		}
 		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\"><strong>$usergroup[title]</strong><br /><small><input type=\"checkbox\" name=\"inherit[$usergroup[gid]]\" id=\"inherit[$usergroup[gid]]\" value=\"yes\" onclick=\"checkInheritPerm($usergroup[gid]);\" $inheritcheck> <span id=\"inheritlbl_$usergroup[gid]\" class=\"$inheritclass\">Inherit / Default</span></td>\n";
+		echo "<td class=\"$bgcolor\"><strong>$usergroup[title]</strong><br /><small><input type=\"checkbox\" name=\"inherit[$usergroup[gid]]\" id=\"inherit[$usergroup[gid]]\" value=\"yes\" onclick=\"checkInheritPerm($usergroup[gid]);\" $inheritcheck> <span id=\"inheritlbl_$usergroup[gid]\" class=\"$inheritclass\">".$lang->quickperms_inheritdefault."</span></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canview[$usergroup[gid]]\" id=\"canview[$usergroup[gid]]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\" $canview /></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canpostthreads[$usergroup[gid]]\" id=\"canpostthreads[$usergroup[gid]]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\" $canpostthreads /></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canpostreplies[$usergroup[gid]]\" id=\"canpostreplies[$usergroup[gid]]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\" $canpostreplies /></td>\n";

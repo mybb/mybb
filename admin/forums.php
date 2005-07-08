@@ -207,11 +207,18 @@ if($action == "do_add") {
 if($action == "do_addmod") {
 	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='$username'");
 	$user = $db->fetch_array($query);
-	if($user[uid]) {
-		$db->query("INSERT INTO ".TABLE_PREFIX."moderators VALUES (NULL, '$fid', '$user[uid]', '$caneditposts', '$candeleteposts', '$canviewips', '$canopenclosethreads', '$canmanagethreads')");
-		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='6' WHERE uid='$user[uid]' AND usergroup='2'");
-		$cache->updatemoderators();
-		cpredirect("forums.php", $lang->mod_added);
+	if($user['uid']) {
+		$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."moderators WHERE uid='".$user['uid']."' LIMIT 1");
+		$mod = $db->fetch_array($query);
+		if(!$mod['uid']) {
+			$db->query("INSERT INTO ".TABLE_PREFIX."moderators VALUES (NULL, '$fid', '$user[uid]', '$caneditposts', '$candeleteposts', '$canviewips', '$canopenclosethreads', '$canmanagethreads')");
+			$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='6' WHERE uid='$user[uid]' AND usergroup='2'");
+			$cache->updatemoderators();
+			cpredirect("forums.php?fid=$fid", $lang->mod_added);
+		}
+		else {
+			cpredirect("forums.php?fid=$fid", $lang->mod_alreadyismod);
+		}
 	} else {
 		cpredirect("forums.php?action=addmod", $lang->mod_user_notfound);
 	}
@@ -248,7 +255,7 @@ if($action == "do_deletemod") {
 			$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='2' WHERE uid='$mod[uid]' AND usergroup!='4' AND usergroup!='3'");
 		}
 		$cache->updatemoderators();
-		cpredirect("forums.php", $lang->mod_deleted);
+		cpredirect("forums.php?fid=$fid", $lang->mod_deleted);
 	} else {
 		$action = "modify";
 	}
@@ -293,7 +300,7 @@ if($action == "do_editmod") {
 	if($user[uid]) {
 		$db->query("UPDATE ".TABLE_PREFIX."moderators SET fid='$fid', uid='$user[uid]', caneditposts='$caneditposts', candeleteposts='$candeleteposts', canopenclosethreads='$canopenclosethreads', canmanagethreads='$canmanagethreads', canviewips='$canviewips' WHERE mid='$mid'");
 		$cache->updatemoderators();
-		cpredirect("forums.php", $lang->mod_updated);
+		cpredirect("forums.php?fid=$fid", $lang->mod_updated);
 	} else {
 		cpmessage($lang->mod_user_notfound);
 	}
@@ -395,6 +402,7 @@ if($action == "deletemod") {
 	cpheader();
 	startform("forums.php", "", "do_deletemod");
 	makehiddencode("mid", $mid);
+	makehiddencode("fid", $fid);
 	starttable();
 	tableheader($lang->delete_mod, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
@@ -444,8 +452,8 @@ if($action == "edit") {
 	makeyesnocode($lang->moderate_attachments, "modattachments", $forum[modattachments]);
 
 	tablesubheader($lang->style_options);
-	if(!$forum[style]) {
-		$forum[style] = "-1";
+	if(!$forum['style']) {
+		$forum['style'] = "-1";
 	}
 	makeselectcode($lang->style, "fstyle", "themes", "tid", "name", $forum[style], $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
 	makeyesnocode($lang->override_style, "overridestyle", $forum[overridestyle]);
@@ -484,6 +492,7 @@ if($action == "editmod") {
 	$moderator = $db->fetch_array($query);
 	startform("forums.php", "", "do_editmod");
 	makehiddencode("mid", $mid);
+	makehiddencode("fid", $fid);
 	starttable();
 	tableheader($lang->edit_moderator);
 	makeinputcode($lang->username, "username", $moderator[username]);
@@ -585,7 +594,7 @@ if($action == "modify" || $action == "") {
 		}
 		while($mod = $db->fetch_array($modquery))
 		{
-			makelabelcode($mod['username'], "<div align=\"right\"><input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('forums.php?action=editmod&mid=".$mod['uid']."');\" class=\"submitbutton\"><input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('forums.php?action=deletemod&mid=".$mod['mid']."');\" class=\"submitbutton\"></div>");
+			makelabelcode($mod['username'], "<div align=\"right\"><input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('forums.php?action=editmod&mid=".$mod['mid']."');\" class=\"submitbutton\"><input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('forums.php?action=deletemod&fid=".$mod['fid']."&mid=".$mod['mid']."');\" class=\"submitbutton\"></div>");
 		}
 		endtable();
 		echo "</td>\n";

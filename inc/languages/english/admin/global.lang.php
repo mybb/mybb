@@ -20,6 +20,7 @@ $l['no'] = "No";
 $l['on'] = "On";
 $l['off'] = "Off";
 $l['go'] = "Go";
+$l['unknown'] = "Unknown";
 
 $l['redirect_msg'] = "You will now be redirected";
 $l['cp_message_header'] = "Message";
@@ -51,4 +52,8 @@ $l['toolbar_hovered'] = "Toolbar Item Hovered";
 $l['toolbar_clicked'] = "Toolbar Item Selected";
 $l['toolbar_muousedown'] = "Toolbar Item Mouse Down";
 $l['border'] = "Border";
+
+$l['footer_powered_by'] = "Powered by:";
+$l['footer_copyright'] = "Copyright";
+$l['footer_stats'] = "Generated in: {1} seconds with {2} queries.";
 ?>

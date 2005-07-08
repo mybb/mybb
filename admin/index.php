@@ -133,18 +133,18 @@ else if ($action=="home") {
 	$langdir = "./inc/languages/";
 	$dir = opendir($langdir);
 	$langs = array();
-	while(($lang = readdir($dir)) !== false)
+	while(($lang1 = readdir($dir)) !== false)
 	{
-		if(filetype($langdir.$lang) == 'file')
+		if(filetype($langdir.$lang1) == 'file')
 		{
-			$langs[] = $langdir.$lang;
+			$langs[] = $langdir.$lang1;
 		}
 	}
 	closedir($dir);
 	sort($langs);
-	while(list($key, $lang) = each($langs))
+	while(list($key, $lang2) = each($langs))
 	{
-		require $lang;
+		require $lang2;
 		if(!empty($langinfo['website']))
 		{
 			$author = "<a href=\"$langinfo[website]\">$langinfo[author]</a>";
@@ -157,7 +157,6 @@ else if ($action=="home") {
 		unset($langinfo);
 	}
 	endtable();
-	
 	cpfooter();
 }
 else if($action == "vercheck") {

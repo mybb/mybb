@@ -37,7 +37,7 @@ function getforums($pid="0")
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions");
 		while($permissions = $db->fetch_array($query))
 		{
-			$ownperms[$permissions[fid]][$permissions[gid]] = $permissions[pid];
+			$ownperms[$permissions['fid']][$permissions['gid']] = $permissions[pid];
 		}
 	}
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE pid='$pid' ORDER BY disporder ASC");
@@ -48,18 +48,18 @@ function getforums($pid="0")
 		$groupquery = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title");
 		while($usergroup = $db->fetch_array($groupquery))
 		{
-			if($ownperms[$forum[fid]][$usergroup[gid]])
+			if($ownperms[$forum['fid']][$usergroup['gid']])
 			{
-				$pid = $ownperms[$forum[fid]][$usergroup[gid]];
+				$pid = $ownperms[$forum['fid']][$usergroup['gid']];
 				$forumlist .= "<li><font color=\"red\">$usergroup[title]</font> ";
 				$forumlist .= makelinkcode("<font color=\"red\">$lang->edit_perms</font>", "forumpermissions.php?action=edit&pid=$pid&fid=$forum[fid]");
 			}
 			else
 			{
-				$sql = buildparentlist($forum[fid]);
+				$sql = buildparentlist($forum['fid']);
 				$cusquery = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions WHERE $sql AND gid='$usergroup[gid]'");
 				$customperms = $db->fetch_array($cusquery);
-				if($customperms[pid])
+				if($customperms['pid'])
 				{
 					$forumlist .= "<li><font color=\"blue\">$usergroup[title]</font> ";
 					$forumlist .= makelinkcode("<font color=\"blue\">$lang->set_perms</font>", "forumpermissions.php?action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
@@ -72,7 +72,7 @@ function getforums($pid="0")
 			}
 			$forumlist .= "</font></li>\n";
 		}
-		getforums($forum[fid]);
+		getforums($forum['fid']);
 		$forumlist .= "</ul>\n";
 		$forumlist .= "</li>\n";
 	}
@@ -81,7 +81,7 @@ function getforums($pid="0")
 if($action == "do_quickperms")
 {
 	savequickperms($fid);
-	cpredirect("forumpermissions.php", "The forum permissions for this forum have been updated and/or deleted.");
+	cpredirect("forumpermissions.php", $lang->perms_updated);
 }
 
 		
@@ -134,8 +134,8 @@ if($action == "edit")
 	}
 	$forumpermissions = $db->fetch_array($query);
 	if(!$fid && !$gid) {
-		$fid = $forumpermissions[fid];
-		$gid = $forumpermissions[gid];
+		$fid = $forumpermissions['fid'];
+		$gid = $forumpermissions['gid'];
 	}
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
@@ -149,7 +149,7 @@ if($action == "edit")
 	$cusquery = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions WHERE $sql AND gid='$gid'");
 	$customperms = $db->fetch_array($cusquery);
 
-	if($forumpermissions[pid])
+	if($forumpermissions['pid'])
 	{
 		$usecustom = "checked";
 		makehiddencode("pid", $pid);
@@ -170,7 +170,7 @@ if($action == "edit")
 		}
 	}
 
-	if($customperms[pid] && !$sperms[fid])
+	if($customperms['pid'] && !$sperms['fid'])
 	{
 		starttable();
 		makelabelcode($lang->inherit_note);
@@ -178,7 +178,7 @@ if($action == "edit")
 		echo "<br>";
 	}
 	starttable();
-	$lang->edit_permissions = sprintf($lang->edit_permissions, $usergroup[title], $forum[name]);
+	$lang->edit_permissions = sprintf($lang->edit_permissions, $usergroup['title'], $forum['name']);
 	tableheader($lang->edit_permissions);
 	makelabelcode("<input type=\"radio\" name=\"usecustom\" value=\"no\" $useusergroup> $lang->use_default_inherit", "", 2);
 	makelabelcode("<input type=\"radio\" name=\"usecustom\" value=\"yes\" $usecustom> $lang->use_custom", "", 2);
@@ -189,22 +189,22 @@ if($action == "edit")
 
 	tablesubheader($lang->perms_posting);
 	makepermscode($lang->canpostthreads, "canpostthreads", $forumpermissions['canpostthreads']);
-	makepermscode($lang->canpostreplies, "canpostreplys", $forumpermissions[canpostreplys]);
-	makepermscode($lang->canpostattachments, "canpostattachments", $forumpermissions[canpostattachments]);
-	makepermscode($lang->canratethreads, "canratethreads", $forumpermissions[canratethreads]);
+	makepermscode($lang->canpostreplies, "canpostreplys", $forumpermissions['canpostreplys']);
+	makepermscode($lang->canpostattachments, "canpostattachments", $forumpermissions['canpostattachments']);
+	makepermscode($lang->canratethreads, "canratethreads", $forumpermissions['canratethreads']);
 	
 	tablesubheader($lang->perms_editing);
-	makepermscode($lang->caneditposts, "caneditposts", $forumpermissions[caneditposts]);
-	makepermscode($lang->candeleteposts, "candeleteposts", $forumpermissions[candeleteposts]);
-	makepermscode($lang->candeletethreads, "candeletethreads", $forumpermissions[candeletethreads]);
-	makepermscode($lang->caneditattachments, "caneditattachments", $forumpermissions[caneditattachments]);
+	makepermscode($lang->caneditposts, "caneditposts", $forumpermissions['caneditposts']);
+	makepermscode($lang->candeleteposts, "candeleteposts", $forumpermissions['candeleteposts']);
+	makepermscode($lang->candeletethreads, "candeletethreads", $forumpermissions['candeletethreads']);
+	makepermscode($lang->caneditattachments, "caneditattachments", $forumpermissions['caneditattachments']);
 	
 	tablesubheader($lang->perms_polls);
-	makepermscode($lang->canpostpolls, "canpostpolls", $forumpermissions[canpostpolls]);
-	makepermscode($lang->canvotepolls, "canvotepolls", $forumpermissions[canvotepolls]);
+	makepermscode($lang->canpostpolls, "canpostpolls", $forumpermissions['canpostpolls']);
+	makepermscode($lang->canvotepolls, "canvotepolls", $forumpermissions['canvotepolls']);
 
 	tablesubheader($lang->perms_misc);
-	makepermscode($lang->cansearch, "cansearch", $forumpermissions[cansearch]);
+	makepermscode($lang->cansearch, "cansearch", $forumpermissions['cansearch']);
 	endtable();
 	endform($lang->update_permissions, $lang->reset_button);
 	cpfooter();

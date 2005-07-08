@@ -70,8 +70,8 @@ if($action == "edit")
 	makehiddencode("bid", $bid);
 	starttable();
 	tableheader($lang->modify_badword);
-	makeinputcode($lang->badword, "badword", $badword['badword']);
-	makeinputcode($lang->replacement, "replacement", $badword['replacement']);
+	makeinputcode($lang->badword_label, "badword", $badword['badword']);
+	makeinputcode($lang->replacement_label, "replacement", $badword['replacement']);
 	endtable();
 	endform($lang->update_badword, $lang->reset_button);
 	cpfooter();
@@ -84,8 +84,8 @@ if($action == "add")
 	makehiddencode("bid", $bid);
 	starttable();
 	tableheader($lang->add_badword);
-	makeinputcode($lang->badword, "badword");
-	makeinputcode($lang->replacement, "replacement");
+	makeinputcode($lang->badword_label, "badword");
+	makeinputcode($lang->replacement_label, "replacement");
 	endtable();
 	endform($lang->insert_badword, $lang->reset_button);
 	cpfooter();
@@ -99,8 +99,8 @@ if($action == "modify" || $action == "")
 	starttable();
 	tableheader($lang->badwords, "", 4);
 	echo "<tr>\n";
-	echo "<td class=\"subheader\" align=\"center\">$lang->badword</td>\n";
-	echo "<td class=\"subheader\" align=\"center\">$lang->replacement</td>\n";
+	echo "<td class=\"subheader\" align=\"center\">$lang->badword_title</td>\n";
+	echo "<td class=\"subheader\" align=\"center\">$lang->replacement_title</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" colspan=\"2\">$lang->options</td>\n";
 	echo "</tr>\n";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."badwords ORDER BY badword ASC");
