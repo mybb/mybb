@@ -113,7 +113,7 @@ class MyBB {
 		{
 			foreach($variables as $var)
 			{
-				if($type == "int" && @$this->input[$var])
+				if($type == "int" && @$this->input[$var] && $this->input[$var] != "lastposter")
 				{
 					$this->input[$var] = intval($this->input[$var]);
 				}
