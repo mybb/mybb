@@ -259,9 +259,9 @@ if($action == "edit")
 	makehiddencode("aid", "$aid");
 	starttable();
 
-	$lang->edit_announcement2 = sprintf($lang->edit_announcement2, $announcement[subject]);
+	$lang->edit_announcement2 = sprintf($lang->edit_announcement2, $announcement['subject']);
 
-	tableheader("Edit Announcement: $announcement[subject]");
+	tableheader($lang->edit_announcement2);
 	makeinputcode($lang->subject, "subject", "$announcement[subject]");
 	$startdate = explode("-", gmdate("j-m-Y-g-i-a", $announcement['startdate']));
 	$enddate = explode("-", gmdate("j-m-Y-g-i-a", $announcement['enddate']));

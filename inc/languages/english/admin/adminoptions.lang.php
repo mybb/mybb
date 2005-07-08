@@ -7,7 +7,7 @@ $l['nav_edit_def_permissions'] = "Default Permissions";
 $l['prefs_updated'] = "Your control panel preferences have successfully been updated.";
 
 $l['default_perms_updated'] = "The default administrator permissions have successfully been updated.";
-$l['perms_updated'] = "The administrators' permissions have successfully been updated.";
+$l['perms_updated'] = "The administrator's permissions have successfully been updated.";
 
 $l['edit_perms'] = "Edit Administrator Permissions";
 $l['edit_admin_perms'] = "Edit administrator permissions for %s";
