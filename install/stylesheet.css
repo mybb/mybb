@@ -48,6 +48,15 @@ td.talt1 {
  border-bottom : 1px solid #e5e5e5;
 }
 
+td.bottom {
+ background-color: #F3F3F3;
+ color: #000000;
+ font-size: 12px;
+ font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
+ padding: 4px;
+ border-bottom : 1px solid #000000;
+}
+
 td.content {
  background-color: #FFFFFF;
  color: #000000;

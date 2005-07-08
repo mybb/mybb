@@ -72,7 +72,7 @@ class installerOutput {
 			echo "</tr>\n";
 		}
 		echo "<tr>\n";
-		echo "<td class=\"talt1\" align=\"right\">&copy; 2004 The MyBulletinBoard Group</td>\n";
+		echo "<td class=\"bottom\" align=\"right\">&copy; 2004 The MyBulletinBoard Group</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		if($this->openedform)

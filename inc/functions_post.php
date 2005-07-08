@@ -13,16 +13,19 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 {
 	global $db, $mybb, $theme;
 
+	$message = dobadwords($message);
 	if($allowhtml != "yes")
 	{
-		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicide
 		$message = str_replace("<","&lt;",$message);
 		$message = str_replace(">","&gt;",$message);
 	}
-	$message = dobadwords($message);
 	if($allowmycode != "no")
 	{
 		$message = domycode($message, $allowimgcode);
+	}
+	if($allowhtml != "yes")
+	{
+		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicide
 	}
 	if($allowsmilies != "no")
 	{
