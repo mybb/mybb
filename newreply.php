@@ -675,7 +675,7 @@ if($mybb->input['action'] == "do_newreply" )
 			replyPosted($pid);
 		}
 
-		$plugins->run_hooks("newreply_do_newrpely-end");
+		$plugins->run_hooks("newreply_do_newrpely_end");
 	}
 	// Setup the correct ownership of the attachments
 	if($mybb->input['posthash'])
