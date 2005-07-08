@@ -289,7 +289,10 @@ elseif($mybb->input['action'] == "do_editpost") {
 		$icon = $post['icon'];
 	}
 	
-	$posticons = getposticons();
+	if($forum['allowpicons'] != "no")
+	{
+		$posticons = getposticons();
+	}
 	
 	if($mybb->user['uid'] != 0) {
 		eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
