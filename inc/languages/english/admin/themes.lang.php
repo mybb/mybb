@@ -106,4 +106,5 @@ $l['import_options'] = "Theme Import Options";
 $l['import_name'] = "Custom Name<br /><small>If left blank, the name specified in the theme file will be used.";
 $l['theme_parent'] = "Parent Theme";
 $l['revert_customizations'] = "Revert Customizations";
+$l['general_options'] = "General Options";
 ?>

@@ -482,7 +482,7 @@ function cperror($message="")
 	if(!$message) { $message = $lang->error_msg; }
 	cpheader("", 0);
 	starttable("65%");
-	tableheader($lang->message);
+	tableheader($lang->cp_message_header);
 	makelabelcode($message);
 	endtable();
 	cpfooter();
@@ -1365,7 +1365,7 @@ function make_theme_list($tid="0", $depth="")
 			$bgcolor = getaltbg();
 			if($theme['def'] == 1)
 			{
-				$def = " (Default)";
+				$def = " (" . $lang->default . ")";
 				$setdefault = "";
 			}
 			else

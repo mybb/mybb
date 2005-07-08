@@ -70,6 +70,7 @@ $l['years'] = "Years";
 $l['years_old'] = "years old";
 
 $l['name'] = "Name";
+$l['name_header'] = "Name";
 $l['username'] = "Username";
 $l['password'] = "Password";
 $l['new_password'] = "New Password";

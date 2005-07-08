@@ -278,12 +278,12 @@ if($action == "edit")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
 	$usergroup = $db->fetch_array($query);
-	if($usergroup[type] == "3")
+	if($usergroup['type'] == "3")
 	{
 		$joinable = "yes";
 		$moderate = "no";
 	}
-	elseif($usergroup[type] == "4")
+	elseif($usergroup['type'] == "4")
 	{
 		$joinable = "yes";
 		$moderate = "yes";
@@ -293,15 +293,15 @@ if($action == "edit")
 		$joinable = "no";
 		$moderate = "no";
 	}
-	$usergroup[description] = stripslashes($usergroup['description']);
-	$usergroup[namestyle] = stripslashes($usergroup['namestyle']);
+	$usergroup['description'] = stripslashes($usergroup['description']);
+	$usergroup['namestyle'] = stripslashes($usergroup['namestyle']);
 	$lang->edit_group = sprintf($lang->edit_group, $usergroup['title']);
 	cpheader();
 	startform("usergroups.php", "", "do_edit");
 	makehiddencode("gid", $gid);
 	starttable();
 	tableheader($lang->edit_group);
-	makeinputcode($lang->title, "title", $usergroup[title]);
+	makeinputcode($lang->title, "title", $usergroup['title']);
 	maketextareacode($lang->description, "description", $usergroup['description']);
 	makeinputcode($lang->namestyle, "namestyle", $usergroup['namestyle']);
 	makeinputcode($lang->usertitle, "usertitle", $usergroup['usertitle']);
@@ -532,7 +532,7 @@ function usergroup_hop(gid)
 	starttable();
 	tableheader($lang->default_groups, "", 4);
 	echo "<tr>\n";
-	echo "<td class=\"subheader\">$lang->title</td>\n";
+	echo "<td class=\"subheader\">$lang->title_list</td>\n";
 	echo "<td class=\"subheader\" align=\"center\">$lang->users</td>\n";
 	echo "<td class=\"subheader\" align=\"center\">$lang->controls</td>\n";
 	echo "</tr>\n";
@@ -554,7 +554,7 @@ function usergroup_hop(gid)
 		echo "<option value=\"edit\">$lang->select_edit</option>\n";
 		echo "<option value=\"listusers\">$lang->list_users</option>\n";
 		echo "<option value=\"listsecondaryusers\">$lang->list_secondary_users</option>\n";
-		echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"Go\"></td>\n";
+		echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"$lang->go\"></td>\n";
 		echo "</tr>\n";
 		$donedefault = 1;
 	}
@@ -591,7 +591,7 @@ function usergroup_hop(gid)
 			echo "<option value=\"listusers\">$lang->list_users</option>\n";
 			echo "<option value=\"listsecondaryusers\">$lang->list_secondary_users</option>\n";
 			echo "<option value=\"groupleaders\">$lang->group_leaders</option>\n";
-			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"Go\"></td>\n";
+			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"$lang->go\"></td>\n";
 			echo "</tr>\n";
 			$donecustom = 1;
 		}
@@ -638,7 +638,7 @@ function usergroup_hop(gid)
 			echo "<option value=\"listsecondaryusers\">$lang->list_secondary_users</option>\n";
 			echo "<option value=\"groupleaders\">$lang->group_leaders</option>\n";
 			echo "<option value=\"joinrequests\">$lang->moderate_join_requests</option>\n";
-			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"Go\"></td>\n";
+			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"$lang->go\"></td>\n";
 			echo "</tr>\n";
 		}
 		endform();

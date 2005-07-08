@@ -128,23 +128,23 @@ function checkbanned()
 	}
 }
 
-$bantimes["1-0-0"] = "1 Day";
-$bantimes["2-0-0"] = "2 Days";
-$bantimes["3-0-0"] = "3 Days";
-$bantimes["4-0-0"] = "4 Days";
-$bantimes["5-0-0"] = "5 Days";
-$bantimes["6-0-0"] = "6 Days";
-$bantimes["7-0-0"] = "1 Week";
-$bantimes["14-0-0"] = "2 Weeks";
-$bantimes["21-0-0"] = "3 Weeks";
-$bantimes["0-1-0"] = "1 Month";
-$bantimes["0-2-0"] = "2 Months";
-$bantimes["0-3-0"] = "3 Months";
-$bantimes["0-4-0"] = "4 Months";
-$bantimes["0-5-0"] = "5 Months";
-$bantimes["0-6-0"] = "6 Months";
-$bantimes["0-0-1"] = "1 Year";
-$bantimes["0-0-2"] = "2 Years";
+$bantimes["1-0-0"] = "1 $lang->day";
+$bantimes["2-0-0"] = "2 $lang->days";
+$bantimes["3-0-0"] = "3 $lang->days";
+$bantimes["4-0-0"] = "4 $lang->days";
+$bantimes["5-0-0"] = "5 $lang->days";
+$bantimes["6-0-0"] = "6 $lang->days";
+$bantimes["7-0-0"] = "1 $lang->week";
+$bantimes["14-0-0"] = "2 $lang->weeks";
+$bantimes["21-0-0"] = "3 $lang->weeks";
+$bantimes["0-1-0"] = "1 $lang->month";
+$bantimes["0-2-0"] = "2 $lang->months";
+$bantimes["0-3-0"] = "3 $lang->months";
+$bantimes["0-4-0"] = "4 $lang->months";
+$bantimes["0-5-0"] = "5 $lang->months";
+$bantimes["0-6-0"] = "6 $lang->months";
+$bantimes["0-0-1"] = "1 $lang->year";
+$bantimes["0-0-2"] = "2 $lang->years";
 
 checkadminpermissions("caneditusers");
 logadmin();
@@ -1288,63 +1288,63 @@ if($action == "find")
 		starttable();
 		echo "<tr>\n";
 
-		if($searchdisp[username] == "yes")
+		if($searchdisp['username'] == "yes")
 		{
-			echo "<td class=\"subheader\" align=\"center\">$lang->name</td>\n";
+			echo "<td class=\"subheader\" align=\"center\">$lang->name_header</td>\n";
 		}
-		if($searchdisp[usergroup] == "yes")
+		if($searchdisp['usergroup'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->usergroup</td>\n";
 		}
-		if($searchdisp[email] == "yes")
+		if($searchdisp['email'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->email</td>\n";
 		}
-		if($searchdisp[website] == "yes")
+		if($searchdisp['website'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->website</td>\n";
 		}
-		if($searchdisp[icq] == "yes")
+		if($searchdisp['icq'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->icq_number</td>\n";
 		}
-		if($searchdisp[aim] == "yes")
+		if($searchdisp['aim'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->aim_handle</td>\n";
 		}
-		if($searchdisp[yahoo] == "yes")
+		if($searchdisp['yahoo'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->yahoo_handle</td>\n";
 		}
-		if($searchdisp[msn] == "yes")
+		if($searchdisp['msn'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->msn_address</td>\n";
 		}
-		if($searchdisp[signature] == "yes")
+		if($searchdisp['signature'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->signature</td>\n";
 		}
-		if($searchdisp[usertitle] == "yes")
+		if($searchdisp['usertitle'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->usertitle</td>\n";
 		}
-		if($searchdisp[regdate] == "yes")
+		if($searchdisp['regdate'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->reg_date</td>\n";
 		}
-		if($searchdisp[lastvisit] == "yes")
+		if($searchdisp['lastvisit'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->last_visit</td>\n";
 		}
-		if($searchdisp[postnum] == "yes")
+		if($searchdisp['postnum'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->posts</td>\n";
 		}
-		if($searchdisp[birthday] == "yes")
+		if($searchdisp['birthday'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->birthday</td>\n";
 		}
-		if($searchdisp[ops] == "yes")
+		if($searchdisp['ops'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->options</td>\n";
 		}
@@ -1479,7 +1479,7 @@ if($action == "do_manageban")
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 		$user = $db->fetch_array($query);
 
-		if(!$ban[uid])
+		if(!$ban['uid'])
 		{
 			cperror($lang->error_not_banned);
 		}
@@ -1492,13 +1492,13 @@ if($action == "do_manageban")
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$username'");
 		$user = $db->fetch_array($query);
 
-		if(!$user[uid])
+		if(!$user['uid'])
 		{
 			cperror($lang->error_not_found);
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='$user[uid]'");
 		$bancheck = $db->fetch_array($query);
-		$uid = $user[uid];
+		$uid = $user['uid'];
 	}
 	if($liftafter == "---")
 	{ // permanent ban
@@ -1640,9 +1640,9 @@ if($action == "banned")
 			}
 			else
 			{
-				$banlength = $bantimes[$user[bantime]];
-				$timeremaining = getbanremaining($user[lifted]);
-				$liftedon = mydate($settings[dateformat], $user[lifted]);
+				$banlength = $bantimes[$user['bantime']];
+				$timeremaining = getbanremaining($user['lifted']);
+				$liftedon = mydate($settings['dateformat'], $user['lifted']);
 			}
 			$user['banreason'] = htmlspecialchars_uni($user['banreason']);
 			$bannedon = mydate($settings['dateformat'], $user['dateline']);

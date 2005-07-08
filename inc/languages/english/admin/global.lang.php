@@ -50,7 +50,7 @@ $l['mycode_toolbar'] = "MyCode Formatting Toolbar";
 $l['toolbar_normal'] = "Toolbar Item Normal";
 $l['toolbar_hovered'] = "Toolbar Item Hovered";
 $l['toolbar_clicked'] = "Toolbar Item Selected";
-$l['toolbar_muousedown'] = "Toolbar Item Mouse Down";
+$l['toolbar_mousedown'] = "Toolbar Item Mouse Down";
 $l['border'] = "Border";
 
 $l['footer_powered_by'] = "Powered by:";

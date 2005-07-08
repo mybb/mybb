@@ -39,6 +39,7 @@ $l['perms_misc'] = "Permissions: Misc";
 $l['perms_attachments'] ="Permissions: Attachments";
 
 $l['title'] = "Title";
+$l['title_list'] = "Title";
 $l['description'] = "Description";
 $l['namestyle'] = "Username Style<br><small>This allows you to set a custom name style for this usergroup. Please use {username} to represent the name.</small>";
 $l['usertitle'] = "User Title<br><small>If nothing is entered here the usertitles system will be used instead to show the title.</small>";
