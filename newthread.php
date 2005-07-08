@@ -606,7 +606,6 @@ if($mybb->input['action'] == "do_newthread")
 	elseif($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
 	{
 		$url = "polls.php?action=newpoll&tid=$tid&polloptions=".intval($mybb->input['numpolloptions']);
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='-1' WHERE tid='$tid'");
 		$lang->redirect_newthread .= $lang->redirect_newthread_poll;
 	}
 	elseif(!$visible)

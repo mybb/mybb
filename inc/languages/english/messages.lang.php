@@ -52,6 +52,7 @@ $l['redirect_pmsdeleted'] = "The selected private messages have been deleted suc
 $l['redirect_activationresent'] = "Your activation e-mail has been resent.";
 $l['redirect_nodelete'] = "The post was not deleted because you didn't check the \"Delete\" checkbox.";
 $l['redirect_pollposted'] = "Your poll has been posted.<br />You will now be returned to the thread.";
+$l['redirect_pollpostedmoderated'] = "Your poll has been posted, but your thread is still pending moderation.<br />You will be returned to the forum.";
 $l['redirect_pollupdated'] = "The poll has been updated.<br />You will now be returned to the thread.";
 $l['redirect_votethanks'] = "Thank you for voting.<br />You will now be returned to the thread.";
 $l['redirect_pmsaved'] = "The private message has been saved in your Drafts folder.";

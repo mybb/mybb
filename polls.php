@@ -222,7 +222,7 @@ if($mybb->input['action'] == "do_newpoll")
 		"pid" => "NULL",
 		"tid" => $thread['tid'],
 		"question" => addslashes($mybb->input['question']),
-		"dateline" => now(),
+		"dateline" => time(),
 		"options" => addslashes($optionslist),
 		"votes" => addslashes($voteslist),
 		"numoptions" => intval($optioncount),
@@ -235,7 +235,7 @@ if($mybb->input['action'] == "do_newpoll")
 	$db->insert_query(TABLE_PREFIX."polls", $newpoll);
 	$pid = $db->insert_id();
 
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET poll='$pid', visible='1' WHERE tid='".$thread['tid']."'");
+	$db->query("UPDATE ".TABLE_PREFIX."threads SET poll='$pid' WHERE tid='".$thread['tid']."'");
 	updateforumcount($fid);
 
 	$now = time();
@@ -249,7 +249,13 @@ if($mybb->input['action'] == "do_newpoll")
 	}
 	$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$thread['uid']."'");
 	$cache->updatestats();
-	redirect("showthread.php?tid=".$thread['tid'], $lang->redirect_pollposted);
+	if($thread['visible'] == 1)
+	{
+		redirect("showthread.php?tid=".$thread['tid'], $lang->redirect_pollposted);
+	}
+	else
+	{
+		redirect("forumdisplay.php?fid=".$thread['fid'], $lang->redirect_pollpostedmoderated);
 }
 if($mybb->input['action'] == "editpoll")
 {
@@ -612,7 +618,7 @@ if($mybb->input['action'] == "showresults")
 }
 if($mybb->input['action'] == "vote")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['poll']."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['poll'])."'");
 	$poll = $db->fetch_array($query);
 	$poll['timeout'] = $poll['timeout']*60*60*24;
 	if(!$poll['pid'])
