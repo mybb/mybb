@@ -535,7 +535,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 		{
 			while(list($key, $forum) = each($main))
 			{
-				$perms = $forumpermissions[$forum['fid']];
+				$perms = $permissioncache[$forum['fid']];
 				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
 				{
 					if($flist[$forum['fid']])
