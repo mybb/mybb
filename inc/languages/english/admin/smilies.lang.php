@@ -34,4 +34,5 @@ $l['edit'] = "edit";
 $l['delete'] = "delete";
 $l['add_new_smilie'] = "Add New Smilie";
 $l['add_multiple_smilies'] = "Add Multiple Smilies";
+$l['invalid_smilie'] = "Invalid smilie specified.";
 ?>

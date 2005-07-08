@@ -15,6 +15,8 @@ require "./global.php";
 global $lang;
 $lang->load("icons");
 
+$iid = intval($_REQUEST['iid']);
+
 checkadminpermissions("caneditpicons");
 logadmin();
 
@@ -35,6 +37,9 @@ switch($action)
 if($action == "do_add") {
 	$name = addslashes($_POST['name']);
 	$path = addslashes($_POST['path']);
+	if (empty($name) || empty($path)) {
+		cperror($lang->error_fill_form);
+	}
 	$db->query("INSERT INTO ".TABLE_PREFIX."icons VALUES (NULL,'$name','$path')");
 	cpredirect("icons.php", $lang->icon_added);
 }
@@ -50,6 +55,9 @@ if($action == "do_delete") {
 if($action == "do_edit") {
 	$name = addslashes($_POST['name']);
 	$path = addslashes($_POST['path']);
+	if(empty($name) || empty($path)) {
+		cperror($lang->error_fill_form);
+	}
 	$db->query("UPDATE ".TABLE_PREFIX."icons SET name='$name', path='$path' WHERE iid='$iid'");
 	cpredirect("icons.php", $lang->icon_updated);
 }
@@ -57,6 +65,10 @@ if($action == "do_edit") {
 if($action == "edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons WHERE iid='$iid'");
 	$icon = $db->fetch_array($query);
+	
+	if(!$icon['iid']) {
+		cperror($lang->invalid_icon);
+	}
 
 	if(!$noheader) {
 		cpheader();
@@ -76,6 +88,9 @@ if($action == "edit") {
 if($action == "delete") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons WHERE iid='$iid'");
 	$icon = $db->fetch_array($query);
+	if(!$icon['iid']) {
+		cperror($lang->invalid_icon);
+	}
 	$lang->delete_icon = sprintf($lang->delete_icon, $icon[name]);
 	$lang->delete_icon_confirm = sprintf($lang->delete_icon_confirm, $icon[name]);
 	cpheader();

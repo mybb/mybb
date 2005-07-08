@@ -15,6 +15,8 @@ require "./global.php";
 global $lang;
 $lang->load("smilies");
 
+$sid = intval($_REQUEST['sid']);
+
 addacpnav($lang->nav_smilies, "smilies.php");
 switch($action)
 {
@@ -36,6 +38,9 @@ if($action == "do_add") {
 	$find = addslashes($_POST['find']);
 	$path = addslashes($_POST['path']);
 	$name = addslashes($_POST['name']);
+	if(empty($find) || empty($path) || empty($name)) {
+		cperror($lang->error_fill_form);
+	}
 	$disporder = intval($_POST['disporder']);
 	$db->query("INSERT INTO ".TABLE_PREFIX."smilies (sid,name,find,image,disporder,showclickable) VALUES (NULL,'$name','$find','$path','$disporder','$showclickable')");
 	$cache->updatesmilies();
@@ -55,6 +60,9 @@ if($action == "do_edit") {
 	$find = addslashes($_POST['find']);
 	$path = addslashes($_POST['path']);
 	$name = addslashes($_POST['name']);
+	if(empty($find) || empty($path) || empty($name)) {
+		cperror($lang->error_fill_form);
+	}
 	$disporder = intval($_POST['disporder']);
 	$db->query("UPDATE ".TABLE_PREFIX."smilies SET name='$name', find='$find', image='$path', disporder='$disporder', showclickable='$showclickable' WHERE sid='$sid'");
 	$cache->updatesmilies();
@@ -64,17 +72,20 @@ if($action == "do_edit") {
 if($action == "edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='$sid'");
 	$smilie = $db->fetch_array($query);
-	$theme[imgdir] = "images";
+	if(!$smilie['sid']) {
+		cperror($lang->invalid_smilie);
+	}
+	$theme['imgdir'] = "images";
 	cpheader();
 	startform("smilies.php", "", "do_edit");
 	makehiddencode("sid", $sid);
 	starttable();
 	tableheader($lang->modify_smilie);
-	makeinputcode($lang->name, "name", $smilie[name]);
-	makeinputcode($lang->text_to_replace, "find", $smilie[find]);
-	makeinputcode($lang->image_path, "path", $smilie[image]);
-	makeinputcode($lang->disp_order, "disporder", $smilie[disporder]);
-	makeyesnocode($lang->show_clickable, "showclickable", $smilie[showclickable]);
+	makeinputcode($lang->name, "name", $smilie['name']);
+	makeinputcode($lang->text_to_replace, "find", $smilie['find']);
+	makeinputcode($lang->image_path, "path", $smilie['image']);
+	makeinputcode($lang->disp_order, "disporder", $smilie['disporder']);
+	makeyesnocode($lang->show_clickable, "showclickable", $smilie['showclickable']);
 	endtable();
 	endform($lang->update_smilie, $lang->reset_button);
 	cpfooter();
@@ -83,6 +94,9 @@ if($action == "edit") {
 if($action == "delete") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='$sid'");
 	$smilie = $db->fetch_array($query);
+	if(!$smilie['sid']) {
+		cperror($lang->invalid_smilie);
+	}
 	cpheader();
 	startform("smilies.php", "", "do_delete");
 	makehiddencode("sid", $sid);

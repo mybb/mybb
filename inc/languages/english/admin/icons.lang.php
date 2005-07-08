@@ -33,4 +33,5 @@ $l['delete_icon_confirm'] = "Are you sure you want to delete the post icon title
 $l['icon_added'] = "The post icon has successfully been added.";
 $l['icon_deleted'] = "The post icon has successfully been deleted.";
 $l['icon_updated'] = "The post icon has successfully been updated.";
+$l['invalid_icon'] = "Invalid icon specified.";
 ?>
