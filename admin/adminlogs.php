@@ -60,7 +60,7 @@ if($action == "do_prune")
 }
 if($action == "view")
 {
-	$perpage = intval($_POST['perpage']);
+	$perpage = intval($_REQUEST['perpage']);
 	if(!$perpage)
 	{
 		$perpage = 20;
