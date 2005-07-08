@@ -691,7 +691,7 @@ elseif($mybb->input['action'] == "activate")
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['uid']."'");
 		$user = $db->fetch_array($query);
 	}
-	if($code && $user['uid'])
+	if($mybb->input['code'] && $user['uid'])
 	{
 		$mybb->settings['awaitingusergroup'] = "5";
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user['uid']."' AND (type='r' OR type='e')");
