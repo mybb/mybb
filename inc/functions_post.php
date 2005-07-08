@@ -531,7 +531,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$www = "";
 		}
-		if($post['hideemail'] != "yes")
+		if($memprofile['hideemail'] == "no")
 		{
 			eval("\$email = \"".$templates->get("postbit_email")."\";");
 		}
