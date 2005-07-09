@@ -38,7 +38,7 @@ while(list($gid, $usergroup) = each($teams)) {
 			$post['uid'] = $user['uid'];
 			$user['location'] = stripslashes($user['location']);
 			$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
-			if($memprofile['hideemail'] == "no")
+			if($user['hideemail'] == "no")
 			{
 				eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
 			}
@@ -71,7 +71,7 @@ if(is_array($modsarray)) {
 		$forumslist = $modforums[$uid];
 		$uid = $user['uid'];
 		$post['uid'] = $user['uid'];
-		if($memprofile['hideemail'] == "no")
+		if($user['hideemail'] == "no")
 		{
 			eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
 		}
