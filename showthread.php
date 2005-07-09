@@ -122,7 +122,7 @@ if($action == "thread") {
 		$poll['timeout'] = $poll['timeout']*60*60*24;
 		$expiretime = $poll['dateline'] + $poll['timeout'];
 		$now = time();
-		if($poll['closed'] == "yes" || $thread['closed'] == "yes" || ($expiretime < $now && $poll['timeout'])) {
+		if($poll['closed'] == "yes" || $thread['closed'] == "yes" || ($expiretime < $now && $poll['timeout'] > 0)) {
 			$showresults = 1;
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user[uid]."' AND pid='$poll[pid]'");

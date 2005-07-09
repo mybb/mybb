@@ -256,6 +256,7 @@ if($mybb->input['action'] == "do_newpoll")
 	else
 	{
 		redirect("forumdisplay.php?fid=".$thread['fid'], $lang->redirect_pollpostedmoderated);
+	}
 }
 if($mybb->input['action'] == "editpoll")
 {
@@ -406,7 +407,7 @@ if($mybb->input['action'] == "do_editpoll")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='".intval($mybb->input['pid'])."'");
 	$thread = $db->fetch_array($query);
 
-	$forumpermissions = forumpermissions($thread['fid']);
+	$forumpermissions = forum_permissions($thread['fid']);
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."'");
 	$forum = $db->fetch_array($query);
