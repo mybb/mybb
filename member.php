@@ -104,13 +104,13 @@ if($mybb->input['action'] == "do_register")
 	}
 	if(eregi("<", $username) || eregi(">", $username) || eregi("&", $username) && !$bannedusername)
 	{
-		$errors[] = $lang->error_bannedusername;
+		$errors[] = $lang->error_invalidusername;
 		$bannedusername = 1;
 	}
 	$user2 = str_replace("\\", "", $username);
 	if($user2 != $username)
 	{
-		$errors[] = $lang->bannedusername;
+		$errors[] = $lang->error_invalidusername;
 		$bannedusername = 1;
 	}
 	if(($mybb->settings['maxnamelength'] != 0 && strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && strlen($username) < $mybb->settings['minnamelength']) && !$bannedusername && !$missingname)
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "do_register")
 	}
 	
 	$email = $mybb->input['email'];
-	$email2 = $mybb->input['email'];
+	$email2 = $mybb->input['email2'];
 
 	if(!trim($email))
 	{
