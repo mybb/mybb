@@ -962,8 +962,8 @@ if($action == "showreferrers")
 		while($refuser = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
-			$regdate = gmdate("d-m-Y", $user[regdate]);
-			$lvdate = gmdate("d-m-Y", $user[lastvisit]);
+			$regdate = gmdate("d-m-Y", $refuser['regdate']);
+			$lvdate = gmdate("d-m-Y", $refuser['lastvisit']);
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\">$refuser[username]</td>\n";
 			echo "<td class=\"$bgcolor\">$refuser[postnum]</td>\n";
