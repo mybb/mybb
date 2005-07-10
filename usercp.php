@@ -32,17 +32,23 @@ makeucpnav();
 
 if($action == "do_editsig")
 {
-	if($mybb->settings['maxsigimages'] != 0)
+	$imagecheck = postify(stripslashes($signature), $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);
+	if(($mybb->settings['sigimgcode'] == "no" && substr_count($imagecheck, "<img") > 0) || ($mybb->settings['sigimgcode'] == "yes" && substr_count($imagecheck, "<img") > $mybb->settings['maxsigimages']))
 	{
-		$imagecheck = postify(stripslashes($signature), $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);
-		if(substr_count($imagecheck, "<img") > $mybb->settings['maxsigimages'])
+		if($mybb->settings['sigimgcode'] == "yes")
 		{
-			$lang->too_many_sig_images2 = sprintf($lang->too_many_sig_images2, $mybb->settings['maxsigimages']);
-			eval("\$maximageserror = \"".$templates->get("error_maxsigimages")."\";");
-			$action = "editsig";
+			$imgsallowed = $mybb->settings['maxsigimages'];
 		}
+		else
+		{
+			$imgsallowed = 0;
+		}
+		$lang->too_many_sig_images2 = sprintf($lang->too_many_sig_images2, $imgsallowed);
+		eval("\$maximageserror = \"".$templates->get("error_maxsigimages")."\";");
+		$action = "editsig";
 	}
-	if($preview) {
+	if($mybb->input['preview'])
+	{
 		$action = "editsig";
 	}
 }
@@ -1068,7 +1074,7 @@ elseif($action == "favorites")
 	if($mybb->settings['sigimgcode'] == "yes") {
 		$sigimgcode = $lang->on;
 	} else {
-		$sigmycode = $lang->off;
+		$sigimgcode = $lang->off;
 	}
 	$lang->edit_sig_note2 = sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 	eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");

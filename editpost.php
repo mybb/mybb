@@ -154,32 +154,44 @@ if($mybb->input['removeattachment']) { // Lets remove the attachmen
 //	die($removeattachment);
 }
 
-if($mybb->input['action'] == "deletepost") {
+if($mybb->input['action'] == "deletepost")
+{
 
 	$plugins->run_hooks("editpost_deletepost");
 	
-	if($mybb->input['delete'] == "yes") {
+	if($mybb->input['delete'] == "yes")
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
 		$firstcheck = $db->fetch_array($query);
-		if($firstcheck['pid'] == $pid) {
+		if($firstcheck['pid'] == $pid)
+		{
 			$firstpost = 1;
-		} else {
+		}
+		else
+		{
 			$firstpost = 0;
 		}
 		$modlogdata['fid'] = $fid;
 		$modlogdata['tid'] = $tid;
-		if($firstpost) {
-			if($forumpermissions['candeletethreads'] == "yes") {
+		if($firstpost)
+		{
+			if($forumpermissions['candeletethreads'] == "yes")
+			{
 				deletethread($tid);
 				updateforumcount($fid);
 				markreports($tid, "thread");
 				logmod($modlogdata, "Deleted Thread");
 				redirect("forumdisplay.php?fid=$fid", $lang->redirect_threaddeleted);
-			} else {
+			}
+			else
+			{
 				nopermission();
 			}
-		} else {
-			if($forumpermissions['candeleteposts'] == "yes") {
+		}
+		else
+		{
+			if($forumpermissions['candeleteposts'] == "yes")
+			{
 				// Select the first post before this
 				deletepost($pid, $tid);
 				updatethreadcount($tid);
@@ -194,11 +206,15 @@ if($mybb->input['action'] == "deletepost") {
 				}
 				logmod($modlogdata, "Deleted Post");
 				redirect($redir, $lang->redirect_postdeleted);
-			} else {
+			}
+			else
+			{
 				nopermission();
 			}
 		}
-	} else {
+	}
+	else
+	{
 		redirect("showthread.php?tid=$tid", $lang->redirect_nodelete);
 	}
 }
@@ -209,32 +225,45 @@ elseif($mybb->input['action'] == "do_editpost")
 	
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
 	$firstcheck = $db->fetch_array($query);
-	if($firstcheck['pid'] == $pid) {
+	if($firstcheck['pid'] == $pid)
+	{
 		$firstpost = 1;
-	} else {
+	}
+	else
+	{
 		$firstpost = 0;
 	}
-	if(strlen(trim($mybb->input['subject'])) == 0 && $firstpost) {
+
+	if(strlen(trim($mybb->input['subject'])) == 0 && $firstpost)
+	{
 		error($lang->error_nosubject);
 	}
+	elseif(strlen(trim($mybb->input['subject'])) == 0)
+	{
+		$mybb->input['subject'] = "RE: " . $thread['subject'];
+	}
+
 	if (strlen(trim($mybb->input['message'])) == 0)
 	{
 		error($lang->error_nomessage);
 	}
 
-	if(strlen(trim($mybb->input['message'])) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] != 0) {
+	if(strlen(trim($mybb->input['message'])) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] != 0)
+	{
 		error($lang->error_messagelength);
 	}
 
 	$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE filename='' AND filesize < 1");
 
-	if(!$mybb->input['icon'] || $mybb->input['icon'] == -1) {
+	if(!$mybb->input['icon'] || $mybb->input['icon'] == -1)
+	{
 		$mybb->input['icon'] = "0";
 	}
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
 	$firstcheck = $db->fetch_array($query);
-	if($firstcheck['pid'] == $pid) {
+	if($firstpost)
+	{
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='".addslashes($mybb->input['subject'])."', icon='".$mybb->input['icon']."' WHERE tid='$tid'");
 	}
 
@@ -242,13 +271,16 @@ elseif($mybb->input['action'] == "do_editpost")
 	
 	$postoptions = $mybb->input['postoptions'];
 
-	if($postoptions['signature'] != "yes") {
+	if($postoptions['signature'] != "yes")
+	{
 		$postoptions['signature'] = "no";
 	}
-	if($postoptions['emailnotify'] != "yes") {
+	if($postoptions['emailnotify'] != "yes")
+	{
 		$postoptions['emailnotify'] = "no";
 	}
-	if($postoptions['disablesmilies'] != "yes") {
+	if($postoptions['disablesmilies'] != "yes")
+	{
 		$postoptions['disablesmilies'] = "no";
 	}
 

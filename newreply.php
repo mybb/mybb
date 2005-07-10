@@ -450,7 +450,11 @@ if($mybb->input['action'] == "do_newreply" )
 	$updatepost = 0;
 	if(!$mybb->input['savedraft'] || !$mybb->user['uid'])
 	{
-		if (strlen(trim($mybb->input['message'])) == 0)
+		if(strlen(trim($mybb->input['subject'])) == 0)
+		{
+			$mybb->input['subject'] = 'RE: ' . $thread['subject'];
+		}
+		if(strlen(trim($mybb->input['message'])) == 0)
 		{
 			error($lang->error_nomessage);
 		}
