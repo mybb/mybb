@@ -165,7 +165,7 @@ function requirements_check()
 	$uploadswritable = is_writeable("../uploads");
 	if(!$uploadswritable)
 	{
-		$errors[] = "<p><b>Warning: The uploads (uploads/) directory is not writable. Please adjust the chmod permissions to allow it to be written to.</b></p>";
+		$errors[] = "<p><b>The uploads directory (uploads/) is not writable. Please adjust the chmod permissions to allow it to be written to.</b></p>";
 		$showerror = 1;
 	}
 	else
@@ -175,7 +175,7 @@ function requirements_check()
 	$avatarswritable = is_writeable("../uploads/avatars");
 	if(!$avatarswritable)
 	{
-		$errors[] =  "<p><b>Warning: The avatar uploads (uploads/avatars/) directory is not writable. Please adjust the chmod permissions to allow it to be written to.</b></p>";
+		$errors[] =  "<p><b>The avatars directory (uploads/avatars/) is not writable. Please adjust the chmod permissions to allow it to be written to.</b></p>";
 		$showerror = 1;
 	}
 	else
@@ -369,19 +369,27 @@ function configure()
 	$contents = "<p>Now that we have managed to install the default templates, as well as populate the database we need you to specify the basic board configuration below as well as create an Administrator account.</p>";
 	$contents .= "<p>Board Name:<br /><input type=\"text\" name=\"boardname\" value=\"\" /></p>\n";
 	$contents .= "<p>Board URL: (Enter the full URL to your board without the trailing slash.)<br /><input type=\"text\" name=\"boardurl\" value=\"http://\" /></p>\n";
+	$contents .= "<table cellspacing=\"1\" cellpadding=\"4\" style=\"border: solid 1px;\" width=\"100%\"><tbody><tr><td><a href=\"javascript:expandCollapse('advanced_1');\"><strong><i>&raquo;</i> Advanced Settings (optional)</strong></a></td></tr></tbody><tbody style=\"\" id=\"advanced_1_e\"><tr><td>";
+	$contents .= "<p>Website Name:<br /><input type=\"text\" name=\"webname\" value=\"Your Website\" /></p>\n";
+	$contents .= "<p>Website URL:<br /><input type=\"text\" name=\"weburl\" value=\"http://\" /></p>\n";
+	$contents .= "</td></tr></tbody></table>";
 	$contents .= "<p>&nbsp;</p>";
 	$contents .= "<p>Administrator Username:<br /><input type=\"text\" name=\"adminuser\" value=\"\" /></p>\n";
 	$contents .= "<p>Administrator Password:<br /><input type=\"password\" name=\"adminpass\" value=\"\" /></p>\n";
 	$contents .= "<p>Administrator Email:<br /><input type=\"text\" name=\"adminemail\" value=\"\" /></p>\n";
+	$contents .= "<table cellspacing=\"1\" cellpadding=\"4\" style=\"border: solid 1px;\" width=\"100%\"><tbody><tr><td><a href=\"javascript:expandCollapse('advanced_2');\"><strong><i>&raquo;</i> Advanced Settings (optional)</strong></a></td></tr></tbody><tbody style=\"\" id=\"advanced_2_e\"><tr><td>";
+	$contents .= "<p>Cookie Domain:<br /><input type=\"text\" name=\"cookiedomain\" value=\"\" /></p>\n";
+	$contents .= "<p>Cookie Path:<br /><input type=\"text\" name=\"cookiepath\" value=\"\" /></p>\n";
+	$contents .= "</td></tr></tbody></table>";
+	$contents .= "<p>&nbsp;</p>";
 	$contents .= "<p><b>Once you have checked these details and are ready to proceed, click Next.</b></p>\n";
 	$output->print_contents($contents);
 	$output->print_footer("final");
-
 }
 
 function install_done()
 {
-	global $output, $db, $myver, $adminuser, $adminpass, $boardname, $boardurl, $adminemail, $cache;
+	global $output, $db, $myver, $adminuser, $adminpass, $boardname, $boardurl, $adminemail, $webname, $weburl, $cookiedomain, $cookiepath, $cache;
 
 	require "../inc/config.php";
 	require "../inc/db_".$config['dbtype'].".php";
@@ -418,13 +426,23 @@ function install_done()
 	$contents .= "<p>Setting up basic board settings...";
 	$boardname = addslashes($_POST['boardname']);
 	$boardurl = addslashes($_POST['boardurl']);
-	$adminemail = addslashes($_POST['adminemail']);
 	if (substr($boardurl, -1, 1) == "/") {
 		$boardurl = substr($boardurl, 0, -1);
 	}
+	$webname = addslashes($_POST['webname']);
+	$weburl = addslashes($_POST['weburl']);
+	$cookiedomain = addslashes($_POST['cookiedomain']);
+	$cookiepath = addslashes($_POST['cookiepath']);
+	$adminemail = addslashes($_POST['adminemail']);
+
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$boardname."' WHERE name='bbname'");
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$boardurl."' WHERE name='bburl'");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$webname."' WHERE name='homename'");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$weburl."' WHERE name='homeurl'");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$cookiedomain."' WHERE name='cookiedomain'");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$cookiepath."' WHERE name='cookiepath'");
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$adminemail."' WHERE name='adminemail'");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='mailto:".$adminemail."' WHERE name='contactlink'");
 	write_settings();
 	$contents .= "done</p>";
 

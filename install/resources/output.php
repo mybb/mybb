@@ -23,6 +23,7 @@ class installerOutput {
 		echo "<head>\n";
 		echo "<title>MyBulletinBoard Installation Wizard</title>\n";
 		echo "<link rel=\"stylesheet\" href=\"stylesheet.css\" type=\"text/css\" />\n";
+		echo "<script src=\"general.js\" type=\"text/javascript\" /></script>\n";
 		echo "</head>\n";
 		echo "<body>\n";
 		if($form)
@@ -32,7 +33,7 @@ class installerOutput {
 		}
 		echo "<table class=\"outer\">\n";
 		echo "<tr>\n";
-		echo "<td id=\"header\"><img src=\"header.gif\"></td>\n";
+		echo "<td id=\"header\"><img src=\"images/header.gif\"></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td class=\"thead\">Installation Wizard</td>\n";
