@@ -1,4 +1,4 @@
-s<?php
+<?php
 /**
  * MyBB 1.0
  * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
