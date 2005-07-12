@@ -222,7 +222,8 @@ function create_tables()
 {
 	global $output, $myver, $dbinfo;
 	
-	if(!file_exists("../inc/db_".$dbinfo['engine'].".php")) {
+	if(!file_exists("../inc/db_".$dbinfo['engine'].".php"))
+	{
 		$output->print_error("<p>Sorry but you have selected an invalid database engine, please go back and try again.</p>");
 	}
 
@@ -390,6 +391,29 @@ function configure()
 function install_done()
 {
 	global $output, $db, $myver, $adminuser, $adminpass, $boardname, $boardurl, $adminemail, $webname, $weburl, $cookiedomain, $cookiepath, $cache;
+	$errors = array();
+	$showerror = 0;
+
+	if($boardname == "")
+	{
+		$output->print_error("It seems you have forgotten to enter your Board's name. Please go back and fill it in.");
+	}
+	if($boardurl == "")
+	{
+		$output->print_error("It seems you have forgotten to enter your Board's URL. Please go back and fill it in.");
+	}
+	if($adminuser == "")
+	{
+		$output->print_error("It seems you have forgotten to enter your Administrator's username. Please go back and fill it in.");
+	}
+	if($adminpass == "")
+	{
+		$output->print_error("It seems you have forgotten to enter your Administrator's password. Please go back and fill it in.");
+	}
+	if($adminemail == "")
+	{
+		$output->print_error("It seems you have forgotten to enter your Administrator's email. Please go back and fill it in.");
+	}
 
 	require "../inc/config.php";
 	require "../inc/db_".$config['dbtype'].".php";
@@ -402,12 +426,11 @@ function install_done()
 	ob_start();
 	$output->print_header("Final Steps");
 	$contents = "<p>Inserting MyBB settings...";
-//	require "./resources/settings.php";
+	// require "./resources/settings.php";
 	$contents .=  "done</p>";
 
 	$contents .= "<p>Creating Administrator account...";
 	$now = time();
-
 	$adminuser = addslashes($_POST['adminuser']);
 	$adminemail = addslashes($_POST['adminemail']);
 	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,usergroup,regdate) VALUES (NULL,'".$adminuser."','".md5($adminpass)."','".$adminemail."','4','$now')");
@@ -426,7 +449,8 @@ function install_done()
 	$contents .= "<p>Setting up basic board settings...";
 	$boardname = addslashes($_POST['boardname']);
 	$boardurl = addslashes($_POST['boardurl']);
-	if (substr($boardurl, -1, 1) == "/") {
+	if (substr($boardurl, -1, 1) == "/")
+	{
 		$boardurl = substr($boardurl, 0, -1);
 	}
 	$webname = addslashes($_POST['webname']);
@@ -434,7 +458,6 @@ function install_done()
 	$cookiedomain = addslashes($_POST['cookiedomain']);
 	$cookiepath = addslashes($_POST['cookiepath']);
 	$adminemail = addslashes($_POST['adminemail']);
-
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$boardname."' WHERE name='bbname'");
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$boardurl."' WHERE name='bburl'");
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$webname."' WHERE name='homename'");
