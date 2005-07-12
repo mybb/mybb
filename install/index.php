@@ -397,22 +397,27 @@ function install_done()
 	if($boardname == "")
 	{
 		$output->print_error("It seems you have forgotten to enter your Board's name. Please go back and fill it in.");
+		exit;
 	}
 	if($boardurl == "")
 	{
 		$output->print_error("It seems you have forgotten to enter your Board's URL. Please go back and fill it in.");
+		exit;
 	}
 	if($adminuser == "")
 	{
 		$output->print_error("It seems you have forgotten to enter your Administrator's username. Please go back and fill it in.");
+		exit;
 	}
 	if($adminpass == "")
 	{
 		$output->print_error("It seems you have forgotten to enter your Administrator's password. Please go back and fill it in.");
+		exit;
 	}
 	if($adminemail == "")
 	{
 		$output->print_error("It seems you have forgotten to enter your Administrator's email. Please go back and fill it in.");
+		exit;
 	}
 
 	require "../inc/config.php";
