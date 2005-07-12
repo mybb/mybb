@@ -560,7 +560,7 @@ function makenavoption($name, $url)
 {
 	global $noframes, $navoptions;
 	$name = htmlspecialchars_uni($name);
-	$navoptions .= "<li><a href=\"$url\">$name</small></a></li>\n";
+	$navoptions .= "<li><a href=\"$url\">$name</a></li>\n";
 }
 function makenavselect($name)
 {
