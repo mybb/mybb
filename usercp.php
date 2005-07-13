@@ -1774,6 +1774,7 @@ else {
 	{
 		$usergroup .= "<br />(<a href=\"member.php?action=resendactivation\">$lang->resend_activation</a>)";
 	}
+	$mybb->user['postnum'] = number_format($mybb->user['postnum']);
 	eval("\$usercp = \"".$templates->get("usercp")."\";");
 	outputpage($usercp);
 }

@@ -4567,7 +4567,7 @@ $lang->agreement_4
 $footer
 </body>
 </html>]]></template>
-		<template name="stats_thread"><![CDATA[<a href="showthread.php?tid=$thread[tid]"><strong>$thread[subject]</strong></a> ($thread[$viewreply] $viewreply)<br />]]></template>
+<template name="stats_thread"><![CDATA[<a href="showthread.php?tid=$thread[tid]"><strong>$thread[subject]</strong></a> ($numberbit $numbertype)<br />]]></template>
 		<template name="online"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->users_online</title>

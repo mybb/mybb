@@ -47,16 +47,18 @@ if($unviewableforums) {
 // Most replied-to threads
 $query = $db->query("SELECT tid, subject, replies FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY replies DESC LIMIT 0, ".$mybb->settings[statslimit]);
 while($thread = $db->fetch_array($query)) {
-	$viewreply = "replies";
 	$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
+	$numberbit = number_format($thread['replies']);
+	$numbertype = $lang->replies;
 	eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
 }
 
 // Most viewed threads
 $query = $db->query("SELECT tid, subject, views FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY views DESC LIMIT 0, ".$mybb->settings[statslimit]);
 while($thread = $db->fetch_array($query)) {
-	$viewreply = "views";
 	$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
+	$numberbit = number_format($thread['views']);
+	$numbertype = $lang->views;
 	eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");
 }
 
@@ -91,8 +93,12 @@ $query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE postnum > 
 $posters = $db->result($query, 0);
 $havepostedpercent = round((($posters / $stats['numusers']) * 100), 2) . "%";
 
-$lang->todays_top_poster = sprintf($lang->todays_top_poster, $topposter, $topposterposts);
-$lang->popular_forum = sprintf($lang->popular_forum, $topforum, $topforumposts, $topforumthreads);
+$lang->todays_top_poster = sprintf($lang->todays_top_poster, $topposter, number_format($topposterposts));
+$lang->popular_forum = sprintf($lang->popular_forum, $topforum, number_format($topforumposts), number_format($topforumthreads));
+
+$stats['numposts'] = number_format($stats['numposts']);
+$stats['numthreads'] = number_format($stats['numthreads']);
+$stats['numusers'] = number_format($stats['numusers']);
 
 eval("\$stats = \"".$templates->get("stats")."\";");
 outputpage($stats);

@@ -475,6 +475,7 @@ function makepostbit($post, $pmprevann=0)
 				}
 			}
 		}
+		
 		if(!$starimage)
 		{
 			$starimage = $usergroup['starimage'];
@@ -491,6 +492,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$usertitle = $post['usertitle'];
 		}
+		$post['postnum'] == number_format($post['postnum']);
 		
 		// Determine the status to show for the user (Online/Offline/Away)
 		$timecut = time() - $mybb->settings['wolcutoff'];
