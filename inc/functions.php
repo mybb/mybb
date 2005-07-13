@@ -2078,11 +2078,26 @@ function themeselect($name, $selected="", $tid=0, $depth="")
 
 function htmlspecialchars_uni($message)
 {
-		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicide
-		$message = str_replace("<","&lt;",$message);
-		$message = str_replace(">","&gt;",$message);
-		$message = str_replace("\"","&quot;",$message);
-		$message = str_replace("  ", "&nbsp;&nbsp;", $message);
-		return $message;
+	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicide
+	$message = str_replace("<","&lt;",$message);
+	$message = str_replace(">","&gt;",$message);
+	$message = str_replace("\"","&quot;",$message);
+	$message = str_replace("  ", "&nbsp;&nbsp;", $message);
+	return $message;
+}
+
+function mynumberformat($number)
+{
+	global $mybb;
+	if(is_int($number))
+	{
+		return number_format($number, 0, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
+	}
+	else
+	{
+		$parts = explode('.', $number);
+		$decimals = strlen($parts[1]);
+		return number_format($number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
+	}
 }
 ?>

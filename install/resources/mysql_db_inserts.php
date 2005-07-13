@@ -179,6 +179,9 @@ $inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionsc
 $inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (110, 'avataruploadpath', 'Avatar Upload Path', 'This is the path where custom avatars will be uploaded to. This directory <b>must be chmod 777</b> (writable) for uploads to work.', 'text', './uploads/avatars', 1, 19);";
 $inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (111, 'subforumsindex', 'Subforums to show on Index listing', 'The number of subforums that you wish to show inside forums on the index and forumdisplay pages. Set to 0 to disable this', 'text', '2', 1, 16);";
 $inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (112, 'disableregs', 'Disable Registrations', 'Allows you to turn off the capability for users to register with one click.', 'yesno', 'no', 9, 19);";
+$inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (113, 'decpoint', 'Decimal Point', 'The decimal point you use in your region.', 'text', '.', 1, 1);";
+$inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (114, 'thousandssep', 'Thousands Numeric Separator', 'The punctuation you want to use .  (for example, the setting \',\' with the number 1200 will give you a number such as 1,200)', 'text', ',', 1, 1);";
+
 
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (1, 'Smile', ':)', 'images/smilies/smile.gif', 1, 'yes');";
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (3, 'Wink', ';)', 'images/smilies/wink.gif', 1, 'yes');";
