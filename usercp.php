@@ -933,6 +933,8 @@ elseif($action == "favorites")
 				$folder .= "lock";
 			}
 			$folder .= "folder";
+			$favorite['replies'] = mynumberformat($favorite['replies']);
+			$favorite['views'] = mynumberformat($favorite['views']);
 			eval("\$threads .= \"".$templates->get("usercp_favorites_thread")."\";");
 			$folder = "";
 		}
@@ -996,6 +998,8 @@ elseif($action == "favorites")
 				$folder .= "lock";
 			}
 			$folder .= "folder";
+			$subscription['replies'] = mynumberformat($subscription['replies']);
+			$subscription['views'] = mynumberformat($subscription['views']);
 			eval("\$threads .= \"".$templates->get("usercp_subscriptions_thread")."\";");
 			$folder = "";
 		}
@@ -1031,8 +1035,8 @@ elseif($action == "favorites")
 				eval("\$lastpost = \"".$templates->get("forumbit_depth1_forum_lastpost")."\";");
 			}
 		}
-		$posts = $forum['posts'];
-		$threads = $forum['threads'];
+		$posts = mynumberformat($forum['posts']);
+		$threads = mynumberformat($forum['threads']);
 		if($mybb->settings['showdescriptions'] == "no") {
 			$forum['description'] = "";
 		}
@@ -1724,7 +1728,7 @@ else {
 	if($perday > $mybb->user['postnum']) {
 		$perday = $mybb->user['postnum'];
 	}
-	$lang->posts_day = sprintf($lang->posts_day, $perday);
+	$lang->posts_day = sprintf($lang->posts_day, mynumberformat($perday));
 	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
 
 	$colspan = 2;
@@ -1774,7 +1778,7 @@ else {
 	{
 		$usergroup .= "<br />(<a href=\"member.php?action=resendactivation\">$lang->resend_activation</a>)";
 	}
-	$mybb->user['postnum'] = number_format($mybb->user['postnum']);
+	$mybbuser['postnum'] = mynumberformat($mybb->user['postnum']);
 	eval("\$usercp = \"".$templates->get("usercp")."\";");
 	outputpage($usercp);
 }

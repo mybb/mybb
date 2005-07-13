@@ -304,7 +304,8 @@ if($action == "results")
 				$morelink = "";
 				$result['multipage'] = "";
 			}
-
+			$result['replies'] = mynumberformat($result['replies']);
+			$result['views'] = mynumberformat($result['views']);
 			eval("\$results .= \"".$templates->get("search_results_thread")."\";");		
 		}
 		if($bgcolor == "trow2")

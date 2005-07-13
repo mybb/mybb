@@ -492,7 +492,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$usertitle = $post['usertitle'];
 		}
-		$post['postnum'] == number_format($post['postnum']);
+		$post['postnum'] = mynumberformat($post['postnum']);
 		
 		// Determine the status to show for the user (Online/Offline/Away)
 		$timecut = time() - $mybb->settings['wolcutoff'];

@@ -192,7 +192,7 @@ if($mybb->user['uid'] != 0)
 		eval("\$admincplink = \"".$templates->get("header_welcomeblock_member_admin")."\";");
 	}
 	$lang->welcome_back = sprintf($lang->welcome_back, $mybb->user['username'], $lastvisit);
-	$lang->welcome_pms_usage = sprintf($lang->welcome_pms_usage, $mybb->user['pms_new'], $mybb->user['pms_unread'], $mybb->user['pms_total']);
+	$lang->welcome_pms_usage = sprintf($lang->welcome_pms_usage, mynumberformat($mybb->user['pms_new']), mynumberformat($mybb->user['pms_unread']), mynumberformat($mybb->user['pms_total']));
 	eval("\$welcomeblock = \"".$templates->get("header_welcomeblock_member")."\";");
 }
 else

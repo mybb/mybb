@@ -1284,8 +1284,8 @@ elseif($mybb->input['action'] == "profile")
 	{
 		eval("\$profilefields = \"".$templates->get("member_profile_customfields")."\";");
 	}
-	$memprofile['postnum'] = number_format($memprofile['postnum']);
-	$lang->ppd_percent_total = sprintf($lang->ppd_percent_total, $ppd, $percent);
+	$memprofile['postnum'] = mynumberformat($memprofile['postnum']);
+	$lang->ppd_percent_total = sprintf($lang->ppd_percent_total, mynumberformat($ppd), $percent);
 	$formattedname = formatname($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
 	if($memprofile['timeonline'])
 	{

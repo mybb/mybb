@@ -25,8 +25,8 @@ if($stats['numthreads'] < 1 || $stats['numposts'] < 1)
 	error($lang->not_enough_info_stats);
 }
 
-$repliesperthread = round((($stats['numposts'] - $stats['numthreads']) / $stats['numthreads']), 2);
-$postspermember = round(($stats['numposts'] / $stats['numusers']), 2);
+$repliesperthread = mynumberformat(round((($stats['numposts'] - $stats['numthreads']) / $stats['numthreads']), 2));
+$postspermember = mynumberformat(round(($stats['numposts'] / $stats['numusers']), 2));
 
 // Get number of days since board start (might need improvement)
 $query = $db->query("SELECT regdate FROM ".TABLE_PREFIX."users ORDER BY regdate LIMIT 1");
@@ -34,9 +34,9 @@ $result = $db->fetch_array($query);
 $days = (time() - $result['regdate']) / 86400;
 
 // Get "per day" things
-$postsperday = round(($stats['numposts'] / $days), 2);
-$threadsperday = round(($stats['numthreads'] / $days), 2);
-$membersperday = round(($stats['numusers'] / $days), 2);
+$postsperday = mynumberformat(round(($stats['numposts'] / $days), 2));
+$threadsperday = mynumberformat(round(($stats['numthreads'] / $days), 2));
+$membersperday = mynumberformat(round(($stats['numusers'] / $days), 2));
 
 // Get forum permissions
 $unviewableforums = getunviewableforums();
@@ -48,7 +48,7 @@ if($unviewableforums) {
 $query = $db->query("SELECT tid, subject, replies FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY replies DESC LIMIT 0, ".$mybb->settings[statslimit]);
 while($thread = $db->fetch_array($query)) {
 	$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
-	$numberbit = number_format($thread['replies']);
+	$numberbit = mynumberformat($thread['replies']);
 	$numbertype = $lang->replies;
 	eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
 }
@@ -57,7 +57,7 @@ while($thread = $db->fetch_array($query)) {
 $query = $db->query("SELECT tid, subject, views FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY views DESC LIMIT 0, ".$mybb->settings[statslimit]);
 while($thread = $db->fetch_array($query)) {
 	$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
-	$numberbit = number_format($thread['views']);
+	$numberbit = mynumberformat($thread['views']);
 	$numbertype = $lang->views;
 	eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");
 }
@@ -93,12 +93,12 @@ $query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE postnum > 
 $posters = $db->result($query, 0);
 $havepostedpercent = round((($posters / $stats['numusers']) * 100), 2) . "%";
 
-$lang->todays_top_poster = sprintf($lang->todays_top_poster, $topposter, number_format($topposterposts));
-$lang->popular_forum = sprintf($lang->popular_forum, $topforum, number_format($topforumposts), number_format($topforumthreads));
+$lang->todays_top_poster = sprintf($lang->todays_top_poster, $topposter, mynumberformat($topposterposts));
+$lang->popular_forum = sprintf($lang->popular_forum, $topforum, mynumberformat($topforumposts), mynumberformat($topforumthreads));
 
-$stats['numposts'] = number_format($stats['numposts']);
-$stats['numthreads'] = number_format($stats['numthreads']);
-$stats['numusers'] = number_format($stats['numusers']);
+$stats['numposts'] = mynumberformat($stats['numposts']);
+$stats['numthreads'] = mynumberformat($stats['numthreads']);
+$stats['numusers'] = mynumberformat($stats['numusers']);
 
 eval("\$stats = \"".$templates->get("stats")."\";");
 outputpage($stats);

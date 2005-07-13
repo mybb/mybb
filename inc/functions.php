@@ -1860,7 +1860,7 @@ function makeucpnav()
 	}
 	$query = $db->query("SELECT COUNT(*) AS draftcount FROM ".TABLE_PREFIX."posts WHERE visible='-2' AND uid='".$mybb->user['uid']."'");
 	$count = $db->fetch_array($query);
-	$draftcount = "(".$count['draftcount'].")";
+	$draftcount = "(".mynumberformat($count['draftcount']).")";
 	if($count['draftcount'] > 0)
 	{
 		$draftstart = "<strong>";

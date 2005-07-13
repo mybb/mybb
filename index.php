@@ -93,7 +93,7 @@ if($mybb->settings['showwol'] != "no")
 		$hourdel = time()-($hourdel*60*60);
 		$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."online WHERE time<'$hourdel'");
 	}
-	$lang->online_note = sprintf($lang->online_note, number_format($onlinecount), number_format($membercount), number_format($anoncount), number_format($guestcount));
+	$lang->online_note = sprintf($lang->online_note, mynumberformat($onlinecount), mynumberformat($membercount), mynumberformat($anoncount), mynumberformat($guestcount));
 	eval("\$whosonline = \"".$templates->get("index_whosonline")."\";");
 }
 // Get birthdays
@@ -135,8 +135,8 @@ if($mybb->settings['showindexstats'] != "no")
 	{
 		$newestmember = "<a href=\"member.php?action=profile&amp;uid=".$stats['lastuid']."\">".$stats['lastusername']."</a>";
 	}
-	$lang->stats_posts_threads = sprintf($lang->stats_posts_threads, number_format($stats['numposts']), number_format($stats['numthreads']));
-	$lang->stats_numusers = sprintf($lang->stats_numusers, number_format($stats['numusers']));
+	$lang->stats_posts_threads = sprintf($lang->stats_posts_threads, mynumberformat($stats['numposts']), mynumberformat($stats['numthreads']));
+	$lang->stats_numusers = sprintf($lang->stats_numusers, mynumberformat($stats['numusers']));
 	$lang->stats_newestuser = sprintf($lang->stats_newestuser, $newestmember);
 	
 	// Most users online
@@ -152,7 +152,7 @@ if($mybb->settings['showindexstats'] != "no")
 	$recorddate = mydate($mybb->settings['dateformat'], $mostonline['time']);
 	$recordtime = mydate($mybb->settings['timeformat'], $mostonline['time']);
 	
-	$lang->stats_mostonline = sprintf($lang->stats_mostonline, number_format($recordcount), $recorddate, $recordtime);
+	$lang->stats_mostonline = sprintf($lang->stats_mostonline, mynumberformat($recordcount), $recorddate, $recordtime);
 	
 	eval("\$forumstats = \"".$templates->get("index_stats")."\";");
 }
@@ -283,8 +283,8 @@ function getforums($pid="0", $depth=1, $permissions="")
 					}
 					else
 					{
-						$posts = number_format($forum['posts']);
-						$threads = number_format($forum['threads']);
+						$posts = mynumberformat($forum['posts']);
+						$threads = mynumberformat($forum['threads']);
 					}
 					if($mybb->settings['modlist'] != "off")
 					{

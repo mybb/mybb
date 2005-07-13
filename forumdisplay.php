@@ -640,7 +640,8 @@ if($threadcache)
 		$lastposter = $thread['lastposter'];
 		$lastposteruid = $thread['lastposter'];
 		eval("\$lastpost = \"".$templates->get("forumdisplay_thread_lastpost")."\";");
-
+		$thread['replies'] = mynumberformat($thread['replies']);
+		$thread['views'] = mynumberformat($thread['views']);
 		eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
 	}
 
@@ -748,8 +749,8 @@ function getforums($pid="0", $depth=1, $permissions="")
 					}
 					else
 					{
-						$posts = $forum['posts'];
-						$threads = $forum['threads'];
+						$posts = mynumberformat($forum['posts']);
+						$threads = mynumberformat($forum['threads']);
 					}
 					if($mybb->settings['modlist'] != "off")
 					{
