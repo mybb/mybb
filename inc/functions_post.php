@@ -38,8 +38,9 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 			$message = dosmilies($message);
 		}
 	}
-	if($allowhtml != "yes")
+	if($allowimgcode != "yes")
 	{
+		$message = str_replace("<img","&lt;img",$message);
 	}
 	$message = nl2br($message);
 	return $message;
