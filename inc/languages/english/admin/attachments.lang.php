@@ -47,9 +47,10 @@ $l['filetype'] = "Filetype";
 $l['filesize'] = "Filesize";
 $l['downloads'] = "Downloads";
 $l['delete_selected'] = "Delete Selected Files";
-$l['clear_checks'] = "Check Checked Files";
+$l['clear_checks'] = "Uncheck Selected Files";
 
 $l['attachs_deleted'] = "The selected attachments have been successfully deleted.";
+$l['attachs_noneselected'] = "No attachments were selected for deletion.";
 
 $l['new_attach_type'] = "New Attachment Type";
 $l['edit_attach_type'] = "Edit Attachment Type";

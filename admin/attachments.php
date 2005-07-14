@@ -196,7 +196,7 @@ if($action == "do_search")
 
 		echo "<tr>\n";
 		echo "<td class=\"$altbg\" align=\"center\"><input type=\"checkbox\" name=\"check[$result[aid]]\" value=\"$result[aid]\"></td>\n";
-		echo "<td class=\"$altbg\"><a href=\"../showthread.php?action=attachment&tid=$result[tid]&pid=$result[pid]\">$filename</td>\n";
+		echo "<td class=\"$altbg\"><a href=\"../attachment.php?aid=$result[aid]\">$filename</td>\n";
 		echo "<td class=\"$altbg\"><a href=\"../member.php?action=profile&uid=$result[uid]\">$result[username]</a></td>\n";
 		echo "<td class=\"$altbg\"><a href=\"../forumdisplay.php?fid=$result[fid]\">$result[name]</a> &raquo; <a href=\"../showthread.php?tid=$result[tid]&pid=$result[pid]#pid$result[pid]\">$result[subject]</a></td>\n";
 		echo "<td class=\"$altbg\">$result[filetype]</td>\n";
@@ -221,14 +221,18 @@ if($action == "do_search")
 if($action == "do_search_delete")
 {
 	// delete selected attachments from database
-	if(is_array($check))
+	if(is_array($check) && !empty($check))
 	{
 		foreach($check as $aid)
 		{
 			$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='$aid'");
 		}
+		cpredirect("attachments.php?action=search", $lang->attachs_deleted);
 	}
-	cpredirect("attachments.php", $lang->attachs_deleted);
+	else
+	{
+		cpredirect("attachments.php?action=search", $lang->attachs_noneselected);
+	}
 }
 
 if($action == "add")
