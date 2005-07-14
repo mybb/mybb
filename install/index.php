@@ -396,27 +396,27 @@ function install_done()
 
 	if($boardname == "")
 	{
-		$output->print_error("It seems you have forgotten to enter your Board's name. Please go back and fill it in.");
-		exit;
+		$missingwhat = "Board's name";
 	}
-	if($boardurl == "")
+	elseif($boardurl == "")
 	{
-		$output->print_error("It seems you have forgotten to enter your Board's URL. Please go back and fill it in.");
-		exit;
+		$missingwhat = "Board's URL";
 	}
-	if($adminuser == "")
+	elseif($adminuser == "")
 	{
-		$output->print_error("It seems you have forgotten to enter your Administrator's username. Please go back and fill it in.");
-		exit;
+		$missingwhat = "Administrator's username";
 	}
-	if($adminpass == "")
+	elseif($adminpass == "")
 	{
-		$output->print_error("It seems you have forgotten to enter your Administrator's password. Please go back and fill it in.");
-		exit;
+		$missingwhat = "Administrator's password";
 	}
-	if($adminemail == "")
+	elseif($adminemail == "")
 	{
-		$output->print_error("It seems you have forgotten to enter your Administrator's email. Please go back and fill it in.");
+		$missingwhat = "Administrator's email";
+	}
+	
+	if(!empty($missingwhat) {
+		$output->print_error("It seems you have forgotten to enter your $missingwhat. Please go back and fill it in.");
 		exit;
 	}
 
