@@ -415,7 +415,8 @@ function install_done()
 		$missingwhat = "Administrator's email";
 	}
 	
-	if(!empty($missingwhat) {
+	if(!empty($missingwhat))
+	{
 		$output->print_error("It seems you have forgotten to enter your $missingwhat. Please go back and fill it in.");
 		exit;
 	}
