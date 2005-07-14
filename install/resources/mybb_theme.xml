@@ -329,14 +329,11 @@ list-style-type: none;
 <td class="trow1"><input type="text" name="category[$key]" size="25" value="$category"></td>
 </tr>]]></template>
 		<template name="global_boardclosed_warning"><![CDATA[<br />
-<table cellspacing="0" cellpadding="0" border="0" width="50%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1" align="center"><strong><font color="red">$lang->bbclosed_warning</font></strong></td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
 		<template name="post_savedraftbutton"><![CDATA[&nbsp;<input type="submit" name="savedraft" value="$lang->save_draft" />]]></template>
 		<template name="index"><![CDATA[<html>
@@ -403,7 +400,7 @@ $footer
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr>
 <td>
-<form action="moderation.php" method="get" style="margin-top: 0; margin-bottom: 0;">
+<form action="moderation.php" method="get"" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="$tid" /><span class="smalltext">
 <strong>$lang->moderation_options</strong></span> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid=$tid')">
 <option value="threadnotes">$lang->thread_notes</option>
@@ -482,9 +479,7 @@ $quickreply
 $moderationoptions
 $similarthreads
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1">
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -501,7 +496,6 @@ $forumjump
 </table>
 </td></tr>
 </table>
-</td></tr></table>
 $footer
 </body>
 </html>]]></template>
@@ -525,7 +519,7 @@ $gobutton
 ]]></template>
 		<template name="forumjump_advanced"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
 <tr><td class="trow" align="right">
-<form action="forumdisplay.php" method="get">
+<form action="forumdisplay.php" method="get"">
 <span class="smalltext"><strong>$lang->forumjump</strong></span>
 <select name="$name" onchange="window.location=('forumdisplay.php?fid='+this.options[this.selectedIndex].value)">
 <option value="index" $jumpsel[default]>$lang->forumjump_select</option>
@@ -567,9 +561,7 @@ $preview
 $maximageserror
 $attacherror
 <form action="editpost.php" method="post" name="editpost">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>$lang->delete_post</strong></td>
 </tr>
@@ -578,16 +570,12 @@ $attacherror
 <td class="trow1" width="100%">$lang->delete_1<br /><span class="smalltext">$lang->delete_2</span></td>
 <td class="trow1" nowrap="nowrap"><input type="submit" name="submit" value="$lang->delete_now" tabindex="10"></td>
 </table>
-</td></tr>
-</table>
 <input type="hidden" name="action" value="deletepost">
 <input type="hidden" name="pid" value="$pid">
 </form>
 <br />
 <form action="editpost.php" method="post" enctype="multipart/form-data" name="input" onsubmit="return checkForm();">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->edit_post</strong></td>
 </tr>
@@ -620,7 +608,6 @@ $disablesmilies</span></td>
 $attachbox
 $pollbox
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->update_post" tabindex="3">  <input type="submit" name="previewpost" value="$lang->preview_post" tabindex="4">  <input type="reset" name="reset" value="$lang->reset_button" tabindex="5"></center>
 <input type="hidden" name="action" value="do_editpost">
@@ -644,9 +631,7 @@ $preview
 $maximageserror
 $attacherror
 <form action="newreply.php" method="post" enctype="multipart/form-data" name="input" onsubmit="return checkForm();">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->post_new_reply</strong></td>
 </tr>
@@ -683,7 +668,6 @@ $disablesmilies
 $attachbox
 $modoptions
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->post_reply" tabindex="3" accesskey="s">  <input type="submit" name="previewpost" value="$lang->preview_post" tabindex="4">$savedraftbutton  <input type="reset" name="reset" value="$lang->reset_button" tabindex="5"></center>
 <input type="hidden" name="action" value="do_newreply">
@@ -737,7 +721,7 @@ $footer
 </body>
 </html>]]></template>
 		<template name="usercp_drafts_draft"><![CDATA[<tr>
-<td class="$trow"><b>$draft[subject]</b><br /><span class="smalltext">$detail</span></td>
+<td class="$trow"><strong>$draft[subject]</strong><br /><span class="smalltext">$detail</span></td>
 <td class="$trow" align="center">$savedate, $savetime</td>
 <td class="$trow" align="center"><a href="$editurl">$lang->edit_draft</a></td>
 <td class="$trow" align="center"><input type="checkbox" name="deletedraft[$id]" value="$type" /></td>
@@ -753,9 +737,7 @@ $preview
 $maximageserror
 $attacherror
 <form action="newthread.php" method="post" enctype="multipart/form-data" name="input" onsubmit="return checkForm();">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->post_new_thread</strong></td>
 </tr>
@@ -789,7 +771,6 @@ $modoptions
 $attachbox
 $pollbox
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->post_thread" tabindex="4" accesskey="s">  <input type="submit" name="previewpost" value="$lang->preview_post" tabindex="5">$savedraftbutton  <input type="reset" name="reset" value="$lang->reset_button" tabindex="6"></center>
 <input type="hidden" name="action" value="do_newthread">
@@ -805,9 +786,7 @@ $footer
 		<template name="newthread_disablesmilies"><![CDATA[<br />
 <input type="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" $postoptionschecked[disablesmilies]> $lang->options_disablesmilies]]></template>
 		<template name="usercp_nav"><![CDATA[<td width="$lang->ucp_nav_width" valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead"><strong>$lang->ucp_nav_menu</strong></td>
 </tr>
@@ -859,7 +838,6 @@ $changenameop
 </td>
 </tr>
 </table>
-</td></tr></table>
 </td>]]></template>
 		<template name="usercp_profile_away"><![CDATA[<br />
 <fieldset class="trow2">
@@ -1276,7 +1254,7 @@ $footer
 </html>]]></template>
 		<template name="showthread_threaded_bitactive"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><strong>$post[subject]</strong> <span class="smalltext">- $lang->by $post[username] - $postdate $posttime</span><br />]]></template>
 		<template name="showthread_threaded_bit"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><a href="showthread.php?tid=$tid&amp;pid=$post[pid]&mode=threaded">$post[subject]</a> <span class="smalltext">- $lang->by $post[username] - $postdate, $posttime</span><br />]]></template>
-		<template name="showthread_poll"><![CDATA[<form action="polls.php" method="get">
+		<template name="showthread_poll"><![CDATA[<form action="polls.php" method="get"">
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="$poll[pid]" />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
@@ -1427,7 +1405,7 @@ $headerinclude
 $headerinclude
 </head>
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" class="trow2">
-<form action="http://msg.mirabilis.com/scripts/WWPMsg.dll" method="get" name="frmPager">
+<form action="http://msg.mirabilis.com/scripts/WWPMsg.dll" method="get"" name="frmPager">
 <table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
 <tr>
 <td class="thead" align="center" colspan="2"><strong>$lang->icq_message_center</strong></td>
@@ -1490,9 +1468,7 @@ $pwnote
 $footer
 </body>
 </html>]]></template>
-		<template name="error_maxsigimages"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+		<template name="error_maxsigimages"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead"><strong>$lang->too_many_images</strong></td>
 </tr>
@@ -1501,7 +1477,6 @@ $footer
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
 		<template name="forumbit_depth2_forum"><![CDATA[<tr>
 <td class="$bgcolor" align="center" valign="top"><img src="$theme[imgdir]/$folder.gif" alt="" /></td>
@@ -1877,7 +1852,7 @@ $footer
 <br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
-<td class="thead" colspan="$colspan"><strong><i>&raquo;</i> $foruminfo[name]</strong></td>
+<td class="thead" colspan="$colspan"><strong><em>&raquo;</em> $foruminfo[name]</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center" colspan="2">&nbsp;</td>
@@ -1905,7 +1880,7 @@ $threads
 </table>
 <br />
 $inlinemod
-<form action="forumdisplay.php" method="get">
+<form action="forumdisplay.php" method="get"">
 <input type="hidden" name="fid" value="$fid" />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
@@ -2322,9 +2297,7 @@ $headerinclude
 </head>
 <body>
 $header
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1">
 <table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="trow1" width="75%">
@@ -2343,7 +2316,6 @@ $userstars<br />
 </tr>
 $awaybit
 </table>
-</td></tr></table>
 <br />
 <table width="$theme[tablewidth]" cellspacing="0" cellpadding="0" border="0" align="center">
 <td width="50%" valign="top">
@@ -2730,9 +2702,7 @@ $headerinclude
 $header
 $preview
 <form action="moderation.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>$lang->delete_poll</strong></td>
 </tr>
@@ -2741,16 +2711,12 @@ $preview
 <td class="trow1" width="100%">$lang->delete_note<br /><span class="smalltext">$lang->delete_note_2</span></td>
 <td class="trow1" nowrap="nowrap"><input type="submit" name="submit" value="$lang->delete_poll" tabindex="10"></td>
 </table>
-</td></tr>
-</table>
 <input type="hidden" name="action" value="do_deletepoll">
 <input type="hidden" name="tid" value="$tid">
 </form>
 <br />
 <form action="polls.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->edit_poll</strong></td>
 </tr>
@@ -2785,7 +2751,6 @@ $optionbits
 <td class="trow2"><input type="text" name="timeout" value="$timeout"> $lang->days_after $polldate</td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->update_poll">  <input type="reset" name="reset" value="$lang->reset_button" tabindex="5"></center>
 <input type="hidden" name="action" value="do_editpoll">
@@ -3146,10 +3111,8 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="moderation.php" method="POST">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<form action="moderation.php" method="post">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->delete_posts</strong></td>
 </tr>
@@ -3157,7 +3120,6 @@ $header
 <td class="trow1" colspan="2" align="center">$lang->confirm_delete_posts
 $loginbox
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->delete_posts"></center>
 <input type="hidden" name="action" value="do_multideleteposts">
@@ -3232,17 +3194,14 @@ $footer
 </body>
 </html>]]></template>
 		<template name="forumdisplay_thread_modbit"><![CDATA[<td class="$bgcolor" align="center" nowrap="nowrap"><input type="checkbox" name="inlinemod_$multitid" id="inlinemod_$multitid" value="1" onclick="javascript:selectinline($multitid, this);" $inlinecheck  /></td>]]></template>
-		<template name="index_pms"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+		<template name="index_pms"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr><td class="thead" colspan="2"><a href="private.php"><strong>$lang->private_messages</strong></a></td></tr>
 <tr>
 <td class="trow1" align="center" width="2%"><img src="$theme[imgdir]/$pmfolder" alt="$lang->private_messages" /></td>
 <td class="trow1" width="98%"><span class="smalltext">$lang->pms_new<br />$lang->pms_unread_total</span></td>
 </tr>
 </table>
-</td></tr>
-</table>]]></template>
+]]></template>
 		<template name="forumdisplay_thread_gotounread"><![CDATA[<a href="showthread.php?action=newpost&amp;tid=$thread[tid]"><img src="$theme[imgdir]/jump.gif" alt="$lang->goto_first_unread" border="0" /></a>&nbsp;]]></template>
 		<template name="private_tracking"><![CDATA[<html>
 <head>
@@ -3251,7 +3210,7 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="private.php" method="POST">
+<form action="private.php" method="post">
 <input type="hidden" name="action" value="do_tracking">
 <table width="$theme[tablewidth]" border="0" align="center">
 <tr>
@@ -3309,9 +3268,7 @@ $headerinclude
 <body>
 $header
 <form action="moderation.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->thread_notes_editor</strong></td>
 </tr>
@@ -3322,15 +3279,12 @@ $loginbox
 <td class="trow1" align="center" colspan="2"><textarea name="threadnotes" cols="80" rows="10" wrap="virtual" tabindex="1">$thread[notes]</textarea></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->update_notes" tabindex="2">  <input type="reset" name="reset" value="$lang->reset_button" tabindex="3"></center>
 <input type="hidden" name="action" value="do_threadnotes">
 <input type="hidden" name="tid" value="$tid">
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="4"><strong>$lang->mod_logs</strong></td>
 </tr>
@@ -3342,14 +3296,11 @@ $loginbox
 </tr>
 $modactions
 </table>
-</td></tr></table>
 </form>
 $footer
 </body>
 </html>]]></template>
-		<template name="error_maxpostimages"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+		<template name="error_maxpostimages"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead"><strong>$lang->error_too_many_images</strong></td>
 </tr>
@@ -3358,7 +3309,6 @@ $footer
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
 		<template name="calendar"><![CDATA[<html>
 <head>
@@ -3643,9 +3593,7 @@ $header
 <tr>
 $usercpnav
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder" colspan="2">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1">
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
@@ -3656,12 +3604,9 @@ $usercpnav
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 $limitwarning
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder" colspan="2">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="6"><strong>$lang->pms_in_folder</strong></td>
 </tr>
@@ -3677,11 +3622,8 @@ $messagelist
 <td class="tfoot" align="right" colspan="6"><input type="submit" name="moveto" value="$lang->move_to"> $folderoplist $lang->or <input type="submit" name="delete" value="$lang->delete"> $lang->selected_messages</td>
 </tr>
 </table>
-</td></tr></table>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder" colspan="2">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1">
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
@@ -3693,7 +3635,6 @@ $messagelist
 </td>
 </tr>
 </table>
-</td></tr></table>
 </td>
 </tr>
 </table>
@@ -3769,7 +3710,7 @@ $seperator]]></template>
 		<template name="forumdisplay_threadlist_clearpass"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid=$fid">$lang->clear_stored_password</a>]]></template>
 		<template name="portal_welcome_guesttext"><![CDATA[<span class="smalltext">$lang->guest_welcome_registration<br />
 <br />
-<form method="POST" action="$PHP_SELF"><input type="hidden" name="action" value="do_login">
+<form method="post" action="$PHP_SELF"><input type="hidden" name="action" value="do_login">
 $lang->username<br />&nbsp;&nbsp;<input type="text" name="username" value="" /><br /><br />
 $lang->password<br />&nbsp;&nbsp;<input type="password" name="password" value="" /><br />
 <br /><input type="submit" name="loginsubmit" value="$lang->login" /></form>]]></template>
@@ -3947,9 +3888,7 @@ $footer
 <td class="trow1">$mybbuser[username] <span class="smalltext">[<strong><a href="member.php?action=logout&uid=$mybbuser[uid]">$lang->change_user</a></strong>]</span></td>
 </tr>
 ]]></template>
-		<template name="showthread_poll_results"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+		<template name="showthread_poll_results"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="4" align="center"><strong>$lang->poll $poll[question]</strong><br /><span class="smalltext">$pollstatus</small</td>
 </tr>
@@ -3960,7 +3899,6 @@ $polloptions
 <td class="thead" align="center"><strong>$totpercent</strong></td>
 </tr>
 </table>
-</td></tr></table>
 <table cellspacing="0" cellpadding="2" border="0" width="$theme[tablewidth]" align="center">
 <tr>
 <td align="left"><span class="smalltext">$lang->you_voted</span></td>
@@ -3975,9 +3913,7 @@ $headerinclude
 </head>
 <body>
 $header
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="4" align="center"><strong>$poll[question]</strong><br /><span class="smalltext">$pollstatus</small</td>
 </tr>
@@ -3988,7 +3924,6 @@ $polloptions
 <td class="thead" align="center"><strong>$totpercent</strong></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 $footer
 </body>
@@ -4073,9 +4008,7 @@ $headerinclude
 $header
 <br />
 <form action="member.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->login</strong></td>
 </tr>
@@ -4088,7 +4021,6 @@ $header
 <td class="trow2"><input type="password" name="password" size="25" maxlength="15"> (<a href="member.php?action=lostpw">$lang->lostpw_note</a>)</td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->login">  <input type="reset" name="reset" value="$lang->reset_button"></center>
 <input type="hidden" name="action" value="do_login">
@@ -4133,7 +4065,7 @@ $headerinclude
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr>
 <td>
-<form action="moderation.php" method="get" style="margin-top: 0; margin-bottom: 0;">
+<form action="moderation.php" method="get"" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="$tid" />
 <strong>$lang->admin_options:</strong> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid=$tid')">
 <option value="threadnotes">$lang->thread_notes</option>
@@ -4292,16 +4224,13 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="moderation.php" method="POST">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<form action="moderation.php" method="post">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$thread[subject] - $lang->delete_thread</strong></td>
 </tr>
 $loginbox
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->delete_thread"></center>
 <input type="hidden" name="action" value="do_deletethread">
@@ -4382,7 +4311,7 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="moderation.php" method="POST">
+<form action="moderation.php" method="post">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder"><tr>
 <td class="thead" colspan="2"><strong>$lang->merge_posts</strong></td>
 </tr>
@@ -4413,9 +4342,7 @@ $headerinclude
 </head>
 <body>
 $header
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->board_stats</strong></td>
 </tr>
@@ -4449,13 +4376,10 @@ $lang->popular_forum
 </td>
 </tr>
 </table>
-</td></tr>
-</table>
+
 
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->most_popular</strong></td>
 </tr>
@@ -4467,8 +4391,6 @@ $lang->popular_forum
 <td class="trow1" valign="top">$mostreplies</td>
 <td class="trow1" valign="top">$mostviews</td>
 </tr>
-</table>
-</td></tr>
 </table>
 $footer
 </body>
@@ -4482,9 +4404,7 @@ $headerinclude
 $header
 $preview
 <form action="polls.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->post_new_poll</strong></td>
 </tr>
@@ -4518,7 +4438,6 @@ $optionbits
 <td class="trow2"><font><input type="text" name="timeout" value="$timeout"> $lang->days</td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->post_new_poll">  <input type="reset" name="reset" value="$lang->reset_button" tabindex="5"></center>
 <input type="hidden" name="action" value="do_newpoll">
@@ -4576,9 +4495,7 @@ $refresh
 </head>
 <body>
 $header
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>$lang->users_online</strong></td>
 </tr>
@@ -4592,22 +4509,16 @@ $onlinerows
 <td class="thead" colspan="3" align="right"><span class="smalltext"><strong><a href="online.php?action=today">$lang->online_today</a> | <a href="online.php">$lang->refresh_page</a></strong></span></td>
 </tr>
 </table>
-</td></tr>
-</table>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td align="center" class="trow1"><span class="smalltext">$lang->online_count</span></td>
 </tr>
 </table>
-</td></tr>
-</table>
 $footer
 </body>
 </html>]]></template>
-		<template name="portal_welcome_membertext"><![CDATA[<span class="smalltext"><i>$lang->member_welcome_lastvisit</i> $lastvisit<br />
+		<template name="portal_welcome_membertext"><![CDATA[<span class="smalltext"><em>$lang->member_welcome_lastvisit</em> $lastvisit<br />
 $lang->since_then<br />
 <strong>&raquo;</strong> $lang->new_announcements<br />
 <strong>&raquo;</strong> $lang->new_threads<br />
@@ -4744,7 +4655,7 @@ $lang->online_users<br /><strong>&raquo;</strong> $lang->online_counts<br />$onl
 <tr>
 <td class="trow1" align="center">
 <span class="smalltext"><br />
-<form method="POST" action="$settings[bburl]/search.php">
+<form method="post" action="$settings[bburl]/search.php">
 <input type="hidden" name="action" value="do_search" />
 <input type="hidden" name="postthread" value="1" />
 <input type="hidden" name="forums" value="all" />
@@ -4770,7 +4681,7 @@ $threadlist
 </table>
 </td></tr></table>
 <br />]]></template>
-		<template name="portal_latestthreads_thread_lastpost"><![CDATA[<i>$lang->latest_threads_lastpost</i> <a href="$settings[bburl]/member.php?action=profile&amp;uid=lastposter&amp;tid=$thread[tid]"> $thread[lastposter]</a><br />
+		<template name="portal_latestthreads_thread_lastpost"><![CDATA[<em>$lang->latest_threads_lastpost</em> <a href="$settings[bburl]/member.php?action=profile&amp;uid=lastposter&amp;tid=$thread[tid]"> $thread[lastposter]</a><br />
 $lastpostdate $lastposttime<br />]]></template>
 		<template name="portal_whosonline_memberbit"><![CDATA[$comma<a href="$settings[bburl]/member.php?action=profile&amp;uid=$user[uid]">$user[username]</a>$invisiblemark]]></template>
 		<template name="usercp_favorites"><![CDATA[<html>
@@ -4836,9 +4747,9 @@ $headerinclude
 <span class="largetext">$thread[subject] - $lang->printable_version</span><br />
 <br />
 <font>
--$settings[bbname] (<i>$settings[bburl]</i>)<br />
+-$settings[bbname] (<em>$settings[bburl]</em>)<br />
 $breadcrumb
-+$tdepth $lang->thread $thread[subject] (<i>/showthread.php?tid=$tid</i>)
++$tdepth $lang->thread $thread[subject] (<em>/showthread.php?tid=$tid</em>)
 <hr size="1">
 </td>
 </tr>
@@ -4981,7 +4892,7 @@ $message[message]
 <td class="tcat" colspan="2"><strong>$lang->folder $foldername</strong></td>
 </tr>]]></template>
 		<template name="private_archive_html_message"><![CDATA[<tr>
-<td class="trow1"><strong>$lang->subject $message[subject]</font></strong><br /><font><i>$lang->to $message[tousername]<br />$lang->from $message[fromusername]<br />$lang->sent $senddate</i></td>
+<td class="trow1"><strong>$lang->subject $message[subject]</font></strong><br /><font><em>$lang->to $message[tousername]<br />$lang->from $message[fromusername]<br />$lang->sent $senddate</em></td>
 </tr>
 <tr>
 <td class="trow2">$message[message]</td>
@@ -5022,7 +4933,7 @@ $message[message]
 <td align="center" class="$bgcolor" width="1"><img src="$theme[imgdir]/$folder.gif"></td>
 <td align="center" class="$bgcolor" width="1">$icon</td>
 <td class="$bgcolor"><span class="smalltext">$lang->post_thread <a href="showthread.php?tid=$result[tid]">$result[tsubject]</a><br />$lang->post_subject <a href="showthread.php?tid=$result[tid]&amp;pid=$result[pid]#pid$result[pid]">$title</a></span><br />
-<table width="100%"><tr><td><span class="smalltext"><i>$prev</i></span></td></tr></table></td>
+<table width="100%"><tr><td><span class="smalltext"><em>$prev</em></span></td></tr></table></td>
 <td align="center" class="$bgcolor"><a href="member.php?action=profile&amp;uid=$result[uid]">$result[username]</a></td>
 <td class="$bgcolor"><a href="forumdisplay.php?fid=$result[fid]">$result[forumname]</a></td>
 <td align="center" class="$bgcolor"><a href="javascript:whoPosted($result[tid]);">$result[treplies]</a></td>
@@ -5103,14 +5014,11 @@ $footer
 <td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=views&order=desc">$lang->views</a></strong> $orderarrow[views]</span></td>
 <td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=dateline&order=desc">$lang->posted</a> $orderarrow[dateline]</strong></span></td>
 </tr>]]></template>
-		<template name="private_limitwarning"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder" colspan="2">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+		<template name="private_limitwarning"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1" align="center"><span class="smalltext"><strong><font color="red">$lang->reached_warning</font></strong><br />$lang->reached_warning2</span></td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
 		<template name="misc_smilies_smilie"><![CDATA[<tr>
 <td class="$class" align="center"><img src="$smilie[image]"></td>
@@ -5241,15 +5149,12 @@ $headerinclude
 <body>
 $header
 <form action="moderation.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->delete_poll</strong></td>
 </tr>
 $loginbox
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->delete_poll"></center>
 <input type="hidden" name="action" value="do_deletepoll">
@@ -5265,16 +5170,13 @@ $headerinclude
 </head>
 <body>
 $header
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td colspan=8 class="thead" align="center"><strong>$lang->search_results</strong></td>
 </tr>
 $searchresultsbar
 $results
 </table>
-</td></tr></table>
 <center>$multipage</center>
 $footer
 </body>
@@ -5351,9 +5253,7 @@ $headerinclude
 </head>
 <body>
 $header
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->get_post_ip</strong></td>
 </tr>
@@ -5367,7 +5267,6 @@ $loginbox
 <td class="trow2">$hostname</td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 $footer
 </body>
@@ -5571,9 +5470,7 @@ $headerinclude
 <body>
 $header
 <form action="member.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->lost_pw_form</strong></td>
 </tr>
@@ -5582,7 +5479,6 @@ $header
 <td class="trow1" width="60%"><input type="text" name="email"></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" value="$lang->request_user_pass"></center>
 <input type="hidden" name="action" value="do_lostpw" />
@@ -5680,16 +5576,13 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="moderation.php" method="POST">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<form action="moderation.php" method="post">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->delete_posts</strong></td>
 </tr>
 $posts
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->delete_selected_posts"></center>
 <input type="hidden" name="action" value="do_deleteposts">
@@ -5705,10 +5598,8 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="moderation.php" method="POST">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<form action="moderation.php" method="post">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->split_thread</strong></td>
 </tr>
@@ -5725,17 +5616,13 @@ $loginbox
 <td class="trow1">$forumselect</td>
 </tr>
 </table>
-</td></tr></table>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->posts_to_split</strong></td>
 </tr>
 $posts
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->split_thread"></center>
 <input type="hidden" name="action" value="do_split">
@@ -5751,16 +5638,14 @@ $footer
 <td class="$altbg">$reviewmessage</td>
 </tr>]]></template>
 		<template name="newreply_threadreview"><![CDATA[<br />
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" align="center"><strong>$lang->thread_review</strong></td>
 </tr>
 $reviewbits
 $reviewmore
 </table>
-</td></tr></table>]]></template>
+]]></template>
 		<template name="member_rate"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->rate_member</title>
@@ -5769,9 +5654,7 @@ $headerinclude
 <body>
 $header
 <form action="member.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->rate_member</strong></td>
 </tr>
@@ -5786,7 +5669,6 @@ $header
 </select></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" value="$lang->do_rate"></center>
 <input type="hidden" name="action" value="do_rate" /><input type="hidden" name="uid" value="$uid" />
@@ -5909,9 +5791,7 @@ $header
 <tr>
 $usercpnav
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>$pm[subject]</strong></font></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid=$pm[pmid]&do=reply">$lang->reply</a> | <a href="private.php?action=send&amp;pmid=$pm[pmid]&do=forward">$lang->forward</a> | <a href="private.php?action=delete&amp;pmid=$pm[pmid]">$lang->delete</a></td></table></td>
 </tr>
@@ -5920,7 +5800,6 @@ $message
 <td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>$pm[subject]</strong></font></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid=$pm[pmid]&do=reply">$lang->reply</a> | <a href="private.php?action=send&amp;pmid=$pm[pmid]&do=forward">$lang->forward</a> | <a href="private.php?action=delete&amp;pmid=$pm[pmid]">$lang->delete</a></td></table></td>
 </tr>
 </table>
-</td></tr></table>
 </td>
 </tr>
 </table>
@@ -5939,12 +5818,10 @@ $postrow[message]
 </li>
 <li>$lang->error_nopermission_guest_4</li>
 </ol>
-<form action="member.php" method="POST">
+<form action="member.php" method="post">
 <input type="hidden" name="action" value="do_login">
 <input type="hidden" name="url" value="$url">
-<table cellspacing="0" cellpadding="0" border="0" width="50%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><span class="smalltext"><strong>$lang->login</strong></span></td>
 </tr>
@@ -5974,9 +5851,7 @@ $postrow[message]
 <li>$lang->error_nopermission_user_4 (<a href="member.php?action=resendactivation">$lang->error_nopermission_user_resendactivation</a>)</li>
 </ol>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="50%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><span class="smalltext"><strong>$lang->logged_in_user</strong></span></td>
 </tr>
@@ -5985,7 +5860,6 @@ $postrow[message]
 <td class="trow1">$mybbuser[username]</td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
 		<template name="private_folders"><![CDATA[<html>
 <head>
@@ -6046,10 +5920,8 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="moderation.php" method="POST">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<form action="moderation.php" method="post">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->move_copy_thread</strong></td>
 </tr>
@@ -6067,7 +5939,6 @@ $loginbox
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->move_copy_thread"></center>
 <input type="hidden" name="action" value="do_move">
@@ -6083,10 +5954,8 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="moderation.php" method="POST">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<form action="moderation.php" method="post">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->merge_threads</strong></td>
 </tr>
@@ -6101,7 +5970,6 @@ $loginbox
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->merge_threads"></center>
 <input type="hidden" name="action" value="do_merge">
@@ -6272,9 +6140,7 @@ $headerinclude
 </head>
 <body>
 $header
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead"><strong>$lang->ip_lookup</strong></td>
 </tr>
@@ -6282,8 +6148,6 @@ $header
 <td align="center" class="trow1">
 $lang->ip $ip $lang->resolves_to $host</td>
 </tr>
-</table>
-</td></tr>
 </table>
 $footer
 </body>
@@ -6382,9 +6246,7 @@ $headerinclude
 <body>
 $header
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead"><span class="smalltext"><strong>$title</strong></span></td>
 </tr>
@@ -6392,7 +6254,6 @@ $header
 <td class="trow1">$error</td>
 </tr>
 </table>
-</td></tr></table>
 $footer
 </body>
 </html>]]></template>
@@ -6400,7 +6261,7 @@ $footer
 		<template name="member_profile_away"><![CDATA[<tr>
 <td class="trow1" align="center">
 <strong>$lang->away_note</strong><br />
-<span class="smalltext"><i>$lang->away_reason $memprofile[awayreason]</i></span><br />
+<span class="smalltext"><em>$lang->away_reason $memprofile[awayreason]</em></span><br />
 $lang->away_since $awaydate &nbsp;&nbsp;&nbsp; $lang->away_returns $returndate
 </td>
 </tr>]]></template>
@@ -6434,15 +6295,12 @@ $footer
 <td class="trow1" valign="top">$iconlist</td>
 </tr>
 ]]></template>
-		<template name="previewpost"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+		<template name="previewpost"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>$lang->post_preview</strong></td>
 </tr>
 $postbit
 </table>
-</td></tr></table>
 <br />]]></template>
 		<template name="member_profile_avatar"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" class="tborder">
 <tr>
@@ -6500,9 +6358,7 @@ $header
 <tr>
 $usercpnav
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" width="1"> </td>
 <td class="thead" valign="bottom"><span class="smalltext"><strong>$lang->forum</strong></span></td>
@@ -6512,7 +6368,6 @@ $usercpnav
 </tr>
 $forums
 </table>
-</td></tr></table>
 </td>
 </tr>
 </table>
@@ -6616,9 +6471,7 @@ $headerinclude
 <body>
 $header
 <form action="member.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->resend_activation</strong></td>
 </tr>
@@ -6627,7 +6480,6 @@ $header
 <td class="trow1" width="60%"><input type="text" name="email"></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" value="$lang->request_activation"></center>
 <input type="hidden" name="action" value="do_resendactivation" />
@@ -6648,10 +6500,8 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="moderation.php" method="POST">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<form action="moderation.php" method="post">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->delete_threads</strong></td>
 </tr>
@@ -6659,7 +6509,6 @@ $header
 <td class="trow1" colspan="2" align="center">$lang->confirm_delete_threads
 $loginbox
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->delete_threads"></center>
 <input type="hidden" name="action" value="do_multideletethreads">
@@ -6677,10 +6526,8 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="moderation.php" method="POST">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<form action="moderation.php" method="post">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->move_threads</strong></td>
 </tr>
@@ -6690,7 +6537,6 @@ $loginbox
 <td class="trow2">$forumselect</td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->move_threads"></center>
 <input type="hidden" name="action" value="do_multimovethreads">
@@ -6707,10 +6553,8 @@ $headerinclude
 </head>
 <body>
 $header
-<form action="moderation.php" method="POST">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<form action="moderation.php" method="post">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->merge_posts</strong></td>
 </tr>
@@ -6721,7 +6565,6 @@ $loginbox
 <td class="trow2"><input type="radio" name="sep" value="hr" checked="checked" />&nbsp;$lang->horizontal_rule&nbsp;<input type="radio" name="sep" value="new_line" />&nbsp;$lang->new_line</td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->merge_posts"></center>
 <input type="hidden" name="action" value="do_multimergeposts">
@@ -6739,9 +6582,7 @@ $headerinclude
 <body>
 $header
 <form action="moderation.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->split_thread</strong></td>
 </tr>
@@ -6758,7 +6599,6 @@ $loginbox
 <td class="trow1">$forumselect</td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="submit" name="submit" value="$lang->split_thread"></center>
 <input type="hidden" name="action" value="do_multisplitposts">
@@ -6894,9 +6734,7 @@ $footer
 </body>
 </html>]]></template>
 		<template name="global_bannedwarning"><![CDATA[<br />
-<table cellspacing="0" cellpadding="0" border="0" width="50%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1" align="center"><font color="red"><strong>$lang->banned_warning</strong><br />
 $lang->banned_warning2: $reason<br />
@@ -6904,7 +6742,6 @@ $lang->banned_warning3: $banlift<br />
 </font></td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
 	</templates>
 </theme>
