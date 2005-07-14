@@ -210,7 +210,7 @@ function makeyesnocode($title, $name, $value="yes")
 	{
 		$yescheck = "checked=\"checked\"";
 	}
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"radio\" name=\"$name\" value=\"yes\" $yescheck />&nbsp;$lang->yes &nbsp;&nbsp;<input type=\"radio\" name=\"$name\" value=\"no\" $nocheck />&nbsp;$lang->no</td>\n</tr>\n";
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><label><input type=\"radio\" name=\"$name\" value=\"yes\" $yescheck />&nbsp;$lang->yes</label> &nbsp;&nbsp;<label><input type=\"radio\" name=\"$name\" value=\"no\" $nocheck />&nbsp;$lang->no</label></td>\n</tr>\n";
 }
 function makeonoffcode($title, $name, $value="on")
 {
@@ -224,7 +224,7 @@ function makeonoffcode($title, $name, $value="on")
 	{
 		$oncheck = "checked";
 	}
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"radio\" name=\"$name\" value=\"on\" $oncheck>&nbsp;$lang->on &nbsp;&nbsp;<input type=\"radio\" name=\"$name\" value=\"off\" $offcheck>&nbsp;$lang->off</td>\n</tr>\n";
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><label><input type=\"radio\" name=\"$name\" value=\"on\" $oncheck>&nbsp;$lang->on</label> &nbsp;&nbsp;<label><input type=\"radio\" name=\"$name\" value=\"off\" $offcheck>&nbsp;$lang->off</label></td>\n</tr>\n";
 }
 function makeselectcode($title, $name, $table, $tableid, $optiondisp, $selected="", $extra="", $blank="", $condition="")
 {
