@@ -372,24 +372,25 @@ elseif($mybb->input['action'] == "smilies")
 }
 elseif($mybb->input['action'] == "imcenter")
 {
-	if(!$imtype)
+	if(!$mybb->input['imtype'])
 	{
 		exit;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+	$uid = intval($mybb->input['uid']);
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$uid."' LIMIT 1");
 	$user = $db->fetch_array($query);
 	
 	if(!$user['username'])
 	{
-		error($lang->error_invalidusername);
+		error($lang->error_invaliduser);
 	}
-	if(!$user[$imtype])
+	if(!$user[$mybb->input['imtype']])
 	{
 		error($lang->error_invalidimtype);
 	}
 
 	// build im navigation bar
-	$navigatiobar = "";
+	$navigationbar = "";
 	if($user['aim'])
 	{
 		$navigationbar .= "<a href=\"misc.php?action=imcenter&imtype=aim&uid=$uid\">$lang->aol_im</a>";
@@ -412,7 +413,7 @@ elseif($mybb->input['action'] == "imcenter")
 	$lang->msn_address_is = sprintf($lang->msn_address_is, $user['username']);
 	$lang->send_y_message = sprintf($lang->send_y_message, $user['username']);
 	$lang->view_y_profile = sprintf($lang->view_y_profile, $user['username']);
-	$imtemplate = "misc_imcenter_$imtype";
+	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
 	eval("\$imcenter = \"".$templates->get($imtemplate)."\";");
 	outputpage($imcenter);
 }

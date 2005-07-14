@@ -984,7 +984,7 @@ elseif($mybb->input['action'] == "profile")
 	{
 		nopermission();
 	}
-	if($mybb->input['goto'] == "lastposter")
+	if($mybb->input['uid'] == "lastposter")
 	{
 		if($mybb->input['tid'])
 		{
@@ -992,7 +992,7 @@ elseif($mybb->input['action'] == "profile")
 			$post = $db->fetch_array($query);
 			$uid = $post['uid'];
 		}
-		else if($mybb->input['fid'])
+		elseif($mybb->input['fid'])
 		{
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE INSTR(CONCAT(',',parentlist,','),',".$mybb->input['fid'].",') > 0");
 			while($forum = $db->fetch_array($query))
