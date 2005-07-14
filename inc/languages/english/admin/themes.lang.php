@@ -78,7 +78,7 @@ $l['select_download'] = "Please select the theme to download and options below."
 $l['theme_select'] = "Theme<br><small>Select the name of the theme you wish to download.</small>";
 $l['include_templates'] = "Include Templates?<br><small>If you want to download the templates used in this theme as well, select yes.</small>";
 $l['include_custom_only'] = "Include only Customized Items?<br><small>If you wish to include items (css and theme bits) inherited from parent themes select \"no\", otherwise only customized elements will be exported.</small>";
-$l['include_custom_temps_only'] = "Include only Customized Templates?<br><small>If you wish to download only customized templates in this theme select \"yes\", if you want to export all templates in MyBB including custom ones for this theme select \"yes\".</small>";
+$l['include_custom_temps_only'] = "Include only Customized Templates?<br><small>If you wish to download only customized templates in this theme select \"yes\", if you want to export all templates in MyBB including custom ones for this theme select \"no\".</small>";
 $l['export_advanced_settings'] = "Do you wish to select advanced export settings for this theme?\n\nClicking OK will take you to the export page, clicking Cancel will automatically include customized theme elements and customized templates used within this theme.";
 
 $l['theme_added'] = "The theme has successfully been added to the database.";
