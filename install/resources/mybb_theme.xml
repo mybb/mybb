@@ -400,7 +400,7 @@ $footer
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr>
 <td>
-<form action="moderation.php" method="get"" style="margin-top: 0; margin-bottom: 0;">
+<form action="moderation.php" method="get" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="$tid" /><span class="smalltext">
 <strong>$lang->moderation_options</strong></span> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid=$tid')">
 <option value="threadnotes">$lang->thread_notes</option>
@@ -519,7 +519,7 @@ $gobutton
 ]]></template>
 		<template name="forumjump_advanced"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
 <tr><td class="trow" align="right">
-<form action="forumdisplay.php" method="get"">
+<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>$lang->forumjump</strong></span>
 <select name="$name" onchange="window.location=('forumdisplay.php?fid='+this.options[this.selectedIndex].value)">
 <option value="index" $jumpsel[default]>$lang->forumjump_select</option>
@@ -1254,7 +1254,7 @@ $footer
 </html>]]></template>
 		<template name="showthread_threaded_bitactive"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><strong>$post[subject]</strong> <span class="smalltext">- $lang->by $post[username] - $postdate $posttime</span><br />]]></template>
 		<template name="showthread_threaded_bit"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><a href="showthread.php?tid=$tid&amp;pid=$post[pid]&mode=threaded">$post[subject]</a> <span class="smalltext">- $lang->by $post[username] - $postdate, $posttime</span><br />]]></template>
-		<template name="showthread_poll"><![CDATA[<form action="polls.php" method="get"">
+		<template name="showthread_poll"><![CDATA[<form action="polls.php" method="get">
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="$poll[pid]" />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
@@ -1405,7 +1405,7 @@ $headerinclude
 $headerinclude
 </head>
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" class="trow2">
-<form action="http://msg.mirabilis.com/scripts/WWPMsg.dll" method="get"" name="frmPager">
+<form action="http://msg.mirabilis.com/scripts/WWPMsg.dll" method="get" name="frmPager">
 <table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
 <tr>
 <td class="thead" align="center" colspan="2"><strong>$lang->icq_message_center</strong></td>
@@ -1880,7 +1880,7 @@ $threads
 </table>
 <br />
 $inlinemod
-<form action="forumdisplay.php" method="get"">
+<form action="forumdisplay.php" method="get">
 <input type="hidden" name="fid" value="$fid" />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
@@ -4065,7 +4065,7 @@ $headerinclude
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr>
 <td>
-<form action="moderation.php" method="get"" style="margin-top: 0; margin-bottom: 0;">
+<form action="moderation.php" method="get" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="$tid" />
 <strong>$lang->admin_options:</strong> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid=$tid')">
 <option value="threadnotes">$lang->thread_notes</option>
