@@ -26,8 +26,7 @@ pageheaders();
 
 if(is_dir("install") && !file_exists("install/lock"))
 {
-	echo "Please remove the install directory from your server, or create a file called 'lock' in the install directory. Until you do so, your board will remain unaccessable";
-	exit;
+	$mybb->trigger_generic_error("install_directory");
 }
 
 //

@@ -135,6 +135,9 @@ class MyBB {
 			case "cache_no_write":
 				$message = "The data cache directory (inc/cache/) needs exist and be writable by the web server. Change its permissions so that it is writable (777 on Unix based servers).";
 				break;
+			case "install_directory":
+				$message = "The install directory (install/) still exists on your server and is not locked. To access MyBB please either remove this directory or create an empty file in it called 'lock'".
+				break;
 			default:
 				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.com\">MyBB Website</a>";
 		}

@@ -31,10 +31,12 @@ $lang->setLanguage($settings['cplanguage'], "admin");
 $lang->load("global");
 
 $time = time();
-if(is_dir("./install") && !file_exists("./install/lock")) {
-	echo $lang->setup_warning;
-	exit;
+
+if(is_dir("install") && !file_exists("install/lock"))
+{
+	$mybb->trigger_generic_error("install_directory");
 }
+
 if($action == "logout")
 {
 	$expires = $time-86400;
