@@ -912,7 +912,6 @@ if($action == "edit")
 	makeyesnocode($lang->pm_notify, "pmnotify", $user['pmnotify']);
 	makeinputcode($lang->time_offset, "timezoneoffset", $user[timezone]);
 	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user[style], $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
-	$user[signature] = htmlspecialchars_uni($user[signature]);
 	maketextareacode($lang->signature, "signature", $user[signature], 6, 50);
 	if(!$user['regip']) { $user['regip'] = " "; }
 	makelabelcode($lang->reg_ip, $user[regip]);
