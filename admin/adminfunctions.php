@@ -991,7 +991,7 @@ function savequickperms($fid)
 			}
 			else
 			{
-				$pattahments = "no";
+				$pattachments = "no";
 			}
 			if(!$preplies && !$pthreads)
 			{
