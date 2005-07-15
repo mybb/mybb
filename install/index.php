@@ -45,7 +45,7 @@ else
 		"adminuser" => "Administrator User",
 		"final" => "Finish Setup"
 	);
-	switch($action)
+	switch($mybb->input['action'])
 	{
 		case "license":
 			license_agreement();
