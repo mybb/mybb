@@ -8,6 +8,7 @@
  *
  * $Id$
  */
+ define("KILL_GLOBALS", 1);
 
 $templatelist = "showteam,showteam_row,showteam_row_mod";
 require "./global.php";

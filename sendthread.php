@@ -8,6 +8,7 @@
  *
  * $Id$
  */
+ define("KILL_GLOBALS", 1);
 
 $templatelist = "sendthread,sendthread_guest,email_sendtofriend";
 require "./global.php";
@@ -15,6 +16,8 @@ require "./inc/functions_post.php";
 
 // Load global language phrases
 $lang->load("sendthread");
+
+$tid = intval($mybb->input['tid']);
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 $thread = $db->fetch_array($query);
@@ -38,11 +41,11 @@ $forumpermissions = forum_permissions($forum['fid']);
 if($forum['type'] != "f") {
 	error($lang->error_invalidforum);
 }
-if($forumpermissions['canview'] == "no") {
+if($forumpermissions['canview'] != "yes") {
 	nopermission();
 }
 
-// Password protected forums ......... yhummmmy!
+// Password protected forums
 checkpwforum($forum['fid'], $forum['password']);
 
 if($mybb->usergroup['cansendemail'] == "no") {
@@ -50,24 +53,24 @@ if($mybb->usergroup['cansendemail'] == "no") {
 }
 
 if($action == "do_sendtofriend") {
-	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $sendto)) {
+	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['sendto'])) {
 		error($lang->error_invalidemail);
-	} elseif(!$subject || !$message) {
+	} elseif(!$mybb->input['subject'] || !$mybb->input['message']) {
 		error($lang->error_incompletefields);
-	} elseif(!strstr($message, "$settings[bburl]/showthread.php?tid=$tid")) {
+	} elseif(!strstr($mybb->input['message'], "$settings[bburl]/showthread.php?tid=$tid")) {
 		error($lang->error_nothreadurl);
 	}
 	if($mybb->user['uid'] == 0) {
-		if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $fromemail)) {
+		if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['fromemail'])) {
 			error($lang->error_invalidemail);
-		} elseif(!$fromname) {
+		} elseif(!$mybb->input['fromname']) {
 			error($lang->error_incompletefields);
 		}
-		$from = $fromname . " <" . $fromemail . ">";
+		$from = $mybb->input['fromname'] . " <" . $mybb->input['fromemail'] . ">";
 	} else {
 		$from = $mybb->user['username'] . " <" . $mybb->user['email'] . ">";
 	}
-	mymail($sendto, $subject, $message, $from);
+	mymail($mybb->input['sendto'], $mybb->input['subject'], $mybb->input['message'], $mybb->input['from']);
 	redirect("showthread.php?tid=$tid", $lang->redirect_emailsent);
 } else {
 	if($mybb->user['uid'] == 0) {

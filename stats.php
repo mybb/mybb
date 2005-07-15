@@ -8,6 +8,7 @@
  *
  * $Id$
  */
+define("KILL_GLOBALS", 1);
 
 $templatelist = "stats,stats_thread";
 require "./global.php";
