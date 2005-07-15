@@ -420,7 +420,7 @@ elseif($mybb->input['action'] == "getdaily")
 	}
 	else
 	{
-		$days = intval($mybb->input['days'];
+		$days = intval($mybb->input['days']);
 	}
 
 	$wheresql = "1=1";
