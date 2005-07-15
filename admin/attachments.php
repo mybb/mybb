@@ -56,7 +56,8 @@ if($action == "do_add")
 		$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid,mimetype,extension,maxsize,icon) VALUES ('','$mimetype','$extension','$maxsize','$icon')");
 		$cache->updateattachtypes();
 		cpredirect("attachments.php", $lang->type_added);
-	} else
+	}
+	else
 	{
 		cpredirect("attachments.php", $lang->type_add_missing_fields);
 	}
@@ -295,9 +296,9 @@ if($action == "search")
 	makeinputcode($lang->filetype_contains, "mimetype");
 	makeinputcode($lang->poster_contains, "username");
 	makelabelcode($lang->forum_is, forumselect("forum"));
-	makeinputcode($lang->posted_in_last, "postdate", "", 5);
-	makeinputcode($lang->size_less, "sizeless", "", 5);
-	makeinputcode($lang->size_greater, "sizemore", "", 5);
+	makeinputcode($lang->posted_in_last, "postdate", "", 5, " (days)");
+	makeinputcode($lang->size_less, "sizeless", "", 5, " (KB)");
+	makeinputcode($lang->size_greater, "sizemore", "", 5, " (KB)");
 	makeinputcode($lang->downloads_less, "downloadsless", "", 5);
 	makeinputcode($lang->downloads_greater, "downloadsmore", "", 5);
 	endtable();
