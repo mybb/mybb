@@ -550,7 +550,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	if(!is_array($forumcache))
 	{
 		// Get Forums
-		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f ORDER BY f.pid, f.disporder");
+		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f WHERE linkto='' ORDER BY f.pid, f.disporder");
 		while($forum = $db->fetch_array($query))
 		{
 			$forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
