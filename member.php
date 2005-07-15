@@ -256,8 +256,7 @@ if($mybb->input['action'] == "do_register")
 	}
 	$style = "";
 	// Custom profile fields baby!
-	$querypart1 = "";
-	$querypart2 = "";
+	$userfields = array();
 	$comma = "";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
@@ -290,8 +289,7 @@ if($mybb->input['action'] == "do_register")
 		{
 			$options = $mybb->input[$field];
 		}
-		$querypart1 .= "$comma$field";
-		$querypart2 .= "$comma'$options'";
+		$userfields[$field] = $options;
 		$comma = ",";
 	}
 
@@ -393,7 +391,8 @@ if($mybb->input['action'] == "do_register")
 		$db->insert_query(TABLE_PREFIX."users", $newuser);
 		$uid = $db->insert_id();
 	
-		$db->query("INSERT INTO ".TABLE_PREFIX."userfields (ufid,$querypart1) VALUES ('$uid',$querypart2)");
+		$userfields['ufid'] = $uid;
+		$db->insert_query(TABLE_PREFIX."userfields", $userfields);
 	
 		if(function_exists("accountCreated"))
 		{
@@ -412,7 +411,14 @@ if($mybb->input['action'] == "do_register")
 		{
 			$activationcode = random_str();
 			$now = time();
-			$db->query("INSERT INTO ".TABLE_PREFIX."awaitingactivation (aid,uid,dateline,code,type) VALUES (NULL,'$uid','$now','$activationcode','r')");
+			$activationarray = array(
+				"aid" => "NULL",
+				"uid" => $uid,
+				"dateline" => time(),
+				"code" => $activationcode,
+				"type" => "r"
+			);
+			$db->insert_query(TABLE_PREFIX."activation", $activationarray);
 			$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_activeateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
 			mymail($email, $emailsubject, $emailmessage);
@@ -680,7 +686,12 @@ if($mybb->input['action'] == "register")
 			$randomstr = random_str();
 			$time = time();
 			$imagehash = md5($randomstr);
-			$db->query("INSERT INTO ".TABLE_PREFIX."regimages VALUES ('$imagehash','$randomstr','$time')");
+			$regimagearray = array(
+				"imagehash" => $imagehash,
+				"imagestring" => $randomstr,
+				"dateline" => now()
+				);
+			$db->insert_query(TABLE_PREFIX."regimages", $regimagearray);
 			eval("\$regimage = \"".$templates->get("member_register_regimage")."\";");
 		}
 		if($mybb->settings['regtype'] != "randompass")
@@ -792,7 +803,14 @@ elseif($mybb->input['action'] == "do_resendactivation")
 					$user['code'] = random_str();
 					$now = time();
 					$uid = $user['uid'];
-					$db->query("INSERT INTO ".TABLE_PREFIX."awaitingactivation (aid,uid,dateline,code,type) VALUES (NULL,'$uid','$now','$user[code]','r')");
+					$awaitingarray = array(
+						"aid" => "NULL",
+						"uid" => $uid,
+						"dateline" => time(),
+						"code" => $user['code'],
+						"type" => "r"
+					);
+					$db->insert_query(TABLE_PREFIX."awaitingactivation", $awaitingarray);
 				}
 				$username = $user['username'];
 				$email = $user['email'];
@@ -833,7 +851,14 @@ elseif($mybb->input['action'] == "do_lostpw")
 			$user['activationcode'] = random_str();
 			$now = time();
 			$uid = $user['uid'];
-			$db->query("INSERT INTO ".TABLE_PREFIX."awaitingactivation (aid,uid,dateline,code,type) VALUES (NULL,'$uid','$now','$user[activationcode]','p')");
+			$awaitingarray = array(
+				"aid" => "NULL",
+				"uid" => $user['uid'],
+				"dateline" => time(),
+				"code" => $user['activationcode'],
+				"type" => "p"
+			);
+			$db->insert_query(TABLE_PREFIX."awaitingactivation", $awaitingarray);
 			$username = $user['username'];
 			$email = $user['email'];
 			$activationcode = $user['activationcode'];

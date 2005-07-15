@@ -289,7 +289,13 @@ elseif($mybb->input['action'] == "do_editpost")
 		$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."favorites WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'");
 		$subcheck = $db->fetch_array($query);
 		if(!$subcheck['uid']) {
-			$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$mybb->user[uid]."','$tid','s')");
+			$subscriptionarray = array(
+				"fid" => "NULL",
+				"uid" => $mybb->user['uid'],
+				"tid" => $tid,
+				"type" => "s"
+			);
+			$db->insert_query(TABLE_PREFIX."favorites");
 		}
 	} else {
 		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE type='s' AND uid='".$mybb->user[uid]."' AND tid='$tid'");

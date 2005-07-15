@@ -537,16 +537,46 @@ switch($mybb->input['action'])
 			$db->query("UPDATE ".TABLE_PREFIX."threads SET fid='$moveto' WHERE tid='$tid'");
 			$db->query("UPDATE ".TABLE_PREFIX."posts SET fid='$moveto' WHERE tid='$tid'");
 			$rsubject = addslashes($thread['subject']);
-			$db->query("INSERT INTO ".TABLE_PREFIX."threads (tid,fid,subject,icon,uid,username,dateline,lastpost,lastposter,views,replies,closed,sticky,visible) VALUES (NULL,'$thread[fid]','$rsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$thread[views]','$thread[replies]','moved|$tid','$thread[sticky]', '1')");
+			$threadarray = array(
+				"tid" => "NULL",
+				"fid" => $thread['fid'],
+				"subject" => addslashes($thread['subject']),
+				"icon" => $thread['icon'],
+				"uid" => $thread['uid'],
+				"username" => addslashes($thread['username']),
+				"dateline" => $thread['dateline'],
+				"lastpost" => $thread['lastpost'],
+				"lastposter" => addslashes($thread['lastposter']),
+				"views" => $thread['views'],
+				"replies" => $thread['replies'],
+				"closed" => "moved|$tid",
+				"sticky" => $thread['sticky'],
+				"visible" => 1
+				);
+			$db->insert_query(TABLE_PREFIX."threads", $threadarray);
 			logmod($modlogdata, $lang->thread_moved);
 		}
 		else
 		{ // copy thread
 		// we need to add code to copy attachments(?), polls, etc etc here
-
+			$threadarray = array(
+				"tid" => "NULL",
+				"fid" => $thread['fid'],
+				"subject" => addslashes($thread['subject']),
+				"icon" => $thread['icon'],
+				"uid" => $thread['uid'],
+				"username" => addslashes($thread['username']),
+				"dateline" => $thread['dateline'],
+				"lastpost" => $thread['lastpost'],
+				"lastposter" => addslashes($thread['lastposter']),
+				"views" => $thread['views'],
+				"replies" => $thread['replies'],
+				"closed" => $thread['closed'],
+				"sticky" => $thread['sticky'],
+				"visible" => $thread['visible']
+				);
 			$plugins->run_hooks("moderation_do_move_copy");
-			
-			$db->query("INSERT INTO ".TABLE_PREFIX."threads (tid,fid,subject,icon,uid,username,dateline,lastpost,lastposter,views,replies,closed,sticky,notes,visible) VALUES (NULL,'$moveto','$thread[subject]','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$thread[views]','$thread[replies]','$thread[closed]','$thread[sticky]','$thread[notes]','1')");
+			$db->insert_query(TABLE_PREFIX."threads", $threadarray);
 			$newtid = $db->insert_id();
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
 			while($post = $db->fetch_array($query))
