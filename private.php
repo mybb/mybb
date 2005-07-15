@@ -212,16 +212,13 @@ if($mybb->input['action'] == "send")
 			}
 			elseif($mybb->input['do'] == "reply")
 			{
-				$uid = $pm['fromid'];
 				$subject = "Re: $subject";
+				$uid = $pm['fromid'];
+				$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='".$uid."'");
+				$user = $db->fetch_array($query);
+				$to = $user['username'];
 			}
 		}
-	}
-	if($mybb->input['uid'] && !$mybb->input['preview'])
-	{
-		$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
-		$user = $db->fetch_array($query);
-		$to = $user['username'];
 	}
 	if($autocomplete)
 	{
@@ -251,6 +248,8 @@ if($mybb->input['action'] == "send")
 			eval("\$buddyselect = \"".$templates->get("private_send_buddyselect")."\";");
 		}
 	}
+	$pmid = $mybb->input['pmid'];
+	$do = $mybb->input['do'];
 	eval("\$send = \"".$templates->get("private_send")."\";");
 	outputpage($send);
 }
