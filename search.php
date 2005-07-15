@@ -375,7 +375,7 @@ elseif($mybb->input['action'] == "getnew")
 	}
 	else
 	{
-		$days = intval($mybb->input['days'];
+		$days = intval($mybb->input['days']);
 	}
 
 	$wheresql = "1=1";
