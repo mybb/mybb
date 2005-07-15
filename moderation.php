@@ -536,7 +536,6 @@ switch($mybb->input['action'])
 
 			$db->query("UPDATE ".TABLE_PREFIX."threads SET fid='$moveto' WHERE tid='$tid'");
 			$db->query("UPDATE ".TABLE_PREFIX."posts SET fid='$moveto' WHERE tid='$tid'");
-			$rsubject = addslashes($thread['subject']);
 			$threadarray = array(
 				"tid" => "NULL",
 				"fid" => $thread['fid'],
