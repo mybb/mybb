@@ -439,7 +439,7 @@ elseif($mybb->input['action'] == "do_send")
 }
 elseif($mybb->input['action'] == "read")
 {
-	$pmid = intval($mybb->input['pid']);
+	$pmid = intval($mybb->input['pmid']);
 
 	$query = $db->query("SELECT pm.*, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE pm.pmid='".$mybb->input['pmid']."' AND pm.uid='".$mybb->user[uid]."'");
 	$pm = $db->fetch_array($query);
@@ -454,19 +454,19 @@ elseif($mybb->input['action'] == "read")
 	}
 	if($pm['receipt'] == "1")
 	{
-		$time = time();
 		if($mybb->usergroup['cantrackpms'] && $mybb->usergroup['candenypmreceipts'] && $mybb->input['denyreceipt'] == "yes")
 		{
-			$receiptadd = ", receipt='0', readtime='$time'";
+			$receiptadd = ", receipt='0'";
 		}
 		else
 		{
-			$receiptadd = ", receipt='2', readtime='$time'";
+			$receiptadd = ", receipt='2'";
 		}
 	}
 	if($pm['status'] == "0")
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='1' $receiptadd WHERE pmid='$pmid'");
+		$time = time();
+		$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='1'$receiptadd, readtime='$time' WHERE pmid='$pmid'");
 	}
 	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($pm['subject']);
@@ -1048,9 +1048,9 @@ else
 		$message['subject'] = htmlspecialchars_uni($message['subject']);
 		if($message['folder'] != "3")
 		{
-			$senddate = mydate($mybb->settings['dateformat'], $message['dateline']);
-			$sendtime = mydate($mybb->settings['timeformat'], $message['dateline']);
-			$senddate = $senddate.", ".$sendtime;
+			$sendpmdate = mydate($mybb->settings['dateformat'], $message['dateline']);
+			$sendpmtime = mydate($mybb->settings['timeformat'], $message['dateline']);
+			$senddate = $sendpmdate.", ".$sendpmtime;
 		}
 		else
 		{
