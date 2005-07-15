@@ -1,29 +1,71 @@
 body {
  background-color: #FFFFFF;
  color: #000000;
- font-size: 12px;
+ font-size: 13px;
  font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
 }
 
-#header {
- background: url('images/header-bg.gif');
- padding: 0;
-}
-
-table.outer {
+#container {
  margin: auto auto;
  width: 780px;
  border: 1px solid #000000;
- border-collapse: collapse;
+ background: #ebebeb;
+}
+
+#logo {
+ background: url('images/header-bg.gif');
+ padding: 0;
+ height: 67px;
+}
+
+#logo h1 {
+	background: url('images/header.gif');
+	height: 67px;
+	width: 300px;
+	padding: 0;
+	margin: 0;
+}
+
+#header {
+	background: #7DA2BC;
+	color: #fff;
+	font-size: 15px;
+ font-weight: bold;
+	padding: 6px;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+
+#progress {
+	width: 160px;
+	float: left;
+	padding: 10px;
+}
+#progress ul {
+	list-style: none;
+	padding: 0 0 0 10px;
+	margin: 0;
+}
+
+#progress li {
+	color: #535353;
+	font-weight: bold;
+	margin: 0;
+	padding: 0 0 3px 0;
+}
+
+#progress li.active {
+	list-style-image: url('images/bullet.gif');
+	color: #000;
 }
 
 table.tbl {
  width: 100%;
  border: 1px solid #000000;
- border-collapse: collapse;
+ 
 }
 
-td.thead {
+thead td {
  background-color: #296792;
  color: #FFFFFF;
  font-size: 12px;
@@ -31,7 +73,7 @@ td.thead {
  padding: 4px;
 }
 
-td.thead2 {
+td.subhead {
  background-color: #7DA2BC;
  color: #FFFFFF;
  font-size: 12px;
@@ -45,26 +87,157 @@ td.talt1 {
  font-size: 12px;
  font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
  padding: 4px;
- border-bottom : 1px solid #e5e5e5;
+ border-top : 1px solid #ccc;
+ border-right: 1px solid #ccc;
 }
 
-td.bottom {
- background-color: #F3F3F3;
+td.talt2 {
+ background-color: #fff;
  color: #000000;
  font-size: 12px;
  font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
  padding: 4px;
- border-bottom : 1px solid #000000;
+ border-top : 1px solid #ccc;
+ border-right: 1px solid #ccc;
 }
 
-td.content {
- background-color: #FFFFFF;
+
+#content {
+	border-left: 1px solid #ccc;
+ background-color: #fff;
  color: #000000;
  font-size: 12px;
  font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
- padding: 4px;
+ margin-left: 170px;
+ width: 580px;
+ padding: 10px 10px 10px 19px;
 }
 
-form input[type="submit"] {
+* html #content {
+	width: 567px;
+}
+
+input[type="submit"] {
  font-weight: bold;
+}
+
+.invisible {
+	display: none;
+}
+
+#footer {
+	clear: both;
+	background: #7DA2BC;
+	height: 26px;
+	color: #fff;
+	border-top: 1px solid #000;
+}
+
+h2 {
+margin: 0;
+font-size: 24px;
+height: 32px;
+	padding-left: 40px;
+}
+
+h2.welcome {
+	background: url('images/h2-welcome.gif') no-repeat;
+}
+
+h2.license {
+	background: url('images/h2-license.gif') no-repeat;
+}
+
+h2.requirements {
+	background: url('images/h2-requirements.gif') no-repeat;
+}
+
+h2.dbconfig {
+	background: url('images/h2-dbconfig.gif') no-repeat;
+}
+
+h2.createtables {
+	background: url('images/h2-createtables.gif') no-repeat;
+}
+
+h2.tablepopulate {
+	background: url('images/h2-tablepopulate.gif') no-repeat;
+}
+
+h2.theme {
+	background: url('images/h2-theme.gif') no-repeat;
+}
+
+h2.config {
+	background: url('images/h2-config.gif') no-repeat;
+}
+
+h2.admin {
+	background: url('images/h2-admin.gif') no-repeat;
+}
+
+h2.finish{
+	background: url('images/h2-finish.gif') no-repeat;
+}
+
+.license_agreement {
+	margin: 10px auto;
+	padding: 10px;
+	overflow: scroll;
+	height: 400px;
+	width: 500px;
+
+	border: 1px solid #ccc;
+}
+
+h3 {
+	font-size: 14px;
+	margin: 5px 0;
+}
+
+.license_agreement ul {
+padding: 0;
+margin: 15px;
+}
+
+#next_button {
+	float: right;
+	width: auto;
+	background: #296792; 
+}
+
+
+
+#next_button input {
+	background: #296792;
+	border: 0;
+	height: 26px;
+	width: 75px;
+	color: #fff;
+	font-weight: bold;
+}
+
+#footer #copyright {
+	padding: 4px;
+}
+
+.pass {
+	color: green;
+}
+
+.fail {
+	color: red;
+}
+
+.error {
+	border: 1px solid #e36666;
+	background: #efefef;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.error h3 {
+	background: url('images/error_bg.gif') no-repeat middle left;
+	color: red;
 }
