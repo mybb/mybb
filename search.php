@@ -8,6 +8,7 @@
  *
  * $Id$
  */
+ define("KILL_GLOBALS", 1);
 
 $templatelist = "search,redirect,redirect_searchnomore,redirect_searchnotfound,search_results,search_showresults,search_showcalres,search_showhlpres";
 $templatelist .= "";
@@ -19,7 +20,7 @@ $lang->load("search");
 
 addnav($lang->nav_search, "search.php");
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "results":
 		addnav($lang->nav_results);
@@ -31,16 +32,17 @@ if($mybb->usergroup['cansearch'] == "no")
 	nopermission();
 }
 
-if($action == "results")
+if($mybb->input['action'] == "results")
 {
-	$sid = addslashes($sid);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE sid='$sid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE sid='".intval($mybb->input['sid'])."'");
 	$search = $db->fetch_array($query);
-	//$search['wheresql'] = stripslashes($search['wheresql']);
 	if(!$search['sid'])
 	{
 		error($lang->error_invalidsearch);
 	}
+	$order = $mybb->input['order'];
+	$sortby = $mybb->input['sortby'];
+
 	if($order == "asc")
 	{
 		$sortorder = "ASC";
@@ -118,6 +120,7 @@ if($action == "results")
 		$resultcount = $search['limitto'];
 	}
 	$perpage = $mybb->settings['threadsperpage'];
+	$page = $mybb->input['page'];
 	if($page)
 	{
 		$start = ($page-1) *$perpage;
@@ -329,44 +332,63 @@ if($action == "results")
 	eval("\$searchresults = \"".$templates->get("search_results")."\";");
 	outputpage($searchresults);
 }
-elseif($action == "findguest")
+elseif($mybb->input['action'] == "findguest")
 {
 	$wheresql = " AND p.uid < 1";
-	$wheresql .= addslashes($wheresql);
 	$now = time();
-	$db->query("INSERT INTO ".TABLE_PREFIX."searchlog (sid,uid,dateline,ipaddress,wheresql,lookin,showposts) VALUES (NULL,'".$mybb->user[uid]."','$now','$ipaddress','$wheresql','p.message','2')");
+	$searcharray = array(
+		"sid" => "NULL",
+		"uid" => $mybb->user['uid'],
+		"dateline" => time(),
+		"ipaddress" => $ipaddress,
+		"wheresql" => $wheresql,
+		"lookin" => "p.message",
+		"showposts" => 2
+		);
+	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
 
-	redirect("search.php?action=results&sid=$sid&sortby=$sortby&order=$sortordr", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
 }
-elseif($action == "finduser")
+elseif($mybb->input['action'] == "finduser")
 {
 	$wheresql = "1=1";
-	$wheresql .= " AND p.uid='$uid'";
-	$wheresql = addslashes($wheresql);
-	$now = time();
-	$db->query("INSERT INTO ".TABLE_PREFIX."searchlog (sid,uid,dateline,ipaddress,wheresql,lookin,showposts) VALUES (NULL,'".$mybb->user[uid]."','$now','$ipaddress','$wheresql','p.message','2')");
+	$wheresql .= " AND p.uid='".intval($mybb->input['uid'])."'";
+	$searcharray = array(
+		"sid" => "NULL",
+		"uid" => $mybb->user['uid'],
+		"dateline" => time(),
+		"ipaddress" => $ipaddress,
+		"wheresql" => addslashes($wheresql),
+		"lookin" => "p.message",
+		"showposts" => 2
+		);
+	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
-
-	redirect("search.php?action=results&sid=$sid&sortby=$sortby&order=$sortordr", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
 }
-elseif($action == "getnew")
+elseif($mybb->input['action'] == "getnew")
 {
-	if(!$days < 1)
+	if(!$mybb->input['days'] < 1)
 	{
 		$days = 1;
 	}
-	$wheresql = "1=1";
-	if($fid)
+	else
 	{
-		$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$id,') > 0 AND (ISNULL(p.fid) OR (p.cansearch='yes' AND p.canview='yes')");
+		$days = intval($mybb->input['days'];
+	}
+
+	$wheresql = "1=1";
+	if($mybb->input['fid'])
+	{
+		$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0 AND (ISNULL(p.fid) OR (p.cansearch='yes' AND p.canview='yes')");
 		if($db->num_rows($query) == 1)
 		{
-			$wheresql .= " AND t.fid='$fid' ";
+			$wheresql .= " AND t.fid='".intval($mybb->input['fid'])."' ";
 		}
 		else
 		{
-			$wheresql .= " AND t.fid IN ('$fid'";
+			$wheresql .= " AND t.fid IN ('".intval($mybb->input['fid'])."'";
 			while($sforum = $db->fetch_array($query))
 			{
 				$wheresql .= ",'$sforum[fid]'";
@@ -375,60 +397,77 @@ elseif($action == "getnew")
 		}
 	}
 	$wheresql .= " AND t.lastpost >= '".$mybb->user[lastvisit]."'";
-	$wheresql = addslashes($wheresql);
-	$db->query("INSERT INTO ".TABLE_PREFIX."searchlog (sid,uid,dateline,ipaddress,wheresql,lookin,showposts) VALUES (NULL,'".$mybb->user[uid]."','$now','$ipaddress','$wheresql','p.message','1')");
+	$searcharray = array(
+		"sid" => "NULL",
+		"uid" => $mybb->user['uid'],
+		"dateline" => time(),
+		"ipaddress" => $ipaddress,
+		"wheresql" => addslashes($wheresql),
+		"lookin" => "p.message",
+		"showposts" => 1
+		);
+	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
 
 	eval("\$redirect = \"".$templates->get("redirect_searchresults")."\";");
-	redirect("search.php?action=results&sid=$sid&sortby=$sortby&order=$sortordr", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
 }
-elseif($action == "getdaily")
+elseif($mybb->input['action'] == "getdaily")
 {
-	if($days < 1 || !$days)
+	if(!$mybb->input['days'] < 1)
 	{
 		$days = 1;
 	}
-	$wheresql = "1=1";
-	if($fid)
+	else
 	{
-		$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$id,') > 0 AND (ISNULL(p.fid) OR (p.cansearch='yes' AND p.canview='yes'))");
+		$days = intval($mybb->input['days'];
+	}
+
+	$wheresql = "1=1";
+	if($mybb->input['fid'])
+	{
+		$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0 AND (ISNULL(p.fid) OR (p.cansearch='yes' AND p.canview='yes')");
 		if($db->num_rows($query) == 1)
 		{
-			$wheresql .= " AND t.fid='$fid' ";
+			$wheresql .= " AND t.fid='".intval($mybb->input['fid'])."' ";
 		}
 		else
 		{
-			$wheresql .= " AND t.fid IN ('$fid'";
+			$wheresql .= " AND t.fid IN ('".intval($mybb->input['fid'])."'";
 			while($sforum = $db->fetch_array($query))
 			{
 				$wheresql .= ",'$sforum[fid]'";
 			}
 			$wheresql .= ")";
 		}
-	}
-	$now = time();
+	}	$now = time();
 	$thing = 68400*$days;
 	$datecut = $now-$thing;
 	$wheresql .= " AND t.lastpost >= '$datecut'";
-	$wheresql = addslashes($wheresql);
-	$db->query("INSERT INTO ".TABLE_PREFIX."searchlog (sid,uid,dateline,ipaddress,wheresql,lookin,showposts) VALUES (NULL,'".$mybb->user[uid]."','$now','$ipaddress','$wheresql','p.message','1')");
+	$searcharray = array(
+		"sid" => "NULL",
+		"uid" => $mybb->user['uid'],
+		"dateline" => time(),
+		"ipaddress" => $ipaddress,
+		"wheresql" => addslashes($wheresql),
+		"lookin" => "p.message",
+		"showposts" => 2
+		);
+	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
-
 	eval("\$redirect = \"".$templates->get("redirect_searchresults")."\";");
-	redirect("search.php?action=results&sid=$sid&sortby=$sortby&order=$sortordr", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
 }
-elseif($action == "do_search")
+elseif($mybb->input['action'] == "do_search")
 {
-	$keyword = addslashes($_POST['keywords']);
-	$author = addslashes($_POST['author']);
-	if(!$keyword)
+	if(!$mybb->input['keyword'])
 	{
-		if(!$author)
+		if(!$mybb->input['author'])
 		{
 			error($lang->error_nosearchterms);
 		}
 	}
-	if($postthread == 1)
+	if($mybb->input['postthread'] == 1)
 	{
 		$lookin = "p.message";
 		$lookin2 = "p.subject";
@@ -437,11 +476,11 @@ elseif($action == "do_search")
 	{
 		$lookin = "p.subject";
 	}
-	if($srchtype == 1)
+	if($mybb->input['srchtype'] == 1)
 	{
 		$op = "AND";
 	}
-	elseif($srchtype == 3)
+	elseif($mybb->input['srchtype'] == 3)
 	{
 		$op = "||";
 	}
@@ -449,24 +488,24 @@ elseif($action == "do_search")
 	{
 		$op = "";
 	}
-	if($keyword) {
+	if($mybb->input['keyword']) {
 		$wheresql = "(1=0 ";
-		if($srchtype != 2)
+		if($mybb->input['srchtype'] != 2)
 		{
-			$words = explode(" ", $keyword);
+			$words = explode(" ", $mybb->input['keyword']);
 			$wordcount = count($words);
 			for($i=0;$i<$wordcount;$i++)
 			{
-				$wheresql .= "OR $op $lookin LIKE '%".$words[$i]."%'";
+				$wheresql .= "OR $op $lookin LIKE '%".addslashes($words[$i])."%'";
 				if($lookin2)
 				{
-					$wheresql .= "OR $op $lookin2 LIKE '%".$words[$i]."%'";
+					$wheresql .= "OR $op $lookin2 LIKE '%".addslashes($words[$i])."%'";
 				}
 			}
 		}
 		else
 		{
-			$wheresql .=  " AND $lookin LIKE '%$keyword%'";
+			$wheresql .=  " AND $lookin LIKE '%".addslashes($mybb->input['keyword'])."%'";
 		}
 	}
 	else
@@ -475,17 +514,17 @@ elseif($action == "do_search")
 	}
 	$wheresql .= ")";
 
-	if($author)
+	if($mybb->input['author'])
 	{
 		$usersql = " AND (1=0";
-		if($matchusername)
+		if($mybb->input['matchusername'])
 		{
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='$author'");
+			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['author'])."'");
 		}
 		else
 		{
-			$author = strtolower($author);
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LCASE(username) LIKE '%$author%'");
+			$mybb->input['author'] = strtolower($mybb->input['author']);
+			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LCASE(username) LIKE '%".addslashes($mybb->input['author'])."%'");
 		}
 		if($db->num_rows($query) > 0)
 		{
@@ -502,10 +541,10 @@ elseif($action == "do_search")
 	}
 	
 	$now = time();
-	if($postdate)
+	if($mybb->input['postdate'])
 	{
 		$wheresql .= " AND p.dateline ";
-		if($pddir == 0)
+		if($mybb->input['pddir'] == 0)
 		{
 			$wheresql .= "<=";
 		}
@@ -513,35 +552,43 @@ elseif($action == "do_search")
 		{
 			$wheresql .= ">=";
 		}
-		$datelimit = $now-(86400 * $postdate);
+		$datelimit = $now-(86400 * $mybb->input['postdate']);
 		$wheresql .= "'$datelimit'";
 	}
-	if($forums != "all")
+	if($mybb->input['forums'] != "all")
 	{
-		$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forums,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
-		if($db->num_rows($query) == 1)
+		foreach($mybb->input['forums'] as $forum)
 		{
-			$wheresql .= " AND t.fid='$forums' ";
-		}
-		else
-		{
-			$wheresql .= " AND t.fid IN ('$forums'";
-			while($sforum = $db->fetch_array($query))
+			if(!$searchin[$forum])
 			{
-				$wheresql .= ",'$sforum[fid]'";
+				$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
+				if($db->num_rows($query) == 1)
+				{
+					$wheresql .= " AND t.fid='$forum' ";
+					$searchin[$fid] = 1;
+				}
+				else
+				{
+					$wheresql .= " AND t.fid IN ('$forum'";
+					while($sforum = $db->fetch_array($query))
+					{
+						$wheresql .= ",'$sforum[fid]'";
+						$searchin[$sforum['fid']] = 1;
+					}
+					$wheresql .= ")";
+				}
 			}
-			$wheresql .= ")";
 		}
 	}
-	if($findthreadst && $numreplies)
+	if($mybb->input['findthreadst'] && $mybb->input['numreplies'])
 	{
-		if($findthreadst == "1")
+		if($mybb->input['findthreadst'] == "1")
 		{
-			$wheresql .= " AND t.replies>=$numreplies";
+			$wheresql .= " AND t.replies>=".intval($mybb->input['numreplies']);
 		}
 		elseif($findthreadst == "2")
 		{
-			$wheresql .= " AND t.replies<=$numreplies";
+			$wheresql .= " AND t.replies<=".intval($mybb->input['numreplies']);
 		}
 	}
 		
@@ -560,7 +607,7 @@ elseif($action == "do_search")
 	{
 		error($lang->error_nosearchresults);
 	}
-	if($showresults == "threads")
+	if($mybb->input['showresults'] == "threads")
 	{
 		$showposts = 1;
 	}
@@ -569,10 +616,21 @@ elseif($action == "do_search")
 		$showposts = 2;
 	}
 	$wheresql = addslashes($wheresql);
-	$db->query("INSERT INTO ".TABLE_PREFIX."searchlog (sid,uid,dateline,ipaddress,wheresql,lookin,showposts,limitto) VALUES (NULL,'".$mybb->user[uid]."','$now','$ipaddress','$wheresql','$lookin','$showposts','$numrecs')");
+	$searcharray = array(
+		"sid" => "NULL",
+		"uid" => $mybb->user['uid'],
+		"dateline" => time(),
+		"ipaddress" => $ipaddress,
+		"wheresql" => $wheresql,
+		"lookin" => $lookin,
+		"showposts" => $showposts,
+		"limitto" => intval($mybb->input['numrecs'])
+		);
+
+	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
 	eval("\$redirect = \"".$templates->get("redirect_searchresults")."\";");
-	redirect("search.php?action=results&sid=$sid&sortby=$sortby&order=$sortordr", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid&sortby=".$mybb->input['sortby']."&order=".$mybb->input['sortordr'], $lang->redirect_searchresults);
 }
 else
 {
