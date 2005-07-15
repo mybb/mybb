@@ -76,7 +76,7 @@ if($action == "do_sendtofriend") {
 	if($mybb->user['uid'] == 0) {
 		eval("\$guestfields = \"".$templates->get("sendthread_guest")."\";");
 	}
-	$message = sprintf($lang->email_sendtofriend, $mybb->settings['bbname'], $mybb->settings[['bburl'], $tid);
+	$message = sprintf($lang->email_sendtofriend, $mybb->settings['bbname'], $mybb->settings['bburl'], $tid);
 	eval("\$sendtofriend = \"".$templates->get("sendthread")."\";");
 	outputpage($sendtofriend);
 }
