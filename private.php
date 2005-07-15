@@ -356,7 +356,7 @@ elseif($mybb->input['action'] == "do_send")
 			"status" => 0,
 			"includesig" => $options['signature'],
 			"smilieoff" => $options['disablesmilies'],
-			"receipt" => $options['receipt'],
+			"receipt" => $options['readreceipt'],
 			"readtime" => 0
 			);
 			
@@ -386,7 +386,7 @@ elseif($mybb->input['action'] == "do_send")
 			"status" => 0,
 			"includesig" => $options['signature'],
 			"smilieoff" => $options['disablesmilies'],
-			"receipt" => $options['receipt'],
+			"receipt" => $options['readreceipt'],
 			"readtime" => 0
 			);
 			if($mybb->input['saveasdraft'])
