@@ -16,7 +16,7 @@ $l['type_delete'] = "Delete";
 $l['add_attach_type'] = "Add Attachment Type";
 
 $l['type_added'] = "The attachment type has successfully been added.";
-$l['type_add_missing_fields'] = "You must at least enter an extension or a mime type for the attachment type!";
+$l['type_add_missing_fields'] = "You must enter a file size and either an extension or a mime type for the attachment type!";
 $l['type_deleted'] = "The attachment type has successfully been deleted.";
 $l['type_updated'] = "The attachment type has successfully been updated.";
 $l['type_edit_missing_fields'] = "You must at least enter an extension and a mime type for the attachment type!";
@@ -30,11 +30,11 @@ $l['filename_contains'] = "File Name Contains";
 $l['filetype_contains'] = "File Type Contains";
 $l['poster_contains'] = "Poster's Name Contains";
 $l['forum_is'] = "Forum Select";
-$l['posted_in_last'] = "Posted in the last (days)";
-$l['size_less'] = "Size is LESS Than (KB)";
-$l['size_greater'] = "Size is GREATER Than (KB)";
-$l['downloads_less'] = "Download Count is LESS Than";
-$l['downloads_greater'] = "Download Count is GREATER Than";
+$l['posted_in_last'] = "Posted in the last";
+$l['size_less'] = "Size is LESS than";
+$l['size_greater'] = "Size is GREATER than";
+$l['downloads_less'] = "Download Count is LESS than";
+$l['downloads_greater'] = "Download Count is GREATER than";
 $l['search'] = "Search";
 
 $l['no_attachments'] = "No attachments were found matching your query.";
