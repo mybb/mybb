@@ -418,7 +418,7 @@ if($mybb->input['action'] == "do_register")
 				"code" => $activationcode,
 				"type" => "r"
 			);
-			$db->insert_query(TABLE_PREFIX."activation", $activationarray);
+			$db->insert_query(TABLE_PREFIX."awaitingactivation", $activationarray);
 			$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_activeateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
 			mymail($email, $emailsubject, $emailmessage);
