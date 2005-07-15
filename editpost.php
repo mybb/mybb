@@ -295,7 +295,7 @@ elseif($mybb->input['action'] == "do_editpost")
 				"tid" => $tid,
 				"type" => "s"
 			);
-			$db->insert_query(TABLE_PREFIX."favorites");
+			$db->insert_query(TABLE_PREFIX."favorites", $subscriptionarray);
 		}
 	} else {
 		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE type='s' AND uid='".$mybb->user[uid]."' AND tid='$tid'");
