@@ -47,7 +47,7 @@ switch($action)
 if($action == "do_add")
 {
 	// add new type to database
-	if($extension)
+	if(($extension || $mimetype) && $maxsize)
 	{
 		$mimetype = addslashes($_POST['mimetype']);
 		$extension = addslashes($_POST['extension']);
@@ -244,6 +244,7 @@ if($action == "add")
 	tableheader($lang->new_attach_type);
 	makeinputcode($lang->extension, "extension");
 	makeinputcode($lang->mimetype, "mimetype");
+	makelabelcode($lang->control_note, '', 2);
 	makeinputcode($lang->max_size, "maxsize");
 	makeinputcode($lang->type_icon, "icon", "images/attachtypes/");
 	endtable();
@@ -256,25 +257,25 @@ if($action == "search")
 	// display form for searching for attachments
 	$query = $db->query("SELECT COUNT(aid) AS Total, SUM(filesize) AS Sum FROM ".TABLE_PREFIX."attachments");
 	$stats = $db->fetch_array($query);
-	if(!$stats[Sum])
+	if(!$stats['Sum'])
 	{
-		$stats[Sum] = 0;
+		$stats['Sum'] = 0;
 	}
-	if($stats[Sum] >= 1073741824)
+	if($stats['Sum'] >= 1073741824)
 	{
-		$stats[Sum] = round($stats[Sum] / 1073741824 * 100) / 100 . " gigabytes";
+		$stats['Sum'] = round($stats['Sum'] / 1073741824 * 100) / 100 . " gigabytes";
 	}
-	elseif($stats[Sum] >= 1048576)
+	elseif($stats['Sum'] >= 1048576)
 	{
-		$stats[Sum] = round($stats[Sum] / 1048576 * 100) / 100 . " megabytes";
+		$stats['Sum'] = round($stats['Sum'] / 1048576 * 100) / 100 . " megabytes";
 	}
-	elseif($stats[Sum] >= 1024)
+	elseif($stats['Sum'] >= 1024)
 	{
-		$stats[Sum] = round($stats[Sum] / 1024 * 100) / 100 . " kilobytes";
+		$stats['Sum'] = round($stats['Sum'] / 1024 * 100) / 100 . " kilobytes";
 	}
 	else
 	{
-		$stats[Sum] = $stats[Sum] . " bytes";
+		$stats['Sum'] = $stats['Sum'] . " bytes";
 	}
 
 	if(!$noheader)
@@ -286,7 +287,7 @@ if($action == "search")
 	tableheader($lang->attach_management);
 	tablesubheader($lang->attach_stats);
 
-	$lang->attach_stats2 = sprintf($lang->attach_stats2, $stats[Total], $stats[Sum]);
+	$lang->attach_stats2 = sprintf($lang->attach_stats2, $stats['Total'], $stats['Sum']);
 
 	makelabelcode("<center>$lang->attach_stats2</center>", "", 2);
 	tablesubheader($lang->search_attachments);
@@ -324,6 +325,7 @@ if($action == "edit")
 		tableheader($lang->edit_attach_type);
 		makeinputcode($lang->extension, "extension", $type['extension']);
 		makeinputcode($lang->mimetype, "mimetype", $type['mimetype']);
+		makelabelcode($lang->control_note, '', 2);
 		makeinputcode($lang->max_size, "maxsize", $type['maxsize']);
 		makeinputcode($lang->type_icon, "icon", $type['icon']);
 		endtable();
@@ -369,7 +371,7 @@ if($action == "modify" || !$action)
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes ORDER BY name");
 	while($type = $db->fetch_array($query))
 	{
-		$type[name] = stripslashes($type[name]);
+		$type['name'] = stripslashes($type['name']);
 		$size = getfriendlysize($type['maxsize']*1024);
 		if($type['icon'])
 		{

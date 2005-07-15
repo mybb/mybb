@@ -16,7 +16,7 @@ $l['type_delete'] = "Delete";
 $l['add_attach_type'] = "Add Attachment Type";
 
 $l['type_added'] = "The attachment type has successfully been added.";
-$l['type_add_missing_fields'] = "You must at least enter an extension and a mime type for the attachment type!";
+$l['type_add_missing_fields'] = "You must at least enter an extension or a mime type for the attachment type!";
 $l['type_deleted'] = "The attachment type has successfully been deleted.";
 $l['type_updated'] = "The attachment type has successfully been updated.";
 $l['type_edit_missing_fields'] = "You must at least enter an extension and a mime type for the attachment type!";
@@ -58,7 +58,7 @@ $l['name'] = "Name<br><small>Enter a short name that will be used to identify th
 $l['mimetype'] = "MIME Type<br><small>The MIME type of this attachment type.<br>Example: text/plain</small>";
 $l['extension'] = "Extension<br><small>The file extension of this attachment type.<br>Example: txt</small>";
 $l['max_size'] = "Maximum Size<br><small>The maximum file size (in kilobytes) for this type of attachment.</small>";
-$l['control_note'] = "Note: For more specific file type control, you can leave either the MIME type or file extension field blank.";
+$l['control_note'] = "<small>Note: For more specific file type control, you can leave either the MIME type or file extension field blank.</small>";
 $l['add_type'] = "Add Type";
 $l['update_type'] = "Update Attachment Type";
 

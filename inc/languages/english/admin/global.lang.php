@@ -63,4 +63,9 @@ $l['invalidlogin_headers'] = "From: \"{1} Admin CP\" <{2}>";
 $l['invalidlogin_message'] = "A user has tried to access the Administration Control Panel for {1}. They were unable to succeed in doing so.\nBelow are the login details:\n\nUsername: {2}\nPassword: {3} (MD5: {4})\n\nIP Address: {5}\nHostname: {6}\n\nThank you.";
 
 $l['error_fill_form'] = "One or more form fields were invalid or left blank.  Please go back and try again.";
+
+$l['size_gb'] = "GB";
+$l['size_mb'] = "MB";
+$l['size_kb'] = "KB";
+$l['size_bytes'] = "bytes";
 ?>
