@@ -42,6 +42,8 @@ if($mybb->input['action'] == "newpoll")
 {
 	$tid = intval($mybb->input['tid']);
 
+	$plugins->run_hooks("polls_newpoll_start");
+
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
@@ -118,11 +120,15 @@ if($mybb->input['action'] == "newpoll")
 		$timeout = 0;
 	}
 
+	$plugins->run_hooks("polls_newpoll_end");
+
 	eval("\$newpoll = \"".$templates->get("polls_newpoll")."\";");
 	outputpage($newpoll);		
 }
 if($mybb->input['action'] == "do_newpoll")
 {
+	$plugins->run_hooks("polls_do_newpoll_start");
+
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
@@ -232,6 +238,9 @@ if($mybb->input['action'] == "do_newpoll")
 		"multiple" => $postoptions['multiple'],
 		"public" => $postoptions['public']
 		);
+
+	$plugins->run_hooks("polls_do_newpoll_process");
+
 	$db->insert_query(TABLE_PREFIX."polls", $newpoll);
 	$pid = $db->insert_id();
 
@@ -249,6 +258,9 @@ if($mybb->input['action'] == "do_newpoll")
 	}
 	$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$thread['uid']."'");
 	$cache->updatestats();
+
+	$plugins->run_hooks("polls_do_newpoll_end");
+
 	if($thread['visible'] == 1)
 	{
 		redirect("showthread.php?tid=".$thread['tid'], $lang->redirect_pollposted);
@@ -261,6 +273,8 @@ if($mybb->input['action'] == "do_newpoll")
 if($mybb->input['action'] == "editpoll")
 {
 	$pid = intval($mybb->input['pid']);
+
+	$plugins->run_hooks("polls_editpoll_start");
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='$pid'");
 	$poll = $db->fetch_array($query);
@@ -396,11 +410,15 @@ if($mybb->input['action'] == "editpoll")
 		}
 	}
 
+	$plugins->run_hooks("polls_editpoll_end");
+
 	eval("\$editpoll = \"".$templates->get("polls_editpoll")."\";");
 	outputpage($editpoll);
 }
 if($mybb->input['action'] == "do_editpoll")
 {
+	$plugins->run_hooks("polls_do_editpoll_start");
+
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 
@@ -506,7 +524,12 @@ if($mybb->input['action'] == "do_editpoll")
 		"multiple" => $postoptions['multiple'],
 		"public" => $postoptions['public']
 		);
+
+	$plugins->run_hooks("polls_do_editpoll_process");
+
 	$db->update_query(TABLE_PREFIX."polls", $updatedpoll, "pid='".intval($mybb->input['pid'])."'");
+
+	$plugins->run_hooks("polls_do_editpoll_end");
 
 	redirect("showthread.php?tid=".$thread['tid'], $lang->redirect_pollupdated);
 }
@@ -521,6 +544,9 @@ if($mybb->input['action'] == "showresults")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
 	$forum = $db->fetch_array($query);
 	$forumpermissions = forum_permissions($forum['fid']);
+
+	$plugins->run_hooks("polls_showresults_start");
+
 
 	if($forumpermissions['canviewthreads'] == "no" || $forumpermissions['canview'] == "no")
 	{
@@ -614,6 +640,9 @@ if($mybb->input['action'] == "showresults")
 	{
 		$totpercent = "0%";
 	}
+
+	$plugins->run_hooks("polls_showresults_end");
+
 	eval("\$showresults = \"".$templates->get("polls_showresults")."\";");
 	outputpage($showresults);
 }
@@ -622,6 +651,9 @@ if($mybb->input['action'] == "vote")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 	$poll['timeout'] = $poll['timeout']*60*60*24;
+
+	$plugins->run_hooks("polls_vote_start");
+
 	if(!$poll['pid'])
 	{
 		error($lang->error_invalidpoll);
@@ -707,7 +739,12 @@ if($mybb->input['action'] == "vote")
 		"votes" => addslashes($voteslist),
 		"numvotes" => "numvotes+1"
 	);
+
+	$plugins->run_hooks("polls_vote_process");
+
 	$db->update_query(TABLE_PREFIX."polls", $updatedpoll, "pid='".$poll['pid']."'");
+
+	$plugins->run_hooks("polls_vote_end");
 
 	redirect("showthread.php?tid=".$poll['tid'], $lang->redirect_votethanks);
 }
