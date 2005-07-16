@@ -619,7 +619,7 @@ if($mybb->input['action'] == "showresults")
 }
 if($mybb->input['action'] == "vote")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['poll'])."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 	$poll['timeout'] = $poll['timeout']*60*60*24;
 	if(!$poll['pid'])
@@ -647,12 +647,12 @@ if($mybb->input['action'] == "vote")
 	{
 		error($lang->error_pollclosed);
 	}
-	if(!isset($option))
+	if(!isset($mybb->input['option']))
 	{
 		error($lang->error_nopolloptions);
 	}
 	// Check if the user has voted before...
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user[uid]."' AND pid='".$poll['pid']."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
 	$votecheck = $db->fetch_array($query);
 	if($votecheck['vid'] || $pollvotes[$poll['pid']])
 	{
@@ -669,6 +669,10 @@ if($mybb->input['action'] == "vote")
 	$now = time();
 	$votesarray = explode("||~|~||", $poll['votes']);
 	$option = $mybb->input['option'];
+	if(!isset($votesarray[$option-1]))
+	{
+		error($lang->error_nopolloptions);
+	}
 	if($poll['multiple'] == "yes")
 	{
 		while(list($voteoption, $vote) = each($option))
@@ -679,14 +683,14 @@ if($mybb->input['action'] == "vote")
 				{
 					$votesql .= ",";
 				}
-				$votesql .= "(NULL,'".$poll['pid']."','".$mybb->user[uid]."','$voteoption','$now')";
+				$votesql .= "(NULL,'".$poll['pid']."','".$mybb->user['uid']."','$voteoption','$now')";
 				$votesarray[$voteoption-1]++;
 			}
 		}
 	}
 	else
 	{
-		$votesql = "(NULL,'".$poll['pid']."','".$mybb->user[uid]."','".addslashes($option)."','$now')";
+		$votesql = "(NULL,'".$poll['pid']."','".$mybb->user['uid']."','".addslashes($option)."','$now')";
 		$votesarray[$option-1]++;
 	}
 	$db->query("INSERT INTO ".TABLE_PREFIX."pollvotes VALUES $votesql");
@@ -700,7 +704,7 @@ if($mybb->input['action'] == "vote")
 		$voteslist .= $votesarray[$i-1];
 	}
 	$updatedpoll = array(
-		"votes" => addslashes($votes),
+		"votes" => addslashes($voteslist),
 		"numvotes" => "numvotes+1"
 	);
 	$db->update_query(TABLE_PREFIX."polls", $updatedpoll, "pid='".$poll['pid']."'");

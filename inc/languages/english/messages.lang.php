@@ -200,6 +200,11 @@ $l['error_alreadyingroup'] = "The user specified already is part of the usergrou
 $l['error_usercp_return_date_past'] = "You cannot return in the past!";
 $l['error_invalidannouncement'] = "The announcement specified is invalid.";
 $l['error_invaliduser'] = "The specified user is invalid or does not exist.";
+$l['error_invalidpoll'] = "The specified poll is invalid or does not exist.";
+$l['error_pollclosed'] = "You cannot vote in a poll that has been closed.";
+$l['error_nopolloptions'] = "The specified poll option is invalid or does not exist.";
+$l['error_alreadyvoted'] = "You have already voted in this poll.";
+
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";
