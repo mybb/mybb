@@ -61,6 +61,9 @@ if($mybb->input['action'] == "do_login")
 	redirect($PHP_SELF, $lang->redirect_loggedin);
 }
 
+$plugins->run_hooks("portal_start");
+
+
 // get forums user cannot view
 $unviewable = getunviewableforums();
 if($unviewable)
@@ -379,11 +382,15 @@ while($announcement = $db->fetch_array($query))
 		}
 	}
 
+	$plugins->run_hooks("portal_announcement");
 
 	$message = postify($announcement['message'], $forum['allowhtml'], $forum['allowmycode'], $forum['allowsmilies'], $forum['allowimgcode']);
 	eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
 }
 eval("\$portal = \"".$templates->get("portal")."\";");
+
+$plugins->run_hooks("portal_end");
+
 outputpage($portal);
 
 ?>

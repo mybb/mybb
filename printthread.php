@@ -19,6 +19,8 @@ require "./inc/functions_post.php";
 // Load global language phrases
 $lang->load("printthread");
 
+$plugins->run_hooks("printthread_start");
+
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."' AND visible='1'");
 $thread = $db->fetch_array($query);
 $thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
@@ -69,10 +71,13 @@ while($postrow = $db->fetch_array($query))
 	{
 		$postrow['message'] = domecode($postrow['message'], $postrow['username']);
 	}
-
+	$plugins->run_hooks("printthread_post");
 	eval("\$postrows .= \"".$templates->get("printthread_post")."\";");
 }
 eval("\$printable = \"".$templates->get("printthread")."\";");
+
+$plugins->run_hooks("printthread_end");
+
 outputpage($printable);
 
 function makeprintablenav($pid="0", $depth="--")
