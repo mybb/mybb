@@ -2707,7 +2707,7 @@ $preview
 <td class="thead" colspan="3"><strong>$lang->delete_poll</strong></td>
 </tr>
 <tr>
-<td class="trow1" nowrap="nowrap"<input type="checkbox" name="delete" value="yes" tabindex="9"> <strong>$lang->delete_q</strong></td>
+<td class="trow1" nowrap="nowrap"><input type="checkbox" name="delete" value="yes" tabindex="9"> <strong>$lang->delete_q</strong></td>
 <td class="trow1" width="100%">$lang->delete_note<br /><span class="smalltext">$lang->delete_note_2</span></td>
 <td class="trow1" nowrap="nowrap"><input type="submit" name="submit" value="$lang->delete_poll" tabindex="10"></td>
 </table>
@@ -2934,11 +2934,11 @@ $buddys[offline]
 </html>]]></template>
 		<template name="misc_buddypopup_user_offline"><![CDATA[<tr>
 <td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid=$buddy[uid]" target="_blank">$buddy[username]</a></span></td>
-<td class="trow1" align="right" nowrap="nowrap"<span class="smalltext">$pmbuddy<a href="misc.php?action=buddypopup&removebuddy=$buddy[uid]">$lang->delete_buddy</a></span></td>
+<td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">$pmbuddy<a href="misc.php?action=buddypopup&removebuddy=$buddy[uid]">$lang->delete_buddy</a></span></td>
 </tr>]]></template>
 		<template name="misc_buddypopup_user_online"><![CDATA[<tr>
 <td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid=$buddy[uid]" target="_blank">$buddy[username]</a></span></td>
-<td class="trow1" align="right" nowrap="nowrap"<span class="smalltext">$pmbuddy<a href="misc.php?action=buddypopup&removebuddy=$buddy[uid]">$lang->delete_buddy</a></span></td>
+<td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">$pmbuddy<a href="misc.php?action=buddypopup&removebuddy=$buddy[uid]">$lang->delete_buddy</a></span></td>
 </tr>]]></template>
 		<template name="private_archive_txt"><![CDATA[$lang->private_messages_for
 ($lang->exported_date)
@@ -3224,9 +3224,9 @@ $usercpnav
 </tr>
 <tr>
 <td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>$lang->_message_title</strong></span></td>
-<td class="tcat" align="center" nowrap="nowrap"<span class="smalltext"><strong>$lang->sentto</strong></span></td>
-<td class="tcat" align="center" nowrap="nowrap"<span class="smalltext"><strong>$lang->dateread</strong></span></td>
-<td class="tcat" align="center" nowrap="nowrap"<span class="smalltext"><strong>?</strong></span></td>
+<td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>$lang->sentto</strong></span></td>
+<td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>$lang->dateread</strong></span></td>
+<td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>?</strong></span></td>
 </tr>
 $readmessages
 <tr>
@@ -3243,9 +3243,9 @@ $readmessages
 </tr>
 <tr>
 <td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>$lang->_message_title</strong></span></td>
-<td class="tcat" align="center" nowrap="nowrap"<span class="smalltext"><strong>$lang->sentto</strong></span></td>
-<td class="tcat" align="center" nowrap="nowrap"<span class="smalltext"><strong>$lang->datesent</strong></span></td>
-<td class="tcat" align="center" nowrap="nowrap"<span class="smalltext"><strong>?</strong></span></td>
+<td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>$lang->sentto</strong></span></td>
+<td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>$lang->datesent</strong></span></td>
+<td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>?</strong></span></td>
 </tr>
 $unreadmessages
 <tr>
@@ -3412,7 +3412,7 @@ $pmsdownload
 <td align="center" class="trow2" width="5%">$icon</td>
 <td class="trow1" width="35%"><a href="private.php?action=read&amp;pmid=$message[pmid]">$message[subject]</a>$denyreceipt</td>
 <td align="center" class="trow2">$tofromusername</td>
-<td class="trow1" align="right" nowrap="nowrap"<span class="smalltext">$senddate $sendtime</span></td>
+<td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">$senddate $sendtime</span></td>
 <td class="trow2" align="center"><input type="checkbox" name="check[$message[pmid]]" value="yes"></td>
 </tr>]]></template>
 		<template name="private_send_buddyselect"><![CDATA[<br /><span class="smalltext">$lang->select_buddy<br /><select name="buddy" onchange="document.myform.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>$buddies</select>]]></template>
@@ -3489,10 +3489,10 @@ var php_prompt = "$lang->php_prompt";
 <img name="align_right" src="./images/codebuttons/align_right.gif" onclick="insertCode('align', 'right')" class="toolbar_normal" onMouseOver="toolbarHover('align_right')" onMouseOut="toolbarUnHover('align_right')" onMouseDown="toolbarMouseDown('align_right')" alt="$lang->alt_right">
 <img name="align_justify" src="./images/codebuttons/align_justify.gif" onclick="insertCode('align', 'justify')" class="toolbar_normal" onMouseOver="toolbarHover('align_justify')" onMouseOut="toolbarUnHover('align_justify')" onMouseDown="toolbarMouseDown('align_justify')" alt="$lang->alt_justify">
 <img src="./images/codebuttons/sep.gif">
-<img name="list_num"src="./images/codebuttons/list_num.gif" onclick="insertCode('list', '1')" class="toolbar_normal" onMouseOver="toolbarHover('list_num')" onMouseOut="toolbarUnHover('list_num')" onMouseDown="toolbarMouseDown('list_num')" alt="$lang->alt_numlist">
+<img name="list_num" src="./images/codebuttons/list_num.gif" onclick="insertCode('list', '1')" class="toolbar_normal" onMouseOver="toolbarHover('list_num')" onMouseOut="toolbarUnHover('list_num')" onMouseDown="toolbarMouseDown('list_num')" alt="$lang->alt_numlist">
 <img name="list_bullet" src="./images/codebuttons/list_bullet.gif" onclick="insertCode('list')" class="toolbar_normal" onMouseOver="toolbarHover('list_bullet')" onMouseOut="toolbarUnHover('list_bullet')" onMouseDown="toolbarMouseDown('list_bullet')" alt="$lang->alt_bulletlist">
 <img src="./images/codebuttons/sep.gif">
-<img name="img"src="./images/codebuttons/image.gif" onclick="insertCode('img')" class="toolbar_normal" onMouseOver="toolbarHover('img')" onMouseOut="toolbarUnHover('img')" onMouseDown="toolbarMouseDown('img')" alt="$lang->alt_image">
+<img name="img" src="./images/codebuttons/image.gif" onclick="insertCode('img')" class="toolbar_normal" onMouseOver="toolbarHover('img')" onMouseOut="toolbarUnHover('img')" onMouseDown="toolbarMouseDown('img')" alt="$lang->alt_image">
 <img name="url" src="./images/codebuttons/url.gif" onclick="insertCode('url')" class="toolbar_normal" onMouseOver="toolbarHover('url')" onMouseOut="toolbarUnHover('url')" onMouseDown="toolbarMouseDown('url')" alt="$lang->alt_hyperlink">
 <img name="email" src="./images/codebuttons/email.gif" onclick="insertCode('email')" class="toolbar_normal" onMouseOver="toolbarHover('email')" onMouseOut="toolbarUnHover('email')" onMouseDown="toolbarMouseDown('email')" alt="$lang->alt_email">
 <img src="./images/codebuttons/sep.gif">
@@ -3551,11 +3551,11 @@ $header
 </tr>
 <tr>
 <td class="tcat"><span class="smalltext"><strong>$lang->username</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>$lang->email</strong></span></</td>
-<td class="tcat" align="center"><span class="smalltext"><strong>$lang->website</strong></span></</td>
-<td class="tcat"><span class="smalltext"><strong>$lang->location</strong></span></</td>
-<td class="tcat" align="center"><span class="smalltext"><strong>$lang->joined</strong></span></</td>
-<td class="tcat"><span class="smalltext"><strong>$lang->posts</strong></span></</td>
+<td class="tcat" align="center"><span class="smalltext"><strong>$lang->email</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>$lang->website</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>$lang->location</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>$lang->joined</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>$lang->posts</strong></span></td>
 </tr>
 $member
 <tr>
@@ -3890,7 +3890,7 @@ $footer
 ]]></template>
 		<template name="showthread_poll_results"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
-<td class="thead" colspan="4" align="center"><strong>$lang->poll $poll[question]</strong><br /><span class="smalltext">$pollstatus</small</td>
+<td class="thead" colspan="4" align="center"><strong>$lang->poll $poll[question]</strong><br /><span class="smalltext">$pollstatus</span></td>
 </tr>
 $polloptions
 <tr>
@@ -3915,7 +3915,7 @@ $headerinclude
 $header
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
-<td class="thead" colspan="4" align="center"><strong>$poll[question]</strong><br /><span class="smalltext">$pollstatus</small</td>
+<td class="thead" colspan="4" align="center"><strong>$poll[question]</strong><br /><span class="smalltext">$pollstatus</span></td>
 </tr>
 $polloptions
 <tr>
@@ -4142,7 +4142,7 @@ $url
 <td align="center" class="trow1">-</td>
 <td align="center" class="trow1">-</td>
 $rating
-<td class="trow1" nowrap="nowrap"$postdate $posttime</span></td>
+<td class="trow1" nowrap="nowrap">$postdate $posttime</td>
 $modann
 </tr>
 ]]></template>
@@ -4285,8 +4285,8 @@ $post[signature]]]></template>
 		<template name="error_attacherror"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder"><tr>
 <td class="thead"><strong>$lang->error_attach_file</strong></td>
 </tr>
-<td class="trow1">$attachedfile[error]
-</td
+<tr>
+<td class="trow1">$attachedfile[error]</td>
 </tr>
 </table>
 <br />]]></template>
@@ -4912,7 +4912,7 @@ $message[message]
 <td class="$bgcolor" width="1" nowrap="nowrap">
 <table cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" nowrap="nowrap"<span class="smalltext">$lastpostdate $lastposttime<br />(<a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$result[tid]">$lastposter</a>)</span>
+<td align="left" nowrap="nowrap"><span class="smalltext">$lastpostdate $lastposttime<br />(<a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$result[tid]">$lastposter</a>)</span>
 </td>
 <td align="right">
 <a href="showthread.php?action=lastpost&amp;tid=$result[tid]"><!-- <img src="images/lastpost.gif"> --><span class="smalltext"><strong>&raquo;</strong></span></a>
@@ -6362,8 +6362,8 @@ $usercpnav
 <tr>
 <td class="thead" width="1"> </td>
 <td class="thead" valign="bottom"><span class="smalltext"><strong>$lang->forum</strong></span></td>
-<td class="thead" valign="bottom" align="center" nowrap="nowrap"<span class="smalltext"><strong>$lang->posts</strong></span></td>
-<td class="thead" valign="bottom" align="center" nowrap="nowrap"<span class="smalltext"><strong>$lang->threads</strong></span></td>
+<td class="thead" valign="bottom" align="center" nowrap="nowrap"><span class="smalltext"><strong>$lang->posts</strong></span></td>
+<td class="thead" valign="bottom" align="center" nowrap="nowrap"><span class="smalltext"><strong>$lang->threads</strong></span></td>
 <td class="thead" valign="bottom" align="center"><span class="smalltext"><strong>$lang->lastpost</strong></span></td>
 </tr>
 $forums
