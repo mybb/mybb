@@ -98,6 +98,7 @@ $l['reset_password'] = "Reset Password";
 $l['send_password'] = "Send New Password!";
 $l['image_verification'] = "Image Verification";
 $l['verification_note'] = "Please enter the text contained within the image on the right in to the textbox below it. This process is used to prevent automated signups.";
+$l['verification_subnote'] = "(case in-sensitive)";
 $l['registration_errors'] = "The following errors occurred with your registration:";
 $l['timeonline'] = "Time Spent Online:";
 $l['registrations_disabled'] = "Sorry but you cannot register at this time because the administrator has disabled new account registrations.";

@@ -684,12 +684,11 @@ if($mybb->input['action'] == "register")
 		if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))
 		{
 			$randomstr = random_str();
-			$time = time();
 			$imagehash = md5($randomstr);
 			$regimagearray = array(
 				"imagehash" => $imagehash,
 				"imagestring" => $randomstr,
-				"dateline" => now()
+				"dateline" => time()
 				);
 			$db->insert_query(TABLE_PREFIX."regimages", $regimagearray);
 			eval("\$regimage = \"".$templates->get("member_register_regimage")."\";");

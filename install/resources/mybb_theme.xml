@@ -6618,7 +6618,7 @@ $footer
 <table cellspacing="0" cellpadding="$theme[tablespace]">
 <tr>
 <td><span class="smalltext">$lang->verification_note</span></td>
-<td rowspan="2"><img src="image.php?action=regimage&imagehash=$imagehash" alt="$lang->image_verification" /></td>
+<td rowspan="2" align="center"><img src="image.php?action=regimage&imagehash=$imagehash" alt="$lang->image_verification" /><br /><span style="color: red;" class="smalltext">$lang->verification_subnote</span></td>
 </tr>
 <tr>
 <td><input type="text" name="imagestring" value="" /></td>
