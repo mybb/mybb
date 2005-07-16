@@ -19,14 +19,6 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 		$message = str_replace("<","&lt;",$message);
 		$message = str_replace(">","&gt;",$message);
 	}
-	if($allowmycode != "no")
-	{
-		$message = domycode($message, $allowimgcode);
-	}
-	if($allowhtml != "yes")
-	{
-		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicide
-	}
 	if($allowsmilies != "no")
 	{
 		if($archive == 1)
@@ -38,9 +30,17 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 			$message = dosmilies($message);
 		}
 	}
+	if($allowmycode != "no")
+	{
+		$message = domycode($message, $allowimgcode);
+	}
 	if($allowimgcode != "yes")
 	{
 		$message = str_replace("<img","&lt;img",$message);
+	}
+	if($allowhtml != "yes")
+	{
+		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicode
 	}
 	$message = nl2br($message);
 	return $message;
