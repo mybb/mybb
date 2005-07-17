@@ -296,6 +296,8 @@ function upgrade3_dbchanges2()
 	);");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD salt varchar(10) NOT NULL AFTER password;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usersADD loginkey varchar(50) NOT NULL AFTER salt;");
+
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD pmnotify varchar(3) NOT NULL AFTER pmpopup;");
 
 	$inserts[] = "CREATE TABLE ".TABLE_PREFIX."settinggroups (
