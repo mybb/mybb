@@ -15,6 +15,7 @@ $templatelist = "member_register,error_nousername,error_nopassword,error_passwor
 $templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword";
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/functions_user.php";
 
 // Load global language phrases
 $lang->load("member");
@@ -342,9 +343,14 @@ if($mybb->input['action'] == "do_register")
 		{
 			$md5password = md5($mybb->input['password']);
 		}
-		$salt = random_str();
-		$saltedpw = md5(md5($salt).$md5password);
+
+		//
+		// Generate salt, salted password, and login key
+		//
+		$salt = generate_salt();
+		$saltedpw = salt_password($md5password, $salt);
 		$loginkey = generate_loginkey();
+		
 		$timenow = time();
 		$newuser = array(
 			"uid" => "NULL",
@@ -901,25 +907,18 @@ elseif($mybb->input['action'] == "resetpassword")
 			error($lang->error_badlostpwcode);
 		}
 		$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user[uid]."' AND type='p'");
-		
-		// Generate a new password
 		$username = $user['username'];
-		$password = random_str();
-		$newpassword = md5(md5($user['salt']).md5($password));
 
-		// Generate a new loginkey
-		$loginkey = generate_loginkey();
+		//
+		// Generate a new password, then update it
+		//
+		$password = random_str();
+		$logindetails = update_password($user['uid'], $password, $user['salt']);
 
 		$email = $user['email'];
 		
 		$plugins->run_hooks("member_resetpassword_action");
 
-		$db->query("UPDATE ".TABLE_PREFIX."users SET password='$newpassword', loginkey='$loginkey' WHERE uid='".$user[uid]."'");
-
-		if(function_exists("passwordChanged"))
-		{
-			passwordChanged($user['uid'], $newpassword);
-		}
 		$emailsubject = sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
 		$emailmessage = sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
 		mymail($email, $emailsubject, $emailmessage);
@@ -947,6 +946,7 @@ else if($mybb->input['action'] == "do_login")
 {
 	$plugins->run_hooks("member_do_login_start");
 
+	/*
 	$query = $db->query("SELECT uid, username,password,salt FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
@@ -967,6 +967,13 @@ else if($mybb->input['action'] == "do_login")
 	}
 
 	if($user['password'] != md5(md5($user['salt']).md5($mybb->input['password'])))
+	{
+	}
+	*/
+
+	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+
+	if(!$user['uid'])
 	{
 		error($lang->error_invalidpassword);
 	}

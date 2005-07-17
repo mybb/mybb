@@ -882,16 +882,10 @@ elseif($mybb->input['action'] == "do_password")
 	{
 		error($lang->error_passwordmismatch);
 	}
-	$password = md5(md5($mybb->user['salt']).$mybb->input['password']);
-	// Generate new login key
-	$loginkey = generate_loginkey();
+	$logindetails = update_password($mybb->user['uid'], md5($mybb->input['password']), $mybb->user['salt']);
 
-	$db->query("UPDATE ".TABLE_PREFIX."users SET password='$password', loginkey='$loginkey' WHERE uid='".$mybb->user[uid]."'");
-	mysetcookie("mybbuser", $mybb->user['uid']."_".$loginkey);
-	if(function_exists("passwordChanged"))
-	{
-		passwordChanged($mybb->user['uid'], $password);
-	}
+	mysetcookie("mybbuser", $mybb->user['uid']."_".$logindetails['loginkey']);
+
 	redirect("usercp.php", $lang->redirect_passwordupdated);
 }
 elseif($mybb->input['action'] == "changename")

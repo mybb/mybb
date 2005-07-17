@@ -209,13 +209,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		if($mybb->input['username'] && !$mybb->user['uid'])
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
-			$user = $db->fetch_array($query);
-			if($user['password'] == md5($mybb->input['password']) && $user['username'])
-			{
-				$mybb->user['username'] = $user['username'];
-				$mybb->user['uid'] = $user['uid'];
-			}
+			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 		}
 		$query = $db->query("SELECT u.*, f.*, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".$mybb->input['icon']."') WHERE u.uid='".$mybb->user[uid]."'");
 		$post = $db->fetch_array($query);
@@ -356,23 +350,19 @@ if($mybb->input['action'] == "do_newthread")
 	if($mybb->user['uid'] == 0)
 	{
 		$username = htmlspecialchars_uni($mybb->input['username']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
-		$member = $db->fetch_array($query);
-		if($member['uid'])
+		if(username_exists($mybb->input['username']))
 		{
 			if(!$mybb->input['password'])
 			{
 				error($lang->error_usernametaken);
 			}
-			elseif($member['password'] != md5($mybb->input['password']))
+			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+			if($mybb->user['uid'])
 			{
 				error($lang->error_invalidpass);
 			}
-			$username = $member['username'];
-			$uid = $member['uid'];
-			$mybb->user = $member;
-			mysetcookie("mybb[uid]", $member['uid']);
-			mysetcookie("mybb[password]", $member['password']);
+			$mybb->input['username'] = $username = $mybb->user['username'];
+			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
 		}
 		else
 		{

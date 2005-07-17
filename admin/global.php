@@ -18,6 +18,7 @@ if(!$config['admindir'])
 
 require "./inc/init.php";
 require $config['admindir']."/adminfunctions.php";
+require "./inc/functions_user.php";
 
 $style = "./styles/$settings[cpstyle]/stylesheet.css";
 if(!file_exists($config['admindir']."/".$style))
@@ -51,18 +52,20 @@ $ipaddress = getip();
 unset($user);
 if($do == "login")
 {
-	$md5pw = md5($password);
-	$username = addslashes($_POST['username']);
-	$query = $db->query("SELECT username, uid, password, usergroup FROM ".TABLE_PREFIX."users WHERE username='$username' AND password='$md5pw'");
-	$user = $db->fetch_array($query);
+	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+	if($user['uid'])
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$user['uid']."'");
+		$user = $db->fetch_array($query);
+	}
 	$failcheck = 1;
 }
 elseif($action != "logout")
 {
 	$logon = explode("_", $_COOKIE['mybbadmin'], 2);
-	$query = $db->query("SELECT username, uid, password, usergroup FROM ".TABLE_PREFIX."users WHERE uid='$logon[0]'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$logon[0]'");
 	$user = $db->fetch_array($query);
-	if(md5($user['password'].md5($user['salt'])) != $logon[1])
+	if($user['loginkey'] != $logon[1])
 	{
 		unset($user);
 	}
@@ -83,7 +86,7 @@ if($admingroup['cancp'] != "yes" || !$user['uid'])
 if($user['uid'])
 {
 	$expires = $time+60*60*24;
-	setcookie("mybbadmin", $user['uid']."_".md5($user['password'].md5($user['salt'])), $expires);
+	setcookie("mybbadmin", $user['uid']."_".$user['loginkey'], $expires);
 	$mybbadmin = $user;
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]'");
 	$adminoptions = $db->fetch_array($query);
