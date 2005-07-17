@@ -15,6 +15,7 @@ $templatelist .= ",smilieinsert,codebuttons,post_attachments_new,post_attachment
 
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/functions_user.php";
 
 // Load global language phrases
 $lang->load("newreply");

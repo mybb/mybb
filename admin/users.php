@@ -173,14 +173,13 @@ if($action == "do_add")
 	$msn = addslashes($msn);
 	$signature = addslashes($signature);
 	$avatar = addslashes($avatar);
-//	$avatar = fixjavascript($avatar);
 
-	// Generate salt and login key
-	$salt = random_str();
+	//
+	// Generate salt, salted password, and login key
+	//
+	$salt = generate_salt();
+	$md5password = salt_password($md5password, $salt);
 	$loginkey = generate_loginkey();
-
-	$md5password = md5(md5($salt).md5($password));
-	$timenow = time();
 
 	// Determine the usergroup stuff
 	if(is_array($additionalgroups))
@@ -276,22 +275,9 @@ if($action == "do_edit")
 	$signature = addslashes($signature);
 	$avatar = addslashes($avatar);
 
-	if(!$user['salt'])
-	{
-		$user['salt'] = random_str();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='".$user['salt']."' WHERE uid='".$user['uid']."'");
-	}
-	if(!$user['loginkey'])
-	{
-		$user['loginkey'] = generate_loginkey();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET loginkey='".$user['loginkey']."' WHERE uid='".$user['uid']."'");
-	}
-
 	if($password != "")
 	{
-		$md5password = md5(md5($user['salt'].md5($password));
-		$user['loginkey'] = generate_loginkey();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET password='$md5password', loginkey='".$user['loginkey']." WHERE uid='$uid'");
+		update_password($user['uid'], md5($password), $user['salt']);
 	}
 	// Custom profile fields baby!
 	$upquery = "";
