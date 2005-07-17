@@ -448,6 +448,7 @@ function show($user)
 			$locationname = $lang->reporting_post;
 			break;
 		// reputation.php functions
+		case "reputation":
 			$locationname = $lang->giving_reputation;
 			break;
 		// search.php functions
