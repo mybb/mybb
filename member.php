@@ -343,12 +343,15 @@ if($mybb->input['action'] == "do_register")
 			$md5password = md5($mybb->input['password']);
 		}
 		$salt = random_str();
+		$saltedpw = md5(md5($salt).$md5password);
+		$loginkey = generate_loginkey();
 		$timenow = time();
 		$newuser = array(
 			"uid" => "NULL",
 			"username" => addslashes($username),
-			"password" => $md5password,
+			"password" => $saltedpw,
 			"salt" => $salt,
+			"loginkey" => $loginkey,
 			"email" => addslashes($email),
 			"usergroup" => $usergroup,
 			"regdate" => $timenow,
@@ -402,7 +405,7 @@ if($mybb->input['action'] == "do_register")
 		if($mybb->settings['regtype'] != "randompass")
 		{
 			// Log them in
-			mysetcookie("mybbuser", $uid."_".md5($md5password.md5($salt)));
+			mysetcookie("mybbuser", $uid."_".$loginkey);
 		}
 
 		// Update forum stats
@@ -898,19 +901,24 @@ elseif($mybb->input['action'] == "resetpassword")
 			error($lang->error_badlostpwcode);
 		}
 		$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user[uid]."' AND type='p'");
-		// generate new password
+		
+		// Generate a new password
 		$username = $user['username'];
 		$password = random_str();
-		$newpassword = md5($password);
+		$newpassword = md5(md5($user['salt']).md5($password));
+
+		// Generate a new loginkey
+		$loginkey = generate_loginkey();
+
 		$email = $user['email'];
 		
 		$plugins->run_hooks("member_resetpassword_action");
 
-		$db->query("UPDATE ".TABLE_PREFIX."users SET password='$newpassword' WHERE uid='".$user[uid]."'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET password='$newpassword', loginkey='$loginkey' WHERE uid='".$user[uid]."'");
 
 		if(function_exists("passwordChanged"))
 		{
-			passwordChanged($user['uid'], $newpasswords);
+			passwordChanged($user['uid'], $newpassword);
 		}
 		$emailsubject = sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
 		$emailmessage = sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
@@ -945,16 +953,25 @@ else if($mybb->input['action'] == "do_login")
 	{
 		error($lang->error_invalidusername);
 	}
-	if($user['password'] != md5($mybb->input['password']))
-	{
-		error($lang->error_invalidpassword);
-	}
 	if(!$user['salt'])
 	{
 		$user['salt'] = random_str();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='".$user['salt']."' WHERE uid='".$user['uid']."'");
+		// Rebuild users password
+		$user['password'] = md5(md5($user['salt']).$user['password']);
+		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='".$user['salt']."', password='".$user['password']."' WHERE uid='".$user['uid']."'");
 	}
-	mysetcookie("mybbuser", $user['uid']."_".md5($user['password'].md5($user['salt'])));
+	if(!$user['loginkey'])
+	{
+		$user['loginkey'] = generate_loginkey();
+		$db->query("UPDATE ".TABLE_PREFIX."users SET loginkey='".$user['loginkey']."' WHERE uid='".$user['uid']."'");
+	}
+
+	if($user['password'] != md5(md5($user['salt']).md5($mybb->input['password'])))
+	{
+		error($lang->error_invalidpassword);
+	}
+
+	mysetcookie("mybbuser", $user['uid']."_".$user['loginkey']);
 
 	if(function_exists("loggedIn"))
 	{

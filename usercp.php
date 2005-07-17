@@ -873,7 +873,7 @@ elseif($mybb->input['action'] == "password")
 }
 elseif($mybb->input['action'] == "do_password")
 {
-	$mybb->input['oldpassword'] = md5($mybb->input['oldpassword']);
+	$mybb->input['oldpassword'] = md5(md5($mybb->user['salt']).$mybb->input['oldpassword']);
 	if($mybb->input['oldpassword'] != $mybb->user['password'] || $mybb->input['password'] == "")
 	{
 		error($lang->error_invalidpassword);
@@ -882,10 +882,12 @@ elseif($mybb->input['action'] == "do_password")
 	{
 		error($lang->error_passwordmismatch);
 	}
-	$password = md5($mybb->input['password']);
+	$password = md5(md5($mybb->user['salt']).$mybb->input['password']);
+	// Generate new login key
+	$loginkey = generate_loginkey();
 
-	$db->query("UPDATE ".TABLE_PREFIX."users SET password='$password' WHERE uid='".$mybb->user[uid]."'");
-	mysetcookie("mybbuser", $mybb->user['uid']."_".md5($password.md5($mybb->user['salt'])));
+	$db->query("UPDATE ".TABLE_PREFIX."users SET password='$password', loginkey='$loginkey' WHERE uid='".$mybb->user[uid]."'");
+	mysetcookie("mybbuser", $mybb->user['uid']."_".$loginkey);
 	if(function_exists("passwordChanged"))
 	{
 		passwordChanged($mybb->user['uid'], $password);

@@ -2100,4 +2100,9 @@ function mynumberformat($number)
 		return number_format($number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
 	}
 }
+
+function generate_loginkey()
+{
+	return random_str(50);
+}
 ?>

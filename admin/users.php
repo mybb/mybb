@@ -175,7 +175,11 @@ if($action == "do_add")
 	$avatar = addslashes($avatar);
 //	$avatar = fixjavascript($avatar);
 
-	$md5password = md5($password);
+	// Generate salt and login key
+	$salt = random_str();
+	$loginkey = generate_loginkey();
+
+	$md5password = md5(md5($salt).md5($password));
 	$timenow = time();
 
 	// Determine the usergroup stuff
@@ -196,7 +200,7 @@ if($action == "do_add")
 	}
 	$email = addslashes($_POST['email']);
 
-	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,usergroup,usertitle,regdate,lastactive,lastvisit,avatar,website,icq,aim,yahoo,msn,birthday,allownotices,hideemail,emailnotify,invisible,style,timezone,receivepms,pmpopup,pmnotify,signature) VALUES (NULL,'$username','$md5password','$email','$usergroup','$usertitle','$timenow','$timenow','$timenow','$avatar','$website','$icq','$aim','$yahoo','$msn','$birthday','$allownotices','$hideemail','$emailnotify','$invisible','$style','$timezoneoffset','$receivepms','$pmpopup','$pmnotify','$signature')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,salt,loginkey,email,usergroup,usertitle,regdate,lastactive,lastvisit,avatar,website,icq,aim,yahoo,msn,birthday,allownotices,hideemail,emailnotify,invisible,style,timezone,receivepms,pmpopup,pmnotify,signature) VALUES (NULL,'$username','$md5password','$salt','$loginkey','$email','$usergroup','$usertitle','$timenow','$timenow','$timenow','$avatar','$website','$icq','$aim','$yahoo','$msn','$birthday','$allownotices','$hideemail','$emailnotify','$invisible','$style','$timezoneoffset','$receivepms','$pmpopup','$pmnotify','$signature')");
 	$uid = $db->insert_id();
 
 	// Custom profile fields baby!
@@ -272,10 +276,22 @@ if($action == "do_edit")
 	$signature = addslashes($signature);
 	$avatar = addslashes($avatar);
 
+	if(!$user['salt'])
+	{
+		$user['salt'] = random_str();
+		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='".$user['salt']."' WHERE uid='".$user['uid']."'");
+	}
+	if(!$user['loginkey'])
+	{
+		$user['loginkey'] = generate_loginkey();
+		$db->query("UPDATE ".TABLE_PREFIX."users SET loginkey='".$user['loginkey']."' WHERE uid='".$user['uid']."'");
+	}
+
 	if($password != "")
 	{
-		$md5password = md5($password);
-		$db->query("UPDATE ".TABLE_PREFIX."users SET password='$md5password' WHERE uid='$uid'");
+		$md5password = md5(md5($user['salt'].md5($password));
+		$user['loginkey'] = generate_loginkey();
+		$db->query("UPDATE ".TABLE_PREFIX."users SET password='$md5password', loginkey='".$user['loginkey']." WHERE uid='$uid'");
 	}
 	// Custom profile fields baby!
 	$upquery = "";

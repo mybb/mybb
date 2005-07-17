@@ -91,7 +91,7 @@ function create_user_session()
 	$logon = explode("_", $_COOKIE['mybbuser'], 2);
 	$query = $db->query("SELECT u.*, f.*, COUNT(pms.pmid) AS pms_total, SUM(IF(pms.dateline>u.lastvisit AND pms.folder='1','1','0')) AS pms_new, SUM(IF(pms.status='0' AND pms.folder='1','1','0')) AS pms_unread, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."privatemessages pms ON (pms.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) WHERE u.uid='$logon[0]' GROUP BY u.uid");
 	$mybb->user = $db->fetch_array($query);
-	if(md5($mybb->user['password'].md5($mybb->user['salt'])) != $logon[1])
+	if($mybb->user['loginkey'] != $logon[1])
 	{
 		return false;
 	}
