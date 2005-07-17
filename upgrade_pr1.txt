@@ -1,0 +1,13 @@
+MyBB Preview Release 1 (Version released to testers) to MyBB Preview Release 1 (Latest code) Upgrade Instructions
+-----
+
+Please keep this file updated
+
+----
+
+-> MySQL Queries to run:
+
+UPDATE mybb_users SET salt='';
+ALTER TABLE mybb_users ADD loginkey varchar(50) NOT NULL AFTER salt;
+
+--
