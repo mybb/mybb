@@ -160,8 +160,17 @@ switch($action)
 			{
 				$prefix = "<span class=\"threadprefix\">".$lang->archive_sticky."</span> ";
 			}
+
+			if($thread['replies'] == 1)
+			{
+				$lang_reply_text = $lang->archive_replies;
+			}
+			else
+			{
+				$lang_reply_text = $lang->archive_reply;
+			}
 			?>
-<li><?php echo $prefix; ?><a href="<?php echo $archiveurl."/index.php/thread-".$thread['tid'].".html"; ?>"><?php echo $thread['subject']; ?></a> <span class="replycount">(<?php echo $thread['replies']." ".$lang->archive_replies; ?>)</span></li>
+<li><?php echo $prefix; ?><a href="<?php echo $archiveurl."/index.php/thread-".$thread['tid'].".html"; ?>"><?php echo $thread['subject']; ?></a> <span class="replycount">(<?php echo $thread['replies'] ." ".$lang_reply_text; ?>)</span></li>
 			<?php
 		}
 		?>
