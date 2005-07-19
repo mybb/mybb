@@ -217,7 +217,7 @@ if($action == "editset") {
 	cpfooter();
 }
 
-if($action == "delete") {
+if($action == "delete" || $action == "revert") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='$tid'");
 	$template = $db->fetch_array($query);
 
@@ -228,7 +228,16 @@ if($action == "delete") {
 	tableheader($lang->delete_template, "", 1);
 	$yes = makebuttoncode("deletesubmit", "Yes");
 	$no = makebuttoncode("no", "No");
-	makelabelcode("<center>$lang->delete_template<br><br>$yes$no</center>", "");
+	if($action == "revert")
+	{
+		tableheader($lang->revert_template, "", 1);
+		makelabelcode("<center>$lang->revert_template_notice<br><br>$yes$no</center>", "");
+	}
+	else
+	{
+		tableheader($lang->delete_template, "", 1);
+		makelabelcode("<center>$lang->delete_template_notice<br><br>$yes$no</center>", "");
+	}
 	endtable();
 	endform();
 	cpfooter();
