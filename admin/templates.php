@@ -551,7 +551,7 @@ if($action == "modify" || $action == "") {
 					echo "<a href=\"templates.php?action=edit&tid=".$template['tid']."\"><span class=\"highlight3\">".$template['originaltitle']."</span></a></td>";
 					echo "<td class=\"$altbg\" align=\"right\">";
 					echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?action=edit&tid=".$template['tid']."');\" class=\"submitbutton\">";
-					echo "<input type=\"button\" value=\"$lang->revert_original\" onclick=\"hopto('templates.php?action=delete&tid=".$template['tid']."');\" class=\"submitbutton\">";
+					echo "<input type=\"button\" value=\"$lang->revert_original\" onclick=\"hopto('templates.php?action=revert&tid=".$template['tid']."');\" class=\"submitbutton\">";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
