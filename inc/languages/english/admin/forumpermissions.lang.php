@@ -40,12 +40,4 @@ $l['cansearch'] = "Can Search Forum";
 $l['update_permissions'] = "Update Permissions";
 
 $l['perms_updated'] = "The forum's permissions have successfully been updated.";
-
-$l['quickperms_view'] = "View";
-$l['quickperms_postthreads'] = "Post Threads";
-$l['quickperms_postreplies'] = "Post Replies";
-$l['quickperms_postpolls'] = "Post Polls";
-$l['quickperms_upload'] = "Upload";
-$l['quickperms_all'] = "All";
-$l['quickperms_inheritdefault'] = "Inherit / Default";
 ?>
