@@ -115,6 +115,8 @@ if($mybb->input['preview'])
 if($mybb->input['action'] == "send")
 {
 
+	$plugins->run_hooks("private_send_start");
+
 	if($mybb->settings['bbcodeinserter'] != "off" && $mybb->settings['pmsallowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
 	{
 		$codebuttons = makebbcodeinsert();
@@ -251,10 +253,13 @@ if($mybb->input['action'] == "send")
 	$pmid = $mybb->input['pmid'];
 	$do = $mybb->input['do'];
 	eval("\$send = \"".$templates->get("private_send")."\";");
+	$plugins->run_hooks("private_send_end");
 	outputpage($send);
 }
 elseif($mybb->input['action'] == "do_send")
 {
+	$plugins->run_hooks("private_send_do_send");
+
 	if($mybb->input['subject'] == "")
 	{
 		$mybb->input['subject'] = "[no subject]";
@@ -367,7 +372,8 @@ elseif($mybb->input['action'] == "do_send")
 		{
 			$updateddraft['uid'] = $touser['uid'];
 		}
-			
+		$plugins->run_hooks("editpost_do_send_draft");
+
 		$db->update_query(TABLE_PREFIX."privatemessages", $updateddraft, "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."'");
 	}
 	else
@@ -392,6 +398,9 @@ elseif($mybb->input['action'] == "do_send")
 			{
 				$newpm['uid'] = $mybb->user['uid'];
 			}
+
+			$plugins->run_hooks("editpost_do_send_process");
+
 		$db->insert_query(TABLE_PREFIX."privatemessages", $newpm);
 	}
 	if($mybb->input['pmid'] && !$mybb->input['saveasdraft'])
@@ -421,12 +430,14 @@ elseif($mybb->input['action'] == "do_send")
 			"includesig" => $options['signature'],
 			"smilieoff" => $options['disablesmilies']
 			);
+			$plugins->run_hooks("private_do_send_savecopy");
 		$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
 	}
 	if($touser['pmpopup'] != "no" && !$mybb->input['saveasdraft'])
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."users SET pmpopup='new' WHERE uid='".$touser[uid]."'");
 	}
+	$plugins->run_hooks("private_do_send_end");
 	if($mybb->input['saveasdraft'])
 	{
 		redirect("private.php", $lang->redirect_pmsaved);
@@ -438,6 +449,8 @@ elseif($mybb->input['action'] == "do_send")
 }
 elseif($mybb->input['action'] == "read")
 {
+	$plugins->run_hooks("private_read");
+
 	$pmid = intval($mybb->input['pmid']);
 
 	$query = $db->query("SELECT pm.*, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE pm.pmid='".$mybb->input['pmid']."' AND pm.uid='".$mybb->user[uid]."'");
@@ -477,10 +490,13 @@ elseif($mybb->input['action'] == "read")
 	addnav($pm['subject']);
 	$message = makepostbit($pm, "1");
 	eval("\$read = \"".$templates->get("private_read")."\";");
+	$plugins->run_hooks("private_read_end");
 	outputpage($read);
 }	
 elseif($mybb->input['action'] == "tracking")
 {
+	$plugins->run_hooks("private_tracking_start");
+
 	$query = $db->query("SELECT pm.*, u.username as tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid) WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user[uid]."'");
 	while($readmessage = $db->fetch_array($query))
 	{
@@ -500,10 +516,12 @@ elseif($mybb->input['action'] == "tracking")
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
 	}
 	eval("\$tracking = \"".$templates->get("private_tracking")."\";");
+	$plugins->run_hooks("private_tracking_end");
 	outputpage($tracking);
 }
 elseif($mybb->input['action'] == "do_tracking")
 {
+	$plugins->run_hooks("private_do_tracking_start");
 	if($mybb->input['stoptracking'])
 	{
 		if(is_array($mybb->input['readcheck']))
@@ -513,6 +531,7 @@ elseif($mybb->input['action'] == "do_tracking")
 				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."'");
 			}
 		}
+		$plugins->run_hooks("private_do_tracking_end");
 		redirect("private.php", $lang->redirect_pmstrackingstopped);
 	}
 	elseif($mybb->input['cancel'])
@@ -524,11 +543,13 @@ elseif($mybb->input['action'] == "do_tracking")
 				$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='".intval($key)."'");
 			}
 		}
+		$plugins->run_hooks("private_do_tracking_end");
 		redirect("private.php", $lang->redirect_pmstrackingcancelled);
 	}
 }
 elseif($mybb->input['action'] == "folders")
 {
+	$plugins->run_hooks("private_folders_start");
 	// echo $mybb->user['pmfolders'];
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	while(list($key, $folders) = each($foldersexploded))
@@ -555,10 +576,12 @@ elseif($mybb->input['action'] == "folders")
 		eval("\$newfolders .= \"".$templates->get("private_folders_folder")."\";");
 	}
 	eval("\$folders = \"".$templates->get("private_folders")."\";");
+	$plugins->run_hooks("private_folders_end");
 	outputpage($folders);
 }
 elseif($mybb->input['action'] == "do_folders")
 {
+	$plugins->run_hooks("private_do_folders_start");
 	$highestid = 2;
 	$folders = "";
 	@reset($mybb->input['folder']);
@@ -619,10 +642,12 @@ elseif($mybb->input['action'] == "do_folders")
 		}
 	}
 	$db->query("UPDATE ".TABLE_PREFIX."users SET pmfolders='$folders' WHERE uid='".$mybb->user[uid]."'");
+	$plugins->run_hooks("private_do_folders_end");
 	redirect("private.php", $lang->redirect_pmfoldersupdated);
 }
 elseif($mybb->input['action'] == "empty")
 {
+	$plugins->run_hooks("private_empty_start");
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	while(list($key, $folders) = each($foldersexploded))
 	{
@@ -635,10 +660,12 @@ elseif($mybb->input['action'] == "empty")
 		eval("\$folderlist .= \"".$templates->get("private_empty_folder")."\";");
 	}
 	eval("\$folders = \"".$templates->get("private_empty")."\";");
+	$plugins->run_hooks("private_empty_end");
 	outputpage($folders);
 }
 elseif($mybb->input['action'] == "do_empty")
 {
+	$plugins->run_hooks("private_do_empty_start");
 	$emptyq = "";
 	if(is_array($mybb->input['empty']))
 	{
@@ -659,10 +686,12 @@ elseif($mybb->input['action'] == "do_empty")
 		}
 		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE ($emptyq) AND uid='".$mybb->user[uid]."' $keepunreadq");
 	}
+	$plugins->run_hooks("private_do_empty_end");
 	redirect("private.php", $lang->redirect_pmfoldersemptied);
 }
 elseif($mybb->input['action'] == "do_stuff")
 {
+	$plugins->run_hooks("private_do_stuff");
 	if($mybb->input['hop'])
 	{
 		header("Location: private.php?fid=".$mybb->input['jumpto']);
@@ -714,11 +743,14 @@ elseif($mybb->input['action'] == "do_stuff")
 }
 elseif($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("private_delete_start");
 	$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='4' WHERE pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'");
+	$plugins->run_hooks("private_delete_end");
 	redirect("private.php", $lang->redirect_pmsdeleted);
 }
 elseif($mybb->input['action'] == "export")
 {
+	$plugins->run_hooks("private_export_start");
 	$folderlist = "<select name=\"exportfolders[]\" multiple>\n";
 	$folderlist .= "<option value=\"all\" selected>$lang->all_folders</option>";
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
@@ -729,10 +761,12 @@ elseif($mybb->input['action'] == "export")
 	}
 	$folderlist .= "</select>\n";
 	eval("\$archive = \"".$templates->get("private_archive")."\";");
+	$plugins->run_hooks("private_export_end");
 	outputpage($archive);
 }
 elseif($mybb->input['action'] == "do_export")
 {
+	$plugins->run_hooks("private_do_export_start");
 	$lang->private_messages_for = sprintf($lang->private_messages_for, $mybb->user['username']);
 	$exdate = mydate($mybb->settings['dateformat'], time(), 0, 0);
 	$extime = mydate($mybb->settings['timeformat'], time(), 0, 0);
@@ -911,6 +945,7 @@ elseif($mybb->input['action'] == "do_export")
 	$archived = ereg_replace("\\\'","'",$archived);
 	header("Content-disposition: filename=$filename");
 	header("Content-type: unknown/unknown");
+	$plugins->run_hooks("private_do_export_end");
 	if($mybb->input['exporttype'] == "html")
 	{
 		outputpage($archived);
@@ -922,6 +957,7 @@ elseif($mybb->input['action'] == "do_export")
 }
 else
 {
+	$plugins->run_hooks("private_start");
 	if(!$mybb->input['fid'])
 	{
 		$mybb->input['fid'] = 1;
@@ -1064,6 +1100,7 @@ else
 		eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
 	}
 	eval("\$folder = \"".$templates->get("private")."\";");
+	$plugins->run_hooks("private_end");
 	outputpage($folder);
 }
 ?>

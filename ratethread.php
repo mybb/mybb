@@ -39,6 +39,7 @@ if($mybb->input['rating'] < 1 || $mybb->input['rating'] > 5)
 {
 	error($lang->error_invalidrating);
 }
+$plugins->run_hooks("ratethread_start");
 
 if($mybb->user['uid'] != "0")
 {
@@ -61,6 +62,8 @@ else
 	{
 		error($lang->error_alreadyratedthread);
 	}
+	$plugins->run_hooks("ratethread_process");
+
 	$db->query("UPDATE ".TABLE_PREFIX."threads SET numratings=numratings+1, totalratings=totalratings+'".$mybb->input['rating']."' WHERE tid='".intval($mybb->input['tid'])."'");
 	if($mybb->user['uid'] != "0")
 	{
@@ -73,5 +76,6 @@ else
 		mysetcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
 	}
 }
+$plugins->run_hooks("ratethread_end");
 redirect("showthread.php?tid=".$mybb->input['tid'], $lang->redirect_threadrated);
 ?>

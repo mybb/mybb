@@ -44,12 +44,15 @@ $thread = $db->fetch_array($query);
 
 if($mybb->input['action'] == "report")
 {
+	$plugins->run_hooks("report_start");
 	$pid = $mybb->input['pid'];
 	eval("\$report = \"".$templates->get("report")."\";");
+	$plugins->run_hooks("report_end");
 	outputpage($report);
 }
 elseif($mybb->input['action'] == "do_report")
 {
+	$plugins->run_hooks("report_do_report_start");
 	if(!trim($mybb->input['reason']))
 	{
 		eval("\$report = \"".$templates->get("report_noreason")."\";");
@@ -113,6 +116,7 @@ elseif($mybb->input['action'] == "do_report")
 		$cache->updatereportedposts();
 	}
 	eval("\$report = \"".$templates->get("report_thanks")."\";");
+	$plugins->run_hooks("report_do_report_end");
 	outputpage($report);
 }
 ?>
