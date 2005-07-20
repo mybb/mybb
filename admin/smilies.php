@@ -18,7 +18,7 @@ $lang->load("smilies");
 $sid = intval($_REQUEST['sid']);
 
 addacpnav($lang->nav_smilies, "smilies.php");
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_smilie);
@@ -34,7 +34,7 @@ switch($action)
 checkadminpermissions("caneditsmilies");
 logadmin();
 
-if($action == "do_add") {
+if($mybb->input['action'] == "do_add") {
 	$find = addslashes($_POST['find']);
 	$path = addslashes($_POST['path']);
 	$name = addslashes($_POST['name']);
@@ -46,17 +46,17 @@ if($action == "do_add") {
 	$cache->updatesmilies();
 	cpredirect("smilies.php", $lang->smilie_added);
 }
-if($action == "do_delete") {
+if($mybb->input['action'] == "do_delete") {
 	if($deletesubmit) {	
 		$db->query("DELETE FROM ".TABLE_PREFIX."smilies WHERE sid='$sid'");
 		$cache->updatesmilies();
 		cpredirect("smilies.php", $lang->smilie_deleted);
 	} else {
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 	}
 }
 
-if($action == "do_edit") {
+if($mybb->input['action'] == "do_edit") {
 	$find = addslashes($_POST['find']);
 	$path = addslashes($_POST['path']);
 	$name = addslashes($_POST['name']);
@@ -69,7 +69,7 @@ if($action == "do_edit") {
 	cpredirect("smilies.php", $lang->smilie_updated);
 }
 
-if($action == "edit") {
+if($mybb->input['action'] == "edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='$sid'");
 	$smilie = $db->fetch_array($query);
 	if(!$smilie['sid']) {
@@ -91,7 +91,7 @@ if($action == "edit") {
 	cpfooter();
 }
 
-if($action == "delete") {
+if($mybb->input['action'] == "delete") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='$sid'");
 	$smilie = $db->fetch_array($query);
 	if(!$smilie['sid']) {
@@ -110,7 +110,7 @@ if($action == "delete") {
 	cpfooter();
 }
 
-if($action == "add") {
+if($mybb->input['action'] == "add") {
 	cpheader();
 	if(!$multi)
 	{
@@ -137,9 +137,9 @@ if($action == "add") {
 	}
 	cpfooter();
 }
-if($action == "do_addmultiple") {
+if($mybb->input['action'] == "do_addmultiple") {
 	if($page) {
-		$action = "addmultiple";
+		$mybb->input['action'] = "addmultiple";
 	}
 	elseif(!is_array($smimport)) {
 		cpmessage($lang->sel_no_images);
@@ -161,11 +161,11 @@ if($action == "do_addmultiple") {
 		endtable();
 		echo "<br>";
 		$finishedinsert = 1;
-		$action = "add";
+		$mybb->input['action'] = "add";
 
 	}
 }
-if($action == "addmultiple") {
+if($mybb->input['action'] == "addmultiple") {
 	$perpage = intval($_POST['perpage']);
 	if(!$perpage) {
 		$perpage = 15;
@@ -256,7 +256,7 @@ if($action == "addmultiple") {
 	endform($lang->add_multiple, $lang->reset_button);
 	cpfooter();
 }
-if($action == "modify" || $action == "") {
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	if(!$noheader) {
 		cpheader();
 	}

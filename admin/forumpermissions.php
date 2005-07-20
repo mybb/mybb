@@ -18,7 +18,7 @@ $lang->load("forumpermissions");
 checkadminpermissions("caneditforums");
 logadmin();
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "edit":
 		makeacpforumnav($fid);
@@ -78,14 +78,14 @@ function getforums($pid="0")
 	}
 	return $forumlist;
 }
-if($action == "do_quickperms")
+if($mybb->input['action'] == "do_quickperms")
 {
 	savequickperms($fid);
 	cpredirect("forumpermissions.php", $lang->perms_updated);
 }
 
 		
-if($action == "quickperms")
+if($mybb->input['action'] == "quickperms")
 {
 	cpheader();
 	startform("forumpermissions.php", "", "do_quickperms");
@@ -95,7 +95,7 @@ if($action == "quickperms")
 	cpfooter();
 }
 
-if($action == "do_edit")
+if($mybb->input['action'] == "do_edit")
 {
 	if($usecustom == "no")
 	{
@@ -118,7 +118,7 @@ if($action == "do_edit")
 	$cache->updateforumpermissions();
 	cpredirect("forumpermissions.php", $lang->perms_updated);
 }
-if($action == "edit")
+if($mybb->input['action'] == "edit")
 {
 	if(!$noheader)
 	{
@@ -215,7 +215,7 @@ function makepermscode($title, $name, $value)
 	makeyesnocode($title, $name, $value);
 }
 
-if($action == "modify" || $action == "")
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	if(!$noheader)
 	{

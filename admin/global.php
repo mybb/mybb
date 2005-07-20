@@ -38,7 +38,7 @@ if(is_dir("install") && !file_exists("install/lock"))
 	$mybb->trigger_generic_error("install_directory");
 }
 
-if($action == "logout")
+if($mybb->input['action'] == "logout")
 {
 	$expires = $time-86400;
 	setcookie("mybbadmin", "", $expires);
@@ -60,7 +60,7 @@ if($do == "login")
 	}
 	$failcheck = 1;
 }
-elseif($action != "logout")
+elseif($mybb->input['action'] != "logout")
 {
 	$logon = explode("_", $_COOKIE['mybbadmin'], 2);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$logon[0]'");

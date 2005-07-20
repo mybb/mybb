@@ -18,7 +18,7 @@ global $lang;
 $lang->load("themes");
 
 addacpnav($lang->nav_themes, "themes.php");
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_theme);
@@ -39,7 +39,7 @@ switch($action)
 checkadminpermissions("caneditthemes");
 logadmin();
 
-if($action == "do_add")
+if($mybb->input['action'] == "do_add")
 {
 	if(!$pid)
 	{
@@ -58,7 +58,7 @@ if($action == "do_add")
 	cpredirect("themes.php", $lang->theme_added);
 }
 
-if($action == "do_edit")
+if($mybb->input['action'] == "do_edit")
 {	if(!$pid)
 	{
 		$pid = 1;
@@ -80,7 +80,7 @@ if($action == "do_edit")
 	cpredirect("themes.php", $lang->theme_updated."<br />$themelist");
 }
 
-if($action == "do_delete")
+if($mybb->input['action'] == "do_delete")
 {
 	if($deletesubmit)
 	{	
@@ -90,16 +90,16 @@ if($action == "do_delete")
 	}
 	else
 	{
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 	}
 }
-if($action == "default")
+if($mybb->input['action'] == "default")
 {
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='0'");
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='1' WHERE tid='".intval($tid)."'");
 	cpredirect("themes.php", $lang->default_updated);
 }
-if($action == "do_download")
+if($mybb->input['action'] == "do_download")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='".intval($tid)."'");
 	$theme = $db->fetch_array($query);
@@ -202,7 +202,7 @@ if($action == "do_download")
 	echo $xml;
 	exit;	
 }
-if($action == "do_import")
+if($mybb->input['action'] == "do_import")
 {
 	if($compfile)
 	{
@@ -287,7 +287,7 @@ if($action == "do_import")
 	$lang->theme_imported = sprintf($lang->theme_imported, $name);
 	cpredirect("themes.php", $lang->theme_imported);
 }
-if($action == "add")
+if($mybb->input['action'] == "add")
 {
 	cpheader();
 	startform("themes.php", "" , "do_add");
@@ -301,7 +301,7 @@ if($action == "add")
 	cpfooter();
 
 }
-if($action == "settings")
+if($mybb->input['action'] == "settings")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='$tid'");
 	$theme = $db->fetch_array($query);
@@ -317,7 +317,7 @@ if($action == "settings")
 	cpfooter();
 }
 
-if($action == "edit") {
+if($mybb->input['action'] == "edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='1'");
 	$master = $db->fetch_array($query);
 
@@ -385,7 +385,7 @@ if($action == "edit") {
 
 	cpfooter();
 }
-if($action == "delete") {
+if($mybb->input['action'] == "delete") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='$tid'");
 	$theme = $db->fetch_array($query);
 	$lang->delete_theme = sprintf($lang->delete_theme, $theme['name']);
@@ -410,7 +410,7 @@ if($action == "delete") {
 	cpfooter();
 
 }
-if($action == "import")
+if($mybb->input['action'] == "import")
 {
 	cpheader();
 	startform("themes.php", "" , "do_import");
@@ -427,7 +427,7 @@ if($action == "import")
 	endform($lang->import_theme, $lang->reset_button);
 	cpfooter();
 }
-if($action == "download")
+if($mybb->input['action'] == "download")
 {
 	if(!$noheader)
 	{
@@ -445,7 +445,7 @@ if($action == "download")
 	endform($lang->do_download, $lang->reset_button);
 	cpfooter();
 }
-if($action == "modify" || $action == "")
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	if(!$noheader)
 	{

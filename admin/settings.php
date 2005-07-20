@@ -17,7 +17,7 @@ $lang->load("settings");
 
 addacpnav($lang->nav_settings, "settings.php");
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add);
@@ -57,7 +57,7 @@ function rebuildsettings() {
 	fclose($file);
 }
 
-if($action == "do_change") {
+if($mybb->input['action'] == "do_change") {
 	$upsetting = $_POST['upsetting'];
 	if(is_array($upsetting))
 	{
@@ -71,7 +71,7 @@ if($action == "do_change") {
 	cpredirect("settings.php", $lang->settings_updated);
 }
 
-if($action == "do_add") {
+if($mybb->input['action'] == "do_add") {
 	if($add == "setting") {
 		$name = addslashes($_POST['name']);
 		$description = addslashes($_POST['description']);
@@ -107,7 +107,7 @@ if($action == "do_add") {
 	}
 }
 
-if($action == "do_delete") {
+if($mybb->input['action'] == "do_delete") {
 	if($deletesubmit) {	
 		if($sid) {
 			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE sid='$sid'");
@@ -124,7 +124,7 @@ if($action == "do_delete") {
 		header("Location: settings.php");
 	}
 }
-if($action == "export")
+if($mybb->input['action'] == "export")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings ORDER BY disporder");
 	while($setting = $db->fetch_array($query))
@@ -163,7 +163,7 @@ if($action == "export")
 	echo $xml;
 	exit;	
 }
-if($action == "do_edit") {
+if($mybb->input['action'] == "do_edit") {
 	cpheader();
 	if($sid) {
 		$name = addslashes($_POST['name']);
@@ -190,7 +190,7 @@ if($action == "do_edit") {
 	}
 }
 
-if($action == "edit") {
+if($mybb->input['action'] == "edit") {
 	cpheader();
 	if($sid) {
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE sid='$sid'");
@@ -231,7 +231,7 @@ if($action == "edit") {
 	cpfooter();
 }
 
-if($action == "delete") {
+if($mybb->input['action'] == "delete") {
 	cpheader();
 	if($sid) {
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE sid='$sid'");
@@ -262,7 +262,7 @@ if($action == "delete") {
 	cpfooter();
 }
 
-if($action == "add") {
+if($mybb->input['action'] == "add") {
 	cpheader();
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
 	while($group = $db->fetch_array($query)) {
@@ -295,7 +295,7 @@ if($action == "add") {
 	endform($lang->add_setting, $lang->reset_button);
 	cpfooter();
 }
-if($action == "do_modify") {
+if($mybb->input['action'] == "do_modify") {
 	cpheader();
 	while(list($sid, $order) = each($disporder)) {
 		$db->query("UPDATE ".TABLE_PREFIX."settings SET disporder='$order' WHERE sid='$sid'");
@@ -305,9 +305,9 @@ if($action == "do_modify") {
 	}
 	echo $lang->setting_group_orders_updated;
 	$noheader = 1;
-	$action = "modify";
+	$mybb->input['action'] = "modify";
 }
-if($action == "modify") {
+if($mybb->input['action'] == "modify") {
 	if(!$noheader) {
 		cpheader();
 	}
@@ -337,7 +337,7 @@ if($action == "modify") {
 
 }
 
-if($action == "change" || $action == "") {
+if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 	if(!$noheader) {
 		cpheader();
 	}

@@ -19,7 +19,7 @@ checkadminpermissions("caneditforums");
 logadmin();
 
 addacpnav($lang->nav_forums, "forums.php");
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_forum);
@@ -184,7 +184,7 @@ function makeparentlist($fid, $navsep=",") {
 	}
 	return $navigation;
 }
-if($action == "do_add") {
+if($mybb->input['action'] == "do_add") {
 	$description = addslashes($description);
 	$name =addslashes($name);
 	$rules = addslashes($rules);
@@ -204,7 +204,7 @@ if($action == "do_add") {
 	
 	cpredirect("forums.php", $lang->forum_added);
 }
-if($action == "do_addmod") {
+if($mybb->input['action'] == "do_addmod") {
 	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='$username'");
 	$user = $db->fetch_array($query);
 	if($user['uid']) {
@@ -224,7 +224,7 @@ if($action == "do_addmod") {
 	}
 	$noheader = 1;
 }
-if($action == "do_delete") {
+if($mybb->input['action'] == "do_delete") {
 	if($deletesubmit) {	
 		$db->query("DELETE FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
@@ -241,11 +241,11 @@ if($action == "do_delete") {
 	
 		cpredirect("forums.php", $lang->forum_deleted);
 	} else {
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 	}
 }
 
-if($action == "do_deletemod") {
+if($mybb->input['action'] == "do_deletemod") {
 	if($deletesubmit) {	
 		$query = $db->query("SELECT m.*, u.usergroup FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=m.uid WHERE m.mid='$mid'");
 		$mod = $db->fetch_array($query);
@@ -257,11 +257,11 @@ if($action == "do_deletemod") {
 		$cache->updatemoderators();
 		cpredirect("forums.php?fid=$fid", $lang->mod_deleted);
 	} else {
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 	}
 }
 
-if($action == "do_edit") {
+if($mybb->input['action'] == "do_edit") {
 	$description = addslashes($description);
 	$name =addslashes($name);
 	$rules = addslashes($rules);
@@ -293,7 +293,7 @@ if($action == "do_edit") {
 		cpredirect("forums.php", $lang->forum_updated);
 	}
 }
-if($action == "do_editmod") {
+if($mybb->input['action'] == "do_editmod") {
 	cpheader();
 	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='$username'");
 	$user = $db->fetch_array($query);
@@ -306,7 +306,7 @@ if($action == "do_editmod") {
 	}
 }
 
-if($action == "add") {
+if($mybb->input['action'] == "add") {
 	cpheader();
 	startform("forums.php", "" , "do_add");
 	starttable();
@@ -360,7 +360,7 @@ if($action == "add") {
 	cpfooter();
 	
 }
-if($action == "addmod") {
+if($mybb->input['action'] == "addmod") {
 	if(!$noheader) {
 		cpheader();
 	}
@@ -380,7 +380,7 @@ if($action == "addmod") {
 	cpfooter();
 }
 
-if($action == "delete") {
+if($mybb->input['action'] == "delete") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
 	$forum = $db->fetch_array($query);
 	cpheader();
@@ -398,7 +398,7 @@ if($action == "delete") {
 	cpfooter();
 }
 
-if($action == "deletemod") {
+if($mybb->input['action'] == "deletemod") {
 	cpheader();
 	startform("forums.php", "", "do_deletemod");
 	makehiddencode("mid", $mid);
@@ -413,7 +413,7 @@ if($action == "deletemod") {
 	cpfooter();
 }
 
-if($action == "edit") {
+if($mybb->input['action'] == "edit") {
 	if(!$noheader) {
 		cpheader();
 	}
@@ -484,7 +484,7 @@ if($action == "edit") {
 	endform($lang->update_forum, $lang->reset_button);
 	cpfooter();
 }
-if($action == "editmod") {
+if($mybb->input['action'] == "editmod") {
 	if(!$noheader) {
 		cpheader();
 	}
@@ -508,7 +508,7 @@ if($action == "editmod") {
 	cpfooter();
 }
 
-if($action == "do_modify") {
+if($mybb->input['action'] == "do_modify") {
 	while(list($fid, $order) = each($disporder)) {
 		$db->query("UPDATE ".TABLE_PREFIX."forums SET disporder='$order' WHERE fid='$fid'");
 	}
@@ -516,7 +516,7 @@ if($action == "do_modify") {
 	cpredirect("forums.php", $lang->orders_updated);
 }
 
-if($action == "modify" || $action == "") {
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	cpheader();
 	if($fid)
 	{

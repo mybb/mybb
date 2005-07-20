@@ -18,7 +18,7 @@ $lang->load("moderate");
 checkadminpermissions("canmodposts");
 logadmin();
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "threadsposts":
 		addacpnav($lang->nav_moderate_threadsposts);
@@ -34,7 +34,7 @@ switch($action)
 		break;
 }
 
-if($action == "do_attachments") {
+if($mybb->input['action'] == "do_attachments") {
 	if(is_array($attachvalidate)) {
 		while(list($aid, $val) = each($attachvalidate)) {
 			if($attachdelete[$aid] == "yes") {
@@ -48,8 +48,8 @@ if($action == "do_attachments") {
 	}
 	cpmessage($lang->attachments_moderated);
 }
-if($action == "do_threads" || $action == "do_posts" || $action == "do_threadsposts") {
-	if(is_array($threadvalidate) && $action != "do_posts") {
+if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts" || $mybb->input['action'] == "do_threadsposts") {
+	if(is_array($threadvalidate) && $mybb->input['action'] != "do_posts") {
 		while(list($tid, $val) = each($threadvalidate)) {
 			$query = $db->query("SELECT subject, fid FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 			$thread = $db->fetch_array($query);
@@ -67,7 +67,7 @@ if($action == "do_threads" || $action == "do_posts" || $action == "do_threadspos
 			}
 		}
 	}
-	if(is_array($postvalidate) && $action != "do_threads") {
+	if(is_array($postvalidate) && $mybb->input['action'] != "do_threads") {
 		while(list($pid, $val) = each($postvalidate)) {
 			$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
 			$post = $db->fetch_array($query);
@@ -100,7 +100,7 @@ if($action == "do_threads" || $action == "do_posts" || $action == "do_threadspos
 	}
 	cpmessage($lang->threadsposts_moderated);
 }
-if($action == "attachments") {
+if($mybb->input['action'] == "attachments") {
 	$query = $db->query("SELECT a.*, p.subject AS postsubject, p.pid AS postpid, p.tid, p.username AS postusername, p.uid AS postuid, t.subject AS threadsubject, f.name AS forumname, p.fid FROM ".TABLE_PREFIX."attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE a.pid=p.pid AND t.tid=p.tid AND a.visible!='1' ORDER BY p.dateline DESC");
 	$count = $db->num_rows($query);
 	if(!$count) {
@@ -139,19 +139,19 @@ if($action == "attachments") {
 	endform($lang->moderate_attachments, $lang->reset_button);
 	cpfooter();
 }
-if($action == "threads" || $action == "threadsposts") {
+if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadsposts") {
 	$done = 0;
 	$query = $db->query("SELECT t.*, f.name AS forumname, u.username AS username, p.message AS postmessage, p.pid AS postpid FROM ".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid) WHERE t.visible=0 AND p.tid=t.tid ORDER BY t.lastpost DESC");
 	$tcount = $db->num_rows($query);
 
-	if($tcount < 1 && $action != "threadsposts")
+	if($tcount < 1 && $mybb->input['action'] != "threadsposts")
 	{
 		cperror($lang->no_threads);
 	}
 	if($tcount)
 	{
 		cpheader();
-		startform("moderate.php", "" , "do_".$action);
+		startform("moderate.php", "" , "do_".$mybb->input['action']);
 		starttable();
 		tableheader($lang->threads_awaiting);
 	}
@@ -171,25 +171,25 @@ if($action == "threads" || $action == "threadsposts") {
 	{
 		endtable();
 	}
-	if($action != "threadsposts") {
+	if($mybb->input['action'] != "threadsposts") {
 		endform($lang->moderate_threads, $lang->reset_button);
 		cpfooter();
 	}
 }
-if($action == "posts" || $action == "threadsposts") {
+if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts") {
 	$done = 0;
 	$query = $db->query("SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, f.name AS forumname, u.username AS username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.visible=0 ORDER BY p.dateline DESC");
 	$count = $db->num_rows($query);
-	if(!$tcount && !$count && $action == "threadsposts")
+	if(!$tcount && !$count && $mybb->input['action'] == "threadsposts")
 	{
 		cperror($lang->no_threadsposts);
 	}
 
-	if($count < 1 && $action != "threadsposts")
+	if($count < 1 && $mybb->input['action'] != "threadsposts")
 	{
 		cperror($lang->no_posts);
 	}
-	if($action != "threadsposts") {
+	if($mybb->input['action'] != "threadsposts") {
 		cpheader();
 		startform("moderate.php", "" , "do_posts");
 	}
@@ -211,7 +211,7 @@ if($action == "posts" || $action == "threadsposts") {
 		}
 	}
 	endtable();
-	if($action != "threadsposts") {
+	if($mybb->input['action'] != "threadsposts") {
 		endform($lang->moderate_posts, $lang->reset_button);
 		cpfooter();
 	} else {

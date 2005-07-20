@@ -17,7 +17,7 @@ $lang->load("profilefields");
 
 addacpnav($lang->nav_profile_fields, "profilefields.php");
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_field);
@@ -32,7 +32,7 @@ switch($action)
 checkadminpermissions("caneditpfields");
 logadmin();
 
-if($action == "do_add") {
+if($mybb->input['action'] == "do_add") {
 	if($type != "text" && $type != "textarea") {
 		$thing = "$type\n$options";
 	} else {
@@ -50,7 +50,7 @@ if($action == "do_add") {
 	$db->query("OPTIMIZE TABLE ".TABLE_PREFIX."userfields");
 	cpredirect("profilefields.php", $lang->field_added);
 }
-if($action == "do_delete") {
+if($mybb->input['action'] == "do_delete") {
 	if($deletesubmit) {	
 		$db->query("DELETE FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
 		$fieldname = "fid$fid";
@@ -58,11 +58,11 @@ if($action == "do_delete") {
 		$db->query("OPTIMIZE TABLE ".TABLE_PREFIX."userfields");
 		cpredirect("profilefields.php", $lang->field_deleted);
 	} else {
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 	}
 }
 
-if($action == "do_edit") {
+if($mybb->input['action'] == "do_edit") {
 	if($type != "text" && $type != "textarea") {
 		$thing = "$type\n$options";
 	} else {
@@ -76,7 +76,7 @@ if($action == "do_edit") {
 	$db->query("UPDATE ".TABLE_PREFIX."profilefields SET name='$name', description='$description', disporder='$disporder', type='$thing', length='$length', maxlength='$maxlength', required='$required', editable='$editable', hidden='$hidden' WHERE fid='$fid'");
 	cpredirect("profilefields.php", $lang->field_updated);
 }
-if($action == "add") {
+if($mybb->input['action'] == "add") {
 	cpheader();
 	startform("profilefields.php", "" , "do_add");
 	starttable();
@@ -95,7 +95,7 @@ if($action == "add") {
 	endform($lang->add_field, $lang->reset_button);
 	cpfooter();
 }
-if($action == "delete") {
+if($mybb->input['action'] == "delete") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
 	$profilefield = $db->fetch_array($query);
 	cpheader();
@@ -112,7 +112,7 @@ if($action == "delete") {
 	endform();
 	cpfooter();
 }
-if($action == "edit") {
+if($mybb->input['action'] == "edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
 	$profilefield = $db->fetch_array($query);
 
@@ -144,7 +144,7 @@ if($action == "edit") {
 	endform($lang->edit_field, $lang->reset_button);
 	cpfooter();
 }
-if($action == "modify" || $action == "") {
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	if(!$noheader) {
 		cpheader();
 	}

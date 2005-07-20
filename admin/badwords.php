@@ -21,7 +21,7 @@ checkadminpermissions("caneditsmilies");
 logadmin();
 
 addacpnav($lang->nav_badwords, "badwords.php");
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_badword);
@@ -34,7 +34,7 @@ switch($action)
 		break;
 }
 
-if($action == "do_add")
+if($mybb->input['action'] == "do_add")
 {
 	$badword = addslashes($badword);
 	$replacement = addslashes($replacement);
@@ -43,7 +43,7 @@ if($action == "do_add")
 	cpredirect("badwords.php", $lang->badword_added);
 }
 
-if($action == "do_edit")
+if($mybb->input['action'] == "do_edit")
 {
 	$bid = $_POST['bid'];
 	$badword = addslashes($badword);
@@ -53,7 +53,7 @@ if($action == "do_edit")
 	cpredirect("badwords.php", $lang->badword_edited);
 }
 
-if($action == "edit")
+if($mybb->input['action'] == "edit")
 {
 	$bid = $_POST['bid'];
 	if($delete)
@@ -77,7 +77,7 @@ if($action == "edit")
 	cpfooter();
 }
 
-if($action == "add")
+if($mybb->input['action'] == "add")
 {
 	cpheader();
 	startform("badwords.php", "", "do_add");
@@ -91,7 +91,7 @@ if($action == "add")
 	cpfooter();
 }
 
-if($action == "modify" || $action == "")
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	cpheader();
 	$hopto[] = "<input type=\"button\" value=\"$lang->add_badword_filter\" onclick=\"hopto('badwords.php?action=add');\" class=\"hoptobutton\">";

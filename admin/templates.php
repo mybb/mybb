@@ -19,7 +19,7 @@ global $lang;
 $lang->load("templates");
 
 addacpnav($lang->nav_templates, "templates.php");
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_template);
@@ -86,7 +86,7 @@ $templategroups['newthread'] = $lang->group_newthread;
 $templategroups['newreply'] = $lang->group_newreply;
 $templategroups['member'] = $lang->group_member;
 
-if($action == "do_add") {
+if($mybb->input['action'] == "do_add") {
 	$template = addslashes($template);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='$setid' AND title='$title'");
 	$temp = $db->fetch_array($query);
@@ -96,34 +96,34 @@ if($action == "do_add") {
 	$db->query("INSERT INTO ".TABLE_PREFIX."templates VALUES (NULL,'$title','$template', '$setid')");
 	cpredirect("templates.php?expand=$setid", $lang->template_added);
 }
-if($action == "do_addset") {
+if($mybb->input['action'] == "do_addset") {
 	$db->query("INSERT INTO ".TABLE_PREFIX."templatesets VALUES (NULL, '$title')");
 	$setid = $db->insert_id();
 	cpredirect("templates.php?expand=$setid", $lang->set_added);
 }
 	
-if($action == "do_delete") {
+if($mybb->input['action'] == "do_delete") {
 	if($deletesubmit) {	
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE tid='$tid'");
 		cpredirect("templates.php?expand=$template[sid]", $lang->template_deleted);
 	} else {
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 		$expand = $template[sid];
 	}
 }
-if($action == "do_deleteset") {
+if($mybb->input['action'] == "do_deleteset") {
 	if($deletesubmit) {	
 		$db->query("DELETE FROM ".TABLE_PREFIX."templatesets WHERE sid='$setid'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='$setid'");
 		cpredirect("templates.php", $lang->set_deleted);
 	}
 }
-if($action == "do_editset") {
+if($mybb->input['action'] == "do_editset") {
 	$db->query("UPDATE ".TABLE_PREFIX."templatesets SET title='$title' WHERE sid='$setid'");
 	cpredirect("templates.php", $lang->set_edited);
 }
 
-if($action == "do_edit") {
+if($mybb->input['action'] == "do_edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='$tid'");
 	$templateinfo = $db->fetch_array($query);
 
@@ -134,7 +134,7 @@ if($action == "do_edit") {
 	$db->query("UPDATE ".TABLE_PREFIX."templates SET template='$template', title='$title', sid='$setid' WHERE tid='$tid'");
 	cpredirect("templates.php?expand=$setid", $lang->template_edited);
 }
-if($action == "do_replace") {
+if($mybb->input['action'] == "do_replace") {
 	$noheader = 1;
 	if(!$find) {
 		cpmessage("You did not enter a search string.");
@@ -167,7 +167,7 @@ if($action == "do_replace") {
 		cpfooter();
 	}
 }
-if($action == "edit") {
+if($mybb->input['action'] == "edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='$tid'");
 	$template = $db->fetch_array($query);
 	$template[template] = stripslashes($template[template]);
@@ -203,7 +203,7 @@ if($action == "edit") {
 	}
 	cpfooter();
 }
-if($action == "editset") {
+if($mybb->input['action'] == "editset") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templatesets WHERE sid='$setid'");
 	$set = $db->fetch_array($query);
 	cpheader();
@@ -217,7 +217,7 @@ if($action == "editset") {
 	cpfooter();
 }
 
-if($action == "delete" || $action == "revert") {
+if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='$tid'");
 	$template = $db->fetch_array($query);
 
@@ -228,7 +228,7 @@ if($action == "delete" || $action == "revert") {
 	tableheader($lang->delete_template, "", 1);
 	$yes = makebuttoncode("deletesubmit", "Yes");
 	$no = makebuttoncode("no", "No");
-	if($action == "revert")
+	if($mybb->input['action'] == "revert")
 	{
 		tableheader($lang->revert_template, "", 1);
 		makelabelcode("<center>$lang->revert_template_notice<br><br>$yes$no</center>", "");
@@ -243,7 +243,7 @@ if($action == "delete" || $action == "revert") {
 	cpfooter();
 }
 
-if($action == "deleteset") {
+if($mybb->input['action'] == "deleteset") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templatesets WHERE sid='$setid'");
 	$templateset = $db->fetch_array($query);
 	cpheader();
@@ -258,7 +258,7 @@ if($action == "deleteset") {
 	endform();
 	cpfooter();
 }
-if($action == "makeoriginals") {
+if($mybb->input['action'] == "makeoriginals") {
 	$query = $db->query("SELECT t1.*, t2.title AS origtitle FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t1.title=t2.title AND t2.sid='-2') WHERE t1.sid='$setid'");
 	$query2 = $db->query("SELECT t1.* FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t1.title=t2.title AND t2.sid='-2') WHERE t1.sid='$set[sid]' AND ISNULL(t2.template) ORDER BY t1.title ASC");
 
@@ -275,7 +275,7 @@ if($action == "makeoriginals") {
 	cpredirect("templates.php?expand=$setid", $lang->originals_made);
 }
 
-if($action == "add") {
+if($mybb->input['action'] == "add") {
 	if($title) {
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$title' AND sid='-2'");
 		$template = $db->fetch_array($query);
@@ -301,7 +301,7 @@ if($action == "add") {
 	endform($lang->add_template, $lang->reset_button);
 	cpfooter();
 }
-if($action == "addset") {
+if($mybb->input['action'] == "addset") {
 	cpheader();
 	startform("templates.php", "" , "do_addset");
 	starttable();
@@ -311,7 +311,7 @@ if($action == "addset") {
 	endform($lang->add_set, $lang->reset_button);
 	cpfooter();
 }
-if($action == "search") {
+if($mybb->input['action'] == "search") {
 	if(!$noheader) {
 		cpheader();
 	}
@@ -324,7 +324,7 @@ if($action == "search") {
 	endform($lang->find_replace, $lang->reset_button);
 	cpfooter();
 }
-if($action == "modify" || $action == "") {
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 
 	if(!$noheader) {
 		cpheader();

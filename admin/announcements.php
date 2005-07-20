@@ -19,7 +19,7 @@ checkadminpermissions("caneditann");
 logadmin();
 
 addacpnav($lang->nav_announcements);
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_announcement);
@@ -57,7 +57,7 @@ function getforums($pid="0")
 	}
 	return $forumlist;
 }
-if($action == "do_add")
+if($mybb->input['action'] == "do_add")
 {
 	$message = addslashes($message);
 	$subject = addslashes($subject);
@@ -82,7 +82,7 @@ if($action == "do_add")
 	$db->query("INSERT INTO ".TABLE_PREFIX."announcements (aid,fid,uid,subject,message,startdate,enddate,allowhtml,allowmycode,allowsmilies) VALUES (NULL,'$fid','$mybbadmin[uid]','$subject','$message','$startdate','$enddate','$allowhtml','$allowmycode','$allowsmilies')");
 	cpredirect("announcements.php", $lang->announcement_added);
 }
-if($action == "do_delete")
+if($mybb->input['action'] == "do_delete")
 {
 	if($deletesubmit)
 	{	
@@ -91,10 +91,10 @@ if($action == "do_delete")
 	}
 	else
 	{
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 	}
 }
-if($action == "do_edit")
+if($mybb->input['action'] == "do_edit")
 {
 	$message = addslashes($message);
 	$subject = addslashes($subject);
@@ -119,7 +119,7 @@ if($action == "do_edit")
 	$db->query("UPDATE ".TABLE_PREFIX."announcements SET fid='$fid',subject='$subject', message='$message', startdate='$startdate', enddate='$enddate', allowhtml='$allowhtml', allowmycode='$allowmycode', allowsmilies='$allowsmilies' WHERE aid='$aid'");
 	cpredirect("announcements.php", $lang->announcement_edited);
 }
-if($action == "add") {
+if($mybb->input['action'] == "add") {
 	cpheader();
 	startform("announcements.php", "" , "do_add");
 	starttable();
@@ -222,7 +222,7 @@ if($action == "add") {
 	endform($lang->add_announcement2, $lang->reset_button);
 	cpfooter();
 }
-if($action == "delete")
+if($mybb->input['action'] == "delete")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE aid='$aid'");
 	$announcement = $db->fetch_array($query);
@@ -243,7 +243,7 @@ if($action == "delete")
 	endform();
 	cpfooter();
 }
-if($action == "edit")
+if($mybb->input['action'] == "edit")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE aid='$aid'");
 	$announcement = $db->fetch_array($query);
@@ -386,7 +386,7 @@ if($action == "edit")
 	endform($lang->update_announcement, $lang->reset_button);
 	cpfooter();
 }
-if($action == "modify" || $action == "")
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	if(!$noheader)
 	{

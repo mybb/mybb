@@ -17,7 +17,7 @@ $lang->load("adminoptions");
 
 logadmin();
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "adminpermissions":
 	case "updateperms":
@@ -29,31 +29,55 @@ switch($action)
 		break;
 }
 
-if($action == "do_updateprefs")
+if($mybb->input['action'] == "do_updateprefs")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]'");
+	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]' LIMIT 1");
 	$adminoptions = $db->fetch_array($query);
-	$notes = addslashes($notes);
+	$sqlarray = array(
+		"notes" => addslashes($mybb->input['notes']),
+		"cpstyle" => addslashes($mybb->input['cpstyle']),
+		);
 	if($adminoptions['uid'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET cpstyle='$cpstyle', notes='$notes' WHERE uid='$user[uid]'");
+		$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='".$user['uid']."'");
 	}
 	else
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions (uid,cpstyle,notes) VALUES ('$user[uid]','$cpstyle','$notes')");
+		$db->insert_query(TABLE_PREFIX."adminoptions", $sqlarray);
 	}
 	cpredirect("adminoptions.php", $lang->prefs_updated);
 }
-if($action == "do_updateperms")
+if($mybb->input['action'] == "do_updateperms")
 {
+	$uid = intval($mybb->input['uid']);
 	checkadminpermissions("caneditaperms");
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$uid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$uid' LIMIT 1");
 	$adminoptions = $db->fetch_array($query);
 	if(!$adminoptions['uid'])
 	{
 		$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions (uid) VALUES ('$uid')");
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET permsset='1', caneditsettings='$newperms[caneditsettings]', caneditann='$newperms[caneditann]', caneditforums='$newperms[caneditforums]',	canmodposts='$newperms[canmodposts]', caneditsmilies='$newperms[caneditsmilies]', caneditpicons='$newperms[caneditpicons]',	caneditthemes='$newperms[caneditthemes]', canedittemps='$newperms[canedittemps]', caneditusers='$newperms[caneditusers]', caneditpfields='$newperms[caneditpfields]', caneditugroups='$newperms[caneditugroups]', caneditaperms='$newperms[caneditaperms]', caneditutitles='$newperms[caneditutitles]', caneditattach='$newperms[caneditattach]', canedithelp='$newperms[canedithelp]', canrunmaint='$newperms[canrunmaint]' WHERE uid='$uid'");
+	$sqlarray = array(
+		"permsset" => '1',
+		"caneditsettings" => addslashes($newperms['caneditsettings']),
+		"caneditann" => addslashes($newperms['caneditann']),
+		"caneditforums" => addslashes($newperms['caneditforums']),
+		"canmodposts" => addslashes($newperms['canmodposts']),
+		"caneditsmilies" => addslashes($newperms['caneditsmilies']),
+		"caneditpicons" => addslashes($newperms['caneditpicons']),
+		"caneditthemes" => addslashes($newperms['caneditthemes']),
+		"canedittemps" => addslashes($newperms['canedittemps']),
+		"caneditusers" => addslashes($newperms['caneditusers']),
+		"caneditpfields" => addslashes($newperms['caneditpfields']),
+		"caneditugroups" => addslashes($newperms['caneditugroups']),
+		"caneditaperms" => addslashes($newperms['caneditaperms']),
+		"caneditutitles" => addslashes($newperms['caneditutitles']),
+		"caneditattach" => addslashes($newperms['caneditattach']),
+		"canedithelp" => addslashes($newperms['canedithelp']),
+		"canrunmaint" => addslashes($newperms['canrunmaint']),
+		);
+	$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='$uid'"
+	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET canrunmaint='$newperms[canrunmaint]' WHERE uid='$uid'");
 	if($uid == -1)
 	{
 		cpredirect("adminoptions.php?action=adminpermissions", $lang->default_perms_updated);
@@ -63,9 +87,10 @@ if($action == "do_updateperms")
 		cpredirect("adminoptions.php?action=adminpermissions", $lang->perms_updated);
 	}
 }
-if($action == "updateperms")
+if($mybb->input['action'] == "updateperms")
 {
 	checkadminpermissions("caneditaperms");
+	$uid = intval($mybb->input['uid']);
 	if($uid != -1)
 	{
 		$query = $db->query("SELECT u.uid, u.username, g.cancp FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g WHERE u.uid='$uid' AND u.usergroup=g.gid AND g.cancp='yes'");
@@ -107,7 +132,7 @@ if($action == "updateperms")
 	endform($lang->update_permissions, $lang->reset_button);
 	cpfooter();
 }
-if($action == "adminpermissions")
+if($mybb->input['action'] == "adminpermissions")
 {
 	checkadminpermissions("caneditaperms");
 	cpheader();
@@ -127,7 +152,7 @@ if($action == "adminpermissions")
 		echo "<td class=\"$bgcolor\">$admin[username]</td>\n";
 		echo "<td class=\"$bgcolor\">$la</td>\n";
 		echo "<td class=\"$bgcolor\">";
-		if($admin[permsset])
+		if($admin['permsset'])
 		{
 			echo makelinkcode($lang->edit_perms2, "adminoptions.php?action=updateperms&uid=$admin[uid]");
 		}
@@ -143,7 +168,7 @@ if($action == "adminpermissions")
 	cpfooter();
 
 }
-if($action == "updateprefs" || $action == "")
+if($mybb->input['action'] == "updateprefs" || $mybb->input['action'] == "")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]'");
 	$adminoptions = $db->fetch_array($query);

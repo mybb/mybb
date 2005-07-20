@@ -18,12 +18,12 @@ $lang->load("misc");
 checkadminpermissions("canrunmaint");
 logadmin();
 
-if($action == "dbmaint")
+if($mybb->input['action'] == "dbmaint")
 {
 	addacpnav($lang->dbmaint);
 }
 
-if($action == "do_dbmaint") {
+if($mybb->input['action'] == "do_dbmaint") {
 	$tablelist = "";
 	$tables = $db->list_tables($config[database]);
 	while(list($tablename) = $db->fetch_array($tables, "")) {
@@ -38,7 +38,7 @@ if($action == "do_dbmaint") {
 	cpmessage($lang->dbmaint_done);
 }
 
-if($action == "dbmaint") {
+if($mybb->input['action'] == "dbmaint") {
 	cpheader();
 	startform("misc.php", "" , "do_dbmaint");
 	starttable();

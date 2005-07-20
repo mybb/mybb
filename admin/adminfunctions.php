@@ -99,7 +99,7 @@ function startform($script, $name="", $action="")
 {
 
 	echo "<form action=\"$script\" method=\"post\" name=\"$name\" enctype=\"multipart/form-data\">\n";
-	if($action != "")
+	if($mybb->input['action'] != "")
 	{
 		makehiddencode("action", $action);
 	}
@@ -684,7 +684,7 @@ function getadminpermissions($uid="")
 
 function logadmin()
 {
-	global $_SERVER, $mybbadmin, $db, $action;
+	global $_SERVER, $mybbadmin, $db, $mybb->input['action'];
 	$scriptname = basename($_SERVER['PHP_SELF']);
 	$qstring = explode("&", $_SERVER['QUERY_STRING']);
 	while(list($key, $val) = each($qstring))
@@ -701,7 +701,7 @@ function logadmin()
 	}
 	$now = time();
 	$ipaddress = getip();
-	$db->query("INSERT INTO ".TABLE_PREFIX."adminlog (uid,dateline,scriptname,action,querystring,ipaddress) VALUES ('$mybbadmin[uid]','$now','$scriptname','$action','$querystring','$ipaddress')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."adminlog (uid,dateline,scriptname,action,querystring,ipaddress) VALUES ('".$mybbadmin['uid']."','".$now."','".$scriptname."','".$mybb->input['action']."','".$querystring."','".$ipaddress."')");
 }
 
 function buildacpnav($finished=1)

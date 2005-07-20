@@ -16,7 +16,7 @@ global $lang;
 $lang->load("users");
 
 addacpnav($lang->nav_users, "users.php");
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_user);
@@ -149,7 +149,7 @@ $bantimes["0-0-2"] = "2 $lang->years";
 checkadminpermissions("caneditusers");
 logadmin();
 
-if($action == "do_add")
+if($mybb->input['action'] == "do_add")
 {
 	$username = addslashes($_POST['username']);
 	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='$username'");
@@ -252,7 +252,7 @@ if($action == "do_add")
 	$cache->updatestats();
 	cpredirect("users.php", $lang->user_added);
 }
-if($action == "do_edit")
+if($mybb->input['action'] == "do_edit")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
@@ -336,7 +336,7 @@ if($action == "do_edit")
 
 	cpredirect("users.php", $lang->profile_updated);
 }
-if($action == "do_delete")
+if($mybb->input['action'] == "do_delete")
 {
 	if($deletesubmit)
 	{	
@@ -360,7 +360,7 @@ if($action == "do_delete")
 		header("Location: users.php?123");
 	}
 }
-if($action == "do_email")
+if($mybb->input['action'] == "do_email")
 {
 	$conditions = "1=1";
 
@@ -503,7 +503,7 @@ if($action == "do_email")
 		cpfooter();
 	}
 }
-if($action == "do_do_merge")
+if($mybb->input['action'] == "do_do_merge")
 {
 	if(!$deletesubmit)
 	{
@@ -549,7 +549,7 @@ if($action == "do_do_merge")
 	$lang->users_merged = sprintf($lang->users_merged, $sourceuser['username'], $sourceuser['username'], $destuser['username']);
 	cpmessage($lang->users_merged);
 }
-if($action == "do_merge")
+if($mybb->input['action'] == "do_merge")
 {
 	$source = addslashes($_POST['source']);
 	$destination = addslashes($_POST['destination']);
@@ -581,7 +581,7 @@ if($action == "do_merge")
 	cpfooter();
 }
 
-if($action == "add")
+if($mybb->input['action'] == "add")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");
 	while($usergroup = $db->fetch_array($query))
@@ -711,7 +711,7 @@ if($action == "add")
 	endform($lang->add_user, $lang->reset_button);
 	cpfooter();
 }
-if($action == "edit")
+if($mybb->input['action'] == "edit")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
@@ -921,7 +921,7 @@ if($action == "edit")
 	endtable();
 	endform($lang->update_user, $lang->reset_button);
 }
-if($action == "delete")
+if($mybb->input['action'] == "delete")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
@@ -940,7 +940,7 @@ if($action == "delete")
 	cpfooter();
 }
 
-if($action == "showreferrers")
+if($mybb->input['action'] == "showreferrers")
 {
 	cpheader();
 	if($uid)
@@ -976,7 +976,7 @@ if($action == "showreferrers")
 		endtable();
 	}
 }
-if($action == "misc")
+if($mybb->input['action'] == "misc")
 {
 	cpheader();
 	starttable();
@@ -984,7 +984,7 @@ if($action == "misc")
 	endtable();
 	cpfooter();
 }
-if($action == "merge")
+if($mybb->input['action'] == "merge")
 {
 	cpheader();
 	startform("users.php", "", "do_merge");
@@ -999,7 +999,7 @@ if($action == "merge")
 	endform($lang->merge_user_accounts);
 	cpfooter();
 }
-if($action == "stats")
+if($mybb->input['action'] == "stats")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
@@ -1069,7 +1069,7 @@ if($action == "stats")
 	cpfooter();
 }
 
-if($action == "pmstats")
+if($mybb->input['action'] == "pmstats")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
@@ -1106,7 +1106,7 @@ if($action == "pmstats")
 
 }
 		
-if($action == "email")
+if($mybb->input['action'] == "email")
 {
 	if(!$noheader)
 	{
@@ -1150,7 +1150,7 @@ if($action == "email")
 	cpfooter();
 }
 
-if($action == "find")
+if($mybb->input['action'] == "find")
 {
 	$dispcount = count($searchdisp);
 	$yescount = "0";
@@ -1272,7 +1272,7 @@ if($action == "find")
 		makelabelcode($lang->error_no_users);
 		endtable();
 		$noheader = 1;
-		$action = "search";
+		$mybb->input['action'] = "search";
 	}
 	else
 	{
@@ -1471,7 +1471,7 @@ if($action == "find")
 		}
 	}
 }
-if($action == "do_manageban")
+if($mybb->input['action'] == "do_manageban")
 {
 	if($uid)
 	{
@@ -1527,7 +1527,7 @@ if($action == "do_manageban")
 		cpredirect("users.php?action=banned", $lang->ban_added);
 	}
 }
-if($action == "liftban")
+if($mybb->input['action'] == "liftban")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='$uid'");
 	$ban = $db->fetch_array($query);
@@ -1542,7 +1542,7 @@ if($action == "liftban")
 	$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='$uid'");
 	cpredirect("users.php?action=banned", $lang->ban_lifted);
 }
-if($action == "manageban")
+if($mybb->input['action'] == "manageban")
 {
 	if($uid && !$auid)
 	{ // editing a ban
@@ -1605,7 +1605,7 @@ if($action == "manageban")
 	}
 	cpfooter();
 }
-if($action == "banned")
+if($mybb->input['action'] == "banned")
 {
 	checkbanned();
 	$query = $db->query("SELECT b.*, a.username AS adminuser, u.username FROM ".TABLE_PREFIX."banned b LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid) ORDER BY lifted ASC");
@@ -1662,7 +1662,7 @@ if($action == "banned")
 	cpfooter();
 }
 
-if ($action == "search" || !$action)
+if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 {
 	if(!$noheader)
 	{

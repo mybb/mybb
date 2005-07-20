@@ -19,7 +19,7 @@ checkadminpermissions("caneditutitles");
 logadmin();
 
 addacpnav($lang->nav_usertitles, "usertitles.php");
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_title);
@@ -32,7 +32,7 @@ switch($action)
 		break;
 }
 
-if($action == "do_add")
+if($mybb->input['action'] == "do_add")
 {
 	$posts = intval($_POST['posts']);
 	$title = addslashes($_POST['title']);
@@ -45,7 +45,7 @@ if($action == "do_add")
 	$db->query("INSERT INTO ".TABLE_PREFIX."usertitles VALUES (NULL, '$posts', '$title', '$stars', '$starimage')");
 	cpredirect("usertitles.php", $lang->title_added);
 }
-if($action == "do_delete")
+if($mybb->input['action'] == "do_delete")
 {
 	if($deletesubmit)
 	{	
@@ -54,11 +54,11 @@ if($action == "do_delete")
 	}
 	else
 	{
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 	}
 }
 
-if($action == "do_edit")
+if($mybb->input['action'] == "do_edit")
 {
 	$posts = intval($_POST['posts']);
 	$title = addslashes($_POST['title']);
@@ -71,7 +71,7 @@ if($action == "do_edit")
 	$db->query("UPDATE ".TABLE_PREFIX."usertitles SET posts='$posts', title='$title', stars='$stars', starimage='$starimage' WHERE utid='$utid'");
 	cpredirect("usertitles.php", $lang->title_updated);
 }
-if($action == "add")
+if($mybb->input['action'] == "add")
 {
 	cpheader();
 	startform("usertitles.php", "" , "do_add");
@@ -85,7 +85,7 @@ if($action == "add")
 	endform($lang->add_title, $lang->reset_button);
 	cpfooter();
 }
-if($action == "delete")
+if($mybb->input['action'] == "delete")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE utid='$utid'");
 	$title = $db->fetch_array($query);
@@ -103,7 +103,7 @@ if($action == "delete")
 	endform();
 	cpfooter();
 }
-if($action == "edit")
+if($mybb->input['action'] == "edit")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE utid='$utid'");
 	$title = $db->fetch_array($query);
@@ -121,7 +121,7 @@ if($action == "edit")
 	endform($lang->update_title, $lang->reset_button);
 	cpfooter();
 }
-if($action == "modify" || $action == "")
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	if(!$noheader)
 	{

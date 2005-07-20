@@ -15,7 +15,7 @@ require "./global.php";
 global $lang;
 $lang->load("index");
 
-if ($action=="header") {
+if ($mybb->input['action']=="header") {
 	echo "<html>\n";
 	echo "<head>";
 	echo "<link rel=\"stylesheet\" href=\"$style\">";
@@ -28,7 +28,7 @@ if ($action=="header") {
 	echo "</html>";
 }
 
-else if ($action=="home") {
+else if ($mybb->input['action']=="home") {
 	logadmin();
 	cpheader();
 	// Get statistics
@@ -159,7 +159,7 @@ else if ($action=="home") {
 	endtable();
 	cpfooter();
 }
-else if($action == "vercheck") {
+else if($mybb->input['action'] == "vercheck") {
 	logadmin();
 	$ver = rawurlencode($mybboard[internalver]);
 	$larr = @file("http://www.mybboard.com/vercheck.php?tver=".$ver);
@@ -201,7 +201,7 @@ else if($action == "vercheck") {
 	cpfooter();
 }
 
-else if ($action=="navigation") {
+else if ($mybb->input['action']=="navigation") {
 ?>
 <html>
 <head>

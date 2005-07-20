@@ -17,7 +17,7 @@ $lang->load("modlogs");
 
 addacpnav($lang->nav_mod_logs, "modlogs.php");
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "view":
 		addacpnav($lang->nav_search_results);
@@ -26,7 +26,7 @@ switch($action)
 
 logadmin();
 
-if($action == "do_prune") {
+if($mybb->input['action'] == "do_prune") {
 	$time = time();
 	$timecut = $time-($days*60*60*24);
 	$thequery = "";
@@ -45,7 +45,7 @@ if($action == "do_prune") {
 	$db->query("DELETE FROM ".TABLE_PREFIX."moderatorlog $thequery");
 	cpredirect("modlogs.php", $lang->modlog_pruned);
 }
-if($action == "view") {
+if($mybb->input['action'] == "view") {
 	if(!$perpage) {
 		$perpage = 20;
 	}
@@ -132,7 +132,7 @@ if($action == "view") {
 	cpfooter();
 		
 }
-if($action == "") {
+if($mybb->input['action'] == "") {
 	$query = $db->query("SELECT DISTINCT l.uid, u.username FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid) ORDER BY u.username ASC");
 	while($user = $db->fetch_array($query)) {
 		$uoptions .= "<option value=\"$user[uid]\">$user[username]</option>\n";

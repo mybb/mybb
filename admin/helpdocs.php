@@ -20,7 +20,7 @@ logadmin();
 
 addacpnav($lang->nav_helpdocs, "helpdocs.php?action=modify");
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_helpdoc);
@@ -33,7 +33,7 @@ switch($action)
 		break;
 }
 
-if($action == "do_add") {
+if($mybb->input['action'] == "do_add") {
 	if($add == "doc") {
 		$description = addslashes($_POST['description']);
 		$document = addslashes($_POST['document']);
@@ -54,7 +54,7 @@ if($action == "do_add") {
 	}
 }
 
-if($action == "do_delete") {
+if($mybb->input['action'] == "do_delete") {
 	if($deletesubmit) {	
 		if($hid) {
 			$db->query("DELETE FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
@@ -80,11 +80,11 @@ if($action == "do_delete") {
 			cpredirect("helpdocs.php", $lang->section_deleted);
 		}
 	} else {
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 	}
 }
 
-if($action == "do_edit") {
+if($mybb->input['action'] == "do_edit") {
 	if($hid) {
 		$description = addslashes($_POST['description']);
 		$document = addslashes($_POST['document']);
@@ -106,7 +106,7 @@ if($action == "do_edit") {
 	}
 }
 
-if($action == "edit") {
+if($mybb->input['action'] == "edit") {
 	cpheader();
 	if($hid) {
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
@@ -167,7 +167,7 @@ if($action == "edit") {
 	cpfooter();
 }
 
-if($action == "delete") {
+if($mybb->input['action'] == "delete") {
 	cpheader();
 	if($hid) {
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
@@ -207,7 +207,7 @@ if($action == "delete") {
 	cpfooter();
 }
 
-if($action == "add") {
+if($mybb->input['action'] == "add") {
 	cpheader();
 	startform("helpdocs.php", "", "do_add");
 	makehiddencode("add", "section");
@@ -237,7 +237,7 @@ if($action == "add") {
 	endform($lang->add_doc_section, $lang->reset_button);
 	cpfooter();
 }
-if($action == "modify" || $action == "") {
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	if(!$noheader) {
 		cpheader();
 	}

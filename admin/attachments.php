@@ -18,7 +18,7 @@ $lang->load("attachments");
 checkadminpermissions("caneditattach");
 logadmin();
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "search":
 		addacpnav($lang->nav_attachment_manager);
@@ -44,7 +44,7 @@ switch($action)
 		break;
 }
 
-if($action == "do_add")
+if($mybb->input['action'] == "do_add")
 {
 	// add new type to database
 	if(($extension || $mimetype) && $maxsize)
@@ -63,7 +63,7 @@ if($action == "do_add")
 	}
 }
 
-if($action == "do_delete")
+if($mybb->input['action'] == "do_delete")
 {
 	// remove type from database
 	if($deletesubmit)
@@ -74,11 +74,11 @@ if($action == "do_delete")
 	}
 	else
 	{
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 	}
 }
 
-if($action == "do_edit")
+if($mybb->input['action'] == "do_edit")
 {
 	// update database with new type settings
 	if($extension)
@@ -97,7 +97,7 @@ if($action == "do_edit")
 	}
 }
 
-if($action == "do_search")
+if($mybb->input['action'] == "do_search")
 {
 	// search for the attachments
 	$sql = "";
@@ -219,7 +219,7 @@ if($action == "do_search")
 	cpfooter();
 }
 
-if($action == "do_search_delete")
+if($mybb->input['action'] == "do_search_delete")
 {
 	// delete selected attachments from database
 	if(is_array($check) && !empty($check))
@@ -236,7 +236,7 @@ if($action == "do_search_delete")
 	}
 }
 
-if($action == "add")
+if($mybb->input['action'] == "add")
 {
 	// form for adding new attachment type
 	cpheader();
@@ -253,7 +253,7 @@ if($action == "add")
 	cpfooter();
 }
 
-if($action == "search")
+if($mybb->input['action'] == "search")
 {
 	// display form for searching for attachments
 	$query = $db->query("SELECT COUNT(aid) AS Total, SUM(filesize) AS Sum FROM ".TABLE_PREFIX."attachments");
@@ -306,11 +306,11 @@ if($action == "search")
 	cpfooter();
 }
 
-if($action == "edit")
+if($mybb->input['action'] == "edit")
 {
 	if($delete)
 	{
-		$action = "delete";
+		$mybb->input['action'] = "delete";
 	}
 	else
 	{
@@ -335,7 +335,7 @@ if($action == "edit")
 	}
 }
 
-if($action == "delete")
+if($mybb->input['action'] == "delete")
 {
 	// confirmation page for deleting an attachment type
 	$query = $db->query("SELECT name FROM ".TABLE_PREFIX."attachtypes WHERE atid='$atid'");
@@ -355,7 +355,7 @@ if($action == "delete")
 	cpfooter();
 }
 
-if($action == "modify" || !$action)
+if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 {
 	// list all attachment types so user can pick one to edit/delete
 	cpheader();

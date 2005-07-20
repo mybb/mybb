@@ -18,7 +18,7 @@ $lang->load("maintenance");
 checkadminpermissions("canrunmaint");
 logadmin();
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "cache":
 		addacpnav($lang->nav_cache_manager, "maintenance.php?action=cache");
@@ -35,7 +35,7 @@ switch($action)
 		break;
 }
 
-if($action == "do_cache")
+if($mybb->input['action'] == "do_cache")
 {
 	if($view)
 	{
@@ -72,7 +72,7 @@ if($action == "do_cache")
 	}
 }
 
-if($action == "cache")
+if($mybb->input['action'] == "cache")
 {
 	cpheader();
 	starttable();
@@ -104,13 +104,13 @@ if($action == "cache")
 	cpfooter();
 }
 
-if($action == "do_rebuildstats")
+if($mybb->input['action'] == "do_rebuildstats")
 {
 	$cache->updatestats();
 	cpmessage($lang->stats_rebuilt);
 }
 
-if($action == "rebuildstats")
+if($mybb->input['action'] == "rebuildstats")
 {
 	cpheader();
 	startform("maintenance.php", "" , "do_rebuildstats");

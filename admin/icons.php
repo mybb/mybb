@@ -21,7 +21,7 @@ checkadminpermissions("caneditpicons");
 logadmin();
 
 addacpnav($lang->nav_posticons, "icons.php");
-switch($action)
+switch($mybb->input['action'])
 {
 	case "add":
 		addacpnav($lang->nav_add_posticon);
@@ -34,7 +34,7 @@ switch($action)
 		break;
 }
 
-if($action == "do_add") {
+if($mybb->input['action'] == "do_add") {
 	$name = addslashes($_POST['name']);
 	$path = addslashes($_POST['path']);
 	if (empty($name) || empty($path)) {
@@ -43,16 +43,16 @@ if($action == "do_add") {
 	$db->query("INSERT INTO ".TABLE_PREFIX."icons VALUES (NULL,'$name','$path')");
 	cpredirect("icons.php", $lang->icon_added);
 }
-if($action == "do_delete") {
+if($mybb->input['action'] == "do_delete") {
 	if($deletesubmit) {	
 		$db->query("DELETE FROM ".TABLE_PREFIX."icons WHERE iid='$iid'");
 		cpredirect("icons.php", $lang->icon_deleted);
 	} else {
-		$action = "modify";
+		$mybb->input['action'] = "modify";
 	}
 }
 
-if($action == "do_edit") {
+if($mybb->input['action'] == "do_edit") {
 	$name = addslashes($_POST['name']);
 	$path = addslashes($_POST['path']);
 	if(empty($name) || empty($path)) {
@@ -62,7 +62,7 @@ if($action == "do_edit") {
 	cpredirect("icons.php", $lang->icon_updated);
 }
 
-if($action == "edit") {
+if($mybb->input['action'] == "edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons WHERE iid='$iid'");
 	$icon = $db->fetch_array($query);
 	
@@ -85,7 +85,7 @@ if($action == "edit") {
 	cpfooter();
 }
 
-if($action == "delete") {
+if($mybb->input['action'] == "delete") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons WHERE iid='$iid'");
 	$icon = $db->fetch_array($query);
 	if(!$icon['iid']) {
@@ -106,7 +106,7 @@ if($action == "delete") {
 	cpfooter();
 }
 
-if($action == "add") {
+if($mybb->input['action'] == "add") {
 	cpheader();
 	startform("icons.php", "", "do_add");
 	starttable();
@@ -128,9 +128,9 @@ if($action == "add") {
 	cpfooter();
 }
 
-if($action == "do_addmultiple") {
+if($mybb->input['action'] == "do_addmultiple") {
 	if($page) {
-		$action = "addmultiple";
+		$mybb->input['action'] = "addmultiple";
 	}
 	elseif(!is_array($piimport)) {
 		cpmessage($lang->no_images_import);
@@ -147,7 +147,7 @@ if($action == "do_addmultiple") {
 		cpredirect("icons.php", $lang->icons_added);
 	}
 }
-if($action == "addmultiple") {
+if($mybb->input['action'] == "addmultiple") {
 	$perpage = intval($perpage);
 	if(!$perpage) {
 		$perpage = 15;
@@ -237,7 +237,7 @@ if($action == "addmultiple") {
 	endform($lang->add_posticons, $lang->reset_button);
 	cpfooter();
 }
-if($action == "modify" || $action == "") {
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	if(!$noheader) {
 		cpheader();
 	}

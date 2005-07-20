@@ -31,7 +31,7 @@ $active_plugins = $plugins_cache['active'];
 //
 // Activates or deactivates a specific plugin
 //
-if($action == "activate")
+if($mybb->input['action'] == "activate")
 {
 	$codename = $mybb->input['plugin'];
 	$file = $codename.".php";
@@ -67,7 +67,7 @@ if($action == "activate")
 	cpredirect("plugins.php", $message);	
 }
 
-if($action == "")
+if($mybb->input['action'] == "")
 {
 	//
 	// Get a list of the plugin files which exist in the plugins directory

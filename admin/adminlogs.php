@@ -19,16 +19,20 @@ logadmin();
 
 addacpnav($lang->nav_admin_logs, "adminlogs.php");
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "view":
 		addacpnav($lang->nav_search_results);
 		break;
 }
 
-if($action == "do_prune")
+if($mybb->input['action'] == "do_prune")
 {
 	$time = time();
+	$days = intval($mybb->input['days']);
+	$fromscript = $mybb->input['fromscript'];
+	$fromadmin = intval($mybb->input['fromadmin']);
+
 	$timecut = $time-($days*60*60*24);
 	$thequery = "";
 	if($timecut)
@@ -55,12 +59,17 @@ if($action == "do_prune")
 	{
 		$thequery = "WHERE $thequery";
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."adminlog $thequery");
+	$db->query("DELETE FROM ".TABLE_PREFIX."adminlog ".addslashes($thequery));
 	cpredirect("adminlogs.php", $lang->log_pruned);
 }
-if($action == "view")
+elseif($mybb->input['action'] == "view")
 {
-	$perpage = intval($_REQUEST['perpage']);
+	$perpage = intval($mybb->input['perpage']);
+	$fromscript = $mybb->input['fromscript'];
+	$fromadmin = intval($mybb->input['fromadmin']);
+	$orderby = $mybb->input['orderby'];
+	$page = $mybb->input['page'];
+
 	if(!$perpage)
 	{
 		$perpage = 20;
@@ -94,7 +103,7 @@ if($action == "view")
 	{
 		$order = "l.dateline DESC";
 	}
-	$query = $db->query("SELECT COUNT(dateline) FROM ".TABLE_PREFIX."adminlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) $squery");
+	$query = $db->query("SELECT COUNT(dateline) FROM ".TABLE_PREFIX."adminlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) ".addslashes($squery));
 	$rescount = $db->result($query, 0);
 	if(!$rescount)
 	{
@@ -151,7 +160,7 @@ if($action == "view")
 	$query = $db->query("SELECT l.*, u.username FROM ".TABLE_PREFIX."adminlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) $squery ORDER BY $order LIMIT $start, $perpage");
 	while($logitem = $db->fetch_array($query))
 	{
-		$logitem[dateline] = date("jS M Y, G:i", $logitem[dateline]);
+		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
 		$bgcolor = getaltbg();
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"users.php?action=edit&uid=$logitem[uid]\">$logitem[username]</a></td>\n";
@@ -168,9 +177,8 @@ if($action == "view")
 	}
 	endtable();
 	cpfooter();
-		
 }
-if($action == "")
+else
 {
 	$query = $db->query("SELECT DISTINCT scriptname FROM ".TABLE_PREFIX."adminlog ORDER BY scriptname ASC");
 	while($script = $db->fetch_array($query))
@@ -203,6 +211,5 @@ if($action == "")
 	makeinputcode($lang->entries_older, "days", 30, 4);
 	endtable();
 	endform($lang->prune_log, $lang->reset_button);
-
 }
 ?>
