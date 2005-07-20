@@ -18,6 +18,8 @@ $lang->load("showteam");
 
 addnav($lang->nav_showteam);
 
+$plugins->run_hooks("showteam_start");
+
 $teamquery = "";
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE showforumteam='yes' AND gid!='6' ORDER BY title ASC");
 while($usergroup = $db->fetch_array($query)) {
@@ -90,5 +92,6 @@ if(is_array($modsarray)) {
 }
 
 eval("\$showteam = \"".$templates->get("showteam")."\";");
+$plugins->run_hooks("showteam_end");
 outputpage($showteam);
 ?>

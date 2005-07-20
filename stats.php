@@ -26,6 +26,8 @@ if($stats['numthreads'] < 1 || $stats['numposts'] < 1)
 	error($lang->not_enough_info_stats);
 }
 
+$plugins->run_hooks("stats_start");
+
 $repliesperthread = mynumberformat(round((($stats['numposts'] - $stats['numthreads']) / $stats['numthreads']), 2));
 $postspermember = mynumberformat(round(($stats['numposts'] / $stats['numusers']), 2));
 
@@ -102,5 +104,6 @@ $stats['numthreads'] = mynumberformat($stats['numthreads']);
 $stats['numusers'] = mynumberformat($stats['numusers']);
 
 eval("\$stats = \"".$templates->get("stats")."\";");
+$plugins->run_hooks("stats_end");
 outputpage($stats);
 ?>

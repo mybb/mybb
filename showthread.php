@@ -117,6 +117,9 @@ if($mybb->input['action'] == "newpost") {
 		header("Location:showthread.php?action=lastpost&tid=$tid");
 	}
 }
+
+$plugins->run_hooks("showthread_start");
+
 if($mybb->input['action'] == "thread") {
 	// Thread has a poll?
 	if($thread['poll']) {
@@ -189,11 +192,13 @@ if($mybb->input['action'] == "thread") {
 			}
 			$lang->total_votes = sprintf($lang->total_votes, $poll['numvotes']);
 			eval("\$pollbox = \"".$templates->get("showthread_poll_results")."\";");
+			$plugins->run_hooks("showthread_poll_results");
 		} else {
 			if($poll['public'] == "yes") {
 				$publicnote = $lang->public_note;
 			}
 			eval("\$pollbox = \"".$templates->get("showthread_poll")."\";");
+			$plugins->run_hooks("showthread_poll");
 		}
 
 	} else {
@@ -248,6 +253,7 @@ if($mybb->input['action'] == "thread") {
 		$closeoption .= "<br /><input type=\"checkbox\" name=\"modoptions[stickthread]\" value=\"yes\" $stickch />&nbsp;<b>".$lang->stick_thread."</b>";
 		$inlinecount = "0";
 		$inlinecookie = "inlinemod_thread".$tid;
+		$plugins->run_hooks("showthread_ismod");
 	} else {
 		$adminoptions = "&nbsp;";
 		$inlinemod = "";
@@ -328,6 +334,7 @@ if($mybb->input['action'] == "thread") {
 		$threadedbits = buildtree();
 		$posts = makepostbit($showpost);
 		eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
+		$plugins->run_hooks("showthread_threaded");
 	} else { // Linear
 		// Do Multi Pages
 		$perpage = $mybb->settings['postsperpage'];
@@ -395,6 +402,7 @@ if($mybb->input['action'] == "thread") {
 			$post = "";
 			$pfirst = false;
 		}
+		$plugins->run_hooks("showthread_linear");
 	}
 	if($mybb->settings['showsimilarthreads'] != "no") {
 		$query = $db->query("SELECT subject, tid, lastpost, username, replies FROM ".TABLE_PREFIX."threads WHERE fid='$thread[fid]' AND tid!='$thread[tid]' AND visible='1' AND  MATCH (subject) AGAINST ('".addslashes($thread[subject])."') >= ".$mybb->settings[similarityrating]." ORDER BY dateline DESC LIMIT 0, ".$mybb->settings[similarlimit]);
@@ -417,6 +425,7 @@ if($mybb->input['action'] == "thread") {
 	}
 	$thread['subject'] = dobadwords($thread['subject']);
 	eval("\$showthread = \"".$templates->get("showthread")."\";");
+	$plugins->run_hooks("showthread_end");
 	outputpage($showthread);
 }
 function buildtree($replyto="0", $indent="0") {

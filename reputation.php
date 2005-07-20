@@ -48,6 +48,7 @@ checkpwforum($fid, $foruminfo['password']);
 
 if($mybb->input['action'] == "do_add")
 {
+	$plugins->run_hooks("reputation_do_add_start");
 	if($post['uid'] == $mybb->user['uid'])
 	{ // let the user view their reputation
 		eval("\$reputationbit = \"".$templates->get("reputation_yourpost")."\";");
@@ -88,9 +89,11 @@ if($mybb->input['action'] == "do_add")
 				"dateline" => time(),
 				"comments" => addslashes($mybb->input['comments'])
 				);
+			$plugins->run_hooks("reputation_do_add_process");
 			$db->insert_query(TABLE_PREFIX."reputation", $reputation);
 			$db->query("UPDATE ".TABLE_PREFIX."users SET reputation=reputation+'$rep' WHERE uid='$post[uid]'");
 			$reputationbit = "<script type=\"text/javascript\">window.close();</script>";
+			$plugins->run_hooks("reputation_do_add_end");
 		}
 		eval("\$reputation = \"".$templates->get("reputation")."\";");
 		outputpage($reputation);
@@ -98,6 +101,8 @@ if($mybb->input['action'] == "do_add")
 }
 else
 {
+	$plugins->run_hooks("reputation_start");
+
 	$lang->add_reputation = sprintf($lang->add_reputation, $user['username']);
 	if($post['uid'] == $mybb->user['uid'])
 	{ // let the user view their reputation
@@ -137,6 +142,7 @@ else
 		}
 		$lang->add_reputation = sprintf($lang->add_reputation, $user['username']);
 		eval("\$reputation = \"".$templates->get("reputation")."\";");
+		$plugins->run_hooks("reputation_end");
 		outputpage($reputation);
 	}
 }

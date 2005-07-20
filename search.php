@@ -40,6 +40,8 @@ if($mybb->input['action'] == "results")
 	{
 		error($lang->error_invalidsearch);
 	}
+	$plugins->run_hooks("search_results_start");
+
 	$order = $mybb->input['order'];
 	$sortby = $mybb->input['sortby'];
 
@@ -261,6 +263,7 @@ if($mybb->input['action'] == "results")
 				$prev = $result['message'];
 			}
 			$posted = mydate($mybb->settings['dateformat'], $result['dateline']).", ".mydate($mybb->settings['timeformat'], $result['dateline']);
+			$plugins->run_hooks("search_results_post");
 			eval("\$results .= \"".$templates->get("search_results_post")."\";");		
 		}
 		else
@@ -309,6 +312,7 @@ if($mybb->input['action'] == "results")
 			}
 			$result['replies'] = mynumberformat($result['replies']);
 			$result['views'] = mynumberformat($result['views']);
+			$plugins->run_hooks("search_results_thread");
 			eval("\$results .= \"".$templates->get("search_results_thread")."\";");		
 		}
 		if($bgcolor == "trow2")
@@ -330,6 +334,7 @@ if($mybb->input['action'] == "results")
 		eval("\$searchresultsbar = \"".$templates->get("search_results_barthreads")."\";");
 	}
 	eval("\$searchresults = \"".$templates->get("search_results")."\";");
+	$plugins->run_hooks("search_results_end");
 	outputpage($searchresults);
 }
 elseif($mybb->input['action'] == "findguest")
@@ -345,6 +350,7 @@ elseif($mybb->input['action'] == "findguest")
 		"lookin" => "p.message",
 		"showposts" => 2
 		);
+	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
 
@@ -363,6 +369,7 @@ elseif($mybb->input['action'] == "finduser")
 		"lookin" => "p.message",
 		"showposts" => 2
 		);
+	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
 	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
@@ -406,6 +413,7 @@ elseif($mybb->input['action'] == "getnew")
 		"lookin" => "p.message",
 		"showposts" => 1
 		);
+	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
 
@@ -454,6 +462,7 @@ elseif($mybb->input['action'] == "getdaily")
 		"showposts" => 2
 		);
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+	$plugins->run_hooks("search_do_search_process");
 	$sid = $db->insert_id();
 	eval("\$redirect = \"".$templates->get("redirect_searchresults")."\";");
 	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
@@ -467,6 +476,8 @@ elseif($mybb->input['action'] == "do_search")
 			error($lang->error_nosearchterms);
 		}
 	}
+	$plugins->run_hooks("search_do_search_start");
+
 	if($mybb->input['postthread'] == 1)
 	{
 		$lookin = "p.message";
@@ -628,14 +639,17 @@ elseif($mybb->input['action'] == "do_search")
 		);
 
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+	$plugins->run_hooks("search_do_search_process");
 	$sid = $db->insert_id();
-	eval("\$redirect = \"".$templates->get("redirect_searchresults")."\";");
+	$plugins->run_hooks("search_do_search_end");
 	redirect("search.php?action=results&sid=$sid&sortby=".$mybb->input['sortby']."&order=".$mybb->input['sortordr'], $lang->redirect_searchresults);
 }
 else
 {
+	$plugins->run_hooks("search_start");
 	$srchlist = makesearchforums("", "$fid");
 	eval("\$search = \"".$templates->get("search")."\";");
+	$plugins->run_hooks("search_end");
 	outputpage($search);
 }
 
