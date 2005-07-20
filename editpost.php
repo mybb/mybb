@@ -317,7 +317,7 @@ elseif($mybb->input['action'] == "do_editpost")
 		"includesig" => $postoptions['signature']
 		);
 
-	$plugins->run_hooks("editpost_do_editpost_action");
+	$plugins->run_hooks("editpost_do_editpost_process");
 
 	if(($mybb->settings['showeditedby'] == "yes" && ismod($fid, "caneditposts") != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && ismod($fid, "caneditposts") == "yes")) {
 		$newpost['edituid'] = $mybb->user['uid'];

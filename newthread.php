@@ -501,7 +501,7 @@ if($mybb->input['action'] == "do_newthread")
 			"visible" => $visible
 			);
 
-		$plugins->run_hooks("newthread_do_newthread_action");
+		$plugins->run_hooks("newthread_do_newthread_process");
 
 		$db->insert_query(TABLE_PREFIX."threads", $newthread);
 		$tid = $db->insert_id();

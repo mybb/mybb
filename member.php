@@ -395,7 +395,7 @@ if($mybb->input['action'] == "do_register")
 			$newuser['referrer'] = $refuid;
 		}
 
-		$plugins->run_hooks("member_do_register_action");
+		$plugins->run_hooks("member_do_register_process");
 
 		$db->insert_query(TABLE_PREFIX."users", $newuser);
 		$uid = $db->insert_id();
@@ -917,7 +917,7 @@ elseif($mybb->input['action'] == "resetpassword")
 
 		$email = $user['email'];
 		
-		$plugins->run_hooks("member_resetpassword_action");
+		$plugins->run_hooks("member_resetpassword_process");
 
 		$emailsubject = sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
 		$emailmessage = sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);

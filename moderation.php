@@ -113,11 +113,11 @@ switch($mybb->input['action'])
 		{
 			$openclose = $lang->closed;
 		}
-		$lang->mod_action = sprintf($lang->mod_action, $openclose);
+		$lang->mod_process = sprintf($lang->mod_process, $openclose);
 
 		$plugins->run_hooks("moderation_openclosethread");
 
-		logmod($modlogdata, $lang->mod_action);
+		logmod($modlogdata, $lang->mod_process);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET closed='$thread[closed]' WHERE tid='$tid'");
 		redirect("showthread.php?tid=$tid", $redirect);
 		break;
@@ -148,11 +148,11 @@ switch($mybb->input['action'])
 		{
 			$stuckunstuck = $lang->stuck;
 		}
-		$lang->mod_action = sprintf($lang->mod_action, $stuckunstuck);
+		$lang->mod_process = sprintf($lang->mod_process, $stuckunstuck);
 
 		$plugins->run_hooks("moderation_stick");
 
-		logmod($modlogdata, $lang->mod_action);
+		logmod($modlogdata, $lang->mod_process);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET sticky='$thread[sticky]' WHERE tid='$tid'");
 		redirect("showthread.php?tid=$tid", $redirect);
 		break;

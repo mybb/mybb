@@ -627,7 +627,7 @@ if($mybb->input['action'] == "do_newreply" )
 			"visible" => $visible
 			);
 
-		$plugins->run_hooks("newreply_do_newreply_action");
+		$plugins->run_hooks("newreply_do_newreply_process");
 
 		$db->insert_query(TABLE_PREFIX."posts", $newreply);
 		$pid = $db->insert_id();

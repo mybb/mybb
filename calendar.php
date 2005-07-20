@@ -254,7 +254,7 @@ elseif($mybb->input['action'] == "do_addevent")
 		"private" => $mybb->input['private']
 		);
 
-	$plugins->run_hooks("calendar_do_addevent_action");
+	$plugins->run_hooks("calendar_do_addevent_process");
 
 	$db->insert_query(TABLE_PREFIX."events", $newevent);
 	$eid = $db->insert_id();
@@ -352,7 +352,7 @@ elseif($mybb->input['action'] == "do_editevent")
 			"private" => $mybb->input['private']
 			);
 
-		$plugins->run_hooks("calendar_do_editevent_action");
+		$plugins->run_hooks("calendar_do_editevent_process");
 	
 		$db->update_query(TABLE_PREFIX."events", $newevent, "eid=$eid");
 		
