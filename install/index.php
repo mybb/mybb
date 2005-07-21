@@ -21,6 +21,7 @@ require "../inc/constants.php";
 require "../inc/functions.php";
 require "../admin/adminfunctions.php";
 require "../inc/class_xml.php";
+require "../inc/functions_user.php";
 
 // Include the installation resources
 require "./resources/output.php";

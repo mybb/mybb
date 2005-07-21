@@ -49,11 +49,14 @@ if($mybb->input['action'] == "do_add")
 	// add new type to database
 	if(($extension || $mimetype) && $maxsize)
 	{
-		$mimetype = addslashes($_POST['mimetype']);
-		$extension = addslashes($_POST['extension']);
-		$maxsize = addslashes($_POST['maxsize']);
-		$icon = addslashes($_POST['icon']);
-		$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid,mimetype,extension,maxsize,icon) VALUES ('','$mimetype','$extension','$maxsize','$icon')");
+		$sqlarray = array(
+			"atid" => '',
+			"mimetype" => addslashes($mybb->input['mimetype']),
+			"extension" => addslashes($mybb->input['extension']),
+			"maxsize" => addslashes($mybb->input['maxsize']),
+			"icon" => addslashes($mybb->input['icon']),
+			);
+		$db->insert_query(TABLE_PREFIX."attachtypes", $sqlarray);
 		$cache->updateattachtypes();
 		cpredirect("attachments.php", $lang->type_added);
 	}
@@ -81,13 +84,16 @@ if($mybb->input['action'] == "do_delete")
 if($mybb->input['action'] == "do_edit")
 {
 	// update database with new type settings
-	if($extension)
+	if(($extension || $mimetype) && $maxsize)
 	{
-		$mimetype = addslashes($_POST['mimetype']);
-		$extension = addslashes($_POST['extension']);
-		$maxsize = addslashes($_POST['maxsize']);
-		$icon = addslashes($_POST['icon']);
-		$db->query("UPDATE ".TABLE_PREFIX."attachtypes SET mimetype='$mimetype', extension='$extension', maxsize='$maxsize', icon='$icon' WHERE atid='$atid'");
+		$sqlarray = array(
+			"atid" => '',
+			"mimetype" => addslashes($mybb->input['mimetype']),
+			"extension" => addslashes($mybb->input['extension']),
+			"maxsize" => addslashes($mybb->input['maxsize']),
+			"icon" => addslashes($mybb->input['icon']),
+			);
+		$db->update_query(TABLE_PREFIX."attachtypes", $sqlarray, "atid='$atid'");
 		$cache->updateattachtypes();
 		cpredirect("attachments.php", $lang->type_updated);
 	}
@@ -101,51 +107,51 @@ if($mybb->input['action'] == "do_search")
 {
 	// search for the attachments
 	$sql = "";
-	if($username)
+	if($mybb->input['username'])
 	{
-		$username = addslashes($username);
+		$username = addslashes($mybb->input['username']);
 		$sql .= " AND u.username LIKE '%$username%'";
 	}
-	if($filename)
+	if($mybb->input['filename'])
 	{
-		$filename = addslashes($filename);
+		$filename = addslashes($mybb->input['filename']);
 		$sql .= " AND a.filename LIKE '%$filename%'";
 	}
-	if($mimetype)
+	if($mybb->input['mimetype'])
 	{
-		$mimetype = addslashes($mimetype);
+		$mimetype = addslashes($mybb->input['mimetype']);
 		$sql .= " AND a.filetype LIKE '%$mimetype%'";
 	}
-	if($forum)
+	if($mybb->input['forum'])
 	{
-		$sql .= " AND p.fid='$forum'";
+		$sql .= " AND p.fid='".intval($mybb->input['forum'])."'";
 	}
-	if($postdate)
+	if($mybb->input['postdate'])
 	{
-		$postdate = intval($postdate);
+		$postdate = intval($mybb->input['postdate']);
 		$postdate = time() - ($postdate * 86400);
 		$sql .= " AND p.dateline >= '$postdate'";
 	}
-	if($sizeless)
+	if($mybb->input['sizeless'])
 	{
-		$sizeless = addslashes($sizeless);
+		$sizeless = addslashes($mybb->input['sizeless']);
 		$sizeless *= 1024;
 		$sql .= " AND a.filesize < '$sizeless'";
 	}
-	if($sizemore)
+	if($mybb->input['sizemore'])
 	{
-		$sizemore = addslashes($sizemore);
+		$sizemore = addslashes($mybb->input['sizemore']);
 		$sizemore *= 1024;
 		$sql .= " AND a.filesize > '$sizemore'";
 	}
-	if($downloadsless)
+	if($mybb->input['downloadsless'])
 	{
-		$downloadsless = intval($downloadsless);
+		$downloadsless = intval($mybb->input['downloadsless']);
 		$sql .= " AND a.downloads < '$downloadsless'";
 	}
-	if($downloadsmore)
+	if($mybb->input['downloadsmore'])
 	{
-		$downloadsmore = intval($downloadsmore);
+		$downloadsmore = intval($mybb->input['downloadsmore']);
 		$sql .= " AND a.downloads > '$downloadsmore'";
 	}
 	if($sql)
@@ -176,23 +182,23 @@ if($mybb->input['action'] == "do_search")
 	$altbg = "altbg1";
 	while($result = $db->fetch_array($query))
 	{
-		$filename = stripslashes($result[filename]);
-		$filesize = $result[filesize];
+		$filename = stripslashes($result['filename']);
+		$filesize = $result['filesize'];
 		if($filesize >= 1073741824)
 		{
-			$filesize = round($filesize / 1073741824 * 100) / 100 . " GB";
+			$filesize = round($filesize / 1073741824 * 100) / 100 . ' ' . $lang->size_gb;
 		}
 		elseif($filesize >= 1048576)
 		{
-			$filesize = round($filesize / 1048576 * 100) / 100 . " MB";
+			$filesize = round($filesize / 1048576 * 100) / 100 . ' ' . $lang->size_mb;
 		}
 		elseif($filesize >= 1024)
 		{
-			$filesize = round($filesize / 1024 * 100) / 100 . " KB";
+			$filesize = round($filesize / 1024 * 100) / 100 . ' ' . $lang->size_kb;
 		}
 		else
 		{
-			$filesize = $filesize . " bytes";
+			$filesize = $filesize . ' ' . $lang->size_bytes;
 		}
 
 		echo "<tr>\n";
@@ -226,7 +232,7 @@ if($mybb->input['action'] == "do_search_delete")
 	{
 		foreach($check as $aid)
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='$aid'");
+			$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='".intval($mybb->input['aid']),"'");
 		}
 		cpredirect("attachments.php?action=search", $lang->attachs_deleted);
 	}
@@ -264,15 +270,15 @@ if($mybb->input['action'] == "search")
 	}
 	if($stats['Sum'] >= 1073741824)
 	{
-		$stats['Sum'] = round($stats['Sum'] / 1073741824 * 100) / 100 . " gigabytes";
+		$stats['Sum'] = round($stats['Sum'] / 1073741824 * 100) / 100 . ' ' . $lang->size_gb;
 	}
 	elseif($stats['Sum'] >= 1048576)
 	{
-		$stats['Sum'] = round($stats['Sum'] / 1048576 * 100) / 100 . " megabytes";
+		$stats['Sum'] = round($stats['Sum'] / 1048576 * 100) / 100 . ' ' . $lang->size_mb;
 	}
 	elseif($stats['Sum'] >= 1024)
 	{
-		$stats['Sum'] = round($stats['Sum'] / 1024 * 100) / 100 . " kilobytes";
+		$stats['Sum'] = round($stats['Sum'] / 1024 * 100) / 100 . ' ' . $lang->size_kb;
 	}
 	else
 	{
@@ -296,9 +302,9 @@ if($mybb->input['action'] == "search")
 	makeinputcode($lang->filetype_contains, "mimetype");
 	makeinputcode($lang->poster_contains, "username");
 	makelabelcode($lang->forum_is, forumselect("forum"));
-	makeinputcode($lang->posted_in_last, "postdate", "", 5, " (days)");
-	makeinputcode($lang->size_less, "sizeless", "", 5, " (KB)");
-	makeinputcode($lang->size_greater, "sizemore", "", 5, " (KB)");
+	makeinputcode($lang->posted_in_last, "postdate", "", 5, ' ('.$lang->days.')');
+	makeinputcode($lang->size_less, "sizeless", "", 5, ' ('.$lang->size_kb.')');
+	makeinputcode($lang->size_greater, "sizemore", "", 5, ' ('.$lang->size_kb.')');
 	makeinputcode($lang->downloads_less, "downloadsless", "", 5);
 	makeinputcode($lang->downloads_greater, "downloadsmore", "", 5);
 	endtable();
@@ -322,7 +328,7 @@ if($mybb->input['action'] == "edit")
 		startform("attachments.php", "", "do_edit");
 		makehiddencode("atid", $atid);
 		starttable();
-		$lang->edit_attach_type = sprintf($lang->edit_attach_type, $type[name]);
+		$lang->edit_attach_type = sprintf($lang->edit_attach_type, $type['name']);
 		tableheader($lang->edit_attach_type);
 		makeinputcode($lang->extension, "extension", $type['extension']);
 		makeinputcode($lang->mimetype, "mimetype", $type['mimetype']);

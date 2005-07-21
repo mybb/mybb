@@ -18,6 +18,9 @@ $lang->load("announcements");
 checkadminpermissions("caneditann");
 logadmin();
 
+$fid = intval($mybb->input['fid']);
+$aid = intval($mybb->input['aid']);
+
 addacpnav($lang->nav_announcements);
 switch($mybb->input['action'])
 {
@@ -59,8 +62,13 @@ function getforums($pid="0")
 }
 if($mybb->input['action'] == "do_add")
 {
-	$message = addslashes($message);
-	$subject = addslashes($subject);
+	$message = addslashes($mybb->input['message']);
+	$subject = addslashes($mybb->input['subject']);
+	$startdateampm = $mybb->input['startdateampm'];
+	$startdatehour = intval($mybb->input['startdatehour']);
+	$enddateampm = $mybb->input['enddateampm'];
+	$enddatehour = intval($mybb->input['enddatehour']);
+
 	if($startdateampm == "pm")
 	{
 		$startdatehour = 12+$startdatehour;
@@ -77,9 +85,21 @@ if($mybb->input['action'] == "do_add")
 			$enddatehour = "00";
 		}
 	}
-	$startdate = gmmktime($startdatehour, $startdatemin, 0, $startdatemonth, $startdateday, $startdateyear);
-	$enddate = gmmktime($enddatehour, $enddatemin, 0, $enddatemonth, $enddateday, $enddateyear);
-	$db->query("INSERT INTO ".TABLE_PREFIX."announcements (aid,fid,uid,subject,message,startdate,enddate,allowhtml,allowmycode,allowsmilies) VALUES (NULL,'$fid','$mybbadmin[uid]','$subject','$message','$startdate','$enddate','$allowhtml','$allowmycode','$allowsmilies')");
+	$startdate = gmmktime($startdatehour, intval($mybb->input['startdatemin']), 0, intval($mybb->input['startdatemonth']), intval($mybb->input['startdateday']), intval($mybb->input['startdateyear']));
+	$enddate = gmmktime($enddatehour, intval($mybb->input['enddatemin']), 0, intval($mybb->input['enddatemonth']), intval($mybb->input['enddateday']), intval($mybb->input['enddateyear']));
+	$sqlarray = array(
+		"aid" => "NULL", 
+		"fid" => $fid,
+		"uid" => $mybbadmin['uid'],
+		"subject" => $subject,
+		"message" => $message,
+		"startdate" => $startdate,
+		"enddate" => $enddate,
+		"allowhtml" => addslashes($mybb->input['allowhtml']),
+		"allowmycode" => addslashes($mybb->input['allowmycode']),
+		"allowsmilies" => addslashes($mybb->input['allowsmilies']),
+		);
+	$db->insert_query(TABLE_PREFIX."announcements", $sqlarray);
 	cpredirect("announcements.php", $lang->announcement_added);
 }
 if($mybb->input['action'] == "do_delete")
@@ -96,8 +116,13 @@ if($mybb->input['action'] == "do_delete")
 }
 if($mybb->input['action'] == "do_edit")
 {
-	$message = addslashes($message);
-	$subject = addslashes($subject);
+	$message = addslashes($mybb->input['message']);
+	$subject = addslashes($mybb->input['subject']);
+	$startdateampm = $mybb->input['startdateampm'];
+	$startdatehour = intval($mybb->input['startdatehour']);
+	$enddateampm = $mybb->input['enddateampm'];
+	$enddatehour = intval($mybb->input['enddatehour']);
+
 	if($startdateampm == "pm")
 	{
 		$startdatehour = 12+$startdatehour;
@@ -114,9 +139,21 @@ if($mybb->input['action'] == "do_edit")
 			$enddatehour = "00";
 		}
 	}
-	$startdate = gmmktime($startdatehour, $startdatemin, 0, $startdatemonth, $startdateday, $startdateyear);
-	$enddate = gmmktime($enddatehour, $enddatemin, 0, $enddatemonth, $enddateday, $enddateyear);
-	$db->query("UPDATE ".TABLE_PREFIX."announcements SET fid='$fid',subject='$subject', message='$message', startdate='$startdate', enddate='$enddate', allowhtml='$allowhtml', allowmycode='$allowmycode', allowsmilies='$allowsmilies' WHERE aid='$aid'");
+	$startdate = gmmktime($startdatehour, intval($mybb->input['startdatemin']), 0, intval($mybb->input['startdatemonth']), intval($mybb->input['startdateday']), intval($mybb->input['startdateyear']));
+	$enddate = gmmktime($enddatehour, intval($mybb->input['enddatemin']), 0, intval($mybb->input['enddatemonth']), intval($mybb->input['enddateday']), intval($mybb->input['enddateyear']));
+	$sqlarray = array(
+		"aid" => "NULL", 
+		"fid" => $fid,
+		"uid" => $mybbadmin['uid'],
+		"subject" => $subject,
+		"message" => $message,
+		"startdate" => $startdate,
+		"enddate" => $enddate,
+		"allowhtml" => addslashes($mybb->input['allowhtml']),
+		"allowmycode" => addslashes($mybb->input['allowmycode']),
+		"allowsmilies" => addslashes($mybb->input['allowsmilies']),
+		);
+	$db->update_query(TABLE_PREFIX."announcements", $sqlarray, "aid='$aid'");
 	cpredirect("announcements.php", $lang->announcement_edited);
 }
 if($mybb->input['action'] == "add") {
@@ -226,7 +263,7 @@ if($mybb->input['action'] == "delete")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE aid='$aid'");
 	$announcement = $db->fetch_array($query);
-	$announcement[subject] = stripslashes($announcement['subject']);
+	$announcement['subject'] = stripslashes($announcement['subject']);
 	cpheader();
 	startform("announcements.php", "", "do_delete");
 	makehiddencode("aid", $aid);

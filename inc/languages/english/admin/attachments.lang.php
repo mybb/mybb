@@ -65,4 +65,6 @@ $l['update_type'] = "Update Attachment Type";
 $l['delete_attach_type'] = "Delete Attachment Type";
 $l['delete_confirm'] = "Are you sure you wish to delete the selected attachment type?";
 
+$l['days'] = "days";
+
 ?>
