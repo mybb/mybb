@@ -385,6 +385,10 @@ function makepostbit($post, $pmprevann=0)
 	elseif($pmprevann == 2)
 	{ // This message is an announcement
 		global $announcementarray, $message;
+		$forum['allowhtml'] = $announcementarray['allowhtml'];
+		$forum['allowmycode'] = $announcementarray['allowmycode'];
+		$forum['allowsmilies'] = $announcementarray['allowsmilies'];
+		$forum['allowimgcode'] = 'yes';
 	}
 	if(!$postcounter)
 	{ // Used to show the # of the post
