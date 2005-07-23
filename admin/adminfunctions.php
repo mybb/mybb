@@ -684,7 +684,7 @@ function getadminpermissions($uid="")
 
 function logadmin()
 {
-	global $_SERVER, $mybbadmin, $db, $mybb->input['action'];
+	global $_SERVER, $mybbadmin, $db, $mybb;
 	$scriptname = basename($_SERVER['PHP_SELF']);
 	$qstring = explode("&", $_SERVER['QUERY_STRING']);
 	while(list($key, $val) = each($qstring))
