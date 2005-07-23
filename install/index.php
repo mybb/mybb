@@ -759,7 +759,6 @@ function install_done()
 	$salt = random_str();
 	$loginkey = generate_loginkey();
 	$saltedpw = md5(md5($salt).md5($mybb->input['adminpass']));
-	echo "md5(md5($salt).md5($mybb->input['adminpass']));";
 	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,salt,loginkey,usergroup,regdate) VALUES (NULL,'".addslashes($mybb->input['adminuser'])."','".$saltedpw."','".addslashes($mybb->input['adminemail'])."','$salt','$loginkey','4','$now')");
 	$uid = $db->insert_id();
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('$uid','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
