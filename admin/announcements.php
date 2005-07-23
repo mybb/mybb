@@ -46,7 +46,7 @@ function getforums($pid="0")
 			$forumlist .= "<ul><b>$lang->announcement</b><ul>";
 			while($announcement = $db->fetch_array($annquery))
 			{
-				$announcement[subject] = stripslashes($announcement[subject]);
+				$announcement['subject'] = stripslashes($announcement['subject']);
 				$forumlist .= "<li>$announcement[subject]".
 					makelinkcode($lang->edit_announcement, "announcements.php?action=edit&aid=$announcement[aid]").
 					makelinkcode($lang->delete_announcement, "announcements.php?action=delete&aid=$announcement[aid]")."</li>\n";
@@ -54,12 +54,13 @@ function getforums($pid="0")
 			$forumlist .= "</ul></ul>\n";
 		}
 		$forumlist .= "<ul>\n";
-		getforums($forum[fid]);
+		getforums($forum['fid']);
 		$forumlist .= "</ul>\n";
 		$forumlist .= "</li>\n";
 	}
 	return $forumlist;
 }
+
 if($mybb->input['action'] == "do_add")
 {
 	$message = addslashes($mybb->input['message']);
