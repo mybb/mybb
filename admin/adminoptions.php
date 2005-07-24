@@ -76,8 +76,7 @@ if($mybb->input['action'] == "do_updateperms")
 		"canedithelp" => addslashes($newperms['canedithelp']),
 		"canrunmaint" => addslashes($newperms['canrunmaint']),
 		);
-	$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='$uid'"
-	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET canrunmaint='$newperms[canrunmaint]' WHERE uid='$uid'");
+	$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='$uid'");
 	if($uid == -1)
 	{
 		cpredirect("adminoptions.php?action=adminpermissions", $lang->default_perms_updated);
