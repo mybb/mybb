@@ -241,6 +241,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	if(!$noheader) {
 		cpheader();
 	}
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_doc\" onclick=\"hopto('helpdocs.php?action=add');\" class=\"hoptobutton\">";
+	makehoptolinks($hopto);
 	// Get default sections/documents
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid<='2' ORDER BY disporder");
 	while($section = $db->fetch_array($query)) {
