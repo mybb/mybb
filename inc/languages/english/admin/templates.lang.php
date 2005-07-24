@@ -78,6 +78,13 @@ $l['search_for'] = "Search For";
 $l['replace_with'] = "Replace With";
 $l['find_replace'] = "Find and Replace";
 
+$l['search_noneset'] = "You did not enter a search string.";
+$l['search_results'] = "Template Search Results";
+$l['search_header'] = "Searching For \"{1}\" in Custom Templates";
+$l['search_updated'] = "Updated";
+$l['search_found'] = "Found in";
+$l['search_edit'] = "edit";
+
 $l['originals_made'] = "The set has successfully been made into original templates.";
 
 $l['delete_template_set'] = "Delete Template Set";

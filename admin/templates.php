@@ -136,28 +136,30 @@ if($mybb->input['action'] == "do_edit") {
 }
 if($mybb->input['action'] == "do_replace") {
 	$noheader = 1;
+	$find = htmlspecialchars_uni($find);
 	if(!$find) {
-		cpmessage("You did not enter a search string.");
+		cpmessage($lang->search_noneset);
 	} else {
 		cpheader();
 		starttable();
-		tableheader("Template Search Results");
-		tablesubheader("Searching For: $find in Custom Templates");
+		tableheader($lang->search_results);
+		$lang->search_header = sprintf($lang->search_header, $find);
+		tablesubheader($lang->search_header);
 		echo "<tr>\n";
 		echo "<td class=\"altbg1\">\n";
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid>'1'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid>='1'");
 		while($template = $db->fetch_array($query)) {
-			$newtemplate = str_replace($find, $replace, $template[template]);
-			if($newtemplate != $template[template]) {
+			$newtemplate = str_replace($find, $replace, $template['template']);
+			if($newtemplate != $template['template']) {
 				if($replace != "") {
 					$newtemplate = addslashes($newtemplate);
 					$db->query("UPDATE ".TABLE_PREFIX."templates SET template='$newtemplate' WHERE tid='$template[tid]'");
-					echo "Updated $template[title]".
-						makelinkcode("edit", "templates.php?action=edit&tid=$template[tid]").
+					echo "$lang->search_updated $template[title]".
+						makelinkcode($lang->search_edit, "templates.php?action=edit&tid=$template[tid]").
 						"<br>";
 				} else {
-					echo "Found in $template[title]".
-						makelinkcode("edit", "templates.php?action=edit&tid=$template[tid]").
+					echo "$lang->search_found $template[title]".
+						makelinkcode($lang->search_edit, "templates.php?action=edit&tid=$template[tid]").
 						"<br>";
 				}
 			}
@@ -225,9 +227,8 @@ if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert") {
 	startform("templates.php", "", "do_delete");
 	makehiddencode("tid", $tid);
 	starttable();
-	tableheader($lang->delete_template, "", 1);
-	$yes = makebuttoncode("deletesubmit", "Yes");
-	$no = makebuttoncode("no", "No");
+	$yes = makebuttoncode("deletesubmit", $lang->yes);
+	$no = makebuttoncode("no", $lang->no);
 	if($mybb->input['action'] == "revert")
 	{
 		tableheader($lang->revert_template, "", 1);
