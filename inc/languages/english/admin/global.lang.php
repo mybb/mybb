@@ -68,4 +68,15 @@ $l['size_gb'] = "GB";
 $l['size_mb'] = "MB";
 $l['size_kb'] = "KB";
 $l['size_bytes'] = "bytes";
+
+$l['quickperms_view'] = "View";
+$l['quickperms_postthreads'] = "Post Threads";
+$l['quickperms_postreplies'] = "Post Replies";
+$l['quickperms_postpolls'] = "Post Polls";
+$l['quickperms_upload'] = "Upload";
+$l['quickperms_all'] = "All";
+$l['quickperms_inheritdefault'] = "Inherit / Default";
+$l['quickperms_group'] = "User Group";
+$l['quickperms_upload'] = "Can Upload";
+$l['quickperms_all'] = "All";
 ?>

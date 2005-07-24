@@ -842,10 +842,10 @@ function getElemRefs(id) {
 	}
 	echo "<tr>\n";
 	echo "<td class=\"subheader\">".$lang->quickperms_group."</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->canview."</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->canpostthreads."</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->canpostreplies."</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->canpostpolls."</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_view."</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_postthreads."</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_postreplies."</td>\n";
+	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_postpolls."</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_upload."</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_all."</td>\n";
 	echo "</tr>\n";

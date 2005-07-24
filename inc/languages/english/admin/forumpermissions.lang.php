@@ -41,7 +41,4 @@ $l['update_permissions'] = "Update Permissions";
 
 $l['perms_updated'] = "The forum's permissions have successfully been updated.";
 
-$l['quickperms_group'] = "User Group";
-$l['quickperms_upload'] = "Can Upload";
-$l['quickperms_all'] = "All";
 ?>
