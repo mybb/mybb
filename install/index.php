@@ -752,6 +752,7 @@ function install_done()
 	$db->connect($config['hostname'], $config['username'], $config['password']);
 	$db->select_db($config['database']);
 
+	ob_start();
 	$output->print_header("Finish Setup", "finish");
 
 	echo "<p>Creating Administrator account...";
@@ -762,8 +763,12 @@ function install_done()
 	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,salt,loginkey,usergroup,regdate) VALUES (NULL,'".addslashes($mybb->input['adminuser'])."','".$saltedpw."','".addslashes($mybb->input['adminemail'])."','$salt','$loginkey','4','$now')");
 	$uid = $db->insert_id();
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('$uid','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
+	// Automatic Login
+	mysetcookie("mybbadmin", $uid."_".$loginkey);
+	mysetcookie("mybbuser", $uid."_".$loginkey);
+	ob_end_flush();
 	echo "done</p>";
-	
+
 
 	// Make fulltext column
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD FULLTEXT KEY subject_2 (subject)", 1);
