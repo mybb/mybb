@@ -88,7 +88,7 @@ function intro()
 
 	$output->print_header("Welcome", "welcome");
 	echo <<<END
-			<p>Welcome to the installation wizard for MyBB 1.0 $myver. This wizard will install and configure a copy of MyBB on your server.</p>
+			<p>Welcome to the installation wizard for MyBB $myver. This wizard will install and configure a copy of MyBB on your server.</p>
 			<p>Now that you've uploaded the MyBB files the database and settings need to be created and imported. Below is an outline of what is going to be completed during installation.</p>
 			<ul>
 				<li>MyBB requirements checked</li>
