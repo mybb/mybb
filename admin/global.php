@@ -40,9 +40,15 @@ if(is_dir("install") && !file_exists("install/lock"))
 
 if($mybb->input['action'] == "logout")
 {
-	$expires = $time-86400;
-	setcookie("mybbadmin", "", $expires);
-	unset($mybbadmin);
+	$expires = $time-60*60*24;
+	if($settings['cookiedomain'])
+	{
+		@setcookie("mybbadmin", "", $expires, $settings['cookiepath'], $settings['cookiedomain']);
+	}
+	else
+	{
+		@setcookie("mybbadmin", "", $expires, $settings['cookiepath']);
+	}
 	$lang->invalid_admin = $lang->logged_out_admin;
 }
 
@@ -95,6 +101,7 @@ if($user['uid'])
 	}
 } else {
 	if($failcheck) {
+		$md5pw = md5($password);
 		$ipaddress = getip();
 		$iphost = @gethostbyaddr($ipaddress);
 		
