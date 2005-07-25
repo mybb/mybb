@@ -800,7 +800,7 @@ function install_done()
 	}
 	if(!$written)
 	{
-		$contents .= "<p><b><font color=\"red\">Please remove this directory before exploring your copy of MyBB.</font></b></p>";
+		echo "<p><b><font color=\"red\">Please remove this directory before exploring your copy of MyBB.</font></b></p>";
 	}
 	$output->print_footer("");
 }
