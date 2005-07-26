@@ -1580,7 +1580,7 @@ $footer
 		<hr class="hidden" />
 			<div id="copyright">
 				<div id="debug"><debugstuff></div>
-$lang->powered_by <a href="http://www.mybboard.com">MyBB</a> $mybboard[internalver]<br />
+$lang->powered_by <a href="http://www.mybboard.com">MyBB</a> $mybbversion<br />
 				$lang->copyright &copy; $copyyear <strong><a href="http://www.mybboard.com">MyBB Group</a></strong>
 <br class="clear" />
 		</div>

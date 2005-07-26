@@ -256,6 +256,14 @@ eval("\$htmldoctype = \"".$templates->get("htmldoctype")."\";");
 eval("\$header = \"".$templates->get("header")."\";");
 $copyyear = date("Y");
 $settings['homename'] = stripslashes($settings['homename']);
+if($mybb->settings['showvernum'] == "on")
+{
+	$mybbversion = $mybboard['internalver'];
+}
+else
+{
+	$mybbversion = "";
+}
 eval("\$footer = \"".$templates->get("footer")."\";");
 
 $navbits[0]['name'] = $mybb->settings['bbname'];
