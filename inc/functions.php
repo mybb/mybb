@@ -659,7 +659,7 @@ function getuserpermissions($uid="", $gid="")
 //
 function checkpwforum($fid, $password="")
 {
-	global $mybbuser, $pwverify, $header, $settings, $footer, $css, $headerinclude, $theme, $_SERVER, $breadcrumb, $forumpass, $templates, $lang;
+	global $mybbuser, $pwverify, $toplinks, $header, $settings, $footer, $css, $headerinclude, $theme, $_SERVER, $breadcrumb, $forumpass, $templates, $lang;
 	$showform = 1;
 	if($password)
 	{
