@@ -36,7 +36,6 @@ switch($mybb->input['action'])
 if($mybb->input['action'] == "do_add")
 {
 	$sqlarray = array(
-		"bid" => '',
 		"badword" => addslashes($mybb->input['badword']),
 		"replacement" => addslashes($mybb->input['replacement']),
 		);

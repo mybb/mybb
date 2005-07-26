@@ -185,19 +185,55 @@ function makeparentlist($fid, $navsep=",") {
 	return $navigation;
 }
 if($mybb->input['action'] == "do_add") {
-	$description = addslashes($description);
-	$name =addslashes($name);
-	$rules = addslashes($rules);
-	$rulestitle = addslashes($rulestitle);
-	if($isforum == "no") {
+	if($mybb->input['isforum'] == "no")
+	{
 		$type = "c";
-	} else {
+	}
+	else
+	{
 		$type = "f";
 	}
-	$db->query("INSERT INTO ".TABLE_PREFIX."forums (fid,name,description,linkto,type,pid,disporder,active,open,threads,posts,lastpost,lastposter,allowhtml,allowmycode,allowsmilies,allowimgcode,allowpicons,allowtratings,usepostcounts,password,showinjump,modposts,modthreads,modattachments,style,overridestyle,rulestype,rulestitle,rules) VALUES (NULL,'$name','$description','$linkto','$type','$pid','$disporder','$isactive','$isopen','0','0','0','0','$allowhtml','$allowmycode','$allowsmilies','$allowimgcode','$allowpicons','$allowtratings','$usepostcounts','$password','$showinjump','$modposts','$modthreads','$modattachments','$fstyle','$overridestyle','$rulestype','$rulestitle','$rules')");
+	$sqlarray = array(
+		"name" => addslashes($mybb->input['name']),
+		"description" => addslashes($mybb->input['description']),
+		"linkto" => addslashes($mybb->input['linkto']),
+		"type" => $type,
+		"pid" => intval($mybb->input['pid']),
+		"disporder" => intval($mybb->input['disporder']),
+		"active" => addslashes($mybb->input['active']),
+		"open" => addslashes($mybb->input['open']),
+		"threads" => '0'
+		"posts" => '0'
+		"lastpost" => '0'
+		"lastposter" => '0'
+		"allowhtml" => addslashes($mybb->input['allowhtml']),
+		"allowmycode" => addslashes($mybb->input['allowmycode']),
+		"allowsmilies" => addslashes($mybb->input['allowsmilies']),
+		"allowimgcode" => addslashes($mybb->input['allowimgcode']),
+		"allowpicons" => addslashes($mybb->input['allowpicons']),
+		"allowtratings" => addslashes($mybb->input['allowtratings']),
+		"usepostcounts" => addslashes($mybb->input['usepostcounts']),
+		"password" => addslashes($mybb->input['password']),
+		"showinjump" => addslashes($mybb->input['showinjump']),
+		"modposts" => addslashes($mybb->input['modposts']),
+		"modthreads" => addslashes($mybb->input['modthreads']),
+		"modattachments" => addslashes($mybb->input['modattachments']),
+		"style" => addslashes($mybb->input['fstyle']),
+		"overridestyle" => addslashes($mybb->input['overridestyle']),
+		"rulestype" => addslashes($mybb->input['rulestype']),
+		"rulestitle" => addslashes($mybb->input['rulestitle']),
+		"rules" => addslashes($mybb->input['rules']),
+		);
+	$db->insert_query(TABLE_PREFIX."forums", $sqlarray);
 	$fid = $db->insert_id();
 	$parentlist = makeparentlist($fid);
 	$db->query("UPDATE ".TABLE_PREFIX."forums SET parentlist='$parentlist' WHERE fid='$fid'");
+	$inherit = $mybb->input['inherit'];
+	$canview = $mybb->input['canview'];
+	$canpostthreads = $mybb->input['canpostthreads'];
+	$canpostreplies = $mybb->input['canpostreplies'];
+	$canpostpolls = $mybb->input['canpostpolls'];
+	$canpostattachments = $mybb->input['canpostattachments'];
 	savequickperms($fid);
 	$cache->updateforums();
 	$cache->updateforumpermissions();
@@ -205,31 +241,45 @@ if($mybb->input['action'] == "do_add") {
 	cpredirect("forums.php", $lang->forum_added);
 }
 if($mybb->input['action'] == "do_addmod") {
-	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='$username'");
+	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username']."' LIMIT 1");
 	$user = $db->fetch_array($query);
-	if($user['uid']) {
+	if($user['uid'])
+	{
 		$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."moderators WHERE uid='".$user['uid']."' LIMIT 1");
 		$mod = $db->fetch_array($query);
-		if(!$mod['uid']) {
+		if(!$mod['uid'])
+		{
+			$fid = intval($mybb->input['fid']);
+			$caneditposts = addslashes($mybb->input['caneditposts']);
+			$candeleteposts = addslashes($mybb->input['candeleteposts']);
+			$canviewips = addslashes($mybb->input['canviewips']);
+			$canopenclosethreads = addslashes($mybb->input['canopenclosethreads']);
+			$canmanagethreads = addslashes($mybb->input['canmanagethreads']);
 			$db->query("INSERT INTO ".TABLE_PREFIX."moderators VALUES (NULL, '$fid', '$user[uid]', '$caneditposts', '$candeleteposts', '$canviewips', '$canopenclosethreads', '$canmanagethreads')");
 			$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='6' WHERE uid='$user[uid]' AND usergroup='2'");
 			$cache->updatemoderators();
 			cpredirect("forums.php?fid=$fid", $lang->mod_added);
 		}
-		else {
+		else
+		{
 			cpredirect("forums.php?fid=$fid", $lang->mod_alreadyismod);
 		}
-	} else {
+	}
+	else
+	{
 		cpredirect("forums.php?action=addmod", $lang->mod_user_notfound);
 	}
 	$noheader = 1;
 }
 if($mybb->input['action'] == "do_delete") {
-	if($deletesubmit) {	
+	if($mybb->input['deletesubmit'])
+	{	
+		$fid = intval($mybb->input['fid']);
 		$db->query("DELETE FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE CONCAT(',', parentlist, ',') LIKE '%,$fid,%'");
-		while($f = $db->fetch_array($query)) {
+		while($f = $db->fetch_array($query))
+		{
 			$fids[$f[fid]] = $fid;
 			$delquery .= " OR fid='$f[fid]'";
 		}
@@ -240,36 +290,44 @@ if($mybb->input['action'] == "do_delete") {
 		$cache->updateforumpermissions();
 	
 		cpredirect("forums.php", $lang->forum_deleted);
-	} else {
+	}
+	else
+	{
 		$mybb->input['action'] = "modify";
 	}
 }
 
 if($mybb->input['action'] == "do_deletemod") {
-	if($deletesubmit) {	
+	if($mybb->input['deletesubmit'])
+	{
+		$mid = intval($mybb->input['mid']);
 		$query = $db->query("SELECT m.*, u.usergroup FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=m.uid WHERE m.mid='$mid'");
 		$mod = $db->fetch_array($query);
 		$db->query("DELETE FROM ".TABLE_PREFIX."moderators WHERE mid='$mid'");
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators WHERE uid='$mod[uid]'");
-		if($db->fetch_array($query)) {
+		if($db->fetch_array($query))
+		{
 			$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='2' WHERE uid='$mod[uid]' AND usergroup!='4' AND usergroup!='3'");
 		}
 		$cache->updatemoderators();
 		cpredirect("forums.php?fid=$fid", $lang->mod_deleted);
-	} else {
+	}
+	else
+	{
 		$mybb->input['action'] = "modify";
 	}
 }
 
 if($mybb->input['action'] == "do_edit") {
-	$description = addslashes($description);
-	$name =addslashes($name);
-	$rules = addslashes($rules);
-	$rulestitle = addslashes($rulestitle);
-	if($pid == $fid) {
-		cpmessage($lang->forum_parent_itself);
-	} else {
+	$fid = intval($mybb->input['fid']);
+	$pid = intval($mybb->input['pid']);
 
+	if($pid == $fid)
+	{
+		cpmessage($lang->forum_parent_itself);
+	}
+	else
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE pid='$fid'");
 		while($child = $db->fetch_array($query))
 		{
@@ -278,12 +336,44 @@ if($mybb->input['action'] == "do_edit") {
 				cpmessage($lang->forum_parent_child);
 			}
 		}
-		if($isforum == "no") {
+		if($mybb->input['isforum'] == "no")
+		{
 			$type = "c";
-		} else {
+		}
+		else
+		{
 			$type = "f";
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET name='$name', description='$description', linkto='$linkto', type='$type', pid='$pid', disporder='$disporder', active='$isactive', open='$isopen', allowhtml='$allowhtml', allowmycode='$allowmycode', allowsmilies='$allowsmilies', allowimgcode='$allowimgcode', allowpicons='$allowpicons', allowtratings='$allowtratings', usepostcounts='$usepostcounts', password='$password', showinjump='$showinjump', modposts='$modposts', modthreads='$modthreads', modattachments='$modattachments', style='$fstyle',  overridestyle='$overridestyle', rulestype='$rulestype', rules='$rules', rulestitle='$rulestitle' WHERE fid='$fid'");
+		
+		$sqlarray = array(
+			"name" => addslashes($mybb->input['name']),
+			"description" => addslashes($mybb->input['description']),
+			"linkto" => addslashes($mybb->input['linkto']),
+			"type" => $type,
+			"pid" => intval($mybb->input['pid']),
+			"disporder" = intval($mybb->input['disporder']),
+			"active" => addslashes($mybb->input['active']),
+			"open" => addslashes($mybb->input['open']),
+			"allowhtml" => addslashes($mybb->input['allowhtml']),
+			"allowmycode" => addslashes($mybb->input['allowmycode']),
+			"allowsmilies" => addslashes($mybb->input['allowsmilies']),
+			"allowimgcode" => addslashes($mybb->input['allowimgcode']),
+			"allowpicons" => addslashes($mybb->input['allowpicons']),
+			"allowtratings" => addslashes($mybb->input['allowtratings']),
+			"usepostcounts" => addslashes($mybb->input['usepostcounts']),
+			"password" => addslashes($mybb->input['password']),
+ 			"showinjump" => addslashes($mybb->input['showinjump']),
+			"modposts" => addslashes($mybb->input['modposts']),
+			"modthreads" => addslashes($mybb->input['modthreads']),
+			"modattachments" => addslashes($mybb->input['modattachments']),
+			"style" => intval($mybb->input['fstyle']),
+			"overridestyle" => addslashes($mybb->input['overridestyle']),
+			"rulestype" => addslashes($mybb->input['rulestype']),
+			"rulestitle" => addslashes($mybb->input['rulestitle']),
+			"rules" => addslashes($mybb->input['rules']),
+			);
+			
+		$db->update_query(TABLE_PREFIX."forums", $sqlarray, "fid='$fid'");
 		$parentlist = makeparentlist($fid);
 		$db->query("UPDATE ".TABLE_PREFIX."forums SET parentlist='$parentlist' WHERE fid='$fid'");
 
@@ -295,13 +385,29 @@ if($mybb->input['action'] == "do_edit") {
 }
 if($mybb->input['action'] == "do_editmod") {
 	cpheader();
+	$username = addslashes($mybb->input['username']);
+	$fid = intval($mybb->input['fid']);
+
 	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='$username'");
 	$user = $db->fetch_array($query);
-	if($user[uid]) {
-		$db->query("UPDATE ".TABLE_PREFIX."moderators SET fid='$fid', uid='$user[uid]', caneditposts='$caneditposts', candeleteposts='$candeleteposts', canopenclosethreads='$canopenclosethreads', canmanagethreads='$canmanagethreads', canviewips='$canviewips' WHERE mid='$mid'");
+	if($user['uid'])
+	{
+		$sqlarray = array(
+			"fid" => intval($mybb->input['fid']),
+			"uid" => $user['uid'],
+			"caneditposts" => addslashes($mybb->input['caneditposts']),
+			"candeleteposts" => addslashes($mybb->input['candeleteposts']),
+			"canviewips" => addslashes($mybb->input['canviewips']),
+			"canopenclosethreads" => addslashes($mybb->input['canopenclosethreads']),
+			"canmanagethreads" => addslashes($mybb->input['canmanagethreads']),
+			);
+
+		$db->update_query(TABLE_PREFIX."moderators", $sqlarray, "mid='".intval($mybb->input['mid']."'");
 		$cache->updatemoderators();
 		cpredirect("forums.php?fid=$fid", $lang->mod_updated);
-	} else {
+	}
+	else
+	{
 		cpmessage($lang->mod_user_notfound);
 	}
 }
@@ -315,15 +421,18 @@ if($mybb->input['action'] == "add") {
 	maketextareacode($lang->description, "description");
 	makeinputcode($lang->forumlink, "linkto");
 	makeinputcode($lang->disporder, "disporder", "1", "4");
-	makelabelcode($lang->parentforum, forumselect("pid", $pid));
+	makelabelcode($lang->parentforum, forumselect("pid", intval($mybb->input['pid'])));
 
 	tablesubheader($lang->access_perm_options);
 	makeinputcode($lang->forum_password, "password");
 
 	tablesubheader($lang->posting_options);
-	if($type == "c") {
+	if($mybb->input['type'] == 'c')
+	{
 		$typesel = "no";
-	} else {
+	}
+	else
+	{
 		$typesel = "yes";
 	}	
 	makeyesnocode($lang->act_as_forum, "isforum", $typesel);
@@ -361,14 +470,15 @@ if($mybb->input['action'] == "add") {
 	
 }
 if($mybb->input['action'] == "addmod") {
-	if(!$noheader) {
+	if(!$noheader)
+	{
 		cpheader();
 	}
 	startform("forums.php", "", "do_addmod");
 	starttable();
 	tableheader($lang->add_moderator);
 	makeinputcode($lang->username, "username");
-	makelabelcode($lang->forum, forumselect("fid", $fid));
+	makelabelcode($lang->forum, forumselect("fid", intval($mybb->input['fid'])));
 	tablesubheader($lang->mod_perms);
 	makeyesnocode($lang->caneditposts, "caneditposts", "yes");
 	makeyesnocode($lang->candeleteposts, "candeleteposts", "yes");
@@ -381,17 +491,18 @@ if($mybb->input['action'] == "addmod") {
 }
 
 if($mybb->input['action'] == "delete") {
+	$fid = intval($mybb->input['fid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
 	$forum = $db->fetch_array($query);
 	cpheader();
 	startform("forums.php", "", "do_delete");
 	makehiddencode("fid", $fid);
 	starttable();
-	$lang->delete_forum = sprintf($lang->delete_forum, $forum[name]);
+	$lang->delete_forum = sprintf($lang->delete_forum, $forum['name']);
 	tableheader($lang->delete_forum, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
-	$lang->delete_forum_confirm = sprintf($lang->delete_forum_confirm, $forum[name]);
+	$lang->delete_forum_confirm = sprintf($lang->delete_forum_confirm, $forum['name']);
 	makelabelcode("<center>$lang->delete_forum_confirm<br><br>$yes$no</center>", "");
 	endtable();
 	endform();
@@ -399,6 +510,8 @@ if($mybb->input['action'] == "delete") {
 }
 
 if($mybb->input['action'] == "deletemod") {
+	$mid = intval($mybb->input['mid']);
+	$fid = intval($mybb->input['fid']);
 	cpheader();
 	startform("forums.php", "", "do_deletemod");
 	makehiddencode("mid", $mid);
@@ -414,49 +527,54 @@ if($mybb->input['action'] == "deletemod") {
 }
 
 if($mybb->input['action'] == "edit") {
-	if(!$noheader) {
+	if(!$noheader)
+	{
 		cpheader();
 	}
+	$fid = intval($mybb->input['fid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
 	$forum = $db->fetch_array($query);
-	$forum[description] = stripslashes($forum[description]);
-	$pid = $forum[pid];
-	if($forum[type] == "c") {
+	$forum['description'] = stripslashes($forum['description']);
+	$pid = $forum['pid'];
+	if($forum[type] == "c")
+	{
 		$isforum = "no";
-	} else {
+	}
+	else
+	{
 		$isforum = "yes";
 	}
 	
 	startform("forums.php", "", "do_edit");
 	makehiddencode("fid", $fid);
 	starttable();
-	$lang->edit_forum = sprintf($lang->edit_forum, $forum[name]);
+	$lang->edit_forum = sprintf($lang->edit_forum, $forum['name']);
 	tableheader($lang->edit_forum);
 	makeinputcode($lang->name, "name", $forum[name]);
-	maketextareacode($lang->description, "description", $forum[description]);
-	makeinputcode($lang->forumlink, "linkto", $forum[linkto]);
+	maketextareacode($lang->description, "description", $forum['description']);
+	makeinputcode($lang->forumlink, "linkto", $forum['linkto']);
 	makeinputcode($lang->disporder, "disporder", "$forum[disporder]", "4");
-	makelabelcode($lang->parentforum, forumselect("pid", $forum[pid]));
+	makelabelcode($lang->parentforum, forumselect("pid", $forum['pid']));
 
 	tablesubheader($lang->access_perm_options);
-	makeinputcode($lang->forum_password, "password", $forum[password]);
+	makeinputcode($lang->forum_password, "password", $forum['password']);
 
 	tablesubheader($lang->posting_options);
 	makeyesnocode($lang->act_as_forum, "isforum", $isforum);
-	makeyesnocode($lang->forum_active, "isactive", $forum[active]);
-	makeyesnocode($lang->forum_open, "isopen", $forum[open]);
+	makeyesnocode($lang->forum_active, "isactive", $forum['active']);
+	makeyesnocode($lang->forum_open, "isopen", $forum['open']);
 
 	tablesubheader($lang->moderation_options);
-	makeyesnocode($lang->moderate_posts, "modposts", $forum[modposts]);
-	makeyesnocode($lang->moderate_threads, "modthreads", $forum[modthreads]);
-	makeyesnocode($lang->moderate_attachments, "modattachments", $forum[modattachments]);
+	makeyesnocode($lang->moderate_posts, "modposts", $forum['modposts']);
+	makeyesnocode($lang->moderate_threads, "modthreads", $forum['modthreads']);
+	makeyesnocode($lang->moderate_attachments, "modattachments", $forum['modattachments']);
 
 	tablesubheader($lang->style_options);
 	if(!$forum['style']) {
 		$forum['style'] = "-1";
 	}
-	makeselectcode($lang->style, "fstyle", "themes", "tid", "name", $forum[style], $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
-	makeyesnocode($lang->override_style, "overridestyle", $forum[overridestyle]);
+	makeselectcode($lang->style, "fstyle", "themes", "tid", "name", $forum['style'], $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
+	makeyesnocode($lang->override_style, "overridestyle", $forum['overridestyle']);
 
 	tablesubheader($lang->forum_rules);
 	if($forum['rulestype'] == 1)
@@ -472,22 +590,25 @@ if($mybb->input['action'] == "edit") {
 	maketextareacode($lang->rules, "rules", $forum['rules']);
 
 	tablesubheader($lang->misc_options);
-	makeyesnocode($lang->allow_html, "allowhtml", $forum[allowhtml]);
-	makeyesnocode($lang->allow_mycode, "allowmycode", $forum[allowmycode]);
-	makeyesnocode($lang->allow_smilies, "allowsmilies", $forum[allowsmilies]);
-	makeyesnocode($lang->allow_img_code, "allowimgcode", $forum[allowimgcode]);
-	makeyesnocode($lang->allow_posticons, "allowpicons", $forum[allowpicons]);
-	makeyesnocode($lang->allow_ratings, "allowtratings", $forum[allowtratings]);
-	makeyesnocode($lang->show_forum_jump, "showinjump", $forum[showinjump]);
-	makeyesnocode($lang->use_postcounts, "usepostcounts", $forum[usepostcounts]);
+	makeyesnocode($lang->allow_html, "allowhtml", $forum['allowhtml']);
+	makeyesnocode($lang->allow_mycode, "allowmycode", $forum['allowmycode']);
+	makeyesnocode($lang->allow_smilies, "allowsmilies", $forum['allowsmilies']);
+	makeyesnocode($lang->allow_img_code, "allowimgcode", $forum['allowimgcode']);
+	makeyesnocode($lang->allow_posticons, "allowpicons", $forum['allowpicons']);
+	makeyesnocode($lang->allow_ratings, "allowtratings", $forum['allowtratings']);
+	makeyesnocode($lang->show_forum_jump, "showinjump", $forum['showinjump']);
+	makeyesnocode($lang->use_postcounts, "usepostcounts", $forum['usepostcounts']);
 	endtable();
 	endform($lang->update_forum, $lang->reset_button);
 	cpfooter();
 }
 if($mybb->input['action'] == "editmod") {
-	if(!$noheader) {
+	if(!$noheader)
+	{
 		cpheader();
 	}
+	$mid = intval($mybb->input['mid']);
+	$fid = intval($mybb->input['fid']);
 	$query = $db->query("SELECT m.*, u.username FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=m.uid WHERE m.mid='$mid'");
 	$moderator = $db->fetch_array($query);
 	startform("forums.php", "", "do_editmod");
@@ -495,21 +616,24 @@ if($mybb->input['action'] == "editmod") {
 	makehiddencode("fid", $fid);
 	starttable();
 	tableheader($lang->edit_moderator);
-	makeinputcode($lang->username, "username", $moderator[username]);
-	makelabelcode($lang->forum, forumselect("fid", $moderator[fid]));
+	makeinputcode($lang->username, "username", $moderator['username']);
+	makelabelcode($lang->forum, forumselect("fid", $moderator['fid']));
 	tablesubheader($lang->mod_perms);
-	makeyesnocode($lang->caneditposts, "caneditposts", $moderator[caneditposts]);
-	makeyesnocode($lang->candeleteposts, "candeleteposts", $moderator[candeleteposts]);
-	makeyesnocode($lang->canviewips, "canviewips", $moderator[canviewips]);
-	makeyesnocode($lang->canopenclose, "canopenclosethreads", $moderator[canopenclosethreads]);
-	makeyesnocode($lang->canmanage, "canmanagethreads", $moderator[canmanagethreads]);
+	makeyesnocode($lang->caneditposts, "caneditposts", $moderator['caneditposts']);
+	makeyesnocode($lang->candeleteposts, "candeleteposts", $moderator['candeleteposts']);
+	makeyesnocode($lang->canviewips, "canviewips", $moderator['canviewips']);
+	makeyesnocode($lang->canopenclose, "canopenclosethreads", $moderator['canopenclosethreads']);
+	makeyesnocode($lang->canmanage, "canmanagethreads", $moderator['canmanagethreads']);
 	endtable();
 	endform($lang->update_moderator, $lang->reset_button);
 	cpfooter();
 }
 
 if($mybb->input['action'] == "do_modify") {
-	while(list($fid, $order) = each($disporder)) {
+	while(list($fid, $order) = each($mybb->input['disporder']))
+	{
+		$fid = intval($fid);
+		$order = intval($order);
 		$db->query("UPDATE ".TABLE_PREFIX."forums SET disporder='$order' WHERE fid='$fid'");
 	}
 	$cache->updateforums();
@@ -518,6 +642,7 @@ if($mybb->input['action'] == "do_modify") {
 
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	cpheader();
+	$fid = intval($mybb->input['fid']);
 	if($fid)
 	{
 		$query = $db->query("SELECT f.*, t.subject AS lastpostsubject FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = f.lastposttid) WHERE f.fid='$fid'");

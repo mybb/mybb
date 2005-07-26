@@ -320,7 +320,8 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		// form for editing an attachment type
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes WHERE atid='".intval($mybb->input['atid'])."' LIMIT 1");
+		$atid = intval($mybb->input['atid'])
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes WHERE atid='".$atid."' LIMIT 1");
 		$type = $db->fetch_array($query);
 		$type['name'] = htmlspecialchars_uni(stripslashes($type['name']));
 		cpheader();
@@ -343,7 +344,8 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	// confirmation page for deleting an attachment type
-	$query = $db->query("SELECT name FROM ".TABLE_PREFIX."attachtypes WHERE atid='$atid'");
+	$atid = intval($mybb->input['atid']);
+	$query = $db->query("SELECT name FROM ".TABLE_PREFIX."attachtypes WHERE atid='".$atid."'");
 	$name = stripslashes($db->result($query, 0));
 	cpheader();
 	startform("attachments.php", "", "do_delete");

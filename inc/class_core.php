@@ -19,7 +19,7 @@ class MyBB {
 	var $config = array();
 
 	var $clean_variables = array (
-		"int" => array("tid", "pid", "uid", "eid", "pmid", "sid")
+		"int" => array("tid", "pid", "uid", "eid", "pmid", "sid", "fid", "aid")
 		);
 
 	function MyBB()
@@ -133,7 +133,7 @@ class MyBB {
 		switch($code)
 		{
 			case "cache_no_write":
-				$message = "The data cache directory (inc/cache/) needs exist and be writable by the web server. Change its permissions so that it is writable (777 on Unix based servers).";
+				$message = "The data cache directory (inc/cache/) needs to exist and be writable by the web server. Change its permissions so that it is writable (777 on Unix based servers).";
 				break;
 			case "install_directory":
 				$message = "The install directory (install/) still exists on your server and is not locked. To access MyBB please either remove this directory or create an empty file in it called 'lock'.";

@@ -115,7 +115,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 	else
 	{
-		$sqlquery = array(
+		$sqlarray = array(
 			"canview" => $mybb->input['canview'],
 			"candlattachments" => $mybb->input['candlattachments'],
 			"canpostthreads" => $mybb->input['canpostthreads'],
@@ -131,14 +131,15 @@ if($mybb->input['action'] == "do_edit")
 			"cansearch" => $mybb->input['cansearch'],
 		if($fid)
 		{
-			$sqlquery['pid'] = '';
-			$sqlquery['fid'] = $fid;
-			$sqlquery['gid'] = intval($mybb->input['gid']);
+			$sqlarray['pid'] = '';
+			$sqlarray['fid'] = $fid;
+			$sqlarray['gid'] = intval($mybb->input['gid']);
+			$db->insert_query(TABLE_PREFIX."forumpermissions", $sqlarray);
 			$db->query("INSERT INTO ".TABLE_PREFIX."forumpermissions (pid, fid, gid, canview, candlattachments, canpostthreads, canpostreplys, canpostattachments, canratethreads, caneditposts, candeleteposts, candeletethreads, caneditattachments, canpostpolls, canvotepolls, cansearch) VALUES (NULL, '$fid', '$gid', '$canview', '$candlattachments', '$canpostthreads', '$canpostreplys', '$canpostattachments', '$canratethreads', '$caneditposts', '$candeleteposts', '$candeletethreads', '$caneditattachments', '$canpostpolls', '$canvotepolls', '$cansearch')");
 		}
 		else
 		{
-			$db->update_query(TABLE_PREFIX."forumpermissions", $sqlquery, "pid='$pid'");
+			$db->update_query(TABLE_PREFIX."forumpermissions", $sqlarray, "pid='$pid'");
 		}
 	}
 	$cache->updateforumpermissions();
