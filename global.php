@@ -291,7 +291,7 @@ if($mybb->settings['boardclosed'] == "yes")
 }
 
 // Load Limiting
-if($uptime = @exec('uptime'))
+if(strtolower(substr(PHP_OS, 0, 3)) !== 'win' && $uptime = @exec('uptime'))
 {
 	preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $regs);
 	$load = $regs[1];

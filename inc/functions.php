@@ -881,7 +881,11 @@ function mysetarraycookie($name, $id, $value) {
 function serverload()
 {
 	global $lang;
-	if(@file_exists("/proc/loadavg"))
+	if(strtolower(substr(PHP_OS, 0, 3)) === 'win')
+	{
+		return $lang->unknown;
+	}
+	elseif(@file_exists("/proc/loadavg"))
 	{
 		$file = @fopen("/proc/loadavg", "r");
 		$load = @fread($file, 6);
@@ -893,10 +897,6 @@ function serverload()
 			$load = split("load averages?: ", $load);
 			$serverload = explode(",", $load[1]);
 		}
-	} 
-	elseif(substr(@php_uname(), 0, 7) == "Windows")
-	{
-		return $lang->unknown;
 	}
 	else
 	{
