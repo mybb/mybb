@@ -15,7 +15,6 @@ require "./global.php";
 global $lang;
 $lang->load("badwords");
 
-
 // A temporary permission!
 checkadminpermissions("caneditsmilies");
 logadmin();
@@ -36,26 +35,31 @@ switch($mybb->input['action'])
 
 if($mybb->input['action'] == "do_add")
 {
-	$badword = addslashes($badword);
-	$replacement = addslashes($replacement);
-	$db->query("INSERT INTO ".TABLE_PREFIX."badwords (bid,badword,replacement) VALUES (NULL,'$badword','$replacement')");
+	$sqlarray = array(
+		"bid" => '',
+		"badword" => addslashes($mybb->input['badword']),
+		"replacement" => addslashes($mybb->input['replacement']),
+		);
+	$db->insert_query(TABLE_PREFIX."badwords", $sqlarray);
 	$cache->updatebadwords();
 	cpredirect("badwords.php", $lang->badword_added);
 }
 
 if($mybb->input['action'] == "do_edit")
 {
-	$bid = $_POST['bid'];
-	$badword = addslashes($badword);
-	$replacement = addslashes($replacement);
-	$db->query("UPDATE ".TABLE_PREFIX."badwords SET badword='$badword', replacement='$replacement' WHERE bid='$bid'");
+	$sqlarray = array(
+		"bid" => intval($mybb->input['bid']),
+		"badword" => addslashes($mybb->input['badword']),
+		"replacement" => addslashes($mybb->input['replacement']),
+		);
+	$db->update_query(TABLE_PREFIX."badwords", $sqlarray, "bid='".intval($mybb->input['bid'])."'");
 	$cache->updatebadwords();
 	cpredirect("badwords.php", $lang->badword_edited);
 }
 
 if($mybb->input['action'] == "edit")
 {
-	$bid = $_POST['bid'];
+	$bid = intval($mybb->input['bid']);
 	if($delete)
 	{
 		$query = $db->query("DELETE FROM ".TABLE_PREFIX."badwords WHERE bid='$bid'");

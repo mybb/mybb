@@ -57,6 +57,7 @@ if($mybb->input['action'] == "do_updateperms")
 	{
 		$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions (uid) VALUES ('$uid')");
 	}
+	$newperms = $mybb->input['newperms'];
 	$sqlarray = array(
 		"permsset" => '1',
 		"caneditsettings" => addslashes($newperms['caneditsettings']),

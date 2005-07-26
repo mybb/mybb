@@ -71,7 +71,7 @@ if($mybb->input['action'] == "do_delete")
 	// remove type from database
 	if($deletesubmit)
 	{
-		$db->query("DELETE FROM ".TABLE_PREFIX."attachtypes WHERE atid='$atid'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."attachtypes WHERE atid='".intval($mybb->input['atid'])."'");
 		$cache->updateattachtypes();
 		cpredirect("attachments.php", $lang->type_deleted);
 	}
@@ -93,7 +93,7 @@ if($mybb->input['action'] == "do_edit")
 			"maxsize" => addslashes($mybb->input['maxsize']),
 			"icon" => addslashes($mybb->input['icon']),
 			);
-		$db->update_query(TABLE_PREFIX."attachtypes", $sqlarray, "atid='$atid'");
+		$db->update_query(TABLE_PREFIX."attachtypes", $sqlarray, "atid='".intval($mybb->input['atid']."'");
 		$cache->updateattachtypes();
 		cpredirect("attachments.php", $lang->type_updated);
 	}
@@ -321,7 +321,7 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		// form for editing an attachment type
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes WHERE atid='$atid'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes WHERE atid='".intval($mybb->input['atid'])."' LIMIT 1");
 		$type = $db->fetch_array($query);
 		$type['name'] = htmlspecialchars_uni(stripslashes($type['name']));
 		cpheader();

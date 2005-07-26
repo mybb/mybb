@@ -37,7 +37,7 @@ function getforums($pid="0")
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions");
 		while($permissions = $db->fetch_array($query))
 		{
-			$ownperms[$permissions['fid']][$permissions['gid']] = $permissions[pid];
+			$ownperms[$permissions['fid']][$permissions['gid']] = $permissions['pid'];
 		}
 	}
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE pid='$pid' ORDER BY disporder ASC");
@@ -80,6 +80,12 @@ function getforums($pid="0")
 }
 if($mybb->input['action'] == "do_quickperms")
 {
+	$inherit = $mybb->input['inherit'];
+	$canview = $mybb->input['canview'];
+	$canpostthreads = $mybb->input['canpostthreads'];
+	$canpostreplies = $mybb->input['canpostreplies'];
+	$canpostpolls = $mybb->input['canpostpolls'];
+	$canpostattachments = $mybb->input['canpostattachments'];
 	savequickperms($fid);
 	cpredirect("forumpermissions.php", $lang->perms_updated);
 }
@@ -87,6 +93,7 @@ if($mybb->input['action'] == "do_quickperms")
 		
 if($mybb->input['action'] == "quickperms")
 {
+	$fid = intval($mybb->input['fid']);
 	cpheader();
 	startform("forumpermissions.php", "", "do_quickperms");
 	makehiddencode("fid", $fid);
@@ -97,6 +104,8 @@ if($mybb->input['action'] == "quickperms")
 
 if($mybb->input['action'] == "do_edit")
 {
+	$pid = intval($mybb->input['pid']);
+	$fid = intval($mybb->input['fid']);
 	if($usecustom == "no")
 	{
 		if($pid)
@@ -106,13 +115,30 @@ if($mybb->input['action'] == "do_edit")
 	}
 	else
 	{
+		$sqlquery = array(
+			"canview" => $mybb->input['canview'],
+			"candlattachments" => $mybb->input['candlattachments'],
+			"canpostthreads" => $mybb->input['canpostthreads'],
+			"canpostreplys" => $mybb->input['canpostreplys'],
+			"canpostattachments" => $mybb->input['canpostattachments'],
+			"canratethreads" => $mybb->input['canratethreads'],
+			"caneditposts" => $mybb->input['caneditposts'],
+			"candeleteposts" => $mybb->input['candeleteposts'],
+			"candeletethreads" => $mybb->input['candeletethreads'],
+			"caneditattachments" => $mybb->input['caneditattachments'],
+			"canpostpolls" => $mybb->input['canpostpolls'],
+			"canvotepolls" => $mybb->input['canvotepolls'],
+			"cansearch" => $mybb->input['cansearch'],
 		if($fid)
 		{
+			$sqlquery['pid'] = '';
+			$sqlquery['fid'] = $fid;
+			$sqlquery['gid'] = intval($mybb->input['gid']);
 			$db->query("INSERT INTO ".TABLE_PREFIX."forumpermissions (pid, fid, gid, canview, candlattachments, canpostthreads, canpostreplys, canpostattachments, canratethreads, caneditposts, candeleteposts, candeletethreads, caneditattachments, canpostpolls, canvotepolls, cansearch) VALUES (NULL, '$fid', '$gid', '$canview', '$candlattachments', '$canpostthreads', '$canpostreplys', '$canpostattachments', '$canratethreads', '$caneditposts', '$candeleteposts', '$candeletethreads', '$caneditattachments', '$canpostpolls', '$canvotepolls', '$cansearch')");
 		}
 		else
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."forumpermissions SET canview='$canview', candlattachments='$candlattachments', canpostthreads='$canpostthreads', canpostreplys='$canpostreplys', canpostattachments='$canpostattachments', canratethreads='$canratethreads', caneditposts='$caneditposts', candeleteposts='$candeleteposts', candeletethreads='$candeletethreads', caneditattachments='$caneditattachments', canpostpolls='$canpostpolls', canvotepolls='$canvotepolls', cansearch='$cansearch' WHERE pid='$pid'");
+			$db->update_query(TABLE_PREFIX."forumpermissions", $sqlquery, "pid='$pid'");
 		}
 	}
 	$cache->updateforumpermissions();
@@ -120,6 +146,9 @@ if($mybb->input['action'] == "do_edit")
 }
 if($mybb->input['action'] == "edit")
 {
+	$pid = intval($mybb->input['pid']);
+	$gid = intval($mybb->input['gid']);
+	$fid = intval($mybb->input['fid']);
 	if(!$noheader)
 	{
 		cpheader();
@@ -158,7 +187,7 @@ if($mybb->input['action'] == "edit")
 	{
 		makehiddencode("fid", $fid);
 		makehiddencode("gid", $gid);
-		if(!$customperms[pid])
+		if(!$customperms['pid'])
 		{
 			$forumpermissions = usergroup_permissions($gid);
 			$useusergroup = "checked=\"checked\"";
