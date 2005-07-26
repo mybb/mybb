@@ -277,6 +277,12 @@ function upgrade3_dbchanges2()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD rulestitle varchar(200) NOT NULL;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD rules text NOT NULL;");
 
+	$db->query("ALTER TABLE ".TABLE_PREFIX."helpdocs ADD usetranslation CHAR( 3 ) NOT NULL AFTER document;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."helpdocs ADD enabled CHAR( 3 ) NOT NULL AFTER usetranslation;");
+	
+	$db->query("ALTER TABLE ".TABLE_PREFIX."helpsections ADD usetranslation CHAR( 3 ) NOT NULL AFTER description;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."helpsections ADD enabled CHAR( 3 ) NOT NULL AFTER usetranslation;");
+	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD attachquota bigint(30) NOT NULL default '0';");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD cancustomtitle varchar(3) NOT NULL;");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."groupleaders (
