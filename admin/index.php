@@ -36,7 +36,7 @@ else if ($mybb->input['action']=="home") {
 	$dbversion = mysql_get_server_info();
 	$serverload = serverload();
 	if(!$serverload) {
-		$serverload = "N/A";
+		$serverload = $lang->unknown;
 	}
 	// Get the number of users
 	$query = $db->query("SELECT COUNT(*) AS numusers FROM ".TABLE_PREFIX."users");
@@ -80,19 +80,19 @@ else if ($mybb->input['action']=="home") {
 	tablesubheader($lang->program_stats, "", 4);
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>".$lang->mybb_version."</b></td><td valign=\"top\" class=\"altbg2\">$mybboard[internalver]</td>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->php_version</b></td><td valign=\"top\" class=\"altbg2\">$phpversion</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->php_version</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"index.php?action=phpinfo\">$phpversion</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->mysql_version</b></td><td valign=\"top\" class=\"altbg2\">$dbversion</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->server_load</b></td><td valign=\"top\" class=\"altbg2\">$serverload</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_users</b></td><td valign=\"top\" class=\"altbg2\">$users[numusers]</td>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->users_awaiting_activation</b></td><td valign=\"top\" class=\"altbg2\">$awaitingusers[awaitingusers]</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_users</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?action=find\">$users[numusers]</a></td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->users_awaiting_activation</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?action=find&additionalgroups[]=5&searchop[sortby]=regdate&searchop[order]=desc\">$awaitingusers[awaitingusers]</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->new_users_today</b></td><td valign=\"top\" class=\"altbg2\">$newusers[newusers]</td>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->active_users_today</b></td><td valign=\"top\" class=\"altbg2\">$activeusers[activeusers]</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->active_users_today</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"../online.php?action=today\">$activeusers[activeusers]</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_threads</b></td><td valign=\"top\" class=\"altbg2\">$threads[numthreads]</td>\n";
@@ -100,7 +100,7 @@ else if ($mybb->input['action']=="home") {
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_posts</b></td><td valign=\"top\" class=\"altbg2\">$posts[numposts]</td>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->posts_today</b></td><td valign=\"top\" class=\"altbg2\">$newposts[newposts]</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->posts_today</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"../search.php?action=getdaily\">$newposts[newposts]</a></td>\n";
 	echo "</tr>\n";
 	endtable();
 
@@ -279,11 +279,15 @@ makenavselect($lang->nav_helpdocs);
 makenavoption($lang->nav_db_maint, "misc.php?action=dbmaint");
 makenavoption($lang->nav_cache_manager, "maintenance.php?action=cache");
 makenavoption($lang->nav_recount_stats, "maintenance.php?action=rebuildstats");
+makenavoption($lang->nav_view_phpinfo, "index.php?action=phpinfo");
 makenavselect($lang->nav_maintenance);
 ?>
 </body>
 </html>
 <?php
+}
+else if($mybb->input['action'] == "phpinfo") {
+	phpinfo();
 }
 else {
 	if(!empty($_REQUEST['goto']))

@@ -110,6 +110,7 @@ $l['nav_helpdocs'] = "Help Docs";
 $l['nav_db_maint'] = "DB Maintenance";
 $l['nav_recount_stats'] = "Recount Stats";
 $l['nav_maintenance'] = "Maintenance";
+$l['nav_view_phpinfo'] = "View PHP Info";
 
 $l['mybb_admin'] = "MyBB Administration";
 

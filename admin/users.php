@@ -1166,12 +1166,12 @@ if($mybb->input['action'] == "find")
 	}
 	if($yescount == "0")
 	{
-		$searchdisp[username] = "yes";
-		$searchdisp[ops] = "yes";
-		$searchdisp[email] = "yes";
-		$searchdisp[regdate] = "yes";
-		$searchdisp[lastvisit] = "yes";
-		$searchdisp[postnum] = "yes";
+		$searchdisp['username'] = "yes";
+		$searchdisp['ops'] = "yes";
+		$searchdisp['email'] = "yes";
+		$searchdisp['regdate'] = "yes";
+		$searchdisp['lastvisit'] = "yes";
+		$searchdisp['postnum'] = "yes";
 		$dispcount = count($searchdisp);
 	}
 	$conditions = "1=1";
@@ -1181,57 +1181,65 @@ if($mybb->input['action'] == "find")
 		$search['username'] = addslashes($search['username']);
 		$conditions .= " AND username LIKE '%$search[username]%'";
 	}
-	if($search[usergroup] > 0)
+	/* Old Code
+	if($search['usergroup'] > 0)
 	{
 		$search['usergroup'] = addslashes($search['usergroup']);
 		$conditions .= " AND usergroup='$search[usergroup]'";
+	}*/
+	if(count($mybb->input['additionalgroups']) > 0)
+	{
+		foreach($mybb->input['additionalgroups'] as $group)
+		{
+			$conditions .= " AND (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
+		}
 	}
-	if($search[email])
+	if($search['email'])
 	{
 		$search['email'] = addslashes($search['email']);
 		$conditions .= " AND email LIKE '%$search[email]%'";
 	}
-	if($search[website])
+	if($search['website'])
 	{
 		$search['website'] = addslashes($search['website']);
 		$conditions .= " AND website LIKE '%$search[website]%'";
 	}
-	if($search[icq])
+	if($search['icq'])
 	{
 		$search['icq'] = intval($search['icq']);
 		$conditions .= " AND icq LIKE '%$search[icq]%'";
 	}
-	if($search[aim])
+	if($search['aim'])
 	{
 		$search['aim'] = addslashes($search['aim']);
 		$conditions .= " AND aim LIKE '%$search[aim]%'";
 	}
-	if($search[yahoo])
+	if($search['yahoo'])
 	{
 		$search['yahoo'] = addslashes($search['yahoo']);
 		$conditions .= " AND yahoo LIKE '%$search[yahoo]%'";
 	}
-	if($search[msn])
+	if($search['msn'])
 	{
 		$search['msn'] = addslashes($search['msn']);
 		$conditions .= " AND msn LIKE '%$search[msn]%'";
 	}
-	if($search[signature])
+	if($search['signature'])
 	{
 		$search['signature'] = addslashes($search['signature']);
 		$conditions .= " AND signature LIKE '%$search[signature]%'";
 	}
-	if($search[usertitle])
+	if($search['usertitle'])
 	{
 		$search['usertitle'] = addslashes($search['usertitle']);
 		$conditions .= " AND usertitle LIKE '%$search[usertitle]%'";
 	}
-	if($search[postsgreater])
+	if($search['postsgreater'])
 	{
 		$search['postsgreater'] = intval($search['postsgreater']);
 		$conditions .= " AND postnum>$search[postsgreater]";
 	}
-	if($search[postsless])
+	if($search['postsless'])
 	{
 		$search['postsless'] = intval($search['postsless']);
 		$conditions .= " AND postnum<$search[postsless]";
@@ -1240,24 +1248,24 @@ if($mybb->input['action'] == "find")
 	{
 		$conditions = "1=1";
 	}
-	if(!$searchop[sortby])
+	if(!$searchop['sortby'])
 	{
-		$searchop[sortby] = "username";
+		$searchop['sortby'] = "username";
 	}
-	if(!$searchop[perpage])
+	if(!$searchop['perpage'])
 	{
-		$searchop[perpage] = "30";
+		$searchop['perpage'] = "30";
 	}
-	if(!$searchop[page])
+	if(!$searchop['page'])
 	{
-		$searchop[page] = "1";
-		$searchop[start] = "0";
+		$searchop['page'] = "1";
+		$searchop['start'] = "0";
 	}
 	else
 	{
-		$searchop[start] = ($searchop[page]-1) * $searchop[perpage];
+		$searchop['start'] = ($searchop['page']-1) * $searchop['perpage'];
 	}
-	$searchop[page]++;
+	$searchop['page']++;
 
 	$countquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions";
 	$query = $db->query($countquery);
@@ -1670,7 +1678,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	}
 	else
 	{
-		echo "<br>";
+		echo "<br />";
 	}
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");
 	while($usergroup = $db->fetch_array($query))
