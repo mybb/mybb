@@ -43,7 +43,7 @@ function getforums($pid="0")
 		$numannouncements = $db->num_rows($annquery);
 		if($numannouncements != "0")
 		{
-			$forumlist .= "<ul><b>$lang->announcement</b><ul>";
+			$forumlist .= "<ul>";
 			while($announcement = $db->fetch_array($annquery))
 			{
 				$announcement['subject'] = stripslashes($announcement['subject']);
@@ -51,7 +51,7 @@ function getforums($pid="0")
 					makelinkcode($lang->edit_announcement, "announcements.php?action=edit&aid=$announcement[aid]").
 					makelinkcode($lang->delete_announcement, "announcements.php?action=delete&aid=$announcement[aid]")."</li>\n";
 			}
-			$forumlist .= "</ul></ul>\n";
+			$forumlist .= "</ul>\n";
 		}
 		$forumlist .= "<ul>\n";
 		getforums($forum['fid']);

@@ -65,7 +65,7 @@ if($mybb->input['action'] == "do_prune")
 elseif($mybb->input['action'] == "view")
 {
 	$perpage = intval($mybb->input['perpage']);
-	$fromscript = $mybb->input['fromscript'];
+	$fromscript = addslashes($mybb->input['fromscript']);
 	$fromadmin = intval($mybb->input['fromadmin']);
 	$orderby = $mybb->input['orderby'];
 	$page = $mybb->input['page'];
@@ -103,7 +103,7 @@ elseif($mybb->input['action'] == "view")
 	{
 		$order = "l.dateline DESC";
 	}
-	$query = $db->query("SELECT COUNT(dateline) FROM ".TABLE_PREFIX."adminlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) ".addslashes($squery));
+	$query = $db->query("SELECT COUNT(dateline) FROM ".TABLE_PREFIX."adminlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) ".$squery);
 	$rescount = $db->result($query, 0);
 	if(!$rescount)
 	{

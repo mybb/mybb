@@ -52,7 +52,7 @@ if($mybb->input['action'] == "do_edit")
 		"badword" => addslashes($mybb->input['badword']),
 		"replacement" => addslashes($mybb->input['replacement']),
 		);
-	$db->update_query(TABLE_PREFIX."badwords", $sqlarray, "bid='".intval($mybb->input['bid'])."'");
+	$db->update_query(TABLE_PREFIX."badwords", $sqlarray, "bid='".$sqlarray['bid']."'");
 	$cache->updatebadwords();
 	cpredirect("badwords.php", $lang->badword_edited);
 }

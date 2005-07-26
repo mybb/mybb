@@ -50,7 +50,6 @@ if($mybb->input['action'] == "do_add")
 	if(($extension || $mimetype) && $maxsize)
 	{
 		$sqlarray = array(
-			"atid" => '',
 			"mimetype" => addslashes($mybb->input['mimetype']),
 			"extension" => addslashes($mybb->input['extension']),
 			"maxsize" => addslashes($mybb->input['maxsize']),
@@ -87,13 +86,13 @@ if($mybb->input['action'] == "do_edit")
 	if(($extension || $mimetype) && $maxsize)
 	{
 		$sqlarray = array(
-			"atid" => '',
+			"atid" => intval($mybb->input['atid']),
 			"mimetype" => addslashes($mybb->input['mimetype']),
 			"extension" => addslashes($mybb->input['extension']),
 			"maxsize" => addslashes($mybb->input['maxsize']),
 			"icon" => addslashes($mybb->input['icon']),
 			);
-		$db->update_query(TABLE_PREFIX."attachtypes", $sqlarray, "atid='".intval($mybb->input['atid']."'");
+		$db->update_query(TABLE_PREFIX."attachtypes", $sqlarray, "atid='".$sqlarray['atid']."'");
 		$cache->updateattachtypes();
 		cpredirect("attachments.php", $lang->type_updated);
 	}
