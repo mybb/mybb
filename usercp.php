@@ -980,6 +980,10 @@ elseif($mybb->input['action'] == "favorites")
 			$folder = "";
 		}
 	}
+	if(!$threads)
+	{
+		eval("\$threads = \"".$templates->get("usercp_favorites_none")."\";");
+	}
 	eval("\$favorites = \"".$templates->get("usercp_favorites")."\";");
 	outputpage($favorites);
 } elseif($mybb->input['action'] == "subscriptions") {
@@ -1041,6 +1045,10 @@ elseif($mybb->input['action'] == "favorites")
 			eval("\$threads .= \"".$templates->get("usercp_subscriptions_thread")."\";");
 			$folder = "";
 		}
+	}
+	if(!$threads)
+	{
+		eval("\$threads = \"".$templates->get("usercp_subscriptions_none")."\";");
 	}
 	eval("\$subscriptions = \"".$templates->get("usercp_subscriptions")."\";");
 	outputpage($subscriptions);

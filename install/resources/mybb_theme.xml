@@ -1095,6 +1095,9 @@ $pppselect
 $footer
 </body>
 </html>]]></template>
+		<template name="usercp_subscriptions_none"><![CDATA[<tr>
+<td class="trow1" colspan="7">$lang->no_thread_subscriptions</td>
+</tr>]]></template>
 		<template name="usercp_subscriptions_thread"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="$theme[imgdir]/$folder.gif"></td>
 <td align="center" class="trow2">$icon</td>
@@ -1136,6 +1139,9 @@ $footer
 <option value="+11" $timezoneselect[110]>$lang->gmt +11:00 $lang->hours ($timein[110])</option>
 <option value="+12" $timezoneselect[120]>$lang->gmt +12:00 $lang->hours ($timein[120])</option>
 </select>]]></template>
+		<template name="usercp_favorites_none"><![CDATA[<tr>
+<td class="trow1" colspan="7">$lang->no_favorite_threads</td>
+</tr>]]></template>
 		<template name="usercp_favorites_thread"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="$theme[imgdir]/$folder.gif"></td>
 <td align="center" class="trow2">$icon</td>
