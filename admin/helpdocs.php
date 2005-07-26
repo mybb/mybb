@@ -33,8 +33,10 @@ switch($mybb->input['action'])
 		break;
 }
 
-if($mybb->input['action'] == "do_add") {
-	if($add == "doc") {
+if($mybb->input['action'] == "do_add")
+{
+	if($add == "doc")
+	{
 		$description = addslashes($_POST['description']);
 		$document = addslashes($_POST['document']);
 		$name = addslashes($_POST['name']);
@@ -44,7 +46,8 @@ if($mybb->input['action'] == "do_add") {
 		$db->query("INSERT INTO ".TABLE_PREFIX."helpdocs VALUES (NULL,'$sid','$name','$description','$document','$usetranslation','$enabled','$disporder')");
 		cpredirect("helpdocs.php", $lang->doc_added);
 	}
-	else if($add == "section") {
+	else if($add == "section")
+	{
 		$description = addslashes($_POST['description']);
 		$name = addslashes($_POST['name']);
 		$enabled = $_POST['enabled'];
@@ -54,13 +57,17 @@ if($mybb->input['action'] == "do_add") {
 	}
 }
 
-if($mybb->input['action'] == "do_delete") {
-	if($deletesubmit) {	
-		if($hid) {
+if($mybb->input['action'] == "do_delete")
+{
+	if($deletesubmit)
+	{	
+		if($hid)
+		{
 			$db->query("DELETE FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
 			cpredirect("helpdocs.php", $lang->doc_deleted);
 		}
-		else if($sid) {
+		else if($sid)
+		{
 			$db->query("DELETE FROM ".TABLE_PREFIX."helpsections WHERE sid='$sid'");
 			$db->query("DELETE FROM ".TABLE_PREFIX."helpdocs WHERE sid='$sid' AND hid>'7'");
 			// Move back any defaults left without a category
@@ -79,13 +86,17 @@ if($mybb->input['action'] == "do_delete") {
 			}
 			cpredirect("helpdocs.php", $lang->section_deleted);
 		}
-	} else {
+	}
+	else
+	{
 		$mybb->input['action'] = "modify";
 	}
 }
 
-if($mybb->input['action'] == "do_edit") {
-	if($hid) {
+if($mybb->input['action'] == "do_edit")
+{
+	if($hid)
+	{
 		$description = addslashes($_POST['description']);
 		$document = addslashes($_POST['document']);
 		$name = addslashes($_POST['name']);
@@ -95,7 +106,8 @@ if($mybb->input['action'] == "do_edit") {
 		$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET name='$name', description='$description', document='$document', usetranslation='$usetranslation', enabled='$enabled', disporder='$disporder', sid='$sid' WHERE hid='$hid'");
 		cpredirect("helpdocs.php", $lang->doc_updated);
 	}
-	else if($sid) {
+	else if($sid)
+	{
 		$description = addslashes($_POST['description']);
 		$name = addslashes($_POST['name']);
 		$usetranslation = $_POST['usetranslation'];
@@ -106,9 +118,11 @@ if($mybb->input['action'] == "do_edit") {
 	}
 }
 
-if($mybb->input['action'] == "edit") {
+if($mybb->input['action'] == "edit")
+{
 	cpheader();
-	if($hid) {
+	if($hid)
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
 		$doc = $db->fetch_array($query);
 		$doc['description'] = stripslashes($doc['description']);
@@ -138,7 +152,9 @@ if($mybb->input['action'] == "edit") {
 		makeselectcode($lang->doc_section, "sid", "helpsections", "sid", "name", $doc['sid']);
 		endtable();
 		endform($lang->update_doc, $lang->reset_button);
-	} else if($sid) {
+	}
+	else if($sid)
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid='$sid'");
 		$section = $db->fetch_array($query);
 		startform("helpdocs.php", "", "do_edit");
@@ -167,9 +183,11 @@ if($mybb->input['action'] == "edit") {
 	cpfooter();
 }
 
-if($mybb->input['action'] == "delete") {
+if($mybb->input['action'] == "delete")
+{
 	cpheader();
-	if($hid) {
+	if($hid)
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
 		$doc = $db->fetch_array($query);
 		if($hid > 7)
@@ -186,7 +204,9 @@ if($mybb->input['action'] == "delete") {
 			endtable();
 			endform();
 		}
-	} else if($sid) {
+	}
+	else if($sid)
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid='$sid'");
 		$section = $db->fetch_array($query);
 		if($section['sid'] > 2)
@@ -207,7 +227,8 @@ if($mybb->input['action'] == "delete") {
 	cpfooter();
 }
 
-if($mybb->input['action'] == "add") {
+if($mybb->input['action'] == "add")
+{
 	cpheader();
 	startform("helpdocs.php", "", "do_add");
 	makehiddencode("add", "section");
@@ -237,11 +258,13 @@ if($mybb->input['action'] == "add") {
 	endform($lang->add_doc_section, $lang->reset_button);
 	cpfooter();
 }
-if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
-	if(!$noheader) {
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
+{
+	if(!$noheader)
+	{
 		cpheader();
 	}
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_doc\" onclick=\"hopto('helpdocs.php?action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->hopto_add\" onclick=\"hopto('helpdocs.php?action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 	// Get default sections/documents
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid<='2' ORDER BY disporder");
@@ -255,7 +278,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 			makelinkcode($lang->edit, "helpdocs.php?action=edit&sid=$section[sid]").
 			"</li>\n<ul>\n";
 		$query2 = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE sid='$section[sid]' ORDER BY disporder");
-		while($doc = $db->fetch_array($query2)) {
+		while($doc = $db->fetch_array($query2))
+		{
 			$disablednote = "";
 			if($doc['enabled'] == "no")
 			{
@@ -273,7 +297,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	}
 	// Get custom help sections/documents
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid>'2' ORDER BY disporder");
-	while($section = $db->fetch_array($query)) {
+	while($section = $db->fetch_array($query))
+	{
 		$disablednote = "";
 		if($section['enabled'] == "no")
 		{
@@ -284,7 +309,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 			makelinkcode($lang->delete, "helpdocs.php?action=delete&sid=$section[sid]").
 			"</li>\n<ul>\n";
 		$query2 = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE sid='$section[sid]' ORDER BY disporder");
-		while($doc = $db->fetch_array($query2)) {
+		while($doc = $db->fetch_array($query2))
+		{
 			$disablednote = "";
 			if($doc['enabled'] == "no")
 			{
@@ -311,5 +337,4 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	endtable();
 	cpfooter();
 }
-
 ?>

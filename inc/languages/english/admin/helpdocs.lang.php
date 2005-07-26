@@ -4,6 +4,8 @@ $l['nav_add_helpdoc'] = "New Help Document";
 $l['nav_edit_helpdoc'] = "Edit Help Document";
 $l['nav_delete_helpdoc'] = "Delete Help Document";
 
+$l['hopto_add'] = "Add Help Section / Document";
+
 $l['helpdocs'] = "Help Documents Management";
 $l['default_sections'] = "Default Help Documents/sections";
 $l['custom_sections'] = "Custom Help Documents/sections";
