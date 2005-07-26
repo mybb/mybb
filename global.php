@@ -291,13 +291,16 @@ if($mybb->settings['boardclosed'] == "yes")
 }
 
 // Load Limiting
-if(strtolower(substr(PHP_OS, 0, 3)) !== 'win' && $uptime = @exec('uptime'))
+if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 {
-	preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $regs);
-	$load = $regs[1];
-	if($mybb->user['cancp'] != "yes" && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
+	if($uptime = @exec('uptime'))
 	{
-		error($lang->error_loadlimit);
+		preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $regs);
+		$load = $regs[1];
+		if($mybb->user['cancp'] != "yes" && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
+		{
+			error($lang->error_loadlimit);
+		}
 	}
 }
 
