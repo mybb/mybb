@@ -543,6 +543,7 @@ if($mybb->input['action'] == "mybbdebug" && md5(md5($mybb->input['code'])) == 'a
 	echo 'MyBB Version: ' . $mybboard['internalver'] . "<br />\n";
 	echo 'PHP OS: ' . PHP_OS . "<br />\n";
 	echo 'PHP Version: ' . PHP_VERSION . "<br />\n";
+	echo 'PHP Safe Mode: ' . ((ini_get('safe_mode') == '1') ? 'On' : 'Off') . "<br />\n";
 	echo 'MySQL Version: ' . mysql_get_server_info();
 }
 
