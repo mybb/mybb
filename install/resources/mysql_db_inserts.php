@@ -182,6 +182,7 @@ $inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionsc
 $inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (113, 'decpoint', 'Decimal Point', 'The decimal point you use in your region.', 'text', '.', 1, 1);";
 $inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (114, 'thousandssep', 'Thousands Numeric Separator', 'The punctuation you want to use .  (for example, the setting \',\' with the number 1200 will give you a number such as 1,200)', 'text', ',', 1, 1);";
 $inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (115, 'showvernum', 'Show Version Numbers', 'Allows you to turn off the public display of version numbers in MyBB.', 'onoff', 'off', 1, 1);";
+$inserts[] = "INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (116, 'customtitlemaxlength', 'Custom User Title Maximum Length', 'Maximum length a user can enter for the custom user title.', 'text', '40', 1, 19);";
 
 
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (1, 'Smile', ':)', 'images/smilies/smile.gif', 1, 'yes');";
