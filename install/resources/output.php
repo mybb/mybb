@@ -104,6 +104,10 @@ END;
 			echo "\n			<input type=\"hidden\" name=\"action\" value=\"$nextact\" />\n			\n<div id=\"next_button\"><input type=\"submit\" value=\"Next &raquo;\" /></div>\n";
 			$formend = "</form>";
 		}
+		else
+		{
+			$formend = "";
+		}
 		echo <<<END
 			<div id="copyright">
 				&copy; 2005 MyBB Group

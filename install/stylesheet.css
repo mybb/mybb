@@ -9,7 +9,7 @@ body {
  margin: auto auto;
  width: 780px;
  border: 1px solid #000000;
- background: #ebebeb;
+ background: #ebebeb url('images/content_bg.gif');
 }
 
 #logo {

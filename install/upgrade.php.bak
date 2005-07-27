@@ -11,43 +11,22 @@
 // The version number of MyBB we are installing
 $myver = "1.0 Preview Release 1";
 
-// Magic quotes, the sum of all evil
-if(get_magic_quotes_gpc()) {
-	stripslashesarray($HTTP_POST_VARS);
-	stripslashesarray($HTTP_GET_VARS);
-	stripslashesarray($HTTP_COOKIE_VARS);
-}
-
-function stripslashesarray(&$array) {
-	while(list($key, $val) = each($array)) {
-		if(is_array($array[$key])) {
-			stripslashesarray($array[$key]);
-		} else {
-			$array[$key] = stripslashes($array[$key]);
-		}
-	}
-}
-set_magic_quotes_runtime(0);
-
-// Fix register_globals
-if(get_cfg_var("register_globals") != "1") {
-	extract($HTTP_POST_VARS);
-	extract($HTTP_POST_FILES);
-	extract($HTTP_GET_VARS);
-	extract($HTTP_ENV_VARS);
-	extract($HTTP_SERVER_VARS);
-	extract($HTTP_COOKIE_VARS);
-}
-
+require "../inc/class_core.php";
+$mybb = new MyBB;
 
 // Include the files necessary for installation
-require "../inc/timers.php";
+require "../inc/class_timers.php";
 require "../inc/constants.php";
 require "../inc/functions.php";
 require "../admin/adminfunctions.php";
+require "../inc/class_xml.php";
 require "../inc/config.php";
-require "../inc/xml.php";
 require "../inc/db_$config[dbtype].php";
+
+// Include the installation resources
+require "./resources/output.php";
+$output = new installerOutput;
+$output->script = "upgrade.php";
 
 $db=new bbDB;
 // Connect to Database
@@ -55,10 +34,6 @@ define("TABLE_PREFIX", $config['table_prefix']);
 $db->connect($config[hostname], $config[username], $config[password]);
 $db->select_db($config[database]);
 
-// Include the installation resources
-require "./resources/output.php";
-$output = new installerOutput;
-$output->script = "upgrade.php";
 
 // Define versions the user can upgrade from.
 $oldvers['1'] = "Release Candidate 2";

@@ -8,6 +8,7 @@
  *
  * $Id$
  */
+error_reporting(E_ALL & ~E_NOTICE);
 
 // The version number of MyBB we are installing
 $myver = "1.0 Preview Release 1";
@@ -27,7 +28,6 @@ require "../inc/functions_user.php";
 require "./resources/output.php";
 $output = new installerOutput;
 
-
 if(file_exists("lock"))
 {
 	$output->print_error("The installer is currently locked, please remove 'lock' from the install directory to continue");
@@ -46,6 +46,10 @@ else
 		"adminuser" => "Administrator User",
 		"final" => "Finish Setup"
 	);
+	if(!isset($mybb->input['action']))
+	{
+		$mybb->input['action'] = "welcome";
+	}
 	switch($mybb->input['action'])
 	{
 		case "license":
@@ -300,7 +304,7 @@ END;
 function database_info()
 {
 	global $output, $myver, $dbinfo, $errors, $mybb;
-
+	$mybb->input['action'] = "database_info";
 	$output->print_header("Database Configuration", "dbconfig");
 
 	if(is_array($errors))
@@ -326,6 +330,8 @@ function database_info()
 		echo "<p>It is now time to configure the database that MyBB will use as well as your database authentication details. If you do not have this information, it can usually be obtained from your webhost.</p>";
 		$dbhost = "localhost";
 		$tableprefix = "mybb_";
+		$dbuser = "";
+		$dbname = "";
 	}
 
 	echo <<<END

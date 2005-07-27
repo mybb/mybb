@@ -7,6 +7,7 @@
  * License: http://www.mybboard.com/eula.html
  *
  */
+error_reporting(E_ALL & ~E_NOTICE);
 
 // The version number of MyBB we are installing
 $myver = "1.0 Preview Release 1";

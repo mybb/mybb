@@ -11,7 +11,10 @@
 
 // Lets pretend we're a level higher
 chdir('../');
-if(!$config['admindir'])
+
+$config = array();
+
+if(!isset($config['admindir']))
 {
 	$config['admindir'] = "admin";
 }
