@@ -540,19 +540,9 @@ if($mybb->input['action'] == "clearcookies")
 }
 if($mybb->input['action'] == "mybbdebug" && md5(md5($mybb->input['code'])) == 'a16fba79549a134435a0436ee68736db')
 {
-	switch($mybb->input['show'])
-	{
-		case 'php_os':
-			echo PHP_OS;
-			break;
-		case 'php_version':
-			echo PHP_VERSION;
-			break;
-		case 'mysql_version':
-			echo mysql_get_server_info();
-			break;
-	}
-
+	echo 'PHP OS: ' . PHP_OS . "<br />\n";
+	echo 'PHP Version: ' . PHP_VERSION . "<br />\n";
+	echo 'MySQL Version: ' . mysql_get_server_info();
 }
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
