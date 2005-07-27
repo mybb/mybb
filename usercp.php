@@ -463,7 +463,7 @@ elseif($mybb->input['action'] == "do_profile")
 		$newprofile['usertitle'] = addslashes(htmlspecialchars_uni($usertitle));
 	}
 
-	$db->update_query(TABLE_PREFIX."users", $newprofile, "uid='".$mybb['uid']."'");
+	$db->update_query(TABLE_PREFIX."users", $newprofile, "uid='".$mybb->user['uid']."'");
 
 	if(function_exists("profileUpdated"))
 	{
