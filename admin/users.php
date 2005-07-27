@@ -976,11 +976,46 @@ if($mybb->input['action'] == "showreferrers")
 		endtable();
 	}
 }
+if($mybb->input['action'] == "findips")
+{
+	cpheader();
+	$uid = intval($mybb->input['uid']);
+	$query = $db->query("SELECT uid,username,regip FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+	$user = $db->fetch_array($query);
+	if (!$user['uid'])
+	{
+		cperror($lang->error_no_users);
+	}
+	$query = $db->query("SELECT DISTINCT ipaddress FROM ".TABLE_PREFIX."posts WHERE uid='$uid'");
+	starttable();
+	$lang->ip_addresses_user = sprintf($lang->ip_addresses_user, $user['username']);
+	tableheader($lang->ip_addresses_user);
+	tablesubheader($lang->reg_ip);
+	echo "<tr>\n<td class=\"$bgcolor\" colspan=\"$colspan\" valign=\"top\" width=\"40%\">$row[ipaddress]</td>\n";
+	echo "<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\">";
+	echo "</td>\n</tr>\n";
+	tablesubheader($lang->post_ip);
+	if($db->num_rows($query) > 0)
+	{
+		while($row = $db->fetch_array($query))
+		{
+		$bgcolor = getaltbg();
+		echo "<tr>\n<td class=\"$bgcolor\" colspan=\"$colspan\" valign=\"top\" width=\"40%\">$row[ipaddress]</td>\n";
+		echo "<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\">";
+		echo "</td>\n</tr>\n";
+		}
+	}
+	else
+	{
+		makelabelcode($lang->error_no_ips);
+	}
+	endtable();
+}
 if($mybb->input['action'] == "misc")
 {
 	cpheader();
 	starttable();
-	makelabelcode("<ul>\n<li><a href=\"users.php?action=showreferrers&uid=$uid\">$lang->show_referred_members</a></li>\n<li><a href=\"users.php?action=pmstats&uid=$uid\">$lang->pm_stats</a></li>\n<li><a href=\"users.php?action=stats&uid=$uid\">$lang->general_stats</a></li>\n</ul>");
+	makelabelcode("<ul>\n<li><a href=\"users.php?action=showreferrers&uid=$uid\">$lang->show_referred_members</a></li>\n<li><a href=\"users.php?action=pmstats&uid=$uid\">$lang->pm_stats</a></li>\n<li><a href=\"users.php?action=stats&uid=$uid\">$lang->general_stats</a></li>\n<li><a href=\"users.php?action=findips&uid=$uid\">$lang->ip_addresses</a></li>\n</ul>");
 	endtable();
 	cpfooter();
 }
@@ -1154,9 +1189,9 @@ if($mybb->input['action'] == "find")
 {
 	$dispcount = count($searchdisp);
 	$yescount = "0";
-	if($searchdisp)
+	if($mybb->input['searchdisp'])
 	{
-		foreach($searchdisp as $disp)
+		foreach($mybb->input['searchdisp'] as $disp)
 		{
 			if($disp == "yes")
 			{
@@ -1164,6 +1199,9 @@ if($mybb->input['action'] == "find")
 			}
 		}
 	}
+	$searchdisp = $mybb->input['searchdisp'];
+	$search = $mybb->input['search'];
+	$searchop = $mybb->input['searchop'];
 	if($yescount == "0")
 	{
 		$searchdisp['username'] = "yes";
@@ -1187,9 +1225,9 @@ if($mybb->input['action'] == "find")
 		$search['usergroup'] = addslashes($search['usergroup']);
 		$conditions .= " AND usergroup='$search[usergroup]'";
 	}*/
-	if(count($mybb->input['additionalgroups']) > 0)
+	if(count($search['additionalgroups']) > 0)
 	{
-		foreach($mybb->input['additionalgroups'] as $group)
+		foreach($search['additionalgroups'] as $group)
 		{
 			$conditions .= " AND (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
 		}
@@ -1243,6 +1281,22 @@ if($mybb->input['action'] == "find")
 	{
 		$search['postsless'] = intval($search['postsless']);
 		$conditions .= " AND postnum<$search[postsless]";
+	}
+	if($search['regip'])
+	{
+		$search['regip'] = intval($search['regip']);
+		$conditions .= " AND regip LIKE '%$search[regip]%'";
+	}
+	if($search['postip'])
+	{
+		$search['postip'] = addslashes($search['postip']);
+		$query = $db->query("SELECT DISTINCT uid FROM ".TABLE_PREFIX."posts WHERE ipaddress LIKE '%$search[postip]%'");
+		$uids = ',';
+		while($u = $db->fetch_array($query))
+		{
+			$uids .= $u['uid'] . ',';		
+		}
+		$conditions .= " AND '$uids' LIKE CONCAT('%,',uid,',%')";
 	}
 	if($listall)
 	{
@@ -1354,6 +1408,10 @@ if($mybb->input['action'] == "find")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->birthday</td>\n";
 		}
+		if($searchdisp['regip'] == "yes")
+		{
+			echo "<td class=\"subheader\" align=\"center\">$lang->reg_ip</td>\n";
+		}
 		if($searchdisp['ops'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->options</td>\n";
@@ -1365,18 +1423,23 @@ if($mybb->input['action'] == "find")
 		$options['manageban'] = $lang->ban_user;
 		$options['showreferrers'] = $lang->show_referred;
 		$options['misc'] = $lang->misc_options;
+		$options['findips'] = $lang->ip_addresses;
 		while($user = $db->fetch_array($query))
 		{
+			foreach($user as $name => $value)
+			{
+				$user[$name] = htmlspecialchars_uni($value);
+			}
 			$bgcolor = getaltbg();
 			startform("users.php");
 			makehiddencode("uid", $user['uid']);
 			makehiddencode("auid", $user['uid']);
 			echo "<tr>\n";
-			if($searchdisp[username] == "yes")
+			if($searchdisp['username'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\">$user[username]</td>\n";
 			}
-			if($searchdisp[usergroup] == "yes")
+			if($searchdisp['usergroup'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\" align=\"center\">";
 				if(isset($usergroups[$user['usergroup']]))
@@ -1398,57 +1461,61 @@ if($mybb->input['action'] == "find")
 				}
 				echo "</td>\n";
 			}
-			if($searchdisp[email] == "yes")
+			if($searchdisp['email'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\"><a href=\"mailto:$user[email]\">$user[email]</td>\n";
 			}
-			if($searchdisp[website] == "yes")
+			if($searchdisp['website'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\"><a href=\"$user[website]\" target=\"_blank\">$user[website]</a></td>\n";
 			}
-			if($searchdisp[icq] == "yes")
+			if($searchdisp['icq'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\">$user[icq]</td>\n";
 			}
-			if($searchdisp[aim] == "yes")
+			if($searchdisp['aim'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\">$user[aim]</td>\n";
 			}
-			if($searchdisp[yahoo] == "yes")
+			if($searchdisp['yahoo'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\">$user[yahoo]</td>\n";
 			}
-			if($searchdisp[msn] == "yes") {
+			if($searchdisp['msn'] == "yes") {
 				echo "<td class=\"$bgcolor\">$user[msn]</td>\n";
 			}
-			if($searchdisp[signature] == "yes")
+			if($searchdisp['signature'] == "yes")
 			{
-				$user[signature] = nl2br($user[signature]);
+				$user['signature'] = nl2br($user['signature']);
 				echo "<td class=\"$bgcolor\">$user[signature]</td>\n";
 			}
-			if($searchdisp[usertitle] == "yes")
+			if($searchdisp['usertitle'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\">$user[usertitle]</td>\n";
 			}
-			if($searchdisp[regdate] == "yes")
+			if($searchdisp['regdate'] == "yes")
 			{
-				$date = gmdate("d-m-Y", $user[regdate]);
+				$date = gmdate("d-m-Y", $user['regdate']);
 				echo "<td class=\"$bgcolor\">$date</td>\n";
 			}
-			if($searchdisp[lastvisit] == "yes")
+			if($searchdisp['lastvisit'] == "yes")
 			{
-				$date = gmdate("d-m-Y", $user[lastvisit]);
+				$date = gmdate("d-m-Y", $user['lastvisit']);
 				echo "<td class=\"$bgcolor\">$date</td>\n";
 			}
-			if($searchdisp[postnum] == "yes")
+			if($searchdisp['postnum'] == "yes")
 			{
-				echo "<td class=\"$bgcolor\">$user[postnum]</td>\n";
+				echo "<td class=\"$bgcolor\"><a href=\"../search.php?action=finduser&uid=$user[uid]\">$user[postnum]</a></td>\n";
 			}
-			if($searchdisp[birthday] == "yes")
+			if($searchdisp['birthday'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\">$user[birthday]</td>\n";
 			}
-			if($searchdisp[ops] == "yes")
+			if($searchdisp['regip'] == "yes")
+			{
+				echo "<td class=\"$bgcolor\">$user[regip]</td>\n";
+			}
+			if($searchdisp['ops'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\" align=\"right\">".makehopper("action", $options)."</td>\n";
 			}
@@ -1461,7 +1528,17 @@ if($mybb->input['action'] == "find")
 		{
 			while(list($key, $val) = each($search))
 			{
-				$hiddens .= "<input type=\"hidden\" name=\"search[$key]\" value=\"$val\">";
+				if ($key != 'additionalgroups[]')
+				{
+					$hiddens .= "<input type=\"hidden\" name=\"search[$key]\" value=\"$val\">";
+				}
+			}
+		}
+		if(is_array($search['additionalgroups']))
+		{
+			while(list($key, $val) = each($search))
+			{
+				$hiddens .= "<input type=\"hidden\" name=\"search[additionalgroups][]\" value=\"$val\">";
 			}
 		}
 		while(list($key, $val) = each($searchop))
@@ -1473,7 +1550,7 @@ if($mybb->input['action'] == "find")
 			$hiddens .= "<input type=\"hidden\" name=\"searchdisp[$key]\" value=\"$val\">";
 		}
 		echo "$hiddens";
-		if($numusers > $searchop[perpage])
+		if($numusers > $searchop['perpage'])
 		{
 			endform($lang->next_page, "");
 		}
@@ -1683,7 +1760,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");
 	while($usergroup = $db->fetch_array($query))
 	{
-		$groups[] = "<input type=\"checkbox\" name=\"additionalgroups[]\" value=\"$usergroup[gid]\" /> $usergroup[title]";
+		$groups[] = "<input type=\"checkbox\" name=\"search[additionalgroups][]\" value=\"$usergroup[gid]\" /> $usergroup[title]";
 	}
 	$groups = implode("<br />", $groups);
 
@@ -1691,7 +1768,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	startform("users.php", "", "find");
 	tableheader($lang->user_management);
 	tablesubheader($lang->quick_search_listing);
-	makelabelcode("<ul>\n<li><a href=\"users.php?action=find\">$lang->list_all</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n</ul>", "", 2);
+	makelabelcode("<ul>\n<li><a href=\"users.php?action=find\">$lang->list_all</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n<li><a href=\"users.php?action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n</ul>", "", 2);
 	tablesubheader($lang->search_users_where);
 	makeinputcode($lang->name_contains, "search[username]");
 	makeinputcode($lang->and_email, "search[email]");
@@ -1705,6 +1782,8 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	makeinputcode($lang->and_title, "search[usertitle]");
 	makeinputcode($lang->posts_more, "search[postsgreater]");
 	makeinputcode($lang->posts_less, "search[postsless]");
+	makeinputcode($lang->and_reg_ip, "search[regip]");
+	makeinputcode($lang->and_post_ip, "search[postip]");
 
 	tablesubheader($lang->sorting_misc_options);
 	$bgcolor = getaltbg();
@@ -1740,6 +1819,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	makeyesnocode($lang->display_last_visit, "searchdisp[lastvisit]", "yes");
 	makeyesnocode($lang->display_num_posts, "searchdisp[postnum]", "yes");
 	makeyesnocode($lang->display_birthday, "searchdisp[birthday]", "no");
+	makeyesnocode($lang->display_regip, "searchdisp[regip]", "no");
 
 	endtable();
 	endform($lang->search, $lang->reset_button);

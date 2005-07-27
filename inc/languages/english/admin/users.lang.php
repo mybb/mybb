@@ -27,6 +27,7 @@ $l['merge_user_accounts'] = "Merge User Accounts";
 $l['list_all'] = "List All Users";
 $l['list_top_posters'] = "List Top Posters";
 $l['list_new_regs'] = "List New Registrations";
+$l['list_awaiting_activation'] = "List Users Awaiting Activation";
 
 $l['edit'] = "Edit Profile & Settings";
 $l['delete'] = "Delete This User";
@@ -134,6 +135,8 @@ $l['and_sig'] = "and signature contains";
 $l['and_title'] = "and usertitle contains";
 $l['posts_more'] = "and Number of Posts is greater than";
 $l['posts_less'] = "and Number of Posts is less than";
+$l['and_reg_ip'] = "and registration IP matches";
+$l['and_post_ip'] = "and has posted with IP";
 
 $l['display_username'] = "Display username";
 $l['display_options_2'] = "Display options";
@@ -149,7 +152,8 @@ $l['display_title'] = "Display usertitle";
 $l['display_reg_date'] = "Display registration date";
 $l['display_last_visit'] = "Display last visit";
 $l['display_num_posts'] = "Display number of posts";
-$l['display_birthday'] = "Display Birthday";
+$l['display_birthday'] = "Display birthday";
+$l['display_regip'] = "Display registration IP";
 
 $l['instructions'] = "Instructions";
 $l['merge_instructions'] = "This tool can merge two users accounts into one single account. The source account will be combined with the destination account.<br><br>The source users posts, threads, private messages, calendar events, post count and buddy list will be merged into the Destination users account.<br><br><b>NOTE: This process cannot be undone.</b>";
@@ -189,6 +193,7 @@ $l['results_per_page'] = "Results to show per page";
 $l['not_specified'] = "Not specified";
 $l['error_name_exists'] = "A user with that username already exists.";
 $l['error_no_users'] = "No users were found matching the search criteria.";
+$l['error_no_ips'] = "No IPs were found matching the search criteria.";
 $l['error_no_banned'] = "There are currently no banned users. To ban a user, click the button above.";
 $l['error_not_found'] = "The user could not be found in the database.";
 $l['error_not_banned'] = "The user could not be found in the banned list.";
@@ -219,4 +224,10 @@ $l['send_pm'] = "Private Message";
 $l['send_method'] = "Delivery Method";
 $l['override_notice'] = "Override \"Allow Notices\" Preference";
 $l['is_member_of'] = "and is a member of";
+
+$l['ip_addresses'] = "Show IP addresses";
+$l['ip_addresses_user'] = "IP addresses for {1}";
+$l['post_ip'] = "Post IPs";
+$l['find_users_reg_with_ip'] = "Find users registered with this IP";
+$l['find_users_posted_with_ip'] = "Find users who posted with this IP";
 ?>
