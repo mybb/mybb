@@ -19,7 +19,7 @@ class MyBB {
 	var $config = array();
 
 	var $clean_variables = array (
-		"int" => array("tid", "pid", "uid", "eid", "pmid", "sid", "fid", "aid")
+		"int" => array("tid", "pid", "uid", "eid", "pmid", "sid")
 		);
 
 	function MyBB()
