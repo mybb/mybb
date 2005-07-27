@@ -24,6 +24,7 @@ $l['delete'] = "Delete";
 $l['or'] = "or";
 $l['selected_messages'] = "the selected messages";
 $l['go'] = "Go!";
+$l['pmspaceused'] = "of PM space used.";
 $l['jump_folder'] = "Jump to Folder:";
 $l['archive_messages'] = "Export Private Messages";
 $l['archive_note'] = "The following tool will let you mass download your private messages out of a selected folder, messages sent after a particular date, your read messages, and drafted messages for later viewing.";
