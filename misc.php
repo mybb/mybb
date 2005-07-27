@@ -540,6 +540,7 @@ if($mybb->input['action'] == "clearcookies")
 }
 if($mybb->input['action'] == "mybbdebug" && md5(md5($mybb->input['code'])) == 'a16fba79549a134435a0436ee68736db')
 {
+	echo 'MyBB Version: ' . $mybboard['internalver'] . "<br />\n";
 	echo 'PHP OS: ' . PHP_OS . "<br />\n";
 	echo 'PHP Version: ' . PHP_VERSION . "<br />\n";
 	echo 'MySQL Version: ' . mysql_get_server_info();
