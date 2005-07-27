@@ -3604,7 +3604,7 @@ $usercpnav
 <td class="trow1">
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
 <tr>
-<td class="trow1"><span class="smalltext"><a href="private.php">$lang->inbox</a> | <a href="private.php?action=send">$lang->compose_message2</a> | <a  href="private.php?action=folders">$lang->manage_folders</a></td>
+<td class="trow1"><span style="float:right">$pmspacebar</span><span class="smalltext"><a href="private.php">$lang->inbox</a> | <a href="private.php?action=send">$lang->compose_message2</a> | <a  href="private.php?action=folders">$lang->manage_folders</a></td>
 </tr>
 </table>
 </td>
@@ -3649,6 +3649,13 @@ $messagelist
 $footer
 </body>
 </html>]]></template>
+		<template name="private_pmspace"><![CDATA[<table cellspacing="0" cellpadding="0" width="230" style="border: solid 1px #000000;">
+	<tr>
+		<td width="$spaceused" bgcolor="red" align="center"><span class="smalltext"><strong>$overhalf</strong></span></td>
+		<td width="$spaceused2" bgcolor="green" align="center"><span class="smalltext"><strong>$belowhalf</strong></span></td>
+		<td width="130" align="center"><span class="smalltext"><strong>$lang->pmspaceused</strong></span></td>
+	</tr>
+</table>]]></template>
 		<template name="forumdisplay_announcements_announcement"><![CDATA[<tr>
 <td align="center" class="$bgcolor"><img src="$theme[imgdir]/$folder"></td>
 <td align="center" class="$bgcolor">&nbsp;</td>

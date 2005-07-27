@@ -1099,6 +1099,22 @@ else
 		}
 		eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
 	}
+	if($mybb->usergroup['pmquota'] != "0")
+	{
+		$query = $db->query("SELECT COUNT(*) AS total FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$mybb->user['uid']."'");
+		$pmscount = $db->fetch_array($query);
+		$spaceused = $pmscount['total'] / $mybb->usergroup['pmquota'] * 100;
+		$spaceused2 = 100 - $spaceused;
+		if($spaceused <= "50")
+		{
+			$belowhalf = round($spaceused, 0)."%";
+		}
+		else
+		{
+			$overhalf = round($spaceused, 0)."%";
+		}
+		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
+	}
 	eval("\$folder = \"".$templates->get("private")."\";");
 	$plugins->run_hooks("private_end");
 	outputpage($folder);
