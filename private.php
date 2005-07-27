@@ -323,7 +323,7 @@ elseif($mybb->input['action'] == "do_send")
 	{
 		$lang->email_reachedpmquota = sprintf($lang->email_reachedpmquota, $touser['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 		$lang->emailsubject_reachedpmquota = sprintf($lang->emailsubject_reachpmquota, $mybb->settings['bbname']);
-		mymail($touser['email'], $lang->email_reachedpmquota, $lang->emailsubject_reachedpmquta);
+		mymail($touser['email'], $lang->email_reachedpmquota, $lang->emailsubject_reachedpmquota);
 		error($lang->error_pmrecipientreachedquota);
 	}
 	$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$touser['uid']."' AND folder='1' ORDER BY dateline DESC LIMIT 1");
@@ -372,7 +372,7 @@ elseif($mybb->input['action'] == "do_send")
 		{
 			$updateddraft['uid'] = $touser['uid'];
 		}
-		$plugins->run_hooks("editpost_do_send_draft");
+		$plugins->run_hooks("private_do_send_draft");
 
 		$db->update_query(TABLE_PREFIX."privatemessages", $updateddraft, "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."'");
 	}
@@ -399,7 +399,7 @@ elseif($mybb->input['action'] == "do_send")
 				$newpm['uid'] = $mybb->user['uid'];
 			}
 
-			$plugins->run_hooks("editpost_do_send_process");
+			$plugins->run_hooks("private_do_send_process");
 
 		$db->insert_query(TABLE_PREFIX."privatemessages", $newpm);
 	}
@@ -416,26 +416,31 @@ elseif($mybb->input['action'] == "do_send")
 	}
 	if($options['savecopy'] != "no" && !$mybb->input['saveasdraft'])
 	{
-		$savedcopy = array(
-			"pmid" => "NULL",
-			"uid" => $mybb->user['uid'],
-			"toid" => $touser['uid'],
-			"fromid" => $mybb->user['uid'],
-			"folder" => 2,
-			"subject" => addslashes($mybb->input['subject']),
-			"icon" => intval($mybb->input['icon']),
-			"message" => addslashes($mybb->input['message']),
-			"dateline" => time(),
-			"status" => 1,
-			"includesig" => $options['signature'],
-			"smilieoff" => $options['disablesmilies']
-			);
+		$query = $db->query("SELECT COUNT(*) AS total FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$mybb->user['uid']."'");
+		$pmscount = $db->fetch_array($query);
+		if($pmscount['total'] < $mybb->usergroup['pmquota'])
+		{
+			$savedcopy = array(
+				"pmid" => "NULL",
+				"uid" => $mybb->user['uid'],
+				"toid" => $touser['uid'],
+				"fromid" => $mybb->user['uid'],
+				"folder" => 2,
+				"subject" => addslashes($mybb->input['subject']),
+				"icon" => intval($mybb->input['icon']),
+				"message" => addslashes($mybb->input['message']),
+				"dateline" => time(),
+				"status" => 1,
+				"includesig" => $options['signature'],
+				"smilieoff" => $options['disablesmilies']
+				);
 			$plugins->run_hooks("private_do_send_savecopy");
-		$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
+			$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
+		}
 	}
 	if($touser['pmpopup'] != "no" && !$mybb->input['saveasdraft'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET pmpopup='new' WHERE uid='".$touser[uid]."'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET pmpopup='new' WHERE uid='".$touser['uid']."'");
 	}
 	$plugins->run_hooks("private_do_send_end");
 	if($mybb->input['saveasdraft'])
