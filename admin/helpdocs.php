@@ -35,43 +35,50 @@ switch($mybb->input['action'])
 
 if($mybb->input['action'] == "do_add")
 {
-	if($add == "doc")
+	if($mybb->input['add'] == "doc")
 	{
-		$description = addslashes($_POST['description']);
-		$document = addslashes($_POST['document']);
-		$name = addslashes($_POST['name']);
-		$disporder = intval($_POST['disporder']);
-		$usetranslation = $_POST['usetranslation'];
-		$enabled = $_POST['enabled'];
-		$db->query("INSERT INTO ".TABLE_PREFIX."helpdocs VALUES (NULL,'$sid','$name','$description','$document','$usetranslation','$enabled','$disporder')");
+		$sqlarray = array(
+			"sid" => intval($mybb->input['sid']),
+			"name" => addslashes($mybb->input['name']),
+			"description" => addslashes($mybb->input['description']),
+			"document" => addslashes($mybb->input['document']),
+			"usetranslation" => addslashes($mybb->input['usetranslation']),
+			"enabled" => addslashes($mybb->input['enabled']),
+			"disporder" => intval($mybb->input['disporder']),
+			);
+		$db->insert_query(TABLE_PREFIX."helpdocs", $sqlarray);
 		cpredirect("helpdocs.php", $lang->doc_added);
 	}
-	else if($add == "section")
+	elseif($mybb->input['add'] == "section")
 	{
-		$description = addslashes($_POST['description']);
-		$name = addslashes($_POST['name']);
-		$enabled = $_POST['enabled'];
-		$disporder = intval($_POST['disporder']);
-		$db->query("INSERT INTO ".TABLE_PREFIX."helpsections VALUES (NULL,'$name','$description','$usetranslation','$enabled','$disporder')");
+		$sqlarray = array(
+			"name" => addslashes($mybb->input['name']),
+			"description" => addslashes($mybb->input['description']),
+			"usetranslation" => addslashes($mybb->input['usetranslation']),
+			"enabled" => addslashes($mybb->input['enabled']),
+			"disporder" => intval($mybb->input['disporder']),
+			);
+		$db->insert_query(TABLE_PREFIX."helpsections", $sqlarray);
 		cpredirect("helpdocs.php", $lang->section_added);
 	}
 }
 
 if($mybb->input['action'] == "do_delete")
 {
-	if($deletesubmit)
+	if($mybb->input['deletesubmit'])
 	{	
-		if($hid)
+		if(!empty($mybb->input['hid']))
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
+			$db->query("DELETE FROM ".TABLE_PREFIX."helpdocs WHERE hid='".intval($mybb->input['hid'])."'");
 			cpredirect("helpdocs.php", $lang->doc_deleted);
 		}
-		else if($sid)
+		elseif(!empty($mybb->input['sid'])])
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."helpsections WHERE sid='$sid'");
-			$db->query("DELETE FROM ".TABLE_PREFIX."helpdocs WHERE sid='$sid' AND hid>'7'");
+			$sid = intval($mybb->input['sid']);
+			$db->query("DELETE FROM ".TABLE_PREFIX."helpsections WHERE sid='".$sid."'");
+			$db->query("DELETE FROM ".TABLE_PREFIX."helpdocs WHERE sid='".$sid."' AND hid>'7'");
 			// Move back any defaults left without a category
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE sid='$sid'");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE sid='".$sid."'");
 			while($doc = $db->fetch_array($query))
 			{
 				if($doc['hid'] <= 4)
@@ -95,25 +102,30 @@ if($mybb->input['action'] == "do_delete")
 
 if($mybb->input['action'] == "do_edit")
 {
-	if($hid)
+	if($mybb->input['hid'])
 	{
-		$description = addslashes($_POST['description']);
-		$document = addslashes($_POST['document']);
-		$name = addslashes($_POST['name']);
-		$disporder = intval($_POST['disporder']);
-		$usetranslation = $_POST['usetranslation'];
-		$enabled = $_POST['enabled'];
-		$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET name='$name', description='$description', document='$document', usetranslation='$usetranslation', enabled='$enabled', disporder='$disporder', sid='$sid' WHERE hid='$hid'");
+		$sqlarray = array(
+			"sid" => intval($mybb->input['sid']),
+			"name" => addslashes($mybb->input['name']),
+			"description" => addslashes($mybb->input['description']),
+			"document" => addslashes($mybb->input['document']),
+			"usetranslation" => addslashes($mybb->input['usetranslation']),
+			"enabled" => addslashes($mybb->input['enabled']),
+			"disporder" => intval($mybb->input['disporder']),
+			);
+		$db->update_query(TABLE_PREFIX."helpdocs", $sqlarray, "hid='".intval($mybb->input['hid']."'");
 		cpredirect("helpdocs.php", $lang->doc_updated);
 	}
-	else if($sid)
+	elseif($mybb->input['sid'])
 	{
-		$description = addslashes($_POST['description']);
-		$name = addslashes($_POST['name']);
-		$usetranslation = $_POST['usetranslation'];
-		$enabled = $_POST['enabled'];
-		$disporder = intval($_POST['disporder']);
-		$db->query("UPDATE ".TABLE_PREFIX."helpsections SET name='$name', description='$description', usetranslation='$usetranslation', enabled='$enabled', disporder='$disporder' WHERE sid='$sid'");
+		$sqlarray = array(
+			"name" => addslashes($mybb->input['name']),
+			"description" => addslashes($mybb->input['description']),
+			"usetranslation" => addslashes($mybb->input['usetranslation']),
+			"enabled" => addslashes($mybb->input['enabled']),
+			"disporder" => intval($mybb->input['disporder']),
+			);
+		$db->update_query(TABLE_PREFIX."helpsections", $sqlarray, "sid='".intval($mybb->input['sid']."'");
 		cpredirect("helpdocs.php", $lang->section_updated);
 	}
 }
@@ -121,8 +133,9 @@ if($mybb->input['action'] == "do_edit")
 if($mybb->input['action'] == "edit")
 {
 	cpheader();
-	if($hid)
+	if($mybb->input['hid'])
 	{
+		$hid = intval($mybb->input['hid']);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
 		$doc = $db->fetch_array($query);
 		$doc['description'] = stripslashes($doc['description']);
@@ -153,8 +166,9 @@ if($mybb->input['action'] == "edit")
 		endtable();
 		endform($lang->update_doc, $lang->reset_button);
 	}
-	else if($sid)
+	elseif($$mybb->input['sid'])
 	{
+		$sid = intval($mybb->input['sid']);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid='$sid'");
 		$section = $db->fetch_array($query);
 		startform("helpdocs.php", "", "do_edit");
@@ -186,11 +200,12 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	cpheader();
-	if($hid)
+	if($mybb->input['hid'])
 	{
+		$hid = intval($mybb->input['hid']);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
 		$doc = $db->fetch_array($query);
-		if($hid > 7)
+		if($mybb->input['hid'] > 7)
 		{
 			$lang->delete_doc = sprintf($lang->delete_doc, $doc[name]);
 			$lang->delete_doc_confirm = sprintf($lang->delete_doc_confirm, $doc[name]);
@@ -205,8 +220,9 @@ if($mybb->input['action'] == "delete")
 			endform();
 		}
 	}
-	else if($sid)
+	elseif($mybb->input['sid'])
 	{
+		$sid = intval($mybb->input['sid']);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid='$sid'");
 		$section = $db->fetch_array($query);
 		if($section['sid'] > 2)

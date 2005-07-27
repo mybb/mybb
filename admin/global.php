@@ -23,7 +23,7 @@ require "./inc/init.php";
 require $config['admindir']."/adminfunctions.php";
 require "./inc/functions_user.php";
 
-$style = "./styles/$settings[cpstyle]/stylesheet.css";
+$style = "./styles/".$mybb->settings['cpstyle']."/stylesheet.css";
 if(!file_exists($config['admindir']."/".$style))
 {
 	$style = "./styles/Axiom/stylesheet.css";
@@ -46,11 +46,11 @@ if($mybb->input['action'] == "logout")
 	$expires = $time-60*60*24;
 	if($settings['cookiedomain'])
 	{
-		@setcookie("mybbadmin", "", $expires, $settings['cookiepath'], $settings['cookiedomain']);
+		@setcookie("mybbadmin", "", $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
 	}
 	else
 	{
-		@setcookie("mybbadmin", "", $expires, $settings['cookiepath']);
+		@setcookie("mybbadmin", "", $expires, $mybb->settings['cookiepath']);
 	}
 	$lang->invalid_admin = $lang->logged_out_admin;
 }
@@ -59,7 +59,7 @@ $showlogin = 1;
 $ipaddress = getip();
 
 unset($user);
-if($do == "login")
+if($mybb->input['do'] == "login")
 {
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if($user['uid'])
@@ -85,8 +85,10 @@ if(!$user['usergroup'])
 {
 	$mybbgroups = 1;
 }
+
 $groupscache = $cache->read("usergroups");
 $admingroup = usergroup_permissions($mybbgroups);
+
 if($admingroup['cancp'] != "yes" || !$user['uid'])
 {
 	unset($user);
@@ -99,23 +101,27 @@ if($user['uid'])
 	$mybbadmin = $user;
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]'");
 	$adminoptions = $db->fetch_array($query);
-	if($adminoptions[cpstyle] && file_exists($config['admindir']."/styles/$adminoptions[cpstyle]/stylesheet.css")) {
+	if($adminoptions['cpstyle'] && file_exists($config['admindir']."/styles/$adminoptions[cpstyle]/stylesheet.css"))
+	{
 		$style = "./styles/$adminoptions[cpstyle]/stylesheet.css";
 	}
-} else {
-	if($failcheck) {
-		$md5pw = md5($password);
+}
+else
+{
+	if($failcheck)
+	{
+		$md5pw = md5($mybb->input['password']);
 		$ipaddress = getip();
 		$iphost = @gethostbyaddr($ipaddress);
 		
 		$message=
-		$lang->invalidlogin_message = sprintf($lang->invalidlogin_message, $settings['bbname'], $username, $password, $md5pw, $ipaddress, $iphost);
-		$lang->invalidlogin_subject = sprintf($lang->invalidlogin_subject, $settings['bbname']);
-		$lang->invalidlogin_headers = sprintf($lang->invalidlogin_headers, $settings['bbname'], $settings['adminemail']);
+		$lang->invalidlogin_message = sprintf($lang->invalidlogin_message, $mybb->settings['bbname'], $mybb->input['username'], $mybb->input['password'], $md5pw, $ipaddress, $iphost);
+		$lang->invalidlogin_subject = sprintf($lang->invalidlogin_subject, $mybb->settings['bbname']);
+		$lang->invalidlogin_headers = sprintf($lang->invalidlogin_headers, $mybb->settings['bbname'], $mybb->settings['adminemail']);
 		mail($settings['adminemail'], $lang->invalidlogin_subject, $message, $lang->invalidlogin_headers);
 	}
 
-	if(!empty($_REQUEST['goto']))
+	if(!empty($mybb->input['goto']))
 	{
 		$goto = htmlspecialchars_uni($_GET['goto']);
 	}
