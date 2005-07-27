@@ -2105,4 +2105,74 @@ function generate_loginkey()
 {
 	return random_str(50);
 }*/
+
+// Birthday code fix's provided meme
+function get_weekday($month, $day, $year)
+{
+	$h = 4;
+	for($i = 1969; $i >= $year; $i--)
+	{
+		$j = get_bdays($i);
+		for($k = 11; $k >= 0; $k--)
+		{
+			$l = ($k + 1);
+			for($m = $j[$k]; $m >= 1; $m--)
+			{
+				$h--;
+				if($i == $year && $l == $month && $m == $day)
+				{
+					return($h);
+				}
+				if($h == 0)
+				{
+					$h = 7;
+				}
+			}
+		}
+	}
+}
+
+function get_bdays($in)
+{
+	return(array(31, ($in % 4 == 0 && ($in % 100 > 0 || $in % 400 == 0) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31));
+}
+
+function format_bdays($display, $bm, $bd, $by, $wd)
+{
+	global $lang;
+	$bdays = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
+	$bmonth = array($lang->month_1, $lang->month_2, $lang->month_3, $lang->month_4, $lang->month_5, $lang->month_6, $lang->month_7, $lang->month_8, $lang->month_9, $lang->month_10, $lang->month_11, $lang->month_12);
+	$find = array('m', 'd', 'y', 'Y', 'j', 'S', 'F', 'l');
+	$replace = array((sprintf('%02s', $bm)), (sprintf('%02s', $bd)), (substr($by, 2)), $by, ($bd[0] == 0 ? substr($bd, 1) : $bd), ($db == 1 || $db == 21 || $db == 31 ? 'st' : ($db == 2 || $db == 22 ? 'nd' : ($db == 3 || $db == 23 ? 'rd' : 'th'))), $bmonth[$bm-1], $bdays[$wd]);
+	return(str_replace($find, $replace, $display));
+}
+
+
+function win_years($bm, $bd, $by)
+{
+	$age = '';
+	$nd = date('j');
+	$nm = date('n');
+	$ty = (date('Y') - $by);
+	if($nm > $bm)
+	{
+		$age = $ty;
+	}
+	elseif($nm < $bm)
+	{
+		$age = ($ty - 1);
+	}
+	else
+	{
+		if($nd >= $bd)
+		{
+			$age = $ty;
+		}
+		else
+		{
+			$age = ($ty - 1);
+		}
+	}
+	return($age);
+}
 ?>

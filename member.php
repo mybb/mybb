@@ -1190,17 +1190,28 @@ elseif($mybb->input['action'] == "profile")
 		$memlastvisitsep = '';
 		$memlastvisittime = '';
 	}
-
+	
+	// Birthday code fix's provided meme
 	if($memprofile['birthday'])
 	{
 		$membday = explode("-", $memprofile['birthday']);
 		if($membday[2])
 		{
-			$bdayformat = fixmktime($mybb->settings['dateformat'], $membday[2]);
-			$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
-			$lang->membdayage = sprintf($lang->membdayage, floor((time() - $membday) / 31557600));
-			$membdayage = $lang->membdayage;
-			$membday = gmdate($bdayformat, $membday);
+			if($membday[2] < 1970 && strtolower(substr(PHP_OS, 0, 3)) == 'win')
+			{
+				$w_day = get_weekday($membday[1], $membday[0], $membday[2]);
+				$lang->membdayage = sprintf($lang->membdayage, win_years($membday[1], $membday[0], $membday[2]));
+				$membdayage = $lang->membdayage;
+				$membday = format_bdays($settings['dateformat'], $membday[1], $membday[0], $membday[2], $w_day);
+			}
+			else
+			{
+				$bdayformat = fixmktime($mybb->settings['dateformat'], $membday[2]);
+				$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
+				$lang->membdayage = sprintf($lang->membdayage, floor((time() - $membday) / 31557600));
+				$membdayage = $lang->membdayage;
+				$membday = gmdate($bdayformat, $membday);
+			}
 		}
 		else
 		{
