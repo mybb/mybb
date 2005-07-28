@@ -1136,22 +1136,6 @@ function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 		}
 		// CSS bits
 		$parentcss = build_css_array($pid, 0);
-		function killempty($array)
-		{
-			foreach($array as $key => $val)
-			{
-				if(is_array($val))
-				{
-					$array[$key] = killempty($val);
-					$val = $array[$key];
-				}
-				if(empty($val))
-				{
-					unset($array[$key]);
-				}
-			}
-			return $array;
-		}
 		foreach($cssselectors as $selector => $realname)
 		{
 			$parentbit = serialize(killempty($parentcss[$selector]));
@@ -1159,17 +1143,6 @@ function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 			if($parentbit == $childbit)
 			{
 				unset($cssbits[$selector]);
-				echo "$selector is the same in child and parent.<br />\n";
-			}
-			else
-			{
-				echo "$selector is different in child and parent.<br />\n";
-				echo "<pre>PARENT:\n";
-				print_r($parentcss[$selector]);
-				echo "</pre>";
-				echo "<pre>LDI:\n";
-				print_r($css[$selector]);
-				echo "</pre>";
 			}
 			if($revert_css[$selector])
 			{
@@ -1551,5 +1524,24 @@ function update_theme($tid, $pid="", $themebits="", $css="", $child=0, $isnew=0)
 	}
 	return $updatedthemes;
 }
-
+function killempty($array)
+{
+	if(!is_array($array))
+	{
+		return;
+	}
+	foreach($array as $key => $val)
+	{
+		if(is_array($val))
+		{
+			$array[$key] = killempty($val);
+			$val = $array[$key];
+		}
+		if(empty($val))
+		{
+			unset($array[$key]);
+		}
+	}
+	return $array;
+}
 ?>
