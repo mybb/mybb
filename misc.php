@@ -544,7 +544,17 @@ if($mybb->input['action'] == "mybbdebug" && md5(md5($mybb->input['code'])) == 'a
 	echo 'PHP OS: ' . PHP_OS . "<br />\n";
 	echo 'PHP Version: ' . PHP_VERSION . "<br />\n";
 	echo 'PHP Safe Mode: ' . ((ini_get('safe_mode') == '1') ? 'On' : 'Off') . "<br />\n";
-	echo 'MySQL Version: ' . mysql_get_server_info();
+	echo 'PHP XML Extensions: ' . ((function_exists("xml_parser_create")) ? 'Installed' : 'Not Installed') . "<br />\n";
+	echo 'MySQL Version: ' . mysql_get_server_info() . "<br />\n";
+	if(function_exists('gd_info'))
+	{
+		$gd = gd_info();
+		echo 'GD Version: ' . $gd['GD Version'] . '; PNG Support: ' . (($gd['PNG Support']) ? 'Yes' : 'No') . "</br />\n";
+	}
+	else
+	{
+		echo "GD Not Installed<br />\n";
+	}
 }
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
