@@ -43,7 +43,7 @@ if($mybb->input['action'] == "do_prune")
 			$thequery .= " AND ";
 		}
 	}
-	if($fromscript)
+	if($mybb->input['fromscript'])
 	{
 		$thequery .= "scriptname='$fromscript'";
 		if($fromadmin)
@@ -51,7 +51,7 @@ if($mybb->input['action'] == "do_prune")
 			$thequery .= " AND ";
 		}
 	}
-	if($fromadmin)
+	if($mybb->input['fromadmin'])
 	{
 		$thequery .= "uid='$fromadmin'";
 	}

@@ -34,13 +34,21 @@ switch($mybb->input['action'])
 		break;
 }
 
-if($mybb->input['action'] == "do_attachments") {
-	if(is_array($attachvalidate)) {
-		while(list($aid, $val) = each($attachvalidate)) {
-			if($attachdelete[$aid] == "yes") {
+if($mybb->input['action'] == "do_attachments")
+{
+	if(is_array($mybb->input['attachvalidate']))
+	{
+		while(list($aid, $val) = each($attachvalidate))
+		{
+			$aid = intval($aid);
+			if($attachdelete[$aid] == "yes")
+			{
 				$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='$aid'");
-			} else {
-				if($val != "no") {
+			}
+			else
+			{
+				if($val != "no")
+				{
 					$db->query("UPDATE ".TABLE_PREFIX."attachments SET visible='1' WHERE aid='$aid'");
 				}
 			}
@@ -48,42 +56,59 @@ if($mybb->input['action'] == "do_attachments") {
 	}
 	cpmessage($lang->attachments_moderated);
 }
-if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts" || $mybb->input['action'] == "do_threadsposts") {
-	if(is_array($threadvalidate) && $mybb->input['action'] != "do_posts") {
-		while(list($tid, $val) = each($threadvalidate)) {
+
+if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts" || $mybb->input['action'] == "do_threadsposts")
+{
+	if(is_array($mybb->input['threadvalidate']) && $mybb->input['action'] != "do_posts")
+	{
+		while(list($tid, $val) = each($mybb->input['threadvalidate']))
+		{
+			$tid = intval($tid);
 			$query = $db->query("SELECT subject, fid FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 			$thread = $db->fetch_array($query);
-			if($threaddelete[$tid] == "yes") {
+			if($mybb->input['threaddelete'][$tid] == "yes")
+			{
 				deletethread($tid);
-				$updateforumcount[$thread[fid]] = 1;
-			} else {
-				if($val != "no") {
-					$subject = addslashes($threadsubject[$tid]);
-					$message = addslashes($threadmessage[$tid]);
+				$updateforumcount[$thread['fid']] = 1;
+			}
+			else
+			{
+				if($val != "no")
+				{
+					$subject = addslashes($mybb->input['threadsubject'][$tid]);
+					$message = addslashes($mybb->input['threadmessage'][$tid]);
 					$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1', subject='$subject' WHERE tid='$tid'");
 					$db->query("UPDATE ".TABLE_PREFIX."posts SET message='$message', subject='$subject', visible='1' WHERE tid='$tid'");
-					$updateforumcount[$thread[fid]] = 1;
+					$updateforumcount[$thread['fid']] = 1;
 				}
 			}
 		}
 	}
-	if(is_array($postvalidate) && $mybb->input['action'] != "do_threads") {
-		while(list($pid, $val) = each($postvalidate)) {
+
+	if(is_array($mybb->input['postvalidate']) && $mybb->input['action'] != "do_threads")
+	{
+		while(list($pid, $val) = each($mybb->input['postvalidate']))
+		{
+			$pid = intval($pid);
 			$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
 			$post = $db->fetch_array($query);
-			$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."threads WHERE tid='$thread[tid]'");
+			$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."threads WHERE tid='$post[tid]'");
 			$thread = $db->fetch_array($query);
-			if($postdelete[$pid] == "yes") {
+			if($mybb->input['postdelete'][$pid] == "yes")
+			{
 				deletepost($pid);
-				$updatethreadcount[$post[tid]] = 1;
-				$updateforumcount[$thread[fid]] = 1;
-			} else {
-				if($val != "no") {
-					$message = addslashes($postmessage[$pid]);
-					$subject = addslashes($postsubject[$pid]);
+				$updatethreadcount[$post['tid']] = 1;
+				$updateforumcount[$thread['fid']] = 1;
+			}
+			else
+			{
+				if($val != "no")
+				{
+					$message = addslashes($mybb->input['postmessage'][$pid]);
+					$subject = addslashes($mybb->input['postsubject'][$pid]);
 					$db->query("UPDATE ".TABLE_PREFIX."posts SET visible=1, message='$message', subject='$subject' WHERE pid='$pid'");
-					$updatethreadcount[$post[tid]] = 1;
-					$updateforumcount[$thread[fid]] = 1;
+					$updatethreadcount[$post['tid']] = 1;
+					$updateforumcount[$thread['fid']] = 1;
 				}
 			}
 		}
@@ -100,10 +125,12 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 	}
 	cpmessage($lang->threadsposts_moderated);
 }
-if($mybb->input['action'] == "attachments") {
+if($mybb->input['action'] == "attachments")
+{
 	$query = $db->query("SELECT a.*, p.subject AS postsubject, p.pid AS postpid, p.tid, p.username AS postusername, p.uid AS postuid, t.subject AS threadsubject, f.name AS forumname, p.fid FROM ".TABLE_PREFIX."attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE a.pid=p.pid AND t.tid=p.tid AND a.visible!='1' ORDER BY p.dateline DESC");
 	$count = $db->num_rows($query);
-	if(!$count) {
+	if(!$count)
+	{
 		cperror($lang->no_attachments);
 	}
 	cpheader();
@@ -111,19 +138,28 @@ if($mybb->input['action'] == "attachments") {
 	starttable();
 	tableheader($lang->attachments_awaiting);
 	$done = 0;
-	while($attachment = $db->fetch_array($query)) {
+	while($attachment = $db->fetch_array($query))
+	{
 		$done = 1;
-		if($attachment[filesize] >= 1073741824) {
-			$attachment[filesize] = round(($attachment[filesize] / 1073741824), 2) . " GB";
-		} elseif($attachment[filesize] >= 1048576) {
-			$attachment[filesize] = round(($attachment[filesize] / 1048576), 2) . " MB";
-		} elseif($attachment[filesize] >= 1024)	{
-			$attachment[filesize] = round(($attachment[filesize] / 1024), 2) . " KB";
-		} else {
-			$attachment[filesize] = $attachment[filesize] . " bytes";
+		if($attachment['filesize'] >= 1073741824)
+		{
+			$attachment['filesize'] = round(($attachment['filesize'] / 1073741824), 2) . " " . $lang->size_gb;
 		}
-		if(!$attachment[postsubject]) {
-			$attachment[postsubject] = "[no subject]";
+		elseif($attachment['filesize'] >= 1048576)
+		{
+			$attachment['filesize'] = round(($attachment['filesize'] / 1048576), 2) . " " . $lang->size_mb;
+		}
+		elseif($attachment['filesize'] >= 1024)
+		{
+			$attachment['filesize'] = round(($attachment['filesize'] / 1024), 2) . " " . $lang->size_kb;
+		}
+		else
+		{
+			$attachment['filesize'] = $attachment['filesize'] . " " . $lang->size_bytes;
+		}
+		if(empty($attachment['postsubject'])
+		{
+			$attachment['postsubject'] = "[no subject]";
 		}
 		makelabelcode($lang->attachment, "$attachment[filename] ($lang->size $attachment[filesize]) ".makelinkcode($lang->view, "../attachment.php?tid=$attachment[tid]&pid=$attachment[pid]", 1));
 		makelabelcode($lang->post, "<a href=\"../showthread.php?tid=$attachment[tid]&pid=$attachment[postpid]#pid$attachment[postpid]\" target=\"_blank\">$attachment[postsubject]</a>");
@@ -139,7 +175,9 @@ if($mybb->input['action'] == "attachments") {
 	endform($lang->moderate_attachments, $lang->reset_button);
 	cpfooter();
 }
-if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadsposts") {
+
+if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadsposts")
+{
 	$done = 0;
 	$query = $db->query("SELECT t.*, f.name AS forumname, u.username AS username, p.message AS postmessage, p.pid AS postpid FROM ".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid) WHERE t.visible=0 AND p.tid=t.tid ORDER BY t.lastpost DESC");
 	$tcount = $db->num_rows($query);
@@ -155,7 +193,8 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 		starttable();
 		tableheader($lang->threads_awaiting);
 	}
-	while($thread = $db->fetch_array($query)) {
+	while($thread = $db->fetch_array($query))
+	{
 		$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 		$done = 1;
 		makeinputcode($lang->thread_subject, "threadsubject[$thread[tid]]", "$thread[subject]");		
@@ -196,8 +235,10 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 	starttable();
 	tableheader($lang->posts_awaiting);
 
-	while($post = $db->fetch_array($query)) {
-		if(!$donepid[$post[pid]]) { // so we dont show new threads main post again
+	while($post = $db->fetch_array($query))
+	{
+		if(!$donepid[$post['pid']])
+		{ // so we dont show new threads main post again
 			$done = 1;
 			$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 			makeinputcode($lang->post_subject, "postsubject[$post[pid]]", "$post[subject]");	
@@ -211,10 +252,13 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 		}
 	}
 	endtable();
-	if($mybb->input['action'] != "threadsposts") {
+	if($mybb->input['action'] != "threadsposts")
+	{
 		endform($lang->moderate_posts, $lang->reset_button);
 		cpfooter();
-	} else {
+	}
+	else
+	{
 		endform($lang->moderate_threads_posts, $lang->reset_button);
 		cpfooter();
 	}

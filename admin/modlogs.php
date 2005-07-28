@@ -28,66 +28,89 @@ logadmin();
 
 if($mybb->input['action'] == "do_prune") {
 	$time = time();
-	$timecut = $time-($days*60*60*24);
+	$timecut = $time-(intval($mybb->input['days'])*60*60*24);
 	$thequery = "";
-	if($timecut) {
+	if($timecut)
+	{
 		$thequery .= "dateline<'$timecut'";
-		if($fromscript || $fromadmin) {
+		if($fromscript || $fromadmin)
+		{
 			$thequery .= " AND ";
 		}
 	}
-	if($frommod) {
+	if($mybb->input['frommod'])
+	{
+		$mybb->input['frommod'] = intval($mybb->input['frommod']);
 		$thequery .= " uid='$frommod'";
 	}
-	if($thequery) {
+	if($thequery)
+	{
 		$thequery = "WHERE $thequery";
 	}
 	$db->query("DELETE FROM ".TABLE_PREFIX."moderatorlog $thequery");
 	cpredirect("modlogs.php", $lang->modlog_pruned);
 }
-if($mybb->input['action'] == "view") {
-	if(!$perpage) {
+if($mybb->input['action'] == "view")
+{
+	$perpage = intval($mybb->input['perpage']);
+	$fromscript = addslashes($mybb->input['fromscript']);
+	$frommod = intval($mybb->input['frommod']);
+	$orderby = $mybb->input['orderby'];
+	$page = intval($mybb->input['page']);
+
+	if(!$mybb->input['perpage'])
+	{
 		$perpage = 20;
 	}
 	$squery = "";
-	if($frommod) {
+	if($mybb->input['frommod'])
+	{
 		$squery .= "l.uid='$frommod'";
 	}
-	if($squery) {
+	if($squery)
+	{
 		$squery = "WHERE $squery";
 	}
-	if($orderby == "nameasc") {
+	if($orderby == "nameasc")
+	{
 		$order = "u.username ASC";
 	}
-	else {
+	else
+	{
 		$order = "l.dateline DESC";
 	}
 	$query = $db->query("SELECT COUNT(dateline) FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) $squery");
 	$rescount = $db->result($query, 0);
-	if(!$rescount) {
+	if(!$rescount)
+	{
 		cpmessage($lang->no_results);
 	}
-	if(!$perpage) {
-		$perpage = 15;
+	if($page)
+	{
+		$start = ($page-1) * $perpage;
 	}
-	if($page) {
-		$start = ($page-1) *$perpage;
-	} else {
+	else
+	{
 		$start = 0;
 		$page = 1;
 	}
-	if($rescount > $perpage) {
+	if($rescount > $perpage)
+	{
 		$pages = $rescount / $perpage;
 		$pages = ceil($pages);
-	} else {
+	}
+	else
+	{
 		$pages = 1;
 	}
-	if($page != $pages) {
+	if($page != $pages)
+	{
 		$npage = $page+1;
 		$nextpage = "<input type=\"button\" value=\"$lang->nextpage\" onClick=\"hopto('modlogs.php?action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$npage')\">&nbsp;";
 		$lastpage = "<input type=\"button\" value=\"$lang->lastpage\" onClick=\"hopto('modlogs.php?action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$pages')\">&nbsp;";
 	}
-	if($page != 1) {
+	if($page != 1)
+	{
 		$ppage = $page-1;
 		$prevpage = "<input type=\"button\" value=\"$lang->prevpage\" onClick=\"hopto('modlogs.php?action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$ppage')\">&nbsp;";
 		$firstpage = "<input type=\"button\" value=\"$lang->firstpage\" onClick=\"hopto('modlogs.php?action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=1')\">&nbsp;";
@@ -104,37 +127,44 @@ if($mybb->input['action'] == "view") {
 	echo "<td class=\"subheader\" align=\"center\">$lang->ipaddress</td>\n";
 	echo "</tr>\n";
 	$query = $db->query("SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid) $squery ORDER BY $order LIMIT $start, $perpage");
-	while($logitem = $db->fetch_array($query)) {
-		$logitem[dateline] = date("jS M Y, G:i", $logitem[dateline]);
+	while($logitem = $db->fetch_array($query))
+	{
+		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
 		$bgcolor = getaltbg();
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\"><a href=\"users.php?action=edit&uid=$logitem[uid]\">$logitem[username]</a></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\">$logitem[dateline]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\">$logitem[action]</td>";
 		echo "<td class=\"$bgcolor\">";
-		if($logitem[tsubject]) {
+		if($logitem['tsubject'])
+		{
 			echo "<b>$lang->thread</b> <a href=\"../showthread.php?tid=$logitem[tid]\" target=\"_blank\">$logitem[tsubject]</a><br>";
 		}
-		if($logitem[fname]) {
+		if($logitem['fname'])
+		{
 			echo "<b>$lang->forum</b> <a href=\"../forumdisplay.php?fid=$logitem[fid]\" target=\"_blank\">$logitem[fname]</a><br>";
 		}
-		if($logitem[psubject]) {
+		if($logitem['psubject'])
+		{
 			echo "<b>$lang->post</b> <a href=\"../showthread.php?tid=$logitem[tid]&pid=$logitem[pid]#pid$logitem[pid]\">$logitem[psubject]</a>";
 		}
 		echo "</td>";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\">$logitem[ipaddress]</td>";
 		echo "</tr>\n";
 	}
-	if($prevpage || $nextpage) {
+	if($prevpage || $nextpage)
+	{
 		tablesubheader("<center>$firstpage$prevpage$nextpage$lastpage</center>", "", 6);
 	}
 	endtable();
 	cpfooter();
 		
 }
-if($mybb->input['action'] == "") {
+if($mybb->input['action'] == "")
+{
 	$query = $db->query("SELECT DISTINCT l.uid, u.username FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid) ORDER BY u.username ASC");
-	while($user = $db->fetch_array($query)) {
+	while($user = $db->fetch_array($query))
+	{
 		$uoptions .= "<option value=\"$user[uid]\">$user[username]</option>\n";
 	}
 

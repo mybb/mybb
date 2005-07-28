@@ -32,51 +32,78 @@ switch($mybb->input['action'])
 checkadminpermissions("caneditpfields");
 logadmin();
 
-if($mybb->input['action'] == "do_add") {
-	if($type != "text" && $type != "textarea") {
+if($mybb->input['action'] == "do_add")
+{
+	$type = $mybb->input['type'];
+	if($type != "text" && $type != "textarea")
+	{
 		$thing = "$type\n$options";
-	} else {
+	}
+	else
+	{
 		$thing = $type;
 	}
-	$thing = addslashes($thing);
-	$name = addslashes($_POST['name']);
-	$description = addslashes($_POST['description']);
-	$length = intval($_POST['length']);
-	$maxlength = intval($_POST['maxlength']);
-	$db->query("INSERT INTO ".TABLE_PREFIX."profilefields (fid,name,description,disporder,type,length,maxlength,required,editable,hidden) VALUES (NULL,'$name','$description','$disporder','$thing','$length','$maxlength','$required','$editable','$hidden')");
+	$sqlarray = array(
+		"name" => addslashes($mybb->input['name']),
+		"description" => addslashes($mybb->input['description']),
+		"disporder" => intval($mybb->input['disporder']),
+		"type" => addslashes($thing),
+		"length" => intval($mybb->input['length']),
+		"maxlength" => intval($mybb->input['maxlength']),
+		"required" => addslashes($mybb->input['required']),
+		"editable" => addslashes($mybb->input['editable']),
+		"hidden" => addslashes($mybb->input['hidden']),
+		);
+	$db->insert_query(TABLE_PREFIX."profilefields", $sqlarray);
 	$fid = $db->insert_id();
 	$fieldname = "fid$fid";
 	$db->query("ALTER TABLE ".TABLE_PREFIX."userfields ADD $fieldname TEXT NOT NULL");
 	$db->query("OPTIMIZE TABLE ".TABLE_PREFIX."userfields");
 	cpredirect("profilefields.php", $lang->field_added);
 }
-if($mybb->input['action'] == "do_delete") {
-	if($deletesubmit) {	
+if($mybb->input['action'] == "do_delete")
+{
+	if($mybb->input['deletesubmit']) {	
+		$fid = intval($mybb->input['fid']);
 		$db->query("DELETE FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
 		$fieldname = "fid$fid";
 		$db->query("ALTER TABLE ".TABLE_PREFIX."userfields DROP $fieldname");
 		$db->query("OPTIMIZE TABLE ".TABLE_PREFIX."userfields");
 		cpredirect("profilefields.php", $lang->field_deleted);
-	} else {
+	}
+	else
+	{
 		$mybb->input['action'] = "modify";
 	}
 }
 
-if($mybb->input['action'] == "do_edit") {
-	if($type != "text" && $type != "textarea") {
+if($mybb->input['action'] == "do_edit")
+{
+	$type = $mybb->input['type'];
+	if($type != "text" && $type != "textarea")
+	{
 		$thing = "$type\n$options";
-	} else {
+	}
+	else
+	{
 		$thing = $type;
 	}
-	$thing = addslashes($thing);
-	$name = addslashes($_POST['name']);
-	$description = addslashes($_POST['description']);
-	$length = intval($_POST['length']);
-	$maxlength = intval($_POST['maxlength']);
-	$db->query("UPDATE ".TABLE_PREFIX."profilefields SET name='$name', description='$description', disporder='$disporder', type='$thing', length='$length', maxlength='$maxlength', required='$required', editable='$editable', hidden='$hidden' WHERE fid='$fid'");
+	$sqlarray = array(
+		"name" => addslashes($mybb->input['name']),
+		"description" => addslashes($mybb->input['description']),
+		"disporder" => intval($mybb->input['disporder']),
+		"type" => addslashes($thing),
+		"length" => intval($mybb->input['length']),
+		"maxlength" => intval($mybb->input['maxlength']),
+		"required" => addslashes($mybb->input['required']),
+		"editable" => addslashes($mybb->input['editable']),
+		"hidden" => addslashes($mybb->input['hidden']),
+		);
+	$db->update_query(TABLE_PREFIX."profilefields", $sqlarray, "fid='".intval($mybb->input['fid'])."'");
 	cpredirect("profilefields.php", $lang->field_updated);
 }
-if($mybb->input['action'] == "add") {
+if($mybb->input['action'] == "add")
+{
 	cpheader();
 	startform("profilefields.php", "" , "do_add");
 	starttable();
@@ -95,32 +122,36 @@ if($mybb->input['action'] == "add") {
 	endform($lang->add_field, $lang->reset_button);
 	cpfooter();
 }
-if($mybb->input['action'] == "delete") {
+if($mybb->input['action'] == "delete")
+{
+	$fid = intval($mybb->input['fid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
 	$profilefield = $db->fetch_array($query);
 	cpheader();
 	startform("profilefields.php", "", "do_delete");
 	makehiddencode("fid", $fid);
 	starttable();
-	$lang->delete_field = sprintf($lang->delete_field, $profilefield[name]);
+	$lang->delete_field = sprintf($lang->delete_field, $profilefield['name']);
 	tableheader($lang->delete_field, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
-	$lang->delete_confirm = sprintf($lang->delete_confirm, $profilefield[name]);
+	$lang->delete_confirm = sprintf($lang->delete_confirm, $profilefield['name']);
 	makelabelcode("<center>$lang->delete_confirm<br><br>$yes$no</center>", "");
 	endtable();
 	endform();
 	cpfooter();
 }
-if($mybb->input['action'] == "edit") {
+if($mybb->input['action'] == "edit")
+{
+	$fid = intval($mybb->input['fid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
 	$profilefield = $db->fetch_array($query);
 
-	$profilefield['name'] = stripslashes($profilefield[name]);
-	$profilefield['description'] = stripslashes($profilefield[description]);
-	$profilefield['type'] = stripslashes($profilefield[type]);
+	$profilefield['name'] = stripslashes($profilefield['name']);
+	$profilefield['description'] = stripslashes($profilefield['description']);
+	$profilefield['type'] = stripslashes($profilefield['type']);
 
-	$type = explode("\n", $profilefield[type], "2");
+	$type = explode("\n", $profilefield['type'], "2");
 	$typesel[$type[0]] = "selected";
 	$options = $type[1];
 
@@ -144,8 +175,10 @@ if($mybb->input['action'] == "edit") {
 	endform($lang->edit_field, $lang->reset_button);
 	cpfooter();
 }
-if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
-	if(!$noheader) {
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
+{
+	if(!$noheader)
+	{
 		cpheader();
 	}
 	$hopto[] = "<input type=\"button\" value=\"$lang->create_profilefield\" onclick=\"hopto('profilefields.php?action=add');\" class=\"hoptobutton\">";
@@ -162,7 +195,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	echo "<td class=\"subheader\" align=\"center\">$lang->controls</td>\n";
 	echo "</tr>\n";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
-	while($profilefield = $db->fetch_array($query)) {
+	while($profilefield = $db->fetch_array($query))
+	{
 		$bgcolor = getaltbg();
 		startform("profilefields.php");
 		makehiddencode("fid", $profilefield['fid']);

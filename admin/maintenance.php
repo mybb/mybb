@@ -37,16 +37,17 @@ switch($mybb->input['action'])
 
 if($mybb->input['action'] == "do_cache")
 {
-	if($view)
+	$cacheitem = $mybb->input['cacheitem'];
+	if($mybb->input['view'])
 	{
 		cpheader();
 		starttable();
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='-3' AND title='$cacheitem'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='-3' AND title='".addslashes($cacheitem)."'");
 		$cacheitem = $db->fetch_array($query);
 		$cachecontents = unserialize($cacheitem['template']);
 		if(empty($cachecontents))
 		{
-			$cachecontents = "Cache is empty.";
+			$cachecontents = $lang->cache_empty;
 		}
 		ob_start();
 		print_r($cachecontents);
@@ -56,8 +57,7 @@ if($mybb->input['action'] == "do_cache")
 		endtable();
 		cpfooter();
 	}
-
-	if($refresh)
+	if($mybb->input['refresh'])
 	{
 		if(method_exists($cache, "update$cacheitem"))
 		{

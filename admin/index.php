@@ -15,7 +15,8 @@ require "./global.php";
 global $lang;
 $lang->load("index");
 
-if ($mybb->input['action']=="header") {
+if ($mybb->input['action']=="header")
+{
 	echo "<html>\n";
 	echo "<head>";
 	echo "<link rel=\"stylesheet\" href=\"$style\">";
@@ -28,14 +29,16 @@ if ($mybb->input['action']=="header") {
 	echo "</html>";
 }
 
-else if ($mybb->input['action']=="home") {
+elseif ($mybb->input['action']=="home")
+{
 	logadmin();
 	cpheader();
 	// Get statistics
 	$phpversion = phpversion();
 	$dbversion = mysql_get_server_info();
 	$serverload = serverload();
-	if(!$serverload) {
+	if(!$serverload)
+	{
 		$serverload = $lang->unknown;
 	}
 	// Get the number of users
@@ -159,17 +162,20 @@ else if ($mybb->input['action']=="home") {
 	endtable();
 	cpfooter();
 }
-else if($mybb->input['action'] == "vercheck") {
+
+elseif($mybb->input['action'] == "vercheck") {
 	logadmin();
-	$ver = rawurlencode($mybboard[internalver]);
+	$ver = rawurlencode($mybboard['internalver']);
 	$larr = @file("http://www.mybboard.com/vercheck.php?tver=".$ver);
-	if(!$larr) {
+	if(!$larr)
+	{
 		cperror($lang->vercheck_error);
 		exit;
 	}
 	$latestver = implode("", $larr);
 	$lann = @file("http://www.mybboard.com/latestann.php");
-	if($latestver > $mybboard[internalver]) {
+	if($latestver > $mybboard['internalver'])
+	{
 		$latestver = "<font color=\"red\">$latestver</font>";
 		$verwarn = 1;
 	}
@@ -177,22 +183,25 @@ else if($mybb->input['action'] == "vercheck") {
 	starttable();
 	tableheader($lang->vercheck);
 	tablesubheader($lang->vercheck_up2date);
-	makelabelcode($lang->your_version, $mybboard[internalver]);
+	makelabelcode($lang->your_version, $mybboard['internalver']);
 	makelabelcode($lang->latest_version, $latestver);
-	if($verwarn) {
+	if($verwarn)
+	{
 		makelabelcode("<center><b><font color=red>$lang->newer_ver</font></b>", "", 2);
 	}
 	endtable();
 	echo "<br>";
 	starttable();
 	tableheader($lang->latest_ann);
-	while(list($key, $val) = each($lann)) {
+	while(list($key, $val) = each($lann))
+	{
 		$dstore = explode("|\|", $val);
 		$subject = $dstore[0];
 		$item = $dstore[1];
 		$url = $dstore[2];
 		tablesubheader($subject);
-		if(strlen(trim($url)) > 0) {
+		if(strlen(trim($url)) > 0)
+		{
 			$item .= "<div align=\"right\"><a href=\"$url\">$lang->latest_ann_more</a></div>";
 		}
 		makelabelcode("$item");
@@ -201,7 +210,8 @@ else if($mybb->input['action'] == "vercheck") {
 	cpfooter();
 }
 
-else if ($mybb->input['action']=="navigation") {
+elseif ($mybb->input['action']=="navigation")
+{
 ?>
 <html>
 <head>
@@ -286,13 +296,17 @@ makenavselect($lang->nav_maintenance);
 </html>
 <?php
 }
-else if($mybb->input['action'] == "phpinfo") {
+
+elseif($mybb->input['action'] == "phpinfo")
+{
 	phpinfo();
 }
-else {
-	if(!empty($_REQUEST['goto']))
+
+else
+{
+	if(!empty($mybb->input['goto']))
 	{
-		$goto = htmlspecialchars_uni($_GET['goto']);
+		$goto = htmlspecialchars_uni($mybb->input['goto']);
 	}
 	else
 	{

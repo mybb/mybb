@@ -23,13 +23,18 @@ if($mybb->input['action'] == "dbmaint")
 	addacpnav($lang->dbmaint);
 }
 
-if($mybb->input['action'] == "do_dbmaint") {
+if($mybb->input['action'] == "do_dbmaint")
+{
 	$tablelist = "";
-	$tables = $db->list_tables($config[database]);
-	while(list($tablename) = $db->fetch_array($tables, "")) {
-		if(!$tablelist) {
+	$tables = $db->list_tables($config['database']);
+	while(list($tablename) = $db->fetch_array($tables, ""))
+	{
+		if(!$tablelist)
+		{
 			$tablelist = $tablename;
-		} else {
+		}
+		else
+		{
 			$tablelist .= "," . $tablename;
 		}
 	}
@@ -38,7 +43,8 @@ if($mybb->input['action'] == "do_dbmaint") {
 	cpmessage($lang->dbmaint_done);
 }
 
-if($mybb->input['action'] == "dbmaint") {
+if($mybb->input['action'] == "dbmaint")
+{
 	cpheader();
 	startform("misc.php", "" , "do_dbmaint");
 	starttable();

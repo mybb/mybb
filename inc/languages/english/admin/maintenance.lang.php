@@ -10,6 +10,7 @@ $l['view_contents'] = "View Contents";
 $l['refresh_cache'] = "Rebuild Cache";
 $l['nocache_update'] = "The cache was not able to be rebuilt because the required updated function was not found.";
 $l['cache_updated'] = "The cache has been rebuilt. You will now be taken to the cache manager.";
+$l['cache_empty'] = "Cache is empty.";
 
 $l['rebuildstats'] = "Recount Statistics";
 $l['rebuildstats_notice'] = "When you run the recount statistics function, your forum statistics will be recounted and updated on the forum index and statistics page.";
