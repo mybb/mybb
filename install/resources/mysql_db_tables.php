@@ -476,6 +476,7 @@ $tables[] = "CREATE TABLE mybb_threads (
   uid int unsigned NOT NULL default '0',
   username varchar(80) NOT NULL default '',
   dateline bigint(30) NOT NULL default '0',
+  firstpost int unsigned NOT NULL default '0',
   lastpost bigint(30) NOT NULL default '0',
   lastposter varchar(120) NOT NULL default '',
   views int(100) NOT NULL default '0',

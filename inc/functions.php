@@ -2175,4 +2175,13 @@ function win_years($bm, $bd, $by)
 	}
 	return($age);
 }
+
+function update_first_post($tid)
+{
+	global $db;
+	$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
+	$post = $db->fetch_array($query);
+	$firstpostup = array("firstpost" => $post['pid']);
+	$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='$tid'");
+}
 ?>

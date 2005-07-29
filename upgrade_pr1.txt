@@ -9,5 +9,6 @@ Please keep this file updated
 
 UPDATE mybb_users SET salt='';
 ALTER TABLE mybb_users ADD loginkey varchar(50) NOT NULL AFTER salt;
+ALTER TABLE mybb_threads ADD firstpost int unsigned NOT NULL default '0' AFTER dateline;
 
 --

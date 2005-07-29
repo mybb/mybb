@@ -81,13 +81,14 @@ switch($mybb->input['type'])
 		break;
 }
 
-$query = $db->query("SELECT t.*, f.name AS forumname FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE 1=1 $forumlist $unviewable ORDER BY t.dateline DESC LIMIT 0, ".$mybb->input['limit']);
+$query = $db->query("SELECT t.*, f.name AS forumname, p.message AS postmessage FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost) WHERE 1=1 $forumlist $unviewable ORDER BY t.dateline DESC LIMIT 0, ".$mybb->input['limit']);
 while($thread = $db->fetch_array($query))
 {
 	$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 	$thread['forumnanme'] = htmlspecialchars_uni($thread['forumname']);
 	$postdate = mydate($mybb->settings['dateformat'], $thread['dateline'], "", 0);
 	$posttime = mydate($mybb->settings['timeformat'], $thread['dateline'], "", 0);
+	$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 	$pubdate = mydate("r", $thread['dateline'], "", 0);
 	switch($mybb->input['type'])
 	{
@@ -96,7 +97,12 @@ while($thread = $db->fetch_array($query))
 			echo "\t\t\t<guid>".$mybb->settings['bburl']."/showthread.php?tid=".$thread['tid']."&amp;action=newpost</guid>\n";
 			echo "\t\t\t<title>".$thread['subject']."</title>\n";
 			echo "\t\t\t<author>".$thread['username']."</author>\n";
-			echo "\t\t\t<description>".$lang->forum." ".$thread['forumname']."\r\n<br />".$lang->posted_by." ".$thread['username']." ".$lang->on." ".$postdate." ".$posttime."</description>\n";
+			echo "\t\t\t<description>".$lang->forum." ".$thread['forumname']."\r\n<br />".$lang->posted_by." ".$thread['username']." ".$lang->on." ".$postdate." ".$posttime;
+			if($thread['postmessage'])
+			{
+				echo "\n<br />".$thread['postmessage'];
+			}
+			echo "</description>\n";
 			echo "\t\t\t<link>".$mybb->settings['bburl']."/showthread.php?tid=".$thread['tid']."&amp;action=newpost</link>\n";
 			echo "\t\t\t<category domain=\"".$mybb->settings['bburl']."/forumdisplay.php?fid=".$thread['fid']."\">".$thread['forumname']."</category>\n";
 			echo "\t\t\t<pubDate>".$pubdate."</pubDate>\n";
@@ -106,7 +112,12 @@ while($thread = $db->fetch_array($query))
 			echo "\t\t<item>\n";
 			echo "\t\t\t<title>".$thread['subject']."</title>\n";
 			echo "\t\t\t<author>".$thread['username']."</author>\n";
-			echo "\t\t\t<description>".$lang->forum." ".$thread['forumname']."\r\n<br />".$lang->posted_by." ".$thread['username']." ".$lang->on." ".$postdate." ".$posttime."</description>\n";
+			echo "\t\t\t<description>".$lang->forum." ".$thread['forumname']."\r\n<br />".$lang->posted_by." ".$thread['username']." ".$lang->on." ".$postdate." ".$posttime;
+			if($thread['postmessage'])
+			{
+				echo "\n<br />".$thread['postmessage'];
+			}
+			echo "</description>\n";
 			echo "\t\t\t<link>".$mybb->settings['bburl']."/showthread.php?tid=".$thread['tid']."&amp;action=newpost</link>\n";
 			echo "\t\t</item>\n";
 			break;

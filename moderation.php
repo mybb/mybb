@@ -589,6 +589,8 @@ switch($mybb->input['action'])
 			}
 			$db->query("INSERT INTO ".TABLE_PREFIX."posts (pid,tid,fid,subject,icon,uid,username,dateline,message,ipaddress,includesig,smilieoff,edituid,edittime,visible) VALUES $postssql");
 			logmod($modlogdata, $lang->thread_copied);
+
+			update_first_post($newtid);
 		}
 		$query = $db->query("SELECT COUNT(p.pid) AS posts, u.uid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='$tid' GROUP BY u.uid ORDER BY posts DESC");
 		while($posters = $db->fetch_array($query))
@@ -777,7 +779,7 @@ switch($mybb->input['action'])
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='$subject' $pollcode WHERE tid='$tid'");
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET closed='moved|$tid' WHERE closed='moved|$mergetid'");
 		$db->query("UPDATE ".TABLE_PREFIX."favorites SET tid='$tid' WHERE tid='$mergetid'");
-
+		update_first_post($tid);
 		logmod($modlogdata, $lang->thread_merged);
 		deletethread($mergetid);
 		updatethreadcount($tid);
@@ -887,6 +889,8 @@ switch($mybb->input['action'])
 			}
 			markreports($post['pid'], "post");
 		}
+		update_first_post($newtid);
+		update_first_post($tid);
 		logmod($modlogdata, $lang->thread_split);
 		updatethreadcount($tid);
 		updatethreadcount($newtid);

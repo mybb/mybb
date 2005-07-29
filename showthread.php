@@ -121,6 +121,10 @@ if($mybb->input['action'] == "newpost") {
 $plugins->run_hooks("showthread_start");
 
 if($mybb->input['action'] == "thread") {
+	if($thread['firstpost'] == 0)
+	{
+		update_first_post($tid);
+	}
 	// Thread has a poll?
 	if($thread['poll']) {
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".$thread[poll]."'");

@@ -523,6 +523,12 @@ if($mybb->input['action'] == "do_newthread")
 			);
 		$db->insert_query(TABLE_PREFIX."posts", $newpost);
 		$pid = $db->insert_id();
+
+		//
+		// Update ye firstpost column
+		//
+		$firstpostup = array("firstpost" => $pid);
+		$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='$tid'");
 	}
 	
 	// Do moderator options

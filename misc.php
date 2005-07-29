@@ -425,6 +425,7 @@ elseif($mybb->input['action'] == "syndication")
 	$fid = $mybb->input['fid'];
 	$version = $mybb->input['version'];
 	$limit = $mybb->input['limit'];
+	$forums = $mybb->input['forums'];
 
 	addnav($lang->nav_syndication);
 	$unviewable = getunviewableforums();

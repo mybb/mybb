@@ -283,6 +283,8 @@ function upgrade3_dbchanges2()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."helpsections ADD usetranslation CHAR( 3 ) NOT NULL AFTER description;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."helpsections ADD enabled CHAR( 3 ) NOT NULL AFTER usetranslation;");
 	
+	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD firstpost int unsigned NOT NULL default '0' AFTER dateline;");
+
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD attachquota bigint(30) NOT NULL default '0';");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD cancustomtitle varchar(3) NOT NULL;");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."groupleaders (

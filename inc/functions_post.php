@@ -16,6 +16,7 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 	$message = dobadwords($message);
 	if($allowhtml != "yes")
 	{
+		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicode
 		$message = str_replace("<","&lt;",$message);
 		$message = str_replace(">","&gt;",$message);
 	}
@@ -37,10 +38,6 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 	if($allowimgcode != "yes")
 	{
 		$message = str_replace("<img","&lt;img",$message);
-	}
-	if($allowhtml != "yes")
-	{
-		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicode
 	}
 	$message = nl2br($message);
 	return $message;
