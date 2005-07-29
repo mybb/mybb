@@ -77,6 +77,7 @@ $l['redirect_eventadded'] = "Your event has been added successfully.<br />You wi
 $l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";
 $l['redirect_loggedin'] = "You have successfully been logged in.<br />You will now be taken back to where you came from.";
 $l['redirect_loggedout'] = "You have successfully been logged out.<br />You will now be taken back to the forum index.";
+$l['redirect_alreadyloggedout'] = "You were already logged out or have not logged in yet.<br />You will now be taken back to the forum index.";
 $l['redirect_passwordupdated'] = "Thank you, your password has successfully been updated.<br />You will  now be returned to the User CP.";
 $l['redirect_markforumread'] = "The selected forum has been marked as read.";
 $l['redirect_markforumsread'] = "All the forums have been marked as read.";

@@ -1000,6 +1000,10 @@ else if($mybb->input['action'] == "logout")
 {
 	$plugins->run_hooks("member_logout_start");
 
+	if(!$mybb->user['uid'])
+	{
+		redirect("index.php", $lang->redirect_alreadyloggedout);
+	}
 	if($mybb->input['uid'] == $mybb->user['uid'])
 	{
 		mysetcookie("mybbuser", "");
