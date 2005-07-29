@@ -241,7 +241,7 @@ if($mybb->input['action'] == "do_add") {
 	cpredirect("forums.php", $lang->forum_added);
 }
 if($mybb->input['action'] == "do_addmod") {
-	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username']."' LIMIT 1");
+	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."' LIMIT 1");
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{
@@ -351,7 +351,7 @@ if($mybb->input['action'] == "do_edit") {
 			"linkto" => addslashes($mybb->input['linkto']),
 			"type" => $type,
 			"pid" => intval($mybb->input['pid']),
-			"disporder" = intval($mybb->input['disporder']),
+			"disporder" => intval($mybb->input['disporder']),
 			"active" => addslashes($mybb->input['active']),
 			"open" => addslashes($mybb->input['open']),
 			"allowhtml" => addslashes($mybb->input['allowhtml']),
@@ -402,7 +402,7 @@ if($mybb->input['action'] == "do_editmod") {
 			"canmanagethreads" => addslashes($mybb->input['canmanagethreads']),
 			);
 
-		$db->update_query(TABLE_PREFIX."moderators", $sqlarray, "mid='".intval($mybb->input['mid']."'");
+		$db->update_query(TABLE_PREFIX."moderators", $sqlarray, "mid='".intval($mybb->input['mid'])."'");
 		$cache->updatemoderators();
 		cpredirect("forums.php?fid=$fid", $lang->mod_updated);
 	}
