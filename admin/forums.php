@@ -202,10 +202,10 @@ if($mybb->input['action'] == "do_add") {
 		"disporder" => intval($mybb->input['disporder']),
 		"active" => addslashes($mybb->input['active']),
 		"open" => addslashes($mybb->input['open']),
-		"threads" => '0'
-		"posts" => '0'
-		"lastpost" => '0'
-		"lastposter" => '0'
+		"threads" => '0',
+		"posts" => '0',
+		"lastpost" => '0',
+		"lastposter" => '0',
 		"allowhtml" => addslashes($mybb->input['allowhtml']),
 		"allowmycode" => addslashes($mybb->input['allowmycode']),
 		"allowsmilies" => addslashes($mybb->input['allowsmilies']),
