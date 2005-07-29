@@ -1121,7 +1121,7 @@ elseif($mybb->input['action'] == "favorites")
 		$sig = $mybb->user['signature'];
 		$template = "usercp_editsig_current";
 	}
-	if($mybb->input['sig']) {
+	if($sig) {
 		$sigpreview = postify($sig, $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);
 		eval("\$signature = \"".$templates->get($template)."\";");
 	}
