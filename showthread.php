@@ -342,6 +342,7 @@ if($mybb->input['action'] == "thread") {
 	} else { // Linear
 		// Do Multi Pages
 		$perpage = $mybb->settings['postsperpage'];
+		$page = intval($mybb->input['page']);
 		if($mybb->input['pid']) {
 			$query = $db->query("SELECT COUNT(pid) FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid <= '".intval($mybb->input['pid'])."' $visible");
 			$result = $db->result($query, 0);
@@ -355,7 +356,6 @@ if($mybb->input['action'] == "thread") {
 		$pages = $postcount / $perpage;
 		$pages = ceil($pages);
 
-		$page = intval($mybb->input['page']);
 		if($page > $pages)
 		{
 			$page = 1;
