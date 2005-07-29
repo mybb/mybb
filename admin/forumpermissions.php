@@ -129,6 +129,7 @@ if($mybb->input['action'] == "do_edit")
 			"canpostpolls" => $mybb->input['canpostpolls'],
 			"canvotepolls" => $mybb->input['canvotepolls'],
 			"cansearch" => $mybb->input['cansearch'],
+			);
 		if($fid)
 		{
 			$sqlarray['pid'] = '';

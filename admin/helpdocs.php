@@ -72,7 +72,7 @@ if($mybb->input['action'] == "do_delete")
 			$db->query("DELETE FROM ".TABLE_PREFIX."helpdocs WHERE hid='".intval($mybb->input['hid'])."'");
 			cpredirect("helpdocs.php", $lang->doc_deleted);
 		}
-		elseif(!empty($mybb->input['sid'])])
+		elseif(!empty($mybb->input['sid']))
 		{
 			$sid = intval($mybb->input['sid']);
 			$db->query("DELETE FROM ".TABLE_PREFIX."helpsections WHERE sid='".$sid."'");
@@ -113,7 +113,7 @@ if($mybb->input['action'] == "do_edit")
 			"enabled" => addslashes($mybb->input['enabled']),
 			"disporder" => intval($mybb->input['disporder']),
 			);
-		$db->update_query(TABLE_PREFIX."helpdocs", $sqlarray, "hid='".intval($mybb->input['hid']."'");
+		$db->update_query(TABLE_PREFIX."helpdocs", $sqlarray, "hid='".intval($mybb->input['hid'])."'");
 		cpredirect("helpdocs.php", $lang->doc_updated);
 	}
 	elseif($mybb->input['sid'])
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "do_edit")
 			"enabled" => addslashes($mybb->input['enabled']),
 			"disporder" => intval($mybb->input['disporder']),
 			);
-		$db->update_query(TABLE_PREFIX."helpsections", $sqlarray, "sid='".intval($mybb->input['sid']."'");
+		$db->update_query(TABLE_PREFIX."helpsections", $sqlarray, "sid='".intval($mybb->input['sid'])."'");
 		cpredirect("helpdocs.php", $lang->section_updated);
 	}
 }

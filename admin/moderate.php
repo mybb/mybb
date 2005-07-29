@@ -157,7 +157,7 @@ if($mybb->input['action'] == "attachments")
 		{
 			$attachment['filesize'] = $attachment['filesize'] . " " . $lang->size_bytes;
 		}
-		if(empty($attachment['postsubject'])
+		if(empty($attachment['postsubject']))
 		{
 			$attachment['postsubject'] = "[no subject]";
 		}

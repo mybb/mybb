@@ -206,7 +206,7 @@ if($mybb->input['action'] == "addmultiple")
 		}
 	}
 	closedir($dir);
-	if(!isset($mybb->input['page'])
+	if(!isset($mybb->input['page']))
 	{
 		$page = 1;
 	}

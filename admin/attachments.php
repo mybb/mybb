@@ -320,7 +320,7 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		// form for editing an attachment type
-		$atid = intval($mybb->input['atid'])
+		$atid = intval($mybb->input['atid']);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes WHERE atid='".$atid."' LIMIT 1");
 		$type = $db->fetch_array($query);
 		$type['name'] = htmlspecialchars_uni(stripslashes($type['name']));
