@@ -1692,7 +1692,7 @@ function getforum($fid)
 
 function markreports($id, $type="post")
 {
-	global $db, $cache;
+	global $db, $cache, $plugins;
 	switch($type)
 	{
 		case "posts":
