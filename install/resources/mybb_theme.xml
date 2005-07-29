@@ -5689,7 +5689,7 @@ $header
 </table>
 <br />
 <center><input type="submit" value="$lang->do_rate"></center>
-<input type="hidden" name="action" value="do_rate" /><input type="hidden" name="uid" value="$uid" />
+<input type="hidden" name="action" value="do_rate" /><input type="hidden" name="uid" value="$mybb->user[uid]" />
 </form>
 $footer
 </body>
