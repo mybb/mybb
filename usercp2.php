@@ -11,6 +11,7 @@
 
 /* This file does all the misc operations of usercp.php */
 require "./global.php";
+require "./functions_user.php";
 
 if($mybb->user['uid'] == 0)
 {
@@ -30,12 +31,7 @@ if($mybb->input['action'] == "addfavorite")
 	{
 		nopermission();
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$thread['tid']."' AND type='f' AND uid='".$mybb->user[uid]."'");
-	$favorite = $db->fetch_array($query);
-	if(!$favorite['tid'])
-	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$mybb->user[uid]."','".$thread['tid']."','f')");
-	}
+	add_favorite_thread($thread['tid']);
 	if($_SERVER['HTTP_REFERER'])
 	{
 		$url = $_SERVER['HTTP_REFERER'];
@@ -54,7 +50,7 @@ elseif($mybb->input['action'] == "removefavorite")
 	{
 		error($lang->error_invalidthread);
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='".$thread['tid']."' AND type='f' AND uid='".$mybb->user[uid]."'");
+	delete_favorite_thread($thread['tid']);
 	if($_SERVER['HTTP_REFERER'])
 	{
 		$url = $_SERVER['HTTP_REFERER'];
@@ -80,12 +76,7 @@ if($mybb->input['action'] == "addsubscription")
 		{
 			nopermission();
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".$forum['fid']."' AND uid='".$mybb->user[uid]."'");
-		$fsubscription = $db->fetch_array($query);
-		if(!$fsubscription['fid'])
-		{
-			$db->query("INSERT INTO ".TABLE_PREFIX."forumsubscriptions (fsid,fid,uid) VALUES (NULL,'".$forum['fid']."','".$mybb->user[uid]."')");
-		}
+		add_subscribed_forum($forum['fid']);
 		if($_SERVER['HTTP_REFERER'])
 		{
 			$url = $_SERVER['HTTP_REFERER'];
@@ -109,12 +100,7 @@ if($mybb->input['action'] == "addsubscription")
 		{
 			nopermission();
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$thread['tid']."' AND type='s' AND uid='".$mybb->user[uid]."'");
-		$favorite = $db->fetch_array($query);
-		if(!$favorite['tid'])
-		{
-			$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$mybb->user[uid]."','".$thread['tid']."','s')");
-		}
+		add_subscribed_thread($thread['tid']);
 		if($_SERVER['HTTP_REFERER'])
 		{
 			$url = $_SERVER['HTTP_REFERER'];
@@ -136,7 +122,7 @@ elseif($mybb->input['action'] == "removesubscription")
 		{
 			error($lang->error_invalidforum);
 		}
-		$db->query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".$forum['fid']."' AND uid='".$mybb->user[uid]."'");
+		remove_subscribed_forum($forum['fid']);
 		if($_SERVER['HTTP_REFERER'])
 		{
 			$url = $_SERVER['HTTP_REFERER'];
@@ -155,7 +141,7 @@ elseif($mybb->input['action'] == "removesubscription")
 		{
 			error($lang->error_invalidthread);
 		}
-		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='".$thread['tid']."' AND type='s' AND uid='".$mybb->user[uid]."'");
+		remove_subscribed_thread($thread['tid']);
 		if($_SERVER['HTTP_REFERER'])
 		{
 			$url = $_SERVER['HTTP_REFERER'];

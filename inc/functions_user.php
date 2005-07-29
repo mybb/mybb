@@ -1,4 +1,5 @@
 <?php
+
 //
 // Checks if $uid exists in the database
 //
@@ -179,4 +180,134 @@ function update_loginkey($uid)
 	return $loginkey;
 
 }
+
+//
+// Adds a thread ($tid) to a users ($uid) favorite thread list
+// If no uid is supplied, the current logged in user's id will be used
+//
+function add_favorite_thread($tid, $uid="")
+{
+	global $mybb, $db;
+	if(!$uid)
+	{
+		$uid = $mybb['uid'];
+	}
+	if(!$uid)
+	{
+		return;
+	}
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$thread['tid']."' AND type='f' AND uid='".$mybb->user[uid]."'");
+	$favorite = $db->fetch_array($query);
+	if(!$favorite['tid'])
+	{
+		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$uid."','".$tid."','f')");
+	}
+	return true;
+}
+
+//
+// Removes a thread ($tid) from a users ($uid) favorite thread list
+// If no uid is supplied, the current logged in user's id will be used
+//
+function remove_favorite_thread($tid, $uid="")
+{
+	global $mybb, $db;
+	if(!$uid)
+	{
+		$uid = $mybb['uid'];
+	}
+	if(!$uid)
+	{
+		return;
+	}
+	$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='".$tid."' AND type='f' AND uid='".$uid."'");
+	return true;
+}
+
+//
+// Adds a thread ($tid) to a users ($uid) thread subscriptions list
+// If no uid is supplied, the current logged in user's id will be used
+//
+function add_subscribed_thread($tid, $uid="")
+{
+	global $mybb, $db;
+	if(!$uid)
+	{
+		$uid = $mybb['uid'];
+	}
+	if(!$uid)
+	{
+		return;
+	}
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$thread['tid']."' AND type='s' AND uid='".$mybb->user[uid]."'");
+	$favorite = $db->fetch_array($query);
+	if(!$favorite['tid'])
+	{
+		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$uid."','".$tid."','s')");
+	}
+	return true;
+}
+
+//
+// Removes a thread ($tid) from a users ($uid) thread subscriptions list
+// If no uid is supplied, the current logged in user's id will be used
+//
+function remove_subscribed_thread($tid, $uid="")
+{
+	global $mybb, $db;
+	if(!$uid)
+	{
+		$uid = $mybb['uid'];
+	}
+	if(!$uid)
+	{
+		return;
+	}
+	$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='".$tid."' AND type='s' AND uid='".$uid."'");
+	return true;
+}
+
+//
+// Adds a forum ($fid) to a users ($uid) subscribed forums list
+// If no uid is supplied, the current logged in user's id will be used
+//
+function add_subscribed_forum($fid, $uid="")
+{
+	global $mybb, $db;
+	if(!$uid)
+	{
+		$uid = $mybb['uid'];
+	}
+	if(!$uid)
+	{
+		return;
+	}
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".$fid."' AND uid='".$uid."'");
+	$fsubscription = $db->fetch_array($query);
+	if(!$fsubscription['fid'])
+	{
+		$db->query("INSERT INTO ".TABLE_PREFIX."forumsubscriptions (fsid,fid,uid) VALUES (NULL,'".$fid."','".$uid."')");
+	}
+	return true;
+}
+
+//
+// Removes a forum ($fid) from a users ($uid) subscribed forums list
+// If no uid is supplied, the current logged in user's id will be used
+//
+function remove_subscribed_forum($fid, $uid="")
+{
+	global $mybb, $db;
+	if(!$uid)
+	{
+		$uid = $mybb['uid'];
+	}
+	if(!$uid)
+	{
+		return;
+	}
+	$db->query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".$fid."' AND uid='".$uid."'");
+	return true;
+}
+
 ?>
