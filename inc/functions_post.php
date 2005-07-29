@@ -353,7 +353,7 @@ function dophpcode($str)
 
 function makepostbit($post, $pmprevann=0)
 {
-	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter, $titlescache, $page, $templates, $forumpermissions, $attachcache, $lang, $ismod, $inlinecookie, $inlinecount, $HTTP_COOKIE_VARS, $groupscache, $fid;
+	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter, $titlescache, $page, $templates, $forumpermissions, $attachcache, $lang, $ismod, $inlinecookie, $inlinecount, $HTTP_COOKIE_VARS, $groupscache, $fid, $plugins;
 	if($post['visible'] == 0 && $pmprevann == 0)
 	{
 		$altbg = "trow_shaded";
