@@ -22,7 +22,7 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 	}
 	if($allowsmilies != "no")
 	{
-		if($archive == 1)
+		if($archive == "yes")
 		{
 			$message = dosmilies($message, $mybb->settings['bburl']);
 		}
