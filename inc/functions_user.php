@@ -239,7 +239,7 @@ function add_subscribed_thread($tid, $uid="")
 	{
 		return;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$thread['tid']."' AND type='s' AND uid='".$mybb->user[uid]."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$tid."' AND type='s' AND uid='".$uid."'");
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
 	{
