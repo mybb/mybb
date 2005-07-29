@@ -541,7 +541,7 @@ if($mybb->input['action'] == "showresults")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
 	$forum = $db->fetch_array($query);
 	$forumpermissions = forum_permissions($forum['fid']);
 
@@ -552,7 +552,7 @@ if($mybb->input['action'] == "showresults")
 	{
 		error($lang->error_pollpermissions);
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='$pid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 
 	if(!$poll['pid'])
