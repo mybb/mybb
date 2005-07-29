@@ -153,6 +153,7 @@ $l['error_avatartype'] = "Invalid file type. An uploaded avatar must be in GIF, 
 $l['error_uploadfailed'] = "The file upload failed. Please choose a valid file and try again.";
 $l['error_bannedemail'] = "I'm sorry, the email address you are trying to register with is restricted by the administrators of this forum.  Please specify a different email address.";
 $l['error_incompletefields'] = "You left some (or all) of the required fields blank. Please go back and fill them in.";
+$l['error_incorrectday'] = "The day you have entered does not appear to exist.  Please go back and try again.";
 $l['error_loadlimit'] = "The maximum server load limit has been reached.  Please check back later once the server is less busy.";
 $l['error_emailmismatch'] = "The email addresses you entered do not match. Please go back and try again";
 $l['error_nopassword'] = "You did not enter a valid password.";
