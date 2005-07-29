@@ -290,7 +290,7 @@ elseif($mybb->input['action'] == "whoposted")
 {
 	$numposts = 0;
 	$altbg = "trow1";
-	$query = $db->query("SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='$tid' GROUP BY u.uid ORDER BY posts DESC");
+	$query = $db->query("SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='".$mybb->input['tid']."' GROUP BY u.uid ORDER BY posts DESC");
 	while($poster = $db->fetch_array($query))
 	{
 		if($poster['username'] == "")
