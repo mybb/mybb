@@ -11,7 +11,7 @@
 
 function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="yes", $allowimgcode="yes", $archive=0)
 {
-	global $db, $mybb, $theme;
+	global $db, $mybb, $theme, $plugins;
 
 	$message = dobadwords($message);
 	if($allowhtml != "yes")
@@ -39,6 +39,7 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 	{
 		$message = str_replace("<img","&lt;img",$message);
 	}
+	$message = $plugins->run_hooks("parse_message", $message);
 	$message = nl2br($message);
 	return $message;
 }
@@ -760,8 +761,21 @@ function makepostbit($post, $pmprevann=0)
 	}
 	if($pmprevann != 2)
 	{
-		eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
 	}
+	if(!$pmprevann)
+	{
+		eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
+		$plugins->run_hooks("postbit");
+	}
+	elseif($pmprevann == 1)
+	{
+		$plugins->run_hooks("postbit_pm");
+	}
+	elseif($pmprevann == 2)
+	{
+		$plugins->run_hooks("postbit_announcement");
+	}
+
 	eval("\$postbit = \"".$templates->get("postbit")."\";");
 	return $postbit;
 }

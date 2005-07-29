@@ -71,6 +71,7 @@ function outputpage($contents)
 		$contents = gzipencode($contents, $settings['gziplevel']);
 	}
 	echo $contents;
+	$plugins->run_hooks("post_output_page");
 	if(NO_SHUTDOWN)
 	{
 		run_shutdown();
@@ -99,10 +100,8 @@ function parsepage($contents)
 {
 	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup;
 	global $loadpmpopup, $PHP_SELF;
-//	$contents = $lang->parse($contents);
 
 	$contents = str_replace("<navigation>", buildnav(1), $contents);
-	//$contents = stripslashes($contents);
 	$contents = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n".$contents;
 	if($lang->settings['rtl'] == 1)
 	{
@@ -277,8 +276,9 @@ function inlineerror($errors, $title="")
 //
 function nopermission()
 {
-	global $REQUEST_URI, $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang;
+	global $REQUEST_URI, $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang, $plugins;
 	$time = time();
+	$plugins->run_hooks("no_permission");
 	$db->query("UPDATE ".TABLE_PREFIX."online SET uid='".$mybb->user['uid']."', time='$time', location='nopermission', ip='$ipaddress' WHERE ip='$ipaddress' OR uid='".$mybb->user['uid']."'");
 	$plate = "error_nopermission".(($mybb->user['uid']!=0)?"_loggedin":"");
 	$url = $REQUEST_URI;
@@ -291,8 +291,9 @@ function nopermission()
 //
 function redirect($url, $message="You will now be redirected", $title="")
 {
-	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $templates, $lang;
+	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $templates, $lang, $plugins;
 	$timenow = mydate($settings['dateformat'], time()) . " " . mydate($settings['timeformat'], time());
+	$plugins->run_hooks("redirect");
 	if(!$title)
 	{
 		$title = $settings['bbname'];
@@ -1003,7 +1004,7 @@ function updatethreadcount($tid)
 
 function deletethread($tid)
 {
-	global $db, $cache;
+	global $db, $cache, $plugins;
 	$query = $db->query("SELECT p.pid, p.uid, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.tid='$tid'");
 	while($post = $db->fetch_array($query))
 	{
@@ -1043,11 +1044,12 @@ function deletethread($tid)
 	$db->query("DELETE FROM ".TABLE_PREFIX."polls WHERE tid='$tid'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."pollvotes WHERE pid='".$thread['poll']."'");
 	$cache->updatestats();
+	$plugins->run_hooks("delete_thread", $tid);
 }
 
 function deletepost($pid, $tid="")
 {
-	global $db, $cache;
+	global $db, $cache, $plugins;
 	$query = $db->query("SELECT p.pid, p.uid, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.pid='$pid'");
 	$post = $db->fetch_array($query);
 	if($post['usepostcounts'] != "no")
@@ -1056,6 +1058,7 @@ function deletepost($pid, $tid="")
 	}
 	$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE pid='$pid'");
+	$plugins->run_hooks("delete_post", $tid);
 	$cache->updatestats();
 }
 
@@ -1729,6 +1732,7 @@ function markreports($id, $type="post")
 			$db->query("UPDATE ".TABLE_PREFIX."reportedposts SET reportstatus='1' WHERE reportstatus='0'");
 			break;
 	}
+	$plugins->run_hooks("mark_reports");
 	$cache->updatereportedposts();
 }
 
@@ -2100,13 +2104,9 @@ function mynumberformat($number)
 		return number_format($number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
 	}
 }
-/*
-function generate_loginkey()
-{
-	return random_str(50);
-}*/
 
-// Birthday code fix's provided meme
+
+// Birthday code fix's provided by meme
 function get_weekday($month, $day, $year)
 {
 	$h = 4;
