@@ -310,4 +310,69 @@ function remove_subscribed_forum($fid, $uid="")
 	return true;
 }
 
+//
+// Constructs the User CP navigation menu
+//
+function usercp_menu()
+{
+	global $mybb, $templates, $theme, $plugins, $lang, $usercpnav, $usercpmenu;
+
+	$lang->load("usercpnav");
+
+	//
+	// Add the default items as plugins with separated priorities of 10
+	//
+	$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
+	$plugins->add_hook("usercp_menu", "usercp_menu_profile", 20);
+	$plugins->add_hook("usercp_menu", "usercp_menu_misc", 30);
+
+	//
+	// Run the plugin hooks
+	//
+	$plugins->run_hooks("usercp_menu");
+	global $usercpmenu;
+
+	eval("\$usercpnav = \"".$templates->get("usercp_nav")."\";");
+
+	$plugins->run_hooks("usercp_menu_built");
+}
+
+function usercp_menu_messenger()
+{
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
+
+	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
+	while(list($key, $folders) = each($foldersexploded))
+	{
+		$folderinfo = explode("**", $folders, 2);
+		$folderlinks .= "<li class=\"pmfolders\"><a href=\"private.php?fid=$folderinfo[0]\">$folderinfo[1]</a></li>\n";
+	}
+	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_messenger")."\";");
+}
+
+function usercp_menu_profile()
+{
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
+
+	if($mybbgroup['canchangename'] != "no")
+	{
+		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
+	}
+	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");
+}
+
+function usercp_menu_misc()
+{
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
+
+	$query = $db->query("SELECT COUNT(*) AS draftcount FROM ".TABLE_PREFIX."posts WHERE visible='-2' AND uid='".$mybb->user['uid']."'");
+	$count = $db->fetch_array($query);
+	$draftcount = "(".mynumberformat($count['draftcount']).")";
+	if($count['draftcount'] > 0)
+	{
+		$draftstart = "<strong>";
+		$draftend = "</strong>";
+	}
+	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
+}
 ?>

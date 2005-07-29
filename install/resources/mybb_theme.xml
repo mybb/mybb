@@ -790,8 +790,11 @@ $footer
 <tr>
 <td class="thead"><strong>$lang->ucp_nav_menu</strong></td>
 </tr>
-$yourblog
-<tr><td class="tcat"><span class="smalltext"><strong>$lang->ucp_nav_messenger</strong></span></td></tr>
+$usercpmenu
+</table>
+</td>]]></template>
+		<template name="usercp_nav_messenger"><![CDATA[<tr>
+<td class="tcat"><span class="smalltext"><strong>$lang->ucp_nav_messenger</strong></span></td></tr>
 <tr>
 <td class="trow1">
 <ul class="usercpnav">
@@ -804,8 +807,9 @@ $folderlinks
 <li><a href="private.php?action=export">$lang->ucp_nav_export_messages</a></li>
 </ul>
 </td>
-</tr>
-<tr><td class="tcat"><span class="smalltext"><strong>$lang->ucp_nav_profile</strong></span></td></tr>
+</tr>]]></template>
+		<template name="usercp_nav_profile"><![CDATA[<tr>
+<td class="tcat"><span class="smalltext"><strong>$lang->ucp_nav_profile</strong></span></td></tr>
 <tr>
 <td class="trow1">
 <ul class="usercpnav">
@@ -818,8 +822,9 @@ $changenameop
 <li><a href="usercp.php?action=avatar">$lang->ucp_nav_change_avatar</a></li>
 </ul>
 </td>
-</tr>
-<tr><td class="tcat"><span class="smalltext"><strong>$lang->ucp_nav_misc</strong></span></td></tr>
+</tr>]]></template>
+		<template name="usercp_nav_misc"><![CDATA[<tr>
+<td class="tcat"><span class="smalltext"><strong>$lang->ucp_nav_misc</strong></span></td></tr>
 <tr>
 <td class="trow1">
 <ul class="usercpnav">
@@ -836,9 +841,7 @@ $changenameop
 <li><a href="usercp.php">$lang->ucp_nav_home</a></li>
 </ul>
 </td>
-</tr>
-</table>
-</td>]]></template>
+</tr>]]></template>
 		<template name="usercp_profile_away"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>$lang->away_information</strong></legend>

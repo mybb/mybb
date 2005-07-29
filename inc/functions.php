@@ -1658,14 +1658,6 @@ function pageheaders() {
 	}
 }
 
-function buildpreferences()
-{
-	global $settings, $mybbuser;
-	// Does the user have a custom date and time format?
-	//   - Stupid Reply 302: I think not my friend.....
-die("using depreciated code");
-}
-
 function getthread($tid)
 {
 	global $tcache, $db;
@@ -1841,42 +1833,6 @@ if(!function_exists("file_get_contents"))
 		}
 		return $false;
 	}
-}
-function makeucpnav()
-{
-	global $mybbgroup, $mybb, $mybbuser, $templates, $theme, $lang, $db, $usercpnav, $modulecache;
-	$lang->load("usercpnav");
-	if($modulecache['weblogs']['active'] == 1)
-	{
-		$lang->load("weblogs");
-		$query = $db->query("SELECT bid FROM ".TABLE_PREFIX."weblogs WHERE uid='".$mybb->user['uid']."'");
-		$blog = $db->fetch_array($query);
-		if($blog['bid'])
-		{
-			eval("\$manageblog = \"".$templates->get("usercp_nav_blog_manage")."\";");
-		}
-		eval("\$yourblog = \"".$templates->get("usercp_nav_blog")."\";");
-	}
-
-	if($mybbgroup['canchangename'] != "no")
-	{
-		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
-	}
-	$query = $db->query("SELECT COUNT(*) AS draftcount FROM ".TABLE_PREFIX."posts WHERE visible='-2' AND uid='".$mybb->user['uid']."'");
-	$count = $db->fetch_array($query);
-	$draftcount = "(".mynumberformat($count['draftcount']).")";
-	if($count['draftcount'] > 0)
-	{
-		$draftstart = "<strong>";
-		$draftend = "</strong>";
-	}
-	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	while(list($key, $folders) = each($foldersexploded))
-	{
-		$folderinfo = explode("**", $folders, 2);
-		$folderlinks .= "<li class=\"pmfolders\"><a href=\"private.php?fid=$folderinfo[0]\">$folderinfo[1]</a></li>\n";
-	}
-	eval("\$usercpnav = \"".$templates->get("usercp_nav")."\";");
 }
 
 function alt_trow($reset=0)

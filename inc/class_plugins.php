@@ -29,7 +29,7 @@ class pluginSystem
 		}
 	}
 
-	function add_hook($hook, $function, $file="", $priority=10)
+	function add_hook($hook, $function, $priority=10, $file="")
 	{
 		// Check to see if we already have this hook running at this priority
 		if(is_array($this->hooks[$hook][$priority][$function]))

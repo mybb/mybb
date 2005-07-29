@@ -12,9 +12,11 @@
 
 $templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage";
 $templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav_changename,usercp_nav,private_empty_folder,private_empty,posticons";
+$templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc";
 
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/functions_user.php";
 
 $autocomplete = "on";
 // Autocomplete for buddy list when composing PM's
@@ -39,7 +41,6 @@ if($mybb->input['action'] == "getbuddies" && $mybb->user['uid'])
 
 // Load global language phrases
 $lang->load("private");
-$lang->load("usercpnav");
 
 if($mybb->user['uid'] == "/" || $mybb->user['uid'] == "0" || $mybb->usergroup['canusepms'] == "no")
 {
@@ -85,7 +86,7 @@ $folderjump .= "</select>\n";
 $folderjump2 .= "</select>\n";
 $folderoplist .= "</select>\n";
 
-makeucpnav();
+usercp_menu();
 
 
 // Make navigation

@@ -12,8 +12,10 @@
  
 $templatelist = "usercp,usercp_home,usercp_nav,usercp_profile,error_nopermission,buddy_online,buddy_offline,usercp_changename,usercp_nav_changename";
 $templatelist .= "usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups";
+$templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc";
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/functions_user.php";
 
 // Load global language phrases
 $lang->load("usercp");
@@ -29,7 +31,7 @@ if(!$mybb->user['pmfolders'])
 	$db->query("UPDATE ".TABLE_PREFIX."users SET pmfolders='".$mybb->user[pmfolders]."' WHERE uid='".$mybb->user[uid]."'");
 }
 
-makeucpnav();
+usercp_menu();
 
 if($mybb->input['action'] == "do_editsig")
 {
