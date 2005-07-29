@@ -1424,9 +1424,9 @@ elseif($mybb->input['action'] == "editlists")
 		$newlist .= "$comma2$user[uid]";
 		$comma2 = ",";
 	}
-	$type = $list."list";
+	$type = $mybb->input['list']."list";
 	$db->query("UPDATE ".TABLE_PREFIX."users SET $type='$newlist' WHERE uid='".$mybb->user[uid]."'");
-	$redirecttemplate = "redirect_".$list."updated";
+	$redirecttemplate = "redirect_".$mybb->input['list']."updated";
 	$plugins->run_hooks("usercp_do_editlists_end");
 	redirect("usercp.php?action=editlists", $lang->$redirecttemplate);
 }
