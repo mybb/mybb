@@ -1169,7 +1169,7 @@ elseif($mybb->input['action'] == "favorites")
 	$plugins->run_hooks("usercp_do_editsig_process");
 	$db->update_query(TABLE_PREFIX."users", $newsignature, "uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks("usercp_do_editsig_end");
-	redirect("usercp.php", $lang->redirect_sigupdated);
+	redirect("usercp.php?action=editsig", $lang->redirect_sigupdated);
 
 }
 elseif($mybb->input['action'] == "avatar")

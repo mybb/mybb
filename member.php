@@ -195,7 +195,7 @@ if($mybb->input['action'] == "do_register")
 		}
 	}
 
-	if($mybb->input['allownotices'] == "no")
+	if($mybb->input['allownotices'] != "yes")
 	{
 		$allownotices = "no";
 	}
@@ -225,7 +225,7 @@ if($mybb->input['action'] == "do_register")
 		$hideemailcheck = "checked=\"checked\"";
 	}
 
-	if(!$mybb->input['emailnotify'] != "yes")
+	if($mybb->input['emailnotify'] != "yes")
 	{
 		$emailnotify = "no";
 	}
@@ -235,7 +235,7 @@ if($mybb->input['action'] == "do_register")
 		$emailnotifycheck = "checked=\"checked\"";
 	}
 	
-	if(!$mybb->input['receivepms'] == "no")
+	if($mybb->input['receivepms'] != "yes")
 	{
 		$receivepms = "no";
 	}

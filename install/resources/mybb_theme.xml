@@ -461,8 +461,8 @@ $pollbox
 <td class="thead" colspan="2"><strong>$rating $thread[subject]</strong></td>
 </tr>
 <tr>
-<td class="tcat"  width="15%"><span class="smalltext"><strong>$lang->author</strong></span></td>
-<td class="tcat " width="85%"><span class="smalltext"><strong>$lang->message</strong></span></td>
+<td class="tcat" width="15%"><span class="smalltext"><strong>$lang->author</strong></span></td>
+<td class="tcat" width="85%"><span class="smalltext"><strong>$lang->message</strong></span></td>
 </tr>
 $posts
 $threadpages
@@ -752,11 +752,11 @@ $posticons
 <tr>
 <td class="trow2" valign="top"><strong>$lang->your_message</strong><br /><p align="center">$smilieinserter</p></td>
 <td class="trow2">
-<table cellspacing="0" cellpadding="0" border="0" width="100%">
+<table cellspacing="0" cellpadding="0" border="0">
 $codebuttons
 <tr>
 <td colspan="2">
-<textarea name="message" rows="20" cols="75" tabindex="3">$message</textarea>
+<textarea name="message" rows="20" cols="70" tabindex="3">$message</textarea>
 </td>
 </tr>
 </table>
