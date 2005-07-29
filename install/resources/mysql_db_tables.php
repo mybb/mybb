@@ -21,7 +21,7 @@ $tables[] = "CREATE TABLE mybb_adminlog (
 
 
 $tables[] = "CREATE TABLE mybb_adminoptions (
-  uid int unsigned NOT NULL default '0',
+  uid int(10) NOT NULL default '0',
   cpstyle varchar(50) NOT NULL default '',
   notes text NOT NULL,
   permsset int(1) NOT NULL default '0',
@@ -434,7 +434,7 @@ $tables[] = "CREATE TABLE mybb_templates (
   tid int unsigned NOT NULL auto_increment,
   title varchar(120) NOT NULL default '',
   template text NOT NULL,
-  sid smallint(6) NOT NULL default '0',
+  sid int(10) NOT NULL default '0',
   PRIMARY KEY  (tid)
 ) TYPE=MyISAM;";
 
