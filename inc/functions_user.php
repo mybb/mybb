@@ -190,7 +190,7 @@ function add_favorite_thread($tid, $uid="")
 	global $mybb, $db;
 	if(!$uid)
 	{
-		$uid = $mybb['uid'];
+		$uid = $mybb->user['uid'];
 	}
 	if(!$uid)
 	{
@@ -214,7 +214,7 @@ function remove_favorite_thread($tid, $uid="")
 	global $mybb, $db;
 	if(!$uid)
 	{
-		$uid = $mybb['uid'];
+		$uid = $mybb->user['uid'];
 	}
 	if(!$uid)
 	{
@@ -233,7 +233,7 @@ function add_subscribed_thread($tid, $uid="")
 	global $mybb, $db;
 	if(!$uid)
 	{
-		$uid = $mybb['uid'];
+		$uid = $mybb->user['uid'];
 	}
 	if(!$uid)
 	{
@@ -276,7 +276,7 @@ function add_subscribed_forum($fid, $uid="")
 	global $mybb, $db;
 	if(!$uid)
 	{
-		$uid = $mybb['uid'];
+		$uid = $mybb->user['uid'];
 	}
 	if(!$uid)
 	{
@@ -300,7 +300,7 @@ function remove_subscribed_forum($fid, $uid="")
 	global $mybb, $db;
 	if(!$uid)
 	{
-		$uid = $mybb['uid'];
+		$uid = $mybb->user['uid'];
 	}
 	if(!$uid)
 	{
