@@ -184,7 +184,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$previewmessage = $mybb->input['message'];
 	}
-	$message = htmlspecialchars_uni($mybb->input['message']);
+	if(!$message) 
+	{
+	$message = $mybb->input['message'];
+	}
+	$message = htmlspecialchars_uni($message);
 	$editdraftpid = "";
 
 	if($mybb->input['previewpost'] || $maximageserror)
