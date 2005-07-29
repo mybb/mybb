@@ -1471,6 +1471,7 @@ elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 	if($mybb->input['action'] == "rate")
 	{
 		$plugins->run_hooks("member_rate_end");
+		
 		$uid = $mybb->input['uid'];
 		eval("\$rate = \"".$templates->get("member_rate")."\";");
 		outputpage($rate);
