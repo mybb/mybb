@@ -560,7 +560,7 @@ if($mybb->input['action'] == "showresults")
 		error($lang->error_invalidpoll);
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='$pid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='".intval($mybb->input['pid'])."'");
 	$thread = $db->fetch_array($query);
 
 	if(!$thread['tid'])
