@@ -88,8 +88,8 @@ if($mybb->input['action'] == "addsubscription")
 		redirect($url, $lang->redirect_forumsubscriptionadded);
 	}
 	else
-	{	
-		$query = $db->query("SELECT tid,fid FROM ".TABLE_PREFIX."threads WHERE tid='".intval($thread['tid'])."'");
+	{
+		$query = $db->query("SELECT tid, fid FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
 		$thread = $db->fetch_array($query);
 		if(!$thread['tid'])
 		{
@@ -116,7 +116,7 @@ elseif($mybb->input['action'] == "removesubscription")
 {
 	if($mybb->input['type'] == "forum")
 	{
-		$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".intval($mybb->input['fid'])."' AND uid='".$mybb->user[uid]."'");
+		$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".intval($mybb->input['fid'])."' AND uid='".$mybb->user['uid']."'");
 		$forum = $db->fetch_array($query);
 		if(!$forum['fid'])
 		{
@@ -135,7 +135,7 @@ elseif($mybb->input['action'] == "removesubscription")
 	}
 	else
 	{
-		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."favorites WHERE tid='".intval($mybb->input['tid'])."' AND type='s' AND uid='".$mybb->user[uid]."'");
+		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."favorites WHERE tid='".intval($mybb->input['tid'])."' AND type='s' AND uid='".$mybb->user['uid']."'");
 		$thread = $db->fetch_array($query);
 		if(!$thread['tid'])
 		{

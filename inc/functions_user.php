@@ -257,7 +257,7 @@ function remove_subscribed_thread($tid, $uid="")
 	global $mybb, $db;
 	if(!$uid)
 	{
-		$uid = $mybb['uid'];
+		$uid = $mybb->user['uid'];
 	}
 	if(!$uid)
 	{
