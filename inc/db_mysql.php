@@ -110,7 +110,7 @@ class bbDB {
 				"<td bgcolor=\"#cccccc\"><strong>#".$this->query_count." - Write Query</strong></td>\n".
 				"</tr>\n".
 				"<tr bgcolor=\"#fefefe\">\n".
-				"<td><span style=\"font: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"<td><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
 				"<tr>\n".
 				"<td bgcolor=\"#ffffff\">Query Time: ".$qtime."</td>\n".
