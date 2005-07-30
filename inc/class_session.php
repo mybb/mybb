@@ -471,3 +471,4 @@ class session
 		}
 		return $array;
 	}
+}
