@@ -967,9 +967,6 @@ else if($mybb->input['action'] == "do_login")
 	$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'");
 	$db->query("UPDATE ".TABLE_PREFIX."online SET uid='".$user['uid']."' WHERE sid='".$session->sid."'");
 	
-	print("DELETE FROM ".TABLE_PREFIX."online WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'");
-	print("UPDATE ".TABLE_PREFIX."online SET uid='".$user['uid']."' WHERE sid='".$session->sid."'");
-
 	mysetcookie("mybbuser", $user['uid']."_".$user['loginkey']);
 	mysetcookie("sid", $session->sid, -1);
 
