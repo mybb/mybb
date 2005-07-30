@@ -807,21 +807,27 @@ function getposticons()
 //
 // MyBB setcookie() wrapper
 //
-function mysetcookie($name, $value="")
+function mysetcookie($name, $value="", $expires="")
 {
 	global $settings, $mybbuser;
 	if(!$settings['cookiepath'])
 	{
 		$settings['cookiepath'] = "/";
 	}
-
-	if($mybbuser['rememberme'] == "no")
+	if($expires == -1)
 	{
-		$expires = "";
+		$expires = 0;
 	}
 	else
 	{
-		$expires = time() + (60*60*24*365); // Make the cookie expire in a years time
+		if($mybbuser['rememberme'] == "no")
+		{
+			$expires = "";
+		}
+		else
+		{
+			$expires = time() + (60*60*24*365); // Make the cookie expire in a years time
+		}
 	}
 	if($settings['cookiedomain'])
 	{

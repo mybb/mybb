@@ -142,8 +142,8 @@ else
 		}
 		elseif(strstr($user['sid'], "bot="))
 		{
-			$botkey = str_replace("bot=", "", $user['sid']);
-			$user['bot'] = $bots[$botkey];
+			$botkey = strtolower(str_replace("bot=", "", $user['sid']));
+			$user['bot'] = $session->bots[$botkey];
 			$guests[] = what($user);
 			$botcount++;
 		}

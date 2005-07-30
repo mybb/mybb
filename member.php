@@ -957,31 +957,6 @@ else if($mybb->input['action'] == "do_login")
 {
 	$plugins->run_hooks("member_do_login_start");
 
-	/*
-	$query = $db->query("SELECT uid, username,password,salt FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
-	$user = $db->fetch_array($query);
-	if(!$user['uid'])
-	{
-		error($lang->error_invalidusername);
-	}
-	if(!$user['salt'])
-	{
-		$user['salt'] = random_str();
-		// Rebuild users password
-		$user['password'] = md5(md5($user['salt']).$user['password']);
-		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='".$user['salt']."', password='".$user['password']."' WHERE uid='".$user['uid']."'");
-	}
-	if(!$user['loginkey'])
-	{
-		$user['loginkey'] = generate_loginkey();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET loginkey='".$user['loginkey']."' WHERE uid='".$user['uid']."'");
-	}
-
-	if($user['password'] != md5(md5($user['salt']).md5($mybb->input['password'])))
-	{
-	}
-	*/
-
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 
 	if(!$user['uid'])
@@ -989,7 +964,14 @@ else if($mybb->input['action'] == "do_login")
 		error($lang->error_invalidpassword);
 	}
 
+	$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'");
+	$db->query("UPDATE ".TABLE_PREFIX."online SET uid='".$user['uid']."' WHERE sid='".$session->sid."'");
+	
+	print("DELETE FROM ".TABLE_PREFIX."online WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'");
+	print("UPDATE ".TABLE_PREFIX."online SET uid='".$user['uid']."' WHERE sid='".$session->sid."'");
+
 	mysetcookie("mybbuser", $user['uid']."_".$user['loginkey']);
+	mysetcookie("sid", $session->sid, -1);
 
 	if(function_exists("loggedIn"))
 	{
@@ -1018,7 +1000,7 @@ else if($mybb->input['action'] == "logout")
 	if($mybb->input['uid'] == $mybb->user['uid'])
 	{
 		mysetcookie("mybbuser", "");
-	
+		mysetcookie("sid", 0, -1);
 		if($mybb->user['uid'])
 		{
 			$time = time();

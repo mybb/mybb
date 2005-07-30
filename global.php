@@ -33,7 +33,9 @@ if(is_dir("install") && !file_exists("install/lock"))
 // Create this users session
 //
 
-require "./inc/sessions.php";
+require "./inc/class_session.php";
+$session = new session;
+$session->init();
 
 $plugins->run_hooks("global_start");
 

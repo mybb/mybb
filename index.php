@@ -74,8 +74,8 @@ if($mybb->settings['showwol'] != "no")
 		}
 		elseif(strstr($user['sid'], "bot="))
 		{
-			$botkey = str_replace("bot=", "", $user['sid']);
-			$onlinemembers .= $comma.formatname($bots[$botkey], $botgroup);
+			$botkey = strtolower(str_replace("bot=", "", $user['sid']));
+			$onlinemembers .= $comma.formatname($session->bots[$botkey], $botgroup);
 			$comma = ", ";
 			$botcount++;
 		}
