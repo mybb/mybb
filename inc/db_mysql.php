@@ -54,7 +54,7 @@ class bbDB {
 		$this->query_count++;
 		if($mybb->debug)
 		{
-			explain_query($string, $qtime);
+			$this->explain_query($string, $qtime);
 		}
 		return $query;
 	}
