@@ -52,8 +52,14 @@ h1 { margin-bottom: 7; }
 <td width="50%" align="center" valign="top" colspan="2">
 <?php
 $text = implode("", file("update.txt"));
-if($text == "")
+if(!is_writeable("update.txt"))
 {
+	$error = "Update.txt is not writable. Please CHMOD it to 777";
+	$text = "";
+}
+elseif($text == "")
+{
+	$error = "";
 	$text = "Dummy Text";
 }
 ?>
@@ -61,7 +67,7 @@ if($text == "")
 (double click the text below, change it somehow then press enter or deselect it)<br /><br />
 <table>
 <tr>
-<td><span style="font-size: 13px;" ondblclick="javascript:instantEdit(this, 'testac.php?instantupdate=1');"><?php echo $text; ?></span></td>
+<td><?php echo $error; ?><span style="font-size: 13px;" ondblclick="javascript:instantEdit(this, 'testac.php?instantupdate=1');"><?php echo $text; ?></span></td>
 </tr>
 </table>
 </td>
