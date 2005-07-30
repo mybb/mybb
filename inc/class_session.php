@@ -63,7 +63,7 @@ class session
 			$this->sid = 0;
 		}
 
-
+echo $this->sid;
 		//
 		// If we have a valid session id and user id, load that users session
 		//
