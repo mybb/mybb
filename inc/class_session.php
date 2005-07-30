@@ -63,7 +63,6 @@ class session
 			$this->sid = 0;
 		}
 
-echo $this->sid;
 		//
 		// If we have a valid session id and user id, load that users session
 		//
@@ -419,13 +418,12 @@ echo $this->sid;
 		$onlinedata['time'] = time();
 		$onlinedata['location'] = get_current_location();
 		$onlinedata['useragent'] = $this->useragent;
-		$db->update_query(TABLE_PREFIX."online", $onlinedata, "sid='".$sid."'");
+		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
 	}
 
 	function create_session($uid="")
 	{
 		global $db;
-
 		if($uid > 0)
 		{
 			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$uid."'");
@@ -449,7 +447,7 @@ echo $this->sid;
 		$onlinedata['location'] = get_current_location();
 		$onlinedata['useragent'] = $this->useragent;
 
-		$db->insert_query(TABLE_PREFIX."online", $onlinedata);
+		$db->insert_query(TABLE_PREFIX."sessions", $onlinedata);
 		$this->sid = $onlinedata['sid'];
 		$this->uid = $onlinedata['uid'];
 	}
