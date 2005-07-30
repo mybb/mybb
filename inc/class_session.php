@@ -111,7 +111,7 @@ class session
 
 	function load_user($uid, $password="")
 	{
-		global $_COOKIE, $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang, $mybbgroups, $loadpmpopup, $session;
+		global $_COOKIE, $mybbuser, $mybb, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang, $mybbgroups, $loadpmpopup, $session;
 
 		$query = $db->query("SELECT u.*, f.*, COUNT(pms.pmid) AS pms_total, SUM(IF(pms.dateline>u.lastvisit AND pms.folder='1','1','0')) AS pms_new, SUM(IF(pms.status='0' AND pms.folder='1','1','0')) AS pms_unread, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."privatemessages pms ON (pms.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) WHERE u.uid='$uid' GROUP BY u.uid");
 		$mybb->user = $db->fetch_array($query);
@@ -147,6 +147,7 @@ class session
 		//
 		// If the last visit was over 900 seconds (session time out) ago then update lastvisit
 		//
+		$time = time();
 		if($time - $mybb->user['lastactive'] > 900)
 		{
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit=lastactive, lastactive='$time' $popupadd WHERE uid='".$mybb->user[uid]."'");
@@ -297,10 +298,11 @@ class session
 
 	function load_guest()
 	{
-		global $_COOKIE, $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang;
+		global $_COOKIE, $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $lang;
 		//
 		// Set up some defaults
 		//
+		$time = time();
 		$mybb->user['usergroup'] = 1;
 		$mybb->user['username'] = "";
 		$mybb->user['username'] = "";
@@ -366,10 +368,11 @@ class session
 
 	function load_spider($spider)
 	{
-		global $_COOKIE, $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $bots, $lang, $botgroup;
+		global $_COOKIE, $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $bots, $lang, $botgroup;
 		//
 		// Set up some defaults
 		//
+		$time = time();
 		$this->is_spider = true;
 		$spidername = $bots[$spider];
 		$mybb->user['usergroup'] = $botgroup;

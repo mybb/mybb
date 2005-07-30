@@ -98,7 +98,7 @@ class bbDB {
 			}
 			$this->explain .=
 				"<tr>\n".
-				"<td colspan=\"8\">Query Time: ".$qtime."</td>\n".
+				"<td colspan=\"8\" bgcolor=\"#ffffff\">Query Time: ".$qtime."</td>\n".
 				"</tr>\n".
 				"</table>\n".
 				"<br />\n";
@@ -112,6 +112,10 @@ class bbDB {
 				"<tr bgcolor=\"#fefefe\">\n".
 				"<td><span style=\"font: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
+				"<tr>\n".
+				"<td bgcolor=\"#ffffff\">Query Time: ".$qtime."</td>\n".
+				"</tr>\n".
+				"</table>\n".
 				"</table>\n".
 				"<br />\n";
 		}
