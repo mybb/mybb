@@ -4745,13 +4745,14 @@ $footer
 		<template name="printthread"><![CDATA[<html>
 <head>
 <title>$thread[subject] - $lang->printable_version</title>
-$headerinclude
+<meta http-equiv="Content-Type" content="text/html; charset=$charset" />
+<style type="text/css">
+body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
+.largetext { font-family: Verdana, Arial, sans-serif; font-size: medium; font-weight: bold; }
+</style>
 </head>
 <body>
-<table width="100%">
-<tr>
-<td width="100%">
-<table width="$theme[tablewidth]" align="center">
+<table width="98%" align="center">
 <tr>
 <td valign="top"><a href="index.php"><img src="$theme[logo]" alt="$settings[bbname]" border="0"></a></td>
 </tr>
@@ -4759,18 +4760,14 @@ $headerinclude
 <td>
 <span class="largetext">$thread[subject] - $lang->printable_version</span><br />
 <br />
-<font>
--$settings[bbname] (<em>$settings[bburl]</em>)<br />
++- $settings[bbname] (<em>$settings[bburl]</em>)<br />
 $breadcrumb
-+$tdepth $lang->thread $thread[subject] (<em>/showthread.php?tid=$tid</em>)
-<hr size="1">
-</td>
++$tdepth $lang->thread $thread[subject] (<em>/showthread.php?tid=$tid</em>)</td>
+</tr>
+<tr>
+<td><br /><hr size="1">$postrows</td>
 </tr>
 </table>
-</td>
-</tr>
-</table>
-$postrows
 </body>
 </html>]]></template>
 		<template name="forumbit_depth1_forum_lastpost"><![CDATA[<span class="smalltext">
