@@ -419,7 +419,7 @@ elseif($mybb->input['action'] == "do_send")
 	{
 		$query = $db->query("SELECT COUNT(*) AS total FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$mybb->user['uid']."'");
 		$pmscount = $db->fetch_array($query);
-		if($pmscount['total'] < $mybb->usergroup['pmquota'])
+		if($mybb->usergroup['pmquota'] == "0" || $pmscount['total'] < $mybb->usergroup['pmquota'])
 		{
 			$savedcopy = array(
 				"pmid" => "NULL",
