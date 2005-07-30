@@ -388,7 +388,7 @@ $loginform
 $footer
 </body>
 </html>]]></template>
-		<template name="header_welcomeblock_member"><![CDATA[				<div style="float:right">$lang->welcome_current_time</div>$lang->welcome_back (<a href="$settings[bburl]/usercp.php"><strong>$lang->welcome_usercp</strong></a>$admincplink &mdash; <a href="$settings[bburl]/member.php?action=logout&uid=$mybbuser[uid]">$lang->welcome_logout</a>)<br />
+		<template name="header_welcomeblock_member"><![CDATA[	$lang->welcome_back (<a href="$settings[bburl]/usercp.php"><strong>$lang->welcome_usercp</strong></a>$admincplink &mdash; <a href="$settings[bburl]/member.php?action=logout&uid=$mybbuser[uid]">$lang->welcome_logout</a>)<br />
 				<span class="links">
 					<a href="#" onclick="popupWin('misc.php?action=buddypopup', 'buddyList', 170, 300);">$lang->welcome_open_buddy_list</a>
 				</span>
@@ -1592,7 +1592,8 @@ $footer
 			<div id="copyright">
 				<div id="debug"><debugstuff></div>
 $lang->powered_by <a href="http://www.mybboard.com" target="_blank">MyBB</a> $mybbversion<br />
-				$lang->copyright &copy; $copyyear <strong><a href="http://www.mybboard.com" target="_blank">MyBB Group</a></strong>
+				$lang->copyright &copy; $copyyear <strong><a href="http://www.mybboard.com" target="_blank">MyBB Group</a></strong><br />
+$lang->welcome_current_time
 <br class="clear" />
 		</div>
 		</div>]]></template>
@@ -2422,7 +2423,7 @@ $footer
 </table>
 </td></tr></table>
 ]]></template>
-		<template name="header_welcomeblock_guest"><![CDATA[				<div style="float:right">$lang->welcome_current_time</div>$lang->welcome_guest (<a href="$settings[bburl]/member.php?action=login">$lang->welcome_login</a> &mdash; <a href="$settings[bburl]/member.php?action=register">$lang->welcome_register</a>)]]></template>
+		<template name="header_welcomeblock_guest"><![CDATA[	$lang->welcome_guest (<a href="$settings[bburl]/member.php?action=login">$lang->welcome_login</a> &mdash; <a href="$settings[bburl]/member.php?action=register">$lang->welcome_register</a>)]]></template>
 		<template name="header"><![CDATA[	<script language="Javascript" type="text/javascript">
 		 var cookieDomain = "$settings[cookiedomain]";
 		 var cookiePath = "$settings[cookiepath]";

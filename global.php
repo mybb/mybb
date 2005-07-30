@@ -184,7 +184,7 @@ if($modulecache['shoutbox']['active'] == 1)
 // Prepare the main templates for use
 unset($admincplink);
 
-$lang->welcome_current_time = sprintf($lang->welcome_current_time, $datenow.' '.$timenow);
+$lang->welcome_current_time = sprintf($lang->welcome_current_time, $datenow.', '.$timenow);
 
 if($mybb->user['uid'] != 0)
 {

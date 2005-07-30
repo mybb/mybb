@@ -27,7 +27,7 @@ $l['welcome_pms'] = "Private Messages";
 $l['welcome_pms_usage'] = "(New {1}, Unread {2}, Total {3})";
 $l['welcome_back'] = "<strong>Welcome back, {1}</strong>. You last visited: {2}";
 $l['welcome_guest'] = "Hello There, Guest!";
-$l['welcome_current_time'] = "It is {1}";
+$l['welcome_current_time'] = "<strong>Server time:</strong> {1}";
 
 $l['moved_prefix'] = "Moved:";
 $l['sticky_prefix'] = "<strong>Sticky:</strong>";
