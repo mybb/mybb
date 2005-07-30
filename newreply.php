@@ -605,7 +605,7 @@ if($mybb->input['action'] == "do_newreply" )
 			"username" => addslashes($username),
 			"dateline" => time(),
 			"message" => addslashes($mybb->input['message']),
-			"ipaddress" => $ipaddress,
+			"ipaddress" => getip(),
 			"includesig" => $postoptions['signature'],
 			"smilieoff" => $postoptions['disablesmilies'],
 			"visible" => $visible
@@ -625,7 +625,7 @@ if($mybb->input['action'] == "do_newreply" )
 			"username" => addslashes($username),
 			"dateline" => time(),
 			"message" => addslashes($mybb->input['message']),
-			"ipaddress" => $ipaddress,
+			"ipaddress" => getip(),
 			"includesig" => $postoptions['signature'],
 			"smilieoff" => $postoptions['disablesmilies'],
 			"visible" => $visible

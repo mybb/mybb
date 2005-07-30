@@ -476,7 +476,7 @@ if($mybb->input['action'] == "do_newthread")
 			"username" => addslashes(htmlspecialchars_uni($mybb->user['username'])),
 			"dateline" => time(),
 			"message" => addslashes($mybb->input['message']),
-			"ipaddress" => $ipaddress,
+			"ipaddress" => getip(),
 			"includesig" => $postoptions['signature'],
 			"smilieoff" => $postoptions['disablesmilies'],
 			"visible" => $visible
@@ -516,7 +516,7 @@ if($mybb->input['action'] == "do_newthread")
 			"username" => addslashes(htmlspecialchars_uni($mybb->user['username'])),
 			"dateline" => time(),
 			"message" => addslashes($mybb->input['message']),
-			"ipaddress" => $ipaddress,
+			"ipaddress" => getip(),
 			"includesig" => $postoptions['signature'],
 			"smilieoff" => $postoptions['disablesmilies'],
 			"visible" => $visible
