@@ -69,7 +69,7 @@ class bbDB {
 				"<td colspan=\"8\" bgcolor=\"#cccccc\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td colspan=\"8\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"<td colspan=\"8\" bgcolor=\"#fefefe\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
 				"<tr bgcolor=\"#efefef\">\n".
 				"<td><strong>table</strong></td>\n".
@@ -107,9 +107,9 @@ class bbDB {
 		{
 			$this->explain .= "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
-				"<td bgcolor=\"#cccccc\"><strong>#".$this->query_count." - Query</strong></td>\n".
+				"<td bgcolor=\"#cccccc\"><strong>#".$this->query_count." - Write Query</strong></td>\n".
 				"</tr>\n".
-				"<tr bgcolor=\"#ffffff\">\n".
+				"<tr bgcolor=\"#fefefe\">\n".
 				"<td><span style=\"font: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
 				"</table>\n".
