@@ -281,7 +281,7 @@ echo $this->sid;
 		//
 		if(!$noonline)
 		{
-			if($this->sid)
+			if($this->sid > 0)
 			{
 				$this->update_session($this->sid, $mybb->user['uid']);
 			}
@@ -352,7 +352,7 @@ echo $this->sid;
 		//
 		if(!$noonline)
 		{
-			if($this->sid)
+			if($this->sid > 0)
 			{
 				$this->update_session($this->sid);
 			}
