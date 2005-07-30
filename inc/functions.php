@@ -149,7 +149,6 @@ function mydate($format, $stamp, $offset="", $ty=1)
 	}
 	$date = gmdate($format, $stamp + ($offset * 3600));
 	if($mybb->settings['dateformat'] == $format && $ty && $mybb->settings['todayyesterday'] != "no")
-	if(&& $ty && $settings['todayyesterday'] != "no")
 	{
 		$stamp = mktime();
 		$todaysdate = gmdate($format, $stamp + ($offset * 3600));
