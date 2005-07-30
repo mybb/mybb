@@ -66,26 +66,26 @@ class bbDB {
 			$query = mysql_query("EXPLAIN $string", $this->link);
 			$this->explain .= "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
-				"<td colspan=\"8\" bgcolor=\"#cccccc\">#".$this->query_count." - Select Query</td>\n".
+				"<td colspan=\"8\" bgcolor=\"#cccccc\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
 				"</tr>\n".
 				"<tr>\n".
 				"<td colspan=\"8\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
 				"<tr bgcolor=\"#efefef\">\n".
-				"<td>table</td>\n".
-				"<td>type</td>\n".
-				"<td>possible_keys</td>\n".
-				"<td>key</td>\n".
-				"<td>key_len</td>\n".
-				"<td>ref</td>\n".
-				"<td>rows</td>\n".
-				"<td>Extra</td>\n".
+				"<td><strong>table</strong></td>\n".
+				"<td><strong>type</strong></td>\n".
+				"<td><strong>possible_keys</strong></td>\n".
+				"<td><strong>key</strong></td>\n".
+				"<td><strong>key_len</strong></td>\n".
+				"<td><strong>ref</strong></td>\n".
+				"<td><strong>rows</strong></td>\n".
+				"<td><strong>Extra</strong></td>\n".
 				"</tr>\n";
 
 			while($table = mysql_fetch_array($query))
 			{
 				$this->explain .=
-					"<tr>\n".
+					"<tr bgcolor=\"#ffffff\">\n".
 					"<td>".$table['table']."</td>\n".
 					"<td>".$table['type']."</td>\n".
 					"<td>".$table['possible_keys']."</td>\n".
@@ -107,9 +107,9 @@ class bbDB {
 		{
 			$this->explain .= "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
-				"<td bgcolor=\"#ccc\"><strong>#".$this->query_count." - Query</strong></td>\n".
+				"<td bgcolor=\"#cccccc\"><strong>#".$this->query_count." - Query</strong></td>\n".
 				"</tr>\n".
-				"<tr>\n".
+				"<tr bgcolor=\"#ffffff\">\n".
 				"<td><span style=\"font: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
 				"</table>\n".
