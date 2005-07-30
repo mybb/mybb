@@ -50,6 +50,7 @@ if($mybb->settings['showwol'] != "no")
 				if($user['invisible'] == "yes")
 				{
 					$anoncount++;
+					$membercount++;
 				}
 				else
 				{
@@ -84,7 +85,7 @@ if($mybb->settings['showwol'] != "no")
 			$guestcount++;
 		}
 	}
-	$onlinecount = $membercount + $guestcount + $anoncount;
+	$onlinecount = $membercount + $guestcount;
 
 	// Every 1-10 times clear the WOL table
 	$hourdel = "48";
@@ -93,7 +94,27 @@ if($mybb->settings['showwol'] != "no")
 		$hourdel = time()-($hourdel*60*60);
 		$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."sessions WHERE time<'$hourdel'");
 	}
-	$lang->online_note = sprintf($lang->online_note, mynumberformat($onlinecount), mynumberformat($membercount), mynumberformat($anoncount), mynumberformat($guestcount));
+	if($onlinecount != 1)
+	{
+		$onlinebit = "s";
+	}
+	if($membercount != 1)
+	{
+		$memberbit = "s";
+	}
+	if($anoncount != 1)
+	{
+		$anonbit = "are";
+	}
+	else
+	{
+		$anonbit = "is";
+	}
+	if($guestcount != 1)
+	{
+		$guestbit = "s";
+	}
+	$lang->online_note = sprintf($lang->online_note, mynumberformat($onlinecount), $onlinebit, mynumberformat($membercount), $memberbit, mynumberformat($anoncount), $anonbit, mynumberformat($guestcount), $guestbit);
 	eval("\$whosonline = \"".$templates->get("index_whosonline")."\";");
 }
 // Get birthdays
