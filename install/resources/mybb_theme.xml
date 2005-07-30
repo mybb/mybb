@@ -6726,10 +6726,13 @@ $referrer
 <legend><strong>$lang->time_offset</strong></legend>
 <table cellspacing="0" cellpadding="$theme[tablespace]">
 <tr>
-<td><span class="smalltext">$lang->time_offset_desc</td>
+<td colspan="2"><span class="smalltext">$lang->time_offset_desc</td>
 </tr>
 <tr>
 <td>$tzselect</td>
+</tr>
+<tr>
+<td valign="top" colspan="2" /><input type="checkbox" name="enabledst" id="enableddst" value="yes" $enabledstcheck />   <span class="smalltext"><label for="enabledstcheck">$lang->enable_dst</label></span>
 </tr>
 </table>
 </fieldset>

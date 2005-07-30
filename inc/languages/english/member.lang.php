@@ -84,6 +84,7 @@ $l['email_notify'] = "Automatically subscribe to threads you post in.";
 $l['receive_pms'] = "Receive private messages from other users.";
 $l['time_offset'] = "Timezone Settings:";
 $l['time_offset_desc'] = "If you live in a timezone which differs to what this board is set at, you can select it from the list below. GMT time now is {1}.";
+$l['enable_dst'] = "Enable Daylight Savings Time Correction?";
 $l['submit_registration'] = "Submit Registration!";
 $l['confirm_password'] = "Confirm Password:";
 $l['referrer'] = "Referrer:";

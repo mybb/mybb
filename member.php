@@ -244,6 +244,16 @@ if($mybb->input['action'] == "do_register")
 		$receivepms = "yes";
 		$receivepmscheck = "checked=\"checked\"";
 	}
+	
+	if($mybb->input['enabledst'] != "yes")
+	{
+		$enabledst = "no";
+	}
+	else
+	{
+		$enabledst = "yes";
+		$enabledstcheck = "checked=\"checked\"";
+	}
 
 	$pmpopup = $receivepms;
 
@@ -375,6 +385,7 @@ if($mybb->input['action'] == "do_register")
 			"invisible" => $invisible,
 			"style" => intval($mybb->input['style']),
 			"timezone" => addslashes($mybb->input['timezoneoffset']),
+			"dst" => $enabledst,
 			"threadmode" => $threadmode,
 			"receivepms" => $receivepms,
 			"pmpopup" => $pmpopup,
