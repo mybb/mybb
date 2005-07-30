@@ -261,7 +261,7 @@ function show($user)
 			}
 			else
 			{
-				$locationname = $lang-viewing_announcements2;
+				$locationname = $lang->viewing_announcements2;
 			}
 			break;
 		// attachment.php actions
