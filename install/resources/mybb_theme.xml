@@ -3426,7 +3426,7 @@ $pmsdownload
 <td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">$senddate $sendtime</span></td>
 <td class="trow2" align="center"><input type="checkbox" name="check[$message[pmid]]" value="yes"></td>
 </tr>]]></template>
-		<template name="private_send_buddyselect"><![CDATA[<br /><span class="smalltext">$lang->select_buddy<br /><select name="buddy" onchange="document.myform.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>$buddies</select>]]></template>
+		<template name="private_send_buddyselect"><![CDATA[<br /><span class="smalltext">$lang->select_buddy<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>$buddies</select>]]></template>
 		<template name="codebuttons"><![CDATA[<script language="javascript">
 var b_prompt = "$lang->b_prompt";
 var i_prompt = "$lang->i_prompt";
