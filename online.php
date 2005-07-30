@@ -104,18 +104,18 @@ else
 	$eidsql = '';
 	if($mybb->input['sortby'] == "username")
 	{
-		$sql = "u.username ASC, o.time DESC";
+		$sql = "u.username ASC, s.time DESC";
 	}
 	elseif($mybb->input['sortby'] == "location")
 	{
-		$sql = "o.location, o.time DESC";
+		$sql = "s.location, s.time DESC";
 	}
 	else
 	{
-		$sql = "o.time DESC";
+		$sql = "s.time DESC";
 	}
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
-	$query = $db->query("SELECT DISTINCT o.sid, o.ip, o.uid, o.time, o.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."online o LEFT JOIN ".TABLE_PREFIX."users u ON (o.uid=u.uid) WHERE o.time>'$timesearch' ORDER BY $sql");
+	$query = $db->query("SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY $sql");
 	$membercount = 0;
 	$guestcount = 0;
 	$anoncount = 0;

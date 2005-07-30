@@ -268,15 +268,6 @@ $tables[] = "CREATE TABLE mybb_moderators (
   PRIMARY KEY  (mid)
 ) TYPE=MyISAM;";
 
-$tables[] = "CREATE TABLE mybb_online (
-  sid varchar(32) NOT NULL default '',
-  uid int unsigned NOT NULL default '0',
-  ip varchar(40) NOT NULL default '',
-  time bigint(30) NOT NULL default '0',
-  location varchar(150) NOT NULL default '',
-  useragent varchar(100) NOT NULL default ''
-) TYPE=MyISAM;";
-
 $tables[] = "CREATE TABLE mybb_polls (
   pid int unsigned NOT NULL auto_increment,
   tid int unsigned NOT NULL default '0',
@@ -394,6 +385,22 @@ $tables[] = "CREATE TABLE mybb_searchlog (
   showposts smallint(1) NOT NULL default '0',
   limitto smallint(4) NOT NULL default '0',
   PRIMARY KEY  (sid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_sessions (
+  sid varchar(32) NOT NULL default '',
+  uid int unsigned NOT NULL default '0',
+  ip varchar(40) NOT NULL default '',
+  time bigint(30) NOT NULL default '0',
+  location varchar(150) NOT NULL default '',
+  useragent varchar(100) NOT NULL default '',
+  anonymous int(1) NOT NULL default '0',
+  nopermission int(1) NOT NULL default '0',
+  location1 int(10) NOT NULL default '0',
+  location2 int(10) NOT NULL default '0',
+  PRIMARY KEY(sid),
+  KEY location1 (location1),
+  KEY location2 (location2)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_settinggroups (

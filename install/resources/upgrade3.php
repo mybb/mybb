@@ -266,9 +266,6 @@ function upgrade3_dbchanges2()
 
 	$contents = "<p>Performing necessary database changes.</p>";
 
-	$db->query("ALTER TABLE ".TABLE_PREFIX."online ADD useragent varchar(100) NOT NULL;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."online ADD sid varchar(32) NOT NULL FIRST;");
-
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD additionalgroups varchar(200) NOT NULL default '' AFTER usergroup;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD displaygroup smallint(6) NOT NULL default'0' AFTER additionalgroups;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD candisplaygroup varchar(3) NOT NULL;");
@@ -301,6 +298,23 @@ function upgrade3_dbchanges2()
 	 reason varchar(250) NOT NULL,
 	 dateline bigint(30) NOT NULL,
 	 PRIMARY KEY(rid)
+	);");
+
+	$db->query("DROP TABLE ".TABLE_PREFIX."online;");
+	$db->query("CREATE TABLE ".TABLE_PREFIX."sessions (
+	  sid varchar(32) NOT NULL default '',
+	  uid int unsigned NOT NULL default '0',
+	  ip varchar(40) NOT NULL default '',
+	  time bigint(30) NOT NULL default '0',
+	  location varchar(150) NOT NULL default '',
+	  useragent varchar(100) NOT NULL default '',
+	  anonymous int(1) NOT NULL default '0',
+	  nopermission int(1) NOT NULL default '0',
+	  location1 int(10) NOT NULL default '0',
+	  location2 int(10) NOT NULL default '0',
+	  PRIMARY KEY(sid),
+	  KEY location1 (location1),
+	  KEY location2 (location2)
 	);");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD salt varchar(10) NOT NULL AFTER password;");
@@ -547,8 +561,6 @@ function upgrade3_dbchanges3()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."moderators CHANGE mid mid smallint unsigned NOT NULL auto_increment;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."moderators CHANGE fid fid smallint unsigned NOT NULL;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."moderators CHANGE uid uid int unsigned NOT NULL;");
-
-	$db->query("ALTER TABLE ".TABLE_PREFIX."online CHANGE uid uid int unsigned NOT NULL;");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."polls CHANGE pid pid int unsigned NOT NULL auto_increment;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."polls CHANGE tid tid int unsigned NOT NULL;");

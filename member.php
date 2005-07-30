@@ -964,8 +964,8 @@ else if($mybb->input['action'] == "do_login")
 		error($lang->error_invalidpassword);
 	}
 
-	$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'");
-	$db->query("UPDATE ".TABLE_PREFIX."online SET uid='".$user['uid']."' WHERE sid='".$session->sid."'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'");
+	$db->query("UPDATE ".TABLE_PREFIX."sessions SET uid='".$user['uid']."' WHERE sid='".$session->sid."'");
 	
 	mysetcookie("mybbuser", $user['uid']."_".$user['loginkey']);
 	mysetcookie("sid", $session->sid, -1);
@@ -1002,7 +1002,7 @@ else if($mybb->input['action'] == "logout")
 		{
 			$time = time();
 			$db->query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time-900', lastvisit='$time' WHERE uid='".$mybb->user[uid]."'");
-			$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE uid='".$mybb->user['uid']."' OR ip='$ipaddress'");
+			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$mybb->user['uid']."' OR ip='$ipaddress'");
 	
 			if(function_exists("loggedOut"))
 			{

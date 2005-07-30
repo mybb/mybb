@@ -35,7 +35,7 @@ if($mybb->settings['showwol'] != "no")
 	// Get the online users
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
 	$comma = "";
-	$query = $db->query("SELECT DISTINCT o.sid, o.ip, o.uid, o.time, o.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."online o LEFT JOIN ".TABLE_PREFIX."users u ON (o.uid=u.uid) WHERE o.time>'$timesearch' ORDER BY u.username ASC, o.time DESC");
+	$query = $db->query("SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY u.username ASC, s.time DESC");
 	$membercount = 0;
 	$guestcount = 0;
 	$anoncount = 0;
@@ -91,7 +91,7 @@ if($mybb->settings['showwol'] != "no")
 	if($rand == 5)
 	{
 		$hourdel = time()-($hourdel*60*60);
-		$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."online WHERE time<'$hourdel'");
+		$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."sessions WHERE time<'$hourdel'");
 	}
 	$lang->online_note = sprintf($lang->online_note, mynumberformat($onlinecount), mynumberformat($membercount), mynumberformat($anoncount), mynumberformat($guestcount));
 	eval("\$whosonline = \"".$templates->get("index_whosonline")."\";");

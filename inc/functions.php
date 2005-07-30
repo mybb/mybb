@@ -276,10 +276,10 @@ function inlineerror($errors, $title="")
 //
 function nopermission()
 {
-	global $REQUEST_URI, $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang, $plugins;
+	global $REQUEST_URI, $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang, $plugins, $session;
 	$time = time();
 	$plugins->run_hooks("no_permission");
-	$db->query("UPDATE ".TABLE_PREFIX."online SET uid='".$mybb->user['uid']."', time='$time', location='nopermission', ip='$ipaddress' WHERE ip='$ipaddress' OR uid='".$mybb->user['uid']."'");
+	$db->query("UPDATE ".TABLE_PREFIX."sessions SET nopermission='1' WHERE sid='".$session->sid."'");
 	$plate = "error_nopermission".(($mybb->user['uid']!=0)?"_loggedin":"");
 	$url = $REQUEST_URI;
 	eval("\$errorpage = \"".$templates->get($plate)."\";");

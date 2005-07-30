@@ -51,7 +51,7 @@ class session
 		//
 		// Attempt to load the session from the database
 		//
-		$query = $db->query("SELECT sid,uid FROM ".TABLE_PREFIX."online WHERE sid='".$this->sid."' AND ip='".$this->ipaddress."'");
+		$query = $db->query("SELECT sid,uid FROM ".TABLE_PREFIX."sessions WHERE sid='".$this->sid."' AND ip='".$this->ipaddress."'");
 		$session = $db->fetch_array($query);
 		if($session['sid'])
 		{
@@ -389,7 +389,7 @@ class session
 		$mydisplaygroup = usergroup_displaygroup(1);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
-		$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE sid='bot=".$spider."'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE sid='bot=".$spider."'");
 
 		//
 		// Update the online data
@@ -428,12 +428,12 @@ class session
 
 		if($uid > 0)
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE uid='".$uid."'");
+			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$uid."'");
 			$onlinedata['uid'] = $uid;
 		}
 		else
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE ip='".$this->ipaddress."'");
+			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE ip='".$this->ipaddress."'");
 			$onlinedata['uid'] = 0;
 		}
 		if($this->is_spider == true)

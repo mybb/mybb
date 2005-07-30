@@ -351,9 +351,8 @@ if($_COOKIE['collapsed'])
 	}
 }
 
-$globaltime = $maintimer->gettime();
-
 $rand = rand(1,10);
 
 $plugins->run_hooks("global_end");
+$globaltime = $maintimer->gettime();
 ?>
