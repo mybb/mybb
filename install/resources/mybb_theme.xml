@@ -1591,8 +1591,8 @@ $footer
 		<hr class="hidden" />
 			<div id="copyright">
 				<div id="debug"><debugstuff></div>
-$lang->powered_by <a href="http://www.mybboard.com">MyBB</a> $mybbversion<br />
-				$lang->copyright &copy; $copyyear <strong><a href="http://www.mybboard.com">MyBB Group</a></strong>
+$lang->powered_by <a href="http://www.mybboard.com" target="_blank">MyBB</a> $mybbversion<br />
+				$lang->copyright &copy; $copyyear <strong><a href="http://www.mybboard.com" target="_blank">MyBB Group</a></strong>
 <br class="clear" />
 		</div>
 		</div>]]></template>
