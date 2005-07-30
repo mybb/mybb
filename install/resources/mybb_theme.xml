@@ -2833,29 +2833,24 @@ $headerinclude
 </head>
 <body>
 $header
-<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" class="tborder" align="center">
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
-<td class="thead">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
-<tr>
-<td width="90%" class="thead" colspan="2">
+<td class="thead" colspan="2">
 <strong>$event[subject]</strong></td>
-<td width="10%" class="thead" align="right">$editbutton $deletebutton</td>
 </tr>
 <tr>
 <td width="30%" class="trow1"><strong>$lang->event_date</strong></td>
-<td width="70%" class="trow1" colspan="2">$eventdate</td>
+<td width="70%" class="trow1">$eventdate</td>
 </tr>
 <tr>
 <td width="30%" class="trow2"><strong>$lang->event_author</strong></td>
-<td width="70%" class="trow2" colspan="2">$eventposter</td>
+<td width="70%" class="trow2">$eventposter</td>
 </tr>
 <tr>
 <td width="30%" class="trow1" valign="top"><strong>$lang->event_details</strong></td>
-<td width="70%" class="trow1" colspan="2">$event[description]</td>
-</tr>
-</table>
-</td>
+<td width="70%" class="trow1">
+$event[description]
+<div style="float: right; width: auto; clear: both;">$editbutton $deletebutton</div></td>
 </tr>
 </table>
 $footer
