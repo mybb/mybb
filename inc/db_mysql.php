@@ -118,6 +118,7 @@ class bbDB {
 
 		$this->querylist[$this->query_count]['query'] = $string;
 		$this->querylist[$this->query_count]['time'] = $qtime;
+	}
 
 
 	// Return a result array for  query
