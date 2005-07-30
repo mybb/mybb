@@ -66,10 +66,10 @@ class bbDB {
 			$query = mysql_query("EXPLAIN $string", $this->link);
 			$this->explain .= "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
-				"<td colspan=\"8\" bgcolor=\"#ccc\">#".$this->query_count." - Select Query</td>\n".
+				"<td colspan=\"8\" bgcolor=\"#cccccc\">#".$this->query_count." - Select Query</td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td colspan=\"8\"><span style=\"font: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"<td colspan=\"8\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
 				"<tr bgcolor=\"#efefef\">\n".
 				"<td>table</td>\n".
