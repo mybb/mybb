@@ -1584,8 +1584,9 @@ function debugpage() {
 	{
 		$gzipen = "Disabled";
 	}
-
-	echo "<table bgcolor=\"#666666\" width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">";
+	echo "<h1>MyBB Debug Information</h1>";
+	echo "<h2>Page Generation</h2>";
+	echo "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">";
 	echo "<tr>";
 	echo "<td bgcolor=\"#CCCCCC\" colspan=\"4\"><b><font size=\"2\" face=\"Tahoma\">Page Generation Statistics</font></b></td>";
 	echo "</tr>";
@@ -1618,30 +1619,11 @@ function debugpage() {
 	echo "<td bgcolor=\"#FEFEFE\" width=\"75%\" colspan=\"3\"><font face=\"Tahoma\" size=\"2\">$gzipen</font></b></td>";
 	echo "</tr>";
 	echo "</table>";
-	echo "<br />";
-	echo "<br />";
-	echo "<table bgcolor=\"#666666\" width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">";
-	echo "<tr>";
-	echo "<td bgcolor=\"#CCCCCC\"><b><font size=\"2\" face=\"Tahoma\">Database Queries</font></b></td>";
-	echo "</tr>";
-	reset($db->querylist);
-	while(list($key, $val) = each($db->querylist))
-	{
-	echo "<tr>";
-	echo "<td bgcolor=\"#DADADA\"><font size=\"2\" face=\"Tahoma\">".$val['query']."</font></td>";
-	echo "</tr>";
-		echo "<tr>";
-	echo "<td bgcolor=\"#EFEFEF\"><b><font face=\"Tahoma\" size=\"2\">Execution Time:</b> ".$val['time']."</font></b></td>";
-	echo "</tr>";
-	}
-	echo "</table>";
-	echo "<font face=Tahoma size=2>";
-	echo "Database Queries:<br />";
-	echo $db->querys;
-	echo "<br />";
-	echo "Template Statistics:<br />";
+	echo "<h2>Database Queries (".$db->query_count." Total) </h2>";
+	echo $db->explain;
+	echo "<h2>Template Statistics</h2>";
 	echo "<b>Templates loaded at startup:</b> $templatelist<br />";
-	$cached = count($templatecache);
+	$cached = count($templates->cache);
 	echo "<b>No of templates cached:</b> $cached<br />";
 	echo "<b>Cached templates:</b> ";
 	$comma = "";

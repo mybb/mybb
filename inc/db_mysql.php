@@ -15,6 +15,7 @@ class bbDB {
 	var $querylist = array();
 	var $error_reporting = 1;
 	var $link;
+	var $explain;
 
 	// Connects to the database server
 	function connect($hostname="localhost", $username="root", $password="", $pconnect=0)
@@ -39,7 +40,7 @@ class bbDB {
 	// Query the database for $string
 	function query($string, $hideerr=0)
 	{
-		global $pagestarttime, $querytime, $db;
+		global $pagestarttime, $querytime, $db, $debug;
 		$qtimer = new timer();
 		$query = @mysql_query($string, $this->link);
 		if($this->errno() && !$hideerr)
@@ -51,10 +52,73 @@ class bbDB {
 		$querytime += $qtimer->totaltime;
 		$qtimer->remove();
 		$this->query_count++;
-		$this->querylist[$this->query_count]['query'] = $string;
-		$this->querylist[$this->query_count]['time'] = $qtime;
+		if($debug)
+		{
+			explain_query($string, $qtime);
+		}
 		return $query;
 	}
+
+	function explain_query($string, $qtime)
+	{
+		if(preg_match("#^select#i", $string))
+		{
+			$query = mysql_query("EXPLAIN $string", $this->link);
+			$this->explain .= "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
+				"<tr>\n".
+				"<td colspan=\"8\" bgcolor=\"#ccc\">#".$this->query_count." - Select Query</td>\n".
+				"</tr>\n".
+				"<tr>\n".
+				"<td colspan=\"8\"><span style=\"font: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"</tr>\n".
+				"<tr bgcolor=\"#efefef\">\n".
+				"<td>table</td>\n".
+				"<td>type</td>\n".
+				"<td>possible_keys</td>\n".
+				"<td>key</td>\n".
+				"<td>key_len</td>\n".
+				"<td>ref</td>\n".
+				"<td>rows</td>\n".
+				"<td>Extra</td>\n".
+				"</tr>\n";
+
+			while($table = mysql_fetch_array($query))
+			{
+				$this->explain .=
+					"<tr>\n".
+					"<td>".$table['table']."</td>\n".
+					"<td>".$table['type']."</td>\n".
+					"<td>".$table['possible_keys']."</td>\n".
+					"<td>".$table['key']."</td>\n".
+					"<td>".$table['key_len']."</td>\n".
+					"<td>".$table['ref']."</td>\n".
+					"<td>".$table['rows']."</td>\n".
+					"<td>".$table['Extra']."</td>\n".
+					"</tr>\n";
+			}
+			$this->explain .=
+				"<tr>\n".
+				"<td colspan=\"8\">Query Time: ".$qtime."</td>\n".
+				"</tr>\n".
+				"</table>\n".
+				"<br />\n";
+		}
+		else
+		{
+			$this->explain .= "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
+				"<tr>\n".
+				"<td bgcolor=\"#ccc\"><strong>#".$this->query_count." - Query</strong></td>\n".
+				"</tr>\n".
+				"<tr>\n".
+				"<td><span style=\"font: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"</tr>\n".
+				"</table>\n".
+				"<br />\n";
+		}
+
+		$this->querylist[$this->query_count]['query'] = $string;
+		$this->querylist[$this->query_count]['time'] = $qtime;
+
 
 	// Return a result array for  query
 	function fetch_array($query, $type=MYSQL_ASSOC)
