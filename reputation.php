@@ -138,6 +138,7 @@ else
 			{
 				$poscheck = "checked";
 			}
+			$pid = $mybb->input['pid'];
 			eval("\$reputationbit = \"".$templates->get("reputation_add")."\";");
 		}
 		$lang->add_reputation = sprintf($lang->add_reputation, $user['username']);
