@@ -456,7 +456,7 @@ class session
 		$this->uid = $onlinedata['uid'];
 	}
 
-	function get_special_location()
+	function get_special_locations()
 	{
 		global $mybb;
 		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['fid']) > 0)
