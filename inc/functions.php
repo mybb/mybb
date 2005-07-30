@@ -127,12 +127,12 @@ function parsepage($contents)
 //
 function mydate($format, $stamp, $offset="", $ty=1)
 {
-	global $mybbuser, $settings, $lang, $mybbadmin;
+	global $mybb, $lang, $mybbadmin;
 	if(!$offset)
 	{
-		if(isset($mybbuser['timezone']))
+		if(isset($mybb->user['timezone']))
 		{
-			$offset = $mybbuser['timezone'];
+			$offset = $mybb->user['timezone'];
 		}
 		elseif(isset($mybbadmin['timezone']))
 		{
@@ -148,7 +148,8 @@ function mydate($format, $stamp, $offset="", $ty=1)
 		$offset = 0;
 	}
 	$date = gmdate($format, $stamp + ($offset * 3600));
-	if($settings['dateformat'] == $format && $ty && $settings['todayyesterday'] != "no")
+	if($mybb->settings['dateformat'] == $format && $ty && $mybb->settings['todayyesterday'] != "no")
+	if(&& $ty && $settings['todayyesterday'] != "no")
 	{
 		$stamp = mktime();
 		$todaysdate = gmdate($format, $stamp + ($offset * 3600));
