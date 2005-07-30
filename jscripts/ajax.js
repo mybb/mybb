@@ -338,7 +338,7 @@ function instantEdit(span, url)
 
 	function instantUpdateSpan()
 	{
-		parentItem.innerHTML = "<span ondblclick=\"javascript:instantEdit(this, '"+url+"');\">"+newValue+"</span>";
+		parentItem.innerHTML = "<span style=\"font-size: 13px;\" ondblclick=\"javascript:instantEdit(this, '"+url+"');\">"+newValue+"</span>";
 	}
 
 	if(parentItem)
