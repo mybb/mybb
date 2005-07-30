@@ -99,7 +99,7 @@ function startform($script, $name="", $action="")
 {
 	global $mybb;
 	echo "<form action=\"$script\" method=\"post\" name=\"$name\" enctype=\"multipart/form-data\">\n";
-	if($mybb->input['action'] != "")
+	if($action != "")
 	{
 		makehiddencode("action", $action);
 	}
