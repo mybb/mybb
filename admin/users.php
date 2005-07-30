@@ -806,7 +806,7 @@ if($mybb->input['action'] == "edit")
 					{
 						$sel = "";
 					}
-					$select .= "<option value\"$val\" $sel>$val</option>\n";
+					$select .= "<option value=\"$val\" $sel>$val</option>\n";
 				}
 				if(!$profilefield[length])
 				{
@@ -831,7 +831,7 @@ if($mybb->input['action'] == "edit")
 					{
 						$sel = "";
 					}
-					$select .= "<option value\"$val\" $sel>$val</option>";
+					$select .= "<option value=\"$val\" $sel>$val</option>";
 				}
 				if(!$profilefield[length])
 				{
