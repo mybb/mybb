@@ -406,7 +406,7 @@ class session
 	function update_session($sid, $uid="")
 	{
 		global $db;
-
+		$speciallocs = $this->get_special_locations();
 		if($uid)
 		{
 			$onlinedata['uid'] = $uid;
@@ -418,12 +418,15 @@ class session
 		$onlinedata['time'] = time();
 		$onlinedata['location'] = get_current_location();
 		$onlinedata['useragent'] = $this->useragent;
+		$onlinedata['location1'] = $speciallocs['1'];
+		$onlinedata['location2'] = $speciallocs['2'];
 		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
 	}
 
 	function create_session($uid="")
 	{
 		global $db;
+		$speciallocs = $this->get_special_locations();
 		if($uid > 0)
 		{
 			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$uid."'");
@@ -446,9 +449,25 @@ class session
 		$onlinedata['ip'] = $this->ipaddress;
 		$onlinedata['location'] = get_current_location();
 		$onlinedata['useragent'] = $this->useragent;
-
+		$onlinedata['location1'] = $speciallocs['1'];
+		$onlinedata['location2'] = $speciallocs['2'];
 		$db->insert_query(TABLE_PREFIX."sessions", $onlinedata);
 		$this->sid = $onlinedata['sid'];
 		$this->uid = $onlinedata['uid'];
 	}
-}
+
+	function get_special_location()
+	{
+		global $mybb;
+		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['fid']) > 0)
+		{
+			$array[1] = intval($mybb->input['fid']);
+			$array[2] = "";
+		}
+		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['tid']) > 0)
+		{
+			$array[1] = "";
+			$array[2] = intval($mybb->input['tid']);
+		}
+		return $array;
+	}

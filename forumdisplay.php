@@ -151,7 +151,7 @@ if($mybb->settings['browsingthisforum'] != "off")
 	$guestcount = 0;
 	$membercount = 0;
 	$inviscount = 0;
-	$query = $db->query("SELECT DISTINCT s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timecut' AND location LIKE '%forumdisplay.php%fid=$fid%' ORDER BY u.username");
+	$query = $db->query("SELECT s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timecut' AND location1='$fid' ORDER BY u.username");
 	while($user = $db->fetch_array($query))
 	{
 		if($user['uid'] == 0)
