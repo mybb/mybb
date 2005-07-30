@@ -17,6 +17,7 @@ class MyBB {
 	var $settings = array();
 	var $magicquotes = 0;
 	var $config = array();
+	var $debug;
 
 	var $clean_variables = array (
 		"int" => array("tid", "pid", "uid", "eid", "pmid", "sid")
@@ -51,7 +52,10 @@ class MyBB {
 			$this->unset_globals($_FILES);
 			//$this->unset_globals($_COOKIE);
 		}
-
+		if($this->input['debug'])
+		{
+			$this->debug = 1;
+		}
 		$this->clean_input();
 	}
 

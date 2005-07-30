@@ -40,7 +40,7 @@ class bbDB {
 	// Query the database for $string
 	function query($string, $hideerr=0)
 	{
-		global $pagestarttime, $querytime, $db, $debug;
+		global $pagestarttime, $querytime, $db, $mybb;
 		$qtimer = new timer();
 		$query = @mysql_query($string, $this->link);
 		if($this->errno() && !$hideerr)
@@ -52,7 +52,7 @@ class bbDB {
 		$querytime += $qtimer->totaltime;
 		$qtimer->remove();
 		$this->query_count++;
-		if($debug)
+		if($mybb->debug)
 		{
 			explain_query($string, $qtime);
 		}
