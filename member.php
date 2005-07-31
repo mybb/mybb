@@ -391,6 +391,7 @@ if($mybb->input['action'] == "do_register")
 			"pmpopup" => $pmpopup,
 			"daysprune" => intval($mybb->input['daysprune']),
 			"regip" => $ipaddress,
+			"language" => addslashes($mybb->input['language']),
 			"showcodebuttons" => 1,
 			);
 		if($mybb->settings['usertppoptions'])
@@ -716,6 +717,19 @@ if($mybb->input['action'] == "register")
 		if($mybb->settings['regtype'] != "randompass")
 		{
 			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
+		}
+
+		$languages = $lang->getLanguages();
+		foreach($languages as $lname => $language)
+		{
+			if($user['language'] == $lname)
+			{
+				$langoptions .= "<option value=\"$lname\" selected=\"selected\">$language</option>\n";
+			}
+			else
+			{
+				$langoptions .= "<option value=\"$lname\">$language</option>\n";
+			}
 		}
 
 		$plugins->run_hooks("member_register_end");

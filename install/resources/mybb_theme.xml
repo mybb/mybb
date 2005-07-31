@@ -6729,6 +6729,18 @@ $referrer
 </tr>
 </table>
 </fieldset>
+<br />
+<fieldset class="trow2">
+<legend><strong>$lang->lang_select</strong></legend>
+<table cellspacing="0" cellpadding="$theme[tablespace]">
+<tr>
+<td colspan="2"><span class="smalltext">$lang->lang_select_desc</td>
+</tr>
+<tr>
+<td><select name="language"><option value="">$lang->lang_select_default</option><option value="">-----------</option>$langoptions</select></td>
+</tr>
+</table>
+</fieldset>
 </td>
 </tr>
 </table>
