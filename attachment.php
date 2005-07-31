@@ -45,7 +45,7 @@ if(!$tid)
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 $thread = $db->fetch_array($query);
-if(!$thread['tid'] && !$thumbnail)
+if(!$thread['tid'] && !$mybb->input['thumbnail'])
 {
 	error($lang->error_invalidthread);
 }
@@ -62,7 +62,7 @@ if(!$attachment['aid'] || !$attachment['attachname'])
 {
 	error($lang->error_invalidattachment);
 }
-if(!$thumbnail) // Only increment the download count if this is not a thumbnail
+if(!$mybb->input['thumbnail']) // Only increment the download count if this is not a thumbnail
 {
 	$db->query("UPDATE ".TABLE_PREFIX."attachments SET downloads=downloads+1 WHERE aid='$attachment[aid]'");
 }
@@ -71,7 +71,7 @@ $attachment['filename'] = rawurlencode($attachment['filename']);
 $plugins->run_hooks("attachment_end");
 
 header("Content-disposition: filename=$attachment[filename]");
-if($thumbnail)
+if($mybb->input['thumbnail'])
 {
 	$ext = getextention($attachment['thumbnail']);
 	switch($ext)
