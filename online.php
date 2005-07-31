@@ -132,6 +132,7 @@ else
 				if($user['invisible'] == "yes")
 				{
 					$anoncount++;
+					$membercount++;
 				}
 				else
 				{
@@ -230,7 +231,7 @@ else
 		}
 		reset($guests);
 	}
-	$usercount = $membercount + $guestcount + $anoncount;
+	$usercount = $membercount + $guestcount;
 	$mostonline = $cache->read("mostonline");
 	$recordcount = $mostonline['numusers'];
 	$recorddate = mydate($mybb->settings['dateformat'], $mostonline['time']);
@@ -239,7 +240,27 @@ else
 	{
 		$refresh = "<meta http-equiv=\"refresh\" content=\"60;URL=online.php\">";
 	}
-	$lang->online_count = sprintf($lang->online_count, $usercount, $membercount, $anoncount, $guestcount);
+	if($usercount != 1)
+	{
+		$userbit = "s";
+	}
+	if($membercount != 1)
+	{
+		$memberbit = "s";
+	}
+	if($anoncount != 1)
+	{
+		$anonbit = "are";
+	}
+	else
+	{
+		$anonbit = "is";
+	}
+	if($guestcount != 1)
+	{
+		$guestbit = "s";
+	}
+	$lang->online_count = sprintf($lang->online_count, mynumberformat($usercount), $userbit, mynumberformat($membercount), $memberbit, mynumberformat($anoncount), $anonbit, mynumberformat($guestcount), $guestbit);
 
 	$plugins->run_hooks("online_end");
 
