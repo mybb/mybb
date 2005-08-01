@@ -242,26 +242,25 @@ else
 	}
 	if($usercount != 1)
 	{
-		$userbit = "s";
+		$userbit = $lang->online_count_bit;
 	}
 	if($membercount != 1)
 	{
-		$memberbit = "s";
+		$memberbit = $lang->online_count_bit;
 	}
 	if($anoncount != 1)
 	{
-		$anonbit = "are";
+		$anonbit = $lang->online_count_are;
 	}
 	else
 	{
-		$anonbit = "is";
+		$anonbit = $lang->online_count_is;
 	}
 	if($guestcount != 1)
 	{
-		$guestbit = "s";
+		$guestbit = $lang->online_count_bit;
 	}
-	$lang->online_count = sprintf($lang->online_count, mynumberformat($usercount), $userbit, mynumberformat($membercount), $memberbit, mynumberformat($anoncount), $anonbit, mynumberformat($guestcount), $guestbit);
-
+	$lang->online_count = sprintf($lang->online_count, mynumberformat($usercount), $userbit, $mybb->settings['wolcutoffmins'], mynumberformat($membercount), $memberbit, mynumberformat($anoncount), $anonbit, mynumberformat($guestcount), $guestbit);
 	$plugins->run_hooks("online_end");
 
 	eval("\$online = \"".$templates->get("online")."\";");

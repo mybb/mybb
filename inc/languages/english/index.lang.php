@@ -21,6 +21,9 @@ $l['stats_newestuser'] = "Please welcome our newest member, <b>{1}</b>";
 $l['stats_mostonline'] = "The most users online at one time was {1} on {2} at {3}";
 $l['whos_online'] = "Who's Online";
 $l['complete_list'] = "Complete List";
-$l['online_note'] = "{1} user{2} active in the past 15 minutes. ({3} member{4}, {5} of whom {6} invisible, and {7} guest{8}).";
+$l['online_note_bit'] = "s";
+$l['online_note_are'] = "are";
+$l['online_note_is'] = "is";
+$l['online_note'] = "{1} user{2} active in the past {3} minutes ({4} member{5}, {6} of whom {7} invisible, and {8} guest{9}).";
 $l['subforums'] = "<strong>Sub Forums:</strong>";
 ?>

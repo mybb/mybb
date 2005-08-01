@@ -96,25 +96,25 @@ if($mybb->settings['showwol'] != "no")
 	}
 	if($onlinecount != 1)
 	{
-		$onlinebit = "s";
+		$onlinebit = $lang->online_note_bit;
 	}
 	if($membercount != 1)
 	{
-		$memberbit = "s";
+		$memberbit = $lang->online_note_bit;
 	}
 	if($anoncount != 1)
 	{
-		$anonbit = "are";
+		$anonbit = $lang->online_note_are;
 	}
 	else
 	{
-		$anonbit = "is";
+		$anonbit = $lang->online_note_is;
 	}
 	if($guestcount != 1)
 	{
-		$guestbit = "s";
+		$guestbit = $lang->online_note_bit;
 	}
-	$lang->online_note = sprintf($lang->online_note, mynumberformat($onlinecount), $onlinebit, mynumberformat($membercount), $memberbit, mynumberformat($anoncount), $anonbit, mynumberformat($guestcount), $guestbit);
+	$lang->online_note = sprintf($lang->online_note, mynumberformat($onlinecount), $onlinebit, $mybb->settings['wolcutoffmins'], mynumberformat($membercount), $memberbit, mynumberformat($anoncount), $anonbit, mynumberformat($guestcount), $guestbit);
 	eval("\$whosonline = \"".$templates->get("index_whosonline")."\";");
 }
 // Get birthdays
