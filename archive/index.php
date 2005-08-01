@@ -14,7 +14,7 @@ require "./inc/functions_post.php";
 // Load global language phrases
 $lang->load("index");
 
-switch($action)
+switch($mybb->input['action'])
 {
 	case "thread":
 		$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
@@ -36,10 +36,10 @@ switch($action)
 		makeforumnav($forum['fid'], 1);
 		addnav($thread['subject']);
 
-		archive_header($thread['subject'], $thread['subject'], $settings['bburl']."/showthread.php?tid=$id");
+		archive_header($thread['subject'], $thread['subject'], $mybb->settings['bburl']."/showthread.php?tid=$id");
 
 		// Paginate this thread
-		$perpage = $settings['postsperpage'];
+		$perpage = $mybb->settings['postsperpage'];
 		$postcount = intval($thread['replies'])+1;
 		$pages = ceil($postcount/$perpage);
 
@@ -65,7 +65,7 @@ switch($action)
 		$query = $db->query("SELECT u.*, u.username AS userusername, p.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.tid='$id' AND visible='1' ORDER BY p.dateline LIMIT $start, $perpage");
 		while($post = $db->fetch_array($query))
 		{
-			$post['date'] = mydate($settings['dateformat'].", ".$settings['timeformat'], $post['dateline'], "", 0);
+			$post['date'] = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $post['dateline'], "", 0);
 			// Parse the message
 			if($post['smilieoff'] == "yes")
 			{
@@ -87,14 +87,14 @@ switch($action)
 			{
 				while(list($aid, $attachment) = each($acache[$post['pid']]))
 				{
-					$post['message'] = str_replace("[attachment=$attachment[aid]]", "[<a href=\"$settings[bburl]/attachment.php?aid=$attachment[aid]\">attachment=$attachment[aid]</a>]", $post['message']);
+					$post['message'] = str_replace("[attachment=$attachment[aid]]", "[<a href=\"".$mybb->settings['bburl']."/attachment.php?aid=$attachment[aid]\">attachment=$attachment[aid]</a>]", $post['message']);
 				}
 			}
 			
 			// Damn thats a lot of parsing, now to determine which username to show..
 			if($post['userusername'])
 			{
-				$post['username'] = "<a href=\"".$settings['bburl']."/member.php?action=profile&amp;uid=".$post['uid']."\">".$post['userusername']."</a>";
+				$post['username'] = "<a href=\"".$mybb->settings['bburl']."/member.php?action=profile&amp;uid=".$post['uid']."\">".$post['userusername']."</a>";
 			}
 
 			// Finally show the post
@@ -130,9 +130,9 @@ switch($action)
 
 		// Build the navigation
 		makeforumnav($forum['fid'], 1);
-		archive_header($forum['name'], $forum['name'], $settings['bburl']."/forumdisplay.php?fid=$id");
+		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid=$id");
 
-		$perpage = $settings['threadsperpage'];
+		$perpage = $mybb->settings['threadsperpage'];
 		$pages = ceil($threadcount/$perpage);
 		if($page > $pages)
 		{
@@ -194,10 +194,10 @@ switch($action)
 
 		// Build our forum listing
 		$forums = getforums();
-		archive_header("", $settings['bbname'], $settings['bburl']."/index.php");
+		archive_header("", $mybb->settings['bbname'], $mybb->settings['bburl']."/index.php");
 ?>
 <div class="forumlist">
-<div class="header"><?php echo $settings['bbname']; ?></div>
+<div class="header"><?php echo $mybb->settings['bbname']; ?></div>
 <div class="forums">
 <ul>
 <?php
@@ -214,7 +214,7 @@ switch($action)
 
 function getforums($pid="0", $depth=1, $permissions="")
 {
-	global $fcache, $forumpermissions, $settings, $mybb, $mybbgroup, $lang, $archiveurl;
+	global $fcache, $forumpermissions, $mybb, $lang, $archiveurl;
 	if(is_array($fcache[$pid]))
 	{
 		while(list($key, $main) = each($fcache[$pid]))
@@ -222,7 +222,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 			while(list($key, $forum) = each($main))
 			{
 				$perms = $forumpermissions[$forum['fid']];
-				if($perms['canview'] == "yes" || $settings['hideprivateforums'] == "no")
+				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
 				{
 					if($forum['linkto'])
 					{
