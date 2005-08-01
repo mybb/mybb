@@ -86,6 +86,10 @@ else
 	define(MYBB_LOCATION, "index.php");
 }
 
+// Initialise session
+$session = new session();
+$session->init();
+
 if(!$mybb->settings['bblanguage'])
 {
 	$mybb->settings['bblanguage'] = "english";
