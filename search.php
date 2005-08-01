@@ -499,7 +499,7 @@ elseif($mybb->input['action'] == "do_search")
 	{
 		$op = "";
 	}
-	if($mybb->input['keyword']) {
+	if($mybb->input['keywords']) {
 		$wheresql = "(1=0 ";
 		if($mybb->input['srchtype'] != 2)
 		{
