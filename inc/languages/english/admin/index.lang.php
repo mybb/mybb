@@ -102,6 +102,7 @@ $l['nav_pruning'] = "Pruning";
 $l['nav_find'] = "Find";
 $l['nav_add_type'] = "Add Type";
 $l['nav_modify_delete_types'] = "Modify / Delete Types";
+$l['nav_attach_stats'] = "Attachment Statistics";
 $l['nav_attachments'] = "Attachments";
 $l['nav_admin_log'] = "Administrator Log";
 $l['nav_mod_log'] = "Moderator Log";

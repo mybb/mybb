@@ -66,5 +66,16 @@ $l['delete_attach_type'] = "Delete Attachment Type";
 $l['delete_confirm'] = "Are you sure you wish to delete the selected attachment type?";
 
 $l['days'] = "days";
+$l['overall_attachment_statistics'] = "Overall Statistics";
+$l['total_attachments'] = "Total Attachments";
+$l['total_size'] = "Total Size";
+$l['total_downloads'] = "Total Downloads";
+$l['most_popular_attachments'] = "5 Most Popular Attachments";
+$l['file_name'] = "File Name";
+$l['post'] = "Post";
+$l['username'] = "Username";
+$l['downloads'] = "Downloads";
+$l['largest_attachments'] = "5 Largest Attachments";
+$l['filesize'] = "File Size";
 
 ?>

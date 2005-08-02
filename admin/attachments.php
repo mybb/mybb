@@ -38,6 +38,9 @@ switch($mybb->input['action'])
 		addacpnav($lang->nav_attachtypes, "attachments.php");
 		addacpnav($lang->nav_edit_attachtype);
 		break;
+	case "stats":
+		addacpnav($lang->nav_attachment_stats);
+		break;
 	case "modify":
 	case "":
 		addacpnav($lang->nav_attachtypes);
@@ -260,42 +263,10 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "search")
 {
-	// display form for searching for attachments
-	$query = $db->query("SELECT COUNT(aid) AS Total, SUM(filesize) AS Sum FROM ".TABLE_PREFIX."attachments");
-	$stats = $db->fetch_array($query);
-	if(!$stats['Sum'])
-	{
-		$stats['Sum'] = 0;
-	}
-	if($stats['Sum'] >= 1073741824)
-	{
-		$stats['Sum'] = round($stats['Sum'] / 1073741824 * 100) / 100 . ' ' . $lang->size_gb;
-	}
-	elseif($stats['Sum'] >= 1048576)
-	{
-		$stats['Sum'] = round($stats['Sum'] / 1048576 * 100) / 100 . ' ' . $lang->size_mb;
-	}
-	elseif($stats['Sum'] >= 1024)
-	{
-		$stats['Sum'] = round($stats['Sum'] / 1024 * 100) / 100 . ' ' . $lang->size_kb;
-	}
-	else
-	{
-		$stats['Sum'] = $stats['Sum'] . " bytes";
-	}
-
-	if(!$noheader)
-	{
-		cpheader();
-	}
+	cpheader();
 	startform("attachments.php", "", "do_search");
 	starttable();
 	tableheader($lang->attach_management);
-	tablesubheader($lang->attach_stats);
-
-	$lang->attach_stats2 = sprintf($lang->attach_stats2, $stats['Total'], $stats['Sum']);
-
-	makelabelcode("<center>$lang->attach_stats2</center>", "", 2);
 	tablesubheader($lang->search_attachments);
 	makeinputcode($lang->filename_contains, "filename");
 	makeinputcode($lang->filetype_contains, "mimetype");
@@ -361,6 +332,74 @@ if($mybb->input['action'] == "delete")
 	endform();
 	cpfooter();
 }
+if($mybb->input['action'] == "stats")
+{
+	cpheader();
+	
+	$query = $db->query("SELECT COUNT(*) AS attachments, SUM(filesize) AS totalsize, SUM(downloads) AS downloads FROM ".TABLE_PREFIX."attachments");
+	$stats = $db->fetch_array($query);
+	if(!$stats['downloads'])
+	{
+		$stats['downloads'] = "0";
+	}
+	starttable();
+	tableheader($lang->overall_attachment_statistics, "");
+	makelabelcode($lang->total_attachments, $stats['attachments']);
+	makelabelcode($lang->total_size, getfriendlysize($stats['totalsize']));
+	makelabelcode($lang->total_downloads, $stats['downloads']);
+	endtable();
+
+	if($stats['attachments'] > 0)
+	{
+		starttable();
+		tableheader($lang->most_popular_attachments, "", 4);
+		echo "<tr>\n";
+		echo "<td class=\"subheader\" width=\"30%\">$lang->file_name</td>\n";
+		echo "<td class=\"subheader\" align=\"center\" width=\"40%\">$lang->post</td>\n";
+		echo "<td class=\"subheader\" align=\"center\" width=\"20%\">$lang->username</td>\n";
+		echo "<td class=\"subheader\" align=\"center\" width=\"10%\">$lang->downloads</td>\n";
+		echo "</tr>\n";
+		$query = $db->query("SELECT a.*, p.tid, p.subject, u.username FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid) ORDER BY downloads DESC LIMIT 0, 5");
+		while($attachment = $db->fetch_array($query))
+		{
+			$bgcolor = getaltbg();
+			echo "<tr>\n";
+			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=proflile&uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['downloads']."</a></td>\n";
+			echo "</tr>\n";
+		}
+		endtable();
+
+		starttable();
+		tableheader($lang->largest_attachments, "", 4);
+		echo "<tr>\n";
+		echo "<td class=\"subheader\" width=\"30%\">$lang->file_name</td>\n";
+		echo "<td class=\"subheader\" align=\"center\" width=\"40%\">$lang->post</td>\n";
+		echo "<td class=\"subheader\" align=\"center\" width=\"20%\">$lang->username</td>\n";
+		echo "<td class=\"subheader\" align=\"center\" width=\"10%\">$lang->filesize</td>\n";
+		echo "</tr>\n";
+		echo "</tr>\n";
+		$query = $db->query("SELECT a.*, p.tid, p.subject, u.username FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid) ORDER BY filesize DESC LIMIT 0, 5");
+		while($attachment = $db->fetch_array($query))
+		{
+			$bgcolor = getaltbg();
+			$attachment['filesize'] = getfriendlysize($attachment['filesize']);
+			echo "<tr>\n";
+			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=proflile&uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['filesize']."</a></td>\n";
+			echo "</tr>\n";
+		}
+		endtable();
+
+		starttable();
+	}
+	cpfooter();
+}
+
 
 if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 {

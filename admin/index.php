@@ -243,6 +243,7 @@ makenavoption($lang->nav_attachments, "moderate.php?action=attachments");
 makenavselect($lang->nav_moderation_queue);
 
 makenavoption($lang->nav_search_attachments, "attachments.php?action=search");
+makenavoption($lang->nav_attach_stats, "attachments.php?action=stats");
 makenavoption($lang->nav_add_type, "attachments.php?action=add");
 makenavoption($lang->nav_manage_attachment_types, "attachments.php?action=modify");
 makenavselect($lang->nav_attachments);
