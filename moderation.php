@@ -877,14 +877,32 @@ switch($mybb->input['action'])
 			$moveto = $fid;
 		}
 		$newsubject = addslashes($mybb->input['newsubject']);
-		$db->query("INSERT INTO ".TABLE_PREFIX."threads (tid,fid,subject,icon,uid,username,dateline,lastpost,lastposter,replies,visible) VALUES (NULL,'$moveto','$newsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$numyes','1')");
+		$query = array(
+			"tid" => "NULL",
+			"fid" => $moveto,
+			"subject" => $newsubject,
+			"icon" => $thread['icon'],
+			"uid" => $thread['uid'],
+			"username" => $thread['username'],
+			"dateline" => $thread['dateline'],
+			"lastpost" => $thread['lastpost'],
+			"lastposter" => $thread['lastposter'],
+			"replies" => $numyes,
+			"visible" => "1",
+		);
+		$db->insert_query(TABLE_PREFIX."threads", $query);
 		$newtid = $db->insert_id();
+		
 		// move the selected posts over
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
 		while($post = $db->fetch_array($query))
 		{
-			if($splitpost[$post['pid']] == "yes")
+			if($mybb->input['splitpost'][$post['pid']] == "yes")
 			{
+				$query = array(
+					"tid" => $newtid,
+					"fid" => $moveto,
+				);
 				$db->query("UPDATE ".TABLE_PREFIX."posts SET tid='$newtid', fid='$moveto' WHERE pid='$post[pid]'");
 			}
 			markreports($post['pid'], "post");
