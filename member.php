@@ -205,16 +205,6 @@ if($mybb->input['action'] == "do_register")
 		$allownoticescheck = "checked=\"checked\"";
 	}
 
-	if($mybb->input['invisible'] != "yes")
-	{
-		$invisible = "no";
-	}
-	else
-	{
-		$invisible = "yes";
-		$invisiblecheck = "checked=\"checked\"";
-	}
-
 	if($mybb->input['hideemail'] != "yes")
 	{
 		$hideemail = "no";
@@ -234,7 +224,7 @@ if($mybb->input['action'] == "do_register")
 		$emailnotify = "yes";
 		$emailnotifycheck = "checked=\"checked\"";
 	}
-	
+
 	if($mybb->input['receivepms'] != "yes")
 	{
 		$receivepms = "no";
@@ -243,6 +233,36 @@ if($mybb->input['action'] == "do_register")
 	{
 		$receivepms = "yes";
 		$receivepmscheck = "checked=\"checked\"";
+	}
+
+	if($mybb->input['pmpopup'] != "yes")
+	{
+		$pmpopup = "no";
+	}
+	else
+	{
+		$pmpopup = "yes";
+		$pmpopupcheck = "checked=\"checked\"";
+	}
+
+	if($mybb->input['emailpmnotify'] != "yes")
+	{
+		$emailpmnotify = "no";
+	}
+	else
+	{
+		$emailpmnotify = "yes";
+		$emailpmnotifycheck = "checked=\"checked\"";
+	}
+
+	if($mybb->input['invisible'] != "yes")
+	{
+		$invisible = "no";
+	}
+	else
+	{
+		$invisible = "yes";
+		$invisiblecheck = "checked=\"checked\"";
 	}
 	
 	if($mybb->input['enabledst'] != "yes")
@@ -254,8 +274,6 @@ if($mybb->input['action'] == "do_register")
 		$enabledst = "yes";
 		$enabledstcheck = "checked=\"checked\"";
 	}
-
-	$pmpopup = $receivepms;
 
 	if($mybb->settings['regtype'] == "verify")
 	{
@@ -382,13 +400,14 @@ if($mybb->input['action'] == "do_register")
 			"allownotices" => $allownotices,
 			"hideemail" => $hideemail,
 			"emailnotify" => $emailnotify,
+			"receivepms" => $receivepms,
+			"pmpopup" => $pmpopup,
+			"pmnotify" => $emailpmnotify,
 			"invisible" => $invisible,
 			"style" => intval($mybb->input['style']),
 			"timezone" => addslashes($mybb->input['timezoneoffset']),
 			"dst" => $enabledst,
 			"threadmode" => $threadmode,
-			"receivepms" => $receivepms,
-			"pmpopup" => $pmpopup,
 			"daysprune" => intval($mybb->input['daysprune']),
 			"regip" => $ipaddress,
 			"language" => addslashes($mybb->input['language']),

@@ -498,7 +498,7 @@ elseif($mybb->input['action'] == "options")
 		$allownoticescheck = "";
 	}
 
-	if($mybb->user['invisible'] == "yes")
+	if($mybb->user['invisible'] != "no")
 	{
 		$invisiblecheck = "checked=\"checked\"";
 	}
@@ -507,7 +507,7 @@ elseif($mybb->input['action'] == "options")
 		$invisiblecheck = "";
 	}
 
-	if($mybb->user['hideemail'] == "no")
+	if($mybb->user['hideemail'] != "no")
 	{
 		$hideemailcheck = "checked=\"checked\"";
 	}
@@ -579,7 +579,7 @@ elseif($mybb->input['action'] == "options")
 		$pmpopupcheck = "";
 	}
 
-	if($mybb->user['dst'] == "yes")
+	if($mybb->user['dst'] != "no")
 	{
 		$dstcheck = "checked=\"checked\"";
 	}

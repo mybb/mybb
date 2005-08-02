@@ -6701,16 +6701,24 @@ $referrer
 <td valign="top"><span class="smalltext"><label for="hideemail">$lang->hide_email</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1" /><input type="checkbox" name="invisible" id="invisible" value="yes" $invisiblecheck /></td>
-<td valign="top"><span class="smalltext"><label for="invisible">$lang->invisible_mode</label></span></td>
-</tr>
-<tr>
 <td valign="top" width="1" /><input type="checkbox" name="emailnotify" id="emailnotify" value="yes" $emailnotifycheck /></td>
 <td valign="top"><span class="smalltext"><label for="emailnotify">$lang->email_notify</label></span></td>
 </tr>
 <tr>
 <td valign="top" width="1" /><input type="checkbox" name="receivepms" id="receivepms" value="yes" $receivepmscheck /></td>
 <td valign="top"><span class="smalltext"><label for="receivepms">$lang->receive_pms</label></span></td>
+</tr>
+<tr>
+<td valign="top" width="1" /><input type="checkbox" name="pmpopup" id="pmpopup" value="yes" $pmpopupcheck /></td>
+<td valign="top"><span class="smalltext"><label for="pmpopup">$lang->pm_popup</label></span></td>
+</tr>
+<tr>
+<td valign="top" width="1" /><input type="checkbox" name="emailpmnotify" id="emailpmnotify" value="yes" $emailpmnotifycheck /></td>
+<td valign="top"><span class="smalltext"><label for="emailpmnotify">$lang->email_notify_newpm</label></span></td>
+</tr>
+<tr>
+<td valign="top" width="1" /><input type="checkbox" name="invisible" id="invisible" value="yes" $invisiblecheck /></td>
+<td valign="top"><span class="smalltext"><label for="invisible">$lang->invisible_mode</label></span></td>
 </tr>
 </table>
 </fieldset>
