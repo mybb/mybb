@@ -97,7 +97,7 @@ if($mybb->input['action'] == "results")
 	if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'])
 	{
 		$dotadd1 = "DISTINCT p.uid AS dotuid, ";
-		$dotadd2 = "LEFT JOIN ".TABLE_PREFIX."posts p ON (t.tid = p.tid AND p.uid='".$mybb->user[uid]."')";
+		$dotadd2 = "LEFT JOIN ".TABLE_PREFIX."posts p ON (t.tid = p.tid AND p.uid='".$mybb->user['uid']."')";
 	}
 	$unsearchforums = getunsearchableforums();
 	if($unsearchforums)
@@ -112,7 +112,7 @@ if($mybb->input['action'] == "results")
 	}
 	else
 	{
-		$sql = "SELECT DISTINCT(p.tid), p.pid, p.fid, ".$search[lookin].", t.subject, t.uid, t.lastposter, t.replies, t.views, t.lastpost, p.dateline, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, f.name AS forumname FROM ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE $search[wheresql] AND f.active!='no' AND t.closed NOT LIKE 'moved|%' AND t.tid=p.tid AND t.visible='1' GROUP BY p.tid ORDER BY $sortfield $sortorder";
+		$sql = "SELECT DISTINCT(p.tid), p.pid, p.fid, ".$search['lookin'].", t.subject, t.uid, t.lastposter, t.replies, t.views, t.lastpost, p.dateline, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, f.name AS forumname FROM ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE $search[wheresql] AND f.active!='no' AND t.closed NOT LIKE 'moved|%' AND t.tid=p.tid AND t.visible='1' GROUP BY p.tid ORDER BY $sortfield $sortorder";
 	}
 	$query = $db->query($sql);
 	$resultcount = $db->num_rows($query);
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "results")
 	$page = $mybb->input['page'];
 	if($page)
 	{
-		$start = ($page-1) *$perpage;
+		$start = ($page-1) * $perpage;
 	}
 	else
 	{
@@ -422,7 +422,7 @@ elseif($mybb->input['action'] == "getnew")
 }
 elseif($mybb->input['action'] == "getdaily")
 {
-	if(!$mybb->input['days'] < 1)
+	if($mybb->input['days'] < 1)
 	{
 		$days = 1;
 	}
@@ -469,7 +469,7 @@ elseif($mybb->input['action'] == "getdaily")
 }
 elseif($mybb->input['action'] == "do_search")
 {
-	if(!$mybb->input['keyword'])
+	if(!$mybb->input['keywords'])
 	{
 		if(!$mybb->input['author'])
 		{
@@ -503,7 +503,7 @@ elseif($mybb->input['action'] == "do_search")
 		$wheresql = "(1=0 ";
 		if($mybb->input['srchtype'] != 2)
 		{
-			$words = explode(" ", $mybb->input['keyword']);
+			$words = explode(" ", $mybb->input['keywords']);
 			$wordcount = count($words);
 			for($i=0;$i<$wordcount;$i++)
 			{
@@ -516,7 +516,7 @@ elseif($mybb->input['action'] == "do_search")
 		}
 		else
 		{
-			$wheresql .=  " AND $lookin LIKE '%".addslashes($mybb->input['keyword'])."%'";
+			$wheresql .=  " AND $lookin LIKE '%".addslashes($mybb->input['keywords'])."%'";
 		}
 	}
 	else
