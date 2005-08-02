@@ -779,6 +779,7 @@ elseif($mybb->input['action'] == "do_options")
 			{
 				$mybb->input['ppp'] = $biggest;
 			}
+		}
 	}
 
 	$languages = $lang->getLanguages();
