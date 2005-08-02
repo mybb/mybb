@@ -416,11 +416,12 @@ class session
 			$onlinedata['uid'] = 0;
 		}
 		$onlinedata['time'] = time();
-		$onlinedata['location'] = get_current_location();
+		$onlinedata['location'] = addslashes(get_current_location());
 		$onlinedata['useragent'] = $this->useragent;
 		$onlinedata['location1'] = $speciallocs['1'];
 		$onlinedata['location2'] = $speciallocs['2'];
 		$sid = addslashes($sid);
+
 		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
 	}
 
@@ -448,7 +449,7 @@ class session
 		}
 		$onlinedata['time'] = time();
 		$onlinedata['ip'] = $this->ipaddress;
-		$onlinedata['location'] = get_current_location();
+		$onlinedata['location'] = addslashes(get_current_location());
 		$onlinedata['useragent'] = $this->useragent;
 		$onlinedata['location1'] = $speciallocs['1'];
 		$onlinedata['location2'] = $speciallocs['2'];
