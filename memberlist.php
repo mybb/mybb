@@ -85,7 +85,7 @@ else
 {
 	$regdatesel = " selected=\"selected\"";
 }
-if($order == "DESC")
+if($mybb->input['order'] == "DESC")
 {
 	$descsel = " selected=\"selected\"";
 }

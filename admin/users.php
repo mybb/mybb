@@ -348,7 +348,7 @@ if($mybb->input['action'] == "do_delete")
 		$db->query("DELETE FROM ".TABLE_PREFIX."moderators WHERE uid='$uid'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE uid='$uid'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE uid='$uid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE uid='$uid'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='$uid'");
 
 		// Update forum stats
 		$cache->updatestats();
