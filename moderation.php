@@ -899,10 +899,6 @@ switch($mybb->input['action'])
 		{
 			if($mybb->input['splitpost'][$post['pid']] == "yes")
 			{
-				$query = array(
-					"tid" => $newtid,
-					"fid" => $moveto,
-				);
 				$db->query("UPDATE ".TABLE_PREFIX."posts SET tid='$newtid', fid='$moveto' WHERE pid='$post[pid]'");
 			}
 			markreports($post['pid'], "post");
