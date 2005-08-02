@@ -264,7 +264,11 @@ elseif($mybb->input['action'] == "do_editpost")
 	$firstcheck = $db->fetch_array($query);
 	if($firstpost)
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='".addslashes($mybb->input['subject'])."', icon='".$mybb->input['icon']."' WHERE tid='$tid'");
+		$newpost = array(
+			"subject" => addslashes($mybb->input['subject']),
+			"icon" => $mybb->input['icon'],
+			);
+		$db->update_query(TABLE_PREFIX."threads", $newpost, "tid='$tid'");
 	}
 
 	$now = time();
