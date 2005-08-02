@@ -161,7 +161,7 @@ switch($action)
 				$prefix = "<span class=\"threadprefix\">".$lang->archive_sticky."</span> ";
 			}
 
-			if($thread['replies'] == 1)
+			if($thread['replies'] != 1)
 			{
 				$lang_reply_text = $lang->archive_replies;
 			}
