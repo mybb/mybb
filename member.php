@@ -793,11 +793,17 @@ elseif($mybb->input['action'] == "activate")
 		$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user['uid']."' AND (type='r' OR type='e')");
 		if($user['usergroup'] == 5 && $activation['type'] != "e")
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='2' WHERE uid='".$user['uid']."'");
+			$newgroup = array(
+				"usergroup" => 2,
+				);
+			$db->update_query(TABLE_PREFIX."users", $newgroup, "uid='".$user['uid']."'");
 		}
 		if($activation['type'] == "e")
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."users SET email='".$activation['misc']."' WHERE uid='".$user['uid']."'");
+			$newemail = array(
+				"email" => $activation['misc'],
+				);
+			$db->update_query(TABLE_PREFIX."users", $newemail, "uid='".$user['uid']."'");
 			if(function_exists("emailChanged"))
 			{
 				emailChanged($mybb->user['uid'], $email);
@@ -998,7 +1004,10 @@ else if($mybb->input['action'] == "do_login")
 	}
 
 	$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'");
-	$db->query("UPDATE ".TABLE_PREFIX."sessions SET uid='".$user['uid']."' WHERE sid='".$session->sid."'");
+	$newsession = array(
+		"uid" => $user['uid'],
+		);
+	$db->update_query(TABLE_PREFIX."sessions", $newsession, "sid='".$session->sid."'");
 	
 	mysetcookie("mybbuser", $user['uid']."_".$user['loginkey']);
 	mysetcookie("sid", $session->sid, -1);
@@ -1034,7 +1043,11 @@ else if($mybb->input['action'] == "logout")
 		if($mybb->user['uid'])
 		{
 			$time = time();
-			$db->query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time-900', lastvisit='$time' WHERE uid='".$mybb->user[uid]."'");
+			$lastvisit = array(
+				"lastactive" => $time-900,
+				"lastvisit" => $time,
+				);
+			$db->update_query(TABLE_PREFIX."users", $lastvisit, "uid='".$mybb->user['uid']."'");
 			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$mybb->user['uid']."' OR ip='$ipaddress'");
 	
 			if(function_exists("loggedOut"))
@@ -1522,7 +1535,10 @@ elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 			$newrating3 = $rateinfo[2] . $mybb->user['uid'] . " ";
 			$newrating = $newrating1 . "|" . $newrating2 . "|" . $newrating3;
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."users SET rating='$newrating' WHERE uid='".$mybb->input['uid']."'");
+		$rating = array(
+			"rating" => $newrating,
+			);
+		$db->update_query(TABLE_PREFIX."users", $rating, "uid='".$mybb->input['uid']."'");
 
 		$plugins->run_hooks("member_do_rate_end");
 
