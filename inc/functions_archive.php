@@ -11,15 +11,15 @@
 
 function archive_header($title="", $fulltitle="", $fullurl="")
 {
-	global $settings, $lang, $db, $nav, $archiveurl;
+	global $mybb, $lang, $db, $nav, $archiveurl;
 	$nav = archive_navigation();
 	if(!$title)
 	{
-		$title = $settings['bbname'];
+		$title = $mybb->settings['bbname'];
 	}
 	else
 	{
-		$title = $settings['bbname']." - ".$title;
+		$title = $mybb->settings['bbname']." - ".$title;
 	}
 	$GLOBALS['fulltitle'] = $fulltitle;
 	$GLOBALS['fullurl'] = $fullurl;
@@ -35,7 +35,7 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 </head>
 <body>
 <div id="container">
-<h1><a href="<?php echo $settings['bburl']; ?>/index.php"><?php echo $settings['bbname']; ?></a></h1>
+<h1><a href="<?php echo $mybb->settings['bburl']; ?>/index.php"><?php echo $mybb->settings['bbname']; ?></a></h1>
 <div class="navigation"><?php echo $nav; ?></div>
 <div id="fullversion"><strong><?php echo $lang->archive_fullversion; ?></strong> <a href="<?php echo $fullurl; ?>"><?php echo $fulltitle; ?></a></div>
 <div id="infobox"><?php echo sprintf($lang->archive_note, $fullurl); ?></div>
@@ -45,7 +45,7 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 
 function archive_navigation($addlinks=1)
 {
-	global $navbits, $settings, $lang;
+	global $navbits, $mybb, $lang;
 	$navsep = " &gt; ";
 	if(is_array($navbits))
 	{
@@ -95,7 +95,7 @@ function archive_multipage($count, $perpage, $page, $url)
 
 function archive_footer()
 {
-	global $settings, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $mybboard;
+	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $mybboard;
 	$totaltime = $maintimer->stop();
 ?>
 </div>
@@ -103,8 +103,8 @@ function archive_footer()
 <div id="printinfo">
 <strong><?php echo $lang->archive_reference_urls; ?></strong>
 <ul>
-<li><strong><?php echo $settings['bbname']; ?>:</strong> <?php echo $settings['bburl']."/index.php"; ?></li>
-<?php if($fullurl != $settings['bburl']) { ?><li><strong><?php echo $fulltitle; ?>:</strong> <?php echo $fullurl; ?></li><?php } ?>
+<li><strong><?php echo $mybb->settings['bbname']; ?>:</strong> <?php echo $mybb->settings['bburl']."/index.php"; ?></li>
+<?php if($fullurl != $mybb->settings['bburl']) { ?><li><strong><?php echo $fulltitle; ?>:</strong> <?php echo $fullurl; ?></li><?php } ?>
 </ul>
 </div>
 </div>
@@ -120,7 +120,7 @@ function archive_footer()
 }
 function archive_error($error)
 {
-	global $lang, $settings;
+	global $lang, $mybb;
 	resetnav();
 	addnav($lang->error);
 	archive_header();

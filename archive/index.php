@@ -14,7 +14,7 @@ require "./inc/functions_post.php";
 // Load global language phrases
 $lang->load("index");
 
-switch($mybb->input['action'])
+switch($action)
 {
 	case "thread":
 		$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
