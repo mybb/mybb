@@ -394,8 +394,6 @@ if($mybb->input['action'] == "stats")
 			echo "</tr>\n";
 		}
 		endtable();
-
-		starttable();
 	}
 	cpfooter();
 }

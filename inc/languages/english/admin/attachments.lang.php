@@ -1,6 +1,7 @@
 <?php
 $l['nav_attachment_manager'] = "Attachment Manager";
 $l['nav_attachment_results'] = "Search Results";
+$l['nav_attachment_stats'] = "Attachment Statistics";
 $l['nav_attachtypes'] = "Attachment Types";
 $l['nav_add_attachtype'] = "Add Attachment Type";
 $l['nav_edit_attachtype'] = "Edit Attachment Type";
