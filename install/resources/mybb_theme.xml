@@ -3237,7 +3237,7 @@ $usercpnav
 </tr>
 $readmessages
 <tr>
-<td class="thead" align="right" colspan="5"><strong><input type="submit" name="stoptracking" value="$lang->stop_tracking"> $lang->selected_messages</strong></td>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" name="stoptracking" value="$lang->stop_tracking"> $lang->selected_messages</strong></td>
 </tr>
 </table>
 </td></tr></table>
@@ -3256,7 +3256,7 @@ $readmessages
 </tr>
 $unreadmessages
 <tr>
-<td class="thead" align="right" colspan="5"><strong><input type="submit" name="cancel" value="$lang->cancel"> $lang->selected_messages</strong></td>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" name="cancel" value="$lang->cancel"> $lang->selected_messages</strong></td>
 </tr>
 </table>
 </td></tr></table>
@@ -4520,7 +4520,7 @@ $header
 </tr>
 $onlinerows
 <tr>
-<td class="thead" colspan="3" align="right"><span class="smalltext"><strong><a href="online.php?action=today">$lang->online_today</a> | <a href="online.php">$lang->refresh_page</a></strong></span></td>
+<td class="tfoot" colspan="3" align="right"><span class="smalltext"><strong><a href="online.php?action=today">$lang->online_today</a> | <a href="online.php">$lang->refresh_page</a></strong></span></td>
 </tr>
 </table>
 <br />
