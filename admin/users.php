@@ -198,7 +198,7 @@ if($mybb->input['action'] == "do_add")
 		$additionalgroups = "";
 	}
 	$email = addslashes($_POST['email']);
-
+	$timenow = time();
 	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,salt,loginkey,email,usergroup,usertitle,regdate,lastactive,lastvisit,avatar,website,icq,aim,yahoo,msn,birthday,allownotices,hideemail,emailnotify,invisible,style,timezone,receivepms,pmpopup,pmnotify,signature) VALUES (NULL,'$username','$md5password','$salt','$loginkey','$email','$usergroup','$usertitle','$timenow','$timenow','$timenow','$avatar','$website','$icq','$aim','$yahoo','$msn','$birthday','$allownotices','$hideemail','$emailnotify','$invisible','$style','$timezoneoffset','$receivepms','$pmpopup','$pmnotify','$signature')");
 	$uid = $db->insert_id();
 
