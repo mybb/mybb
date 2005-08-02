@@ -254,6 +254,7 @@ if($mybb->input['action'] == "do_add")
 }
 if($mybb->input['action'] == "do_edit")
 {
+	$uid = intval($mybb->input['uid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
 	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='$username' AND username!='".addslashes($user[username])."'");
@@ -338,6 +339,7 @@ if($mybb->input['action'] == "do_edit")
 }
 if($mybb->input['action'] == "do_delete")
 {
+	$uid = intval($mybb->input['uid']);
 	if($deletesubmit)
 	{	
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET uid='0' WHERE uid='$uid'");
@@ -713,6 +715,7 @@ if($mybb->input['action'] == "add")
 }
 if($mybb->input['action'] == "edit")
 {
+	$uid = intval($mybb->input['uid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
 
@@ -923,6 +926,7 @@ if($mybb->input['action'] == "edit")
 }
 if($mybb->input['action'] == "delete")
 {
+	$uid = intval($mybb->input['uid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
 	$lang->delete_user = sprintf($lang->delete_user, $user['username']);
@@ -943,6 +947,7 @@ if($mybb->input['action'] == "delete")
 if($mybb->input['action'] == "showreferrers")
 {
 	cpheader();
+	$uid = intval($mybb->input['uid']);
 	if($uid)
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
@@ -1014,6 +1019,7 @@ if($mybb->input['action'] == "findips")
 if($mybb->input['action'] == "misc")
 {
 	cpheader();
+	$uid = intval($mybb->input['uid']);
 	starttable();
 	makelabelcode("<ul>\n<li><a href=\"users.php?action=showreferrers&uid=$uid\">$lang->show_referred_members</a></li>\n<li><a href=\"users.php?action=pmstats&uid=$uid\">$lang->pm_stats</a></li>\n<li><a href=\"users.php?action=stats&uid=$uid\">$lang->general_stats</a></li>\n<li><a href=\"users.php?action=findips&uid=$uid\">$lang->ip_addresses</a></li>\n</ul>");
 	endtable();
@@ -1036,6 +1042,7 @@ if($mybb->input['action'] == "merge")
 }
 if($mybb->input['action'] == "stats")
 {
+	$uid = intval($mybb->input['uid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
 	$lang->general_user_stats = sprintf($lang->general_user_stats, $user['username']);
@@ -1106,6 +1113,7 @@ if($mybb->input['action'] == "stats")
 
 if($mybb->input['action'] == "pmstats")
 {
+	$uid = intval($mybb->input['uid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
 	$lang->pm_stats = sprintf($lang->pm_stats, $user['username']);
