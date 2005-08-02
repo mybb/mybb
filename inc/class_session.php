@@ -420,6 +420,7 @@ class session
 		$onlinedata['useragent'] = $this->useragent;
 		$onlinedata['location1'] = $speciallocs['1'];
 		$onlinedata['location2'] = $speciallocs['2'];
+		$sid = addslashes($sid);
 		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
 	}
 
