@@ -936,7 +936,7 @@ $usercpnav
 <td><span class="smalltext"><label for="allownotices">$lang->allow_notices</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="hideemail" id="hideemail" value="no" $hideemailcheck /></td>
+<td valign="top" width="1"><input type="checkbox" name="hideemail" id="hideemail" value="yes" $hideemailcheck /></td>
 <td><span class="smalltext"><label for="hideemail">$lang->allow_emails</label></span></td>
 </tr>
 <tr>

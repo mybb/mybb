@@ -696,24 +696,40 @@ elseif($mybb->input['action'] == "do_options")
 	{
 		$mybb->input['showcodebuttons'] = 0;
 	}
+	
 	if($mybb->input['allownotices'] != "yes")
 	{
-		$allownotices = "no";
+		$mybb->input['allownotices'] = "no";
 	}
 
-	if($mybb->input['invisible'] != "yes")
+	if($mybb->input['hideemail'] != "yes")
 	{
-		$mybb->input['invisible'] = "no";
-	}
-
-	if($mybb->input['hideemail'] != "no")
-	{
-		$mybb->input['hideemail'] = "yes";
+		$mybb->input['hideemail'] = "no";
 	}
 
 	if($mybb->input['emailnotify'] != "yes")
 	{
 		$mybb->input['emailnotify'] = "no";
+	}
+
+	if($mybb->input['receivepms'] != "yes")
+	{
+		$mybb->input['receivepms'] = "no";
+	}
+	
+	if($mybb->input['pmpopup'] != "yes")
+	{
+		$mybb->input['pmpopup'] = "no";
+	}
+
+	if($mybb->input['pmnotify'] != "yes")
+	{
+		$mybb->input['pmnotify'] = "no";
+	}
+
+	if($mybb->input['invisible'] != "yes")
+	{
+		$mybb->input['invisible'] = "no";
 	}
 
 	if($mybb->input['showsigs'] != "yes")
@@ -734,20 +750,6 @@ elseif($mybb->input['action'] == "do_options")
 	if($mybb->input['remember'] != "yes")
 	{
 		$mybb->input['remember'] = "no";
-	}
-
-	if($mybb->input['receivepms'] != "yes")
-	{
-		$mybb->input['receivepms'] = "no";
-	}
-	if($mybb->input['pmpopup'] != "yes")
-	{
-		$mybb->input['pmpopup'] = "no";
-	}
-
-	if($mybb->input['pmnotify'] != "yes")
-	{
-		$mybb->input['pmnotify'] = "no";
 	}
 
 	if($mybb->input['dst'] != "yes")
@@ -807,7 +809,7 @@ elseif($mybb->input['action'] == "do_options")
 		"daysprune" => intval($mybb->input['daysprune']),
 		"language" => $mybb->input['language'],
 		"showcodebuttons" => $mybb->input['showcodebuttons'],
-		"pmnotify" => $mybb->input['pmnotify']
+		"pmnotify" => $mybb->input['pmnotify'],
 		);
 
 	if($mybb->settings['usertppoptions'])
