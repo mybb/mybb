@@ -82,7 +82,7 @@ if($mybb->input['action'] == "newpoll")
 	{
 		$polloptions = $mybb->settings['maxpolloptions'];
 	}
-	elseif($mybb->input['polloptions'])
+	elseif(!$mybb->input['polloptions'])
 	{
 		$polloptions = 2;
 	}
@@ -111,13 +111,13 @@ if($mybb->input['action'] == "newpoll")
 		eval("\$optionbits .= \"".$templates->get("polls_newpoll_option")."\";");
 		$option = "";
 	}
-	if($timeout)
+	if(!$mybb->input['timeout'])
 	{
-		$timeout = $mybb->input['timeout'];
+		$timeout = 0;
 	}
 	else
 	{
-		$timeout = 0;
+		$timeout = $mybb->input['timeout'];
 	}
 
 	$plugins->run_hooks("polls_newpoll_end");
@@ -216,7 +216,7 @@ if($mybb->input['action'] == "do_newpoll")
 			$voteslist .= "0";
 		}
 	}
-	if($timeout > 0)
+	if($mybb->input['timeout'] > 0)
 	{
 		$timeout = $mybb->input['timeout'];
 	}
@@ -328,7 +328,7 @@ if($mybb->input['action'] == "editpoll")
 			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 		}
 		$question = htmlspecialchars_uni($poll['question']);
-		$numoptions = $poll['numoptions'] + 2;
+		$numoptions = $poll['numoptions'];
 		$optionbits = "";
 		for($i=0;$i<$numoptions;$i++)
 		{
@@ -400,13 +400,13 @@ if($mybb->input['action'] == "editpoll")
 			$option = "";
 		}
 
-		if($timeout > 0)
+		if(!$mybb->input['timeout'])
 		{
-			$timeout = $mybb->input['timeout'];
+			$timeout = 0;
 		}
 		else
 		{
-			$timeout = 0;
+			$timeout = $mybb->input['timeout'];
 		}
 	}
 
@@ -457,7 +457,6 @@ if($mybb->input['action'] == "do_editpoll")
 	{
 		$postoptions['multiple'] = "no";
 	}
-
 	if($postoptions['public'] != "yes")
 	{
 		$postoptions['public'] = "no";
@@ -466,7 +465,6 @@ if($mybb->input['action'] == "do_editpoll")
 	{
 		$postoptions['closed'] = "no";
 	}
-	$optioncount = "0";
 	$optioncount = "0";
 	$options = $mybb->input['options'];
 
@@ -513,6 +511,14 @@ if($mybb->input['action'] == "do_editpoll")
 			$numvotes = $numvotes + $votes[$i];
 		}
 	}
+	if($mybb->input['timeout'] > 0)
+	{
+		$timeout = $mybb->input['timeout'];
+	}
+	else
+	{
+		$timeout = 0;
+	}
 	$updatedpoll = array(
 		"question" => addslashes($mybb->input['question']),
 		"options" => addslashes($optionslist),
@@ -520,7 +526,7 @@ if($mybb->input['action'] == "do_editpoll")
 		"numoptions" => intval($numoptions),
 		"numvotes" => $numvotes,
 		"timeout" => $timeout,
-		"closed" => "no",
+		"closed" => $postoptions['closed'],
 		"multiple" => $postoptions['multiple'],
 		"public" => $postoptions['public']
 		);
