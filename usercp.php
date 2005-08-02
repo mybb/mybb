@@ -755,6 +755,32 @@ elseif($mybb->input['action'] == "do_options")
 		$mybb->input['dst'] = "no";
 	}
 
+	if($mybb->settings['usertppoptions'])
+	{
+		$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
+		if(is_array($explodedtpp))
+		{
+			@asort($explodedtpp);
+			$biggest = $explodedtpp[count($explodedtpp)-1];
+			if($mybb->input['tpp'] > $biggest)
+			{
+				$mybb->input['tpp'] = $biggest;
+			}
+		}
+	}
+	if($mybb->settings['userpppoptions'])
+	{
+		$explodedppp = explode(",", $mybb->settings['userpppoptions']);
+		if(is_array($explodedppp))
+		{
+			@asort($explodedppp);
+			$biggest = $explodedppp[count($explodedppp)-1];
+			if($mybb->input['ppp'] > $biggest)
+			{
+				$mybb->input['ppp'] = $biggest;
+			}
+	}
+
 	$languages = $lang->getLanguages();
 	if(!$languages[$mybb->input['language']])
 	{
