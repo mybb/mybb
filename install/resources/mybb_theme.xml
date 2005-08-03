@@ -2934,7 +2934,7 @@ $buddys[online]
 </tr>
 $buddys[offline]
 <tr>
-<td colspan="2" class="thead" align="center"><span class="smalltext"><a href="misc.php?action=buddypopup">$lang->refresh</a></span></td>
+<td colspan="2" class="tfoot" align="center"><span class="smalltext"><a href="misc.php?action=buddypopup">$lang->refresh</a></span></td>
 </tr>
 </table>
 </body>
@@ -3908,9 +3908,9 @@ $footer
 </tr>
 $polloptions
 <tr>
-<td class="thead" align="right" colspan="2"><strong>$lang->total</strong></td>
-<td class="thead" align="center"><strong>$lang->total_votes</strong></td>
-<td class="thead" align="center"><strong>$totpercent</strong></td>
+<td class="tfoot" align="right" colspan="2"><strong>$lang->total</strong></td>
+<td class="tfoot" align="center"><strong>$lang->total_votes</strong></td>
+<td class="tfoot" align="center"><strong>$totpercent</strong></td>
 </tr>
 </table>
 <table cellspacing="0" cellpadding="2" border="0" width="$theme[tablewidth]" align="center">
@@ -3933,9 +3933,9 @@ $header
 </tr>
 $polloptions
 <tr>
-<td class="thead" align="right" colspan="2"><strong>$lang->poll_total</strong></td>
-<td class="thead" align="center"><strong>$poll[numvotes] $lang->poll_votes</strong></td>
-<td class="thead" align="center"><strong>$totpercent</strong></td>
+<td class="tfoot" align="right" colspan="2"><strong>$lang->poll_total</strong></td>
+<td class="tfoot" align="center"><strong>$poll[numvotes] $lang->poll_votes</strong></td>
+<td class="tfoot" align="center"><strong>$totpercent</strong></td>
 </tr>
 </table>
 <br />
