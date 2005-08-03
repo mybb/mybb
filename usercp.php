@@ -131,6 +131,14 @@ if($mybb->input['action'] == "profile")
 	{
 		$user['website'] = htmlspecialchars_uni($user['website']);
 	}
+	if($user['icq'] != "0")
+	{
+		$icq = stripslashes($user['icq']);
+	}
+	else
+	{
+		$icq = "";
+	}
 	if($mybb->settings['allowaway'] != "no")
 	{
 		if($mybb->user['away'] == "yes")

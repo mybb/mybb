@@ -1184,7 +1184,14 @@ elseif($mybb->input['action'] == "profile")
 	$query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE referrer='$memprofile[uid]'");
 	$referrals = $db->result($query, 0);
 
-	$memprofile['icq'] = stripslashes($memprofile['icq']);
+	if($memprofile['icq'] != "0")
+	{
+		$memprofile['icq'] = stripslashes($memprofile['icq']);
+	}
+	else
+	{
+		$memprofile['icq'] = "";
+	}
 	$memprofile['aim'] = stripslashes($memprofile['aim']);
 	$memprofile['yahoo'] = stripslashes($memprofile['yahoo']);
 	$memprofile['signature'] = stripslashes($memprofile['signature']);

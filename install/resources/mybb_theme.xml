@@ -1705,7 +1705,7 @@ $customtitle
 <td><span class="smalltext">$lang->icq_number</span></td>
 </tr>
 <tr>
-<td><input type="text" name="icq" size="25" value="$user[icq]" /></td>
+<td><input type="text" name="icq" size="25" value="$icq" /></td>
 </tr>
 <tr>
 <td><span class="smalltext">$lang->aim_screenname</span></td>
