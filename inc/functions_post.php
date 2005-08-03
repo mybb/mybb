@@ -630,8 +630,10 @@ function makepostbit($post, $pmprevann=0)
 		}
 		eval("\$posturl = \"".$templates->get("postbit_posturl")."\";");
 		eval("\$quote = \"".$templates->get("postbit_quote")."\";");
-		eval("\$report = \"".$templates->get("postbit_report")."\";");
-
+		if($mybb->user['uid'] != "0")
+		{
+			eval("\$report = \"".$templates->get("postbit_report")."\";");
+		}
 
 		if($mybb->settings['logip'] != "no")
 		{

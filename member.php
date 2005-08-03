@@ -996,8 +996,11 @@ else if($mybb->input['action'] == "do_login")
 {
 	$plugins->run_hooks("member_do_login_start");
 
+	if(!username_exists($mybb->input['username']))
+	{
+		error($lang->error_invalidusername);
+	}
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
-
 	if(!$user['uid'])
 	{
 		error($lang->error_invalidpassword);
