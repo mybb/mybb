@@ -244,8 +244,16 @@ function getforums($pid="0", $depth=1, $permissions="")
 						}
 						continue;
 					}
+					if($mybb->user['uid'] != 0)
+					{
+						$lastvisit = $mybb->user['lastvisit'];
+					}
+					else
+					{
+						$lastvisit = $_COOKIE['mybb']['lastvisit'];
+					}
 					$forumread = mygetarraycookie("forumread", $forum['fid']);
-					if($forum['lastpost'] > $mybb->user['lastvisit'] && $forum['lastpost'] > $forumread && $forum['lastpost'] != 0)
+					if($forum['lastpost'] > $lastvisit && $forum['lastpost'] > $forumread && $forum['lastpost'] != 0)
 					{
 						$folder = "on";
 						$altonoff = $lang->new_posts;
