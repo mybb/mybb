@@ -52,7 +52,7 @@ if($endpart != "index.php")
 	$todo = explode("-", $endpart, 3);
 	$action = $todo[0];
 	$page = $todo[2];
-	$id = $todo[1];
+	$id = intval($todo[1]);
 	if($action == "thread")
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$id' AND visible='1' AND closed NOT LIKE 'moved|%'");
