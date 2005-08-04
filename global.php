@@ -78,27 +78,27 @@ if($mybb->user['style'] != "" && $mybb->user['style'] != "0")
 }
 if($mybb->input['pid'] > 0 && $mybb->input['tid'])
 {
-	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f, ".TABLE_PREFIX."posts p WHERE f.fid=p.fid AND p.pid='".$mybb->input['pid']."'");
+	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f, ".TABLE_PREFIX."posts p WHERE f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'");
 	$style = $db->fetch_array($query);
 }
 if($mybb->input['pid'] > 0 && !$mybb->input['tid'])
 {
-	$query = $db->query("SELECT p.fid, f.style, f.overridestyle FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.pid='".$mybb->input['pid']."'");
+	$query = $db->query("SELECT p.fid, f.style, f.overridestyle FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.pid='".intval($mybb->input['pid'])."'");
 	$style = $db->fetch_array($query);
 }
 if($mybb->input['tid'] > 0 && $mybb->input['fid'])
 {
-	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f, ".TABLE_PREFIX."threads t WHERE f.fid=t.fid AND t.tid='".$mybb->input['tid']."'");
+	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f, ".TABLE_PREFIX."threads t WHERE f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'");
 	$style = $db->fetch_array($query);
 }
 if($mybb->input['tid'] > 0 && !$mybb->input['fid'])
 {
-	$query = $db->query("SELECT t.fid, f.style, f.overridestyle FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE t.tid='".$mybb->input['tid']."'");
+	$query = $db->query("SELECT t.fid, f.style, f.overridestyle FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE t.tid='".intval($mybb->input['tid'])."'");
 	$style = $db->fetch_array($query);
 }
 if($mybb->input['fid'] > 0)
 {
-	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f WHERE f.fid='".$mybb->input['fid']."'");
+	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f WHERE f.fid='".intval($mybb->input['fid'])."'");
 	$style = $db->fetch_array($query);
 }
 if($style['style'] && $style['style'] != -1)
