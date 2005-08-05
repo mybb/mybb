@@ -75,7 +75,7 @@ if($mybb->input['action'] == "do_edit")
 		"title" => addslashes($mybb->input['title']),
 		"stars" => intval($mybb->input['stars']),
 		"starimage" => addslashes($mybb->input['starimage'])
-
+		);
 	$db->update_query(TABLE_PREFIX."usertitles", $usertitle, "utid='".intval($mybb->input['utid'])."'");
 	cpredirect("usertitles.php", $lang->title_updated);
 }
