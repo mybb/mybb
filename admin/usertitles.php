@@ -34,22 +34,27 @@ switch($mybb->input['action'])
 
 if($mybb->input['action'] == "do_add")
 {
-	$posts = intval($_POST['posts']);
-	$title = addslashes($_POST['title']);
-	$stars = intval($_POST['stars']);
-	$starimage = addslashes($_POST['starimage']);
-	if($stars < 1)
+	if($mybb->input['stars'] < 1)
 	{
-		$stars = 0;
+		$mybb->input['stars'] = $mybb->input['stars'];
 	}
-	$db->query("INSERT INTO ".TABLE_PREFIX."usertitles VALUES (NULL, '$posts', '$title', '$stars', '$starimage')");
+
+	$usertitle = array(
+		"utid" => "NULL",
+		"posts" => intval($mybb->input['posts']),
+		"title" => addslashes($mybb->input['title']),
+		"stars" => intval($mybb->input['stars']),
+		"starimage" => addslashes($mybb->input['starimage'])
+		);
+
+	$db->insert_query(TABLE_PREFIX."usertitles", $usertitle);
 	cpredirect("usertitles.php", $lang->title_added);
 }
 if($mybb->input['action'] == "do_delete")
 {
-	if($deletesubmit)
+	if($mybb->input['deletesubmit'])
 	{	
-		$db->query("DELETE FROM ".TABLE_PREFIX."usertitles WHERE utid='$utid'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."usertitles WHERE utid='".intval($mybb->input['utid'])."'");
 		cpredirect("usertitles.php", $lang->title_deleted);
 	}
 	else
@@ -60,15 +65,18 @@ if($mybb->input['action'] == "do_delete")
 
 if($mybb->input['action'] == "do_edit")
 {
-	$posts = intval($_POST['posts']);
-	$title = addslashes($_POST['title']);
-	$stars = intval($_POST['stars']);
-	$starimage = addslashes($_POST['starimage']);
-	if($stars < 1)
+	if($mybb->input['stars'] < 1)
 	{
-		$stars = 0;
+		$mybb->input['stars'] = $mybb->input['stars'];
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."usertitles SET posts='$posts', title='$title', stars='$stars', starimage='$starimage' WHERE utid='$utid'");
+
+	$usertitle = array(
+		"posts" => intval($mybb->input['posts']),
+		"title" => addslashes($mybb->input['title']),
+		"stars" => intval($mybb->input['stars']),
+		"starimage" => addslashes($mybb->input['starimage'])
+
+	$db->update_query(TABLE_PREFIX."usertitles", $usertitle, "utid='".intval($mybb->input['utid'])."'");
 	cpredirect("usertitles.php", $lang->title_updated);
 }
 if($mybb->input['action'] == "add")
@@ -87,13 +95,13 @@ if($mybb->input['action'] == "add")
 }
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE utid='$utid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE utid='".intval($mybb->input['utid'])."'");
 	$title = $db->fetch_array($query);
 	$lang->delete_title = sprintf($lang->delete_title, $title['title']);
 	$lang->delete_title_confirm = sprintf($lang->delete_title_confirm, $title['title']);
 	cpheader();
 	startform("usertitles.php", "", "do_delete");
-	makehiddencode("utid", $utid);
+	makehiddencode("utid", $mybb->input['utid']);
 	starttable();
 	tableheader($lang->delete_title, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
@@ -105,12 +113,12 @@ if($mybb->input['action'] == "delete")
 }
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE utid='$utid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE utid='".intval($mybb->input['utid'])."'");
 	$title = $db->fetch_array($query);
 	$lang->edit_title = sprintf($lang->edit_title, $title['title']);
 	cpheader();
 	startform("usertitles.php", "" , "do_edit");
-	makehiddencode("utid", $utid);
+	makehiddencode("utid", $mybb->input['utid']);
 	starttable();
 	tableheader($lang->edit_title);
 	makeinputcode($lang->title, "title", $title[title]);

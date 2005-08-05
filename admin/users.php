@@ -9,7 +9,7 @@
  * $Id$
  */
 
-require "global.php";
+require "./global.php";
 
 // Load language packs for this section
 global $lang;
@@ -151,28 +151,19 @@ logadmin();
 
 if($mybb->input['action'] == "do_add")
 {
-	$username = addslashes($_POST['username']);
-	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='$username'");
-	if($db->fetch_array($query))
+	if(username_exists($mybb->input['username']))
 	{
 		cpmessage($lang->error_name_exists);
 	}
-	if(!$username || !$password || !$email)
+	if(!$mybb->input['username'] || !$mybb->input['password'] || !$mybb->input['email'])
 	{
 		cpmessage($lang->missing_fields);
 	}
-	if($website == "http://" || $website == "none")
+	if($mybb->input['website'] == "http://" || $mybb->input['website'] == "none")
 	{
-		$website = "";
+		$mybb->input['website'] = "";
 	}
-	$usertitle = addslashes($usertitle);
-	$website = addslashes($website);
-	$icq = addslashes($icq);
-	$aim = addslashes($aim);
-	$yahoo = addslashes($yahoo);
-	$msn = addslashes($msn);
-	$signature = addslashes($signature);
-	$avatar = addslashes($avatar);
+	$md5password = md5($mybb->input['password']);
 
 	//
 	// Generate salt, salted password, and login key
@@ -182,43 +173,72 @@ if($mybb->input['action'] == "do_add")
 	$loginkey = generate_loginkey();
 
 	// Determine the usergroup stuff
-	if(is_array($additionalgroups))
+	if(is_array($mybb->input['additionalgroups']))
 	{
-		foreach($additionalgroups as $gid)
+		foreach($mybb->input['additionalgroups'] as $gid)
 		{
 			if($gid == $usergroup)
 			{
-				unset($additionalgroups[$gid]);
+				unset($mybb->input['additionalgroups'][$gid]);
 			}
 		}
-		$additionalgroups = implode(",", $additionalgroups);
+		$additionalgroups = implode(",", $mybb->input['additionalgroups']);
 	}
 	else
 	{
 		$additionalgroups = "";
 	}
-	$email = addslashes($_POST['email']);
 	$timenow = time();
-	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,salt,loginkey,email,usergroup,usertitle,regdate,lastactive,lastvisit,avatar,website,icq,aim,yahoo,msn,birthday,allownotices,hideemail,emailnotify,invisible,style,timezone,receivepms,pmpopup,pmnotify,signature) VALUES (NULL,'$username','$md5password','$salt','$loginkey','$email','$usergroup','$usertitle','$timenow','$timenow','$timenow','$avatar','$website','$icq','$aim','$yahoo','$msn','$birthday','$allownotices','$hideemail','$emailnotify','$invisible','$style','$timezoneoffset','$receivepms','$pmpopup','$pmnotify','$signature')");
+	$user = array(
+		"uid" => "NULL",
+		"username" => addslashes($mybb->input['username']),
+		"password" => $md5password,
+		"salt" => $salt,
+		"loginkey" => $loginkey,
+		"email" => addslashes($mybb->input['email']),
+		"usergroup" => intval($mybb->input['usergroup'],
+		"usertitle" => addslashes($mybb->input['usertitle'],
+		"regdate" => time(),
+		"lastactive" => 0,
+		"lastvisit" => 0,
+		"avatar" => addslashes($mybb->input['avatar']),
+		"website" => addslashes($mybb->input['website']),
+		"icq" => addslashes($mybb->input['icq']),
+		"aim" => addslashes($mybb->input['aim']),
+		"yahoo" => addslashes($mybb->input['yahoo']),
+		"msn" => addslashes($mybb->input['msn']),
+		"birthday" => addslashes($mybb->input['birthday']),
+		"allownotices" => $mybb->input['allownotices'],
+		"hideemail" => $mybb->input['hideemail'],
+		"emailnotify" => $mybb->input['emailnotify'],
+		"invisible" => $mybb->input['invisible'],
+		"style" => $mybb->input['style'],
+		"timezone" => $mybb->input['timezoneoffset'],
+		"receivepms" => $mybb->input['receivepms'],
+		"pmpopup" => $mybb->input['pmpopup'],
+		"pmnotify" => $mybb->input['pmnotify'],
+		"signature" => $mybb->input['signature']
+		);
+	$db->insert_query(TABLE_PREFIX."users", $user);
 	$uid = $db->insert_id();
 
-	// Custom profile fields baby!
+	// Custom profile fields
 	$querypart1 = "";
 	$querypart2 = "";
 	$comma = "";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield[type] = htmlspecialchars_uni(stripslashes($profilefield[type]));
+		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 		$thing = explode("\n", $profilefield[type], "2");
 		$type = trim($thing[0]);
 		$field = "fid$profilefield[fid]";
 		$options = "";
 		if($type == "multiselect" || $type == "checkbox")
 		{
-			if(is_array($$field))
+			if(is_array($mybb->input[$field'))
 			{
-				while(list($key, $val) = each($$field))
+				while(list($key, $val) = each($mybb->input[$field]))
 				{
 					if($options)
 					{
@@ -230,127 +250,158 @@ if($mybb->input['action'] == "do_add")
 		}
 		else
 		{
-			$options = $$field;
+			$options = $mybb->input[$field];
 		}
 		$options = addslashes($options);
-		$querypart1 .= "$comma$field";
-		$querypart2 .= "$comma'$options'";
-		$comma = ",";
+		$userfields[$field] = $options;
 	}
-	if($usergroup == 5)
+	$userfields['ufid'] = $uid;
+	$db->insert_query(TABLE_PREFIX."userfields", $userfields);
+	if($mybb->input['usergroup'] == 5)
 	{
 		$activationcode = random_str();
 		$now = time();
-		$db->query("INSERT INTO ".TABLE_PREFIX."awaitingactivation (aid,uid,dateline,code,type) VALUES (NULL,'$uid','$now','$activationcode','r')");
+		$activationarray = array(
+			"aid" => "NULL",
+			"uid" => $uid,
+			"dateline" => time(),
+			"code" => $activationcode,
+			"type" => "r"
+		);
+		$db->query(TABLE_PREFIX."awaitingactivation", $activationarray);
 		$emailsubject = sprintf($lang->emailsubject_activateaccount, $settings['bbname']);
 		$emailmessage = sprintf($lang->email_activeateaccount, $username, $settings['bbname'], $settings['bburl'], $uid, $activationcode);
 		mymail($email, $emailsubject, $emailmessage);
 	}
-
-	$db->query("INSERT INTO ".TABLE_PREFIX."userfields (ufid,$querypart1) VALUES ('$uid',$querypart2)");
-
 	$cache->updatestats();
 	cpredirect("users.php", $lang->user_added);
 }
 if($mybb->input['action'] == "do_edit")
 {
-	$uid = intval($mybb->input['uid']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
-	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='$username' AND username!='".addslashes($user[username])."'");
+
+	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."' AND username!='".addslashes($user['username'])."'");
 	if($db->fetch_array($query))
 	{
 		cpmessage($lang->error_name_exists);
 	}
-
-	if($website == "http://" || $website == "none")
+	if(!$mybb->input['email'])
 	{
-		$website = "";
+		cpmessage($lang->missing_fields);
 	}
-	$usertitle = addslashes($usertitle);
-	$website = addslashes($website);
-	$icq = addslashes($icq);
-	$aim = addslashes($aim);
-	$yahoo = addslashes($yahoo);
-	$msn = addslashes($msn);
-	$signature = addslashes($signature);
-	$avatar = addslashes($avatar);
-
-	if($password != "")
+	if($mybb->input['website'] == "http://" || $mybb->input['website'] == "none")
 	{
-		update_password($user['uid'], md5($password), $user['salt']);
+		$mybb->input['website'] = "";
 	}
-	// Custom profile fields baby!
-	$upquery = "";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
+
+	if($mybb->input['password'] != "")
+	{
+		update_password($user['uid'], md5($mybb->input['password']), $user['salt']);
+	}
+	// Custom profile fields
+	$querypart1 = "";
+	$querypart2 = "";
+	$comma = "";
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield[type] = htmlspecialchars_uni(stripslashes($profilefield[type]));
+		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 		$thing = explode("\n", $profilefield[type], "2");
 		$type = trim($thing[0]);
 		$field = "fid$profilefield[fid]";
 		$options = "";
 		if($type == "multiselect" || $type == "checkbox")
 		{
-			while(list($key, $val) = each($$field))
+			if(is_array($mybb->input[$field'))
 			{
-				if($options)
+				while(list($key, $val) = each($mybb->input[$field]))
 				{
-					$options .= "\n";
+					if($options)
+					{
+						$options .= "\n";
+					}
+					$options .= "$val";
 				}
-				$options .= $val;
 			}
 		}
 		else
 		{
-			$options = $$field;
+			$options = $mybb->input[$field];
 		}
 		$options = addslashes($options);
-		$upquery .= ", $field='$options'";
+		$userfields[$field] = $options;
 	}
+	$userfields['ufid'] = $uid;
+	$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='".$mybb->input['uid'])."'");
+	$db->insert_query(TABLE_PREFIX."userfields", $userfields);
+
 	// Determine the usergroup stuff
-	if(is_array($additionalgroups))
+	if(is_array($mybb->input['additionalgroups']))
 	{
-		foreach($additionalgroups as $gid)
+		foreach($mybb->input['additionalgroups'] as $gid)
 		{
 			if($gid == $usergroup)
 			{
-				unset($additionalgroups[$gid]);
+				unset($mybb->input['additionalgroups'][$gid]);
 			}
 		}
-		$additionalgroups = implode(",", $additionalgroups);
+		$additionalgroups = implode(",", $mybb->input['additionalgroups']);
 	}
 	else
 	{
 		$additionalgroups = "";
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='$uid'");
-	$db->query("INSERT INTO ".TABLE_PREFIX."userfields (ufid) VALUES ('$uid')");
-	$db->query("UPDATE ".TABLE_PREFIX."userfields SET ufid='$uid' $upquery WHERE ufid='$uid'");
 
-	$db->query("UPDATE ".TABLE_PREFIX."users SET username='$username', email='$email', usergroup='$usergroup', usertitle='$usertitle', avatar='$avatar', website='$website', icq='$icq', aim='$aim', yahoo='$yahoo', msn='$msn', birthday='$birthday', hideemail='$hideemail', emailnotify='$emailnotify', allownotices='$allownotices', invisible='$invisible', style='$stylesel', timezone='$timezoneoffset', receivepms='$receivepms', pmpopup='$pmpopup', signature='$signature', additionalgroups='$additionalgroups', postnum='$postnum', pmnotify='$pmnotify' WHERE uid='$uid'");
-	if($username != $user[username])
+	$user = array(
+		"username" => addslashes($mybb->input['username']),
+		"email" => addslashes($mybb->input['email']),
+		"usergroup" => intval($mybb->input['usergroup'],
+		"additionalgroups" => $additionalgroups,
+		"usertitle" => addslashes($mybb->input['usertitle'],
+		"avatar" => addslashes($mybb->input['avatar']),
+		"website" => addslashes($mybb->input['website']),
+		"icq" => addslashes($mybb->input['icq']),
+		"aim" => addslashes($mybb->input['aim']),
+		"yahoo" => addslashes($mybb->input['yahoo']),
+		"msn" => addslashes($mybb->input['msn']),
+		"birthday" => addslashes($mybb->input['birthday']),
+		"allownotices" => $mybb->input['allownotices'],
+		"hideemail" => $mybb->input['hideemail'],
+		"emailnotify" => $mybb->input['emailnotify'],
+		"invisible" => $mybb->input['invisible'],
+		"style" => $mybb->input['stylesel'],
+		"timezone" => $mybb->input['timezoneoffset'],
+		"receivepms" => $mybb->input['receivepms'],
+		"pmpopup" => $mybb->input['pmpopup'],
+		"pmnotify" => $mybb->input['pmnotify'],
+		"signature" => $mybb->input['signature'],
+		"postnum" => $mybb->input['postnum'],
+		);
+
+	$db->update_query(TABLE_PREFIX."users", $user, "uid='".intval($mybb->input['uid'])."'");
+
+	if($mybb->input['username'] != $user['username'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET lastposter='$username' WHERE lastposter='$user[username]'");
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='$username' WHERE lastposter='$user[username]'");
+		$db->query("UPDATE ".TABLE_PREFIX."forums SET lastposter='".addslashes($mybb->input['username'])."' WHERE lastposter='".addslashes($user[username])."'");
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".addslashes($mybb->input['username'])."' WHERE lastposter='".addslashes($user[username])."'");
 	}
 
 	cpredirect("users.php", $lang->profile_updated);
 }
 if($mybb->input['action'] == "do_delete")
 {
-	$uid = intval($mybb->input['uid']);
-	if($deletesubmit)
+	if($mybb->input['deletesubmit'])
 	{	
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET uid='0' WHERE uid='$uid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='$uid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE uid='$uid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."events WHERE author='$uid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."moderators WHERE uid='$uid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE uid='$uid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE uid='$uid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='$uid'");
+		$db->query("UPDATE ".TABLE_PREFIX."posts SET uid='0' WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='".intval($mybb->input['uid'])."'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."events WHERE author='".intval($mybb->input['uid'])."'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."moderators WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".intval($mybb->input['uid'])."'");
 
 		// Update forum stats
 		$cache->updatestats();
@@ -366,9 +417,11 @@ if($mybb->input['action'] == "do_email")
 {
 	$conditions = "1=1";
 
+	$search = $mybb->input['search'];
+
 	if($search['username'])
 	{
-		$conditions .= " AND username LIKE '%$search[username]%'";
+		$conditions .= " AND username LIKE '%".addslashes($search[username])."%'";
 	}
 	if(is_array($search['usergroups']))
 	{
@@ -378,48 +431,50 @@ if($mybb->input['action'] == "do_email")
 
 	if($search['email'])
 	{
-		$conditions .= " AND email LIKE '%$search[email]%'";
+		$conditions .= " AND email LIKE '%".addslashes($search[email])."%'";
 	}
 	if($search['website'])
 	{
-		$conditions .= " AND website LIKE '%$search[website]%'";
+		$conditions .= " AND website LIKE '%".addslashes($search[website])."%'";
 	}
 	if($search['icq'])
 	{
-		$conditions .= " AND icq LIKE '%$search[icq]%'";
+		$conditions .= " AND icq LIKE '%".addslashes($search[icq])."%'";
 	}
 	if($search['aim'])
 	{
-		$conditions .= " AND aim LIKE '%$search[aim]%'";
+		$conditions .= " AND aim LIKE '%".addslashes($search[aim])."%'";
 	}
 	if($search['yahoo'])
 	{
-		$conditions .= " AND yahoo LIKE '%$search[yahoo]%'";
+		$conditions .= " AND yahoo LIKE '%".addslashes($search[yahoo])."%'";
 	}
 	if($search['msn'])
 	{
-		$conditions .= " AND msn LIKE '%$search[msn]%'";
+		$conditions .= " AND msn LIKE '%".addslashes($search[msn])."%'";
 	}
 	if($search['signature'])
 	{
-		$conditions .= " AND signature LIKE '%$search[signature]%'";
+		$conditions .= " AND signature LIKE '%".addslashes($search[signature])."%'";
 	}
 	if($search['usertitle'])
 	{
-		$conditions .= " AND usertitle LIKE '%$search[usertitle]%'";
+		$conditions .= " AND usertitle LIKE '%".addslashes($search[usertitle])."%'";
 	}
 	if($search['postsgreater'])
 	{
-		$conditions .= " AND postnum>$search[postsgreater]";
+		$conditions .= " AND postnum>".intval($search[postsgreater]);
 	}
 	if($search['postsless'])
 	{
-		$conditions .= " AND postnum<$search[postsless]";
+		$conditions .= " AND postnum<".intval($search[postsless]);
 	}
 	if($search['overridenotice'] != "yes")
 	{
 		$conditions .= " AND allownotices!='no'";
 	}
+
+	$searchop = $mybb->input['searchop'];
 	if(!$searchop['perpage'])
 	{
 		$searchop['perpage'] = "500";
@@ -507,19 +562,19 @@ if($mybb->input['action'] == "do_email")
 }
 if($mybb->input['action'] == "do_do_merge")
 {
-	if(!$deletesubmit)
+	if(!$mybb->input['deletesubmit'])
 	{
 		cpredirect("users.php?action=merge", "You chose not to merge the two users. You will now be taken back to the merge page.");
 		exit;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$source'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['source'])."'");
 	$sourceuser = $db->fetch_array($query);
 	if(!$sourceuser[uid])
 	{
 		cperror($lang->error_invalid_source);
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$destination'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['destination'])."'");
 	$destuser = $db->fetch_array($query);
 	if(!$destuser[uid])
 	{
@@ -553,16 +608,14 @@ if($mybb->input['action'] == "do_do_merge")
 }
 if($mybb->input['action'] == "do_merge")
 {
-	$source = addslashes($_POST['source']);
-	$destination = addslashes($_POST['destination']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$source'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['source'])."'");
 	$sourceuser = $db->fetch_array($query);
 	if(!$sourceuser[uid])
 	{
 		cperror($lang->error_invalid_source);
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$destination'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['destination'])."'");
 	$destuser = $db->fetch_array($query);
 	if(!$destuser[uid])
 	{
@@ -571,8 +624,8 @@ if($mybb->input['action'] == "do_merge")
 	$lang->confirm_merge = sprintf($lang->confirm_merge, $sourceuser['username'], $destuser['username'], $sourceuser['username']);
 	cpheader();
 	startform("users.php", "", "do_do_merge");
-	makehiddencode("source", $source);
-	makehiddencode("destination", $destination);
+	makehiddencode("source", $mybb->input['source']);
+	makehiddencode("destination", $mybb->input['destination']);
 	starttable();
 	tableheader($lang->merge_accounts, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
@@ -1195,6 +1248,10 @@ if($mybb->input['action'] == "email")
 
 if($mybb->input['action'] == "find")
 {
+	$searchdisp = $mybb->input['searchdisp'];
+	$search = $mybb->input['search'];
+	$searchop = $mybb->input['searchop'];
+
 	$dispcount = count($searchdisp);
 	$yescount = "0";
 	if($mybb->input['searchdisp'])
@@ -1207,9 +1264,6 @@ if($mybb->input['action'] == "find")
 			}
 		}
 	}
-	$searchdisp = $mybb->input['searchdisp'];
-	$search = $mybb->input['search'];
-	$searchop = $mybb->input['searchop'];
 	if($yescount == "0")
 	{
 		$searchdisp['username'] = "yes";
@@ -1227,12 +1281,6 @@ if($mybb->input['action'] == "find")
 		$search['username'] = addslashes($search['username']);
 		$conditions .= " AND username LIKE '%$search[username]%'";
 	}
-	/* Old Code
-	if($search['usergroup'] > 0)
-	{
-		$search['usergroup'] = addslashes($search['usergroup']);
-		$conditions .= " AND usergroup='$search[usergroup]'";
-	}*/
 	if(count($search['additionalgroups']) > 0)
 	{
 		foreach($search['additionalgroups'] as $group)
@@ -1566,12 +1614,12 @@ if($mybb->input['action'] == "find")
 }
 if($mybb->input['action'] == "do_manageban")
 {
-	if($uid)
+	if($mybb->input['uid'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='$uid'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='".intval($mybb->input['uid'])."'");
 		$ban = $db->fetch_array($query);
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 
 		if(!$ban['uid'])
@@ -1583,8 +1631,7 @@ if($mybb->input['action'] == "do_manageban")
 	}
 	else
 	{
-		$username = addslashes($_POST['username']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$username'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
 		$user = $db->fetch_array($query);
 
 		if(!$user['uid'])
@@ -1595,54 +1642,76 @@ if($mybb->input['action'] == "do_manageban")
 		$bancheck = $db->fetch_array($query);
 		$uid = $user['uid'];
 	}
-	if($liftafter == "---")
+	if($mybb->input['liftafter'] == "---")
 	{ // permanent ban
 		$liftdate = "perm";
-		$liftafter = "perm";
+		$mybb->input['liftafter'] = "perm";
 	}
 	else
 	{
-		$liftdate = date2timestamp($liftafter);
+		$liftdate = date2timestamp($mybb->input['liftafter']);
 	}
-	$banreason = addslashes($_POST['banreason']);
 	$lang->ban_updated = sprintf($lang->ban_updated, $user['username']);
 	$lang->ban_added = sprintf($lang->ban_added, $user['username']);
 	$now = time();
-	$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='$usergroup' WHERE uid='$user[uid]'");
+	$groupupdate = array(
+		"usergroup" => $mybb->input['usergroup'])
+		);
+	$db->update_query(TABLE_PREFIX."users", $groupupdate, "uid='".$user['uid']."'");
 	if($bancheck['uid'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."banned SET admin='$mybbadmin[uid]', dateline='$now', gid='$usergroup', bantime='$liftafter', lifted='$liftdate', reason='$banreason' WHERE uid='$user[uid]'");
+		$banneduser = array(
+			"admin" => $mybbadmin['uid'],
+			"dateline" => time(),
+			"gid" => $mybb->input['gid'],
+			"bantime" => $mybb->input['liftafter'],
+			"lifted" => $liftdate,
+			"reason" => $addslashes($mybb->input['banreason'])
+			);
+
+		$db->update_query(TABLE_PREFIX."banned", $banneduser, "uid='".$user['uid']."'");
 		cpredirect("users.php?action=banned", $lang->ban_updated);
 	}
 	else
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."banned (uid,admin,gid,oldgroup,dateline,bantime,lifted,reason) VALUES ('$user[uid]','$mybbadmin[uid]','$usergroup','$user[usergroup]','$now','$liftafter','$liftdate','$banreason')");
+		$banneduser = array(
+			"uid" => $user['uid'],
+			"admin" => $mybbadmin['uid'],
+			"gid" => $mybb->input['gid'],
+			"oldgroup" => $user['usergroup'],
+			"dateline" => time(),
+			"bantime" => $mybb->input['liftafter'],
+			"lifted" => $liftdate,
+			"reason" => $addslashes($mybb->input['banreason'])
+			);
+		$db->insert_query(TABLE_PREFIX."banned", $banneduser);
 		cpredirect("users.php?action=banned", $lang->ban_added);
 	}
 }
 if($mybb->input['action'] == "liftban")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='$uid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='".intval($mybb->input['uid'])."'");
 	$ban = $db->fetch_array($query);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 	$lang->ban_lifted = sprintf($lang->ban_lifted, $user['username']);
 	if(!$ban[uid])
 	{
 		cperror($lang->error_not_banned);
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='$ban[oldgroup]' WHERE uid='$uid'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='$uid'");
+	$groupupdate = array("usergroup" => $ban['oldgroup']);
+	$db->update_query(TABLE_PREFIX."users", $groupupdate, "uid='".intval($mybb->input['uid'])."'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".intval($mybb->input['uid'])."'");
 	cpredirect("users.php?action=banned", $lang->ban_lifted);
 }
 if($mybb->input['action'] == "manageban")
 {
-	if($uid && !$auid)
+	if($mybb->input['uid'] && !$mybb->input['auid'])
 	{ // editing a ban
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='$uid'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='".intval($mybb->input['uid'])."'");
 		$ban = $db->fetch_array($query);
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 		$lang->edit_banning_options = sprintf($lang->edit_banning_options, $user['username']);
 
@@ -1654,12 +1723,12 @@ if($mybb->input['action'] == "manageban")
 		cpheader();
 		starttable();
 		startform("users.php", "", "do_manageban");
-		makehiddencode("uid", $uid);
+		makehiddencode("uid", $mybb->input['uid']);
 		tableheader($lang->edit_banning_options);
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$auid'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['auid'])."'");
 		$user = $db->fetch_array($query);
 
 		cpheader();
