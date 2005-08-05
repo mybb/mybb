@@ -196,8 +196,8 @@ if($mybb->input['action'] == "do_add")
 		"salt" => $salt,
 		"loginkey" => $loginkey,
 		"email" => addslashes($mybb->input['email']),
-		"usergroup" => intval($mybb->input['usergroup'],
-		"usertitle" => addslashes($mybb->input['usertitle'],
+		"usergroup" => intval($mybb->input['usergroup']),
+		"usertitle" => addslashes($mybb->input['usertitle']),
 		"regdate" => time(),
 		"lastactive" => 0,
 		"lastvisit" => 0,
@@ -236,7 +236,7 @@ if($mybb->input['action'] == "do_add")
 		$options = "";
 		if($type == "multiselect" || $type == "checkbox")
 		{
-			if(is_array($mybb->input[$field'))
+			if(is_array($mybb->input[$field]))
 			{
 				while(list($key, $val) = each($mybb->input[$field]))
 				{
@@ -313,7 +313,7 @@ if($mybb->input['action'] == "do_edit")
 		$options = "";
 		if($type == "multiselect" || $type == "checkbox")
 		{
-			if(is_array($mybb->input[$field'))
+			if(is_array($mybb->input[$field]))
 			{
 				while(list($key, $val) = each($mybb->input[$field]))
 				{
@@ -333,7 +333,7 @@ if($mybb->input['action'] == "do_edit")
 		$userfields[$field] = $options;
 	}
 	$userfields['ufid'] = $uid;
-	$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='".$mybb->input['uid'])."'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='".intval($mybb->input['uid'])."'");
 	$db->insert_query(TABLE_PREFIX."userfields", $userfields);
 
 	// Determine the usergroup stuff
@@ -356,9 +356,9 @@ if($mybb->input['action'] == "do_edit")
 	$user = array(
 		"username" => addslashes($mybb->input['username']),
 		"email" => addslashes($mybb->input['email']),
-		"usergroup" => intval($mybb->input['usergroup'],
+		"usergroup" => intval($mybb->input['usergroup']),
 		"additionalgroups" => $additionalgroups,
-		"usertitle" => addslashes($mybb->input['usertitle'],
+		"usertitle" => addslashes($mybb->input['usertitle']),
 		"avatar" => addslashes($mybb->input['avatar']),
 		"website" => addslashes($mybb->input['website']),
 		"icq" => addslashes($mybb->input['icq']),
@@ -1655,7 +1655,7 @@ if($mybb->input['action'] == "do_manageban")
 	$lang->ban_added = sprintf($lang->ban_added, $user['username']);
 	$now = time();
 	$groupupdate = array(
-		"usergroup" => $mybb->input['usergroup'])
+		"usergroup" => intval($mybb->input['usergroup'])
 		);
 	$db->update_query(TABLE_PREFIX."users", $groupupdate, "uid='".$user['uid']."'");
 	if($bancheck['uid'])
@@ -1728,7 +1728,7 @@ if($mybb->input['action'] == "manageban")
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['auid'])."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['auid'])."'");
 		$user = $db->fetch_array($query);
 
 		cpheader();
