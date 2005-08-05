@@ -29,9 +29,9 @@ switch($mybb->input['action'])
 		addacpnav($lang->nav_edit);
 		break;
 	case "change":
-		if($gid)
+		if($mybb->input['gid'])
 		{
-			$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) WHERE g.gid='$gid' GROUP BY s.gid");
+			$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) WHERE g.gid='".intval($mybb->input['gid'])."' GROUP BY s.gid");
 			$groupinfo = $db->fetch_array($query);
 			addacpnav($groupinfo['name']);
 		}
@@ -58,10 +58,9 @@ function rebuildsettings() {
 }
 
 if($mybb->input['action'] == "do_change") {
-	$upsetting = $_POST['upsetting'];
-	if(is_array($upsetting))
+	if(is_array($mybb->input['upsetting']))
 	{
-		foreach($upsetting as $key => $val)
+		foreach($mybb->input['upsetting'] as $key => $val)
 		{
 			$val = addslashes($val);
 			$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$val' WHERE sid='$key'");
@@ -72,51 +71,57 @@ if($mybb->input['action'] == "do_change") {
 }
 
 if($mybb->input['action'] == "do_add") {
-	if($add == "setting") {
-		$name = addslashes($_POST['name']);
-		$description = addslashes($_POST['description']);
-		$title = addslashes($_POST['title']);
-		$type = addslashes($_POST['type']);
-		$value = addslashes($_POST['value']);
-		$disporder = intval($_POST['disporder']);
-		if($type == "custom") {
-			$type = addslashes($_POST['code']);
+	if($mybb->input['add'] == "setting") {
+		if($mybb->input['type'] == "custom") {
+			$mybb->input['type'] = addslashes($mybb->input['code']);
 		}
-		$db->query("INSERT INTO ".TABLE_PREFIX."settings VALUES(NULL,'$name','$title','$description','$type','$value','$disporder','$gid')");
+		$settingarray = array(
+			"sid" => "NULL",
+			"name" => addslashes($mybb->input['name']),
+			"title" => addslashes($mybb->input['title']),
+			"description" => addslashes($mybb->input['description']),
+			"type" => $mybb->input['type'],
+			"value" => addslashes($mybb->input['value']),
+			"disporder" => intval($mybb->input['disporder']),
+			"gid" => intval($mybb->input['gid'])
+			);
+
+		$db->insert_query(TABLE_PREFIX."settings", $settingarray);
 		rebuildsettings();
 		cpredirect("settings.php", $lang->setting_added);
 	}
 	else if($add == "group") {
-		$name = addslashes($_POST['name']);
-		$description = addslashes($_POST['description']);
-		$disporder = intval($_POST['disporder']);
-		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
-			$isdefaultadd = ",'$isdefault'";
-		} else {
-			$isdefaultadd = ",'no'";
-		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE name='$name'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE name='".addslashes($mybb->input['name'])."'");
 		$g = $db->fetch_array($query);
 		if($g['name'])
 		{
 			cperror($lang->group_exists);
 		}
-		$db->query("INSERT INTO ".TABLE_PREFIX."settinggroups VALUES (NULL,'$name','$description','$disporder'$isdefaultadd)");
+		$settinggrouparray = array(
+			"gid" => "NULL",
+			"name" => addslashes($mybb->input['name']),
+			"description" => addslashes($mybb->input['description']),
+			"disporder" => intval($mybb->input['disporder'])
+			);
+		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
+			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
+		}
+		$db->insert_query(TABLE_PREFIX."settings", $settinggrouparray);
 		rebuildsettings();
 		cpredirect("settings.php", $lang->group_added);
 	}
 }
 
 if($mybb->input['action'] == "do_delete") {
-	if($deletesubmit) {	
-		if($sid) {
-			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE sid='$sid'");
+	if($mybb->input['deletesubmit']) {	
+		if($mybb->input['sid']) {
+			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
 			rebuildsettings();
 			cpredirect("settings.php", $lang->setting_deleted);
 		}
-		else if($gid) {
-			$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE gid='$gid'");
-			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE gid='$gid'");
+		else if($mybb->input['gid']) {
+			$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
+			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE gid='".intval($mybb->input['gid'])."'");
 			rebuildsettings();
 			cpredirect("settings.php", $lang->group_deleted);
 		}
@@ -165,26 +170,30 @@ if($mybb->input['action'] == "export")
 }
 if($mybb->input['action'] == "do_edit") {
 	cpheader();
-	if($sid) {
-		$name = addslashes($_POST['name']);
-		$description = addslashes($_POST['description']);
-		$title = addslashes($_POST['title']);
-		$type = addslashes($_POST['type']);
-		$value = addslashes($_POST['value']);
-		$disporder = intval($_POST['disporder']);
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET title='$title', name='$name', description='$description', optionscode='$type', value='$value', gid='$gid', disporder='$disporder' WHERE sid='$sid'");
+	if($mybb->input['sid']) {
+		$settingarray = array(
+			"name" => addslashes($mybb->input['name']),
+			"title" => addslashes($mybb->input['title']),
+			"description" => addslashes($mybb->input['description']),
+			"type" => $mybb->input['type'],
+			"value" => addslashes($mybb->input['value']),
+			"disporder" => intval($mybb->input['disporder']),
+			"gid" => intval($mybb->input['gid'])
+			);
+		$db->update_query(TABLE_PREFIX."settings", $settingarray, "sid='".intval($mybb->input['sid'])."'");
 		rebuildsettings();
 		cpredirect("settings.php", $lang->setting_edited);
 	}
-	else if($gid) {
-		$name = addslashes($_POST['name']);
-		$description = addslashes($_POST['description']);
-		$disporder = intval($_POST['disporder']);
+	else if($mybb->input['gid']) {
+		$settinggrouparray = array(
+			"name" => addslashes($mybb->input['name']),
+			"description" => addslashes($mybb->input['description']),
+			"disporder" => intval($mybb->input['disporder'])
+			);
 		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
-			$isdefaultadd = ", isdefault='$isdefault'";
+			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
 		}
-
-		$db->query("UPDATE ".TABLE_PREFIX."settinggroups SET name='$name', description='$description', disporder='$disporder' $isdefaultadd WHERE gid='$gid'");
+		$db->update_query(TABLE_PREFIX."settings", $settinggrouparray, "gid='".intval($mybb->input['gid'])."'");
 		rebuildsettings();
 		cpredirect("settings.php", $lang->group_edited);
 	}
@@ -192,13 +201,13 @@ if($mybb->input['action'] == "do_edit") {
 
 if($mybb->input['action'] == "edit") {
 	cpheader();
-	if($sid) {
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE sid='$sid'");
+	if($mybb->input['sid']) {
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
 		$setting = $db->fetch_array($query);
-		$type[$setting[type]] = "selected";
-		$setting[description] = stripslashes($setting[description]);
+		$type[$setting['type']] = "selected";
+		$setting['description'] = stripslashes($setting[description]);
 		startform("settings.php", "", "do_edit");
-		makehiddencode("sid", "$sid");
+		makehiddencode("sid", $mybb->input['sid']);
 		starttable();
 		tableheader($lang->modify_setting);
 		makeinputcode($lang->setting_title, "title", $setting[title]);
@@ -211,11 +220,11 @@ if($mybb->input['action'] == "edit") {
 		endtable();
 		endform($lang->modify_setting, $lang->reset_button);
 	}
-	else if($gid) {
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE gid='$gid'");
+	else if($mybb->input['gid']) {
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
 		$group = $db->fetch_array($query);
 		startform("settings.php", "", "do_edit");
-		makehiddencode("gid", $gid);
+		makehiddencode("gid", $mybb->input['gid']);
 		starttable();
 		tableheader($lang->modify_group);
 		makeinputcode($lang->group_name, "name", $group['name']);
@@ -233,11 +242,11 @@ if($mybb->input['action'] == "edit") {
 
 if($mybb->input['action'] == "delete") {
 	cpheader();
-	if($sid) {
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE sid='$sid'");
+	if($mybb->input['sid']) {
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
 		$setting = $db->fetch_array($query);
 		startform("settings.php", "", "do_delete");
-		makehiddencode("sid", $sid);
+		makehiddencode("sid", $mybb->input['sid']);
 		starttable();
 		tableheader($lang->delete_setting, "", 1);
 		$yes = makebuttoncode("deletesubmit", $lang->yes);
@@ -246,11 +255,11 @@ if($mybb->input['action'] == "delete") {
 		endtable();
 		endform();
 	}
-	else if($gid) {
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE gid='$gid'");
+	else if($mybb->input['gid']) {
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
 		$group = $db->fetch_array($query);
 		startform("settings.php", "", "do_delete");
-		makehiddencode("gid", $gid);
+		makehiddencode("gid", $mybb->input['gid']);
 		starttable();
 		tableheader($lang->delete_group, "", 1);
 		$yes = makebuttoncode("deletesubmit", $lang->yes);
@@ -297,10 +306,10 @@ if($mybb->input['action'] == "add") {
 }
 if($mybb->input['action'] == "do_modify") {
 	cpheader();
-	while(list($sid, $order) = each($disporder)) {
+	while(list($sid, $order) = each($mybb->input['disporder'])) {
 		$db->query("UPDATE ".TABLE_PREFIX."settings SET disporder='$order' WHERE sid='$sid'");
 	}
-	while(list($gid, $order) = each($dispordercats)) {
+	while(list($gid, $order) = each($mybb->input['dispordercats'])) {
 		$db->query("UPDATE ".TABLE_PREFIX."settinggroups SET disporder='$order' WHERE gid='$gid'");
 	}
 	echo $lang->setting_group_orders_updated;
@@ -341,15 +350,15 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 	if(!$noheader) {
 		cpheader();
 	}
-	if($gid) {
-		$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) WHERE g.gid='$gid' GROUP BY s.gid");
+	if($mybb->input['gid']) {
+		$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) WHERE g.gid='".intval($mybb->input['gid'])."' GROUP BY s.gid");
 		$groupinfo = $db->fetch_array($query);
 
 		startform("settings.php", "", "do_change");
-		makehiddencode("gid", $gid);
+		makehiddencode("gid", $mybb->input['gid']);
 		starttable();
 		tableheader($groupinfo['name'], "", 2);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE gid='$gid' ORDER BY disporder");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE gid='".intval($mybb->input['gid'])."' ORDER BY disporder");
 		while($setting = $db->fetch_array($query)) {
 			$options = "";
 			$type = explode("\n", $setting['optionscode']);

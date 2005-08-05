@@ -17,12 +17,12 @@ $lang->load("usergroups");
 
 if($mybb->input['action'] == "listusers")
 {
-	header("Location: users.php?action=find&search[usergroup]=$gid");
+	header("Location: users.php?action=find&search[usergroup]=".$mybb->input['gid']);
 	exit;
 }
 if($mybb->input['action'] == "listsecondaryusers")
 {
-	header("Location: users.php?action=find&search[additionalusergroups]=$gid");
+	header("Location: users.php?action=find&search[additionalusergroups]=".$mybb->input['gid']);
 	exit;
 }
 addacpnav($lang->nav_usergroups, "usergroups.php");
@@ -47,39 +47,85 @@ logadmin();
 
 if($mybb->input['action'] == "do_add")
 {
-	$namestyle = $_POST['namestyle'];
-	if($joinable == "yes")
+	if($mybb->input['joinable'] == "yes")
 	{
-		if($moderate == "yes")
+		if($mybb->input['moderate'] == "yes")
 		{
 			$type = "4";
 		}
 		else
 		{
-			$type = "3";
+			$mybb->input['type'] = "3";
 		}
 	}
 	else
 	{
-		$type = "2";
+		$mybb->input['type'] = "2";
 	}
-	if(strpos($namestyle, "{username}") === false)
+	if(strpos($mybb->input['namestyle'], "{username}") === false)
 	{
-		$namestyle = "{username}";
+		$mybb->input['namestyle'] = "{username}";
 		$namenote = $lang->error_namenote;
 	}
-	$namestyle = addslashes($namestyle);
-	$description = addslashes($_POST['description']);
-	$title = addslashes($_POST['title']);
-	$usertitle = addslashes($_POST['usertitle']);
-	$ustars = intval($_POST['ustars']);
-	if($ustars < 1)
+	if($mybb->input['ustars'] < 1)
 	{
-		$ustars = 0;
+		$mybb->input['ustars'] = 0;
 	}
-	$image = addslashes($_POST['image']);
-	$db->query("INSERT INTO ".TABLE_PREFIX."usergroups (gid,type,title,description,namestyle,usertitle,stars,starimage,image,isbannedgroup,canview,canviewprofiles,candlattachments,canpostthreads,canpostreplys,canpostattachments,canratethreads,caneditposts,candeleteposts,candeletethreads,caneditattachments,canpostpolls,canvotepolls,canusepms,cansendpms,cantrackpms,candenypmreceipts,pmquota,cansendemail,canviewmemberlist,canviewcalendar,canaddpublicevents,canaddprivateevents,canviewonline,canviewwolinvis,canviewonlineips,cancp,issupermod,cansearch,canusercp,canuploadavatars,canratemembers,canchangename,showforumteam,usereputationsystem,cangivereputations,reputationpower,maxreputationsday,candisplaygroup,attachquota,cancustomtitle) VALUES (NULL,'$type','$title','$description','$namestyle','$usertitle','$ustars','$starimage','$image','$isbannedgroup','$canview','$canviewprofiles','$candlattachments','$canpostthreads','$canpostreplys','$canpostattachments','$canratethreads','$caneditposts','$candeleteposts','$candeletethreads','$caneditattachments','$canpostpolls','$canvotepolls','$canusepms','$cansendpms','$cantrackpms','$candenypmreceipts','$pmquota','$cansendemail','$canviewmemberlist','$canviewcalendar','$canaddpublicevents','$canaddprivateevents','$canviewonline','$canviewwolinvis','$canviewonlineips','$cancp','$issupermod','$cansearch','$canusercp','$canuploadavatars','$canratemembers','$canchangename','$showforumteam','$usereputationsystem','$cangivereputations','$reputationpower','$maxreputationsday','$candisplaygroup','$attachquota','$cancustomtitle')");
-	
+	$grouparray = array(
+		"gid" => "NULL",
+		"type" => $type,
+		"title" => addslashes($mybb->input['title']),
+		"description" => addslashes($mybb->input['description']),
+		"namestyle" => addslashes($mybb->input['namestyle']),
+		"usertitle" => addslashes($mybb->input['usertitle']),
+		"stars" => intval($mybb->input['ustars']),
+		"starimage" => addslashes($mybb->input['starimage']),
+		"image" => addslashes($mybb->input['image']),
+		"isbannedgroup" => $mybb->input['isbannedgroup'],
+		"canview" => $mybb->input['canview'],
+		"canviewprofiles" => $mybb->input['canviewprofiles'],
+		"candlattachments" => $mybb->input['candlattachments'],
+		"canpostthreads" => $mybb->input['canpostthreads'],
+		"canpostreplys" => $mybb->input['canpostreplys'],
+		"canpostattachments" => $mybb->input['canpostattachments'],
+		"canratethreads" => $mybb->input['canratethreads'],
+		"caneditposts" => $mybb->input['caneditposts'],
+		"candeleteposts" => $mybb->input['candeleteposts'],
+		"candeletethreads" => $mybb->input['candeletethreads'],
+		"caneditattachments" => $mybb->input['caneditattachments'],
+		"canpostpolls" => $mybb->input['canpostpolls'],
+		"canvotepolls" => $mybb->input['canvotepolls'],
+		"canusepms" => $mybb->input['canusepms'],
+		"cansendpms" => $mybb->input['cansendpms'],
+		"cantrackpms" => $mybb->input['cantrackpms'],
+		"candenypmreceipts" => $mybb->input['candenypmreceipts'],
+		"pmquota" => $mybb->input['pmquota'],
+		"cansendemail" => $mybb->input['cansendemail'],
+		"canviewmemberlist" => $mybb->input['canviewmemberlist'],
+		"canviewcalendar" => $mybb->input['canviewcalendar'],
+		"canaddpublicevents" => $mybb->input['canaddpublicevents'],
+		"canaddprivateevents" => $mybb->input['canaddprivateevents'],
+		"canviewonline" => $mybb->input['canviewonline'],
+		"canviewwolinvis" => $mybb->input['canviewwolinvis'],
+		"canviewonlineips" => $mybb->input['canviewonlineips'],
+		"cancp" => $mybb->input['cancp'],
+		"issupermod" => $mybb->input['issupermod'],
+		"cansearch" => $mybb->input['cansearch'],
+		"canusercp" => $mybb->input['canusercp'],
+		"canuploadavatars" => $mybb->input['canuploadavatars'],
+		"canratemembers" => $mybb->input['canratemembers'],
+		"canchangename" => $mybb->input['canchangename'],
+		"showforumteam" => $mybb->input['showforumteam'],
+		"usereputationsystem" => $mybb->input['usereputationsystem'],
+		"cangivereputations" => $mybb->input['cangivereputations'],
+		"reputationpower" => $mybb->input['reputationpower'],
+		"maxreputationsday" => $mybb->input['maxreputationsday'],
+		"candisplaygroup" => $mybb->input['candisplaygroup'],
+		"attachquota" => $mybb->input['attachquota'],
+		"cancustomtitle" => $mybb->input['cancustomtitle']
+		);
+
+	$db->insert_query(TABLE_PREFIX."usergroups", $grouparray);
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();
 	cpredirect("usergroups.php", $lang->group_added.$namenote);
@@ -87,33 +133,38 @@ if($mybb->input['action'] == "do_add")
 
 if($mybb->input['action'] == "do_deletegroupleader")
 {
-	$db->query("DELETE FROM ".TABLE_PREFIX."groupleaders WHERE uid='$uid' AND gid='$gid'");
-	cpredirect("usergroups.php?action=groupleaders&gid=$gid", $lang->leader_deleted);
+	$db->query("DELETE FROM ".TABLE_PREFIX."groupleaders WHERE uid='".intval($mybb->input['uid'])."' AND gid='".intval($mybb->input['gid'])."'");
+	cpredirect("usergroups.php?action=groupleaders&gid=".$mybb->input['gid'], $lang->leader_deleted);
 }
 
 if($mybb->input['action'] == "do_addgroupleader")
 {
-	$username = addslashes($_POST['username']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$username'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
 	$user = $db->fetch_array($query);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
 	if(!$user['username'])
 	{
 		cperror($lang->add_leader_no_user);
 	}
-	$db->query("INSERT INTO ".TABLE_PREFIX."groupleaders (lid,gid,uid) VALUES (NULL,'$gid','$user[uid]')");
+	$leaderarray = array(
+		"lid" => "NULL",
+		"gid" => $mybb->input['gid'],
+		"uid" => $user['uid']
+		);
+
+	$db->insert_query(TABLE_PREFIX."groupleaders", $leaderarray);
 	$lang->leader_added = sprintf($lang->leader_added, $usergroup['title']);
-	cpredirect("usergroups.php?action=groupleaders&gid=$gid", $lang->leader_added);
+	cpredirect("usergroups.php?action=groupleaders&gid=".$mybb->input['gid'], $lang->leader_added);
 }
 
 if($mybb->input['action'] == "do_delete")
 {
-	if($deletesubmit)
+	if($mybb->input['deletesubmit'])
 	{	
-		$db->query("DELETE FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid' AND type!='1'");
-		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='2' WHERE usergroup='$gid'");
-		$db->query("UPDATE ".TABLE_PREFIX."users SET displaygroup=usergroup WHERE displaygroup='$gid'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."' AND type!='1'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='2' WHERE usergroup='".intval($mybb->input['gid'])."'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET displaygroup=usergroup WHERE displaygroup='".intval($mybb->input['gid'])."'");
 		$cache->updateusergroups();
 		$cache->updateforumpermissions();
 		cpredirect("usergroups.php", $lang->group_deleted);
@@ -126,42 +177,91 @@ if($mybb->input['action'] == "do_delete")
 
 if($mybb->input['action'] == "do_edit")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
-	if($joinable == "yes")
+
+	if($mybb->input['joinable'] == "yes")
 	{
-		if($moderate == "yes")
+		if($mybb->input['moderate'] == "yes")
 		{
 			$type = "4";
 		}
 		else
 		{
-			$type = "3";
+			$mybb->input['type'] = "3";
 		}
 	}
 	else
 	{
-		$type = "2";
+		$mybb->input['type'] = "2";
 	}
 	if($usergroup['type'] == "1")
 	{
 		$type = 1;
 	}
-	if(strpos($namestyle, "{username}") === false)
+	if(strpos($mybb->input['namestyle'], "{username}") === false)
 	{
-		$namestyle = "{username}";
+		$mybb->input['namestyle'] = "{username}";
 		$namenote = $lang->error_namenote;
 	}
-	$description = addslashes($_POST['description']);
-	$title = addslashes($_POST['title']);
-	$usertitle = addslashes($_POST['usertitle']);
-	$ustars = intval($_POST['ustars']);
-	if($ustars < 1)
+	if($mybb->input['ustars'] < 1)
 	{
-		$ustars = 0;
+		$mybb->input['ustars'] = 0;
 	}
-	$image = addslashes($_POST['image']);
-	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET type='$type', title='$title', description='$description', namestyle='$namestyle', usertitle='$usertitle', stars='$stars', starimage='$starimage', image='$image', isbannedgroup='$isbannedgroup', canview='$canview', canviewprofiles='$canviewprofiles', candlattachments='$candlattachments', canpostthreads='$canpostthreads', canpostreplys='$canpostreplys', canpostattachments='$canpostattachments', canratethreads='$canratethreads', caneditposts='$caneditposts', candeleteposts='$candeleteposts', candeletethreads='$candeletethreads', caneditattachments='$caneditattachments', canpostpolls='$canpostpolls', canvotepolls='$canvotepolls', canusepms='$canusepms', cansendpms='$cansendpms', cantrackpms='$cantrackpms', candenypmreceipts='$candenypmreceipts', pmquota='$pmquota', cansendemail='$cansendemail', canviewmemberlist='$canviewmemberlist', canviewcalendar='$canviewcalendar', canaddpublicevents='$canaddpublicevents', canaddprivateevents='$canaddprivateevents', canviewonline='$canviewonline', canviewwolinvis='$canviewwolinvis', canviewonlineips='$canviewonlineips', cancp='$cancp', issupermod='$issupermod', cansearch='$cansearch', canusercp='$canusercp', canuploadavatars='$canuploadavatars', canratemembers='$canratemembers', canchangename='$canchangename', showforumteam='$showforumteam', usereputationsystem='$usereputationsystem', cangivereputations='$cangivereputations', reputationpower='$reputationpower', maxreputationsday='$maxreputationsday', candisplaygroup='$candisplaygroup', attachquota='$attachquota', cancustomtitle='$cancustomtitle' WHERE gid='$gid'");
+	$grouparray = array(
+		"type" => $type,
+		"title" => addslashes($mybb->input['title']),
+		"description" => addslashes($mybb->input['description']),
+		"namestyle" => addslashes($mybb->input['namestyle']),
+		"usertitle" => addslashes($mybb->input['usertitle']),
+		"stars" => intval($mybb->input['ustars']),
+		"starimage" => addslashes($mybb->input['starimage']),
+		"image" => addslashes($mybb->input['image']),
+		"isbannedgroup" => $mybb->input['isbannedgroup'],
+		"canview" => $mybb->input['canview'],
+		"canviewprofiles" => $mybb->input['canviewprofiles'],
+		"candlattachments" => $mybb->input['candlattachments'],
+		"canpostthreads" => $mybb->input['canpostthreads'],
+		"canpostreplys" => $mybb->input['canpostreplys'],
+		"canpostattachments" => $mybb->input['canpostattachments'],
+		"canratethreads" => $mybb->input['canratethreads'],
+		"caneditposts" => $mybb->input['caneditposts'],
+		"candeleteposts" => $mybb->input['candeleteposts'],
+		"candeletethreads" => $mybb->input['candeletethreads'],
+		"caneditattachments" => $mybb->input['caneditattachments'],
+		"canpostpolls" => $mybb->input['canpostpolls'],
+		"canvotepolls" => $mybb->input['canvotepolls'],
+		"canusepms" => $mybb->input['canusepms'],
+		"cansendpms" => $mybb->input['cansendpms'],
+		"cantrackpms" => $mybb->input['cantrackpms'],
+		"candenypmreceipts" => $mybb->input['candenypmreceipts'],
+		"pmquota" => $mybb->input['pmquota'],
+		"cansendemail" => $mybb->input['cansendemail'],
+		"canviewmemberlist" => $mybb->input['canviewmemberlist'],
+		"canviewcalendar" => $mybb->input['canviewcalendar'],
+		"canaddpublicevents" => $mybb->input['canaddpublicevents'],
+		"canaddprivateevents" => $mybb->input['canaddprivateevents'],
+		"canviewonline" => $mybb->input['canviewonline'],
+		"canviewwolinvis" => $mybb->input['canviewwolinvis'],
+		"canviewonlineips" => $mybb->input['canviewonlineips'],
+		"cancp" => $mybb->input['cancp'],
+		"issupermod" => $mybb->input['issupermod'],
+		"cansearch" => $mybb->input['cansearch'],
+		"canusercp" => $mybb->input['canusercp'],
+		"canuploadavatars" => $mybb->input['canuploadavatars'],
+		"canratemembers" => $mybb->input['canratemembers'],
+		"canchangename" => $mybb->input['canchangename'],
+		"showforumteam" => $mybb->input['showforumteam'],
+		"usereputationsystem" => $mybb->input['usereputationsystem'],
+		"cangivereputations" => $mybb->input['cangivereputations'],
+		"reputationpower" => $mybb->input['reputationpower'],
+		"maxreputationsday" => $mybb->input['maxreputationsday'],
+		"candisplaygroup" => $mybb->input['candisplaygroup'],
+		"attachquota" => $mybb->input['attachquota'],
+		"cancustomtitle" => $mybb->input['cancustomtitle']
+		);
+
+	$db->update_query(TABLE_PREFIX."usergroups", $grouparray, "gid='".$mybb->input['gid'])."'");	
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();
 	cpredirect("usergroups.php", $lang->group_updated.$namenote);
@@ -258,13 +358,13 @@ if($mybb->input['action'] == "add")
 }
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
 	$lang->delete_group = sprintf($lang->delete_group, $usergroup['title']);
 	$lang->confirm_delete_group = sprintf($lang->confirm_delete_group, $usergroup['title']);
 	cpheader();
 	startform("usergroups.php", "", "do_delete");
-	makehiddencode("gid", $gid);
+	makehiddencode("gid", $mybb->input['gid']);
 	starttable();
 	tableheader($lang->delete_group, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
@@ -276,7 +376,7 @@ if($mybb->input['action'] == "delete")
 }
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
 	if($usergroup['type'] == "3")
 	{
@@ -293,8 +393,6 @@ if($mybb->input['action'] == "edit")
 		$joinable = "no";
 		$moderate = "no";
 	}
-	$usergroup['description'] = stripslashes($usergroup['description']);
-	$usergroup['namestyle'] = stripslashes($usergroup['namestyle']);
 	$lang->edit_group = sprintf($lang->edit_group, $usergroup['title']);
 	cpheader();
 	startform("usergroups.php", "", "do_edit");
@@ -394,20 +492,20 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "groupleaders")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
 
 	cpheader();
 	$lang->manage_group_leaders_for = sprintf($lang->manage_group_leaders_for, $usergroup['title']);
 	startform("usergroups.php", "", "do_groupleaders");
-	makehiddencode("gid", $gid);
+	makehiddencode("gid", $mybb->input['gid']);
 	starttable();
 	tableheader($lang->manage_group_leaders_for);
 	tablesubheader($lang->existing_leaders);
-	$query = $db->query("SELECT l.*, u.username FROM ".TABLE_PREFIX."groupleaders l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) WHERE l.gid='$gid' ORDER BY u.username ASC");
+	$query = $db->query("SELECT l.*, u.username FROM ".TABLE_PREFIX."groupleaders l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) WHERE l.gid='".intval($mybb->input['gid'])."' ORDER BY u.username ASC");
 	while($leader =  $db->fetch_array($query))
 	{
-		$delete = makelinkcode($lang->delete_leader, "usergroups.php?action=do_deletegroupleader&gid=$gid&uid=".$leader['uid']);
+		$delete = makelinkcode($lang->delete_leader, "usergroups.php?action=do_deletegroupleader&gid=".$mybb->input['gid']."&uid=".$leader['uid']);
 		$editprofile = makelinkcode($lang->edit_profile, "users.php?action=edit&uid=".$leader['uid']);
 		makelabelcode("<a href=\"../member.php?action=profile&uid=".$leader['uid']."\">".$leader['username']."</a> $delete $editprofile", "", 2);
 	}
@@ -418,7 +516,7 @@ if($mybb->input['action'] == "groupleaders")
 	endtable();
 
 	startform("usergroups.php", "", "do_addgroupleader");
-	makehiddencode("gid", $gid);
+	makehiddencode("gid", $mybb->input['gid']);
 	starttable();
 	tableheader($lang->add_new_leader);
 	makeinputcode($lang->username, "username");
@@ -429,9 +527,9 @@ if($mybb->input['action'] == "groupleaders")
 
 if($mybb->input['action'] == "do_joinrequests")
 {
-	if(is_array($request))
+	if(is_array($mybb->input['request']))
 	{
-		foreach($request as $uid => $what)
+		foreach($mybb->input['request'] as $uid => $what)
 		{
 			if($what == "accept")
 			{
@@ -454,9 +552,9 @@ if($mybb->input['action'] == "do_joinrequests")
 
 if($mybb->input['action'] == "joinrequests")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
-	$query = $db->query("SELECT j.*, u.username FROM ".TABLE_PREFIX."joinrequests j LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid) WHERE j.gid='$gid' ORDER BY u.username ASC");
+	$query = $db->query("SELECT j.*, u.username FROM ".TABLE_PREFIX."joinrequests j LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid) WHERE j.gid='".intval($mybb->input['gid'])."' ORDER BY u.username ASC");
 	$numrequests = $db->num_rows($query);
 	if($numrequests < 1)
 	{
@@ -485,7 +583,7 @@ function radioAll(formName, value)
 <?php
 	$lang->manage_requests_for = sprintf($lang->manage_requests_for, $usergroup['title']);
 	startform("usergroups.php", "reqform", "do_joinrequests");
-	makehiddencode("gid", $gid);
+	makehiddencode("gid", $mybb->input['gid']);
 	starttable();
 	tableheader($lang->manage_requests_for, "", 5);
 	tablesubheader(array($lang->req_username,
