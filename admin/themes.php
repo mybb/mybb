@@ -213,7 +213,7 @@ if($mybb->input['action'] == "do_import")
 {
 	if($_FILES['compfile'])
 	{
-		if(!is_uploaded_file($_FILES['compfile']['tmp_name'y]))
+		if(!is_uploaded_file($_FILES['compfile']['tmp_name']))
 		{
 			cpmessage($lang->upload_failed);
 		}

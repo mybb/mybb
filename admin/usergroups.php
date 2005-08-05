@@ -261,7 +261,7 @@ if($mybb->input['action'] == "do_edit")
 		"cancustomtitle" => $mybb->input['cancustomtitle']
 		);
 
-	$db->update_query(TABLE_PREFIX."usergroups", $grouparray, "gid='".$mybb->input['gid'])."'");	
+	$db->update_query(TABLE_PREFIX."usergroups", $grouparray, "gid='".$mybb->input['gid']."'");	
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();
 	cpredirect("usergroups.php", $lang->group_updated.$namenote);
