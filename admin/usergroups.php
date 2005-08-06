@@ -73,7 +73,7 @@ if($mybb->input['action'] == "do_add")
 	}
 	$grouparray = array(
 		"gid" => "NULL",
-		"type" => $type,
+		"type" => $mybb->input['type'],
 		"title" => addslashes($mybb->input['title']),
 		"description" => addslashes($mybb->input['description']),
 		"namestyle" => addslashes($mybb->input['namestyle']),
@@ -209,7 +209,7 @@ if($mybb->input['action'] == "do_edit")
 		$mybb->input['ustars'] = 0;
 	}
 	$grouparray = array(
-		"type" => $type,
+		"type" => $mybb->input['type'],
 		"title" => addslashes($mybb->input['title']),
 		"description" => addslashes($mybb->input['description']),
 		"namestyle" => addslashes($mybb->input['namestyle']),

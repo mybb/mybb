@@ -1389,7 +1389,7 @@ function make_theme_list($tid="0", $depth="")
 			echo "<option value=\"\" style=\"font-weight: bold;\">$lang->theme_options&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>\n";
 			if($theme['tid'] > 1)
 			{
-				echo "<option value=\"settings\">- $lang->edit_theme_settings</option>\n";
+				//echo "<option value=\"settings\">- $lang->edit_theme_settings</option>\n";
 				echo "<option value=\"delete\">- $lang->del_theme</option>\n";
 				if($setdefault)
 				{

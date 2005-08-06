@@ -119,4 +119,5 @@ $l['ignore'] = "Ignore";
 $l['all'] = "(ALL)";
 $l['action_requests'] = "Action Requests";
 $l['join_requests_moderated'] = "The join requests have been moderated.";
+$l['no_join_requests'] = "There are currently no outstanding join requests.";
 ?>

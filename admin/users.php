@@ -199,8 +199,8 @@ if($mybb->input['action'] == "do_add")
 		"usergroup" => intval($mybb->input['usergroup']),
 		"usertitle" => addslashes($mybb->input['usertitle']),
 		"regdate" => time(),
-		"lastactive" => 0,
-		"lastvisit" => 0,
+		"lastactive" => time(),
+		"lastvisit" => time(),
 		"avatar" => addslashes($mybb->input['avatar']),
 		"website" => addslashes($mybb->input['website']),
 		"icq" => addslashes($mybb->input['icq']),
@@ -527,7 +527,7 @@ if($mybb->input['action'] == "do_email")
 			}
 			elseif($user['email'] != "")
 			{
-				mail($user['email'], $searchop['subject'], $searchop['sendmessage'], "From: $searchop[from]");
+				mail($user['email'], $searchop['subject'], $sendmessage, "From: $searchop[from]");
 				echo sprintf($lang->email_sent, $user['username']);
 			}
 			else
@@ -1047,10 +1047,10 @@ if($mybb->input['action'] == "findips")
 	$query = $db->query("SELECT DISTINCT ipaddress FROM ".TABLE_PREFIX."posts WHERE uid='$uid'");
 	starttable();
 	$lang->ip_addresses_user = sprintf($lang->ip_addresses_user, $user['username']);
-	tableheader($lang->ip_addresses_user);
-	tablesubheader($lang->reg_ip);
-	echo "<tr>\n<td class=\"$bgcolor\" colspan=\"$colspan\" valign=\"top\" width=\"40%\">$row[ipaddress]</td>\n";
-	echo "<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\">";
+	tableheader($lang->ip_addresses_user, "", 2);
+	tablesubheader($lang->reg_ip, "", 2);
+	echo "<tr>\n<td class=\"$bgcolor\" width=\"40%\">$row[ipaddress]</td>\n";
+	echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\">";
 	echo "</td>\n</tr>\n";
 	tablesubheader($lang->post_ip);
 	if($db->num_rows($query) > 0)
@@ -1058,8 +1058,8 @@ if($mybb->input['action'] == "findips")
 		while($row = $db->fetch_array($query))
 		{
 		$bgcolor = getaltbg();
-		echo "<tr>\n<td class=\"$bgcolor\" colspan=\"$colspan\" valign=\"top\" width=\"40%\">$row[ipaddress]</td>\n";
-		echo "<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\">";
+		echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$row[ipaddress]</td>\n";
+		echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\">";
 		echo "</td>\n</tr>\n";
 		}
 	}

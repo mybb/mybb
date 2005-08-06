@@ -220,6 +220,11 @@ if($mybb->input['action'] == "do_import")
 		$arr = @file($_FILES['compfile']['tmp_name']);
 		$contents = @implode("", $arr);
 		@unlink($_FILES['compfile']['temp_name']);
+		if(!$contents)
+		{
+			cpmessage($lang->upload_failed);
+		}
+
 	}
 	elseif($mybb->input['localfile'])
 	{
