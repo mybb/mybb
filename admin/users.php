@@ -1044,15 +1044,15 @@ if($mybb->input['action'] == "findips")
 	{
 		cperror($lang->error_no_users);
 	}
-	$query = $db->query("SELECT DISTINCT ipaddress FROM ".TABLE_PREFIX."posts WHERE uid='$uid'");
 	starttable();
 	$lang->ip_addresses_user = sprintf($lang->ip_addresses_user, $user['username']);
-	tableheader($lang->ip_addresses_user, "", 2);
-	tablesubheader($lang->reg_ip, "", 2);
-	echo "<tr>\n<td class=\"$bgcolor\" width=\"40%\">$row[ipaddress]</td>\n";
-	echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\">";
+	tableheader($lang->ip_addresses_user, "");
+	tablesubheader($lang->reg_ip, "");
+	echo "<tr>\n<td class=\"$bgcolor\" width=\"40%\">$user[regip]</td>\n";
+	echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$user[regip]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$user[regip]');\" class=\"submitbutton\">";
 	echo "</td>\n</tr>\n";
 	tablesubheader($lang->post_ip);
+	$query = $db->query("SELECT DISTINCT ipaddress FROM ".TABLE_PREFIX."posts WHERE uid='$uid'");
 	if($db->num_rows($query) > 0)
 	{
 		while($row = $db->fetch_array($query))
@@ -1065,7 +1065,7 @@ if($mybb->input['action'] == "findips")
 	}
 	else
 	{
-		makelabelcode($lang->error_no_ips);
+		makelabelcode($lang->error_no_ips, "", 2);
 	}
 	endtable();
 }
@@ -1103,7 +1103,7 @@ if($mybb->input['action'] == "stats")
 	$daysreg = (time() - $user[regdate]) / (24*3600);
 	$ppd = $user[postnum] / $daysreg;
 	$ppd = round($ppd, 2);
-	if($ppd > $user[postnum])
+	if(!$ppd || $ppd > $user[postnum])
 	{
 		$ppd = $user[postnum];
 	}
