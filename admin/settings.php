@@ -80,7 +80,7 @@ if($mybb->input['action'] == "do_add") {
 			"name" => addslashes($mybb->input['name']),
 			"title" => addslashes($mybb->input['title']),
 			"description" => addslashes($mybb->input['description']),
-			"type" => $mybb->input['type'],
+			"optionscode" => $mybb->input['type'],
 			"value" => addslashes($mybb->input['value']),
 			"disporder" => intval($mybb->input['disporder']),
 			"gid" => intval($mybb->input['gid'])
@@ -106,7 +106,7 @@ if($mybb->input['action'] == "do_add") {
 		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
 			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
 		}
-		$db->insert_query(TABLE_PREFIX."settings", $settinggrouparray);
+		$db->insert_query(TABLE_PREFIX."settinggroups", $settinggrouparray);
 		rebuildsettings();
 		cpredirect("settings.php", $lang->group_added);
 	}
@@ -175,7 +175,7 @@ if($mybb->input['action'] == "do_edit") {
 			"name" => addslashes($mybb->input['name']),
 			"title" => addslashes($mybb->input['title']),
 			"description" => addslashes($mybb->input['description']),
-			"type" => $mybb->input['type'],
+			"optionscode" => $mybb->input['type'],
 			"value" => addslashes($mybb->input['value']),
 			"disporder" => intval($mybb->input['disporder']),
 			"gid" => intval($mybb->input['gid'])
@@ -193,7 +193,7 @@ if($mybb->input['action'] == "do_edit") {
 		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
 			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
 		}
-		$db->update_query(TABLE_PREFIX."settings", $settinggrouparray, "gid='".intval($mybb->input['gid'])."'");
+		$db->update_query(TABLE_PREFIX."settinggroups", $settinggrouparray, "gid='".intval($mybb->input['gid'])."'");
 		rebuildsettings();
 		cpredirect("settings.php", $lang->group_edited);
 	}
@@ -251,7 +251,7 @@ if($mybb->input['action'] == "delete") {
 		tableheader($lang->delete_setting, "", 1);
 		$yes = makebuttoncode("deletesubmit", $lang->yes);
 		$no = makebuttoncode("no", $lang->no);
-		makelabelcode("<center>$lang->setting_delete_confirm<br><br>$yes$no</center>", "");
+		makelabelcode("<center>$lang->delete_setting_confirm<br><br>$yes$no</center>", "");
 		endtable();
 		endform();
 	}
