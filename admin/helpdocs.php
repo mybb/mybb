@@ -166,7 +166,7 @@ if($mybb->input['action'] == "edit")
 		endtable();
 		endform($lang->update_doc, $lang->reset_button);
 	}
-	elseif($$mybb->input['sid'])
+	elseif($mybb->input['sid'])
 	{
 		$sid = intval($mybb->input['sid']);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid='$sid'");
