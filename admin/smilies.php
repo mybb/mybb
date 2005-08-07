@@ -15,8 +15,6 @@ require "./global.php";
 global $lang;
 $lang->load("smilies");
 
-$sid = intval($_REQUEST['sid']);
-
 addacpnav($lang->nav_smilies, "smilies.php");
 switch($mybb->input['action'])
 {
@@ -35,20 +33,25 @@ checkadminpermissions("caneditsmilies");
 logadmin();
 
 if($mybb->input['action'] == "do_add") {
-	$find = addslashes($_POST['find']);
-	$path = addslashes($_POST['path']);
-	$name = addslashes($_POST['name']);
-	if(empty($find) || empty($path) || empty($name)) {
+	if(empty($mybb->input['find']) || empty($mybb->input['path']) || empty($mybb->input['name'])) {
 		cperror($lang->error_fill_form);
 	}
-	$disporder = intval($_POST['disporder']);
-	$db->query("INSERT INTO ".TABLE_PREFIX."smilies (sid,name,find,image,disporder,showclickable) VALUES (NULL,'$name','$find','$path','$disporder','$showclickable')");
+	$newsmilie = array(
+		"sid" => "NULL",
+		"name" => addslashes($mybb->input['name']),
+		"find" => addslashes($mybb->input['find']),
+		"image" => addslashes($mybb->input['image']),
+		"disporder" => intval($mybb->input['disporder']),
+		"showclickable" => $mybb->input['showclickable']
+		);
+
+	$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
 	$cache->updatesmilies();
 	cpredirect("smilies.php", $lang->smilie_added);
 }
 if($mybb->input['action'] == "do_delete") {
-	if($deletesubmit) {	
-		$db->query("DELETE FROM ".TABLE_PREFIX."smilies WHERE sid='$sid'");
+	if($mybb->input['deletesubmit']) {	
+		$db->query("DELETE FROM ".TABLE_PREFIX."smilies WHERE sid='".$mybb->input['sid']."'");
 		$cache->updatesmilies();
 		cpredirect("smilies.php", $lang->smilie_deleted);
 	} else {
@@ -57,20 +60,24 @@ if($mybb->input['action'] == "do_delete") {
 }
 
 if($mybb->input['action'] == "do_edit") {
-	$find = addslashes($_POST['find']);
-	$path = addslashes($_POST['path']);
-	$name = addslashes($_POST['name']);
-	if(empty($find) || empty($path) || empty($name)) {
+	if(empty($mybb->input['find']) || empty($mybb->input['path']) || empty($mybb->input['name'])) {
 		cperror($lang->error_fill_form);
 	}
-	$disporder = intval($_POST['disporder']);
-	$db->query("UPDATE ".TABLE_PREFIX."smilies SET name='$name', find='$find', image='$path', disporder='$disporder', showclickable='$showclickable' WHERE sid='$sid'");
+	$smilie = array(
+		"name" => addslashes($mybb->input['name']),
+		"find" => addslashes($mybb->input['find']),
+		"image" => addslashes($mybb->input['image']),
+		"disporder" => intval($mybb->input['disporder']),
+		"showclickable" => $mybb->input['showclickable']
+		);
+
+	$db->update_query(TABLE_PREFIX."smilies", $newsmilie, "sid='".intval($mybb->input['sid'])."'");
 	$cache->updatesmilies();
 	cpredirect("smilies.php", $lang->smilie_updated);
 }
 
 if($mybb->input['action'] == "edit") {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='$sid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 	if(!$smilie['sid']) {
 		cperror($lang->invalid_smilie);
@@ -78,7 +85,7 @@ if($mybb->input['action'] == "edit") {
 	$theme['imgdir'] = "images";
 	cpheader();
 	startform("smilies.php", "", "do_edit");
-	makehiddencode("sid", $sid);
+	makehiddencode("sid", $mybb->input['sid']);
 	starttable();
 	tableheader($lang->modify_smilie);
 	makeinputcode($lang->name, "name", $smilie['name']);
@@ -92,14 +99,14 @@ if($mybb->input['action'] == "edit") {
 }
 
 if($mybb->input['action'] == "delete") {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='$sid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 	if(!$smilie['sid']) {
 		cperror($lang->invalid_smilie);
 	}
 	cpheader();
 	startform("smilies.php", "", "do_delete");
-	makehiddencode("sid", $sid);
+	makehiddencode("sid", $mybb->input['sid']);
 	starttable();
 	tableheader($lang->delete_smilie, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
@@ -112,7 +119,7 @@ if($mybb->input['action'] == "delete") {
 
 if($mybb->input['action'] == "add") {
 	cpheader();
-	if(!$multi)
+	if(!$mybb->input['multi'])
 	{
 		startform("smilies.php", "", "do_add");
 		starttable();
@@ -138,20 +145,27 @@ if($mybb->input['action'] == "add") {
 	cpfooter();
 }
 if($mybb->input['action'] == "do_addmultiple") {
-	if($page) {
+	if($mybb->input['page']) {
 		$mybb->input['action'] = "addmultiple";
 	}
-	elseif(!is_array($smimport)) {
+	elseif(!is_array($mybb->input['smimport'])) {
 		cpmessage($lang->sel_no_images);
 	}
 	else {
-		reset($smimport);
-		while(list($image,$insert) = each($smimport)) {
+		reset($mybb->input['smimport']);
+		while(list($image,$insert) = each($mybb->input['smimport'])) {
 				if($insert) {
 				$find = $smcode[$image];
 				$name = $smname[$image];
 				$imageurl = $path."/".$image;
-				$db->query("INSERT INTO ".TABLE_PREFIX."smilies (sid,name,find,image,showclickable) VALUES (NULL,'$name','$find','$imageurl','yes')");
+				$newsmilie = array(
+					"sid" => "NULL",
+					"name" => addslashes($name),
+					"find" => addslashes($find),
+					"url" => addslashes($imageurl),
+					"showclickable" => "yes"
+				);
+				$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
 			}
 		}
 		$cache->updatesmilies();
@@ -166,11 +180,12 @@ if($mybb->input['action'] == "do_addmultiple") {
 	}
 }
 if($mybb->input['action'] == "addmultiple") {
-	$perpage = intval($_POST['perpage']);
+	$perpage = intval($mybb->input['perpage']);
+	$page = intval($mybb->input['page']);
 	if(!$perpage) {
 		$perpage = 15;
 	}
-	$dir = @opendir("$path");
+	$dir = @opendir($mybb->input['path']);
 	if(!$dir) {
 		cperror($lang->bad_directory);
 	}
@@ -269,7 +284,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	$theme[imgdir] = "images";
 	$query = $db->query("SELECT COUNT(sid) AS smilies FROM ".TABLE_PREFIX."smilies");
 	$smiliecount = $db->result($query, 0);
-	$perpage = intval($_GET['perpage']);
+	$perpage = intval($mybb->input['perpage']);
+	$page = intval($mybb->input['page']);
 	if(!$perpage) {
 		$perpage = 15;
 	}
