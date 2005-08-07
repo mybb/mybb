@@ -1,16 +1,4 @@
 <?php
-// Help Section 1
-$l['s1_name'] = "User Maintenance";
-$l['s1_desc'] = "Basic instructions for maintaining a forum account.";
-
-// Help Section 2
-$l['s2_name'] = "Posting";
-$l['s2_desc'] = "Posting, replying, and basic usage of forum.";
-
-// Help Sectin 3
-$l['s3_name'] = "Test Help Section";
-$l['s3_desc'] = "This is just a test help section.";
-
 // Help Document 1
 $l['1_name'] = "User Registration";
 $l['1_desc'] = "Perks and privileges to user registration.";
