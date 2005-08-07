@@ -9,6 +9,9 @@
  * $Id$
  */
 
+/**
+ * Upgrade Script: Release Candidate 3
+ */
 function upgrade2_dbchanges()
 {
 	global $db, $output;

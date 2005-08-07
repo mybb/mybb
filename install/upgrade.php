@@ -49,12 +49,15 @@ $rebuildsettingsfile = 1;
 $revertallthemes = 1;
 
 $valid = 0;
+/*
+
+NOTE: This code has been commented out because of the new login system.
 
 if($do == "login")
 {
-	$md5pw = md5($adminpass);
-	$query = $db->query("SELECT uid, password, usergroup FROM ".TABLE_PREFIX."users WHERE username='$adminuser' AND password='$md5pw'");
+	$query = $db->query("SELECT uid, password, usergroup, salt, loginkey FROM ".TABLE_PREFIX."users WHERE username='$adminuser'");
 	$failcheck = 1;
+	$md5pw = md5($adminpass);
 }
 else
 {
@@ -79,7 +82,7 @@ if($valid != 1)
 	$output->print_footer("intro");
 	exit;
 }
-
+*/
 if(file_exists("lock"))
 {
 	$output->print_error("The installer is currently locked, please remove 'lock' from the install directory to continue");
@@ -90,18 +93,35 @@ else
 	if(!$action || $action == "intro")
 	{
 		$output->print_header("MyBB Upgrade Script");
-
-		while(list($key, $val) = each($oldvers))
+		$dh = opendir("./resources");
+		while(($file = readdir($dh)) !== false)
 		{
-			if(!$oldvers[$key+1])
+			if(preg_match("#upgrade([0-9]+).php$#i", $file))
 			{
-				$vers .= "<option value=\"$key\" selected=\"selected\">$val</option>\n";
-			}
-			else
-			{
-				$vers .= "<option value=\"$key\">$val</option>\n";
+				$upgradescripts[] = $file;
 			}
 		}
+		closedir($dh);
+		foreach($upgradescripts as $key => $file)
+		{
+			$upgradescript = implode("", file("./resources/$file"));
+			preg_match("#Upgrade Script:(.*)#i", $upgradescript, $verinfo);
+			preg_match("#upgrade([0-9]+).php$#i", $file, $keynum);
+			if(trim($verinfo[1]))
+			{
+				if(!$upgradescripts[$key+1])
+				{
+					$vers .= "<option value=\"$keynum[1]\" selected=\"selected\">$verinfo[1]</option>\n";
+				}
+				else
+				{
+					$vers .= "<option value=\"$keynum[1]\">$verinfo[1]</option>\n";
+				}
+			}
+		}
+		unset($upgradescripts);
+		unset($upgradescript);
+
 		$output->print_contents("<p>Welcome to the upgrade wizard for MyBulletinBoard $myver.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p>We recommend that you also do a complete backup of your database before attempting to upgrade so if something goes wrong you can easily revert back to the previous version.</p></p><p>Once you're ready, please select your old version below and click next to continue.</p><p><select name=\"from\">$vers</select>");
 		$output->print_footer("doupgrade");
 	}
