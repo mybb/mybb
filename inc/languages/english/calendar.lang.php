@@ -7,7 +7,7 @@ $l['nav_addevent'] = "Add Event";
 $l['nav_editevent'] = "Edit Event";
 
 // In some languages these months need to be slightly different than those defined in global.lang.php
-$l['alt_month_1'] = "Januaray";
+$l['alt_month_1'] = "January";
 $l['alt_month_2'] = "February";
 $l['alt_month_3'] = "March";
 $l['alt_month_4'] = "April";
