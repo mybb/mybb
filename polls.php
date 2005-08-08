@@ -443,7 +443,7 @@ if($mybb->input['action'] == "do_editpoll")
 	{
 		$numoptions = $mybb->settings['maxpolloptions'];
 	}
-	elseif($mybb->input['numoptions'])
+	elseif(!$mybb->input['numoptions'])
 	{
 		$numoptions = 2;
 	}
