@@ -176,6 +176,10 @@ function upload_attachment($attachment)
 			$thumbadd = ",thumbnail";
 			$thumbadd2 = ",'".$thumbnail['filename']."'";
 		}
+		elseif($thumbnail['code'] == 4)
+		{
+			$thumbadd = ",thumbnail";
+			$thumbadd2 = ",'SMALL'";
 	}
 	if($forum['modattachments'] == "yes" && $mybb->usergroup['cancp'] != "yes")
 	{

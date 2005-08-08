@@ -93,6 +93,10 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		$thumb['filename'] = $filename;
 		return $thumb;
 	}
+	else
+	{
+		return array("code" => 4);
+	}
 }
 
 function scaleImage($width, $height, $maxwidth, $maxheight)

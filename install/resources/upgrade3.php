@@ -135,11 +135,14 @@ function upgrade3_convertattachments()
 		fclose($fp);
 		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 		{
-			echo "making thumbnail..";
 			require_once "../inc/functions_image.php";
 			$thumbname = str_replace(".attach", "_thumb.$ext", $filename);
 			$thumbnail = generate_thumbnail("../uploads/".$filename, "../uploads", $thumbname, $settings['attachthumbh'], $settings['attachthumbw']);
-			echo "thumbnail: $thumbnail[filename]<br />";
+			if($thumbnail['code'] == 4)
+			{
+				// Image was too small - fake a filename
+				$thumbnail['filename'] = "SMALL";
+			}
 		}
 		$db->query("UPDATE ".TABLE_PREFIX."attachments SET donecon='1', uid='".$attachment['puid']."', thumbnail='".$thumbnail['filename']."' WHERE aid='".$attachment['aid']."'");
 	}

@@ -674,7 +674,8 @@ function makepostbit($post, $pmprevann=0)
 	if(is_array($attachcache[$post['pid']]))
 	{ // This post has 1 or more attachments
 		$validationcount = 0;
-		while(list($aid, $attachment) = each($attachcache[$post['pid']]))
+		$id = $post['pid'];
+		foreach($attachcache[$id] as $aid => $attachment)
 		{
 			if($attachment['visible'])
 			{ // There is an attachment thats visible!
@@ -685,26 +686,25 @@ function makepostbit($post, $pmprevann=0)
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
-					if($attachment['thumbnail'] && $forumpermissions['candlattachments'] == "yes")
-					{ // We have a thumbnail to show
+					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes")
+					{ // We have a thumbnail to show (and its not the "SMALL" enough image
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
+					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes")
+					{
+						// Image is small enough to show - no thumbnail
+						eval("\$imagelist .= \"".$templates->get("postbit_attachments_images_image")."\";");
+					}
 					elseif($forumpermissions['candlattachments'] == "yes")
-					{ // Image is small enough to show
-						if($ext == "jpg" || $ext == "gif" || $ext == "png" || $ext == "bmp" || $ext == "jpeg")
-						{
-							eval("\$imagelist .= \"".$templates->get("postbit_attachments_images_image")."\";");
-						}
-						else
-						{
-							eval("\$attachmentlist .= \"".$templates->get("postbit_attachments_attachment")."\";");
-						}
+					{
+						// Show standard link to attachment
+						eval("\$attachmentlist .= \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
 					$post['message'] = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $post['message']);
 				}
 				else
 				{
-					if($attachment['thumbnail'] && $forumpermissions['candlattachments'] == "yes")
+					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes")
 					{ // We have a thumbnail to show
 						eval("\$thumblist .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
@@ -714,16 +714,14 @@ function makepostbit($post, $pmprevann=0)
 						}
 						$tcount++;
 					}
+					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes")
+					{
+						// Image is small enough to show - no thumbnail
+						eval("\$imagelist .= \"".$templates->get("postbit_attachments_images_image")."\";");
+					}
 					elseif($forumpermissions['candlattachments'] == "yes")
-					{ // Image is small enough to show
-						if($ext == "jpg" || $ext == "gif" || $ext == "png" || $ext == "bmp" || $ext == "jpeg")
-						{
-							eval("\$imagelist .= \"".$templates->get("postbit_attachments_images_image")."\";");
-						}
-						else
-						{
-							eval("\$attachmentlist .= \"".$templates->get("postbit_attachments_attachment")."\";");
-						}
+					{
+						eval("\$attachmentlist .= \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
 				}
 			}
