@@ -5944,9 +5944,9 @@ $loginbox
 <tr>
 <td class="trow1" valign="top"><strong>$lang->method</strong></td>
 <td class="trow2">
-<input type="radio" name="method" value="move"> $lang->method_move<br />
-<input type="radio" name="method" value="redirect" checked> $lang->method_move_redirect<br />
-<input type="radio" name="method" value="copy"> $lang->method_copy<br />
+<label><input type="radio" name="method" value="move"> $lang->method_move</label><br />
+<label><input type="radio" name="method" value="redirect" checked> $lang->method_move_redirect</label><br />
+<label><input type="radio" name="method" value="copy"> $lang->method_copy</label><br />
 </td>
 </tr>
 </table>
@@ -6573,7 +6573,7 @@ $header
 $loginbox
 <tr>
 <td class="trow2"><strong>$lang->post_separator</strong></td>
-<td class="trow2"><input type="radio" name="sep" value="hr" checked="checked" />&nbsp;$lang->horizontal_rule&nbsp;<input type="radio" name="sep" value="new_line" />&nbsp;$lang->new_line</td>
+<td class="trow2"><label><input type="radio" name="sep" value="hr" checked="checked" />&nbsp;$lang->horizontal_rule</label><br /><label><input type="radio" name="sep" value="new_line" />&nbsp;$lang->new_line</label></td>
 </tr>
 </table>
 <br />
