@@ -679,6 +679,9 @@ function makepostbit($post, $pmprevann=0)
 			if($attachment['visible'])
 			{ // There is an attachment thats visible!
 				$attachment['name'] = htmlspecialchars_uni($attachment['name']);
+				$attachment['filesize'] = getfriendlysize($attachment['filesize']);
+				$ext = getextention($attachment['filename']);
+				$attachment['icon'] = getattachicon($ext);
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
@@ -686,16 +689,16 @@ function makepostbit($post, $pmprevann=0)
 					{ // We have a thumbnail to show
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
-					elseif($attachment['thumbnailsm'] == "yes" && $forumpermissions['candlattachments'] == "yes")
+					elseif($forumpermissions['candlattachments'] == "yes")
 					{ // Image is small enough to show
-						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
-					}
-					else
-					{
-						$attachment['filesize'] = getfriendlysize($attachment['filesize']);
-						$ext = getextention($attachment['filename']);
-						$attachment['icon'] = getattachicon($ext);
-						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
+						if($ext == "jpg" || $ext == "gif" || $ext == "png" || $ext == "bmp" || $ext == "jpeg")
+						{
+							eval("\$imagelist .= \"".$templates->get("postbit_attachments_images_image")."\";");
+						}
+						else
+						{
+							eval("\$attachmentlist .= \"".$templates->get("postbit_attachments_attachment")."\";");
+						}
 					}
 					$post['message'] = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $post['message']);
 				}
@@ -711,16 +714,16 @@ function makepostbit($post, $pmprevann=0)
 						}
 						$tcount++;
 					}
-					elseif($attachment['thumbnailsm'] == "yes" && $forumpermissions['candlattachments'] == "yes")
+					elseif($forumpermissions['candlattachments'] == "yes")
 					{ // Image is small enough to show
-						eval("\$imagelist .= \"".$templates->get("postbit_attachments_images_image")."\";");
-					}
-					else
-					{
-						$attachment['filesize'] = getfriendlysize($attachment['filesize']);
-						$ext = getextention($attachment['filename']);
-						$attachment['icon'] = getattachicon($ext);
-						eval("\$attachmentlist .= \"".$templates->get("postbit_attachments_attachment")."\";");
+						if($ext == "jpg" || $ext == "gif" || $ext == "png" || $ext == "bmp" || $ext == "jpeg")
+						{
+							eval("\$imagelist .= \"".$templates->get("postbit_attachments_images_image")."\";");
+						}
+						else
+						{
+							eval("\$attachmentlist .= \"".$templates->get("postbit_attachments_attachment")."\";");
+						}
 					}
 				}
 			}
