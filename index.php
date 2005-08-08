@@ -122,7 +122,7 @@ if($mybb->settings['showbirthdays'] != "no")
 {
 	$bdaycount = 0;
 	$bdaytime = time();
-	$bdaydate = mydate("d-n", $bdaytime, "", 0);
+	$bdaydate = mydate("j-n", $bdaytime, "", 0);
 	$year = mydate("Y", $bdaytime, "", 0);
 	$query = $db->query("SELECT uid, username, birthday FROM ".TABLE_PREFIX."users WHERE birthday LIKE '$bdaydate-%'");
 	while($bdayuser = $db->fetch_array($query))
@@ -141,7 +141,7 @@ if($mybb->settings['showbirthdays'] != "no")
 	}
 	if($bdaycount > 0)
 	{
-		eval("\$birthdays = \"".$templates->get("index_birthdays")."\";");			
+		eval("\$birthdays = \"".$templates->get("index_birthdays")."\";");
 	}
 }
 // Get Forum Statistics
