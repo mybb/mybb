@@ -117,7 +117,7 @@ if($mybb->settings[portal_showwelcome] != "no")
 	}
 	else
 	{
-		$lang->guest_welcome_registration = sprintf($lang->guest_welcome_registration, $mybb->settings['bburl']);
+		$lang->guest_welcome_registration = sprintf($lang->guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
 		$mybb->user['username'] = $lang->guest;
 		eval("\$welcometext = \"".$templates->get("portal_welcome_guesttext")."\";");
 	}
