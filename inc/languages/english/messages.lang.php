@@ -75,6 +75,7 @@ $l['redirect_redirectsremoved'] = "All move redirects to this thread have been r
 $l['redirect_postedited'] = "Thank you, this post has been edited. <br />You will now be returned to the thread.";
 $l['redirect_eventadded'] = "Your event has been added successfully.<br />You will now be taken to it.";
 $l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";
+$l['redirect_registered_admin_activate'] = "Thank you for registering on {1}, {2}.<br />Your registration must be activated by an administrator.  Until then, you may not be able to post on these forums.";
 $l['redirect_loggedin'] = "You have successfully been logged in.<br />You will now be taken back to where you came from.";
 $l['redirect_loggedout'] = "You have successfully been logged out.<br />You will now be taken back to the forum index.";
 $l['redirect_alreadyloggedout'] = "You were already logged out or have not logged in yet.<br />You will now be taken back to the forum index.";

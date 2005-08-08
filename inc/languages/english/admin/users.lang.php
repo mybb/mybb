@@ -34,6 +34,7 @@ $l['delete'] = "Delete This User";
 $l['ban'] = "Ban This User";
 $l['show_referred'] = "Show Referred Users";
 $l['misc_options'] = "Miscellaneous Options";
+$l['activate'] = "Activate This User";
 
 $l['modify_user'] = "Modify User Account for {1}";
 $l['delete_user'] = "Delete Registered User: {1}";
@@ -137,6 +138,7 @@ $l['posts_more'] = "and Number of Posts is greater than";
 $l['posts_less'] = "and Number of Posts is less than";
 $l['and_reg_ip'] = "and registration IP matches";
 $l['and_post_ip'] = "and has posted with IP";
+$l['is_member_of'] = "and is a member of";
 
 $l['display_username'] = "Display username";
 $l['display_options_2'] = "Display options";
@@ -208,6 +210,7 @@ $l['ban_lifted'] = "The ban on {1} has successfully been lifted.";
 $l['ban_updated'] = "The ban on {1} has successfully been updated.";
 $l['users_merged'] = "The two user accounts have successfully been merged and the user {1} has been deleted.<br><br>Any old forum permissions, moderator permissions, or bans {2} had, you will need to recreate again for {3} if you want them to work.";
 $l['confirm_merge'] = "Are you sure you want to merge the account <b>{1}</b> into the account <b>{2}</b>? <br><br><b>{3}</b> will be deleted after the accounts have been merged.";
+$l['activated'] = "The user has been activated";
 
 $l['done'] = "Done!";
 $l['next_page'] = "View Next Page";
@@ -223,7 +226,6 @@ $l['html_email'] = "HTML Email";
 $l['send_pm'] = "Private Message";
 $l['send_method'] = "Delivery Method";
 $l['override_notice'] = "Override \"Allow Notices\" Preference";
-$l['is_member_of'] = "and is a member of";
 
 $l['ip_addresses'] = "Show IP addresses";
 $l['ip_addresses_user'] = "IP addresses for {1}";

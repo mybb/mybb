@@ -1486,6 +1486,10 @@ if($mybb->input['action'] == "find")
 			{
 				$user[$name] = htmlspecialchars_uni($value);
 			}
+			if($user['usergroup'] == 5)
+			{
+				$options['activate'] = $lang->activate;
+			}
 			$bgcolor = getaltbg();
 			startform("users.php");
 			makehiddencode("uid", $user['uid']);
@@ -1611,6 +1615,11 @@ if($mybb->input['action'] == "find")
 			endform($lang->next_page, "");
 		}
 	}
+}
+if($mybb->input['action'] == "activate")
+{
+	$query = $db->query("UPDATE ".TABLE_PREFIX."users SET usergroup = '2' WHERE uid='".intval($mybb->input['uid'])."' AND usergroup = '5'");
+	cpredirect("users.php", $lang->activated);
 }
 if($mybb->input['action'] == "do_manageban")
 {

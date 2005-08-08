@@ -275,7 +275,7 @@ if($mybb->input['action'] == "do_register")
 		$enabledstcheck = "checked=\"checked\"";
 	}
 
-	if($mybb->settings['regtype'] == "verify")
+	if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin")
 	{
 		$usergroup = 5;
 	}
@@ -477,6 +477,14 @@ if($mybb->input['action'] == "do_register")
 			$plugins->run_hooks("member_do_register_end");
 
 			error($lang->redirect_registered_passwordsent);
+		}
+		else if($mybb->settings['regtype'] == "admin")
+		{
+			$lang->redirect_registered_admin_activate = sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], $username);
+
+			$plugins->run_hooks("member_do_register_end");
+
+			error($lang->redirect_registered_admin_activate);
 		}
 		else
 		{
