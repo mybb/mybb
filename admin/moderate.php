@@ -159,7 +159,7 @@ if($mybb->input['action'] == "attachments")
 		}
 		if(empty($attachment['postsubject']))
 		{
-			$attachment['postsubject'] = "[no subject]";
+			$attachment['postsubject'] = $lang->no_subject;
 		}
 		makelabelcode($lang->attachment, "$attachment[filename] ($lang->size $attachment[filesize]) ".makelinkcode($lang->view, "../attachment.php?tid=$attachment[tid]&pid=$attachment[pid]", 1));
 		makelabelcode($lang->post, "<a href=\"../showthread.php?tid=$attachment[tid]&pid=$attachment[postpid]#pid$attachment[postpid]\" target=\"_blank\">$attachment[postsubject]</a>");

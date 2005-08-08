@@ -35,4 +35,6 @@ $l['moderate_attachments'] = "Moderate Selected Attachments";
 
 $l['attachments_moderated'] = "The selected attachments have successfully been validated or deleted.";
 $l['threadsposts_moderated'] = "The selected threads and posts have successfully been validated or deleted.";
+
+$l['no_subject'] = "[no subject]";
 ?>
