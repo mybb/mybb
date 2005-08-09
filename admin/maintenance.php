@@ -42,9 +42,9 @@ if($mybb->input['action'] == "do_cache")
 	{
 		cpheader();
 		starttable();
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='-3' AND title='".addslashes($cacheitem)."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."datacache WHERE title='".addslashes($cacheitem)."'");
 		$cacheitem = $db->fetch_array($query);
-		$cachecontents = unserialize($cacheitem['template']);
+		$cachecontents = unserialize($cacheitem['cache']);
 		if(empty($cachecontents))
 		{
 			$cachecontents = $lang->cache_empty;
@@ -82,10 +82,10 @@ if($mybb->input['action'] == "cache")
 	echo "<td class=\"subheader\" align=\"center\">$lang->size</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" colspan=\"2\">$lang->options</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT title, template FROM ".TABLE_PREFIX."templates WHERE sid='-3'");
+	$query = $db->query("SELECT title, template FROM ".TABLE_PREFIX."datacache");
 	while($cacheitem = $db->fetch_array($query))
 	{
-		$size = getfriendlysize(strlen($cacheitem['template']));
+		$size = getfriendlysize(strlen($cacheitem['cache']));
 		$bgcolor = getaltbg();
 		startform("maintenance.php", "", "do_cache");
 		makehiddencode("cacheitem", $cacheitem['title']);

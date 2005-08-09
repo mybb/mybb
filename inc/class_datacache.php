@@ -21,20 +21,20 @@ class datacache
 			// Check if no files exist in cache directory, if not we need to create them (possible move from db to files)
 			if(!file_exists("./inc/cache/version.php"))
 			{
-				$query = $db->query("SELECT title,template FROM ".TABLE_PREFIX."templates WHERE sid='-3'");
+				$query = $db->query("SELECT title,cache FROM ".TABLE_PREFIX."datacache");
 				while($data = $db->fetch_array($query))
 				{
-					$this->update($data['title'], unserialize($data['template']));
+					$this->update($data['title'], unserialize($data['cache']));
 				}
 			}
 			return;
 		}
 		else
 		{
-			$query = $db->query("SELECT title,template FROM ".TABLE_PREFIX."templates WHERE sid='-3'");
+			$query = $db->query("SELECT title,cache FROM ".TABLE_PREFIX."datacache");
 			while($data = $db->fetch_array($query))
 			{
-				$this->cache[$data['title']] = unserialize($data['template']);
+				$this->cache[$data['title']] = unserialize($data['cache']);
 			}
 		}
 	}
@@ -59,9 +59,9 @@ class datacache
 		{
 			if($hard)
 			{
-				$query = $db->query("SELECT title,template FROM ".TABLE_PREFIX."templates WHERE sid='-3' AND title='$name'");
+				$query = $db->query("SELECT title, cache FROM ".TABLE_PREFIX."datacache WHERE title='$name'");
 				$data = $db->fetch_array($query);
-				$this->cache[$data['title']] = unserialize($data['template']);
+				$this->cache[$data['title']] = unserialize($data['cache']);
 			}
 		}
 		return $this->cache[$name];
@@ -71,6 +71,12 @@ class datacache
 	{
 		global $db, $mybb;
 		$this->cache[$name] = $contents;
+
+		// We ALWAYS keep a running copy in the db just incase we need it
+		$dbcontents = addslashes(serialize($contents));
+		$db->query("REPLACE INTO ".TABLE_PREFIX."datacache (title, cache) VALUES ('$name','$dbcontents')");
+
+		// If using files, update the cache file too
 		if($mybb->config['cachestore'] == "files")
 		{
 			if(!@is_writable("./inc/cache/"))
@@ -85,17 +91,6 @@ class datacache
 		}
 		else
 		{
-			$contents = addslashes(serialize($contents));
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$name' AND sid='-3'");
-			$cache = $db->fetch_array($query);
-			if($cache['title'])
-			{
-				$db->query("UPDATE ".TABLE_PREFIX."templates SET template='$contents' WHERE title='$name' AND sid='-3'");
-			}
-			else
-			{
-				$db->query("INSERT INTO ".TABLE_PREFIX."templates (tid,title,template,sid) VALUES (NULL,'$name','$contents','-3')");
-			}
 		}
 	}
 

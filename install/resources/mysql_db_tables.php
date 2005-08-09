@@ -115,6 +115,12 @@ $tables[] = "CREATE TABLE mybb_banned (
   reason varchar(255) NOT NULL default ''
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_datacache (
+  title varchar(15) NOT NULL default '',
+  cache mediumtext NOT NULL,
+  PRIMARY KEY(title)
+) TYPE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_events (
   eid int unsigned NOT NULL auto_increment,
   subject varchar(120) NOT NULL default '',

@@ -4,7 +4,8 @@ MyBB Preview Release 1 (Version released to testers) to MyBB Preview Release 1 (
 Please keep this file updated
 
 ----
-
+-> Drop templates/themes table again
+-> Import themes/templates
 -> MySQL Queries to run:
 
 UPDATE mybb_users SET salt='';
@@ -30,7 +31,11 @@ CREATE TABLE mybb_sessions (
 	  KEY location1 (location1),
 	  KEY location2 (location2)
 	);
-
+CREATE TABLE mybb_datacache (
+  title varchar(15) NOT NULL default '',
+  cache mediumtext NOT NULL,
+  PRIMARY KEY(title)
+) TYPE=MyISAM;
 
 ALTER TABLE mybb_adminlog CHANGE uid uid int unsigned NOT NULL;
 	

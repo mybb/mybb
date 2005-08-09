@@ -349,6 +349,12 @@ function upgrade3_dbchanges2()
 	  PRIMARY KEY  (sid)
 		) TYPE=MyISAM;";
 
+	$tables[] = "CREATE TABLE ".TABLE_PREFIX."datacache (
+	  title varchar(15) NOT NULL default '',
+	  cache mediumtext NOT NULL,
+	  PRIMARY KEY(title)
+	) TYPE=MyISAM;";
+
 	$contents .= "<p>Done</p>";
 	$contents .= "<p>Dropping settings and rebuilding them...";
 	$inserts[] = "INSERT INTO ".TABLE_PREFIX."settinggroups (gid, name, description, disporder, isdefault) VALUES (1, 'General Configuration', 'This section contains various settings such as your board name and url, as well as your website name and url.', 2, 'yes');";
