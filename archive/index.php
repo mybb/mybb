@@ -20,7 +20,7 @@ switch($action)
 		$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
 
 		// Fetch the forum this thread is in
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."' AND active='yes' AND type='f' AND password=''");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."' AND active!='no' AND type='f' AND password=''");
 		$forum = $db->fetch_array($query);
 		if(!$forum['fid'])
 		{
@@ -222,7 +222,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 			while(list($key, $forum) = each($main))
 			{
 				$perms = $forumpermissions[$forum['fid']];
-				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
+				if(($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no") && $forum['active'] != "no")
 				{
 					if($forum['linkto'])
 					{
