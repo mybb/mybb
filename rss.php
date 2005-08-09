@@ -63,7 +63,7 @@ switch($mybb->input['type'])
 	case "rss2.0":
 		header("Content-Type: text/xml");	
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-		echo "<rss version=\"2.0\">\n";
+		echo "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:wfw=\"http://wellformedweb.org/CommentAPI/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
 		echo "\t<channel>\n";
 		echo "\t\t<title>".$title."</title>\n";
 		echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
@@ -72,6 +72,7 @@ switch($mybb->input['type'])
 		break;
 	default:
 		header("Content-Type: text/xml");	
+		echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 		echo "<rss version=\"0.92\">\n";
 		echo "\t<channel>\n";
 		echo "\t\t<title>".$title."</title>\n";
@@ -97,12 +98,12 @@ while($thread = $db->fetch_array($query))
 			echo "\t\t\t<guid>".$mybb->settings['bburl']."/showthread.php?tid=".$thread['tid']."&amp;action=newpost</guid>\n";
 			echo "\t\t\t<title>".$thread['subject']."</title>\n";
 			echo "\t\t\t<author>".$thread['username']."</author>\n";
-			echo "\t\t\t<description>".$lang->forum." ".$thread['forumname']."\r\n<br />".$lang->posted_by." ".$thread['username']." ".$lang->on." ".$postdate." ".$posttime;
+			$description = htmlspecialchars($lang->forum." ".$thread['forumname']."\r\n<br />".$lang->posted_by." ".$thread['username']." ".$lang->on." ".$postdate." ".$posttime);
 			if($thread['postmessage'])
 			{
-				echo "\n<br />".$thread['postmessage'];
+				$description .= "\n<br />".$thread['postmessage'];
 			}
-			echo "</description>\n";
+			echo "\t\t\t<description><![CDATA[".$description."]]></description>".;
 			echo "\t\t\t<link>".$mybb->settings['bburl']."/showthread.php?tid=".$thread['tid']."&amp;action=newpost</link>\n";
 			echo "\t\t\t<category domain=\"".$mybb->settings['bburl']."/forumdisplay.php?fid=".$thread['fid']."\">".$thread['forumname']."</category>\n";
 			echo "\t\t\t<pubDate>".$pubdate."</pubDate>\n";
@@ -112,12 +113,12 @@ while($thread = $db->fetch_array($query))
 			echo "\t\t<item>\n";
 			echo "\t\t\t<title>".$thread['subject']."</title>\n";
 			echo "\t\t\t<author>".$thread['username']."</author>\n";
-			echo "\t\t\t<description>".$lang->forum." ".$thread['forumname']."\r\n<br />".$lang->posted_by." ".$thread['username']." ".$lang->on." ".$postdate." ".$posttime;
+			$description = htmlspecialchars($lang->forum." ".$thread['forumname']."\r\n<br />".$lang->posted_by." ".$thread['username']." ".$lang->on." ".$postdate." ".$posttime);
 			if($thread['postmessage'])
 			{
-				echo "\n<br />".$thread['postmessage'];
+				$description .= "\n<br />".$thread['postmessage'];
 			}
-			echo "</description>\n";
+			echo "\t\t\t<description><![CDATA[".$description."]]></description>".;
 			echo "\t\t\t<link>".$mybb->settings['bburl']."/showthread.php?tid=".$thread['tid']."&amp;action=newpost</link>\n";
 			echo "\t\t</item>\n";
 			break;
