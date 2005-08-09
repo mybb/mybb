@@ -1,45 +1,45 @@
 <?php
 // Help Document 1
-$l['1_name'] = "User Registration";
-$l['1_desc'] = "Perks and privileges to user registration.";
-$l['1_document'] = "Some parts of this forum may require you to be logged in and registered. Registration is free and takes a few minutes to complete.
+$l['d1_name'] = "User Registration";
+$l['d1_desc'] = "Perks and privileges to user registration.";
+$l['d1_document'] = "Some parts of this forum may require you to be logged in and registered. Registration is free and takes a few minutes to complete.
 <br><br>You are encouraged to register; once you register you will be able to post messages, set your own preferences, and maintain a profile.
 <br><br>Some of the features that generally require registration are subscriptions, favorites, changing of styles, accessing of your myPad (simple notepad) and emailing forum members.";
 
 // Help Document 2
-$l['2_name'] = "Updating Profile";
-$l['2_desc'] = "Changing your data currently on record.";
-$l['2_document'] = "At some point during your stay, you may decide you need to update some information such as your instant messenger information, your password, or perhaps you need to change your email address. You may change any of this information from your user control panel. To access this control panel, simply click on the link in the upper right hand corner of most any page entitled \"user cp\". From there, simply choose \"Edit Profile\" and change or update any desired items, then proceed to click the submit button located at the bottom of the page for changes to take effect.";
+$l['d2_name'] = "Updating Profile";
+$l['d2_desc'] = "Changing your data currently on record.";
+$l['d2_document'] = "At some point during your stay, you may decide you need to update some information such as your instant messenger information, your password, or perhaps you need to change your email address. You may change any of this information from your user control panel. To access this control panel, simply click on the link in the upper right hand corner of most any page entitled \"user cp\". From there, simply choose \"Edit Profile\" and change or update any desired items, then proceed to click the submit button located at the bottom of the page for changes to take effect.";
 
 // Help Document 3
-$l['3_name'] = "Use of Cookies on MyBB";
-$l['3_desc'] = "MyBB uses cookies to store certain information about your registration.";
-$l['3_document'] = "MyBulletinBoard makes use of cookies to store your login information if you are registered, and your last visit if you are not.
+$l['d3_name'] = "Use of Cookies on MyBB";
+$l['d3_desc'] = "MyBB uses cookies to store certain information about your registration.";
+$l['d3_document'] = "MyBulletinBoard makes use of cookies to store your login information if you are registered, and your last visit if you are not.
 <br><br>Cookies are small text documents stored on your computer; the cookies set by this forum can only be used on this website and pose no security risk.
 <br><br>Cookies on this forum also track the specific topics you have read and when you last read them.
 <br><br>To clear all cookies set by this forum, you can click <a href=\"misc.php?action=clearcookies\">here</a>.";
 
 // Help Document 4
-$l['4_name'] = "Logging In and Out";
-$l['4_desc'] = "How to login and logout.";
-$l['4_document'] = "When you login, you set a cookie on your machine so that you can browse the forums without having to enter in your username and password each time. Logging out clears that cookie to ensure nobody else can browse the forum as you.
+$l['d4_name'] = "Logging In and Out";
+$l['d4_desc'] = "How to login and logout.";
+$l['d4_document'] = "When you login, you set a cookie on your machine so that you can browse the forums without having to enter in your username and password each time. Logging out clears that cookie to ensure nobody else can browse the forum as you.
 <br><br>To login, simply click the login link at the top right hand corner of the forum. To logout, click the logout link in the same place. In the event you cannot logout, clearing cookies on your machine will take the same effect.";
 
 // Help Document 5
-$l['5_name'] = "Posting a New Topic";
-$l['5_desc'] = "Starting a new thread in a forum.";
-$l['5_document'] = "When you go to a forum you are interested in and you wish to create a new topic (or thread), simply choose the button at the top and bottom of the forums entitled \"New topic\". Please take note that you may not have permission to post a new topic in every forum as your administrator may have restricted posting in that forum to staff or archived the forum entirely.";
+$l['d5_name'] = "Posting a New Topic";
+$l['d5_desc'] = "Starting a new thread in a forum.";
+$l['d5_document'] = "When you go to a forum you are interested in and you wish to create a new topic (or thread), simply choose the button at the top and bottom of the forums entitled \"New topic\". Please take note that you may not have permission to post a new topic in every forum as your administrator may have restricted posting in that forum to staff or archived the forum entirely.";
 
 // Help Document 6
-$l['6_name'] = "Posting a Reply";
-$l['6_desc'] = "Replying to a topic within a forum.";
-$l['6_document'] = "During the course of your visit, you may encounter a thread to which you would like to make a reply. To do so, simply click the \"Post reply\" button at the bottom or top of the thread. Please take note that your administrator may have restricted posting to certain individuals in that particular forum.
+$l['d6_name'] = "Posting a Reply";
+$l['d6_desc'] = "Replying to a topic within a forum.";
+$l['d6_document'] = "During the course of your visit, you may encounter a thread to which you would like to make a reply. To do so, simply click the \"Post reply\" button at the bottom or top of the thread. Please take note that your administrator may have restricted posting to certain individuals in that particular forum.
 <br><br>Additionally, a moderator of a forum may have closed a thread meaning that users cannot reply to it. There is no way for a user to open such a thread without the help of a moderator or administrator.";
 
 // Help Document 7
-$l['7_name'] = "myCode";
-$l['7_desc'] = "Learn how to use myCode to enhance your posts.";
-$l['7_document'] = "You can use myCode, a simplified version of HTML, in your posts to create certain effects.
+$l['d7_name'] = "myCode";
+$l['d7_desc'] = "Learn how to use myCode to enhance your posts.";
+$l['d7_document'] = "You can use myCode, a simplified version of HTML, in your posts to create certain effects.
 <p><br>[b]This text is bold[/b]<br>&nbsp;&nbsp;&nbsp;<b>This text is bold</b>
 <p>[i]This text is italicized[/i]<br>&nbsp;&nbsp;&nbsp;<i>This text is italicized</i>
 <p>[u]This text is underlined[/u]<br>&nbsp;&nbsp;&nbsp;<u>This text is underlined</u>

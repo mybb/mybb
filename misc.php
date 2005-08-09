@@ -98,7 +98,9 @@ elseif($mybb->input['action'] == "rules")
 elseif($mybb->input['action'] == "help")
 {
 	$lang->load("helpdocs");
+	$lang->load("helpsections");
 	$lang->load("customhelpdocs");
+	$lang->load("customhelpsections");
 	
 	addnav($lang->nav_helpdocs, "misc.php?action=help");
 
@@ -112,9 +114,9 @@ elseif($mybb->input['action'] == "help")
 
 			if($helpdoc['usetranslation'] == "yes" || $helpdoc['hid'] <= 7)
 			{
-				$langnamevar = $helpdoc['hid']."_name";
-				$langdescvar = $helpdoc['hid']."_desc";
-				$langdocvar = $helpdoc['hid']."_document";
+				$langnamevar = "d".$helpdoc['hid']."_name";
+				$langdescvar = "d".$helpdoc['hid']."_desc";
+				$langdocvar = "d".$helpdoc['hid']."_document";
 				$helpdoc['name'] = $lang->$langnamevar;
 				$helpdoc['description'] = $lang->$langdescvar;
 				$helpdoc['document'] = $lang->$langdocvar;
@@ -179,8 +181,8 @@ elseif($mybb->input['action'] == "help")
 						{
 							if($helpdoc['usetranslation'] == "yes" || $helpdoc['hid'] <= 7)
 							{
-								$langnamevar = $helpdoc['hid'].'_name';
-								$langdescvar = $helpdoc['hid'].'_desc';
+								$langnamevar = "d".$helpdoc['hid'].'_name';
+								$langdescvar = "d".$helpdoc['hid'].'_desc';
 								$helpdoc['name'] = $lang->$langnamevar;
 								$helpdoc['description'] = $lang->$langdescvar;
 							}
