@@ -63,7 +63,8 @@ if($mybb->input['action'] == "do_add")
 }
 if($mybb->input['action'] == "do_delete")
 {
-	if($mybb->input['deletesubmit']) {	
+	if($mybb->input['deletesubmit'])
+	{	
 		$fid = intval($mybb->input['fid']);
 		$db->query("DELETE FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
 		$fieldname = "fid$fid";
@@ -159,18 +160,18 @@ if($mybb->input['action'] == "edit")
 	startform("profilefields.php", "" , "do_edit");
 	makehiddencode("fid", $profilefield['fid']);
 	starttable();
-	$lang->edit_custom_field = sprintf($lang->edit_custom_field, $profilefield[name]);
+	$lang->edit_custom_field = sprintf($lang->edit_custom_field, $profilefield['name']);
 	tableheader($lang->edit_custom_field);
 	makeinputcode($lang->field_name, "name", "$profilefield[name]");
-	maketextareacode($lang->field_description, "description", $profilefield[description]);
-	makeinputcode($lang->field_max_length, "maxlength", $profilefield[maxlength]);
-	makeinputcode($lang->field_length, "length", $profilefield[length]);
-	makeinputcode($lang->field_disporder, "disporder", $profilefield[disporder], 4);
+	maketextareacode($lang->field_description, "description", $profilefield['description']);
+	makeinputcode($lang->field_max_length, "maxlength", $profilefield['maxlength']);
+	makeinputcode($lang->field_length, "length", $profilefield['length']);
+	makeinputcode($lang->field_disporder, "disporder", $profilefield['disporder'], 4);
 	makelabelcode($lang->field_type, "<select name=\"type\"><option value=\"text\" $typesel[text]>$lang->field_type_textbox</option><option value=\"textarea\" $typesel[textarea]>$lang->field_type_textarea</option><option value=\"select\" $typesel[select]>$lang->field_type_select</option><option value=\"multiselect\" $typesel[multiselect]>$lang->field_type_multiselect</option><option value=\"radio\" $typesel[radio]>$lang->field_type_radio</option><option value=\"checkbox\" $typesel[checkbox]>$lang->field_type_checkbox</option></select>");
 	maketextareacode($lang->field_options, "options", $options, 6, 50);
-	makeyesnocode($lang->field_required, "required", $profilefield[required]);
-	makeyesnocode($lang->field_editable, "editable", $profilefield[editable]);
-	makeyesnocode($lang->field_hidden, "hidden", $profilefield[hidden]);
+	makeyesnocode($lang->field_required, "required", $profilefield['required']);
+	makeyesnocode($lang->field_editable, "editable", $profilefield['editable']);
+	makeyesnocode($lang->field_hidden, "hidden", $profilefield['hidden']);
 	endtable();
 	endform($lang->edit_field, $lang->reset_button);
 	cpfooter();
@@ -216,5 +217,4 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	endtable();
 	cpfooter();
 }
-
 ?>
