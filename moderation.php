@@ -105,7 +105,7 @@ switch($mybb->input['action'])
 			$thread['closed'] = "yes";
 			$redirect = $lang->redirect_closethread;
 		}
-		if($openclose == "open")
+		if($openclose == "opened")
 		{
 			$openclose = $lang->opened;
 		}
