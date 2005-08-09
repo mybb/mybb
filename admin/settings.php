@@ -312,7 +312,10 @@ if($mybb->input['action'] == "do_modify") {
 	while(list($gid, $order) = each($mybb->input['dispordercats'])) {
 		$db->query("UPDATE ".TABLE_PREFIX."settinggroups SET disporder='$order' WHERE gid='$gid'");
 	}
-	echo $lang->setting_group_orders_updated;
+	starttable();
+	tableheader($lang->cp_message_header);
+	makelabelcode($lang->setting_group_orders_updated);
+	endtable();
 	$noheader = 1;
 	$mybb->input['action'] = "modify";
 }
