@@ -1292,9 +1292,10 @@ function gzipencode($contents, $level=1)
 
 function logmod($data, $action="")
 {
-	global $mybb, $mybbuser, $db, $ipaddress;
+	global $mybb, $mybbuser, $db, $session;
+	
 	$time = time();
-	$db->query("INSERT INTO ".TABLE_PREFIX."moderatorlog (uid,dateline,fid,tid,action,ipaddress) VALUES ('".$mybb->user['uid']."','$time','".$data['fid']."','".$data['tid']."','$action','$ipaddress')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."moderatorlog (uid,dateline,fid,tid,action,ipaddress) VALUES ('".$mybb->user['uid']."','$time','".$data['fid']."','".$data['tid']."','$action','".$session->ipaddress."')");
 }
 
 function getreputation($reputation, $alt="")
