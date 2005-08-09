@@ -82,7 +82,7 @@ if($mybb->input['action'] == "cache")
 	echo "<td class=\"subheader\" align=\"center\">$lang->size</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" colspan=\"2\">$lang->options</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT title, template FROM ".TABLE_PREFIX."datacache");
+	$query = $db->query("SELECT title,cache FROM ".TABLE_PREFIX."datacache");
 	while($cacheitem = $db->fetch_array($query))
 	{
 		$size = getfriendlysize(strlen($cacheitem['cache']));
