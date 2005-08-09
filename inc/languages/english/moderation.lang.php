@@ -94,4 +94,5 @@ $l['multi_unapprove_posts'] = "Selected Posts Unapproved";
 $l['multi_stuck_threads'] = "Threads Stuck";
 $l['multi_unstuck_threads'] = "Threads Unstuck";
 $l['multi_moved_threads'] = "Threads Moved";
+$l['multi_copied_threads'] = "Threads Copied";
 ?>
