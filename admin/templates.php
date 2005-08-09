@@ -347,6 +347,28 @@ if($mybb->input['action'] == "search") {
 	endform($lang->find_replace, $lang->reset_button);
 	cpfooter();
 }
+if($mybb->input['action'] == "diff")
+{
+	// Compares a template of sid1 with that of sid2, if no sid1, it is assumed -2
+	if(!$mybb->input['sid1'])
+	{
+		$mybb->input['sid1'] = -2;
+	}
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$mybb->input['title']."' AND sid='".$mybb->input['sid1']."'");
+	$template1 = $db->fetch_array($query);
+	$template1['template'] = explode("\n", $template1['template']);
+
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$mybb->input['title']."' AND sid='".$mybb->input['sid2']."'");
+	$template2 = $db->fetch_array($query);
+	$template2['template'] = explode("\n", $template2['template']);
+
+	require "./inc/class_diff.php";
+
+	$diff = &new Text_Diff($template1['template'], $template2['template']);
+	$renderer = &new Text_Diff_Renderer_inline();
+	echo $renderer->render($diff);
+}
+
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 
 	if(!$noheader) {
