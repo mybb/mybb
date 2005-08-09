@@ -103,7 +103,7 @@ while($thread = $db->fetch_array($query))
 			{
 				$description .= "\n<br />".$thread['postmessage'];
 			}
-			echo "\t\t\t<description><![CDATA[".$description."]]></description>".;
+			echo "\t\t\t<description><![CDATA[".$description."]]></description>";
 			echo "\t\t\t<link>".$mybb->settings['bburl']."/showthread.php?tid=".$thread['tid']."&amp;action=newpost</link>\n";
 			echo "\t\t\t<category domain=\"".$mybb->settings['bburl']."/forumdisplay.php?fid=".$thread['fid']."\">".$thread['forumname']."</category>\n";
 			echo "\t\t\t<pubDate>".$pubdate."</pubDate>\n";
@@ -118,7 +118,7 @@ while($thread = $db->fetch_array($query))
 			{
 				$description .= "\n<br />".$thread['postmessage'];
 			}
-			echo "\t\t\t<description><![CDATA[".$description."]]></description>".;
+			echo "\t\t\t<description><![CDATA[".$description."]]></description>";
 			echo "\t\t\t<link>".$mybb->settings['bburl']."/showthread.php?tid=".$thread['tid']."&amp;action=newpost</link>\n";
 			echo "\t\t</item>\n";
 			break;
