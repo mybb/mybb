@@ -63,7 +63,7 @@ switch($mybb->input['type'])
 	case "rss2.0":
 		header("Content-Type: text/xml");	
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-		echo "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:wfw=\"http://wellformedweb.org/CommentAPI/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
+		echo "<rss version=\"2.0\">\n";
 		echo "\t<channel>\n";
 		echo "\t\t<title>".$title."</title>\n";
 		echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
