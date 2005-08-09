@@ -374,6 +374,24 @@ elseif($mybb->input['action'] == "finduser")
 	$sid = $db->insert_id();
 	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
 }
+elseif($mybb->input['action'] == "finduserthreads")
+{
+	$wheresql = "1=1";
+	$wheresql .= " AND t.uid='".intval($mybb->input['uid'])."'";
+	$searcharray = array(
+		"sid" => "NULL",
+		"uid" => $mybb->user['uid'],
+		"dateline" => time(),
+		"ipaddress" => $ipaddress,
+		"wheresql" => addslashes($wheresql),
+		"lookin" => "p.message",
+		"showposts" => 1
+		);
+	$plugins->run_hooks("search_do_search_process");
+	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+	$sid = $db->insert_id();
+	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
+}
 elseif($mybb->input['action'] == "getnew")
 {
 	if(!$mybb->input['days'] < 1)

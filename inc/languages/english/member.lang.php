@@ -39,6 +39,7 @@ $l['lastvisit'] = "Last Visit";
 $l['total_posts'] = "Total Posts:";
 $l['ppd_percent_total'] = "{1} posts per day | {2} percent of total posts";
 $l['find_posts'] = "Find All Posts";
+$l['find_threads'] = "Find Created Threads";
 $l['rating'] = "Rating:";
 $l['users_contact_details'] = "{1}'s Contact Details";
 $l['homepage'] = "Homepage:";

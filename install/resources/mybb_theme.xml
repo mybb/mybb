@@ -2346,7 +2346,7 @@ $awaybit
 </tr>
 <tr>
 <td class="trow1"><strong>$lang->total_posts</strong></td>
-<td class="trow1">$memprofile[postnum] ($lang->ppd_percent_total)<br /><span class="smalltext">(<a href="search.php?action=finduser&amp;uid=$uid">$lang->find_posts</a>)</span></td>
+<td class="trow1">$memprofile[postnum] ($lang->ppd_percent_total)<br /><span class="smalltext">(<a href="search.php?action=finduser&amp;uid=$uid">$lang->find_posts</a>) (<a href="search.php?action=finduserthreads&amp;uid=$uid">$lang->find_threads</a>)</span></td>
 </tr>
 <tr>
 <td class="trow2"><strong>$lang->timeonline</strong></td>

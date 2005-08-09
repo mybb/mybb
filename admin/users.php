@@ -1048,19 +1048,29 @@ if($mybb->input['action'] == "findips")
 	$lang->ip_addresses_user = sprintf($lang->ip_addresses_user, $user['username']);
 	tableheader($lang->ip_addresses_user, "");
 	tablesubheader($lang->reg_ip, "");
-	echo "<tr>\n<td class=\"$bgcolor\" width=\"40%\">$user[regip]</td>\n";
-	echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$user[regip]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$user[regip]');\" class=\"submitbutton\">";
-	echo "</td>\n</tr>\n";
+	if(!empty($user['regip']))
+	{
+		echo "<tr>\n<td class=\"$bgcolor\" width=\"40%\">$user[regip]</td>\n";
+		echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$user[regip]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$user[regip]');\" class=\"submitbutton\">";
+		echo "</td>\n</tr>\n";
+	}
+	else
+	{
+		makelabelcode($lang->error_no_ips, "", 2);
+	}
 	tablesubheader($lang->post_ip);
 	$query = $db->query("SELECT DISTINCT ipaddress FROM ".TABLE_PREFIX."posts WHERE uid='$uid'");
 	if($db->num_rows($query) > 0)
 	{
 		while($row = $db->fetch_array($query))
 		{
-		$bgcolor = getaltbg();
-		echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$row[ipaddress]</td>\n";
-		echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\">";
-		echo "</td>\n</tr>\n";
+			if(!empty($row['ipaddress']))
+			{
+				$bgcolor = getaltbg();
+				echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$row[ipaddress]</td>\n";
+				echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\">";
+				echo "</td>\n</tr>\n";
+			}
 		}
 	}
 	else
@@ -1340,13 +1350,13 @@ if($mybb->input['action'] == "find")
 	}
 	if($search['regip'])
 	{
-		$search['regip'] = intval($search['regip']);
-		$conditions .= " AND regip LIKE '%$search[regip]%'";
+		$search['regip'] = addslashes($search['regip']);
+		$conditions .= " AND regip LIKE '$search[regip]%'";
 	}
 	if($search['postip'])
 	{
 		$search['postip'] = addslashes($search['postip']);
-		$query = $db->query("SELECT DISTINCT uid FROM ".TABLE_PREFIX."posts WHERE ipaddress LIKE '%$search[postip]%'");
+		$query = $db->query("SELECT DISTINCT uid FROM ".TABLE_PREFIX."posts WHERE ipaddress LIKE '$search[postip]%'");
 		$uids = ',';
 		while($u = $db->fetch_array($query))
 		{
