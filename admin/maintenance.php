@@ -97,6 +97,10 @@ if($mybb->input['action'] == "cache")
 		{
 			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"submit\" name=\"refresh\" value=\"$lang->refresh_cache\" class=\"submitbutton\"></td>";
 		}
+		else
+		{
+			echo "<td class=\"$bgcolor\">&nbsp;</td>";
+		}
 		echo "</tr>\n";
 		endform();
 	}
