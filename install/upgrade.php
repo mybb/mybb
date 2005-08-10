@@ -96,9 +96,9 @@ else
 		$dh = opendir("./resources");
 		while(($file = readdir($dh)) !== false)
 		{
-			if(preg_match("#upgrade([0-9]+).php$#i", $file))
+			if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))
 			{
-				$upgradescripts[] = $file;
+				$upgradescripts[$match1] = $file;
 			}
 		}
 		closedir($dh);
@@ -168,13 +168,13 @@ function upgradethemes()
 	if($revertalltemplates)
 	{
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templates;");
-		$db->query("CREATE TABLE ".TABLE_PREFIX."templates (
-		   tid smallint(6) NOT NULL auto_increment,
-		   title varchar(120) NOT NULL,
-		   template text NOT NULL,
-		   sid smallint(6) NOT NULL,
-		   PRIMARY KEY (tid)
-		);");
+		$db->query("CREATE TABLE mybb_templates (
+		  tid int unsigned NOT NULL auto_increment,
+		  title varchar(120) NOT NULL default '',
+		  template text NOT NULL,
+		  sid int(10) NOT NULL default '0',
+		  PRIMARY KEY  (tid)
+		) TYPE=MyISAM;");
 	}
 	else
 	{
@@ -184,10 +184,10 @@ function upgradethemes()
 	if($revertallthemes)
 	{
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."themes");
-		$db->query("CREATE TABLE ".TABLE_PREFIX."themes (
-		  tid smallint(6) NOT NULL auto_increment,
+		$db->query("CREATE TABLE mybb_themes (
+		  tid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
-		  pid smallint(6) NOT NULL default '0',
+		  pid smallint unsigned NOT NULL default '0',
 		  def smallint(1) NOT NULL default '0',
 		  css text NOT NULL,
 		  cssbits text NOT NULL,

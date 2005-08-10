@@ -1,41 +1,63 @@
-MyBB Preview Release 1 (Version released to testers) to MyBB Preview Release 1 (Latest code) Upgrade Instructions
------
+<?php
+/**
+ * MyBB 1.0
+ * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.com
+ * License: http://www.mybboard.com/eula.html
+ *
+ * $$
+ */
 
-Please keep this file updated
+/**
+ * Upgrade Script: PR1 (Released to Testers) to Latest PR1
+ */
 
-----
--> Drop templates/themes table again
--> Import themes/templates
--> MySQL Queries to run:
+function upgrade3_dbchanges()
+{
+	global $db, $output;
 
-$db->query("UPDATE mybb_users SET salt='';");
-$db->query("INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (113, 'decpoint', 'Decimal Point', 'The decimal point you use in your region.', 'text', '.', 1, 1);");
-$db->query("INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (114, 'thousandssep', 'Thousands Numeric Separator', 'The punctuation you want to use .  (for example, the setting \',\' with the number 1200 will give you a number such as 1,200)', 'text', ',', 1, 1);");
-$db->query("INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (115, 'showvernum', 'Show Version Numbers', 'Allows you to turn off the public display of version numbers in MyBB.', 'onoff', 'off', 1, 1);");
+	$output->print_header("Update Process");
+	echo "Modifying database...";
+	$db->query("UPDATE mybb_users SET salt='';");
+	$db->query("INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (113, 'decpoint', 'Decimal Point', 'The decimal point you use in your region.', 'text', '.', 1, 1);");
+	$db->query("INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (114, 'thousandssep', 'Thousands Numeric Separator', 'The punctuation you want to use .  (for example, the setting \',\' with the number 1200 will give you a number such as 1,200)', 'text', ',', 1, 1);");
+	$db->query("INSERT INTO mybb_settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (115, 'showvernum', 'Show Version Numbers', 'Allows you to turn off the public display of version numbers in MyBB.', 'onoff', 'off', 1, 1);");
 
-$db->query("ALTER TABLE mybb_users ADD loginkey varchar(50) NOT NULL AFTER salt;");
-$db->query("ALTER TABLE mybb_threads ADD firstpost int unsigned NOT NULL default '0' AFTER dateline;");
-$db->query("DROP TABLE mybb_online;");
-$db->query("CREATE TABLE mybb_sessions (
-	  sid varchar(32) NOT NULL default '',
-	  uid int unsigned NOT NULL default '0',
-	  ip varchar(40) NOT NULL default '',
-	  time bigint(30) NOT NULL default '0',
-	  location varchar(150) NOT NULL default '',
-	  useragent varchar(100) NOT NULL default '',
-	  anonymous int(1) NOT NULL default '0',
-	  nopermission int(1) NOT NULL default '0',
-	  location1 int(10) NOT NULL default '0',
-	  location2 int(10) NOT NULL default '0',
-	  PRIMARY KEY(sid),
-	  KEY location1 (location1),
-	  KEY location2 (location2)
-	);");
-$db->query("CREATE TABLE mybb_datacache (
-  title varchar(15) NOT NULL default '',
-  cache mediumtext NOT NULL,
-  PRIMARY KEY(title)
-) TYPE=MyISAM;");
+	$db->query("ALTER TABLE mybb_users ADD loginkey varchar(50) NOT NULL AFTER salt;");
+	$db->query("ALTER TABLE mybb_threads ADD firstpost int unsigned NOT NULL default '0' AFTER dateline;");
+	$db->query("DROP TABLE mybb_online;");
+	$db->query("CREATE TABLE mybb_sessions (
+		  sid varchar(32) NOT NULL default '',
+		  uid int unsigned NOT NULL default '0',
+		  ip varchar(40) NOT NULL default '',
+		  time bigint(30) NOT NULL default '0',
+		  location varchar(150) NOT NULL default '',
+		  useragent varchar(100) NOT NULL default '',
+		  anonymous int(1) NOT NULL default '0',
+		  nopermission int(1) NOT NULL default '0',
+		  location1 int(10) NOT NULL default '0',
+		  location2 int(10) NOT NULL default '0',
+		  PRIMARY KEY(sid),
+		  KEY location1 (location1),
+		  KEY location2 (location2)
+		);");
+	$db->query("CREATE TABLE mybb_datacache (
+	  title varchar(15) NOT NULL default '',
+	  cache mediumtext NOT NULL,
+	  PRIMARY KEY(title)
+	) TYPE=MyISAM;");
+
+	echo "Done. Click Next.";
+	$output->print_footer("3_dbchanges2");
+}
+
+function upgrade3_dbchanges2()
+{
+	global $db, $output;
+
+	$output->print_header("More Database Modifications");
+	echo "Be patient, this page could take a while to complete depending on the size of your forums...";
 
 $db->query("ALTER TABLE mybb_adminlog CHANGE uid uid int unsigned NOT NULL;");
 	
@@ -208,4 +230,11 @@ $db->query("ALTER TABLE mybb_usertitles CHANGE utid utid smallint unsigned NOT N
 $db->query("ALTER TABLE mybb_usertitles CHANGE posts posts int unsigned NOT NULL;");
 $db->query("ALTER TABLE mybb_usertitles CHANGE stars stars smallint(4) NOT NULL;");
 
---
+	echo "Done";
+	echo "<br /><br />Click Next.";
+	echo "<p><font color=\red\"><b>WARNING:</font> The next step will delete any custom themes or templates you have! Please back them up before continuing!</p>";
+	$output->print_footer("templates");
+}
+
+
+?>
