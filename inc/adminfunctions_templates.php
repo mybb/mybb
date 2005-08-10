@@ -26,7 +26,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $case
 	}
 	if($autocreate != 1)
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$title' AND sid='-2';
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$title' AND sid='-2'");
 		$master = $db->fetch_array($query);
 		$master['template'] = addslashes($function($find, $replace, $master['template']));
 	}
