@@ -109,7 +109,7 @@ if($mybb->input['action'] == "do_addset") {
 		"sid" => "NULL",
 		"title" => addslashes($mybb->input['title'])
 		);
-	$db->insert_query(TABLE_PREFIX."templatesets");
+	$db->insert_query(TABLE_PREFIX."templatesets", $newset);
 	$setid = $db->insert_id();
 	cpredirect("templates.php?expand=$setid", $lang->set_added);
 }
