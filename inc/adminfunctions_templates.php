@@ -25,7 +25,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $case
 	{
 		$function = "str_replace";
 	}
-	if($autocreate != 1)
+	if($autocreate != 0)
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$title' AND sid='-2'");
 		$master = $db->fetch_array($query);
@@ -40,7 +40,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $case
 			$updatetemp = array("template" => addslashes($template['template']));
 			$db->update_query(TABLE_PREFIX."templates", $updatetemp, "tid='".$template['tid']."'");
 		}
-		elseif($autocreate != 1) // No template exists, create it based off master
+		elseif($autocreate != 0) // No template exists, create it based off master
 		{
 			$newtemp = array(
 				"tid" => "NULL",
