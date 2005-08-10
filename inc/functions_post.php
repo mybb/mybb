@@ -496,7 +496,7 @@ function makepostbit($post, $pmprevann=0)
 		}
 		for($i = 0; $i < $post['stars']; $i++)
 		{
-			$post['userstars'] .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
+			$post['userstars'] .= "<img src=\"".$post['starimage']."\" border=\"0\" alt=\"*\" />";
 		}
 		if($post['userstars'] && $post['starimage'] && $post['stars'])
 		{
