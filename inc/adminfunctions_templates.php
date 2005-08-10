@@ -16,6 +16,7 @@
 //
 function find_replace_templatesets($title, $find, $replace, $autocreate=1, $casesensitive=1)
 {
+	global $db;
 	if($casesensitive != 1)
 	{
 		$function = "stri_replace";
@@ -30,7 +31,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $case
 		$master = $db->fetch_array($query);
 		$master['template'] = addslashes($function($find, $replace, $master['template']));
 	}
-	$query = $db->query("SELECT s.sid, t.template, t.tid FROM ".TABLE_PREFIX."templatesets s LEFT JOIN ".TABLE_PREFIX."templates ON (t.title='$title' AND t.sid=s.sid)");
+	$query = $db->query("SELECT s.sid, t.template, t.tid FROM ".TABLE_PREFIX."templatesets s LEFT JOIN ".TABLE_PREFIX."templates t ON (t.title='$title' AND t.sid=s.sid)");
 	while($template = $db->fetch_array($query))
 	{
 		if($template['template']) // Custom template exists for this group
