@@ -283,7 +283,7 @@ if(is_array($bannedips))
 			if(strstr("$ipaddress", $bannedip))
 			{
 				error($lang->error_banned);
-				$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE ip='$ipaddress' OR uid='$mybb[uid]'");
+				$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE ip='$ipaddress' OR uid='$mybb[uid]'");
 			}
 		}
 	}

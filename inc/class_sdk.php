@@ -119,7 +119,7 @@ class MyBB {
 	function onlineUsers()
 	{
 		$timesearch = time() - $this->settings['wolcutoff'];
-		$query = $this->db->query("SELECT DISTINCT o.ip, o.uid, o.time, o.location, u.username, u.invisible, u.usergroup, g.namestyle FROM ".TABLE_PREFIX."online o LEFT JOIN ".TABLE_PREFIX."users u ON (o.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE o.time>'$timesearch' ORDER BY u.username ASC, o.time DESC");
+		$query = $db->query("SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY u.username ASC, s.time DESC");
 		while($user = $this->db->fetch_array($query))
 		{
 			if($user['uid'] > 0)
