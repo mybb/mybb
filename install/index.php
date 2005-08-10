@@ -715,8 +715,8 @@ function create_admin_user()
 			<td class="talt1"><input type="password" name="adminpass2" value="" autocomplete="off"  /></td>
 		</tr>
 		<tr>
-			<td class="talt1">Email Address:</td>
-			<td class="talt1"><input type="text" name="adminemail" value="$adminemail" /></td>
+			<td class="talt2">Email Address:</td>
+			<td class="talt2"><input type="text" name="adminemail" value="$adminemail" /></td>
 		</tr>
 	</table>
 
