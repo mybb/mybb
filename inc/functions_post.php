@@ -772,7 +772,7 @@ function makepostbit($post, $pmprevann=0)
 	{
 		$post['username'] = formatname($post['username'], $post['usergroup'], $post['displaygroup']); // Set the style for the username
 	}
-	$GLOBALS['post'] = $post;
+	$GLOBALS['post'] =& $post;
 	if(!$pmprevann)
 	{
 		eval("\$post['seperator'] = \"".$templates->get("postbit_seperator")."\";");
