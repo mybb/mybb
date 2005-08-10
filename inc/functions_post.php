@@ -353,7 +353,12 @@ function dophpcode($str)
 
 function makepostbit($post, $pmprevann=0)
 {
-	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter, $titlescache, $page, $templates, $forumpermissions, $attachcache, $lang, $ismod, $inlinecookie, $inlinecount, $HTTP_COOKIE_VARS, $groupscache, $fid, $plugins;
+	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter, $titlescache, $page, $templates;
+	global $forumpermissions, $attachcache, $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
+	global $plugins;
+
+	$GLOBALS['post'] = $post;
+
 	if($post['visible'] == 0 && $pmprevann == 0)
 	{
 		$altbg = "trow_shaded";
@@ -406,8 +411,8 @@ function makepostbit($post, $pmprevann=0)
 	$postcounter++;
 
 	// Format the post date and time using mydate
-	$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
-	$posttime = mydate($mybb->settings['timeformat'], $post['dateline']);
+	$post['postdate'] = mydate($mybb->settings['dateformat'], $post['dateline']);
+	$post['posttime'] = mydate($mybb->settings['timeformat'], $post['dateline']);
 
 	// Dont want any little 'nasties' in the subject
 	$post['subject'] = htmlspecialchars_uni(dobadwords($post['subject']));
@@ -451,18 +456,21 @@ function makepostbit($post, $pmprevann=0)
 			$language = $mybb->settings['bblanguage'];
 		}
 		$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
-		eval("\$groupimage = \"".$templates->get("postbit_groupimage")."\";");
+		eval("\$post['groupimage'] = \"".$templates->get("postbit_groupimage")."\";");
 	}
 
 	if($post['userusername'])
 	{ // This post was made by a registered user
 
 		$post['username'] = $post['userusername'];
-
-		if($usergroup['usertitle'] != "")
+		if($post['usertitle'])
 		{
-			$usertitle = $usergroup['usertitle'];
-			$stars = $usergroup['stars'];
+			$hascustomtitle = 1;
+		}
+		if($usergroup['usertitle'] != "" && $post['usertitle'] == "")
+		{
+			$post['usertitle'] = $usergroup['usertitle'];
+			$post['stars'] = $usergroup['stars'];
 		}
 		elseif(is_array($titlescache))
 		{
@@ -471,29 +479,28 @@ function makepostbit($post, $pmprevann=0)
 			{
 				if($post['postnum'] >= $key)
 				{
-					$usertitle = $titleinfo['title'];
-					$stars = $titleinfo['stars'];
-					$starimage = $titleinfo['starimage'];
+					if(!$hascustomtitle)
+					{
+						$post['usertitle'] = $titleinfo['title'];
+					}
+					$post['stars'] = $titleinfo['stars'];
+					$post['starimage'] = $titleinfo['starimage'];
 					break;
 				}
 			}
 		}
 		
-		if(!$starimage)
+		if(!$post['starimage'])
 		{
-			$starimage = $usergroup['starimage'];
+			$post['starimage'] = $usergroup['starimage'];
 		}
-		for($i = 0; $i < $stars; $i++)
+		for($i = 0; $i < $post['stars']; $i++)
 		{
-			$userstars .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
+			$post['userstars'] .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
 		}
-		if($userstars && $starimage && $stars)
+		if($post['userstars'] && $post['starimage'] && $post['stars'])
 		{
-			$userstars .= "<br />";
-		}
-		if($post['usertitle'] != "")
-		{
-			$usertitle = $post['usertitle'];
+			$post['userstars'] .= "<br />";
 		}
 		$post['postnum'] = mynumberformat($post['postnum']);
 		
@@ -501,50 +508,50 @@ function makepostbit($post, $pmprevann=0)
 		$timecut = time() - $mybb->settings['wolcutoff'];
 		if($post['lastactive'] > $timecut && ($post['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes") && $post['lastvisit'] != $post['lastactive'])
 		{
-			eval("\$onlinestatus = \"".$templates->get("postbit_online")."\";");
+			eval("\$post['onlinestatus'] = \"".$templates->get("postbit_online")."\";");
 		}
 		else
 		{
 			if($post['away'] == "yes" && $mybb->settings['allowaway'] != "no")
 			{
-				eval("\$onlinestatus = \"".$templates->get("postbit_away")."\";");
+				eval("\$post['onlinestatus'] = \"".$templates->get("postbit_away")."\";");
 			}
 			else
 			{
-				eval("\$onlinestatus = \"".$templates->get("postbit_offline")."\";");
+				eval("\$post['onlinestatus'] = \"".$templates->get("postbit_offline")."\";");
 			}
 		}
 
 		if($post['avatar'] != "" && $mybb->user['showavatars'] != "no")
 		{
 			$post['avatar'] = htmlspecialchars_uni($post['avatar']);
-			eval("\$avatar = \"".$templates->get("postbit_avatar")."\";");
+			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
 		}
 		else
 		{
-			$avatar = "";
+			$post['useravatar'] = "";
 		}
-		eval("\$profile = \"".$templates->get("postbit_profile")."\";");
-		eval("\$find = \"".$templates->get("postbit_find")."\";");
-		eval("\$pm = \"".$templates->get("postbit_pm")."\";");
+		eval("\$post['button_profile'] = \"".$templates->get("postbit_profile")."\";");
+		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
+		eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
 		if($post['website'] != "")
 		{
 			$post['website'] = htmlspecialchars_uni($post['website']);
-			eval("\$www = \"".$templates->get("postbit_www")."\";");
+			eval("\$post['button_www'] = \"".$templates->get("postbit_www")."\";");
 		}
 		else
 		{
-			$www = "";
+			$post['button_www'] = "";
 		}
 		if($post['hideemail'] == "no")
 		{
-			eval("\$email = \"".$templates->get("postbit_email")."\";");
+			eval("\$post['button_email'] = \"".$templates->get("postbit_email")."\";");
 		}
 		else
 		{
-			$email = "";
+			$$post['button_email'] = "";
 		}
-		$regdate = mydate($mybb->settings['regdateformat'], $post['regdate']);
+		$post['userregdate'] = mydate($mybb->settings['regdateformat'], $post['regdate']);
 
 		// Work out the reputation this user has
 		if($post['usereputationsystem'] != "no")
@@ -553,17 +560,17 @@ function makepostbit($post, $pmprevann=0)
 			{
 				if(!$pmprevann)
 				{
-					$neglink = "<a href=\"javascript:reputation(".$post['pid'].", 'n');\"><img src=\"".$theme['imgdir']."/rep_neg.gif\" border=\"0\"></a>";
-					$poslink = "<a href=\"javascript:reputation(".$post['pid'].", 'p');\"><img src=\"".$theme['imgdir']."/rep_pos.gif\" border=\"0\"></a>";
+					$post['neglink'] = "<a href=\"javascript:reputation(".$post['pid'].", 'n');\"><img src=\"".$theme['imgdir']."/rep_neg.gif\" border=\"0\"></a>";
+					$post['poslink'] = "<a href=\"javascript:reputation(".$post['pid'].", 'p');\"><img src=\"".$theme['imgdir']."/rep_pos.gif\" border=\"0\"></a>";
 				}
 				else
 				{
-					$neglink = "";
-					$poslink = "";
+					$post['neglink'] = "";
+					$post['poslink'] = "";
 				}
 			}
-			$reputation = getreputation($post['reputation']);
-			eval("\$replink = \"".$templates->get("postbit_reputation")."\";");
+			$post['userreputation'] = getreputation($post['reputation']);
+			eval("\$post['replink'] = \"".$templates->get("postbit_reputation")."\";");
 		}
 	}
 	else
@@ -571,45 +578,44 @@ function makepostbit($post, $pmprevann=0)
 		$post['username'] = $post['username'];
 		if($usergroup['usertitle'])
 		{
-			$usertitle = $usergroup['usertitle'];
-			$usergroup = $lang->na;
+			$postbit['usertitle'] = $usergroup['usertitle'];
+			$postbit['usergroup'] = $lang->na;
 		}
 		else
 		{
-			$usertitle = $lang->guest;
+			$postbit['usertitle'] = $lang->guest;
 		}
 
-	    $regdate = $lang->na;
+	    $postbit['userregdate'] = $lang->na;
 	    $post['postnum'] = $lang->na;
-		$profile = "";
-		$email = "";
-		$www = "";
-		$signature = "";
-		$pm = "";
-		$find = "";
-		$style = "";
-		$onlinestatus = $lang->unknown;
-		$repbit = "";
+		$post['button_profile'] = "";
+		$post['button_email'] = "";
+		$post['button_www'] = "";
+		$post['signature'] = "";
+		$post['button_pm'] = "";
+		$post['button_find'] = "";
+		$post['onlinestatus'] = $lang->unknown;
+		$post['replink'] = "";
 	}
 	if(!$pmprevann)
 	{
 		if($post['edituid'] != "" && $post['edittime'] != "" && $post['editusername'] != "")
 		{
-			$editdate = mydate($mybb->settings['dateformat'], $post['edittime']);
-			$edittime = mydate($mybb->settings['timeformat'], $post['edittime']);
-			$editnote = sprintf($lang->postbit_edited, $editdate, $edittime);
-			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
+			$post['editdate'] = mydate($mybb->settings['dateformat'], $post['edittime']);
+			$post['edittime'] = mydate($mybb->settings['timeformat'], $post['edittime']);
+			$editnote = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
+			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
-		eval("\$edit = \"".$templates->get("postbit_edit")."\";");
+		eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		// Quick Delete button
 		if((ismod($fid, "candeleteposts") == "yes" || $mybb->user['uid'] == $post['uid']) && $mybb->user['uid'] != 0)
 		{
-			eval("\$quickdelete = \"".$templates->get("postbit_quickdelete")."\";");
+			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
 		}
 		// Inline moderation stuff
 		if($ismod)
 		{
-			if(strstr($HTTP_COOKIE_VARS[$inlinecookie], "|".$post['pid']."|"))
+			if(strstr($_COOKIE[$inlinecookie], "|".$post['pid']."|"))
 			{
 				$inlinecheck = "checked=\"checked\"";
 				$inlinecount++;
@@ -618,7 +624,7 @@ function makepostbit($post, $pmprevann=0)
 			{
 				$inlinecheck = "";
 			}
-			eval("\$inlinecheck = \"".$templates->get("postbit_inlinecheck")."\";");
+			eval("\$post['inlinecheck'] = \"".$templates->get("postbit_inlinecheck")."\";");
 			if($post['visible'] == 0)
 			{
 				$invisiblepost = 1;
@@ -626,33 +632,33 @@ function makepostbit($post, $pmprevann=0)
 		}
 		else
 		{
-			$inlinecheck = "";
+			$post['inlinecheck'] = "";
 		}
-		eval("\$posturl = \"".$templates->get("postbit_posturl")."\";");
-		eval("\$quote = \"".$templates->get("postbit_quote")."\";");
+		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
+		eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		if($mybb->user['uid'] != "0")
 		{
-			eval("\$report = \"".$templates->get("postbit_report")."\";");
+			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
 		}
 
 		if($mybb->settings['logip'] != "no")
 		{
 			if($mybb->settings['logip'] == "show")
 			{
-				eval("\$iplogged = \"".$templates->get("postbit_iplogged_show")."\";");
+				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_show")."\";");
 			}
 			else if($mybb->settings['logip'] == "hide" && $ismod)
 			{
-				eval("\$iplogged = \"".$templates->get("postbit_iplogged_hiden")."\";");
+				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_hiden")."\";");
 			}
 			else
 			{
-				$iplogged = "";
+				$post['iplogged'] = "";
 			}
 		}
 		else
 		{
-				$iplogged = "";
+				$post['iplogged'] = "";
 		}
 
 	}
@@ -693,12 +699,12 @@ function makepostbit($post, $pmprevann=0)
 					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes")
 					{
 						// Image is small enough to show - no thumbnail
-						eval("\$imagelist .= \"".$templates->get("postbit_attachments_images_image")."\";");
+						eval("\$attbit .= \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
 					elseif($forumpermissions['candlattachments'] == "yes")
 					{
 						// Show standard link to attachment
-						eval("\$attachmentlist .= \"".$templates->get("postbit_attachments_attachment")."\";");
+						eval("\$attbit .= \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
 					$post['message'] = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $post['message']);
 				}
@@ -706,7 +712,7 @@ function makepostbit($post, $pmprevann=0)
 				{
 					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes")
 					{ // We have a thumbnail to show
-						eval("\$thumblist .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
+						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
 						{
 							$thumblist .= "<br />";
@@ -717,11 +723,11 @@ function makepostbit($post, $pmprevann=0)
 					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes")
 					{
 						// Image is small enough to show - no thumbnail
-						eval("\$imagelist .= \"".$templates->get("postbit_attachments_images_image")."\";");
+						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
 					elseif($forumpermissions['candlattachments'] == "yes")
 					{
-						eval("\$attachmentlist .= \"".$templates->get("postbit_attachments_attachment")."\";");
+						eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
 				}
 			}
@@ -730,44 +736,46 @@ function makepostbit($post, $pmprevann=0)
 				$validationcount++;
 			}
 		}
-		if($thumblist)
+		if($post['thumblist'])
 		{
-			eval("\$attachedthumbs = \"".$templates->get("postbit_attachments_thumbnails")."\";");
+			eval("\$postg['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
 		}
-		if($imagelist)
+		if($post['imagelist'])
 		{
-			eval("\$attachedimages = \"".$templates->get("postbit_attachments_images")."\";");
+			eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
 		}
-		if($attachmentlist || $thumblist || $imagelist)
+		if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
 		{
-			eval("\$attachments = \"".$templates->get("postbit_attachments")."\";");
+			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
 		}
 	}
 
 	if($post['includesig'] != "no" && $post['username'] && $post['signature'] != "" && $mybb->user['showsigs'] != "no")
 	{
 		$post['signature'] = postify(stripslashes($post['signature']), $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);
-		eval("\$signature = \"".$templates->get("postbit_signature")."\";");
+		eval("\$post['signature'] = \"".$templates->get("postbit_signature")."\";");
+	}
+	else
+	{
+		$post['signature'] = "";
 	}
 
 	if($post['iconpath'])
 	{
-		$icon = "<img src=\"".$post['iconpath']."\" alt=\"".$post['iconname']."\">&nbsp;";
+		$post['icon'] = "<img src=\"".$post['iconpath']."\" alt=\"".$post['iconname']."\">&nbsp;";
 	}
 	else
 	{
-		$icon = "";
+		$post['icon'] = "";
 	}
 	if(stripos($usergroup['namestyle'], "{username}") !== false)
 	{
 		$post['username'] = formatname($post['username'], $post['usergroup'], $post['displaygroup']); // Set the style for the username
 	}
-	if($pmprevann != 2)
-	{
-	}
+	$GLOBALS['post'] = $post;
 	if(!$pmprevann)
 	{
-		eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
+		eval("\$post['seperator'] = \"".$templates->get("postbit_seperator")."\";");
 		$plugins->run_hooks("postbit");
 	}
 	elseif($pmprevann == 1)

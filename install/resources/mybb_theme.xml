@@ -2346,7 +2346,7 @@ $awaybit
 </tr>
 <tr>
 <td class="trow1"><strong>$lang->total_posts</strong></td>
-<td class="trow1">$memprofile[postnum] ($lang->ppd_percent_total)<br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid=$uid">$lang->find_threads</a> &mdash; <a href="search.php?action=finduser&amp;uid=$uid">$lang->find_posts</a>)</span></td>
+<td class="trow1">$memprofile[postnum] ($lang->ppd_percent_total)<br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid=$uid">$lang->find_threads</a> &mdash; <a href="search.php?action=finduser&amp;uid=$uid">$lang->find_posts</a>)</span></td>  
 </tr>
 <tr>
 <td class="trow2"><strong>$lang->timeonline</strong></td>
@@ -3683,36 +3683,37 @@ $announcements]]></template>
 <td class="$altbg" width="155" valign="top" nowrap="nowrap" align="center"><a name="pid$post[pid]"></a>
 <strong><span class="largetext"><a href="member.php?action=profile&amp;uid=$post[uid]">$post[username]</a></span></strong><br />
 <span class="smalltext">
-$usertitle<br />
-$userstars
-$groupimage<br />
-$avatar<br />
+$post[usertitle]<br />
+$post[userstars]
+$post[groupimage]<br />
+$post[useravatar]<br />
 $lang->postbit_posts $post[postnum]<br />
 $lang->postbit_group $usergroup[title]<br />
-$lang->postbit_joined $regdate<br />
+$lang->postbit_joined $post[userregdate]<br />
 $lang->postbit_status $onlinestatus$replink<br />
 </span>
 </td>
 <td class="$altbg" width="100%" valign="top">
 <table width="100%">
-<tr><td class="trow">$posturl$icon<span class="smalltext"><strong> $post[subject]</strong></span>
+<tr><td class="trow">$post[posturl]$post[icon]<span class="smalltext"><strong> $post[subject]</strong></span>
 <p>$post[message]</p>
-$attachments
-$signature
+$post[attachments]
+$post[signature]
 <div style="text-align: right; vertical-align: bottom;">
-$editedmsg
-$iplogged
+$post[editedmsg]
+$post[iplogged]
 </div>
 </td></tr>
 </table>
 </td>
 </tr>
 <tr>
-<td class="$altbg" height="18" nowrap="nowrap" align="center"><span class="smalltext">$postdate $posttime</span></td>
+<td class="$altbg" height="18" nowrap="nowrap" align="center"><span class="smalltext">$post[postdate] $post[posttime]</span></td>
 <td class="$altbg" width="100%" valign="middle" height="18">
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr valign="bottom"><td align="left" ><span class="smalltext">$email$pm$www$find</span></td>
-	<td align="right" nowrap="nowrap"><span class="smalltext">$edit$quickdelete$quote$report</span></td>
+	<tr valign="bottom">
+		<td align="left" ><span class="smalltext">$post[button_email]$post[button_pm]$post[button_www]$post[button_find]</span></td>
+		<td align="right" nowrap="nowrap"><span class="smalltext">$post[button_edit]$post[button_quickdelete]$post[button_quote]$post[button_report]</span></td>
 	</tr>
 	</table>
 </td>
@@ -4254,7 +4255,7 @@ $footer
 </body>
 </html>]]></template>
 		<template name="postbit_attachments_thumbnails"><![CDATA[<span class="smalltext"><strong>$lang->postbit_attachments_thumbnails</strong></span><br />
-$thumblist
+$post[thumblist]
 <br />]]></template>
 		<template name="forumdisplay_subforums"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
@@ -4286,7 +4287,7 @@ $modbit
 ]]></template>
 		<template name="forumdisplay_orderarrow"><![CDATA[<span class="smalltext">[<a href="$sorturl&amp;sortby=$sortby&amp;order=$oppsort">$oppsort</a>]</span>]]></template>
 		<template name="showthread_ratingdisplay"><![CDATA[<img src="$theme[imgdir]/$thread[rating]" border="0" alt="$thread[numratings] votes - $thread[averagerating] average" />&nbsp;&nbsp;]]></template>
-		<template name="postbit_posturl"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><span class="smalltext"><strong>$lang->postbit_post <a href="showthread.php?tid=$tid&amp;pid=$post[pid]#pid$post[pid]">#$postcounter</a></strong>$inlinecheck</span></div>]]></template>
+		<template name="postbit_posturl"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><span class="smalltext"><strong>$lang->postbit_post <a href="showthread.php?tid=$tid&amp;pid=$post[pid]#pid$post[pid]">#$postcounter</a></strong>$post[inlinecheck]</span></div>]]></template>
 		<template name="postbit_attachments_thumbnails_thumbnail"><![CDATA[<a href="attachment.php?aid=$attachment[aid]" target="_blank"><img src="attachment.php?thumbnail=$attachment[aid]" class="attachment" alt="" /></a>&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_attachments_images_image"><![CDATA[<img src="attachment.php?aid=$attachment[aid]" class="attachment" alt="" />&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_signature"><![CDATA[<hr size="1" width="25%"  align="left" />
@@ -4308,13 +4309,13 @@ $post[signature]]]></template>
 <br />
 <fieldset>
 <legend><strong>$lang->postbit_attachments</strong></legend>
-$attachedthumbs
-$attachedimages
-$attachmentlist
+$post[attachedthumbs]
+$post[attachedimages]
+$post[attachmentlist]
 </fieldset>]]></template>
 		<template name="postbit_attachments_attachment"><![CDATA[<br />$attachment[icon]&nbsp;&nbsp;<a href="attachment.php?aid=$attachment[aid]">$attachment[filename]</a> ($lang->postbit_attachment_size $attachment[filesize] / $lang->postbit_attachment_downloads $attachment[downloads])]]></template>
 		<template name="postbit_attachments_images"><![CDATA[<span class="smalltext"><strong>$lang->postbit_attachments_images</strong></span><br />
-$imagelist
+$post[imagelist]
 <br />]]></template>
 		<template name="post_attachments_attachment_postinsert"><![CDATA[<input type="button" name="insert" value="$lang->insert_attachment_post" onclick="doInsert('[attachment=$attachment[aid]]');">]]></template>
 		<template name="moderation_mergeposts"><![CDATA[<html>
@@ -4975,7 +4976,7 @@ $message[message]
 <br />
 <center><input type="submit" value="$lang->add_to_reputation"></center>
 </form>]]></template>
-		<template name="postbit_reputation"><![CDATA[<br />$lang->postbit_reputation $neglink$reputation$poslink]]></template>
+		<template name="postbit_reputation"><![CDATA[<br />$lang->postbit_reputation $post[neglink]$post[userreputation]$post[poslink]]]></template>
 		<template name="usercp_latestreputations_bit"><![CDATA[<tr>
 <td class="$bgclass" align="center"><img src="$theme[imgdir]/$posnegimg"></td>
 <td class="$bgclass">$postlink</td>
@@ -6233,7 +6234,7 @@ $footer
 </body>
 </html>]]></template>
 		<template name="postbit_offline"><![CDATA[<font color="#C7C7C7"><strong>$lang->postbit_status_offline</strong></font>]]></template>
-		<template name="postbit_editedby"><![CDATA[<p align="right"><span class="smalltext">$editnote <a href="member.php?action=profile&amp;uid=$post[edituid]">$post[editusername]</a>.</span></p>
+		<template name="postbit_editedby"><![CDATA[<p align="right"><span class="smalltext">$post[editnote] <a href="member.php?action=profile&amp;uid=$post[edituid]">$post[editusername]</a>.</span></p>
 
 ]]></template>
 		<template name="member_register_requiredfields"><![CDATA[<fieldset class="trow2">

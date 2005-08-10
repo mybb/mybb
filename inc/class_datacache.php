@@ -27,7 +27,6 @@ class datacache
 					$this->update($data['title'], unserialize($data['cache']));
 				}
 			}
-			return;
 		}
 		else
 		{
@@ -88,9 +87,6 @@ class datacache
 			$cachecontents .= "\$$name = ".var_export($contents, true).";\n\n ?>";
 			fwrite($cachefile, $cachecontents);
 			fclose($cachefile);
-		}
-		else
-		{
 		}
 	}
 
