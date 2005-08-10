@@ -688,11 +688,19 @@ function makepostbit($post, $pmprevann=0)
 				$attachment['name'] = htmlspecialchars_uni($attachment['name']);
 				$attachment['filesize'] = getfriendlysize($attachment['filesize']);
 				$ext = getextention($attachment['filename']);
+				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
+				{
+					$isimage = true;
+				}
+				else
+				{
+					$isimage = false;
+				}
 				$attachment['icon'] = getattachicon($ext);
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
-					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes")
+					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes" && $attachment['thumbnail'] != "")
 					{ // We have a thumbnail to show (and its not the "SMALL" enough image
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
@@ -710,7 +718,7 @@ function makepostbit($post, $pmprevann=0)
 				}
 				else
 				{
-					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes")
+					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes" && $attachment['thumbnail'] != "")
 					{ // We have a thumbnail to show
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
@@ -738,14 +746,14 @@ function makepostbit($post, $pmprevann=0)
 		}
 		if($post['thumblist'])
 		{
-			eval("\$postg['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
+			eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
 		}
 		if($post['imagelist'])
 		{
 			eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
 		}
 		if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
-		{
+		{ echo "$post[attachmentlist] || $post[thumblist] || $post[imagelist]";
 			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
 		}
 	}
@@ -789,5 +797,6 @@ function makepostbit($post, $pmprevann=0)
 
 	eval("\$postbit = \"".$templates->get("postbit")."\";");
 	return $postbit;
+	$GLOBALS['post'] = "";
 }
 ?>
