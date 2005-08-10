@@ -753,7 +753,7 @@ function makepostbit($post, $pmprevann=0)
 			eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
 		}
 		if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
-		{ echo "$post[attachmentlist] || $post[thumblist] || $post[imagelist]";
+		{
 			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
 		}
 	}
