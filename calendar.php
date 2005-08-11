@@ -194,7 +194,7 @@ elseif($mybb->input['action'] == "addevent")
 		}
 	}
 	$msel[$month] = " selected=\"selected\"";
-	if($type == "private")
+	if($mybb->input['type'] == "private")
 	{
 		$privatecheck = " checked=\"checked\"";
 		if($mybb->usergroup['canaddprivateevents'] == "no")
@@ -390,6 +390,7 @@ else
 	while($event = $db->fetch_array($query))
 	{
 		$event['subject'] = htmlspecialchars_uni(stripslashes($event['subject']));
+		$event['fullsubject'] = $event['subject'];
 		if(strlen($event['subject']) > 15)
 		{
 			$event['subject'] = substr($event['subject'], 0, 15) . "...";

@@ -5996,8 +5996,8 @@ $footer
 <td class="trow2" align="right">$similarthreaddate<br />$similarthreadtime</td>
 </tr>
 ]]></template>
-		<template name="calendar_eventbit_public"><![CDATA[<a href="calendar.php?action=event&eid=$event[eid]"><span class="smalltext"><font color="$settings[publiceventcolor]">$event[subject]</font></span></a><br />]]></template>
-		<template name="calendar_eventbit_private"><![CDATA[<a href="calendar.php?action=event&eid=$event[eid]"><span class="smalltext"><font color="$settings[privateeventcolor]">$event[subject]</font></span></a><br />]]></template>
+		<template name="calendar_eventbit_public"><![CDATA[<a href="calendar.php?action=event&eid=$event[eid]" title="$event[fullsubject]"><span class="smalltext"><font color="$settings[publiceventcolor]">$event[subject]</font></span></a><br />]]></template>
+		<template name="calendar_eventbit_private"><![CDATA[<a href="calendar.php?action=event&eid=$event[eid]" title="$event[fullsubject]"><span class="smalltext"><font color="$settings[privateeventcolor]">$event[subject]</font></span></a><br />]]></template>
 		<template name="calendar_daybit_today"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
 <strong><a href="calendar.php?action=dayview&year=$year&month=$month&day=$i">$i</a></strong>
 <br /><span class="smalltext">$birthdays$events[$i]</span>
