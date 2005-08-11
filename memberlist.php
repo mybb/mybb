@@ -62,6 +62,7 @@ else
 }
 
 $num = $db->result($query, 0);
+$page = intval($mybb->input['page']);
 $multipage = multipage($num, $mybb->settings['membersperpage'], $page, "memberlist.php?by=".$mybb->input['by']."&order=".$mybb->input['order'].$linkaddon);
 if(is_numeric($page))
 {
