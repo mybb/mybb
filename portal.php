@@ -20,7 +20,7 @@ if(!chdir($forumdir) && $forumdir)
 {
 	die("\$forumdir is invalid!");
 }
-require "global.php";
+require "./global.php";
 require "./inc/functions_post.php";
 require "./inc/functions_user.php";
 
@@ -204,14 +204,6 @@ if($mybb->settings['portal_showwol'] != "no")
 	$recorddate = mydate($mybb->settings['dateformat'], $mostonline['time']);
 	$recordtime = mydate($mybb->settings['timeformat'], $mostonline['time']);
 
-	// Every 1-10 times clear the WOL table
-	$rand = rand(1,10);
-	$hourdel = "48";
-	if($rand == 5)
-	{
-		$hourdel = time()-($hourdel*60*60);
-		$db->query("DELETE FROM ".TABLE_PREFIX."online WHERE time<'$hourdel'");
-	}
 	$lang->online_users = sprintf($lang->online_users, $onlinecount);
 	$lang->online_counts = sprintf($lang->online_counts, $membercount, $guestcount);
 	eval("\$whosonline = \"".$templates->get("portal_whosonline")."\";");
