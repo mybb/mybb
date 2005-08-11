@@ -63,8 +63,7 @@ else
 
 $num = $db->result($query, 0);
 $page = intval($mybb->input['page']);
-$multipage = multipage($num, $mybb->settings['membersperpage'], $page, "memberlist.php?by=".$mybb->input['by']."&order=".$mybb->input['order'].$linkaddon);
-if(is_numeric($page))
+if($page)
 {
 	$start = ($page - 1) * $mybb->settings['membersperpage'];
 }
@@ -73,6 +72,7 @@ else
 	$start = 0;
 	$page = 1;
 }
+$multipage = multipage($num, $mybb->settings['membersperpage'], $page, "memberlist.php?by=".$mybb->input['by']."&order=".$mybb->input['order'].$linkaddon);
 
 if($mybb->input['by'] == "postnum")
 {
