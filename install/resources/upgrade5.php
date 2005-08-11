@@ -13,7 +13,7 @@
  * Upgrade Script: PR1 (Released to Testers) to Latest PR1
  */
 
-function upgrade3_dbchanges()
+function upgrade5_dbchanges()
 {
 	global $db, $output;
 
@@ -49,10 +49,10 @@ function upgrade3_dbchanges()
 	) TYPE=MyISAM;");
 
 	echo "Done. Click Next.";
-	$output->print_footer("3_dbchanges2");
+	$output->print_footer("5_dbchanges2");
 }
 
-function upgrade3_dbchanges2()
+function upgrade5_dbchanges2()
 {
 	global $db, $output;
 

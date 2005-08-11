@@ -65,9 +65,10 @@ function validate_password_from_uid($uid, $password, $user="")
 	}
 	if(!$user['salt'])
 	{
-		// Generate a salt for this user
+		// Generate a salt for this user and assume the password stored in db is a plain md5 password
 		$user['salt'] = generate_salt();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='$salt' WHERE uid='".$user['uid']."'");
+		$user['password'] = salt_password($user['password'], $user['salt']);
+		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='".$user['salt']."', password='".$user['password']."' WHERE uid='".$user['uid']."'");
 	}
 
 	if(!$user['loginkey'])

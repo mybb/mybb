@@ -809,10 +809,10 @@ function getposticons()
 //
 function mysetcookie($name, $value="", $expires="")
 {
-	global $settings, $mybbuser;
-	if(!$settings['cookiepath'])
+	global $mybb;
+	if(!$mybb->settings['cookiepath'])
 	{
-		$settings['cookiepath'] = "/";
+		$mybb->settings['cookiepath'] = "/";
 	}
 	if($expires == -1)
 	{
@@ -820,7 +820,7 @@ function mysetcookie($name, $value="", $expires="")
 	}
 	else
 	{
-		if($mybbuser['rememberme'] == "no")
+		if($mybb->user['rememberme'] == "no")
 		{
 			$expires = "";
 		}
@@ -831,30 +831,30 @@ function mysetcookie($name, $value="", $expires="")
 	}
 	if($settings['cookiedomain'])
 	{
-		setcookie($name, $value, $expires, $settings['cookiepath'], $settings['cookiedomain']);
+		setcookie($name, $value, $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
 	}
 	else
 	{
-		setcookie($name, $value, $expires, $settings['cookiepath']);
+		setcookie($name, $value, $expires, $mybb->settings['cookiepath']);
 	}
 }
 
 function myunsetcookie($name)
 {
-	global $settings, $mybbuser;
+	global $mybb;
 	$expires = time()-3600;
-	if(!$settings['cookiepath'])
+	if(!$mybb->settings['cookiepath'])
 	{
-		$settings['cookiepath'] = "/";
+		$mybb->settings['cookiepath'] = "/";
 	}
 
-	if($settings['cookiedomain'])
+	if($mybb->settings['cookiedomain'])
 	{
-		@setcookie($name, "", $expires, $settings['cookiepath'], $settings['cookiedomain']);
+		@setcookie($name, "", $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
 	}
 	else
 	{
-		@setcookie($name, "", $expires, $settings['cookiepath']);
+		@setcookie($name, "", $expires, $mybb->settings['cookiepath']);
 	}
 }
 

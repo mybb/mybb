@@ -90,7 +90,7 @@ if(file_exists("lock"))
 else
 {
 	
-	if(!$action || $action == "intro")
+	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
 		$output->print_header("MyBB Upgrade Script");
 		$dh = opendir("./resources");
@@ -98,7 +98,7 @@ else
 		{
 			if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))
 			{
-				$upgradescripts[$match1] = $file;
+				$upgradescripts[$match[1]] = $file;
 			}
 		}
 		closedir($dh);
@@ -125,29 +125,29 @@ else
 		$output->print_contents("<p>Welcome to the upgrade wizard for MyBulletinBoard $myver.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p>We recommend that you also do a complete backup of your database before attempting to upgrade so if something goes wrong you can easily revert back to the previous version.</p></p><p>Once you're ready, please select your old version below and click next to continue.</p><p><select name=\"from\">$vers</select>");
 		$output->print_footer("doupgrade");
 	}
-	elseif($action == "doupgrade")
+	elseif($mybb->input['action'] == "doupgrade")
 	{
-		$runfunction = next_function($from);
+		$runfunction = next_function($mybb->input['from']);
 	}
-	elseif($action == "templates")
+	elseif($mybb->input['action'] == "templates")
 	{
 		$runfunction = "upgradethemes";
 	}
-	elseif($action == "rebuildsettings")
+	elseif($mybb->input['action'] == "rebuildsettings")
 	{
 		$runfunction = "rebuildsettings";
 	}
-	elseif($action == "buildcaches")
+	elseif($mybb->input['action'] == "buildcaches")
 	{
 		$runfunction = "buildcaches";
 	}
-	elseif($action == "finished")
+	elseif($mybb->input['action'] == "finished")
 	{
 		$runfunction = "upgradedone";
 	}
 	else // Busy running modules, come back later
 	{
-		$bits = explode("_", $action, 2);
+		$bits = explode("_", $mybb->input['action'], 2);
 		if($bits[1]) // We're still running a module
 		{
 			$from = $bits[0];
@@ -291,7 +291,21 @@ function upgradedone()
 	global $db, $output, $myver;
 	
 	$output->print_header("Upgrade Complete");
-	$output->print_contents("<p>Congratulations, your copy of MyBB has successfully been updated to $myver.</p><p>As a security precaution, we recommend you delete the 'install' directory off your server before continuing.</p>");
+	if(is_writable("./"))
+	{
+		$lock = @fopen("./lock", "w");
+		$written = @fwrite($lock, "1");
+		@fclose($lock);
+		if($written)
+		{
+			$lock_note = "<p>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</p><p>You may now proceed to your upgraded copy of <a href=\"../index.php\">MyBB</a> or its <a href=\"../admin/index.php\">Admin Control Panel</a>.</p>";
+		}
+	}
+	if(!$written)
+	{
+		$lock_note = "<p><b><font color=\"red\">Please remove this directory before exploring your upgraded MyBB.</font></b></p>";
+	}
+	$output->print_contents("<p>Congratulations, your copy of MyBB has successfully been updated to $myver.</p>$lock_note");
 	$output->print_footer();
 }
 

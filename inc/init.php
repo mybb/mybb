@@ -26,6 +26,10 @@ $mybb = new MyBB;
 
 // Include the required core files
 require "./inc/config.php";
+if(!isset($config))
+{
+	die("Please run the installer before exploring your board :)");
+}
 $mybb->config = $config;
 
 require "./inc/db_".$config['dbtype'].".php";
