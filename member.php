@@ -1030,9 +1030,9 @@ else if($mybb->input['action'] == "do_login")
 
 	$plugins->run_hooks("member_do_login_end");
 
-	if($url)
+	if($mybb->input['url'])
 	{
-		redirect($url, $lang->redirect_loggedin);
+		redirect($mybb->input['url'], $lang->redirect_loggedin);
 	}
 	else
 	{
