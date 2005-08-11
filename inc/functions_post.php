@@ -603,7 +603,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['editdate'] = mydate($mybb->settings['dateformat'], $post['edittime']);
 			$post['edittime'] = mydate($mybb->settings['timeformat'], $post['edittime']);
-			$editnote = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
+			$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
 		eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
