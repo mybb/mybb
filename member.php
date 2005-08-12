@@ -1532,6 +1532,7 @@ elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 	}
 	else
 	{
+		$uid = $mybb->input['uid'];
 		$rating = $mybb->input['rating'];
 		if($rating < 1)
 		{
@@ -1556,7 +1557,7 @@ elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 		$rating = array(
 			"rating" => $newrating,
 			);
-		$db->update_query(TABLE_PREFIX."users", $rating, "uid='".$mybb->input['uid']."'");
+		$db->update_query(TABLE_PREFIX."users", $rating, "uid='".$uid."'");
 
 		$plugins->run_hooks("member_do_rate_end");
 
