@@ -497,7 +497,7 @@ elseif($mybb->input['action'] == "options")
 	}
 
 	// Lets work out which options the user has selected and check the boxes
-	if($mybb->user['allownotices'] != "no")
+	if($mybb->user['allownotices'] == "yes")
 	{
 		$allownoticescheck = "checked=\"checked\"";
 	}
@@ -506,7 +506,7 @@ elseif($mybb->input['action'] == "options")
 		$allownoticescheck = "";
 	}
 
-	if($mybb->user['invisible'] != "no")
+	if($mybb->user['invisible'] == "yes")
 	{
 		$invisiblecheck = "checked=\"checked\"";
 	}
@@ -515,7 +515,7 @@ elseif($mybb->input['action'] == "options")
 		$invisiblecheck = "";
 	}
 
-	if($mybb->user['hideemail'] != "no")
+	if($mybb->user['hideemail'] == "yes")
 	{
 		$hideemailcheck = "checked=\"checked\"";
 	}
@@ -524,7 +524,7 @@ elseif($mybb->input['action'] == "options")
 		$hideemailcheck = "";
 	}
 
-	if($mybb->user['emailnotify'] != "no")
+	if($mybb->user['emailnotify'] == "yes")
 	{
 		$emailnotifycheck = "checked=\"checked\"";
 	}
@@ -533,7 +533,7 @@ elseif($mybb->input['action'] == "options")
 		$emailnotifycheck = "";
 	}
 
-	if($mybb->user['showsigs'] != "no")
+	if($mybb->user['showsigs'] == "yes")
 	{
 		$showsigscheck = "checked=\"checked\"";;
 	}
@@ -542,7 +542,7 @@ elseif($mybb->input['action'] == "options")
 		$showsigscheck = "";
 	}
 
-	if($mybb->user['showavatars'] != "no")
+	if($mybb->user['showavatars'] == "yes")
 	{
 		$showavatarscheck = "checked=\"checked\"";
 	}
@@ -551,7 +551,7 @@ elseif($mybb->input['action'] == "options")
 		$showavatarscheck = "";
 	}
 
-	if($mybb->user['showquickreply'] != "no")
+	if($mybb->user['showquickreply'] == "yes")
 	{
 		$showquickreplycheck = "checked=\"checked\"";
 	}
@@ -560,7 +560,7 @@ elseif($mybb->input['action'] == "options")
 		$showquickreplycheck = "";
 	}
 
-	if($mybb->user['remember'] != "no")
+	if($mybb->user['remember'] == "yes")
 	{
 		$remembercheck = "checked=\"checked\"";
 	}
@@ -569,7 +569,7 @@ elseif($mybb->input['action'] == "options")
 		$remembercheck = "";
 	}
 
-	if($mybb->user['receivepms'] != "no")
+	if($mybb->user['receivepms'] == "yes")
 	{
 		$receivepmscheck = "checked=\"checked\"";
 	}
@@ -578,7 +578,7 @@ elseif($mybb->input['action'] == "options")
 		$receivepmscheck = "";
 	}
 
-	if($mybb->user['pmpopup'] != "no")
+	if($mybb->user['pmpopup'] == "yes")
 	{
 		$pmpopupcheck = "checked=\"checked\"";
 	}
@@ -587,7 +587,7 @@ elseif($mybb->input['action'] == "options")
 		$pmpopupcheck = "";
 	}
 
-	if($mybb->user['dst'] != "no")
+	if($mybb->user['dst'] == "yes")
 	{
 		$dstcheck = "checked=\"checked\"";
 	}
