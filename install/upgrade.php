@@ -267,7 +267,7 @@ function buildcaches()
 	$output->print_header("Data Cache Building");
 
 	$contents .= "<p>Building cache's...";
-	require "../inc/datacache.php";
+	require "../inc/class_datacache.php";
 	$cache = new datacache;
 	$cache->updateversion();
 	$cache->updateattachtypes();

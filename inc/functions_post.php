@@ -19,6 +19,10 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicode
 		$message = str_replace("<","&lt;",$message);
 		$message = str_replace(">","&gt;",$message);
+		if($allowimgcode != "yes")
+		{
+			$message = str_replace("<img","&lt;img",$message);
+		}
 	}
 	if($allowsmilies != "no")
 	{
@@ -35,10 +39,7 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 	{
 		$message = domycode($message, $allowimgcode);
 	}
-	if($allowimgcode != "yes")
-	{
-		$message = str_replace("<img","&lt;img",$message);
-	}
+
 	$message = $plugins->run_hooks("parse_message", $message);
 	$message = nl2br($message);
 	return $message;

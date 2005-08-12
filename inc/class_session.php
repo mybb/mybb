@@ -128,6 +128,7 @@ class session
 		//
 		if($password != $mybb->user['loginkey'] && !$this->uid)
 		{
+			unset($mybb->user);
 			return false;
 		}
 
