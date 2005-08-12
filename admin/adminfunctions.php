@@ -632,7 +632,7 @@ function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $ext
 		}
 		if($shownone)
 		{
-			$forumselect .= "<option value=\"0\">None</option><option value=\"0\">-----------</option>";
+			$forumselect .= "<option value=\"0\">$lang->parentforum_none</option><option value=\"0\">-----------</option>";
 		}
 	}
 	else

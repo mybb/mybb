@@ -47,6 +47,7 @@ $l['description'] = "Description";
 $l['forumlink'] = "Forum Link<br><small>Entering this will cause the forum to redirect to another url.. not be an actual forum, how ever, permissions can still be set for it.</small>";
 $l['disporder'] = "Display Order";
 $l['parentforum'] = "Parent Forum";
+$l['parentforum_none'] = "None";
 
 $l['access_perm_options'] = "Access and Permission Options";
 $l['forum_password'] = "Forum Password<br><small>If you want to protect this forum you can enter a password here. Note, the user groups needs permission to access the as well.</small>";
