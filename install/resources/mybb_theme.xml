@@ -389,7 +389,7 @@ $footer
 </body>
 </html>]]></template>
 		<template name="header_welcomeblock_member"><![CDATA[	<span style="float:right;">$lang->welcome_current_time</span>
-		$lang->welcome_back (<a href="$settings[bburl]/usercp.php"><strong>$lang->welcome_usercp</strong></a>$admincplink &mdash; <a href="$settings[bburl]/member.php?action=logout&uid=$mybbuser[uid]">$lang->welcome_logout</a>)<br />
+		$lang->welcome_back (<a href="$settings[bburl]/usercp.php"><strong>$lang->welcome_usercp</strong></a>$admincplink &mdash; <a href="$settings[bburl]/member.php?action=logout&amp;uid=$mybbuser[uid]">$lang->welcome_logout</a>)<br />
 				<span class="links">
 					<a href="#" onclick="popupWin('misc.php?action=buddypopup', 'buddyList', 170, 300);">$lang->welcome_open_buddy_list</a>
 				</span>
@@ -2533,16 +2533,6 @@ $footer
 $memberoflist
 </table>
 <br />]]></template>
-		<template name="toplinks_admin"><![CDATA[<ul>
-<li><a href="$settings[bburl]/member.php?action=logout&uid=$mybbuser[uid]">$lang->toplinks_logout</a></li>
-<li><a href="$settings[bburl]/usercp.php">$lang->toplinks_usercp</a></li>
-<li><a href="$settings[bburl]/$config[admindir]/index.php">$lang->toplinks_admincp</a></li>
-<li><a href="$settings[bburl]/memberlist.php">$lang->toplinks_memberlist</a></li>
-<li><a href="$settings[bburl]/search.php">$lang->toplinks_search</a></li>
-<li><a href="$settings[bburl]/misc.php?action=help">$lang->toplinks_help</a></li>
-<li><a href="$settings[bburl]/calendar.php">$lang->toplinks_calendar</a></li>
-<li><a href="$settings[bburl]/index.php">$lang->toplinks_home</a></li>
-</ul>]]></template>
 		<template name="managegroup"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->members_of</title>
@@ -3900,7 +3890,7 @@ $footer
 </html>]]></template>
 		<template name="changeuserbox"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>$lang->username</strong></td>
-<td class="trow1">$mybbuser[username] <span class="smalltext">[<strong><a href="member.php?action=logout&uid=$mybbuser[uid]">$lang->change_user</a></strong>]</span></td>
+<td class="trow1">$mybbuser[username] <span class="smalltext">[<strong><a href="member.php?action=logout&amp;uid=$mybbuser[uid]">$lang->change_user</a></strong>]</span></td>
 </tr>
 ]]></template>
 		<template name="showthread_poll_results"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
@@ -5093,15 +5083,6 @@ $footer
 <td align="center" class="trow1" width="50%"><a href="member.php?action=profile&amp;uid=$online[uid]">$username</a>$invisiblemark</td>
 <td align="center" class="trow2" width="50%">$onlinetime</td>
 </tr>]]></template>
-		<template name="toplinks"><![CDATA[<ul>
-<li><a href="$settings[bburl]/member.php?action=login">$lang->toplinks_login</a></li>
-<li><a href="$settings[bburl]/member.php?action=register">$lang->toplinks_register</a></li>
-<li><a href="$settings[bburl]/memberlist.php">$lang->toplinks_memberlist</a></li>
-<li><a href="$settings[bburl]/search.php">$lang->toplinks_search</a></li>
-<li><a href="$settings[bburl]/misc.php?action=help">$lang->toplinks_help</a></li>
-<li><a href="$settings[bburl]/calendar.php">$lang->toplinks_calendar</a></li>
-<li><a href="$settings[bburl]/index.php">$lang->toplinks_home</a></li>
-</ul>]]></template>
 		<template name="member_profile_email"><![CDATA[<tr>
 <td class="trow2"><strong>$lang->email</strong></td>
 <td class="trow2"><a href="member.php?action=emailuser&amp;uid=$memprofile[uid]">$lang->send_user_email</td>
@@ -5294,7 +5275,7 @@ $tppoptions
 </select>
 </td>
 </tr>]]></template>
-		<template name="index_logoutlink"><![CDATA[<a href="member.php?action=logout&uid=$mybbuser[uid]">$lang->index_logout</a> | ]]></template>
+		<template name="index_logoutlink"><![CDATA[<a href="member.php?action=logout&amp;uid=$mybbuser[uid]">$lang->index_logout</a> | ]]></template>
 		<template name="postbit_iplogged_show"><![CDATA[<br /><span class="smalltext">$lang->postbit_ipaddress $post[ipaddress]</span>]]></template>
 		<template name="calendar_dayview"><![CDATA[<html>
 <head>
@@ -6281,15 +6262,6 @@ $lang->away_since $awaydate &nbsp;&nbsp;&nbsp; $lang->away_returns $returndate
 		<template name="forumbit_depth2_cat"><![CDATA[<tr>
 <td class="tcat">&nbsp;</td>
 <td class="tcat" colspan="5"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid=$forum[fid]"><font color="$theme[categorytext]">$forum[name]</font></a></strong><br /><span class="smalltext">$forum[description]</td></tr>]]></template>
-		<template name="toplinks_member"><![CDATA[<ul>
-<li><a href="$settings[bburl]/member.php?action=logout&uid=$mybbuser[uid]">$lang->toplinks_logout</a></li>
-<li><a href="$settings[bburl]/usercp.php">$lang->toplinks_usercp</a></li>
-<li><a href="$settings[bburl]/memberlist.php">$lang->toplinks_memberlist</a></li>
-<li><a href="$settings[bburl]/search.php">$lang->toplinks_search</a></li>
-<li><a href="$settings[bburl]/misc.php?action=help">$lang->toplinks_help</a></li>
-<li><a href="$settings[bburl]/calendar.php">$lang->toplinks_calendar</a></li>
-<li><a href="$settings[bburl]/index.php">$lang->toplinks_home</a></li>
-</ul>]]></template>
 		<template name="misc_help"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->help_docs</title>
