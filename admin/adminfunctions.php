@@ -621,7 +621,7 @@ function makehopper($name, $values)
 
 function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $extra="")
 {
-	global $db, $forumselect;
+	global $db, $forumselect, $lang;
 
 	if(!$fid)
 	{
