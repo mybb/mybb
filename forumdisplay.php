@@ -380,7 +380,7 @@ if($mybb->settings['announcementlimit'])
 }
 $sql = buildparentlist($fid, "fid", "OR", $parentlist);
 $time = time();
-$query = $db->query("SELECT a.*, u.username FROM ".TABLE_PREFIX."announcements a LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=a.uid WHERE a.startdate<='$time' AND a.enddate>='$time' AND ($sql OR fid='0') ORDER BY a.startdate DESC $limit");
+$query = $db->query("SELECT a.*, u.username FROM ".TABLE_PREFIX."announcements a LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=a.uid WHERE a.startdate<='$time' AND a.enddate>='$time' AND ($sql OR fid='-1') ORDER BY a.startdate DESC $limit");
 while($announcement = $db->fetch_array($query))
 {
 	if($announcement['startdate'] > $mybb->user['lastvisit'])
