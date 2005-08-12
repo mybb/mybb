@@ -24,6 +24,7 @@ $fpermissioncache = $cache->read("forumpermissions");
 
 pageheaders();
 
+
 if(is_dir("install") && !file_exists("install/lock"))
 {
 	$mybb->trigger_generic_error("install_directory");

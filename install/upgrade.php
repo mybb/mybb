@@ -36,10 +36,6 @@ $db->connect($config[hostname], $config[username], $config[password]);
 $db->select_db($config[database]);
 
 
-// Define versions the user can upgrade from.
-$oldvers['1'] = "Release Candidate 2";
-$oldvers['2'] = "Release Candidate 3";
-$oldvers['3'] = "Release Candidate 4";
 
 // Set if we need to revert templates and settings for this version
 $reverttemplates = 1;
@@ -197,6 +193,8 @@ function upgradethemes()
 		) TYPE=MyISAM;");
 		$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid) VALUES (NULL,'MyBB Master Style','0')");
 		$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid,def) VALUES (NULL,'MyBB Default','1','1')");
+		$sid = $db->insert_id();
+		$db->query("UPDATE ".TABLE_PREFIX."users SET style='$tid'");
 	}
 	$sid = -2;
 

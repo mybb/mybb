@@ -125,7 +125,6 @@ function upgrade3_convertattachments()
 	{
 		$filename = "post_".$attachment['puid']."_".$attachment['dateline'].$attachment['aid'].".attach";
 		$ext = strtolower(substr(strrchr($attachment['filename'], "."), 1));
-		echo "writing to $filename | $ext<br />";
 		$fp = fopen("../uploads/".$filename, "wb");
 		if(!$fp)
 		{
@@ -234,7 +233,6 @@ function upgrade3_convertavatars()
 		if($ext)
 		{
 			$filename = "avatar_".$avatar['uid'].".".$ext;
-		echo "doing $filename<br />";
 			$fp = @fopen("../uploads/avatars/".$filename, "wb");
 			if(!$fp)
 			{
@@ -325,7 +323,7 @@ function upgrade3_dbchanges2()
 	);");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD salt varchar(10) NOT NULL AFTER password;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usersADD loginkey varchar(50) NOT NULL AFTER salt;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD loginkey varchar(50) NOT NULL AFTER salt;");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD pmnotify varchar(3) NOT NULL AFTER pmpopup;");
 
@@ -349,11 +347,11 @@ function upgrade3_dbchanges2()
 	  PRIMARY KEY  (sid)
 		) TYPE=MyISAM;";
 
-	$tables[] = "CREATE TABLE ".TABLE_PREFIX."datacache (
+	$db->query("CREATE TABLE ".TABLE_PREFIX."datacache (
 	  title varchar(15) NOT NULL default '',
 	  cache mediumtext NOT NULL,
 	  PRIMARY KEY(title)
-	) TYPE=MyISAM;";
+	) TYPE=MyISAM;");
 
 	$contents .= "<p>Done</p>";
 	$contents .= "<p>Dropping settings and rebuilding them...";
@@ -636,7 +634,6 @@ function upgrade3_dbchanges3()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."templatesets CHANGE sid sid smallint unsigned NOT NULL auto_increment;");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."themes CHANGE tid tid smallint unsigned NOT NULL auto_increment;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."themes CHANGE pid pid smallint unsigned NOT NULL;");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threadratings CHANGE rid rid int unsigned NOT NULL auto_increment;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threadratings CHANGE tid tid int unsigned NOT NULL;");

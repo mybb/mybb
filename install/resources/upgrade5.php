@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: PR1 (Released to Testers) to Latest PR1
+ * Upgrade Script: Preview Release 1
  */
 
 function upgrade5_dbchanges()

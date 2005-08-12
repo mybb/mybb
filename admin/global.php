@@ -20,7 +20,7 @@ if(!isset($config['admindir']))
 }
 
 require "./inc/init.php";
-require $config['admindir']."/adminfunctions.php";
+require "./".$config['admindir']."/adminfunctions.php";
 require "./inc/functions_user.php";
 
 $style = "./styles/".$mybb->settings['cpstyle']."/stylesheet.css";

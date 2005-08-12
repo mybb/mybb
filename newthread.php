@@ -120,7 +120,7 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 if($mybb->input['removeattachment'])
 { // Lets remove the attachment
 	require_once "./inc/functions_upload.php";
-	remove_attachment(0, $posthash, $mybb->input['removeattachment']);
+	remove_attachment(0, $mybb->input['posthash'], $mybb->input['removeattachment']);
 	if(!$mybb->input['submit'])
 	{
 		$mybb->input['action'] = "newthread";
@@ -289,7 +289,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		else
 		{
-			$attachwhere = "posthash='".addslashes($mybb->input['posthash'])."'";
+			$attachwhere = "posthash='".addslashes($posthash)."'";
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
 		while($attachment = $db->fetch_array($query))

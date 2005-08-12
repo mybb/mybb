@@ -34,7 +34,7 @@ class session
 
 	function init()
 	{
-		global $ip, $db, $mybb;
+		global $ipaddress, $db, $mybb;
 		//
 		// Get our visitors IP
 		//
@@ -126,7 +126,8 @@ class session
 		//
 		// Check the password if we're not using a session
 		//
-		if($password != $mybb->user['loginkey'] && !$this->uid)
+		//if($password != $mybb->user['loginkey'] && !$this->uid)
+		if($password != $mybb->user['loginkey'])
 		{
 			unset($mybb->user);
 			return false;
