@@ -299,7 +299,6 @@ function docode($message)
 	return $message;
 }
 
-// New function...
 function dophpcode($str)
 {
 	global $lang;
@@ -331,10 +330,6 @@ function dophpcode($str)
 	{
 		$code = $str;
 	}
-
-	// Get rid of extra line break at end
-	$code = preg_replace("#</font>\n</code>#is", "</font></code>", $code);
-	$code = preg_replace("#</font>\n</font></code>#is", "</font></code>", $code);
 	
 	if(preg_match("/\A[\s]*\<\?/", $original) === 0)
 	{
@@ -343,10 +338,10 @@ function dophpcode($str)
 		$code = str_replace('<br />', '', $code);
 	}
 	
-	// Get rid of other useless code
-	//$code = preg_replace("#<code><font color=\"(.+?)\">\n#is", "<code>", $code);
+	// Get rid of other useless code and linebreaks
 	$code = str_replace('<code><font color=\"#000000"><br />\n', '<code>', $code);
 	$code = str_replace('<font color="#0000CC"></font>', '', $code);
+	$code = str_replace("\n</code>", '</code>', $code);
 	
 	// Send back the code all nice and pretty
 	return "</p><div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div><p>";

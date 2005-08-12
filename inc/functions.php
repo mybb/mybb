@@ -1626,12 +1626,15 @@ function debugpage() {
 	echo "<b>Templates loaded at startup:</b> $templatelist<br />";
 	$cached = count($templates->cache);
 	echo "<b>No of templates cached:</b> $cached<br />";
-	echo "<b>Cached templates:</b> ";
-	$comma = "";
-	while(list($key, $val) = each($templatecache))
+	if($cached > 0)
 	{
-		echo "$comma$key";
-		$comma = ", ";
+		echo "<b>Cached templates:</b> ";
+		$comma = "";
+		while(list($key, $val) = each($templatecache))
+		{
+			echo "$comma$key";
+			$comma = ", ";
+		}
 	}
 	exit;
 }
