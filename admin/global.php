@@ -36,7 +36,6 @@ $lang->load("global");
 
 // Remove slashes from bbname
 $mybb->settings['bbname'] = stripslashes($mybb->settings['bbname']);
-$settings['bbname'] = stripslashes($mybb->settings['bbname']);
 
 $time = time();
 
@@ -48,7 +47,7 @@ if(is_dir("install") && !file_exists("install/lock"))
 if($mybb->input['action'] == "logout")
 {
 	$expires = $time-60*60*24;
-	if($settings['cookiedomain'])
+	if($mybb->settings['cookiedomain'])
 	{
 		@setcookie("mybbadmin", "", $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
 	}
@@ -174,7 +173,7 @@ else
 	cpfooter();
 	exit;
 }
-$navbits[0]['name'] = $settings['bbname']." ".$lang->control_panel;
+$navbits[0]['name'] = $mybb->settings['bbname']." ".$lang->control_panel;
 $navbits[0]['url'] = "index.php?action=home";
 //addacpnav($lang->mybb_admin, "index.php");
 ?>
