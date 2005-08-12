@@ -113,7 +113,7 @@ padding: 8px;]]></extra>
 			<font-weight><![CDATA[bold]]></font-weight>
 		</trow_sep>
 		<tfoot>
-			<background><![CDATA[#2E669B]]></background>
+			<background><![CDATA[#2E669B url(images/Light/thead_bg.gif)]]></background>
 			<color><![CDATA[#ffffff]]></color>
 			<a_link>
 				<color><![CDATA[#ffffff]]></color>
