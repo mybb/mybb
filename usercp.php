@@ -843,8 +843,8 @@ elseif($mybb->input['action'] == "email")
 elseif($mybb->input['action'] == "do_email")
 {
 	$plugins->run_hooks("usercp_do_email_start");
-	$mybb->input['password'] = md5($mybb->input['password']);
-	if($mybb->input['password'] != $mybb->user['password'] || $mybb->input['password'] == "")
+	$user = validate_password_from_uid($mybb->user['uid'], $mybb->input['password']);
+	if(!$user['uid'])
 	{
 		error($lang->error_invalidpassword);
 	}
@@ -880,7 +880,7 @@ elseif($mybb->input['action'] == "do_email")
 		emailChanged($mybb->user['uid'], $mybb->input['email']);
 	}
 
-	if($mybb->settings['regtype'] == "verify")
+	if(!$mybb->user['usergroup'] == "5")
 	{
 		$activationcode = random_str();
 		$now = time();

@@ -223,6 +223,12 @@ if($mybb->input['action'] == "send")
 			}
 		}
 	}
+	if($mybb->input['uid'] && !$mybb->input['preview'])
+	{
+	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['uid']."'");
+	$user = $db->fetch_array($query);
+	$to = $user['username'];
+	}
 	if($autocomplete)
 	{
 	}
