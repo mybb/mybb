@@ -55,6 +55,10 @@ $lang->setLanguage($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
 
+// Remove slashes from bbname
+$mybb->settings['bbname'] = stripslashes($mybb->settings['bbname']);
+$settings['bbname'] = stripslashes($mybb->settings['bbname']);
+
 // Which thread mode is our user using?
 if(!$mybb->input['mode'])
 {

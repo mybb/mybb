@@ -34,6 +34,10 @@ $lang->setLanguage($settings['cplanguage'], "admin");
 // Load global language phrases
 $lang->load("global");
 
+// Remove slashes from bbname
+$mybb->settings['bbname'] = stripslashes($mybb->settings['bbname']);
+$settings['bbname'] = stripslashes($mybb->settings['bbname']);
+
 $time = time();
 
 if(is_dir("install") && !file_exists("install/lock"))
