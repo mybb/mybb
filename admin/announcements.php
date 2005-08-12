@@ -434,7 +434,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	tableheader($lang->forum_announcements);
 	$forumlist = getforums();
 	$globallist = "\n<li><b>$lang->global_announcements</b>".makelinkcode($lang->add_announcement, "announcements.php?action=add&fid=0")."\n<ul>";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE fid='0'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE fid='-1'");
 	while($globannouncement = $db->fetch_array($query))
 	{
 		$globallist .= "<li>$globannouncement[subject]".
