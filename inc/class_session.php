@@ -449,7 +449,8 @@ class session
 		}
 		if($this->is_spider == true)
 		{
-			$onlinedata['sid'] = "bot=".$this->useragent;
+			//$onlinedata['sid'] = "bot=".$this->useragent;
+			$onlinedata['sid'] = $this->sid;
 		}
 		else
 		{

@@ -122,7 +122,7 @@ else
 	while($user = $db->fetch_array($query))
 	{
 		$plugins->run_hooks("online_user");
-
+		$botkey = strtolower(str_replace("bot=", "", $user['sid']));
 		if($user['uid'] > 0)
 		{
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
@@ -141,9 +141,8 @@ else
 
 			}
 		}
-		elseif(strstr($user['sid'], "bot="))
+		elseif(strstr($user['sid'], "bot=") !== false && $session->bots[$botkey])
 		{
-			$botkey = strtolower(str_replace("bot=", "", $user['sid']));
 			$user['bot'] = $session->bots[$botkey];
 			$guests[] = what($user);
 			$botcount++;

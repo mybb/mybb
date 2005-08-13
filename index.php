@@ -43,6 +43,7 @@ if($mybb->settings['showwol'] != "no")
 
 	while($user = $db->fetch_array($query))
 	{
+		$botkey = strtolower(str_replace("bot=", "", $user['sid']));
 		if($user['uid'] > 0)
 		{
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
@@ -73,9 +74,8 @@ if($mybb->settings['showwol'] != "no")
 				$doneusers[$user['uid']] = $user['time'];
 			}
 		}
-		elseif(strstr($user['sid'], "bot="))
+		elseif(strstr($user['sid'], "bot=") !== false && $session->bots[$botkey])
 		{
-			$botkey = strtolower(str_replace("bot=", "", $user['sid']));
 			$onlinemembers .= $comma.formatname($session->bots[$botkey], $botgroup);
 			$comma = ", ";
 			$botcount++;
