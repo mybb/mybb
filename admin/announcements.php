@@ -143,7 +143,7 @@ if($mybb->input['action'] == "do_edit")
 	$startdate = gmmktime($startdatehour, intval($mybb->input['startdatemin']), 0, intval($mybb->input['startdatemonth']), intval($mybb->input['startdateday']), intval($mybb->input['startdateyear']));
 	$enddate = gmmktime($enddatehour, intval($mybb->input['enddatemin']), 0, intval($mybb->input['enddatemonth']), intval($mybb->input['enddateday']), intval($mybb->input['enddateyear']));
 	$sqlarray = array(
-		"aid" => "NULL", 
+		"aid" => intval($mybb->input['aid']), 
 		"fid" => $fid,
 		"uid" => $mybbadmin['uid'],
 		"subject" => $subject,
@@ -433,7 +433,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	starttable();
 	tableheader($lang->forum_announcements);
 	$forumlist = getforums();
-	$globallist = "\n<li><b>$lang->global_announcements</b>".makelinkcode($lang->add_announcement, "announcements.php?action=add&fid=0")."\n<ul>";
+	$globallist = "\n<li><b>$lang->global_announcements</b>".makelinkcode($lang->add_announcement, "announcements.php?action=add&fid=-1")."\n<ul>";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE fid='-1'");
 	while($globannouncement = $db->fetch_array($query))
 	{
