@@ -433,7 +433,7 @@ class session
 		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
 	}
 
-	function create_session($uid="")
+	function create_session($uid=0)
 	{
 		global $db;
 		$speciallocs = $this->get_special_locations();
