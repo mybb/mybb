@@ -43,7 +43,7 @@ function upgrade5_dbchanges()
 		  KEY location2 (location2)
 		);");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."datacache (
-	  title varchar(15) NOT NULL default '',
+	  title varchar(30) NOT NULL default '',
 	  cache mediumtext NOT NULL,
 	  PRIMARY KEY(title)
 	) TYPE=MyISAM;");

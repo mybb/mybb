@@ -116,7 +116,7 @@ $tables[] = "CREATE TABLE mybb_banned (
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_datacache (
-  title varchar(15) NOT NULL default '',
+  title varchar(50) NOT NULL default '',
   cache mediumtext NOT NULL,
   PRIMARY KEY(title)
 ) TYPE=MyISAM;";
