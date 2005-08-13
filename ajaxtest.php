@@ -8,7 +8,7 @@ if($_GET['echo'] == "time")
 if($_GET['instantupdate'] == 1)
 {
 	header('Content-Type: text/xml');
-	$handle = fopen("update.txt", 'w');
+	$handle = fopen("ajaxtest.txt", 'w');
 	fwrite($handle, $_GET['query']);
 	fclose($handle);
 	echo "<success>";
@@ -42,7 +42,7 @@ h1 { margin-bottom: 7; }
 </td>
 <td width="50%" align="center" valign="top">
 <h1>Live Fetch from server:</h1>
-<input type="button" onclick="javascript:fetchData('testac.php?echo=time', 'upID');" value="Update Time" />
+<input type="button" onclick="javascript:fetchData('ajaxtest.php?echo=time', 'upID');" value="Update Time" />
 <br /><br /><span id="upID"></span>
 </td>
 </tr>
@@ -51,10 +51,10 @@ h1 { margin-bottom: 7; }
 <tr>
 <td width="50%" align="center" valign="top" colspan="2">
 <?php
-$text = implode("", file("update.txt"));
-if(!is_writeable("update.txt"))
+$text = implode("", file("ajaxtest.txt"));
+if(!is_writeable("ajaxtest.txt"))
 {
-	$error = "Update.txt is not writable. Please CHMOD it to 777";
+	$error = "ajaxtest.txt is not writable. Please CHMOD it to 777";
 	$text = "";
 }
 elseif($text == "")
@@ -67,7 +67,7 @@ elseif($text == "")
 (double click the text below, change it somehow then press enter or deselect it)<br /><br />
 <table>
 <tr>
-<td><?php echo $error; ?><span style="font-size: 13px;" ondblclick="javascript:instantEdit(this, 'testac.php?instantupdate=1');"><?php echo $text; ?></span></td>
+<td><?php echo $error; ?><span style="font-size: 13px;" ondblclick="javascript:instantEdit(this, 'ajaxtest.php?instantupdate=1');"><?php echo $text; ?></span></td>
 </tr>
 </table>
 </td>
