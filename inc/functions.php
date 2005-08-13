@@ -1021,6 +1021,7 @@ function updatethreadcount($tid)
 function deletethread($tid)
 {
 	global $db, $cache, $plugins;
+	require "functions_upload.php";
 	$query = $db->query("SELECT p.pid, p.uid, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.tid='$tid'");
 	while($post = $db->fetch_array($query))
 	{
@@ -1067,6 +1068,7 @@ function deletethread($tid)
 function deletepost($pid, $tid="")
 {
 	global $db, $cache, $plugins;
+	require "functions_upload.php";
 	$query = $db->query("SELECT p.pid, p.uid, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.pid='$pid'");
 	$post = $db->fetch_array($query);
 	if($post['usepostcounts'] != "no")
