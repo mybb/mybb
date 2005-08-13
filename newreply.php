@@ -274,6 +274,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	    mt_srand ((double) microtime() * 1000000);
 	    $posthash = md5($thread['tid'].$mybb->user['uid'].mt_rand());
 	}
+	else
+	{
+		$posthash = $mybb->input['posthash'];
+	}
 
 	if($forumpermissions['canpostattachments'] != "no")
 	{ // Get a listing of the current attachments, if there are any
@@ -284,7 +288,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$attachwhere = "posthash='".addslashes($mybb->input['posthash'])."'";
+			$attachwhere = "posthash='".addslashes($posthash)."'";
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
 		while($attachment = $db->fetch_array($query))
