@@ -73,7 +73,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 		$regcount = $db->num_rows($query);
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
 		{
-			$lang->error_alreadyregisteredtime = sprintf($lang->error_alreadyregisteredtime, $regcount);
+			$lang->error_alreadyregisteredtime = sprintf($lang->error_alreadyregisteredtime, $regcount, $mybb->settings['betweenregstime']);
 			error($lang->error_alreadyregisteredtime);
 		}
 	}
