@@ -28,7 +28,7 @@ $mybb = new MyBB;
 require "./inc/config.php";
 if(!isset($config['dbtype']))
 {
-	die("Please run the installer before exploring your board :)");
+	$mybb->trigger_generic_error("board_not_installed");
 }
 $mybb->config = $config;
 
