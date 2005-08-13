@@ -171,6 +171,16 @@ function mydate($format, $stamp, $offset="", $ty=1)
 function mymail($to, $subject, $message, $from="")
 {
 	global $db, $mybb, $settings;
+	// For some reason sendmail/qmail doesn't like \r\n
+	$sendmail = @ini_get('sendmail_path');
+	if($sendmail)
+	{
+		$message = preg_replace("#(\r\n|\r|\n)#s", "\n", $message);
+	}
+	else
+	{
+		$message = preg_replace("#(\r\n|\r|\n)#s", "\r\n", $message);
+	}
 	if(strlen(trim($from)) == 0)
 	{
 		$from = "\"".$settings['bbname']." Mailer\" <".$settings['adminemail'].">";
@@ -1024,6 +1034,7 @@ function deletethread($tid)
 		}
 		$pids .= $post['pid'].",";
 		$usepostcounts = $post['usepostcounts'];
+		remove_attachments($post['pid']);
 	}
 	if($usepostcounts != "no")
 	{
@@ -1063,7 +1074,7 @@ function deletepost($pid, $tid="")
 		$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
 	}
 	$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE pid='$pid'");
+	remove_attachments($pid);
 	$plugins->run_hooks("delete_post", $tid);
 	$cache->updatestats();
 }
@@ -1630,7 +1641,7 @@ function debugpage() {
 	{
 		echo "<b>Cached templates:</b> ";
 		$comma = "";
-		while(list($key, $val) = each($templatecache))
+		while(list($key, $val) = each($templates->cache))
 		{
 			echo "$comma$key";
 			$comma = ", ";

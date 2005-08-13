@@ -18,6 +18,7 @@ class MyBB {
 	var $magicquotes = 0;
 	var $config = array();
 	var $debug;
+	var $request_method = "";
 
 	var $clean_variables = array (
 		"int" => array("tid", "pid", "uid", "eid", "pmid", "sid")
@@ -43,6 +44,14 @@ class MyBB {
 		// Determine input
 		$this->parse_incoming($_GET);
 		$this->parse_incoming($_POST);
+
+		if($_SERVER['REQUEST_METHOD'] == "POST")
+		{
+			$this->request_method = "post";
+		}
+		elseif($_SERVER['REQUEST_METHOD'] == "GET")
+		{
+			$this->request_method = "get";
 
 		// If we've got register globals on, then kill them too
 		if (@ini_get("register_globals") || !@ini_get("gpc_order"))

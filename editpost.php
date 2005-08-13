@@ -73,7 +73,7 @@ if(!$mybb->user['uid'])
 {
 	nopermission();
 }
-if($mybb->input['action'] == "deletepost")
+if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
 	if(ismod($fid, "candeleteposts") != "yes")
 	{
