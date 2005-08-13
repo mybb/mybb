@@ -52,7 +52,7 @@ class MyBB {
 		elseif($_SERVER['REQUEST_METHOD'] == "GET")
 		{
 			$this->request_method = "get";
-
+		}
 		// If we've got register globals on, then kill them too
 		if (@ini_get("register_globals") || !@ini_get("gpc_order"))
 		{
