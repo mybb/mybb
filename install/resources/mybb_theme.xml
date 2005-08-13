@@ -2787,7 +2787,7 @@ $forums
 		<template name="postbit_find"><![CDATA[<a href="search.php?action=finduser&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_find.gif" border="0" alt="$lang->postbit_find" /></a>]]></template>
 		<template name="postbit_pm"><![CDATA[<a href="private.php?action=send&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_pm.gif" border="0" alt="$lang->postbit_pm" /></a>]]></template>
 		<template name="postbit_profile"><![CDATA[<a href="member.php?action=profile&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_profile.gif" border="0" alt="$lang->postbit_profile" /></a>]]></template>
-		<template name="postbit_quickdelete"><![CDATA[<a href="javascript:deletePost($post[pid]);"><img src="$theme[imgdir]/postbit_delete.gif" border="0" alt="$lang->postbit_qdelete" /></a>]]></template>
+		<template name="postbit_quickdelete"><![CDATA[<a href="javascript:deletePost($post[pid]);"><img src="$theme[imglangdir]/postbit_delete.gif" border="0" alt="$lang->postbit_qdelete" /></a>]]></template>
 		<template name="postbit_quote"><![CDATA[<a href="newreply.php?tid=$tid&amp;pid=$post[pid]"><img src="$theme[imglangdir]/postbit_quote.gif" border="0" alt="$lang->postbit_quote" /></a>]]></template>
 		<template name="postbit_report"><![CDATA[<a href="javascript:reportPost($post[pid]);"><img src="$theme[imglangdir]/postbit_report.gif" border="0" alt="$lang->postbit_report" /></a>]]></template>
 		<template name="postbit_www"><![CDATA[<a href="$post[website]" target="_blank"><img src="$theme[imglangdir]/postbit_www.gif" border="0" alt="$lang->postbit_website" /></a>]]></template>
