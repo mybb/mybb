@@ -70,20 +70,14 @@ class session
 		else
 		{
 			$this->sid = 0;
+			$this->uid = 0;
 		}
 
 		//
 		// If we have a valid session id and user id, load that users session
 		//
 		$logon = explode("_", $_COOKIE['mybbuser'], 2);
-		if($this->sid > 0 && $this->uid > 0)
-		{
-			$this->load_user($session['uid'], $logon[1]);
-		}
-		//
-		// If not, and a cookie exists, try to load the user through the cookie
-		//
-		elseif($_COOKIE['mybbuser'])
+		if($_COOKIE['mybbuser'])
 		{
 			$this->load_user($logon[0], $logon[1]);
 		}
@@ -130,8 +124,11 @@ class session
 		if($password != $mybb->user['loginkey'])
 		{
 			unset($mybb->user);
+			$this->uid = 0;
 			return false;
 		}
+
+		$this->uid = $mybb->user['uid'];
 
 		//
 		// Setup some common variables
