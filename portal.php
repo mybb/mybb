@@ -268,7 +268,7 @@ while($attachment = $db->fetch_array($query))
 	$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
 }
 
-
+$forumpermissions = forum_permissions($mybb->settings['portal_announcementsfid']);
 $query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar, p.message FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.tid=t.tid AND p.dateline=t.dateline) WHERE 1=1 AND $pids ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
 while($announcement = $db->fetch_array($query))
 {
@@ -373,17 +373,17 @@ while($announcement = $db->fetch_array($query))
 				$validationcount++;
 			}
 		}
-		if($thumblist)
+		if($post['thumblist'])
 		{
-			eval("\$attachedthumbs = \"".$templates->get("postbit_attachments_thumbnails")."\";");
+			eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
 		}
-		if($imagelist)
+		if($post['imagelist'])
 		{
-			eval("\$attachedimages = \"".$templates->get("postbit_attachments_images")."\";");
+			eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
 		}
-		if($attachmentlist || $thumblist || $imagelist)
+		if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
 		{
-			eval("\$attachments = \"".$templates->get("postbit_attachments")."\";");
+			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
 		}
 	}
 

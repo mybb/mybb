@@ -130,7 +130,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
 	global $mybb, $lang, $mybbadmin;
 	if(!$offset)
 	{
-		if(isset($mybb->user['timezone']))
+		if(!empty($mybb->user['timezone']))
 		{
 			$offset = $mybb->user['timezone'];
 		}
