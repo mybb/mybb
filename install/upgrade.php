@@ -164,7 +164,7 @@ function upgradethemes()
 	if($revertalltemplates)
 	{
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templates;");
-		$db->query("CREATE TABLE mybb_templates (
+		$db->query("CREATE TABLE ".TABLE_PREFIX."templates (
 		  tid int unsigned NOT NULL auto_increment,
 		  title varchar(120) NOT NULL default '',
 		  template text NOT NULL,
@@ -180,7 +180,7 @@ function upgradethemes()
 	if($revertallthemes)
 	{
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."themes");
-		$db->query("CREATE TABLE mybb_themes (
+		$db->query("CREATE TABLE ".TABLE_PREFIX."themes (
 		  tid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
 		  pid smallint unsigned NOT NULL default '0',
