@@ -517,6 +517,15 @@ if($mybb->input['action'] == "do_newreply" )
 		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'$lastpost[dateline]'");
 		while($subscribedmember = $db->fetch_array($query))
 		{
+			if($subscribedmember['language'] != "" && $lang->languageExists($subscribedmember['language']))
+			{
+				$uselang = $subscribedmember['language'];
+			}
+			else
+			{
+				$uselang = $settings['bblanguage'];
+			}
+
 			if($uselang == $mybb->user['language'])
 			{
 				$emailsubject = $lang->emailsubject_subscription;
