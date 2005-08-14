@@ -4,14 +4,16 @@
 		<title>MyBB Error</title>
 	</head>
 	<body>
-		<h1>MyBB Error</h1>
-		<p></strong>MyBB has generated a critical error and as a result cannot function correctly.</strong></p>
-		<p>MyBB Said:</p>
-		<p style="font-family: Courier New;"><?php echo $message; ?></p>
-		<p style="font-family: Courier New;">Error Code: <?php echo $code; ?></p>
-		<p>Please try clicking the <a href="javascript:window.location=window.location;">Refresh</a> button in your web browser to see if this corrects this problem.</p>
-		<p>We apologise for any inconvenience.</p>
-		<hr />
-		<address>MyBB <?php $mybb->version; ?></address>
+	<pre>
+<h1>MyBB Error</h1>
+<strong>MyBB has generated a critical error and as a result cannot function correctly.</strong><br />
+	MyBB Said:<br /><br />
+		Error Code: <?php echo $code; ?><br />
+		<?php echo $message; ?><br /><br />
+	Please try clicking the <a href="javascript:window.location=window.location;">Refresh</a> button in your web browser to see if this corrects this problem.<br />
+We apologise for any inconvenience.<br />
+<hr />
+<address>MyBB <?php echo $mybb->version; ?></address>
+	</pre>
 	</body>
 </html>
