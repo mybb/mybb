@@ -376,4 +376,28 @@ function usercp_menu_misc()
 	}
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
+
+function get_usertitle($uid="")
+{
+	global $db, $mybb;
+	if($mybb->user['uid'] == $uid)
+	{
+		$user = $mybb->user;
+	}
+	else
+	{
+		$query = $db->query("SELECT usertitle,postnum FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+		$user = $db->fetch_array($query);
+	}
+	if($user['usertitle'])
+	{
+		return $user['usertitle'];
+	}
+	else
+	{
+		$query = $db->query("SELECT title FROM ".TABLE_PREFIX."usertitles WHERE posts<='".$user['postnum']."' ORDER BY posts DESC");
+		$usertitle = $db->fetch_array($query);
+		return $usertitle['title'];
+	}
+}
 ?>
