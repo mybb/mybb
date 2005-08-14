@@ -517,20 +517,28 @@ if($mybb->input['action'] == "do_newreply" )
 		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'$lastpost[dateline]'");
 		while($subscribedmember = $db->fetch_array($query))
 		{
-			if(empty($subscribedmember['language']) && !empty($mybb->user['language']))
+			if($uselang == $mybb->user['language'])
 			{
-				$subscribedmember['language'] = $mybb->settings['bblanguage'];
-			}
-			if($subscribedmember['language'] == $mybb->user['language'])
-			{
-				$userlang = &$lang;
+				$emailsubject = $lang->emailsubject_subscription;
+				$emailmessage = $lang->email_subscription;
 			}
 			else
 			{
-				$userlang = new MyLanguage;
-				$userlang->setPath("./inc/languages");
-				$userlang->setLanguage($subscribedmember['language']);
-				$userlang->load("messages");
+				if($langcache[$subscribedmember['language']]['emailsubject_subscription'])
+				{
+					$emailsubject = $langcache[$subscribedmember['language']]['emailsubject_subscription'];
+					$emailmessage = $langcache[$subscribedmember['language']]['email_subscription'];
+				}
+				else
+				{
+					$userlang = new MyLanguage;
+					$userlang->setPath("./inc/languages");
+					$userlang->setLanguage($subscribedmember['language']);
+					$userlang->load("messages");
+					$langcache[$subscribedmember['language']]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
+					$langcache[$subscribedmember['language']]['email_subscription'] = $userlang->email_subscription;
+					unset($userlang);
+				}
 			}
 			$emailsubject = sprintf($userlang->emailsubject_subscription, $subject);
 			$emailmessage = sprintf($userlang->email_subscription, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);

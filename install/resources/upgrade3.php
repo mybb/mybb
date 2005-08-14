@@ -143,7 +143,8 @@ function upgrade3_convertattachments()
 				$thumbnail['filename'] = "SMALL";
 			}
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."attachments SET donecon='1', uid='".$attachment['puid']."', thumbnail='".$thumbnail['filename']."' WHERE aid='".$attachment['aid']."'");
+		$db->query("UPDATE ".TABLE_PREFIX."attachments SET attachname='".$filename."', donecon='1', uid='".$attachment['puid']."', thumbnail='".$thumbnail['filename']."' WHERE aid='".$attachment['aid']."'");
+		unset($thumbnail);
 	}
 	echo "<p>Done.</p>";
 	$query = $db->query("SELECT COUNT(aid) AS attachrem FROM ".TABLE_PREFIX."attachments WHERE donecon!='1'");
