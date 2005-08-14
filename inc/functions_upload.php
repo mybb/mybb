@@ -28,7 +28,6 @@ function remove_attachments($pid, $posthash="")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE posthash='$posthash' OR (pid='$pid' AND pid!='0')");
 	while($attachment = $db->fetch_array($query))
 	{
-		$attachment = $db->fetch_array($query);
 		$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='".$attachment['aid']."'");
 		@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 		if($attachment['thumbnail'])
