@@ -1701,7 +1701,7 @@ if($mybb->input['action'] == "do_manageban")
 			"dateline" => time(),
 			"bantime" => $mybb->input['liftafter'],
 			"lifted" => $liftdate,
-			"reason" => $addslashes($mybb->input['banreason'])
+			"reason" => addslashes($mybb->input['banreason'])
 			);
 		$db->insert_query(TABLE_PREFIX."banned", $banneduser);
 		cpredirect("users.php?action=banned", $lang->ban_added);
