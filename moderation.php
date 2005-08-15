@@ -170,7 +170,7 @@ switch($mybb->input['action'])
 	
 		updateforumcount($fid);
 		logmod($modlogdata, $lang->redirects_removed);
-		redirect("showthread.php?tid=$tid", $lang->redirect_redirectsmoved);
+		redirect("showthread.php?tid=$tid", $lang->redirect_redirectsremoved);
 		break;
 
 	// Delete thread confirmation page

@@ -95,7 +95,6 @@ $l['redirect_inline_threadsunapproved'] = "The selected threads have been unappr
 $l['redirect_inline_postsmerged'] = "The selected posts have been merged together.<br />You will now be taken back to the thread.";
 $l['redirect_inline_postsapproved'] = "The selected posts have been approved.<br />You will now be returned to the thread.";
 $l['redirect_inline_postsunapproved'] = "The selected posts have been unapproved.<br />You will now be returned to the thread.";
-$l['redirect_redirectsmoved'] = "The redirects to this thread have been removed.<br />You will now be taken back to the thread.";
 $l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
 
 $l['error_alreadyuploaded'] = "It appears you have already uploaded the same file (judged by filename and size) into this post. Please choose a different file to attach.";
