@@ -71,7 +71,6 @@ $l['redirect_threadnotesupdated'] = "Thank you, the notes for this thread have s
 $l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";
 $l['redirect_threadsmerged'] = "Thank you, the two threads have successfully been merged together.<br />You will now be taken to the new thread.";
 $l['redirect_accountactivated'] = "Your account has successfully been activated.<br />You will now be taken back to the main page.";
-$l['redirect_redirectsremoved'] = "All move redirects to this thread have been removed.<br />You will now be taken back to the thread.";
 $l['redirect_postedited'] = "Thank you, this post has been edited. <br />You will now be returned to the thread.";
 $l['redirect_eventadded'] = "Your event has been added successfully.<br />You will now be taken to it.";
 $l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";
@@ -103,7 +102,7 @@ $l['error_alreadyuploaded'] = "It appears you have already uploaded the same fil
 $l['error_polloptiontoolong'] = "One or more poll options you entered are longer than the acceptable limit. Please go back and shorten them.";
 $l['error_nomergeposts'] = "You need to select one or more posts from the thread to be able to merge posts together.";
 $l['error_nomessage'] = "Sorry, we cannot proceed because you did not enter a valid message. Please go back and do so.";
-$l['error_cantsplitonepost'] = "You cannot split a thread that contains only one posts.";
+$l['error_cantsplitonepost'] = "You cannot split a thread that contains only one post.";
 $l['error_alreadyregistered'] = "Sorry, but our system shows that you have already registered on these forums and the registration of multiple accounts has been disabled.";
 $l['error_alreadyregisteredtime'] = "We cannot process your registration because there has already been {1} new registration(s) from your ip address in the past {2} hours. Please try again later.";
 $l['error_invalidrating'] = "You have selected an invalid rating for this thread. Please go back and try again.";
@@ -312,7 +311,7 @@ If you would not like to receive any more notifications of new threads in this f
 
 ------------------------------------------";
 
-$l['email_activeateaccount'] = "{1},
+$l['email_activateaccount'] = "{1},
 
 To complete the registration process on {2}, you will need to go to the URL below in your web browser.
 
