@@ -349,7 +349,7 @@ function upgrade3_dbchanges2()
 		) TYPE=MyISAM;";
 
 	$db->query("CREATE TABLE ".TABLE_PREFIX."datacache (
-	  title varchar(15) NOT NULL default '',
+	  title varchar(30) NOT NULL default '',
 	  cache mediumtext NOT NULL,
 	  PRIMARY KEY(title)
 	) TYPE=MyISAM;");
