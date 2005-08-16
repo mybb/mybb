@@ -461,7 +461,7 @@ if($mybb->input['action'] == "do_register")
 			$db->insert_query(TABLE_PREFIX."awaitingactivation", $activationarray);
 			$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_activeateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-			die("1 - $emailmessage. 2 - $lang->email_activeateaccount");
+			die("0 - $lang - 05 - $lang->email_sendtofriend 1 - $emailmessage. 2 - $lang->email_activeateaccount");
 			mymail($email, $emailsubject, $emailmessage);
 			$lang->redirect_registered_activation = sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $username);
 
