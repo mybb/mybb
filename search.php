@@ -324,7 +324,7 @@ if($mybb->input['action'] == "results")
 			$bgcolor = "trow2";
 		}
 	}
-	$multipage = multipage($resultcount, $perpage, $page, "search.php?action=results&sid=$sid&sortby=$sortby&order=$order");
+	$multipage = multipage($resultcount, $perpage, $page, "search.php?action=results&sid=".$mybb->input['sid']."&sortby=$sortby&order=$order");
 	if($search['showposts'] == 2)
 	{
 		eval("\$searchresultsbar = \"".$templates->get("search_results_barposts")."\";");
