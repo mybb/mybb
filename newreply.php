@@ -521,9 +521,13 @@ if($mybb->input['action'] == "do_newreply" )
 			{
 				$uselang = $subscribedmember['language'];
 			}
+			elseif($mybb->settings['bblanguage'])
+			{
+				$uselang = $mybb->settings['bblanguage'];
+			}
 			else
 			{
-				$uselang = $settings['bblanguage'];
+				$uselang = "english";
 			}
 
 			if($uselang == $mybb->user['language'])
