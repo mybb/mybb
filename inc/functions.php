@@ -670,15 +670,16 @@ function getuserpermissions($uid="", $gid="")
 //
 function checkpwforum($fid, $password="")
 {
-	global $mybbuser, $pwverify, $toplinks, $header, $settings, $footer, $css, $headerinclude, $theme, $_SERVER, $breadcrumb, $forumpass, $templates, $lang;
+	global $mybb, $mybbuser, $toplinks, $header, $settings, $footer, $css, $headerinclude, $theme, $_SERVER, $breadcrumb, $templates, $lang;
 	$showform = 1;
+
 	if($password)
 	{
-		if($pwverify)
+		if($mybb->input['pwverify'])
 		{
-			if($password == $pwverify)
+			if($password == $mybb->input['pwverify'])
 			{
-				mysetcookie("forumpass[$fid]", md5($mybbuser['uid'].$pwverify));
+				mysetcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']));
 				$showform = 0;
 			}
 			else
@@ -689,7 +690,7 @@ function checkpwforum($fid, $password="")
 		}
 		else
 		{
-			if(!$forumpass[$fid] || ($forumpass[$fid] && md5($mybbuser['uid'].$password) != $forumpass[$fid]))
+			if(!$_COOKIE['forumpass'][$fid] || ($_COOKIE['forumpass'][$fid] && md5($mybb->user['uid'].$password) != $_COOKIE['forumpass'][$fid]))
 			{
 				$showform = 1;
 			}
