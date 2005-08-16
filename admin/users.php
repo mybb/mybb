@@ -527,7 +527,7 @@ if($mybb->input['action'] == "do_email")
 			}
 			elseif($user['email'] != "")
 			{
-				mail($user['email'], $searchop['subject'], $sendmessage, "From: $searchop[from]");
+				mymail($user['email'], $searchop['subject'], $sendmessage, "From: $searchop[from]");
 				echo sprintf($lang->email_sent, $user['username']);
 			}
 			else

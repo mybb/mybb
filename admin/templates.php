@@ -148,7 +148,7 @@ if($mybb->input['action'] == "do_edit")
 	$updatedtemplate = array(
 		"title" => addslashes($mybb->input['title']),
 		"template" => addslashes($mybb->input['template']),
-		"sid" => intval($sid)
+		"sid" => $sid
 		);
 	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
 	cpredirect("templates.php?expand=".$setid, $lang->template_edited);
