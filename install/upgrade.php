@@ -32,9 +32,8 @@ $output->script = "upgrade.php";
 $db=new bbDB;
 // Connect to Database
 define("TABLE_PREFIX", $config['table_prefix']);
-$db->connect($config[hostname], $config[username], $config[password]);
-$db->select_db($config[database]);
-
+$db->connect($config['hostname'], $config['username'], $config['password']);
+$db->select_db($config['database']);
 
 
 // Set if we need to revert templates and settings for this version

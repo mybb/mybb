@@ -48,6 +48,14 @@ function upgrade5_dbchanges()
 	  PRIMARY KEY(title)
 	) TYPE=MyISAM;");
 
+	$db->query("ALTER TABLE ".TABLE_PREFIX."helpdocs ADD usetranslation CHAR( 3 ) NOT NULL AFTER document;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."helpdocs ADD enabled CHAR( 3 ) NOT NULL AFTER usetranslation;");
+	$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET hid='6' WHERE hid='7'");
+	$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET hid='7' WHERE hid='8'");
+	
+	$db->query("ALTER TABLE ".TABLE_PREFIX."helpsections ADD usetranslation CHAR( 3 ) NOT NULL AFTER description;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."helpsections ADD enabled CHAR( 3 ) NOT NULL AFTER usetranslation;");
+	
 	echo "Done. Click Next.";
 	$output->print_footer("5_dbchanges2");
 }
