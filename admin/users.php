@@ -505,7 +505,9 @@ if($mybb->input['action'] == "do_email")
 		tablesubheader($lang->results_matching);
 		$bgcolor = getaltbg();
 		echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\">\n";
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT $searchop[start], $searchop[perpage]");		
+//		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT $searchop[start], $searchop[perpage]");	
+	@set_time_limit(0);
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid");		
 		while($user = $db->fetch_array($query))
 		{
 			$sendmessage = $searchop['message'];
