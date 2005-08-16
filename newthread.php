@@ -570,6 +570,48 @@ if($mybb->input['action'] == "do_newthread")
 			{
 				$uselang = $subscribedmember['language'];
 			}
+			elseif($mybb->settings['bblanguage'])
+			{
+				$uselang = $mybb->settings['bblanguage'];
+			}
+			else
+			{
+				$uselang = "english";
+			}
+
+			if($uselang == $mybb->settings['bblanguage'])
+			{
+				$emailsubject = $lang->emailsubject_forum_subscription;
+				$emailmessage = $lang->email_forum_subscription;
+			}
+			else
+			{
+				if(isset($langcache[$uselang]['emailsubject_subscription']))
+				{
+					$emailsubject = $langcache[$uselang]['emailsubject_forum_subscription'];
+					$emailmessage = $langcache[$uselang]['email_forum_subscription'];
+				}
+				else
+				{
+					$userlang = new MyLanguage;
+					$userlang->setPath("./inc/languages");
+					$userlang->setLanguage($uselang);
+					$userlang->load("messages");
+					$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_forum_subscription;
+					$langcache[$uselang]['email_subscription'] = $userlang->email_forum_subscription;
+					unset($userlang);
+				}
+			}
+			$emailsubject = sprintf($userlang->emailsubject_subscription, $subject);
+			$emailmessage = sprintf($userlang->email_subscription, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
+			mymail($subscribedmember['email'], $emailsubject, $emailmessage);
+			unset($userlang);
+		}
+
+			if($subscribedmember['language'] != "" && $lang->languageExists($subscribedmember['language']))
+			{
+				$uselang = $subscribedmember['language'];
+			}
 			else
 			{
 				$uselang = $settings['bblanguage'];

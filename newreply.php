@@ -513,8 +513,7 @@ if($mybb->input['action'] == "do_newreply" )
 		$excerpt = substr(dobadwords(stripslashes($mybb->input['message'])), 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline DESC LIMIT 1");
 		$lastpost = $db->fetch_array($query);
-//		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'$lastpost[dateline]'");
-		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."'");
+		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'$lastpost[dateline]'");
 		while($subscribedmember = $db->fetch_array($query))
 		{
 			if($subscribedmember['language'] != "" && $lang->languageExists($subscribedmember['language']))
@@ -530,7 +529,7 @@ if($mybb->input['action'] == "do_newreply" )
 				$uselang = "english";
 			}
 
-			if($uselang == $mybb->user['language'])
+			if($uselang == $mybb->settings['bblanguage'])
 			{
 				$emailsubject = $lang->emailsubject_subscription;
 				$emailmessage = $lang->email_subscription;
@@ -541,12 +540,10 @@ if($mybb->input['action'] == "do_newreply" )
 				{
 					$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
 					$emailmessage = $langcache[$uselang]['email_subscription'];
-					die("cached $uselang");
 				}
 				else
 				{
 					$userlang = new MyLanguage;
-					die("loading $uselang");
 					$userlang->setPath("./inc/languages");
 					$userlang->setLanguage($uselang);
 					$userlang->load("messages");
@@ -560,7 +557,6 @@ if($mybb->input['action'] == "do_newreply" )
 			mymail($subscribedmember['email'], $emailsubject, $emailmessage);
 			unset($userlang);
 		}
-		error_reporting(0);
 		// Start Auto Subscribe
 		if($postoptions['emailnotify'] != "no")
 		{

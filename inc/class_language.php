@@ -41,9 +41,8 @@ class MyLanguage {
 		{
 			$language = "english";
 		}
-
 		$this->language = $language;
-		require_once $this->path."/".$language.".php";
+		require $this->path."/".$language.".php";
 		$this->settings = $langinfo;
 
 		if($area == "admin")
@@ -61,7 +60,7 @@ class MyLanguage {
 		$lfile = $this->path."/".$this->language."/".$section.".lang.php";
 		if(file_exists($lfile))
 		{
-			require_once $lfile;
+			require $lfile;
 		}
 		else
 		{
