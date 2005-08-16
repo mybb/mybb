@@ -481,7 +481,7 @@ if($mybb->input['action'] == "do_email")
 	}
 	if(!$searchop['page'])
 	{
-		$searchop['page'] = "1";
+		$searchop['page'] = "0";
 		$searchop['start'] = "0";
 	}
 	else
