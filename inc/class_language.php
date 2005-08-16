@@ -37,6 +37,11 @@ class MyLanguage {
 		{
 			die("Language $language ($this->path/$language) is not installed");
 		}
+		if($language == "")
+		{
+			$language = "english";
+		}
+
 		$this->language = $language;
 		require_once $this->path."/".$language.".php";
 		$this->settings = $langinfo;
