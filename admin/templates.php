@@ -146,8 +146,8 @@ if($mybb->input['action'] == "do_edit")
 		$title = $templateinfo['title'];
 	}
 	$updatedtemplate = array(
-		"title" => addslashes($title),
-		"template" => addslashes($template),
+		"title" => addslashes($mybb->input['title']),
+		"template" => addslashes($mybb->input['template']),
 		"sid" => intval($sid)
 		);
 	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
