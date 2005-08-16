@@ -546,7 +546,7 @@ if($mybb->input['action'] == "do_newreply" )
 				{
 					$userlang = new MyLanguage;
 					$userlang->setPath("./inc/languages");
-					$userlang->setLanguage($subscribedmember['language']);
+					$userlang->setLanguage($uselang);
 					$userlang->load("messages");
 					$langcache[$subscribedmember['language']]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
 					$langcache[$subscribedmember['language']]['email_subscription'] = $userlang->email_subscription;
