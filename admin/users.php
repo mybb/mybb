@@ -552,7 +552,7 @@ if($mybb->input['action'] == "do_email")
 			$hiddens .= "<input type=\"hidden\" name=\"searchop[$key]\" value=\"$val\">";
 		}
 		echo "$hiddens";
-		if($numusers > $searchop[perpage])
+		if($num[results] > $searchop[perpage])
 		{
 			endform($lang->next_page, "");
 		}
