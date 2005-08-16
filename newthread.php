@@ -586,12 +586,7 @@ if($mybb->input['action'] == "do_newthread")
 			}
 			else
 			{
-				if(isset($langcache[$uselang]['emailsubject_subscription']))
-				{
-					$emailsubject = $langcache[$uselang]['emailsubject_forum_subscription'];
-					$emailmessage = $langcache[$uselang]['email_forum_subscription'];
-				}
-				else
+				if(!isset($langcache[$uselang]['emailsubject_subscription']))
 				{
 					$userlang = new MyLanguage;
 					$userlang->setPath("./inc/languages");
@@ -601,43 +596,9 @@ if($mybb->input['action'] == "do_newthread")
 					$langcache[$uselang]['email_subscription'] = $userlang->email_forum_subscription;
 					unset($userlang);
 				}
-			}
-			$emailsubject = sprintf($userlang->emailsubject_subscription, $subject);
-			$emailmessage = sprintf($userlang->email_subscription, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
-			mymail($subscribedmember['email'], $emailsubject, $emailmessage);
-			unset($userlang);
-		}
+				$emailsubject = $langcache[$uselang]['emailsubject_forum_subscription'];
+				$emailmessage = $langcache[$uselang]['email_forum_subscription'];
 
-			if($subscribedmember['language'] != "" && $lang->languageExists($subscribedmember['language']))
-			{
-				$uselang = $subscribedmember['language'];
-			}
-			else
-			{
-				$uselang = $settings['bblanguage'];
-			}
-			if($uselang == $mybb->user['language'])
-			{
-				$emailsubject = $lang->emailsubject_forumsubscription;
-				$emailmessage = $lang->email_forumsubscription;
-			}
-			else
-			{
-				if($langcache[$subscribedmember['language']]['emailsubject_forumsubscription'])
-				{
-					$emailsubject = $langcache[$subscribedmember['language']]['emailsubject_forumsubscription'];
-					$emailmessage = $langcache[$subscribedmember['language']]['email_forumsubscription'];
-				}
-				else
-				{
-					$userlang = new MyLanguage;
-					$userlang->setPath("./inc/languages");
-					$userlang->setLanguage($subscribedmember['language']);
-					$userlang->load("messages");
-					$langcache[$subscribedmember['language']]['emailsubject_forumsubscription'] = $userlang->emailsubject_forumsubscription;
-					$langcache[$subscribedmember['language']]['email_forumsubscription'] = $userlang->email_forumsubscription;
-					unset($userlang);
-				}
 			}
 			$emailsubject = sprintf($emailsubject, $forum['name']);
 			$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $mybb->user['username'], $forum['name'], $mybb->settings['bbname'], $mybb->input['subject'], $excerpt, $mybb->settings['bburl'], $tid);
