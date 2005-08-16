@@ -136,20 +136,21 @@ if($mybb->input['action'] == "do_editset")
 	cpredirect("templates.php", $lang->set_edited);
 }
 
-if($mybb->input['action'] == "do_edit") {
+if($mybb->input['action'] == "do_edit")
+{
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 	$templateinfo = $db->fetch_array($query);
 
-	if($title == "") {
-		$title = $templateinfo[title];
+	if($title == "")
+	{
+		$title = $templateinfo['title'];
 	}
-	$template = addslashes($template);
 	$updatedtemplate = array(
 		"title" => addslashes($title),
 		"template" => addslashes($template),
 		"sid" => intval($sid)
 		);
-	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$tid."'");
+	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
 	cpredirect("templates.php?expand=".$setid, $lang->template_edited);
 }
 if($mybb->input['action'] == "do_replace") {
