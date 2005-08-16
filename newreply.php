@@ -537,20 +537,19 @@ if($mybb->input['action'] == "do_newreply" )
 			}
 			else
 			{
-				if(isset($langcache[$subscribedmember['language']]['emailsubject_subscription']))
+				if(isset($langcache[$uselang]['emailsubject_subscription']))
 				{
-					$emailsubject = $langcache[$subscribedmember['language']]['emailsubject_subscription'];
-					$emailmessage = $langcache[$subscribedmember['language']]['email_subscription'];
+					$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
+					$emailmessage = $langcache[$uselang]['email_subscription'];
 				}
 				else
 				{
 					$userlang = new MyLanguage;
 					$userlang->setPath("./inc/languages");
-					echo "loading $uselang...";
 					$userlang->setLanguage($uselang);
 					$userlang->load("messages");
-					$langcache[$subscribedmember['language']]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
-					$langcache[$subscribedmember['language']]['email_subscription'] = $userlang->email_subscription;
+					$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
+					$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
 					unset($userlang);
 				}
 			}
