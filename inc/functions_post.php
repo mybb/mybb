@@ -602,7 +602,10 @@ function makepostbit($post, $pmprevann=0)
 			$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
-		eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
+		if((ismod($fid, "caneditposts") == "yes" || $mybb->user['uid'] == $post['uid']) && $mybb->user['uid'] != 0)
+		{
+			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
+		}
 		// Quick Delete button
 		if((ismod($fid, "candeleteposts") == "yes" || $mybb->user['uid'] == $post['uid']) && $mybb->user['uid'] != 0)
 		{
