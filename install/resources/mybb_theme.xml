@@ -4278,7 +4278,7 @@ $rating
 $modbit
 </tr>
 ]]></template>
-		<template name="forumdisplay_orderarrow"><![CDATA[<span class="smalltext">[<a href="$sorturl&amp;sortby=$sortby&amp;order=$oppsort">$oppsort</a>]</span>]]></template>
+		<template name="forumdisplay_orderarrow"><![CDATA[<span class="smalltext">[<a href="$sorturl&amp;sortby=$sortby&amp;order=$sortorder">$oppsort</a>]</span>]]></template>
 		<template name="showthread_ratingdisplay"><![CDATA[<img src="$theme[imgdir]/$thread[rating]" border="0" alt="$ratingav" />&nbsp;&nbsp;]]></template>
 		<template name="postbit_posturl"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><span class="smalltext"><strong>$lang->postbit_post <a href="showthread.php?tid=$tid&amp;pid=$post[pid]#pid$post[pid]">#$postcounter</a></strong>$post[inlinecheck]</span></div>]]></template>
 		<template name="postbit_attachments_thumbnails_thumbnail"><![CDATA[<a href="attachment.php?aid=$attachment[aid]" target="_blank"><img src="attachment.php?thumbnail=$attachment[aid]" class="attachment" alt="" /></a>&nbsp;&nbsp;&nbsp;]]></template>
@@ -6162,7 +6162,7 @@ $header
 <td colspan="2" width="100%" class="thead"><strong>$lang->edit_event</strong></td>
 </tr>
 <tr>
-<td width="40%" class="trow1"><strong>Date:</strong></td>
+<td width="40%" class="trow1"><strong>$lang->event_date</strong></td>
 <td width="60%" class="trow1">
 <select name="month">
 <option value="1"$msel[1]>$lang->month_1</option>
