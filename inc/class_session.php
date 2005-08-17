@@ -29,7 +29,8 @@ class session
 		"fast-webcrawler" => "AlltheWeb",
 		"grub.org" => "Grub Client",
 		"turnitinbot" => "Turnitin.com",
-		"msnbot" => "MSN Search"
+		"msnbot" => "MSN Search",
+		"yahoo" => "Yahoo! Slurp"
 		);
 
 	function init()
