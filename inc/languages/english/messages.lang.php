@@ -34,7 +34,6 @@ $l['redirect_notepadupdated'] = "Your personal notepad has been updated.<br />Yo
 $l['redirect_profileupdated'] = "Thank you, your profile has been updated successfully.<br />You will now be returned to the User CP.";
 $l['redirect_newreplyerror'] = "Sorry, but your reply has been rejected for lack of content. <br />You will now be returned to the thread.";
 $l['redirect_validated'] = "Thank you, your account has been validated.<br />You will now be taken to the forums.";
-$l['redirect_newreplyerror'] = "Sorry, but your reply has been rejected for lack of content. <br />You will now be returned to the thread.";
 $l['redirect_threadrated'] = "Thank you, the thread has been rated successfully. You will now be returned to the thread.";
 $l['redirect_forumsubscriptionadded'] = "The selected forum has been added to your forum subscriptions list.<br />You will now be returned to where you came from.";
 $l['redirect_forumsubscriptionremoved'] = "The selected forum has been removed from your forum subscriptions list.<br />You will now be returned to where you came from.";

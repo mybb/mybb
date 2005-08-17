@@ -279,13 +279,17 @@ if($mybb->input['action'] == "thread") {
 	$thread['views']++;
 	
 	// Work out the threads rating
-	if($forum['allowtratings'] != "no" && $thread['numratings'] > 0) {
+	if($forum['allowtratings'] != "no" && $thread['numratings'] > 0)
+	{
 		$thread['averagerating'] = round(($thread['totalratings']/$thread['numratings']), 2);
 		$rateimg = intval(round($thread['averagerating']));
 		$thread['rating'] = $rateimg."stars.gif";
 		$thread['numratings'] = intval($thread['numratings']);
+		$ratingav = sprintf($lang->rating_average, $thread['numratings'], $thread['averagerating']);
 		eval("\$rating = \"".$templates->get("showthread_ratingdisplay")."\";");
-	} else {
+	}
+	else
+	{
 		$rating = "";
 	}
 	if($forum['allowtratings'] != "no") {

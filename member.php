@@ -1214,7 +1214,7 @@ elseif($mybb->input['action'] == "profile")
 		$memprofile['awayreason'] = htmlspecialchars_uni(stripslashes($memprofile['awayreason']));
 		if($memprofile['returndate'] == "")
 		{
-			$returndate = "Unknown";
+			$returndate = "$lang->unknown";
 		}
 		else
 		{

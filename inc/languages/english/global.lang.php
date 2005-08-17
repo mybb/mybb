@@ -51,7 +51,6 @@ $l['enter_password_below'] = "Please enter the Password Below:";
 $l['verify_forum_password'] = "Verify Forum Password";
 $l['wrong_forum_password'] = "The password you entered seems to be wrong. Please try again.";
 
-$l['guest'] = "Guest";
 $l['reset_button'] = "Reset";
 $l['username'] = "Username:";
 $l['password'] = "Password:";
