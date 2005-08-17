@@ -1150,7 +1150,7 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$avatar = "";
 	}
-	if($memprofile['hideemail'] == "no")
+	if($memprofile['hideemail'] != "no")
 	{
 		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
 	}
@@ -1443,7 +1443,7 @@ elseif($mybb->input['action'] == "emailuser")
 		{
 			error($lang->error_invalidpmrecipient);
 		}
-		if($emailto['hideemail'] == "yes")
+		if($emailto['hideemail'] != "yes")
 		{
 			error($lang->error_hideemail);
 		}
@@ -1472,7 +1472,7 @@ elseif($mybb->input['action'] == "do_emailuser")
 	{
 		error($lang->error_invalidpmrecipient);
 	}
-	if($emailto['hideemail'] == "yes")
+	if($emailto['hideemail'] != "yes")
 	{
 		error($lang->error_hideemail);
 	}

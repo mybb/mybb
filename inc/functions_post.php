@@ -539,13 +539,13 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['button_www'] = "";
 		}
-		if($post['hideemail'] == "no")
+		if($post['hideemail'] != "no")
 		{
 			eval("\$post['button_email'] = \"".$templates->get("postbit_email")."\";");
 		}
 		else
 		{
-			$$post['button_email'] = "";
+			$post['button_email'] = "";
 		}
 		$post['userregdate'] = mydate($mybb->settings['regdateformat'], $post['regdate']);
 
