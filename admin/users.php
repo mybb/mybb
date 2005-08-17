@@ -652,8 +652,8 @@ if($mybb->input['action'] == "add")
 	startform("users.php", "", "do_add");
 	tableheader($lang->add_user);
 	tablesubheader($lang->required_info);
-	makeinputcode($lang->username, "username");
-	makepasswordcode($lang->password, "password");
+	makeinputcode($lang->username, "username", "", 25, "", 25, 0);
+	makepasswordcode($lang->password, "password", "", 25, 0);
 	makeinputcode($lang->email, "email");
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", 2);
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
@@ -814,8 +814,8 @@ if($mybb->input['action'] == "edit")
 	makehiddencode("uid", $uid);
 	tableheader($lang->modify_user);
 	tablesubheader($lang->required_info);
-	makeinputcode($lang->username, "username", $user['username'], 25, "", 15);
-	makepasswordcode($lang->new_password, "password");
+	makeinputcode($lang->username, "username", $user['username'], 25, "", 25, 0);
+	makepasswordcode($lang->new_password, "password", "", 25, 0);
 	makeinputcode($lang->email, "email", $user['email']);
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", $user['usergroup']);
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");

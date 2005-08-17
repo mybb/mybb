@@ -167,23 +167,31 @@ function makelinkcode($text, $url, $newwin=0, $class="")
 	}
 	return " <a href=\"$url\" $target><span class=\"$class\">[$text]</span></a>";
 }
-function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxlength="")
+function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxlength="", $autocomplete=1)
 {
 	$bgcolor = getaltbg();
 	$value = stripslashes($value);
 	$value = htmlspecialchars_uni($value);
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"text\" class=\"inputbox\" name=\"$name\" value=\"$value\" size=\"$size\" maxlength=\"$maxlength\">$extra</td>\n</tr>\n";
+	if($autocomplete != 1)
+	{
+		$ac = "autocomplete=\"off\"";
+	}
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"text\" class=\"inputbox\" name=\"$name\" value=\"$value\" size=\"$size\" maxlength=\"$maxlength\" $ac>$extra</td>\n</tr>\n";
 }
 function makeuploadcode($title, $name, $size="25", $extra="")
 {
 	$bgcolor = getaltbg();
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"file\" class=\"inputbox\" name=\"$name\" size=\"$size\">$extra</td>\n</tr>\n";
 }
-function makepasswordcode($title, $name, $value="", $size="25")
+function makepasswordcode($title, $name, $value="", $size="25", $autocomplete=1)
 {
 	$bgcolor = getaltbg();
 	$value = htmlspecialchars_uni($value);
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"password\" class=\"inputbox\" name=\"$name\" value=\"$value\" size=\"$size\"></td>\n</tr>\n";
+	if($autocomplete != 1)
+	{
+		$ac = "autocomplete=\"off\"";
+	}
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"password\" class=\"inputbox\" name=\"$name\" value=\"$value\" size=\"$size\" $ac></td>\n</tr>\n";
 }
 function maketextareacode($title, $name, $value="", $rows="4", $columns="40")
 {
