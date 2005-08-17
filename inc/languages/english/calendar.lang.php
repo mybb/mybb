@@ -45,4 +45,6 @@ $l['edit_event'] = "Edit Event";
 $l['view_event'] = "View Event";
 $l['no_events'] = "This day does not have any events associated with it.<p>To post an event on this day:<ol><li>Go back to the 'Monthly View' of the calendar.</li><li>Click either 'Add Public Event' or 'Add Private Event' at the bottom of the page.</li><li>Enter the event details and the date.</li></ol>";
 $l['years_old'] = "Years Old";
+$l['alt_edit'] = "Edit this event";
+$l['alt_delete'] = "Delete this event";
 ?>

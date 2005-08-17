@@ -83,8 +83,8 @@ if($mybb->input['action'] == "event")
 	}
 	if(($event['author'] == $mybb->user['uid'] && $mybb->user['uid'] != 0) || $mybb->usergroup['cancp'] == "yes")
 	{
-		$editbutton = "<a href=\"calendar.php?action=editevent&eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"Edit this event\" /></a>";
-		$deletebutton = "<a href=\"javascript:deleteEvent($event[eid]);\"><img src=\"$theme[imgdir]/postbit_delete.gif\" border=\"0\" alt=\"Delete this event\" /></a>";
+		$editbutton = "<a href=\"calendar.php?action=editevent&eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
+		$deletebutton = "<a href=\"javascript:deleteEvent($event[eid]);\"><img src=\"$theme[imglangdir]/postbit_delete.gif\" border=\"0\" alt=\"$lang->alt_delete\" /></a>";
 	}
 	$event['subject'] = htmlspecialchars_uni(stripslashes($event['subject']));
 	$event['description'] = postify($event['description'], "no", "yes", "yes", "yes");
