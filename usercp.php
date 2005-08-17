@@ -1286,7 +1286,7 @@ elseif($mybb->input['action'] == "avatar")
 	$avatardir = @opendir($mybb->settings['avatardir']);
 	while($dir = @readdir($avatardir))
 	{
-		if(is_dir($mybb->settings['avatardir']."/$dir") && $dir != "." && $dir != "..")
+		if(is_dir($mybb->settings['avatardir']."/$dir") && substr($dir, 0, 1) != ".")
 		{
 			$gallerylist[$dir] = str_replace("_", " ", $dir);
 		}
