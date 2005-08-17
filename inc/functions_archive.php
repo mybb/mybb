@@ -97,6 +97,14 @@ function archive_footer()
 {
 	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $mybboard;
 	$totaltime = $maintimer->stop();
+	if($mybb->settings['showvernum'] == "on")
+	{
+		$mybbversion = $mybboard['internalver'];
+	}
+	else
+	{
+		$mybbversion = "";
+	}
 ?>
 </div>
 <div class="navigation"><?php echo $nav; ?></div>
@@ -109,7 +117,7 @@ function archive_footer()
 </div>
 </div>
 <div id="footer">
-<?php echo $lang->powered_by; ?> <a href="http://www.mybboard.com">MyBB</a> <?php echo $mybboard['internalver']; ?><br /><?php echo $lang->copyright; ?> &copy; <?php echo date("Y"); ?> <a href="http://www.mybboard.com">MyBB Group</a>
+<?php echo $lang->powered_by; ?> <a href="http://www.mybboard.com">MyBB</a> <?php echo $mybbversion; ?><br /><?php echo $lang->copyright; ?> &copy; <?php echo date("Y"); ?> <a href="http://www.mybboard.com">MyBB Group</a>
 <!-- temporary code to be removed before release -->
 <!-- <?php echo "<br />Page Loaded in $totaltime with $db->query_count queries."; ?> -->
 <!-- end temporary code -->
