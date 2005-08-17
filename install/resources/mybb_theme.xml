@@ -1409,7 +1409,7 @@ $headerinclude
 </html>]]></template>
 		<template name="gobutton"><![CDATA[<input type="submit" value="$lang->go" />]]></template>
 		<template name="postbit_away"><![CDATA[<a href="member.php?action=profile&amp;uid=$post[uid]"><font color="maroon">$lang->postbit_status_away</font></a>]]></template>
-		<template name="calendar_dayview_birthdays_bday"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdays[uid]"><strong>$bdays[username]</strong></a>  $age]]></template>
+		<template name="calendar_dayview_birthdays_bday"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdays[uid]"><strong>$bdays[username]</strong></a> $age]]></template>
 		<template name="misc_imcenter_icq"><![CDATA[<html>
 <head>
 <title>$lang->icq_message_center</title>
@@ -5099,7 +5099,7 @@ $footer
 ]]></template>
 		<template name="calendar_addpublicevent"><![CDATA[<a href="calendar.php?action=addevent&amp;type=public">$lang->add_public_event</a>]]></template>
 		<template name="calendar_addprivateevent"><![CDATA[<a href="calendar.php?action=addevent&amp;type=private">$lang->add_private_event</a>]]></template>
-		<template name="index_birthdays_birthday"><![CDATA[<a href="member.php?action=profile&amp;uid=$bdayuser[uid]">$bdayuser[username]</a>$age ]]></template>
+		<template name="index_birthdays_birthday"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdayuser[uid]">$bdayuser[username]</a> $age]]></template>
 		<template name="private_tracking_readmessage"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="$theme[imgdir]/old_pm.gif" border="0" alt=""></td>
 <td class="trow2">$readmessage[subject]</td>

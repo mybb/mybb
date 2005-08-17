@@ -125,12 +125,13 @@ if($mybb->settings['showbirthdays'] != "no")
 	$bdaydate = mydate("j-n", $bdaytime, "", 0);
 	$year = mydate("Y", $bdaytime, "", 0);
 	$query = $db->query("SELECT uid, username, birthday FROM ".TABLE_PREFIX."users WHERE birthday LIKE '$bdaydate-%'");
+	$comma = "";
 	while($bdayuser = $db->fetch_array($query))
 	{
 		$bday = explode("-", $bdayuser['birthday']);
 		if($year > $bday['2'] && $bday['2'] != "")
 		{
-			$age = " (".($year - $bday['2']).")";
+			$age = "(".($year - $bday['2']).")";
 		}
 		else
 		{
@@ -138,6 +139,7 @@ if($mybb->settings['showbirthdays'] != "no")
 		}
 		eval("\$bdays .= \"".$templates->get("index_birthdays_birthday")."\";");
 		$bdaycount++;
+		$comma = ", ";
 	}
 	if($bdaycount > 0)
 	{

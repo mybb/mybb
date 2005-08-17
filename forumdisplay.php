@@ -757,6 +757,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						$moderators = "";
 						$parentlistexploded = explode(",", $forum['parentlist']);
+						$comma = "";
 						while(list($key, $mfid) = each($parentlistexploded))
 						{
 							if($moderatorcache[$mfid])
@@ -769,7 +770,6 @@ function getforums($pid="0", $depth=1, $permissions="")
 								}
 							}
 						}
-						$comma = "";
 						if($moderators)
 						{
 							eval("\$modlist = \"".$templates->get("forumbit_moderators")."\";");
