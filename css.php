@@ -10,6 +10,7 @@
  */
 
 define("KILL_GLOBALS", 1);
+define("NO_ONLINE", 1);
 
 require "./inc/init.php";
 

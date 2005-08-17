@@ -34,7 +34,7 @@ class session
 
 	function init()
 	{
-		global $ipaddress, $db, $mybb;
+		global $ipaddress, $db, $mybb, $noonline;
 		//
 		// Get our visitors IP
 		//
@@ -286,7 +286,7 @@ class session
 		//
 		// Update or create the session
 		//
-		if(!$noonline)
+		if(!defined("NO_ONLINE"))
 		{
 			if($this->sid > 0)
 			{
@@ -357,7 +357,7 @@ class session
 		//
 		// Update the online data
 		//
-		if(!$noonline)
+		if(!defined("NO_ONLINE"))
 		{
 			if($this->sid > 0)
 			{
@@ -401,7 +401,7 @@ class session
 		//
 		// Update the online data
 		//
-		if(!$noonline)
+		if(!defined("NO_ONLINE"))
 		{
 			$this->sid = "bot=".$spider;
 			$this->create_session();

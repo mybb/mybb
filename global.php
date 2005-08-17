@@ -33,7 +33,10 @@ if(is_dir("install") && !file_exists("install/lock"))
 //
 // Create this users session
 //
-
+if(isset($nosession[$mybb->input['action']]))
+{
+	define("NO_ONLINE", 1);
+}
 require "./inc/class_session.php";
 $session = new session;
 $session->init();

@@ -10,7 +10,7 @@
  */
 
 define("KILL_GLOBALS", 1);
-
+$nosession['avatar'] = 1;
 $templatelist = "member_register,error_nousername,error_nopassword,error_passwordmismatch,error_invalidemail,error_usernametaken,error_emailmismatch,error_noemail,redirect_registered";
 $templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword";
 require "./global.php";
