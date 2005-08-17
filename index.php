@@ -280,13 +280,13 @@ function getforums($pid="0", $depth=1, $permissions="")
 					$hideinfo = 0;
 					if($forum['type'] == "f" && $forum['linkto'] == "")
 					{
-						if($forum['lastpost'] == 0 || $forum['lastposter'] == "")
-						{
-							$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
-						}
-						elseif($forum['password'] != "" && $forumpass[$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+						if($forum['password'] != "" && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 						{
 							$hideinfo = 1;
+						}
+						elseif($forum['lastpost'] == 0 || $forum['lastposter'] == "")
+						{
+							$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
 						}
 						else
 						{
