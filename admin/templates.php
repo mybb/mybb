@@ -123,11 +123,17 @@ if($mybb->input['action'] == "do_delete") {
 		$expand = $template[sid];
 	}
 }
-if($mybb->input['action'] == "do_deleteset") {
-	if($mybb->input['deletesubmit']) {	
+if($mybb->input['action'] == "do_deleteset")
+{
+	if($mybb->input['deletesubmit'])
+	{	
 		$db->query("DELETE FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
-		cpredirect("templates.php", $lang->set_deleted);
+		cpredirect("templates.php?action=modify", $lang->set_deleted);
+	}
+	else
+	{
+		cpredirect("templates.php?action=modify");
 	}
 }
 if($mybb->input['action'] == "do_editset")

