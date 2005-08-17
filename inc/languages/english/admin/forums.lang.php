@@ -101,6 +101,7 @@ $l['forum_added'] = "The forum has successfully been added.";
 $l['forum_deleted'] = "The forum has successfully been deleted.";
 $l['forum_updated'] = "The forum has successfully been updated.";
 $l['forum_parent_itself'] = "The forum parent cannot be the forum itself.";
+$l['forum_noparent'] = "The forum must belong to a parent.";
 
 $l['mod_added'] = "The moderator has sucessfully been added to the forum.";
 $l['mod_alreadyismod'] = "The user is already a moderator of the forum.";

@@ -185,6 +185,7 @@ function makeparentlist($fid, $navsep=",") {
 	return $navigation;
 }
 if($mybb->input['action'] == "do_add") {
+	$pid = intval($mybb->input['pid']);
 	if($mybb->input['isforum'] == "no")
 	{
 		$type = "c";
@@ -193,12 +194,16 @@ if($mybb->input['action'] == "do_add") {
 	{
 		$type = "f";
 	}
+	if($mybb->input['pid'] == 0 && $type == "f")
+	{
+		cperror($lang->forum_noparent);
+	}
 	$sqlarray = array(
 		"name" => addslashes($mybb->input['name']),
 		"description" => addslashes($mybb->input['description']),
 		"linkto" => addslashes($mybb->input['linkto']),
 		"type" => $type,
-		"pid" => intval($mybb->input['pid']),
+		"pid" => $pid,
 		"disporder" => intval($mybb->input['disporder']),
 		"active" => addslashes($mybb->input['isactive']),
 		"open" => addslashes($mybb->input['isopen']),
@@ -343,6 +348,11 @@ if($mybb->input['action'] == "do_edit") {
 		else
 		{
 			$type = "f";
+		}
+		
+		if($mybb->input['pid'] == 0 && $type == "f")
+		{
+			cperror($lang->forum_noparent);
 		}
 		
 		$sqlarray = array(
