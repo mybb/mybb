@@ -162,7 +162,7 @@ if($mybb->input['action'] == "do_addmultiple") {
 					"sid" => "NULL",
 					"name" => addslashes($name),
 					"find" => addslashes($find),
-					"url" => addslashes($imageurl),
+					"image" => addslashes($imageurl),
 					"showclickable" => "yes"
 				);
 				$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
