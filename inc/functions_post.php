@@ -466,7 +466,6 @@ function makepostbit($post, $pmprevann=0)
 		if($usergroup['usertitle'] != "" && !$hascustomtitle)
 		{
 			$post['usertitle'] = $usergroup['usertitle'];
-			$post['stars'] = $usergroup['stars'];
 		}
 		elseif(is_array($titlescache) && !$usergroup['title'])
 		{
@@ -484,6 +483,11 @@ function makepostbit($post, $pmprevann=0)
 					break;
 				}
 			}
+		}
+
+		if($usergroup['stars'])
+		{
+			$post['stars'] = $usergroup['stars'];
 		}
 		
 		if(!$post['starimage'])
