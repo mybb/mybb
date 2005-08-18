@@ -1411,7 +1411,7 @@ function getattachicon($ext)
 	}
 	else
 	{
-		return "<img src=\"images/attachtypes/unkown.gif\" border=\"0\" alt=\".$ext File\" />";
+		return "<img src=\"images/attachtypes/unknown.gif\" border=\"0\" alt=\".$ext File\" />";
 	}
 }
 
