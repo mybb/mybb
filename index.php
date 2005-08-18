@@ -86,33 +86,37 @@ if($mybb->settings['showwol'] != "no")
 		}
 	}
 	$onlinecount = $membercount + $guestcount;
-
-	// Every 1-10 times clear the WOL table
-	$hourdel = "48";
-	if($rand == 5)
-	{
-		$hourdel = time()-($hourdel*60*60);
-		$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."sessions WHERE time<'$hourdel'");
-	}
 	if($onlinecount != 1)
 	{
-		$onlinebit = $lang->online_note_bit;
-	}
-	if($membercount != 1)
-	{
-		$memberbit = $lang->online_note_bit;
-	}
-	if($anoncount != 1)
-	{
-		$anonbit = $lang->online_note_are;
+		$onlinebit = $lang->online_online_plural;
 	}
 	else
 	{
-		$anonbit = $lang->online_note_is;
+		$onlinebit = $lang->online_online_singular;
+	}
+	if($membercount != 1)
+	{
+		$memberbit = $lang->online_member_plural;
+	}
+	else
+	{
+		$memberbit = $lang->online_member_singular;
+	}
+	if($anoncount != 1)
+	{
+		$anonbit = $lang->online_anon_plural;
+	}
+	else
+	{
+		$anonbit = $lang->online_anon_singular;
 	}
 	if($guestcount != 1)
 	{
-		$guestbit = $lang->online_note_bit;
+		$guestbit = $lang->online_guest_plural;
+	}
+	else
+	{
+		$guestbit = $lang->online_guest_singular;
 	}
 	$lang->online_note = sprintf($lang->online_note, mynumberformat($onlinecount), $onlinebit, $mybb->settings['wolcutoffmins'], mynumberformat($membercount), $memberbit, mynumberformat($anoncount), $anonbit, mynumberformat($guestcount), $guestbit);
 	eval("\$whosonline = \"".$templates->get("index_whosonline")."\";");
