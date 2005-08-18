@@ -197,7 +197,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 	if($usergroup['type'] == "1")
 	{
-		$type = 1;
+		$mybb->input['type'] = 1;
 	}
 	if(strpos($mybb->input['namestyle'], "{username}") === false)
 	{
@@ -403,7 +403,7 @@ if($mybb->input['action'] == "edit")
 	maketextareacode($lang->description, "description", $usergroup['description']);
 	makeinputcode($lang->namestyle, "namestyle", $usergroup['namestyle']);
 	makeinputcode($lang->usertitle, "usertitle", $usergroup['usertitle']);
-	makeinputcode($lang->stars, "stars", $usergroup['stars']);
+	makeinputcode($lang->stars, "ustars", $usergroup['stars']);
 	makeinputcode($lang->star_image, "starimage", $usergroup['starimage']);
 	makeinputcode($lang->group_image, "image", $usergroup['image']);
 
