@@ -137,7 +137,7 @@ if($mybb->settings['showbirthdays'] != "no")
 		{
 			$age = "";
 		}
-		eval("\$bdays .= \"".$templates->get("index_birthdays_birthday")."\";");
+		eval("\$bdays .= \"".$templates->get("index_birthdays_birthday", 1, 0)."\";");
 		$bdaycount++;
 		$comma = ", ";
 	}

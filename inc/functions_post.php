@@ -463,12 +463,12 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$hascustomtitle = 1;
 		}
-		if($usergroup['usertitle'] != "" && $post['usertitle'] == "")
+		if($usergroup['usertitle'] != "" && !$hascustomtitle)
 		{
 			$post['usertitle'] = $usergroup['usertitle'];
 			$post['stars'] = $usergroup['stars'];
 		}
-		elseif(is_array($titlescache))
+		elseif(is_array($titlescache) && !$usergroup['title'])
 		{
 			reset($titlescache);
 			foreach($titlescache as $key => $titleinfo)

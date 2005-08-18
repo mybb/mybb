@@ -133,7 +133,7 @@ while(list($key, $mfid) = each($parentlistexploded))
 		while(list($key2, $moderator) = each($moderatorcache[$mfid]))
 		{
 			$moderator['username'] = formatname($moderator['username'], $moderator['usergroup'], $moderator['displaygroup']);
-			eval("\$modlist .= \"".$templates->get("forumdisplay_moderatedby_moderator")."\";");
+			eval("\$modlist .= \"".$templates->get("forumdisplay_moderatedby_moderator", 1, 0)."\";");
 			$modcomma=", ";
 		}
 	}
