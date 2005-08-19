@@ -107,7 +107,9 @@ switch($mybb->input['action'])
 	
 if($mybb->input['action'] == "profile")
 {
-	$user = $mybb->user;
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->user['uid']."'");
+	$user = $db->fetch_array($query);
+
 	$plugins->run_hooks("usercp_profile_start");
 	$bday = explode("-", $mybb->user['birthday']);
 	for($i=1;$i<=31;$i++)
