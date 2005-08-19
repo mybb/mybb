@@ -124,8 +124,8 @@ elseif ($mybb->input['action']=="home")
 	starttable();
 	tableheader($lang->mybb_credits);
 	tablesubheader($lang->contributed);
-	makelabelcode("<b>$lang->product_managers</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a><br>");
-	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a><br><a href=\"http://www.mybbmods.com/\">Musicalmidget</a>");
+	makelabelcode("<b>$lang->product_managers</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a>");
+	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a><br><a href=\"http://www.mybbmods.com/\">Musicalmidget</a><br><a href=\"http://www.dennistt.com\">DennisTT</a><br>k776");
 	makelabelcode("<b>$lang->graphics_and_style</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a><br /><a href=\"http://www.templatesforall.com\">Scott Hough</a>");
 	endtable();
 
