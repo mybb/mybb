@@ -133,7 +133,7 @@ if($mybb->input['action'] == "do_deleteset")
 	}
 	else
 	{
-		cpredirect("templates.php?action=modify");
+		cpredirect("templates.php");
 	}
 }
 if($mybb->input['action'] == "do_editset")
@@ -154,7 +154,7 @@ if($mybb->input['action'] == "do_edit")
 	$updatedtemplate = array(
 		"title" => addslashes($mybb->input['title']),
 		"template" => addslashes($mybb->input['template']),
-		"sid" => $sid
+		"sid" => $mybb->input['setid']
 		);
 	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
 	cpredirect("templates.php?expand=".$setid, $lang->template_edited);
