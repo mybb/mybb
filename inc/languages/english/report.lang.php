@@ -1,5 +1,4 @@
 <?php
-$l['thank_you'] = "Thank you,";
 $l['report_post'] = "Report Post";
 $l['report_to_mod'] = "Report this post to a moderator";
 $l['only_report'] = "You should only report posts that are spam, advertising messages, or abuse.";
