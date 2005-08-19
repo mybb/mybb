@@ -47,14 +47,7 @@ if(is_dir("install") && !file_exists("install/lock"))
 if($mybb->input['action'] == "logout")
 {
 	$expires = $time-60*60*24;
-	if($mybb->settings['cookiedomain'])
-	{
-		@setcookie("mybbadmin", "", $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
-	}
-	else
-	{
-		@setcookie("mybbadmin", "", $expires, $mybb->settings['cookiepath']);
-	}
+	@setcookie("mybbadmin", "", $expires);
 	$lang->invalid_admin = $lang->logged_out_admin;
 }
 
