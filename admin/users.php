@@ -188,6 +188,20 @@ if($mybb->input['action'] == "do_add")
 	{
 		$additionalgroups = "";
 	}
+	$birthday = explode("-", $mybb->input['birthday']);
+	if($birthday[0] < 10 && $birthday[0] != "")
+	{
+		$nbirthday[0] = "0".$birthday[0];
+	}
+	if($birthday[1] < 10 && $birthday[1] != "")
+	{
+		$nbirthday[1] = "0".$birthday[1];
+	}
+	if($nbirthday[0] && $nbirthday[0])
+	{
+		$mybb->input['birthday'] = $nbirthday[0]."-".$nbirthday[1]."-".$nbirthday[2];
+	}
+
 	$timenow = time();
 	$user = array(
 		"uid" => "NULL",
@@ -351,6 +365,20 @@ if($mybb->input['action'] == "do_edit")
 	else
 	{
 		$additionalgroups = "";
+	}
+
+	$birthday = explode("-", $mybb->input['birthday']);
+	if($birthday[0] < 10 && $birthday[0] != "")
+	{
+		$nbirthday[0] = "0".$birthday[0];
+	}
+	if($birthday[1] < 10 && $birthday[1] != "")
+	{
+		$nbirthday[1] = "0".$birthday[1];
+	}
+	if($nbirthday[0] && $nbirthday[0])
+	{
+		$mybb->input['birthday'] = $nbirthday[0]."-".$nbirthday[1]."-".$nbirthday[2];
 	}
 
 	$user = array(
