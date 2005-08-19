@@ -51,7 +51,7 @@ if($mybb->input['action'] == "do_add")
 	{
 		if($mybb->input['moderate'] == "yes")
 		{
-			$type = "4";
+			$mybb->input['type'] = "4";
 		}
 		else
 		{
