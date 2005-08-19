@@ -197,7 +197,7 @@ if($mybb->input['action'] == "do_add")
 	{
 		$nbirthday[1] = "0".$birthday[1];
 	}
-	if($nbirthday[0] && $nbirthday[0])
+	if($nbirthday[0] && $nbirthday[1])
 	{
 		$mybb->input['birthday'] = $nbirthday[0]."-".$nbirthday[1]."-".$nbirthday[2];
 	}
@@ -376,7 +376,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$nbirthday[1] = "0".$birthday[1];
 	}
-	if($nbirthday[0] && $nbirthday[0])
+	if($nbirthday[0] && $nbirthday[1])
 	{
 		$mybb->input['birthday'] = $nbirthday[0]."-".$nbirthday[1]."-".$nbirthday[2];
 	}
