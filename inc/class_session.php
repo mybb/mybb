@@ -158,7 +158,7 @@ class session
 		$time = time();
 		if($time - $mybb->user['lastactive'] > 900)
 		{
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit=lastactive, lastactive='$time' $popupadd WHERE uid='".$mybb->user[uid]."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='".$mybb->user['lastactive']."', lastactive='$time' $popupadd WHERE uid='".$mybb->user[uid]."'");
 			$mybb->user['lastvisit'] = $mybb->user['lastactive'];
 		}
 		else
