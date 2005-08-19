@@ -474,7 +474,7 @@ if($forumread > $lastread)
 {
 	$lastread = $forumread;
 }
-
+$unreadpost = 0;
 if($threadcache)
 {
 	foreach($threadcache as $thread)
@@ -537,7 +537,6 @@ if($threadcache)
 		$gotounread = "";
 		$isnew = 0;
 		$donenew = 0;
-
 		if($thread['lastpost'] > $lastread)
 		{
 			if($mybb->user['uid'] && $thread['lastread'])
@@ -554,14 +553,6 @@ if($threadcache)
 				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
 				$unreadpost = 1;
 			}
-			else
-			{
-				$unreadpost = 0;
-			}
-		}
-		else
-		{
-			$unreadpost = 0;
 		}
 
 		if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews']) {
