@@ -2,7 +2,7 @@
 $l['click_no_wait'] = "Click here if you don't want to wait any longer.";
 $l['redirect_mergeposts'] = "The selected posts have now been merged together. You will now be taken back to the thread.";
 $l['redirect_eventdeleted'] = "The event has successfully been deleted.<br />You will now be taken back to the calendar.";
-$l['redirect_threadclosed'] = "You cannot post replies or edit existing posts in this thread because it has been closed by an administrator.";
+$l['redirect_threadclosed'] = "You cannot post replies or edit existing posts in this thread because it has been closed by a moderator.";
 $l['redirect_newthread'] = "Thank you, your thread has been posted.";
 $l['redirect_newthread_poll'] = "<br />You will now be taken to the poll options and configuration page.";
 $l['redirect_newthread_moderation'] = "<br />The administrator has specified that all new threads require moderation. You will now be returned to the thread listing.";
