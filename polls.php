@@ -711,15 +711,11 @@ if($mybb->input['action'] == "vote")
 	$now = time();
 	$votesarray = explode("||~|~||", $poll['votes']);
 	$option = $mybb->input['option'];
-	if(!$votesarray[$option-1])
-	{
-		error($lang->error_nopolloptions);
-	}
 	if($poll['multiple'] == "yes")
 	{
 		while(list($voteoption, $vote) = each($option))
 		{
-			if($vote == "yes")
+			if($vote == "yes" && isset($votesarray[$voteoption-1]))
 			{
 				if($votesql)
 				{
@@ -732,6 +728,10 @@ if($mybb->input['action'] == "vote")
 	}
 	else
 	{
+		if(!isset($votesarray[$option-1]))
+		{
+			error($lang->error_nopolloptions);
+		}
 		$votesql = "(NULL,'".$poll['pid']."','".$mybb->user['uid']."','".addslashes($option)."','$now')";
 		$votesarray[$option-1]++;
 	}
