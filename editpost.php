@@ -307,7 +307,7 @@ elseif($mybb->input['action'] == "do_editpost")
 	
 	if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
 	{
-		$url = "polls.php?action=newpoll&tid=$tid&polloptions=$numpolloptions";
+		$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->input['numpolloptions'];
 		$redirect = $lang->redirect_postedited_poll;
 	}
 	else
@@ -409,6 +409,7 @@ elseif($mybb->input['action'] == "do_editpost")
 	$firstcheck = $db->fetch_array($query);
 	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != "no" && $thread['poll'] < 1) {
 		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
+		$numpolloptions = "2";
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
 		

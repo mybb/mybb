@@ -711,6 +711,7 @@ if($mybb->input['action'] == "vote")
 	$now = time();
 	$votesarray = explode("||~|~||", $poll['votes']);
 	$option = $mybb->input['option'];
+	$numvotes = $poll['numvotes'];
 	if($poll['multiple'] == "yes")
 	{
 		while(list($voteoption, $vote) = each($option))
@@ -723,6 +724,7 @@ if($mybb->input['action'] == "vote")
 				}
 				$votesql .= "(NULL,'".$poll['pid']."','".$mybb->user['uid']."','$voteoption','$now')";
 				$votesarray[$voteoption-1]++;
+				$numvotes = $numvotes+1;
 			}
 		}
 	}
@@ -734,7 +736,9 @@ if($mybb->input['action'] == "vote")
 		}
 		$votesql = "(NULL,'".$poll['pid']."','".$mybb->user['uid']."','".addslashes($option)."','$now')";
 		$votesarray[$option-1]++;
+		$numvotes = $numvotes+1;
 	}
+
 	$db->query("INSERT INTO ".TABLE_PREFIX."pollvotes VALUES $votesql");
 	$voteslist = "";
 	for($i=1;$i<=$poll['numoptions'];$i++)
@@ -747,7 +751,7 @@ if($mybb->input['action'] == "vote")
 	}
 	$updatedpoll = array(
 		"votes" => addslashes($voteslist),
-		"numvotes" => "numvotes+1"
+		"numvotes" => intval($numvotes),
 	);
 
 	$plugins->run_hooks("polls_vote_process");
