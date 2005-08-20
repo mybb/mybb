@@ -530,6 +530,7 @@ if($threadcache)
 		$gotounread = "";
 		$isnew = 0;
 		$donenew = 0;
+		$lastread = 0;
 
 		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
 		{
