@@ -4026,7 +4026,7 @@ $header
 </tr>
 <tr>
 <td class="trow2"><strong>$lang->password</strong><br /><span class="smalltext">$lang->pw_note</span></td>
-<td class="trow2"><input type="password" name="password" size="25" maxlength="15"> (<a href="member.php?action=lostpw">$lang->lostpw_note</a>)</td>
+<td class="trow2"><input type="password" name="password" size="25"> (<a href="member.php?action=lostpw">$lang->lostpw_note</a>)</td>
 </tr>
 </table>
 <br />
@@ -4787,18 +4787,18 @@ $usercpnav
 <td class="tcat" colspan="2"><strong>$lang->current_password</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" name="oldpassword" size="25" maxlength="15"></td>
+<td class="trow1" colspan="2" align="center"><input type="password" name="oldpassword" size="25"></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>$lang->please_enter_confirm_new_password</strong></td>
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>$lang->new_password</strong></td>
-<td class="trow2" width="60%"><input type="password" name="password" size="25" maxlength="15"></td>
+<td class="trow2" width="60%"><input type="password" name="password" size="25"></td>
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>$lang->confirm_password</strong></td>
-<td class="trow1" width="60%"><input type="password" name="password2" size="25" maxlength="15"></td>
+<td class="trow1" width="60%"><input type="password" name="password2" size="25"></td>
 </tr>
 </table>
 </td></tr></table>
@@ -4838,7 +4838,7 @@ $usercpnav
 <td class="tcat" colspan="2"><strong>$lang->enter_password</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" name="password" size="25" maxlength="15"></td>
+<td class="trow1" colspan="2" align="center"><input type="password" name="password" size="25"></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>$lang->please_enter_confirm_new_email</strong></td>
