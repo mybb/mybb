@@ -1409,7 +1409,7 @@ $headerinclude
 </html>]]></template>
 		<template name="gobutton"><![CDATA[<input type="submit" value="$lang->go" />]]></template>
 		<template name="postbit_away"><![CDATA[<a href="member.php?action=profile&amp;uid=$post[uid]"><font color="maroon">$lang->postbit_status_away</font></a>]]></template>
-		<template name="calendar_dayview_birthdays_bday"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdays[uid]"><strong>$bdays[username]</strong></a>$age]]></template>
+		<template name="calendar_dayview_birthdays_bday"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdays[uid]"><strong>$bdays[username]</strong></a> $age]]></template>
 		<template name="misc_imcenter_icq"><![CDATA[<html>
 <head>
 <title>$lang->icq_message_center</title>
@@ -1795,7 +1795,7 @@ $footer
 </html>]]></template>
 		<template name="usercp_attachments_attachment"><![CDATA[<tr>
 <td class="$altbg" width="1">$icon</td>
-<td class="$altbg" width="40%"><a href="attachment.php?aid=$attachment[aid]" target="_blank">$attachment[filename]</a><br /><span class="smalltext">$sizedownloads</span></td>
+<td class="$altbg" width="40%"><a href="attachment.php?aid=$attachment[aid]">$attachment[filename]</a><br /><span class="smalltext">$sizedownloads</span></td>
 <td class="$altbg"><a href="showthread.php?tid=$attachment[tid]&pid=$attachment[pid]#pid$attachment[pid]">$attachment[subject]</a><br /><span class="smalltext">$lang->attachment_thread <a href="showthread.php?tid=$attachment[tid]">$attachment[threadsubject]</a></span></td>
 <td class="$altbg" align="center">$attachdate, $attachtime</td>
 <td class="$altbg" width="1"><input type="checkbox" name="attachments[$attachment[aid]]" value="$attachment[aid]" /></td>
@@ -4026,7 +4026,7 @@ $header
 </tr>
 <tr>
 <td class="trow2"><strong>$lang->password</strong><br /><span class="smalltext">$lang->pw_note</span></td>
-<td class="trow2"><input type="password" name="password" size="25"> (<a href="member.php?action=lostpw">$lang->lostpw_note</a>)</td>
+<td class="trow2"><input type="password" name="password" size="25" maxlength="15"> (<a href="member.php?action=lostpw">$lang->lostpw_note</a>)</td>
 </tr>
 </table>
 <br />
@@ -4306,7 +4306,7 @@ $post[attachedthumbs]
 $post[attachedimages]
 $post[attachmentlist]
 </fieldset>]]></template>
-		<template name="postbit_attachments_attachment"><![CDATA[<br />$attachment[icon]&nbsp;&nbsp;<a href="attachment.php?aid=$attachment[aid]" target="_blank">$attachment[filename]</a> ($lang->postbit_attachment_size $attachment[filesize] / $lang->postbit_attachment_downloads $attachment[downloads])]]></template>
+		<template name="postbit_attachments_attachment"><![CDATA[<br />$attachment[icon]&nbsp;&nbsp;<a href="attachment.php?aid=$attachment[aid]">$attachment[filename]</a> ($lang->postbit_attachment_size $attachment[filesize] / $lang->postbit_attachment_downloads $attachment[downloads])]]></template>
 		<template name="postbit_attachments_images"><![CDATA[<span class="smalltext"><strong>$lang->postbit_attachments_images</strong></span><br />
 $post[imagelist]
 <br />]]></template>
@@ -4787,18 +4787,18 @@ $usercpnav
 <td class="tcat" colspan="2"><strong>$lang->current_password</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" name="oldpassword" size="25"></td>
+<td class="trow1" colspan="2" align="center"><input type="password" name="oldpassword" size="25" maxlength="15"></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>$lang->please_enter_confirm_new_password</strong></td>
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>$lang->new_password</strong></td>
-<td class="trow2" width="60%"><input type="password" name="password" size="25"></td>
+<td class="trow2" width="60%"><input type="password" name="password" size="25" maxlength="15"></td>
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>$lang->confirm_password</strong></td>
-<td class="trow1" width="60%"><input type="password" name="password2" size="25"></td>
+<td class="trow1" width="60%"><input type="password" name="password2" size="25" maxlength="15"></td>
 </tr>
 </table>
 </td></tr></table>
@@ -4838,7 +4838,7 @@ $usercpnav
 <td class="tcat" colspan="2"><strong>$lang->enter_password</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" name="password" size="25"></td>
+<td class="trow1" colspan="2" align="center"><input type="password" name="password" size="25" maxlength="15"></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>$lang->please_enter_confirm_new_email</strong></td>
@@ -5099,7 +5099,7 @@ $footer
 ]]></template>
 		<template name="calendar_addpublicevent"><![CDATA[<a href="calendar.php?action=addevent&amp;type=public">$lang->add_public_event</a>]]></template>
 		<template name="calendar_addprivateevent"><![CDATA[<a href="calendar.php?action=addevent&amp;type=private">$lang->add_private_event</a>]]></template>
-		<template name="index_birthdays_birthday"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdayuser[uid]">$bdayuser[username]</a>$age]]></template>
+		<template name="index_birthdays_birthday"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdayuser[uid]">$bdayuser[username]</a> $age]]></template>
 		<template name="private_tracking_readmessage"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="$theme[imgdir]/old_pm.gif" border="0" alt=""></td>
 <td class="trow2">$readmessage[subject]</td>

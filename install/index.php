@@ -48,7 +48,7 @@ else
 	);
 	if(!isset($mybb->input['action']))
 	{
-		$mybb->input['action'] = "welcome";
+		$mybb->input['action'] = "intro";
 	}
 	switch($mybb->input['action'])
 	{
@@ -80,7 +80,6 @@ else
 			install_done();
 			break;
 		default:
-			$mybb->input['action'] = "welcome";
 			intro();
 			break;
 	}

@@ -16,7 +16,7 @@ class installerOutput {
 	var $steps = array();
 	var $title = "MyBB Installation Wizard";
 
-	function print_header($title="Welcome", $image="welcome", $form=1)
+	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
 		global $mybb;
 		$this->doneheader = 1;
@@ -33,24 +33,22 @@ class installerOutput {
 END;
 		if($form)
 		{
-			echo "	<form method=\"post\" action=\"".$this->script."\">\n";
+			echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";
 			$this->openedform = 1;
 		}
 		
 		echo <<<END
-		<div id="container">
+\n		<div id="container">
 		<div id="logo">
 			<h1><span class="invisible">MyBB</span></h1>
 		</div>
 
 		<div id="header">$this->title</div>
-
-		<div id="progress">
 END;
-
 		if(is_array($this->steps) && !empty($this->steps))
 		{
-			echo "			<ul>\n";
+		echo "\n		<div id=\"progress\">";
+			echo "\n			<ul>\n";
 			foreach($this->steps as $action => $step)
 			{
 				if($action == $mybb->input['action'])
@@ -62,14 +60,18 @@ END;
 					echo "				<li>$step</li>\n";
 				}
 			}
-			echo "			</ul>\n";
+			echo "			</ul>";
+		echo "\n		</div>";
+		echo "\n		<div id=\"content\">\n";
+		}
+		else
+		{
+		echo "\n		<div id=\"progress_error\"></div>";
+		echo "\n		<div id=\"content_error\">\n";
 		}
 
 		echo <<<END
-		</div>
-
-		<div id="content">
-			<h2 class="$image">$title</h2>
+			<h2 class="$image">$title</h2>\n
 END;
 	}
 
@@ -82,11 +84,11 @@ END;
 	{
 		if(!$this->doneheader)
 		{
-			$this->print_header("Error", "errormsg", 0);
+			$this->print_header("Error", "errormsg", 0, 1);
 		}
-		echo "<div class=\"error\">";
+		echo "			<div class=\"error\">\n				";
 		$this->print_contents($message);
-		echo "</div>";
+		echo "\n			</div>";
 		$this->print_footer();
 	}
 
@@ -94,14 +96,15 @@ END;
 	function print_footer($nextact="")
 	{
 		echo <<<END
-		</div>
+\n		</div>
 	
-		<div id="footer">
+		<div id="footer">\n
 END;
 
 		if($nextact && $this->openedform)
 		{
-			echo "\n			<input type=\"hidden\" name=\"action\" value=\"$nextact\" />\n			\n<div id=\"next_button\"><input type=\"submit\" value=\"Next &raquo;\" /></div>\n";
+			echo "\n			<input type=\"hidden\" name=\"action\" value=\"$nextact\" />";
+			echo "\n				<div id=\"next_button\"><input type=\"submit\" value=\"Next &raquo;\" /></div>\n";
 			$formend = "</form>";
 		}
 		else
@@ -111,8 +114,8 @@ END;
 		echo <<<END
 			<div id="copyright">
 				&copy; 2005 MyBB Group
+			</div>
 		</div>
-	</div>
 	$formend
 </body>
 </html>
