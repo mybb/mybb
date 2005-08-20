@@ -460,20 +460,13 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 	}
 }
 
-$readcut = $mybb->settings['threadreadcut']*60*60*24;
 $forumread = mygetarraycookie("forumread", $fid);
-if($readcut > 0 && $mybb->user['uid'])
+if($mybb->user['lastvisit'] > $forumread)
 {
-	$lastread = time()-$readcut;
+	$forumread = $mybb->user['lastvisit'];
 }
-else
-{
-	$lastread = $mybb->user['lastvisit'];
-}
-if($forumread > $lastread)
-{
-	$lastread = $forumread;
-}
+
+
 $unreadpost = 0;
 if($threadcache)
 {
@@ -537,22 +530,40 @@ if($threadcache)
 		$gotounread = "";
 		$isnew = 0;
 		$donenew = 0;
-		if($thread['lastpost'] > $lastread)
+
+		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
 		{
-			if($mybb->user['uid'] && $thread['lastread'])
+			$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+			if($thread['lastpost'] > $cutoff)
 			{
-				$threadread = $thread['lastread'];
+				if($thread['lastread'])
+				{
+					$lastread = $thread['lastread'];
+				}
+				else
+				{
+					$lastread = 1;
+				}
+			}
+		}
+		if(!$lastread)
+		{
+			$readcookie = $threadread = mygetarraycookie("threadread", $thread['tid']);
+			if($readcookie > $forumread)
+			{
+				$lastread = $readcookie;
 			}
 			else
 			{
-				$threadread = mygetarraycookie("threadread", $thread['tid']);
+				$lastread = $forumread;
 			}
-			if($thread['lastpost'] > $threadread)
-			{
-				$folder .= "new";
-				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
-				$unreadpost = 1;
-			}
+		}
+
+		if($thread['lastpost'] > $lastread && $lastread)
+		{
+			$folder .= "new";
+			eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+			$unreadpost = 1;
 		}
 
 		if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews']) {
