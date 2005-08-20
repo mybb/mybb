@@ -135,7 +135,7 @@ if($mybb->settings['showbirthdays'] != "no")
 		$bday = explode("-", $bdayuser['birthday']);
 		if($year > $bday['2'] && $bday['2'] != "")
 		{
-			$age = "(".($year - $bday['2']).")";
+			$age = " (".($year - $bday['2']).")";
 		}
 		else
 		{

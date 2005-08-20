@@ -121,7 +121,7 @@ elseif($mybb->input['action'] == "dayview")
 		if($bday[2] && $bday[2] < $year)
 		{
 			$age = $year - $bday[2];
-			$age = "($age $lang->years_old)";
+			$age = " ($age $lang->years_old)";
 		}
 		$bdays['username'] = formatname($bdays['username'], $bdays['usergroup'], $bdays['displaygroup']);
 		eval("\$birthdays .= \"".$templates->get("calendar_dayview_birthdays_bday")."\";");
