@@ -13,6 +13,7 @@ define("KILL_GLOBALS", 1);
 
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/functions_upload.php";
 
 // Load global language phrases
 $lang->load("moderation");
