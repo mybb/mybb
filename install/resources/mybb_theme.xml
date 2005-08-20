@@ -1795,7 +1795,7 @@ $footer
 </html>]]></template>
 		<template name="usercp_attachments_attachment"><![CDATA[<tr>
 <td class="$altbg" width="1">$icon</td>
-<td class="$altbg" width="40%"><a href="attachment.php?aid=$attachment[aid]">$attachment[filename]</a><br /><span class="smalltext">$sizedownloads</span></td>
+<td class="$altbg" width="40%"><a href="attachment.php?aid=$attachment[aid]" target="_blank">$attachment[filename]</a><br /><span class="smalltext">$sizedownloads</span></td>
 <td class="$altbg"><a href="showthread.php?tid=$attachment[tid]&pid=$attachment[pid]#pid$attachment[pid]">$attachment[subject]</a><br /><span class="smalltext">$lang->attachment_thread <a href="showthread.php?tid=$attachment[tid]">$attachment[threadsubject]</a></span></td>
 <td class="$altbg" align="center">$attachdate, $attachtime</td>
 <td class="$altbg" width="1"><input type="checkbox" name="attachments[$attachment[aid]]" value="$attachment[aid]" /></td>
@@ -4306,7 +4306,7 @@ $post[attachedthumbs]
 $post[attachedimages]
 $post[attachmentlist]
 </fieldset>]]></template>
-		<template name="postbit_attachments_attachment"><![CDATA[<br />$attachment[icon]&nbsp;&nbsp;<a href="attachment.php?aid=$attachment[aid]">$attachment[filename]</a> ($lang->postbit_attachment_size $attachment[filesize] / $lang->postbit_attachment_downloads $attachment[downloads])]]></template>
+		<template name="postbit_attachments_attachment"><![CDATA[<br />$attachment[icon]&nbsp;&nbsp;<a href="attachment.php?aid=$attachment[aid]" target="_blank">$attachment[filename]</a> ($lang->postbit_attachment_size $attachment[filesize] / $lang->postbit_attachment_downloads $attachment[downloads])]]></template>
 		<template name="postbit_attachments_images"><![CDATA[<span class="smalltext"><strong>$lang->postbit_attachments_images</strong></span><br />
 $post[imagelist]
 <br />]]></template>
