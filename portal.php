@@ -255,10 +255,11 @@ $forum = $db->fetch_array($query);
 
 $pids = "";
 $comma="";
-$query = $db->query("SELECT p.pid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid AND t.dateline=p.dateline) WHERE t.fid='".$mybb->settings['portal_announcementsfid']."' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
+$query = $db->query("SELECT p.pid, p.message, p.tid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid AND t.dateline=p.dateline) WHERE t.fid='".$mybb->settings['portal_announcementsfid']."' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
 while($getid = $db->fetch_array($query))
 {
 	$pids .= ",'$getid[pid]'";
+	$posts[$getid['tid']] = $getid;
 }
 $pids = "pid IN(0$pids)";
 // Now lets fetch all of the attachments for these posts
@@ -269,9 +270,11 @@ while($attachment = $db->fetch_array($query))
 }
 
 $forumpermissions = forum_permissions($mybb->settings['portal_announcementsfid']);
-$query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar, p.message FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.tid=t.tid AND p.dateline=t.dateline) WHERE 1=1 AND $pids ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
+$query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE 1=1 AND ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
 while($announcement = $db->fetch_array($query))
 {
+	$announcement['message'] = $posts[$announcement['tid']]['message'];
+	$announcement['pid'] = $posts[$announcement['tid']]['pid'];
 	$announcement['author'] = $announcement['uid'];
 	if(!$announcement['username'])
 	{
