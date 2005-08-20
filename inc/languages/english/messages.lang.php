@@ -71,6 +71,7 @@ $l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p
 $l['redirect_threadsmerged'] = "Thank you, the two threads have successfully been merged together.<br />You will now be taken to the new thread.";
 $l['redirect_accountactivated'] = "Your account has successfully been activated.<br />You will now be taken back to the main page.";
 $l['redirect_postedited'] = "Thank you, this post has been edited. <br />You will now be returned to the thread.";
+$l['redirect_postedited_poll'] = "Thank you, this post has been edited. <br />Because you opted to post a poll, you'll now be taken to the poll creation page.";
 $l['redirect_eventadded'] = "Your event has been added successfully.<br />You will now be taken to it.";
 $l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";
 $l['redirect_registered_admin_activate'] = "Thank you for registering on {1}, {2}.<br />Your registration must be activated by an administrator.  Until then, you may not be able to post on these forums.";

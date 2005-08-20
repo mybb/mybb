@@ -2727,7 +2727,7 @@ $preview
 </tr>
 $loginbox
 <tr>
-<td class="trow2"><font><strong>$lang->question</strong></td>
+<td class="trow2"><strong>$lang->question</strong></td>
 <td class="trow2"><input type="text" name="question" size="40" maxlength="240" value="$question"></td>
 </tr>
 <tr>
@@ -3474,7 +3474,7 @@ var php_prompt = "$lang->php_prompt";
 </td>
 </tr></table>
 </td>
-<td nowrap bgcolor="#F0F0F0" align="right"><input type="button" style="color: red; font: bold 11px verdana" value="$lang->close_tags" onclick="closeTags()"></font></td>
+<td nowrap bgcolor="#F0F0F0" align="right"><input type="button" style="color: red; font: bold 11px verdana" value="$lang->close_tags" onclick="closeTags()"></td>
 </tr>
 <tr>
 <td nowrap bgcolor="#F0F0F0" colspan="2">
@@ -4417,7 +4417,7 @@ $preview
 </tr>
 $loginbox
 <tr>
-<td class="trow2"><font><strong>$lang->question</strong></td>
+<td class="trow2"><strong>$lang->question</strong></td>
 <td class="trow2"><input type="text" name="question" size="40" maxlength="240" value="$question"></td>
 </tr>
 <tr>
@@ -4442,7 +4442,7 @@ $optionbits
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>$lang->poll_timeout</strong><br /><span class="smalltext">$lang->timeout_note</td>
-<td class="trow2"><font><input type="text" name="timeout" value="$timeout"> $lang->days</td>
+<td class="trow2"><input type="text" name="timeout" value="$timeout"> $lang->days</td>
 </tr>
 </table>
 <br />
@@ -4555,7 +4555,7 @@ $footer
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
 <tr>
-<td class="thead"><strong><a href="$settings[bburl]/private.php"><font color="$theme[headertext]">$lang->private_messages</font></a></strong></td>
+<td class="thead"><strong><a href="$settings[bburl]/private.php">$lang->private_messages</a></strong></td>
 </tr>
 <tr>
 <td class="trow1">
@@ -4625,7 +4625,7 @@ $lang->online_users<br /><strong>&raquo;</strong> $lang->online_counts<br />$onl
 <td class="tborder">
 <table cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
 <tr>
-<td class="thead"><strong>$icon <a href="$settings[bburl]/showthread.php?tid=$announcement[tid]"><font color="$theme[headertext]">$announcement[subject]</font></a></strong></td>
+<td class="thead"><strong>$icon <a href="$settings[bburl]/showthread.php?tid=$announcement[tid]">$announcement[subject]</a></strong></td>
 </tr>
 <tr>
 <td class="trow2" align="right">
@@ -4889,7 +4889,7 @@ $message[message]
 <td class="tcat" colspan="2"><strong>$lang->folder $foldername</strong></td>
 </tr>]]></template>
 		<template name="private_archive_html_message"><![CDATA[<tr>
-<td class="trow1"><strong>$lang->subject $message[subject]</font></strong><br /><font><em>$lang->to $message[tousername]<br />$lang->from $message[fromusername]<br />$lang->sent $senddate</em></td>
+<td class="trow1"><strong>$lang->subject $message[subject]</strong><br /><em>$lang->to $message[tousername]<br />$lang->from $message[fromusername]<br />$lang->sent $senddate</em></td>
 </tr>
 <tr>
 <td class="trow2">$message[message]</td>
@@ -5145,8 +5145,9 @@ $loginbox
 </table>
 <br />
 <center><input type="submit" name="submit" value="$lang->delete_poll"></center>
-<input type="hidden" name="action" value="do_deletepoll">
-<input type="hidden" name="tid" value="$tid">
+<input type="hidden" name="action" value="do_deletepoll" />
+<input type="hidden" name="tid" value="$tid" />
+<input type="hidden" name="delete" value="1" />
 </form>
 $footer
 </body>
@@ -5395,9 +5396,9 @@ $footer
 </tr>]]></template>
 		<template name="polls_editpoll_option"><![CDATA[<tr>
 <td class="trow">$lang->option $counter:</td>
-<td class="trow"><font><input type="text" name="options[$counter]" value="$option">
+<td class="trow"><input type="text" name="options[$counter]" value="$option"></td>
 <td class="trow">$lang->votes</td>
-<td class="trow"><font><input type="text" name="votes[$counter]" value="$optionvotes">
+<td class="trow"><input type="text" name="votes[$counter]" value="$optionvotes"></td>
 </tr>]]></template>
 		<template name="member_resetpassword"><![CDATA[<html>
 <head>
@@ -5533,7 +5534,7 @@ $headerinclude
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" class="trow2">
 <table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
 <tr>
-<td colspan="2" class="thead"><font><strong>$lang->total_posts $numposts</td>
+<td colspan="2" class="thead"><strong>$lang->total_posts $numposts</td>
 </tr>
 <tr>
 <td class="tcat"><span class="smalltext"><strong>$lang->user</strong></span></td>
@@ -5781,11 +5782,11 @@ $usercpnav
 <td valign="top">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
-<td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>$pm[subject]</strong></font></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid=$pm[pmid]&do=reply">$lang->reply</a> | <a href="private.php?action=send&amp;pmid=$pm[pmid]&do=forward">$lang->forward</a> | <a href="private.php?action=delete&amp;pmid=$pm[pmid]">$lang->delete</a></td></table></td>
+<td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>$pm[subject]</strong></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid=$pm[pmid]&do=reply">$lang->reply</a> | <a href="private.php?action=send&amp;pmid=$pm[pmid]&do=forward">$lang->forward</a> | <a href="private.php?action=delete&amp;pmid=$pm[pmid]">$lang->delete</a></td></table></td>
 </tr>
 $message
 <tr>
-<td class="tfoot" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="tfoot"><strong>$pm[subject]</strong></font></td><td class="tfoot" align="right"><a href="private.php?action=send&amp;pmid=$pm[pmid]&do=reply">$lang->reply</a> | <a href="private.php?action=send&amp;pmid=$pm[pmid]&do=forward">$lang->forward</a> | <a href="private.php?action=delete&amp;pmid=$pm[pmid]">$lang->delete</a></td></table></td>
+<td class="tfoot" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="tfoot"><strong>$pm[subject]</strong></td><td class="tfoot" align="right"><a href="private.php?action=send&amp;pmid=$pm[pmid]&do=reply">$lang->reply</a> | <a href="private.php?action=send&amp;pmid=$pm[pmid]&do=forward">$lang->forward</a> | <a href="private.php?action=delete&amp;pmid=$pm[pmid]">$lang->delete</a></td></table></td>
 </tr>
 </table>
 </td>
@@ -5985,7 +5986,7 @@ $footer
 </td>]]></template>
 		<template name="polls_newpoll_option"><![CDATA[<tr>
 <td class="trow">$lang->option $i:</td>
-<td class="trow"><font><input type="text" name="options[$i]" value="$option" width="250">
+<td class="trow"><input type="text" name="options[$i]" value="$option" width="250"></td>
 </tr>]]></template>
 		<template name="showthread_poll_option_multiple"><![CDATA[<tr>
 <td class="trow1" width="5%"><input type="checkbox" name="option[$number]" value="yes"></td>
@@ -6257,7 +6258,7 @@ $lang->away_since $awaydate &nbsp;&nbsp;&nbsp; $lang->away_returns $returndate
 		<template name="forumdisplay_moderatedby"><![CDATA[<span class="smalltext">$lang->moderated_by <strong>$modlist</strong></span><br />]]></template>
 		<template name="forumbit_depth2_cat"><![CDATA[<tr>
 <td class="tcat">&nbsp;</td>
-<td class="tcat" colspan="5"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid=$forum[fid]"><font color="$theme[categorytext]">$forum[name]</font></a></strong><br /><span class="smalltext">$forum[description]</td></tr>]]></template>
+<td class="tcat" colspan="5"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><span class="smalltext">$forum[description]</td></tr>]]></template>
 		<template name="misc_help"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->help_docs</title>

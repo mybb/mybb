@@ -239,6 +239,10 @@ switch($mybb->input['action'])
 
 	// Delete the actual poll here!
 	case "do_deletepoll":
+		if(!$mybb->input['delete'])
+		{
+			redirect("showthread.php?tid=$tid", $lang->redirect_pollnotdeleted);
+		}
 		if(ismod($fid, "candeleteposts") != "yes")
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])

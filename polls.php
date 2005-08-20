@@ -82,6 +82,10 @@ if($mybb->input['action'] == "newpoll")
 	{
 		$polloptions = $mybb->settings['maxpolloptions'];
 	}
+	if($mybb->input['numpolloptions'] > 0)
+	{
+		$mybb->input['polloptions'] = $mybb->input['numpolloptions'];
+	}
 	elseif(!$mybb->input['polloptions'])
 	{
 		$polloptions = 2;
@@ -707,7 +711,7 @@ if($mybb->input['action'] == "vote")
 	$now = time();
 	$votesarray = explode("||~|~||", $poll['votes']);
 	$option = $mybb->input['option'];
-	if(!isset($votesarray[$option-1]))
+	if(!$votesarray[$option-1])
 	{
 		error($lang->error_nopolloptions);
 	}

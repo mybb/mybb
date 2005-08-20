@@ -308,10 +308,12 @@ elseif($mybb->input['action'] == "do_editpost")
 	if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
 	{
 		$url = "polls.php?action=newpoll&tid=$tid&polloptions=$numpolloptions";
+		$redirect = $lang->redirect_postedited_poll;
 	}
 	else
 	{
 		$url = "showthread.php?tid=$tid&pid=$pid#pid$pid";
+		$redirect = $lang->redirect_postedited;
 	}
 	$newpost = array(
 		"subject" => addslashes($mybb->input['subject']),
@@ -332,7 +334,7 @@ elseif($mybb->input['action'] == "do_editpost")
 
 	$plugins->run_hooks("editpost_do_editpost_end");
 
-	redirect($url, $lang->redirect_postedited);
+	redirect($url, $redirect);
 } else {
 
 	$plugins->run_hooks("editpost_start");
