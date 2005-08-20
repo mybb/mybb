@@ -484,9 +484,7 @@ elseif($mybb->input['action'] == "options")
 {
 	$plugins->run_hooks("usercp_options_start");
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->user['uid']."'");
-	$user = $db->fetch_array($query);
-
+	$user = $mybb->user;
 	$languages = $lang->getLanguages();
 	foreach($languages as $lname => $language)
 	{
@@ -594,6 +592,7 @@ elseif($mybb->input['action'] == "options")
 	if($mybb->user['dst'] == "yes")
 	{
 		$dstcheck = "checked=\"checked\"";
+		$mybb->user['timezone']=--;
 	}
 	else
 	{
