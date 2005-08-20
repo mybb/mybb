@@ -270,7 +270,7 @@ while($attachment = $db->fetch_array($query))
 }
 
 $forumpermissions = forum_permissions($mybb->settings['portal_announcementsfid']);
-$query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE 1=1 AND ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
+$query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE 1=1 ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
 while($announcement = $db->fetch_array($query))
 {
 	$announcement['message'] = $posts[$announcement['tid']]['message'];
@@ -332,7 +332,7 @@ while($announcement = $db->fetch_array($query))
 				// Support for [attachment=id] code
 				if(stripos($announcement['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
-					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes" && $attachment['thumbnail'] != "")
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
 					{ // We have a thumbnail to show (and its not the "SMALL" enough image
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
@@ -341,7 +341,7 @@ while($announcement = $db->fetch_array($query))
 						// Image is small enough to show - no thumbnail
 						eval("\$attbit .= \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
-					elseif($forumpermissions['candlattachments'] == "yes")
+					else
 					{
 						// Show standard link to attachment
 						eval("\$attbit .= \"".$templates->get("postbit_attachments_attachment")."\";");
@@ -350,7 +350,7 @@ while($announcement = $db->fetch_array($query))
 				}
 				else
 				{
-					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes" && $attachment['thumbnail'] != "")
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
 					{ // We have a thumbnail to show
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
@@ -365,7 +365,7 @@ while($announcement = $db->fetch_array($query))
 						// Image is small enough to show - no thumbnail
 						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
-					elseif($forumpermissions['candlattachments'] == "yes")
+					else
 					{
 						eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
