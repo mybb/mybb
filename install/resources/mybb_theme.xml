@@ -5877,7 +5877,7 @@ $folderlist
 <td class="thead"><strong>$lang->new_folders</strong></td>
 </tr>
 <tr>
-<td class="trow1"><span class="smalltext">$lang->new_folders_note</span></td>
+<td class="trow1"><span class="smalltext">$lang->add_folders_note</span></td>
 </tr>
 $newfolders
 </table>

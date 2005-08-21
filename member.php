@@ -1211,7 +1211,7 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
 		$awaydate = mydate($mybb->settings['dateformat'], $memprofile['awaydate']);
-		$memprofile['awayreason'] = htmlspecialchars_uni(stripslashes($memprofile['awayreason']));
+		$memprofile['awayreason'] = stripslashes($memprofile['awayreason']);
 		if($memprofile['returndate'] == "")
 		{
 			$returndate = "$lang->unknown";

@@ -378,7 +378,7 @@ elseif($mybb->input['action'] == "do_profile")
 	{
 		if(strlen($mybb->input['usertitle']) <= $mybb->settings['customtitlemaxlength'])
 		{
-			$usertitle = htmlspecialchars_uni($mybb->input['usertitle']);
+			$usertitle = $mybb->input['usertitle'];
 		}
 		else
 		{
