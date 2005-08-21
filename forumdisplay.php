@@ -210,7 +210,7 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 	{
 		$foruminfo['rulestitle'] = sprintf($lang->forum_rules, $foruminfo['name']);
 	}
-	$foruminfo['rules'] = nl2br($foruminfo['rules']);
+	$foruminfo['rules'] = postify($foruminfo['rules'], "yes", "yes", "yes", "yes");
 	if($foruminfo['rulestype'] == 1)
 	{
 		eval("\$rules = \"".$templates->get("forumdisplay_rules")."\";");
