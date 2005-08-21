@@ -71,6 +71,7 @@ $l['opened'] = "Opened";
 $l['closed'] = "Closed";
 $l['stuck'] = "Stuck";
 $l['unstuck'] = "Unstuck";
+$l['split'] = "t";
 $l['mod_process'] = "Thread {1}";
 $l['redirects_removed'] = "Thread Redirects Removed";
 $l['thread_deleted'] = "Thread Deleted: {1}";

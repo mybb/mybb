@@ -839,7 +839,6 @@ switch($mybb->input['action'])
 		$forumselect = makeforumjump("", $fid, 1, "", 0, "", "moveto");
 
 		$plugins->run_hooks("moderation_split");
-
 		eval("\$split = \"".$templates->get("moderation_split")."\";");
 		outputpage($split);
 		break;
