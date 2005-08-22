@@ -708,7 +708,7 @@ function makepostbit($post, $pmprevann=0)
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
-					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes" && $attachment['thumbnail'] != "")
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
 					{ // We have a thumbnail to show (and its not the "SMALL" enough image
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
@@ -717,7 +717,7 @@ function makepostbit($post, $pmprevann=0)
 						// Image is small enough to show - no thumbnail
 						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
-					elseif($forumpermissions['candlattachments'] == "yes")
+					else
 					{
 						// Show standard link to attachment
 						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
