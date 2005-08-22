@@ -473,7 +473,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['usertitle'] = $usergroup['usertitle'];
 		}
-		elseif(is_array($titlescache) && !$usergroup['title'])
+		elseif(is_array($titlescache) && !$usergroup['usertitle'])
 		{
 			reset($titlescache);
 			foreach($titlescache as $key => $titleinfo)
@@ -584,15 +584,15 @@ function makepostbit($post, $pmprevann=0)
 		$post['username'] = $post['username'];
 		if($usergroup['usertitle'])
 		{
-			$postbit['usertitle'] = $usergroup['usertitle'];
-			$postbit['usergroup'] = $lang->na;
+			$post['usertitle'] = $usergroup['usertitle'];
 		}
 		else
 		{
-			$postbit['usertitle'] = $lang->guest;
+			$post['usertitle'] = $lang->guest;
 		}
+		$post['usergroup'] = $lang->na;
 
-	    $postbit['userregdate'] = $lang->na;
+	    $post['userregdate'] = $lang->na;
 	    $post['postnum'] = $lang->na;
 		$post['button_profile'] = "";
 		$post['button_email'] = "";
@@ -726,7 +726,7 @@ function makepostbit($post, $pmprevann=0)
 				}
 				else
 				{
-					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes" && $attachment['thumbnail'] != "")
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
 					{ // We have a thumbnail to show
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
@@ -741,7 +741,7 @@ function makepostbit($post, $pmprevann=0)
 						// Image is small enough to show - no thumbnail
 						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
-					elseif($forumpermissions['candlattachments'] == "yes")
+					else
 					{
 						eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
