@@ -590,7 +590,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['usertitle'] = $lang->guest;
 		}
-		$post['usergroup'] = $lang->na;
+		$usergroup['title'] = $lang->na;
 
 	    $post['userregdate'] = $lang->na;
 	    $post['postnum'] = $lang->na;
