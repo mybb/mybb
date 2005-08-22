@@ -339,7 +339,7 @@ function dophpcode($str)
 	}
 	
 	// Get rid of other useless code and linebreaks
-	$code = str_replace('<code><font color=\"#000000"><br />\n', '', $code);
+	$code = str_replace("<code><font color=\"#000000\"><br />\n", '', $code);
 	$code = str_replace('<font color="#0000CC"></font>', '', $code);
 	$code = str_replace("\n</code>", '', $code);
 	
@@ -367,34 +367,28 @@ function makepostbit($post, $pmprevann=0)
 	{
 		$altbg = "trow1";
 	}
-	switch($pmprevann)
-	{
-		case "1": // Message preview
-			global $forum;
-			$id = 0;
-			break;
-		case "2": // Private message
-			global $message, $pmid;
-			$forum['allowhtml'] = $mybb->settings['pmsallowhtml'];
-			$forum['allowmycode'] = $mybb->settings['pmsallowmycode'];
-			$forum['allowsmilies'] = $mybb->settings['pmsallowsmilies'];
-			$forum['allowimgcode'] = $mybb->settings['pmsallowimgcode'];
-			$id = $pmid;
-			break;
-		case "3": // Announcement
-			global $announcementarray, $message;
-			$forum['allowhtml'] = $announcementarray['allowhtml'];
-			$forum['allowmycode'] = $announcementarray['allowmycode'];
-			$forum['allowsmilies'] = $announcementarray['allowsmilies'];
-			$forum['allowimgcode'] = 'yes';
-			break;
-		default: // Regular post
-			global $forum, $thread, $tid;
-			$oldforum = $forum;
-			$id = $post['pid'];
-			break;
-	}
 
+	if(!$pmprevann)
+	{ // This messgae is neither a pm nor announcement, its a post
+		global $forum, $thread, $tid;
+		$oldforum = $forum;
+	}
+	elseif($pmprevann == 1)
+	{ // Set the bbcode/smilie parsing option based on the settings as this is a PM
+		global $message, $pmid;
+		$forum['allowhtml'] = $mybb->settings['pmsallowhtml'];
+		$forum['allowmycode'] = $mybb->settings['pmsallowmycode'];
+		$forum['allowsmilies'] = $mybb->settings['pmsallowsmilies'];
+		$forum['allowimgcode'] = $mybb->settings['pmsallowimgcode'];
+	}
+	elseif($pmprevann == 2)
+	{ // This message is an announcement
+		global $announcementarray, $message;
+		$forum['allowhtml'] = $announcementarray['allowhtml'];
+		$forum['allowmycode'] = $announcementarray['allowmycode'];
+		$forum['allowsmilies'] = $announcementarray['allowsmilies'];
+		$forum['allowimgcode'] = 'yes';
+	}
 	if(!$postcounter)
 	{ // Used to show the # of the post
 		if($page > 1)
@@ -465,7 +459,7 @@ function makepostbit($post, $pmprevann=0)
 	{ // This post was made by a registered user
 
 		$post['username'] = $post['userusername'];
-		if(trim($post['usertitle']) != "")
+		if($post['usertitle'])
 		{
 			$hascustomtitle = 1;
 		}
@@ -473,7 +467,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['usertitle'] = $usergroup['usertitle'];
 		}
-		elseif(is_array($titlescache) && !$usergroup['usertitle'])
+		elseif(is_array($titlescache) && !$usergroup['title'])
 		{
 			reset($titlescache);
 			foreach($titlescache as $key => $titleinfo)
@@ -491,7 +485,7 @@ function makepostbit($post, $pmprevann=0)
 			}
 		}
 
-		if($usergroup['stars'] > 0)
+		if($usergroup['stars'])
 		{
 			$post['stars'] = $usergroup['stars'];
 		}
@@ -504,7 +498,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['userstars'] .= "<img src=\"".$post['starimage']."\" border=\"0\" alt=\"*\" />";
 		}
-		if($post['userstars'])
+		if($post['userstars'] && $post['starimage'] && $post['stars'])
 		{
 			$post['userstars'] .= "<br />";
 		}
@@ -584,15 +578,15 @@ function makepostbit($post, $pmprevann=0)
 		$post['username'] = $post['username'];
 		if($usergroup['usertitle'])
 		{
-			$post['usertitle'] = $usergroup['usertitle'];
+			$postbit['usertitle'] = $usergroup['usertitle'];
+			$postbit['usergroup'] = $lang->na;
 		}
 		else
 		{
-			$post['usertitle'] = $lang->guest;
+			$postbit['usertitle'] = $lang->guest;
 		}
-		$usergroup['title'] = $lang->na;
 
-	    $post['userregdate'] = $lang->na;
+	    $postbit['userregdate'] = $lang->na;
 	    $post['postnum'] = $lang->na;
 		$post['button_profile'] = "";
 		$post['button_email'] = "";
@@ -686,9 +680,10 @@ function makepostbit($post, $pmprevann=0)
 		$post['message'] = domecode($post['message'], $post['username']);
 	}
 
-	if(is_array($attachcache[$id]))
+	if(is_array($attachcache[$post['pid']]))
 	{ // This post has 1 or more attachments
 		$validationcount = 0;
+		$id = $post['pid'];
 		foreach($attachcache[$id] as $aid => $attachment)
 		{
 			if($attachment['visible'])
@@ -708,7 +703,7 @@ function makepostbit($post, $pmprevann=0)
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
+					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes" && $attachment['thumbnail'] != "")
 					{ // We have a thumbnail to show (and its not the "SMALL" enough image
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
@@ -717,7 +712,7 @@ function makepostbit($post, $pmprevann=0)
 						// Image is small enough to show - no thumbnail
 						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
-					else
+					elseif($forumpermissions['candlattachments'] == "yes")
 					{
 						// Show standard link to attachment
 						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
@@ -726,7 +721,7 @@ function makepostbit($post, $pmprevann=0)
 				}
 				else
 				{
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
+					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes" && $attachment['thumbnail'] != "")
 					{ // We have a thumbnail to show
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
@@ -741,7 +736,7 @@ function makepostbit($post, $pmprevann=0)
 						// Image is small enough to show - no thumbnail
 						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
-					else
+					elseif($forumpermissions['candlattachments'] == "yes")
 					{
 						eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
