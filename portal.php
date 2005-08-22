@@ -342,12 +342,12 @@ while($announcement = $db->fetch_array($query))
 					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes")
 					{
 						// Image is small enough to show - no thumbnail
-						eval("\$attbit .= \"".$templates->get("postbit_attachments_images_image")."\";");
+						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
 					else
 					{
 						// Show standard link to attachment
-						eval("\$attbit .= \"".$templates->get("postbit_attachments_attachment")."\";");
+						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
 					$announcement['message'] = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $announcement['message']);
 				}
@@ -397,6 +397,7 @@ while($announcement = $db->fetch_array($query))
 
 	$message = postify($announcement['message'], $forum['allowhtml'], $forum['allowmycode'], $forum['allowsmilies'], $forum['allowimgcode']);
 	eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
+	unset($post);
 }
 eval("\$portal = \"".$templates->get("portal")."\";");
 
