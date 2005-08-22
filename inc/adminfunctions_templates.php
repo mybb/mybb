@@ -34,11 +34,11 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 	{
 		if($template['template']) // Custom template exists for this group
 		{
-			$newtemplate = preg_replace($find, $replace, $template['template']);
-			if($newtemplate == $template['template'])
+			if(!preg_match($find, $template['template']))
 			{
 				return false;
 			}
+			$newtemplate = preg_replace($find, $replace, $template['template']);
 			$template['template'] = $newtemplate;
 			$update[] = $template;
 		}
