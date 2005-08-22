@@ -924,8 +924,11 @@ elseif($mybb->input['action'] == "password")
 elseif($mybb->input['action'] == "do_password")
 {
 	$plugins->run_hooks("usercp_do_password_start");
-	$mybb->input['oldpassword'] = md5(md5($mybb->user['salt']).$mybb->input['oldpassword']);
-	if($mybb->input['oldpassword'] != $mybb->user['password'] || $mybb->input['password'] == "")
+	if(validate_password-from_uid($mybb->user['uid'], $mybb->input['oldpassword']) == false)
+	{
+		error($lang->error_invalidpassword);
+	}
+	if($mybb->input['password'] == "")
 	{
 		error($lang->error_invalidpassword);
 	}
