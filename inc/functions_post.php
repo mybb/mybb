@@ -339,9 +339,9 @@ function dophpcode($str)
 	}
 	
 	// Get rid of other useless code and linebreaks
-	$code = str_replace("<code><font color=\"#000000\"><br />\n", '', $code);
+	$code = str_replace("<code><font color=\"#000000\">\n", '', $code);
 	$code = str_replace('<font color="#0000CC"></font>', '', $code);
-	$code = str_replace("\n</code>", '', $code);
+	$code = str_replace("</font>\n</code>", '', $code);
 	
 	// Send back the code all nice and pretty
 	return "</p><div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div><p>";
