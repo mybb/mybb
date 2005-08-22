@@ -586,7 +586,7 @@ elseif($mybb->input['action'] == "do_search")
 	}
 	if($mybb->input['forums'] != "all")
 	{
-		if(!is_array($mybb->input['forums'])
+		if(!is_array($mybb->input['forums']))
 		{
 			$mybb->input['forums'][] = intval($mybb->input['forums']);
 		}
