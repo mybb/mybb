@@ -1271,15 +1271,15 @@ switch($mybb->input['action'])
 				$plist[] = $pid;
 		}
 		$first = 1;
+		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC LIMIT 0, 1");
+		$master = $db->fetch_array($query);
+		$masterpid = $post['pid'];
+		$message = $post['message'];
+		$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$masterpid' WHERE pid IN($pidin)");
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC");
 		while($post = $db->fetch_array($query))
 		{
-			if($first == 1)
-			{ // all posts will be merged into this one
-				$masterpid = $post['pid'];
-				$message = $post['message'];
-			}
-			else
+			if(!$first != 1)
 			{ // these are the selected posts
 				if($mybb->input['sep'] == "new_line")
 				{
@@ -1296,7 +1296,6 @@ switch($mybb->input['action'])
 		}
 		$message = addslashes($message);
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET message='$message' WHERE pid='$masterpid'");
-		$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$masterpid' WHERE pid IN($pidin)");
 		updatethreadcount($tid);
 		updateforumcount($fid);
 		markreports($plist, "posts");
