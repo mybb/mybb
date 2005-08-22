@@ -924,7 +924,7 @@ elseif($mybb->input['action'] == "password")
 elseif($mybb->input['action'] == "do_password")
 {
 	$plugins->run_hooks("usercp_do_password_start");
-	if(validate_password-from_uid($mybb->user['uid'], $mybb->input['oldpassword']) == false)
+	if(validate_password_from_uid($mybb->user['uid'], $mybb->input['oldpassword']) == false)
 	{
 		error($lang->error_invalidpassword);
 	}

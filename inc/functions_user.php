@@ -57,7 +57,11 @@ function validate_password_from_username($username, $password)
 //
 function validate_password_from_uid($uid, $password, $user="")
 {
-	global $db;
+	global $db, $mybb;
+	if($mybb->user['uid'] == $uid)
+	{
+		$user = $mybb->user['uid'];
+	}
 	if(!$user['password'])
 	{
 		$query = $db->query("SELECT uid,username,password,salt,loginkey FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."'");
