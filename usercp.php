@@ -930,7 +930,7 @@ elseif($mybb->input['action'] == "do_password")
 	}
 	if($mybb->input['password'] == "")
 	{
-		error($lang->error_invalidpassword);
+		error($lang->error_invalidnewpassword);
 	}
 	if($mybb->input['password'] != $mybb->input['password2'])
 	{
