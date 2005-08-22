@@ -367,28 +367,34 @@ function makepostbit($post, $pmprevann=0)
 	{
 		$altbg = "trow1";
 	}
+	switch($pmprevann)
+	{
+		case "1": // Message preview
+			global $forum;
+			$id = 0;
+			break;
+		case "2": // Private message
+			global $message, $pmid;
+			$forum['allowhtml'] = $mybb->settings['pmsallowhtml'];
+			$forum['allowmycode'] = $mybb->settings['pmsallowmycode'];
+			$forum['allowsmilies'] = $mybb->settings['pmsallowsmilies'];
+			$forum['allowimgcode'] = $mybb->settings['pmsallowimgcode'];
+			$id = $pmid;
+			break;
+		case "3": // Announcement
+			global $announcementarray, $message;
+			$forum['allowhtml'] = $announcementarray['allowhtml'];
+			$forum['allowmycode'] = $announcementarray['allowmycode'];
+			$forum['allowsmilies'] = $announcementarray['allowsmilies'];
+			$forum['allowimgcode'] = 'yes';
+			break;
+		default: // Regular post
+			global $forum, $thread, $tid;
+			$oldforum = $forum;
+			$id = $post['pid'];
+			break;
+	}
 
-	if(!$pmprevann)
-	{ // This messgae is neither a pm nor announcement, its a post
-		global $forum, $thread, $tid;
-		$oldforum = $forum;
-	}
-	elseif($pmprevann == 1)
-	{ // Set the bbcode/smilie parsing option based on the settings as this is a PM
-		global $message, $pmid;
-		$forum['allowhtml'] = $mybb->settings['pmsallowhtml'];
-		$forum['allowmycode'] = $mybb->settings['pmsallowmycode'];
-		$forum['allowsmilies'] = $mybb->settings['pmsallowsmilies'];
-		$forum['allowimgcode'] = $mybb->settings['pmsallowimgcode'];
-	}
-	elseif($pmprevann == 2)
-	{ // This message is an announcement
-		global $announcementarray, $message;
-		$forum['allowhtml'] = $announcementarray['allowhtml'];
-		$forum['allowmycode'] = $announcementarray['allowmycode'];
-		$forum['allowsmilies'] = $announcementarray['allowsmilies'];
-		$forum['allowimgcode'] = 'yes';
-	}
 	if(!$postcounter)
 	{ // Used to show the # of the post
 		if($page > 1)
@@ -459,7 +465,7 @@ function makepostbit($post, $pmprevann=0)
 	{ // This post was made by a registered user
 
 		$post['username'] = $post['userusername'];
-		if($post['usertitle'])
+		if(trim($post['usertitle']) != "")
 		{
 			$hascustomtitle = 1;
 		}
@@ -467,7 +473,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['usertitle'] = $usergroup['usertitle'];
 		}
-		elseif(is_array($titlescache) && !$usergroup['title'])
+		elseif(is_array($titlescache) && !$usergroup['usertitle'])
 		{
 			reset($titlescache);
 			foreach($titlescache as $key => $titleinfo)
@@ -578,16 +584,16 @@ function makepostbit($post, $pmprevann=0)
 		$post['username'] = $post['username'];
 		if($usergroup['usertitle'])
 		{
-			$postbit['usertitle'] = $usergroup['usertitle'];
-			$postbit['usergroup'] = $lang->na;
+			$post['usertitle'] = $usergroup['usertitle'];
 		}
 		else
 		{
-			$postbit['usertitle'] = $lang->guest;
+			$post['usertitle'] = $lang->guest;
 		}
+		$usergroup['title'] = $lang->na;
 
-	    $postbit['userregdate'] = $lang->na;
-	    $post['postnum'] = $lang->na;
+		$post['userregdate'] = $lang->na;
+		$post['postnum'] = $lang->na;
 		$post['button_profile'] = "";
 		$post['button_email'] = "";
 		$post['button_www'] = "";
@@ -680,10 +686,9 @@ function makepostbit($post, $pmprevann=0)
 		$post['message'] = domecode($post['message'], $post['username']);
 	}
 
-	if(is_array($attachcache[$post['pid']]))
+	if(is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
 		$validationcount = 0;
-		$id = $post['pid'];
 		foreach($attachcache[$id] as $aid => $attachment)
 		{
 			if($attachment['visible'])
@@ -703,7 +708,7 @@ function makepostbit($post, $pmprevann=0)
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
-					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes" && $attachment['thumbnail'] != "")
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
 					{ // We have a thumbnail to show (and its not the "SMALL" enough image
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
@@ -712,7 +717,7 @@ function makepostbit($post, $pmprevann=0)
 						// Image is small enough to show - no thumbnail
 						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
-					elseif($forumpermissions['candlattachments'] == "yes")
+					else
 					{
 						// Show standard link to attachment
 						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
@@ -721,7 +726,7 @@ function makepostbit($post, $pmprevann=0)
 				}
 				else
 				{
-					if($attachment['thumbnail'] != "SMALL" && $forumpermissions['candlattachments'] == "yes" && $attachment['thumbnail'] != "")
+					if($attachment['thumbnail'] != "SMALL" && attachment['thumbnail'] != "")
 					{ // We have a thumbnail to show
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
@@ -736,7 +741,7 @@ function makepostbit($post, $pmprevann=0)
 						// Image is small enough to show - no thumbnail
 						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
-					elseif($forumpermissions['candlattachments'] == "yes")
+					else
 					{
 						eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
