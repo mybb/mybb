@@ -391,6 +391,7 @@ function makepostbit($post, $pmprevann=0)
 		default: // Regular post
 			global $forum, $thread, $tid;
 			$oldforum = $forum;
+			$id = $post['pid'];
 			break;
 	}
 
