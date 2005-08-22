@@ -233,12 +233,13 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		// Fetch attachments assigned to this post
 		if($mybb->input['pid'])
 		{
-			$attachwhere = "pid='".intval($mybb->input['pid'])."'");
+			$attachwhere = "pid='".intval($mybb->input['pid'])."'";
 		}
 		else
 		{
-			$attachwhere = "posthash='".addslashes($mybb->input['posthash'])."'");
+			$attachwhere = "posthash='".addslashes($mybb->input['posthash'])."'";
 		}
+
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
 		while($attachment = $db->fetch_array($query)) {
 			$attachcache[0][$attachment['aid']] = $attachment;
