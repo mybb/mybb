@@ -229,6 +229,21 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$post['icon'] = $icon;
 		$post['smilieoff'] = $postoptions['disablesmilies'];
 		$post['dateline'] = time();
+
+		// Fetch attachments assigned to this post
+		if($mybb->input['pid'])
+		{
+			$attachwhere = "pid='".intval($mybb->input['pid'])."'");
+		}
+		else
+		{
+			$attachwhere = "posthash='".addslashes($mybb->input['posthash'])."'");
+		}
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
+		while($attachment = $db->fetch_array($query)) {
+			$attachcache[0][$attachment['aid']] = $attachment;
+		}
+
 		$postbit = makepostbit($post, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 		$message = htmlspecialchars_uni($mybb->input['message']);

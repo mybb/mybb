@@ -141,7 +141,7 @@ if($mybb->input['action'] == "send")
 		$post['subject'] = $mybb->input['subject'];
 		$post['icon'] = $mybb->input['icon'];
 		$post['dateline'] = time();
-		$postbit = makepostbit($post, 1);
+		$postbit = makepostbit($post, 2);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 
 		$options = $mybb->input['options'];

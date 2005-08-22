@@ -367,28 +367,33 @@ function makepostbit($post, $pmprevann=0)
 	{
 		$altbg = "trow1";
 	}
+	switch($pmprevann)
+	{
+		case "1": // Message preview
+			global $forum;
+			$id = 0;
+			break;
+		case "2": // Private message
+			global $message, $pmid;
+			$forum['allowhtml'] = $mybb->settings['pmsallowhtml'];
+			$forum['allowmycode'] = $mybb->settings['pmsallowmycode'];
+			$forum['allowsmilies'] = $mybb->settings['pmsallowsmilies'];
+			$forum['allowimgcode'] = $mybb->settings['pmsallowimgcode'];
+			$id = $pmid;
+			break;
+		case "3": // Announcement
+			global $announcementarray, $message;
+			$forum['allowhtml'] = $announcementarray['allowhtml'];
+			$forum['allowmycode'] = $announcementarray['allowmycode'];
+			$forum['allowsmilies'] = $announcementarray['allowsmilies'];
+			$forum['allowimgcode'] = 'yes';
+			break;
+		default: // Regular post
+			global $forum, $thread, $tid;
+			$oldforum = $forum;
+			break;
+	}
 
-	if(!$pmprevann)
-	{ // This messgae is neither a pm nor announcement, its a post
-		global $forum, $thread, $tid;
-		$oldforum = $forum;
-	}
-	elseif($pmprevann == 1)
-	{ // Set the bbcode/smilie parsing option based on the settings as this is a PM
-		global $message, $pmid;
-		$forum['allowhtml'] = $mybb->settings['pmsallowhtml'];
-		$forum['allowmycode'] = $mybb->settings['pmsallowmycode'];
-		$forum['allowsmilies'] = $mybb->settings['pmsallowsmilies'];
-		$forum['allowimgcode'] = $mybb->settings['pmsallowimgcode'];
-	}
-	elseif($pmprevann == 2)
-	{ // This message is an announcement
-		global $announcementarray, $message;
-		$forum['allowhtml'] = $announcementarray['allowhtml'];
-		$forum['allowmycode'] = $announcementarray['allowmycode'];
-		$forum['allowsmilies'] = $announcementarray['allowsmilies'];
-		$forum['allowimgcode'] = 'yes';
-	}
 	if(!$postcounter)
 	{ // Used to show the # of the post
 		if($page > 1)
@@ -459,7 +464,7 @@ function makepostbit($post, $pmprevann=0)
 	{ // This post was made by a registered user
 
 		$post['username'] = $post['userusername'];
-		if($post['usertitle'])
+		if(trim($post['usertitle']) != "")
 		{
 			$hascustomtitle = 1;
 		}
@@ -485,7 +490,7 @@ function makepostbit($post, $pmprevann=0)
 			}
 		}
 
-		if($usergroup['stars'])
+		if($usergroup['stars'] > 0)
 		{
 			$post['stars'] = $usergroup['stars'];
 		}
@@ -498,7 +503,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['userstars'] .= "<img src=\"".$post['starimage']."\" border=\"0\" alt=\"*\" />";
 		}
-		if($post['userstars'] && $post['starimage'] && $post['stars'])
+		if($post['userstars'])
 		{
 			$post['userstars'] .= "<br />";
 		}
@@ -680,10 +685,9 @@ function makepostbit($post, $pmprevann=0)
 		$post['message'] = domecode($post['message'], $post['username']);
 	}
 
-	if(is_array($attachcache[$post['pid']]))
+	if(is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
 		$validationcount = 0;
-		$id = $post['pid'];
 		foreach($attachcache[$id] as $aid => $attachment)
 		{
 			if($attachment['visible'])
