@@ -27,7 +27,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 		{
 			return false;
 		}
-		$master['template'] = addslashes($master['template'];
+		$master['template'] = addslashes($master['template']);
 	}
 	$query = $db->query("SELECT s.sid, t.template, t.tid FROM ".TABLE_PREFIX."templatesets s LEFT JOIN ".TABLE_PREFIX."templates t ON (t.title='$title' AND t.sid=s.sid)");
 	while($template = $db->fetch_array($query))
