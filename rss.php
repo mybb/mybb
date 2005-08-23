@@ -8,9 +8,9 @@
  *
  * $Id$
  */
- define("KILL_GLOBALS", 1);
+define("KILL_GLOBALS", 1);
+define("NO_ONLINE", 1);
 
-$noonline = 1;
 require "./global.php";
 
 // Load global language phrases
