@@ -359,14 +359,6 @@ if($_COOKIE['collapsed'])
 	}
 }
 
-// Every 1-10 times clear the WOL table
-$rand = rand(1,10);
-if($rand == 5)
-{
-	$hourdel = time() - $mybb->settings['wolcutoffmins']*60;
-	$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE time<'$hourdel'");
-}
-
 $plugins->run_hooks("global_end");
 $globaltime = $maintimer->gettime();
 ?>
