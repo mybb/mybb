@@ -168,7 +168,8 @@ elseif($mybb->input['action'] == "dayview")
 	}
 	if($birthdays)
 	{
-		$lang->birthdays_on_day = sprintf($lang->birthdays_on_day, $monthnames[$month], $day, $year);
+		$bdaydate = mydate($mybb->settings['dateformat'], $stamp);
+		$lang->birthdays_on_day = sprintf($lang->birthdays_on_day, $bdaydate);
 		eval("\$bdaylist = \"".$templates->get("calendar_dayview_birthdays")."\";");
 	}
 	addnav($lang->nav_dayview);

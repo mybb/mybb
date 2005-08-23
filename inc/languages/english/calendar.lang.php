@@ -27,7 +27,7 @@ $l['calendar'] = "Calendar";
 
 $l['jump_month'] ="Jump to month:";
 
-$l['birthdays_on_day'] = "Birthdays on {1} {2}, {3}";
+$l['birthdays_on_day'] = "Birthdays on {1}";
 
 $l['add_event'] = "Add Event";
 $l['event_date'] = "Event Date:";
