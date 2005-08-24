@@ -108,4 +108,5 @@ $l['template_set_associated_themes2'] = "Before this template set can be deleted
 $l['template_set_master_templates'] = "Templates in this group are 'master' templates.<br /><br />Modification features for this set are only provided in debug mode as they can cause significant damage and template loss.";
 $l['template_set_global_templates'] = "Templates in this group are 'global' templates.<br /><br />Any custom templates created in this group will be able to used throughout the board no matter which template set is assigned to the active theme.";
 $l['template_set_no_associated_themes'] = "This template set is currently not associated to any themes.<br /><br />It can be removed at any time.";
+$l['continue_editing'] = "Continue editing this template after submit?"
 ?>
