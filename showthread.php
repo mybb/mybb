@@ -222,7 +222,7 @@ if($mybb->input['action'] == "thread") {
 		mysetarraycookie("threadread", $tid, time());
 	}
 
-	if($$forum['open'] != "no") {
+	if($forum['open'] != "no") {
 		eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
 	}
 	if($forum['open'] != "no") {
