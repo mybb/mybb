@@ -135,7 +135,6 @@ if($mybb->input['action'] == "do_editpost") {
 if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_editpost" && $mybb->input['submit'] && $_FILES['attachment']))) {
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no") {
-		require "./inc/functions_upload.php";
 		$attachedfile = upload_attachment($_FILES['attachment']);
 	}
 	if($attachedfile['error']) {
@@ -147,7 +146,6 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 	}
 }
 if($mybb->input['removeattachment']) { // Lets remove the attachmen
-	require_once "./inc/functions_upload.php";
 	remove_attachment($pid, $posthash, $mybb->input['removeattachment']);
 	if(!$mybb->input['submit']) {
 		$mybb->input['action'] = "editpost";

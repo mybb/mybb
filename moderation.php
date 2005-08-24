@@ -1289,7 +1289,6 @@ switch($mybb->input['action'])
 				{
 					$message .= "[hr]$post[message]";
 				}
-
 				deletepost($post['pid']);
 			}
 		}
