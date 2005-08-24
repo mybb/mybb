@@ -1013,7 +1013,8 @@ else
 	$pmscount = $db->fetch_array($query);
 
 	$perpage = $mybb->settings['threadsperpage'];
-	if($page)
+	$page = intval($mybb->input['page']);
+	if(intval($mybb->input['page']) > 0)
 	{
 		$start = ($page-1) *$perpage;
 	}
