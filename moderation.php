@@ -1271,7 +1271,7 @@ switch($mybb->input['action'])
 				$plist[] = $pid;
 		}
 		$first = 1;
-		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC LIMIT 0, 1");
+		$query = $db->query("SELECT pid, message FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC LIMIT 0, 1");
 		$master = $db->fetch_array($query);
 		$masterpid = $master['pid'];
 		$message = $master['message'];
@@ -1279,7 +1279,7 @@ switch($mybb->input['action'])
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC");
 		while($post = $db->fetch_array($query))
 		{
-			if(!$post['pid'] != $masterpid)
+			if($post['pid'] != $masterpid)
 			{ // these are the selected posts
 				if($mybb->input['sep'] == "new_line")
 				{
