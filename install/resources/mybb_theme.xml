@@ -643,7 +643,7 @@ $attacherror
 $loginbox
 <tr>
 <td class="trow2" width="20%"><strong>$lang->post_subject</strong></td>
-<td class="trow2"><input type="text" name="subject" size="40" maxlength="85" value="$subject" tabindex="1"></td>
+<td class="trow2"><input type="text" name="subject" size="40" maxlength="85" value="$subject" tabindex="1" /></td>
 </tr>
 $posticons
 <tr>
@@ -653,7 +653,7 @@ $posticons
 $codebuttons
 <tr>
 <td colspan="2">
-<textarea name="message" rows="20" cols="70" tabindex="3">$message</textarea>
+<textarea name="message" rows="20" cols="70" tabindex="2">$message</textarea>
 </td>
 </tr>
 </table>
@@ -662,8 +662,8 @@ $codebuttons
 <tr>
 <td class="trow1" valign="top"><strong>$lang->post_options</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" name="postoptions[signature]" value="yes" tabindex="6" $postoptionschecked[signature]> $lang->options_sig<br />
-<input type="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" $postoptionschecked[emailnotify]> $lang->options_emailnotify
+<label><input type="checkbox" name="postoptions[signature]" value="yes" tabindex="6" $postoptionschecked[signature]> $lang->options_sig</label><br />
+<label><input type="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" $postoptionschecked[emailnotify]> $lang->options_emailnotify</label>
 $disablesmilies
 </span></td>
 </tr>
@@ -671,7 +671,7 @@ $attachbox
 $modoptions
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->post_reply" tabindex="3" accesskey="s">  <input type="submit" name="previewpost" value="$lang->preview_post" tabindex="4">$savedraftbutton  <input type="reset" name="reset" value="$lang->reset_button" tabindex="5"></center>
+<center><input type="submit" name="submit" value="$lang->post_reply" tabindex="3" accesskey="s" />  <input type="submit" name="previewpost" value="$lang->preview_post" tabindex="4" />$savedraftbutton  <input type="reset" name="reset" value="$lang->reset_button" tabindex="5" /></center>
 <input type="hidden" name="action" value="do_newreply">
 <input type="hidden" name="tid" value="$tid">
 <input type="hidden" name="replyto" value="$pid">
@@ -765,8 +765,8 @@ $codebuttons
 <tr>
 <td class="trow1" valign="top"><strong>$lang->post_options</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" name="postoptions[signature]" value="yes" tabindex="7" $postoptionschecked[signature] /> $lang->options_sig<br />
-<input type="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="8" $postoptionschecked[emailnotify] /> $lang->options_emailnotify
+<label><input type="checkbox" name="postoptions[signature]" value="yes" tabindex="7" $postoptionschecked[signature] /> $lang->options_sig</label><br />
+<label><input type="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="8" $postoptionschecked[emailnotify] /> $lang->options_emailnotify</label>
 $disablesmilies</span></td>
 </tr>
 $modoptions
@@ -2677,10 +2677,10 @@ $codebuttons
 <tr>
 <td class="trow1" valign="top"><strong>$lang->compose_options</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" name="options[signature]" value="yes" $optionschecked[signature]> $lang->options_sig<br />
-<input type="checkbox" name="options[disablesmilies]" value="yes" $optionschecked[disablesmilies]> $lang->options_disable_smilies<br />
-<input type="checkbox" name="options[savecopy]" value="yes" $optionschecked[savecopy]> $lang->options_save_copy<br />
-<input type="checkbox" name="options[readreceipt]" value="yes" $optionschecked[readreceipt]> $lang->options_read_receipt<br />
+<label><input type="checkbox" name="options[signature]" value="yes" tabindex="8" $optionschecked[signature]> $lang->options_sig</label><br />
+<label><input type="checkbox" name="options[disablesmilies]" value="yes" tabindex="9" $optionschecked[disablesmilies]> $lang->options_disable_smilies</label><br />
+<label><input type="checkbox" name="options[savecopy]" value="yes" tabindex="10" $optionschecked[savecopy]> $lang->options_save_copy</label><br />
+<label><input type="checkbox" name="options[readreceipt]" value="yes" tabindex="11" $optionschecked[readreceipt]> $lang->options_read_receipt</label><br />
 </span></td>
 </tr>
 </table>
@@ -2689,7 +2689,7 @@ $codebuttons
 <input type="hidden" name="action" value="do_send" />
 <input type="hidden" name="pmid" value="$pmid" />
 <input type="hidden" name="do" value="$do" />
-<center><input type="submit" name="submit" value="$lang->send_message" >  <input type="submit" name="saveasdraft" value="$lang->save_draft" />  <input type="submit" name="preview" value="$lang->preview" />  <input type="reset" name="reset" value="$lang->reset_button" /></center>
+<center><input type="submit" name="submit" value="$lang->send_message" tabindex="4" accesskey="s" />  <input type="submit" name="saveasdraft" value="$lang->save_draft" tabindex="5" />  <input type="submit" name="preview" value="$lang->preview" tabindex="6" />  <input type="reset" name="reset" value="$lang->reset_button" tabindex="7" /></center>
 </td>
 </tr>
 </table>
@@ -3415,6 +3415,9 @@ $pmsdownload
 <td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">$senddate $sendtime</span></td>
 <td class="trow2" align="center"><input type="checkbox" name="check[$message[pmid]]" value="yes"></td>
 </tr>]]></template>
+		<template name="private_nomessages"><![CDATA[<tr>
+<td colspan="6" class="trow1">$lang->nomessages</td>
+</tr>]]></template>
 		<template name="private_send_buddyselect"><![CDATA[<br /><span class="smalltext">$lang->select_buddy<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>$buddies</select>]]></template>
 		<template name="codebuttons"><![CDATA[<script language="javascript">
 var b_prompt = "$lang->b_prompt";
@@ -3526,9 +3529,9 @@ var php_prompt = "$lang->php_prompt";
 <td class="trow1" valign="top">
 <strong>$lang->message</strong><br />
 <span class="smalltext">$lang->message_note<br /><br />
-<input type="checkbox" name="postoptions[signature]" value="yes" $postoptionschecked[signature]>&nbsp;<strong>$lang->signature</strong><br />
-<input type="checkbox" name="postoptions[emailnotify]" value="yes" $postoptionschecked[emailnotify]>&nbsp;<strong>$lang->email_notify</strong><br />
-<input type="checkbox" name="postoptions[disablesmilies]" value="yes">&nbsp;<strong>$lang->disable_smilies</strong>$closeoption</span>
+<label><input type="checkbox" name="postoptions[signature]" value="yes" $postoptionschecked[signature]>&nbsp;<strong>$lang->signature</strong></label><br />
+<label><input type="checkbox" name="postoptions[emailnotify]" value="yes" $postoptionschecked[emailnotify]>&nbsp;<strong>$lang->email_notify</strong></label><br />
+<label><input type="checkbox" name="postoptions[disablesmilies]" value="yes">&nbsp;<strong>$lang->disable_smilies</strong></label>$closeoption</span>
 </td>
 <td class="trow1"><textarea name="message" rows="7" cols="70" wrap="virtual" tabindex="1"></textarea></td>
 </tr>
@@ -5185,8 +5188,8 @@ $footer
 		<template name="newreply_modoptions"><![CDATA[<tr>
 <td class="trow1" valign="top"><strong>$lang->mod_options</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" name="modoptions[closethread]" value="yes" $closecheck> $lang->close_thread<br />
-<input type="checkbox" name="modoptions[stickthread]" value="yes" $stickycheck> $lang->stick_thread
+<label><input type="checkbox" name="modoptions[closethread]" value="yes" $closecheck> $lang->close_thread</label><br />
+<label><input type="checkbox" name="modoptions[stickthread]" value="yes" $stickycheck> $lang->stick_thread</label>
 </span></td>
 </tr>]]></template>
 		<template name="smilieinsert_getmore"><![CDATA[<tr>

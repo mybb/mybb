@@ -1033,85 +1033,93 @@ else
 	$multipage = multipage($pmscount['total'], $perpage, $page, "private.php?fid=$folder");
 
 	$query = $db->query("SELECT pm.*, fu.username AS fromusername, tu.username AS tousername, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) WHERE pm.folder='$folder' AND pm.uid='".$mybb->user[uid]."' ORDER BY pm.dateline DESC LIMIT $start, $perpage");
-	while($message = $db->fetch_array($query))
+	if($db->num_rows($query) > 0)
 	{
-		// Determine Folder Icon
-		if($message['status'] == 0)
+		while($message = $db->fetch_array($query))
 		{
-			$msgfolder = "new_pm.gif";
-			$doneunread = 1;
-		}
-		elseif($message['status'] == 1)
-		{
-			$msgfolder = "old_pm.gif";
-			$doneread = 1;
-		}
-		elseif($message['status'] == 3)
-		{
-			$msgfolder = "re_pm.gif";
-			$doneread = 1;
-		}
-		elseif($message['status'] == 4)
-		{
-			$msgfolder = "fw_pm.gif";
-			$doneread = 1;
-		}
-		if($folder == 2 || $folder == 3)
-		{ // Sent Items or Drafts Folder Check
-			if($message['toid'])
+			// Determine Folder Icon
+			if($message['status'] == 0)
 			{
-				$tofromusername = $message['tousername'];
-				$tofromuid = $message['toid'];
+				$msgfolder = "new_pm.gif";
+				$doneunread = 1;
+			}
+			elseif($message['status'] == 1)
+			{
+				$msgfolder = "old_pm.gif";
+				$doneread = 1;
+			}
+			elseif($message['status'] == 3)
+			{
+				$msgfolder = "re_pm.gif";
+				$doneread = 1;
+			}
+			elseif($message['status'] == 4)
+			{
+				$msgfolder = "fw_pm.gif";
+				$doneread = 1;
+			}
+			if($folder == 2 || $folder == 3)
+			{ // Sent Items or Drafts Folder Check
+				if($message['toid'])
+				{
+					$tofromusername = $message['tousername'];
+					$tofromuid = $message['toid'];
+				}
+				else
+				{
+					$tofromusername = $lang->not_sent;
+				}
 			}
 			else
 			{
-				$tofromusername = $lang->not_sent;
+				$tofromusername = $message['fromusername'];
+				$tofromuid = $message['fromid'];
+				if($tofromuid == -2)
+				{
+					$tofromusername = "MyBB Engine";
+				}
 			}
-		}
-		else
-		{
-			$tofromusername = $message['fromusername'];
-			$tofromuid = $message['fromid'];
-			if($tofromuid == -2)
+			if($mybb->usergroup['cantrackpms'] && $mybb->usergroup['candenypmreceipts'] && $message['receipt'] == "1" && $message['folder'] != "3")
 			{
-				$tofromusername = "MyBB Engine";
+				eval("\$denyreceipt = \"".$templates->get("private_messagebit_denyreceipt")."\";");
 			}
+			else
+			{
+				$denyreceipt = "";
+			}
+			if($message['iconpath'])
+			{
+				$icon = "<img src=\"$message[iconpath]\" alt=\"$message[iconname]\">&nbsp;";
+			}
+			else
+			{
+				$icon = "";
+			}
+			$message['subject'] = htmlspecialchars_uni($message['subject']);
+			if($message['folder'] != "3")
+			{
+				$sendpmdate = mydate($mybb->settings['dateformat'], $message['dateline']);
+				$sendpmtime = mydate($mybb->settings['timeformat'], $message['dateline']);
+				$senddate = $sendpmdate.", ".$sendpmtime;
+			}
+			else
+			{
+				$senddate = $lang->not_sent;
+			}
+			if($doneunread && $doneread)
+			{
+				eval("\$messagelist .= \"".$templates->get("private_messagebit_sep")."\";");
+				$doneunread = 0;
+				$doneread = 0;
+			}
+			eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
 		}
-		if($mybb->usergroup['cantrackpms'] && $mybb->usergroup['candenypmreceipts'] && $message['receipt'] == "1" && $message['folder'] != "3")
-		{
-			eval("\$denyreceipt = \"".$templates->get("private_messagebit_denyreceipt")."\";");
-		}
-		else
-		{
-			$denyreceipt = "";
-		}
-		if($message['iconpath'])
-		{
-			$icon = "<img src=\"$message[iconpath]\" alt=\"$message[iconname]\">&nbsp;";
-		}
-		else
-		{
-			$icon = "";
-		}
-		$message['subject'] = htmlspecialchars_uni($message['subject']);
-		if($message['folder'] != "3")
-		{
-			$sendpmdate = mydate($mybb->settings['dateformat'], $message['dateline']);
-			$sendpmtime = mydate($mybb->settings['timeformat'], $message['dateline']);
-			$senddate = $sendpmdate.", ".$sendpmtime;
-		}
-		else
-		{
-			$senddate = $lang->not_sent;
-		}
-		if($doneunread && $doneread)
-		{
-			eval("\$messagelist .= \"".$templates->get("private_messagebit_sep")."\";");
-			$doneunread = 0;
-			$doneread = 0;
-		}
-		eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
 	}
+	else
+	{
+		eval("\$messagelist .= \"".$templates->get("private_nomessages")."\";");
+	}
+
 	if($mybb->usergroup['pmquota'] != "0")
 	{
 		$query = $db->query("SELECT COUNT(*) AS total FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$mybb->user['uid']."'");

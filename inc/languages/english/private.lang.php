@@ -96,4 +96,5 @@ $l['export_from'] ="From";
 $l['export_message'] = "Message";
 $l['not_sent'] = "N/A (not sent)";
 $l['at'] = "at";
+$l['nomessages'] = "There are no private messages in this folder.";
 ?>
