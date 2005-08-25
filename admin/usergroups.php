@@ -184,7 +184,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		if($mybb->input['moderate'] == "yes")
 		{
-			$type = "4";
+			$mybb->input['type'] = "4";
 		}
 		else
 		{
@@ -274,7 +274,7 @@ if($mybb->input['action'] == "add")
 	tableheader($lang->new_group);
 	makeinputcode($lang->title, "title");
 	maketextareacode($lang->description, "description");
-	makeinputcode($lang->namestyle, "namestyle");
+	makeinputcode($lang->namestyle, "namestyle", "{username}");
 	makeinputcode($lang->usertitle, "usertitle");
 	makeinputcode($lang->stars, "ustars");
 	makeinputcode($lang->star_image, "starimage", "images/star.gif");
