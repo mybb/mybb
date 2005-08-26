@@ -495,7 +495,13 @@ if($threadcache)
 		if(!$thread['username'])
 		{
 			$thread['username'] = $thread['threadusername'];
+			$thread['profilelink'] = $thread['threadusername'];
 		}
+		else
+		{
+			$thread['profilelink'] = "<a href=\"".str_replace("{uid}", $thread['uid'], PROFILE_URL)."\">".$thread['username']."</a>";
+		}
+
 		$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
 		if($thread['iconpath'])
 		{

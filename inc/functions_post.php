@@ -465,6 +465,7 @@ function makepostbit($post, $pmprevann=0)
 	{ // This post was made by a registered user
 
 		$post['username'] = $post['userusername'];
+		$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".$post['username']."</a>";
 		if(trim($post['usertitle']) != "")
 		{
 			$hascustomtitle = 1;
@@ -582,6 +583,7 @@ function makepostbit($post, $pmprevann=0)
 	else
 	{ // Message was posted by a guest or an unknown user
 		$post['username'] = $post['username'];
+		$post['profilelink'] = $post['username'];
 		if($usergroup['usertitle'])
 		{
 			$post['usertitle'] = $usergroup['usertitle'];

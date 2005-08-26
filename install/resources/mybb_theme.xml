@@ -3677,7 +3677,7 @@ $announcements]]></template>
 </tr>]]></template>
 		<template name="postbit"><![CDATA[<tr>
 <td class="$altbg" width="155" valign="top" nowrap="nowrap" align="center"><a name="pid$post[pid]"></a>
-<strong><span class="largetext"><a href="member.php?action=profile&amp;uid=$post[uid]">$post[username]</a></span></strong><br />
+<strong><span class="largetext">$post[profilelink]</span></strong><br />
 <span class="smalltext">
 $post[usertitle]<br />
 $post[userstars]
@@ -4273,7 +4273,7 @@ $forums
 <td align="center" class="$bgcolor" width="2%"><img src="$theme[imgdir]/$folder.gif" alt="$thread[subject]" /></td>
 <td align="center" class="$bgcolor" width="2%">$icon</td>
 <td class="$bgcolor">$prefix $gotounread<a href="showthread.php?tid=$thread[tid]">$thread[subject]</a>$thread[multipage]</td>
-<td align="center" class="$bgcolor"><a href="member.php?action=profile&amp;uid=$thread[author]">$thread[username]</a></td>
+<td align="center" class="$bgcolor">$thread[profilelink]</td>
 <td align="center" class="$bgcolor"><a href="javascript:whoPosted($thread[tid]);">$thread[replies]</a></td>
 <td align="center" class="$bgcolor">$thread[views]</td>
 $rating

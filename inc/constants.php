@@ -9,6 +9,7 @@
  * $Id$
  */
 
+define(PROFILE_URL, "member.php?action=profile&amp;uid={uid}");
 
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
