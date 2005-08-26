@@ -26,6 +26,7 @@ $l['num_threads'] = "Number of Threads:";
 $l['num_posts'] = "Number of Posts:";
 $l['lastpost'] = "Last Post";
 $l['update_orders'] = "Update Forum Orders";
+$l['mods_colors_note'] = "Normal Color - moderator of this forum<br /><span class=\"highlight2\">Highlighted</span> - moderator inherited from a parent forum.";
 $l['no_mods_note'] ="This forum does not currently have any moderators. To add one, click 'New Moderator' above.";
 $l['edit'] = "Edit";
 $l['delete'] = "Delete";

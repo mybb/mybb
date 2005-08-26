@@ -720,8 +720,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 		echo "<td width=\"49%\" valign=\"top\" align=\"right\">\n";
 		starttable("100%");
 		tableheader($lang->forum_moderators);
+		makelabelcode($lang->mods_colors_note, '', 2);
 		tablesubheader("<div align=\"right\"><input type=\"button\" value=\"$lang->add_mod\" onclick=\"hopto('forums.php?action=addmod&fid=$fid');\" class=\"submitbutton\"></div>");
-		$modquery = $db->query("SELECT m.mid, m.uid, m.fid, u.username FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid) WHERE m.fid='$fid' ORDER BY u.username");
+		$parentlist = buildparentlist($fid, 'm.fid');
+		$modquery = $db->query("SELECT m.mid, m.uid, m.fid, u.username FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid) WHERE $parentlist ORDER BY u.username");
 		$nummods = $db->num_rows($modquery);
 		if(!$nummods)
 		{
@@ -729,6 +731,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 		}
 		while($mod = $db->fetch_array($modquery))
 		{
+			if($mod['fid'] != $fid)
+			{
+				$mod['username'] = '<span class="highlight2">' . $mod['username'] . '</span>';
+			}
 			makelabelcode($mod['username'], "<div align=\"right\"><input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('forums.php?action=editmod&mid=".$mod['mid']."');\" class=\"submitbutton\"><input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('forums.php?action=deletemod&fid=".$mod['fid']."&mid=".$mod['mid']."');\" class=\"submitbutton\"></div>");
 		}
 		endtable();
