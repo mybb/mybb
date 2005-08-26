@@ -850,7 +850,7 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->post_count, "postnum", $user['postnum'], 4);
 
 	tablesubheader($lang->optional_info);
-	makeinputcode($lang->custom_title, "usertitle", $user['usertitle'], 25, "", 15);
+	makeinputcode($lang->custom_title, "usertitle", $user['usertitle']);
 	makeinputcode($lang->avatar_url, "avatar", $user['avatar']);
 	makeinputcode($lang->website, "website", $user['website']);
 	makeinputcode($lang->icq_number, "icq", $user['icq']);
