@@ -380,6 +380,10 @@ elseif($mybb->input['action'] == "do_profile")
 		{
 			$usertitle = $mybb->input['usertitle'];
 		}
+		elseif($mybb->input['usertitle'] == $mybb->user['usertitle'])
+		{
+			$usertitle = $mybb->input['usertitle'];
+		}
 		else
 		{
 			error($lang->error_customtitle_length);
