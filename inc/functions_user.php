@@ -60,7 +60,7 @@ function validate_password_from_uid($uid, $password, $user="")
 	global $db, $mybb;
 	if($mybb->user['uid'] == $uid)
 	{
-		$user = $mybb->user['uid'];
+		$user = $mybb->user;
 	}
 	if(!$user['password'])
 	{
