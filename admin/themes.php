@@ -217,9 +217,9 @@ if($mybb->input['action'] == "do_import")
 		{
 			cpmessage($lang->upload_failed);
 		}
-		$arr = @file($_FILES['compfile']['tmp_name']);
-		$contents = @implode("", $arr);
-		@unlink($_FILES['compfile']['temp_name']);
+		$arr = file($_FILES['compfile']['tmp_name']);
+		$contents = implode("", $arr);
+		unlink($_FILES['compfile']['temp_name']);
 		if(!$contents)
 		{
 			cpmessage($lang->upload_failed);
@@ -384,12 +384,13 @@ if($mybb->input['action'] == "edit") {
 
 	starttable();
 	tableheader($lang->additional_css, "", 1);
+/*
 	tablesubheader($lang->master_css_note, "", 1);
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" align=\"center\">\n";
 	echo "<textarea style=\"width: 98%; padding: 4px;\"	rows=\"9\"name=\"extracss\">".htmlspecialchars_uni($master['extracss'])."</textarea>\n";
 	echo "</td>\n";
-	echo "</tr>\n";
+	echo "</tr>\n"; */
 	tablesubheader($lang->additional_css_note, "", 1);
 	makethemebitedit("", "extracss");
 	endtable();
