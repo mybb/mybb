@@ -153,7 +153,7 @@ function getforums($pid=0, $depth=1)
 				}
 				elseif($depth == 3)
 				{
-					echo "<a href=\"forums.php?fid=".$forum['fid']."\">".$forum['name']."</a>&nbsp;";
+					echo "$comma <a href=\"forums.php?fid=".$forum['fid']."\">".$forum['name']."</a>";
 					$comma = ", ";
 				}
 			}

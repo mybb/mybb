@@ -704,6 +704,11 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$donecount++;
 						if($donecount == $mybb->settings['subforumsindex'])
 						{
+							if(count($main) > $donecount)
+							{
+								$forumlisting .= $comma;
+								$forumlisting .= sprintf($lang->more_subforums, (count($main) - $donecount));
+							}
 							return $forumlisting;
 						}
 						continue;

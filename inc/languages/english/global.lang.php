@@ -44,6 +44,7 @@ $l['no_new_posts'] = "Forum Contains No New Posts";
 $l['forum_locked'] = "Forum is Locked";
 $l['lastpost_never'] = "Never";
 $l['by'] = "by";
+$l['more_subforums'] = "and {1} more";
 
 $l['password_required'] = "Password Required";
 $l['forum_password_note'] = "The administrator has required it so that a password is required for access to this forum.";
