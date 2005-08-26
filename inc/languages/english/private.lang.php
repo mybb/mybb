@@ -19,6 +19,7 @@ $l['message_title'] = "Message Title";
 $l['sender'] = "Sender";
 $l['sentto'] = "Sent To";
 $l['date_sent'] = "Date/Time Sent";
+$l['delete_pm'] = "Delete";
 $l['move_to'] = "Move To";
 $l['delete'] = "Delete";
 $l['or'] = "or";

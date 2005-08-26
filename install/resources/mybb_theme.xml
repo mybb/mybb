@@ -5785,11 +5785,11 @@ $usercpnav
 <td valign="top">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
-<td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>$pm[subject]</strong></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid=$pm[pmid]&do=reply">$lang->reply</a> | <a href="private.php?action=send&amp;pmid=$pm[pmid]&do=forward">$lang->forward</a> | <a href="private.php?action=delete&amp;pmid=$pm[pmid]">$lang->delete</a></td></table></td>
+<td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>$pm[subject]</strong></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid=$pm[pmid]&do=reply">$lang->reply</a> | <a href="private.php?action=send&amp;pmid=$pm[pmid]&do=forward">$lang->forward</a> | <a href="private.php?action=delete&amp;pmid=$pm[pmid]">$lang->delete_pm</a></td></table></td>
 </tr>
 $message
 <tr>
-<td class="tfoot" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="tfoot"><strong>$pm[subject]</strong></td><td class="tfoot" align="right"><a href="private.php?action=send&amp;pmid=$pm[pmid]&do=reply">$lang->reply</a> | <a href="private.php?action=send&amp;pmid=$pm[pmid]&do=forward">$lang->forward</a> | <a href="private.php?action=delete&amp;pmid=$pm[pmid]">$lang->delete</a></td></table></td>
+<td class="tfoot" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="tfoot"><strong>$pm[subject]</strong></td><td class="tfoot" align="right"><a href="private.php?action=send&amp;pmid=$pm[pmid]&do=reply">$lang->reply</a> | <a href="private.php?action=send&amp;pmid=$pm[pmid]&do=forward">$lang->forward</a> | <a href="private.php?action=delete&amp;pmid=$pm[pmid]">$lang->delete_pm</a></td></table></td>
 </tr>
 </table>
 </td>
