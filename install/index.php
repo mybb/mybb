@@ -18,11 +18,16 @@ $mybb = new MyBB;
 
 // Include the files necessary for installation
 require "../inc/class_timers.php";
-require "../inc/constants.php";
 require "../inc/functions.php";
 require "../admin/adminfunctions.php";
 require "../inc/class_xml.php";
 require "../inc/functions_user.php";
+
+// Include the necessary contants for installation
+$grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+$groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
+$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+$fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
 
 // Include the installation resources
 require "./resources/output.php";
