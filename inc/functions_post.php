@@ -465,7 +465,7 @@ function makepostbit($post, $pmprevann=0)
 	{ // This post was made by a registered user
 
 		$post['username'] = $post['userusername'];
-		$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".$post['username']."</a>";
+		$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".formatname($post['username'], $post['usergroup'], $post['displaygroup'])."</a>";
 		if(trim($post['usertitle']) != "")
 		{
 			$hascustomtitle = 1;
@@ -785,10 +785,6 @@ function makepostbit($post, $pmprevann=0)
 	else
 	{
 		$post['icon'] = "";
-	}
-	if(stripos($usergroup['namestyle'], "{username}") !== false)
-	{
-		$post['username'] = formatname($post['username'], $post['usergroup'], $post['displaygroup']); // Set the style for the username
 	}
 	$GLOBALS['post'] =& $post;
 	if(!$pmprevann)
