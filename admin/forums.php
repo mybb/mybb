@@ -75,8 +75,8 @@ function getforums($pid=0, $depth=1)
 		{
 			foreach($main as $key => $forum)
 			{
-				$forum['name'] = stripslashes($forum['name']);
-				$forum['description'] = stripslashes($forum['description']);
+				$forum['name'] = $forum['name'];
+				$forum['description'] = $forum['description'];
 				if($forum['type'] == "c" && ($depth == 1 || $depth == 2))
 				{
 					echo "<tr>\n";
@@ -544,7 +544,7 @@ if($mybb->input['action'] == "edit") {
 	$fid = intval($mybb->input['fid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
 	$forum = $db->fetch_array($query);
-	$forum['description'] = stripslashes($forum['description']);
+	$forum['description'] = $forum['description'];
 	$pid = $forum['pid'];
 	if($forum[type] == "c")
 	{
