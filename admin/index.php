@@ -137,7 +137,7 @@ elseif ($mybb->input['action']=="home")
 	asort($languages);
 	foreach($languages as $key => $langname)
 	{
-		require_once "./inc/languages/".$key.".php";
+		require "./inc/languages/".$key.".php";
 		if(!empty($langinfo['website']))
 		{
 			$author = "<a href=\"$langinfo[website]\">$langinfo[author]</a>";
