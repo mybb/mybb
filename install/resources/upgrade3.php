@@ -12,6 +12,7 @@
 /**
  * Upgrade Script: Release Candidate 4
  */
+@set_time_limit(0);
 
 function upgrade3_dbchanges()
 {
@@ -132,6 +133,7 @@ function upgrade3_convertattachments()
 		}
 		fwrite($fp, $attachment['filedata']);
 		fclose($fp);
+		unset($attachment['filedata']);
 		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 		{
 			require_once "../inc/functions_image.php";

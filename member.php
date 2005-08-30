@@ -955,12 +955,12 @@ elseif($mybb->input['action'] == "resetpassword")
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['uid']."'");
 		$user = $db->fetch_array($query);
 	}
-	if($code && $user['uid'])
+	if($mybb->input['code'] && $user['uid'])
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user[uid]."' AND type='p'");
 		$activation = $db->fetch_array($query);
 		$now = time();
-		if($activation['code'] != $code)
+		if($activation['code'] != $mybb->input['code'])
 		{
 			error($lang->error_badlostpwcode);
 		}
@@ -1087,13 +1087,13 @@ elseif($mybb->input['action'] == "profile")
 	{
 		if($mybb->input['tid'])
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='".$mybb->input['tid']."' ORDER BY dateline DESC LIMIT 0, 1");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='".intval($mybb->input['tid'])."' ORDER BY dateline DESC LIMIT 0, 1");
 			$post = $db->fetch_array($query);
 			$uid = $post['uid'];
 		}
 		elseif($mybb->input['fid'])
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE INSTR(CONCAT(',',parentlist,','),',".$mybb->input['fid'].",') > 0");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0");
 			while($forum = $db->fetch_array($query))
 			{
 				if($forum['fid'] == $mybb->input['fid'])
