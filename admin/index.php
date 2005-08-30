@@ -138,7 +138,7 @@ elseif ($mybb->input['action']=="home")
 	$langs = array();
 	while(($lang1 = readdir($dir)) !== false)
 	{
-		if(filetype($langdir.$lang1) == 'file')
+		if(filetype($langdir.$lang1) == 'file' && strpos($lang1, ".php") !== false)
 		{
 			$langs[] = $langdir.$lang1;
 		}
@@ -147,7 +147,7 @@ elseif ($mybb->input['action']=="home")
 	sort($langs);
 	while(list($key, $lang2) = each($langs))
 	{
-		require $lang2;
+		require_once $lang2;
 		if(!empty($langinfo['website']))
 		{
 			$author = "<a href=\"$langinfo[website]\">$langinfo[author]</a>";
