@@ -138,7 +138,7 @@ elseif ($mybb->input['action']=="home")
 	$langs = array();
 	while(($lang1 = readdir($dir)) !== false)
 	{
-		if(filetype($langdir.$lang1) == 'file' && strpos($lang1, ".php") !== false)
+		if(filetype($langdir.$lang1) == 'file' && getextension($lang1) == "php")
 		{
 			$langs[] = $langdir.$lang1;
 		}
