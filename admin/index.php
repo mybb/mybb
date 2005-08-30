@@ -133,21 +133,11 @@ elseif ($mybb->input['action']=="home")
 	starttable();
 	tableheader($lang->installed_langs);
 	tablesubheader($lang->lang_authors);
-	$langdir = "./inc/languages/";
-	$dir = opendir($langdir);
-	$langs = array();
-	while(($lang1 = readdir($dir)) !== false)
+	$languages = $lang->getLanguages();
+	asort($languages);
+	foreach($languages as $key => $langname)
 	{
-		if(filetype($langdir.$lang1) == 'file' && getextention($lang1) == "php")
-		{
-			$langs[] = $langdir.$lang1;
-		}
-	}
-	closedir($dir);
-	sort($langs);
-	while(list($key, $lang2) = each($langs))
-	{
-		require_once $lang2;
+		require_once "./inc/languages/".$key.".php";
 		if(!empty($langinfo['website']))
 		{
 			$author = "<a href=\"$langinfo[website]\">$langinfo[author]</a>";
