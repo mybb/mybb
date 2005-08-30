@@ -790,7 +790,7 @@ if($mybb->input['action'] == "add")
 	makeyesnocode($lang->pm_popup, "pmpopup", "yes");
 	makeyesnocode($lang->pm_notify, "pmnotify", "yes");
 	makeinputcode($lang->time_offset, "timezoneoffset");
-	makeselectcode($lang->style, "style", "themes", "tid", "name", -1, $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
+	makeselectcode($lang->style, "style", "themes", "tid", "name", -1, $lang->use_default, "", "tid>1");
 	maketextareacode($lang->signature, "signature", "", 6, 50);
 	endtable();
 	endform($lang->add_user, $lang->reset_button);
@@ -999,7 +999,7 @@ if($mybb->input['action'] == "edit")
 	makeyesnocode($lang->pm_popup, "pmpopup", $user[pmpopup]);
 	makeyesnocode($lang->pm_notify, "pmnotify", $user['pmnotify']);
 	makeinputcode($lang->time_offset, "timezoneoffset", $user[timezone]);
-	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user[style], $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
+	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user[style], $lang->use_default, "", "tid>1");
 	maketextareacode($lang->signature, "signature", $user[signature], 6, 50);
 	if(!$user['regip']) { $user['regip'] = " "; }
 	makelabelcode($lang->reg_ip, $user[regip]);
