@@ -327,9 +327,6 @@ list-style-type: none;
 	</themebits>
 	<templates>
 		<template name="forumdisplay_threadlist_sortrating"><![CDATA[<option value="rating" $sortsel[rating]>$lang->sort_by_rating</option>]]></template>
-		<template name="weblogs_editcategories_category"><![CDATA[<tr>
-<td class="trow1"><input type="text" name="category[$key]" size="25" value="$category"></td>
-</tr>]]></template>
 		<template name="global_boardclosed_warning"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
@@ -1157,112 +1154,7 @@ $footer
 <td class="trow1" nowrap="nowrap">$lastpostdate, $lastposttime<br /><span class="smalltext">$lang->by <a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$favorite[tid]">$lastposter</a></span></td>
 </tr>]]></template>
 		<template name="header_welcomeblock_member_admin"><![CDATA[ &mdash; <a href="$settings[bburl]/admin/index.php">$lang->welcome_admin</a>]]></template>
-		<template name="header_toplinks_gallery"><![CDATA[<li><a href="$settings[bburl]/gallery.php"><img src="$theme[imgdir]/toplinks/gallery.gif" border="0" alt="$lang->toplinks_gallery" />$lang->toplinks_gallery</a></li>]]></template>
-		<template name="header_toplinks_shoutbox"><![CDATA[<li><a href="about:blank"><img src="$theme[imgdir]/toplinks/shoutbox.gif" border="0" alt="$lang->toplinks_shoutbox" />$lang->toplinks_shoutbox</a></li>]]></template>
 		<template name="forumdisplay_newthread"><![CDATA[<a href="newthread.php?fid=$fid"><img src="$theme[imglangdir]/newthread.gif" border="0" alt="$lang->post_thread" /></a>]]></template>
-		<template name="weblogs_manage"><![CDATA[<html>
-<head>
-<title>$settings[bbname] - $lang->weblog_settings</title>
-$headerinclude
-</head>
-<body>
-$header
-<form action="weblogs.php" method="post">
-<table width="$theme[tablewidth]" border="0" align="center">
-<tr>
-$usercpnav
-<td valign="top">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
-<tr>
-<td class="thead" colspan="2"><strong>$lang->weblog_settings</strong></td>
-</tr>
-<tr>
-<td class="tcat" colspan="2"><strong>$lang->weblog_configuration</strong></td>
-</tr>
-<tr>
-<td class="trow1" width="40%"><strong>$lang->weblog_name</strong><br /><span class="smalltext">$lang->weblog_name_desc</span></td>
-<td class="trow1" width="60%"><input type="text" name="name" value="$blog[name]" /></td>
-</tr>
-<tr>
-<td class="trow2" width="40%" valign="top"><strong>$lang->weblog_description</strong><br /><span class="smalltext">$lang->weblog_description_desc</span></td>
-<td class="trow2" width="60"><textarea name="description">$description</textarea></td>
-</tr>
-<tr>
-<td class="trow1" width="40%" valign="top"><strong>$lang->weblog_type</strong><br /><span class="smalltext">$lang->weblog_type_desc</span></td>
-<td class="trow1" width="60%">
-	<select name="type">
-		<option value="0">$lang->weblog_type_local</option>
-		<option value="1" $type_remote>$lang->weblog_type_remote</option>
-	</select>
-</td>
-</tr>
-<tr>
-<td class="trow2" width="40%"><strong>$lang->weblog_type_remote_url</strong><br /><span class="smalltext">$lang->weblog_type_remote_url_desc</span></td>
-<td class="trow2" width="60%"><input type="text" name="remoteurl" value="$blog[remoteurl]" /></td>
-</tr>
-<tr>
-<td class="tcat" colspan="2"><strong>$lang->weblog_settings2</strong></td>
-</tr>
-<tr>
-<td class="trow1" width="40%"><strong>$lang->weblog_private</strong><br /><span class="smalltext">$lang->weblog_private_desc</span></td>
-<td class="trow1" width="60%">
-	<select name="private">
-		<option value="0">$lang->weblog_private_public</option>
-		<option value="1" $private_private>$lang->weblog_private_private</option>
-	</select>
-</td>
-</tr>
-<tr>
-<td class="trow2" width="40%"><strong>$lang->weblog_canview</strong><br /><span class="smalltext">$lang->weblog_canview_desc</span></td>
-<td class="trow2" width="60%">
-	<select name="canview">
-		<option value="0">$lang->weblog_canview_all</option>
-		<option value="1" $canview_users>$lang->weblog_canview_users</option>
-	</select>
-</td>
-</tr>
-<tr>
-<td class="trow1" width="40%"><strong>$lang->weblog_leavecomments</strong><br /><span class="smalltext">$lang->weblog_leavecomments_desc</span></td>
-<td class="trow1" width="60%">
-	<select name="leavecomments">
-		<option value="1">$lang->weblog_leavecomments_everyone</option>
-		<option value="2" $cancomments_users>$lang->weblog_leavecomments_users</option>
-		<option value="0" $cancomments_noone>$lang->weblog_leavecomments_noone</option>
-	</select>
-</td>
-</tr>
-<tr>
-<td class="tcat" colspan="2"><strong>$lang->weblog_appearance</strong></td>
-</tr>
-<tr>
-<td class="trow2" width="40%"><strong>$lang->weblog_epp</strong><br /><span class="smalltext">$lang->weblog_epp_desc</span></td>
-<td class="trow2" width="60%">
-	<select name="epp">
-		$eppselect
-	</select>
-</td>
-</tr>
-<tr>
-<td class="trow1" width="40%"><strong>$lang->weblog_cpp</strong><br /><span class="smalltext">$lang->weblog_cpp_desc</span></td>
-<td class="trow1" width="60%">
-	<select name="cpp">
-		$cppselect
-	</select>
-</td>
-</tr>
-</table>
-<br />
-<div align="center">
-<input type="hidden" name="action" value="do_manage" />
-<input type="submit" value="$lang->save_weblog_configuration" />
-</div>
-</td>
-</tr>
-</table>
-</form>
-$footer
-</body>
-</html>]]></template>
 		<template name="showthread_threaded_bitactive"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><strong>$post[subject]</strong> <span class="smalltext">- $lang->by $post[username] - $postdate $posttime</span><br />]]></template>
 		<template name="showthread_threaded_bit"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><a href="showthread.php?tid=$tid&amp;pid=$post[pid]&mode=threaded">$post[subject]</a> <span class="smalltext">- $lang->by $post[username] - $postdate, $posttime</span><br />]]></template>
 		<template name="showthread_poll"><![CDATA[<form action="polls.php" method="get">
@@ -1959,15 +1851,6 @@ $inlinemod
 		</td>
 	</tr>
 </table>]]></template>
-		<template name="weblogs_listing_blog"><![CDATA[<tr>
-<td class="$trow" align="center" width="1"><img src="$theme[imgdir]/$onoff.gif" alt="$onoffalt" /></td>
-<td class="$trow" width="30%"><strong><a href="weblogs.php?bid=$blog[bid]">$blog[name]</a></strong><br /><span class="smalltext">$blog[description]</span></td>
-<td class="$trow" align="center"><a href="member.php?action=profile&uid=$blog[uid]">$blog[username]</a></td>
-<td class="$trow" align="center">$blog[entries]</td>
-<td class="$trow">$lastpost</td>
-<td class="$trow">$blog[comments]</td>
-<td class="$trow">$lastcomment</td>
-</tr>]]></template>
 		<template name="member_register_referrer"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>$lang->referrer</strong></legend>
@@ -2165,138 +2048,6 @@ $newpmmsg]]></template>
 </tr>
 $similarthreadbits
 </table>]]></template>
-		<template name="weblogs_listing"><![CDATA[<html>
-<head>
-<title>$settings[bbname] - $lang->weblog_list</title>
-$headerinclude
-</head>
-<body>
-$header
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
-<tr>
-<td class="thead" colspan="7"><strong>$lang->weblog_list</strong></td>
-</tr>
-<tr>
-<td class="tcat" colspan="2" width="30%"><span class="smalltext"><strong>$lang->weblog_name</strong></span></td>
-<td class="tcat" align="center" width="14%"><span class="smalltext"><strong>$lang->weblog_author</strong></span></td>
-<td class="tcat" align="center" width="8%"><span class="smalltext"><strong>$lang->weblog_entries</strong></span></td>
-<td class="tcat" align="center" width="20%"><span class="smalltext"><strong>$lang->weblog_latest_entry</strong></span></td>
-<td class="tcat" align="center" width="8%"><span class="smalltext"><strong>$lang->weblog_comments</strong></span></td>
-<td class="tcat" align="center" width="20%"><span class="smalltext"><strong>$lang->weblog_latest_comment</strong></span></td>
-</tr>
-$blogs
-</table>
-$footer
-</body>
-</html>]]></template>
-		<template name="usercp_nav_blog"><![CDATA[<tr><td class="tcat"><span class="smalltext"><strong>$lang->ucp_nav_blog</strong></span></td></tr>
-<tr>
-<td class="trow1">
-<span class="smalltext">
-<ul class="usercpnav">
-<li><a href="weblogs.php?action=manage">$lang->ucp_nav_blog_settings</a></li>
-$manageblog
-</ul>
-</span>
-</td>
-</tr>]]></template>
-		<template name="weblogs_editcategories"><![CDATA[<html>
-<head>
-<title>$settings[bbname] - $lang->weblog_categories</title>
-$headerinclude
-</head>
-<body>
-$header
-<form action="weblogs.php" method="post">
-<table width="$theme[tablewidth]" border="0" align="center">
-<tr>
-$usercpnav
-<td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
-<tr>
-<td class="thead"><strong>$lang->weblog_categories</strong></td>
-</tr>
-<tr>
-<td class="tcat"><strong>$lang->existing_categories</strong></td>
-</tr>
-<tr>
-<td class="trow1"><span class="smalltext">$lang->categories_note</span></td>
-</tr>
-$categorylist
-<tr>
-<td class="tcat"><strong>$lang->new_categories</strong></td>
-</tr>
-<tr>
-<td class="trow1"><span class="smalltext">$lang->new_categories_note</span></td>
-</tr>
-$newcategories
-</table>
-</td></tr></table>
-<br />
-<div align="center">
-<input type="hidden" name="action" value="do_editcategories">
-<input type="submit" name="submit" value="$lang->update_categories">
-</div>
-</td>
-</tr>
-</table>
-</form>
-$footer
-</body>
-</html>]]></template>
-		<template name="weblogs_blog"><![CDATA[<html>
-<head>
-<title>$settings[bbname] - $pagetitle</title>
-$headerinclude
-</head>
-<body>
-$header
-<table width="$theme[tablewidth]" border="0" align="center">
-<tr>
-<td valign="top">
-<h2>$blog[name]</h2>
-<h3>$blog[description]</h3>
-$blogcontent
-</td>
-<td valign="top" width="250">
-$rightblocks
-</td>
-</tr>
-</table>
-$footer
-</body>
-</html>]]></template>
-		<template name="weblogs_blog_entries_entry"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
-<tr>
-<td class="thead"><strong><div style="float: right;">$lang->posted $entrydate $entrytime</div><div>$entry[title]</div></strong></td>
-</tr>
-<tr>
-<td class="trow1">$content</td>
-</tr>
-<tr>
-<td class="trow2"><div style="float: right;">$entry_categories</div><div>$lang->comments $entry[commentcount]</div></td>
-</tr>
-</table>
-<br />]]></template>
-		<template name="weblogs_blog_entries"><![CDATA[$entries]]></template>
-		<template name="weblogs_blog_blocks_latestposts"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
-<tr>
-<td class="thead"><strong>$lang->block_latest_10_posts</strong></td>
-</tr>
-<tr>
-<td class="trow1">
-$latestposts
-</td>
-</tr>
-</table>
-<br />]]></template>
-		<template name="usercp_nav_blog_manage"><![CDATA[<li><a href="weblogs.php?action=newpost">$lang->ucp_nav_blog_newpost</a></li>
-<li><a href="weblogs.php?action=postadmin">$lang->ucp_nav_blog_manageposts</a></li>
-<li><a href="weblogs.php?action=editcategories">$lang->ucp_nav_blog_categories</a></li>
-<li><a href="weblogs.php?bid=$blog[bid]">$lang->ucp_nav_blog_yourblog</a></li>]]></template>
 		<template name="nav_sep"><![CDATA[ / ]]></template>
 		<template name="post_attachments_new"><![CDATA[<tr>
 <td colspan="3" nowrap="nowrap"><strong>$lang->new_attachment</strong> <input type="file" name="attachment" size="30" /> <input type="submit" name="newattachment" value="$lang->add_attachment"  tabindex="12">
@@ -2443,9 +2194,6 @@ $footer
 					<li><a href="$settings[bburl]/search.php"><img src="$theme[imgdir]/toplinks/search.gif" border="0" alt="$lang->toplinks_search" />$lang->toplinks_search</a></li>
 					<li><a href="$settings[bburl]/memberlist.php"><img src="$theme[imgdir]/toplinks/memberlist.gif" border="0" alt="$lang->toplinks_memberlist" />$lang->toplinks_memberlist</a></li>
 					<li><a href="$settings[bburl]/calendar.php"><img src="$theme[imgdir]/toplinks/calendar.gif" border="0" alt="$lang->toplinks_calendar" />$lang->toplinks_calendar</a></li>
-					$weblogslink
-					$gallerylink
-					$shoutboxlink
 					<li><a href="$settings[bburl]/misc.php?action=help"><img src="$theme[imgdir]/toplinks/help.gif" border="0" alt="$lang->toplinks_help" />$lang->toplinks_help</a></li>
 				</ul>
 			</div>
@@ -2523,7 +2271,6 @@ $displaygroups
 $footer
 </body>
 </html>]]></template>
-		<template name="header_toplinks_weblogs"><![CDATA[<li><a href="$settings[bburl]/weblogs.php"><img src="$theme[imgdir]/toplinks/weblogs.gif" border="0" alt="$lang->toplinks_weblogs" />$lang->toplinks_weblogs</a></li>]]></template>
 		<template name="usercp_usergroups_memberof"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>$lang->usergroups_memberof</strong></td>

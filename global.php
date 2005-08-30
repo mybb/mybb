@@ -173,22 +173,6 @@ if($mybb->settings['boardclosed'] == "yes")
 	}
 }
 
-// Prep toplinks modules supported by MyBB.
-$weblogslink = $gallerylink = $shoutboxlink = "";
-if($modulecache['weblogs']['active'] == 1)
-{
-	eval("\$weblogslink = \"".$templates->get("header_toplinks_weblogs")."\";");
-}
-if($modulecache['gallery']['active'] == 1)
-{
-	eval("\$gallerylink = \"".$templates->get("header_toplinks_gallery")."\";");
-
-}
-if($modulecache['shoutbox']['active'] == 1)
-{
-	eval("\$shoutboxlink = \"".$templates->get("header_toplinks_shoutbox")."\";");
-}
-
 // Prepare the main templates for use
 unset($admincplink);
 
