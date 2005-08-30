@@ -1715,7 +1715,7 @@ if($mybb->input['action'] == "do_manageban")
 			"gid" => $mybb->input['gid'],
 			"bantime" => $mybb->input['liftafter'],
 			"lifted" => $liftdate,
-			"reason" => $addslashes($mybb->input['banreason'])
+			"reason" => addslashes($mybb->input['banreason'])
 			);
 
 		$db->update_query(TABLE_PREFIX."banned", $banneduser, "uid='".$user['uid']."'");
