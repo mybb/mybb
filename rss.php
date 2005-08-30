@@ -65,19 +65,19 @@ switch($mybb->input['type'])
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 		echo "<rss version=\"2.0\">\n";
 		echo "\t<channel>\n";
-		echo "\t\t<title>".$title."</title>\n";
-		echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
-		echo "\t\t<description>".$mybb->settings['bbname']." - ".$mybb->settings['bburl']."</description>\n";
-		echo "\t\t<generator>MyBB ".$mybboard['internalver']."</generator>\n";
+		echo "\t\t<title><![CDATA[".$title."</title>\n";
+		echo "\t\t<link><![CDATA[".$mybb->settings['bburl']."</link>\n";
+		echo "\t\t<description>".$mybb->settings['bbname']." - ".$mybb->settings['bburl']."]]></description>\n";
+		echo "\t\t<generator>MyBB</generator>\n";
 		break;
 	default:
 		header("Content-Type: text/xml");	
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 		echo "<rss version=\"0.92\">\n";
 		echo "\t<channel>\n";
-		echo "\t\t<title>".$title."</title>\n";
-		echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
-		echo "\t\t<description>".$mybb->settings['bbname']." - ".$mybb->settings['bburl']."</description>\n";
+		echo "\t\t<title><![CDATA[".$title."]]></title>\n";
+		echo "\t\t<link><![CDATA[".$mybb->settings['bburl']."</link>\n";
+		echo "\t\t<description>".$mybb->settings['bbname']." - ".$mybb->settings['bburl']."]]></description>\n";
 		echo "\t\t<language>en</language>\n";
 		break;
 }
