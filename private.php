@@ -186,7 +186,7 @@ if($mybb->input['action'] == "send")
 		$subject = htmlspecialchars_uni($subject);
 		if($pm['folder'] == "3")
 		{ // message saved in drafts
-			$uid = $pm['toid'];
+			$mybb->input['uid'] = $pm['toid'];
 			if($pm['includesig'] == "yes")
 			{
 				$optionschecked['signature'] = "checked";
@@ -990,7 +990,7 @@ else
 		$foldername = $lang->inbox;
 	}
 	$lang->pms_in_folder = sprintf($lang->pms_in_folder, $foldername);
-	if($folder == 2)
+	if($folder == 2 || $folder == 3)
 	{ // Sent Items Folder
 		$sender = $lang->sentto;
 	}
