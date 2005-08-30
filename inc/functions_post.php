@@ -789,7 +789,7 @@ function makepostbit($post, $pmprevann=0)
 	$GLOBALS['post'] =& $post;
 	if(!$pmprevann)
 	{
-		eval("\$post['seperator'] = \"".$templates->get("postbit_seperator")."\";");
+		eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
 		$plugins->run_hooks("postbit");
 	}
 	elseif($pmprevann == 1)
