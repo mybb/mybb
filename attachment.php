@@ -53,7 +53,7 @@ $fid = $thread['fid'];
 
 $forumpermissions = forum_permissions($fid);
 
-if($forumpermissions['canview'] == "no" || $forumpermissions['candlattachments'] == "no")
+if(($forumpermissions['canview'] == "no" || $forumpermissions['candlattachments'] == "no") && !$mybb->input['thumbnail'])
 {
 	nopermission();
 }
