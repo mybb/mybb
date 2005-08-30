@@ -86,7 +86,7 @@ $query = $db->query("SELECT t.*, f.name AS forumname, p.message AS postmessage F
 while($thread = $db->fetch_array($query))
 {
 	$thread['subject'] = htmlspecialchars_uni($thread['subject']);
-	$thread['forumnanme'] = htmlspecialchars_uni($thread['forumname']);
+	$thread['forumname'] = htmlspecialchars_uni($thread['forumname']);
 	$postdate = mydate($mybb->settings['dateformat'], $thread['dateline'], "", 0);
 	$posttime = mydate($mybb->settings['timeformat'], $thread['dateline'], "", 0);
 	$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
