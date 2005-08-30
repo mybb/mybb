@@ -1653,7 +1653,7 @@ function debugpage() {
 
 function pageheaders() {
 	global $settings;
-	if($settings['nocacheheaders'] == "yes" && $settings['sendheaders'] != "yes")
+	if($settings['nocacheheaders'] == "yes" && $settings['standardheaders'] != "yes")
 	{
 		header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
