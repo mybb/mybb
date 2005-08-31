@@ -95,10 +95,14 @@ function makehoptolinks($links)
 	echo "</table>";
 }
 
-function startform($script, $name="", $action="")
+function startform($script, $name="", $action="", $autocomplete=1)
 {
 	global $mybb;
-	echo "<form action=\"$script\" method=\"post\" name=\"$name\" enctype=\"multipart/form-data\">\n";
+	if($autocomplete == 0)
+	{
+		$acomplete = "autocomplete=\"off\"";
+	}
+	echo "<form action=\"$script\" method=\"post\" name=\"$name\" enctype=\"multipart/form-data\" $acomplete>\n";
 	if($action != "")
 	{
 		makehiddencode("action", $action);

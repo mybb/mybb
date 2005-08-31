@@ -677,7 +677,7 @@ if($mybb->input['action'] == "add")
 
 	cpheader();
 	starttable();
-	startform("users.php", "", "do_add");
+	startform("users.php", "", "do_add", 0);
 	tableheader($lang->add_user);
 	tablesubheader($lang->required_info);
 	makeinputcode($lang->username, "username", "", 25, "", 25, 0);
@@ -838,7 +838,7 @@ if($mybb->input['action'] == "edit")
 	endtable();
 
 	starttable();
-	startform("users.php", "", "do_edit");	
+	startform("users.php", "", "do_edit", 0);	
 	makehiddencode("uid", $uid);
 	tableheader($lang->modify_user);
 	tablesubheader($lang->required_info);
