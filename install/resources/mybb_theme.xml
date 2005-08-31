@@ -4732,7 +4732,6 @@ $message[message]
 $headerinclude
 </head>
 <body>
-$header
 <br />
 <table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
 <tr>
@@ -4749,8 +4748,6 @@ $smilies
 </table>
 </td></tr></table>
 <br />
-</form>
-$footer
 </body>
 </html>]]></template>
 		<template name="search_results_barposts"><![CDATA[<tr>
