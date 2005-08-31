@@ -225,7 +225,7 @@ function upload_file($file, $path, $filename="")
 	}
 	$upload['original_filename'] = preg_replace("#/$#", "", $file['name']); // Make the filename safe
 	$filename = preg_replace("#/$#", "", $filename); // Make the filename safe
-	$moved = @move_uploaded_file($file['tmp_name'], $path."/".$filename);
+	$moved = move_uploaded_file($file['tmp_name'], $path."/".$filename);
 	if(!$moved)
 	{
 		$upload['error'] = 2;

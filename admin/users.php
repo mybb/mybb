@@ -151,11 +151,11 @@ logadmin();
 
 if($mybb->input['action'] == "do_add")
 {
-	if(username_exists($mybb->input['username']))
+	if(username_exists($mybb->input['userusername']))
 	{
 		cpmessage($lang->error_name_exists);
 	}
-	if(!$mybb->input['username'] || !$mybb->input['password'] || !$mybb->input['email'])
+	if(!$mybb->input['userusername'] || !$mybb->input['newpassword'] || !$mybb->input['email'])
 	{
 		cpmessage($lang->missing_fields);
 	}
@@ -163,7 +163,7 @@ if($mybb->input['action'] == "do_add")
 	{
 		$mybb->input['website'] = "";
 	}
-	$md5password = md5($mybb->input['password']);
+	$md5password = md5($mybb->input['newpassword']);
 
 	//
 	// Generate salt, salted password, and login key
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "do_add")
 	$timenow = time();
 	$user = array(
 		"uid" => "NULL",
-		"username" => addslashes($mybb->input['username']),
+		"username" => addslashes($mybb->input['userusername']),
 		"password" => $md5password,
 		"salt" => $salt,
 		"loginkey" => $loginkey,
@@ -295,7 +295,7 @@ if($mybb->input['action'] == "do_edit")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 
-	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."' AND username!='".addslashes($user['username'])."'");
+	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['userusername'])."' AND username!='".addslashes($user['username'])."'");
 	if($db->fetch_array($query))
 	{
 		cpmessage($lang->error_name_exists);
@@ -309,9 +309,9 @@ if($mybb->input['action'] == "do_edit")
 		$mybb->input['website'] = "";
 	}
 
-	if($mybb->input['password'] != "")
+	if($mybb->input['newpassword'] != "")
 	{
-		update_password($user['uid'], md5($mybb->input['password']), $user['salt']);
+		update_password($user['uid'], md5($mybb->input['newpassword']), $user['salt']);
 	}
 	// Custom profile fields
 	$querypart1 = "";
@@ -382,7 +382,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 
 	$user = array(
-		"username" => addslashes($mybb->input['username']),
+		"username" => addslashes($mybb->input['userusername']),
 		"email" => addslashes($mybb->input['email']),
 		"usergroup" => intval($mybb->input['usergroup']),
 		"additionalgroups" => $additionalgroups,
@@ -842,8 +842,8 @@ if($mybb->input['action'] == "edit")
 	makehiddencode("uid", $uid);
 	tableheader($lang->modify_user);
 	tablesubheader($lang->required_info);
-	makeinputcode($lang->username, "username", $user['username'], 25, "", 25, 0);
-	makepasswordcode($lang->new_password, "password", "", 25, 0);
+	makeinputcode($lang->username, "userusername", $user['username'], 25, "", 25, 0);
+	makepasswordcode($lang->new_password, "newpassword", "", 25, 0);
 	makeinputcode($lang->email, "email", $user['email']);
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", $user['usergroup']);
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
