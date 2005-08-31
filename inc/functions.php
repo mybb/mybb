@@ -44,7 +44,7 @@ function outputpage($contents)
 		{
 			$debuglink = getenv("REQUEST_URI") . "?debug=1";
 		}
-		if($settings['gzipoutput'] != "no")
+		if($mybb->settings['gzipoutput'] != "no")
 		{
 			$gzipen = "Enabled";
 		}
@@ -66,9 +66,9 @@ function outputpage($contents)
 	}
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
-	if($settings['gzipoutput'] != "no")
+	if($mybb->settings['gzipoutput'] != "no")
 	{
-		$contents = gzipencode($contents, $settings['gziplevel']);
+		$contents = gzipencode($contents, $mybb->settings['gziplevel']);
 	}
 	echo $contents;
 	$plugins->run_hooks("post_output_page");
@@ -140,7 +140,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
 		}
 		else
 		{
-			$offset = $settings['timezoneoffset'];
+			$offset = $mybb->settings['timezoneoffset'];
 		}
 	}
 	if($offset == "-")
@@ -183,7 +183,7 @@ function mymail($to, $subject, $message, $from="")
 	}
 	if(strlen(trim($from)) == 0)
 	{
-		$from = "\"".$settings['bbname']." Mailer\" <".$settings['adminemail'].">";
+		$from = "\"".$mybb->settings['bbname']." Mailer\" <".$mybb->settings['adminemail'].">";
 	}
 	mail($to, $subject, $message, "From: $from");
 }
@@ -254,8 +254,8 @@ function cacheforums()
 function error($error, $title="")
 {
 	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $db, $templates, $lang;
-	$title = (!$title) ? $settings['bbname'] : $title;
-	$timenow = mydate($settings['dateformat'], time()) . " " . mydate($settings['timeformat'], time());
+	$title = (!$title) ? $mybb->settings['bbname'] : $title;
+	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	resetnav();
 	addnav($lang->error);
 	eval("\$errorpage = \"".$templates->get("error")."\";");
@@ -302,13 +302,13 @@ function nopermission()
 function redirect($url, $message="You will now be redirected", $title="")
 {
 	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $templates, $lang, $plugins;
-	$timenow = mydate($settings['dateformat'], time()) . " " . mydate($settings['timeformat'], time());
+	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	$plugins->run_hooks("redirect");
 	if(!$title)
 	{
-		$title = $settings['bbname'];
+		$title = $mybb->settings['bbname'];
 	}
-	if($settings['redirects'] == "on")
+	if($mybb->settings['redirects'] == "on")
 	{	
 		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
 		outputpage($redirectpage);
@@ -840,7 +840,7 @@ function mysetcookie($name, $value="", $expires="")
 			$expires = time() + (60*60*24*365); // Make the cookie expire in a years time
 		}
 	}
-	if($settings['cookiedomain'])
+	if($mybb->settings['cookiedomain'])
 	{
 		setcookie($name, $value, $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
 	}
@@ -1114,7 +1114,7 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 				if($forum['fid'] != "0")
 				{
 					$perms=(!$permissioncache[$forum['fid']])?$permissions:$permissioncache[$forum['fid']];
-					if(($perms['canview'] != "no" || $settings['hideprivateforums'] == "no") && $forum['showinjump'] != "no")
+					if(($perms['canview'] != "no" || $mybb->settings['hideprivateforums'] == "no") && $forum['showinjump'] != "no")
 					{
 						$optionselected = ($selitem==$forum['fid']) ? "selected=\"selected\"" : "";
 						$selecteddone = ($selitem==$forum['fid']) ? 1:0;
@@ -1191,7 +1191,7 @@ function formatname($username, $usergroup, $displaygroup="")
 function makebbcodeinsert()
 {
 	global $db, $settings, $theme, $templates, $lang;
-	if($settings['bbcodeinserter'] != "off")
+	if($mybb->settings['bbcodeinserter'] != "off")
 	{
 		eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
 	}
@@ -1200,7 +1200,7 @@ function makebbcodeinsert()
 function makesmilieinsert()
 {
 	global $db, $smiliecache, $settings, $theme, $templates, $lang;
-	if($settings['smilieinserter'] != "off" && $settings['smilieinsertercols'] && $settings['smilieinsertertot'])
+	if($mybb->settings['smilieinserter'] != "off" && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 	{
 		$smiliecount = 0;
 		if(!$smiliecache)
@@ -1217,13 +1217,13 @@ function makesmilieinsert()
 		if(is_array($smiliecache))
 		{
 			reset($smiliecache);
-			if($settings['smilieinsertertot'] >= $smiliecount)
+			if($mybb->settings['smilieinsertertot'] >= $smiliecount)
 			{
-				$settings['smilieinsertertot'] = $smiliecount;
+				$mybb->settings['smilieinsertertot'] = $smiliecount;
 			}
-			elseif ($settings['smilieinsertertot'] < $smiliecount)
+			elseif ($mybb->settings['smilieinsertertot'] < $smiliecount)
 			{
-				$smiliecount = $settings['smilieinsertertot'];
+				$smiliecount = $mybb->settings['smilieinsertertot'];
 				eval("\$getmore = \"".$templates->get("smilieinsert_getmore")."\";");
 			}
 			$smilies = "";
@@ -1231,7 +1231,7 @@ function makesmilieinsert()
 			$i = 0;
 			while(list($find, $image) = each($smiliecache))
 			{
-				if($i < $settings['smilieinsertertot'])
+				if($i < $mybb->settings['smilieinsertertot'])
 				{
 					if($counter == 0)
 					{
@@ -1241,14 +1241,14 @@ function makesmilieinsert()
 					$smilies .= "<td><a href=\"javascript:addsmilie('$find');\"><img src=\"$image\" border=\"0\"></a></td>";
 					$i++;
 					$counter++;
-					if($counter == $settings['smilieinsertercols'])
+					if($counter == $mybb->settings['smilieinsertercols'])
 					{
 						$counter = 0;
 						$smilies .= "</tr><tr>";
 					}
 				}
 			}
-			$colspan = $settings['smilieinsertercols'] - $counter;
+			$colspan = $mybb->settings['smilieinsertercols'] - $counter;
 			if($colspan > 0)
 			{
 				$smilies .= "<td colspan=\"$colspan\">&nbsp;</td></tr>";
@@ -1589,7 +1589,7 @@ function debugpage() {
 	{
 		$debuglink = getenv("REQUEST_URI") . "?debug=1";
 	}
-	if($settings['gzipoutput'] != "no")
+	if($mybb->settings['gzipoutput'] != "no")
 	{
 		$gzipen = "Enabled";
 	}
@@ -1653,7 +1653,7 @@ function debugpage() {
 
 function pageheaders() {
 	global $settings;
-	if($settings['nocacheheaders'] == "yes" && $settings['standardheaders'] != "yes")
+	if($mybb->settings['nocacheheaders'] == "yes" && $mybb->settings['standardheaders'] != "yes")
 	{
 		header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
