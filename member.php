@@ -971,7 +971,7 @@ elseif($mybb->input['action'] == "resetpassword")
 		// Generate a new password, then update it
 		//
 		$password = random_str();
-		$logindetails = update_password($user['uid'], $password, $user['salt']);
+		$logindetails = update_password($user['uid'], md5($password), $user['salt']);
 
 		$email = $user['email'];
 		
