@@ -19,7 +19,7 @@ require "./inc/functions_user.php";
 // Load global language phrases
 $lang->load("newthread");
 
-if($mybb->input['action'] == "editdraft" || ($mybb->inputp['savedraft'] && $mybb->input['tid']) || ($mybb->input['tid'] && $mybb->input['pid']))
+if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $mybb->input['tid']) || ($mybb->input['tid'] && $mybb->input['pid']))
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."' AND visible='-2'");
 	$thread = $db->fetch_array($query);
@@ -81,7 +81,7 @@ else
 {
 	if(!$mybb->input['previewpost'] && $mybb->input['action'] != "do_newthread")
 	{
-		$username = "Guest";
+		$username = $lang->guest;
 	}
 	else
 	{
@@ -206,7 +206,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		if(!$mybb->input['username'])
 		{
-			$mybb->input['username'] = "Guest";
+			$mybb->input['username'] = $lang->guest;
 		}
 		if($mybb->input['username'] && !$mybb->user['uid'])
 		{
@@ -385,7 +385,7 @@ if($mybb->input['action'] == "do_newthread")
 		{
 			if(!$mybb->input['username'])
 			{
-				$username = "Guest";
+				$username = $lang->guest;
 			}
 			else
 			{
