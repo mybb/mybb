@@ -283,11 +283,13 @@ switch($mybb->input['order'])
 		$sortorder = "ASC";
 		$ordersel['asc'] = "selected=\"selected\"";
 		$oppsort = $lang->desc;
+		$oppsortorder = "DESC";
 		break;
 	default:
 		$sortorder = "DESC";
 		$ordersel['desc'] = "selected=\"selected\"";
 		$oppsort = $lang->asc;
+		$oppsortorder = "ASC";
 }
 
 switch($mybb->input['sortby'])
@@ -348,7 +350,8 @@ else
 $end = $start + $perpage;
 $lower = $start + 1;
 $upper = $end;
-if($upper > $threadcount) {
+if($upper > $threadcount)
+{
 	$upper = $threadcount;
 }
 $multipage = multipage($threadcount, $perpage, $page, "forumdisplay.php?fid=$fid&sortby=$sortby&order=$order&datecut=$datecut");
