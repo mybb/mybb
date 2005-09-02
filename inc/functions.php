@@ -253,7 +253,7 @@ function cacheforums()
 //
 function error($error, $title="")
 {
-	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $db, $templates, $lang;
+	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $db, $templates, $lang, $mybb;
 	$title = (!$title) ? $mybb->settings['bbname'] : $title;
 	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	resetnav();
