@@ -207,7 +207,7 @@ if($mybb->input['action'] == "do_download")
 	$theme['name'] = rawurlencode($theme['name']);
 	header("Content-disposition: filename=".$theme['name']."-theme.xml");
 	header("Content-Length: ".strlen($xml));
-	header("Content-type: unknown/unknown");
+	header("Content-type: application/octet-stream");
 	header("Pragma: no-cache");
 	header("Expires: 0");
 	echo $xml;
@@ -388,13 +388,6 @@ if($mybb->input['action'] == "edit") {
 
 	starttable();
 	tableheader($lang->additional_css, "", 1);
-/*
-	tablesubheader($lang->master_css_note, "", 1);
-	echo "<tr>\n";
-	echo "<td class=\"altbg1\" align=\"center\">\n";
-	echo "<textarea style=\"width: 98%; padding: 4px;\"	rows=\"9\"name=\"extracss\">".htmlspecialchars_uni($master['extracss'])."</textarea>\n";
-	echo "</td>\n";
-	echo "</tr>\n"; */
 	tablesubheader($lang->additional_css_note, "", 1);
 	makethemebitedit("", "extracss");
 	endtable();

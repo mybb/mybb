@@ -680,8 +680,8 @@ if($mybb->input['action'] == "add")
 	startform("users.php", "", "do_add", 0);
 	tableheader($lang->add_user);
 	tablesubheader($lang->required_info);
-	makeinputcode($lang->username, "username", "", 25, "", 25, 0);
-	makepasswordcode($lang->password, "password", "", 25, 0);
+	makeinputcode($lang->username, "userusername", "", 25, "", 25, 0);
+	makepasswordcode($lang->password, "newpassword", "", 25, 0);
 	makeinputcode($lang->email, "email");
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", 2);
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
