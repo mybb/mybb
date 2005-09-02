@@ -263,8 +263,9 @@ if(!$mybb->input['datecut'])
 }
 else
 {
-	$datecut = $mybb->input['datecut'];
+	$datecut = intval($mybb->input['datecut']);
 }
+$datecut = intval($datecut);
 
 $datecutsel[$datecut] = "selected=\"selected\"";
 if($datecut != "1000")

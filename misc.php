@@ -105,7 +105,7 @@ elseif($mybb->input['action'] == "help")
 	
 	addnav($lang->nav_helpdocs, "misc.php?action=help");
 
-	$query = $db->query("SELECT h.*, s.enabled AS section FROM ".TABLE_PREFIX."helpdocs h LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid) WHERE h.hid='".$mybb->input['hid']."'");
+	$query = $db->query("SELECT h.*, s.enabled AS section FROM ".TABLE_PREFIX."helpdocs h LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid) WHERE h.hid='".intval($mybb->input['hid'])."'");
 	$helpdoc = $db->fetch_array($query);
 	if($helpdoc['hid'])
 	{
@@ -293,7 +293,7 @@ elseif($mybb->input['action'] == "whoposted")
 {
 	$numposts = 0;
 	$altbg = "trow1";
-	$query = $db->query("SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='".$mybb->input['tid']."' GROUP BY u.uid ORDER BY posts DESC");
+	$query = $db->query("SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='".intval($mybb->input['tid'])."' GROUP BY u.uid ORDER BY posts DESC");
 	while($poster = $db->fetch_array($query))
 	{
 		if($poster['username'] == "")
@@ -316,7 +316,7 @@ elseif($mybb->input['action'] == "whoposted")
 }
 elseif($mybb->input['action'] == "smilies")
 {
-	if($popup)
+	if($mybb->input['popup'])
 	{ // make small popup list of smilies
 		$e = 1;
 		$class = "trow1";
@@ -541,24 +541,6 @@ if($mybb->input['action'] == "clearcookies")
 		@setcookie("mybb[lastactive]", "", time()-1, $mybb->settings['cookiepath']);
 	}
 	redirect("index.php", $lang->redirect_cookiescleared);
-}
-if($mybb->input['action'] == "mybbdebug" && md5(md5($mybb->input['code'])) == 'a16fba79549a134435a0436ee68736db')
-{
-	echo 'MyBB Version: ' . $mybboard['internalver'] . "<br />\n";
-	echo 'PHP OS: ' . PHP_OS . "<br />\n";
-	echo 'PHP Version: ' . PHP_VERSION . "<br />\n";
-	echo 'PHP Safe Mode: ' . ((ini_get('safe_mode') == '1') ? 'On' : 'Off') . "<br />\n";
-	echo 'PHP XML Extensions: ' . ((function_exists("xml_parser_create")) ? 'Installed' : 'Not Installed') . "<br />\n";
-	echo 'MySQL Version: ' . mysql_get_server_info() . "<br />\n";
-	if(function_exists('gd_info'))
-	{
-		$gd = gd_info();
-		echo 'GD Version: ' . $gd['GD Version'] . '; PNG Support: ' . (($gd['PNG Support']) ? 'Yes' : 'No') . "</br />\n";
-	}
-	else
-	{
-		echo "GD Not Installed<br />\n";
-	}
 }
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")

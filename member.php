@@ -175,9 +175,9 @@ if($mybb->input['action'] == "do_register")
 		$website = "";
 	}
 
-	$bday1 = $mybb->input['bday1'];
-	$bday2 = $mybb->input['bday2'];
-	$bday3 = $mybb->input['bday3'];
+	$bday1 = intval($mybb->input['bday1']);
+	$bday2 = intval($mybb->input['bday2']);
+	$bday3 = intval($mybb->input['bday3']);
 
 	if($bday1 == "" || $bday2 == "")
 	{

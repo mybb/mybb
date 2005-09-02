@@ -365,11 +365,11 @@ elseif($mybb->input['action'] == "do_profile")
 	{
 		if(($mybb->input['bday3']>=(date("Y")-100)) && ($mybb->input['bday3']<date("Y")))
 		{
-			$bday = $mybb->input['bday1']."-".$mybb->input['bday2']."-".$mybb->input['bday3'];
+			$bday = intval($mybb->input['bday1'])."-".intval($mybb->input['bday2'])."-".intval($mybb->input['bday3']);
 		}
 		else
 		{
-			$bday = $mybb->input['bday1']."-".$mybb->input['bday2']."-";
+			$bday = intval($mybb->input['bday1'])."-".intval($mybb->input['bday2'])."-";
 		}
 	}
 	$titleup == "";
