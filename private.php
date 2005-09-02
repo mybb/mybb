@@ -202,8 +202,7 @@ if($mybb->input['action'] == "send")
 		}
 		else
 		{
-			$subject = str_replace("Re:","",$subject);
-			$subject = str_replace("Fw:","",$subject);
+			$subject = preg_replace("#(FW|RE):( *)#is", "", $subject);
 			$postdate = mydate($mybb->settings['dateformat'], $pm['dateline']);
 			$posttime = mydate($mybb->settings['timeformat'], $pm['dateline']);
 			$message = "[quote=$pm[quotename]]\n$message\n[/quote]";
