@@ -199,7 +199,14 @@ function upgradethemes()
 		$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid) VALUES (NULL,'MyBB Master Style','0')");
 		$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid,def) VALUES (NULL,'MyBB Default','1','1')");
 		$sid = $db->insert_id();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET style='$tid'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET style='$sid'");
+		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templatesets;");
+		$db->query("CREATE TABLE ".TABLE_PREFIX."templatesets (
+		  sid smallint unsigned NOT NULL auto_increment,
+		  title varchar(120) NOT NULL default '',
+		  PRIMARY KEY  (sid)
+		) TYPE=MyISAM;");
+		$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (sid,title) VALUES (NULL,'Default Templates')");
 	}
 	$sid = -2;
 
