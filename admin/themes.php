@@ -73,6 +73,10 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$mybb->input['pid'] = "0";
 	}
+	if($mybb->input['pid'] == $mybb->input['tid'])
+	{
+		cpmessage($lang->theme_same_parent);
+	}
 	$themelist = "<ul>";
 	$themelist .= update_theme($mybb->input['tid'], $mybb->input['pid'], $mybb->input['themebits'], $mybb->input['css'], 0);
 	$themelist .= "</ul>";

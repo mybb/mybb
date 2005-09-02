@@ -130,11 +130,11 @@ function mydate($format, $stamp, $offset="", $ty=1)
 	global $mybb, $lang, $mybbadmin;
 	if(!$offset)
 	{
-		if(!empty($mybb->user['timezone']))
+		if(isset($mybb->user['timezone']))
 		{
 			$offset = $mybb->user['timezone'];
 		}
-		elseif(isset($mybbadmin['timezone']))
+		elseif(defined("IN_ADMINCP"))
 		{
 			$offset =  $mybbadmin['timezone'];
 		}
@@ -1819,7 +1819,10 @@ function nice_time($stamp)
 	{
 		$nicetime['seconds'] = $seconds." ".$lang->seconds;
 	}
-	return implode(", ", $nicetime);
+	if(is_array($nicetime))
+	{
+		return implode(", ", $nicetime);
+	}
 }
 
 if(!function_exists("file_get_contents"))

@@ -11,7 +11,7 @@
 
 // Lets pretend we're a level higher
 chdir('../');
-
+define("IN_ADMINCP", 1);
 $config = array();
 
 if(!isset($config['admindir']))

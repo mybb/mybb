@@ -83,6 +83,7 @@ $l['export_advanced_settings'] = "Do you wish to select advanced export settings
 
 $l['theme_added'] = "The theme has successfully been added to the database.";
 $l['theme_updated'] = "The theme has successfully been updated.";
+$l['theme_same_parent'] = "The theme's parent cannot be the theme itself!";
 $l['theme_deleted'] = "The theme has successfully been deleted.<br>All users using this style have been reverted to the default style.";
 $l['default_updated'] = "The default theme has successfully been changed.";
 $l['error_local_file'] = "Could not open the local file. Does it exist? Please check and try again.";

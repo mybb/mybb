@@ -1404,7 +1404,7 @@ elseif($mybb->input['action'] == "profile")
 	$memprofile['postnum'] = mynumberformat($memprofile['postnum']);
 	$lang->ppd_percent_total = sprintf($lang->ppd_percent_total, mynumberformat($ppd), $percent);
 	$formattedname = formatname($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
-	if($memprofile['timeonline'])
+	if($memprofile['timeonline'] > 0)
 	{
 		$timeonline = nice_time($memprofile['timeonline']);
 	}
