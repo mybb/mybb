@@ -411,8 +411,8 @@ if($mybb->input['action'] == "do_edit")
 
 	if($mybb->input['username'] != $user['username'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET lastposter='".addslashes($mybb->input['username'])."' WHERE lastposter='".addslashes($user[username])."'");
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".addslashes($mybb->input['username'])."' WHERE lastposter='".addslashes($user[username])."'");
+		$db->query("UPDATE ".TABLE_PREFIX."forums SET lastposter='".addslashes($mybb->input['userusername'])."' WHERE lastposter='".addslashes($user['username'])."'");
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".addslashes($mybb->input['userusername'])."' WHERE lastposter='".addslashes($user['username'])."'");
 	}
 
 	cpredirect("users.php", $lang->profile_updated);
