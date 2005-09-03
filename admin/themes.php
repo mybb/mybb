@@ -221,19 +221,16 @@ if($mybb->input['action'] == "do_import")
 		{
 			cpmessage($lang->upload_failed);
 		}
-		$arr = file($_FILES['compfile']['tmp_name']);
-		$contents = implode("", $arr);
-		unlink($_FILES['compfile']['temp_name']);
-		if(!$contents)
+		$contents = @file_get_contents($_FILES['compfile']['tmp_name']);
+		@unlink($_FILES['compfile']['temp_name']);
+		if(!trim($contents))
 		{
 			cpmessage($lang->upload_failed);
 		}
-
 	}
 	elseif($mybb->input['localfile'])
 	{
-		$arr = @file($mybb->input['localfile']);
-		$contents = @implode("", $arr);
+		$contents = @file_get_contents($mybb->input['localfile']);
 		if(!$contents)
 		{
 			cpmessage($lang->error_local_file);
@@ -243,6 +240,11 @@ if($mybb->input['action'] == "do_import")
 	$tree = $parser->getTree();
 
 	$theme = $tree['theme'];
+
+	if(!$tree['theme'])
+	{
+		cpmessage($lang->upload_failed);
+	}
 	if(!$name)
 	{
 		$name = $theme['attributes']['name'];

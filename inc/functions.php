@@ -631,7 +631,7 @@ function getpermissions($fid=0, $uid=0, $gid="", $parentslist="")
 	}
 	else
 	{
-	    return $permscache[$gid][$fid];
+		return $permscache[$gid][$fid];
 	}
 	return $perms;
 }

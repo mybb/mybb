@@ -35,7 +35,7 @@ logadmin();
 if($mybb->input['action'] == "do_add")
 {
 	if(empty($mybb->input['find']) || empty($mybb->input['path']) || empty($mybb->input['name']))
-    {
+	{
 		cperror($lang->error_fill_form);
 	}
 	$newsmilie = array(
@@ -55,13 +55,13 @@ if($mybb->input['action'] == "do_add")
 if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
-    {
+	{
 		$db->query("DELETE FROM ".TABLE_PREFIX."smilies WHERE sid='".$mybb->input['sid']."'");
 		$cache->updatesmilies();
 		cpredirect("smilies.php", $lang->smilie_deleted);
 	}
-    else
-    {
+	else
+	{
 		$mybb->input['action'] = "modify";
 	}
 }
@@ -69,7 +69,7 @@ if($mybb->input['action'] == "do_delete")
 if($mybb->input['action'] == "do_edit")
 {
 	if(empty($mybb->input['find']) || empty($mybb->input['path']) || empty($mybb->input['name']))
-    {
+	{
 		cperror($lang->error_fill_form);
 	}
 	$smilie = array(
@@ -90,7 +90,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 	if(!$smilie['sid'])
-    {
+	{
 		cperror($lang->invalid_smilie);
 	}
 	$theme['imgdir'] = "images";
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "delete")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 	if(!$smilie['sid'])
-    {
+	{
 		cperror($lang->invalid_smilie);
 	}
 	cpheader();
@@ -162,32 +162,32 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "do_addmultiple")
 {
 	if($mybb->input['page'])
-    {
+	{
 		$mybb->input['action'] = "addmultiple";
 	}
 	elseif(!is_array($mybb->input['smimport']))
-    {
+	{
 		cpmessage($lang->sel_no_images);
 	}
 	else
-    {
+	{
 		reset($mybb->input['smimport']);
 		while(list($image,$insert) = each($mybb->input['smimport']))
-        {
+		{
 			if($insert)
-            {
-			    $find = $smcode[$image];
-    			$name = $smname[$image];
-    			$imageurl = $path."/".$image;
-    			$newsmilie = array(
-    				"sid" => "NULL",
-    				"name" => addslashes($name),
-    				"find" => addslashes($find),
-    				"image" => addslashes($imageurl),
-    				"showclickable" => "yes"
-    			);
-    			$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
-    		}
+			{
+				$find = $smcode[$image];
+				$name = $smname[$image];
+				$imageurl = $path."/".$image;
+				$newsmilie = array(
+					"sid" => "NULL",
+					"name" => addslashes($name),
+					"find" => addslashes($find),
+					"image" => addslashes($imageurl),
+					"showclickable" => "yes"
+				);
+				$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
+			}
 		}
 		$cache->updatesmilies();
 		cpheader();
@@ -210,23 +210,23 @@ if($mybb->input['action'] == "addmultiple")
 	}
 	$dir = @opendir($mybb->input['path']);
 	if(!$dir)
-    {
+	{
 		cperror($lang->bad_directory);
 	}
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies");
 	while($smilie = $db->fetch_array($query))
-    {
+	{
 		$asmilies[$smilie[image]] = 1;
 	}
 	while($file = readdir($dir))
-    {
+	{
 		if($file != ".." && $file != ".")
-        {
+		{
 			$ext = getextention($file);
 			if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
-            {
+			{
 				if(!$asmilies["$path/$file"])
-                {
+				{
 					$smilies[] = $file;
 				}
 			}
@@ -234,54 +234,54 @@ if($mybb->input['action'] == "addmultiple")
 	}
 	closedir($dir);
 	if(!$page)
-    {
+	{
 		$page = 1;
 	}
 	$newsmilies = count($smilies);
 	if($newsmilies > $perpage)
-    {
+	{
 		$pages = $newsmilies / $perpage;
 		$pages = ceil($pages);
 		for($i=1;$i<=$pages;$i++)
-        {
+		{
 			if($i == $page)
-            {
+			{
 				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\" disabled=\"disabled\"> ";
 			}
-            else
-            {
+			else
+			{
 				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\"> ";
 			}
 		}
 		$start = ($page-1) *$perpage;
 	}
-    else
-    {
+	else
+	{
 		$start = 0;
 		$page = 1;
 		$pages = 1;
 	}
 	$end = $perpage + $start;
 	if($end > $newsmilies)
-    {
+	{
 		$end = $newsmilies;
 	}
 
 	if(!$newsmilies)
-    {
+	{
 		if($finishedmulti)
-        {
+		{
 			cpredirect("smilies.php", $lang->all_sel_added);
 		}
-        else
-        {
+		else
+		{
 			cpmessage($lang->no_images);
 		}
 	}
-    else
-    {
+	else
+	{
 		if(!$finishedinsert)
-        {
+		{
 			cpheader();
 		}
 		startform("smilies.php", "", "do_addmultiple");
@@ -296,7 +296,7 @@ if($mybb->input['action'] == "addmultiple")
 		echo "<td class=\"subheader\" align=\"center\">$lang->add</td>\n";
 		echo "</tr>\n";
 		for($i=$start;$i<$end;$i++)
-        {
+		{
 			$file = $smilies[$i];
 			$ext = getextention($smilies[$i]);
 			$find = str_replace(".".$ext, "", $file);
@@ -311,7 +311,7 @@ if($mybb->input['action'] == "addmultiple")
 		}
 	}
 	if($newsmilies > $perpage)
-    {
+	{
 		tablesubheader($pagelist, "", 4);
 	}
 	endtable();
@@ -322,7 +322,7 @@ if($mybb->input['action'] == "addmultiple")
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	if(!$noheader)
-    {
+	{
 		cpheader();
 	}
 	$hopto[] = "<input type=\"button\" value=\"$lang->add_new_smilie\" onclick=\"hopto('smilies.php?action=add');\" class=\"hoptobutton\">";
@@ -337,15 +337,15 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	$perpage = intval($mybb->input['perpage']);
 	$page = intval($mybb->input['page']);
 	if(!$perpage)
-    {
+	{
 		$perpage = 15;
 	}
 	if($page)
-    {
+	{
 		$start = ($page-1) *$perpage;
 	}
-    else
-    {
+	else
+	{
 		$start = 0;
 		$page = 1;
 	}
@@ -353,17 +353,17 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	$altbg = "altbg1";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies ORDER BY disporder ASC LIMIT $start, $perpage");
 	while($smilie = $db->fetch_array($query))
-    {
+	{
 		if($listed == "0")
-        {
+		{
 			echo "<tr>";
 		}
 		$smilie[image] = str_replace("{theme:imgdir}", $theme[imgdir], $smilie[image]);
 		if(strstr($smilie[image], "p://") || substr($smilie[image],0,1) == "/") {
 			$image = $smilie[image];
 		}
-        else
-        {
+		else
+		{
 			$image = "../$smilie[image]";
 		}
 		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$smilie[name]<br><br><img src=\"$image\">&nbsp;&nbsp;<b>".stripslashes($smilie[find])."</b><br><br>";
@@ -371,14 +371,14 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		echo "</td>";
 		$listed++;
 		if($listed == 5)
-        {
+		{
 			echo "</tr>";
 			if($altbg == "altbg2")
-            {
+			{
 				$altbg = "altbg1";
 			}
-            else
-            {
+			else
+			{
 				$altbg = "altbg2";
 			}
 			$listed = 0;
@@ -386,51 +386,51 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	
 	}
 	if($listed != "0")
-    {
+	{
 		while($listed != "0")
-        {
+		{
 			echo "<td class=\"$altbg\">&nbsp;</td>";
 			$listed++;
 			if($listed == "5")
-            {
+			{
 				$listed = 0;
 			}
 		}
 		echo "</tr>";
 	}
 	if($smiliecount > $perpage)
-    {
+	{
 		$pages = $smiliecount / $perpage;
 		$pages = ceil($pages);
 		if($page > 1)
-        {
+		{
 			$prev = $page - 1;
 			$prevpage = "<a href=\"smilies.php?page=$prev&perpage=$perpage\">$lang->prevpage</a>";
 		}
 		if($page < $pages)
-        {
+		{
 			$next = $page + 1;
 			$nextpage = "<a href=\"smilies.php?page=$next&perpage=$perpage\">$lang->nextpage</a>";
 		}
 		for($i=1;$i<=$pages;$i++)
-        {
+		{
 			if($i == $page)
-            {
+			{
 				$pagelist .= "<b>$i</b>";
 			}
-            else
-            {
+			else
+			{
 				$pagelist .= "<a href=\"smilies.php?page=$i&perpage=$perpage\">$i</a>";
 			}
 		}
 	}
 	if($pagelist || $prevpage  || $nextpage)
-    {
+	{
 		echo "<tr><td class=\"altbg1\" colspan=\"5\">$prevpage $pagelist $nextpage</td></tr>";
 	}
 	echo "<form action=\"smilies.php?page=$page\" method=\"post\"><tr><td class=\"altbg2\" colspan=\"5\">$lang->smilies_per_page <input type=\"text\" name=\"perpage\" value=\"$perpage\"> <input type=\"submit\" name=\"submit\" value=\"$lang->go\"></td></tr></form>";
-    echo "</table>\n";
-    echo "</td></tr></table>";
+	echo "</table>\n";
+	echo "</td></tr></table>";
 	cpfooter();
 }
 ?>
