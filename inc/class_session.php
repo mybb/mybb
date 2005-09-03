@@ -383,7 +383,7 @@ class session
 		$time = time();
 		$this->is_spider = true;
 		$spidername = $bots[$spider];
-		$mybb->user['usergroup'] = $botgroup;
+		$mybb->user['usergroup'] = $this->botgroup;
 		$mybb->user['username'] = "";
 		$mybb->user['username'] = "";
 		$mybb->user['uid'] = 0;
@@ -394,6 +394,7 @@ class session
 		// Gather a full permission set for this spider
 		//
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
+//		die(print_r($mybb->usergroup));
 		$mydisplaygroup = usergroup_displaygroup(1);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
