@@ -268,7 +268,7 @@ function error($error, $title="")
 //
 function inlineerror($errors, $title="")
 {
-	global $theme, $settings, $db, $lang, $templates;
+	global $theme, $mybb, $db, $lang, $templates, $settings;
 	if(!$title)
 	{
 		$title = $lang->please_correct_errors;
@@ -301,7 +301,7 @@ function nopermission()
 //
 function redirect($url, $message="You will now be redirected", $title="")
 {
-	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $templates, $lang, $plugins;
+	global $header, $footer, $css, $toplinks, $settings, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	$plugins->run_hooks("redirect");
 	if(!$title)
@@ -326,7 +326,7 @@ function redirect($url, $message="You will now be redirected", $title="")
 //
 function multipage($count, $perpage, $page, $url)
 {
-	global $settings, $theme, $templates, $lang;
+	global $settings, $theme, $templates, $lang, $mybb;
 	if($count > $perpage)
 	{
 		$pages = $count / $perpage;
@@ -1142,12 +1142,6 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 	return $forumjump;
 }
 
-function checkattachment($attachment)
-{
-
-	global $db, $settings, $theme, $templates, $posthash, $pid, $tid, $forum, $mybbuser, $mybbgroup, $lang;
-	die("USING OLD FUNCTION checkatachment");
-}
 function getextention($file)
 {
 	return strtolower(substr(strrchr($file, "."), 1));
@@ -1190,7 +1184,7 @@ function formatname($username, $usergroup, $displaygroup="")
 
 function makebbcodeinsert()
 {
-	global $db, $settings, $theme, $templates, $lang;
+	global $db, $mybb, $settings, $theme, $templates, $lang;
 	if($mybb->settings['bbcodeinserter'] != "off")
 	{
 		eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
@@ -1199,7 +1193,7 @@ function makebbcodeinsert()
 }
 function makesmilieinsert()
 {
-	global $db, $smiliecache, $settings, $theme, $templates, $lang;
+	global $db, $smiliecache, $settings, $theme, $templates, $lang, $mybb;
 	if($mybb->settings['smilieinserter'] != "off" && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 	{
 		$smiliecount = 0;

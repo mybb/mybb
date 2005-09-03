@@ -71,7 +71,7 @@ if($mybb->input['action'] == "do_edit") {
 		"showclickable" => $mybb->input['showclickable']
 		);
 
-	$db->update_query(TABLE_PREFIX."smilies", $newsmilie, "sid='".intval($mybb->input['sid'])."'");
+	$db->update_query(TABLE_PREFIX."smilies", $smilie, "sid='".intval($mybb->input['sid'])."'");
 	$cache->updatesmilies();
 	cpredirect("smilies.php", $lang->smilie_updated);
 }
