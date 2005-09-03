@@ -280,16 +280,16 @@ else
 switch($mybb->input['order'])
 {
 	case "asc":
-		$sortorder = "ASC";
-		$ordersel['asc'] = "selected=\"selected\"";
+		$sortordernow = "ASC";
+        $ordersel['asc'] = "selected=\"selected\"";
 		$oppsort = $lang->desc;
-		$oppsortorder = "DESC";
+		$oppsortnext = "DESC";
 		break;
 	default:
-		$sortorder = "DESC";
+        $sortordernow = "DESC";
 		$ordersel['desc'] = "selected=\"selected\"";
-		$oppsort = $lang->asc;
-		$oppsortorder = "ASC";
+        $oppsort = $lang->asc;
+		$oppsortnext = "ASC";
 }
 
 switch($mybb->input['sortby'])
@@ -433,7 +433,7 @@ if($announcements)
 }
 
 // Start Getting Threads
-$query = $db->query("SELECT t.*, $ratingadd i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE t.fid='$fid' $visibleonly $datecutsql ORDER BY t.sticky DESC, $sortfield $sortorder LIMIT $start, $perpage");
+$query = $db->query("SELECT t.*, $ratingadd i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE t.fid='$fid' $visibleonly $datecutsql ORDER BY t.sticky DESC, $sortfield $sortordernow LIMIT $start, $perpage");
 while($thread = $db->fetch_array($query))
 {
 	$threadcache[$thread['tid']] = $thread;
