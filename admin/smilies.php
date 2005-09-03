@@ -32,15 +32,17 @@ switch($mybb->input['action'])
 checkadminpermissions("caneditsmilies");
 logadmin();
 
-if($mybb->input['action'] == "do_add") {
-	if(empty($mybb->input['find']) || empty($mybb->input['path']) || empty($mybb->input['name'])) {
+if($mybb->input['action'] == "do_add")
+{
+	if(empty($mybb->input['find']) || empty($mybb->input['path']) || empty($mybb->input['name']))
+    {
 		cperror($lang->error_fill_form);
 	}
 	$newsmilie = array(
 		"sid" => "NULL",
 		"name" => addslashes($mybb->input['name']),
 		"find" => addslashes($mybb->input['find']),
-		"image" => addslashes($mybb->input['image']),
+		"image" => addslashes($mybb->input['path']),
 		"disporder" => intval($mybb->input['disporder']),
 		"showclickable" => $mybb->input['showclickable']
 		);
@@ -49,24 +51,31 @@ if($mybb->input['action'] == "do_add") {
 	$cache->updatesmilies();
 	cpredirect("smilies.php", $lang->smilie_added);
 }
-if($mybb->input['action'] == "do_delete") {
-	if($mybb->input['deletesubmit']) {	
+
+if($mybb->input['action'] == "do_delete")
+{
+	if($mybb->input['deletesubmit'])
+    {
 		$db->query("DELETE FROM ".TABLE_PREFIX."smilies WHERE sid='".$mybb->input['sid']."'");
 		$cache->updatesmilies();
 		cpredirect("smilies.php", $lang->smilie_deleted);
-	} else {
+	}
+    else
+    {
 		$mybb->input['action'] = "modify";
 	}
 }
 
-if($mybb->input['action'] == "do_edit") {
-	if(empty($mybb->input['find']) || empty($mybb->input['path']) || empty($mybb->input['name'])) {
+if($mybb->input['action'] == "do_edit")
+{
+	if(empty($mybb->input['find']) || empty($mybb->input['path']) || empty($mybb->input['name']))
+    {
 		cperror($lang->error_fill_form);
 	}
 	$smilie = array(
 		"name" => addslashes($mybb->input['name']),
 		"find" => addslashes($mybb->input['find']),
-		"image" => addslashes($mybb->input['image']),
+		"image" => addslashes($mybb->input['path']),
 		"disporder" => intval($mybb->input['disporder']),
 		"showclickable" => $mybb->input['showclickable']
 		);
@@ -76,10 +85,12 @@ if($mybb->input['action'] == "do_edit") {
 	cpredirect("smilies.php", $lang->smilie_updated);
 }
 
-if($mybb->input['action'] == "edit") {
+if($mybb->input['action'] == "edit")
+{
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
-	if(!$smilie['sid']) {
+	if(!$smilie['sid'])
+    {
 		cperror($lang->invalid_smilie);
 	}
 	$theme['imgdir'] = "images";
@@ -98,10 +109,12 @@ if($mybb->input['action'] == "edit") {
 	cpfooter();
 }
 
-if($mybb->input['action'] == "delete") {
+if($mybb->input['action'] == "delete")
+{
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
-	if(!$smilie['sid']) {
+	if(!$smilie['sid'])
+    {
 		cperror($lang->invalid_smilie);
 	}
 	cpheader();
@@ -117,7 +130,8 @@ if($mybb->input['action'] == "delete") {
 	cpfooter();
 }
 
-if($mybb->input['action'] == "add") {
+if($mybb->input['action'] == "add")
+{
 	cpheader();
 	if(!$mybb->input['multi'])
 	{
@@ -144,29 +158,36 @@ if($mybb->input['action'] == "add") {
 	}
 	cpfooter();
 }
-if($mybb->input['action'] == "do_addmultiple") {
-	if($mybb->input['page']) {
+
+if($mybb->input['action'] == "do_addmultiple")
+{
+	if($mybb->input['page'])
+    {
 		$mybb->input['action'] = "addmultiple";
 	}
-	elseif(!is_array($mybb->input['smimport'])) {
+	elseif(!is_array($mybb->input['smimport']))
+    {
 		cpmessage($lang->sel_no_images);
 	}
-	else {
+	else
+    {
 		reset($mybb->input['smimport']);
-		while(list($image,$insert) = each($mybb->input['smimport'])) {
-				if($insert) {
-				$find = $smcode[$image];
-				$name = $smname[$image];
-				$imageurl = $path."/".$image;
-				$newsmilie = array(
-					"sid" => "NULL",
-					"name" => addslashes($name),
-					"find" => addslashes($find),
-					"image" => addslashes($imageurl),
-					"showclickable" => "yes"
-				);
-				$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
-			}
+		while(list($image,$insert) = each($mybb->input['smimport']))
+        {
+			if($insert)
+            {
+			    $find = $smcode[$image];
+    			$name = $smname[$image];
+    			$imageurl = $path."/".$image;
+    			$newsmilie = array(
+    				"sid" => "NULL",
+    				"name" => addslashes($name),
+    				"find" => addslashes($find),
+    				"image" => addslashes($imageurl),
+    				"showclickable" => "yes"
+    			);
+    			$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
+    		}
 		}
 		$cache->updatesmilies();
 		cpheader();
@@ -176,67 +197,91 @@ if($mybb->input['action'] == "do_addmultiple") {
 		echo "<br>";
 		$finishedinsert = 1;
 		$mybb->input['action'] = "add";
-
 	}
 }
-if($mybb->input['action'] == "addmultiple") {
+
+if($mybb->input['action'] == "addmultiple")
+{
 	$perpage = intval($mybb->input['perpage']);
 	$page = intval($mybb->input['page']);
-	if(!$perpage) {
+	if(!$perpage)
+	{
 		$perpage = 15;
 	}
 	$dir = @opendir($mybb->input['path']);
-	if(!$dir) {
+	if(!$dir)
+    {
 		cperror($lang->bad_directory);
 	}
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies");
-	while($smilie = $db->fetch_array($query)) {
+	while($smilie = $db->fetch_array($query))
+    {
 		$asmilies[$smilie[image]] = 1;
 	}
-	while($file = readdir($dir)) {
-		if($file != ".." && $file != ".") {
+	while($file = readdir($dir))
+    {
+		if($file != ".." && $file != ".")
+        {
 			$ext = getextention($file);
-			if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp") {
-				if(!$asmilies["$path/$file"]) {
+			if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
+            {
+				if(!$asmilies["$path/$file"])
+                {
 					$smilies[] = $file;
 				}
 			}
 		}
 	}
 	closedir($dir);
-	if(!$page) {
+	if(!$page)
+    {
 		$page = 1;
 	}
 	$newsmilies = count($smilies);
-	if($newsmilies > $perpage) {
+	if($newsmilies > $perpage)
+    {
 		$pages = $newsmilies / $perpage;
 		$pages = ceil($pages);
-		for($i=1;$i<=$pages;$i++) {
-			if($i == $page) {
+		for($i=1;$i<=$pages;$i++)
+        {
+			if($i == $page)
+            {
 				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\" disabled=\"disabled\"> ";
-			} else {
+			}
+            else
+            {
 				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\"> ";
 			}
 		}
 		$start = ($page-1) *$perpage;
-	} else {
+	}
+    else
+    {
 		$start = 0;
 		$page = 1;
 		$pages = 1;
 	}
 	$end = $perpage + $start;
-	if($end > $newsmilies) {
+	if($end > $newsmilies)
+    {
 		$end = $newsmilies;
 	}
 
-	if(!$newsmilies) {
-		if($finishedmulti) {
+	if(!$newsmilies)
+    {
+		if($finishedmulti)
+        {
 			cpredirect("smilies.php", $lang->all_sel_added);
-		} else {
+		}
+        else
+        {
 			cpmessage($lang->no_images);
 		}
-	} else {
-		if(!$finishedinsert) {
+	}
+    else
+    {
+		if(!$finishedinsert)
+        {
 			cpheader();
 		}
 		startform("smilies.php", "", "do_addmultiple");
@@ -250,7 +295,8 @@ if($mybb->input['action'] == "addmultiple") {
 		echo "<td class=\"subheader\" align=\"center\">$lang->text_to_replace</td>\n";
 		echo "<td class=\"subheader\" align=\"center\">$lang->add</td>\n";
 		echo "</tr>\n";
-		for($i=$start;$i<$end;$i++) {
+		for($i=$start;$i<$end;$i++)
+        {
 			$file = $smilies[$i];
 			$ext = getextention($smilies[$i]);
 			$find = str_replace(".".$ext, "", $file);
@@ -264,15 +310,19 @@ if($mybb->input['action'] == "addmultiple") {
 			echo "</tr>\n";
 		}
 	}
-	if($newsmilies > $perpage) {
+	if($newsmilies > $perpage)
+    {
 		tablesubheader($pagelist, "", 4);
 	}
 	endtable();
 	endform($lang->add_multiple, $lang->reset_button);
 	cpfooter();
 }
-if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
-	if(!$noheader) {
+
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
+{
+	if(!$noheader)
+    {
 		cpheader();
 	}
 	$hopto[] = "<input type=\"button\" value=\"$lang->add_new_smilie\" onclick=\"hopto('smilies.php?action=add');\" class=\"hoptobutton\">";
@@ -286,80 +336,101 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	$smiliecount = $db->result($query, 0);
 	$perpage = intval($mybb->input['perpage']);
 	$page = intval($mybb->input['page']);
-	if(!$perpage) {
+	if(!$perpage)
+    {
 		$perpage = 15;
 	}
-	if($page) {
+	if($page)
+    {
 		$start = ($page-1) *$perpage;
-	} else {
+	}
+    else
+    {
 		$start = 0;
 		$page = 1;
 	}
 	$listed = 0;
 	$altbg = "altbg1";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies ORDER BY disporder ASC LIMIT $start, $perpage");
-	while($smilie = $db->fetch_array($query)) {
-		if($listed == "0") {
+	while($smilie = $db->fetch_array($query))
+    {
+		if($listed == "0")
+        {
 			echo "<tr>";
 		}
 		$smilie[image] = str_replace("{theme:imgdir}", $theme[imgdir], $smilie[image]);
 		if(strstr($smilie[image], "p://") || substr($smilie[image],0,1) == "/") {
 			$image = $smilie[image];
-		} else {
+		}
+        else
+        {
 			$image = "../$smilie[image]";
 		}
 		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$smilie[name]<br><br><img src=\"$image\">&nbsp;&nbsp;<b>".stripslashes($smilie[find])."</b><br><br>";
 		echo "<a href=\"smilies.php?action=edit&sid=$smilie[sid]&page=$page&perpage=$perpage\">$lang->edit</a> <a href=\"smilies.php?action=delete&sid=$smilie[sid]&page=$page&perpage=$perpage\">$lang->delete</a>";
 		echo "</td>";
 		$listed++;
-		if($listed == 5) {
+		if($listed == 5)
+        {
 			echo "</tr>";
-			if($altbg == "altbg2") {
+			if($altbg == "altbg2")
+            {
 				$altbg = "altbg1";
-			} else {
+			}
+            else
+            {
 				$altbg = "altbg2";
 			}
 			$listed = 0;
 		}
 	
 	}
-	if($listed != "0") {
-		while($listed != "0") {
+	if($listed != "0")
+    {
+		while($listed != "0")
+        {
 			echo "<td class=\"$altbg\">&nbsp;</td>";
 			$listed++;
-			if($listed == "5") {
+			if($listed == "5")
+            {
 				$listed = 0;
 			}
 		}
 		echo "</tr>";
 	}
-	if($smiliecount > $perpage) {
+	if($smiliecount > $perpage)
+    {
 		$pages = $smiliecount / $perpage;
 		$pages = ceil($pages);
-		if($page > 1) {
+		if($page > 1)
+        {
 			$prev = $page - 1;
 			$prevpage = "<a href=\"smilies.php?page=$prev&perpage=$perpage\">$lang->prevpage</a>";
 		}
-		if($page < $pages) {
+		if($page < $pages)
+        {
 			$next = $page + 1;
 			$nextpage = "<a href=\"smilies.php?page=$next&perpage=$perpage\">$lang->nextpage</a>";
 		}
-		for($i=1;$i<=$pages;$i++) {
-			if($i == $page) {
+		for($i=1;$i<=$pages;$i++)
+        {
+			if($i == $page)
+            {
 				$pagelist .= "<b>$i</b>";
-			} else {
+			}
+            else
+            {
 				$pagelist .= "<a href=\"smilies.php?page=$i&perpage=$perpage\">$i</a>";
 			}
 		}
 	}
-	if($pagelist || $prevpage  || $nextpage) {
+	if($pagelist || $prevpage  || $nextpage)
+    {
 		echo "<tr><td class=\"altbg1\" colspan=\"5\">$prevpage $pagelist $nextpage</td></tr>";
 	}
 	echo "<form action=\"smilies.php?page=$page\" method=\"post\"><tr><td class=\"altbg2\" colspan=\"5\">$lang->smilies_per_page <input type=\"text\" name=\"perpage\" value=\"$perpage\"> <input type=\"submit\" name=\"submit\" value=\"$lang->go\"></td></tr></form>";
-?>
-</table>
-</td></tr></table>
-	<?php
+    echo "</table>\n";
+    echo "</td></tr></table>";
 	cpfooter();
 }
 ?>
