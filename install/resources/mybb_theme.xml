@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<theme name="MyBB Default" version="100.05">
+<theme name="MyBB Default" version="100.06">
 	<cssbits>
 		<body>
 			<background><![CDATA[#e3e3e3 url(images/Light/logo_bg.png) repeat-x;]]></background>
@@ -2186,9 +2186,10 @@ $footer
 		 var deleteevent_confirm = "$lang->deleteevent_confirm";
 		 var removeattach_confirm = "$lang->removeattach_confirm";
 	</script>
+	<a name="top"></a>
 	<div id="container">
 		<div id="header">
-			<div class="logo"><a href="$settings[bburl]/index.php" name="top"><img src="$theme[logo]" alt="$settings[bbname]" border="0" /></a></div>
+			<div class="logo"><a href="$settings[bburl]/index.php"><img src="$theme[logo]" alt="$settings[bbname]" border="0" /></a></div>
 			<div class="menu">
 				<ul>
 					<li><a href="$settings[bburl]/search.php"><img src="$theme[imgdir]/toplinks/search.gif" border="0" alt="$lang->toplinks_search" />$lang->toplinks_search</a></li>
