@@ -543,11 +543,13 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 			while($template = $db->fetch_array($query))
 			{
 				$altbg = getaltbg();
+				echo "<tr>";
 				echo "<td class=\"$altbg\" width=\"10\">&nbsp;</td>\n";
 				echo "<td class=\"$altbg\"><a href=\"templates.php?action=edit&tid=".$template['tid']."\">".$template['title']."</a></td>";
 				echo "<td class=\"$altbg\" align=\"right\">";
 				echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?action=edit&tid=".$template['tid']."');\" class=\"submitbutton\">";
 				echo "<input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('templates.php?action=delete&tid=".$template['tid']."');\" class=\"submitbutton\">";
+				echo "</td>";
 				echo "</tr>";
 			}
 		}
@@ -558,11 +560,13 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 			while($template = $db->fetch_array($query))
 			{
 				$altbg = getaltbg();
+				echo "<tr>";
 				echo "<td class=\"$altbg\" width=\"10\">&nbsp;</td>\n";
 				echo "<td class=\"$altbg\"><a href=\"templates.php?action=edit&tid=".$template['tid']."\">".$template['title']."</a></td>";
 				echo "<td class=\"$altbg\" align=\"right\">";
 				echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?action=edit&tid=".$template['tid']."');\" class=\"submitbutton\">";
 				echo "<input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('templates.php?action=delete&tid=".$template['tid']."');\" class=\"submitbutton\">";
+				echo "</td>";
 				echo "</tr>";
 			}
 		}
@@ -605,8 +609,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 						$altbg = getaltbg();
 						echo "<tr>\n";
 						echo "<td class=\"$altbg\" colspan=\"2\"><b><a href=\"templates.php?expand=$expand&group=$grouptype#$grouptype\" name=\"$grouptype\">$groupname $lang->templates</a></b></td>\n";
-						echo "<td class=\"$altbg\" align=\"right\">\n";
-						echo "<input type=\"button\" value=\"$lang->expand\" onclick=\"hopto('templates.php?expand=$expand&group=$grouptype#$grouptype');\" class=\"submitbutton\">\n";
+						echo "<td class=\"$altbg\" align=\"right\"><input type=\"button\" value=\"$lang->expand\" onclick=\"hopto('templates.php?expand=$expand&group=$grouptype#$grouptype');\" class=\"submitbutton\"></td>\n";
 						echo "</tr>\n";
 						$donegroup[$grouptype] = 1;
 					}
@@ -661,5 +664,4 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 	}
 	cpfooter();
 }
-
 ?>
