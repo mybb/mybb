@@ -211,6 +211,7 @@ if($mybb->input['action'] == "do_add")
 		"loginkey" => $loginkey,
 		"email" => addslashes($mybb->input['email']),
 		"usergroup" => intval($mybb->input['usergroup']),
+		"displaygroup" => intval($mybb->input['displaygroup']),
 		"usertitle" => addslashes($mybb->input['usertitle']),
 		"regdate" => time(),
 		"lastactive" => time(),
@@ -386,6 +387,7 @@ if($mybb->input['action'] == "do_edit")
 		"email" => addslashes($mybb->input['email']),
 		"usergroup" => intval($mybb->input['usergroup']),
 		"additionalgroups" => $additionalgroups,
+		"displaygroup" => intval($mybb->input['displaygroup']),
 		"usertitle" => addslashes($mybb->input['usertitle']),
 		"avatar" => addslashes($mybb->input['avatar']),
 		"website" => addslashes($mybb->input['website']),
@@ -685,6 +687,7 @@ if($mybb->input['action'] == "add")
 	makeinputcode($lang->email, "email");
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", 2);
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
+	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", 2);
 
 	tablesubheader($lang->optional_info);
 	makeinputcode($lang->custom_title, "usertitle");
@@ -847,6 +850,7 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->email, "email", $user['email']);
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", $user['usergroup']);
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
+	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", $user['displaygroup']);
 	makeinputcode($lang->post_count, "postnum", $user['postnum'], 4);
 
 	tablesubheader($lang->optional_info);

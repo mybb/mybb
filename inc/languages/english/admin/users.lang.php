@@ -80,6 +80,7 @@ $l['email'] = "Email Address";
 $l['usergroup'] = "Usergroup";
 $l['primary_usergroup'] = "Primary Usergroup";
 $l['secondary_usergroups'] = "Secondary Usergroups";
+$l['display_group'] = "Display Group";
 $l['post_count'] = "Post Count";
 $l['usertitle'] = "User Title";
 $l['custom_title'] = "Custom Usertitle";
