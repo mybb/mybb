@@ -1248,6 +1248,8 @@ elseif($mybb->input['action'] == "profile")
 	$memlocaldate = gmdate($mybb->settings['dateformat'], time() + ($memprofile['timezone'] * 3600));
 	$memlocaltime = gmdate($mybb->settings['timeformat'], time() + ($memprofile['timezone'] * 3600));
 
+	$localtime = sprintf($lang->local_time_format, $memlocaldate, $memlocaltime);
+
 	if($memprofile['lastvisit'])
 	{
 		$memlastvisitdate = mydate($mybb->settings['dateformat'], $memprofile['lastvisit']);

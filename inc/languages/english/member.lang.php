@@ -33,6 +33,7 @@ $l['profile'] = "Profile";
 $l['registration_date'] = "Registration Date:";
 $l['birthday'] ="Birthday:";
 $l['local_time'] = "Local Time:";
+$l['local_time_format'] = "{1} at {2}";
 $l['users_forum_info'] = "{1}'s Forum Info";
 $l['joined'] = "Joined:";
 $l['lastvisit'] = "Last Visit";

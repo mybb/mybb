@@ -2074,7 +2074,7 @@ $userstars<br />
 <br />
 <strong>$lang->registration_date</strong> $memregdate<br />
 <strong>$lang->birthday</strong> $membday $membdayage<br />
-<strong>$lang->local_time</strong> $memlocaldate $lang->at $memlocaltime<br />
+<strong>$lang->local_time</strong> $localtime<br />
 </span>
 </td><td width="25%" align="center" valign="middle">$avatar</td></tr></table>
 </td>
