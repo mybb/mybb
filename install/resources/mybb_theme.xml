@@ -6344,24 +6344,18 @@ $footer
 </body>
 </html>]]></template>
 		<template name="member_register_regimage"><![CDATA[<br />
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder" width="100%">
-<tr>
-<td class="thead"><strong>$lang->image_verification</td>
-</tr>
-<tr>
-<td class="trow2">
+<fieldset class="trow2">
+<legend><strong>$lang->image_verification</strong></legend>
 <table cellspacing="0" cellpadding="$theme[tablespace]">
 <tr>
 <td><span class="smalltext">$lang->verification_note</span></td>
 <td rowspan="2" align="center"><img src="image.php?action=regimage&imagehash=$imagehash" alt="$lang->image_verification" /><br /><span style="color: red;" class="smalltext">$lang->verification_subnote</span></td>
 </tr>
 <tr>
-<td><input type="text" name="imagestring" value="" /></td>
+<td><input type="text" name="imagestring" value="" /><input type="hidden" name="imagehash" value="$imagehash" /></td>
 </tr>
 </table>
-</td>
-</tr>
-</table><input type="hidden" name="imagehash" value="$imagehash" />]]></template>
+</fieldset>]]></template>
 		<template name="error_inline"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder"><tr>
 <td class="thead"><strong>$title</strong></td>
 </tr>
@@ -6411,6 +6405,7 @@ $passboxes
 </fieldset>
 $requiredfields
 $referrer
+$regimage
 </td>
 <td width="50%" class="trow1" valign="top">
 <fieldset class="trow2">
@@ -6475,11 +6470,6 @@ $referrer
 </fieldset>
 </td>
 </tr>
-</table>
-<table width="50%" cellspacing="0" cellpadding="0" border="0" align="center">
-<tr><td>
-$regimage
-</td></tr>
 </table>
 <br />
 <center>
