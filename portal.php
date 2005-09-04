@@ -273,7 +273,7 @@ while($attachment = $db->fetch_array($query))
 }
 
 $forumpermissions = forum_permissions($mybb->settings['portal_announcementsfid']);
-$query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE fid='".$mybb->settings['portal_announcementsfid']."' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
+$query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE fid='".$mybb->settings['portal_announcementsfid']."' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
 while($announcement = $db->fetch_array($query))
 {
 	$announcement['message'] = $posts[$announcement['tid']]['message'];
