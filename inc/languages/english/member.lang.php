@@ -54,6 +54,7 @@ $l['away_note'] = "{1} is currently away.";
 $l['away_reason'] = "Reason:";
 $l['away_since'] = "Away Since:";
 $l['away_returns'] = "Returns on:";
+$l['away_no_reason'] = "Not specified.";
 $l['users_additional_info'] = "Additional Info About {1}";
 $l['email'] = "Email:";
 $l['send_user_email'] = "Send {1} an email.";

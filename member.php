@@ -1141,6 +1141,15 @@ elseif($mybb->input['action'] == "profile")
 	$lang->users_signature = sprintf($lang->users_signature, $memprofile['username']);
 	$lang->send_user_email = sprintf($lang->send_user_email, $memprofile['username']);
 
+	if(!empty($memprofile['awayreason']))
+	{
+		$awayreason = $memprofile['awayreason'];
+	}
+	else
+	{
+		$awayreason = $lang->away_no_reason;
+	}
+
 	if($memprofile['avatar'])
 	{
 		$memprofile['avatar'] = htmlspecialchars_uni($memprofile['avatar']);
@@ -1150,6 +1159,7 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$avatar = "";
 	}
+
 	if($memprofile['hideemail'] != "no")
 	{
 		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
@@ -1158,6 +1168,7 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$sendemail = "";
 	}
+
 	if($memprofile['website'])
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
@@ -1167,6 +1178,7 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$website = "";
 	}
+
 	if($memprofile['signature'])
 	{
 		$memprofile['signature'] = postify(stripslashes($memprofile['signature']), $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);

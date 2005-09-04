@@ -6005,7 +6005,7 @@ $footer
 		<template name="member_profile_away"><![CDATA[<tr>
 <td class="trow1" align="center">
 <strong>$lang->away_note</strong><br />
-<span class="smalltext"><em>$lang->away_reason $memprofile[awayreason]</em></span><br />
+<span class="smalltext"><em>$lang->away_reason $awayreason</em></span><br />
 $lang->away_since $awaydate &nbsp;&nbsp;&nbsp; $lang->away_returns $returndate
 </td>
 </tr>]]></template>
