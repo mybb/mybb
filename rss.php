@@ -65,7 +65,7 @@ switch($mybb->input['type'])
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 		echo "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:wfw=\"http://wellformedweb.org/CommentAPI/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\>\n";
 		echo "\t<channel>\n";
-		echo "\t\t<title><![CDATA[".$title."</title>\n";
+		echo "\t\t<title><![CDATA[".$title."]]></title>\n";
 		echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
 		echo "\t\t<description><![CDATA[".$mybb->settings['bbname']." - ".$mybb->settings['bburl']."]]></description>\n";
 		echo "\t\t<generator>MyBB</generator>\n";
