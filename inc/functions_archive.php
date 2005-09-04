@@ -30,8 +30,8 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 <title><?php echo $title; ?></title>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 <meta name="robots" content="index,follow" />
-<link rel="stylesheet" rev="stylesheet" href="<?php echo $archiveurl; ?>/screen.css" media="screen" />
-<link rel="stylesheet" rev="stylesheet" href="<?php echo $archiveurl; ?>/print.css" media="print" />
+<link type="text/css" rel="stylesheet" rev="stylesheet" href="<?php echo $archiveurl; ?>/screen.css" media="screen" />
+<link type="text/css" rel="stylesheet" rev="stylesheet" href="<?php echo $archiveurl; ?>/print.css" media="print" />
 </head>
 <body>
 <div id="container">

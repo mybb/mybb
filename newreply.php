@@ -709,7 +709,7 @@ if($mybb->input['action'] == "do_newreply" )
 			replyPosted($pid);
 		}
 
-		$plugins->run_hooks("newreply_do_newrpely_end");
+		$plugins->run_hooks("newreply_do_newreply_end");
 	}
 	// Setup the correct ownership of the attachments
 	if($mybb->input['posthash'])
