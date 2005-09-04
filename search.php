@@ -675,38 +675,35 @@ else
 	outputpage($search);
 }
 
-function makesearchforums($pid="0", $selitem="", $addselect="1", $depth="")
+function makesearchforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
-	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $mybbgroup, $lang, $forumpass;
+	global $db, $pforumcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $mybbgroup, $lang, $forumpass;
 	$pid = intval($pid);
-	if(!is_array($forumcache))
+	if(!$permissions)
+	{
+		$permissions = $mybb->usergroup;
+	}
+	if(!is_array($pforumcache))
 	{
 		// Get Forums
-		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f ORDER BY f.pid, f.disporder");
+		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f WHERE linkto='' ORDER BY f.pid, f.disporder");
 		while($forum = $db->fetch_array($query))
 		{
-			$forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
+			$pforumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 		}
 	}
 	if(!is_array($permissioncache))
 	{
 		$permissioncache = forum_permissions();
 	}
-	if(is_array($forumcache[$pid]))
+	if(is_array($pforumcache[$pid]))
 	{
-		while(list($key, $main) = each($forumcache[$pid]))
+		while(list($key, $main) = each($pforumcache[$pid]))
 		{
 			while(list($key, $forum) = each($main))
 			{
-				if(!$permissioncache[$forum['fid']])
-				{
-					$perms = $mybb->usergroup;
-				}
-				else
-				{
-					$perms = $permissioncache[$forum['fid']];
-				}
-				if(($perms['canview'] != "no" || $mybb->settings['hideprivateforums'] == "no") && $perms['cansearch'] != "no")
+				$perms = $permissioncache[$forum['fid']];
+				if(($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no") && $perms['cansearch'] != "no")
 				{
 					if($selitem == $forum['fid'])
 					{
@@ -733,10 +730,10 @@ function makesearchforums($pid="0", $selitem="", $addselect="1", $depth="")
 					{
 						$forumlistbits .= "<option value=\"$forum[fid]\">$depth $forum[name]</option>\n";
 					}
-					if($forumcache[$forum['fid']])
+					if($pforumcache[$forum['fid']])
 					{
 						$newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
-						$forumlistbits .= makesearchforums($forum['fid'], $selitem, 0, $newdepth);
+						$forumlistbits .= makesearchforums($forum['fid'], $selitem, 0, $newdepth, $perms);
 					}
 				}
 			}
