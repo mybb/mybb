@@ -1636,8 +1636,8 @@ $footer
 </body>
 </html>]]></template>
 		<template name="post_attachments"><![CDATA[<tr>
-<td class="trow2" valign="top"><strong>$lang->attachments</strong><br /><span class="smalltext">$lang->attachments_desc</span></td>
-<td class="trow2" valign="top">
+<td class="$bgcolor" valign="top"><strong>$lang->attachments</strong><br /><span class="smalltext">$lang->attachments_desc</span></td>
+<td class="$bgcolor" valign="top">
 <table cellspacing="3" cellpadding="0" border="0">
 <tr>
 <td colspan="3">
@@ -3710,10 +3710,10 @@ $footer
 <td class="trow2" valign="top" nowrap="nowrap">$lastpost</td>
 </tr>]]></template>
 		<template name="newthread_postpoll"><![CDATA[<tr>
-<td class="trow1" valign="top">
+<td class="$bgcolor" valign="top">
 <strong>$lang->poll</strong><br /><span class="smalltext">$lang->poll_desc</span>
 </td>
-<td class="trow1" valign="top">
+<td class="$bgcolor" valign="top">
 <span class="smalltext"><input type="checkbox" name="postpoll" value="yes" $postpollchecked> <strong>$lang->poll_check</strong><br />
 $lang->num_options <input type="text" name="numpolloptions" value="$numpolloptions" size="10"> $lang->max_options</span>
 </td>
@@ -4938,8 +4938,8 @@ $footer
 </table>
 </td></tr></table>]]></template>
 		<template name="newreply_modoptions"><![CDATA[<tr>
-<td class="trow1" valign="top"><strong>$lang->mod_options</strong></td>
-<td class="trow1"><span class="smalltext">
+<td class="$bgcolor" valign="top"><strong>$lang->mod_options</strong></td>
+<td class="$bgcolor"><span class="smalltext">
 <label><input type="checkbox" name="modoptions[closethread]" value="yes" $closecheck> $lang->close_thread</label><br />
 <label><input type="checkbox" name="modoptions[stickthread]" value="yes" $stickycheck> $lang->stick_thread</label>
 </span></td>

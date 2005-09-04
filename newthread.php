@@ -294,6 +294,11 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		unset($modoptions);
 		eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
+		$bgcolor = "trow1";
+	}
+	else
+	{
+		$bgcolor = "trow2";
 	}
 
 	if($forumpermissions['canpostattachments'] != "no")
@@ -340,6 +345,15 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
+		
+		if($bgcolor == "trow1")
+		{
+			$bgcolor = "trow2";
+		}
+		else
+		{
+			$bgcolor = "trow1";
+		}
 	}
 
 	if($mybb->user['uid'])
