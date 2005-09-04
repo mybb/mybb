@@ -399,7 +399,7 @@ elseif($mybb->input['action'] == "do_profile")
 			if ($returntimestamp < $awaytimestamp) {
 				error($lang->error_usercp_return_date_past);
 			}
-			$returndate = $mybb->input['awayday']."-".$mybb->input['awaymonth']."-".$mybb->input['awayyear'];
+			$returndate = intval($mybb->input['awayday'])."-".intval($mybb->input['awaymonth'])."-".intval($mybb->input['awayyear']);
 		}
 		else
 		{
