@@ -3570,7 +3570,7 @@ $footer
 </html>
 ]]></template>
 		<template name="postbit_groupimage"><![CDATA[<img src="$usergroup[image]" border="0" alt="$usergroup[title]" />]]></template>
-		<template name="showthread_newreply"><![CDATA[<a href="newreply.php?tid=$tid"><img src="$theme[imglangdir]/newreply.gif" border="0" alt="$lang->post_reply" /></a>&nbsp;]]></template>
+		<template name="showthread_newreply"><![CDATA[<a href="newreply.php?tid=$tid"><img src="$theme[imglangdir]/newreply.gif" border="0" alt="$lang->post_reply_img" /></a>&nbsp;]]></template>
 		<template name="showthread_newthread"><![CDATA[<a href="newthread.php?fid=$fid"><img src="$theme[imglangdir]/newthread.gif" border="0" alt="$lang->post_thread" /></a>&nbsp;]]></template>
 		<template name="member_profile_groupimage"><![CDATA[<img src="$displaygroup[image]" alt="$usertitle" /><br />]]></template>
 		<template name="misc_help_section"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center"><tr><td class="tborder">

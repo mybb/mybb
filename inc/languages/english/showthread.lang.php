@@ -42,6 +42,7 @@ $l['signature'] = "Signature";
 $l['email_notify'] = "Email Notification";
 $l['disable_smilies'] = "Disable Smilies";
 $l['post_reply'] = "Post Reply";
+$l['post_reply_img'] = "Post Reply";
 $l['post_thread'] = "Post Thread";
 $l['preview_post'] = "Preview Post";
 $l['rating_average'] = "{1} Votes - {2} Average";
