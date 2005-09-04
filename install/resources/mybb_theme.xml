@@ -1467,6 +1467,10 @@ $avatar
 <td class="trow2" width="50%"><strong>$lang->postnum</strong></td>
 <td class="trow2" width="50%">$mybbuser[postnum] $lang->posts_day</td>
 </tr>
+<tr>
+<td class="trow2" width="50%"><strong>$lang->email</strong></td>
+<td class="trow2" width="50%">$mybbuser[email]</td>
+</tr>
 </table>
 $reputations
 </td>
