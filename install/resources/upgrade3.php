@@ -518,7 +518,7 @@ function upgrade3_dbchanges3()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE uid uid int(10) NOT NULL;");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."announcements CHANGE aid aid int unsigned NOT NULL auto_increment;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."announcements CHANGE fid fid int unsigned NOT NULL;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."announcements CHANGE fid fid int(10) NOT NULL;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."announcements CHANGE uid uid int unsigned NOT NULL;");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."attachments CHANGE aid aid int unsigned NOT NULL auto_increment;");
