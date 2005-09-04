@@ -2249,6 +2249,7 @@ $joinablegrouplist
 <td class="$trow"><strong>$usergroup[title]</strong>$description</td>
 <td class="$trow" align="center">$usergroup[usertitle]</td>
 <td class="$trow">$leavelink</td>
+<td class="$trow">$displaycode</td>
 </tr>]]></template>
 		<template name="usercp_usergroups"><![CDATA[<html>
 <head>
@@ -2280,8 +2281,12 @@ $footer
 <td class="tcat" width="35%"><strong>$lang->usergroup</strong></td>
 <td class="tcat" align="center" width="32%"><strong>$lang->usertitle</strong></td>
 <td class="tcat" align="center" width="32%"><strong>$lang->usergroup_leave</strong></td>
+<td class="tcat" align="center"><strong>$lang->display_group</strong></td>
 </tr>
 $memberoflist
+<tr>
+<td class="tfoot" align="right" colspan="4"><strong><input type="submit" name="changedisplaygroup" value="$lang->change_display_group" /></strong></td>
+</tr>
 </table>
 <br />]]></template>
 		<template name="managegroup"><![CDATA[<html>

@@ -1784,6 +1784,19 @@ elseif($mybb->input['action'] == "usergroups")
 	$usergroup = $db->fetch_array($query);
 	$leavelink = "<span class=\"smalltext\"><center>$lang->usergroup_leave_primary</center></span>";
 	$trow = alt_trow();
+	if($usergroup['candisplaygroup'] == "yes" && $usergroup['gid'] == $mybb->user['displaygroup'])
+	{
+		$displaycode = "<input type=\"radio\" name=\"displaygroup\" value=\"$usergroup[gid]\" checked=\"checked\" />";
+	}
+	elseif($usergroup['candisplaygroup'] == "yes")
+	{
+		$displaycode = "<input type=\"radio\" name=\"displaygroup\" value=\"$usergroup[gid]\" />";
+	}
+	else
+	{
+		$displaycode = '';
+	}
+
 	eval("\$memberoflist = \"".$templates->get("usercp_usergroups_memberof_usergroup")."\";");
 	$showmemberof = false;
 
@@ -1814,6 +1827,18 @@ elseif($mybb->input['action'] == "usergroups")
 				// fetch title here
 			}
 			$trow = alt_trow();
+			if($usergroup['candisplaygroup'] == "yes" && $usergroup['gid'] == $mybb->user['displaygroup'])
+			{
+				$displaycode = "<input type=\"radio\" name=\"displaygroup\" value=\"$usergroup[gid]\" checked=\"checked\" />";
+			}
+			elseif($usergroup['candisplaygroup'] == "yes")
+			{
+				$displaycode = "<input type=\"radio\" name=\"displaygroup\" value=\"$usergroup[gid]\" />";
+			}
+			else
+			{
+				$displaycode = '';
+			}
 			eval("\$memberoflist .= \"".$templates->get("usercp_usergroups_memberof_usergroup")."\";");
 		}
 	}
