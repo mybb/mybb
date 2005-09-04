@@ -41,7 +41,7 @@ function upgrade2_dbchanges()
 	$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (11, '', 'image/jpeg', 'jpeg', 500, 'images/attachtypes/image.gif');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (12, '', 'application/x-gzip', 'gz', 1024, 'images/attachtypes/tgz.gif');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (13, '', 'application/x-tar', 'tar', 1024, 'images/attachtypes/tar.gif');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (14, '', 'text/css', 'css', 100, '');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (14, '', 'text/css', 'css', 100, 'images/attachtypes/css.gif');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (15, '', 'application/pdf', 'pdf', 2048, 'images/attachtypes/pdf.gif');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (16, '', 'image/bmp', 'bmp', 500, 'images/attachtypes/image.gif');");
 
