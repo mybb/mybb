@@ -31,7 +31,7 @@ $l['marking_read'] = "<a href=\"misc.php?action=markread\">Marking Forums as Rea
 $l['viewing_helpdocs'] = "Viewing <a href=\"misc.php?action=help\">Help Documents</a>";
 $l['viewing_buddylist'] = "Viewing <a href=\"misc.php?action=buddypopup\">Buddy List</a>";
 $l['viewing_smilies'] = "Viewing <a href=\"misc.php?action=smilies\">Smilie List</a>";
-$l['viewing_syndication'] = "Viewing <a href=\"misc.php?action=synidcation\">RSS Syndication</a> Page";
+$l['viewing_syndication'] = "Viewing <a href=\"misc.php?action=syndication\">RSS Syndication</a> Page";
 $l['replying_thread'] = "Replying to Thread";
 $l['replying_thread2'] = "Replying to Thread <a href=\"showthread.php?tid={1}\">{2}</a>";
 $l['posting_thread'] = "Posting New Thread";
