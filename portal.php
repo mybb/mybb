@@ -134,7 +134,7 @@ if($mybb->settings['portal_showwelcome'] != "no")
 	}
 }
 // Get Forum Statistics
-if($mybb->settings['portal_showstatsh'] != "no")
+if($mybb->settings['portal_showstats'] != "no")
 {
 	$stats = $cache->read("stats");
 	$threadsnum = $stats['numthreads'];
