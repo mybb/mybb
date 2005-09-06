@@ -1274,9 +1274,8 @@ $headerinclude
 </html>]]></template>
 		<template name="redirect"><![CDATA[<html>
 <head>
-<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
-<meta http-equiv="refresh" content="2;URL=$url">
 <title>$title</title>
+<meta http-equiv="refresh" content="2;URL=$url">
 $headerinclude
 </head>
 <body>
