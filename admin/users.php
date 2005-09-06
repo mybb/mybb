@@ -228,11 +228,11 @@ if($mybb->input['action'] == "do_add")
 		"emailnotify" => $mybb->input['emailnotify'],
 		"invisible" => $mybb->input['invisible'],
 		"style" => $mybb->input['style'],
-		"timezone" => $mybb->input['timezoneoffset'],
+		"timezone" => addslashes($mybb->input['timezoneoffset']),
 		"receivepms" => $mybb->input['receivepms'],
 		"pmpopup" => $mybb->input['pmpopup'],
 		"pmnotify" => $mybb->input['pmnotify'],
-		"signature" => $mybb->input['signature']
+		"signature" => addslashes($mybb->input['signature'])
 		);
 	$db->insert_query(TABLE_PREFIX."users", $user);
 	$uid = $db->insert_id();
@@ -401,12 +401,12 @@ if($mybb->input['action'] == "do_edit")
 		"emailnotify" => $mybb->input['emailnotify'],
 		"invisible" => $mybb->input['invisible'],
 		"style" => $mybb->input['stylesel'],
-		"timezone" => $mybb->input['timezoneoffset'],
+		"timezone" => addslashes($mybb->input['timezoneoffset']),
 		"receivepms" => $mybb->input['receivepms'],
 		"pmpopup" => $mybb->input['pmpopup'],
 		"pmnotify" => $mybb->input['pmnotify'],
-		"signature" => $mybb->input['signature'],
-		"postnum" => $mybb->input['postnum'],
+		"signature" => addslashes($mybb->input['signature']),
+		"postnum" => intval($mybb->input['postnum']),
 		);
 
 	$db->update_query(TABLE_PREFIX."users", $user, "uid='".intval($mybb->input['uid'])."'");
