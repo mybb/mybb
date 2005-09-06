@@ -1723,7 +1723,7 @@ elseif($mybb->input['action'] == "usergroups")
 			$joinrequest = array(
 				"rid" => "NULL",
 				"uid" => $mybb->user['uid'],
-				"gid" => intval($mybb->input['gid']),
+				"gid" => intval($mybb->input['joingroup']),
 				"reason" => addslashes($mybb->input['reason']),
 				"dateline" => time()
 				);
