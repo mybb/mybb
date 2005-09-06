@@ -286,7 +286,7 @@ if($mybb->settings['boardclosed'] == "yes")
 {
 	if($mybb->usergroup['cancp'] != "yes")
 	{
-		$lang->error_boardclosed .= "<blockquote>".$mybb->settings['boardclosed_reason']."</blockquote>";
+		$lang->error_boardclosed .= "<blockquote>".stripslashes($mybb->settings['boardclosed_reason'])."</blockquote>";
 		error($lang->error_boardclosed);
 		exit;
 	}
