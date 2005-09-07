@@ -556,13 +556,7 @@ if($mybb->input['action'] == "register")
 
 		eval("\$tzselect = \"".$templates->get("usercp_options_timezoneselect")."\";");
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE name!='((master))' AND name!='((master-backup))' ORDER BY name ASC");
-		while($style = $db->fetch_array($query))
-		{
-			$style['sid'] = $style['tid'];
-			$selected = "";
-			eval("\$stylelist .= \"".$templates->get("usercp_options_stylebit")."\";");
-		}
+		$stylelist = themeselect("style");
 
 		if($mybb->settings['usertppoptions'])
 		{
@@ -594,19 +588,19 @@ if($mybb->input['action'] == "register")
 		{
 			if($_COOKIE['mybb']['referrer'])
 			{
-				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".$_COOKIE['mybb']['referrer']."'");
+				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($_COOKIE['mybb']['referrer'])."'");
 				$ref = $db->fetch_array($query);
 				$referrername = $_COOKIE['mybb']['referrer'];
 			}
 			elseif($referrer)
 			{
-				$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='$referrer[uid]'");
+				$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='".intval($referrer['uid'])."'");
 				$ref = $db->fetch_array($query);
 				$referrername = $ref['username'];
 			}
 			elseif($referrername)
 			{
-				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='$referrername'");
+				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($referrername)."'");
 				$ref = $db->fetch_array($query);
 				if(!$ref['uid'])
 				{
@@ -782,7 +776,7 @@ elseif($mybb->input['action'] == "activate")
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['uid']."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 	}
 	if($mybb->input['code'] && $user['uid'])
@@ -952,7 +946,7 @@ elseif($mybb->input['action'] == "resetpassword")
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['uid']."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 	}
 	if($mybb->input['code'] && $user['uid'])
@@ -1059,7 +1053,7 @@ else if($mybb->input['action'] == "logout")
 				"lastvisit" => $time,
 				);
 			$db->update_query(TABLE_PREFIX."users", $lastvisit, "uid='".$mybb->user['uid']."'");
-			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$mybb->user['uid']."' OR ip='$ipaddress'");
+			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$mybb->user['uid']."' OR ip='".$ipaddress."'");
 	
 			if(function_exists("loggedOut"))
 			{
@@ -1114,7 +1108,7 @@ elseif($mybb->input['action'] == "profile")
 	{
 		if($mybb->input['uid'])
 		{
-			$uid = $mybb->input['uid'];
+			$uid = intval($mybb->input['uid']);
 		}
 		else
 		{
@@ -1451,7 +1445,7 @@ elseif($mybb->input['action'] == "emailuser")
 	}
 	if($mybb->input['uid'])
 	{
-		$query = $db->query("SELECT username, hideemail FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['uid']."'");
+		$query = $db->query("SELECT username, hideemail FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 		$emailto = $db->fetch_array($query);
 		if(!$emailto['username'])
 		{
@@ -1520,7 +1514,7 @@ elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 {
 	$plugins->run_hooks("member_rate_start");
 
-	$query = $db->query("SELECT uid, username, rating FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['uid']."'");
+	$query = $db->query("SELECT uid, username, rating FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 	$member = $db->fetch_array($query);
 	if(!$member['username'])
 	{

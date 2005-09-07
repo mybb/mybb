@@ -122,8 +122,8 @@ if($mybb->input['action'] == "results")
 		$resultcount = $search['limitto'];
 	}
 	$perpage = $mybb->settings['threadsperpage'];
-	$page = $mybb->input['page'];
-	if($page)
+	$page = intval($mybb->input['page']);
+	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
 	}

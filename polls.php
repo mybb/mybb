@@ -222,7 +222,7 @@ if($mybb->input['action'] == "do_newpoll")
 	}
 	if($mybb->input['timeout'] > 0)
 	{
-		$timeout = $mybb->input['timeout'];
+		$timeout = intval($mybb->input['timeout']);
 	}
 	else
 	{
@@ -517,7 +517,7 @@ if($mybb->input['action'] == "do_editpoll")
 	}
 	if($mybb->input['timeout'] > 0)
 	{
-		$timeout = $mybb->input['timeout'];
+		$timeout = intval($mybb->input['timeout']);
 	}
 	else
 	{

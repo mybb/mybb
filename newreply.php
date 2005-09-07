@@ -20,8 +20,8 @@ require "./inc/functions_user.php";
 // Load global language phrases
 $lang->load("newreply");
 
-$pid = $mybb->input['pid'];
-$tid = $mybb->input['tid'];
+$pid = intval($mybb->input['pid']);
+$tid = intval($mybb->input['tid']);
 
 if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $pid) || ($tid && $pid))
 {

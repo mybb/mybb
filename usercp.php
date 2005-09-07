@@ -1076,7 +1076,7 @@ elseif($mybb->input['action'] == "subscriptions")
 	
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
-	if($page)
+	if($page > 0)
 	{
 		$start = ($page-1) *$perpage;
 	}

@@ -224,7 +224,7 @@ if($mybb->input['action'] == "send")
 	}
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
-	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['uid']."'");
+	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 	$to = $user['username'];
 	}
@@ -464,7 +464,7 @@ elseif($mybb->input['action'] == "read")
 
 	$pmid = intval($mybb->input['pmid']);
 
-	$query = $db->query("SELECT pm.*, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE pm.pmid='".$mybb->input['pmid']."' AND pm.uid='".$mybb->user[uid]."'");
+	$query = $db->query("SELECT pm.*, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user[uid]."'");
 	$pm = $db->fetch_array($query);
 	if($pm['folder'] == 3)
 	{
@@ -684,6 +684,7 @@ elseif($mybb->input['action'] == "do_empty")
 		{
 			if($val == "yes")
 			{
+				$key = intval($key);
 				if($emptyq)
 				{
 					$emptyq .= " OR ";
@@ -812,6 +813,7 @@ elseif($mybb->input['action'] == "do_export")
 			reset($mybb->input['exportfolders']);
 			while(list($key, $val) = each($mybb->input['exportfolders']))
 			{
+				$val = addslashes($val);
 				if($val == "all")
 				{
 					$folderlst = "";
