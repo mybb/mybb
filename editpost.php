@@ -21,7 +21,7 @@ require "./inc/functions_upload.php";
 // Load global language phrases
 $lang->load("editpost");
 
-$pid = $mybb->input['pid'];
+$pid = intval($mybb->input['pid']);
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
 $post = $db->fetch_array($query);

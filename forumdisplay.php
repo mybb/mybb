@@ -25,7 +25,7 @@ $lang->load("forumdisplay");
 
 $plugins->run_hooks("forumdisplay_start");
 
-$fid = $mybb->input['fid'];
+$fid = intval($mybb->input['fid']);
 
 if($fid == "index" || $fid == "private" || $fid == "usercp" || $fid == "online" || $fid == "search")
 {

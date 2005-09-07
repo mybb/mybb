@@ -73,11 +73,11 @@ elseif($mybb->input['action'] == "do_joinrequests")
 			if($what == "accept")
 			{
 				join_usergroup($uid, $gid);
-				$uidin[] = $uid;
+				$uidin[] = intval($uid);
 			}
 			elseif($what == "decline")
 			{
-				$uidin[] = $uid;
+				$uidin[] = intval($uid);
 			}
 		}
 	}

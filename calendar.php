@@ -72,7 +72,7 @@ if($mybb->input['action'] == "event")
 {
 	$plugins->run_hooks("calendar_event_start");
 
-	$eid = $mybb->input['eid'];
+	$eid = intval($mybb->input['eid']);
 
 	$query = $db->query("SELECT e.*, u.username, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."events e LEFT JOIN ".TABLE_PREFIX."users u ON (e.author=u.uid) WHERE e.eid='$eid'");
 	$event = $db->fetch_array($query);
@@ -275,7 +275,7 @@ elseif($mybb->input['action'] == "editevent")
 {
 	$plugins->run_hooks("calendar_editevent_start");
 	
-	$eid = $mybb->input['eid'];
+	$eid = intval($mybb->input['eid']);
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."events WHERE eid='$eid'");
 	$event = $db->fetch_array($query);
@@ -317,7 +317,7 @@ elseif($mybb->input['action'] == "editevent")
 }
 elseif($mybb->input['action'] == "do_editevent")
 {
-	$eid = $mybb->input['eid'];
+	$eid = intval($mybb->input['eid']);
 
 	$plugins->run_hooks("calendar_do_editevent_start");
 

@@ -59,7 +59,7 @@ elseif($mybb->input['action'] == "clearpass")
 
 	if($mybb->input['fid'])
 	{
-		mysetcookie("forumpass[".$mybb->input['fid']."]", "");
+		mysetcookie("forumpass[".intval($mybb->input['fid'])."]", "");
 		redirect("index.php", $lang->redirect_forumpasscleared);
 	}
 }
@@ -69,7 +69,7 @@ elseif($mybb->input['action'] == "rules")
 	{
 		$plugins->run_hooks("misc_rules_start");
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$mybb->input['fid']."' AND active!='no'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".intval($mybb->input['fid'])."' AND active!='no'");
 		$forum = $db->fetch_array($query);
 
 		$forumpermissions = forum_permissions($forum['fid']);
