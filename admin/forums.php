@@ -250,11 +250,11 @@ if($mybb->input['action'] == "do_addmod") {
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{
-		$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."moderators WHERE uid='".$user['uid']."' LIMIT 1");
+		$fid = intval($mybb->input['fid']);
+		$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."moderators WHERE uid='".$user['uid']."' AND fid='".$fid."' LIMIT 1");
 		$mod = $db->fetch_array($query);
 		if(!$mod['uid'])
 		{
-			$fid = intval($mybb->input['fid']);
 			$caneditposts = addslashes($mybb->input['caneditposts']);
 			$candeleteposts = addslashes($mybb->input['candeleteposts']);
 			$canviewips = addslashes($mybb->input['canviewips']);
