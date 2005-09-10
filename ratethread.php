@@ -35,6 +35,7 @@ if($forum['allowtratings'] == "no")
 {
 	nopermission();
 }
+$mybb->input['rating'] = intval($mybb->input['rating']);
 if($mybb->input['rating'] < 1 || $mybb->input['rating'] > 5)
 {
 	error($lang->error_invalidrating);
