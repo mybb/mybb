@@ -90,7 +90,7 @@ $templategroups['newreply'] = $lang->group_newreply;
 $templategroups['member'] = $lang->group_member;
 
 if($mybb->input['action'] == "do_add") {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."' AND title='".$mybb->input['title']."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='".intval($mybb->input['setid'])."' AND title='".addslashes($mybb->input['title'])."'");
 	$temp = $db->fetch_array($query);
 	if($temp[tid]) {
 		cperror($lang->name_exists);
@@ -168,14 +168,14 @@ if($mybb->input['action'] == "do_edit")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 	$templateinfo = $db->fetch_array($query);
 
-	if($title == "")
+	if($mybb->input['title'] == "")
 	{
-		$title = $templateinfo['title'];
+		$mybb->input['title'] = $templateinfo['title'];
 	}
 	$updatedtemplate = array(
 		"title" => addslashes($mybb->input['title']),
 		"template" => addslashes($mybb->input['template']),
-		"sid" => $mybb->input['setid']
+		"sid" => intval($mybb->input['setid'])
 		);
 	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
 	if($mybb->input['group'])
