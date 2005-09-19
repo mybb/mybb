@@ -38,7 +38,7 @@ class pluginSystem
 		}
 
 		// Add the hook
-		$this->hooks[$hook][$priority][] = array(
+		$this->hooks[$hook][$priority][$function] = array(
 			"function" => $function,
 			"file" => $file
 			);
@@ -61,7 +61,7 @@ class pluginSystem
 				{
 					if($hook['file'])
 					{
-						require_once $file;
+						require_once $hook['file'];
 					}
 					$oldreturnargs = $returnargs;
 					$returnargs = call_user_func($hook['function'], $arguments);
@@ -77,7 +77,7 @@ class pluginSystem
 
 	function remove_hook($hook, $function, $file="", $priority=10)
 	{
-		//@unset($this->hooks[$hook][$priority][$function]);
+		@unset($this->hooks[$hook][$priority][$function]);
 	}
 }
 ?>
