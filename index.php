@@ -51,12 +51,8 @@ if($mybb->settings['showwol'] != "no")
 				if($user['invisible'] == "yes")
 				{
 					$anoncount++;
-					$membercount++;
 				}
-				else
-				{
-					$membercount++;
-				}
+				$membercount++;
 				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
 				{
 					if($user['invisible'] == "yes")
