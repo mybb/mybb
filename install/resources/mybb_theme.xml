@@ -5783,7 +5783,6 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template name="htmldoctype"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="smilieinsert"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" align="center">
 <tr><td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">

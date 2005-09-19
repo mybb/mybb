@@ -77,7 +77,7 @@ class pluginSystem
 
 	function remove_hook($hook, $function, $file="", $priority=10)
 	{
-		@unset($this->hooks[$hook][$priority][$function]);
+		//@unset($this->hooks[$hook][$priority][$function]);
 	}
 }
 ?>

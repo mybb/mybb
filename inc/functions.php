@@ -102,7 +102,14 @@ function parsepage($contents)
 	global $loadpmpopup, $PHP_SELF;
 
 	$contents = str_replace("<navigation>", buildnav(1), $contents);
-	$contents = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n".$contents;
+	if($lang->settings['doctype'])
+	{
+		$contents = $lang->settings['doctype'].$contents;
+	}
+	else
+	{
+		$contents = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n".$contents;
+	}
 	if($lang->settings['rtl'] == 1)
 	{
 		$contents = str_replace("<html", "<html dir=\"rtl\"", $contents);
