@@ -134,11 +134,7 @@ else
 					$anoncount++;
 					$membercount++;
 				}
-				else
-				{
-					$membercount++;
-				}
-
+				$membercount++;
 			}
 		}
 		elseif(strstr($user['sid'], "bot=") !== false && $session->bots[$botkey])
