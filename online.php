@@ -132,7 +132,6 @@ else
 				if($user['invisible'] == "yes")
 				{
 					$anoncount++;
-					$membercount++;
 				}
 				$membercount++;
 			}
