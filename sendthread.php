@@ -52,7 +52,7 @@ if($mybb->usergroup['cansendemail'] == "no") {
 	nopermission();
 }
 
-if($action == "do_sendtofriend") {
+if($mybb->input['action'] == "do_sendtofriend") {
 	$plugins->run_hooks("sendthread_do_sendtofriend_start");
 	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['sendto'])) {
 		error($lang->error_invalidemail);
