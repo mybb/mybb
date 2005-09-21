@@ -1325,6 +1325,16 @@ if($mybb->input['action'] == "find")
 		$search['username'] = addslashes($search['username']);
 		$conditions .= " AND username LIKE '%$search[username]%'";
 	}
+    if($search['usergroup'])
+    {
+        $search['usergroup'] = intval($search['usergroup']);
+        $conditions .= " AND usergroup = '$search[usergroup]'";
+    }
+    if($search['additionalusergroups'])
+    {
+        $search['additionalusergroups'] = intval($search['additionalusergroups']);
+        $conditions .= " AND CONCAT(',',additionalgroups,',') LIKE '%,".$search['additionalusergroups'].",%'";
+    }
 	if(count($search['additionalgroups']) > 0)
 	{
 		foreach($search['additionalgroups'] as $group)
