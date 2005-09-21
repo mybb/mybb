@@ -2700,7 +2700,7 @@ $buddys[offline]
 ($lang->exported_date)
 
 $pmsdownload]]></template>
-		<template name="postbit_avatar"><![CDATA[<img src="$post[avatar]" border="0" alt="" /><div class="smalltext">$post[fid4]</div>]]></template>
+		<template name="postbit_avatar"><![CDATA[<img src="$post[avatar]" border="0" alt="" />]]></template>
 		<template name="usercp_latestreputations"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <td class="thead" colspan="4"><strong>$lang->latest_reputations_received</strong></td>
