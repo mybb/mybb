@@ -2171,8 +2171,8 @@ $footer
 <tr>
 <td class="trow1">
 <ul>
-<li><a href="admin/index.php?goto=users%2Ephp%3Faction%3Dedit%26uid=$uid">$lang->admin_edit_in_acp</a></li>
-<li><a href="admin/index.php?goto=users%2Ephp%3Faction%3Dmanageban%26auid=$uid">$lang->admin_ban_in_acp</a></li>
+<li><a href="$settings[bburl]/$config[admindir]/index.php?goto=users%2Ephp%3Faction%3Dedit%26uid=$uid">$lang->admin_edit_in_acp</a></li>
+<li><a href="$settings[bburl]/$config[admindir]/index.php?goto=users%2Ephp%3Faction%3Dmanageban%26auid=$uid">$lang->admin_ban_in_acp</a></li>
 </ul>
 </td>
 </tr>
