@@ -1153,7 +1153,7 @@ $footer
 <td align="center" class="trow2">$favorite[views]</td>
 <td class="trow1" nowrap="nowrap">$lastpostdate, $lastposttime<br /><span class="smalltext">$lang->by <a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$favorite[tid]">$lastposter</a></span></td>
 </tr>]]></template>
-		<template name="header_welcomeblock_member_admin"><![CDATA[ &mdash; <a href="$settings[bburl]/admin/index.php">$lang->welcome_admin</a>]]></template>
+		<template name="header_welcomeblock_member_admin"><![CDATA[ &mdash; <a href="$settings[bburl]/$config[admindir]/index.php">$lang->welcome_admin</a>]]></template>
 		<template name="forumdisplay_newthread"><![CDATA[<a href="newthread.php?fid=$fid"><img src="$theme[imglangdir]/newthread.gif" border="0" alt="$lang->post_thread" /></a>]]></template>
 		<template name="showthread_threaded_bitactive"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><strong>$post[subject]</strong> <span class="smalltext">- $lang->by $post[username] - $postdate $posttime</span><br />]]></template>
 		<template name="showthread_threaded_bit"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><a href="showthread.php?tid=$tid&amp;pid=$post[pid]&mode=threaded">$post[subject]</a> <span class="smalltext">- $lang->by $post[username] - $postdate, $posttime</span><br />]]></template>
