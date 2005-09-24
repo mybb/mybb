@@ -2622,7 +2622,7 @@ $modrows
 <td width="50%" class="trow1"><a href="member.php?action=profile&amp;uid=$uid"><strong>$username</strong></a></td>
 <td width="30%" class="trow2"><span class="smalltext">$forumslist</span></td>
 <td width="10%" class="trow2">$emailcode</td>
-<td width="10%" class="trow1"><a href="private.php?action=send&amp;uid=$uid"><img src="$theme[imglangdir]/pm.gif" border="0"></a></td>
+<td width="10%" class="trow1"><a href="private.php?action=send&amp;uid=$uid"><img src="$theme[imglangdir]/postbit_pm.gif" border="0"></a></td>
 </tr>]]></template>
 		<template name="report_noreason"><![CDATA[<html>
 <head>
