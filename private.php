@@ -499,7 +499,7 @@ elseif($mybb->input['action'] == "read")
 	}
 	
 	addnav($pm['subject']);
-	$message = makepostbit($pm, "1");
+	$message = makepostbit($pm, "2");
 	eval("\$read = \"".$templates->get("private_read")."\";");
 	$plugins->run_hooks("private_read_end");
 	outputpage($read);
