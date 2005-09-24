@@ -230,11 +230,11 @@ if($mybb->input['action'] == "do_search")
 if($mybb->input['action'] == "do_search_delete")
 {
 	// delete selected attachments from database
-	if(is_array($check) && !empty($check))
+	if(is_array($mybb->input['check']) && !empty($mybb->input['check']))
 	{
-		foreach($check as $aid)
+		foreach($mybb->input['check'] as $aid)
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='".intval($mybb->input['aid']),"'");
+			$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='".intval($aid)."'");
 		}
 		cpredirect("attachments.php?action=search", $lang->attachs_deleted);
 	}
