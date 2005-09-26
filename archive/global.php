@@ -31,20 +31,19 @@ if(is_dir("install") && !file_exists("install/lock"))
 	echo "Please remove the install directory from your server, or create a file called 'lock' in the install directory. Until you do so, your board will remain unaccessable";
 	exit;
 }
-
-$endpart = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
+if($_SERVER['REDIRECT_URL'] && strpos($_SERVER['REDIRECT_URL'], "/") !== false)
+{
+	$url = $_SERVER['REDIRECT_URL'];
+}
+else
+{
+	$url = $_SERVER['PHP_SELF'];
+}
+$endpart = substr(strrchr($url, "/"), 1);
 $action = "index";
 
 // This seems to work the same as the block below except without the css bugs O_o
 $archiveurl = $mybb->settings['bburl'].'/archive';
-
-/*$archiveurl = str_replace($endpart, "", $_SERVER['PHP_SELF']);
-$archiveurl = str_replace("index.php/", "", $archiveurl);
-$archiveurl = str_replace("index.php", "", $archiveurl);
-if(substr($archiveurl, -1) == "/")
-{
-	$archiveurl = substr($archiveurl, 0, strlen($archiveurl)-1);
-}*/
 
 if($endpart != "index.php")
 {
