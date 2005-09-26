@@ -1005,7 +1005,7 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->time_offset, "timezoneoffset", $user[timezone]);
 	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user[style], $lang->use_default, "", "tid>1");
 	maketextareacode($lang->signature, "signature", $user[signature], 6, 50);
-	if(!$user['regip']) { $user['regip'] = " "; }
+	if(!$user['regip']) { $user['regip'] = "&nbsp;"; }
 	makelabelcode($lang->reg_ip, $user[regip]);
 
 	endtable();

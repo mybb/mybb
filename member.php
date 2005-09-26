@@ -404,7 +404,7 @@ if($mybb->input['action'] == "do_register")
 			"pmpopup" => $pmpopup,
 			"pmnotify" => $emailpmnotify,
 			"invisible" => $invisible,
-			"style" => intval($mybb->input['style']),
+			"style" => '0',
 			"timezone" => addslashes($mybb->input['timezoneoffset']),
 			"dst" => $enabledst,
 			"threadmode" => $threadmode,

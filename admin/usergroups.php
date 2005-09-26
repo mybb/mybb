@@ -612,6 +612,24 @@ function radioAll(formName, value)
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	cpheader();
+
+	$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) GROUP BY gid;");
+	while($groupcount = $db->fetch_array($query))
+	{
+		$primaryusers[$groupcount['gid']] = $groupcount['users'];
+	}
+
+	$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) WHERE g.gid!='' GROUP BY gid;");
+	while($groupcount = $db->fetch_array($query))
+	{
+		$secondaryusers[$groupcount['gid']] = $groupcount['users'];
+	}
+
+	$query = $db->query("SELECT g.gid, COUNT(r.uid) AS users FROM ".TABLE_PREFIX."joinrequests r LEFT JOIN ".TABLE_PREFIX."usergroups ON (g.gid=r.gid) GROUP BY gid;");
+	while($joinrequest = $db->fetch_array($query))
+	{
+		$joinrequests[$joinrequest['gid']] = $joinrequest['users'];
+	}
 ?>
 <script type="text/javascript">
 <!--
@@ -634,7 +652,7 @@ function usergroup_hop(gid)
 	echo "<td class=\"subheader\" align=\"center\">$lang->users</td>\n";
 	echo "<td class=\"subheader\" align=\"center\">$lang->controls</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT g.*, COUNT(u.uid) AS users, COUNT(u2.uid) AS secondaryusers FROM ".TABLE_PREFIX."usergroups g LEFT JOIN ".TABLE_PREFIX."users u ON (u.usergroup=g.gid) LEFT JOIN ".TABLE_PREFIX."users u2 ON (CONCAT(',', u2.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) WHERE g.type='1' GROUP BY g.gid ORDER BY g.title");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups g WHERE g.type='1' ORDER BY g.title");
 	while($usergroup = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
@@ -642,10 +660,10 @@ function usergroup_hop(gid)
 		makehiddencode("gid", $usergroup['gid']);
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\">$usergroup[title]<br><small>$usergroup[description]</td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\">$usergroup[users]";
-		if($usergroup['secondaryusers'])
+		echo "<td class=\"$bgcolor\" align=\"center\">".$primaryusers[$usergroup['gid']];
+		if($secondaryusers[$usergroup['gid']])
 		{
-			echo " ($usergroup[secondaryusers])";
+			echo " (".$secondaryusers[$usergroup['gid']].")";
 		}
 		echo "<td class=\"$bgcolor\" align=\"right\" nowrap=\"nowrap\">\n";
 		echo "<select name=\"usergroup_$usergroup[gid]\" onchange=\"usergroup_hop($usergroup[gid]);\">\n";
@@ -658,7 +676,7 @@ function usergroup_hop(gid)
 	}
 	endtable();
 
-	$query = $db->query("SELECT g.*, COUNT(u.uid) AS users, COUNT(u2.uid) AS secondaryusers FROM ".TABLE_PREFIX."usergroups g LEFT JOIN ".TABLE_PREFIX."users u ON (u.usergroup=g.gid) LEFT JOIN ".TABLE_PREFIX."users u2 ON (CONCAT(',', u2.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) WHERE g.type='2' GROUP BY g.gid ORDER BY g.title");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE type='2'  ORDER BY title");
 	$count = $db->num_rows($query);
 	if($count > 0)
 	{
@@ -676,10 +694,10 @@ function usergroup_hop(gid)
 			makehiddencode("gid", $usergroup['gid']);
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\">$usergroup[title]</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">$usergroup[users]";
-			if($usergroup['secondaryusers'])
+			echo "<td class=\"$bgcolor\" align=\"center\">".$primaryusers[$usergroup['gid']];
+			if($secondaryusers[$usergroup['gid']])
 			{
-				echo " ($usergroup[secondaryusers])";
+				echo " (".$secondaryusers[$usergroup['gid']].")";
 			}
 			echo "</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"right\" nowrap=\"nowrap\">\n";
@@ -696,7 +714,7 @@ function usergroup_hop(gid)
 		endtable();
 	}
 	unset($count);
-	$query = $db->query("SELECT g.*, COUNT(u.uid) AS users, COUNT(u2.uid) AS secondaryusers, COUNT(j.uid) AS joinrequests FROM ".TABLE_PREFIX."usergroups g LEFT JOIN ".TABLE_PREFIX."users u ON (u.usergroup=g.gid) LEFT JOIN ".TABLE_PREFIX."users u2 ON (CONCAT(',', u2.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) LEFT JOIN ".TABLE_PREFIX."joinrequests j ON (j.gid=g.gid) WHERE g.type='3' OR g.type='4' GROUP BY g.gid ORDER BY g.title");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE type='3' OR type='4' ORDER BY title");
 	$count = $db->num_rows($query);
 	if($count > 0)
 	{
@@ -715,15 +733,15 @@ function usergroup_hop(gid)
 			makehiddencode("gid", $usergroup['gid']);
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\">$usergroup[title]</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">$usergroup[users]";
-			if($usergroup['secondaryusers'])
+			echo "<td class=\"$bgcolor\" align=\"center\">".$primaryusers[$usergroup['gid']];
+			if($secondaryusers[$usergroup['gid']])
 			{
-				echo " ($usergroup[secondaryusers])";
+				echo " (".$secondaryusers[$usergroup['gid']].")";
 			}
 			$modrequests = "";
-			if($usergroup['joinrequests'] > 0)
+			if($joinrequests[$usergroup['gid']] > 0)
 			{
-				$usergroup['joinrequests'] = "<span class=\"highlight1\">".$usergroup['joinrequests']."</span>";
+				$usergroup['joinrequests'] = "<span class=\"highlight1\">".$joinrequests[$usergroup['gid']]."</span>";
 				$modrequests = "<option value=\"joinrequests\">$lang->moderate_join_requests</option>";
 			}
 			echo "</td>\n";
