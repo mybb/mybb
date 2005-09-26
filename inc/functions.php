@@ -22,10 +22,9 @@ $mybboard['vercode'] = "100.06";
 function outputpage($contents)
 {
 	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser, $mybbgroup;
-	global $querytime, $debug, $templatecache, $templatelist, $htmldoctype, $maintimer, $globaltime, $parsetime;
+	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 	$ptimer = new timer();
 	$contents = parsepage($contents);
-	//$contents = stripslashes($contents);
 	$parsetime = $ptimer->stop();
 	$totaltime = $maintimer->stop();
 	if($mybbgroup['cancp'] == "yes")
@@ -98,13 +97,13 @@ function run_shutdown()
 //
 function parsepage($contents)
 {
-	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup;
+	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup, $htmldoctype;
 	global $loadpmpopup, $PHP_SELF;
 
 	$contents = str_replace("<navigation>", buildnav(1), $contents);
-	if($lang->settings['doctype'])
+	if($htmldoctype)
 	{
-		$contents = $lang->settings['doctype'].$contents;
+		$contents = $htmldoctype.$contents;
 	}
 	else
 	{
