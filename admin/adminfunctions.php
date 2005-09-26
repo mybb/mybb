@@ -53,14 +53,16 @@ function cpheader($title="", $donav=1, $onload="")
 	{
 		$title = $lang->admin_center;
 	}
+	$htmltag = "<html>\n";
 	if($lang->settings['rtl'] == 1)
 	{
-		echo "<html dir=\"rtl\">\n";
+		$htmltag = str_replace("<html", "<html dir=\"rtl\"", $htmltag);
 	}
-	else
+	if($lang->settings['htmllang'])
 	{
-		echo "<html>\n";
+		$htmltag = str_replace("<html", "<html lang=\"".$lang->settings['htmllang']."\"", $htmltag);
 	}
+	echo $htmltag;
 	echo "<head>\n";
 	echo "<title>$title</title>\n";
 	echo "<link rel=\"stylesheet\" href=\"$style\">\n";
