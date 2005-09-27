@@ -142,7 +142,7 @@ if($mybb->settings['portal_showstats'] != "no")
 	$membersnum = $stats['numusers'];
 	if(!$stats['lastusername'])
 	{
-		$newestmember = "<b>no-one</b>";
+		$newestmember = "<b>" . $lang->no_one . "</b>";
 	}
 	else
 	{

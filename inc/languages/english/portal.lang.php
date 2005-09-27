@@ -36,4 +36,5 @@ $l['view_todays'] = "View Today's Posts";
 $l['online'] = "Online Users";
 $l['online_users'] = "There are currently <b>{1}</b> online users.";
 $l['online_counts'] = "<b>{1}</b> Member(s) | <b>{2}</b> Guest(s)";
+$l['no_one'] = "no-one";
 ?>
