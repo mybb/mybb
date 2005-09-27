@@ -8,7 +8,7 @@
  *
  * $Id$
  */
- define("KILL_GLOBALS", 1);
+define("KILL_GLOBALS", 1);
 
 $templatelist = "sendthread,sendthread_guest,email_sendtofriend";
 require "./global.php";
@@ -22,7 +22,8 @@ $tid = intval($mybb->input['tid']);
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 $thread = $db->fetch_array($query);
 $thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
-if(!$thread['tid']) {
+if(!$thread['tid'])
+{
 	error($lang->error_invalidthread);
 }
 $fid = $thread['fid'];
@@ -38,45 +39,63 @@ $forum = $db->fetch_array($query);
 
 $forumpermissions = forum_permissions($forum['fid']);
 
-if($forum['type'] != "f") {
+if($forum['type'] != "f")
+{
 	error($lang->error_invalidforum);
 }
-if($forumpermissions['canview'] != "yes") {
+if($forumpermissions['canview'] != "yes")
+{
 	nopermission();
 }
 
 // Password protected forums
 checkpwforum($forum['fid'], $forum['password']);
 
-if($mybb->usergroup['cansendemail'] == "no") {
+if($mybb->usergroup['cansendemail'] == "no")
+{
 	nopermission();
 }
 
-if($mybb->input['action'] == "do_sendtofriend") {
+if($mybb->input['action'] == "do_sendtofriend")
+{
 	$plugins->run_hooks("sendthread_do_sendtofriend_start");
-	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['sendto'])) {
+	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['sendto']))
+	{
 		error($lang->error_invalidemail);
-	} elseif(!$mybb->input['subject'] || !$mybb->input['message']) {
+	}
+	elseif(!$mybb->input['subject'] || !$mybb->input['message'])
+	{
 		error($lang->error_incompletefields);
-	} elseif(!strstr($mybb->input['message'], "$settings[bburl]/showthread.php?tid=$tid")) {
+	}
+	elseif(!strstr($mybb->input['message'], "$settings[bburl]/showthread.php?tid=$tid"))
+	{
 		error($lang->error_nothreadurl);
 	}
-	if($mybb->user['uid'] == 0) {
-		if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['fromemail'])) {
+	if($mybb->user['uid'] == 0)
+	{
+		if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['fromemail']))
+		{
 			error($lang->error_invalidemail);
-		} elseif(!$mybb->input['fromname']) {
+		}
+		elseif(!$mybb->input['fromname'])
+		{
 			error($lang->error_incompletefields);
 		}
 		$from = $mybb->input['fromname'] . " <" . $mybb->input['fromemail'] . ">";
-	} else {
+	}
+	else
+	{
 		$from = $mybb->user['username'] . " <" . $mybb->user['email'] . ">";
 	}
-	mymail($mybb->input['sendto'], $mybb->input['subject'], $mybb->input['message'], $mybb->input['from']);
+	mymail($mybb->input['sendto'], $mybb->input['subject'], $mybb->input['message'], $from);
 	$plugins->run_hooks("sendthread_do_sendtofriend_end");
 	redirect("showthread.php?tid=$tid", $lang->redirect_emailsent);
-} else {
+}
+else
+{
 	$plugins->run_hooks("sendthread_start");
-	if($mybb->user['uid'] == 0) {
+	if($mybb->user['uid'] == 0)
+	{
 		eval("\$guestfields = \"".$templates->get("sendthread_guest")."\";");
 	}
 	$message = sprintf($lang->email_sendtofriend, $mybb->settings['bbname'], $mybb->settings['bburl'], $tid);
