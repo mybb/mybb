@@ -292,7 +292,7 @@ if($mybb->input['action'] == "thread") {
 	{
 		$rating = "";
 	}
-	if($forum['allowtratings'] != "no") {
+	if($forum['allowtratings'] != "no" || $forumpermissions['canratethreads'] != "no") {
 		eval("\$ratethread = \"".$templates->get("showthread_ratethread")."\";");
 	}
 	// Work out if we're showing both approved and unapproved threads or just approved..
