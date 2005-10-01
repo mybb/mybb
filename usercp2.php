@@ -50,7 +50,7 @@ elseif($mybb->input['action'] == "removefavorite")
 	{
 		error($lang->error_invalidthread);
 	}
-	delete_favorite_thread($thread['tid']);
+	remove_favorite_thread($thread['tid']);
 	if($_SERVER['HTTP_REFERER'])
 	{
 		$url = $_SERVER['HTTP_REFERER'];
