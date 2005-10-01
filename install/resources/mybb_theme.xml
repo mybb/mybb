@@ -1467,8 +1467,8 @@ $avatar
 <td class="trow2" width="50%">$mybbuser[postnum] $lang->posts_day</td>
 </tr>
 <tr>
-<td class="trow2" width="50%"><strong>$lang->email</strong></td>
-<td class="trow2" width="50%">$mybbuser[email]</td>
+<td class="trow1" width="50%"><strong>$lang->email</strong></td>
+<td class="trow1" width="50%">$mybbuser[email]</td>
 </tr>
 </table>
 $reputations
@@ -1478,7 +1478,7 @@ $reputations
 $footer
 </body>
 </html>]]></template>
-		<template name="usercp_currentavatar"><![CDATA[<td class="trow1" rowspan="4" valign="middle" align="center" width="1"><img src="$mybbuser[avatar]" alt="$mybbuser[username]" /></td>]]></template>
+		<template name="usercp_currentavatar"><![CDATA[<td class="trow1" rowspan="5" valign="middle" align="center" width="1"><img src="$mybbuser[avatar]" alt="$mybbuser[username]" /></td>]]></template>
 		<template name="footer"><![CDATA[			<br />
 			<div class="bottommenu"><span class="smalltext"><a href="$settings[contactlink]">$lang->bottomlinks_contactus</a> | <a href="$settings[homeurl]">$settings[homename]</a> | <a href="#top">$lang->bottomlinks_returntop</a> | <a href="#content">$lang->bottomlinks_returncontent</a> | <a href="archive/index.php">$lang->bottomlinks_litemode</a> | <a href="$settings[bburl]/misc.php?action=syndication">$lang->bottomlinks_syndication</a></span>
 			</div>
