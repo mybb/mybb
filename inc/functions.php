@@ -322,6 +322,7 @@ function redirect($url, $message="You will now be redirected", $title="")
 	else
 	{
 		$url = str_replace("#", "&#", $url);
+		$url = str_replace("&amp;", "&", $url);
 		header("Location: $url");
 	}
 	exit;
