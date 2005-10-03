@@ -625,7 +625,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		$secondaryusers[$groupcount['gid']] = $groupcount['users'];
 	}
 
-	$query = $db->query("SELECT g.gid, COUNT(r.uid) AS users FROM ".TABLE_PREFIX."joinrequests r LEFT JOIN ".TABLE_PREFIX."usergroups ON (g.gid=r.gid) GROUP BY gid;");
+	$query = $db->query("SELECT g.gid, COUNT(r.uid) AS users FROM ".TABLE_PREFIX."joinrequests r LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=r.gid) GROUP BY gid;");
 	while($joinrequest = $db->fetch_array($query))
 	{
 		$joinrequests[$joinrequest['gid']] = $joinrequest['users'];
