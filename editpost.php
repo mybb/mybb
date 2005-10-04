@@ -146,7 +146,7 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 	}
 }
 if($mybb->input['removeattachment']) { // Lets remove the attachmen
-	remove_attachment($pid, $posthash, $mybb->input['removeattachment']);
+	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['removeattachment']);
 	if(!$mybb->input['submit']) {
 		$mybb->input['action'] = "editpost";
 	}
@@ -358,8 +358,12 @@ elseif($mybb->input['action'] == "do_editpost")
 	    mt_srand ((double) microtime() * 1000000);
 	    $posthash = md5($post['pid'].$mybb->user['uid'].mt_rand());
 	}
+	else
+	{
+		$posthash = addslashes($mybb->input['posthash']);
+	}
 
-
+	$bgcolor = "trow2";
 	if($forumpermissions['canpostattachments'] != "no") { // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE posthash='$posthash' OR pid='$pid'");

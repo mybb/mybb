@@ -127,9 +127,9 @@ if($mybb->input['action'] == "do_download")
 	else
 	{
 		$css = unserialize($theme['cssbits']);
-		foreach($themebits as $name => $valie)
+		foreach($themebits as $name => $value)
 		{
-			if($inheritedbits[$name] && $inheritedbits[$name] != $mybb->input['tid'] && $mybb->input['tid'] != 1)
+			if($inheritedbits[$name] && $inheritedbits[$name] != $mybb->input['tid'] && $inheritedbits[$name] != 1 && $mybb->input['tid'] != 1)
 			{
 				unset($themebits[$name]);
 			}

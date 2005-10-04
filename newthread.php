@@ -591,7 +591,7 @@ if($mybb->input['action'] == "do_newthread")
 	if($savedraft != 1)
 	{
 		$excerpt = substr($mybb->input['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u WHERE fs.fid='$fid' AND u.uid=fs.uid AND fs.uid!='".$mybb->user[uid]."' AND u.lastactive>'".time()."'");
+		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u WHERE fs.fid='$fid' AND u.uid=fs.uid AND fs.uid!='".$mybb->user[uid]."' AND u.lastactive>'".$forum['lastpost']."'");
 		while($subscribedmember = $db->fetch_array($query))
 		{
 			if($subscribedmember['language'] != "" && $lang->languageExists($subscribedmember['language']))
@@ -609,8 +609,8 @@ if($mybb->input['action'] == "do_newthread")
 
 			if($uselang == $mybb->settings['bblanguage'])
 			{
-				$emailsubject = $lang->emailsubject_forum_subscription;
-				$emailmessage = $lang->email_forum_subscription;
+				$emailsubject = $lang->emailsubject_forumsubscription;
+				$emailmessage = $lang->email_forumsubscription;
 			}
 			else
 			{
