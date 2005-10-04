@@ -614,18 +614,18 @@ if($mybb->input['action'] == "do_newthread")
 			}
 			else
 			{
-				if(!isset($langcache[$uselang]['emailsubject_subscription']))
+				if(!isset($langcache[$uselang]['emailsubject_forumsubscription']))
 				{
 					$userlang = new MyLanguage;
 					$userlang->setPath("./inc/languages");
 					$userlang->setLanguage($uselang);
 					$userlang->load("messages");
-					$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_forum_subscription;
-					$langcache[$uselang]['email_subscription'] = $userlang->email_forum_subscription;
+					$langcache[$uselang]['emailsubject_forumsubscription'] = $userlang->emailsubject_forumsubscription;
+					$langcache[$uselang]['email_forumsubscription'] = $userlang->email_forumsubscription;
 					unset($userlang);
 				}
-				$emailsubject = $langcache[$uselang]['emailsubject_forum_subscription'];
-				$emailmessage = $langcache[$uselang]['email_forum_subscription'];
+				$emailsubject = $langcache[$uselang]['emailsubject_forumsubscription'];
+				$emailmessage = $langcache[$uselang]['email_forumsubscription'];
 
 			}
 			$emailsubject = sprintf($emailsubject, $forum['name']);
