@@ -1390,6 +1390,7 @@ $footer
 <td class="$bgcolor" valign="top" align="right" nowrap="nowrap">$lastpost</td>
 </tr>]]></template>
 		<template name="forumbit_depth3"><![CDATA[$comma<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a>]]></template>
+		<template name="forumbit_subforums"><![CDATA[<br />$lang->subforums $forums]]></template>
 		<template name="private_empty"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->empty_folders</title>

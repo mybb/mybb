@@ -11,7 +11,7 @@
 
 define("KILL_GLOBALS", 1);
 
-$templatelist = "index,index_whosonline,index_welcomemembertext,index_welcomeguest,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,index_modcolumn,forumbit_moderators,index_welcomeguesttext"; 
+$templatelist = "index,index_whosonline,index_welcomemembertext,index_welcomeguest,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,index_modcolumn,forumbit_moderators,forumbit_subforums,index_welcomeguesttext"; 
 $templatelist .= ",index_birthdays_birthday,index_birthdays,index_pms,index_loginform,index_logoutlink,index_stats,forumbit_depth3";
 
 require "./global.php";
@@ -378,7 +378,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$forums = getforums($forum['fid'], $newdepth, $perms);
 						if($depth == 2 && $forums)
 						{
-							$subforums = "<br />".$lang->subforums." ".$forums;
+							eval("\$subforums = \"".$templates->get("forumbit_subforums")."\";");
 						}
 					}
 					eval("\$forumlisting .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
