@@ -1421,6 +1421,7 @@ switch($mybb->input['action'])
 				updateforumcount($fid);
 			}
 		}
+		updatethreadcount($tid);
 		logmod($modlogdata, $lang->multi_approve_posts);
 		clearinline($tid, "thread");
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsapproved);
@@ -1454,6 +1455,7 @@ switch($mybb->input['action'])
 				updateforumcount($fid);
 			}
 		}
+		updatethreadcount($tid);
 		logmod($modlogdata, $lang->multi_unapprove_posts);
 		clearinline($tid, "thread");
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsunapproved);
@@ -1544,6 +1546,7 @@ switch($mybb->input['action'])
 		outputpage($reportedposts);
 		break;
 	default:
+		error($lang->invalidaction);
 		break;
 }
 

@@ -71,4 +71,8 @@ if($mybb->input['action'] == "regimage")
 		header("Location: images/clear.gif");
 	}
 }
+else
+{
+	error($lang->invalidaction);
+}
 ?>

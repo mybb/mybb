@@ -206,6 +206,7 @@ $l['error_invalidpoll'] = "The specified poll is invalid or does not exist.";
 $l['error_pollclosed'] = "You cannot vote in a poll that has been closed.";
 $l['error_nopolloptions'] = "The specified poll option is invalid or does not exist.";
 $l['error_alreadyvoted'] = "You have already voted in this poll.";
+$l['error_invalidaction'] = "Invalid action";
 
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";

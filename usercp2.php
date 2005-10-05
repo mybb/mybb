@@ -61,7 +61,7 @@ elseif($mybb->input['action'] == "removefavorite")
 	}
 	redirect($url, $lang->redirect_favoriteremoved);
 }
-if($mybb->input['action'] == "addsubscription")
+elseif($mybb->input['action'] == "addsubscription")
 {
 	if($mybb->input['type'] == "forum")
 	{
@@ -194,5 +194,9 @@ elseif($mybb->input['action'] == "removefavorites")
 		$url = "usercp.php?action=favorites";
 	}
 	redirect($url, $lang->redirect_favoritesremoved);
+}
+else
+{
+	error($lang->invalidaction);
 }
 ?>
