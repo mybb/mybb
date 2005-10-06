@@ -994,7 +994,7 @@ function updateforumcount($fid) {
 function updatethreadcount($tid)
 {
 	global $db, $cache;
-	$query = $db->query("SELECT COUNT(*) AS replies FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
+	$query = $db->query("SELECT COUNT(*) AS replies FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND visible='1'");
 	$replies = $db->fetch_array($query);
 	$treplies = $replies['replies'] - 1;
 	if($treplies < 0)

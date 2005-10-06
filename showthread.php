@@ -53,7 +53,7 @@ makeforumnav($fid);
 addnav($thread['subject'], "showthread.php?tid=$tid");
 
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread[fid]."' AND active!='no'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."' AND active!='no'");
 $forum = $db->fetch_array($query);
 
 $forumpermissions = forum_permissions($forum['fid']);
@@ -355,6 +355,13 @@ if($mybb->input['action'] == "thread") {
 			} else {
 				$page = intval($result / $perpage) + 1;
 			}
+		}
+		// Recount replies if user is a moderator to take into account unapproved posts.
+		if($ismod)
+		{
+			$query = $db->query("SELECT COUNT(*) AS replies FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
+			$qarray = $db->fetch_array($query);
+			$thread['replies'] = $qarray['replies'] - 1;
 		}
 		$postcount = intval($thread['replies'])+1;
 		$pages = $postcount / $perpage;

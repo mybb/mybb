@@ -293,6 +293,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$stickycheck = "";
 		}
 		unset($modoptions);
+		$bgcolor = "trow2";
 		eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
 		$bgcolor = "trow1";
 	}
