@@ -197,6 +197,6 @@ elseif($mybb->input['action'] == "removefavorites")
 }
 else
 {
-	error($lang->invalidaction);
+	error($lang->error_invalidaction);
 }
 ?>

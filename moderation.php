@@ -1546,7 +1546,7 @@ switch($mybb->input['action'])
 		outputpage($reportedposts);
 		break;
 	default:
-		error($lang->invalidaction);
+		error($lang->error_invalidaction);
 		break;
 }
 

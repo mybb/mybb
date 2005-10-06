@@ -73,6 +73,6 @@ if($mybb->input['action'] == "regimage")
 }
 else
 {
-	error($lang->invalidaction);
+	error($lang->error_invalidaction);
 }
 ?>
