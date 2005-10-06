@@ -477,7 +477,7 @@ elseif($mybb->input['action'] == "getdaily")
 		"ipaddress" => $ipaddress,
 		"wheresql" => addslashes($wheresql),
 		"lookin" => "p.message",
-		"showposts" => 2
+		"showposts" => 1
 		);
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$plugins->run_hooks("search_do_search_process");
