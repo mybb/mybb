@@ -536,7 +536,7 @@ if($mybb->input['action'] == "do_email")
 		$bgcolor = getaltbg();
 		echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\">\n";
 //		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT $searchop[start], $searchop[perpage]");	
-	@set_time_limit(0);
+		@set_time_limit(0);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid");		
 		while($user = $db->fetch_array($query))
 		{
@@ -682,7 +682,7 @@ if($mybb->input['action'] == "add")
 	startform("users.php", "", "do_add", 0);
 	tableheader($lang->add_user);
 	tablesubheader($lang->required_info);
-	makeinputcode($lang->username, "userusername", "", 25, "", 25, 0);
+	makeinputcode($lang->username, "userusername", "", 25, "", 40, 0);
 	makepasswordcode($lang->password, "newpassword", "", 25, 0);
 	makeinputcode($lang->email, "email");
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", 2);
@@ -845,7 +845,7 @@ if($mybb->input['action'] == "edit")
 	makehiddencode("uid", $uid);
 	tableheader($lang->modify_user);
 	tablesubheader($lang->required_info);
-	makeinputcode($lang->username, "userusername", $user['username'], 25, "", 25, 0);
+	makeinputcode($lang->username, "userusername", $user['username'], 25, "", 40, 0);
 	makepasswordcode($lang->new_password, "newpassword", "", 25, 0);
 	makeinputcode($lang->email, "email", $user['email']);
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", $user['usergroup']);

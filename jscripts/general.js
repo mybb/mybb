@@ -47,8 +47,16 @@ function unsetcookie(name) {
 }
 
 function popupWin(url, window_name, window_width, window_height) {
-	settings= "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width="+window_width+",height="+window_height; 
-	NewWindow=window.open(url,window_name,settings);
+	settings= "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes"; 
+	if(window_width)
+	{
+		settings = settings+",width="+window_width+;
+	}
+	if(window_height)
+	{
+		settings = settings+",height="+window_height;
+	}
+	window.open(url,window_name,settings);
 }
 
 function newPM() {

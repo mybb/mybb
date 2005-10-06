@@ -255,6 +255,10 @@ function doInsert(myCode, myClose, singleTag, ignoreSel) {
 	if(ignoreSel != true) {
 		ignoreSel = false;
 	}
+	if(!myClose)
+	{
+		myClose = "";
+	}
 	var messageBox = document.input.message;
 	if(is_ie && is_win && (agt_ver >= 4)) {
 		setFocus(messageBox);
@@ -264,7 +268,7 @@ function doInsert(myCode, myClose, singleTag, ignoreSel) {
 			range.collapse;
 		}
 		if(((seltext.type == "Text" || seltext.type == "None") && range != null) && ignoreSel != true) {
-			if(myClose && range.text.length > 0) {
+			if(myClose != "" && range.text.length > 0) {
 				myCode = myCode+range.text+myClose;
 			} else {
 				if(singleTag) {
@@ -285,13 +289,14 @@ function doInsert(myCode, myClose, singleTag, ignoreSel) {
 		var start = (messageBox.value).substring(0, select_start);
 		var middle = (messageBox.value).substring(select_start, select_end);
 		var end = (messageBox.value).substring(select_end, messageBox.textLength);
-		if((messageBox.selectionEnd - messageBox.selectionStart > 0) && ignoreSel != true) {
+		if((messageBox.selectionEnd - messageBox.selectionStart > 0) && ignoreSel != true && myClose != "") {
 			middle = myCode+middle+myClose;
 		} else {
 			if(singleTag) {
 				isClosed = false;
 			}
-			middle = myCode+middle;
+			//middle = myCode+middle;
+			middle = myCode;
 		}
 		messageBox.value = start+middle+end;
 	}
