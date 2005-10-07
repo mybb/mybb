@@ -148,10 +148,10 @@ if($mybb->input['action'] == "export")
 			{
 				$xml .= "\t\t<setting name=\"".$setting['name']."\">\n";
 				$xml .= "\t\t\t<title>".$setting['title']."</title>\n";
-				$xml .= "\t\t\t<description>".$setting['description']."</description>\n";
+				$xml .= "\t\t\t<description><![CDATA[".$setting['description']."]]></description>\n";
 				$xml .= "\t\t\t<disporder>".$setting['disporder']."</disporder>\n";
 				$xml .= "\t\t\t<optionscode>".$setting['optionscode']."</optionscode>\n";
-				$xml .= "\t\t\t<value>".$setting['value']."</value>";
+				$xml .= "\t\t\t<value><![CDATA[".$setting['value']."]]</value>\n";
 				$xml .= "\t\t\t<helpkey>".$setting['helpkey']."</helpkey>\n";
 				$xml .= "\t\t</setting>\n";
 			}
