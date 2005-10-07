@@ -682,7 +682,7 @@ if($mybb->input['action'] == "add")
 	startform("users.php", "", "do_add", 0);
 	tableheader($lang->add_user);
 	tablesubheader($lang->required_info);
-	makeinputcode($lang->username, "userusername", "", 25, "", 40, 0);
+	makeinputcode($lang->username, "userusername", "", 25, "", $mybb->settings['maxnamelength'], 0);
 	makepasswordcode($lang->password, "newpassword", "", 25, 0);
 	makeinputcode($lang->email, "email");
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", 2);
@@ -845,7 +845,7 @@ if($mybb->input['action'] == "edit")
 	makehiddencode("uid", $uid);
 	tableheader($lang->modify_user);
 	tablesubheader($lang->required_info);
-	makeinputcode($lang->username, "userusername", $user['username'], 25, "", 40, 0);
+	makeinputcode($lang->username, "userusername", $user['username'], 25, "", $mybb->settings['maxnamelength'], 0);
 	makepasswordcode($lang->new_password, "newpassword", "", 25, 0);
 	makeinputcode($lang->email, "email", $user['email']);
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", $user['usergroup']);
@@ -898,9 +898,9 @@ if($mybb->input['action'] == "edit")
 					}
 					$select .= "<option value=\"$val\" $sel>$val</option>\n";
 				}
-				if(!$profilefield[length])
+				if(!$profilefield['length'])
 				{
-					$profilefield[length] = 3;
+					$profilefield['length'] = 3;
 				}
 				$code = "<select name=\"".$field."[]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
 			}
@@ -923,9 +923,9 @@ if($mybb->input['action'] == "edit")
 					}
 					$select .= "<option value=\"$val\" $sel>$val</option>";
 				}
-				if(!$profilefield[length])
+				if(!$profilefield['length'])
 				{
-					$profilefield[length] = 1;
+					$profilefield['length'] = 1;
 				}
 				$code = "<select name=\"$field\" size=\"$profilefield[length]\">$select</select>";
 			}

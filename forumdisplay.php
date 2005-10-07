@@ -596,6 +596,13 @@ if($threadcache)
 		} else {
 			$rating = "";
 		}
+		// Recount replies if user is a moderator to take into account unapproved posts.
+		if($ismod)
+		{
+			$query = $db->query("SELECT COUNT(*) AS replies FROM ".TABLE_PREFIX."posts WHERE tid='$thread[tid]'");
+			$qarray = $db->fetch_array($query);
+			$thread['replies'] = $qarray['replies'] - 1;
+		}
 		$thread['pages'] = 0;
 		$thread['multipage'] = "";
 		$threadpages = "";

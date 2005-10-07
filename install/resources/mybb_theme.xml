@@ -3782,7 +3782,7 @@ $header
 </tr>
 <tr>
 <td class="trow1"><strong>$lang->username</strong></td>
-<td class="trow1"><input type="text" name="username" size="25" maxlength="25"></td>
+<td class="trow1"><input type="text" name="username" size="25" maxlength="$settings[maxnamelength]"></td>
 </tr>
 <tr>
 <td class="trow2"><strong>$lang->password</strong><br /><span class="smalltext">$lang->pw_note</span></td>
