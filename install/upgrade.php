@@ -21,7 +21,7 @@ require "../inc/functions.php";
 require "../admin/adminfunctions.php";
 require "../inc/class_xml.php";
 require "../inc/config.php";
-require "../inc/db_$config[dbtype].php";
+require "../inc/db_".$config['dbtype'].".php";
 
 // Include the necessary contants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
