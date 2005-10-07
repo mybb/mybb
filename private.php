@@ -294,8 +294,8 @@ elseif($mybb->input['action'] == "do_send")
 			break;
 		}
 	}
-	$lang->error_recipientpmturnedoff = sprintf($lang->error_recipientpmturnedoff, $to);
-	$lang->error_recipientignoring = sprintf($lang->error_recipientignoring, $to);
+	$lang->error_recipientpmturnedoff = sprintf($lang->error_recipientpmturnedoff, $mybb->input['to']);
+	$lang->error_recipientignoring = sprintf($lang->error_recipientignoring, $mybb->input['to']);
 	if($nosend)
 	{
 		error($lang->error_recipientignoring);

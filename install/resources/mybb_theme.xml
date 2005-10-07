@@ -2330,7 +2330,7 @@ $users
 </tr>
 <tr>
 <td class="trow1">$lang->username</td>
-<td class="trow1"><input type="text" name="username" size="40" maxlength="85" /></td>
+<td class="trow1"><input type="text" name="username" size="40" maxlength="$settings[maxnamelength]" /></td>
 </tr>
 </table>
 <br />
@@ -2412,7 +2412,7 @@ $preview
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>$lang->compose_to</strong></td>
-<td class="trow1"><input type="text" name="to" size="40" maxlength="85" value="$to" tabindex="1" />$buddyselect</td>
+<td class="trow1"><input type="text" name="to" size="40" maxlength="$settings[maxnamelength]" value="$to" tabindex="1" />$buddyselect</td>
 </tr>
 <tr>
 <td class="trow2"><strong>$lang->compose_subject</strong></td>
@@ -3518,7 +3518,7 @@ $header
 </td>
 <td class="trow1">
 <table><tr>
-<td class="trow1"><input type="text" name="author" size="35" maxlength="250"><br /><span class="smalltext"><input type="checkbox" name="matchusername" value="1" checked>&nbsp; $lang->match_username</span></td>
+<td class="trow1"><input type="text" name="author" size="35" maxlength="$settings[maxnamelength]"><br /><span class="smalltext"><input type="checkbox" name="matchusername" value="1" checked>&nbsp; $lang->match_username</span></td>
 <td class="trow1">&nbsp;</td>
 </tr></table>
 </td>
@@ -5255,7 +5255,7 @@ $usercpnav
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>$lang->new_username</strong></td>
-<td class="trow2" width="60%"><input type="text" name="username" size="25" maxlength="15" value="$mybbuser[username]"></td>
+<td class="trow2" width="60%"><input type="text" name="username" size="25" maxlength="$settings[maxnamelength]" value="$mybbuser[username]"></td>
 </tr>
 </table>
 </td></tr></table>
