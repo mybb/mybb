@@ -94,14 +94,6 @@ else
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
 		$output->print_header("MyBB Upgrade Script");
-
-		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."upgrade_data");
-		$db->query("CREATE TABLE ".TABLE_PREFIX."update_data
-			title varchar(30) NOT NULL,
-			contents text NOT NULL,
-			PRIMARY KEY(title)
-				);");
-
 		$dh = opendir("./resources");
 		while(($file = readdir($dh)) !== false)
 		{
@@ -136,7 +128,6 @@ else
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
-		add_upgrade_store("startscript", $mybb->input['from']);
 		$runfunction = next_function($mybb->input['from']);
 	}
 	elseif($mybb->input['action'] == "templates")
@@ -350,7 +341,6 @@ function next_function($from, $func="dbchanges")
 	require_once "./resources/upgrade".$from.".php";
 	if(function_exists("upgrade".$from."_".$func))
 	{
-		add_upgrade_store("currentscript", "upgrade".$from.".php");
 		$function = "upgrade".$from."_".$func;
 	}
 	else
@@ -368,17 +358,4 @@ function next_function($from, $func="dbchanges")
 	}
 	return $function;
 }
-
-function get_upgrade_store($title)
-{
-	global $db;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."upgrade_data WHERE title='".addslashes($title)."'");
-	$data = $db->fetch_array($query);
-	return unserialize($data['contents']);
-}
-
-function add_upgrade_store($title, $contents)
-{
-	global $db;
-	$db->query("REPLACE INTO ".TABLE_PREFIX."upgrade_data (title,contents) VALUES ('".addslashes($title)."', '".addslashes(serialize($contents))."')");
 ?>
