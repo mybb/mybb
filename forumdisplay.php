@@ -596,6 +596,13 @@ if($threadcache)
 		} else {
 			$rating = "";
 		}
+		/* Woah, way too many queries here!
+
+		   If we're going to do something like this then we would require another column, using one for visible reply count,
+		   and one for invisible replies/posts.
+
+		   Otherwise, it stays as a limitation
+		 
 		// Recount replies if user is a moderator to take into account unapproved posts.
 		if($ismod)
 		{
@@ -603,6 +610,9 @@ if($threadcache)
 			$qarray = $db->fetch_array($query);
 			$thread['replies'] = $qarray['replies'] - 1;
 		}
+
+		*/
+
 		$thread['pages'] = 0;
 		$thread['multipage'] = "";
 		$threadpages = "";
