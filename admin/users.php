@@ -687,7 +687,7 @@ if($mybb->input['action'] == "add")
 	makeinputcode($lang->email, "email");
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", 2);
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
-	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", 2);
+	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", 2, "--".$lang->primary_usergroup."--");
 
 	tablesubheader($lang->optional_info);
 	makeinputcode($lang->custom_title, "usertitle");
@@ -850,7 +850,11 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->email, "email", $user['email']);
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", $user['usergroup']);
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
-	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", $user['displaygroup']);
+	if(!$user['displaygroup'])
+	{
+		$user['displaygroup'] = -1;
+	}
+	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", $user['displaygroup'], "--".$lang->primary_usergroup."--");
 	makeinputcode($lang->post_count, "postnum", $user['postnum'], 4);
 
 	tablesubheader($lang->optional_info);
@@ -995,18 +999,22 @@ if($mybb->input['action'] == "edit")
 
 
 	tablesubheader($lang->account_prefs);
-	makeyesnocode($lang->invisible_mode, "invisible", $user[invisible]);
-	makeyesnocode($lang->admin_emails, "allownotices", $user[allownotices]);
-	makeyesnocode($lang->hide_email, "hideemail", $user[hideemail]);
-	makeyesnocode($lang->email_notify, "emailnotify", $user[emailnotify]);
-	makeyesnocode($lang->enable_pms, "receivepms", $user[receivepms]);
-	makeyesnocode($lang->pm_popup, "pmpopup", $user[pmpopup]);
+	makeyesnocode($lang->invisible_mode, "invisible", $user['invisible']);
+	makeyesnocode($lang->admin_emails, "allownotices", $user['allownotices']);
+	makeyesnocode($lang->hide_email, "hideemail", $user['hideemail']);
+	makeyesnocode($lang->email_notify, "emailnotify", $user['emailnotify']);
+	makeyesnocode($lang->enable_pms, "receivepms", $user['receivepms']);
+	makeyesnocode($lang->pm_popup, "pmpopup", $user['pmpopup']);
 	makeyesnocode($lang->pm_notify, "pmnotify", $user['pmnotify']);
-	makeinputcode($lang->time_offset, "timezoneoffset", $user[timezone]);
-	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user[style], $lang->use_default, "", "tid>1");
-	maketextareacode($lang->signature, "signature", $user[signature], 6, 50);
+	makeinputcode($lang->time_offset, "timezoneoffset", $user['timezone']);
+	if(!$user['style'])
+	{
+		$user['style'] = -1;
+	}
+	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user['style'], $lang->use_default, "", "tid>1");
+	maketextareacode($lang->signature, "signature", $user['signature'], 6, 50);
 	if(!$user['regip']) { $user['regip'] = "&nbsp;"; }
-	makelabelcode($lang->reg_ip, $user[regip]);
+	makelabelcode($lang->reg_ip, $user['regip']);
 
 	endtable();
 	endform($lang->update_user, $lang->reset_button);
