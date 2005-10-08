@@ -34,7 +34,8 @@ if($mybb->usergroup['cansearch'] == "no")
 
 if($mybb->input['action'] == "results")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE sid='".intval($mybb->input['sid'])."'");
+	$sid = intval($mybb->input['sid']);
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE sid='".$sid."'");
 	$search = $db->fetch_array($query);
 	if(!$search['sid'])
 	{
