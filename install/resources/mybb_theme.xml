@@ -1507,10 +1507,16 @@ $pmsdownload]]></template>
 <td><span class="smalltext"><strong>$defaulttitle</strong></span></td>
 </tr>
 <tr>
-<td><span class="smalltext">$lang->custom_usertitle2</span></td>
+<td><span class="smalltext">$lang->current_custom_usertitle</span></td>
 </tr>
 <tr>
-<td><input type="text" name="usertitle" size="25" value="$mybbuser[usertitle]" maxlength="$settings[customtitlemaxlength]" /></td>
+<td><span class="smalltext"><strong>$user[usertitle]</strong></span></td>
+</tr>
+<tr>
+<td><span class="smalltext">$lang->new_custom_usertitle</span></td>
+</tr>
+<tr>
+<td><input type="text" name="usertitle" size="25" value="" maxlength="$settings[customtitlemaxlength]" /></td>
 </tr>
 </table>
 </fieldset>

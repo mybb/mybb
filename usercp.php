@@ -332,6 +332,10 @@ if($mybb->input['action'] == "profile")
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->user['uid']."'");
 		$user = $db->fetch_array($query);
 		$mybb->user['usertitle'] = $user['usertitle'];
+		if(empty($user['usertitle']))
+		{
+			$lang->current_custom_usertitle = '';
+		}
 		eval("\$customtitle = \"".$templates->get("usercp_profile_customtitle")."\";");
 	}
 	else
@@ -380,9 +384,9 @@ elseif($mybb->input['action'] == "do_profile")
 		{
 			$usertitle = $mybb->input['usertitle'];
 		}
-		elseif($mybb->input['usertitle'] == $mybb->user['usertitle'])
+		elseif(empty($mybb->input['usertitle']))
 		{
-			$usertitle = $mybb->input['usertitle'];
+			$usertitle = $mybb->user['usertitle'];
 		}
 		else
 		{
