@@ -646,7 +646,11 @@ function makepostbit($post, $pmprevann=0)
 			$post['inlinecheck'] = "";
 		}
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
-		eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
+		global $forum;
+		if($forum['open'] != "no")
+		{
+			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
+		}
 		if($mybb->user['uid'] != "0")
 		{
 			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
