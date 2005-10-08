@@ -876,11 +876,16 @@ switch($mybb->input['action'])
 		}
 		if($mybb->input['moveto'])
 		{
-			$moveto = $mybb->input['moveto'];
+			$moveto = intval($mybb->input['moveto']);
 		} 
 		else
 		{
 			$moveto = $fid;
+		}
+		$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forums WHERE fid='$moveto' LIMIT 1");
+		if($db->num_rows($query) == 0)
+		{
+			error($lang->error_invalidforum);
 		}
 		$newsubject = addslashes($mybb->input['newsubject']);
 		$query = array(
@@ -1332,7 +1337,7 @@ switch($mybb->input['action'])
 		}
 		$inlineids = implode("|", $posts);
 		clearinline($tid, "thread");
-		$forumselect = makeforumjump("", "", 1, "", 0, "", "moveto");
+		$forumselect = makeforumjump("", $fid, 1, "", 0, "", "moveto");
 		eval("\$splitposts = \"".$templates->get("moderation_inline_splitposts")."\";");
 		outputpage($splitposts);
 		break;
@@ -1357,6 +1362,11 @@ switch($mybb->input['action'])
 		else
 		{
 			$moveto = $fid;
+		}
+		$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forums WHERE fid='$moveto' LIMIT 1");
+		if($db->num_rows($query) == 0)
+		{
+			error($lang->error_invalidforum);
 		}
 		$newsubject = addslashes($mybb->input['newsubject']);
 		$db->query("INSERT INTO ".TABLE_PREFIX."threads (tid,fid,subject,icon,uid,username,dateline,lastpost,lastposter,replies,visible) VALUES (NULL,'$moveto','$newsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$numyes','1')");
