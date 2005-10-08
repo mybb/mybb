@@ -224,8 +224,6 @@ if($mybb->input['action'] == "thread") {
 
 	if($forum['open'] != "no") {
 		eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
-	}
-	if($forum['open'] != "no") {
 		if($thread['closed'] != "yes" || ismod($fid) == "yes") {
 			eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
 		} else {

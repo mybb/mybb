@@ -646,8 +646,8 @@ function makepostbit($post, $pmprevann=0)
 			$post['inlinecheck'] = "";
 		}
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
-		global $forum;
-		if($forum['open'] != "no")
+		global $forum, $thread;
+		if($forum['open'] != "no" && ($thread['closed'] != "yes" || ismod($forum['fid']) == "yes"))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
