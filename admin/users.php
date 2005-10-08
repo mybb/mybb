@@ -1622,7 +1622,14 @@ if($mybb->input['action'] == "find")
 			}
 			if($searchdisp['lastvisit'] == "yes")
 			{
-				$date = gmdate("d-m-Y", $user['lastvisit']);
+				if(!$user['lastvisit'])
+				{
+					$date = $lang->never;
+				}
+				else
+				{
+					$date = gmdate("d-m-Y", $user['lastvisit']);
+				}
 				echo "<td class=\"$bgcolor\">$date</td>\n";
 			}
 			if($searchdisp['postnum'] == "yes")
