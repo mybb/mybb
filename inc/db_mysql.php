@@ -9,7 +9,7 @@
  * $Id$
  */
 
-class bbDB {
+class databaseEngine {
 
 	var $query_count = 0;
 	var $querylist = array();

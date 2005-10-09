@@ -33,7 +33,7 @@ if(!isset($config['dbtype']))
 $mybb->config = $config;
 
 require "./inc/db_".$config['dbtype'].".php";
-$db = new bbDB;
+$db = new databaseEngine;
 
 require "./inc/functions.php";
 
