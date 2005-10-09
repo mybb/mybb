@@ -390,7 +390,7 @@ function create_tables()
 
 	// Attempt to connect to the db
 	require "../inc/db_".$mybb->input['dbengine'].".php";
-	$db = new bbDB;
+	$db = new databaseEngine;
 	$db->error_reporting = 0;
 
 	$connection = $db->connect($mybb->input['dbhost'], $mybb->input['dbuser'], $mybb->input['dbpass']);
@@ -455,7 +455,7 @@ function populate_tables()
 
 	require "../inc/config.php";
 	require "../inc/db_$config[dbtype].php";
-	$db=new bbDB;
+	$db=new databaseEngine;
 	// Connect to Database
 	define("TABLE_PREFIX", $config['table_prefix']);
 	$db->connect($config['hostname'], $config['username'], $config['password']);
@@ -480,7 +480,7 @@ function insert_templates()
 	global $output, $myver, $cache, $db;
 	require "../inc/config.php";
 	require "../inc/db_$config[dbtype].php";
-	$db=new bbDB;
+	$db=new databaseEngine;
 	// Connect to Database
 	define("TABLE_PREFIX", $config['table_prefix']);
 	$db->connect($config['hostname'], $config['username'], $config['password']);
@@ -672,7 +672,7 @@ function create_admin_user()
 	{
 		require "../inc/config.php";
 		require "../inc/db_".$config['dbtype'].".php";
-		$db = new bbDB;
+		$db = new databaseEngine;
 
 		// Connect to Database
 		define("TABLE_PREFIX", $config['table_prefix']);
@@ -756,7 +756,7 @@ function install_done()
 	
 	require "../inc/config.php";
 	require "../inc/db_".$config['dbtype'].".php";
-	$db=new bbDB;
+	$db=new databaseEngine;
 	// Connect to Database
 	define("TABLE_PREFIX", $config['table_prefix']);
 	$db->connect($config['hostname'], $config['username'], $config['password']);

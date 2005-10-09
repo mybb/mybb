@@ -35,7 +35,7 @@ require "./resources/output.php";
 $output = new installerOutput;
 $output->script = "upgrade.php";
 
-$db=new bbDB;
+$db=new databaseEngine;
 // Connect to Database
 define("TABLE_PREFIX", $config['table_prefix']);
 $db->connect($config['hostname'], $config['username'], $config['password']);
