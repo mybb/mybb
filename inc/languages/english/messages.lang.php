@@ -395,7 +395,7 @@ You have received a new private message on {3} from [2}. To view this message, y
 
 {4}/private.php
 
-Please note that you will not receive any further notifications of new messages until you visit [1}.
+Please note that you will not receive any further notifications of new messages until you visit {1}.
 
 You can disable new message noitifications on your account options page:
 
