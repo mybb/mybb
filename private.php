@@ -329,7 +329,7 @@ elseif($mybb->input['action'] == "do_send")
 	{
 		$lang->email_reachedpmquota = sprintf($lang->email_reachedpmquota, $touser['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 		$lang->emailsubject_reachedpmquota = sprintf($lang->emailsubject_reachpmquota, $mybb->settings['bbname']);
-		mymail($touser['email'], $lang->email_reachedpmquota, $lang->emailsubject_reachedpmquota);
+		mymail($touser['email'], $lang->emailsubject_reachedpmquota, $lang->email_reachedpmquota);
 		error($lang->error_pmrecipientreachedquota);
 	}
 	$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$touser['uid']."' AND folder='1' ORDER BY dateline DESC LIMIT 1");
@@ -338,7 +338,7 @@ elseif($mybb->input['action'] == "do_send")
 	{
 		$lang->email_newpm = sprintf($lang->email_newpm, $touser['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 		$lang->emailsubject_newpm = sprintf($lang->emailsubject_newpm, $mybb->settings['bbname']);
-		mymail($touser['email'], $lang->email_newpm, $lang->emailsubject_newpm);
+		mymail($touser['email'], $lang->emailsubject_newpm, $lang->email_newpm);
 	}
 
 	$now = time();
@@ -538,6 +538,18 @@ elseif($mybb->input['action'] == "do_tracking")
 		if(is_array($mybb->input['readcheck']))
 		{
 			while(list($key, $val) = each($mybb->input['readcheck']))
+			{
+				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."'");
+			}
+		}
+		$plugins->run_hooks("private_do_tracking_end");
+		redirect("private.php", $lang->redirect_pmstrackingstopped);
+	}
+	elseif($mybb->input['stoptrackingunread'])
+	{
+		if(is_array($mybb->input['unreadcheck']))
+		{
+			while(list($key, $val) = each($mybb->input['unreadcheck']))
 			{
 				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."'");
 			}
