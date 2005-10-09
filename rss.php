@@ -48,7 +48,7 @@ if(trim($mybb->input['fid']) > 0)
 $title = htmlentities($mybb->settings['bbname'].$title);
 
 $mybb->input['limit'] = intval($mybb->input['limit']);
-if($mybb->input['limit'] < 1 || !$mybb->input['limit'])
+if($mybb->input['limit'] < 1 || !$mybb->input['limit'] || $mybb->input['limit'] > 50)
 {
 	$mybb->input['limit'] = 15;
 }
