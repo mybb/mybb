@@ -131,14 +131,19 @@ if($mybb->input['action'] == "do_delete") {
 }
 if($mybb->input['action'] == "export")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings ORDER BY disporder");
+	$gidwhere = "";
+	if($mybb->input['gid'])
+	{
+		$gidwhere = "WHERE gid='".intval($mybb->input['gid'])."'";
+	}
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings $gidwhere ORDER BY disporder");
 	while($setting = $db->fetch_array($query))
 	{
 		$settinglist[$setting['gid']][] = $setting;
 	}
 	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
 	$xml = "<settings version=\"".$mybboard['vercode']."\" exported=\"".time()."\">\n";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY name ASC");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups $gidwhere ORDER BY name ASC");
 	while($settinggroup = $db->fetch_array($query))
 	{
 		$xml .= "\t<settinggroup name=\"".$settinggroup['name']."\" description=\"".$settinggroup['description']."\" disporder=\"".$settinggroup['disporder']."\" isdefault=\"".$settinggroup['isdefault']."\">\n";
@@ -150,8 +155,8 @@ if($mybb->input['action'] == "export")
 				$xml .= "\t\t\t<title>".$setting['title']."</title>\n";
 				$xml .= "\t\t\t<description><![CDATA[".$setting['description']."]]></description>\n";
 				$xml .= "\t\t\t<disporder>".$setting['disporder']."</disporder>\n";
-				$xml .= "\t\t\t<optionscode>".$setting['optionscode']."</optionscode>\n";
-				$xml .= "\t\t\t<value><![CDATA[".$setting['value']."]]</value>\n";
+				$xml .= "\t\t\t<optionscode><![CDATA[".$setting['optionscode']."]]></optionscode>\n";
+				$xml .= "\t\t\t<settingvalue><![CDATA[".$setting['value']."]]></settingvalue>\n";
 				$xml .= "\t\t\t<helpkey>".$setting['helpkey']."</helpkey>\n";
 				$xml .= "\t\t</setting>\n";
 			}
