@@ -2222,7 +2222,7 @@ $footer
 			<navigation>
 			<br class="clear" />]]></template>
 		<template name="usercp_usergroups_leader_usergroup"><![CDATA[<tr>
-<td class="$trow">$usergroup[title]</td>
+<td class="$trow"><strong>$usergroup[title]</strong></td>
 <td class="$trow" align="center">$usergroup[users] $memberlistlink</td>
 <td class="$trow" align="center">$usergroup[joinrequests] $moderaterequestslink</td>
 </tr>]]></template>
@@ -2275,7 +2275,6 @@ $usercpnav
 $leadinggroups
 $joinablegroups
 $membergroups
-$displaygroups
 </td>
 </tr>
 </table>
