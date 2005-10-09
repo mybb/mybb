@@ -2283,7 +2283,9 @@ $displaygroups
 $footer
 </body>
 </html>]]></template>
-		<template name="usercp_usergroups_memberof"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="usercp_usergroups_memberof"><![CDATA[<form method="post" action="usercp.php">
+<input type="hidden" name="action" value="usergroups" />
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="4"><strong>$lang->usergroups_memberof</strong></td>
 </tr>
@@ -2298,6 +2300,7 @@ $memberoflist
 <td class="tfoot" align="right" colspan="4"><strong><input type="submit" name="changedisplaygroup" value="$lang->change_display_group" /></strong></td>
 </tr>
 </table>
+</form>
 <br />]]></template>
 		<template name="managegroup"><![CDATA[<html>
 <head>
