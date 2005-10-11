@@ -12,6 +12,13 @@
 /**
  * Upgrade Script: Release Candidate 4
  */
+
+$upgrade_detail = array(
+	"revert_all_templates" => 1,
+	"revert_all_themes" => 1,
+	"revert_all_settings" => 1
+	);
+
 @set_time_limit(0);
 
 function upgrade3_dbchanges()
@@ -692,7 +699,7 @@ function upgrade3_dbchanges3()
 	
 	$contents .= "<font color=\red\"><b>WARNING:</font> The next step will delete any custom themes or templates you have! Please back them up before continuing!</p>";
 	$output->print_contents($contents);
-	$output->print_footer("templates");
+	$output->print_footer("3_done");
 }
 
 ?>

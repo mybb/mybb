@@ -679,7 +679,47 @@ function create_admin_user()
 		$db->connect($config['hostname'], $config['username'], $config['password']);
 		$db->select_db($config['database']);
 
-		echo "<p>Setting up basic board settings...";
+		echo "<p>Setting up basic board settings...</p>";
+
+		$settings = file_get_contents("./resources/settings.xml");
+		$parser = new XMLParser($settings);
+		$parser->collapse_dups = 0;
+		$tree = $parser->getTree();
+
+		foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
+		{
+			$groupdata = array(
+				"gid" => "NULL",
+				"name" => addslashes($settinggroup['attributes']['name']),
+				"description" => addslashes($settinggroup['attributes']['description']),
+				"disporder" => intval($settinggroup['attributes']['disporder']),
+				"isdefault" => $settinggroup['attributes']['isdefault']
+				);
+			$db->insert_query(TABLE_PREFIX."settinggroups", $groupdata);
+			$gid = $db->insert_id();
+			$groupcount++;
+			foreach($settinggroup['setting'] as $setting)
+			{
+				$settingdata = array(
+					"sid" => "NULL",
+					"name" => addslashes($setting['attributes']['name']),
+					"title" => addslashes($setting['title'][0]['value']),
+					"description" => addslashes($setting['description'][0]['value']),
+					"optionscode" => addslashes($setting['optionscode'][0]['value']),
+					"value" => addslashes($setting['settingvalue'][0]['value']),
+					"disporder" => intval($setting['disporder'][0]['value']),
+					"gid" => $gid
+					);
+
+				$db->insert_query(TABLE_PREFIX."settings", $settingdata);
+				$settingcount++;
+			}
+		}
+
+		echo "<p>Inserted $settingcount settings into $groupcount groups.</p>";
+		echo "<p>Updating settings with user defined values.</p>";
+
+
 		if (substr($mybb->input['bburl'], -1, 1) == "/")
 		{
 			$mybb->input['bburl'] = substr($mybb->input['bburl'], 0, -1);
@@ -695,7 +735,6 @@ function create_admin_user()
 		
 		write_settings();
 		
-		echo "done</p>";
 		echo "<p>You need to create an initial administrator account for you to login and manage your copy of MyBB. Please fill in the required fields below to create this account.</p>";
 	}
 

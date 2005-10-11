@@ -43,12 +43,13 @@ $db->select_db($config['database']);
 
 
 // Set if we need to revert templates and settings for this version
+/*
 $reverttemplates = 1;
 $revertalltemplates = 1;
 $rebuilddbsettings = 1;
 $rebuildsettingsfile = 1;
 $revertallthemes = 1;
-
+*/
 $valid = 0;
 /*
 
@@ -90,10 +91,20 @@ if(file_exists("lock"))
 }
 else
 {
+
+	$output->steps = array("Upgrade Process");
 	
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
 		$output->print_header("MyBB Upgrade Script");
+
+		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."upgrade_data");  
+		$db->query("CREATE TABLE ".TABLE_PREFIX."upgrade_data ( 
+			title varchar(30) NOT NULL,  
+			contents text NOT NULL,  
+			PRIMARY KEY(title)  
+		);");
+		
 		$dh = opendir("./resources");
 		while(($file = readdir($dh)) !== false)
 		{
@@ -105,7 +116,7 @@ else
 		closedir($dh);
 		foreach($upgradescripts as $key => $file)
 		{
-			$upgradescript = implode("", file("./resources/$file"));
+			$upgradescript = file_get_contents("./resources/$file");
 			preg_match("#Upgrade Script:(.*)#i", $upgradescript, $verinfo);
 			preg_match("#upgrade([0-9]+).php$#i", $file, $keynum);
 			if(trim($verinfo[1]))
@@ -123,14 +134,18 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		$output->print_contents("<p>Welcome to the upgrade wizard for MyBulletinBoard $myver.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p>We recommend that you also do a complete backup of your database before attempting to upgrade so if something goes wrong you can easily revert back to the previous version.</p></p><p>Once you're ready, please select your old version below and click next to continue.</p><p><select name=\"from\">$vers</select>");
+		$output->print_contents("<p>Welcome to the upgrade wizard for MyBB $myver.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p><strong>We recommend that you also do a complete backup of your database before attempting to upgrade</strong> so if something goes wrong you can easily revert back to the previous version.</p></p><p>Once you're ready, please select your old version below and click next to continue.</p><p><select name=\"from\">$vers</select>");
 		$output->print_footer("doupgrade");
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
+		add_upgrade_store("startscript", $mybb->input['from']);
 		$runfunction = next_function($mybb->input['from']);
 	}
-	elseif($mybb->input['action'] == "templates")
+	$currentscript = get_upgrade_store("currentscript");
+	$system_upgrade_detail = get_upgrade_store("upgradedetail");
+
+	if($mybb->input['action'] == "templates")
 	{
 		$runfunction = "upgradethemes";
 	}
@@ -156,6 +171,8 @@ else
 
 		}
 	}
+	// Fetch current script we're in
+
 	if(function_exists($runfunction))
 	{
 		$runfunction();
@@ -164,9 +181,9 @@ else
 
 function upgradethemes()
 {
-	global $output, $db, $reverttemplates, $revertalltemplates, $rebuilddbsettings, $rebuildsettingsfile, $revertallthemes;
+	global $output, $db, $system_upgrade_detail;
 
-	if($revertalltemplates)
+	if($system_upgrade_detail['revert_all_templates'] > 0)
 	{
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templates;");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."templates (
@@ -182,7 +199,7 @@ function upgradethemes()
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='-2'");
 	}
 
-	if($revertallthemes)
+	if($system_upgrade_detail['revert_all_themes'] > 0)
 	{
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."themes");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."themes (
@@ -231,7 +248,8 @@ function upgradethemes()
 
 	$output->print_header("Templates Reverted");
 	$output->print_contents("<p>All of the templates have successfully been reverted to the new ones contained in this release. Please press next to continue with the upgrade process.</p>");
-	if($rebuilddbsettings || $rebuildsettingsfile)
+	print_r($system_upgrade_detail);
+	if($system_upgrade_detail['revert_all_settings'])
 	{
 		$output->print_footer("rebuildsettings");
 	}
@@ -243,31 +261,12 @@ function upgradethemes()
 
 function rebuildsettings()
 {
-	global $db, $output, $rebuilddbsettings, $rebuildsettingsfile;
+	global $db, $output, $system_upgrade_detail;
 
-	if($rebuilddbsettings)
-	{
-		require "../inc/settings.php";
-		while(list($key, $val) = each($settings)) {
-			$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$val' WHERE name='$key'");
-		}
-	}
-	unset($settings);
-	if($rebuildsettingsfile)
-	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings ORDER BY title ASC");
-		while($setting = $db->fetch_array($query)) {
-			$setting[value] = addslashes($setting[value]);
-			$settings .= "\$settings[".$setting['name']."] = \"".$setting['value']."\";\n";
-		}
-		$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n?>";
-		$file = fopen("../inc/settings.php", "w");
-		fwrite($file, $settings);
-		fclose($file);
-	}
+	$synccount = sync_settings($system_upgrade_detail['revert_all_settings']);
 
-	$output->print_header("Settings Rebuilt");
-	$output->print_contents("<p>The board settings have been rebuilt.</p><p>To finalise the upgrade, please click next below to continue.</p>");
+	$output->print_header("Settings Synchronisation");
+	$output->print_contents("<p>The board settings have been synchronised with the latest in MyBB.</p><p>".$synccount[1]." new settings inserted along with ".$synccount[0]." new setting groups.</p><p>To finalise the upgrade, please click next below to continue.</p>");
 	$output->print_footer("buildcaches");
 }
 function buildcaches()
@@ -321,15 +320,15 @@ function upgradedone()
 
 function whatsnext()
 {
-	global $output, $db, $reverttemplates, $rebuilddbsettings, $rebuildsettingsfile;
+	global $output, $db, $system_upgrade_detail;
 
-	if($reverttemplates)
+	if($system_upgrade_detail['revert_all_templates'])
 	{
 		$output->print_header("Template Reversion Warning");
 		$output->print_contents("<p>All necessary database modifications have successfully been made to upgrade your board.</p><p>This upgrade requires all templates to be reverted to the new ones contained in the package so please back up any custom templates you have made before clicking next.");
 		$output->print_footer("templates");
 	}
-	if($rebuilddbsettings || $rebuildsettingsfile)
+	if($system_upgrade_detail['revert_all_settings'])
 	{
 		rebuildsettings();
 	}
@@ -337,8 +336,9 @@ function whatsnext()
 
 function next_function($from, $func="dbchanges")
 {
-	global $oldvers;
-	require_once "./resources/upgrade".$from.".php";
+	global $oldvers, $system_upgrade_detail, $currentscript;
+
+	load_module("upgrade".$from.".php");
 	if(function_exists("upgrade".$from."_".$func))
 	{
 		$function = "upgrade".$from."_".$func;
@@ -346,7 +346,7 @@ function next_function($from, $func="dbchanges")
 	else
 	{
 		$from = $from+1;
-		if($oldvers[$from])
+		if(file_exists("./resources/upgrade".$from.".php"))
 		{
 			$function = next_function($from);
 		}
@@ -354,8 +354,142 @@ function next_function($from, $func="dbchanges")
 
 	if(!$function)
 	{
+		echo "whats up doc!";
 		$function = "whatsnext";
 	}
 	return $function;
+}
+
+function load_module($module)
+{
+	global $system_upgrade_detail, $currentscript;
+	require_once "./resources/".$module;
+	if($currentscript != $module)
+	{
+		foreach($upgrade_detail as $key => $val)
+		{
+			if(!$system_upgrade_detail[$key] || $val > $system_upgrade_detail[$key])
+			{
+				$system_upgrade_detail[$key] = $val;
+			}
+		}
+		add_upgrade_store("upgradedetail", $system_upgrade_detail);
+		add_upgrade_store("currentscript", $module);
+	}
+}
+
+function get_upgrade_store($title)  
+{  
+	global $db;  
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."upgrade_data WHERE title='".addslashes($title)."'");  
+	$data = $db->fetch_array($query);  
+	return unserialize($data['contents']);  
+}
+
+function add_upgrade_store($title, $contents)  
+{  
+	global $db;  
+	$db->query("REPLACE INTO ".TABLE_PREFIX."upgrade_data (title,contents) VALUES ('".addslashes($title)."', '".addslashes(serialize($contents))."')");  
+}
+
+function sync_settings($redo=0)
+{
+	global $db;
+	$settingcount = $groupcount = 0;
+	if($redo == 2)
+	{
+		$db->query("DROP TABLE ".TABLE_PREFIX."settings");
+
+		$db->query("CREATE TABLE ".TABLE_PREFIX."settings (
+		  sid smallint(6) NOT NULL auto_increment,
+		  name varchar(120) NOT NULL default '',
+		  title varchar(120) NOT NULL default '',
+		  description text NOT NULL,
+		  optionscode text NOT NULL,
+		  value text NOT NULL,
+		  disporder smallint(6) NOT NULL default '0',
+		  gid smallint(6) NOT NULL default '0',
+		  PRIMARY KEY  (sid)
+		) TYPE=MyISAM;");
+	}
+	else
+	{
+		$query = $db->query("SELECT name FROM ".TABLE_PREFIX."settings");
+		while($setting = $db->fetch_array($query))
+		{
+			$settings[$setting['name']] = 1;
+		}
+		$query = $db->query("SELECT name,gid FROM ".TABLE_PREFIX."settinggroups");
+		while($group = $db->fetch_array($query))
+		{
+			$settinggroups[$group['name']] = $group['gid'];
+		}
+	}
+	$settings_xml = file_get_contents("./resources/settings.xml");
+	$parser = new XMLParser($settings_xml);
+	$parser->collapse_dups = 0;
+	$tree = $parser->getTree();
+
+	foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
+	{
+		if(!$settinggroups[$settinggroup['attributes']['name']] || $redo == 2)
+		{
+			$groupdata = array(
+				"gid" => "NULL",
+				"name" => addslashes($settinggroup['attributes']['name']),
+				"description" => addslashes($settinggroup['attributes']['description']),
+				"disporder" => intval($settinggroup['attributes']['disporder']),
+				"isdefault" => $settinggroup['attributes']['isdefault']
+				);
+			$db->insert_query(TABLE_PREFIX."settinggroups", $groupdata);
+			$gid = $db->insert_id();
+			$groupcount++;
+		}
+		else
+		{
+			$gid = $settinggroups[$settinggroup['attributes']['name']];
+		}
+		if(!$gid)
+		{
+			continue;
+		}
+		foreach($settinggroup['setting'] as $setting)
+		{
+			if(!$settings[$setting['attributes']['name']] || $redo == 2)
+			{
+				$settingdata = array(
+					"sid" => "NULL",
+					"name" => addslashes($setting['attributes']['name']),
+					"title" => addslashes($setting['title'][0]['value']),
+					"description" => addslashes($setting['description'][0]['value']),
+					"optionscode" => addslashes($setting['optionscode'][0]['value']),
+					"value" => addslashes($setting['settingvalue'][0]['value']),
+					"disporder" => intval($setting['disporder'][0]['value']),
+					"gid" => $gid
+					);
+
+				$db->insert_query(TABLE_PREFIX."settings", $settingdata);
+				$settingcount++;
+			}
+		}
+	}
+	if($redo == 1)
+	{
+		require "../inc/settings.php";
+		while(list($key, $val) = each($settings)) {
+			$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$val' WHERE name='$key'");
+		}
+	}
+	unset($settings);
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings ORDER BY title ASC");
+	while($setting = $db->fetch_array($query)) {
+		$setting[value] = addslashes($setting[value]);
+		$settings .= "\$settings[".$setting['name']."] = \"".$setting['value']."\";\n";
+	}
+	$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n?>";
+	$file = fopen("../inc/settings.php", "w");
+	fwrite($file, $settings);
+	fclose($file);
+	return array($groupcount, $settingcount);
 }
 ?>

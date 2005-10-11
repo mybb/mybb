@@ -12,6 +12,13 @@
 /**
  * Upgrade Script: Release Candidate 3
  */
+
+$upgrade_detail = array(
+	"revert_all_templates" => 1,
+	"revert_all_themes" => 1,
+	"revert_all_settings" => 1
+	);
+
 function upgrade2_dbchanges()
 {
 	global $db, $output;
