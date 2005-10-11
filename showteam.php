@@ -49,10 +49,21 @@ while(list($gid, $usergroup) = each($teams)) {
 			{
 				$emailcode = "";
 			}
+			if($user['receivepms'] != "no")
+			{
+				eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
+			}
+			else
+			{
+				$pmcode = "";
+			}
 			eval("\$usergrouprows .= \"".$templates->get("showteam_usergroup_user")."\";");
-			if($bgcolor == "trow1") {
+			if($bgcolor == "trow1")
+			{
 				$bgcolor = "trow2";
-			} else {
+			}
+			else
+			{
 				$bgcolor = "trow1";
 			}
 		}
@@ -61,7 +72,7 @@ while(list($gid, $usergroup) = each($teams)) {
 	$usergrouprows = "";
 }
 unset($user);
-$query = $db->query("SELECT m.fid, m.uid, u.username, u.usergroup, u.displaygroup, u.hideemail, f.name FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid) ORDER BY u.username, f.name");
+$query = $db->query("SELECT m.fid, m.uid, u.username, u.usergroup, u.displaygroup, u.hideemail, u.receivepms, f.name FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid) ORDER BY u.username, f.name");
 while($mod = $db->fetch_array($query)) {
 	$modsarray[$mod['uid']] = $mod;
 	if($modforums[$mod['uid']]) {
@@ -83,12 +94,23 @@ if(is_array($modsarray)) {
 		{
 			$emailcode = "";
 		}
+		if($user['receivepms'] != "no")
+		{
+			eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
+		}
+		else
+		{
+			$pmcode = "";
+		}
 		$username = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 		$location = $user['location'];
 		eval("\$modrows .= \"".$templates->get("showteam_moderators_mod")."\";");
-		if($bgcolor == "trow1") {
+		if($bgcolor == "trow1") 
+		{
 			$bgcolor = "trow2";
-		} else {
+		}
+		else
+		{
 			$bgcolor = "trow1";
 		}
 	}
