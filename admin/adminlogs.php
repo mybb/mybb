@@ -30,7 +30,7 @@ if($mybb->input['action'] == "do_prune")
 {
 	$time = time();
 	$days = intval($mybb->input['days']);
-	$fromscript = $mybb->input['fromscript'];
+	$fromscript = addslashes($mybb->input['fromscript']);
 	$fromadmin = intval($mybb->input['fromadmin']);
 
 	$timecut = $time-($days*60*60*24);
@@ -59,7 +59,7 @@ if($mybb->input['action'] == "do_prune")
 	{
 		$thequery = "WHERE $thequery";
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."adminlog ".addslashes($thequery));
+	$db->query("DELETE FROM ".TABLE_PREFIX."adminlog $thequery"));
 	cpredirect("adminlogs.php", $lang->log_pruned);
 }
 elseif($mybb->input['action'] == "view")
