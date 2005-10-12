@@ -539,21 +539,21 @@ elseif($mybb->input['action'] == "do_tracking")
 		{
 			while(list($key, $val) = each($mybb->input['readcheck']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."'");
+				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."' AND fromid='".$mybb->user['uid']."'");
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
 		redirect("private.php", $lang->redirect_pmstrackingstopped);
 	}
-	elseif($mybb->input['stoptrackingunread'])
+	elseif($mybb->input['cancel'])
 	{
 		if(is_array($mybb->input['unreadcheck']))
 		{
 			while(list($key, $val) = each($mybb->input['unreadcheck']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."'");
+				$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='".intval($key)."' AND fromid='".$mybb->user['uid']."'");
 			}
-		}
+
 		$plugins->run_hooks("private_do_tracking_end");
 		redirect("private.php", $lang->redirect_pmstrackingstopped);
 	}
