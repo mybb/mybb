@@ -139,6 +139,7 @@ $l['error_pmrecipientreachedquota'] = "You cannot send a private message to $to 
 $l['error_recipientpmturnedoff'] = "{1} has chosen not to receive private messages or may not be allowed to do so. Therefore you may not send your private message to this user.";
 $l['error_noquestionoptions'] = "You either did not enter a question for your poll or do not have enough options. The minimum number of options a poll can have is 2.<br />Please go back and correct this error.";
 $l['error_invalidforum'] = "Invalid forum";
+$l['error_closedinvalidforum'] = "You may not post in this forum either because the forum is closed, or it is a category.";
 $l['error_pollalready'] = "Thread already has poll!";
 $l['error_badactivationcode'] = "You have entered an invalid account activation code. To resend all activation emails to the email address on file, please click <a href=\"member.php?action=resendactivation\">here</a>.";
 $l['error_alreadyactivated'] = "It appears your account is already activated or does not require email verification.";

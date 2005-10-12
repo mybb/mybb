@@ -53,7 +53,7 @@ if(!$thread['subject'])
 }
 if($forum['open'] == "no" || $forum['type'] != "f")
 {
-	error($lang->error_invalidforum);
+	error($lang->error_closedinvalidforum);
 }
 if($forumpermissions['canview'] == "no" || $forumpermissions['canpostreplys'] == "no")
 {
