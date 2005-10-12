@@ -155,6 +155,12 @@ if($mybb->input['action'] == "do_newreply" && !$mybb->input['savedraft'])
 	}
 }
 
+// Setup our posthash for managing attachments
+if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
+{
+	mt_srand ((double) microtime() * 1000000);
+	$mybb->input['posthash'] = md5($thread['tid'].$mybb->user['uid'].mt_rand());
+}
 
 if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft")
 {
@@ -284,15 +290,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	// Setup a unique posthash for attachment management
-	if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
-	{
-	    mt_srand ((double) microtime() * 1000000);
-	    $posthash = md5($thread['tid'].$mybb->user['uid'].mt_rand());
-	}
-	else
-	{
-		$posthash = $mybb->input['posthash'];
-	}
+	$posthash = $mybb->input['posthash'];
 
 	$bgcolor = "trow2";
 	if($forumpermissions['canpostattachments'] != "no")
