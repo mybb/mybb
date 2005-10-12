@@ -22,22 +22,35 @@ $plugins->run_hooks("showteam_start");
 
 $teamquery = "";
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE showforumteam='yes' AND gid!='6' ORDER BY title ASC");
-while($usergroup = $db->fetch_array($query)) {
+while($usergroup = $db->fetch_array($query))
+{
 	$teams[$usergroup['gid']] = $usergroup;
 	$teamquery .= "$comma'$usergroup[gid]'";
 	$comma = ",";
 }
-$query = $db->query("SELECT u.*, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."users u WHERE u.usergroup IN ($teamquery) ORDER BY u.username ASC");
-while($user = $db->fetch_array($query)) {
-	$users[$user['usergroup']][$user['uid']] = $user;
+$query = $db->query("SELECT u.*, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."users u WHERE u.displaygroup IN ($teamquery) OR (u.displaygroup = 0 AND u.usergroup IN ($teamquery)) ORDER BY u.username ASC");
+while($user = $db->fetch_array($query))
+{
+	if($user['displaygroup'] == 0)
+	{
+		$users[$user['usergroup']][$user['uid']] = $user;
+	}
+	else
+	{
+		$users[$user['displaygroup']][$user['uid']] = $user;
+	}
 }
-if(!is_array($users)) {
+if(!is_array($users))
+{
 	error($lang->error_noteamstoshow);
 }
-while(list($gid, $usergroup) = each($teams)) {
-	if(is_array($users[$gid])) {
+while(list($gid, $usergroup) = each($teams))
+{
+	if(is_array($users[$gid]))
+	{
 		$bgcolor = "trow1";
-		while(list($uid, $user) = each($users[$gid])) {
+		while(list($uid, $user) = each($users[$gid]))
+		{
 			$post['uid'] = $user['uid'];
 			$user['location'] = stripslashes($user['location']);
 			$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
@@ -73,16 +86,20 @@ while(list($gid, $usergroup) = each($teams)) {
 }
 unset($user);
 $query = $db->query("SELECT m.fid, m.uid, u.username, u.usergroup, u.displaygroup, u.hideemail, u.receivepms, f.name FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid) ORDER BY u.username, f.name");
-while($mod = $db->fetch_array($query)) {
+while($mod = $db->fetch_array($query))
+{
 	$modsarray[$mod['uid']] = $mod;
-	if($modforums[$mod['uid']]) {
+	if($modforums[$mod['uid']])
+	{
 		$modforums[$mod['uid']] .= "<br>";
 	}
 	$modforums[$mod['uid']] .= "<a href=\"forumdisplay.php?fid=$mod[fid]\">$mod[name]</a>";
 }
-if(is_array($modsarray)) {
+if(is_array($modsarray))
+{
 	$bgcolor = "trow1";
-	while(list($uid, $user) = each($modsarray)) {
+	while(list($uid, $user) = each($modsarray))
+	{
 		$forumslist = $modforums[$uid];
 		$uid = $user['uid'];
 		$post['uid'] = $user['uid'];
