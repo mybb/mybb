@@ -403,6 +403,9 @@ if($mybb->input['action'] == "do_register")
 			"receivepms" => $receivepms,
 			"pmpopup" => $pmpopup,
 			"pmnotify" => $emailpmnotify,
+			"showsigs" => "yes",
+			"showavatars" => "yes",
+			"showquickreply" => "yes",
 			"invisible" => $invisible,
 			"style" => '0',
 			"timezone" => addslashes($mybb->input['timezoneoffset']),
@@ -713,14 +716,15 @@ if($mybb->input['action'] == "register")
 		{
 			eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
 		}
-
 		if(!$fromreg)
 		{
 			$allownoticescheck = "checked=\"checked\"";
 			$hideemailcheck = "";
-			$invisiblecheck = "";
 			$emailnotifycheck = "";
 			$receivepmscheck = "checked=\"checked\"";
+			$pmpopupcheck = "checked=\"checked\"";
+			$pmnotifycheck = "";
+			$invisiblecheck = "";
 		}
 		// Spambot registration image thingy
 		if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))
