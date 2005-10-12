@@ -539,7 +539,7 @@ elseif($mybb->input['action'] == "do_tracking")
 		{
 			while(list($key, $val) = each($mybb->input['readcheck']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."' AND uid='".$mybb->user['uid']."'");
+				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."' AND fromid='".$mybb->user['uid']."'");
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
@@ -551,7 +551,7 @@ elseif($mybb->input['action'] == "do_tracking")
 		{
 			while(list($key, $val) = each($mybb->input['unreadcheck']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."' AND uid='".$mybb->user['uid']."'");
+				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."' AND fromid='".$mybb->user['uid']."'");
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
@@ -563,7 +563,7 @@ elseif($mybb->input['action'] == "do_tracking")
 		{
 			while(list($key, $val) = each($mybb->input['unreadcheck']))
 			{
-				$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='".intval($key)."' AND uid='".$mybb->user['uid']."'");
+				$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='".intval($key)."' AND fromid='".$mybb->user['uid']."'");
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
