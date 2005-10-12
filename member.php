@@ -403,6 +403,7 @@ if($mybb->input['action'] == "do_register")
 			"receivepms" => $receivepms,
 			"pmpopup" => $pmpopup,
 			"pmnotify" => $emailpmnotify,
+			"remember" => "yes",
 			"showsigs" => "yes",
 			"showavatars" => "yes",
 			"showquickreply" => "yes",
@@ -719,7 +720,7 @@ if($mybb->input['action'] == "register")
 		if(!$fromreg)
 		{
 			$allownoticescheck = "checked=\"checked\"";
-			$hideemailcheck = "";
+			$hideemailcheck = "checked=\"checked\"";
 			$emailnotifycheck = "";
 			$receivepmscheck = "checked=\"checked\"";
 			$pmpopupcheck = "checked=\"checked\"";
