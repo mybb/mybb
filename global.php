@@ -246,7 +246,7 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 }
 eval("\$headerinclude = \"".$templates->get("headerinclude")."\";");
 eval("\$gobutton = \"".$templates->get("gobutton")."\";");
-eval("\$htmldoctype = \"".$templates->get("htmldoctype")."\";");
+eval("\$htmldoctype = \"".$templates->get("htmldoctype", 1, 0)."\";");
 eval("\$header = \"".$templates->get("header")."\";");
 $copyyear = date("Y");
 $settings['homename'] = stripslashes($settings['homename']);
