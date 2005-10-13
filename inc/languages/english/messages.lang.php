@@ -216,7 +216,7 @@ $l['emailsubject_passwordreset'] = "New password at {1}";
 $l['emailsubject_subscription'] = "New Reply to {1}";
 $l['emailsubject_randompassword'] = "Your Password for {1}";
 $l['emailsubject_activateaccount'] = "Account Activation at {1}";
-$l['emailsubject_forumsubcription'] = "New Thread in {1}";
+$l['emailsubject_forumsubscription'] = "New Thread in {1}";
 $l['emailsubject_reportpost'] = "Reported post at {1}";
 $l['emailsubject_reachedpmquota'] = "Private Messaging Quota Reached at {1}";
 $l['emailsubject_changeemail'] = "Change of Email at {1}";
@@ -286,7 +286,7 @@ $l['email_sendtofriend'] = "Hello, I thought you might be interested in reading 
 
 {2}/showthread.php?tid={3}
 ";
-$l['email_forumsubcription'] = "{1},
+$l['email_forumsubscription'] = "{1},
 
 {2} has just started a new thread in {3}
 This is a forum you have subscribed to at {4}.
