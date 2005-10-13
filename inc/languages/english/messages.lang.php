@@ -393,7 +393,7 @@ Thank you,
 
 $l['email_newpm'] = "{1},
 		
-You have received a new private message on {3} from [2}. To view this message, you can follow this link:
+You have received a new private message on {3} from {2}. To view this message, you can follow this link:
 
 {4}/private.php
 

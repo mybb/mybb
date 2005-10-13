@@ -278,7 +278,7 @@ elseif($mybb->input['action'] == "do_send")
 	{
 		error($lang->error_pmnomessage);
 	}
-	$query = $db->query("SELECT u.uid, u.username, u.email, u.usergroup, u.pmnotify, u.pmpopup, u.receivepms, u.ignorelist, u.lastactive, COUNT(pms.pmid) AS pms_total, g.canusepms, g.pmquota, g.cancp  FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g LEFT JOIN ".TABLE_PREFIX."privatemessages pms ON (pms.uid=u.uid) WHERE u.username='".addslashes($mybb->input['to'])."' AND g.gid=u.usergroup GROUP BY u.uid");
+	$query = $db->query("SELECT u.uid, u.username, u.email, u.usergroup, u.pmnotify, u.pmpopup, u.receivepms, u.ignorelist, u.lastactive, u.language, COUNT(pms.pmid) AS pms_total, g.canusepms, g.pmquota, g.cancp  FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g LEFT JOIN ".TABLE_PREFIX."privatemessages pms ON (pms.uid=u.uid) WHERE u.username='".addslashes($mybb->input['to'])."' AND g.gid=u.usergroup GROUP BY u.uid");
 	$touser = $db->fetch_array($query);
 
 	if(!$touser['uid'] && !$mybb->input['saveasdraft'])
@@ -327,18 +327,70 @@ elseif($mybb->input['action'] == "do_send")
 	}
 	if($touser['pmquota'] != "0" && $touser['pms_total'] >= $touser['pmquota'] && $touser['cancp'] != "yes" && $mybb->usergroup['cancp'] != "yes" && !$mybb->input['saveasdraft'])
 	{
-		$lang->email_reachedpmquota = sprintf($lang->email_reachedpmquota, $touser['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-		$lang->emailsubject_reachedpmquota = sprintf($lang->emailsubject_reachpmquota, $mybb->settings['bbname']);
-		mymail($touser['email'], $lang->emailsubject_reachedpmquota, $lang->email_reachedpmquota);
+		if($touser['language'] != "" && $lang->languageExists($touser['language']))
+		{
+			$uselang = $touser['language'];
+		}
+		elseif($mybb->settings['bblanguage'])
+		{
+			$uselang = $mybb->settings['language'];
+		}
+		else
+		{
+			$uselang = "english";
+		}
+		if($uselang == $mybb->settings['bblanguage'])
+		{
+			$emailsubject = $lang->emailsubject_reachedpmquota;
+			$emailmessage = $lang->email_reachedpmquota;
+		}
+		else
+		{
+			$userlang = new MyLanguage;
+			$userlang->setPath("./inc/languages");
+			$userlang->setLanguage($uselang);
+			$userlang->load("messages");
+			$emailsubject = $userlang->emailsubject_reachedpmquota;
+			$emailmessage = $userlang->email_reachedpmquota;
+		}
+		$emailmessage = sprintf($emailmessage, $touser['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+		$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
+		mymail($touser['email'], $emailsubject, $emailmessage);
 		error($lang->error_pmrecipientreachedquota);
 	}
 	$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$touser['uid']."' AND folder='1' ORDER BY dateline DESC LIMIT 1");
 	$lastpm = $db->fetch_array($query);
 	if($touser['pmnotify'] == "yes" && $touser['lastactive'] > $lastpm['dateline'])
 	{
-		$lang->email_newpm = sprintf($lang->email_newpm, $touser['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-		$lang->emailsubject_newpm = sprintf($lang->emailsubject_newpm, $mybb->settings['bbname']);
-		mymail($touser['email'], $lang->emailsubject_newpm, $lang->email_newpm);
+		if($touser['language'] != "" && $lang->languageExists($touser['language']))
+		{
+			$uselang = $touser['language'];
+		}
+		elseif($mybb->settings['bblanguage'])
+		{
+			$uselang = $mybb->settings['language'];
+		}
+		else
+		{
+			$uselang = "english";
+		}
+		if($uselang == $mybb->settings['bblanguage'])
+		{
+			$emailsubject = $lang->emailsubject_newpm;
+			$emailmessage = $lang->email_newpm;
+		}
+		else
+		{
+			$userlang = new MyLanguage;
+			$userlang->setPath("./inc/languages");
+			$userlang->setLanguage($uselang);
+			$userlang->load("messages");
+			$emailsubject = $userlang->emailsubject_newpm;
+			$emailmessage = $userlang->email_newpm;
+		}
+		$emailmessage = sprintf($emailmessage, $touser['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+		$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
+		mymail($touser['email'], $emailsubject, $emailmessage);
 	}
 
 	$now = time();
