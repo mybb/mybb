@@ -720,7 +720,7 @@ if($mybb->input['action'] == "register")
 		if(!$fromreg)
 		{
 			$allownoticescheck = "checked=\"checked\"";
-			$hideemailcheck = "checked=\"checked\"";
+			$hideemailcheck = "";
 			$emailnotifycheck = "";
 			$receivepmscheck = "checked=\"checked\"";
 			$pmpopupcheck = "checked=\"checked\"";
@@ -1159,7 +1159,7 @@ elseif($mybb->input['action'] == "profile")
 		$avatar = "";
 	}
 
-	if($memprofile['hideemail'] != "no")
+	if($memprofile['hideemail'] != "yes")
 	{
 		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
 	}
@@ -1456,7 +1456,7 @@ elseif($mybb->input['action'] == "emailuser")
 		{
 			error($lang->error_invalidpmrecipient);
 		}
-		if($emailto['hideemail'] != "yes")
+		if($emailto['hideemail'] != "no")
 		{
 			error($lang->error_hideemail);
 		}
@@ -1485,7 +1485,7 @@ elseif($mybb->input['action'] == "do_emailuser")
 	{
 		error($lang->error_invalidpmrecipient);
 	}
-	if($emailto['hideemail'] != "yes")
+	if($emailto['hideemail'] != "no")
 	{
 		error($lang->error_hideemail);
 	}

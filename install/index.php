@@ -809,7 +809,7 @@ function install_done()
 	$salt = random_str();
 	$loginkey = generate_loginkey();
 	$saltedpw = md5(md5($salt).md5($mybb->input['adminpass']));
-	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,salt,loginkey,usergroup,regdate,allownotices,hideemail,receivepms,pmpopup,pmnotify,remember,showsigs,showavatars,showquickreply) VALUES (NULL,'".addslashes($mybb->input['adminuser'])."','".$saltedpw."','".addslashes($mybb->input['adminemail'])."','$salt','$loginkey','4','$now','yes','yes','yes','yes','no','yes','yes','yes','yes')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,salt,loginkey,usergroup,regdate,allownotices,hideemail,receivepms,pmpopup,pmnotify,remember,showsigs,showavatars,showquickreply) VALUES (NULL,'".addslashes($mybb->input['adminuser'])."','".$saltedpw."','".addslashes($mybb->input['adminemail'])."','$salt','$loginkey','4','$now','yes','no','yes','yes','no','yes','yes','yes','yes')");
 	$uid = $db->insert_id();
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('$uid','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
 	// Automatic Login

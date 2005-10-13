@@ -550,7 +550,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['button_www'] = "";
 		}
-		if($post['hideemail'] != "no")
+		if($post['hideemail'] != "yes")
 		{
 			eval("\$post['button_email'] = \"".$templates->get("postbit_email")."\";");
 		}
