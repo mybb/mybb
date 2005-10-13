@@ -566,7 +566,7 @@ switch($mybb->input['action'])
 		// we need to add code to copy attachments(?), polls, etc etc here
 			$threadarray = array(
 				"tid" => "NULL",
-				"fid" => $thread['fid'],
+				"fid" => $moveto,
 				"subject" => addslashes($thread['subject']),
 				"icon" => $thread['icon'],
 				"uid" => $thread['uid'],

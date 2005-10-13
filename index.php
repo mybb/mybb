@@ -379,6 +379,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 						if($depth == 2 && $forums)
 						{
 							eval("\$subforums = \"".$templates->get("forumbit_subforums")."\";");
+							$forums = "";
 						}
 					}
 					eval("\$forumlisting .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");

@@ -6021,7 +6021,9 @@ $lang->away_since $awaydate &nbsp;&nbsp;&nbsp; $lang->away_returns $returndate
 		<template name="forumdisplay_moderatedby"><![CDATA[<span class="smalltext">$lang->moderated_by <strong>$modlist</strong></span><br />]]></template>
 		<template name="forumbit_depth2_cat"><![CDATA[<tr>
 <td class="tcat">&nbsp;</td>
-<td class="tcat" colspan="5"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><span class="smalltext">$forum[description]</td></tr>]]></template>
+<td class="tcat" colspan="5"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><span class="smalltext">$forum[description]$subforums</span></td></tr>]]></template>
+		<template name="forumbit_depth1_cat_subforum"><![CDATA[<tr>
+<td class="tcat" colspan="6"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><span class="smalltext">$forum[description]</span></td></tr>$forums]]></template>
 		<template name="misc_help"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->help_docs</title>

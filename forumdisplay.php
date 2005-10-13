@@ -709,12 +709,14 @@ if($foruminfo['type'] != "c") {
 function getforums($pid="0", $depth=1, $permissions="")
 {
 	global $fcache, $moderatorcache, $forumpermissions, $settings, $theme, $mybb, $mybbforumread, $mybbuser, $excols, $fcollapse, $templates, $bgcolor, $collapsed, $mybbgroup, $lang, $showdepth;
+	$originaldepth = $depth;
 	if(is_array($fcache[$pid]))
 	{
 		while(list($key, $main) = each($fcache[$pid]))
 		{
 			while(list($key, $forum) = each($main))
 			{
+				$depth = $originaldepth;
 				$perms = $forumpermissions[$forum['fid']];
 				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
 				{
@@ -753,7 +755,14 @@ function getforums($pid="0", $depth=1, $permissions="")
 					$forumread = 0;
 					if($forum['type'] == "c")
 					{
-						$forumcat = "_cat";
+						if($depth == 1)
+						{
+							$forumcat = "_cat_subforum";
+						}
+						else
+						{
+							$forumcat = "_cat";
+						}
 					}
 					else
 					{
@@ -831,13 +840,14 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						$expcolimage = "collapse.gif";
 					}
-					if($fcache[$forum['fid']] && $depth < $showdepth)
+					if($fcache[$forum['fid']] && $originaldepth < $showdepth)
 					{
-						$newdepth = $depth + 1;
+						$newdepth = $originaldepth + 1;
 						$forums = getforums($forum['fid'], $newdepth, $perms);
-						if($depth == 2 && $forums)
+						if($originaldepth == 2 && $forums)
 						{
 							eval("\$subforums = \"".$templates->get("forumbit_subforums")."\";");
+							$forums = "";
 						}
 					}
 					if($depth != 2 && !$subforums)
