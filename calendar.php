@@ -123,6 +123,10 @@ elseif($mybb->input['action'] == "dayview")
 			$age = $year - $bday[2];
 			$age = " ($age $lang->years_old)";
 		}
+		else
+		{
+			$age = "";
+		}
 		$bdays['username'] = formatname($bdays['username'], $bdays['usergroup'], $bdays['displaygroup']);
 		eval("\$birthdays .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
 

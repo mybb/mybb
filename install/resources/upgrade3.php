@@ -297,7 +297,6 @@ function upgrade3_dbchanges2()
 
 	This will break the upgrade for users who have customised help documents
 	
-	*/
 	$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET hid='6' WHERE hid='7'");
 	$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET hid='7' WHERE hid='8'");*/
 	
