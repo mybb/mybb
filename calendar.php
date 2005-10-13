@@ -83,21 +83,21 @@ if($mybb->input['action'] == "event")
 	}
 	if(($event['author'] == $mybb->user['uid'] && $mybb->user['uid'] != 0) || $mybb->usergroup['cancp'] == "yes")
 	{
-		$editbutton = "<a href=\"calendar.php?action=editevent&eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
+		$editbutton = "<a href=\"calendar.php?action=editevent&amp;eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
 		$deletebutton = "<a href=\"javascript:deleteEvent($event[eid]);\"><img src=\"$theme[imglangdir]/postbit_delete.gif\" border=\"0\" alt=\"$lang->alt_delete\" /></a>";
 	}
 	$event['subject'] = htmlspecialchars_uni(stripslashes($event['subject']));
 	$event['description'] = postify($event['description'], "no", "yes", "yes", "yes");
 	if($event['username'])
 	{
-		$eventposter = "<a href=\"member.php?action=profile&uid=$event[author]\">" . formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
+		$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">" . formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
 	}
 	else
 	{
 		$eventposter = $lang->guest;
 	}
 	$eventdate = explode("-", $event['date']);
-	$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
+	$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0]+1, $eventdate[2]);
 	$eventdate = mydate($mybb->settings['dateformat'], $eventdate);
 
 	addnav($lang->nav_viewevent);
@@ -124,7 +124,7 @@ elseif($mybb->input['action'] == "dayview")
 			$age = " ($age $lang->years_old)";
 		}
 		$bdays['username'] = formatname($bdays['username'], $bdays['usergroup'], $bdays['displaygroup']);
-		eval("\$birthdays .= \"".$templates->get("calendar_dayview_birthdays_bday")."\";");
+		eval("\$birthdays .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
 
 		if($alterbg == $theme['trow1'])
 		{
@@ -142,23 +142,23 @@ elseif($mybb->input['action'] == "dayview")
 	{
 		$plugins->run_hooks("calendar_dayview_event");
 
-		if($event['uid'] == $mybb->user['uid'] || $mybb->usergroup['cancp'] == "yes")
+		if(($event['author'] == $mybb->user['uid'] && $mybb->user['uid'] != 0) || $mybb->usergroup['cancp'] == "yes")
 		{
-			$editbutton = "<a href=\"calendar.php?action=editevent&eid=$event[eid]\"><img src=\"$theme[imgdir]/postbit_edit.gif\" border=\"0\" /></a>";
-			$deletebutton = "<a href=\"javascript:deleteEvent($event[eid]);\"><img src=\"$theme[imgdir]/postbit_delete.gif\" border=\"0\" alt=\"Delete this event\" /></a>";
+			$editbutton = "<a href=\"calendar.php?action=editevent&amp;eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
+			$deletebutton = "<a href=\"javascript:deleteEvent($event[eid]);\"><img src=\"$theme[imglangdir]/postbit_delete.gif\" border=\"0\" alt=\"$lang->alt_delete\" /></a>";
 		}
 		$event['subject'] = htmlspecialchars_uni(stripslashes($event['subject']));
 		$event['description'] = postify(stripslashes($event['description']), "no", "yes", "yes", "yes");
 		if($event['username'])
 		{
-			$eventposter = "<a href=\"member.php?action=profile&uid=$event[author]\">" . formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
+			$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">" . formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
 		}
 		else
 		{
 			$eventposter = $lang_guest;
 		}
 		$eventdate = explode("-", $event['date']);
-		$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
+		$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0]+1, $eventdate[2]);
 		$eventdate = mydate($mybb->settings['dateformat'], $eventdate);
 		eval("\$events .= \"".$templates->get("calendar_dayview_event")."\";");
 	}

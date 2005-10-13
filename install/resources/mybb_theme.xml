@@ -2915,7 +2915,7 @@ $footer
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
 <tr>
-<td class="thead" colspan="2"><span style="float:right">$editbutton $deletebutton</span><strong>$event[subject]</strong></td>
+<td class="thead" colspan="2"><strong>$event[subject]</strong></td>
 </tr>
 <tr>
 <td width="30%" class="trow1"><strong>$lang->event_date</strong></td>
@@ -2927,7 +2927,9 @@ $footer
 </tr>
 <tr>
 <td width="30%" class="trow1" valign="top"><strong>$lang->event_details</strong></td>
-<td width="70%" class="trow1">$event[description]</td>
+<td width="70%" class="trow1">
+$event[description]
+<div style="float: right; width: auto; clear: both;">$editbutton $deletebutton</div></td>
 </tr>
 </table>
 </td>
