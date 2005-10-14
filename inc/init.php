@@ -30,6 +30,10 @@ if(!isset($config['dbtype']))
 {
 	$mybb->trigger_generic_error("board_not_installed");
 }
+if(!isset($config['admindir']))
+{
+	$config['admindir'] = "admin";
+}
 $mybb->config = $config;
 
 require "./inc/db_".$config['dbtype'].".php";
