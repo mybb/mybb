@@ -881,7 +881,7 @@ elseif($mybb->input['action'] == "do_resendactivation")
 				$email = $user['email'];
 				$activationcode = $user['code'];
 				$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-				$emailmessage = sprintf($lang->email_activeateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+				$emailmessage = sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
 				mymail($email, $emailsubject, $emailmessage);
 			}
 		}
