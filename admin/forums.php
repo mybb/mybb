@@ -328,6 +328,9 @@ if($mybb->input['action'] == "do_edit") {
 	$fid = intval($mybb->input['fid']);
 	$pid = intval($mybb->input['pid']);
 
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$fid.'");
+	$forum = $db->fetch_array($query);
+
 	if($pid == $fid)
 	{
 		cpmessage($lang->forum_parent_itself);
@@ -385,9 +388,18 @@ if($mybb->input['action'] == "do_edit") {
 			);
 			
 		$db->update_query(TABLE_PREFIX."forums", $sqlarray, "fid='$fid'");
-		$parentlist = makeparentlist($fid);
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET parentlist='$parentlist' WHERE fid='$fid'");
-
+		if($pid != $forum['pid'])
+		{
+			$parentlist = makeparentlist($fid);
+			$db->query("UPDATE ".TABLE_PREFIX."forums SET parentlist='$parentlist' WHERE fid='$fid'");
+			// Rebuild the parentlist of all of the forums this forum was a parent of
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
+			while($childforum = $db->fetch_array($query))
+			{
+				$parentlist = makeparentlist($childforum['fid']);
+				$db->query("UPDATE ".TABLE_PREFIX."forums SET parentlist='$parentlist' WHERE fid='".$childforum['fid']."'");
+			}
+		}
 		$cache->updateforums();
 		$cache->updateforumpermissions();
 	
