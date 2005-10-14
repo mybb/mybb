@@ -97,7 +97,7 @@ if($mybb->input['action'] == "event")
 		$eventposter = $lang->guest;
 	}
 	$eventdate = explode("-", $event['date']);
-	$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0]+1, $eventdate[2]);
+	$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
 	$eventdate = mydate($mybb->settings['dateformat'], $eventdate);
 
 	addnav($lang->nav_viewevent);
@@ -162,7 +162,7 @@ elseif($mybb->input['action'] == "dayview")
 			$eventposter = $lang_guest;
 		}
 		$eventdate = explode("-", $event['date']);
-		$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0]+1, $eventdate[2]);
+		$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
 		$eventdate = mydate($mybb->settings['dateformat'], $eventdate);
 		eval("\$events .= \"".$templates->get("calendar_dayview_event")."\";");
 	}
@@ -172,7 +172,7 @@ elseif($mybb->input['action'] == "dayview")
 	}
 	if($birthdays)
 	{
-		$eventdate = mktime(0, 0, 0, $month, $day+1, $year);
+		$eventdate = mktime(0, 0, 0, $month, $day, $year);
 		$bdaydate = mydate($mybb->settings['dateformat'], $eventdate);
 		$lang->birthdays_on_day = sprintf($lang->birthdays_on_day, $bdaydate);
 		eval("\$bdaylist = \"".$templates->get("calendar_dayview_birthdays")."\";");
