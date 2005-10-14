@@ -2111,33 +2111,21 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 	return(str_replace($find, $replace, $display));
 }
 
-
-function win_years($bm, $bd, $by)
+function get_age($birthday)
 {
-	$age = '';
-	$nd = date('j');
-	$nm = date('n');
-	$ty = (date('Y') - $by);
-	if($nm > $bm)
-	{
-		$age = $ty;
-	}
-	elseif($nm < $bm)
-	{
-		$age = ($ty - 1);
-	}
-	else
-	{
-		if($nd >= $bd)
-		{
-			$age = $ty;
-		}
-		else
-		{
-			$age = ($ty - 1);
-		}
-	}
-	return($age);
+        $bday = explode("-", $birthday);
+        if($bday[2] < 1970)
+        {
+                $years = 1970-$bday[2];
+                $year = $bday[2]+($years*2);
+                $stamp = mktime(0, 0, 0, $bday[1], $bday[0], $year)-($years*31556926*2);
+        }
+        else
+        {
+                $stamp = mktime(0, 0, 0, $bday[1], $bday[0], $bday[2]);
+        }
+        $age = floor((time()-$stamp)/31556926);
+        return $age;
 }
 
 function update_first_post($tid)
