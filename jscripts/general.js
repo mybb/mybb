@@ -50,7 +50,7 @@ function popupWin(url, window_name, window_width, window_height) {
 	settings= "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes"; 
 	if(window_width)
 	{
-		settings = settings+",width="+window_width+;
+		settings = settings+",width="+window_width;
 	}
 	if(window_height)
 	{
