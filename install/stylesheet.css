@@ -136,9 +136,9 @@ input[type="submit"] {
 }
 
 h2 {
-margin: 0;
-font-size: 24px;
-height: 32px;
+	margin: 0;
+	font-size: 24px;
+	height: 32px;
 	padding-left: 40px;
 }
 
@@ -235,7 +235,7 @@ margin: 15px;
 	margin-bottom: 10px;
 }
 
-.error h3 {
-	background: url('images/error_bg.gif') no-repeat middle left;
+.error h3, .errormsg {
+	background: url('images/error_bg.gif') no-repeat left;
 	color: red;
 }

@@ -45,6 +45,10 @@ END;
 
 		<div id="header">$this->title</div>
 END;
+		if(empty($this->steps))
+		{
+			$this->steps = array("");
+		}
 		if(is_array($this->steps) && !empty($this->steps))
 		{
 		echo "\n		<div id=\"progress\">";

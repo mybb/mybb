@@ -216,8 +216,9 @@ class databaseEngine {
 	{
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
-		$exists = $this->query("SELECT 1 FROM $table LIMIT 0");
-		if($exists)
+		$query = $this->query("SHOW TABLES LIKE '$table'");
+		$exists = $this->num_rows($query);
+		if($exists > 0)
 		{
 			return true;
 		}
@@ -225,14 +226,19 @@ class databaseEngine {
 		{
 			return false;
 		}
+		$this->error_reporting = $err;
 	}
 
 	// Check if a field exists in the database
 	function field_exists($field, $table)
 	{
 		global $db;
-		$this->query("SELECT COUNT($field) AS count FROM $table", 1);
-		if($this->errno())
+		$err = $this->error_reporting;
+		$this->error_reporting = 0;
+		$this->query("SHOW COLUMNS FROM $table LIKE '$field'");
+		$exists = $this->num_rows($query);
+		$this->error_reporting = $err;
+		if($exists > 0)
 		{
 			return false;
 		}
