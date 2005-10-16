@@ -304,7 +304,7 @@ To view the thread, you can go to the following URL:
 There may also be other new threads and replies but you will not receive anymore notifications until you visit the board again.
 
 Thank you,
-{4} team
+{4} Staff
 
 ------------------------------------------
 Unsubscription Information:
@@ -346,7 +346,7 @@ To view the thread, you can go to the following URL:
 There may also be other replies to this thread but you will not receive anymore notifications until you visit the board again.
 
 Thank you,
-{3} team
+{3} Staff
 
 ------------------------------------------
 Unsubscription Information:
@@ -364,7 +364,7 @@ One or more users may have tried to send you private messages and were unsuccess
 Please delete some of your private messages you currently have stored, remembering to also delete them from the 'Trash Can'.
 
 Thank you,
-{2}
+{2} Staff
 {3}";
 $l['email_changeemail'] = "{1},
 
@@ -388,7 +388,7 @@ Activation Code: {6}
 If you choose not to validate your new email address your profile will not be updated and will still contain your existing email address.
 
 Thank you,
-{2}
+{2} Staff
 {5}";
 
 $l['email_newpm'] = "{1},
@@ -397,13 +397,13 @@ You have received a new private message on {3} from {2}. To view this message, y
 
 {4}/private.php
 
-Please note that you will not receive any further notifications of new messages until you visit {1}.
+Please note that you will not receive any further notifications of new messages until you visit {3}.
 
-You can disable new message noitifications on your account options page:
+You can disable new message notifications on your account options page:
 
-{1}/usercp.php?action=options
+{4}/usercp.php?action=options
 
 Thank you,
-{1}
-{2}";
+{3} Staff
+{4}";
 ?>
