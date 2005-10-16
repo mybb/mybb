@@ -1510,27 +1510,14 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$flist = "";
-		if($mybb->usergroup['issupermod'] != "yes")
-		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators WHERE uid='".$mybb->user[uid]."'");
-			while($forum = $db->fetch_array($query))
-			{
-				$flist .= ",'".$forum['fid']."'";
-			}
-		}
-		if($flist)
-		{
-			$flist2 = "WHERE fid IN (0$flist)";
-			$flistr = "AND r.fid IN (0$flist)";
-		}
-		$query = $db->query("SELECT fid,name FROM ".TABLE_PREFIX."forums $flist2");
+
+		$query = $db->query("SELECT fid,name FROM ".TABLE_PREFIX."forums");
 		while($forum = $db->fetch_array($query))
 		{
 			$forums[$forum['fid']] = $forum['name'];
 		}
 		$trow = "trow1";
-		$query = $db->query("SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject FROM ".TABLE_PREFIX."reportedposts r LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid) LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid) LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid) WHERE r.reportstatus ='0' $flistr ORDER BY r.dateline ASC");
+		$query = $db->query("SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject FROM ".TABLE_PREFIX."reportedposts r LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid) LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid) LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid) WHERE r.reportstatus ='0' ORDER BY r.dateline ASC");
 		while($report = $db->fetch_array($query))
 		{
 			$reportdate = mydate($mybb->settings['dateformat'], $report['dateline']);

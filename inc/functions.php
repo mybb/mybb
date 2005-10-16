@@ -762,7 +762,7 @@ function ismod($fid="0", $action="", $uid="0")
 		{
 			$query = $db->query("SELECT mid FROM ".TABLE_PREFIX."moderators WHERE uid='$uid'");
 			$modcheck = $db->fetch_array($query);
-			if($ismod['mid'])
+			if($modcheck['mid'])
 			{
 				return "yes";
 			}
