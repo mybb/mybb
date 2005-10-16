@@ -248,8 +248,8 @@ function doquotes($message)
 	$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\]#si",
 					 "#\[quote\](.*?)\[\/quote\]#si");
 	
-	$replace = array("</p><div class=\"quote_header\">$1 $lang->wrote</div><div class=\"quote_body\">$2</div><p>",
-					 "</p><div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div><p>\n");
+	$replace = array("<div class=\"quote_header\">$1 $lang->wrote</div><div class=\"quote_body\">$2</div>",
+					 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>\n");
 	
 	while (preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
 	{
@@ -285,8 +285,8 @@ function docode($message)
 	$pattern = array("#\[code\](.*?)#si",
 					 "#\[\/code\]#si");
 
-	$replace = array("</p><div class=\"code_header\">$lang->code</div><div class=\"code_body\">",
-					 "</div><p>\n");
+	$replace = array("<div class=\"code_header\">$lang->code</div><div class=\"code_body\">",
+					 "</div>\n");
 
 	$message = preg_replace($pattern, $replace, $message, $limit);
 	$message = str_replace("<div class=\"code_body\"><br />", "<div class=\"code_body\">", $message);
