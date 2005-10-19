@@ -583,7 +583,7 @@ function makepostbit($post, $pmprevann=0)
 	else
 	{ // Message was posted by a guest or an unknown user
 		$post['username'] = $post['username'];
-		$post['profilelink'] = $post['username'];
+		$post['profilelink'] = formatname($post['username'], 1);
 		if($usergroup['usertitle'])
 		{
 			$post['usertitle'] = $usergroup['usertitle'];
