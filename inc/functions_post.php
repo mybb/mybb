@@ -791,20 +791,22 @@ function makepostbit($post, $pmprevann=0)
 		$post['icon'] = "";
 	}
 	$GLOBALS['post'] =& $post;
-	if(!$pmprevann)
+	switch($pmprevann)
 	{
-		eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
-		$plugins->run_hooks("postbit");
+		case 1: // Message preview
+			$plugins->run_hooks("postbit_prev");
+			break;
+		case 2: // Private message
+			$plugins->run_hooks("postbit_pm");
+			break;
+		case 3: // Announcement
+			$plugins->run_hooks("postbit_announcement");
+			break;
+		default: // Regular post
+			eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
+			$plugins->run_hooks("postbit");
+			break;
 	}
-	elseif($pmprevann == 2)
-	{
-		$plugins->run_hooks("postbit_pm");
-	}
-	elseif($pmprevann == 3)
-	{
-		$plugins->run_hooks("postbit_announcement");
-	}
-
 	eval("\$postbit = \"".$templates->get("postbit")."\";");
 	return $postbit;
 	$GLOBALS['post'] = "";
