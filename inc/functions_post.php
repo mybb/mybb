@@ -796,11 +796,11 @@ function makepostbit($post, $pmprevann=0)
 		eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
 		$plugins->run_hooks("postbit");
 	}
-	elseif($pmprevann == 1)
+	elseif($pmprevann == 2)
 	{
 		$plugins->run_hooks("postbit_pm");
 	}
-	elseif($pmprevann == 2)
+	elseif($pmprevann == 3)
 	{
 		$plugins->run_hooks("postbit_announcement");
 	}
