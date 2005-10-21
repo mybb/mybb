@@ -391,7 +391,7 @@ if($mybb->input['action'] == "do_newthread")
 			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 			if($mybb->user['uid'])
 			{
-				error($lang->error_invalidpass);
+				error($lang->error_invalidpassword);
 			}
 			$mybb->input['username'] = $username = $mybb->user['username'];
 			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
