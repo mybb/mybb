@@ -341,6 +341,13 @@ if(intval($mybb->input['page']) > 0)
 {
 	$page = $mybb->input['page'];
 	$start = ($page-1) *$perpage;
+	$pages = $threadcount / $perpage;
+	$pages = ceil($pages);
+	if($page > $pages)
+	{
+		$start = 0;
+		$page = 1;
+	}
 }
 else
 {
