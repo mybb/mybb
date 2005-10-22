@@ -328,7 +328,7 @@ if($mybb->input['action'] == "do_edit") {
 	$fid = intval($mybb->input['fid']);
 	$pid = intval($mybb->input['pid']);
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$fid.'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$fid."'");
 	$forum = $db->fetch_array($query);
 
 	if($pid == $fid)
