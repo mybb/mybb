@@ -375,6 +375,8 @@ if($mybb->input['action'] == "thread") {
 			$start = 0;
 			$page = 1;
 		}
+		$upper = $start+$perpage;
+
 		$multipage = multipage($postcount, $perpage, $page, "showthread.php?tid=$tid");
 		if($postcount > $perpage) {
 			eval("\$threadpages = \"".$templates->get("showthread_multipage")."\";");
