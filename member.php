@@ -390,7 +390,7 @@ if($mybb->input['action'] == "do_register")
 			"usergroup" => $usergroup,
 			"regdate" => $timenow,
 			"lastactive" => $timenow,
-			"lastvisit" => $lastvisit,
+			"lastvisit" => intval($lastvisit),
 			"website" => addslashes($website),
 			"icq" => intval($mybb->input['icq']),
 			"aim" => addslashes($mybb->input['aim']),
