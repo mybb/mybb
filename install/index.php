@@ -497,7 +497,7 @@ function insert_templates()
 	$db->query("DELETE FROM ".TABLE_PREFIX."themes");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates");
 	$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid,css,cssbits,themebits,extracss) VALUES (NULL,'MyBB Master Style','0','','','','')");
-	$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid,def,css,cssbits,themebits,extracss) VALUES (NULL,'MyBB Default','1','1','''','','')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid,def,css,cssbits,themebits,extracss) VALUES (NULL,'MyBB Default','1','1','','','','')");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (sid,title) VALUES (NULL,'Default Templates');");
 	$templateset = $db->insert_id();	
 	$arr = @file("./resources/mybb_theme.xml");
