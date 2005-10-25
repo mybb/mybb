@@ -543,7 +543,6 @@ switch($mybb->input['action'])
 			$db->query("UPDATE ".TABLE_PREFIX."threads SET fid='$moveto' WHERE tid='$tid'");
 			$db->query("UPDATE ".TABLE_PREFIX."posts SET fid='$moveto' WHERE tid='$tid'");
 			$threadarray = array(
-				"tid" => "NULL",
 				"fid" => $thread['fid'],
 				"subject" => addslashes($thread['subject']),
 				"icon" => $thread['icon'],
@@ -565,7 +564,6 @@ switch($mybb->input['action'])
 		{ // copy thread
 		// we need to add code to copy attachments(?), polls, etc etc here
 			$threadarray = array(
-				"tid" => "NULL",
 				"fid" => $moveto,
 				"subject" => addslashes($thread['subject']),
 				"icon" => $thread['icon'],
@@ -591,9 +589,9 @@ switch($mybb->input['action'])
 					$postssql .= ", ";
 				}
 				$post['message'] = addslashes($post['message']);
-				$postssql .= "(NULL,'$newtid','$moveto','$post[subject]','$post[icon]','$post[uid]','$post[username]','$post[dateline]','$post[message]','$post[ipaddress]','$post[includesig]','$post[smilieoff]','$post[edituid]','$post[edittime]','1')";
+				$postssql .= "('$newtid','$moveto','$post[subject]','$post[icon]','$post[uid]','$post[username]','$post[dateline]','$post[message]','$post[ipaddress]','$post[includesig]','$post[smilieoff]','$post[edituid]','$post[edittime]','1')";
 			}
-			$db->query("INSERT INTO ".TABLE_PREFIX."posts (pid,tid,fid,subject,icon,uid,username,dateline,message,ipaddress,includesig,smilieoff,edituid,edittime,visible) VALUES $postssql");
+			$db->query("INSERT INTO ".TABLE_PREFIX."posts (tid,fid,subject,icon,uid,username,dateline,message,ipaddress,includesig,smilieoff,edituid,edittime,visible) VALUES $postssql");
 			logmod($modlogdata, $lang->thread_copied);
 
 			update_first_post($newtid);
@@ -889,7 +887,6 @@ switch($mybb->input['action'])
 		}
 		$newsubject = addslashes($mybb->input['newsubject']);
 		$query = array(
-			"tid" => "NULL",
 			"fid" => $moveto,
 			"subject" => $newsubject,
 			"icon" => $thread['icon'],
@@ -1369,7 +1366,7 @@ switch($mybb->input['action'])
 			error($lang->error_invalidforum);
 		}
 		$newsubject = addslashes($mybb->input['newsubject']);
-		$db->query("INSERT INTO ".TABLE_PREFIX."threads (tid,fid,subject,icon,uid,username,dateline,lastpost,lastposter,replies,visible) VALUES (NULL,'$moveto','$newsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$numyes','1')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."threads (fid,subject,icon,uid,username,dateline,lastpost,lastposter,replies,visible) VALUES ('$moveto','$newsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$numyes','1')");
 		$newtid = $db->insert_id();
 		// move the selected posts over
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET tid='$newtid', fid='$moveto' WHERE pid IN($pidin)");

@@ -96,7 +96,6 @@ if($mybb->input['action'] == "do_add") {
 		cperror($lang->name_exists);
 	}
 	$newtemplate = array(
-		"tid" => "NULL",
 		"title" => addslashes($mybb->input['title']),
 		"template" => addslashes($mybb->input['template']),
 		"sid" => $mybb->input['setid']
@@ -119,7 +118,6 @@ if($mybb->input['action'] == "do_add") {
 }
 if($mybb->input['action'] == "do_addset") {
 	$newset = array(
-		"sid" => "NULL",
 		"title" => addslashes($mybb->input['title'])
 		);
 	$db->insert_query(TABLE_PREFIX."templatesets", $newset);
@@ -340,7 +338,6 @@ if($mybb->input['action'] == "makeoriginals") {
 			$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "title='".$template['title']."' AND sid='-2'");
 		} else {
 			$newtemplate = array(
-				"tid" => "NULL",
 				"sid" => -2,
 				"title" => addslashes($template['title']),
 				"template" => addslashes($template['template'])

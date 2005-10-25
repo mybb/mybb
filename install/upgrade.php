@@ -213,8 +213,8 @@ function upgradethemes()
 		  extracss text NOT NULL,
 		  PRIMARY KEY  (tid)
 		) TYPE=MyISAM;");
-		$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid) VALUES (NULL,'MyBB Master Style','0')");
-		$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid,def) VALUES (NULL,'MyBB Default','1','1')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid) VALUES ('MyBB Master Style','0')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,def) VALUES ('MyBB Default','1','1')");
 		$sid = $db->insert_id();
 		$db->query("UPDATE ".TABLE_PREFIX."users SET style='$sid'");
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templatesets;");
@@ -223,7 +223,7 @@ function upgradethemes()
 		  title varchar(120) NOT NULL default '',
 		  PRIMARY KEY  (sid)
 		) TYPE=MyISAM;");
-		$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (sid,title) VALUES (NULL,'Default Templates')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('Default Templates')");
 	}
 	$sid = -2;
 
@@ -435,7 +435,6 @@ function sync_settings($redo=0)
 		if(!$settinggroups[$settinggroup['attributes']['name']] || $redo == 2)
 		{
 			$groupdata = array(
-				"gid" => "NULL",
 				"name" => addslashes($settinggroup['attributes']['name']),
 				"description" => addslashes($settinggroup['attributes']['description']),
 				"disporder" => intval($settinggroup['attributes']['disporder']),
@@ -458,7 +457,6 @@ function sync_settings($redo=0)
 			if(!$settings[$setting['attributes']['name']] || $redo == 2)
 			{
 				$settingdata = array(
-					"sid" => "NULL",
 					"name" => addslashes($setting['attributes']['name']),
 					"title" => addslashes($setting['title'][0]['value']),
 					"description" => addslashes($setting['description'][0]['value']),

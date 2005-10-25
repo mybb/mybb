@@ -57,7 +57,7 @@ if($mybb->input['action'] == "do_add")
 	$db->insert_query(TABLE_PREFIX."profilefields", $sqlarray);
 	$fid = $db->insert_id();
 	$fieldname = "fid$fid";
-	$db->query("ALTER TABLE ".TABLE_PREFIX."userfields ADD $fieldname TEXT NOT NULL");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."userfields ADD $fieldname TEXT;");
 	$db->query("OPTIMIZE TABLE ".TABLE_PREFIX."userfields");
 	cpredirect("profilefields.php", $lang->field_added);
 }

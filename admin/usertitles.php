@@ -40,7 +40,6 @@ if($mybb->input['action'] == "do_add")
 	}
 
 	$usertitle = array(
-		"utid" => "NULL",
 		"posts" => intval($mybb->input['posts']),
 		"title" => addslashes($mybb->input['title']),
 		"stars" => intval($mybb->input['stars']),

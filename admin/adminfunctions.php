@@ -1015,7 +1015,7 @@ function savequickperms($fid)
 			{
 				$ppost = "yes";
 			}
-			$db->query("INSERT INTO ".TABLE_PREFIX."forumpermissions (pid,fid,gid,canview,candlattachments,canpostthreads,canpostreplys,canpostattachments,canratethreads,caneditposts,candeleteposts,candeletethreads,caneditattachments,canpostpolls,canvotepolls,cansearch) VALUES (NULL,'$fid','$usergroup[gid]', '$pview', '$pview', '$pthreads', '$preplies', '$pattachments', '$pview', '$ppost', '$ppost', '$pthreads', '$pattachments', '$ppolls', '$pview', '$pview')");
+			$db->query("INSERT INTO ".TABLE_PREFIX."forumpermissions (fid,gid,canview,candlattachments,canpostthreads,canpostreplys,canpostattachments,canratethreads,caneditposts,candeleteposts,candeletethreads,caneditattachments,canpostpolls,canvotepolls,cansearch) VALUES ('$fid','$usergroup[gid]', '$pview', '$pview', '$pthreads', '$preplies', '$pattachments', '$pview', '$ppost', '$ppost', '$pthreads', '$pattachments', '$ppolls', '$pview', '$pview')");
 		}
 	}
 	$cache->updateforumpermissions();

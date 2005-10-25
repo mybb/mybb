@@ -205,7 +205,7 @@ function add_favorite_thread($tid, $uid="")
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$uid."','".$tid."','f')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".$uid."','".$tid."','f')");
 	}
 	return true;
 }
@@ -248,7 +248,7 @@ function add_subscribed_thread($tid, $uid="")
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$uid."','".$tid."','s')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".$uid."','".$tid."','s')");
 	}
 	return true;
 }
@@ -291,7 +291,7 @@ function add_subscribed_forum($fid, $uid="")
 	$fsubscription = $db->fetch_array($query);
 	if(!$fsubscription['fid'])
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."forumsubscriptions (fsid,fid,uid) VALUES (NULL,'".$fid."','".$uid."')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."forumsubscriptions (fid,uid) VALUES ('".$fid."','".$uid."')");
 	}
 	return true;
 }

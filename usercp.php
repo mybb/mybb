@@ -897,7 +897,6 @@ elseif($mybb->input['action'] == "do_email")
 		$now = time();
 		$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$mybb->user['uid']."'");
 		$newactivation = array(
-			"aid" => "NULL",
 			"uid" => $mybb->user['uid'],
 			"dateline" => time(),
 			"code" => $activationcode,
@@ -1725,7 +1724,6 @@ elseif($mybb->input['action'] == "usergroups")
 			$reason = addslashes($reason);
 			$now = time();
 			$joinrequest = array(
-				"rid" => "NULL",
 				"uid" => $mybb->user['uid'],
 				"gid" => intval($mybb->input['joingroup']),
 				"reason" => addslashes($mybb->input['reason']),

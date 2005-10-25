@@ -204,7 +204,6 @@ if($mybb->input['action'] == "do_add")
 
 	$timenow = time();
 	$user = array(
-		"uid" => "NULL",
 		"username" => addslashes($mybb->input['userusername']),
 		"password" => $md5password,
 		"salt" => $salt,
@@ -277,7 +276,6 @@ if($mybb->input['action'] == "do_add")
 		$activationcode = random_str();
 		$now = time();
 		$activationarray = array(
-			"aid" => "NULL",
 			"uid" => $uid,
 			"dateline" => time(),
 			"code" => $activationcode,
@@ -554,7 +552,7 @@ if($mybb->input['action'] == "do_email")
 			elseif($searchop['type'] == "pm")
 			{
 				$now = time();
-				$db->query("INSERT INTO ".TABLE_PREFIX."privatemessages(pmid,uid,toid,fromid,folder,subject,message,dateline,status,receipt) VALUES(NULL,'$user[uid]','$user[uid]','$mybbadmin[uid]','1','$searchop[subject]','$sendmessage','$now','0','no');");
+				$db->query("INSERT INTO ".TABLE_PREFIX."privatemessages(uid,toid,fromid,folder,subject,message,dateline,status,receipt) VALUES('$user[uid]','$user[uid]','$mybbadmin[uid]','1','$searchop[subject]','$sendmessage','$now','0','no');");
 				echo sprintf($lang->pm_sent, $user['username']);
 			}
 			elseif($user['email'] != "")

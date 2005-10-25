@@ -52,7 +52,6 @@ if($mybb->input['action'] == "do_add")
 		cpmessage($lang->theme_exists);
 	}
 	$themearray = array(
-		"tid" => "NULL",
 		"name" => addslashes($mybb->input['name']),
 		"pid" => $mybb->input['pid'],
 		);
@@ -297,7 +296,6 @@ if($mybb->input['action'] == "do_import")
 		$mybb->input['pid'] = 1;
 	}
 	$themearray = array(
-		"tid" => "NULL",
 		"name" => addslashes($name),
 		"pid" => $mybb->input['pid'],
 		);

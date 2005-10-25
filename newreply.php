@@ -577,7 +577,7 @@ if($mybb->input['action'] == "do_newreply" )
 			$subcheck = $db->fetch_array($query);
 			if(!$subcheck['uid'])
 			{
-				$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$mybb->user[uid]."','$tid','s')");
+				$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".$mybb->user[uid]."','$tid','s')");
 			}
 		}
 	}
@@ -651,7 +651,6 @@ if($mybb->input['action'] == "do_newreply" )
 	else
 	{
 		$newreply = array(
-			"pid" => "NULL",
 			"tid" => intval($tid),
 			"replyto" => intval($mybb->input['replyto']),
 			"fid" => $fid,

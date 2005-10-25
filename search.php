@@ -343,7 +343,6 @@ elseif($mybb->input['action'] == "findguest")
 	$wheresql = " AND p.uid < 1";
 	$now = time();
 	$searcharray = array(
-		"sid" => "NULL",
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,
@@ -362,7 +361,6 @@ elseif($mybb->input['action'] == "finduser")
 	$wheresql = "1=1";
 	$wheresql .= " AND p.uid='".intval($mybb->input['uid'])."'";
 	$searcharray = array(
-		"sid" => "NULL",
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,
@@ -380,7 +378,6 @@ elseif($mybb->input['action'] == "finduserthreads")
 	$wheresql = "1=1";
 	$wheresql .= " AND t.uid='".intval($mybb->input['uid'])."'";
 	$searcharray = array(
-		"sid" => "NULL",
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,
@@ -424,7 +421,6 @@ elseif($mybb->input['action'] == "getnew")
 	}
 	$wheresql .= " AND t.lastpost >= '".$mybb->user[lastvisit]."'";
 	$searcharray = array(
-		"sid" => "NULL",
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,
@@ -472,7 +468,6 @@ elseif($mybb->input['action'] == "getdaily")
 	$datecut = $now-$thing;
 	$wheresql .= " AND t.lastpost >= '$datecut'";
 	$searcharray = array(
-		"sid" => "NULL",
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,
@@ -651,7 +646,6 @@ elseif($mybb->input['action'] == "do_search")
 	}
 	$wheresql = addslashes($wheresql);
 	$searcharray = array(
-		"sid" => "NULL",
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,

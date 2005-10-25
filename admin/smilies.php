@@ -39,7 +39,6 @@ if($mybb->input['action'] == "do_add")
 		cperror($lang->error_fill_form);
 	}
 	$newsmilie = array(
-		"sid" => "NULL",
 		"name" => addslashes($mybb->input['name']),
 		"find" => addslashes($mybb->input['find']),
 		"image" => addslashes($mybb->input['path']),
@@ -180,7 +179,6 @@ if($mybb->input['action'] == "do_addmultiple")
 				$name = $smname[$image];
 				$imageurl = $path."/".$image;
 				$newsmilie = array(
-					"sid" => "NULL",
 					"name" => addslashes($name),
 					"find" => addslashes($find),
 					"image" => addslashes($imageurl),

@@ -89,7 +89,6 @@ if($mybb->input['action'] == "do_add")
 	$startdate = gmmktime($startdatehour, intval($mybb->input['startdatemin']), 0, intval($mybb->input['startdatemonth']), intval($mybb->input['startdateday']), intval($mybb->input['startdateyear']));
 	$enddate = gmmktime($enddatehour, intval($mybb->input['enddatemin']), 0, intval($mybb->input['enddatemonth']), intval($mybb->input['enddateday']), intval($mybb->input['enddateyear']));
 	$sqlarray = array(
-		"aid" => "NULL", 
 		"fid" => $fid,
 		"uid" => $mybbadmin['uid'],
 		"subject" => $subject,

@@ -428,8 +428,8 @@ class session
 		$onlinedata['time'] = time();
 		$onlinedata['location'] = addslashes(get_current_location());
 		$onlinedata['useragent'] = addslashes($this->useragent);
-		$onlinedata['location1'] = $speciallocs['1'];
-		$onlinedata['location2'] = $speciallocs['2'];
+		$onlinedata['location1'] = intval($speciallocs['1']);
+		$onlinedata['location2'] = intval($speciallocs['2']);
 		$sid = addslashes($sid);
 
 		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
@@ -462,8 +462,8 @@ class session
 		$onlinedata['ip'] = $this->ipaddress;
 		$onlinedata['location'] = addslashes(get_current_location());
 		$onlinedata['useragent'] = addslashes($this->useragent);
-		$onlinedata['location1'] = $speciallocs['1'];
-		$onlinedata['location2'] = $speciallocs['2'];
+		$onlinedata['location1'] = intval($speciallocs['1']);
+		$onlinedata['location2'] = intval($speciallocs['2']);
 		$db->insert_query(TABLE_PREFIX."sessions", $onlinedata);
 		$this->sid = $onlinedata['sid'];
 		$this->uid = $onlinedata['uid'];

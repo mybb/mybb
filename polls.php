@@ -229,7 +229,6 @@ if($mybb->input['action'] == "do_newpoll")
 		$timeout = 0;
 	}
 	$newpoll = array(
-		"pid" => "NULL",
 		"tid" => $thread['tid'],
 		"question" => addslashes($mybb->input['question']),
 		"dateline" => time(),
@@ -722,7 +721,7 @@ if($mybb->input['action'] == "vote")
 				{
 					$votesql .= ",";
 				}
-				$votesql .= "(NULL,'".$poll['pid']."','".$mybb->user['uid']."','$voteoption','$now')";
+				$votesql .= "('".$poll['pid']."','".$mybb->user['uid']."','$voteoption','$now')";
 				$votesarray[$voteoption-1]++;
 				$numvotes = $numvotes+1;
 			}
@@ -734,12 +733,12 @@ if($mybb->input['action'] == "vote")
 		{
 			error($lang->error_nopolloptions);
 		}
-		$votesql = "(NULL,'".$poll['pid']."','".$mybb->user['uid']."','".addslashes($option)."','$now')";
+		$votesql = "('".$poll['pid']."','".$mybb->user['uid']."','".addslashes($option)."','$now')";
 		$votesarray[$option-1]++;
 		$numvotes = $numvotes+1;
 	}
 
-	$db->query("INSERT INTO ".TABLE_PREFIX."pollvotes VALUES $votesql");
+	$db->query("INSERT INTO ".TABLE_PREFIX."pollvotes (pid,uid,voteoption,dateline) VALUES $votesql");
 	$voteslist = "";
 	for($i=1;$i<=$poll['numoptions'];$i++)
 	{

@@ -496,9 +496,9 @@ function insert_templates()
 
 	$db->query("DELETE FROM ".TABLE_PREFIX."themes");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates");
-	$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid,css,cssbits,themebits,extracss) VALUES (NULL,'MyBB Master Style','0','','','','')");
-	$db->query("INSERT INTO ".TABLE_PREFIX."themes (tid,name,pid,def,css,cssbits,themebits,extracss) VALUES (NULL,'MyBB Default','1','1','','','','')");
-	$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (sid,title) VALUES (NULL,'Default Templates');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,css,cssbits,themebits,extracss) VALUES ('MyBB Master Style','0','','','','')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,def,css,cssbits,themebits,extracss) VALUES ('MyBB Default','1','1','','','','')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('Default Templates');");
 	$templateset = $db->insert_id();	
 	$arr = @file("./resources/mybb_theme.xml");
 	$contents = @implode("", $arr);
@@ -516,7 +516,7 @@ function insert_templates()
 	{
 		$templatename = $template['attributes']['name'];
 		$templatevalue = addslashes($template['value']);
-		$db->query("INSERT INTO ".TABLE_PREFIX."templates VALUES (NULL,'$templatename','$templatevalue','$sid')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid) VALUES ('$templatename','$templatevalue','$sid')");
 	}
 	update_theme(1, 0, $themebits, $css, 0);
 	
@@ -689,7 +689,6 @@ function create_admin_user()
 		foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
 		{
 			$groupdata = array(
-				"gid" => "NULL",
 				"name" => addslashes($settinggroup['attributes']['name']),
 				"description" => addslashes($settinggroup['attributes']['description']),
 				"disporder" => intval($settinggroup['attributes']['disporder']),
@@ -701,7 +700,6 @@ function create_admin_user()
 			foreach($settinggroup['setting'] as $setting)
 			{
 				$settingdata = array(
-					"sid" => "NULL",
 					"name" => addslashes($setting['attributes']['name']),
 					"title" => addslashes($setting['title'][0]['value']),
 					"description" => addslashes($setting['description'][0]['value']),
@@ -809,8 +807,49 @@ function install_done()
 	$salt = random_str();
 	$loginkey = generate_loginkey();
 	$saltedpw = md5(md5($salt).md5($mybb->input['adminpass']));
-	$db->query("INSERT INTO ".TABLE_PREFIX."users (uid,username,password,email,salt,loginkey,usergroup,regdate,allownotices,hideemail,receivepms,pmpopup,pmnotify,remember,showsigs,showavatars,showquickreply) VALUES (NULL,'".addslashes($mybb->input['adminuser'])."','".$saltedpw."','".addslashes($mybb->input['adminemail'])."','$salt','$loginkey','4','$now','yes','no','yes','yes','no','yes','yes','yes','yes')");
+
+	$newuser = array(
+		"username" => addslashes($mybb->input['adminuser']),
+		"password" => $saltedpw,
+		"salt" => $salt,
+		"loginkey" => $loginkey,
+		"email" => addslashes($mybb->input['adminemail']),
+		"usergroup" => 4,
+		"regdate" => $now,
+		"lastactive" => $now,
+		"lastvisit" => intval($now),
+		"website" => "",
+		"icq" => "",
+		"aim" => "",
+		"yahoo" => "",
+		"msn" =>"",
+		"birthday" => "",
+		"allownotices" => "yes",
+		"hideemail" => "no",
+		"emailnotify" => "no",
+		"receivepms" => "yes",
+		"pmpopup" => "yes",
+		"pmnotify" => "yes",
+		"remember" => "yes",
+		"showsigs" => "yes",
+		"showavatars" => "yes",
+		"showquickreply" => "yes",
+		"invisible" => "no",
+		"style" => '0',
+		"timezone" => 0,
+		"dst" => "no",
+		"threadmode" => "",
+		"daysprune" => 0,
+		"regip" => $ipaddress,
+		"language" => "",
+		"showcodebuttons" => 1,
+		"tpp" => 0,
+		"ppp" => 0,
+		"referrer" => 0
+		);
+	$db->insert_query(TABLE_PREFIX."users", $newuser);
 	$uid = $db->insert_id();
+	
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('$uid','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
 	// Automatic Login
 	mysetcookie("mybbadmin", $uid."_".$loginkey);

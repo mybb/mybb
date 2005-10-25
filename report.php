@@ -80,7 +80,6 @@ elseif($mybb->input['action'] == "do_report")
 			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != "no")
 			{
 				$reportpm = array(
-					"pmid" => "NULL",
 					"uid" => $mod['uid'],
 					"toid" => $mod['uid'],
 					"fromid" => -2,
@@ -103,7 +102,6 @@ elseif($mybb->input['action'] == "do_report")
 	else
 	{
 		$reportedpost = array(
-			"rid" => "NULL",
 			"pid" => intval($mybb->input['pid']),
 			"tid" => $thread['tid'],
 			"fid" => $thread['fid'],

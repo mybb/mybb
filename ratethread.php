@@ -68,11 +68,11 @@ else
 	$db->query("UPDATE ".TABLE_PREFIX."threads SET numratings=numratings+1, totalratings=totalratings+'".$mybb->input['rating']."' WHERE tid='".intval($mybb->input['tid'])."'");
 	if($mybb->user['uid'] != "0")
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."threadratings (rid,tid,uid,rating,ipaddress) VALUES (NULL,'".intval($mybb->input['tid'])."','".$mybb->user[uid]."','".$mybb->input['rating']."','$ipaddress')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."threadratings (tid,uid,rating,ipaddress) VALUES ('".intval($mybb->input['tid'])."','".$mybb->user[uid]."','".$mybb->input['rating']."','$ipaddress')");
 	}
 	else
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."threadratings (rid,tid,rating,ipaddress) VALUES (NULL,'".intval($mybb->input['tid'])."','".$mybb->input['rating']."','$ipaddress')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."threadratings (tid,rating,ipaddress) VALUES ('".intval($mybb->input['tid'])."','".$mybb->input['rating']."','$ipaddress')");
 		$time = time();
 		mysetcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
 	}

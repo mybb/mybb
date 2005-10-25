@@ -76,7 +76,6 @@ if($mybb->input['action'] == "do_add") {
 			$mybb->input['type'] = addslashes($mybb->input['code']);
 		}
 		$settingarray = array(
-			"sid" => "NULL",
 			"name" => addslashes($mybb->input['name']),
 			"title" => addslashes($mybb->input['title']),
 			"description" => addslashes($mybb->input['description']),
@@ -98,7 +97,6 @@ if($mybb->input['action'] == "do_add") {
 			cperror($lang->group_exists);
 		}
 		$settinggrouparray = array(
-			"gid" => "NULL",
 			"name" => addslashes($mybb->input['name']),
 			"description" => addslashes($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])

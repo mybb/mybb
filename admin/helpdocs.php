@@ -38,7 +38,6 @@ if($mybb->input['action'] == "do_add")
 	if($mybb->input['add'] == "doc")
 	{
 		$sqlarray = array(
-			"sid" => intval($mybb->input['sid']),
 			"name" => addslashes($mybb->input['name']),
 			"description" => addslashes($mybb->input['description']),
 			"document" => addslashes($mybb->input['document']),

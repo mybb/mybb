@@ -72,7 +72,6 @@ if($mybb->input['action'] == "do_add")
 		$mybb->input['ustars'] = 0;
 	}
 	$grouparray = array(
-		"gid" => "NULL",
 		"type" => $mybb->input['type'],
 		"title" => addslashes($mybb->input['title']),
 		"description" => addslashes($mybb->input['description']),
@@ -148,7 +147,6 @@ if($mybb->input['action'] == "do_addgroupleader")
 		cperror($lang->add_leader_no_user);
 	}
 	$leaderarray = array(
-		"lid" => "NULL",
 		"gid" => $mybb->input['gid'],
 		"uid" => $user['uid']
 		);

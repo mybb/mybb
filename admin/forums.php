@@ -261,7 +261,7 @@ if($mybb->input['action'] == "do_addmod") {
 			$canviewips = addslashes($mybb->input['canviewips']);
 			$canopenclosethreads = addslashes($mybb->input['canopenclosethreads']);
 			$canmanagethreads = addslashes($mybb->input['canmanagethreads']);
-			$db->query("INSERT INTO ".TABLE_PREFIX."moderators VALUES (NULL, '$fid', '$user[uid]', '$caneditposts', '$candeleteposts', '$canviewips', '$canopenclosethreads', '$canmanagethreads')");
+			$db->query("INSERT INTO ".TABLE_PREFIX."moderators (fid,uid,caneditposts,candeleteposts,canviewips,canopenclosethreads,canmanagethreads) VALUES ('$fid', '$user[uid]', '$caneditposts', '$candeleteposts', '$canviewips', '$canopenclosethreads', '$canmanagethreads')");
 			$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='6' WHERE uid='$user[uid]' AND usergroup='2'");
 			$cache->updatemoderators();
 			cpredirect("forums.php?fid=$fid", $lang->mod_added);

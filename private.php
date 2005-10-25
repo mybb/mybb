@@ -437,7 +437,6 @@ elseif($mybb->input['action'] == "do_send")
 	else
 	{
 		$newpm = array(
-			"pmid" => "NULL",
 			"uid" => $touser['uid'],
 			"toid" => $touser['uid'],
 			"fromid" => $mybb->user['uid'],
@@ -479,7 +478,6 @@ elseif($mybb->input['action'] == "do_send")
 		if($mybb->usergroup['pmquota'] == "0" || $pmscount['total'] < $mybb->usergroup['pmquota'])
 		{
 			$savedcopy = array(
-				"pmid" => "NULL",
 				"uid" => $mybb->user['uid'],
 				"toid" => $touser['uid'],
 				"fromid" => $mybb->user['uid'],

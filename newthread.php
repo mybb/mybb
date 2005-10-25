@@ -518,7 +518,6 @@ if($mybb->input['action'] == "do_newthread")
 	else
 	{
 		$newthread = array(
-			"tid" => "NULL",
 			"fid" => $fid,
 			"subject" => addslashes($mybb->input['subject']),
 			"icon" => intval($mybb->input['icon']),
@@ -538,7 +537,6 @@ if($mybb->input['action'] == "do_newthread")
 		$tid = $db->insert_id();
 
 		$newpost = array(
-			"pid" => "NULL",
 			"tid" => $tid,
 			"fid" => $fid,
 			"subject" => addslashes($mybb->input['subject']),
@@ -638,7 +636,7 @@ if($mybb->input['action'] == "do_newthread")
 		// Start Auto Subscribe
 		if($postoptions['emailnotify'] != "no")
 		{
-			$db->query("INSERT INTO ".TABLE_PREFIX."favorites (fid,uid,tid,type) VALUES (NULL,'".$mybb->user['uid']."','$tid','s')");
+			$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".$mybb->user['uid']."','$tid','s')");
 		}
 		if(!$mybb->input['postpoll'])
 		{

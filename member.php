@@ -381,7 +381,6 @@ if($mybb->input['action'] == "do_register")
 		
 		$timenow = time();
 		$newuser = array(
-			"uid" => "NULL",
 			"username" => addslashes($username),
 			"password" => $saltedpw,
 			"salt" => $salt,
@@ -456,7 +455,6 @@ if($mybb->input['action'] == "do_register")
 			$activationcode = random_str();
 			$now = time();
 			$activationarray = array(
-				"aid" => "NULL",
 				"uid" => $uid,
 				"dateline" => time(),
 				"code" => $activationcode,
@@ -869,7 +867,6 @@ elseif($mybb->input['action'] == "do_resendactivation")
 					$now = time();
 					$uid = $user['uid'];
 					$awaitingarray = array(
-						"aid" => "NULL",
 						"uid" => $uid,
 						"dateline" => time(),
 						"code" => $user['code'],
@@ -917,7 +914,6 @@ elseif($mybb->input['action'] == "do_lostpw")
 			$now = time();
 			$uid = $user['uid'];
 			$awaitingarray = array(
-				"aid" => "NULL",
 				"uid" => $user['uid'],
 				"dateline" => time(),
 				"code" => $user['activationcode'],

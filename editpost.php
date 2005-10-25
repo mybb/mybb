@@ -293,7 +293,6 @@ elseif($mybb->input['action'] == "do_editpost")
 		$subcheck = $db->fetch_array($query);
 		if(!$subcheck['uid']) {
 			$subscriptionarray = array(
-				"fid" => "NULL",
 				"uid" => $mybb->user['uid'],
 				"tid" => $tid,
 				"type" => "s"

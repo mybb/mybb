@@ -45,7 +45,6 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 		elseif($autocreate != 0) // No template exists, create it based off master
 		{
 			$newtemp = array(
-				"tid" => "NULL",
 				"title" => $title,
 				"template" => $master['template'],
 				"sid" => $template['sid']

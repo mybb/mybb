@@ -259,7 +259,6 @@ elseif($mybb->input['action'] == "do_addevent")
 	$eventdate = $mybb->input['day']."-".$mybb->input['month']."-".$mybb->input['year'];
 
 	$newevent = array(
-		"eid" => "NULL",
 		"subject" => addslashes($mybb->input['subject']),
 		"author" => $mybb->user['uid'],
 		"date" => $eventdate,
