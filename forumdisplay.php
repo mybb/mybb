@@ -791,6 +791,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 								$lastpostsubject = substr($lastpostsubject, 0, 25) . "...";
 							}
 							$lastpostsubject = htmlspecialchars_uni(dobadwords($lastpostsubject));
+							$fulllastpostsubject = htmlspecialchars_uni(dobadwords($fulllastpostsubject));
 							eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
 						}
 					}

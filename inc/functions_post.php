@@ -210,6 +210,10 @@ function doshorturl($url, $name="")
 	{
 		$fullurl = "ftp://".$fullurl;
 	}
+    if(strpos($fullurl, "://") === false)
+    {
+        $fullurl = "http://".$fullurl;
+    }
 	if(!$name)
 	{
 		$name = $url;

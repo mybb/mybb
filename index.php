@@ -302,13 +302,14 @@ function getforums($pid="0", $depth=1, $permissions="")
 							$lastposter = $forum['lastposter'];
 							$lastposttid = $forum['lastposttid'];
 							$lastpostsubject = $fulllastpostsubject = $forum['lastpostsubject'];
-							$lastpostsubject = dobadwords($lastpostsubject);
 							if(strlen($lastpostsubject) > 25)
 							{
 								$lastpostsubject = substr($lastpostsubject, 0, 25) . "...";
 							}
 							$lastpostsubject = htmlspecialchars_uni(dobadwords($lastpostsubject));
+							$fulllastpostsubject = htmlspecialchars_uni(dobadwords($fulllastpostsubject));
 							eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
+
 						}
 					}
 					if($forum['linkto'] != "" || $hideinfo == 1)
