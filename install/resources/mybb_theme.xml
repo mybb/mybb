@@ -178,151 +178,142 @@ padding: 6px;]]></extra>
 		<tablewidth><![CDATA[100%]]></tablewidth>
 		<borderwidth><![CDATA[1]]></borderwidth>
 		<extracss><![CDATA[.clear {
-clear: both;
+	clear: both;
 }
 
 .hidden {
-display: none;
-float: none;
-width: 1%;
+	display: none;
+	float: none;
+	width: 1%;
 }
 
 .menu ul {
-list-style: none;
-margin: 0;
+	list-style: none;
+	margin: 0;
 }
 
 .menu li {
-display: inline;
-padding-left: 5px;
+	display: inline;
+	padding-left: 5px;
 }
 
 .menu img {
-padding-right: 5px;
-vertical-align: top;
+	padding-right: 5px;
+	vertical-align: top;
 }
 
 #panel .links {
-margin: 0;
-float: right;
+	margin: 0;
+	float: right;
 }
 
 .expcolimage {
-float: right;
-width: auto;
-vertical-align: middle;
+	float: right;
+	width: auto;
+	vertical-align: middle;
 }
 
 img.attachment {
-border: 1px solid #E9E5D7;
-padding: 2px;
+	border: 1px solid #E9E5D7;
+	padding: 2px;
 }
 
 .pagenav {
-font-weight: bold;
+	font-weight: bold;
 }
 
 .pagenavbit {
-padding-left: 3px;
+	padding-left: 3px;
 }
 
 .pagenavbit a {
-text-decoration: none;
+	text-decoration: none;
 }
 
 .pagenavcurrent {
-font-weight: bold;
-padding-left: 3px;
+	font-weight: bold;
+	padding-left: 3px;
 }
 
 hr {
-background-color: #000000;
-color: #000000;
-height: 1px;
-border: 0px;
+	background-color: #000000;
+	color: #000000;
+	height: 1px;
+	border: 0px;
 }
 
 #copyright {
-font: x-small Verdana, Arial, Sans-Serif;
-margin: 0;
-padding: 10px 0 0 0;
+	font: x-small Verdana, Arial, Sans-Serif;
+	margin: 0;
+	padding: 10px 0 0 0;
 }
 
 #debug {
-float: right;
-text-align: right;
-margin-top: 0;
+	float: right;
+	text-align: right;
+	margin-top: 0;
 }
 
 .quote_header {
-margin-left: 20px;
-padding: 4px;
-border-top: 1px dashed #000000;
-border-left: 1px dashed #000000;
-border-right: 1px dashed #000000;
-color: #000000;
-background: #ffffff;
-font-weight: bold;
+	background: #fff;
+	border: 1px dashed #000;
+	border-bottom: 0;
+	color: #000;
+	font-weight: bold;
+	margin: 8px auto 0 auto;
+	padding: 4px;
 }
 
 .quote_body {
-margin-left: 20px;
-padding: 0 4px 4px 4px;
-border-bottom: 1px dashed #000000;
-border-left: 1px dashed #000000;
-border-right: 1px dashed #000000;
-color: #000000;
-background: #ffffff;
+	background: #fff;
+	border: 1px dashed #000;
+	border-top: 0;
+	color: #000;
+	padding: 4px;
+	margin: 0 auto 8px auto;
 }
 
 .code_header {
-margin-left: 20px;
-padding: 4px;
-border-top: 1px dashed #000000;
-border-left: 1px dashed #000000;
-border-right: 1px dashed #000000;
-color: #000000;
-background: #ffffff;
-font-weight: bold;
+	background: #fff;
+	border: 1px dashed #000;
+	border-bottom: 0;
+	color: #000;
+	font-weight: bold;
+	margin: 8px auto 0 auto;
+	padding: 4px;
 }
 
 .code_body {
-margin-left: 20px;
-padding: 0 4px 4px 4px;
-border-bottom: 1px dashed #000000;
-border-left: 1px dashed #000000;
-border-right: 1px dashed #000000;
-color: #000000;
-font-family: monospace;
-background: #ffffff;
+	background: #fff;
+	border: 1px dashed #000;
+	border-top: 0;
+	color: #000;
+	padding: 4px;
+	margin: 0 auto 8px auto;
+	font-family: monospace;
 }
-
-.quote_body ol, .quote_body ul {
-margin: 0;
-}
-
 .usercpnav {
-list-style: inside;
-padding: 0;
-margin: 0;
+	list-style: inside;
+	padding: 0;
+	margin: 0;
 }
 
 .usercpnav li {
-padding: 1px;
-font-family: Verdana;
-font-size:11px
+	padding: 1px;
+	font-family: Verdana;
+	font-size:11px
 }
 
 .usercpnav .pmfolders {
-/* PM folders on the UCP Nav menu */
+	/* PM folders on the UCP Nav menu */
 }
 
 .separator {
-margin: 5px;
-padding: 0;
-height: 0px;
-font-size: 1px;
-list-style-type: none;
+	margin: 5px;
+	padding: 0;
+	height: 0px;
+	font-size: 1px;
+	list-style-type: none;
 }]]></extracss>
 	</themebits>
 	<templates>
