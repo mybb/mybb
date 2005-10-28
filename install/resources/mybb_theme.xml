@@ -2320,6 +2320,7 @@ $users
 <br />
 <div align="center"><input type="submit" value="$lang->remove_selected" /></div>
 </form>
+<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="action" value="do_add" />
 <input type="hidden" name="gid" value="$gid" />
