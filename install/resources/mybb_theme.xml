@@ -5195,7 +5195,7 @@ $footer
 </html>]]></template>
 		<template name="forumdisplay_thread_multipage"><![CDATA[ <span class="smalltext">($lang->pages $threadpages$morelink)</span>]]></template>
 		<template name="forumdisplay_thread_multipage_page"><![CDATA[<a href="showthread.php?tid=$thread[tid]&amp;page=$i">$i</a> ]]></template>
-		<template name="forumdisplay_thread_multipage_more"><![CDATA[... <a href="showthread.php?tid=$thread[tid]&amp;page=$thread[pages]">$lang->pages_last</a>]]></template>
+		<template name="forumdisplay_thread_multipage_more"><![CDATA[... <a href="showthread.php?tid=$thread[tid]&amp;page=last">$lang->pages_last</a>]]></template>
 		<template name="member_profile_customfields"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr><td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">

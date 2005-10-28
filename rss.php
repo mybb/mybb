@@ -82,7 +82,7 @@ switch($mybb->input['type'])
 		break;
 }
 
-$query = $db->query("SELECT t.*, f.name AS forumname, p.message AS postmessage FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost) WHERE 1=1 $forumlist $unviewable ORDER BY t.dateline DESC LIMIT 0, ".$mybb->input['limit']);
+$query = $db->query("SELECT t.*, f.name AS forumname, p.message AS postmessage FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost) WHERE 1=1 $forumlist $unviewable AND t.visible='1' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->input['limit']);
 while($thread = $db->fetch_array($query))
 {
 	$thread['subject'] = htmlspecialchars_uni($thread['subject']);
