@@ -776,7 +776,7 @@ elseif($mybb->input['action'] == "do_stuff")
 		{
 			while(list($key, $val) = each($mybb->input['check']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='".intval($mybb->input['fid'])."' WHERE pmid='".intval($key)."'");
+				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='".intval($mybb->input['fid'])."' WHERE pmid='".intval($key)."' AND uid='".$mybb->input['uid']."'");
 			}
 		}
 		redirect("private.php?fid=".$mybb->input['fid'], $lang->redirect_pmsmoved);
@@ -804,11 +804,11 @@ elseif($mybb->input['action'] == "do_stuff")
 			{
 				if($deletepms[$key])
 				{
-					$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='$key'");
+					$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='$key' AND uid='".$mybb->input['uid']."'");
 				}
 				else
 				{
-					$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='4' WHERE pmid='$key'");
+					$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='4' WHERE pmid='$key' AND uid='".$mybb->input['uid']."'");
 				}
 			}
 		}

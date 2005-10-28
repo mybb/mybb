@@ -209,6 +209,7 @@ $l['error_nopolloptions'] = "The specified poll option is invalid or does not ex
 $l['error_alreadyvoted'] = "You have already voted in this poll.";
 $l['error_invalidaction'] = "Invalid action";
 $l['error_noteamstoshow'] = "There are no forum staff to be shown.";
+$l['error_missingrequiredfield'] = "You did not fill in one of the required additional fields.";
 
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";

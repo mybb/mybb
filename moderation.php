@@ -510,11 +510,13 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+		/* Moderators should now be able to move threads to any forum
 		$newperms = forum_permissions($moveto);
 		if($newperms['canview'] == "no")
 		{
 			nopermission();
 		}
+		*/
 		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE closed='moved|$tid' AND fid='$moveto'");
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
 		$newforum = $db->fetch_array($query);
