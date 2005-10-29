@@ -594,7 +594,7 @@ if($mybb->input['action'] == "do_do_merge")
 {
 	if(!$mybb->input['deletesubmit'])
 	{
-		cpredirect("users.php?action=merge", "You chose not to merge the two users. You will now be taken back to the merge page.");
+		cpredirect("users.php?action=merge", $lang->users_not_merged);
 		exit;
 	}
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['source'])."'");
