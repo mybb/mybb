@@ -2130,20 +2130,20 @@ $sendemail
 <td class="trow2"><a href="private.php?action=send&amp;uid=$memprofile[uid]">$lang->send_pm</td>
 </tr>
 <tr>
-<td class="trow2"><strong>$lang->icq_number</strong></td>
-<td class="trow2"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=icq&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[icq]</a></td>
+<td class="trow1"><strong>$lang->icq_number</strong></td>
+<td class="trow1"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=icq&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[icq]</a></td>
 </tr>
 <tr>
-<td class="trow1"><strong>$lang->aim_screenname</strong></td>
-<td class="trow1"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=aim&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[aim]</a></td>
+<td class="trow2"><strong>$lang->aim_screenname</strong></td>
+<td class="trow2"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=aim&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[aim]</a></td>
 </tr>
 <tr>
-<td class="trow2"><strong>$lang->yahoo_id</strong></td>
-<td class="trow2"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=yahoo&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[yahoo]</a></td>
+<td class="trow1"><strong>$lang->yahoo_id</strong></td>
+<td class="trow1"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=yahoo&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[yahoo]</a></td>
 </tr>
 <tr>
-<td class="trow1"><strong>$lang->msn</strong></td>
-<td class="trow1"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=msn&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[msn]</a></td>
+<td class="trow2"><strong>$lang->msn</strong></td>
+<td class="trow2"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=msn&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[msn]</a></td>
 </tr>
 </table>
 </td></tr></table>
