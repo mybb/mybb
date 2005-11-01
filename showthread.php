@@ -344,7 +344,7 @@ if($mybb->input['action'] == "thread") {
 	} else { // Linear
 		// Do Multi Pages
 		$perpage = $mybb->settings['postsperpage'];
-		if($page != "last")
+		if($mybb->input['page'] != "last")
 		{
 			$page = intval($mybb->input['page']);
 		}
@@ -368,7 +368,7 @@ if($mybb->input['action'] == "thread") {
 		$pages = $postcount / $perpage;
 		$pages = ceil($pages);
 
-		if($page == "last")
+		if($mybb->input['page'] == "last")
 		{
 			$page = $pages;
 		}

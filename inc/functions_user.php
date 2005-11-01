@@ -359,7 +359,7 @@ function usercp_menu_profile()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
 
-	if($mybbgroup['canchangename'] != "no")
+	if($mybb->usergroup['canchangename'] != "no")
 	{
 		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
 	}
