@@ -368,7 +368,7 @@ elseif($mybb->input['action'] == "do_send")
 		}
 		elseif($mybb->settings['bblanguage'])
 		{
-			$uselang = $mybb->settings['language'];
+			$uselang = $mybb->settings['bblanguage'];
 		}
 		else
 		{
@@ -710,7 +710,7 @@ elseif($mybb->input['action'] == "do_folders")
 			}
 			else
 			{
-				$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE folder='$fid'");
+				$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE folder='$fid' AND uid='".$mybb->user['uid']."'");
 			}
 		}
 	}
