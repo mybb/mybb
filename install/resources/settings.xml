@@ -628,16 +628,24 @@ show=Show to all Users]]></optionscode>
 	<settinggroup name="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="yes">
 		<setting name="gzipoutput">
 			<title>Use GZip Page Compression?</title>
-			<description><![CDATA[Do you want to compress pages in GZip format when they are sent to the browser? This means quicker downloads for your visitors, and less traffic usage for you. The level of the compression is set by the server's load.]]></description>
+			<description><![CDATA[Do you want to compress pages in GZip format when they are sent to the browser? This means quicker downloads for your visitors, and less traffic usage for you.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="gziplevel">
+			<title>GZip Page Compression Level</title>
+			<description><![CDATA[Set the level for GZip Page Compression from 0-9.  (0=no compression, 9=maximum compression).  This will only take effect if GZip Page Compression is enabled above.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[4]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="uploadspath">
 			<title>Uploads Path</title>
 			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on Unix servers).]]></description>
-			<disporder>1</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
 			<helpkey></helpkey>
@@ -645,7 +653,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="standardheaders">
 			<title>Send Standard Headers</title>
 			<description><![CDATA[With some web servers, this option can cause problems; with others, it is needed. ]]></description>
-			<disporder>2</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[no]]></settingvalue>
 			<helpkey></helpkey>
@@ -653,7 +661,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="nocacheheaders">
 			<title>Send No Cache Headers</title>
 			<description><![CDATA[With this option you can prevent caching of the page by the browser.]]></description>
-			<disporder>3</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[no]]></settingvalue>
 			<helpkey></helpkey>
@@ -661,7 +669,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="redirects">
 			<title>Friendly Redirection Pages</title>
 			<description><![CDATA[This will enable friendly redirection pages instead of bumping the user directly to the page.]]></description>
-			<disporder>4</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[on]]></settingvalue>
 			<helpkey></helpkey>
@@ -669,7 +677,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="load">
 			<title>*NIX Load Limiting</title>
 			<description><![CDATA[Limit the maximum server load before myBB rejects people.  0 for none.  Recommended limit is 5.0.]]></description>
-			<disporder>5</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
