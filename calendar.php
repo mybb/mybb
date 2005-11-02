@@ -188,6 +188,7 @@ elseif($mybb->input['action'] == "addevent")
 {
 	$plugins->run_hooks("calendar_addevent_start");
 
+	$yearopts = '';
 	for($i = date("Y"); $i < (date("Y") + 5); $i++)
 	{
 		if($i == $year)
@@ -200,6 +201,13 @@ elseif($mybb->input['action'] == "addevent")
 		}
 	}
 	$msel[$month] = " selected=\"selected\"";
+	
+	$dayopts = '';
+	for($i=1;$i<=31;$i++)
+	{
+		$dayopts .= "<option value=\"$i\">$i</option>\n";
+	}
+	
 	if($mybb->input['type'] == "private")
 	{
 		$privatecheck = " checked=\"checked\"";
@@ -238,6 +246,10 @@ elseif($mybb->input['action'] == "do_addevent")
 		error($lang->error_incompletefields);
 	}
 	if($day > $days)
+	{
+		error($lang->error_incorrectday);
+	}
+	if($day > gmdate("t", mktime(0, 0, 0, $month, $year)))
 	{
 		error($lang->error_incorrectday);
 	}

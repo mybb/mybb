@@ -47,4 +47,6 @@ $l['no_events'] = "This day does not have any events associated with it.<p>To po
 $l['years_old'] = "Years Old";
 $l['alt_edit'] = "Edit this event";
 $l['alt_delete'] = "Delete this event";
+
+$l['error_incorrectday'] = "The day you have entered does not appear to exist. Please go back and try again.";
 ?>

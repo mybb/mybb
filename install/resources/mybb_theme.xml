@@ -2818,7 +2818,11 @@ $header
 <option value="11"$msel[11]>$lang->month_11</option>
 <option value="12"$msel[12]>$lang->month_12</option>
 </select>
-&nbsp;<input type="text" name="day" size="2" maxlength="2" value="$eventdate[0]" />&nbsp;
+&nbsp;
+<select name="day">
+$dayopts
+</select>
+&nbsp;
 <select name="year">
 $yearopts
 </select>
