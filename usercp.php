@@ -103,6 +103,9 @@ switch($mybb->input['action'])
 	case "usergroups":
 		addnav($lang->nav_usergroups);
 		break;
+	case "attachments":
+		addnav($lang->nav_attachments);
+		break;
 }
 	
 if($mybb->input['action'] == "profile")

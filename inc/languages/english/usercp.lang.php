@@ -14,6 +14,7 @@ $l['nav_notepad'] = "Personal Notepad";
 $l['nav_editlists'] = "Manage Buddy and Ignore Lists";
 $l['nav_drafts'] = "Saved Drafts";
 $l['nav_usergroups'] = "Group Memberships";
+$l['nav_attachments'] = "Attachment Manager";
 
 $l['resend_activation'] = "Resend Activation Email";
 $l['away_notice_away'] = "You have been marked away since {1}";

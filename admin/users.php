@@ -1275,7 +1275,7 @@ if($mybb->input['action'] == "email")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");
 	while($usergroup = $db->fetch_array($query))
 	{
-		$groups[] = "<input type=\"checkbox\" name=\"search[usergroups[]]\" value=\"$usergroup[gid]\" /> $usergroup[title]";
+		$groups[] = "<input type=\"checkbox\" name=\"search[usergroups][]\" value=\"$usergroup[gid]\" /> $usergroup[title]";
 	}
 	$groups = implode("<br />", $groups);
 

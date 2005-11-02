@@ -10,6 +10,7 @@
  */
 
 require "./global.php";
+require "./inc/functions_upload.php";
 
 // Load language packs for this section
 global $lang;
