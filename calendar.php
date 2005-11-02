@@ -237,19 +237,13 @@ elseif($mybb->input['action'] == "do_addevent")
 	$day = intval($mybb->input['day']);
 	$month = intval($mybb->input['month']);
 	$year = intval($mybb->input['year']);
-	
-	$time = mktime(0, 0, 0, $month, 1, $year);
-	$days = date('t', $time);
 
 	if(!$mybb->input['subject'] || !$mybb->input['description'] || !$mybb->input['day'] || !$mybb->input['month'] || !$mybb->input['year'])
 	{
 		error($lang->error_incompletefields);
 	}
-	if($day > $days)
-	{
-		error($lang->error_incorrectday);
-	}
-	if($day > gmdate("t", mktime(0, 0, 0, $month, $year)))
+	/* The following bit doesn't seem to work due to the gmdate("t") always returning 31 */
+	if($day > gmdate("t", mktime(0, 0, 0, $month, 1, $year)))
 	{
 		error($lang->error_incorrectday);
 	}
