@@ -30,7 +30,7 @@ else
 {
 	eval("\$loginform = \"".$templates->get("index_loginform")."\";");
 }
-if($mybb->settings['showwol'] != "no")
+if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "no")
 {
 	// Get the online users
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
