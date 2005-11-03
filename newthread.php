@@ -628,7 +628,7 @@ if($mybb->input['action'] == "do_newthread")
 
 			}
 			$emailsubject = sprintf($emailsubject, $forum['name']);
-			$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $mybb->user['username'], $forum['name'], $mybb->settings['bbname'], $mybb->input['subject'], $excerpt, $mybb->settings['bburl'], $tid);
+			$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $mybb->user['username'], $forum['name'], $mybb->settings['bbname'], $mybb->input['subject'], $excerpt, $mybb->settings['bburl'], $tid, $fid);
 			mymail($subscribedmember['email'], $emailsubject, $emailmessage);
 			unset($userlang);
 		}

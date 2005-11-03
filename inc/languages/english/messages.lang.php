@@ -310,7 +310,7 @@ Thank you,
 Unsubscription Information:
 
 If you would not like to receive any more notifications of new threads in this forum, visit the following URL in your browser:
-{7}/usercp2.php?action=removesubscription&type=forum&fid={10}
+{7}/usercp2.php?action=removesubscription&type=forum&fid={9}
 
 ------------------------------------------";
 
