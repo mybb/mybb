@@ -311,6 +311,20 @@ elseif($mybb->input['action'] == "editevent")
 			$yearopts .= "<option value=\"$i\">$i</option>\n";
 		}
 	}
+	
+	$dayopts = '';
+	for($i=1;$i<=31;$i++)
+	{
+		if($i == $eventdate[0])
+		{
+			$dayopts .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+		}
+		else
+		{
+			$dayopts .= "<option value=\"$i\">$i</option>\n";
+		}
+	}
+	
 	$event['subject'] = htmlspecialchars_uni($event['subject']);
 	$event['description'] = htmlspecialchars_uni($event['description']);
 

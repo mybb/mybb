@@ -26,13 +26,11 @@ $lang->load("forumdisplay");
 $plugins->run_hooks("forumdisplay_start");
 
 $fid = intval($mybb->input['fid']);
-
-if($fid == "index" || $fid == "private" || $fid == "usercp" || $fid == "online" || $fid == "search")
+if($mybb->input['fid'] == "index" || $mybb->input['fid'] == "private" || $mybb->input['fid'] == "usercp" || $mybb->input['fid'] == "online" || $mybb->input['fid'] == "search")
 {
-	header("Location: $fid.php");
+	header("Location: " . $mybb->input['fid'] . ".php");
 	exit;
 }
-$fid = intval($fid);
 
 cacheforums();
 
