@@ -157,7 +157,7 @@ if($mybb->input['action'] == "do_deleteset")
 }
 if($mybb->input['action'] == "do_editset")
 {
-	$db->query("UPDATE ".TABLE_PREFIX."templatesets SET title='".$mybb->input['title']."' WHERE sid='".$mybb->input['setid']."'");
+	$db->query("UPDATE ".TABLE_PREFIX."templatesets SET title='".addslashes($mybb->input['title'])."' WHERE sid='".intval($mybb->input['setid'])."'");
 	cpredirect("templates.php", $lang->set_edited);
 }
 
