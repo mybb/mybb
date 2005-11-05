@@ -776,7 +776,7 @@ elseif($mybb->input['action'] == "do_stuff")
 		{
 			while(list($key, $val) = each($mybb->input['check']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='".intval($mybb->input['fid'])."' WHERE pmid='".intval($key)."' AND uid='".$mybb->input['uid']."'");
+				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='".intval($mybb->input['fid'])."' WHERE pmid='".intval($key)."' AND uid='".$mybb->user['uid']."'");
 			}
 		}
 		redirect("private.php?fid=".$mybb->input['fid'], $lang->redirect_pmsmoved);
