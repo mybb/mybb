@@ -126,9 +126,9 @@ function dolist($message, $type="")
 function domecode($message, $username)
 {
 	global $lang;
-	$message = preg_replace('#^/me (.*)$#im', "<font color=\"red\">* $username \\1</font>", $message);
-	$message = preg_replace('#^/slap (.*)#iem', "'<font color=\"red\">* $username $lang->slaps '.str_replace('<br />', '', '\\1').' $lang->with_trout</font><br />'", $message);
-	return $message;
+	$message = preg_replace('#^/me (.*)$#im', "<span style=\"color: red;\">* $username \\1</span>", $message);
+	$message = preg_replace('#^/slap (.*)#iem', "'<span style=\"color: red;\">* $username $lang->slaps '.str_replace('<br />', '', '\\1').' $lang->with_trout</span><br />'", $message);
+	return $message;	
 }
 
 function fixjavascript($message)
