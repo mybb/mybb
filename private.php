@@ -804,11 +804,11 @@ elseif($mybb->input['action'] == "do_stuff")
 			{
 				if($deletepms[$key])
 				{
-					$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='$key' AND uid='".$mybb->input['uid']."'");
+					$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='$key' AND uid='".$mybb->user['uid']."'");
 				}
 				else
 				{
-					$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='4' WHERE pmid='$key' AND uid='".$mybb->input['uid']."'");
+					$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='4' WHERE pmid='$key' AND uid='".$mybb->user['uid']."'");
 				}
 			}
 		}
