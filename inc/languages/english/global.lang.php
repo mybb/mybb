@@ -109,7 +109,8 @@ $l['size'] = "Size";
 $l['small'] = "Small";
 $l['medium'] = "Medium";
 $l['large'] = "Large";
-$l['largest'] = "Largest";
+$l['xlarge'] = "X large";
+$l['xxlarge'] = "XX large";
 
 $l['color'] = "Color";
 $l['white'] = "White";

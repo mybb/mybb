@@ -63,13 +63,13 @@ function domycode($message, $allowimgcode="yes")
 					 "#\[email\](.*?)\[/email\]#ei",
 					 "#\[email=(.*?)\](.*?)\[/email\]#ei",
 					 "#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#si",
-					 "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si",
+					 "#\[size=(small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si",
 					 "#\[font=([a-z ]+?)\](.+?)\[/font\]#si",
 					 "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si");
-	$replace = array("<b>$1</b>",
-					 "<i>$1</i>",
+	$replace = array("<strong>$1</strong>",
+					 "<em>$1</em>",
 					 "<u>$1</u>",
-					 "<strike>$1</strike>",
+					 "<del>$1</del>",
 				     "&copy;",
 					 "&#153;",
 					 "&reg;",
@@ -79,10 +79,10 @@ function domycode($message, $allowimgcode="yes")
 					 "doshorturl(\"$1\", \"$2\")",
 					 "doemailurl(\"$1\")",
 					 "doemailurl(\"$1\", \"$2\")",
-					 "<font color=\"$1\">$2</font>",
-					 "<font size=\"$1\">$2</font>",
-					 "<font face=\"$1\">$2</font>",
-					 "<p align=\"$1\">$2</p>");
+					 "<span style=\"color: $1;\">$2</span>",
+					 "<span style=\"font-size: $1;\">$2</span>",
+					 "<span style=\"font-family: $1;\">$2</span>",
+					 "<p style=\"text-align: $1;\">$2</p>");
 	$message = preg_replace($pattern, $replace, $message);
 	while(preg_match("#\[list\](.*?)\[/list\]#esi", $message))
 	{
@@ -96,12 +96,13 @@ function domycode($message, $allowimgcode="yes")
 	if($allowimgcode)
 	{
 		$message = preg_replace("#\[img\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$1$2\" border=\"0\" alt=\"\" />", $message);
-		$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$3$4\" border=\"0\" width=\"$1\" height=\"$2\" alt=\"\" />", $message);
+		$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$3$4\" style=\"border: 0; width: $1; height: $2;\" alt=\"\" />", $message);
 	}
 	$message = doquotes($message);
 	$message = docode($message);
 	$message = doautourl($message);
-	$message = str_replace("[hr]", "<hr size=\"1\" />", $message);
+	/* Used to be <hr size="1"> but users should get the chance to set the size in their CSS */
+	$message = str_replace("[hr]", "<hr />", $message); 
 	return $message;
 }
 

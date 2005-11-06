@@ -3212,10 +3212,11 @@ var php_prompt = "$lang->php_prompt";
 <td>
 <select name="size" onchange="insertCode('size', this.options[this.selectedIndex].value)">
 <option value="-">$lang->size</option>
-<option value="1">$lang->small</option>
-<option value="2">$lang->medium</option>
-<option value="3">$lang->large</option>
-<option value="4">$lang->largest</option>
+<option value="small">$lang->small</option>
+<option value="medium">$lang->medium</option>
+<option value="large">$lang->large</option>
+<option value="x-large">$lang->xlarge</option>
+<option value="xx-large">$lang->xxlarge</option>
 </select>
 </td>
 <td>
