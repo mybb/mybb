@@ -26,7 +26,7 @@ if($mybb->input['action'] == "markread")
 {
 	if($mybb->input['fid'])
 	{
-		$validforum = validateforum($mybb->input['fid']);
+		$validforum = validateforum(addslashes($mybb->input['fid']));
 		if(!$validforum)
 		{
 			error($lang->error_invalidforum);
