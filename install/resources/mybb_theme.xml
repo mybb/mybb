@@ -325,7 +325,7 @@ hr {
 </tr>
 </table>
 <br />]]></template>
-		<template name="post_savedraftbutton"><![CDATA[&nbsp;<input type="submit" name="savedraft" value="$lang->save_draft" />]]></template>
+		<template name="post_savedraftbutton"><![CDATA[&nbsp;<input type="submit" class="submit" name="savedraft" value="$lang->save_draft" />]]></template>
 		<template name="index"><![CDATA[<html>
 <head>
 <title>$settings[bbname]</title>
@@ -425,7 +425,7 @@ $gobutton
 <option value="multiapproveposts">$lang->inline_approve_posts</option>
 <option value="multiunapproveposts">$lang->inline_unapprove_posts</option>
 </select>
-<input type="submit" name="go" value="$lang->go ($inlinecount)" name="inline_go" id="inline_go" />&nbsp;
+<input type="submit" class="submit" name="go" value="$lang->go ($inlinecount)" name="inline_go" id="inline_go" />&nbsp;
 <input type="button" onclick="javascript:inlineunset();" value="$lang->clear" />
 </form>
 <script language="JavaScript" type="text/javascript">
@@ -558,7 +558,7 @@ $attacherror
 <tr>
 <td class="trow1" nowrap="nowrap"><input type="checkbox" name="delete" value="yes" tabindex="9"> <strong>$lang->delete_q</strong></td>
 <td class="trow1" width="100%">$lang->delete_1<br /><span class="smalltext">$lang->delete_2</span></td>
-<td class="trow1" nowrap="nowrap"><input type="submit" name="submit" value="$lang->delete_now" tabindex="10"></td>
+<td class="trow1" nowrap="nowrap"><input type="submit" class="submit" name="submit" value="$lang->delete_now" tabindex="10"></td>
 </table>
 <input type="hidden" name="action" value="deletepost">
 <input type="hidden" name="pid" value="$pid">
@@ -599,7 +599,7 @@ $attachbox
 $pollbox
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->update_post" tabindex="3">  <input type="submit" name="previewpost" value="$lang->preview_post" tabindex="4">  <input type="reset" name="reset" value="$lang->reset_button" tabindex="5"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->update_post" tabindex="3">  <input type="submit" class="submit" name="previewpost" value="$lang->preview_post" tabindex="4"></center>
 <input type="hidden" name="action" value="do_editpost">
 <input type="hidden" name="pid" value="$pid">
 <input type="hidden" name="posthash" value="$posthash">
@@ -659,7 +659,7 @@ $attachbox
 $modoptions
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->post_reply" tabindex="3" accesskey="s" />  <input type="submit" name="previewpost" value="$lang->preview_post" tabindex="4" />$savedraftbutton  <input type="reset" name="reset" value="$lang->reset_button" tabindex="5" /></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->post_reply" tabindex="3" accesskey="s" />  <input type="submit" class="submit" name="previewpost" value="$lang->preview_post" tabindex="4" />$savedraftbutton</center>
 <input type="hidden" name="action" value="do_newreply">
 <input type="hidden" name="tid" value="$tid">
 <input type="hidden" name="replyto" value="$pid">
@@ -701,7 +701,7 @@ $drafts
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_drafts" />
-<input type="submit" name="draftman" value="$lang->delete_drafts" />
+<input type="submit" class="submit" name="draftman" value="$lang->delete_drafts" />
 </div>
 </td>
 </tr>
@@ -762,7 +762,7 @@ $attachbox
 $pollbox
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->post_thread" tabindex="4" accesskey="s">  <input type="submit" name="previewpost" value="$lang->preview_post" tabindex="5">$savedraftbutton  <input type="reset" name="reset" value="$lang->reset_button" tabindex="6"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->post_thread" tabindex="4" accesskey="s">  <input type="submit" class="submit" name="previewpost" value="$lang->preview_post" tabindex="5">$savedraftbutton</center>
 <input type="hidden" name="action" value="do_newthread">
 <input type="hidden" name="posthash" value="$posthash">
 <input type="hidden" name="fid" value="$fid">
@@ -1078,8 +1078,7 @@ $pppselect
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_options">
-<input type="submit" name="regsubmit" value="$lang->update_options">
-<input type="reset" name="reset" value="$lang->reset_button">
+<input type="submit" class="submit" name="regsubmit" value="$lang->update_options">
 </div>
 </td>
 </tr>
@@ -1158,7 +1157,7 @@ $footer
 $polloptions
 </table>
 <table width="$theme[tablewidth]" cellspacing="0" cellpadding="2" border="0" align="center">
-<td class="trow"><input type="submit" value="$lang->vote" /></td>
+<td class="trow"><input type="submit" class="submit" value="$lang->vote" /></td>
 <td valign="top" align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid=$poll[pid]">$lang->show_results</a> | <a href="polls.php?action=editpoll&amp;pid=$poll[pid]">$lang->edit_poll</a>]</span></td>
 </tr>
 <tr>
@@ -1183,7 +1182,7 @@ $polloptions
 <option value="multiapprovethreads">$lang->approve_threads</option>
 <option value="multiunapprovethreads">$lang->unapprove_threads</option>
 </select>
-<input type="submit" name="go" value="$lang->inline_go ($inlinecount)" name="inline_go" id="inline_go" />&nbsp;
+<input type="submit" class="submit" name="go" value="$lang->inline_go ($inlinecount)" name="inline_go" id="inline_go" />&nbsp;
 <input type="button" onclick="javascript:inlineunset();" value="$lang->clear" />
 </td>
 </tr>
@@ -1256,7 +1255,7 @@ $headerinclude
 <input type="text" name="reason" size="40" maxlength="250">
 <br />
 <br />
-<center><input type="submit" value="$lang->report_post"></center>
+<center><input type="submit" class="submit" value="$lang->report_post"></center>
 </form>
 </td>
 </tr>
@@ -1289,7 +1288,7 @@ $headerinclude
 </div>
 </body>
 </html>]]></template>
-		<template name="gobutton"><![CDATA[<input type="submit" value="$lang->go" />]]></template>
+		<template name="gobutton"><![CDATA[<input type="submit" class="submit" value="$lang->go" />]]></template>
 		<template name="postbit_away"><![CDATA[<a href="member.php?action=profile&amp;uid=$post[uid]"><font color="maroon">$lang->postbit_status_away</font></a>]]></template>
 		<template name="calendar_dayview_birthdays_bday"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdays[uid]"><strong>$bdays[username]</strong></a>$age]]></template>
 		<template name="misc_imcenter_icq"><![CDATA[<html>
@@ -1322,7 +1321,7 @@ $headerinclude
 <td class="trow1"><textarea wrap="virtual" cols="50" rows="12" name="body"></textarea></td>
 </tr>
 <tr>
-<td class="trow1" align="center" colspan="2"><input type="submit" name="submit" value="$lang->send_message"></td>
+<td class="trow1" align="center" colspan="2"><input type="submit" class="submit" name="submit" value="$lang->send_message"></td>
 </tr>
 </table>
 <input type="hidden" name="subject" value="From WebPager Panel">
@@ -1356,7 +1355,7 @@ $pwnote
 </tr>
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->verify_forum_password"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->verify_forum_password"></center>
 </form>
 $footer
 </body>
@@ -1418,7 +1417,7 @@ $folderlist
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_empty">
-<input type="submit" name="submit" value="$lang->delete">
+<input type="submit" class="submit" name="submit" value="$lang->delete">
 </div>
 </td>
 </tr>
@@ -1626,8 +1625,7 @@ $awaysection
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_profile" />
-<input type="submit" name="regsubmit" value="$lang->update_profile" />
-<input type="reset" name="reset" value="$lang->reset_button" />
+<input type="submit" class="submit" name="regsubmit" value="$lang->update_profile" />
 </div>
 </td>
 </tr>
@@ -1677,7 +1675,7 @@ $attachments
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_attachments" />
-<input type="submit" value="$lang->delete_attachments" />
+<input type="submit" class="submit" value="$lang->delete_attachments" />
 </div>
 </td>
 </tr>
@@ -1899,7 +1897,7 @@ $usercpnav
 <input type="hidden" name="action" value="usergroups" />
 <input type="hidden" name="joingroup" value="$joingroup" />
 <input type="hidden" name="do" value="joingroup" />
-<input type="submit" value="$lang->send_join_request" />
+<input type="submit" class="submit" value="$lang->send_join_request" />
 </div>
 </td>
 </tr>
@@ -1965,8 +1963,8 @@ $galleries
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_avatar" />
-<input type="submit" name="submit" value="$lang->change_avatar" />
-<input type="submit" name="remove" value="$lang->remove_avatar" />
+<input type="submit" class="submit" name="submit" value="$lang->change_avatar" />
+<input type="submit" class="submit" name="remove" value="$lang->remove_avatar" />
 </div>
 </td>
 </tr>
@@ -2021,7 +2019,7 @@ $avatarlist
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_avatar" />
-<input type="submit" name="submit" value="$lang->change_avatar" />
+<input type="submit" class="submit" name="submit" value="$lang->change_avatar" />
 </div>
 </td>
 </tr>
@@ -2051,7 +2049,7 @@ $similarthreadbits
 </table>]]></template>
 		<template name="nav_sep"><![CDATA[ / ]]></template>
 		<template name="post_attachments_new"><![CDATA[<tr>
-<td colspan="3" nowrap="nowrap"><strong>$lang->new_attachment</strong> <input type="file" name="attachment" size="30" /> <input type="submit" name="newattachment" value="$lang->add_attachment"  tabindex="12">
+<td colspan="3" nowrap="nowrap"><strong>$lang->new_attachment</strong> <input type="file" name="attachment" size="30" /> <input type="submit" class="submit" name="newattachment" value="$lang->add_attachment"  tabindex="12">
 </td>
 </tr>
 ]]></template>
@@ -2287,7 +2285,7 @@ $footer
 </tr>
 $memberoflist
 <tr>
-<td class="tfoot" align="right" colspan="4"><strong><input type="submit" name="changedisplaygroup" value="$lang->change_display_group" /></strong></td>
+<td class="tfoot" align="right" colspan="4"><strong><input type="submit" class="submit" name="changedisplaygroup" value="$lang->change_display_group" /></strong></td>
 </tr>
 </table>
 </form>
@@ -2318,7 +2316,7 @@ $joinrequests
 $users
 </table>
 <br />
-<div align="center"><input type="submit" value="$lang->remove_selected" /></div>
+<div align="center"><input type="submit" class="submit" value="$lang->remove_selected" /></div>
 </form>
 <br />
 <form method="post" action="managegroup.php">
@@ -2334,7 +2332,7 @@ $users
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" value="$lang->add_member_submit" /></div>
+<div align="center"><input type="submit" class="submit" value="$lang->add_member_submit" /></div>
 </form>
 
 $footer
@@ -2378,7 +2376,7 @@ $joinrequests
 $users
 </table>
 <br />
-<div align="center"><input type="submit" value="$lang->action_requests" /></div>
+<div align="center"><input type="submit" class="submit" value="$lang->action_requests" /></div>
 </form>
 $footer
 </body>
@@ -2446,7 +2444,7 @@ $codebuttons
 <input type="hidden" name="action" value="do_send" />
 <input type="hidden" name="pmid" value="$pmid" />
 <input type="hidden" name="do" value="$do" />
-<center><input type="submit" name="submit" value="$lang->send_message" tabindex="4" accesskey="s" />  <input type="submit" name="saveasdraft" value="$lang->save_draft" tabindex="5" />  <input type="submit" name="preview" value="$lang->preview" tabindex="6" />  <input type="reset" name="reset" value="$lang->reset_button" tabindex="7" /></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->send_message" tabindex="4" accesskey="s" />  <input type="submit" class="submit" name="saveasdraft" value="$lang->save_draft" tabindex="5" />  <input type="submit" class="submit" name="preview" value="$lang->preview" tabindex="6" />
 </td>
 </tr>
 </table>
@@ -2471,7 +2469,7 @@ $preview
 <tr>
 <td class="trow1" nowrap="nowrap"><input type="checkbox" name="delete" value="yes" tabindex="9"> <strong>$lang->delete_q</strong></td>
 <td class="trow1" width="100%">$lang->delete_note<br /><span class="smalltext">$lang->delete_note_2</span></td>
-<td class="trow1" nowrap="nowrap"><input type="submit" name="submit" value="$lang->delete_poll" tabindex="10"></td>
+<td class="trow1" nowrap="nowrap"><input type="submit" class="submit" name="submit" value="$lang->delete_poll" tabindex="10"></td>
 </table>
 <input type="hidden" name="action" value="do_deletepoll">
 <input type="hidden" name="tid" value="$tid">
@@ -2489,7 +2487,7 @@ $loginbox
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>$lang->num_options</strong><br /><span class="smalltext">$lang->max_options $settings[maxpolloptions]</span></td>
-<td class="trow1"><input type="text" name="numoptions" size="10" value="$numoptions">&nbsp;&nbsp;<input type="submit" name="updateoptions" value="$lang->update_options"></td>
+<td class="trow1"><input type="text" name="numoptions" size="10" value="$numoptions">&nbsp;&nbsp;<input type="submit" class="submit" name="updateoptions" value="$lang->update_options"></td>
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>$lang->poll_options</strong></td>
@@ -2514,7 +2512,9 @@ $optionbits
 </tr>
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->update_poll">  <input type="reset" name="reset" value="$lang->reset_button" tabindex="5"></center>
+<center>
+<input type="submit" class="submit" name="submit" value="$lang->update_poll">
+</center>
 <input type="hidden" name="action" value="do_editpoll">
 <input type="hidden" name="pid" value="$pid">
 </form>
@@ -2777,7 +2777,7 @@ $usercpnav
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_export" />
-<input type="submit" name="submit" value="$lang->archive_messages" />
+<input type="submit" class="submit" name="submit" value="$lang->archive_messages" />
 </div>
 </td>
 </tr>
@@ -2848,7 +2848,7 @@ $yearopts
 </table>
 <br />
 <input type="hidden" name="action" value="do_addevent" />
-<div align="center"><input type="submit" value="$lang->add_event" />&nbsp;<input type="reset" value="$lang->reset_button" /></div>
+<div align="center"><input type="submit" class="submit" value="$lang->add_event" /></div>
 </form>
 $footer
 </body>
@@ -2882,7 +2882,7 @@ $header
 $loginbox
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->delete_posts"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->delete_posts"></center>
 <input type="hidden" name="action" value="do_multideleteposts">
 <input type="hidden" name="tid" value="$tid">
 <input type="hidden" name="posts" value="$inlineids">
@@ -2993,7 +2993,7 @@ $usercpnav
 </tr>
 $readmessages
 <tr>
-<td class="tfoot" align="right" colspan="5"><strong><input type="submit" name="stoptracking" value="$lang->stop_tracking"> $lang->selected_messages</strong></td>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="submit" name="stoptracking" value="$lang->stop_tracking"> $lang->selected_messages</strong></td>
 </tr>
 </table>
 </td></tr></table>
@@ -3012,7 +3012,7 @@ $readmessages
 </tr>
 $unreadmessages
 <tr>
-<td class="tfoot" align="right" colspan="5"><strong><input type="submit" name="stoptrackingunread" value="$lang->stop_tracking"> / <input type="submit" name="cancel" value="$lang->cancel"> $lang->selected_messages</strong></td>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="submit" name="stoptrackingunread" value="$lang->stop_tracking"> / <input type="submit" class="submit" name="cancel" value="$lang->cancel"> $lang->selected_messages</strong></td>
 </tr>
 </table>
 </td></tr></table>
@@ -3043,7 +3043,7 @@ $loginbox
 </tr>
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->update_notes" tabindex="2">  <input type="reset" name="reset" value="$lang->reset_button" tabindex="3"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->update_notes" tabindex="2"></center>
 <input type="hidden" name="action" value="do_threadnotes">
 <input type="hidden" name="tid" value="$tid">
 <br />
@@ -3300,7 +3300,7 @@ var php_prompt = "$lang->php_prompt";
 <td class="trow1"><textarea name="message" rows="7" cols="70" wrap="virtual" tabindex="1"></textarea></td>
 </tr>
 <tr>
-<td colspan="2" align="center" class="tfoot"><input type="submit" value="$lang->post_reply" tabindex="2" accesskey="s" /> <input type="submit" name="previewpost" value="$lang->preview_post" tabindex="3" /> <input type="reset" value="$lang->reset_button" tabindex="4" /></td>
+<td colspan="2" align="center" class="tfoot"><input type="submit" class="submit" value="$lang->post_reply" tabindex="2" accesskey="s" /> <input type="submit" class="submit" name="previewpost" value="$lang->preview_post" tabindex="3" /></td>
 </tr>
 </tbody>
 </table>
@@ -3386,7 +3386,7 @@ $limitwarning
 </tr>
 $messagelist
 <tr>
-<td class="tfoot" align="right" colspan="6"><input type="submit" name="moveto" value="$lang->move_to"> $folderoplist $lang->or <input type="submit" name="delete" value="$lang->delete"> $lang->selected_messages</td>
+<td class="tfoot" align="right" colspan="6"><input type="submit" class="submit" name="moveto" value="$lang->move_to"> $folderoplist $lang->or <input type="submit" class="submit" name="delete" value="$lang->delete"> $lang->selected_messages</td>
 </tr>
 </table>
 <br />
@@ -3396,7 +3396,7 @@ $messagelist
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
 <tr>
 <td class="trow1"><span class="smalltext">$multipage</span></td>
-<td class="trow1" align="right"><span class="smalltext"><strong>$lang->jump_folder $folderjump <input type="submit" name="hop" value="$lang->go"></strong></span></td>
+<td class="trow1" align="right"><span class="smalltext"><strong>$lang->jump_folder $folderjump <input type="submit" class="submit" name="hop" value="$lang->go"></strong></span></td>
 </tr>
 </table>
 </td>
@@ -3488,7 +3488,7 @@ $seperator]]></template>
 <form method="post" action="$PHP_SELF"><input type="hidden" name="action" value="do_login">
 $lang->username<br />&nbsp;&nbsp;<input type="text" name="username" value="" /><br /><br />
 $lang->password<br />&nbsp;&nbsp;<input type="password" name="password" value="" /><br />
-<br /><input type="submit" name="loginsubmit" value="$lang->login" /></form>]]></template>
+<br /><input type="submit" class="submit" name="loginsubmit" value="$lang->login" /></form>]]></template>
 		<template name="portal_latestthreads_thread"><![CDATA[<tr>
 <td class="$altbg">
 <strong><a href="$settings[bburl]/showthread.php?tid=$thread[tid]">$thread[subject]</a></strong><span class="smalltext"><br />
@@ -3574,7 +3574,7 @@ $header
 </tr>
 </td>
 </table>
-<center><br /><input type="submit" name="submit" value="$lang->search"> <input type="reset" value="$lang->reset_button"></center>
+<center><br /><input type="submit" class="submit" name="submit" value="$lang->search" /></center>
 </form>
 $footer
 </body>
@@ -3653,7 +3653,7 @@ $guestfields
 </table>
 <br />
 <input type="hidden" name="action" value="do_emailuser" />
-<div align="center"><input type="submit" value="$lang->send_email" />&nbsp;<input type="reset" value="$lang->reset_button" /></div>
+<div align="center"><input type="submit" class="submit" value="$lang->send_email" /></div>
 </form>
 $footer
 </body>
@@ -3752,7 +3752,7 @@ $header
 $reports
 </table>
 <br />
-<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" name="reportsubmit" value="$lang->mark_read" /></div>
+<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" class="submit" name="reportsubmit" value="$lang->mark_read" /></div>
 </form>
 $footer
 </body>
@@ -3797,7 +3797,7 @@ $header
 </tr>
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->login">  <input type="reset" name="reset" value="$lang->reset_button"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->login"></center>
 <input type="hidden" name="action" value="do_login">
 <input type="hidden" name="url" value="$HTTP_REFERER" />
 </form>
@@ -3894,7 +3894,7 @@ $feedurl
 <td class="trow2" width="60%"><input type="text" name="limit" value="$limit" size="3" /> $lang->syndication_threads_time</td>
 </tr></table>
 <br />
-<div align="center"><input type="submit" name="make" value="$lang->syndication_generate" /></div>
+<div align="center"><input type="submit" class="submit" name="make" value="$lang->syndication_generate" /></div>
 </form>
 $footer
 </body>
@@ -4007,7 +4007,7 @@ $header
 $loginbox
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->delete_thread"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->delete_thread"></center>
 <input type="hidden" name="action" value="do_deletethread">
 <input type="hidden" name="tid" value="$tid">
 </form>
@@ -4055,7 +4055,7 @@ $post[signature]]]></template>
 		<template name="post_attachments_attachment"><![CDATA[<tr>
 <td width="5%" align="center">$attachment[icon]</td>
 <td nowrap="nowrap">$attachment[filename] ($attachment[size])</td>
-<td nowrap="nowrap" align="right"><input type="submit" name="rem" value="$lang->remove_attachment" onclick="removeAttachment($attachment[aid]);">&nbsp;$postinsert</td>
+<td nowrap="nowrap" align="right"><input type="submit" class="submit" name="rem" value="$lang->remove_attachment" onclick="removeAttachment($attachment[aid]);">&nbsp;$postinsert</td>
 </tr>]]></template>
 		<template name="error_attacherror"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder"><tr>
 <td class="thead"><strong>$lang->error_attach_file</strong></td>
@@ -4095,7 +4095,7 @@ $header
 $posts
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->merge_posts"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->merge_posts"></center>
 <input type="hidden" name="action" value="do_mergeposts">
 <input type="hidden" name="tid" value="$tid">
 </form>
@@ -4189,7 +4189,7 @@ $loginbox
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>$lang->num_options</strong><br /><span class="smalltext">$lang->max_options $settings[maxpolloptions]</span></td>
-<td class="trow1"><input type="text" name="polloptions" size="10" value="$polloptions">&nbsp;&nbsp;<input type="submit" name="updateoptions" value="$lang->update_options"></td>
+<td class="trow1"><input type="text" name="polloptions" size="10" value="$polloptions">&nbsp;&nbsp;<input type="submit" class="submit" name="updateoptions" value="$lang->update_options"></td>
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>$lang->poll_options</strong></td>
@@ -4213,7 +4213,7 @@ $optionbits
 </tr>
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->post_new_poll">  <input type="reset" name="reset" value="$lang->reset_button" tabindex="5"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->post_new_poll"></center>
 <input type="hidden" name="action" value="do_newpoll">
 <input type="hidden" name="tid" value="$tid">
 </form>
@@ -4247,7 +4247,7 @@ $header
 <br />
 <center>
 <input type="hidden" name="action" value="register">
-<input type="submit" name="agree" value="$lang->i_agree">
+<input type="submit" class="submit" name="agree" value="$lang->i_agree">
 </center>
 </form>
 $footer
@@ -4572,8 +4572,7 @@ $usercpnav
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_password">
-<input type="submit" name="submit" value="$lang->update_password">
-<input type="reset" name="reset" value="$lang->reset_button">
+<input type="submit" class="submit" name="submit" value="$lang->update_password">
 </div>
 </td>
 </tr>
@@ -4623,8 +4622,7 @@ $usercpnav
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_email">
-<input type="submit" name="submit" value="$lang->update_email">
-<input type="reset" name="reset" value="$lang->reset_button">
+<input type="submit" class="submit" name="submit" value="$lang->update_email">
 </div>
 </td>
 </tr>
@@ -4727,7 +4725,7 @@ $message[message]
 <input type="text" name="comments" size="40" maxlength="250">
 <br />
 <br />
-<center><input type="submit" value="$lang->add_to_reputation"></center>
+<center><input type="submit" class="submit" value="$lang->add_to_reputation"></center>
 </form>]]></template>
 		<template name="postbit_reputation"><![CDATA[<br />$lang->postbit_reputation $post[neglink]$post[userreputation]$post[poslink]]]></template>
 		<template name="usercp_latestreputations_bit"><![CDATA[<tr>
@@ -4910,7 +4908,7 @@ $header
 $loginbox
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->delete_poll"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->delete_poll"></center>
 <input type="hidden" name="action" value="do_deletepoll" />
 <input type="hidden" name="tid" value="$tid" />
 <input type="hidden" name="delete" value="1" />
@@ -5108,8 +5106,7 @@ $listoptions
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_avatar" />
-<input type="submit" name="submit" value="$lang->change_avatar" />
-<input type="reset" name="reset" value="$lang->reset_button" />
+<input type="submit" class="submit" name="submit" value="$lang->change_avatar" />
 </div>
 </td>
 </tr>
@@ -5147,8 +5144,7 @@ $usercpnav
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_notepad" />
-<input type="submit" name="submit" value="$lang->update_notepad" />
-<input type="reset" name="reset" value="$lang->reset_button" />
+<input type="submit" class="submit" name="submit" value="$lang->update_notepad" />
 </div>
 </td>
 </tr>
@@ -5193,7 +5189,7 @@ $header
 </table>
 </td></tr></table>
 <br />
-<center><input type="hidden" name="action" value="activate"><input type="submit" name="regsubmit" value="$lang->send_password">  <input type="reset" name="reset" value="$lang->reset_button"></center>
+<center><input type="hidden" name="action" value="activate"><input type="submit" class="submit" name="regsubmit" value="$lang->send_password">  </center>
 </form>
 $footer
 </body>
@@ -5235,7 +5231,7 @@ $header
 </tr>
 </table>
 <br />
-<center><input type="submit" value="$lang->request_user_pass"></center>
+<center><input type="submit" class="submit" value="$lang->request_user_pass"></center>
 <input type="hidden" name="action" value="do_lostpw" />
 </form>
 $footer
@@ -5269,8 +5265,7 @@ $usercpnav
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_changename">
-<input type="submit" name="submit" value="$lang->update_username">
-<input type="reset" name="reset" value="$lang->reset_button">
+<input type="submit" class="submit" name="submit" value="$lang->update_username">
 </div>
 </td>
 </tr>
@@ -5339,7 +5334,7 @@ $header
 $posts
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->delete_selected_posts"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->delete_selected_posts"></center>
 <input type="hidden" name="action" value="do_deleteposts">
 <input type="hidden" name="tid" value="$tid">
 </form>
@@ -5379,7 +5374,7 @@ $loginbox
 $posts
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->split_thread"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->split_thread"></center>
 <input type="hidden" name="action" value="do_split">
 <input type="hidden" name="tid" value="$tid">
 </form>
@@ -5425,7 +5420,7 @@ $header
 </tr>
 </table>
 <br />
-<center><input type="submit" value="$lang->do_rate"></center>
+<center><input type="submit" class="submit" value="$lang->do_rate"></center>
 <input type="hidden" name="action" value="do_rate" /><input type="hidden" name="uid" value="$uid" />
 </form>
 $footer
@@ -5465,7 +5460,7 @@ $guestfields
 </table>
 <br />
 <input type="hidden" name="action" value="do_sendtofriend" /><input type="hidden" name="tid" value="$tid" />
-<div align="center"><input type="submit" value="$lang->send_thread" />&nbsp;<input type="reset" value="$lang->reset_button" /></div>
+<div align="center"><input type="submit" class="submit" value="$lang->send_thread" /></div>
 </form>
 $footer
 </body>
@@ -5523,9 +5518,8 @@ $signature
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_editsig" />
-<input type="submit" name="submit" value="$lang->update_sig" />
-<input type="submit" name="preview" value="$lang->preview" />
-<input type="reset" name="reset" value="$lang->reset_button" />
+<input type="submit" class="submit" name="submit" value="$lang->update_sig" />
+<input type="submit" class="submit" name="preview" value="$lang->preview" />
 </div>
 </td>
 </tr>
@@ -5589,7 +5583,7 @@ $postrow[message]
 <td class="trow2"><input type="password" name="password"></td>
 </tr>
 <tr>
-<td class="trow2" colspan="2"><span class="smalltext" style="float:right; padding-top:3px;"><a href="member.php?action=register">$lang->need_reg</a> | <a href="member.php?action=lostpw">$lang->forgot_password</a>&nbsp;</span>&nbsp;<input type="submit" value="$lang->login"></td>
+<td class="trow2" colspan="2"><span class="smalltext" style="float:right; padding-top:3px;"><a href="member.php?action=register">$lang->need_reg</a> | <a href="member.php?action=lostpw">$lang->forgot_password</a>&nbsp;</span>&nbsp;<input type="submit" class="submit" value="$lang->login"></td>
 </tr>
 </table>
 </td></tr>
@@ -5648,8 +5642,7 @@ $newfolders
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_folders">
-<input type="submit" name="submit" value="$lang->update_folders">
-<input type="reset" name="reset" value="$lang->reset_button">
+<input type="submit" class="submit" name="submit" value="$lang->update_folders">
 </div>
 </td>
 </tr>
@@ -5692,7 +5685,7 @@ $loginbox
 </tr>
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->move_copy_thread"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->move_copy_thread"></center>
 <input type="hidden" name="action" value="do_move">
 <input type="hidden" name="tid" value="$tid">
 </form>
@@ -5723,7 +5716,7 @@ $loginbox
 </tr>
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->merge_threads"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->merge_threads"></center>
 <input type="hidden" name="action" value="do_merge">
 <input type="hidden" name="tid" value="$tid">
 </form>
@@ -5786,7 +5779,7 @@ $header
 </table>
 </td></tr></table>
 <br />
-<center><input type="hidden" name="action" value="activate"><input type="submit" name="regsubmit" value="$lang->activate_account">  <input type="reset" name="reset" value="$lang->reset_button"></center>
+<center><input type="hidden" name="action" value="activate"><input type="submit" class="submit" name="regsubmit" value="$lang->activate_account">  </center>
 </form>
 $footer
 </body>
@@ -5845,7 +5838,7 @@ $newlist
 <center>
 <input type="hidden" name="action" value="do_editlists">
 <input type="hidden" name="list" value="buddy">
-<input type="submit" name="submit" value="$lang->update_buddy_list">
+<input type="submit" class="submit" name="submit" value="$lang->update_buddy_list">
 </center>
 </form>
 </td>
@@ -5873,7 +5866,7 @@ $newlist
 <center>
 <input type="hidden" name="action" value="do_editlists">
 <input type="hidden" name="list" value="ignore">
-<input type="submit" name="submit" value="$lang->update_ignore_list">
+<input type="submit" class="submit" name="submit" value="$lang->update_ignore_list">
 </center>
 </form>
 </td>
@@ -5972,7 +5965,8 @@ $yearopts
 </table>
 <br />
 <input type="hidden" name="action" value="do_editevent" /><input type="hidden" name="eid" value="$eid" />
-<div align="center"><input type="submit" value="$lang->edit_event" />&nbsp;<input type="reset" value="$lang->reset_button" /></div>
+<div align="center"><input type="submit" class="submit" value="$lang->edit_event" />
+</div>
 </form>
 $footer
 </body>
@@ -6229,7 +6223,7 @@ $header
 </tr>
 </table>
 <br />
-<center><input type="submit" value="$lang->request_activation"></center>
+<center><input type="submit" class="submit" value="$lang->request_activation"></center>
 <input type="hidden" name="action" value="do_resendactivation" />
 </form>
 $footer
@@ -6258,7 +6252,7 @@ $header
 $loginbox
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->delete_threads"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->delete_threads"></center>
 <input type="hidden" name="action" value="do_multideletethreads">
 <input type="hidden" name="fid" value="$fid">
 <input type="hidden" name="threads" value="$inlineids">
@@ -6286,7 +6280,7 @@ $loginbox
 </tr>
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->move_threads"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->move_threads"></center>
 <input type="hidden" name="action" value="do_multimovethreads">
 <input type="hidden" name="fid" value="$fid">
 <input type="hidden" name="threads" value="$inlineids">
@@ -6314,7 +6308,7 @@ $loginbox
 </tr>
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->merge_posts"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->merge_posts"></center>
 <input type="hidden" name="action" value="do_multimergeposts">
 <input type="hidden" name="tid" value="$tid">
 <input type="hidden" name="posts" value="$inlineids">
@@ -6348,7 +6342,7 @@ $loginbox
 </tr>
 </table>
 <br />
-<center><input type="submit" name="submit" value="$lang->split_thread"></center>
+<center><input type="submit" class="submit" name="submit" value="$lang->split_thread"></center>
 <input type="hidden" name="action" value="do_multisplitposts">
 <input type="hidden" name="tid" value="$tid">
 <input type="hidden" name="posts" value="$inlineids">
@@ -6487,8 +6481,7 @@ $regimage
 <br />
 <center>
 <input type="hidden" name="action" value="do_register">
-<input type="submit" name="regsubmit" value="$lang->submit_registration">
-<input type="reset" name="reset" value="$lang->reset_button">
+<input type="submit" class="submit" name="regsubmit" value="$lang->submit_registration">
 </center>
 </form>
 $footer

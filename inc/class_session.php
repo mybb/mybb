@@ -45,6 +45,10 @@ class session
 		// User-agent
 		//
 		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
+		if(strlen($this->useragent) > 100)
+		{
+			$this->useragent = substr($this->useragent, 0, 100);
+		}
 
 		//
 		// Attempt to find a session id in the cookies

@@ -268,3 +268,8 @@ function inlineunset() {
 	ob.value = go_text+" ("+inlinecount+")";
 	unsetcookie(cookiename);
 }
+
+function resetConfirmation()
+{
+		return confirm("Are you sure you wish to reset the form back to it's default details?\n\nAny changes you've made will be lost.");
+}
