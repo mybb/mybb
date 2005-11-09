@@ -360,7 +360,7 @@ elseif($mybb->input['action'] == "do_send")
 	}
 	$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$touser['uid']."' AND folder='1' ORDER BY dateline DESC LIMIT 1");
 	$lastpm = $db->fetch_array($query);
-	if($touser['pmnotify'] == "yes" && $touser['lastactive'] > $lastpm['dateline'])
+	if($touser['pmnotify'] == "yes" && $touser['lastactive'] > $lastpm['dateline'] && !$mybb->input['saveasdraft'])
 	{
 		if($touser['language'] != "" && $lang->languageExists($touser['language']))
 		{
@@ -394,7 +394,7 @@ elseif($mybb->input['action'] == "do_send")
 	}
 
 	$now = time();
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."privatemessages WHERE folder='3' AND uid='".$mybb->user[uid]."' AND pmid='".addslashes($mybb->input['pmid'])."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."privatemessages WHERE folder='3' AND uid='".$mybb->user['uid']."' AND pmid='".addslashes($mybb->input['pmid'])."'");
 	$draftcheck = $db->fetch_array($query);
 	if($mybb->input['saveasdraft'])
 	{
