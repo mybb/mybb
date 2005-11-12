@@ -490,6 +490,12 @@ elseif($mybb->input['action'] == "do_search")
 			error($lang->error_nosearchterms);
 		}
 	}
+	
+	if(trim($mybb->input['keywords']) == '%')
+	{
+ 		error($lang->error_percentnotallowed);
+	}
+	
 	$plugins->run_hooks("search_do_search_start");
 
 	if($mybb->input['postthread'] == 1)
