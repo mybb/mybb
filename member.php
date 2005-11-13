@@ -1539,7 +1539,7 @@ elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 	else
 	{
 		$uid = $mybb->input['uid'];
-		$rating = $mybb->input['rating'];
+		$rating = intval($mybb->input['rating']);
 		if($rating < 1)
 		{
 			$rating = 1;

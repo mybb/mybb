@@ -179,7 +179,10 @@ if($mybb->input['action'] == "deletepost")
 				deletethread($tid);
 				updateforumcount($fid);
 				markreports($tid, "thread");
-				logmod($modlogdata, "Deleted Thread");
+				if(ismod($fid, "candeleteposts") != "yes")
+				{
+					logmod($modlogdata, "Deleted Thread");
+				}
 				redirect("forumdisplay.php?fid=$fid", $lang->redirect_threaddeleted);
 			}
 			else
@@ -196,6 +199,10 @@ if($mybb->input['action'] == "deletepost")
 				updatethreadcount($tid);
 				updateforumcount($fid);
 				markreports($pid, "post");
+				if(ismod($fid, "candeleteposts") != "yes")
+				{
+					logmod($modlogdata, "Deleted Post");
+				}
 				$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND dateline <= '$post[dateline]' ORDER BY dateline DESC LIMIT 0, 1");
 				$p = $db->fetch_array($query);
 				if($p['pid']) {
@@ -203,7 +210,6 @@ if($mybb->input['action'] == "deletepost")
 				} else {
 					$redir = "showthread.php?tid=$tid";
 				}
-				logmod($modlogdata, "Deleted Post");
 				redirect($redir, $lang->redirect_postdeleted);
 			}
 			else

@@ -262,7 +262,7 @@ elseif($mybb->input['action'] == "do_addevent")
 		}
 		$mybb->input['private'] = "no";
 	}
-	$eventdate = $mybb->input['day']."-".$mybb->input['month']."-".$mybb->input['year'];
+	$eventdate = $day."-".$month."-".$year;
 
 	$newevent = array(
 		"subject" => addslashes($mybb->input['subject']),
@@ -375,7 +375,7 @@ elseif($mybb->input['action'] == "do_editevent")
 			$mybb->input['private'] = "no";
 		}
 
-		$eventdate = $mybb->input['day']."-".$mybb->input['month']."-".$mybb->input['year'];
+		$eventdate = $day."-".$month."-".$year;
 
 		$newevent = array(
 			"subject" => addslashes($mybb->input['subject']),

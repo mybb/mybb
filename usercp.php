@@ -627,6 +627,11 @@ elseif($mybb->input['action'] == "options")
 		$pmnotifycheck = "";
 	}
 
+	if($mybb->input['threadmode'] != "threaded")
+	{
+		$mybb->input['threadmode'] = "linear";
+	}
+
 	$dateselect[$mybb->user['dateformat']] = "selected";
 	$timeselect[$mybb->user['timeformat']] = "selected";
 	$mybb->user['timezone'] = $mybb->user['timezone']*10;
@@ -1559,7 +1564,14 @@ elseif($mybb->input['action'] == "do_editlists")
 		$newlist .= "$comma2$user[uid]";
 		$comma2 = ",";
 	}
-	$type = $mybb->input['list']."list";
+	if($mybb->input['list'] == "ignore")
+	{
+		$type = "ignorelist";
+	}
+	else
+	{
+		$type = "buddylist";
+	}
 	$db->query("UPDATE ".TABLE_PREFIX."users SET $type='$newlist' WHERE uid='".$mybb->user['uid']."'");
 	$redirecttemplate = "redirect_".$mybb->input['list']."updated";
 	$plugins->run_hooks("usercp_do_editlists_end");
