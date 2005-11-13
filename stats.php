@@ -43,13 +43,15 @@ $membersperday = mynumberformat(round(($stats['numusers'] / $days), 2));
 
 // Get forum permissions
 $unviewableforums = getunviewableforums();
-if($unviewableforums) {
+if($unviewableforums)
+{
 	$fidnot = " AND fid NOT IN ($unviewableforums)";
 }
 
 // Most replied-to threads
 $query = $db->query("SELECT tid, subject, replies FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY replies DESC LIMIT 0, ".$mybb->settings[statslimit]);
-while($thread = $db->fetch_array($query)) {
+while($thread = $db->fetch_array($query))
+{
 	$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
 	$numberbit = mynumberformat($thread['replies']);
 	$numbertype = $lang->replies;
@@ -58,7 +60,8 @@ while($thread = $db->fetch_array($query)) {
 
 // Most viewed threads
 $query = $db->query("SELECT tid, subject, views FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY views DESC LIMIT 0, ".$mybb->settings[statslimit]);
-while($thread = $db->fetch_array($query)) {
+while($thread = $db->fetch_array($query))
+{
 	$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
 	$numberbit = mynumberformat($thread['views']);
 	$numbertype = $lang->views;
@@ -68,11 +71,14 @@ while($thread = $db->fetch_array($query)) {
 // Top forum
 $query = $db->query("SELECT fid, name, threads, posts FROM ".TABLE_PREFIX."forums WHERE 1=1 $fidnot AND type='f' ORDER BY posts DESC LIMIT 1");
 $forum = $db->fetch_array($query);
-if(!$forum['posts']) {
+if(!$forum['posts'])
+{
 	$topforum = $lang->none;
 	$topforumposts = $lang->no;
 	$topforumthreads = $lang->no;
-} else {
+}
+else
+{
 	$forum['name'] = htmlspecialchars_uni(stripslashes($forum['name']));
 	$topforum = "<a href=\"forumdisplay.php?fid=$forum[fid]\">$forum[name]</a>";
 	$topforumposts = $forum['posts'];
@@ -83,11 +89,21 @@ if(!$forum['posts']) {
 $timesearch = time() - 86400;
 $query = $db->query("SELECT u.uid, u.username, COUNT(*) AS poststoday FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE p.dateline > $timesearch GROUP BY p.uid ORDER BY poststoday DESC LIMIT 1");
 $user = $db->fetch_array($query);
-if(!$user['poststoday']) {
+if(!$user['poststoday'])
+{
 	$topposter = $lang->nobody;
 	$topposterposts = $lang->no_posts;
-} else {
-	$topposter = "<a href=\"member.php?action=profile&uid=$user[uid]\">$user[username]</a>";
+}
+else
+{
+	if(!$user['uid'])
+	{
+		$topposter = $lang->guest;
+	}
+	else
+	{
+		$topposter = "<a href=\"member.php?action=profile&uid=$user[uid]\">$user[username]</a>";
+	}
 	$topposterposts = $user['poststoday'];
 }
 
