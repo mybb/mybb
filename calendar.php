@@ -58,7 +58,7 @@ $day = date("j", $stamp);
 $month = date("n", $stamp);
 $year = date("Y", $stamp);
 
-$monthnames = array("offset", $lang->alt_month_1, $lang->alt_month_2, $lang->nav_alt_month_3, $lang->alt_month_4, $lang->alt_month_5, $lang->alt_month_6, $lang->alt_month_7, $lang->alt_month_8, $lang->alt_month_9, $lang->alt_month_10, $lang->alt_month_11, $lang->alt_month_12);
+$monthnames = array("offset", $lang->alt_month_1, $lang->alt_month_2, $lang->alt_month_3, $lang->alt_month_4, $lang->alt_month_5, $lang->alt_month_6, $lang->alt_month_7, $lang->alt_month_8, $lang->alt_month_9, $lang->alt_month_10, $lang->alt_month_11, $lang->alt_month_12);
 
 // Make navigation
 addnav($lang->nav_calendar, "calendar.php");
