@@ -110,7 +110,7 @@ if($mybb->input['fid'] > 0)
 	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f WHERE f.fid='".intval($mybb->input['fid'])."'");
 	$style = $db->fetch_array($query);
 }
-if(is_numeric($style['style']) && $style['style'] != -1)
+if(is_numeric($style['style']) && $style['style'] > 0)
 {
 	if($style['overridestyle'] == "yes" || !$mybb->user['style'])
 	{
@@ -125,7 +125,7 @@ if(!$loadstyle)
 $query = $db->query("SELECT name,tid,themebits FROM ".TABLE_PREFIX."themes WHERE $loadstyle");
 $theme = $db->fetch_array($query);
 
-$theme = array_merge($theme, unserialize($theme['themebits']));
+$theme = @array_merge($theme, unserialize($theme['themebits']));
 
 if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
 {
