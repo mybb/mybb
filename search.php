@@ -678,7 +678,7 @@ else
 
 function makesearchforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
-	global $db, $pforumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $lang, $forumpass;
+	global $db, $pforumcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $mybbgroup, $lang, $forumpass;
 	$pid = intval($pid);
 	if(!$permissions)
 	{

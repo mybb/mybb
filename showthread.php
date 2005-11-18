@@ -453,7 +453,7 @@ if($mybb->input['action'] == "thread") {
 	outputpage($showthread);
 }
 function buildtree($replyto="0", $indent="0") {
-	global $tree, $mybb, $templates;
+	global $tree, $settings, $theme, $mybb, $pid, $tid, $templates;
 	if($indent) {
 		$indentsize = 13 * $indent;
 	} else {
