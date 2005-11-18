@@ -468,7 +468,7 @@ if($mybb->input['action'] == "add") {
 	makeyesnocode($lang->moderate_attachments, "modattachments", "no");
 
 	tablesubheader($lang->style_options);
-	makeselectcode($lang->style, "fstyle", "themes", "tid", "name", "-1", $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
+	makeselectcode($lang->style, "fstyle", "themes", "tid", "name", "0", $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
 	makeyesnocode($lang->override_style, "overridestyle", "no");
 
 	tablesubheader($lang->forum_rules);
@@ -594,7 +594,7 @@ if($mybb->input['action'] == "edit") {
 
 	tablesubheader($lang->style_options);
 	if(!$forum['style']) {
-		$forum['style'] = "-1";
+		$forum['style'] = "0";
 	}
 	makeselectcode($lang->style, "fstyle", "themes", "tid", "name", $forum['style'], $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
 	makeyesnocode($lang->override_style, "overridestyle", $forum['overridestyle']);

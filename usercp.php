@@ -2041,7 +2041,7 @@ else
 			}
 			$repdate = mydate($mybb->settings['dateformat'], $reputation['dateline']);
 			$reptime = mydate($mybb->settings['timeformat'], $reputation['dateline']);
-			$reputation['comments'] = stripslashes($reputation['comments']);
+			$reputation['comments'] = htmlspecialchars_uni(stripslashes($reputation['comments']));
 			if(strpos(" ".$reputation['reputation'], "-"))
 			{ // negative
 				$posnegimg = "repbit_neg.gif";

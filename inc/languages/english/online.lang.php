@@ -65,6 +65,8 @@ $l['viewing_portal'] = "Viewing <a href=\"portal.php\">Portal</a> Page";
 $l['viewing_noperms'] = "Viewing No Permissions Page";
 $l['unknown_location'] = "<a href=\"{1}\">Unknown Location</a>";
 $l['giving_reputation'] = "Giving a Reputation";
+$l['member_resendactivation'] = "Resending Account Activation Email";
+$l['member_lostpw'] = "Retrieving <a href=\"member.php?action=lostpw\">Lost Password</a>";
 $l['guest'] = "Guest";
 $l['page'] = "Page";
 $l['users_online'] = "Who's Online";

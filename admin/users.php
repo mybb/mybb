@@ -791,7 +791,7 @@ if($mybb->input['action'] == "add")
 	makeyesnocode($lang->pm_popup, "pmpopup", "yes");
 	makeyesnocode($lang->pm_notify, "pmnotify", "yes");
 	makeinputcode($lang->time_offset, "timezoneoffset");
-	makeselectcode($lang->style, "style", "themes", "tid", "name", -1, $lang->use_default, "", "tid>1");
+	makeselectcode($lang->style, "style", "themes", "tid", "name", 0, $lang->use_default, "", "tid>1");
 	maketextareacode($lang->signature, "signature", "", 6, 50);
 	endtable();
 	endform($lang->add_user, $lang->reset_button);
@@ -850,7 +850,7 @@ if($mybb->input['action'] == "edit")
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
 	if(!$user['displaygroup'])
 	{
-		$user['displaygroup'] = -1;
+		$user['displaygroup'] = 0;
 	}
 	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", $user['displaygroup'], "--".$lang->primary_usergroup."--");
 	makeinputcode($lang->post_count, "postnum", $user['postnum'], 4);
@@ -1007,7 +1007,7 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->time_offset, "timezoneoffset", $user['timezone']);
 	if(!$user['style'])
 	{
-		$user['style'] = -1;
+		$user['style'] = 0;
 	}
 	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user['style'], $lang->use_default, "", "tid>1");
 	maketextareacode($lang->signature, "signature", $user['signature'], 6, 50);

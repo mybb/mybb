@@ -80,6 +80,7 @@ if(!$mybb->input['mode'])
 }
 
 $loadstyle = "";
+$style = array();
 if($mybb->user['style'] != "" && $mybb->user['style'] != "0")
 {
 	$loadstyle = "tid='".$mybb->user['style']."'";
@@ -109,11 +110,11 @@ if($mybb->input['fid'] > 0)
 	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f WHERE f.fid='".intval($mybb->input['fid'])."'");
 	$style = $db->fetch_array($query);
 }
-if($style['style'] && $style['style'] != -1)
+if(is_numeric($style['style']) && $style['style'] != -1)
 {
 	if($style['overridestyle'] == "yes" || !$mybb->user['style'])
 	{
-		$loadstyle = "tid='$style[style]'";
+		$loadstyle = "tid='".$style['style']."'";
 	}
 }
 if(!$loadstyle)

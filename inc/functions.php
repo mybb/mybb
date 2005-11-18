@@ -98,7 +98,7 @@ function run_shutdown()
 function parsepage($contents)
 {
 	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup, $htmldoctype;
-	global $loadpmpopup, $PHP_SELF;
+	global $loadpmpopup;
 
 	$contents = str_replace("<navigation>", buildnav(1), $contents);
 	if($htmldoctype)
@@ -120,7 +120,7 @@ function parsepage($contents)
 
 	if($loadpmpopup)
 	{
-		if(substr($PHP_SELF, -strlen("private.php")) != "private.php")
+		if(substr($_SERVER['PHP_SELF'], -strlen("private.php")) != "private.php")
 		{
 			$contents = str_replace("<body", "<body onload=\"Javascript:newPM()\"", $contents);
 		}

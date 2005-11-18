@@ -78,7 +78,7 @@ if($mybb->input['action'] == "do_updateperms")
 		"canrunmaint" => addslashes($newperms['canrunmaint']),
 		);
 	$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='$uid'");
-	if($uid == -1)
+	if($uid == 0)
 	{
 		cpredirect("adminoptions.php?action=adminpermissions", $lang->default_perms_updated);
 	} 
@@ -91,7 +91,7 @@ if($mybb->input['action'] == "updateperms")
 {
 	checkadminpermissions("caneditaperms");
 	$uid = intval($mybb->input['uid']);
-	if($uid != -1)
+	if($uid != 0)
 	{
 		$query = $db->query("SELECT u.uid, u.username, g.cancp FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g WHERE u.uid='$uid' AND u.usergroup=g.gid AND g.cancp='yes'");
 		$admin = $db->fetch_array($query);
@@ -103,7 +103,7 @@ if($mybb->input['action'] == "updateperms")
 	else
 	{
 		$tsub = $lang->edit_default_perms;
-		$permissions = getadminpermissions("-1");
+		$permissions = getadminpermissions("0");
 		addacpnav($lang->nav_edit_def_permissions);
 	}
 	cpheader();
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "adminpermissions")
 	checkadminpermissions("caneditaperms");
 	cpheader();
 	starttable();
-	tableheader($lang->admin_perms.makelinkcode($lang->edit_default, "adminoptions.php?action=updateperms&uid=-1", "", "header"), "", 4);
+	tableheader($lang->admin_perms.makelinkcode($lang->edit_default, "adminoptions.php?action=updateperms&uid=0", "", "header"), "", 4);
 	echo "<tr>\n";
 	echo "<td class=\"subheader\">$lang->username</td>\n";
 	echo "<td class=\"subheader\">$lang->lastactive</td>\n";

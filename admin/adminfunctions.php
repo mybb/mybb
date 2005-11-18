@@ -271,13 +271,25 @@ function makeselectcode($title, $name, $table, $tableid, $optiondisp, $selected=
 	}
 	if($extra)
 	{
-		if($selected == "-1")
+		$eq_pos = strpos($extra, "=");
+		if($eq_pos !== false)
 		{
-			echo "<option value=\"-1\" selected>$extra</option>\n";
+			$exp = explode("=", $extra, 2);
+			$extra = $exp[1];
+			$value = $exp[0];
+		}
+		else
+		{
+			$value = "0";
+		}
+
+		if($selected == $value)
+		{
+			echo "<option value=\"$value\" selected>$extra</option>\n";
 		} 
 		else
 		{
-			echo "<option value=\"-1\">$extra</option>\n";
+			echo "<option value=\"$value\">$extra</option>\n";
 		}
 	}
 	echo "</select>\n</td>\n</tr>\n";
@@ -644,10 +656,6 @@ function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $ext
 		{
 			$forumselect .= "<option value=\"-1\">$extra</option><option value=\"0\">-----------</option>";
 		}
-		if($shownone)
-		{
-			$forumselect .= "<option value=\"0\">$lang->parentforum_none</option><option value=\"0\">-----------</option>";
-		}
 	}
 	else
 	{
@@ -691,7 +699,7 @@ function getadminpermissions($uid="")
 	{
 		$uid = $mybbadmin[uid];
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE (uid='$uid' OR uid='-1') AND permsset!='' ORDER BY uid DESC");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE (uid='$uid' OR uid='0') AND permsset!='' ORDER BY uid DESC");
 	$perms = $db->fetch_array($query);
 	return $perms;
 }
@@ -1250,8 +1258,8 @@ function build_css($array, $name="")
 			}
 			$css .= $selector." {\n".$cssbits."}\n";
 			$css .= $incss;
-			$cssbits = $incss = "";
 		}
+		$cssbits = $incss = "";
 		$extra = "";
 	}
 	return $css;
@@ -1538,6 +1546,7 @@ function update_theme($tid, $pid="", $themebits="", $css="", $child=0, $isnew=0)
 	}
 	return $updatedthemes;
 }
+
 function killempty($array)
 {
 	if(!is_array($array))

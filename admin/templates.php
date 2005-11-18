@@ -249,7 +249,7 @@ if($mybb->input['action'] == "edit") {
 	}
 	maketextareacode($lang->template, "template", $template[template], "25", "80");
 	if($template[sid] != "-2") {
-		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $template[sid], "Global - All Template Sets");
+		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $template[sid], "-1=Global - All Template Sets");
 	} else {
 		makehiddencode("setid", $template[sid]);
 	}
@@ -367,7 +367,7 @@ if($mybb->input['action'] == "add") {
 	if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
 		makehiddencode("setid", -2);
 	} else {
-		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $mybb->input['sid'], $lang->global_sel);
+		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $mybb->input['sid'], "-1=".$lang->global_sel);
 	}
 	makeyesnocode($lang->continue_editing, "continue", "no");
 	endtable();

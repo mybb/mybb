@@ -21,23 +21,23 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	{
 		if($imgtype == 3)
 		{
-			if( function_exists("imagecreatefrompng"))
+			if(@function_exists("imagecreatefrompng"))
 			{
-				$im = imagecreatefrompng($file);
+				$im = @imagecreatefrompng($file);
 			}
 		}
 		elseif($imgtype == 2)
 		{
-			if(function_exists("imagecreatefromjpeg"))
+			if(@function_exists("imagecreatefromjpeg"))
 			{
-				$im = imagecreatefromjpeg($file);
+				$im = @imagecreatefromjpeg($file);
 			}
 		}
 		elseif($imgtype == 1)
 		{
-			if(function_exists("imagecreatefromgif"))
+			if(@function_exists("imagecreatefromgif"))
 			{
-				$im = imagecreatefromgif($file);
+				$im = @imagecreatefromgif($file);
 			}
 		}
 		else
@@ -56,12 +56,12 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		$thumbim = @imagecreatetruecolor($thumbwidth, $thumbheight);
 		if($thumbim)
 		{
-			imagecopyresampled($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth,$imgheight);
+			@imagecopyresampled($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth,$imgheight);
 		}
 		else
 		{
-			$thumbim = imagecreate($thumbwidth, $thumbheight);
-			imagecopyresized($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth, $imgheight);
+			$thumbim = @imagecreate($thumbwidth, $thumbheight);
+			@imagecopyresized($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth, $imgheight);
 		}
 		@imagedestroy($im);
 		if(!function_exists("imagegif") && $imgtype == 1)

@@ -372,6 +372,12 @@ function show($user)
 		case "member_rate":
 			$locationname = $lang->rating_user;
 			break;
+		case "member_resendactivation":
+			$locationname = $lang->resending_account_activation;
+			break;
+		case "member_lostpw":
+			$locationname = $lang->retrieving_lost_pw;
+			break;
 		// memberlist.php functions
 		case "memberlist":
 			$locationname = $lang->viewing_memberlist;
@@ -684,6 +690,14 @@ function what($user)
 			elseif($parameters['action'] == "rate")
 			{
 				$user['activity'] = "member_rate";
+			}
+			elseif($parameters['action'] == "resendactivation" || $parameters['action'] == "do_resendactivation")
+			{
+				$user['activity'] = "member_resendactivation";
+			}
+			elseif($parameters['action'] == "lostpw" || $parameters['action'] == "do_lostpw" || $parameters['action'] == "resetpassword")
+			{
+				$user['activity'] = "member_lostpw";
 			}
 			else
 			{
