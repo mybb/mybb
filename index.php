@@ -223,7 +223,7 @@ $forums = getforums();
 
 function getforums($pid="0", $depth=1, $permissions="")
 {
-	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $mybbforumread, $settings, $mybbuser, $excols, $fcollapse, $templates, $bgcolor, $collapsed, $lang, $showdepth, $forumpass, $plugins;
+	global $fcache, $moderatorcache, $forumpermissions, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins;
 	if(is_array($fcache[$pid]))
 	{
 		while(list($key, $main) = each($fcache[$pid]))

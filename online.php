@@ -275,7 +275,7 @@ else
 
 function show($user)
 {
-	global $threads, $forums, $posts, $events, $members, $settings, $theme, $mybb, $mybbuser, $onlinerows, $templates, $mybbgroup, $lang, $bots;
+	global $threads, $forums, $posts, $events, $members, $mybb, $templates, $lang;
 
 	switch($user['activity'])
 	{

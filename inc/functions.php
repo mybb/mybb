@@ -21,8 +21,7 @@ $mybboard['vercode'] = "100.06";
 //
 function outputpage($contents)
 {
-	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser, $mybbgroup;
-	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
+	global $db, $plugins, $mybb, $mybbgroup, $querytime, $maintimer, $globaltime, $parsetime;
 	$ptimer = new timer();
 	$contents = parsepage($contents);
 	$parsetime = $ptimer->stop();
@@ -227,6 +226,7 @@ function buildparentlist($fid, $column="fid", $joiner="OR", $parentlist="")
 	$parentlist = (!$parentlist) ? getparentlist($fid) : $parentlist;
 	$parentsexploded = explode(",", $parentlist);
 	$builtlist = "(";
+	$sep = "";
 	while(list($key, $val) = each($parentsexploded))
 	{
 		$builtlist .= "$sep$column='$val'";
@@ -259,7 +259,7 @@ function cacheforums()
 //
 function error($error, $title="")
 {
-	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $db, $templates, $lang, $mybb;
+	global $settings, $theme, $db, $templates, $lang, $mybb;
 	$title = (!$title) ? $mybb->settings['bbname'] : $title;
 	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	resetnav();
@@ -292,12 +292,12 @@ function inlineerror($errors, $title="")
 //
 function nopermission()
 {
-	global $REQUEST_URI, $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang, $plugins, $session;
+	global $mybb, $mybbuser, $theme, $templates, $db, $lang, $plugins, $session;
 	$time = time();
 	$plugins->run_hooks("no_permission");
 	$db->query("UPDATE ".TABLE_PREFIX."sessions SET nopermission='1' WHERE sid='".$session->sid."'");
 	$plate = "error_nopermission".(($mybb->user['uid']!=0)?"_loggedin":"");
-	$url = $REQUEST_URI;
+	$url = $_SERVER['REQUEST_URI'];
 	eval("\$errorpage = \"".$templates->get($plate)."\";");
 	error($errorpage);
 }
@@ -466,7 +466,7 @@ function usergroup_displaygroup($gid)
 //
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
-	global $db, $cache, $groupscache, $forumcache, $fpermcache, $mybbgroup, $mybbuser, $mybb, $usercache, $fpermissionscache;
+	global $db, $cache, $groupscache, $forumcache, $fpermcache, $mybbgroup, $mybbuser, $mybb, $usercache;
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
@@ -677,7 +677,7 @@ function getuserpermissions($uid="", $gid="")
 //
 function checkpwforum($fid, $password="")
 {
-	global $mybb, $mybbuser, $toplinks, $header, $settings, $footer, $css, $headerinclude, $theme, $_SERVER, $breadcrumb, $templates, $lang;
+	global $mybb, $mybbuser, $toplinks, $header, $settings, $footer, $css, $headerinclude, $theme, $_SERVER, $templates, $lang;
 	$showform = 1;
 
 	if($password)
@@ -880,7 +880,6 @@ function mygetarraycookie($name, $id)
 {
 	// Many minutes were used to perfect this function
 	// With the wonderful debugging help of Matt Light
-	global $_COOKIE, $test;
 	$my = $_COOKIE['mybb'];
 	$cookie = unserialize($my[$name]);
 	if($cookie[$id])
@@ -893,8 +892,8 @@ function mygetarraycookie($name, $id)
 	}
 }
 
-function mysetarraycookie($name, $id, $value) {
-	global $_COOKIE;
+function mysetarraycookie($name, $id, $value)
+{
 	$my = $_COOKIE['mybb'];
 	$newcookie = unserialize($my[$name]);
 	$newcookie[$id] = $value;
@@ -1415,7 +1414,7 @@ function getattachicon($ext)
 
 function getunviewableforums()
 {
-	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $unviewable, $templates, $mybbgroup, $forumpass;
+	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $templates, $mybbgroup, $forumpass;
 	$pid = intval($pid);
 
 	if(!$permissions)
@@ -1517,7 +1516,7 @@ function addnav($name, $url="") {
 
 function makeforumnav($fid, $archive=0)
 {
-	global $pforumcache, $db, $currentitem, $forumcache, $navbits, $lang, $archiveurl;
+	global $pforumcache, $db, $forumcache, $navbits, $lang, $archiveurl;
 	if(!$pforumcache)
 	{
 		if(!is_array($forumcache))
@@ -1565,7 +1564,7 @@ function makeforumnav($fid, $archive=0)
 
 function resetnav()
 {
-	global $navbits, $_GLOBAL;
+	global $navbits;
 	$newnav[0]['name'] = $navbits[0]['name'];
 	$newnav[0]['url'] = $navbits[0]['url'];
 	unset($GLOBALS['navbits']);
@@ -1573,7 +1572,7 @@ function resetnav()
 }
 
 function debugpage() {
-	global $db, $querytime, $debug, $templatecache, $templatelist, $htmldoctype, $mybb, $mybbuser, $maintimer, $globaltime, $settings, $mybbgroup, $lang, $ptimer, $parsetime;
+	global $db, $querytime, $debug, $templatecache, $templatelist, $htmldoctype, $mybb, $mybbuser, $maintimer, $globaltime, $settings, $mybbgroup, $lang, $parsetime;
 	$totaltime = $maintimer->totaltime;
 	$phptime = $maintimer->format($maintimer->totaltime - $querytime);
 	$querytime = $maintimer->format($querytime);

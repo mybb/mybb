@@ -713,7 +713,7 @@ if($foruminfo['type'] != "c") {
 
 function getforums($pid="0", $depth=1, $permissions="")
 {
-	global $fcache, $moderatorcache, $forumpermissions, $settings, $theme, $mybb, $mybbforumread, $mybbuser, $excols, $fcollapse, $templates, $bgcolor, $collapsed, $mybbgroup, $lang, $showdepth;
+	global $fcache, $moderatorcache, $forumpermissions, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth;
 	if(is_array($fcache[$pid]))
 	{
 		while(list($key, $main) = each($fcache[$pid]))
