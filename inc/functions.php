@@ -912,10 +912,9 @@ function serverload()
 	}
 	elseif(@file_exists("/proc/loadavg"))
 	{
-		$file = @fopen("/proc/loadavg", "r");
-		$load = @fread($file, 6);
-		@fclose($file);
+		$load = @file_get_contents("/proc/loadavg");
 		$serverload = explode(" ", $load);
+		$serverload = round($serverload[0], 4);
 		if(!$serverload)
 		{
 			$load = @exec("uptime");
