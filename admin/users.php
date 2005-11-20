@@ -240,7 +240,7 @@ if($mybb->input['action'] == "do_add")
 	$querypart1 = "";
 	$querypart2 = "";
 	$comma = "";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -696,11 +696,11 @@ if($mybb->input['action'] == "add")
 	makeinputcode($lang->yahoo_handle, "yahoo");
 	makeinputcode($lang->msn_address, "msn");
 	makeinputcode($lang->birthday, "birthday");
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield[type] = htmlspecialchars_uni(stripslashes($profilefield[type]));
-		$thing = explode("\n", $profilefield[type], "2");
+		$profilefield[type] = htmlspecialchars_uni(stripslashes($profilefield['type']));
+		$thing = explode("\n", $profilefield['type'], "2");
 		$type = trim($thing[0]);
 		$options = $thing[1];
 		$field = "fid$profilefield[fid]";
@@ -1175,8 +1175,8 @@ if($mybb->input['action'] == "stats")
 	$memregdate = mydate($settings['dateformat'], $user['regdate']);
 	$memlocaldate = gmdate($settings['dateformat'], time() + ($user[timezone] * 3600));
 	$memlocaltime = gmdate($settings['timeformat'], time() + ($user[timezone] * 3600));
-	$memlastvisitdate = mydate($settings['dateformat'], $user[lastvisit']);
-	$memlastvisittime = mydate($settings['timeformat'], $user[lastvisit']);
+	$memlastvisitdate = mydate($settings['dateformat'], $user['lastvisit']);
+	$memlastvisittime = mydate($settings['timeformat'], $user['lastvisit']);
 	
 	if($user['birthday'])
 	{
