@@ -316,7 +316,7 @@ if($mybb->input['action'] == "do_edit")
 	$querypart1 = "";
 	$querypart2 = "";
 	$comma = "";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
