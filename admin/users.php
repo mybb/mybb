@@ -320,7 +320,7 @@ if($mybb->input['action'] == "do_edit")
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-		$thing = explode("\n", $profilefield[type], "2");
+		$thing = explode("\n", $profilefield['type'], "2");
 		$type = trim($thing[0]);
 		$field = "fid$profilefield[fid]";
 		$options = "";
@@ -330,7 +330,7 @@ if($mybb->input['action'] == "do_edit")
 			{
 				while(list($key, $val) = each($mybb->input[$field]))
 				{
-					if($options)
+					if(!empty($options))
 					{
 						$options .= "\n";
 					}
@@ -459,43 +459,43 @@ if($mybb->input['action'] == "do_email")
 
 	if($search['email'])
 	{
-		$conditions .= " AND email LIKE '%".addslashes($search[email])."%'";
+		$conditions .= " AND email LIKE '%".addslashes($search['email'])."%'";
 	}
 	if($search['website'])
 	{
-		$conditions .= " AND website LIKE '%".addslashes($search[website])."%'";
+		$conditions .= " AND website LIKE '%".addslashes($search['website'])."%'";
 	}
 	if($search['icq'])
 	{
-		$conditions .= " AND icq LIKE '%".addslashes($search[icq])."%'";
+		$conditions .= " AND icq LIKE '%".addslashes($search['icq'])."%'";
 	}
 	if($search['aim'])
 	{
-		$conditions .= " AND aim LIKE '%".addslashes($search[aim])."%'";
+		$conditions .= " AND aim LIKE '%".addslashes($search['aim'])."%'";
 	}
 	if($search['yahoo'])
 	{
-		$conditions .= " AND yahoo LIKE '%".addslashes($search[yahoo])."%'";
+		$conditions .= " AND yahoo LIKE '%".addslashes($search['yahoo'])."%'";
 	}
 	if($search['msn'])
 	{
-		$conditions .= " AND msn LIKE '%".addslashes($search[msn])."%'";
+		$conditions .= " AND msn LIKE '%".addslashes($search['msn'])."%'";
 	}
 	if($search['signature'])
 	{
-		$conditions .= " AND signature LIKE '%".addslashes($search[signature])."%'";
+		$conditions .= " AND signature LIKE '%".addslashes($search['signature'])."%'";
 	}
 	if($search['usertitle'])
 	{
-		$conditions .= " AND usertitle LIKE '%".addslashes($search[usertitle])."%'";
+		$conditions .= " AND usertitle LIKE '%".addslashes($search['usertitle'])."%'";
 	}
 	if($search['postsgreater'])
 	{
-		$conditions .= " AND postnum>".intval($search[postsgreater]);
+		$conditions .= " AND postnum>".intval($search['postsgreater']);
 	}
 	if($search['postsless'])
 	{
-		$conditions .= " AND postnum<".intval($search[postsless]);
+		$conditions .= " AND postnum<".intval($search['postsless']);
 	}
 	if($search['overridenotice'] != "yes")
 	{
@@ -582,7 +582,7 @@ if($mybb->input['action'] == "do_email")
 			$hiddens .= "<input type=\"hidden\" name=\"searchop[$key]\" value=\"$val\">";
 		}
 		echo "$hiddens";
-		if($num[results] > $searchop[perpage])
+		if($num['results'] > $searchop['perpage'])
 		{
 			endform($lang->next_page, "");
 		}
@@ -640,14 +640,14 @@ if($mybb->input['action'] == "do_merge")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['source'])."'");
 	$sourceuser = $db->fetch_array($query);
-	if(!$sourceuser[uid])
+	if(!$sourceuser['uid'])
 	{
 		cperror($lang->error_invalid_source);
 	}
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['destination'])."'");
 	$destuser = $db->fetch_array($query);
-	if(!$destuser[uid])
+	if(!$destuser['uid'])
 	{
 		cperror($lang->error_invalid_destination);
 	}
@@ -715,9 +715,9 @@ if($mybb->input['action'] == "add")
 					$val = str_replace("\n", "\\n", $val);
 					$select .= "<option value\"$val\">$val</option>\n";
 				}
-				if(!$profilefield[length])
+				if(!$profilefield['length'])
 				{
-					$profilefield[length] = 3;
+					$profilefield['length'] = 3;
 				}
 				$code = "<select name=\"".$field."[]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
 			}
@@ -733,9 +733,9 @@ if($mybb->input['action'] == "add")
 					$val = str_replace("\n", "\\n", $val);
 					$select .= "<option value\"$val\">$val</option>";
 				}
-				if(!$profilefield[length])
+				if(!$profilefield['length'])
 				{
-					$profilefield[length] = 1;
+					$profilefield['length'] = 1;
 				}
 				$code = "<select name=\"$field\" size=\"$profilefield[length]\">$select</select>";
 			}
@@ -1150,10 +1150,10 @@ if($mybb->input['action'] == "stats")
 	$user = $db->fetch_array($query);
 	$lang->general_user_stats = sprintf($lang->general_user_stats, $user['username']);
 
-	$daysreg = (time() - $user[regdate]) / (24*3600);
-	$ppd = $user[postnum] / $daysreg;
+	$daysreg = (time() - $user['regdate']) / (24*3600);
+	$ppd = $user['postnum'] / $daysreg;
 	$ppd = round($ppd, 2);
-	if(!$ppd || $ppd > $user[postnum])
+	if(!$ppd || $ppd > $user['postnum'])
 	{
 		$ppd = $user[postnum];
 	}
@@ -1165,18 +1165,18 @@ if($mybb->input['action'] == "stats")
 	}
 	else
 	{
-		$percent = $user[postnum]*100/$posts;
+		$percent = $user['postnum']*100/$posts;
 		$percent = round($percent, 2)."%";
 	}
 
 	$query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE referrer='$user[uid]'");
 	$referrals = $db->result($query, 0);
 
-	$memregdate = mydate($settings[dateformat], $user[regdate]);
-	$memlocaldate = gmdate($settings[dateformat], time() + ($user[timezone] * 3600));
-	$memlocaltime = gmdate($settings[timeformat], time() + ($user[timezone] * 3600));
-	$memlastvisitdate = mydate($settings[dateformat], $user[lastvisit]);
-	$memlastvisittime = mydate($settings[timeformat], $user[lastvisit]);
+	$memregdate = mydate($settings['dateformat'], $user['regdate']);
+	$memlocaldate = gmdate($settings['dateformat'], time() + ($user[timezone] * 3600));
+	$memlocaltime = gmdate($settings['timeformat'], time() + ($user[timezone] * 3600));
+	$memlastvisitdate = mydate($settings['dateformat'], $user[lastvisit']);
+	$memlastvisittime = mydate($settings['timeformat'], $user[lastvisit']);
 	
 	if($user['birthday'])
 	{
@@ -1204,7 +1204,7 @@ if($mybb->input['action'] == "stats")
 	starttable();
 	tableheader($lang->general_user_stats);
 	makelabelcode($lang->reg_date, $memregdate);
-	makelabelcode($lang->total_posts, $user[postnum]);
+	makelabelcode($lang->total_posts, $user['postnum']);
 	makelabelcode($lang->posts_per_day, $ppd);
 	makelabelcode($lang->percent_tot_posts, $percent);
 	makelabelcode($lang->last_visit, "$memlastvisitdate $memlastvisittime");
@@ -1234,11 +1234,11 @@ if($mybb->input['action'] == "pmstats")
 	cpheader();
 	starttable();
 	tableheader($lang->pm_stats);
-	makelabelcode($lang->total_pms, $pmscount[total]);
-	makelabelcode($lang->new_pms, $newpmscount[newpms]);
-	makelabelcode($lang->unread_pms, $unreadpmscount[unreadpms]);
+	makelabelcode($lang->total_pms, $pmscount['total']);
+	makelabelcode($lang->new_pms, $newpmscount['newpms']);
+	makelabelcode($lang->unread_pms, $unreadpmscount['unreadpms']);
 	tablesubheader($lang->custom_pm_folders);
-	$pmfolders = explode("$%%$", $user[pmfolders]);
+	$pmfolders = explode("$%%$", $user['pmfolders']);
 	while(list($key, $folder) = each($pmfolders))
 	{
 		$folderinfo = explode("**", $folder, 2);
@@ -1771,7 +1771,7 @@ if($mybb->input['action'] == "liftban")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 	$lang->ban_lifted = sprintf($lang->ban_lifted, $user['username']);
-	if(!$ban[uid])
+	if(!$ban['uid'])
 	{
 		cperror($lang->error_not_banned);
 	}
@@ -1791,7 +1791,7 @@ if($mybb->input['action'] == "manageban")
 		$user = $db->fetch_array($query);
 		$lang->edit_banning_options = sprintf($lang->edit_banning_options, $user['username']);
 
-		if(!$ban[uid])
+		if(!$ban['uid'])
 		{
 			cperror($lang->error_not_banned);
 		}
