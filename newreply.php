@@ -188,11 +188,16 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	if($mybb->input['previewpost'])
 	{
+		$subject = "RE: " . $thread['subject'];
 		$previewmessage = $mybb->input['message'];
 	}
 	if(!$message) 
 	{
-	$message = $mybb->input['message'];
+		$message = $mybb->input['message'];
+	}
+	if(!$subject)
+	{
+		$subject = "RE: " . $thread['subject'];
 	}
 	$message = htmlspecialchars_uni($message);
 	$editdraftpid = "";
