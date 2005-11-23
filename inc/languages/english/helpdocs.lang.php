@@ -43,6 +43,7 @@ $l['d7_document'] = "You can use myCode, a simplified version of HTML, in your p
 <p><br>[b]This text is bold[/b]<br>&nbsp;&nbsp;&nbsp;<b>This text is bold</b>
 <p>[i]This text is italicized[/i]<br>&nbsp;&nbsp;&nbsp;<i>This text is italicized</i>
 <p>[u]This text is underlined[/u]<br>&nbsp;&nbsp;&nbsp;<u>This text is underlined</u>
+<p>[s]This text is striked out[/s]<br>&nbsp;&nbsp;&nbsp;<strike>This text is striked out</strike>
 <p><br>[url]http://www.example.com/[/url]<br>&nbsp;&nbsp;&nbsp;<a href=\"http://www.example.com/\">http://www.example.com/</a>
 <p>[url=http://www.example.com/]Example.com[/url]<br>&nbsp;&nbsp;&nbsp;<a href=\"http://www.example.com/\">Example.com</a>
 <p>[email]example@example.com[/email]<br>&nbsp;&nbsp;&nbsp;<a href=\"mailto:example@example.com\">example@example.com</a>
