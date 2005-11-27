@@ -172,7 +172,6 @@ $tables[] = "CREATE TABLE mybb_forums (
   open char(3) NOT NULL default '',
   threads int unsigned NOT NULL default '0',
   posts int unsigned NOT NULL default '0',
-  moderators text NOT NULL default '',
   lastpost int(10) unsigned NOT NULL default '0',
   lastposter varchar(120) NOT NULL default '',
   lastposttid int(10) NOT NULL default '0',
@@ -500,8 +499,6 @@ $tables[] = "CREATE TABLE mybb_threads (
   totalratings smallint unsigned NOT NULL default '0',
   notes text NOT NULL default '',
   visible int(1) NOT NULL default '0',
-  messageindex text NOT NULL default '',
-  subjectindex text NOT NULL default '',
   PRIMARY KEY  (tid),
   KEY subject (subject),
   FULLTEXT KEY subject_2 (subject)

@@ -210,6 +210,7 @@ $l['error_invalidaction'] = "Invalid action";
 $l['error_noteamstoshow'] = "There are no forum staff to be shown.";
 $l['error_missingrequiredfield'] = "You did not fill in one of the required additional fields.";
 $l['error_percentnotallowed'] = "The percentage sign is not a valid keyword. Please specify a different keyword.";
+$l['error_messagelength'] = "Sorry, your message is too long and cannot be posted. Please try shortening your message and try again.";
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";

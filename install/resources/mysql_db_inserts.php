@@ -9,7 +9,7 @@
  * $Id$
  */
 
-$inserts[] = "INSERT INTO mybb_adminoptions (uid, cpstyle, notes, permsset, caneditsettings, caneditann, caneditforums, canmodposts, caneditsmilies, caneditpicons, caneditthemes, canedittemps, caneditusers, caneditpfields, caneditugroups, caneditaperms, caneditutitles, caneditattach, canedithelp, canrunmaint) VALUES (-1, '', '', 1, 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'no', 'yes', 'yes', 'yes', 'yes');";
+$inserts[] = "INSERT INTO mybb_adminoptions (uid, cpstyle, notes, permsset, caneditsettings, caneditann, caneditforums, canmodposts, caneditsmilies, caneditpicons, caneditthemes, canedittemps, caneditusers, caneditpfields, caneditugroups, caneditaperms, caneditutitles, caneditattach, canedithelp, canrunmaint) VALUES (0, '', '', 1, 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'no', 'yes', 'yes', 'yes', 'yes');";
 
 $inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (1, 'Zip File', 'application/zip', 'zip', 1024, 'images/attachtypes/zip.gif');";
 $inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (2, 'JPEG Image', 'image/jpeg', 'jpg', 500, 'images/attachtypes/image.gif');";
