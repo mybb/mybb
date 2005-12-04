@@ -13,7 +13,7 @@
  * The following file allows you to run custom routines
  * and code on various events raised in MyBB, such as
  * account creation, logins etc. This allows you to
- * intergrate MyBB along side other products easily.
+ * integrate MyBB along side other products easily.
  *
  * For more information please visit the support forums:
  * http://community.mybboard.com

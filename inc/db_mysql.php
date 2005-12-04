@@ -58,20 +58,21 @@ class databaseEngine {
 		}
 		return $query;
 	}
-
+	
+	// Explains the query $string
 	function explain_query($string, $qtime)
 	{
 		if(preg_match("#^select#i", $string))
 		{
 			$query = mysql_query("EXPLAIN $string", $this->link);
-			$this->explain .= "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
+			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
-				"<td colspan=\"8\" bgcolor=\"#cccccc\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
+				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td colspan=\"8\" bgcolor=\"#fefefe\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
-				"<tr bgcolor=\"#efefef\">\n".
+				"<tr style=\"background-color: #efefef;\">\n".
 				"<td><strong>table</strong></td>\n".
 				"<td><strong>type</strong></td>\n".
 				"<td><strong>possible_keys</strong></td>\n".
@@ -98,18 +99,18 @@ class databaseEngine {
 			}
 			$this->explain .=
 				"<tr>\n".
-				"<td colspan=\"8\" bgcolor=\"#ffffff\">Query Time: ".$qtime."</td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".$qtime."</td>\n".
 				"</tr>\n".
 				"</table>\n".
 				"<br />\n";
 		}
 		else
 		{
-			$this->explain .= "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
+			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
-				"<td bgcolor=\"#cccccc\"><strong>#".$this->query_count." - Write Query</strong></td>\n".
+				"<td style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Write Query</strong></td>\n".
 				"</tr>\n".
-				"<tr bgcolor=\"#fefefe\">\n".
+				"<tr style=\"background-color: #fefefe;\">\n".
 				"<td><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
 				"<tr>\n".
@@ -181,8 +182,8 @@ class databaseEngine {
 		if($this->error_reporting)
 		{
 			echo "mySQL error: " . mysql_errno();
-			echo "<br>" . mysql_error();
-			echo "<br>Query: $string";
+			echo "<br />" . mysql_error();
+			echo "<br />Query: $string";
 			exit;
 		}
 	}

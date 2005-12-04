@@ -27,8 +27,6 @@ else
 $theme = $db->fetch_array($query);
 
 // Find out if we are using header/category background images
-
-
 header("Content-type: text/css");
 echo $theme['css'];
 exit;
