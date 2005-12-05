@@ -41,11 +41,11 @@ $forum = $db->fetch_array($query);
 
 // Make navigation
 makeforumnav($fid);
+$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
 addnav($lang->nav_newreply);
 
 $forumpermissions = forum_permissions($fid);
-$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 
 if(!$thread['subject'])
 {
