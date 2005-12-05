@@ -191,12 +191,11 @@ function upgradethemes()
 		  title varchar(120) NOT NULL default '',
 		  template text NOT NULL,
 		  sid int(10) NOT NULL default '0',
+		  version varchar(20) NOT NULL default '0',
+		  status varchar(10) NOT NULL default '',
+		  dateline int(10) NOT NULL default '0',
 		  PRIMARY KEY  (tid)
 		) TYPE=MyISAM;");
-	}
-	else
-	{
-		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='-2'");
 	}
 
 	if($system_upgrade_detail['revert_all_themes'] > 0)
@@ -241,22 +240,25 @@ function upgradethemes()
 	foreach($templates as $template)
 	{
 		$templatename = $template['attributes']['name'];
+		$templateversion = $template['attributes']['version'];
 		$templatevalue = addslashes($template['value']);
-		$db->query("INSERT INTO ".TABLE_PREFIX."templates VALUES ('','$templatename','$templatevalue','$sid')");
+		$time = time();
+		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."templates WHERE sid='-2' AND title='$templatename'");
+		$oldtemp = $db->fetch_array($query);
+		if($oldtemp['tid'])
+		{
+			$db->query("UPDATE ".TABLE_PREFIX."templates SET template='$templatevalue', version='$templateversion', dateline='$time' WHERE title='$templatename' AND sid='-2'");
+		}
+		else
+		{
+			$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$sid','$templateversion','','$time')");
+		}
 	}
 	update_theme(1, 0, $themebits, $css, 0);
 
 	$output->print_header("Templates Reverted");
 	$output->print_contents("<p>All of the templates have successfully been reverted to the new ones contained in this release. Please press next to continue with the upgrade process.</p>");
-	print_r($system_upgrade_detail);
-	if($system_upgrade_detail['revert_all_settings'])
-	{
-		$output->print_footer("rebuildsettings");
-	}
-	else
-	{
-		$output->print_footer("buildcaches");
-	}
+	$output->print_footer("rebuildsettings");
 }
 
 function rebuildsettings()
@@ -314,7 +316,7 @@ function upgradedone()
 	{
 		$lock_note = "<p><b><font color=\"red\">Please remove this directory before exploring your upgraded MyBB.</font></b></p>";
 	}
-	$output->print_contents("<p>Congratulations, your copy of MyBB has successfully been updated to $myver.</p>$lock_note");
+	$output->print_contents("<p>Congratulations, your copy of MyBB has successfully been updated to $myver.</p>$lock_note<p><strong>What's Next?</strong></p><ul><li>Please use the 'Find Updated Templates' tool in the Admin CP to find customised templates updated during this upgrade process. Edit them to contain the changes or revert them to originals.</li><li>Ensure that your board is still fully functional.</li></ul>");
 	$output->print_footer();
 }
 
@@ -322,15 +324,15 @@ function whatsnext()
 {
 	global $output, $db, $system_upgrade_detail;
 
-	if($system_upgrade_detail['revert_all_templates'])
+	if($system_upgrade_detail['revert_all_templates'] > 0)
 	{
 		$output->print_header("Template Reversion Warning");
 		$output->print_contents("<p>All necessary database modifications have successfully been made to upgrade your board.</p><p>This upgrade requires all templates to be reverted to the new ones contained in the package so please back up any custom templates you have made before clicking next.");
 		$output->print_footer("templates");
 	}
-	if($system_upgrade_detail['revert_all_settings'])
+	else
 	{
-		rebuildsettings();
+		upgradethemes();
 	}
 }
 
@@ -354,7 +356,6 @@ function next_function($from, $func="dbchanges")
 
 	if(!$function)
 	{
-		echo "whats up doc!";
 		$function = "whatsnext";
 	}
 	return $function;

@@ -57,11 +57,6 @@ define("TABLE_PREFIX", $config['table_prefix']);
 $db->connect($config['hostname'], $config['username'], $config['password']);
 $db->select_db($config['database']);
 
-// Load Settings
-require "./inc/settings.php";
-$settings['wolcutoff'] = $settings['wolcutoffmins']*60;
-$mybb->settings = $settings;
-
 // Language initialisation
 require "./inc/class_language.php";
 $lang = new MyLanguage;
@@ -69,6 +64,12 @@ $lang->setPath("./inc/languages");
 
 // Load cache
 $cache->cache();
+
+// Load Settings
+require "./inc/settings.php";
+$settings['wolcutoff'] = $settings['wolcutoffmins']*60;
+$mybb->settings = $settings;
+
 
 // Load plugins
 if(!defined("NO_PLUGINS"))

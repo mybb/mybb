@@ -39,6 +39,9 @@ switch($mybb->input['action'])
 	case "deleteset":
 		addacpnav($lang->nav_delete_set);
 		break;
+	case "findupdated":
+		addacpnav($lang->nav_find_updated);
+		break;
 	default:
 		if($mybb->input['expand'])
 		{
@@ -95,10 +98,19 @@ if($mybb->input['action'] == "do_add") {
 	if($temp[tid]) {
 		cperror($lang->name_exists);
 	}
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".addslashes($mybb->input['title'])."' AND sid='-2'");
+	$templateinfo = $db->fetch_array($query);
+	if($templateinfo['template'] == $mybb->input['template'])
+	{
+		cperror($lang->template_same_master);
+	}
 	$newtemplate = array(
 		"title" => addslashes($mybb->input['title']),
 		"template" => addslashes($mybb->input['template']),
-		"sid" => $mybb->input['setid']
+		"sid" => $mybb->input['setid'],
+		"version" => $mybboard['vercode'],
+		"status" => "",
+		"dateline" => time()
 		);
 	$db->insert_query(TABLE_PREFIX."templates", $newtemplate);
 	$tid = $db->insert_id();
@@ -173,7 +185,10 @@ if($mybb->input['action'] == "do_edit")
 	$updatedtemplate = array(
 		"title" => addslashes($mybb->input['title']),
 		"template" => addslashes($mybb->input['template']),
-		"sid" => intval($mybb->input['setid'])
+		"sid" => intval($mybb->input['setid']),
+		"version" => $mybboard['vercode'],
+		"status" => "",
+		"dateline" => time()
 		);
 	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
 	if($mybb->input['group'])
@@ -249,6 +264,12 @@ if($mybb->input['action'] == "edit") {
 	}
 	maketextareacode($lang->template, "template", $template[template], "25", "80");
 	if($template[sid] != "-2") {
+		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."templates WHERE title='".addslashes($template['title'])."' AND sid='-2';");
+		$master = $db->fetch_array($query);
+		if($master['tid'])
+		{
+			makelabelcode($lang->options, "<a href=\"templates.php?action=edit&tid=".$master['tid']."\">".$lang->view_original."</a>");
+		}
 		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $template[sid], "-1=Global - All Template Sets");
 	} else {
 		makehiddencode("setid", $template[sid]);
@@ -261,7 +282,9 @@ if($mybb->input['action'] == "edit") {
 	{
 		$continue = "no";
 	}
-	makeyesnocode($lang->continue_editing, "continue", $continue);
+	if(($template[sid] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template[sid] == -2)) {
+		makeyesnocode($lang->continue_editing, "continue", $continue);
+	}
 	endtable();
 	makehiddencode("group", $mybb->input['group']);
 	if(($template[sid] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template[sid] == -2)) {
@@ -407,17 +430,81 @@ if($mybb->input['action'] == "diff")
 	}
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$mybb->input['title']."' AND sid='".$mybb->input['sid1']."'");
 	$template1 = $db->fetch_array($query);
-	$template1['template'] = explode("\n", $template1['template']);
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$mybb->input['title']."' AND sid='".$mybb->input['sid2']."'");
 	$template2 = $db->fetch_array($query);
-	$template2['template'] = explode("\n", $template2['template']);
+
+	if($template1['template'] == $template2['template'])
+	{
+		cpmessage($lang->templates_the_same);
+	}
+
+	$template1['template'] = explode("\n", htmlspecialchars($template1['template']));
+	$template2['template'] = explode("\n", htmlspecialchars($template2['template']));
 
 	require "./inc/class_diff.php";
 
 	$diff = &new Text_Diff($template1['template'], $template2['template']);
 	$renderer = &new Text_Diff_Renderer_inline();
-	echo $renderer->render($diff);
+	cpheader();
+	if($mybb->input['sid2'] == -2)
+	{
+		starttable();
+		makelabelcode("<ins>".$lang->master_updated_ins."</ins><br /><del>".$lang->master_updated_del."</del>");
+		endtable();
+	}
+	starttable();
+	tableheader($lang->template_diff_analysis, "", 1);
+	makelabelcode("<pre>".$renderer->render($diff)."</pre>", "");
+	endtable();
+	cpfooter();
+}
+
+if($mybb->input['action'] == "findupdated")
+{
+	// Finds templates that are old and have been updated by MyBB
+	$compare_version = $mybboard['vercode'];
+	$query = $db->query("SELECT COUNT(*) AS updated_count FROM ".TABLE_PREFIX."templates t INNER JOIN ".TABLE_PREFIX."templates m ON (m.title=t.title AND m.sid=-2 AND m.version>t.version) WHERE t.sid>0");
+	$count = $db->fetch_array($query);
+
+	if($count['updated_count'] < 1)
+	{
+		cpmessage($lang->no_updated_templates);
+	}
+	cpheader();
+
+	$query = $db->query("SELECT* FROM ".TABLE_PREFIX."templatesets ORDER BY title ASC");
+	while($templateset = $db->fetch_array($query))
+	{
+		$templatesets[$templateset['sid']] = $templateset;
+	}
+
+	starttable();
+	makelabelcode($lang->updated_template_welcome."<ul><li>".$lang->updated_template_welcome1."</li><li>".$lang->updated_template_welcome2."</li><li>".$lang->updated_template_welcome3."</li></ul>");
+	endtable();
+
+	starttable();
+	tableheader($lang->updated_template_management, "", 3);
+	$query = $db->query("SELECT t.tid,t.title, t.sid, t.version FROM ".TABLE_PREFIX."templates t INNER JOIN ".TABLE_PREFIX."templates m ON (m.title=t.title AND m.sid=-2 AND m.version>t.version) WHERE t.sid>0 ORDER BY t.sid ASC, title ASC");
+	while($template = $db->fetch_array($query))
+	{
+		if(!$done_set[$template['sid']])
+		{
+			tablesubheader($templatesets[$template['sid']]['title'], "", 3);
+		}
+		$altbg = getaltbg();
+		echo "<tr>";
+		echo "<td class=\"$altbg\" width=\"10\">&nbsp;</td>\n";
+		echo "<td class=\"$altbg\"><a href=\"templates.php?action=edit&tid=".$template['tid']."\">".$template['title']."</a></td>";
+		echo "<td class=\"$altbg\" align=\"right\">";
+		echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?action=edit&tid=".$template['tid']."');\" class=\"submitbutton\">";
+		echo "<input type=\"button\" value=\"$lang->revert\" onclick=\"hopto('templates.php?action=revert&tid=".$template['tid']."');\" class=\"submitbutton\">";
+		echo "<input type=\"button\" value=\"$lang->diff\" onclick=\"hopto('templates.php?action=diff&title=".$template['title']."&sid1=".$template['sid']."&sid2=-2');\" class=\"submitbutton\">";
+		echo "</td>";
+		echo "</tr>";
+	}
+	endtable();
+	cpfooter();
 }
 
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {

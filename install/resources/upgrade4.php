@@ -14,14 +14,14 @@
  */
 
 $upgrade_detail = array(
-	"revert_all_templates" => 1,
-	"revert_all_themes" => 1,
+	"revert_all_templates" => 0,
+	"revert_all_themes" => 0,
 	"revert_all_settings" => 1
 	);
 
 @set_time_limit(0);
 
-function upgrade3_dbchanges()
+function upgrade4_dbchanges()
 {
 	global $db, $output;
 
@@ -37,6 +37,11 @@ function upgrade3_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP messageindex;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP subjectindex;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums DROP moderators;");
+
+	$db->query("ALTER TABLE ".TABLE_PREFIX."templates ADD version varchar(20) NOT NULL default '0';");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."templates ADD status varchar(10) NOT NULL default '';");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."templates ADD dateline int(10) NOT NULL default '0';");
+	$db->query("UPDATE ".TABLE_PREFIX."templates SET version='100.06' WHERE sid>0");
 
 	echo "Done</p>";
 	

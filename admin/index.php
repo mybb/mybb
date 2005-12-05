@@ -273,6 +273,7 @@ makenavoption($lang->nav_add, "templates.php?action=add");
 makenavoption($lang->nav_modify_delete, "templates.php?action=modify");
 makenavoption($lang->nav_search, "templates.php?action=search");
 makenavoption($lang->nav_addset, "templates.php?action=addset");
+makenavoption($lang->nav_find_updated, "templates.php?action=findupdated");
 makenavselect($lang->nav_templates);
 
 makenavoption($lang->nav_add, "icons.php?action=add");

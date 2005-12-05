@@ -184,7 +184,7 @@ if($mybb->input['action'] == "do_download")
 		{
 			$template['template'] = stripslashes($template['template']);
 			$template['template'] = str_replace("\n", "\n", $template['template']);
-			$xml .= "\t\t<template name=\"".$template['title']."\"><![CDATA[".$template['template']."]]></template>\r\n";
+			$xml .= "\t\t<template name=\"".$template['title']."\" version=\"".$template['version']."\"><![CDATA[".$template['template']."]]></template>\r\n";
 			$tempsdone[$template['title']] = 1;
 		}
 		if($mybb->input['customtempsonly'] == "no")
@@ -196,7 +196,7 @@ if($mybb->input['action'] == "do_download")
 				{
 					$template['template'] = stripslashes($template['template']);
 					$template['template'] =str_replace("\n", "\n", $template['template']);
-					$xml .= "\t\t<template name=\"".$template['title']."\"><![CDATA[".$template['template']."]]></template>\r\n";
+					$xml .= "\t\t<template name=\"".$template['title']."\" version=\"".$template['version']."\"><![CDATA[".$template['template']."]]></template>\r\n";
 				}
 			}
 		}
@@ -287,7 +287,9 @@ if($mybb->input['action'] == "do_import")
 		{
 			$templatename = $template['attributes']['name'];
 			$templatevalue = addslashes($template['value']);
-			$db->query("INSERT INTO ".TABLE_PREFIX."templates VALUES ('','$templatename','$templatevalue','$templateset')");
+			$templateversion = $template['attributes']['version'];
+			$time = time();
+			$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('','$templatename','$templatevalue','$templateset','$templateversion','','$time')");
 		}
 	}
 

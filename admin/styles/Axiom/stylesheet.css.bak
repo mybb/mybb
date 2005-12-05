@@ -252,5 +252,14 @@ font-size: 11px;
 
 .lnavitem li {
 	padding: 1px;
-	font-weight: bold;
+}
+
+ins {
+	background: #dfd;
+	text-decoration: none;
+}
+
+del {
+	background: #fdd;
+	text-decoration: none;
 }
