@@ -516,7 +516,9 @@ function insert_templates()
 	{
 		$templatename = $template['attributes']['name'];
 		$templatevalue = addslashes($template['value']);
-		$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid) VALUES ('$templatename','$templatevalue','$sid')");
+		$templateversion = $template['attributes']['version'];
+		$time = time();
+		$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$sid','$templateversion','','$time')");
 	}
 	update_theme(1, 0, $themebits, $css, 0);
 	
