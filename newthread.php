@@ -59,13 +59,13 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] =
 // Password protected forums ......... yhummmmy!
 checkpwforum($fid, $forum['password']);
 
-if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
+if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
 	$codebuttons = makebbcodeinsert();
-}
-if($forum['allowsmilies'] != "no")
-{
-	$smilieinserter = makesmilieinsert();
+	if($forum['allowsmilies'] != "no")
+	{
+		$smilieinserter = makesmilieinsert();
+	}
 }
 if($forum['allowpicons'] != "no")
 {

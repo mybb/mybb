@@ -62,13 +62,13 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canpostreplys'] ==
 // Password protected forums ......... yhummmmy!
 checkpwforum($fid, $forum['password']);
 
-if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
+if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
 	$codebuttons = makebbcodeinsert();
-}
-if($forum['allowsmilies'] != "no")
-{
-	$smilieinserter = makesmilieinsert();
+	if($forum['allowsmilies'] != "no")
+	{
+		$smilieinserter = makesmilieinsert();
+	}
 }
 
 if($mybb->user['uid'] != 0)
@@ -171,7 +171,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$query = $db->query("SELECT p.*, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.pid='$pid' AND p.tid='$tid' AND p.visible='1'");
 		$quoted = $db->fetch_array($query);
 		$quoted['subject'] = preg_replace("#RE:#i", "", stripslashes($quoted['subject']));
-		$subject = "RE: " . htmlspecialchars_uni($quoted['subject']);
+		$subject = "RE: ".$quoted['subject'];
 		$quoted['message'] = preg_replace('#^/me (.*)$#im', "* $quoted[username] \\1", $quoted['message']);
 		if($quoted['username'])
 		{
@@ -188,16 +188,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	if($mybb->input['previewpost'])
 	{
-		$subject = "RE: " . $thread['subject'];
 		$previewmessage = $mybb->input['message'];
 	}
 	if(!$message) 
 	{
-		$message = $mybb->input['message'];
-	}
-	if(!$subject)
-	{
-		$subject = "RE: " . $thread['subject'];
+	$message = $mybb->input['message'];
 	}
 	$message = htmlspecialchars_uni($message);
 	$editdraftpid = "";
@@ -217,6 +212,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['disablesmilies'] = "checked";
 		}
+		$subject = $mybb->input['subject'];
 	}
 	elseif($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
 	{
@@ -294,6 +290,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$postbit = makepostbit($post, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
+	$subject = htmlspecialchars_uni($subject);
 
 	// Setup a unique posthash for attachment management
 	$posthash = $mybb->input['posthash'];
