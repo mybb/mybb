@@ -1471,6 +1471,7 @@ elseif($mybb->input['action'] == "do_avatar")
 	else
 	{
 		$mybb->input['avatarurl'] = preg_replace("#script:#i", "", $mybb->input['avatarurl']);
+		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
 		$ext = getextention($mybb->input['avatarurl']);
 		if(preg_match("#gif|jpg|jpeg|jpe|bmp|png#i", $ext) && $mybb->settings['maxavatardims'] != "")
 		{
