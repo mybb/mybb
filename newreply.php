@@ -445,7 +445,7 @@ if($mybb->input['action'] == "do_newreply" )
 				error($lang->error_usernametaken);
 			}
 			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
-			if($mybb->user['uid'])
+			if(!$mybb->user['uid'])
 			{
 				error($lang->error_invalidpassword);
 			}
