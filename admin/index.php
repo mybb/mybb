@@ -155,27 +155,37 @@ elseif ($mybb->input['action']=="home")
 
 elseif($mybb->input['action'] == "vercheck") {
 	logadmin();
-	$ver = rawurlencode($mybboard['internalver']);
-	$larr = @file("http://www.mybboard.com/vercheck.php?tver=".$ver);
-	if(!$larr)
+
+	$current_version = rawurlencode($mybboard['vercode']);
+
+	require_once "./inc/class_xml.php";
+	$contents = @implode("", @file("http://mybboard.com/version_check.php"));
+	if(!$contents)
 	{
 		cperror($lang->vercheck_error);
 		exit;
 	}
-	$latestver = implode("", $larr);
-	$lann = @file("http://www.mybboard.com/latestann.php");
-	if($latestver > $mybboard['internalver'])
+	
+	$parser = new XMLParser($contents);
+	$tree = $parser->getTree();
+
+	$latest_code = $tree['mybb']['version_code']['value'];
+	$latest_version = $tree['mybb']['latest_version']['value']." (".$latest_code.")";
+	if($latest_code > $mybboard['vercode'])
 	{
-		$latestver = "<font color=\"red\">$latestver</font>";
-		$verwarn = 1;
+		$latest_version = "<span style=\"color: red\">".$latest_version." (".$latest_code.") </font>";
+		$version_warn = 1;
 	}
+
+
+	$lann = @file("http://www.mybboard.com/latestann.php");
 	cpheader();
 	starttable();
 	tableheader($lang->vercheck);
 	tablesubheader($lang->vercheck_up2date);
-	makelabelcode($lang->your_version, $mybboard['internalver']);
-	makelabelcode($lang->latest_version, $latestver);
-	if($verwarn)
+	makelabelcode($lang->your_version, $mybboard['internalver']." (".$mybboard['vercode'].")");
+	makelabelcode($lang->latest_version, $latest_version);
+	if($version_warn)
 	{
 		makelabelcode("<center><b><font color=red>$lang->newer_ver</font></b>", "", 2);
 	}

@@ -59,7 +59,7 @@ if($mybb->input['action'] == "do_prune")
 	{
 		$thequery = "WHERE $thequery";
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."adminlog $thequery"));
+	$db->query("DELETE FROM ".TABLE_PREFIX."adminlog $thequery");
 	cpredirect("adminlogs.php", $lang->log_pruned);
 }
 elseif($mybb->input['action'] == "view")

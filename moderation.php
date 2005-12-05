@@ -855,7 +855,11 @@ switch($mybb->input['action'])
 
 		$numyes = "0";
 		$numno = "0";
-		while(list($key, $val) = each($mybb->input['splitpost']))
+		if(!is_array($mybb->input['splitpost']))
+		{
+			error($lang->error_nosplitposts);
+		}
+		foreach($mybb->input['splitpost'] as $val)
 		{
 			if($val == "yes")
 			{
@@ -866,11 +870,11 @@ switch($mybb->input['action'])
 				$numno++;
 			}
 		}
-		if(!$numyes && $numno)
+		if($numyes < 1 && $numno > 1)
 		{
 			error($lang->error_nosplitposts);
 		}
-		if($numyess && !$numno)
+		if($numyes > 1 && $numno < 1)
 		{
 			error($lang->error_cantsplitall);
 		}

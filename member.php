@@ -1496,7 +1496,7 @@ elseif($mybb->input['action'] == "do_emailuser")
 		{
 			error($lang->error_incompletefields);
 		}
-		$from = $fromname . " <" . $fromemail . ">";
+		$from = $mybb->input['fromname'] . " <" . $mybb->input['fromemail'] . ">";
 	}
 	else
 	{

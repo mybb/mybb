@@ -1871,20 +1871,14 @@ function join_usergroup($uid, $joingroup)
 	}
 
 	// Build the new list of additional groups for this user and make sure they're in the right format
-	$user['additionalgroups'] .= ",".$joingroup;
 	$groupslist = "";
-	$groups = explode(",", $user['additionalgroups']);
-	if(is_array($groups))
+	if($user['additionalgroups'] && $joingroup != $user['usergroup'])
 	{
-		foreach($groups as $gid)
-		{
-			if(trim($gid) != "" && $gid != $user['usergroup'] && !$donegroup[$gid])
-			{
-				$groupslist .= $comma.$gid;
-				$comma = ",";
-				$donegroup[$gid] = 1;
-			}
-		}
+		$additionalgroups = explode(",", $user['additionalgroups']);
+		$additionalgroups[] = $joingroup;
+		$groupslist = array_unique($additionalgroups);
+		$groupslist = implode(",", $groupslist);
+		$groupslist = preg_replace("#,{2,}#", ",", $groupslist);
 	}
 	$db->query("UPDATE ".TABLE_PREFIX."users SET additionalgroups='$groupslist' WHERE uid='$uid'");
 }
@@ -1901,19 +1895,18 @@ function leave_usergroup($uid, $leavegroup)
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 		$user = $db->fetch_array($query);
 	}
-	$user['additionalgroups'] .= ",";
 	$groups = explode(",", $user['additionalgroups']);
+	$grouplist = "";
 	if(is_array($groups))
 	{
-		foreach($groups as $gid)
+		$groups = array_unique($groups);
+		$key = array_search($leavegroup, $groups);
+		if($key !== false)
 		{
-			if(trim($gid) != "" && $leavegroup != $gid && !$donegroup[$gid])
-			{
-				$groupslist .= $comma.$gid;
-				$comma  = ",";
-				$donegroup[$gid] = 1;
-			}
+			unset($groups[$key]);
 		}
+		$groupslist = implode(",", $groups);
+		$groupslist = preg_replace("#,{2,}#", ",", $groupslist);
 	}
 	if($leavegroup == $user['displaygroup'])
 	{

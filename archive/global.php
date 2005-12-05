@@ -31,14 +31,19 @@ if(is_dir("install") && !file_exists("install/lock"))
 	echo "Please remove the install directory from your server, or create a file called 'lock' in the install directory. Until you do so, your board will remain unaccessable";
 	exit;
 }
-if($_SERVER['REDIRECT_URL'] && strpos($_SERVER['REDIRECT_URL'], "/") !== false)
+if($_SERVER['REDIRECT_URL'])
 {
 	$url = $_SERVER['REDIRECT_URL'];
+}
+elseif($_SERVER['PATH_INFO'])
+{
+	$url = $_SERVER['PATH_INFO'];
 }
 else
 {
 	$url = $_SERVER['PHP_SELF'];
 }
+
 $endpart = substr(strrchr($url, "/"), 1);
 $action = "index";
 
