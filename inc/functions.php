@@ -13,7 +13,7 @@
    technical support
 */
 
-$mybboard['internalver'] = "1.00;
+$mybboard['internalver'] = "1.00";
 $mybboard['vercode'] = "100.07";
 
 //

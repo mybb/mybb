@@ -119,6 +119,17 @@ class datacache
 		$this->update("smilies", $smilies);
 	}
 
+	function updateposticons()
+	{
+		global $db;
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons");
+		while($icon = $db->fetch_array($query))
+		{
+			$icons[$icon['iid']] = $icon;
+		}
+		$this->update("posticons", $icons);
+	}
+
 	function updatebadwords()
 	{
 		global $db;
