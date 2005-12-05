@@ -13,8 +13,8 @@
    technical support
 */
 
-$mybboard['internalver'] = "1.00 Preview Release 2";
-$mybboard['vercode'] = "100.06";
+$mybboard['internalver'] = "1.00;
+$mybboard['vercode'] = "100.07";
 
 //
 // Outputs the contents of a page rendering variables
