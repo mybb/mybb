@@ -45,7 +45,7 @@ function upgrade4_dbchanges()
 
 	echo "Done</p>";
 	
-	$contents .= "<font color=\red\"><b>WARNING:</font> The next step will delete any custom themes or templates you have! Please back them up before continuing!</p>";
+	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("4_done");
 }

@@ -183,6 +183,8 @@ function upgradethemes()
 {
 	global $output, $db, $system_upgrade_detail;
 
+	$output->print_header("Templates Reverted");
+
 	if($system_upgrade_detail['revert_all_templates'] > 0)
 	{
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templates;");
@@ -237,6 +239,7 @@ function upgradethemes()
 	$themebits = killtags($theme['themebits']);
 	$templates = $theme['templates']['template'];
 	$themebits['templateset'] = $templateset;
+	$newcount = 0;
 	foreach($templates as $template)
 	{
 		$templatename = $template['attributes']['name'];
@@ -252,11 +255,10 @@ function upgradethemes()
 		else
 		{
 			$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$sid','$templateversion','','$time')");
+			$newcount++;
 		}
 	}
 	update_theme(1, 0, $themebits, $css, 0);
-
-	$output->print_header("Templates Reverted");
 	$output->print_contents("<p>All of the templates have successfully been reverted to the new ones contained in this release. Please press next to continue with the upgrade process.</p>");
 	$output->print_footer("rebuildsettings");
 }

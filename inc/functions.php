@@ -534,14 +534,14 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 			{
 				if(!is_array($fpermcache[$fid][$gid]))
 				{
-					$fpermcache[$fid][$gid] = $groupscache[$gid];
-				}
+					continue;
+				} 
 				foreach($fpermcache[$fid][$gid] as $perm => $access)
 				{
 					if($perm != "fid" && $perm != "gid" && $perm != "pid")
 					{
 						$permbit = $forumpermissions[$perm];
-						if($access > $permbit)
+						if($access > $permbit || ($access == "yes" && $permbit == "no"))
 						{
 							$forumpermissions[$perm] = $access;
 						}
