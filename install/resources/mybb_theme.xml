@@ -25,7 +25,8 @@
 color: #000000;
 border: 1px solid #4874a3;
 margin: auto auto;
-padding: 20px;]]></extra>
+padding: 20px;
+text-align: left;]]></extra>
 		</container>
 		<content>
 			<extra><![CDATA[/* FIX: Make internet explorer wrap correctly */
