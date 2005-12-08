@@ -535,13 +535,14 @@ function show($user)
 		case "portal":
 			$locationname = $lang->viewing_portal;
 			break;
-		case "nopermission":
-			$locationname = $lang->viewing_noperms;
-			break;
 		// default
 		default:
 			$locationname = sprintf($lang->unknown_location, $user['location']);
 			break;
+	}
+	if($user['nopermission'] == 1)
+	{
+		$locationname = $lang->viewing_noperms;
 	}
 	if($user['uid'] > 0)
 	{

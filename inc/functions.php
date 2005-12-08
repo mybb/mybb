@@ -295,7 +295,7 @@ function nopermission()
 	global $REQUEST_URI, $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang, $plugins, $session;
 	$time = time();
 	$plugins->run_hooks("no_permission");
-	$db->query("UPDATE ".TABLE_PREFIX."sessions SET nopermission='1' WHERE sid='".$session->sid."'");
+	$db->query("UPDATE ".TABLE_PREFIX."sessions SET nopermission='1', location1='', location2='' WHERE sid='".$session->sid."'");
 	$plate = "error_nopermission".(($mybb->user['uid']!=0)?"_loggedin":"");
 	$url = $REQUEST_URI;
 	eval("\$errorpage = \"".$templates->get($plate)."\";");

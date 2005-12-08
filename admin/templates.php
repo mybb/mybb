@@ -491,6 +491,7 @@ if($mybb->input['action'] == "findupdated")
 		if(!$done_set[$template['sid']])
 		{
 			tablesubheader($templatesets[$template['sid']]['title'], "", 3);
+			$done_set[$template['sid']] = 1;
 		}
 		$altbg = getaltbg();
 		echo "<tr>";
