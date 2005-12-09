@@ -115,7 +115,7 @@ border: 1px solid #0F5C8E;]]></extra>
 			<font-weight><![CDATA[bold]]></font-weight>
 		</trow_sep>
 		<tfoot>
-			<background><![CDATA[#2E669B url(images/thead_bg.gif)]]></background>
+			<background><![CDATA[#026CB1 url(images/thead_bg.gif) top left repeat-x]]></background>
 			<color><![CDATA[#ffffff]]></color>
 			<a_link>
 				<color><![CDATA[#ffffff]]></color>

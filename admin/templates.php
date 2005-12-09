@@ -600,7 +600,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templatesets WHERE sid='".$expand."'");
 			$templateset = $db->fetch_array($query);
 			starttable();
-			makelabelcode("$lang->template_color1_note<br /><span class=\"highlight3\">$lang->template_color2_note</span><br /><span class=\"highlight2\">$lang->template_color3_note</span>");
+			makelabelcode("<span class=\"highlight4\">$lang->template_color1_note</span><br /><span class=\"highlight3\">$lang->template_color2_note</span><br /><span class=\"highlight2\">$lang->template_color3_note</span>");
 			endtable();
 		}
 
@@ -647,7 +647,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 				$altbg = getaltbg();
 				echo "<tr>";
 				echo "<td class=\"$altbg\" width=\"10\">&nbsp;</td>\n";
-				echo "<td class=\"$altbg\"><a href=\"templates.php?action=edit&tid=".$template['tid']."\">".$template['title']."</a></td>";
+				echo "<td class=\"$altbg\"><a href=\"templates.php?action=edit&tid=".$template['tid']."\"><span class=\"highlight4\">".$template['title']."</span></a></td>";
 				echo "<td class=\"$altbg\" align=\"right\">";
 				echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?action=edit&tid=".$template['tid']."');\" class=\"submitbutton\">";
 				echo "<input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('templates.php?action=delete&tid=".$template['tid']."');\" class=\"submitbutton\">";
@@ -718,7 +718,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 				}
 				if(!$template['tid'])
 				{
-					echo "<a href=\"templates.php?action=add&title=".$template['originaltitle']."&sid=".$set['sid']."\">".$template['originaltitle']."</a></td>\n";
+					echo "<a href=\"templates.php?action=add&title=".$template['originaltitle']."&sid=".$set['sid']."\"><span class=\"highlight4\">".$template['originaltitle']."</span></a></td>\n";
 					echo "<td class=\"$altbg\" align=\"right\">";
 					echo "<input type=\"button\" value=\"$lang->change_original\" onclick=\"hopto('templates.php?action=add&title=".$template['originaltitle']."&sid=".$set['sid']."&group=$grouptype');\" class=\"submitbutton\">";
 					echo "</td>\n";
