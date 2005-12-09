@@ -264,8 +264,6 @@ elseif($mybb->input['action'] == "do_editpost")
 		$mybb->input['icon'] = "0";
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
-	$firstcheck = $db->fetch_array($query);
 	if($firstpost)
 	{
 		$newpost = array(
