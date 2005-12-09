@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<theme name="MyBB Default" version="100.07">
+<theme name="MyBB Master Style" version="100.07">
 	<cssbits>
 		<body>
-			<background><![CDATA[#e3e3e3 url(images/Light/logo_bg.png) repeat-x;]]></background>
-			<color><![CDATA[#000000]]></color>
+			<background><![CDATA[#efefef]]></background>
+			<color><![CDATA[#000]]></color>
 			<font-family><![CDATA[Verdana]]></font-family>
 			<font-size><![CDATA[small]]></font-size>
 			<a_link>
-				<color><![CDATA[#4874a3]]></color>
+				<color><![CDATA[#026CB1]]></color>
 				<text-decoration><![CDATA[none]]></text-decoration>
 			</a_link>
 			<a_visited>
-				<color><![CDATA[#4874a3]]></color>
+				<color><![CDATA[#026CB1]]></color>
 				<text-decoration><![CDATA[none]]></text-decoration>
 			</a_visited>
 			<a_hover>
-				<color><![CDATA[#000000]]></color>
+				<color><![CDATA[#000]]></color>
 				<text-decoration><![CDATA[underline]]></text-decoration>
 			</a_hover>
 		</body>
 		<container>
 			<width><![CDATA[95%]]></width>
-			<extra><![CDATA[background: #ffffff;
+			<extra><![CDATA[background: #fff;
+border: 1px solid #e4e4e4;
 color: #000000;
-border: 1px solid #4874a3;
 margin: auto auto;
 padding: 20px;
 text-align: left;]]></extra>
@@ -52,10 +52,10 @@ padding: 4px;]]></extra>
 			</a_hover>
 		</menu>
 		<panel>
-			<background><![CDATA[#f7f7f7]]></background>
+			<background><![CDATA[#efefef]]></background>
 			<color><![CDATA[#000000]]></color>
 			<font-size><![CDATA[11px]]></font-size>
-			<extra><![CDATA[border: 1px solid #cccccc;
+			<extra><![CDATA[border: 1px solid #D4D4D4;
 padding: 8px;]]></extra>
 		</panel>
 		<table>
@@ -64,12 +64,13 @@ padding: 8px;]]></extra>
 			<font-size><![CDATA[small]]></font-size>
 		</table>
 		<tborder>
-			<background><![CDATA[#4874a3]]></background>
+			<background><![CDATA[#81A2C4]]></background>
 			<width><![CDATA[100%]]></width>
-			<extra><![CDATA[margin: auto auto;]]></extra>
+			<extra><![CDATA[margin: auto auto;
+border: 1px solid #0F5C8E;]]></extra>
 		</tborder>
 		<thead>
-			<background><![CDATA[#013c74 url(images/Light/thead_bg.gif)]]></background>
+			<background><![CDATA[#026CB1 url(images/thead_bg.gif) top left repeat-x]]></background>
 			<color><![CDATA[#ffffff]]></color>
 			<a_link>
 				<color><![CDATA[#ffffff]]></color>
@@ -85,7 +86,7 @@ padding: 8px;]]></extra>
 			</a_hover>
 		</thead>
 		<tcat>
-			<background><![CDATA[#ABC9E5 url(images/Light/tcat_bg.gif) repeat-x top]]></background>
+			<background><![CDATA[#ADCBE7]]></background>
 			<color><![CDATA[#000000]]></color>
 			<font-size><![CDATA[11px]]></font-size>
 			<a_link>
@@ -99,10 +100,10 @@ padding: 8px;]]></extra>
 			</a_hover>
 		</tcat>
 		<trow1>
-			<background><![CDATA[#efefef]]></background>
+			<background><![CDATA[#f5f5f5]]></background>
 		</trow1>
 		<trow2>
-			<background><![CDATA[#f7f7f7]]></background>
+			<background><![CDATA[#EFEFEF]]></background>
 		</trow2>
 		<trow_shaded>
 			<background><![CDATA[#eea8a1]]></background>
@@ -114,7 +115,7 @@ padding: 8px;]]></extra>
 			<font-weight><![CDATA[bold]]></font-weight>
 		</trow_sep>
 		<tfoot>
-			<background><![CDATA[#2E669B url(images/Light/thead_bg.gif)]]></background>
+			<background><![CDATA[#2E669B url(images/thead_bg.gif)]]></background>
 			<color><![CDATA[#ffffff]]></color>
 			<a_link>
 				<color><![CDATA[#ffffff]]></color>
@@ -318,16 +319,124 @@ hr {
 }]]></extracss>
 	</themebits>
 	<templates>
-		<template version="100.07" name="forumdisplay_threadlist_sortrating"><![CDATA[<option value="rating" $sortsel[rating]>$lang->sort_by_rating</option>]]></template>
-		<template version="100.07" name="global_boardclosed_warning"><![CDATA[<br />
+		<template name="forumdisplay_threadlist" version="100.07"><![CDATA[<table width="$theme[tablewidth]" align="center" border="0">
+	<tr>
+		<td valign="bottom" align="right">$newthread</td>
+	</tr>
+</table>
+<table width="$theme[tablewidth]" align="center" cellspacing="0">
+	<tr><td>$multipage</td></tr>
+</table>
+<br />
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+	<tr>
+		<td class="thead" colspan="$colspan"><strong><em>&raquo;</em> $foruminfo[name]</strong></td>
+	</tr>
+	<tr>
+		<td class="tcat" align="center" colspan="2">&nbsp;</td>
+		<td class="tcat" align="center" width="40%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=subject&amp;order=asc">$lang->thread</a> $orderarrow[subject]</strong></span></td>
+		<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=starter&amp;order=asc">$lang->author</a> $orderarrow[starter]</strong></span></td>
+		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=replies&amp;order=desc">$lang->replies</a> $orderarrow[replies]</strong></span></td>
+		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=views&amp;order=desc">$lang->views</a> $orderarrow[views]</strong></span></td>
+		$ratingcol
+		<td class="tcat" align="center" width="200"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=lastpost&amp;order=desc">$lang->lastpost</a> $orderarrow[lastpost]</strong></span></td>
+		$inlinemodcol
+	</tr>
+	$announcementlist
+	$threads
+	<tr>
+		<td class="tfoot" align="right" colspan="$colspan"><span class="smalltext"><strong><a href="misc.php?action=markread&amp;fid=$fid">$lang->markforum_read</a> | <a href="usercp2.php?action=addsubscription&amp;type=forum&amp;fid=$fid">$lang->subscribe_forum</a>$clearstoredpass</strong></span></td>
+	</tr>
+</table>
+<br />
+<table width="$theme[tablewidth]" align="center" border="0">
+	<tr>
+		<td valign="top">$multipage</td>
+		<td align="right" valign="top">$newthread</td>
+	</tr>
+</table>
+<br />
+$inlinemod
+<form action="forumdisplay.php" method="get">
+	<input type="hidden" name="fid" value="$fid" />
+		<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+			<tr>
+				<td class="trow1" align="center"><span class="smalltext">
+					$lang->sort_by
+					<select name="sortby">
+						<option value="subject" $sortsel[subject]>$lang->sort_by_subject</option>
+						<option value="lastpost" $sortsel[lastpost]>$lang->sort_by_lastpost</option>
+						<option value="starter" $sortsel[starter]>$lang->sort_by_starter</option>
+						$ratingsort
+						<option value="replies" $sortsel[replies]>$lang->sort_by_replies</option>
+						<option value="views" $sortsel[views]>$lang->sort_by_views</option>
+					</select>
+					 $lang->sort_order 
+					<select name="order">
+						<option value="asc" $ordersel[asc]>$lang->sort_order_asc</option>
+						<option value="desc" $ordersel[desc]>$lang->sort_order_desc</option>
+					</select>
+					 $lang->datelimit
+					<select name="datecut">
+						<option value="1" $datecutsel[1]>$lang->datelimit_1day</option>
+						<option value="5" $datecutsel[5]>$lang->datelimit_5days</option>
+						<option value="10" $datecutsel[10]>$lang->datelimit_10days</option>
+						<option value="20" $datecutsel[20]>$lang->datelimit_20days</option>
+						<option value="50" $datecutsel[50]>$lang->datelimit_50days</option>
+						<option value="75" $datecutsel[75]>$lang->datelimit_75days</option>
+						<option value="100" $datecutsel[100]>$lang->datelimit_100days</option>
+						<option value="365" $datecutsel[365]>$lang->datelimit_lastyear</option>
+						<option value="1000" $datecutsel[1000]>$lang->datelimit_beginning</option>
+					</select>
+					 $gobutton
+				</span></td>
+			</tr>
+	</table>
+</form>
+<br />
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+	<tr>
+		<td class="trow2">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td valign="top" align="left">
+					<!-- start icon legend -->
+						<table width="5%" cellspacing="0" cellpadding="2" border="0">
+							<tr>
+								<td nowrap="nowrap">
+									<img src="$theme[imgdir]/newfolder.gif" alt="$lang->new_thread" />&nbsp;&nbsp;<span class="smalltext">$lang->new_thread</span><br />
+									<img src="$theme[imgdir]/newhotfolder.gif" alt="$lang->new_hot_thread" />&nbsp;&nbsp;<span class="smalltext">$lang->new_hot_thread</span><br />
+									<img src="$theme[imgdir]/dot_folder.gif" alt="$lang->posts_by_you" />&nbsp;&nbsp;<span class="smalltext">$lang->posts_by_you</span>
+								</td>
+								<td nowrap="nowrap">
+									<img src="$theme[imgdir]/folder.gif" alt="$lang->no_new_thread" />&nbsp;&nbsp;<span class="smalltext">$lang->no_new_thread</span><br />
+									<img src="$theme[imgdir]/hotfolder.gif" alt="$lang->hot_thread" />&nbsp;&nbsp;<span class="smalltext">$lang->hot_thread</span><br />
+									<img src="$theme[imgdir]/lockfolder.gif" alt="$lang->locked_thread" />&nbsp;&nbsp;<span class="smalltext">$lang->locked_thread</span>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td valign="middle" align="right">
+						<table>
+							<tr><td align="right">$searchforum</td></tr>
+							<tr><td align="right">$forumjump</td></tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>]]></template>
+		<template name="forumdisplay_threadlist_sortrating" version="100.07"><![CDATA[<option value="rating" $sortsel[rating]>$lang->sort_by_rating</option>]]></template>
+		<template name="global_boardclosed_warning" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1" align="center"><strong><font color="red">$lang->bbclosed_warning</font></strong></td>
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="post_savedraftbutton"><![CDATA[&nbsp;<input type="submit" class="submit" name="savedraft" value="$lang->save_draft" />]]></template>
-		<template version="100.07" name="index"><![CDATA[<html>
+		<template name="post_savedraftbutton" version="100.07"><![CDATA[&nbsp;<input type="submit" class="submit" name="savedraft" value="$lang->save_draft" />]]></template>
+		<template name="index" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname]</title>
 $headerinclude
@@ -377,14 +486,14 @@ $loginform
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="header_welcomeblock_member"><![CDATA[	<span style="float:right;">$lang->welcome_current_time</span>
+		<template name="header_welcomeblock_member" version="100.07"><![CDATA[	<span style="float:right;">$lang->welcome_current_time</span>
 		$lang->welcome_back (<a href="$settings[bburl]/usercp.php"><strong>$lang->welcome_usercp</strong></a>$admincplink &mdash; <a href="$settings[bburl]/member.php?action=logout&amp;uid=$mybbuser[uid]">$lang->welcome_logout</a>)<br />
 				<span class="links">
 					<a href="#" onclick="popupWin('misc.php?action=buddypopup', 'buddyList', 170, 300);">$lang->welcome_open_buddy_list</a>
 				</span>
 				<a href="search.php?action=getnew">$lang->welcome_newposts</a> | <a href="search.php?action=getdaily">$lang->welcome_todaysposts</a> | <a href="private.php">$lang->welcome_pms</a> $lang->welcome_pms_usage]]></template>
-		<template version="100.07" name="postbit_online"><![CDATA[<a href="online.php"><font color="#15A018"><strong>$lang->postbit_status_online</strong></font></a>]]></template>
-		<template version="100.07" name="showthread_moderationoptions"><![CDATA[<br />
+		<template name="postbit_online" version="100.07"><![CDATA[<a href="online.php"><font color="#15A018"><strong>$lang->postbit_status_online</strong></font></a>]]></template>
+		<template name="showthread_moderationoptions" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1">
@@ -416,7 +525,7 @@ $gobutton
 </td>
 </tr>
 </table>]]></template>
-		<template version="100.07" name="showthread_inlinemoderation"><![CDATA[<form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
+		<template name="showthread_inlinemoderation" version="100.07"><![CDATA[<form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="$tid" />
 <span class="smalltext"><strong>$lang->inline_post_moderation</strong></span>
 <select name="action">
@@ -433,7 +542,7 @@ $gobutton
 var go_text = "$lang->inline_go";
 begininline($tid, "thread");
 </script>]]></template>
-		<template version="100.07" name="showthread"><![CDATA[<html>
+		<template name="showthread" version="100.07"><![CDATA[<html>
 <head>
 <title>$thread[subject]</title>
 $headerinclude
@@ -490,7 +599,7 @@ $forumjump
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="showthread_ratethread"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
+		<template name="showthread_ratethread" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
 <tr><td class="trow">
 <form action="ratethread.php" method="post">
 <span class="smalltext"><strong>$lang->rate_thread</strong></span>
@@ -508,7 +617,7 @@ $gobutton
 </td></tr>
 </table>
 ]]></template>
-		<template version="100.07" name="forumjump_advanced"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
+		<template name="forumjump_advanced" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
 <tr><td class="trow" align="right">
 <form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>$lang->forumjump</strong></span>
@@ -527,7 +636,7 @@ $gobutton
 </td></tr>
 </table>
 ]]></template>
-		<template version="100.07" name="forumdisplay_searchforum"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
+		<template name="forumdisplay_searchforum" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
 <tr><td>
 <form action="search.php" method="post">
 <span class="smalltext"><strong>$lang->search_forum</strong></span> <input type="text" name="keywords" /> $gobutton
@@ -537,11 +646,11 @@ $gobutton
 </form>
 </td></tr>
 </table>]]></template>
-		<template version="100.07" name="forumbit_depth2_forum_lastpost"><![CDATA[<span class="smalltext">
+		<template name="forumbit_depth2_forum_lastpost" version="100.07"><![CDATA[<span class="smalltext">
 <a href="showthread.php?tid=$lastposttid&amp;action=lastpost" title="$fulllastpostsubject"><strong>$lastpostsubject</strong></a>
 <br />$lastpostdate $lastposttime<br />$lang->by <a href="member.php?action=profile&amp;uid=lastposter&amp;fid=$forum[fid]">$lastposter</a></span>
 ]]></template>
-		<template version="100.07" name="editpost"><![CDATA[<html>
+		<template name="editpost" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->edit_post</title>
 $headerinclude
@@ -609,9 +718,9 @@ $pollbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="editpost_disablesmilies"><![CDATA[<br />
+		<template name="editpost_disablesmilies" version="100.07"><![CDATA[<br />
 <input type="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8" $postoptionschecked[disablesmilies]> $lang->options_disablesmilies]]></template>
-		<template version="100.07" name="newreply"><![CDATA[<html>
+		<template name="newreply" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->post_reply_to</title>
 $headerinclude
@@ -673,9 +782,9 @@ $threadreview
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="newreply_disablesmilies"><![CDATA[<br />
+		<template name="newreply_disablesmilies" version="100.07"><![CDATA[<br />
 <input type="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" $postoptionschecked[disablesmilies]> $lang->options_disablesmilies]]></template>
-		<template version="100.07" name="usercp_drafts"><![CDATA[<html>
+		<template name="usercp_drafts" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->drafts</title>
 $headerinclude
@@ -711,13 +820,13 @@ $drafts
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_drafts_draft"><![CDATA[<tr>
+		<template name="usercp_drafts_draft" version="100.07"><![CDATA[<tr>
 <td class="$trow"><strong>$draft[subject]</strong><br /><span class="smalltext">$detail</span></td>
 <td class="$trow" align="center">$savedate, $savetime</td>
 <td class="$trow" align="center"><a href="$editurl">$lang->edit_draft</a></td>
 <td class="$trow" align="center"><input type="checkbox" name="deletedraft[$id]" value="$type" /></td>
 </tr>]]></template>
-		<template version="100.07" name="newthread"><![CDATA[<html>
+		<template name="newthread" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->newthread_in $forum[name]</title>
 $headerinclude
@@ -774,9 +883,9 @@ $forumrules
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="newthread_disablesmilies"><![CDATA[<br />
+		<template name="newthread_disablesmilies" version="100.07"><![CDATA[<br />
 <input type="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" $postoptionschecked[disablesmilies]> $lang->options_disablesmilies]]></template>
-		<template version="100.07" name="usercp_nav"><![CDATA[<td width="$lang->ucp_nav_width" valign="top">
+		<template name="usercp_nav" version="100.07"><![CDATA[<td width="$lang->ucp_nav_width" valign="top">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead"><strong>$lang->ucp_nav_menu</strong></td>
@@ -784,7 +893,7 @@ $footer
 $usercpmenu
 </table>
 </td>]]></template>
-		<template version="100.07" name="usercp_nav_messenger"><![CDATA[<tr>
+		<template name="usercp_nav_messenger" version="100.07"><![CDATA[<tr>
 <td class="tcat"><span class="smalltext"><strong>$lang->ucp_nav_messenger</strong></span></td></tr>
 <tr>
 <td class="trow1">
@@ -799,7 +908,7 @@ $folderlinks
 </ul>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_nav_profile"><![CDATA[<tr>
+		<template name="usercp_nav_profile" version="100.07"><![CDATA[<tr>
 <td class="tcat"><span class="smalltext"><strong>$lang->ucp_nav_profile</strong></span></td></tr>
 <tr>
 <td class="trow1">
@@ -814,7 +923,7 @@ $changenameop
 </ul>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_nav_misc"><![CDATA[<tr>
+		<template name="usercp_nav_misc" version="100.07"><![CDATA[<tr>
 <td class="tcat"><span class="smalltext"><strong>$lang->ucp_nav_misc</strong></span></td></tr>
 <tr>
 <td class="trow1">
@@ -833,7 +942,7 @@ $changenameop
 </ul>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_profile_away"><![CDATA[<br />
+		<template name="usercp_profile_away" version="100.07"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>$lang->away_information</strong></legend>
 <table cellspacing="0" cellpadding="$theme[tablespace]">
@@ -885,7 +994,7 @@ $returndatesel
 </tr>
 </table>
 </fieldset>]]></template>
-		<template version="100.07" name="usercp_options"><![CDATA[<html>
+		<template name="usercp_options" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->edit_options</title>
 $headerinclude
@@ -1088,10 +1197,10 @@ $pppselect
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_subscriptions_none"><![CDATA[<tr>
+		<template name="usercp_subscriptions_none" version="100.07"><![CDATA[<tr>
 <td class="trow1" colspan="7">$lang->no_thread_subscriptions</td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_subscriptions_thread"><![CDATA[<tr>
+		<template name="usercp_subscriptions_thread" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="$theme[imgdir]/$folder.gif"></td>
 <td align="center" class="trow2">$icon</td>
 <td width="100%" class="trow1"><a href="showthread.php?tid=$subscription[tid]">$subscription[subject]</a><br /><span class="smalltext"><a href="newreply.php?tid=$subscription[tid]">$lang->post_reply</a> | <a href="usercp2.php?action=removesubscription&amp;tid=$subscription[tid]">$lang->unsubscribe</a></span></td>
@@ -1099,7 +1208,7 @@ $footer
 <td align="center" class="trow1">$subscription[replies]</td>
 <td align="center" class="trow2">$subscription[views]</td>
 <td class="trow1" nowrap="nowrap">$lastpostdate, $lastposttime<br /><span class="smalltext">$lang->by <a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$subscription[tid]">$lastposter</a></span></td>]]></template>
-		<template version="100.07" name="usercp_options_timezoneselect"><![CDATA[<select name="timezoneoffset">
+		<template name="usercp_options_timezoneselect" version="100.07"><![CDATA[<select name="timezoneoffset">
 <option value="-12" $timezoneselect[n120]>$lang->gmt -12:00 $lang->hours ($timein[n120])</option>
 <option value="-11" $timezoneselect[n110]>$lang->gmt -11:00 $lang->hours ($timein[n110])</option>
 <option value="-10" $timezoneselect[n100]>$lang->gmt -10:00 $lang->hours ($timein[n100])</option>
@@ -1132,10 +1241,10 @@ $footer
 <option value="+11" $timezoneselect[110]>$lang->gmt +11:00 $lang->hours ($timein[110])</option>
 <option value="+12" $timezoneselect[120]>$lang->gmt +12:00 $lang->hours ($timein[120])</option>
 </select>]]></template>
-		<template version="100.07" name="usercp_favorites_none"><![CDATA[<tr>
+		<template name="usercp_favorites_none" version="100.07"><![CDATA[<tr>
 <td class="trow1" colspan="7">$lang->no_favorite_threads</td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_favorites_thread"><![CDATA[<tr>
+		<template name="usercp_favorites_thread" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="$theme[imgdir]/$folder.gif"></td>
 <td align="center" class="trow2">$icon</td>
 <td width="100%" class="trow1"><a href="showthread.php?tid=$favorite[tid]">$favorite[subject]</a><br /><span class="smalltext"><a href="newreply.php?tid=$favorite[tid]">$lang->post_reply</a> | <a href="usercp2.php?action=removefavorite&amp;tid=$favorite[tid]">$lang->delete_from_favorites</a></span></td>
@@ -1144,11 +1253,11 @@ $footer
 <td align="center" class="trow2">$favorite[views]</td>
 <td class="trow1" nowrap="nowrap">$lastpostdate, $lastposttime<br /><span class="smalltext">$lang->by <a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$favorite[tid]">$lastposter</a></span></td>
 </tr>]]></template>
-		<template version="100.07" name="header_welcomeblock_member_admin"><![CDATA[ &mdash; <a href="$settings[bburl]/$config[admindir]/index.php">$lang->welcome_admin</a>]]></template>
-		<template version="100.07" name="forumdisplay_newthread"><![CDATA[<a href="newthread.php?fid=$fid"><img src="$theme[imglangdir]/newthread.gif" border="0" alt="$lang->post_thread" /></a>]]></template>
-		<template version="100.07" name="showthread_threaded_bitactive"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><strong>$post[subject]</strong> <span class="smalltext">- $lang->by $post[username] - $postdate $posttime</span><br />]]></template>
-		<template version="100.07" name="showthread_threaded_bit"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><a href="showthread.php?tid=$tid&amp;pid=$post[pid]&mode=threaded">$post[subject]</a> <span class="smalltext">- $lang->by $post[username] - $postdate, $posttime</span><br />]]></template>
-		<template version="100.07" name="showthread_poll"><![CDATA[<form action="polls.php" method="get">
+		<template name="header_welcomeblock_member_admin" version="100.07"><![CDATA[ &mdash; <a href="$settings[bburl]/$config[admindir]/index.php">$lang->welcome_admin</a>]]></template>
+		<template name="forumdisplay_newthread" version="100.07"><![CDATA[<a href="newthread.php?fid=$fid"><img src="$theme[imglangdir]/newthread.gif" border="0" alt="$lang->post_thread" /></a>]]></template>
+		<template name="showthread_threaded_bitactive" version="100.07"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><strong>$post[subject]</strong> <span class="smalltext">- $lang->by $post[username] - $postdate $posttime</span><br />]]></template>
+		<template name="showthread_threaded_bit" version="100.07"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><a href="showthread.php?tid=$tid&amp;pid=$post[pid]&mode=threaded">$post[subject]</a> <span class="smalltext">- $lang->by $post[username] - $postdate, $posttime</span><br />]]></template>
+		<template name="showthread_poll" version="100.07"><![CDATA[<form action="polls.php" method="get">
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="$poll[pid]" />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
@@ -1166,7 +1275,7 @@ $polloptions
 </tr>
 </table>
 </form>]]></template>
-		<template version="100.07" name="forumdisplay_inlinemoderation"><![CDATA[<form action="moderation.php" method="post">
+		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<form action="moderation.php" method="post">
 <input type="hidden" name="fid" value="$fid">
 <table cellspacing="0" cellpadding="0" border="0" align="right">
 <tr><td class="tborder">
@@ -1196,7 +1305,7 @@ var go_text = "$lang->inline_go";
 begininline($fid, "forum");
 </script>
 <br /><br /><br />]]></template>
-		<template version="100.07" name="reputation_samepost"><![CDATA[<strong>$lang->error</strong><br />
+		<template name="reputation_samepost" version="100.07"><![CDATA[<strong>$lang->error</strong><br />
 <blockquote>$lang->error_reputation_same_post</blockquote>
 <br />
 <br />
@@ -1204,7 +1313,7 @@ begininline($fid, "forum");
 <br />
 <br />
 <br />]]></template>
-		<template version="100.07" name="reputation_maxperday"><![CDATA[<strong>$lang->error</strong><br />
+		<template name="reputation_maxperday" version="100.07"><![CDATA[<strong>$lang->error</strong><br />
 <blockquote>$lang->error_max_reputations_day</blockquote>
 <br />
 <br />
@@ -1212,7 +1321,7 @@ begininline($fid, "forum");
 <br />
 <br />
 <br />]]></template>
-		<template version="100.07" name="report_thanks"><![CDATA[<html>
+		<template name="report_thanks" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->report_post</title>
 $headerinclude
@@ -1233,7 +1342,7 @@ $headerinclude
 </table>
 </body>
 </html>]]></template>
-		<template version="100.07" name="report"><![CDATA[<html>
+		<template name="report" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->report_post</title>
 $headerinclude
@@ -1263,7 +1372,7 @@ $headerinclude
 </table>
 </body>
 </html>]]></template>
-		<template version="100.07" name="redirect"><![CDATA[<html>
+		<template name="redirect" version="100.07"><![CDATA[<html>
 <head>
 <title>$title</title>
 <meta http-equiv="refresh" content="2;URL=$url">
@@ -1289,10 +1398,10 @@ $headerinclude
 </div>
 </body>
 </html>]]></template>
-		<template version="100.07" name="gobutton"><![CDATA[<input type="submit" class="submit" value="$lang->go" />]]></template>
-		<template version="100.07" name="postbit_away"><![CDATA[<a href="member.php?action=profile&amp;uid=$post[uid]"><font color="maroon">$lang->postbit_status_away</font></a>]]></template>
-		<template version="100.07" name="calendar_dayview_birthdays_bday"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdays[uid]"><strong>$bdays[username]</strong></a>$age]]></template>
-		<template version="100.07" name="misc_imcenter_icq"><![CDATA[<html>
+		<template name="gobutton" version="100.07"><![CDATA[<input type="submit" class="submit" value="$lang->go" />]]></template>
+		<template name="postbit_away" version="100.07"><![CDATA[<a href="member.php?action=profile&amp;uid=$post[uid]"><font color="maroon">$lang->postbit_status_away</font></a>]]></template>
+		<template name="calendar_dayview_birthdays_bday" version="100.07"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdays[uid]"><strong>$bdays[username]</strong></a>$age]]></template>
+		<template name="misc_imcenter_icq" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->icq_message_center</title>
 $headerinclude
@@ -1330,9 +1439,9 @@ $headerinclude
 </form>
 </body>
 </html>]]></template>
-		<template version="100.07" name="forumdisplay_thread_rating"><![CDATA[<td align="center" class="$bgcolor"><img src="$theme[imgdir]/$thread[rating]" alt="$ratingvotesav" /></td>
+		<template name="forumdisplay_thread_rating" version="100.07"><![CDATA[<td align="center" class="$bgcolor"><img src="$theme[imgdir]/$thread[rating]" alt="$ratingvotesav" /></td>
 ]]></template>
-		<template version="100.07" name="forumdisplay_password"><![CDATA[<html>
+		<template name="forumdisplay_password" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->password_required </title>
 $headerinclude
@@ -1361,7 +1470,7 @@ $pwnote
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="error_maxsigimages"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="error_maxsigimages" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead"><strong>$lang->too_many_images</strong></td>
 </tr>
@@ -1371,7 +1480,7 @@ $footer
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="forumbit_depth2_forum"><![CDATA[<tr>
+		<template name="forumbit_depth2_forum" version="100.07"><![CDATA[<tr>
 <td class="$bgcolor" align="center" valign="top"><img src="$theme[imgdir]/$folder.gif" alt="" /></td>
 <td class="$bgcolor" valign="top">
 <strong><a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><div class="smalltext">$forum[description]$modlist$subforums</div>
@@ -1380,9 +1489,9 @@ $footer
 <td class="$bgcolor" valign="top" align="center" nowrap="nowrap">$posts</td>
 <td class="$bgcolor" valign="top" align="right" nowrap="nowrap">$lastpost</td>
 </tr>]]></template>
-		<template version="100.07" name="forumbit_depth3"><![CDATA[$comma<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a>]]></template>
-		<template version="100.07" name="forumbit_subforums"><![CDATA[<br />$lang->subforums $forums]]></template>
-		<template version="100.07" name="private_empty"><![CDATA[<html>
+		<template name="forumbit_depth3" version="100.07"><![CDATA[$comma<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a>]]></template>
+		<template name="forumbit_subforums" version="100.07"><![CDATA[<br />$lang->subforums $forums]]></template>
+		<template name="private_empty" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->empty_folders</title>
 $headerinclude
@@ -1427,7 +1536,7 @@ $folderlist
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp"><![CDATA[<html>
+		<template name="usercp" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->user_cp</title>
 $headerinclude
@@ -1470,8 +1579,8 @@ $reputations
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_currentavatar"><![CDATA[<td class="trow1" rowspan="5" valign="middle" align="center" width="1"><img src="$mybbuser[avatar]" alt="$mybbuser[username]" /></td>]]></template>
-		<template version="100.07" name="footer"><![CDATA[			<br />
+		<template name="usercp_currentavatar" version="100.07"><![CDATA[<td class="trow1" rowspan="5" valign="middle" align="center" width="1"><img src="$mybbuser[avatar]" alt="$mybbuser[username]" /></td>]]></template>
+		<template name="footer" version="100.07"><![CDATA[			<br />
 			<div class="bottommenu"><span class="smalltext"><a href="$settings[contactlink]">$lang->bottomlinks_contactus</a> | <a href="$settings[homeurl]">$settings[homename]</a> | <a href="#top">$lang->bottomlinks_returntop</a> | <a href="#content">$lang->bottomlinks_returncontent</a> | <a href="archive/index.php">$lang->bottomlinks_litemode</a> | <a href="$settings[bburl]/misc.php?action=syndication">$lang->bottomlinks_syndication</a></span>
 			</div>
 			</div>
@@ -1483,9 +1592,9 @@ $lang->powered_by <a href="http://www.mybboard.com" target="_blank">MyBB</a> $my
 <br class="clear" />
 		</div>
 		</div>]]></template>
-		<template version="100.07" name="private_archive_csv"><![CDATA[$lang->export_date_sent,$lang->export_folder,$lang->export_subject,$lang->export_to,$lang->export_from,$lang->export_message
+		<template name="private_archive_csv" version="100.07"><![CDATA[$lang->export_date_sent,$lang->export_folder,$lang->export_subject,$lang->export_to,$lang->export_from,$lang->export_message
 $pmsdownload]]></template>
-		<template version="100.07" name="usercp_profile_customtitle"><![CDATA[<fieldset class="trow2">
+		<template name="usercp_profile_customtitle" version="100.07"><![CDATA[<fieldset class="trow2">
 <legend><strong>$lang->custom_usertitle</strong></legend>
 <table cellspacing="0" cellpadding="$theme[tablespace]">
 <tr>
@@ -1512,11 +1621,11 @@ $pmsdownload]]></template>
 </table>
 </fieldset>
 <br />]]></template>
-		<template version="100.07" name="usercp_attachments_none"><![CDATA[<tr>
+		<template name="usercp_attachments_none" version="100.07"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="5">$lang->no_attachments</td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_nav_changename"><![CDATA[<li><a href="usercp.php?action=changename">$lang->ucp_nav_change_username</a><br /></li>]]></template>
-		<template version="100.07" name="usercp_profile"><![CDATA[<html>
+		<template name="usercp_nav_changename" version="100.07"><![CDATA[<li><a href="usercp.php?action=changename">$lang->ucp_nav_change_username</a><br /></li>]]></template>
+		<template name="usercp_profile" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->edit_profile</title>
 $headerinclude
@@ -1635,7 +1744,7 @@ $awaysection
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="post_attachments"><![CDATA[<tr>
+		<template name="post_attachments" version="100.07"><![CDATA[<tr>
 <td class="$bgcolor" valign="top"><strong>$lang->attachments</strong><br /><span class="smalltext">$lang->attachments_desc</span></td>
 <td class="$bgcolor" valign="top">
 <table cellspacing="3" cellpadding="0" border="0">
@@ -1649,7 +1758,7 @@ $attachments
 </table>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_attachments"><![CDATA[<html>
+		<template name="usercp_attachments" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->attachments_manager</title>
 $headerinclude
@@ -1685,14 +1794,14 @@ $attachments
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_attachments_attachment"><![CDATA[<tr>
+		<template name="usercp_attachments_attachment" version="100.07"><![CDATA[<tr>
 <td class="$altbg" width="1">$icon</td>
 <td class="$altbg" width="40%"><a href="attachment.php?aid=$attachment[aid]" target="_blank">$attachment[filename]</a><br /><span class="smalltext">$sizedownloads</span></td>
 <td class="$altbg"><a href="showthread.php?tid=$attachment[tid]&pid=$attachment[pid]#pid$attachment[pid]">$attachment[subject]</a><br /><span class="smalltext">$lang->attachment_thread <a href="showthread.php?tid=$attachment[tid]">$attachment[threadsubject]</a></span></td>
 <td class="$altbg" align="center">$attachdate, $attachtime</td>
 <td class="$altbg" width="1"><input type="checkbox" name="attachments[$attachment[aid]]" value="$attachment[aid]" /></td>
 </tr>]]></template>
-		<template version="100.07" name="misc_rules_forum"><![CDATA[<html>
+		<template name="misc_rules_forum" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $forum[rulestitle]</title>
 $headerinclude
@@ -1710,7 +1819,7 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="forumdisplay_rules"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="forumdisplay_rules" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="$colspan"><strong>$foruminfo[rulestitle]</td>
 </tr>
@@ -1719,13 +1828,13 @@ $footer
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="forumdisplay_rules_link"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="forumdisplay_rules_link" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1"><strong><a href="misc.php?action=rules&fid=$fid">$foruminfo[rulestitle]</a></strong></td>
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="forumdisplay"><![CDATA[<html>
+		<template name="forumdisplay" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $foruminfo[name] </title>
 $headerinclude
@@ -1744,114 +1853,7 @@ $threadslist
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="forumdisplay_threadlist"><![CDATA[<table width="$theme[tablewidth]" align="center" border="0">
-	<tr>
-		<td valign="bottom" align="right">$newthread</td>
-	</tr>
-</table>
-<table width="$theme[tablewidth]" align="center" cellspacing="0">
-	<tr><td>$multipage</td></tr>
-</table>
-<br />
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
-	<tr>
-		<td class="thead" colspan="$colspan"><strong><em>&raquo;</em> $foruminfo[name]</strong></td>
-	</tr>
-	<tr>
-		<td class="tcat" align="center" colspan="2">&nbsp;</td>
-		<td class="tcat" align="center" width="40%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=subject&amp;order=asc">$lang->thread</a> $orderarrow[subject]</strong></span></td>
-		<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=starter&amp;order=asc">$lang->author</a> $orderarrow[starter]</strong></span></td>
-		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=replies&amp;order=desc">$lang->replies</a> $orderarrow[replies]</strong></span></td>
-		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=views&amp;order=desc">$lang->views</a> $orderarrow[views]</strong></span></td>
-		$ratingcol
-		<td class="tcat" align="center" width="200"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=lastpost&amp;order=desc">$lang->lastpost</a> $orderarrow[lastpost]</strong></span></td>
-		$inlinemodcol
-	</tr>
-	$announcementlist
-	$threads
-	<tr>
-		<td class="tfoot" align="right" colspan="$colspan"><span class="smalltext"><strong><a href="misc.php?action=markread&amp;fid=$fid">$lang->markforum_read</a> | <a href="usercp2.php?action=addsubscription&amp;type=forum&amp;fid=$fid">$lang->subscribe_forum</a>$clearstoredpass</strong></span></td>
-	</tr>
-</table>
-<br />
-<table width="$theme[tablewidth]" align="center" border="0">
-	<tr>
-		<td valign="top">$multipage</td>
-		<td align="right" valign="top">$newthread</td>
-	</tr>
-</table>
-<br />
-$inlinemod
-<form action="forumdisplay.php" method="get">
-	<input type="hidden" name="fid" value="$fid" />
-		<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
-			<tr>
-				<td class="trow1" align="center"><span class="smalltext">
-					$lang->sort_by
-					<select name="sortby">
-						<option value="subject" $sortsel[subject]>$lang->sort_by_subject</option>
-						<option value="lastpost" $sortsel[lastpost]>$lang->sort_by_lastpost</option>
-						<option value="starter" $sortsel[starter]>$lang->sort_by_starter</option>
-						$ratingsort
-						<option value="replies" $sortsel[replies]>$lang->sort_by_replies</option>
-						<option value="views" $sortsel[views]>$lang->sort_by_views</option>
-					</select>
-					 $lang->sort_order 
-					<select name="order">
-						<option value="asc" $ordersel[asc]>$lang->sort_order_asc</option>
-						<option value="desc" $ordersel[desc]>$lang->sort_order_desc</option>
-					</select>
-					 $lang->datelimit
-					<select name="datecut">
-						<option value="1" $datecutsel[1]>$lang->datelimit_1day</option>
-						<option value="5" $datecutsel[5]>$lang->datelimit_5days</option>
-						<option value="10" $datecutsel[10]>$lang->datelimit_10days</option>
-						<option value="20" $datecutsel[20]>$lang->datelimit_20days</option>
-						<option value="50" $datecutsel[50]>$lang->datelimit_50days</option>
-						<option value="75" $datecutsel[75]>$lang->datelimit_75days</option>
-						<option value="100" $datecutsel[100]>$lang->datelimit_100days</option>
-						<option value="365" $datecutsel[365]>$lang->datelimit_lastyear</option>
-						<option value="1000" $datecutsel[1000]>$lang->datelimit_beginning</option>
-					</select>
-					 $gobutton
-				</span></td>
-			</tr>
-	</table>
-</form>
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
-	<tr>
-		<td class="trow2">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0">
-				<tr>
-					<td valign="top" align="left">
-					<!-- start icon legend -->
-						<table width="5%" cellspacing="0" cellpadding="2" border="0">
-							<tr>
-								<td nowrap="nowrap">
-									<img src="$theme[imgdir]/newfolder.gif" alt="$lang->new_thread" />&nbsp;&nbsp;<span class="smalltext">$lang->new_thread</span><br />
-									<img src="$theme[imgdir]/newhotfolder.gif" alt="$lang->new_hot_thread" />&nbsp;&nbsp;<span class="smalltext">$lang->new_hot_thread</span><br />
-									<img src="$theme[imgdir]/dot_folder.gif" alt="$lang->posts_by_you" />&nbsp;&nbsp;<span class="smalltext">$lang->posts_by_you</span>
-								</td>
-								<td nowrap="nowrap">
-									<img src="$theme[imgdir]/folder.gif" alt="$lang->no_new_thread" />&nbsp;&nbsp;<span class="smalltext">$lang->no_new_thread</span><br />
-									<img src="$theme[imgdir]/hotfolder.gif" alt="$lang->hot_thread" />&nbsp;&nbsp;<span class="smalltext">$lang->hot_thread</span><br />
-									<img src="$theme[imgdir]/lockfolder.gif" alt="$lang->locked_thread" />&nbsp;&nbsp;<span class="smalltext">$lang->locked_thread</span>
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td valign="middle" align="right">
-						<table>
-							<tr><td align="right">$searchforum</td></tr>
-							<tr><td align="right">$forumjump</td></tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>]]></template>
-		<template version="100.07" name="member_register_referrer"><![CDATA[<br />
+		<template name="member_register_referrer" version="100.07"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>$lang->referrer</strong></legend>
 <table cellspacing="0" cellpadding="$theme[tablespace]">
@@ -1865,7 +1867,7 @@ $inlinemod
 </tr></table>
 </fieldset>
 <br />]]></template>
-		<template version="100.07" name="usercp_usergroups_joingroup"><![CDATA[<html>
+		<template name="usercp_usergroups_joingroup" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->request_join_usergroup</title>
 $headerinclude
@@ -1907,7 +1909,7 @@ $usercpnav
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_avatar"><![CDATA[<html>
+		<template name="usercp_avatar" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->change_avatar</title>
 $headerinclude
@@ -1974,7 +1976,7 @@ $galleries
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_avatar_gallery"><![CDATA[<html>
+		<template name="usercp_avatar_gallery" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->change_avatar</title>
 $headerinclude
@@ -2029,13 +2031,13 @@ $avatarlist
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_avatar_gallery_avatar"><![CDATA[<td width="20%" align="center"><label for="avatar-$avatar"><img src="$avatarpath" alt="$avatar" /><br /><input type="radio" name="avatar" value="$avatar" id="avatar-$avatar" /><strong>$avatarname</strong></td>]]></template>
-		<template version="100.07" name="usercp_avatar_current"><![CDATA[<td class="trow1" width="150" align="right"><img src="$urltoavatar" alt="$lang->avatar" /></td>]]></template>
-		<template version="100.07" name="headerinclude"><![CDATA[<meta http-equiv="Content-Type" content="text/html; charset=$charset" />
+		<template name="usercp_avatar_gallery_avatar" version="100.07"><![CDATA[<td width="20%" align="center"><label for="avatar-$avatar"><img src="$avatarpath" alt="$avatar" /><br /><input type="radio" name="avatar" value="$avatar" id="avatar-$avatar" /><strong>$avatarname</strong></td>]]></template>
+		<template name="usercp_avatar_current" version="100.07"><![CDATA[<td class="trow1" width="150" align="right"><img src="$urltoavatar" alt="$lang->avatar" /></td>]]></template>
+		<template name="headerinclude" version="100.07"><![CDATA[<meta http-equiv="Content-Type" content="text/html; charset=$charset" />
 <script type="text/javascript" src="jscripts/general.js"></script>
 <link rel="stylesheet" type="text/css" href="css.php?theme=$theme[tid]" />
 $newpmmsg]]></template>
-		<template version="100.07" name="showthread_similarthreads"><![CDATA[<br />
+		<template name="showthread_similarthreads" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="4">$lang->similar_threads</td>
@@ -2048,14 +2050,14 @@ $newpmmsg]]></template>
 </tr>
 $similarthreadbits
 </table>]]></template>
-		<template version="100.07" name="nav_sep"><![CDATA[ / ]]></template>
-		<template version="100.07" name="post_attachments_new"><![CDATA[<tr>
+		<template name="nav_sep" version="100.07"><![CDATA[ / ]]></template>
+		<template name="post_attachments_new" version="100.07"><![CDATA[<tr>
 <td colspan="3" nowrap="nowrap"><strong>$lang->new_attachment</strong> <input type="file" name="attachment" size="30" /> <input type="submit" class="submit" name="newattachment" value="$lang->add_attachment"  tabindex="12">
 </td>
 </tr>
 ]]></template>
-		<template version="100.07" name="nav_sep_active"><![CDATA[ / ]]></template>
-		<template version="100.07" name="member_profile"><![CDATA[<html>
+		<template name="nav_sep_active" version="100.07"><![CDATA[ / ]]></template>
+		<template name="member_profile" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->profile</title>
 $headerinclude
@@ -2158,7 +2160,7 @@ $adminoptions
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="member_profile_adminoptions"><![CDATA[
+		<template name="member_profile_adminoptions" version="100.07"><![CDATA[
 <br /><table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr><td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -2176,9 +2178,9 @@ $footer
 </table>
 </td></tr></table>
 ]]></template>
-		<template version="100.07" name="header_welcomeblock_guest"><![CDATA[	<span style="float:right;">$lang->welcome_current_time</span>
+		<template name="header_welcomeblock_guest" version="100.07"><![CDATA[	<span style="float:right;">$lang->welcome_current_time</span>
 		$lang->welcome_guest (<a href="$settings[bburl]/member.php?action=login">$lang->welcome_login</a> &mdash; <a href="$settings[bburl]/member.php?action=register">$lang->welcome_register</a>)]]></template>
-		<template version="100.07" name="header"><![CDATA[	<script language="Javascript" type="text/javascript">
+		<template name="header" version="100.07"><![CDATA[	<script language="Javascript" type="text/javascript">
 		 var cookieDomain = "$settings[cookiedomain]";
 		 var cookiePath = "$settings[cookiepath]";
 		 var quickdelete_confirm = "$lang->quickdelete_confirm";
@@ -2211,12 +2213,12 @@ $footer
 			$unreadreports
 			<navigation>
 			<br class="clear" />]]></template>
-		<template version="100.07" name="usercp_usergroups_leader_usergroup"><![CDATA[<tr>
+		<template name="usercp_usergroups_leader_usergroup" version="100.07"><![CDATA[<tr>
 <td class="$trow"><strong>$usergroup[title]</strong></td>
 <td class="$trow" align="center">$usergroup[users] $memberlistlink</td>
 <td class="$trow" align="center">$usergroup[joinrequests] $moderaterequestslink</td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_usergroups_leader"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="usercp_usergroups_leader" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>$lang->usergroups_leader</strong></td>
 </tr>
@@ -2228,7 +2230,7 @@ $footer
 $groupsledlist
 </table>
 <br />]]></template>
-		<template version="100.07" name="usercp_usergroups_joinable"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="usercp_usergroups_joinable" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>$lang->usergroups_joinable</strong></td>
 </tr>
@@ -2240,18 +2242,18 @@ $groupsledlist
 $joinablegrouplist
 </table>
 <br />]]></template>
-		<template version="100.07" name="usercp_usergroups_joinable_usergroup"><![CDATA[<tr>
+		<template name="usercp_usergroups_joinable_usergroup" version="100.07"><![CDATA[<tr>
 <td class="$trow"><strong>$usergroup[title]</strong>$description</td>
 <td class="$trow"><span class="smalltext">$conditions</span><br /><span class="smalltext">$usergroupleaders</span></td>
 <td class="$trow" align="center">$joinlink</td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_usergroups_memberof_usergroup"><![CDATA[<tr>
+		<template name="usercp_usergroups_memberof_usergroup" version="100.07"><![CDATA[<tr>
 <td class="$trow"><strong>$usergroup[title]</strong>$description</td>
 <td class="$trow" align="center">$usergroup[usertitle]</td>
 <td class="$trow">$leavelink</td>
 <td class="$trow">$displaycode</td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_usergroups"><![CDATA[<html>
+		<template name="usercp_usergroups" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->group_memberships</title>
 $headerinclude
@@ -2272,7 +2274,7 @@ $membergroups
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_usergroups_memberof"><![CDATA[<form method="post" action="usercp.php">
+		<template name="usercp_usergroups_memberof" version="100.07"><![CDATA[<form method="post" action="usercp.php">
 <input type="hidden" name="action" value="usergroups" />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
@@ -2291,7 +2293,7 @@ $memberoflist
 </table>
 </form>
 <br />]]></template>
-		<template version="100.07" name="managegroup"><![CDATA[<html>
+		<template name="managegroup" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->members_of</title>
 $headerinclude
@@ -2339,7 +2341,7 @@ $users
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="managegroup_user"><![CDATA[<tr>
+		<template name="managegroup_user" version="100.07"><![CDATA[<tr>
 <td class="$altbg"><a href="member.php?action=profile&uid=$user[uid]">$user[username]</a> $leader</td>
 <td class="$altbg" align="center">$email</td>
 <td class="$altbg" align="center">$sendpm</td>
@@ -2348,11 +2350,11 @@ $footer
 <td class="$altbg" align="center"><input type="checkbox" name="removeuser[$user[uid]]" value="$user[uid]" /></td>
 </tr>
 ]]></template>
-		<template version="100.07" name="managegroup_requestnote"><![CDATA[<p>
+		<template name="managegroup_requestnote" version="100.07"><![CDATA[<p>
 <strong><a href="managegroup.php?action=joinrequests&gid=$gid">$lang->pending_requests</a></strong><br />
 $lang->num_requests_pending
 </p>]]></template>
-		<template version="100.07" name="managegroup_joinrequests"><![CDATA[<html>
+		<template name="managegroup_joinrequests" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->join_requests</title>
 $headerinclude
@@ -2382,7 +2384,7 @@ $users
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="managegroup_joinrequests_request"><![CDATA[<tr>
+		<template name="managegroup_joinrequests_request" version="100.07"><![CDATA[<tr>
 <td class="$altbg"><a href="member.php?action=profile&uid=$user[uid]">$user[username]</a></td>
 <td class="$altbg" align="center">$user[reason]</td>
 <td class="$altbg" align="center"><input type="radio" name="request[$user[uid]]" value="accept" /></td>
@@ -2390,7 +2392,7 @@ $footer
 <td class="$altbg" align="center"><input type="radio" name="request[$user[uid]]" value="decline" /></td>
 </tr>
 ]]></template>
-		<template version="100.07" name="private_send"><![CDATA[<html>
+		<template name="private_send" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->compose_pm</title>
 $headerinclude
@@ -2453,8 +2455,8 @@ $codebuttons
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="showthread_newreply_closed"><![CDATA[<a href="newreply.php?tid=$tid"><img src="$theme[imglangdir]/closed.gif" border="0" alt="$lang->thread_closed" /></a>&nbsp;]]></template>
-		<template version="100.07" name="polls_editpoll"><![CDATA[<html>
+		<template name="showthread_newreply_closed" version="100.07"><![CDATA[<a href="newreply.php?tid=$tid"><img src="$theme[imglangdir]/closed.gif" border="0" alt="$lang->thread_closed" /></a>&nbsp;]]></template>
+		<template name="polls_editpoll" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->edit_poll</title>
 $headerinclude
@@ -2522,7 +2524,7 @@ $optionbits
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="forumbit_depth1_cat"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="forumbit_depth1_cat" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <thead>
 <tr>
 <td class="thead" colspan="5">
@@ -2543,30 +2545,30 @@ $forums
 </tbody>
 </table>
 <br />]]></template>
-		<template version="100.07" name="postbit_edit"><![CDATA[<a href="editpost.php?pid=$post[pid]"><img src="$theme[imglangdir]/postbit_edit.gif" border="0" alt="$lang->postbit_edit" /></a>]]></template>
-		<template version="100.07" name="postbit_email"><![CDATA[<a href="member.php?action=emailuser&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_email.gif" border="0" alt="$lang->postbit_email" /></a>]]></template>
-		<template version="100.07" name="postbit_find"><![CDATA[<a href="search.php?action=finduser&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_find.gif" border="0" alt="$lang->postbit_find" /></a>]]></template>
-		<template version="100.07" name="postbit_pm"><![CDATA[<a href="private.php?action=send&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_pm.gif" border="0" alt="$lang->postbit_pm" /></a>]]></template>
-		<template version="100.07" name="postbit_profile"><![CDATA[<a href="member.php?action=profile&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_profile.gif" border="0" alt="$lang->postbit_profile" /></a>]]></template>
-		<template version="100.07" name="postbit_quickdelete"><![CDATA[<a href="javascript:deletePost($post[pid]);"><img src="$theme[imglangdir]/postbit_delete.gif" border="0" alt="$lang->postbit_qdelete" /></a>]]></template>
-		<template version="100.07" name="postbit_quote"><![CDATA[<a href="newreply.php?tid=$tid&amp;pid=$post[pid]"><img src="$theme[imglangdir]/postbit_quote.gif" border="0" alt="$lang->postbit_quote" /></a>]]></template>
-		<template version="100.07" name="postbit_report"><![CDATA[<a href="javascript:reportPost($post[pid]);"><img src="$theme[imglangdir]/postbit_report.gif" border="0" alt="$lang->postbit_report" /></a>]]></template>
-		<template version="100.07" name="postbit_www"><![CDATA[<a href="$post[website]" target="_blank"><img src="$theme[imglangdir]/postbit_www.gif" border="0" alt="$lang->postbit_website" /></a>]]></template>
-		<template version="100.07" name="polls_showresults_resultbit"><![CDATA[<tr>
+		<template name="postbit_edit" version="100.07"><![CDATA[<a href="editpost.php?pid=$post[pid]"><img src="$theme[imglangdir]/postbit_edit.gif" border="0" alt="$lang->postbit_edit" /></a>]]></template>
+		<template name="postbit_email" version="100.07"><![CDATA[<a href="member.php?action=emailuser&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_email.gif" border="0" alt="$lang->postbit_email" /></a>]]></template>
+		<template name="postbit_find" version="100.07"><![CDATA[<a href="search.php?action=finduser&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_find.gif" border="0" alt="$lang->postbit_find" /></a>]]></template>
+		<template name="postbit_pm" version="100.07"><![CDATA[<a href="private.php?action=send&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_pm.gif" border="0" alt="$lang->postbit_pm" /></a>]]></template>
+		<template name="postbit_profile" version="100.07"><![CDATA[<a href="member.php?action=profile&amp;uid=$post[uid]"><img src="$theme[imglangdir]/postbit_profile.gif" border="0" alt="$lang->postbit_profile" /></a>]]></template>
+		<template name="postbit_quickdelete" version="100.07"><![CDATA[<a href="javascript:deletePost($post[pid]);"><img src="$theme[imglangdir]/postbit_delete.gif" border="0" alt="$lang->postbit_qdelete" /></a>]]></template>
+		<template name="postbit_quote" version="100.07"><![CDATA[<a href="newreply.php?tid=$tid&amp;pid=$post[pid]"><img src="$theme[imglangdir]/postbit_quote.gif" border="0" alt="$lang->postbit_quote" /></a>]]></template>
+		<template name="postbit_report" version="100.07"><![CDATA[<a href="javascript:reportPost($post[pid]);"><img src="$theme[imglangdir]/postbit_report.gif" border="0" alt="$lang->postbit_report" /></a>]]></template>
+		<template name="postbit_www" version="100.07"><![CDATA[<a href="$post[website]" target="_blank"><img src="$theme[imglangdir]/postbit_www.gif" border="0" alt="$lang->postbit_website" /></a>]]></template>
+		<template name="polls_showresults_resultbit" version="100.07"><![CDATA[<tr>
 <td class="$optionbg" align="right">$option$votestar
 <td class="$optionbg"><img src="$theme[imgdir]/pollbar-s.gif" /><img src="$theme[imgdir]/pollbar.gif" width="$imagewidth" height="10" /><img src="$theme[imgdir]/pollbar-e.gif" /><br />$userlist</td>
 <td class="$optionbg" width="67" align="center"><a href="polls.php?action=showresults&amp;pid=$poll[pid]#option$number">$votes</a></td>
 <td class="$optionbg" width="67" align="center">$percent%</td>
 </tr>
 ]]></template>
-		<template version="100.07" name="showthread_poll_resultbit"><![CDATA[<tr>
+		<template name="showthread_poll_resultbit" version="100.07"><![CDATA[<tr>
 <td class="$optionbg" align="right">$option$votestar</td>
 <td class="$optionbg"><img src="$theme[imgdir]/pollbar-s.gif" /><img src="$theme[imgdir]/pollbar.gif" width="$imagewidth" height="10"><img src="$theme[imgdir]/pollbar-e.gif" /></td>
 <td class="$optionbg" width="67" align="center"><a href="polls.php?action=showresults&amp;pid=$poll[pid]#option$number">$votes</a></td>
 <td class="$optionbg" width="67" align="center">$percent%</td>
 </tr>
 ]]></template>
-		<template version="100.07" name="showteam_usergroup"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="showteam_usergroup" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>$usergroup[title]</strong></td>
 </tr>
@@ -2578,7 +2580,7 @@ $forums
 $usergrouprows
 </table>
 <br />]]></template>
-		<template version="100.07" name="calendar_event"><![CDATA[<html>
+		<template name="calendar_event" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->calendar - $lang->view_event</title>
 $headerinclude
@@ -2608,7 +2610,7 @@ $event[description]
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="showteam_moderators"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="showteam_moderators" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="4"><strong>$lang->moderators</strong></td>
 </tr>
@@ -2620,13 +2622,13 @@ $footer
 </tr>
 $modrows
 </table>]]></template>
-		<template version="100.07" name="showteam_moderators_mod"><![CDATA[<tr>
+		<template name="showteam_moderators_mod" version="100.07"><![CDATA[<tr>
 <td width="50%" class="trow1"><a href="member.php?action=profile&amp;uid=$uid"><strong>$username</strong></a></td>
 <td width="30%" class="trow2"><span class="smalltext">$forumslist</span></td>
 <td width="10%" class="trow2">$emailcode</td>
 <td width="10%" class="trow1">$pmcode</td>
 </tr>]]></template>
-		<template version="100.07" name="report_noreason"><![CDATA[<html>
+		<template name="report_noreason" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->report_post</title>
 $headerinclude
@@ -2647,7 +2649,7 @@ $headerinclude
 </table>
 </body>
 </html>]]></template>
-		<template version="100.07" name="reputation"><![CDATA[<html>
+		<template name="reputation" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->reputation</title>
 $headerinclude
@@ -2665,7 +2667,7 @@ $reputationbit
 </table>
 </body>
 </html>]]></template>
-		<template version="100.07" name="misc_buddypopup"><![CDATA[<html>
+		<template name="misc_buddypopup" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->buddy_list</title>
 <META HTTP-EQUIV="refresh" CONTENT="60; URL=misc.php?action=buddypopup">
@@ -2690,20 +2692,20 @@ $buddys[offline]
 </table>
 </body>
 </html>]]></template>
-		<template version="100.07" name="misc_buddypopup_user_offline"><![CDATA[<tr>
+		<template name="misc_buddypopup_user_offline" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid=$buddy[uid]" target="_blank">$buddy[username]</a></span></td>
 <td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">$pmbuddy<a href="misc.php?action=buddypopup&removebuddy=$buddy[uid]">$lang->delete_buddy</a></span></td>
 </tr>]]></template>
-		<template version="100.07" name="misc_buddypopup_user_online"><![CDATA[<tr>
+		<template name="misc_buddypopup_user_online" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid=$buddy[uid]" target="_blank">$buddy[username]</a></span></td>
 <td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">$pmbuddy<a href="misc.php?action=buddypopup&removebuddy=$buddy[uid]">$lang->delete_buddy</a></span></td>
 </tr>]]></template>
-		<template version="100.07" name="private_archive_txt"><![CDATA[$lang->private_messages_for
+		<template name="private_archive_txt" version="100.07"><![CDATA[$lang->private_messages_for
 ($lang->exported_date)
 
 $pmsdownload]]></template>
-		<template version="100.07" name="postbit_avatar"><![CDATA[<img src="$post[avatar]" border="0" alt="" />]]></template>
-		<template version="100.07" name="usercp_latestreputations"><![CDATA[<br />
+		<template name="postbit_avatar" version="100.07"><![CDATA[<img src="$post[avatar]" border="0" alt="" />]]></template>
+		<template name="usercp_latestreputations" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <td class="thead" colspan="4"><strong>$lang->latest_reputations_received</strong></td>
 </tr>
@@ -2716,7 +2718,7 @@ $pmsdownload]]></template>
 $reputationbits
 </table><br />
 <span class="smalltext"><img src="$theme[imgdir]/repbit_pos.gif"> $lang->positive_key<br /><img src="$theme[imgdir]/repbit_neg.gif"> $lang->negative_key</span>]]></template>
-		<template version="100.07" name="usercp_profile_customfield"><![CDATA[<tr>
+		<template name="usercp_profile_customfield" version="100.07"><![CDATA[<tr>
 <td><span class="smalltext">
 $profilefield[name]:</span></td>
 </tr>
@@ -2724,14 +2726,14 @@ $profilefield[name]:</span></td>
 <td>$code</td>
 </tr>
 ]]></template>
-		<template version="100.07" name="usercp_profile_profilefields"><![CDATA[<br />
+		<template name="usercp_profile_profilefields" version="100.07"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>$lang->additional_information</strong></legend>
 <table cellspacing="0" cellpadding="$theme[tablespace]" width="100%">
 $customfields
 </table>
 </fieldset>]]></template>
-		<template version="100.07" name="private_archive"><![CDATA[<html>
+		<template name="private_archive" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->archive_messages</title>
 $headerinclude
@@ -2787,7 +2789,7 @@ $usercpnav
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="calendar_addevent"><![CDATA[<html>
+		<template name="calendar_addevent" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->calendar - $lang->add_event</title>
 $headerinclude
@@ -2854,19 +2856,19 @@ $yearopts
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="private_folders_folder"><![CDATA[<tr>
+		<template name="private_folders_folder" version="100.07"><![CDATA[<tr>
 <td class="trow1"><input type="text" name="folder[$fid]" size="25" value="$foldername" maxlength="30"></td>
 </tr>]]></template>
-		<template version="100.07" name="private_folders_folder_unremovable"><![CDATA[<tr>
+		<template name="private_folders_folder_unremovable" version="100.07"><![CDATA[<tr>
 <td class="trow1"><input type="text" name="folder[$fid]" size="25" value="$foldername"> <span class="smalltext">($foldername2 - $lang->cannot_be_removed)</span>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="showteam_usergroup_user"><![CDATA[<tr>
+		<template name="showteam_usergroup_user" version="100.07"><![CDATA[<tr>
 <td width="80%" class="$bgcolor"><a href="member.php?action=profile&amp;uid=$user[uid]"><strong>$user[username]</strong></a></td>
 <td width="10%" class="$bgcolor">$emailcode</td>
 <td width="10%" class="$bgcolor">$pmcode</td>
 </tr>]]></template>
-		<template version="100.07" name="moderation_inline_deleteposts"><![CDATA[<html>
+		<template name="moderation_inline_deleteposts" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->delete_posts</title>
 $headerinclude
@@ -2891,7 +2893,7 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="calendar_dayview_birthdays"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center" class="tborder">
+		<template name="calendar_dayview_birthdays" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center" class="tborder">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -2907,7 +2909,7 @@ $footer
 </table>
 <br />
 ]]></template>
-		<template version="100.07" name="calendar_dayview_event"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" class="tborder" align="center">
+		<template name="calendar_dayview_event" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" class="tborder" align="center">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -2933,7 +2935,7 @@ $event[description]
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="online_today"><![CDATA[<html>
+		<template name="online_today" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->online_today</title>
 $headerinclude
@@ -2957,8 +2959,8 @@ $todayrows
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="forumdisplay_thread_modbit"><![CDATA[<td class="$bgcolor" align="center" nowrap="nowrap"><input type="checkbox" name="inlinemod_$multitid" id="inlinemod_$multitid" value="1" onclick="javascript:selectinline($multitid, this);" $inlinecheck  /></td>]]></template>
-		<template version="100.07" name="index_pms"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="forumdisplay_thread_modbit" version="100.07"><![CDATA[<td class="$bgcolor" align="center" nowrap="nowrap"><input type="checkbox" name="inlinemod_$multitid" id="inlinemod_$multitid" value="1" onclick="javascript:selectinline($multitid, this);" $inlinecheck  /></td>]]></template>
+		<template name="index_pms" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr><td class="thead" colspan="2"><a href="private.php"><strong>$lang->private_messages</strong></a></td></tr>
 <tr>
 <td class="trow1" align="center" width="2%"><img src="$theme[imgdir]/$pmfolder" alt="$lang->private_messages" /></td>
@@ -2966,8 +2968,8 @@ $footer
 </tr>
 </table>
 ]]></template>
-		<template version="100.07" name="forumdisplay_thread_gotounread"><![CDATA[<a href="showthread.php?action=newpost&amp;tid=$thread[tid]"><img src="$theme[imgdir]/jump.gif" alt="$lang->goto_first_unread" border="0" /></a>&nbsp;]]></template>
-		<template version="100.07" name="private_tracking"><![CDATA[<html>
+		<template name="forumdisplay_thread_gotounread" version="100.07"><![CDATA[<a href="showthread.php?action=newpost&amp;tid=$thread[tid]"><img src="$theme[imgdir]/jump.gif" alt="$lang->goto_first_unread" border="0" /></a>&nbsp;]]></template>
+		<template name="private_tracking" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->pm_tracking</title>
 $headerinclude
@@ -3024,7 +3026,7 @@ $unreadmessages
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="moderation_threadnotes"><![CDATA[<html>
+		<template name="moderation_threadnotes" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->thread_notes_editor</title>
 $headerinclude
@@ -3064,7 +3066,7 @@ $modactions
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="error_maxpostimages"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="error_maxpostimages" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead"><strong>$lang->error_too_many_images</strong></td>
 </tr>
@@ -3074,7 +3076,7 @@ $footer
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="calendar"><![CDATA[<html>
+		<template name="calendar" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->calendar</title>
 $headerinclude
@@ -3143,7 +3145,7 @@ $gobutton
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="private_archive_html"><![CDATA[<html>
+		<template name="private_archive_html" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->private_messages_for</title>
 <style type="text/css">$css</style>
@@ -3171,7 +3173,7 @@ $pmsdownload
 </table>
 </td></tr></table>
 </body>]]></template>
-		<template version="100.07" name="private_messagebit"><![CDATA[<tr>
+		<template name="private_messagebit" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1" width="5%"><img src="$theme[imgdir]/$msgfolder" border="0"></td>
 <td align="center" class="trow2" width="5%">$icon</td>
 <td class="trow1" width="35%"><a href="private.php?action=read&amp;pmid=$message[pmid]">$message[subject]</a>$denyreceipt</td>
@@ -3179,11 +3181,11 @@ $pmsdownload
 <td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">$senddate $sendtime</span></td>
 <td class="trow2" align="center"><input type="checkbox" name="check[$message[pmid]]" value="yes"></td>
 </tr>]]></template>
-		<template version="100.07" name="private_nomessages"><![CDATA[<tr>
+		<template name="private_nomessages" version="100.07"><![CDATA[<tr>
 <td colspan="6" class="trow1">$lang->nomessages</td>
 </tr>]]></template>
-		<template version="100.07" name="private_send_buddyselect"><![CDATA[<br /><span class="smalltext">$lang->select_buddy<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>$buddies</select>]]></template>
-		<template version="100.07" name="codebuttons"><![CDATA[<script language="javascript">
+		<template name="private_send_buddyselect" version="100.07"><![CDATA[<br /><span class="smalltext">$lang->select_buddy<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>$buddies</select>]]></template>
+		<template name="codebuttons" version="100.07"><![CDATA[<script language="javascript">
 var b_prompt = "$lang->b_prompt";
 var i_prompt = "$lang->i_prompt";
 var u_prompt = "$lang->u_prompt";
@@ -3275,7 +3277,7 @@ var php_prompt = "$lang->php_prompt";
 <td bgcolor="#F0F0F0" colspan="2"><span class="smalltext"><input type="radio" name="mode" value="normal" onClick="changeMode('normal')"> $lang->normal_mode&nbsp;&nbsp;<input type="radio" name="mode" value="advanced" onClick="changeMode('advanced')"> $lang->advanced_mode</span></td>
 </tr>
 <script language='Javascript' src='jscripts/codebuttons.js'></script>]]></template>
-		<template version="100.07" name="showthread_quickreply"><![CDATA[<br />
+		<template name="showthread_quickreply" version="100.07"><![CDATA[<br />
 <form method="post" action="newreply.php" name="input">
 <input type="hidden" name="subject" value="RE: $thread[subject]" />
 <input type="hidden" name="action" value="do_newreply" />
@@ -3306,7 +3308,7 @@ var php_prompt = "$lang->php_prompt";
 </tbody>
 </table>
 </form>]]></template>
-		<template version="100.07" name="memberlist"><![CDATA[<html>
+		<template name="memberlist" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->member_list</title>
 $headerinclude
@@ -3349,7 +3351,7 @@ $lang->sort_by <select name="by">
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="private"><![CDATA[<html>
+		<template name="private" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->private_messaging</title>
 $headerinclude
@@ -3411,14 +3413,14 @@ $messagelist
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="private_pmspace"><![CDATA[<table cellspacing="0" cellpadding="0" width="230" style="border: solid 1px #000000;">
+		<template name="private_pmspace" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" width="230" style="border: solid 1px #000000;">
 	<tr>
 		<td width="$spaceused" bgcolor="red" align="center"><span class="smalltext"><strong>$overhalf</strong></span></td>
 		<td width="$spaceused2" bgcolor="green" align="center"><span class="smalltext"><strong>$belowhalf</strong></span></td>
 		<td width="130" align="center"><span class="smalltext"><strong>$lang->pmspaceused</strong></span></td>
 	</tr>
 </table>]]></template>
-		<template version="100.07" name="forumdisplay_announcements_announcement"><![CDATA[<tr>
+		<template name="forumdisplay_announcements_announcement" version="100.07"><![CDATA[<tr>
 <td align="center" class="$bgcolor"><img src="$theme[imgdir]/$folder"></td>
 <td align="center" class="$bgcolor">&nbsp;</td>
 <td class="$bgcolor"><a href="announcements.php?aid=$announcement[aid]">$announcement[subject]</a></td>
@@ -3430,17 +3432,17 @@ $rating
 $modann
 </tr>
 ]]></template>
-		<template version="100.07" name="forumdisplay_announcements"><![CDATA[<tr>
+		<template name="forumdisplay_announcements" version="100.07"><![CDATA[<tr>
 <td class="trow_sep" colspan="$colspan">$lang->forum_announcements</td>
 </tr>
 $announcements]]></template>
-		<template version="100.07" name="forumdisplay_sticky_sep"><![CDATA[<tr>
+		<template name="forumdisplay_sticky_sep" version="100.07"><![CDATA[<tr>
 <td class="trow_sep" colspan="$colspan">$lang->sticky_threads</td>
 </tr>]]></template>
-		<template version="100.07" name="forumdisplay_threads_sep"><![CDATA[<tr>
+		<template name="forumdisplay_threads_sep" version="100.07"><![CDATA[<tr>
 <td class="trow_sep" colspan="$colspan">$lang->normal_threads</td>
 </tr>]]></template>
-		<template version="100.07" name="postbit"><![CDATA[<tr>
+		<template name="postbit" version="100.07"><![CDATA[<tr>
 <td class="$altbg" width="155" valign="top" nowrap="nowrap" align="center"><a name="pid$post[pid]"></a>
 <strong><span class="largetext">$post[profilelink]</span></strong><br />
 <span class="smalltext">
@@ -3480,17 +3482,17 @@ $post[iplogged]
 </td>
 </tr>
 $seperator]]></template>
-		<template version="100.07" name="postbit_seperator"><![CDATA[<tr>
+		<template name="postbit_seperator" version="100.07"><![CDATA[<tr>
 <td class="trow_sep" colspan="2"><img src="$theme[imgdir]/pixel.gif" height="1" width="1" alt="" /></td>
 </tr>]]></template>
-		<template version="100.07" name="forumdisplay_threadlist_clearpass"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid=$fid">$lang->clear_stored_password</a>]]></template>
-		<template version="100.07" name="portal_welcome_guesttext"><![CDATA[<span class="smalltext">$lang->guest_welcome_registration<br />
+		<template name="forumdisplay_threadlist_clearpass" version="100.07"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid=$fid">$lang->clear_stored_password</a>]]></template>
+		<template name="portal_welcome_guesttext" version="100.07"><![CDATA[<span class="smalltext">$lang->guest_welcome_registration<br />
 <br />
 <form method="post" action="$PHP_SELF"><input type="hidden" name="action" value="do_login">
 $lang->username<br />&nbsp;&nbsp;<input type="text" name="username" value="" /><br /><br />
 $lang->password<br />&nbsp;&nbsp;<input type="password" name="password" value="" /><br />
 <br /><input type="submit" class="submit" name="loginsubmit" value="$lang->login" /></form>]]></template>
-		<template version="100.07" name="portal_latestthreads_thread"><![CDATA[<tr>
+		<template name="portal_latestthreads_thread" version="100.07"><![CDATA[<tr>
 <td class="$altbg">
 <strong><a href="$settings[bburl]/showthread.php?tid=$thread[tid]">$thread[subject]</a></strong><span class="smalltext"><br />
 $lastpost
@@ -3498,7 +3500,7 @@ $lastpost
 <strong>&raquo; </strong>$lang->latest_threads_views $thread[views]
 </td>
 </tr>]]></template>
-		<template version="100.07" name="search"><![CDATA[<html>
+		<template name="search" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->search</title>
 $headerinclude
@@ -3581,11 +3583,11 @@ $footer
 </body>
 </html>
 ]]></template>
-		<template version="100.07" name="postbit_groupimage"><![CDATA[<img src="$usergroup[image]" border="0" alt="$usergroup[title]" />]]></template>
-		<template version="100.07" name="showthread_newreply"><![CDATA[<a href="newreply.php?tid=$tid"><img src="$theme[imglangdir]/newreply.gif" border="0" alt="$lang->post_reply_img" /></a>&nbsp;]]></template>
-		<template version="100.07" name="showthread_newthread"><![CDATA[<a href="newthread.php?fid=$fid"><img src="$theme[imglangdir]/newthread.gif" border="0" alt="$lang->post_thread" /></a>&nbsp;]]></template>
-		<template version="100.07" name="member_profile_groupimage"><![CDATA[<img src="$displaygroup[image]" alt="$usertitle" /><br />]]></template>
-		<template version="100.07" name="misc_help_section"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center"><tr><td class="tborder">
+		<template name="postbit_groupimage" version="100.07"><![CDATA[<img src="$usergroup[image]" border="0" alt="$usergroup[title]" />]]></template>
+		<template name="showthread_newreply" version="100.07"><![CDATA[<a href="newreply.php?tid=$tid"><img src="$theme[imglangdir]/newreply.gif" border="0" alt="$lang->post_reply_img" /></a>&nbsp;]]></template>
+		<template name="showthread_newthread" version="100.07"><![CDATA[<a href="newthread.php?fid=$fid"><img src="$theme[imglangdir]/newthread.gif" border="0" alt="$lang->post_thread" /></a>&nbsp;]]></template>
+		<template name="member_profile_groupimage" version="100.07"><![CDATA[<img src="$displaygroup[image]" alt="$usertitle" /><br />]]></template>
+		<template name="misc_help_section" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center"><tr><td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
 <thead>
 <tr>
@@ -3601,7 +3603,7 @@ $helpbits
 </table>
 </td></tr></table>
 <br />]]></template>
-		<template version="100.07" name="announcement"><![CDATA[<html>
+		<template name="announcement" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->announcements</title>
 $headerinclude
@@ -3620,7 +3622,7 @@ $announcement
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="member_emailuser"><![CDATA[<html>
+		<template name="member_emailuser" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->email_user</title>
 $headerinclude
@@ -3659,12 +3661,12 @@ $guestfields
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="changeuserbox"><![CDATA[<tr>
+		<template name="changeuserbox" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>$lang->username</strong></td>
 <td class="trow1">$mybbuser[username] <span class="smalltext">[<strong><a href="member.php?action=logout&amp;uid=$mybbuser[uid]">$lang->change_user</a></strong>]</span></td>
 </tr>
 ]]></template>
-		<template version="100.07" name="showthread_poll_results"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="showthread_poll_results" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="4" align="center"><strong>$lang->poll $poll[question]</strong><br /><span class="smalltext">$pollstatus</span></td>
 </tr>
@@ -3682,7 +3684,7 @@ $polloptions
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="polls_showresults"><![CDATA[<html>
+		<template name="polls_showresults" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->poll_results</title>
 $headerinclude
@@ -3704,7 +3706,7 @@ $polloptions
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="member_register_password"><![CDATA[<tr>
+		<template name="member_register_password" version="100.07"><![CDATA[<tr>
 <td><span class="smalltext">$lang->password</strong></td>
 <td><span class="smalltext">$lang->confirm_password</strong></td>
 </tr>
@@ -3713,7 +3715,7 @@ $footer
 <td><input type="password" name="password2" size="20" /></td>
 </tr>
 ]]></template>
-		<template version="100.07" name="usercp_forumsubscriptions_forum"><![CDATA[<tr>
+		<template name="usercp_forumsubscriptions_forum" version="100.07"><![CDATA[<tr>
 <td class="trow1" align="center" valign="top"><img src="$theme[imgdir]/$folder.gif" valign="top"></td>
 <td class="trow1" valign="top">
 <strong><a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><span class="smalltext"><a href="usercp2.php?action=removesubscription&amp;type=forum&amp;fid=$forum[fid]">$lang->unsubscribe</a> | <a href="newthread.php?fid=$forum[fid]">$lang->new_thread</a></span></td>
@@ -3721,7 +3723,7 @@ $footer
 <td class="trow1" valign="top" align="center" nowrap="nowrap">$threads</td>
 <td class="trow2" valign="top" nowrap="nowrap">$lastpost</td>
 </tr>]]></template>
-		<template version="100.07" name="newthread_postpoll"><![CDATA[<tr>
+		<template name="newthread_postpoll" version="100.07"><![CDATA[<tr>
 <td class="$bgcolor" valign="top">
 <strong>$lang->poll</strong><br /><span class="smalltext">$lang->poll_desc</span>
 </td>
@@ -3730,7 +3732,7 @@ $footer
 $lang->num_options <input type="text" name="numpolloptions" value="$numpolloptions" size="10"> $lang->max_options</span>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="moderation_reports"><![CDATA[<html>
+		<template name="moderation_reports" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->reported_posts</title>
 $headerinclude
@@ -3758,7 +3760,7 @@ $reports
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="moderation_reports_report"><![CDATA[<tr>
+		<template name="moderation_reports_report" version="100.07"><![CDATA[<tr>
 <td class="$trow" align="center"><label for="reports_$report[rid]"><input type="checkbox" name="reports[]" id="reports_$report[rid]" value="$report[rid]" />&nbsp;<a href="showthread.php?pid=$report[pid]&tid=$report[tid]#pid$report[pid]" target="_blank">$report[pid]</a></label></td>
 <td class="$trow" align="center"><a href="member.php?action=profile&uid=$report[postuid]" target="_blank">$report[postusername]</a></td>
 <td class="$trow"><a href="showthread.php?tid=$report[tid]" target="_blank">$report[threadsubject]</a></td>
@@ -3766,16 +3768,16 @@ $footer
 <td class="$trow">$report[reason]</td>
 <td class="$trow" align="center">$reportdate, $reporttime</td>
 </tr>]]></template>
-		<template version="100.07" name="moderation_reports_noreports"><![CDATA[<tr>
+		<template name="moderation_reports_noreports" version="100.07"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="6">$lang->no_reports</td>
 </tr>]]></template>
-		<template version="100.07" name="global_unreadreports"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="global_unreadreports" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1" align="right"><span class="smalltext"><a href="moderation.php?action=reports">$lang->unread_reports</a></span></td>
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="member_login"><![CDATA[<html>
+		<template name="member_login" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->login</title>
 $headerinclude
@@ -3805,7 +3807,7 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="misc_imcenter_aim"><![CDATA[<html>
+		<template name="misc_imcenter_aim" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->aol_im</title>
 $headerinclude
@@ -3834,7 +3836,7 @@ $headerinclude
 
 </body>
 </html>]]></template>
-		<template version="100.07" name="showthread_adminoptions"><![CDATA[<br />
+		<template name="showthread_adminoptions" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1">
@@ -3865,7 +3867,7 @@ $gobutton
 </td>
 </tr>
 </table>]]></template>
-		<template version="100.07" name="misc_syndication"><![CDATA[<html>
+		<template name="misc_syndication" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->syndication</title>
 $headerinclude
@@ -3900,7 +3902,7 @@ $feedurl
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="misc_syndication_feedurl"><![CDATA[<table border="0" cellspacing="0" cellpadding="$theme[tablespace]" width="$theme[tablewidth]">
+		<template name="misc_syndication_feedurl" version="100.07"><![CDATA[<table border="0" cellspacing="0" cellpadding="$theme[tablespace]" width="$theme[tablewidth]">
 <tr><td>
 <strong>$lang->syndication_generated_url</strong><blockquote>
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder"><tr><td class="trow1">
@@ -3910,7 +3912,7 @@ $url
 </td></tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="forumdisplay_announcement"><![CDATA[<tr>
+		<template name="forumdisplay_announcement" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="$theme[imgdir]/$folder"></td>
 <td align="center" class="trow1">&nbsp;</td>
 <td width="100%" class="trow1"><strong>$lang->announcement_prefix</strong> <a href="announcements.php?fid=$fid">$announcement[subject]</a></td>
@@ -3922,7 +3924,7 @@ $rating
 $modann
 </tr>
 ]]></template>
-		<template version="100.07" name="memberlist_row"><![CDATA[<tr>
+		<template name="memberlist_row" version="100.07"><![CDATA[<tr>
 <td class="trow1"><a href="member.php?action=profile&amp;uid=$users[uid]">$users[username]</a></td>
 <td class="trow2" align="center">$useremail</td>
 <td class="trow1" align="center">$usersite</td>
@@ -3930,7 +3932,7 @@ $modann
 <td class="trow1">$users[regdate]</td>
 <td class="trow2">$users[postnum]</td>
 </tr>]]></template>
-		<template version="100.07" name="index_loginform"><![CDATA[<tr>
+		<template name="index_loginform" version="100.07"><![CDATA[<tr>
 <td align="right" class="trow">
 <form action="member.php" method="post">
 <input type="hidden" name="action" value="do_login" />
@@ -3947,22 +3949,22 @@ $gobutton
 </form>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="multipage"><![CDATA[<span class="smalltext"><span class="pagenav">$lang->multipage_pages</span>$start $prevpage $mppage $nextpage $end</span>]]></template>
-		<template version="100.07" name="multipage_end"><![CDATA[<span class="pagenavbit"><a href="$url&amp;page=$pages">$lang->multipage_last &raquo;</a></span>]]></template>
-		<template version="100.07" name="multipage_nextpage"><![CDATA[<span class="pagenavbit"><a href="$url&amp;page=$next">&raquo;</a></span>]]></template>
-		<template version="100.07" name="multipage_page"><![CDATA[ <span class="pagenavbit"><a href="$url&amp;page=$i">$i</a></span>]]></template>
-		<template version="100.07" name="multipage_page_current"><![CDATA[ <span class="pagenavcurrent">[$i]</span>]]></template>
-		<template version="100.07" name="multipage_prevpage"><![CDATA[<span class="pagenavbit"><a href="$url&amp;page=$prev">&laquo;</a></span>]]></template>
-		<template version="100.07" name="multipage_start"><![CDATA[<span class="pagenavbit"><a href="$url&amp;page=1">&laquo; $lang->multipage_first</a></span>]]></template>
-		<template version="100.07" name="usercp_forumsubscriptions_none"><![CDATA[<tr>
+		<template name="multipage" version="100.07"><![CDATA[<span class="smalltext"><span class="pagenav">$lang->multipage_pages</span>$start $prevpage $mppage $nextpage $end</span>]]></template>
+		<template name="multipage_end" version="100.07"><![CDATA[<span class="pagenavbit"><a href="$url&amp;page=$pages">$lang->multipage_last &raquo;</a></span>]]></template>
+		<template name="multipage_nextpage" version="100.07"><![CDATA[<span class="pagenavbit"><a href="$url&amp;page=$next">&raquo;</a></span>]]></template>
+		<template name="multipage_page" version="100.07"><![CDATA[ <span class="pagenavbit"><a href="$url&amp;page=$i">$i</a></span>]]></template>
+		<template name="multipage_page_current" version="100.07"><![CDATA[ <span class="pagenavcurrent">[$i]</span>]]></template>
+		<template name="multipage_prevpage" version="100.07"><![CDATA[<span class="pagenavbit"><a href="$url&amp;page=$prev">&laquo;</a></span>]]></template>
+		<template name="multipage_start" version="100.07"><![CDATA[<span class="pagenavbit"><a href="$url&amp;page=1">&laquo; $lang->multipage_first</a></span>]]></template>
+		<template name="usercp_forumsubscriptions_none" version="100.07"><![CDATA[<tr>
 <td class="trow1" colspan="5">$lang->no_forum_subscriptions</td>
 </tr>]]></template>
-		<template version="100.07" name="calendar_dayview_noevents"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="calendar_dayview_noevents" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1">$lang->no_events</td>
 </tr>
 </table>]]></template>
-		<template version="100.07" name="forumbit_depth1_forum"><![CDATA[<tr>
+		<template name="forumbit_depth1_forum" version="100.07"><![CDATA[<tr>
 <td class="$bgcolor" valign="top" colspan="2">
 <table cellspacing="0" cellpadding="0" border="0" width="100%"><tr>
 <td width="15" align="left"><img src="$theme[imgdir]/$folder.gif" alt="" /></td>
@@ -3977,13 +3979,13 @@ $gobutton
 <td class="$bgcolor" valign="top" align="right" nowrap="nowrap">$lastpost</td>
 </tr>
 $forums]]></template>
-		<template version="100.07" name="index_whosonline"><![CDATA[<tr>
+		<template name="index_whosonline" version="100.07"><![CDATA[<tr>
 <td class="tcat"><strong>$lang->whos_online</strong> [<a href="online.php">$lang->complete_list</a>]</td>
 </tr>
 <tr>
 <td class="trow1"><span class="smalltext">$lang->online_note<br />$onlinemembers</span></td>
 </tr>]]></template>
-		<template version="100.07" name="index_stats"><![CDATA[<tr><td class="tcat"><strong>$lang->boardstats</strong></td></tr>
+		<template name="index_stats" version="100.07"><![CDATA[<tr><td class="tcat"><strong>$lang->boardstats</strong></td></tr>
 <tr>
 <td class="trow1"><span class="smalltext">
 $lang->stats_posts_threads<br />
@@ -3993,7 +3995,7 @@ $lang->stats_mostonline
 </span>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="moderation_deletethread"><![CDATA[<html>
+		<template name="moderation_deletethread" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->delete_thread</title>
 $headerinclude
@@ -4015,10 +4017,10 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="postbit_attachments_thumbnails"><![CDATA[<span class="smalltext"><strong>$lang->postbit_attachments_thumbnails</strong></span><br />
+		<template name="postbit_attachments_thumbnails" version="100.07"><![CDATA[<span class="smalltext"><strong>$lang->postbit_attachments_thumbnails</strong></span><br />
 $post[thumblist]
 <br />]]></template>
-		<template version="100.07" name="forumdisplay_subforums"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="forumdisplay_subforums" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="5" align="center"><strong>$lang->sub_forums_in</strong></td>
 </tr>
@@ -4032,9 +4034,9 @@ $post[thumblist]
 $forums
 </table>
 <br />]]></template>
-		<template version="100.07" name="forumdisplay_threadlist_rating"><![CDATA[<td class="tcat" align="center" width="60"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=rating&amp;order=desc">$lang->rating</a> $orderarrow[rating]</strong></span></td>
+		<template name="forumdisplay_threadlist_rating" version="100.07"><![CDATA[<td class="tcat" align="center" width="60"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=rating&amp;order=desc">$lang->rating</a> $orderarrow[rating]</strong></span></td>
 ]]></template>
-		<template version="100.07" name="forumdisplay_thread"><![CDATA[<tr>
+		<template name="forumdisplay_thread" version="100.07"><![CDATA[<tr>
 <td align="center" class="$bgcolor" width="2%"><img src="$theme[imgdir]/$folder.gif" alt="$thread[subject]" /></td>
 <td align="center" class="$bgcolor" width="2%">$icon</td>
 <td class="$bgcolor">$prefix $gotounread<a href="showthread.php?tid=$thread[tid]">$thread[subject]</a>$thread[multipage]</td>
@@ -4046,19 +4048,19 @@ $rating
 $modbit
 </tr>
 ]]></template>
-		<template version="100.07" name="forumdisplay_orderarrow"><![CDATA[<span class="smalltext">[<a href="$sorturl&amp;sortby=$sortby&amp;order=$oppsortnext">$oppsort</a>]</span>]]></template>
-		<template version="100.07" name="showthread_ratingdisplay"><![CDATA[<img src="$theme[imgdir]/$thread[rating]" border="0" alt="$ratingav" />&nbsp;&nbsp;]]></template>
-		<template version="100.07" name="postbit_posturl"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><span class="smalltext"><strong>$lang->postbit_post <a href="showthread.php?tid=$tid&amp;pid=$post[pid]#pid$post[pid]">#$postcounter</a></strong>$post[inlinecheck]</span></div>]]></template>
-		<template version="100.07" name="postbit_attachments_thumbnails_thumbnail"><![CDATA[<a href="attachment.php?aid=$attachment[aid]" target="_blank"><img src="attachment.php?thumbnail=$attachment[aid]" class="attachment" alt="" /></a>&nbsp;&nbsp;&nbsp;]]></template>
-		<template version="100.07" name="postbit_attachments_images_image"><![CDATA[<img src="attachment.php?aid=$attachment[aid]" class="attachment" alt="" />&nbsp;&nbsp;&nbsp;]]></template>
-		<template version="100.07" name="postbit_signature"><![CDATA[<hr size="1" width="25%"  align="left" />
+		<template name="forumdisplay_orderarrow" version="100.07"><![CDATA[<span class="smalltext">[<a href="$sorturl&amp;sortby=$sortby&amp;order=$oppsortnext">$oppsort</a>]</span>]]></template>
+		<template name="showthread_ratingdisplay" version="100.07"><![CDATA[<img src="$theme[imgdir]/$thread[rating]" border="0" alt="$ratingav" />&nbsp;&nbsp;]]></template>
+		<template name="postbit_posturl" version="100.07"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><span class="smalltext"><strong>$lang->postbit_post <a href="showthread.php?tid=$tid&amp;pid=$post[pid]#pid$post[pid]">#$postcounter</a></strong>$post[inlinecheck]</span></div>]]></template>
+		<template name="postbit_attachments_thumbnails_thumbnail" version="100.07"><![CDATA[<a href="attachment.php?aid=$attachment[aid]" target="_blank"><img src="attachment.php?thumbnail=$attachment[aid]" class="attachment" alt="" /></a>&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_attachments_images_image" version="100.07"><![CDATA[<img src="attachment.php?aid=$attachment[aid]" class="attachment" alt="" />&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_signature" version="100.07"><![CDATA[<hr size="1" width="25%"  align="left" />
 $post[signature]]]></template>
-		<template version="100.07" name="post_attachments_attachment"><![CDATA[<tr>
+		<template name="post_attachments_attachment" version="100.07"><![CDATA[<tr>
 <td width="5%" align="center">$attachment[icon]</td>
 <td nowrap="nowrap">$attachment[filename] ($attachment[size])</td>
 <td nowrap="nowrap" align="right"><input type="submit" class="submit" name="rem" value="$lang->remove_attachment" onclick="removeAttachment($attachment[aid]);">&nbsp;$postinsert</td>
 </tr>]]></template>
-		<template version="100.07" name="error_attacherror"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder"><tr>
+		<template name="error_attacherror" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder"><tr>
 <td class="thead"><strong>$lang->error_attach_file</strong></td>
 </tr>
 <tr>
@@ -4066,7 +4068,7 @@ $post[signature]]]></template>
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="postbit_attachments"><![CDATA[<br />
+		<template name="postbit_attachments" version="100.07"><![CDATA[<br />
 <br />
 <fieldset>
 <legend><strong>$lang->postbit_attachments</strong></legend>
@@ -4074,12 +4076,12 @@ $post[attachedthumbs]
 $post[attachedimages]
 $post[attachmentlist]
 </fieldset>]]></template>
-		<template version="100.07" name="postbit_attachments_attachment"><![CDATA[<br />$attachment[icon]&nbsp;&nbsp;<a href="attachment.php?aid=$attachment[aid]" target="_blank">$attachment[filename]</a> ($lang->postbit_attachment_size $attachment[filesize] / $lang->postbit_attachment_downloads $attachment[downloads])]]></template>
-		<template version="100.07" name="postbit_attachments_images"><![CDATA[<span class="smalltext"><strong>$lang->postbit_attachments_images</strong></span><br />
+		<template name="postbit_attachments_attachment" version="100.07"><![CDATA[<br />$attachment[icon]&nbsp;&nbsp;<a href="attachment.php?aid=$attachment[aid]" target="_blank">$attachment[filename]</a> ($lang->postbit_attachment_size $attachment[filesize] / $lang->postbit_attachment_downloads $attachment[downloads])]]></template>
+		<template name="postbit_attachments_images" version="100.07"><![CDATA[<span class="smalltext"><strong>$lang->postbit_attachments_images</strong></span><br />
 $post[imagelist]
 <br />]]></template>
-		<template version="100.07" name="post_attachments_attachment_postinsert"><![CDATA[<input type="button" name="insert" value="$lang->insert_attachment_post" onclick="doInsert('[attachment=$attachment[aid]]');">]]></template>
-		<template version="100.07" name="moderation_mergeposts"><![CDATA[<html>
+		<template name="post_attachments_attachment_postinsert" version="100.07"><![CDATA[<input type="button" name="insert" value="$lang->insert_attachment_post" onclick="doInsert('[attachment=$attachment[aid]]');">]]></template>
+		<template name="moderation_mergeposts" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->merge_posts</title>
 $headerinclude
@@ -4103,14 +4105,14 @@ $posts
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="moderation_mergeposts_post"><![CDATA[<tr>
+		<template name="moderation_mergeposts_post" version="100.07"><![CDATA[<tr>
 <td class="tcat" colspan="2"><span class="smalltext"><strong>$lang->posted_by $post[username] - $postdate $posttime</strong></span></td>
 </tr>
 <tr>
 <td class="$altbg" valign="top" align="center" width="1"><input type="checkbox" name="mergepost[$post[pid]]" value="yes"></td>
 <td class="$altbg">$message</td>
 </tr>]]></template>
-		<template version="100.07" name="stats"><![CDATA[<html>
+		<template name="stats" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->board_stats</title>
 $headerinclude
@@ -4170,7 +4172,7 @@ $lang->popular_forum
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="polls_newpoll"><![CDATA[<html>
+		<template name="polls_newpoll" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->post_new_poll</title>
 $headerinclude
@@ -4221,7 +4223,7 @@ $optionbits
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="member_register_agreement"><![CDATA[<html>
+		<template name="member_register_agreement" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->agreement</title>
 $headerinclude
@@ -4254,8 +4256,8 @@ $header
 $footer
 </body>
 </html>]]></template>
-<template version="100.07" name="stats_thread"><![CDATA[<a href="showthread.php?tid=$thread[tid]"><strong>$thread[subject]</strong></a> ($numberbit $numbertype)<br />]]></template>
-		<template version="100.07" name="online"><![CDATA[<html>
+		<template name="stats_thread" version="100.07"><![CDATA[<a href="showthread.php?tid=$thread[tid]"><strong>$thread[subject]</strong></a> ($numberbit $numbertype)<br />]]></template>
+		<template name="online" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->users_online</title>
 $headerinclude
@@ -4286,14 +4288,14 @@ $onlinerows
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="portal_welcome_membertext"><![CDATA[<span class="smalltext"><em>$lang->member_welcome_lastvisit</em> $lastvisit<br />
+		<template name="portal_welcome_membertext" version="100.07"><![CDATA[<span class="smalltext"><em>$lang->member_welcome_lastvisit</em> $lastvisit<br />
 $lang->since_then<br />
 <strong>&raquo;</strong> $lang->new_announcements<br />
 <strong>&raquo;</strong> $lang->new_threads<br />
 <strong>&raquo;</strong> $lang->new_posts<br /><br />
 <a href="$settings[bburl]/search.php?action=getnew">$lang->view_new</a><br /><a href="$settings[bburl]/search.php?action=getdaily">$lang->view_todays</a>
 </span>]]></template>
-		<template version="100.07" name="portal"><![CDATA[<html>
+		<template name="portal" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname]</title>
 $headerinclude
@@ -4318,7 +4320,7 @@ $announcements
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="portal_pms"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
+		<template name="portal_pms" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -4335,7 +4337,7 @@ $footer
 </table>
 </td></tr></table>
 <br />]]></template>
-		<template version="100.07" name="portal_stats"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
+		<template name="portal_stats" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -4356,7 +4358,7 @@ $footer
 </table>
 </td></tr></table>
 <br />]]></template>
-		<template version="100.07" name="portal_welcome"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
+		<template name="portal_welcome" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -4370,7 +4372,7 @@ $welcometext
 </tr>
 </table></td></tr></table>
 <br />]]></template>
-		<template version="100.07" name="portal_whosonline"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
+		<template name="portal_whosonline" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -4387,8 +4389,8 @@ $lang->online_users<br /><strong>&raquo;</strong> $lang->online_counts<br />$onl
 </table>
 </td></tr></table>
 <br />]]></template>
-		<template version="100.07" name="portal_announcement_numcomments"><![CDATA[- <a href="$settings[bburl]/showthread.php?tid=$announcement[tid]">$lang->replies</a> ($announcement[replies])]]></template>
-		<template version="100.07" name="portal_announcement"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
+		<template name="portal_announcement_numcomments" version="100.07"><![CDATA[- <a href="$settings[bburl]/showthread.php?tid=$announcement[tid]">$lang->replies</a> ($announcement[replies])]]></template>
+		<template name="portal_announcement" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr>
 <td class="tborder">
 <table cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -4412,8 +4414,8 @@ $lang->online_users<br /><strong>&raquo;</strong> $lang->online_counts<br />$onl
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="portal_announcement_numcomments_no"><![CDATA[- $lang->no_replies]]></template>
-		<template version="100.07" name="portal_search"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
+		<template name="portal_announcement_numcomments_no" version="100.07"><![CDATA[- $lang->no_replies]]></template>
+		<template name="portal_search" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -4438,7 +4440,7 @@ $gobutton<br />
 </table>
 </td></tr></table>
 <br />]]></template>
-		<template version="100.07" name="portal_latestthreads"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
+		<template name="portal_latestthreads" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -4449,10 +4451,10 @@ $threadlist
 </table>
 </td></tr></table>
 <br />]]></template>
-		<template version="100.07" name="portal_latestthreads_thread_lastpost"><![CDATA[<em>$lang->latest_threads_lastpost</em> <a href="$settings[bburl]/member.php?action=profile&amp;uid=lastposter&amp;tid=$thread[tid]"> $thread[lastposter]</a><br />
+		<template name="portal_latestthreads_thread_lastpost" version="100.07"><![CDATA[<em>$lang->latest_threads_lastpost</em> <a href="$settings[bburl]/member.php?action=profile&amp;uid=lastposter&amp;tid=$thread[tid]"> $thread[lastposter]</a><br />
 $lastpostdate $lastposttime<br />]]></template>
-		<template version="100.07" name="portal_whosonline_memberbit"><![CDATA[$comma<a href="$settings[bburl]/member.php?action=profile&amp;uid=$user[uid]">$user[username]</a>$invisiblemark]]></template>
-		<template version="100.07" name="usercp_favorites"><![CDATA[<html>
+		<template name="portal_whosonline_memberbit" version="100.07"><![CDATA[$comma<a href="$settings[bburl]/member.php?action=profile&amp;uid=$user[uid]">$user[username]</a>$invisiblemark]]></template>
+		<template name="usercp_favorites" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->favorites</title>
 $headerinclude
@@ -4497,7 +4499,7 @@ $threads
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="printthread"><![CDATA[<html>
+		<template name="printthread" version="100.07"><![CDATA[<html>
 <head>
 <title>$thread[subject] - $lang->printable_version</title>
 <meta http-equiv="Content-Type" content="text/html; charset=$charset" />
@@ -4525,14 +4527,14 @@ $breadcrumb
 </table>
 </body>
 </html>]]></template>
-		<template version="100.07" name="forumbit_depth1_forum_lastpost"><![CDATA[<span class="smalltext">
+		<template name="forumbit_depth1_forum_lastpost" version="100.07"><![CDATA[<span class="smalltext">
 <a href="showthread.php?tid=$lastposttid&amp;action=lastpost"><strong>$lastpostsubject</strong></a>
 <br />$lastpostdate $lastposttime<br />$lang->by <a href="member.php?action=profile&amp;uid=lastposter&amp;fid=$forum[fid]">$lastposter</a></span>
 ]]></template>
-		<template version="100.07" name="forumdisplay_nothreads"><![CDATA[<tr>
+		<template name="forumdisplay_nothreads" version="100.07"><![CDATA[<tr>
 <td colspan="$colspan" class="trow1">$lang->nothreads</td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_password"><![CDATA[<html>
+		<template name="usercp_password" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->change_password</title>
 $headerinclude
@@ -4582,7 +4584,7 @@ $usercpnav
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_email"><![CDATA[<html>
+		<template name="usercp_email" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->change_email</title>
 $headerinclude
@@ -4632,11 +4634,11 @@ $usercpnav
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="private_archive_txt_folderhead"><![CDATA[#######################################################################
+		<template name="private_archive_txt_folderhead" version="100.07"><![CDATA[#######################################################################
 $lang->folder $foldername
 #######################################################################
 ]]></template>
-		<template version="100.07" name="private_archive_txt_message"><![CDATA[$lang->subject $message[subject]
+		<template name="private_archive_txt_message" version="100.07"><![CDATA[$lang->subject $message[subject]
 $tofrom $tofromusername
 $lang->sent $senddate
 ------------------------------------------------------------------------
@@ -4644,7 +4646,7 @@ $message[message]
 ------------------------------------------------------------------------
 
 ]]></template>
-		<template version="100.07" name="private_archive_html_folderhead"><![CDATA[</table>
+		<template name="private_archive_html_folderhead" version="100.07"><![CDATA[</table>
 </td></tr></table>
 <br />
 <table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" align="center">
@@ -4654,7 +4656,7 @@ $message[message]
 <tr>
 <td class="tcat" colspan="2"><strong>$lang->folder $foldername</strong></td>
 </tr>]]></template>
-		<template version="100.07" name="private_archive_html_message"><![CDATA[<tr>
+		<template name="private_archive_html_message" version="100.07"><![CDATA[<tr>
 <td class="trow1"><strong>$lang->subject $message[subject]</strong><br /><em>$lang->to $message[tousername]<br />$lang->from $message[fromusername]<br />$lang->sent $senddate</em></td>
 </tr>
 <tr>
@@ -4663,8 +4665,8 @@ $message[message]
 <tr>
 <td class="tcat" height="3"><img src="pixel.gif" height="3" width="1"></td>
 </tr>]]></template>
-		<template version="100.07" name="private_archive_csv_message"><![CDATA[$senddate,$foldername,$message[subject],$message[tousername],$message[fromusername],$message[message]]]></template>
-		<template version="100.07" name="search_results_thread"><![CDATA[<tr>
+		<template name="private_archive_csv_message" version="100.07"><![CDATA[$senddate,$foldername,$message[subject],$message[tousername],$message[fromusername],$message[message]]]></template>
+		<template name="search_results_thread" version="100.07"><![CDATA[<tr>
 <td align="center" class="$bgcolor" width="1"><img src="$theme[imgdir]/$folder.gif"></td>
 <td align="center" class="$bgcolor" width="1">$icon</td>
 <td class="$bgcolor">$prefix <a href="showthread.php?tid=$result[tid]">$result[subject]</a>$result[multipage]</td>
@@ -4684,7 +4686,7 @@ $message[message]
 </table>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="reputation_yourpost"><![CDATA[<strong>$lang->error</strong><br />
+		<template name="reputation_yourpost" version="100.07"><![CDATA[<strong>$lang->error</strong><br />
 <blockquote>$lang->error_own_reputation</blockquote>
 <br />
 <br />
@@ -4692,7 +4694,7 @@ $message[message]
 <br />
 <br />
 <br />]]></template>
-		<template version="100.07" name="search_results_post"><![CDATA[<tr>
+		<template name="search_results_post" version="100.07"><![CDATA[<tr>
 <td align="center" class="$bgcolor" width="1"><img src="$theme[imgdir]/$folder.gif"></td>
 <td align="center" class="$bgcolor" width="1">$icon</td>
 <td class="$bgcolor"><span class="smalltext">$lang->post_thread <a href="showthread.php?tid=$result[tid]">$result[tsubject]</a><br />$lang->post_subject <a href="showthread.php?tid=$result[tid]&amp;pid=$result[pid]#pid$result[pid]">$title</a></span><br />
@@ -4703,7 +4705,7 @@ $message[message]
 <td align="center" class="$bgcolor">$result[tviews]</td>
 <td class="$bgcolor" nowrap="nowrap" align="center" align="center"><span class="smalltext">$posted</span></td>
 </tr>]]></template>
-		<template version="100.07" name="search_results_barthreads"><![CDATA[<tr>
+		<template name="search_results_barthreads" version="100.07"><![CDATA[<tr>
 <td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="$sorturl&sortby=subject&order=asc">$lang->thread</a> $orderarrow[subject]</strong></span></td>
 <td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=starter&order=asc">$lang->author</a> $orderarrow[starter]</strong></span></td>
 <td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=forum&order=asc">$lang->forum</a> $orderarrow[forum]</strong></span></td>
@@ -4712,7 +4714,7 @@ $message[message]
 <td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=lastpost&order=desc">$lang->lastpost</a> $orderarrow[lastpost]</strong></span></td>
 </tr>
 ]]></template>
-		<template version="100.07" name="reputation_add"><![CDATA[<strong>$lang->add_reputation</strong>
+		<template name="reputation_add" version="100.07"><![CDATA[<strong>$lang->add_reputation</strong>
 <form action="reputation.php" method="post">
 <input type="hidden" name="action" value="do_add">
 <input type="hidden" name="pid" value="$pid">
@@ -4728,21 +4730,21 @@ $message[message]
 <br />
 <center><input type="submit" class="submit" value="$lang->add_to_reputation"></center>
 </form>]]></template>
-		<template version="100.07" name="postbit_reputation"><![CDATA[<br />$lang->postbit_reputation $post[neglink]$post[userreputation]$post[poslink]]]></template>
-		<template version="100.07" name="usercp_latestreputations_bit"><![CDATA[<tr>
+		<template name="postbit_reputation" version="100.07"><![CDATA[<br />$lang->postbit_reputation $post[neglink]$post[userreputation]$post[poslink]]]></template>
+		<template name="usercp_latestreputations_bit" version="100.07"><![CDATA[<tr>
 <td class="$bgclass" align="center"><img src="$theme[imgdir]/$posnegimg"></td>
 <td class="$bgclass">$postlink</td>
 <td class="$bgclass">$repdate $reptime</td>
 <td class="$bgclass">$reputation[comments]</td>
 </tr>]]></template>
-		<template version="100.07" name="moderation_threadnotes_modaction"><![CDATA[<tr>
+		<template name="moderation_threadnotes_modaction" version="100.07"><![CDATA[<tr>
 <td class="$trow" align="center"><a href="users.php?action=edit&amp;uid=$modaction[uid]">$modaction[username]</a></td>
 <td class="$trow" align="center">$modaction[dateline]</td>
 <td class="$trow" align="center">$modaction[action]</td>
 <td class="$trow">$info</td>
 </tr>
 ]]></template>
-		<template version="100.07" name="misc_smilies"><![CDATA[<html>
+		<template name="misc_smilies" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->smilies_listing</title>
 $headerinclude
@@ -4768,7 +4770,7 @@ $smilies
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="search_results_barposts"><![CDATA[<tr>
+		<template name="search_results_barposts" version="100.07"><![CDATA[<tr>
 <td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="$sorturl&sortby=subject&order=asc">$lang->post</a> $orderarrow[subject]</strong></span></td>
 <td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=starter&order=asc">$lang->author</a> $orderarrow[starter]</strong></span></td>
 <td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=forum&order=asc">$lang->forum</a> $orderarrow[forum]</strong></span></td>
@@ -4776,18 +4778,18 @@ $footer
 <td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=views&order=desc">$lang->views</a></strong> $orderarrow[views]</span></td>
 <td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=dateline&order=desc">$lang->posted</a> $orderarrow[dateline]</strong></span></td>
 </tr>]]></template>
-		<template version="100.07" name="private_limitwarning"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="private_limitwarning" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1" align="center"><span class="smalltext"><strong><font color="red">$lang->reached_warning</font></strong><br />$lang->reached_warning2</span></td>
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="misc_smilies_smilie"><![CDATA[<tr>
+		<template name="misc_smilies_smilie" version="100.07"><![CDATA[<tr>
 <td class="$class" align="center"><img src="$smilie[image]"></td>
 <td class="$class">$smilie[name]</td>
 <td class="$class">$smilie[find]</td>
 </tr>]]></template>
-		<template version="100.07" name="member_emailuser_guest"><![CDATA[<tr>
+		<template name="member_emailuser_guest" version="100.07"><![CDATA[<tr>
 <td width="40%" class="trow2"><strong>$lang->your_name</strong><br /><span class="smalltext">$lang->name_note</span></td>
 <td width="60%" class="trow2"><input type="text" size="50" name="fromname" /></td>
 </tr>
@@ -4795,7 +4797,7 @@ $footer
 <td width="40%" class="trow1"><strong>$lang->your_email</strong><br /><span class="smalltext">$lang->email_note</span></td>
 <td width="60%" class="trow1"><input type="text" size="50" name="fromemail" /></td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_subscriptions"><![CDATA[<html>
+		<template name="usercp_subscriptions" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->subscriptions</title>
 $headerinclude
@@ -4840,15 +4842,15 @@ $threads
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="online_today_row"><![CDATA[<tr>
+		<template name="online_today_row" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1" width="50%"><a href="member.php?action=profile&amp;uid=$online[uid]">$username</a>$invisiblemark</td>
 <td align="center" class="trow2" width="50%">$onlinetime</td>
 </tr>]]></template>
-		<template version="100.07" name="member_profile_email"><![CDATA[<tr>
+		<template name="member_profile_email" version="100.07"><![CDATA[<tr>
 <td class="trow2"><strong>$lang->email</strong></td>
 <td class="trow2"><a href="member.php?action=emailuser&amp;uid=$memprofile[uid]">$lang->send_user_email</td>
 </tr>]]></template>
-		<template version="100.07" name="loginbox"><![CDATA[<tr>
+		<template name="loginbox" version="100.07"><![CDATA[<tr>
 <td class="trow2"><strong>$lang->username</strong></td>
 <td class="trow2"><input type="text" name="username" size="30" value="$username"></td>
 </tr>
@@ -4858,29 +4860,29 @@ $footer
 </tr>
 
 ]]></template>
-		<template version="100.07" name="misc_help_section_bit"><![CDATA[<tr>
+		<template name="misc_help_section_bit" version="100.07"><![CDATA[<tr>
 <td width="100%" class="$altbg"><a href="misc.php?action=help&hid=$helpdoc[hid]">$helpdoc[name]</a><br /><span class="smalltext">$helpdoc[description]</span></td>
 </tr>
 ]]></template>
-		<template version="100.07" name="calendar_addpublicevent"><![CDATA[<a href="calendar.php?action=addevent&amp;type=public">$lang->add_public_event</a>]]></template>
-		<template version="100.07" name="calendar_addprivateevent"><![CDATA[<a href="calendar.php?action=addevent&amp;type=private">$lang->add_private_event</a>]]></template>
-		<template version="100.07" name="index_birthdays_birthday"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdayuser[uid]">$bdayuser[username]</a>$age]]></template>
-		<template version="100.07" name="private_tracking_readmessage"><![CDATA[<tr>
+		<template name="calendar_addpublicevent" version="100.07"><![CDATA[<a href="calendar.php?action=addevent&amp;type=public">$lang->add_public_event</a>]]></template>
+		<template name="calendar_addprivateevent" version="100.07"><![CDATA[<a href="calendar.php?action=addevent&amp;type=private">$lang->add_private_event</a>]]></template>
+		<template name="index_birthdays_birthday" version="100.07"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$bdayuser[uid]">$bdayuser[username]</a>$age]]></template>
+		<template name="private_tracking_readmessage" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="$theme[imgdir]/old_pm.gif" border="0" alt=""></td>
 <td class="trow2">$readmessage[subject]</td>
 <td class="trow1"><a href="member.php?action=profile&amp;uid=$readmessage[toid]">$readmessage[tousername]</a></td>
 <td class="trow2" align="right"><span class="smalltext">$readdate<br />$readtime</span></td>
 <td class="trow1"><input type="checkbox" name="readcheck[$readmessage[pmid]]" value="yes"></td>
 </tr>]]></template>
-		<template version="100.07" name="private_tracking_unreadmessage"><![CDATA[<tr>
+		<template name="private_tracking_unreadmessage" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="$theme[imgdir]/new_pm.gif" border="0" alt=""></td>
 <td class="trow2">$unreadmessage[subject]</td>
 <td class="trow1"><a href="member.php?action=profile&amp;uid=$unreadmessage[toid]">$unreadmessage[tousername]</a></td>
 <td class="trow2" align="right"><span class="smalltext">$senddate<br />$sendtime</span></td>
 <td class="trow1"><input type="checkbox" name="unreadcheck[$unreadmessage[pmid]]" value="yes"></td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_editlists_user"><![CDATA[<input type="text" name="listuser[$uid]" size="25" value="$username"><br />]]></template>
-		<template version="100.07" name="showthread_threadedbox"><![CDATA[<br />
+		<template name="usercp_editlists_user" version="100.07"><![CDATA[<input type="text" name="listuser[$uid]" size="25" value="$username"><br />]]></template>
+		<template name="showthread_threadedbox" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead"><span class="smalltext"><strong>$lang->messages_in_thread</strong></span></td>
@@ -4890,11 +4892,11 @@ $footer
 </tr>
 </table>
 ]]></template>
-		<template version="100.07" name="showthread_multipage"><![CDATA[<tr>
+		<template name="showthread_multipage" version="100.07"><![CDATA[<tr>
 <td class="tcat" colspan="2"><span class="smalltext"> $multipage</span></td>
 </tr>]]></template>
-		<template version="100.07" name="forumbit_moderators"><![CDATA[<br />$lang->forumbit_moderated_by $moderators]]></template>
-		<template version="100.07" name="moderation_deletepoll"><![CDATA[<html>
+		<template name="forumbit_moderators" version="100.07"><![CDATA[<br />$lang->forumbit_moderated_by $moderators]]></template>
+		<template name="moderation_deletepoll" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->delete_poll</title>
 $headerinclude
@@ -4917,7 +4919,7 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="search_results"><![CDATA[<html>
+		<template name="search_results" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->search_results</title>
 $headerinclude
@@ -4935,7 +4937,7 @@ $results
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="member_profile_signature"><![CDATA[<br />
+		<template name="member_profile_signature" version="100.07"><![CDATA[<br />
 <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr><td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -4947,17 +4949,17 @@ $footer
 </tr>
 </table>
 </td></tr></table>]]></template>
-		<template version="100.07" name="newreply_modoptions"><![CDATA[<tr>
+		<template name="newreply_modoptions" version="100.07"><![CDATA[<tr>
 <td class="$bgcolor" valign="top"><strong>$lang->mod_options</strong></td>
 <td class="$bgcolor"><span class="smalltext">
 <label><input type="checkbox" name="modoptions[closethread]" value="yes" $closecheck> $lang->close_thread</label><br />
 <label><input type="checkbox" name="modoptions[stickthread]" value="yes" $stickycheck> $lang->stick_thread</label>
 </span></td>
 </tr>]]></template>
-		<template version="100.07" name="smilieinsert_getmore"><![CDATA[<tr>
+		<template name="smilieinsert_getmore" version="100.07"><![CDATA[<tr>
 <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:popupWin('misc.php?action=smilies&amp;popup=true','sminsert',240,280);">$lang->smilieinsert_getmore</a>]</strong></td>
 </tr>]]></template>
-		<template version="100.07" name="misc_smilies_popup"><![CDATA[<html>
+		<template name="misc_smilies_popup" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->smilies_listing</title>
 $headerinclude
@@ -4983,9 +4985,9 @@ $smilies
 </table>
 </body>
 </html>]]></template>
-		<template version="100.07" name="misc_smilies_popup_smilie"><![CDATA[<td class="$class" align="center"><a href="javascript:opener.addsmilie('$smilie[find]');"><img src="$smilie[image]" border="0"></a></td>
+		<template name="misc_smilies_popup_smilie" version="100.07"><![CDATA[<td class="$class" align="center"><a href="javascript:opener.addsmilie('$smilie[find]');"><img src="$smilie[image]" border="0"></a></td>
 <td class="$class">$smilie[find]</td>]]></template>
-		<template version="100.07" name="showteam"><![CDATA[<html>
+		<template name="showteam" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->forum_team</title>
 $headerinclude
@@ -4996,11 +4998,11 @@ $usergroups
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="index_birthdays"><![CDATA[<tr><td class="tcat"><strong>$lang->todays_birthdays</td></tr>
+		<template name="index_birthdays" version="100.07"><![CDATA[<tr><td class="tcat"><strong>$lang->todays_birthdays</td></tr>
 <tr>
 <td class="trow1"><span class="smalltext">$bdays</span></td>
 </tr>]]></template>
-		<template version="100.07" name="moderation_getip"><![CDATA[<html>
+		<template name="moderation_getip" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->get_post_ip</title>
 $headerinclude
@@ -5025,8 +5027,8 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="postbit_iplogged_hiden"><![CDATA[<br /><span class="smalltext">$lang->postbit_ipaddress <a href="moderation.php?action=getip&amp;pid=$post[pid]">$lang->postbit_ipaddress_logged</a></span>]]></template>
-		<template version="100.07" name="usercp_options_tppselect"><![CDATA[<tr>
+		<template name="postbit_iplogged_hiden" version="100.07"><![CDATA[<br /><span class="smalltext">$lang->postbit_ipaddress <a href="moderation.php?action=getip&amp;pid=$post[pid]">$lang->postbit_ipaddress_logged</a></span>]]></template>
+		<template name="usercp_options_tppselect" version="100.07"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">$lang->tpp</span></td>
 </tr>
 <tr>
@@ -5037,9 +5039,9 @@ $tppoptions
 </select>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="index_logoutlink"><![CDATA[<a href="member.php?action=logout&amp;uid=$mybbuser[uid]">$lang->index_logout</a> | ]]></template>
-		<template version="100.07" name="postbit_iplogged_show"><![CDATA[<br /><span class="smalltext">$lang->postbit_ipaddress $post[ipaddress]</span>]]></template>
-		<template version="100.07" name="calendar_dayview"><![CDATA[<html>
+		<template name="index_logoutlink" version="100.07"><![CDATA[<a href="member.php?action=logout&amp;uid=$mybbuser[uid]">$lang->index_logout</a> | ]]></template>
+		<template name="postbit_iplogged_show" version="100.07"><![CDATA[<br /><span class="smalltext">$lang->postbit_ipaddress $post[ipaddress]</span>]]></template>
+		<template name="calendar_dayview" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->calendar - $lang->day_view</title>
 $headerinclude
@@ -5051,7 +5053,7 @@ $events
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_changeavatar"><![CDATA[<html>
+		<template name="usercp_changeavatar" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->change_avatar</title>
 $headerinclude
@@ -5116,7 +5118,7 @@ $listoptions
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_notepad"><![CDATA[<html>
+		<template name="usercp_notepad" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->personal_notepad</title>
 $headerinclude
@@ -5154,16 +5156,16 @@ $usercpnav
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="private_messagebit_sep"><![CDATA[<tr>
+		<template name="private_messagebit_sep" version="100.07"><![CDATA[<tr>
 <td class="tcat" align="center" colspan="6" height="1"><img src="$theme[imgdir]/pixel.gif" height="1" width="1"></td>
 </tr>]]></template>
-		<template version="100.07" name="polls_editpoll_option"><![CDATA[<tr>
+		<template name="polls_editpoll_option" version="100.07"><![CDATA[<tr>
 <td class="trow">$lang->option $counter:</td>
 <td class="trow"><input type="text" name="options[$counter]" value="$option"></td>
 <td class="trow">$lang->votes</td>
 <td class="trow"><input type="text" name="votes[$counter]" value="$optionvotes"></td>
 </tr>]]></template>
-		<template version="100.07" name="member_resetpassword"><![CDATA[<html>
+		<template name="member_resetpassword" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->reset_password</title>
 $headerinclude
@@ -5195,10 +5197,10 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="forumdisplay_thread_multipage"><![CDATA[ <span class="smalltext">($lang->pages $threadpages$morelink)</span>]]></template>
-		<template version="100.07" name="forumdisplay_thread_multipage_page"><![CDATA[<a href="showthread.php?tid=$thread[tid]&amp;page=$i">$i</a> ]]></template>
-		<template version="100.07" name="forumdisplay_thread_multipage_more"><![CDATA[... <a href="showthread.php?tid=$thread[tid]&amp;page=last">$lang->pages_last</a>]]></template>
-		<template version="100.07" name="member_profile_customfields"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
+		<template name="forumdisplay_thread_multipage" version="100.07"><![CDATA[ <span class="smalltext">($lang->pages $threadpages$morelink)</span>]]></template>
+		<template name="forumdisplay_thread_multipage_page" version="100.07"><![CDATA[<a href="showthread.php?tid=$thread[tid]&amp;page=$i">$i</a> ]]></template>
+		<template name="forumdisplay_thread_multipage_more" version="100.07"><![CDATA[... <a href="showthread.php?tid=$thread[tid]&amp;page=last">$lang->pages_last</a>]]></template>
+		<template name="member_profile_customfields" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr><td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
 <tr>
@@ -5207,14 +5209,14 @@ $footer
 $customfields
 </table>
 </td></tr></table>]]></template>
-		<template version="100.07" name="member_profile_customfields_field"><![CDATA[<tr>
+		<template name="member_profile_customfields_field" version="100.07"><![CDATA[<tr>
 <td class="$bgcolor"><strong>$customfield[name]:</strong></td>
 <td class="$bgcolor">$customfieldval</td>
 </tr>
 ]]></template>
-		<template version="100.07" name="forumdisplay_usersbrowsing_user"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$user[uid]">$user[username]</a>$invisiblemark]]></template>
-		<template version="100.07" name="forumdisplay_usersbrowsing"><![CDATA[<span class="smalltext">$lang->users_browsing_forum $onlinemembers$onlinesep$invisonline$onlinesep2$guestsonline</span>]]></template>
-		<template version="100.07" name="member_lostpw"><![CDATA[<html>
+		<template name="forumdisplay_usersbrowsing_user" version="100.07"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$user[uid]">$user[username]</a>$invisiblemark]]></template>
+		<template name="forumdisplay_usersbrowsing" version="100.07"><![CDATA[<span class="smalltext">$lang->users_browsing_forum $onlinemembers$onlinesep$invisonline$onlinesep2$guestsonline</span>]]></template>
+		<template name="member_lostpw" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->lost_pw</title>
 $headerinclude
@@ -5238,7 +5240,7 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_changename"><![CDATA[<html>
+		<template name="usercp_changename" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->change_username</title>
 $headerinclude
@@ -5275,20 +5277,20 @@ $usercpnav
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="moderation_split_post"><![CDATA[<tr>
+		<template name="moderation_split_post" version="100.07"><![CDATA[<tr>
 <td class="tcat" colspan="2"><span class="smalltext"><strong>$lang->posted_by $post[username] - $postdate $posttime</strong></span></td>
 </tr>
 <tr>
 <td class="$altbg" valign="top" align="center"><input type="checkbox" name="splitpost[$post[pid]]" value="yes"></td>
 <td class="$altbg">$message</td>
 </tr>]]></template>
-		<template version="100.07" name="newreply_threadreview_more"><![CDATA[<tr>
+		<template name="newreply_threadreview_more" version="100.07"><![CDATA[<tr>
 <td class="thead" align="center"><span class="smalltext"><strong>$lang->thread_review_more</strong></span></td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_forumsubscriptions_forum_lastpost"><![CDATA[<span class="smalltext"><a href="showthread.php?tid=$lastposttid&amp;action=lastpost"><strong>$lastpostsubject</strong></a>
+		<template name="usercp_forumsubscriptions_forum_lastpost" version="100.07"><![CDATA[<span class="smalltext"><a href="showthread.php?tid=$lastposttid&amp;action=lastpost"><strong>$lastpostsubject</strong></a>
 <br />
 $lastpostdate $lastposttime (<a href="member.php?action=profile&amp;uid=$forum[lastposter]">$lastposter</a>)</span>]]></template>
-		<template version="100.07" name="misc_whoposted"><![CDATA[<html>
+		<template name="misc_whoposted" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->who_posted</title>
 $headerinclude
@@ -5309,18 +5311,18 @@ $whoposted
 </table>
 </body>
 </html>]]></template>
-		<template version="100.07" name="misc_whoposted_poster"><![CDATA[<tr>
+		<template name="misc_whoposted_poster" version="100.07"><![CDATA[<tr>
 <td class="$altbg"><a href="member.php?action=profile&amp;uid=$poster[uid]">$poster[username]</a></td>
 <td class="$altbg">$poster[posts]</td>
 </tr>]]></template>
-		<template version="100.07" name="moderation_deleteposts_post"><![CDATA[<tr>
+		<template name="moderation_deleteposts_post" version="100.07"><![CDATA[<tr>
 <td class="tcat" colspan="2"><span class="smalltext"><strong>$lang->posted_by $post[username] - $postdate $posttime</strong></span></td>
 </tr>
 <tr>
 <td class="$altbg" valign="top" align="center"><input type="checkbox" name="deletepost[$post[pid]]" value="yes"></td>
 <td class="$altbg">$message</td>
 </tr>]]></template>
-		<template version="100.07" name="moderation_deleteposts"><![CDATA[<html>
+		<template name="moderation_deleteposts" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->delete_posts</title>
 $headerinclude
@@ -5342,7 +5344,7 @@ $posts
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="moderation_split"><![CDATA[<html>
+		<template name="moderation_split" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->split_thread</title>
 $headerinclude
@@ -5382,13 +5384,13 @@ $posts
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="newreply_threadreview_post"><![CDATA[<tr>
+		<template name="newreply_threadreview_post" version="100.07"><![CDATA[<tr>
 <td class="tcat"><span class="smalltext"><strong>$lang->posted_by $post[username] - $reviewpostdate $reviewposttime</strong></span></td>
 </tr>
 <tr>
 <td class="$altbg">$reviewmessage</td>
 </tr>]]></template>
-		<template version="100.07" name="newreply_threadreview"><![CDATA[<br />
+		<template name="newreply_threadreview" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" align="center"><strong>$lang->thread_review</strong></td>
@@ -5397,7 +5399,7 @@ $reviewbits
 $reviewmore
 </table>
 ]]></template>
-		<template version="100.07" name="member_rate"><![CDATA[<html>
+		<template name="member_rate" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->rate_member</title>
 $headerinclude
@@ -5427,7 +5429,7 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="sendthread"><![CDATA[<html>
+		<template name="sendthread" version="100.07"><![CDATA[<html>
 <head>
 <title>$thread[subject] - $lang->send_thread</title>
 $headerinclude
@@ -5466,7 +5468,7 @@ $guestfields
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="sendthread_guest"><![CDATA[<tr>
+		<template name="sendthread_guest" version="100.07"><![CDATA[<tr>
 <td width="40%" class="trow2"><strong>$lang->your_name</strong><br /><span class="smalltext">$lang->name_note</span></td>
 <td width="60%" class="trow2"><input type="text" size="50" name="fromname" /></td>
 </tr>
@@ -5474,7 +5476,7 @@ $footer
 <td width="40%" class="trow1"><strong>$lang->your_email</strong><br /><span class="smalltext">$lang->email_note</span></td>
 <td width="60%" class="trow1"><input type="text" size="50" name="fromemail" /></td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_editsig"><![CDATA[<html>
+		<template name="usercp_editsig" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->edit_sig</title>
 $headerinclude
@@ -5529,8 +5531,8 @@ $signature
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="private_messagebit_denyreceipt"><![CDATA[<span class="smalltext"><a href="private.php?action=read&amp;pmid=$message[pmid]&denyreceipt=yes">$lang->deny_receipt</a></span>]]></template>
-		<template version="100.07" name="private_read"><![CDATA[<html>
+		<template name="private_messagebit_denyreceipt" version="100.07"><![CDATA[<span class="smalltext"><a href="private.php?action=read&amp;pmid=$message[pmid]&denyreceipt=yes">$lang->deny_receipt</a></span>]]></template>
+		<template name="private_read" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->viewing_pm $pm[subject]</title>
 $headerinclude
@@ -5556,12 +5558,12 @@ $message
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="forumdisplay_inlinemoderation_col"><![CDATA[<td class="tcat" align="center" width="1">&nbsp;</td>]]></template>
-		<template version="100.07" name="printthread_post"><![CDATA[<strong>$postrow[subject]</strong> - <a href="member.php?action=profile&amp;uid=$postrow[uid]"><strong>$postrow[username]</strong></a> -  <strong>$postrow[date]</strong> <strong>$postrow[time]</strong>
+		<template name="forumdisplay_inlinemoderation_col" version="100.07"><![CDATA[<td class="tcat" align="center" width="1">&nbsp;</td>]]></template>
+		<template name="printthread_post" version="100.07"><![CDATA[<strong>$postrow[subject]</strong> - <a href="member.php?action=profile&amp;uid=$postrow[uid]"><strong>$postrow[username]</strong></a> -  <strong>$postrow[date]</strong> <strong>$postrow[time]</strong>
 <p>
 $postrow[message]
 <hr size="1">]]></template>
-		<template version="100.07" name="error_nopermission"><![CDATA[$lang->error_nopermission_guest_1
+		<template name="error_nopermission" version="100.07"><![CDATA[$lang->error_nopermission_guest_1
 <ol>
 <li>$lang->error_nopermission_guest_2.</li>
 <li>$lang->error_nopermission_guest_3
@@ -5591,7 +5593,7 @@ $postrow[message]
 </table>
 </form>
 <br />]]></template>
-		<template version="100.07" name="error_nopermission_loggedin"><![CDATA[$lang->error_nopermission_user_1
+		<template name="error_nopermission_loggedin" version="100.07"><![CDATA[$lang->error_nopermission_user_1
 <ol>
 <li>$lang->error_nopermission_user_2</li>
 <li>$lang->error_nopermission_user_3</li>
@@ -5608,7 +5610,7 @@ $postrow[message]
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="private_folders"><![CDATA[<html>
+		<template name="private_folders" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->pm_folders</title>
 $headerinclude
@@ -5652,14 +5654,14 @@ $newfolders
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="forumjump_bit"><![CDATA[<option value="$forum[fid]" $optionselected>$depth $forum[name]</option>]]></template>
-		<template version="100.07" name="forumjump_special"><![CDATA[<select name="$name">
+		<template name="forumjump_bit" version="100.07"><![CDATA[<option value="$forum[fid]" $optionselected>$depth $forum[name]</option>]]></template>
+		<template name="forumjump_special" version="100.07"><![CDATA[<select name="$name">
 <option value="index" $jumpsel[default]>$lang->forumjump_select</option>
 <option value="index">--------------------</option>
 $forumjumpbits
 </select>
 ]]></template>
-		<template version="100.07" name="moderation_move"><![CDATA[<html>
+		<template name="moderation_move" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->move_copy_thread</title>
 $headerinclude
@@ -5693,7 +5695,7 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="moderation_merge"><![CDATA[<html>
+		<template name="moderation_merge" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->merge_threads</title>
 $headerinclude
@@ -5724,36 +5726,36 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="showthread_similarthreads_bit"><![CDATA[<tr>
+		<template name="showthread_similarthreads_bit" version="100.07"><![CDATA[<tr>
 <td class="trow1"><a href="showthread.php?tid=$similarthread[tid]">$similarthread[subject]</a></td>
 <td class="trow2" align="center">$similarthread[username]</td>
 <td class="trow1" align="center">$similarthread[replies]</td>
 <td class="trow2" align="right">$similarthreaddate<br />$similarthreadtime</td>
 </tr>
 ]]></template>
-		<template version="100.07" name="calendar_eventbit_public"><![CDATA[<a href="calendar.php?action=event&eid=$event[eid]" title="$event[fullsubject]"><span class="smalltext"><font color="$settings[publiceventcolor]">$event[subject]</font></span></a><br />]]></template>
-		<template version="100.07" name="calendar_eventbit_private"><![CDATA[<a href="calendar.php?action=event&eid=$event[eid]" title="$event[fullsubject]"><span class="smalltext"><font color="$settings[privateeventcolor]">$event[subject]</font></span></a><br />]]></template>
-		<template version="100.07" name="calendar_daybit_today"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
+		<template name="calendar_eventbit_public" version="100.07"><![CDATA[<a href="calendar.php?action=event&eid=$event[eid]" title="$event[fullsubject]"><span class="smalltext"><font color="$settings[publiceventcolor]">$event[subject]</font></span></a><br />]]></template>
+		<template name="calendar_eventbit_private" version="100.07"><![CDATA[<a href="calendar.php?action=event&eid=$event[eid]" title="$event[fullsubject]"><span class="smalltext"><font color="$settings[privateeventcolor]">$event[subject]</font></span></a><br />]]></template>
+		<template name="calendar_daybit_today" version="100.07"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
 <strong><a href="calendar.php?action=dayview&year=$year&month=$month&day=$i">$i</a></strong>
 <br /><span class="smalltext">$birthdays$events[$i]</span>
 </td>]]></template>
-		<template version="100.07" name="calendar_daybit"><![CDATA[<td width="14%" height="90" class="trow1" valign="top">
+		<template name="calendar_daybit" version="100.07"><![CDATA[<td width="14%" height="90" class="trow1" valign="top">
 <strong><a href="calendar.php?action=dayview&year=$year&month=$month&day=$i">$i</a></strong>
 <br /><span class="smalltext">$birthdays$events[$i]</span>
 </td>]]></template>
-		<template version="100.07" name="polls_newpoll_option"><![CDATA[<tr>
+		<template name="polls_newpoll_option" version="100.07"><![CDATA[<tr>
 <td class="trow">$lang->option $i:</td>
 <td class="trow"><input type="text" name="options[$i]" value="$option" width="250"></td>
 </tr>]]></template>
-		<template version="100.07" name="showthread_poll_option_multiple"><![CDATA[<tr>
+		<template name="showthread_poll_option_multiple" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="5%"><input type="checkbox" name="option[$number]" value="yes"></td>
 <td class="trow2" colspan="3">$option</td>
 </tr>]]></template>
-		<template version="100.07" name="showthread_poll_option"><![CDATA[<tr>
+		<template name="showthread_poll_option" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="5%"><input type="radio" name="option" value="$number"></td>
 <td class="trow1" colspan="3">$option</td>
 </tr>]]></template>
-		<template version="100.07" name="member_activate"><![CDATA[<html>
+		<template name="member_activate" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->account_activation</title>
 $headerinclude
@@ -5785,7 +5787,7 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="smilieinsert"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" align="center">
+		<template name="smilieinsert" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" align="center">
 <tr><td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
 <tr>
@@ -5801,8 +5803,8 @@ $smilies
 $getmore
 </table>
 </td></tr></table>]]></template>
-		<template version="100.07" name="misc_buddypopup_user_sendpm"><![CDATA[<a href="private.php?action=send&amp;uid=$buddy[uid]" target="_blank">$lang->pm_buddy</a>&nbsp;&nbsp;]]></template>
-		<template version="100.07" name="usercp_editlists"><![CDATA[<html>
+		<template name="misc_buddypopup_user_sendpm" version="100.07"><![CDATA[<a href="private.php?action=send&amp;uid=$buddy[uid]" target="_blank">$lang->pm_buddy</a>&nbsp;&nbsp;]]></template>
+		<template name="usercp_editlists" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->edit_lists</title>
 $headerinclude
@@ -5878,7 +5880,7 @@ $newlist
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="online_iplookup"><![CDATA[<html>
+		<template name="online_iplookup" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->ip_lookup</title>
 $headerinclude
@@ -5897,13 +5899,13 @@ $lang->ip $ip $lang->resolves_to $host</td>
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="online_row"><![CDATA[<tr>
+		<template name="online_row" version="100.07"><![CDATA[<tr>
 <td class="trow1">$onlinename$userip</td>
 <td align="center" class="trow2">$onlinetime</td>
 <td class="trow1" width="50%">$locationname</td>
 </tr>]]></template>
-		<template version="100.07" name="online_row_ip"><![CDATA[<br /><span class="smalltext">$lang->ip $user[ip] <a href="online.php?action=iplookup&ip=$user[ip]">$lang->lookup</a></span>]]></template>
-		<template version="100.07" name="calendar_editevent"><![CDATA[<html>
+		<template name="online_row_ip" version="100.07"><![CDATA[<br /><span class="smalltext">$lang->ip $user[ip] <a href="online.php?action=iplookup&ip=$user[ip]">$lang->lookup</a></span>]]></template>
+		<template name="calendar_editevent" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->calendar - $lang->edit_event</title>
 $headerinclude
@@ -5972,23 +5974,23 @@ $yearopts
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="postbit_offline"><![CDATA[<font color="#C7C7C7"><strong>$lang->postbit_status_offline</strong></font>]]></template>
-		<template version="100.07" name="postbit_editedby"><![CDATA[<p align="right"><span class="smalltext">$post[editnote] <a href="member.php?action=profile&amp;uid=$post[edituid]">$post[editusername]</a>.</span></p>
+		<template name="postbit_offline" version="100.07"><![CDATA[<font color="#C7C7C7"><strong>$lang->postbit_status_offline</strong></font>]]></template>
+		<template name="postbit_editedby" version="100.07"><![CDATA[<p align="right"><span class="smalltext">$post[editnote] <a href="member.php?action=profile&amp;uid=$post[edituid]">$post[editusername]</a>.</span></p>
 
 ]]></template>
-		<template version="100.07" name="member_register_requiredfields"><![CDATA[<fieldset class="trow2">
+		<template name="member_register_requiredfields" version="100.07"><![CDATA[<fieldset class="trow2">
 <legend><strong>$lang->additional_info</strong></legend>
 <table cellspacing="0" cellpadding="$theme[tablespace]">
 $requiredfields
 </table>
 </fieldset>]]></template>
-		<template version="100.07" name="member_register_customfield"><![CDATA[<tr>
+		<template name="member_register_customfield" version="100.07"><![CDATA[<tr>
 <td><span class="smalltext">$profilefield[name]</span></td>
 <tr>
 <tr>
 <td>$code</td>
 </tr>]]></template>
-		<template version="100.07" name="error"><![CDATA[<html>
+		<template name="error" version="100.07"><![CDATA[<html>
 <head>
 <title>$title</title>
 $headerinclude
@@ -6007,22 +6009,22 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="index_whosonline_memberbit"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$user[uid]">$user[username]</a>$invisiblemark]]></template>
-		<template version="100.07" name="member_profile_away"><![CDATA[<tr>
+		<template name="index_whosonline_memberbit" version="100.07"><![CDATA[$comma<a href="member.php?action=profile&amp;uid=$user[uid]">$user[username]</a>$invisiblemark]]></template>
+		<template name="member_profile_away" version="100.07"><![CDATA[<tr>
 <td class="trow1" align="center">
 <strong>$lang->away_note</strong><br />
 <span class="smalltext"><em>$lang->away_reason $awayreason</em></span><br />
 $lang->away_since $awaydate &nbsp;&nbsp;&nbsp; $lang->away_returns $returndate
 </td>
 </tr>]]></template>
-		<template version="100.07" name="forumdisplay_moderatedby_moderator"><![CDATA[$modcomma<a href="member.php?action=profile&amp;uid=$moderator[uid]">$moderator[username]</a>]]></template>
-		<template version="100.07" name="forumdisplay_moderatedby"><![CDATA[<span class="smalltext">$lang->moderated_by <strong>$modlist</strong></span><br />]]></template>
-		<template version="100.07" name="forumbit_depth2_cat"><![CDATA[<tr>
+		<template name="forumdisplay_moderatedby_moderator" version="100.07"><![CDATA[$modcomma<a href="member.php?action=profile&amp;uid=$moderator[uid]">$moderator[username]</a>]]></template>
+		<template name="forumdisplay_moderatedby" version="100.07"><![CDATA[<span class="smalltext">$lang->moderated_by <strong>$modlist</strong></span><br />]]></template>
+		<template name="forumbit_depth2_cat" version="100.07"><![CDATA[<tr>
 <td class="tcat">&nbsp;</td>
 <td class="tcat" colspan="5"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><span class="smalltext">$forum[description]$subforums</span></td></tr>]]></template>
-		<template version="100.07" name="forumbit_depth1_cat_subforum"><![CDATA[<tr>
+		<template name="forumbit_depth1_cat_subforum" version="100.07"><![CDATA[<tr>
 <td class="tcat" colspan="6"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><span class="smalltext">$forum[description]</span></td></tr>$forums]]></template>
-		<template version="100.07" name="misc_help"><![CDATA[<html>
+		<template name="misc_help" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->help_docs</title>
 $headerinclude
@@ -6033,19 +6035,19 @@ $sections
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="posticons"><![CDATA[<tr>
+		<template name="posticons" version="100.07"><![CDATA[<tr>
 <td class="trow1"><strong>$lang->post_icon</strong><br /><span class="smalltext"><input type="radio" name="icon" value="-1">$lang->no_post_icon</span></td>
 <td class="trow1" valign="top">$iconlist</td>
 </tr>
 ]]></template>
-		<template version="100.07" name="previewpost"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+		<template name="previewpost" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>$lang->post_preview</strong></td>
 </tr>
 $postbit
 </table>
 <br />]]></template>
-		<template version="100.07" name="member_profile_avatar"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" class="tborder">
+		<template name="member_profile_avatar" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" class="tborder">
 <tr>
 <td>
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -6059,7 +6061,7 @@ $postbit
 </td>
 </tr>
 </table>]]></template>
-		<template version="100.07" name="misc_help_helpdoc"><![CDATA[<html>
+		<template name="misc_help_helpdoc" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->help_docs</title>
 $headerinclude
@@ -6079,7 +6081,7 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_options_pppselect"><![CDATA[<tr>
+		<template name="usercp_options_pppselect" version="100.07"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">$lang->ppp</span></td>
 </tr>
 <tr>
@@ -6090,7 +6092,7 @@ $pppoptions
 </select>
 </td>
 </tr>]]></template>
-		<template version="100.07" name="usercp_forumsubscriptions"><![CDATA[<html>
+		<template name="usercp_forumsubscriptions" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->forum_subscriptions</title>
 $headerinclude
@@ -6118,20 +6120,20 @@ $forums
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="member_register_stylebit"><![CDATA[<option value="$style[sid]">$style[name]</option>]]></template>
-		<template version="100.07" name="usercp_options_stylebit"><![CDATA[<option value="$style[sid]" $selected>$style[name]</option>]]></template>
-		<template version="100.07" name="forumdisplay_password_wrongpass"><![CDATA[<tr>
+		<template name="member_register_stylebit" version="100.07"><![CDATA[<option value="$style[sid]">$style[name]</option>]]></template>
+		<template name="usercp_options_stylebit" version="100.07"><![CDATA[<option value="$style[sid]" $selected>$style[name]</option>]]></template>
+		<template name="forumdisplay_password_wrongpass" version="100.07"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="2"><strong>$lang->wrong_forum_password</strong></td>
 </tr>
 ]]></template>
-		<template version="100.07" name="forumdisplay_thread_lastpost"><![CDATA[<span class="smalltext">$lastpostdate $lastposttime<br />
+		<template name="forumdisplay_thread_lastpost" version="100.07"><![CDATA[<span class="smalltext">$lastpostdate $lastposttime<br />
 <a href="showthread.php?action=lastpost&amp;tid=$thread[tid]">$lang->lastpost</a>: <a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$thread[tid]">$lastposter</a></span>]]></template>
-		<template version="100.07" name="private_empty_folder"><![CDATA[<tr>
+		<template name="private_empty_folder" version="100.07"><![CDATA[<tr>
 <td class="trow1"><strong>$foldername</strong></td>
 <td class="trow1" align="center">$foldercount</td>
 <td class="trow1" align="center"><input type="checkbox" name="empty[$fid]" value="yes"></td>
 </tr>]]></template>
-		<template version="100.07" name="misc_imcenter_msn"><![CDATA[<html>
+		<template name="misc_imcenter_msn" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->msn_messenger_center</title>
 $headerinclude
@@ -6153,7 +6155,7 @@ $headerinclude
 </table>
 </body>
 </html>]]></template>
-		<template version="100.07" name="misc_imcenter_yahoo"><![CDATA[<html>
+		<template name="misc_imcenter_yahoo" version="100.07"><![CDATA[<html>
 <head>
 <title>$lang->yahoo_center</title>
 $headerinclude
@@ -6180,7 +6182,7 @@ $headerinclude
 </table>
 </body>
 </html>]]></template>
-		<template version="100.07" name="usercp_editsig_current"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
+		<template name="usercp_editsig_current" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -6193,7 +6195,7 @@ $headerinclude
 </table>
 </td></tr></table>
 <br />]]></template>
-		<template version="100.07" name="usercp_editsig_preview"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
+		<template name="usercp_editsig_preview" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
@@ -6206,7 +6208,7 @@ $headerinclude
 </table>
 </td></tr></table>
 <br />]]></template>
-		<template version="100.07" name="member_resendactivation"><![CDATA[<html>
+		<template name="member_resendactivation" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->resend_activation</title>
 $headerinclude
@@ -6230,13 +6232,13 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="nav"><![CDATA[
+		<template name="nav" version="100.07"><![CDATA[
 <div class="navigation">
 $nav$activesep$activebit
 </div>]]></template>
-		<template version="100.07" name="nav_bit"><![CDATA[<a href="$navbit[url]">$navbit[name]</a>$sep]]></template>
-		<template version="100.07" name="nav_bit_active"><![CDATA[<span class="active">$navbit[name]</span>]]></template>
-		<template version="100.07" name="moderation_inline_deletethreads"><![CDATA[<html>
+		<template name="nav_bit" version="100.07"><![CDATA[<a href="$navbit[url]">$navbit[name]</a>$sep]]></template>
+		<template name="nav_bit_active" version="100.07"><![CDATA[<span class="active">$navbit[name]</span>]]></template>
+		<template name="moderation_inline_deletethreads" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->delete_threads</title>
 $headerinclude
@@ -6261,8 +6263,8 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="postbit_inlinecheck"><![CDATA[| <input type="checkbox" name="inlinemod_$post[pid]" id="inlinemod_$post[pid]" value="1" onclick="javascript:selectinline($post[pid], this);" $inlinecheck  />]]></template>
-		<template version="100.07" name="moderation_inline_movethreads"><![CDATA[<html>
+		<template name="postbit_inlinecheck" version="100.07"><![CDATA[| <input type="checkbox" name="inlinemod_$post[pid]" id="inlinemod_$post[pid]" value="1" onclick="javascript:selectinline($post[pid], this);" $inlinecheck  />]]></template>
+		<template name="moderation_inline_movethreads" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->move_threads</title>
 $headerinclude
@@ -6289,7 +6291,7 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="moderation_inline_mergeposts"><![CDATA[<html>
+		<template name="moderation_inline_mergeposts" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->merge_posts</title>
 $headerinclude
@@ -6317,7 +6319,7 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="moderation_inline_splitposts"><![CDATA[<html>
+		<template name="moderation_inline_splitposts" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->split_thread</title>
 $headerinclude
@@ -6351,7 +6353,7 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="member_register_regimage"><![CDATA[<br />
+		<template name="member_register_regimage" version="100.07"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>$lang->image_verification</strong></legend>
 <table cellspacing="0" cellpadding="$theme[tablespace]">
@@ -6364,7 +6366,7 @@ $footer
 </tr>
 </table>
 </fieldset>]]></template>
-		<template version="100.07" name="error_inline"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder"><tr>
+		<template name="error_inline" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder"><tr>
 <td class="thead"><strong>$title</strong></td>
 </tr>
 <td class="trow1">
@@ -6375,7 +6377,7 @@ $errorlist
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="member_register"><![CDATA[<html>
+		<template name="member_register" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->registration</title>
 $headerinclude
@@ -6488,7 +6490,7 @@ $regimage
 $footer
 </body>
 </html>]]></template>
-		<template version="100.07" name="global_bannedwarning"><![CDATA[<br />
+		<template name="global_bannedwarning" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1" align="center"><font color="red"><strong>$lang->banned_warning</strong><br />
@@ -6498,6 +6500,6 @@ $lang->banned_warning3: $banlift<br />
 </tr>
 </table>
 <br />]]></template>
-		<template version="100.07" name="htmldoctype"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
+		<template name="htmldoctype" version="100.07"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 	</templates>
 </theme>

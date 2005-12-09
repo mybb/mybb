@@ -8,45 +8,55 @@ body {
  background-color: #FFFFFF;
 }
 
-a:link, a:visited, a:active {
-color: #000000;
-text-decoration: none;
+a:link {
+	color: #026CB1;
+	text-decoration: none;
 }
-
-a:hover {
-text-decoration: underline;
+a:visited {
+	color: #026CB1;
+	text-decoration: none;
+}
+a:hover, a:active {
+	color: #000;
+	text-decoration: underline;
 }
 
 /* table classes */
 .header {
- color: #FFFFFF;
- background: #013c74 url("thead_bg.gif");
- font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
- font-weight: bold;
- font-size: 11px;
- vertical-align: center;
+	background: #026CB1 url(thead_bg.gif) top left repeat-x;
+	color: #ffffff;
+}
+
+.header a:link {
+	color: #ffffff;
+	text-decoration: none;
+}
+.header a:visited {
+	color: #ffffff;
+	text-decoration: none;
+}
+.header a:hover, .header a:active {
+	color: #ffffff;
+	text-decoration: underline;
 }
 
 .subheader {
- border: outset 1px;
- color: #000000;
- background: #013c74 url("tsubheader_bg.gif");
- font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
- font-weight: bold;
- font-size: 11px;
- vertical-align: middle;
+	background: #ADCBE7;
+	color: #000000;
+	font-size: 11px;
+	font-weight: bold;
+/* border: outset 1px; */
 }
 
 .subtext {
  color: #000000;
- font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
- font-weight: bold;
  font-size: 11px;
+ font-weight: bold;
  vertical-align: middle;
 }
 
 .bordercolor {
- background-color: #000000;
+ background-color: #81A2C4;
 }
 
 .tback {
@@ -60,19 +70,17 @@ table {
 }
 
 .altbg1 {
- background-color: #efefef;
+ background-color: #f5f5f5;
 }
 
 .altbg2 {
- background-color: #f7f7f7;
+ background-color: #EFEFEF;
 }
-
 
 .nav {
  border: outset 1px;
  color: #000000;
- background: #EEEEEE url("thead_bg.gif");
- font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+	background: #026CB1 url(thead_bg.gif) top left repeat-x;
  font-weight: bold;
  font-size: 11px;
 }
@@ -95,13 +103,11 @@ table {
 
 .lnav body {
  color: #000000;
- font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
  font-weight: bold;
  font-size: 9px;
 }
 
 .lnav td {
-	font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
 	font-size: 9px;
 }
 
@@ -114,21 +120,19 @@ table {
 
 .lnavhead {
  color: #FFFFFF;
- background: #013c74 url("thead_bg.gif");
- font-family: Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
+	background: #026CB1 url(thead_bg.gif) top left repeat-x;
  font-weight: bold;
  font-size: 11px
 }
 
 .lnavitem {
- background-color: #efefef;
- font-family: Verdana;
+ background-color: #f5f5f5;
  color: #000000;
  font-size: 11px;
 }
 
 .lnavbordercolor {
- background-color: #000000;
+	background: #81A2C4;
 }
 
 /* control panel header */
@@ -150,15 +154,15 @@ table {
 #header-links {
  border-top: 1px solid #000000;
  border-bottom: 1px solid #000000;
- background : #4874a3;
+ background : url(thead_bg.gif) top repeat-x #035488;
  padding-top: 4px;
  padding-bottom: 4px;
- color:  #e5ecf4;
+ color:  #ffffff;
  text-align: right;
 }
 
 #header-links a {
- color:  #e5ecf4;
+ color:  #ffffff;
  padding-left: 10px;
  padding-right: 10px;
  padding-top: 4px;
@@ -166,9 +170,9 @@ table {
 }
 
 #header-links a:hover {
- background : #618ab4 ;
+ background : #016DB1 ;
  color : #ffffff;
- text-decoration: none;
+ text-decoration: underline;
 }
 
 /* navigation styles */
@@ -257,9 +261,11 @@ font-size: 11px;
 ins {
 	background: #dfd;
 	text-decoration: none;
+	padding: 2px;
 }
 
 del {
 	background: #fdd;
 	text-decoration: none;
+	padding: 2px;
 }
