@@ -427,11 +427,14 @@ function usergroup_permissions($gid=0)
 				{
 					$permbit = "";
 				}
-				if(in_array($perm, $groupzerogreater) && $access == 0)
+				if(in_array($perm, $groupzerogreater))
 				{
-					$usergroup[$perm] = 0;
+					if($access == 0)
+					{
+						$usergroup[$perm] = 0;
+					}
 				}
-				elseif($access > $permbit)
+				elseif($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit)
 				{
 					$usergroup[$perm] = $access;
 				}
@@ -541,7 +544,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 					if($perm != "fid" && $perm != "gid" && $perm != "pid")
 					{
 						$permbit = $forumpermissions[$perm];
-						if($access > $permbit || ($access == "yes" && $permbit == "no"))
+						if($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit)
 						{
 							$forumpermissions[$perm] = $access;
 						}
