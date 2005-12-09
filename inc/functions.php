@@ -917,7 +917,7 @@ function serverload()
 	{
 		$load = @file_get_contents("/proc/loadavg");
 		$serverload = explode(" ", $load);
-		$serverload = round($serverload[0], 4);
+		$serverload[0] = round($serverload[0], 4);
 		if(!$serverload)
 		{
 			$load = @exec("uptime");
