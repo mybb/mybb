@@ -132,11 +132,11 @@ else
 	echo "<tr><td class=\"bordercolor\">\n";
 	echo "<table border=\"0\" cellspacing=\"1\" cellpadding=\"4\" width=\"100%\">\n";
 	echo "<tr>\n";
-	echo "<td class=\"header\" align=\"center\">".$lang->administration_login."</td>\n";
-	echo "</tr>";
-	echo "<tr>\n";
 	echo "<td id=\"logo\"><h1><span class=\"hidden\">MyBB</span></h1></td>\n";
 	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"header\" align=\"center\">".$lang->administration_login."</td>\n";
+	echo "</tr>";
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" align=\"center\">".$lang->invalid_admin."</td>\n";
 	echo "</tr>";

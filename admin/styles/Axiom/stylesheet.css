@@ -25,6 +25,7 @@ a:hover, a:active {
 .header {
 	background: #026CB1 url(thead_bg.gif) top left repeat-x;
 	color: #ffffff;
+	font-weight: bold;
 }
 
 .header a:link {

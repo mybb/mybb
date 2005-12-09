@@ -154,7 +154,7 @@ table {
 #header-links {
  border-top: 1px solid #000000;
  border-bottom: 1px solid #000000;
- background : url(thead_bg.gif) top repeat-x #035488;
+ background: #026CB1 url(thead_bg.gif) top repeat-x;
  padding-top: 4px;
  padding-bottom: 4px;
  color:  #ffffff;
