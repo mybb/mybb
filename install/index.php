@@ -11,7 +11,7 @@
 error_reporting(E_ALL & ~E_NOTICE);
 
 // The version number of MyBB we are installing
-$myver = "1.0 Preview Release 2";
+$myver = "1.0";
 
 require "../inc/class_core.php";
 $mybb = new MyBB;
