@@ -137,7 +137,7 @@ function domecode($message, $username)
 function fixjavascript($message)
 {
 	$message = preg_replace("#javascript:#i", "java script:", $message);
-	// this patch provided by Ryan (try to remove XSS Cross-site scripting issues).
+	/* This patch provided by Ryan (try to remove XSS Cross-site scripting issues). */
 	$message = preg_replace("#(a)(lert)#ie", "'&#'.ord($1).';$2'", $message);
 	$message = preg_replace("#onmouseover#i", "&#111;nmouseover", $message);
 	$message = preg_replace("#onmouseout#i", "&#111;nmouseout", $message);
@@ -160,7 +160,10 @@ function dobadwords($message)
 		reset($badwordcache);
 		foreach($badwordcache as $bid => $badword)
 		{
-			if(!$badword['replacement']) $badword['replacement'] = "*****";
+			if(!$badword['replacement'])
+			{
+				$badword['replacement'] = "*****";
+			}
 			$badword['badword'] = str_replace("\\", "\\\\", $badword['badword']);
 			$message = preg_replace("#".$badword['badword']."#i", $badword['replacement'], $message);
 		}
