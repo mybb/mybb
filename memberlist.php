@@ -119,7 +119,7 @@ while($users = $db->fetch_array($query))
 	}
 	$users['location'] = $users[fid1];
 	$users['location'] = htmlspecialchars_uni(stripslashes($users['location']));
-	if($users['hideemail'] != "yes")
+	if($users['hideemail'] == "yes")
 	{
 		$useremail = "";
 	}
