@@ -1272,7 +1272,7 @@ elseif($mybb->input['action'] == "profile")
 			{
 				$bdayformat = fixmktime($mybb->settings['dateformat'], $membday[2]);
 				$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
-				$membday = gmdate($bdayformat, $membday);
+				$membday = date($bdayformat, $membday);
 			}
 			$lang->membdayage = sprintf($lang->membdayage, get_age($memprofile['birthday']));
 			$membdayage = $lang->membdayage;

@@ -213,6 +213,7 @@ class databaseEngine {
 		return mysql_list_tables($database);
 	}
 
+	// Check if a table exists in the database
 	function table_exists($table)
 	{
 		$err = $this->error_reporting;
@@ -236,7 +237,7 @@ class databaseEngine {
 		global $db;
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
-		$this->query("SHOW COLUMNS FROM $table LIKE '$field'");
+		$query = $this->query("SHOW COLUMNS FROM $table LIKE '$field'");
 		$exists = $this->num_rows($query);
 		$this->error_reporting = $err;
 		if($exists > 0)
