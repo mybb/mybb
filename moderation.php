@@ -917,6 +917,17 @@ switch($mybb->input['action'])
 			}
 			markreports($post['pid'], "post");
 		}
+		
+		// Update the subject of the first post in the new thread
+		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$newtid' ORDER BY dateline ASC LIMIT 1");
+		$newthread = $db->fetch_array($query);
+		$db->query("UPDATE ".TABLE_PREFIX."posts SET subject='$newsubject' WHERE pid='$newthread[pid]' LIMIT 1");
+
+		// Update the subject of the first post in the old thread
+		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 1");
+		$oldthread = $db->fetch_array($query);
+		$db->query("UPDATE ".TABLE_PREFIX."posts SET subject='$thread[subject]' WHERE pid='$oldthread[pid]' LIMIT 1");
+
 		update_first_post($newtid);
 		update_first_post($tid);
 		logmod($modlogdata, $lang->thread_split);
@@ -1394,6 +1405,17 @@ switch($mybb->input['action'])
 			}
 			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]'");
 		}
+
+		// Update the subject of the first post in the new thread
+		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$newtid' ORDER BY dateline ASC LIMIT 1");
+		$newthread = $db->fetch_array($query);
+		$db->query("UPDATE ".TABLE_PREFIX."posts SET subject='$newsubject' WHERE pid='$newthread[pid]' LIMIT 1");
+
+		// Update the subject of the first post in the old thread
+		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 1");
+		$oldthread = $db->fetch_array($query);
+		$db->query("UPDATE ".TABLE_PREFIX."posts SET subject='$thread[subject]' WHERE pid='$oldthread[pid]' LIMIT 1");
+
 		logmod($modlogdata, $lang->thread_split);
 		markreports($plist, "posts");
 		updatethreadcount($tid);
