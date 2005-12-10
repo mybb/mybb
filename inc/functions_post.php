@@ -156,7 +156,8 @@ function dobadwords($message)
 		$badwordcache = $cache->read("badwords");
 	}
 
-	if(is_array($badwordcache)) {
+	if(is_array($badwordcache))
+	{
 		reset($badwordcache);
 		foreach($badwordcache as $bid => $badword)
 		{
