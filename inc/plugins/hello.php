@@ -33,7 +33,7 @@ function hello_deactivate()
 
 function hello_world($page)
 {
-	$page = str_replace("<div id=\"content\">", "<div id=\"content\">Hello World!<br />This is a sample MyBB Plugin (which can be disabled!) that displays this message on all pages.<br />", $page);
+	$page = str_replace("<div id=\"content\">", "<div id=\"content\"><p>Hello World!<br />This is a sample MyBB Plugin (which can be disabled!) that displays this message on all pages.</p>", $page);
 	return $page;
 }
 ?>
