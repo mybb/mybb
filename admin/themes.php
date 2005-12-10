@@ -289,7 +289,7 @@ if($mybb->input['action'] == "do_import")
 			$templatevalue = addslashes($template['value']);
 			$templateversion = $template['attributes']['version'];
 			$time = time();
-			$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('','$templatename','$templatevalue','$templateset','$templateversion','','$time')");
+			$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$templateset','$templateversion','','$time')");
 		}
 	}
 
