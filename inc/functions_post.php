@@ -100,7 +100,7 @@ function domycode($message, $allowimgcode="yes")
 	if($allowimgcode)
 	{
 		$message = preg_replace("#\[img\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$1$2\" border=\"0\" alt=\"\" />", $message);
-		$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$3$4\" style=\"border: 0; width: $1; height: $2;\" alt=\"\" />", $message);
+		$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$3$4\" style=\"border: 0; width: $1px; height: $2px;\" alt=\"\" />", $message);
 	}
 	$message = doautourl($message);
 	/* Used to be <hr size="1"> but users should get the chance to set the size in their CSS */
