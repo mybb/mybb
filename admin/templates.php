@@ -225,7 +225,7 @@ if($mybb->input['action'] == "do_replace") {
 					$updatedtemplate = array(
 						"template" => addslashes($newtemplate)
 						);
-					$db->update_array(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$template['tid']."'");
+					$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$template['tid']."'");
 					echo "$lang->search_updated $template[title]".
 						makelinkcode($lang->search_edit, "templates.php?action=edit&tid=".$template[tid]).
 						"<br>";
