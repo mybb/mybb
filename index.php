@@ -359,10 +359,12 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						$expcolimage = "collapse_collapsed.gif";
 						$expdisplay = "display: none;";
+						$expaltext = "[-]";
 					}
 					else
 					{
 						$expcolimage = "collapse.gif";
+						$expaltext = "[+]";
 					}
 					if($bgcolor == "trow2")
 					{

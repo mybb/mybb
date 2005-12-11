@@ -155,12 +155,14 @@ function expandCollapse(id) {
 			saveCollapsed(id);
 			if(collapseImage) {
 				collapseImage.src = collapseImage.src.replace("collapse_collapsed.gif","collapse.gif");
+				collapseImage.alt = collapseImage.alt.replace("[-]","[+]");
 			}
 		} else {
 			hideDiv(id+"_e");
 			saveCollapsed(id, 1);
 			if(collapseImage) {
 				collapseImage.src = collapseImage.src.replace("collapse.gif","collapse_collapsed.gif");
+				collapseImage.alt = collapseImage.alt.replace("[+]","[-]");
 			}
 		}
 	}

@@ -2528,7 +2528,7 @@ $footer
 <thead>
 <tr>
 <td class="thead" colspan="5">
-<div class="expcolimage"><a href="javascript:expandCollapse('cat_$forum[fid]');"><img src="$theme[imgdir]/$expcolimage" id="cat_$forum[fid]_collapseimg" border="0" alt="[-]" /></a></div>
+<div class="expcolimage"><a href="javascript:expandCollapse('cat_$forum[fid]');"><img src="$theme[imgdir]/$expcolimage" id="cat_$forum[fid]_collapseimg" border="0" alt="$expaltext" /></a></div>
 <div><strong><a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><div class="smalltext">$forum[description]</div></div>
 </td>
 </tr>

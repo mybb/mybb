@@ -45,7 +45,7 @@ function remove_avatars($uid, $exclude="")
 	{
 		while($file = @readdir($dir))
 		{
-			if(preg_match("#avatar_".$uid."#", $file) && is_file($mybb->settings['avataruploadpath']."/".$file) && $file != $exclude)
+			if(preg_match("#avatar_".$uid."\.#", $file) && is_file($mybb->settings['avataruploadpath']."/".$file) && $file != $exclude)
 			{
 				@unlink($mybb->settings['avataruploadpath']."/".$file);
 			}
