@@ -193,7 +193,7 @@ else
 		}
 		$query1 = $db->query("SELECT uid FROM ".TABLE_PREFIX."groupleaders WHERE uid='$user[uid]' AND gid='$gid'");
 		$isleader = $db->fetch_array($query1);
-		$user['username'] = formatname($user['username'], $user['usergroup']);
+		$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 		if($isleader['uid'])
 		{
 			$leader = $lang->leader;
