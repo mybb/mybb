@@ -181,6 +181,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$message = "[quote]\n$quoted[message]\n[/quote]";
 		}
+		// Remove [attachment=x] from quoted posts.
+		$message = preg_replace("#\[attachment=([0-9]+?)\]#i", "", $message); 
 	}
 	if(!$pid && !$mybb->input['previewpost'])
 	{
