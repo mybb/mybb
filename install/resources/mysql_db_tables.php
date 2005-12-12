@@ -587,7 +587,7 @@ $tables[] = "CREATE TABLE mybb_users (
   email varchar(220) NOT NULL default '',
   postnum int(10) NOT NULL default '0',
   avatar varchar(200) NOT NULL default '',
-  avatartype smallint(10) NOT NULL default '0',
+  avatartype varchar(10) NOT NULL default '0',
   usergroup smallint unsigned NOT NULL default '0',
   additionalgroups varchar(200) NOT NULL default '',
   displaygroup smallint unsigned NOT NULL default '0',
