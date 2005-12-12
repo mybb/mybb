@@ -12,8 +12,16 @@
 function remove_attachment($pid, $posthash, $aid)
 {
 	global $db, $mybb;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE aid='$aid' AND (posthash='$posthash' OR (pid='$pid' AND pid!='0'))");
-	$attachment = $db->fetch_array($query);
+	if($posthash != "")
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE aid='$aid' AND posthash='$posthash');
+		$attachment = $db->fetch_array($query);
+	}
+	else
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE aid='$aid' AND pid='$pid'");
+		$attachment = $db->fetch_array($query);
+	}
 	$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='".$attachment['aid']."'");
 	@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 	if($attachment['thumbnail'])
@@ -25,7 +33,14 @@ function remove_attachment($pid, $posthash, $aid)
 function remove_attachments($pid, $posthash="")
 {
 	global $db, $mybb;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE posthash='$posthash' OR (pid='$pid' AND pid!='0')");
+	if($posthash != "")
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE posthash='$posthash');
+	}
+	else
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE pid='$pid'");
+	}
 	while($attachment = $db->fetch_array($query))
 	{
 		$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='".$attachment['aid']."'");
