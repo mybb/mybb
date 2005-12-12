@@ -165,7 +165,7 @@ function dobadwords($message)
 			{
 				$badword['replacement'] = "*****";
 			}
-			$badword['badword'] = str_replace("\\", "\\\\", $badword['badword']);
+			$badword['badword'] = preg_quote($badword['badword']);
 			$message = preg_replace("#".$badword['badword']."#i", $badword['replacement'], $message);
 		}
 	}
