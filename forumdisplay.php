@@ -275,19 +275,19 @@ else
 {
 	$datecutsql = "";
 }
-switch($mybb->input['order'])
+switch(strtolower($mybb->input['order']))
 {
 	case "asc":
 		$sortordernow = "ASC";
         $ordersel['asc'] = "selected=\"selected\"";
 		$oppsort = $lang->desc;
-		$oppsortnext = "DESC";
+		$oppsortnext = "desc";
 		break;
 	default:
         $sortordernow = "DESC";
 		$ordersel['desc'] = "selected=\"selected\"";
         $oppsort = $lang->asc;
-		$oppsortnext = "ASC";
+		$oppsortnext = "asc";
 }
 
 switch($mybb->input['sortby'])
