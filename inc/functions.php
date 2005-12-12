@@ -429,7 +429,7 @@ function usergroup_permissions($gid=0)
 				}
 				if(in_array($perm, $groupzerogreater))
 				{
-					if($perm == 0)
+					if($access == 0)
 					{
 						$usergroup[$perm] = 0;
 					}
