@@ -432,13 +432,14 @@ function usergroup_permissions($gid=0)
 					if($access == 0)
 					{
 						$usergroup[$perm] = 0;
+						$zerogreater = 1;
 					}
 				}
-				elseif($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit)
+				if(($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) && !$zerogreater)
 				{
 					$usergroup[$perm] = $access;
 				}
-
+				$zerogreater = 0;
 			}
 		}
 	}
