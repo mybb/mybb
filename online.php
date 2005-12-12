@@ -535,15 +535,16 @@ function show($user)
 		case "portal":
 			$locationname = $lang->viewing_portal;
 			break;
-		// default
-		default:
-			$locationname = sprintf($lang->unknown_location, $user['location']);
-			break;
 	}
 	if($user['nopermission'] == 1)
 	{
 		$locationname = $lang->viewing_noperms;
 	}
+	if(!$locationname)
+	{
+		$locationname = sprintf($lang->unknown_location, $user['location']);
+	}
+
 	if($user['uid'] > 0)
 	{
 		if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes")
