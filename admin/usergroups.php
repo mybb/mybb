@@ -417,7 +417,7 @@ if($mybb->input['action'] == "edit")
 		tablesubheader($lang->perms_joinable);
 		makeyesnocode($lang->can_join_group, "joinable", $joinable);
 		makeyesnocode($lang->moderate_joins, "moderate", $moderate);
-		makeyesnocode($lang->can_display_group, "candisplaygroup", $usergroup['candisplaygroupo']);
+		makeyesnocode($lang->can_display_group, "candisplaygroup", $usergroup['candisplaygroup']);
 	}
 
 	tablesubheader($lang->perms_viewing);
