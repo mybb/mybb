@@ -1255,8 +1255,8 @@ $footer
 </tr>]]></template>
 		<template name="header_welcomeblock_member_admin" version="100.07"><![CDATA[ &mdash; <a href="$settings[bburl]/$config[admindir]/index.php">$lang->welcome_admin</a>]]></template>
 		<template name="forumdisplay_newthread" version="100.07"><![CDATA[<a href="newthread.php?fid=$fid"><img src="$theme[imglangdir]/newthread.gif" border="0" alt="$lang->post_thread" /></a>]]></template>
-		<template name="showthread_threaded_bitactive" version="100.07"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><strong>$post[subject]</strong> <span class="smalltext">- $lang->by $post[username] - $postdate $posttime</span><br />]]></template>
-		<template name="showthread_threaded_bit" version="100.07"><![CDATA[<img src="blank.gif" width="$indentsize" height="1"><a href="showthread.php?tid=$tid&amp;pid=$post[pid]&mode=threaded">$post[subject]</a> <span class="smalltext">- $lang->by $post[username] - $postdate, $posttime</span><br />]]></template>
+		<template name="showthread_threaded_bitactive" version="100.07"><![CDATA[<div style="margin-left: {$indentsize}px;"><strong>$post[subject]</strong> <span class="smalltext">- $lang->by $post[username] - $postdate $posttime</span></div>]]></template>
+		<template name="showthread_threaded_bit" version="100.07"><![CDATA[<div style="margin-left: {$indentsize}px;"><a href="showthread.php?tid=$tid&amp;pid=$post[pid]&mode=threaded">$post[subject]</a> <span class="smalltext">- $lang->by $post[username] - $postdate, $posttime</span></div>]]></template>
 		<template name="showthread_poll" version="100.07"><![CDATA[<form action="polls.php" method="get">
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="$poll[pid]" />
