@@ -31,8 +31,13 @@ function upgrade4_dbchanges()
 
 	$db->query("UPDATE ".TABLE_PREFIX."users SET style='0' WHERE style='-1';");
 	$db->query("UPDATE ".TABLE_PREFIX."users SET displaygroup='0' WHERE displaygroup='-1';");
-	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET uid='0' WHERE uid='-1';");
 	$db->query("UPDATE ".TABLE_PREFIX."forums SET style='0' WHERE style='-1';");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='0'");
+	$test = $db->fetch_array($query);
+	if(!isset($test['uid']))
+	{
+		$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET uid='0' WHERE uid='-1';");
+	}
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP messageindex;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP subjectindex;");

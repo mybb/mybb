@@ -10,7 +10,7 @@
 error_reporting(E_ALL & ~E_NOTICE);
 
 // The version number of MyBB we are installing
-$myver = "1.0 Preview Release 2";
+$myver = "1.0";
 
 require "../inc/class_core.php";
 $mybb = new MyBB;
@@ -42,49 +42,6 @@ $db->connect($config['hostname'], $config['username'], $config['password']);
 $db->select_db($config['database']);
 
 
-// Set if we need to revert templates and settings for this version
-/*
-$reverttemplates = 1;
-$revertalltemplates = 1;
-$rebuilddbsettings = 1;
-$rebuildsettingsfile = 1;
-$revertallthemes = 1;
-*/
-$valid = 0;
-/*
-
-NOTE: This code has been commented out because of the new login system.
-
-if($do == "login")
-{
-	$query = $db->query("SELECT uid, password, usergroup, salt, loginkey FROM ".TABLE_PREFIX."users WHERE username='$adminuser'");
-	$failcheck = 1;
-	$md5pw = md5($adminpass);
-}
-else
-{
-	$query = $db->query("SELECT uid, password, usergroup FROM ".TABLE_PREFIX."users WHERE uid='$mybbadmin[uid]' AND password='$mybbadmin[password]'");
-}
-$user = $db->fetch_array($query);
-$query = $db->query("SELECT cancp FROM ".TABLE_PREFIX."usergroups WHERE gid='".$user['usergroup']."'");
-$ausergroup = $db->fetch_array($query);
-if($ausergroup[cancp] == "yes")
-{
-	setcookie("mybbadmin[uid]", $user['uid']);
-	setcookie("mybbadmin[password]", $user['password']);
-	$valid = 1;
-}
-
-if($valid != 1)
-{
-	$output->print_header("Please Login", 0);
-	$contents = "<p>To continue with the upgrade process we need to verify that you are indeed an administrator of these forums. Please enter your username and password below.</p>\n";
-	$contents .= "<form method=\"post\" action=\"upgrade.php\"><input type=\"hidden\" name=\"do\" value=\"login\" /><p><b>Username: </b><br /><input type=\"text\" name=\"adminuser\" /></p><p><b>Password: </b><br /><input type=\"password\" name=\"adminpass\" /></p><p><input type=\"submit\" value=\"Login\"></form>\n";
-	$output->print_contents($contents);
-	$output->print_footer("intro");
-	exit;
-}
-*/
 if(file_exists("lock"))
 {
 	$output->print_error("The installer is currently locked, please remove 'lock' from the install directory to continue");

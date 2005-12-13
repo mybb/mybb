@@ -278,7 +278,7 @@ elseif($mybb->input['action'] == "do_send")
 	{
 		error($lang->error_pmnomessage);
 	}
-	$query = $db->query("SELECT u.uid, u.username, u.email, u.usergroup, u.pmnotify, u.pmpopup, u.receivepms, u.ignorelist, u.lastactive, u.language, COUNT(pms.pmid) AS pms_total, g.canusepms, g.pmquota, g.cancp  FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g LEFT JOIN ".TABLE_PREFIX."privatemessages pms ON (pms.uid=u.uid) WHERE u.username='".addslashes($mybb->input['to'])."' AND g.gid=u.usergroup GROUP BY u.uid");
+	$query = $db->query("SELECT u.uid, u.username, u.email, u.usergroup, u.pmnotify, u.pmpopup, u.receivepms, u.ignorelist, u.lastactive, u.language, COUNT(pms.pmid) AS pms_total, g.canusepms, g.pmquota, g.cancp  FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g) LEFT JOIN ".TABLE_PREFIX."privatemessages pms ON (pms.uid=u.uid) WHERE u.username='".addslashes($mybb->input['to'])."' AND g.gid=u.usergroup GROUP BY u.uid");
 	$touser = $db->fetch_array($query);
 
 	if(!$touser['uid'] && !$mybb->input['saveasdraft'])
