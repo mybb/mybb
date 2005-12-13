@@ -145,15 +145,16 @@ if($mybb->input['action'] == "do_register")
 		$errors[] = $lang->error_noemail;
 		$bademail = 1;
 	}
+	$email = strtolower($email);
 	$bannedemails = explode(" ", $mybb->settings['emailban']);
 	if(is_array($bannedemails) && !$bademail)
 	{
-		while(list($key, $bannedemail) = each($bannedemails))
+		foreach($bannedemails as $bannedemail)
 		{
-			$bannedemail = trim($bannedemail);
+			$bannedemail = strtolower(trim($bannedemail));
 			if($bannedemail != "")
 			{
-				if(strstr("$email", $bannedemail) != "")
+				if(strstr($email, $bannedemail) != "")
 				{
 					$errors[] = $lang->error_bannedemail;
 				}
