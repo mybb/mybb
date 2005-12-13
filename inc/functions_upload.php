@@ -12,7 +12,7 @@
 function remove_attachment($pid, $posthash, $aid)
 {
 	global $db, $mybb;
-	if($posthash != "")
+	if($posthash != "" && !$pid)
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE aid='$aid' AND posthash='$posthash'");
 		$attachment = $db->fetch_array($query);
@@ -33,7 +33,7 @@ function remove_attachment($pid, $posthash, $aid)
 function remove_attachments($pid, $posthash="")
 {
 	global $db, $mybb;
-	if($posthash != "")
+	if($posthash != "" && !$pid)
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE posthash='$posthash'");
 	}
