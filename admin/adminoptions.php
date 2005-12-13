@@ -37,7 +37,7 @@ if($mybb->input['action'] == "do_updateprefs")
 		"notes" => addslashes($mybb->input['notes']),
 		"cpstyle" => addslashes($mybb->input['cpstyle']),
 		);
-	if($adminoptions['uid'])
+	if(isset($adminoptions['uid']))
 	{
 		$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='".$user['uid']."'");
 	}
