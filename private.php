@@ -327,9 +327,9 @@ elseif($mybb->input['action'] == "do_send")
 	}
 	if($touser['pmquota'] != "0" && $touser['pms_total'] >= $touser['pmquota'] && $touser['cancp'] != "yes" && $mybb->usergroup['cancp'] != "yes" && !$mybb->input['saveasdraft'])
 	{
-		if($touser['language'] != "" && $lang->languageExists($touser['language']))
+		if(trim($touser['language']) != "" && $lang->languageExists($touser['language']))
 		{
-			$uselang = $touser['language'];
+			$uselang = trim($touser['language']);
 		}
 		elseif($mybb->settings['bblanguage'])
 		{
@@ -339,7 +339,7 @@ elseif($mybb->input['action'] == "do_send")
 		{
 			$uselang = "english";
 		}
-		if($uselang == $mybb->settings['bblanguage'])
+		if($uselang == $mybb->settings['bblanguage'] || !$uselang)
 		{
 			$emailsubject = $lang->emailsubject_reachedpmquota;
 			$emailmessage = $lang->email_reachedpmquota;
@@ -362,19 +362,19 @@ elseif($mybb->input['action'] == "do_send")
 	$lastpm = $db->fetch_array($query);
 	if($touser['pmnotify'] == "yes" && $touser['lastactive'] > $lastpm['dateline'] && !$mybb->input['saveasdraft'])
 	{
-		if($touser['language'] != "" && $lang->languageExists($touser['language']))
+		if(trim($touser['language']) != "" && $lang->languageExists($touser['language']))
 		{
-			$uselang = $touser['language'];
+			$uselang = trim($touser['language']);
 		}
 		elseif($mybb->settings['bblanguage'])
 		{
-			$uselang = $mybb->settings['bblanguage'];
+			$uselang = $mybb->settings['language'];
 		}
 		else
 		{
 			$uselang = "english";
 		}
-		if($uselang == $mybb->settings['bblanguage'])
+		if($uselang == $mybb->settings['bblanguage'] || !$uselang)
 		{
 			$emailsubject = $lang->emailsubject_newpm;
 			$emailmessage = $lang->email_newpm;
