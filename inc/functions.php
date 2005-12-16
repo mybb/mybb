@@ -395,6 +395,35 @@ function validateforum($fid)
 }
 
 //
+// Build the usergroup permissions for a specific user
+//
+function user_permissions($uid=0)
+{
+	global $mybb, $cache, $groupscache, $usercache;
+	
+	if($uid == 0)
+	{
+		$uid = $mybb->user['uid'];
+	}
+
+	if($uid != $mybb->user['uid'])
+	{
+		if($usercache[$uid])
+		{
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+			$usercache[$uid] = $db->fetch_array($query);
+		}
+		$gid = $usercache[$uid]['usergroup'].",".$usercache[$uid]['additionalgroups'];
+		$groupperms = usergroup_permissions($gid);
+	}
+	else
+	{
+		$groupperms = $mybb->usergroup;
+	}
+	return $groupperms;
+}
+
+//
 // Build the usergroup permissions for a user in group(s)
 //
 function usergroup_permissions($gid=0)

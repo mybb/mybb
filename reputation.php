@@ -18,9 +18,11 @@ $lang->load("reputation");
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='".intval($mybb->input['pid'])."'");
 $post = $db->fetch_array($query);
+
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$post[uid]."'");
 $user = $db->fetch_array($query);
-$usergroup = getuserpermissions($post['uid']);
+
+$usergroup = user_permissions($post['uid']);
 
 if(!$post['pid'])
 {
@@ -37,6 +39,7 @@ if($permissions['canview'] != "yes")
 }
 $query = $db->query("SELECT g.usereputationsystem FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g WHERE u.uid='".$post[uid]."' AND g.gid=u.usergroup");
 $usergroup = $db->fetch_array($query);
+
 if($usergroup['usereputationsystem'] != "yes" || $mybb->usergroup['cangivereputations'] != "yes")
 {
 	error($lang->error_reputationdisabled);
