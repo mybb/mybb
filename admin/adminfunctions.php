@@ -176,7 +176,7 @@ function makelinkcode($text, $url, $newwin=0, $class="")
 function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxlength="", $autocomplete=1)
 {
 	$bgcolor = getaltbg();
-	$value = stripslashes($value);
+	//$value = stripslashes($value);
 	$value = htmlspecialchars_uni($value);
 	if($autocomplete != 1)
 	{
@@ -202,13 +202,13 @@ function makepasswordcode($title, $name, $value="", $size="25", $autocomplete=1)
 function maketextareacode($title, $name, $value="", $rows="4", $columns="40")
 {
 	$bgcolor = getaltbg();
-	$value = stripslashes($value);
+	//$value = stripslashes($value);
 	$value = htmlspecialchars_uni($value);
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><textarea name=\"$name\" rows=\"$rows\" cols=\"$columns\">$value</textarea></td>\n</tr>\n";
 }
 function makehiddencode($name, $value="")
 {
-	$value = stripslashes($value);
+	//$value = stripslashes($value);
 	$value = htmlspecialchars_uni($value);
 	echo "<input type=\"hidden\" name=\"$name\" value=\"$value\">\n";
 }
