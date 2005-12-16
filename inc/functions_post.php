@@ -578,8 +578,8 @@ function makepostbit($post, $pmprevann=0)
 			{
 				if(!$pmprevann)
 				{
-					$post['neglink'] = "<a href=\"javascript:reputation(".$post['pid'].", 'n');\"><img src=\"".$theme['imgdir']."/rep_neg.gif\" border=\"0\"></a>";
-					$post['poslink'] = "<a href=\"javascript:reputation(".$post['pid'].", 'p');\"><img src=\"".$theme['imgdir']."/rep_pos.gif\" border=\"0\"></a>";
+					$post['neglink'] = "<a href=\"javascript:reputation(".$post['pid'].", 'n');\">[-]</a> ";
+					$post['poslink'] = " <a href=\"javascript:reputation(".$post['pid'].", 'p');\">[+]</a>";
 				}
 				else
 				{

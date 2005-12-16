@@ -1199,36 +1199,22 @@ function logmod($data, $action="")
 	$db->query("INSERT INTO ".TABLE_PREFIX."moderatorlog (uid,dateline,fid,tid,action,ipaddress) VALUES ('".$mybb->user['uid']."','$time','".$data['fid']."','".$data['tid']."','$action','".$session->ipaddress."')");
 }
 
-function getreputation($reputation, $alt="")
+function getreputation($reputation)
 {
 	global $theme;
+	
 	if(strpos(" ".$reputation, "-"))
-	{ // negative
-		$img = "repbit_neg.gif";
-		$reputation = str_replace("-", "", $reputation);
-	}
-	elseif($reputation == 0)
-	{ // balanced
-		$img = "repbit_bal.gif";
-	}
-	else
 	{
-		$img = "repbit_pos.gif"; // positive
+		return "<span style=\"color: red;\">".$reputation."</span>";
 	}
-	$numimages = intval($reputation/10); // 10 points = 1 image
-	if($numimages > 10)
+	else if($reputation > 0)
 	{
-		$numimages = 10;
+		return "<span style=\"color: green;\">".$reputation."</span>";
 	}
-	if(!$numimages)
+	else if($reputation == 0)
 	{
-		$numimages = 1;
+		return "0";
 	}
-	for($i=1;$i<=$numimages;$i++)
-	{
-		$rep .= "<img src=\"".$theme['imgdir']."/$img\" alt=\"$alt\" />";
-	}
-	return $rep;
 }
 
 function getip() {

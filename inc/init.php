@@ -90,5 +90,7 @@ $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostre
 
 /* URL Definitions */
 define(PROFILE_URL, "member.php?action=profile&amp;uid={uid}");
+define(FORUM_URL, "forumdisplay.php?fid={fid}");
+define(THREAD_URL, "showthread.php?tid={tid}");
 
 ?>
