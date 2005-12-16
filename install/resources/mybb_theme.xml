@@ -3805,7 +3805,7 @@ $header
 <br />
 <center><input type="submit" class="submit" name="submit" value="$lang->login"></center>
 <input type="hidden" name="action" value="do_login">
-<input type="hidden" name="url" value="$HTTP_REFERER" />
+<input type="hidden" name="url" value="$redirect_url" />
 </form>
 $footer
 </body>

@@ -992,7 +992,16 @@ elseif($mybb->input['action'] == "resetpassword")
 else if($mybb->input['action'] == "login")
 {
 	$plugins->run_hooks("member_login");
-
+	
+	if($mybb->input['url'])
+	{
+		$redirect_url = $mybb->input['url'];
+	}
+	else if($_SERVER['HTTP_REFERER'])
+	{
+		$redirect_url = $_SERVER['HTTP_REFERER'];
+	}
+	
 	eval("\$login = \"".$templates->get("member_login")."\";");
 	outputpage($login);
 }
