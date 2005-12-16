@@ -435,7 +435,7 @@ function usergroup_permissions($gid=0)
 						$zerogreater = 1;
 					}
 				}
-				if(($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) && !$zerogreater)
+				if(($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) && $zerogreater != 1)
 				{
 					$usergroup[$perm] = $access;
 				}
@@ -489,7 +489,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 		}
 		else
 		{
-			$gid = $mybb->user['usergroup'].",".$mybbuser['additionalgroups'];
+			$gid = $mybb->user['usergroup'].",".$mybb->user['additionalgroups'];
 			$groupperms = $mybbgroup;
 		}
 	}
@@ -524,7 +524,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 //
 function fetch_forum_permissions($fid, $gid, $groupperms)
 {
-	global $groupscache, $forumcache, $fpermcache;
+	global $groupscache, $forumcache, $fpermcache, $mybb;
 	$groups = explode(",", $gid);
 	if(!$fpermcache[$fid]) // This forum has no custom or inherited permisssions so lets just return the group permissions
 	{
@@ -559,121 +559,6 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 		$forumpermissions = $groupperms;
 	}
 	return $forumpermissions;
-}
-
-//
-// REDUNDANT CODE - TO BE REMOVED
-//
-function getpermissions($fid=0, $uid=0, $gid="", $parentslist="")
-{
-	die("USING OLD CODE - getpmerissions");
-	global $db, $mybb, $mybbuser, $usercache, $permscache, $usergroups, $mybbgroup, $groupscache, $cache;
-	if(!$groupscache)
-	{
-		$groupscache = $cache->read("usergroups");
-	}
-	$uid = (!$uid) ? $mybb->user['uid'] : $uid;
-	if(!$gid)
-	{
-		if($uid == 0)
-		{
-			$gid = 1;
-		}
-		else
-		{
-			$usercache[$uid]=($uid==$mybb->user['uid'])?$mybbuser:$uid;
-			$usercache[$uid]=($uid==$mybb->user['uid'])?$mybb:$uid;
-			if(!$usercache[$uid])
-			{
-				$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
-				$user = $db->fetch_array($query);
-				$usercache[$user['uid']] = $user;
-				$gid = $user['usergroup'];
-			}
-			$gid = ($usercache[$uid]) ? $usercache[$uid]['usergroup'] : $gid;
-		}
-	}
-	if(!$permissioncache[$gid][$fid])
-	{
-		if(!$fid)
-		{
-			if(!$usergroups[$gid])
-			{
-				if($mybb->user['uid'] && $gid == $mybbuser['usergroup'])
-				{
-					$usergroups[$gid] = $mybbgroup;
-				}
-				else
-				{
-					$usergroups[$gid] = $groupscache[$gid];
-				}
-			}
-			return $usergroups[$gid];
-		}
-		else
-		{
-			$parentslist=(!$parentslist)?getparentlist($fid):$parentslist;
-			$sql = buildparentlist($fid, "fid", "OR", $parentslist);
-			$query = $db->query("SELECT *, INSTR(',$parentslist,', CONCAT(',', fid, ',') ) AS useperm FROM ".TABLE_PREFIX."forumpermissions WHERE gid='$gid' AND $sql ORDER BY useperm LIMIT 1");
-			$perms = $db->fetch_array($query);
-			if(!$perms['pid'])
-			{
-				if(!$usergroups[$gid])
-				{
-					if($gid == $mybbuser['usergroup'])
-					{
-						$usergroups[$gid] = $mybbgroup;
-					}
-					else
-					{
-						//$perms=$db->fetch_array($db->query("SELECT * FROM usergroups WHERE gid='$gid'"));
-						$usergroups[$gid] = $groupscache[$gid];	
-					}
-					$perms = $usergroups[$gid];
-
-				}
-				else
-				{
-					$perms = $usergroups[$gid];
-				}
-			}
-		}
-		$permscache[$gid][$fid] = $perms;
-	}
-	else
-	{
-		return $permscache[$gid][$fid];
-	}
-	return $perms;
-}
-
-//
-// REDUNDANT CODE - TO BE REMOVED
-//
-function getuserpermissions($uid="", $gid="")
-{
-	global $mybb, $mybbuser, $usergroups, $usercache, $db, $groupscache;
-	if($uid == $mybb->user['uid'])
-	{
-		$gid = $mybb->user['usergroup'];
-	}
-	else
-	{
-		if($uid)
-		{
-			if($usercache[$uid])
-			{
-				$gid = $usercache[$uid]['usergroup'];
-			}
-			else
-			{
-				$user = $db->fetch_array($db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'"));
-				$usercache[$user['uid']] = $user;
-				$gid = $user['usergroup'];
-			}
-		}
-	}
-	return $groupscache[$gid];
 }
 
 //
