@@ -67,13 +67,6 @@ function newPM() {
 	}
 }
 
-function deletePost(pid) {
-	confirmReturn = confirm(quickdelete_confirm);
-	if(confirmReturn == true) {
-		window.location = "editpost.php?action=deletepost&pid="+pid+"&delete=yes";
-	}
-}
-
 function deleteEvent(eid) {
 	confirmReturn = confirm(deleteevent_confirm);
 	if(confirmReturn == true) {
@@ -107,10 +100,6 @@ function checkAll(formName) {
 			element.checked = formName.allbox.checked;
 		}
 	}
-}
-
-function reportPost(pid) {
-	popupWin("report.php?pid=" + pid, "reportPost", 400, 300)
 }
 
 function reputation(pid, type) {
@@ -269,11 +258,6 @@ function inlineunset() {
 	ob = getElemRefs("inline_go");
 	ob.value = go_text+" ("+inlinecount+")";
 	unsetcookie(cookiename);
-}
-
-function resetConfirmation()
-{
-		return confirm("Are you sure you wish to reset the form back to it's default details?\n\nAny changes you've made will be lost.");
 }
 
 function unHTMLchars(text)
