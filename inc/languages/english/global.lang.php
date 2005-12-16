@@ -195,7 +195,7 @@ $l['postbit_qdelete'] = "Delete this post";
 $l['postbit_profile'] = "View authors profile";
 $l['postbit_pm'] = "Send the author a private message";
 $l['postbit_edit'] = "Edit this post";
-$l['postbit_qquote'] = "Quote this post in a quick reply"
+$l['postbit_qquote'] = "Quote this post in a quick reply";
 
 $l['forumjump'] = "Forum Jump:";
 $l['forumjump_select'] = "Please select one:";
