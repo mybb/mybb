@@ -122,7 +122,7 @@ function parsepage($contents)
 	{
 		if(substr($_SERVER['PHP_SELF'], -strlen("private.php")) != "private.php")
 		{
-			$contents = str_replace("<body", "<body onload=\"Javascript:newPM()\"", $contents);
+			$contents = str_replace("<body", "<body onload=\"Javascript:MyBB.newPM()\"", $contents);
 		}
 	}
 	return $contents;

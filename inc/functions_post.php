@@ -578,8 +578,8 @@ function makepostbit($post, $pmprevann=0)
 			{
 				if(!$pmprevann)
 				{
-					$post['neglink'] = "<a href=\"javascript:reputation(".$post['pid'].", 'n');\">[-]</a> ";
-					$post['poslink'] = " <a href=\"javascript:reputation(".$post['pid'].", 'p');\">[+]</a>";
+					$post['neglink'] = "<a href=\"javascript:MyBB.reputation(".$post['pid'].", 'n');\">[-]</a> ";
+					$post['poslink'] = " <a href=\"javascript:MyBB.reputation(".$post['pid'].", 'p');\">[+]</a>";
 				}
 				else
 				{

@@ -488,7 +488,7 @@ $footer
 		<template name="header_welcomeblock_member" version="100.07"><![CDATA[	<span style="float:right;">$lang->welcome_current_time</span>
 		$lang->welcome_back (<a href="$settings[bburl]/usercp.php"><strong>$lang->welcome_usercp</strong></a>$admincplink &mdash; <a href="$settings[bburl]/member.php?action=logout&amp;uid=$mybbuser[uid]">$lang->welcome_logout</a>)<br />
 				<span class="links">
-					<a href="#" onclick="popupWin('misc.php?action=buddypopup', 'buddyList', 170, 300);">$lang->welcome_open_buddy_list</a>
+					<a href="#" onclick="MyBB.popupWindow('misc.php?action=buddypopup', 'buddyList', 170, 300);">$lang->welcome_open_buddy_list</a>
 				</span>
 				<a href="search.php?action=getnew">$lang->welcome_newposts</a> | <a href="search.php?action=getdaily">$lang->welcome_todaysposts</a> | <a href="private.php">$lang->welcome_pms</a> $lang->welcome_pms_usage]]></template>
 		<template name="postbit_online" version="100.07"><![CDATA[<a href="online.php"><font color="#15A018"><strong>$lang->postbit_status_online</strong></font></a>]]></template>
@@ -514,7 +514,7 @@ $adminpolloptions
 <option value="mergeposts">$lang->merge_posts</option>
 <option value="removeredirects">$lang->remove_redirects</option>
 $approveunapprovethread
-x</select>
+</select>
 $gobutton
 </form>
 </td>
@@ -524,7 +524,9 @@ $gobutton
 </td>
 </tr>
 </table>]]></template>
-		<template name="showthread_inlinemoderation" version="100.07"><![CDATA[<form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
+		<template name="showthread_inlinemoderation" version="100.07"><![CDATA[
+<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
+<form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="$tid" />
 <span class="smalltext"><strong>$lang->inline_post_moderation</strong></span>
 <select name="action">
@@ -535,11 +537,12 @@ $gobutton
 <option value="multiunapproveposts">$lang->inline_unapprove_posts</option>
 </select>
 <input type="submit" class="submit" name="go" value="$lang->go ($inlinecount)" name="inline_go" id="inline_go" />&nbsp;
-<input type="button" onclick="javascript:inlineunset();" value="$lang->clear" />
+<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="$lang->clear" />
 </form>
 <script language="JavaScript" type="text/javascript">
 var go_text = "$lang->inline_go";
-begininline($tid, "thread");
+var inlineType = "thread";
+var inlineId = $tid;
 </script>]]></template>
 		<template name="showthread" version="100.07"><![CDATA[<html>
 <head>
@@ -1278,7 +1281,8 @@ $polloptions
 </tr>
 </table>
 </form>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<form action="moderation.php" method="post">
+		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
+		<form action="moderation.php" method="post">
 <input type="hidden" name="fid" value="$fid">
 <table cellspacing="0" cellpadding="0" border="0" align="right">
 <tr><td class="tborder">
@@ -1296,7 +1300,7 @@ $polloptions
 <option value="multiunapprovethreads">$lang->unapprove_threads</option>
 </select>
 <input type="submit" class="submit" name="go" value="$lang->inline_go ($inlinecount)" name="inline_go" id="inline_go" />&nbsp;
-<input type="button" onclick="javascript:inlineunset();" value="$lang->clear" />
+<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="$lang->clear" />
 </td>
 </tr>
 </table>
@@ -1305,7 +1309,8 @@ $polloptions
 </form>
 <script language="JavaScript" type="text/javascript">
 var go_text = "$lang->inline_go";
-begininline($fid, "forum");
+var inlineType = "forum";
+var inlineId = $fid;
 </script>
 <br /><br /><br />]]></template>
 		<template name="reputation_samepost" version="100.07"><![CDATA[<strong>$lang->error</strong><br />
@@ -1781,7 +1786,7 @@ $usercpnav
 <td class="tcat" colspan="2" width="40%"><span class="smalltext"><strong>$lang->attachments_attachment</strong></span></td>
 <td class="tcat" width="40%"><span class="smalltext"><strong>$lang->attachments_post</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>$lang->date_uploaded</strong></span></td>
-<td class="tcat" width="1"><input type="checkbox" name="allbox" onclick="javascript:checkAll(this.form);" /></td>
+<td class="tcat" width="1"><input type="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></td>
 </tr>
 $attachments
 </table>
@@ -2135,19 +2140,19 @@ $sendemail
 </tr>
 <tr>
 <td class="trow1"><strong>$lang->icq_number</strong></td>
-<td class="trow1"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=icq&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[icq]</a></td>
+<td class="trow1"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&imtype=icq&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[icq]</a></td>
 </tr>
 <tr>
 <td class="trow2"><strong>$lang->aim_screenname</strong></td>
-<td class="trow2"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=aim&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[aim]</a></td>
+<td class="trow2"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&imtype=aim&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[aim]</a></td>
 </tr>
 <tr>
 <td class="trow1"><strong>$lang->yahoo_id</strong></td>
-<td class="trow1"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=yahoo&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[yahoo]</a></td>
+<td class="trow1"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&imtype=yahoo&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[yahoo]</a></td>
 </tr>
 <tr>
 <td class="trow2"><strong>$lang->msn</strong></td>
-<td class="trow2"><a href="javascript:;" onclick="popupWin('misc.php?action=imcenter&imtype=msn&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[msn]</a></td>
+<td class="trow2"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&imtype=msn&amp;uid=$uid', 'imcenter', 450, 300);">$memprofile[msn]</a></td>
 </tr>
 </table>
 </td></tr></table>
@@ -2961,7 +2966,7 @@ $todayrows
 $footer
 </body>
 </html>]]></template>
-		<template name="forumdisplay_thread_modbit" version="100.07"><![CDATA[<td class="$bgcolor" align="center" nowrap="nowrap"><input type="checkbox" name="inlinemod_$multitid" id="inlinemod_$multitid" value="1" onclick="javascript:selectinline($multitid, this);" $inlinecheck  /></td>]]></template>
+		<template name="forumdisplay_thread_modbit" version="100.07"><![CDATA[<td class="$bgcolor" align="center" nowrap="nowrap"><input type="checkbox" name="inlinemod_$multitid" id="inlinemod_$multitid" value="1" $inlinecheck  /></td>]]></template>
 		<template name="index_pms" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr><td class="thead" colspan="2"><a href="private.php"><strong>$lang->private_messages</strong></a></td></tr>
 <tr>
@@ -3387,7 +3392,7 @@ $limitwarning
 <td class="tcat" align="center" width="35%"><span class="smalltext"><strong>$lang->message_title</strong></span></td>
 <td class="tcat" align="center" width="30%" nowrap="nowrap"><span class="smalltext"><strong>$sender</strong></span></td>
 <td class="tcat" align="right"  width="20%" nowrap="nowrap"><span class="smalltext"><strong>$lang->date_sent</strong></span></td>
-<td class="tcat" align="center" width="5%" nowrap="nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" value="Check All" onClick="checkAll(this.form)"></span></td>
+<td class="tcat" align="center" width="5%" nowrap="nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" value="Check All" onClick="MyBB.checkAll(this.form)"></span></td>
 </tr>
 $messagelist
 <tr>
@@ -4044,7 +4049,7 @@ $forums
 <td align="center" class="$bgcolor" width="2%">$icon</td>
 <td class="$bgcolor">$prefix $gotounread<a href="showthread.php?tid=$thread[tid]">$thread[subject]</a>$thread[multipage]</td>
 <td align="center" class="$bgcolor">$thread[profilelink]</td>
-<td align="center" class="$bgcolor"><a href="javascript:whoPosted($thread[tid]);">$thread[replies]</a></td>
+<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($thread[tid]);">$thread[replies]</a></td>
 <td align="center" class="$bgcolor">$thread[views]</td>
 $rating
 <td class="$bgcolor" nowrap="nowrap">$lastpost</td>
@@ -4675,7 +4680,7 @@ $message[message]
 <td class="$bgcolor">$prefix <a href="showthread.php?tid=$result[tid]">$result[subject]</a>$result[multipage]</td>
 <td align="center" class="$bgcolor"><a href="member.php?action=profile&amp;uid=$result[uid]">$result[username]</a></td>
 <td class="$bgcolor"><a href="forumdisplay.php?fid=$result[fid]">$result[forumname]</a></td>
-<td align="center" class="$bgcolor"><a href="javascript:whoPosted($result[tid]);">$result[replies]</a></td>
+<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($result[tid]);">$result[replies]</a></td>
 <td align="center" class="$bgcolor">$result[views]</td>
 <td class="$bgcolor" width="1" nowrap="nowrap">
 <table cellpadding="0" cellspacing="0" width="100%">
@@ -4704,7 +4709,7 @@ $message[message]
 <table width="100%"><tr><td><span class="smalltext"><em>$prev</em></span></td></tr></table></td>
 <td align="center" class="$bgcolor"><a href="member.php?action=profile&amp;uid=$result[uid]">$result[username]</a></td>
 <td class="$bgcolor"><a href="forumdisplay.php?fid=$result[fid]">$result[forumname]</a></td>
-<td align="center" class="$bgcolor"><a href="javascript:whoPosted($result[tid]);">$result[treplies]</a></td>
+<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($result[tid]);">$result[treplies]</a></td>
 <td align="center" class="$bgcolor">$result[tviews]</td>
 <td class="$bgcolor" nowrap="nowrap" align="center" align="center"><span class="smalltext">$posted</span></td>
 </tr>]]></template>
@@ -4960,7 +4965,7 @@ $footer
 </span></td>
 </tr>]]></template>
 		<template name="smilieinsert_getmore" version="100.07"><![CDATA[<tr>
-<td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:popupWin('misc.php?action=smilies&amp;popup=true','sminsert',240,280);">$lang->smilieinsert_getmore</a>]</strong></td>
+<td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('misc.php?action=smilies&amp;popup=true','sminsert',240,280);">$lang->smilieinsert_getmore</a>]</strong></td>
 </tr>]]></template>
 		<template name="misc_smilies_popup" version="100.07"><![CDATA[<html>
 <head>
@@ -6266,7 +6271,7 @@ $loginbox
 $footer
 </body>
 </html>]]></template>
-		<template name="postbit_inlinecheck" version="100.07"><![CDATA[| <input type="checkbox" name="inlinemod_$post[pid]" id="inlinemod_$post[pid]" value="1" onclick="javascript:selectinline($post[pid], this);" $inlinecheck  />]]></template>
+		<template name="postbit_inlinecheck" version="100.07"><![CDATA[| <input type="checkbox" name="inlinemod_$post[pid]" id="inlinemod_$post[pid]" value="1" $inlinecheck  />]]></template>
 		<template name="moderation_inline_movethreads" version="100.07"><![CDATA[<html>
 <head>
 <title>$settings[bbname] - $lang->move_threads</title>
