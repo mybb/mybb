@@ -662,6 +662,12 @@ function makepostbit($post, $pmprevann=0)
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
+		if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || ismod($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->settings['quickquote'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no" && !$pmprevann)
+		{
+			eval("\$post['button_quickquote'] = \"".$templates->get("postbit_quickquote")."\";");
+			$post['quickquote_message'] = htmlspecialchars($post['message']);
+			eval("\$post['qqmessage'] = \"".$templates->get("postbit_qqmessage")."\";");
+		}
 		if($mybb->user['uid'] != "0")
 		{
 			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");

@@ -357,13 +357,6 @@ if($mybb->input['action'] == "thread") {
 				$page = intval($result / $perpage) + 1;
 			}
 		}
-		// Recount replies if user is a moderator to take into account unapproved posts.
-		if($ismod)
-		{
-			$query = $db->query("SELECT COUNT(*) AS replies FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
-			$qarray = $db->fetch_array($query);
-			$thread['replies'] = $qarray['replies'] - 1;
-		}
 		$postcount = intval($thread['replies'])+1;
 		$pages = $postcount / $perpage;
 		$pages = ceil($pages);

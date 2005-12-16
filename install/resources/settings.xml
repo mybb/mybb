@@ -740,6 +740,22 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="quickreply">
+			<title>Show Quick Reply Form</title>
+			<description><![CDATA[Allows you to set whether or not the quick reply form will be shown at the bottom of threads.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[onoff]]></optionscode>
+			<settingvalue><![CDATA[on]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="similarlimit">
+			<title>Show Quick Quote Buttons</title>
+			<description><![CDATA[Quick quote buttons allow users to instantly quote a post using the quick reply form. Be warned that this option adds extra data to the page and can cause pages to take longer to download. The quick reply option must also be enabled.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[onoff]]></optionscode>
+			<settingvalue><![CDATA[on]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>		
 	</settinggroup>
 	<settinggroup name="User Registration and Profile Options" description="Here you can control various settings with relation to user account registration and account management." disporder="8" isdefault="yes">
 		<setting name="sigmycode">

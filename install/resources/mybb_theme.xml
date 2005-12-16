@@ -545,6 +545,7 @@ begininline($tid, "thread");
 <head>
 <title>$thread[subject]</title>
 $headerinclude
+<script type="text/javascript" src="jscripts/thread.js"></script>
 </head>
 <body>
 $header
@@ -3461,6 +3462,7 @@ $lang->postbit_status $post[onlinestatus]$post[replink]<br />
 <p>$post[message]</p>
 $post[attachments]
 $post[signature]
+$post[qqmessage]
 <div style="text-align: right; vertical-align: bottom;">
 $post[editedmsg]
 $post[iplogged]
@@ -3475,7 +3477,7 @@ $post[iplogged]
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr valign="bottom">
 		<td align="left" ><span class="smalltext">$post[button_email]$post[button_pm]$post[button_www]$post[button_find]</span></td>
-		<td align="right" nowrap="nowrap"><span class="smalltext">$post[button_edit]$post[button_quickdelete]$post[button_quote]$post[button_report]</span></td>
+		<td align="right" nowrap="nowrap"><span class="smalltext">$post[button_edit]$post[button_quickdelete]$post[button_quote]$post[button_quickquote]$post[button_report]</span></td>
 	</tr>
 	</table>
 </td>
@@ -6500,5 +6502,7 @@ $lang->banned_warning3: $banlift<br />
 </table>
 <br />]]></template>
 		<template name="htmldoctype" version="100.07"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
+		<template name="postbit_qqmessage" version="100.07"><![CDATA[<div style="display: none;"><span id="qq$post[pid]">$post[quickquote_message]</span><span id="qqauthor$post[pid]">$post[username]</span></div>]]></template>		
+		<template name="postbit_quickquote" version="100.07"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.quickQuote($post[pid]);\"><img src=\"$theme[imglangdir]/postbit_quickquote.gif\" border=\"0\" alt=\"$lang->postbit_qquote\" /></a>");</script>]]></template>				
 	</templates>
 </theme>
