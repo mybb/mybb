@@ -220,6 +220,7 @@ class databaseEngine {
 		$this->error_reporting = 0;
 		$query = $this->query("SHOW TABLES LIKE '$table'");
 		$exists = $this->num_rows($query);
+		$this->error_reporting = $err;
 		if($exists > 0)
 		{
 			return true;
@@ -228,7 +229,6 @@ class databaseEngine {
 		{
 			return false;
 		}
-		$this->error_reporting = $err;
 	}
 
 	// Check if a field exists in the database
@@ -242,11 +242,11 @@ class databaseEngine {
 		$this->error_reporting = $err;
 		if($exists > 0)
 		{
-			return false;
+			return true;
 		}
 		else
 		{
-			return true;
+			return false;
 		}
 	}
 
