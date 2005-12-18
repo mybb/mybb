@@ -1434,7 +1434,7 @@ elseif($mybb->input['action'] == "do_avatar")
 {
 	$plugins->run_hooks("usercp_do_avatar_start");
 	require "./inc/functions_upload.php";
-	if($mybb->input['removeavatar'])
+	if($mybb->input['remove'])
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."users SET avatar='', avatartype='' WHERE uid='".$mybb->user['uid']."'");
 		remove_avatars($mybb->user['uid']);
