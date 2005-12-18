@@ -417,7 +417,7 @@ elseif($mybb->input['action'] == "do_profile")
 	else
 	{
 		$away = "no";
-		$awaydate = "";
+		$awaydate = "0";
 		$returndate = "";
 		$mybb->input['awayreason'] = "";
 	}

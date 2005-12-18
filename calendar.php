@@ -22,34 +22,43 @@ if($mybb->usergroup['canviewcalendar'] == "no")
 	nopermission();
 }
 
-if($mybb->input['year'])
+if($mybb->input['action'] == "event")
 {
-	$year = intval($mybb->input['year']);
+	$query = $db->query("SELECT date FROM ".TABLE_PREFIX."events WHERE eid = ".intval($mybb->input['eid']));
+	$event_date = $db->result($query, 0);
+	list($day, $month, $year) = explode("-", $event_date);
 }
 else
 {
-	$year = date("Y");
-}
-
-if($mybb->input['month'] >=1 && $mybb->input['month'] <= 12)
-{
-	$month = $mybb->input['month'];
-}
-else
-{
-	$month = date("n");
-}
-
-$time = mktime(0, 0, 0, $month, 1, $year);
-$days = date("t", $time);
-
-if($mybb->input['day'] >= 1 && $mybb->input['day'] <= $days)
-{
-	$day = $mybb->input['day'];
-}
-else
-{
-         $day = ((date("j") > $days) ? $days : date("j"));  
+	if($mybb->input['year'])
+	{
+		$year = intval($mybb->input['year']);
+	}
+	else
+	{
+		$year = date("Y");
+	}
+	
+	if($mybb->input['month'] >=1 && $mybb->input['month'] <= 12)
+	{
+		$month = $mybb->input['month'];
+	}
+	else
+	{
+		$month = date("n");
+	}
+	
+	$time = mktime(0, 0, 0, $month, 1, $year);
+	$days = date("t", $time);
+	
+	if($mybb->input['day'] >= 1 && $mybb->input['day'] <= $days)
+	{
+		$day = $mybb->input['day'];
+	}
+	else
+	{
+		$day = ((date("j") > $days) ? $days : date("j"));
+	}
 }
 
 // Make sure there's no leading zeros
