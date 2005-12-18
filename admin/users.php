@@ -552,6 +552,7 @@ if($mybb->input['action'] == "do_email")
 			elseif($searchop['type'] == "pm")
 			{
 				$now = time();
+				$sendmessage = addslashes($sendmessage);
 				$db->query("INSERT INTO ".TABLE_PREFIX."privatemessages(uid,toid,fromid,folder,subject,message,dateline,status,receipt) VALUES('$user[uid]','$user[uid]','$mybbadmin[uid]','1','$searchop[subject]','$sendmessage','$now','0','no');");
 				echo sprintf($lang->pm_sent, $user['username']);
 			}
