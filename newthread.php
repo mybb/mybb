@@ -421,7 +421,7 @@ if($mybb->input['action'] == "do_newthread")
 		{
 			error($lang->error_nosubject);
 		}
-		if(mb_strlen(trim($mybb->input['subject'])) > 85)
+		if(my_strlen(trim($mybb->input['subject'])) > 85)
 		{
 			error($lang->error_subjecttolong);
 		}

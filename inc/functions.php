@@ -2042,4 +2042,25 @@ function update_first_post($tid)
 	$firstpostup = array("firstpost" => $post['pid']);
 	$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='$tid'");
 }
+
+/**
+ * Checks for the length of a string, mb strings accounted for
+ *
+ * @param string The string to check the length of.
+ * @return int The length of the string.
+ */
+function my_strlen($string)
+{
+	if(function_exists("mb_strlen"))
+	{
+		$string_length = mb_strlen($string);
+	}
+	else 
+	{
+		$string_length = strlen($string);
+	}
+	
+	return $string_length;
+}
+
 ?>
