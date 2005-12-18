@@ -268,7 +268,7 @@ elseif($mybb->input['action'] == "do_editpost")
 	{
 		$newpost = array(
 			"subject" => addslashes($mybb->input['subject']),
-			"icon" => $mybb->input['icon'],
+			"icon" => intval($mybb->input['icon']),
 			);
 		$db->update_query(TABLE_PREFIX."threads", $newpost, "tid='$tid'");
 	}

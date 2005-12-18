@@ -258,7 +258,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 		}
 		$mybb->input['icon'] = intval($mybb->input['icon']);
-		$query = $db->query("SELECT u.*, f.*, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".$mybb->input['icon']."') WHERE u.uid='".$mybb->user['uid']."'");
+		$query = $db->query("SELECT u.*, f.*, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".intval($mybb->input['icon'])."') WHERE u.uid='".$mybb->user['uid']."'");
 		$post = $db->fetch_array($query);
 		if(!$mybb->user['uid'] || !$post['username'])
 		{
@@ -719,7 +719,7 @@ if($mybb->input['action'] == "do_newreply" )
 	// Setup the correct ownership of the attachments
 	if($mybb->input['posthash'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$pid' WHERE posthash='".$mybb->input['posthash']."'");
+		$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$pid' WHERE posthash='".addslashes($mybb->input['posthash'])."'");
 	}
 	redirect($url, $lang->redirect_newreply);
 }

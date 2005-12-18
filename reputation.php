@@ -121,7 +121,7 @@ else
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user[uid]."' AND dateline>'$timesearch'");
 			$numtoday = $db->num_rows($query);
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='".$mybb->input['pid']."' AND adduid='".$mybb->user[uid]."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='".intval($mybb->input['pid'])."' AND adduid='".$mybb->user[uid]."'");
 		$reputation = $db->fetch_array($query);
 		if($reputation['uid'])
 		{

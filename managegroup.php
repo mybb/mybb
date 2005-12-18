@@ -95,7 +95,7 @@ elseif($mybb->input['action'] == "joinrequests")
 {
 	$plugins->run_hooks("managegroup_joinrequests_start");
 
-	$query = $db->query("SELECT j.*, u.uid, u.username, u.postnum, u.regdate FROM ".TABLE_PREFIX."joinrequests j LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid) WHERE j.gid='".$mybb->input['gid']."' ORDER BY u.username ASC");
+	$query = $db->query("SELECT j.*, u.uid, u.username, u.postnum, u.regdate FROM ".TABLE_PREFIX."joinrequests j LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid) WHERE j.gid='".intval($mybb->input['gid'])."' ORDER BY u.username ASC");
 	while($user = $db->fetch_array($query))
 	{
 		$user['reason'] = htmlspecialchars_uni($user['reason']);
@@ -138,7 +138,7 @@ else
 	$lang->add_member = sprintf($lang->add_member, $usergroup['title']);
 	if($usergroup['type'] == 4)
 	{
-		$query = $db->query("SELECT COUNT(*) AS req FROM ".TABLE_PREFIX."joinrequests WHERE gid='".$mybb->input['gid']."'");
+		$query = $db->query("SELECT COUNT(*) AS req FROM ".TABLE_PREFIX."joinrequests WHERE gid='".intval($mybb->input['gid'])."'");
 		$numrequests = $db->fetch_array($query);
 		if($numrequests['req'])
 		{
@@ -157,7 +157,7 @@ else
 	}
 		
 
-	$uquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' ORDER BY username ASC";
+	$uquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".intval($mybb->input['gid']).",%' ORDER BY username ASC";
 	$query = $db->query($uquery);
 	$numusers = $db->num_rows($query);
 	/*if(!$numusers && !$numrequests)

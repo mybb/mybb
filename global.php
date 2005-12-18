@@ -310,7 +310,7 @@ if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 // Referrals system
 if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && intval($mybb->input['referrer']) > 0 && !$_COOKIE['mybb']['referrer'])
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->input['referrer']."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['referrer'])."'");
 	$referrer = $db->fetch_array($query);
 	if($referrer['uid'])
 	{
