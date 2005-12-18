@@ -65,7 +65,7 @@ function domycode($message, $allowimgcode="yes")
 					 "#\[email\](.*?)\[/email\]#ei",
 					 "#\[email=(.*?)\](.*?)\[/email\]#ei",
 					 "#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#si",
-					 "#\[size=(small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si",
+					 "#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si",
 			         "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si",
 					 "#\[font=([a-z ]+?)\](.+?)\[/font\]#si",
 					 "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si");

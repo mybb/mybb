@@ -106,6 +106,8 @@ $l['trebuchet_ms'] = "Trebuchet MS";
 $l['verdana'] = "Verdana";
 
 $l['size'] = "Size";
+$l['xxsmall'] = "XX small";
+$l['xsmall'] = "X small";
 $l['small'] = "Small";
 $l['medium'] = "Medium";
 $l['large'] = "Large";
