@@ -859,22 +859,14 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_nosplitposts);
 		}
-		foreach($mybb->input['splitpost'] as $val)
-		{
-			if($val == "yes")
-			{
-				$numyes++;
-			}
-			else
-			{
-				$numno++;
-			}
-		}
-		if($numyes < 1 && $numno > 1)
+		$query = $db->query("SELECT COUNT(*) AS totalposts FROM ".TABLE_PREFIX."posts WHERE tid='".intval($mybb->input['tid'])."'");
+		$count = $db->fetch_array($query);
+		
+		if(!is_array($mybb->input['splitpost']))
 		{
 			error($lang->error_nosplitposts);
 		}
-		if($numyes > 1 && $numno < 1)
+		elseif($count['totalposts'] == count($mybb->input['splitpost']))
 		{
 			error($lang->error_cantsplitall);
 		}
@@ -1418,6 +1410,8 @@ switch($mybb->input['action'])
 
 		logmod($modlogdata, $lang->thread_split);
 		markreports($plist, "posts");
+		update_first_post($newtid);
+		update_first_post($tid);
 		updatethreadcount($tid);
 		updatethreadcount($newtid);
 		if($moveto != $fid)
