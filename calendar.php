@@ -22,10 +22,15 @@ if($mybb->usergroup['canviewcalendar'] == "no")
 	nopermission();
 }
 
+/* If we are looking at an event, select the date for that event first. */
 if($mybb->input['action'] == "event")
 {
 	$query = $db->query("SELECT date FROM ".TABLE_PREFIX."events WHERE eid = ".intval($mybb->input['eid']));
 	$event_date = $db->result($query, 0);
+	if($event_date == FALSE)
+	{
+		error($lang->error_invalidevent);
+	}
 	list($day, $month, $year) = explode("-", $event_date);
 }
 else
@@ -90,6 +95,12 @@ if($mybb->input['action'] == "event")
 	{
 		error($lang->error_invalidevent);
 	}
+	
+	if($event['private'] == "yes" && $event['username'] != $mybb->user['username'])
+	{
+		nopermission();
+	}
+	
 	if(($event['author'] == $mybb->user['uid'] && $mybb->user['uid'] != 0) || $mybb->usergroup['cancp'] == "yes")
 	{
 		$editbutton = "<a href=\"calendar.php?action=editevent&amp;eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
@@ -251,8 +262,8 @@ elseif($mybb->input['action'] == "do_addevent")
 	{
 		error($lang->error_incompletefields);
 	}
-	/* The following bit doesn't seem to work due to the gmdate("t") always returning 31 */
-	if($day > gmdate("t", mktime(0, 0, 0, $month, 1, $year)))
+	
+	if($day > date("t", mktime(0, 0, 0, $month, 1, $year)))
 	{
 		error($lang->error_incorrectday);
 	}
