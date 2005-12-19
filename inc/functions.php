@@ -711,9 +711,11 @@ function ismod($fid="0", $action="", $uid="0")
 	}
 }
 
-//
-// Generate a list of post icons
-//
+/**
+ * Generate a list of the posticons.
+ *
+ * @return string The template of posticons.
+ */
 function getposticons()
 {
 	global $db, $icon, $settings, $theme, $templates, $lang;
@@ -740,9 +742,13 @@ function getposticons()
 	return $posticons;
 }
 
-//
-// MyBB setcookie() wrapper
-//
+/**
+ * MyBB setcooke() wrapper.
+ *
+ * @param string The cookie name.
+ * @param string The cookie value.
+ * @param int The timestamp of the expiry date.
+ */
 function mysetcookie($name, $value="", $expires="")
 {
 	global $mybb;
@@ -820,7 +826,11 @@ function mysetarraycookie($name, $id, $value) {
 	mysetcookie("mybb[$name]", $newcookie);
 }
 
-
+/**
+ * Returns the serverload of the system.
+ *
+ * @return int The serverload of the system.
+ */
 function serverload()
 {
 	global $lang;
@@ -1066,11 +1076,23 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 	return $forumjump;
 }
 
+/**
+ * Returns the extension of a file.
+ *
+ * @param string The filename.
+ * @return string The extension of the file.
+ */
 function getextention($file)
 {
 	return strtolower(substr(strrchr($file, "."), 1));
 }
 
+/**
+ * Generates a random string.
+ *
+ * @param int The length of the string to generate.
+ * @return string The random string.
+ */
 function random_str($length="8")
 {
 	$set = array("a","A","b","B","c","C","d","D","e","E","f","F","g","G","h","H","i","I","j","J","k","K","l","L","m","M","n","N","o","O","p","P","q","Q","r","R","s","S","t","T","u","U","v","V","w","W","x","X","y","Y","z","Z","1","2","3","4","5","6","7","8","9");
@@ -1376,6 +1398,7 @@ if(!function_exists("stripos"))
 		return strpos(strtoupper($haystack), strtoupper($needle), $offset);
 	}
 }
+
 function fixmktime($format, $year)
 {
 	// Our little work around for the date < 1970 thing.
@@ -1555,6 +1578,10 @@ function debugpage() {
 	exit;
 }
 
+/**
+ * Outputs the correct page headers.
+ *
+ */
 function pageheaders() {
 	global $settings;
 	if($mybb->settings['nocacheheaders'] == "yes" && $mybb->settings['standardheaders'] != "yes")
@@ -1952,7 +1979,7 @@ function themeselect($name, $selected="", $tid=0, $depth="")
 
 function htmlspecialchars_uni($message)
 {
-	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicide
+	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
 	$message = str_replace("<","&lt;",$message);
 	$message = str_replace(">","&gt;",$message);
 	$message = str_replace("\"","&quot;",$message);
@@ -1960,6 +1987,12 @@ function htmlspecialchars_uni($message)
 	return $message;
 }
 
+/**
+ * Custom function for formatting numbers.
+ *
+ * @param int The number to format.
+ * @return int The formatted number.
+ */
 function mynumberformat($number)
 {
 	global $mybb;
@@ -1974,7 +2007,6 @@ function mynumberformat($number)
 		return number_format($number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
 	}
 }
-
 
 // Birthday code fix's provided by meme
 function get_weekday($month, $day, $year)
@@ -2017,6 +2049,12 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 	return(str_replace($find, $replace, $display));
 }
 
+/**
+ * Returns the age of a user with specified birthday.
+ *
+ * @param string The birthday of a user.
+ * @return float The age of a user with that birthday.
+ */
 function get_age($birthday)
 {
         $bday = explode("-", $birthday);
@@ -2034,6 +2072,11 @@ function get_age($birthday)
         return $age;
 }
 
+/**
+ * Updates the first posts in a thread.
+ *
+ * @param int The thread id for which to update the first post id.
+ */
 function update_first_post($tid)
 {
 	global $db;
