@@ -72,6 +72,7 @@ $l['years'] = "Years";
 $l['years_old'] = "years old";
 
 $l['name'] = "Name";
+$l['uid_header'] = "User ID";
 $l['name_header'] = "Name";
 $l['username'] = "Username";
 $l['password'] = "Password";
@@ -141,6 +142,7 @@ $l['and_reg_ip'] = "and registration IP matches";
 $l['and_post_ip'] = "and has posted with IP";
 $l['is_member_of'] = "and is a member of";
 
+$l['display_uid'] = "Display user ID";
 $l['display_username'] = "Display username";
 $l['display_options_2'] = "Display options";
 $l['display_group'] = "Display usergroups";

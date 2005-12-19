@@ -1469,6 +1469,10 @@ if($mybb->input['action'] == "find")
 		starttable();
 		echo "<tr>\n";
 
+		if($searchdisp['uid'] == "yes")
+		{
+			echo "<td class=\"subheader\" align=\"center\">$lang->uid_header</td>\n";
+		}
 		if($searchdisp['username'] == "yes")
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->name_header</td>\n";
@@ -1556,6 +1560,10 @@ if($mybb->input['action'] == "find")
 			makehiddencode("uid", $user['uid']);
 			makehiddencode("auid", $user['uid']);
 			echo "<tr>\n";
+			if($searchdisp['uid'] == "yes")
+			{
+				echo "<td class=\"$bgcolor\">$user[uid]</td>\n";
+			}
 			if($searchdisp['username'] == "yes")
 			{
 				echo "<td class=\"$bgcolor\">$user[username]</td>\n";
@@ -1958,6 +1966,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	makeinputcode($lang->results_per_page, "searchop[perpage]", "30");
 
 	tablesubheader($lang->display_options);
+	makeyesnocode($lang->display_uid, "searchdisp[uid]", "no");
 	makeyesnocode($lang->display_username, "searchdisp[username]", "yes");
 	makeyesnocode($lang->display_options_2, "searchdisp[ops]", "yes");
 	makeyesnocode($lang->display_group, "searchdisp[usergroup]", "no");
