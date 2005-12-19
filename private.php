@@ -356,7 +356,7 @@ elseif($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		$emailmessage = sprintf($emailmessage, $touser['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 		$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
 		mymail($touser['email'], $emailsubject, $emailmessage);
-		error($lang->error_pmrecipientreachedquota);
+		error(sprintf($lang->error_pmrecipientreachedquota, $touser['username']));
 	}
 	$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$touser['uid']."' AND folder='1' ORDER BY dateline DESC LIMIT 1");
 	$lastpm = $db->fetch_array($query);
