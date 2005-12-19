@@ -230,9 +230,10 @@ function doshorturl($url, $name="")
 	$fullurl = stripslashes($fullurl);
 	if($name == $url)
 	{
-		if(strlen($url) > 55)
+		$clean_url = unhtmlentities($url);
+		if(strlen($clean_url) > 55)
 		{
-			$name = substr($url, 0, 40)."...".substr($url, -10);
+			$name = substr($clean_url, 0, 40)."...".substr($clean_url, -10);
 		}
 	}
 	$link = "<a href=\"$fullurl\" target=\"_blank\">$name</a>";
