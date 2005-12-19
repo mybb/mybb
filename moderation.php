@@ -119,7 +119,10 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_openclosethread");
 
 		logmod($modlogdata, $lang->mod_process);
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET closed='$thread[closed]' WHERE tid='$tid'");
+		$sqlarray = array(
+			"closed" => $thread['closed'],
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
 		redirect("showthread.php?tid=$tid", $redirect);
 		break;
 	
@@ -154,7 +157,10 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_stick");
 
 		logmod($modlogdata, $lang->mod_process);
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET sticky='$thread[sticky]' WHERE tid='$tid'");
+		$sqlarray = array(
+			"sticky" => $thread['sticky'],
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
 		redirect("showthread.php?tid=$tid", $redirect);
 		break;
 
@@ -264,7 +270,10 @@ switch($mybb->input['action'])
 		logmod($modlogdata, $lang->poll_deleted);
 		$db->query("DELETE FROM ".TABLE_PREFIX."polls WHERE pid='$poll[pid]'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."pollvotes WHERE pid='$poll[pid]'");
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET poll='' WHERE poll='$poll[pid]'");
+		$sqlarray = array(
+			"poll" => '',
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "poll='$poll[pid]'");
 		redirect("showthread.php?tid=$tid", $lang->redirect_polldeleted);
 		break;
 
@@ -281,8 +290,11 @@ switch($mybb->input['action'])
 
 		$lang->thread_approved = sprintf($lang->thread_approved, $thread['subject']);
 		logmod($modlogdata, $lang->thread_approved);
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='$tid'");
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='1' WHERE tid='$tid' AND replyto='0'");
+		$sqlarray = array(
+			"visible" => 1,
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$tid' AND replyto='0'");
 		$cache->updatestats();
 		updateforumcount($fid);
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadapproved);
@@ -301,8 +313,11 @@ switch($mybb->input['action'])
 
 		$lang->thread_unapproved = sprintf($lang->thread_unapproved, $thread['subject']);
 		logmod($modlogdata, $lang->thread_unapproved);
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='0' WHERE tid='$tid'");
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='0' WHERE tid='$tid' AND replyto='0'");
+		$sqlarray = array(
+			"visible" => 0,
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$tid' AND replyto='0'");
 		updateforumcount($fid);
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadunapproved);
 		break;
@@ -471,10 +486,16 @@ switch($mybb->input['action'])
 			$first = 0;
 		}
 		$message = addslashes($message);
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET message='$message' WHERE pid='$masterpid'");
+		$sqlquery = array(
+			"message" => $message,
+			);
+		$db->update_query(TABLE_PREFIX."posts", $sqlquery, "pid='$masterpid'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid IN($pidin) AND pid!='$masterpid'");
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET pid='$masterpid' WHERE pid IN($pidin)");
-		$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$masterpid' WHERE pid IN($pidin)");
+		$sqlquery = array(
+			"pid" => $masterpid,
+			);
+		$db->update_query(TABLE_PREFIX."posts", $sqlquery, "pid IN($pidin)");
+		$db->update_query(TABLE_PREFIX."attachments", $sqlquery, "pid IN($pidin)");
 		updatethreadcount($tid);
 		updateforumcount($fid);
 		markreports($plist, "posts");
@@ -533,8 +554,11 @@ switch($mybb->input['action'])
 
 			$plugins->run_hooks("moderation_do_move_simple");
 
-			$db->query("UPDATE ".TABLE_PREFIX."threads SET fid='$moveto' WHERE tid='$tid'");
-			$db->query("UPDATE ".TABLE_PREFIX."posts SET fid='$moveto' WHERE tid='$tid'");
+			$sqlarray = array(
+				"fid" => $moveto,
+				);
+			$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
+			$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$tid'");
 			logmod($modlogdata, $lang->thread_moved);
 		}
 		elseif($method == "redirect")
@@ -542,8 +566,11 @@ switch($mybb->input['action'])
 
 			$plugins->run_hooks("moderation_do_move_redirect");
 
-			$db->query("UPDATE ".TABLE_PREFIX."threads SET fid='$moveto' WHERE tid='$tid'");
-			$db->query("UPDATE ".TABLE_PREFIX."posts SET fid='$moveto' WHERE tid='$tid'");
+			$sqlarray = array(
+				"fid" => $moveto,
+				);
+			$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
+			$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$tid'");
 			$threadarray = array(
 				"fid" => $thread['fid'],
 				"subject" => addslashes($thread['subject']),
@@ -613,7 +640,10 @@ switch($mybb->input['action'])
 			{
 				$pcount = "-$posters[posts]";
 			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]'");
+			$sqlarray = array(
+				"postnum" => "postnum$pcount",
+				);
+			$db->update_query(TABLE_PREFIX."users", $sqlarray, "uid='$posters[uid]'");
 		}
 		updateforumcount($moveto);
 		updateforumcount($fid);
@@ -678,8 +708,10 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_do_threadnotes");
 
 		logmod($modlogdata, $lang->thread_notes_edited);
-		$thread['notes'] = addslashes($mybb->input['threadnotes']);
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET notes='".$thread['notes']."' WHERE tid='$tid'");
+		$sqlarray = array(
+			"notes" => addslashes($mybb->input['threadnotes']),
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadnotesupdated);
 		break;
 
@@ -760,7 +792,10 @@ switch($mybb->input['action'])
 		if($mergethread['poll'])
 		{
 			$pollsql = ", poll='$mergethread[poll]'";
-			$db->query("UPDATE ".TABLE_PREFIX."polls SET tid='$tid' WHERE tid='$mergethread[tid]'");
+			$sqlarray = array(
+				"tid" => $tid,
+				);
+			$db->update_query(TABLE_PREFIX."polls", $sqlarray, "tid='$mergethread[tid]'");
 		}
 		else
 		{
@@ -781,10 +816,20 @@ switch($mybb->input['action'])
 			$subject = $thread['subject'];
 		}
 		$subject = addslashes($subject);
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET tid='$tid', fid='$fid' WHERE tid='$mergetid'");
+		$sqlarray = array(
+			"tid" => $tid,
+			"fid" => $fid,
+			);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$mergetid'");
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='$subject' $pollcode WHERE tid='$tid'");
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET closed='moved|$tid' WHERE closed='moved|$mergetid'");
-		$db->query("UPDATE ".TABLE_PREFIX."favorites SET tid='$tid' WHERE tid='$mergetid'");
+		$sqlarray = array(
+			"closed" => "moved|$tid",
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "closed='moved|$mergetid'");
+		$sqlarray = array(
+			"tid" => $tid,
+			);
+		$db->update_query(TABLE_PREFIX."favorites", $sqlarray, "tid='$mergetid'");
 		update_first_post($tid);
 		logmod($modlogdata, $lang->thread_merged);
 		deletethread($mergetid);
@@ -905,7 +950,11 @@ switch($mybb->input['action'])
 		{
 			if($mybb->input['splitpost'][$post['pid']] == "yes")
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."posts SET tid='$newtid', fid='$moveto' WHERE pid='$post[pid]'");
+				$sqlarray = array(
+					"tid" => $newtid,
+					"fid" => $moveto,
+					);
+				$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$post[pid]'");
 			}
 			markreports($post['pid'], "post");
 		}
@@ -913,15 +962,21 @@ switch($mybb->input['action'])
 		// Update the subject of the first post in the new thread
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$newtid' ORDER BY dateline ASC LIMIT 1");
 		$newthread = $db->fetch_array($query);
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET subject='$newsubject' WHERE pid='$newthread[pid]' LIMIT 1");
+		$sqlarray = array(
+			"subject" => $newsubject,
+			);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$newthread[pid]'");
 
 		// Update the subject of the first post in the old thread
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 1");
 		$oldthread = $db->fetch_array($query);
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET subject='$thread[subject]' WHERE pid='$oldthread[pid]' LIMIT 1");
+		$sqlarray = array(
+			"subject" => $thread['subject'],
+			);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$oldthread[pid]'");
 
-		update_first_post($newtid);
 		update_first_post($tid);
+		update_first_post($newtid);
 		logmod($modlogdata, $lang->thread_split);
 		updatethreadcount($tid);
 		updatethreadcount($newtid);
@@ -992,7 +1047,10 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET closed='no' WHERE $q");
+		$sqlarray = array(
+			"closed" => "no",
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, $q);
 		logmod($modlogdata, $lang->multi_opened_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsopened);
@@ -1014,7 +1072,10 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET closed='yes' WHERE $q");
+		$sqlarray = array(
+			"closed" => "yes",
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, $q);
 		logmod($modlogdata, $lang->multi_closed_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsclosed);
@@ -1036,8 +1097,11 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE $q");
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='1' WHERE $q AND replyto='0'");
+		$sqlarray = array(
+			"visible" => 1,
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, $q);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "$q AND replyto='0'");
 		logmod($modlogdata, $lang->multi_approved_threads);
 		clearinline($fid, "forum");
 		$cache->updatestats();
@@ -1061,8 +1125,11 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='0' WHERE $q");
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='0' WHERE $q AND replyto='0'");
+		$sqlarray = array(
+			"visible" => 0,
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, $q);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "$q AND replyto='0'");
 		logmod($modlogdata, $lang->multi_unapproved_threads);
 		clearinline($fid, "forum");
 		$cache->updatestats();
@@ -1086,7 +1153,10 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET sticky='1' WHERE $q");
+		$sqlarray = array(
+			"sticky" => 1,
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, $q);
 		logmod($modlogdata, $lang->multi_stuck_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsstuck);
@@ -1108,7 +1178,10 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR tid='$tid'";
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET sticky='0' WHERE $q");
+		$sqlarray = array(
+			"sticky" => 0,
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, $q);
 		logmod($modlogdata, $lang->multi_unstuck_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsunstuck);
@@ -1166,8 +1239,11 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_movetosameforum);
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET fid='$moveto' WHERE $q");
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET fid='$moveto' WHERE $q");
+		$sqlarray = array(
+			"fid" => $moveto,
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, $q);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, $q);
 		logmod($modlogdata, $lang->multi_moved_threads);
 		$query = $db->query("SELECT COUNT(p.pid) AS posts, u.uid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE $q GROUP BY u.uid ORDER BY posts DESC");
 		while($posters = $db->fetch_array($query))
@@ -1184,7 +1260,10 @@ switch($mybb->input['action'])
 			{
 				$pcount = "-$posters[posts]";
 			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]'");
+			$sqlarray = array(
+				"postnum" => "postnum$pcount",
+				);
+			$db->update_query(TABLE_PREFIX."users", $sqlarray, "uid='$posters[uid]'");
 		}
 		updateforumcount($moveto);
 		updateforumcount($fid);
@@ -1286,7 +1365,10 @@ switch($mybb->input['action'])
 		$master = $db->fetch_array($query);
 		$masterpid = $master['pid'];
 		$message = $master['message'];
-		$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$masterpid' WHERE pid IN($pidin)");
+		$sqlarray = array(
+			"pid" => $masterpid,
+			);
+		$db->update_query(TABLE_PREFIX."attachments", $sqlarray, "pid IN($pidin)");
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC");
 		while($post = $db->fetch_array($query))
 		{
@@ -1304,7 +1386,10 @@ switch($mybb->input['action'])
 			}
 		}
 		$message = addslashes($message);
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET message='$message' WHERE pid='$masterpid'");
+		$sqlarray = array(
+			"message" => $message,
+			);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$masterpid'");
 		updatethreadcount($tid);
 		updateforumcount($fid);
 		markreports($plist, "posts");
@@ -1378,7 +1463,11 @@ switch($mybb->input['action'])
 		$db->query("INSERT INTO ".TABLE_PREFIX."threads (fid,subject,icon,uid,username,dateline,lastpost,lastposter,replies,visible) VALUES ('$moveto','$newsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$numyes','1')");
 		$newtid = $db->insert_id();
 		// move the selected posts over
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET tid='$newtid', fid='$moveto' WHERE pid IN($pidin)");
+		$sqlarray = array(
+			"tid" => $newtid,
+			"fid" => $moveto,
+			);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid IN($pidin)");
 		// adjust user post counts accordingly
 		$query = $db->query("SELECT usepostcounts FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
 		$oldusepcounts = $db->result($query, 0);
@@ -1395,18 +1484,27 @@ switch($mybb->input['action'])
 			{
 				$pcount = "+$posters[posts]";
 			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]'");
+			$sqlarray = array(
+				"postnum" => "postnum$pcount",
+				);
+			$db->update_query(TABLE_PREFIX."users", $sqlarray, "uid='$posters[uid]'");
 		}
 
 		// Update the subject of the first post in the new thread
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$newtid' ORDER BY dateline ASC LIMIT 1");
 		$newthread = $db->fetch_array($query);
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET subject='$newsubject' WHERE pid='$newthread[pid]' LIMIT 1");
+		$sqlarray = array(
+			"subject" => $newsubject,
+			);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$newthread[pid]'");
 
 		// Update the subject of the first post in the old thread
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 1");
 		$oldthread = $db->fetch_array($query);
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET subject='$thread[subject]' WHERE pid='$oldthread[pid]' LIMIT 1");
+		$sqlarray = array(
+			"subject" => $thread['subject'],
+			);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$oldthread[pid]'");
 
 		logmod($modlogdata, $lang->thread_split);
 		markreports($plist, "posts");
@@ -1438,14 +1536,17 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR pid='$pid'";
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='1' WHERE $q");
+		$sqlarray = array(
+			"visible" => 1,
+			);
+		$db->query(TABLE_PREFIX."posts", $sqlarray, $q);
 		// If this is the first post of the thread, also approve the thread
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE $q");
 		while($post = $db->fetch_array($query))
 		{
 			if($post['replyto'] == 0)
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='$post[tid]'");
+				$db->query(TABLE_PREFIX."threads", $sqlarray, "tid='$post[tid]'");
 				$cache->updatestats();
 				updateforumcount($fid);
 			}
@@ -1472,14 +1573,17 @@ switch($mybb->input['action'])
 		{
 			$q .= " OR pid='$pid'";
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET visible='0' WHERE $q");
+		$sqlarray = array(
+			"visible" => 0,
+			);
+		$db->query(TABLE_PREFIX."posts", $sqlarray, $q);
 		// If this is the first post of the thread, also unapprove the thread
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE $q");
 		while($post = $db->fetch_array($query))
 		{
 			if($post['replyto'] == 0)
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='0' WHERE tid='$post[tid]'");
+				$db->query(TABLE_PREFIX."threads", $sqlarray, "tid='$post[tid]'");
 				$cache->updatestats();
 				updateforumcount($fid);
 			}
@@ -1518,7 +1622,10 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_do_reports");
 		
-		$db->query("UPDATE ".TABLE_PREFIX."reportedposts SET reportstatus='1' WHERE rid IN ($rids)");
+		$sqlarray = array(
+			"reportstatus" => 1,
+			);
+		$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "rid IN ($rids)");
 		$cache->updatereportedposts();
 		redirect("moderation.php?action=reports", $lang->redirect_reportsmarked);
 		break;
