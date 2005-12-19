@@ -129,7 +129,7 @@ if($mybb->input['action'] == "newpoll")
 	eval("\$newpoll = \"".$templates->get("polls_newpoll")."\";");
 	outputpage($newpoll);		
 }
-if($mybb->input['action'] == "do_newpoll")
+if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("polls_do_newpoll_start");
 
@@ -418,7 +418,7 @@ if($mybb->input['action'] == "editpoll")
 	eval("\$editpoll = \"".$templates->get("polls_editpoll")."\";");
 	outputpage($editpoll);
 }
-if($mybb->input['action'] == "do_editpoll")
+if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("polls_do_editpoll_start");
 

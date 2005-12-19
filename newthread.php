@@ -375,7 +375,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	outputpage($newthread);
 		
 }
-if($mybb->input['action'] == "do_newthread")
+if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("newthread_do_newthread_start");
 

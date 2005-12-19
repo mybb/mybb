@@ -433,7 +433,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	eval("\$newreply = \"".$templates->get("newreply")."\";");
 	outputpage($newreply);
 }
-if($mybb->input['action'] == "do_newreply" )
+if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("newreply_do_newreply_start");
 

@@ -41,7 +41,7 @@ if(!$groupleader['uid'])
 	error($lang->not_leader_of_this_group);
 }
 
-if($mybb->input['action'] == "do_add")
+if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 {
 	$query = $db->query("SELECT uid, additionalgroups, usergroup FROM ".TABLE_PREFIX."users WHERE username = '".addslashes($mybb->input['username'])."' LIMIT 1");
 	$user = $db->fetch_array($query);
@@ -62,7 +62,7 @@ if($mybb->input['action'] == "do_add")
 		error($lang->error_invalidusername);
 	}
 }
-elseif($mybb->input['action'] == "do_joinrequests")
+elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("managegroup_do_joinrequests_start");
 

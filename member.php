@@ -79,7 +79,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 	}
 }
 
-if($mybb->input['action'] == "do_register")
+if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 {
 
 	$plugins->run_hooks("member_do_register_start");
@@ -846,7 +846,7 @@ elseif($mybb->input['action'] == "resendactivation")
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
 	outputpage($activate);
 }
-elseif($mybb->input['action'] == "do_resendactivation")
+elseif($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_resendactivation_start");
 
@@ -895,7 +895,7 @@ elseif($mybb->input['action'] == "lostpw")
 	eval("\$lostpw = \"".$templates->get("member_lostpw")."\";");
 	outputpage($lostpw);
 }
-elseif($mybb->input['action'] == "do_lostpw")
+elseif($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_lostpw_start");
 
@@ -1005,7 +1005,7 @@ else if($mybb->input['action'] == "login")
 	eval("\$login = \"".$templates->get("member_login")."\";");
 	outputpage($login);
 }
-else if($mybb->input['action'] == "do_login")
+else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_login_start");
 
@@ -1474,7 +1474,7 @@ elseif($mybb->input['action'] == "emailuser")
 	eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
 	outputpage($emailuser);
 }
-elseif($mybb->input['action'] == "do_emailuser")
+elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_emailuser_start");
 
@@ -1546,7 +1546,7 @@ elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 		eval("\$rate = \"".$templates->get("member_rate")."\";");
 		outputpage($rate);
 	}
-	else
+	elseif($mybb->input['action'] == "do_rate" && $mybb->request_method == "post")
 	{
 		$uid = $mybb->input['uid'];
 		$rating = intval($mybb->input['rating']);

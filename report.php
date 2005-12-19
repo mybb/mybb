@@ -50,7 +50,7 @@ if($mybb->input['action'] == "report")
 	$plugins->run_hooks("report_end");
 	outputpage($report);
 }
-elseif($mybb->input['action'] == "do_report")
+elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("report_do_report_start");
 	if(!trim($mybb->input['reason']))

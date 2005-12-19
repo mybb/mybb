@@ -349,7 +349,7 @@ if($mybb->input['action'] == "profile")
 	$plugins->run_hooks("usercp_profile_end");
 	outputpage($editprofile);
 }
-elseif($mybb->input['action'] == "do_profile")
+elseif($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_profile_start");
 	if($mybb->input['website'] && !stristr($mybb->input['website'], "http://"))
@@ -715,7 +715,7 @@ elseif($mybb->input['action'] == "options")
 	$plugins->run_hooks("usercp_options_end");
 	outputpage($editprofile);
 }
-elseif($mybb->input['action'] == "do_options")
+elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_options_start");
 
@@ -936,7 +936,7 @@ elseif($mybb->input['action'] == "password")
 	$plugins->run_hooks("usercp_password_end");
 	outputpage($editpassword);
 }
-elseif($mybb->input['action'] == "do_password")
+elseif($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_password_start");
 	if(validate_password_from_uid($mybb->user['uid'], $mybb->input['oldpassword']) == false)
@@ -969,7 +969,7 @@ elseif($mybb->input['action'] == "changename")
 	$plugins->run_hooks("usercp_changename_end");
 	outputpage($changename);
 }
-elseif($mybb->input['action'] == "do_changename")
+elseif($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_changename_start");
 	if($mybb->usergroup['canchangename'] != "yes")
@@ -1275,7 +1275,7 @@ elseif($mybb->input['action'] == "editsig")
 	$plugins->run_hooks("usercp_endsig_end");
 	outputpage($editsig);
 }
-elseif($mybb->input['action'] == "do_editsig")
+elseif($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_editsig_start");
 	if($mybb->settings['siglength'] != 0 && strlen($mybb->input['signature']) > $mybb->settings['siglength'])
@@ -1430,7 +1430,7 @@ elseif($mybb->input['action'] == "avatar")
 	}
 
 }
-elseif($mybb->input['action'] == "do_avatar")
+elseif($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_avatar_start");
 	require "./inc/functions_upload.php";
@@ -1496,7 +1496,7 @@ elseif($mybb->input['action'] == "notepad")
 	$plugins->run_hooks("usercp_notepad_end");
 	outputpage($notepad);
 }
-elseif($mybb->input['action'] == "do_notepad")
+elseif($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_notepad_start");
 	$db->query("UPDATE ".TABLE_PREFIX."users SET notepad='".addslashes($mybb->input['notepad'])."' WHERE uid='".$mybb->user['uid']."'");
@@ -1547,7 +1547,7 @@ elseif($mybb->input['action'] == "editlists")
 	$plugins->run_hooks("usercp_editlists_end");
 	outputpage($listpage);
 }
-elseif($mybb->input['action'] == "do_editlists")
+elseif($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_editlists_start");
 	while(list($key, $val) = each($mybb->input['listuser']))
@@ -1625,7 +1625,7 @@ elseif($mybb->input['action'] == "drafts")
 	outputpage($draftlist);
 
 }
-elseif($mybb->input['action'] == "do_drafts")
+elseif($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_drafts_start");
 	if(!$mybb->input['deletedraft'])
@@ -1978,7 +1978,7 @@ elseif($mybb->input['action'] == "attachments")
 	$plugins->run_hooks("usercp_attachments_end");
 	outputpage($manageattachments);
 }
-elseif($mybb->input['action'] == "do_attachments")
+elseif($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_attachments_start");
 	require "./inc/functions_upload.php";

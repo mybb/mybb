@@ -56,7 +56,7 @@ if($mybb->usergroup['cansendemail'] == "no")
 	nopermission();
 }
 
-if($mybb->input['action'] == "do_sendtofriend")
+if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("sendthread_do_sendtofriend_start");
 	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['sendto']))

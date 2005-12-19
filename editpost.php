@@ -152,7 +152,7 @@ if($mybb->input['removeattachment']) { // Lets remove the attachmen
 //	die($removeattachment);
 }
 
-if($mybb->input['action'] == "deletepost")
+if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
 
 	$plugins->run_hooks("editpost_deletepost");
@@ -222,7 +222,7 @@ if($mybb->input['action'] == "deletepost")
 		redirect("showthread.php?tid=$tid", $lang->redirect_nodelete);
 	}
 }
-elseif($mybb->input['action'] == "do_editpost")
+elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 {
 
 	$plugins->run_hooks("editpost_do_editpost_start");

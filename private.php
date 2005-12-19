@@ -262,7 +262,7 @@ if($mybb->input['action'] == "send")
 	$plugins->run_hooks("private_send_end");
 	outputpage($send);
 }
-elseif($mybb->input['action'] == "do_send")
+elseif($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_send_do_send");
 
@@ -580,7 +580,7 @@ elseif($mybb->input['action'] == "tracking")
 	$plugins->run_hooks("private_tracking_end");
 	outputpage($tracking);
 }
-elseif($mybb->input['action'] == "do_tracking")
+elseif($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_do_tracking_start");
 	if($mybb->input['stoptracking'])
@@ -652,7 +652,7 @@ elseif($mybb->input['action'] == "folders")
 	$plugins->run_hooks("private_folders_end");
 	outputpage($folders);
 }
-elseif($mybb->input['action'] == "do_folders")
+elseif($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_do_folders_start");
 	$highestid = 2;
@@ -736,7 +736,7 @@ elseif($mybb->input['action'] == "empty")
 	$plugins->run_hooks("private_empty_end");
 	outputpage($folders);
 }
-elseif($mybb->input['action'] == "do_empty")
+elseif($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_do_empty_start");
 	$emptyq = "";
@@ -763,7 +763,7 @@ elseif($mybb->input['action'] == "do_empty")
 	$plugins->run_hooks("private_do_empty_end");
 	redirect("private.php", $lang->redirect_pmfoldersemptied);
 }
-elseif($mybb->input['action'] == "do_stuff")
+elseif($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_do_stuff");
 	if($mybb->input['hop'])
@@ -838,7 +838,7 @@ elseif($mybb->input['action'] == "export")
 	$plugins->run_hooks("private_export_end");
 	outputpage($archive);
 }
-elseif($mybb->input['action'] == "do_export")
+elseif($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_do_export_start");
 	$lang->private_messages_for = sprintf($lang->private_messages_for, $mybb->user['username']);
