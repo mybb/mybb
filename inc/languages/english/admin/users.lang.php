@@ -181,6 +181,7 @@ $l['ban_reason'] = "Ban Reason";
 $l['quick_search_listing'] = "Quick Search and Listing Options";
 $l['sorting_misc_options'] = "Sorting and Misc. Options";
 $l['search_users_where'] = "Search for users where..";
+$l['last_edited'] = "Previously editing: {1}";
 
 $l['select_username'] = "username";
 $l['select_email'] = "email";

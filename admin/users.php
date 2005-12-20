@@ -177,7 +177,7 @@ if($mybb->input['action'] == "do_add")
 	{
 		foreach($mybb->input['additionalgroups'] as $gid)
 		{
-			if($gid == $usergroup)
+			if($gid == $mybb->input['usergroup'])
 			{
 				unset($mybb->input['additionalgroups'][$gid]);
 			}
@@ -210,6 +210,7 @@ if($mybb->input['action'] == "do_add")
 		"loginkey" => $loginkey,
 		"email" => addslashes($mybb->input['email']),
 		"usergroup" => intval($mybb->input['usergroup']),
+		"additionalgroups" => $additionalgroups,		
 		"displaygroup" => intval($mybb->input['displaygroup']),
 		"usertitle" => addslashes($mybb->input['usertitle']),
 		"regdate" => time(),
@@ -287,7 +288,7 @@ if($mybb->input['action'] == "do_add")
 		mymail($email, $emailsubject, $emailmessage);
 	}
 	$cache->updatestats();
-	cpredirect("users.php", $lang->user_added);
+	cpredirect("users.php?lastuid=$uid", $lang->user_added);
 }
 if($mybb->input['action'] == "do_edit")
 {
@@ -415,7 +416,7 @@ if($mybb->input['action'] == "do_edit")
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".addslashes($mybb->input['userusername'])."' WHERE lastposter='".addslashes($user['username'])."'");
 	}
 
-	cpredirect("users.php", $lang->profile_updated);
+	cpredirect("users.php?lastuid=$uid", $lang->profile_updated);
 }
 if($mybb->input['action'] == "do_delete")
 {
@@ -1926,11 +1927,22 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	}
 	$groups = implode("<br />", $groups);
 
+	//If there was a user previously edited, get their username:
+	if(isset($mybb->input['lastuid']))
+	{
+		$last_uid = intval($mybb->input['lastuid']);
+		$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='$lastuid' LIMIT 1");
+		$last_user = $db->fetch_array($query);
+		$lang->last_edited = sprintf($lang->last_edited, $last_user['username']);
+		$last_user['username'] = urlencode($last_user['username']);
+		$last_edited = "<li><a href=\"users.php?action=find&search[username]=$last_user[username]&searchop[sortby]=regdate&searchop[order]=desc\">".$lang->last_edited."</li>\n";
+	}
+
 	starttable();
 	startform("users.php", "", "find");
 	tableheader($lang->user_management);
 	tablesubheader($lang->quick_search_listing);
-	makelabelcode("<ul>\n<li><a href=\"users.php?action=find\">$lang->list_all</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n<li><a href=\"users.php?action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n</ul>", "", 2);
+	makelabelcode("<ul>\n$last_edited<li><a href=\"users.php?action=find\">$lang->list_all</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n<li><a href=\"users.php?action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n</ul>", "", 2);
 	tablesubheader($lang->search_users_where);
 	makeinputcode($lang->name_contains, "search[username]");
 	makeinputcode($lang->and_email, "search[email]");
