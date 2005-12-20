@@ -1,42 +1,48 @@
 var MyBB = {
 	init: function()
 	{
-		MyBB.detectBrowser();
+		this.detectBrowser();
+		this.attachListener(window, "load", MyBB.pageLoaded);
+	},
+	
+	pageLoaded: function()
+	{
+	
 	},
 	
 	detectBrowser: function()
 	{
-		MyBB.useragent = navigator.userAgent.toLowerCase();
-		MyBB.useragent_version = parseInt(navigator.appVersion);
+		this.useragent = navigator.userAgent.toLowerCase();
+		this.useragent_version = parseInt(navigator.appVersion);
 		
 		if(navigator.product == "Gecko")
 		{
-			MyBB.browser = "mozilla";
+			this.browser = "mozilla";
 		}
-		else if(MyBB.useragent.indexOf("opera") != -1)
+		else if(this.useragent.indexOf("opera") != -1)
 		{
-			MyBB.browser = "opera";
+			this.browser = "opera";
 		}
-		else if(MyBB.useragent.indexOf("konqueror") != -1)
+		else if(this.useragent.indexOf("konqueror") != -1)
 		{
-			MyBB.browser = "konqueror";
+			this.browser = "konqueror";
 		}
-		else if(MyBB.useragent.indexOf("msie") != -1)
+		else if(this.useragent.indexOf("msie") != -1)
 		{
-			MyBB.browser = "ie";
+			this.browser = "ie";
 		}
-		else if(MyBB.useragent.indexOf("compatible") == -1 && MyBB.useragent.indexOf("mozilla") != -1)
+		else if(this.useragent.indexOf("compatible") == -1 && this.useragent.indexOf("mozilla") != -1)
 		{
-			MyBB.browser = "netscape";
+			this.browser = "netscape";
 		}
 		
-		if(MyBB.useragent.indexOf("win") != -1)
+		if(this.useragent.indexOf("win") != -1)
 		{
-			MyBB.os = "win";
+			this.os = "win";
 		}
-		else if(MyBB.useragent.indexOf("mac") != -1)
+		else if(this.useragent.indexOf("mac") != -1)
 		{
-			MyBB.os = "mac";
+			this.os = "mac";
 		}
 	},
 	
@@ -281,4 +287,4 @@ var Cookie = {
 		Cookie.set(name, 0, -1);
 	}
 }
-MyBB.attachListener(window, "load", MyBB.init);
+MyBB.init();
