@@ -16,9 +16,11 @@
 $mybboard['internalver'] = "1.00";
 $mybboard['vercode'] = "100.07";
 
-//
-// Outputs the contents of a page rendering variables
-//
+/**
+ * Outputs a page directly to the browser, parsing anything which needs to be parsed.
+ *
+ * @param string The contents of the page.
+ */
 function outputpage($contents)
 {
 	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser, $mybbgroup;
@@ -77,9 +79,10 @@ function outputpage($contents)
 	}
 }
 
-//
-// Run queries stated for shutdown
-//
+/**
+ * Runs the shutdown queries after the page has been sent to the browser.
+ *
+ */
 function run_shutdown()
 {
 	global $db, $shutdown_queries;
@@ -92,9 +95,12 @@ function run_shutdown()
 	}
 }
 
-//
-// Parse the contents of a page before outputting it
-//
+/**
+ * Parses the contents of a page before outputting it.
+ *
+ * @param string The contents of the page.
+ * @return string The parsed page.
+ */
 function parsepage($contents)
 {
 	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup, $htmldoctype;
@@ -128,9 +134,15 @@ function parsepage($contents)
 	return $contents;
 }
 
-//
-// Turn a unix timestamp in to a "friendly" date/time format for the user
-//
+/**
+ * Turn a unix timestamp in to a "friendly" date/time format for the user.
+ *
+ * @param string A date format according to PHP's date structure.
+ * @param int The unix timestamp the date should be generated for.
+ * @param int The offset in hours that should be applied to times. (timezones)
+ * @param int Whether or not to use today/yesterday formatting.
+ * @return string The formatted timestamp.
+ */
 function mydate($format, $stamp, $offset="", $ty=1)
 {
 	global $mybb, $lang, $mybbadmin;
@@ -171,9 +183,14 @@ function mydate($format, $stamp, $offset="", $ty=1)
 	return $date;
 }
 
-//
-// MyBB mail wrapper (soon to be a class)
-//
+/**
+ * Sends an email using PHP's mail function, formatting it appropriately.
+ *
+ * @param string Address the email should be addressed to.
+ * @param string The subject of the email being sent.
+ * @param string The message being sent.
+ * @param string The from address of the email, if blank, the board name will be used.
+ */
 function mymail($to, $subject, $message, $from="")
 {
 	global $db, $mybb, $settings;
@@ -194,9 +211,12 @@ function mymail($to, $subject, $message, $from="")
 	mail($to, $subject, $message, "From: $from");
 }
 
-//
-// Return a parent list for the given forum
-//
+/**
+ * Return a parent list for the specified forum.
+ *
+ * @param int The forum id to get the parent list for.
+ * @return string The parent list.
+ */
 function getparentlist($fid)
 {
 	global $db, $forumcache;
