@@ -7,7 +7,7 @@ var MyBB = {
 	
 	pageLoaded: function()
 	{
-	
+		expandables.init();
 	},
 	
 	detectBrowser: function()
@@ -161,84 +161,7 @@ var MyBB = {
 		}
 	}
 }
-function expandCollapse(id) {
-	expandedItem = getElemRefs(id+"_e");
-	collapsedItem = getElemRefs(id+"_c");
-	if(expandedItem && collapsedItem) {
-		if(expandedItem.style.display == "none") {
-			hideDiv(id+"_c");
-			showDiv(id+"_e");
-			saveCollapsed(id);
-		} else {
-			hideDiv(id+"_e");
-			showDiv(id+"_c");
-			saveCollapsed(id, 1);
-		}
-	}
-	if(expandedItem && !collapsedItem)
-	{
-		collapseImage = getElemRefs(id+"_collapseimg");
-		if(expandedItem.style.display == "none") {
-			showDiv(id+"_e");
-			saveCollapsed(id);
-			if(collapseImage) {
-				collapseImage.src = collapseImage.src.replace("collapse_collapsed.gif","collapse.gif");
-				collapseImage.alt = collapseImage.alt.replace("[-]","[+]");
-			}
-		} else {
-			hideDiv(id+"_e");
-			saveCollapsed(id, 1);
-			if(collapseImage) {
-				collapseImage.src = collapseImage.src.replace("collapse.gif","collapse_collapsed.gif");
-				collapseImage.alt = collapseImage.alt.replace("[+]","[-]");
-			}
-		}
-	}
-}
 
-function getElemRefs(id) {
-	if(document.getElementById) {
-		return document.getElementById(id);
-	}
-	else if(document.all) {
-		return document.all[id];
-	}
-	else if(document.layers) {
-		return document.layers[id];
-	}
-}
-
-function showDiv(id) {
-	var lyr = getElemRefs(id);
-	if(lyr && lyr.style) {
-		lyr.style.display = "";
-	}
-}
-
-function hideDiv(id) {
-	var lyr = getElemRefs(id);
-	if(lyr && lyr.style) {
-		lyr.style.display = "none";
-	}
-}
-
-function saveCollapsed(id, add) {
-	var saved = new Array();
-	var newcollapsed = new Array();
-	if(collapsed = getcookie("collapsed")) {
-		saved = collapsed.split("|");
-		for(i=0;i<saved.length;i++) {
-			if(saved[i] != id && saved[id] != "") {
-				newcollapsed[newcollapsed.length] = saved[i];
-			}
-		}
-	}
-	if(add) {
-		newcollapsed[newcollapsed.length] = id;
-	}
-	col = newcollapsed.join("|");
-	setcookie("collapsed", col);
-}
 var Cookie = {
 
 	get: function(name)
@@ -287,4 +210,143 @@ var Cookie = {
 		Cookie.set(name, 0, -1);
 	}
 }
+
+var DomLib = {
+	
+	addClass: function(element, name)
+	{
+		if(element)
+		{
+			if(element.className != "")
+			{
+				element.className += " "+name;
+			}
+			else
+			{
+				element.className = name;
+			}
+		}
+	},
+
+	removeClass: function(element, name)
+	{
+		if(element.className == element.className.replace(" ", "-"))
+		{
+			element.className = element.className.replace(name, "");
+		}
+		else
+		{
+			element.className = element.className.replace(" "+name, "");
+		}
+	},
+
+	getElementsByClassName: function(oElm, strTagName, strClassName)
+	{
+	    var arrElements = (strTagName == "*" && document.all)? document.all : oElm.getElementsByTagName(strTagName);
+	    var arrReturnElements = new Array();
+	    strClassName = strClassName.replace(/\-/g, "\\-");
+	    var oRegExp = new RegExp("(^|\\s)" + strClassName + "(\\s|$)");
+	    var oElement;
+	    for(var i=0; i<arrElements.length; i++)
+		{
+	        oElement = arrElements[i];      
+	        if(oRegExp.test(oElement.className))
+			{
+	            arrReturnElements.push(oElement);
+	        }   
+	    }
+	    return (arrReturnElements)
+	}
+}
+
+var expandables = {
+
+	init: function()
+	{
+		expanders = DomLib.getElementsByClassName(document, "img", "expander");
+		if(expanders.length > 0)
+		{
+			for(i=0;i<expanders.length;i++)
+			{
+				var expander = expanders[i];
+				if(!expander.id)
+				{
+					continue;
+				}
+				MyBB.attachListener(expander, "click", this.expandCollapse);
+				expander.controls = expander.id.replace("_img", "");
+				var row = document.getElementById(expander.id);
+				if(row)
+				{
+					MyBB.attachListener(row, "dblclick", this.expandCollapse);
+					row.controls = expander.id.replace("_img", "");
+				}
+			}
+		}
+	},
+
+	expandCollapse: function(e)
+	{
+		element = MyBB.eventElement(e)
+		if(!element || !element.controls)
+		{
+			return false;
+		}
+		var expandedItem = document.getElementById(element.controls+"_e");
+		var collapsedItem = document.getElementById(element.controls+"_c");
+
+		if(expandedItem && collapsedItem)
+		{
+			if(expandedItem.style.display = "none")
+			{
+				expandedItem.style.display = "";
+				collapsedItem.style.display = "none";
+			}
+			else
+			{
+				expandedItem.style.display = "none";
+				collapsedItem.style.display = "";
+			}
+		}
+		else if(expandedItem && !collapsedItem)
+		{
+			if(expandedItem.style.display == "none")
+			{
+				expandedItem.style.display = "";
+				element.src = element.src.replace("collapse_collapsed.gif", "collapse.gif");
+				element.alt = element.alt.replace("[-]", "[+]");
+			}
+			else
+			{
+				expandedItem.style.display = "none";
+				element.src = element.src.replace("collapse.gif", "collapse_collapsed.gif");
+				element.alt = element.alt.replace("[+]", "[-]");
+			}
+		}
+	},
+
+	saveCollapsed: function(id, add)
+	{
+		var saved = new Array();
+		var newCollapsed = new Array();
+		var collapsed = Cookie.get("collapsed");
+		if(collapsed)
+		{
+			saved = split("|");
+			for(i=0;i<saved.length;i++)
+			{
+				if(saved[i] != id && saved[id] != "")
+				{
+					newCollapsed[newCollapsed.length] = saved[i];
+				}
+			}
+		}
+		if(add)
+		{
+			newCollapsed[newCollapsed.length] = saved[i];
+		}
+		Cookie.set("collapsed", newCollapsed.join("|"));
+	}
+}
+
 MyBB.init();

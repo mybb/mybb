@@ -447,7 +447,7 @@ $forums
 <thead>
 <tr>
 <td class="thead">
-<div class="expcolimage"><a href="javascript:expandCollapse('boardstats');"><img src="$theme[imgdir]/collapse$collapsedimg[boardstats].gif" id="boardstats_collapseimg" border="0" alt="[-]" /></a></div>
+<div class="expcolimage"><img src="$theme[imgdir]/collapse$collapsedimg[boardstats].gif" id="boardstats_img" border="0" alt="[-]" /></div>
 <div><strong>$lang->boardstats</strong></div>
 </td>
 </tr>
@@ -2535,7 +2535,7 @@ $footer
 <thead>
 <tr>
 <td class="thead" colspan="5">
-<div class="expcolimage"><a href="javascript:expandCollapse('cat_$forum[fid]');"><img src="$theme[imgdir]/$expcolimage" id="cat_$forum[fid]_collapseimg" border="0" alt="$expaltext" /></a></div>
+<div class="expcolimage"><img src="$theme[imgdir]/$expcolimage" id="cat_$forum[fid]_img" border="0" alt="$expaltext" /></div>
 <div><strong><a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><div class="smalltext">$forum[description]</div></div>
 </td>
 </tr>
@@ -3295,7 +3295,7 @@ var php_prompt = "$lang->php_prompt";
 <thead>
 <tr>
 <td colspan="2" class="thead">
-<div class="expcolimage"><a href="javascript:expandCollapse('quickreply');"><img src="images/collapse$collapsedimg[quickreply].gif" id="quickreply_collapseimg" border="0"></a></div>
+<div class="expcolimage"><img src="images/collapse$collapsedimg[quickreply].gif" id="quickreply_img" border="0"></div>
 <div><strong>$lang->quick_reply</strong></div>
 </td>
 </tr>
@@ -3601,7 +3601,7 @@ $footer
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
 <thead>
 <tr>
-<td class="thead"><div class="expcolimage"><a href="javascript:expandCollapse('sid_$section[sid]');"><img src="$theme[imgdir]/$expcolimage" id="sid_$section[sid]_collapseimg" border="0" alt="[-]" /></a></div><div><strong>$section[name]</strong></div></td>
+<td class="thead"><div class="expcolimage"><img src="$theme[imgdir]/$expcolimage" id="sid_$section[sid]_img" border="0" alt="[-]" /></div><div><strong>$section[name]</strong></div></td>
 </tr>
 </thead>
 <tbody style="$expdisplay" id="sid_$section[sid]_e">
