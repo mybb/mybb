@@ -11,13 +11,50 @@
 
 class databaseEngine {
 
+	/**
+	 * A count of the number of queries.
+	 *
+	 * @var int
+	 */
 	var $query_count = 0;
+	
+	/**
+	 * A list of the performed queries.
+	 *
+	 * @var array
+	 */
 	var $querylist = array();
+	
+	/**
+	 * 1 if error reporting enabled, 0 if disabled.
+	 *
+	 * @var boolean
+	 */
 	var $error_reporting = 1;
+	
+	/**
+	 * The database connection resource.
+	 *
+	 * @var resource
+	 */
 	var $link;
+	
+	/**
+	 * Explanation of a query.
+	 *
+	 * @var string
+	 */
 	var $explain;
 
-	// Connects to the database server
+	/**
+	 * Connect to the database server.
+	 *
+	 * @param string The database hostname.
+	 * @param string The database username.
+	 * @param string The database user's password.
+	 * @param boolean 1 if persistent connection, 0 if not.
+	 * @return resource The database connection resource.
+	 */
 	function connect($hostname="localhost", $username="root", $password="", $pconnect=0)
 	{
 		if($pconnect)
@@ -31,13 +68,24 @@ class databaseEngine {
 		return $this->link;
 	}
 
-	// Selects which database we're using for MyBB
+	/**
+	 * Selects the database to use.
+	 *
+	 * @param string The database name.
+	 * @return boolean True when successfully connected, false if not.
+	 */
 	function select_db($database)
 	{
 		return @mysql_select_db($database, $this->link) or $this->dberror();
 	}
 
-	// Query the database for $string
+	/**
+	 * Query the database.
+	 *
+	 * @param string The query SQL.
+	 * @param boolean 1 if hide errors, 0 if not.
+	 * @return resource The query data.
+	 */
 	function query($string, $hideerr=0)
 	{
 		global $pagestarttime, $querytime, $db, $mybb;
@@ -59,7 +107,12 @@ class databaseEngine {
 		return $query;
 	}
 	
-	// Explains the query $string
+	/**
+	 * Explain a query on the database.
+	 *
+	 * @param string The query SQL.
+	 * @param string The time it took to perform the query.
+	 */
 	function explain_query($string, $qtime)
 	{
 		if(preg_match("#^select#i", $string))
@@ -126,7 +179,13 @@ class databaseEngine {
 	}
 
 
-	// Return a result array for  query
+	/**
+	 * Return a result array for a query.
+	 *
+	 * @param resource The query data.
+	 * @param constant The type of array to return.
+	 * @return array The array of results.
+	 */
 	function fetch_array($query, $type=MYSQL_ASSOC)
 	{
 		if(!$type)
@@ -138,45 +197,75 @@ class databaseEngine {
 	}
 
 
-	// Return a specified result for a query
+	/**
+	 * Return a specified result for a quer.
+	 *
+	 * @param resource The query data.
+	 * @param string The row to return.
+	 * @return string The result of the query.
+	 */
 	function result($query, $row)
 	{
 		$result = mysql_result($query, $row);
 		return $result;
 	}
 
-	// Return the number of rows resulting from a query
+	/**
+	 * Return the number of rows resulting from a query.
+	 *
+	 * @param resource The query data.
+	 * @return int The number of rows in the result.
+	 */
 	function num_rows($query)
 	{
 		return mysql_num_rows($query);
 	}
 
-	// Get the last id number of previously inserted data
+	/**
+	 * Return the last id number of inserted data.
+	 *
+	 * @return int The id number.
+	 */
 	function insert_id()
 	{
 		$id = mysql_insert_id();
 		return $id;
 	}
 
-	// Close the connection to the DBMS
+	/**
+	 * Close the connection with the DBMS.
+	 *
+	 */
 	function close()
 	{
 		@mysql_close($this->link);
 	}
 
-	// Return an error number
+	/**
+	 * Return an error number.
+	 *
+	 * @return int The error number of the current error.
+	 */
 	function errno()
 	{
-		global $db;
 		return mysql_errno();
 	}
 
+	/**
+	 * Return an error string.
+	 *
+	 * @return string The explanation for the current error.
+	 */
 	function error()
 	{
 		return mysql_error();
 	}
 
-	// Output a database error
+	/**
+	 * Output a database error.
+	 *
+	 * @param string The string to present as an error.
+	 */
 	function dberror($string="")
 	{
 		if($this->error_reporting)
@@ -189,31 +278,56 @@ class databaseEngine {
 	}
 
 
-	// Return how many affected rows by a query
+	/**
+	 * Returns the number of affected rows in a query.
+	 *
+	 * @return int The number of affected rows.
+	 */
 	function affected_rows()
 	{
 		return mysql_affected_rows();
 	}
 
-	// Return the number of fields
+	/**
+	 * Return the number of fields.
+	 *
+	 * @param resource The query data.
+	 * @return int The number of fields.
+	 */
 	function num_fields($query)
 	{
 		return mysql_num_fields($query);
 	}
 
-	// Get a field name
+	/**
+	 * Return a field name.
+	 *
+	 * @param resource The query data.
+	 * @param int The field offset.
+	 * @return string The field name.
+	 */
 	function field_name($query, $i)
 	{
 		return mysql_field_name($query, $i);
     }
 
-	// List all tables in the database
+	/**
+	 * Lists all functions in the database.
+	 *
+	 * @param string The database name.
+	 * @return array The table list.
+	 */
 	function list_tables($database)
 	{
 		return mysql_list_tables($database);
 	}
 
-	// Check if a table exists in the database
+	/**
+	 * Check if a table exists in a database.
+	 *
+	 * @param string The table name.
+	 * @return boolean True when exists, false if not.
+	 */
 	function table_exists($table)
 	{
 		$err = $this->error_reporting;
@@ -231,7 +345,13 @@ class databaseEngine {
 		}
 	}
 
-	// Check if a field exists in the database
+	/**
+	 * Check if a field exists in a database.
+	 *
+	 * @param string The field name.
+	 * @param string The table name.
+	 * @return boolean True when exists, false if not.
+	 */
 	function field_exists($field, $table)
 	{
 		global $db;
@@ -250,7 +370,12 @@ class databaseEngine {
 		}
 	}
 
-	// Add a shutdown query
+	/**
+	 * Add a shutdown query.
+	 *
+	 * @param resource The query data.
+	 * @param string An optional name for the query.
+	 */
 	function shutdown_query($query, $name=0)
 	{
 		global $shutdown_queries;
@@ -264,7 +389,13 @@ class databaseEngine {
 		}
 	}
 
-	// Build an insert query from an array
+	/**
+	 * Build an insert query from an array.
+	 *
+	 * @param string The table name to perform the query on.
+	 * @param array An array of fields and their values.
+	 * @return resource The query data.
+	 */
 	function insert_query($table, $array)
 	{
 		if(!is_array($array))
@@ -279,7 +410,15 @@ class databaseEngine {
 		}
 		return $this->query("INSERT INTO ".$table." (".$query1.") VALUES (".$query2.");");
 	}
-	// Build an update query from an array
+	
+	/**
+	 * Build an update query from an array.
+	 *
+	 * @param string The table name to perform the query on.
+	 * @param array An array of fields and their values.
+	 * @param string An optional where clause for the query.
+	 * @return resource The query data.
+	 */
 	function update_query($table, $array, $where="")
 	{
 		if(!is_array($array))
@@ -296,7 +435,6 @@ class databaseEngine {
 			$query .= " WHERE $where";
 		}
 		return $this->query("UPDATE $table SET $query");
-		//die("UPDATE $table SET $query");
 	}
 }
 ?>
