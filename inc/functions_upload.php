@@ -171,7 +171,7 @@ function upload_attachment($attachment)
 	}
 
 	// Check if an attachment with this name is already in the post
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE filename='".$attachment['name']."' AND (posthash='$posthash' OR (pid='$pid' AND pid!='0'))");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE filename='".addslashes($attachment['name'])."' AND (posthash='$posthash' OR (pid='$pid' AND pid!='0'))");
 	$prevattach = $db->fetch_array($query);
 	if($prevattach['aid'])
 	{
@@ -195,6 +195,18 @@ function upload_attachment($attachment)
 		return $ret;
 	}
 
+	// Generate the array for the insert_query
+	$attacharray = array(
+		"pid" => $pid,
+		"posthash" => $posthash,
+		"uid" => $mybb->user['uid'],
+		"filename" => addslashes($file['original_filename']),
+		"filetype" => $file['type'],
+		"filesize" => $file['size'],
+		"attachname" => $filename,
+		"downloads" => 0,
+		);
+
 	// Alls well that ends well? Lets generate a thumbnail (if image) and insert it all in to the database
 	if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 	{
@@ -203,24 +215,24 @@ function upload_attachment($attachment)
 		$thumbnail = generate_thumbnail($mybb->settings['uploadspath']."/".$filename, $mybb->settings['uploadspath'], $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 		if($thumbnail['filename'])
 		{
-			$thumbadd = ",thumbnail";
-			$thumbadd2 = ",'".$thumbnail['filename']."'";
+			$attacharray['thumbnail'] = $thumbnail['filename'];
 		}
 		elseif($thumbnail['code'] == 4)
 		{
-			$thumbadd = ",thumbnail";
-			$thumbadd2 = ",'SMALL'";
+			$attacharray['thumbnail'] = "SMALL";
 		}
 	}
 	if($forum['modattachments'] == "yes" && $mybb->usergroup['cancp'] != "yes")
 	{
-		$attvisible = 0;
+		$attacharray['visible'] = 0;
 	}
 	else
 	{
-		$attvisible = 1;
+		$attacharray['visible'] = 1;
 	}
-	$db->query("INSERT INTO ".TABLE_PREFIX."attachments (aid,pid,posthash,uid,filename,filetype,filesize,attachname,downloads,visible$thumbadd) VALUES ('','$pid','$posthash','".$mybb->user['uid']."','".$file['original_filename']."','".$file['type']."','".$file['size']."','$filename','0','$attvisible'$thumbadd2)");
+	
+	$db->insert_query(TABLE_PREFIX."attachments", $attacharray);
+	
 	$aid = $db->insert_id();
 	$ret['aid'] = $aid;
 	return $ret;
