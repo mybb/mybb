@@ -383,7 +383,7 @@ elseif($mybb->input['action'] == "do_profile" && $mybb->request_method == "post"
 	$usertitle = "";
 	if($mybb->usergroup['cancustomtitle'] == "yes")
 	{
-		if(strlen($mybb->input['usertitle']) <= $mybb->settings['customtitlemaxlength'])
+		if(my_strlen($mybb->input['usertitle']) <= $mybb->settings['customtitlemaxlength'])
 		{
 			$usertitle = $mybb->input['usertitle'];
 		}
@@ -1278,7 +1278,7 @@ elseif($mybb->input['action'] == "editsig")
 elseif($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_editsig_start");
-	if($mybb->settings['siglength'] != 0 && strlen($mybb->input['signature']) > $mybb->settings['siglength'])
+	if($mybb->settings['siglength'] != 0 && my_strlen($mybb->input['signature']) > $mybb->settings['siglength'])
 	{
 		error($lang->sig_too_long);
 	}
