@@ -45,6 +45,13 @@ class databaseEngine {
 	 * @var string
 	 */
 	var $explain;
+	
+	/**
+	 * Queries to perform prior to shutdown of connection.
+	 *
+	 * @var array
+	 */
+	var $shutdown_queries;
 
 	/**
 	 * Connect to the database server.
@@ -378,14 +385,13 @@ class databaseEngine {
 	 */
 	function shutdown_query($query, $name=0)
 	{
-		global $shutdown_queries;
 		if($name)
 		{
-			$shutdown_queries[$name] = $query;
+			$this->shutdown_queries[$name] = $query;
 		}
 		else
 		{
-			$shutdown_queries[] = $query;
+			$this->shutdown_queries[] = $query;
 		}
 	}
 

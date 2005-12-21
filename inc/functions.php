@@ -85,10 +85,10 @@ function outputpage($contents)
  */
 function run_shutdown()
 {
-	global $db, $shutdown_queries;
-	if(is_array($shutdown_queries))
+	global $db;
+	if(is_array($db->shutdown_queries))
 	{
-		foreach($shutdown_queries as $query)
+		foreach($db->shutdown_queries as $query)
 		{
 			$db->query($query);
 		}
