@@ -65,8 +65,8 @@ while($postrow = $db->fetch_array($query))
 	$postrow['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($postrow['subject'])));
 	$postrow['date'] = mydate($mybb->settings['dateformat'], $postrow['dateline']);
 	$postrow['time'] = mydate($mybb->settings['timeformat'], $postrow['dateline']);
-	$postrow['message'] = postify(stripslashes($postrow['message']), $forum['allowmycode'], $forum['allowsmilies'], $forum['allowimgcode']);
-	// do me code
+	$postrow['message'] = postify(stripslashes($postrow['message']), $forum['allowhtml'], $forum['allowmycode'], $forum['allowsmilies'], $forum['allowimgcode']);
+	/* Do /me code */
 	if($forum['allowmycode'] != "no")
 	{
 		$postrow['message'] = domecode($postrow['message'], $postrow['username']);
