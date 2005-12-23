@@ -49,8 +49,11 @@ if($mybb->input['action'] == "do_attachments")
 			else
 			{
 				if($val != "no")
-				{
-					$db->query("UPDATE ".TABLE_PREFIX."attachments SET visible='1' WHERE aid='$aid'");
+				{					
+					$sql_array = array(
+						"visible" => 1
+					);
+					$db->update_query(TABLE_PREFIX."attachments", $sql_array, "aid = '".$aid."'");
 				}
 			}
 		}
@@ -78,8 +81,19 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 				{
 					$subject = addslashes($mybb->input['threadsubject'][$tid]);
 					$message = addslashes($mybb->input['threadmessage'][$tid]);
-					$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1', subject='$subject' WHERE tid='$tid'");
-					$db->query("UPDATE ".TABLE_PREFIX."posts SET message='$message', subject='$subject', visible='1' WHERE tid='$tid'");
+					
+					$sql_array = array(
+						"visible" => 1,
+						"subject" => $subject
+					);
+					$db->update_query(TABLE_PREFIX."threads", $sql_array, "tid = '".$tid."'");
+					
+					$sql_array = array(
+						"message" => $message,
+						"subject" => $subject,
+						"visible" => 1
+					);
+					$db->update_query(TABLE_PREFIX."posts", $sql_array, "tid = '".$tid."'");
 					$updateforumcount[$thread['fid']] = 1;
 				}
 			}
@@ -107,7 +121,13 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 				{
 					$message = addslashes($mybb->input['postmessage'][$pid]);
 					$subject = addslashes($mybb->input['postsubject'][$pid]);
-					$db->query("UPDATE ".TABLE_PREFIX."posts SET visible=1, message='$message', subject='$subject' WHERE pid='$pid'");
+					
+					$sql_array = array(
+						"visible" => 1,
+						"message" => $message,
+						"subject" => $subject
+					);
+					$db->update_query(TABLE_PREFIX."posts", $sql_array, "pid = '".$pid."'");
 					$updatethreadcount[$post['tid']] = 1;
 					$updateforumcount[$thread['fid']] = 1;
 				}
@@ -115,12 +135,14 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 		}
 	}
 	if(is_array($updatethreadcount)) {
-		while(list($tid, $val) = each($updatethreadcount)) {
+		while(list($tid, $val) = each($updatethreadcount))
+		{
 			updatethreadcount($tid);
 		}
 	}
 	if(is_array($updateforumcount)) {
-		while(list($fid, $val) = each($updateforumcount)) {
+		while(list($fid, $val) = each($updateforumcount))
+		{
 			updateforumcount($fid);
 		}
 	}
@@ -180,7 +202,7 @@ if($mybb->input['action'] == "attachments")
 if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadsposts")
 {
 	$done = 0;
-	$query = $db->query("SELECT t.*, f.name AS forumname, u.username AS username, p.message AS postmessage, p.pid AS postpid FROM ".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid) WHERE t.visible=0 AND p.tid=t.tid ORDER BY t.lastpost DESC");
+	$query = $db->query("SELECT t.tid, t.fid, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid) WHERE t.visible=0 AND p.tid=t.tid ORDER BY t.lastpost DESC");
 	$tcount = $db->num_rows($query);
 
 	if($tcount < 1 && $mybb->input['action'] != "threadsposts")
