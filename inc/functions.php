@@ -1268,12 +1268,37 @@ function gzipencode($contents, $level=1)
 	return $contents;
 }
 
+/**
+ * Log the actions of a moderator.
+ *
+ * @param array The data of the moderator's action.
+ * @param string The message to enter for the action the moderator performed.
+ */
 function logmod($data, $action="")
 {
 	global $mybb, $mybbuser, $db, $session;
 	
+	/* If the fid or tid is not set, set it at 0 so MySQL doesn't choke on it. */
+	if($data['fid'] == '')
+	{
+		$data['fid'] = 0;
+	}	
+	if($data['tid'] == '')
+	{
+		$data['tid'] = 0;
+	}
+	
 	$time = time();
-	$db->query("INSERT INTO ".TABLE_PREFIX."moderatorlog (uid,dateline,fid,tid,action,ipaddress) VALUES ('".$mybb->user['uid']."','$time','".$data['fid']."','".$data['tid']."','$action','".$session->ipaddress."')");
+	
+	$sql_array = array(
+		"uid" => $mybb->user['uid'],
+		"dateline" => $time,
+		"fid" => $data['fid'],
+		"tid" => $data['tid'],
+		"action" => $action,
+		"ipaddress" => $session->ipaddress
+	);
+	$db->insert_query(TABLE_PREFIX."moderatorlog", $sql_array);
 }
 
 function getreputation($reputation)

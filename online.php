@@ -475,6 +475,10 @@ function show($user)
 		case "private":
 			$locationname = $lang->using_pmsystem;
 			break;
+		/* Ratethread functions */
+		case "ratethread":
+			$locationname = $lang->rating_thread;
+			break;
 		// report.php functions
 		case "report":
 			$locationname = $lang->reporting_post;
@@ -664,7 +668,7 @@ function what($user)
 			{
 				$user['activity'] = "member_activate";
 			}
-			elseif($parameters['action'] == "register")
+			elseif($parameters['action'] == "register" || $parameters['action'] == "do_register")
 			{
 				$user['activity'] = "member_register";
 			}
@@ -812,6 +816,9 @@ function what($user)
 			{
 				$user['activity'] = "private";
 			}
+			break;
+		case "ratethread":
+			$user['activity'] = "ratethread";
 			break;
 		case "report":
 			$user['activity'] = "report";
