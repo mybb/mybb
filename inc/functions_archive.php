@@ -129,9 +129,6 @@ function archive_footer()
 function archive_error($error)
 {
 	global $lang, $mybb;
-	resetnav();
-	addnav($lang->error);
-	archive_header();
 ?>
 <div class="error">
 <div class="header"><?php echo $lang->error; ?></div>

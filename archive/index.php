@@ -123,14 +123,14 @@ switch($action)
 		$query = $db->query("SELECT COUNT(t.tid) AS threads FROM ".TABLE_PREFIX."threads t WHERE t.fid='$id' AND t.visible='1'");
 		$threadcount = $db->result($query, 0);
 
+		// Build the navigation
+		makeforumnav($forum['fid'], 1);
+		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid=$id");
+		
 		if($threadcount < 1)
 		{
 			archive_error($lang->error_nothreads);
 		}
-
-		// Build the navigation
-		makeforumnav($forum['fid'], 1);
-		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid=$id");
 
 		$perpage = $mybb->settings['threadsperpage'];
 		$pages = ceil($threadcount/$perpage);
