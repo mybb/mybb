@@ -54,7 +54,11 @@ if($mybb->user['receivepms'] == "no")
 if(!$mybb->user['pmfolders'])
 {
 	$mybb->user['pmfolders'] = "1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can";
-	$db->query("UPDATE ".TABLE_PREFIX."users SET pmfolders='".$mybb->user[pmfolders]."' WHERE uid='".$mybb->user[uid]."'");
+	
+	$sql_array = array(
+		 "pmfolders" => $mybb->user['pmfolders']
+	);
+	$db->update_query(TABLE_PREFIX."users", $sql_array, "WHERE uid = ".$mybb->user['uid']);
 }
 
 $timecut = time()-(60*60*24*7);
@@ -464,11 +468,17 @@ elseif($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	{
 		if($mybb->input['do'] == "reply")
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='3' WHERE pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'");
+			$sql_array = array(
+				"status" => 3
+			);
+			$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "WHERE pmid=".intval($mybb->input['pmid'])." AND uid=".$mybb->user['uid']);
 		}
 		elseif($mybb->input['do'] == "forward")
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='4' WHERE pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'");
+			$sql_array = array(
+				"status" => 4
+			);
+			$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "WHERE pmid=".intval($mybb->input['pmid'])." AND uid=".$mybb->user['uid']);
 		}
 	}
 	if($options['savecopy'] != "no" && !$mybb->input['saveasdraft'])
@@ -496,7 +506,10 @@ elseif($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	}
 	if($touser['pmpopup'] != "no" && !$mybb->input['saveasdraft'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET pmpopup='new' WHERE uid='".$touser['uid']."'");
+		$sql_array = array(
+			"pmpopup" => "new"
+		);
+		$db->update_query(TABLE_PREFIX."users", $sql_array, "WHERE uid=".$touser['uid']);
 	}
 	$plugins->run_hooks("private_do_send_end");
 	if($mybb->input['saveasdraft'])
@@ -539,6 +552,7 @@ elseif($mybb->input['action'] == "read")
 	if($pm['status'] == "0")
 	{
 		$time = time();
+		/* Do not convert to update_query() as $receiptadd will break. */
 		$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='1'$receiptadd, readtime='$time' WHERE pmid='$pmid'");
 	}
 	$pm['userusername'] = $pm['username'];
@@ -589,7 +603,10 @@ elseif($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post
 		{
 			while(list($key, $val) = each($mybb->input['readcheck']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."' AND fromid='".$mybb->user['uid']."'");
+				$sql_array = array(
+					"receipt" => 0
+				);
+				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "WHERE pmid=".intval($key)." AND fromid=".$mybb->user['uid']);
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
@@ -601,7 +618,10 @@ elseif($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post
 		{
 			while(list($key, $val) = each($mybb->input['unreadcheck']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET receipt='0' WHERE pmid='".intval($key)."' AND fromid='".$mybb->user['uid']."'");
+				$sql_array = array(
+					"receipt" => 0
+				);
+				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "WHERE pmid=".intval($key)." AND fromid=".$mybb->user['uid']);
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
@@ -714,7 +734,11 @@ elseif($mybb->input['action'] == "do_folders" && $mybb->request_method == "post"
 			}
 		}
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."users SET pmfolders='$folders' WHERE uid='".$mybb->user[uid]."'");
+	
+	$sql_array = array(
+		"pmfolders" => $folders
+	);
+	$db->update_query(TABLE_PREFIX."users", $sql_array, "WHERE uid='".$mybb->user['uid']);
 	$plugins->run_hooks("private_do_folders_end");
 	redirect("private.php", $lang->redirect_pmfoldersupdated);
 }
@@ -776,7 +800,10 @@ elseif($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 		{
 			while(list($key, $val) = each($mybb->input['check']))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='".intval($mybb->input['fid'])."' WHERE pmid='".intval($key)."' AND uid='".$mybb->user['uid']."'");
+				$sql_array = array(
+					"folder" => intval($mybb->input['fid'])
+				);
+				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "WHERE pmid=".intval($key)." AND uid=".$mybb->user['uid']);
 			}
 		}
 		redirect("private.php?fid=".$mybb->input['fid'], $lang->redirect_pmsmoved);
@@ -794,7 +821,7 @@ elseif($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				}
 				$pmssql .= "'".intval($key)."'";
 			}
-			$query = $db->query("SELECT pmid, folder FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN ($pmssql) AND uid='".$mybb->user[uid]."' AND folder='4' ORDER BY pmid");
+			$query = $db->query("SELECT pmid, folder FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN ($pmssql) AND uid='".$mybb->user['uid']."' AND folder='4' ORDER BY pmid");
 			while($delpm = $db->fetch_array($query))
 			{
 				$deletepms[$delpm['pmid']] = 1;
@@ -808,7 +835,10 @@ elseif($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				}
 				else
 				{
-					$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='4' WHERE pmid='$key' AND uid='".$mybb->user['uid']."'");
+					$sql_array = array(
+						"folder" => 4,
+					);
+					$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid='".$key."' AND uid='".$mybb->user['uid']."'");
 				}
 			}
 		}
@@ -818,7 +848,12 @@ elseif($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 elseif($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("private_delete_start");
-	$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET folder='4' WHERE pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'");
+	
+	$sql_array = array(
+		"folder" => 4
+	);
+	$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "WHERE pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'");
+	
 	$plugins->run_hooks("private_delete_end");
 	redirect("private.php", $lang->redirect_pmsdeleted);
 }
