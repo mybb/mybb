@@ -640,10 +640,7 @@ switch($mybb->input['action'])
 			{
 				$pcount = "-$posters[posts]";
 			}
-			$sqlarray = array(
-				"postnum" => "postnum$pcount",
-				);
-			$db->update_query(TABLE_PREFIX."users", $sqlarray, "uid='$posters[uid]'");
+			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]')");
 		}
 		updateforumcount($moveto);
 		updateforumcount($fid);
@@ -1260,10 +1257,7 @@ switch($mybb->input['action'])
 			{
 				$pcount = "-$posters[posts]";
 			}
-			$sqlarray = array(
-				"postnum" => "postnum$pcount",
-				);
-			$db->update_query(TABLE_PREFIX."users", $sqlarray, "uid='$posters[uid]'");
+			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]')");
 		}
 		updateforumcount($moveto);
 		updateforumcount($fid);
@@ -1484,10 +1478,7 @@ switch($mybb->input['action'])
 			{
 				$pcount = "+$posters[posts]";
 			}
-			$sqlarray = array(
-				"postnum" => "postnum$pcount",
-				);
-			$db->update_query(TABLE_PREFIX."users", $sqlarray, "uid='$posters[uid]'");
+			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]')");
 		}
 
 		// Update the subject of the first post in the new thread
