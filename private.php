@@ -887,9 +887,9 @@ elseif($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	}
 	else
 	{
-		if($mybb->input['daycut'] && ($mybb->input['dayway'] != "all"))
+		if($mybb->input['daycut'] && ($mybb->input['dayway'] != "disregard"))
 		{
-			$datecut = time()-($daycut * 86400);
+			$datecut = time()-($mybb->input['daycut'] * 86400);
 			$wsql = "pm.dateline";
 			if($mybb->input['dayway'] == "older")
 			{
@@ -943,11 +943,7 @@ elseif($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$wsql .= " AND pm.status!='0'";
 		}
 	}
-	if($mybb->input['exporttype'] != "html" && $mybb->input['exporttype'] != "csv")
-	{
-		$exporttype = "txt";
-	}
-	$query = $db->query("SELECT pm.*, fu.username AS fromusername, tu.username AS tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid) WHERE $wsql AND pm.uid='".$mybb->user[uid]."' ORDER BY pm.folder ASC, pm.dateline DESC");
+	$query = $db->query("SELECT pm.*, fu.username AS fromusername, tu.username AS tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid) WHERE $wsql AND pm.uid='".$mybb->user['uid']."' ORDER BY pm.folder ASC, pm.dateline DESC");
 	$numpms = $db->num_rows($query);
 	if(!$numpms)
 	{
@@ -1021,21 +1017,21 @@ elseif($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 				if($folderinfo[0] == $message['folder'])
 				{
 					$foldername = $folderinfo[1];
-					if($exporttype != "csv")
+					if($mybb->input['exporttype'] != "csv")
 					{
-						eval("\$pmsdownload .= \"".$templates->get("private_archive_".$exporttype."_folderhead", 1, 0)."\";");
+						eval("\$pmsdownload .= \"".$templates->get("private_archive_".$nmybb->input['exporttype']."_folderhead", 1, 0)."\";");
 					}
 					$donefolder[$message['folder']] = 1;				
 				}
 			}
 		}
-		eval("\$pmsdownload .= \"".$templates->get("private_archive_".$exporttype."_message", 1, 0)."\";");
+		eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_message", 1, 0)."\";");
 		$ids .= ",'$message[pmid]'";
 	}
 	$query = $db->query("SELECT css FROM ".TABLE_PREFIX."themes WHERE tid='$theme[tid]'");
 	$css = $db->result($query, 0);
 
-	eval("\$archived = \"".$templates->get("private_archive_".$exporttype, 1, 0)."\";");
+	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
 	if($mybb->input['deletepms'] == "yes")
 	{ // delete the archived pms
 		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN (''$ids)");
@@ -1043,18 +1039,21 @@ elseif($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	if($mybb->input['exporttype'] == "html")
 	{
 		$filename = "pm-archive.html";
+		$contenttype = "text/html";
 	}
 	elseif($mybb->input['exporttype'] == "csv")
 	{
 		$filename = "pm-archive.csv";
+		$contenttype = "application/octet-stream";
 	}
 	else
 	{
 		$filename = "pm-archive.txt";
+		$contenttype = "text/plain";
 	}
 	$archived = ereg_replace("\\\'","'",$archived);
 	header("Content-disposition: filename=$filename");
-	header("Content-type: unknown/unknown");
+	header("Content-type: ".$contenttype);
 	$plugins->run_hooks("private_do_export_end");
 	if($mybb->input['exporttype'] == "html")
 	{

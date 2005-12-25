@@ -2768,7 +2768,7 @@ $usercpnav
 </tr>
 <tr>
 <td class="trow2" valign="top" width="30%"><strong>$lang->date_limit</strong></td>
-<td class="trow2"><select name="dayway"><option value="older">$lang->date_limit_older</option><option value="newer">$lang->date_limit_newer</option></select> <input type="text" name="daycut" value="30" size="3" maxlength="4" /> $lang->date_limit_days</td>
+<td class="trow2"><select name="dayway"><option value="older">$lang->date_limit_older</option><option value="newer">$lang->date_limit_newer</option><option value="disregard">$lang->date_limit_disregard</option></select> <input type="text" name="daycut" value="30" size="3" maxlength="4" /> $lang->date_limit_days</td>
 </tr>
 <tr>
 <td class="trow1" valign="top" width="30%"><strong>$lang->export_unread</strong></td>

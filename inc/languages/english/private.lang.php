@@ -34,6 +34,7 @@ $l['all_folders'] = "All Folders";
 $l['date_limit'] = "Date Limitation:";
 $l['date_limit_older'] = "Export messages older than";
 $l['date_limit_newer'] = "Export messages newer than";
+$l['date_limit_disregard'] = "Disregard date.";
 $l['date_limit_days'] = "days";
 $l['export_unread'] = "Export Unread Messages?";
 $l['delete_archived'] = "Delete Exported Messages?";
