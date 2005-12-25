@@ -1343,13 +1343,16 @@ if($mybb->input['action'] == "find")
         $search['additionalusergroups'] = intval($search['additionalusergroups']);
         $conditions .= " AND CONCAT(',',additionalgroups,',') LIKE '%,".$search['additionalusergroups'].",%'";
     }
-	if(count($search['additionalgroups']) > 0)
-	{
-		foreach($search['additionalgroups'] as $group)
+    if(is_array($search['additionalgroups']))
+    {
+		if(count($search['additionalgroups']) > 0)
 		{
-			$conditions .= " AND (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
+			foreach($search['additionalgroups'] as $group)
+			{
+				$conditions .= " AND (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
+			}
 		}
-	}
+    }
 	if($search['email'])
 	{
 		$search['email'] = addslashes($search['email']);
