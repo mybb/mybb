@@ -5575,7 +5575,7 @@ $postrow[message]
 <hr size="1">]]></template>
 		<template name="error_nopermission" version="100.07"><![CDATA[$lang->error_nopermission_guest_1
 <ol>
-<li>$lang->error_nopermission_guest_2.</li>
+<li>$lang->error_nopermission_guest_2</li>
 <li>$lang->error_nopermission_guest_3
 </li>
 <li>$lang->error_nopermission_guest_4</li>
