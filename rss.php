@@ -8,7 +8,6 @@
  *
  * $Id$
  */
-define("KILL_GLOBALS", 1);
 define("NO_ONLINE", 1);
 
 require "./global.php";

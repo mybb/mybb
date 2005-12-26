@@ -8,7 +8,6 @@
  *
  * $Id$
  */
-define("KILL_GLOBALS", 1);
 
 $templatelist = "sendthread,sendthread_guest,email_sendtofriend";
 require "./global.php";

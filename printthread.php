@@ -9,8 +9,6 @@
  * $Id$
  */
 
- define("KILL_GLOBALS", 1);
-
 $templatelist = "printthread,printthread_post";
 
 require "./global.php";

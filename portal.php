@@ -9,8 +9,6 @@
  * $Id$
  */
 
- define("KILL_GLOBALS", 1);
-
 // set the path to your forums directory here (without trailing slash)
 $forumdir = "./";
 

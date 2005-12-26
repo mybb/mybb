@@ -8,7 +8,6 @@
  *
  * $Id$
  */
- define("KILL_GLOBALS", 1);
 
  $templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_iplookup,mostonline,posticons";
 require "./global.php";

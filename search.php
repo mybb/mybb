@@ -8,7 +8,6 @@
  *
  * $Id$
  */
- define("KILL_GLOBALS", 1);
 
 $templatelist = "search,redirect,redirect_searchnomore,redirect_searchnotfound,search_results,search_showresults,search_showcalres,search_showhlpres";
 $templatelist .= "";

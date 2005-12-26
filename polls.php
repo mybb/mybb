@@ -9,8 +9,6 @@
  * $Id$
  */
 
- define("KILL_GLOBALS", 1);
-
 $templatelist = "poll_newpoll,redirect_pollposted,redirect_pollupdated,redirect_votethanks";
 require "./global.php";
 require "./inc/functions_post.php";

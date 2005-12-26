@@ -8,7 +8,6 @@
  *
  * $Id$
  */
- define("KILL_GLOBALS", 1);
 
 $templatelist = "";
 require "./global.php";

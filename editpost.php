@@ -9,8 +9,6 @@
  * $Id$
  */
 
-define("KILL_GLOBALS", 1);
-
 $templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,changeuserbox,attachment";
 $templatelist .= "posticons";
 

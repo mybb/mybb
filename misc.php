@@ -8,8 +8,6 @@
  *
  * $Id$
  */
- 
- define("KILL_GLOBALS", 1);
 
 $templatelist = "redirect_markallread,redirect_markforumread";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm";
