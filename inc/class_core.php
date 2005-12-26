@@ -78,10 +78,7 @@ class MyBB {
 		foreach($array as $key => $val)
 		{
 			$this->input[$key] = $val;
-			if(defined("KILL_GLOBALS"))
-			{
-				unset($GLOBALS["$key"]);
-			}
+			unset($GLOBALS[$key]);
 		}
 	}
 
@@ -113,10 +110,6 @@ class MyBB {
 			{
 				unset($GLOBALS["$key"]);
 			}
-/*
-			$file = explode("/", $_SERVER['PHP_SELF']);
-			$file = $file[count($file)-2]."/".$file[count($file)-1].".log";
-			$this->log_message("./vars_to_unset/".$file, $key."\n"); */
 		}
 	}
 

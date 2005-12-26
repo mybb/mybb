@@ -11,6 +11,8 @@
 
 require "./inc/init.php";
 
+$shutdown_queries = array();
+
 $groupscache = $cache->read("usergroups");
 $mcache = $cache->read("moderators");
 

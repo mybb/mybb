@@ -18,11 +18,11 @@ $maintimer = new timer();
 require "./inc/class_core.php";
 $mybb = new MyBB;
 
-		if(!defined("KILL_GLOBALS"))
-		{
-			@extract($_POST, EXTR_OVERWRITE);
-			@extract($_GET, EXTR_OVERWRITE);
-		}
+if(!defined("KILL_GLOBALS"))
+{
+	@extract($_POST, EXTR_OVERWRITE);
+	@extract($_GET, EXTR_OVERWRITE);
+}
 
 // Include the required core files
 require "./inc/config.php";

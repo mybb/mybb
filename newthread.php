@@ -8,6 +8,7 @@
  *
  * $Id$
  */
+define("KILL_GLOBALS", 1); 
 
 $templatelist = "newthread,previewpost,error_invalidforum,redirect_newthread,loginbox,changeuserbox,newthread_postpoll,posticons,attachment,newthread_postpoll,codebuttons,smilieinsert,error_nosubject";
 $templatelist .= "posticons";

@@ -9,6 +9,8 @@
  * $Id$
  */
 
+ define("KILL_GLOBALS", 1); 
+
 /* This file does all the misc operations of usercp.php */
 require "./global.php";
 require "./inc/functions_user.php";
