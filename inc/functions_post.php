@@ -24,114 +24,24 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 			$message = str_replace("<img","&lt;img",$message);
 		}
 	}
-	if($allowsmilies != "no")
-	{
-		if($archive == "yes")
-		{
-			$message = dosmilies($message, $mybb->settings['bburl']);
-		}
-		else
-		{
-			$message = dosmilies($message);
-		}
-	}
+
+	/* Parse mycode */
 	if($allowmycode != "no")
 	{
-		$message = domycode($message, $allowimgcode);
+		$mycode_perms = array();
+		$mycode_perms['allowimagecode'] = $allowimagecode;
+		$mycode_perms['allowsmilies'] = $allowsmilies;
+		
+		require_once "class_mycode.php";
+		$mycode = new MyCode();
+		$message = $mycode->do_mycode($message, $mycode_perms);
 	}
+	
+	$message = fixjavascript($message);
 
 	$message = $plugins->run_hooks("parse_message", $message);
 	$message = nl2br($message);
 	return $message;
-}
-
-function domycode($message, $allowimgcode="yes")
-{
-	global $theme, $settings;
-	$message = fixjavascript($message);
-	$message = docode($message);
-	$message = doquotes($message);
-	$pattern = array("#\[b\](.*?)\[/b\]#si",
-					 "#\[i\](.*?)\[/i\]#si",
-					 "#\[u\](.*?)\[/u\]#si",
-					 "#\[s\](.*?)\[/s\]#si",
-					 "#\(c\)#i",
-					 "#\(tm\)#i",
-					 "#\(r\)#i",
-					 "#\[url\]([a-z]+?://)([^\r\n\"\[<]+?)\[/url\]#sei",
-					 "#\[url\]([^\r\n\"\[<]+?)\[/url\]#ei",
-					 "#\[url=([a-z]+?://)([^\r\n\"\[<]+?)\](.+?)\[/url\]#esi",
-					 "#\[url=([^\r\n\"\[<]+?)\](.+?)\[/url\]#esi",
-					 "#\[email\](.*?)\[/email\]#ei",
-					 "#\[email=(.*?)\](.*?)\[/email\]#ei",
-					 "#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#si",
-					 "#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si",
-			         "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si",
-					 "#\[font=([a-z ]+?)\](.+?)\[/font\]#si",
-					 "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si");
-	$replace = array("<strong>$1</strong>",
-					 "<em>$1</em>",
-					 "<u>$1</u>",
-					 "<del>$1</del>",
-				     "&copy;",
-					 "&#153;",
-					 "&reg;",
-					 "doshorturl(\"$1$2\")",
-					 "doshorturl(\"$1\")",
-					 "doshorturl(\"$1$2\", \"$3\")",
-					 "doshorturl(\"$1\", \"$2\")",
-					 "doemailurl(\"$1\")",
-					 "doemailurl(\"$1\", \"$2\")",
-					 "<span style=\"color: $1;\">$2</span>",
-					 "<span style=\"font-size: $1;\">$2</span>",
-					 "<font size=\"$1\">$2</font>",
-					 "<span style=\"font-family: $1;\">$2</span>",
-					 "<p style=\"text-align: $1;\">$2</p>");
-	$message = preg_replace($pattern, $replace, $message);
-	while(preg_match("#\[list\](.*?)\[/list\]#esi", $message))
-	{
-		$message = preg_replace("#\[list\](.*?)\[/list\]#esi", "dolist('$1')", $message);
-	}
-	while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", $message))
-	{
-		$message = preg_replace("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "dolist('$2', '$1')", $message);
-	}
-
-	if($allowimgcode)
-	{
-		$message = preg_replace("#\[img\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$1$2\" border=\"0\" alt=\"\" />", $message);
-		$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$3$4\" style=\"border: 0; width: $1px; height: $2px;\" alt=\"\" />", $message);
-	}
-	$message = doautourl($message);
-	/* Used to be <hr size="1"> but users should get the chance to set the size in their CSS */
-	$message = str_replace("[hr]", "<hr />", $message); 
-	return $message;
-}
-
-function dolist($message, $type="")
-{
-	$message = str_replace('\"', '"', $message);
-	$message = preg_replace("#\[\*\]#", "</li><li>", $message);
-	$message .= "</li>";
-
-	if($type)
-	{
-		$list = "<ol type=\"$type\">$message</ol>";
-	}
-	else
-	{
-		$list = "<ul>$message</ul>";
-	}
-	$list = preg_replace("#<(ol type=\"$type\"|ul)>\s*</li>#", "<$1>", $list);
-	return $list;
-}
-
-function domecode($message, $username)
-{
-	global $lang;
-	$message = preg_replace('#^/me (.*)$#im', "<span style=\"color: red;\">* $username \\1</span>", $message);
-	$message = preg_replace('#^/slap (.*)#iem', "'<span style=\"color: red;\">* $username $lang->slaps '.str_replace('<br />', '', '\\1').' $lang->with_trout</span><br />'", $message);
-	return $message;	
 }
 
 function fixjavascript($message)
@@ -170,193 +80,6 @@ function dobadwords($message)
 		}
 	}
 	return $message;
-}
-
-function dosmilies($message, $url="")
-{
-	global $db, $smiliecache, $cache;
-
-	if($url != "")
-	{
-		if(substr($url, strlen($url) -1) != "/")
-		{
-			$url = $url."/";
-		}
-	}
-	
-	$smiliecache = $cache->read("smilies");
-	if(is_array($smiliecache))
-	{
-		reset($smiliecache);
-		foreach($smiliecache as $sid => $smilie)
-		{
-			$message = str_replace($smilie['find'], "<img src=\"".$url.$smilie['image']."\" align=\"middle\" border=\"0\" alt=\"".$smilie['name']."\" />", $message);
-		}
-	}
-	return $message;
-}
-
-function doautourl($message)
-{
-	$message = " ".$message;
-	$message = preg_replace("#([\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#ie", "\"$1\".doshorturl(\"$2://$3\")", $message);
-	$message = preg_replace("#([\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#ie", "\"$1\".doshorturl(\"$2.$3\", \"$2.$3\")", $message);
-	$message = substr($message, 1);
-	return $message;
-}
-
-function doshorturl($url, $name="")
-{
-	$fullurl = $url;
-	// attempt to make a bit of sense out of their url if they dont type it properly
-	if(strpos($url, "www.") === 0)
-	{
-		$fullurl = "http://".$fullurl;
-	}
-	if(strpos($url, "ftp.") === 0)
-	{
-		$fullurl = "ftp://".$fullurl;
-	}
-    if(strpos($fullurl, "://") === false)
-    {
-        $fullurl = "http://".$fullurl;
-    }
-	if(!$name)
-	{
-		$name = $url;
-	}
-	$name = stripslashes($name);
-	$url = stripslashes($url);
-	$fullurl = stripslashes($fullurl);
-	if($name == $url)
-	{
-		$clean_url = unhtmlentities($url);
-		if(strlen($clean_url) > 55)
-		{
-			$name = substr($clean_url, 0, 40)."...".substr($clean_url, -10);
-		}
-	}
-	$link = "<a href=\"$fullurl\" target=\"_blank\">$name</a>";
-	return $link;
-}
-
-function doemailurl($email, $name="") {
-	if(!$name)
-	{
-		$name = $email;
-	}
-	if(preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email))
-	{
-		return "<a href=\"mailto:$email\">".$name."</a>";
-	}
-}
-
-
-function doquotes($message)
-{
-	global $lang;
-	
-	// user sanity check
-	$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\]#si",
-					 "#\[quote\](.*?)\[\/quote\]#si");
-	
-	$replace = array("<div class=\"quote_header\">$1 $lang->wrote</div><div class=\"quote_body\">$2</div>",
-					 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>\n");
-	
-	while (preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
-	{
-		$message = preg_replace($pattern, $replace, $message);
-	}
-	$message = str_replace("<div class=\"quote_body\"><br />", "<div class=\"quote_body\">", $message);
-	$message = str_replace("<br /></div>", "</div>", $message);
-	return $message;
-}
-
-function docode($message)
-{
-	global $lang;
-	
-	// user sanity check
-	$m2 = strtolower($message);
-	//$message = str_replace("[php]", "[code]", $message);
-	//$message = str_replace("[/php]", "[/code]", $message);
-	$opencount = substr_count($m2, "[code]");
-	$closedcount = substr_count($m2, "[/code]");
-	if($opencount > $closedcount)
-	{
-		$limit = $closedcount;
-	}
-	elseif($closedcount > $opencount)
-	{
-		$limit = $opencount;
-	}
-	else
-	{
-		$limit = -1;
-	}
-	$pattern = array("#\[code\](.*?)#si",
-					 "#\[\/code\]#si");
-
-	$replace = array("<div class=\"code_header\">$lang->code</div><div class=\"code_body\">",
-					 "</div>\n");
-
-	$message = preg_replace($pattern, $replace, $message, $limit);
-	$message = str_replace("<div class=\"code_body\"><br />", "<div class=\"code_body\">", $message);
-	$message = str_replace("<br /></div>", "</div>", $message);
-	//$message = preg_replace("#\[php\](.+?)\[/php\]#ies", "dophpcode('\\1')", $message);
-	while(preg_match("#\[php\](.+?)\[/php\]#ies", $message, $matches))
-	{
-		$message = str_replace($matches[0], dophpcode($matches[1]), $message);
-	}
-	return $message;
-}
-
-function dophpcode($str)
-{
-	global $lang;
-	
-	$str = str_replace('&lt;', '<', $str);
-	$str = str_replace('&gt;', '>', $str);
-	$str = str_replace('&amp;', '&', $str);
-	$str = str_replace("\n", '', $str);
-	$original = $str;
-	
-	if(preg_match("/\A[\s]*\<\?/", $str) === 0)
-	{
-		$str = "<?php\n".$str;
-	}
-
-	if(preg_match("/\A[\s]*\>\?/", strrev($str)) === 0)
-	{
-		$str = $str."\n?>";
-	}
-	
-	if(substr(phpversion(), 0, 1) >= 4)
-	{
-		ob_start();
-		@highlight_string($str);
-		$code = ob_get_contents();
-		ob_end_clean();
-	}
-	else
-	{
-		$code = $str;
-	}
-	
-	if(preg_match("/\A[\s]*\<\?/", $original) === 0)
-	{
-		$code = substr_replace($code, "", strpos($code, "&lt;?php"), strlen("&lt;?php"));
-		$code = strrev(substr_replace(strrev($code), "", strpos(strrev($code), strrev("?&gt;")), strlen("?&gt;")));
-		$code = str_replace('<br />', '', $code);
-	}
-	
-	// Get rid of other useless code and linebreaks
-	$code = str_replace("<code><font color=\"#000000\">\n", '', $code);
-	$code = str_replace('<font color="#0000CC"></font>', '', $code);
-	$code = str_replace("</font>\n</code>", '', $code);
-	
-	// Send back the code all nice and pretty
-	return "</p><div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div><p>";
 }
 
 function makepostbit($post, $pmprevann=0)
@@ -704,11 +427,6 @@ function makepostbit($post, $pmprevann=0)
 		$allowsmilies = $forum['allowsmilies'];
 	}
 	$post['message'] = postify($post['message'], $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
-	// do me code
-	if($forum['allowmycode'] != "no")
-	{
-		$post['message'] = domecode($post['message'], $post['username']);
-	}
 
 	if(is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments

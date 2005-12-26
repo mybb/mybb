@@ -106,7 +106,7 @@ class MyBB {
 
 		foreach(array_keys($array) as $key)
 		{
-			unset($GLOBALS["$key"]);
+			unset($GLOBALS[$key]);
 		}
 	}
 

@@ -65,7 +65,7 @@ class session
 		//
 		// Attempt to load the session from the database
 		//
-		$query = $db->query("SELECT sid,uid FROM ".TABLE_PREFIX."sessions WHERE sid='".$this->sid."' AND ip='".$this->ipaddress."'");
+		$query = $db->query("SELECT sid,uid FROM ".TABLE_PREFIX."sessions WHERE sid='".$this->sid."' AND ip='".$this->ipaddress."' LIMIT 1");
 		$session = $db->fetch_array($query);
 		if($session['sid'])
 		{
@@ -162,14 +162,14 @@ class session
 		$time = time();
 		if($time - $mybb->user['lastactive'] > 900)
 		{
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='".$mybb->user['lastactive']."', lastactive='$time' $popupadd WHERE uid='".$mybb->user[uid]."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='".$mybb->user['lastactive']."', lastactive='$time' $popupadd WHERE uid='".$mybb->user['uid']."'");
 			$mybb->user['lastvisit'] = $mybb->user['lastactive'];
 		}
 		else
 		{
 			$mybb->user['lastvisit'] = $mybb->user['lastvisit'];
 			$timespent = time() - $mybb->user['lastactive'];
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent $popupadd WHERE uid='".$mybb->user[uid]."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent $popupadd WHERE uid='".$mybb->user['uid']."'");
 		}
 
 		//
@@ -261,11 +261,11 @@ class session
 		//
 		if($mybb->user['bandate'] && $mybb->user['banlifted'])  // hmmm...bad user... how did you get banned =/
 		{
-			if($mybb->user['banlifted']<$time) // must have been good.. bans up :D
+			if($mybb->user['banlifted'] < $time) // must have been good.. bans up :D
 			{
 				$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user[uid]."'");
 				$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user[uid]."'");
-				$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".$mybb->user['banoldgroup']."'"); // we better do this..otherwise they have dodgy permissions
+				$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".$mybb->user['banoldgroup']."' LIMIT 1"); // we better do this..otherwise they have dodgy permissions
 				$group = $db->fetch_array($query);
 				$mybb->user['usergroup'] = $group['usergroup'];
 			}
