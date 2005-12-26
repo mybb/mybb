@@ -10,18 +10,55 @@
  */
 
 class timer {
+	
+	/**
+	 * The timer name.
+	 *
+	 * @var string
+	 */
 	var $name;
+	
+	/**
+	 * The start time of this timer.
+	 *
+	 * @var int
+	 */
 	var $start;
+	
+	/**
+	 * The end time of this timer.
+	 *
+	 * @var int
+	 */
 	var $end;
+	
+	/**
+	 * The total time this timer has run.
+	 *
+	 * @var int
+	 */
 	var $totaltime;
+	
+	/**
+	 * The formatted total time this timer has run.
+	 *
+	 * @var string
+	 */
 	var $formatted;
 
-	
+	/**
+	 * Constructor of class.
+	 *
+	 */
 	function timer()
 	{
 		$this->add();
 	}
 	
+	/**
+	 * Starts the timer.
+	 *
+	 */
 	function add()
 	{
 		if(!$this->start) {
@@ -30,6 +67,11 @@ class timer {
 		}
 	}
 
+	/**
+	 * Gets the time for which the timer has run up until this point.
+	 *
+	 * @return unknown
+	 */
 	function gettime()
 	{
 		if($this->end) // timer has been stopped
@@ -48,6 +90,12 @@ class timer {
 			return false;
 		}
 	}
+	
+	/**
+	 * Stops the timer.
+	 *
+	 * @return unknown
+	 */
 	function stop()
 	{
 		if($this->start)
@@ -60,6 +108,11 @@ class timer {
 			return $this->formatted;
 		}
 	}
+	
+	/**
+	 * Removes the timer.
+	 *
+	 */
 	function remove()
 	{
 		$this->name = "";
@@ -68,6 +121,13 @@ class timer {
 		$this->totaltime = "";
 		$this->formatted = "";
 	}
+	
+	/**
+	 * Formats the timer time in a pretty way.
+	 *
+	 * @param string The time string.
+	 * @return The formatted time string.
+	 */
 	function format($string)
 	{
 		return number_format($string, 7);

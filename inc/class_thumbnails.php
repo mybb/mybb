@@ -10,6 +10,15 @@
  */
 
 class MyThumbnail {
+	
+	/**
+	 * Generates a thumbnail
+	 *
+	 * @param string The filename to save to.
+	 * @param int The maximum height of the thumbnail.
+	 * @param int The maximum width of the thumbnail.
+	 * @return array Return array.
+	 */
 	function generate($file, $maxheight, $maxwidth)
 	{
 		if(!$this->gdVersion())
@@ -116,6 +125,15 @@ class MyThumbnail {
 		return $ret;
 	}
 
+	/**
+	 * Scales an image.
+	 *
+	 * @param int Image width.
+	 * @param int Image height.
+	 * @param int Image maxwidth.
+	 * @param int Image maxheight.
+	 * @return array Array containing widths and heights.
+	 */
 	function scaleImage($width, $height, $maxwidth, $maxheight)
 	{
 		$newwidth = $width;
@@ -137,6 +155,12 @@ class MyThumbnail {
 		$ret['height'] = $newheight;
 		return $ret;
 	}
+	
+	/**
+	 * Gets the GD version.
+	 *
+	 * @return float The GD version.
+	 */
 	function gdVersion()
 	{
 		if (!extension_loaded('gd'))

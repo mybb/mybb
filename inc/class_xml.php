@@ -114,14 +114,15 @@ class XMLParser {
  * 	^ Visit him, he does great things with
  * 	  your code
  */
-
-function killtags ($array)
+function killtags($array)
 {
-	foreach ($array as $key => $val)
+	foreach($array as $key => $val)
 	{
-		if ($key == "tag" || $key == "value")
+		if($key == "tag" || $key == "value")
+		{
 			unset($array[$key]);
-		else if (is_array($val))
+		}
+		elseif(is_array($val))
 		{
 			// kill any nested tag or value indexes
 			$array[$key] = killtags($val);
@@ -130,7 +131,9 @@ function killtags ($array)
 			// and therefore is at the deepest level, then
 			// store the string value
 			if (count($array[$key]) <= 0)
+			{
 				$array[$key] = $val['value'];
+			}
 		}
 	}
 

@@ -10,20 +10,84 @@
  */
 
 class MyBB {
+	
+	/**
+	 * No idea...
+	 *
+	 * @var string
+	 */
 	var $cwd = ".";
+	
+	/**
+	 * Input variables received from the outer world.
+	 *
+	 * @var array
+	 */
 	var $input = array();
+	
+	/**
+	 * Information about the current user.
+	 *
+	 * @var array
+	 */
 	var $user = array();
+	
+	/**
+	 * Information about the current usergroup.
+	 *
+	 * @var array
+	 */
 	var $usergroup = array();
+	
+	/**
+	 * MyBB settings.
+	 *
+	 * @var array
+	 */
 	var $settings = array();
+	
+	/**
+	 * Whether or not magic quotes are enabled.
+	 *
+	 * @var unknown_type
+	 */
 	var $magicquotes = 0;
+	
+	/**
+	 * MyBB configuration.
+	 *
+	 * @var array
+	 */
 	var $config = array();
+	
+	/**
+	 * The debug information.
+	 *
+	 * @var unknown_type
+	 */
 	var $debug;
+	
+	/**
+	 * The request method that called this page.
+	 *
+	 * @var string.
+	 */
 	var $request_method = "";
 
-	var $clean_variables = array (
+	/**
+	 * Variables that need to be clean.
+	 *
+	 * @var array
+	 */
+	var $clean_variables = array(
 		"int" => array("tid", "pid", "uid", "eid", "pmid", "sid")
-		);
+	);
 
+	/**
+	 * Constructor of class.
+	 *
+	 * @return MyBB
+	 */
 	function MyBB()
 	{
 		// Set up MyBB
@@ -39,7 +103,6 @@ class MyBB {
 		set_magic_quotes_runtime(0);
 		@ini_set("magic_quotes_gpc", 0);
 		@ini_set("magic_quotes_runtime", 0); 
-
 		
 		// Determine input
 		$this->parse_incoming($_GET);
@@ -68,6 +131,11 @@ class MyBB {
 		$this->clean_input();
 	}
 
+	/**
+	 * Parses the incoming variables.
+	 *
+	 * @param array The array of incoming variables.
+	 */
 	function parse_incoming($array)
 	{
 		if(!is_array($array))
@@ -82,6 +150,11 @@ class MyBB {
 		}
 	}
 
+	/**
+	 * Strips slashes out of a given array.
+	 *
+	 * @param array The array to strip.
+	 */
 	function strip_slashes_array(&$array)
 	{
 		foreach($array as $key => $val)
@@ -97,6 +170,11 @@ class MyBB {
 		}
 	}
 
+	/**
+	 * Unsets globals from a specific array.
+	 *
+	 * @param array The array to unset from.
+	 */
 	function unset_globals($array)
 	{
 		if(!is_array($array))
@@ -110,6 +188,10 @@ class MyBB {
 		}
 	}
 
+	/**
+	 * Cleans predefined input variables.
+	 *
+	 */
 	function clean_input()
 	{
 		foreach($this->clean_variables as $type => $variables)
@@ -124,6 +206,12 @@ class MyBB {
 		}
 	}
 
+	/**
+	 * Logs a message.
+	 *
+	 * @param string The file to log to.
+	 * @param string The message to log.
+	 */
 	function log_message($file, $message)
 	{
 		$handle = fopen($file, 'a');
@@ -131,6 +219,12 @@ class MyBB {
 		fclose($handle);
 	}
 
+	/**
+	 * Triggers a generic error.
+	 *
+	 * @param string The error code.
+	 * @param boolean Halt code execution, true for halt.
+	 */
 	function trigger_generic_error($code, $halt=true)
 	{
 		switch($code)

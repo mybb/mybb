@@ -11,8 +11,18 @@
 
 class pluginSystem
 {
+	
+	/**
+	 * The hooks to which plugins can be attached.
+	 *
+	 * @var array
+	 */
 	var $hooks;
 
+	/**
+	 * Load all plugins.
+	 *
+	 */
 	function load()
 	{
 		global $cache, $plugins;
@@ -29,6 +39,15 @@ class pluginSystem
 		}
 	}
 
+	/**
+	 * Add a hook onto which a plugin can be attached.
+	 *
+	 * @param string The hook name.
+	 * @param string The function of this hook.
+	 * @param int The priority this hook has.
+	 * @param string The optional file belonging to this hook.
+	 * @return boolean Always true.
+	 */
 	function add_hook($hook, $function, $priority=10, $file="")
 	{
 		// Check to see if we already have this hook running at this priority
@@ -41,10 +60,17 @@ class pluginSystem
 		$this->hooks[$hook][$priority][$function] = array(
 			"function" => $function,
 			"file" => $file
-			);
+		);
 		return true;
 	}
 
+	/**
+	 * Run the hooks that have plugins.
+	 *
+	 * @param string The name of the hook that is run.
+	 * @param string The argument for the hook that is run.
+	 * @return string The arguments for the hook.
+	 */
 	function run_hooks($hook, $arguments="")
 	{
 		if(!is_array($this->hooks[$hook]))
