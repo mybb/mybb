@@ -522,14 +522,26 @@ if($mybb->input['action'] == "register")
 		{
 			$timezoneoffset = $mybb->input['timezoneoffset']*10;
 			$timezoneoffset = str_replace("-", "n", $timezoneoffset);
-			$timezoneselect[$timezoneoffset] = "selected";
+			$timezoneselect[$timezoneoffset] = "selected=\"selected\"";
 		}
 		else
 		{
-			$selzone = str_replace("-", "n", $mybb->settings['timezoneoffset']);
-			$selzone = str_replace("+", "", $mybb->settings['timezoneoffset']);
-			$selzone = $selzone*10;
-			$timezoneselect[$selzone] = "selected";
+			// Replace any 'n' with - ... don't know why anyone would use a n, except someone who knows the system anyway
+			$mybb->settings['timezoneoffset'] = str_replace("n", "-", $mybb->settings['timezoneoffset']);
+			// Multiply it by 10 as required by the system and make any negative disappear
+			$selzonetime = abs(intval($mybb->settings['timezoneoffset'])*10);
+			// If the timezone is negative, use a prefix n, else no prefix.
+			if(substr($mybb->settings['timezoneoffset'], 0, 1) == "-")
+			{
+				$selzoneway = "n";
+			}
+			else
+			{
+				$selzoneway = "";
+			}
+			// Couple the prefix and offset together and make it selected!
+			$selzone = $selzoneway.$selzonetime;
+			$timezoneselect[$selzone] = "selected=\"selected\"";
 		}
 		$timenow = mydate($mybb->settings['timeformat'], time(), "-");
 		$lang->time_offset_desc = sprintf($lang->time_offset_desc, $timenow);
