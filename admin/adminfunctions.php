@@ -551,14 +551,22 @@ function cpredirect($url, $message="")
 	cpfooter();
 }
 
-function cpfooter()
+function cpfooter($showversion=1)
 {
 	global $mybboard, $db, $maintimer;
 	global $lang;
 	echo "<center><br><br>\n";
 	$totaltime = $maintimer->stop();
 	$lang->footer_stats = sprintf($lang->footer_stats, $totaltime, $db->query_count);
-	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">".$lang->footer_powered_by." <b>MyBB $mybboard[internalver]</b><br>".$lang->footer_copyright." &copy; 2005 MyBB Group<br />".$lang->footer_stats."</font></center>\n";
+	if(!$showversion)
+	{
+		$mybbversion = "";
+	}
+	else
+	{
+		$mybbversion = $mybboard['internalver'];
+	}
+	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">".$lang->footer_powered_by." <b>MyBB $mybbversion</b><br>".$lang->footer_copyright." &copy; 2005 MyBB Group<br />".$lang->footer_stats."</font></center>\n";
 	echo "</body>\n";
 	echo "</html>";
 }

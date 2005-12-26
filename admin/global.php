@@ -163,7 +163,7 @@ else
 	echo "<input type=\"hidden\" name=\"do\" value=\"login\">\n";
 	echo "<input type=\"hidden\" name=\"goto\" value=\"".$goto."\">\n";
 	echo "</form>\n";
-	cpfooter();
+	cpfooter(0);
 	exit;
 }
 $navbits[0]['name'] = $mybb->settings['bbname']." ".$lang->control_panel;
