@@ -49,8 +49,8 @@ function domycode($message, $allowimgcode="yes")
 {
 	global $theme, $settings;
 	$message = fixjavascript($message);
-	$message = doquotes($message);
 	$message = docode($message);
+	$message = doquotes($message);
 	$pattern = array("#\[b\](.*?)\[/b\]#si",
 					 "#\[i\](.*?)\[/i\]#si",
 					 "#\[u\](.*?)\[/u\]#si",
