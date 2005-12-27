@@ -375,7 +375,7 @@ if($mybb->input['action'] == "do_edit") {
 			"description" => addslashes($mybb->input['description']),
 			"linkto" => addslashes($mybb->input['linkto']),
 			"type" => $type,
-			"pid" => intval($mybb->input['pid']),
+			"pid" => $pid,
 			"disporder" => intval($mybb->input['disporder']),
 			"active" => addslashes($mybb->input['isactive']),
 			"open" => addslashes($mybb->input['isopen']),
@@ -398,17 +398,21 @@ if($mybb->input['action'] == "do_edit") {
 			"rules" => addslashes($mybb->input['rules']),
 			);
 			
-		$db->update_query(TABLE_PREFIX."forums", $sqlarray, "fid='$fid'");
+		$db->update_query(TABLE_PREFIX."forums", $sqlarray, "fid='$fid'", 1);
 		if($pid != $forum['pid'])
 		{
-			$parentlist = makeparentlist($fid);
-			$db->query("UPDATE ".TABLE_PREFIX."forums SET parentlist='$parentlist' WHERE fid='$fid'");
+				$sql_array = array(
+					"parentlist" => makeparentlist($fid),
+					);
+				$db->update_query(TABLE_PREFIX."forums", $sql_array, "fid='$fid'", 1);
 			// Rebuild the parentlist of all of the forums this forum was a parent of
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
+			$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
 			while($childforum = $db->fetch_array($query))
 			{
-				$parentlist = makeparentlist($childforum['fid']);
-				$db->query("UPDATE ".TABLE_PREFIX."forums SET parentlist='$parentlist' WHERE fid='".$childforum['fid']."'");
+				$sql_array = array(
+					"parentlist" => makeparentlist($childforum['fid']),
+					);
+				$db->update_query(TABLE_PREFIX."forums", $sql_array, "fid='".$childforum['fid']."'", 1);
 			}
 		}
 		$cache->updateforums();
