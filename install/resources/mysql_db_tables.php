@@ -273,6 +273,13 @@ $tables[] = "CREATE TABLE mybb_moderators (
   PRIMARY KEY  (mid)
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_mycodes (
+  cid int unsigned NOT NULL auto_increment,
+  regex varchar(255) NOT NULL default '',
+  replacement varchar(255) NOT NULL default '',
+  PRIMARY KEY(cid)
+) TYPE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_polls (
   pid int unsigned NOT NULL auto_increment,
   tid int unsigned NOT NULL default '0',
