@@ -19,37 +19,46 @@ $l['invalid_cid'] = "That MyCode id is invalid. Please specify a valid MyCode id
 class MyCode {
 	
 	/**
+	 * The message that is being parsed.
+	 *
+	 * @var string
+	 */
+	var $message;
+	
+	/**
 	 * Parses a string of text with mycode.
 	 *
 	 * @param string The message to be parsed.
 	 * @return string The parsed message.
 	 */
-	function do_mycode($message, $mycode_perms = array())
+	function parse($message, $mycode_perms = array())
 	{		
 		global $db;
+		
+		$this->message = $message;
 				
 		$query = $db->query("SELECT regex, replacement FROM ".TABLE_PREFIX."mycodes");
 		
 		while($mycodes = $db->fetch_array($query))
 		{
-			$message = preg_replace($mycodes['regex'], $mycodes['replacement'], $message);
+			$this->message = preg_replace($mycodes['regex'], $mycodes['replacement'], $this->message);
 		}
 		
 		/* Parse lists */
-		while(preg_match("#\[list\](.*?)\[/list\]#esi", $message))
+		while(preg_match("#\[list\](.*?)\[/list\]#esi", $this->message))
 		{
-			$message = preg_replace("#\[list\](.*?)\[/list\]#esi", "MyCode::do_list('$1')", $message);
+			$this->message = preg_replace("#\[list\](.*?)\[/list\]#esi", "MyCode::do_list('$1')", $this->message);
 		}
-		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", $message))
+		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", $this->message))
 		{
-			$message = preg_replace("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "MyCode::do_list('$2', '$1')", $message);
+			$this->message = preg_replace("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "MyCode::do_list('$2', '$1')", $this->message);
 		}
 		
 		/* Parse image code */
 		if($mycode_perms['allowimgcode'] != "no")
 		{
-			$message = preg_replace("#\[img\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$1$2\" border=\"0\" alt=\"\" />", $message);
-			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$3$4\" style=\"border: 0; width: $1px; height: $2px;\" alt=\"\" />", $message);
+			$this->message = preg_replace("#\[img\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$1$2\" border=\"0\" alt=\"\" />", $this->message);
+			$this->message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$3$4\" style=\"border: 0; width: $1px; height: $2px;\" alt=\"\" />", $this->message);
 		}
 		
 		/* Parse smilies if allowed */
@@ -57,20 +66,20 @@ class MyCode {
 		{
 			if($archive == "yes")
 			{
-				$message = $this->do_smilies($message, $mybb->settings['bburl']);
+				$this->do_smilies($mybb->settings['bburl']);
 			}
 			else
 			{
-				$message = $this->do_smilies($message);
+				$this->do_smilies();
 			}
 		}
 		
 		/* Parse special mycodes */
-		$message = $this->do_code($message);
-		$message = $this->do_quotes($message);
-		$message = $this->do_autourl($message);
+		$this->do_code();
+		$this->do_quotes();
+		$this->do_autourl();
 		
-		return $message;
+		return $this->message;
 	}
 	
 	/**
@@ -79,7 +88,7 @@ class MyCode {
 	 * @param string The message to be parsed.
 	 * @return The parsed message.
 	 */
-	function do_quotes($message)
+	function do_quotes()
 	{
 		global $lang;
 		
@@ -90,28 +99,24 @@ class MyCode {
 		$replace = array("<div class=\"quote_header\">$1 $lang->wrote</div><div class=\"quote_body\">$2</div>",
 						 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>\n");
 		
-		while(preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
+		while(preg_match($pattern[0], $this->message) or preg_match($pattern[1], $this->message))
 		{
-			$message = preg_replace($pattern, $replace, $message);
+			$this->message = preg_replace($pattern, $replace, $this->message);
 		}
-		$message = str_replace("<div class=\"quote_body\"><br />", "<div class=\"quote_body\">", $message);
-		$message = str_replace("<br /></div>", "</div>", $message);
-		
-		return $message;
+		$this->message = str_replace("<div class=\"quote_body\"><br />", "<div class=\"quote_body\">", $this->message);
+		$this->message = str_replace("<br /></div>", "</div>", $this->message);
 	}
 	
 	/**
 	 * Parses a message for code.
 	 *
-	 * @param string The message to be parsed.
-	 * @return string The parsed message.
 	 */
-	function do_code($message)
+	function do_code()
 	{
 		global $lang;
 		
 		/* User sanity check */
-		$m2 = strtolower($message);
+		$m2 = strtolower($this->message);
 		$opencount = substr_count($m2, "[code]");
 		$closedcount = substr_count($m2, "[/code]");
 		if($opencount > $closedcount)
@@ -132,16 +137,14 @@ class MyCode {
 		$replace = array("<div class=\"code_header\">$lang->code</div><div class=\"code_body\">",
 						 "</div>\n");
 	
-		$message = preg_replace($pattern, $replace, $message, $limit);
-		$message = str_replace("<div class=\"code_body\"><br />", "<div class=\"code_body\">", $message);
-		$message = str_replace("<br /></div>", "</div>", $message);
+		$this->message = preg_replace($pattern, $replace, $this->message, $limit);
+		$this->message = str_replace("<div class=\"code_body\"><br />", "<div class=\"code_body\">", $this->message);
+		$this->message = str_replace("<br /></div>", "</div>", $this->message);
 		
-		while(preg_match("#\[php\](.+?)\[/php\]#ies", $message, $matches))
+		while(preg_match("#\[php\](.+?)\[/php\]#ies", $this->message, $matches))
 		{
-			$message = str_replace($matches[0], $this->do_phpcode($matches[1]), $message);
+			$this->message = str_replace($matches[0], $this->do_phpcode($matches[1]), $this->message);
 		}
-		
-		return $message;
 	}
 	
 	/**
@@ -194,17 +197,15 @@ class MyCode {
 		}
 		
 		/* Send back the code all nice and pretty */
-		return "</p><div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div><p>";
+		return "<div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div>";
 	}
 	
 	/**
 	 * Parses a message for smilies.
 	 *
-	 * @param string The message to be parsed.
 	 * @param string The URL to the smilie directory.
-	 * @return string The parsed message.
 	 */
-	function do_smilies($message, $url="")
+	function do_smilies( $url="")
 	{
 		global $db, $smiliecache, $cache;
 	
@@ -222,11 +223,9 @@ class MyCode {
 			reset($smiliecache);
 			foreach($smiliecache as $sid => $smilie)
 			{
-				$message = str_replace($smilie['find'], "<img src=\"".$url.$smilie['image']."\" class=\"smilie\" alt=\"".$smilie['name']."\" />", $message);
+				$this->message = str_replace($smilie['find'], "<img src=\"".$url.$smilie['image']."\" class=\"smilie\" alt=\"".$smilie['name']."\" />", $this->message);
 			}
 		}
-		
-		return $message;
 	}
 	
 	/**
@@ -258,17 +257,13 @@ class MyCode {
 	/**
 	 * Parses a message for URLs.
 	 *
-	 * @param string The message to be parsed.
-	 * @return string The parsed message.
 	 */
-	function do_autourl($message)
+	function do_autourl()
 	{
-		$message = " ".$message;
-		$message = preg_replace("#([\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#ie", "\"$1\".MyCode::do_shorturl(\"$2://$3\")", $message);
-		$message = preg_replace("#([\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#ie", "\"$1\".MyCode::do_shorturl(\"$2.$3\", \"$2.$3\")", $message);
-		$message = substr($message, 1);
-		
-		return $message;
+		$this->message = " ".$this->message;
+		$this->message = preg_replace("#([\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#ie", "\"$1\".MyCode::do_shorturl(\"$2://$3\")", $this->message);
+		$this->message = preg_replace("#([\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#ie", "\"$1\".MyCode::do_shorturl(\"$2.$3\", \"$2.$3\")", $this->message);
+		$this->message = substr($this->message, 1);
 	}
 	
 	/**
@@ -311,6 +306,25 @@ class MyCode {
 		$link = "<a href=\"$fullurl\" target=\"_blank\">$name</a>";
 		
 		return $link;
+	}
+	
+	/**
+	 * Parses a message for email urls.
+	 *
+	 * @param string The email address.
+	 * @param string An optional name for the link.
+	 * @return string The parsed mail address.
+	 */
+	function do_emailurl($email, $name="")
+	{
+		if(!$name)
+		{
+			$name = $email;
+		}
+		if(preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email))
+		{
+			return "<a href=\"mailto:$email\">".$name."</a>";
+		}
 	}
 	
 	/**

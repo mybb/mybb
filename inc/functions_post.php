@@ -34,13 +34,13 @@ function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="y
 		
 		require_once "class_mycode.php";
 		$mycode = new MyCode();
-		$message = $mycode->do_mycode($message, $mycode_perms);
+		$message = $mycode->parse($message, $mycode_perms);
 	}
 	
 	$message = fixjavascript($message);
-
 	$message = $plugins->run_hooks("parse_message", $message);
 	$message = nl2br($message);
+	
 	return $message;
 }
 

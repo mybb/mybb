@@ -532,7 +532,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$subject = dobadwords($thread['subject']);
 		require_once "inc/class_mycode.php";
 		$mycode = new MyCode();
-		$excerpt = substr(dobadwords($mycode->do_mycode($mybb->input['message'])), 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+		$excerpt = substr(dobadwords($mycode->parse($mybb->input['message'])), 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline DESC LIMIT 1");
 		$lastpost = $db->fetch_array($query);
 		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'$lastpost[dateline]'");
