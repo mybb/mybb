@@ -6,7 +6,7 @@
 function user_exists($uid)
 {
 	global $db;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."' LIMIT 1");
 	if($db->fetch_array($query))
 	{
 		return true;
@@ -23,7 +23,7 @@ function user_exists($uid)
 function username_exists($username)
 {
 	global $db;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($username)."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($username)."' LIMIT 1");
 	if($db->fetch_array($query))
 	{
 		return true;
@@ -40,7 +40,7 @@ function username_exists($username)
 function validate_password_from_username($username, $password)
 {
 	global $db;
-	$query = $db->query("SELECT uid,username,password,salt,loginkey FROM ".TABLE_PREFIX."users WHERE username='".addslashes($username)."'");
+	$query = $db->query("SELECT uid,username,password,salt,loginkey FROM ".TABLE_PREFIX."users WHERE username='".addslashes($username)."' LIMIT 1");
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
 	{
@@ -64,7 +64,7 @@ function validate_password_from_uid($uid, $password, $user="")
 	}
 	if(!$user['password'])
 	{
-		$query = $db->query("SELECT uid,username,password,salt,loginkey FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."'");
+		$query = $db->query("SELECT uid,username,password,salt,loginkey FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."' LIMIT 1");
 		$user = $db->fetch_array($query);
 	}
 	if(!$user['salt'])
@@ -72,13 +72,13 @@ function validate_password_from_uid($uid, $password, $user="")
 		// Generate a salt for this user and assume the password stored in db is a plain md5 password
 		$user['salt'] = generate_salt();
 		$user['password'] = salt_password($user['password'], $user['salt']);
-		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='".$user['salt']."', password='".$user['password']."' WHERE uid='".$user['uid']."'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='".$user['salt']."', password='".$user['password']."' WHERE uid='".$user['uid']."' LIMIT 1");
 	}
 
 	if(!$user['loginkey'])
 	{
 		$user['loginkey'] = generate_loginkey();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET loginkey='".$user['loginkey']."' WHERE uid='".$user['uid']."'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET loginkey='".$user['loginkey']."' WHERE uid='".$user['uid']."' LIMIT 1");
 	}
 	if(salt_password(md5($password), $user['salt']) == $user['password'])
 	{
@@ -104,7 +104,7 @@ function update_password($uid, $password, $salt="")
 	//
 	if(!$salt)
 	{
-		$query = $db->query("SELECT salt FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+		$query = $db->query("SELECT salt FROM ".TABLE_PREFIX."users WHERE uid='$uid' LIMIT 1");
 		$user = $db->fetch_array($query);
 		if($user['salt'])
 		{
@@ -132,7 +132,7 @@ function update_password($uid, $password, $salt="")
 	//
 	$newpassword['password'] = $saltedpw;
 	$newpassword['loginkey'] = $loginkey;
-	$db->update_query(TABLE_PREFIX."users", $newpassword, "uid='$uid'");
+	$db->update_query(TABLE_PREFIX."users", $newpassword, "uid='$uid'", 1);
 
 	$plugins->run_hooks("password_changed");
 
@@ -170,7 +170,7 @@ function update_salt($uid)
 {
 	global $db;
 	$salt = generate_salt();
-	$db->query("UPDATE ".TABLE_PREFIX."users SET salt='$salt' WHERE uid='$uid'");
+	$db->query("UPDATE ".TABLE_PREFIX."users SET salt='$salt' WHERE uid='$uid' LIMIT 1");
 	return $salt;
 }
 
@@ -181,7 +181,7 @@ function update_loginkey($uid)
 {
 	global $db;
 	$loginkey = generate_loginkey();
-	$db->query("UPDATE ".TABLE_PREFIX."users SET loginkey='$loginkey' WHERE uid='$uid'");
+	$db->query("UPDATE ".TABLE_PREFIX."users SET loginkey='$loginkey' WHERE uid='$uid' LIMIT 1");
 	return $loginkey;
 
 }
@@ -201,7 +201,7 @@ function add_favorite_thread($tid, $uid="")
 	{
 		return;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$thread['tid']."' AND type='f' AND uid='".$mybb->user[uid]."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$thread['tid']."' AND type='f' AND uid='".$mybb->user['uid']."' LIMIT 1");
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
 	{
@@ -244,7 +244,7 @@ function add_subscribed_thread($tid, $uid="")
 	{
 		return;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$tid."' AND type='s' AND uid='".$uid."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$tid."' AND type='s' AND uid='".$uid."' LIMIT 1");
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
 	{
@@ -287,7 +287,7 @@ function add_subscribed_forum($fid, $uid="")
 	{
 		return;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".$fid."' AND uid='".$uid."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".$fid."' AND uid='".$uid."' LIMIT 1");
 	$fsubscription = $db->fetch_array($query);
 	if(!$fsubscription['fid'])
 	{
@@ -390,7 +390,7 @@ function get_usertitle($uid="")
 	}
 	else
 	{
-		$query = $db->query("SELECT usertitle,postnum FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+		$query = $db->query("SELECT usertitle,postnum FROM ".TABLE_PREFIX."users WHERE uid='$uid' LIMIT 1");
 		$user = $db->fetch_array($query);
 	}
 	if($user['usertitle'])

@@ -105,7 +105,7 @@ else
 		$time = time();
 		if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < ($time-($mybb->settings['edittimelimit']*60)))
 		{
-			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edtitimelimit']);
+			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			error($lang->edit_time_limit);
 		}
 	}
