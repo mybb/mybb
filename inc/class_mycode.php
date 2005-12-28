@@ -15,6 +15,7 @@ $l['invalid_mycode_cid'] = "The MyCode id is invalid. Please specify a valid MyC
 $l['invalid_mycode_title'] = "The MyCode title you entered is invalid. Please enter a valid title.";
 $l['invalid_mycode_description'] = "The MyCode description you entered is invalid. Please enter a valid description or leave the field empty.";
 $l['invalid_mycode_regex_replacement'] = "The regex and/or replacement you entered either do not match or are invalid. Please enter a valid regex/replacement combination.";
+$l['invalid_active'] = "The value you entered for 'active' is not correct. Please enter a correct value.";
 
 */
 
@@ -336,8 +337,9 @@ class MyCode {
 	 * @param string (Optional) The description of this mycode.
 	 * @param string The regex of this mycode.
 	 * @param string The code to replace the regexes with.
+	 * @param string Whether or not the mycode should be active.
 	 */
-	function add($title, $description = "", $regex, $replacement)
+	function add($title, $description = "", $regex, $replacement, $active = "yes")
 	{
 		global $db;
 		
@@ -348,11 +350,15 @@ class MyCode {
 		}
 		if(!$this->validate_description($description))
 		{
-			cperro($lang->invalid_mycode_description);
+			cperror($lang->invalid_mycode_description);
 		}		
 		if(!$this->validate_regex_replacement($regex, $replacement))
 		{
 			cperror($lang->invalid_regex_replacement);
+		}
+		if(!$this->validate_active($active))
+		{
+			cperror($lang->invalid_active);
 		}
 		
 		$mycode_add = array(
@@ -360,7 +366,8 @@ class MyCode {
 			"title" => $title,
 			"description" => $description,
 			"regex" => $regex,
-			"replacement" => $replacement			
+			"replacement" => $replacement,
+			"active" => $active
 		);
 		
 		$db->insert_query(TABLE_PREFIX."mycodes", $mycode_add);
@@ -374,35 +381,42 @@ class MyCode {
 	 * @param string (Optional) The description of the mycode.
 	 * @param string The regex of this mycode.
 	 * @param string The code to replace the regexes with.
+	 * @param string Whether or not the mycode should be active.
 	 */
-	function edit($cid, $title, $description = "", $regex, $replacement)
+	function edit($cid, $title, $description = "", $regex, $replacement, $active = "yes")
 	{
 		global $db;
 		
 		/* Do some validity checks */
+		if(!$this->validate_cid($cid))
+		{
+			cperror($lang->invalid_cid);
+		}
 		if(!$this->validate_title($title))
 		{
 			cperror($lang->invalid_mycode_title);
 		}
 		if(!$this->validate_description($description))
 		{
-			cperro($lang->invalid_mycode_description);
+			cperror($lang->invalid_mycode_description);
 		}		
 		if(!$this->validate_regex_replacement($regex, $replacement))
 		{
 			cperror($lang->invalid_regex_replacement);
 		}
-		
-		if(!$this->validate_cid($cid))
+		if(!$this->validate_active($active))
 		{
-			cperror($lang->invalid_cid);
+			cperror($lang->invalid_active);
 		}
 		
 		$cid = intval($cid);
 		
 		$mycode_edit = array(
+			"title" => $title,
+			"description" => $description,
 			"regex" => $regex,
-			"replacement" => $replacement
+			"replacement" => $replacement,
+			"active" => $active
 		);
 		
 		$db->update_query(TABLE_PREFIX."mycodes", $mycode_edit, "cid = ".$cid);
@@ -423,6 +437,8 @@ class MyCode {
 			cperror($lang->invalid_cid);
 		}
 		$cid = intval($cid);
+		
+		/* INCLUDE CHECK TO PREVENT PEOPLE FROM DELETING DEFAULT MYCODES */
 		
 		$db->query("DELETE FROM ".TABLE_PREFIX."mycodes WHERE cid = ".$cid);
 	}
@@ -499,6 +515,22 @@ class MyCode {
 		}
 		
 		return TRUE;
+	}
+	
+	/**
+	 * Validates the "active" field.
+	 *
+	 * @param string The active value.
+	 * @return True when valid, false when invalid.
+	 */
+	function validate_active($active)
+	{
+		if($active == "yes" || $active == "no")
+		{
+			return TRUE;
+		}
+		
+		return FALSE;
 	}
 	
 }
