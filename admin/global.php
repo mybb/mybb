@@ -68,7 +68,7 @@ if($mybb->input['do'] == "login")
 elseif($mybb->input['action'] != "logout")
 {
 	$logon = explode("_", $_COOKIE['mybbadmin'], 2);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$logon[0]'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".addslashes($logon[0])."'");
 	$user = $db->fetch_array($query);
 	if($user['loginkey'] != $logon[1])
 	{
@@ -109,8 +109,6 @@ else
 		$md5pw = md5($mybb->input['password']);
 		$ipaddress = getip();
 		$iphost = @gethostbyaddr($ipaddress);
-		
-		$message=
 		$lang->invalidlogin_message = sprintf($lang->invalidlogin_message, $mybb->settings['bbname'], $mybb->input['username'], $mybb->input['password'], $md5pw, $ipaddress, $iphost);
 		$lang->invalidlogin_subject = sprintf($lang->invalidlogin_subject, $mybb->settings['bbname']);
 		$lang->invalidlogin_headers = sprintf($lang->invalidlogin_headers, $mybb->settings['bbname'], $mybb->settings['adminemail']);
