@@ -11,8 +11,10 @@
 
 /*
 
-$l['invalid_regex_replacement'] = "The regex and/or replacement you entered either do not match or are invalid.";
-$l['invalid_cid'] = "That MyCode id is invalid. Please specify a valid MyCode id.";
+$l['invalid_mycode_cid'] = "The MyCode id is invalid. Please specify a valid MyCode id.";
+$l['invalid_mycode_title'] = "The MyCode title you entered is invalid. Please enter a valid title.";
+$l['invalid_mycode_description'] = "The MyCode description you entered is invalid. Please enter a valid description or leave the field empty.";
+$l['invalid_mycode_regex_replacement'] = "The regex and/or replacement you entered either do not match or are invalid. Please enter a valid regex/replacement combination.";
 
 */
 
@@ -330,20 +332,33 @@ class MyCode {
 	/**
 	 * Add a mycode.
 	 *
+	 * @param string The title of this mycode.
+	 * @param string (Optional) The description of this mycode.
 	 * @param string The regex of this mycode.
 	 * @param string The code to replace the regexes with.
 	 */
-	function add_mycode($regex, $replacement)
+	function add($title, $description = "", $regex, $replacement)
 	{
 		global $db;
 		
+		/* Do some validity checks */
+		if(!$this->validate_title($title))
+		{
+			cperror($lang->invalid_mycode_title);
+		}
+		if(!$this->validate_description($description))
+		{
+			cperro($lang->invalid_mycode_description);
+		}		
 		if(!$this->validate_regex_replacement($regex, $replacement))
 		{
 			cperror($lang->invalid_regex_replacement);
 		}
 		
 		$mycode_add = array(
-			"cid" => 1,
+			"cid" => 0,
+			"title" => $title,
+			"description" => $description,
 			"regex" => $regex,
 			"replacement" => $replacement			
 		);
@@ -355,13 +370,24 @@ class MyCode {
 	 * Edit a mycode.
 	 *
 	 * @param int The MyCode id.
+	 * @param string The title of the mycode.
+	 * @param string (Optional) The description of the mycode.
 	 * @param string The regex of this mycode.
 	 * @param string The code to replace the regexes with.
 	 */
-	function edit_mycode($cid, $regex, $replacement)
+	function edit($cid, $title, $description = "", $regex, $replacement)
 	{
 		global $db;
 		
+		/* Do some validity checks */
+		if(!$this->validate_title($title))
+		{
+			cperror($lang->invalid_mycode_title);
+		}
+		if(!$this->validate_description($description))
+		{
+			cperro($lang->invalid_mycode_description);
+		}		
 		if(!$this->validate_regex_replacement($regex, $replacement))
 		{
 			cperror($lang->invalid_regex_replacement);
@@ -387,18 +413,70 @@ class MyCode {
 	 *
 	 * @param int The MyCode id.
 	 */
-	function delete_mycode($cid)
+	function delete($cid)
 	{
 		global $db;
 		
+		/* Do some validity checks */
 		if(!$this->validate_cid($cid))
 		{
 			cperror($lang->invalid_cid);
 		}
-		
 		$cid = intval($cid);
 		
 		$db->query("DELETE FROM ".TABLE_PREFIX."mycodes WHERE cid = ".$cid);
+	}
+	
+	/**
+	 * Validates a mycode id.
+	 *
+	 * @param int|string The mycode id.
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function validate_cid($cid)
+	{
+		if(!is_numeric($cid))
+		{
+			return FALSE;
+		}
+		
+		return TRUE;
+	}
+	
+	/**
+	 * Validates a title.
+	 *
+	 * @param string The mycode title.
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function validate_title($title)
+	{
+		if(empty($title) || !is_string($title))
+		{
+			return FALSE;
+		}
+		if(my_strlen($title) > 100)
+		{
+			return FALSE;
+		}
+		
+		return TRUE;
+	}
+	
+	/**
+	 * Validates a description.
+	 *
+	 * @param string The description string.
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function validate_description($description)
+	{
+		if(!is_string($description))
+		{
+			return FALSE;
+		}
+		
+		return TRUE;
 	}
 	
 	/**
@@ -416,22 +494,6 @@ class MyCode {
 		}
 		
 		if(empty($replacement) || !is_string($regex))
-		{
-			return FALSE;
-		}
-		
-		return TRUE;
-	}
-	
-	/**
-	 * Validates a mycode id.
-	 *
-	 * @param int|string The mycode id.
-	 * @return boolean True when valid, false when invalid.
-	 */
-	function validate_cid($cid)
-	{
-		if(!is_numeric($cid))
 		{
 			return FALSE;
 		}
