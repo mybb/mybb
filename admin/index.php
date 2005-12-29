@@ -173,7 +173,7 @@ elseif($mybb->input['action'] == "vercheck") {
 	$latest_version = $tree['mybb']['latest_version']['value']." (".$latest_code.")";
 	if($latest_code > $mybboard['vercode'])
 	{
-		$latest_version = "<span style=\"color: red\">".$latest_version." (".$latest_code.") </font>";
+		$latest_version = "<span style=\"color: red\">".$latest_version."</font>";
 		$version_warn = 1;
 	}
 
