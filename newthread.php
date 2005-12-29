@@ -153,7 +153,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	$plugins->run_hooks("newthread_start");
 
-	if($mybb->input['previewpost'] || $maximageserror)
+	if($mybb->input['previewpost'] || $mybb->input['removeattachment'] || $mybb->input['newattachment'] || $maximageserror)
 	{
 		$postoptions = $mybb->input['postoptions'];
 		if($postoptions['signature'] == "yes")
@@ -248,6 +248,10 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$postbit = makepostbit($post, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 		$message = htmlspecialchars_uni($mybb->input['message']);
+		$subject = htmlspecialchars_uni($mybb->input['subject']);
+	}
+	elseif($mybb->input['removeattachment'] || $mybb->input['newattachment']) {
+		$message = htmlspecialchars_uni($mybb->input['message'];
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
 
