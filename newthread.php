@@ -251,7 +251,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
 	elseif($mybb->input['removeattachment'] || $mybb->input['newattachment']) {
-		$message = htmlspecialchars_uni($mybb->input['message'];
+		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
 
