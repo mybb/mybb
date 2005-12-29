@@ -320,8 +320,13 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && intval($my
 	}
 }
 
-if($mybb->usergroup['canview'] != "yes" && $mybb->input['action'] != "register" && $mybb->input['action'] != "do_register" && $mybb->input['action'] != "login" && $mybb->input['action'] != "do_login" && $mybb->input['action'] != "logout" && $mybb->input['action'] != "regimage")
-{
+// Check pages allowable even when not allowed to view board
+$allowable_actions = array(
+	"member.php" => array("register", "do_register", "login", "do_login", "logout", "lostpw", "do_lostpw", "activate", "resendactivation", "do_resendactivation", "resetpassword"),
+	"image.php" => array("regimage"),
+	);
+if($mybb->usergroup['canview'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && !(basename($_SERVER['PHP_SELF']) == "image.php" && in_array($mybb->input['action'], $allowable_actions['image.php'])))
+{ 
 	nopermission();
 }
 
