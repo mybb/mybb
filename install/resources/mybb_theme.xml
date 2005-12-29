@@ -660,6 +660,7 @@ $gobutton
 <head>
 <title>$settings[bbname] - $lang->edit_post</title>
 $headerinclude
+<script type="text/javascript" src="jscripts/post.js"></script>
 </head>
 <body>
 $header
@@ -680,7 +681,7 @@ $attacherror
 <input type="hidden" name="pid" value="$pid">
 </form>
 <br />
-<form action="editpost.php" method="post" enctype="multipart/form-data" name="input" onsubmit="return checkForm();">
+<form action="editpost.php" method="post" enctype="multipart/form-data" name="input">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->edit_post</strong></td>
@@ -730,13 +731,14 @@ $footer
 <head>
 <title>$lang->post_reply_to</title>
 $headerinclude
+<script type="text/javascript" src="jscripts/post.js"></script>
 </head>
 <body>
 $header
 $preview
 $maximageserror
 $attacherror
-<form action="newreply.php" method="post" enctype="multipart/form-data" name="input" onsubmit="return checkForm();">
+<form action="newreply.php" method="post" enctype="multipart/form-data" name="input">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->post_new_reply</strong></td>
@@ -836,13 +838,14 @@ $footer
 <head>
 <title>$lang->newthread_in $forum[name]</title>
 $headerinclude
+<script type="text/javascript" src="jscripts/post.js"></script>
 </head>
 <body>
 $header
 $preview
 $maximageserror
 $attacherror
-<form action="newthread.php" method="post" enctype="multipart/form-data" name="input" onsubmit="return checkForm();">
+<form action="newthread.php" method="post" enctype="multipart/form-data" name="input">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>$lang->post_new_thread</strong></td>
@@ -4068,7 +4071,7 @@ $post[signature]]]></template>
 		<template name="post_attachments_attachment" version="100.07"><![CDATA[<tr>
 <td width="5%" align="center">$attachment[icon]</td>
 <td nowrap="nowrap">$attachment[filename] ($attachment[size])</td>
-<td nowrap="nowrap" align="right"><input type="submit" class="submit" name="rem" value="$lang->remove_attachment" onclick="removeAttachment($attachment[aid]);">&nbsp;$postinsert</td>
+<td nowrap="nowrap" align="right"><input type="submit" class="submit" name="rem" value="$lang->remove_attachment" onclick="return Post.removeAttachment($attachment[aid]);">&nbsp;$postinsert</td>
 </tr>]]></template>
 		<template name="error_attacherror" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder"><tr>
 <td class="thead"><strong>$lang->error_attach_file</strong></td>
