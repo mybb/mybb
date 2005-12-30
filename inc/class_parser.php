@@ -9,14 +9,15 @@
  * $Id$
  */
 
- /**
-  * options = array(
-		allow_html
-		allow_smilies
-		allow_mycode
-		nl2br
-		is_archive
-		filter_badwords
+/*
+options = array(
+	allow_html
+	allow_smilies
+	allow_mycode
+	nl2br
+	is_archive
+	filter_badwords
+)
 */
 
 class postParser
@@ -314,8 +315,8 @@ class postParser
 
 	function mycode_parse_code($code)
 	{
-		global $lang;
-		return "</p><div class=\"code_header\">".$lang->code."</div><div class=\"code_body\">".$code."</div><p>";
+		global $lang;		
+		return "<div class=\"code_header\">".$lang->code."</div><div class=\"code_body\"><pre><code>".$code."</code></pre></div>";
 	}
 
 	function mycode_parse_php($str)
@@ -363,7 +364,7 @@ class postParser
 		$code = str_replace("</font>\n</code>", '', $code);
 		
 		// Send back the code all nice and pretty
-		return "</p><div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div><p>";
+		return "<div class=\"code_header\">$lang->php_code</div><div class=\"code_body\"><pre><code>".$code."</code></pre></div>";
 	}
 
 	function mycode_parse_url($url, $name="")
