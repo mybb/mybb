@@ -82,7 +82,7 @@ function upload_avatar()
 	
 	// Check we have a valid extension
 	$ext = getextention(strtolower($avatar['name']));
-	if(!preg_match("#[gif|jpg|jpeg|jpe|bmp|png]$#i", $ext)) {
+	if(!preg_match("#(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext)) {
 		$ret['error'] = $lang->error_avatartype;
 		return $ret;
 	}
@@ -110,7 +110,7 @@ function upload_avatar()
 	}
 
 	// If we've got this far check dimensions
-	if(preg_match("#gif|jpg|jpeg|jpe|bmp|png#i", $ext) && $mybb->settings['maxavatardims'] != "")
+	if(preg_match("#(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext) && $mybb->settings['maxavatardims'] != "")
 	{
 		list($width, $height) = @getimagesize($mybb->settings['avataruploadpath']."/".$filename);
 		list($maxwidth, $maxheight) = @explode("x", $mybb->settings['maxavatardims']);

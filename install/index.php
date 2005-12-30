@@ -877,6 +877,7 @@ function install_done()
 	$cache->updateforums();
 	$cache->updateusertitles();
 	$cache->updatereportedposts();
+	$cache->updatemycodes();
 	echo "done</p>";
 	
 	echo "<p>Your copy of MyBB has successfully been installed and configured correctly.</p>";

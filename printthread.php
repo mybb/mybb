@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  * MyBB 1.0
  * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
@@ -13,6 +13,8 @@ $templatelist = "printthread,printthread_post";
 
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("printthread");
@@ -21,7 +23,7 @@ $plugins->run_hooks("printthread_start");
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."' AND visible='1'");
 $thread = $db->fetch_array($query);
-$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
+$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 if(!$thread['tid'])
 {
 	error($lang->error_invalidthread);
@@ -60,10 +62,21 @@ while($postrow = $db->fetch_array($query))
 	{
 		$postrow['username'] = $postrow['userusername'];
 	}
-	$postrow['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($postrow['subject'])));
+	$postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
 	$postrow['date'] = mydate($mybb->settings['dateformat'], $postrow['dateline']);
 	$postrow['time'] = mydate($mybb->settings['timeformat'], $postrow['dateline']);
-	$postrow['message'] = postify(stripslashes($postrow['message']), $forum['allowhtml'], $forum['allowmycode'], $forum['allowsmilies'], $forum['allowimgcode']);
+	$parser_options = array(
+		"allow_html" => $forum['allow_html'],
+		"allow_mycode" => $forum['allow_mycode'],
+		"allow_smilies" => $forum['allowsmilies'],
+		"allow_imgcode" => $forum['allowimgcode']
+	);
+	if($postrow['smilieoff'] == "yes")
+	{
+		$parser_options['allow_smilies'] = "no";
+	}
+
+	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
 	/* Do /me code */
 	if($forum['allowmycode'] != "no")
 	{

@@ -221,7 +221,7 @@ $forums = getforums();
 
 function getforums($pid="0", $depth=1, $permissions="")
 {
-	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $mybbforumread, $settings, $mybbuser, $excols, $fcollapse, $templates, $bgcolor, $collapsed, $lang, $showdepth, $forumpass, $plugins;
+	global $fcache, $moderatorcache, $forumpermissions, $settings, $theme, $mybb, $mybbforumread, $mybbuser, $excols, $fcollapse, $templates, $bgcolor, $collapsed, $mybbgroup, $lang, $showdepth, $parser;
 	if(is_array($fcache[$pid]))
 	{
 		while(list($key, $main) = each($fcache[$pid]))
@@ -231,8 +231,6 @@ function getforums($pid="0", $depth=1, $permissions="")
 				$perms = $forumpermissions[$forum['fid']];
 				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
 				{
-					$plugins->run_hooks("index_forum");
-
 					if($depth == 3)
 					{
 						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
@@ -249,16 +247,8 @@ function getforums($pid="0", $depth=1, $permissions="")
 						}
 						continue;
 					}
-					if($mybb->user['uid'] != 0)
-					{
-						$lastvisit = $mybb->user['lastvisit'];
-					}
-					else
-					{
-						$lastvisit = $_COOKIE['mybb']['lastvisit'];
-					}
 					$forumread = mygetarraycookie("forumread", $forum['fid']);
-					if($forum['lastpost'] > $lastvisit && $forum['lastpost'] > $forumread && $forum['lastpost'] != 0)
+					if($forum['lastpost'] > $mybb->user['lastvisit'] && $forum['lastpost'] > $forumread && $forum['lastpost'] != 0)
 					{
 						$folder = "on";
 						$altonoff = $lang->new_posts;
@@ -276,20 +266,22 @@ function getforums($pid="0", $depth=1, $permissions="")
 					$forumread = 0;
 					if($forum['type'] == "c")
 					{
-						$forumcat = "_cat";
+						if($depth == 1)
+						{
+							$forumcat = "_cat_subforum";
+						}
+						else
+						{
+							$forumcat = "_cat";
+						}
 					}
 					else
 					{
 						$forumcat = "_forum";
 					}
-					$hideinfo = 0;
 					if($forum['type'] == "f" && $forum['linkto'] == "")
 					{
-						if($forum['password'] != "" && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
-						{
-							$hideinfo = 1;
-						}
-						elseif($forum['lastpost'] == 0 || $forum['lastposter'] == "")
+						if($forum['lastpost'] == 0 || $forum['lastposter'] == "")
 						{
 							$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
 						}
@@ -299,18 +291,18 @@ function getforums($pid="0", $depth=1, $permissions="")
 							$lastposttime = mydate($mybb->settings['timeformat'], $forum['lastpost']);
 							$lastposter = $forum['lastposter'];
 							$lastposttid = $forum['lastposttid'];
+							$forum['lastpostsubject'] = $parser->parse_badwords($forum['lastpostsubject']);
 							$lastpostsubject = $fulllastpostsubject = $forum['lastpostsubject'];
 							if(strlen($lastpostsubject) > 25)
 							{
 								$lastpostsubject = substr($lastpostsubject, 0, 25) . "...";
 							}
-							$lastpostsubject = htmlspecialchars_uni(dobadwords($lastpostsubject));
-							$fulllastpostsubject = htmlspecialchars_uni(dobadwords($fulllastpostsubject));
+							$lastpostsubject = htmlspecialchars_uni($lastpostsubject);
+							$fulllastpostsubject = htmlspecialchars_uni($fulllastpostsubject);
 							eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
-
 						}
 					}
-					if($forum['linkto'] != "" || $hideinfo == 1)
+					if($forum['linkto'] != "")
 					{
 						$lastpost = "<center>-</center>";
 						$posts = "-";
@@ -325,6 +317,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						$moderators = "";
 						$parentlistexploded = explode(",", $forum['parentlist']);
+						$comma = "";
 						while(list($key, $mfid) = each($parentlistexploded))
 						{
 							if($moderatorcache[$mfid])
@@ -337,7 +330,6 @@ function getforums($pid="0", $depth=1, $permissions="")
 								}
 							}
 						}
-						$comma = "";
 						if($moderators)
 						{
 							eval("\$modlist = \"".$templates->get("forumbit_moderators")."\";");
@@ -351,28 +343,16 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						$forum['description'] = "";
 					}
-					$expdisplay = "";
 					$cname = "cat_".$forum['fid']."_c";
 					if($collapsed[$cname] == "display: show;")
 					{
 						$expcolimage = "collapse_collapsed.gif";
 						$expdisplay = "display: none;";
-						$expaltext = "[+]";
 					}
 					else
 					{
 						$expcolimage = "collapse.gif";
-						$expaltext = "[-]";
 					}
-					if($bgcolor == "trow2")
-					{
-						$bgcolor = "trow1";
-					}
-					else
-					{
-						$bgcolor = "trow2";
-					}
-
 					if($fcache[$forum['fid']] && $depth < $showdepth)
 					{
 						$newdepth = $depth + 1;
@@ -383,6 +363,18 @@ function getforums($pid="0", $depth=1, $permissions="")
 							$forums = "";
 						}
 					}
+					if($depth != 2 && !$subforums)
+					{
+						if($bgcolor == "trow2")
+						{
+							$bgcolor = "trow1";
+						}
+						else
+						{
+							$bgcolor = "trow2";
+						}
+					}
+
 					eval("\$forumlisting .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 				}
 				$forums = $subforums = "";
@@ -391,7 +383,6 @@ function getforums($pid="0", $depth=1, $permissions="")
 	}
 	return $forumlisting;
 }
-
 $plugins->run_hooks("index_end");
 
 eval("\$index = \"".$templates->get("index")."\";");

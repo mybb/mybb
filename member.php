@@ -15,6 +15,8 @@ $templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusern
 require "./global.php";
 require "./inc/functions_post.php";
 require "./inc/functions_user.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("member");
@@ -1197,7 +1199,14 @@ elseif($mybb->input['action'] == "profile")
 
 	if($memprofile['signature'])
 	{
-		$memprofile['signature'] = postify(stripslashes($memprofile['signature']), $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);
+		$sig_parser = array(
+			"allow_html" => $mybb->settings['sightml'],
+			"allow_mycode" => $mybb->settings['sigmycode'],
+			"allow_smilies" => $mybb->settings['sigsmilies'],
+			"allow_imgcode" => $mybb->settings['sigimgcode']
+		);
+
+		$memprofile['signature'] = $parser->parse_message($memprofile['signature'], $sig_parser);
 		eval("\$signature = \"".$templates->get("member_profile_signature")."\";");
 	}
 

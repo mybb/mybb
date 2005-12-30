@@ -12,6 +12,16 @@
 $templatelist = "calendar,calendar_eventbit_public,calendar_eventbit_private,calendar_addpublicevent,calendar_addprivateevent,calendar_addevent,calendar_event,calendar_daybit,calendar_daybit_today";
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
+
+$event_parser_options = array(
+	"allow_html" => "no",
+	"allow_mycode" => "yes",
+	"allow_smilies" => "yes",
+	"allow_imgcode" => "yes"
+);
+
 
 // Load global language phrases
 $lang->load("calendar");
@@ -105,8 +115,9 @@ if($mybb->input['action'] == "event")
 		$editbutton = "<a href=\"calendar.php?action=editevent&amp;eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
 		$deletebutton = "<a href=\"javascript:deleteEvent($event[eid]);\"><img src=\"$theme[imglangdir]/postbit_delete.gif\" border=\"0\" alt=\"$lang->alt_delete\" /></a>";
 	}
-	$event['subject'] = htmlspecialchars_uni(stripslashes($event['subject']));
-	$event['description'] = postify($event['description'], "no", "yes", "yes", "yes");
+	$event['subject'] = $parser->parse_badwords($event['subject']);
+	$event['subject'] = htmlspecialchars_uni($event['subject']);
+	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 	if($event['username'])
 	{
 		$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">" . formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
@@ -170,8 +181,9 @@ elseif($mybb->input['action'] == "dayview")
 			$editbutton = "<a href=\"calendar.php?action=editevent&amp;eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
 			$deletebutton = "<a href=\"javascript:deleteEvent($event[eid]);\"><img src=\"$theme[imglangdir]/postbit_delete.gif\" border=\"0\" alt=\"$lang->alt_delete\" /></a>";
 		}
-		$event['subject'] = htmlspecialchars_uni(stripslashes($event['subject']));
-		$event['description'] = postify(stripslashes($event['description']), "no", "yes", "yes", "yes");
+		$event['subject'] = $parser->parse_badwords($event['subject']);
+		$event['subject'] = htmlspecialchars_uni($event['subject']);
+		$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 		if($event['username'])
 		{
 			$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">" . formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";

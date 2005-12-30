@@ -13,6 +13,8 @@ $templatelist = "search,redirect,redirect_searchnomore,redirect_searchnotfound,s
 $templatelist .= "";
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("search");
@@ -239,9 +241,9 @@ if($mybb->input['action'] == "results")
 
 		if($search['showposts'] == 2)
 		{
-			$result['tsubject'] = htmlspecialchars_uni(stripslashes(dobadwords($result['tsubject'])));
-			$result['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($result['subject'])));
-			$result['message'] = htmlspecialchars_uni(stripslashes(dobadwords($result['message'])));
+			$result['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($result['tsubject']));
+			$result['subject'] = htmlspecialchars_uni($parser->parse_badwords($result['subject']));
+			$result['message'] = htmlspecialchars_uni($parser->parse_badwords($result['message']));
 			if(!$result['subject'])
 			{
 				$result['subject'] = $result['message'];

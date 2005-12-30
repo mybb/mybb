@@ -16,6 +16,8 @@ $templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,
 require "./global.php";
 require "./inc/functions_post.php";
 require "./inc/functions_user.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 $autocomplete = "on";
 // Autocomplete for buddy list when composing PM's
@@ -995,7 +997,14 @@ elseif($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		}
 		if($mybb->input['exporttype'] == "html")
 		{
-			$message['message'] = postify($message['message'], $mybb->settings['pmsallowhtml'], $mybb->settings['pmsallowmycode'], "no", $mybb->settings['pmsallowimgcode']);
+			$parser_options = array(
+				"allow_html" => $mybb->settings['pmsallowhtml'],
+				"allow_mycode" => $mybb->settings['pmsallowmycode'],
+				"allow_smilies" => "no",
+				"allow_imgcode" => $mybb->settings['pmsallowimgcode']
+			);
+
+			$message['message'] = $parser->parse_message($message['message'], $parser_options);
 			// do me code
 			if($mybb->settings['pmsallowmycode'] != "no")
 			{

@@ -24,6 +24,8 @@ $templatelist = "portal_welcome,portal_welcome_membertext,portal_stats,portal_se
 require "./global.php";
 require "./inc/functions_post.php";
 require "./inc/functions_user.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 global $settings, $theme, $templates;
 
@@ -393,7 +395,19 @@ while($announcement = $db->fetch_array($query))
 
 	$plugins->run_hooks("portal_announcement");
 
-	$message = postify($announcement['message'], $forum['allowhtml'], $forum['allowmycode'], $forum['allowsmilies'], $forum['allowimgcode']);
+	$parser_options = array(
+		"allow_html" => $forum['allow_html'],
+		"allow_mycode" => $forum['allow_mycode'],
+		"allow_smilies" => $forum['allowsmilies'],
+		"allow_imgcode" => $forum['allowimgcode']
+	);
+	if($announcement['smilieoff'] == "yes")
+	{
+		$parser_options['allow_smilies'] = "no";
+	}
+
+	$message = $parser->parse_message($announcement['message'], $parser_options);
+
 	eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
 	unset($post);
 }

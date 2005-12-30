@@ -296,5 +296,16 @@ class datacache
 		$reports['lastdateline'] = $latest['dateline'];
 		$this->update("reportedposts", $reports);
 	}
+
+	function updatemycodes()
+	{
+		global $db;
+		$query = $db->query("SELECT regex, replacement FROM mybb_mycodes WHERE active='yes'");
+		while($mycode = $db->fetch_array($query))
+		{
+			$mycodes[] = $mycode;
+		}
+		$this->update("mycode", $mycode);
+	}
 }
 ?>

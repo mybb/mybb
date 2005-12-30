@@ -15,6 +15,8 @@ $templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,
 require "./global.php";
 require "./inc/functions_post.php";
 require "./inc/functions_user.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("usercp");
@@ -1033,7 +1035,7 @@ elseif($mybb->input['action'] == "favorites")
 			{
 				$favorite['username'] = $favorite['threadusername'];
 			}
-			$favorite['subject'] = htmlspecialchars_uni(dobadwords($favorite['subject']));
+			$favorite['subject'] = htmlspecialchars_uni($parser->parse_badwords($favorite['subject']));
 			if($favorite['iconpath'])
 			{
 				$icon = "<img src=\"$favorite[iconpath]\" alt=\"$favorite[iconname]\">";
@@ -1118,7 +1120,7 @@ elseif($mybb->input['action'] == "subscriptions")
 			{
 				$subscription['username'] = $subscription['threadusername'];
 			}
-			$subscription['subject'] = htmlspecialchars_uni(dobadwords($subscription['subject']));
+			$subscription['subject'] = htmlspecialchars_uni($parser->parse_badwords($subscription['subject']));
 			if($subscription['iconpath'])
 			{
 				$icon = "<img src=\"$subscription[iconpath]\" alt=\"$subscription[iconname]\">";
@@ -1234,7 +1236,14 @@ elseif($mybb->input['action'] == "editsig")
 	}
 	if($sig)
 	{
-		$sigpreview = postify($sig, $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);
+		$sig_parser = array(
+			"allow_html" => $mybb->settings['sightml'],
+			"allow_mycode" => $mybb->settings['sigmycode'],
+			"allow_smilies" => $mybb->settings['sigsmilies'],
+			"allow_imgcode" => $mybb->settings['sigimgcode']
+		);
+
+		$sigpreview = $parser->parse_message($sig, $sig_parser);
 		eval("\$signature = \"".$templates->get($template)."\";");
 	}
 	if($mybb->settings['sigsmilies'] == "yes")
@@ -1937,8 +1946,8 @@ elseif($mybb->input['action'] == "attachments")
 	{
 		if($attachment['dateline'] && $attachment['tid'])
 		{
-			$attachment['subject'] = htmlspecialchars_uni(dobadwords($attachment['subject']));
-			$attachment['threadsubject'] = htmlspecialchars_uni(dobadwords($attachment['threadsubject']));
+			$attachment['subject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['subject']));
+			$attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
 			$size = getfriendlysize($attachment['filesize']);
 			$icon = getattachicon(getextention($attachment['filename']));
 			$sizedownloads = sprintf($lang->attachment_size_downloads, $size, $attachment['downloads']);

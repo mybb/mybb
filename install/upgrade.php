@@ -250,6 +250,7 @@ function buildcaches()
 	$cache->updateforums();
 	$cache->updateusertitles();
 	$cache->updatereportedposts();
+	$cache->updatemycodes();
 	$contents .= "done</p>";
 
 	$output->print_contents("$contents<p>Please press next to continue</p>");

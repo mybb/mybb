@@ -12,6 +12,8 @@
 $templatelist = "poll_newpoll,redirect_pollposted,redirect_pollupdated,redirect_votethanks";
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("polls");
@@ -601,8 +603,16 @@ if($mybb->input['action'] == "showresults")
 		$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 	}
 	for($i=1;$i<=$poll['numoptions'];$i++)
-	{
-		$option = postify(stripslashes($optionsarray[$i-1]), $forum['allowhtml'], $forum['allowmycode'], $forum['allowsmilies'], $forum['allowimgcode']);
+	{		
+		$parser_options = array(
+			"allow_html" => $forum['allowhtml'],
+			"allow_mycode" => $forum['allowmycode'],
+			"allow_smilies" => $forum['allowsmilies'],
+			"allow_imgcode" => $forum['allowimgcode']
+		);
+		
+		$option = $parser->parse_message($optionsarray[$i-1], $parser_options);
+
 		$votes = $votesarray[$i-1];
 		$number = $i;
 		if($votedfor[$number])

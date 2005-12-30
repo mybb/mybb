@@ -12,10 +12,12 @@ $templatelist = "showthread,postbit,showthread_newthread,showthread_newreply,sho
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,showthread_moderationoptions.postbit_iplogged_show,postbit_iplogged_hiden,showthread_quickreply";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,thumbnails_thumbnail,postbit_attachments_attachment,postbit_attachments,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl";
-$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail";
+$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_seperator";
 
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("showthread");
@@ -28,7 +30,7 @@ if($mybb->input['pid'] && !$mybb->input['tid']) {
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."' AND closed NOT LIKE 'moved|%'");
 $thread = $db->fetch_array($query);
-$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
+$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 $tid = $thread['tid'];
 $fid = $thread['fid'];
 
@@ -148,8 +150,16 @@ if($mybb->input['action'] == "thread") {
 			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 		}
 		$poll['question'] = htmlspecialchars_uni($poll['question']);
-		for($i=1;$i<=$poll['numoptions'];$i++) {
-			$option = postify(stripslashes($optionsarray[$i-1]), $forum['allowhtml'], $forum['allowmycode'], $forum['allowsmilies'], $forum['allowimgcode']);
+		for($i=1;$i<=$poll['numoptions'];$i++)
+		{
+			$parser_options = array(
+				"allow_html" => $forum['allowhtml'],
+				"allow_mycode" => $forum['allowmycode'],
+				"allow_smilies" => $forum['allowsmilies'],
+				"allow_imgcode" => $forum['allowimgcode']
+			);
+			
+			$option = $parser->parse_message($optionsarray[$i-1], $parser_options);
 			$votes = $votesarray[$i-1];
 			$number = $i;
 			if($votedfor[$number]) {
@@ -437,13 +447,12 @@ if($mybb->input['action'] == "thread") {
 		eval("\$inlinemod = \"".$templates->get("showthread_inlinemoderation")."\";");
 		eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
 	}
-	$thread['subject'] = dobadwords($thread['subject']);
 	eval("\$showthread = \"".$templates->get("showthread")."\";");
 	$plugins->run_hooks("showthread_end");
 	outputpage($showthread);
 }
 function buildtree($replyto="0", $indent="0") {
-	global $tree, $settings, $theme, $mybb, $pid, $tid, $templates;
+	global $tree, $settings, $theme, $mybb, $pid, $tid, $templates, $parser;
 	if($indent) {
 		$indentsize = 13 * $indent;
 	} else {
@@ -454,7 +463,7 @@ function buildtree($replyto="0", $indent="0") {
 		while(list($key, $post) = each($tree[$replyto])) {
 			$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = mydate($mybb->settings['timeformat'], $post['dateline']);
-			$post['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($post['subject'])));
+			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
 			if(!$post['subject']) {
 				$post['subject'] = "[no subject]";
 			}

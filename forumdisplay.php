@@ -17,6 +17,8 @@ $templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep";
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("forumdisplay");
@@ -206,7 +208,14 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 	{
 		$foruminfo['rulestitle'] = sprintf($lang->forum_rules, $foruminfo['name']);
 	}
-	$foruminfo['rules'] = postify($foruminfo['rules'], "yes", "yes", "yes", "yes");
+	$rules_parser = array(
+		"allow_html" => "yes",
+		"allow_mycode" => "yes",
+		"allow_smilies" => "yes",
+		"allow_imgcode" => "yes"
+	);
+
+	$foruminfo['rules'] = $parser->parse_message($foruminfo['rules'], $rules_parser);
 	if($foruminfo['rulestype'] == 1)
 	{
 		eval("\$rules = \"".$templates->get("forumdisplay_rules")."\";");
@@ -398,7 +407,8 @@ while($announcement = $db->fetch_array($query))
 	{
 		$folder = "folder.gif";
 	}
-	$announcement['subject'] = htmlspecialchars_uni(dobadwords($announcement['subject']));
+	$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
+	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 	$postdate = mydate($mybb->settings['dateformat'], $announcement['startdate']);
 	if($foruminfo['allowtratings'] != "no")
 	{
@@ -508,8 +518,8 @@ if($threadcache)
 		{
 			$thread['profilelink'] = "<a href=\"".str_replace("{uid}", $thread['uid'], PROFILE_URL)."\">".$thread['username']."</a>";
 		}
-
-		$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
+		$thread['subject'] = $parser->parse_badwords($thread['subject']);
+		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		if($thread['iconpath'])
 		{
 			$icon = "<img src=\"$thread[iconpath]\" alt=\"$thread[iconname]\">";
@@ -711,7 +721,7 @@ if($foruminfo['type'] != "c") {
 
 function getforums($pid="0", $depth=1, $permissions="")
 {
-	global $fcache, $moderatorcache, $forumpermissions, $settings, $theme, $mybb, $mybbforumread, $mybbuser, $excols, $fcollapse, $templates, $bgcolor, $collapsed, $mybbgroup, $lang, $showdepth;
+	global $fcache, $moderatorcache, $forumpermissions, $settings, $theme, $mybb, $mybbforumread, $mybbuser, $excols, $fcollapse, $templates, $bgcolor, $collapsed, $mybbgroup, $lang, $showdepth, $parser;
 	if(is_array($fcache[$pid]))
 	{
 		while(list($key, $main) = each($fcache[$pid]))
@@ -781,13 +791,14 @@ function getforums($pid="0", $depth=1, $permissions="")
 							$lastposttime = mydate($mybb->settings['timeformat'], $forum['lastpost']);
 							$lastposter = $forum['lastposter'];
 							$lastposttid = $forum['lastposttid'];
+							$forum['lastpostsubject'] = $parser->parse_badwords($forum['lastpostsubject']);
 							$lastpostsubject = $fulllastpostsubject = $forum['lastpostsubject'];
 							if(strlen($lastpostsubject) > 25)
 							{
 								$lastpostsubject = substr($lastpostsubject, 0, 25) . "...";
 							}
-							$lastpostsubject = htmlspecialchars_uni(dobadwords($lastpostsubject));
-							$fulllastpostsubject = htmlspecialchars_uni(dobadwords($fulllastpostsubject));
+							$lastpostsubject = htmlspecialchars_uni($lastpostsubject);
+							$fulllastpostsubject = htmlspecialchars_uni($fulllastpostsubject);
 							eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
 						}
 					}

@@ -82,22 +82,4 @@ $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage)
 $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage) VALUES (4, 250, 'Senior Member', 4, '');";
 $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage) VALUES (5, 750, 'Posting Freak', 5, '');";
 
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\[b\\](.*?)\\[/b\\]#si', '<strong>$1</strong>');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\[i\\](.*?)\\[/i\\]#si', '<em>$1</em>');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\[u\\](.*?)\\[/u\\]#si', '<u>$1</u>');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\[s\\](.*?)\\[/s\\]#si', '<del>$1</del>');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\(c\\)#i', '&copy;');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\(tm\\)#i', '&#153;');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\(r\\)#i', '&reg;');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\[url\]([a-z]+?://)([^\r\n\"\[<]+?)\[/url\]#sei', 'MyCode::do_shorturl(\"$1$2\")');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\[url\]([^\r\n\"\[<]+?)\[/url\]#ei', 'MyCode::do_shorturl(\"$1\")');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\[url=([a-z]+?://)([^\r\n\"\[<]+?)\](.+?)\[/url\]#esi', 'MyCode::do_shorturl(\"$1$2\", \"$3\")');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\[url=([^\r\n\"\[<]+?)\](.+?)\[/url\]#esi', 'MyCode::do_shorturl(\"$1\", \"$2\")');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\[email\\](.*?)\\[/email\\]#ei', 'MyCode::do_emailurl(\"$1\", \"$2\")');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\[email=(.*?)\\](.*?)\\[/email\\]#ei', 'MyCode::do_emailurl(\"$1\", \"$2\")');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\[color=([a-zA-Z]*|\\#?[0-9a-fA-F]{6})](.*?)\\[/color\\]#si', '<span style=\"color: $1;\">$2</span>');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\\](.*?)\\[/size\\]#si', '<span style=\"font-size: $1;\">$2</span>');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\[font=([a-z ]+?)\\](.+?)\\[/font\\]#si', '<span style=\"font-family: $1;\">$2</span>');";
-$inserts[]= "INSERT INTO mybb_mycodes (cid, regex, replacement) VALUES (0, '#\\[align=(left|center|right|justify)\\](.*?)\\[/align\\]#si', '<p style=\"text-align: $1;\">$2</p>');";
-
 ?>

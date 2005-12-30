@@ -15,7 +15,8 @@ $templatelist .= ",smilieinsert,codebuttons,post_attachments_new,post_attachment
 require "./global.php";
 require "./inc/functions_post.php";
 require "./inc/functions_user.php";
-
+require "./inc/class_parser.php";
+$parser = new postParser;
 // Load global language phrases
 $lang->load("newreply");
 
@@ -371,16 +372,18 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$reviewpostdate = mydate($mybb->settings['dateformat'], $post['dateline']);
 				$reviewposttime = mydate($mybb->settings['timeformat'], $post['dateline']);
-				$reviewmessage = stripslashes($post['message']);
+				$parser_options = array(
+					"allow_html" => $forum['allowhtml'],
+					"allow_mycode" => $forum['allowmycode'],
+					"allow_smilies" => $forum['allowsmilies'],
+					"allow_imgcode" => $forum['allowimgcode']
+				);
 				if($post['smilieoff'] == "yes")
 				{
-					$allowsmilies = "no";
+					$parser_options['allow_smilies'] = "no";
 				}
-				else
-				{
-					$allowsmilies = $forum['allowsmilies'];
-				}
-				$reviewmessage = postify($reviewmessage, $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
+
+				$reviewmessage = $parser->parse_message($post['message'], $parser_options);
 				eval("\$reviewbits .= \"".$templates->get("newreply_threadreview_post")."\";");
 				if($altbg == "trow1")
 				{
@@ -529,10 +532,9 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	// Start Subscriptions
 	if(!$savedraft)
 	{
-		$subject = dobadwords($thread['subject']);
-		require_once "inc/class_mycode.php";
-		$mycode = new MyCode();
-		$excerpt = substr(dobadwords($mycode->parse($mybb->input['message'])), 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+		$subject = $parser->parse_badwords($thread['subject']);
+		$excerpt = $parser->strip_mycode($mybb->input['message']);
+		$excerpt = substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline DESC LIMIT 1");
 		$lastpost = $db->fetch_array($query);
 		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'$lastpost[dateline]'");

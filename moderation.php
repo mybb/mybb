@@ -12,6 +12,8 @@
 require "./global.php";
 require "./inc/functions_post.php";
 require "./inc/functions_upload.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("moderation");
@@ -61,7 +63,7 @@ if($fid)
 
 if($tid)
 {
-	addnav(dobadwords($thread['subject']), "showthread.php?tid=$thread[tid]");
+	addnav($parser->parse_badwords($thread['subject']), "showthread.php?tid=$thread[tid]");
 	$modlogdata['tid'] = $tid;
 }
 
@@ -333,16 +335,19 @@ switch($mybb->input['action'])
 		{
 			$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = mydate($mybb->settings['timeformat'], $post['dateline']);
-			$message = stripslashes($post['message']);
+
+			$parser_options = array(
+				"allow_html" => $forum['allowhtml'],
+				"allow_mycode" => $forum['allowmycode'],
+				"allow_smilies" => $forum['allowsmilies'],
+				"allow_imgcode" => $forum['allowimgcode']
+			);
 			if($post['smilieoff'] == "yes")
 			{
-				$allowsmilies = "no";
+				$parser_options['allow_smilies'] = "no";
 			}
-			else
-			{
-				$allowsmilies = $forum['allowsmilies'];
-			}
-			$message = postify($message, $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
+
+			$message = $parser->parse_message($message, $parser_options);
 			eval("\$posts .= \"".$templates->get("moderation_deleteposts_post")."\";");
 			if($altbg == "trow1")
 			{
@@ -417,16 +422,18 @@ switch($mybb->input['action'])
 		{
 			$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = mydate($mybb->settings['timeformat'], $post['dateline']);
-			$message = stripslashes($post['message']);
+			$parser_options = array(
+				"allow_html" => $forum['allowhtml'],
+				"allow_mycode" => $forum['allowmycode'],
+				"allow_smilies" => $forum['allowsmilies'],
+				"allow_imgcode" => $forum['allowimgcode']
+			);
 			if($post['smilieoff'] == "yes")
 			{
-				$allowsmilies = "no";
+				$parser_options['allow_smilies'] = "no";
 			}
-			else
-			{
-				$allowsmilies = $forum['allowsmilies'];
-			}
-			$message = postify($message, $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
+
+			$message = $parser->parse_message($message, $parser_options);
 			eval("\$posts .= \"".$templates->get("moderation_mergeposts_post")."\";");
 			if($altbg == "trow1")
 			{
@@ -652,7 +659,7 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$thread['notes'] = htmlspecialchars_uni(dobadwords($thread['notes']));
+		$thread['notes'] = htmlspecialchars_uni($parser->parse_badwords($thread['notes']));
 		$trow = "trow1";
 		$query = $db->query("SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid) WHERE t.tid='$tid' ORDER BY l.dateline DESC LIMIT  0, 20");
 		while($modaction = $db->fetch_array($query))
@@ -856,16 +863,18 @@ switch($mybb->input['action'])
 		{
 			$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = mydate($mybb->settings['timeformat'], $post['dateline']);
-			$message = stripslashes($post['message']);
+			$parser_options = array(
+				"allow_html" => $forum['allowhtml'],
+				"allow_mycode" => $forum['allowmycode'],
+				"allow_smilies" => $forum['allowsmilies'],
+				"allow_imgcode" => $forum['allowimgcode']
+			);
 			if($post['smilieoff'] == "yes")
 			{
-				$allowsmilies = "no";
+				$parser_options['allow_smilies'] = "no";
 			}
-			else
-			{
-				$allowsmilies = $forum['allowsmilies'];
-			}
-			$message = postify($message, $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
+
+			$message = $parser->parse_message($message, $parser_options);
 			eval("\$posts .= \"".$templates->get("moderation_split_post")."\";");
 			if($altbg == "trow1")
 			{

@@ -12,6 +12,8 @@
 $templatelist = "stats,stats_thread";
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("stats");
@@ -51,7 +53,7 @@ if($unviewableforums)
 $query = $db->query("SELECT tid, subject, replies FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY replies DESC LIMIT 0, ".$mybb->settings[statslimit]);
 while($thread = $db->fetch_array($query))
 {
-	$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
+	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 	$numberbit = mynumberformat($thread['replies']);
 	$numbertype = $lang->replies;
 	eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
@@ -61,7 +63,7 @@ while($thread = $db->fetch_array($query))
 $query = $db->query("SELECT tid, subject, views FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY views DESC LIMIT 0, ".$mybb->settings[statslimit]);
 while($thread = $db->fetch_array($query))
 {
-	$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
+	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 	$numberbit = mynumberformat($thread['views']);
 	$numbertype = $lang->views;
 	eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");

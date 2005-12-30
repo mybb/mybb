@@ -12,83 +12,45 @@
 function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="yes", $allowimgcode="yes", $archive=0)
 {
 	global $db, $mybb, $theme, $plugins;
-
-	$message = dobadwords($message);
-	if($allowhtml != "yes")
-	{
-		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicode
-		$message = str_replace("<","&lt;",$message);
-		$message = str_replace(">","&gt;",$message);
-		if($allowimgcode != "yes")
-		{
-			$message = str_replace("<img","&lt;img",$message);
-		}
-	}
-
-	/* Parse mycode */
-	if($allowmycode != "no")
-	{
-		$mycode_perms = array();
-		$mycode_perms['allowimagecode'] = $allowimagecode;
-		$mycode_perms['allowsmilies'] = $allowsmilies;
-		
-		require_once "class_mycode.php";
-		$mycode = new MyCode();
-		$message = $mycode->parse($message, $mycode_perms);
-	}
-	
-	$message = fixjavascript($message);
-	$message = $plugins->run_hooks("parse_message", $message);
-	$message = nl2br($message);
-	
+	$message = "<strong>postify: This function is now deprecated.</strong>";
 	return $message;
 }
 
 function fixjavascript($message)
 {
-	$message = preg_replace("#javascript:#i", "java script:", $message);
-	/* This patch provided by Ryan (try to remove XSS Cross-site scripting issues). */
-	$message = preg_replace("#(a)(lert)#ie", "'&#'.ord($1).';$2'", $message);
-	$message = preg_replace("#onmouseover#i", "&#111;nmouseover", $message);
-	$message = preg_replace("#onmouseout#i", "&#111;nmouseout", $message);
-	$message = preg_replace("#onclick#i", "&#111;nclick", $message);
-	$message = preg_replace("#onload#i", "&#111;nload", $message);
-	$message = eregi_replace("#onsubmit#i", "&#111;nsubmit", $message);
+	$message = "<strong>fixjavascript: This function is now deprecated.</strong>";
 	return $message;
 }
 
 function dobadwords($message)
 {
 	global $db, $badwordcache, $cache;
-
-	if(!$badwordcache)
-	{
-		$badwordcache = $cache->read("badwords");
-	}
-
-	if(is_array($badwordcache))
-	{
-		reset($badwordcache);
-		foreach($badwordcache as $bid => $badword)
-		{
-			if(!$badword['replacement'])
-			{
-				$badword['replacement'] = "*****";
-			}
-			$badword['badword'] = preg_quote($badword['badword']);
-			$message = preg_replace("#".$badword['badword']."#i", $badword['replacement'], $message);
-		}
-	}
+	$message = "<strong>dobadwords: This function is now deprecated.</strong>";
 	return $message;
+}
+
+function domecode($message, $username)
+{
+	global $lang;
+	$message = preg_replace('#^/me (.*)$#im', "<span style=\"color: red;\">* $username \\1</span>", $message);
+	$message = preg_replace('#^/slap (.*)#iem', "'<span style=\"color: red;\">* $username $lang->slaps '.str_replace('<br />', '', '\\1').' $lang->with_trout</span><br />'", $message);
+	return $message;	
 }
 
 function makepostbit($post, $pmprevann=0)
 {
 	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter, $titlescache, $page, $templates;
 	global $forumpermissions, $attachcache, $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
-	global $plugins;
+	global $plugins, $parser;
 
 	$GLOBALS['post'] = $post;
+
+	// Set up the message parser if it doesn't already exist.
+	if(!$parser)
+	{
+		require_once "class_parser.php";
+		$parser = new postParser;
+	}
 
 	if($post['visible'] == 0 && $pmprevann == 0)
 	{
@@ -110,23 +72,27 @@ function makepostbit($post, $pmprevann=0)
 			break;
 		case "2": // Private message
 			global $message, $pmid;
-			$forum['allowhtml'] = $mybb->settings['pmsallowhtml'];
-			$forum['allowmycode'] = $mybb->settings['pmsallowmycode'];
-			$forum['allowsmilies'] = $mybb->settings['pmsallowsmilies'];
-			$forum['allowimgcode'] = $mybb->settings['pmsallowimgcode'];
+			$parser_options['allow_html'] = $mybb->settings['pmsallowhtml'];
+			$parser_options['allow_mycode'] = $mybb->settings['pmsallowmycode'];
+			$parser_options['allow_smilies'] = $mybb->settings['pmsallowsmilies'];
+			$parser_options['allow_imgcode'] = $mybb->settings['pmsallowimgcode'];
 			$id = $pmid;
 			break;
 		case "3": // Announcement
 			global $announcementarray, $message;
-			$forum['allowhtml'] = $announcementarray['allowhtml'];
-			$forum['allowmycode'] = $announcementarray['allowmycode'];
-			$forum['allowsmilies'] = $announcementarray['allowsmilies'];
-			$forum['allowimgcode'] = 'yes';
+			$parser_options['allow_html'] = $announcementarray['allowhtml'];
+			$parser_options['allow_mycode'] = $announcementarray['allowmycode'];
+			$parser_options['allow_smilies'] = $announcementarray['allowsmilies'];
+			$parser_options['allow_imgcode'] = "yes";
 			break;
 		default: // Regular post
 			global $forum, $thread, $tid;
 			$oldforum = $forum;
 			$id = $post['pid'];
+			$parser_options['allow_html'] = $forum['allowhtml'];
+			$parser_options['allow_mycode'] = $forum['allow_mycode'];
+			$parser_options['allow_smilies'] = $forum['allowsmilies'];
+			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
 			break;
 	}
 
@@ -152,7 +118,8 @@ function makepostbit($post, $pmprevann=0)
 	$post['posttime'] = mydate($mybb->settings['timeformat'], $post['dateline']);
 
 	// Dont want any little 'nasties' in the subject
-	$post['subject'] = htmlspecialchars_uni(dobadwords($post['subject']));
+	$post['subject'] = $parser->parse_badwords($post['subject']);
+	$post['subject'] = htmlspecialchars_uni($post['subject']);
 
 	$post['author'] = $post['uid'];
 
@@ -420,13 +387,9 @@ function makepostbit($post, $pmprevann=0)
 	}
 	if($post['smilieoff'] == "yes")
 	{
-		$allowsmilies = "no";
+		$parser_options['allow_smilies'] = "no";
 	}
-	else
-	{
-		$allowsmilies = $forum['allowsmilies'];
-	}
-	$post['message'] = postify($post['message'], $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
+	$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 	if(is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
@@ -510,7 +473,14 @@ function makepostbit($post, $pmprevann=0)
 
 	if($post['includesig'] != "no" && $post['username'] && $post['signature'] != "" && $mybb->user['showsigs'] != "no")
 	{
-		$post['signature'] = postify(stripslashes($post['signature']), $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);
+		$sig_parser = array(
+			"allow_html" => $mybb->settings['sightml'],
+			"allow_mycode" => $mybb->settings['sigmycode'],
+			"allow_smilies" => $mybb->settings['sigsmilies'],
+			"allow_imgcode" => $mybb->settings['sigimgcode']
+		);
+
+		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);
 		eval("\$post['signature'] = \"".$templates->get("postbit_signature")."\";");
 	}
 	else

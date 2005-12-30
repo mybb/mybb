@@ -12,6 +12,8 @@
 $templatelist = "sendthread,sendthread_guest,email_sendtofriend";
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("sendthread");
@@ -20,7 +22,7 @@ $tid = intval($mybb->input['tid']);
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 $thread = $db->fetch_array($query);
-$thread['subject'] = htmlspecialchars_uni(stripslashes(dobadwords($thread['subject'])));
+$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 if(!$thread['tid'])
 {
 	error($lang->error_invalidthread);
