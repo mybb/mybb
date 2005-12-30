@@ -14,6 +14,8 @@ $templatelist .= ",index_birthdays_birthday,index_birthdays,index_pms,index_logi
 
 require "./global.php";
 require "./inc/functions_post.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 $plugins->run_hooks("index_start");
 
