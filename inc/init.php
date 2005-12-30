@@ -82,6 +82,9 @@ $displaygroupfields = array("title", "description", "namestyle", "usertitle", "s
 // These are fields in the usergroups table that are also forum permission specific
 $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
 
+// Generate a random number for performing random actions.
+$rand = rand(0, 10);
+
 /* URL Definitions */
 define(PROFILE_URL, "member.php?action=profile&amp;uid={uid}");
 define(FORUM_URL, "forumdisplay.php?fid={fid}");

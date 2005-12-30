@@ -18,13 +18,13 @@ class templates {
 	{
 		global $db, $extras, $theme;
 		$names = explode(",", $templates);
-		while(list($key, $title) = each($names))
+		foreach($names as $key => $title)
 		{
 			$sql .= ",'".trim($title)."'";
 		}
 		if(is_array($extras))
 		{
-			while(list($extra, $val) = each($extras))
+			foreach($extras as $val => $extra)
 			{
 				$sqladd .= " OR (title='cache_".trim($extra)."')";
 			}
@@ -45,7 +45,6 @@ class templates {
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$title' AND sid IN ('-2','-1','".$theme['templateset']."') ORDER BY sid DESC LIMIT 0, 1");
 			$gettemplate = $db->fetch_array($query);
 			$this->cache[$title] = $gettemplate['template'];
-//			$this->logit("uncached-templates.txt", $title);
 		}
 		$template = $this->cache[$title];
 		if($htmlcomments)
@@ -56,54 +55,7 @@ class templates {
 		{
 			$template = str_replace("\\'", "'", addslashes($template));
 		}
-		//if(!isset($this->cache[$title])) {
-		//	echo "<b>Warning:</b> Missing template $title<br>";
-		//}
 		return $template;
-	}
-
-	function logit($file, $message)
-	{
-		global $PHP_SELF;
-		$out = fopen($file, "a");
-		fwrite($out, time()." $PHP_SELF $message\n");
-		fclose($out);
-	}
-
-	function xhtmlfix($template)
-	{
-		$search  = array ("'(<\/?)(\w+)([^>]*>)'e",
-                   "'(<\/?)(br|input|meta|link|img)([^>]*)( />)'ie", 
-                   "'(<\/?)(br|input|meta|link|img)([^>]*)(/>)'ie", 
-                   "'(<\/?)(br|input|meta|link|img)([^>]*)(>)'ie", 
-                   "'(\w+=)(\w+)'ie", 
-                   "'(\w+=)(.+?)'ie"); 
-		$replace = array ("'\\1'.strtolower('\\2').'\\3'", 
-                   "'\\1\\2\\3>'", 
-                   "'\\1\\2\\3>'", 
-                   "'\\1\\2\\3 /\\4'", 
-                   "strtolower('\\1').'\"\\2\"'", 
-                   "strtolower('\\1').'\\2'"); 
-		$template = preg_replace($search, $replace, $template); 
-		return $template;
-	}
-
-	// cache read/update functions :-D
-	function readcache($name)
-	{
-		global $db, $templates;
-		return $templates->get("cache_".$name, 0, 0);
-	}
-
-	function updatecache($name, $contents)
-	{
-		global $db, $templates;
-		$name = "cache_".$name;
-		$db->query("UPDATE templates SET ".TABLE_PREFIX."template='$contents' WHERE title='$name'");
-		if($db->affected_rows() == 0)
-		{
-			$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid) VALUES ('$name','$contents','-3')");
-		}
 	}
 }
 ?>

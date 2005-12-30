@@ -14,9 +14,9 @@ $templatelist .= ",private_folders,private_folders_folder,private_folders_folder
 $templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc";
 
 require "./global.php";
-require "./inc/functions_post.php";
-require "./inc/functions_user.php";
-require "./inc/class_parser.php";
+require_once "./inc/functions_post.php";
+require_once "./inc/functions_user.php";
+require_once "./inc/class_parser.php";
 $parser = new postParser;
 
 $autocomplete = "on";
@@ -60,6 +60,12 @@ if(!$mybb->user['pmfolders'])
 		 "pmfolders" => $mybb->user['pmfolders']
 	);
 	$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$mybb->user['uid']);
+}
+
+// On a random occassion, recount the users pm's just to make sure everything is in sync.
+if($rand == 5)
+{
+	update_pm_count();
 }
 
 $timecut = time()-(60*60*24*7);
@@ -455,15 +461,20 @@ elseif($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 			"smilieoff" => $options['disablesmilies'],
 			"receipt" => $options['readreceipt'],
 			"readtime" => 0
-			);
-			if($mybb->input['saveasdraft'])
-			{
-				$newpm['uid'] = $mybb->user['uid'];
-			}
+		);
 
-			$plugins->run_hooks("private_do_send_process");
+		if($mybb->input['saveasdraft'])
+		{
+			$newpm['uid'] = $mybb->user['uid'];
+		}
+
+		$plugins->run_hooks("private_do_send_process");
 
 		$db->insert_query(TABLE_PREFIX."privatemessages", $newpm);
+
+		// Update private message count (total, new and unread) for recipient
+		update_pm_count($touser['uid']);
+
 	}
 	if($mybb->input['pmid'] && !$mybb->input['saveasdraft'])
 	{
@@ -503,6 +514,12 @@ elseif($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 				);
 			$plugins->run_hooks("private_do_send_savecopy");
 			$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
+
+			// Because the sender saved a copy, update their total pm count
+			if($touser['uid'] != $mybb->user['uid'])
+			{
+				update_pm_count("", 4);
+			}
 		}
 	}
 	if($touser['pmpopup'] != "no" && !$mybb->input['saveasdraft'])
@@ -555,6 +572,9 @@ elseif($mybb->input['action'] == "read")
 		$time = time();
 		/* Do not convert to update_query() as $receiptadd will break. */
 		$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET status='1'$receiptadd, readtime='$time' WHERE pmid='$pmid'");
+
+		// Update the unread count - it has now changed.
+		update_pm_count("", 4);
 	}
 	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($pm['subject']);
@@ -632,9 +652,21 @@ elseif($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post
 	{
 		if(is_array($mybb->input['unreadcheck']))
 		{
-			while(list($key, $val) = each($mybb->input['unreadcheck']))
+			foreach($mybb->input['unreadcheck'] as $pmid => $val)
 			{
-				$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='".intval($key)."' AND fromid='".$mybb->user['uid']."'");
+				$pmids[$pmid] = intval($pmid);
+			}
+			$pmids = implode(",", $pmids);
+			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN ($pmids) AND fromid='".$mybb->user['uid']."'");
+			while($pm = $db->fetch_array($query))
+			{
+				$pmuids[$pm['uid']] = $pm['uid'];
+			}
+			$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN ($pmids) AND fromid='".$mybb->user['uid']."'");
+			foreach($pmuids as $uid)
+			{
+				// Message is cancelled, update PM count for this user
+				update_pm_count($pm['uid']);
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
@@ -644,7 +676,6 @@ elseif($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post
 elseif($mybb->input['action'] == "folders")
 {
 	$plugins->run_hooks("private_folders_start");
-	// echo $mybb->user['pmfolders'];
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	while(list($key, $folders) = each($foldersexploded))
 	{
@@ -785,6 +816,9 @@ elseif($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 		}
 		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE ($emptyq) AND uid='".$mybb->user[uid]."' $keepunreadq");
 	}
+	// Update PM count
+	update_pm_count();
+
 	$plugins->run_hooks("private_do_empty_end");
 	redirect("private.php", $lang->redirect_pmfoldersemptied);
 }
@@ -807,6 +841,9 @@ elseif($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid=".intval($key)." AND uid=".$mybb->user['uid']);
 			}
 		}
+		// Update PM count
+		update_pm_count();
+
 		redirect("private.php?fid=".$mybb->input['fid'], $lang->redirect_pmsmoved);
 	}
 	elseif($mybb->input['delete'])
@@ -843,6 +880,9 @@ elseif($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				}
 			}
 		}
+		// Update PM count
+		update_pm_count();
+
 		redirect("private.php", $lang->redirect_pmsdeleted);
 	}
 }
@@ -854,7 +894,10 @@ elseif($mybb->input['action'] == "delete")
 		"folder" => 4
 	);
 	$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'");
-	
+
+	// Update PM count
+	update_pm_count();
+
 	$plugins->run_hooks("private_delete_end");
 	redirect("private.php", $lang->redirect_pmsdeleted);
 }
@@ -1043,6 +1086,8 @@ elseif($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	if($mybb->input['deletepms'] == "yes")
 	{ // delete the archived pms
 		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN (''$ids)");
+		// Update PM count
+		update_pm_count();
 	}
 	if($mybb->input['exporttype'] == "html")
 	{

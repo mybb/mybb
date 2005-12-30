@@ -29,19 +29,22 @@ function upgrade5_dbchanges()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE avatartype avatartype varchar(10) NOT NULL AFTER avatar;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE avatartype avatartype varchar(10) NOT NULL;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD totalpms int(10) NOT NULL default '0' AFTER showcodebuttons;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD newpms int(10) NOT NULL default '0' AFTER totalpms;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD unreadpms int(10) NOT NULL default '0' AFTER newpms;");
+
+	$db->query("UPDATE ".TABLE_PREFIX."users SET totalpms='-1', newpms='-1', unreadpms='-1'");
 
 	echo "Done</p>";
 	
 	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mycodes");	
-	$db->query("
-		CREATE TABLE ".TABLE_PREFIX."mycodes (
+	$db->query("CREATE TABLE ".TABLE_PREFIX."mycodes (
 			cid int unsigned NOT NULL auto_increment,
 			regex varchar(255) NOT NULL default '',
 			replacement varchar(255) NOT NULL default '',
 			PRIMARY KEY(cid)
-		) TYPE=MyISAM;
-	");
+		) TYPE=MyISAM;");
 	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

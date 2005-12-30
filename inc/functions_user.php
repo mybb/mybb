@@ -404,4 +404,67 @@ function get_usertitle($uid="")
 		return $usertitle['title'];
 	}
 }
+
+/**
+ * Updates a users private message count in the users table with the number of pms they have.
+ *
+ * @param int The user id to update the count for. If none, assumes currently logged in user.
+ * @param int Bitwise value for what to update. 1 = total, 2 = new, 4 = unread. Combinations accepted.
+ * @param int The unix timestamp the user with uid last visited. If not specified, will be queried.
+ */
+
+function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
+{
+	global $db, $mybb;
+	static $pm_lastvisit_cache;
+
+	// If no user id, assume that we mean the current logged in user.
+	if(intval($uid) == 0)
+	{
+		$uid = $mybb->user['uid'];
+	}
+
+	// If using logged in user, use the last visit
+	if($uid == $mybb->user['uid'])
+	{
+		$lastvisit = $mybb->user['lastvisit'];
+	}
+	// Else, if no last visit is specified, query for it.
+	elseif(intval($lastvisit) < 1) 
+	{
+		if(!$pm_lastvisit_cache[$uid])
+		{
+			$query = $db->query("SELECT lastvisit FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."'");
+			$user = $db->fetch_array($query);
+			$pm_lastvisit_cache[$uid] = $user['lastvisit'];
+		}
+		$lastvisit = $pm_lastvisit_cache[$uid];
+	}
+	// Update total number of messages.
+	if($count_to_update & 1)
+	{
+		$query = $db->query("SELECT COUNT(pmid) AS pms_total FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$uid."'");
+		$total = $db->fetch_array($query);
+		$pmcount['totalpms'] = $total['pms_total'];
+	}
+	// Update number of new messages.
+	if($count_to_update & 2)
+	{
+		$query = $db->query("SELECT COUNT(pmid) AS pms_new FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$uid."' AND dateline>'".$mybb->user['lastvisit']."' AND folder=1");
+		$new = $db->fetch_array($query);
+		$pmcount['newpms'] = $new['pms_new'];
+	}
+	// Update number of unread messages.
+	if($count_to_update & 4)
+	{
+		$query = $db->query("SELECT COUNT(pmid) AS pms_unread FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$uid."' AND status=0 AND folder='1'");
+		$unread = $db->fetch_array($query);
+		$pmcount['unreadpms'] = $unread['pms_unread'];
+	}
+	if(is_array($pmcount))
+	{
+		$db->update_query(TABLE_PREFIX."users", $pmcount, "uid='".intval($uid)."'");
+	}
+	return $pmcount;
+}
 ?>

@@ -247,7 +247,7 @@ function buildparentlist($fid, $column="fid", $joiner="OR", $parentlist="")
 	$parentlist = (!$parentlist) ? getparentlist($fid) : $parentlist;
 	$parentsexploded = explode(",", $parentlist);
 	$builtlist = "(";
-	while(list($key, $val) = each($parentsexploded))
+	foreach($parentsexploded as $key => $val)
 	{
 		$builtlist .= "$sep$column='$val'";
 		$sep = " $joiner ";
@@ -934,7 +934,7 @@ function updateforumcount($fid) {
 	if($parentlist && $db->affected_rows())
 	{
 		$parentsexploded = explode(",", $parentlist);
-		while(list($key, $val) = each($parentsexploded))
+		foreach($parentsexploded as $key => $val)
 		{
 			if($val && $val != $fid)
 			{
@@ -1001,7 +1001,7 @@ function deletethread($tid)
 	{
 		if(is_array($userposts))
 		{
-			while(list($uid, $subtract) = each($userposts))
+			foreach($userposts as $uid => $subtract)
 			{
 				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$subtract WHERE uid='$uid'");
 			}
@@ -1056,7 +1056,7 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 			cacheforums();
 		}
 		reset($forumcache);
-		while(list($key, $val) = each($forumcache))
+		foreach($forumcache as $key => $val)
 		{
 			$jumpfcache[$val['pid']][$val['disporder']][$val['fid']] = $val;
 		}
@@ -1067,9 +1067,9 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 	}
 	if(is_array($jumpfcache[$pid]))
 	{
-		while(list($key, $main) = each($jumpfcache[$pid]))
+		foreach($jumpfcache[$pid] as $key => $main)
 		{
-			while(list($key, $forum) = each($main))
+			foreach($main as $key => $forum)
 			{
 				if($forum['fid'] != "0")
 				{
@@ -1195,7 +1195,7 @@ function makesmilieinsert()
 			$smilies = "";
 			$counter = 0;
 			$i = 0;
-			while(list($find, $image) = each($smiliecache))
+			foreach($smiliecache as $find => $image)
 			{
 				if($i < $mybb->settings['smilieinsertertot'])
 				{
@@ -1510,7 +1510,7 @@ function makeforumnav($fid, $archive=0)
 	}
 	if(is_array($pforumcache[$fid]))
 	{
-		while(list($key, $forumnav) = each($pforumcache[$fid]))
+		foreach($pforumcache[$fid] as $key => $forumnav)
 		{
 			if($fid == $forumnav['fid'])
 			{

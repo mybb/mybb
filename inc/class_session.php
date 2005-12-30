@@ -120,7 +120,7 @@ class session
 	{
 		global $_COOKIE, $mybbuser, $mybb, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang, $mybbgroups, $loadpmpopup, $session;
 
-		$query = $db->query("SELECT u.*, f.*, COUNT(pms.pmid) AS pms_total, SUM(IF(pms.dateline>u.lastvisit AND pms.folder='1','1','0')) AS pms_new, SUM(IF(pms.status='0' AND pms.folder='1','1','0')) AS pms_unread, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."privatemessages pms ON (pms.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) WHERE u.uid='$uid' GROUP BY u.uid");
+		$query = $db->query("SELECT u.*, f.*, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) WHERE u.uid='$uid'");
 		$mybb->user = $db->fetch_array($query);
 		//
 		// Check the password if we're not using a session
@@ -134,14 +134,24 @@ class session
 		}
 
 		$this->uid = $mybb->user['uid'];
-
-		//
-		// Setup some common variables
-		//
-		if($mybb->user['pms_unread'] == "")
+		// Sort out the private message count for this user
+		if($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1 || $mybb->user['newpms'] == -1) // Forced recount
 		{
-			$mybb->user['pms_unread'] = 0;
+			$update = 0;
+			if($mybb->user['totalpms'] == -1) $update += 1;
+			if($mybb->user['newpms'] == -1) $update += 2;
+			if($mybb->user['unreadpms'] == -1) $update += 4;
+
+			require_once "./inc/functions_user.php";
+			$pmcount = update_pm_count("", $update);
+			if(is_array($pmcount))
+			{
+				$mybb->user = array_merge($mybb->user, $pmcount);
+			}
 		}
+		$mybb->user['pms_total'] = $mybb->user['totalpms'];
+		$mybb->user['pms_new'] = $mybb->user['newpms'];
+		$mybb->user['pms_unread'] = $mybb->user['unreadpms'];
 
 		//
 		// Check if this user has a new private message
