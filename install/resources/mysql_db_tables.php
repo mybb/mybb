@@ -277,6 +277,7 @@ $tables[] = "CREATE TABLE mybb_mycodes (
   cid int unsigned NOT NULL auto_increment,
   regex varchar(255) NOT NULL default '',
   replacement varchar(255) NOT NULL default '',
+  active char(3) NOT NULL default '',
   PRIMARY KEY(cid)
 ) TYPE=MyISAM;";
 

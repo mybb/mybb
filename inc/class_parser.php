@@ -35,7 +35,7 @@ class postParser
 			$message = $this->parse_html($message);
 		}
 
-		if($options['filter_badwods'] != "no")
+		if($options['filter_badwords'] != "no")
 		{
 			$message = $this->parse_badwords($message);
 		}
