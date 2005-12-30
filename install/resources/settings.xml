@@ -395,7 +395,7 @@ email=Sent via Email]]></optionscode>
 	<settinggroup name="Portal Settings" description="" disporder="14" isdefault="yes">
 		<setting name="portal_announcementsfid">
 			<title>Forum ID to pull announcements from</title>
-			<description><![CDATA[Please enter the forum id (fid) of the forum you wish to pull the announcements from]]></description>
+			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.  Separate them with a comma (,).]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>

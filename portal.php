@@ -103,7 +103,7 @@ if($mybb->settings['portal_showwelcome'] != "no")
 		{ // if there aren't any new posts, there is no point in wasting two more queries
 			$query = $db->query("SELECT COUNT(tid) AS newthreads FROM ".TABLE_PREFIX."threads WHERE dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 			$newthreads = $db->result($query, 0);
-			$query = $db->query("SELECT COUNT(tid) AS newann FROM ".TABLE_PREFIX."threads WHERE dateline>'".$mybb->user['lastvisit']."' AND fid='".$mybb->settings['portal_announcementsfid']."' $unviewwhere");
+			$query = $db->query("SELECT COUNT(tid) AS newann FROM ".TABLE_PREFIX."threads WHERE dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere");
 			$newann = $db->result($query, 0);
 			if(!$newthreads) { $newthreads = 0; }
 			if(!$newann) { $newann = 0; }
@@ -253,12 +253,15 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 }
 
 // Get latest news announcements
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$mybb->settings['portal_announcementsfid']."'");
-$forum = $db->fetch_array($query);
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid IN (".$mybb->settings['portal_announcementsfid'].")");
+while($forumrow = $db->fetch_array($query))
+{
+    $forum[$forumrow['fid']] = $forumrow;
+}
 
 $pids = "";
 $comma="";
-$query = $db->query("SELECT p.pid, p.message, p.tid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid AND t.dateline=p.dateline) WHERE t.fid='".$mybb->settings['portal_announcementsfid']."' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
+$query = $db->query("SELECT p.pid, p.message, p.tid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid AND t.dateline=p.dateline) WHERE t.fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
 while($getid = $db->fetch_array($query))
 {
 	$pids .= ",'$getid[pid]'";
@@ -272,8 +275,11 @@ while($attachment = $db->fetch_array($query))
 	$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
 }
 
-$forumpermissions = forum_permissions($mybb->settings['portal_announcementsfid']);
-$query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE fid='".$mybb->settings['portal_announcementsfid']."' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
+foreach($forum as $fid => $forumrow)
+{
+    $forumpermissions[$fid] = forum_permissions($fid);
+}
+$query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
 while($announcement = $db->fetch_array($query))
 {
 	$announcement['message'] = $posts[$announcement['tid']]['message'];
@@ -339,7 +345,7 @@ while($announcement = $db->fetch_array($query))
 					{ // We have a thumbnail to show (and its not the "SMALL" enough image
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
-					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes")
+					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == "yes")
 					{
 						// Image is small enough to show - no thumbnail
 						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
@@ -363,7 +369,7 @@ while($announcement = $db->fetch_array($query))
 						}
 						$tcount++;
 					}
-					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes")
+					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == "yes")
 					{
 						// Image is small enough to show - no thumbnail
 						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
@@ -396,10 +402,10 @@ while($announcement = $db->fetch_array($query))
 	$plugins->run_hooks("portal_announcement");
 
 	$parser_options = array(
-		"allow_html" => $forum['allow_html'],
-		"allow_mycode" => $forum['allow_mycode'],
-		"allow_smilies" => $forum['allowsmilies'],
-		"allow_imgcode" => $forum['allowimgcode']
+		"allow_html" => $forum[$announcement['fid']]['allow_html'],
+		"allow_mycode" => $forum[$announcement['fid']]['allow_mycode'],
+		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
+		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode']
 	);
 	if($announcement['smilieoff'] == "yes")
 	{
