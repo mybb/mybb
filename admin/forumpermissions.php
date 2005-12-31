@@ -161,14 +161,17 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions WHERE fid='$fid' AND gid='$gid'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions WHERE fid='$fid' AND gid='$gid' LIMIT 1");
 	}
 	$forumpermissions = $db->fetch_array($query);
-	if(!$fid && !$gid) {
+	if(!$fid)
+	{
 		$fid = $forumpermissions['fid'];
+	}
+	if(!$gid)
+	{
 		$gid = $forumpermissions['gid'];
 	}
-
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
 	$usergroup = $db->fetch_array($query);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
