@@ -29,7 +29,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $pid) 
 	$post = $db->fetch_array($query);
 	if(!$post['pid'])
 	{
-		error($lang->invalidpost);
+		error($lang->error_invalidpost);
 	}
 	$tid = $post['tid'];
 }
@@ -47,7 +47,11 @@ addnav($lang->nav_newreply);
 
 $forumpermissions = forum_permissions($fid);
 
-if(!$thread['subject'])
+if(($post['visible'] == 0 && ismod($fid) != "yes") || $post['visible'] < 0)
+{
+	error($lang->error_invalidpost);
+}
+if(!$thread['subject'] || (($thread['visible'] == 0 && ismod($fid) != "yes") || $thread['visible'] < 0))
 {
 	error($lang->error_invalidthread);
 }
@@ -351,7 +355,15 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	if($mybb->settings['threadreview'] != "off")
 	{
-		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' AND visible='1' ORDER BY dateline DESC");
+		if(ismod($fid) == "yes")
+		{
+			$visibility = "(p.visible='1' OR p.visible='0')";
+		}
+		else
+		{
+			$visibility = "p.visible='1'";
+		}
+		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' AND $visibility ORDER BY dateline DESC");
 		$numposts = $db->num_rows($query);
 		if($numposts > $mybb->settings['postsperpage'])
 		{
@@ -381,6 +393,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				if($post['smilieoff'] == "yes")
 				{
 					$parser_options['allow_smilies'] = "no";
+				}
+
+				if($post['visible'] != 1)
+				{
+					$altbg = "trow_shaded";
 				}
 
 				$reviewmessage = $parser->parse_message($post['message'], $parser_options);
