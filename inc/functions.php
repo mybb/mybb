@@ -769,7 +769,7 @@ function getposticons()
 }
 
 /**
- * MyBB setcooke() wrapper.
+ * MyBB setcookie() wrapper.
  *
  * @param string The cookie name.
  * @param string The cookie value.
@@ -788,9 +788,9 @@ function mysetcookie($name, $value="", $expires="")
 	}
 	else
 	{
-		if($mybb->user['rememberme'] == "no")
+		if($mybb->user['remember'] == "no")
 		{
-			$expires = "";
+			$expires = NULL;
 		}
 		else
 		{

@@ -966,14 +966,14 @@ elseif($mybb->input['action'] == "resetpassword")
 	}
 	if($mybb->input['code'] && $user['uid'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user[uid]."' AND type='p'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user['uid']."' AND type='p'");
 		$activation = $db->fetch_array($query);
 		$now = time();
 		if($activation['code'] != $mybb->input['code'])
 		{
 			error($lang->error_badlostpwcode);
 		}
-		$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user[uid]."' AND type='p'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user['uid']."' AND type='p'");
 		$username = $user['username'];
 
 		//
@@ -1037,6 +1037,9 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		"uid" => $user['uid'],
 		);
 	$db->update_query(TABLE_PREFIX."sessions", $newsession, "sid='".$session->sid."'");
+
+	// Temporarily set the cookie remember option for the login cookies
+	$mybb->user['remember'] = $user['remember'];
 	
 	mysetcookie("mybbuser", $user['uid']."_".$user['loginkey']);
 	mysetcookie("sid", $session->sid, -1);
@@ -1067,7 +1070,7 @@ else if($mybb->input['action'] == "logout")
 	}
 	if($mybb->input['uid'] == $mybb->user['uid'])
 	{
-		mysetcookie("mybbuser", "");
+		myunsetcookie("mybbuser");
 		mysetcookie("sid", 0, -1);
 		if($mybb->user['uid'])
 		{

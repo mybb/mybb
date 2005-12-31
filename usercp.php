@@ -844,13 +844,28 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 	{
 		$updatedoptions['tpp'] = intval($mybb->input['tpp']);
 	}
+
 	if($mybb->settings['userpppoptions'])
 	{
 		$updatedoptions['ppp'] = intval($mybb->input['ppp']);
 	}
+
 	$plugins->run_hooks("usercp_do_options_process");
+
 	$db->update_query(TABLE_PREFIX."users", $updatedoptions, "uid='".$mybb->user['uid']."'");
+	
+	// If the cookie settings are different, re-set the cookie
+	if($mybb->input['remember'] != $mybb->user['remember'])
+	{
+		$mybb->user['remember'] = $mybb->input['remember'];
+		// Unset the old one
+		myunsetcookie("mybbuser");
+		// Set the new one
+		mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
+	}
+
 	$plugins->run_hooks("usercp_do_options_end");
+
 	redirect("usercp.php", $lang->redirect_optionsupdated);
 }
 elseif($mybb->input['action'] == "email")
