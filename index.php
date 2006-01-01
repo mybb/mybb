@@ -324,6 +324,28 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$posts = mynumberformat($forum['posts']);
 						$threads = mynumberformat($forum['threads']);
 					}
+
+					// Threads and posts requiring moderation
+					if(ismod($forum['fid']) == "yes")
+					{
+						if($forum['unapprovedposts'])
+						{
+							$unapproved_posts = " (".mynumberformat($forum['unapprovedposts']).")";
+						}
+						else
+						{
+							$unapproved_posts = "";
+						}
+						if($forum['unapprovedthreads'])
+						{
+							$unapproved_threads = " (".mynumberformat($forum['unapprovedthreads']).")";
+						}
+						else
+						{
+							$unapproved_threads = "";
+						}
+					}
+
 					if($mybb->settings['modlist'] != "off")
 					{
 						$moderators = "";

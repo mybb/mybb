@@ -47,7 +47,7 @@ addnav($lang->nav_newreply);
 
 $forumpermissions = forum_permissions($fid);
 
-if(($post['visible'] == 0 && ismod($fid) != "yes") || $post['visible'] < 0)
+if(isset($post) && (($post['visible'] == 0 && ismod($fid) != "yes") || $post['visible'] < 0))
 {
 	error($lang->error_invalidpost);
 }
@@ -697,13 +697,16 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$pid = $db->insert_id();
 	}
 	
+	// Deciding the fate
 	if($visible == -2)
 	{
+		// Draft post
 		$lang->redirect_newreply = $lang->draft_saved;
 		$url = "usercp.php?action=drafts";
 	}
 	elseif($visible == 1)
 	{
+		// Visible post
 		$lang->redirect_newreply .= $lang->redirect_newreply_post;
 		$url = "showthread.php?tid=$tid&pid=$pid#pid$pid";
 		updatethreadcount($tid);
@@ -712,8 +715,12 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	else
 	{
+		// Moderated post
 		$lang->redirect_newreply .= $lang->redirect_newreply_moderation;
 		$url = "showthread.php?tid=$tid";
+		// Update the unapproved posts count for the current thread and current forum
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+1 WHERE tid='$tid'");
+		$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts+1 WHERE fid='$fid'");
 	}
 	
 	if(!$savedraft)

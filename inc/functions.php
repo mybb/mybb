@@ -982,7 +982,8 @@ function updatethreadcount($tid)
 function deletethread($tid)
 {
 	global $db, $cache, $plugins;
-	$query = $db->query("SELECT p.pid, p.uid, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.tid='$tid'");
+	$query = $db->query("SELECT p.pid, p.uid, p.visible, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.tid='$tid'");
+	$num_unapproved_posts = 0;
 	while($post = $db->fetch_array($query))
 	{
 		if($userposts[$post['uid']])
@@ -996,6 +997,12 @@ function deletethread($tid)
 		$pids .= $post['pid'].",";
 		$usepostcounts = $post['usepostcounts'];
 		remove_attachments($post['pid']);
+		
+		// If the post is unapproved, count it!
+		if($post['visible'] == 0)
+		{
+			$num_unapproved_posts++;
+		}
 	}
 	if($usepostcounts != "no")
 	{
@@ -1016,6 +1023,25 @@ function deletethread($tid)
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 	$thread = $db->fetch_array($query);
 
+	// Update unapproved post/thread numbers
+	$update_unapproved = "";
+	if($thread['visible'] == 0)
+	{
+		$update_unapproved .= "unapprovedthreads=unapprovedthreads-1";
+	}
+	if($num_unapproved_posts > 0)
+	{
+		if(!empty($update_unapproved))
+		{
+			$update_unapproved .= ", ";
+		}
+		$update_unapproved .= "unapprovedposts=unapprovedposts-".$num_unapproved_posts;
+	}
+	if(!empty($update_unapproved))
+	{
+		$db->query("UPDATE ".TABLE_PREFIX."forums SET $update_unapproved WHERE fid='$thread[fid]'");  
+	}
+
 	$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE closed='moved|$tid'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='$tid'");
@@ -1028,7 +1054,7 @@ function deletethread($tid)
 function deletepost($pid, $tid="")
 {
 	global $db, $cache, $plugins;
-	$query = $db->query("SELECT p.pid, p.uid, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.pid='$pid'");
+	$query = $db->query("SELECT p.pid, p.uid, p.fid, p.tid, p.visible, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.pid='$pid'");
 	$post = $db->fetch_array($query);
 	if($post['usepostcounts'] != "no")
 	{
@@ -1036,6 +1062,13 @@ function deletepost($pid, $tid="")
 	}
 	$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
 	remove_attachments($pid);
+
+	// Update unapproved post count
+	if($post['visible'] == 0)
+	{
+		$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-1 WHERE fid='$post[fid]'");
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1 WHERE tid='$post[tid]'");
+	}
 	$plugins->run_hooks("delete_post", $tid);
 	$cache->updatestats();
 }

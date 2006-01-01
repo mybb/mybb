@@ -193,6 +193,8 @@ $tables[] = "CREATE TABLE mybb_forums (
   rulestype smallint(1) NOT NULL default '0',
   rulestitle varchar(200) NOT NULL default '',
   rules text NOT NULL default '',
+  unapprovedthreads int(10) unsigned NOT NULL default '0',
+  unapprovedposts int(10) unsigned NOT NULL default '',
   PRIMARY KEY  (fid)
 ) TYPE=MyISAM;";
 
@@ -510,6 +512,7 @@ $tables[] = "CREATE TABLE mybb_threads (
   totalratings smallint unsigned NOT NULL default '0',
   notes text NOT NULL default '',
   visible int(1) NOT NULL default '0',
+  unapprovedposts int(10) unsigned NOT NULL default '',
   PRIMARY KEY  (tid),
   KEY subject (subject),
   FULLTEXT KEY subject_2 (subject)

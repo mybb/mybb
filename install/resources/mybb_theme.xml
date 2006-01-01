@@ -1496,8 +1496,8 @@ $footer
 <td class="$bgcolor" valign="top">
 <strong><a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><div class="smalltext">$forum[description]$modlist$subforums</div>
 </td>
-<td class="$bgcolor" valign="top" align="center" nowrap="nowrap">$threads</td>
-<td class="$bgcolor" valign="top" align="center" nowrap="nowrap">$posts</td>
+<td class="$bgcolor" valign="top" align="center" nowrap="nowrap">$threads$unapproved_threads</td>
+<td class="$bgcolor" valign="top" align="center" nowrap="nowrap">$posts$unapproved_posts</td>
 <td class="$bgcolor" valign="top" align="right" nowrap="nowrap">$lastpost</td>
 </tr>]]></template>
 		<template name="forumbit_depth3" version="100.07"><![CDATA[$comma<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a>]]></template>
@@ -3987,8 +3987,8 @@ $gobutton
 </td>
 </tr></table>
 </td>
-<td class="$bgcolor" valign="top" align="center" nowrap="nowrap">$threads</td>
-<td class="$bgcolor" valign="top" align="center" nowrap="nowrap">$posts</td>
+<td class="$bgcolor" valign="top" align="center" nowrap="nowrap">$threads$unapproved_threads</td>
+<td class="$bgcolor" valign="top" align="center" nowrap="nowrap">$posts$unapproved_posts</td>
 <td class="$bgcolor" valign="top" align="right" nowrap="nowrap">$lastpost</td>
 </tr>
 $forums]]></template>
@@ -4054,7 +4054,7 @@ $forums
 <td align="center" class="$bgcolor" width="2%">$icon</td>
 <td class="$bgcolor">$prefix $gotounread<a href="showthread.php?tid=$thread[tid]">$thread[subject]</a>$thread[multipage]</td>
 <td align="center" class="$bgcolor">$thread[profilelink]</td>
-<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($thread[tid]);">$thread[replies]</a></td>
+<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($thread[tid]);">$thread[replies]</a>$unapproved_posts</td>
 <td align="center" class="$bgcolor">$thread[views]</td>
 $rating
 <td class="$bgcolor" nowrap="nowrap">$lastpost</td>

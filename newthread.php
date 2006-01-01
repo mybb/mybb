@@ -656,23 +656,31 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		}
 	}
 
+	// Deciding the fate
 	if($savedraft)
 	{
+		// Draft thread
 		$lang->redirect_newthread = $lang->draft_saved;
 		$url = "usercp.php?action=drafts";
 	}
 	elseif($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
 	{
+		// Visible thread + poll
 		$url = "polls.php?action=newpoll&tid=$tid&polloptions=".intval($mybb->input['numpolloptions']);
 		$lang->redirect_newthread .= $lang->redirect_newthread_poll;
 	}
 	elseif(!$visible)
 	{
+		// Moderated thread
 		$lang->redirect_newthread .= $lang->redirect_newthread_moderation;
 		$url = "forumdisplay.php?fid=$fid";
+		// Update the unapproved posts and threads count for the current thread and current forum
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+1 WHERE tid='$tid'");
+		$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads+1, unapprovedposts=unapprovedposts+1 WHERE fid='$fid'");
 	}
 	else
 	{
+		// Visible thread
 		$lang->redirect_newthread .= $lang->redirect_newthread_thread;
 		$url = "showthread.php?tid=$tid";
 		$cache->updatestats();
