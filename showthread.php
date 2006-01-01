@@ -309,9 +309,13 @@ if($mybb->input['action'] == "thread") {
 	{
 		$visible = "AND visible='1'";
 	}
-	// Threaded or Linear?
-	if($mybb->input['mode'] == "threaded") { // Threaded
+	
+	// Threaded or lineair display?
+	if($mybb->input['mode'] == "threaded")
+	{ 
 		$isfirst = 1;
+		
+		/* Show a specific post? */
 		if($mybb->input['pid'])
 		{
 			$where = "AND p.pid='".intval($mybb->input['pid'])."'";
@@ -320,12 +324,19 @@ if($mybb->input['action'] == "thread") {
 		{
 			$where = " ORDER BY dateline ASC LIMIT 0, 1";
 		}
-		$query = $db->query("SELECT u.*, u.username AS userusername, p.*, f.*, i.path as iconpath, i.name as iconnamee, eu.username AS editusername FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon) LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid) WHERE p.tid='$tid' $visible $where");
+		$query = $db->query("SELECT u.*, u.username AS userusername, p.*, f.*, i.path as iconpath, i.name as iconname, eu.username AS editusername FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon) LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid) WHERE p.tid='$tid' $visible $where");
 		$showpost = $db->fetch_array($query);
-		if(!$mybb->input['pid']) {
+		
+		/* Choose post id */
+		if(!$mybb->input['pid'])
+		{
 			$mybb->input['pid'] = $showpost['pid'];
 		}
-
+		/* Validate post id */
+		if(!$showpost['pid'])
+		{
+			error($lang->invalidpost);
+		}
 
 		// Get the attachments for this post
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE pid='".intval($mybb->input['pid'])."'");
