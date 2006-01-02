@@ -68,7 +68,7 @@ function validate_password_from_username($username, $password)
  * @param int The user id.
  * @param string The md5()'ed password.
  * @param string An optional user data array.
- * @return unknown
+ * @return boolean|array False when not valid, user data array when valid.
  */
 function validate_password_from_uid($uid, $password, $user = array())
 {
@@ -202,7 +202,7 @@ function generate_loginkey()
  * Updates a user's salt in the database (does not update a password).
  *
  * @param int The uid of the user to update.
- * @return unknown
+ * @return string The new salt.
  */
 function update_salt($uid)
 {
