@@ -80,6 +80,10 @@ if($mybb->input['action'] == "results")
 	{
 		$sortfield = "p.dateline";
 	}
+	elseif($sortby == "forum")
+	{
+		$sortfield = "f.name";
+	}
 	else
 	{
 		if($search['showposts'] == "2")
