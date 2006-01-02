@@ -1,8 +1,11 @@
 <?php
 
-//
-// Checks if $uid exists in the database
-//
+/**
+ * Checks if a user with uid $uid exists in the database.
+ *
+ * @param int The uid to check for.
+ * @return boolean True when exists, false when not.
+ */
 function user_exists($uid)
 {
 	global $db;
@@ -17,9 +20,12 @@ function user_exists($uid)
 	}
 }
 
-//
-// Check's if $username is a username already in use in the database
-//
+/**
+ * Checks if $username already exists in the database.
+ *
+ * @param string The username for check for.
+ * @return boolean True when exists, false when not.
+ */
 function username_exists($username)
 {
 	global $db;
@@ -34,9 +40,13 @@ function username_exists($username)
 	}
 }
 
-//
-// Check's a password with a supplied username (expects password to be raw)
-//
+/**
+ * Checks a password with a supplied username.
+ *
+ * @param string The username of the user.
+ * @param string The md5()'ed password.
+ * @return boolean|array False when no match, array with user info when match.
+ */
 function validate_password_from_username($username, $password)
 {
 	global $db;
@@ -52,10 +62,15 @@ function validate_password_from_username($username, $password)
 	}
 }
 
-//
-// Check's a password with a supplied user id (expects password to be raw)
-//
-function validate_password_from_uid($uid, $password, $user="")
+/**
+ * Checks a password with a supplied uid.
+ *
+ * @param int The user id.
+ * @param string The md5()'ed password.
+ * @param string An optional user data array.
+ * @return unknown
+ */
+function validate_password_from_uid($uid, $password, $user = array())
 {
 	global $db, $mybb;
 	if($mybb->user['uid'] == $uid)
@@ -72,13 +87,20 @@ function validate_password_from_uid($uid, $password, $user="")
 		// Generate a salt for this user and assume the password stored in db is a plain md5 password
 		$user['salt'] = generate_salt();
 		$user['password'] = salt_password($user['password'], $user['salt']);
-		$db->query("UPDATE ".TABLE_PREFIX."users SET salt='".$user['salt']."', password='".$user['password']."' WHERE uid='".$user['uid']."' LIMIT 1");
+		$sql_array = array(
+			"salt" => $user['salt'],
+			"password" => $user['password']
+		);
+		$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$user['uid'], 1)
 	}
 
 	if(!$user['loginkey'])
 	{
 		$user['loginkey'] = generate_loginkey();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET loginkey='".$user['loginkey']."' WHERE uid='".$user['uid']."' LIMIT 1");
+		$sql_array = array(
+			"loginkey" => $user['loginkey']
+		);
+		$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$user['uid'], 1);
 	}
 	if(salt_password(md5($password), $user['salt']) == $user['password'])
 	{
@@ -90,9 +112,14 @@ function validate_password_from_uid($uid, $password, $user="")
 	}
 }
 
-//
-// Used to update a password for particular user id in the database (expects password to be md5'd once)
-//
+/**
+ * Updates a user's password.
+ *
+ * @param int The user's id.
+ * @param string The md5()'ed password.
+ * @param string (Optional) The salt of the user.
+ * @return array The new password.
+ */
 function update_password($uid, $password, $salt="")
 {
 	global $db, $plugins;
@@ -139,57 +166,81 @@ function update_password($uid, $password, $salt="")
 	return $newpassword;
 }
 
-//
-// Salt's $password based on $salt (expects $password to be md5'd once)
-//
+/**
+ * Salts a password based on a supplied salt.
+ *
+ * @param string The md5()'ed password.
+ * @param string The salt.
+ * @return string The password hash.
+ */
 function salt_password($password, $salt)
 {
 	return md5(md5($salt).$password);
 }
 
-//
-// Generates an 8 character string for the password salt
-//
+/**
+ * Generates a random salt
+ *
+ * @return string The salt.
+ */
 function generate_salt()
 {
 	return random_str(8);
 }
 
-//
-// Generates a 50 character random login key
-//
+/**
+ * Generates a 50 character random login key.
+ *
+ * @return string The login key.
+ */
 function generate_loginkey()
 {
 	return random_str(50);
 }
 
-//
-// Updates a users salt in the database (however it is not possible to update a password)
-//
+/**
+ * Updates a user's salt in the database (does not update a password).
+ *
+ * @param int The uid of the user to update.
+ * @return unknown
+ */
 function update_salt($uid)
 {
 	global $db;
 	$salt = generate_salt();
-	$db->query("UPDATE ".TABLE_PREFIX."users SET salt='$salt' WHERE uid='$uid' LIMIT 1");
+	$sql_array = array(
+		"salt" => $salt
+	);
+	$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$uid, 1);
 	return $salt;
 }
 
-//
-// Generates a new loginkey for the specified user id
-//
+/**
+ * Generates a new login key for a user.
+ *
+ * @param int The uid of the user to update.
+ * @return string The new login key.
+ */
 function update_loginkey($uid)
 {
 	global $db;
 	$loginkey = generate_loginkey();
-	$db->query("UPDATE ".TABLE_PREFIX."users SET loginkey='$loginkey' WHERE uid='$uid' LIMIT 1");
+	$sql_array = array(
+		"loginkey" => $loginkey
+	);
+	$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$uid, 1);
 	return $loginkey;
 
 }
 
-//
-// Adds a thread ($tid) to a users ($uid) favorite thread list
-// If no uid is supplied, the current logged in user's id will be used
-//
+/**
+ * Adds a thread to a user's favorite thread list. 
+ * If no uid is supplied, the currently logged in user's id will be used.
+ *
+ * @param int The tid of the thread to add to the list.
+ * @param int (Optional) The uid of the user who's list to update.
+ * @return boolean True when success, false when otherwise.
+ */
 function add_favorite_thread($tid, $uid="")
 {
 	global $mybb, $db;
@@ -210,10 +261,14 @@ function add_favorite_thread($tid, $uid="")
 	return true;
 }
 
-//
-// Removes a thread ($tid) from a users ($uid) favorite thread list
-// If no uid is supplied, the current logged in user's id will be used
-//
+/**
+ * Removes a thread from a user's favorite thread list. 
+ * If no uid is supplied, the currently logged in user's id will be used.
+ *
+ * @param int The tid of the thread to remove from the list.
+ * @param int (Optional)The uid of the user who's list to update.
+ * @return boolean True when success, false when otherwise.
+ */
 function remove_favorite_thread($tid, $uid="")
 {
 	global $mybb, $db;
@@ -229,10 +284,14 @@ function remove_favorite_thread($tid, $uid="")
 	return true;
 }
 
-//
-// Adds a thread ($tid) to a users ($uid) thread subscriptions list
-// If no uid is supplied, the current logged in user's id will be used
-//
+/**
+ * Adds a thread to a user's thread subscription list. 
+ * If no uid is supplied, the currently logged in user's id will be used.
+ *
+ * @param int The tid of the thread to add to the list.
+ * @param int (Optional) The uid of the user who's list to update.
+ * @return boolean True when success, false when otherwise.
+ */
 function add_subscribed_thread($tid, $uid="")
 {
 	global $mybb, $db;
@@ -253,10 +312,14 @@ function add_subscribed_thread($tid, $uid="")
 	return true;
 }
 
-//
-// Removes a thread ($tid) from a users ($uid) thread subscriptions list
-// If no uid is supplied, the current logged in user's id will be used
-//
+/**
+ * Remove a thread from a user's thread subscription list. 
+ * If no uid is supplied, the currently logged in user's id will be used.
+ *
+ * @param int The tid of the thread to remove from the list.
+ * @param int (Optional) The uid of the user who's list to update.
+ * @return boolean True when success, false when otherwise.
+ */
 function remove_subscribed_thread($tid, $uid="")
 {
 	global $mybb, $db;
@@ -272,10 +335,14 @@ function remove_subscribed_thread($tid, $uid="")
 	return true;
 }
 
-//
-// Adds a forum ($fid) to a users ($uid) subscribed forums list
-// If no uid is supplied, the current logged in user's id will be used
-//
+/**
+ * Adds a forum to a user's forum subscription list. 
+ * If no uid is supplied, the currently logged in user's id will be used.
+ *
+ * @param int The fid of the forum to add to the list.
+ * @param int (Optional) The uid of the user who's list to update.
+ * @return boolean True when success, false when otherwise.
+ */
 function add_subscribed_forum($fid, $uid="")
 {
 	global $mybb, $db;
@@ -296,10 +363,14 @@ function add_subscribed_forum($fid, $uid="")
 	return true;
 }
 
-//
-// Removes a forum ($fid) from a users ($uid) subscribed forums list
-// If no uid is supplied, the current logged in user's id will be used
-//
+/**
+ * Removes a forum from a user's forum subscription list. 
+ * If no uid is supplied, the currently logged in user's id will be used.
+ *
+ * @param int The fid of the forum to remove from the list.
+ * @param int (Optional) The uid of the user who's list to update.
+ * @return boolean True when success, false when otherwise.
+ */
 function remove_subscribed_forum($fid, $uid="")
 {
 	global $mybb, $db;
@@ -315,9 +386,10 @@ function remove_subscribed_forum($fid, $uid="")
 	return true;
 }
 
-//
-// Constructs the User CP navigation menu
-//
+/**
+ * Constructs the usercp navigation menu.
+ *
+ */
 function usercp_menu()
 {
 	global $mybb, $templates, $theme, $plugins, $lang, $usercpnav, $usercpmenu;
@@ -342,6 +414,10 @@ function usercp_menu()
 	$plugins->run_hooks("usercp_menu_built");
 }
 
+/**
+ * Constructs the usercp messenger menu.
+ *
+ */
 function usercp_menu_messenger()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
@@ -355,6 +431,10 @@ function usercp_menu_messenger()
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_messenger")."\";");
 }
 
+/**
+ * Constructs the usercp profile menu.
+ *
+ */
 function usercp_menu_profile()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $mybbuser;
@@ -366,6 +446,10 @@ function usercp_menu_profile()
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");
 }
 
+/**
+ * Constructs the usercp misc menu.
+ *
+ */
 function usercp_menu_misc()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $mybbuser;
@@ -381,6 +465,12 @@ function usercp_menu_misc()
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
 
+/**
+ * Gets the usertitle for a specific uid.
+ *
+ * @param int The uid of the user to get the usertitle of.
+ * @return string The usertitle of the user.
+ */
 function get_usertitle($uid="")
 {
 	global $db, $mybb;
