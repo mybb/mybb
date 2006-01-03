@@ -9,16 +9,46 @@
  * $Id$
  */
 
-class MyLanguage {
+class MyLanguage
+{
+	
+	/**
+	 * The path to the languages folder.
+	 *
+	 * @var string
+	 */
 	var $path = "./inc/languages";
+	
+	/**
+	 * The language we are using.
+	 *
+	 * @var unknown_type
+	 */
 	var $language;
+	
+	/**
+	 * Information about the current language.
+	 *
+	 * @var array
+	 */
 	var $settings;
 
+	/**
+	 * Set the path for the language folder.
+	 *
+	 * @param unknown_type $path
+	 */
 	function setPath($path)
 	{
 		$this->path = $path;
 	}
 
+	/**
+	 * Check if a specific language exists.
+	 *
+	 * @param string The language to check for.
+	 * @return boolean True when exists, false when does not exist.
+	 */
 	function languageExists($language)
 	{
 		if(file_exists($this->path."/".$language.".php"))
@@ -31,6 +61,12 @@ class MyLanguage {
 		}
 	}
 
+	/**
+	 * Set the language for an area.
+	 *
+	 * @param string The language to use.
+	 * @param string The area to set the language for.
+	 */
 	function setLanguage($language="english", $area="user")
 	{
 		if(!$this->languageExists($language))
@@ -55,6 +91,11 @@ class MyLanguage {
 		}
 	}
 
+	/**
+	 * Load the language variables for a section.
+	 *
+	 * @param string The section name.
+	 */
 	function load($section)
 	{
 		$lfile = $this->path."/".$this->language."/".$section.".lang.php";
@@ -79,6 +120,12 @@ class MyLanguage {
 		}
 	}
 
+	/**
+	 * Get the language variables for a section.
+	 *
+	 * @param boolean Admin variables when true, user when false.
+	 * @return array The language variables.
+	 */
 	function getLanguages($admin=0)
 	{
 		$dir = @opendir($this->path);
@@ -99,6 +146,12 @@ class MyLanguage {
 		return $languages;
 	}
 
+	/**
+	 * Parse contents for language variables.
+	 *
+	 * @param string The contents to parse.
+	 * @return string The parsed contents.
+	 */
 	function parse($contents)
 	{
 		$contents = preg_replace("#<lang:([a-zA-Z0-9_]+)>#e", "\$this->$1", $contents);
