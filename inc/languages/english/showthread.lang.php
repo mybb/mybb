@@ -67,4 +67,5 @@ $l['inline_post_moderation'] = "Inline Post Moderation:";
 $l['inline_go'] = "Go";
 $l['clear'] = "Clear";
 $l['thread_closed'] = "Thread Closed";
+$l['no_subject'] = "No subject";
 ?>
