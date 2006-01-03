@@ -155,20 +155,20 @@ if($mybb->settings['browsingthisforum'] != "off")
 	{
 		if($user['uid'] == 0)
 		{
-			$guestcount++;
+			++$guestcount;
 		}
 		else
 		{
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
 			{
 				$doneusers[$user['uid']] = $user['time'];
-				$membercount++;
+				++$membercount;
 				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] =="yes")
 				{
 					if($user['invisible'] == "yes")
 					{
 						$invisiblemark = "*";
-						$inviscount++;
+						++$inviscount;
 					}
 					else
 					{
@@ -247,7 +247,8 @@ else
 }
 
 unset($rating);
-// Sorting options
+
+/* Pick out some sorting options */
 if(!$mybb->input['datecut'])
 {
 	if($mybb->user['daysprune'])
@@ -271,7 +272,6 @@ else
 	$datecut = intval($mybb->input['datecut']);
 }
 $datecut = intval($datecut);
-
 $datecutsel[$datecut] = "selected=\"selected\"";
 if($datecut != "1000")
 {
@@ -282,6 +282,8 @@ else
 {
 	$datecutsql = "";
 }
+
+/* Pick the sort order */
 switch(strtolower($mybb->input['order']))
 {
 	case "asc":
@@ -297,6 +299,7 @@ switch(strtolower($mybb->input['order']))
 		$oppsortnext = "asc";
 }
 
+/* Sort by what field? */
 switch($mybb->input['sortby'])
 {
 	case "subject":
@@ -318,14 +321,15 @@ switch($mybb->input['sortby'])
 		$sortfield = "t.dateline";
 		break;
 	default:
-		$mybb->input['sortby'] = $sortby = "lastpost";
+		$mybb->input['sortby'] = "lastpost";
 		$sortfield = "t.lastpost";
 		break;
 }
-$sortby = $mybb->input['sortby'];
 
+$sortby = $mybb->input['sortby'];
 $sortsel[$mybb->input['sortby']] = "selected=\"selected\"";
 
+/* Are we viewing a specific page? */
 if(isset($mybb->input['page']) && is_numeric($mybb->input['page']))
 {
 	$sorturl = "forumdisplay.php?fid=$fid&amp;datecut=$datecut&amp;page=".$mybb->input['page'];
@@ -336,7 +340,7 @@ else
 }
 eval("\$orderarrow[$sortby] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
-// Do Multi Pages
+/* How many pages are there? */
 $query = $db->query("SELECT COUNT(t.tid) AS threads FROM ".TABLE_PREFIX."threads t WHERE t.fid='$fid' $visibleonly $datecutsql");
 $threadcount = $db->result($query, 0);
 
@@ -385,7 +389,7 @@ else
 
 if($ismod)
 {
-	$colspan++;
+	++$colspan;
 }
 
 // Get Announcements
@@ -640,7 +644,7 @@ if($threadcache)
 			} else {
 				$pagesstop = $thread['pages'];
 			}
-			for($i=1;$i<=$pagesstop;$i++) {
+			for($i=1; $i<=$pagesstop; ++$i) {
 				eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
 			}
 			eval("\$thread[multipage] = \"".$templates->get("forumdisplay_thread_multipage")."\";");
@@ -655,7 +659,7 @@ if($threadcache)
 			if(strstr($_COOKIE[$inlinecookie], "|$thread[tid]|"))
 			{
 				$inlinecheck = "checked=\"checked\"";
-				$inlinecount++;
+				++$inlinecount;
 			}
 			else
 			{
@@ -714,8 +718,10 @@ if($threadcache)
 	}
 }
 
+/* Is this a real forum with threads? */
 if($foruminfo['type'] != "c") {
-	if(!$threadcount) {
+	if(!$threadcount)
+	{
 		eval("\$threads = \"".$templates->get("forumdisplay_nothreads")."\";");
 	}
 	if($foruminfo['password'] != "")
@@ -723,13 +729,24 @@ if($foruminfo['type'] != "c") {
 		eval("\$clearstoredpass = \"".$templates->get("forumdisplay_threadlist_clearpass")."\";");
 	}
 	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");
-} else {
+}
+else
+{
 	$threadslist = "";
-	if($forums == "") {
+	if($forums == "")
+	{
 		error($lang->error_containsnoforums);
 	}
 }
 
+/**
+ * Get a list of forums.
+ *
+ * @param unknown_type $pid
+ * @param unknown_type $depth
+ * @param unknown_type $permissions
+ * @return unknown
+ */
 function getforums($pid="0", $depth=1, $permissions="")
 {
 	global $fcache, $moderatorcache, $forumpermissions, $settings, $theme, $mybb, $mybbforumread, $mybbuser, $excols, $fcollapse, $templates, $bgcolor, $collapsed, $mybbgroup, $lang, $showdepth, $parser;
@@ -746,7 +763,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
 						$comma = ", ";
-						$donecount++;
+						++$donecount;
 						if($donecount == $mybb->settings['subforumsindex'])
 						{
 							if(count($main) > $donecount)
@@ -858,7 +875,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 								reset($moderatorcache[$mfid]);
 								while(list($key2, $moderator) = each($moderatorcache[$mfid]))
 								{
-									$moderators .= "$comma<a href=\"member.php?action=profile&uid=$moderator[uid]\">".$moderator['username']."</a>";
+									$moderators .= "$comma<a href=\"member.php?action=profile&uid=".$moderator['uid']."\">".$moderator['username']."</a>";
 									$comma = ", ";
 								}
 							}
@@ -877,6 +894,8 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$forum['description'] = "";
 					}
 					$cname = "cat_".$forum['fid']."_c";
+					
+					/* Show collapsed or non-collapsed image */
 					if($collapsed[$cname] == "display: show;")
 					{
 						$expcolimage = "collapse_collapsed.gif";
@@ -886,6 +905,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						$expcolimage = "collapse.gif";
 					}
+					
 					if($fcache[$forum['fid']] && $depth < $showdepth)
 					{
 						$newdepth = $depth + 1;
@@ -916,6 +936,8 @@ function getforums($pid="0", $depth=1, $permissions="")
 	}
 	return $forumlisting;
 }
+
+/* On a random occasion, delete all the threadsread. */
 if($rand == 5 && $mybb->settings['threadreadcut'] > 0)
 {
 	$cut = time()-($mybb->settings['threadreadcut']*60*60*24);
