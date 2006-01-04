@@ -259,6 +259,7 @@ if($mybb->input['action'] == "do_import")
 
 	if($mybboard['vercode'] != $version && $mybb->input['ignorecompat'] != "yes")
 	{
+		$lang->version_warning = sprintf($lang->version_warning, $mybboard['internalver']);
 		cpmessage($lang->version_warning);
 	}
 

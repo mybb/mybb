@@ -1599,7 +1599,7 @@ $footer
 			<div id="copyright">
 				<div id="debug"><debugstuff></div>
 $lang->powered_by <a href="http://www.mybboard.com" target="_blank">MyBB</a> $mybbversion<br />
-				$lang->copyright &copy; $copyyear <strong><a href="http://www.mybboard.com" target="_blank">MyBB Group</a></strong><br />
+				$lang->copyright &copy; 2002-$copy_year <strong><a href="http://www.mybboard.com" target="_blank">MyBB Group</a></strong><br />
 <br class="clear" />
 		</div>
 		</div>]]></template>
