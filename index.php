@@ -50,9 +50,9 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 			{
 				if($user['invisible'] == "yes")
 				{
-					$anoncount++;
+					++$anoncount;
 				}
-				$membercount++;
+				++$membercount;
 				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
 				{
 					if($user['invisible'] == "yes")
@@ -74,11 +74,11 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 		{
 			$onlinemembers .= $comma.formatname($session->bots[$botkey], $botgroup);
 			$comma = ", ";
-			$botcount++;
+			++$botcount;
 		}
 		else
 		{
-			$guestcount++;
+			++$guestcount;
 		}
 	}
 	$onlinecount = $membercount + $guestcount;
@@ -138,7 +138,7 @@ if($mybb->settings['showbirthdays'] != "no")
 			$age = "";
 		}
 		eval("\$bdays .= \"".$templates->get("index_birthdays_birthday", 1, 0)."\";");
-		$bdaycount++;
+		++$bdaycount;
 		$comma = ", ";
 	}
 	if($bdaycount > 0)
@@ -239,7 +239,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
 						$comma = ", ";
-						$donecount++;
+						++$donecount;
 						if($donecount == $mybb->settings['subforumsindex'])
 						{
 							if(count($main) > $donecount)
