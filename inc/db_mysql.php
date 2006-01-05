@@ -447,5 +447,17 @@ class databaseEngine {
 		}
 		return $this->query("UPDATE $table SET $query");
 	}
+	
+	/**
+	 * Escape a string according to the MySQL escape format.
+	 *
+	 * @param string The string to be escaped.
+	 * @return string The escaped string.
+	 */
+	function escape_string($string)
+	{
+		$string = mysql_real_escape_string($string);
+		return $string;
+	}
 }
 ?>
