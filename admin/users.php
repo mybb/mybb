@@ -189,11 +189,11 @@ if($mybb->input['action'] == "do_add")
 		$additionalgroups = "";
 	}
 	$birthday = explode("-", $mybb->input['birthday']);
-	if($birthday[0] < 10 && $birthday[0] != "")
+	if($birthday[0] < 10 && $birthday[0] != "" && strlen($birthday[0]) < 2)
 	{
 		$nbirthday[0] = "0".$birthday[0];
 	}
-	if($birthday[1] < 10 && $birthday[1] != "")
+	if($birthday[1] < 10 && $birthday[1] != "" && strlen($birthday[0]) < 2)
 	{
 		$nbirthday[1] = "0".$birthday[1];
 	}
