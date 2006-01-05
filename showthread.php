@@ -564,6 +564,14 @@ function buildtree($replyto="0", $indent="0")
 			{
 				$post['subject'] = "[".$lang->no_subject."]";
 			}
+			if($post['userusername'])
+			{
+				$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".$post['userusername']."</a>";
+			}
+			else
+			{
+				$post['profilelink'] = $post['username'];
+			}			
 			if($mybb->input['pid'] == $post['pid'])
 			{
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bitactive")."\";");
