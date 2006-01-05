@@ -701,9 +701,12 @@ if($mybb->input['action'] == "vote")
 		error($lang->error_nopolloptions);
 	}
 	// Check if the user has voted before...
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
-	$votecheck = $db->fetch_array($query);
-	if($votecheck['vid'] || $pollvotes[$poll['pid']])
+	if($mybb->user['uid'])
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
+		$votecheck = $db->fetch_array($query);
+	}
+	if($votecheck['vid'] || $_COOKIE['pollvotes'][$poll['pid']])
 	{
 		error($lang->error_alreadyvoted);
 	}

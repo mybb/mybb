@@ -149,18 +149,21 @@ if($mybb->input['action'] == "thread")
 		{
 			$showresults = 1;
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user[uid]."' AND pid='".$poll[pid]."'");
-		while($votecheck = $db->fetch_array($query))
+		if($mybb->input['uid']) != 0)
 		{
-			$alreadyvoted = 1;
-			if($mybb->user['uid'])
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user[uid]."' AND pid='".$poll[pid]."'");
+			while($votecheck = $db->fetch_array($query))
 			{
+				$alreadyvoted = 1;
 				$votedfor[$votecheck['voteoption']] = 1;
 			}
 		}
-		if($pollvotes[$poll['pid']])
+		else
 		{
-			$alreadyvoted = 1;
+			if($_COOKIE['pollvotes'][$poll['pid']])
+			{
+				$alreadyvoted = 1;
+			}
 		}
 		$optionsarray = explode("||~|~||", $poll['options']);
 		$votesarray = explode("||~|~||", $poll['votes']);
