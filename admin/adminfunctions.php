@@ -65,6 +65,7 @@ function cpheader($title="", $donav=1, $onload="")
 	echo $htmltag;
 	echo "<head>\n";
 	echo "<title>$title</title>\n";
+	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".$lang->settings['charset']."\">";
 	echo "<link rel=\"stylesheet\" href=\"$style\">\n";
 	echo "<script type=\"text/javascript\">\n";
 	echo "function hopto(url) {\n";

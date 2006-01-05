@@ -8,7 +8,7 @@ $l['nav_modify'] = "Modify Settings and Groups";
 $l['add_new_setting'] = "Add New Setting";
 $l['manage_settings'] = "Manage Settings";
 
-$l['settings'] = "Settings";
+$l['settings_count'] = "Settings";
 $l['sections'] = "Sections";
 $l['options'] = "Options";
 $l['modify_settings'] = "Modify Settings";

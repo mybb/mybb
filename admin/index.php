@@ -17,8 +17,9 @@ $lang->load("index");
 
 if ($mybb->input['action']=="header")
 {
-	echo "<html>\n";
+	echo "<html ".($lang->settings['rtl'] ? "dir=\"rtl\"" : "")."lang=\"".($lang->settings['htmllang'])."\">\n";
 	echo "<head>";
+	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".$lang->settings['charset']."\">";
 	echo "<link rel=\"stylesheet\" href=\"$style\">";
 	echo "</head>";
 	echo "<body id=\"logo\">";
@@ -324,9 +325,18 @@ else
 	echo "</head>\n";
 	echo "<frameset rows=\"78, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
 	echo "<frame name=\"header\" noresize scrolling=\"no\" src=\"index.php?action=header\">\n";
-	echo "<frameset cols=\"200, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-	echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?action=navigation\">\n";
-	echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\">\n";
+	if($lang->settings['rtl'])
+	{
+		echo "<frameset cols=\"*,200\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
+		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\">\n";
+		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?action=navigation\">\n";
+	}
+	else
+	{
+		echo "<frameset cols=\"200, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
+		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?action=navigation\">\n";
+		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\">\n";
+	}
 	echo "</frameset>\n";
 	echo "</frameset>\n";
 	echo "</html>\n";

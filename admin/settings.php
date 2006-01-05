@@ -329,7 +329,7 @@ if($mybb->input['action'] == "modify") {
 	startform("settings.php", "", "do_modify");
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
 	while($group = $db->fetch_array($query)) {
-		$settinglist .= "<li><b>$group[name]</b> ($lang->disp_order_list <input type=\"text\" name=\"dispordercats[$group[gid]]\" size=\"4\" value=\"$group[disporder]\"> ".
+		$settinglist .= "<li><strong>$group[name]</strong> ($lang->disp_order_list <input type=\"text\" name=\"dispordercats[$group[gid]]\" size=\"4\" value=\"$group[disporder]\"> ".
 			makelinkcode($lang->edit, "settings.php?action=edit&gid=$group[gid]").
 			makelinkcode($lang->delete, "settings.php?action=delete&gid=$group[gid]").
 			"</li>\n<ul>\n";
@@ -500,7 +500,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 			startform("settings.php");
 			makehiddencode("gid", $group['gid']);
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\" width=\"88%\"><b><a href=\"settings.php?action=change&gid=$group[gid]\">$group[name]</a></b> ($group[settingcount] $lang->settings)<br /><small>$group[description]</small>";
+			echo "<td class=\"$bgcolor\" width=\"88%\"><strong><a href=\"settings.php?action=change&gid=".$group['gid']."\">".$group['name']."</a></strong> (".$group['settingcount']." ".$lang->settings_count.")<br /><small>".$group['description']."</small>";
 			if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" || $group['isdefault'] != "yes") {
 				$options['change'] = $lang->modify_settings;
 				$options['edit'] = $lang->edit_setting_group;

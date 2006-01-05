@@ -143,7 +143,7 @@ if($mybb->input['action'] == "adminpermissions")
 	echo "<td class=\"subheader\">$lang->lastactive</td>\n";
 	echo "<td class=\"subheader\">$lang->options</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT u.uid, u.username, u.lastactive, g.cancp, a.permsset FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid=u.uid) WHERE u.usergroup=g.gid AND g.cancp='yes' ORDER BY u.username ASC");
+	$query = $db->query("SELECT u.uid, u.username, u.lastactive, g.cancp, a.permsset FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g) LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid=u.uid) WHERE u.usergroup=g.gid AND g.cancp='yes' ORDER BY u.username ASC");
 	while($admin = $db->fetch_array($query))
 	{
 		$la = mydate($settings['dateformat'].",".$settings['timeformat'], $admin['lastactive']);
