@@ -163,17 +163,18 @@ if($mybb->settings['browsingthisforum'] != "off")
 			{
 				$doneusers[$user['uid']] = $user['time'];
 				++$membercount;
-				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] =="yes")
+				if($user['invisible'] == "yes")
 				{
-					if($user['invisible'] == "yes")
-					{
-						$invisiblemark = "*";
-						++$inviscount;
-					}
-					else
-					{
-						$invisiblemark = "";
-					}
+					$invisiblemark = "*";
+					++$inviscount;
+				}
+				else
+				{
+					$invisiblemark = "";
+				}
+				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] =="yes" || $user['uid'] == $mybb->user['uid'])
+				{
+
 					$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
 					$comma = ", ";
