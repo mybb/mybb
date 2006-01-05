@@ -817,6 +817,12 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 	{
 		$mybb->input['language'] = "";
 	}	
+	
+	if($mybb->input['threadmode'] != "threaded")
+	{
+		$mybb->input['threadmode'] = "linear";
+	}
+	
 	$updatedoptions = array(
 		"allownotices" => $mybb->input['allownotices'],
 		"hideemail" => $mybb->input['hideemail'],
