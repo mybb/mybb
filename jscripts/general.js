@@ -4,17 +4,17 @@ var MyBB = {
 		this.detectBrowser();
 		this.attachListener(window, "load", MyBB.pageLoaded);
 	},
-	
+
 	pageLoaded: function()
 	{
 		expandables.init();
 	},
-	
+
 	detectBrowser: function()
 	{
 		this.useragent = navigator.userAgent.toLowerCase();
 		this.useragent_version = parseInt(navigator.appVersion);
-		
+
 		if(navigator.product == "Gecko")
 		{
 			this.browser = "mozilla";
@@ -35,7 +35,7 @@ var MyBB = {
 		{
 			this.browser = "netscape";
 		}
-		
+
 		if(this.useragent.indexOf("win") != -1)
 		{
 			this.os = "win";
@@ -45,10 +45,10 @@ var MyBB = {
 			this.os = "mac";
 		}
 	},
-	
+
 	popupWindow: function(url, name, width, height)
 	{
-		settings = "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes"; 
+		settings = "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes";
 		if(width)
 		{
 			settings = settings+",width="+width;
@@ -59,16 +59,16 @@ var MyBB = {
 		}
 		window.open(url, name, settings);
 	},
-	
+
 	newPM: function()
 	{
 		confirmReturn = confirm(newpm_prompt);
 		if(confirmReturn == true) {
-			settings="toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=600,height=500"; 
+			settings="toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=600,height=500";
 			NewWindow=window.open('private.php','pmPopup',settings);
 		}
 	},
-	
+
 	deletePost: function()
 	{
 		confirmReturn = confirm(quickdelete_confirm);
@@ -76,7 +76,7 @@ var MyBB = {
 			window.location = "editpost.php?action=deletepost&pid="+pid+"&delete=yes";
 		}
 	},
-	
+
 	deleteEvent: function()
 	{
 		confirmReturn = confirm(deleteevent_confirm);
@@ -85,7 +85,7 @@ var MyBB = {
 		}
 	},
 
-	
+
 	checkAll: function(formName)
 	{
 		for(var i=0;i<formName.elements.length;i++)
@@ -102,12 +102,12 @@ var MyBB = {
 	{
 		popupWin("reputation.php?pid=" + pid + "&type=" + type, "reputation", 400, 300)
 	},
-	
+
 	whoPosted: function(tid)
 	{
 		popupWin("misc.php?action=whoposted&tid=" + tid, "whoPosted", 230, 300)
 	},
-	
+
 	hopPage: function(tid, page, pages)
 	{
 		if(pages > 1)
@@ -124,7 +124,7 @@ var MyBB = {
 			window.location = "showthread.php?tid="+tid+"&page"+promotres;
 		}
 	},
-	
+
 	attachListener: function(element, type, listener)
 	{
 		if(element.addEventListener)
@@ -136,7 +136,7 @@ var MyBB = {
 			element.attachEvent("on"+type, listener, false);
 		}
 	},
-	
+
 	removeListener: function(element, type, listener)
 	{
 		if(element.removeEventListener)
@@ -148,7 +148,7 @@ var MyBB = {
 			element.detachEvent("on"+type, listener);
 		}
 	},
-	
+
 	eventElement: function(event)
 	{
 		if(event.currentTarget)
@@ -159,6 +159,32 @@ var MyBB = {
 		{
 			return event.srcElement;
 		}
+	},
+
+	arraySize: function(name)
+	{
+		for(i=0;i<name.length;i++)
+		{
+			if(name[i] == "undefined" || name[i] == "" || name[i] == null)
+			{
+				return i;
+			}
+		}
+		return name.length;
+	},
+
+	arrayPush: function(array_name, value)
+	{
+		array_size = MyBB.arraySize(array_name);
+		array_name[array_size] = value;
+	},
+
+	arrayPop: function(array_name)
+	{
+		array_size = MyBB.arraySize(array_name);
+		array_value = array_name[array_size-1];
+		delete array_name[array_size-1];
+		return array_value;
 	}
 }
 
@@ -212,7 +238,7 @@ var Cookie = {
 }
 
 var DomLib = {
-	
+
 	addClass: function(element, name)
 	{
 		if(element)
@@ -249,11 +275,11 @@ var DomLib = {
 	    var oElement;
 	    for(var i=0; i<arrElements.length; i++)
 		{
-	        oElement = arrElements[i];      
+	        oElement = arrElements[i];
 	        if(oRegExp.test(oElement.className))
 			{
 	            arrReturnElements.push(oElement);
-	        }   
+	        }
 	    }
 	    return (arrReturnElements)
 	}
