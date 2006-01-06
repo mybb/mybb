@@ -19,7 +19,7 @@ class session
 	var $is_spider = false;
 
 	var $bots = array(
-		"googlebot" => "GoogleBot",
+		"google" => "GoogleBot",
 		"lycos" => "Lycos.com",
 		"ask jeeves" => "Ask Jeeves",
 		"slurp@inktomi" => "Hot Bot",
