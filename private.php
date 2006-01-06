@@ -191,9 +191,9 @@ if($mybb->input['action'] == "send")
 	{
 		$query = $db->query("SELECT pm.*, u.username AS quotename FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user[uid]."'");
 		$pm = $db->fetch_array($query);
-		$message = stripslashes($pm['message']);
+		$message = $pm['message'];
 		$message = htmlspecialchars_uni($message);
-		$subject = stripslashes($pm['subject']);
+		$subject = $pm['subject'];
 		$subject = htmlspecialchars_uni($subject);
 		if($pm['folder'] == "3")
 		{ // message saved in drafts
@@ -596,7 +596,6 @@ elseif($mybb->input['action'] == "tracking")
 	$query = $db->query("SELECT pm.*, u.username as tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid) WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user[uid]."'");
 	while($readmessage = $db->fetch_array($query))
 	{
-		$readmessage['subject'] = stripslashes($readmessage['subject']);
 		$readmessage['subject'] = htmlspecialchars_uni($readmessage['subject']);
 		$readdate = mydate($mybb->settings['dateformat'], $readmessage['readtime']);
 		$readtime = mydate($mybb->settings['timeformat'], $readmessage['readtime']);
@@ -605,7 +604,6 @@ elseif($mybb->input['action'] == "tracking")
 	$query = $db->query("SELECT pm.*, u.username AS tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid) WHERE receipt='1' AND status='0' AND fromid='".$mybb->user[uid]."'");
 	while($unreadmessage = $db->fetch_array($query))
 	{
-		$unreadmessage['subject'] = stripslashes($unreadmessage['subject']);
 		$unreadmessage['subject'] = htmlspecialchars_uni($unreadmessage['subject']);
 		$senddate = mydate($mybb->settings['dateformat'], $unreadmessage['dateline']);
 		$sendtime = mydate($mybb->settings['timeformat'], $unreadmessage['dateline']);

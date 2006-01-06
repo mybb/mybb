@@ -41,7 +41,7 @@ $forum = $db->fetch_array($query);
 
 // Make navigation
 makeforumnav($fid);
-$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
+$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
 addnav($lang->nav_newreply);
 
@@ -174,7 +174,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$query = $db->query("SELECT p.*, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.pid='$pid' AND p.tid='$tid' AND p.visible='1'");
 		$quoted = $db->fetch_array($query);
-		$quoted['subject'] = preg_replace("#RE:#i", "", stripslashes($quoted['subject']));
+		$quoted['subject'] = preg_replace("#RE:#i", "", $quoted['subject']);
 		$subject = "RE: ".$quoted['subject'];
 		$quoted['message'] = preg_replace('#^/me (.*)$#im', "* $quoted[username] \\1", $quoted['message']);
 		if($quoted['username'])

@@ -230,7 +230,6 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 		{
 			$lastpost = "";
 		}
-		$thread['subject'] = stripslashes($thread['subject']);
 		if(strlen($thread['subject']) > 25)
 		{
 			$thread['subject'] = substr($thread['subject'], 0, 25) . "...";
@@ -289,7 +288,7 @@ while($announcement = $db->fetch_array($query))
 	{
 		$announcement['username'] = $announcement['threadusername'];
 	}
-	$announcement['subject'] = htmlspecialchars_uni(stripslashes($announcement['subject']));
+	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 	if($announcement['iconpath'])
 	{
 		$icon = "<img src=\"$announcement[iconpath]\" alt=\"$announcement[iconname]\">";

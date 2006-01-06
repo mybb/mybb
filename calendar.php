@@ -445,7 +445,7 @@ else
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."events WHERE date LIKE '%-$month-$year' AND ((author='".$mybb->user[uid]."' AND private='yes') OR (private!='yes'))");
 	while($event = $db->fetch_array($query))
 	{
-		$event['subject'] = htmlspecialchars_uni(stripslashes($event['subject']));
+		$event['subject'] = htmlspecialchars_uni($event['subject']);
 		$event['fullsubject'] = $event['subject'];
 		if(strlen($event['subject']) > 15)
 		{

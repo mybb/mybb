@@ -80,7 +80,7 @@ if(!$forum['posts'])
 }
 else
 {
-	$forum['name'] = htmlspecialchars_uni(stripslashes($forum['name']));
+	$forum['name'] = htmlspecialchars_uni($forum['name']);
 	$topforum = "<a href=\"forumdisplay.php?fid=$forum[fid]\">$forum[name]</a>";
 	$topforumposts = $forum['posts'];
 	$topforumthreads = $forum['threads'];

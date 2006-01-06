@@ -17,35 +17,35 @@ class databaseEngine {
 	 * @var int
 	 */
 	var $query_count = 0;
-	
+
 	/**
 	 * A list of the performed queries.
 	 *
 	 * @var array
 	 */
 	var $querylist = array();
-	
+
 	/**
 	 * 1 if error reporting enabled, 0 if disabled.
 	 *
 	 * @var boolean
 	 */
 	var $error_reporting = 1;
-	
+
 	/**
 	 * The database connection resource.
 	 *
 	 * @var resource
 	 */
 	var $link;
-	
+
 	/**
 	 * Explanation of a query.
 	 *
 	 * @var string
 	 */
 	var $explain;
-	
+
 	/**
 	 * Queries to perform prior to shutdown of connection.
 	 *
@@ -113,7 +113,7 @@ class databaseEngine {
 		}
 		return $query;
 	}
-	
+
 	/**
 	 * Explain a query on the database.
 	 *
@@ -394,6 +394,40 @@ class databaseEngine {
 			$this->shutdown_queries[] = $query;
 		}
 	}
+	/**
+	 * Performs a simple select query.
+	 *
+	 * @param string The table name to be queried.
+	 * @param string Comma delimetered list of fields to be selected.
+	 * @param string SQL formatted list of conditions to be matched.
+	 * @param array List of options, order by, order direction, limit, limit start
+	 */
+	function simple_select($table, $fields="*", $conditions="", $options=array())
+	{
+		$query = "SELECT ".$fields." FROM ".$table;
+		if($conditions != "")
+		{
+			$query .= " WHERE ".$conditions;
+		}
+		if(isset($options['order_by']))
+		{
+			$query .= " ORDER BY ".$options['order_by'];
+			if(isset($options['order_dir']))
+			{
+				$query .= " ".$options['order_dir'];
+			}
+		}
+		if(isset($options['limit_start']) && isset($options['limit']))
+		{
+			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
+		}
+		elseif(isset($options['limit']))
+		{
+			$query .= " LIMIT ".$options['limit'];
+		}
+		return $this->query($query);
+	}
+
 
 	/**
 	 * Build an insert query from an array.
@@ -416,7 +450,7 @@ class databaseEngine {
 		}
 		return $this->query("INSERT INTO ".$table." (".$query1.") VALUES (".$query2.");");
 	}
-	
+
 	/**
 	 * Build an update query from an array.
 	 *
@@ -447,7 +481,7 @@ class databaseEngine {
 		}
 		return $this->query("UPDATE $table SET $query");
 	}
-	
+
 	/**
 	 * Escape a string according to the MySQL escape format.
 	 *

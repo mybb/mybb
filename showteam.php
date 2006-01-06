@@ -50,7 +50,6 @@ while(list($gid, $usergroup) = each($teams))
 		while(list($uid, $user) = each($users[$gid]))
 		{
 			$post['uid'] = $user['uid'];
-			$user['location'] = stripslashes($user['location']);
 			$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 			if($user['hideemail'] != "yes")
 			{

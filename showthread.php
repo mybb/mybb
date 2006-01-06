@@ -519,7 +519,7 @@ if($mybb->input['action'] == "thread")
 			++$count;
 			$similarthreaddate = mydate($mybb->settings['dateformat'], $similarthread['lastpost']);
 			$similarthreadtime = mydate($mybb->settings['timeformat'], $similarthread['lastpost']);
-			$similarthread['subject'] = htmlspecialchars_uni(stripslashes($similarthread['subject']));
+			$similarthread['subject'] = htmlspecialchars_uni($similarthread['subject']);
 			eval("\$similarthreadbits .= \"".$templates->get("showthread_similarthreads_bit")."\";");
 		}
 		if($count)

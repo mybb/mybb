@@ -243,7 +243,7 @@ class postParser
 			reset($this->smilies_cache);
 			foreach($this->smilies_cache as $sid => $smilie)
 			{
-				$message = str_replace($smilie['find'], "<img src=\"".$url.$smilie['image']."\" align=\"middle\" border=\"0\" alt=\"".$smilie['name']."\" />", $message);
+				$message = str_replace($smilie['find'], "<img src=\"".$url.$smilie['image']."\" style=\"vertical-align: middle;\" border=\"0\" alt=\"".$smilie['name']."\" />", $message);
 			}
 		}
 		return $message;

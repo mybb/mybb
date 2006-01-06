@@ -341,7 +341,7 @@ function redirect($url, $message="You will now be redirected", $title="")
 		$title = $mybb->settings['bbname'];
 	}
 	if($mybb->settings['redirects'] == "on")
-	{	
+	{
 		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
 		outputpage($redirectpage);
 	}
@@ -426,7 +426,7 @@ function validateforum($fid)
 function user_permissions($uid=0)
 {
 	global $mybb, $cache, $groupscache, $usercache;
-	
+
 	if($uid == 0)
 	{
 		$uid = $mybb->user['uid'];
@@ -594,7 +594,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 				if(!is_array($fpermcache[$fid][$gid]))
 				{
 					continue;
-				} 
+				}
 				foreach($fpermcache[$fid][$gid] as $perm => $access)
 				{
 					if($perm != "fid" && $perm != "gid" && $perm != "pid")
@@ -728,7 +728,7 @@ function ismod($fid="0", $action="", $uid="0")
 				{
 					return "yes";
 				}
-				else 
+				else
 				{
 					return "no";
 				}
@@ -916,7 +916,7 @@ function updateforumcount($fid) {
 		$lp['lastposter'] = addslashes($lp['lastposter']);
 		$lpadd = ",lastpost='".$lp['lastpost']."', lastposter='".$lp['lastposter']."', lastposttid='".$lp['tid']."'";
 	}
-	
+
 	// Get the post counters for this forum and its children
 	$query = $db->query("SELECT COUNT(*) AS totthreads, SUM(replies) AS totreplies FROM ".TABLE_PREFIX."threads WHERE fid='$fid' AND visible='1' AND closed NOT LIKE 'moved|%'");
 	$posts2 = $db->fetch_array($query);
@@ -997,7 +997,7 @@ function deletethread($tid)
 		$pids .= $post['pid'].",";
 		$usepostcounts = $post['usepostcounts'];
 		remove_attachments($post['pid']);
-		
+
 		// If the post is unapproved, count it!
 		if($post['visible'] == 0)
 		{
@@ -1039,7 +1039,7 @@ function deletethread($tid)
 	}
 	if(!empty($update_unapproved))
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET $update_unapproved WHERE fid='$thread[fid]'");  
+		$db->query("UPDATE ".TABLE_PREFIX."forums SET $update_unapproved WHERE fid='$thread[fid]'");
 	}
 
 	$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
@@ -1310,19 +1310,19 @@ function gzipencode($contents, $level=1)
 function logmod($data, $action="")
 {
 	global $mybb, $mybbuser, $db, $session;
-	
+
 	/* If the fid or tid is not set, set it at 0 so MySQL doesn't choke on it. */
 	if($data['fid'] == '')
 	{
 		$data['fid'] = 0;
-	}	
+	}
 	if($data['tid'] == '')
 	{
 		$data['tid'] = 0;
 	}
-	
+
 	$time = time();
-	
+
 	$sql_array = array(
 		"uid" => $mybb->user['uid'],
 		"dateline" => $time,
@@ -1337,7 +1337,7 @@ function logmod($data, $action="")
 function getreputation($reputation)
 {
 	global $theme;
-	
+
 	if(strpos(" ".$reputation, "-"))
 	{
 		return "<span style=\"color: red;\">".$reputation."</span>";
@@ -1982,7 +1982,7 @@ function get_current_location()
 			$location = "?".$_ENV['QUERY_STRING'];
 		}
 	}
-	
+
 	if($_SERVER['REQUEST_METHOD'] == "POST" || $_ENV['REQUEST_METHOD'] == "POST")
 	{
 		if($_POST['action'])
@@ -2182,11 +2182,11 @@ function my_strlen($string)
 	{
 		$string_length = mb_strlen($string);
 	}
-	else 
+	else
 	{
 		$string_length = strlen($string);
 	}
-	
+
 	return $string_length;
 }
 

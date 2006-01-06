@@ -139,7 +139,7 @@ if($mybb->input['action'] == "profile")
 	}
 	if($user['icq'] != "0")
 	{
-		$icq = stripslashes($user['icq']);
+		$icq = intval($user['icq']);
 	}
 	else
 	{
@@ -179,7 +179,7 @@ if($mybb->input['action'] == "profile")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
+		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = $thing[0];
 		$options = $thing[1];
@@ -1218,7 +1218,7 @@ elseif($mybb->input['action'] == "forumsubscriptions")
 				$lastposttime = mydate($mybb->settings['timeformat'], $forum['lastpost']);
 				$lastposttid = $forum['lastposttid'];
 				$lastposter = $forum['lastposter'];
-				$lastpostsubject = stripslashes($forum['lastpostsubject']);
+				$lastpostsubject = $forum['lastpostsubject'];
 				if(strlen($lastpostsubject) > 25)
 				{
 					$lastpostsubject = substr($lastpostsubject, 0, 25) . "...";
@@ -2071,7 +2071,7 @@ else
 			}
 			$repdate = mydate($mybb->settings['dateformat'], $reputation['dateline']);
 			$reptime = mydate($mybb->settings['timeformat'], $reputation['dateline']);
-			$reputation['comments'] = htmlspecialchars_uni(stripslashes($reputation['comments']));
+			$reputation['comments'] = htmlspecialchars_uni($reputation['comments']);
 			if(strpos(" ".$reputation['reputation'], "-"))
 			{ // negative
 				$posnegimg = "repbit_neg.gif";

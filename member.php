@@ -292,7 +292,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
+		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = trim($thing[0]);
 		$field = "fid$profilefield[fid]";
@@ -642,7 +642,7 @@ if($mybb->input['action'] == "register")
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 		while($profilefield = $db->fetch_array($query))
 		{
-			$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
+			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 			$thing = explode("\n", $profilefield['type'], "2");
 			$type = trim($thing[0]);
 			$options = $thing[1];
@@ -1237,21 +1237,18 @@ elseif($mybb->input['action'] == "profile")
 
 	if($memprofile['icq'] != "0")
 	{
-		$memprofile['icq'] = stripslashes($memprofile['icq']);
+		$memprofile['icq'] = intval($memprofile['icq']);
 	}
 	else
 	{
 		$memprofile['icq'] = "";
 	}
-	$memprofile['aim'] = stripslashes($memprofile['aim']);
-	$memprofile['yahoo'] = stripslashes($memprofile['yahoo']);
-	$memprofile['signature'] = stripslashes($memprofile['signature']);
 
 	if($memprofile['away'] == "yes" && $mybb->settings['allowaway'] != "no")
 	{
 		$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
 		$awaydate = mydate($mybb->settings['dateformat'], $memprofile['awaydate']);
-		$memprofile['awayreason'] = stripslashes($memprofile['awayreason']);
+		$memprofile['awayreason'] = $memprofile['awayreason'];
 		if($memprofile['returndate'] == "")
 		{
 			$returndate = "$lang->unknown";

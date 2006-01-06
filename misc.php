@@ -152,11 +152,6 @@ elseif($mybb->input['action'] == "help")
 				$section['name'] = $lang->$langnamevar;
 				$section['description'] = $lang->$langdescvar;
 			}
-			else
-			{
-				$section['name'] = stripslashes($section['name']);
-				$section['description'] = stripslashes($section['description']);
-			}
 			if(is_array($helpdocs[$section['sid']]))
 			{
 				$altbg = "trow1";
@@ -184,11 +179,6 @@ elseif($mybb->input['action'] == "help")
 								$langdescvar = "d".$helpdoc['hid'].'_desc';
 								$helpdoc['name'] = $lang->$langnamevar;
 								$helpdoc['description'] = $lang->$langdescvar;
-							}
-							else
-							{
-								$helpdoc['name'] = stripslashes($helpdoc['name']);
-								$helpdoc['description'] = stripslashes($helpdoc['description']);
 							}
 							eval("\$helpbits .= \"".$templates->get("misc_help_section_bit")."\";");
 							if($altbg == "trow2")
