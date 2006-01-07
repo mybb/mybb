@@ -29,6 +29,8 @@ function init() {
 		document.input.mode[0].checked = false;
 		normalmode = false;
 	}
+	
+	MyBB.attachListener(document.input, "submit", closeTags);
 }
 
 function changeMode(newMode) {
@@ -260,7 +262,7 @@ function doInsert(myCode, myClose, singleTag, ignoreSel) {
 		myClose = "";
 	}
 	var messageBox = document.input.message;
-	if(is_ie && is_win && (agt_ver >= 4)) {
+	if(MyBB.browser == "ie" && MyBB.os == "win" && (MyBB.useragent_version >= 4)) {
 		setFocus(messageBox);
 		var seltext = document.selection;
 		var range = seltext.createRange();
@@ -280,7 +282,7 @@ function doInsert(myCode, myClose, singleTag, ignoreSel) {
 			messageBox.value += myCode;
 		}
 	}
-	else if(is_mozilla && messageBox.selectionEnd) {
+	else if(MyBB.browser == "mozilla" && messageBox.selectionEnd) {
 		var select_start = messageBox.selectionStart;
 		var select_end = messageBox.selectionEnd;
 		if(select_end <= 2) {
