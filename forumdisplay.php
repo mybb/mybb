@@ -808,9 +808,14 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						$forumcat = "_forum";
 					}
+					$hideinfo = 0;
 					if($forum['type'] == "f" && $forum['linkto'] == "")
 					{
-						if($forum['lastpost'] == 0 || $forum['lastposter'] == "")
+						if($forum['password'] != "" && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+						{
+							$hideinfo = 1;
+						}
+						elseif($forum['lastpost'] == 0 || $forum['lastposter'] == "")
 						{
 							$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
 						}
@@ -831,7 +836,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 							eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
 						}
 					}
-					if($forum['linkto'] != "")
+					if($forum['linkto'] != "" || $hideinfo == 1)
 					{
 						$lastpost = "<center>-</center>";
 						$posts = "-";
