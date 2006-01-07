@@ -105,14 +105,17 @@ else
 	if($mybb->input['sortby'] == "username")
 	{
 		$sql = "u.username ASC, s.time DESC";
+		$refresh_string = "?sortby=username";
 	}
 	elseif($mybb->input['sortby'] == "location")
 	{
 		$sql = "s.location, s.time DESC";
+		$refresh_string = "?sortby=location";
 	}
 	else
 	{
 		$sql = "s.time DESC";
+		$refresh_string = "";
 	}
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
 	$query = $db->query("SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY $sql");
@@ -186,7 +189,7 @@ else
 		$query = $db->query("SELECT fid,tid,subject FROM ".TABLE_PREFIX."threads WHERE tid IN(0$tidsql) $fidnot");
 		while($thread = $db->fetch_array($query))
 		{
-			$threads[$thread['tid']] = htmlspecialchars_uni($parser->parse_badwords($thread['subject'])));
+			$threads[$thread['tid']] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$fidsql .= ",$thread[fid]";
 		}
 	}
@@ -232,7 +235,7 @@ else
 	$recordtime = mydate($mybb->settings['timeformat'], $mostonline['time']);
 	if($mybb->settings['refreshwol'] != "no")
 	{
-		$refresh = "<meta http-equiv=\"refresh\" content=\"60;URL=online.php\">";
+		$refresh = "<meta http-equiv=\"refresh\" content=\"60;URL=online.php$refresh_string\" />";
 	}
 	if($usercount != 1)
 	{

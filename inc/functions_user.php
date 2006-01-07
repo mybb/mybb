@@ -91,7 +91,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 			"salt" => $user['salt'],
 			"password" => $user['password']
 		);
-		$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$user['uid'], 1)
+		$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$user['uid'], 1);
 	}
 
 	if(!$user['loginkey'])
