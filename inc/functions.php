@@ -2080,6 +2080,10 @@ function htmlspecialchars_uni($message)
 function mynumberformat($number)
 {
 	global $mybb;
+	if($number == "-")
+	{
+		return $number;
+	}
 	if(is_int($number))
 	{
 		return number_format($number, 0, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
