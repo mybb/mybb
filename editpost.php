@@ -117,7 +117,7 @@ checkpwforum($fid, $forum['password']);
 // Max images check
 if($mybb->input['action'] == "do_editpost") {
 	if($mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes") {
-		if($postoptions['disablesmilies'] == "yes") {
+		if($mybb->input['postoptions']['disablesmilies'] == "yes") {
 			$allowsmilies = "no";
 		} else {
 			$allowsmilies = $forum['allowsmilies'];
@@ -154,7 +154,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
 
 	$plugins->run_hooks("editpost_deletepost");
-	
+
 	if($mybb->input['delete'] == "yes")
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
@@ -224,7 +224,7 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 {
 
 	$plugins->run_hooks("editpost_do_editpost_start");
-	
+
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
 	$firstcheck = $db->fetch_array($query);
 	if($firstcheck['pid'] == $pid)
@@ -272,7 +272,7 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 	}
 
 	$now = time();
-	
+
 	$postoptions = $mybb->input['postoptions'];
 
 	if($postoptions['signature'] != "yes")
@@ -303,7 +303,7 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 	} else {
 		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE type='s' AND uid='".$mybb->user[uid]."' AND tid='$tid'");
 	}
-	
+
 	if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
 	{
 		$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->input['numpolloptions'];
@@ -337,16 +337,16 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 } else {
 
 	$plugins->run_hooks("editpost_start");
-	
+
 	if(!$mybb->input['previewpost']) {
 		$icon = $post['icon'];
 	}
-	
+
 	if($forum['allowpicons'] != "no")
 	{
 		$posticons = getposticons();
 	}
-	
+
 	if($mybb->user['uid'] != 0) {
 		eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 	} else {
@@ -415,8 +415,8 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 		$numpolloptions = "2";
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
-		
-	if($mybb->input['previewpost']) {
+
+	if($mybb->input['previewpost'] || $maximageserror) {
 		$previewmessage = $message;
 		$message = htmlspecialchars_uni($message);
 		$subject = htmlspecialchars_uni($subject);
@@ -432,7 +432,7 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 		if($postoptions['disablesmilies'] == "yes") {
 			$postoptionschecked['disablesmilies'] = "checked";
 		}
-		
+
 		if(!$mybb->input['username']) {
 			$username = "Guest";
 		}

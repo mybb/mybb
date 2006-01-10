@@ -142,7 +142,7 @@ if($mybb->input['action'] == "do_newreply" && !$mybb->input['savedraft'])
 {
 	if($mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes")
 	{
-		if($postoptions['disablesmilies'] == "yes")
+		if($mybb->input['postoptions']['disablesmilies'] == "yes")
 		{
 			$allowsmilies = "no";
 		}
@@ -186,7 +186,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$message = "[quote]\n$quoted[message]\n[/quote]";
 		}
 		// Remove [attachment=x] from quoted posts.
-		$message = preg_replace("#\[attachment=([0-9]+?)\]#i", "", $message); 
+		$message = preg_replace("#\[attachment=([0-9]+?)\]#i", "", $message);
 	}
 	if(!$pid && !$mybb->input['previewpost'])
 	{
@@ -196,9 +196,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$previewmessage = $mybb->input['message'];
 	}
-	if(!$message) 
+	if(!$message)
 	{
-	$message = $mybb->input['message'];
+		$message = $mybb->input['message'];
 	}
 	$message = htmlspecialchars_uni($message);
 	$editdraftpid = "";
@@ -348,7 +348,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 		$bgcolor = "trow1";
 	}
-	
+
 	if($mybb->user['uid'])
 	{
 		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton")."\";");
@@ -525,7 +525,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	{
 		$updatepost = 0;
 	}
-		
+
 
 	if(!$mybb->input['icon'])
 	{
@@ -545,7 +545,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	{
 		$postoptions['disablesmilies'] = "no";
 	}
-	
+
 	// Start Subscriptions
 	if(!$savedraft)
 	{
@@ -606,7 +606,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			}
 		}
 	}
-	
+
 	if(!$mybb->input['replyto'])
 	{ // If we dont have a post to reply to, lets make it the first one :)
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
@@ -696,7 +696,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$db->insert_query(TABLE_PREFIX."posts", $newreply);
 		$pid = $db->insert_id();
 	}
-	
+
 	// Deciding the fate
 	if($visible == -2)
 	{
@@ -722,7 +722,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+1 WHERE tid='$tid'");
 		$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts+1 WHERE fid='$fid'");
 	}
-	
+
 	if(!$savedraft)
 	{
 		$now = time();

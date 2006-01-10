@@ -131,7 +131,7 @@ if($mybb->input['action'] == "do_newthread" && !$mybb->input['savedraft'])
 {
 	if($mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes")
 	{
-		if($postoptions['disablesmilies'] == "yes")
+		if($mybb->input['postoptions']['disablesmilies'] == "yes")
 		{
 			$allowsmilies = "no";
 		}
@@ -250,7 +250,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
-	elseif($mybb->input['removeattachment'] || $mybb->input['newattachment']) {
+	elseif($mybb->input['removeattachment'] || $mybb->input['newattachment'] || $maximageserror) {
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
@@ -275,7 +275,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
 	}
-	
+
 	// Show the moderator options
 	if(ismod($fid) == "yes")
 	{
@@ -350,7 +350,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
-		
+
 		if($bgcolor == "trow1")
 		{
 			$bgcolor = "trow2";
@@ -377,7 +377,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	eval("\$newthread = \"".$templates->get("newthread")."\";");
 	outputpage($newthread);
-		
+
 }
 if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 {
@@ -504,7 +504,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			"visible" => $visible
 			);
 		$db->update_query(TABLE_PREFIX."threads", $newthread, "tid='$tid'");
-		
+
 		$newpost = array(
 			"subject" => addslashes($mybb->input['subject']),
 			"icon" => intval($mybb->input['icon']),
@@ -563,7 +563,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		$firstpostup = array("firstpost" => $pid);
 		$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='$tid'");
 	}
-	
+
 	// Do moderator options
 	if(ismod($fid) == "yes" && !$savedraft)
 	{
@@ -689,7 +689,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 
 	$plugins->run_hooks("newthread_do_newthread_end");
-	
+
 	if(function_exists("threadPosted") && !$savedraft)
 	{
 		threadPosted($tid);
