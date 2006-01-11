@@ -16,7 +16,7 @@ $lang->load("managegroup");
 
 $gid = intval($mybb->input['gid']);
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid' AND type <> 1");
+$query = $db->query("SELECT gid, title, type FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid' AND type <> 1");
 $usergroup = $db->fetch_array($query);
 if(!$usergroup['gid'])
 {
@@ -32,7 +32,7 @@ if($mybb->input['action'] == "joinrequests")
 }
 
 // Check that this user is actually a leader of this group
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."groupleaders WHERE uid='".$mybb->user['uid']."' AND gid='$gid'");
+$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."groupleaders WHERE uid='".$mybb->user['uid']."' AND gid='$gid'");
 $groupleader = $db->fetch_array($query);
 if(!$groupleader['uid'])
 {
@@ -153,19 +153,13 @@ else
 	{
 		$usergrouptype = $lang->group_private;
 	}
-		
 
-	$uquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".intval($mybb->input['gid']).",%' ORDER BY username ASC";
-	$query = $db->query($uquery);
-	$numusers = $db->num_rows($query);
-	/*if(!$numusers && !$numrequests)
-	{
-		error($lang->group_no_members);
-	}*/
+	/* Multiple pages? */
 	$perpage = $mybb->settings['membersperpage'];
-	if($page)
+	if($mybb->input['page'])
 	{
-		$start = ($page-1) *$perpage;
+		$page = intval($mybb->input['page']);
+		$start = ($page-1) * $perpage;
 	}
 	else
 	{
@@ -173,7 +167,14 @@ else
 		$page = 1;
 	}
 	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$mybb->input['gid']);
-	$uquery .= " LIMIT $start, $perpage";
+	
+	$sql = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".intval($mybb->input['gid']).",%' ORDER BY username ASC LIMIT $start, $perpage";
+	$query = $db->query($sql);
+	$numusers = $db->num_rows($query);
+	/*if(!$numusers && !$numrequests)
+	{
+		error($lang->group_no_members);
+	}*/
 
 	while($user = $db->fetch_array($query))
 	{
@@ -189,7 +190,7 @@ else
 		{
 			$email = "";
 		}
-		$query1 = $db->query("SELECT uid FROM ".TABLE_PREFIX."groupleaders WHERE uid='$user[uid]' AND gid='$gid'");
+		$query1 = $db->query("SELECT uid FROM ".TABLE_PREFIX."groupleaders WHERE uid='".$user['uid']."' AND gid='$gid'");
 		$isleader = $db->fetch_array($query1);
 		$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 		if($isleader['uid'])

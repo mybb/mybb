@@ -160,7 +160,7 @@ $l['color_prompt'] = "Please enter the text to be formatted with the color tag."
 $l['align_prompt'] = "Please enter the text to be aligned.";
 $l['quote_prompt'] = "Please enter the text to be quoted.";
 $l['code_prompt'] = "Please enter the code to be treated as code and unformatted text.";
-$l['php_prompt'] = "Please enter the code to be trated as PHP code.";
+$l['php_prompt'] = "Please enter the code to be treated as PHP code.";
 
 $l['quote'] = "Quote:";
 $l['wrote'] = "Wrote:";
