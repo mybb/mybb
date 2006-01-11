@@ -29,18 +29,18 @@ logadmin();
 if($mybb->input['action'] == "do_prune") {
 	$time = time();
 	$timecut = $time-(intval($mybb->input['days'])*60*60*24);
+	$frommod = intval($mybb->input['frommod']);
 	$thequery = "";
 	if($timecut)
 	{
 		$thequery .= "dateline<'$timecut'";
-		if($fromscript || $fromadmin)
+		if($frommod)
 		{
 			$thequery .= " AND ";
 		}
 	}
-	if($mybb->input['frommod'])
+	if($frommod)
 	{
-		$mybb->input['frommod'] = intval($mybb->input['frommod']);
 		$thequery .= " uid='$frommod'";
 	}
 	if($thequery)
