@@ -31,10 +31,17 @@ if($mybb->usergroup['canviewcalendar'] == "no")
 	nopermission();
 }
 
+/* Just do this here right now, no need for duplicate code. */
+$eid = intval($mybb->input['eid']);
+
 /* If we are looking at an event, select the date for that event first. */
 if($mybb->input['action'] == "event")
 {
-	$query = $db->query("SELECT date FROM ".TABLE_PREFIX."events WHERE eid = ".intval($mybb->input['eid']));
+	$query = $db->query("
+		SELECT date
+		FROM ".TABLE_PREFIX."events
+		WHERE eid = ".$eid
+	);
 	$event_date = $db->result($query, 0);
 	if($event_date == FALSE)
 	{
@@ -95,9 +102,12 @@ if($mybb->input['action'] == "event")
 {
 	$plugins->run_hooks("calendar_event_start");
 
-	$eid = intval($mybb->input['eid']);
-
-	$query = $db->query("SELECT e.*, u.username, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."events e LEFT JOIN ".TABLE_PREFIX."users u ON (e.author=u.uid) WHERE e.eid='$eid'");
+	$query = $db->query("
+		SELECT e.eid, e.private, e.author, e.subject, e.description, e.date, u.username, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."events e
+		LEFT JOIN ".TABLE_PREFIX."users u ON (e.author=u.uid)
+		WHERE e.eid='$eid'
+	");
 	$event = $db->fetch_array($query);
 	
 	if(!$event['eid'])
@@ -142,7 +152,11 @@ elseif($mybb->input['action'] == "dayview")
 	$plugins->run_hooks("calendar_dayview_start");
 
 	// Load Birthdays
-	$query = $db->query("SELECT u.uid, u.username, u.birthday, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."users u WHERE u.birthday LIKE '$day-$month-%'");
+	$query = $db->query(
+		"SELECT u.uid, u.username, u.birthday, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."users u
+		WHERE u.birthday LIKE '$day-$month-%'
+	");
 	$alterbg = $theme['trow1'];
 	$comma = "";
 	while($bdays = $db->fetch_array($query))
@@ -171,7 +185,14 @@ elseif($mybb->input['action'] == "dayview")
 		$comma = ", ";
 	}
 	// Load Events
-	$query = $db->query("SELECT e.*, u.username, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."events e LEFT JOIN ".TABLE_PREFIX."users u ON (e.author=u.uid) WHERE date LIKE '$day-$month-$year' AND ((author='".$mybb->user[uid]."' AND private='yes') OR (private!='yes'))");
+	$query = $db->query("
+		SELECT e.eid, e.author, e.subject, e.description, u.username, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."events e
+		LEFT JOIN ".TABLE_PREFIX."users u ON (e.author=u.uid)
+		WHERE date LIKE '$day-$month-$year'
+		AND ((author='".$mybb->user[uid]."'
+		AND private='yes') OR (private!='yes'))
+	");
 	while($event = $db->fetch_array($query))
 	{
 		$plugins->run_hooks("calendar_dayview_event");
@@ -318,7 +339,12 @@ elseif($mybb->input['action'] == "editevent")
 	
 	$eid = intval($mybb->input['eid']);
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."events WHERE eid='$eid'");
+	$query = $db->query("
+		SELECT eid, author, date
+		FROM ".TABLE_PREFIX."events
+		WHERE eid='$eid'
+		LIMIT 1
+	");
 	$event = $db->fetch_array($query);
 	
 	if(!$event['eid'])
@@ -376,7 +402,11 @@ elseif($mybb->input['action'] == "do_editevent")
 
 	$plugins->run_hooks("calendar_do_editevent_start");
 
-	$query = $db->query("SELECT author FROM ".TABLE_PREFIX."events WHERE eid='$eid'");
+	$query = $db->query("
+		SELECT author
+		FROM ".TABLE_PREFIX."events
+		WHERE eid='$eid'
+	");
 	$event = $db->fetch_array($query);
 	
 	if(!is_numeric($event['author']))
@@ -434,7 +464,11 @@ else
 	$bdays = array();
 
 	// Load Birthdays
-	$query = $db->query("SELECT birthday FROM ".TABLE_PREFIX."users WHERE birthday LIKE '%-$month-%'");
+	$query = $db->query("
+		SELECT birthday
+		FROM ".TABLE_PREFIX."users
+		WHERE birthday LIKE '%-$month-%'
+	");
 	while($user = $db->fetch_array($query))
 	{
 		$bday = explode("-", $user['birthday']);
@@ -442,7 +476,14 @@ else
 	}
 
 	// Load Events
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."events WHERE date LIKE '%-$month-$year' AND ((author='".$mybb->user[uid]."' AND private='yes') OR (private!='yes'))");
+	$query = $db->query("
+		SELECT subject, private, date
+		FROM ".TABLE_PREFIX."events
+		WHERE date LIKE '%-$month-$year'
+		AND ((author='".$mybb->user[uid]."'
+		AND private='yes')
+		OR (private!='yes'))
+	");
 	while($event = $db->fetch_array($query))
 	{
 		$event['subject'] = htmlspecialchars_uni($event['subject']);
