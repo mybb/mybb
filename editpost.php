@@ -23,10 +23,21 @@ $pid = intval($mybb->input['pid']);
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
 $post = $db->fetch_array($query);
-$tid = $post['tid'];
 
+if(!$post['pid'])
+{
+	error($lang->error_invalidpost);
+}
+
+$tid = $post['tid'];
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 $thread = $db->fetch_array($query);
+
+if(!$thread['tid'])
+{
+	error($lang->error_invalidthread);
+}
+
 $thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
 $fid = $thread['fid'];
@@ -41,14 +52,6 @@ $forumpermissions = forum_permissions($fid);
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
 $forum = $db->fetch_array($query);
 
-if(!$post['pid'])
-{
-	error($lang->error_invalidpost);
-}
-if(!$thread['tid'])
-{
-	error($lang->error_invalidthread);
-}
 if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user[showcodebuttons] != 0)
 {
 	$codebuttons = makebbcodeinsert();

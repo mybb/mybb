@@ -22,10 +22,34 @@ options = array(
 
 class postParser
 {
+	/**
+	 * Internal cache of MyCode.
+	 *
+	 * @var mixed
+	 */
 	var $mycode_cache = 0;
+
+	/**
+	 * Internal cache of smilies
+	 *
+	 * @var mixed
+	 */
 	var $smilies_cache = 0;
+
+	/**
+	 * Internal cache of badwords filters
+	 *
+	 * @var mixed
+	 */
 	var $badwords_cache = 0;
 
+	/**
+	 * Parses a message with the specified options.
+	 *
+	 * @param string The message to be parsed.
+	 * @param array Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br.
+	 * @return string The parsed message.
+	 */
 	function parse_message($message, $options=array())
 	{
 		global $plugins, $settings;
@@ -86,7 +110,7 @@ class postParser
 				}
 			}
 		}
-	
+
 		if($options['nl2br'] != "no")
 		{
 			$message = nl2br($message);
@@ -94,6 +118,12 @@ class postParser
 		return $message;
 	}
 
+	/**
+	 * Converts HTML in a message to their specific entities whilst allowing unicode characters.
+	 *
+	 * @param string The message to be parsed.
+	 * @return string The formatted message.
+	 */
 	function parse_html($message)
 	{
 		$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // fix & but allow unicode
@@ -102,6 +132,11 @@ class postParser
 		return $message;
 	}
 
+	/**
+	 * Generates a cache of MyCode, both standard and custom.
+	 *
+	 * @access private
+	 */
 	function cache_mycode()
 	{
 		global $cache;
@@ -154,7 +189,7 @@ class postParser
 
 		$standard_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si";
 		$standard_mycode['size_int']['replacement'] = "<font size=\"$1\">$2</font>";
-	
+
 		$standard_mycode['font']['regex'] = "#\[font=([a-z ]+?)\](.+?)\[/font\]#si";
 		$standard_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
 
@@ -163,7 +198,7 @@ class postParser
 
 		$standard_mycode['hr']['regex'] = "#\[hr\]#si";
 		$standard_mycode['hr']['replacement'] = "<hr />";
-		
+
 		$custom_mycode = $cache->read("mycode");
 
 		if(is_array($custom_mycode))
@@ -182,6 +217,13 @@ class postParser
 		}
 	}
 
+	/**
+	 * Parses MyCode tags in a specific message with the specified options.
+	 *
+	 * @param string The message to be parsed.
+	 * @param array Array of options in yes/no format. Options are allow_imgcode.
+	 * @return string The parsed message.
+	 */
 	function parse_mycode($message, $options=array())
 	{
 		if($this->mycode_cache == 0)
@@ -217,6 +259,11 @@ class postParser
 		return $message;
 	}
 
+	/**
+	 * Generates a cache of smilies
+	 *
+	 * @access private
+	 */
 	function cache_smilies()
 	{
 		global $cache;
@@ -224,6 +271,13 @@ class postParser
 		$this->smilies_cache = $cache->read("smilies");
 	}
 
+	/**
+	 * Parses smilie code in the specified message.
+	 *
+	 * @param string The message being parsed.
+	 * @param string Base URL for the image tags created by smilies.
+	 * @return string The parsed message.
+	 */
 	function parse_smilies($message, $url="")
 	{
 		if($this->smilies_cache == 0)
@@ -254,6 +308,11 @@ class postParser
 		// Hi!
 	}
 
+	/**
+	 * Generates a cache of badwords filters.
+	 *
+	 * @access private
+	 */
 	function cache_badwords()
 	{
 		global $cache;
@@ -261,7 +320,14 @@ class postParser
 		$this->badwords_cache = $cache->read("badwords");
 	}
 
-	function parse_badwords($message)
+	/**
+	 * Parses a list of filtered/badwords in the specified message.
+	 *
+	 * @param string The message to be parsed.
+	 * @param array Array of parser options in yes/no format.
+	 * @return string The parsed message.
+	 */
+	function parse_badwords($message, $options=array())
 	{
 		if($this->badwords_cache == 0)
 		{
@@ -277,9 +343,19 @@ class postParser
 				$message = preg_replace("#".$badword['badword']."#i", $badword['replacement'], $message);
 			}
 		}
+		if($options['strip_tags'] == "yes")
+		{
+			$message = strip_tags($message);
+		}
 		return $message;
 	}
 
+	/**
+	 * Attempts to move any javascript references in the specified message.
+	 *
+	 * @param string The message to be parsed.
+	 * @return string The parsed message.
+	 */
 	function fix_javascript($message)
 	{
 		$message = preg_replace("#javascript:#i", "java script:", $message);
@@ -295,14 +371,14 @@ class postParser
 	function mycode_parse_quotes($message)
 	{
 		global $lang;
-		
+
 		// user sanity check
 		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\]#si",
 						 "#\[quote\](.*?)\[\/quote\]#si");
-		
+
 		$replace = array("<div class=\"quote_header\">$1 $lang->wrote</div><div class=\"quote_body\">$2</div>",
 						 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>\n");
-		
+
 		while (preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
 		{
 			$message = preg_replace($pattern, $replace, $message);
@@ -315,20 +391,20 @@ class postParser
 
 	function mycode_parse_code($code)
 	{
-		global $lang;		
+		global $lang;
 		return "<div class=\"code_header\">".$lang->code."</div><div class=\"code_body\"><pre><code>".$code."</code></pre></div>";
 	}
 
 	function mycode_parse_php($str)
 	{
 		global $lang;
-		
+
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
 		$str = str_replace('&amp;', '&', $str);
 		$str = str_replace("\n", '', $str);
 		$original = $str;
-		
+
 		if(preg_match("/\A[\s]*\<\?/", $str) === 0)
 		{
 			$str = "<?php\n".$str;
@@ -338,7 +414,7 @@ class postParser
 		{
 			$str = $str."\n?>";
 		}
-		
+
 		if(substr(phpversion(), 0, 1) >= 4)
 		{
 			ob_start();
@@ -350,19 +426,19 @@ class postParser
 		{
 			$code = $str;
 		}
-		
+
 		if(preg_match("/\A[\s]*\<\?/", $original) === 0)
 		{
 			$code = substr_replace($code, "", strpos($code, "&lt;?php"), strlen("&lt;?php"));
 			$code = strrev(substr_replace(strrev($code), "", strpos(strrev($code), strrev("?&gt;")), strlen("?&gt;")));
 			$code = str_replace('<br />', '', $code);
 		}
-		
+
 		// Get rid of other useless code and linebreaks
 		$code = str_replace("<code><font color=\"#000000\">\n", '', $code);
 		$code = str_replace('<font color="#0000CC"></font>', '', $code);
 		$code = str_replace("</font>\n</code>", '', $code);
-		
+
 		// Send back the code all nice and pretty
 		return "<div class=\"code_header\">$lang->php_code</div><div class=\"code_body\"><pre><code>".$code."</code></pre></div>";
 	}
