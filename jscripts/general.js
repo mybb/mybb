@@ -161,22 +161,22 @@ var MyBB = {
 		}
 	},
 
-	arraySize: function(name)
+	arraySize: function(array_name)
 	{
-		for(i=0;i<name.length;i++)
+		for(var i=0;i<array_name.length;i++)
 		{
-			if(name[i] == "undefined" || name[i] == "" || name[i] == null)
+			if(array_name[i] == "undefined" || array_name[i] == "" || array_name[i] == null)
 			{
 				return i;
 			}
 		}
-		return name.length;
+		return array_name.length;
 	},
 
-	arrayPush: function(array_name, value)
+	arrayPush: function(array_name, array_value)
 	{
 		array_size = MyBB.arraySize(array_name);
-		array_name[array_size] = value;
+		array_name[array_size] = array_value;
 	},
 
 	arrayPop: function(array_name)
@@ -292,7 +292,7 @@ var expandables = {
 		expanders = DomLib.getElementsByClassName(document, "img", "expander");
 		if(expanders.length > 0)
 		{
-			for(i=0;i<expanders.length;i++)
+			for(var i=0;i<expanders.length;i++)
 			{
 				var expander = expanders[i];
 				if(!expander.id)
@@ -359,7 +359,7 @@ var expandables = {
 		if(collapsed)
 		{
 			saved = split("|");
-			for(i=0;i<saved.length;i++)
+			for(var i=0;i<saved.length;i++)
 			{
 				if(saved[i] != id && saved[id] != "")
 				{
