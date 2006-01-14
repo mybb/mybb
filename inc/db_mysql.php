@@ -481,6 +481,28 @@ class databaseEngine {
 		}
 		return $this->query("UPDATE $table SET $query");
 	}
+	
+	/**
+	 * Build a delete query.
+	 *
+	 * @param string The table name to perform the query on.
+	 * @param string An optional where clause for the query.
+	 * @param string An optional limit clause for the query.
+	 * @return resource The query data.
+	 */
+	function delete_query($table, $where="", $limit)
+	{
+		$query = "";
+		if(!empty($where))
+		{
+			$query .= " WHERE $where";
+		}
+		if(!empty($limit))
+		{
+			$query .= " LIMIT $limit";
+		}
+		return $this->query("DELETE FROM $table $query");
+	}
 
 	/**
 	 * Escape a string according to the MySQL escape format.
