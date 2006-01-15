@@ -188,10 +188,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// Remove [attachment=x] from quoted posts.
 		$message = preg_replace("#\[attachment=([0-9]+?)\]#i", "", $message);
 	}
-	if(!$pid && !$mybb->input['previewpost'])
-	{
-		$subject = "RE: " . $thread['subject'];
-	}
 	if($mybb->input['previewpost'])
 	{
 		$previewmessage = $mybb->input['message'];
@@ -223,7 +219,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	elseif($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
 	{
 		$message = htmlspecialchars_uni($post['message']);
-		$subject = htmlspecialchars_uni($post['subject']);
+		$subject = $post['subject'];
 		if($post['includesig'] != "no")
 		{
 			$postoptionschecked['signature'] = "checked";
@@ -298,6 +294,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	$subject = htmlspecialchars_uni($subject);
 
+	if(!$pid && !$mybb->input['previewpost'])
+	{
+		$subject = "RE: " . $thread['subject'];
+	}
 	// Setup a unique posthash for attachment management
 	$posthash = $mybb->input['posthash'];
 
