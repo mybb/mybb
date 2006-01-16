@@ -843,7 +843,7 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 		"daysprune" => intval($mybb->input['daysprune']),
 		"language" => $mybb->input['language'],
 		"showcodebuttons" => $mybb->input['showcodebuttons'],
-		"pmnotify" => $mybb->input['pmnotify'],
+		"pmnotify" => $mybb->input['pmnotify']
 		);
 
 	if($mybb->settings['usertppoptions'])
@@ -867,7 +867,14 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 		// Unset the old one
 		myunsetcookie("mybbuser");
 		// Set the new one
-		mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
+		if($mybb->input['remember'] == "yes")
+		{
+			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
+		}
+		else 
+		{
+			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], -1);
+		}
 	}
 
 	$plugins->run_hooks("usercp_do_options_end");

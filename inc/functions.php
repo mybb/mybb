@@ -790,7 +790,7 @@ function mysetcookie($name, $value="", $expires="")
 	{
 		if($mybb->user['remember'] == "no")
 		{
-			$expires = NULL;
+			$expires = 0;
 		}
 		else
 		{
