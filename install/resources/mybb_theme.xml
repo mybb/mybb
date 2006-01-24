@@ -4751,7 +4751,7 @@ $message[message]
 <td class="$bgclass">$reputation[comments]</td>
 </tr>]]></template>
 		<template name="moderation_threadnotes_modaction" version="100.07"><![CDATA[<tr>
-<td class="$trow" align="center"><a href="users.php?action=edit&amp;uid=$modaction[uid]">$modaction[username]</a></td>
+<td class="$trow" align="center"><a href="member.php?action=profile&amp;uid=$modaction[uid]">$modaction[username]</a></td>
 <td class="$trow" align="center">$modaction[dateline]</td>
 <td class="$trow" align="center">$modaction[action]</td>
 <td class="$trow">$info</td>

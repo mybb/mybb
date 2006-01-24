@@ -298,9 +298,10 @@ switch(strtolower($mybb->input['order']))
 		$ordersel['desc'] = "selected=\"selected\"";
         $oppsort = $lang->asc;
 		$oppsortnext = "asc";
+		break;
 }
 
-/* Sort by what field? */
+/* Sort by which field? */
 switch($mybb->input['sortby'])
 {
 	case "subject":

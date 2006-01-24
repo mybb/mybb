@@ -716,22 +716,32 @@ switch($mybb->input['action'])
 		}
 		$thread['notes'] = htmlspecialchars_uni($parser->parse_badwords($thread['notes']));
 		$trow = "trow1";
-		$query = $db->query("SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid) WHERE t.tid='$tid' ORDER BY l.dateline DESC LIMIT  0, 20");
+		$query = $db->query("
+			SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
+			FROM ".TABLE_PREFIX."moderatorlog l
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
+			WHERE t.tid='$tid'
+			ORDER BY l.dateline DESC
+			LIMIT  0, 20
+		");
 		while($modaction = $db->fetch_array($query))
 		{
 			$modaction['dateline'] = mydate("jS M Y, G:i", $modaction['dateline']);
 			$info = "";
 			if($modaction['tsubject'])
 			{
-				$info .= "<b>$lang->thread</b> <a href=\"showthread.php?tid=$modaction[tid]\" target=\"_blank\">$modaction[tsubject]</a><br>";
+				$info .= "<strong>$lang->thread</strong> <a href=\"showthread.php?tid=".$modaction['tid']."\">".$modaction['tsubject']."</a><br />";
 			}
 			if($modaction['fname'])
 			{
-				$info .= "<b>$lang->forum</b> <a href=\"forumdisplay.php?fid=$modaction[fid]\" target=\"_blank\">$modaction[fname]</a><br>";
+				$info .= "<strong>$lang->forum</strong> <a href=\"forumdisplay.php?fid=".$modaction['fid']."\">".$modaction['fname']."</a><br />";
 			}
 			if($modaction['psubject'])
 			{
-				$info .= "<b>$lang->post</b> <a href=\"showthread.php?tid=$modaction[tid]&pid=$modaction[pid]#pid$modaction[pid]\">$modaction[psubject]</a>";
+				$info .= "<strong>$lang->post</strong> <a href=\"showthread.php?tid=".$modaction['tid']."&pid=".$modaction['pid']."#pid".$modaction['pid']."\">".$modaction['psubject']."</a>";
 			}
 	
 			eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
