@@ -165,7 +165,7 @@ class Syndication
 			FROM ".TABLE_PREFIX."threads t 
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) 
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost) 
-			WHERE 1=1 $this->forumlist
+			WHERE 1=1 AND p.visible=1 $this->forumlist
 			ORDER BY t.dateline DESC 
 			LIMIT 0, ".$this->limit
 		);
