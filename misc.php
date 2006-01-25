@@ -445,7 +445,7 @@ elseif($mybb->input['action'] == "syndication")
 				}
 			}
 		}
-		$url = $mybb->settings['bburl']."/rss.php";
+		$url = $mybb->settings['bburl']."/syndication.php";
 		if(!$all)
 		{
 			$url .= "?fid=$syndicate";
