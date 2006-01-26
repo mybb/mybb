@@ -1108,13 +1108,21 @@ elseif($mybb->input['action'] == "profile")
 	{
 		if($mybb->input['tid'])
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='".intval($mybb->input['tid'])."' ORDER BY dateline DESC LIMIT 0, 1");
+			$query = $db->query("
+				SELECT uid FROM ".TABLE_PREFIX."posts
+				WHERE tid='".intval($mybb->input['tid'])."'
+				AND visible = 1
+				ORDER BY dateline DESC LIMIT 0, 1
+			");
 			$post = $db->fetch_array($query);
 			$uid = $post['uid'];
 		}
 		elseif($mybb->input['fid'])
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0");
+			$query = $db->query("
+				SELECT fid FROM ".TABLE_PREFIX."forums
+				WHERE INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0
+			");
 			while($forum = $db->fetch_array($query))
 			{
 				if($forum['fid'] == $mybb->input['fid'])
@@ -1123,10 +1131,21 @@ elseif($mybb->input['action'] == "profile")
 				}
 				$flist .= ",".$forum['fid'];
 			}
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE fid IN (0$flist) ORDER BY lastpost DESC LIMIT 0, 1");
+			$query = $db->query("
+				SELECT tid FROM ".TABLE_PREFIX."threads
+				WHERE fid IN (0$flist)
+				AND visible = 1
+				ORDER BY lastpost DESC
+				LIMIT 0, 1
+			");
 			$thread = $db->fetch_array($query);
 			$tid = $thread['tid'];
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline DESC LIMIT 0, 1");
+			$query = $db->query("
+				SELECT uid FROM ".TABLE_PREFIX."posts
+				WHERE tid='$tid'
+				ORDER BY dateline DESC
+				LIMIT 0, 1
+			");
 			$post = $db->fetch_array($query);
 			$uid = $post['uid'];
 		}
