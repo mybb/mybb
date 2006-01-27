@@ -70,7 +70,7 @@ class timer {
 	/**
 	 * Gets the time for which the timer has run up until this point.
 	 *
-	 * @return unknown
+	 * @return string|boolean The formatted time up until now or false when timer is no longer running.
 	 */
 	function gettime()
 	{
@@ -94,7 +94,7 @@ class timer {
 	/**
 	 * Stops the timer.
 	 *
-	 * @return unknown
+	 * @return string The formatted total time.
 	 */
 	function stop()
 	{

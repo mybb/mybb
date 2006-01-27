@@ -93,7 +93,7 @@ class MyBB {
 		// Set up MyBB
 
 		// Determine Magic Quotes Status
-		if (get_magic_quotes_gpc())
+		if(get_magic_quotes_gpc())
 		{
 			$this->magicquotes = 1;
 			$this->strip_slashes_array($_POST);

@@ -9,11 +9,34 @@
  * $Id$
  */
 
-class templates {
+class templates
+{
+	/**
+	 * The total number of templates.
+	 *
+	 * @var int
+	 */
 	var $total = 0;
+	
+	/**
+	 * The template cache.
+	 *
+	 * @var array
+	 */
 	var $cache = array();
+	
+	/**
+	 * The current template list.
+	 *
+	 * @var string
+	 */
 	var $templatelist = "";
 
+	/**
+	 * Cache the templates.
+	 *
+	 * @param string A list of templates to cache.
+	 */
 	function cache($templates)
 	{
 		global $db, $extras, $theme;
@@ -37,6 +60,14 @@ class templates {
 		}
 	}
 
+	/**
+	 * Gets templates.
+	 *
+	 * @param string The title of the template to get.
+	 * @param boolean True if template contents must be escaped, false if not.
+	 * @param boolean True to output HTML comments, false to not output.
+	 * @return string The template HTML.
+	 */
 	function get($title, $eslashes=1, $htmlcomments=1)
 	{
 		global $db, $theme, $PHP_SELF;

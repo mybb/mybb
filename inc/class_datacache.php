@@ -11,8 +11,17 @@
 
 class datacache
 {
+	/**
+	 * Cache contents.
+	 *
+	 * @var array
+	 */
 	var $cache = array();
 
+	/**
+	 * Build cache data.
+	 *
+	 */
 	function cache()
 	{
 		global $db, $mybb;
@@ -38,7 +47,14 @@ class datacache
 		}
 	}
 
-	function read($name, $hard="")
+	/**
+	 * Read cache from files or db.
+	 *
+	 * @param string The cache component to read.
+	 * @param boolean If true, cannot be overwritten during script execution.
+	 * @return unknown
+	 */
+	function read($name, $hard=false)
 	{
 		global $db, $test, $mybb;
 		if($mybb->config['cachestore'] == "files")
@@ -66,6 +82,12 @@ class datacache
 		return $this->cache[$name];
 	}
 
+	/**
+	 * Update cache contents.
+	 *
+	 * @param string The cache content identifier.
+	 * @param string The cache content.
+	 */
 	function update($name, $contents)
 	{
 		global $db, $mybb;
@@ -90,16 +112,27 @@ class datacache
 		}
 	}
 
+	/**
+	 * Update the MyBB version in the cache.
+	 *
+	 */
 	function updateversion()
 	{
 		global $db, $mybboard;
 		$this->update("version", $mybboard);
 	}
 
+	/**
+	 * Update the attachment type cache.
+	 *
+	 */
 	function updateattachtypes()
 	{
 		global $db;
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes");
+		$query = $db->query("
+			SELECT atid, name, mimetype, extension, maxsize, icon
+			FROM ".TABLE_PREFIX."attachtypes
+		");
 		while($type = $db->fetch_array($query))
 		{
 			$type['extension'] = strtolower($type['extension']);
@@ -108,10 +141,17 @@ class datacache
 		$this->update("attachtypes", $types);
 	}
 
+	/**
+	 * Update the smilies cache.
+	 *
+	 */
 	function updatesmilies()
 	{
 		global $db;
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies");
+		$query = $db->query("
+			SELECT sid, name, find, image, disporder, showclickable
+			FROM ".TABLE_PREFIX."smilies
+		");
 		while($smilie = $db->fetch_array($query))
 		{
 			$smilies[$smilie['sid']] = $smilie;
@@ -119,10 +159,17 @@ class datacache
 		$this->update("smilies", $smilies);
 	}
 
+	/**
+	 * Update the posticon cache.
+	 *
+	 */
 	function updateposticons()
 	{
 		global $db;
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons");
+		$query = $db->query("
+			SELECT iid, name, path
+			FROM ".TABLE_PREFIX."icons
+		");
 		while($icon = $db->fetch_array($query))
 		{
 			$icons[$icon['iid']] = $icon;
@@ -130,20 +177,34 @@ class datacache
 		$this->update("posticons", $icons);
 	}
 
+	/**
+	 * Update the badwords cache.
+	 *
+	 */
 	function updatebadwords()
 	{
 		global $db;
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."badwords");
+		$query = $db->query("
+			SELECT bid, badword, replacement
+			FROM ".TABLE_PREFIX."badwords
+		");
 		while($badword = $db->fetch_array($query)) {
 			$badwords[$badword['bid']] = $badword;
 		}
 		$this->update("badwords", $badwords);
 	}
 
+	/**
+	 * Update the usergroups cache.
+	 *
+	 */
 	function updateusergroups()
 	{
 		global $db;
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."usergroups
+		");
 		while($g = $db->fetch_array($query))
 		{
 			$gs[$g['gid']] = $g;
@@ -151,12 +212,20 @@ class datacache
 		$this->update("usergroups", $gs);
 	}
 
+	/**
+	 * Update the forum permissions cache.
+	 *
+	 * @return false When failed, returns false.
+	 */
 	function updateforumpermissions()
 	{
 		global $forumcache, $fcache, $db, $usergroupcache, $fperms, $fpermfields, $forumpermissions;
 
 		// Get usergroups
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."usergroups
+		");
 		while($usergroup = $db->fetch_array($query))
 		{
 			$gid = $usergroup['gid'];
@@ -188,7 +257,10 @@ class datacache
 		ksort($fcache);
 	
 		// Fetch forum permissions
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."forumpermissions
+		");
 		while($fperm = $db->fetch_array($query))
 		{
 			$fperms[$fperm['fid']][$fperm['gid']] = $fperm;
@@ -197,6 +269,12 @@ class datacache
 		$this->update("forumpermissions", $forumpermissions);
 	}
 
+	/**
+	 * Build the forumpermissions cache.
+	 *
+	 * @param array An optional permissions array.
+	 * @param int An optional permission id.
+	 */
 	function buildforumpermissions($permissions="", $pid=0)
 	{
 		global $fcache, $usergroupcache, $fperms, $forumpermissions;
@@ -225,14 +303,31 @@ class datacache
 		}
 	}
 
+	/**
+	 * Update the stats cache.
+	 *
+	 */
 	function updatestats()
 	{
 		global $db;
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE visible='1'");
+		
+		$query = $db->query("
+			SELECT tid
+			FROM ".TABLE_PREFIX."threads
+			WHERE visible='1'
+		");
 		$stats['numthreads'] = $db->num_rows($query);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE visible='1'");
+		$query = $db->query("
+			SELECT pid
+			FROM ".TABLE_PREFIX."posts
+			WHERE visible='1'
+		");
 		$stats['numposts'] = $db->num_rows($query);
-		$query = $db->query("SELECT uid, username FROM ".TABLE_PREFIX."users ORDER BY uid DESC");
+		$query = $db->query("
+			SELECT uid, username
+			FROM ".TABLE_PREFIX."users
+			ORDER BY uid DESC
+		");
 		$stats['numusers'] = $db->num_rows($query);
 		$lastmember = $db->fetch_array($query);
 		$stats['lastuid'] = $lastmember['uid'];
@@ -240,10 +335,17 @@ class datacache
 		$this->update("stats", $stats);
 	}
 
+	/**
+	 * Update the moderators cache.
+	 *
+	 */
 	function updatemoderators()
 	{
 		global $db;
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators");
+		$query = $db->query("
+			SELECT mid, fid, uid, caneditposts, candeleteposts, canviewips, canopenclosethreads, canmanagethreads
+			FROM ".TABLE_PREFIX."moderators
+		");
 		while($mod = $db->fetch_array($query))
 		{
 			$mods[$mod['fid']][$mod['uid']] = $mod;
@@ -251,12 +353,19 @@ class datacache
 		$this->update("moderators", $mods);
 	}
 
-
+	/**
+	 * Update the forums cache.
+	 *
+	 */
 	function updateforums()
 	{
 		global $db;
 		$exclude = array("threads", "posts", "lastpost", "lastposter", "lastposttid");
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums  ORDER BY pid, disporder");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."forums
+			ORDER BY pid, disporder
+		");
 		while($forum = $db->fetch_array($query))
 		{
 			foreach($forum as $key => $val)
@@ -271,10 +380,18 @@ class datacache
 		$this->update("forums", $forums);
 	}
 
+	/**
+	 * Update usertitles cache.
+	 *
+	 */
 	function updateusertitles()
 	{
 		global $db;
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles ORDER BY posts DESC");
+		$query = $db->query("
+			SELECT utid, posts, title, stars, starimage
+			FROM ".TABLE_PREFIX."usertitles
+			ORDER BY posts DESC
+		");
 		while($usertitle = $db->fetch_array($query))
 		{
 			$usertitles[] = $usertitle;
@@ -282,14 +399,29 @@ class datacache
 		$this->update("usertitles", $usertitles);
 	}
 
+	/**
+	 * Update reported posts cache.
+	 *
+	 */
 	function updatereportedposts()
 	{
 		global $db;
-		$query = $db->query("SELECT COUNT(rid) AS unreadcount FROM ".TABLE_PREFIX."reportedposts WHERE reportstatus='0'");
+		$query = $db->query("
+			SELECT COUNT(rid) AS unreadcount
+			FROM ".TABLE_PREFIX."reportedposts WHERE reportstatus='0'
+		");
 		$num = $db->fetch_array($query);
-		$query = $db->query("SELECT COUNT(rid) AS reportcount FROM ".TABLE_PREFIX."reportedposts");
+		$query = $db->query("
+			SELECT COUNT(rid) AS reportcount
+			FROM ".TABLE_PREFIX."reportedposts
+		");
 		$total = $db->fetch_array($query);
-		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."reportedposts WHERE reportstatus='0' ORDER BY dateline DESC");
+		$query = $db->query("
+			SELECT dateline
+			FROM ".TABLE_PREFIX."reportedposts
+			WHERE reportstatus='0'
+			ORDER BY dateline DESC
+		");
 		$latest = $db->fetch_array($query);
 		$reports['unread'] = $num['unreadcount'];
 		$reports['total'] = $total['reportcount'];
@@ -297,10 +429,18 @@ class datacache
 		$this->update("reportedposts", $reports);
 	}
 
+	/**
+	 * Update mycodes cache.
+	 *
+	 */
 	function updatemycodes()
 	{
 		global $db;
-		$query = $db->query("SELECT regex, replacement FROM mybb_mycodes WHERE active='yes'");
+		$query = $db->query("
+			SELECT regex, replacement
+			FROM ".TABLE_PREFIX."mycodes
+			WHERE active='yes'
+		");
 		while($mycode = $db->fetch_array($query))
 		{
 			$mycodes[] = $mycode;
