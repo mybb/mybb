@@ -1666,8 +1666,9 @@ function debugpage() {
  * Outputs the correct page headers.
  *
  */
-function pageheaders() {
-	global $settings;
+function pageheaders()
+{
+	global $mybb;
 	if($mybb->settings['nocacheheaders'] == "yes" && $mybb->settings['standardheaders'] != "yes")
 	{
 		header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");

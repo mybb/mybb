@@ -1120,7 +1120,8 @@ elseif($mybb->input['action'] == "profile")
 		elseif($mybb->input['fid'])
 		{
 			$query = $db->query("
-				SELECT fid FROM ".TABLE_PREFIX."forums
+				SELECT fid
+				FROM ".TABLE_PREFIX."forums
 				WHERE INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0
 			");
 			while($forum = $db->fetch_array($query))
@@ -1143,6 +1144,7 @@ elseif($mybb->input['action'] == "profile")
 			$query = $db->query("
 				SELECT uid FROM ".TABLE_PREFIX."posts
 				WHERE tid='$tid'
+				AND visible = 1
 				ORDER BY dateline DESC
 				LIMIT 0, 1
 			");
@@ -1162,7 +1164,11 @@ elseif($mybb->input['action'] == "profile")
 		}
 	}
 
-	$query = $db->query("SELECT u.* FROM ".TABLE_PREFIX."users u WHERE u.uid='$uid'");
+	$query = $db->query("
+		SELECT u.*
+		FROM ".TABLE_PREFIX."users u
+		WHERE u.uid='$uid'
+	");
 	$memprofile = $db->fetch_array($query);
 
 	if(!$memprofile['uid'])
