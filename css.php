@@ -17,11 +17,19 @@ $theme = intval($mybb->input['theme']);
 
 if($theme)
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='$theme'");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."themes
+		WHERE tid='$theme'
+	");
 }
 else
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE def='1'");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."themes
+		WHERE def='1'
+	");
 }
 $theme = $db->fetch_array($query);
 

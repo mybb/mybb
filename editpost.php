@@ -21,7 +21,11 @@ $lang->load("editpost");
 
 $pid = intval($mybb->input['pid']);
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
+$query = $db->query("
+	SELECT *
+	FROM ".TABLE_PREFIX."posts
+	WHERE pid='$pid'
+");
 $post = $db->fetch_array($query);
 
 if(!$post['pid'])
@@ -30,7 +34,11 @@ if(!$post['pid'])
 }
 
 $tid = $post['tid'];
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
+$query = $db->query("
+	SELECT *
+	FROM ".TABLE_PREFIX."threads
+	WHERE tid='$tid'
+");
 $thread = $db->fetch_array($query);
 
 if(!$thread['tid'])
@@ -49,7 +57,11 @@ addnav($lang->nav_editpost);
 
 $forumpermissions = forum_permissions($fid);
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
+$query = $db->query("
+	SELECT *
+	FROM ".TABLE_PREFIX."forums
+	WHERE fid='$fid'
+");
 $forum = $db->fetch_array($query);
 
 if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user[showcodebuttons] != 0)
@@ -160,7 +172,13 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 	if($mybb->input['delete'] == "yes")
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."posts
+			WHERE tid='$tid'
+			ORDER BY dateline ASC
+			LIMIT 0,1
+		");
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $pid)
 		{
@@ -203,7 +221,12 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				{
 					logmod($modlogdata, "Deleted Post");
 				}
-				$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND dateline <= '$post[dateline]' ORDER BY dateline DESC LIMIT 0, 1");
+				$query = $db->query("
+					SELECT * FROM ".TABLE_PREFIX."posts
+					WHERE tid='$tid' AND dateline <= '$post[dateline]'
+					ORDER BY dateline DESC
+					LIMIT 0, 1
+				");
 				$p = $db->fetch_array($query);
 				if($p['pid']) {
 					$redir = "showthread.php?tid=$tid&pid=$p[pid]#pid$p[pid]";
@@ -228,7 +251,13 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 
 	$plugins->run_hooks("editpost_do_editpost_start");
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."posts
+		WHERE tid='$tid'
+		ORDER BY dateline ASC
+		LIMIT 0,1
+	");
 	$firstcheck = $db->fetch_array($query);
 	if($firstcheck['pid'] == $pid)
 	{
@@ -258,7 +287,10 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 		error($lang->error_messagelength);
 	}
 
-	$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE filename='' AND filesize < 1");
+	$db->query("
+		DELETE FROM ".TABLE_PREFIX."attachments
+		WHERE filename='' AND filesize < 1
+	");
 
 	if(!$mybb->input['icon'] || $mybb->input['icon'] == -1)
 	{
@@ -293,7 +325,11 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 
 	// Start Auto Subscribe
 	if($postoptions['emailnotify'] != "no") {
-		$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."favorites WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'");
+		$query = $db->query("
+			SELECT uid
+			FROM ".TABLE_PREFIX."favorites
+			WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'
+		");
 		$subcheck = $db->fetch_array($query);
 		if(!$subcheck['uid']) {
 			$subscriptionarray = array(
@@ -304,7 +340,10 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 			$db->insert_query(TABLE_PREFIX."favorites", $subscriptionarray);
 		}
 	} else {
-		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE type='s' AND uid='".$mybb->user[uid]."' AND tid='$tid'");
+		$db->query("
+			DELETE FROM ".TABLE_PREFIX."favorites
+			WHERE type='s' AND uid='".$mybb->user[uid]."' AND tid='$tid'
+		");
 	}
 
 	if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
@@ -369,7 +408,11 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 	$bgcolor = "trow2";
 	if($forumpermissions['canpostattachments'] != "no") { // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE posthash='$posthash' OR pid='$pid'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."attachments
+			WHERE posthash='$posthash' OR pid='$pid'
+		");
 		while($attachment = $db->fetch_array($query)) {
 			$attachment['size'] = getfriendlysize($attachment['filesize']);
 			$attachment['icon'] = getattachicon(getextention($attachment['filename']));
@@ -411,7 +454,13 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 		$subject = $mybb->input['subject'];
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."posts
+		WHERE tid='$tid'
+		ORDER BY dateline ASC
+		LIMIT 0,1
+	");
 	$firstcheck = $db->fetch_array($query);
 	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != "no" && $thread['poll'] < 1) {
 		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
@@ -445,7 +494,11 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 		}
 
 		if($username && !$mybb->user['uid']) {
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='$username'");
+			$query = $db->query("
+				SELECT *
+				FROM ".TABLE_PREFIX."users
+				WHERE username='$username'
+			");
 			$user = $db->fetch_array($query);
 			if($user['password'] == md5($password) && $user['username']) {
 				$mybb->user['username'] = $user['username'];
@@ -453,7 +506,13 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 			}
 		}
 
-		$query = $db->query("SELECT u.*, f.*, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='$icon') WHERE u.uid='".$mybb->user[uid]."'");
+		$query = $db->query("
+			SELECT u.*, f.*, i.path as iconpath, i.name as iconname
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='$icon')
+			WHERE u.uid='".$mybb->user[uid]."'
+		");
 		$postinfo = $db->fetch_array($query);
 
 		if(!$mybb->user['uid'] || !$postinfo['username']) {
@@ -489,7 +548,11 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 		{
 			$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."favorites
+			WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'
+		");
 		$subcheck = $db->fetch_array($query);
 		if($subcheck['tid']) {
 			$postoptionschecked['emailnotify'] = "checked";
