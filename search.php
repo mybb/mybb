@@ -670,7 +670,15 @@ elseif($mybb->input['action'] == "do_search")
 	$plugins->run_hooks("search_do_search_process");
 	$sid = $db->insert_id();
 	$plugins->run_hooks("search_do_search_end");
-	redirect("search.php?action=results&sid=$sid&sortby=".$mybb->input['sortby']."&order=".$mybb->input['sortordr'], $lang->redirect_searchresults);
+	if(strtolower($mybb->input['sortordr']) == "asc" || strtolower($mybb->input['sortordr'] == "desc"))
+	{
+		$sortorder = $mybb->input['sortordr'];
+	}
+	else
+	{
+		$sortorder = "desc";
+	}
+	redirect("search.php?action=results&sid=$sid&sortby=".$mybb->input['sortby']."&order=".$sortorder, $lang->redirect_searchresults);
 }
 else
 {

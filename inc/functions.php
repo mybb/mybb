@@ -771,7 +771,7 @@ function getposticons()
 /**
  * MyBB setcookie() wrapper.
  *
- * @param string The cookie name.
+ * @param string The cookie identifier.
  * @param string The cookie value.
  * @param int The timestamp of the expiry date.
  */
@@ -807,6 +807,11 @@ function mysetcookie($name, $value="", $expires="")
 	}
 }
 
+/**
+ * Unset a cookie set by MyBB.
+ *
+ * @param string The cookie identifier.
+ */
 function myunsetcookie($name)
 {
 	global $mybb;
@@ -826,13 +831,16 @@ function myunsetcookie($name)
 	}
 }
 
+/**
+ * Get the contents from a serialised cookie array.
+ *
+ * @param string The cookie identifier.
+ * @param int The cookie content id.
+ * @return array|boolean The cookie id's content array or false when non-existent.
+ */
 function mygetarraycookie($name, $id)
 {
-	// Many minutes were used to perfect this function
-	// With the wonderful debugging help of Matt Light
-	global $_COOKIE, $test;
-	$my = $_COOKIE['mybb'];
-	$cookie = unserialize($my[$name]);
+	$cookie = unserialize($_COOKIE['mybb'][$name]);
 	if($cookie[$id])
 	{
 		return $cookie[$id];
@@ -843,10 +851,17 @@ function mygetarraycookie($name, $id)
 	}
 }
 
-function mysetarraycookie($name, $id, $value) {
-	global $_COOKIE;
-	$my = $_COOKIE['mybb'];
-	$newcookie = unserialize($my[$name]);
+/**
+ * Set a serialised cookie array.
+ *
+ * @param string The cookie identifier.
+ * @param int The cookie content id.
+ * @param string The value to set the cookie to.
+ */
+function mysetarraycookie($name, $id, $value)
+{
+	$cookie = $_COOKIE['mybb'];
+	$newcookie = unserialize($cookie[$name]);
 	$newcookie[$id] = $value;
 	$newcookie = addslashes(serialize($newcookie));
 	mysetcookie("mybb[$name]", $newcookie);
