@@ -153,7 +153,7 @@ if($templatelist)
 $templatelist .= "css,headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin";
 $templatelist .= ",header_toplinks_weblogs,header_toplinks_gallery,header_toplinks_shoutbox,header_toplinks_arcade";
 $templatelist .= ",nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active";
-$templates->cache($templatelist);
+$templates->cache(addslashes($templatelist));
 
 $datenow = mydate($mybb->settings['dateformat'], time(), '', false);
 $timenow = mydate($mybb->settings['timeformat'], time());

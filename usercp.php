@@ -1529,6 +1529,7 @@ elseif($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 elseif($mybb->input['action'] == "notepad")
 {
 	$plugins->run_hooks("usercp_notepad_start");
+	$mybbuser['notepad'] = htmlspecialchars_uni($mybbuser['notepad']);
 	eval("\$notepad = \"".$templates->get("usercp_notepad")."\";");
 	$plugins->run_hooks("usercp_notepad_end");
 	outputpage($notepad);

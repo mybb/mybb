@@ -522,7 +522,7 @@ elseif($mybb->input['action'] == "do_search")
 	}
 	else
 	{
-		$op = "";
+		$op = "AND";
 	}
 	if($mybb->input['keywords']) {
 		$wheresql = "(1=0 ";
@@ -678,7 +678,8 @@ elseif($mybb->input['action'] == "do_search")
 	{
 		$sortorder = "desc";
 	}
-	redirect("search.php?action=results&sid=$sid&sortby=".$mybb->input['sortby']."&order=".$sortorder, $lang->redirect_searchresults);
+	$sortby = htmlspecialchars($mybb->input['sortby']);
+	redirect("search.php?action=results&sid=$sid&sortby=".$sortby."&order=".$sortorder, $lang->redirect_searchresults);
 }
 else
 {
