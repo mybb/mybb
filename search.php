@@ -522,7 +522,7 @@ elseif($mybb->input['action'] == "do_search")
 	}
 	else
 	{
-		$op = "AND";
+		$op = "";
 	}
 	if($mybb->input['keywords']) {
 		$wheresql = "(1=0 ";
