@@ -1180,7 +1180,11 @@ elseif($mybb->input['action'] == "profile")
 
 	$lang->users_forum_info = sprintf($lang->users_forum_info, $memprofile['username']);
 	$lang->users_contact_details = sprintf($lang->users_contact_details, $memprofile['username']);
-	$lang->send_pm = sprintf($lang->send_pm, $memprofile['username']);
+	
+	if($mybb->settings['enablepms'] != "no")
+	{
+		$lang->send_pm = sprintf($lang->send_pm, $memprofile['username']);
+	}
 	$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
 	$lang->users_additional_info = sprintf($lang->users_additional_info, $memprofile['username']);
 	$lang->send_user_email = sprintf($lang->send_user_email, $memprofile['username']);

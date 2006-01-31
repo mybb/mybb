@@ -399,7 +399,10 @@ function usercp_menu()
 	//
 	// Add the default items as plugins with separated priorities of 10
 	//
-	$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
+	if($mybb->settings['enablepms'] != "no")
+	{
+		$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
+	}
 	$plugins->add_hook("usercp_menu", "usercp_menu_profile", 20);
 	$plugins->add_hook("usercp_menu", "usercp_menu_misc", 30);
 

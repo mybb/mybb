@@ -135,7 +135,7 @@ class session
 
 		$this->uid = $mybb->user['uid'];
 		// Sort out the private message count for this user
-		if($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1 || $mybb->user['newpms'] == -1) // Forced recount
+		if(($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1 || $mybb->user['newpms'] == -1) && $mybb->settings['enablepms'] != "no") // Forced recount
 		{
 			$update = 0;
 			if($mybb->user['totalpms'] == -1) $update += 1;
@@ -156,7 +156,7 @@ class session
 		//
 		// Check if this user has a new private message
 		//
-		if($mybb->user['pmpopup'] == "new")
+		if($mybb->user['pmpopup'] == "new" && $mybb->settings['enablepms'] != "no")
 		{
 			$popupadd = ", pmpopup='yes'";
 			$loadpmpopup = 1;

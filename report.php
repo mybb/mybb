@@ -76,7 +76,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			$emailsubject = sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_reportpost, $mod['username'], $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], $thread['tid'], $pid, $thread['subject'], $mybb->input['reason']);
 			
-			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != "no")
+			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != "no" && $mybb->settings['enablepms'] != "no")
 			{
 				$reportpm = array(
 					"uid" => $mod['uid'],

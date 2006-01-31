@@ -6,6 +6,8 @@ $l['nav_folders'] = "Folder Management";
 $l['nav_empty'] = "Empty Folders";
 $l['nav_export'] = "Export Messages";
 
+$l['pms_disabled'] = "You cannot use the private messaging functionality as it has been disabled by the Administrator.";
+
 $l['private_messaging'] = "Private Messaging";
 $l['inbox'] = "Inbox";
 $l['folder1'] = "Inbox";

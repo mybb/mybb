@@ -26,6 +26,11 @@ $event_parser_options = array(
 // Load global language phrases
 $lang->load("calendar");
 
+if($mybb->settings['enablecalendar'] == "no")
+{
+	error($lang->calendar_disabled);
+}
+
 if($mybb->usergroup['canviewcalendar'] == "no")
 {
 	nopermission();

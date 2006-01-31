@@ -15,6 +15,11 @@ require "./global.php";
 // Load global language phrases
 $lang->load("memberlist");
 
+if($mybb->settings['enablememberlist'] == "no")
+{
+	error($lang->memberlist_disabled);
+}
+
 $plugins->run_hooks("memberlist_start");
 
 addnav($lang->nav_memberlist);

@@ -59,7 +59,7 @@ while(list($gid, $usergroup) = each($teams))
 			{
 				$emailcode = "";
 			}
-			if($user['receivepms'] != "no")
+			if($user['receivepms'] != "no" && $mybb->settings['enablepms'] != "no")
 			{
 				eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
 			}

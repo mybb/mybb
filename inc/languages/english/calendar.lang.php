@@ -6,6 +6,8 @@ $l['nav_dayview'] = "Day View";
 $l['nav_addevent'] = "Add Event";
 $l['nav_editevent'] = "Edit Event";
 
+$l['calendar_disabled'] = "You cannot use the calendar functionality as it has been disabled by the Administrator.";
+
 // In some languages these months need to be slightly different than those defined in global.lang.php
 $l['alt_month_1'] = "January";
 $l['alt_month_2'] = "February";

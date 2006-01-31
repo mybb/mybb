@@ -242,7 +242,10 @@ function makepostbit($post, $pmprevann=0)
 		}
 		eval("\$post['button_profile'] = \"".$templates->get("postbit_profile")."\";");
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
-		eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
+		if($mybb->settings['enablepms'] != "no")
+		{
+			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
+		}
 		if($post['website'] != "")
 		{
 			$post['website'] = htmlspecialchars_uni($post['website']);

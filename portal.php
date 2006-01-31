@@ -80,7 +80,7 @@ if($mybb->settings['portal_showwelcome'] != "no")
 {
 	if($mybb->user['uid'] != 0)
 	{
-		if($mybb->user['receivepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->settings['portal_showpms'] != "no")
+		if($mybb->user['receivepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->settings['portal_showpms'] != "no" && $mybb->settings['enablepms'] != "no")
 		{
 			$query = $db->query("SELECT COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$mybb->user['uid']."'");
 			$messages = $db->fetch_array($query);

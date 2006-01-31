@@ -54,10 +54,18 @@
 		</setting>
 	</settinggroup>
 	<settinggroup name="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar." disporder="12" isdefault="yes">
+		<setting name="enablecalendar">
+			<title>Enable Calendar Functionality</title>
+			<description><![CDATA[If you wish to disable the calendar on your board, set this option to no.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[yes]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="publiceventcolor">
 			<title>Public Events Color</title>
 			<description><![CDATA[The color that public events will be shown in on the main calendar page.]]></description>
-			<disporder>1</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[green]]></settingvalue>
 			<helpkey></helpkey>
@@ -65,7 +73,7 @@
 		<setting name="privateeventcolor">
 			<title>Private Events Color</title>
 			<description><![CDATA[The color that private events will be shown in on the main calendar page.]]></description>
-			<disporder>2</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[red]]></settingvalue>
 			<helpkey></helpkey>
@@ -383,6 +391,14 @@ email=Sent via Email]]></optionscode>
 		</setting>
 	</settinggroup>
 	<settinggroup name="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="10" isdefault="yes">
+		<setting name="enablememberlist">
+			<title>Enable Member List Functionality</title>
+			<description><![CDATA[If you wish to disable the member list on your board, set this option to no.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[yes]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="membersperpage">
 			<title>Members Per Page</title>
 			<description><![CDATA[The number of members to show per page on the member list.]]></description>
@@ -600,10 +616,18 @@ show=Show to all Users]]></optionscode>
 		</setting>
 	</settinggroup>
 	<settinggroup name="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="11" isdefault="yes">
+		<setting name="enablepms">
+			<title>Enable Private Messaging Functionality</title>
+			<description><![CDATA[If you wish to disable the private messaging system on your board, set this option to no.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[yes]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="pmsallowhtml">
 			<title>Allow HTML</title>
 			<description><![CDATA[Selecting yes will allow HTML to be used in private messages.]]></description>
-			<disporder>1</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[no]]></settingvalue>
 			<helpkey></helpkey>
@@ -611,7 +635,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="pmsallowmycode">
 			<title>Allow myCode</title>
 			<description><![CDATA[Selecting yes will allow myCode to be used in private messages.]]></description>
-			<disporder>2</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -619,7 +643,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="pmsallowsmilies">
 			<title>Allow Smilies</title>
 			<description><![CDATA[Selecting yes will allow Smilies to be used in private messages.]]></description>
-			<disporder>3</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -627,7 +651,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="pmsallowimgcode">
 			<title>Allow [img] Code</title>
 			<description><![CDATA[Selecting yes will allow [img] Code to be used in private messages.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>

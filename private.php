@@ -19,6 +19,11 @@ require_once "./inc/functions_user.php";
 require_once "./inc/class_parser.php";
 $parser = new postParser;
 
+if($mybb->settings['enablepms'] == "no")
+{
+	error($lang->pms_disabled);
+}
+
 $autocomplete = "on";
 // Autocomplete for buddy list when composing PM's
 if($mybb->input['action'] == "getbuddies" && $mybb->user['uid'])
