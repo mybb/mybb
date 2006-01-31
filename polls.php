@@ -248,19 +248,6 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	$pid = $db->insert_id();
 
 	$db->query("UPDATE ".TABLE_PREFIX."threads SET poll='$pid' WHERE tid='".$thread['tid']."'");
-	updateforumcount($fid);
-
-	$now = time();
-	if($forum['usepostcounts'] != "no")
-	{
-		$queryadd = ",postnum=postnum+1";
-	}
-	else
-	{
-		$queryadd = "";
-	}
-	$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$thread['uid']."'");
-	$cache->updatestats();
 
 	$plugins->run_hooks("polls_do_newpoll_end");
 
