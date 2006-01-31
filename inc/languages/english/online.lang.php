@@ -91,4 +91,7 @@ $l['lookup'] = "[lookup]";
 $l['member_online_today'] = "<strong>1</strong> Member Was Online Today";
 $l['members_were_online_today'] = "<strong>{1}</strong> Members Were Online Today";
 $l['rating_thread'] = "Rating thread";
+$l['viewing_imcenter'] = "Viewing IM Center";
+$l['managing_favorites'] = "Managing Favorite Threads";
+$l['managing_subscriptions'] = "Managing Subscribed Threads";
 ?>

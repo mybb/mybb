@@ -411,6 +411,9 @@ function show($user)
 		case "misc_syndication":
 			$locationname = $lang->viewing_syndication;
 			break;
+		case "misc_imcenter":
+			$locationname = $lang->viewing_imcenter;
+			break;
 		// moderation.php functions
 		case "moderation":
 			$locationname = $lang->using_modtools;
@@ -539,6 +542,12 @@ function show($user)
 		case "usercp":
 			$locationname = $lang->user_cp;
 			break;
+		case "usercp2_favorites":
+			$locationname = $lang->managing_favorites;
+			break;
+		case "usercp2_subscriptions":
+			$locationname = $lang->managing_subscriptions;
+			break;
 		case "portal":
 			$locationname = $lang->viewing_portal;
 			break;
@@ -638,11 +647,11 @@ function what($user)
 				$user['activity'] = "calendar_event";
 				$user['eid'] = $parameters['eid'];
 			}
-			elseif($parameters['action'] == "addevent")
+			elseif($parameters['action'] == "addevent" || $parameters['action'] == "do_addevent")
 			{
 				$user['activity'] = "calendar_addevent";
 			}
-			elseif($parameters['action'] == "editevent")
+			elseif($parameters['action'] == "editevent" || $parameters['action'] == "do_editevent")
 			{
 				$user['activity'] = "calendar_editevent";
 			}
@@ -675,7 +684,7 @@ function what($user)
 			{
 				$user['activity'] = "member_register";
 			}
-			elseif($parameters['action'] == "login")
+			elseif($parameters['action'] == "login" || $parameters['action'] == "do_login")
 			{
 				$user['activity'] = "member_login";
 			}
@@ -692,11 +701,11 @@ function what($user)
 				}
 				$user['uuid'] = $parameters['uid'];
 			}
-			elseif($parameters['action'] == "emailuser")
+			elseif($parameters['action'] == "emailuser" || $parameters['action'] == "do_emailuser")
 			{
 				$user['activity'] = "member_emailuser";
 			}
-			elseif($parameters['action'] == "rate")
+			elseif($parameters['action'] == "rate" || $parameters['action'] == "do_rate")
 			{
 				$user['activity'] = "member_rate";
 			}
@@ -746,6 +755,10 @@ function what($user)
 			{
 				$user['activity'] = "misc_syndication";
 			}
+			elseif($parameters['action'] == "imcenter")
+			{
+				$user['activity'] = "misc_imcenter";
+			}
 			else
 			{
 				$user['activity'] = "misc";
@@ -792,9 +805,6 @@ function what($user)
 		case "polls":
 			$user['activity'] = $parameters['action'];
 			break;
-		case "postings":
-			$user['activity'] = "postings";
-			break;
 		case "printthread":
 			if(is_numeric($parameters['tid']))
 			{
@@ -803,7 +813,7 @@ function what($user)
 			$user['activity'] = "printthread";
 			$user['tid'] = $parameters['tid'];
 		case "private":
-			if($parameters['action'] == "send")
+			if($parameters['action'] == "send" || $parameters['action'] == "do_send")
 			{
 				$user['activity'] = "private_send";
 			}
@@ -811,7 +821,7 @@ function what($user)
 			{
 				$user['activity'] = "private_read";
 			}
-			elseif($parameters['action'] == "folders")
+			elseif($parameters['action'] == "folders" || $parameters['action'] == "do_folders")
 			{
 				$user['activity'] = "private_folders";
 			}
@@ -867,27 +877,27 @@ function what($user)
 			$user['activity'] = "stats";
 			break;
 		case "usercp":
-			if($parameters['action'] == "profile")
+			if($parameters['action'] == "profile" || $parameters['action'] == "do_profile")
 			{
 				$user['activity'] = "usercp_profile";
 			}
-			elseif($parameters['action'] == "options")
+			elseif($parameters['action'] == "options" || $parameters['action'] == "do_options")
 			{
 				$user['activity'] = "usercp_options";
 			}
-			elseif($parameters['action'] == "password")
+			elseif($parameters['action'] == "password" || $parameters['action'] == "do_password")
 			{
 				$user['activity'] = "usercp_password";
 			}
-			elseif($parameters['action'] == "editsig")
+			elseif($parameters['action'] == "editsig" || $parameters['action'] == "do_editsig")
 			{
 				$user['activity'] = "usercp_editsig";
 			}
-			elseif($parameters['action'] == "avatar")
+			elseif($parameters['action'] == "avatar" || $parameters['action'] == "do_avatar")
 			{
 				$user['activity'] = "usercp_avatar";
 			}
-			elseif($parameters['action'] == "editlists")
+			elseif($parameters['action'] == "editlists" || $parameters['action'] == "do_editlists")
 			{
 				$user['activity'] = "usercp_editlists";
 			}
@@ -899,7 +909,7 @@ function what($user)
 			{
 				$user['activity'] = "usercp_subscriptions";
 			}
-			elseif($parameters['action'] == "notepad")
+			elseif($parameters['action'] == "notepad" || $parameters['action'] == "do_notepad")
 			{
 				$user['activity'] = "usercp_notepad";
 			}
@@ -908,7 +918,17 @@ function what($user)
 				$user['activity'] = "usercp";
 			}
 			break;
-		case "portal";
+		case "usercp2":
+			if($parameters['action'] == "addfavorite" || $parameters['action'] == "removefavorite" || $parameters['action'] == "removefavorites")
+			{
+				$user['activity'] = "usercp2_favorites";
+			}
+			elseif($parameters['action'] == "addsubscription" || $parameters['action'] == "removesubscription" || $parameters['action'] == "removesubscription")
+			{
+				$user['activity'] = "usercp2_subscriptions";
+			}
+			break;
+		case "portal":
 			$user['activity'] = "portal";
 			break;
 		case "nopermission":
