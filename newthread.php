@@ -225,8 +225,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		$previewmessage = $mybb->input['message'];
 		$post['message'] = $previewmessage;
-		$post['subject'] = $subject;
-		$post['icon'] = $icon;
+		$post['subject'] = $mybb->input['subject'];
+		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $postoptions['disablesmilies'];
 		$post['dateline'] = time();
 

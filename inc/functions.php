@@ -744,12 +744,12 @@ function ismod($fid="0", $action="", $uid="0")
  */
 function getposticons()
 {
-	global $db, $icon, $settings, $theme, $templates, $lang;
+	global $mybb, $db, $icon, $settings, $theme, $templates, $lang;
 	$listed = 0;
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons ORDER BY name DESC");
 	while($dbicon = $db->fetch_array($query))
 	{
-		if($icon == $dbicon['iid'])
+		if($mybb->input['icon'] == $dbicon['iid'])
 		{
 			$iconlist .= "<input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\">";
 		}
