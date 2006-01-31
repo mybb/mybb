@@ -43,7 +43,8 @@ $pid = $attachment['pid'];
 if(!$tid)
 {
 	$query = $db->query("
-		SELECT tid FROM ".TABLE_PREFIX."posts
+		SELECT tid
+		FROM ".TABLE_PREFIX."posts
 		WHERE pid='$pid'
 	");
 	$post = $db->fetch_array($query);
@@ -51,7 +52,8 @@ if(!$tid)
 }
 
 $query = $db->query("
-	SELECT * FROM ".TABLE_PREFIX."threads
+	SELECT *
+	FROM ".TABLE_PREFIX."threads
 	WHERE tid='$tid'
 ");
 $thread = $db->fetch_array($query);

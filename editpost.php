@@ -222,7 +222,8 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					logmod($modlogdata, "Deleted Post");
 				}
 				$query = $db->query("
-					SELECT * FROM ".TABLE_PREFIX."posts
+					SELECT *
+					FROM ".TABLE_PREFIX."posts
 					WHERE tid='$tid' AND dateline <= '$post[dateline]'
 					ORDER BY dateline DESC
 					LIMIT 0, 1
