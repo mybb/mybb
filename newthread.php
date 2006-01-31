@@ -668,6 +668,9 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		// Visible thread + poll
 		$url = "polls.php?action=newpoll&tid=$tid&polloptions=".intval($mybb->input['numpolloptions']);
 		$lang->redirect_newthread .= $lang->redirect_newthread_poll;
+		$cache->updatestats();
+		updatethreadcount($tid);
+		updateforumcount($fid);
 	}
 	elseif(!$visible)
 	{
