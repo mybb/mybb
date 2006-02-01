@@ -512,7 +512,16 @@ if($mybb->input['action'] == "thread")
 	}
 	if($mybb->settings['showsimilarthreads'] != "no")
 	{
-		$query = $db->query("SELECT subject, tid, lastpost, username, replies FROM ".TABLE_PREFIX."threads WHERE fid=".$thread['fid']." AND tid!=".$thread['tid']." AND visible='1' AND  MATCH (subject) AGAINST ('".addslashes($thread['subject'])."') >= ".$mybb->settings['similarityrating']." ORDER BY dateline DESC LIMIT 0, ".$mybb->settings['similarlimit']);
+		$query = $db->query("
+			SELECT subject, tid, lastpost, username, replies
+			FROM ".TABLE_PREFIX."threads
+			WHERE fid=".$thread['fid']."
+			AND tid!=".$thread['tid']."
+			AND visible='1'
+			AND  MATCH (subject) AGAINST ('".addslashes($thread['subject'])."') >= ".$mybb->settings['similarityrating']."
+			ORDER BY dateline DESC
+			LIMIT 0, ".$mybb->settings['similarlimit']
+		);
 		$count = 0;
 		while($similarthread = $db->fetch_array($query))
 		{
