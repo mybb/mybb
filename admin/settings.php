@@ -484,7 +484,9 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 		}
 		endtable();
 		endform($lang->submit_changes, $lang->reset_button);
-	} else { // Generate a listing of all of the setting groups
+	}
+	else
+	{ // Generate a listing of all of the setting groups
 		$hopto[] = "<input type=\"button\" value=\"$lang->add_new_setting\" onclick=\"hopto('settings.php?action=add');\" class=\"hoptobutton\">";
 		$hopto[] = "<input type=\"button\" value=\"$lang->manage_settings\" onclick=\"hopto('settings.php?action=modify');\" class=\"hoptobutton\">";
 		makehoptolinks($hopto);
@@ -495,18 +497,30 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 		echo "<td class=\"subheader\" align=\"center\">$lang->options</td>\n";
 		echo "</tr>\n";
 		$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) GROUP BY s.gid ORDER BY g.disporder");
-		while($group = $db->fetch_array($query)) {
+		while($group = $db->fetch_array($query))
+		{
+			if($group['settingcount'] != 1)
+			{
+				$settings_count = sprintf($lang->settings_count, $group['settingcount']);
+			}
+			else
+			{
+				$settings_count = $lang->setting_count;
+			}
 			$bgcolor = getaltbg();
 			startform("settings.php");
 			makehiddencode("gid", $group['gid']);
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\" width=\"88%\"><strong><a href=\"settings.php?action=change&gid=".$group['gid']."\">".$group['name']."</a></strong> (".$group['settingcount']." ".$lang->settings_count.")<br /><small>".$group['description']."</small>";
-			if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" || $group['isdefault'] != "yes") {
+			echo "<td class=\"$bgcolor\" width=\"88%\"><strong><a href=\"settings.php?action=change&gid=".$group['gid']."\">".$group['name']."</a></strong> (".$settings_count.")<br /><small>".$group['description']."</small>";
+			if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" || $group['isdefault'] != "yes")
+			{
 				$options['change'] = $lang->modify_settings;
 				$options['edit'] = $lang->edit_setting_group;
 				$options['add'] = $lang->add_setting;
 				$options['delete'] = $lang->delete_setting_group;
-			} else {
+			}
+			else
+			{
 				$options['change'] = $lang->modify_settings;
 			}
 			echo "<td class=\"$bgcolor\" align=\"right\" nowrap=\"nowrap\">".makehopper("action", $options)."</td>\n";
