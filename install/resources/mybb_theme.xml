@@ -5325,7 +5325,7 @@ $whoposted
 </body>
 </html>]]></template>
 		<template name="misc_whoposted_poster" version="100.07"><![CDATA[<tr>
-<td class="$altbg"><a href="member.php?action=profile&amp;uid=$poster[uid]">$poster[username]</a></td>
+<td class="$altbg"><a href="member.php?action=profile&amp;uid=$poster[uid]" target="_new">$poster[username]</a></td>
 <td class="$altbg">$poster[posts]</td>
 </tr>]]></template>
 		<template name="moderation_deleteposts_post" version="100.07"><![CDATA[<tr>
