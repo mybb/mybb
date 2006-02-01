@@ -292,14 +292,26 @@ if($mybb->input['action'] == "do_add")
 }
 if($mybb->input['action'] == "do_edit")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
+	/* Fetch user details */
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."users
+		WHERE uid='".intval($mybb->input['uid'])."'
+	");
 	$user = $db->fetch_array($query);
 
-	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['userusername'])."' AND username!='".addslashes($user['username'])."'");
+	/* Check if the name entered already exists. */
+	$query = $db->query("
+		SELECT username
+		FROM ".TABLE_PREFIX."users
+		WHERE username='".addslashes($mybb->input['userusername'])."'
+		AND username!='".addslashes($user['username'])."'
+	");
 	if($db->fetch_array($query))
 	{
 		cpmessage($lang->error_name_exists);
 	}
+	
 	if(!$mybb->input['email'])
 	{
 		cpmessage($lang->missing_fields);
@@ -317,7 +329,11 @@ if($mybb->input['action'] == "do_edit")
 	$querypart1 = "";
 	$querypart2 = "";
 	$comma = "";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."profilefields
+		ORDER BY disporder
+	");
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -346,8 +362,11 @@ if($mybb->input['action'] == "do_edit")
 		$options = addslashes($options);
 		$userfields[$field] = $options;
 	}
-	$userfields['ufid'] = $uid;
-	$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='".intval($mybb->input['uid'])."'");
+	$userfields['ufid'] = intval($mybb->input['uid']);
+	$db->query("
+		DELETE FROM ".TABLE_PREFIX."userfields
+		WHERE ufid='".intval($mybb->input['uid'])."'
+	");
 	$db->insert_query(TABLE_PREFIX."userfields", $userfields);
 
 	// Determine the usergroup stuff
@@ -381,7 +400,8 @@ if($mybb->input['action'] == "do_edit")
 		$mybb->input['birthday'] = $nbirthday[0]."-".$nbirthday[1]."-".$nbirthday[2];
 	}
 
-	$user = array(
+	/* Update users table. */
+	$user_new = array(
 		"username" => addslashes($mybb->input['userusername']),
 		"email" => addslashes($mybb->input['email']),
 		"usergroup" => intval($mybb->input['usergroup']),
@@ -406,14 +426,27 @@ if($mybb->input['action'] == "do_edit")
 		"pmnotify" => $mybb->input['pmnotify'],
 		"signature" => addslashes($mybb->input['signature']),
 		"postnum" => intval($mybb->input['postnum']),
-		);
-
-	$db->update_query(TABLE_PREFIX."users", $user, "uid='".intval($mybb->input['uid'])."'");
-
-	if($mybb->input['username'] != $user['username'])
+	);
+	$db->update_query(TABLE_PREFIX."users", $user_new, "uid='".intval($mybb->input['uid'])."'");
+	
+	/* Update posts and threads made by this user to new username. */
+	$username_update = array(
+		"username" => addslashes($mybb->input['userusername'])
+	);
+	if($mybb->input['userusername'] != $user['username'])
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET lastposter='".addslashes($mybb->input['userusername'])."' WHERE lastposter='".addslashes($user['username'])."'");
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".addslashes($mybb->input['userusername'])."' WHERE lastposter='".addslashes($user['username'])."'");
+		$db->update_query(TABLE_PREFIX."posts", $username_update, "uid='".intval($mybb->input['uid'])."'");
+		$db->update_query(TABLE_PREFIX."threads", $username_update, "uid='".intval($mybb->input['uid'])."'");
+	}
+	
+	/* Update last posts made by this user to new username, when needed. */
+	$lastposter_update = array(
+		"lastposter" => addslashes($mybb->input['userusername'])
+	);
+	if($mybb->input['userusername'] != $user['username'])
+	{
+		$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".addslashes($user['username'])."'");
+		$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".addslashes($user['username'])."'");
 	}
 
 	cpredirect("users.php?lastuid=$uid", $lang->profile_updated);
