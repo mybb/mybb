@@ -429,22 +429,18 @@ if($mybb->input['action'] == "do_edit")
 	);
 	$db->update_query(TABLE_PREFIX."users", $user_new, "uid='".intval($mybb->input['uid'])."'");
 	
-	/* Update posts and threads made by this user to new username. */
-	$username_update = array(
-		"username" => addslashes($mybb->input['userusername'])
-	);
+	/* Update posts and threads made by this user to new username and also update last poster values. */
 	if($mybb->input['userusername'] != $user['username'])
 	{
+		$username_update = array(
+			"username" => addslashes($mybb->input['userusername'])
+		);	
+		$lastposter_update = array(
+			"lastposter" => addslashes($mybb->input['userusername'])
+		);
+	
 		$db->update_query(TABLE_PREFIX."posts", $username_update, "uid='".intval($mybb->input['uid'])."'");
 		$db->update_query(TABLE_PREFIX."threads", $username_update, "uid='".intval($mybb->input['uid'])."'");
-	}
-	
-	/* Update last posts made by this user to new username, when needed. */
-	$lastposter_update = array(
-		"lastposter" => addslashes($mybb->input['userusername'])
-	);
-	if($mybb->input['userusername'] != $user['username'])
-	{
 		$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".addslashes($user['username'])."'");
 		$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".addslashes($user['username'])."'");
 	}
