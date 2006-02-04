@@ -214,25 +214,25 @@ if($mybb->input['action'] == "do_download")
 }
 if($mybb->input['action'] == "do_import")
 {
-	if($_FILES['compfile'])
+	if($_FILES['compfile']['error'] != 4)
 	{
 		if(!is_uploaded_file($_FILES['compfile']['tmp_name']))
 		{
-			cpmessage($lang->upload_failed);
+			cperror($lang->upload_failed);
 		}
 		$contents = @file_get_contents($_FILES['compfile']['tmp_name']);
 		@unlink($_FILES['compfile']['temp_name']);
 		if(!trim($contents))
 		{
-			cpmessage($lang->upload_failed);
+			cperror($lang->upload_failed);
 		}
 	}
-	elseif($mybb->input['localfile'])
+	elseif(!empty($mybb->input['localfile']))
 	{
 		$contents = @file_get_contents($mybb->input['localfile']);
 		if(!$contents)
 		{
-			cpmessage($lang->error_local_file);
+			cperror($lang->error_local_file);
 		}
 	}
 	$parser = new XMLParser($contents);
@@ -242,7 +242,7 @@ if($mybb->input['action'] == "do_import")
 
 	if(!$tree['theme'])
 	{
-		cpmessage($lang->upload_failed);
+		cperror($lang->failed_finding_theme);
 	}
 	if(!$name)
 	{
@@ -260,7 +260,7 @@ if($mybb->input['action'] == "do_import")
 	if($mybboard['vercode'] != $version && $mybb->input['ignorecompat'] != "yes")
 	{
 		$lang->version_warning = sprintf($lang->version_warning, $mybboard['internalver']);
-		cpmessage($lang->version_warning);
+		cperror($lang->version_warning);
 	}
 
 	$css = killtags($theme['cssbits']);

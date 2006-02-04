@@ -88,6 +88,7 @@ $l['theme_deleted'] = "The theme has successfully been deleted.<br>All users usi
 $l['default_updated'] = "The default theme has successfully been changed.";
 $l['error_local_file'] = "Could not open the local file. Does it exist? Please check and try again.";
 $l['upload_failed'] = "Upload failed. Please try again.";
+$l['failed_finding_theme'] = "The upload was successful, or the file you specified exists, but does it not contain valid theme information.  Please ensure that ";
 $l['error_remote_url'] = "Could not connect to the remote url. Please check the url and try again.";
 $l['version_warning'] = "The theme file is not for the current version of myBB you are running ({1}). If you still wish to install it, please change 'Ignore Version Compatibility' to yes.";
 $l['theme_imported'] = "The theme, {1} has successfully been imported.";
