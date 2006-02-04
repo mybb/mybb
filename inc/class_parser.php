@@ -358,13 +358,26 @@ class postParser
 	 */
 	function fix_javascript($message)
 	{
-		$message = preg_replace("#javascript:#i", "java script:", $message);
-		$message = preg_replace("#(a)(lert)#ie", "'&#'.ord($1).';$2'", $message);
-		$message = preg_replace("#onmouseover#i", "&#111;nmouseover", $message);
-		$message = preg_replace("#onmouseout#i", "&#111;nmouseout", $message);
-		$message = preg_replace("#onclick#i", "&#111;nclick", $message);
-		$message = preg_replace("#onload#i", "&#111;nload", $message);
-		$message = eregi_replace("#onsubmit#i", "&#111;nsubmit", $message);
+		$message = preg_replace("#(java)(script:)#i", "$1 $2", $message);
+		$js_array = array(
+			"#(a)(lert)#ie", 
+			"#(o)(nmouseover)#ie", 
+			"#(o)(nmouseout)#ie",
+			"#(o)(nmousedown)#ie",
+			"#(o)(nmousemove)#ie", 
+			"#(o)(nmouseup)#ie",  
+			"#(o)(nclick)#ie",
+			"#(o)(ndblclick)#ie", 
+			"#(o)(nload)#ie", 
+			"#(o)(nsubmit)#ie", 
+			"#(o)(nblur)#ie", 
+			"#(o)(nchange)#ie",
+			"#(o)(nfocus)#ie",
+			"#(o)(nselect)#ie",
+			"#(o)(nunload)#ie",
+			"#(o)(nkeypress)#ie"
+			);
+		$message = preg_replace($js_array, "'&#'.ord($1).';$2'", $message);
 		return $message;
 	}
 
