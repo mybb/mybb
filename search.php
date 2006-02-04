@@ -33,10 +33,12 @@ if($mybb->usergroup['cansearch'] == "no")
 	nopermission();
 }
 
+$now = time();
+
 if($mybb->input['action'] == "results")
 {
 	$sid = intval($mybb->input['sid']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE sid='".$sid."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE sid='".$sid."' AND uid='".intval($mybb->input['uid'])."' AND dateline='".intval($mybb->input['dateline'])."'");
 	$search = $db->fetch_array($query);
 	if(!$search['sid'])
 	{
@@ -330,7 +332,7 @@ if($mybb->input['action'] == "results")
 			$bgcolor = "trow2";
 		}
 	}
-	$multipage = multipage($resultcount, $perpage, $page, "search.php?action=results&sid=$sid&sortby=$sortby&order=$order");
+	$multipage = multipage($resultcount, $perpage, $page, "search.php?action=results&sid=$sid&sortby=$sortby&order=$order&uid=".$mybb->input['uid']."&dateline=".$mybb->input['dateline']);
 	if($search['showposts'] == 2)
 	{
 		eval("\$searchresultsbar = \"".$templates->get("search_results_barposts")."\";");
@@ -346,10 +348,10 @@ if($mybb->input['action'] == "results")
 elseif($mybb->input['action'] == "findguest")
 {
 	$wheresql = " AND p.uid < 1";
-	$now = time();
+	
 	$searcharray = array(
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => $now,
 		"ipaddress" => $ipaddress,
 		"wheresql" => $wheresql,
 		"lookin" => "p.message",
@@ -359,15 +361,16 @@ elseif($mybb->input['action'] == "findguest")
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
 
-	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid&uid=".$mybb->user['uid']."&dateline=$now", $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "finduser")
 {
 	$wheresql = "1=1";
 	$wheresql .= " AND p.uid='".intval($mybb->input['uid'])."'";
+	
 	$searcharray = array(
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => $now,
 		"ipaddress" => $ipaddress,
 		"wheresql" => addslashes($wheresql),
 		"lookin" => "p.message",
@@ -376,15 +379,16 @@ elseif($mybb->input['action'] == "finduser")
 	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
-	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid&uid=".$mybb->user['uid']."&dateline=$now", $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "finduserthreads")
 {
 	$wheresql = "1=1";
 	$wheresql .= " AND t.uid='".intval($mybb->input['uid'])."'";
+	
 	$searcharray = array(
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => $now,
 		"ipaddress" => $ipaddress,
 		"wheresql" => addslashes($wheresql),
 		"lookin" => "p.message",
@@ -393,7 +397,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 	$sid = $db->insert_id();
-	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid&uid=".$mybb->user['uid']."&dateline=$now", $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "getnew")
 {
@@ -425,9 +429,10 @@ elseif($mybb->input['action'] == "getnew")
 		}
 	}
 	$wheresql .= " AND t.lastpost >= '".$mybb->user[lastvisit]."'";
+	
 	$searcharray = array(
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => $now,
 		"ipaddress" => $ipaddress,
 		"wheresql" => addslashes($wheresql),
 		"lookin" => "p.message",
@@ -438,7 +443,7 @@ elseif($mybb->input['action'] == "getnew")
 	$sid = $db->insert_id();
 
 	eval("\$redirect = \"".$templates->get("redirect_searchresults")."\";");
-	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid&uid=".$mybb->user['uid']."&dateline=$now", $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "getdaily")
 {
@@ -468,13 +473,14 @@ elseif($mybb->input['action'] == "getdaily")
 			}
 			$wheresql .= ")";
 		}
-	}	$now = time();
+	}	
 	$thing = 68400*$days;
 	$datecut = $now-$thing;
 	$wheresql .= " AND t.lastpost >= '$datecut'";
+	
 	$searcharray = array(
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => $now,
 		"ipaddress" => $ipaddress,
 		"wheresql" => addslashes($wheresql),
 		"lookin" => "p.message",
@@ -484,7 +490,7 @@ elseif($mybb->input['action'] == "getdaily")
 	$plugins->run_hooks("search_do_search_process");
 	$sid = $db->insert_id();
 	eval("\$redirect = \"".$templates->get("redirect_searchresults")."\";");
-	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid&uid=".$mybb->user['uid']."&dateline=$now", $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "do_search")
 {
@@ -576,7 +582,7 @@ elseif($mybb->input['action'] == "do_search")
 		$usersql .= ")";
 	}
 	
-	$now = time();
+	
 	if($mybb->input['postdate'])
 	{
 		$wheresql .= " AND p.dateline ";
@@ -656,9 +662,10 @@ elseif($mybb->input['action'] == "do_search")
 		$showposts = 2;
 	}
 	$wheresql = addslashes($wheresql);
+	
 	$searcharray = array(
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => $now,
 		"ipaddress" => $ipaddress,
 		"wheresql" => $wheresql,
 		"lookin" => $lookin,
@@ -679,7 +686,7 @@ elseif($mybb->input['action'] == "do_search")
 		$sortorder = "desc";
 	}
 	$sortby = htmlspecialchars($mybb->input['sortby']);
-	redirect("search.php?action=results&sid=$sid&sortby=".$sortby."&order=".$sortorder, $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid&sortby=".$sortby."&order=".$sortorder."&uid=".$mybb->user['uid']."&dateline=$now", $lang->redirect_searchresults);
 }
 else
 {
