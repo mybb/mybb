@@ -115,9 +115,10 @@ END;
 		{
 			$formend = "";
 		}
+		$copyyear = date('Y');
 		echo <<<END
 			<div id="copyright">
-				&copy; 2005 MyBB Group
+				&copy; 2002-$copyyear MyBB Group
 			</div>
 		</div>
 	$formend

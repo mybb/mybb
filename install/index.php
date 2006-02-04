@@ -439,7 +439,7 @@ function create_tables()
 			mysql_query("DROP TABLE IF EXISTS ".$match[1]);
 			echo "Creating table ".$match[1]."...";
 		}
-		mysql_query($val);
+		mysql_query($val) or die("<br /><br /><strong>mySQL error:</strong> ".mysql_error()."<br />Query: $val");
 		if($match[1])
 		{
 			echo "done<br />\n";
