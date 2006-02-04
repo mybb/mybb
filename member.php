@@ -289,7 +289,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	// Custom profile fields baby!
 	$userfields = array();
 	$comma = "";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
+	$query = $db->query("
+		SELECT type, fid, required
+		FROM ".TABLE_PREFIX."profilefields
+		WHERE editable='yes'
+		ORDER BY disporder
+	");
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -1322,7 +1327,7 @@ elseif($mybb->input['action'] == "profile")
 		$membday = explode("-", $memprofile['birthday']);
 		if($membday[2])
 		{
-			if($membday[2] < 1970 && strtolower(substr(PHP_OS, 0, 3)) == 'win')
+			if($membday[2] < 1970)
 			{
 				$w_day = get_weekday($membday[1], $membday[0], $membday[2]);
 				$membday = format_bdays($settings['dateformat'], $membday[1], $membday[0], $membday[2], $w_day);

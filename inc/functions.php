@@ -193,7 +193,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
  */
 function mymail($to, $subject, $message, $from="")
 {
-	global $db, $mybb, $settings;
+	global $db, $mybb;
 	// For some reason sendmail/qmail doesn't like \r\n
 	$sendmail = @ini_get('sendmail_path');
 	if($sendmail)
@@ -215,7 +215,7 @@ function mymail($to, $subject, $message, $from="")
  * Return a parent list for the specified forum.
  *
  * @param int The forum id to get the parent list for.
- * @return string The parent list.
+ * @return string The comma-separated parent list.
  */
 function getparentlist($fid)
 {

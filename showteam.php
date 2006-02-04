@@ -82,7 +82,13 @@ while(list($gid, $usergroup) = each($teams))
 	$usergrouprows = "";
 }
 unset($user);
-$query = $db->query("SELECT m.fid, m.uid, u.username, u.usergroup, u.displaygroup, u.hideemail, u.receivepms, f.name FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid) ORDER BY u.username, f.name");
+$query = $db->query("
+	SELECT m.fid, m.uid, u.username, u.usergroup, u.displaygroup, u.hideemail, u.receivepms, f.name
+	FROM ".TABLE_PREFIX."moderators m
+	LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
+	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid)
+	ORDER BY u.username, f.name
+");
 while($mod = $db->fetch_array($query))
 {
 	$modsarray[$mod['uid']] = $mod;
