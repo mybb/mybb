@@ -81,7 +81,7 @@ function upload_avatar()
 	}
 	
 	// Check we have a valid extension
-	$ext = getextention(strtolower($avatar['name']));
+	$ext = getextension(strtolower($avatar['name']));
 	if(!preg_match("#(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext)) {
 		$ret['error'] = $lang->error_avatartype;
 		return $ret;
@@ -135,12 +135,12 @@ function upload_attachment($attachment)
 	
 	$posthash = addslashes($mybb->input['posthash']);
 
-	if(!is_uploaded_file($attachment['tmp_name']))
+	if(!is_uploaded_file($attachment['tmp_name']) || empty($attachment['tmp_name']))
 	{
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
-	$ext = getextention($attachment['name']);
+	$ext = getextension($attachment['name']);
 	// Check if we have a valid extension
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes WHERE extension='$ext'");
 	$attachtype = $db->fetch_array($query);

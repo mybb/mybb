@@ -1156,9 +1156,20 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
  * @param string The filename.
  * @return string The extension of the file.
  */
-function getextention($file)
+function getextension($file)
 {
 	return strtolower(substr(strrchr($file, "."), 1));
+}
+
+/**
+ * Deprecated function that returns the extension of a file.
+ *
+ * @param string The filename.
+ * @return string The extension of the file.
+ */
+function getextention($file)
+{
+	return getextension($file);
 }
 
 /**
