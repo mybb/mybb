@@ -642,6 +642,8 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		{
 			$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".$mybb->user['uid']."','$tid','s')");
 		}
+
+		// Update user's post count
 		if($forum['usepostcounts'] != "no")
 		{
 			$queryadd = ",postnum=postnum+1";
@@ -651,7 +653,6 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$queryadd = "";
 		}
 		$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$mybb->user['uid']."'");
-		}
 	}
 
 	// Deciding the fate

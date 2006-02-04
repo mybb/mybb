@@ -293,15 +293,16 @@ if($mybb->input['action'] == "do_delete") {
 	{	
 		$fid = intval($mybb->input['fid']);
 		$db->query("DELETE FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE CONCAT(',', parentlist, ',') LIKE '%,$fid,%'");
 		while($f = $db->fetch_array($query))
 		{
-			$fids[$f[fid]] = $fid;
+			$fids[$f['fid']] = $fid;
 			$delquery .= " OR fid='$f[fid]'";
 		}
+		$db->query("DELETE FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE fid='$fid' $delquery");
 		$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE fid='$fid' $delquery");
+		$db->query("DELETE FROM ".TABLE_PREFIX."moderators WHERE fid='$fid' $delquery");
 
 		$cache->updateforums();
 		$cache->updateforumpermissions();
