@@ -6047,7 +6047,7 @@ $footer
 </body>
 </html>]]></template>
 		<template name="posticons" version="100.07"><![CDATA[<tr>
-<td class="trow1"><strong>$lang->post_icon</strong><br /><span class="smalltext"><input type="radio" name="icon" value="-1">$lang->no_post_icon</span></td>
+<td class="trow1"><strong>$lang->post_icon</strong><br /><span class="smalltext"><input type="radio" name="icon" value="-1"$no_icons_checked />$lang->no_post_icon</span></td>
 <td class="trow1" valign="top">$iconlist</td>
 </tr>
 ]]></template>

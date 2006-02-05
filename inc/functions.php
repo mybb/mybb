@@ -746,16 +746,18 @@ function getposticons()
 {
 	global $mybb, $db, $icon, $settings, $theme, $templates, $lang;
 	$listed = 0;
+	$no_icons_checked = " checked=\"checked\"";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons ORDER BY name DESC");
 	while($dbicon = $db->fetch_array($query))
 	{
 		if($mybb->input['icon'] == $dbicon['iid'])
 		{
-			$iconlist .= "<input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\">";
+			$iconlist .= "<input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked=\"checked\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" />";
+			$no_icons_checked = "";
 		}
 		else
 		{
-			$iconlist .= "<input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\"> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\">";
+			$iconlist .= "<input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" />";
 		}
 		$listed++;
 		if($listed == 9)
