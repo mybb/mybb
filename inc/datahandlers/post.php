@@ -56,6 +56,11 @@ class PostDataHandler extends DataHandler
 		}
 
 		$db->insert_query(TABLE_PREFIX."posts", $post);
+		
+		/* Update post count for thread and forum the post is in. */
+		updatethreadcount($post['tid']);
+		updateforumcount($post['fid']);
+		
 	}
 	
 	/**

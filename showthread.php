@@ -513,23 +513,26 @@ if($mybb->input['action'] == "thread")
 	if($mybb->settings['showsimilarthreads'] != "no")
 	{
 		$query = $db->query("
-			SELECT subject, tid, lastpost, username, replies
+			SELECT subject, tid, lastpost, username, replies, 
+			MATCH (subject) AGAINST ('".addslashes($thread['subject'])."') AS relevance 
 			FROM ".TABLE_PREFIX."threads
-			WHERE fid=".$thread['fid']."
-			AND tid!=".$thread['tid']."
+			WHERE fid='".$thread['fid']."'
+			AND tid <> '".$thread['tid']."'
 			AND visible='1'
-			AND  MATCH (subject) AGAINST ('".addslashes($thread['subject'])."') >= ".$mybb->settings['similarityrating']."
 			ORDER BY dateline DESC
 			LIMIT 0, ".$mybb->settings['similarlimit']
 		);
 		$count = 0;
 		while($similarthread = $db->fetch_array($query))
 		{
-			++$count;
-			$similarthreaddate = mydate($mybb->settings['dateformat'], $similarthread['lastpost']);
-			$similarthreadtime = mydate($mybb->settings['timeformat'], $similarthread['lastpost']);
-			$similarthread['subject'] = htmlspecialchars_uni($similarthread['subject']);
-			eval("\$similarthreadbits .= \"".$templates->get("showthread_similarthreads_bit")."\";");
+			if($similarthread['relevance'] >= $mybb->settings['similarityrating'])
+			{
+				++$count;
+				$similarthreaddate = mydate($mybb->settings['dateformat'], $similarthread['lastpost']);
+				$similarthreadtime = mydate($mybb->settings['timeformat'], $similarthread['lastpost']);
+				$similarthread['subject'] = htmlspecialchars_uni($similarthread['subject']);
+				eval("\$similarthreadbits .= \"".$templates->get("showthread_similarthreads_bit")."\";");
+			}
 		}
 		if($count)
 		{

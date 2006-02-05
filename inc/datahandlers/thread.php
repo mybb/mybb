@@ -15,7 +15,30 @@
  */
 class ThreadDataHandler extends Handler
 {
-	
+	/**
+	 * Insert a thread into the database.
+	 *
+	 * @param array The thread data array.
+	 */
+	function insert_thread($thread)
+	{
+		global $db;
+		
+		if($this->get_validated !== true)
+		{
+			die("The thread needs to be validated before inserting it into the DB.");
+		}
+		if(!empty($this->get_errors()))
+		{
+			die("The thread is not valid.");
+		}
+
+		$db->insert_query(TABLE_PREFIX."threads", $thread);
+		
+		/* Update thread count for forum the thread is in. */
+		updateforumcount($thread['fid']);
+		
+	}
 }
 
 ?>
