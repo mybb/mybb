@@ -132,11 +132,20 @@ class PostDataHandler extends DataHandler
 			// Automatic subscription to the thread
 			if($post['postoptions']['emailnotify'] != "no" && $post['uid'] > 0)
 			{
-				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."favorites WHERE type='s' AND tid='".$post['tid']."' AND uid='".$post['uid']."'");
+				$query = $db->query("
+					SELECT uid
+					FROM ".TABLE_PREFIX."favorites
+					WHERE type='s'
+					AND tid='".$post['tid']."'
+					AND uid='".$post['uid']."'
+				");
 				$subcheck = $db->fetch_array($query);
 				if(!$subcheck['uid'])
 				{
-					$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".$post['uid']."','".$post['tid']."','s')");
+					$db->query("
+						INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type)
+						VALUES ('".$post['uid']."','".$post['tid']."','s')
+					");
 				}
 			}
 
@@ -176,7 +185,10 @@ class PostDataHandler extends DataHandler
 				}
 				
 				// Execute moderation options
-				if($newstick && $newclosed) { $sep = ","; }
+				if($newstick && $newclosed)
+				{
+					$sep = ",";
+				}
 				if($newstick || $newclosed)
 				{
 					$db->query("UPDATE ".TABLE_PREFIX."threads SET $newclosed$sep$newstick WHERE tid='$tid'");
@@ -217,7 +229,7 @@ class PostDataHandler extends DataHandler
 			// Insert the post
 			$newreply = array(
 				"tid" => intval($post['tid']),
-				"replyto" => intval($post['replyto'],
+				"replyto" => intval($post['replyto']),
 				"fid" => intval($post['fid']),
 				"subject" => addslashes($post['subject']),
 				"icon" => intval($post['icon']),
@@ -225,7 +237,7 @@ class PostDataHandler extends DataHandler
 				"username" => addslashes($post['username']),
 				"dateline" => time(),
 				"message" => addslashes($post['message']),
-				"ipaddress" => addslashes($post['ip'],
+				"ipaddress" => addslashes($post['ip']),
 				"includesig" => $post['postoptions']['signature'],
 				"smilieoff" => $post['postoptions']['disablesmilies'],
 				"visible" => $visible
@@ -246,7 +258,7 @@ class PostDataHandler extends DataHandler
 		return array(
 			"pid" => $pid,
 			"visible" => $visible
-			);
+		);
 	
 	}
 	
