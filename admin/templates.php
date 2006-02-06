@@ -65,33 +65,6 @@ $group = $mybb->input['group'];
 checkadminpermissions("canedittemps");
 logadmin();
 
-$templategroups['calendar'] = $lang->group_calendar;
-$templategroups['editpost'] = $lang->group_editpost;
-$templategroups['email'] = $lang->group_email;
-$templategroups['emailsubject'] = $lang->group_emailsubject;
-$templategroups['forumbit'] = $lang->group_forumbit;
-$templategroups['forumjump'] = $lang->group_forumjump;
-$templategroups['forumdisplay'] = $lang->group_forumdisplay;
-$templategroups['index'] = $lang->group_index;
-$templategroups['error'] = $lang->group_error;
-$templategroups['memberlist'] = $lang->group_memberlist;
-$templategroups['multipage'] = $lang->group_multipage;
-$templategroups['private'] = $lang->group_private;
-$templategroups['portal'] = $lang->group_portal;
-$templategroups['postbit'] = $lang->group_postbit;
-$templategroups['redirect'] = $lang->group_redirect;
-$templategroups['showthread'] = $lang->group_showthread;
-$templategroups['usercp'] = $lang->group_usercp;
-$templategroups['online'] = $lang->group_online;
-$templategroups['moderation'] = $lang->group_moderation;
-$templategroups['nav'] = $lang->group_nav;
-$templategroups['search'] = $lang->group_search;
-$templategroups['showteam'] = $lang->group_showteam;
-$templategroups['reputation'] = $lang->group_reputation;
-$templategroups['newthread'] = $lang->group_newthread;
-$templategroups['newreply'] = $lang->group_newreply;
-$templategroups['member'] = $lang->group_member;
-
 if($mybb->input['action'] == "do_add") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='".intval($mybb->input['setid'])."' AND title='".addslashes($mybb->input['title'])."'");
 	$temp = $db->fetch_array($query);
@@ -120,7 +93,7 @@ if($mybb->input['action'] == "do_add") {
 	}
 	if($mybb->input['continue'] != "yes")
 	{
-		$editurl = "templates.php?expand=".$setid.$opengroup;
+		$editurl = "templates.php?expand=".$mybb->input['setid'].$opengroup;
 	}
 	else
 	{
@@ -197,7 +170,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 	if($mybb->input['continue'] != "yes")
 	{
-		$editurl = "templates.php?expand=".$setid.$opengroup;
+		$editurl = "templates.php?expand=".$mybb->input['setid'].$opengroup;
 	}
 	else
 	{
@@ -657,6 +630,16 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 		}
 		else
 		{
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templategroups ORDER BY title ASC");
+			while($templategroup = $db->fetch_array($query))
+			{
+				if($mybb->input['group'] == $templategroup['gid'])
+				{
+					$expand_group = $templategroup['prefix'];
+				}
+				$templategroups[$templategroup['prefix']] = $templategroup;
+			}
+
 			// Query for custom templates
 			$query2 = $db->query("SELECT t1.* FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t1.title=t2.title AND t2.sid='-2') WHERE t1.sid='".$set[sid]."' AND ISNULL(t2.template) ORDER BY t1.title ASC");
 			while($template = $db->fetch_array($query2))
@@ -685,24 +668,29 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 				$exploded = explode("_", $checkname, 2);
 				reset($templategroups);
 				$grouptype = "";
+				$opengroup = "";
 				if($templategroups[$exploded[0]])
 				{
+					$gid = $templategroups[$exploded[0]]['gid'];
 					$grouptype = $exploded[0];
 					if(!$donegroup[$exploded[0]])
 					{
-						$groupname = $templategroups[$grouptype];
+						$groupname = $lang->parse($templategroups[$exploded[0]]['title']);
 						$altbg = getaltbg();
 						echo "<tr>\n";
-						echo "<td class=\"$altbg\" colspan=\"2\"><b><a href=\"templates.php?expand=$expand&group=$grouptype#$grouptype\" name=\"$grouptype\">$groupname $lang->templates</a></b></td>\n";
-						echo "<td class=\"$altbg\" align=\"right\"><input type=\"button\" value=\"$lang->expand\" onclick=\"hopto('templates.php?expand=$expand&group=$grouptype#$grouptype');\" class=\"submitbutton\"></td>\n";
+						echo "<td class=\"$altbg\" colspan=\"2\"><b><a href=\"templates.php?expand=$expand&group=$gid#$gid\" name=\"$gid\">$groupname $lang->templates</a></b></td>\n";
+						echo "<td class=\"$altbg\" align=\"right\"><input type=\"button\" value=\"$lang->expand\" onclick=\"hopto('templates.php?expand=$expand&group=$gid#$gid');\" class=\"submitbutton\"></td>\n";
 						echo "</tr>\n";
 						$donegroup[$grouptype] = 1;
 					}
-						if($group != $grouptype && $group != "all")
-						{
-							continue;
-						}
-
+					if($expand_group != $grouptype && $mybb->input['group'] != "all")
+					{
+						continue;
+					}
+					elseif($mybb->input['group'] != "all")
+					{
+						$opengroup = "&group=".$gid;
+					}
 				}
 				$altbg = getaltbg();
 				if($grouptype)
@@ -718,7 +706,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 				}
 				if(!$template['tid'])
 				{
-					echo "<a href=\"templates.php?action=add&title=".$template['originaltitle']."&sid=".$set['sid']."\"><span class=\"highlight4\">".$template['originaltitle']."</span></a></td>\n";
+					echo "<a href=\"templates.php?action=add&title=".$template['originaltitle']."&sid=".$set['sid'].$opengroup."\"><span class=\"highlight4\">".$template['originaltitle']."</span></a></td>\n";
 					echo "<td class=\"$altbg\" align=\"right\">";
 					echo "<input type=\"button\" value=\"$lang->change_original\" onclick=\"hopto('templates.php?action=add&title=".$template['originaltitle']."&sid=".$set['sid']."&group=$grouptype');\" class=\"submitbutton\">";
 					echo "</td>\n";
@@ -726,7 +714,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 				}
 				elseif($template['customtemplate'])
 				{
-						echo "<a href=\"templates.php?action=edit&tid=".$template['tid']."\"><span class=\"highlight2\">".$template['title']."</span></a></td>";
+						echo "<a href=\"templates.php?action=edit&tid=".$template['tid'].$opengroup."\"><span class=\"highlight2\">".$template['title']."</span></a></td>";
 						echo "<td class=\"$altbg\" align=\"right\">";
 						echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?action=edit&tid=".$template['tid']."&group=$grouptype');\" class=\"submitbutton\">";
 						echo "<input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('templates.php?action=delete&tid=".$template['tid']."&expand=$expand&group=$grouptype');\" class=\"submitbutton\">";
@@ -735,7 +723,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 				}
 				else
 				{
-					echo "<a href=\"templates.php?action=edit&tid=".$template['tid']."\"><span class=\"highlight3\">".$template['originaltitle']."</span></a></td>";
+					echo "<a href=\"templates.php?action=edit&tid=".$template['tid'].$opengroup."\"><span class=\"highlight3\">".$template['originaltitle']."</span></a></td>";
 					echo "<td class=\"$altbg\" align=\"right\">";
 					echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?action=edit&tid=".$template['tid']."&group=$grouptype');\" class=\"submitbutton\">";
 					echo "<input type=\"button\" value=\"$lang->revert_original\" onclick=\"hopto('templates.php?action=revert&tid=".$template['tid']."&expand=$expand&group=$grouptype');\" class=\"submitbutton\">";
