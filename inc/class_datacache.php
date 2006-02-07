@@ -151,6 +151,7 @@ class datacache
 		$query = $db->query("
 			SELECT sid, name, find, image, disporder, showclickable
 			FROM ".TABLE_PREFIX."smilies
+			ORDER BY LENGTH(find) DESC
 		");
 		while($smilie = $db->fetch_array($query))
 		{
