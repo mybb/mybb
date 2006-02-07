@@ -56,6 +56,8 @@ if($mybb->input['action'] == "event")
 }
 else
 {
+	// Let's find the date we're looking at.
+	// First of all, the year
 	if($mybb->input['year'])
 	{
 		$year = intval($mybb->input['year']);
@@ -64,26 +66,40 @@ else
 	{
 		$year = date("Y");
 	}
-	
+	// Then the month
 	if($mybb->input['month'] >=1 && $mybb->input['month'] <= 12)
 	{
-		$month = $mybb->input['month'];
+		$month = intval($mybb->input['month']);
 	}
 	else
 	{
 		$month = date("n");
 	}
-	
+	// Find the number of days in that month	
 	$time = mktime(0, 0, 0, $month, 1, $year);
 	$days = date("t", $time);
-	
+	// Now the specific day
 	if($mybb->input['day'] >= 1 && $mybb->input['day'] <= $days)
 	{
 		$day = $mybb->input['day'];
 	}
 	else
 	{
-		$day = ((date("j") > $days) ? $days : date("j"));
+		// Make the day the last day of the month, if the user overshot the number of days in the month
+		if($mybb->input['day'] > $days)
+		{
+			$day = $days;
+		}
+		// Make the day the first day of the month, if the user undershot the number of days in the month
+		elseif($mybb->input['day'] < 1)
+		{
+			$day = 1;
+		}
+		// This shouldn't be needed, but just in case if someone falls into the hole...
+		else
+		{
+			$day = date("j");
+		}
 	}
 }
 
