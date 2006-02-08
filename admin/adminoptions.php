@@ -53,7 +53,7 @@ if($mybb->input['action'] == "do_updateperms")
 	checkadminpermissions("caneditaperms");
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$uid' LIMIT 1");
 	$adminoptions = $db->fetch_array($query);
-	if(isset($adminoptions['uid']))
+	if(!isset($adminoptions['uid']))
 	{
 		$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions (uid) VALUES ('$uid')");
 	}

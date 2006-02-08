@@ -513,7 +513,7 @@ class postParser
 	function mycode_parse_list($message, $type="")
 	{
 		$message = str_replace('\"', '"', $message);
-		$message = preg_replace("#\[\*\]#", "</li><li>", $message);
+		$message = preg_replace("#\[\*\]#", "</li><li> ", $message);
 		$message .= "</li>";
 
 		if($type)

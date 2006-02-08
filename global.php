@@ -196,7 +196,7 @@ else
 	eval("\$welcomeblock = \"".$templates->get("header_welcomeblock_guest")."\";");
 }
 $unreadreports = "";
-if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mcache[$mybb->user['uid']])
+if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->usergroup['gid'] == 6)
 {
 	$reported = $cache->read("reportedposts");
 	if($reported['unread'] > 0)
