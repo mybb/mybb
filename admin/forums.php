@@ -299,12 +299,42 @@ if($mybb->input['action'] == "do_delete") {
 			$fids[$f['fid']] = $fid;
 			$delquery .= " OR fid='$f[fid]'";
 		}
+
+		/**
+		 * This slab of code pulls out the moderators for this forum,
+		 * checks if they moderate any other forums, and if they don't
+		 * it moves them back to the registered usergroup
+		 */
+
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators WHERE fid='$fid'");
+		while($mod = $db->fetch_array($query))
+		{
+			$moderators[$mod['uid']] = $mod['uid'];
+		}
+		if(is_array($moderators))
+		{
+			$mod_list = implode(",", $moderators);
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators WHERE fid!='$fid' AND uid IN ($mod_list)");
+			while($mod = $db->fetch_array($query))
+			{
+				unset($moderators[$mod['uid']]);
+			}
+		}
+		if(is_array($moderators))
+		{
+			$mod_list = implode(",", $moderators);
+			if($mod_list)
+			{
+				$db->query("UPDATE ".TABLE_PREFIX."usergroups SET usergroup='2' WHERE uid IN ($mod_list) AND usergroup='6'");
+			}
+		}
 		$db->query("DELETE FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE fid='$fid' $delquery");
 		$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE fid='$fid' $delquery");
 		$db->query("DELETE FROM ".TABLE_PREFIX."moderators WHERE fid='$fid' $delquery");
 
 		$cache->updateforums();
+		$cache->updatemoderators();
 		$cache->updateforumpermissions();
 	
 		cpredirect("forums.php", $lang->forum_deleted);
