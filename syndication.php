@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id:  $
+ * $Id$
  */
 
 define("NO_ONLINE", 1);
