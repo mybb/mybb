@@ -516,7 +516,6 @@ else
 	while($user = $db->fetch_array($query))
 	{
 		$bday = explode("-", $user['birthday']);
-		print_r($bday);
 		if($feb_fix == 1 && $bday[0] == 29 && $bday[1] == 2)
 		{
 			$bdays[1]++;
