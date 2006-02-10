@@ -173,10 +173,21 @@ elseif($mybb->input['action'] == "dayview")
 	$plugins->run_hooks("calendar_dayview_start");
 
 	// Load Birthdays
+	// If we have 1st March and this year isn't a leap year, fetch birthdays on the 29th.
+	if($day == 1 && $month == 3 && date("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
+	{
+		$bday_where = "u.birthday LIKE '$day-$month-%' OR u.birthday LIKE '29-2-%'";
+		$feb_fix = 1;
+	}
+	else // Fetch only for this day
+	{
+		$bday_where = "u.birthday LIKE '$day-$month-%'";
+		$feb_fix = 0;
+	}
 	$query = $db->query(
 		"SELECT u.uid, u.username, u.birthday, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."users u
-		WHERE u.birthday LIKE '$day-$month-%'
+		WHERE $bday_where
 	");
 	$alterbg = $theme['trow1'];
 	$comma = "";
@@ -245,7 +256,7 @@ elseif($mybb->input['action'] == "dayview")
 	}
 	if($birthdays)
 	{
-		$eventdate = mktime(0, 0, 0, $month, $day, $year);
+		$eventdate = gmmktime(0, 0, 0, $month, $day, $year);
 		$bdaydate = mydate($mybb->settings['dateformat'], $eventdate);
 		$lang->birthdays_on_day = sprintf($lang->birthdays_on_day, $bdaydate);
 		eval("\$bdaylist = \"".$templates->get("calendar_dayview_birthdays")."\";");
@@ -485,15 +496,35 @@ else
 	$bdays = array();
 
 	// Load Birthdays
-	$query = $db->query("
-		SELECT birthday
-		FROM ".TABLE_PREFIX."users
-		WHERE birthday LIKE '%-$month-%'
+	// If we have 1st March and this year isn't a leap year, fetch birthdays on the 29th.
+	if($day == 1 && $month == 3 && date("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
+	{
+		$bday_where = "u.birthday LIKE '%-$month-%' OR u.birthday LIKE '29-2-%'";
+		$feb_fix = 1;
+	}
+	else // Fetch only for this day
+	{
+		$bday_where = "u.birthday LIKE '%-$month-%'";
+		$feb_fix = 0;
+	}
+	$query = $db->query(
+		"SELECT u.uid, u.username, u.birthday, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."users u
+		WHERE $bday_where
 	");
+
 	while($user = $db->fetch_array($query))
 	{
 		$bday = explode("-", $user['birthday']);
-		$bdays[$bday[0]]++;
+		print_r($bday);
+		if($feb_fix == 1 && $bday[0] == 29 && $bday[1] == 2)
+		{
+			$bdays[1]++;
+		}
+		else
+		{
+			$bdays[$bday[0]]++;
+		}
 	}
 
 	// Load Events
