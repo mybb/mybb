@@ -481,7 +481,7 @@ switch($mybb->input['action'])
 		{
 			if($yes == "yes")
 			{
-				$pidin .= "$comma'$pid'";
+				$pidin .= "$comma'".intval($pid)."'";
 				$comma = ",";
 				$plist[] = $pid;
 			}
@@ -832,7 +832,7 @@ switch($mybb->input['action'])
 		}
 		if($parameters['pid'] && !$parameters['tid'])
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='".intval($parameters['pid'])."'");
 			$post = $db->fetch_array($query);
 			$mergetid = $post['tid'];
 		}
@@ -840,7 +840,8 @@ switch($mybb->input['action'])
 		{
 			$mergetid = $parameters['tid'];
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$mergetid'");
+		$mergetid = intval($mergetid);
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mergetid)."'");
 		$mergethread = $db->fetch_array($query);
 		if(!$mergethread['tid'])
 		{
@@ -862,11 +863,11 @@ switch($mybb->input['action'])
 			$sqlarray = array(
 				"tid" => $tid,
 				);
-			$db->update_query(TABLE_PREFIX."polls", $sqlarray, "tid='$mergethread[tid]'");
+			$db->update_query(TABLE_PREFIX."polls", $sqlarray, "tid='".intval($mergethread['tid'])."'");
 		}
 		else
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='$mergethread[poll]' AND tid!='$mergethread[tid]'");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='$mergethread[poll]' AND tid!='".intval($mergethread['tid'])."'");
 			$pollcheck = $db->fetch_array($query);
 			if(!$pollcheck['poll'])
 			{
@@ -885,7 +886,7 @@ switch($mybb->input['action'])
 		$subject = addslashes($subject);
 
 		// Update unapproved post/thread counter
-		$query = $db->query("SELECT COUNT(*) AS count FROM ".TABLE_PREFIX."posts WHERE tid='$mergetid' AND visible='0'");
+		$query = $db->query("SELECT COUNT(*) AS count FROM ".TABLE_PREFIX."posts WHERE tid='".intval($mergethread['tid'])."' AND visible='0'");
 		$unapproved_posts = $db->fetch_array($query);
 		$unapproved_posts = intval($unapproved_posts['count']);
 		if($mergethread['visible'] == 0)
@@ -1123,6 +1124,7 @@ switch($mybb->input['action'])
 		$threadlist = explode("|", $mybb->input['threads']);
 		foreach($threadlist as $tid)
 		{
+			$tid = intval($tid);
 			deletethread($tid);
 			$tlist[] = $tid;
 		}
@@ -1147,7 +1149,7 @@ switch($mybb->input['action'])
 		$q = "tid='-1'";
 		foreach($threads as $tid)
 		{
-			$q .= " OR tid='$tid'";
+			$q .= " OR tid='".intval($tid)."'";
 		}
 		$sqlarray = array(
 			"closed" => "no",
@@ -1172,7 +1174,7 @@ switch($mybb->input['action'])
 		$q = "tid='-1'";
 		foreach($threads as $tid)
 		{
-			$q .= " OR tid='$tid'";
+			$q .= " OR tid='".intval($tid)."'";
 		}
 		$sqlarray = array(
 			"closed" => "yes",
@@ -1198,7 +1200,7 @@ switch($mybb->input['action'])
 		$num_approved = 0;
 		foreach($threads as $tid)
 		{
-			$q .= " OR tid='$tid'";
+			$q .= " OR tid='".intval($tid)."'";
 			$num_approved++;
 		}
 		// Update unapproved thread count
@@ -1232,7 +1234,7 @@ switch($mybb->input['action'])
 		$num_unapproved = 0;
 		foreach($threads as $tid)
 		{
-			$q .= " OR tid='$tid'";
+			$q .= " OR tid='".intval($tid)."'";
 			$num_unapproved++;
 		}
 
@@ -1266,7 +1268,7 @@ switch($mybb->input['action'])
 		$q = "tid='-1'";
 		foreach($threads as $tid)
 		{
-			$q .= " OR tid='$tid'";
+			$q .= " OR tid='".intval($tid)."'";
 		}
 		$sqlarray = array(
 			"sticky" => 1,
@@ -1291,7 +1293,7 @@ switch($mybb->input['action'])
 		$q = "tid='-1'";
 		foreach($threads as $tid)
 		{
-			$q .= " OR tid='$tid'";
+			$q .= " OR tid='".intval($tid)."'";
 		}
 		$sqlarray = array(
 			"sticky" => 0,
@@ -1333,7 +1335,7 @@ switch($mybb->input['action'])
 		$threadlist = explode("|", $mybb->input['threads']);
 		foreach($threadlist as $tid)
 		{
-			$q .= " OR tid='$tid'";
+			$q .= " OR tid='".intval($tid)."'";
 		}
 		if(ismod($moveto, "canmanagethreads") != "yes")
 		{
@@ -1430,6 +1432,7 @@ switch($mybb->input['action'])
 		$deletecount = 0;
 		foreach($postlist as $pid)
 		{
+			$pid = intval($pid);
 			deletepost($pid);
 			$plist[] = $pid;
 			$deletecount++;
@@ -1482,9 +1485,10 @@ switch($mybb->input['action'])
 		$postlist = explode("|", $mybb->input['posts']);
 		foreach($postlist as $pid)
 		{
-				$pidin .= "$comma'$pid'";
-				$comma = ",";
-				$plist[] = $pid;
+			$pid = intval($pid);
+			$pidin .= "$comma'$pid'";
+			$comma = ",";
+			$plist[] = $pid;
 		}
 		$first = 1;
 		$query = $db->query("SELECT pid, message FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC LIMIT 0, 1");
@@ -1543,6 +1547,7 @@ switch($mybb->input['action'])
 		}
 		foreach($posts as $pid)
 		{
+			$pid = intval($pid);
 			$pidin .= "$comma'$pid'";
 			$comma = ",";
 		}
@@ -1568,6 +1573,7 @@ switch($mybb->input['action'])
 		$postlist = explode("|", $mybb->input['posts']);
 		foreach($postlist as $pid)
 		{
+			$pid = intval($pid);
 			$pidin .= "$comma'$pid'";
 			$comma = ",";
 			$plist[] = $pid;
@@ -1672,7 +1678,7 @@ switch($mybb->input['action'])
 		$num_approved_threads = 0;
 		foreach($posts as $pid)
 		{
-			$q .= " OR pid='$pid'";
+			$q .= " OR pid='".intval($pid)."'";
 			$num_approved_posts++;
 		}
 
@@ -1718,7 +1724,7 @@ switch($mybb->input['action'])
 		$num_unapproved_threads = 0;
 		foreach($posts as $pid)
 		{
-			$q .= " OR pid='$pid'";
+			$q .= " OR pid='".intval($pid)."'";
 			$num_unapproved_posts++;
 		}
 
@@ -1771,7 +1777,7 @@ switch($mybb->input['action'])
 			error($lang->error_noselected_reports);
 		}
 		$rids = implode($mybb->input['reports'], "','");
-		$rids = "'0','$rids'";
+		$rids = addslashes("'0','$rids'");
 
 		$plugins->run_hooks("moderation_do_reports");
 		
@@ -1836,7 +1842,7 @@ function getids($id, $type)
 	{
 		if($id != "")
 		{
-			$newids[] = $id;
+			$newids[] = iintval($id);
 		}
 	}
 	return $newids;

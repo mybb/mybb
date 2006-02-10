@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id: helpdocs.php 953 2005-12-11 18:13:32Z dennis $
+ * $Id$
  */
 
 require "./global.php";
