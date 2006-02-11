@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id:$
+ * $Id$
  */
 
 /*
@@ -31,38 +31,11 @@ if($postHandler->validate_post())
 class PostDataHandler extends DataHandler
 {
 	/**
-	 * Array of post data.
+	 * What we are doing: inserting, updating or deleting.
 	 *
-	 * @var array
+	 * @var string
 	 */
-	var $post;
-	
-	/**
-	 * Array of data of the thread the post is in.
-	 *
-	 * @var array
-	 */
-	var $thread;
-	
-	/**
-	 * Set the post data of the post we are looking at.
-	 *
-	 * @param array The array of post data.
-	 */
-	function set_post_data($post)
-	{
-		$this->post = $post;
-	}
-	
-	/**
-	 * Set the thread data of the thread the post is in.
-	 *
-	 * @param unknown_type $thread
-	 */
-	function set_thread_data($thread)
-	{
-		$this->thread = $thread;
-	}
+	var $action;
 	
 	/**
 	 * Get a post from the database by post id.
@@ -81,9 +54,9 @@ class PostDataHandler extends DataHandler
 			WHERE pid = ".$pid."
 			LIMIT 1
 		");
-		$this->post = $db->fetch_array($query);
+		$post = $db->fetch_array($query);
 		
-		return $this->post;
+		return $post;
 	}
 
 	/**
@@ -100,24 +73,46 @@ class PostDataHandler extends DataHandler
 		// Check is the user is being naughty.
 		if($mybb->settings['postfloodcheck'] == "on")
 		{
-			if($mybb->user['uid'] != 0 && $time-$mybb->user['lastpost'] <= $mybb->settings['postfloodsecs'] && ismod($this->post['fid']) != "yes")
+			if($mybb->user['uid'] != 0 && $time-$mybb->user['lastpost'] <= $mybb->settings['postfloodsecs'] && ismod($post['fid']) != "yes")
 			{
 				$this->set_error("post_flooding");
 			}
 		}
 
 		// Message of correct length?
-		if(strlen(trim($this->post['message'])) == 0)
+		if(strlen(trim($post['message'])) == 0)
 		{
 			$this->set_error("no_message");
 		}
-		elseif(strlen($this->post['message']) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($this->post['fid']) != "yes")
+		elseif(strlen($post['message']) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($post['fid']) != "yes")
 		{
 			$this->set_error("message_too_long");
 		}
 
+		// Check for correct subject content.
+		if($this->action == "insert")
+		{
+			// If there is no subject, make it the default one.
+			if(strlen(trim($mybb->input['subject'])) == 0)
+			{
+				$mybb->input['subject'] = "RE: " . $thread['subject'];
+			}
+		}
+		elseif($this->action == "update")
+		{
+			// If this is the first post there needs to be a subject, else make it the default one.
+			if(strlen(trim($mybb->input['subject'])) == 0 && $firstpost)
+			{
+				$this->set_error("no_subject");
+			}
+			elseif(strlen(trim($mybb->input['subject'])) == 0)
+			{
+				$mybb->input['subject'] = "RE: " . $thread['subject'];
+			}
+		}
+		
 		// If there is no post to reply to, let's reply to the first one.
-		if(!$this->post['replyto'])
+		if(!$post['replyto'])
 		{
 			$options = array(
 				"limit_start" => 0,
@@ -125,29 +120,29 @@ class PostDataHandler extends DataHandler
 				"order_by" => "dateline",
 				"order_dir" => "asc"
 			);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='".$this->thread['tid']."'", $options);
+			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='".$thread['tid']."'", $options);
 			$replyto = $db->fetch_array($query);
-			$this->post['replyto'] = $replyto['pid'];
+			$post['replyto'] = $replyto['pid'];
 		}
 
 		// Perhaps we don't have a post icon?
-		if(!$this->post['icon'])
+		if(!$post['icon'])
 		{
-			$this->post['icon'] = "0";
+			$post['icon'] = "0";
 		}
 
 		// Just making sure the options are correct.
-		if($this->post['postoptions']['signature'] != "yes")
+		if($post['postoptions']['signature'] != "yes")
 		{
-			$this->post['postoptions']['signature'] = "no";
+			$post['postoptions']['signature'] = "no";
 		}
-		if($this->post['postoptions']['emailnotify'] != "yes")
+		if($post['postoptions']['emailnotify'] != "yes")
 		{
-			$this->post['postoptions']['emailnotify'] = "no";
+			$post['postoptions']['emailnotify'] = "no";
 		}
-		if($this->post['postoptions']['disablesmilies'] != "yes")
+		if($post['postoptions']['disablesmilies'] != "yes")
 		{
-			$this->post['postoptions']['disablesmilies'] = "no";
+			$post['postoptions']['disablesmilies'] = "no";
 		}
 
 		// We are done validating, return.
@@ -161,7 +156,6 @@ class PostDataHandler extends DataHandler
 			return false;
 		}
 	}
-
 	
 	/**
 	 * Insert a post into the database.
@@ -173,6 +167,9 @@ class PostDataHandler extends DataHandler
 	{
 		global $db;
 
+		$this->action = "insert";
+		
+		/* Have we validated? */
 		if($this->get_validated !== true)
 		{
 			die("The post needs to be validated before inserting it into the DB.");
@@ -182,60 +179,60 @@ class PostDataHandler extends DataHandler
 			die("The post is not valid.");
 		}
 
-		if($this->post['savedraft']) // Save this post as a draft
+		if($post['savedraft']) // Save this post as a draft
 		{
 			$visible = -2;
 		}
 		else // This post is being made now
 		{
 			// Automatic subscription to the thread
-			if($this->post['postoptions']['emailnotify'] != "no" && $this->post['uid'] > 0)
+			if($post['options']['emailnotify'] != "no" && $post['uid'] > 0)
 			{
 				$query = $db->simple_select(
 					TABLE_PREFIX."favorites",
 					"uid",
-					"type='s' AND tid='".$this->post['tid']."' AND uid='".$this->post['uid']."'"
+					"type='s' AND tid='".$post['tid']."' AND uid='".$post['uid']."'"
 				);
 				$subcheck = $db->fetch_array($query);
 				if(!$subcheck['uid'])
 				{
 					$db->query("
 						INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type)
-						VALUES ('".$this->post['uid']."','".$this->post['tid']."','s')
+						VALUES ('".$post['uid']."','".$post['tid']."','s')
 					");
 				}
 			}
 
 			// Perform any selected moderation tools
-			if(ismod($this->post['fid']) == "yes" && $this->post['modoptions'])
+			if(ismod($post['fid']) == "yes" && $post['modoptions'])
 			{
-				$modoptions = $this->post['modoptions'];
-				$modlogdata['fid'] = $this->thread['fid'];
-				$modlogdata['tid'] = $this->thread['tid'];
+				$modoptions = $post['modoptions'];
+				$modlogdata['fid'] = $thread['fid'];
+				$modlogdata['tid'] = $thread['tid'];
 
 				// Close the thread
-				if($modoptions['closethread'] == "yes" && $this->thread['closed'] != "yes")
+				if($modoptions['closethread'] == "yes" && $thread['closed'] != "yes")
 				{
 					$newclosed = "closed='yes'";
 					logmod($modlogdata, "Thread closed");
 				}
 
 				// Open the thread
-				if($modoptions['closethread'] != "yes" && $this->thread['closed'] == "yes")
+				if($modoptions['closethread'] != "yes" && $thread['closed'] == "yes")
 				{
 					$newclosed = "closed='no'";
 					logmod($modlogdata, "Thread opened");
 				}
 
 				// Stick the thread
-				if($modoptions['stickthread'] == "yes" && $this->thread['sticky'] != 1)
+				if($modoptions['stickthread'] == "yes" && $thread['sticky'] != 1)
 				{
 					$newstick = "sticky='1'";
 					logmod($modlogdata, "Thread stuck");
 				}
 
 				// Unstick the thread
-				if($modoptions['stickthread'] != "yes" && $this->thread['sticky'])
+				if($modoptions['stickthread'] != "yes" && $thread['sticky'])
 				{
 					$newstick = "sticky='0'";
 					logmod($modlogdata, "Thread unstuck");
@@ -251,7 +248,7 @@ class PostDataHandler extends DataHandler
 					$db->query("
 						UPDATE ".TABLE_PREFIX."threads
 						SET $newclosed$sep$newstick
-						WHERE tid='".$this->thread['tid']."'
+						WHERE tid='".$thread['tid']."'
 					");
 				}
 			}
@@ -268,40 +265,40 @@ class PostDataHandler extends DataHandler
 		}
 		
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
-		if($this->post['pid'])
+		if($post['pid'])
 		{
 			// Update a post that is a draft
 			$updatedpost = array(
-				"subject" => addslashes($this->post['subject']),
-				"icon" => intval($this->post['icon']),
-				"uid" => intval($this->post['uid']),
-				"username" => addslashes($this->post['username']),
+				"subject" => addslashes($post['subject']),
+				"icon" => intval($post['icon']),
+				"uid" => intval($post['uid']),
+				"username" => addslashes($post['username']),
 				"dateline" => time(),
-				"message" => addslashes($this->post['message']),
-				"ipaddress" => addslashes($this->post['ip']),
-				"includesig" => $this->post['postoptions']['signature'],
-				"smilieoff" => $this->post['postoptions']['disablesmilies'],
+				"message" => addslashes($post['message']),
+				"ipaddress" => addslashes($post['ip']),
+				"includesig" => $post['postoptions']['signature'],
+				"smilieoff" => $post['postoptions']['disablesmilies'],
 				"visible" => $visible
 				);
-			$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='".$this->post['pid']."'");
-			$pid = $this->post['pid'];
+			$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='".$post['pid']."'");
+			$pid = $post['pid'];
 		}
 		else
 		{
 			// Insert the post
 			$newreply = array(
-				"tid" => intval($this->post['tid']),
-				"replyto" => intval($this->post['replyto']),
-				"fid" => intval($this->post['fid']),
-				"subject" => addslashes($this->post['subject']),
-				"icon" => intval($this->post['icon']),
-				"uid" => intval($this->post['uid']),
-				"username" => addslashes($this->post['username']),
+				"tid" => intval($post['tid']),
+				"replyto" => intval($post['replyto']),
+				"fid" => intval($post['fid']),
+				"subject" => addslashes($post['subject']),
+				"icon" => intval($post['icon']),
+				"uid" => intval($post['uid']),
+				"username" => addslashes($post['username']),
 				"dateline" => time(),
-				"message" => addslashes($this->post['message']),
-				"ipaddress" => addslashes($this->post['ip']),
-				"includesig" => $this->post['postoptions']['signature'],
-				"smilieoff" => $this->post['postoptions']['disablesmilies'],
+				"message" => addslashes($post['message']),
+				"ipaddress" => addslashes($post['ip']),
+				"includesig" => $post['postoptions']['signature'],
+				"smilieoff" => $post['postoptions']['disablesmilies'],
 				"visible" => $visible
 				);
 
@@ -312,12 +309,12 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Assign any uploaded attachments with the specific posthash to the newly created post
-		if($this->post['posthash'])
+		if($post['posthash'])
 		{
 			$db->query("
 				UPDATE ".TABLE_PREFIX."attachments
-				SET pid='".$this->post['pid']."'
-				WHERE posthash='".addslashes($this->post['posthash'])."'
+				SET pid='".$post['pid']."'
+				WHERE posthash='".addslashes($post['posthash'])."'
 			");
 		}
 
@@ -337,6 +334,9 @@ class PostDataHandler extends DataHandler
 	{
 		global $db;
 		
+		$this->action = "update";
+		
+		/* Have we validated? */
 		if($this->get_validated !== true)
 		{
 			die("The post needs to be validated before inserting it into the DB.");
@@ -346,7 +346,72 @@ class PostDataHandler extends DataHandler
 			die("The post is not valid.");
 		}
 		
-		$db->update_query(TABLE_PREFIX."posts", $this->post, "pid = ".$pid);
+		/* Check if this is the first post in a thread. */
+		$query = $db->query("
+			SELECT pid
+			FROM ".TABLE_PREFIX."posts
+			WHERE tid='$tid'
+			ORDER BY dateline ASC
+			LIMIT 0,1
+		");
+		$firstcheck = $db->fetch_array($query);
+		if($firstcheck['pid'] == $pid)
+		{
+			$firstpost = 1;
+		}
+		else
+		{
+			$firstpost = 0;
+		}
+		
+		// Check what icon we want on the thread.
+		if(!$mybb->input['icon'] || $mybb->input['icon'] == -1)
+		{
+			$mybb->input['icon'] = "0";
+		}
+		
+		// Update the thread details that might have been changed first.
+		if($firstpost)
+		{
+			$newpost = array(
+				"subject" => addslashes($mybb->input['subject']),
+				"icon" => intval($mybb->input['icon']),
+				);
+			$db->update_query(TABLE_PREFIX."threads", $newpost, "tid='$tid'");
+		}
+		
+		// Just to be safe here.
+		$post['options'] = $mybb->input['postoptions'];
+		if($post['options']['signature'] != "yes")
+		{
+			$post['options']['signature'] = "no";
+		}
+		if($post['options']['emailnotify'] != "yes")
+		{
+			$post['options']['emailnotify'] = "no";
+		}
+		if($post['options']['disablesmilies'] != "yes")
+		{
+			$post['options']['disablesmilies'] = "no";
+		}
+		
+		// Prepare array for post updating.
+		$updatepost = array(
+			"subject" => addslashes($mybb->input['subject']),
+			"message" => addslashes($mybb->input['message']),
+			"icon" => intval($mybb->input['icon']),
+			"smilieoff" => $post['options']['disablesmilies'],
+			"includesig" => $post['options']['signature']
+		);
+		
+		// If we need to show the edited by, let's do so.
+		if(($mybb->settings['showeditedby'] == "yes" && ismod($fid, "caneditposts") != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && ismod($fid, "caneditposts") == "yes"))
+		{
+			$updatepost['edituid'] = $mybb->user['uid'];
+			$updatepost['edittime'] = time();
+		}
+	
+		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid=$pid");
 	}
 	
 	/**
