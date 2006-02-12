@@ -16,10 +16,9 @@ $post = get from POST data
 $thread = get from DB using POST data id
 
 $postHandler = new postHandler();
-$postHandler->set_post_data($post);
-if($postHandler->validate_post())
+if($postHandler->validate_post($post))
 {
-	$postHandler->insert_post();
+	$postHandler->insert_post($post);
 }
 
 */
@@ -95,7 +94,7 @@ class PostDataHandler extends DataHandler
 			// If there is no subject, make it the default one.
 			if(strlen(trim($mybb->input['subject'])) == 0)
 			{
-				$mybb->input['subject'] = "RE: " . $thread['subject'];
+				$post['subject'] = "RE: " . $thread['subject'];
 			}
 		}
 		elseif($this->action == "update")
@@ -107,7 +106,7 @@ class PostDataHandler extends DataHandler
 			}
 			elseif(strlen(trim($mybb->input['subject'])) == 0)
 			{
-				$mybb->input['subject'] = "RE: " . $thread['subject'];
+				$post['subject'] = "RE: " . $thread['subject'];
 			}
 		}
 		
@@ -131,19 +130,8 @@ class PostDataHandler extends DataHandler
 			$post['icon'] = "0";
 		}
 
-		// Just making sure the options are correct.
-		if($post['postoptions']['signature'] != "yes")
-		{
-			$post['postoptions']['signature'] = "no";
-		}
-		if($post['postoptions']['emailnotify'] != "yes")
-		{
-			$post['postoptions']['emailnotify'] = "no";
-		}
-		if($post['postoptions']['disablesmilies'] != "yes")
-		{
-			$post['postoptions']['disablesmilies'] = "no";
-		}
+		// Clean the post options for this post.
+		$post = $post->get_options($post);
 
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -158,18 +146,42 @@ class PostDataHandler extends DataHandler
 	}
 	
 	/**
+	 * Assigns post options to the post data array.
+	 *
+	 * @param array The post data array.
+	 */
+	function get_options(&$post)
+	{
+		// Just to be safe here.
+		$post['options'] = $mybb->input['postoptions'];
+		if($post['options']['signature'] != "yes")
+		{
+			$post['options']['signature'] = "no";
+		}
+		if($post['options']['emailnotify'] != "yes")
+		{
+			$post['options']['emailnotify'] = "no";
+		}
+		if($post['options']['disablesmilies'] != "yes")
+		{
+			$post['options']['disablesmilies'] = "no";
+		}		
+	}
+	
+	/**
 	 * Insert a post into the database.
 	 *
 	 * @param array The post data array.
 	 * @return array Array of new post details, pid and visibility.
 	 */
-	function insert_post()
+	function insert_post($post)
 	{
 		global $db;
 
+		// Make the validation method know what we are doing.
 		$this->action = "insert";
 		
-		/* Have we validated? */
+		// Yes, validating is required.
 		if($this->get_validated !== true)
 		{
 			die("The post needs to be validated before inserting it into the DB.");
@@ -269,15 +281,15 @@ class PostDataHandler extends DataHandler
 		{
 			// Update a post that is a draft
 			$updatedpost = array(
-				"subject" => addslashes($post['subject']),
+				"subject" => $db->escape_string($post['subject']),
 				"icon" => intval($post['icon']),
 				"uid" => intval($post['uid']),
-				"username" => addslashes($post['username']),
+				"username" => $db->escape_string($post['username']),
 				"dateline" => time(),
-				"message" => addslashes($post['message']),
-				"ipaddress" => addslashes($post['ip']),
-				"includesig" => $post['postoptions']['signature'],
-				"smilieoff" => $post['postoptions']['disablesmilies'],
+				"message" => $db->escape_string($post['message']),
+				"ipaddress" => $db->escape_string($post['ip']),
+				"includesig" => $post['options']['signature'],
+				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible
 				);
 			$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='".$post['pid']."'");
@@ -285,20 +297,20 @@ class PostDataHandler extends DataHandler
 		}
 		else
 		{
-			// Insert the post
+			// Insert the post.
 			$newreply = array(
 				"tid" => intval($post['tid']),
 				"replyto" => intval($post['replyto']),
 				"fid" => intval($post['fid']),
-				"subject" => addslashes($post['subject']),
+				"subject" => $db->escape_string($post['subject']),
 				"icon" => intval($post['icon']),
 				"uid" => intval($post['uid']),
-				"username" => addslashes($post['username']),
+				"username" => $db->escape_string($post['username']),
 				"dateline" => time(),
-				"message" => addslashes($post['message']),
-				"ipaddress" => addslashes($post['ip']),
-				"includesig" => $post['postoptions']['signature'],
-				"smilieoff" => $post['postoptions']['disablesmilies'],
+				"message" => $db->escape_string($post['message']),
+				"ipaddress" => $db->escape_string($post['ip']),
+				"includesig" => $post['options']['signature'],
+				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible
 				);
 
@@ -308,13 +320,13 @@ class PostDataHandler extends DataHandler
 			$pid = $db->insert_id();
 		}
 
-		// Assign any uploaded attachments with the specific posthash to the newly created post
+		// Assign any uploaded attachments with the specific posthash to the newly created post.
 		if($post['posthash'])
 		{
 			$db->query("
 				UPDATE ".TABLE_PREFIX."attachments
 				SET pid='".$post['pid']."'
-				WHERE posthash='".addslashes($post['posthash'])."'
+				WHERE posthash='".$db->escape_string($post['posthash'])."'
 			");
 		}
 
@@ -334,9 +346,10 @@ class PostDataHandler extends DataHandler
 	{
 		global $db;
 		
+		// Make the validation method know what we are doing.
 		$this->action = "update";
 		
-		/* Have we validated? */
+		// Yes, validating is required.
 		if($this->get_validated !== true)
 		{
 			die("The post needs to be validated before inserting it into the DB.");
@@ -346,7 +359,7 @@ class PostDataHandler extends DataHandler
 			die("The post is not valid.");
 		}
 		
-		/* Check if this is the first post in a thread. */
+		// Check if this is the first post in a thread.
 		$query = $db->query("
 			SELECT pid
 			FROM ".TABLE_PREFIX."posts
@@ -373,33 +386,18 @@ class PostDataHandler extends DataHandler
 		// Update the thread details that might have been changed first.
 		if($firstpost)
 		{
-			$newpost = array(
-				"subject" => addslashes($mybb->input['subject']),
+			$updatethread = array(
+				"subject" => $db->escape_string($mybb->input['subject']),
 				"icon" => intval($mybb->input['icon']),
 				);
-			$db->update_query(TABLE_PREFIX."threads", $newpost, "tid='$tid'");
-		}
-		
-		// Just to be safe here.
-		$post['options'] = $mybb->input['postoptions'];
-		if($post['options']['signature'] != "yes")
-		{
-			$post['options']['signature'] = "no";
-		}
-		if($post['options']['emailnotify'] != "yes")
-		{
-			$post['options']['emailnotify'] = "no";
-		}
-		if($post['options']['disablesmilies'] != "yes")
-		{
-			$post['options']['disablesmilies'] = "no";
+			$db->update_query(TABLE_PREFIX."threads", $updatethread, "tid='$tid'");
 		}
 		
 		// Prepare array for post updating.
 		$updatepost = array(
-			"subject" => addslashes($mybb->input['subject']),
-			"message" => addslashes($mybb->input['message']),
-			"icon" => intval($mybb->input['icon']),
+			"subject" => $db->escape_string($post['subject']),
+			"message" => $db->escape_string($post['message']),
+			"icon" => intval($post['icon']),
 			"smilieoff" => $post['options']['disablesmilies'],
 			"includesig" => $post['options']['signature']
 		);
@@ -410,7 +408,6 @@ class PostDataHandler extends DataHandler
 			$updatepost['edituid'] = $mybb->user['uid'];
 			$updatepost['edittime'] = time();
 		}
-	
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid=$pid");
 	}
 	

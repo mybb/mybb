@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id:$
+ * $Id$
  */
 
 /**
@@ -54,6 +54,8 @@ class EventDataHandler extends Handler
 		{
 			die("The event is not valid.");
 		}
+		
+		
 		
 		$db->insert_query(TABLE_PREFIX."events", $event);
 	}
