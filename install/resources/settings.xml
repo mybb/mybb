@@ -844,7 +844,7 @@ admin=Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="maxsigimages">
 			<title>Maximum Number of Images per Signature</title>
-			<description><![CDATA[Enter the maximum number of images (including smilies) a user can put in their signature. Set to 0 to disable this.]]></description>
+			<description><![CDATA[Enter the maximum number of images (including smilies) a user can put in their signature. Set to 0 to disable images in signatures altogether.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>

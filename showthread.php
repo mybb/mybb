@@ -335,7 +335,7 @@ if($mybb->input['action'] == "thread")
 		$quickreply = "";
 	}
 
-	$db->shutdown_query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='$tid'");
+	$db->query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='$tid'");
 	++$thread['views'];
 	
 	// Work out the threads rating

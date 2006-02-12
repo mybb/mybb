@@ -440,11 +440,15 @@ class postParser
 			$code = $str;
 		}
 
+		// Make sure the php tags get parsed properly.
 		if(preg_match("/\A[\s]*\<\?/", $original) === 0)
 		{
 			$code = substr_replace($code, "", strpos($code, "&lt;?php"), strlen("&lt;?php"));
-			$code = strrev(substr_replace(strrev($code), "", strpos(strrev($code), strrev("?&gt;")), strlen("?&gt;")));
 			$code = str_replace('<br />', '', $code);
+		}
+		if(preg_match("/\A[\s]*\>\?/", strrev($original)) === 0)
+		{
+			$code = strrev(substr_replace(strrev($code), "", strpos(strrev($code), strrev("?&gt;")), strlen("?&gt;")));
 		}
 
 		// Get rid of other useless code and linebreaks
