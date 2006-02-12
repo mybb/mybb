@@ -118,16 +118,16 @@ class Syndication
 			case "rss2.0":
 				echo "<rss version=\"2.0\">\n";
 				echo "\t<channel>\n";
-				echo "\t\t<title>".htmlentities($mybb->settings['bbname'])."</title>\n";
+				echo "\t\t<title>".htmlspecialchars($mybb->settings['bbname'])."</title>\n";
 				echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
-				echo "\t\t<description>".htmlentities($mybb->settings['bbname'])." - ".$mybb->settings['bburl']."</description>\n";
+				echo "\t\t<description>".htmlspecialchars($mybb->settings['bbname'])." - ".$mybb->settings['bburl']."</description>\n";
 				echo "\t\t<lastBuildDate>".date("Y-m-d H:i:s")."</lastBuildDate>\n";
 				echo "\t\t<generator>MyBB ".$mybboard['internalver']."</generator>\n";
 			break;
 			
 			case "atom1.0":
 				echo "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n";
-				echo "\t<title>".htmlentities($mybb->settings['bbname'])."</title>\n";
+				echo "\t<title>".htmlspecialchars($mybb->settings['bbname'])."</title>\n";
 				echo "\t<id>".$mybb->settings['bburl']."</id>\n";
 				echo "\t<link rel=\"self\" href=\"".$mybb->settings['bburl']."/syndication.php?type=atom1.0&amp;limit=".$this->limit."\"/>\n";
 				echo "\t<updated>".date("Y-m-dTH:i:sZ")."</updated>\n";
@@ -137,9 +137,9 @@ class Syndication
 			case "rss0.92":
 				echo "<rss version=\"0.92\">\n";
 				echo "\t<channel>\n";
-				echo "\t\t<title>".htmlentities($mybb->settings['bbname'])."</title>\n";
+				echo "\t\t<title>".htmlspecialchars($mybb->settings['bbname'])."</title>\n";
 				echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
-				echo "\t\t<description>".htmlentities($mybb->settings['bbname'])." - ".$mybb->settings['bburl']."</description>\n";
+				echo "\t\t<description>".htmlspecialchars($mybb->settings['bbname'])." - ".$mybb->settings['bburl']."</description>\n";
 				echo "\t\t<lastBuildDate>".date("Y-m-d H:i:s")."</lastBuildDate>\n";
 				echo "\t\t<language>en</language>\n";
 			break;
@@ -147,9 +147,9 @@ class Syndication
 			default:
 				echo "<rss version=\"0.92\">\n";
 				echo "\t<channel>\n";
-				echo "\t\t<title>".htmlentities($mybb->settings['bbname'])."</title>\n";
+				echo "\t\t<title>".htmlspecialchars($mybb->settings['bbname'])."</title>\n";
 				echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
-				echo "\t\t<description>".htmlentities($mybb->settings['bbname'])." - ".$mybb->settings['bburl']."</description>\n";
+				echo "\t\t<description>".htmlspecialchars($mybb->settings['bbname'])." - ".$mybb->settings['bburl']."</description>\n";
 				echo "\t\t<lastBuildDate>".date("Y-m-d H:i:s")."</lastBuildDate>\n";
 				echo "\t\t<language>en</language>\n";
 			break;
@@ -165,7 +165,8 @@ class Syndication
 			FROM ".TABLE_PREFIX."threads t 
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) 
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost) 
-			WHERE 1=1 AND p.visible=1 $this->forumlist
+			WHERE 1=1
+			AND p.visible=1 $this->forumlist
 			ORDER BY t.dateline DESC 
 			LIMIT 0, ".$this->limit
 		);

@@ -51,12 +51,26 @@ if($mybb->input['action'] == "do_updateperms")
 {
 	$uid = intval($mybb->input['uid']);
 	checkadminpermissions("caneditaperms");
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$uid' LIMIT 1");
+	
+	// Check if there are custom permissions for this admin.
+	$query = $db->query("
+		SELECT permsset
+		FROM ".TABLE_PREFIX."adminoptions
+		WHERE uid='$uid'
+		LIMIT 1
+	");
 	$adminoptions = $db->fetch_array($query);
-	if(!isset($adminoptions['uid']))
+	
+	// If no custom permissions are set for this admin, create a blank custom set first.
+	if(!isset($adminoptions['permsset']))
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions (uid) VALUES ('$uid')");
+		$options_update = array(
+			"uid" => $uid
+		);
+		$db->insert_query(TABLE_PREFIX."adminoptions", $options_update);
 	}
+	
+	// Update the admin to the new permissions.
 	$newperms = $mybb->input['newperms'];
 	$sqlarray = array(
 		"permsset" => '1',
@@ -78,6 +92,8 @@ if($mybb->input['action'] == "do_updateperms")
 		"canrunmaint" => addslashes($newperms['canrunmaint']),
 		);
 	$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='$uid'");
+	
+	// Redirect based on what the user did.
 	if($uid == 0)
 	{
 		cpredirect("adminoptions.php?action=adminpermissions", $lang->default_perms_updated);
