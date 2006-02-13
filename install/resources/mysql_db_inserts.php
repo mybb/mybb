@@ -41,7 +41,7 @@ $inserts[] = "INSERT INTO mybb_helpdocs (hid, sid, name, description, document, 
 $inserts[] = "INSERT INTO mybb_helpsections (sid, name, description, usetranslation, enabled, disporder) VALUES (1, 'User Maintenance', 'Basic instructions for maintaining a forum account.', 'yes', 'yes', 1);";
 $inserts[] = "INSERT INTO mybb_helpsections (sid, name, description, usetranslation, enabled, disporder) VALUES (2, 'Posting', 'Posting, replying, and basic usage of forum.', 'yes', 'yes', 2);";
 
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (1, 'myBB', 'images/icons/my.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (1, 'MyBB', 'images/icons/my.gif');";
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (2, 'Exclamation', 'images/icons/exclamation.gif');";
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (3, 'Question', 'images/icons/question.gif');";
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (4, 'Smile', 'images/icons/smile.gif');";
@@ -52,7 +52,7 @@ $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (8, 'Big Grin', 'i
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (9, 'Toungue', 'images/icons/tongue.gif');";
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (10, 'Rolleyes', 'images/icons/rolleyes.gif');";
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (11, 'Shy', 'images/icons/shy.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (16, '', 'images/icons/at.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (16, 'At', 'images/icons/at.gif');";
 
 $inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (1, 'Location', 'Where in the world do you live?', 1, 'text', 0, 255, 'no', 'yes', 'no');";
 $inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (2, 'Bio', 'Enter a few short details about yourself, your life story etc.', 2, 'textarea', 0, 0, 'no', 'yes', 'no');";
