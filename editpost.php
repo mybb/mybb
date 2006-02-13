@@ -445,7 +445,8 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 	}
-	if(!$mybb->input['removeattachment'] && !$mybb->input['newattachment'] && !$mybb->input['previewpost'] && !$maximageserror) {
+	if(!$mybb->input['removeattachment'] && !$mybb->input['newattachment'] && !$mybb->input['previewpost'] && !$maximageserror)
+	{
 		$message = $post['message'];
 		$subject = $post['subject'];
 	}
@@ -463,65 +464,87 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 		LIMIT 0,1
 	");
 	$firstcheck = $db->fetch_array($query);
-	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != "no" && $thread['poll'] < 1) {
+	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != "no" && $thread['poll'] < 1)
+	{
 		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		$numpolloptions = "2";
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
 
-	if($mybb->input['previewpost'] || $maximageserror) {
+	if($mybb->input['previewpost'] || $maximageserror)
+	{
 		$previewmessage = $message;
 		$message = htmlspecialchars_uni($message);
 		$subject = htmlspecialchars_uni($subject);
 
 		$postoptions = $mybb->input['postoptions'];
 
-		if($postoptions['signature'] == "yes") {
+		if($postoptions['signature'] == "yes")
+		{
 			$postoptionschecked['signature'] = "checked";
 		}
-		if($postoptions['emailnotify'] == "yes") {
+		if($postoptions['emailnotify'] == "yes")
+		{
 			$postoptionschecked['emailnotify'] = "checked";
 		}
-		if($postoptions['disablesmilies'] == "yes") {
+		if($postoptions['disablesmilies'] == "yes")
+		{
 			$postoptionschecked['disablesmilies'] = "checked";
 		}
 
-		if(!$mybb->input['username']) {
-			$username = "Guest";
-		}
-		else
+		// If user is not logged in, find out if a username was entered.
+		if(!$mybb->user['uid'])
 		{
-			$username = htmlspecialchars_uni($mybb->input['username']);
+			if($mybb->input['username'])
+			{
+				$username = htmlspecialchars_uni($mybb->input['username']);
+			}
+			else
+			{
+				$username = $lang->guest;
+			}
 		}
 
-		if($username && !$mybb->user['uid']) {
+		// If the user is not logged in, see if the user tried.
+		if($username && !$mybb->user['uid'])
+		{
 			$query = $db->query("
 				SELECT *
 				FROM ".TABLE_PREFIX."users
 				WHERE username='$username'
 			");
 			$user = $db->fetch_array($query);
-			if($user['password'] == md5($password) && $user['username']) {
+			if($user['password'] == md5($mybb->input['password']) && $user['username'])
+			{
 				$mybb->user['username'] = $user['username'];
 				$mybb->user['uid'] = $user['uid'];
 			}
 		}
 
+		$pid = intval($mybb->input['pid']);
+		
+		// Figure out the poster's uid and username.
+		$options = array(
+			"limit" => 1
+		);
+		$query = $db->simple_select(TABLE_PREFIX."posts", "uid, username", "pid=".$pid, $options);
+		$post_poster = $db->fetch_array($query);
+		
+		// Figure out the poster's other information.
 		$query = $db->query("
 			SELECT u.*, f.*, i.path as iconpath, i.name as iconname
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='$icon')
-			WHERE u.uid='".$mybb->user[uid]."'
+			WHERE u.uid='".$post_poster['uid']."'
+			LIMIT 1
 		");
 		$postinfo = $db->fetch_array($query);
-
-		if(!$mybb->user['uid'] || !$postinfo['username']) {
-			$postinfo['username'] = $username;
-		} else {
-			$postinfo['userusername'] = $mybb->user['username'];
-			$postinfo['username'] = $mybb->user['username'];
-		}
+		
+		// Set the values of the post info array.
+		$postinfo['username'] = $post_poster['username'];
+		$postinfo['userusername'] = $post_poster['username'];
+		$postinfo['uid'] = $post_poster['uid'];
 		$postinfo['message'] = $previewmessage;
 		$postinfo['subject'] = $subject;
 		$postinfo['icon'] = $icon;
@@ -530,7 +553,9 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 
 		$postbit = makepostbit($postinfo, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
-	} else {
+	}
+	else
+	{
 		$message = htmlspecialchars_uni($message);
 		$subject = htmlspecialchars_uni($subject);
 
