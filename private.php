@@ -720,7 +720,7 @@ elseif($mybb->input['action'] == "do_folders" && $mybb->request_method == "post"
 			if(substr($key, 0, 3) == "new")
 			{
 				$highestid++;
-				$fid = $highestid;
+				$fid = intval($highestid);
 			}
 			else
 			{
@@ -744,7 +744,7 @@ elseif($mybb->input['action'] == "do_folders" && $mybb->request_method == "post"
 				{
 					$val = "Trash Can";
 				}
-				$fid = $key;
+				$fid = intval($key);
 			}
 			if($val != "")
 			{
@@ -870,6 +870,7 @@ elseif($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 			reset($mybb->input['check']);
 			while(list($key, $val) = each($mybb->input['check']))
 			{
+				$key = intval($key);
 				if($deletepms[$key])
 				{
 					$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='$key' AND uid='".$mybb->user['uid']."'");
