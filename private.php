@@ -773,7 +773,7 @@ elseif($mybb->input['action'] == "do_folders" && $mybb->request_method == "post"
 	$sql_array = array(
 		"pmfolders" => $folders
 	);
-	$db->update_query(TABLE_PREFIX."users", $sql_array, "uid='".$mybb->user['uid']);
+	$db->update_query(TABLE_PREFIX."users", $sql_array, "uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks("private_do_folders_end");
 	redirect("private.php", $lang->redirect_pmfoldersupdated);
 }
