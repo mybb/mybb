@@ -486,7 +486,7 @@ if($mybb->input['action'] == "add") {
 	startform("forums.php", "" , "do_add");
 	starttable();
 	tableheader($lang->add_forum);
-	makeinputcode($lang->name, "name", $fname);
+	makeinputcode($lang->name, "name", $mybb->input['fname']);
 	maketextareacode($lang->description, "description");
 	makeinputcode($lang->forumlink, "linkto");
 	makeinputcode($lang->disporder, "disporder", "1", "4");
