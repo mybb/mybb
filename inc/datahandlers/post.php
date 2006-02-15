@@ -46,13 +46,11 @@ class PostDataHandler extends DataHandler
 	{
 		global $db;
 		
-		$pid = intval($pid);		
-		$query = $db->query("
-			SELECT tid, replyto, fid, subject, icon, uid, username, dateline, message, ipaddress, includesig, smilieoff, edituid, edittime, visible
-			FROM ".TABLE_PREFIX."posts
-			WHERE pid = ".$pid."
-			LIMIT 1
-		");
+		$pid = intval($pid);
+		$options = array(
+			"limit" => 1
+		);
+		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid=".$pid, $options);
 		$post = $db->fetch_array($query);
 		
 		return $post;
@@ -133,6 +131,8 @@ class PostDataHandler extends DataHandler
 		// Clean the post options for this post.
 		$post = $post->get_options($post);
 
+		$plugins->run_hooks("datahandler_post_validate");
+		
 		// We are done validating, return.
 		$this->set_validated(true);
 		if(empty($this->get_errors()))
@@ -148,7 +148,7 @@ class PostDataHandler extends DataHandler
 	/**
 	 * Assigns post options to the post data array.
 	 *
-	 * @param array The post data array.
+	 * @param array A reference to the post data array.
 	 */
 	function get_options(&$post)
 	{
@@ -360,13 +360,13 @@ class PostDataHandler extends DataHandler
 		}
 		
 		// Check if this is the first post in a thread.
-		$query = $db->query("
-			SELECT pid
-			FROM ".TABLE_PREFIX."posts
-			WHERE tid='$tid'
-			ORDER BY dateline ASC
-			LIMIT 0,1
-		");
+		$options = array(
+			"orderby" => "dateline",
+			"order_dir" => "asc",
+			"limit_start" => 0,
+			"limit" => 1
+		);
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$pid, $options);
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $pid)
 		{
@@ -409,6 +409,8 @@ class PostDataHandler extends DataHandler
 			$updatepost['edittime'] = time();
 		}
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid=$pid");
+		
+		$plugins->run_hooks("datahandler_post_update");
 	}
 	
 	/**
@@ -418,17 +420,18 @@ class PostDataHandler extends DataHandler
 	 * @param int The thread id of the thread the post is in.
 	 * @param int The forum id of the forum the post is in.
 	 */
-	function delete_post($pid, $tid, $fid)
+	function delete_by_pid($pid, $tid, $fid)
 	{
 		global $db;
 		
-		/* Is this the first post of a thread? If so, we'll need to delete the whole thread. */
-		$query = $db->query("
-			SELECT pid FROM ".TABLE_PREFIX."posts
-			WHERE tid='$tid'
-			ORDER BY dateline ASC
-			LIMIT 0,1
-		");
+		// Is this the first post of a thread? If so, we'll need to delete the whole thread.
+		$options = array(
+			"orderby" => "dateline",
+			"order_dir" => "asc",
+			"limit_start" => 0,
+			"limit" => 1
+		);
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$pid, $options);
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $pid)
 		{
@@ -439,7 +442,7 @@ class PostDataHandler extends DataHandler
 			$firstpost = false;
 		}
 		
-		/* Delete the whole thread or this post only? */
+		// Delete the whole thread or this post only?
 		if($firstpost === true)
 		{
 			deletethread($tid);

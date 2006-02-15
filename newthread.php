@@ -150,12 +150,7 @@ if($mybb->input['action'] == "do_newthread" && !$mybb->input['savedraft'])
 
 if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft")
 {
-<<<<<<< .mine
 	$plugins->run_hooks("newthread_start");
-=======
->>>>>>> .r1142
-
-<<<<<<< .mine
 	if($mybb->input['previewpost'] || $mybb->input['removeattachment'] || $mybb->input['newattachment'] || $maximageserror)
 	{
 		$postoptions = $mybb->input['postoptions'];
