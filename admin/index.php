@@ -262,11 +262,8 @@ makenavselect($lang->nav_users_groups);
 
 makenavoption($lang->nav_smilie_manager, "smilies.php?action=modify");
 makenavoption($lang->nav_manage_badwords, "badwords.php?action=modify");
+makenavoption($lang->nav_custom_mycode, "mycode.php?action=modify");
 makenavselect($lang->nav_message_filters);
-
-makenavoption($lang->nav_add, "mycode.php?action=add");
-makenavoption($lang->nav_modify_delete, "mycode.php?action=modify");
-makenavselect($lang->nav_mycode);
 
 makenavoption($lang->nav_add, "themes.php?action=add");
 makenavoption($lang->nav_modify_delete, "themes.php?action=modify");

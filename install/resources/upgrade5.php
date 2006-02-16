@@ -40,11 +40,14 @@ function upgrade5_dbchanges()
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET optionscode='select\r\ninstant=Instant Activation\r\nverify=Send Email Verification\r\nrandompass=Send Random Password\r\nadmin=Administrator Activation' WHERE name = 'regtype'");
 	$db->query("UPDATE ".TABLE_PREFIX."users SET totalpms='-1', newpms='-1', unreadpms='-1'");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mycodes");	
-	$db->query("CREATE TABLE ".TABLE_PREFIX."mycodes (
-			cid int unsigned NOT NULL auto_increment,
-			regex varchar(255) NOT NULL default '',
-			replacement varchar(255) NOT NULL default '',
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mycode");	
+	$db->query("CREATE TABLE ".TABLE_PREFIX."mycode (
+		    cid int unsigned NOT NULL auto_increment,
+		    title varchar(100) NOT NULL default '',
+		    description text NOT NULL default '',
+		    regex varchar(255) NOT NULL default '',
+		    replacement varchar(255) NOT NULL default '',
+		    active char(3) NOT NULL default '',
 			PRIMARY KEY(cid)
 		) TYPE=MyISAM;");
 

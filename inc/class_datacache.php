@@ -431,22 +431,22 @@ class datacache
 	}
 
 	/**
-	 * Update mycodes cache.
+	 * Update mycode cache.
 	 *
 	 */
-	function updatemycodes()
+	function updatemycode()
 	{
 		global $db;
 		$query = $db->query("
 			SELECT regex, replacement
-			FROM ".TABLE_PREFIX."mycodes
+			FROM ".TABLE_PREFIX."mycode
 			WHERE active='yes'
 		");
 		while($mycode = $db->fetch_array($query))
 		{
 			$mycodes[] = $mycode;
 		}
-		$this->update("mycode", $mycode);
+		$this->update("mycode", $mycodes);
 	}
 }
 ?>

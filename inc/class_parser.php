@@ -203,6 +203,10 @@ class postParser
 
 		if(is_array($custom_mycode))
 		{
+			foreach($custom_mycode as $key => $mycode)
+			{
+				$custom_mycode[$key]['regex'] = "#".$mycode['regex']."#si";
+			}
 			$mycode = array_merge($standard_mycode, $custom_mycode);
 		}
 		else

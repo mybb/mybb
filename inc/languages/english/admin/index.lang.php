@@ -113,7 +113,7 @@ $l['nav_recount_stats'] = "Recount Stats";
 $l['nav_maintenance'] = "Maintenance";
 $l['nav_view_phpinfo'] = "View PHP Info";
 $l['nav_find_updated'] = "Find Updated";
-$l['nav_mycode'] = "MyCode";
+$l['nav_custom_mycode'] = "Custom MyCode";
 
 $l['mybb_admin'] = "MyBB Administration";
 

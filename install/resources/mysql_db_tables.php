@@ -275,8 +275,10 @@ $tables[] = "CREATE TABLE mybb_moderators (
   PRIMARY KEY  (mid)
 ) TYPE=MyISAM;";
 
-$tables[] = "CREATE TABLE mybb_mycodes (
+$tables[] = "CREATE TABLE mybb_mycode (
   cid int unsigned NOT NULL auto_increment,
+  title varchar(100) NOT NULL default '',
+  description text NOT NULL default '',
   regex varchar(255) NOT NULL default '',
   replacement varchar(255) NOT NULL default '',
   active char(3) NOT NULL default '',
