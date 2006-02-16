@@ -15,6 +15,11 @@ require "./global.php";
 // Load global language phrases
 $lang->load("reputation");
 
+if($mybb->settings['enablereputation'] != "yes")
+{
+	error($lang->reputation_disabled);
+}
+
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='".intval($mybb->input['pid'])."'");
 $post = $db->fetch_array($query);
 
@@ -99,7 +104,7 @@ if($mybb->input['action'] == "do_add")
 		}
 		eval("\$reputation = \"".$templates->get("reputation")."\";");
 		outputpage($reputation);
-	}	
+	}
 }
 else
 {

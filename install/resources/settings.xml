@@ -160,7 +160,7 @@
 	<settinggroup name="Forum Display Options" description="This section allows you to manage the various settings used on the forum display (forumdisplay.php) of your boards such as enabling and disabling different features." disporder="6" isdefault="yes">
 		<setting name="threadsperpage">
 			<title>Threads Per Page</title>
-			<description><![CDATA[]]></description>
+			<description><![CDATA[The number of threads to display per page on the forum display]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
@@ -615,6 +615,16 @@ show=Show to all Users]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
+	<settinggroup name="Reputation" description="" disporder="10" isdefault="yes">
+		<setting name="enablereputation">
+			<title>Enable Reputation Functionality</title>
+			<description><![CDATA[If you wish to disable the reputation system on your board, set this option to no.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[yes]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+	</settinggroup>
 	<settinggroup name="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="11" isdefault="yes">
 		<setting name="enablepms">
 			<title>Enable Private Messaging Functionality</title>
@@ -787,7 +797,7 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[on]]></settingvalue>
 			<helpkey></helpkey>
-		</setting>		
+		</setting>
 	</settinggroup>
 	<settinggroup name="User Registration and Profile Options" description="Here you can control various settings with relation to user account registration and account management." disporder="8" isdefault="yes">
 		<setting name="sigmycode">

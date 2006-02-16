@@ -125,7 +125,7 @@ switch($mybb->input['action'])
 		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
 		redirect("showthread.php?tid=$tid", $redirect);
 		break;
-	
+
 	// Stick or unstick that post to the top bab!
 	case "stick";
 		if(ismod($fid, "canmanagethreads") != "yes")
@@ -174,7 +174,7 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_removeredirects");
 
 		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE closed='moved|$tid'");
-	
+
 		updateforumcount($fid);
 		logmod($modlogdata, $lang->redirects_removed);
 		redirect("showthread.php?tid=$tid", $lang->redirect_redirectsremoved);
@@ -305,7 +305,7 @@ switch($mybb->input['action'])
 		updateforumcount($fid);
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadapproved);
 		break;
-	
+
 	// Unapprove a thread
 	case "unapprovethread":
 		if(ismod($fid, "canopenclosethreads") != "yes")
@@ -341,7 +341,7 @@ switch($mybb->input['action'])
 			nopermission();
 		}
 		$posts = "";
-		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");	
+		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
 		{
@@ -419,7 +419,7 @@ switch($mybb->input['action'])
 		updateforumcount($fid);
 		redirect($url, $lang->redirect_postsdeleted);
 		break;
-	
+
 	// Merge selected posts selection screen
 	case "mergeposts":
 		addnav($lang->nav_mergeposts);
@@ -429,7 +429,7 @@ switch($mybb->input['action'])
 			nopermission();
 		}
 		$posts = "";
-		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");	
+		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
 		{
@@ -508,7 +508,7 @@ switch($mybb->input['action'])
 				if($post['visible'] == 0)
 				{
 					$num_unapproved_posts++;
-				}				
+				}
 			}
 			$first = 0;
 		}
@@ -537,7 +537,7 @@ switch($mybb->input['action'])
 		logmod($modlogdata, $lang->merged_selective_posts);
 		redirect("showthread.php?tid=$tid", $lang->redirect_mergepsots);
 		break;
-	
+
 	// Move a thread
 	case "move":
 		addnav($lang->nav_move);
@@ -676,7 +676,7 @@ switch($mybb->input['action'])
 		if($thread['visible'] == 0)
 		{
 			$unapproved_threads = 1;
-		} 
+		}
 		else
 		{
 			$unapproved_threads = 0;
@@ -711,7 +711,7 @@ switch($mybb->input['action'])
 		updateforumcount($fid);
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadmoved);
 		break;
-	
+
 	// Thread notes editor
 	case "threadnotes":
 		addnav($lang->nav_threadnotes);
@@ -748,7 +748,7 @@ switch($mybb->input['action'])
 			{
 				$info .= "<strong>$lang->post</strong> <a href=\"showthread.php?tid=".$modaction['tid']."&pid=".$modaction['pid']."#pid".$modaction['pid']."\">".$modaction['psubject']."</a>";
 			}
-	
+
 			eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
 			if($trow == "trow2")
 			{
@@ -769,7 +769,7 @@ switch($mybb->input['action'])
 		eval("\$threadnotes = \"".$templates->get("moderation_threadnotes")."\";");
 		outputpage($threadnotes);
 		break;
-	
+
 	// Update the thread notes!
 	case "do_threadnotes":
 		if(ismod($fid, "canmanagethreads") != "yes")
@@ -794,7 +794,7 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-	
+
 		$hostname = @gethostbyaddr($post['ipaddress']);
 		if(!$hostname || $hostname == $post['ipaddress'])
 		{
@@ -826,7 +826,7 @@ switch($mybb->input['action'])
 		}
 
 		$plugins->run_hooks("moderation_do_merge");
-	
+
 		// get thread to merge's tid
 		$splitloc = explode(".php", $mybb->input['threadurl']);
 		$temp = explode("&", substr($splitloc[1], 1));
@@ -860,7 +860,7 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-	
+
 		$pollsql = '';
 		if($mergethread['poll'])
 		{
@@ -897,7 +897,7 @@ switch($mybb->input['action'])
 		if($mergethread['visible'] == 0)
 		{
 			$unapproved_threads = 1;
-		} 
+		}
 		else
 		{
 			$unapproved_threads = 0;
@@ -943,13 +943,13 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");	
+		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");
 		$numposts = $db->num_rows($query);
 		if($numposts <= "1")
 		{
 			error($lang->error_cantsplitonepost);
 		}
-	
+
 		$altbg = "trow1";
 		$posts = '';
 		while($post = $db->fetch_array($query))
@@ -1003,7 +1003,7 @@ switch($mybb->input['action'])
 		}
 		$query = $db->query("SELECT COUNT(*) AS totalposts FROM ".TABLE_PREFIX."posts WHERE tid='".intval($mybb->input['tid'])."'");
 		$count = $db->fetch_array($query);
-		
+
 		if(!is_array($mybb->input['splitpost']))
 		{
 			error($lang->error_nosplitposts);
@@ -1015,7 +1015,7 @@ switch($mybb->input['action'])
 		if($mybb->input['moveto'])
 		{
 			$moveto = intval($mybb->input['moveto']);
-		} 
+		}
 		else
 		{
 			$moveto = $fid;
@@ -1040,7 +1040,7 @@ switch($mybb->input['action'])
 		);
 		$db->insert_query(TABLE_PREFIX."threads", $query);
 		$newtid = $db->insert_id();
-		
+
 		// move the selected posts over
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
 		while($post = $db->fetch_array($query))
@@ -1055,7 +1055,7 @@ switch($mybb->input['action'])
 			}
 			markreports($post['pid'], "post");
 		}
-		
+
 		// Update the subject of the first post in the new thread
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$newtid' ORDER BY dateline ASC LIMIT 1");
 		$newthread = $db->fetch_array($query);
@@ -1096,7 +1096,7 @@ switch($mybb->input['action'])
 		updateforumcount($fid);
 		redirect("showthread.php?tid=$newtid", $lang->redirect_threadsplit);
 		break;
-	
+
 	// Delete Threads - Inline moderation
 	case "multideletethreads":
 		addnav($lang->nav_multi_deletethreads);
@@ -1259,7 +1259,7 @@ switch($mybb->input['action'])
 		updateforumcount($fid);
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsunapproved);
 		break;
-	
+
 	// Stick threads - Inline moderation
 	case "multistickthreads":
 		if(ismod($fid, "canopenclosethreads") != "yes")
@@ -1542,7 +1542,7 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");	
+		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");
 		$numposts = $db->num_rows($query);
 		if($numposts <= "1")
 		{
@@ -1792,7 +1792,7 @@ switch($mybb->input['action'])
 		$rids = addslashes("'0','$rids'");
 
 		$plugins->run_hooks("moderation_do_reports");
-		
+
 		$sqlarray = array(
 			"reportstatus" => 1,
 			);
@@ -1855,7 +1855,7 @@ function getids($id, $type)
 	{
 		if($id != '')
 		{
-			$newids[] = iintval($id);
+			$newids[] = intval($id);
 		}
 	}
 	return $newids;

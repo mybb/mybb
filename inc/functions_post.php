@@ -34,7 +34,7 @@ function domecode($message, $username)
 	global $lang;
 	$message = preg_replace('#^/me (.*)$#im', "<span style=\"color: red;\">* $username \\1</span>", $message);
 	$message = preg_replace('#^/slap (.*)#iem', "'<span style=\"color: red;\">* $username $lang->slaps '.str_replace('<br />', '', '\\1').' $lang->with_trout</span><br />'", $message);
-	return $message;	
+	return $message;
 }
 
 function makepostbit($post, $pmprevann=0)
@@ -136,7 +136,7 @@ function makepostbit($post, $pmprevann=0)
 	{
 		$usergroup = $groupscache[1];
 	}
-	
+
 	if(!is_array($titlescache))
 	{
 		// Get user titles (i guess we should improve this, maybe in version3.
@@ -147,7 +147,7 @@ function makepostbit($post, $pmprevann=0)
 		}
 		unset($usertitle);
 	}
-	
+
 	// Work out the usergroup/title stuff
 	if(!empty($usergroup['image']))
 	{
@@ -198,7 +198,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['stars'] = $usergroup['stars'];
 		}
-		
+
 		if(!$post['starimage'])
 		{
 			$post['starimage'] = $usergroup['starimage'];
@@ -212,7 +212,7 @@ function makepostbit($post, $pmprevann=0)
 			$post['userstars'] .= "<br />";
 		}
 		$post['postnum'] = mynumberformat($post['postnum']);
-		
+
 		// Determine the status to show for the user (Online/Offline/Away)
 		$timecut = time() - $mybb->settings['wolcutoff'];
 		if($post['lastactive'] > $timecut && ($post['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes") && $post['lastvisit'] != $post['lastactive'])
@@ -266,7 +266,7 @@ function makepostbit($post, $pmprevann=0)
 		$post['userregdate'] = mydate($mybb->settings['regdateformat'], $post['regdate']);
 
 		// Work out the reputation this user has
-		if($usergroup['usereputationsystem'] != "no")
+		if($usergroup['usereputationsystem'] != "no" && $mybb->settings['enablereputation'] == "yes" && $mybb->user['uid'] != $post['uid'])
 		{
 			if($mybb->usergroup['cangivereputations'] == "yes")
 			{

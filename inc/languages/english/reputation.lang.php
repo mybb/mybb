@@ -1,4 +1,6 @@
 <?php
+$l['reputation_disabled'] = "You cannot use the reputation system as it has been disabled by the Administrator.";
+
 $l['reputation'] = "Reputation";
 $l['error'] = "Error";
 $l['error_own_reputation'] = "You cannot add to or remove points from your own reputation.";
