@@ -87,11 +87,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	$username = $mybb->input['username'];
 
+	// Fix bad characters
+	$username = str_replace(array(chr(160), chr(173)), array(" ", "-"), $username);
+
 	// Remove multiple spaces from the username
 	$username = preg_replace("#\s{2,}#", " ", $username);
-	// Fix bad characters
-	$username = preg_replace("#".chr(160)."#", " ", $username);
-	$username = preg_replace("#".chr(173)."#", "-", $username);
+
 
 	if(!trim($username))
 	{
