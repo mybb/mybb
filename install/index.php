@@ -119,7 +119,7 @@ function license_agreement()
 	global $output;
 
 	$output->print_header("License Agreement", "license");
-	
+
 	echo <<<END
 		<div class="license_agreement">
 		<h3>IMPORTANT—READ CAREFULLY:</h3>
@@ -165,22 +165,22 @@ The MyBB  SOFTWARE and documentation are provided with RESTRICTED RIGHTS. Use, d
 <li>MyBulletinBoard reserves the right to make modifications to this License Grant at any given time and will apply to all current and existing copies of the MyBB Software.</li>
 </ul>
 </div>
-<p><strong>By clicking Next, you agree to the terms stated in the MyBB License Agreement above.</strong></p>	
+<p><strong>By clicking Next, you agree to the terms stated in the MyBB License Agreement above.</strong></p>
 END;
 	$output->print_footer("requirements_check");
-}	
+}
 
 function requirements_check()
 {
 	global $output, $myver;
 
 	$output->print_header("Requirements Check", "requirements");
-	
+
 	echo "<p>Before you can install MyBB, we must check that you meet the minimum requirements for installation.</p>";
-	
+
 	$errors = array();
 	$showerror = 0;
-	
+
 	// Check PHP Version
 	$phpversion = @phpversion();
 	if($phpversion < "4.1.0")
@@ -263,7 +263,7 @@ function requirements_check()
 		<tr>
 			<td class="talt2">PHP XML Extensions:</td>
 			<td class="talt2">$xmlstatus</td>
-		</tr>			
+		</tr>
 		<tr>
 			<td class="talt1">Configuration File Writable:</td>
 			<td class="talt1">$configstatus</td>
@@ -271,7 +271,7 @@ function requirements_check()
 		<tr>
 			<td class="talt2">Settings File Writable:</td>
 			<td class="talt2">$settingsstatus</td>
-		</tr>			
+		</tr>
 		<tr>
 			<td class="talt1">File Uploads Directory Writable:</td>
 			<td class="talt1">$uploadsstatus</td>
@@ -372,7 +372,7 @@ function database_info()
 
 	</table>
 END;
-	
+
 	echo "<p>Once you've checked these details are correct, click next to continue.</p>";
 
 	$output->print_footer("create_tables");
@@ -381,7 +381,7 @@ END;
 function create_tables()
 {
 	global $output, $myver, $dbinfo, $errors, $mybb;
-	
+
 	if(!file_exists("../inc/db_".$mybb->input['dbengine'].".php"))
 	{
 		$errors[] = "You have selected an invalid database engine. Please make your selection from the list below.";
@@ -419,7 +419,7 @@ function create_tables()
 		"\n/* Datacache Configuration */\n".
 		"\n/* files = Stores datacache in files inside /inc/cache/ (Must be writable)*/\n".
 		"\n/* db = Stores datacache in the database*/\n".
-		"\$config['cachestore'] = \"db\";\n". 
+		"\$config['cachestore'] = \"db\";\n".
 		"?>";
 	$file = fopen("../inc/config.php", "w");
 	fwrite($file, $configdata);
@@ -428,7 +428,7 @@ function create_tables()
 	$output->print_header("Table Creation", "createtables");
 
 	echo "<p>Connection to the database server and table you specified was successful. The MyBB database tables will now be created.</p>";
-	
+
 	require "./resources/".$mybb->input['dbengine']."_db_tables.php";
 	while(list($key, $val) = each($tables))
 	{
@@ -460,7 +460,7 @@ function populate_tables()
 	define("TABLE_PREFIX", $config['table_prefix']);
 	$db->connect($config['hostname'], $config['username'], $config['password']);
 	$db->select_db($config['database']);
-	
+
 	$output->print_header("Table Population", "tablepopulate");
 	$contents = "<p>Now that the basic tables have been created, it's time to insert the default data.</p>";
 
@@ -499,7 +499,7 @@ function insert_templates()
 	$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,css,cssbits,themebits,extracss) VALUES ('MyBB Master Style','0','','','','')");
 	$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,def,css,cssbits,themebits,extracss) VALUES ('MyBB Default','1','1','','','','')");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('Default Templates');");
-	$templateset = $db->insert_id();	
+	$templateset = $db->insert_id();
 	$arr = @file("./resources/mybb_theme.xml");
 	$contents = @implode("", $arr);
 
@@ -521,7 +521,7 @@ function insert_templates()
 		$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$sid','$templateversion','','$time')");
 	}
 	update_theme(1, 0, $themebits, $css, 0);
-	
+
 	echo "<p>The default theme and template sets have been successfully inserted. Click Next to configure the basic options for your board.</p>";
 
 	$output->print_footer("configuration");
@@ -732,9 +732,9 @@ function create_admin_user()
 		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".addslashes($mybb->input['cookiepath'])."' WHERE name='cookiepath'");
 		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".addslashes($mybb->input['contactemail'])."' WHERE name='adminemail'");
 		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='mailto:".addslashes($mybb->input['contactemail'])."' WHERE name='contactlink'");
-		
+
 		write_settings();
-		
+
 		echo "<p>You need to create an initial administrator account for you to login and manage your copy of MyBB. Please fill in the required fields below to create this account.</p>";
 	}
 
@@ -792,7 +792,7 @@ function install_done()
 	{
 		create_admin_user();
 	}
-	
+
 	require "../inc/config.php";
 	require "../inc/db_".$config['dbtype'].".php";
 	$db=new databaseEngine;
@@ -851,15 +851,15 @@ function install_done()
 		);
 	$db->insert_query(TABLE_PREFIX."users", $newuser);
 	$uid = $db->insert_id();
-	
+
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('$uid','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
 	// Automatic Login
 	mysetcookie("mybbadmin", $uid."_".$loginkey);
 	mysetcookie("mybbuser", $uid."_".$loginkey);
 	ob_end_flush();
 	echo "done</p>";
-	
-	
+
+
 	// Make fulltext column
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD FULLTEXT KEY subject_2 (subject)", 1);
 
@@ -877,9 +877,9 @@ function install_done()
 	$cache->updateforums();
 	$cache->updateusertitles();
 	$cache->updatereportedposts();
-	$cache->updatemycodes();
+	$cache->updatemycode();
 	echo "done</p>";
-	
+
 	echo "<p>Your copy of MyBB has successfully been installed and configured correctly.</p>";
 	echo "<p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become apart of the MyBB community.</p>";
 
