@@ -168,7 +168,7 @@ if($mybb->input['action'] == "thread")
 		$optionsarray = explode("||~|~||", $poll['options']);
 		$votesarray = explode("||~|~||", $poll['votes']);
 		$poll['question'] = htmlspecialchars_uni($poll['question']);
-		
+		$polloptions = '';
 		/* Loop through the poll options. */
 		for($i=1; $i<=$poll['numoptions']; ++$i)
 		{
@@ -473,6 +473,7 @@ if($mybb->input['action'] == "thread")
 
 		// Lets get the pid's of the posts on this page
 		$pids = "";
+		$comma = '';
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' $visible ORDER BY dateline LIMIT $start, $perpage");
 		while($getid = $db->fetch_array($query))
 		{
@@ -497,6 +498,7 @@ if($mybb->input['action'] == "thread")
 
 		// Lets get the actual posts
 		$pfirst = true;
+		$posts = '';
 		$query = $db->query("SELECT u.*, u.username AS userusername, p.*, f.*, i.path as iconpath, i.name as iconname, eu.username AS editusername FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon) LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid) WHERE $pids ORDER BY p.dateline");
 		while($post = $db->fetch_array($query))
 		{
@@ -505,7 +507,7 @@ if($mybb->input['action'] == "thread")
 				$post['visible'] = 0;
 			}
 			$posts .= makepostbit($post);
-			$post = "";
+			$post = '';
 			$pfirst = false;
 		}
 		$plugins->run_hooks("showthread_linear");
@@ -523,6 +525,7 @@ if($mybb->input['action'] == "thread")
 			LIMIT 0, ".$mybb->settings['similarlimit']
 		);
 		$count = 0;
+		$similarthreadbits = '';
 		while($similarthread = $db->fetch_array($query))
 		{
 			if($similarthread['relevance'] >= $mybb->settings['similarityrating'])

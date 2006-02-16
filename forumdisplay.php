@@ -87,8 +87,8 @@ if($forums)
 // Expand (or Collapse) forums
 if($mybb->input['action'] == "expand")
 {
-	mysetcookie("fcollapse[$fid]", "");
-	$fcollapse[$fid] = "";
+	mysetcookie("fcollapse[$fid]", '');
+	$fcollapse[$fid] = '';
 }
 elseif($mybb->input['action'] == "collapse")
 {
@@ -121,7 +121,8 @@ if($fpermissions['cansearch'] != "no" && $foruminfo['type'] == "f")
 	eval("\$searchforum = \"".$templates->get("forumdisplay_searchforum")."\";");
 }
 
-$modcomma = "";
+$modcomma = '';
+$modlist = '';
 $parentlistexploded = explode(",", $parentlist);
 while(list($key, $mfid) = each($parentlistexploded))
 {
@@ -146,10 +147,11 @@ if($modlist)
 if($mybb->settings['browsingthisforum'] != "off")
 {
 	$timecut = time() - $mybb->settings['wolcutoff'];
-	$comma = "";
+	$comma = '';
 	$guestcount = 0;
 	$membercount = 0;
 	$inviscount = 0;
+	$onlinemembers = '';
 	$query = $db->query("SELECT s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timecut' AND location1='$fid' AND nopermission!=1 ORDER BY u.username");
 	while($user = $db->fetch_array($query))
 	{
@@ -170,7 +172,7 @@ if($mybb->settings['browsingthisforum'] != "off")
 				}
 				else
 				{
-					$invisiblemark = "";
+					$invisiblemark = '';
 				}
 				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] =="yes" || $user['uid'] == $mybb->user['uid'])
 				{
@@ -202,7 +204,7 @@ if($mybb->settings['browsingthisforum'] != "off")
 }
 
 // Do we have any forum rules to show for this forum?
-$forumrules = "";
+$forumrules = '';
 if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 {
 	if(!$foruminfo['rulestitle'])
@@ -243,7 +245,7 @@ if(ismod($fid) == "yes")
 }
 else
 {
-	$inlinemod = "";
+	$inlinemod = '';
 	$ismod = false;
 }
 
@@ -281,7 +283,7 @@ if($datecut != "1000")
 }
 else
 {
-	$datecutsql = "";
+	$datecutsql = '';
 }
 
 /* Pick the sort order */
@@ -384,7 +386,7 @@ if($foruminfo['allowtratings'] != "no")
 }
 else
 {
-	$ratingadd = "";
+	$ratingadd = '';
 	$lpbackground = "trow1";
 	$colspan = "7";
 }
@@ -395,7 +397,8 @@ if($ismod)
 }
 
 // Get Announcements
-$limit = "";
+$limit = '';
+$announcements = '';
 if($mybb->settings['announcementlimit'])
 {
 	$limit = "LIMIT 0, ".$mybb->settings['announcementlimit'];
@@ -424,7 +427,7 @@ while($announcement = $db->fetch_array($query))
 	}
 	else
 	{
-		$rating = "";
+		$rating = '';
 		$lpbackground = "trow1";
 	}
 	if($ismod)
@@ -433,7 +436,7 @@ while($announcement = $db->fetch_array($query))
 	}
 	else
 	{
-		$modann = "";
+		$modann = '';
 	}
 	eval("\$announcements  .= \"".$templates->get("forumdisplay_announcements_announcement")."\";");
 	if($bgcolor == "trow2")
@@ -491,6 +494,7 @@ if($mybb->user['lastvisit'] > $forumread)
 
 
 $unreadpost = 0;
+$threads = '';
 if($threadcache)
 {
 	foreach($threadcache as $thread)
@@ -511,8 +515,8 @@ if($threadcache)
 		{
 			$bgcolor = "trow2";
 		}
-		$folder = "";
-		$prefix = "";
+		$folder = '';
+		$prefix = '';
 		
 		$thread['author'] = $thread['uid'];
 		if(!$thread['username'])
@@ -534,7 +538,7 @@ if($threadcache)
 		{
 			$icon = "&nbsp;";
 		}
-		$prefix = "";
+		$prefix = '';
 		if($thread['poll']) {
 			$prefix = $lang->poll_prefix;
 		}
@@ -551,12 +555,12 @@ if($threadcache)
 		}
 		
 		// Determine the folder
-		$folder = "";
+		$folder = '';
 		if($thread['doticon'])
 		{
 			$folder = "dot_";
 		}
-		$gotounread = "";
+		$gotounread = '';
 		$isnew = 0;
 		$donenew = 0;
 		$lastread = 0;
@@ -613,7 +617,7 @@ if($threadcache)
 			$ratingvotesav = sprintf($lang->rating_votes_average, $thread['numratings'], $thread['averagerating']);
 			eval("\$rating = \"".$templates->get("forumdisplay_thread_rating")."\";");
 		} else {
-			$rating = "";
+			$rating = '';
 		}
 		/* Woah, way too many queries here!
 
@@ -633,9 +637,9 @@ if($threadcache)
 		*/
 
 		$thread['pages'] = 0;
-		$thread['multipage'] = "";
-		$threadpages = "";
-		$morelink = "";
+		$thread['multipage'] = '';
+		$threadpages = '';
+		$morelink = '';
 		$thread['posts'] = $thread['replies'] + 1;
 		if($thread['posts'] > $mybb->settings['postsperpage']) {
 			$thread['pages'] = $thread['posts'] / $mybb->settings['postsperpage'];
@@ -651,9 +655,9 @@ if($threadcache)
 			}
 			eval("\$thread[multipage] = \"".$templates->get("forumdisplay_thread_multipage")."\";");
 		} else {
-			$threadpages = "";
-			$morelink = "";
-			$thread['multipage'] = "";
+			$threadpages = '';
+			$morelink = '';
+			$thread['multipage'] = '';
 		}
 
 		if($ismod)
@@ -665,14 +669,14 @@ if($threadcache)
 			}
 			else
 			{
-				$inlinecheck = "";
+				$inlinecheck = '';
 			}
 			$multitid = $thread['tid'];
 			eval("\$modbit = \"".$templates->get("forumdisplay_thread_modbit")."\";");
 		}
 		else
 		{
-			$modbit = "";
+			$modbit = '';
 		}
 		
 		$moved = explode("|", $thread['closed']);
@@ -683,7 +687,7 @@ if($threadcache)
 			$thread['replies'] = "-";
 			$thread['views'] = "-";
 			$folder .= "lock";
-			$gotounread = "";
+			$gotounread = '';
 		}
 
 		$folder .= "folder";
@@ -703,7 +707,7 @@ if($threadcache)
 		}
 		else
 		{
-			$unapproved_posts = "";
+			$unapproved_posts = '';
 		}
 
 		eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
@@ -726,7 +730,7 @@ if($foruminfo['type'] != "c") {
 	{
 		eval("\$threads = \"".$templates->get("forumdisplay_nothreads")."\";");
 	}
-	if($foruminfo['password'] != "")
+	if($foruminfo['password'] != '')
 	{
 		eval("\$clearstoredpass = \"".$templates->get("forumdisplay_threadlist_clearpass")."\";");
 	}
@@ -734,8 +738,8 @@ if($foruminfo['type'] != "c") {
 }
 else
 {
-	$threadslist = "";
-	if($forums == "")
+	$threadslist = '';
+	if($forums == '')
 	{
 		error($lang->error_containsnoforums);
 	}
@@ -810,13 +814,13 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$forumcat = "_forum";
 					}
 					$hideinfo = 0;
-					if($forum['type'] == "f" && $forum['linkto'] == "")
+					if($forum['type'] == "f" && $forum['linkto'] == '')
 					{
-						if($forum['password'] != "" && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+						if($forum['password'] != '' && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 						{
 							$hideinfo = 1;
 						}
-						elseif($forum['lastpost'] == 0 || $forum['lastposter'] == "")
+						elseif($forum['lastpost'] == 0 || $forum['lastposter'] == '')
 						{
 							$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
 						}
@@ -837,7 +841,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 							eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
 						}
 					}
-					if($forum['linkto'] != "" || $hideinfo == 1)
+					if($forum['linkto'] != '' || $hideinfo == 1)
 					{
 						$lastpost = "<center>-</center>";
 						$posts = "-";
@@ -858,7 +862,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 						}
 						else
 						{
-							$unapproved_posts = "";
+							$unapproved_posts = '';
 						}
 						if($forum['unapprovedthreads'])
 						{
@@ -866,15 +870,15 @@ function getforums($pid="0", $depth=1, $permissions="")
 						}
 						else
 						{
-							$unapproved_threads = "";
+							$unapproved_threads = '';
 						}
 					}
 
 					if($mybb->settings['modlist'] != "off")
 					{
-						$moderators = "";
+						$moderators = '';
 						$parentlistexploded = explode(",", $forum['parentlist']);
-						$comma = "";
+						$comma = '';
 						while(list($key, $mfid) = each($parentlistexploded))
 						{
 							if($moderatorcache[$mfid])
@@ -893,12 +897,12 @@ function getforums($pid="0", $depth=1, $permissions="")
 						}
 						else
 						{
-							$modlist = "";
+							$modlist = '';
 						}
 					}
 					if($mybb->settings['showdescriptions'] == "no")
 					{
-						$forum['description'] = "";
+						$forum['description'] = '';
 					}
 					$cname = "cat_".$forum['fid']."_c";
 					
@@ -920,7 +924,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 						if($depth == 2 && $forums)
 						{
 							eval("\$subforums = \"".$templates->get("forumbit_subforums")."\";");
-							$forums = "";
+							$forums = '';
 						}
 					}
 					if($depth != 2 && !$subforums)
@@ -937,7 +941,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 
 					eval("\$forumlisting .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 				}
-				$forums = $subforums = "";
+				$forums = $subforums = '';
 			}
 		}
 	}

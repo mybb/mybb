@@ -62,7 +62,7 @@ if($mybb->input['usersearch'])
 else
 {
 	$query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users");
-	$linkaddon = "";
+	$linkaddon = '';
 }
 
 $num = $db->result($query, 0);
@@ -107,14 +107,14 @@ else
 {
 	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) ORDER BY u.".$mybb->input['by']." ".$mybb->input['order']." LIMIT $start, ".$mybb->settings[membersperpage]);
 }
-
+$member = '';
 while($users = $db->fetch_array($query))
 {
 	$plugins->run_hooks("memberlist_user");
 
-	if($users['website'] == "" || $users['website'] == "http://")
+	if($users['website'] == '' || $users['website'] == "http://")
 	{
-		$usersite = "";
+		$usersite = '';
 	}
 	else
 	{
@@ -125,7 +125,7 @@ while($users = $db->fetch_array($query))
 	$users['location'] = htmlspecialchars_uni(stripslashes($users['location']));
 	if($users['hideemail'] == "yes")
 	{
-		$useremail = "";
+		$useremail = '';
 	}
 	else
 	{

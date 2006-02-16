@@ -57,7 +57,7 @@ elseif($mybb->input['action'] == "clearpass")
 
 	if($mybb->input['fid'])
 	{
-		mysetcookie("forumpass[".intval($mybb->input['fid'])."]", "");
+		mysetcookie("forumpass[".intval($mybb->input['fid'])."]", '');
 		redirect("index.php", $lang->redirect_forumpasscleared);
 	}
 }
@@ -72,7 +72,7 @@ elseif($mybb->input['action'] == "rules")
 
 		$forumpermissions = forum_permissions($forum['fid']);
 
-		if($forum['type'] != "f" || $forum['rules'] == "") {
+		if($forum['type'] != "f" || $forum['rules'] == '') {
 			error($lang->error_invalidforum);
 		}
 		if($forumpermissions['canview'] != "yes") {
@@ -142,6 +142,7 @@ elseif($mybb->input['action'] == "help")
 			$helpdocs[$helpdoc['sid']][$helpdoc['disporder']][$helpdoc['hid']] = $helpdoc;
 		}
 		unset($helpdoc);
+		$sections = '';
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE enabled!='no' ORDER BY disporder");
 		while($section = $db->fetch_array($query))
 		{
@@ -155,12 +156,12 @@ elseif($mybb->input['action'] == "help")
 			if(is_array($helpdocs[$section['sid']]))
 			{
 				$altbg = "trow1";
-				$helpbits = "";
+				$helpbits = '';
 				// Expand (or Collapse) forums
 				if($mybb->input['action'] == "expand")
 				{
-					mysetcookie("fcollapse[$section[sid]]", "");
-					$scollapse[$section['sid']] = "";
+					mysetcookie("fcollapse[$section[sid]]", '');
+					$scollapse[$section['sid']] = '';
 				}
 				elseif($mybb->input['action'] == "collapse")
 				{
@@ -191,7 +192,7 @@ elseif($mybb->input['action'] == "help")
 							}
 						}
 					}
-					$expdisplay = "";
+					$expdisplay = '';
 					$sname = "sid_".$section['sid']."_c";
 					if($collapsed[$sname] == "display: show;")
 					{
@@ -241,9 +242,12 @@ elseif($mybb->input['action'] == "buddypopup")
 	}
 	// Load Buddies
 	$buddies = $mybb->user['buddylist'];
+	$buddys = array();
 	$namesarray = explode(",",$buddies);
 	if(is_array($namesarray))
 	{
+		$comma = '';
+		$sql = '';
 		while(list($key, $buddyid) = each($namesarray))
 		{
 			$sql .= "$comma'$buddyid'";
@@ -259,7 +263,7 @@ elseif($mybb->input['action'] == "buddypopup")
 			}
 			else
 			{
-				$pmbuddy = "";
+				$pmbuddy = '';
 			}
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == "no" || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
@@ -281,10 +285,11 @@ elseif($mybb->input['action'] == "whoposted")
 {
 	$numposts = 0;
 	$altbg = "trow1";
+	$whoposted = '';
 	$query = $db->query("SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='".intval($mybb->input['tid'])."' AND p.visible='1' GROUP BY u.uid ORDER BY posts DESC");
 	while($poster = $db->fetch_array($query))
 	{
-		if($poster['username'] == "")
+		if($poster['username'] == '')
 		{
 			$poster['username'] = $poster['postusername'];
 		}
@@ -304,6 +309,7 @@ elseif($mybb->input['action'] == "whoposted")
 }
 elseif($mybb->input['action'] == "smilies")
 {
+	$smilies = '';
 	if($mybb->input['popup'])
 	{ // make small popup list of smilies
 		$e = 1;
@@ -381,7 +387,7 @@ elseif($mybb->input['action'] == "imcenter")
 	}
 
 	// build im navigation bar
-	$navigationbar = "";
+	$navigationbar = '';
 	if($user['aim'])
 	{
 		$navigationbar .= "<a href=\"misc.php?action=imcenter&imtype=aim&uid=$uid\">$lang->aol_im</a>";
@@ -428,6 +434,7 @@ elseif($mybb->input['action'] == "syndication")
 			$unview[$fid] = 1;
 		}
 		$syndicate = '';
+		$comma = '';
 		foreach($forums as $fid)
 		{
 			if($fid == "all")
@@ -494,11 +501,11 @@ elseif($mybb->input['action'] == "syndication")
 	if($version == "rss2.0")
 	{
 		$rss2check = "checked=\"checked\"";
-		$rsscheck = "";
+		$rsscheck = '';
 	}
 	else
 	{
-		$rss2check = "";
+		$rss2check = '';
 		$rsscheck = "checked=\"checked\"";
 	}
 	$forumselect = makesyndicateforums("", $blah);
@@ -516,17 +523,17 @@ if($mybb->input['action'] == "clearcookies")
 
 	if($mybb->settings['cookiedomain'])
 	{
-		@setcookie("mybb[uid]", "", time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
-		@setcookie("mybb[password]", "", time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
-		@setcookie("mybb[lastvisit]", "", time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
-		@setcookie("mybb[lastactive]", "", time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
+		@setcookie("mybb[uid]", '', time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
+		@setcookie("mybb[password]", '', time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
+		@setcookie("mybb[lastvisit]", '', time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
+		@setcookie("mybb[lastactive]", '', time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
 	}
 	else
 	{
-		@setcookie("mybb", "", time()-1, $mybb->settings['cookiepath']);
-		@setcookie("mybb[password]", "", time()-1, $mybb->settings['cookiepath']);
-		@setcookie("mybb[lastvisit]", "", time()-1, $mybb->settings['cookiepath']);
-		@setcookie("mybb[lastactive]", "", time()-1, $mybb->settings['cookiepath']);
+		@setcookie("mybb", '', time()-1, $mybb->settings['cookiepath']);
+		@setcookie("mybb[password]", '', time()-1, $mybb->settings['cookiepath']);
+		@setcookie("mybb[lastvisit]", '', time()-1, $mybb->settings['cookiepath']);
+		@setcookie("mybb[lastactive]", '', time()-1, $mybb->settings['cookiepath']);
 	}
 	redirect("index.php", $lang->redirect_cookiescleared);
 }
@@ -568,10 +575,10 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 					}
 					else
 					{
-						$optionselected = "";
+						$optionselected = '';
 					}
 
-					if($forum['password'] == "")
+					if($forum['password'] == '')
 					{
 						$forumlistbits .= "<option value=\"$forum[fid]\" $optionselected>$depth $forum[name]</option>\n";
 					}

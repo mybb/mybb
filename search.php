@@ -181,7 +181,7 @@ if($mybb->input['action'] == "results")
 			$readthreads[$readthread['tid']] = $readthread['dateline'];
 		}
 	}
-
+	$results = '';
 	foreach($resultcache as $result)
 	{
 		$thread = $result;
@@ -365,8 +365,7 @@ elseif($mybb->input['action'] == "findguest")
 }
 elseif($mybb->input['action'] == "finduser")
 {
-	$wheresql = "1=1";
-	$wheresql .= " AND p.uid='".intval($mybb->input['uid'])."'";
+	$wheresql = "p.uid='".intval($mybb->input['uid'])."'";
 	
 	$searcharray = array(
 		"uid" => $mybb->user['uid'],
@@ -383,8 +382,7 @@ elseif($mybb->input['action'] == "finduser")
 }
 elseif($mybb->input['action'] == "finduserthreads")
 {
-	$wheresql = "1=1";
-	$wheresql .= " AND t.uid='".intval($mybb->input['uid'])."'";
+	$wheresql = "t.uid='".intval($mybb->input['uid'])."'";
 	
 	$searcharray = array(
 		"uid" => $mybb->user['uid'],

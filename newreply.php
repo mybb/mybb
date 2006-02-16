@@ -174,7 +174,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$query = $db->query("SELECT p.*, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.pid='$pid' AND p.tid='$tid' AND p.visible='1'");
 		$quoted = $db->fetch_array($query);
-		$quoted['subject'] = preg_replace("#RE:#i", "", $quoted['subject']);
+		$quoted['subject'] = preg_replace("#RE:#i", '', $quoted['subject']);
 		$subject = "RE: ".$quoted['subject'];
 		$quoted['message'] = preg_replace('#^/me (.*)$#im', "* $quoted[username] \\1", $quoted['message']);
 		if($quoted['username'])
@@ -186,7 +186,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$message = "[quote]\n$quoted[message]\n[/quote]";
 		}
 		// Remove [attachment=x] from quoted posts.
-		$message = preg_replace("#\[attachment=([0-9]+?)\]#i", "", $message);
+		$message = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $message);
 	}
 	if($mybb->input['previewpost'])
 	{
@@ -197,7 +197,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$message = $mybb->input['message'];
 	}
 	$message = htmlspecialchars_uni($message);
-	$editdraftpid = "";
+	$editdraftpid = '';
 
 	if($mybb->input['previewpost'] || $maximageserror)
 	{
@@ -233,7 +233,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	else
 	{
-		if($mybb->user['signature'] != "")
+		if($mybb->user['signature'] != '')
 		{
 			$postoptionschecked['signature'] = "checked";
 		}
@@ -313,6 +313,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$attachwhere = "posthash='".addslashes($posthash)."'";
 		}
+		$attachments = '';
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
 		while($attachment = $db->fetch_array($query))
 		{
@@ -373,6 +374,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$postsdone = 0;
 		$altbg = "trow1";
+		$reviewbits = '';
 		while($post = $db->fetch_array($query))
 		{
 			$postsdone++;
@@ -432,7 +434,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$closecheck = "";
+			$closecheck = '';
 		}
 		if($thread['sticky'])
 		{
@@ -440,7 +442,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$stickycheck = "";
+			$stickycheck = '';
 		}
 		eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
 	}
@@ -557,7 +559,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'$lastpost[dateline]'");
 		while($subscribedmember = $db->fetch_array($query))
 		{
-			if($subscribedmember['language'] != "" && $lang->languageExists($subscribedmember['language']))
+			if($subscribedmember['language'] != '' && $lang->languageExists($subscribedmember['language']))
 			{
 				$uselang = $subscribedmember['language'];
 			}
@@ -732,7 +734,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$queryadd = "";
+			$queryadd = '';
 		}
 		$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$mybb->user['uid']."'");
 

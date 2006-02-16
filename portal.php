@@ -159,9 +159,10 @@ if($mybb->settings['portal_showsearch'] != "no")
 if($mybb->settings['portal_showwol'] != "no")
 {
 	$timesearch = time() - $mybb->settings['wolcutoff'];
-	$comma = "";
+	$comma = '';
 	$guestcount = 0;
 	$membercount = 0;
+	$onlinemembers = '';
 	$query = $db->query("SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY u.username ASC, s.time DESC");
 	while($user = $db->fetch_array($query))
 	{
@@ -183,7 +184,7 @@ if($mybb->settings['portal_showwol'] != "no")
 					}
 					else
 					{
-						$invisiblemark = "";
+						$invisiblemark = '';
 					}
 					$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
@@ -216,11 +217,12 @@ if($mybb->settings['portal_showwol'] != "no")
 if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_showdiscussionsnum'])
 {
 	$altbg = "trow1";
+	$threadlist = '';
 	$query = $db->query("SELECT t.*, u.username FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid) WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.lastpost DESC  LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']);
 	while($thread = $db->fetch_array($query))
 	{
 
-		if($thread['lastpost'] != "" && $thread['lastposter'] != "")
+		if($thread['lastpost'] != '' && $thread['lastposter'] != '')
 		{
 			$lastpostdate = mydate($mybb->settings['dateformat'], $thread['lastpost']);
 			$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
@@ -228,7 +230,7 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 		}
 		else
 		{
-			$lastpost = "";
+			$lastpost = '';
 		}
 		if(strlen($thread['subject']) > 25)
 		{
@@ -258,7 +260,7 @@ while($forumrow = $db->fetch_array($query))
     $forum[$forumrow['fid']] = $forumrow;
 }
 
-$pids = "";
+$pids = '';
 $comma="";
 $query = $db->query("SELECT p.pid, p.message, p.tid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid AND t.dateline=p.dateline) WHERE t.fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
 while($getid = $db->fetch_array($query))
@@ -278,6 +280,7 @@ foreach($forum as $fid => $forumrow)
 {
     $forumpermissions[$fid] = forum_permissions($fid);
 }
+$announcements = '';
 $query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
 while($announcement = $db->fetch_array($query))
 {
@@ -297,13 +300,13 @@ while($announcement = $db->fetch_array($query))
 	{
 		$icon = "&nbsp;";
 	}
-	if($announcement['avatar'] != "")
+	if($announcement['avatar'] != '')
 	{
 		$avatar = "<td class=\"trow\" class=\"trow1\" width=1 align=\"center\" valign=\"top\"><img src=\"$announcement[avatar]\"></td>";
 	}
 	else
 	{
-		$avatar = "";
+		$avatar = '';
 	}
 	$anndate = mydate($mybb->settings['dateformat'], $announcement['dateline']);
 	$anntime = mydate($mybb->settings['timeformat'], $announcement['dateline']);
@@ -315,7 +318,7 @@ while($announcement = $db->fetch_array($query))
 	else
 	{
 		eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments_no")."\";");
-		$lastcomment = "";
+		$lastcomment = '';
 	}
 	if(is_array($attachcache[$announcement['pid']]))
 	{ // This post has 1 or more attachments
@@ -340,7 +343,7 @@ while($announcement = $db->fetch_array($query))
 				// Support for [attachment=id] code
 				if(stripos($announcement['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
 					{ // We have a thumbnail to show (and its not the "SMALL" enough image
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
@@ -358,7 +361,7 @@ while($announcement = $db->fetch_array($query))
 				}
 				else
 				{
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
 					{ // We have a thumbnail to show
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)

@@ -93,6 +93,7 @@ elseif($mybb->input['action'] == "do_joinrequests")
 }
 elseif($mybb->input['action'] == "joinrequests")
 {
+	$users = "";
 	$plugins->run_hooks("managegroup_joinrequests_start");
 
 	$query = $db->query("SELECT j.*, u.uid, u.username, u.postnum, u.regdate FROM ".TABLE_PREFIX."joinrequests j LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid) WHERE j.gid='".$mybb->input['gid']."' ORDER BY u.username ASC");
@@ -175,8 +176,7 @@ else
 		$page = 1;
 	}
 	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$mybb->input['gid']);
-	$uquery .= " LIMIT $start, $perpage";
-
+	$users = "";
 	while($user = $db->fetch_array($query))
 	{
 		$altbg = alt_trow();
@@ -189,7 +189,7 @@ else
 		}
 		else
 		{
-			$email = "";
+			$email = '';
 		}
 		$query1 = $db->query("SELECT uid FROM ".TABLE_PREFIX."groupleaders WHERE uid='$user[uid]' AND gid='$gid'");
 		$isleader = $db->fetch_array($query1);

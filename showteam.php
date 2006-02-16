@@ -19,6 +19,7 @@ addnav($lang->nav_showteam);
 $plugins->run_hooks("showteam_start");
 
 $teamquery = "";
+$comma = '';
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE showforumteam='yes' AND gid!='6' ORDER BY title ASC");
 while($usergroup = $db->fetch_array($query))
 {
@@ -42,6 +43,8 @@ if(!is_array($users))
 {
 	error($lang->error_noteamstoshow);
 }
+$usergrouprows = '';
+$usergroups = '';
 while(list($gid, $usergroup) = each($teams))
 {
 	if(is_array($users[$gid]))
@@ -57,7 +60,7 @@ while(list($gid, $usergroup) = each($teams))
 			}
 			else
 			{
-				$emailcode = "";
+				$emailcode = '';
 			}
 			if($user['receivepms'] != "no" && $mybb->settings['enablepms'] != "no")
 			{
@@ -65,7 +68,7 @@ while(list($gid, $usergroup) = each($teams))
 			}
 			else
 			{
-				$pmcode = "";
+				$pmcode = '';
 			}
 			eval("\$usergrouprows .= \"".$templates->get("showteam_usergroup_user")."\";");
 			if($bgcolor == "trow1")
@@ -79,7 +82,7 @@ while(list($gid, $usergroup) = each($teams))
 		}
 		eval("\$usergroups .= \"".$templates->get("showteam_usergroup")."\";");
 	}
-	$usergrouprows = "";
+	$usergrouprows = '';
 }
 unset($user);
 $query = $db->query("
@@ -98,6 +101,7 @@ while($mod = $db->fetch_array($query))
 	}
 	$modforums[$mod['uid']] .= "<a href=\"forumdisplay.php?fid=$mod[fid]\">$mod[name]</a>";
 }
+$modrows = '';
 if(is_array($modsarray))
 {
 	$bgcolor = "trow1";
@@ -112,7 +116,7 @@ if(is_array($modsarray))
 		}
 		else
 		{
-			$emailcode = "";
+			$emailcode = '';
 		}
 		if($user['receivepms'] != "no")
 		{
@@ -120,7 +124,7 @@ if(is_array($modsarray))
 		}
 		else
 		{
-			$pmcode = "";
+			$pmcode = '';
 		}
 		$username = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 		$location = $user['location'];

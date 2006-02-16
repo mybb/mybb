@@ -34,7 +34,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 {
 	// Get the online users
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
-	$comma = "";
+	$comma = '';
 	$query = $db->query("SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY u.username ASC, s.time DESC");
 	$membercount = 0;
 	$guestcount = 0;
@@ -43,7 +43,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 
 	while($user = $db->fetch_array($query))
 	{
-		$botkey = strtolower(str_replace("bot=", "", $user['sid']));
+		$botkey = strtolower(str_replace("bot=", '', $user['sid']));
 		if($user['uid'] > 0)
 		{
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
@@ -61,7 +61,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 					}
 					else
 					{
-						$invisiblemark = "";
+						$invisiblemark = '';
 					}
 					$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"".$templates->get("index_whosonline_memberbit", 1, 0)."\";");
@@ -122,20 +122,20 @@ if($mybb->settings['showbirthdays'] != "no")
 {
 	$bdaycount = 0;
 	$bdaytime = time();
-	$bdaydate = mydate("j-n", $bdaytime, "", 0);
-	$year = mydate("Y", $bdaytime, "", 0);
+	$bdaydate = mydate("j-n", $bdaytime, '', 0);
+	$year = mydate("Y", $bdaytime, '', 0);
 	$query = $db->query("SELECT uid, username, birthday FROM ".TABLE_PREFIX."users WHERE birthday LIKE '$bdaydate-%'");
-	$comma = "";
+	$comma = '';
 	while($bdayuser = $db->fetch_array($query))
 	{
 		$bday = explode("-", $bdayuser['birthday']);
-		if($year > $bday['2'] && $bday['2'] != "")
+		if($year > $bday['2'] && $bday['2'] != '')
 		{
 			$age = " (".($year - $bday['2']).")";
 		}
 		else
 		{
-			$age = "";
+			$age = '';
 		}
 		eval("\$bdays .= \"".$templates->get("index_birthdays_birthday", 1, 0)."\";");
 		++$bdaycount;
@@ -200,8 +200,8 @@ if($mybb->settings['modlist'] != "off")
 // Expand (or Collapse) forums
 if($mybb->input['action'] == "expand")
 {
-	mysetcookie("fcollapse[$fid]", "");
-	$fcollapse[$fid] = "";
+	mysetcookie("fcollapse[$fid]", '');
+	$fcollapse[$fid] = '';
 }
 elseif($mybb->input['action'] == "collapse")
 {
@@ -285,13 +285,13 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$forumcat = "_forum";
 					}
 					$hideinfo = 0;
-					if($forum['type'] == "f" && $forum['linkto'] == "")
+					if($forum['type'] == "f" && $forum['linkto'] == '')
 					{
-						if($forum['password'] != "" && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+						if($forum['password'] != '' && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 						{
 							$hideinfo = 1;
 						}
-						elseif($forum['lastpost'] == 0 || $forum['lastposter'] == "")
+						elseif($forum['lastpost'] == 0 || $forum['lastposter'] == '')
 						{
 							$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
 						}
@@ -313,7 +313,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 
 						}
 					}
-					if($forum['linkto'] != "" || $hideinfo == 1)
+					if($forum['linkto'] != '' || $hideinfo == 1)
 					{
 						$lastpost = "<center>-</center>";
 						$posts = "-";
@@ -334,7 +334,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 						}
 						else
 						{
-							$unapproved_posts = "";
+							$unapproved_posts = '';
 						}
 						if($forum['unapprovedthreads'])
 						{
@@ -342,13 +342,13 @@ function getforums($pid="0", $depth=1, $permissions="")
 						}
 						else
 						{
-							$unapproved_threads = "";
+							$unapproved_threads = '';
 						}
 					}
 
 					if($mybb->settings['modlist'] != "off")
 					{
-						$moderators = "";
+						$moderators = '';
 						$parentlistexploded = explode(",", $forum['parentlist']);
 						while(list($key, $mfid) = each($parentlistexploded))
 						{
@@ -362,21 +362,21 @@ function getforums($pid="0", $depth=1, $permissions="")
 								}
 							}
 						}
-						$comma = "";
+						$comma = '';
 						if($moderators)
 						{
 							eval("\$modlist = \"".$templates->get("forumbit_moderators")."\";");
 						}
 						else
 						{
-							$modlist = "";
+							$modlist = '';
 						}
 					}
 					if($mybb->settings['showdescriptions'] == "no")
 					{
-						$forum['description'] = "";
+						$forum['description'] = '';
 					}
-					$expdisplay = "";
+					$expdisplay = '';
 					$cname = "cat_".$forum['fid']."_c";
 					if($collapsed[$cname] == "display: show;")
 					{
@@ -405,12 +405,12 @@ function getforums($pid="0", $depth=1, $permissions="")
 						if($depth == 2 && $forums)
 						{
 							eval("\$subforums = \"".$templates->get("forumbit_subforums")."\";");
-							$forums = "";
+							$forums = '';
 						}
 					}
 					eval("\$forumlisting .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 				}
-				$forums = $subforums = "";
+				$forums = $subforums = '';
 			}
 		}
 	}

@@ -250,6 +250,8 @@ if($mybb->input['action'] == "send")
 	// Load Buddys
 	$buddies = $mybb->user['buddylist'];
 	$namesarray = explode(",",$buddies);
+	$comma = '';
+	$sql = '';
 	if(is_array($namesarray))
 	{
 		while(list($key, $buddyid) = each($namesarray))
@@ -259,7 +261,7 @@ if($mybb->input['action'] == "send")
 		}
 		$timecut = time() - $mybb->settings['wolcutoff'];
 		$query = $db->query("SELECT u.*, g.canusepms FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE u.uid IN ($sql)");
-		$buddies = "";
+		$buddies = '';
 		while($buddy = $db->fetch_array($query))
 		{
 			if($mybb->user['receivepms'] != "no" && $buddy['receivepms'] != "no" && $buddy['canusepms'] != "no")
@@ -282,7 +284,7 @@ elseif($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_send_do_send");
 
-	if($mybb->input['subject'] == "")
+	if($mybb->input['subject'] == '')
 	{
 		$mybb->input['subject'] = "[no subject]";
 	}
@@ -290,7 +292,7 @@ elseif($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	{
 		error($lang->error_subjecttolong);
 	}
-	if(trim($mybb->input['message']) == "")
+	if(trim($mybb->input['message']) == '')
 	{
 		error($lang->error_pmnomessage);
 	}
@@ -343,7 +345,7 @@ elseif($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	}
 	if($touser['pmquota'] != "0" && $touser['pms_total'] >= $touser['pmquota'] && $touser['cancp'] != "yes" && $mybb->usergroup['cancp'] != "yes" && !$mybb->input['saveasdraft'])
 	{
-		if(trim($touser['language']) != "" && $lang->languageExists($touser['language']))
+		if(trim($touser['language']) != '' && $lang->languageExists($touser['language']))
 		{
 			$uselang = trim($touser['language']);
 		}
@@ -378,7 +380,7 @@ elseif($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	$lastpm = $db->fetch_array($query);
 	if($touser['pmnotify'] == "yes" && $touser['lastactive'] > $lastpm['dateline'] && !$mybb->input['saveasdraft'])
 	{
-		if(trim($touser['language']) != "" && $lang->languageExists($touser['language']))
+		if(trim($touser['language']) != '' && $lang->languageExists($touser['language']))
 		{
 			$uselang = trim($touser['language']);
 		}
@@ -597,7 +599,8 @@ elseif($mybb->input['action'] == "read")
 elseif($mybb->input['action'] == "tracking")
 {
 	$plugins->run_hooks("private_tracking_start");
-
+	$readmessages = '';
+	$unreadmessages = '';
 	$query = $db->query("SELECT pm.*, u.username as tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid) WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user[uid]."'");
 	while($readmessage = $db->fetch_array($query))
 	{
@@ -679,6 +682,7 @@ elseif($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post
 elseif($mybb->input['action'] == "folders")
 {
 	$plugins->run_hooks("private_folders_start");
+	$folderlist = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	while(list($key, $folders) = each($foldersexploded))
 	{
@@ -697,10 +701,11 @@ elseif($mybb->input['action'] == "folders")
 			eval("\$folderlist .= \"".$templates->get("private_folders_folder")."\";");
 		}
 	}
+	$newfolders = '';
 	for($i=1;$i<=5;$i++)
 	{
 		$fid = "new$i";
-		$foldername = "";
+		$foldername = '';
 		eval("\$newfolders .= \"".$templates->get("private_folders_folder")."\";");
 	}
 	eval("\$folders = \"".$templates->get("private_folders")."\";");
@@ -711,7 +716,7 @@ elseif($mybb->input['action'] == "do_folders" && $mybb->request_method == "post"
 {
 	$plugins->run_hooks("private_do_folders_start");
 	$highestid = 2;
-	$folders = "";
+	$folders = '';
 	@reset($mybb->input['folder']);
 	while(list($key, $val) = each($mybb->input['folder']))
 	{
@@ -728,31 +733,31 @@ elseif($mybb->input['action'] == "do_folders" && $mybb->request_method == "post"
 				{
 					$highestid = $key;
 				}
-				if($key == "1" && $val == "")
+				if($key == "1" && $val == '')
 				{
 					$val = "Inbox";
 				}
-				if($key == "2" && $val == "")
+				if($key == "2" && $val == '')
 				{
 					$val = "Sent Items";
 				}
-				if($key == "3" && $val == "")
+				if($key == "3" && $val == '')
 				{
 					$val = "Drafts";
 				}
-				if($key == "4" && $val == "")
+				if($key == "4" && $val == '')
 				{
 					$val = "Trash Can";
 				}
 				$fid = intval($key);
 			}
-			if($val != "")
+			if($val != '')
 			{
 				$foldername = $val;
 				$foldername = addslashes(htmlspecialchars_uni($foldername));
 				if(strpos($foldername, "$%%$") === false)
 				{
-					if($folders != "")
+					if($folders != '')
 					{
 						$folders .= "$%%$";
 					}
@@ -781,6 +786,7 @@ elseif($mybb->input['action'] == "empty")
 {
 	$plugins->run_hooks("private_empty_start");
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
+	$folderlist = '';
 	while(list($key, $folders) = each($foldersexploded))
 	{
 		$folderinfo = explode("**", $folders, 2);
@@ -798,7 +804,7 @@ elseif($mybb->input['action'] == "empty")
 elseif($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_do_empty_start");
-	$emptyq = "";
+	$emptyq = '';
 	if(is_array($mybb->input['empty']))
 	{
 		while(list($key, $val) = each($mybb->input['empty']))
@@ -853,7 +859,7 @@ elseif($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 	{
 		if(is_array($mybb->input['check']))
 		{
-			$pmssql = "";
+			$pmssql = '';
 			while(list($key, $val) = each($mybb->input['check']))
 			{
 				if($pmssql)
@@ -955,13 +961,14 @@ elseif($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		}
 		if(is_array($mybb->input['exportfolders']))
 		{
+			$folderlst = '';
 			reset($mybb->input['exportfolders']);
 			while(list($key, $val) = each($mybb->input['exportfolders']))
 			{
 				$val = addslashes($val);
 				if($val == "all")
 				{
-					$folderlst = "";
+					$folderlst = '';
 					break;
 				}
 				else
@@ -997,6 +1004,7 @@ elseif($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	{
 		error($lang->error_nopmsarchive);
 	}
+	$pmsdownload = '';
 	while($message = $db->fetch_array($query))
 	{
 		if($message['folder'] == 2 || $message['folder'] == 3)
@@ -1185,7 +1193,7 @@ else
 		$upper = $threadcount;
 	}
 	$multipage = multipage($pmscount['total'], $perpage, $page, "private.php?fid=$folder");
-
+	$messagelist = '';
 	$query = $db->query("SELECT pm.*, fu.username AS fromusername, tu.username AS tousername, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) WHERE pm.folder='$folder' AND pm.uid='".$mybb->user[uid]."' ORDER BY pm.dateline DESC LIMIT $start, $perpage");
 	if($db->num_rows($query) > 0)
 	{
@@ -1239,7 +1247,7 @@ else
 			}
 			else
 			{
-				$denyreceipt = "";
+				$denyreceipt = '';
 			}
 			if($message['iconpath'])
 			{
@@ -1247,7 +1255,7 @@ else
 			}
 			else
 			{
-				$icon = "";
+				$icon = '';
 			}
 			$message['subject'] = htmlspecialchars_uni($message['subject']);
 			if($message['folder'] != "3")

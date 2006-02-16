@@ -108,6 +108,7 @@ if($mybb->input['action'] == "newpoll")
 	}
 
 	$options = $mybb->input['options'];
+	$optionbits = '';
 	for($i=1;$i<=$polloptions;$i++)
 	{
 		$option = $options[$i];
@@ -375,7 +376,7 @@ if($mybb->input['action'] == "editpoll")
 
 		$options = $mybb->input['options'];
 		$votes = $mybb->input['votes'];
-
+		$optionbits = '';
 		for($i=1;$i<=$numoptions;$i++)
 		{
 			$counter = $i;
@@ -589,6 +590,7 @@ if($mybb->input['action'] == "showresults")
 	{
 		$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 	}
+	$polloptions = '';
 	for($i=1;$i<=$poll['numoptions'];$i++)
 	{		
 		$parser_options = array(
@@ -621,8 +623,8 @@ if($mybb->input['action'] == "showresults")
 			$percent = number_format($votes / $poll['totvotes'] * 100, 2);
 		}
 		$imagewidth = (round($percent)/3) * 5;
-		$comma = "";
-		$userlist = "";
+		$comma = '';
+		$userlist = '';
 		if($poll['public'] == "yes")
 		{
 			if(is_array($voters[$number]))
@@ -704,7 +706,7 @@ if($mybb->input['action'] == "vote")
 			mysetcookie("pollvotes[$poll[pid]]", "1", "yes");
 		}
 	}
-	$votesql = "";
+	$votesql = '';
 	$now = time();
 	$votesarray = explode("||~|~||", $poll['votes']);
 	$option = $mybb->input['option'];
@@ -737,7 +739,7 @@ if($mybb->input['action'] == "vote")
 	}
 
 	$db->query("INSERT INTO ".TABLE_PREFIX."pollvotes (pid,uid,voteoption,dateline) VALUES $votesql");
-	$voteslist = "";
+	$voteslist = '';
 	for($i=1;$i<=$poll['numoptions'];$i++)
 	{
 		if($i > 1)

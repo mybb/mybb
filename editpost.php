@@ -414,6 +414,7 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 			FROM ".TABLE_PREFIX."attachments
 			WHERE posthash='$posthash' OR pid='$pid'
 		");
+		$attachments = '';
 		while($attachment = $db->fetch_array($query)) {
 			$attachment['size'] = getfriendlysize($attachment['filesize']);
 			$attachment['icon'] = getattachicon(getextention($attachment['filename']));

@@ -55,6 +55,7 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] =
 // Password protected forums ......... yhummmmy!
 checkpwforum($fid, $forum['password']);
 
+$postrows = '';
 $query = $db->query("SELECT u.*, u.username AS userusername, p.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.tid='$tid' AND p.visible=1 ORDER BY p.dateline");
 while($postrow = $db->fetch_array($query))
 {

@@ -42,7 +42,7 @@ if($mybb->input['action'] == "today")
 
 	$todaycount = 0;
 	$stime = time()-(60*60*24);
-	
+	$todayrows = '';
 	$query = $db->query("SELECT u.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE u.lastactive > $stime ORDER BY u.lastactive DESC");
 	while($online = $db->fetch_array($query))
 	{
@@ -102,6 +102,7 @@ else
 	$tidsql = '';
 	$fidsql = '';
 	$eidsql = '';
+	$onlinerows = '';
 	if($mybb->input['sortby'] == "username")
 	{
 		$sql = "u.username ASC, s.time DESC";
@@ -115,7 +116,7 @@ else
 	else
 	{
 		$sql = "s.time DESC";
-		$refresh_string = "";
+		$refresh_string = '';
 	}
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
 	$query = $db->query("SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY $sql");
@@ -125,7 +126,7 @@ else
 	while($user = $db->fetch_array($query))
 	{
 		$plugins->run_hooks("online_user");
-		$botkey = strtolower(str_replace("bot=", "", $user['sid']));
+		$botkey = strtolower(str_replace("bot=", '', $user['sid']));
 		if($user['uid'] > 0)
 		{
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
@@ -501,7 +502,7 @@ function show($user)
 		case "showthread":
 			if($threads[$user['tid']])
 			{
-				$pagenote = "";
+				$pagenote = '';
 				$locationname = sprintf($lang->reading_thread2, $user['tid'], $threads[$user['tid']], $pagenote);
 			}
 			else
@@ -571,7 +572,7 @@ function show($user)
 			}
 			else 
 			{
-				$invisiblemark = "";
+				$invisiblemark = '';
 			}
 			$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 			$onlinename = "<a href=\"member.php?action=profile&uid=".$user['uid']."\">".$user['username']."</a>".$invisiblemark;
@@ -603,7 +604,7 @@ function what($user)
 	$splitloc = explode(".php", $user['location']);
 	if($splitloc[0] == $user['location'])
 	{
-		$filename = "";
+		$filename = '';
 	}
 	else
 	{
@@ -672,7 +673,7 @@ function what($user)
 			$user['fid'] = $parameters['fid'];
 			break;
 		case "index":
-		case "":
+		case '':
 			$user['activity'] = "index";
 			break;
 		case "member":

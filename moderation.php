@@ -340,6 +340,7 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+		$posts = "";
 		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");	
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
@@ -427,6 +428,7 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+		$posts = "";
 		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");	
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
@@ -476,7 +478,8 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_nomergeposts);
 		}
-		$comma = "";
+		$comma = '';
+		$pidin = '';
 		while(list($pid, $yes) = @each($mergepost))
 		{
 			if($yes == "yes")
@@ -489,6 +492,7 @@ switch($mybb->input['action'])
 		$first = 1;
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC");
 		$num_unapproved_posts = 0;
+		$message = '';
 		while($post = $db->fetch_array($query))
 		{
 			if($first == 1)
@@ -544,7 +548,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_move");
 
-		$forumselect = makeforumjump("", "", 1, "", 0, "", "moveto");
+		$forumselect = makeforumjump("", '', 1, '', 0, '', "moveto");
 		eval("\$movethread = \"".$templates->get("moderation_move")."\";");
 		outputpage($movethread);
 		break;
@@ -647,9 +651,10 @@ switch($mybb->input['action'])
 			$db->insert_query(TABLE_PREFIX."threads", $threadarray);
 			$newtid = $db->insert_id();
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
+			$postsql = '';
 			while($post = $db->fetch_array($query))
 			{
-				if($postssql)
+				if($postssql != '')
 				{
 					$postssql .= ", ";
 				}
@@ -730,7 +735,7 @@ switch($mybb->input['action'])
 		while($modaction = $db->fetch_array($query))
 		{
 			$modaction['dateline'] = mydate("jS M Y, G:i", $modaction['dateline']);
-			$info = "";
+			$info = '';
 			if($modaction['tsubject'])
 			{
 				$info .= "<strong>$lang->thread</strong> <a href=\"showthread.php?tid=".$modaction['tid']."\">".$modaction['tsubject']."</a><br />";
@@ -856,7 +861,7 @@ switch($mybb->input['action'])
 			nopermission();
 		}
 	
-		$pollsql = "";
+		$pollsql = '';
 		if($mergethread['poll'])
 		{
 			$pollsql = ", poll='$mergethread[poll]'";
@@ -946,6 +951,7 @@ switch($mybb->input['action'])
 		}
 	
 		$altbg = "trow1";
+		$posts = '';
 		while($post = $db->fetch_array($query))
 		{
 			$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
@@ -972,7 +978,7 @@ switch($mybb->input['action'])
 				$altbg = "trow1";
 			}
 		}
-		$forumselect = makeforumjump("", $fid, 1, "", 0, "", "moveto");
+		$forumselect = makeforumjump("", $fid, 1, '', 0, '', "moveto");
 
 		$plugins->run_hooks("moderation_split");
 
@@ -1319,7 +1325,7 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$forumselect = makeforumjump("", "", 1, "", 0, "", "moveto");
+		$forumselect = makeforumjump("", '', 1, '', 0, '', "moveto");
 		eval("\$movethread = \"".$templates->get("moderation_inline_movethreads")."\";");
 		outputpage($movethread);
 		break;
@@ -1483,6 +1489,8 @@ switch($mybb->input['action'])
 			nopermission();
 		}
 		$postlist = explode("|", $mybb->input['posts']);
+		$pidin = '';
+		$comma = '';
 		foreach($postlist as $pid)
 		{
 			$pid = intval($pid);
@@ -1545,6 +1553,8 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_inline_nopostsselected);
 		}
+		$pidin = '';
+		$comma = '';
 		foreach($posts as $pid)
 		{
 			$pid = intval($pid);
@@ -1559,7 +1569,7 @@ switch($mybb->input['action'])
 		}
 		$inlineids = implode("|", $posts);
 		clearinline($tid, "thread");
-		$forumselect = makeforumjump("", $fid, 1, "", 0, "", "moveto");
+		$forumselect = makeforumjump("", $fid, 1, '', 0, '', "moveto");
 		eval("\$splitposts = \"".$templates->get("moderation_inline_splitposts")."\";");
 		outputpage($splitposts);
 		break;
@@ -1571,6 +1581,8 @@ switch($mybb->input['action'])
 			nopermission();
 		}
 		$postlist = explode("|", $mybb->input['posts']);
+		$pidin = '';
+		$comma = '';
 		foreach($postlist as $pid)
 		{
 			$pid = intval($pid);
@@ -1759,7 +1771,7 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$flist = "";
+		$flist = '';
 		if($mybb->usergroup['issupermod'] != "yes")
 		{
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators WHERE uid='".$mybb->user[uid]."'");
@@ -1802,6 +1814,7 @@ switch($mybb->input['action'])
 			$forums[$forum['fid']] = $forum['name'];
 		}
 		$trow = "trow1";
+		$reports = '';
 		$query = $db->query("SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject FROM ".TABLE_PREFIX."reportedposts r LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid) LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid) LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid) WHERE r.reportstatus ='0' ORDER BY r.dateline ASC");
 		while($report = $db->fetch_array($query))
 		{
@@ -1840,7 +1853,7 @@ function getids($id, $type)
 	$ids = explode("|", $_COOKIE[$cookie]);
 	foreach($ids as $id)
 	{
-		if($id != "")
+		if($id != '')
 		{
 			$newids[] = iintval($id);
 		}
@@ -1857,5 +1870,5 @@ function clearinline($id, $type)
 function extendinline($id, $type)
 {
 	global $_COOKIE;
-	setcookie("inlinemod_$type$id", "", time()+3600);
+	setcookie("inlinemod_$type$id", '', time()+3600);
 }

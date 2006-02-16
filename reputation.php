@@ -9,7 +9,7 @@
  * $Id$
  */
 
-$templatesused = "";
+$templatesused = '';
 require "./global.php";
 
 // Load global language phrases

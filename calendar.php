@@ -190,7 +190,8 @@ elseif($mybb->input['action'] == "dayview")
 		WHERE $bday_where
 	");
 	$alterbg = $theme['trow1'];
-	$comma = "";
+	$comma = '';
+	$birthdays = '';
 	while($bdays = $db->fetch_array($query))
 	{
 		$bday = explode("-", $bdays['birthday']);
@@ -201,7 +202,7 @@ elseif($mybb->input['action'] == "dayview")
 		}
 		else
 		{
-			$age = "";
+			$age = '';
 		}
 		$bdays['username'] = formatname($bdays['username'], $bdays['usergroup'], $bdays['displaygroup']);
 		eval("\$birthdays .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
@@ -216,6 +217,7 @@ elseif($mybb->input['action'] == "dayview")
 		}
 		$comma = ", ";
 	}
+	$events = '';
 	// Load Events
 	$query = $db->query("
 		SELECT e.eid, e.author, e.subject, e.description, u.username, u.usergroup, u.displaygroup
@@ -389,6 +391,7 @@ elseif($mybb->input['action'] == "editevent")
 	}
 	$eventdate = explode("-", $event['date']);
 	$msel[$eventdate[1]] = " selected=\"selected\"";
+	$yearopts = '';
 	for($i = ($eventdate[2] - 2); $i <= ($eventdate[2] + 2); $i++)
 	{
 		if($i == $eventdate[2])
@@ -525,7 +528,7 @@ else
 			$bdays[$bday[0]]++;
 		}
 	}
-
+	$events = array();
 	// Load Events
 	$query = $db->query("
 		SELECT subject, private, date
@@ -578,7 +581,7 @@ else
 		}
 		else
 		{
-			$birthdays = "";
+			$birthdays = '';
 		}
 		if ((date("d") == $i) && (date("n") == $month) && (date("Y") == $year))
 		{
@@ -628,6 +631,7 @@ else
 	$nextyear = date("Y", $next);
 	$nextmonth = date("n", $next);
 
+	$yearsel == '';
 	for($i = date("Y"); $i < (date("Y") + 5); $i++)
 	{
 		$yearsel .= "<option value=\"$i\">$i</option>\n";

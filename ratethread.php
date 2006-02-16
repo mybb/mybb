@@ -9,7 +9,7 @@
  * $Id$
  */
 
-$templatelist = "";
+$templatelist = '';
 require "./global.php";
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");

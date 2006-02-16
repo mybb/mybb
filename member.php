@@ -112,7 +112,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$errors[] = $lang->error_invalidusername;
 		$bannedusername = 1;
 	}
-	$user2 = str_replace("\\", "", $username);
+	$user2 = str_replace("\\", '', $username);
 	if($user2 != $username)
 	{
 		$errors[] = $lang->error_invalidusername;
@@ -156,9 +156,9 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		foreach($bannedemails as $bannedemail)
 		{
 			$bannedemail = strtolower(trim($bannedemail));
-			if($bannedemail != "")
+			if($bannedemail != '')
 			{
-				if(strstr($email, $bannedemail) != "")
+				if(strstr($email, $bannedemail) != '')
 				{
 					$errors[] = $lang->error_bannedemail;
 				}
@@ -177,16 +177,16 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	$website = $mybb->input['website'];
 	if($website == "http://" || $website == "none")
 	{
-		$website = "";
+		$website = '';
 	}
 
 	$bday1 = intval($mybb->input['bday1']);
 	$bday2 = intval($mybb->input['bday2']);
 	$bday3 = intval($mybb->input['bday3']);
 
-	if($bday1 == "" || $bday2 == "")
+	if($bday1 == '' || $bday2 == '')
 	{
-		$bday = "";
+		$bday = '';
 	}
 	else
 	{
@@ -288,10 +288,10 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$usergroup = 2;
 	}
-	$style = "";
+	$style = '';
 	// Custom profile fields baby!
 	$userfields = array();
-	$comma = "";
+	$comma = '';
 	$query = $db->query("
 		SELECT type, fid, required
 		FROM ".TABLE_PREFIX."profilefields
@@ -309,7 +309,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$errors[] = $lang->error_missingrequiredfield;
 			$proferror = 1;
 		}
-		$options = "";
+		$options = '';
 		if($type == "multiselect" || $type == "checkbox")
 		{
 			if(is_array($mybb->input[$field]))
@@ -523,6 +523,7 @@ if($mybb->input['action'] == "register")
 
 		$plugins->run_hooks("member_register_start");
 
+		$bdaysel = '';
 		for($i=1;$i<=31;$i++)
 		{
 			$bdaydaysel .= "<option value=\"$i\">$i</option>\n";
@@ -547,7 +548,7 @@ if($mybb->input['action'] == "register")
 			}
 			else
 			{
-				$selzoneway = "";
+				$selzoneway = '';
 			}
 			// Couple the prefix and offset together and make it selected!
 			$selzone = $selzoneway.$selzonetime;
@@ -584,6 +585,7 @@ if($mybb->input['action'] == "register")
 
 		if($mybb->settings['usertppoptions'])
 		{
+			$tppoptions = '';
 			$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
 			if(is_array($explodedtpp))
 			{
@@ -597,6 +599,7 @@ if($mybb->input['action'] == "register")
 		}
 		if($mybb->settings['userpppoptions'])
 		{
+			$pppoptions = '';
 			$explodedppp = explode(",", $mybb->settings['userpppoptions']);
 			if(is_array($explodedppp))
 			{
@@ -643,7 +646,7 @@ if($mybb->input['action'] == "register")
 		}
 		else
 		{
-			$referrer = "";
+			$referrer = '';
 		}
 		// Custom profile fields baby!
 		$altbg = trow1;
@@ -654,6 +657,7 @@ if($mybb->input['action'] == "register")
 			$thing = explode("\n", $profilefield['type'], "2");
 			$type = trim($thing[0]);
 			$options = $thing[1];
+			$select = '';
 			$field = "fid$profilefield[fid]";
 			if($type == "multiselect")
 			{
@@ -725,13 +729,13 @@ if($mybb->input['action'] == "register")
 			{
 				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 			}
-			$code = "";
-			$select = "";
-			$val = "";
-			$options = "";
-			$expoptions = "";
-			$useropts = "";
-			$seloptions = "";
+			$code = '';
+			$select = '';
+			$val = '';
+			$options = '';
+			$expoptions = '';
+			$useropts = '';
+			$seloptions = '';
 		}
 		if($requiredfields)
 		{
@@ -740,12 +744,12 @@ if($mybb->input['action'] == "register")
 		if(!$fromreg)
 		{
 			$allownoticescheck = "checked=\"checked\"";
-			$hideemailcheck = "";
-			$emailnotifycheck = "";
+			$hideemailcheck = '';
+			$emailnotifycheck = '';
 			$receivepmscheck = "checked=\"checked\"";
 			$pmpopupcheck = "checked=\"checked\"";
-			$pmnotifycheck = "";
-			$invisiblecheck = "";
+			$pmnotifycheck = '';
+			$invisiblecheck = '';
 		}
 		// Spambot registration image thingy
 		if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))
@@ -766,6 +770,7 @@ if($mybb->input['action'] == "register")
 		}
 
 		$languages = $lang->getLanguages();
+		$langoptions = '';
 		foreach($languages as $lname => $language)
 		{
 			if($user['language'] == $lname)
@@ -1127,6 +1132,7 @@ elseif($mybb->input['action'] == "profile")
 		}
 		elseif($mybb->input['fid'])
 		{
+			$flist = '';
 			$query = $db->query("
 				SELECT fid
 				FROM ".TABLE_PREFIX."forums
@@ -1215,7 +1221,7 @@ elseif($mybb->input['action'] == "profile")
 	}
 	else
 	{
-		$avatar = "";
+		$avatar = '';
 	}
 
 	if($memprofile['hideemail'] != "yes")
@@ -1224,7 +1230,7 @@ elseif($mybb->input['action'] == "profile")
 	}
 	else
 	{
-		$sendemail = "";
+		$sendemail = '';
 	}
 
 	if($memprofile['website'])
@@ -1234,7 +1240,7 @@ elseif($mybb->input['action'] == "profile")
 	}
 	else
 	{
-		$website = "";
+		$website = '';
 	}
 
 	if($memprofile['signature'])
@@ -1278,7 +1284,7 @@ elseif($mybb->input['action'] == "profile")
 	}
 	else
 	{
-		$memprofile['icq'] = "";
+		$memprofile['icq'] = '';
 	}
 
 	if($memprofile['away'] == "yes" && $mybb->settings['allowaway'] != "no")
@@ -1286,7 +1292,7 @@ elseif($mybb->input['action'] == "profile")
 		$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
 		$awaydate = mydate($mybb->settings['dateformat'], $memprofile['awaydate']);
 		$memprofile['awayreason'] = $memprofile['awayreason'];
-		if($memprofile['returndate'] == "")
+		if($memprofile['returndate'] == '')
 		{
 			$returndate = "$lang->unknown";
 		}
@@ -1348,13 +1354,13 @@ elseif($mybb->input['action'] == "profile")
 		{
 			$membday = mktime(0, 0, 0, $membday[1], $membday[0], 0);
 			$membday = gmdate("F j", $membday);
-			$membdayage = "";
+			$membdayage = '';
 		}
 	}
 	else
 	{
 		$membday = $lang->not_specified;
-		$membdayage = "";
+		$membdayage = '';
 	}
 
 	if(!$memprofile['displaygroup'])
@@ -1400,7 +1406,7 @@ elseif($mybb->input['action'] == "profile")
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
 	
-	if(trim($memprofile['usertitle']) != "")
+	if(trim($memprofile['usertitle']) != '')
 	{
 		$usertitle = $memprofile['usertitle'];
 	}
@@ -1408,6 +1414,7 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$starimage = $displaygroup['starimage'];
 	}
+	$userstars = '';
 	for($i = 0; $i < $stars; $i++)
 	{
 		$userstars .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
@@ -1420,6 +1427,7 @@ elseif($mybb->input['action'] == "profile")
 	}
 	else
 	{
+		$ratestars = '';
 		$rateinfo = explode("|", $memprofile['rating']);
 		$rating = round($rateinfo[0] / $rateinfo[1]);
 		for($i = 1; $i <= $rating; $i++)
@@ -1434,14 +1442,14 @@ elseif($mybb->input['action'] == "profile")
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='$uid'");
 	$userfields = $db->fetch_array($query);
-	$customfields = "";
+	$customfields = '';
 	$bgcolor = trow1;
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE hidden='no' ORDER BY disporder");
 	while($customfield = $db->fetch_array($query))
 	{
 		$field = "fid$customfield[fid]";
 		$useropts = explode("\n", $userfields[$field]);
-		$customfieldval = "";
+		$customfieldval = '';
 		if(is_array($useropts) && ($customfield['type'] == "multiselect" || $customfield['type'] == "checkbox"))
 		{
 			while(list($key, $val) = each($useropts))

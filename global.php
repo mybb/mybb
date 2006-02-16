@@ -168,6 +168,7 @@ else
 	$lastvisit = $lang->lastvisit_never;
 }
 
+$bbclosedwarning = '';
 if($mybb->settings['boardclosed'] == "yes")
 {
 	if($mybb->usergroup['cancp'] == "yes")
@@ -195,7 +196,7 @@ else
 {
 	eval("\$welcomeblock = \"".$templates->get("header_welcomeblock_guest")."\";");
 }
-$unreadreports = "";
+$unreadreports = '';
 if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->usergroup['gid'] == 6)
 {
 	$reported = $cache->read("reportedposts");
@@ -259,7 +260,7 @@ if($mybb->settings['showvernum'] == "on")
 }
 else
 {
-	$mybbversion = "";
+	$mybbversion = '';
 }
 eval("\$footer = \"".$templates->get("footer")."\";");
 
@@ -273,7 +274,7 @@ if(is_array($bannedips))
 	foreach($bannedips as $key => $bannedip)
 	{
 		$bannedip = trim($bannedip);
-		if($bannedip != "")
+		if($bannedip != '')
 		{
 			if(strstr("$ipaddress", $bannedip))
 			{
