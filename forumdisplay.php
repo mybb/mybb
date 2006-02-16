@@ -61,8 +61,13 @@ while($forum = $db->fetch_array($query))
 
 }
 
-// Get forum moderators (we need to do this here so we can show the mods of this forum)
-$query = $db->query("SELECT m.uid, m.fid, u.username, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid) ORDER BY u.username");
+// Get forum moderators (we need to do this here so we can show the mods of this forum).
+$query = $db->query("
+	SELECT m.uid, m.fid, u.username, u.usergroup, u.displaygroup
+	FROM ".TABLE_PREFIX."moderators m
+	LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
+	ORDER BY u.username
+");
 while($moderator = $db->fetch_array($query))
 {
 	$moderatorcache[$moderator['fid']][] = $moderator;
@@ -143,7 +148,7 @@ if($modlist)
 	eval("\$moderatedby = \"".$templates->get("forumdisplay_moderatedby")."\";");
 }
 
-// Users browsing this forum..
+// Get the users browsing this forum.
 if($mybb->settings['browsingthisforum'] != "off")
 {
 	$timecut = time() - $mybb->settings['wolcutoff'];
@@ -231,10 +236,10 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 
 $bgcolor = "trow1";
 
-// Set here to fetch only approved topics (and then below for a moderator we change this)
+// Set here to fetch only approved topics (and then below for a moderator we change this).
 $visibleonly = "AND t.visible='1'";
 
-// Check if the active user is a moderator and get the inline moderation tools
+// Check if the active user is a moderator and get the inline moderation tools.
 if(ismod($fid) == "yes")
 {
 	eval("\$inlinemodcol = \"".$templates->get("forumdisplay_inlinemoderation_col")."\";");
@@ -251,7 +256,7 @@ else
 
 unset($rating);
 
-/* Pick out some sorting options */
+// Pick out some sorting options.
 if(!$mybb->input['datecut'])
 {
 	if($mybb->user['daysprune'])
@@ -286,7 +291,7 @@ else
 	$datecutsql = '';
 }
 
-/* Pick the sort order */
+// Pick the sort order.
 switch(strtolower($mybb->input['order']))
 {
 	case "asc":
@@ -303,7 +308,7 @@ switch(strtolower($mybb->input['order']))
 		break;
 }
 
-/* Sort by which field? */
+// Sort by which field?
 switch($mybb->input['sortby'])
 {
 	case "subject":
@@ -333,7 +338,7 @@ switch($mybb->input['sortby'])
 $sortby = $mybb->input['sortby'];
 $sortsel[$mybb->input['sortby']] = "selected=\"selected\"";
 
-/* Are we viewing a specific page? */
+// Are we viewing a specific page?
 if(isset($mybb->input['page']) && is_numeric($mybb->input['page']))
 {
 	$sorturl = "forumdisplay.php?fid=$fid&amp;datecut=$datecut&amp;page=".$mybb->input['page'];
@@ -344,8 +349,12 @@ else
 }
 eval("\$orderarrow[$sortby] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
-/* How many pages are there? */
-$query = $db->query("SELECT COUNT(t.tid) AS threads FROM ".TABLE_PREFIX."threads t WHERE t.fid='$fid' $visibleonly $datecutsql");
+// How many pages are there?
+$query = $db->query("
+	SELECT COUNT(t.tid) AS threads
+	FROM ".TABLE_PREFIX."threads t
+	WHERE t.fid='$fid' $visibleonly $datecutsql
+");
 $threadcount = $db->result($query, 0);
 
 $perpage = $mybb->settings['threadsperpage'];
@@ -469,7 +478,12 @@ if($tids)
 // 'dot' Icons
 if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 {
-	$query = $db->query("SELECT tid,uid FROM ".TABLE_PREFIX."posts WHERE uid='".$mybb->user[uid]."' AND tid IN($tids)");
+	$query = $db->query("
+		SELECT tid,uid
+		FROM ".TABLE_PREFIX."posts
+		WHERE uid='".$mybb->user['uid']."'
+		AND tid IN($tids)
+	");
 	while($post = $db->fetch_array($query))
 	{
 		$threadcache[$post['tid']]['doticon'] = 1;
@@ -600,23 +614,29 @@ if($threadcache)
 			$unreadpost = 1;
 		}
 
-		if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews']) {
+		if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews'])
+		{
 			$folder .= "hot";
 		}
-		if($thread['closed'] == "yes") {
+		if($thread['closed'] == "yes")
+		{
 			$folder .= "lock";
 		}
-		if($foruminfo['allowtratings'] != "no") {
+		if($foruminfo['allowtratings'] != "no")
+		{
 			$thread['averagerating'] = round($thread['averagerating'], 2);
 			$rateimg = intval(round($thread['averagerating']));
 			$thread['rating'] = $rateimg."stars.gif";
 			$thread['numratings'] = intval($thread['numratings']);
-			if($thread['averagerating'] == 0 && $thread['numratings'] == 0) {
+			if($thread['averagerating'] == 0 && $thread['numratings'] == 0)
+			{
 				$thread['rating'] = "pixel.gif";
 			}
 			$ratingvotesav = sprintf($lang->rating_votes_average, $thread['numratings'], $thread['averagerating']);
 			eval("\$rating = \"".$templates->get("forumdisplay_thread_rating")."\";");
-		} else {
+		}
+		else
+		{
 			$rating = '';
 		}
 		/* Woah, way too many queries here!
@@ -641,20 +661,27 @@ if($threadcache)
 		$threadpages = '';
 		$morelink = '';
 		$thread['posts'] = $thread['replies'] + 1;
-		if($thread['posts'] > $mybb->settings['postsperpage']) {
+		if($thread['posts'] > $mybb->settings['postsperpage'])
+		{
 			$thread['pages'] = $thread['posts'] / $mybb->settings['postsperpage'];
 			$thread['pages'] = ceil($thread['pages']);
-			if($thread['pages'] > 4) {
+			if($thread['pages'] > 4)
+			{
 				$pagesstop = 4;
 				eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
-			} else {
+			}
+			else
+			{
 				$pagesstop = $thread['pages'];
 			}
-			for($i=1; $i<=$pagesstop; ++$i) {
+			for($i=1; $i<=$pagesstop; ++$i)
+			{
 				eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
 			}
 			eval("\$thread[multipage] = \"".$templates->get("forumdisplay_thread_multipage")."\";");
-		} else {
+		}
+		else
+		{
 			$threadpages = '';
 			$morelink = '';
 			$thread['multipage'] = '';
@@ -724,7 +751,7 @@ if($threadcache)
 	}
 }
 
-/* Is this a real forum with threads? */
+// Is this a real forum with threads?
 if($foruminfo['type'] != "c") {
 	if(!$threadcount)
 	{

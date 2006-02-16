@@ -1789,7 +1789,7 @@ switch($mybb->input['action'])
 			error($lang->error_noselected_reports);
 		}
 		$rids = implode($mybb->input['reports'], "','");
-		$rids = addslashes("'0','$rids'");
+		$rids = "'0','$rids'";
 
 		$plugins->run_hooks("moderation_do_reports");
 

@@ -120,7 +120,7 @@ if($mybb->input['action'] == "results")
 	}
 	else
 	{
-		$sql = "SELECT DISTINCT(p.tid), p.pid, p.fid, ".$search['lookin'].", t.subject, t.uid, t.lastposter, t.replies, t.views, t.lastpost, t.closed, p.dateline, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, f.name AS forumname FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE $search[wheresql] AND f.active!='no' AND t.closed NOT LIKE 'moved|%' AND t.tid=p.tid AND t.visible='1' GROUP BY p.tid ORDER BY $sortfield $sortorder";
+		$sql = "SELECT DISTINCT(p.tid), p.pid, p.fid, ".$search['lookin'].", t.subject AS tsubject, t.uid, t.lastposter AS tlastposter, t.replies AS treplies, t.views AS tviews, t.lastpost, t.closed, p.dateline, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, f.name AS forumname FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE $search[wheresql] AND f.active!='no' AND t.closed NOT LIKE 'moved|%' AND t.tid=p.tid AND t.visible='1' GROUP BY p.tid ORDER BY $sortfield $sortorder";
 	}
 	$query = $db->query($sql);
 	$resultcount = $db->num_rows($query);

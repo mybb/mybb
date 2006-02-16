@@ -804,7 +804,19 @@ function what($user)
 			}
 			break;
 		case "polls":
-			$user['activity'] = $parameters['action'];
+			// Make the "do" parts the same as the other one.
+			if($parameters['action'] == "do_newpoll")
+			{
+				$user['activity'] = "newpoll";
+			}
+			elseif($parameters['action'] == "do_editpoll")
+			{
+				$user['activity'] = "editpoll";
+			}
+			else
+			{
+				$user['activity'] = $parameters['action'];
+			}
 			break;
 		case "printthread":
 			if(is_numeric($parameters['tid']))
