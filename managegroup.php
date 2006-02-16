@@ -9,14 +9,16 @@
  * $Id$
  */
 
+ define("KILL_GLOBALS", 1);
+
 require "./global.php";
 
 // Load language files
 $lang->load("managegroup");
 
-$gid = intval($mybb->input['gid']);
+$gid = $mybb->input['gid'] = intval($mybb->input['gid']);
 
-$query = $db->query("SELECT gid, title, type FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid' AND type <> 1");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid' AND type <> 1");
 $usergroup = $db->fetch_array($query);
 if(!$usergroup['gid'])
 {
@@ -32,14 +34,14 @@ if($mybb->input['action'] == "joinrequests")
 }
 
 // Check that this user is actually a leader of this group
-$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."groupleaders WHERE uid='".$mybb->user['uid']."' AND gid='$gid'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."groupleaders WHERE uid='".$mybb->user['uid']."' AND gid='$gid'");
 $groupleader = $db->fetch_array($query);
 if(!$groupleader['uid'])
 {
 	error($lang->not_leader_of_this_group);
 }
 
-if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
+if($mybb->input['action'] == "do_add")
 {
 	$query = $db->query("SELECT uid, additionalgroups, usergroup FROM ".TABLE_PREFIX."users WHERE username = '".addslashes($mybb->input['username'])."' LIMIT 1");
 	$user = $db->fetch_array($query);
@@ -60,7 +62,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		error($lang->error_invalidusername);
 	}
 }
-elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "post")
+elseif($mybb->input['action'] == "do_joinrequests")
 {
 	$plugins->run_hooks("managegroup_do_joinrequests_start");
 
@@ -93,7 +95,7 @@ elseif($mybb->input['action'] == "joinrequests")
 {
 	$plugins->run_hooks("managegroup_joinrequests_start");
 
-	$query = $db->query("SELECT j.*, u.uid, u.username, u.postnum, u.regdate FROM ".TABLE_PREFIX."joinrequests j LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid) WHERE j.gid='".intval($mybb->input['gid'])."' ORDER BY u.username ASC");
+	$query = $db->query("SELECT j.*, u.uid, u.username, u.postnum, u.regdate FROM ".TABLE_PREFIX."joinrequests j LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid) WHERE j.gid='".$mybb->input['gid']."' ORDER BY u.username ASC");
 	while($user = $db->fetch_array($query))
 	{
 		$user['reason'] = htmlspecialchars_uni($user['reason']);
@@ -136,7 +138,7 @@ else
 	$lang->add_member = sprintf($lang->add_member, $usergroup['title']);
 	if($usergroup['type'] == 4)
 	{
-		$query = $db->query("SELECT COUNT(*) AS req FROM ".TABLE_PREFIX."joinrequests WHERE gid='".intval($mybb->input['gid'])."'");
+		$query = $db->query("SELECT COUNT(*) AS req FROM ".TABLE_PREFIX."joinrequests WHERE gid='".$mybb->input['gid']."'");
 		$numrequests = $db->fetch_array($query);
 		if($numrequests['req'])
 		{
@@ -153,13 +155,19 @@ else
 	{
 		$usergrouptype = $lang->group_private;
 	}
+		
 
-	/* Multiple pages? */
-	$perpage = $mybb->settings['membersperpage'];
-	if($mybb->input['page'])
+	$uquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' ORDER BY username ASC";
+	$query = $db->query($uquery);
+	$numusers = $db->num_rows($query);
+	/*if(!$numusers && !$numrequests)
 	{
-		$page = intval($mybb->input['page']);
-		$start = ($page-1) * $perpage;
+		error($lang->group_no_members);
+	}*/
+	$perpage = $mybb->settings['membersperpage'];
+	if($page)
+	{
+		$start = ($page-1) *$perpage;
 	}
 	else
 	{
@@ -167,14 +175,7 @@ else
 		$page = 1;
 	}
 	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$mybb->input['gid']);
-	
-	$sql = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".intval($mybb->input['gid']).",%' ORDER BY username ASC LIMIT $start, $perpage";
-	$query = $db->query($sql);
-	$numusers = $db->num_rows($query);
-	/*if(!$numusers && !$numrequests)
-	{
-		error($lang->group_no_members);
-	}*/
+	$uquery .= " LIMIT $start, $perpage";
 
 	while($user = $db->fetch_array($query))
 	{
@@ -190,9 +191,9 @@ else
 		{
 			$email = "";
 		}
-		$query1 = $db->query("SELECT uid FROM ".TABLE_PREFIX."groupleaders WHERE uid='".$user['uid']."' AND gid='$gid'");
+		$query1 = $db->query("SELECT uid FROM ".TABLE_PREFIX."groupleaders WHERE uid='$user[uid]' AND gid='$gid'");
 		$isleader = $db->fetch_array($query1);
-		$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
+		$user['username'] = formatname($user['username'], $user['usergroup']);
 		if($isleader['uid'])
 		{
 			$leader = $lang->leader;
