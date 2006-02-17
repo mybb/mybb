@@ -6,6 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
+ * $Id:$
  */
 error_reporting(E_ALL & ~E_NOTICE);
 
@@ -20,7 +21,12 @@ require "../inc/class_timers.php";
 require "../inc/functions.php";
 require "../inc/class_xml.php";
 require "../inc/config.php";
-require "../".$config['admindir']."/adminfunctions.php";
+
+// If there's a custom admin dir, use it.
+if(isset($config['admindir']))
+{
+	require "../".$config['admindir']."/adminfunctions.php";
+}
 require "../inc/db_".$config['dbtype'].".php";
 
 // Include the necessary contants for installation
