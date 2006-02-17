@@ -235,22 +235,6 @@ function getforums($pid="0", $depth=1, $permissions="")
 				{
 					$plugins->run_hooks("index_forum");
 
-					if($depth == 3)
-					{
-						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
-						$comma = ", ";
-						++$donecount;
-						if($donecount == $mybb->settings['subforumsindex'])
-						{
-							if(count($main) > $donecount)
-							{
-								$forumlisting .= $comma;
-								$forumlisting .= sprintf($lang->more_subforums, (count($main) - $donecount));
-							}
-							return $forumlisting;
-						}
-						continue;
-					}
 					if($mybb->user['uid'] != 0)
 					{
 						$lastvisit = $mybb->user['lastvisit'];
@@ -275,7 +259,27 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$folder = "offlock";
 						$altonoff = $lang->forum_locked;
 					}
+					if($depth == 3)
+					{
+						$folder .= "mini";
+					}
 					$forumread = 0;
+					if($depth == 3)
+					{
+						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
+						$comma = ", ";
+						++$donecount;
+						if($donecount == $mybb->settings['subforumsindex'])
+						{
+							if(count($main) > $donecount)
+							{
+								$forumlisting .= $comma;
+								$forumlisting .= sprintf($lang->more_subforums, (count($main) - $donecount));
+							}
+							return $forumlisting;
+						}
+						continue;
+					}
 					if($forum['type'] == "c")
 					{
 						$forumcat = "_cat";

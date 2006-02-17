@@ -1492,7 +1492,7 @@ $footer
 </table>
 <br />]]></template>
 		<template name="forumbit_depth2_forum" version="100.07"><![CDATA[<tr>
-<td class="$bgcolor" align="center" valign="top"><img src="$theme[imgdir]/$folder.gif" alt="" /></td>
+<td class="$bgcolor" align="center" valign="top"><img src="$theme[imgdir]/$folder.gif" alt="$altonoff" /></td>
 <td class="$bgcolor" valign="top">
 <strong><a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><div class="smalltext">$forum[description]$modlist$subforums</div>
 </td>
@@ -1500,7 +1500,7 @@ $footer
 <td class="$bgcolor" valign="top" align="center" nowrap="nowrap">$posts$unapproved_posts</td>
 <td class="$bgcolor" valign="top" align="right" nowrap="nowrap">$lastpost</td>
 </tr>]]></template>
-		<template name="forumbit_depth3" version="100.07"><![CDATA[$comma<a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a>]]></template>
+		<template name="forumbit_depth3" version="100.07"><![CDATA[$comma<img src="$theme[imgdir]/$folder.gif" alt="$altonoff" /> <a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a>]]></template>
 		<template name="forumbit_subforums" version="100.07"><![CDATA[<br />$lang->subforums $forums]]></template>
 		<template name="private_empty" version="100.07"><![CDATA[<html>
 <head>
@@ -3980,7 +3980,7 @@ $gobutton
 		<template name="forumbit_depth1_forum" version="100.07"><![CDATA[<tr>
 <td class="$bgcolor" valign="top" colspan="2">
 <table cellspacing="0" cellpadding="0" border="0" width="100%"><tr>
-<td width="15" align="left"><img src="$theme[imgdir]/$folder.gif" alt="" /></td>
+<td width="15" align="left"><img src="$theme[imgdir]/$folder.gif" alt="$altonoff" /></td>
 <td width="5">&nbsp;</td>
 <td valign="top"><strong><a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong>
 <br /><span class="smalltext">$forum[description]$modlist</span>

@@ -792,22 +792,6 @@ function getforums($pid="0", $depth=1, $permissions="")
 				$perms = $forumpermissions[$forum['fid']];
 				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
 				{
-					if($depth == 3)
-					{
-						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
-						$comma = ", ";
-						++$donecount;
-						if($donecount == $mybb->settings['subforumsindex'])
-						{
-							if(count($main) > $donecount)
-							{
-								$forumlisting .= $comma;
-								$forumlisting .= sprintf($lang->more_subforums, (count($main) - $donecount));
-							}
-							return $forumlisting;
-						}
-						continue;
-					}
 					$forumread = mygetarraycookie("forumread", $forum['fid']);
 					if($forum['lastpost'] > $mybb->user['lastvisit'] && $forum['lastpost'] > $forumread && $forum['lastpost'] != 0)
 					{
@@ -824,7 +808,27 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$folder = "offlock";
 						$altonoff = $lang->forum_locked;
 					}
+					if($depth == 3)
+					{
+						$folder .= "mini";
+					}
 					$forumread = 0;
+					if($depth == 3)
+					{
+						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
+						$comma = ", ";
+						++$donecount;
+						if($donecount == $mybb->settings['subforumsindex'])
+						{
+							if(count($main) > $donecount)
+							{
+								$forumlisting .= $comma;
+								$forumlisting .= sprintf($lang->more_subforums, (count($main) - $donecount));
+							}
+							return $forumlisting;
+						}
+						continue;
+					}
 					if($forum['type'] == "c")
 					{
 						if($depth == 1)
