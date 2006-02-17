@@ -5035,11 +5035,19 @@ $loginbox
 <td class="trow1"><strong>$lang->hostname<br /><span class="smalltext">$lang->if_resolvable</span></strong></td>
 <td class="trow2">$hostname</td>
 </tr>
+$adminoptions
 </table>
 <br />
 $footer
 </body>
 </html>]]></template>
+		<template name="moderation_getip_adminoptions" version="100.07"><![CDATA[<tr>
+<td class="trow2"><strong>$lang->admin_options</strong></td>
+<td class="trow2">
+	<a href="$config[admindir]/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bregip%5D%3D$post[ipaddress]">$lang->search_regip_users</a><br />
+	<a href="$config[admindir]/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bpostip%5D%3D$post[ipaddress]">$lang->search_postip_users</a>
+</td>
+</tr>]]></template>
 		<template name="postbit_iplogged_hiden" version="100.07"><![CDATA[<br /><span class="smalltext">$lang->postbit_ipaddress <a href="moderation.php?action=getip&amp;pid=$post[pid]">$lang->postbit_ipaddress_logged</a></span>]]></template>
 		<template name="usercp_options_tppselect" version="100.07"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">$lang->tpp</span></td>
@@ -5900,16 +5908,27 @@ $headerinclude
 $header
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
-<td class="thead"><strong>$lang->ip_lookup</strong></td>
+<td class="thead" colspan="2"><strong>$lang->ip_lookup</strong></td>
+</tr>
+<td class="trow2"><strong>$lang->ip</strong></td>
+<td class="trow2">$ip</td>
 </tr>
 <tr>
-<td align="center" class="trow1">
-$lang->ip $ip $lang->resolves_to $host</td>
+<td class="trow1"><strong>$lang->resolves_to<br /><span class="smalltext">$lang->if_resolvable</span></strong></td>
+<td class="trow2">$host</td>
 </tr>
+$adminoptions
 </table>
 $footer
 </body>
 </html>]]></template>
+		<template name="online_iplookup_adminoptions"><![CDATA[<tr>
+<td class="trow1"><strong>$lang->admin_options</strong></td>
+<td class="trow2">
+	<a href="$config[admindir]/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bregip%5D%3D$post[ipaddress]">$lang->search_regip_users</a><br />
+	<a href="$config[admindir]/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bpostip%5D%3D$post[ipaddress]">$lang->search_postip_users</a>
+</td>
+</tr>]]></template>
 		<template name="online_row" version="100.07"><![CDATA[<tr>
 <td class="trow1">$onlinename$userip</td>
 <td align="center" class="trow2">$onlinetime</td>

@@ -89,6 +89,13 @@ elseif($mybb->input['action'] == "iplookup")
 	{
 		error($lang->error_nohostname);
 	}
+
+	// Admin options
+	$adminoptions = "";
+	if($mybb->usergroup['cancp'] == "yes")
+	{
+		eval("\$adminoptions = \"".$templates->get("online_iplookup_adminoptions")."\";");
+	}	
 	eval("\$iplookup = \"".$templates->get("online_iplookup")."\";");
 	outputpage($iplookup);
 }

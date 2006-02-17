@@ -800,6 +800,14 @@ switch($mybb->input['action'])
 		{
 			$hostname = $lang->resolve_fail;
 		}
+
+		// Admin options
+		$adminoptions = "";
+		if($mybb->usergroup['cancp'] == "yes")
+		{
+			eval("\$adminoptions = \"".$templates->get("moderation_getip_adminoptions")."\";");
+		}
+
 		eval("\$getip = \"".$templates->get("moderation_getip")."\";");
 		outputpage($getip);
 		break;
