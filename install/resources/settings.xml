@@ -208,7 +208,7 @@
 		</setting>
 		<setting name="announcementlimit">
 			<title>Announcements Limit</title>
-			<description><![CDATA[The number of forum announcements to  show in the thread listing on the forum display pages. Set to 0 to show all active announcements.]]></description>
+			<description><![CDATA[The number of forum announcements to  show in the thread listing on the forum display pages. Set to 0 to disable announcements altogether.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>

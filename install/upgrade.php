@@ -18,9 +18,9 @@ $mybb = new MyBB;
 // Include the files necessary for installation
 require "../inc/class_timers.php";
 require "../inc/functions.php";
-require "../admin/adminfunctions.php";
 require "../inc/class_xml.php";
 require "../inc/config.php";
+require "../".$config['admindir']."/adminfunctions.php";
 require "../inc/db_".$config['dbtype'].".php";
 
 // Include the necessary contants for installation
