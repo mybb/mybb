@@ -69,15 +69,15 @@ if(!$mybb->input['mode'])
 {
 	if($mybb->user['threadmode'])
 	{
-		$mode = $mybb->user['threadmode'];
+		$mybb->input['mode'] = $mybb->user['threadmode'];
 	}
 	elseif($mybb->settings['threadusenetstyle'] == "yes")
 	{
-		$mode = "threaded";
+		$mybb->input['mode'] = "threaded";
 	}
 	else
 	{
-		$mode = "linear";
+		$mybb->input['mode'] = "linear";
 	}
 }
 
@@ -168,7 +168,6 @@ else
 	$lastvisit = $lang->lastvisit_never;
 }
 
-$bbclosedwarning = '';
 if($mybb->settings['boardclosed'] == "yes")
 {
 	if($mybb->usergroup['cancp'] == "yes")
@@ -196,7 +195,7 @@ else
 {
 	eval("\$welcomeblock = \"".$templates->get("header_welcomeblock_guest")."\";");
 }
-$unreadreports = '';
+$unreadreports = "";
 if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->usergroup['gid'] == 6)
 {
 	$reported = $cache->read("reportedposts");
@@ -260,7 +259,7 @@ if($mybb->settings['showvernum'] == "on")
 }
 else
 {
-	$mybbversion = '';
+	$mybbversion = "";
 }
 eval("\$footer = \"".$templates->get("footer")."\";");
 
@@ -274,7 +273,7 @@ if(is_array($bannedips))
 	foreach($bannedips as $key => $bannedip)
 	{
 		$bannedip = trim($bannedip);
-		if($bannedip != '')
+		if($bannedip != "")
 		{
 			if(strstr("$ipaddress", $bannedip))
 			{
