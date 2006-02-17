@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id:$
+ * $Id$
  */
 
 /**
@@ -35,7 +35,7 @@ class ThreadDataHandler extends Handler
 
 		$db->insert_query(TABLE_PREFIX."threads", $thread);
 		
-		/* Update thread count for forum the thread is in. */
+		// Update thread count for forum the thread is in.
 		updateforumcount($thread['fid']);
 		
 	}

@@ -15,7 +15,7 @@ EXAMPLE USE:
 $post = get from POST data
 $thread = get from DB using POST data id
 
-$postHandler = new postHandler();
+$postHandler = new postDataHandler();
 if($postHandler->validate_post($post))
 {
 	$postHandler->insert_post($post);
@@ -63,11 +63,11 @@ class PostDataHandler extends DataHandler
 	 */
 	function validate_post()
 	{
-		global $mybb, $db;
+		global $mybb, $db, $plugins;
 
 		$time = time();
 		
-		// Check is the user is being naughty.
+		// Check is the user posted sooner than allowed.
 		if($mybb->settings['postfloodcheck'] == "on")
 		{
 			if($mybb->user['uid'] != 0 && $time-$mybb->user['lastpost'] <= $mybb->settings['postfloodsecs'] && ismod($post['fid']) != "yes")
@@ -129,28 +129,29 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Clean the post options for this post.
-		$post = $post->get_options($post);
+		$post = $this->get_options($post);
 
 		$plugins->run_hooks("datahandler_post_validate");
 		
 		// We are done validating, return.
 		$this->set_validated(true);
-		if(empty($this->get_errors()))
+		if(count($this->get_errors() > 0))
 		{
-			return true;
+			return false;
 		}
 		else
 		{
-			return false;
+			return true;
 		}
 	}
 	
 	/**
 	 * Assigns post options to the post data array.
 	 *
-	 * @param array A reference to the post data array.
+	 * @param array The post data array.
+	 * @return array The cleaned post data array.
 	 */
-	function get_options(&$post)
+	function get_options($post)
 	{
 		// Just to be safe here.
 		$post['options'] = $mybb->input['postoptions'];
@@ -165,7 +166,9 @@ class PostDataHandler extends DataHandler
 		if($post['options']['disablesmilies'] != "yes")
 		{
 			$post['options']['disablesmilies'] = "no";
-		}		
+		}
+		
+		return $post;	
 	}
 	
 	/**
@@ -186,7 +189,7 @@ class PostDataHandler extends DataHandler
 		{
 			die("The post needs to be validated before inserting it into the DB.");
 		}
-		if(!empty($this->get_errors()))
+		if(count($this->get_errors() > 0))
 		{
 			die("The post is not valid.");
 		}
@@ -208,49 +211,51 @@ class PostDataHandler extends DataHandler
 				$subcheck = $db->fetch_array($query);
 				if(!$subcheck['uid'])
 				{
-					$db->query("
-						INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type)
-						VALUES ('".$post['uid']."','".$post['tid']."','s')
-					");
+					$favoriteadd = array(
+						"uid" => intval($post['uid']),
+						"tid" => intval($post['tid']),
+						"type" => "s"
+					);
+					$db->insert_query(TABLE_PREFIX."favorites", $favoriteadd);
 				}
 			}
 
-			// Perform any selected moderation tools
+			// Perform any selected moderation tools.
 			if(ismod($post['fid']) == "yes" && $post['modoptions'])
 			{
 				$modoptions = $post['modoptions'];
 				$modlogdata['fid'] = $thread['fid'];
 				$modlogdata['tid'] = $thread['tid'];
 
-				// Close the thread
+				// Close the thread.
 				if($modoptions['closethread'] == "yes" && $thread['closed'] != "yes")
 				{
 					$newclosed = "closed='yes'";
 					logmod($modlogdata, "Thread closed");
 				}
 
-				// Open the thread
+				// Open the thread.
 				if($modoptions['closethread'] != "yes" && $thread['closed'] == "yes")
 				{
 					$newclosed = "closed='no'";
 					logmod($modlogdata, "Thread opened");
 				}
 
-				// Stick the thread
+				// Stick the thread.
 				if($modoptions['stickthread'] == "yes" && $thread['sticky'] != 1)
 				{
 					$newstick = "sticky='1'";
 					logmod($modlogdata, "Thread stuck");
 				}
 
-				// Unstick the thread
+				// Unstick the thread.
 				if($modoptions['stickthread'] != "yes" && $thread['sticky'])
 				{
 					$newstick = "sticky='0'";
 					logmod($modlogdata, "Thread unstuck");
 				}
 				
-				// Execute moderation options
+				// Execute moderation options.
 				if($newstick && $newclosed)
 				{
 					$sep = ",";
@@ -287,7 +292,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($post['username']),
 				"dateline" => time(),
 				"message" => $db->escape_string($post['message']),
-				"ipaddress" => $db->escape_string($post['ip']),
+				"ipaddress" => $db->escape_string($post['ipaddress']),
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible
@@ -308,7 +313,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($post['username']),
 				"dateline" => time(),
 				"message" => $db->escape_string($post['message']),
-				"ipaddress" => $db->escape_string($post['ip']),
+				"ipaddress" => $db->escape_string($post['ipaddress']),
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible
@@ -323,11 +328,11 @@ class PostDataHandler extends DataHandler
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
 		if($post['posthash'])
 		{
-			$db->query("
-				UPDATE ".TABLE_PREFIX."attachments
-				SET pid='".$post['pid']."'
-				WHERE posthash='".$db->escape_string($post['posthash'])."'
-			");
+			$post['posthash'] = $db->escape_string($post['posthash']);
+			$attachmentassign = array(
+				"pid" => $post['pid']
+			);
+			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash=".$post['posthash']);
 		}
 
 		return array(
@@ -354,7 +359,7 @@ class PostDataHandler extends DataHandler
 		{
 			die("The post needs to be validated before inserting it into the DB.");
 		}
-		if(!empty($this->get_errors()))
+		if(count($this->get_errors() > 0))
 		{
 			die("The post is not valid.");
 		}

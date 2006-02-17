@@ -489,65 +489,40 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$username = $mybb->user['username'];
 	}
 	$updatepost = 0;
-	if(!$mybb->input['savedraft'] || !$mybb->user['uid'])
+	
+	require_once "inc/datahandler.php";
+	require_once "inc/datahandlers/post.php";
+	$posthandler = new PostDataHandler();
+	
+	// Set the post data that came from the input to the $post array.
+	$post = array(
+		"subject" => $mybb->input['subject'],
+		"icon" => $mybb->input['icon'],
+		"uid" => $mybb->input['uid'],
+		"username" => $mybb->input['username'],
+		"message" => $mybb->input['message'],
+		"ipaddress" => $mybb->input['ipaddress'],
+		"tid" => $mybb->input['tid']
+	);
+	$post['options'] = array(
+		"signature" => $mybb->input['postoptions']['signature'],
+		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
+		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
+	);
+	
+	// Now let the post handler do all the hard work.
+	if($posthandler->validate_post($post))
 	{
-		if(strlen(trim($mybb->input['subject'])) == 0)
-		{
-			$mybb->input['subject'] = 'RE: ' . $thread['subject'];
-		}
-		if(strlen(trim($mybb->input['message'])) == 0)
-		{
-			error($lang->error_nomessage);
-		}
-		$now = time();
-		// Flood checking
-		if($mybb->settings['postfloodcheck'] == "on")
-		{
-			if($mybb->user['uid'] != 0 && $now-$mybb->user['lastpost'] <= $mybb->settings['postfloodsecs'] && ismod($fid) != "yes")
-			{
-				$lang->error_postflooding = sprintf($lang->error_postflooding, $mybb->settings['postfloodsecs']);
-				error($lang->error_postflooding);
-			}
-		}
-		if(strlen($mybb->input['message']) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($fid) != "yes")
-		{
-			error($lang->error_messagelength);
-		}
-		$savedraft = 0;
-	}
-	elseif($mybb->input['savedraft'] && $mybb->user['uid'])
-	{
-		$savedraft = 1;
-	}
-	if($post['pid'])
-	{
-		$updatepost = 1;
+		$postinfo = $posthandler->insert_post($post);
+		$pid = $postinfo['pid'];
+		$visible = $postinfo['visible'];
 	}
 	else
 	{
-		$updatepost = 0;
+		$errors = $posthandler->get_errors();
+		// Error code to go here.
 	}
-
-
-	if(!$mybb->input['icon'])
-	{
-		$mybb->input['icon'] = "0";
-	}
-
-	$postoptions = $mybb->input['postoptions'];
-	if($postoptions['signature'] != "yes")
-	{
-		$postoptions['signature'] = "no";
-	}
-	if($postoptions['emailnotify'] != "yes")
-	{
-		$postoptions['emailnotify'] = "no";
-	}
-	if($postoptions['disablesmilies'] != "yes")
-	{
-		$postoptions['disablesmilies'] = "no";
-	}
-
+	
 	// Start Subscriptions
 	if(!$savedraft)
 	{
@@ -597,106 +572,6 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			mymail($subscribedmember['email'], $emailsubject, $emailmessage);
 			unset($userlang);
 		}
-		// Start Auto Subscribe
-		if($postoptions['emailnotify'] != "no")
-		{
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."favorites WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'");
-			$subcheck = $db->fetch_array($query);
-			if(!$subcheck['uid'])
-			{
-				$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".$mybb->user[uid]."','$tid','s')");
-			}
-		}
-	}
-
-	if(!$mybb->input['replyto'])
-	{ // If we dont have a post to reply to, lets make it the first one :)
-		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
-		$repto = $db->fetch_array($query);
-		$mybb->input['replyto'] = $repto['pid'];
-	}
-	// Do moderator options
-	if(ismod($fid) == "yes" && !$savedraft)
-	{
-		$modoptions = $mybb->input['modoptions'];
-		$modlogdata['fid'] = $thread['fid'];
-		$modlogdata['tid'] = $thread['tid'];
-		if($modoptions['closethread'] == "yes" && $thread['closed'] != "yes")
-		{
-			$newclosed = "closed='yes'";
-			logmod($modlogdata, "Thread closed");
-		}
-		if($modoptions['closethread'] != "yes" && $thread['closed'] == "yes")
-		{
-			$newclosed = "closed='no'";
-			logmod($modlogdata, "Thread opened");
-		}
-		if($modoptions['stickthread'] == "yes" && $thread['sticky'] != 1)
-		{
-			$newstick = "sticky='1'";
-			logmod($modlogdata, "Thread stuck");
-		}
-		if($modoptions['stickthread'] != "yes" && $thread['sticky'])
-		{
-			$newstick = "sticky='0'";
-			logmod($modlogdata, "Thread unstuck");
-		}
-		if($newstick && $newclosed) { $sep = ","; }
-		if($newstick || $newclosed)
-		{
-			$db->query("UPDATE ".TABLE_PREFIX."threads SET $newclosed$sep$newstick WHERE tid='$tid'");
-		}
-	}
-	if($savedraft)
-	{
-		$visible = -2;
-	}
-	elseif($forum['modposts'] == "yes" && $mybb->usergroup['cancp'] != "yes")
-	{
-		$visible = 0;
-	}
-	else
-	{
-		$visible = 1;
-	}
-	$now = time();
-	if($updatepost)
-	{
-		$updatedpost = array(
-			"subject" => addslashes($mybb->input['subject']),
-			"icon" => intval($mybb->input['icon']),
-			"username" => addslashes($username),
-			"dateline" => time(),
-			"message" => addslashes($mybb->input['message']),
-			"ipaddress" => getip(),
-			"includesig" => $postoptions['signature'],
-			"smilieoff" => $postoptions['disablesmilies'],
-			"visible" => $visible
-			);
-		$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='$pid'");
-	}
-	else
-	{
-		$newreply = array(
-			"tid" => intval($tid),
-			"replyto" => intval($mybb->input['replyto']),
-			"fid" => $fid,
-			"subject" => addslashes($mybb->input['subject']),
-			"icon" => intval($mybb->input['icon']),
-			"uid" => $mybb->user['uid'],
-			"username" => addslashes($username),
-			"dateline" => time(),
-			"message" => addslashes($mybb->input['message']),
-			"ipaddress" => getip(),
-			"includesig" => $postoptions['signature'],
-			"smilieoff" => $postoptions['disablesmilies'],
-			"visible" => $visible
-			);
-
-		$plugins->run_hooks("newreply_do_newreply_process");
-
-		$db->insert_query(TABLE_PREFIX."posts", $newreply);
-		$pid = $db->insert_id();
 	}
 
 	// Deciding the fate
