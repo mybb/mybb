@@ -173,14 +173,14 @@ if($mybb->input['action'] == "thread")
 		for($i=1; $i<=$poll['numoptions']; ++$i)
 		{
 			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
-			
+
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
 				"allow_smilies" => $forum['allowsmilies'],
 				"allow_imgcode" => $forum['allowimgcode']
 			);
-			
+
 			$option = $parser->parse_message($optionsarray[$i-1], $parser_options);
 			$votes = $votesarray[$i-1];
 			$number = $i;
@@ -256,7 +256,7 @@ if($mybb->input['action'] == "thread")
 	{
 		$pollbox = "";
 	}
-	
+
 	// Make forum jump...
 	$forumjump = makeforumjump("", $fid, 1);
 
@@ -337,7 +337,7 @@ if($mybb->input['action'] == "thread")
 
 	$db->query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='$tid'");
 	++$thread['views'];
-	
+
 	// Work out the threads rating
 	if($forum['allowtratings'] != "no" && $thread['numratings'] > 0)
 	{
@@ -352,7 +352,7 @@ if($mybb->input['action'] == "thread")
 	{
 		$rating = "";
 	}
-	if($forum['allowtratings'] != "no" || $forumpermissions['canratethreads'] != "no") {
+	if($forum['allowtratings'] == "yes" && $forumpermissions['canratethreads'] == "yes") {
 		eval("\$ratethread = \"".$templates->get("showthread_ratethread")."\";");
 	}
 	// Work out if we're showing both approved and unapproved threads or just approved..
@@ -364,12 +364,12 @@ if($mybb->input['action'] == "thread")
 	{
 		$visible = "AND visible='1'";
 	}
-	
+
 	// Threaded or lineair display?
 	if($mybb->input['mode'] == "threaded")
-	{ 
+	{
 		$isfirst = 1;
-		
+
 		/* Show a specific post? */
 		if($mybb->input['pid'])
 		{
@@ -381,7 +381,7 @@ if($mybb->input['action'] == "thread")
 		}
 		$query = $db->query("SELECT u.*, u.username AS userusername, p.*, f.*, i.path as iconpath, i.name as iconname, eu.username AS editusername FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon) LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid) WHERE p.tid='$tid' $visible $where");
 		$showpost = $db->fetch_array($query);
-		
+
 		/* Choose post id */
 		if(!$mybb->input['pid'])
 		{
@@ -453,7 +453,7 @@ if($mybb->input['action'] == "thread")
 		{
 			$page = 1;
 		}
-		
+
 		if($page)
 		{
 			$start = ($page-1) * $perpage;
@@ -515,8 +515,8 @@ if($mybb->input['action'] == "thread")
 	if($mybb->settings['showsimilarthreads'] != "no")
 	{
 		$query = $db->query("
-			SELECT subject, tid, lastpost, username, replies, 
-			MATCH (subject) AGAINST ('".addslashes($thread['subject'])."') AS relevance 
+			SELECT subject, tid, lastpost, username, replies,
+			MATCH (subject) AGAINST ('".addslashes($thread['subject'])."') AS relevance
 			FROM ".TABLE_PREFIX."threads
 			WHERE fid='".$thread['fid']."'
 			AND tid <> '".$thread['tid']."'
@@ -589,7 +589,7 @@ function buildtree($replyto="0", $indent="0")
 			else
 			{
 				$post['profilelink'] = $post['username'];
-			}			
+			}
 			if($mybb->input['pid'] == $post['pid'])
 			{
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bitactive")."\";");

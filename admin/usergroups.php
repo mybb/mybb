@@ -159,7 +159,7 @@ if($mybb->input['action'] == "do_addgroupleader")
 if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
-	{	
+	{
 		$db->query("DELETE FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."' AND type!='1'");
 		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='2' WHERE usergroup='".intval($mybb->input['gid'])."'");
 		$db->query("UPDATE ".TABLE_PREFIX."users SET displaygroup=usergroup WHERE displaygroup='".intval($mybb->input['gid'])."'");
@@ -260,10 +260,10 @@ if($mybb->input['action'] == "do_edit")
 	// Only update the candisplaygroup setting if not a core usergroup
 	if($usergroup['type'] != 1)
 	{
-		$grouparray['candisplaygroup'] = addslashes($mybb->input['candisplaygroup']);	
+		$grouparray['candisplaygroup'] = addslashes($mybb->input['candisplaygroup']);
 	}
 
-	$db->update_query(TABLE_PREFIX."usergroups", $grouparray, "gid='".$mybb->input['gid']."'");	
+	$db->update_query(TABLE_PREFIX."usergroups", $grouparray, "gid='".$mybb->input['gid']."'");
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();
 	cpredirect("usergroups.php", $lang->group_updated.$namenote);
@@ -296,7 +296,7 @@ if($mybb->input['action'] == "add")
 	makeyesnocode($lang->can_search_forums, "cansearch", "yes");
 	makeyesnocode($lang->can_view_profiles, "canviewprofiles", "yes");
 	makeyesnocode($lang->can_download_attachments, "candlattachments", "yes");
-	
+
 	tablesubheader($lang->perms_posting);
 	makeyesnocode($lang->can_post_threads, "canpostthreads", "yes");
 	makeyesnocode($lang->can_post_replies, "canpostreplys", "yes");
@@ -305,13 +305,13 @@ if($mybb->input['action'] == "add")
 	tablesubheader($lang->perms_attachments);
 	makeyesnocode($lang->can_post_attachments, "canpostattachments", "yes");
 	makeinputcode($lang->attach_quota, "attachquota", "10000");
-	
+
 	tablesubheader($lang->perms_editing);
 	makeyesnocode($lang->can_edit_posts, "caneditposts", "yes");
 	makeyesnocode($lang->can_delete_posts, "candeleteposts", "yes");
 	makeyesnocode($lang->can_delete_threads, "candeletethreads", "yes");
 	makeyesnocode($lang->can_edit_attachments, "caneditattachments", "yes");
-	
+
 	tablesubheader($lang->perms_reputations);
 	makeyesnocode($lang->show_reputations, "usereputationsystem", "yes");
 	makeyesnocode($lang->can_give_reputations, "cangivereputations", "yes");
@@ -321,24 +321,24 @@ if($mybb->input['action'] == "add")
 	tablesubheader($lang->perms_polls);
 	makeyesnocode($lang->can_post_polls, "canpostpolls", "yes");
 	makeyesnocode($lang->can_vote_polls, "canvotepolls", "yes");
-	
+
 	tablesubheader($lang->perms_pms);
 	makeyesnocode($lang->can_use_pms, "canusepms", "yes");
 	makeyesnocode($lang->can_send_pms, "cansendpms", "yes");
 	makeyesnocode($lang->can_track_pms, "cantrackpms", "yes");
 	makeyesnocode($lang->can_deny_pms, "candenypmreceipts", "yes");
 	makeinputcode($lang->pm_quota, "stars", "50", 4);
-	
+
 	tablesubheader($lang->perms_calendar);
 	makeyesnocode($lang->can_view_calendar, "canviewcalendar", "yes");
 	makeyesnocode($lang->can_add_public, "canaddpublicevents", "no");
 	makeyesnocode($lang->can_add_private, "canaddprivateevents", "no");
-	
+
 	tablesubheader($lang->perms_wol);
 	makeyesnocode($lang->can_view_wol, "canviewonline", "yes");
 	makeyesnocode($lang->can_view_invisible, "canviewwolinvis", "no");
 	makeyesnocode($lang->can_view_ips, "canviewonlineips", "no");
-	
+
 	tablesubheader($lang->perms_account);
 	makeyesnocode($lang->can_access_ucp, "canusercp", "yes");
 	makeyesnocode($lang->can_change_name, "canchangename", "no");
@@ -349,7 +349,7 @@ if($mybb->input['action'] == "add")
 	tablesubheader($lang->perms_admin);
 	makeyesnocode($lang->can_access_acp, "cancp", "no");
 	makeyesnocode($lang->is_smod, "issupermod", "no");
-	
+
 	tablesubheader($lang->perms_misc);
 	makeyesnocode($lang->can_view_mlist, "canviewmemberlist", "yes");
 	makeyesnocode($lang->can_send_emails, "cansendemail", "yes");
@@ -398,7 +398,7 @@ if($mybb->input['action'] == "edit")
 	$lang->edit_group = sprintf($lang->edit_group, $usergroup['title']);
 	cpheader();
 	startform("usergroups.php", "", "do_edit");
-	makehiddencode("gid", $gid);
+	makehiddencode("gid", htmlspecialchars($mybb->input['gid']));
 	starttable();
 	tableheader($lang->edit_group);
 	makeinputcode($lang->title, "title", $usergroup['title']);
@@ -429,7 +429,7 @@ if($mybb->input['action'] == "edit")
 	makeyesnocode($lang->can_search_forums, "cansearch", $usergroup['cansearch']);
 	makeyesnocode($lang->can_view_profiles, "canviewprofiles", $usergroup['canviewprofiles']);
 	makeyesnocode($lang->can_download_attachments, "candlattachments", $usergroup['candlattachments']);
-	
+
 	tablesubheader($lang->perms_posting);
 	makeyesnocode($lang->can_post_threads, "canpostthreads", $usergroup['canpostthreads']);
 	makeyesnocode($lang->can_post_replies, "canpostreplys", $usergroup['canpostreplys']);
@@ -438,13 +438,13 @@ if($mybb->input['action'] == "edit")
 	tablesubheader($lang->perms_attachments);
 	makeyesnocode($lang->can_post_attachments, "canpostattachments", $usergroup['canpostattachments']);
 	makeinputcode($lang->attach_quota, "attachquota", $usergroup['attachquota']);
-	
+
 	tablesubheader($lang->perms_editing);
 	makeyesnocode($lang->can_edit_posts, "caneditposts", $usergroup['caneditposts']);
 	makeyesnocode($lang->can_delete_posts, "candeleteposts", $usergroup['candeleteposts']);
 	makeyesnocode($lang->can_delete_threads, "candeletethreads", $usergroup['candeletethreads']);
 	makeyesnocode($lang->can_edit_attachments, "caneditattachments", $usergroup['caneditattachments']);
-	
+
 	tablesubheader($lang->perms_reputations);
 
 	makeyesnocode($lang->show_reputations, "usereputationsystem", $usergroup['usereputationsystem']);
@@ -455,24 +455,24 @@ if($mybb->input['action'] == "edit")
 	tablesubheader($lang->perms_polls);
 	makeyesnocode($lang->can_post_polls, "canpostpolls", $usergroup['canpostpolls']);
 	makeyesnocode($lang->can_vote_polls, "canvotepolls", $usergroup['canvotepolls']);
-	
+
 	tablesubheader($lang->perms_pms);
 	makeyesnocode($lang->can_use_pms, "canusepms", $usergroup['canusepms']);
 	makeyesnocode($lang->can_send_pms, "cansendpms", $usergroup['cansendpms']);
 	makeyesnocode($lang->can_track_pms, "cantrackpms", $usergroup['cantrackpms']);
 	makeyesnocode($lang->can_deny_pms, "candenypmreceipts", $usergroup['candenypmreceipts']);
 	makeinputcode($lang->pm_quota, "pmquota", $usergroup['pmquota'], 4);
-	
+
 	tablesubheader($lang->perms_calendar);
 	makeyesnocode($lang->can_view_calendar, "canviewcalendar", $usergroup['canviewcalendar']);
 	makeyesnocode($lang->can_add_public, "canaddpublicevents", $usergroup['canaddpublicevents']);
 	makeyesnocode($lang->can_add_private, "canaddprivateevents", $usergroup['canaddprivateevents']);
-	
+
 	tablesubheader($lang->perms_wol);
 	makeyesnocode($lang->can_view_wol, "canviewonline", $usergroup['canviewonline']);
 	makeyesnocode($lang->can_view_invisible, "canviewwolinvis", $usergroup['canviewwolinvis']);
 	makeyesnocode($lang->can_view_ips, "canviewonlineips", $usergroup['canviewonlineips']);
-	
+
 	tablesubheader($lang->perms_account);
 	makeyesnocode($lang->can_access_ucp, "canusercp", $usergroup['canusercp']);
 	makeyesnocode($lang->can_change_name, "canchangename", $usergroup['canchangename']);
@@ -482,7 +482,7 @@ if($mybb->input['action'] == "edit")
 	tablesubheader($lang->perms_admin);
 	makeyesnocode($lang->can_access_acp, "cancp", $usergroup['cancp']);
 	makeyesnocode($lang->is_smod, "issupermod", $usergroup['issupermod']);
-	
+
 	tablesubheader($lang->perms_misc);
 	makeyesnocode($lang->can_view_mlist, "canviewmemberlist", $usergroup['canviewmemberlist']);
 	makeyesnocode($lang->can_send_emails, "cansendemail", $usergroup['cansendemail']);
