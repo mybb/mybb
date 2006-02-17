@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id:$
+ * $Id$
  */
 error_reporting(E_ALL & ~E_NOTICE);
 
@@ -21,20 +21,23 @@ require "../inc/class_timers.php";
 require "../inc/functions.php";
 require "../inc/class_xml.php";
 require "../inc/config.php";
+require "../inc/db_".$config['dbtype'].".php";
 
 // If there's a custom admin dir, use it.
 if(isset($config['admindir']))
 {
 	require "../".$config['admindir']."/adminfunctions.php";
 }
-require "../inc/db_".$config['dbtype'].".php";
+else
+{
+	require "../admin/adminfunctions.php";
+}
 
 // Include the necessary contants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
-
 
 // Include the installation resources
 require "./resources/output.php";
@@ -275,7 +278,7 @@ function upgradedone()
 		@fclose($lock);
 		if($written)
 		{
-			$lock_note = "<p>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</p><p>You may now proceed to your upgraded copy of <a href=\"../index.php\">MyBB</a> or its <a href=\"../admin/index.php\">Admin Control Panel</a>.</p>";
+			$lock_note = "<p>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</p><p>You may now proceed to your upgraded copy of <a href=\"../index.php\">MyBB</a> or its <a href=\"../".$config['admindir']."/index.php\">Admin Control Panel</a>.</p>";
 		}
 	}
 	if(!$written)
