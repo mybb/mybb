@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id:$
+ * $Id$
  */
 
 /**
@@ -20,14 +20,14 @@ class DataHandler
 	 *
 	 * @var boolean True when validated, false when not validated.
 	 */
-	var $is_validated;
+	var $is_validated = false;
 	
 	/**
 	 * The errors that occurred when handling data.
 	 *
 	 * @var array
 	 */
-	var $errors;
+	var $errors = array();
 	
 	/**
 	 * Add an error to the error array.
@@ -66,7 +66,7 @@ class DataHandler
 	 */
 	function get_validated()
 	{
-		if($this->is_validated === true)
+		if($this->is_validated == true)
 		{
 			return true;
 		}

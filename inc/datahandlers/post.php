@@ -30,38 +30,11 @@ if($postHandler->validate_post($post))
 class PostDataHandler extends DataHandler
 {
 	/**
-	 * What we are doing: inserting, updating or deleting.
-	 *
-	 * @var string
-	 */
-	var $action;
-	
-	/**
-	 * Get a post from the database by post id.
-	 *
-	 * @param int The id of the post to be retrieved.
-	 * @return array An array of post data.
-	 */
-	function get_post_by_pid($pid)
-	{
-		global $db;
-		
-		$pid = intval($pid);
-		$options = array(
-			"limit" => 1
-		);
-		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid=".$pid, $options);
-		$post = $db->fetch_array($query);
-		
-		return $post;
-	}
-
-	/**
 	 * Validate a post.
 	 *
 	 * @return boolean True when valid, false when invalid.
 	 */
-	function validate_post()
+	function validate_post(&$post)
 	{
 		global $mybb, $db, $plugins;
 
@@ -75,7 +48,6 @@ class PostDataHandler extends DataHandler
 				$this->set_error("post_flooding");
 			}
 		}
-
 		// Message of correct length?
 		if(strlen(trim($post['message'])) == 0)
 		{
@@ -87,22 +59,44 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Check for correct subject content.
-		if($this->action == "insert")
+		if($post['action'] == "edit" && $post['pid'])
 		{
-			// If there is no subject, make it the default one.
-			if(strlen(trim($mybb->input['subject'])) == 0)
+			// Check if this post is the first in the thread.
+			$query = $db->query("
+				SELECT *
+				FROM ".TABLE_PREFIX."posts
+				WHERE tid='$tid'
+				ORDER BY dateline ASC
+				LIMIT 0,1
+			");
+			$firstcheck = $db->fetch_array($query);
+			if($firstcheck['pid'] == $post['pid'])
 			{
-				$post['subject'] = "RE: " . $thread['subject'];
+				$firstpost = 1;
 			}
-		}
-		elseif($this->action == "update")
-		{
+			else
+			{
+				$firstpost = 0;
+			}
+
 			// If this is the first post there needs to be a subject, else make it the default one.
 			if(strlen(trim($mybb->input['subject'])) == 0 && $firstpost)
 			{
 				$this->set_error("no_subject");
 			}
 			elseif(strlen(trim($mybb->input['subject'])) == 0)
+			{
+				$post['subject'] = "RE: " . $thread['subject'];
+			}
+		}
+		else
+		{
+			// If there is no subject, make it the default one.
+
+			//
+			// REVIEW: THIS WILL NOT WORK
+			//
+			if(strlen(trim($mybb->input['subject'])) == 0)
 			{
 				$post['subject'] = "RE: " . $thread['subject'];
 			}
@@ -135,7 +129,7 @@ class PostDataHandler extends DataHandler
 		
 		// We are done validating, return.
 		$this->set_validated(true);
-		if(count($this->get_errors() > 0))
+		if(count($this->get_errors()) > 0)
 		{
 			return false;
 		}
@@ -153,8 +147,6 @@ class PostDataHandler extends DataHandler
 	 */
 	function get_options($post)
 	{
-		// Just to be safe here.
-		$post['options'] = $mybb->input['postoptions'];
 		if($post['options']['signature'] != "yes")
 		{
 			$post['options']['signature'] = "no";
@@ -179,17 +171,14 @@ class PostDataHandler extends DataHandler
 	 */
 	function insert_post($post)
 	{
-		global $db;
+		global $db, $mybb, $plugins;
 
-		// Make the validation method know what we are doing.
-		$this->action = "insert";
-		
 		// Yes, validating is required.
-		if($this->get_validated !== true)
+		if(!$this->get_validated())
 		{
 			die("The post needs to be validated before inserting it into the DB.");
 		}
-		if(count($this->get_errors() > 0))
+		if(count($this->get_errors()) > 0)
 		{
 			die("The post is not valid.");
 		}
@@ -282,7 +271,7 @@ class PostDataHandler extends DataHandler
 		}
 		
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
-		if($post['pid'])
+		if($post['savedraft'] == 1 && $post['pid'])
 		{
 			// Update a post that is a draft
 			$updatedpost = array(
@@ -332,7 +321,7 @@ class PostDataHandler extends DataHandler
 			$attachmentassign = array(
 				"pid" => $post['pid']
 			);
-			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash=".$post['posthash']);
+			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='".$post['posthash']."'");
 		}
 
 		return array(
@@ -351,11 +340,8 @@ class PostDataHandler extends DataHandler
 	{
 		global $db;
 		
-		// Make the validation method know what we are doing.
-		$this->action = "update";
-		
 		// Yes, validating is required.
-		if($this->get_validated !== true)
+		if($this->get_validated() != true)
 		{
 			die("The post needs to be validated before inserting it into the DB.");
 		}

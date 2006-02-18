@@ -23,6 +23,7 @@ $lang->load("newreply");
 $pid = intval($mybb->input['pid']);
 $tid = intval($mybb->input['tid']);
 
+$draft_pid = 0;
 if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $pid) || ($tid && $pid))
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
@@ -31,6 +32,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $pid) 
 	{
 		error($lang->error_invalidpost);
 	}
+	$draft_pid = $post['pid'];
 	$tid = $post['tid'];
 }
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
@@ -137,10 +139,24 @@ if($mybb->input['removeattachment'])
 	}
 }
 
-// Max images check
-if($mybb->input['action'] == "do_newreply" && !$mybb->input['savedraft'])
+// Setup our posthash for managing attachments
+if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
 {
-	if($mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes")
+	mt_srand ((double) microtime() * 1000000);
+	$mybb->input['posthash'] = md5($thread['tid'].$mybb->user['uid'].mt_rand());
+}
+
+$reply_errors = "";
+if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
+{
+	$plugins->run_hooks("newreply_do_newreply_start");
+
+	// Check if this post contains more images than the forum allows
+	
+	//
+	// THIS NEEDS TO BE MOED INTO HANDLER AND CODE UPDATED TO NEW PARSER
+	//
+	if(!$mybb->input['savedraft'] && $mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes")
 	{
 		if($mybb->input['postoptions']['disablesmilies'] == "yes")
 		{
@@ -157,13 +173,186 @@ if($mybb->input['action'] == "do_newreply" && !$mybb->input['savedraft'])
 			$mybb->input['action'] = "newreply";
 		}
 	}
-}
+	$plugins->run_hooks("newreply_do_newreply_start");
 
-// Setup our posthash for managing attachments
-if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
-{
-	mt_srand ((double) microtime() * 1000000);
-	$mybb->input['posthash'] = md5($thread['tid'].$mybb->user['uid'].mt_rand());
+	if($mybb->user['uid'] == 0)
+	{
+		$username = htmlspecialchars_uni($mybb->input['username']);
+		if(username_exists($mybb->input['username']))
+		{
+			if(!$mybb->input['password'])
+			{
+				error($lang->error_usernametaken);
+			}
+			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+			if(!$mybb->user['uid'])
+			{
+				error($lang->error_invalidpassword);
+			}
+			$mybb->input['username'] = $username = $mybb->user['username'];
+			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
+		}
+		else
+		{
+			if(!$mybb->input['username'])
+			{
+				$$mybb->input['username'] = "Guest";
+			}
+		}
+	}
+
+	require_once "inc/datahandler.php";
+	require_once "inc/datahandlers/post.php";
+	$posthandler = new PostDataHandler();
+
+	// Set the post data that came from the input to the $post array.
+	$post = array(
+		"tid" => $mybb->input['tid'],
+		"replyto" => $mybb->input['replyto'],
+		"fid" => $thread['fid'],
+		"subject" => $mybb->input['subject'],
+		"icon" => $mybb->input['icon'],
+		"uid" => $mybb->user['uid'],
+		"username" => $mybb->user['username'],
+		"message" => $mybb->input['message'],
+		"ipaddress" => getip(),
+		"posthash" => $mybb->input['posthash']
+	);
+
+	// Are we saving a draft post?
+	if($mybb->input['savedraft'] && $mybb->user['uid'])
+	{
+		$post['savedraft'] = 1;
+		if($draft_pid)
+		{
+			$post['pid'] = $draft_pid;
+		}
+	}
+	else
+	{
+		$post['savedraft'] = 0;
+	}
+
+	$post['options'] = array(
+		"signature" => $mybb->input['postoptions']['signature'],
+		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
+		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
+	);
+
+	// Now let the post handler do all the hard work.
+	if(!$posthandler->validate_post($post))
+	{
+		$errors = $posthandler->get_errors();
+		foreach($errors as $error)
+		{
+			//
+			// REVIEW: Language variables or other system?
+			//
+			//$posterrors[] = $lang->error_$error;
+			$post_errors[] = $error;
+		}
+		$reply_errors = inlineerror($post_errors);
+		$mybb->input['action'] = "newreply";
+	}
+	else
+	{
+		$postinfo = $posthandler->insert_post($post);
+		$pid = $postinfo['pid'];
+		$visible = $postinfo['visible'];
+
+		// Start Subscriptions
+		if(!$post['savedraft'])
+		{
+			$subject = $parser->parse_badwords($thread['subject']);
+			$excerpt = $parser->strip_mycode($post['message']);
+			$excerpt = substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+			$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'".$thread['lastpost']."'");
+			while($subscribedmember = $db->fetch_array($query))
+			{
+				if($subscribedmember['language'] != '' && $lang->languageExists($subscribedmember['language']))
+				{
+					$uselang = $subscribedmember['language'];
+				}
+				elseif($mybb->settings['bblanguage'])
+				{
+					$uselang = $mybb->settings['bblanguage'];
+				}
+				else
+				{
+					$uselang = "english";
+				}
+
+				if($uselang == $mybb->settings['bblanguage'])
+				{
+					$emailsubject = $lang->emailsubject_subscription;
+					$emailmessage = $lang->email_subscription;
+				}
+				else
+				{
+					if(!isset($langcache[$uselang]['emailsubject_subscription']))
+					{
+						$userlang = new MyLanguage;
+						$userlang->setPath("./inc/languages");
+						$userlang->setLanguage($uselang);
+						$userlang->load("messages");
+						$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
+						$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
+						unset($userlang);
+					}
+					$emailsubject =  $langcache[$uselang]['emailsubject_subscription'];
+					$emailmessage =  $langcache[$uselang]['email_subscription'];
+				}
+				$emailsubject = sprintf($emailsubject, $subject);
+				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
+				mymail($subscribedmember['email'], $emailsubject, $emailmessage);
+				unset($userlang);
+			}
+		}
+
+		// Deciding the fate
+		if($visible == -2)
+		{
+			// Draft post
+			$lang->redirect_newreply = $lang->draft_saved;
+			$url = "usercp.php?action=drafts";
+		}
+		elseif($visible == 1)
+		{
+			// Visible post
+			$lang->redirect_newreply .= $lang->redirect_newreply_post;
+			$url = "showthread.php?tid=$tid&pid=$pid#pid$pid";
+			updatethreadcount($tid);
+			updateforumcount($fid);
+			$cache->updatestats();
+		}
+		else
+		{
+			// Moderated post
+			$lang->redirect_newreply .= $lang->redirect_newreply_moderation;
+			$url = "showthread.php?tid=$tid";
+			// Update the unapproved posts count for the current thread and current forum
+			$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+1 WHERE tid='$tid'");
+			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts+1 WHERE fid='$fid'");
+		}
+
+		if(!$post['savedraft'])
+		{
+			$now = time();
+			if($forum['usepostcounts'] != "no")
+			{
+					$queryadd = ",postnum=postnum+1";
+			}
+			else
+			{
+				$queryadd = '';
+			}
+			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$mybb->user['uid']."'");
+
+			$plugins->run_hooks("newreply_do_newreply_end");
+		}
+
+		redirect($url, $lang->redirect_newreply);
+	}
 }
 
 if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft")
@@ -199,7 +388,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$message = htmlspecialchars_uni($message);
 	$editdraftpid = '';
 
-	if($mybb->input['previewpost'] || $maximageserror)
+	if($mybb->input['previewpost'] || $maximageserror || $reply_errors)
 	{
 		$postoptions = $mybb->input['postoptions'];
 		if($postoptions['signature'] == "yes")
@@ -453,178 +642,5 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	eval("\$newreply = \"".$templates->get("newreply")."\";");
 	outputpage($newreply);
-}
-if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
-{
-	$plugins->run_hooks("newreply_do_newreply_start");
-
-	if($mybb->user['uid'] == 0)
-	{
-		$username = htmlspecialchars_uni($mybb->input['username']);
-		if(username_exists($mybb->input['username']))
-		{
-			if(!$mybb->input['password'])
-			{
-				error($lang->error_usernametaken);
-			}
-			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
-			if(!$mybb->user['uid'])
-			{
-				error($lang->error_invalidpassword);
-			}
-			$mybb->input['username'] = $username = $mybb->user['username'];
-			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
-		}
-		else
-		{
-			if(!$username)
-			{
-				$username = "Guest";
-			}
-			$author = 0;
-		}
-	}
-	else
-	{
-		$username = $mybb->user['username'];
-	}
-	$updatepost = 0;
-	
-	require_once "inc/datahandler.php";
-	require_once "inc/datahandlers/post.php";
-	$posthandler = new PostDataHandler();
-	
-	// Set the post data that came from the input to the $post array.
-	$post = array(
-		"subject" => $mybb->input['subject'],
-		"icon" => $mybb->input['icon'],
-		"uid" => $mybb->input['uid'],
-		"username" => $mybb->input['username'],
-		"message" => $mybb->input['message'],
-		"ipaddress" => $mybb->input['ipaddress'],
-		"tid" => $mybb->input['tid']
-	);
-	$post['options'] = array(
-		"signature" => $mybb->input['postoptions']['signature'],
-		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
-		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
-	);
-	
-	// Now let the post handler do all the hard work.
-	if($posthandler->validate_post($post))
-	{
-		$postinfo = $posthandler->insert_post($post);
-		$pid = $postinfo['pid'];
-		$visible = $postinfo['visible'];
-	}
-	else
-	{
-		$errors = $posthandler->get_errors();
-		// Error code to go here.
-	}
-	
-	// Start Subscriptions
-	if(!$savedraft)
-	{
-		$subject = $parser->parse_badwords($thread['subject']);
-		$excerpt = $parser->strip_mycode($mybb->input['message']);
-		$excerpt = substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline DESC LIMIT 1");
-		$lastpost = $db->fetch_array($query);
-		$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'$lastpost[dateline]'");
-		while($subscribedmember = $db->fetch_array($query))
-		{
-			if($subscribedmember['language'] != '' && $lang->languageExists($subscribedmember['language']))
-			{
-				$uselang = $subscribedmember['language'];
-			}
-			elseif($mybb->settings['bblanguage'])
-			{
-				$uselang = $mybb->settings['bblanguage'];
-			}
-			else
-			{
-				$uselang = "english";
-			}
-
-			if($uselang == $mybb->settings['bblanguage'])
-			{
-				$emailsubject = $lang->emailsubject_subscription;
-				$emailmessage = $lang->email_subscription;
-			}
-			else
-			{
-				if(!isset($langcache[$uselang]['emailsubject_subscription']))
-				{
-					$userlang = new MyLanguage;
-					$userlang->setPath("./inc/languages");
-					$userlang->setLanguage($uselang);
-					$userlang->load("messages");
-					$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
-					$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
-					unset($userlang);
-				}
-				$emailsubject =  $langcache[$uselang]['emailsubject_subscription'];
-				$emailmessage =  $langcache[$uselang]['email_subscription'];
-			}
-			$emailsubject = sprintf($emailsubject, $subject);
-			$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
-			mymail($subscribedmember['email'], $emailsubject, $emailmessage);
-			unset($userlang);
-		}
-	}
-
-	// Deciding the fate
-	if($visible == -2)
-	{
-		// Draft post
-		$lang->redirect_newreply = $lang->draft_saved;
-		$url = "usercp.php?action=drafts";
-	}
-	elseif($visible == 1)
-	{
-		// Visible post
-		$lang->redirect_newreply .= $lang->redirect_newreply_post;
-		$url = "showthread.php?tid=$tid&pid=$pid#pid$pid";
-		updatethreadcount($tid);
-		updateforumcount($fid);
-		$cache->updatestats();
-	}
-	else
-	{
-		// Moderated post
-		$lang->redirect_newreply .= $lang->redirect_newreply_moderation;
-		$url = "showthread.php?tid=$tid";
-		// Update the unapproved posts count for the current thread and current forum
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+1 WHERE tid='$tid'");
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts+1 WHERE fid='$fid'");
-	}
-
-	if(!$savedraft)
-	{
-		$now = time();
-		if($forum['usepostcounts'] != "no")
-		{
-				$queryadd = ",postnum=postnum+1";
-		}
-		else
-		{
-			$queryadd = '';
-		}
-		$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$mybb->user['uid']."'");
-
-		if(function_exists("replyPosted"))
-		{
-			replyPosted($pid);
-		}
-
-		$plugins->run_hooks("newreply_do_newreply_end");
-	}
-	// Setup the correct ownership of the attachments
-	if($mybb->input['posthash'])
-	{
-		$db->query("UPDATE ".TABLE_PREFIX."attachments SET pid='$pid' WHERE posthash='".addslashes($mybb->input['posthash'])."'");
-	}
-	redirect($url, $lang->redirect_newreply);
 }
 ?>

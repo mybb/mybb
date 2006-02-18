@@ -738,6 +738,7 @@ $header
 $preview
 $maximageserror
 $attacherror
+$reply_errors
 <form action="newreply.php" method="post" enctype="multipart/form-data" name="input">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
