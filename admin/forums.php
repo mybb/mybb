@@ -229,6 +229,9 @@ if($mybb->input['action'] == "do_add") {
 		"rulestype" => addslashes($mybb->input['rulestype']),
 		"rulestitle" => addslashes($mybb->input['rulestitle']),
 		"rules" => addslashes($mybb->input['rules']),
+		"defaultdatecut" => intval($mybb->input['defaultdatecut']),
+		"defaultsortby" => addslashes($mybb->input['defaultsortby']),
+		"defaultsortorder" => addslashes($mybb->input['defaultsortorder']),
 		);
 	$db->insert_query(TABLE_PREFIX."forums", $sqlarray);
 	$fid = $db->insert_id();
@@ -427,6 +430,9 @@ if($mybb->input['action'] == "do_edit") {
 			"rulestype" => addslashes($mybb->input['rulestype']),
 			"rulestitle" => addslashes($mybb->input['rulestitle']),
 			"rules" => addslashes($mybb->input['rules']),
+			"defaultdatecut" => intval($mybb->input['defaultdatecut']),
+			"defaultsortby" => addslashes($mybb->input['defaultsortby']),
+			"defaultsortorder" => addslashes($mybb->input['defaultsortorder']),
 			);
 			
 		$db->update_query(TABLE_PREFIX."forums", $sqlarray, "fid='$fid'", 1);
@@ -521,6 +527,35 @@ if($mybb->input['action'] == "add") {
 	makelabelcode($lang->rules_display_method, "<select name=\"rulestype\"><option value=\"0\">".$lang->dont_display_rules."</option><option value=\"1\">".$lang->display_rules_inline."</option><option value=\"2\">".$lang->display_rules_link."</option></select>");
 	makeinputcode($lang->rules_title, "rulestitle");
 	maketextareacode($lang->rules, "rules");
+
+	tablesubheader($lang->default_viewing_options);
+	$datecut_array = array(
+		1 => $lang->datelimit_1day,
+		5 => $lang->datelimit_5days,
+		10 => $lang->datelimit_10days,
+		20 => $lang->datelimit_20days,
+		50 => $lang->datelimit_50days,
+		75 => $lang->datelimit_75days,
+		100 => $lang->datelimit_100days,
+		365 => $lang->datelimit_lastyear,
+		1000 => $lang->datelimit_beginning,
+		);
+	makeselectcode_array($lang->default_datecut, "defaultdatecut", $datecut_array, "", true, $lang->board_default);
+	$sortby_array = array(
+		"subject" => $lang->sort_by_subject,
+		"lastpost" => $lang->sort_by_lastpost,
+		"starter" => $lang->sort_by_starter,
+		"started" => $lang->sort_by_started,
+		"rating" => $lang->sort_by_rating,
+		"replies" => $lang->sort_by_replies,
+		"views" => $lang->sort_by_views,
+		);
+	makeselectcode_array($lang->default_sortby, "defaultsortby", $sortby_array, "", true, $lang->board_default);
+	$sortorder_array = array(
+		"asc" => $lang->sort_order_asc,
+		"desc" => $lang->sort_order_desc,
+		);
+	makeselectcode_array($lang->default_sortorder, "defaultsortorder", $sortorder_array, "", true, $lang->board_default);
 
 	tablesubheader($lang->misc_options);
 	makeyesnocode($lang->allow_html, "allowhtml", "no");
@@ -648,15 +683,48 @@ if($mybb->input['action'] == "edit") {
 	tablesubheader($lang->forum_rules);
 	if($forum['rulestype'] == 1)
 	{
-		$rulesdispin = "selected";
+		$rulesdispin = "selected=\"selected\"";
 	}
 	elseif($forum['rulestype'] == 2)
 	{
-		$rulesdisplink = "selected";
+		$rulesdisplink = "selected=\"selected\"";
+	}
+	else
+	{
+		$rulesnodisp = "selected=\"selected\"";
 	}
 	makelabelcode($lang->rules_display_method, "<select name=\"rulestype\"><option value=\"0\" $rulesnodisp>".$lang->dont_display_rules."</option><option value=\"1\" $rulesdispin>".$lang->display_rules_inline."</option><option value=\"2\" $rulesdisplink>".$lang->display_rules_link."</option></select>");
 	makeinputcode($lang->rules_title, "rulestitle", $forum['rulestitle']);
 	maketextareacode($lang->rules, "rules", $forum['rules']);
+
+	tablesubheader($lang->default_viewing_options);
+	$datecut_array = array(
+		1 => $lang->datelimit_1day,
+		5 => $lang->datelimit_5days,
+		10 => $lang->datelimit_10days,
+		20 => $lang->datelimit_20days,
+		50 => $lang->datelimit_50days,
+		75 => $lang->datelimit_75days,
+		100 => $lang->datelimit_100days,
+		365 => $lang->datelimit_lastyear,
+		1000 => $lang->datelimit_beginning,
+		);
+	makeselectcode_array($lang->default_datecut, "defaultdatecut", $datecut_array, $forum['defaultdatecut'], true, $lang->board_default);
+	$sortby_array = array(
+		"subject" => $lang->sort_by_subject,
+		"lastpost" => $lang->sort_by_lastpost,
+		"starter" => $lang->sort_by_starter,
+		"started" => $lang->sort_by_started,
+		"rating" => $lang->sort_by_rating,
+		"replies" => $lang->sort_by_replies,
+		"views" => $lang->sort_by_views,
+		);
+	makeselectcode_array($lang->default_sortby, "defaultsortby", $sortby_array, $forum['defaultsortby'], true, $lang->board_default);
+	$sortorder_array = array(
+		"asc" => $lang->sort_order_asc,
+		"desc" => $lang->sort_order_desc,
+		);
+	makeselectcode_array($lang->default_sortorder, "defaultsortorder", $sortorder_array, $forum['defaultsortorder'], true, $lang->board_default);
 
 	tablesubheader($lang->misc_options);
 	makeyesnocode($lang->allow_html, "allowhtml", $forum['allowhtml']);

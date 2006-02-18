@@ -16,6 +16,7 @@ $l['sort_by'] = "Show threads sorted by";
 $l['sort_by_subject'] = "thread subject";
 $l['sort_by_lastpost'] = "last post time";
 $l['sort_by_starter'] = "thread starter";
+$l['sort_by_started'] = "thread creation time";
 $l['sort_by_rating'] = "thread rating";
 $l['sort_by_replies'] = "number of replies";
 $l['sort_by_views'] = "number of views";

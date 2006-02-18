@@ -366,6 +366,7 @@ $inlinemod
 						<option value="subject" $sortsel[subject]>$lang->sort_by_subject</option>
 						<option value="lastpost" $sortsel[lastpost]>$lang->sort_by_lastpost</option>
 						<option value="starter" $sortsel[starter]>$lang->sort_by_starter</option>
+						<option value="started" $sortsel[started]>$lang->sort_by_started</option>
 						$ratingsort
 						<option value="replies" $sortsel[replies]>$lang->sort_by_replies</option>
 						<option value="views" $sortsel[views]>$lang->sort_by_views</option>

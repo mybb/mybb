@@ -295,6 +295,28 @@ function makeselectcode($title, $name, $table, $tableid, $optiondisp, $selected=
 	}
 	echo "</select>\n</td>\n</tr>\n";
 }
+function makeselectcode_array($title, $name, $options, $selected="", $blank="", $blank_label="")
+{
+	global $db;
+	$bgcolor = getaltbg();
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td><td class=\"$bgcolor\" valign=\"top\" width=\"60%\">\n<select name=\"$name\">\n";
+	if($blank)
+	{
+		echo "<option value=\"\"> $blank_label</option>";
+	}
+	foreach($options as $value => $label)
+	{
+		if($value == $selected)
+		{
+			echo "<option value=\"$value\" selected=\"selected\">$label</option>\n";
+		}
+		else
+		{
+			echo "<option value=\"$value\">$label</option>\n";
+		}
+	}
+	echo "</select>\n</td>\n</tr>\n";
+}
 function makedateselect($title, $name, $day, $month)
 {
 	$dname = $name."[day]";

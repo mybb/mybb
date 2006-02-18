@@ -265,9 +265,9 @@ if(!$mybb->input['datecut'])
 	}
 	else
 	{
-		if($foruminfo['daysprune'])
+		if($foruminfo['defaultdatecut'])
 		{
-			$datecut = $foruminfo['daysprune'];
+			$datecut = $foruminfo['defaultdatecut'];
 		}
 		else
 		{
@@ -292,6 +292,10 @@ else
 }
 
 // Pick the sort order.
+if(!isset($mybb->input['order']) && !empty($foruminfo['defaultsortorder']))
+{
+	$mybb->input['order'] = $foruminfo['defaultsortorder'];
+}
 switch(strtolower($mybb->input['order']))
 {
 	case "asc":
@@ -309,6 +313,10 @@ switch(strtolower($mybb->input['order']))
 }
 
 // Sort by which field?
+if(!isset($mybb->input['sortby']) && !empty($foruminfo['defaultsortby']))
+{
+	$mybb->input['sortby'] = $foruminfo['defaultsortby'];
+}
 switch($mybb->input['sortby'])
 {
 	case "subject":
