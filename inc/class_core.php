@@ -122,7 +122,7 @@ class MyBB {
 			$this->unset_globals($_POST);
 			$this->unset_globals($_GET);
 			$this->unset_globals($_FILES);
-			//$this->unset_globals($_COOKIE);
+			$this->unset_globals($_COOKIE);
 		}
 		if($this->input['debug'])
 		{
