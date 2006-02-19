@@ -259,10 +259,6 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$folder = "offlock";
 						$altonoff = $lang->forum_locked;
 					}
-					if($depth == 3)
-					{
-						$folder .= "mini";
-					}
 					$forumread = 0;
 					if($depth == 3)
 					{

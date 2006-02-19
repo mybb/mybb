@@ -226,7 +226,7 @@
 		</setting>
 		<setting name="subforumsindex">
 			<title>Subforums to show on Index listing</title>
-			<description><![CDATA[The number of subforums that you wish to show inside forums on the index and forumdisplay pages. Set to 0 to disable this]]></description>
+			<description><![CDATA[The number of subforums that you wish to show inside forums on the index and forumdisplay pages. Set to 0 to not show the subforum list]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
