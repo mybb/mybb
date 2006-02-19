@@ -2568,14 +2568,14 @@ $forums
 		<template name="postbit_www" version="100.07"><![CDATA[<a href="$post[website]" target="_blank"><img src="$theme[imglangdir]/postbit_www.gif" border="0" alt="$lang->postbit_website" /></a>]]></template>
 		<template name="polls_showresults_resultbit" version="100.07"><![CDATA[<tr>
 <td class="$optionbg" align="right">$option$votestar</td>
-<td class="$optionbg"><img src="$theme[imgdir]/pollbar-s.gif" /><img src="$theme[imgdir]/pollbar.gif" width="$imagewidth" height="10" /><img src="$theme[imgdir]/pollbar-e.gif" /><br />$userlist</td>
+<td class="$optionbg"><img src="$theme[imgdir]/pollbar-s.gif" alt="" /><img src="$theme[imgdir]/pollbar.gif" width="$imagewidth" height="10" alt="$percent%" /><img src="$theme[imgdir]/pollbar-e.gif" alt="" /><br />$userlist</td>
 <td class="$optionbg" width="67" align="center"><a href="polls.php?action=showresults&amp;pid=$poll[pid]#option$number">$votes</a></td>
 <td class="$optionbg" width="67" align="center">$percent%</td>
 </tr>
 ]]></template>
 		<template name="showthread_poll_resultbit" version="100.07"><![CDATA[<tr>
 <td class="$optionbg" align="right">$option$votestar</td>
-<td class="$optionbg"><img src="$theme[imgdir]/pollbar-s.gif" /><img src="$theme[imgdir]/pollbar.gif" width="$imagewidth" height="10"><img src="$theme[imgdir]/pollbar-e.gif" /></td>
+<td class="$optionbg"><img src="$theme[imgdir]/pollbar-s.gif" alt="" /><img src="$theme[imgdir]/pollbar.gif" width="$imagewidth" height="10" alt="$percent%" /><img src="$theme[imgdir]/pollbar-e.gif" alt="" /></td>
 <td class="$optionbg" width="67" align="center"><a href="polls.php?action=showresults&amp;pid=$poll[pid]#option$number">$votes</a></td>
 <td class="$optionbg" width="67" align="center">$percent%</td>
 </tr>
