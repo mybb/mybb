@@ -4052,7 +4052,7 @@ $forums
 		<template name="forumdisplay_threadlist_rating" version="100.07"><![CDATA[<td class="tcat" align="center" width="60"><span class="smalltext"><strong><a href="$sorturl&amp;sortby=rating&amp;order=desc">$lang->rating</a> $orderarrow[rating]</strong></span></td>
 ]]></template>
 		<template name="forumdisplay_thread" version="100.07"><![CDATA[<tr>
-<td align="center" class="$bgcolor" width="2%"><img src="$theme[imgdir]/$folder.gif" alt="$thread[subject]" /></td>
+<td align="center" class="$bgcolor" width="2%"><img src="$theme[imgdir]/$folder.gif" alt="$folder_label" title="$folder_label" /></td>
 <td align="center" class="$bgcolor" width="2%">$icon</td>
 <td class="$bgcolor">$prefix $gotounread<a href="showthread.php?tid=$thread[tid]">$thread[subject]</a>$thread[multipage]</td>
 <td align="center" class="$bgcolor">$thread[profilelink]</td>

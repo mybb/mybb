@@ -578,9 +578,11 @@ if($threadcache)
 		
 		// Determine the folder
 		$folder = '';
+		$folder_label = '';
 		if($thread['doticon'])
 		{
 			$folder = "dot_";
+			$folder_label .= $lang->icon_dot;
 		}
 		$gotounread = '';
 		$isnew = 0;
@@ -618,17 +620,24 @@ if($threadcache)
 		if($thread['lastpost'] > $lastread && $lastread)
 		{
 			$folder .= "new";
+			$folder_label .= $lang->icon_new;
 			eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
 			$unreadpost = 1;
+		}
+		else
+		{
+			$folder_label .= $lang->icon_no_new;
 		}
 
 		if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews'])
 		{
 			$folder .= "hot";
+			$folder_label .= $lang->icon_hot;
 		}
 		if($thread['closed'] == "yes")
 		{
 			$folder .= "lock";
+			$folder_label .= $lang->icon_lock;
 		}
 		if($foruminfo['allowtratings'] != "no")
 		{
