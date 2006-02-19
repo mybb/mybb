@@ -285,14 +285,19 @@ if(is_array($bannedips))
 }
 
 // Board closed
-if($mybb->settings['boardclosed'] == "yes")
+if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && ($mybb->input['action'] == "login" || $mybb->input['action'] == "do_login")))
 {
-	if($mybb->usergroup['cancp'] != "yes")
+	// Logout user
+	myunsetcookie("mybbuser");
+	mysetcookie("sid", 0, -1);
+	if($mybb->user['uid'])
 	{
-		$lang->error_boardclosed .= "<blockquote>".stripslashes($mybb->settings['boardclosed_reason'])."</blockquote>";
-		error($lang->error_boardclosed);
-		exit;
+		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$mybb->user['uid']."' OR ip='".$ipaddress."'");
 	}
+	// Show error
+	$lang->error_boardclosed .= "<blockquote>".stripslashes($mybb->settings['boardclosed_reason'])."</blockquote>";
+	error($lang->error_boardclosed);
+	exit;
 }
 
 // Load Limiting
