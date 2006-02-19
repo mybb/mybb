@@ -22,20 +22,28 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("showthread");
 
+// If there is no tid but a pid, trick the system into thinking there was a tid anyway.
 if($mybb->input['pid'] && !$mybb->input['tid'])
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='".intval($mybb->input['pid'])."'");
+	$options = array(
+		"limit" => 1
+	);
+	$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid=".$mybb->clean_variables['pid'], $options);
 	$post = $db->fetch_array($query);
 	$mybb->input['tid'] = $post['tid'];
 }
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."' AND closed NOT LIKE 'moved|%'");
+// Get the thread details from the database.
+$options = array(
+	"limit" => 1
+);
+$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid=".$mybb->clean_variables['tid']." AND closed NOT LIKE 'moved|%'");
 $thread = $db->fetch_array($query);
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 $tid = $thread['tid'];
 $fid = $thread['fid'];
 
-
+// Is the currently logged in user a moderator of this forum?
 if(ismod($fid) == "yes")
 {
 	$ismod = true;
@@ -45,21 +53,23 @@ else
 	$ismod = false;
 }
 
+// Make sure we are looking at a real thread here.
 if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
 	error($lang->error_invalidthread);
 }
 
-// Make navigation
+// Build the navigation.
 makeforumnav($fid);
 addnav($thread['subject'], "showthread.php?tid=$tid");
 
-
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."' AND active!='no'");
+// Get the forum details from the database.
+$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid=".$thread['fid']." AND active != 'no'");
 $forum = $db->fetch_array($query);
 
 $forumpermissions = forum_permissions($forum['fid']);
 
+// Make sure we are looking at a proper forum.
 if($forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
@@ -69,14 +79,16 @@ if($forumpermissions['canview'] != "yes")
 	nopermission();
 }
 
-// Password protected forums
+// Check that this forum is not password protected.
 checkpwforum($forum['fid'], $forum['password']);
 
+// If there is no specific action, we must be looking at the thread.
 if(!$mybb->input['action'])
 {
 	$mybb->input['action'] = "thread";
 }
 
+// Jump to the last post.
 if($mybb->input['action'] == "lastpost")
 {
 	if(strstr($thread['closed'], "moved|"))
@@ -92,55 +104,109 @@ if($mybb->input['action'] == "lastpost")
 	header("Location:showthread.php?tid=$tid&pid=$pid#pid$pid");
 	exit;
 }
+
+// Jump to the next newest posts.
 if($mybb->input['action'] == "nextnewest")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE fid='".$thread[fid]."' AND lastpost > '".$thread[lastpost]."' AND visible='1' AND closed NOT LIKE 'moved|%' ORDER BY lastpost LIMIT 0, 1");
+	$options = array(
+		"limit_start" => 0,	
+		"limit" => 1,
+		"order_by" => "lastpost"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid=".$thread['fid']." AND lastpost > ".$thread['lastpost']." AND visible=1 AND closed NOT LIKE 'moved|%'");
 	$nextthread = $db->fetch_array($query);
-	if(!$nextthread['tid']) {
+	
+	// Are there actually next newest posts?
+	if(!$nextthread['tid'])
+	{
 		error($lang->error_nonextnewest);
 	}
-	$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='".$nextthread[tid]."' ORDER BY dateline DESC LIMIT 0, 1");
-	$pid = $db->result($query, 0);
-	header("Location:showthread.php?tid=$nextthread[tid]&pid=$pid#pid$pid");
-}
-if($mybb->input['action'] == "nextoldest")
-{
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE fid='".$thread[fid]."' AND lastpost < '".$thread[lastpost]."' AND visible='1' AND closed NOT LIKE 'moved|%' ORDER BY lastpost DESC LIMIT 0, 1");
-	$nextthread = $db->fetch_array($query);
-	if(!$nextthread['tid']) {
-		error($lang->error_nonextoldest);
-	}
-	$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='".$nextthread[tid]."' ORDER BY dateline DESC LIMIT 0, 1");
+	$options = array(
+		"limit_start" => 0,
+		"limit" => 1,
+		"order_by" => "dateline",
+		"order_dir" => "desc"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$nextthread['tid']);
+	
+	// Redirect to the proper page.
 	$pid = $db->result($query, 0);
 	header("Location:showthread.php?tid=$nextthread[tid]&pid=$pid#pid$pid");
 }
 
+// Jump to the next oldest posts.
+if($mybb->input['action'] == "nextoldest")
+{
+	$options = array(
+		"limit" => 1,
+		"limit_start" => 0,
+		"order_by" => "lastpost"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid=".$thread['fid']." AND lastpost < ".$thread['lastpost']." AND visible=1 AND closed NOT LIKE 'moved|%'");
+	$nextthread = $db->fetch_array($query);
+	
+	// Are there actually next oldest posts?
+	if(!$nextthread['tid'])
+	{
+		error($lang->error_nonextoldest);
+	}
+	$options = array(
+		"limit_start" => 0,
+		"limit" => 1,
+		"order_by" => "dateline",
+		"order_dir" => "desc"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$nextthread['tid']);
+	
+	// Redirect to the proper page.
+	$pid = $db->result($query, 0);
+	header("Location:showthread.php?tid=$nextthread[tid]&pid=$pid#pid$pid");
+}
+
+// Jump to the unread posts.
 if($mybb->input['action'] == "newpost")
 {
+	// First, figure out what the unread posts are.
 	$threadread = mygetarraycookie("threadread", $tid);
-	if($threadread > $mybb->user['lastvisit']) {
+	if($threadread > $mybb->user['lastvisit'])
+	{
 		$mybb->user['lastvisit'] = $threadread;
 	}
-	$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND dateline>'".$mybb->user[lastvisit]."' ORDER BY dateline ASC LIMIT 0, 1");
+	
+	// Next, find the proper pid to link to.
+	$options = array(
+		"limit_start" => 0,
+		"limit" => 1,
+		"order_by" => "dateline",
+		"order_dir" => "asc"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid." AND dateline > ".$mybb->user['lastvisit']);
 	$newpost = $db->fetch_array($query);
-	if($newpost['pid']) {
-		header("Location:showthread.php?tid=$tid&pid=$newpost[pid]#pid$newpost[pid]");
-	} else {
-		header("Location:showthread.php?action=lastpost&tid=$tid");
+	if($newpost['pid'])
+	{
+		header("Location:showthread.php?tid=".$tid."&pid=".$newpost['pid']."#pid".$newpost['pid']);
+	}
+	else
+	{
+		header("Location:showthread.php?action=lastpost&tid=".$tid);
 	}
 }
 
 $plugins->run_hooks("showthread_start");
 
+// Show the entire thread (taking into account pagination).
 if($mybb->input['action'] == "thread")
 {
 	if($thread['firstpost'] == 0)
 	{
 		update_first_post($tid);
 	}
-	// Thread has a poll?
+	// Does this thread have a poll?
 	if($thread['poll']) {
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".$thread[poll]."'");
+		$options = array(
+			"limit" => 1
+		);
+		$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid=".$thread['poll']);
 		$poll = $db->fetch_array($query);
 		$poll['timeout'] = $poll['timeout']*60*60*24;
 		$expiretime = $poll['dateline'] + $poll['timeout'];
