@@ -345,7 +345,7 @@ if($mybb->input['action'] == "edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 	$themebits = unserialize($theme['themebits']);
-	$css = build_css_array($tid);
+	$css = build_css_array($theme['tid']);
 	$lang->modify_theme = sprintf($lang->modify_theme, $theme['name']);
 	cpheader();
 	startform("themes.php", "" , "do_edit");
