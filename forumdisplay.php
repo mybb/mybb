@@ -26,10 +26,31 @@ $lang->load("forumdisplay");
 $plugins->run_hooks("forumdisplay_start");
 
 $fid = intval($mybb->input['fid']);
-if($mybb->input['fid'] == "index" || $mybb->input['fid'] == "private" || $mybb->input['fid'] == "usercp" || $mybb->input['fid'] == "online" || $mybb->input['fid'] == "search")
+if($fid < 0)
 {
-	header("Location: " . $mybb->input['fid'] . ".php");
-	exit;
+	switch($fid)
+	{
+		case "-1":
+			$location = "index.php";
+			break;
+		case "-2":
+			$location = "search.php";
+			break;
+		case "-3":
+			$location = "usercp.php";
+			break;
+		case "-4":
+			$location = "private.php";
+			break;
+		case "-5":
+			$location = "online.php";
+			break;
+	}
+	if($location)
+	{
+		header("Location: ".$location);
+		exit;
+	}
 }
 
 cacheforums();

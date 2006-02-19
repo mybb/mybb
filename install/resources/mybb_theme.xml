@@ -635,13 +635,13 @@ $gobutton
 <form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>$lang->forumjump</strong></span>
 <select name="$name" onchange="window.location=('forumdisplay.php?fid='+this.options[this.selectedIndex].value)">
-<option value="index" $jumpsel[default]>$lang->forumjump_select</option>
-<option value="index">--------------------</option>
-<option value="private">$lang->forumjump_pms</option>
-<option value="usercp">$lang->forumjump_usercp</option>
-<option value="online">$lang->forumjump_wol</option>
-<option value="search">$lang->forumjump_search</option>
-<option value="index">$lang->forumjump_home</option>
+<option value="-1" $jumpsel[default]>$lang->forumjump_select</option>
+<option value="-1">--------------------</option>
+<option value="-4">$lang->forumjump_pms</option>
+<option value="-3">$lang->forumjump_usercp</option>
+<option value="-5">$lang->forumjump_wol</option>
+<option value="-2">$lang->forumjump_search</option>
+<option value="-1">$lang->forumjump_home</option>
 $forumjumpbits
 </select>
 $gobutton
