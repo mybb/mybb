@@ -161,6 +161,7 @@ else
 	echo "<input type=\"hidden\" name=\"do\" value=\"login\">\n";
 	echo "<input type=\"hidden\" name=\"goto\" value=\"".$goto."\">\n";
 	echo "</form>\n";
+	echo "<p style=\"text-align: center\"><a href=\"../\">".$lang->back_to_forum."</a></p>\n";
 	cpfooter(0);
 	exit;
 }

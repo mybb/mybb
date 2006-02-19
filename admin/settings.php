@@ -478,7 +478,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 		$hopto[] = "<input type=\"button\" value=\"$lang->manage_settings\" onclick=\"hopto('settings.php?action=modify');\" class=\"hoptobutton\">";
 		makehoptolinks($hopto);
 		starttable();
-		tableheader($lang->settings, "", "2");
+		tableheader($lang->board_settings, "", "2");
 		echo "<tr>\n";
 		echo "<td class=\"subheader\">$lang->sections</td>\n";
 		echo "<td class=\"subheader\" align=\"center\">$lang->options</td>\n";

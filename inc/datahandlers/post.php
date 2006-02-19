@@ -57,6 +57,10 @@ class PostDataHandler extends DataHandler
 		{
 			$this->set_error("message_too_long");
 		}
+		elseif(strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && ismod($post['fid']) != "yes")
+		{
+			$this->set_error("message_too_short");
+		}
 
 		// Check for correct subject content.
 		if($post['action'] == "edit" && $post['pid'])

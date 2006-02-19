@@ -350,6 +350,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$plugins->run_hooks("newreply_do_newreply_end");
 		}
 
+		$lang->redirect_newreply .= sprintf($lang->redirect_return_forum, $fid);
 		redirect($url, $lang->redirect_newreply);
 	}
 }

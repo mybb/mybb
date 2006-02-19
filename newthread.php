@@ -698,6 +698,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		threadPosted($tid);
 	}
 
+	$lang->redirect_newthread .= sprintf($lang->redirect_return_forum, $fid);
 	redirect($url, $lang->redirect_newthread);
 
 }

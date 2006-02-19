@@ -10,6 +10,7 @@ $l['redirect_newthread_thread'] = "<br />You will now be taken to the new thread
 $l['redirect_newreply'] = "Thank you, your reply has been posted.";
 $l['redirect_newreply_moderation'] = "<br />The administrator has specified that all new posts require moderation. You will now be returned to the thread.";
 $l['redirect_newreply_post'] = "<br />You will now be taken to your post.";
+$l['redirect_return_forum'] = "<br /><br />Alternatively, <a href=\"forumdisplay.php?fid={1}\">return to the forum</a>.";
 $l['redirect_ignoreupdated'] = "Thank you, your ignore list has successfully been updated.";
 $l['redirect_cookiescleared'] = "All cookies have been cleared.";
 $l['redirect_buddyupdated'] = "Thank you, your buddy list has successfully been updated.";
@@ -211,6 +212,7 @@ $l['error_noteamstoshow'] = "There are no forum staff to be shown.";
 $l['error_missingrequiredfield'] = "You did not fill in one of the required additional fields.";
 $l['error_percentnotallowed'] = "The percentage sign is not a valid keyword. Please specify a different keyword.";
 $l['error_messagelength'] = "Sorry, your message is too long and cannot be posted. Please try shortening your message and try again.";
+$l['error_message_too_short'] = "Sorry, your message is too short and cannot be posted.";
 $l['error_nosplitposts'] = "You cannot split this thread as you did not select any posts to split from this thread.";
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";

@@ -9,6 +9,7 @@ $l['login_password'] = "Password";
 $l['login'] = "Login";
 $l['reset'] = "Reset";
 $l['reset_button'] = "Reset";
+$l['back_to_forum'] = "Back to Forum";
 
 $l['nextpage'] = "Next Page &gt;";
 $l['lastpage'] = "Last Page &raquo;";

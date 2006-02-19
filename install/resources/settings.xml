@@ -491,6 +491,14 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="minmessagelength">
+			<title>Minimum Message Length</title>
+			<description><![CDATA[The minimum number of characters to post.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[5]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="polloptionlimit">
 			<title>Maximum Poll Option Length</title>
 			<description><![CDATA[The maximum length that each poll option can be. (Set to 0 to disable).]]></description>
