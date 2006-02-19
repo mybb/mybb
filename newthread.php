@@ -462,7 +462,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	{
 		$updatepost = 0;
 	}
-	if(!$mybb->input['icon'])
+	if(!$mybb->input['icon'] || intval($mybb->input['icon']) == -1)
 	{
 		$mybb->input['icon'] = "0";
 	}

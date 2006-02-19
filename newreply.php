@@ -173,7 +173,6 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$mybb->input['action'] = "newreply";
 		}
 	}
-	$plugins->run_hooks("newreply_do_newreply_start");
 
 	if($mybb->user['uid'] == 0)
 	{
