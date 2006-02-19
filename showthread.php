@@ -149,7 +149,7 @@ if($mybb->input['action'] == "thread")
 		{
 			$showresults = 1;
 		}
-		if($mybb->input['uid'] != 0)
+		if($mybb->user['uid'] != 0)
 		{
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user[uid]."' AND pid='".$poll[pid]."'");
 			while($votecheck = $db->fetch_array($query))
