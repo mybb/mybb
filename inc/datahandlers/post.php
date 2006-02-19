@@ -106,6 +106,25 @@ class PostDataHandler extends DataHandler
 			}
 		}
 		
+		// Check if this post contains more images than the forum allows
+		if(!$mybb->input['savedraft'] && $mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes")
+		{
+			if($mybb->input['postoptions']['disablesmilies'] == "yes")
+			{
+				$allowsmilies = "no";
+			}
+			else
+			{
+				$allowsmilies = $forum['allowsmilies'];
+			}
+			$imagecheck = postify($mybb->input['message'], $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
+			if(substr_count($imagecheck, "<img") > $mybb->settings['maxpostimages'])
+			{
+				eval("\$maximageserror = \"".$templates->get("error_maxpostimages")."\";");
+				$mybb->input['action'] = "newreply";
+			}
+		}
+		
 		// If there is no post to reply to, let's reply to the first one.
 		if(!$post['replyto'])
 		{

@@ -20,13 +20,18 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("newreply");
 
-$pid = intval($mybb->input['pid']);
-$tid = intval($mybb->input['tid']);
+// Get the pid and tid from the input.
+$pid = $mybb->clean_variables['pid'];
+$tid = $mybb->clean_variables['tid'];
 
+// Edit a draft post.
 $draft_pid = 0;
 if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $pid) || ($tid && $pid))
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
+	$options = array(
+		"limit" => 1
+	);
+	$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid=".$pid, $options);
 	$post = $db->fetch_array($query);
 	if(!$post['pid'])
 	{
@@ -35,10 +40,15 @@ if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $pid) 
 	$draft_pid = $post['pid'];
 	$tid = $post['tid'];
 }
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
+
+// Set up $thread and $forum for later use.
+$options = array(
+	"limit" => 1
+);
+$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid=".$tid);
 $thread = $db->fetch_array($query);
 $fid = $thread['fid'];
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid' AND active!='no'");
+$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid=".$fid." AND active!='no'");
 $forum = $db->fetch_array($query);
 
 // Make navigation
@@ -49,6 +59,7 @@ addnav($lang->nav_newreply);
 
 $forumpermissions = forum_permissions($fid);
 
+// See if everything is valid up to here.
 if(isset($post) && (($post['visible'] == 0 && ismod($fid) != "yes") || $post['visible'] < 0))
 {
 	error($lang->error_invalidpost);
@@ -65,6 +76,7 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canpostreplys'] ==
 {
 	nopermission();
 }
+
 // Password protected forums ......... yhummmmy!
 checkpwforum($fid, $forum['password']);
 
@@ -77,6 +89,7 @@ if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" &
 	}
 }
 
+// Display a login box or change user box?
 if($mybb->user['uid'] != 0)
 {
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
@@ -85,7 +98,7 @@ else
 {
 	if(!$mybb->input['previewpost'] && $mybb->input['action'] != "do_newreply")
 	{
-		$username = "Guest";
+		$username = $lang->guest;
 	}
 	elseif($mybb->input['previewpost'])
 	{
@@ -93,7 +106,8 @@ else
 	}
 	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 }
-// check to see if the threads closed, and if the user is a mod
+
+// Check to see if the thread is closed, and if the user is a mod.
 if(ismod($fid, "caneditposts") != "yes")
 {
 	if($thread['closed'] == "yes")
@@ -102,18 +116,20 @@ if(ismod($fid, "caneditposts") != "yes")
 	}
 }
 
+// No weird actions allowed, show new reply form if no regular action.
 if($mybb->input['action'] != "do_newreply" && $mybb->input['action'] != "editdraft")
 {
 	$mybb->input['action'] = "newreply";
 }
 
+// Even if we are previewing, still show the new reply form.
 if($mybb->input['previewpost'])
 {
 	$mybb->input['action'] = "newreply";
 }
 if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newreply" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
-	// If there's an attachment, check it and upload it
+	// If there's an attachment, check it and upload it.
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
 	{
 		require_once "./inc/functions_upload.php";
@@ -129,8 +145,10 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 		$mybb->input['action'] = "newreply";
 	}
 }
+
+// Remove an attachment.
 if($mybb->input['removeattachment'])
-{ // Lets remove the attachment
+{
 	require_once "./inc/functions_upload.php";
 	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['removeattachment']);
 	if(!$mybb->input['submit'])
@@ -139,7 +157,7 @@ if($mybb->input['removeattachment'])
 	}
 }
 
-// Setup our posthash for managing attachments
+// Setup our posthash for managing attachments.
 if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
 {
 	mt_srand ((double) microtime() * 1000000);
@@ -151,29 +169,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("newreply_do_newreply_start");
 
-	// Check if this post contains more images than the forum allows
-	
-	//
-	// THIS NEEDS TO BE MOED INTO HANDLER AND CODE UPDATED TO NEW PARSER
-	//
-	if(!$mybb->input['savedraft'] && $mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes")
-	{
-		if($mybb->input['postoptions']['disablesmilies'] == "yes")
-		{
-			$allowsmilies = "no";
-		}
-		else
-		{
-			$allowsmilies = $forum['allowsmilies'];
-		}
-		$imagecheck = postify($mybb->input['message'], $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
-		if(substr_count($imagecheck, "<img") > $mybb->settings['maxpostimages'])
-		{
-			eval("\$maximageserror = \"".$templates->get("error_maxpostimages")."\";");
-			$mybb->input['action'] = "newreply";
-		}
-	}
-
+	// If we are not logged in, either login or post as a guest.
 	if($mybb->user['uid'] == 0)
 	{
 		$username = htmlspecialchars_uni($mybb->input['username']);
@@ -195,11 +191,12 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		{
 			if(!$mybb->input['username'])
 			{
-				$$mybb->input['username'] = "Guest";
+				$$mybb->input['username'] = $lang->guest;
 			}
 		}
 	}
 
+	// Set up posthandler.
 	require_once "inc/datahandler.php";
 	require_once "inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler();
@@ -232,6 +229,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$post['savedraft'] = 0;
 	}
 
+	// Set up the post options from the input.
 	$post['options'] = array(
 		"signature" => $mybb->input['postoptions']['signature'],
 		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
@@ -244,11 +242,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$errors = $posthandler->get_errors();
 		foreach($errors as $error)
 		{
-			//
-			// REVIEW: Language variables or other system?
-			//
-			//$posterrors[] = $lang->error_$error;
-			$post_errors[] = $error;
+			$post_errors[] = $lang->$error;
 		}
 		$reply_errors = inlineerror($post_errors);
 		$mybb->input['action'] = "newreply";
@@ -265,7 +259,14 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$subject = $parser->parse_badwords($thread['subject']);
 			$excerpt = $parser->strip_mycode($post['message']);
 			$excerpt = substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-			$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u WHERE f.type='s' AND f.tid='$tid' AND u.uid=f.uid AND f.uid!='".$mybb->user['uid']."' AND u.lastactive>'".$thread['lastpost']."'");
+			$query = $db->query("
+				SELECT u.username, u.email, u.uid, u.language
+				FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u
+				WHERE f.type='s' AND f.tid='$tid'
+				AND u.uid=f.uid
+				AND f.uid!='".$mybb->user['uid']."'
+				AND u.lastactive>'".$thread['lastpost']."'
+			");
 			while($subscribedmember = $db->fetch_array($query))
 			{
 				if($subscribedmember['language'] != '' && $lang->languageExists($subscribedmember['language']))
@@ -355,13 +356,21 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 }
 
+// Show the newreply form.
 if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft")
 {
 	$plugins->run_hooks("newreply_start");
 
+	// Handle quotes in the post.
 	if($pid && !$mybb->input['previewpost'] && $mybb->input['action'] != "editdraft")
 	{
-		$query = $db->query("SELECT p.*, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.pid='$pid' AND p.tid='$tid' AND p.visible='1'");
+		$query = $db->query("
+			SELECT p.*, u.username FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			WHERE p.pid='$pid'
+			AND p.tid='$tid'
+			AND p.visible='1'
+		");
 		$quoted = $db->fetch_array($query);
 		$quoted['subject'] = preg_replace("#RE:#i", '', $quoted['subject']);
 		$subject = "RE: ".$quoted['subject'];
@@ -388,6 +397,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$message = htmlspecialchars_uni($message);
 	$editdraftpid = '';
 
+	// Set up the post options.
 	if($mybb->input['previewpost'] || $maximageserror || $reply_errors)
 	{
 		$postoptions = $mybb->input['postoptions'];
@@ -436,18 +446,25 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$posticons = getposticons();
 	}
 
+	// Preview a post that was written.
 	if($mybb->input['previewpost'])
 	{
 		if(!$mybb->input['username'])
 		{
-			$mybb->input['username'] = "Guest";
+			$mybb->input['username'] = $lang->guest;
 		}
 		if($mybb->input['username'] && !$mybb->user['uid'])
 		{
 			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 		}
 		$mybb->input['icon'] = intval($mybb->input['icon']);
-		$query = $db->query("SELECT u.*, f.*, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".intval($mybb->input['icon'])."') WHERE u.uid='".$mybb->user['uid']."'");
+		$query = $db->query("
+			SELECT u.*, f.*, i.path as iconpath, i.name as iconname
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".intval($mybb->input['icon'])."')
+			WHERE u.uid='".$mybb->user['uid']."'
+		");
 		$post = $db->fetch_array($query);
 		if(!$mybb->user['uid'] || !$post['username'])
 		{
@@ -464,7 +481,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$post['smilieoff'] = $postoptions['disablesmilies'];
 		$post['dateline'] = time();
 
-		// Fetch attachments assigned to this post
+		// Fetch attachments assigned to this post.
 		if($mybb->input['pid'])
 		{
 			$attachwhere = "pid='".intval($mybb->input['pid'])."'";
@@ -487,12 +504,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$subject = "RE: " . $thread['subject'];
 	}
-	// Setup a unique posthash for attachment management
+	// Setup a unique posthash for attachment management.
 	$posthash = $mybb->input['posthash'];
 
+	// Get a listing of the current attachments.
 	$bgcolor = "trow2";
 	if($forumpermissions['canpostattachments'] != "no")
-	{ // Get a listing of the current attachments, if there are any
+	{
 		$attachcount = 0;
 		if($mybb->input['action'] == "editdraft")
 		{
@@ -503,7 +521,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$attachwhere = "posthash='".addslashes($posthash)."'";
 		}
 		$attachments = '';
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachment['size'] = getfriendlysize($attachment['filesize']);
@@ -539,6 +557,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$bgcolor = "trow1";
 	}
 
+	// If the user is logged in, provide a save draft button.
 	if($mybb->user['uid'])
 	{
 		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton")."\";");
@@ -614,7 +633,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
 	}
-	// Show the moderator options
+	// Show the moderator options.
 	if(ismod($fid) == "yes")
 	{
 		if($thread['closed'] == "yes")

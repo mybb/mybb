@@ -12,7 +12,7 @@
 class MyBB {
 	
 	/**
-	 * No idea...
+	 * The current working directory.
 	 *
 	 * @var string
 	 */
@@ -80,7 +80,7 @@ class MyBB {
 	 * @var array
 	 */
 	var $clean_variables = array(
-		"int" => array("tid", "pid", "uid", "eid", "pmid", "sid")
+		"int" => array("tid", "pid", "uid", "eid", "pmid", "sid", "fid")
 	);
 
 	/**
