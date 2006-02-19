@@ -128,7 +128,7 @@ function license_agreement()
 
 	echo <<<END
 		<div class="license_agreement">
-		<h3>IMPORTANT—READ CAREFULLY:</h3>
+		<h3>IMPORTANT- READ CAREFULLY:</h3>
 
 This MyBulletinBoard End-User License Agreement ("EULA") is a legal agreement between you (either an individual or a single entity) and MyBulletinBoard for the MyBulletinBoard product identified above, which includes computer software and may include associated media, printed materials, and "online" or electronic documentation ("MyBulletinBoard"). By installing, copying, or otherwise using the MyBulletinBoard  PRODUCT, you agree to be bound by the terms of this EULA. If you do not agree to the terms of this EULA, do not install or use the MyBulletinBoard Product; you may, however, return it to MyBulletinBoard.<br />
 <br />
@@ -145,7 +145,7 @@ You may not reproduce or distribute the MyBB  SOFTWARE for any reason with out e
 
 <ul>
 <li><strong>Limitations on Reverse Engineering, Decompilation, and Disassembly</strong><br />
-You may not Reverse Engineer, Decompile, or Disassemble the MyBB  SOFTWARE. You may add modifications (“HACKS”) to the software that MyBulletinBoard personally releases.</li>
+You may not Reverse Engineer, Decompile, or Disassemble the MyBB  SOFTWARE. You may add modifications ("HACKS") to the software that MyBulletinBoard personally releases.</li>
 <li><strong>Separation of Components</strong><br />
 The MyBB  SOFTWARE is licensed as a single product. Its component parts may not be separated for use on more than one computer.
 </li>
@@ -157,7 +157,7 @@ Without prejudice to any other rights, MyBulletinBoard may terminate this EULA i
 All title and copyrights in and to the MyBB  SOFTWARE(including but not limited to any images, photographs, animations, video, audio, music, text, and "applets" incorporated into the MyBB  SOFTWARE), the accompanying materials, and any copies of the MyBB  SOFTWARE are owned by MyBulletinBoard. The MyBB  SOFTWARE is protected by copyright laws and international treaty provisions. Therefore, you must treat the MyBB  SOFTWARE like any other copyrighted material.
 
 <h3>U.S. GOVERNMENT RESTRICTED RIGHTS</h3>
-The MyBB  SOFTWARE and documentation are provided with RESTRICTED RIGHTS. Use, duplication, or disclosure by the Government is subject to restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and Computer Software clause at DFARS 252.227-7013 or subparagraphs (c)(1) and (2) of the Commercial Computer Software—Restricted Rights at 48 CFR 52.227-19, as applicable. Manufacturer is MyBulletinBoard @ www.mybboard.com
+The MyBB  SOFTWARE and documentation are provided with RESTRICTED RIGHTS. Use, duplication, or disclosure by the Government is subject to restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and Computer Software clause at DFARS 252.227-7013 or subparagraphs (c)(1) and (2) of the Commercial Computer Software-Restricted Rights at 48 CFR 52.227-19, as applicable. Manufacturer is MyBulletinBoard @ www.mybboard.com
 
 <h3>MISCELLANEOUS</h3>
 <ul>
@@ -268,40 +268,45 @@ function requirements_check()
 	}
 	// Output requirements page
 	echo <<<END
-		<table class="tbl" cellspacing="0">
+		<div class="border_wrapper">
+			<div class="title">Requirements Check</div>
+		<table class="general" cellspacing="0">
 		<thead>
 			<tr>
-				<td colspan="2">Requirements Check</td>
+				<th colspan="2" class="first last">Requirements</td>
 			</tr>
-			</thead>
+		</thead>
+		<tbody>
+		<tr class="first">
+			<td class="first">PHP Version:</td>
+			<td class="last alt_col">$phpversion</td>
+		</tr>
+		<tr class="alt_row">
+			<td class="first">Supported DB Extensions:</td>
+			<td class="last alt_col">$dbsupportlist</td>
 		<tr>
-			<td class="talt1">PHP Version:</td>
-			<td class="talt1">$phpversion</td>
+			<td class="first">PHP XML Extensions:</td>
+			<td class="last alt_col">$xmlstatus</td>
+		</tr>
+		<tr class="alt_row">
+			<td class="first">Configuration File Writable:</td>
+			<td class="last alt_col">$configstatus</td>
 		</tr>
 		<tr>
-			<td class="talt2">Supported DB Extensions:</td>
-			<td class="talt2">$dbsupportlist</td>
-		<tr>
-			<td class="talt1">PHP XML Extensions:</td>
-			<td class="talt1">$xmlstatus</td>
+			<td class="first">Settings File Writable:</td>
+			<td class="last alt_col">$settingsstatus</td>
 		</tr>
-		<tr>
-			<td class="talt2">Configuration File Writable:</td>
-			<td class="talt2">$configstatus</td>
+		<tr class="alt_row">
+			<td class="first">File Uploads Directory Writable:</td>
+			<td class="last alt_col">$uploadsstatus</td>
 		</tr>
-		<tr>
-			<td class="talt1">Settings File Writable:</td>
-			<td class="talt1">$settingsstatus</td>
+		<tr class="last">
+			<td class="first">Avatar Uploads Directory Writable:</td>
+			<td class="last alt_col">$avatarsstatus</td>
 		</tr>
-		<tr>
-			<td class="talt2">File Uploads Directory Writable:</td>
-			<td class="talt2">$uploadsstatus</td>
-		</tr>
-		<tr>
-			<td class="talt1">Avatar Uploads Directory Writable:</td>
-			<td class="talt1">$avatarsstatus</td>
-		</tr>
-	</table>
+		</tbody>
+		</table>
+		</div>
 END;
 
 	if($showerror == 1)
@@ -360,38 +365,42 @@ function database_info()
 	}
 
 	echo <<<END
-		<table class="tbl" cellspacing="0">
-		<thead>
-		<tr>
-			<td colspan="2">Database Configuration</td>
-		</tr>
-		</thead>
-		<tr>
-			<td class="talt1">Database Engine:</td>
-			<td class="talt1"><select name="dbengine"><option value="mysql">MySQL</option></select></td>
-		</tr>
-		<tr>
-			<td class="talt2">Database Host:</td>
-			<td class="talt2"><input type="text" name="dbhost" value="$dbhost" /></td>
-		</tr>
-		<tr>
-			<td class="talt1">Database Username:</td>
-			<td class="talt1"><input type="text" name="dbuser" value="$dbuser" /></td>
-		</tr>
-		<tr>
-			<td class="talt2">Database Password:</td>
-			<td class="talt2"><input type="password" name="dbpass" value="" /></td>
-		</tr>
-		<tr>
-			<td class="talt1">Database Name:</td>
-			<td class="talt1"><input type="text" name="dbname" value="$dbname" /></td>
-		</tr>
-		<tr>
-			<td class="talt2">Table Prefix:</td>
-			<td class="talt2"><input type="text" name="tableprefix" value="$tableprefix" /></td>
-		</tr>
+		<div class="border_wrapper">
+			<div class="title">Database Configuration</div>
 
-	</table>
+		<table class="general" cellspacing="0">
+		<tr>
+			<th colspan="2" class="first last">Database Settings</td>
+		</tr>
+		<tr class="first">
+			<td class="first"><label for="dbengine">Database Engine:</label></td>
+			<td class="last alt_col"><select name="dbengine" id="dbengine"><option value="mysql">MySQL</option></select></td>
+		</tr>
+		<tr class="alt_row">
+			<td class="first"><label for="dbhost">Database Host:</label></td>
+			<td class="last alt_col"><input type="text" class="text_input" name="dbhost" id="dbhost" value="$dbhost" /></td>
+		</tr>
+		<tr>
+			<td class="first"><label for="dbuser">Database Username:</label></td>
+			<td class="last alt_col"><input type="text" class="text_input" name="dbuser" id="dbuser" value="$dbuser" /></td>
+		</tr>
+		<tr class="alt_row">
+			<td class="first"><label for="dbpass">Database Password:</label></td>
+			<td class="last alt_col"><input type="password" class="text_input" name="dbpass" id="dbpass" value="" /></td>
+		</tr>
+		<tr class="last">
+			<td class="first"><label for="dbname">Database Name:</label></td>
+			<td class="last alt_col"><input type="text" class="text_input" name="dbname" id="dbname" value="$dbname" /></td>
+		</tr>
+		<tr>
+			<th colspan="2" class="first last">Table Settings</th>
+		</tr>
+		<tr class="last">
+			<td class="first"><label for="tableprefix">Table Prefix:</label></td>
+			<td class="last alt_col"><input type="text" class="text_input" name="tableprefix" id="tableprefix" value="$tableprefix" /></td>
+		</tr>
+		</table>
+		</div>
 END;
 
 	echo "<p>Once you've checked these details are correct, click next to continue.</p>";
@@ -604,53 +613,52 @@ function configure()
 	}
 	echo <<<END
 		<p>It is now time for you to configure the basic settings for your forums such as forum name, URL, your website details, along with your "cookie" domain and paths. These settings can easily be changed in the future through the MyBB Admin Control Panel.</p>
-		<table class="tbl" cellspacing="0">
-		<thead>
-		<tr>
-			<td colspan="2">Board Configuration</td>
-		</tr>
-		</thead>
-		<tr>
-			<td colspan="2" class="subhead">Forum Name and Address</td>
-		</tr>
-		<tr>
-			<td class="talt1">Forum Name:</td>
-			<td class="talt1"><input type="text" name="bbname" value="$bbname" /></td>
-		</tr>
-		<tr>
-			<td class="talt2">Forum URL (No trailing slash):</td>
-			<td class="talt2"><input type="text" name="bburl" value="$bburl" /></td>
-		</tr>
-		<tr>
-			<td colspan="2" class="subhead">Website Name and Address</td>
-		</tr>
-		<tr>
-			<td class="talt1">Website Name:</td>
-			<td class="talt1"><input type="text" name="websitename" value="$websitename" /></td>
-		</tr>
-		<tr>
-			<td class="talt2">Website URL:</td>
-			<td class="talt2"><input type="text" name="websiteurl" value="$websiteurl" /></td>
-		</tr>
-		<tr>
-			<td colspan="2" class="subhead">Cookie Domain and Path (Optional)</td>
-		</tr>
-		<tr>
-			<td class="talt1">Cookie Domain:</td>
-			<td class="talt1"><input type="text" name="cookiedomain" value="$cookiedomain" /></td>
-		</tr>
-		<tr>
-			<td class="talt2">Cookie Path:</td>
-			<td class="talt2"><input type="text" name="cookiepath" value="$cookiepath" /></td>
-		</tr>
-		<tr>
-			<td colspan="2" class="subhead">Contact Email Address (Used in Footer)</td>
-		</tr>
-		<tr>
-			<td class="talt1">Contact Email:</td>
-			<td class="talt1"><input type="text" name="contactemail" value="$contactemail" /></td>
-		</tr>
-	</table>
+		<div class="border_wrapper">
+			<div class="title">Board Configuration</div>
+			<table class="general" cellspacing="0">
+				<tbody>
+				<tr>
+					<th colspan="2" class="first last">Forum Details</th>
+				</tr>
+				<tr class="first">
+					<td class="first"><label for="bbname">Forum Name:</label></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="bbname" id="bbname" value="$bbname" /></td>
+				</tr>
+				<tr class="alt_row last">
+					<td class="first"><label for="bburl">Forum URL (No trailing slash):</label></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="bburl" id="bburl" value="$bburl" /></td>
+				</tr>
+				<tr>
+					<th colspan="2" class="first last">Website Details</th>
+				</tr>
+				<tr>
+					<td class="first"><label for="websitename">Website Name:</label></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="websitename" id="websitename" value="$websitename" /></td>
+				</tr>
+				<tr class="alt_row last">
+					<td class="first"><label for="websiteurl">Website URL:</td>
+					<td class="last alt_col"><input type="text" class="text_input" name="websiteurl" id="websiteurl" value="$websiteurl" /></td>
+				</tr>
+				<tr>
+					<th colspan="2" class="first last">Cookie settings</th>
+				</tr>
+				<tr>
+					<td class="first"><label for="cookiedomain">Cookie Domain:</label></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="cookiedomain" id="cookiedomain" value="$cookiedomain" /></td>
+				</tr>
+				<tr class="alt_row last">
+					<td class="first"><label for="cookiepath">Cookie Path:</label></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="cookiepath" id="cookiepath" value="$cookiepath" /></td>
+				</tr>
+				<tr>
+					<th colspan="2" class="first last">Contact Details (Shown in footer)</th>
+				</tr>
+				<tr class="last">
+					<td class="first"><label for="contactemail">Contact Email:</label></td>
+					<td class="last alt_col"><input type="text" class="text_input" class="text_input" name="contactemail" id="contactemail" value="$contactemail" /></td>
+				</tr>
+			</table>
+		</div>
 
 	<p>Once you've correctly entered the details above and are ready to proceed, click Next.</p>
 END;
@@ -762,29 +770,36 @@ function create_admin_user()
 	}
 
 	echo <<<END
-	<table class="tbl" cellspacing="0">
-	<thead>
+		<div class="border_wrapper">
+			<div class="title">Administrator Account Details</div>
+
+		<table class="general" cellspacing="0">
+		<thead>
 		<tr>
-			<td colspan="2">Administrator Account Details</td>
+			<th colspan="2" class="first last">Account Details</th>
 		</tr>
-	</thead>
-		<tr>
-			<td class="talt1">Username:</td>
-			<td class="talt1"><input type="text" name="adminuser" value="$adminuser" autocomplete="off" /></td>
+		</thead>
+		<tr class="first">
+			<td class="first"><label for="adminuser">Username:</label></td>
+			<td class="alt_col last"><input type="text" class="text_input" name="adminuser" id="adminuser" value="$adminuser" autocomplete="off" /></td>
+		</tr>
+		<tr class="alt_row">
+			<td class="first"><label for="adminpass">Password:</label></td>
+			<td class="alt_col last"><input type="password" class="text_input" name="adminpass" id="adminpass" value="" autocomplete="off"  /></td>
+		</tr>
+		<tr class="last">
+			<td class="first"><label for="adminpass2">Retype Password:</label></td>
+			<td class="alt_col last"><input type="password" class="text_input" name="adminpass2" id="adminpass2" value="" autocomplete="off"  /></td>
 		</tr>
 		<tr>
-			<td class="talt2">Password:</td>
-			<td class="talt2"><input type="password" name="adminpass" value="" autocomplete="off"  /></td>
+			<th colspan="2" class="first last">Contact Details</th>
 		</tr>
-		<tr>
-			<td class="talt1">Retype Password:</td>
-			<td class="talt1"><input type="password" name="adminpass2" value="" autocomplete="off"  /></td>
-		</tr>
-		<tr>
-			<td class="talt2">Email Address:</td>
-			<td class="talt2"><input type="text" name="adminemail" value="$adminemail" /></td>
+		<tr class="first last">
+			<td class="first"><label for="adminemail">Email Address:</label></td>
+			<td class="alt_col last"><input type="text" class="text_input" name="adminemail" id="adminemail" value="$adminemail" /></td>
 		</tr>
 	</table>
+	</div>
 
 	<p>Once you've correctly entered the details above and are ready to proceed, click Next.</p>
 END;
@@ -903,7 +918,7 @@ function install_done()
 	$cache->updatemycode();
 	echo "done</p>";
 
-	echo "<p>Your copy of MyBB has successfully been installed and configured correctly.</p>";
+	echo "<p class=\"success\">Your copy of MyBB has successfully been installed and configured correctly.</p>";
 	echo "<p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become apart of the MyBB community.</p>";
 
 	$written = 0;

@@ -42,29 +42,29 @@ END;
 		<div id="logo">
 			<h1><span class="invisible">MyBB</span></h1>
 		</div>
-
+		<div id="inner_container">
 		<div id="header">$this->title</div>
 END;
 		if(empty($this->steps))
 		{
-			$this->steps = array("");
+			$this->steps = array();
 		}
-		if(is_array($this->steps) && !empty($this->steps))
+		if(is_array($this->steps))
 		{
 		echo "\n		<div id=\"progress\">";
-			echo "\n			<ul>\n";
-			foreach($this->steps as $action => $step)
-			{
-				if($action == $mybb->input['action'])
+				echo "\n			<ul>\n";
+				foreach($this->steps as $action => $step)
 				{
-					echo "				<li class=\"active\"><strong>$step</strong></li>\n";
+					if($action == $mybb->input['action'])
+					{
+						echo "				<li class=\"active\"><strong>$step</strong></li>\n";
+					}
+					else
+					{
+						echo "				<li>$step</li>\n";
+					}
 				}
-				else
-				{
-					echo "				<li>$step</li>\n";
-				}
-			}
-			echo "			</ul>";
+				echo "			</ul>";
 		echo "\n		</div>";
 		echo "\n		<div id=\"content\">\n";
 		}
@@ -73,10 +73,12 @@ END;
 		echo "\n		<div id=\"progress_error\"></div>";
 		echo "\n		<div id=\"content_error\">\n";
 		}
-
+		if($title != "")
+		{
 		echo <<<END
 			<h2 class="$image">$title</h2>\n
 END;
+		}
 	}
 
 	function print_contents($contents)
@@ -88,9 +90,10 @@ END;
 	{
 		if(!$this->doneheader)
 		{
-			$this->print_header("Error", "errormsg", 0, 1);
+			$this->print_header("", "", 0, 1);
 		}
 		echo "			<div class=\"error\">\n				";
+		echo "<h3>Error</h3>";
 		$this->print_contents($message);
 		echo "\n			</div>";
 		$this->print_footer();
@@ -99,29 +102,30 @@ END;
 
 	function print_footer($nextact="")
 	{
-		echo <<<END
-\n		</div>
-	
-		<div id="footer">\n
-END;
-
 		if($nextact && $this->openedform)
 		{
 			echo "\n			<input type=\"hidden\" name=\"action\" value=\"$nextact\" />";
-			echo "\n				<div id=\"next_button\"><input type=\"submit\" value=\"Next &raquo;\" /></div>\n";
+			echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"Next &raquo;\" /></div><br style=\"clear: both;\" />\n";
 			$formend = "</form>";
 		}
 		else
 		{
 			$formend = "";
 		}
+
+		echo <<<END
+		</div>
+		<div id="footer">
+END;
+
 		$copyyear = date('Y');
 		echo <<<END
 			<div id="copyright">
-				&copy; 2002-$copyyear MyBB Group
+				MyBB &copy; 2002-$copyyear MyBB Group
 			</div>
 		</div>
-	$formend
+		</div>
+		$formend
 </body>
 </html>
 END;

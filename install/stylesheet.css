@@ -1,46 +1,65 @@
+/**
+ * MyBB Installer CSS
+ * (c) 2006 MyBB Group
+ */
+
 body {
- background-color: #FFFFFF;
- color: #000000;
- font-size: 13px;
- font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+	background: #fff;
+	color: #000000;
+	margin: 0;
+}
+
+a {
+	color: #035488;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #444;
+	text-decoration: underline;
 }
 
 #container {
  margin: auto auto;
  width: 780px;
- border: 1px solid #000000;
- background: #ebebeb url('images/content_bg.gif');
 }
 
-#logo {
- background: url('images/header-bg.gif');
- padding: 0;
- height: 67px;
-}
+/* Logo */
 
 #logo h1 {
-	background: url('images/header.gif');
-	height: 67px;
-	width: 300px;
-	padding: 0;
-	margin: 0;
+	background: #fff url(images/logo.gif) no-repeat top left;
+	height: 82px;
+	margin: 0 0 2px 0;
+	padding: 3px;
 }
+
+/* Header */
 
 #header {
 	clear: both;
-	background: #7DA2BC;
-	height: 26px;
+	background: #016DB1 url(images/thead_bg.gif) repeat-x top left;
 	color: #fff;
-	border-top: 1px solid #000;
-	border-bottom: 1px solid #000;
-	padding-left: 4px;
+	padding: 5px;
 	font-weight: bold;
+	border-bottom: 1px solid #000;
 }
+
+/* Inner Container */
+
+#inner_container {
+	background: #ebebeb url('images/content_bg.gif');
+	border: 1px solid #000;
+}
+
+/* Progress Side bar */
 
 #progress {
 	width: 160px;
 	float: left;
 	padding: 10px;
+	font-size: 11px;
 }
 #progress ul {
 	list-style: none;
@@ -60,80 +79,20 @@ body {
 	color: #000;
 }
 
-table.tbl {
- width: 100%;
- border: 1px solid #000000;
- 
-}
-
-thead td {
- background-color: #296792;
- color: #FFFFFF;
- font-size: 12px;
- font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
- padding: 4px;
-}
-
-td.subhead {
- background-color: #7DA2BC;
- color: #FFFFFF;
- font-size: 12px;
- font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
- padding: 4px;
-}
-
-td.talt1 {
- background-color: #F3F3F3;
- color: #000000;
- font-size: 12px;
- font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
- padding: 4px;
- border-top : 1px solid #ccc;
- border-right: 1px solid #ccc;
-}
-
-td.talt2 {
- background-color: #fff;
- color: #000000;
- font-size: 12px;
- font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
- padding: 4px;
- border-top : 1px solid #ccc;
- border-right: 1px solid #ccc;
-}
-
+/* Content Area */
 
 #content {
 	border-left: 1px solid #ccc;
- background-color: #fff;
- color: #000000;
- font-size: 12px;
- font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
- margin-left: 170px;
- width: 580px;
- padding: 10px 10px 10px 19px;
+	margin-left: 170px;
+	width: 580px;
+	padding: 10px 10px 10px 19px;
 }
 
 * html #content {
 	width: 567px;
 }
 
-input[type="submit"] {
- font-weight: bold;
-}
-
-.invisible {
-	display: none;
-}
-
-#footer {
-	clear: both;
-	background: #7DA2BC;
-	height: 26px;
-	color: #fff;
-	border-top: 1px solid #000;
-	padding-left: 4px;
-}
+/* Heading Styles */
 
 h2 {
 	margin: 0;
@@ -182,41 +141,156 @@ h2.finish{
 	background: url('images/h2-finish.gif') no-repeat;
 }
 
+h3 {
+	font-size: 14px;
+	margin: 5px 0;
+}
+
+/* License Agreement */
+
 .license_agreement {
 	margin: 10px auto;
 	padding: 10px;
 	overflow: scroll;
 	height: 400px;
 	width: 500px;
-
 	border: 1px solid #ccc;
 }
 
-h3 {
-	font-size: 14px;
-	margin: 5px 0;
-}
 
 .license_agreement ul {
-padding: 0;
-margin: 15px;
+	padding: 0;
+	margin: 15px;
 }
+
+/* Next Button */
 
 #next_button {
 	float: right;
 	width: auto;
-	background: #296792; 
+}
+
+/* Footer */
+
+#footer {
+	clear: both;
+	background: #ebebeb;
+	border-top: 1px solid #ccc;
+	padding: 5px;
+	font-size: 11px;
+	text-align: right;
+	vertical-align: middle;
+}
+
+/* Tables */
+
+.border_wrapper {
+	border: 1px solid #0F5C8E;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	margin-top: 14px;
+}
+
+.border_wrapper div.title {
+	background: #016DB1 url(images/thead_bg.gif) repeat-x top left;
+	color: #fff;
+	padding: 6px 4px;
+	font-size: 100%;
+	text-align: left;
+	font-weight: bold;
+}
+
+.border_wrapper div.title a {
+	color: #fff;
+	text-decoration: none;
+}
+
+table.general {
+	background: #ccc;
+	width: 100%;
+}
+
+table.general td {
+	border-top: 1px solid #fafafa;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-left: 1px solid #fafafa;
+}
+
+table.general tr.last td {
+	border-bottom: 0;
+}
+
+table.bottom_cell_border td {
+	border-right: 0;
+	border-left: 0;
+}
+
+table.general td {
+	background: #f5f5f5;
+	padding: 6px;
+	vertical-align: top;
+}
+
+table.general th {
+	background: #ADCBE6 url(images/tsubhead_bg.gif) repeat-x;
+	text-align: left;
+	color: #000;
+	padding: 5px;
+	font-size: 96%;
+	font-weight: bold;
+	border-bottom: 1px solid #000;
+	border-top: 1px solid #000;
+}
+
+table.general th a, table.general th {
+	color: #000;
+	text-decoration: none;
 }
 
 
+table .alt_row td {
+	background: #f1f1f1;
+}
 
-#next_button input {
-	background: #296792;
-	border: 0;
-	height: 26px;
-	width: 75px;
-	color: #fff;
+/* Forms */
+
+input.text_input {
+	border: 1px solid #0F5C8E;
+	background: #fff;
+	width: 300px;
+	padding: 3px;
+	font-size: 11px;
+}
+
+input.text_input:focus {
+	border: 1px solid #000;
+}
+
+input.submit_button {
+	border: 3px double #0F5C8E;
+	padding: 3px;
+	background: #fff url(images/submit_bg.gif) repeat-x top;
+	color: #0F5C8E;
 	font-weight: bold;
+	margin-top: 4px;
+	margin-right: 3px;
+}
+
+label {
+	font-weight: bold;
+}
+
+.field_description, small {
+	color: #444;
+	font-size: 11px;
+}
+
+/* Misc */
+
+.invisible {
+	display: none;
 }
 
 .pass {
@@ -228,14 +302,19 @@ margin: 15px;
 }
 
 .error {
-	border: 1px solid #e36666;
-	background: #efefef;
-	padding: 10px;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	background: #FFF6BF;
+	border-top: 2px solid #FFD324;
+	border-bottom: 2px solid #FFD324;
+	margin: 10px auto;
+	padding: 3px 20px;
 }
 
-.error h3, .errormsg {
-	background: url('images/error_bg.gif') no-repeat left;
-	color: red;
+.success {
+	background: #D6ECA6;
+	border-top: 2px solid #8DC93E;
+	border-bottom: 2px solid #8DC93E;
+	text-align: center;
+	margin: 10px auto;
+	padding: 3px 20px;
+	font-weight: bold;
 }
