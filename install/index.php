@@ -33,6 +33,12 @@ $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostre
 require "./resources/output.php";
 $output = new installerOutput;
 
+$dboptions = array();
+if(function_exists("mysql_connect"))
+{
+	$dboptions['mysql'] = "MySQL";
+}
+
 if(file_exists("lock"))
 {
 	$output->print_error("The installer is currently locked, please remove 'lock' from the install directory to continue");
@@ -172,7 +178,7 @@ END;
 
 function requirements_check()
 {
-	global $output, $myver;
+	global $output, $myver, $dboptions;
 
 	$output->print_header("Requirements Check", "requirements");
 
@@ -193,6 +199,18 @@ function requirements_check()
 	{
 		$phpversion = "<span class=\"pass\">$phpversion</span>\n";
 	}
+	// Check database engines
+	if(count($dboptions) < 1)
+	{
+		$errors[] = "<p><b>MyBB requires one or more suitable database extensions to be installed. Your server reported that none were available.</b></p>";
+		$dbsupportlist = "<span class=\"fail\"><strong>None</strong></span>\n";
+		$showerror = 1;
+	}
+	else
+	{
+		$dbsupportlist = implode(", ", $dboptions);
+	}
+
 	if(!function_exists("xml_parser_create"))
 	{
 		$errors[] = "<p><strong>MyBB requires PHP to be compiled with support for XML Data Handling. Please see <a href=\"http://www.php.net/xml\">PHP.net</a> for more information.</strong></p>";
@@ -261,24 +279,27 @@ function requirements_check()
 			<td class="talt1">$phpversion</td>
 		</tr>
 		<tr>
-			<td class="talt2">PHP XML Extensions:</td>
-			<td class="talt2">$xmlstatus</td>
+			<td class="talt2">Supported DB Extensions:</td>
+			<td class="talt2">$dbsupportlist</td>
+		<tr>
+			<td class="talt1">PHP XML Extensions:</td>
+			<td class="talt1">$xmlstatus</td>
 		</tr>
 		<tr>
-			<td class="talt1">Configuration File Writable:</td>
-			<td class="talt1">$configstatus</td>
+			<td class="talt2">Configuration File Writable:</td>
+			<td class="talt2">$configstatus</td>
 		</tr>
 		<tr>
-			<td class="talt2">Settings File Writable:</td>
-			<td class="talt2">$settingsstatus</td>
+			<td class="talt1">Settings File Writable:</td>
+			<td class="talt1">$settingsstatus</td>
 		</tr>
 		<tr>
-			<td class="talt1">File Uploads Directory Writable:</td>
-			<td class="talt1">$uploadsstatus</td>
+			<td class="talt2">File Uploads Directory Writable:</td>
+			<td class="talt2">$uploadsstatus</td>
 		</tr>
 		<tr>
-			<td class="talt2">Avatar Uploads Directory Writable:</td>
-			<td class="talt2">$avatarsstatus</td>
+			<td class="talt1">Avatar Uploads Directory Writable:</td>
+			<td class="talt1">$avatarsstatus</td>
 		</tr>
 	</table>
 END;
@@ -307,7 +328,7 @@ END;
 
 function database_info()
 {
-	global $output, $myver, $dbinfo, $errors, $mybb;
+	global $output, $myver, $dbinfo, $errors, $mybb, $dboptions;
 	$mybb->input['action'] = "database_info";
 	$output->print_header("Database Configuration", "dbconfig");
 
@@ -380,7 +401,7 @@ END;
 
 function create_tables()
 {
-	global $output, $myver, $dbinfo, $errors, $mybb;
+	global $output, $myver, $dbinfo, $errors, $mybb, $dboptions;
 
 	if(!file_exists("../inc/db_".$mybb->input['dbengine'].".php"))
 	{
@@ -399,7 +420,7 @@ function create_tables()
 		$errors[] = "Could not connect to the database server at ".$mybb->input['dbhost']." with the supplied username and password. Are you sure the hostname and user details are correct?";
 		database_info();
 	}
-	$dbselect = @mysql_select_db($mybb->input['dbname']);
+	$dbselect = $db->select_db($mybb->input['dbname']);
 	if(!$dbselect)
 	{
 		$errors[] = "Could not select the database '".$mybb->input['dbname']."'. Are you sure it exists and the specified username and password have access to it?";
@@ -427,7 +448,9 @@ function create_tables()
 
 	$output->print_header("Table Creation", "createtables");
 
-	echo "<p>Connection to the database server and table you specified was successful. The MyBB database tables will now be created.</p>";
+	echo "<p>Connection to the database server and table you specified was successful.</p>";
+	echo "<p>Database Engine: ".$dboptions[$mybb->input['dbengine']]." ".$db->get_version()."</p>";
+	echo "<p>The MyBB database tables will now be created.</p>";
 
 	require "./resources/".$mybb->input['dbengine']."_db_tables.php";
 	while(list($key, $val) = each($tables))
@@ -436,10 +459,10 @@ function create_tables()
 		preg_match("#CREATE TABLE (\S+) \(#i", $val, $match);
 		if($match[1])
 		{
-			mysql_query("DROP TABLE IF EXISTS ".$match[1]);
+			$db->query("DROP TABLE IF EXISTS ".$match[1]);
 			echo "Creating table ".$match[1]."...";
 		}
-		mysql_query($val) or die("<br /><br /><strong>mySQL error:</strong> ".mysql_error()."<br />Query: $val");
+		$db->query($val);
 		if($match[1])
 		{
 			echo "done<br />\n";
@@ -468,7 +491,7 @@ function populate_tables()
 	while(list($key, $val) = each($inserts))
 	{
 		$val = preg_replace("#mybb_(\S+?)([\s\.,]|$)#", $config['table_prefix']."\\1\\2", $val);
-		mysql_query($val);
+		$db->query($val);
 	}
 	echo "<p>The default data has successfully been inserted into the database. Click Next to insert the default MyBB template and theme sets.</p>";
 

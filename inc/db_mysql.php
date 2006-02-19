@@ -54,6 +54,13 @@ class databaseEngine {
 	var $shutdown_queries;
 
 	/**
+	 * The current version of MySQL.
+	 *
+	 * @var string
+	 */
+	var $version;
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param string The database hostname.
@@ -515,5 +522,27 @@ class databaseEngine {
 		$string = mysql_real_escape_string($string);
 		return $string;
 	}
+
+	/**
+	 * Gets the current version of MySQL.
+	 *
+	 * @return string Version of MySQL.
+	 */
+	function get_version()
+	{
+		if($this->version)
+		{
+			return $this->version;
+		}
+		$query = $this->query("SELECT VERSION() as version");
+		$ver = $this->fetch_array($query);
+		if($ver['version'])
+		{
+			$version = explode(".", $ver['version'], 3);
+			$this->version = intval($version[0]).".".intval($version[1]).".".intval($version[2]);
+		}
+		return $this->version;
+	}
+	
 }
 ?>
