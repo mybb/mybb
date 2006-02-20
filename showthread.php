@@ -28,7 +28,7 @@ if($mybb->input['pid'] && !$mybb->input['tid'])
 	$options = array(
 		"limit" => 1
 	);
-	$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid=".$mybb->clean_variables['pid'], $options);
+	$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid=".$mybb->input['pid'], $options);
 	$post = $db->fetch_array($query);
 	$mybb->input['tid'] = $post['tid'];
 }
@@ -37,7 +37,7 @@ if($mybb->input['pid'] && !$mybb->input['tid'])
 $options = array(
 	"limit" => 1
 );
-$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid=".$mybb->clean_variables['tid']." AND closed NOT LIKE 'moved|%'");
+$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid=".$mybb->input['tid']." AND closed NOT LIKE 'moved|%'");
 $thread = $db->fetch_array($query);
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 $tid = $thread['tid'];
