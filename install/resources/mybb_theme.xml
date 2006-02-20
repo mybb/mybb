@@ -170,6 +170,22 @@ padding: 6px;]]></extra>
 			<font-family><![CDATA[Verdana]]></font-family>
 			<font-size><![CDATA[small]]></font-size>
 		</area_input_select_object>
+		<editor>
+			<background><![CDATA[#f1f1f1]]></background>
+			<border><![CDATA[1px solid #ccc]]></border>
+		</editor>
+		<toolbar_normal>
+			<background><![CDATA[#f0f0f0]]></background>
+			<border><![CDATA[1px solid #f0f0f0]]></border>
+		</toolbar_normal>
+		<toolbar_hover>
+			<background><![CDATA[#c1d2ee]]></background>
+			<border><![CDATA[1px solid #5296f7]]></border>
+		</toolbar_hover>
+		<toolbar_clicked>
+			<background><![CDATA[#e1F2fe]]></background>
+			<border><![CDATA[1px solid #5296f7]]></border>
+		</toolbar_clicked>
 	</cssbits>
 	<themebits>
 		<templateset><![CDATA[1]]></templateset>
