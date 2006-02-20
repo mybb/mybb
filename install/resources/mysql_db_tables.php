@@ -660,6 +660,9 @@ $tables[] = "CREATE TABLE mybb_users (
   language varchar(50) NOT NULL default '',
   timeonline bigint(30) NOT NULL default '0',
   showcodebuttons int(1) NOT NULL default '1',
+  totalpms int(10) NOT NULL default '0',
+  newpms int(10) NOT NULL default '0',
+  unreadpms int(10) NOT NULL default '0',
   PRIMARY KEY  (uid)
 ) TYPE=MyISAM;";
 
