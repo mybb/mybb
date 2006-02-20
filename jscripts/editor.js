@@ -3,7 +3,7 @@ var messageEditor = Class.create();
 messageEditor.prototype = {
 	openTags: new Array(),
 
-	initialize: function(textarea)
+	initialize: function(textarea, options)
 	{
 		// Defines an array of fonts to be shown in the font drop down.
 		this.fonts = new Array();
@@ -50,12 +50,49 @@ messageEditor.prototype = {
 		// Begin the creation of our new editor.
 
 		editor = document.createElement("div");
+		editor.style.position = "relative";
 		editor.className = "editor";
-		editor.style.width = oldTextarea.offsetWidth+"px";
+
+		// Determine the overall height and width - messy, but works
+		if(options && options.width)
+		{
+			w = options.width;
+		}
+		else if(oldTextarea.style.width)
+		{
+			w = oldTextarea.style.width;
+		}
+		else if(oldTextarea.clientWidth)
+		{
+			w = oldTextarea.clientWidth+"px";
+		}
+		else
+		{
+			w = "560px";
+		}
+		if(options && options.height)
+		{
+			w = options.height;
+		}
+		else if(oldTextarea.style.height)
+		{
+			h = oldTextarea.style.height;
+		}
+		else if(oldTextarea.clientHeight)
+		{
+			h = oldTextarea.clientHeight+"px";
+		}
+		else
+		{
+			h = "400px";
+		}
+		editor.style.width = w;
+		editor.style.height = h;
 		editor.style.padding = "3px";
 
 		// Create the first toolbar
 		toolbar = document.createElement("div");
+		toolbar.style.height = "26px";
 
 		// Create the font drop down.
 		fontSelect = document.createElement("select");
@@ -82,7 +119,7 @@ messageEditor.prototype = {
 		// Create the colour drop down.
 		colorSelect = document.createElement("select");
 		colorSelect.style.margin = "2px";
-		colorSelect.options[colorSelect.options.length] = new Option("Font Color", "-");
+		colorSelect.options[colorSelect.options.length] = new Option("Text Color", "-");
 		for(color in this.colors)
 		{
 			colorSelect.options[colorSelect.options.length] = new Option(this.colors[color], color);
@@ -91,16 +128,16 @@ messageEditor.prototype = {
 		}
 		Event.observe(colorSelect, "change", this.changeColor.bindAsEventListener(this));
 		toolbar.appendChild(colorSelect);
-
 		// Append first toolbar to the editor
 		editor.appendChild(toolbar);
 
 		// Create the second toolbar.
 		toolbar2 = document.createElement("div");
+		toolbar2.style.height = "28px";
+		toolbar2.style.position = "relative";
 
 		// Create formatting section of second toolbar.
 		formatting = document.createElement("div");
-		formatting.style.float = "left";
 		formatting.style.position = "absolute";
 		toolbar2.appendChild(formatting);
 
@@ -116,9 +153,9 @@ messageEditor.prototype = {
 
 		// Create insertable elements section of second toolbar.
 		elements = document.createElement("div");
-		elements.style.float = "right";
-		elements.style.textAlign = "right";
-		formatting.style.position = "absolute";
+		elements.style.position = "absolute";
+		elements.style.right = 0;
+
 		toolbar2.appendChild(elements);
 		this.insertStandardButton(elements, "list_num", "images/codebuttons/list_num.gif", "list", "1", "Insert a numbered list.");
 		this.insertStandardButton(elements, "list_bullet", "images/codebuttons/list_bullet.gif", "list", "", "Insert a bulleted list.");
@@ -136,14 +173,28 @@ messageEditor.prototype = {
 
 		// Create our new text area
 		area = document.createElement("div");
+
+		// Set the width/height of the area
+		if(MyBB.browser == "mozilla")
+		{
+			subtract = 6;
+			subtract2 = 1;
+		}
+		else
+		{
+			subtract = subtract2 = 0;
+		}
+		area.style.height = parseInt(editor.style.height)-parseInt(toolbar.style.height)-parseInt(toolbar2.style.height)-subtract+"px";
+		area.style.width = parseInt(editor.style.width)-parseInt(editor.style.padding)-subtract2+"px";
+
+		// Create text area
 		textInput = document.createElement("textarea");
 		textInput.id = this.textarea;
 		textInput.name = oldTextarea.name;
+		textInput.style.height = area.style.height;
+		textInput.style.width = area.style.width;
 		textInput.value = oldTextarea.value;
-		textInput.style.width = parseInt(editor.style.width) - (parseInt(editor.style.padding))+"px";
-		textInput.style.height = oldTextarea.offsetHeight+"px";
 		area.appendChild(textInput);
-
 		editor.appendChild(area);
 		if(oldTextarea.form)
 		{
@@ -163,8 +214,8 @@ messageEditor.prototype = {
 		button.insertText = insertText;
 		button.insertExtra = insertExtra;
 		button.className = "toolbar_normal";
-		button.height = 23;
-		button.width = 22;
+		button.height = 22;
+		button.width = 23;
 		button.style.margin = "2px";
 		Event.observe(button, "mouseover", this.toolbarItemHover.bindAsEventListener(this));
 		Event.observe(button, "mouseout", this.toolbarItemOut.bindAsEventListener(this));
@@ -311,7 +362,7 @@ messageEditor.prototype = {
 	insertEmail: function()
 	{
 		selectedText = this.getSelectedText($(this.textarea));
-		email = prompt("Please enter the email address you wish to insert.", "http://");
+		email = prompt("Please enter the email address you wish to insert.", "");
 		if(email)
 		{
 			if(!selectedText)
@@ -586,5 +637,5 @@ messageEditor.prototype = {
 			return false;
 		}
 		this.performInsert(element.alt, "", true, false);
-	},
-}
+	}
+};
