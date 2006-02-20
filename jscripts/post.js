@@ -16,4 +16,4 @@ var Post = {
 		}
 	}
 }
-MyBB.attachListener(window, 'load', Post.init);
+Event.observe(window, 'load', Post.init);

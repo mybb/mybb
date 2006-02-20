@@ -229,9 +229,10 @@ Object.extend(Event, {
 Event.observe(window, 'unload', Event.unloadCache, false);
 
 //useful array functions
+/*
 Array.prototype.each = function(func){
 	for(var i=0;ob=this[i];i++) func(ob, i);
-}
+} */
 
 function $c(array){
 	var nArray = [];

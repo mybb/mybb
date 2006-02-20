@@ -1264,8 +1264,8 @@ function makesmilieinsert()
 					{
 						$smilies .=  "<tr>";
 					}
-					$find = addslashes($find);
-					$smilies .= "<td><a href=\"javascript:addsmilie('$find');\"><img src=\"$image\" border=\"0\"></a></td>";
+					$find = addslashes(htmlspecialchars($find));
+					$smilies .= "<td><img src=\"$image\" border=\"0\" class=\"smilie\" alt=\"$find\"></td>";
 					$i++;
 					$counter++;
 					if($counter == $mybb->settings['smilieinsertercols'])

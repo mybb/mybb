@@ -29,9 +29,9 @@ $cssselectors = array("body" => "body",
 					  "smalltext" => ".smalltext",
 					  "largetext" => ".largetext",
 					  "area_input_select_object" => "textarea, input, select, object",
+					  "editor" => ".editor",
 					  "toolbar_normal" => ".toolbar_normal",
 					  "toolbar_hover" => ".toolbar_hover",
-					  "toolbar_mousedown" => ".toolbar_mousedown",
 					  "toolbar_clicked" => ".toolbar_clicked",
 					  
 					  // Link selectors
@@ -466,27 +466,27 @@ function makecsstoolbaredit($css)
 	global $lang;
 	starttable();
 	tableheader($lang->mycode_toolbar);
-	echo "<tr>\n<td class=\"subheader\" align=\"center\">".$lang->toolbar_normal."</td><td class=\"subheader\" align=\"center\">".$lang->toolbar_hovered."</td>\n</tr>\n";
+	echo "<tr>\n<td class=\"subheader\" align=\"center\">".$lang->editor."</td><td class=\"subheader\" align=\"center\">".$lang->toolbar_normal."</td>\n</tr>\n";
 	echo "<tr>\n";
+	echo "<td class=\"altbg1\" width=\"50%\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[editor][background]\" value=\"".$css['editor']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[editor][border]\" value=\"".$css['editor']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"50%\">\n";
 	echo "<table width=\"100%\">\n";
 	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_normal][background]\" value=\"".$css['toolbar_normal']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_normal][border]\" value=\"".$css['toolbar_normal']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n<td class=\"subheader\" align=\"center\">".$lang->toolbar_hovered."</td><td class=\"subheader\" align=\"center\">".$lang->toolbar_clicked."</td>\n</tr>\n";
+	echo "<tr>\n";
 	echo "<td class=\"altbg1\" width=\"50%\">\n";
 	echo "<table width=\"100%\">\n";
 	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_hover][background]\" value=\"".$css['toolbar_hover']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_hover][border]\" value=\"".$css['toolbar_hover']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "</table>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n<td class=\"subheader\" align=\"center\"".$lang->toolbar_mousedown."</td><td class=\"subheader\" align=\"center\">".$lang->toolbar_clicked."</td>\n</tr>\n";
-	echo "<tr>\n";
-	echo "<td class=\"altbg1\" width=\"50%\">\n";
-	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_mousedown][background]\" value=\"".$css['toolbar_mousedown']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_mousedown][border]\" value=\"".$css['toolbar_mousedown']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"50%\">\n";

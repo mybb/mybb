@@ -454,7 +454,7 @@ $forums
 <thead>
 <tr>
 <td class="thead">
-<div class="expcolimage"><img src="$theme[imgdir]/collapse$collapsedimg[boardstats].gif" id="boardstats_img" border="0" alt="[-]" /></div>
+<div class="expcolimage"><img src="$theme[imgdir]/collapse$collapsedimg[boardstats].gif" id="boardstats_img" class="expander" border="0" alt="[-]" /></div>
 <div><strong>$lang->boardstats</strong></div>
 </td>
 </tr>
@@ -702,14 +702,8 @@ $posticons
 <tr>
 <td class="trow2" valign="top"><strong>$lang->your_message:</strong><br /><p align="center">$smilieinserter</p></td>
 <td class="trow2">
-<table cellspacing="0" cellpadding="0" border="0">
+<textarea name="message" id="message" rows="20" cols="70" tabindex="3">$message</textarea>
 $codebuttons
-<tr>
-<td colspan="2">
-<textarea name="message" rows="20" cols="70" tabindex="3">$message</textarea>
-</td>
-</tr>
-</table>
 </td>
 </tr>
 <tr>
@@ -763,14 +757,8 @@ $posticons
 <tr>
 <td class="trow2" valign="top"><strong>$lang->your_message</strong><br /><p align="center">$smilieinserter</p></td>
 <td class="trow2">
-<table cellspacing="0" cellpadding="0" border="0">
+<textarea id="message" name="message" rows="20" cols="70" /></textarea>
 $codebuttons
-<tr>
-<td colspan="2">
-<textarea name="message" rows="20" cols="70" tabindex="2">$message</textarea>
-</td>
-</tr>
-</table>
 </td>
 </tr>
 <tr>
@@ -867,14 +855,8 @@ $posticons
 <tr>
 <td class="trow2" valign="top"><strong>$lang->your_message</strong><br /><p align="center">$smilieinserter</p></td>
 <td class="trow2">
-<table cellspacing="0" cellpadding="0" border="0">
+<textarea name="message" id="message" rows="20" cols="70" tabindex="3">$message</textarea>
 $codebuttons
-<tr>
-<td colspan="2">
-<textarea name="message" rows="20" cols="70" tabindex="3">$message</textarea>
-</td>
-</tr>
-</table>
 </td>
 </tr>
 <tr>
@@ -2053,6 +2035,7 @@ $footer
 		<template name="usercp_avatar_gallery_avatar" version="100.07"><![CDATA[<td width="20%" align="center"><label for="avatar-$avatar"><img src="$avatarpath" alt="$avatar" /><br /><input type="radio" name="avatar" value="$avatar" id="avatar-$avatar" /><strong>$avatarname</strong></td>]]></template>
 		<template name="usercp_avatar_current" version="100.07"><![CDATA[<td class="trow1" width="150" align="right"><img src="$urltoavatar" alt="$lang->avatar" /></td>]]></template>
 		<template name="headerinclude" version="100.07"><![CDATA[<meta http-equiv="Content-Type" content="text/html; charset=$charset" />
+<script type="text/javascript" src="jscripts/prototype.lite.js"></script>
 <script type="text/javascript" src="jscripts/general.js"></script>
 <link rel="stylesheet" type="text/css" href="css.php?theme=$theme[tid]" />
 $newpmmsg]]></template>
@@ -2441,14 +2424,8 @@ $posticons
 <tr>
 <td class="trow2" valign="top"><strong>$lang->compose_message</strong><p align="center">$smilieinserter</p></td>
 <td class="trow2">
-<table cellspacing="0" cellpadding="0" border="0">
+<textarea name="message" id="message" rows="20" cols="60" tabindex="3">$message</textarea>
 $codebuttons
-<tr>
-<td colspan="2">
-<textarea name="message" rows="20" cols="60" tabindex="3">$message</textarea>
-</td>
-</tr>
-</table>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>$lang->compose_options</strong></td>
@@ -2546,7 +2523,7 @@ $footer
 <thead>
 <tr>
 <td class="thead" colspan="5">
-<div class="expcolimage"><img src="$theme[imgdir]/$expcolimage" id="cat_$forum[fid]_img" border="0" alt="$expaltext" /></div>
+<div class="expcolimage"><img src="$theme[imgdir]/$expcolimage" id="cat_$forum[fid]_img" class="expander" border="0" alt="$expaltext" /></div>
 <div><strong><a href="forumdisplay.php?fid=$forum[fid]">$forum[name]</a></strong><br /><div class="smalltext">$forum[description]</div></div>
 </td>
 </tr>
@@ -3203,100 +3180,11 @@ $pmsdownload
 <td colspan="6" class="trow1">$lang->nomessages</td>
 </tr>]]></template>
 		<template name="private_send_buddyselect" version="100.07"><![CDATA[<br /><span class="smalltext">$lang->select_buddy<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>$buddies</select>]]></template>
-		<template name="codebuttons" version="100.07"><![CDATA[<script language="javascript">
-var b_prompt = "$lang->b_prompt";
-var i_prompt = "$lang->i_prompt";
-var u_prompt = "$lang->u_prompt";
-var font_prompt = "$lang->font_prompt";
-var size_prompt = "$lang->size_prompt";
-var color_prompt = "$lang->color_prompt";
-var align_prompt = "$lang->align_prompt";
-var quote_prompt = "$lang->quote_prompt";
-var code_prompt = "$lang->code_prompt";
-var php_prompt = "$lang->php_prompt";
-</script>
-<tr>
-<td bgcolor="#F0F0F0">
-<table cellspacing="0" cellpadding="2" border="0"><tr>
-<td>
-<select name="font" onchange="insertCode('font', this.options[this.selectedIndex].value)">
-<option value="-">$lang->font</option>
-<option value="Arial">$lang->arial</option>
-<option value="Courier">$lang->courier</option>
-<option value="Impact">$lang->impact</option>
-<option value="Tahoma">$lang->tahoma</option>
-<option value="Times New Roman">$lang->times_new_roman</option>
-<option value="Trebuchet MS">$lang->trebuchet_ms</option>
-<option value="Verdana">$lang->verdana</option>
-</select>
-</td>
-<td>
-<select name="size" onchange="insertCode('size', this.options[this.selectedIndex].value)">
-<option value="-">$lang->size</option>
-<option value="xx-small">$lang->xxsmall</option>
-<option value="x-small">$lang->xsmall</option>
-<option value="small">$lang->small</option>
-<option value="medium">$lang->medium</option>
-<option value="large">$lang->large</option>
-<option value="x-large">$lang->xlarge</option>
-<option value="xx-large">$lang->xxlarge</option>
-</select>
-</td>
-<td>
-<select name="color" onchange="insertCode('color', this.options[this.selectedIndex].value)">
-<option value="-">$lang->color</option>
-<option value="white" style="color:white;">$lang->white</option>
-<option value="black" style="color:black;">$lang->black</option>
-<option value="red" style="color:red;">$lang->red</option>
-<option value="yellow" style="color:yellow;">$lang->yellow</option>
-<option value="pink" style="color:pink;">$lang->pink</option>
-<option value="green" style="color:green;">$lang->green</option>
-<option value="orange" style="color:orange;">$lang->orange</option>
-<option value="purple" style="color:purple;">$lang->purple</option>
-<option value="blue" style="color:blue;">$lang->blue</option>
-<option value="beige" style="color:beige;">$lang->beige</option>
-<option value="brown" style="color:brown;">$lang->brown</option>
-<option value="teal" style="color:teal;">$lang->teal</option>
-<option value="navy" style="color:navy;">$lang->navy</option>
-<option value="maroon" style="color:maroon;">$lang->maroon</option>
-<option value="limegreen" style="color:limegreen;">$lang->lime_green</option></select>
-</select>
-</td>
-</tr></table>
-</td>
-<td nowrap bgcolor="#F0F0F0" align="right"><input type="button" style="color: red; font: bold 11px verdana" value="$lang->close_tags" onclick="closeTags()"></td>
-</tr>
-<tr>
-<td nowrap bgcolor="#F0F0F0" colspan="2">
-<table cellspacing="0" cellpadding="0" border="0"><tr>
-<td>
-<img name="b" src="./images/codebuttons/bold.gif" onclick="insertCode('b')" class="toolbar_normal" onMouseOver="toolbarHover('b')" onMouseOut="toolbarUnHover('b')" onMouseDown="toolbarMouseDown('b')" alt="$lang->alt_bold">
-<img name="i" src="./images/codebuttons/italics.gif" onclick="insertCode('i')" class="toolbar_normal" onMouseOver="toolbarHover('i')" onMouseOut="toolbarUnHover('i')" onMouseDown="toolbarMouseDown('i')" alt="$lang->alt_italic">
-<img name="u" src="./images/codebuttons/underline.gif" onclick="insertCode('u')" class="toolbar_normal" onMouseOver="toolbarHover('u')" onMouseOut="toolbarUnHover('u')" onMouseDown="toolbarMouseDown('u')" alt="$lang->alt_underline">
-<img src="./images/codebuttons/sep.gif" class="toolbar_normal">
-<img name="align_left" src="./images/codebuttons/align_left.gif" onclick="insertCode('align', 'left')" class="toolbar_normal" onMouseOver="toolbarHover('align_left')" onMouseOut="toolbarUnHover('align_left')" onMouseDown="toolbarMouseDown('align_left')" alt="$lang->alt_left">
-<img name="align_center" src="./images/codebuttons/align_center.gif" onclick="insertCode('align', 'center')" class="toolbar_normal" onMouseOver="toolbarHover('align_center')" onMouseOut="toolbarUnHover('align_center')" onMouseDown="toolbarMouseDown('align_center')" alt="$lang->alt_center">
-<img name="align_right" src="./images/codebuttons/align_right.gif" onclick="insertCode('align', 'right')" class="toolbar_normal" onMouseOver="toolbarHover('align_right')" onMouseOut="toolbarUnHover('align_right')" onMouseDown="toolbarMouseDown('align_right')" alt="$lang->alt_right">
-<img name="align_justify" src="./images/codebuttons/align_justify.gif" onclick="insertCode('align', 'justify')" class="toolbar_normal" onMouseOver="toolbarHover('align_justify')" onMouseOut="toolbarUnHover('align_justify')" onMouseDown="toolbarMouseDown('align_justify')" alt="$lang->alt_justify">
-<img src="./images/codebuttons/sep.gif">
-<img name="list_num" src="./images/codebuttons/list_num.gif" onclick="insertCode('list', '1')" class="toolbar_normal" onMouseOver="toolbarHover('list_num')" onMouseOut="toolbarUnHover('list_num')" onMouseDown="toolbarMouseDown('list_num')" alt="$lang->alt_numlist">
-<img name="list_bullet" src="./images/codebuttons/list_bullet.gif" onclick="insertCode('list')" class="toolbar_normal" onMouseOver="toolbarHover('list_bullet')" onMouseOut="toolbarUnHover('list_bullet')" onMouseDown="toolbarMouseDown('list_bullet')" alt="$lang->alt_bulletlist">
-<img src="./images/codebuttons/sep.gif">
-<img name="img" src="./images/codebuttons/image.gif" onclick="insertCode('img')" class="toolbar_normal" onMouseOver="toolbarHover('img')" onMouseOut="toolbarUnHover('img')" onMouseDown="toolbarMouseDown('img')" alt="$lang->alt_image">
-<img name="url" src="./images/codebuttons/url.gif" onclick="insertCode('url')" class="toolbar_normal" onMouseOver="toolbarHover('url')" onMouseOut="toolbarUnHover('url')" onMouseDown="toolbarMouseDown('url')" alt="$lang->alt_hyperlink">
-<img name="email" src="./images/codebuttons/email.gif" onclick="insertCode('email')" class="toolbar_normal" onMouseOver="toolbarHover('email')" onMouseOut="toolbarUnHover('email')" onMouseDown="toolbarMouseDown('email')" alt="$lang->alt_email">
-<img src="./images/codebuttons/sep.gif">
-<img name="quote" src="./images/codebuttons/quote.gif" onclick="insertCode('quote')"  class="toolbar_normal" onMouseOver="toolbarHover('quote')" onMouseOut="toolbarUnHover('quote')" onMouseDown="toolbarMouseDown('quote')" alt="$lang->alt_quote">
-<img name="code" src="./images/codebuttons/code.gif" onclick="insertCode('code')" class="toolbar_normal" onMouseOver="toolbarHover('code')" onMouseOut="toolbarUnHover('code')" onMouseDown="toolbarMouseDown('code')" alt="$lang->alt_code">
-<img name="php" src="./images/codebuttons/php.gif" onclick="insertCode('php')" class="toolbar_normal" onMouseOver="toolbarHover('php')" onMouseOut="toolbarUnHover('php')" onMouseDown="toolbarMouseDown('php')" alt="$lang->alt_php">
-</td>
-</tr></table>
-</td>
-</tr>
-<tr>
-<td bgcolor="#F0F0F0" colspan="2"><span class="smalltext"><input type="radio" name="mode" value="normal" onClick="changeMode('normal')"> $lang->normal_mode&nbsp;&nbsp;<input type="radio" name="mode" value="advanced" onClick="changeMode('advanced')"> $lang->advanced_mode</span></td>
-</tr>
-<script language='Javascript' src='jscripts/codebuttons.js'></script>]]></template>
+		<template name="codebuttons" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/editor.js"></script>
+<script type="text/javascript">
+	var editor = new messageEditor("message");
+	editor.bindSmilieInserter("clickable_smilies");
+</script>]]></template>
 		<template name="showthread_quickreply" version="100.07"><![CDATA[<br />
 <form method="post" action="newreply.php" name="input">
 <input type="hidden" name="subject" value="RE: $thread[subject]" />
@@ -3306,7 +3194,7 @@ var php_prompt = "$lang->php_prompt";
 <thead>
 <tr>
 <td colspan="2" class="thead">
-<div class="expcolimage"><img src="images/collapse$collapsedimg[quickreply].gif" id="quickreply_img" border="0"></div>
+<div class="expcolimage"><img src="images/collapse$collapsedimg[quickreply].gif" id="quickreply_img" class="expander" border="0"></div>
 <div><strong>$lang->quick_reply</strong></div>
 </td>
 </tr>
@@ -3612,7 +3500,7 @@ $footer
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
 <thead>
 <tr>
-<td class="thead"><div class="expcolimage"><img src="$theme[imgdir]/$expcolimage" id="sid_$section[sid]_img" border="0" alt="[-]" /></div><div><strong>$section[name]</strong></div></td>
+<td class="thead"><div class="expcolimage"><img src="$theme[imgdir]/$expcolimage" id="sid_$section[sid]_img" class="expander" border="0" alt="[-]" /></div><div><strong>$section[name]</strong></div></td>
 </tr>
 </thead>
 <tbody style="$expdisplay" id="sid_$section[sid]_e">
@@ -5814,7 +5702,7 @@ $header
 $footer
 </body>
 </html>]]></template>
-		<template name="smilieinsert" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" align="center">
+		<template name="smilieinsert" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" align="center" id="clickable_smilies">
 <tr><td class="tborder">
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" width="100%">
 <tr>

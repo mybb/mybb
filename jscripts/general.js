@@ -2,7 +2,7 @@ var MyBB = {
 	init: function()
 	{
 		this.detectBrowser();
-		this.attachListener(window, "load", MyBB.pageLoaded);
+		Event.observe(window, "load", MyBB.pageLoaded);
 	},
 
 	pageLoaded: function()
@@ -125,30 +125,6 @@ var MyBB = {
 		}
 	},
 
-	attachListener: function(element, type, listener)
-	{
-		if(element.addEventListener)
-		{
-			element.addEventListener(type, listener, false);
-		}
-		else
-		{
-			element.attachEvent("on"+type, listener, false);
-		}
-	},
-
-	removeListener: function(element, type, listener)
-	{
-		if(element.removeEventListener)
-		{
-			element.removeEventListener(type, listener, false);
-		}
-		else
-		{
-			element.detachEvent("on"+type, listener);
-		}
-	},
-
 	eventElement: function(event)
 	{
 		if(event.currentTarget)
@@ -185,6 +161,18 @@ var MyBB = {
 		array_value = array_name[array_size-1];
 		delete array_name[array_size-1];
 		return array_value;
+	},
+
+	inArray: function(item, array_name)
+	{
+		for(var i=0;i<array_name.length;i++)
+		{
+			if(array_name[i] == item)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }
 
@@ -299,12 +287,12 @@ var expandables = {
 				{
 					continue;
 				}
-				MyBB.attachListener(expander, "click", this.expandCollapse);
+				Event.observe(expander, "click", this.expandCollapse.bindAsEventListener(this));
 				expander.controls = expander.id.replace("_img", "");
-				var row = document.getElementById(expander.id);
+				var row = $(expander.controls);
 				if(row)
 				{
-					MyBB.attachListener(row, "dblclick", this.expandCollapse);
+					Event.observe(row, "dblclick", this.expandCollapse.bindAsEventListener(this));
 					row.controls = expander.id.replace("_img", "");
 				}
 			}
@@ -318,8 +306,8 @@ var expandables = {
 		{
 			return false;
 		}
-		var expandedItem = document.getElementById(element.controls+"_e");
-		var collapsedItem = document.getElementById(element.controls+"_c");
+		var expandedItem = $(element.controls+"_e");
+		var collapsedItem = $(element.controls+"_c");
 
 		if(expandedItem && collapsedItem)
 		{
@@ -327,11 +315,13 @@ var expandables = {
 			{
 				expandedItem.style.display = "";
 				collapsedItem.style.display = "none";
+				this.saveCollapsed(element.controls);
 			}
 			else
 			{
 				expandedItem.style.display = "none";
 				collapsedItem.style.display = "";
+				this.saveCollapsed(element.controls, 1);
 			}
 		}
 		else if(expandedItem && !collapsedItem)
@@ -341,12 +331,14 @@ var expandables = {
 				expandedItem.style.display = "";
 				element.src = element.src.replace("collapse_collapsed.gif", "collapse.gif");
 				element.alt = element.alt.replace("[-]", "[+]");
+				this.saveCollapsed(element.controls);
 			}
 			else
 			{
 				expandedItem.style.display = "none";
 				element.src = element.src.replace("collapse.gif", "collapse_collapsed.gif");
 				element.alt = element.alt.replace("[+]", "[-]");
+				this.saveCollapsed(element.controls, 1);
 			}
 		}
 	},
@@ -358,7 +350,7 @@ var expandables = {
 		var collapsed = Cookie.get("collapsed");
 		if(collapsed)
 		{
-			saved = split("|");
+			saved = collapsed.split("|");
 			for(var i=0;i<saved.length;i++)
 			{
 				if(saved[i] != id && saved[id] != "")
@@ -367,9 +359,9 @@ var expandables = {
 				}
 			}
 		}
-		if(add)
+		if(add == 1)
 		{
-			newCollapsed[newCollapsed.length] = saved[i];
+			newCollapsed[newCollapsed.length] = id;
 		}
 		Cookie.set("collapsed", newCollapsed.join("|"));
 	}

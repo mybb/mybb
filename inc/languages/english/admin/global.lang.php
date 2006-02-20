@@ -49,6 +49,7 @@ $l['hovered_links'] = "Hovered Links";
 $l['save_changes'] = "Save Changes";
 $l['text_decoration'] = "Text Decoration";
 $l['mycode_toolbar'] = "MyCode Formatting Toolbar";
+$l['editor'] = "Message Editor";
 $l['toolbar_normal'] = "Toolbar Item Normal";
 $l['toolbar_hovered'] = "Toolbar Item Hovered";
 $l['toolbar_clicked'] = "Toolbar Item Selected";

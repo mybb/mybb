@@ -5,8 +5,8 @@ var Thread = {
 
 	quickQuote: function(pid)
 	{
-		post = document.getElementById("qq"+pid);
-		author = document.getElementById("qqauthor"+pid);
+		post = $("qq"+pid);
+		author = $("qqauthor"+pid);
 		
 		if(!post)
 		{
@@ -42,4 +42,4 @@ var Thread = {
 		popupWin("report.php?pid="+pid, "reportPost", 400, 300)
 	}
 }
-MyBB.attachListener(window, 'load', Thread.init);
+Event.observe(window, 'load', Thread.init);

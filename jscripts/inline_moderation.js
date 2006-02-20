@@ -18,7 +18,7 @@ var inlineModeration = {
 			var element = inputs[i];
 			if((element.name != "allbox") && (element.type == "checkbox"))
 			{
-				MyBB.attachListener(element, "click", inlineModeration.checkItem);
+				Event.observe(element, "click", inlineModeration.checkItem);
 			}
 		}
 	},
@@ -63,7 +63,7 @@ var inlineModeration = {
 			inlineModeration.inlineCount--;
 		}
 		inlineData = "|"+newIds.join("|")+"|";
-		goButton = document.getElementById("inline_go");
+		goButton = $("inline_go");
 		if(inlineModeration.inlineCount < 0)
 		{
 			inlineModeration.inlineCount = 0;
@@ -89,9 +89,9 @@ var inlineModeration = {
 		}
 
 		inlineModeration.inlineCount = 0;
-		goButton = document.getElementById("inline_go");
+		goButton = $("inline_go");
 		goButton.value = go_text+" (0)";
 		Cookie.unset(inlineModeration.cookieName);
 	}
 }
-MyBB.attachListener(window, "load", inlineModeration.init);
+Event.observe(window, "load", inlineModeration.init);
