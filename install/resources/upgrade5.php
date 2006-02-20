@@ -82,12 +82,26 @@ function upgrade5_dbchanges()
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('18','online','<lang:group_online>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('19','moderation','<lang:group_moderation>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('20','nav','<lang:group_nav>');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('21','search','<lang:group_nav>');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('21','search','<lang:group_search>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('22','showteam','<lang:group_showteam>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('23','reputation','<lang:group_reputation>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('24','newthread','<lang:group_newthread>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('25','newreply','<lang:group_newreply>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('26','member','<lang:group_member>');");
+
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."searchlog");
+	$db->query("CREATE TABLE mybb_searchlog (
+		  sid varchar(32) NOT NULL default '',
+		  uid int unsigned NOT NULL default '0',
+		  dateline bigint(30) NOT NULL default '0',
+		  ipaddress varchar(120) NOT NULL default '',
+		  threads text NOT NULL default '',
+		  posts text NOT NULL default '',
+		  searchtype varchar(10) NOT NULL default '',
+		  resulttype varchar(10) NOT NULL default '',
+		  querycache text NOT NULL default '',
+		  PRIMARY KEY  (sid)
+		) TYPE=MyISAM;");
 
 	echo "Done</p>";
 	

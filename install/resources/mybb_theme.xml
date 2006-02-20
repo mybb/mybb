@@ -4594,18 +4594,18 @@ $message[message]
 		<template name="search_results_thread" version="100.07"><![CDATA[<tr>
 <td align="center" class="$bgcolor" width="1"><img src="$theme[imgdir]/$folder.gif"></td>
 <td align="center" class="$bgcolor" width="1">$icon</td>
-<td class="$bgcolor">$prefix <a href="showthread.php?tid=$result[tid]">$result[subject]</a>$result[multipage]</td>
-<td align="center" class="$bgcolor"><a href="member.php?action=profile&amp;uid=$result[uid]">$result[username]</a></td>
-<td class="$bgcolor"><a href="forumdisplay.php?fid=$result[fid]">$result[forumname]</a></td>
-<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($result[tid]);">$result[replies]</a></td>
-<td align="center" class="$bgcolor">$result[views]</td>
+<td class="$bgcolor">$prefix <a href="showthread.php?tid=$thread[tid]">$thread[subject]</a>$thread[multipage]</td>
+<td align="center" class="$bgcolor">$thread[profilelink]</td>
+<td class="$bgcolor">$thread[forumlink]</td>
+<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($thread[tid]);">$thread[replies]</a></td>
+<td align="center" class="$bgcolor">$thread[views]</td>
 <td class="$bgcolor" width="1" nowrap="nowrap">
 <table cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" nowrap="nowrap"><span class="smalltext">$lastpostdate $lastposttime<br />(<a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$result[tid]">$lastposter</a>)</span>
+<td align="left" nowrap="nowrap"><span class="smalltext">$lastpostdate $lastposttime<br />(<a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$thread[tid]">$lastposter</a>)</span>
 </td>
 <td align="right">
-<a href="showthread.php?action=lastpost&amp;tid=$result[tid]"><!-- <img src="images/lastpost.gif"> --><span class="smalltext"><strong>&raquo;</strong></span></a>
+<a href="showthread.php?action=lastpost&amp;tid=$thread[tid]"><!-- <img src="images/lastpost.gif"> --><span class="smalltext"><strong>&raquo;</strong></span></a>
 </td>
 </tr>
 </table>

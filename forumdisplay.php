@@ -549,7 +549,6 @@ if($threadcache)
 		{
 			$bgcolor = "trow_shaded";
 		}
-
 		elseif($bgcolor == "trow2")
 		{
 			$bgcolor = "trow1";

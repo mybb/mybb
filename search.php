@@ -37,18 +37,257 @@ $now = time();
 
 if($mybb->input['action'] == "results")
 {
-	$sid = intval($mybb->input['sid']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE sid='".$sid."' AND uid='".intval($mybb->input['uid'])."' AND dateline='".intval($mybb->input['dateline'])."'");
+	$sid = addslashes($mybb->input['sid']);
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE sid='$sid'");
 	$search = $db->fetch_array($query);
+
 	if(!$search['sid'])
 	{
 		error($lang->error_invalidsearch);
 	}
 	$plugins->run_hooks("search_results_start");
 
-	$order = $mybb->input['order'];
+	$order = strtolower($mybb->input['order']);
 	$sortby = $mybb->input['sortby'];
 
+	if($order != "asc")
+	{
+		$order = "desc";
+	}
+
+	$perpage = $mybb->settings['threadsperpage'];
+	$page = intval($mybb->input['page']);
+	if($page > 0)
+	{
+		$start = ($page-1) * $perpage;
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
+	$end = $start + $perpage;
+	$lower = $start+1;
+	$upper = $end;
+
+	$sorturl = "search.php?action=results&sid=$sid";
+
+	// Read some caches we will be using
+	$forumcache = $cache->read("forums");
+	$iconcache = $cache->read("posticons");
+
+	if($search['resulttype'] == "threads")
+	{
+		switch($sortby)
+		{
+			case "replies":
+				$sortfield = "t.replies";
+				break;
+			case "views":
+				$sortfield = "t.views";
+				break;
+			case "dateline":
+				$sortfield = "t.dateline";
+				break;
+			case "forum":
+				$sortfield = "t.fid";
+				break;
+			case "start":
+				$sortfield = "t.username";
+				break;
+			default:
+				$sortfield = "t.lastpost";
+				break;
+		}
+
+		$threadcount = 0;
+		if($search['querycache'] != "")
+		{
+			$query = $search['querycache'];
+			$query .= " ORDER BY $sortfield $order";
+			$query .= " LIMIT $start, $perpage";
+
+			$query = $db->query($query);
+		}
+		else
+		{
+			if(!$search['threads'])
+			{
+				error($lang->error_nosearchresults);
+			}
+			$query = $db->query("
+				SELECT t.*
+				FROM ".TABLE_PREFIX."threads t
+				WHERE t.tid IN (".$search['threads'].")
+				ORDER BY $sortfield $order
+				LIMIT $start, $perpage
+			");
+		}
+
+		while($thread = $db->fetch_array($query))
+		{
+			if($bgcolor == "trow1")
+			{
+				$bgcolor = "trow2";
+			}
+			else
+			{
+				$bgcolor = "trow1";
+			}
+			$folder = '';
+			$prefix = '';
+			
+			if(!$thread['username'])
+			{
+				$thread['username'] = $thread['threadusername'];
+				$thread['profilelink'] = $thread['threadusername'];
+			}
+			else
+			{
+				$thread['profilelink'] = "<a href=\"".str_replace("{uid}", $thread['uid'], PROFILE_URL)."\">".$thread['username']."</a>";
+			}
+			$thread['subject'] = $parser->parse_badwords($thread['subject']);
+			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+
+			if($iconcache[$thread['iid']])
+			{
+				$icon = "<img src=\"$result[iconpath]\" alt=\"$result[iconname]\">";
+			}
+			else
+			{
+				$icon = "&nbsp;";
+			}
+			// Determine the folder
+			$folder = '';
+			$folder_label = '';
+			if($thread['doticon'])
+			{
+				$folder = "dot_";
+				$folder_label .= $lang->icon_dot;
+			}
+			$gotounread = '';
+			$isnew = 0;
+			$donenew = 0;
+			$lastread = 0;
+
+			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
+			{
+				$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+				if($thread['lastpost'] > $cutoff)
+				{
+					if($thread['lastread'])
+					{
+						$lastread = $thread['lastread'];
+					}
+					else
+					{
+						$lastread = 1;
+					}
+				}
+			}
+			if(!$lastread)
+			{
+				$readcookie = $threadread = mygetarraycookie("threadread", $thread['tid']);
+				if($readcookie > $forumread)
+				{
+					$lastread = $readcookie;
+				}
+				else
+				{
+					$lastread = $forumread;
+				}
+			}
+
+			if($thread['lastpost'] > $lastread && $lastread)
+			{
+				$folder .= "new";
+				$folder_label .= $lang->icon_new;
+				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+				$unreadpost = 1;
+			}
+			else
+			{
+				$folder_label .= $lang->icon_no_new;
+			}
+
+			if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews'])
+			{
+				$folder .= "hot";
+				$folder_label .= $lang->icon_hot;
+			}
+			if($thread['closed'] == "yes")
+			{
+				$folder .= "lock";
+				$folder_label .= $lang->icon_lock;
+			}
+			$folder .= "folder";
+
+			$thread['pages'] = 0;
+			$thread['multipage'] = '';
+			$threadpages = '';
+			$morelink = '';
+			$thread['posts'] = $thread['replies'] + 1;
+			if($thread['posts'] > $mybb->settings['postsperpage'])
+			{
+				$thread['pages'] = $thread['posts'] / $mybb->settings['postsperpage'];
+				$thread['pages'] = ceil($thread['pages']);
+				if($thread['pages'] > 4)
+				{
+					$pagesstop = 4;
+					eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
+				}
+				else
+				{
+					$pagesstop = $thread['pages'];
+				}
+				for($i=1; $i<=$pagesstop; ++$i)
+				{
+					eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
+				}
+				eval("\$thread[multipage] = \"".$templates->get("forumdisplay_thread_multipage")."\";");
+			}
+			else
+			{
+				$threadpages = '';
+				$morelink = '';
+				$thread['multipage'] = '';
+			}
+			$lastpostdate = mydate($mybb->settings['dateformat'], $thread['lastpost']);
+			$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
+			$lastposter = $thread['lastposter'];
+			$lastposteruid = $thread['lastposter'];
+			eval("\$lastpost = \"".$templates->get("forumdisplay_thread_lastpost")."\";");
+			$thread['replies'] = mynumberformat($thread['replies']);
+			$thread['views'] = mynumberformat($thread['views']);
+
+			if($forumcache[$thread['fid']])
+			{
+				$thread['forumlink'] = "<a href=\"".str_replace("{fid}", $thread['fid'], FORUM_URL)."\">".$forumcache[$thread['fid']]['name']."</a>";
+			}
+			else
+			{
+				$thread['forumlink'] = "";
+			}
+			$plugins->run_hooks("search_results_thread");
+			eval("\$results .= \"".$templates->get("search_results_thread")."\";");	
+			$threadcount++;
+		}
+		if(!$results)
+		{
+			error($lang->error_nosearchresults);
+		}
+		$multipage = multipage($threadcount, $perpage, $page, "search.php?action=results&sid=$sid&sortby=$sortby&order=$order&uid=".$mybb->input['uid']);
+		eval("\$searchresultsbar = \"".$templates->get("search_results_barthreads")."\";");
+		eval("\$searchresults = \"".$templates->get("search_results")."\";");
+		$plugins->run_hooks("search_results_end");
+		outputpage($searchresults);
+	}
+/*
+
+
+	if($sortby == "subject")
+	{
+		$sort
 	if($order == "asc")
 	{
 		$sortorder = "ASC";
@@ -125,35 +364,6 @@ if($mybb->input['action'] == "results")
 	$query = $db->query($sql);
 	$resultcount = $db->num_rows($query);
 
-	if($search['limitto'] && ($resultcount > $search['limitto']))
-	{
-		$resultcount = $search['limitto'];
-	}
-	$perpage = $mybb->settings['threadsperpage'];
-	$page = intval($mybb->input['page']);
-	if($page > 0)
-	{
-		$start = ($page-1) * $perpage;
-	}
-	else
-	{
-		$start = 0;
-		$page = 1;
-	}
-	$end = $start + $perpage;
-	$lower = $start+1;
-	$upper = $end;
-	if($upper > $resultcount)
-	{
-		$upper = $resultcount;
-	}
-	if($resultcount == 0)
-	{
-			error($lang->error_nosearchresults);
-	}
-	$sorturl = "search.php?action=results&sid=$sid";
-
-	$sql .= " LIMIT $start, $perpage";
 	$query = $db->query($sql);
 	$donecount = 0;
 	$bgcolor= "trow1";
@@ -343,7 +553,7 @@ if($mybb->input['action'] == "results")
 	}
 	eval("\$searchresults = \"".$templates->get("search_results")."\";");
 	$plugins->run_hooks("search_results_end");
-	outputpage($searchresults);
+	outputpage($searchresults); */
 }
 elseif($mybb->input['action'] == "findguest")
 {
@@ -382,66 +592,54 @@ elseif($mybb->input['action'] == "finduser")
 }
 elseif($mybb->input['action'] == "finduserthreads")
 {
-	$wheresql = "t.uid='".intval($mybb->input['uid'])."'";
-	
+	$query = "
+		SELECT t.*
+		FROM ".TABLE_PREFIX."threads t
+		WHERE t.uid='".intval($mybb->input['tid'])."'
+	";
+
+	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
+		"sid" => addslashes($sid),
 		"uid" => $mybb->user['uid'],
-		"dateline" => $now,
+		"dateline" => time(),
 		"ipaddress" => $ipaddress,
-		"wheresql" => addslashes($wheresql),
-		"lookin" => "p.message",
-		"showposts" => 1
-		);
+		"threads" => '',
+		"posts" => '',
+		"searchtype" => "titles",
+		"resulttype" => "threads",
+		"querycache" => addslashes($query),
+	);
 	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
-	$sid = $db->insert_id();
-	redirect("search.php?action=results&sid=$sid&uid=".$mybb->user['uid']."&dateline=$now", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "getnew")
 {
-	if(!$mybb->input['days'] < 1)
-	{
-		$days = 1;
-	}
-	else
-	{
-		$days = intval($mybb->input['days']);
-	}
+	$query = "
+		SELECT t.*
+		FROM ".TABLE_PREFIX."threads t
+		WHERE t.lastpost >= '".$mybb->user['lastvisit']."'
+	";
 
-	$wheresql = "1=1";
-	if($mybb->input['fid'])
-	{
-		$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0 AND (ISNULL(p.fid) OR (p.cansearch='yes' AND p.canview='yes')");
-		if($db->num_rows($query) == 1)
-		{
-			$wheresql .= " AND t.fid='".intval($mybb->input['fid'])."' ";
-		}
-		else
-		{
-			$wheresql .= " AND t.fid IN ('".intval($mybb->input['fid'])."'";
-			while($sforum = $db->fetch_array($query))
-			{
-				$wheresql .= ",'$sforum[fid]'";
-			}
-			$wheresql .= ")";
-		}
-	}
-	$wheresql .= " AND t.lastpost >= '".$mybb->user[lastvisit]."'";
-	
+	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
+		"sid" => addslashes($sid),
 		"uid" => $mybb->user['uid'],
-		"dateline" => $now,
+		"dateline" => time(),
 		"ipaddress" => $ipaddress,
-		"wheresql" => addslashes($wheresql),
-		"lookin" => "p.message",
-		"showposts" => 1
-		);
+		"threads" => '',
+		"posts" => '',
+		"searchtype" => "titles",
+		"resulttype" => "threads",
+		"querycache" => addslashes($query),
+	);
+
 	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
-	$sid = $db->insert_id();
 
 	eval("\$redirect = \"".$templates->get("redirect_searchresults")."\";");
-	redirect("search.php?action=results&sid=$sid&uid=".$mybb->user['uid']."&dateline=$now", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "getdaily")
 {
@@ -453,110 +651,103 @@ elseif($mybb->input['action'] == "getdaily")
 	{
 		$days = intval($mybb->input['days']);
 	}
+	$datecut = time()-(68400*$days);
 
-	$wheresql = "1=1";
-	if($mybb->input['fid'])
-	{
-		$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0 AND (ISNULL(p.fid) OR (p.cansearch='yes' AND p.canview='yes')");
-		if($db->num_rows($query) == 1)
-		{
-			$wheresql .= " AND t.fid='".intval($mybb->input['fid'])."' ";
-		}
-		else
-		{
-			$wheresql .= " AND t.fid IN ('".intval($mybb->input['fid'])."'";
-			while($sforum = $db->fetch_array($query))
-			{
-				$wheresql .= ",'$sforum[fid]'";
-			}
-			$wheresql .= ")";
-		}
-	}	
-	$thing = 68400*$days;
-	$datecut = $now-$thing;
-	$wheresql .= " AND t.lastpost >= '$datecut'";
-	
+	$query = "
+		SELECT t.*
+		FROM ".TABLE_PREFIX."threads t
+		WHERE t.lastpost >= '".$datecut."'
+	";
+
+	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
+		"sid" => addslashes($sid),
 		"uid" => $mybb->user['uid'],
-		"dateline" => $now,
+		"dateline" => time(),
 		"ipaddress" => $ipaddress,
-		"wheresql" => addslashes($wheresql),
-		"lookin" => "p.message",
-		"showposts" => 1
-		);
-	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+		"threads" => '',
+		"posts" => '',
+		"searchtype" => "titles",
+		"resulttype" => "threads",
+		"querycache" => addslashes($query),
+	);
+
 	$plugins->run_hooks("search_do_search_process");
-	$sid = $db->insert_id();
+	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+
 	eval("\$redirect = \"".$templates->get("redirect_searchresults")."\";");
-	redirect("search.php?action=results&sid=$sid&uid=".$mybb->user['uid']."&dateline=$now", $lang->redirect_searchresults);
+	redirect("search.php?action=results&sid=$sid", $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "do_search")
 {
-	if(!$mybb->input['keywords'])
+	$keywords = clean_keywords($mybb->input['keywords']);
+	if(!$keywords && !$mybb->input['author'])
 	{
-		if(!$mybb->input['author'])
-		{
-			error($lang->error_nosearchterms);
-		}
+		error($lang->error_nosearchterms);
 	}
-	
-	if(trim($mybb->input['keywords']) == '%')
-	{
- 		error($lang->error_percentnotallowed);
-	}
-	
+
 	$plugins->run_hooks("search_do_search_start");
 
-	if($mybb->input['postthread'] == 1)
+	if($mybb->settings['minsearchword'] < 1)
 	{
-		$lookin = "p.message";
-		$lookin2 = "p.subject";
+		$mybb->settings['minsearchword'] = 4;
 	}
-	else
+	if($keywords)
 	{
-		$lookin = "p.subject";
-	}
-	if($mybb->input['srchtype'] == 1)
-	{
-		$op = "AND";
-	}
-	elseif($mybb->input['srchtype'] == 3)
-	{
-		$op = "||";
-	}
-	else
-	{
-		$op = "";
-	}
-	if($mybb->input['keywords']) {
-		$wheresql = "(1=0 ";
-		if($mybb->input['srchtype'] != 2)
+		// Complex search
+		if(preg_match("# and|or #", $keywords))
 		{
-			$words = explode(" ", $mybb->input['keywords']);
-			$wordcount = count($words);
-			for($i=0;$i<$wordcount;$i++)
+			$subject_lookin = "(";
+			$message_lookin = "(";
+			$matches = preg_split("#\s{1,}(and|or)\s{1,}#", $keywords, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$count_matches = count($matches);
+			for($i=0;$i<$count_matches;$i++)
 			{
-				$wheresql .= "OR $op $lookin LIKE '%".addslashes($words[$i])."%'";
-				if($lookin2)
+				$word = trim($matches[$i]);
+				if($word == "")
 				{
-					$wheresql .= "OR $op $lookin2 LIKE '%".addslashes($words[$i])."%'";
+					continue;
+				}
+				if($i % 2 && ($word == "and" || $word == "or"))
+				{
+					$boolean = $word;
+				}
+				else
+				{
+					if(strlen($word) < $mybb->settings['minsearchword'])
+					{
+						$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+						error($lang->error_minsearchlength);
+					}
+					$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%".$word."%'";
+					if($mybb->input['postthread'] == 1)
+					{
+						$message_lookin .= " $boolean LOWER(p.message) LIKE '%".trim($word)."%'";
+					}
 				}
 			}
+			$subject_lookin .= ")";
+			$message_lookin .= ")";
 		}
 		else
 		{
-			$wheresql .=  " AND $lookin LIKE '%".addslashes($mybb->input['keywords'])."%'";
+			if(strlen($keywords) < $mybb->settings['minsearchword'])
+			{
+				$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+				error($lang->error_minsearchlength);
+			}
+			$subject_lookin = " LOWER(t.subject) LIKE '%".trim($keywords)."%'";
+			if($mybb->input['postthread'] == 1)
+			{
+				$message_lookin = " LOWER(p.message) LIKE '%".trim($keywords)."%'";
+			}
 		}
 	}
-	else
-	{
-		$wheresql = "(1=1";
-	}
-	$wheresql .= ")";
-
+	$post_usersql = "";
+	$thread_usersql = "";
 	if($mybb->input['author'])
 	{
-		$usersql = " AND (1=0";
+		$userids = array();
 		if($mybb->input['matchusername'])
 		{
 			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['author'])."'");
@@ -564,37 +755,42 @@ elseif($mybb->input['action'] == "do_search")
 		else
 		{
 			$mybb->input['author'] = strtolower($mybb->input['author']);
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LCASE(username) LIKE '%".addslashes($mybb->input['author'])."%'");
+			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".addslashes($mybb->input['author'])."%'");
 		}
-		if($db->num_rows($query) > 0)
+		while($user = $db->fetch_array($query))
 		{
-			while($user = $db->fetch_array($query))
-			{
-				$usersql .= " OR p.uid='$user[uid]'";
-			}
+			$userids[] = $user['uid'];
 		}
-		else
+		if(count($userids) < 1)
 		{
 			error($lang->error_nosearchresults);
 		}
-		$usersql .= ")";
+		else
+		{
+			$userids = implode(",", $userids);
+			$post_usersql = " AND p.uid IN (".$userids.")";
+			$thread_usersql = " AND t.uid IN (".$userids.")";
+		}
 	}
-	
-	
+	$datecut = "";
 	if($mybb->input['postdate'])
 	{
-		$wheresql .= " AND p.dateline ";
 		if($mybb->input['pddir'] == 0)
 		{
-			$wheresql .= "<=";
+			$datecut = "<=";
 		}
 		else
 		{
-			$wheresql .= ">=";
+			$datecut = ">=";
 		}
 		$datelimit = $now-(86400 * $mybb->input['postdate']);
-		$wheresql .= "'$datelimit'";
+		$datecut .= "'$datelimit'";
+		$post_datecut = "p.dateline $datecut";
+		$thread_datecut = "t.dateline $datecut";
 	}
+
+	$forumin = "";
+	$fidlist = array();
 	if($mybb->input['forums'] != "all")
 	{
 		if(!is_array($mybb->input['forums']))
@@ -608,73 +804,131 @@ elseif($mybb->input['action'] == "do_search")
 				$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
 				if($db->num_rows($query) == 1)
 				{
-					$wheresql .= " AND t.fid='$forum' ";
+					$forumin .= " AND t.fid='$forum' ";
 					$searchin[$fid] = 1;
 				}
 				else
 				{
-					$wheresql .= " AND t.fid IN ('$forum'";
 					while($sforum = $db->fetch_array($query))
 					{
-						$wheresql .= ",'$sforum[fid]'";
-						$searchin[$sforum['fid']] = 1;
+						$fidlist[] = $sforum['sid'];
 					}
-					$wheresql .= ")";
+					if(count($fidlist) > 1)
+					{
+						$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
+					}
 				}
 			}
 		}
 	}
-	if($mybb->input['findthreadst'] && $mybb->input['numreplies'])
-	{
-		if($mybb->input['findthreadst'] == "1")
-		{
-			$wheresql .= " AND t.replies>=".intval($mybb->input['numreplies']);
-		}
-		elseif($findthreadst == "2")
-		{
-			$wheresql .= " AND t.replies<=".intval($mybb->input['numreplies']);
-		}
-	}
-		
-	$wheresql .= $usersql;
-
 	$unsearchforums = getunsearchableforums();
 	if($unsearchforums)
 	{
 		$permsql = " AND t.fid NOT IN ($unsearchforums)";
 	}
 
-	$query = $db->query("SELECT p.tid FROM ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t WHERE $wheresql $permsql");
-	$results = $db->num_rows($query);
+	// Searching both posts and thread titles
+	$threads = array();
+	$posts = array();
+	$firstposts = array();
 
-	if(!$results)
+	if($mybb->input['postthread'] == 1)
 	{
-		error($lang->error_nosearchresults);
+		$searchtype = "titles";
+		$query = $db->query("
+			SELECT t.tid, t.firstpost
+			FROM ".TABLE_PREFIX."threads t
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' AND ($subject_lookin)
+		");
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[$thread['tid']] = $thread['tid'];
+			if($thread['firstpost'])
+			{
+				$posts[$thread['tid']] = $thread['firstpost'];
+			}
+		}
+		$query = $db->query("
+			SELECT p.pid, p.tid
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE 1=1 $post_datecut $forumin $post_usersql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' AND ($message_lookin)
+		");
+		while($post = $db->fetch_array($query))
+		{
+			$posts[$post['pid']] = $post['pid'];
+			$threads[$post['tid']] = $post['tid'];
+		}
+		if(count($posts) < 1 && count($threads) < 1)
+		{
+			error($lang->error_nosearchresults);
+		}
+		$threads = implode(",", $threads);
+		$posts = implode(",", $posts);
+
+	}
+	// Searching only thread titles
+	else
+	{
+		$searchtype = "posts";
+		$query = $db->query("
+			SELECT t.tid, t.firstpost
+			FROM ".TABLE_PREFIX."threads t
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND ($subject_lookin)
+		");
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[$thread['tid']] = $thread['tid'];
+			if($thread['firstpost'])
+			{
+				$firstposts[$thread['tid']] = $thread['firstpost'];
+			}
+		}
+		if(count($threads) < 1)
+		{
+			error($lang->error_nosearchresults);
+		}
+
+		$threads = implode(",", $threads);
+		$firstposts = implode(",", $firstposts);
+		if($firstposts)
+		{
+			$query = $db->query("
+				SELECT p.pid
+				FROM ".TABLE_PREFIX."posts p
+				WHERE p.pid IN ($firstposts) AND p.visible>0
+			");
+			while($post = $db->fetch_array($query))
+			{
+				$posts[$post['pid']] = $post['pid'];
+			}
+			$posts = implode(",", $posts);
+		}
 	}
 	if($mybb->input['showresults'] == "threads")
 	{
-		$showposts = 1;
+		$resulttype = "threads";
 	}
 	else
 	{
-		$showposts = 2;
+		$resulttype = "posts";
 	}
-	$wheresql = addslashes($wheresql);
-	
+	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
+		"sid" => addslashes($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => $now,
 		"ipaddress" => $ipaddress,
-		"wheresql" => $wheresql,
-		"lookin" => $lookin,
-		"showposts" => $showposts,
-		"limitto" => intval($mybb->input['numrecs'])
+		"threads" => $threads,
+		"posts" => $posts,
+		"searchtype" => $searchtype,
+		"resulttype" => $resulttype,
+		"querycache" => "",
 		);
+	$plugins->run_hooks("search_do_search_process");
 
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
-	$plugins->run_hooks("search_do_search_process");
-	$sid = $db->insert_id();
-	$plugins->run_hooks("search_do_search_end");
+
 	if(strtolower($mybb->input['sortordr']) == "asc" || strtolower($mybb->input['sortordr'] == "desc"))
 	{
 		$sortorder = $mybb->input['sortordr'];
@@ -684,6 +938,7 @@ elseif($mybb->input['action'] == "do_search")
 		$sortorder = "desc";
 	}
 	$sortby = htmlspecialchars($mybb->input['sortby']);
+	$plugins->run_hooks("search_do_search_end");
 	redirect("search.php?action=results&sid=$sid&sortby=".$sortby."&order=".$sortorder."&uid=".$mybb->user['uid']."&dateline=$now", $lang->redirect_searchresults);
 }
 else
@@ -826,4 +1081,16 @@ function getunsearchableforums($pid="0", $first=1)
 	$unsearchable = $unsearchableforums;
 	return $unsearchable;
 }
+
+function clean_keywords($keywords)
+{
+	static $stopwords;
+	$keywords = strtolower($keywords);
+	$keywords = str_replace("%", "\\%", $keywords);
+	$keywords = str_replace("*", "%", $keywords);
+	$keywords = preg_replace("#([\[\]\|\.\,:\"'])#s", " ", $keywords);
+	$keywords = preg_replace("#\s+#s", " ", $keywords);
+	return trim($keywords);
+}
+
 ?>

@@ -396,14 +396,15 @@ $tables[] = "CREATE TABLE mybb_reputation (
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_searchlog (
-  sid int unsigned NOT NULL auto_increment,
+  sid varchar(32) NOT NULL default '',
   uid int unsigned NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
   ipaddress varchar(120) NOT NULL default '',
-  wheresql text NOT NULL default '',
-  lookin varchar(50) NOT NULL default '',
-  showposts smallint(1) NOT NULL default '0',
-  limitto smallint(4) NOT NULL default '0',
+  threads text NOT NULL default '',
+  posts text NOT NULL default '',
+  searchtype varchar(10) NOT NULL default '',
+  resulttype varchar(10) NOT NULL default '',
+  querycache text NOT NULL default '',
   PRIMARY KEY  (sid)
 ) TYPE=MyISAM;";
 
