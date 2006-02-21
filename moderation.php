@@ -446,7 +446,7 @@ switch($mybb->input['action'])
 				$parser_options['allow_smilies'] = "no";
 			}
 
-			$message = $parser->parse_message($message, $parser_options);
+			$message = $parser->parse_message($post['message'], $parser_options);
 			eval("\$posts .= \"".$templates->get("moderation_mergeposts_post")."\";");
 			if($altbg == "trow1")
 			{
@@ -535,7 +535,7 @@ switch($mybb->input['action'])
 		updateforumcount($fid);
 		markreports($plist, "posts");
 		logmod($modlogdata, $lang->merged_selective_posts);
-		redirect("showthread.php?tid=$tid", $lang->redirect_mergepsots);
+		redirect("showthread.php?tid=$tid", $lang->redirect_mergeposts);
 		break;
 
 	// Move a thread
