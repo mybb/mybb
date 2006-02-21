@@ -1782,7 +1782,7 @@ switch($mybb->input['action'])
 		$flist = '';
 		if($mybb->usergroup['issupermod'] != "yes")
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators WHERE uid='".$mybb->user[uid]."'");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators WHERE uid='".$mybb->user['uid']."'");
 			while($forum = $db->fetch_array($query))
 			{
 				$flist .= ",'".$forum['fid']."'";
@@ -1795,6 +1795,10 @@ switch($mybb->input['action'])
 		if(!is_array($mybb->input['reports']))
 		{
 			error($lang->error_noselected_reports);
+		}
+		foreach($mybb->input['reports'] as $rid)
+		{
+			$reports[] = intval($rid);
 		}
 		$rids = implode($mybb->input['reports'], "','");
 		$rids = "'0','$rids'";
