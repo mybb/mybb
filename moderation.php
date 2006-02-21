@@ -1800,7 +1800,7 @@ switch($mybb->input['action'])
 		{
 			$reports[] = intval($rid);
 		}
-		$rids = implode($mybb->input['reports'], "','");
+		$rids = implode($reports, "','");
 		$rids = "'0','$rids'";
 
 		$plugins->run_hooks("moderation_do_reports");
