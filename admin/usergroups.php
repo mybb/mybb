@@ -47,7 +47,7 @@ logadmin();
 
 if($mybb->input['action'] == "do_add")
 {
-	if(empty(trim($mybb->input['title'])))
+	if(empty($mybb->input['title']))
 	{
 		cperror($lang->grouptitle_empty);
 	}
