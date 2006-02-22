@@ -48,4 +48,5 @@ $l['lastpost'] = "Last Post";
 $l['post_thread'] = "Thread:";
 $l['post_subject'] = "Post:";
 $l['replies2'] = "replies";
+$l['error_minsearchlength'] = "One or more of your search terms were shorter than the minimum length. The minimum search term length is {1} characters.";
 ?>

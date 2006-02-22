@@ -3438,8 +3438,8 @@ $header
 <td colspan="2" class="thead"><strong>$settings[bbname] - $lang->search</strong></td>
 </tr>
 <tr>
-<td class="tcat"><strong>$lang->search_keyword</strong></td>
-<td class="tcat"><strong>$lang->search_username</strong></td>
+<td class="tcat" width="50%"><strong>$lang->search_keyword</strong></td>
+<td class="tcat" width="50%"><strong>$lang->search_username</strong></td>
 </tr>
 <tr>
 <td class="trow1">
@@ -3459,7 +3459,7 @@ $header
 </td>
 </tr>
 <tr>
-<td class="tcat" width="40%"><strong>$lang->search_forums</td>
+<td class="tcat"><strong>$lang->search_forums</td>
 <td class="tcat"><strong>$lang->search_options</strong></td>
 </tr>
 <tr>
@@ -3488,10 +3488,10 @@ $header
 <tr>
 <td class="trow1">
 <select name="sortby">
-<option value="1">$lang->sort_lastpost</option>
-<option value="2">$lang->sort_author</option>
-<option value="3">$lang->sort_forum</option>
-</select> $lang->sort_in <input type="radio" name="sorder" value="0"> $lang->sort_asc <input type="radio" name="sorder" value="1" checked> $lang->sort_desc $lang->sort_order
+<option value="lastpost">$lang->sort_lastpost</option>
+<option value="starter">$lang->sort_author</option>
+<option value="forum">$lang->sort_forum</option>
+</select> $lang->sort_in <input type="radio" name="sorder" value="asc"> $lang->sort_asc <input type="radio" name="sorder" value="desc" checked> $lang->sort_desc $lang->sort_order
 </td>
 </tr>
 <tr>
@@ -4591,25 +4591,17 @@ $message[message]
 <td class="tcat" height="3"><img src="pixel.gif" height="3" width="1"></td>
 </tr>]]></template>
 		<template name="private_archive_csv_message" version="100.07"><![CDATA[$senddate,$foldername,$message[subject],$message[tousername],$message[fromusername],$message[message]]]></template>
-		<template name="search_results_thread" version="100.07"><![CDATA[<tr>
-<td align="center" class="$bgcolor" width="1"><img src="$theme[imgdir]/$folder.gif"></td>
-<td align="center" class="$bgcolor" width="1">$icon</td>
-<td class="$bgcolor">$prefix <a href="showthread.php?tid=$thread[tid]">$thread[subject]</a>$thread[multipage]</td>
-<td align="center" class="$bgcolor">$thread[profilelink]</td>
-<td class="$bgcolor">$thread[forumlink]</td>
-<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($thread[tid]);">$thread[replies]</a></td>
-<td align="center" class="$bgcolor">$thread[views]</td>
-<td class="$bgcolor" width="1" nowrap="nowrap">
-<table cellpadding="0" cellspacing="0" width="100%">
-<tr>
-<td align="left" nowrap="nowrap"><span class="smalltext">$lastpostdate $lastposttime<br />(<a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$thread[tid]">$lastposter</a>)</span>
-</td>
-<td align="right">
-<a href="showthread.php?action=lastpost&amp;tid=$thread[tid]"><!-- <img src="images/lastpost.gif"> --><span class="smalltext"><strong>&raquo;</strong></span></a>
-</td>
-</tr>
-</table>
-</td>
+		<template name="search_results_threads_thread" version="100.07"><![CDATA[<tr>
+	<td align="center" class="$bgcolor" width="1"><img src="$theme[imgdir]/$folder.gif"></td>
+	<td align="center" class="$bgcolor" width="1">$icon</td>
+	<td class="$bgcolor">$prefix <a href="showthread.php?tid=$thread[tid]">$thread[subject]</a>$thread[multipage]</td>
+	<td align="center" class="$bgcolor">$thread[profilelink]</td>
+	<td class="$bgcolor">$thread[forumlink]</td>
+	<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($thread[tid]);">$thread[replies]</a></td>
+	<td align="center" class="$bgcolor">$thread[views]</td>
+	<td class="$bgcolor" width="1" nowrap="nowrap"><span class="smalltext">$lastpostdate $lastposttime<br />
+<a href="showthread.php?action=lastpost&amp;tid=$thread[tid]">$lang->lastpost</a>: <a href="member.php?action=profile&amp;uid=lastposter&amp;tid=$thread[tid]">$lastposter</a></span>
+	</td>
 </tr>]]></template>
 		<template name="reputation_yourpost" version="100.07"><![CDATA[<strong>$lang->error</strong><br />
 <blockquote>$lang->error_own_reputation</blockquote>
@@ -4619,26 +4611,53 @@ $message[message]
 <br />
 <br />
 <br />]]></template>
-		<template name="search_results_post" version="100.07"><![CDATA[<tr>
-<td align="center" class="$bgcolor" width="1"><img src="$theme[imgdir]/$folder.gif"></td>
-<td align="center" class="$bgcolor" width="1">$icon</td>
-<td class="$bgcolor"><span class="smalltext">$lang->post_thread <a href="showthread.php?tid=$result[tid]">$result[tsubject]</a><br />$lang->post_subject <a href="showthread.php?tid=$result[tid]&amp;pid=$result[pid]#pid$result[pid]">$title</a></span><br />
-<table width="100%"><tr><td><span class="smalltext"><em>$prev</em></span></td></tr></table></td>
-<td align="center" class="$bgcolor"><a href="member.php?action=profile&amp;uid=$result[uid]">$result[username]</a></td>
-<td class="$bgcolor"><a href="forumdisplay.php?fid=$result[fid]">$result[forumname]</a></td>
-<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($result[tid]);">$result[treplies]</a></td>
-<td align="center" class="$bgcolor">$result[tviews]</td>
-<td class="$bgcolor" nowrap="nowrap" align="center" align="center"><span class="smalltext">$posted</span></td>
+		<template name="search_results_threads" version="100.07"><![CDATA[<html>
+<head>
+<title>$settings[bbname] - $lang->search_results</title>
+$headerinclude
+</head>
+<body>
+$header
+<table width="$theme[tablewidth]" align="center" border="0">
+	<tr>
+		<td align="right" valign="top">$multipage</td>
+	</tr>
+</table>
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+	<tr>
+		<td colspan=8 class="thead">
+			<strong>$lang->search_results</strong>
+		</td>
+	</tr>
+	<tr>
+		<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="$sorturl&sortby=subject&order=asc">$lang->thread</a> $orderarrow[subject]</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=starter&order=asc">$lang->author</a> $orderarrow[starter]</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=forum&order=asc">$lang->forum</a> $orderarrow[forum]</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=replies&order=desc">$lang->replies</a> $orderarrow[replies]</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=views&order=desc">$lang->views</a></strong> $orderarrow[views]</span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=lastpost&order=desc">$lang->lastpost</a> $orderarrow[lastpost]</strong></span></td>
+	</tr>
+	$results
+</table>
+<table width="$theme[tablewidth]" align="center" border="0">
+	<tr>
+		<td align="right" valign="top">$multipage</td>
+	</tr>
+</table>
+$footer
+</body>
+</html>]]></template>
+		<template name="search_results_posts_post" version="100.07"><![CDATA[<tr>
+	<td align="center" class="$bgcolor" width="1"><img src="$theme[imgdir]/$folder.gif"></td>
+	<td align="center" class="$bgcolor" width="1">$icon</td>
+	<td class="$bgcolor"><span class="smalltext">$lang->post_thread <a href="showthread.php?tid=$post[tid]">$post[thread_subject]</a><br />$lang->post_subject <a href="showthread.php?tid=$post[tid]&amp;pid=$post[pid]#pid$post[pid]">$post[subject]</a></span><br />
+	<table width="100%"><tr><td><span class="smalltext"><em>$prev</em></span></td></tr></table></td>
+	<td align="center" class="$bgcolor">$post[profilelink]</td>
+	<td class="$bgcolor">$post[forumlink]</td>
+	<td align="center" class="$bgcolor"><a href="javascript:MyBB.whoPosted($post[tid]);">$post[thread_replies]</a></td>
+	<td align="center" class="$bgcolor">$post[thread_views]</td>
+	<td class="$bgcolor" nowrap="nowrap" align="center"><span class="smalltext">$posted</span></td>
 </tr>]]></template>
-		<template name="search_results_barthreads" version="100.07"><![CDATA[<tr>
-<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="$sorturl&sortby=subject&order=asc">$lang->thread</a> $orderarrow[subject]</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=starter&order=asc">$lang->author</a> $orderarrow[starter]</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=forum&order=asc">$lang->forum</a> $orderarrow[forum]</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=replies&order=desc">$lang->replies</a> $orderarrow[replies]</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=views&order=desc">$lang->views</a></strong> $orderarrow[views]</span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=lastpost&order=desc">$lang->lastpost</a> $orderarrow[lastpost]</strong></span></td>
-</tr>
-]]></template>
 		<template name="reputation_add" version="100.07"><![CDATA[<strong>$lang->add_reputation</strong>
 <form action="reputation.php" method="post">
 <input type="hidden" name="action" value="do_add">
@@ -4695,14 +4714,42 @@ $smilies
 $footer
 </body>
 </html>]]></template>
-		<template name="search_results_barposts" version="100.07"><![CDATA[<tr>
-<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="$sorturl&sortby=subject&order=asc">$lang->post</a> $orderarrow[subject]</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=starter&order=asc">$lang->author</a> $orderarrow[starter]</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=forum&order=asc">$lang->forum</a> $orderarrow[forum]</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=replies&order=desc">$lang->replies</a> $orderarrow[replies]</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=views&order=desc">$lang->views</a></strong> $orderarrow[views]</span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=dateline&order=desc">$lang->posted</a> $orderarrow[dateline]</strong></span></td>
-</tr>]]></template>
+		<template name="search_results_posts" version="100.07"><![CDATA[<html>
+<head>
+<title>$settings[bbname] - $lang->search_results</title>
+$headerinclude
+</head>
+<body>
+$header
+<table width="$theme[tablewidth]" align="center" border="0">
+	<tr>
+		<td align="right" valign="top">$multipage</td>
+	</tr>
+</table>
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+	<tr>
+		<td colspan=8 class="thead">
+			<strong>$lang->search_results</strong>
+		</td>
+	</tr>
+	<tr>
+		<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="$sorturl&sortby=subject&order=asc">$lang->post</a> $orderarrow[subject]</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=starter&order=asc">$lang->author</a> $orderarrow[starter]</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=forum&order=asc">$lang->forum</a> $orderarrow[forum]</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=replies&order=desc">$lang->replies</a> $orderarrow[replies]</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=views&order=desc">$lang->views</a></strong> $orderarrow[views]</span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="$sorturl&sortby=dateline&order=desc">$lang->posted</a> $orderarrow[dateline]</strong></span></td>
+	</tr>
+	$results
+</table>
+<table width="$theme[tablewidth]" align="center" border="0">
+	<tr>
+		<td align="right" valign="top">$multipage</td>
+	</tr>
+</table>
+$footer
+</body>
+</html>]]></template>
 		<template name="private_limitwarning" version="100.07"><![CDATA[<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
 <tr>
 <td class="trow1" align="center"><span class="smalltext"><strong><font color="red">$lang->reached_warning</font></strong><br />$lang->reached_warning2</span></td>
@@ -4841,24 +4888,6 @@ $loginbox
 <input type="hidden" name="tid" value="$tid" />
 <input type="hidden" name="delete" value="1" />
 </form>
-$footer
-</body>
-</html>]]></template>
-		<template name="search_results" version="100.07"><![CDATA[<html>
-<head>
-<title>$settings[bbname] - $lang->search_results</title>
-$headerinclude
-</head>
-<body>
-$header
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
-<tr>
-<td colspan=8 class="thead" align="center"><strong>$lang->search_results</strong></td>
-</tr>
-$searchresultsbar
-$results
-</table>
-<center>$multipage</center>
 $footer
 </body>
 </html>]]></template>
