@@ -47,6 +47,10 @@ logadmin();
 
 if($mybb->input['action'] == "do_add")
 {
+	if(empty(trim($mybb->input['title'])))
+	{
+		cperror($lang->grouptitle_empty);
+	}
 	if($mybb->input['joinable'] == "yes")
 	{
 		if($mybb->input['moderate'] == "yes")
