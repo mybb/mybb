@@ -85,6 +85,7 @@ elseif($mybb->input['action'] == "iplookup")
 	}
 	$ip = $mybb->input['ip'];
 	$host = @gethostbyaddr($ip);
+	$ip = htmlspecialchars($ip);
 	if(!$host || $host == $ip)
 	{
 		error($lang->error_nohostname);

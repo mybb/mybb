@@ -39,11 +39,11 @@ function outputpage($contents)
 		$serverload = serverload();
 		if(strstr(getenv("REQUEST_URI"), "?"))
 		{
-			$debuglink = getenv("REQUEST_URI") . "&debug=1";
+			$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "&debug=1";
 		}
 		else
 		{
-			$debuglink = getenv("REQUEST_URI") . "?debug=1";
+			$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "?debug=1";
 		}
 		if($mybb->settings['gzipoutput'] != "no")
 		{
@@ -349,6 +349,7 @@ function redirect($url, $message="You will now be redirected", $title="")
 	{
 		$url = str_replace("#", "&#", $url);
 		$url = str_replace("&amp;", "&", $url);
+		$url = str_replace(array("\n","\r",";"), "", $url);
 		header("Location: $url");
 	}
 	exit;

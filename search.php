@@ -46,8 +46,10 @@ if($mybb->input['action'] == "results")
 	{
 		error($lang->error_invalidsearch);
 	}
+
 	$plugins->run_hooks("search_results_start");
 
+	// Decide on our sorting fields and sorting order.
 	$order = strtolower($mybb->input['order']);
 	$sortby = $mybb->input['sortby'];
 
@@ -93,6 +95,7 @@ if($mybb->input['action'] == "results")
 		$order = "desc";
 	}
 
+	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
 	if($page > 0)
@@ -113,10 +116,14 @@ if($mybb->input['action'] == "results")
 	// Read some caches we will be using
 	$forumcache = $cache->read("forums");
 	$iconcache = $cache->read("posticons");
+
 	$threads = array();
+
+	// Show search results as 'threads'
 	if($search['resulttype'] == "threads")
 	{
 		$threadcount = 0;
+		// If we have saved WHERE conditions, execute them
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
@@ -130,16 +137,19 @@ if($mybb->input['action'] == "results")
 				$threads[$thread['tid']] = $thread['tid'];
 				$threadcount++;
 			}
+			// Build our list of threads.
 			if($threadcount > 0)
 			{
 				$search['threads'] = implode(",", $threads);
 			}
+			// No results.
 			else
 			{
 				error($lang->error_nosearchresults);
 			}
 			$where_conditions = "t.tid IN (".$search['threads'].")";
 		}
+		// This search doesn't use a query cache, results stored in search table.
 		else
 		{
 			$where_conditions = "t.tid IN (".$search['threads'].")";
@@ -157,7 +167,7 @@ if($mybb->input['action'] == "results")
 			$threadcount = $count['resultcount'];
 		}
 
-		// Read threads
+		// Fetch the read threads.
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
 			$query = $db->query("SELECT tid,dateline FROM ".TABLE_PREFIX."threadsread WHERE uid='".$mybb->user['uid']."' AND tid IN(".$search['threads'].")");
@@ -166,7 +176,8 @@ if($mybb->input['action'] == "results")
 				$readthreads[$readthread['tid']] = $readthread['dateline'];
 			}
 		}
-
+		
+		// Begin selecting matching threads.
 		$query = $db->query("
 			SELECT t.*
 			FROM ".TABLE_PREFIX."threads t
@@ -221,7 +232,7 @@ if($mybb->input['action'] == "results")
 			$isnew = 0;
 			$donenew = 0;
 			$lastread = 0;
-
+	
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
 			{
 				$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
