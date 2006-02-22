@@ -17,7 +17,7 @@ $lang->load("index");
 switch($action)
 {
 	case "thread":
-		$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
+		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
 		// Fetch the forum this thread is in
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."' AND active!='no' AND type='f' AND password=''");
@@ -67,15 +67,18 @@ switch($action)
 		{
 			$post['date'] = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $post['dateline'], "", 0);
 			// Parse the message
+			$parser_options = array(
+				"allow_html" => $forum['allow_html'],
+				"allow_mycode" => $forum['allow_mycode'],
+				"allow_smilies" => $forum['allowsmilies'],
+				"allow_imgcode" => $forum['allowimgcode']
+			);
 			if($post['smilieoff'] == "yes")
 			{
-				$allowsmilies = "no";
+				$parser_options['allow_smilies'] = "no";
 			}
-			else
-			{
-				$allowsmilies = $forum['allowsmilies'];
-			}
-			$post['message'] = postify($post['message'], $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode'], "yes");
+
+			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 			// do me code
 			if($forum['allowmycode'] != "no")
 			{
@@ -154,7 +157,7 @@ switch($action)
 		$query = $db->query("SELECT t.* FROM ".TABLE_PREFIX."threads t WHERE t.fid='$id' AND t.visible='1' ORDER BY t.sticky DESC, t.lastpost DESC LIMIT $start, $perpage");
 		while($thread = $db->fetch_array($query))
 		{
-			$thread['subject'] = htmlspecialchars_uni(dobadwords($thread['subject']));
+			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$prefix = "";
 			if($thread['sticky'] == 1)
 			{

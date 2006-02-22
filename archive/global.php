@@ -15,6 +15,8 @@ chdir('./../');
 require "./inc/init.php";
 require "./inc/functions_archive.php";
 require "./inc/class_session.php";
+require "./inc/class_parser.php";
+$parser = new postParser;
 
 $groupscache = $cache->read("usergroups");
 if(!is_array($groupscache))
