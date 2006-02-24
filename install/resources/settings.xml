@@ -227,15 +227,23 @@
 		<setting name="subforumsindex">
 			<title>Subforums to show on Index listing</title>
 			<description><![CDATA[The number of subforums that you wish to show inside forums on the index and forumdisplay pages. Set to 0 to not show the subforum list]]></description>
-			<disporder>1</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="subforumsstatusicons">
+			<title>Show Subforum Status Icons?</title>
+			<description><![CDATA[Show icons indicating whether or not a subforum contains new posts or not?  This won't have any effect unless you enabled subforums display on the index.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[no]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showbirthdays">
 			<title>Show Today's Birthdays?</title>
 			<description><![CDATA[Do you want to show today's birthdays on the forum homepage?]]></description>
-			<disporder>2</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -243,7 +251,7 @@
 		<setting name="hideprivateforums">
 			<title>Hide Private Forums?</title>
 			<description><![CDATA[You can hide private forums by turning this option on. This option also hides forums on the forum jump and all subforums.]]></description>
-			<disporder>3</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -251,7 +259,7 @@
 		<setting name="showwol">
 			<title>Show Who's Online?</title>
 			<description><![CDATA[Display the currently active users on the forum home page.]]></description>
-			<disporder>4</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -259,7 +267,7 @@
 		<setting name="modlist">
 			<title>Forums' Moderator Listing</title>
 			<description><![CDATA[Here you can turn on or off the listing of moderators for each forum on index.php and forumdisplay.php]]></description>
-			<disporder>5</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[on]]></settingvalue>
 			<helpkey></helpkey>
@@ -267,7 +275,7 @@
 		<setting name="showindexstats">
 			<title>Show Small Stats Section</title>
 			<description><![CDATA[Do you want to show the total number of threads, posts, members, and the last member on the forum home?]]></description>
-			<disporder>6</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>

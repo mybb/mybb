@@ -262,6 +262,12 @@ function getforums($pid="0", $depth=1, $permissions="")
 					$forumread = 0;
 					if($depth == 3)
 					{
+						$statusicon = '';
+						if($mybb->settings['subforumsstatusicons'] == "yes")
+						{
+							$folder .= "mini";
+							eval("\$statusicon = \"".$templates->get("forumbit_depth3_statusicon", 1, 0)."\";");
+						}
 						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
 						$comma = ", ";
 						++$donecount;

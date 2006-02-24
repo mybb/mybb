@@ -832,6 +832,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 					$forumread = 0;
 					if($depth == 3)
 					{
+						$minifolder = $folder."mini";
 						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
 						$comma = ", ";
 						++$donecount;
