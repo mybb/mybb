@@ -16,37 +16,46 @@
 class EventDataHandler extends Handler
 {
 	/**
-	 * Get an event from the database by event id.
+	 * Validate an event.
 	 *
-	 * @param int The id of the event to be retrieved.
-	 * @return array An array of event data.
+	 * @param array The event data array.
 	 */
-	function get_event_by_eid($eid)
+	function validate_event($event)
 	{
-		global $db;
+		// Every event needs a name.
+		if(!$event['name'])
+		{
+			$this->set_error("no_event_name");
+		}
 		
-		$eid = intval($eid);		
-		$query = $db->query("
-			SELECT subject, author, date, description, private
-			FROM ".TABLE_PREFIX."events
-			WHERE eid = ".$eid."
-			LIMIT 1
-		");
-		$event = $db->fetch_array($query);
+		// EVENT VALIDATION CODE GOES HERE
 		
-		return $event;
+		$plugins->run_hooks("datahandler_event_validate");
+		
+		// We are done validating, return.
+		$this->set_validated(true);
+		if(empty($this->get_errors()))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	/**
 	 * Insert an event into the database.
 	 *
 	 * @param array The array of event data.
+	 * @return array Array of new event details, eid and private.
 	 */
 	function insert_event($event)
 	{
-		global $db;
+		global $db, $mybb, $plugins;
 		
-		if($this->get_validated !== true)
+		// Yes, validating is required.
+		if(!$this->get_validated)
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
@@ -55,9 +64,15 @@ class EventDataHandler extends Handler
 			die("The event is not valid.");
 		}
 		
+		// EVENT INSERT CODE GOES HERE
 		
+		$plugins->run_hooks("datahandler_thread_insert");
 		
-		$db->insert_query(TABLE_PREFIX."events", $event);
+		// Return the event's eid and whether or not it is private.
+		return array(
+			"eid" => $eid,
+			"private" => $private
+		);
 	}
 	
 	/**
@@ -70,7 +85,8 @@ class EventDataHandler extends Handler
 	{
 		global $db;
 		
-		if($this->get_validated !== true)
+		// Yes, validating is required.
+		if(!$this->get_validated)
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
@@ -79,7 +95,9 @@ class EventDataHandler extends Handler
 			die("The event is not valid.");
 		}
 		
-		$db->update_query(TABLE_PREFIX."events", $event, "eid = ".$eid);
+		// EVENT UPDATE CODE GOES HERE
+		
+		$plugins->run_hooks("datahandler_event_update");
 	}
 	
 	/**
@@ -87,35 +105,13 @@ class EventDataHandler extends Handler
 	 *
 	 * @param int The event id of the even that is to be deleted.
 	 */
-	function delete_event($eid)
+	function delete_by_eid($eid)
 	{
 		global $db;
 		
-		$db->delete_query(TABLE_PREFIX."events", "eid = ".$eid, 1);
-	}
-	
-	/**
-	 * Validate an event.
-	 *
-	 * @param array The event data array.
-	 */
-	function validate_event($event)
-	{
-		if(!$event['name'])
-		{
-			$this->set_error("no_event_name");
-		}
+		// EVENT DELETE CODE GOES HERE
 		
-		/* We are done validating, return. */
-		$this->set_validated(true);
-		if(empty($this->get_errors()))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		$plugins->run_hooks("datahandler_event_delete");
 	}
 	
 	/**

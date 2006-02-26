@@ -37,7 +37,7 @@ class PostDataHandler extends DataHandler
 	function validate_post(&$post)
 	{
 		global $mybb, $db, $plugins;
-
+		
 		$time = time();
 		
 		// Check is the user posted sooner than allowed.
@@ -147,7 +147,7 @@ class PostDataHandler extends DataHandler
 
 		// Clean the post options for this post.
 		$post = $this->get_options($post);
-
+		
 		$plugins->run_hooks("datahandler_post_validate");
 		
 		// We are done validating, return.
@@ -331,12 +331,10 @@ class PostDataHandler extends DataHandler
 				"visible" => $visible
 				);
 
-			$plugins->run_hooks("datahandler_post_insert");
-
 			$db->insert_query(TABLE_PREFIX."posts", $newreply);
 			$pid = $db->insert_id();
 		}
-
+		
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
 		if($post['posthash'])
 		{
@@ -347,11 +345,13 @@ class PostDataHandler extends DataHandler
 			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='".$post['posthash']."'");
 		}
 
+		$plugins->run_hooks("datahandler_post_insert");
+		
+		// Return the post's pid and whether or not it is visible.
 		return array(
 			"pid" => $pid,
 			"visible" => $visible
 		);
-	
 	}
 	
 	/**
@@ -361,7 +361,7 @@ class PostDataHandler extends DataHandler
 	 */
 	function update_post($pid)
 	{
-		global $db;
+		global $db, $mybb, $plugins;
 		
 		// Yes, validating is required.
 		if($this->get_validated() != true)
@@ -468,6 +468,8 @@ class PostDataHandler extends DataHandler
 			updatethreadcount($tid);
 			updateforumcount($fid);
 		}
+		
+		$plugins->run_hooks("datahandler_thread_delete");
 	}
 }
 
