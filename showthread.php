@@ -211,13 +211,17 @@ if($mybb->input['action'] == "thread")
 		$poll['timeout'] = $poll['timeout']*60*60*24;
 		$expiretime = $poll['dateline'] + $poll['timeout'];
 		$now = time();
+		
+		// If the poll or the thread is closed or if the poll is expired, show the results.
 		if($poll['closed'] == "yes" || $thread['closed'] == "yes" || ($expiretime < $now && $poll['timeout'] > 0))
 		{
 			$showresults = 1;
 		}
+		
+		// If the user is not a guest, check if he already voted.
 		if($mybb->user['uid'] != 0)
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."pollvotes WHERE uid='".$mybb->user[uid]."' AND pid='".$poll[pid]."'");
+			$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "uid=".$mybb->user['uid']."AND pid=".$poll['pid']);
 			while($votecheck = $db->fetch_array($query))
 			{
 				$alreadyvoted = 1;
@@ -235,11 +239,13 @@ if($mybb->input['action'] == "thread")
 		$votesarray = explode("||~|~||", $poll['votes']);
 		$poll['question'] = htmlspecialchars_uni($poll['question']);
 		$polloptions = '';
-		/* Loop through the poll options. */
+		
+		// Loop through the poll options.
 		for($i=1; $i<=$poll['numoptions']; ++$i)
 		{
 			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 
+			// Set up the parser options.
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
@@ -250,6 +256,8 @@ if($mybb->input['action'] == "thread")
 			$option = $parser->parse_message($optionsarray[$i-1], $parser_options);
 			$votes = $votesarray[$i-1];
 			$number = $i;
+			
+			// Mark the option the user voted for.
 			if($votedfor[$number])
 			{
 				$optionbg = "trow2";
@@ -260,9 +268,11 @@ if($mybb->input['action'] == "thread")
 				$optionbg = "trow1";
 				$votestar = "";
 			}
+			
+			// If the user already voted or if the results need to be shown, do so; else show voting screen.
 			if($alreadyvoted || $showresults)
 			{
-				if (intval($votes) == "0")
+				if(intval($votes) == "0")
 				{
 					$percent = "0";
 				}
@@ -285,6 +295,8 @@ if($mybb->input['action'] == "thread")
 				}
 			}
 		}
+		
+		// If there are any votes at all, all votes together will be 100%; if there are no votes, all votes together will be 0%.
 		if($poll['totvotes'])
 		{
 			$totpercent = "100%";
@@ -293,13 +305,17 @@ if($mybb->input['action'] == "thread")
 		{
 			$totpercent = "0%";
 		}
+		
+		// Decide what poll status to show depending on the status of the poll and whether or not the user voted already.
 		if($alreadyvoted || $showresults)
 		{
 			if($alreadyvoted)
 			{
 				$pollstatus = $lang->already_voted;
 				eval("\$pollstatus = \"".$templates->get("showthread_poll_results_voted")."\";");
-			} else {
+			}
+			else
+			{
 				$pollstatus = $lang->poll_closed;
 				eval("\$pollstatus = \"".$templates->get("showthread_poll_results_closed")."\";");
 			}
@@ -323,19 +339,20 @@ if($mybb->input['action'] == "thread")
 		$pollbox = "";
 	}
 
-	// Make forum jump...
+	// Create the forum jump dropdown box.
 	$forumjump = makeforumjump("", $fid, 1);
 
-	// Update Thread Last Read
+	// Update the last read time of this thread.
 	if($mybb->settings['threadreadcut'] && $mybb->user['uid'])
 	{
-		$db->shutdown_query("REPLACE INTO ".TABLE_PREFIX."threadsread SET tid='$tid', uid='".$mybb->user[uid]."', dateline='".time()."'");
+		$db->shutdown_query("REPLACE INTO ".TABLE_PREFIX."threadsread SET tid='$tid', uid='".$mybb->user['uid']."', dateline='".time()."'");
 	}
 	else
 	{
 		mysetarraycookie("threadread", $tid, time());
 	}
 
+	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
 	if($forum['open'] != "no")
 	{
 		eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
@@ -349,7 +366,7 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
-	// Admin Tools jump...
+	// Create the admin tools dropdown box.
 	if($ismod == true)
 	{
 		if($pollbox)
@@ -384,6 +401,7 @@ if($mybb->input['action'] == "thread")
 		$inlinemod = "";
 	}
 
+	// Decide whether or not to include signatures.
 	if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || ismod($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no")
 	{
 		if($mybb->user['signature'])
@@ -401,10 +419,11 @@ if($mybb->input['action'] == "thread")
 		$quickreply = "";
 	}
 
+	// Increment the thread view.
 	$db->query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='$tid'");
 	++$thread['views'];
 
-	// Work out the threads rating
+	// Work out the thread rating for this thread.
 	if($forum['allowtratings'] != "no" && $thread['numratings'] > 0)
 	{
 		$thread['averagerating'] = round(($thread['totalratings']/$thread['numratings']), 2);
@@ -418,10 +437,11 @@ if($mybb->input['action'] == "thread")
 	{
 		$rating = "";
 	}
-	if($forum['allowtratings'] == "yes" && $forumpermissions['canratethreads'] == "yes") {
+	if($forum['allowtratings'] == "yes" && $forumpermissions['canratethreads'] == "yes")
+	{
 		eval("\$ratethread = \"".$templates->get("showthread_ratethread")."\";");
 	}
-	// Work out if we're showing both approved and unapproved threads or just approved..
+	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
 	if($ismod)
 	{
 		$visible = "AND (visible='0' OR visible='1')";
@@ -436,38 +456,55 @@ if($mybb->input['action'] == "thread")
 	{
 		$isfirst = 1;
 
-		/* Show a specific post? */
+		// Are we linked to a specific pid?
 		if($mybb->input['pid'])
 		{
-			$where = "AND p.pid='".intval($mybb->input['pid'])."'";
+			$where = "AND p.pid='".$mybb->input['pid']."'";
 		}
 		else
 		{
 			$where = " ORDER BY dateline ASC LIMIT 0, 1";
 		}
-		$query = $db->query("SELECT u.*, u.username AS userusername, p.*, f.*, i.path as iconpath, i.name as iconname, eu.username AS editusername FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon) LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid) WHERE p.tid='$tid' $visible $where");
+		$query = $db->query("
+			SELECT u.*, u.username AS userusername, p.*, f.*, i.path as iconpath, i.name as iconname, eu.username AS editusername
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon)
+			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
+			WHERE p.tid='$tid' $visible $where
+		");
 		$showpost = $db->fetch_array($query);
 
-		/* Choose post id */
+		// Choose what pid to display.
 		if(!$mybb->input['pid'])
 		{
 			$mybb->input['pid'] = $showpost['pid'];
 		}
-		/* Validate post id */
+		
+		// Is there actually a pid to display?
 		if(!$showpost['pid'])
 		{
 			error($lang->invalidpost);
 		}
 
-		// Get the attachments for this post
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE pid='".intval($mybb->input['pid'])."'");
+		// Get the attachments for this post.
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid=".$mybb->input['pid']);
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
 		}
 
-		// Build the threaded tree
-		$query = $db->query("SELECT u.*, u.username AS userusername, p.*, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon) WHERE p.tid='$tid' AND p.visible='1' ORDER BY p.dateline");
+		// Build the threaded post display tree.
+		$query = $db->query("
+			SELECT u.*, u.username AS userusername, p.*, i.path as iconpath, i.name as iconname
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon)
+			WHERE p.tid='$tid'
+			AND p.visible='1'
+			ORDER BY p.dateline
+		");
 		while($post = $db->fetch_array($query))
 		{
 			if(!$postsdone[$post['pid']])
@@ -485,9 +522,9 @@ if($mybb->input['action'] == "thread")
 		eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
 		$plugins->run_hooks("showthread_threaded");
 	}
-	else // Linear
+	else // Linear display
 	{
-		// Do Multi Pages
+		// Figure out if we need to display multiple pages.
 		$perpage = $mybb->settings['postsperpage'];
 		if($mybb->input['page'] != "last")
 		{
@@ -495,7 +532,12 @@ if($mybb->input['action'] == "thread")
 		}
 		if($mybb->input['pid'])
 		{
-			$query = $db->query("SELECT COUNT(pid) FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid <= '".intval($mybb->input['pid'])."' $visible");
+			$query = $db->query("
+				SELECT COUNT(pid) FROM ".TABLE_PREFIX."posts
+				WHERE tid='$tid'
+				AND pid <= '".$mybb->input['pid']."'
+				$visible
+			");
 			$result = $db->result($query, 0);
 			if(($result % $perpage) == 0)
 			{
@@ -537,7 +579,7 @@ if($mybb->input['action'] == "thread")
 			eval("\$threadpages = \"".$templates->get("showthread_multipage")."\";");
 		}
 
-		// Lets get the pid's of the posts on this page
+		// Lets get the pids of the posts on this page.
 		$pids = "";
 		$comma = '';
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' $visible ORDER BY dateline LIMIT $start, $perpage");
@@ -549,7 +591,7 @@ if($mybb->input['action'] == "thread")
 		if($pids)
 		{
 			$pids = "pid IN($pids)";
-			// Now lets fetch all of the attachments for these posts
+			// Now lets fetch all of the attachments for these posts.
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $pids");
 			while($attachment = $db->fetch_array($query))
 			{
@@ -558,14 +600,23 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			// If there are no pid's the thread is probably awaiting approval
+			// If there are no pid's the thread is probably awaiting approval.
 			error($lang->error_invalidthread);
 		}
 
-		// Lets get the actual posts
+		// Get the actual posts from the database here.
 		$pfirst = true;
 		$posts = '';
-		$query = $db->query("SELECT u.*, u.username AS userusername, p.*, f.*, i.path as iconpath, i.name as iconname, eu.username AS editusername FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon) LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid) WHERE $pids ORDER BY p.dateline");
+		$query = $db->query("
+			SELECT u.*, u.username AS userusername, p.*, f.*, i.path as iconpath, i.name as iconname, eu.username AS editusername
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon)
+			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
+			WHERE $pids
+			ORDER BY p.dateline
+		");
 		while($post = $db->fetch_array($query))
 		{
 			if($pfirst && $thread['visible'] == 0)
@@ -578,6 +629,8 @@ if($mybb->input['action'] == "thread")
 		}
 		$plugins->run_hooks("showthread_linear");
 	}
+	
+	// Show the similar threads table if wanted.
 	if($mybb->settings['showsimilarthreads'] != "no")
 	{
 		$query = $db->query("
@@ -608,6 +661,8 @@ if($mybb->input['action'] == "thread")
 			eval("\$similarthreads = \"".$templates->get("showthread_similarthreads")."\";");
 		}
 	}
+	
+	// If the user is a moderator, show the moderation tools.
 	if($ismod)
 	{
 		eval("\$inlinemod = \"".$templates->get("showthread_inlinemoderation")."\";");
