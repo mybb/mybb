@@ -919,7 +919,7 @@ function install_done()
 	echo "done</p>";
 
 	echo "<p class=\"success\">Your copy of MyBB has successfully been installed and configured correctly.</p>";
-	echo "<p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become apart of the MyBB community.</p>";
+	echo "<p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become a part of the MyBB community.</p>";
 
 	$written = 0;
 	if(is_writable("./"))

@@ -19,6 +19,9 @@ require_once "./inc/functions_user.php";
 require_once "./inc/class_parser.php";
 $parser = new postParser;
 
+// Load global language phrases
+$lang->load("private");
+
 if($mybb->settings['enablepms'] == "no")
 {
 	error($lang->pms_disabled);
@@ -44,9 +47,6 @@ if($mybb->input['action'] == "getbuddies" && $mybb->user['uid'])
 	}
 	exit;
 }
-
-// Load global language phrases
-$lang->load("private");
 
 if($mybb->user['uid'] == "/" || $mybb->user['uid'] == "0" || $mybb->usergroup['canusepms'] == "no")
 {
