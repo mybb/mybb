@@ -15,25 +15,23 @@ require "./inc/init.php";
 
 $theme = intval($mybb->input['theme']);
 
+// If there is a theme set in the input, use the tid, otherwise use default.
 if($theme)
 {
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."themes
-		WHERE tid='$theme'
-	");
+	$options = array(
+		"limit" => 1
+	);
+	$query = $db->simple_select(TABLE_PREFIX."themes", "css", "tid=".$theme, $options);
 }
 else
 {
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."themes
-		WHERE def='1'
-	");
+	$options = array(
+		"limit" => 1
+	);
+	$query = $db->simple_select(TABLE_PREFIX."themes", "css", "def=1", $options);
 }
 $theme = $db->fetch_array($query);
 
-// Find out if we are using header/category background images
 header("Content-type: text/css");
 echo $theme['css'];
 exit;
