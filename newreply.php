@@ -21,8 +21,8 @@ $parser = new postParser;
 $lang->load("newreply");
 
 // Get the pid and tid from the input.
-$pid = intval($mybb->input['pid']);
-$tid = intval($mybb->input['tid']);
+$pid = $mybb->input['pid'];
+$tid = $mybb->input['tid'];
 
 // Edit a draft post.
 $draft_pid = 0;

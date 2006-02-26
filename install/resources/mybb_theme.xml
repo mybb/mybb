@@ -4940,7 +4940,7 @@ $smilies
 </table>
 </body>
 </html>]]></template>
-		<template name="misc_smilies_popup_smilie" version="100.07"><![CDATA[<td class="$class" align="center"><a href="javascript:opener.addsmilie('$smilie[find]');"><img src="$smilie[image]" border="0"></a></td>
+		<template name="misc_smilies_popup_smilie" version="100.07"><![CDATA[<td class="$class" align="center"><a href="javascript:opener.addsmilie('$smilie[find]');"><img src="$smilie[image]" border="0" alt="$smilie[find]"></a></td>
 <td class="$class">$smilie[find]</td>]]></template>
 		<template name="showteam" version="100.07"><![CDATA[<html>
 <head>

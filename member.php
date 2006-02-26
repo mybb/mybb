@@ -1020,11 +1020,12 @@ else if($mybb->input['action'] == "login")
 {
 	$plugins->run_hooks("member_login");
 	
-	if($mybb->input['url'])
+	// Redirect to the page where the user came from, but not if that was the login page.
+	if($mybb->input['url'] && !preg_match("/^(member\.php)?([^\?action=login]+)/i", $mybb->input['url']))
 	{
 		$redirect_url = $mybb->input['url'];
 	}
-	else if($_SERVER['HTTP_REFERER'])
+	elseif($_SERVER['HTTP_REFERER'])
 	{
 		$redirect_url = $_SERVER['HTTP_REFERER'];
 	}
