@@ -29,28 +29,28 @@ class Syndication
 	 * @var string
 	 */
 	var $feed_type = 'rss0.92';
-	
+
 	/**
 	 * The number of items to list.
 	 *
 	 * @var int
 	 */
 	var $limit = 15;
-	
+
 	/**
 	 * The list of forums to grab from.
 	 *
 	 * @var array
 	 */
 	var $forumlist;
-	
+
 	/* Sets the type of feed */
 	function set_feed_type($feed_type)
-	{		
+	{
 		if($feed_type == 'rss2.0')
 		{
 			$this->feed_type = 'rss2.0';
-		}		
+		}
 		elseif($feed_type == 'atom1.0')
 		{
 			$this->feed_type = 'atom1.0';
@@ -58,9 +58,9 @@ class Syndication
 		else
 		{
 			$this->feed_type = 'rss0.92';
-		}		
+		}
 	}
-	
+
 	/* Sets the number of posts to gather */
 	function set_limit($limit)
 	{
@@ -73,7 +73,7 @@ class Syndication
 			$this->limit = intval($limit);
 		}
 	}
-	
+
 	/* Sets the forums from which to get the recent posts */
 	function set_forum_list($forumlist = array())
 	{
@@ -82,7 +82,7 @@ class Syndication
 		{
 			$unviewable = "AND f.fid NOT IN($unviewable)";
 		}
-		
+
 		if(!empty($forumlist))
 		{
 			$forum_ids = "'-1'";
@@ -97,18 +97,18 @@ class Syndication
 			$this->forumlist = $unviewable;
 		}
 	}
-	
+
 	/* This generates and echos the XML for the feed */
 	function generate_feed()
 	{
-		header("Content-Type: text/xml");	
+		header("Content-Type: text/xml");
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-		
-		$this->build_header();		
+
+		$this->build_header();
 		$this->build_entries();
 		$this->build_footer();
 	}
-	
+
 	/* Private function: used by generate_feed(), generates XML for header */
 	function build_header()
 	{
@@ -121,64 +121,64 @@ class Syndication
 				echo "\t\t<title>".htmlspecialchars($mybb->settings['bbname'])."</title>\n";
 				echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
 				echo "\t\t<description>".htmlspecialchars($mybb->settings['bbname'])." - ".$mybb->settings['bburl']."</description>\n";
-				echo "\t\t<lastBuildDate>".date("Y-m-d H:i:s")."</lastBuildDate>\n";
+				echo "\t\t<lastBuildDate>".date("r")."</lastBuildDate>\n";
 				echo "\t\t<generator>MyBB ".$mybboard['internalver']."</generator>\n";
 			break;
-			
+
 			case "atom1.0":
 				echo "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n";
 				echo "\t<title>".htmlspecialchars($mybb->settings['bbname'])."</title>\n";
 				echo "\t<id>".$mybb->settings['bburl']."</id>\n";
 				echo "\t<link rel=\"self\" href=\"".$mybb->settings['bburl']."/syndication.php?type=atom1.0&amp;limit=".$this->limit."\"/>\n";
-				echo "\t<updated>".date("Y-m-dTH:i:sZ")."</updated>\n";
+				echo "\t<updated>".date("Y-m-d\TH:i:s\Z")."</updated>\n";
 				echo "\t<generator uri=\"http://mybboard.com\" version=\"".$mybboard['internalver']."\">MyBB</generator>\n";
 			break;
-			
+
 			case "rss0.92":
 				echo "<rss version=\"0.92\">\n";
 				echo "\t<channel>\n";
 				echo "\t\t<title>".htmlspecialchars($mybb->settings['bbname'])."</title>\n";
 				echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
 				echo "\t\t<description>".htmlspecialchars($mybb->settings['bbname'])." - ".$mybb->settings['bburl']."</description>\n";
-				echo "\t\t<lastBuildDate>".date("Y-m-d H:i:s")."</lastBuildDate>\n";
+				echo "\t\t<lastBuildDate>".date("r")."</lastBuildDate>\n";
 				echo "\t\t<language>en</language>\n";
 			break;
-			
+
 			default:
 				echo "<rss version=\"0.92\">\n";
 				echo "\t<channel>\n";
 				echo "\t\t<title>".htmlspecialchars($mybb->settings['bbname'])."</title>\n";
 				echo "\t\t<link>".$mybb->settings['bburl']."</link>\n";
 				echo "\t\t<description>".htmlspecialchars($mybb->settings['bbname'])." - ".$mybb->settings['bburl']."</description>\n";
-				echo "\t\t<lastBuildDate>".date("Y-m-d H:i:s")."</lastBuildDate>\n";
+				echo "\t\t<lastBuildDate>".date("r")."</lastBuildDate>\n";
 				echo "\t\t<language>en</language>\n";
 			break;
 		}
 	}
-	
+
 	/* Private function: used by generate_feed(), generates XML for entries */
 	function build_entries()
 	{
 		global $db, $mybb, $lang;
 		$query = $db->query("
-			SELECT t.*, f.name AS forumname, p.message AS postmessage 
-			FROM ".TABLE_PREFIX."threads t 
-			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) 
-			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost) 
+			SELECT t.*, f.name AS forumname, p.message AS postmessage
+			FROM ".TABLE_PREFIX."threads t
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
 			WHERE 1=1
 			AND p.visible=1 $this->forumlist
-			ORDER BY t.dateline DESC 
+			ORDER BY t.dateline DESC
 			LIMIT 0, ".$this->limit
 		);
 		while($thread = $db->fetch_array($query))
 		{
-			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
-			$thread['forumname'] = htmlspecialchars_uni($thread['forumname']);
+			$thread['subject'] = htmlspecialchars($thread['subject']);
+			$thread['forumname'] = htmlspecialchars($thread['forumname']);
 			$postdate = mydate($mybb->settings['dateformat'], $thread['dateline'], "", 0);
 			$posttime = mydate($mybb->settings['timeformat'], $thread['dateline'], "", 0);
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 			$last_updated = mydate("r", $thread['dateline'], "", 0);
-			$last_updated_atom = mydate("Y-m-dTH:i:sZ", $thread['dateline'], "", 0);
+			$last_updated_atom = mydate("Y-m-d\TH:i:s\Z", $thread['dateline'], "", 0);
 			switch($this->feed_type)
 			{
 				case "rss2.0";
@@ -197,7 +197,7 @@ class Syndication
 					echo "\t\t\t<pubDate>".$last_updated."</pubDate>\n";
 					echo "\t\t</item>\n";
 				break;
-				
+
 				case "atom1.0":
 					echo "\t<entry>\n";
 					echo "\t\t<id>".$mybb->settings['bburl']."/showthread.php?tid=".$thread['tid']."&amp;action=newpost</id>\n";
@@ -211,10 +211,10 @@ class Syndication
 					{
 						$description .= "\n<br />".$thread['postmessage'];
 					}
-					echo "\t\t\t<content><![CDATA[".$description."]]></content>";
+					echo "\t\t\t<content type=\"html\"><![CDATA[".$description."]]></content>";
 					echo "\t</entry>\n";
 				break;
-				
+
 				case "rss0.92":
 					echo "\t\t<item>\n";
 					echo "\t\t\t<title>".$thread['subject']."</title>\n";
@@ -228,7 +228,7 @@ class Syndication
 					echo "\t\t\t<link>".$mybb->settings['bburl']."/showthread.php?tid=".$thread['tid']."&amp;action=newpost</link>\n";
 					echo "\t\t</item>\n";
 				break;
-				
+
 				default:
 					echo "\t\t<item>\n";
 					echo "\t\t\t<title>".$thread['subject']."</title>\n";
@@ -245,7 +245,7 @@ class Syndication
 			}
 		}
 	}
-	
+
 	/* Private function: used by generate_feed(), generates XML for footer */
 	function build_footer()
 	{
@@ -255,22 +255,22 @@ class Syndication
 				echo "\t</channel>\n";
 				echo "</rss>";
 			break;
-			
+
 			case "atom1.0":
 				echo "</feed>";
 			break;
-			
+
 			case "rss0.92":
 				echo "\t</channel>\n";
 				echo "</rss>";
 			break;
-			
+
 			default:
 				echo "\t</channel>\n";
 				echo "</rss>";
 			break;
 		}
 	}
-	
+
 }
 ?>
