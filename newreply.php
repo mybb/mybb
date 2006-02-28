@@ -403,15 +403,15 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$postoptions = $mybb->input['postoptions'];
 		if($postoptions['signature'] == "yes")
 		{
-			$postoptionschecked['signature'] = "checked";
+			$postoptionschecked['signature'] = "checked=\"checked\"";
 		}
 		if($postoptions['emailnotify'] == "yes")
 		{
-			$postoptionschecked['emailnotify'] = "checked";
+			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
 		}
 		if($postoptions['disablesmilies'] == "yes")
 		{
-			$postoptionschecked['disablesmilies'] = "checked";
+			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
 		}
 		$subject = $mybb->input['subject'];
 	}
@@ -421,11 +421,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$subject = $post['subject'];
 		if($post['includesig'] != "no")
 		{
-			$postoptionschecked['signature'] = "checked";
+			$postoptionschecked['signature'] = "checked=\"checked\"";
 		}
 		if($post['smilieoff'] == "yes")
 		{
-			$postoptionschecked['disablesmilies'] = "checked";
+			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
 		}
 		$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" />";
 		$mybb->input['icon'] = $post['icon'];
@@ -434,11 +434,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		if($mybb->user['signature'] != '')
 		{
-			$postoptionschecked['signature'] = "checked";
+			$postoptionschecked['signature'] = "checked=\"checked\"";
 		}
 		if($mybb->user['emailnotify'] == "yes")
 		{
-			$postoptionschecked['emailnotify'] = "checked";
+			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
 		}
 	}
 	if($forum['allowpicons'] != "no")
