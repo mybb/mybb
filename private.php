@@ -584,7 +584,7 @@ elseif($mybb->input['action'] == "read")
 		update_pm_count("", 4);
 	}
 	$pm['userusername'] = $pm['username'];
-	$pm['subject'] = htmlspecialchars_uni($pm['subject']);
+	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 	if($pm['fromid'] == -2)
 	{
 		$pm['username'] = "MyBB Engine";
@@ -604,7 +604,7 @@ elseif($mybb->input['action'] == "tracking")
 	$query = $db->query("SELECT pm.*, u.username as tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid) WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user[uid]."'");
 	while($readmessage = $db->fetch_array($query))
 	{
-		$readmessage['subject'] = htmlspecialchars_uni($readmessage['subject']);
+		$readmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($readmessage['subject']));
 		$readdate = mydate($mybb->settings['dateformat'], $readmessage['readtime']);
 		$readtime = mydate($mybb->settings['timeformat'], $readmessage['readtime']);
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
@@ -612,7 +612,7 @@ elseif($mybb->input['action'] == "tracking")
 	$query = $db->query("SELECT pm.*, u.username AS tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid) WHERE receipt='1' AND status='0' AND fromid='".$mybb->user[uid]."'");
 	while($unreadmessage = $db->fetch_array($query))
 	{
-		$unreadmessage['subject'] = htmlspecialchars_uni($unreadmessage['subject']);
+		$unreadmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($unreadmessage['subject']));
 		$senddate = mydate($mybb->settings['dateformat'], $unreadmessage['dateline']);
 		$sendtime = mydate($mybb->settings['timeformat'], $unreadmessage['dateline']);
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
@@ -1039,7 +1039,7 @@ elseif($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$message['tousername'] = $lang->not_sent;
 		}
 
-		$message['subject'] = $message['subject'];
+		$message['subject'] = $parser->parse_badwords($message['subject']);
 		if($message['folder'] != "3")
 		{
 			$senddate = mydate($mybb->settings['dateformat'], $message['dateline'], 0, 0);
@@ -1257,7 +1257,7 @@ else
 			{
 				$icon = '';
 			}
-			$message['subject'] = htmlspecialchars_uni($message['subject']);
+			$message['subject'] = htmlspecialchars_uni($parser->parse_badwords($message['subject']));
 			if($message['folder'] != "3")
 			{
 				$sendpmdate = mydate($mybb->settings['dateformat'], $message['dateline']);

@@ -1579,7 +1579,7 @@ elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "pos
 	{
 		$from = $mybb->user['username'] . " <" . $mybb->user['email'] . ">";
 	}
-	mymail($emailto['email'], $mybb->input['subject'], $mybb->input['message'], $from);
+	mymail($emailto['email'], $parser->parse_badwords($mybb->input['subject']), $parser->parse_badwords($mybb->input['message']), $from);
 
 	$plugins->run_hooks("member_do_emailuser_end");
 
