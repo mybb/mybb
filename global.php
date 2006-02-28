@@ -35,7 +35,7 @@ if(is_dir("install") && !file_exists("install/lock"))
 //
 // Create this users session
 //
-if(isset($nosession[$mybb->input['action']]))
+if(isset($nosession[$mybb->input['action']]) || isset($mybb->input['thumbnail']))
 {
 	define("NO_ONLINE", 1);
 }
