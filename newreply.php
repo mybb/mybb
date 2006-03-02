@@ -549,7 +549,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$friendlyusage = getfriendlysize($usage['ausage']);
 		$lang->attach_quota = sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
-		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount <= $mybb->settings['maxattachments']) && !$noshowattach)
+		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
