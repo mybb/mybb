@@ -738,7 +738,14 @@ elseif($mybb->input['action'] == "do_search")
 
 	if($config['dbtype'] == "mysql")
 	{
-		$search_results = perform_search_mysql($search_data);
+		if($settings['fulltextsearching'] == "yes" && $db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
+		{
+			$search_results = perform_search_mysql_ft($search_data);
+		}
+		else
+		{
+			$search_results = perform_search_mysql($search_data);
+		}
 	}
 	else
 	{
@@ -753,7 +760,7 @@ elseif($mybb->input['action'] == "do_search")
 		"threads" => $search_results['threads'],
 		"posts" => $search_results['posts'],
 		"searchtype" => $search_results['searchtype'],
-		"resulttype" => $search_results['resulttype'],
+		"resulttype" => $resulttype,
 		"querycache" => $search_results['querycache'],
 		);
 	$plugins->run_hooks("search_do_search_process");

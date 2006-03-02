@@ -107,7 +107,53 @@ function upgrade5_dbchanges()
 	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("5_done");
+	$output->print_footer("5_dbchanges2");
 }
 
+function upgrade5_dbchanges2()
+{
+	$output->print_header("Indexing");
+	echo "<p>Checking and creating database indexes..</p>";
+
+	$db->drop_index(TABLE_PREFIX."threads", "subject");
+	if($db->is_fulltext(TABLE_PREFIX."threads", "subject_2"))
+	{
+		$db->drop_index(TABLE_PREFIX."threads", "subject_2");
+	}
+
+	if($db->supports_fulltext(TABLE_PREFIX."threads"))
+	{
+		$db->create_fulltext_index(TABLE_PREFIX."threads", "subject");
+	}
+	$fulltext = "no";
+	if($db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
+	{
+		$db->create_fulltext_index(TABLE_PREFIX."posts", "message");
+		$update_data = array(
+			"value" => "yes"
+		);
+		$fulltext = "yes";
+	}
+	$new_setting_group = array(
+		"name" => "mybb:hidden",
+		"description" => "",
+		"disporder" => 0,
+		"isdefault" => "yes"
+	);
+	$db->insert_query(TABLE_PREFIX."settinggroups", $new_seting_group);
+	$gid = $db->insert_id();
+
+	$new_setting = array(
+		"name" => "fulltextsearching",
+		"title" => "",
+		"description" => "",
+		"optionscode" => "yesno",
+		"value" => $fulltext,
+		"disporder" => 0,
+		"gid" => $gid
+	);
+	$db->insert_query(TABLE_PREFIX."settings", $new_setting);
+	$contents .= "Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
+	$output->print_footer("5_done");
 ?>

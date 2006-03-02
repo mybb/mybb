@@ -145,10 +145,97 @@ function clean_keywords($keywords)
 {
 	$keywords = strtolower($keywords);
 	$keywords = str_replace("%", "\\%", $keywords);
+	$keywords = preg_replace("#\*{2,}#s", "*", $keywords);
 	$keywords = str_replace("*", "%", $keywords);
 	$keywords = preg_replace("#([\[\]\|\.\,:\"'])#s", " ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
 	return trim($keywords);
+}
+
+function clean_keywords_ft($keywords)
+{
+	if(!$keywords)
+	{
+		return false;
+	}
+	$keywords = strtolower($keywords);
+	$keywords = str_replace("%", "\\%", $keywords);
+	$keywords = preg_replace("#\*{2,}#s", "*", $keywords);
+	$keywords = preg_replace("#([\[\]\|\.\,:'])#s", " ", $keywords);
+	$keywords = preg_replace("#\s+#s", " ", $keywords);
+
+	if(strpos($keywords, "\"") !== false)
+	{
+		$inquote = false;
+		$keywords = explode("\"", $keywords);
+		foreach($keywords as $phrase)
+		{
+			if($phrase != "")
+			{
+				if($inquote)
+				{
+					$words[] = "\"".trim($phrase)."\"";
+				}
+				else
+				{
+					$split_words = preg_split("#\s{1,}#", $phrase, -1);
+					if(!is_array($split_words))
+					{
+						continue;
+					}
+					foreach($split_words as $word)
+					{
+						if(!$word)
+						{
+							continue;
+						}
+						$words[] = trim($word);
+					}
+				}
+			}
+			$inquote = !$inquote;
+		}
+	}
+	else
+	{
+		$split_words = preg_split("#\s{1,}#", $keywords, -1);
+		if(!is_array($split_words))
+		{
+			continue;
+		}
+		foreach($split_words as $word)
+		{
+			if(!$word)
+			{
+				continue;
+			}
+			$words[] = trim($word);
+		}
+
+	}
+	$keywords = "";
+	foreach($words as $word)
+	{
+		if($word == "or")
+		{
+			$boolean = "";
+		}
+		elseif($word == "and")
+		{
+			$boolean = "+";
+		}
+		elseif($word == "not")
+		{
+			$boolean = "-";
+		}
+		else
+		{
+			$keywords .= " ".$boolean.$word;
+			$boolean = "";
+		}
+	}
+	$keywords = "".trim($keywords);
+	return $keywords;
 }
 
 /* Database engine specific search functions */
@@ -390,5 +477,200 @@ function perform_search_mysql($search)
 
 function perform_search_mysql_ft($search)
 {
+	global $mybb, $db, $lang;
+
+	$keywords = clean_keywords_ft($search['keywords']);
+	if(!$keywords && !$search['author'])
+	{
+		error($lang->error_nosearchterms);
+	}
+
+	if($mybb->settings['minsearchword'] < 1)
+	{
+		$mybb->settings['minsearchword'] = 4;
+	}
+
+	if($keywords)
+	{
+		$words = explode(" ", $keywords);
+		foreach($words as $word)
+		{
+			$word = str_replace(array("+", "-", "*"), "", $word);
+			if(strlen($word) < $mybb->settings['minsearchword'])
+			{
+				$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+				error($lang->error_minsearchlength);
+			}
+		}
+		$message_lookin = "MATCH(message) AGAINST('".addslashes($keywords)."' IN BOOLEAN MODE)";
+		$subject_lookin = "MATCH(subject) AGAINST('".addslashes($keywords)."' IN BOOLEAN MODE)";
+	}
+	$post_usersql = "";
+	$thread_usersql = "";
+	if($search['author'])
+	{
+		$userids = array();
+		if($search['matchusername'])
+		{
+			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($search['author'])."'");
+		}
+		else
+		{
+			$search['author'] = strtolower($search['author']);
+			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".addslashes($search['author'])."%'");
+		}
+		while($user = $db->fetch_array($query))
+		{
+			$userids[] = $user['uid'];
+		}
+		if(count($userids) < 1)
+		{
+			error($lang->error_nosearchresults);
+		}
+		else
+		{
+			$userids = implode(",", $userids);
+			$post_usersql = " AND p.uid IN (".$userids.")";
+			$thread_usersql = " AND t.uid IN (".$userids.")";
+		}
+	}
+	$datecut = "";
+	if($search['postdate'])
+	{
+		if($search['pddir'] == 0)
+		{
+			$datecut = "<=";
+		}
+		else
+		{
+			$datecut = ">=";
+		}
+		$datelimit = $now-(86400 * $search['postdate']);
+		$datecut .= "'$datelimit'";
+		$post_datecut = "p.dateline $datecut";
+		$thread_datecut = "t.dateline $datecut";
+	}
+
+	$forumin = "";
+	$fidlist = array();
+	if($search['forums'] != "all")
+	{
+		if(!is_array($search['forums']))
+		{
+			$search['forums'] = array(intval($search['forums']));
+		}
+		foreach($search['forums'] as $forum)
+		{
+			if(!$searchin[$forum])
+			{
+				$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
+				if($db->num_rows($query) == 1)
+				{
+					$forumin .= " AND t.fid='$forum' ";
+					$searchin[$fid] = 1;
+				}
+				else
+				{
+					while($sforum = $db->fetch_array($query))
+					{
+						$fidlist[] = $sforum['sid'];
+					}
+					if(count($fidlist) > 1)
+					{
+						$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
+					}
+				}
+			}
+		}
+	}
+	$unsearchforums = get_unsearchable_forums();
+	if($unsearchforums)
+	{
+		$permsql = " AND t.fid NOT IN ($unsearchforums)";
+	}
+
+	// Searching both posts and thread titles
+	$threads = array();
+	$posts = array();
+	$firstposts = array();
+	if($search['postthread'] == 1)
+	{
+		$searchtype = "titles";
+		$query = $db->query("
+			SELECT t.tid, t.firstpost
+			FROM ".TABLE_PREFIX."threads t
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' AND ($subject_lookin)
+		");
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[$thread['tid']] = $thread['tid'];
+			if($thread['firstpost'])
+			{
+				$posts[$thread['tid']] = $thread['firstpost'];
+			}
+		}
+		$query = $db->query("
+			SELECT p.pid, p.tid
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE 1=1 $post_datecut $forumin $post_usersql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' AND ($message_lookin)
+		");
+		while($post = $db->fetch_array($query))
+		{
+			$posts[$post['pid']] = $post['pid'];
+			$threads[$post['tid']] = $post['tid'];
+		}
+		if(count($posts) < 1 && count($threads) < 1)
+		{
+			error($lang->error_nosearchresults);
+		}
+		$threads = implode(",", $threads);
+		$posts = implode(",", $posts);
+
+	}
+	// Searching only thread titles
+	else
+	{
+		$searchtype = "posts";
+		$query = $db->query("
+			SELECT t.tid, t.firstpost
+			FROM ".TABLE_PREFIX."threads t
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND ($subject_lookin)
+		");
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[$thread['tid']] = $thread['tid'];
+			if($thread['firstpost'])
+			{
+				$firstposts[$thread['tid']] = $thread['firstpost'];
+			}
+		}
+		if(count($threads) < 1)
+		{
+			error($lang->error_nosearchresults);
+		}
+
+		$threads = implode(",", $threads);
+		$firstposts = implode(",", $firstposts);
+		if($firstposts)
+		{
+			$query = $db->query("
+				SELECT p.pid
+				FROM ".TABLE_PREFIX."posts p
+				WHERE p.pid IN ($firstposts) AND p.visible>0
+			");
+			while($post = $db->fetch_array($query))
+			{
+				$posts[$post['pid']] = $post['pid'];
+			}
+			$posts = implode(",", $posts);
+		}
+	}
+	return array(
+		"searchtype" => $searchtype,
+		"threads" => $threads,
+		"posts" => $posts,
+		"querycache" => ""
+	);
 }
 ?>

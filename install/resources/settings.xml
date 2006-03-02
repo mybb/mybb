@@ -983,4 +983,15 @@ admin=Administrator Activation]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
+	<settinggroup name="mybb:hidden" description="" disporder="0" isdefault="yes">
+		<setting name="fulltextsearching">
+			<title></title>
+			<description><![CDATA[]]></description>
+			<disporder>0</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[no]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+	</settinggroup>
+
 </settings>

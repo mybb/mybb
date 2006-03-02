@@ -525,9 +525,7 @@ $tables[] = "CREATE TABLE mybb_threads (
   notes text NOT NULL default '',
   visible int(1) NOT NULL default '0',
   unapprovedposts int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (tid),
-  KEY subject (subject),
-  FULLTEXT KEY subject_2 (subject)
+  PRIMARY KEY  (tid)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_threadsread (

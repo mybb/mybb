@@ -61,6 +61,13 @@ class databaseEngine {
 	var $version;
 
 	/**
+	 * The current table type in use (myisam/innodb)
+	 *
+	 * @var string
+	 */
+	var $table_type = "myisam";
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param string The database hostname.
@@ -543,6 +550,116 @@ class databaseEngine {
 		}
 		return $this->version;
 	}
-	
+
+	/**
+	 * Optimizes a specific table.
+	 *
+	 * @param string The name of the table to be optimized.
+	 */
+	function optimize_table($table)
+	{
+		$this->query("OPTIMIZE TABLE ".$table.");");
+	}
+
+	/**
+	 * Show the "create table" command for a specific table.
+	 *
+	 * @param string The name of the table.
+	 * @return string The MySQL command to create the specified table.
+	 */
+	function show_create_table($table)
+	{
+		$query = $this->query("SHOW CREATE TABLE ".$table."");
+		$structure = $this->fetch_array($query);
+		return $structure['Create Table'];
+	}
+
+	/**
+	 * Returns whether or not the table contains a fulltext index.
+	 *
+	 * @param string The name of the table.
+	 * @param string Optionally specify the name of the index.
+	 * @return boolean True or false if the table has a fulltext index or not.
+	 */
+	function is_fulltext($table, $index="")
+	{
+		$structure = $this->show_create_table($table);
+		if($index)
+		{
+			if(preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		if(preg_match('#FULLTEXT KEY#i', $structure))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns whether or not this database engine supports fulltext indexing.
+	 *
+	 * @param string The table to be checked.
+	 * @return boolean True or false if supported or not.
+	 */
+
+	function supports_fulltext($table)
+	{
+		$version = $this->get_version();
+		$query = $this->query("SHOW TABLE STATUS LIKE '$table'");
+		$status = $this->fetch_array($query);
+		$table_type = strtoupper($status['Engine']);
+		if($version >= '3.23.23' && $table_type == 'MYISAM')
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns whether or not this database engine supports boolean fulltext matching.
+	 *
+	 * @param string The table to be checked.
+	 * @return boolean True or false if supported or not.
+	 */
+	function supports_fulltext_boolean($table)
+	{
+		$version = $this->get_version();
+		$supports_fulltext = $this->supports_fulltext($table);
+		if($version >= '4.0.1' && $supports_fulltext == true)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Creates a fulltext index on the specified column in the specified table with optional index name.
+	 *
+	 * @param string The name of the table.
+	 * @param string Name of the column to be indexed.
+	 * @param string The index name, optional.
+	 */
+	function create_fulltext_index($table, $column, $name="")
+	{
+		$this->query("ALTER TABLE $table ADD FULLTEXT $name ($column)");
+	}
+
+	/**
+	 * Drop an index with the specified name from the specified table
+	 *
+	 * @param string The name of the table.
+	 * @param string The name of the index.
+	 */
+	function drop_index($table, $name)
+	{
+		$this->query("ALTER TABLE $table DROP INDEX $name");
+	}
 }
 ?>

@@ -898,8 +898,20 @@ function install_done()
 	echo "done</p>";
 
 
-	// Make fulltext column
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD FULLTEXT KEY subject_2 (subject)", 1);
+	// Make fulltext columns if supported
+	if($db->supports_fulltext(TABLE_PREFIX."threads"))
+	{
+		$db->create_fulltext_index(TABLE_PREFIX."threads", "subject");
+	}
+	if($db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
+	{
+		$db->create_fulltext_index(TABLE_PREFIX."posts", "message");
+		$update_data = array(
+			"value" => "yes"
+		);
+		$db->update_query(TABLE_PREFIX."settings", $update_data, "name='fulltextsearching'");
+		write_settings();
+	}
 
 	echo "<p>Building data cache's...";
 	require "../inc/class_datacache.php";
