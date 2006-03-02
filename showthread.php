@@ -342,16 +342,18 @@ if($mybb->input['action'] == "thread")
 	// Create the forum jump dropdown box.
 	$forumjump = makeforumjump("", $fid, 1);
 
-	// Update the last read time of this thread.
-	if($mybb->settings['threadreadcut'] && $mybb->user['uid'])
+	// Mark this thread read for the currently logged in user.
+	if($mybb->settings['threadreadcut'] && ($mybb->user['uid'] != 0))
 	{
+		// For registered users, store the information in the database.
 		$db->shutdown_query("REPLACE INTO ".TABLE_PREFIX."threadsread SET tid='$tid', uid='".$mybb->user['uid']."', dateline='".time()."'");
 	}
 	else
 	{
+		// For guests, store the information in a cookie.
 		mysetarraycookie("threadread", $tid, time());
 	}
-
+	
 	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
 	if($forum['open'] != "no")
 	{
@@ -422,7 +424,7 @@ if($mybb->input['action'] == "thread")
 	// Increment the thread view.
 	$db->query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='$tid'");
 	++$thread['views'];
-
+	
 	// Work out the thread rating for this thread.
 	if($forum['allowtratings'] != "no" && $thread['numratings'] > 0)
 	{

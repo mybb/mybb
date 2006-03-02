@@ -761,7 +761,8 @@ if($threadcache)
 		eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
 	}
 
-	if(!$unreadpost && ($page == 1 || !$page)) // Cheap modification
+	// Set the forum read cookie if all posts are read.
+	if($unreadpost == 0 && ($page == 1 || !$page)) // Cheap modification
 	{
 		mysetarraycookie("forumread", $fid, time());
 	}

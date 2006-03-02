@@ -44,7 +44,11 @@ class Syndication
 	 */
 	var $forumlist;
 
-	/* Sets the type of feed */
+	/**
+	 * Set the type of feed to be used.
+	 *
+	 * @param string The feed type.
+	 */
 	function set_feed_type($feed_type)
 	{
 		if($feed_type == 'rss2.0')
@@ -61,7 +65,11 @@ class Syndication
 		}
 	}
 
-	/* Sets the number of posts to gather */
+	/**
+	 * Set the number of posts to generate in the feed.
+	 *
+	 * @param int The number of posts.
+	 */
 	function set_limit($limit)
 	{
 		if($limit < 1)
@@ -74,7 +82,11 @@ class Syndication
 		}
 	}
 
-	/* Sets the forums from which to get the recent posts */
+	/**
+	 * Set the forum(s) to grab posts from.
+	 *
+	 * @param array Array of forum ids.
+	 */
 	function set_forum_list($forumlist = array())
 	{
 		$unviewable = getunviewableforums();
@@ -98,7 +110,10 @@ class Syndication
 		}
 	}
 
-	/* This generates and echos the XML for the feed */
+	/**
+	 * Generate and echo XML for the feed.
+	 *
+	 */
 	function generate_feed()
 	{
 		header("Content-Type: text/xml");
@@ -109,7 +124,10 @@ class Syndication
 		$this->build_footer();
 	}
 
-	/* Private function: used by generate_feed(), generates XML for header */
+	/**
+	 * Build the feed header.
+	 *
+	 */
 	function build_header()
 	{
 		global $mybb, $lang, $mybboard;
@@ -156,7 +174,10 @@ class Syndication
 		}
 	}
 
-	/* Private function: used by generate_feed(), generates XML for entries */
+	/**
+	 * Build the feed entries.
+	 *
+	 */
 	function build_entries()
 	{
 		global $db, $mybb, $lang;
@@ -246,7 +267,10 @@ class Syndication
 		}
 	}
 
-	/* Private function: used by generate_feed(), generates XML for footer */
+	/**
+	 * Build the feed footer.
+	 *
+	 */
 	function build_footer()
 	{
 		switch($this->feed_type)
