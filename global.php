@@ -81,6 +81,7 @@ if(!$mybb->input['mode'])
 	}
 }
 
+// Select the board theme to use.
 $loadstyle = "";
 $style = array();
 if($mybb->user['style'] != "" && $mybb->user['style'] != "0")
@@ -124,11 +125,12 @@ if(!$loadstyle)
 	$loadstyle = "def='1'";
 }
 
-$query = $db->query("SELECT name,tid,themebits FROM ".TABLE_PREFIX."themes WHERE $loadstyle");
+$query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits", $loadstyle);
 $theme = $db->fetch_array($query);
 
 $theme = @array_merge($theme, unserialize($theme['themebits']));
 
+// Select the language to use.
 if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
 {
 	$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];

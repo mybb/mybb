@@ -2808,6 +2808,7 @@ $headerinclude
 </head>
 <body>
 $header
+$event_errors
 <form action="calendar.php" method="post">
 <table cellspacing="0" cellpadding="0" border="0" width="$theme[tablewidth]" class="tborder" align="center">
 <tr>

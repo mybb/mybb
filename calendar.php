@@ -36,17 +36,16 @@ if($mybb->usergroup['canviewcalendar'] == "no")
 	nopermission();
 }
 
-/* Just do this here right now, no need for duplicate code. */
-$eid = intval($mybb->input['eid']);
+// Make $eid an easy-to-use variable.
+$eid = $mybb->input['eid'];
 
 /* If we are looking at an event, select the date for that event first. */
 if($mybb->input['action'] == "event")
 {
-	$query = $db->query("
-		SELECT date
-		FROM ".TABLE_PREFIX."events
-		WHERE eid = ".$eid
+	$options = array(
+		"limit" => 1
 	);
+	$query = $db->simple_select(TABLE_PREFIX."events", "date", "eid=".$eid, $options);
 	$event_date = $db->result($query, 0);
 	if($event_date == FALSE)
 	{
@@ -119,6 +118,18 @@ if($month && $year)
 	addnav("$monthnames[$month] $year", "calendar.php?month=$month&year=$year");
 }
 
+// No weird actions allowed.
+if(	$mybb->input['action'] != "event" && 
+	$mybb->input['action'] != "addevent" &&
+	$mybb->input['action'] != "do_addevent" &&
+	$mybb->input['action'] != "editevent" &&
+	$mybb->input['action'] != "do_editevent" &&
+	$mybb->input['action'] != "dayview")
+{
+	$mybb->input['action'] = "calendar_main";
+}
+
+// View a specific event.
 if($mybb->input['action'] == "event")
 {
 	$plugins->run_hooks("calendar_event_start");
@@ -168,7 +179,9 @@ if($mybb->input['action'] == "event")
 	eval("\$eventpage = \"".$templates->get("calendar_event")."\";");
 	outputpage($eventpage);
 }
-elseif($mybb->input['action'] == "dayview")
+
+// View all events on a specific day.
+if($mybb->input['action'] == "dayview")
 {
 	$plugins->run_hooks("calendar_dayview_start");
 
@@ -270,7 +283,46 @@ elseif($mybb->input['action'] == "dayview")
 	eval("\$dayview = \"".$templates->get("calendar_dayview")."\";");
 	outputpage($dayview);
 }
-elseif($mybb->input['action'] == "addevent")
+
+// Process the adding of an event.
+if($mybb->input['action'] == "do_addevent")
+{
+	$plugins->run_hooks("calendar_do_addevent_start");
+
+	// Set up eventhandler.
+	require_once "inc/datahandler.php";
+	require_once "inc/datahandlers/event.php";
+	$eventhandler = new EventDataHandler();
+	
+	// Prepare an array for the eventhandler.
+	$event = array(
+		"subject" => $mybb->input['subject'],
+		"description" => $mybb->input['description'],
+	);
+	
+	// Now let the eventhandler do all the hard work.
+	if(!$eventhandler->validate_event($event))
+	{
+		$errors = $eventhandler->get_errors();
+		foreach($errors as $error)
+		{
+			$event_errors[] = $lang->$error;
+		}
+		$event_errors = inlineerror($event_errors);
+		$mybb->input['action'] = "addevent";
+	}
+	else
+	{
+		$eventhandler->insert_event($event);
+	}
+	
+	$plugins->run_hooks("calendar_do_addevent_end");
+
+	redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventadded);
+}
+
+// Show the form for adding an event.
+if($mybb->input['action'] == "addevent")
 {
 	$plugins->run_hooks("calendar_addevent_start");
 
@@ -316,58 +368,80 @@ elseif($mybb->input['action'] == "addevent")
 	eval("\$addevent = \"".$templates->get("calendar_addevent")."\";");
 	outputpage($addevent);
 }
-elseif($mybb->input['action'] == "do_addevent")
+
+// Process the editing of an event.
+if($mybb->input['action'] == "do_editevent")
 {
-	$plugins->run_hooks("calendar_do_addevent_start");
+	$plugins->run_hooks("calendar_do_editevent_start");
 
-	$day = intval($mybb->input['day']);
-	$month = intval($mybb->input['month']);
-	$year = intval($mybb->input['year']);
-
-	if(!$mybb->input['subject'] || !$mybb->input['description'] || !$mybb->input['day'] || !$mybb->input['month'] || !$mybb->input['year'])
+	$query = $db->query("
+		SELECT author
+		FROM ".TABLE_PREFIX."events
+		WHERE eid='$eid'
+	");
+	$event = $db->fetch_array($query);
+	
+	if(!is_numeric($event['author']))
 	{
-		error($lang->error_incompletefields);
+		error($lang->error_invalidevent);
+	}
+	elseif(($event['author'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $mybb->usergroup['cancp'] != "yes")
+	{
+		nopermission();
 	}
 	
-	if($day > date("t", mktime(0, 0, 0, $month, 1, $year)))
+	// Are we going to delete this event or just edit it?
+	if($mybb->input['delete'] == "yes")
 	{
-		error($lang->error_incorrectday);
-	}
-	if($mybb->input['private'] == "yes")
-	{
-		if($mybb->user['uid'] == 0 || $mybb->usergroup['canaddprivateevents'] == "no")
-		{
-			nopermission();
-		}
+		// Set up eventhandler.
+		require_once "inc/datahandler.php";
+		require_once "inc/datahandlers/event.php";
+		$eventhandler = new EventDataHandler();
+		
+		// Make the eventhandler delete the event.
+		$eventhandler->delete_by_eid($eid);
+		
+		// Redirect back to the main calendar view.
+		redirect("calendar.php", $lang->redirect_eventdeleted);
 	}
 	else
 	{
-		if($mybb->usergroup['canaddpublicevents'] == "no")
-		{
-			nopermission();
-		}
-		$mybb->input['private'] = "no";
-	}
-	$eventdate = $day."-".$month."-".$year;
-
-	$newevent = array(
-		"subject" => addslashes($mybb->input['subject']),
-		"author" => $mybb->user['uid'],
-		"date" => $eventdate,
-		"description" => addslashes($mybb->input['description']),
-		"private" => $mybb->input['private']
+		// Set up eventhandler.
+		require_once "inc/datahandler.php";
+		require_once "inc/datahandlers/event.php";
+		$eventhandler = new EventDataHandler();
+		
+		// Prepare an array for the eventhandler.
+		$event = array(
+			"eid" => $eid,
+			"subject" => $mybb->input['subject'],
+			"description" => $mybb->input['description'],
 		);
+		
+		// Now let the eventhandler do all the hard work.
+		if(!$eventhandler->validate_event($event))
+		{
+			$errors = $eventhandler->get_errors();
+			foreach($errors as $error)
+			{
+				$event_errors[] = $lang->$error;
+			}
+			$event_errors = inlineerror($event_errors);
+			$mybb->input['action'] = "editevent";
+		}
+		else
+		{
+			$eventhandler->update_event($event);
+		}
+		
+		$plugins->run_hooks("calendar_do_editevent_end");
 
-	$plugins->run_hooks("calendar_do_addevent_process");
-
-	$db->insert_query(TABLE_PREFIX."events", $newevent);
-	$eid = $db->insert_id();
-
-	$plugins->run_hooks("calendar_do_addevent_end");
-
-	redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventadded);
+		redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventupdated);
+	}
 }
-elseif($mybb->input['action'] == "editevent")
+
+// Show the form for editing an event.
+if($mybb->input['action'] == "editevent")
 {
 	$plugins->run_hooks("calendar_editevent_start");
 	
@@ -431,65 +505,10 @@ elseif($mybb->input['action'] == "editevent")
 	eval("\$editevent = \"".$templates->get("calendar_editevent")."\";");
 	outputpage($editevent);
 }
-elseif($mybb->input['action'] == "do_editevent")
-{
-	$eid = intval($mybb->input['eid']);
 
-	$plugins->run_hooks("calendar_do_editevent_start");
 
-	$query = $db->query("
-		SELECT author
-		FROM ".TABLE_PREFIX."events
-		WHERE eid='$eid'
-	");
-	$event = $db->fetch_array($query);
-	
-	if(!is_numeric($event['author']))
-	{
-		error($lang->error_invalidevent);
-	}
-	elseif(($event['author'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $mybb->usergroup['cancp'] != "yes")
-	{
-		nopermission();
-	}
-	if($mybb->input['delete'] == "yes")
-	{
-		$db->query("DELETE FROM ".TABLE_PREFIX."events WHERE eid='$eid'");
-		redirect("calendar.php", $lang->redirect_eventdeleted);
-	}
-	else
-	{
-		if($mybb->input['private'] == "yes")
-		{
-			if($mybb->user['uid'] == 0 || $mybb->usergroup['canaddprivateevents'] == "no")
-			{
-				nopermission();
-			}
-		}
-		else
-		{
-			$mybb->input['private'] = "no";
-		}
-
-		$eventdate = $day."-".$month."-".$year;
-
-		$newevent = array(
-			"subject" => addslashes($mybb->input['subject']),
-			"description" => addslashes($mybb->input['description']),
-			"date" => $eventdate,
-			"private" => $mybb->input['private']
-			);
-
-		$plugins->run_hooks("calendar_do_editevent_process");
-	
-		$db->update_query(TABLE_PREFIX."events", $newevent, "eid=$eid");
-		
-		$plugins->run_hooks("calendar_do_editevent_end");
-
-		redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventupdated);
-	}
-}
-else
+// Show the main calendar view.
+if($mybb->input['action'] == "calendar_main")
 {
 
 	$plugins->run_hooks("calendar_start");

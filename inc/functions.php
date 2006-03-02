@@ -2236,4 +2236,39 @@ function unhtmlentities($string)
    return strtr($string, $trans_tbl);
 }
 
+/**
+ * Get the event poster.
+ *
+ * @param array The event data array.
+ * @return string The link to the event poster.
+ */
+function get_event_poster($event)
+{
+	if($event['username'])
+	{
+		$event_poster = "<a href=\"member.php?action=profile&amp;uid=".$event['author']."\">" . formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
+	}
+	else
+	{
+		$event_poster = $lang->guest;
+	}
+
+	return $event_poster;
+}
+
+/**
+ * Get the event date.
+ *
+ * @param array The event data array.
+ * @return string The event date.
+ */
+function get_event_date($event)
+{
+	$event_date = explode("-", $event['date']);
+	$event_date = mktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
+	$event_date = mydate($mybb->settings['dateformat'], $event_date);
+
+	return $event_date;
+}
+
 ?>
