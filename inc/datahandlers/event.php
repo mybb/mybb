@@ -25,28 +25,32 @@ class EventDataHandler extends Handler
 		// Every event needs a name.
 		if(!$event['name'])
 		{
-			$this->set_error("no_event_name");
+			$this->set_error("no_name");
 		}
 		
-		// Check if all fields have been entered.
-		if(!$mybb->input['subject'] || !$mybb->input['description'] || !$mybb->input['day'] || !$mybb->input['month'] || !$mybb->input['year'])
+		if(!$event['day'] || !$event['month'] || !$event['year'])
 		{
-			error($lang->error_incompletefields);
+			$this->set_error("invalid_date");
 		}
-		
+
 		// Check if the day actually exists.
-		if($day > date("t", mktime(0, 0, 0, $month, 1, $year)))
+		if($event['day'] > date("t", mktime(0, 0, 0, $event['month'], 1, $event['year'])))
 		{
-			error($lang->error_incorrectday);
+			$this->set_error("incorrect_day");
 		}
-		
+
+		if(!trim($event['description']))
+		{
+			$this->set_error("no_description");
+		}
+
 		// Decide what type of event this is.
-		if($mybb->input['private'] == "yes")
+		if($event['private'] == "yes")
 		{
 			// Check if the user is allowed to add private events if he is trying to.
 			if($mybb->user['uid'] == 0 || $mybb->usergroup['canaddprivateevents'] == "no")
 			{
-				nopermission();
+				$this->set_error("no_permission_private_event");
 			}
 		}
 		else
@@ -54,7 +58,7 @@ class EventDataHandler extends Handler
 			// Check if the user is allowed to add public events if he is trying to.
 			if($mybb->usergroup['canaddpublicevents'] == "no")
 			{
-				nopermission();
+				$this->set_error("no_permission_public_event");
 			}
 		}
 		
@@ -81,7 +85,7 @@ class EventDataHandler extends Handler
 	function get_options($event)
 	{
 		// Check if the event is private or public.
-		if($mybb->input['private'] == "yes")
+		if($event['private'] == "yes")
 		{
 			$event['options']['private'] = "yes";
 		}
@@ -91,11 +95,7 @@ class EventDataHandler extends Handler
 		}
 		
 		// Figure out the event date.
-		$day = intval($mybb->input['day']);
-		$month = intval($mybb->input['month']);
-		$year = intval($mybb->input['year']);
-		$event['date'] = $day."-".$month."-".$year;
-		
+		$event['date'] = intval($event['day'])."-".intval($event['month'])."-".intval($event['year']);
 		return $event;
 	}
 	
