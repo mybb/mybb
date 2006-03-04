@@ -53,17 +53,23 @@ class postParser
 	function parse_message($message, $options=array())
 	{
 		global $plugins, $settings;
+		
+		// Always fix bad Javascript in the message.
 		$message = $this->fix_javascript($message);
+		
+		// If HTML is disallowed, clean the post of it.
 		if($options['allow_html'] != "yes")
 		{
 			$message = $this->parse_html($message);
 		}
 
+		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
 		{
 			$message = $this->parse_badwords($message);
 		}
 
+		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
 		if($options['allow_mycode'] != "no")
 		{
 			// First we split up the contents of code and php tags to ensure they're not parsed.
@@ -71,6 +77,7 @@ class postParser
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\]#si", "<mybb-code>", $message);
 		}
 
+		// Replace smilies if requested.
 		if($options['allow_smilies'] != "no")
 		{
 			if($options['is_archive'] == "yes")
@@ -83,6 +90,7 @@ class postParser
 			}
 		}
 
+		// Replace MyCode if requested.
 		if($options['allow_mycode'] != "no")
 		{
 			$message = $this->parse_mycode($message, $options);
