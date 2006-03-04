@@ -34,7 +34,7 @@ $active_plugins = $plugins_cache['active'];
 if($mybb->input['action'] == "activate")
 {
 	$codename = $mybb->input['plugin'];
-	$file = $codename.".php";
+	$file = basename($codename.".php");
 	if($mybb->input['activate'])
 	{
 		$active_plugins[$codename] = $codename;
@@ -46,6 +46,12 @@ if($mybb->input['action'] == "activate")
 		unset($active_plugins[$codename]);
 		$userfunc = $codename."_deactivate";
 		$message = $lang->plugin_deactivated;
+	}
+
+	// Check if the file exists and throw an error if it doesn't
+	if(!file_exists("./inc/plugins/$file"))
+	{
+		cperror($lang->plugin_not_found);
 	}
 
 	include "./inc/plugins/$file";

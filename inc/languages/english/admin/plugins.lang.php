@@ -11,4 +11,5 @@ $l['activate_plugin'] = "Activate";
 $l['plugin_activated'] = "The plugin has successfully been activated.";
 $l['plugin_deactivated'] = "The plugin has successfully been deactivated.";
 $l['no_plugins'] = "You do not currently have any plugins installed that exist in your plugins directory.";
+$l['plugin_not_found'] = "The plugin specified does not exist in the plugins directory";
 ?>
