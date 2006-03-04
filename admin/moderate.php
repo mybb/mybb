@@ -39,7 +39,7 @@ if($mybb->input['action'] == "do_attachments")
 {
 	if(is_array($mybb->input['attachvalidate']))
 	{
-		while(list($aid, $val) = each($attachvalidate))
+		while(list($aid, $val) = each($mybb->input['attachvalidate']))
 		{
 			$aid = intval($aid);
 			if($attachdelete[$aid] == "yes")
@@ -208,7 +208,7 @@ if($mybb->input['action'] == "attachments")
 if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadsposts")
 {
 	$done = 0;
-	$query = $db->query("SELECT t.tid, t.fid, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid) WHERE t.visible=0 AND p.tid=t.tid ORDER BY t.lastpost DESC");
+	$query = $db->query("SELECT t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid) WHERE t.visible=0 AND p.tid=t.tid ORDER BY t.lastpost DESC");
 	$tcount = $db->num_rows($query);
 
 	if($tcount < 1 && $mybb->input['action'] != "threadsposts")

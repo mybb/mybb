@@ -43,40 +43,54 @@ elseif ($mybb->input['action']=="home")
 		$serverload = $lang->unknown;
 	}
 	// Get the number of users
-	$query = $db->query("SELECT COUNT(*) AS numusers FROM ".TABLE_PREFIX."users");
+	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS numusers");
 	$users = $db->fetch_array($query);
 	
 	// Get the number of users awaiting validation
-	$query = $db->query("SELECT COUNT(*) AS awaitingusers FROM ".TABLE_PREFIX."users WHERE usergroup='5'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS awaitingusers", "usergroup='5'");
 	$awaitingusers = $db->fetch_array($query);
 	
 	// Get the number of new users for today
 	$timecut = time() - 86400;
-	$query = $db->query("SELECT COUNT(*) AS newusers FROM ".TABLE_PREFIX."users WHERE regdate>'$timecut'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS newusers", "regdate>'$timecut'");
 	$newusers = $db->fetch_array($query);
 	
 	// Get the number of active users today
-	$timecut = time() - 86400;
-	$query = $db->query("SELECT COUNT(*) AS activeusers FROM ".TABLE_PREFIX."users WHERE lastvisit>'$timecut'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS activeusers", "lastvisit>'$timecut'");
 	$activeusers = $db->fetch_array($query);
 	
 	// Get the number of threads
-	$query = $db->query("SELECT COUNT(*) AS numthreads FROM ".TABLE_PREFIX."threads");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS numthreads");
 	$threads = $db->fetch_array($query);
+
+	// Get the number of unapproved threads
+	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS numthreads", "visible='0'");
+	$unapproved_threads = $db->fetch_array($query);
 	
 	// Get the number of new threads for today
-	$timecut = time() - 86400;
-	$query = $db->query("SELECT COUNT(*) AS newthreads FROM ".TABLE_PREFIX."threads WHERE dateline>'$timecut'");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS newthreads", "dateline>'$timecut'");
 	$newthreads = $db->fetch_array($query);
 
 	// Get the number of posts
-	$query = $db->query("SELECT COUNT(*) AS numposts FROM ".TABLE_PREFIX."posts");
+	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS numposts");
 	$posts = $db->fetch_array($query);
+
+	// Get the number of unapproved posts
+	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS numposts", "visible='0'");
+	$unapproved_posts = $db->fetch_array($query);
 	
 	// Get the number of new posts for today
-	$timecut = time() - 86400;
-	$query = $db->query("SELECT COUNT(*) AS newposts FROM ".TABLE_PREFIX."posts WHERE dateline>'$timecut'");
+	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS newposts", "dateline>'$timecut'");
 	$newposts = $db->fetch_array($query);
+
+	// Get the number and total file size of attachments
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused");
+	$attachs = $db->fetch_array($query);
+	$attachs['spaceused'] = getfriendlysize($attachs['spaceused']);
+
+	// Get the number of unapproved attachments
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs", "visible='0' AND pid>0");
+	$unapproved_attachs = $db->fetch_array($query);
 
 	// Program Statistics table
 	starttable();
@@ -99,12 +113,16 @@ elseif ($mybb->input['action']=="home")
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->active_users_today</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"../online.php?action=today\">$activeusers[activeusers]</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_threads</b></td><td valign=\"top\" class=\"altbg2\">$threads[numthreads]</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_threads</b></td><td valign=\"top\" class=\"altbg2\">$threads[numthreads] (<a href=\"moderate.php?action=threads\" title=\"$lang->unapproved_threads\">$unapproved_threads[numthreads]</a>)</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->threads_today</b></td><td valign=\"top\" class=\"altbg2\">$newthreads[newthreads]</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_posts</b></td><td valign=\"top\" class=\"altbg2\">$posts[numposts]</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_posts</b></td><td valign=\"top\" class=\"altbg2\">$posts[numposts] (<a href=\"moderate.php?action=posts\" title=\"$lang->unapproved_posts\">$unapproved_posts[numposts]</a>)</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->posts_today</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"../search.php?action=getdaily\">$newposts[newposts]</a></td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_attachments</b></td><td valign=\"top\" class=\"altbg2\">$attachs[numattachs] (<a href=\"moderate.php?action=attachments\" title=\"$lang->unapproved_attachs\">$unapproved_attachs[numattachs]</a>)</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->attachment_space</b></td><td valign=\"top\" class=\"altbg2\">$attachs[spaceused]</td>\n";
 	echo "</tr>\n";
 	endtable();
 

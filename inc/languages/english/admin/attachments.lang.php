@@ -40,6 +40,7 @@ $l['search'] = "Search";
 
 $l['no_attachments'] = "No attachments were found matching your query.";
 $l['attach_search_results'] = "Attachment Search Results";
+$l['attach_search_results_note'] = "Attachments in <span class=\"highlight1\">this colour</span> were not found on the file system and should be deleted.<br />Attachments in <em>italics</em> are unapproved attachments.";
 $l['orphan_search_results'] = "Orphan Attachment Search Results";
 $l['delete'] = "Delete?";
 $l['filename'] = "Filename";

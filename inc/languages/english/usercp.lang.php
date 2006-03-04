@@ -256,6 +256,13 @@ $l['no_attachments_selected'] = "You did not select any attachments to delete.";
 $l['attachments_deleted'] = "The selected attachments have successfully been deleted.<br />You will now be redirected to the attachments manager.";
 $l['attachments_usage_quota'] = "- Using {1} of {2} ({3}) in {4} Attachments";
 $l['attachments_usage'] = "- {1} in {2} Attachments";
+$l['attachments_stats'] = "Your Attachment Statistics";
+$l['attachstats_attachs'] = "Number of Attachments";
+$l['attachstats_spaceused'] = "Space Used";
+$l['attachstats_quota'] = "Attachment Quota";
+$l['attachstats_totaldl'] = "Total Downloads";
+$l['attachstats_bandwidth'] = "Approximate Bandwidth Usage";
+
 $l['error_avatartoobig'] = "Sorry but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height)";
 $l['custom_usertitle'] = "Custom User Title";
 $l['new_custom_usertitle'] = "New Custom User Title: (leave blank to use existing)";

@@ -19,6 +19,11 @@ $l['total_threads'] = "Total Threads:";
 $l['threads_today'] = "New threads today:";
 $l['total_posts'] = "Total Posts:";
 $l['posts_today'] = "New posts today:";
+$l['total_attachments'] = "Total Attachments:";
+$l['attachment_space'] = "Total Attachment Space Used:";
+$l['unapproved_posts'] = "Unapproved posts";
+$l['unapproved_threads'] = "Unapproved threads";
+$l['unapproved_attachs'] = "Unapproved attachments";
 
 $l['quick_options'] = "Quick Administration Options";
 $l['quick_user_finder'] = "Quick User Finder";

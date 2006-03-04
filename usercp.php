@@ -1995,6 +1995,7 @@ elseif($mybb->input['action'] == "attachments")
 	require "./inc/functions_upload.php";
 	$attachments = '';
 	$query = $db->query("SELECT a.*, p.subject, p.dateline, t.tid, t.subject AS threadsubject FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) WHERE a.uid='".$mybb->user['uid']."' AND a.pid!='0' ORDER BY p.dateline DESC");
+	$bandwidth = $totaldownloads = 0;
 	while($attachment = $db->fetch_array($query))
 	{
 		if($attachment['dateline'] && $attachment['tid'])
@@ -2008,6 +2009,9 @@ elseif($mybb->input['action'] == "attachments")
 			$attachtime = mydate($mybb->settings['timeformat'], $attachment['dateline']);
 			$altbg = alt_trow();
 			eval("\$attachments .= \"".$templates->get("usercp_attachments_attachment")."\";");
+			// Add to bandwidth total
+			$bandwidth += ($attachment['filesize'] * $attachment['downloads']);
+			$totaldownloads += $attachment['downloads'];
 		}
 		else
 		{
@@ -2020,6 +2024,7 @@ elseif($mybb->input['action'] == "attachments")
 	$totalusage = $usage['ausage'];
 	$totalattachments = $usage['acount'];
 	$friendlyusage = getfriendlysize($totalusage);
+	$bandwidth = getfriendlysize($bandwidth);
 	if($mybb->usergroup['attachquota'])
 	{
 		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1000))*100)."%";
@@ -2028,6 +2033,8 @@ elseif($mybb->input['action'] == "attachments")
 	}
 	else
 	{
+		$percent = $lang->unlimited;
+		$attachquota = $lang->unlimited;
 		$usagenote = sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
 	}
 	if(!$attachments)

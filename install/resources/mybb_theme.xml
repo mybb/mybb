@@ -1805,6 +1805,32 @@ $attachments
 <input type="hidden" name="action" value="do_attachments" />
 <input type="submit" class="submit" value="$lang->delete_attachments" />
 </div>
+<br />
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>$lang->attachments_stats</strong></td>
+</tr>
+<tr>
+<td class="trow1" width="40%"><strong>$lang->attachstats_attachs</strong></td>
+<td class="trow1" width="60%">$totalattachments</td>
+</tr>
+<tr>
+<td class="trow2" width="40%"><strong>$lang->attachstats_spaceused</strong></td>
+<td class="trow2" width="60%">$friendlyusage ($percent)</td>
+</tr>
+<tr>
+<td class="trow1" width="40%"><strong>$lang->attachstats_quota</strong></td>
+<td class="trow1" width="60%">$attachquota</td>
+</tr>
+<tr>
+<td class="trow2" width="40%"><strong>$lang->attachstats_totaldl</strong></td>
+<td class="trow2" width="60%">$totaldownloads</td>
+</tr>
+<tr>
+<td class="trow1" width="40%"><strong>$lang->attachstats_bandwidth</strong></td>
+<td class="trow1" width="60%">$bandwidth</td>
+</tr>
+</table>
 </td>
 </tr>
 </table>

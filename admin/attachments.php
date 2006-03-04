@@ -186,6 +186,7 @@ if($mybb->input['action'] == "do_search")
 	startform("attachments.php", "", "do_search_delete");
 	starttable();
 	tableheader($lang->attach_search_results, "", "7");
+	makelabelcode($lang->attach_search_results_note, "", "7");
 	echo "<tr>\n";
 	echo "<td class=\"subheader\">$lang->delete</td>\n";
 	echo "<td class=\"subheader\">$lang->filename</td>\n";
@@ -210,7 +211,10 @@ if($mybb->input['action'] == "do_search")
 		{
 			$filename = "<span class=\"highlight1\">".stripslashes($result['filename'])."</span>";
 		}
-
+		if(!$result['visible'] && $result['pid'])
+		{
+			$filename = "<em>".$filename."</em>";
+		}
 		
 		$filesize = getfriendlysize($result['filesize']);
 
