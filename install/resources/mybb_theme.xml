@@ -2055,6 +2055,13 @@ $footer
 <script type="text/javascript" src="jscripts/prototype.lite.js"></script>
 <script type="text/javascript" src="jscripts/general.js"></script>
 <link rel="stylesheet" type="text/css" href="css.php?theme=$theme[tid]" />
+<script language="Javascript" type="text/javascript">
+	 var cookieDomain = "$settings[cookiedomain]";
+	 var cookiePath = "$settings[cookiepath]";
+	 var newpm_prompt = "$lang->newpm_prompt";
+	 var deleteevent_confirm = "$lang->deleteevent_confirm";
+	 var removeattach_confirm = "$lang->removeattach_confirm";
+</script>
 $newpmmsg]]></template>
 		<template name="showthread_similarthreads" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
@@ -2199,14 +2206,7 @@ $footer
 ]]></template>
 		<template name="header_welcomeblock_guest" version="100.07"><![CDATA[	<span style="float:right;">$lang->welcome_current_time</span>
 		$lang->welcome_guest (<a href="$settings[bburl]/member.php?action=login">$lang->welcome_login</a> &mdash; <a href="$settings[bburl]/member.php?action=register">$lang->welcome_register</a>)]]></template>
-		<template name="header" version="100.07"><![CDATA[	<script language="Javascript" type="text/javascript">
-		 var cookieDomain = "$settings[cookiedomain]";
-		 var cookiePath = "$settings[cookiepath]";
-		 var newpm_prompt = "$lang->newpm_prompt";
-		 var deleteevent_confirm = "$lang->deleteevent_confirm";
-		 var removeattach_confirm = "$lang->removeattach_confirm";
-	</script>
-	<a name="top"></a>
+		<template name="header" version="100.07"><![CDATA[	<a name="top"></a>
 	<div id="container">
 		<div id="header">
 			<div class="logo"><a href="$settings[bburl]/index.php"><img src="$theme[logo]" alt="$settings[bbname]" border="0" /></a></div>

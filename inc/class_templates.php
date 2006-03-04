@@ -70,7 +70,7 @@ class templates
 	 */
 	function get($title, $eslashes=1, $htmlcomments=1)
 	{
-		global $db, $theme, $PHP_SELF;
+		global $db, $theme, $PHP_SELF, $mybb;
 		if(!isset($this->cache[$title]))
 		{
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$title' AND sid IN ('-2','-1','".$theme['templateset']."') ORDER BY sid DESC LIMIT 0, 1");
@@ -78,7 +78,7 @@ class templates
 			$this->cache[$title] = $gettemplate['template'];
 		}
 		$template = $this->cache[$title];
-		if($htmlcomments)
+		if($htmlcomments && $mybb->settings['tplhtmlcomments'] == "yes")
 		{
 			$template = "<!-- start: $title -->\n$template\n<!-- end: $title -->";
 		}

@@ -135,9 +135,38 @@ function upload_attachment($attachment)
 	
 	$posthash = addslashes($mybb->input['posthash']);
 
+	if(isset($attachment['error']) && $attachment['error'] != 0)
+	{
+		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
+		switch($attachment['error'])
+		{
+			case 1: // UPLOAD_ERR_INI_SIZE
+				$ret['error'] .= $lang->error_uploadfailed_php1;
+				break;
+			case 2: // UPLOAD_ERR_FORM_SIZE
+				$ret['error'] .= $lang->error_uploadfailed_php2;
+				break;
+			case 3: // UPLOAD_ERR_PARTIAL
+				$ret['error'] .= $lang->error_uploadfailed_php3;
+				break;
+			case 4: // UPLOAD_ERR_NO_FILE
+				$ret['error'] .= $lang->error_uploadfailed_php4;
+				break;
+			case 6: // UPLOAD_ERR_NO_TMP_DIR
+				$ret['error'] .= $lang->error_uploadfailed_php6;
+				break;
+			case 7: // UPLOAD_ERR_CANT_WRITE
+				$ret['error'] .= $lang->error_uploadfailed_php7;
+				break;
+			default:
+				$ret['error'] .= sprintf($lang->error_uploadfailed_phpx, $attachment['error']);
+				break;
+		}
+		return $ret;
+	}
 	if(!is_uploaded_file($attachment['tmp_name']) || empty($attachment['tmp_name']))
 	{
-		$ret['error'] = $lang->error_uploadfailed;
+		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_php4;
 		return $ret;
 	}
 	$ext = getextension($attachment['name']);
@@ -184,14 +213,23 @@ function upload_attachment($attachment)
 	$file = upload_file($attachment, $mybb->settings['uploadspath'], $filename);
 	if($file['error'])
 	{
-		$ret['error'] = $lang->error_uploadfailed;
+		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
+		switch($file['error'])
+		{
+			case 1:
+				$ret['error'] .= $lang->error_uploadfailed_nothingtomove;
+				break;
+			case 2:
+				$ret['error'] .= $lang->error_uploadfailed_movefailed;
+				break;
+		}
 		return $ret;
 	}
 
 	// Lets just double check that it exists
 	if(!file_exists($mybb->settings['uploadspath']."/".$filename))
 	{
-		$ret['error'] = $lang->error_uploadfailed;
+		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail.$lang->error_uploadfailed_lost;
 		return $ret;
 	}
 
@@ -252,11 +290,11 @@ function upload_file($file, $path, $filename="")
 	}
 	$upload['original_filename'] = preg_replace("#/$#", "", $file['name']); // Make the filename safe
 	$filename = preg_replace("#/$#", "", $filename); // Make the filename safe
-	$moved = move_uploaded_file($file['tmp_name'], $path."/".$filename);
+	$moved = @move_uploaded_file($file['tmp_name'], $path."/".$filename);
 	if(!$moved)
 	{
 		$upload['error'] = 2;
-		return;
+		return $upload;
 	}
 	@chmod($path."/".$filename, 0777);
 	$upload['filename'] = $filename;

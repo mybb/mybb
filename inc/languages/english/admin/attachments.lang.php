@@ -20,7 +20,7 @@ $l['type_added'] = "The attachment type has successfully been added.";
 $l['type_add_missing_fields'] = "You must enter a file size and either an extension or a mime type for the attachment type!";
 $l['type_deleted'] = "The attachment type has successfully been deleted.";
 $l['type_updated'] = "The attachment type has successfully been updated.";
-$l['type_edit_missing_fields'] = "You must at least enter an extension and a mime type for the attachment type!";
+$l['type_edit_missing_fields'] = "You must enter a file size and either an extension or a mime type for the attachment type!";
 $l['type_icon'] = "Icon:<br /><small>The location of a small icon representing this attachment type.</small>";
 
 $l['attach_management'] = "Attachment Management";
@@ -40,6 +40,7 @@ $l['search'] = "Search";
 
 $l['no_attachments'] = "No attachments were found matching your query.";
 $l['attach_search_results'] = "Attachment Search Results";
+$l['orphan_search_results'] = "Orphan Attachment Search Results";
 $l['delete'] = "Delete?";
 $l['filename'] = "Filename";
 $l['author'] = "Author";
@@ -52,6 +53,7 @@ $l['clear_checks'] = "Uncheck Selected Files";
 
 $l['attachs_deleted'] = "The selected attachments have been successfully deleted.";
 $l['attachs_noneselected'] = "No attachments were selected for deletion.";
+$l['problem_deleting'] = "There was a problem deleting one or more of the selected attachments.  This may have been a file-permission problem.";
 
 $l['new_attach_type'] = "New Attachment Type";
 $l['edit_attach_type'] = "Edit Attachment Type";

@@ -60,6 +60,7 @@ $l['nav_users_groups'] = "Users and Groups";
 $l['nav_custom_fields'] = "Custom Profile Fields";
 $l['nav_search_attachments'] = "Search Attachments";
 $l['nav_manage_attachment_types'] = "Attachment Types";
+$l['nav_search_orphan_attachments'] = "Search Orphans";
 $l['nav_add_setting'] = "Add New Setting";
 $l['nav_cache_manager'] = "Cache Manager";
 $l['nav_smilie_manager'] = "Smilie Manager";

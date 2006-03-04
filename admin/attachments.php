@@ -23,7 +23,8 @@ switch($mybb->input['action'])
 	case "search":
 		addacpnav($lang->nav_attachment_manager);
 		break;
-	case "do_search";
+	case "do_search":
+	case "do_orphan_search":
 		addacpnav($lang->nav_attachment_manager, "attachments.php?action=search");
 		addacpnav($lang->nav_attachment_results);
 		break;
@@ -31,7 +32,7 @@ switch($mybb->input['action'])
 		addacpnav($lang->nav_attachtypes, "attachments.php");
 		addacpnav($lang->nav_add_attachtype);
 		break;
-	case "delete";
+	case "delete":
 		addacpnav($lang->nav_attachtypes, "attachments.php");
 		addacpnav($lang->nav_delete_attachtype);
 	case "edit":
@@ -50,7 +51,7 @@ switch($mybb->input['action'])
 if($mybb->input['action'] == "do_add")
 {
 	// add new type to database
-	if(($extension || $mimetype) && $maxsize)
+	if(($mybb->input['extension'] || $mybb->input['mimetype']) && $mybb->input['maxsize'])
 	{
 		$sqlarray = array(
 			"mimetype" => addslashes($mybb->input['mimetype']),
@@ -64,7 +65,7 @@ if($mybb->input['action'] == "do_add")
 	}
 	else
 	{
-		cpredirect("attachments.php", $lang->type_add_missing_fields);
+		cperror($lang->type_add_missing_fields);
 	}
 }
 
@@ -86,7 +87,7 @@ if($mybb->input['action'] == "do_delete")
 if($mybb->input['action'] == "do_edit")
 {
 	// update database with new type settings
-	if(($extension || $mimetype) && $maxsize)
+	if(($mybb->input['extension'] || $mybb->input['mimetype']) && $mybb->input['maxsize'])
 	{
 		$sqlarray = array(
 			"atid" => intval($mybb->input['atid']),
@@ -101,7 +102,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 	else
 	{
-		cpredirect("attachments.php", $lang->type_edit_missing_fields);
+		cperror($lang->type_edit_missing_fields);
 	}
 }
 
@@ -160,8 +161,22 @@ if($mybb->input['action'] == "do_search")
 	{
 		$sql = substr_replace($sql, "WHERE", 0, 4);
 	}
+	// Get attachments from database list
 	$query = $db->query("SELECT a.*, p.tid, p.fid, t.subject, f.name, u.uid, u.username FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (p.fid=f.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) $sql ORDER BY a.filename");
 	$num_results = $db->num_rows($query);
+
+	// Get attachments filenames from filesystem
+	if ($uploads = opendir($mybb->settings['uploadspath']))
+	{
+		while (false !== ($file = readdir($uploads)))
+		{
+			if (substr($file, -7, 7) == ".attach")
+			{
+				$uploaded_files[] = $file;
+			}
+		}
+		closedir($uploads);
+	}
 
 	if($num_results < 1)
 	{
@@ -184,28 +199,24 @@ if($mybb->input['action'] == "do_search")
 	$altbg = "altbg1";
 	while($result = $db->fetch_array($query))
 	{
-		$filename = stripslashes($result['filename']);
-		$filesize = $result['filesize'];
-		if($filesize >= 1073741824)
+		// Check if file exists on the server
+		$key = array_search($result['attachname'], $uploaded_files);
+		if($key !== false)
 		{
-			$filesize = round($filesize / 1073741824 * 100) / 100 . ' ' . $lang->size_gb;
-		}
-		elseif($filesize >= 1048576)
-		{
-			$filesize = round($filesize / 1048576 * 100) / 100 . ' ' . $lang->size_mb;
-		}
-		elseif($filesize >= 1024)
-		{
-			$filesize = round($filesize / 1024 * 100) / 100 . ' ' . $lang->size_kb;
+			unset($uploaded_files[$key]);
+			$filename = stripslashes($result['filename']);
 		}
 		else
 		{
-			$filesize = $filesize . ' ' . $lang->size_bytes;
+			$filename = "<span class=\"highlight1\">".stripslashes($result['filename'])."</span>";
 		}
+
+		
+		$filesize = getfriendlysize($result['filesize']);
 
 		echo "<tr>\n";
 		echo "<td class=\"$altbg\" align=\"center\"><input type=\"checkbox\" name=\"check[$result[aid]]\" value=\"$result[aid]\"></td>\n";
-		echo "<td class=\"$altbg\"><a href=\"../attachment.php?aid=$result[aid]\">$filename</td>\n";
+		echo "<td class=\"$altbg\"><a href=\"../attachment.php?aid=$result[aid]\">$filename</a></td>\n";
 		echo "<td class=\"$altbg\"><a href=\"../member.php?action=profile&uid=$result[uid]\">$result[username]</a></td>\n";
 		echo "<td class=\"$altbg\"><a href=\"../forumdisplay.php?fid=$result[fid]\">$result[name]</a> &raquo; <a href=\"../showthread.php?tid=$result[tid]&pid=$result[pid]#pid$result[pid]\">$result[subject]</a></td>\n";
 		echo "<td class=\"$altbg\">$result[filetype]</td>\n";
@@ -240,7 +251,95 @@ if($mybb->input['action'] == "do_search_delete")
 	}
 	else
 	{
-		cpredirect("attachments.php?action=search", $lang->attachs_noneselected);
+		cperror($lang->attachs_noneselected);
+	}
+}
+
+if($mybb->input['action'] == "orphans")
+{
+	// Search files that do not exist in the database
+	// Get attachments from database list
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "attachname");
+	$db_list = array();
+	while($file = $db->fetch_array($query))
+	{
+		$db_list[] = $file['attachname'];
+	}
+	// Get attachments filenames from filesystem
+	if ($uploads = opendir($mybb->settings['uploadspath']))
+	{
+		while (false !== ($file = readdir($uploads)))
+		{
+			if (substr($file, -7, 7) == ".attach" && !in_array($file, $db_list))
+			{
+				$orphan_files[] = $file;
+			}
+		}
+		closedir($uploads);
+	}
+
+	cpheader();
+	startform("attachments.php", "", "do_orphan_delete");
+	starttable();
+	tableheader($lang->orphan_search_results, "", "3");
+	echo "<tr>\n";
+	echo "<td class=\"subheader\">$lang->delete</td>\n";
+	echo "<td class=\"subheader\">$lang->filename</td>\n";
+	echo "<td class=\"subheader\">$lang->filesize</td>\n";
+	echo "</tr>\n";
+
+	$altbg = "altbg1";
+	foreach($orphan_files as $filename)
+	{
+		$filesize = getfriendlysize(filesize($mybb->settings['uploadspath']."/".$filename));
+
+		echo "<tr>\n";
+		echo "<td class=\"$altbg\" align=\"center\"><input type=\"checkbox\" name=\"check[]\" value=\"$filename\"></td>\n";
+		echo "<td class=\"$altbg\">$filename</td>\n";
+		echo "<td class=\"$altbg\">$filesize</td>\n";
+		echo "</tr>\n";
+
+		if($altbg == "altbg1")
+		{
+			$altbg = "altbg2";
+		}
+		else
+		{
+			$altbg = "altbg1";
+		}
+	}
+	endtable();
+	endform($lang->delete_selected, $lang->clear_checks);
+	cpfooter();
+}
+if($mybb->input['action'] == "do_orphan_delete")
+{
+	// delete selected orphans from filesystem
+	if(is_array($mybb->input['check']) && !empty($mybb->input['check']))
+	{
+		$error = false;
+		foreach($mybb->input['check'] as $filename)
+		{
+			if(file_exists($mybb->settings['uploadspath']."/".basename($filename)))
+			{
+				if(!@unlink($mybb->settings['uploadspath']."/".basename($filename)))
+				{
+					$error = true;
+				}
+			}
+		}
+		if($error)
+		{
+			cpredirect("attachments.php?action=orphans", $lang->problem_deleting);
+		}
+		else
+		{
+			cpredirect("attachments.php?action=orphans", $lang->attachs_deleted);
+		}
+	}
+	else
+	{
+		cperror($lang->attachs_noneselected);
 	}
 }
 
