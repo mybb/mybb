@@ -625,6 +625,15 @@ elseif($mybb->input['action'] == "options")
 	{
 		$showcodebuttonscheck = "";
 	}
+
+	if($mybb->user['showredirect'] != "no")
+	{
+		$showredirectcheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$showredirectcheck = "";
+	}
 	
 	if($mybb->user['pmnotify'] != "no")
 	{
@@ -831,6 +840,11 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 	{
 		$mybb->input['threadmode'] = "linear";
 	}
+
+	if($mybb->input['showredirect'] != "yes")
+	{
+		$mybb->input['showredirect'] = "no";
+	}
 	
 	$updatedoptions = array(
 		"allownotices" => $mybb->input['allownotices'],
@@ -852,7 +866,8 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 		"daysprune" => intval($mybb->input['daysprune']),
 		"language" => $mybb->input['language'],
 		"showcodebuttons" => $mybb->input['showcodebuttons'],
-		"pmnotify" => $mybb->input['pmnotify']
+		"pmnotify" => $mybb->input['pmnotify'],
+		"showredirect" => $mybb->input['showredirect']
 		);
 
 	if($mybb->settings['usertppoptions'])

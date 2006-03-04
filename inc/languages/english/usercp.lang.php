@@ -112,6 +112,7 @@ $l['receive_pms_desc'] = "Enables you to send and receive Private Messages.";
 $l['pm_popup'] = "Alert me with a popup box when I receive a Private Message.";
 $l['pm_notify'] = "Notify me by email when I recieve a new Private Message.";
 $l['show_codebuttons'] = "Show the MyCode formatting options on the posting pages.";
+$l['show_redirect'] = "Show friendly redirect pages.";
 $l['thread_view_options'] = "Thread View Options";
 $l['thread_mode'] = "Thread View Mode:";
 $l['thread_mode_desc'] = "The style of that threads should be shown in to you. Selecting 'Use Default' will use the boards default mode.";

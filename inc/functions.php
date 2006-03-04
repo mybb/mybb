@@ -340,7 +340,7 @@ function redirect($url, $message="You will now be redirected", $title="")
 	{
 		$title = $mybb->settings['bbname'];
 	}
-	if($mybb->settings['redirects'] == "on")
+	if($mybb->settings['redirects'] == "on" && $mybb->user['showredirect'] != "no")
 	{
 		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
 		outputpage($redirectpage);

@@ -1180,6 +1180,10 @@ $pppselect
 <legend><strong>$lang->other_options</strong></legend>
 <table cellspacing="0" cellpadding="$theme[tablespace]">
 <tr>
+<td valign="top" width="1"><input type="checkbox" name="showredirect" id="showredirect" value="yes" $showredirectcheck /></td>
+<td><span class="smalltext"><label for="showredirect">$lang->show_redirect</label></span></td>
+</tr>
+<tr>
 <td valign="top" width="1"><input type="checkbox" name="showcodebuttons" id="showcodebuttons" value="1" $showcodebuttonscheck /></td>
 <td><span class="smalltext"><label for="showcodebuttons">$lang->show_codebuttons</label></span></td>
 </tr>

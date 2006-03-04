@@ -636,6 +636,7 @@ $tables[] = "CREATE TABLE mybb_users (
   showsigs char(3) NOT NULL default '',
   showavatars char(3) NOT NULL default '',
   showquickreply char(3) NOT NULL default '',
+  showredirect char(3) NOT NULL default '',
   ppp smallint(6) NOT NULL default '0',
   tpp smallint(6) NOT NULL default '0',
   daysprune smallint(6) NOT NULL default '0',
