@@ -364,6 +364,7 @@ function perform_search_mysql($search)
 		{
 			if(!$searchin[$forum])
 			{
+				$forum = intval($forum);
 				$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
 				if($db->num_rows($query) == 1)
 				{
@@ -561,6 +562,7 @@ function perform_search_mysql_ft($search)
 		}
 		foreach($search['forums'] as $forum)
 		{
+			$forum = intval($forum);
 			if(!$searchin[$forum])
 			{
 				$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");

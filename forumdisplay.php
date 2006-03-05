@@ -110,17 +110,6 @@ if($forums)
 	eval("\$subforums =\"".$templates->get("forumdisplay_subforums")."\";");
 }
 
-// Expand (or Collapse) forums
-if($mybb->input['action'] == "expand")
-{
-	mysetcookie("fcollapse[$fid]", '');
-	$fcollapse[$fid] = '';
-}
-elseif($mybb->input['action'] == "collapse")
-{
-	mysetcookie("fcollapse[$fid]", "y");
-	$fcollapse[$fid] = "y";
-}
 $excols = "forumdisplay";
 
 if($fpermissions['canview'] != "yes")

@@ -197,17 +197,6 @@ if($mybb->settings['modlist'] != "off")
 	}
 }
 
-// Expand (or Collapse) forums
-if($mybb->input['action'] == "expand")
-{
-	mysetcookie("fcollapse[$fid]", '');
-	$fcollapse[$fid] = '';
-}
-elseif($mybb->input['action'] == "collapse")
-{
-	mysetcookie("fcollapse[$fid]", "y");
-	$fcollapse[$fid] = "y";
-}
 $excols = "index";
 $permissioncache['-1'] = "1";
 $bgcolor = "trow1";
@@ -223,7 +212,7 @@ $forums = getforums();
 
 function getforums($pid="0", $depth=1, $permissions="")
 {
-	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $mybbforumread, $settings, $mybbuser, $excols, $fcollapse, $templates, $bgcolor, $collapsed, $lang, $showdepth, $forumpass, $plugins, $parser;
+	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $mybbforumread, $settings, $mybbuser, $excols, $templates, $bgcolor, $collapsed, $lang, $showdepth, $forumpass, $plugins, $parser;
 	if(is_array($fcache[$pid]))
 	{
 		while(list($key, $main) = each($fcache[$pid]))

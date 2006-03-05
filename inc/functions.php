@@ -1487,7 +1487,7 @@ function getunviewableforums()
 		$pwverified = 1;
 		if($forum['password'] != "")
 		{
-			if($forumpass[$forum['fid']] != md5($mybbuser['uid'].$forum['password']))
+			if($_COOKIE['forumpass'][$forum['fid']] != md5($mybbuser['uid'].$forum['password']))
 			{
 				$pwverified = 0;
 			}
