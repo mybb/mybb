@@ -70,8 +70,43 @@ class EventDataHandler extends Handler
 			$this->set_error("incorrect_day");
 			return false;
 		}
+		return intval($day)."-".intval($month)."-".intval($year);
+	}
+
+	/**
+	 * Verifies if the user is allowed to add public or private events.
+	 *
+	 * @param string If the event is private (yes) or not (no).
+	 * @return boolean True or false depending on their permission.
+	 */
+	function verify_scope(&$private="no")
+	{
+		global $mybb;
+
+		// If a private event
+		if($private == "yes")
+		{
+			// Can the user add private events?
+			if($mybb->user['uid'] == 0 || $mybb->usergroup['canaddprivateevents'] == "no")
+			{
+				$this->set_error("no_permission_private_event");
+				return false;
+			}
+		}
+		else
+		{
+			// Public event, got permission?
+			if($mybb->usergroup['canaddpublicevents'] == "no")
+			{
+				$this->set_error("no_permission_public_event");
+				return false;
+			}
+			// Default value
+			$private = "no";
+		}
 		return true;
 	}
+
 
 	/**
 	 * Validate an event.
@@ -83,28 +118,15 @@ class EventDataHandler extends Handler
 		// Every event needs a name.
 		$this->verify_name($event['name']);
 
+		// Check for event description.
 		$this->verify_description($event['description']);
 
-		$this->verify_date($event['day'], $event['month'], $event['year']);
+		// Check valid date & return formatted date.
+		$event['date'] = $this->verify_date($event['day'], $event['month'], $event['year']);
 
-		// Decide what type of event this is.
-		if($event['private'] == "yes")
-		{
-			// Check if the user is allowed to add private events if he is trying to.
-			if($mybb->user['uid'] == 0 || $mybb->usergroup['canaddprivateevents'] == "no")
-			{
-				$this->set_error("no_permission_private_event");
-			}
-		}
-		else
-		{
-			// Check if the user is allowed to add public events if he is trying to.
-			if($mybb->usergroup['canaddpublicevents'] == "no")
-			{
-				$this->set_error("no_permission_public_event");
-			}
-		}
-		
+		// Public event or private event?
+		$this->verify_scope($event['private']);
+
 		$plugins->run_hooks("datahandler_event_validate");
 		
 		// We are done validating, return.
@@ -117,29 +139,6 @@ class EventDataHandler extends Handler
 		{
 			return false;
 		}
-	}
-	
-	/**
-	 * Get the options for an event.
-	 *
-	 * @param array The event data array.
-	 * @return array The cleaned event data array.
-	 */
-	function get_options($event)
-	{
-		// Check if the event is private or public.
-		if($event['private'] == "yes")
-		{
-			$event['options']['private'] = "yes";
-		}
-		else
-		{
-			$event['options']['private'] = "no";
-		}
-		
-		// Figure out the event date.
-		$event['date'] = intval($event['day'])."-".intval($event['month'])."-".intval($event['year']);
-		return $event;
 	}
 	
 	/**
@@ -168,7 +167,7 @@ class EventDataHandler extends Handler
 			"author" => $mybb->user['uid'],
 			"date" => $event['date'],
 			"description" => $db->escape_string($event['description']),
-			"private" => $event['options']['private']
+			"private" => $event['private']
 		);
 		$db->insert_query(TABLE_PREFIX."events", $newevent);
 		$eid = $db->insert_id();
