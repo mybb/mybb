@@ -21,5 +21,5 @@ $langinfo['rtl'] = 0;
 $langinfo['htmllang'] = "en";
 
 // Sets the character set, blank uses the default.
-$langinfo['charset'] = "iso-8859-1";
+$langinfo['charset'] = "UTF-8";
 ?>

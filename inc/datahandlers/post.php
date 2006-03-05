@@ -48,31 +48,24 @@ class PostDataHandler extends DataHandler
 				$this->set_error("post_flooding");
 			}
 		}
-		// Message of correct length?
-		if(strlen(trim($post['message'])) == 0)
-		{
-			$this->set_error("no_message");
-		}
-		elseif(strlen($post['message']) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($post['fid']) != "yes")
-		{
-			$this->set_error("message_too_long");
-		}
-		elseif(strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && ismod($post['fid']) != "yes")
-		{
-			$this->set_error("message_too_short");
-		}
 
+		// Verify all the post parts.
+		$this->verify_message($post['message']);
+		$this->verify_subject($post['subject']);
+		
+		//
+		// CHRIS IS GOING TO CHANGE THIS STILL!
+		//
 		// Check for correct subject content.
 		if($post['action'] == "edit" && $post['pid'])
 		{
-			// Check if this post is the first in the thread.
-			$query = $db->query("
-				SELECT *
-				FROM ".TABLE_PREFIX."posts
-				WHERE tid='$tid'
-				ORDER BY dateline ASC
-				LIMIT 0,1
-			");
+			$options = array(
+				"limit" => 1,
+				"limit_start" => 0,
+				"order_by" => "dateline",
+				"order_dir" => "asc"
+			);
+			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid, $options);
 			$firstcheck = $db->fetch_array($query);
 			if($firstcheck['pid'] == $post['pid'])
 			{
@@ -160,6 +153,38 @@ class PostDataHandler extends DataHandler
 		{
 			return true;
 		}
+	}
+	
+	/**
+	 * Verifies a post message.
+	 *
+	 * @param string The message content.
+	 */
+	function verify_message($message)
+	{
+		// Message of correct length?
+		if(strlen(trim($post['message'])) == 0)
+		{
+			$this->set_error("no_message");
+		}
+		elseif(strlen($post['message']) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($post['fid']) != "yes")
+		{
+			$this->set_error("message_too_long");
+		}
+		elseif(strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && ismod($post['fid']) != "yes")
+		{
+			$this->set_error("message_too_short");
+		}
+	}
+	
+	/**
+	 * Verifies a post subject.
+	 *
+	 * @param string The post subject.
+	 */
+	function verify_post_subject($subject)
+	{
+		
 	}
 	
 	/**

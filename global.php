@@ -220,7 +220,7 @@ if($lang->settings['charset'])
 }
 else
 {
-	$charset = "iso-8859-1";
+	$charset = "UTF-8";
 }
 
 // Banned warning
