@@ -16,6 +16,64 @@
 class EventDataHandler extends Handler
 {
 	/**
+	 * Verifies if an event name is valid or not and attempts to fix it
+	 *
+	 * @param string The name of the event.
+	 * @return boolean True if valid, false if invalid.
+	 */
+	function verify_name(&$name)
+	{
+		$name = trim($name);
+		if(!$name)
+		{
+			$this->set_error("no_name");
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Verifies if an event description is valid or not and attempts to fix it
+	 *
+	 * @param string The description of the event.
+	 * @return boolean True if valid, false if invalid.
+	 */
+	function verify_description(&$description)
+	{
+		$description = trim($description);
+		if(!$description)
+		{
+			$this->set_error("no_description");
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Verifies if an event date is valid or not and attempts to fix it
+	 *
+	 * @param integer The day of the month the event lies on.
+	 * @param integer The month of the year the event lies on.
+	 * @param integer The year that the event lies on.
+	 * @return boolean True if valid, false if invalid.
+	 */
+	function verify_date(&$day, &$month, &$year)
+	{
+		if(!$event['day'] || !$event['month'] || !$event['year'])
+		{
+			$this->set_error("invalid_date");
+			return false;
+		}
+		// Check if the day actually exists.
+		if($day > date("t", mktime(0, 0, 0, $month, 1, $year)))
+		{
+			$this->set_error("incorrect_day");
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Validate an event.
 	 *
 	 * @param array The event data array.
@@ -23,26 +81,11 @@ class EventDataHandler extends Handler
 	function validate_event($event)
 	{
 		// Every event needs a name.
-		if(!$event['name'])
-		{
-			$this->set_error("no_name");
-		}
-		
-		if(!$event['day'] || !$event['month'] || !$event['year'])
-		{
-			$this->set_error("invalid_date");
-		}
+		$this->verify_name($event['name']);
 
-		// Check if the day actually exists.
-		if($event['day'] > date("t", mktime(0, 0, 0, $event['month'], 1, $event['year'])))
-		{
-			$this->set_error("incorrect_day");
-		}
+		$this->verify_description($event['description']);
 
-		if(!trim($event['description']))
-		{
-			$this->set_error("no_description");
-		}
+		$this->verify_date($event['day'], $event['month'], $event['year']);
 
 		// Decide what type of event this is.
 		if($event['private'] == "yes")
