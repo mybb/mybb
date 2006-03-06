@@ -242,7 +242,24 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$errors = $posthandler->get_errors();
 		foreach($errors as $error)
 		{
-			$post_errors[] = $lang->$error;
+			//
+			// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
+			// Used to determine any missing language variables from the datahandlers
+			//
+			if($lang->$errror)
+			{
+				$post_errors[] = $lang->$error;
+			}
+			else
+			{
+				$post_errors[] = "Missing language var: ".$error;
+			}
+			//
+			// END TESTING CODE
+			//
+			/*
+				$post_errors[] =$lang->$error;
+			*/
 		}
 		$reply_errors = inlineerror($post_errors);
 		$mybb->input['action'] = "newreply";
