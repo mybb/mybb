@@ -52,7 +52,7 @@ if(!isset($mybb->settings['bblanguage']))
 {
 	$mybb->settings['bblanguage'] = "english";
 }
-if(isset($mybb->user['language']))
+if(isset($mybb->user['language']) && $lang->languageExists($mybb->user['language']))
 {
 	$mybb->settings['bblanguage'] = $mybb->user['language'];
 }

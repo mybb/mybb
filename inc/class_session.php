@@ -163,6 +163,7 @@ class session
 		}
 		else
 		{
+			$popupadd = '';
 			$loadpmpopup = 0;
 		}
 
