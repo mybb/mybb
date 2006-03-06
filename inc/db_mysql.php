@@ -452,6 +452,7 @@ class databaseEngine {
 	 */
 	function insert_query($table, $array)
 	{
+		$comma = $query1 = $query2 = "";
 		if(!is_array($array))
 		{
 			return false;
@@ -480,6 +481,7 @@ class databaseEngine {
 		{
 			return false;
 		}
+		$comma = $query = "";
 		foreach($array as $field => $value)
 		{
 			$query .= $comma.$field."='".$value."'";

@@ -22,6 +22,7 @@ $plugins->run_hooks("index_start");
 // Load global language phrases
 $lang->load("index");
 
+$logoutlink = $loginform = '';
 if($mybb->user['uid'] != 0)
 {
 	eval("\$logoutlink = \"".$templates->get("index_logoutlink")."\";");
@@ -30,6 +31,7 @@ else
 {
 	eval("\$loginform = \"".$templates->get("index_loginform")."\";");
 }
+$whosonline = '';
 if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "no")
 {
 	// Get the online users.
@@ -37,6 +39,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 	$comma = '';
 	$query = $db->query("SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY u.username ASC, s.time DESC");
 	$membercount = 0;
+	$onlinemembers = '';
 	$guestcount = 0;
 	$anoncount = 0;
 	$doneusers = array();
@@ -133,6 +136,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 }
 
 // Build the birthdays for to show on the index page.
+$bdays = $birthdays = '';
 if($mybb->settings['showbirthdays'] != "no")
 {
 	// First, see what day this is.
@@ -265,12 +269,14 @@ $forums = getforums();
 function getforums($pid="0", $depth=1, $permissions="")
 {
 	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $mybbforumread, $settings, $mybbuser, $excols, $templates, $bgcolor, $collapsed, $lang, $showdepth, $forumpass, $plugins, $parser;
+	$forumlisting = '';
 	if(is_array($fcache[$pid]))
 	{
 		while(list($key, $main) = each($fcache[$pid]))
 		{
 			while(list($key, $forum) = each($main))
 			{
+				$forums = $subforums = '';
 				$perms = $forumpermissions[$forum['fid']];
 				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
 				{
@@ -373,23 +379,16 @@ function getforums($pid="0", $depth=1, $permissions="")
 					}
 
 					// Threads and posts requiring moderation
+					$unapproved_threads = $unapproved_posts = '';
 					if(ismod($forum['fid']) == "yes")
 					{
 						if($forum['unapprovedposts'])
 						{
 							$unapproved_posts = " (".mynumberformat($forum['unapprovedposts']).")";
 						}
-						else
-						{
-							$unapproved_posts = '';
-						}
 						if($forum['unapprovedthreads'])
 						{
 							$unapproved_threads = " (".mynumberformat($forum['unapprovedthreads']).")";
-						}
-						else
-						{
-							$unapproved_threads = '';
 						}
 					}
 
@@ -425,7 +424,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 					}
 					$expdisplay = '';
 					$cname = "cat_".$forum['fid']."_c";
-					if($collapsed[$cname] == "display: show;")
+					if(isset($collapsed[$cname]) && $collapsed[$cname] == "display: show;")
 					{
 						$expcolimage = "collapse_collapsed.gif";
 						$expdisplay = "display: none;";
@@ -445,7 +444,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$bgcolor = "trow2";
 					}
 
-					if($fcache[$forum['fid']] && $depth < $showdepth)
+					if(isset($fcache[$forum['fid']]) && $depth < $showdepth)
 					{
 						$newdepth = $depth + 1;
 						$forums = getforums($forum['fid'], $newdepth, $perms);
@@ -457,7 +456,6 @@ function getforums($pid="0", $depth=1, $permissions="")
 					}
 					eval("\$forumlisting .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 				}
-				$forums = $subforums = '';
 			}
 		}
 	}

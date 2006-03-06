@@ -53,7 +53,7 @@ class session
 		//
 		// Attempt to find a session id in the cookies
 		//
-		if($_COOKIE['sid'])
+		if(isset($_COOKIE['sid']))
 		{
 			$this->sid = addslashes($_COOKIE['sid']);
 		}
@@ -90,7 +90,7 @@ class session
 		//
 		// If no user still, then we have a guest.
 		//
-		if(!$mybb->user['uid'])
+		if(!isset($mybb->user['uid']))
 		{
 			//
 			// Detect if this guest is a search engine spider
@@ -335,11 +335,16 @@ class session
 		//
 		// Has this user visited before? Lastvisit need updating?
 		//
-		if($_COOKIE['mybb']['lastvisit'])
+		if(isset($_COOKIE['mybb']['lastvisit']))
 		{
-			if(!$_COOKIE['mybb']['lastactive'])
+			if(!isset($_COOKIE['mybb']['lastactive']))
 			{
 				$mybb->user['lastactive'] = time();
+				$_COOKIE['mybb']['lastactive'] = $mybb->user['lastactive'];
+			}
+			else
+			{
+				$mybb->user['lastactive'] = $_COOKIE['mybb']['lastactive'];
 			}
 			if($time - $_COOKIE['mybb']['lastactive'] > 900)
 			{
@@ -486,6 +491,7 @@ class session
 	function get_special_locations()
 	{
 		global $mybb;
+		$array = array("1" => "", "2" => "");
 		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['fid']) > 0)
 		{
 			$array[1] = intval($mybb->input['fid']);

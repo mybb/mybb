@@ -166,7 +166,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
 		$offset = 0;
 	}
 	$date = gmdate($format, $stamp + ($offset * 3600));
-	if($mybb->settings['dateformat'] == $format && $ty && $mybb->settings['todayyesterday'] != "no")
+	if($mybb->settings['dateformat'] == $format && $ty)
 	{
 		$stamp = mktime();
 		$todaysdate = gmdate($format, $stamp + ($offset * 3600));
@@ -247,6 +247,7 @@ function buildparentlist($fid, $column="fid", $joiner="OR", $parentlist="")
 	$parentlist = (!$parentlist) ? getparentlist($fid) : $parentlist;
 	$parentsexploded = explode(",", $parentlist);
 	$builtlist = "(";
+	$sep = '';
 	foreach($parentsexploded as $key => $val)
 	{
 		$builtlist .= "$sep$column='$val'";
@@ -545,7 +546,11 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 		}
 		else
 		{
-			$gid = $mybb->user['usergroup'].",".$mybb->user['additionalgroups'];
+			$gid = $mybb->user['usergroup'];
+			if(isset($mybb->user['additionalgroups']))
+			{
+				$gid .= ",".$mybb->user['additionalgroups'];
+			}
 			$groupperms = $mybbgroup;
 		}
 	}
@@ -671,10 +676,16 @@ function getmodpermissions($fid, $uid="0", $parentslist="")
 {
 	global $mybb, $mybbuser, $db;
 	static $modpermscache;
-	$uid=(!$uid)?$mybb->user[$uid]:$uid;
-	if(!$modpermscache[$uid][$fid])
+	if($uid < 1)
 	{
-		$parentslist=(!$parentslist)?getparentlist($fid):$parentslist;
+		$uid = $mybb->user['uid'];
+	}
+	if(!isset($modpermscache[$uid][$fid]))
+	{
+		if(!$parentslist)
+		{
+			$parentslist = getparentlist($fid);
+		}
 		$sql = buildparentlist($fid, "fid", "OR", $parentslist);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators WHERE uid='$uid' AND $sql");
 		$perms = $db->fetch_array($query);
@@ -791,7 +802,7 @@ function mysetcookie($name, $value="", $expires="")
 	}
 	else
 	{
-		if($mybb->user['remember'] == "no")
+		if(isset($mybb->user['remember']) == "no")
 		{
 			$expires = 0;
 		}
@@ -843,8 +854,12 @@ function myunsetcookie($name)
  */
 function mygetarraycookie($name, $id)
 {
+	if(!isset($_COOKIE['mybb'][$name]))
+	{
+		return false;
+	}
 	$cookie = unserialize($_COOKIE['mybb'][$name]);
-	if($cookie[$id])
+	if(isset($cookie[$id]))
 	{
 		return $cookie[$id];
 	}
@@ -1383,7 +1398,7 @@ function getreputation($reputation)
 
 function getip() {
 	global $_SERVER;
-	if($_SERVER['HTTP_X_FORWARDED_FOR'])
+	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 	{
 		if(preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses))
 		{
@@ -1397,9 +1412,9 @@ function getip() {
 			}
 		}
 	}
-	if(!$ip)
+	if(!isset($ip))
 	{
-		if($_SERVER['HTTP_CLIENT_IP'])
+		if(isset($_SERVER['HTTP_CLIENT_IP']))
 		{
 			$ip = $_SERVER['HTTP_CLIENT_IP'];
 		}
@@ -1531,9 +1546,9 @@ function buildnav($finished=1)
 		reset($navbits);
 		foreach($navbits as $key => $navbit)
 		{
-			if($navbits[$key+1])
+			if(isset($navbits[$key+1]))
 			{
-				if($navbits[$key+2]) { $sep = $navsep; } else { $sep = ""; }
+				if(isset($navbits[$key+2])) { $sep = $navsep; } else { $sep = ""; }
 				eval("\$nav .= \"".$templates->get("nav_bit")."\";");
 			}
 		}
@@ -1977,25 +1992,25 @@ function get_current_location()
 	{
 		return MYBB_LOCATION;
 	}
-	if($_SERVER['REQUEST_URI'])
+	if(isset($_SERVER['REQUEST_URI']))
 	{
 		$location = $_SERVER['REQUEST_URI'];
 	}
-	elseif($ENV_['REQUEST_URI'])
+	elseif(isset($ENV_['REQUEST_URI']))
 	{
 		$location = $ENV['REQUEST_URI'];
 	}
 	else
 	{
-		if($_SERVER['PATH_INFO'])
+		if(isset($_SERVER['PATH_INFO']))
 		{
 			$location = $_SERVER['PATH_INFO'];
 		}
-		elseif($_ENV['PATH_INFO'])
+		elseif(isset($_ENV['PATH_INFO']))
 		{
 			$location = $_SERVER['PATH_INFO'];
 		}
-		elseif($_ENV['PHP_SELF'])
+		elseif(isset($_ENV['PHP_SELF']))
 		{
 			$location = $_ENV['PHP_SELF'];
 		}
@@ -2003,43 +2018,43 @@ function get_current_location()
 		{
 			$location = $_SERVER['PHP_SELF'];
 		}
-			if($_SERVER['QUERY_STRING'])
+		if(isset($_SERVER['QUERY_STRING']))
 		{
 			$location .= "?".$_SERVER['QUERY_STRING'];
 		}
-		elseif($_ENV['QUERY_STRING'])
+		elseif(isset($_ENV['QUERY_STRING']))
 		{
 			$location = "?".$_ENV['QUERY_STRING'];
 		}
 	}
 
-	if($_SERVER['REQUEST_METHOD'] == "POST" || $_ENV['REQUEST_METHOD'] == "POST")
+	if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
 	{
-		if($_POST['action'])
+		if(isset($_POST['action']))
 		{
 			$addloc[] = "action=".$_POST['action'];
 		}
-		if($_POST['fid'])
+		if(isset($_POST['fid']))
 		{
 			$addloc[] = "fid=".$_POST['fid'];
 		}
-		if($_POST['tid'])
+		if(isset($_POST['tid']))
 		{
 			$addloc[] = "tid=".$_POST['tid'];
 		}
-		if($_POST['pid'])
+		if(isset($_POST['pid']))
 		{
 			$addloc[] = "pid=".$_POST['pid'];
 		}
-		if($_POST['uid'])
+		if(isset($_POST['uid']))
 		{
 			$addloc[] ="uid=".$_POST['uid'];
 		}
-		if($_POST['eid'])
+		if(isset($_POST['eid']))
 		{
 			$addloc[] = "eid=".$_POST['eid'];
 		}
-		if(is_array($addloc))
+		if(isset($addlock) && is_array($addloc))
 		{
 			$location .= "?".implode("&", $addloc);
 		}
@@ -2121,7 +2136,14 @@ function mynumberformat($number)
 	else
 	{
 		$parts = explode('.', $number);
-		$decimals = strlen($parts[1]);
+		if(isset($parts[1]))
+		{
+			$decimals = strlen($parts[1]);
+		}
+		else
+		{
+			$decimals = 2;
+		}
 		return number_format($number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
 	}
 }

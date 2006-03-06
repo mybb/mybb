@@ -124,7 +124,7 @@ class MyBB {
 			$this->unset_globals($_FILES);
 			$this->unset_globals($_COOKIE);
 		}
-		if($this->input['debug'])
+		if(isset($this->input['debug']))
 		{
 			$this->debug = 1;
 		}
@@ -198,7 +198,7 @@ class MyBB {
 		{
 			foreach($variables as $var)
 			{
-				if($type == "int" && @$this->input[$var] && $this->input[$var] != "lastposter")
+				if($type == "int" && isset($this->input[$var]) && $this->input[$var] != "lastposter")
 				{
 					$this->input[$var] = intval($this->input[$var]);
 				}

@@ -35,7 +35,7 @@ if(is_dir("install") && !file_exists("install/lock"))
 //
 // Create this users session
 //
-if(isset($nosession[$mybb->input['action']]) || isset($mybb->input['thumbnail']))
+if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || isset($mybb->input['thumbnail']))
 {
 	define("NO_ONLINE", 1);
 }
@@ -48,11 +48,11 @@ $plugins->run_hooks("global_start");
 //
 // Set and load the language
 //
-if(!$mybb->settings['bblanguage'])
+if(!isset($mybb->settings['bblanguage']))
 {
 	$mybb->settings['bblanguage'] = "english";
 }
-if($mybb->user['language'])
+if(isset($mybb->user['language']))
 {
 	$mybb->settings['bblanguage'] = $mybb->user['language'];
 }
@@ -65,9 +65,9 @@ $mybb->settings['bbname'] = stripslashes($mybb->settings['bbname']);
 $settings['bbname'] = stripslashes($mybb->settings['bbname']);
 
 // Which thread mode is our user using?
-if(!$mybb->input['mode'])
+if(!isset($mybb->input['mode']))
 {
-	if($mybb->user['threadmode'])
+	if(isset($mybb->user['threadmode']))
 	{
 		$mybb->input['mode'] = $mybb->user['threadmode'];
 	}
@@ -84,40 +84,40 @@ if(!$mybb->input['mode'])
 // Select the board theme to use.
 $loadstyle = "";
 $style = array();
-if($mybb->user['style'] != "" && $mybb->user['style'] != "0")
+if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 {
 	$loadstyle = "tid='".$mybb->user['style']."'";
 }
-if($mybb->input['pid'] > 0 && $mybb->input['tid'])
+if(isset($mybb->input['pid']) && isset($mybb->input['tid']))
 {
 	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f, ".TABLE_PREFIX."posts p WHERE f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'");
 	$style = $db->fetch_array($query);
 }
-if($mybb->input['pid'] > 0 && !$mybb->input['tid'])
+if(isset($mybb->input['pid']) && !isset($mybb->input['tid']))
 {
 	$query = $db->query("SELECT p.fid, f.style, f.overridestyle FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.pid='".intval($mybb->input['pid'])."'");
 	$style = $db->fetch_array($query);
 }
-if($mybb->input['tid'] > 0 && $mybb->input['fid'])
+if(isset($mybb->input['tid']) && isset($mybb->input['fid']))
 {
 	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f, ".TABLE_PREFIX."threads t WHERE f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'");
 	$style = $db->fetch_array($query);
 }
-if($mybb->input['tid'] > 0 && !$mybb->input['fid'])
+if(isset($mybb->input['tid']) && !isset($mybb->input['fid']))
 {
 	$query = $db->query("SELECT t.fid, f.style, f.overridestyle FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE t.tid='".intval($mybb->input['tid'])."'");
 	$style = $db->fetch_array($query);
 }
-if($mybb->input['fid'] > 0)
+if(isset($mybb->input['fid']))
 {
 	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f WHERE f.fid='".intval($mybb->input['fid'])."'");
 	$style = $db->fetch_array($query);
 }
-if(is_numeric($style['style']) && $style['style'] > 0)
+if(isset($style['style']))
 {
-	if($style['overridestyle'] == "yes" || !$mybb->user['style'])
+	if($style['overridestyle'] == "yes" || !isset($mybb->user['style']))
 	{
-		$loadstyle = "tid='".$style['style']."'";
+		$loadstyle = "tid='".intval($style['style'])."'";
 	}
 }
 if(!$loadstyle)
@@ -148,7 +148,7 @@ else
 }
 
 // Load Main Templates and Cached Templates
-if($templatelist)
+if(isset($templatelist))
 {
 	$templatelist .= ",";
 }
@@ -161,7 +161,7 @@ $datenow = mydate($mybb->settings['dateformat'], time(), '', false);
 $timenow = mydate($mybb->settings['timeformat'], time());
 
 // Make the users last visit look purtty
-if($mybb->user['lastvisit'])
+if(isset($mybb->user['lastvisit']))
 {
 	$lastvisit = mydate($mybb->settings['dateformat'], $mybb->user['lastvisit']) . ", " . mydate($mybb->settings['timeformat'], $mybb->user['lastvisit']);
 }
@@ -170,6 +170,7 @@ else
 	$lastvisit = $lang->lastvisit_never;
 }
 
+$bbclosedwarning = '';
 if($mybb->settings['boardclosed'] == "yes")
 {
 	if($mybb->usergroup['cancp'] == "yes")
@@ -224,6 +225,7 @@ else
 }
 
 // Banned warning
+$bannedwarning = '';
 if($mybb->usergroup['isbannedgroup'] == "yes")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid = ".$mybb->user['uid']." LIMIT 1");
@@ -285,7 +287,6 @@ if(is_array($bannedips))
 		}
 	}
 }
-
 // Board closed
 if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && ($mybb->input['action'] == "login" || $mybb->input['action'] == "do_login" || $mybb->input['action'] == "logout")))
 {
@@ -302,7 +303,7 @@ if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 	{
 		preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $regs);
 		$load = $regs[1];
-		if($mybb->user['cancp'] != "yes" && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
+		if($mybb->usergroup['cancp'] != "yes" && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
 		{
 			error($lang->error_loadlimit);
 		}
@@ -310,7 +311,7 @@ if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 }
 
 // Referrals system
-if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && intval($mybb->input['referrer']) > 0 && !$_COOKIE['mybb']['referrer'])
+if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && isset($mybb->input['referrer']) && !isset($_COOKIE['mybb']['referrer']))
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['referrer'])."'");
 	$referrer = $db->fetch_array($query);

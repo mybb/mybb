@@ -40,6 +40,7 @@ class templates
 	function cache($templates)
 	{
 		global $db, $extras, $theme;
+		$sql = $sqladd = "";
 		$names = explode(",", $templates);
 		foreach($names as $key => $title)
 		{

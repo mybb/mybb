@@ -79,7 +79,11 @@ class datacache
 				$this->cache[$data['title']] = unserialize($data['cache']);
 			}
 		}
-		return $this->cache[$name];
+		if(isset($this->cache[$name]))
+		{
+			return $this->cache[$name];
+		}
+		return false;
 	}
 
 	/**

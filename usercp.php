@@ -36,7 +36,7 @@ usercp_menu();
 
 if($mybb->input['action'] == "do_editsig")
 {
-	$imagecheck = postify(addslashes($mybb->input['signature']), $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);
+	$imagecheck = postify($mybb->input['signature'], $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);
 	if(($mybb->settings['sigimgcode'] == "no" && substr_count($imagecheck, "<img") > 0) || ($mybb->settings['sigimgcode'] == "yes" && substr_count($imagecheck, "<img") > $mybb->settings['maxsigimages']))
 	{
 		if($mybb->settings['sigimgcode'] == "yes")

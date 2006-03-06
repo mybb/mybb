@@ -10,6 +10,29 @@
  */
 
 error_reporting(E_ALL & ~E_NOTICE);
+
+
+//
+// MYBB 1.2 DEVELOPMENT CODE - TO BE REMOVED BEFORE RELEASE
+//
+if($_SERVER['SERVER_NAME'] = "roadrunner")
+{
+	error_reporting(E_ALL);
+
+	function my_devel_error_handler($errno, $errstr, $errfile, $errline)
+	{
+		if(strstr($errstr, "MyLanguage::") !== false || strstr($errstr, "public/private/protected") !== false)
+		{
+			return;
+		}
+		echo "Error: [$errno] $errstr (<b>$errfile</b> on line <b>$errline</b>)<br />\n";
+	}
+	set_error_handler("my_devel_error_handler");
+}
+//
+// END MYBB 1.2 DEVELOPMENT CODE
+//
+
 define("NO_SHUTDOWN", false);
 
 require "./inc/class_timers.php";
@@ -86,8 +109,8 @@ $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostre
 $rand = rand(0, 10);
 
 /* URL Definitions */
-define(PROFILE_URL, "member.php?action=profile&amp;uid={uid}");
-define(FORUM_URL, "forumdisplay.php?fid={fid}");
-define(THREAD_URL, "showthread.php?tid={tid}");
+define('PROFILE_URL', "member.php?action=profile&amp;uid={uid}");
+define('FORUM_URL', "forumdisplay.php?fid={fid}");
+define('THREAD_URL', "showthread.php?tid={tid}");
 
 ?>
