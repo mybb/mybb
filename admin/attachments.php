@@ -270,6 +270,7 @@ if($mybb->input['action'] == "orphans")
 		$db_list[] = $file['attachname'];
 	}
 	// Get attachments filenames from filesystem
+	$orphan_files = array();
 	if ($uploads = opendir($mybb->settings['uploadspath']))
 	{
 		while (false !== ($file = readdir($uploads)))
