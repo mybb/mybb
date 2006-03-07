@@ -6376,7 +6376,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - document.forms[0
 <ul>
 {$errorlist}
 </ul>
-</td
+</td>
 </tr>
 </table>
 <br />]]></template>
