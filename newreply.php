@@ -135,6 +135,7 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 		require_once "./inc/functions_upload.php";
 		$attachedfile = upload_attachment($_FILES['attachment']);
 	}
+	print_r($attachedfile);
 	if($attachedfile['error'])
 	{
 		eval("\$attacherror = \"".$templates->get("error_attacherror")."\";");
@@ -246,7 +247,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
 			// Used to determine any missing language variables from the datahandlers
 			//
-			if($lang->$errror)
+			if($lang->$error)
 			{
 				$post_errors[] = $lang->$error;
 			}

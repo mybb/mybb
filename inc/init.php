@@ -15,7 +15,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 //
 // MYBB 1.2 DEVELOPMENT CODE - TO BE REMOVED BEFORE RELEASE
 //
-if($_SERVER['SERVER_NAME'] = "roadrunner")
+if($_SERVER['SERVER_NAME'] == "roadrunner")
 {
 	error_reporting(E_ALL);
 
