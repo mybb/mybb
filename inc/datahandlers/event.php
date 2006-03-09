@@ -113,8 +113,10 @@ class EventDataHandler extends Handler
 	 *
 	 * @param array The event data array.
 	 */
-	function validate_event($event)
+	function validate_event()
 	{
+		$event = &$this->data;
+
 		// Every event needs a name.
 		$this->verify_name($event['name']);
 

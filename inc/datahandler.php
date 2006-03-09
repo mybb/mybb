@@ -16,6 +16,13 @@
 class DataHandler
 {
 	/**
+	 * The data being managed by the data handler
+	 *
+	 * @var array Data being handled by the data handler.
+	 */
+	var $data = array();
+	 *
+	/**
 	 * Whether or not the data has been validated. Note: "validated" != "valid".
 	 *
 	 * @var boolean True when validated, false when not validated.
@@ -28,6 +35,28 @@ class DataHandler
 	 * @var array
 	 */
 	var $errors = array();
+
+	/**
+	 * The status of administrator override powers.
+	 *
+	 * @var boolean
+	 */
+	var $admin_override = false;
+
+	/**
+	 * Sets the data to be used for the data handler
+	 *
+	 * @param array The data.
+	 */
+	function set_data($data)
+	{
+		if(!is_array($data))
+		{
+			return false;
+		}
+		$this->data = $data;
+		return true;
+	}
 	
 	/**
 	 * Add an error to the error array.
@@ -48,7 +77,7 @@ class DataHandler
 	{
 		return $this->errors;
 	}
-	
+
 	/**
 	 * Sets whether or not we are done validating.
 	 *

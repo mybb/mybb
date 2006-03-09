@@ -1,0 +1,165 @@
+<?php
+/**
+ * MyBB 1.0
+ * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.com
+ * License: http://www.mybboard.com/eula.html
+ *
+ * $Id$
+ */
+
+/*
+Example code:
+
+TO BE WRITTEN
+
+*/
+
+class RSSGenerator
+{
+	/**
+	 * The type of feed to generate.
+	 *
+	 * @var string
+	 */
+	var $feed_format = 'rss0.92';
+
+	/**
+	 * The XML to output.
+	 *
+	 * @var string
+	 */
+	var $xml = "";
+
+	/**
+	 * Set the type of feed to be used.
+	 *
+	 * @param string The feed type.
+	 */
+	function set_feed_format($feed_format)
+	{
+		if($feed_format == 'rss2.0')
+		{
+			$this->feed_format = 'rss2.0';
+		}
+		elseif($feed_format == 'atom1.0')
+		{
+			$this->feed_format = 'atom1.0';
+		}
+		else
+		{
+			$this->feed_format = 'rss0.92';
+		}
+	}
+
+	/**
+	 * Sets the channel information for the RSS feed.
+	 *
+	 * @param array The channel information
+	 */
+	function set_channel($channel)
+	{
+		$this->channel = $channel;
+	}
+
+	/**
+	 * Adds an item to the RSS feed.
+	 *
+	 * @param array The item.
+	 */
+	function add_item($item)
+	{
+		$this->items[] = $item;
+	}
+
+
+	/**
+	 * Generate and echo XML for the feed.
+	 *
+	 */
+	function generate_feed()
+	{
+		if(!$this->channel['date'])
+		{
+			$this->channel['date'] = time();
+		}
+		switch($this->feed_format)
+		{
+			case "rss2.0":
+				$this->channel['date'] = date("r", $this->channel['date']);
+				
+				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+				$this->xml .= "<rss version=\"2.0\">\n";
+				$this->xml .= "\t<channel>\n";
+				$this->xml .= "\t\t<title>".htmlentities($this->channel['title'])."</title>\n";
+				$this->xml .= "\t\t<link>".$this->channel['link']."</link>\n";
+				$this->xml .= "\t\t<description>".htmlentities($this->channel['description']."</description>\n";
+				$this->xml .= "\t\t<lastBuildDate>."$this->channel['date']."</lastBuildDate>\n";
+				$this->xml .= "\t\t<generator>MyBB</generator>\n";
+				break;
+			case "atom1.0":
+				$this->channel['date'] = date("Y-m-d\TH:i:s\Z", $this->channel['date']);
+				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+				$this->xml .= "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n";
+				$this->xml .= "\t<title>".htmlentities($this->channel['title'])."</title>\n";
+				$this->xml .= "\t<id>".$this->channel['link']."/</id>\n";
+				$this->xml .= "\t<link rel=\"self\" href=\"".$this->channel['link']."\"/>\n";
+				$this->xml .= "\t<updated>".$this->channel['date']."</updated>\n";
+				$this->xml .= "\t<generator uri=\"http://mybboard.com\">MyBB</generator>\n";
+				break;
+			default:
+				$this->channel['date'] = date("D, d M Y H:i:s O", $this->channel['date']);
+				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+				$this->xml .= "<rss version=\"0.92\">\n";
+				$this->xml .= "\t<channel>\n";
+				$this->xml .= "\t\t<title>".htmlentities($this->channel['title'])."</title>\n";
+				$this->xml .= "\t\t<link>".$this->channel['link']."</link>\n";
+				$this->xml .= "\t\t<description>".htmlentities($this->channel['description']."</description>\n";
+				$this->xml .= "\t\t<lastBuildDate>".$this->channel['date']."</lastBuildDate>\n";
+				$this->xml .= "\t\t<language>en</language>\n";
+		}
+		foreach($this->items as $item)
+		{
+			// pull info out of $item and format appropriately
+		}
+		switch($this->feed_format)
+		{
+			case "rss2.0":
+				$this->xml .= "\t</channel>\n";
+				$this->xml .= "</rss>";
+				break;
+			case "atom1.0":
+				$this->xml .= "</feed>";
+				break;
+			default:
+				$this->xml .= "\t</channel>\n";
+				$this->xml .= "</rss>";
+		}
+	}
+
+	function output_feed()
+	{
+		switch($this->feed_format)
+		{
+			case "rss2.0":
+				header("Content-Type: application/rss+xml");
+				break;
+			case "atom1.0":
+				header("Content-Type: application/atom+xml");
+				break;
+			default:
+				header("Content-Type: application/rss+xml");
+		}
+		if($this->xml)
+		{
+			echo $this->xml;
+		}
+		else
+		{
+			$this->generate_feed();
+			echo $this->xml;
+		}
+	}
+
+?>

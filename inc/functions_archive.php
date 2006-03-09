@@ -21,6 +21,14 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 	{
 		$title = $mybb->settings['bbname']." - ".$title;
 	}
+	if($lang->settings['charset'])
+	{
+		$charset = $lang->settings['charset'];
+	}
+	else
+	{
+		$charset = "utf-8";
+	}
 	$GLOBALS['fulltitle'] = $fulltitle;
 	$GLOBALS['fullurl'] = $fullurl;
 ?>
@@ -28,7 +36,7 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title><?php echo $title; ?></title>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="content-type" content="text/html; charset=<?php echo $charset; ?>" />
 <meta name="robots" content="index,follow" />
 <link type="text/css" rel="stylesheet" rev="stylesheet" href="<?php echo $archiveurl; ?>/screen.css" media="screen" />
 <link type="text/css" rel="stylesheet" rev="stylesheet" href="<?php echo $archiveurl; ?>/print.css" media="print" />
