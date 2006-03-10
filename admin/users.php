@@ -210,7 +210,7 @@ if($mybb->input['action'] == "do_add")
 		"loginkey" => $loginkey,
 		"email" => addslashes($mybb->input['email']),
 		"usergroup" => intval($mybb->input['usergroup']),
-		"additionalgroups" => $additionalgroups,		
+		"additionalgroups" => $additionalgroups,
 		"displaygroup" => intval($mybb->input['displaygroup']),
 		"usertitle" => addslashes($mybb->input['usertitle']),
 		"regdate" => time(),
@@ -284,7 +284,7 @@ if($mybb->input['action'] == "do_add")
 		);
 		$db->query(TABLE_PREFIX."awaitingactivation", $activationarray);
 		$emailsubject = sprintf($lang->emailsubject_activateaccount, $settings['bbname']);
-		$emailmessage = sprintf($lang->email_activeateaccount, $username, $settings['bbname'], $settings['bburl'], $uid, $activationcode);
+		$emailmessage = sprintf($lang->email_activateaccount, $username, $settings['bbname'], $settings['bburl'], $uid, $activationcode);
 		mymail($email, $emailsubject, $emailmessage);
 	}
 	$cache->updatestats();
@@ -311,7 +311,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		cpmessage($lang->error_name_exists);
 	}
-	
+
 	if(!$mybb->input['email'])
 	{
 		cpmessage($lang->missing_fields);
@@ -428,17 +428,17 @@ if($mybb->input['action'] == "do_edit")
 		"postnum" => intval($mybb->input['postnum']),
 	);
 	$db->update_query(TABLE_PREFIX."users", $user_new, "uid='".intval($mybb->input['uid'])."'");
-	
+
 	/* Update posts and threads made by this user to new username and also update last poster values. */
 	if($mybb->input['userusername'] != $user['username'])
 	{
 		$username_update = array(
 			"username" => addslashes($mybb->input['userusername'])
-		);	
+		);
 		$lastposter_update = array(
 			"lastposter" => addslashes($mybb->input['userusername'])
 		);
-	
+
 		$db->update_query(TABLE_PREFIX."posts", $username_update, "uid='".intval($mybb->input['uid'])."'");
 		$db->update_query(TABLE_PREFIX."threads", $username_update, "uid='".intval($mybb->input['uid'])."'");
 		$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".addslashes($user['username'])."'");
@@ -450,7 +450,7 @@ if($mybb->input['action'] == "do_edit")
 if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
-	{	
+	{
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET uid='0' WHERE uid='".intval($mybb->input['uid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='".intval($mybb->input['uid'])."'");
@@ -563,9 +563,9 @@ if($mybb->input['action'] == "do_email")
 		tablesubheader($lang->results_matching);
 		$bgcolor = getaltbg();
 		echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\">\n";
-//		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT $searchop[start], $searchop[perpage]");	
+//		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT $searchop[start], $searchop[perpage]");
 		@set_time_limit(0);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid");		
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid");
 		while($user = $db->fetch_array($query))
 		{
 			$sendmessage = $searchop['message'];
@@ -600,7 +600,7 @@ if($mybb->input['action'] == "do_email")
 		echo "<br>".$lang->done;
 		echo "</td>\n</tr>\n";
 		endtable();
-		startform("users.php", "", "do_email");	
+		startform("users.php", "", "do_email");
 		if(is_array($search))
 		{
 			while(list($key, $val) = each($search))
@@ -870,7 +870,7 @@ if($mybb->input['action'] == "edit")
 	endtable();
 
 	starttable();
-	startform("users.php", "", "do_edit", 0);	
+	startform("users.php", "", "do_edit", 0);
 	makehiddencode("uid", $uid);
 	tableheader($lang->modify_user);
 	tablesubheader($lang->required_info);
@@ -1208,7 +1208,7 @@ if($mybb->input['action'] == "stats")
 	$memlocaltime = gmdate($settings['timeformat'], time() + ($user[timezone] * 3600));
 	$memlastvisitdate = mydate($settings['dateformat'], $user['lastvisit']);
 	$memlastvisittime = mydate($settings['timeformat'], $user['lastvisit']);
-	
+
 	if($user['birthday'])
 	{
 		$membday = explode("-", $user['birthday']);
@@ -1252,7 +1252,7 @@ if($mybb->input['action'] == "pmstats")
 	$user = $db->fetch_array($query);
 	$lang->pm_stats = sprintf($lang->pm_stats, $user['username']);
 	$lang->custom_pm_folders = sprintf($lang->custom_pm_folders, $user['username']);
-	
+
 	$query = $db->query("SELECT COUNT(*) AS total FROM ".TABLE_PREFIX."privatemessages WHERE uid='$uid'");
 	$pmscount = $db->fetch_array($query);
 
@@ -1282,7 +1282,7 @@ if($mybb->input['action'] == "pmstats")
 	cpfooter();
 
 }
-		
+
 if($mybb->input['action'] == "email")
 {
 	if(!$noheader)
@@ -1444,7 +1444,7 @@ if($mybb->input['action'] == "find")
 		$uids = ',';
 		while($u = $db->fetch_array($query))
 		{
-			$uids .= $u['uid'] . ',';		
+			$uids .= $u['uid'] . ',';
 		}
 		$conditions .= " AND '$uids' LIKE CONCAT('%,',uid,',%')";
 	}
@@ -1476,7 +1476,7 @@ if($mybb->input['action'] == "find")
 	$numusers = $db->num_rows($query);
 
 	$query = $db->query("$countquery ORDER BY $searchop[sortby] $searchop[order] LIMIT $searchop[start], $searchop[perpage]");
-	
+
 	if($numusers == 0)
 	{
 		cpheader();
@@ -1692,7 +1692,7 @@ if($mybb->input['action'] == "find")
 			endform();
 		}
 		endtable();
-		startform("users.php", "", "find");	
+		startform("users.php", "", "find");
 		if(is_array($search))
 		{
 			while(list($key, $val) = each($search))
@@ -1837,7 +1837,7 @@ if($mybb->input['action'] == "manageban")
 		{
 			cperror($lang->error_not_banned);
 		}
-	
+
 		cpheader();
 		starttable();
 		startform("users.php", "", "do_manageban");
@@ -2030,7 +2030,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 
 	endtable();
 	endform($lang->search, $lang->reset_button);
-	
+
 	cpfooter();
 }
 ?>

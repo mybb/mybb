@@ -45,7 +45,7 @@ $l['edit_forum'] ="Edit settings for forum {1}";
 
 $l['name'] = "Name";
 $l['description'] = "Description";
-$l['forumlink'] = "Forum Link<br><small>Entering this will cause the forum to redirect to another url.. not be an actual forum, how ever, permissions can still be set for it.</small>";
+$l['forumlink'] = "Forum Link<br><small>Enter a link here to make the forum redirect to another URL. This will not be an actual forum, however, permissions can still be set for it.</small>";
 $l['disporder'] = "Display Order";
 $l['parentforum'] = "Parent Forum";
 $l['parentforum_none'] = "None";
