@@ -20,12 +20,24 @@ $lang->load("syndication");
 require_once "inc/class_feedgeneration.php";
 $feedgenerator = new FeedGenerator();
 
+// Load the post parser
+require_once "./inc/class_parser.php";
+$parser = new postParser;
+
 // Set the feed type and add a feed wrapper.
 $feedgenerator->set_feed_format($mybb->input['type']);
 $feedgenerator->set_channel($channel);
 
 // Find out the thread limit.
 $thread_limit = intval($mybb->input['limit']);
+if($thread_limit > 50)
+{
+	$thread_limit = 50;
+}
+else if(!$thrad_limit)
+{
+	$thread_limit = 10;
+}
 
 // Syndicate a specific forum or all viewable?
 if(isset($mybb->input['fid']))
@@ -68,8 +80,7 @@ $query = $db->query("
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
 	LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
-	WHERE 1=1
-	AND p.visible=1 ".$forumlist."
+	WHERE t.visible=1 ".$forumlist."
 	ORDER BY t.dateline DESC
 	LIMIT 0, ".$thread_limit
 );
@@ -77,7 +88,13 @@ $query = $db->query("
 // Loop through all the threads.
 while($thread = $db->fetch_array($query))
 {
-	$feedgenerator->add_item($thread);
+	$item = array(
+		"title" => $thread['subject'],
+		"link" => $settings['bburl']."/showthread.php?tid=".$thread['tid'],
+		"description" => $parser->strip_mycode($thread['postmessage']),
+		"date" => $thread['dateline']
+	);
+	$feedgenerator->add_item($item);
 }
 
 // Then output the feed XML.
