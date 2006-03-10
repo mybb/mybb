@@ -402,14 +402,22 @@ class postParser
 						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
 
 		$replace = array("<div class=\"quote_header\">$1 $lang->wrote</div><div class=\"quote_body\">$2</div>",
-						 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>\n");
+						 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>");
 
 		while (preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
 		{
 			$message = preg_replace($pattern, $replace, $message);
 		}
-		$message = str_replace("<div class=\"quote_body\"><br />", "<div class=\"quote_body\">", $message);
-		$message = str_replace("<br /></div>", "</div>", $message);
+		$find = array(
+			"#<div class=\"quote_body\">(\r\n?|\n?)#",
+			"#(\r\n?|\n?)</div>#"
+		);
+
+		$replace = array(
+			"<div class=\"quote_body\">",
+			"</div>"
+		);
+		$message = preg_replace($find, $replace, $message);
 		return $message;
 
 	}
@@ -417,7 +425,8 @@ class postParser
 	function mycode_parse_code($code)
 	{
 		global $lang;
-		return "<div class=\"code_header\">".$lang->code."</div><div class=\"code_body\"><pre><code>".$code."</code></pre></div>";
+		$code = trim($code);
+		return "<div class=\"code_header\">".$lang->code."</div><div class=\"code_body\"><code style=\"white-space: nowrap;\"><div dir=\"ltr\">".$code."</div></code></div>";
 	}
 
 	function mycode_parse_php($str)
