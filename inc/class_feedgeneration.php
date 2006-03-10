@@ -16,7 +16,7 @@ TO BE WRITTEN
 
 */
 
-class RSSGenerator
+class FeedGenerator
 {
 	/**
 	 * The type of feed to generate.
@@ -80,15 +80,19 @@ class RSSGenerator
 	 */
 	function generate_feed()
 	{
+		// If no date is given, use the current date.
 		if(!$this->channel['date'])
 		{
 			$this->channel['date'] = time();
 		}
+
+		// First, add the feed metadata.
 		switch($this->feed_format)
 		{
+			// Output an RSS 2.0 formatted feed.
 			case "rss2.0":
 				$this->channel['date'] = date("r", $this->channel['date']);
-				
+
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 				$this->xml .= "<rss version=\"2.0\">\n";
 				$this->xml .= "\t<channel>\n";
@@ -98,6 +102,7 @@ class RSSGenerator
 				$this->xml .= "\t\t<lastBuildDate>."$this->channel['date']."</lastBuildDate>\n";
 				$this->xml .= "\t\t<generator>MyBB</generator>\n";
 				break;
+			// Ouput an Atom 1.0 formatted feed.
 			case "atom1.0":
 				$this->channel['date'] = date("Y-m-d\TH:i:s\Z", $this->channel['date']);
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
@@ -108,6 +113,7 @@ class RSSGenerator
 				$this->xml .= "\t<updated>".$this->channel['date']."</updated>\n";
 				$this->xml .= "\t<generator uri=\"http://mybboard.com\">MyBB</generator>\n";
 				break;
+			// The default is the RSS 0.92 format.
 			default:
 				$this->channel['date'] = date("D, d M Y H:i:s O", $this->channel['date']);
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
@@ -119,6 +125,8 @@ class RSSGenerator
 				$this->xml .= "\t\t<lastBuildDate>".$this->channel['date']."</lastBuildDate>\n";
 				$this->xml .= "\t\t<language>en</language>\n";
 		}
+
+		// Now loop through all of the items and add them to the feed XML.
 		foreach($this->items as $item)
 		{
 			// pull info out of $item and format appropriately
@@ -138,8 +146,12 @@ class RSSGenerator
 		}
 	}
 
+	/**
+	* Output the feed XML.
+	*/
 	function output_feed()
 	{
+		// Send an appropriate header to the browser.
 		switch($this->feed_format)
 		{
 			case "rss2.0":
@@ -151,6 +163,8 @@ class RSSGenerator
 			default:
 				header("Content-Type: application/rss+xml");
 		}
+
+		// Output the feed XML. If the feed hasn't been generated, do so.
 		if($this->xml)
 		{
 			echo $this->xml;

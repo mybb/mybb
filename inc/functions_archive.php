@@ -9,10 +9,21 @@
  * $Id$
  */
 
+/**
+* Output the archive page header.
+*
+* @param string The page title.
+* @param string The full page title.
+* @param string The full page URL.
+*/
 function archive_header($title="", $fulltitle="", $fullurl="")
 {
 	global $mybb, $lang, $db, $nav, $archiveurl;
+
+	// Build the archive navigation.
 	$nav = archive_navigation();
+
+	// If there is a title, append it to the bbname.
 	if(!$title)
 	{
 		$title = $mybb->settings['bbname'];
@@ -21,6 +32,8 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 	{
 		$title = $mybb->settings['bbname']." - ".$title;
 	}
+
+	// If the language doesn't have a charset, make it UTF-8.
 	if($lang->settings['charset'])
 	{
 		$charset = $lang->settings['charset'];
@@ -51,6 +64,10 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 <?php
 }
 
+/**
+* Build the archive navigation.
+*
+*/
 function archive_navigation($addlinks=1)
 {
 	global $navbits, $mybb, $lang;
@@ -76,6 +93,14 @@ function archive_navigation($addlinks=1)
 	return $nav;
 }
 
+/**
+* Output multipage navigation.
+*
+* @param int The total number of items.
+* @param int The items per page.
+* @param int The current page.
+* @param string The URL base.
+*/
 function archive_multipage($count, $perpage, $page, $url)
 {
 	global $lang;
@@ -100,7 +125,10 @@ function archive_multipage($count, $perpage, $page, $url)
 	}
 }
 
-
+/**
+* Output the archive footer.
+*
+*/
 function archive_footer()
 {
 	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $mybboard;
@@ -134,6 +162,12 @@ function archive_footer()
 </html>
 <?php
 }
+
+/**
+* Output an archive error.
+*
+* @param string The error language string identifier.
+*/
 function archive_error($error)
 {
 	global $lang, $mybb;
@@ -147,6 +181,9 @@ function archive_error($error)
 	exit;
 }
 
+/**
+* Ouput a "no permission"page.
+*/
 function archive_nopermission()
 {
 	global $lang;

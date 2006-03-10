@@ -17,12 +17,12 @@ require "./global.php";
 $lang->load("syndication");
 
 // Load syndication class.
-require_once "inc/class_syndication.php";
-$syndication = new Syndication();
+require_once "inc/class_feedgeneration.php";
+$feedgenerator = new FeedGenerator();
 
 // Set the feed type and add a feed wrapper.
-$syndication->set_feed_format($mybb->input['type']);
-$syndication->start_wrapper();
+$feedgenerator->set_feed_format($mybb->input['type']);
+$feedgenerator->set_channel($channel);
 
 // Find out the thread limit.
 $thread_limit = intval($mybb->input['limit']);
@@ -77,11 +77,10 @@ $query = $db->query("
 // Loop through all the threads.
 while($thread = $db->fetch_array($query))
 {
-	$syndication->add_post($thread);
+	$feedgenerator->add_item($thread);
 }
 
 // Then output the feed XML.
-$syndication->end_wrapper();
-$syndication->output_feed();
+$feedgenerator->output_feed();
 
 ?>
