@@ -2142,7 +2142,7 @@ function mynumberformat($number)
 		}
 		else
 		{
-			$decimals = 2;
+			$decimals = 0;
 		}
 		return number_format($number, $decimals, $mybb->settings['decpoint'], $mybb->settings['thousandssep']);
 	}
@@ -2291,6 +2291,86 @@ function get_event_date($event)
 	$event_date = mydate($mybb->settings['dateformat'], $event_date);
 
 	return $event_date;
+}
+
+function build_profile_link($username="", $uid=0)
+{
+	global $lang;
+
+	if(!$username)
+	{
+		return $lang->guest;
+	}
+	else if($uid == 0)
+	{
+		return $username;
+	}
+	else
+	{
+		return "<a href=\"".str_replace("{uid}", $uid, PROFILE_URL)."\">".$htmlspecialchars."</a>";
+	}
+}
+
+function build_forum_link($fid, $title, $page=0)
+{
+	if($page > 0)
+	{
+		$forum_link = str_replace("{fid}", $fid, FORUM_URL_PAGED);
+		$forum_link = str_replace("{page}", $page, FORUM_URL_PAGED);
+	}
+	else
+	{
+		$forum_link = str_replace("{fid}", $fid, FORUM_URL);
+	}
+	return "<a href=\"".$forum_link."\">".$title."</a>";
+}
+
+function build_thread_link($tid, $subject, $page=0)
+{
+	if($page > 0)
+	{
+		$thread_link = str_replace("{tid}", $tid, THREAD_URL_PAGED);
+		$thread_link = str_replace("{page}", $page, THREAD_URL_PAGED);
+	}
+	else
+	{
+		$thread_link = str_replace("{tid}", $fid, THREAD_URL);
+	}
+	return "<a href=\"".$thread_link."\">".$subject."</a>";
+}
+
+function get_user($uid)
+{
+	global $mybb, $db;
+	static $user_cache;
+
+	if($uid == $mybb->user['uid'])
+	{
+		return $mybb->user;
+	}
+	elseif(isset($user_cache[$uid]))
+	{
+		return $user_cache[$uid];
+	}
+	else
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."'");
+		$user_cache[$uid] = $db->fetch_array($query);
+		return $user_cache[$uid];
+	}
+}
+
+function get_forum($fid)
+{
+	global $cache;
+}
+
+function get_thread($tid)
+{
+}
+
+function get_post($pid)
+{
 }
 
 ?>

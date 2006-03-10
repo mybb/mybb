@@ -112,5 +112,5 @@ $rand = rand(0, 10);
 define('PROFILE_URL', "member.php?action=profile&amp;uid={uid}");
 define('FORUM_URL', "forumdisplay.php?fid={fid}");
 define('THREAD_URL', "showthread.php?tid={tid}");
-
+define('INDEX_URL', "index.php");
 ?>
