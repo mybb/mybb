@@ -73,8 +73,8 @@ class postParser
 		if($options['allow_mycode'] != "no")
 		{
 			// First we split up the contents of code and php tags to ensure they're not parsed.
-			preg_match_all("#\[(code|php)\](.*?)\[/\\1\]#si", $message, $code_matches, PREG_SET_ORDER);
-			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\]#si", "<mybb-code>", $message);
+			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
+			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>", $message);
 		}
 
 		// Replace smilies if requested.
@@ -252,10 +252,10 @@ class postParser
 		// special code requiring special attention
 		while(preg_match("#\[list\](.*?)\[/list\]#esi", $message))
 		{
-			$message = preg_replace("#\[list\](.*?)\[/list\]#esi", "\$this->mycode_parse_list('$1')", $message);
+			$message = preg_replace("#\[list\](.*?)\[/list\](\r\n?|\n?)#esi", "\$this->mycode_parse_list('$1')", $message);
 		}
 
-		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", $message))
+		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\](\r\n?|\n?)#esi", $message))
 		{
 			$message = preg_replace("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "\$this->mycode_parse_list('$2', '$1')", $message);
 		}
@@ -398,8 +398,8 @@ class postParser
 		global $lang;
 
 		// user sanity check
-		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\]#si",
-						 "#\[quote\](.*?)\[\/quote\]#si");
+		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#si",
+						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
 
 		$replace = array("<div class=\"quote_header\">$1 $lang->wrote</div><div class=\"quote_body\">$2</div>",
 						 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>\n");
@@ -424,23 +424,20 @@ class postParser
 	{
 		global $lang;
 
+		$str = trim($str);
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
 		$str = str_replace('&amp;', '&', $str);
 		$str = str_replace("\n", '', $str);
 		$original = $str;
 
-		if(preg_match("/\A[\s]*\<\?/", $str) === 0)
+		$added_open_close = false;
+		if(!preg_match("#^\s*<\?#si", $str))
 		{
-			$str = "<?php\n".$str;
+			$added_open_close = true;
+			$str = "<?php\n".$str."\n?>";
 		}
-
-		if(preg_match("/\A[\s]*\>\?/", strrev($str)) === 0)
-		{
-			$str = $str."\n?>";
-		}
-
-		if(substr(phpversion(), 0, 1) >= 4)
+		if(version_compare(PHP_VERSION, "4.2.0", "<") === 1)
 		{
 			ob_start();
 			@highlight_string($str);
@@ -449,27 +446,42 @@ class postParser
 		}
 		else
 		{
-			$code = $str;
+			$code = highlight_string($str, true);
 		}
 
-		// Make sure the php tags get parsed properly.
-		if(preg_match("/\A[\s]*\<\?/", $original) === 0)
+		// If < PHP 5, make XHTML compatible.
+		if(version_compare(PHP_VERSION, "5", "<") === 1)
 		{
-			$code = substr_replace($code, "", strpos($code, "&lt;?php"), strlen("&lt;?php"));
-			$code = str_replace('<br />', '', $code);
+			$find = array(
+				"<font",
+				"color=\"",
+				"</font>"
+			);
+
+			$replace = array(
+				"<span",
+				"style=\"color: ",
+				"</span>"
+			);
+			$code = str_replace($find, $replace, $code);
 		}
-		if(preg_match("/\A[\s]*\>\?/", strrev($original)) === 0)
+
+		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
+		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
+		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
+
+		if($added_open_close == true)
 		{
-			$code = strrev(substr_replace(strrev($code), "", strpos(strrev($code), strrev("?&gt;")), strlen("?&gt;")));
+			$code = str_replace("<code><span style=\"color: #0000BB\">&lt;?php<br /></span>", "<code>", $code);
+			$code = str_replace("<span style=\"color: #0000BB\">?&gt;</span></code>", "</code>", $code);
 		}
 
-		// Get rid of other useless code and linebreaks
-		$code = str_replace("<code><font color=\"#000000\">\n", '', $code);
-		$code = str_replace('<font color="#0000CC"></font>', '', $code);
-		$code = str_replace("</font>\n</code>", '', $code);
+		$code = str_replace("<code>", "<code style=\"white-space: nowrap;\"><div dir=\"ltr\">", $code);
+		$code = str_replace("</code>", "</div></code>", $code);
 
+$code = preg_replace("#\s*$#", "", $code);
 		// Send back the code all nice and pretty
-		return "<div class=\"code_header\">$lang->php_code</div><div class=\"code_body\"><pre><code>".$code."</code></pre></div>";
+		return "<div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div>";
 	}
 
 	function mycode_parse_url($url, $name="")

@@ -3140,8 +3140,8 @@ var inlineId = {$fid};
 </table>
 <table width="{$theme['tablewidth']}" align="center"><tr>
 <tr>
-<td class="trow"><span class="smalltext"><a href="calendar.php?year={$prevyear}&month={$prevmonth}">&laquo; {$monthnames}[{$prevmonth}] {$prevyear}</a></span>
-<td align="right"><span class="smalltext"><a href="calendar.php?year={$nextyear}&month={$nextmonth}">{$monthnames}[{$nextmonth}] {$nextyear} &raquo;</a></span></td>
+<td class="trow"><span class="smalltext"><a href="calendar.php?year={$prevyear}&month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span>
+<td align="right"><span class="smalltext"><a href="calendar.php?year={$nextyear}&month={$nextmonth}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
 </tr>
 </table>
 <br />
@@ -3154,7 +3154,7 @@ var inlineId = {$fid};
 <td class="trow1">{$addpublicevent}{$neweventsep}{$addprivateevent}</td>
 <td class="trow1" align="right"><span class="smalltext"><strong>{$lang->jump_month}</strong>
 <select name="month">
-<option value="{$month}">{$monthnames}[{$month}]</option>
+<option value="{$month}">{$monthnames[$month]}</option>
 <option value="{$month}">----------</option>
 <option value="1">{$lang->alt_month_1}</option>
 <option value="2">{$lang->alt_month_2}</option>
@@ -5729,11 +5729,11 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - document.forms[0
 		<template name="calendar_eventbit_private" version="100.07"><![CDATA[<a href="calendar.php?action=event&eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$settings['privateeventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
 		<template name="calendar_daybit_today" version="100.07"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
 <strong><a href="calendar.php?action=dayview&year={$year}&month={$month}&day={$i}">{$i}</a></strong>
-<br /><span class="smalltext">{$birthdays}{$events}[{$i}]</span>
+<br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
 </td>]]></template>
 		<template name="calendar_daybit" version="100.07"><![CDATA[<td width="14%" height="90" class="trow1" valign="top">
 <strong><a href="calendar.php?action=dayview&year={$year}&month={$month}&day={$i}">{$i}</a></strong>
-<br /><span class="smalltext">{$birthdays}{$events}[{$i}]</span>
+<br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
 </td>]]></template>
 		<template name="polls_newpoll_option" version="100.07"><![CDATA[<tr>
 <td class="trow">{$lang->option} {$i}:</td>
