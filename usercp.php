@@ -8,10 +8,12 @@
  *
  * $Id$
  */
- 
+
 $templatelist = "usercp,usercp_home,usercp_nav,usercp_profile,error_nopermission,buddy_online,buddy_offline,usercp_changename,usercp_nav_changename";
-$templatelist .= "usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups";
-$templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc";
+$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups";
+$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader";
+
+
 require "./global.php";
 require "./inc/functions_post.php";
 require "./inc/functions_user.php";
@@ -108,7 +110,7 @@ switch($mybb->input['action'])
 		addnav($lang->nav_attachments);
 		break;
 }
-	
+
 if($mybb->input['action'] == "profile")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->user['uid']."'");
@@ -473,7 +475,7 @@ elseif($mybb->input['action'] == "do_profile" && $mybb->request_method == "post"
 		$db->query("INSERT INTO ".TABLE_PREFIX."userfields (ufid) VALUES ('".$mybb->user['uid']."')");
 	}
 	$db->update_query(TABLE_PREFIX."userfields", $profilefields, "ufid='".$mybb->user['uid']."'");
-	
+
 	$newprofile = array(
 		"website" => addslashes(htmlspecialchars($mybb->input['website'])),
 		"icq" => intval($mybb->input['icq']),
@@ -634,7 +636,7 @@ elseif($mybb->input['action'] == "options")
 	{
 		$showredirectcheck = "";
 	}
-	
+
 	if($mybb->user['pmnotify'] != "no")
 	{
 		$pmnotifycheck = "checked=\"checked\"";
@@ -742,7 +744,7 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 	{
 		$mybb->input['showcodebuttons'] = 0;
 	}
-	
+
 	if($mybb->input['allownotices'] != "yes")
 	{
 		$mybb->input['allownotices'] = "no";
@@ -762,7 +764,7 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 	{
 		$mybb->input['receivepms'] = "no";
 	}
-	
+
 	if($mybb->input['pmpopup'] != "yes")
 	{
 		$mybb->input['pmpopup'] = "no";
@@ -834,8 +836,8 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 	if(!$languages[$mybb->input['language']])
 	{
 		$mybb->input['language'] = "";
-	}	
-	
+	}
+
 	if($mybb->input['threadmode'] != "threaded")
 	{
 		$mybb->input['threadmode'] = "linear";
@@ -845,7 +847,7 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 	{
 		$mybb->input['showredirect'] = "no";
 	}
-	
+
 	$updatedoptions = array(
 		"allownotices" => $mybb->input['allownotices'],
 		"hideemail" => $mybb->input['hideemail'],
@@ -883,7 +885,7 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 	$plugins->run_hooks("usercp_do_options_process");
 
 	$db->update_query(TABLE_PREFIX."users", $updatedoptions, "uid='".$mybb->user['uid']."'");
-	
+
 	// If the cookie settings are different, re-set the cookie
 	if($mybb->input['remember'] != $mybb->user['remember'])
 	{
@@ -895,7 +897,7 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 		{
 			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
 		}
-		else 
+		else
 		{
 			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], -1);
 		}
@@ -1035,7 +1037,7 @@ elseif($mybb->input['action'] == "do_changename" && $mybb->request_method == "po
 		error($lang->error_bannedusername);
 	}
 	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username LIKE '".addslashes($mybb->input['username'])."'");
-	
+
 	if($db->fetch_array($query))
 	{
 		error($lang->error_usernametaken);
@@ -1053,7 +1055,7 @@ elseif($mybb->input['action'] == "favorites")
 	// Do Multi Pages
 	$query = $db->query("SELECT COUNT(f.tid) AS threads FROM ".TABLE_PREFIX."favorites f WHERE f.type='f' AND f.uid='".$mybb->user['uid']."'");
 	$threadcount = $db->result($query, 0);
-	
+
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
 	if($page)
@@ -1138,7 +1140,7 @@ elseif($mybb->input['action'] == "subscriptions")
 	// Do Multi Pages
 	$query = $db->query("SELECT COUNT(s.tid) AS threads FROM ".TABLE_PREFIX."favorites s WHERE s.type='s' AND s.uid='".$mybb->user['uid']."'");
 	$threadcount = $db->result($query, 0);
-	
+
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
 	if($page > 0)
@@ -1850,7 +1852,19 @@ elseif($mybb->input['action'] == "usergroups")
 
 	// List of groups this user is a leader of
 	$groupsledlist = '';
-	$query = $db->query("SELECT g.title, g.gid, g.type, COUNT(u.uid) AS users, COUNT(j.rid) AS joinrequests FROM ".TABLE_PREFIX."groupleaders l LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=l.gid) LEFT JOIN ".TABLE_PREFIX."users u ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')))) LEFT JOIN ".TABLE_PREFIX."joinrequests j ON (j.gid=g.gid) WHERE l.uid='".$mybb->user['uid']."' GROUP BY l.gid");
+	$query = $db->query("
+		SELECT
+			g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests
+		FROM ".TABLE_PREFIX."groupleaders l
+			LEFT JOIN ".TABLE_PREFIX."usergroups g
+				ON (g.gid=l.gid)
+			LEFT JOIN ".TABLE_PREFIX."users u
+				ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%'))))
+			LEFT JOIN ".TABLE_PREFIX."joinrequests j
+				ON (j.gid=g.gid)
+		WHERE l.uid='".$mybb->user['uid']."'
+		GROUP BY l.gid
+	");
 	while($usergroup = $db->fetch_array($query))
 	{
 		$memberlistlink = $moderaterequestslink = '';
@@ -1871,7 +1885,7 @@ elseif($mybb->input['action'] == "usergroups")
 	{
 		eval("\$leadinggroups = \"".$templates->get("usercp_usergroups_leader")."\";");
 	}
-			
+
 	// Fetch the list of groups the member is in
 	// Do the primary group first
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".$mybb->user['usergroup']."'");
