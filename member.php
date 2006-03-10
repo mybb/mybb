@@ -141,7 +141,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$errors[] = $lang->error_passwordmismatch;
 	}
-	
+
 	$email = $mybb->input['email'];
 	$email2 = $mybb->input['email2'];
 
@@ -270,7 +270,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$invisible = "yes";
 		$invisiblecheck = "checked=\"checked\"";
 	}
-	
+
 	if($mybb->input['enabledst'] != "yes")
 	{
 		$enabledst = "no";
@@ -389,7 +389,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$salt = generate_salt();
 		$saltedpw = salt_password($md5password, $salt);
 		$loginkey = generate_loginkey();
-		
+
 		$timenow = time();
 		$newuser = array(
 			"username" => addslashes($username),
@@ -444,10 +444,10 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 		$db->insert_query(TABLE_PREFIX."users", $newuser);
 		$uid = $db->insert_id();
-	
+
 		$userfields['ufid'] = $uid;
 		$db->insert_query(TABLE_PREFIX."userfields", $userfields);
-	
+
 		if(function_exists("accountCreated"))
 		{
 			accountCreated($uid);
@@ -997,7 +997,7 @@ elseif($mybb->input['action'] == "resetpassword")
 		$logindetails = update_password($user['uid'], md5($password), $user['salt']);
 
 		$email = $user['email'];
-		
+
 		$plugins->run_hooks("member_resetpassword_process");
 
 		$emailsubject = sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
@@ -1019,7 +1019,7 @@ elseif($mybb->input['action'] == "resetpassword")
 else if($mybb->input['action'] == "login")
 {
 	$plugins->run_hooks("member_login");
-	
+
 	// Redirect to the page where the user came from, but not if that was the login page.
 	if($mybb->input['url'] && !preg_match("/^(member\.php)?([^\?action=login]+)/i", $mybb->input['url']))
 	{
@@ -1029,7 +1029,7 @@ else if($mybb->input['action'] == "login")
 	{
 		$redirect_url = $_SERVER['HTTP_REFERER'];
 	}
-	
+
 	eval("\$login = \"".$templates->get("member_login")."\";");
 	outputpage($login);
 }
@@ -1055,7 +1055,7 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	// Temporarily set the cookie remember option for the login cookies
 	$mybb->user['remember'] = $user['remember'];
-	
+
 	mysetcookie("mybbuser", $user['uid']."_".$user['loginkey']);
 	mysetcookie("sid", $session->sid, -1);
 
@@ -1096,7 +1096,7 @@ else if($mybb->input['action'] == "logout")
 				);
 			$db->update_query(TABLE_PREFIX."users", $lastvisit, "uid='".$mybb->user['uid']."'");
 			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$mybb->user['uid']."' OR ip='".$ipaddress."'");
-	
+
 			if(function_exists("loggedOut"))
 			{
 				loggedOut($mybb->user['uid']);
@@ -1196,7 +1196,7 @@ elseif($mybb->input['action'] == "profile")
 
 	$lang->users_forum_info = sprintf($lang->users_forum_info, $memprofile['username']);
 	$lang->users_contact_details = sprintf($lang->users_contact_details, $memprofile['username']);
-	
+
 	if($mybb->settings['enablepms'] != "no")
 	{
 		$lang->send_pm = sprintf($lang->send_pm, $memprofile['username']);
@@ -1280,7 +1280,7 @@ elseif($mybb->input['action'] == "profile")
 	$query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE referrer='$memprofile[uid]'");
 	$referrals = $db->result($query, 0);
 
-	if($memprofile['icq'] != "0")
+	if(!empty($memprofile['icq']))
 	{
 		$memprofile['icq'] = intval($memprofile['icq']);
 	}
@@ -1332,7 +1332,7 @@ elseif($mybb->input['action'] == "profile")
 		$memlastvisitsep = '';
 		$memlastvisittime = '';
 	}
-	
+
 	if($memprofile['birthday'])
 	{
 		$membday = explode("-", $memprofile['birthday']);
@@ -1393,7 +1393,7 @@ elseif($mybb->input['action'] == "profile")
 			}
 		}
 	}
-	
+
 	if(!empty($displaygroup['image']))
 	{
 		if(!empty($mybb->user['language']))
@@ -1407,7 +1407,7 @@ elseif($mybb->input['action'] == "profile")
 		$displaygroup['image'] = str_replace("{lang}", $language, $displaygroup['image']);
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
-	
+
 	if(trim($memprofile['usertitle']) != '')
 	{
 		$usertitle = $memprofile['usertitle'];
@@ -1608,7 +1608,7 @@ elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
 	if($mybb->input['action'] == "rate")
 	{
 		$plugins->run_hooks("member_rate_end");
-		
+
 		$uid = $mybb->input['uid'];
 		eval("\$rate = \"".$templates->get("member_rate")."\";");
 		outputpage($rate);
