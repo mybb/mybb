@@ -538,13 +538,14 @@ if($mybb->input['action'] == "showresults")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
-	cacheforums();
-	if($forumcache[$fid]['active'] != "no")
+
+	// Get forum info
+	$forum = get_forum($fid);
+	if(!$forum)
 	{
-		$forum = $forumcache[$fid];
+		error($lang->error_invalidforum);
 	}
-	/*$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
-	$forum = $db->fetch_array($query);*/
+
 	$forumpermissions = forum_permissions($forum['fid']);
 
 	$plugins->run_hooks("polls_showresults_start");
@@ -561,15 +562,7 @@ if($mybb->input['action'] == "showresults")
 	{
 		error($lang->error_invalidthread);
 	}
-	// Check if forum and parents are active
-	$parents = explode(",", $forum['parentlist']);
-	foreach($parents as $chkfid)
-	{
-		if($forumcache[$chkfid]['active'] == "no")
-		{
-			error($lang->error_invalidforum);
-		}
-	}
+
 	// Make navigation
 	makeforumnav($fid);
 	addnav($thread['subject'], "showthread.php?tid=$thread[tid]");

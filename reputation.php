@@ -36,18 +36,10 @@ $user = $db->fetch_array($query);
 
 // Get forum info
 $fid = $post['fid'];
-/*$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$fid."' AND active!='no'");
-$forum = $db->fetch_array($query);*/
-cacheforums();
-$forum = $forumcache[$fid];
-// Check if forum and parents are active
-$parents = explode(",", $forum['parentlist'].",$fid");
-foreach($parents as $chkfid)
+$forum = get_forum($fid);
+if(!$forum)
 {
-	if($forumcache[$chkfid]['active'] == "no")
-	{
-		error($lang->error_invalidforum);
-	}
+	error($lang->error_invalidforum);
 }
 
 // Do the permissions thing

@@ -10,6 +10,7 @@
  */
 
 require "./global.php";
+
 if($mybb->input['thumbnail'])
 {
 	$aid = intval($mybb->input['thumbnail']);
@@ -63,18 +64,14 @@ if(!$thread['tid'] && !$mybb->input['thumbnail'])
 }
 $fid = $thread['fid'];
 
-cacheforums();
-$forum = $forumcache[$fid];
-// Check if forum and parents are active
-$parents = explode(",", $forum['parentlist'].",$fid");
-foreach($parents as $chkfid)
+// Get forum info
+$forum = get_forum($fid);
+if(!$forum)
 {
-	if($forumcache[$chkfid]['active'] == "no")
-	{
-		error($lang->error_invalidforum);
-	}
+	error($lang->error_invalidforum);
 }
 
+// Permissions
 $forumpermissions = forum_permissions($fid);
 
 if(($forumpermissions['canview'] == "no" || $forumpermissions['candlattachments'] == "no") && !$mybb->input['thumbnail'])

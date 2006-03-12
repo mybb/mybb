@@ -20,45 +20,38 @@ $aid = intval($mybb->input['aid']);
 
 $plugins->run_hooks("announcements_start");
 
-$query = $db->query("
-	SELECT a.fid, f.*
-	FROM ".TABLE_PREFIX."announcements a
-	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=a.fid)
-	WHERE aid='$aid'
-");
-$forum = $db->fetch_array($query);
+// Get announcement fid
+$query = $db->simple_select(TABLE_PREFIX."announcements", "fid", "aid='$aid'");
+$announcement = $db->fetch_array($query);
+
+if(!$announcement)
+{
+	error($lang->error_invalidannouncement);
+}
+
+// Get forum info
+$fid = $announcement['fid'];
+$forum = get_forum($fid);
 
 if(!$forum)
 {
-	error($lang->error_invalidannouncement);
+	error($lang->error_invalidforum);
 }
 
 // Make navigation
 makeforumnav($forum['fid']);
 addnav($lang->nav_announcements);
 
+// Permissions
 $forumpermissions = forum_permissions($forum['fid']);
 $parentlist = $forum['parentlist'];
-
-if(!empty($parentlist))
-{
-	cacheforums();
-	// Check if forum and parents are active
-	$parents = explode(",", $forum['parentlist'].",$fid");
-	foreach($parents as $chkfid)
-	{
-		if($forumcache[$chkfid]['active'] == "no")
-		{
-			error($lang->error_invalidforum);
-		}
-	}
-}
 
 if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
 {
 	nopermission();
 }
 
+// Get announcement info
 $time = time();
 $query = $db->query("
 	SELECT u.*, a.*, f.*, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle, g.usereputationsystem

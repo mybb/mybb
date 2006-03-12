@@ -25,19 +25,13 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canratethreads'] =
 	nopermission();
 }
 
-cacheforums();
-$forum = $forumcache[$thread['fid']];
-// Check if forum and parents are active
-$parents = explode(",", $forum['parentlist'].",$thread[fid]");
-foreach($parents as $chkfid)
+// Get forum info
+$fid = $thread['fid'];
+$forum = get_forum($fid);
+if(!$forum)
 {
-	if($forumcache[$chkfid]['active'] == "no")
-	{
-		error($lang->error_invalidforum);
-	}
+	error($lang->error_invalidforum);
 }
-/*$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread[fid]."'");
-$forum = $db->fetch_array($query);*/
 // Password protected forums ......... yhummmmy!
 checkpwforum($forum['fid'], $forum['password']);
 

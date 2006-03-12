@@ -53,32 +53,16 @@ if($fid < 0)
 	}
 }
 
-cacheforums();
-
-global $forumcache;
-
-if($forumcache[$fid]['active'] != "no")
-{
-	$foruminfo = $forumcache[$fid];
-}
-
-if(!$foruminfo['fid'])
+// Get forum info
+$foruminfo = get_forum($fid);
+if(!$foruminfo)
 {
 	error($lang->error_invalidforum);
 }
+
 $currentitem = $fid;
 makeforumnav($fid);
 $parentlist = $foruminfo['parentlist'];
-
-// Check if parents are active
-$parents = explode(",", $parentlist);
-foreach($parents as $chkfid)
-{
-	if($forumcache[$chkfid]['active'] == "no")
-	{
-		error($lang->error_invalidforum);
-	}
-}
 
 $forumpermissions = forum_permissions();
 $fpermissions = $forumpermissions[$fid];

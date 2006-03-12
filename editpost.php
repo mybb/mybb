@@ -57,24 +57,11 @@ if(!$thread['tid'])
 $thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
 // Get forum info
-$fid = $thread['fid'];
-
-/*$query = $db->query("
-	SELECT *
-	FROM ".TABLE_PREFIX."forums
-	WHERE fid='$fid'
-");
-$forum = $db->fetch_array($query);*/
-cacheforums();
-$forum = $forumcache[$fid];
-// Check if forum and parents are active
-$parents = explode(",", $forum['parentlist'].",$fid");
-foreach($parents as $chkfid)
+$fid = $post['fid'];
+$forum = get_forum($fid);
+if(!$forum || $forum['type'] != "f")
 {
-	if($forumcache[$chkfid]['active'] == "no")
-	{
-		error($lang->error_invalidforum);
-	}
+	error($lang->error_closedinvalidforum);
 }
 if($forum['open'] == "no")
 {

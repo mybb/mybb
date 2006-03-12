@@ -37,23 +37,11 @@ addnav($thread['subject'], "showthread.php?tid=$tid");
 addnav($lang->nav_sendthread);
 
 // Get forum info
-/*$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
-$forum = $db->fetch_array($query);*/
-cacheforums();
-$forum = $forumcache[$fid];
-// Check if forum and parents are active
-$parents = explode(",", $forum['parentlist'].",$fid");
-foreach($parents as $chkfid)
-{
-	if($forumcache[$chkfid]['active'] == "no")
-	{
-		error($lang->error_invalidforum);
-	}
-}
+$forum = get_forum($fid);
 
 $forumpermissions = forum_permissions($forum['fid']);
 
-if($forum['type'] != "f")
+if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
@@ -63,7 +51,7 @@ if($forumpermissions['canview'] != "yes")
 }
 
 // Password protected forums
-checkpwforum($forum['fid'], $forum['password']);
+checkpwforum($fid, $forum['password']);
 
 if($mybb->usergroup['cansendemail'] == "no")
 {
