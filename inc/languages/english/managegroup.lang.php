@@ -8,7 +8,7 @@ $l['invalid_group'] = "This user group does not exist.";
 $l['pending_requests'] ="Pending Join Requests";
 $l['num_requests_pending'] = "There are currently <strong>{1}</strong> pending join requests for this user group.";
 $l['group_management'] = "Group Management";
-$l['members_of'] = "Members in Public Group \"{1}\"";
+$l['members_of'] = "Members in \"{1}\"";
 $l['user_name'] = "Username";
 $l['contact'] = "Contact";
 $l['reg_date'] = "Registered";
@@ -32,4 +32,5 @@ $l['group_no_members'] = "There are currently no members in this group.<br />To 
 $l['group_public_moderated'] = "This usergroup is a public usergroup that anyone can join.  All join requests must be moderated by a group leader.";
 $l['group_public_not_moderated'] = "This usergroup is a public usergroup that anyone can join freely.";
 $l['group_private'] = "This usergroup is a private usergroup.  Only users added by the group leader can be part of this group.";
+$l['group_default'] = "This usergroup is a core usergroup.";
 ?>

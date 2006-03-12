@@ -2,15 +2,20 @@
 $l['nav_admin_permissions'] = "Administrator Permissions";
 $l['nav_admin_prefs'] = "Administrator Preferences";
 $l['nav_edit_permissions'] = "Edit Permissions for {1}";
+$l['nav_edit_group_permissions'] = "Edit Group Permissions for {1}";
 $l['nav_edit_def_permissions'] = "Default Permissions";
 
 $l['prefs_updated'] = "Your control panel preferences have successfully been updated.";
 
 $l['default_perms_updated'] = "The default administrator permissions have successfully been updated.";
 $l['perms_updated'] = "The administrator's permissions have successfully been updated.";
+$l['group_perms_updated'] = "The usergroup's administrator permissions have successfully been updated.";
+$l['perms_revoked'] = "The administrator's permissions have successfully been revoked.";
+$l['group_perms_revoked'] = "The usergroup's administrator permissions have successfully been revoked.";
 
 $l['edit_perms'] = "Edit Administrator Permissions";
 $l['edit_admin_perms'] = "Edit administrator permissions for %s";
+$l['edit_admin_group_perms'] = "Edit usergroup administrator permissions for %s";
 $l['edit_default_perms'] = "Edit default administrator permissions.";
 $l['can_manage_settings'] = "Can Manage Settings";
 $l['can_manage_announcements'] = "Can Manage Announcements";
@@ -33,11 +38,17 @@ $l['update_permissions'] = "Update Permissions";
 $l['admin_perms'] = "Administrator Permissions";
 $l['edit_default'] = "edit default permissions";
 $l['username'] = "Username";
+$l['usergroup'] = "Usergroup";
 $l['lastactive'] = "Last Active";
+$l['perm_options'] = "Permissions";
 $l['options'] = "Options";
-$l['set_perms'] = "set permissions";
-$l['edit_perms2'] = "edit permissions";
-$l['admin_log'] = "administrator log";
+$l['set_perms'] = "set";
+$l['edit_perms2'] = "edit";
+$l['revoke_custom_perms'] = "revoke";
+$l['admin_log'] = "view log";
+
+$l['admin_group_perms'] = "Usergroup Administrator Permissions";
+$l['groupname'] = "Usergroup Name";
 
 $l['cp_prefs'] = "Your Personal Control Panel Preferences";
 $l['prefs'] = "Preferences";

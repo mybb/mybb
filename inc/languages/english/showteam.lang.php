@@ -10,4 +10,9 @@ $l['mod_pm'] = "PM";
 $l['uname'] = "Username";
 $l['email'] = "Email";
 $l['pm'] = "PM";
+
+$l['group_leaders'] = "Leader(s)";
+$l['group_members'] = "Member(s)";
+
+$l['no_members'] = "No members in this group";
 ?>

@@ -94,7 +94,9 @@ if($user['uid'])
 {
 	$expires = $time+60*60*24;
 	setcookie("mybbadmin", $user['uid']."_".$user['loginkey'], $expires);
-	$mybbadmin = $user;
+	$mybbadmin = $mybb->user = $user;
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$user[usergroup]'");
+	$mybb->usergroup = $db->fetch_array($query);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]'");
 	$adminoptions = $db->fetch_array($query);
 	if($adminoptions['cpstyle'] && file_exists($config['admindir']."/styles/$adminoptions[cpstyle]/stylesheet.css"))

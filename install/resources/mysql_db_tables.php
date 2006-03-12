@@ -212,6 +212,8 @@ $tables[] = "CREATE TABLE mybb_groupleaders (
   lid smallint unsigned NOT NULL auto_increment,
   gid smallint unsigned NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
+  canmanagemembers char(3) NOT NULL default '',
+  canmanagerequests char(3) NOT NULL default '',
   PRIMARY KEY  (lid)
 ) TYPE=MyISAM;";
 

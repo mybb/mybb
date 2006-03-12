@@ -716,7 +716,7 @@ if($mybb->input['action'] == "add")
 	makeinputcode($lang->email, "email");
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", 2);
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
-	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", 2, "--".$lang->primary_usergroup."--");
+	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", 0, "--".$lang->primary_usergroup."--");
 
 	tablesubheader($lang->optional_info);
 	makeinputcode($lang->custom_title, "usertitle");
@@ -1963,7 +1963,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	if(isset($mybb->input['lastuid']))
 	{
 		$last_uid = intval($mybb->input['lastuid']);
-		$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='$lastuid' LIMIT 1");
+		$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='$last_uid' LIMIT 1");
 		$last_user = $db->fetch_array($query);
 		$lang->last_edited = sprintf($lang->last_edited, $last_user['username']);
 		$last_user['username'] = urlencode($last_user['username']);

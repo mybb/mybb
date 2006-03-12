@@ -718,8 +718,8 @@ function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $ext
 
 function checkadminpermissions($action)
 {
-	global $db, $mybbadmin, $lang;
-	$perms = getadminpermissions($mybbadmin[uid]);
+	global $db, $mybb, $lang;
+	$perms = getadminpermissions($mybb->user['uid']);
 	if($perms[$action] != "yes")
 	{
 		cperror($lang->access_denied);
@@ -727,16 +727,67 @@ function checkadminpermissions($action)
 	}
 }
 
-function getadminpermissions($uid="")
+function getadminpermissions($get_uid="", $get_gid="")
 {
-	global $db, $mybbadmin;
-	if(!$uid)
+	global $db, $mybb;
+	// Set UID and GID if none
+	$uid = $get_uid;
+	$gid = $get_gid;
+	if($uid === "")
 	{
-		$uid = $mybbadmin[uid];
+		$uid = $mybb->user['uid'];
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE (uid='$uid' OR uid='0') AND permsset!='' ORDER BY uid DESC");
-	$perms = $db->fetch_array($query);
-	return $perms;
+	if(!$gid)
+	{
+		$gid = $mybb->usergroup['gid'];
+	}
+	
+	// Make sure gid is negative
+	$gid = (-1) * abs($gid);
+
+	// What are we trying to find?
+	if($get_gid && !$get_uid)
+	{
+		// A group only
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE (uid='$gid' OR uid='0') AND permsset!='' ORDER BY uid ASC LIMIT 1");
+		$perms = $db->fetch_array($query);
+		return $perms;
+	}
+	else
+	{
+		// A user and/or group
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE (uid='$uid' OR uid='0' OR uid='$gid') AND permsset!='' ORDER BY uid DESC");
+		while($perm = $db->fetch_array($query))
+		{
+			// Sorting out which permission is which
+			if($perm['uid'] > 0)
+			{
+				$perms_user = $perm;
+			}
+			elseif($perm['uid'] < 0)
+			{
+				$perms_group = $perm;
+			}
+			else
+			{
+				$perms_def = $perm;
+			}
+		}
+		
+		// Send specific user, or group permissions before default.
+		if(isset($perms_user))
+		{
+			return $perms_user;
+		}
+		elseif(isset($perms_group))
+		{
+			return $perms_group;
+		}
+		else
+		{
+			return $perms_def;
+		}
+	}
 }
 
 function logadmin()

@@ -40,6 +40,9 @@ switch($mybb->input['action'])
 	case "groupleaders":
 		addacpnav($lang->nav_groupleaders);
 		break;
+	case "editgroupleader":
+		addacpnav($lang->nav_editgroupleader);
+		break;
 }
 
 checkadminpermissions("caneditugroups");
@@ -140,7 +143,7 @@ if($mybb->input['action'] == "do_deletegroupleader")
 	cpredirect("usergroups.php?action=groupleaders&gid=".$mybb->input['gid'], $lang->leader_deleted);
 }
 
-if($mybb->input['action'] == "do_addgroupleader")
+if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "do_editgroupleader")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
 	$user = $db->fetch_array($query);
@@ -150,14 +153,34 @@ if($mybb->input['action'] == "do_addgroupleader")
 	{
 		cperror($lang->add_leader_no_user);
 	}
+	if($mybb->input['canmanagemembers'] != "yes")
+	{
+		$mybb->input['canmanagemembers'] = "no";
+	}
+	if($mybb->input['canmanagerequests'] != "yes")
+	{
+		$mybb->input['canmanagerequests'] = "no";
+	}
 	$leaderarray = array(
 		"gid" => $mybb->input['gid'],
-		"uid" => $user['uid']
+		"uid" => $user['uid'],
+		"canmanagemembers" => $mybb->input['canmanagemembers'],
+		"canmanagerequests" => $mybb->input['canmanagerequests'],
 		);
 
-	$db->insert_query(TABLE_PREFIX."groupleaders", $leaderarray);
-	$lang->leader_added = sprintf($lang->leader_added, $usergroup['title']);
-	cpredirect("usergroups.php?action=groupleaders&gid=".$mybb->input['gid'], $lang->leader_added);
+	if($mybb->input['action'] == "do_editgroupleader")
+	{
+		$lid = intval($mybb->input['lid']);
+		$db->update_query(TABLE_PREFIX."groupleaders", $leaderarray, "lid='$lid'");
+		$success_text= $lang->leader_edited;
+	}
+	else
+	{
+		$db->insert_query(TABLE_PREFIX."groupleaders", $leaderarray);
+		$success_text= sprintf($lang->leader_added, $usergroup['title']);
+	}
+		
+	cpredirect("usergroups.php?action=groupleaders&gid=".$mybb->input['gid'], $success_text);
 }
 
 if($mybb->input['action'] == "do_delete")
@@ -414,7 +437,7 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->group_image, "image", $usergroup['image']);
 
 	tablesubheader($lang->group_options);
-	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5" && $usergroup['gid'] != "6")
+	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5")
 	{
 		makeyesnocode($lang->show_team_page, "showforumteam", $usergroup['showforumteam']);
 	}
@@ -496,6 +519,31 @@ if($mybb->input['action'] == "edit")
 	cpfooter();
 }
 
+if($mybb->input['action'] == "editgroupleader")
+{
+	$lid = intval($mybb->input['lid']);
+
+	$query = $db->query("SELECT l.*, u.username FROM (".TABLE_PREFIX."groupleaders l, ".TABLE_PREFIX."users u) WHERE l.uid=u.uid AND l.lid='$lid'");
+	$leader = $db->fetch_array($query);
+	if(!$leader['uid'])
+	{
+		cperror($lang->invalid_leader);
+	}
+	
+	cpheader();
+	startform("usergroups.php", "", "do_editgroupleader");
+	makehiddencode("gid", $leader['gid']);
+	makehiddencode("lid", $leader['lid']);
+	starttable();
+	tableheader($lang->edit_leader);
+	makeinputcode($lang->username, "username", $leader['username']);
+	makeyesnocode($lang->can_manage_members, "canmanagemembers", $leader['canmanagemembers']);
+	makeyesnocode($lang->can_manage_requests, "canmanagerequests", $leader['canmanagerequests']);
+	endtable();
+	endform($lang->edit_leader);
+	cpfooter();
+}
+
 if($mybb->input['action'] == "groupleaders")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
@@ -506,14 +554,15 @@ if($mybb->input['action'] == "groupleaders")
 	startform("usergroups.php", "", "do_groupleaders");
 	makehiddencode("gid", $mybb->input['gid']);
 	starttable();
-	tableheader($lang->manage_group_leaders_for);
-	tablesubheader($lang->existing_leaders);
+	tableheader($lang->manage_group_leaders_for, "", 2);
+	tablesubheader($lang->existing_leaders, "", 2);
 	$query = $db->query("SELECT l.*, u.username FROM ".TABLE_PREFIX."groupleaders l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) WHERE l.gid='".intval($mybb->input['gid'])."' ORDER BY u.username ASC");
-	while($leader =  $db->fetch_array($query))
+	while($leader = $db->fetch_array($query))
 	{
+		$edit = makelinkcode($lang->edit_leader, "usergroups.php?action=editgroupleader&lid=".$leader['lid']);
 		$delete = makelinkcode($lang->delete_leader, "usergroups.php?action=do_deletegroupleader&gid=".$mybb->input['gid']."&uid=".$leader['uid']);
 		$editprofile = makelinkcode($lang->edit_profile, "users.php?action=edit&uid=".$leader['uid']);
-		makelabelcode("<a href=\"../member.php?action=profile&uid=".$leader['uid']."\">".$leader['username']."</a> $delete $editprofile", "", 2);
+		makelabelcode("<a href=\"../member.php?action=profile&uid=".$leader['uid']."\">".$leader['username']."</a>", "$edit $delete $editprofile");
 	}
 	if(!$editprofile) // Talk about cheating!
 	{
@@ -526,6 +575,8 @@ if($mybb->input['action'] == "groupleaders")
 	starttable();
 	tableheader($lang->add_new_leader);
 	makeinputcode($lang->username, "username");
+	makeyesnocode($lang->can_manage_members, "canmanagemembers");
+	makeyesnocode($lang->can_manage_requests, "canmanagerequests");
 	endtable();
 	endform($lang->add_leader);
 	cpfooter();
@@ -676,6 +727,7 @@ function usergroup_hop(gid)
 		echo "<option value=\"edit\">$lang->select_edit</option>\n";
 		echo "<option value=\"listusers\">$lang->list_users</option>\n";
 		echo "<option value=\"listsecondaryusers\">$lang->list_secondary_users</option>\n";
+		echo "<option value=\"groupleaders\">$lang->group_leaders</option>\n";
 		echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"$lang->go\"></td>\n";
 		echo "</tr>\n";
 		$donedefault = 1;

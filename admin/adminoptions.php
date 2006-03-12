@@ -47,6 +47,25 @@ if($mybb->input['action'] == "do_updateprefs")
 	}
 	cpredirect("adminoptions.php", $lang->prefs_updated);
 }
+if($mybb->input['action'] == "revokeperms")
+{
+	$uid = intval($mybb->input['uid']);
+	checkadminpermissions("caneditaperms");
+	
+	$newperms = array(
+		"permsset" => 0
+		);
+	$db->update_query(TABLE_PREFIX."adminoptions", $newperms, "uid='$uid'");
+
+	if($uid < 0)
+	{
+		cpredirect("adminoptions.php?action=adminpermissions", $lang->group_perms_revoked);
+	}
+	else
+	{
+		cpredirect("adminoptions.php?action=adminpermissions", $lang->perms_revoked);
+	}
+}
 if($mybb->input['action'] == "do_updateperms")
 {
 	$uid = intval($mybb->input['uid']);
@@ -97,7 +116,11 @@ if($mybb->input['action'] == "do_updateperms")
 	if($uid == 0)
 	{
 		cpredirect("adminoptions.php?action=adminpermissions", $lang->default_perms_updated);
-	} 
+	}
+	elseif($uid < 0)
+	{
+		cpredirect("adminoptions.php?action=adminpermissions", $lang->group_perms_updated);
+	}
 	else
 	{
 		cpredirect("adminoptions.php?action=adminpermissions", $lang->perms_updated);
@@ -107,7 +130,7 @@ if($mybb->input['action'] == "updateperms")
 {
 	checkadminpermissions("caneditaperms");
 	$uid = intval($mybb->input['uid']);
-	if($uid != 0)
+	if($uid > 0)
 	{
 		$query = $db->query("SELECT u.uid, u.username, g.cancp FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g WHERE u.uid='$uid' AND u.usergroup=g.gid AND g.cancp='yes'");
 		$admin = $db->fetch_array($query);
@@ -116,10 +139,21 @@ if($mybb->input['action'] == "updateperms")
 		$lang->nav_edit_permissions = sprintf($lang->nav_edit_permissions, $admin['username']);
 		addacpnav($lang->nav_edit_permissions);
 	}
+	elseif($uid < 0)
+	{
+		$gid = abs($uid);
+		$query = $db->simple_select(TABLE_PREFIX."usergroups", "title", "gid='$gid'");
+		$group = $db->fetch_array($query);
+		$tsub = sprintf($lang->edit_admin_group_perms, $group['title']);
+		$permissions = getadminpermissions("", $gid);
+		$lang->nav_edit_permissions = sprintf($lang->nav_edit_group_permissions, $group['title']);
+		addacpnav($lang->nav_edit_permissions);
+	}
 	else
 	{
 		$tsub = $lang->edit_default_perms;
-		$permissions = getadminpermissions("0");
+		$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='0'");
+		$permissions = $db->fetch_array($query);
 		addacpnav($lang->nav_edit_def_permissions);
 	}
 	cpheader();
@@ -146,6 +180,8 @@ if($mybb->input['action'] == "updateperms")
 	makeyesnocode($lang->can_use_maint, "newperms[canrunmaint]", $permissions['canrunmaint']);
 	endtable();
 	endform($lang->update_permissions, $lang->reset_button);
+
+	
 	cpfooter();
 }
 if($mybb->input['action'] == "adminpermissions")
@@ -153,30 +189,65 @@ if($mybb->input['action'] == "adminpermissions")
 	checkadminpermissions("caneditaperms");
 	cpheader();
 	starttable();
-	tableheader($lang->admin_perms.makelinkcode($lang->edit_default, "adminoptions.php?action=updateperms&uid=0", "", "header"), "", 4);
+	tableheader($lang->admin_perms.makelinkcode($lang->edit_default, "adminoptions.php?action=updateperms&uid=0", "", "header"), "", 5);
 	echo "<tr>\n";
 	echo "<td class=\"subheader\">$lang->username</td>\n";
+	echo "<td class=\"subheader\">$lang->usergroup</td>\n";
 	echo "<td class=\"subheader\">$lang->lastactive</td>\n";
+	echo "<td class=\"subheader\">$lang->perm_options</td>\n";
 	echo "<td class=\"subheader\">$lang->options</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT u.uid, u.username, u.lastactive, g.cancp, a.permsset FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g) LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid=u.uid) WHERE u.usergroup=g.gid AND g.cancp='yes' ORDER BY u.username ASC");
+	$query = $db->query("SELECT u.uid, u.username, u.lastactive, g.cancp, g.title as usergroup, a.permsset FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g) LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid=u.uid) WHERE u.usergroup=g.gid AND g.cancp='yes' ORDER BY u.username ASC");
 	while($admin = $db->fetch_array($query))
 	{
 		$la = mydate($settings['dateformat'].",".$settings['timeformat'], $admin['lastactive']);
 		$bgcolor = getaltbg();
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\">$admin[username]</td>\n";
+		echo "<td class=\"$bgcolor\">$admin[usergroup]</td>\n";
 		echo "<td class=\"$bgcolor\">$la</td>\n";
 		echo "<td class=\"$bgcolor\">";
 		if($admin['permsset'])
 		{
 			echo makelinkcode($lang->edit_perms2, "adminoptions.php?action=updateperms&uid=$admin[uid]");
+			echo makelinkcode($lang->revoke_custom_perms, "adminoptions.php?action=revokeperms&uid=$admin[uid]");
 		}
 		else
 		{
 			echo makelinkcode($lang->set_perms, "adminoptions.php?action=updateperms&uid=$admin[uid]");
 		}
+		echo "</td>\n";
+		echo "<td class=\"$bgcolor\">";
 		echo makelinkcode($lang->admin_log, "adminlogs.php?action=view&fromadmin=$admin[uid]")."\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+	endtable();
+
+	// Usergroup list
+	starttable();
+	tableheader($lang->admin_group_perms);
+	echo "<tr>\n";
+	echo "<td class=\"subheader\">$lang->groupname</td>\n";
+	echo "<td class=\"subheader\">$lang->perm_options</td>\n";
+	echo "</tr>\n";
+	$query = $db->query("SELECT g.title, g.cancp, a.permsset, g.gid FROM (".TABLE_PREFIX."usergroups g) LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid = -g.gid) WHERE g.cancp='yes' ORDER BY g.title ASC");
+	while($group = $db->fetch_array($query))
+	{
+		$bgcolor = getaltbg();
+		echo "<tr>\n";
+		echo "<td class=\"$bgcolor\">$group[title]</td>\n";
+		echo "<td class=\"$bgcolor\">";
+		$uid = -$group['gid'];
+		if($group['permsset'])
+		{
+			echo makelinkcode($lang->edit_perms2, "adminoptions.php?action=updateperms&uid=$uid");
+			echo makelinkcode($lang->revoke_custom_perms, "adminoptions.php?action=revokeperms&uid=$uid");
+		}
+		else
+		{
+			echo makelinkcode($lang->set_perms, "adminoptions.php?action=updateperms&uid=$uid");
+		}
 		echo "</td>\n";
 		echo "</tr>\n";
 	}

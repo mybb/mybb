@@ -2367,9 +2367,15 @@ var inlineId = {$fid};
 {$users}
 </table>
 <br />
-<div align="center"><input type="submit" class="submit" value="{$lang->remove_selected}" /></div>
+<div align="center">{$remove_users}</div>
 </form>
-<br />
+{$add_user}
+
+{$footer}
+</body>
+</html>]]></template>
+		<template name="managegroup_removeusers" version="100.07"><![CDATA[<input type="submit" class="submit" value="{$lang->remove_selected}" />]]></template>
+		<template name="managegroup_adduser" version="100.07"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="action" value="do_add" />
 <input type="hidden" name="gid" value="{$gid}" />
@@ -2384,20 +2390,17 @@ var inlineId = {$fid};
 </table>
 <br />
 <div align="center"><input type="submit" class="submit" value="{$lang->add_member_submit}" /></div>
-</form>
-
-{$footer}
-</body>
-</html>]]></template>
+</form>]]></template>
 		<template name="managegroup_user" version="100.07"><![CDATA[<tr>
 <td class="{$altbg}"><a href="member.php?action=profile&uid={$user['uid']}">{$user['username']}</a> {$leader}</td>
 <td class="{$altbg}" align="center">{$email}</td>
 <td class="{$altbg}" align="center">{$sendpm}</td>
 <td class="{$altbg}" align="center">{$regdate}</td>
 <td class="{$altbg}" align="center">{$user['postnum']}</td>
-<td class="{$altbg}" align="center"><input type="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" /></td>
+<td class="{$altbg}" align="center">$checkbox</td>
 </tr>
 ]]></template>
+		<template name="managegroup_user_checkbox" version="100.07"><![CDATA[<input type="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" />]]></template>
 		<template name="managegroup_requestnote" version="100.07"><![CDATA[<p>
 <strong><a href="managegroup.php?action=joinrequests&gid={$gid}">{$lang->pending_requests}</a></strong><br />
 {$lang->num_requests_pending}
@@ -2610,6 +2613,12 @@ var inlineId = {$fid};
 <td class="{$optionbg}" width="67" align="center">{$percent}%</td>
 </tr>
 ]]></template>
+		<template name="showteam_leader_header" version="100.07"><![CDATA[<tr>
+<td class="tcat" colspan="3">$lang->group_leaders</td>
+</tr>]]></template>
+		<template name="showteam_member_header" version="100.07"><![CDATA[<tr>
+<td class="tcat" colspan="3">$lang->group_members</td>
+</tr>]]></template>
 		<template name="showteam_usergroup" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$usergroup['title']}</strong></td>

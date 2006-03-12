@@ -18,7 +18,7 @@ $lang->load("managegroup");
 
 $gid = $mybb->input['gid'] = intval($mybb->input['gid']);
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid' AND type <> 1");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
 $usergroup = $db->fetch_array($query);
 if(!$usergroup['gid'])
 {
@@ -43,6 +43,10 @@ if(!$groupleader['uid'])
 
 if($mybb->input['action'] == "do_add")
 {
+	if($groupleader['canmanagemembers'] == "no")
+	{
+		nopermission();
+	}
 	$query = $db->query("SELECT uid, additionalgroups, usergroup FROM ".TABLE_PREFIX."users WHERE username = '".addslashes($mybb->input['username'])."' LIMIT 1");
 	$user = $db->fetch_array($query);
 	if($user['uid'])
@@ -64,6 +68,11 @@ if($mybb->input['action'] == "do_add")
 }
 elseif($mybb->input['action'] == "do_joinrequests")
 {
+	if($groupleader['canmanagerequests'] == "no")
+	{
+		nopermission();
+	}
+
 	$plugins->run_hooks("managegroup_do_joinrequests_start");
 
 	if(is_array($mybb->input['request']))
@@ -117,6 +126,11 @@ elseif($mybb->input['action'] == "joinrequests")
 }
 elseif($mybb->input['action'] == "do_manageusers")
 {
+	if($groupleader['canmanagemembers'] == "no")
+	{
+		nopermission();
+	}
+
 	$plugins->run_hooks("managegroup_do_manageusers_start");
 
 	if(is_array($mybb->input['removeuser']))
@@ -156,9 +170,13 @@ else
 	{
 		$usergrouptype = $lang->group_private;
 	}
+	else
+	{
+		$usergrouptype = $lang->group_default;
+	}
 		
 
-	$uquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' ORDER BY username ASC";
+	$uquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."' ORDER BY username ASC";
 	$query = $db->query($uquery);
 	$numusers = $db->num_rows($query);
 	/*if(!$numusers && !$numrequests)
@@ -202,7 +220,23 @@ else
 		{
 			$leader = '';
 		}
+
+		// Checkbox for user management - only if current user is allowed
+		$checkbox = '';
+		if($groupleader['canmanagemembers'] == "yes")
+		{
+			eval("\$checkbox = \"".$templates->get("managegroup_user_checkbox")."\";");
+		}
+
 		eval("\$users .= \"".$templates->get("managegroup_user")."\";");
+	}
+
+	$add_user = '';
+	$remove_users = '';
+	if($groupleader['canmanagemembers'] == "yes")
+	{
+		eval("\$add_user = \"".$templates->get("managegroup_adduser")."\";");
+		eval("\$remove_users = \"".$templates->get("managegroup_removeusers")."\";");
 	}
 
 	$plugins->run_hooks("managegroup_end");

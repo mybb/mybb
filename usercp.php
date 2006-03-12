@@ -1854,12 +1854,12 @@ elseif($mybb->input['action'] == "usergroups")
 	$groupsledlist = '';
 	$query = $db->query("
 		SELECT
-			g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests
+			g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
 		FROM ".TABLE_PREFIX."groupleaders l
 			LEFT JOIN ".TABLE_PREFIX."usergroups g
 				ON (g.gid=l.gid)
 			LEFT JOIN ".TABLE_PREFIX."users u
-				ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%'))))
+				ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
 			LEFT JOIN ".TABLE_PREFIX."joinrequests j
 				ON (j.gid=g.gid)
 		WHERE l.uid='".$mybb->user['uid']."'
@@ -1873,7 +1873,7 @@ elseif($mybb->input['action'] == "usergroups")
 		{
 			$usergroup['joinrequests'] = '--';
 		}
-		elseif($usergroup['joinrequests'] > 0)
+		if($usergroup['joinrequests'] > 0 && $usergroup['canmanagerequests'] == "yes")
 		{
 			$moderaterequestslink = " [<a href=\"managegroup.php?action=joinrequests&gid=".$usergroup['gid']."\">".$lang->view_requests."</a>]";
 		}
