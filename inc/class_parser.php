@@ -487,8 +487,7 @@ class postParser
 
 		$code = str_replace("<code>", "<code style=\"white-space: nowrap;\"><div dir=\"ltr\">", $code);
 		$code = str_replace("</code>", "</div></code>", $code);
-
-$code = preg_replace("#\s*$#", "", $code);
+		$code = preg_replace("#\s*$#", "", $code);
 		// Send back the code all nice and pretty
 		return "<div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div>";
 	}

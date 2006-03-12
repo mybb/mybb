@@ -1121,10 +1121,12 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 		{
 			cacheforums();
 		}
-		reset($forumcache);
-		foreach($forumcache as $key => $val)
+		foreach($forumcache as $fid => $forum)
 		{
-			$jumpfcache[$val['pid']][$val['disporder']][$val['fid']] = $val;
+			if($forum['active'] != "no")
+			{
+				$jumpfcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
+			}
 		}
 	}
 	if(!is_array($permissioncache))
@@ -1133,23 +1135,24 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 	}
 	if(is_array($jumpfcache[$pid]))
 	{
-		foreach($jumpfcache[$pid] as $key => $main)
+		foreach($jumpfcache[$pid] as $main)
 		{
-			foreach($main as $key => $forum)
+			foreach($main as $forum)
 			{
-				if($forum['fid'] != "0")
+				$perms = $permissioncache[$forum['fid']];
+				if($forum['fid'] != "0" && ($perms['canview'] != "no" || $mybb->settings['hideprivateforums'] == "no") && $forum['showinjump'] != "no")
 				{
-					$perms=(!$permissioncache[$forum['fid']])?$permissions:$permissioncache[$forum['fid']];
-					if(($perms['canview'] != "no" || $mybb->settings['hideprivateforums'] == "no") && $forum['showinjump'] != "no")
+					$optionselected = "";
+					if($selitem == $forum['fid'])
 					{
-						$optionselected = ($selitem==$forum['fid']) ? "selected=\"selected\"" : "";
-						$selecteddone = ($selitem==$forum['fid']) ? 1:0;
-						eval("\$forumjumpbits .= \"".$templates->get("forumjump_bit")."\";");
-						if($forumcache[$forum['fid']])
-						{
-							$newdepth = $depth."--";
-							$forumjumpbits .= makeforumjump($forum['fid'], $selitem, 0, $newdepth, $showextras, $perms);
-						}
+						$optionselected = "selected=\"selected\"";
+						$selecteddone = 1;
+					}
+					eval("\$forumjumpbits .= \"".$templates->get("forumjump_bit")."\";");
+					if($forumcache[$forum['fid']])
+					{
+						$newdepth = $depth."--";
+						$forumjumpbits .= makeforumjump($forum['fid'], $selitem, 0, $newdepth, $showextras);
 					}
 				}
 			}
@@ -1159,11 +1162,21 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 	{
 		if(!$selecteddone)
 		{
-			$selitem = (!$selitem) ? "default" : $selitem;
+			if(!$selitem)
+			{
+				$selitem = "default";
+			}
 			$jumpsel[$selitem] = "selected";
 		}
-		$plate = ($showextras=="0") ? "special":"advanced";
-		eval("\$forumjump = \"".$templates->get("forumjump_".$plate)."\";");
+		if($showextras == 0)
+		{
+			$template = "special";
+		}
+		else
+		{
+			$template = "advanced";
+		}
+		eval("\$forumjump = \"".$templates->get("forumjump_".$template)."\";");
 	}
 	return $forumjump;
 }
