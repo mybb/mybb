@@ -38,8 +38,19 @@ else
 	$fid = intval($mybb->input['fid']);
 }
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid' AND active!='no'");
-$forum = $db->fetch_array($query);
+cacheforums();
+$forum = $forumcache[$fid];
+// Check if forum and parents are active
+$parents = explode(",", $forum['parentlist'].",$fid");
+foreach($parents as $chkfid)
+{
+	if($forumcache[$chkfid]['active'] == "no")
+	{
+		error($lang->error_invalidforum);
+	}
+}
+/*$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid' AND active!='no'");
+$forum = $db->fetch_array($query);*/
 
 // Make navigation
 makeforumnav($fid);

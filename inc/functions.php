@@ -2385,4 +2385,30 @@ function get_post($pid)
 {
 }
 
+function get_inactive_forums()
+{
+	global $forumcache, $db, $cache, $inactiveforums;
+	if(!$forumcache)
+	{
+		cacheforums();
+	}
+	$inactive = array();
+	foreach($forumcache as $fid => $forum)
+	{
+		if($forum['active'] == "no")
+		{
+			$inactive[] = $fid;
+			foreach($forumcache as $fid1 => $forum1)
+			{
+				if(strpos(",".$forum1['parentlist'].",", ",".$fid.",") !== false)
+				{
+					$inactive[] = $fid;
+				}
+			}
+		}
+	}
+	$inactiveforums = implode(",", $inactive);
+	return $inactiveforums;
+}
+
 ?>

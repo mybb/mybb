@@ -18,6 +18,7 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("sendthread");
 
+// Get thread info
 $tid = intval($mybb->input['tid']);
 
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
@@ -35,8 +36,20 @@ makeforumnav($fid);
 addnav($thread['subject'], "showthread.php?tid=$tid");
 addnav($lang->nav_sendthread);
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
-$forum = $db->fetch_array($query);
+// Get forum info
+/*$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
+$forum = $db->fetch_array($query);*/
+cacheforums();
+$forum = $forumcache[$fid];
+// Check if forum and parents are active
+$parents = explode(",", $forum['parentlist'].",$fid");
+foreach($parents as $chkfid)
+{
+	if($forumcache[$chkfid]['active'] == "no")
+	{
+		error($lang->error_invalidforum);
+	}
+}
 
 $forumpermissions = forum_permissions($forum['fid']);
 

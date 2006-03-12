@@ -390,6 +390,11 @@ function perform_search_mysql($search)
 	{
 		$permsql = " AND t.fid NOT IN ($unsearchforums)";
 	}
+	$inactiveforums = get_inactive_forums();
+	if($inactiveforums)
+	{
+		$permsql .= " AND t.fid NOT IN ($inactiveforums)";
+	}
 
 	// Searching both posts and thread titles
 	$threads = array();
@@ -589,6 +594,11 @@ function perform_search_mysql_ft($search)
 	if($unsearchforums)
 	{
 		$permsql = " AND t.fid NOT IN ($unsearchforums)";
+	}
+	$inactiveforums = get_inactive_forums();
+	if($inactiveforums)
+	{
+		$permsql .= " AND t.fid NOT IN ($inactiveforums)";
 	}
 
 	// Searching both posts and thread titles

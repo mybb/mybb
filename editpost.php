@@ -19,6 +19,13 @@ require "./inc/functions_upload.php";
 // Load global language phrases
 $lang->load("editpost");
 
+// No permission for guests
+if(!$mybb->user['uid'])
+{
+	nopermission();
+}
+
+// Get post info
 $pid = intval($mybb->input['pid']);
 
 $query = $db->query("
@@ -33,6 +40,7 @@ if(!$post['pid'])
 	error($lang->error_invalidpost);
 }
 
+// Get thread info
 $tid = $post['tid'];
 $query = $db->query("
 	SELECT *
@@ -48,7 +56,30 @@ if(!$thread['tid'])
 
 $thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
+// Get forum info
 $fid = $thread['fid'];
+
+/*$query = $db->query("
+	SELECT *
+	FROM ".TABLE_PREFIX."forums
+	WHERE fid='$fid'
+");
+$forum = $db->fetch_array($query);*/
+cacheforums();
+$forum = $forumcache[$fid];
+// Check if forum and parents are active
+$parents = explode(",", $forum['parentlist'].",$fid");
+foreach($parents as $chkfid)
+{
+	if($forumcache[$chkfid]['active'] == "no")
+	{
+		error($lang->error_invalidforum);
+	}
+}
+if($forum['open'] == "no")
+{
+	nopermission();
+}
 
 // Make navigation
 makeforumnav($fid);
@@ -57,12 +88,6 @@ addnav($lang->nav_editpost);
 
 $forumpermissions = forum_permissions($fid);
 
-$query = $db->query("
-	SELECT *
-	FROM ".TABLE_PREFIX."forums
-	WHERE fid='$fid'
-");
-$forum = $db->fetch_array($query);
 
 if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user[showcodebuttons] != 0)
 {
@@ -77,15 +102,7 @@ if(!$mybb->input['action'] || $mybb->input['previewpost'])
 {
 	$mybb->input['action'] = "editpost";
 }
-if($forum['open'] == "no")
-{
-	nopermission();
-}
 
-if(!$mybb->user['uid'])
-{
-	nopermission();
-}
 if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
 	if(ismod($fid, "candeleteposts") != "yes")

@@ -63,6 +63,18 @@ if(!$thread['tid'] && !$mybb->input['thumbnail'])
 }
 $fid = $thread['fid'];
 
+cacheforums();
+$forum = $forumcache[$fid];
+// Check if forum and parents are active
+$parents = explode(",", $forum['parentlist'].",$fid");
+foreach($parents as $chkfid)
+{
+	if($forumcache[$chkfid]['active'] == "no")
+	{
+		error($lang->error_invalidforum);
+	}
+}
+
 $forumpermissions = forum_permissions($fid);
 
 if(($forumpermissions['canview'] == "no" || $forumpermissions['candlattachments'] == "no") && !$mybb->input['thumbnail'])

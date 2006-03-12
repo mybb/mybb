@@ -20,43 +20,58 @@ if($mybb->settings['enablereputation'] != "yes")
 	error($lang->reputation_disabled);
 }
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='".intval($mybb->input['pid'])."'");
+// Get post info
+$pid = intval($mybb->input['pid']);
+$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid='".$pid."'");
 $post = $db->fetch_array($query);
-
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$post[uid]."'");
-$user = $db->fetch_array($query);
-
-$usergroup = user_permissions($post['uid']);
-
 if(!$post['pid'])
 {
 	error($lang->error_invalidpost);
 }
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$post[fid]."' AND active!='no'");
-$forum = $db->fetch_array($query);
 
-$permissions = forum_permissions($forum['fid']);
+// Get author info
+$posteruid = $post['uid'];
+$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".$posteruid."'");
+$user = $db->fetch_array($query);
+
+// Get forum info
+$fid = $post['fid'];
+/*$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$fid."' AND active!='no'");
+$forum = $db->fetch_array($query);*/
+cacheforums();
+$forum = $forumcache[$fid];
+// Check if forum and parents are active
+$parents = explode(",", $forum['parentlist'].",$fid");
+foreach($parents as $chkfid)
+{
+	if($forumcache[$chkfid]['active'] == "no")
+	{
+		error($lang->error_invalidforum);
+	}
+}
+
+// Do the permissions thing
+$usergroup = user_permissions($posteruid);
+$permissions = forum_permissions($fid);
 
 if($permissions['canview'] != "yes")
 {
 	nopermission();
 }
-$query = $db->query("SELECT g.usereputationsystem FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g WHERE u.uid='".$post[uid]."' AND g.gid=u.usergroup");
-$usergroup = $db->fetch_array($query);
+/*$query = $db->query("SELECT g.usereputationsystem FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g WHERE u.uid='".$post['uid']."' AND g.gid=u.usergroup");
+$usergroup = $db->fetch_array($query);*/
 
 if($usergroup['usereputationsystem'] != "yes" || $mybb->usergroup['cangivereputations'] != "yes")
 {
 	error($lang->error_reputationdisabled);
 }
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$post[fid]."'");
-$foruminfo = $db->fetch_array($query);
-checkpwforum($fid, $foruminfo['password']);
+checkpwforum($fid, $forum['password']);
 
 if($mybb->input['action'] == "do_add")
 {
 	$plugins->run_hooks("reputation_do_add_start");
-	if($post['uid'] == $mybb->user['uid'])
+	if($posteruid == $mybb->user['uid'])
 	{ // let the user view their reputation
 		eval("\$reputationbit = \"".$templates->get("reputation_yourpost")."\";");
 		eval("\$reputation = \"".$templates->get("reputation")."\";");
@@ -67,10 +82,10 @@ if($mybb->input['action'] == "do_add")
 		if($mybb->usergroup['maxreputationsday'] != 0)
 		{
 			$timesearch = time() - (60 * 60 * 24);
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user[uid]."' AND dateline>'$timesearch'");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
 			$numtoday = $db->num_rows($query);
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='".$post['pid']."' AND adduid='".$mybb->user[uid]."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='".$pid."' AND adduid='".$mybb->user[uid]."'");
 		$reputation = $db->fetch_array($query);
 		if($reputation['uid'])
 		{
@@ -89,8 +104,8 @@ if($mybb->input['action'] == "do_add")
 				$rep = "-".$rep;
 			}
 			$reputation = array(
-				"uid" => $post['uid'],
-				"pid" => $post['pid'],
+				"uid" => $authorpid,
+				"pid" => $pid,
 				"adduid" => $mybb->user['uid'],
 				"reputation" => $rep,
 				"dateline" => time(),
@@ -98,7 +113,7 @@ if($mybb->input['action'] == "do_add")
 				);
 			$plugins->run_hooks("reputation_do_add_process");
 			$db->insert_query(TABLE_PREFIX."reputation", $reputation);
-			$db->query("UPDATE ".TABLE_PREFIX."users SET reputation=reputation+'$rep' WHERE uid='$post[uid]'");
+			$db->query("UPDATE ".TABLE_PREFIX."users SET reputation=reputation+'$rep' WHERE uid='$authorpid'");
 			$reputationbit = "<script type=\"text/javascript\">window.close();</script>";
 			$plugins->run_hooks("reputation_do_add_end");
 		}
@@ -111,7 +126,7 @@ else
 	$plugins->run_hooks("reputation_start");
 
 	$lang->add_reputation = sprintf($lang->add_reputation, $user['username']);
-	if($post['uid'] == $mybb->user['uid'])
+	if($posteruid == $mybb->user['uid'])
 	{ // let the user view their reputation
 		eval("\$reputationbit = \"".$templates->get("reputation_yourpost")."\";");
 		eval("\$reputation = \"".$templates->get("reputation")."\";");
@@ -122,10 +137,10 @@ else
 		if($mybb->usergroup['maxreputationsday'] != 0)
 		{
 			$timesearch = time() - (60 * 60 * 24);
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user[uid]."' AND dateline>'$timesearch'");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
 			$numtoday = $db->num_rows($query);
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='".intval($mybb->input['pid'])."' AND adduid='".$mybb->user[uid]."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='".$pid."' AND adduid='".$mybb->user['uid']."'");
 		$reputation = $db->fetch_array($query);
 		if($reputation['uid'])
 		{
@@ -139,13 +154,12 @@ else
 		{
 			if($mybb->input['type'] == "n")
 			{
-				$negcheck = "checked";
+				$negcheck = "checked=\"checked\"";
 			}
 			else
 			{
-				$poscheck = "checked";
+				$poscheck = "checked=\"checked\"";
 			}
-			$pid = $mybb->input['pid'];
 			eval("\$reputationbit = \"".$templates->get("reputation_add")."\";");
 		}
 		$lang->add_reputation = sprintf($lang->add_reputation, $user['username']);
@@ -154,3 +168,4 @@ else
 		outputpage($reputation);
 	}
 }
+?>

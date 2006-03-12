@@ -538,42 +538,42 @@ if($mybb->input['action'] == "showresults")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
-	$forum = $db->fetch_array($query);
+	cacheforums();
+	if($forumcache[$fid]['active'] != "no")
+	{
+		$forum = $forumcache[$fid];
+	}
+	/*$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
+	$forum = $db->fetch_array($query);*/
 	$forumpermissions = forum_permissions($forum['fid']);
 
 	$plugins->run_hooks("polls_showresults_start");
-
 
 	if($forumpermissions['canviewthreads'] == "no" || $forumpermissions['canview'] == "no")
 	{
 		error($lang->error_pollpermissions);
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE pid='".intval($mybb->input['pid'])."'");
-	$poll = $db->fetch_array($query);
-
 	if(!$poll['pid'])
 	{
 		error($lang->error_invalidpoll);
 	}
-
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='".intval($mybb->input['pid'])."'");
-	$thread = $db->fetch_array($query);
-
 	if(!$thread['tid'])
 	{
 		error($lang->error_invalidthread);
+	}
+	// Check if forum and parents are active
+	$parents = explode(",", $forum['parentlist']);
+	foreach($parents as $chkfid)
+	{
+		if($forumcache[$chkfid]['active'] == "no")
+		{
+			error($lang->error_invalidforum);
+		}
 	}
 	// Make navigation
 	makeforumnav($fid);
 	addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
 	addnav($lang->nav_pollresults);
-
-
-	$fid = $thread['fid'];
-
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
-	$forum = $db->fetch_array($query);
 
 	$query = $db->query("SELECT v.*, u.username FROM ".TABLE_PREFIX."pollvotes v LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=v.uid) WHERE v.pid='$poll[pid]' ORDER BY u.username");
 	while($voter = $db->fetch_array($query))
@@ -761,4 +761,6 @@ if($mybb->input['action'] == "vote")
 
 	redirect("showthread.php?tid=".$poll['tid'], $lang->redirect_votethanks);
 }
+
+error($lang->error_invalidaction);
 ?>

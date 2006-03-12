@@ -33,12 +33,24 @@ if(!$post['pid'])
 	error($lang->error_invalidpost);
 }
 
+
+/*$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$post['fid']."'");
+$forum = $db->fetch_array($query);*/
+cacheforums();
+$forum = $forumcache[$post['fid']];
+// Check if forum and parents are active
+$parents = explode(",", $forum['parentlist'].",$post[fid]");
+foreach($parents as $chkfid)
+{
+	if($forumcache[$chkfid]['active'] == "no")
+	{
+		error($lang->error_invalidforum);
+	}
+}
 // Password protected forums ......... yhummmmy!
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$post[fid]."'");
-$forum = $db->fetch_array($query);
 checkpwforum($forum['fid'], $forum['password']);
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".$post[tid]."'");
+$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".$post['tid']."'");
 $thread = $db->fetch_array($query);
 
 if($mybb->input['action'] == "report")

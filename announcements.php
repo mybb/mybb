@@ -40,6 +40,20 @@ addnav($lang->nav_announcements);
 $forumpermissions = forum_permissions($forum['fid']);
 $parentlist = $forum['parentlist'];
 
+if(!empty($parentlist))
+{
+	cacheforums();
+	// Check if forum and parents are active
+	$parents = explode(",", $forum['parentlist'].",$fid");
+	foreach($parents as $chkfid)
+	{
+		if($forumcache[$chkfid]['active'] == "no")
+		{
+			error($lang->error_invalidforum);
+		}
+	}
+}
+
 if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
 {
 	nopermission();

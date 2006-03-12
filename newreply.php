@@ -48,8 +48,20 @@ $options = array(
 $query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid=".$tid);
 $thread = $db->fetch_array($query);
 $fid = $thread['fid'];
-$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid=".$fid." AND active!='no'");
-$forum = $db->fetch_array($query);
+
+cacheforums();
+$forum = $forumcache[$fid];
+// Check if forum and parents are active
+$parents = explode(",", $forum['parentlist'].",$fid");
+foreach($parents as $chkfid)
+{
+	if($forumcache[$chkfid]['active'] == "no")
+	{
+		error($lang->error_invalidforum);
+	}
+}
+/*$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid=".$fid." AND active!='no'");
+$forum = $db->fetch_array($query);*/
 
 // Make navigation
 makeforumnav($fid);

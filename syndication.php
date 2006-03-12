@@ -51,11 +51,16 @@ else
 
 // Get the forums the user is not allowed to see.
 $unviewable = getunviewableforums();
+$inactiveforums = get_inactive_forums();
 
 // If there are any, add SQL to exclude them.
 if($unviewable)
 {
 	$unviewable = "AND f.fid NOT IN($unviewable)";
+}
+if($unviewable)
+{
+	$unviewable = "AND f.fid NOT IN($inactiveforums)";
 }
 
 // If there are no forums to syndicate, syndicate all viewable.

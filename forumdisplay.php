@@ -70,6 +70,16 @@ $currentitem = $fid;
 makeforumnav($fid);
 $parentlist = $foruminfo['parentlist'];
 
+// Check if parents are active
+$parents = explode(",", $parentlist);
+foreach($parents as $chkfid)
+{
+	if($forumcache[$chkfid]['active'] == "no")
+	{
+		error($lang->error_invalidforum);
+	}
+}
+
 $forumpermissions = forum_permissions();
 $fpermissions = $forumpermissions[$fid];
 

@@ -64,8 +64,10 @@ makeforumnav($fid);
 addnav($thread['subject'], "showthread.php?tid=$tid");
 
 // Get the forum details from the database.
-$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid=".$thread['fid']." AND active != 'no'");
-$forum = $db->fetch_array($query);
+cacheforums();
+$forum = $forumcache[$fid];
+/*$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid=".$thread['fid']." AND active != 'no'");
+$forum = $db->fetch_array($query);*/
 
 $forumpermissions = forum_permissions($forum['fid']);
 
@@ -77,6 +79,16 @@ if($forum['type'] != "f")
 if($forumpermissions['canview'] != "yes")
 {
 	nopermission();
+}
+
+// Check if forum and parents are active
+$parents = explode(",", $forum['parentlist'].",$fid");
+foreach($parents as $chkfid)
+{
+	if($forumcache[$chkfid]['active'] == "no")
+	{
+		error($lang->error_invalidforum);
+	}
 }
 
 // Check that this forum is not password protected.
@@ -221,7 +233,7 @@ if($mybb->input['action'] == "thread")
 		// If the user is not a guest, check if he already voted.
 		if($mybb->user['uid'] != 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "uid=".$mybb->user['uid']."AND pid=".$poll['pid']);
+			$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "uid=".$mybb->user['uid']." AND pid=".$poll['pid']);
 			while($votecheck = $db->fetch_array($query))
 			{
 				$alreadyvoted = 1;

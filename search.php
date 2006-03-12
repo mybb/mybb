@@ -605,6 +605,11 @@ elseif($mybb->input['action'] == "findguest")
 	{
 		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
 	}
+	$inactiveforums = get_inactive_forums();
+	if($inactiveforums)
+	{
+		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
+	}
 
 	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
@@ -630,6 +635,11 @@ elseif($mybb->input['action'] == "finduser")
 	if($unsearchforums)
 	{
 		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+	}
+	$inactiveforums = get_inactive_forums();
+	if($inactiveforums)
+	{
+		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
 	}
 
 	$sid = md5(uniqid(microtime(), 1));
@@ -657,6 +667,11 @@ elseif($mybb->input['action'] == "finduserthreads")
 	{
 		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
 	}
+	$inactiveforums = get_inactive_forums();
+	if($inactiveforums)
+	{
+		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
+	}
 
 	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
@@ -683,6 +698,11 @@ elseif($mybb->input['action'] == "getnew")
 	if($unsearchforums)
 	{
 		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+	}
+	$inactiveforums = get_inactive_forums();
+	if($inactiveforums)
+	{
+		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
 	}
 
 	$sid = md5(uniqid(microtime(), 1));
@@ -720,6 +740,11 @@ elseif($mybb->input['action'] == "getdaily")
 	if($unsearchforums)
 	{
 		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+	}
+	$inactiveforums = get_inactive_forums();
+	if($inactiveforums)
+	{
+		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
 	}
 
 
