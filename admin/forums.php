@@ -77,6 +77,10 @@ function getforums($pid=0, $depth=1)
 			foreach($main as $key => $forum)
 			{
 				$forum['name'] = $forum['name'];
+				if($forum['active'] == "no")
+				{
+					$forum['name'] = "<em>".$forum['name']."</em>";
+				}
 				$forum['description'] = $forum['description'];
 				if($forum['type'] == "c" && ($depth == 1 || $depth == 2))
 				{
