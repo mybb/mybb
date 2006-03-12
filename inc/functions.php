@@ -219,23 +219,21 @@ function mymail($to, $subject, $message, $from="")
  */
 function getparentlist($fid)
 {
-	global $db, $forumcache;
+	global $db, $forum_cache;
 	static $forumarraycache;
 
 	if($forumarraycache[$fid])
 	{
 		return $forumarraycache[$fid]['parentlist'];
 	}
-	elseif($forumcache[$fid])
+	elseif($forum_cache[$fid])
 	{
-		return $forumcache[$fid]['parentlist'];
+		return $forum_cache[$fid]['parentlist'];
 	}
 	else
 	{
-		$query = $db->query("SELECT parentlist FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
-		$forum = $db->fetch_array($query);
-		$forumarraycache[$fid]['parentlist'] = $forum['parentlist'];
-		return $forum['parentlist'];
+		cache_forums();
+		return $forum_cache[$fid]['parentlist'];
 	}
 }
 
@@ -260,19 +258,19 @@ function buildparentlist($fid, $column="fid", $joiner="OR", $parentlist="")
 //
 // Cache forums in the memory
 //
-function cacheforums()
+function cache_forums()
 {
-	global $forumcache, $db, $cache;
-	if(!$forumcache)
+	global $forum_cache, $db, $cache;
+	if(!$forum_cache)
 	{
-		$forumcache = $cache->read("forums");
-		if(!$forumcache)
+		$forum_cache = $cache->read("forums");
+		if(!$forum_cache)
 		{
 			$cache->updateforums();
-			$forumcache = $cache->read("forums", 1);
+			$forum_cache = $cache->read("forums", 1);
 		}
 	}
-	return $forumcache;
+	return $forum_cache;
 }
 
 //
@@ -527,7 +525,7 @@ function usergroup_displaygroup($gid)
 //
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
-	global $db, $cache, $groupscache, $forumcache, $fpermcache, $mybbgroup, $mybbuser, $mybb, $usercache, $fpermissionscache;
+	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybbgroup, $mybbuser, $mybb, $usercache, $fpermissionscache;
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
@@ -554,11 +552,11 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 			$groupperms = $mybbgroup;
 		}
 	}
-	if(!is_array($forumcache))
+	if(!is_array($forum_cache))
 	{
-		cacheforums();
+		cache_forums();
 	}
-	if(!is_array($forumcache))
+	if(!is_array($forum_cache))
 	{
 		return false;
 	}
@@ -572,7 +570,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 	}
 	else
 	{
-		foreach($forumcache as $forum)
+		foreach($forum_cache as $forum)
 		{
 			$permissions[$forum['fid']] = fetch_forum_permissions($forum['fid'], $gid, $groupperms);
 		}
@@ -585,7 +583,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 //
 function fetch_forum_permissions($fid, $gid, $groupperms)
 {
-	global $groupscache, $forumcache, $fpermcache, $mybb;
+	global $groupscache, $forum_cache, $fpermcache, $mybb;
 	$groups = explode(",", $gid);
 	if(!$fpermcache[$fid]) // This forum has no custom or inherited permisssions so lets just return the group permissions
 	{
@@ -1109,7 +1107,7 @@ function deletepost($pid, $tid="")
 
 function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $permissions="", $name="fid")
 {
-	global $db, $forumcache, $fjumpcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang, $mybbgroup;
+	global $db, $forum_cache, $fjumpcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang, $mybbgroup;
 	$pid = intval($pid);
 	if($permissions)
 	{
@@ -1117,11 +1115,11 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 	}
 	if(!is_array($jumpfcache))
 	{
-		if(!is_array($forumcache))
+		if(!is_array($forum_cache))
 		{
-			cacheforums();
+			cache_forums();
 		}
-		foreach($forumcache as $fid => $forum)
+		foreach($forum_cache as $fid => $forum)
 		{
 			if($forum['active'] != "no")
 			{
@@ -1149,7 +1147,7 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 						$selecteddone = 1;
 					}
 					eval("\$forumjumpbits .= \"".$templates->get("forumjump_bit")."\";");
-					if($forumcache[$forum['fid']])
+					if($forum_cache[$forum['fid']])
 					{
 						$newdepth = $depth."--";
 						$forumjumpbits .= makeforumjump($forum['fid'], $selitem, 0, $newdepth, $showextras);
@@ -1482,27 +1480,22 @@ function getattachicon($ext)
 
 function getunviewableforums()
 {
-	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $unviewable, $templates, $mybbgroup, $forumpass;
+	global $db, $forum_cache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $unviewable, $templates, $mybbgroup, $forumpass;
 	$pid = intval($pid);
 
 	if(!$permissions)
 	{
 		$permissions = $mybbgroup;
 	}
-	if(!is_array($forumcache))
+	if(!is_array($forum_cache))
 	{
-		// Get Forums
-		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f WHERE active!='no' ORDER BY f.pid, f.disporder");
-		while($forum = $db->fetch_array($query))
-		{
-			$forumcache[$forum['fid']] = $forum;
-		}
+		cache_forums();
 	}
 	if(!is_array($permissioncache))
 	{
 		$permissioncache = forum_permissions();
 	}
-	foreach($forumcache as $fid => $forum)
+	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
 		{
@@ -1585,15 +1578,14 @@ function addnav($name, $url="") {
 
 function makeforumnav($fid, $archive=0)
 {
-	global $pforumcache, $db, $currentitem, $forumcache, $navbits, $lang, $archiveurl;
+	global $pforumcache, $db, $currentitem, $forum_cache, $navbits, $lang, $archiveurl;
 	if(!$pforumcache)
 	{
-		if(!is_array($forumcache))
+		if(!is_array($forum_cache))
 		{
-			cacheforums();
+			cache_forums();
 		}
-		@reset($forumcache);
-		while(list($key, $val) = @each($forumcache))
+		foreach($forum_cache as $key => $val)
 		{
 			$pforumcache[$val['fid']][$val['pid']] = $val;
 		}
@@ -2372,9 +2364,34 @@ function get_user($uid)
 	}
 }
 
-function get_forum($fid)
+function get_forum($fid, $active_override=0)
 {
 	global $cache;
+	static $forum_cache;
+
+	if(!isset($forum_cache) || is_array($forum_cache))
+	{
+		$forum_cache = $cache->read("forums");
+	}
+	if(!$forum_cache[$fid])
+	{
+		return false;
+	}
+	if($active_override != 1)
+	{
+		$parents = explode(",", $forum_cache[$fid]['parentlist']);
+		if(is_array($parents))
+		{
+			foreach($parents as $parent)
+			{
+				if($forum_cache[$parent]['active'] == "no")
+				{
+					return false;
+				}
+			}
+		}
+	}
+	return $forum_cache[$fid];
 }
 
 function get_thread($tid)
@@ -2387,18 +2404,18 @@ function get_post($pid)
 
 function get_inactive_forums()
 {
-	global $forumcache, $db, $cache, $inactiveforums;
-	if(!$forumcache)
+	global $forum_cache, $db, $cache, $inactiveforums;
+	if(!$forum_cache)
 	{
-		cacheforums();
+		cache_forums();
 	}
 	$inactive = array();
-	foreach($forumcache as $fid => $forum)
+	foreach($forum_cache as $fid => $forum)
 	{
 		if($forum['active'] == "no")
 		{
 			$inactive[] = $fid;
-			foreach($forumcache as $fid1 => $forum1)
+			foreach($forum_cache as $fid1 => $forum1)
 			{
 				if(strpos(",".$forum1['parentlist'].",", ",".$fid.",") !== false)
 				{

@@ -63,32 +63,18 @@ if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['
 makeforumnav($fid);
 addnav($thread['subject'], "showthread.php?tid=$tid");
 
-// Get the forum details from the database.
-cacheforums();
-$forum = $forumcache[$fid];
-/*$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid=".$thread['fid']." AND active != 'no'");
-$forum = $db->fetch_array($query);*/
+$forum = get_forum($fid);
 
-$forumpermissions = forum_permissions($forum['fid']);
-
-// Make sure we are looking at a proper forum.
-if($forum['type'] != "f")
+if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
+
+$forumpermissions = forum_permissions($forum['fid']);
+
 if($forumpermissions['canview'] != "yes")
 {
 	nopermission();
-}
-
-// Check if forum and parents are active
-$parents = explode(",", $forum['parentlist'].",$fid");
-foreach($parents as $chkfid)
-{
-	if($forumcache[$chkfid]['active'] == "no")
-	{
-		error($lang->error_invalidforum);
-	}
 }
 
 // Check that this forum is not password protected.
