@@ -94,28 +94,9 @@ class FeedGenerator
 	 */
 	function generate_feed()
 	{
-		// If no date is given, use the current date.
-		if(!$this->channel['date'])
-		{
-			$this->channel['date'] = time();
-		}
-
 		// First, add the feed metadata.
 		switch($this->feed_format)
 		{
-			// Output an RSS 2.0 formatted feed.
-			case "rss2.0":
-				$this->channel['date'] = date("r", $this->channel['date']);
-
-				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-				$this->xml .= "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"	xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
-				$this->xml .= "\t<channel>\n";
-				$this->xml .= "\t\t<title>".htmlentities($this->channel['title'])."</title>\n";
-				$this->xml .= "\t\t<link>".$this->channel['link']."</link>\n";
-				$this->xml .= "\t\t<description>".htmlentities($this->channel['description'])."</description>\n";
-				$this->xml .= "\t\t<pubDate>.".$this->channel['date']."</pubDate>\n";
-				$this->xml .= "\t\t<generator>MyBB</generator>\n";
-				break;
 			// Ouput an Atom 1.0 formatted feed.
 			case "atom1.0":
 				$this->channel['date'] = date("Y-m-d\TH:i:s\Z", $this->channel['date']);
@@ -127,17 +108,17 @@ class FeedGenerator
 				$this->xml .= "\t<updated>".$this->channel['date']."</updated>\n";
 				$this->xml .= "\t<generator uri=\"http://mybboard.com\">MyBB</generator>\n";
 				break;
-			// The default is the RSS 0.92 format.
+			// The default is the RSS 2.0 format.
 			default:
 				$this->channel['date'] = date("D, d M Y H:i:s O", $this->channel['date']);
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-				$this->xml .= "<rss version=\"0.92\">\n";
+				$this->xml .= "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"	xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
 				$this->xml .= "\t<channel>\n";
 				$this->xml .= "\t\t<title>".htmlentities($this->channel['title'])."</title>\n";
 				$this->xml .= "\t\t<link>".$this->channel['link']."</link>\n";
 				$this->xml .= "\t\t<description>".htmlentities($this->channel['description'])."</description>\n";
-				$this->xml .= "\t\t<lastBuildDate>".$this->channel['date']."</lastBuildDate>\n";
-				$this->xml .= "\t\t<language>en</language>\n";
+				$this->xml .= "\t\t<pubDate>".$this->channel['date']."</pubDate>\n";
+				$this->xml .= "\t\t<generator>MyBB</generator>\n";
 		}
 
 		// Now loop through all of the items and add them to the feed XML.
@@ -149,8 +130,16 @@ class FeedGenerator
 			}
 			switch($this->feed_format)
 			{
-				case "rss2.0":
-					$item['date'] =  date("r", $item['date']);
+				// Output Atom 1.0 format feed.
+				case "atom1.0":
+					$item['date'] = date("Y-m-d\TH:i:s\Z", $item['date']);
+					$this->xml .= "\t<entry>\n";
+					$this->xml .= "\t\t<title>".htmlentities($item['title'])."</title>\n";
+					break;
+
+				// The default is the RSS 2.0 format.
+				default:
+					$item['date'] = date("D, d M Y H:i:s O", $item['date']);
 					$this->xml .= "\t\t<item>\n";
 					$this->xml .= "\t\t\t<title>".htmlentities($item['title'])."</title>\n";
 					$this->xml .= "\t\t\t<link>".$item['link']."</link>\n";
@@ -160,12 +149,15 @@ class FeedGenerator
 						$this->xml .= "\t\t\t<dc:creator>".htmlentities($item['author'])."</dc:creator>\n";
 					}
 					$this->xml .= "\t\t\t<guid isPermaLink=\"false\">".$item['link']."</guid>\n";
-					$this->xml .= "\t\t\t<description><![CDATA[".htmlentities(strip_tags($item['description']))."]]></description>\n";
+					$this->xml .= "\t\t\t<description><![CDATA[".strip_tags($item['description'])."]]></description>\n";
 					$this->xml .= "\t\t\t<content:encoded><![CDATA[".$item['description']."]]></content:encoded>\n";
 					$this->xml .= "\t\t</item>\n";
 					break;
+
 			}
 		}
+
+		// Now, neatly end the feed XML.
 		switch($this->feed_format)
 		{
 			case "rss2.0":

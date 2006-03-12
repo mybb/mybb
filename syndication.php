@@ -24,10 +24,6 @@ $feedgenerator = new FeedGenerator();
 require_once "./inc/class_parser.php";
 $parser = new postParser;
 
-// Set the feed type and add a feed wrapper.
-$feedgenerator->set_feed_format($mybb->input['type']);
-$feedgenerator->set_channel($channel);
-
 // Find out the thread limit.
 $thread_limit = intval($mybb->input['limit']);
 if($thread_limit > 50)
@@ -74,6 +70,17 @@ else
 	$forumlist = $unviewable;
 }
 
+// Find out which title to add to the feed.
+$title = $mybb->settings['bbname'];
+$query = $db->simple_select(TABLE_PREFIX."forums f", "f.name, f.fid", "1=1 ".$forumlist);
+$comma = " - ";
+while($forum = $db->fetch_array($query))
+{
+	$title .= $comma.$forum['name'];
+	$forumcache[$forum['fid']] = $forum;
+	$comma = ", ";
+}
+
 // Get the threads to syndicate.
 $query = $db->query("
 	SELECT t.*, f.name AS forumname, p.message AS postmessage
@@ -84,6 +91,18 @@ $query = $db->query("
 	ORDER BY t.dateline DESC
 	LIMIT 0, ".$thread_limit
 );
+
+// Set the feed type.
+$feedgenerator->set_feed_format($mybb->input['type']);
+
+// Set the channel header.
+$channel = array(
+	"title" => $title,
+	"link" => $mybb->settings['bburl']."/",
+	"date" => time(),
+	"description" => $mybb->settings['bbname']." - ".$mybb->settings['bburl']
+);
+$feedgenerator->set_channel($channel);
 
 // Loop through all the threads.
 while($thread = $db->fetch_array($query))
