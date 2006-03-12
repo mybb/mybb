@@ -2397,7 +2397,7 @@ var inlineId = {$fid};
 <td class="{$altbg}" align="center">{$sendpm}</td>
 <td class="{$altbg}" align="center">{$regdate}</td>
 <td class="{$altbg}" align="center">{$user['postnum']}</td>
-<td class="{$altbg}" align="center">$checkbox</td>
+<td class="{$altbg}" align="center">{$checkbox}</td>
 </tr>
 ]]></template>
 		<template name="managegroup_user_checkbox" version="100.07"><![CDATA[<input type="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" />]]></template>
@@ -2614,10 +2614,10 @@ var inlineId = {$fid};
 </tr>
 ]]></template>
 		<template name="showteam_leader_header" version="100.07"><![CDATA[<tr>
-<td class="tcat" colspan="3">$lang->group_leaders</td>
+<td class="tcat" colspan="3">{$lang->group_leaders}</td>
 </tr>]]></template>
 		<template name="showteam_member_header" version="100.07"><![CDATA[<tr>
-<td class="tcat" colspan="3">$lang->group_members</td>
+<td class="tcat" colspan="3">{$lang->group_members}</td>
 </tr>]]></template>
 		<template name="showteam_usergroup" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
