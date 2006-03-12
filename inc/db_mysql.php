@@ -457,6 +457,9 @@ class databaseEngine {
 		{
 			return false;
 		}
+		$comma = "";
+		$query1 = "";
+		$query2 = "";
 		foreach($array as $field => $value)
 		{
 			$query1 .= $comma.$field;
@@ -481,7 +484,8 @@ class databaseEngine {
 		{
 			return false;
 		}
-		$comma = $query = "";
+		$comma = "";
+		$query = "";
 		foreach($array as $field => $value)
 		{
 			$query .= $comma.$field."='".$value."'";
@@ -497,7 +501,7 @@ class databaseEngine {
 		}
 		return $this->query("UPDATE $table SET $query");
 	}
-	
+
 	/**
 	 * Build a delete query.
 	 *

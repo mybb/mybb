@@ -55,7 +55,7 @@ if($mybb->input['action'] == "activate")
 	}
 
 	include "./inc/plugins/$file";
-	
+
 	//
 	// If this plugin has an activate/deactivate function then run it
 	//
@@ -69,8 +69,8 @@ if($mybb->input['action'] == "activate")
 	//
 	$plugins_cache['active'] = $active_plugins;
 	$cache->update("plugins", $plugins_cache);
-	
-	cpredirect("plugins.php", $message);	
+
+	cpredirect("plugins.php", $message);
 }
 
 if($mybb->input['action'] == "")
@@ -122,14 +122,14 @@ if($mybb->input['action'] == "")
 			{
 				$plugininfo['author'] = "<a href=\"".$plugininfo['authorsite']."\">".$plugininfo['author']."</a>";
 			}
-			if($active_plugins[$codename])
+			if(isset($active_plugins[$codename]))
 			{
 				$pluginbuttons = "<input type=\"submit\" name=\"deactivate\" value=\"".$lang->deactivate_plugin."\" />";
 			}
 			else
 			{
 				$pluginbuttons = "<input type=\"submit\" name=\"activate\" value=\"".$lang->activate_plugin."\" />";
-			}	
+			}
 
 			$bgcolor = getaltbg();
 			startform("plugins.php");

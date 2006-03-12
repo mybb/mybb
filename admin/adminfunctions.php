@@ -33,13 +33,13 @@ $cssselectors = array("body" => "body",
 					  "toolbar_normal" => ".toolbar_normal",
 					  "toolbar_hover" => ".toolbar_hover",
 					  "toolbar_clicked" => ".toolbar_clicked",
-					  
+
 					  // Link selectors
 					  "a_link" => "a:link",
 					  "a_visited" => "a:visited",
 					  "a_hover" => "a:hover");
 
-/*$cssselectors = array("body", "#container", "#content", ".menu ul", "#panel", "table", ".tborder", ".thead", ".tcat", 
+/*$cssselectors = array("body", "#container", "#content", ".menu ul", "#panel", "table", ".tborder", ".thead", ".tcat",
 					  ".trow1", ".trow2", ".navigation", ".navigation .active", ".smalltext", ".largetext", "textarea, input, select, object",
 					  ".toolbar_normal", ".toolbar_hover", ".toolbar_mousedown", ".toolbar_clicked");
 */
@@ -101,6 +101,8 @@ function makehoptolinks($links)
 function startform($script, $name="", $action="", $autocomplete=1)
 {
 	global $mybb;
+
+	$acomplete = "";
 	if($autocomplete == 0)
 	{
 		$acomplete = "autocomplete=\"off\"";
@@ -287,7 +289,7 @@ function makeselectcode($title, $name, $table, $tableid, $optiondisp, $selected=
 		if($selected == $value)
 		{
 			echo "<option value=\"$value\" selected>$extra</option>\n";
-		} 
+		}
 		else
 		{
 			echo "<option value=\"$value\">$extra</option>\n";
@@ -741,7 +743,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 	{
 		$gid = $mybb->usergroup['gid'];
 	}
-	
+
 	// Make sure gid is negative
 	$gid = (-1) * abs($gid);
 
@@ -773,7 +775,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 				$perms_def = $perm;
 			}
 		}
-		
+
 		// Send specific user, or group permissions before default.
 		if(isset($perms_user))
 		{
@@ -1194,7 +1196,7 @@ function build_theme_bit_array($tid, $themebit, $addinherited=1)
 			$inherited = $tid;
 		}
 	}
-	else 
+	else
 	{
 		if($theme['pid'] > 0)
 		{
@@ -1222,7 +1224,7 @@ function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 		{
 			$css = unserialize($parent['cssbits']);
 		}
-		
+
 	}
 	// Build the actual css
 	$cssbits = $css;
@@ -1518,7 +1520,7 @@ function make_theme_list($tid="0", $depth="")
 		}
 	}
 }
-	
+
 function make_theme_select($name, $selected="", $tid="0", $depth="")
 {
 	global $db, $themeselect, $tcache, $tcache2;
