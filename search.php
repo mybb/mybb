@@ -166,18 +166,7 @@ if($mybb->input['action'] == "results")
 			}
 			$threadcount = $count['resultcount'];
 		}
-
-		// Fetch the read threads.
-		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
-		{
-			$query = $db->query("SELECT tid,dateline FROM ".TABLE_PREFIX."threadsread WHERE uid='".$mybb->user['uid']."' AND tid IN(".$search['threads'].")");
-			while($readthread = $db->fetch_array($query))
-			{
-				$readthreads[$readthread['tid']] = $readthread['dateline'];
-			}
-		}
-		
-		// Begin selecting matching threads.
+		// Begin selecting matching threads, cache them.
 		$query = $db->query("
 			SELECT t.*
 			FROM ".TABLE_PREFIX."threads t
@@ -185,8 +174,46 @@ if($mybb->input['action'] == "results")
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
-
+		$thread_cache = array();
 		while($thread = $db->fetch_array($query))
+		{
+			$thread_cache[$thread['tid']] = $thread;
+		}
+		$thread_ids = implode(",", array_keys($thread_cache));
+
+
+		// Fetch dot icons if enabled
+		if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $thread_cache)
+		{
+			$query = $db->query("
+				SELECT DISTINCT tid,uid
+				FROM ".TABLE_PREFIX."posts
+				WHERE uid='".$mybb->user['uid']."'
+				AND tid IN(".$thread_ids.")
+			");
+			while($post = $db->fetch_array($query))
+			{
+				$thread_cache[$post['tid']]['dot_icon'] = 1;
+			}
+		}
+
+		// Fetch the read threads.
+		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
+		{
+			$query = $db->query("
+				SELECT tid,dateline
+				FROM ".TABLE_PREFIX."threadsread
+				WHERE uid='".$mybb->user['uid']."'
+				AND tid IN(".$thread_ids.")
+			");
+			while($readthread = $db->fetch_array($query))
+			{
+				$thread_cache[$readthread['tid']]['last_read'] = $readthread['dateline'];
+			}
+		}
+
+		// Fetch thread 'dots'
+		foreach($thread_cache as $thread)
 		{
 			if($bgcolor == "trow1")
 			{
@@ -223,7 +250,7 @@ if($mybb->input['action'] == "results")
 			// Determine the folder
 			$folder = '';
 			$folder_label = '';
-			if($thread['doticon'])
+			if($thread['dot_icon'])
 			{
 				$folder = "dot_";
 				$folder_label .= $lang->icon_dot;
@@ -248,7 +275,7 @@ if($mybb->input['action'] == "results")
 					}
 				}
 			}
-			$lastread = $threadsread[$thread['tid']];
+			$lastread = $$thread['lastread'];
 			if(!$lastread)
 			{
 				$readcookie = $threadread = mygetarraycookie("threadread", $thread['tid']);
