@@ -564,9 +564,12 @@ class postParser
 		return $list;
 	}
 
-	function strip_mycode($message)
+	function strip_mycode($message, $options)
 	{
-		$options['allow_html'] = "no";
+		if($options['allow_html'] != "yes")
+		{
+			$options['allow_html'] = "no";
+		}
 		$options['allow_smilies'] = "no";
 		$options['allow_mycode'] = "yes";
 		$options['nl2br'] = "no";

@@ -23,6 +23,9 @@ $feedgenerator = new FeedGenerator();
 // Load the post parser
 require_once "./inc/class_parser.php";
 $parser = new postParser;
+$parser_options = array(
+	"allow_html" => "yes"
+);
 
 // Find out the thread limit.
 $thread_limit = intval($mybb->input['limit']);
@@ -110,7 +113,7 @@ while($thread = $db->fetch_array($query))
 	$item = array(
 		"title" => $thread['subject'],
 		"link" => $settings['bburl']."/showthread.php?tid=".$thread['tid'],
-		"description" => $parser->strip_mycode($thread['postmessage']),
+		"description" => $parser->strip_mycode($thread['postmessage'], $parser_options),
 		"date" => $thread['dateline']
 	);
 	$feedgenerator->add_item($item);
