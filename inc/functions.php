@@ -2324,7 +2324,6 @@ function build_forum_link($fid, $title, $page=0)
 	}
 	return "<a href=\"".$forum_link."\">".$title."</a>";
 }
-
 function build_thread_link($tid, $subject, $page=0)
 {
 	if($page > 0)

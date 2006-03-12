@@ -572,7 +572,7 @@ function show($user)
 
 	if($user['uid'] > 0)
 	{
-		if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes")
+		if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
 		{
 			if($user['invisible'] == "yes")
 			{
