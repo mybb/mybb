@@ -601,7 +601,7 @@ messageEditor.prototype = {
 			}
 		}
 		$(this.textarea).focus();
-		this.openTags = array();
+		this.openTags = new Array();
 	},
 
 	setToolbarItemState: function(id, state)

@@ -13,7 +13,7 @@ var Thread = {
 			return false;
 		}
 		
-		document.input.message.value += "[quote="+author.innerHTML+"]"+unHTMLchars(post.innerHTML)+"[/quote]\n\n";
+		document.input.message.value += "[quote="+author.innerHTML+"]"+MyBB.unHTMLchars(post.innerHTML)+"[/quote]\n\n";
 		document.input.message.focus();
 	},
 

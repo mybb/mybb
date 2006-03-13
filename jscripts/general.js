@@ -173,6 +173,14 @@ var MyBB = {
 			}
 		}
 		return false;
+	},
+
+	unHTMLchars: function(text)
+	{
+		text = text.replace(/&lt;/g, "<");  
+		text = text.replace(/&gt;/g, ">");  
+		text = text.replace(/&amp;/g, "&");
+		return text;
 	}
 }
 
