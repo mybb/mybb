@@ -37,9 +37,9 @@ class PostDataHandler extends DataHandler
 	function validate_post(&$post)
 	{
 		global $mybb, $db, $plugins;
-		
+
 		$time = time();
-		
+
 		// Check is the user posted sooner than allowed.
 		if($mybb->settings['postfloodcheck'] == "on")
 		{
@@ -52,53 +52,7 @@ class PostDataHandler extends DataHandler
 		// Verify all the post parts.
 		$this->verify_message($post['message']);
 		$this->verify_subject($post['subject']);
-		
-		//
-		// CHRIS IS GOING TO CHANGE THIS STILL!
-		//
-		// Check for correct subject content.
-		if($post['action'] == "edit" && $post['pid'])
-		{
-			$options = array(
-				"limit" => 1,
-				"limit_start" => 0,
-				"order_by" => "dateline",
-				"order_dir" => "asc"
-			);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid, $options);
-			$firstcheck = $db->fetch_array($query);
-			if($firstcheck['pid'] == $post['pid'])
-			{
-				$firstpost = 1;
-			}
-			else
-			{
-				$firstpost = 0;
-			}
 
-			// If this is the first post there needs to be a subject, else make it the default one.
-			if(strlen(trim($mybb->input['subject'])) == 0 && $firstpost)
-			{
-				$this->set_error("no_subject");
-			}
-			elseif(strlen(trim($mybb->input['subject'])) == 0)
-			{
-				$post['subject'] = "RE: " . $thread['subject'];
-			}
-		}
-		else
-		{
-			// If there is no subject, make it the default one.
-
-			//
-			// REVIEW: THIS WILL NOT WORK
-			//
-			if(strlen(trim($mybb->input['subject'])) == 0)
-			{
-				$post['subject'] = "RE: " . $thread['subject'];
-			}
-		}
-		
 		// Check if this post contains more images than the forum allows
 		if(!$mybb->input['savedraft'] && $mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes")
 		{
@@ -117,7 +71,7 @@ class PostDataHandler extends DataHandler
 				$mybb->input['action'] = "newreply";
 			}
 		}
-		
+
 		// If there is no post to reply to, let's reply to the first one.
 		if(!$post['replyto'])
 		{
@@ -140,9 +94,9 @@ class PostDataHandler extends DataHandler
 
 		// Clean the post options for this post.
 		$post = $this->get_options($post);
-		
+
 		$plugins->run_hooks("datahandler_post_validate");
-		
+
 		// We are done validating, return.
 		$this->set_validated(true);
 		if(count($this->get_errors()) > 0)
@@ -154,7 +108,7 @@ class PostDataHandler extends DataHandler
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Verifies a post message.
 	 *
@@ -163,30 +117,71 @@ class PostDataHandler extends DataHandler
 	function verify_message($message)
 	{
 		// Message of correct length?
-		if(strlen(trim($post['message'])) == 0)
+		if(trim($message) == "")
 		{
 			$this->set_error("no_message");
 		}
-		elseif(strlen($post['message']) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($post['fid']) != "yes")
+		elseif(strlen($message) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($post['fid']) != "yes")
 		{
 			$this->set_error("message_too_long");
 		}
-		elseif(strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && ismod($post['fid']) != "yes")
+		elseif(strlen($message) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && ismod($post['fid']) != "yes")
 		{
 			$this->set_error("message_too_short");
 		}
 	}
-	
+
 	/**
 	 * Verifies a post subject.
 	 *
 	 * @param string The post subject.
 	 */
-	function verify_post_subject($subject)
+	function verify_subject($subject)
 	{
-		
+		// Check for correct subject content.
+		if($post['action'] == "edit" && $post['pid'])
+		{
+			$options = array(
+				"limit" => 1,
+				"limit_start" => 0,
+				"order_by" => "dateline",
+				"order_dir" => "asc"
+			);
+			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid, $options);
+			$firstcheck = $db->fetch_array($query);
+			if($firstcheck['pid'] == $post['pid'])
+			{
+				$firstpost = 1;
+			}
+			else
+			{
+				$firstpost = 0;
+			}
+
+			// If this is the first post there needs to be a subject, else make it the default one.
+			if(strlen(trim($subject)) == 0 && $firstpost)
+			{
+				$this->set_error("no_subject");
+			}
+			elseif(strlen(trim($subject)) == 0)
+			{
+				$post['subject'] = "RE: " . $thread['subject'];
+			}
+		}
+		else
+		{
+			// If there is no subject, make it the default one.
+
+			//
+			// REVIEW: THIS WILL NOT WORK
+			//
+			if(strlen(trim($subject)) == 0)
+			{
+				$post['subject'] = "RE: " . $thread['subject'];
+			}
+		}
 	}
-	
+
 	/**
 	 * Assigns post options to the post data array.
 	 *
@@ -207,10 +202,10 @@ class PostDataHandler extends DataHandler
 		{
 			$post['options']['disablesmilies'] = "no";
 		}
-		
-		return $post;	
+
+		return $post;
 	}
-	
+
 	/**
 	 * Insert a post into the database.
 	 *
@@ -291,7 +286,7 @@ class PostDataHandler extends DataHandler
 					$newstick = "sticky='0'";
 					logmod($modlogdata, "Thread unstuck");
 				}
-				
+
 				// Execute moderation options.
 				if($newstick && $newclosed)
 				{
@@ -317,7 +312,7 @@ class PostDataHandler extends DataHandler
 				$visible = 1;
 			}
 		}
-		
+
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
 		if($post['savedraft'] == 1 && $post['pid'])
 		{
@@ -359,7 +354,7 @@ class PostDataHandler extends DataHandler
 			$db->insert_query(TABLE_PREFIX."posts", $newreply);
 			$pid = $db->insert_id();
 		}
-		
+
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
 		if($post['posthash'])
 		{
@@ -371,14 +366,14 @@ class PostDataHandler extends DataHandler
 		}
 
 		$plugins->run_hooks("datahandler_post_insert");
-		
+
 		// Return the post's pid and whether or not it is visible.
 		return array(
 			"pid" => $pid,
 			"visible" => $visible
 		);
 	}
-	
+
 	/**
 	 * Updates a post that is already in the database.
 	 *
@@ -387,7 +382,7 @@ class PostDataHandler extends DataHandler
 	function update_post($pid)
 	{
 		global $db, $mybb, $plugins;
-		
+
 		// Yes, validating is required.
 		if($this->get_validated() != true)
 		{
@@ -397,7 +392,7 @@ class PostDataHandler extends DataHandler
 		{
 			die("The post is not valid.");
 		}
-		
+
 		// Check if this is the first post in a thread.
 		$options = array(
 			"orderby" => "dateline",
@@ -415,13 +410,13 @@ class PostDataHandler extends DataHandler
 		{
 			$firstpost = 0;
 		}
-		
+
 		// Check what icon we want on the thread.
 		if(!$mybb->input['icon'] || $mybb->input['icon'] == -1)
 		{
 			$mybb->input['icon'] = "0";
 		}
-		
+
 		// Update the thread details that might have been changed first.
 		if($firstpost)
 		{
@@ -431,7 +426,7 @@ class PostDataHandler extends DataHandler
 				);
 			$db->update_query(TABLE_PREFIX."threads", $updatethread, "tid='$tid'");
 		}
-		
+
 		// Prepare array for post updating.
 		$updatepost = array(
 			"subject" => $db->escape_string($post['subject']),
@@ -440,7 +435,7 @@ class PostDataHandler extends DataHandler
 			"smilieoff" => $post['options']['disablesmilies'],
 			"includesig" => $post['options']['signature']
 		);
-		
+
 		// If we need to show the edited by, let's do so.
 		if(($mybb->settings['showeditedby'] == "yes" && ismod($fid, "caneditposts") != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && ismod($fid, "caneditposts") == "yes"))
 		{
@@ -448,10 +443,10 @@ class PostDataHandler extends DataHandler
 			$updatepost['edittime'] = time();
 		}
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid=$pid");
-		
+
 		$plugins->run_hooks("datahandler_post_update");
 	}
-	
+
 	/**
 	 * Delete a post from the database.
 	 *
@@ -462,7 +457,7 @@ class PostDataHandler extends DataHandler
 	function delete_by_pid($pid, $tid, $fid)
 	{
 		global $db;
-		
+
 		// Is this the first post of a thread? If so, we'll need to delete the whole thread.
 		$options = array(
 			"orderby" => "dateline",
@@ -480,7 +475,7 @@ class PostDataHandler extends DataHandler
 		{
 			$firstpost = false;
 		}
-		
+
 		// Delete the whole thread or this post only?
 		if($firstpost === true)
 		{
@@ -493,7 +488,7 @@ class PostDataHandler extends DataHandler
 			updatethreadcount($tid);
 			updateforumcount($fid);
 		}
-		
+
 		$plugins->run_hooks("datahandler_thread_delete");
 	}
 }

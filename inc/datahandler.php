@@ -21,14 +21,14 @@ class DataHandler
 	 * @var array Data being handled by the data handler.
 	 */
 	var $data = array();
-	 *
+
 	/**
 	 * Whether or not the data has been validated. Note: "validated" != "valid".
 	 *
 	 * @var boolean True when validated, false when not validated.
 	 */
 	var $is_validated = false;
-	
+
 	/**
 	 * The errors that occurred when handling data.
 	 *
@@ -57,7 +57,7 @@ class DataHandler
 		$this->data = $data;
 		return true;
 	}
-	
+
 	/**
 	 * Add an error to the error array.
 	 *
@@ -67,7 +67,7 @@ class DataHandler
 	{
 		$this->errors[] = $error;
 	}
-	
+
 	/**
 	 * Returns the error that occurred when handling data.
 	 *
@@ -87,7 +87,7 @@ class DataHandler
 	{
 		$this->is_validated = $validated;
 	}
-	
+
 	/**
 	 * Returns whether or not we are done validating.
 	 *
