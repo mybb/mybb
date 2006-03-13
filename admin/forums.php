@@ -50,20 +50,20 @@ switch($mybb->input['action'])
 
 function getforums($pid=0, $depth=1)
 {
-	global $db, $iforumcache, $lang, $forumcache, $comma;
+	global $db, $iforumcache, $lang, $forum_cache, $comma;
 	if(!is_array($iforumcache))
 	{
-		if(!is_array($forumcache))
+		if(!is_array($forum_cache))
 		{
-			cacheforums();
+			cache_forums();
 		}
-		if(!is_array($forumcache))
+		if(!is_array($forum_cache))
 		{
 			return false;
 		}
 
-		reset($forumcache);
-		while(list($key, $val) = each($forumcache))
+		reset($forum_cache);
+		while(list($key, $val) = each($forum_cache))
 		{
 			$iforumcache[$val['pid']][$val['disporder']][$val['fid']] = $val;
 		}

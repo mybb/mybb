@@ -245,7 +245,7 @@ class datacache
 		}
 	
 		// Get our forum list
-		cacheforums();
+		cache_forums();
 		if(!is_array($forumcache))
 		{
 			return false;

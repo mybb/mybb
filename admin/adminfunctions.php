@@ -850,15 +850,15 @@ function addacpnav($name, $url="")
 
 function makeacpforumnav($fid)
 {
-	global $pforumcache, $db, $currentitem, $forumcache, $navbits;
+	global $pforumcache, $db, $currentitem, $forum_cache, $navbits;
 	if(!$pforumcache)
 	{
-		if(!is_array($forumcache))
+		if(!is_array($forum_cache))
 		{
-			cacheforums();
+			cache_forums();
 		}
-		reset($forumcache);
-		while(list($key, $val) = each($forumcache))
+		reset($forum_cache);
+		while(list($key, $val) = each($forum_cache))
 		{
 			$pforumcache[$val['fid']][$val['pid']] = $val;
 		}
