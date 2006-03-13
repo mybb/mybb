@@ -6,6 +6,7 @@ body {
  color: #000000;
  font-size: 12px;
  background-color: #FFFFFF;
+ margin: auto auto;
 }
 
 a:link {
@@ -25,6 +26,7 @@ a:hover, a:active {
 .header {
 	background: #026CB1 url(thead_bg.gif) top left repeat-x;
 	color: #ffffff;
+	font-weight: bold;
 }
 
 .header a:link {
@@ -98,17 +100,15 @@ table {
  color: green;
 }
 
+.highlight4 {
+	color: black;
+}
+
 
 /* left navigation menu styles */
 
 .lnav body {
  color: #000000;
- font-weight: bold;
- font-size: 9px;
-}
-
-.lnav td {
-	font-size: 9px;
 }
 
 .lnav a:link, .lnav a:visited, .lnav a:active {
@@ -175,10 +175,15 @@ table {
  text-decoration: underline;
 }
 
+/* main content area */
+
+.main_body {
+	margin: 20px;
+}
+
 /* navigation styles */
 
 .navigation {
- width: 90%;
  margin: auto auto;
  text-align: left;
  font: 8pt Verdana;
@@ -268,4 +273,23 @@ del {
 	background: #fdd;
 	text-decoration: none;
 	padding: 2px;
+}
+
+
+/* Warnings and notices */
+
+.warning {
+	background: #FFF6BF;
+	border-top: 2px solid #FFD324;
+	border-bottom: 2px solid #FFD324;
+	margin: 10px auto;
+	padding: 5px 20px;
+}
+
+.notice {
+	background: #ADCBE7;
+	border-top: 2px solid #0F5C8E;
+	border-bottom: 2px solid #0F5C8E;
+	margin: 10px auto;
+	padding: 5px 20px;
 }

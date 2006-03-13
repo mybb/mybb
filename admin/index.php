@@ -237,7 +237,7 @@ elseif ($mybb->input['action']=="navigation")
 <base target="body">
 <link rel="stylesheet" href="<?php echo $style; ?>">
 </head>
-<body>
+<body class="lnav">
 <?php
 makenavoption($lang->cp_home, "index.php?action=home");
 makenavoption($lang->cp_prefs, "adminoptions.php");

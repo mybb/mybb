@@ -79,7 +79,7 @@ function cpheader($title="", $donav=1, $onload="")
 	}
 	else
 	{
-		echo "<body>\n";
+		echo "<body class=\"main_body\">\n";
 	}
 	if($donav != 0)
 	{
@@ -88,7 +88,7 @@ function cpheader($title="", $donav=1, $onload="")
 }
 function makehoptolinks($links)
 {
-	echo "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"90%\">\n";
+	echo "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"100%\">\n";
 	echo "<tr><td class=\"hoptobuttons\">";
 	foreach($links as $key => $val)
 	{
@@ -113,7 +113,7 @@ function startform($script, $name="", $action="", $autocomplete=1)
 		makehiddencode("action", $action);
 	}
 }
-function starttable($width="90%", $border=1, $padding=6)
+function starttable($width="100%", $border=1, $padding=6)
 {
 	echo "<table cellpadding=\"$border\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"$width\" class=\"bordercolor\">\n";
 	echo "<tr><td>\n";
@@ -527,6 +527,12 @@ function endform($submit="", $reset="")
 	}
 	echo "</form>\n";
 }
+
+function makewarning($text)
+{
+	echo "<p class=\"warning\">".$text."</p>\n";
+}
+
 function cperror($message="")
 {
 	global $lang;

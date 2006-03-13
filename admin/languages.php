@@ -296,27 +296,37 @@ if($mybb->input['action'] == "edit")
 		// Start output
 		cpheader();
 		startform("languages.php", "edit", "do_edit");
+
+		// Check if file is writable, before allowing submission
+		if(!is_writable($editfile))
+		{
+			$lang->update_button = '';
+			makewarning($lang->note_cannot_write);
+		}
+
 		starttable();
 		if($editwithfile) 
 		{
 			// Editing with another file
 			$lang->editing_file_in_set_with = sprintf($lang->editing_file_in_set_with, $file, $languages[$editlang], $languages[$editwith]);
-			tableheader($lang->editing_file_in_set_with, "", 3);
-			tablesubheader(array($lang->variable, $languages[$editlang], $languages[$editwith]));
+			tableheader($lang->editing_file_in_set_with, "", 1);
+			//tablesubheader(array($lang->variable, $languages[$editlang], $languages[$editwith]));
 			if(count($editvars) == 0)
 			{
-				makelabelcode("<center>".$lang->no_variables."</center>", "", 3);
+				makelabelcode("<center>".$lang->no_variables."</center>", "", 1);
 			}
 			else
 			{
 				// Make each editing row
 				foreach($editvars as $key => $value)
 				{
+					tablesubheader($key, "", 1);
 					echo "<tr>\n";
-					echo "<td class=\"$bgcolor\" valign=\"top\" width=\"20%\">$key</td>";
-					echo "<td class=\"$bgcolor\" valign=\"top\" width=\"40%\"><input type=\"text\" class=\"inputbox\" name=\"edit[$key]\" value=\"$value\" style=\"width:100%\" /></td>\n";
-					echo "<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">".htmlspecialchars_uni($withvars[$key])."</td>\n";
-					echo "</tr>\n";
+					echo "<td class=\"altbg1\"><strong>".$languages[$editwith]."<br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" disabled=\"disabled\" name=\"\">".htmlspecialchars($withvars[$key])."</textarea></td>\n";
+					echo "</tr>";
+					echo "<tr>\n";
+					echo "<td class=\"altbg1\"><strong>".$languages[$editlang]."<br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" name=\"edit[$key]\">".htmlspecialchars($value)."</textarea></td>\n";
+					echo "</tr>";
 				}
 			}
 			tablesubheader($lang->new_variables, "", 3);
@@ -325,21 +335,20 @@ if($mybb->input['action'] == "edit")
 		{
 			// Editing individually
 			$lang->editing_file_in_set = sprintf($lang->editing_file_in_set, $file, $languages[$editlang]);
-			tableheader($lang->editing_file_in_set, "", 2);
-			tablesubheader(array($lang->variable, $languages[$editlang]));
+			tableheader($lang->editing_file_in_set, "", 1);
 			if(count($editvars) == 0)
 			{
-				makelabelcode("<center>".$lang->no_variables."</center>", "", 2);
+				makelabelcode("<center>".$lang->no_variables."</center>", "", 1);
 			}
 			else
 			{
 				// Make each editing row
 				foreach($editvars as $key => $value)
 				{
+					tablesubheader($key, "", 1);
 					echo "<tr>\n";
-					echo "<td class=\"$bgcolor\" valign=\"top\" width=\"20%\">$key</td>";
-					echo "<td class=\"$bgcolor\" valign=\"top\" width=\"40%\"><input type=\"text\" class=\"inputbox\" name=\"edit[$key]\" value=\"$value\" style=\"width:100%\" /></td>\n";
-					echo "</tr>\n";
+					echo "<td class=\"altbg1\"><strong>".$languages[$editlang]."<br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" name=\"edit[$key]\">".htmlspecialchars($value)."</textarea></td>\n";
+					echo "</tr>";
 				}
 			}
 		}
@@ -351,23 +360,11 @@ if($mybb->input['action'] == "edit")
 			{
 				$bgcolor = getaltbg();
 				echo "<tr>\n";
-				echo "<td class=\"$bgcolor\" valign=\"top\"><input type=\"text\" class=\"inputbox\" name=\"newkey[$i]\" value=\"\" size=\"25\" /></td>\n";
-				echo "<td class=\"$bgcolor\" valign=\"top\"><input type=\"text\" class=\"inputbox\" name=\"newvalue[$i]\" value=\"\" size=\"25\" style=\"width:100%\" /></td>\n";
-				if($editwithfile)
-				{
-					echo "<td></td>\n";
-				}
-				echo "</tr>\n";
+				echo "<td class=\"$bgcolor\"><input type=\"text\" class=\"inputbox\" name=\"newkey[$i]\" value=\"\" size=\"25\" /><br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" name=\"new[$i]\"><textarea></td>\n";
+				echo "</tr>";
 			}
 		}
 	
-		// Check if file is writable, before allowing submission
-		if(!is_writable($editfile))
-		{
-			$lang->update_button = '';
-			makelabelcode($lang->note_cannot_write, "", 3);
-		}
-
 		endtable();
 
 		makehiddencode("lang", $editlang);
@@ -384,10 +381,10 @@ if($mybb->input['action'] == "edit")
 		
 		// Get files in main folder
 		$filenames = array();
-		if ($handle = opendir($folder)) {
-			while (false !== ($file = readdir($handle)))
+		if($handle = opendir($folder)) {
+			while(false !== ($file = readdir($handle)))
 			{
-				if ($file != "." && $file != ".." && $file != "admin")
+				if(preg_match("#\.lang\.php$#", $file))
 				{
 					$filenames[] = $file;
 				}
@@ -397,10 +394,10 @@ if($mybb->input['action'] == "edit")
 		}
 		// Get files in admin folder
 		$adminfilenames = array();
-		if ($handle = opendir($folder."/admin")) {
-			while (false !== ($file = readdir($handle)))
+		if($handle = opendir($folder."/admin")) {
+			while(false !== ($file = readdir($handle)))
 			{
-				if ($file != "." && $file != "..")
+				if(preg_match("#\.lang\.php$#", $file))
 				{
 					$adminfilenames[] = $file;
 				}
