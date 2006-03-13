@@ -1,0 +1,492 @@
+<?php
+/**
+ * MyBB 1.0
+ * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.com
+ * License: http://www.mybboard.com/eula.html
+ *
+ * $Id$
+ */
+
+require "./global.php";
+
+// Load language packs for this section
+global $lang;
+$lang->load("languages");
+
+$languages = $lang->getLanguages();
+
+addacpnav($lang->nav_languages, "languages.php");
+
+checkadminpermissions("caneditlangs");
+logadmin();
+if(!isset($mybb->input['action']))
+{
+	$mybb->input['action'] = '';
+}
+
+if($mybb->input['action'] == "do_editset")
+{
+	// Update the language set file
+
+	// Validate input
+	$editlang = basename($mybb->input['lang']);
+	$file = "./inc/languages/".$editlang.".php";
+	if(!file_exists($file))
+	{
+		cperror($lang->invalid_file);
+	}
+	if(!is_writable($file))
+	{
+		cperror($lang->cannot_write_to_file);
+	}
+	foreach($mybb->input['info'] as $key => $info)
+	{
+		$info = str_replace("\\", "\\\\", $info);
+		$newlanginfo[$key] = str_replace("\"", '\"', $info);
+	}
+	if($newlanginfo['admin'] == "yes")
+	{
+		$newlanginfo['admin'] = 1;
+	}
+	else
+	{
+		$newlanginfo['admin'] = 0;
+	}
+	if($newlanginfo['rtl'] == "yes")
+	{
+		$newlanginfo['rtl'] = 1;
+	}
+	else
+	{
+		$newlanginfo['rtl'] = 0;
+	}
+
+	// Get contents of existing file
+	require $file;
+
+	// Make the contents of the new file
+	$newfile = "<?php
+// The friendly name of the language
+\$langinfo['name'] = \"$newlanginfo[name]\";
+
+// The author of the language
+\$langinfo['author'] = \"$langinfo[author]\";
+
+// The language authors website
+\$langinfo['website'] = \"$langinfo[website]\";
+
+// Compatible version of MyBB
+\$langinfo['version'] = \"$langinfo[version]\";
+
+// Sets if the translation includes the Admin CP (1 = yes, 0 = no)
+\$langinfo['admin'] = $newlanginfo[admin];
+
+// Sets if the language is RTL (Right to Left) (1 = yes, 0 = no)
+\$langinfo['rtl'] = $newlanginfo[rtl];
+
+// Sets the lang in the <html> on all pages
+\$langinfo['htmllang'] = \"$newlanginfo[htmllang]\";
+
+// Sets the character set, blank uses the default.
+\$langinfo['charset'] = \"$newlanginfo[charset]\";".
+"?>";
+
+	// Put it in!
+	if($file = fopen($file, "w"))
+	{
+		fwrite($file, $newfile);
+		fclose($file);
+		cpredirect("languages.php", $lang->updated);
+	}
+	else
+	{
+		cperror($lang->cannot_write_to_file);
+	}
+}
+
+if($mybb->input['action'] == "editset")
+{
+	$editlang = basename($mybb->input['lang']);
+	$file = "./inc/languages/".$editlang.".php";
+	if(!file_exists($file))
+	{
+		cperror($lang->invalid_file);
+	}
+
+	addacpnav($languages[$editlang], "languages.php?action=edit&lang=$editlang");
+	addacpnav($lang->nav_editing_set);
+
+	// Get language info
+	require $file;
+	
+	cpheader();
+	startform("languages.php", "editset", "do_editset");
+	starttable();
+	$lang->editing_set = sprintf($lang->editing_set, $languages[$editlang]);
+	tableheader($lang->editing_set);
+	makeinputcode($lang->set_friendly_name, "info[name]", $langinfo['name']);
+	makelabelcode($lang->set_author, $langinfo['author']);
+	makelabelcode($lang->set_website, $langinfo['website']);
+	makelabelcode($lang->set_mybb_version, $langinfo['version']);
+	if($langinfo['admin'])
+	{
+		$langinfo['admin'] = "yes";
+	}
+	else
+	{
+		$langinfo['admin'] = "no";
+	}
+	makeyesnocode($lang->set_admin, "info[admin]", $langinfo['admin']);
+	if($langinfo['rtl'])
+	{
+		$langinfo['rtl'] = "yes";
+	}
+	else
+	{
+		$langinfo['rtl'] = "no";
+	}
+	makeyesnocode($lang->set_rtl, "info[rtl]", $langinfo['rtl']);
+	makeinputcode($lang->set_htmllang, "info[htmllang]", $langinfo['htmllang']);
+	makeinputcode($lang->set_charset, "info[charset]", $langinfo['charset']);
+
+	// Check if file is writable, before allowing submission
+	if(!is_writable($editfile))
+	{
+		$lang->update_button = '';
+		makelabelcode($lang->note_cannot_write, "", 2);
+	}
+
+	endtable();
+	makehiddencode("lang", $editlang);
+	endform($lang->update_button, $lang->reset_button);
+	cpfooter();
+}
+
+if($mybb->input['action'] == "do_edit")
+{
+	// Update the language variables file
+
+	// Validate input
+	$editlang = basename($mybb->input['lang']);
+	$editwith = basename($mybb->input['editwith']);
+	$folder = "./inc/languages/".$editlang."/";
+	if(!file_exists($folder))
+	{
+		cperror($lang->invalid_set);
+	}
+	$file = basename($mybb->input['file']);
+	if($mybb->input['inadmin'] == 1)
+	{
+		$file = "admin/".$file;
+	}
+	$editfile = $folder.$file;
+	if(!file_exists($editfile))
+	{
+		cperror($lang->invalid_file);
+	}
+	if(!is_writable($editfile))
+	{
+		cperror($lang->cannot_write_to_file);
+	}
+
+	// Make the contents of the new file
+	$newfile = "<?php\n";
+	foreach($mybb->input['edit'] as $key => $phrase)
+	{
+		$phrase = str_replace("\\", "\\\\", $phrase);
+		$phrase = str_replace("\"", '\"', $phrase);
+		$key = str_replace("\\", '', $key);
+		$key = str_replace("'", '', $key);
+		$newfile .= "\$l['$key'] = \"$phrase\";\n";
+	}
+	foreach($mybb->input['newkey'] as $i => $key)
+	{
+		$phrase = $mybb->input['newvalue'][$i];
+		if(!empty($key) && !empty($phrase))
+		{
+			$phrase = str_replace("\\", "\\\\", $phrase);
+			$phrase = str_replace("\"", '\"', $phrase);
+			$key = str_replace("\\", '', $key);
+			$key = str_replace("'", '', $key);
+			$newfile .= "\$l['$key'] = \"$phrase\";\n";
+		}
+	}
+	$newfile .= "?>";
+
+	// Put it in!
+	if($file = fopen($editfile, "w"))
+	{
+		fwrite($file, $newfile);
+		fclose($file);
+		cpredirect("languages.php?action=edit&lang=$editlang&editwith=$editwith", $lang->updated);
+	}
+	else
+	{
+		cperror($lang->cannot_write_to_file);
+	}
+}
+
+if($mybb->input['action'] == "edit")
+{
+	// Editing language
+
+	// Validate input
+	$editlang = basename($mybb->input['lang']);
+	$folder = "./inc/languages/".$editlang."/";
+	$editwith = basename($mybb->input['editwith']);
+	$editwithfolder = '';
+	if($editwith)
+	{
+		$editwithfolder = "./inc/languages/".$editwith."/";
+	}
+	if(!file_exists($folder) || ($editwithfolder && !file_exists($editwithfolder)))
+	{
+		cperror($lang->invalid_set);
+	}
+
+	addacpnav($languages[$editlang], "languages.php?action=edit&amp;lang=$editlang&amp;editwith=$editwith");
+
+	if(isset($mybb->input['file']))
+	{
+		// List language variables in specific file
+
+		// Validate input
+		$file = basename($mybb->input['file']);
+		if($mybb->input['inadmin'] == 1)
+		{
+			$file = "admin/".$file;
+		}
+		$editfile = $folder.$file;
+		$withfile = '';
+		$editwithfile = '';
+		if($editwithfolder)
+		{
+			$editwithfile = $editwithfolder.$file;
+		}
+		if(!file_exists($editfile) || ($editwithfile && !file_exists($editwithfile)))
+		{
+			cperror($lang->invalid_file);
+		}
+
+		addacpnav(sprintf($lang->nav_editing_file, $file));
+
+		// Get file being edited in an array
+		require $editfile;
+		if(count($l) > 0)
+		{
+			$editvars = $l;
+		}
+		else
+		{
+			$editvars = array();
+		}
+		unset($l);
+		
+		$withvars = array();
+		// Get edit with file in an array
+		if($editwithfile)
+		{
+			require $editwithfile;
+			$withvars = $l;
+			unset($l);
+		}
+
+		// Start output
+		cpheader();
+		startform("languages.php", "edit", "do_edit");
+		starttable();
+		if($editwithfile) 
+		{
+			// Editing with another file
+			$lang->editing_file_in_set_with = sprintf($lang->editing_file_in_set_with, $file, $languages[$editlang], $languages[$editwith]);
+			tableheader($lang->editing_file_in_set_with, "", 3);
+			tablesubheader(array($lang->variable, $languages[$editlang], $languages[$editwith]));
+			if(count($editvars) == 0)
+			{
+				makelabelcode("<center>".$lang->no_variables."</center>", "", 3);
+			}
+			else
+			{
+				// Make each editing row
+				foreach($editvars as $key => $value)
+				{
+					echo "<tr>\n";
+					echo "<td class=\"$bgcolor\" valign=\"top\" width=\"20%\">$key</td>";
+					echo "<td class=\"$bgcolor\" valign=\"top\" width=\"40%\"><input type=\"text\" class=\"inputbox\" name=\"edit[$key]\" value=\"$value\" style=\"width:100%\" /></td>\n";
+					echo "<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">".htmlspecialchars_uni($withvars[$key])."</td>\n";
+					echo "</tr>\n";
+				}
+			}
+			tablesubheader($lang->new_variables, "", 3);
+		}
+		else
+		{
+			// Editing individually
+			$lang->editing_file_in_set = sprintf($lang->editing_file_in_set, $file, $languages[$editlang]);
+			tableheader($lang->editing_file_in_set, "", 2);
+			tablesubheader(array($lang->variable, $languages[$editlang]));
+			if(count($editvars) == 0)
+			{
+				makelabelcode("<center>".$lang->no_variables."</center>", "", 2);
+			}
+			else
+			{
+				// Make each editing row
+				foreach($editvars as $key => $value)
+				{
+					echo "<tr>\n";
+					echo "<td class=\"$bgcolor\" valign=\"top\" width=\"20%\">$key</td>";
+					echo "<td class=\"$bgcolor\" valign=\"top\" width=\"40%\"><input type=\"text\" class=\"inputbox\" name=\"edit[$key]\" value=\"$value\" style=\"width:100%\" /></td>\n";
+					echo "</tr>\n";
+				}
+			}
+		}
+		if(md5($mybb->input['debugmode']) == "0100e895f975e14f4193538dac4d0dc7")
+		{
+			tablesubheader($lang->new_variables, "", 3);
+			// Make rows for creating new variables
+			for($i=0; $i<5; $i++)
+			{
+				$bgcolor = getaltbg();
+				echo "<tr>\n";
+				echo "<td class=\"$bgcolor\" valign=\"top\"><input type=\"text\" class=\"inputbox\" name=\"newkey[$i]\" value=\"\" size=\"25\" /></td>\n";
+				echo "<td class=\"$bgcolor\" valign=\"top\"><input type=\"text\" class=\"inputbox\" name=\"newvalue[$i]\" value=\"\" size=\"25\" style=\"width:100%\" /></td>\n";
+				if($editwithfile)
+				{
+					echo "<td></td>\n";
+				}
+				echo "</tr>\n";
+			}
+		}
+	
+		// Check if file is writable, before allowing submission
+		if(!is_writable($editfile))
+		{
+			$lang->update_button = '';
+			makelabelcode($lang->note_cannot_write, "", 3);
+		}
+
+		endtable();
+
+		makehiddencode("lang", $editlang);
+		makehiddencode("editwith", $editwith);
+		makehiddencode("inadmin", intval($mybb->input['inadmin']));
+		makehiddencode("file", $file);
+	
+		endform($lang->update_button, $lang->reset_button);
+		cpfooter();
+	}
+	else
+	{
+		// List files in specific language
+		
+		// Get files in main folder
+		$filenames = array();
+		if ($handle = opendir($folder)) {
+			while (false !== ($file = readdir($handle)))
+			{
+				if ($file != "." && $file != ".." && $file != "admin")
+				{
+					$filenames[] = $file;
+				}
+			}
+			closedir($handle);
+			sort($filenames);
+		}
+		// Get files in admin folder
+		$adminfilenames = array();
+		if ($handle = opendir($folder."/admin")) {
+			while (false !== ($file = readdir($handle)))
+			{
+				if ($file != "." && $file != "..")
+				{
+					$adminfilenames[] = $file;
+				}
+			}
+			closedir($handle);
+			sort($adminfilenames);
+		}
+		
+		// Output
+		cpheader();
+		startform("languages.php", "choose", "edit");
+		makehiddencode("lang", $editlang);
+		makehiddencode("editwith", $editwith);
+		starttable();
+		tableheader($lang->choose_file_to_edit);
+		tablesubheader($lang->main_folder);
+		foreach($filenames as $filename)
+		{
+			makelabelcode($filename, makelinkcode($lang->edit_link, "languages.php?action=edit&amp;lang=$editlang&amp;editwith=$editwith&amp;file=$filename"));
+		}
+		tablesubheader($lang->admin_folder);
+		foreach($adminfilenames as $filename)
+		{
+			makelabelcode("admin/".$filename, makelinkcode($lang->edit_link, "languages.php?action=edit&amp;lang=$editlang&amp;editwith=$editwith&amp;file=$filename&inadmin=1"));
+		}
+		endtable();
+		endform();
+		cpfooter();
+	}
+}
+
+if(empty($mybb->input['action']))
+{
+	// List language packs
+	cpheader();
+	starttable();
+	tableheader($lang->installed_langs, "", 3);
+	tablesubheader(array($lang->language, $lang->editing_options, $lang->options));
+	asort($languages);
+
+	// Make array for language select list
+	$langselectlangs[0] = $lang->edit;
+	foreach($languages as $key1 => $langname1)
+	{
+		$langselectlangs[$key1] = sprintf($lang->edit_with, $langname1);
+	}
+
+	foreach($languages as $key => $langname)
+	{
+		$bgcolor = getaltbg();
+		require "./inc/languages/".$key.".php";
+
+		if(!empty($langinfo['website']))
+		{
+			$author = "<a href=\"$langinfo[website]\">$langinfo[author]</a>";
+		}
+		else
+		{
+			$author = $langinfo['author'];
+		}
+
+		// Make edit with language select list
+		$langselect = "<form method=\"get\">";
+		$langselect .= "<input type=\"hidden\" name=\"action\" value=\"edit\" />";
+		$langselect .= "<input type=\"hidden\" name=\"lang\" value=\"$key\" />";
+		$langselect .= makehopper("editwith", $langselectlangs);
+		$langselect .= "</form>";
+
+		// Make other options select list
+		$optionlist = array(
+			"editset" => $lang->edit_set,
+			);
+		$options = "<form method=\"get\">";
+		$options .= "<input type=\"hidden\" name=\"lang\" value=\"$key\" />";
+		$options .= makehopper("action", $optionlist);
+		$options .= "</form>";
+
+		echo "<tr>\n";
+		echo "<td class=\"$bgcolor\" valign=\"top\"><strong>$langinfo[name]</strong><br /><span class=\"smalltext\">$author</span></td>\n";
+		echo "<td class=\"$bgcolor\" valign=\"top\">$langselect</td>\n";
+		echo "<td class=\"$bgcolor\" valign=\"top\">$options</td>\n";
+		echo "<tr>\n";
+
+		unset($langinfo);
+	}
+	endtable();
+	cpfooter();
+}
+?>

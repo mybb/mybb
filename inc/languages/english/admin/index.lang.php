@@ -75,6 +75,7 @@ $l['nav_message_filters'] = "Message Filters";
 $l['nav_change'] = "Change";
 $l['nav_add'] = "Add";
 $l['nav_modify_delete'] = "Modify / Delete";
+$l['nav_manage'] = "Manage";
 $l['nav_plugin_manager'] = "Plugin Manager";
 $l['nav_settings'] = "Board Settings";
 $l['nav_announcements'] = "Announcements";
@@ -120,6 +121,7 @@ $l['nav_maintenance'] = "Maintenance";
 $l['nav_view_phpinfo'] = "View PHP Info";
 $l['nav_find_updated'] = "Find Updated";
 $l['nav_custom_mycode'] = "Custom MyCode";
+$l['nav_language_packs'] = "Language Packs";
 
 $l['mybb_admin'] = "MyBB Administration";
 

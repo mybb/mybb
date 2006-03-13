@@ -32,6 +32,7 @@ $l['can_manage_adminperms'] = "Can Manage <b>Administrator Permissions</b>";
 $l['can_manage_usertitles'] = "Can Manage Usertitles";
 $l['can_manage_attachments'] = "Can Manage Attachments / Att. Types";
 $l['can_manage_helpdocs'] = "Can Manage Help Docs";
+$l['can_manage_languages'] = "Can Manage Languages";
 $l['can_use_maint'] = "Can Use Maintenance Tools";
 $l['update_permissions'] = "Update Permissions";
 

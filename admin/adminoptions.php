@@ -108,6 +108,7 @@ if($mybb->input['action'] == "do_updateperms")
 		"caneditutitles" => addslashes($newperms['caneditutitles']),
 		"caneditattach" => addslashes($newperms['caneditattach']),
 		"canedithelp" => addslashes($newperms['canedithelp']),
+		"caneditlangs" => addslashes($newperms['caneditlangs']),
 		"canrunmaint" => addslashes($newperms['canrunmaint']),
 		);
 	$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='$uid'");
@@ -177,6 +178,7 @@ if($mybb->input['action'] == "updateperms")
 	makeyesnocode($lang->can_manage_usertitles, "newperms[caneditutitles]", $permissions['caneditutitles']);
 	makeyesnocode($lang->can_manage_attachments, "newperms[caneditattach]", $permissions['caneditattach']);
 	makeyesnocode($lang->can_manage_helpdocs, "newperms[canedithelp]", $permissions['canedithelp']);
+	makeyesnocode($lang->can_manage_languages, "newperms[caneditlangs]", $permissions['caneditlangs']);
 	makeyesnocode($lang->can_use_maint, "newperms[canrunmaint]", $permissions['canrunmaint']);
 	endtable();
 	endform($lang->update_permissions, $lang->reset_button);

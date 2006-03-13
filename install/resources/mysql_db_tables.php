@@ -40,6 +40,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   caneditutitles char(3) NOT NULL default '',
   caneditattach char(3) NOT NULL default '',
   canedithelp char(3) NOT NULL default '',
+  caneditlangs char(3) NOT NULL default '',
   canrunmaint char(3) NOT NULL default '',
   PRIMARY KEY  (uid)
 ) TYPE=MyISAM;";
