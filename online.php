@@ -204,10 +204,11 @@ else
 	}
 	if($fidsql)
 	{
-		$query = $db->query("SELECT fid,name FROM ".TABLE_PREFIX."forums WHERE fid IN (0$fidsql) $fidnot");
+		$query = $db->query("SELECT fid,name,linkto FROM ".TABLE_PREFIX."forums WHERE fid IN (0$fidsql) $fidnot");
 		while($forum = $db->fetch_array($query))
 		{
 			$forums[$forum['fid']] = $forum['name'];
+			$forums_linkto[$forum['fid']] = $forum['linkto'];
 		}
 	}
 	if($eidsql)
@@ -287,7 +288,7 @@ else
 
 function show($user)
 {
-	global $threads, $forums, $posts, $events, $members, $settings, $theme, $mybb, $mybbuser, $onlinerows, $templates, $mybbgroup, $lang, $bots;
+	global $threads, $forums, $forums_linkto, $posts, $events, $members, $settings, $theme, $mybb, $mybbuser, $onlinerows, $templates, $mybbgroup, $lang, $bots;
 
 	switch($user['activity'])
 	{
@@ -344,7 +345,14 @@ function show($user)
 		case "forumdisplay":
 			if($forums[$user['fid']])
 			{
-				$locationname = sprintf($lang->viewing_forum2, $user['fid'], $forums[$user['fid']]);
+				if($forums_linkto[$user['fid']])
+				{
+					$locationname = sprintf($lang->forum_redirect, $user['fid'], $forums[$user['fid']]);
+				}
+				else
+				{
+					$locationname = sprintf($lang->viewing_forum2, $user['fid'], $forums[$user['fid']]);
+				}
 			}
 			else
 			{

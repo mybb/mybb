@@ -15,6 +15,7 @@ $l['editing_event'] = "Editing Event";
 $l['editing_post'] = "Editing Post";
 $l['viewing_forum'] = "Viewing Forum";
 $l['viewing_forum2'] = "Viewing Forum <a href=\"forumdisplay.php?fid={1}\">{2}</a>";
+$l['forum_redirect_to'] = "Being Redirected To <a href=\"forumdisplay.php?fid={1}\">{2}</a>";
 $l['viewing_index'] = "{1} <a href=\"index.php\">Main Index</a>";
 $l['activating_account'] = "Activating Account";
 $l['viewing_profile'] = "Viewing Profile";
