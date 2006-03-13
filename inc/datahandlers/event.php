@@ -13,7 +13,7 @@
  * Event handling class, provides common structure to handle event data.
  *
  */
-class EventDataHandler extends Handler
+class EventDataHandler extends DataHandler
 {
 	/**
 	 * Verifies if an event name is valid or not and attempts to fix it
@@ -115,6 +115,8 @@ class EventDataHandler extends Handler
 	 */
 	function validate_event()
 	{
+		global $plugins;
+
 		$event = &$this->data;
 
 		// Every event needs a name.
@@ -130,19 +132,19 @@ class EventDataHandler extends Handler
 		$this->verify_scope($event['private']);
 
 		$plugins->run_hooks("datahandler_event_validate");
-		
+
 		// We are done validating, return.
 		$this->set_validated(true);
-		if(empty($this->get_errors()))
-		{
-			return true;
-		}
-		else
+		if(count($this->get_errors()) > 0)
 		{
 			return false;
 		}
+		else
+		{
+			return true;
+		}
 	}
-	
+
 	/**
 	 * Insert an event into the database.
 	 *
@@ -152,17 +154,20 @@ class EventDataHandler extends Handler
 	function insert_event($event)
 	{
 		global $db, $mybb, $plugins;
-		
+
+		echo "EXECUTED, EID: ".$eid;
+		die();
+
 		// Yes, validating is required.
-		if(!$this->get_validated)
+		if(!$this->get_validated())
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
-		if(!empty($this->get_errors()))
+		if(count($this->get_errors()) > 0)
 		{
 			die("The event is not valid.");
 		}
-		
+
 		// Prepare an array for insertion into the database.
 		$newevent = array(
 			"subject" => $db->escape_string($event['subject']),
@@ -173,16 +178,16 @@ class EventDataHandler extends Handler
 		);
 		$db->insert_query(TABLE_PREFIX."events", $newevent);
 		$eid = $db->insert_id();
-		
+
 		$plugins->run_hooks("datahandler_event_insert");
-		
+
 		// Return the event's eid and whether or not it is private.
 		return array(
 			"eid" => $eid,
 			"private" => $event['options']['private']
 		);
 	}
-	
+
 	/**
 	 * Updates an event that is already in the database.
 	 *
@@ -191,17 +196,17 @@ class EventDataHandler extends Handler
 	function update_event($event)
 	{
 		global $db;
-		
+
 		// Yes, validating is required.
-		if(!$this->get_validated)
+		if(!$this->get_validated())
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
-		if(!empty($this->get_errors()))
+		if(count($this->get_errors()) > 0)
 		{
 			die("The event is not valid.");
 		}
-		
+
 		// Prepare an array for insertion into the database.
 		$updateevent = array(
 			"eid" => $event['eid'],
@@ -211,10 +216,10 @@ class EventDataHandler extends Handler
 			"private" => $event['options']['private']
 		);
 		$db->insert_query(TABLE_PREFIX."events", $updateevent);
-		
+
 		$plugins->run_hooks("datahandler_event_update");
 	}
-	
+
 	/**
 	 * Delete an event from the database.
 	 *
@@ -223,9 +228,9 @@ class EventDataHandler extends Handler
 	function delete_by_eid($eid)
 	{
 		global $db;
-		
+
 		$db->delete_query(TABLE_PREFIX."events", "eid=".$eid, 1);
-		
+
 		$plugins->run_hooks("datahandler_event_delete");
 	}
 }

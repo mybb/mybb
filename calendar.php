@@ -74,7 +74,7 @@ else
 	{
 		$month = date("n");
 	}
-	// Find the number of days in that month	
+	// Find the number of days in that month
 	$time = mktime(0, 0, 0, $month, 1, $year);
 	$days = date("t", $time);
 	// Now the specific day
@@ -119,7 +119,7 @@ if($month && $year)
 }
 
 // No weird actions allowed.
-if(	$mybb->input['action'] != "event" && 
+if(	$mybb->input['action'] != "event" &&
 	$mybb->input['action'] != "addevent" &&
 	$mybb->input['action'] != "do_addevent" &&
 	$mybb->input['action'] != "editevent" &&
@@ -141,17 +141,17 @@ if($mybb->input['action'] == "event")
 		WHERE e.eid='$eid'
 	");
 	$event = $db->fetch_array($query);
-	
+
 	if(!$event['eid'])
 	{
 		error($lang->error_invalidevent);
 	}
-	
+
 	if($event['private'] == "yes" && $event['username'] != $mybb->user['username'])
 	{
 		nopermission();
 	}
-	
+
 	if(($event['author'] == $mybb->user['uid'] && $mybb->user['uid'] != 0) || $mybb->usergroup['cancp'] == "yes")
 	{
 		$editbutton = "<a href=\"calendar.php?action=editevent&amp;eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
@@ -293,13 +293,13 @@ if($mybb->input['action'] == "do_addevent")
 	require_once "inc/datahandler.php";
 	require_once "inc/datahandlers/event.php";
 	$eventhandler = new EventDataHandler();
-	
+
 	// Prepare an array for the eventhandler.
 	$event = array(
 		"subject" => $mybb->input['subject'],
 		"description" => $mybb->input['description'],
 	);
-	
+
 	// Now let the eventhandler do all the hard work.
 	if(!$eventhandler->validate_event($event))
 	{
@@ -313,12 +313,11 @@ if($mybb->input['action'] == "do_addevent")
 	}
 	else
 	{
-		$eventhandler->insert_event($event);
+		$details = $eventhandler->insert_event($event);
+		redirect("calendar.php?action=event&eid=".$details['eid'], $lang->redirect_eventadded);
 	}
-	
-	$plugins->run_hooks("calendar_do_addevent_end");
 
-	redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventadded);
+	$plugins->run_hooks("calendar_do_addevent_end");
 }
 
 // Show the form for adding an event.
@@ -339,13 +338,13 @@ if($mybb->input['action'] == "addevent")
 		}
 	}
 	$msel[$month] = " selected=\"selected\"";
-	
+
 	$dayopts = '';
 	for($i=1;$i<=31;$i++)
 	{
 		$dayopts .= "<option value=\"$i\">$i</option>\n";
 	}
-	
+
 	if($mybb->input['type'] == "private")
 	{
 		$privatecheck = " checked=\"checked\"";
@@ -380,7 +379,7 @@ if($mybb->input['action'] == "do_editevent")
 		WHERE eid='$eid'
 	");
 	$event = $db->fetch_array($query);
-	
+
 	if(!is_numeric($event['author']))
 	{
 		error($lang->error_invalidevent);
@@ -389,7 +388,7 @@ if($mybb->input['action'] == "do_editevent")
 	{
 		nopermission();
 	}
-	
+
 	// Are we going to delete this event or just edit it?
 	if($mybb->input['delete'] == "yes")
 	{
@@ -397,10 +396,10 @@ if($mybb->input['action'] == "do_editevent")
 		require_once "inc/datahandler.php";
 		require_once "inc/datahandlers/event.php";
 		$eventhandler = new EventDataHandler();
-		
+
 		// Make the eventhandler delete the event.
 		$eventhandler->delete_by_eid($eid);
-		
+
 		// Redirect back to the main calendar view.
 		redirect("calendar.php", $lang->redirect_eventdeleted);
 	}
@@ -410,14 +409,14 @@ if($mybb->input['action'] == "do_editevent")
 		require_once "inc/datahandler.php";
 		require_once "inc/datahandlers/event.php";
 		$eventhandler = new EventDataHandler();
-		
+
 		// Prepare an array for the eventhandler.
 		$event = array(
 			"eid" => $eid,
 			"subject" => $mybb->input['subject'],
 			"description" => $mybb->input['description'],
 		);
-		
+
 		// Now let the eventhandler do all the hard work.
 		if(!$eventhandler->validate_event($event))
 		{
@@ -433,7 +432,7 @@ if($mybb->input['action'] == "do_editevent")
 		{
 			$eventhandler->update_event($event);
 		}
-		
+
 		$plugins->run_hooks("calendar_do_editevent_end");
 
 		redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventupdated);
@@ -444,7 +443,7 @@ if($mybb->input['action'] == "do_editevent")
 if($mybb->input['action'] == "editevent")
 {
 	$plugins->run_hooks("calendar_editevent_start");
-	
+
 	$eid = intval($mybb->input['eid']);
 
 	$query = $db->query("
@@ -454,7 +453,7 @@ if($mybb->input['action'] == "editevent")
 		LIMIT 1
 	");
 	$event = $db->fetch_array($query);
-	
+
 	if(!$event['eid'])
 	{
 		error($lang->error_invalidevent);
@@ -477,7 +476,7 @@ if($mybb->input['action'] == "editevent")
 			$yearopts .= "<option value=\"$i\">$i</option>\n";
 		}
 	}
-	
+
 	$dayopts = '';
 	for($i=1;$i<=31;$i++)
 	{
@@ -490,7 +489,7 @@ if($mybb->input['action'] == "editevent")
 			$dayopts .= "<option value=\"$i\">$i</option>\n";
 		}
 	}
-	
+
 	$event['subject'] = htmlspecialchars_uni($event['subject']);
 	$event['description'] = htmlspecialchars_uni($event['description']);
 
@@ -611,7 +610,7 @@ if($mybb->input['action'] == "calendar_main")
 			eval("\$daybits .= \"".$templates->get("calendar_daybit")."\";");
 		}
 		$count++;
-	
+
 		if($count == 7)
 		{
 			if($i != $days)
@@ -628,9 +627,9 @@ if($mybb->input['action'] == "calendar_main")
 		{
 			$left = $count + 7;
 		}
-	
+
 	}
-	
+
 	// Blank space after last day
 	if($count != 0)
 	{
@@ -667,7 +666,7 @@ if($mybb->input['action'] == "calendar_main")
 	{
 		$neweventsep = " | ";
 	}
-	
+
 	$plugins->run_hooks("calendar_end");
 
 	eval("\$calendar = \"".$templates->get("calendar")."\";");
