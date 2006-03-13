@@ -29,8 +29,8 @@ function outputpage($contents)
 	$contents = parsepage($contents);
 	$parsetime = $ptimer->stop();
 	$totaltime = $maintimer->stop();
-	//if($mybbgroup['cancp'] == "yes")
-	//{
+	if($mybbgroup['cancp'] == "yes")
+	{
 		$phptime = $maintimer->format($maintimer->totaltime - $querytime);
 		$querytime = $maintimer->format($querytime);
 		$percentphp = number_format((($phptime/$maintimer->totaltime)*100), 2);
@@ -60,11 +60,11 @@ function outputpage($contents)
 		{
 			debugpage();
 		}
-	//}
-	//else
-	//{
-	//	$contents = str_replace("<debugstuff>", "", $contents);
-	//}
+	}
+	else
+	{
+		$contents = str_replace("<debugstuff>", "", $contents);
+	}
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->settings['gzipoutput'] != "no")
