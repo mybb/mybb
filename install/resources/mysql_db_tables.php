@@ -296,7 +296,7 @@ $tables[] = "CREATE TABLE mybb_polls (
   tid int unsigned NOT NULL default '0',
   question varchar(200) NOT NULL default '',
   dateline bigint(30) NOT NULL default '0',
-  options text NOT NULL default '', 
+  options text NOT NULL default '',
   votes text NOT NULL default '',
   numoptions smallint unsigned NOT NULL default '0',
   numvotes smallint unsigned NOT NULL default '0',
@@ -422,6 +422,8 @@ $tables[] = "CREATE TABLE mybb_sessions (
   nopermission int(1) NOT NULL default '0',
   location1 int(10) NOT NULL default '0',
   location2 int(10) NOT NULL default '0',
+  loginattempts tinyint(2) NOT NULL default '1',
+  failedlogin bigint(30) NOT NULL,
   PRIMARY KEY(sid),
   KEY location1 (location1),
   KEY location2 (location2)

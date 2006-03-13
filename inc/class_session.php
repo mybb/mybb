@@ -17,6 +17,8 @@ class session
 	var $useragent = "";
 	var $botgroup = 1;
 	var $is_spider = false;
+	var $logins = 1;
+	var $failedlogin = 0;
 
 	var $bots = array(
 		"google" => "GoogleBot",
@@ -71,11 +73,15 @@ class session
 		{
 			$this->sid = $session['sid'];
 			$this->uid = $session['uid'];
+			$this->logins = $session['loginattempts'];
+			$this->failedlogin = $session['failedlogin'];
 		}
 		else
 		{
 			$this->sid = 0;
 			$this->uid = 0;
+			$this->logins = 1;
+			$this->failedlogin = 0;
 		}
 
 		//
@@ -248,7 +254,7 @@ class session
 					break;
 			}
 		}
-		
+
 		if($mybb->user['dst'] == "yes")
 		{
 			$mybb->user['timezone']++;
@@ -293,12 +299,12 @@ class session
 		}
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
-			
+
 		if(!$mybb->user['usertitle'])
 		{
 			$mybb->user['usertitle'] = $mybb->usergroup['usertitle'];
 		}
-		
+
 		//
 		// Update or create the session
 		//

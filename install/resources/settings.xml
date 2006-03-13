@@ -910,6 +910,30 @@ admin=Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="failedlogincount">
+			<title>Number of times to allow failed logins</title>
+			<description><![CDATA[The number of times to allow someone to attemp to login. 0 to disable]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[3]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="failedlogintime">
+			<title>Time between failed logins</title>
+			<description><![CDATA[The amount of time (in hours) before someone can try to login again, after they have failed to login the first time. Used if value above is not 0.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[24]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="failedlogintext">
+			<title>Display number of failed logins</title>
+			<description><![CDATA[Do you wish to display a line of text telling the user how many more login attempts they have?]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[yes]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="sigsmilies">
 			<title>Allow Smilies in Signatures</title>
 			<description><![CDATA[Do you want to allow smilies to be used in users' signatures?]]></description>

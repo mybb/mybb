@@ -29,8 +29,8 @@ function outputpage($contents)
 	$contents = parsepage($contents);
 	$parsetime = $ptimer->stop();
 	$totaltime = $maintimer->stop();
-	if($mybbgroup['cancp'] == "yes")
-	{
+	//if($mybbgroup['cancp'] == "yes")
+	//{
 		$phptime = $maintimer->format($maintimer->totaltime - $querytime);
 		$querytime = $maintimer->format($querytime);
 		$percentphp = number_format((($phptime/$maintimer->totaltime)*100), 2);
@@ -60,11 +60,11 @@ function outputpage($contents)
 		{
 			debugpage();
 		}
-	}
-	else
-	{
-		$contents = str_replace("<debugstuff>", "", $contents);
-	}
+	//}
+	//else
+	//{
+	//	$contents = str_replace("<debugstuff>", "", $contents);
+	//}
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->settings['gzipoutput'] != "no")
@@ -2428,4 +2428,69 @@ function get_inactive_forums()
 	return $inactiveforums;
 }
 
+/**
+ * Checks to make sure a user has not tried to login more times than permitted
+ * Will stop execution with call to error() unless
+ *
+ * @param bool (Optional) The function will stop execution if it finds an error with the login. Default is True
+ * @return bool Number of logins when success, false if failed.
+ */
+function login_attempt_check($fatal = true)
+{
+	global $mybb, $lang, $session, $db;
+	if($mybb->settings['failedlogincount'] == 0)
+	{
+		return 1;
+	}
+	//Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
+
+	//Use cookie if possible, otherwise use session
+	//Session stops user clearing cookies to bypass the login
+	//Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
+	$cookielogins = intval($_COOKIE['loginattempts']);
+	$cookietime = $_COOKIE['failedlogin'];
+	$loginattempts = empty($cookielogins) ? $session->logins : ($cookielogins < $session->logins ? $session->logins : $cookielogins);
+	$failedlogin = empty($cookietime) ? $session->failedlogin : ($cookietime < $session->failedlogin ? $session->failedlogin : $cookietime);
+
+	//Work out if the user has had more than the allowed number of login attempts
+	if($loginattempts > $mybb->settings['failedlogincount'])
+	{
+		//If so, then we need to work out if they can try to login again
+		//Some maths to work out how long they have left and display it to them
+		$now = time();
+		$secondsleft = ($mybb->settings['failedlogintime'] * 3600 + (empty($_COOKIE['failedlogin']) ? $now : $_COOKIE['failedlogin'])) - $now;
+		$hoursleft = floor($secondsleft / 3600);
+		$minsleft = floor(($secondsleft / 60) % 60);
+		$secsleft = floor($secondsleft % 60);
+		//This value will be empty the first time the user doesn't login in, set it
+		if(empty($failedlogin))
+		{
+			mysetcookie('failedlogin', $now);
+			if($fatal)
+			{
+				error(sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+			}
+			return false;
+		}
+		//Work out if the user has waited long enough before letting them login again
+		if($_COOKIE['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 3600)
+		{
+			mysetcookie('loginattempts', 1);
+			myunsetcookie('failedlogin');
+			$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts = 1 WHERE sid = '{$session->sid}'");
+			return 1;
+		}
+		//Not waited long enough
+		else
+		{
+			if($fatal)
+			{
+				error(sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+			}
+			return false;
+		}
+	}
+	//User can attempt another login
+	return $loginattempts;
+}
 ?>

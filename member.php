@@ -1020,6 +1020,10 @@ else if($mybb->input['action'] == "login")
 {
 	$plugins->run_hooks("member_login");
 
+	//Checks to make sure the user can login; they haven't had too many tries at logging in.
+	//Is a fatal call if user has had too many tries
+	login_attempt_check();
+
 	// Redirect to the page where the user came from, but not if that was the login page.
 	if($mybb->input['url'] && !preg_match("/^(member\.php)?([^\?action=login]+)/i", $mybb->input['url']))
 	{
@@ -1037,19 +1041,38 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_login_start");
 
+	//Checks to make sure the user can login; they haven't had too many tries at logging in.
+	//Is a fatal call if user has had too many tries
+	$logins = login_attempt_check();
+	$login_text = '';
+
 	if(!username_exists($mybb->input['username']))
 	{
-		error($lang->error_invalidusername);
+		mysetcookie('loginattempts', $logins + 1);
+		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts = loginattempts + 1 WHERE sid = '{$session->sid}'");
+		if($mybb->settings['failedlogintext'] == "yes")
+		{
+			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+		}
+		error($lang->error_invalidusername.$login_text);
 	}
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if(!$user['uid'])
 	{
-		error($lang->error_invalidpassword);
+		mysetcookie('loginattempts', $logins + 1);
+		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts = loginattempts + 1 WHERE sid = '{$session->sid}'");
+		if($mybb->settings['failedlogintext'] == "yes")
+		{
+			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+		}
+		error($lang->error_invalidpassword.$login_text);
 	}
 
+	mysetcookie('loginattempts', 1);
 	$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
+		"loginattempts" => 1,
 		);
 	$db->update_query(TABLE_PREFIX."sessions", $newsession, "sid='".$session->sid."'");
 

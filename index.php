@@ -29,7 +29,12 @@ if($mybb->user['uid'] != 0)
 }
 else
 {
-	eval("\$loginform = \"".$templates->get("index_loginform")."\";");
+	//Checks to make sure the user can login; they haven't had too many tries at logging in.
+	//Function call is not fatal
+	if(login_attempt_check(false) !== false)
+	{
+		eval("\$loginform = \"".$templates->get("index_loginform")."\";");
+	}
 }
 $whosonline = '';
 if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "no")
