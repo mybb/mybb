@@ -252,11 +252,11 @@ function add_favorite_thread($tid, $uid="")
 	{
 		return;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$thread['tid']."' AND type='f' AND uid='".$mybb->user['uid']."' LIMIT 1");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".intval($tid)."' AND type='f' AND uid='".intval($uid)."' LIMIT 1");
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".$uid."','".$tid."','f')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".intval($uid)."','".intval($tid)."','f')");
 	}
 	return true;
 }
@@ -280,7 +280,7 @@ function remove_favorite_thread($tid, $uid="")
 	{
 		return;
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='".$tid."' AND type='f' AND uid='".$uid."'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='".intval($tid)."' AND type='f' AND uid='".intval($uid)."'");
 	return true;
 }
 
@@ -303,11 +303,11 @@ function add_subscribed_thread($tid, $uid="")
 	{
 		return;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".$tid."' AND type='s' AND uid='".$uid."' LIMIT 1");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".intval($tid)."' AND type='s' AND uid='".intval($uid)."' LIMIT 1");
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".$uid."','".$tid."','s')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".intval($uid)."','".intval($tid)."','s')");
 	}
 	return true;
 }

@@ -110,7 +110,7 @@ else
 // What percent of members have posted?
 $query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE postnum > 0");
 $posters = $db->result($query, 0);
-$havepostedpercent = round((($posters / $stats['numusers']) * 100), 2) . "%";
+$havepostedpercent = mynumberformat(round((($posters / $stats['numusers']) * 100), 2)) . "%";
 
 $lang->todays_top_poster = sprintf($lang->todays_top_poster, $topposter, mynumberformat($topposterposts));
 $lang->popular_forum = sprintf($lang->popular_forum, $topforum, mynumberformat($topforumposts), mynumberformat($topforumthreads));
