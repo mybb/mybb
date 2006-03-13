@@ -298,12 +298,16 @@ if($mybb->input['action'] == "do_addevent")
 	$event = array(
 		"subject" => $mybb->input['subject'],
 		"description" => $mybb->input['description'],
+		"day" => $mybb->input['day'],
+		"month" => $mybb->input['month'],
+		"year" => $mybb->input['year'],
 	);
 
 	// Now let the eventhandler do all the hard work.
 	if(!$eventhandler->validate_event($event))
 	{
 		$errors = $eventhandler->get_errors();
+		print_r($errors);
 		foreach($errors as $error)
 		{
 			$event_errors[] = $lang->$error;
