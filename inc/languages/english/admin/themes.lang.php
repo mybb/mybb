@@ -105,8 +105,10 @@ $l['other_options'] = "Other Options";
 $l['theme_style'] = "Theme Style";
 $l['theme_users'] = " ({1} Users)";
 $l['import_options'] = "Theme Import Options";
-$l['import_name'] = "Custom Name<br /><small>If left blank, the name specified in the theme file will be used.";
+$l['import_name'] = "Custom Name<br /><small>If left blank, the name specified in the theme file will be used.</small>";
 $l['theme_parent'] = "Parent Theme";
 $l['revert_customizations'] = "Revert Customizations";
 $l['general_options'] = "General Options";
+$l['allowed_groups'] = "Allowed Usergroups<br /><small>Select the usergroups that are able to use this theme.  Selecting 'All Usergroups' overrides any other selection.</small>";
+$l['all_groups'] = "All Usergroups";
 ?>

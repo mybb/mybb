@@ -80,9 +80,29 @@ if($mybb->input['action'] == "do_edit")
 	$themelist .= update_theme($mybb->input['tid'], $mybb->input['pid'], $mybb->input['themebits'], $mybb->input['css'], 0);
 	$themelist .= "</ul>";
 
+	// Figure out usergroup
+	if(!is_array($mybb->input['allowedgroups']))
+	{
+		$allowedgroups = "none";
+	}
+	elseif(in_array("all", $mybb->input['allowedgroups']))
+	{
+		$allowedgroups = "all";
+	}
+	else
+	{
+		$allowedgroups = array();
+		foreach($mybb->input['allowedgroups'] as $gid)
+		{
+			$allowedgroups[] = intval($gid);
+		}
+		$allowedgroups = implode(",", $allowedgroups);
+	}
+
 	$themearray = array(
 		"name" => addslashes($mybb->input['name']),
 		"pid" => $mybb->input['pid'],
+		"allowedgroups" => $allowedgroups,
 		);
 
 	$db->update_query(TABLE_PREFIX."themes", $themearray, "tid='".intval($mybb->input['tid'])."'");
@@ -346,6 +366,33 @@ if($mybb->input['action'] == "edit") {
 	$theme = $db->fetch_array($query);
 	$themebits = unserialize($theme['themebits']);
 	$css = build_css_array($theme['tid']);
+
+	// Do allowed usergroups
+	$existing_groups = explode(",", $theme['allowedgroups']);
+	$options = array(
+		"order_by" => "title",
+		"order_dir" => "ASC"
+		);
+	$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title", "", $options);
+	$has_check = 0;
+	while($usergroup = $db->fetch_array($query))
+	{
+		$checked = '';
+		if(in_array($usergroup['gid'], $existing_groups))
+		{
+			$checked = "checked=\"checked\"";
+			$has_check = 1;
+		}
+		$usergroups[] = "<input type=\"checkbox\" name=\"allowedgroups[]\" value=\"$usergroup[gid]\"$checked /> $usergroup[title]";
+	}
+	$checked = '';
+	if(!$has_check && !in_array("none", $existing_groups))
+	{
+		$checked = "checked=\"checked\"";
+	}
+	$usergroups[] = "<input type=\"checkbox\" name=\"allowedgroups[]\" value=\"all\"$checked /> <strong>$lang->all_groups</strong>";
+	$usergroups = implode("<br />", $usergroups);
+
 	$lang->modify_theme = sprintf($lang->modify_theme, $theme['name']);
 	cpheader();
 	startform("themes.php", "" , "do_edit");
@@ -357,6 +404,8 @@ if($mybb->input['action'] == "edit") {
 	tablesubheader($lang->general_options);
 	makeinputcode($lang->theme_name, "name", $theme['name']);
 	makelabelcode($lang->theme_parent, make_theme_select("pid", $theme['pid']));
+	makelabelcode($lang->allowed_groups, "<small>$usergroups</small>");
+
 	tablesubheader($lang->theme_options);
 	makethemebitedit($lang->template_set, "templateset");
 	makethemebitedit($lang->image_dir, "imgdir");

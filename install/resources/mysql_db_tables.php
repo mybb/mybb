@@ -496,6 +496,7 @@ $tables[] = "CREATE TABLE mybb_themes (
   cssbits text NOT NULL default '',
   themebits text NOT NULL default '',
   extracss text NOT NULL default '',
+  allowedgroups text NOT NULL default '',
   PRIMARY KEY  (tid)
 ) TYPE=MyISAM;";
 
