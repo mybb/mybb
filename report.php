@@ -34,9 +34,7 @@ if(!$post['pid'])
 }
 
 
-/*$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$post['fid']."'");
-$forum = $db->fetch_array($query);*/
-$forum = get_forum($fid);
+$forum = get_forum($post['fid']);
 if(!$forum)
 {
 	error($lang->error_invalidforum);

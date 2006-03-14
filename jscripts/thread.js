@@ -39,7 +39,7 @@ var Thread = {
 	
 	reportPost: function(pid)
 	{
-		MyBB.popupWin("report.php?pid="+pid, "reportPost", 400, 300)
+		MyBB.popupWindow("report.php?pid="+pid, "reportPost", 400, 300)
 	}
 }
 Event.observe(window, 'load', Thread.init);

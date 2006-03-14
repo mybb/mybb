@@ -100,12 +100,12 @@ var MyBB = {
 
 	reputation: function(pid, type)
 	{
-		MyBB.popupWin("reputation.php?pid=" + pid + "&type=" + type, "reputation", 400, 300)
+		MyBB.popupWindow("reputation.php?pid=" + pid + "&type=" + type, "reputation", 400, 300)
 	},
 
 	whoPosted: function(tid)
 	{
-		MyBB.popupWin("misc.php?action=whoposted&tid=" + tid, "whoPosted", 230, 300)
+		MyBB.popupWindow("misc.php?action=whoposted&tid=" + tid, "whoPosted", 230, 300)
 	},
 
 	hopPage: function(tid, page, pages)
