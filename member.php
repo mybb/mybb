@@ -1220,7 +1220,7 @@ elseif($mybb->input['action'] == "profile")
 	$lang->users_forum_info = sprintf($lang->users_forum_info, $memprofile['username']);
 	$lang->users_contact_details = sprintf($lang->users_contact_details, $memprofile['username']);
 
-	if($mybb->settings['enablepms'] != "no")
+	if($mybb->settings['enablepms'] != "no" && $memprofile['receivepms'] != "no")
 	{
 		$lang->send_pm = sprintf($lang->send_pm, $memprofile['username']);
 	}
@@ -1343,11 +1343,11 @@ elseif($mybb->input['action'] == "profile")
 
 	$localtime = sprintf($lang->local_time_format, $memlocaldate, $memlocaltime);
 
-	if($memprofile['lastvisit'])
+	if($memprofile['lastactive'])
 	{
-		$memlastvisitdate = mydate($mybb->settings['dateformat'], $memprofile['lastvisit']);
+		$memlastvisitdate = mydate($mybb->settings['dateformat'], $memprofile['lastactive']);
 		$memlastvisitsep = ', ';
-		$memlastvisittime = mydate($mybb->settings['timeformat'], $memprofile['lastvisit']);
+		$memlastvisittime = mydate($mybb->settings['timeformat'], $memprofile['lastactive']);
 	}
 	else
 	{

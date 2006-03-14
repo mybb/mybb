@@ -242,7 +242,7 @@ function makepostbit($post, $pmprevann=0)
 		}
 		eval("\$post['button_profile'] = \"".$templates->get("postbit_profile")."\";");
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
-		if($mybb->settings['enablepms'] != "no")
+		if($mybb->settings['enablepms'] != "no" && $post['receivepms'] != "no")
 		{
 			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
 		}
