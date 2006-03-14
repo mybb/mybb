@@ -59,7 +59,7 @@ class EventDataHandler extends DataHandler
 	 */
 	function verify_date(&$day, &$month, &$year)
 	{
-		if(!$event['day'] || !$event['month'] || !$event['year'])
+		if(!$day || !$month || !$year)
 		{
 			$this->set_error("invalid_date");
 			return false;
@@ -113,14 +113,14 @@ class EventDataHandler extends DataHandler
 	 *
 	 * @param array The event data array.
 	 */
-	function validate_event()
+	function validate_event($event)
 	{
 		global $plugins;
 
-		$event = &$this->data;
+		//$event = &$this->data;
 
 		// Every event needs a name.
-		$this->verify_name($event['name']);
+		$this->verify_name($event['subject']);
 
 		// Check for event description.
 		$this->verify_description($event['description']);

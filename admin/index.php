@@ -45,20 +45,20 @@ elseif ($mybb->input['action']=="home")
 	// Get the number of users
 	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS numusers");
 	$users = $db->fetch_array($query);
-	
+
 	// Get the number of users awaiting validation
 	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS awaitingusers", "usergroup='5'");
 	$awaitingusers = $db->fetch_array($query);
-	
+
 	// Get the number of new users for today
 	$timecut = time() - 86400;
 	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS newusers", "regdate>'$timecut'");
 	$newusers = $db->fetch_array($query);
-	
+
 	// Get the number of active users today
 	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS activeusers", "lastvisit>'$timecut'");
 	$activeusers = $db->fetch_array($query);
-	
+
 	// Get the number of threads
 	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS numthreads");
 	$threads = $db->fetch_array($query);
@@ -66,7 +66,7 @@ elseif ($mybb->input['action']=="home")
 	// Get the number of unapproved threads
 	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS numthreads", "visible='0'");
 	$unapproved_threads = $db->fetch_array($query);
-	
+
 	// Get the number of new threads for today
 	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS newthreads", "dateline>'$timecut'");
 	$newthreads = $db->fetch_array($query);
@@ -78,7 +78,7 @@ elseif ($mybb->input['action']=="home")
 	// Get the number of unapproved posts
 	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS numposts", "visible='0'");
 	$unapproved_posts = $db->fetch_array($query);
-	
+
 	// Get the number of new posts for today
 	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS newposts", "dateline>'$timecut'");
 	$newposts = $db->fetch_array($query);
@@ -144,7 +144,7 @@ elseif ($mybb->input['action']=="home")
 	tableheader($lang->mybb_credits);
 	tablesubheader($lang->contributed);
 	makelabelcode("<b>$lang->product_managers</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a>");
-	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com/\">Chris Boulton</a><br><a href=\"http://mods.mybboard.com/\">Musicalmidget</a><br><a href=\"http://www.dennistt.net/\">DennisTT</a><br><a href=\"http://www.linuxbox.co.nz/~kieran/\">k776</a><br /><a href=\"http://www.peterakkies.com\">Kilroy</a>");
+	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com/\">Chris Boulton</a><br><a href=\"http://mods.mybboard.com/\">Musicalmidget</a><br><a href=\"http://www.dennistt.net/\">DennisTT</a><br><a href=\"http://www.linuxbox.co.nz/~kieran/\">k776</a><br /><a href=\"http://www.peterakkies.com\">Peter</a>");
 	makelabelcode("<b>$lang->graphics_and_style</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a><br /><a href=\"http://www.templatesforall.com\">Scott Hough</a>");
 	endtable();
 
@@ -184,7 +184,7 @@ elseif($mybb->input['action'] == "vercheck") {
 		cperror($lang->vercheck_error);
 		exit;
 	}
-	
+
 	$parser = new XMLParser($contents);
 	$tree = $parser->getTree();
 
