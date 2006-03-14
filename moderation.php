@@ -14,6 +14,8 @@ require "./inc/functions_post.php";
 require "./inc/functions_upload.php";
 require "./inc/class_parser.php";
 $parser = new postParser;
+require "./inc/class_moderation.php";
+$moderation = new Moderation;
 
 // Load global language phrases
 $lang->load("moderation");
@@ -94,35 +96,26 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
+
+		$plugins->run_hooks("moderation_openclosethread");
+
 		if($thread['closed'] == "yes")
 		{
-			$openclose = "opened";
-			$thread['closed'] = "no";
-			$redirect = $lang->redirect_openthread;
-		}
-		else
-		{
-			$openclose = "closed";
-			$thread['closed'] = "yes";
-			$redirect = $lang->redirect_closethread;
-		}
-		if($openclose == "opened")
-		{
 			$openclose = $lang->opened;
+			$redirect = $lang->redirect_openthread;
+			$moderation->open_thread($tid);
 		}
 		else
 		{
 			$openclose = $lang->closed;
+			$redirect = $lang->redirect_closethread;
+			$moderation->close_thread($tid);
 		}
+
 		$lang->mod_process = sprintf($lang->mod_process, $openclose);
 
-		$plugins->run_hooks("moderation_openclosethread");
-
 		logmod($modlogdata, $lang->mod_process);
-		$sqlarray = array(
-			"closed" => $thread['closed'],
-			);
-		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
+
 		redirect("showthread.php?tid=$tid", $redirect);
 		break;
 

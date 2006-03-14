@@ -37,7 +37,7 @@ if($mybb->input['by'] != "regdate" && $mybb->input['by'] != "postnum" && $mybb->
 	}
 	else
 	{
-		$mybb->input['by'] = "regdate";
+		$mybb->input['by'] = $mybb->settings['default_memberlist_sortby'];
 	}
 }
 
@@ -50,7 +50,7 @@ if($mybb->input['order'] != "DESC" && $mybb->input['order'] != "ASC")
 	}
 	else
 	{
-		$mybb->input['order']= "ASC";
+		$mybb->input['order']= $mybb->settings['default_memberlist_order'];
 	}
 }
 

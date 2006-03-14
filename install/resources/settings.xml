@@ -410,9 +410,30 @@ email=Sent via Email]]></optionscode>
 		<setting name="membersperpage">
 			<title>Members Per Page</title>
 			<description><![CDATA[The number of members to show per page on the member list.]]></description>
-			<disporder>1</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="default_memberlist_sortby">
+			<title>Default Sort By</title>
+			<description><![CDATA[Select the field that you want members to be sorted by default.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[select
+regdate=Registration
+postnum=Post Count
+username=Username]]></optionscode>
+			<settingvalue><![CDATA[regdate]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="default_memberlist_order">
+			<title>Default Sort Order</title>
+			<description><![CDATA[Select the order that you want members to be sorted by default.<br />Ascending: A-Z / beginning-end<br />Descending: Z-A / end-beginning]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[select
+ASC=Ascending
+DESC=Descending]]></optionscode>
+			<settingvalue><![CDATA[ASC]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
