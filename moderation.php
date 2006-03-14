@@ -1853,7 +1853,7 @@ switch($mybb->input['action'])
 		outputpage($reportedposts);
 		break;
 	default:
-		error($lang->error_invalidaction);
+		nopermission();
 		break;
 }
 
