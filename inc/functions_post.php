@@ -266,9 +266,9 @@ function makepostbit($post, $pmprevann=0)
 		$post['userregdate'] = mydate($mybb->settings['regdateformat'], $post['regdate']);
 
 		// Work out the reputation this user has
-		if($usergroup['usereputationsystem'] != "no" && $mybb->settings['enablereputation'] == "yes" && $mybb->user['uid'] != $post['uid'])
+		if($usergroup['usereputationsystem'] != "no" && $mybb->settings['enablereputation'] == "yes")
 		{
-			if($mybb->usergroup['cangivereputations'] == "yes")
+			if($mybb->usergroup['cangivereputations'] == "yes" && $mybb->user['uid'] != $post['uid'])
 			{
 				if(!$pmprevann)
 				{
