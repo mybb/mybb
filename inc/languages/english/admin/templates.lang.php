@@ -59,6 +59,7 @@ $l['group_templates'] = "{1} Templates";
 $l['change_original'] = "Change Original";
 $l['revert_original'] = "Revert to Original";
 $l['view_original'] = "View Original";
+$l['diff_with_original'] = "Diff with Original";
 
 $l['add_template'] = "Add Template";
 $l['add_master_template'] = "Add MASTER Template";

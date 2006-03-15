@@ -232,23 +232,23 @@ if($mybb->input['action'] == "edit") {
 		makehiddencode("tid", $mybb->input['tid']);
 		starttable();
 		tableheader($lang->modify_master_template);
-		makeinputcode($lang->title, "title", $template[title]);
+		makeinputcode($lang->title, "title", $template['title']);
 	} else {
 		starttable();
 		tableheader($lang->view_template);
 		makelabelcode($lang->title, $template[title]);
 	}
-	maketextareacode($lang->template, "template", $template[template], "25", "80");
+	maketextareacode($lang->template, "template", $template['template'], "25", "80");
 	if($template[sid] != "-2") {
 		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."templates WHERE title='".addslashes($template['title'])."' AND sid='-2';");
 		$master = $db->fetch_array($query);
 		if($master['tid'])
 		{
-			makelabelcode($lang->options, "<a href=\"templates.php?action=edit&tid=".$master['tid']."\">".$lang->view_original."</a>");
+			makelabelcode($lang->options, "<a href=\"templates.php?action=edit&tid=".$master['tid']."\">".$lang->view_original."</a><br /><a href=\"templates.php?action=diff&title=$template[title]&sid2=$template[sid]\">".$lang->diff_with_original."</a>");
 		}
-		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $template[sid], "-1=Global - All Template Sets");
+		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $template['sid'], "-1=Global - All Template Sets");
 	} else {
-		makehiddencode("setid", $template[sid]);
+		makehiddencode("setid", $template['sid']);
 	}
 	if($mybb->input['continue'])
 	{
