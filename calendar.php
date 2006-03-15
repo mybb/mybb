@@ -267,6 +267,7 @@ if($mybb->input['action'] == "dayview")
 	}
 	if(!$events)
 	{
+		$lang->no_events = sprintf($lang->no_events, $day, $month, $year);
 		eval("\$events = \"".$templates->get("calendar_dayview_noevents")."\";");
 	}
 	if($birthdays)
@@ -330,6 +331,8 @@ if($mybb->input['action'] == "addevent")
 	$plugins->run_hooks("calendar_addevent_start");
 
 	$yearopts = '';
+
+	//Construct option list for years
 	for($i = date("Y"); $i < (date("Y") + 5); $i++)
 	{
 		if($i == $year)
@@ -344,9 +347,18 @@ if($mybb->input['action'] == "addevent")
 	$msel[$month] = " selected=\"selected\"";
 
 	$dayopts = '';
-	for($i=1;$i<=31;$i++)
+
+	//Construct option list for days
+	for($i = 1; $i <= 31; $i++)
 	{
-		$dayopts .= "<option value=\"$i\">$i</option>\n";
+		if($i == $day)
+		{
+			$dayopts .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+		}
+		else
+		{
+			$dayopts .= "<option value=\"$i\">$i</option>\n";
+		}
 	}
 
 	if($mybb->input['type'] == "private")
