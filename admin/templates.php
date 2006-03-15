@@ -42,6 +42,9 @@ switch($mybb->input['action'])
 	case "findupdated":
 		addacpnav($lang->nav_find_updated);
 		break;
+	case "diff":
+		addacpnav($lang->nav_diff);
+		break;
 	default:
 		if($mybb->input['expand'])
 		{
@@ -726,6 +729,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 					echo "<a href=\"templates.php?action=edit&tid=".$template['tid'].$opengroup."\"><span class=\"highlight3\">".$template['originaltitle']."</span></a></td>";
 					echo "<td class=\"$altbg\" align=\"right\">";
 					echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?action=edit&tid=".$template['tid']."&group=$grouptype');\" class=\"submitbutton\">";
+					if($expand == 1)
+					{
+						echo "<input type=\"button\" value=\"$lang->diff\" onclick=\"hopto('templates.php?action=diff&title=".$template['originaltitle']."&sid2=$expand');\" class=\"submitbutton\">";
+					}
 					echo "<input type=\"button\" value=\"$lang->revert_original\" onclick=\"hopto('templates.php?action=revert&tid=".$template['tid']."&expand=$expand&group=$grouptype');\" class=\"submitbutton\">";
 					echo "</td>\n";
 					echo "</tr>\n";

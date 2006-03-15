@@ -238,6 +238,7 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."threads", $approve, "tid='$tid'");
 		$db->update_query(TABLE_PREFIX."posts", $approve, "tid='$tid' AND replyto='0'", 1);
 
+		// Update stats
 		$cache->updatestats();
 		updateforumcount($fid);
 
@@ -264,6 +265,7 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='$tid'");
 		$db->update_query(TABLE_PREFIX."posts", $unapprove, "tid='$tid' AND replyto='0'", 1);
 
+		// Update stats
 		$cache->updatestats();
 		updateforumcount($fid);
 
@@ -375,6 +377,7 @@ class Moderation
 			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-$num_unapproved_posts WHERE fid='$fid'");
 		}
 
+		// Update stats
 		updatethreadcount($tid);
 		updateforumcount($fid);
 
@@ -392,6 +395,8 @@ class Moderation
 	function move_thread($tid, $new_fid, $method="redirect")
 	{
 		global $db, $plugins;
+
+		// Get thread info
 		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='$tid'");
 		$thread = $db->fetch_array($query);
 		$fid = $thread['fid'];
@@ -496,6 +501,7 @@ class Moderation
 			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts+$unapproved_posts, unapprovedthreads=unapprovedthreads+$unapproved_threads WHERE fid='$new_fid'");
 		}
 
+		// Do post count changes if changing between countable and non-countable forums
 		$query = $db->query("SELECT COUNT(p.pid) AS posts, u.uid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='$tid' GROUP BY u.uid ORDER BY posts DESC");
 		while($posters = $db->fetch_array($query))
 		{
@@ -513,8 +519,12 @@ class Moderation
 			}
 			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]')");
 		}
+
+		// Update forum counts
 		updateforumcount($new_fid);
 		updateforumcount($fid);
+
+		return true;
 	}
 
 }

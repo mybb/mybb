@@ -7,6 +7,7 @@ $l['nav_add_set'] = "New Template Set";
 $l['nav_edit_set'] = "Edit Template Set";
 $l['nav_delete_set'] = "Delete Template Set";
 $l['nav_find_updated'] = "Find Updated Templates";
+$l['nav_diff'] = "Template Difference Analysis";
 
 $l['group_calendar'] = "Calendar";
 $l['group_email'] = "Email";
