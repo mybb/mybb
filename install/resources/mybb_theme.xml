@@ -393,7 +393,7 @@ hr {
 						<option value="replies" {$sortsel['replies']}>{$lang->sort_by_replies}</option>
 						<option value="views" {$sortsel['views']}>{$lang->sort_by_views}</option>
 					</select>
-					 {$lang->sort_order} 
+					 {$lang->sort_order}
 					<select name="order">
 						<option value="asc" {$ordersel['asc']}>{$lang->sort_order_asc}</option>
 						<option value="desc" {$ordersel['desc']}>{$lang->sort_order_desc}</option>
@@ -5486,10 +5486,31 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <script language="JavaScript" type="text/javascript">
 <!--
 function sigLimit() {
-if (document.forms[0].signature.value.length > {$settings['siglength']})
+var count_modifier = 0;
+var loops = 0;
+if('{$settings['sigcountmycode']}' == 'no'){
+var regexp = /(\[.+\].+\[\/.+\])/i;
+var sig_string = document.forms[0].signature.value;
+sig_string = sig_string.replace(/\n/g, "");
+if(regexp.test(sig_string)){
+do{
+var bbcode_string = regexp.exec(sig_string);
+bbcode_string = bbcode_string[1];
+start = bbcode_string.indexOf("]") + 1;
+end = (bbcode_string.length - bbcode_string.lastIndexOf("["));
+bbcode_string = bbcode_string.substring(start, bbcode_string.lastIndexOf("["));
+count_modifier += start + end;
+sig_string = bbcode_string;
+regexp = /(\[\/.+\].*\[.+\])/i;
+loops++;
+}while(loops< 7 && regexp.test(sig_string));
+}
+}
+sig_length = document.forms[0].signature.value.length - count_modifier;
+if (sig_length > {$settings['siglength']})
 document.forms[0].signature.value = document.forms[0].signature.value.substring(0, {$settings['siglength']});
 else
-document.forms[0].sigcounter.value = {$settings['siglength']} - document.forms[0].signature.value.length;
+document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 }
 //-->
 </script>
@@ -6513,7 +6534,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - document.forms[0
 </table>
 <br />]]></template>
 		<template name="htmldoctype" version="100.07"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
-		<template name="postbit_qqmessage" version="100.07"><![CDATA[<div style="display: none;"><span id="qq{$post['pid']}">{$post['quickquote_message']}</span><span id="qqauthor{$post['pid']}">{$post['username']}</span></div>]]></template>		
-		<template name="postbit_quickquote" version="100.07"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /></a>");</script>]]></template>				
+		<template name="postbit_qqmessage" version="100.07"><![CDATA[<div style="display: none;"><span id="qq{$post['pid']}">{$post['quickquote_message']}</span><span id="qqauthor{$post['pid']}">{$post['username']}</span></div>]]></template>
+		<template name="postbit_quickquote" version="100.07"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /></a>");</script>]]></template>
 	</templates>
 </theme>

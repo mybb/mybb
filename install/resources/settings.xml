@@ -1011,6 +1011,14 @@ admin=Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[255]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="sigcountmycode">
+			<title>myCode affects signature length</title>
+			<description><![CDATA[Do you want myCode to be counted as part of the limit when users use myCode in their signature?]]></description>
+			<disporder>6</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[yes]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="maxnamelength">
 			<title>Maximum Username Length</title>
 			<description><![CDATA[The maximum number of characters a username can be when a user registers.]]></description>
