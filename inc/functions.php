@@ -1012,96 +1012,24 @@ function updatethreadcount($tid)
 
 function deletethread($tid)
 {
-	global $db, $cache, $plugins;
-	$query = $db->query("SELECT p.pid, p.uid, p.visible, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.tid='$tid'");
-	$num_unapproved_posts = 0;
-	while($post = $db->fetch_array($query))
+	global $moderation;
+	if(!is_object($moderation))
 	{
-		if($userposts[$post['uid']])
-		{
-			$userposts[$post['uid']]--;
-		}
-		else
-		{
-			$userposts[$post['uid']] = -1;
-		}
-		$pids .= $post['pid'].",";
-		$usepostcounts = $post['usepostcounts'];
-		remove_attachments($post['pid']);
-
-		// If the post is unapproved, count it!
-		if($post['visible'] == 0)
-		{
-			$num_unapproved_posts++;
-		}
+		require_once "./inc/class_moderation.php";
+		$moderation = new Moderation;
 	}
-	if($usepostcounts != "no")
-	{
-		if(is_array($userposts))
-		{
-			foreach($userposts as $uid => $subtract)
-			{
-				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$subtract WHERE uid='$uid'");
-			}
-		}
-	}
-	if($pids)
-	{
-		$pids .= "0";
-		$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid IN ($pids)");
-		$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE pid IN ($pids)");
-	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
-	$thread = $db->fetch_array($query);
-
-	// Update unapproved post/thread numbers
-	$update_unapproved = "";
-	if($thread['visible'] == 0)
-	{
-		$update_unapproved .= "unapprovedthreads=unapprovedthreads-1";
-	}
-	if($num_unapproved_posts > 0)
-	{
-		if(!empty($update_unapproved))
-		{
-			$update_unapproved .= ", ";
-		}
-		$update_unapproved .= "unapprovedposts=unapprovedposts-".$num_unapproved_posts;
-	}
-	if(!empty($update_unapproved))
-	{
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET $update_unapproved WHERE fid='$thread[fid]'");
-	}
-
-	$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE closed='moved|$tid'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='$tid'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."polls WHERE tid='$tid'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."pollvotes WHERE pid='".$thread['poll']."'");
-	$cache->updatestats();
-	$plugins->run_hooks("delete_thread", $tid);
+	return $moderation->delete_thread($tid);
 }
 
 function deletepost($pid, $tid="")
 {
-	global $db, $cache, $plugins;
-	$query = $db->query("SELECT p.pid, p.uid, p.fid, p.tid, p.visible, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.pid='$pid'");
-	$post = $db->fetch_array($query);
-	if($post['usepostcounts'] != "no")
+	global $moderation;
+	if(!is_object($moderation))
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
+		require_once "./inc/class_moderation.php";
+		$moderation = new Moderation;
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
-	remove_attachments($pid);
-
-	// Update unapproved post count
-	if($post['visible'] == 0)
-	{
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-1 WHERE fid='$post[fid]'");
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1 WHERE tid='$post[tid]'");
-	}
-	$plugins->run_hooks("delete_post", $tid);
-	$cache->updatestats();
+	return $moderation->delete_post($tid);
 }
 
 
