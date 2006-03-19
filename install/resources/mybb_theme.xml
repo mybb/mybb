@@ -2456,6 +2456,7 @@ var inlineId = {$fid};
 {$usercpnav}
 <td valign="top">
 {$preview}
+{$send_errors}
 <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr><td class="tborder">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">

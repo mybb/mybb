@@ -15,7 +15,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 //
 // MYBB 1.2 DEVELOPMENT CODE - TO BE REMOVED BEFORE RELEASE
 //
-if($_SERVER['SERVER_NAME'] == "roadrunner" || isset($_GET['phpdebug']))
+if(isset($_COOKIE['phpdbug']) || isset($_GET['phpdebug']))
 {
 	error_reporting(E_ALL);
 
@@ -67,7 +67,9 @@ $cache = new datacache;
 require "./inc/class_plugins.php";
 $plugins = new pluginSystem;
 
-require "./inc/integration.php";
+// Include our base data handler class
+require "./inc/datahandler.php";
+
 
 // Connect to Database
 define("TABLE_PREFIX", $config['table_prefix']);

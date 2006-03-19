@@ -425,28 +425,42 @@ function validateforum($fid)
 //
 function user_permissions($uid=0)
 {
-	global $mybb, $cache, $groupscache, $usercache;
+	global $mybb, $cache, $groupscache, $user_cache;
 
+	// If no user id is specified, assume it is the current user
 	if($uid == 0)
 	{
 		$uid = $mybb->user['uid'];
 	}
 
+	// User id does not match current user, fetch permissions
 	if($uid != $mybb->user['uid'])
 	{
-		if($usercache[$uid])
+		// We've already cached permissions for this user, return them.
+		if($user_cache[$uid]['permissions'])
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
-			$usercache[$uid] = $db->fetch_array($query);
+			return $user_cache[$uid]['permissions'];
 		}
-		$gid = $usercache[$uid]['usergroup'].",".$usercache[$uid]['additionalgroups'];
+
+		// This user was not already cached, fetch their user information.
+		if(!$user_cache[$uid])
+		{
+			$user_cache[$uid] = get_user($uid);
+		}
+
+		// Collect group permissions.
+		$gid = $user_cache[$uid]['usergroup'].",".$user_cache[$uid]['additionalgroups'];
 		$groupperms = usergroup_permissions($gid);
+
+		// Store group permissions in user cache.
+		$user_cache[$uid]['permissions'] = $groupperms;
+		return $groupperms;
 	}
+	// This user is the current user, return their permissions
 	else
 	{
-		$groupperms = $mybb->usergroup;
+		return $mybb->usergroup;
 	}
-	return $groupperms;
 }
 
 //
