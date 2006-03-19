@@ -297,33 +297,53 @@ if($mybb->input['action'] == "do_addevent")
 
 	// Prepare an array for the eventhandler.
 	$event = array(
-		"subject" => $mybb->input['subject'],
+		"name" => $mybb->input['subject'],
+		"uid" => $mybb->user['uid'],
 		"description" => $mybb->input['description'],
 		"day" => $mybb->input['day'],
 		"month" => $mybb->input['month'],
 		"year" => $mybb->input['year'],
+		"private" => $mybb->input['private']
 	);
 
+	$eventhandler->set_data($event);
+
 	// Now let the eventhandler do all the hard work.
-	if(!$eventhandler->validate_event($event))
+	if(!$eventhandler->validate_event())
 	{
 		$errors = $eventhandler->get_errors();
-		print_r($errors);
 		foreach($errors as $error)
 		{
-			$event_errors[] = $lang->$error;
+			//
+			// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
+			// Used to determine any missing language variables from the datahandlers
+			//
+			if($lang->$error)
+			{
+				$event_errors[] = $lang->$error;
+			}
+			else
+			{
+				$event_errors[] = "Missing language var: ".$error;
+			}
+			//
+			// END TESTING CODE
+			//
+			/*
+				$event_errors[] =$lang->$error;
+			*/
 		}
 		$event_errors = inlineerror($event_errors);
 		$mybb->input['action'] = "addevent";
 	}
 	else
 	{
-		$details = $eventhandler->insert_event($event);
+		$details = $eventhandler->insert_event();
+		$plugins->run_hooks("calendar_do_addevent_end");
 		redirect("calendar.php?action=event&eid=".$details['eid'], $lang->redirect_eventadded);
 	}
-
-	$plugins->run_hooks("calendar_do_addevent_end");
 }
+
 
 // Show the form for adding an event.
 if($mybb->input['action'] == "addevent")
@@ -409,7 +429,6 @@ if($mybb->input['action'] == "do_editevent")
 	if($mybb->input['delete'] == "yes")
 	{
 		// Set up eventhandler.
-		require_once "inc/datahandler.php";
 		require_once "inc/datahandlers/event.php";
 		$eventhandler = new EventDataHandler();
 
@@ -422,36 +441,57 @@ if($mybb->input['action'] == "do_editevent")
 	else
 	{
 		// Set up eventhandler.
-		require_once "inc/datahandler.php";
 		require_once "inc/datahandlers/event.php";
 		$eventhandler = new EventDataHandler();
 
 		// Prepare an array for the eventhandler.
 		$event = array(
 			"eid" => $eid,
-			"subject" => $mybb->input['subject'],
+			"name" => $mybb->input['subject'],
+			"uid" => $mybb->user['uid'],
 			"description" => $mybb->input['description'],
+			"day" => $mybb->input['day'],
+			"month" => $mybb->input['month'],
+			"year" => $mybb->input['year'],
+			"private" => $mybb->input['private']
 		);
 
+		$eventhandler->set_data($event);
+
 		// Now let the eventhandler do all the hard work.
-		if(!$eventhandler->validate_event($event))
+		if(!$eventhandler->validate_event())
 		{
 			$errors = $eventhandler->get_errors();
 			foreach($errors as $error)
 			{
-				$event_errors[] = $lang->$error;
+				//
+				// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
+				// Used to determine any missing language variables from the datahandlers
+				//
+				if($lang->$error)
+				{
+					$event_errors[] = $lang->$error;
+				}
+				else
+				{
+					$event_errors[] = "Missing language var: ".$error;
+				}
+				//
+				// END TESTING CODE
+				//
+				/*
+					$event_errors[] =$lang->$error;
+				*/
 			}
 			$event_errors = inlineerror($event_errors);
 			$mybb->input['action'] = "editevent";
 		}
 		else
 		{
-			$eventhandler->update_event($event);
+			$eventhandler->update_event();
+			$plugins->run_hooks("calendar_do_editevent_end");
+			redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventupdated);
 		}
-
-		$plugins->run_hooks("calendar_do_editevent_end");
-
-		redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventupdated);
 	}
 }
 

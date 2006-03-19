@@ -18,11 +18,11 @@ class EventDataHandler extends DataHandler
 	/**
 	 * Verifies if an event name is valid or not and attempts to fix it
 	 *
-	 * @param string The name of the event.
 	 * @return boolean True if valid, false if invalid.
 	 */
-	function verify_name(&$name)
+	function verify_name()
 	{
+		$name = &$this->data['name'];
 		$name = trim($name);
 		if(!$name)
 		{
@@ -35,11 +35,11 @@ class EventDataHandler extends DataHandler
 	/**
 	 * Verifies if an event description is valid or not and attempts to fix it
 	 *
-	 * @param string The description of the event.
 	 * @return boolean True if valid, false if invalid.
 	 */
-	function verify_description(&$description)
+	function verify_description()
 	{
+		$description = &$this->data['description'];
 		$description = trim($description);
 		if(!$description)
 		{
@@ -52,25 +52,25 @@ class EventDataHandler extends DataHandler
 	/**
 	 * Verifies if an event date is valid or not and attempts to fix it
 	 *
-	 * @param integer The day of the month the event lies on.
-	 * @param integer The month of the year the event lies on.
-	 * @param integer The year that the event lies on.
 	 * @return boolean True if valid, false if invalid.
 	 */
-	function verify_date(&$day, &$month, &$year)
+	function verify_date()
 	{
-		if(!$day || !$month || !$year)
+		$event = &$this->data;
+
+		if(!$event['day'] || !$event['month'] || !$event['year'])
 		{
 			$this->set_error("invalid_date");
 			return false;
 		}
 		// Check if the day actually exists.
-		if($day > date("t", mktime(0, 0, 0, $month, 1, $year)))
+		if($event['day'] > date("t", mktime(0, 0, 0, $event['month'], 1, $event['year'])))
 		{
 			$this->set_error("incorrect_day");
 			return false;
 		}
-		return intval($day)."-".intval($month)."-".intval($year);
+		$event['date'] = intval($event['day'])."-".intval($event['month'])."-".intval($event['year']);
+		return true;
 	}
 
 	/**
@@ -79,15 +79,19 @@ class EventDataHandler extends DataHandler
 	 * @param string If the event is private (yes) or not (no).
 	 * @return boolean True or false depending on their permission.
 	 */
-	function verify_scope(&$private="no")
+	function verify_scope()
 	{
 		global $mybb;
+		
+		$event = &$this->data;
+
+		$user_permissions = user_permissions($event['uid']);
 
 		// If a private event
-		if($private == "yes")
+		if($event['private'] == "yes")
 		{
 			// Can the user add private events?
-			if($mybb->user['uid'] == 0 || $mybb->usergroup['canaddprivateevents'] == "no")
+			if($event['uid'] == 0 || $user_permissions['canaddprivateevents'] == "no")
 			{
 				$this->set_error("no_permission_private_event");
 				return false;
@@ -96,13 +100,13 @@ class EventDataHandler extends DataHandler
 		else
 		{
 			// Public event, got permission?
-			if($mybb->usergroup['canaddpublicevents'] == "no")
+			if($user_permissions['canaddpublicevents'] == "no")
 			{
 				$this->set_error("no_permission_public_event");
 				return false;
 			}
 			// Default value
-			$private = "no";
+			$event['private'] = 'no';
 		}
 		return true;
 	}
@@ -113,23 +117,19 @@ class EventDataHandler extends DataHandler
 	 *
 	 * @param array The event data array.
 	 */
-	function validate_event($event)
+	function validate_event()
 	{
 		global $plugins;
 
-		//$event = &$this->data;
+		$event = &$this->data;
 
-		// Every event needs a name.
-		$this->verify_name($event['subject']);
+		$this->verify_name();
 
-		// Check for event description.
-		$this->verify_description($event['description']);
+		$this->verify_description();
 
-		// Check valid date & return formatted date.
-		$event['date'] = $this->verify_date($event['day'], $event['month'], $event['year']);
+		$this->verify_date();
 
-		// Public event or private event?
-		$this->verify_scope($event['private']);
+		$this->verify_scope();
 
 		$plugins->run_hooks("datahandler_event_validate");
 
@@ -151,12 +151,9 @@ class EventDataHandler extends DataHandler
 	 * @param array The array of event data.
 	 * @return array Array of new event details, eid and private.
 	 */
-	function insert_event($event)
+	function insert_event()
 	{
 		global $db, $mybb, $plugins;
-
-		echo "EXECUTED, EID: ".$eid;
-		die();
 
 		// Yes, validating is required.
 		if(!$this->get_validated())
@@ -168,10 +165,12 @@ class EventDataHandler extends DataHandler
 			die("The event is not valid.");
 		}
 
+		$event = &$this->data;
+
 		// Prepare an array for insertion into the database.
 		$newevent = array(
-			"subject" => $db->escape_string($event['subject']),
-			"author" => $mybb->user['uid'],
+			"subject" => $db->escape_string($event['name']),
+			"author" => intval($event['uid']),
 			"date" => $event['date'],
 			"description" => $db->escape_string($event['description']),
 			"private" => $event['private']
@@ -184,7 +183,7 @@ class EventDataHandler extends DataHandler
 		// Return the event's eid and whether or not it is private.
 		return array(
 			"eid" => $eid,
-			"private" => $event['options']['private']
+			"private" => $event['private']
 		);
 	}
 
@@ -207,17 +206,31 @@ class EventDataHandler extends DataHandler
 			die("The event is not valid.");
 		}
 
+		$event = &$this->data;
+
 		// Prepare an array for insertion into the database.
 		$updateevent = array(
-			"eid" => $event['eid'],
-			"subject" => $db->escape_string($event['subject']),
+			"eid" => intval($event['eid']),
+			"subject" => $db->escape_string($event['name']),
 			"date" => $event['date'],
 			"description" => $db->escape_string($event['description']),
-			"private" => $event['options']['private']
+			"private" => $event['private']
 		);
-		$db->insert_query(TABLE_PREFIX."events", $updateevent);
+
+		if($event['uid'])
+		{
+			$updateevent['author'] = intval($event['uid']);
+		}
+
+		$db->insert_query(TABLE_PREFIX."events", $updateevent, "eid='".intval($event['eid'])."'");
 
 		$plugins->run_hooks("datahandler_event_update");
+
+		// Return the event's eid and whether or not it is private.
+		return array(
+			"eid" => $event['eid'],
+			"private" => $event['private']
+		);
 	}
 
 	/**
@@ -229,7 +242,7 @@ class EventDataHandler extends DataHandler
 	{
 		global $db;
 
-		$db->delete_query(TABLE_PREFIX."events", "eid=".$eid, 1);
+		$db->delete_query(TABLE_PREFIX."events", "eid=".intval($eid), 1);
 
 		$plugins->run_hooks("datahandler_event_delete");
 	}
