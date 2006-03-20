@@ -559,6 +559,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   stars smallint(4) NOT NULL default '0',
   starimage varchar(120) NOT NULL default '',
   image varchar(120) NOT NULL default '',
+  disporder smallint unsigned NOT NULL,
   isbannedgroup char(3) NOT NULL default '',
   canview char(3) NOT NULL default '',
   canviewprofiles char(3) NOT NULL default '',

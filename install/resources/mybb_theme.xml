@@ -2622,7 +2622,7 @@ var inlineId = {$fid};
 </tr>]]></template>
 		<template name="showteam_usergroup" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="3"><strong>{$usergroup['title']}</strong></td>
+<td class="thead" colspan="3"><strong>{$usergrouptitle}</strong></td>
 </tr>
 <tr>
 <td class="tcat"><span class="smalltext"><strong>{$lang->uname}</strong></span></td>
@@ -2673,9 +2673,10 @@ var inlineId = {$fid};
 <td class="tcat"><span class="smalltext"><strong>{$lang->mod_pm}</strong></span></td>
 </tr>
 {$modrows}
-</table>]]></template>
+</table>
+<br/>]]></template>
 		<template name="showteam_moderators_mod" version="100.07"><![CDATA[<tr>
-<td width="50%" class="trow1"><a href="member.php?action=profile&amp;uid={$uid}"><strong>{$username}</strong></a></td>
+<td width="50%" class="trow1"><a href="member.php?action=profile&amp;uid={$uid}"><strong>{$user['username']}</strong></a></td>
 <td width="30%" class="trow2"><span class="smalltext">{$forumslist}</span></td>
 <td width="10%" class="trow2">{$emailcode}</td>
 <td width="10%" class="trow1">{$pmcode}</td>
@@ -2921,6 +2922,7 @@ var inlineId = {$fid};
 <td width="10%" class="{$bgcolor}">{$emailcode}</td>
 <td width="10%" class="{$bgcolor}">{$pmcode}</td>
 </tr>]]></template>
+		<template name="showteam_moderators_forum" version="100.07"><![CDATA[<a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a><br/>]]></template>
 		<template name="moderation_inline_deleteposts" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->delete_posts}</title>

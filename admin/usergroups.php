@@ -48,6 +48,24 @@ switch($mybb->input['action'])
 checkadminpermissions("caneditugroups");
 logadmin();
 
+//Change the ordering of the usergroups
+if($mybb->input['action'] == "disporder")
+{
+	foreach($mybb->input['disporder'] as $gid=>$order)
+	{
+		$gid = intval($gid);
+		$order = intval($order);
+		if($gid != 0 && $order != 0)
+		{
+			$sql_array = array(
+				'disporder' => $order,
+			);
+			$db->update_query(TABLE_PREFIX.'usergroups', $sql_array, "gid = '{$gid}'");
+		}
+	}
+	$mybb->input['action'] = 'modify';
+}
+
 if($mybb->input['action'] == "do_add")
 {
 	if(empty($mybb->input['title']))
@@ -179,7 +197,7 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 		$db->insert_query(TABLE_PREFIX."groupleaders", $leaderarray);
 		$success_text= sprintf($lang->leader_added, $usergroup['title']);
 	}
-		
+
 	cpredirect("usergroups.php?action=groupleaders&gid=".$mybb->input['gid'], $success_text);
 }
 
@@ -529,7 +547,7 @@ if($mybb->input['action'] == "editgroupleader")
 	{
 		cperror($lang->invalid_leader);
 	}
-	
+
 	cpheader();
 	startform("usergroups.php", "", "do_editgroupleader");
 	makehiddencode("gid", $leader['gid']);
@@ -699,125 +717,174 @@ function usergroup_hop(gid)
 -->
 </script>
 <?php
-	startform("", "usergroups");
+	//startform('', 'usergroups');
+	startform('usergroups.php', 'usergroups');
+
 	$hopto[] = "<input type=\"button\" value=\"$lang->create_new_group\" onclick=\"hopto('usergroups.php?action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 	starttable();
-	tableheader($lang->default_groups, "", 4);
-	echo "<tr>\n";
-	echo "<td class=\"subheader\">$lang->title_list</td>\n";
-	echo "<td class=\"subheader\" align=\"center\">$lang->users</td>\n";
-	echo "<td class=\"subheader\" align=\"center\">$lang->controls</td>\n";
+	tableheader($lang->default_groups, '', 4);
+	echo "<tr class=\"subheader\">\n";
+	echo "<td width=\"55%\">{$lang->title_list}</td>\n";
+	echo "<td width=\"20%\" align=\"center\">{$lang->users}</td>\n";
+	echo "<td width=\"20%\" align=\"center\">{$lang->controls}</td>\n";
+	echo "<td width=\"5%\">&nbsp;</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups g WHERE g.type='1' ORDER BY g.title");
+
+	$sql_options = array(
+		'order_by' => 'disporder',
+		'order_dir' => 'ASC',
+	);
+	$query = $db->simple_select(TABLE_PREFIX.'usergroups', '*', "type='1'", $sql_options);
+
 	while($usergroup = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
-		startform("usergroups.php");
-		makehiddencode("gid", $usergroup['gid']);
-		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\">$usergroup[title]<br><small>$usergroup[description]</td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\">".$primaryusers[$usergroup['gid']];
+		makehiddencode('gid', $usergroup['gid']);
+		echo "<tr class=\"{$bgcolor}\">\n";
+		echo "<td>{$usergroup['title']}<br><small>{$usergroup['description']}</td>\n";
+		echo "<td align=\"center\">".$primaryusers[$usergroup['gid']];
 		if($secondaryusers[$usergroup['gid']])
 		{
-			echo " (".$secondaryusers[$usergroup['gid']].")";
+			echo ' ('.$secondaryusers[$usergroup['gid']].')';
 		}
-		echo "<td class=\"$bgcolor\" align=\"right\" nowrap=\"nowrap\">\n";
-		echo "<select name=\"usergroup_$usergroup[gid]\" onchange=\"usergroup_hop($usergroup[gid]);\">\n";
-		echo "<option value=\"edit\">$lang->select_edit</option>\n";
-		echo "<option value=\"listusers\">$lang->list_users</option>\n";
-		echo "<option value=\"listsecondaryusers\">$lang->list_secondary_users</option>\n";
-		echo "<option value=\"groupleaders\">$lang->group_leaders</option>\n";
-		echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"$lang->go\"></td>\n";
+		echo "<td align=\"right\" nowrap=\"nowrap\">\n";
+		echo "<select name=\"usergroup_{$usergroup['gid']}\" onchange=\"usergroup_hop({$usergroup['gid']});\">\n";
+		echo "<option value=\"edit\">{$lang->select_edit}</option>\n";
+		echo "<option value=\"listusers\">{$lang->list_users}</option>\n";
+		echo "<option value=\"listsecondaryusers\">{$lang->list_secondary_users}</option>\n";
+		echo "<option value=\"groupleaders\">{$lang->group_leaders}</option>\n";
+		echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\"></td>\n";
+		if($usergroup['showforumteam'] == 'yes')
+			{
+				echo "<td align=\"center\"><input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" /></td>\n";
+			}
+			else
+			{
+				echo "<td>&nbsp;</td>\n";
+			}
 		echo "</tr>\n";
 		$donedefault = 1;
 	}
 	endtable();
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE type='2'  ORDER BY title");
+	//Get custom, private usergroups
+	$sql_options = array(
+		'order_by' => 'disporder',
+		'order_dir' => 'ASC',
+	);
+	$query = $db->simple_select(TABLE_PREFIX.'usergroups', '*', "type='2'", $sql_options);
 	$count = $db->num_rows($query);
 	if($count > 0)
 	{
 		starttable();
 		tableheader($lang->custom_groups, "", 4);
-		echo "<tr>\n";
-		echo "<td class=\"subheader\">$lang->title</td>\n";
-		echo "<td class=\"subheader\" align=\"center\">$lang->users</td>\n";
-		echo "<td class=\"subheader\" align=\"center\">$lang->controls</td>\n";
+		echo "<tr class=\"subheader\">\n";
+		echo "<td width=\"55%\">{$lang->title}</td>\n";
+		echo "<td width=\"20%\" align=\"center\">{$lang->users}</td>\n";
+		echo "<td width=\"20%\" align=\"center\">{$lang->controls}</td>\n";
+		echo "<td width=\"5%\">&nbsp;</td>\n";
 		echo "</tr>\n";
+
 		while($usergroup = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
-			startform("usergroups.php");
-			makehiddencode("gid", $usergroup['gid']);
-			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\">$usergroup[title]</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".$primaryusers[$usergroup['gid']];
+			//startform('usergroups.php');
+			makehiddencode('gid', $usergroup['gid']);
+			echo "<tr class=\"{$bgcolor}\">\n";
+			echo "<td>{$usergroup['title']}</td>\n";
+			echo "<td align=\"center\">".$primaryusers[$usergroup['gid']];
 			if($secondaryusers[$usergroup['gid']])
 			{
 				echo " (".$secondaryusers[$usergroup['gid']].")";
 			}
 			echo "</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"right\" nowrap=\"nowrap\">\n";
-			echo "<select name=\"usergroup_$usergroup[gid]\" onchange=\"usergroup_hop($usergroup[gid]);\">\n";
-			echo "<option value=\"edit\">$lang->select_edit</option>\n";
-			echo "<option value=\"delete\">$lang->select_delete</option>\n";
-			echo "<option value=\"listusers\">$lang->list_users</option>\n";
-			echo "<option value=\"listsecondaryusers\">$lang->list_secondary_users</option>\n";
-			echo "<option value=\"groupleaders\">$lang->group_leaders</option>\n";
-			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"$lang->go\"></td>\n";
+			echo "<td align=\"center\" nowrap=\"nowrap\">\n";
+			echo "<select name=\"usergroup_{$usergroup['gid']}\" onchange=\"usergroup_hop({$usergroup['gid']});\">\n";
+			echo "<option value=\"edit\">{$lang->select_edit}</option>\n";
+			echo "<option value=\"delete\">{$lang->select_delete}</option>\n";
+			echo "<option value=\"listusers\">{$lang->list_users}</option>\n";
+			echo "<option value=\"listsecondaryusers\">{$lang->list_secondary_users}</option>\n";
+			echo "<option value=\"groupleaders\">{$lang->group_leaders}</option>\n";
+			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\"></td>\n";
+			if($usergroup['showforumteam'] == 'yes')
+			{
+				echo "<td align=\"center\"><input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" /></td>\n";
+			}
+			else
+			{
+				echo "<td>&nbsp;</td>\n";
+			}
 			echo "</tr>\n";
 			$donecustom = 1;
 		}
 		endtable();
 	}
 	unset($count);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE type='3' OR type='4' ORDER BY title");
+
+
+	//Get custom pubic/private user groups
+	$sql_options = array(
+		'order_by' => 'disporder',
+		'order_dir' => 'ASC',
+	);
+	$query = $db->simple_select(TABLE_PREFIX.'usergroups', '*', "type='3' OR type='4'", $sql_options);
 	$count = $db->num_rows($query);
 	if($count > 0)
 	{
 		starttable();
 		tableheader($lang->public_custom_groups, "", 5);
-		echo "<tr>\n";
-		echo "<td class=\"subheader\">$lang->title</td>\n";
-		echo "<td class=\"subheader\" align=\"center\">$lang->users</td>\n";
-		echo "<td class=\"subheader\" align=\"center\">$lang->join_requests</td>\n";
-		echo "<td class=\"subheader\" align=\"center\">$lang->controls</td>\n";
+		echo "<tr class=\"subheader\">\n";
+		echo "<td width=\"55%\">{$lang->title}</td>\n";
+		echo "<td width=\"10%\" align=\"center\">{$lang->users}</td>\n";
+		echo "<td width=\"10%\" align=\"center\">{$lang->join_requests}</td>\n";
+		echo "<td width=\"20%\" align=\"center\">{$lang->controls}</td>\n";
+		echo "<td width=\"5%\">&nbsp;</td>\n";
 		echo "</tr>\n";
 		while($usergroup = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
-			startform("usergroups.php");
-			makehiddencode("gid", $usergroup['gid']);
-			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\">$usergroup[title]</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".$primaryusers[$usergroup['gid']];
+			//startform('usergroups.php');
+			makehiddencode('gid', $usergroup['gid']);
+			echo "<tr class=\"{$bgcolor}\">\n";
+			echo "<td>{$usergroup['title']}</td>\n";
+			echo "<td align=\"center\">".$primaryusers[$usergroup['gid']];
 			if($secondaryusers[$usergroup['gid']])
 			{
-				echo " (".$secondaryusers[$usergroup['gid']].")";
+				echo ' ('.$secondaryusers[$usergroup['gid']].')';
 			}
-			$modrequests = "";
+			$modrequests = '';
 			if($joinrequests[$usergroup['gid']] > 0)
 			{
 				$usergroup['joinrequests'] = "<span class=\"highlight1\">".$joinrequests[$usergroup['gid']]."</span>";
-				$modrequests = "<option value=\"joinrequests\">$lang->moderate_join_requests</option>";
+				$modrequests = "<option value=\"joinrequests\">{$lang->moderate_join_requests}</option>\n";
 			}
 			echo "</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">$usergroup[joinrequests]</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"right\" nowrap=\"nowrap\">\n";
-			echo "<select name=\"usergroup_$usergroup[gid]\" onchange=\"usergroup_hop($usergroup[gid]);\">\n";
-			echo "<option value=\"edit\">$lang->select_edit</option>\n";
-			echo "<option value=\"delete\">$lang->select_delete</option>\n";
-			echo "<option value=\"listusers\">$lang->list_users</option>\n";
-			echo "<option value=\"listsecondaryusers\">$lang->list_secondary_users</option>\n";
-			echo "<option value=\"groupleaders\">$lang->group_leaders</option>\n";
-			echo "<option value=\"joinrequests\">$lang->moderate_join_requests</option>\n";
-			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop($usergroup[gid]);\" value=\"$lang->go\"></td>\n";
+			echo "<td align=\"center\">$usergroup[joinrequests]</td>\n";
+			echo "<td align=\"center\" nowrap=\"nowrap\">\n";
+			echo "<select name=\"usergroup_{$usergroup['gid']}\" onchange=\"usergroup_hop({$usergroup['gid']});\">\n";
+			echo "<option value=\"edit\">{$lang->select_edit}</option>\n";
+			echo "<option value=\"delete\">{$lang->select_delete}</option>\n";
+			echo "<option value=\"listusers\">{$lang->list_users}</option>\n";
+			echo "<option value=\"listsecondaryusers\">{$lang->list_secondary_users}</option>\n";
+			echo "<option value=\"groupleaders\">{$lang->group_leaders}</option>\n";
+			echo "<option value=\"joinrequests\">{$lang->moderate_join_requests}</option>\n";
+			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\"></td>\n";
+			if($usergroup['showforumteam'] == 'yes')
+			{
+				echo "<td align=\"center\"><input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" /></td>\n";
+			}
+			else
+			{
+				echo "<td>&nbsp;</td>\n";
+			}
 			echo "</tr>\n";
 		}
-		endform();
+		//endform();
 		endtable();
 	}
+	makehiddencode('action', 'disporder');
+	endform($lang->update_orders, $lang->reset);
 	cpfooter();
 }
 ?>
