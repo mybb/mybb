@@ -1536,7 +1536,7 @@ elseif($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	{
 		$mybb->input['avatarurl'] = preg_replace("#script:#i", "", $mybb->input['avatarurl']);
 		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
-		$ext = getextention($mybb->input['avatarurl']);
+		$ext = getextension($mybb->input['avatarurl']);
 		if(preg_match("#gif|jpg|jpeg|jpe|bmp|png#i", $ext) && $mybb->settings['maxavatardims'] != "")
 		{
 			list($width, $height) = @getimagesize($mybb->input['avatarurl']);
@@ -2032,7 +2032,7 @@ elseif($mybb->input['action'] == "attachments")
 			$attachment['subject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['subject']));
 			$attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
 			$size = getfriendlysize($attachment['filesize']);
-			$icon = getattachicon(getextention($attachment['filename']));
+			$icon = getattachicon(getextension($attachment['filename']));
 			$sizedownloads = sprintf($lang->attachment_size_downloads, $size, $attachment['downloads']);
 			$attachdate = mydate($mybb->settings['dateformat'], $attachment['dateline']);
 			$attachtime = mydate($mybb->settings['timeformat'], $attachment['dateline']);
