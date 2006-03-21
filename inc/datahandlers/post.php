@@ -124,11 +124,16 @@ class PostDataHandler extends DataHandler
 		}
 		return true;
 	}
-	
+
+	/**
+	* Verify that the user is not flooding the system.
+	*
+	* @return boolean True
+	*/
 	function verify_post_flooding()
 	{
 		global $mybb;
-		
+
 		$post = &$this->post;
 		if($mybb->settings['postfloodcheck'] == "on" && $post['uid'] != 0 $this->admin_override == false)
 		{
@@ -141,7 +146,7 @@ class PostDataHandler extends DataHandler
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Validate a post.
 	 *
@@ -150,18 +155,18 @@ class PostDataHandler extends DataHandler
 	function validate_post()
 	{
 		global $mybb, $db, $plugins;
-		
+
 		$post = &$this->data;
 		$time = time();
 
 		$this->verify_subject();
-		
-		$this->verify_message();
-		
-		$this->verify_post_flooding();
-		
 
-		
+		$this->verify_message();
+
+		$this->verify_post_flooding();
+
+
+
 
 		// Check if this post contains more images than the forum allows
 		if(!$mybb->input['savedraft'] && $mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes")

@@ -1133,17 +1133,6 @@ function getextension($file)
 }
 
 /**
- * Deprecated function that returns the extension of a file.
- *
- * @param string The filename.
- * @return string The extension of the file.
- */
-function getextention($file)
-{
-	return getextension($file);
-}
-
-/**
  * Generates a random string.
  *
  * @param int The length of the string to generate.
@@ -2039,7 +2028,7 @@ function themeselect($name, $selected="", $tid=0, $depth="", $usergroup_override
 			$is_allowed = false;
 			if($theme['allowedgroups'] != "all")
 			{
-				$allowed_groups = explode(",", $theme['allowedgroups']);	
+				$allowed_groups = explode(",", $theme['allowedgroups']);
 				// See if groups user is in is allowed
 				foreach($allowed_groups as $agid)
 				{

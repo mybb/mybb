@@ -4996,7 +4996,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="index_birthdays" version="100.07"><![CDATA[<tr><td class="tcat"><strong>{$lang->todays_birthdays}</td></tr>
+		<template name="index_birthdays" version="100.07"><![CDATA[<tr><td class="tcat"><strong>{$lang->todays_birthdays}</strong></td></tr>
 <tr>
 <td class="trow1"><span class="smalltext">{$bdays}</span></td>
 </tr>]]></template>
