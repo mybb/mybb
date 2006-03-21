@@ -30,28 +30,138 @@ if($postHandler->validate_post($post))
 class PostDataHandler extends DataHandler
 {
 	/**
+	 * Verifies a post subject.
+	 *
+	 * @param string The post subject.
+	 */
+	function verify_subject()
+	{
+		$subject = &$this->data['subject'];
+		// Check for correct subject content.
+		if($post['action'] == "edit" && $post['pid'])
+		{
+			$options = array(
+				"limit" => 1,
+				"limit_start" => 0,
+				"order_by" => "dateline",
+				"order_dir" => "asc"
+			);
+			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid, $options);
+			$firstcheck = $db->fetch_array($query);
+			if($firstcheck['pid'] == $post['pid'])
+			{
+				$firstpost = 1;
+			}
+			else
+			{
+				$firstpost = 0;
+			}
+
+			// If this is the first post there needs to be a subject, else make it the default one.
+			if(strlen(trim($subject)) == 0 && $firstpost)
+			{
+				$this->set_error("firstpost_no_subject");
+				return false;
+			}
+			elseif(strlen(trim($subject)) == 0)
+			{
+				$subject = "[no subject]";
+			}
+		}
+		else
+		{
+			if(strlen(trim($subject)) == 0)
+			{
+				$subject = "[no subject]";
+			}
+		}
+		return true;
+	}
+	/**
+	 * Verifies a post message.
+	 *
+	 * @param string The message content.
+	 */
+	function verify_message($message)
+	{
+		// Message of correct length?
+		if(trim($message) == "")
+		{
+			$this->set_error("no_message");
+			return false;
+		}
+		elseif(strlen($message) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($post['fid']) != "yes")
+		{
+			$this->set_error("message_too_long");
+			return false;
+		}
+		elseif(strlen($message) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && ismod($post['fid']) != "yes")
+		{
+			$this->set_error("message_too_short");
+			return false;
+		}
+	}
+
+	/**
+	 * Verifies the specified post options are correct.
+	 *
+	 * @return boolean True
+	 */
+	function get_options()
+	{
+		$options = &$this->data['options'];
+		if($options['signature'] != "yes")
+		{
+			$options['signature'] = "no";
+		}
+		if($options['emailnotify'] != "yes")
+		{
+			$options['emailnotify'] = "no";
+		}
+		if($options['disablesmilies'] != "yes")
+		{
+			$options['disablesmilies'] = "no";
+		}
+		return true;
+	}
+	
+	function verify_post_flooding()
+	{
+		global $mybb;
+		
+		$post = &$this->post;
+		if($mybb->settings['postfloodcheck'] == "on" && $post['uid'] != 0 $this->admin_override == false)
+		{
+			$user = get_user($post['uid']);
+			if(time()-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && ismod($post['fid']) != "yes")
+			{
+				$this->set_error("post_flooding");
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * Validate a post.
 	 *
 	 * @return boolean True when valid, false when invalid.
 	 */
-	function validate_post(&$post)
+	function validate_post()
 	{
 		global $mybb, $db, $plugins;
-
+		
+		$post = &$this->data;
 		$time = time();
 
-		// Check is the user posted sooner than allowed.
-		if($mybb->settings['postfloodcheck'] == "on")
-		{
-			if($mybb->user['uid'] != 0 && $time-$mybb->user['lastpost'] <= $mybb->settings['postfloodsecs'] && ismod($post['fid']) != "yes")
-			{
-				$this->set_error("post_flooding");
-			}
-		}
+		$this->verify_subject();
+		
+		$this->verify_message();
+		
+		$this->verify_post_flooding();
+		
 
-		// Verify all the post parts.
-		$this->verify_message($post['message']);
-		$this->verify_subject($post['subject']);
+		
 
 		// Check if this post contains more images than the forum allows
 		if(!$mybb->input['savedraft'] && $mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes")
@@ -109,102 +219,6 @@ class PostDataHandler extends DataHandler
 		}
 	}
 
-	/**
-	 * Verifies a post message.
-	 *
-	 * @param string The message content.
-	 */
-	function verify_message($message)
-	{
-		// Message of correct length?
-		if(trim($message) == "")
-		{
-			$this->set_error("no_message");
-		}
-		elseif(strlen($message) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($post['fid']) != "yes")
-		{
-			$this->set_error("message_too_long");
-		}
-		elseif(strlen($message) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && ismod($post['fid']) != "yes")
-		{
-			$this->set_error("message_too_short");
-		}
-	}
-
-	/**
-	 * Verifies a post subject.
-	 *
-	 * @param string The post subject.
-	 */
-	function verify_subject($subject)
-	{
-		// Check for correct subject content.
-		if($post['action'] == "edit" && $post['pid'])
-		{
-			$options = array(
-				"limit" => 1,
-				"limit_start" => 0,
-				"order_by" => "dateline",
-				"order_dir" => "asc"
-			);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid, $options);
-			$firstcheck = $db->fetch_array($query);
-			if($firstcheck['pid'] == $post['pid'])
-			{
-				$firstpost = 1;
-			}
-			else
-			{
-				$firstpost = 0;
-			}
-
-			// If this is the first post there needs to be a subject, else make it the default one.
-			if(strlen(trim($subject)) == 0 && $firstpost)
-			{
-				$this->set_error("no_subject");
-			}
-			elseif(strlen(trim($subject)) == 0)
-			{
-				$post['subject'] = "RE: " . $thread['subject'];
-			}
-		}
-		else
-		{
-			// If there is no subject, make it the default one.
-
-			//
-			// REVIEW: THIS WILL NOT WORK
-			//
-			if(strlen(trim($subject)) == 0)
-			{
-				$post['subject'] = "RE: " . $thread['subject'];
-			}
-		}
-	}
-
-	/**
-	 * Assigns post options to the post data array.
-	 *
-	 * @param array The post data array.
-	 * @return array The cleaned post data array.
-	 */
-	function get_options($post)
-	{
-		if($post['options']['signature'] != "yes")
-		{
-			$post['options']['signature'] = "no";
-		}
-		if($post['options']['emailnotify'] != "yes")
-		{
-			$post['options']['emailnotify'] = "no";
-		}
-		if($post['options']['disablesmilies'] != "yes")
-		{
-			$post['options']['disablesmilies'] = "no";
-		}
-
-		return $post;
-	}
 
 	/**
 	 * Insert a post into the database.
