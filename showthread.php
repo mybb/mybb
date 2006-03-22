@@ -107,13 +107,13 @@ if($mybb->input['action'] == "lastpost")
 if($mybb->input['action'] == "nextnewest")
 {
 	$options = array(
-		"limit_start" => 0,	
+		"limit_start" => 0,
 		"limit" => 1,
 		"order_by" => "lastpost"
 	);
 	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid=".$thread['fid']." AND lastpost > ".$thread['lastpost']." AND visible=1 AND closed NOT LIKE 'moved|%'");
 	$nextthread = $db->fetch_array($query);
-	
+
 	// Are there actually next newest posts?
 	if(!$nextthread['tid'])
 	{
@@ -126,7 +126,7 @@ if($mybb->input['action'] == "nextnewest")
 		"order_dir" => "desc"
 	);
 	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$nextthread['tid']);
-	
+
 	// Redirect to the proper page.
 	$pid = $db->result($query, 0);
 	header("Location:showthread.php?tid=$nextthread[tid]&pid=$pid#pid$pid");
@@ -142,7 +142,7 @@ if($mybb->input['action'] == "nextoldest")
 	);
 	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid=".$thread['fid']." AND lastpost < ".$thread['lastpost']." AND visible=1 AND closed NOT LIKE 'moved|%'");
 	$nextthread = $db->fetch_array($query);
-	
+
 	// Are there actually next oldest posts?
 	if(!$nextthread['tid'])
 	{
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "nextoldest")
 		"order_dir" => "desc"
 	);
 	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$nextthread['tid']);
-	
+
 	// Redirect to the proper page.
 	$pid = $db->result($query, 0);
 	header("Location:showthread.php?tid=$nextthread[tid]&pid=$pid#pid$pid");
@@ -170,7 +170,7 @@ if($mybb->input['action'] == "newpost")
 	{
 		$mybb->user['lastvisit'] = $threadread;
 	}
-	
+
 	// Next, find the proper pid to link to.
 	$options = array(
 		"limit_start" => 0,
@@ -209,13 +209,13 @@ if($mybb->input['action'] == "thread")
 		$poll['timeout'] = $poll['timeout']*60*60*24;
 		$expiretime = $poll['dateline'] + $poll['timeout'];
 		$now = time();
-		
+
 		// If the poll or the thread is closed or if the poll is expired, show the results.
 		if($poll['closed'] == "yes" || $thread['closed'] == "yes" || ($expiretime < $now && $poll['timeout'] > 0))
 		{
 			$showresults = 1;
 		}
-		
+
 		// If the user is not a guest, check if he already voted.
 		if($mybb->user['uid'] != 0)
 		{
@@ -237,7 +237,7 @@ if($mybb->input['action'] == "thread")
 		$votesarray = explode("||~|~||", $poll['votes']);
 		$poll['question'] = htmlspecialchars_uni($poll['question']);
 		$polloptions = '';
-		
+
 		// Loop through the poll options.
 		for($i=1; $i<=$poll['numoptions']; ++$i)
 		{
@@ -254,7 +254,7 @@ if($mybb->input['action'] == "thread")
 			$option = $parser->parse_message($optionsarray[$i-1], $parser_options);
 			$votes = $votesarray[$i-1];
 			$number = $i;
-			
+
 			// Mark the option the user voted for.
 			if($votedfor[$number])
 			{
@@ -266,7 +266,7 @@ if($mybb->input['action'] == "thread")
 				$optionbg = "trow1";
 				$votestar = "";
 			}
-			
+
 			// If the user already voted or if the results need to be shown, do so; else show voting screen.
 			if($alreadyvoted || $showresults)
 			{
@@ -293,7 +293,7 @@ if($mybb->input['action'] == "thread")
 				}
 			}
 		}
-		
+
 		// If there are any votes at all, all votes together will be 100%; if there are no votes, all votes together will be 0%.
 		if($poll['totvotes'])
 		{
@@ -303,7 +303,7 @@ if($mybb->input['action'] == "thread")
 		{
 			$totpercent = "0%";
 		}
-		
+
 		// Decide what poll status to show depending on the status of the poll and whether or not the user voted already.
 		if($alreadyvoted || $showresults)
 		{
@@ -351,18 +351,34 @@ if($mybb->input['action'] == "thread")
 		// For guests, store the information in a cookie.
 		mysetarraycookie("threadread", $tid, time());
 	}
-	
+
 	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
 	if($forum['open'] != "no")
 	{
-		eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
-		if($thread['closed'] != "yes" || ismod($fid) == "yes")
+		//If user can make a new thread in the forum, display the button
+		if($mybb->usergroup['canpostthreads'] == "yes")
 		{
-			eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
+			eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
 		}
 		else
 		{
+			$newthread = "";
+		}
+
+		//If the thread is closed but the user is a mod, they can reply
+		//Else if the thread is not closed but the user can't reply then no button
+		//Else show reply button
+		if($thread['closed'] == "yes" && ismod($fid) != "yes")
+		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
+		}
+		elseif($thread['closed'] != "yes" && $mybb->usergroup['canpostreplys'] != "yes")
+		{
+			$newreply = "";
+		}
+		else
+		{
+			eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
 		}
 	}
 
@@ -422,7 +438,7 @@ if($mybb->input['action'] == "thread")
 	// Increment the thread view.
 	$db->query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='$tid'");
 	++$thread['views'];
-	
+
 	// Work out the thread rating for this thread.
 	if($forum['allowtratings'] != "no" && $thread['numratings'] > 0)
 	{
@@ -481,7 +497,7 @@ if($mybb->input['action'] == "thread")
 		{
 			$mybb->input['pid'] = $showpost['pid'];
 		}
-		
+
 		// Is there actually a pid to display?
 		if(!$showpost['pid'])
 		{
@@ -629,7 +645,7 @@ if($mybb->input['action'] == "thread")
 		}
 		$plugins->run_hooks("showthread_linear");
 	}
-	
+
 	// Show the similar threads table if wanted.
 	if($mybb->settings['showsimilarthreads'] != "no")
 	{
@@ -661,7 +677,7 @@ if($mybb->input['action'] == "thread")
 			eval("\$similarthreads = \"".$templates->get("showthread_similarthreads")."\";");
 		}
 	}
-	
+
 	// If the user is a moderator, show the moderation tools.
 	if($ismod)
 	{

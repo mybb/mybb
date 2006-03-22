@@ -242,7 +242,7 @@ function makepostbit($post, $pmprevann=0)
 		}
 		eval("\$post['button_profile'] = \"".$templates->get("postbit_profile")."\";");
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
-		if($mybb->settings['enablepms'] != "no" && $post['receivepms'] != "no")
+		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes")
 		{
 			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
 		}
@@ -255,7 +255,7 @@ function makepostbit($post, $pmprevann=0)
 		{
 			$post['button_www'] = "";
 		}
-		if($post['hideemail'] != "yes")
+		if($post['hideemail'] != "yes" && $mybb->usergroup['cansendemail'] == "yes")
 		{
 			eval("\$post['button_email'] = \"".$templates->get("postbit_email")."\";");
 		}
@@ -352,7 +352,7 @@ function makepostbit($post, $pmprevann=0)
 		}
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
-		if($forum['open'] != "no" && ($thread['closed'] != "yes" || ismod($forum['fid']) == "yes"))
+		if($forum['open'] != "no" && ($thread['closed'] != "yes" || ismod($forum['fid']) == "yes") && $mybb->usergroup['canpostreplys'] == "yes")
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}

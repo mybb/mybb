@@ -11,21 +11,21 @@
 
 class MyLanguage
 {
-	
+
 	/**
 	 * The path to the languages folder.
 	 *
 	 * @var string
 	 */
 	var $path = "./inc/languages";
-	
+
 	/**
 	 * The language we are using.
 	 *
 	 * @var unknown_type
 	 */
 	var $language;
-	
+
 	/**
 	 * Information about the current language.
 	 *
@@ -131,7 +131,7 @@ class MyLanguage
 		$dir = @opendir($this->path);
 		while($lang = readdir($dir))
 		{
-			$ext = strtolower(getextention($lang));
+			$ext = strtolower(getextension($lang));
 			if($lang != "." && $lang != ".." && $ext == "php")
 			{
 				$lname = str_replace(".".$ext, "", $lang);

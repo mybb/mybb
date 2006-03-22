@@ -9,7 +9,7 @@
  * $Id$
  */
 
-$templatelist = "forumdisplay,forumdisplay_thread,breadcrumb_bit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_thread_lastpost,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby_moderator,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_orderarrow,forumdisplay_thread_rating,forumdisplay_announcement,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating,forumdisplay_subforums_modcolumn,forumbit_moderators,forumbit_subforums,forumbit_depth2_forum_lastpost"; 
+$templatelist = "forumdisplay,forumdisplay_thread,breadcrumb_bit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_thread_lastpost,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby_moderator,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_orderarrow,forumdisplay_thread_rating,forumdisplay_announcement,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating,forumdisplay_subforums_modcolumn,forumbit_moderators,forumbit_subforums,forumbit_depth2_forum_lastpost";
 $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more";
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
@@ -121,7 +121,7 @@ checkpwforum($fid, $foruminfo['password']);
 // Make forum jump...
 $forumjump = makeforumjump("", $fid, 1);
 
-if($foruminfo['type'] == "f" && $foruminfo['open'] != "no")
+if($foruminfo['type'] == "f" && $foruminfo['open'] != "no" && $fpermissions['canpostthreads'] == "yes")
 {
 	eval("\$newthread = \"".$templates->get("forumdisplay_newthread")."\";");
 }
@@ -542,7 +542,7 @@ if($threadcache)
 		}
 		$folder = '';
 		$prefix = '';
-		
+
 		$thread['author'] = $thread['uid'];
 		if(!$thread['username'])
 		{
@@ -571,14 +571,14 @@ if($threadcache)
 		{
 			eval("\$threads .= \"".$templates->get("forumdisplay_sticky_sep")."\";");
 			$shownormalsep = true;
-			$donestickysep = true;	
+			$donestickysep = true;
 		}
 		elseif($thread['sticky'] == 0 && $shownormalsep)
 		{
 			eval("\$threads  .= \"".$templates->get("forumdisplay_threads_sep")."\";");
 			$shownormalsep = false;
 		}
-		
+
 		// Determine the folder
 		$folder = '';
 		$folder_label = '';
@@ -709,7 +709,7 @@ if($threadcache)
 		{
 			$modbit = '';
 		}
-		
+
 		$moved = explode("|", $thread['closed']);
 
 		if($moved[0] == "moved") {
@@ -938,7 +938,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 						$forum['description'] = '';
 					}
 					$cname = "cat_".$forum['fid']."_c";
-					
+
 					/* Show collapsed or non-collapsed image */
 					if($collapsed[$cname] == "display: show;")
 					{
@@ -949,7 +949,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						$expcolimage = "collapse.gif";
 					}
-					
+
 					if($fcache[$forum['fid']] && $depth < $showdepth)
 					{
 						$newdepth = $depth + 1;
@@ -987,7 +987,7 @@ if($rand == 5 && $mybb->settings['threadreadcut'] > 0)
 	$cut = time()-($mybb->settings['threadreadcut']*60*60*24);
 	$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."threadsread WHERE dateline < '$cut'");
 }
-	
+
 $plugins->run_hooks("forumdisplay_end");
 
 eval("\$forums = \"".$templates->get("forumdisplay")."\";");
