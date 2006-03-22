@@ -1314,7 +1314,7 @@ function logmod($data, $action="")
 		"dateline" => $time,
 		"fid" => $data['fid'],
 		"tid" => $data['tid'],
-		"action" => $action,
+		"action" => $db->escape_string($action),
 		"ipaddress" => $session->ipaddress
 	);
 	$db->insert_query(TABLE_PREFIX."moderatorlog", $sql_array);

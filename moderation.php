@@ -824,7 +824,7 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_invalidforum);
 		}
-		$newsubject = addslashes($mybb->input['newsubject']);
+		$newsubject = $db->escape_string($mybb->input['newsubject']);
 		$query = array(
 			"fid" => $moveto,
 			"subject" => $newsubject,
@@ -1322,7 +1322,7 @@ switch($mybb->input['action'])
 				deletepost($post['pid']);
 			}
 		}
-		$message = addslashes($message);
+		$message = $db->escape_string($message);
 		$sqlarray = array(
 			"message" => $message,
 			);
@@ -1402,7 +1402,7 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_invalidforum);
 		}
-		$newsubject = addslashes($mybb->input['newsubject']);
+		$newsubject = $db->escape_string($mybb->input['newsubject']);
 		$db->query("INSERT INTO ".TABLE_PREFIX."threads (fid,subject,icon,uid,username,dateline,lastpost,lastposter,replies,visible) VALUES ('$moveto','$newsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$numyes','1')");
 		$newtid = $db->insert_id();
 		// move the selected posts over

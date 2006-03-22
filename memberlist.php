@@ -101,11 +101,11 @@ else
 
 if($mybb->input['usersearch'])
 {
-	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) WHERE u.username LIKE '%".addslashes($mybb->input['usersearch'])."%' ORDER BY u.".$mybb->input['by']." ".$mybb->input['order']." LIMIT $start, ".$mybb->settings[membersperpage]);
+	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) WHERE u.username LIKE '%".addslashes($mybb->input['usersearch'])."%' ORDER BY u.".$mybb->input['by']." ".$mybb->input['order']." LIMIT $start, ".$mybb->settings['membersperpage']);
 }
 else
 {
-	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) ORDER BY u.".$mybb->input['by']." ".$mybb->input['order']." LIMIT $start, ".$mybb->settings[membersperpage]);
+	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) ORDER BY u.".$mybb->input['by']." ".$mybb->input['order']." LIMIT $start, ".$mybb->settings['membersperpage']);
 }
 $member = '';
 while($users = $db->fetch_array($query))
