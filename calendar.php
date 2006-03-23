@@ -318,19 +318,19 @@ if($mybb->input['action'] == "do_addevent")
 			// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
 			// Used to determine any missing language variables from the datahandlers
 			//
-			if($lang->$error)
+			if($lang->$error['error_code'])
 			{
-				$event_errors[] = $lang->$error;
+				$event_errors[] = $lang->$error['error_code'];
 			}
 			else
 			{
-				$event_errors[] = "Missing language var: ".$error;
+				$event_errors[] = "Missing language var: ".$error['error_code'];
 			}
 			//
 			// END TESTING CODE
 			//
 			/*
-				$event_errors[] =$lang->$error;
+				$event_errors[] =$lang->$error['error_code'];
 			*/
 		}
 		$event_errors = inlineerror($event_errors);

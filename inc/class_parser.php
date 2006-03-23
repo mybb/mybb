@@ -564,7 +564,7 @@ class postParser
 		return $list;
 	}
 
-	function strip_mycode($message, $options)
+	function strip_mycode($message, $options=array())
 	{
 		if($options['allow_html'] != "yes")
 		{

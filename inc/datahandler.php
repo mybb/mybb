@@ -63,9 +63,12 @@ class DataHandler
 	 *
 	 * @param string The error name.
 	 */
-	function set_error($error)
+	function set_error($error, $data='')
 	{
-		$this->errors[] = $error;
+		$this->errors[] = array(
+			"error_code" => $error,
+			"data" => $data
+		);	
 	}
 
 	/**

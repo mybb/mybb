@@ -163,19 +163,19 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 			// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
 			// Used to determine any missing language variables from the datahandlers
 			//
-			if($lang->$error)
+			if($lang->$error['error_code'])
 			{
-				$pm_errors[] = $lang->$error;
+				$pm_errors[] = $lang->$error['error_code'];
 			}
 			else
 			{
-				$pm_errors[] = "Missing language var: ".$error;
+				$pm_errors[] = "Missing language var: ".$error['error_code'];
 			}
 			//
 			// END TESTING CODE
 			//
 			/*
-				$pm_errors[] =$lang->$error;
+				$pm_errors[] =$lang->$error['error_code'];
 			*/
 		}
 		$send_errors = inlineerror($pm_errors);

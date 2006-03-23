@@ -203,9 +203,9 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 
 	// Set up posthandler.
-	require_once "inc/datahandler.php";
 	require_once "inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler();
+	$posthandler->action = "post";
 
 	// Set the post data that came from the input to the $post array.
 	$post = array(
@@ -241,9 +241,14 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
 		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
 	);
+	
+	// Apply moderation options if we have them
+	$post['modoptions'] = $mybb->input['modoptions'];
 
+	$posthandler->set_data($post);
+	
 	// Now let the post handler do all the hard work.
-	if(!$posthandler->validate_post($post))
+	if(!$posthandler->validate_post())
 	{
 		$errors = $posthandler->get_errors();
 		foreach($errors as $error)
@@ -252,19 +257,19 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
 			// Used to determine any missing language variables from the datahandlers
 			//
-			if($lang->$error)
+			if($lang->$error['error_code'])
 			{
-				$post_errors[] = $lang->$error;
+				$post_errors[] = $lang->$error['error_code'];
 			}
 			else
 			{
-				$post_errors[] = "Missing language var: ".$error;
+				$post_errors[] = "Missing language var: ".$error['error_code'];
 			}
 			//
 			// END TESTING CODE
 			//
 			/*
-				$post_errors[] =$lang->$error;
+				$post_errors[] =$lang->$error['error_code'];
 			*/
 		}
 		$reply_errors = inlineerror($post_errors);
@@ -272,7 +277,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	else
 	{
-		$postinfo = $posthandler->insert_post($post);
+		$postinfo = $posthandler->insert_post();
 		$pid = $postinfo['pid'];
 		$visible = $postinfo['visible'];
 
