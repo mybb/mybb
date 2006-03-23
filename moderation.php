@@ -442,7 +442,7 @@ switch($mybb->input['action'])
 			error($lang->error_nomergeposts);
 		}
 
-		$moderation->merge_posts($mergepost, $tid)
+		$moderation->merge_posts($mergepost, $tid);
 
 		markreports($plist, "posts");
 		logmod($modlogdata, $lang->merged_selective_posts);
