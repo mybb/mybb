@@ -29,7 +29,7 @@ class PMDataHandler extends DataHandler
 	function verify_subject()
 	{
 		$subject = &$this->data['subject'];
-		
+
 		// Subject is over 85 characters, too long.
 		if(strlen($subject) > 85)
 		{
@@ -52,7 +52,7 @@ class PMDataHandler extends DataHandler
 	function verify_message()
 	{
 		$message = &$this->data['message'];
-		
+
 		// No message, return an error.
 		if(trim($message) == '')
 		{
@@ -124,7 +124,7 @@ class PMDataHandler extends DataHandler
 			$this->set_error("invalid_recipient");
 			return false;
 		}
-		
+
 		// Collect group permissions for the sender and recipient.
 		$recipient_permissions = user_permissions($touser['toid']);
 		$sender_permissions = user_permissions($pm['fromid']);
@@ -189,7 +189,7 @@ class PMDataHandler extends DataHandler
 			$this->set_error("recipient_reached_quota");
 			return false;
 		}
-		
+
 		// Everything looks good, assign some specifics about the recipient
 		$pm['recipient'] = array(
 			"uid" => $touser['uid'],
@@ -249,16 +249,15 @@ class PMDataHandler extends DataHandler
 
 		$pm = &$this->data;
 
+		// Verify all PM assets.
 		$this->verify_subject();
-
 		$this->verify_sender();
-
 		$this->verify_recipient();
-
 		$this->verify_message();
 
 		$plugins->run_hooks("datahandler_pm_validate");
 
+		// Choose the appropriate folder to save in.
 		if($pm['saveasdraft'])
 		{
 			$pm['folder'] = 3;
@@ -298,7 +297,7 @@ class PMDataHandler extends DataHandler
 		{
 			die("The PM is not valid.");
 		}
-		
+
 		// Assign data to common variable
 		$pm = &$this->data;
 
@@ -323,7 +322,7 @@ class PMDataHandler extends DataHandler
 				"receipt" => $pm['options']['readreceipt'],
 				"readtime" => 0
 			);
-			
+
 			if($pm['saveasdraft'])
 			{
 				$updateddraft['uid'] = $pm['sender']['uid'];
@@ -359,7 +358,7 @@ class PMDataHandler extends DataHandler
 			}
 			$plugins->run_hooks("datahandler_pm_insert");
 			$db->insert_query(TABLE_PREFIX."privatemessages", $newpm);
-			
+
 			// Update private message count (total, new and unread) for recipient
 			update_pm_count($pm['recipient']['uid']);
 		}
