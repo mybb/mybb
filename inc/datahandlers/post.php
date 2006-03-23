@@ -644,22 +644,22 @@ class PostDataHandler extends DataHandler
 		if($post['pid'])
 		{
 			$newthread = array(
-				"subject" => addslashes($thread['subject']),
+				"subject" => $db->escape_string($thread['subject']),
 				"icon" => intval($thread['icon']),
-				"username" => addslashes(htmlspecialchars_uni($thread['username'])),
+				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
 				"lastpost" => intval($thread['dateline']),
-				"lastposter" => addslashes(htmlspecialchars_uni($thread['username'])),
+				"lastposter" => $db->escape_string($thread['username']),
 				"visible" => $visible
 				);
 			$db->update_query(TABLE_PREFIX."threads", $newthread, "tid='$tid'");
 
 			$newpost = array(
-				"subject" => addslashes($thread['subject']),
+				"subject" => $db->escape_string($thread['subject']),
 				"icon" => intval($thread['icon']),
-				"username" => addslashes(htmlspecialchars_uni($thread['username'])),
+				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
-				"message" => addslashes($thread['message']),
+				"message" => $db->escape_string($thread['message']),
 				"ipaddress" => getip(),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
@@ -674,13 +674,13 @@ class PostDataHandler extends DataHandler
 		{
 			$newthread = array(
 				"fid" => $thread['fid'],
-				"subject" => addslashes($thread['subject']),
+				"subject" => $db->escape_string($thread['subject']),
 				"icon" => intval($thread['icon']),
 				"uid" => $thread['uid'],
-				"username" => addslashes(htmlspecialchars_uni($thread['username'])),
+				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
 				"lastpost" => intval($thread['dateline']),
-				"lastposter" => addslashes(htmlspecialchars_uni($thread['username'])),
+				"lastposter" => $db->escape_string($thread['username']),
 				"views" => 0,
 				"replies" => 0,
 				"visible" => $visible
@@ -694,12 +694,12 @@ class PostDataHandler extends DataHandler
 			$newpost = array(
 				"tid" => $tid,
 				"fid" => $thread['fid'],
-				"subject" => addslashes($thread['subject']),
+				"subject" => $db->escape_string($thread['subject']),
 				"icon" => intval($thread['icon']),
 				"uid" => $thread['uid'],
-				"username" => addslashes(htmlspecialchars_uni($thread['username'])),
+				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
-				"message" => addslashes($thread['message']),
+				"message" => $db->escape_string($thread['message']),
 				"ipaddress" => getip(),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],

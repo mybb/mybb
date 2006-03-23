@@ -297,9 +297,6 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		{
 			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".intval($mybb->input['numpolloptions']);
 			$lang->redirect_newthread .= $lang->redirect_newthread_poll;
-			$cache->updatestats();
-			updatethreadcount($tid);
-			updateforumcount($fid);
 		}
 		
 		// This thread is stuck in the moderation queue, send them back to the forum.
@@ -308,9 +305,6 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			// Moderated thread
 			$lang->redirect_newthread .= $lang->redirect_newthread_moderation;
 			$url = "forumdisplay.php?fid=$fid";
-			// Update the unapproved posts and threads count for the current thread and current forum
-			$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+1 WHERE tid='$tid'");
-			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads+1, unapprovedposts=unapprovedposts+1 WHERE fid='$fid'");
 		}
 
 		// This is just a normal thread - send them to it.
@@ -319,9 +313,6 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			// Visible thread
 			$lang->redirect_newthread .= $lang->redirect_newthread_thread;
 			$url = "showthread.php?tid=$tid";
-			$cache->updatestats();
-			updatethreadcount($tid);
-			updateforumcount($fid);
 		}
 
 		$plugins->run_hooks("newthread_do_newthread_end");
