@@ -216,10 +216,10 @@ class session
 					$mybb->settings['dateformat'] = "d-m-Y";
 					break;
 				case "6":
-					$mybb->settings['dateformat'] = "d.m.y";
+					$mybb->settings['dateformat'] = "d-m-y";
 					break;
 				case "7":
-					$mybb->settings['dateformat'] = "d.m.y";
+					$mybb->settings['dateformat'] = "d.m.Y";
 					break;
 				case "8":
 					$mybb->settings['dateformat'] = "d.m.y";
