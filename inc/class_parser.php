@@ -53,10 +53,10 @@ class postParser
 	function parse_message($message, $options=array())
 	{
 		global $plugins, $settings;
-		
+
 		// Always fix bad Javascript in the message.
 		$message = $this->fix_javascript($message);
-		
+
 		// If HTML is disallowed, clean the post of it.
 		if($options['allow_html'] != "yes")
 		{
@@ -209,6 +209,7 @@ class postParser
 
 		$custom_mycode = $cache->read("mycode");
 
+		// If there is custom MyCode, load it.
 		if(is_array($custom_mycode))
 		{
 			foreach($custom_mycode as $key => $mycode)
@@ -222,6 +223,7 @@ class postParser
 			$mycode = $standard_mycode;
 		}
 
+		// Assign the MyCode to the cache.
 		foreach($mycode as $code)
 		{
 			$this->mycode_cache['find'][] = $code['regex'];
@@ -238,6 +240,7 @@ class postParser
 	 */
 	function parse_mycode($message, $options=array())
 	{
+		// Cache the MyCode globally if needed.
 		if($this->mycode_cache == 0)
 		{
 			$this->cache_mycode();
@@ -249,17 +252,19 @@ class postParser
 		// Replace the rest
 		$message = preg_replace($this->mycode_cache['find'], $this->mycode_cache['replacement'], $message);
 
-		// special code requiring special attention
+		// Special code requiring special attention
 		while(preg_match("#\[list\](.*?)\[/list\]#esi", $message))
 		{
 			$message = preg_replace("#\[list\](.*?)\[/list\](\r\n?|\n?)#esi", "\$this->mycode_parse_list('$1')", $message);
 		}
 
+		// Replace lists.
 		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\](\r\n?|\n?)#esi", $message))
 		{
 			$message = preg_replace("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "\$this->mycode_parse_list('$2', '$1')", $message);
 		}
 
+		// Convert images when allowed.
 		if($options['allow_imgcode'] != "no")
 		{
 			$message = preg_replace("#\[img\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$1$2\" border=\"0\" alt=\"\" />", $message);
@@ -372,17 +377,17 @@ class postParser
 	{
 		$message = preg_replace("#(java)(script:)#i", "$1 $2", $message);
 		$js_array = array(
-			"#(a)(lert)#ie", 
-			"#(o)(nmouseover)#ie", 
+			"#(a)(lert)#ie",
+			"#(o)(nmouseover)#ie",
 			"#(o)(nmouseout)#ie",
 			"#(o)(nmousedown)#ie",
-			"#(o)(nmousemove)#ie", 
-			"#(o)(nmouseup)#ie",  
+			"#(o)(nmousemove)#ie",
+			"#(o)(nmouseup)#ie",
 			"#(o)(nclick)#ie",
-			"#(o)(ndblclick)#ie", 
-			"#(o)(nload)#ie", 
-			"#(o)(nsubmit)#ie", 
-			"#(o)(nblur)#ie", 
+			"#(o)(ndblclick)#ie",
+			"#(o)(nload)#ie",
+			"#(o)(nsubmit)#ie",
+			"#(o)(nblur)#ie",
 			"#(o)(nchange)#ie",
 			"#(o)(nfocus)#ie",
 			"#(o)(nselect)#ie",
@@ -393,11 +398,17 @@ class postParser
 		return $message;
 	}
 
+	/**
+	* Parses quote MyCode.
+	*
+	* @param string The message to be parsed
+	* @return string The parsed message.
+	*/
 	function mycode_parse_quotes($message)
 	{
 		global $lang;
 
-		// user sanity check
+		// Assign pattern and replace values.
 		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#si",
 						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
 
@@ -422,6 +433,12 @@ class postParser
 
 	}
 
+	/**
+	* Parses code MyCode.
+	*
+	* @param string The message to be parsed
+	* @return string The parsed message.
+	*/
 	function mycode_parse_code($code)
 	{
 		global $lang;
@@ -429,10 +446,17 @@ class postParser
 		return "<div class=\"code_header\">".$lang->code."</div><div class=\"code_body\"><code style=\"white-space: nowrap;\"><div dir=\"ltr\">".$code."</div></code></div>";
 	}
 
+	/**
+	* Parses PHP code MyCode.
+	*
+	* @param string The message to be parsed
+	* @return string The parsed message.
+	*/
 	function mycode_parse_php($str)
 	{
 		global $lang;
 
+		// Clean the string before parsing.
 		$str = trim($str);
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
@@ -440,12 +464,15 @@ class postParser
 		$str = str_replace("\n", '', $str);
 		$original = $str;
 
+		// See if open and close tags are provided.
 		$added_open_close = false;
 		if(!preg_match("#^\s*<\?#si", $str))
 		{
 			$added_open_close = true;
 			$str = "<?php\n".$str."\n?>";
 		}
+
+		// If the PHP version < 4.2, catch highlight_string() output.
 		if(version_compare(PHP_VERSION, "4.2.0", "<") === 1)
 		{
 			ob_start();
@@ -475,6 +502,7 @@ class postParser
 			$code = str_replace($find, $replace, $code);
 		}
 
+		// Do the actual replacing.
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
@@ -488,10 +516,18 @@ class postParser
 		$code = str_replace("<code>", "<code style=\"white-space: nowrap;\"><div dir=\"ltr\">", $code);
 		$code = str_replace("</code>", "</div></code>", $code);
 		$code = preg_replace("#\s*$#", "", $code);
+
 		// Send back the code all nice and pretty
 		return "<div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div>";
 	}
 
+	/**
+	* Parses URL MyCode.
+	*
+	* @param string The URL to link to.
+	* @param string The name of the link.
+	* @return string The built-up link.
+	*/
 	function mycode_parse_url($url, $name="")
 	{
 		$fullurl = $url;
@@ -525,6 +561,13 @@ class postParser
 		return $link;
 	}
 
+	/**
+	* Parses email MyCode.
+	*
+	* @param string The email address to link to.
+	* @param string The name for the link.
+	* @return string The built-up email link.
+	*/
 	function mycode_parse_email($email, $name="")
 	{
 		if(!$name)
@@ -537,6 +580,12 @@ class postParser
 		}
 	}
 
+	/**
+	* Parses URLs automatically.
+	*
+	* @param string The message to be parsed
+	* @return string The parsed message.
+	*/
 	function mycode_auto_url($message)
 	{
 		$message = " ".$message;
@@ -546,6 +595,12 @@ class postParser
 		return $message;
 	}
 
+	/**
+	* Parses list MyCode.
+	*
+	* @param string The message to be parsed
+	* @return string The parsed message.
+	*/
 	function mycode_parse_list($message, $type="")
 	{
 		$message = str_replace('\"', '"', $message);
@@ -564,6 +619,12 @@ class postParser
 		return $list;
 	}
 
+	/**
+	* Strips MyCode.
+	*
+	* @param string The message to be parsed
+	* @return string The parsed message.
+	*/
 	function strip_mycode($message, $options=array())
 	{
 		if($options['allow_html'] != "yes")

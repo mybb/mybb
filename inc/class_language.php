@@ -22,7 +22,7 @@ class MyLanguage
 	/**
 	 * The language we are using.
 	 *
-	 * @var unknown_type
+	 * @var string
 	 */
 	var $language;
 
@@ -36,7 +36,7 @@ class MyLanguage
 	/**
 	 * Set the path for the language folder.
 	 *
-	 * @param unknown_type $path
+	 * @param string The path to the language folder.
 	 */
 	function setPath($path)
 	{
@@ -69,18 +69,23 @@ class MyLanguage
 	 */
 	function setLanguage($language="english", $area="user")
 	{
+		// Check if the language exists.
 		if(!$this->languageExists($language))
 		{
 			die("Language $language ($this->path/$language) is not installed");
 		}
+
+		// Default language is English.
 		if($language == "")
 		{
 			$language = "english";
 		}
+
 		$this->language = $language;
 		require $this->path."/".$language.".php";
 		$this->settings = $langinfo;
 
+		// Load the admin language files as well, if needed.
 		if($area == "admin")
 		{
 			if(!is_dir($this->path."/".$language."/admin"))
@@ -98,6 +103,7 @@ class MyLanguage
 	 */
 	function load($section)
 	{
+		// Assign language variables.
 		$lfile = $this->path."/".$this->language."/".$section.".lang.php";
 		if(file_exists($lfile))
 		{

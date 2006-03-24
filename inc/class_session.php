@@ -38,23 +38,18 @@ class session
 	function init()
 	{
 		global $ipaddress, $db, $mybb, $noonline;
-		//
-		// Get our visitors IP
-		//
+
+		// Get our visitor's IP.
 		$this->ipaddress = $ipaddress = getip();
 
-		//
-		// User-agent
-		//
+		// Find out the user agent.
 		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
 		if(strlen($this->useragent) > 100)
 		{
 			$this->useragent = substr($this->useragent, 0, 100);
 		}
 
-		//
-		// Attempt to find a session id in the cookies
-		//
+		// Attempt to find a session id in the cookies.
 		if(isset($_COOKIE['sid']))
 		{
 			$this->sid = addslashes($_COOKIE['sid']);
@@ -64,10 +59,8 @@ class session
 			$this->sid = 0;
 		}
 
-		//
-		// Attempt to load the session from the database
-		//
-		$query = $db->query("SELECT sid,uid FROM ".TABLE_PREFIX."sessions WHERE sid='".$this->sid."' AND ip='".$this->ipaddress."' LIMIT 1");
+		// Attempt to load the session from the database.
+		$query = $db->simple_select(TABLE_PREFIX."sessions", "sid, uid", "sid='".$this->sid."' AND ip='".$this->ipaddress."'", 1);
 		$session = $db->fetch_array($query);
 		if($session['sid'])
 		{
@@ -84,63 +77,57 @@ class session
 			$this->failedlogin = 0;
 		}
 
-		//
-		// If we have a valid session id and user id, load that users session
-		//
+		// If we have a valid session id and user id, load that users session.
 		$logon = explode("_", $_COOKIE['mybbuser'], 2);
 		if($_COOKIE['mybbuser'])
 		{
 			$this->load_user($logon[0], $logon[1]);
 		}
 
-		//
 		// If no user still, then we have a guest.
-		//
 		if(!isset($mybb->user['uid']))
 		{
-			//
-			// Detect if this guest is a search engine spider
-			//
+			// Detect if this guest is a search engine spider.
 			$spiders = strtolower(implode("|", array_keys($this->bots)));
 			if(preg_match("#(".$spiders.")#i", $this->useragent, $match))
 			{
 				$this->load_spider(strtolower($match[0]));
 			}
 
-			//
-			// Just a plain old guest
-			//
+			// Just a plain old guest.
 			else
 			{
 				$this->load_guest();
 			}
 		}
 
-		//
 		// As a token of our appreciation for getting this far, give the user a cookie
-		//
 		mysetcookie("sid", $this->sid, -1);
 	}
 
+	/**
+	* Load a user via the user credentials.
+	*
+	* @param int The user id.
+	* @param string The user's password.
+	*/
 	function load_user($uid, $password="")
 	{
 		global $_COOKIE, $mybbuser, $mybb, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang, $mybbgroups, $loadpmpopup, $session;
 
 		$query = $db->query("SELECT u.*, f.*, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) WHERE u.uid='$uid'");
 		$mybb->user = $db->fetch_array($query);
-		//
+
 		// Check the password if we're not using a session
-		//
-		//if($password != $mybb->user['loginkey'] && !$this->uid)
 		if($password != $mybb->user['loginkey'])
 		{
 			unset($mybb->user);
 			$this->uid = 0;
 			return false;
 		}
-
 		$this->uid = $mybb->user['uid'];
-		// Sort out the private message count for this user
+
+		// Sort out the private message count for this user.
 		if(($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1 || $mybb->user['newpms'] == -1) && $mybb->settings['enablepms'] != "no") // Forced recount
 		{
 			$update = 0;
@@ -159,9 +146,7 @@ class session
 		$mybb->user['pms_new'] = $mybb->user['newpms'];
 		$mybb->user['pms_unread'] = $mybb->user['unreadpms'];
 
-		//
-		// Check if this user has a new private message
-		//
+		// Check if this user has a new private message.
 		if($mybb->user['pmpopup'] == "new" && $mybb->settings['enablepms'] != "no")
 		{
 			$popupadd = ", pmpopup='yes'";
@@ -173,9 +158,7 @@ class session
 			$loadpmpopup = 0;
 		}
 
-		//
-		// If the last visit was over 900 seconds (session time out) ago then update lastvisit
-		//
+		// If the last visit was over 900 seconds (session time out) ago then update lastvisit.
 		$time = time();
 		if($time - $mybb->user['lastactive'] > 900)
 		{
@@ -189,15 +172,14 @@ class session
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent $popupadd WHERE uid='".$mybb->user['uid']."'");
 		}
 
-		//
-		// Language and forum preferences
-		//
+		// Sort out the language and forum preferences.
 		if($mybb->user['language'] && $lang->languageExists($user['language']))
 		{
 			$mybb->settings['bblanguage'] = $user['language'];
 		}
 		if($mybb->user['dateformat'] != "0" || $mybb->user['dateformat'] != "")
 		{
+			// Choose date format.
 			switch($mybb->user['dateformat'])
 			{
 				case "1":
@@ -240,6 +222,8 @@ class session
 					break;
 			}
 		}
+
+		// Choose time format.
 		if($mybb->user['timeformat'] != "0" || $mybb->user['timeformat'] != "")
 		{
 			switch($mybb->user['timeformat']) {
@@ -255,6 +239,7 @@ class session
 			}
 		}
 
+		// We might need to think about Daylight Savings Time.
 		if($mybb->user['dst'] == "yes")
 		{
 			$mybb->user['timezone']++;
@@ -264,18 +249,19 @@ class session
 			}
 		}
 
+		// Find out the threads per page preference.
 		if($mybb->user['tpp'])
 		{
 			$mybb->settings['threadsperpage'] = $mybb->user['tpp'];
 		}
+
+		// Find out the posts per page preference.
 		if($mybb->user['ppp'])
 		{
 			$mybb->settings['postsperpage'] = $mybb->user['ppp'];
 		}
 
-		//
-		// Check if this user is currently banned and if we have to lift it
-		//
+		// Check if this user is currently banned and if we have to lift it.
 		if($mybb->user['bandate'] && $mybb->user['banlifted'])  // hmmm...bad user... how did you get banned =/
 		{
 			if($mybb->user['banlifted'] < $time) // must have been good.. bans up :D
@@ -288,9 +274,7 @@ class session
 			}
 		}
 
-		//
-		// Gather a full permission set for this user and the groups they are in
-		//
+		// Gather a full permission set for this user and the groups they are in.
 		$mybbgroups = $mybb->user['usergroup'].",".$mybb->user['additionalgroups'];
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		if(!$mybb->user['displaygroup'])
@@ -305,9 +289,7 @@ class session
 			$mybb->user['usertitle'] = $mybb->usergroup['usertitle'];
 		}
 
-		//
-		// Update or create the session
-		//
+		// Update or create the session.
 		if(!defined("NO_ONLINE"))
 		{
 			if($this->sid > 0)
@@ -319,18 +301,22 @@ class session
 				$this->create_session($mybb->user['uid']);
 			}
 		}
-		// Legacy code
+
+		// Deprecated...
 		$mybbuser = $mybb->user;
 		$mybbgroup = $mybb->usergroup;
 		return true;
 	}
 
+	/**
+	* Load a guest user.
+	*
+	*/
 	function load_guest()
 	{
 		global $_COOKIE, $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $lang;
-		//
+
 		// Set up some defaults
-		//
 		$time = time();
 		$mybb->user['usergroup'] = 1;
 		$mybb->user['username'] = "";
@@ -339,9 +325,7 @@ class session
 		$mybbgroups = 1;
 		$mybb->user['displaygroup'] = 1;
 
-		//
 		// Has this user visited before? Lastvisit need updating?
-		//
 		if(isset($_COOKIE['mybb']['lastvisit']))
 		{
 			if(!isset($_COOKIE['mybb']['lastactive']))
@@ -360,18 +344,14 @@ class session
 			}
 		}
 
-		//
-		// No last visit cookie, create one
-		//
+		// No last visit cookie, create one.
 		else
 		{
 			mysetcookie("mybb[lastvisit]", $time);
 			$mybb->user['lastvisit'] = $time;
 		}
 
-		//
-		// Update last active cookie
-		//
+		// Update last active cookie.
 		mysetcookie("mybb[lastactive]", $time);
 
 		//
@@ -381,9 +361,7 @@ class session
 		$mydisplaygroup = usergroup_displaygroup(1);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
-		//
-		// Update the online data
-		//
+		// Update the online data.
 		if(!defined("NO_ONLINE"))
 		{
 			if($this->sid > 0)
@@ -395,17 +373,22 @@ class session
 				$this->create_session();
 			}
 		}
-		// Legacy code
+
+		// Deprecated...
 		$mybbuser = $mybb->user;
 		$mybbgroup = $mybb->usergroup;
 	}
 
+	/**
+	* Load a search engine spider.
+	*
+	* @param string The spider name.
+	*/
 	function load_spider($spider)
 	{
 		global $_COOKIE, $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $bots, $lang, $botgroup;
-		//
+
 		// Set up some defaults
-		//
 		$time = time();
 		$this->is_spider = true;
 		$spidername = $bots[$spider];
@@ -416,32 +399,37 @@ class session
 		$mybbgroups = $this->botgroup;
 		$mybb->user['displaygroup'] = $botgroup;
 
-		//
-		// Gather a full permission set for this spider
-		//
+		// Gather a full permission set for this spider.
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
-//		die(print_r($mybb->usergroup));
 		$mydisplaygroup = usergroup_displaygroup(1);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
 		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE sid='bot=".$spider."'");
+		$db->delete_query(TABLE_PREFIX."sessions", "sid='bot".$spider."'", 1);
 
-		//
-		// Update the online data
-		//
+		// Update the online data.
 		if(!defined("NO_ONLINE"))
 		{
 			$this->sid = "bot=".$spider;
 			$this->create_session();
 		}
-		// Legacy code
+
+		// Deprecated...
 		$mybbuser = $mybb->user;
 		$mybbgroup = $mybb->usergroup;
 	}
 
+	/**
+	* Update a user session.
+	*
+	* @param int The session id.
+	* @param int The user id.
+	*/
 	function update_session($sid, $uid="")
 	{
 		global $db;
+
+		// Find out what the special locations are.
 		$speciallocs = $this->get_special_locations();
 		if($uid)
 		{
@@ -461,20 +449,30 @@ class session
 		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
 	}
 
+	/**
+	* Create a new session.
+	*
+	* @param int The user id to bind the session to.
+	*/
 	function create_session($uid=0)
 	{
 		global $db;
 		$speciallocs = $this->get_special_locations();
+
+		// If there is a proper uid, delete by uid.
 		if($uid > 0)
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$uid."'");
+			$db->delete_query(TABLE_PREFIX."sessions", "uid=".$uid);
 			$onlinedata['uid'] = $uid;
 		}
+		// Else delete by ip.
 		else
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE ip='".$this->ipaddress."'");
+			$db->delete_query(TABLE_PREFIX."sessions", "ip='".$this->ipaddress."'");
 			$onlinedata['uid'] = 0;
 		}
+
+		// If the user is a search enginge spider, ...
 		if($this->is_spider == true)
 		{
 			//$onlinedata['sid'] = "bot=".$this->useragent;
@@ -495,6 +493,11 @@ class session
 		$this->uid = $onlinedata['uid'];
 	}
 
+	/**
+	* Find out the special locations.
+	*
+	* @return array Special locations array.
+	*/
 	function get_special_locations()
 	{
 		global $mybb;

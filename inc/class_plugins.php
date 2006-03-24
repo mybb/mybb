@@ -11,7 +11,7 @@
 
 class pluginSystem
 {
-	
+
 	/**
 	 * The hooks to which plugins can be attached.
 	 *
@@ -101,6 +101,14 @@ class pluginSystem
 		return $arguments;
 	}
 
+	/**
+	* Remove a specific hook.
+	*
+	* @param string The name of the hook.
+	* @param string The function of the hook.
+	* @param string The filename of the plugin.
+	* @param int The priority of the hook.
+	*/
 	function remove_hook($hook, $function, $file="", $priority=10)
 	{
 		//@unset($this->hooks[$hook][$priority][$function]);

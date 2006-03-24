@@ -17,14 +17,14 @@ class templates
 	 * @var int
 	 */
 	var $total = 0;
-	
+
 	/**
 	 * The template cache.
 	 *
 	 * @var array
 	 */
 	var $cache = array();
-	
+
 	/**
 	 * The current template list.
 	 *
@@ -74,7 +74,14 @@ class templates
 		global $db, $theme, $PHP_SELF, $mybb;
 		if(!isset($this->cache[$title]))
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$title' AND sid IN ('-2','-1','".$theme['templateset']."') ORDER BY sid DESC LIMIT 0, 1");
+			$query = $db->query("
+				SELECT template
+				FROM ".TABLE_PREFIX."templates
+				WHERE title='$title'
+				AND sid IN ('-2','-1','".$theme['templateset']."')
+				ORDER BY sid DESC
+				LIMIT 0, 1
+			");
 			$gettemplate = $db->fetch_array($query);
 			$this->cache[$title] = $gettemplate['template'];
 		}
