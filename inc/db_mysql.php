@@ -510,7 +510,7 @@ class databaseEngine {
 	 * @param string An optional limit clause for the query.
 	 * @return resource The query data.
 	 */
-	function delete_query($table, $where="", $limit)
+	function delete_query($table, $where="", $limit="")
 	{
 		$query = "";
 		if(!empty($where))
