@@ -1,0 +1,254 @@
+var autoComplete = Class.create();
+
+autoComplete.prototype = {
+	
+	initialize: function(textbox, url, options)
+	{
+		if(!$(textbox))
+		{
+			return false;
+		}
+		
+		this.cache = new Array();
+		
+		this.lastValue = '';
+		
+		this.textbox = $(textbox);
+		this.textbox.autocomplete = this;
+		this.textbox.onkeydown = this.onKeyDown.bindAsEventListener(this);
+		
+		this.url = url;
+		
+		this.currentIndex = -1;
+		this.valueSpan = options.valueSpan;
+		this.urlParam = options.urlParam;
+		if(options.minChars)
+		{
+			this.minChars = options.minChars;
+		}
+		else
+		{
+			this.minChars = 3;
+		}
+		this.popup = document.createElement("div");
+		this.popup.id = textbox+"_popup";
+		this.popup.style.position = "absolute";
+		this.popup.className = "autocomplete";
+		this.popup.style.display = "none";
+		document.body.appendChild(this.popup);
+		
+		this.timeout = false;
+		
+		Event.observe(document, "unload", this.clearCache.bindAsEventListener(this));
+	},
+	
+	onKeyDown: function(e)
+	{
+		if(this.timeout)
+		{
+			clearTimeout(this.timeout);
+		}		
+		switch(e.keyCode)
+		{
+			case Event.KEY_LEFT:
+			case Event.KEY_RIGHT:
+				break;
+			case Event.KEY_UP:
+				if(this.currentIndex > 0)
+				{
+					this.highlightItem(this.currentIndex-1);
+				}
+				if(e.returnValue)
+				{
+					event.returnValue = false;
+				}
+				else
+				{
+					e.preventDefault();
+				}
+				break;
+			case Event.KEY_DOWN:
+				if(this.currentIndex+1 < this.popup.childNodes.length)
+				{
+					this.highlightItem(this.currentIndex+1);
+				}
+				if(e.returnValue)
+				{
+					event.returnValue = false;
+				}
+				else
+				{
+					e.preventDefault();
+				}
+				break;
+			case Event.KEY_RETURN:
+			case Event.KEY_TAB:
+				if(this.popup.display != "none")
+				{
+					this.updateValue(this.popup.childNodes[this.currentIndex]);
+					this.hidePopup();
+				}
+				break;
+			case Event.KEY_ESC:
+				this.hidePopup();
+				break;
+			default:
+				if(this.lastValue != this.textbox.value)
+				{
+					setTimeout("$('"+this.textbox.id+"').autocomplete.doRequest();", 300);
+					this.lastValue = this.textbox.value;
+				}
+				break;
+		}
+	},
+	
+	buildURL: function()
+	{
+		if(!this.urlParam)
+		{
+			this.urlParam = "query";
+		}
+		var separator = "?";
+		if(this.url.indexOf("?") >= 0)
+		{
+			separator = "&";
+		}
+		return this.url+separator+this.urlParam+"="+escape(this.textbox.value);		
+	},
+	
+	doRequest: function()
+	{
+		if(this.textbox.value.length >= this.minChars)
+		{
+			if(this.cache[this.textbox.value])
+			{
+				this.popup.innerHTML = this.cache[this.textbox.value];
+				this.onComplete();
+			}
+			new ajax(this.buildURL(), {method: 'get', onComplete: this.onComplete.bindAsEventListener(this)});
+		}
+	},
+	
+	onComplete: function(request)
+	{
+		// Cache results
+		if(request)
+		{
+			this.popup.innerHTML = request.responseText;
+			this.cache[this.textbox.value] = this.popup.innerHTML;
+		}
+		var maxHeight = 100;
+		if(MyBB.browser == "mozilla")
+		{
+			this.popup.style.maxHeight = maxHeight+"px";
+			this.popup.style.overflow = "auto";;
+		}
+		else
+		{
+			this.popup.style.height = maxHeight+"px";
+			this.popup.style.overflowY = "auto";
+		}
+		this.popup.style.width = this.textbox.offsetWidth-2+"px";
+		
+		element = this.textbox;
+		offsetTop = offsetLeft = 0;
+		do
+		{
+			offsetTop += element.offsetTop || 0;
+			offsetLeft += element.offsetLeft || 0;
+			element = element.offsetParent;
+		} while(element);
+		
+		this.popup.style.marginTop = "-1px";
+		this.popup.style.left = offsetLeft+"px";
+		this.popup.style.top = offsetTop+this.textbox.offsetHeight+"px";
+		
+		this.popup.scrollTop = 0;		
+		this.currentIndex = -1;
+		for(var i=0;i<this.popup.childNodes.length;i++)
+		{
+			if (this.popup.childNodes[i].nodeType == 3 && !/\S/.test(this.popup.childNodes[i].nodeValue))	
+			{
+				this.popup.removeChild(this.popup.childNodes[i]);
+			}		
+		}
+		for(var i=0;i<this.popup.childNodes.length;i++)
+		{
+			var item = this.popup.childNodes[i];
+			item.index = i;
+			item.style.padding = "3px";
+			item.style.height = "1.2em";
+			Event.observe(item, "mouseover", this.itemOver.bindAsEventListener(this));
+			Event.observe(item, "click", this.itemClick.bindAsEventListener(this));
+		}
+		Event.observe(document, "click", this.hidePopup.bindAsEventListener(this));
+		this.popup.style.display = "";
+	},
+	
+	hidePopup: function()
+	{
+		this.popup.style.display = "none";
+		Event.stopObserving(document, "click", this.hidePopup.bindAsEventListener(this));
+	},
+	
+	updateValue: function(selectedItem)
+	{
+		if(this.valueSpan && selectedItem.innerHTML)
+		{
+			var items = selectedItem.getElementsByTagName("SPAN");
+			if(items)
+			{
+				for(var i=0;i<items.length;i++)
+				{
+					if(items[i].className == this.valueSpan)
+					{
+						textBoxValue = items[i].innerHTML;
+						break;
+					}
+				}
+			}
+		}
+		
+		else if(!this.valueSpan && selectedItem.innerHTML)
+		{
+			textBoxValue = selectedItem.innerHTML;
+		}
+		
+		else
+		{
+			textBoxValue = selectedItem;
+		}
+		this.textbox.value = textBoxValue;
+	},
+	
+	itemOver: function(event)
+	{
+		var element = Event.findElement(event, 'DIV');
+		selectedItem = element.index;
+		this.highlightItem(selectedItem);
+	},
+	
+	itemClick: function(event)
+	{
+		var element = Event.findElement(event, 'DIV');
+		selectedItem = element.index;
+		this.updateValue(this.popup.childNodes[selectedItem]);
+		this.hidePopup();
+		this.textbox.focus();
+	},
+	
+	highlightItem: function(selectedItem)
+	{
+		if(this.currentIndex != -1)
+		{
+			this.popup.childNodes[this.currentIndex].className = "";
+		}
+		this.currentIndex = selectedItem;
+		this.popup.childNodes[this.currentIndex].className = "autocomplete_selected";
+	},
+	
+	clearCache: function()
+	{
+		this.cache = '';
+	}
+};
