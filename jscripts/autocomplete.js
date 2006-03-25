@@ -10,13 +10,14 @@ autoComplete.prototype = {
 		}
 		
 		this.cache = new Array();
-		
+	
 		this.lastValue = '';
 		
 		this.textbox = $(textbox);
-		this.textbox.autocomplete = this;
-		this.textbox.onkeydown = this.onKeyDown.bindAsEventListener(this);
-		
+		this.textbox.autocomplete = "off";
+		this.textbox.autocompletejs = this;
+		this.textbox.onkeyup = this.onKeyUp.bindAsEventListener(this);
+	
 		this.url = url;
 		
 		this.currentIndex = -1;
@@ -42,7 +43,7 @@ autoComplete.prototype = {
 		Event.observe(document, "unload", this.clearCache.bindAsEventListener(this));
 	},
 	
-	onKeyDown: function(e)
+	onKeyUp: function(e)
 	{
 		if(this.timeout)
 		{
@@ -83,21 +84,18 @@ autoComplete.prototype = {
 				break;
 			case Event.KEY_RETURN:
 			case Event.KEY_TAB:
-				if(this.popup.display != "none")
+				if(this.popup.display != "none" && this.currentIndex > -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
+					return false;
 				}
 				break;
 			case Event.KEY_ESC:
 				this.hidePopup();
 				break;
 			default:
-				if(this.lastValue != this.textbox.value)
-				{
-					setTimeout("$('"+this.textbox.id+"').autocomplete.doRequest();", 300);
-					this.lastValue = this.textbox.value;
-				}
+				setTimeout("$('"+this.textbox.id+"').autocompletejs.doRequest();", 300);
 				break;
 		}
 	},
@@ -113,13 +111,19 @@ autoComplete.prototype = {
 		{
 			separator = "&";
 		}
-		return this.url+separator+this.urlParam+"="+escape(this.textbox.value);		
+		return this.url+separator+this.urlParam+"="+encodeURIComponent(this.textbox.value);		
 	},
 	
 	doRequest: function()
 	{
 		if(this.textbox.value.length >= this.minChars)
 		{
+			if(this.lastValue == this.textbox.value)
+			{
+				return false;
+			}
+			this.lastValue = this.textbox.value;
+						
 			if(this.cache[this.textbox.value])
 			{
 				this.popup.innerHTML = this.cache[this.textbox.value];
@@ -131,9 +135,14 @@ autoComplete.prototype = {
 	
 	onComplete: function(request)
 	{
-		// Cache results
+		this.hidePopup();		
+		// Cached results or fresh ones?
 		if(request)
 		{
+			if(request.responseText.charAt(0) != "<")
+			{
+				return false;
+			}
 			this.popup.innerHTML = request.responseText;
 			this.cache[this.textbox.value] = this.popup.innerHTML;
 		}
@@ -176,18 +185,20 @@ autoComplete.prototype = {
 		{
 			var item = this.popup.childNodes[i];
 			item.index = i;
-			item.style.padding = "3px";
+			item.style.padding = "2px";
 			item.style.height = "1.2em";
 			Event.observe(item, "mouseover", this.itemOver.bindAsEventListener(this));
 			Event.observe(item, "click", this.itemClick.bindAsEventListener(this));
 		}
 		Event.observe(document, "click", this.hidePopup.bindAsEventListener(this));
 		this.popup.style.display = "";
+		this.textbox.onkeypress = function(e) { if(!e) { e = window.event } if(e.keyCode == 13) { return false } };
 	},
 	
 	hidePopup: function()
 	{
 		this.popup.style.display = "none";
+		this.textbox.onkeypress = '';
 		Event.stopObserving(document, "click", this.hidePopup.bindAsEventListener(this));
 	},
 	

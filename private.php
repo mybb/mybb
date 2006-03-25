@@ -27,27 +27,6 @@ if($mybb->settings['enablepms'] == "no")
 	error($lang->pms_disabled);
 }
 
-$autocomplete = "on";
-// Autocomplete for buddy list when composing PM's
-if($mybb->input['action'] == "getbuddies" && $mybb->user['uid'])
-{
-	if($mybb->user['buddylist'])
-	{
-		header("Content-Type: text/xml");
-		$users = "";
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username LIKE '".addslashes($mybb->input['query'])."%' AND uid IN (".$mybb->user[buddylist].") ORDER BY username ASC");
-		while($user = $db->fetch_array($query))
-		{
-			$users .= "<li>".$user['username']."</li>";
-		}
-		if($users)
-		{
-			echo "<ul>$users</ul>";
-		}
-	}
-	exit;
-}
-
 if($mybb->user['uid'] == "/" || $mybb->user['uid'] == "0" || $mybb->usergroup['canusepms'] == "no")
 {
 	nopermission();
@@ -313,10 +292,12 @@ if($mybb->input['action'] == "send")
 	$user = $db->fetch_array($query);
 	$to = $user['username'];
 	}
-	if($autocomplete)
-	{
-	}
+	
+	// Load the auto complete javascript if it is enabled.
+	eval("\$autocompletejs = \"".$templates->get("private_send_autocomplete")."\";");
+	
 	// Load Buddys
+	/*
 	$buddies = $mybb->user['buddylist'];
 	$namesarray = explode(",",$buddies);
 	$comma = '';
@@ -342,7 +323,7 @@ if($mybb->input['action'] == "send")
 		{
 			eval("\$buddyselect = \"".$templates->get("private_send_buddyselect")."\";");
 		}
-	}
+	} */
 	$pmid = $mybb->input['pmid'];
 	$do = $mybb->input['do'];
 	eval("\$send = \"".$templates->get("private_send")."\";");

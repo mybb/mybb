@@ -437,6 +437,7 @@ if($mybb->input['action'] == "edit") {
 	makecssedit($css['largetext'], "largetext", $lang->largetext, "", 1, 1, 0);
 	makecssedit($css['area_input_select_object'], "area_input_select_object", $lang->form_elements, "", 1, 1, 0);
 	makecsstoolbaredit($css);
+	makecssautocompleteedit($css);
 
 	starttable();
 	tableheader($lang->additional_css, "", 1);

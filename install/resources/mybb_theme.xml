@@ -186,6 +186,15 @@ padding: 6px;]]></extra>
 			<background><![CDATA[#e1F2fe]]></background>
 			<border><![CDATA[1px solid #5296f7]]></border>
 		</toolbar_clicked>
+		<autocomplete>
+			<background><![CDATA[#fff]]></background>
+			<border><![CDATA[1px solid #000]]></border>
+			<color><![CDATA[black]]></color>
+		</autocomplete>
+		<autocomplete_selected>
+			<background><![CDATA[#adcee7]]></background>
+			<color><![CDATA[#000]]></color>
+		</autocomplete_selected>
 	</cssbits>
 	<themebits>
 		<templateset><![CDATA[1]]></templateset>
@@ -2465,7 +2474,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_to}</strong></td>
-<td class="trow1"><input type="text" name="to" size="40" maxlength="{$settings['maxnamelength']}" value="{$to}" tabindex="1" />{$buddyselect}</td>
+<td class="trow1"><input type="text" name="to" id="to" size="40" maxlength="{$settings['maxnamelength']}" value="{$to}" tabindex="1" />{$autocompletejs}</td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->compose_subject}</strong></td>
@@ -6539,5 +6548,10 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="htmldoctype" version="100.07"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="postbit_qqmessage" version="100.07"><![CDATA[<div style="display: none;"><span id="qq{$post['pid']}">{$post['quickquote_message']}</span><span id="qqauthor{$post['pid']}">{$post['username']}</span></div>]]></template>
 		<template name="postbit_quickquote" version="100.07"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /></a>");</script>]]></template>
+		<template name="private_send_autocomplete" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/moo.ajax.js"></script>
+<script type="text/javascript" src="jscripts/autocomplete.js"></script>
+<script type="text/javascript">
+			new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username"});
+		</script>]]></template>
 	</templates>
 </theme>

@@ -111,4 +111,8 @@ $l['revert_customizations'] = "Revert Customizations";
 $l['general_options'] = "General Options";
 $l['allowed_groups'] = "Allowed Usergroups<br /><small>Select the usergroups that are able to use this theme.  Selecting 'All Usergroups' overrides any other selection.</small>";
 $l['all_groups'] = "All Usergroups";
+
+$l['autocomplete_popup'] = "Auto Complete Popup";
+$l['popup_window'] = "Popup Window";
+$l['selected_result'] = "Selected Result";
 ?>

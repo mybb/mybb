@@ -33,6 +33,8 @@ $cssselectors = array("body" => "body",
 					  "toolbar_normal" => ".toolbar_normal",
 					  "toolbar_hover" => ".toolbar_hover",
 					  "toolbar_clicked" => ".toolbar_clicked",
+					  "autocomplete" => ".autocomplete",
+					  "autocomplete_selected" => ".autocomplete_selected",
 
 					  // Link selectors
 					  "a_link" => "a:link",
@@ -501,6 +503,29 @@ function makecsstoolbaredit($css)
 	endtable();
 }
 
+function makecssautocompleteedit($css)
+{
+	global $lang;
+	starttable();
+	tableheader($lang->autocomplete_popup);
+	echo "<tr>\n<td class=\"subheader\" align=\"center\">".$lang->popup_window."</td><td class=\"subheader\" align=\"center\">".$lang->selected_result."</td>\n</tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[autocomplete][background]\" value=\"".$css['autocomplete']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[autocomplete][border]\" value=\"".$css['editor']['autocomplete']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[autocomplete][color]\" value=\"".$css['editor']['autocomplete']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[autocomplete_selected][background]\" value=\"".$css['autocomplete_selected']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[autocomplete_selected][color]\" value=\"".$css['autocomplete_selected']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	endtable();
+}
 function endtable()
 {
 	echo "</table>\n";
