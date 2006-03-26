@@ -181,6 +181,14 @@ var MyBB = {
 		text = text.replace(/&gt;/g, ">");  
 		text = text.replace(/&amp;/g, "&");
 		return text;
+	},
+	
+	HTMLchars: function(text)
+	{
+		text = text.replace(/&/g, "&amp;");
+		text = text.replace(/</g, "&lt;");  
+		text = text.replace(/>/g, "&gt;");  
+		return text;
 	}
 }
 

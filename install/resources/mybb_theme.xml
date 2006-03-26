@@ -457,7 +457,8 @@ hr {
 			</table>
 		</td>
 	</tr>
-</table>]]></template>
+</table>
+{$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_sortrating" version="100.07"><![CDATA[<option value="rating" {$sortsel['rating']}>{$lang->sort_by_rating}</option>]]></template>
 		<template name="global_boardclosed_warning" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -2092,6 +2093,7 @@ var inlineId = {$fid};
 		<template name="usercp_avatar_current" version="100.07"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$urltoavatar}" alt="{$lang->avatar}" /></td>]]></template>
 		<template name="headerinclude" version="100.07"><![CDATA[<meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <script type="text/javascript" src="jscripts/prototype.lite.js"></script>
+<script type="text/javascript" src="jscripts/moo.ajax.js"></script>
 <script type="text/javascript" src="jscripts/general.js"></script>
 <link rel="stylesheet" type="text/css" href="css.php?theme={$theme['tid']}" />
 <script language="Javascript" type="text/javascript">
@@ -4017,7 +4019,7 @@ var inlineId = {$fid};
 		<template name="forumdisplay_thread" version="100.07"><![CDATA[<tr>
 <td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt="{$folder_label}" title="{$folder_label}" /></td>
 <td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
-<td class="{$bgcolor}">{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</td>
+<td class="{$bgcolor}">{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</td>
 <td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
 <td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a>{$unapproved_posts}</td>
 <td align="center" class="{$bgcolor}">{$thread['views']}</td>
@@ -6548,10 +6550,13 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="htmldoctype" version="100.07"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="postbit_qqmessage" version="100.07"><![CDATA[<div style="display: none;"><span id="qq{$post['pid']}">{$post['quickquote_message']}</span><span id="qqauthor{$post['pid']}">{$post['username']}</span></div>]]></template>
 		<template name="postbit_quickquote" version="100.07"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /></a>");</script>]]></template>
-		<template name="private_send_autocomplete" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/moo.ajax.js"></script>
-<script type="text/javascript" src="jscripts/autocomplete.js"></script>
+		<template name="private_send_autocomplete" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js"></script>
 <script type="text/javascript">
 			new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username"});
 		</script>]]></template>
+				<template name="forumdisplay_threadlist_inlineedit_js" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inlineedit.js"></script>
+		<script type="text/javascript">
+					new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif"});
+				</script>]]></template>
 	</templates>
 </theme>

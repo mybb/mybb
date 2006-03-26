@@ -521,6 +521,7 @@ if($mybb->user['lastvisit'] > $forumread)
 
 $unreadpost = 0;
 $threads = '';
+$load_inline_edit_js = 0;
 if($threadcache)
 {
 	foreach($threadcache as $thread)
@@ -709,6 +710,21 @@ if($threadcache)
 		{
 			$modbit = '';
 		}
+		
+		// Check if "Inline subject editing" is enabled.
+		if(1 == 1)
+		{
+			// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
+			if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes") || $ismod == true)
+			{
+				$inline_edit_class = "subject_editable";
+			}
+			else
+			{
+				$inline_edit_class = "";
+			}
+			$load_inline_edit_js = 1;
+		}
 
 		$moved = explode("|", $thread['closed']);
 
@@ -765,6 +781,10 @@ if($foruminfo['type'] != "c") {
 	if($foruminfo['password'] != '')
 	{
 		eval("\$clearstoredpass = \"".$templates->get("forumdisplay_threadlist_clearpass")."\";");
+	}
+	if($load_inline_edit_js == 1)
+	{
+		eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");		
 	}
 	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");
 }

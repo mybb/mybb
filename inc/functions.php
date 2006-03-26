@@ -2350,10 +2350,56 @@ function get_forum($fid, $active_override=0)
 
 function get_thread($tid)
 {
+	global $db;
+	static $thread_cache;
+	
+	if(isset($thread_cache[$tid]))
+	{
+		return $thread_cache[$tid];
+	}
+	else
+	{
+		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($tid)."'");
+		$thread = $db->fetch_array($query);
+		
+		if($thread)
+		{
+			$thread_cache[$tid] = $thread;
+			return $thread;
+		}
+		else
+		{
+			$thread_cache[$tid] = false;
+			return false;
+		}
+	}
 }
 
 function get_post($pid)
 {
+	global $db;
+	static $post_cache;
+	
+	if(isset($post_cache[$pid]))
+	{
+		return $post_cache[$pid];
+	}
+	else
+	{
+		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid='".intval($pid)."'");
+		$post = $db->fetch_array($query);
+		
+		if($post)
+		{
+			$post_cache[$pid] = $post;
+			return $post;
+		}
+		else
+		{
+			$post_cache[$pid] = false;
+			return false;
+		}
+	}	
 }
 
 function get_inactive_forums()

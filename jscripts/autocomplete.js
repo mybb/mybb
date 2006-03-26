@@ -14,9 +14,9 @@ autoComplete.prototype = {
 		this.lastValue = '';
 		
 		this.textbox = $(textbox);
-		this.textbox.autocomplete = "off";
+		this.textbox.setAttribute("autocomplete", "off");
 		this.textbox.autocompletejs = this;
-		this.textbox.onkeyup = this.onKeyUp.bindAsEventListener(this);
+		this.textbox.onkeydown = this.onKeyDown.bindAsEventListener(this);
 	
 		this.url = url;
 		
@@ -43,7 +43,7 @@ autoComplete.prototype = {
 		Event.observe(document, "unload", this.clearCache.bindAsEventListener(this));
 	},
 	
-	onKeyUp: function(e)
+	onKeyDown: function(e)
 	{
 		if(this.timeout)
 		{
@@ -95,7 +95,7 @@ autoComplete.prototype = {
 				this.hidePopup();
 				break;
 			default:
-				setTimeout("$('"+this.textbox.id+"').autocompletejs.doRequest();", 300);
+				setTimeout("$('"+this.textbox.id+"').autocompletejs.doRequest();", 500);
 				break;
 		}
 	},
@@ -146,11 +146,35 @@ autoComplete.prototype = {
 			this.popup.innerHTML = request.responseText;
 			this.cache[this.textbox.value] = this.popup.innerHTML;
 		}
+		this.currentIndex = -1;
+		if(this.popup.childNodes.length < 1)
+		{
+			return false;
+		}
+		for(var i=0;i<this.popup.childNodes.length;i++)
+		{
+			if (this.popup.childNodes[i].nodeType == 3 && !/\S/.test(this.popup.childNodes[i].nodeValue))	
+			{
+				this.popup.removeChild(this.popup.childNodes[i]);
+			}		
+		}
+		for(var i=0;i<this.popup.childNodes.length;i++)
+		{
+			var item = this.popup.childNodes[i];
+			item.index = i;
+			item.style.padding = "2px";
+			item.style.height = "1.0em";
+			Event.observe(item, "mouseover", this.itemOver.bindAsEventListener(this));
+			Event.observe(item, "click", this.itemClick.bindAsEventListener(this));
+		}
 		var maxHeight = 100;
-		if(MyBB.browser == "mozilla")
+		if(this.popup.offsetHeight > 0 && this.popup.offsetHeight < maxHeight)
+		{
+			this.popup.style.overflow = "hidden";	
+		}
+		else if(MyBB.browser == "mozilla")
 		{
 			this.popup.style.maxHeight = maxHeight+"px";
-			this.popup.style.overflow = "auto";;
 		}
 		else
 		{
@@ -173,24 +197,8 @@ autoComplete.prototype = {
 		this.popup.style.top = offsetTop+this.textbox.offsetHeight+"px";
 		
 		this.popup.scrollTop = 0;		
-		this.currentIndex = -1;
-		for(var i=0;i<this.popup.childNodes.length;i++)
-		{
-			if (this.popup.childNodes[i].nodeType == 3 && !/\S/.test(this.popup.childNodes[i].nodeValue))	
-			{
-				this.popup.removeChild(this.popup.childNodes[i]);
-			}		
-		}
-		for(var i=0;i<this.popup.childNodes.length;i++)
-		{
-			var item = this.popup.childNodes[i];
-			item.index = i;
-			item.style.padding = "2px";
-			item.style.height = "1.2em";
-			Event.observe(item, "mouseover", this.itemOver.bindAsEventListener(this));
-			Event.observe(item, "click", this.itemClick.bindAsEventListener(this));
-		}
 		Event.observe(document, "click", this.hidePopup.bindAsEventListener(this));
+		this.highlightItem(0);
 		this.popup.style.display = "";
 		this.textbox.onkeypress = function(e) { if(!e) { e = window.event } if(e.keyCode == 13) { return false } };
 	},
