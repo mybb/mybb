@@ -166,10 +166,16 @@ padding: 6px;]]></extra>
 			<font-weight><![CDATA[bold]]></font-weight>
 		</largetext>
 		<area_input_select_object>
+			<background><![CDATA[#FFFFFF]]></background>
 			<color><![CDATA[#000000]]></color>
 			<font-family><![CDATA[Verdana]]></font-family>
 			<font-size><![CDATA[small]]></font-size>
+			<extra><![CDATA[border: 1px solid #026CB1;
+padding: 2px;]]></extra>
 		</area_input_select_object>
+		<button>
+			<extra><![CDATA[border: 1px solid #000000;]]></extra>
+		</button>
 		<editor>
 			<background><![CDATA[#f1f1f1]]></background>
 			<border><![CDATA[1px solid #ccc]]></border>

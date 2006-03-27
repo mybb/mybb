@@ -115,4 +115,5 @@ $l['all_groups'] = "All Usergroups";
 $l['autocomplete_popup'] = "Auto Complete Popup";
 $l['popup_window'] = "Popup Window";
 $l['selected_result'] = "Selected Result";
+$l['form_buttons'] = "Form Buttons";
 ?>
