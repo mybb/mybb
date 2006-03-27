@@ -435,8 +435,7 @@ if($mybb->input['action'] == "edit") {
 	makecssedit($css['navigation_active'], "navigation_active", $lang->active_navigation, "");
 	makecssedit($css['smalltext'], "smalltext", $lang->smalltext, "", 1, 1, 0);
 	makecssedit($css['largetext'], "largetext", $lang->largetext, "", 1, 1, 0);
-	makecssedit($css['area_input_select_object'], "area_input_select_object", $lang->form_elements, "", 1, 1, 0);
-	makecssedit($css['button'], "button", $lang->form_buttons, "", 1, 1, 0);
+	makecssinputedit($css);
 	makecsstoolbaredit($css);
 	makecssautocompleteedit($css);
 

@@ -165,16 +165,38 @@ padding: 6px;]]></extra>
 			<font-size><![CDATA[medium]]></font-size>
 			<font-weight><![CDATA[bold]]></font-weight>
 		</largetext>
-		<area_input_select_object>
-			<background><![CDATA[#FFFFFF]]></background>
+		<input>
+			<background><![CDATA[#ffffff]]></background>
 			<color><![CDATA[#000000]]></color>
-			<font-family><![CDATA[Verdana]]></font-family>
-			<font-size><![CDATA[small]]></font-size>
-			<extra><![CDATA[border: 1px solid #026CB1;
-padding: 2px;]]></extra>
-		</area_input_select_object>
+			<border><![CDATA[1px solid #0f5c8e]]></border>
+			<extra><![CDATA[padding: 1px;]]></extra>
+		</input>
+		<textarea>
+			<background><![CDATA[#ffffff]]></background>
+			<color><![CDATA[#000000]]></color>
+			<border><![CDATA[1px solid #0f5c8e]]></border>
+			<extra><![CDATA[padding: 2px;
+line-height: 1.3;
+font-family: Verdana;
+font-size: small;]]></extra>
+		</textarea>
+		<radio>
+			<background><![CDATA[transparent]]></background>
+			<border><![CDATA[none]]></border>
+		</radio>
+		<checkbox>
+			<background><![CDATA[transparent]]></background>
+			<border><![CDATA[none]]></border>
+		</checkbox>
+		<select>
+			<background><![CDATA[#ffffff]]></background>
+			<border><![CDATA[1px solid #0f5c8e]]></border>
+		</select>
 		<button>
-			<extra><![CDATA[border: 1px solid #000000;]]></extra>
+			<background><![CDATA[#ffffff]]></background>
+			<color><![CDATA[#000000]]></color>
+			<border><![CDATA[1px solid #000000]]></border>
+			<extra><![CDATA[padding: 0;]]></extra>
 		</button>
 		<editor>
 			<background><![CDATA[#f1f1f1]]></background>
@@ -712,7 +734,7 @@ var inlineId = {$tid};
 <td class="thead" colspan="3"><strong>{$lang->delete_post}</strong></td>
 </tr>
 <tr>
-<td class="trow1" nowrap="nowrap"><input type="checkbox" name="delete" value="yes" tabindex="9"> <strong>{$lang->delete_q}</strong></td>
+<td class="trow1" nowrap="nowrap"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9"> <strong>{$lang->delete_q}</strong></td>
 <td class="trow1" width="100%">{$lang->delete_1}<br /><span class="smalltext">{$lang->delete_2}</span></td>
 <td class="trow1" nowrap="nowrap"><input type="submit" class="button" name="submit" value="{$lang->delete_now}" tabindex="10"></td>
 </table>
@@ -741,8 +763,8 @@ var inlineId = {$tid};
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']}> {$lang->options_sig}<br />
-<input type="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']}> {$lang->options_emailnotify}
+<input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']}> {$lang->options_sig}<br />
+<input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']}> {$lang->options_emailnotify}
 {$disablesmilies}</span></td>
 </tr>
 {$attachbox}
@@ -759,7 +781,7 @@ var inlineId = {$tid};
 </body>
 </html>]]></template>
 		<template name="editpost_disablesmilies" version="100.07"><![CDATA[<br />
-<input type="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8" {$postoptionschecked['disablesmilies']}> {$lang->options_disablesmilies}]]></template>
+<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8" {$postoptionschecked['disablesmilies']}> {$lang->options_disablesmilies}]]></template>
 		<template name="newreply" version="100.07"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
@@ -796,8 +818,8 @@ var inlineId = {$tid};
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']}> {$lang->options_sig}</label><br />
-<label><input type="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']}> {$lang->options_emailnotify}</label>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']}> {$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']}> {$lang->options_emailnotify}</label>
 {$disablesmilies}
 </span></td>
 </tr>
@@ -819,7 +841,7 @@ var inlineId = {$tid};
 </body>
 </html>]]></template>
 		<template name="newreply_disablesmilies" version="100.07"><![CDATA[<br />
-<input type="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']}> {$lang->options_disablesmilies}]]></template>
+<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']}> {$lang->options_disablesmilies}]]></template>
 		<template name="usercp_drafts" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->drafts}</title>
@@ -860,7 +882,7 @@ var inlineId = {$tid};
 <td class="{$trow}"><strong>{$draft['subject']}</strong><br /><span class="smalltext">{$detail}</span></td>
 <td class="{$trow}" align="center">{$savedate}, {$savetime}</td>
 <td class="{$trow}" align="center"><a href="{$editurl}">{$lang->edit_draft}</a></td>
-<td class="{$trow}" align="center"><input type="checkbox" name="deletedraft[{$id}]" value="{$type}" /></td>
+<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="deletedraft[{$id}]" value="{$type}" /></td>
 </tr>]]></template>
 		<template name="newthread" version="100.07"><![CDATA[<html>
 <head>
@@ -894,8 +916,8 @@ var inlineId = {$tid};
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" name="postoptions[signature]" value="yes" tabindex="7" {$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
-<label><input type="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="8" {$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="7" {$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="8" {$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
 {$disablesmilies}</span></td>
 </tr>
 {$modoptions}
@@ -915,7 +937,7 @@ var inlineId = {$tid};
 </body>
 </html>]]></template>
 		<template name="newthread_disablesmilies" version="100.07"><![CDATA[<br />
-<input type="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']}> {$lang->options_disablesmilies}]]></template>
+<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']}> {$lang->options_disablesmilies}]]></template>
 		<template name="usercp_nav" version="100.07"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -981,8 +1003,8 @@ var inlineId = {$tid};
 <td colspan="2"><span class="smalltext">{$lang->away_status}</span></td>
 </tr>
 <tr>
-<td><span class="smalltext"><input type="radio" name="away" value="yes" {$awaycheck['yes']} /> {$lang->im_away}</span></td>
-<td><span class="smalltext"><input type="radio" name="away" value="no" {$awaycheck['no']} /> {$lang->im_here}</span></td>
+<td><span class="smalltext"><input type="radio" class="radio" name="away" value="yes" {$awaycheck['yes']} /> {$lang->im_away}</span></td>
+<td><span class="smalltext"><input type="radio" class="radio" name="away" value="no" {$awaycheck['no']} /> {$lang->im_here}</span></td>
 </tr>
 <tr>
 <td colspan="2"><span class="smalltext">{$lang->away_reason}</span></td>
@@ -1047,11 +1069,11 @@ var inlineId = {$tid};
 <legend><strong>{$lang->login_cookies_privacy}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="invisible" id="invisible" value="yes" {$invisiblecheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="yes" {$invisiblecheck} /></td>
 <td><span class="smalltext"><label for="invisible">{$lang->invisible_mode}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="remember" id="remember" value="yes" {$remembercheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="remember" id="remember" value="yes" {$remembercheck} /></td>
 <td><span class="smalltext"><label for="remember">{$lang->remember_me}</label></span></td>
 </tr>
 </table>
@@ -1061,27 +1083,27 @@ var inlineId = {$tid};
 <legend><strong>{$lang->messaging_notification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="allownotices" id="allownotices" value="yes" {$allownoticescheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="allownotices" id="allownotices" value="yes" {$allownoticescheck} /></td>
 <td><span class="smalltext"><label for="allownotices">{$lang->allow_notices}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="hideemail" id="hideemail" value="yes" {$hideemailcheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="hideemail" id="hideemail" value="yes" {$hideemailcheck} /></td>
 <td><span class="smalltext"><label for="hideemail">{$lang->allow_emails}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="emailnotify" id="emailnotify" value="yes" {$emailnotifycheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="emailnotify" id="emailnotify" value="yes" {$emailnotifycheck} /></td>
 <td><span class="smalltext"><label for="emailnotify">{$lang->email_notify}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="receivepms" id="receivepms" value="yes" {$receivepmscheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="yes" {$receivepmscheck} /></td>
 <td><span class="smalltext"><label for="receivepms">{$lang->receive_pms}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="pmpopup" id="pmpopup" value="yes" {$pmpopupcheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmpopup" id="pmpopup" value="yes" {$pmpopupcheck} /></td>
 <td><span class="smalltext"><label for="pmpopup">{$lang->pm_popup}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="pmnotify" id="pmnotify" value="yes" {$pmnotifycheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="yes" {$pmnotifycheck} /></td>
 <td><span class="smalltext"><label for="pmnotify">{$lang->pm_notify}</label></span></td>
 </tr>
 </table>
@@ -1134,7 +1156,7 @@ var inlineId = {$tid};
 </table>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="dst" id="dst" value="yes" {$dstcheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="dst" id="dst" value="yes" {$dstcheck} /></td>
 <td><span class="smalltext"><label for="dst">{$lang->dst}</label></span></td>
 </tr>
 </table>
@@ -1171,15 +1193,15 @@ var inlineId = {$tid};
 <legend><strong>{$lang->thread_view_options}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="showsigs" id="showsigs" value="yes" {$showsigscheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showsigs" id="showsigs" value="yes" {$showsigscheck} /></td>
 <td><span class="smalltext"><label for="showsigs">{$lang->show_sigs}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="showavatars" id="showavatars" value="yes" {$showavatarscheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showavatars" id="showavatars" value="yes" {$showavatarscheck} /></td>
 <td><span class="smalltext"><label for="showavatars">{$lang->show_avatars}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="showquickreply" id="showquickreply" value="yes" {$showquickreplycheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showquickreply" id="showquickreply" value="yes" {$showquickreplycheck} /></td>
 <td><span class="smalltext"><label for="showquickreply">{$lang->show_quick_reply}</label></span></td>
 </tr>
 {$pppselect}
@@ -1196,11 +1218,11 @@ var inlineId = {$tid};
 <legend><strong>{$lang->other_options}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="showredirect" id="showredirect" value="yes" {$showredirectcheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showredirect" id="showredirect" value="yes" {$showredirectcheck} /></td>
 <td><span class="smalltext"><label for="showredirect">{$lang->show_redirect}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="showcodebuttons" id="showcodebuttons" value="1" {$showcodebuttonscheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showcodebuttons" id="showcodebuttons" value="1" {$showcodebuttonscheck} /></td>
 <td><span class="smalltext"><label for="showcodebuttons">{$lang->show_codebuttons}</label></span></td>
 </tr>
 <tr>
@@ -1558,7 +1580,7 @@ var inlineId = {$fid};
 </tr>
 {$folderlist}
 <tr>
-<td class="trow2" align="center" colspan="3"><input type="checkbox" name="keepunread" value="yes" checked><strong>{$lang->keep_unread}</strong></td>
+<td class="trow2" align="center" colspan="3"><input type="checkbox" class="checkbox" name="keepunread" value="yes" checked><strong>{$lang->keep_unread}</strong></td>
 </tr>
 </table>
 </td></tr></table>
@@ -1816,7 +1838,7 @@ var inlineId = {$fid};
 <td class="tcat" colspan="2" width="40%"><span class="smalltext"><strong>{$lang->attachments_attachment}</strong></span></td>
 <td class="tcat" width="40%"><span class="smalltext"><strong>{$lang->attachments_post}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->date_uploaded}</strong></span></td>
-<td class="tcat" width="1"><input type="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></td>
+<td class="tcat" width="1"><input type="checkbox" class="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></td>
 </tr>
 {$attachments}
 </table>
@@ -1863,7 +1885,7 @@ var inlineId = {$fid};
 <td class="{$altbg}" width="40%"><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a><br /><span class="smalltext">{$sizedownloads}</span></td>
 <td class="{$altbg}"><a href="showthread.php?tid={$attachment['tid']}&pid={$attachment['pid']}#pid{$attachment['pid']}">{$attachment['subject']}</a><br /><span class="smalltext">{$lang->attachment_thread} <a href="showthread.php?tid={$attachment['tid']}">{$attachment['threadsubject']}</a></span></td>
 <td class="{$altbg}" align="center">{$attachdate}, {$attachtime}</td>
-<td class="{$altbg}" width="1"><input type="checkbox" name="attachments[{$attachment['aid']}]" value="{$attachment['aid']}" /></td>
+<td class="{$altbg}" width="1"><input type="checkbox" class="checkbox" name="attachments[{$attachment['aid']}]" value="{$attachment['aid']}" /></td>
 </tr>]]></template>
 		<template name="misc_rules_forum" version="100.07"><![CDATA[<html>
 <head>
@@ -2095,7 +2117,7 @@ var inlineId = {$fid};
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_avatar_gallery_avatar" version="100.07"><![CDATA[<td width="20%" align="center"><label for="avatar-{$avatar}"><img src="{$avatarpath}" alt="{$avatar}" /><br /><input type="radio" name="avatar" value="{$avatar}" id="avatar-{$avatar}" /><strong>{$avatarname}</strong></td>]]></template>
+		<template name="usercp_avatar_gallery_avatar" version="100.07"><![CDATA[<td width="20%" align="center"><label for="avatar-{$avatar}"><img src="{$avatarpath}" alt="{$avatar}" /><br /><input type="radio" class="radio" name="avatar" value="{$avatar}" id="avatar-{$avatar}" /><strong>{$avatarname}</strong></td>]]></template>
 		<template name="usercp_avatar_current" version="100.07"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$urltoavatar}" alt="{$lang->avatar}" /></td>]]></template>
 		<template name="headerinclude" version="100.07"><![CDATA[<meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <script type="text/javascript" src="jscripts/prototype.lite.js"></script>
@@ -2417,7 +2439,7 @@ var inlineId = {$fid};
 <td class="{$altbg}" align="center">{$checkbox}</td>
 </tr>
 ]]></template>
-		<template name="managegroup_user_checkbox" version="100.07"><![CDATA[<input type="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" />]]></template>
+		<template name="managegroup_user_checkbox" version="100.07"><![CDATA[<input type="checkbox" class="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" />]]></template>
 		<template name="managegroup_requestnote" version="100.07"><![CDATA[<p>
 <strong><a href="managegroup.php?action=joinrequests&gid={$gid}">{$lang->pending_requests}</a></strong><br />
 {$lang->num_requests_pending}
@@ -2455,9 +2477,9 @@ var inlineId = {$fid};
 		<template name="managegroup_joinrequests_request" version="100.07"><![CDATA[<tr>
 <td class="{$altbg}"><a href="member.php?action=profile&uid={$user['uid']}">{$user['username']}</a></td>
 <td class="{$altbg}" align="center">{$user['reason']}</td>
-<td class="{$altbg}" align="center"><input type="radio" name="request[{$user['uid']}]" value="accept" /></td>
-<td class="{$altbg}" align="center"><input type="radio" name="request[{$user['uid']}]" value="ignore" checked="checked" /></td>
-<td class="{$altbg}" align="center"><input type="radio" name="request[{$user['uid']}]" value="decline" /></td>
+<td class="{$altbg}" align="center"><input type="radio" class="radio" name="request[{$user['uid']}]" value="accept" /></td>
+<td class="{$altbg}" align="center"><input type="radio" class="radio" name="request[{$user['uid']}]" value="ignore" checked="checked" /></td>
+<td class="{$altbg}" align="center"><input type="radio" class="radio" name="request[{$user['uid']}]" value="decline" /></td>
 </tr>
 ]]></template>
 		<template name="private_send" version="100.07"><![CDATA[<html>
@@ -2498,10 +2520,10 @@ var inlineId = {$fid};
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" name="options[signature]" value="yes" tabindex="8" {$optionschecked['signature']}> {$lang->options_sig}</label><br />
-<label><input type="checkbox" name="options[disablesmilies]" value="yes" tabindex="9" {$optionschecked['disablesmilies']}> {$lang->options_disable_smilies}</label><br />
-<label><input type="checkbox" name="options[savecopy]" value="yes" tabindex="10" {$optionschecked['savecopy']}> {$lang->options_save_copy}</label><br />
-<label><input type="checkbox" name="options[readreceipt]" value="yes" tabindex="11" {$optionschecked['readreceipt']}> {$lang->options_read_receipt}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[signature]" value="yes" tabindex="8" {$optionschecked['signature']}> {$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="yes" tabindex="9" {$optionschecked['disablesmilies']}> {$lang->options_disable_smilies}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="yes" tabindex="10" {$optionschecked['savecopy']}> {$lang->options_save_copy}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="yes" tabindex="11" {$optionschecked['readreceipt']}> {$lang->options_read_receipt}</label><br />
 </span></td>
 </tr>
 </table>
@@ -2533,7 +2555,7 @@ var inlineId = {$fid};
 <td class="thead" colspan="3"><strong>{$lang->delete_poll}</strong></td>
 </tr>
 <tr>
-<td class="trow1" nowrap="nowrap"><input type="checkbox" name="delete" value="yes" tabindex="9"> <strong>{$lang->delete_q}</strong></td>
+<td class="trow1" nowrap="nowrap"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9"> <strong>{$lang->delete_q}</strong></td>
 <td class="trow1" width="100%">{$lang->delete_note}<br /><span class="smalltext">{$lang->delete_note_2}</span></td>
 <td class="trow1" nowrap="nowrap"><input type="submit" class="button" name="submit" value="{$lang->delete_poll}" tabindex="10"></td>
 </table>
@@ -2566,9 +2588,9 @@ var inlineId = {$fid};
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']}>&nbsp;{$lang->option_multiple}<br />
-<input type="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']}>&nbsp;{$lang->option_public}<br />
-<input type="checkbox" name="postoptions[closed]" value="yes" {$postoptionschecked['closed']}>&nbsp;{$lang->option_closed}
+<input type="checkbox" class="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']}>&nbsp;{$lang->option_multiple}<br />
+<input type="checkbox" class="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']}>&nbsp;{$lang->option_public}<br />
+<input type="checkbox" class="checkbox" name="postoptions[closed]" value="yes" {$postoptionschecked['closed']}>&nbsp;{$lang->option_closed}
 </span>
 </td>
 </tr>
@@ -2835,15 +2857,15 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow1" valign="top" width="30%"><strong>{$lang->export_unread}</strong></td>
-<td class="trow1"><input type="radio" name="exportunread" value="yes" /> {$lang->yes} <input type="radio" name="exportunread" value="no" checked="checked" /> {$lang->no} </td>
+<td class="trow1"><input type="radio" class="radio" name="exportunread" value="yes" /> {$lang->yes} <input type="radio" class="radio" name="exportunread" value="no" checked="checked" /> {$lang->no} </td>
 </tr>
 <tr>
 <td class="trow2" valign="top" width="30%"><strong>{$lang->delete_archived}</strong><br /><span class="smalltext">{$lang->delete_archived_note}</span></td>
-<td class="trow2"><input type="radio" name="deletepms" value="yes" /> {$lang->yes} <input type="radio" name="deletepms" value="no" checked="checked" /> {$lang->no} </td>
+<td class="trow2"><input type="radio" class="radio" name="deletepms" value="yes" /> {$lang->yes} <input type="radio" class="radio" name="deletepms" value="no" checked="checked" /> {$lang->no} </td>
 </tr>
 <tr>
 <td class="trow1" valign="top" width="30%"><strong>{$lang->export_format}</strong><br /><span class="smalltext">{$lang->export_format_note}</span></td>
-<td class="trow1"><input type="radio" name="exporttype" value="html" checked="checked" /> {$lang->export_html}<br /><input type="radio" name="exporttype" value="txt" /> {$lang->export_txt}<br /><input type="radio" name="exporttype" value="csv" /> {$lang->export_csv}</td>
+<td class="trow1"><input type="radio" class="radio" name="exporttype" value="html" checked="checked" /> {$lang->export_html}<br /><input type="radio" class="radio" name="exporttype" value="txt" /> {$lang->export_txt}<br /><input type="radio" class="radio" name="exporttype" value="csv" /> {$lang->export_csv}</td>
 </tr>
 </table>
 </td></tr></table>
@@ -2913,7 +2935,7 @@ var inlineId = {$fid};
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->event_options}</strong></td>
 <td width="60%" class="trow2">
-<input type="checkbox" name="private" value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
+<input type="checkbox" class="checkbox" name="private" value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
 </td>
 </tr>
 </table>
@@ -3031,7 +3053,7 @@ var inlineId = {$fid};
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumdisplay_thread_modbit" version="100.07"><![CDATA[<td class="{$bgcolor}" align="center" nowrap="nowrap"><input type="checkbox" name="inlinemod_{$multitid}" id="inlinemod_{$multitid}" value="1" {$inlinecheck}  /></td>]]></template>
+		<template name="forumdisplay_thread_modbit" version="100.07"><![CDATA[<td class="{$bgcolor}" align="center" nowrap="nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$multitid}" id="inlinemod_{$multitid}" value="1" {$inlinecheck}  /></td>]]></template>
 		<template name="index_pms" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr><td class="thead" colspan="2"><a href="private.php"><strong>{$lang->private_messages}</strong></a></td></tr>
 <tr>
@@ -3251,7 +3273,7 @@ var inlineId = {$fid};
 <td class="trow1" width="35%"><a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$denyreceipt}</td>
 <td align="center" class="trow2">{$tofromusername}</td>
 <td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">{$senddate} {$sendtime}</span></td>
-<td class="trow2" align="center"><input type="checkbox" name="check[{$message['pmid']}]" value="yes"></td>
+<td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="yes"></td>
 </tr>]]></template>
 		<template name="private_nomessages" version="100.07"><![CDATA[<tr>
 <td colspan="6" class="trow1">{$lang->nomessages}</td>
@@ -3281,9 +3303,9 @@ var inlineId = {$fid};
 <td class="trow1" valign="top">
 <strong>{$lang->message}</strong><br />
 <span class="smalltext">{$lang->message_note}<br /><br />
-<label><input type="checkbox" name="postoptions[signature]" value="yes" {$postoptionschecked['signature']}>&nbsp;<strong>{$lang->signature}</strong></label><br />
-<label><input type="checkbox" name="postoptions[emailnotify]" value="yes" {$postoptionschecked['emailnotify']}>&nbsp;<strong>{$lang->email_notify}</strong></label><br />
-<label><input type="checkbox" name="postoptions[disablesmilies]" value="yes">&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" {$postoptionschecked['signature']}>&nbsp;<strong>{$lang->signature}</strong></label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" {$postoptionschecked['emailnotify']}>&nbsp;<strong>{$lang->email_notify}</strong></label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes">&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
 </td>
 <td class="trow1"><textarea name="message" rows="7" cols="70" wrap="virtual" tabindex="1"></textarea></td>
 </tr>
@@ -3370,7 +3392,7 @@ var inlineId = {$fid};
 <td class="tcat" align="center" width="35%"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" width="30%" nowrap="nowrap"><span class="smalltext"><strong>{$sender}</strong></span></td>
 <td class="tcat" align="right"  width="20%" nowrap="nowrap"><span class="smalltext"><strong>{$lang->date_sent}</strong></span></td>
-<td class="tcat" align="center" width="5%" nowrap="nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" value="Check All" onClick="MyBB.checkAll(this.form)"></span></td>
+<td class="tcat" align="center" width="5%" nowrap="nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="Check All" onClick="MyBB.checkAll(this.form)"></span></td>
 </tr>
 {$messagelist}
 <tr>
@@ -3511,12 +3533,12 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td>
-<span class="smalltext"><input type="radio" name="postthread" value="1" checked> {$lang->search_entire_post}<br /><input type="radio" name="postthread" value="2"> {$lang->search_titles_only}</span></td>
+<span class="smalltext"><input type="radio" class="radio" name="postthread" value="1" checked> {$lang->search_entire_post}<br /><input type="radio" class="radio" name="postthread" value="2"> {$lang->search_titles_only}</span></td>
 </tr></table>
 </td>
 <td class="trow1">
 <table><tr>
-<td class="trow1"><input type="text" name="author" size="35" maxlength="{$settings['maxnamelength']}"><br /><span class="smalltext"><input type="checkbox" name="matchusername" value="1" checked>&nbsp; {$lang->match_username}</span></td>
+<td class="trow1"><input type="text" name="author" size="35" maxlength="{$settings['maxnamelength']}"><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked>&nbsp; {$lang->match_username}</span></td>
 <td class="trow1">&nbsp;</td>
 </tr></table>
 </td>
@@ -3542,7 +3564,7 @@ var inlineId = {$fid};
 <option value="90">{$lang->find_3months}</option>
 <option value="180">{$lang->find_6months}</option>
 <option value="365">{$lang->find_year}</option>
-</select>&nbsp;&nbsp; <input type="radio" name="pddir" value="1" checked> {$lang->and_newer}  <input type="radio" name="pddir" value="0"> {$lang->and_older}
+</select>&nbsp;&nbsp; <input type="radio" class="radio" name="pddir" value="1" checked> {$lang->and_newer}  <input type="radio" class="radio" name="pddir" value="0"> {$lang->and_older}
 </td>
 </tr>
 <tr>
@@ -3554,14 +3576,14 @@ var inlineId = {$fid};
 <option value="lastpost">{$lang->sort_lastpost}</option>
 <option value="starter">{$lang->sort_author}</option>
 <option value="forum">{$lang->sort_forum}</option>
-</select> {$lang->sort_in} <input type="radio" name="sorder" value="asc"> {$lang->sort_asc} <input type="radio" name="sorder" value="desc" checked> {$lang->sort_desc} {$lang->sort_order}
+</select> {$lang->sort_in} <input type="radio" class="radio" name="sorder" value="asc"> {$lang->sort_asc} <input type="radio" class="radio" name="sorder" value="desc" checked> {$lang->sort_desc} {$lang->sort_order}
 </td>
 </tr>
 <tr>
 <td class="tcat"><strong>{$lang->display_options}</td>
 </tr>
 <tr>
-<td class="trow1">{$lang->show_results_as} <input type="radio" name="showresults" value="threads" checked> {$lang->show_results_threads} <input type="radio" name="showresults" value="posts"> {$lang->show_results_posts}</td>
+<td class="trow1">{$lang->show_results_as} <input type="radio" class="radio" name="showresults" value="threads" checked> {$lang->show_results_threads} <input type="radio" class="radio" name="showresults" value="posts"> {$lang->show_results_posts}</td>
 </tr>
 </td>
 </table>
@@ -3716,7 +3738,7 @@ var inlineId = {$fid};
 <strong>{$lang->poll}</strong><br /><span class="smalltext">{$lang->poll_desc}</span>
 </td>
 <td class="{$bgcolor}" valign="top">
-<span class="smalltext"><input type="checkbox" name="postpoll" value="yes" {$postpollchecked}> <strong>{$lang->poll_check}</strong><br />
+<span class="smalltext"><input type="checkbox" class="checkbox" name="postpoll" value="yes" {$postpollchecked}> <strong>{$lang->poll_check}</strong><br />
 {$lang->num_options} <input type="text" name="numpolloptions" value="{$numpolloptions}" size="10"> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
@@ -3749,7 +3771,7 @@ var inlineId = {$fid};
 </body>
 </html>]]></template>
 		<template name="moderation_reports_report" version="100.07"><![CDATA[<tr>
-<td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><input type="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" />&nbsp;<a href="showthread.php?pid={$report['pid']}&tid={$report['tid']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
+<td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" />&nbsp;<a href="showthread.php?pid={$report['pid']}&tid={$report['tid']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
 <td class="{$trow}" align="center"><a href="member.php?action=profile&uid={$report['postuid']}" target="_blank">{$report['postusername']}</a></td>
 <td class="{$trow}"><a href="showthread.php?tid={$report['tid']}" target="_blank">{$report['threadsubject']}</a></td>
 <td class="{$trow}" align="center"><a href="member.php?action=profile&uid={$report['uid']}" target="_blank">{$report['username']}</a></td>
@@ -3878,7 +3900,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow2" width="40%" valign="top"><strong>{$lang->syndication_version}</strong><br /><span class="smalltext">{$lang->syndication_version_desc}</span></td>
-<td class="trow2" width="60%"><input type="radio" name="version" value="rss" {$rsscheck} />&nbsp;{$lang->syndication_version_rss}<br /><input type="radio" name="version" value="rss2.0" {$rss2check} />&nbsp;{$lang->syndication_version_rss2}</td>
+<td class="trow2" width="60%"><input type="radio" class="radio" name="version" value="rss" {$rsscheck} />&nbsp;{$lang->syndication_version_rss}<br /><input type="radio" class="radio" name="version" value="rss2.0" {$rss2check} />&nbsp;{$lang->syndication_version_rss2}</td>
 </tr>
 <tr>
 <td class="trow2" width="40%" valign="top"><strong>{$lang->syndication_limit}</strong><br /><span class="smalltext">{$lang->syndication_limit_desc}</span></td>
@@ -4097,7 +4119,7 @@ var inlineId = {$fid};
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->posted_by} {$post['username']} - {$postdate} {$posttime}</strong></span></td>
 </tr>
 <tr>
-<td class="{$altbg}" valign="top" align="center" width="1"><input type="checkbox" name="mergepost[{$post['pid']}]" value="yes"></td>
+<td class="{$altbg}" valign="top" align="center" width="1"><input type="checkbox" class="checkbox" name="mergepost[{$post['pid']}]" value="yes"></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
 		<template name="stats" version="100.07"><![CDATA[<html>
@@ -4193,8 +4215,8 @@ var inlineId = {$fid};
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']}>&nbsp;{$lang->option_multiple}<br />
-<input type="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']}>&nbsp;{$lang->option_public}
+<input type="checkbox" class="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']}>&nbsp;{$lang->option_multiple}<br />
+<input type="checkbox" class="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']}>&nbsp;{$lang->option_public}
 </span>
 </td>
 </tr>
@@ -4725,8 +4747,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <form action="reputation.php" method="post">
 <input type="hidden" name="action" value="do_add">
 <input type="hidden" name="pid" value="{$pid}">
-<blockquote><input type="radio" name="add" value="pos" {$poscheck}>&nbsp;{$lang->positive}<br />
-<input type="radio" name="add" value="neg" {$negcheck}>&nbsp;{$lang->negative}<br />
+<blockquote><input type="radio" class="radio" name="add" value="pos" {$poscheck}>&nbsp;{$lang->positive}<br />
+<input type="radio" class="radio" name="add" value="neg" {$negcheck}>&nbsp;{$lang->negative}<br />
 </blockquote>
 <br />
 <br />
@@ -4907,14 +4929,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2">{$readmessage['subject']}</td>
 <td class="trow1"><a href="member.php?action=profile&amp;uid={$readmessage['toid']}">{$readmessage['tousername']}</a></td>
 <td class="trow2" align="right"><span class="smalltext">{$readdate}<br />{$readtime}</span></td>
-<td class="trow1"><input type="checkbox" name="readcheck[{$readmessage['pmid']}]" value="yes"></td>
+<td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="yes"></td>
 </tr>]]></template>
 		<template name="private_tracking_unreadmessage" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="{$theme['imgdir']}/new_pm.gif" border="0" alt=""></td>
 <td class="trow2">{$unreadmessage['subject']}</td>
 <td class="trow1"><a href="member.php?action=profile&amp;uid={$unreadmessage['toid']}">{$unreadmessage['tousername']}</a></td>
 <td class="trow2" align="right"><span class="smalltext">{$senddate}<br />{$sendtime}</span></td>
-<td class="trow1"><input type="checkbox" name="unreadcheck[{$unreadmessage['pmid']}]" value="yes"></td>
+<td class="trow1"><input type="checkbox" class="checkbox" name="unreadcheck[{$unreadmessage['pmid']}]" value="yes"></td>
 </tr>]]></template>
 		<template name="usercp_editlists_user" version="100.07"><![CDATA[<input type="text" name="listuser[{$uid}]" size="25" value="{$username}"><br />]]></template>
 		<template name="showthread_threadedbox" version="100.07"><![CDATA[<br />
@@ -4969,8 +4991,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="newreply_modoptions" version="100.07"><![CDATA[<tr>
 <td class="{$bgcolor}" valign="top"><strong>{$lang->mod_options}</strong></td>
 <td class="{$bgcolor}"><span class="smalltext">
-<label><input type="checkbox" name="modoptions[closethread]" value="yes" {$closecheck}> {$lang->close_thread}</label><br />
-<label><input type="checkbox" name="modoptions[stickthread]" value="yes" {$stickycheck}> {$lang->stick_thread}</label>
+<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="yes" {$closecheck}> {$lang->close_thread}</label><br />
+<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="yes" {$stickycheck}> {$lang->stick_thread}</label>
 </span></td>
 </tr>]]></template>
 		<template name="smilieinsert_getmore" version="100.07"><![CDATA[<tr>
@@ -5098,17 +5120,17 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="thead" colspan="3"><strong>{$lang->change_avatar}</strong></td>
 </tr>
 <tr>
-<td align="center" class="trow1" width="5%"><input type="radio" name="avatar" value="url"{$checked['url']} /></td>
+<td align="center" class="trow1" width="5%"><input type="radio" class="radio" name="avatar" value="url"{$checked['url']} /></td>
 <td class="trow1" width="40%"><strong>{$lang->avatar_url}</strong><br /><span class="smalltext">{$lang->avatar_url_note}</span></td>
 <td class="trow1" width="55%"><input type="text" name="avatarurl" size="25" maxlength="100" value="{$avatarurl}" /></td>
 </tr>
 <tr>
-<td align="center" class="trow2" width="5%"><input type="radio" name="avatar" value="upload"{$checked['upload']} /></td>
+<td align="center" class="trow2" width="5%"><input type="radio" class="radio" name="avatar" value="upload"{$checked['upload']} /></td>
 <td class="trow2" width="40%"><strong>{$lang->avatar_upload}</strong><br /><span class="smalltext">{$lang->avatar_upload_note}</span></td>
 <td class="trow2" width="55%"><input type="file" name="avatarupload" size="25" value="" />{$uploadedmsg}</td>
 </tr>
 <tr>
-<td align="center" class="trow1" width="5%"><input type="radio" name="avatar" value="list"{$checked['list']} /></td>
+<td align="center" class="trow1" width="5%"><input type="radio" class="radio" name="avatar" value="list"{$checked['list']} /></td>
 <td class="trow1" width="40%"><strong>{$lang->avatar_list}</strong><br /><span class="smalltext">{$lang->avatar_list_note}</span></td>
 <td class="trow1" width="55%">
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
@@ -5126,7 +5148,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>
 <tr>
-<td align="center" class="trow2" width="5%"><input type="radio" name="avatar" value="none"{$checked['none']} /></td>
+<td align="center" class="trow2" width="5%"><input type="radio" class="radio" name="avatar" value="none"{$checked['none']} /></td>
 <td colspan="2" class="trow2" width="95%"><strong>{$lang->no_avatar}</strong><br /><span class="smalltext">{$lang->no_avatar_note}</span></td>
 </tr>
 </table>
@@ -5306,7 +5328,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->posted_by} {$post['username']} - {$postdate} {$posttime}</strong></span></td>
 </tr>
 <tr>
-<td class="{$altbg}" valign="top" align="center"><input type="checkbox" name="splitpost[{$post['pid']}]" value="yes"></td>
+<td class="{$altbg}" valign="top" align="center"><input type="checkbox" class="checkbox" name="splitpost[{$post['pid']}]" value="yes"></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
 		<template name="newreply_threadreview_more" version="100.07"><![CDATA[<tr>
@@ -5344,7 +5366,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->posted_by} {$post['username']} - {$postdate} {$posttime}</strong></span></td>
 </tr>
 <tr>
-<td class="{$altbg}" valign="top" align="center"><input type="checkbox" name="deletepost[{$post['pid']}]" value="yes"></td>
+<td class="{$altbg}" valign="top" align="center"><input type="checkbox" class="checkbox" name="deletepost[{$post['pid']}]" value="yes"></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
 		<template name="moderation_deleteposts" version="100.07"><![CDATA[<html>
@@ -5557,9 +5579,9 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow1" valign="top" width="40%"><span class="smalltext">{$lang->edit_sig_note}<br /><br />{$lang->edit_sig_note2}</span></td>
 <td class="trow1" width="60%"><textarea rows="5" cols="55" wrap="physical" name="signature" onKeyUp="sigLimit()" onKeyDown="sigLimit()">{$sig}</textarea><br /><input type="text" name="sigcounter" size="3" value="{$settings['siglength']}" disabled="disabled" /> <span class="smalltext">{$lang->characters_remaining}</span>
 <br /><br /><span class="smalltext">
-<input type="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}<br />
-<input type="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}<br />
-<input type="radio" name="updateposts" value="no" checked="checked" />&nbsp;{$lang->leave_sig_settings}</span>
+<input type="radio" class="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}<br />
+<input type="radio" class="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}<br />
+<input type="radio" class="radio" name="updateposts" value="no" checked="checked" />&nbsp;{$lang->leave_sig_settings}</span>
 </td>
 </tr>
 </table>
@@ -5725,9 +5747,9 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->method}</strong></td>
 <td class="trow2">
-<label><input type="radio" name="method" value="move"> {$lang->method_move}</label><br />
-<label><input type="radio" name="method" value="redirect" checked> {$lang->method_move_redirect}</label><br />
-<label><input type="radio" name="method" value="copy"> {$lang->method_copy}</label><br />
+<label><input type="radio" class="radio" name="method" value="move"> {$lang->method_move}</label><br />
+<label><input type="radio" class="radio" name="method" value="redirect" checked> {$lang->method_move_redirect}</label><br />
+<label><input type="radio" class="radio" name="method" value="copy"> {$lang->method_copy}</label><br />
 </td>
 </tr>
 </table>
@@ -5792,11 +5814,11 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow"><input type="text" name="options[{$i}]" value="{$option}" width="250"></td>
 </tr>]]></template>
 		<template name="showthread_poll_option_multiple" version="100.07"><![CDATA[<tr>
-<td class="trow1" width="5%"><input type="checkbox" name="option[{$number}]" value="yes"></td>
+<td class="trow1" width="5%"><input type="checkbox" class="checkbox" name="option[{$number}]" value="yes"></td>
 <td class="trow2" colspan="3">{$option}</td>
 </tr>]]></template>
 		<template name="showthread_poll_option" version="100.07"><![CDATA[<tr>
-<td class="trow1" width="5%"><input type="radio" name="option" value="{$number}"></td>
+<td class="trow1" width="5%"><input type="radio" class="radio" name="option" value="{$number}"></td>
 <td class="trow1" colspan="3">{$option}</td>
 </tr>]]></template>
 		<template name="member_activate" version="100.07"><![CDATA[<html>
@@ -6013,8 +6035,8 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->event_options}</strong></td>
 <td width="60%" class="trow2">
-<input type="checkbox" name="private" value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
-<input type="checkbox" name="delete" value="yes" /><span class="smalltext">{$lang->delete_option}</span>
+<input type="checkbox" class="checkbox" name="private" value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
+<input type="checkbox" class="checkbox" name="delete" value="yes" /><span class="smalltext">{$lang->delete_option}</span>
 </td>
 </tr>
 </table>
@@ -6091,7 +6113,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </body>
 </html>]]></template>
 		<template name="posticons" version="100.07"><![CDATA[<tr>
-<td class="trow1"><strong>{$lang->post_icon}</strong><br /><span class="smalltext"><input type="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</span></td>
+<td class="trow1"><strong>{$lang->post_icon}</strong><br /><span class="smalltext"><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</span></td>
 <td class="trow1" valign="top">{$iconlist}</td>
 </tr>
 ]]></template>
@@ -6186,7 +6208,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="private_empty_folder" version="100.07"><![CDATA[<tr>
 <td class="trow1"><strong>{$foldername}</strong></td>
 <td class="trow1" align="center">{$foldercount}</td>
-<td class="trow1" align="center"><input type="checkbox" name="empty[{$fid}]" value="yes"></td>
+<td class="trow1" align="center"><input type="checkbox" class="checkbox" name="empty[{$fid}]" value="yes"></td>
 </tr>]]></template>
 		<template name="misc_imcenter_msn" version="100.07"><![CDATA[<html>
 <head>
@@ -6318,7 +6340,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 {$footer}
 </body>
 </html>]]></template>
-		<template name="postbit_inlinecheck" version="100.07"><![CDATA[| <input type="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" {$inlinecheck}  />]]></template>
+		<template name="postbit_inlinecheck" version="100.07"><![CDATA[| <input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" {$inlinecheck}  />]]></template>
 		<template name="moderation_inline_movethreads" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->move_threads}</title>
@@ -6362,7 +6384,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->post_separator}</strong></td>
-<td class="trow2"><label><input type="radio" name="sep" value="hr" checked="checked" />&nbsp;{$lang->horizontal_rule}</label><br /><label><input type="radio" name="sep" value="new_line" />&nbsp;{$lang->new_line}</label></td>
+<td class="trow2"><label><input type="radio" class="radio" name="sep" value="hr" checked="checked" />&nbsp;{$lang->horizontal_rule}</label><br /><label><input type="radio" class="radio" name="sep" value="new_line" />&nbsp;{$lang->new_line}</label></td>
 </tr>
 </table>
 <br />
@@ -6477,31 +6499,31 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <legend><strong>{$lang->account_prefs}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="allownotices" id="allownotices" value="yes" {$allownoticescheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="allownotices" id="allownotices" value="yes" {$allownoticescheck} /></td>
 <td valign="top"><span class="smalltext"><label for="allownotices">{$lang->allow_notices}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="hideemail" id="hideemail" value="yes" {$hideemailcheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="hideemail" id="hideemail" value="yes" {$hideemailcheck} /></td>
 <td valign="top"><span class="smalltext"><label for="hideemail">{$lang->hide_email}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="emailnotify" id="emailnotify" value="yes" {$emailnotifycheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="emailnotify" id="emailnotify" value="yes" {$emailnotifycheck} /></td>
 <td valign="top"><span class="smalltext"><label for="emailnotify">{$lang->email_notify}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="receivepms" id="receivepms" value="yes" {$receivepmscheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="yes" {$receivepmscheck} /></td>
 <td valign="top"><span class="smalltext"><label for="receivepms">{$lang->receive_pms}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="pmpopup" id="pmpopup" value="yes" {$pmpopupcheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmpopup" id="pmpopup" value="yes" {$pmpopupcheck} /></td>
 <td valign="top"><span class="smalltext"><label for="pmpopup">{$lang->pm_popup}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="emailpmnotify" id="emailpmnotify" value="yes" {$emailpmnotifycheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="emailpmnotify" id="emailpmnotify" value="yes" {$emailpmnotifycheck} /></td>
 <td valign="top"><span class="smalltext"><label for="emailpmnotify">{$lang->email_notify_newpm}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" name="invisible" id="invisible" value="yes" {$invisiblecheck} /></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="yes" {$invisiblecheck} /></td>
 <td valign="top"><span class="smalltext"><label for="invisible">{$lang->invisible_mode}</label></span></td>
 </tr>
 </table>
@@ -6517,7 +6539,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td>{$tzselect}</td>
 </tr>
 <tr>
-<td valign="top" colspan="2"><input type="checkbox" name="enabledst" id="enableddst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledstcheck">{$lang->enable_dst}</label></span>
+<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enableddst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledstcheck">{$lang->enable_dst}</label></span>
 </tr>
 </table>
 </fieldset>

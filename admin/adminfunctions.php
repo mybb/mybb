@@ -28,9 +28,13 @@ $cssselectors = array("body" => "body",
 					  "navigation_active" => ".navigation .active",
 					  "smalltext" => ".smalltext",
 					  "largetext" => ".largetext",
-					  "area_input_select_object" => "textarea, input, select, object",
+					  "input" => "input",
+					  "textarea" => "textarea",
+					  "radio" => "input.radio",
+					  "checkbox" => "input.checkbox",
+					  "select" => "select",
 					  "button" => "input.button",
-					  "editor" => ".editor",
+    				  "editor" => ".editor",
 					  "toolbar_normal" => ".toolbar_normal",
 					  "toolbar_hover" => ".toolbar_hover",
 					  "toolbar_clicked" => ".toolbar_clicked",
@@ -525,6 +529,83 @@ function makecssautocompleteedit($css)
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+	endtable();
+}
+
+function makecssinputedit($css)
+{
+	global $lang, $tid, $tcache;
+	if(!is_array($tcache))
+	{
+		cache_themes();
+	}
+	starttable();
+	tableheader($lang->form_elements);
+	$form_elements = array("input", "textarea", "radio", "checkbox", "select", "button");
+	$c = 0;
+	foreach($form_elements as $key => $element)
+	{
+		$name = "";
+		$revert = "";
+		$highlight = "";
+		if($c == 2)
+		{
+			$c = 1;
+			echo "<tr>\n";
+			echo $header_buffer;
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo $content_buffer;
+			echo "</tr>";
+			$header_buffer = "";
+			$content_buffer = "";
+		}
+		else
+		{
+			$c++;
+		}
+		$langvar = "form_elements_".$element;
+		$name = $lang->$langvar;
+		if($css[$element]['inherited'] != $tid && $css[$element]['inherited'] != 1)
+		{
+			$inheritid = $css[$element]['inherited'];
+			$inheritedfrom = $tcache[$inheritid]['name'];
+			$highlight = "highlight3";
+			$name .= "(".$lang->inherited_from." ".$inheritedfrom.")";
+		}
+		elseif($css[$element]['inherited'] == 1)
+		{
+		}
+		else
+		{
+			$highlight = "highlight2";
+			$name .= " (".$lang->customized_this_style.")";
+			$revert = "<input type=\"checkbox\" name=\"revert_css[$element]\" value=\"1\" id=\"revert_css_$element\" /> <label for=\"revert_css_$element\">".$lang->revert_customizations."</label>";
+		}
+		$header_buffer .= "<td class=\"subheader\" align=\"center\">".$name."</td>\n";
+
+		$content_buffer .=  "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
+		$content_buffer .=  "<table width=\"100%\">\n";
+		$content_buffer .=  "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[$element][background]\" value=\"".$css[$element]['background']."\" size=\"25\" class=\"$highlight\"/></td>\n</tr>\n";
+		$content_buffer .=  "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[$element][color]\" value=\"".$css[$element]['color']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		$content_buffer .=  "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[$element][border]\" value=\"".$css[$element]['border']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		$content_buffer .=  "<tr>\n";
+		$content_buffer .=  "<td class=\"altbg1\" width=\"50%\" valign=\"top\" colspan=\"2\">\n";
+		$content_buffer .=  "<textarea style=\"width: 98%; padding: 4px;\" rows=\"4\" name=\"css[$element][extra]\" class=\"$highlight\">".htmlspecialchars_uni($css[$element]['extra'])."</textarea>\n";
+		$content_buffer .= $revert;
+		$content_buffer .=  "</td>\n";
+		$content_buffer .=  "</tr>\n";
+		$content_buffer .= "</table>\n";
+		$content_buffer .= "</td>\n";
+	}
+	echo "<tr>\n";
+	echo $header_buffer;
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo $content_buffer;
+	echo "</tr>";
+	$submit = makebuttoncode($lang->save_changes, $lang->save_changes, "submit");
+	tablesubheader("<div style=\"float: right;\">$submit</div>", "", 2, "left");
 	endtable();
 }
 function endtable()
