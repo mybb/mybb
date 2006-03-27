@@ -6566,11 +6566,12 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <script type="text/javascript">
 	new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif"});
 </script>]]></template>
-		<template name="xmlhttp_inline_post_edit" version="100.07"><![CDATA[<div style="width: 99%; clear: both; padding-top: 6px;">
-			<div>
-				<textarea style="width: 100%;" rows="12" cols="80" id="quickedit_{$post['pid']}" />{$post['message']}</textarea>
+		<template name="xmlhttp_inline_post_editor" version="100.07"><![CDATA[<br />
+		<div style="width: 90%; clear: both; margin: auto auto; padding-top: 2%" class="editor">
+			<div align="center">
+				<textarea style="width: 96%;" rows="12" cols="80" id="quickedit_{$post['pid']}" />{$post['message']}</textarea>
 			</div>
-			<div style="float: right; margin-top: 5px;">
+			<div style="margin: auto auto; text-align: right; margin-top: 2px; margin-bottom: 4px; width: 96%;">
 				<input type="button" class="button" onclick="Thread.quickEditSave({$post['pid']});" value="Save Changes" />
 				<input type="button" class="button" onclick="Thread.quickEditCancel({$post['pid']});" value="Cancel Edit" />
 			</div>
