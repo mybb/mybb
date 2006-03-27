@@ -29,6 +29,7 @@ $cssselectors = array("body" => "body",
 					  "smalltext" => ".smalltext",
 					  "largetext" => ".largetext",
 					  "area_input_select_object" => "textarea, input, select, object",
+					  "button" => "input.button"
 					  "editor" => ".editor",
 					  "toolbar_normal" => ".toolbar_normal",
 					  "toolbar_hover" => ".toolbar_hover",

@@ -286,7 +286,91 @@ var DomLib = {
 	        }
 	    }
 	    return (arrReturnElements)
+	},
+	
+	// This function is from quirksmode.org
+	// Modified for use in MyBB
+	getPageScroll: function()
+	{
+		var yScroll;
+		if(self.pageYOffset)
+		{
+			yScroll = self.pageYOffset;
+		}
+		else if(document.documentElement && document.documentElement.scrollTop) // Explorer 6 Strict
+		{
+			yScroll = document.documentElement.scrollTop;
+		}
+		else if(document.body) // all other Explorers
+		{
+			yScroll = document.body.scrollTop;
+		}
+		arrayPageScroll = new Array('',yScroll);
+		return arrayPageScroll;
+	},
+
+	// This function is from quirksmode.org
+	// Modified for use in MyBB
+	getPageSize: function()
+	{
+		var xScroll, yScroll;
+
+		if(window.innerHeight && window.scrollMaxY)
+		{	
+			xScroll = document.body.scrollWidth;
+			yScroll = window.innerHeight + window.scrollMaxY;
+		} 
+		else if(document.body.scrollHeight > document.body.offsetHeight) // all but Explorer Mac
+		{ 
+			xScroll = document.body.scrollWidth;
+			yScroll = document.body.scrollHeight;
+		}
+		else  // Explorer Mac...would also work in Explorer 6 Strict, Mozilla and Safari
+		{
+			xScroll = document.body.offsetWidth;
+			yScroll = document.body.offsetHeight;
+		}
+
+		var windowWidth, windowHeight;
+		if(self.innerHeight) // all except Explorer
+		{
+			windowWidth = self.innerWidth;
+			windowHeight = self.innerHeight;
+		}
+		else if(document.documentElement && document.documentElement.clientHeight)  // Explorer 6 Strict Mode
+		{
+			windowWidth = document.documentElement.clientWidth;
+			windowHeight = document.documentElement.clientHeight;
+		}
+		else if (document.body) // other Explorers
+		{
+			windowWidth = document.body.clientWidth;
+			windowHeight = document.body.clientHeight;
+		}	
+
+		// for small pages with total height less then height of the viewport
+		if(yScroll < windowHeight)
+		{
+			pageHeight = windowHeight;
+		}
+		else
+		{ 
+			pageHeight = yScroll;
+		}
+
+		// for small pages with total width less then width of the viewport
+		if(xScroll < windowWidth)
+		{	
+			pageWidth = windowWidth;
+		}
+		else
+		{
+			pageWidth = xScroll;
+		}
+		arrayPageSize = new Array(pageWidth,pageHeight,windowWidth,windowHeight);
+		return arrayPageSize;
 	}
+
 }
 
 var expandables = {
@@ -380,6 +464,68 @@ var expandables = {
 			newCollapsed[newCollapsed.length] = id;
 		}
 		Cookie.set("collapsed", newCollapsed.join("|"));
+	}
+};
+
+var ActivityIndicator = Class.create();
+
+ActivityIndicator.prototype = {
+	initialize: function(owner, options)
+	{
+		if(options && options.image)
+		{
+			image = "<img src=\""+options.image+"\" alt=\"Loading\" />";
+		}
+		else
+		{
+			image = "";
+		}
+		this.height = options.height || 150;
+		this.width = options.width || 150;
+		if(owner == "body")
+		{
+			arrayPageSize = DomLib.getPageSize();
+			arrayPageScroll = DomLib.getPageScroll();
+			var top = arrayPageScroll[1] + ((arrayPageSize[3] - 35 - this.height) / 2);
+			var left = ((arrayPageSize[0] - 20 - this.width) / 2);
+			owner = document.getElementsByTagName("body").item(0);
+		}
+		else
+		{
+			if($(owner))
+			{
+				owner = $(owner);
+			}
+			element = owner;
+			top = left = 0;
+			do
+			{
+				top += element.offsetTop || 0;
+				left += element.offsetLeft || 0;
+				element = element.offsetParent;
+			} while(element);
+			
+			left += owner.offsetWidth;
+			top += owner.offsetHeight;
+		}
+		this.spinner = document.createElement("div");
+		this.spinner.style.border = "1px solid #000000";
+		this.spinner.style.background = "#FFFFFF";
+		this.spinner.style.position = "absolute";
+		this.spinner.style.zIndex = 1000;
+		this.spinner.style.textAlign = "center";
+		this.spinner.style.verticalAlign = "middle";
+		this.spinner.innerHTML = "<br />"+image+"<br /><br /><strong>Loading. <br />Please Wait..</strong>";
+		this.spinner.style.width = this.width + "px";
+		this.spinner.style.height = this.height + "px";
+		this.spinner.style.top = top + "px";
+		this.spinner.style.left = left + "px";
+		owner.insertBefore(this.spinner, owner.firstChild);		
+	},
+	
+	destroy: function()
+	{
+		Element.remove(this.spinner);
 	}
 }
 

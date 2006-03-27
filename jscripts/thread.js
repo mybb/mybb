@@ -1,6 +1,7 @@
 var Thread = {
 	init: function()
 	{
+		Thread.qeCache = new Array();
 	},
 
 	quickQuote: function(pid)
@@ -40,6 +41,93 @@ var Thread = {
 	reportPost: function(pid)
 	{
 		MyBB.popupWindow("report.php?pid="+pid, "reportPost", 400, 300)
+	},
+	
+	quickEdit: function(pid)
+	{
+		if(!$("pid_"+pid))
+		{
+			return false;
+		}
+		if(Thread.qeCache[pid])
+		{
+			return false;
+		}
+		Thread.qeCache[pid] = $("pid_"+pid).innerHTML;
+		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
+		new ajax('xmlhttp.php?action=edit_post&do=get_post&pid='+pid, {method: 'get', onComplete: function(request) { Thread.quickEditLoaded(request, pid); }});
+	},
+	
+	quickEditLoaded: function(request, pid)
+	{
+		if(request.responseText.match(/<error>(.*)<\/error>/))
+		{
+			message = request.responseText.match(/<error>(.*)<\/error>/);
+			if(!message[1])
+			{
+				message[1] = "An unknown error occurred.";
+			}
+			alert('There was an error performing the update.\n\n'+message[1]);
+		}
+		else if(request.responseText)
+		{
+			$("pid_"+pid).innerHTML = request.responseText;
+		}
+		element = $("quickedit_"+pid);
+		element.focus();
+		offsetTop = -60;
+		do
+		{
+			offsetTop += element.offsetTop || 0;
+			element = element.offsetParent;
+		} while(element);
+		
+		scrollTo(0, offsetTop);
+		
+		this.spinner.destroy();		
+	},
+	
+	quickEditSave: function(pid)
+	{
+		message = $("quickedit_"+pid).value;
+		if(message == "")
+		{
+			return false;
+		}
+		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
+		
+		postData = "value="+encodeURIComponent(message);
+		postData += "&pid="+pid;
+
+		new ajax('xmlhttp.php?action=edit_post&do=update_post', {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});		
+	},
+	
+	quickEditCancel: function(pid)
+	{
+		$("pid_"+pid).innerHTML = Thread.qeCache[pid];
+		if(this.spinner)
+		{
+			this.spinner.destroy();
+		}
+	},
+	
+	quickEditSaved: function(request, pid)
+	{
+		if(request.responseText.match(/<error>(.*)<\/error>/))
+		{
+			message = request.responseText.match(/<error>(.*)<\/error>/);
+			if(!message[1])
+			{
+				message[1] = "An unknown error occurred.";
+			}
+			alert('There was an error performing the update.\n\n'+message[1]);
+		}
+		else if(request.responseText)
+		{
+			$("pid_"+pid).innerHTML = request.responseText;
+		}
+		Thread.qeCache[pid] = "";
+		this.spinner.destroy();		
 	}
 }
 Event.observe(window, 'load', Thread.init);

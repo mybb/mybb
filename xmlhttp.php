@@ -58,8 +58,40 @@ if(isset($mybb->user['language']) && $lang->languageExists($mybb->user['language
 }
 $lang->setLanguage($mybb->settings['bblanguage']);
 
-// Load the language pack for this file
+// Load the language pack for this file.
+if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
+{
+	$loadstyle = "tid='".$mybb->user['style']."'";
+}
+else
+{
+	$loadstyle = "def=1";
+}
+
+$query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits", $loadstyle);
+$theme = $db->fetch_array($query);
+$theme = @array_merge($theme, unserialize($theme['themebits']));
+
+// Set the appropriate image language directory for this theme.
+if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
+{
+	$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
+}
+else
+{
+	if(is_dir($theme['imgdir'].'/'.$mybb->settings['bblanguage']))
+	{
+		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
+	}
+	else
+	{
+		$theme['imglangdir'] = $theme['imgdir'];
+	}
+}
+
 //$lang->load("xmlhttp");
+
+// Load basic theme information that we could be needing.
 
 $plugins->run_hooks("xmlhttp");
 
@@ -194,6 +226,102 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 	
 	// Close the connection.
 	exit;
+}
+else if($mybb->input['action'] == "edit_post")
+{
+	// Fetch the post from the database.
+	$post = get_post($mybb->input['pid']);
+		
+	// No result, die.
+	if(!$post['pid'])
+	{
+		xmlhttp_error("The specified post does not exist.");
+	}
+	
+	// Fetch the thread associated with this post.
+	$thread = get_thread($post['tid']);
+
+	// Fetch the specific forum this thread/post is in.
+	$forum = get_forum($thread['fid']);
+
+	// Missing thread, invalid forum? Error.
+	if(!$thread['tid'] || !$forum['fid'] || $forum['type'] != "f")
+	{
+		xmlhttp_error("The specified thread does not exist.");
+	}
+	
+	// Fetch forum permissions.
+	$forumpermissions = forum_permissions($forum['fid']);
+	
+	// If this user is not a moderator with "caneditposts" permissions.
+	if(ismod($forum['fid'], "caneditposts") != "yes")
+	{
+		// Thread is closed - no editing allowed.
+		if($thread['closed'] == "yes")
+		{
+			xmlhttp_error("This thread is closed and you may not edit subjects.");
+		}
+		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
+		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'])
+		{
+			xmlhttp_eror("You do not have permission to this title.");
+		}
+		// If we're past the edit time limit - don't allow editing.
+		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (time()-($mybb->settings['edittimelimit']*60)))
+		{
+			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
+			xmlhttp_eror($lang->edit_time_limit);
+		}
+	}	
+	if($mybb->input['do'] == "get_post")
+	{
+		// Send our headers.
+		header("Content-type: text/html; charset=utf-8");
+		
+		// Send the contents of the post.
+		eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");		
+		echo $inline_editor;
+		exit;
+	}
+	else if($mybb->input['do'] == "update_post")
+	{
+		$message = rawurldecode($mybb->input['value']);
+		$updatepost = array(
+			"message" => addslashes($message),
+		);
+
+		// If we need to show the edited by, let's do so.
+		if(($mybb->settings['showeditedby'] == "yes" && ismod($post['fid'], "caneditposts", $post['edit_uid']) != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && ismod($post['fid'], "caneditposts", $post['edit_uid']) == "yes"))
+		{
+			$updatepost['edituid'] = intval($post['edit_uid']);
+			$updatepost['edittime'] = time();
+		}
+		
+		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".$mybb->input['pid']."'");
+		
+		require "./inc/class_parser.php";
+		$parser = new postParser;
+		
+		$parser_options = array(
+			"allow_html" => $forum['allowhtml'],
+			"allow_mycode" => $forum['allowmycode'],
+			"allow_smilies" => $forum['allowsmilies'],
+			"allow_imgcode" => $forum['allowimgcode']
+		);
+		if($post['smilieoff'] == "yes")
+		{
+			$parser_options['allow_smilies'] = "no";
+		}
+	
+		$message = $parser->parse_message($message, $parser_options);
+		
+		// Send our headers.
+		header("Content-type: text/plain; charset=utf-8");
+		echo "<p>\n";
+		echo $message;
+		echo "</p>\n";
+		exit;	
+	}
 }
 
 /**

@@ -16,6 +16,10 @@ inlineEditor.prototype = {
 		{
 			this.spinnerImage = options.spinnerImage;
 		}
+		if(options.editButton == true)
+		{
+			this.editButton = true;
+		}
 		if(options.textBox)
 		{
 			if(!$(options.textBox))
@@ -41,10 +45,21 @@ inlineEditor.prototype = {
 	
 	makeEditable: function(element)
 	{
-		element.title = element.title+" (Click and hold to edit)";
-		element.onmousedown = this.onMouseDown.bindAsEventListener(this);
+		if(!this.editButton)
+		{
+			element.title = element.title+" (Click and hold to edit)";
+			element.onmousedown = this.onMouseDown.bindAsEventListener(this);
+		}
+		else
+		{
+			editButton = $(element.id+"_inlineedit");
+			if(editButton)
+			{
+				editButton.onclick = function() {this.onButtonClick(element.id)}.bindAsEventListener(this);
+			}
+		}
 	},
-	
+
 	onMouseDown: function(e)
 	{
 		element = Event.element(e);
@@ -56,7 +71,7 @@ inlineEditor.prototype = {
 		this.downTime = 0;
 		
 		this.timeout = setTimeout(this.showTextbox.bindAsEventListener(this), 1200);
-		
+
 		element.onmouseup = this.onMouseUp.bindAsEventListener(this);
 		
 		return false;
@@ -69,33 +84,42 @@ inlineEditor.prototype = {
 		this.currentIndex = -1;
 	},
 	
+	onButtonClick: function(id)
+	{
+		if($(id))
+		{
+			this.currentIndex = $(id).index;
+			this.showTextbox();
+		}
+		return false;
+	},
+	
 	showTextbox: function()
 	{
 		this.element = this.elements[this.currentIndex];
 
-		if(!element.parentNode || typeof(element.index) == "undefined")
+		if(!this.element.parentNode || typeof(this.element.index) == "undefined")
 		{
 			return false;
 		}
-		//element.ondblclick = "";
-		this.currentIndex = element.index;
+		this.currentIndex = this.element.index;
 		value = this.element.innerHTML;
 		this.textbox = document.createElement("input");
+		this.textbox.style.width = "95%";
 		this.textbox.type = "text";
-		this.textbox.name = "value";
-		this.textbox.value = MyBB.unHTMLchars(value);
-		this.textbox.index = this.element.index;
 		this.textbox.onblur = this.onBlur.bindAsEventListener(this);
 		this.textbox.onkeypress = this.onKeyPress.bindAsEventListener(this);
 		this.textbox.setAttribute("autocomplete", "off");
+		this.textbox.name = "value";
+		this.textbox.index = this.element.index;
 		this.element.style.display = "none";
+		this.textbox.value = MyBB.unHTMLchars(value);
 		this.element.parentNode.insertBefore(this.textbox, this.element);
-		this.textbox.focus();
+		this.textbox.focus();				
 	},
 	
 	onBlur: function(e)
 	{
-		element = Event.element(e);
 		this.hideTextbox();
 	},
 	
@@ -107,6 +131,11 @@ inlineEditor.prototype = {
 		}
 	},
 	
+	onSubmit: function(e)
+	{
+		this.hideTextbox();
+	},
+	
 	hideTextbox: function()
 	{
 		this.textbox.onblur = "";
@@ -115,11 +144,11 @@ inlineEditor.prototype = {
 		{
 			this.element.innerHTML = newValue;
 			this.lastIndex = this.currentIndex;
+			postData = "value="+encodeURIComponent(this.textbox.value)
 			if(this.spinnerImage)
 			{
 				this.showSpinner();
 			}
-			postData = "value="+encodeURIComponent(this.textbox.value)
 			if(this.element.id)
 			{
 				idInfo = this.element.id.split("_");
@@ -180,6 +209,6 @@ inlineEditor.prototype = {
 		{
 			return false;
 		}
-		Element.remove(this.spinner);		
+		Element.remove(this.spinner);
 	}
 }
