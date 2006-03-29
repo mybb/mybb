@@ -1052,7 +1052,7 @@ admin=Administrator Activation]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Who's Online" description="" disporder="13" isdefault="yes">
+	<settinggroup name="Who's Online" description="Various settings regarding the Who is Online functionality." disporder="13" isdefault="yes">
 		<setting name="wolcutoffmins">
 			<title>Cut-off Time (mins)</title>
 			<description><![CDATA[The number of minutes before a user is marked offline. Recommended: 15.]]></description>
@@ -1062,13 +1062,14 @@ admin=Administrator Activation]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="mybb:hidden" description="" disporder="0" isdefault="yes">
-		<setting name="fulltextsearching">
-			<title></title>
-			<description><![CDATA[]]></description>
-			<disporder>0</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+	<settinggroup name="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads and posts in MyBB," disporder="14" isdefault="yes">
+		<setting name="searchtype">
+			<title>Search Type</title>
+			<description><![CDATA[Please select the type of search system you wish to use. You can either chose between "Standard", or "Full Text" (depending on your database). Fulltext searching is more powerful than the standard MyBB searching and quicker too.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[php
+<select name=\"upsetting[{$setting['sid']}]\"><option value=\"standard\">Standard</option>".($db->supports_fulltext(TABLE_PREFIX."threads") && $db->supports_fulltext_boolean(TABLE_PREFIX."posts")?"<option value=\"fulltext\"".($setting['value']=="fulltext"?" selected=\"selected\"":"").">Full Text</option>":"")."</select>]]></optionscode>
+			<settingvalue><![CDATA[standard]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>

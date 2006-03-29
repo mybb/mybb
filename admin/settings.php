@@ -165,7 +165,7 @@ if($mybb->input['action'] == "do_edit") {
 			"name" => addslashes($mybb->input['name']),
 			"title" => addslashes($mybb->input['title']),
 			"description" => addslashes($mybb->input['description']),
-			"optionscode" => $mybb->input['type'],
+			"optionscode" => addslashes($mybb->input['type']),
 			"value" => addslashes($mybb->input['value']),
 			"disporder" => intval($mybb->input['disporder']),
 			"gid" => intval($mybb->input['gid'])
@@ -314,7 +314,7 @@ if($mybb->input['action'] == "modify") {
 		cpheader();
 	}
 	startform("settings.php", "", "do_modify");
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE disporder>0 ORDER BY disporder");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
 	while($group = $db->fetch_array($query)) {
 		$settinglist .= "<li><strong>$group[name]</strong> ($lang->disp_order_list <input type=\"text\" name=\"dispordercats[$group[gid]]\" size=\"4\" value=\"$group[disporder]\"> ".
 			makelinkcode($lang->edit, "settings.php?action=edit&gid=$group[gid]").
@@ -428,7 +428,13 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 					$options .= "<option value=\"$lname\" $sel>$language</option>";
 				}
 				$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
-			} else {
+			}
+			elseif($type[0] == "php")
+			{
+				$setting['optionscode'] = substr($setting['optionscode'], 3);
+				eval("\$settingcode = \"".$setting['optionscode']."\";");
+			}
+			else {
 				for($i=0;$i<count($type);$i++) {
 					$optionsexp = explode("=", $type[$i]);
 					if(!$optionsexp[1]) {

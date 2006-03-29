@@ -909,7 +909,7 @@ function install_done()
 		$update_data = array(
 			"value" => "yes"
 		);
-		$db->update_query(TABLE_PREFIX."settings", $update_data, "name='fulltextsearching'");
+		$db->update_query(TABLE_PREFIX."settings", $update_data, "name='searchtype'");
 		write_settings();
 	}
 

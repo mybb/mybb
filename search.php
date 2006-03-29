@@ -790,7 +790,7 @@ elseif($mybb->input['action'] == "do_search")
 
 	if($config['dbtype'] == "mysql")
 	{
-		if($settings['fulltextsearching'] == "yes" && $db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
+		if($settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
 		{
 			$search_results = perform_search_mysql_ft($search_data);
 		}
