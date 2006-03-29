@@ -524,28 +524,17 @@ form {
 </tbody>
 </table>
 <br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td valign="middle" align="left">
-<table cellspacing="0" cellpadding="2" border="0">
-<tr><td><img src="{$theme['imgdir']}/on.gif" alt="{$lang->new_posts}" /></td><td class="trow"><span class="smalltext">{$lang->new_posts}</span></td></tr>
-<tr><td><img src="{$theme['imgdir']}/off.gif" alt="{$lang->no_new_posts}" /></td><td class="trow"><span class="smalltext">{$lang->no_new_posts}</span></td></tr>
-<tr><td><img src="{$theme['imgdir']}/offlock.gif" alt="{$lang->forum_locked}" /></td><td class="trow"><span class="smalltext">{$lang->forum_locked}</span></td></tr>
-</table>
-</td>
-<td valign="top" align="right">
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td valign="top" align="right">
-<span class="smalltext">{$logoutlink}<a href="misc.php?action=markread">{$lang->markread}</a> | <a href="showteam.php">{$lang->forumteam}</a> | <a href="stats.php">{$lang->forumstats}</a></span>
-</td></tr>
-{$loginform}
-</table>
-</td></tr>
-</table>
-</td></tr>
+<table align="center" width="{$theme['tablewidth']}">
+	<tr>
+		<td>
+			<img src="{$theme['imgdir']}/on.gif" alt="{$lang->new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /> <span class="smalltext">{$lang->new_posts}</span><br />
+			<img src="{$theme['imgdir']}/off.gif" alt="{$lang->no_new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /> <span class="smalltext">{$lang->no_new_posts}</span><br />
+			<img src="{$theme['imgdir']}/offlock.gif" alt="{$lang->forum_locked}" style="vertical-align: middle;" /> <span class="smalltext">{$lang->forum_locked}</span>
+		</td>
+		<td style="vertical-align: top; text-align: right;"><span class="smalltext">{$logoutlink}<a href="misc.php?action=markread">{$lang->markread}</a> | <a href="showteam.php">{$lang->forumteam}</a> | <a href="stats.php">{$lang->forumstats}</a></span>
+			{$loginform}
+		</td>
+	</tr>
 </table>
 {$footer}
 </body>
@@ -620,10 +609,12 @@ var inlineId = {$tid};
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" align="center" cellspacing="0" cellpadding="0"><tr>
-<td align="left" valign="bottom">{$multipage}</td>
-<td align="right">{$newreply}{$newthread}</td></tr></table>
-<span class="smalltext"><br /></span>
+<table align="center" width="{$theme['tablewidth']}">
+	<tr>
+		<td style="vertical-align: bottom;">{$multipage}</td>
+		<td style="text-align: right;">{$newreply}{$newthread}</td>
+	</tr>
+</table>
 {$pollbox}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -644,53 +635,49 @@ var inlineId = {$tid};
 </table>
 {$threadexbox}
 <br />
-<table width="{$theme['tablewidth']}" align="center" cellspacing="0" cellpadding="0"><tr>
-<td>{$newreply}{$newthread}</td></tr></table>
+<table align="center" width="{$theme['tablewidth']}">
+	<tr>
+		<td>{$newreply}{$newthread}</td>
+	</tr>
+</table>
 {$quickreply}
 {$moderationoptions}
 {$similarthreads}
 <br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td valign="middle" align="left"><span class="smalltext">
-<a href="printthread.php?tid={$tid}">{$lang->view_printable}</a><br />
-<a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a><br />
-<a href="usercp2.php?action=addsubscription&amp;tid={$tid}">{$lang->subscribe_thread}</a> | <a href="usercp2.php?action=addfavorite&amp;tid={$tid}">{$lang->add_favorites}</a></span></td>
-<td valign="middle" align="right">
-{$ratethread}
-<br />
-{$forumjump}
-</td></tr>
-</table>
-</td></tr>
+<table align="center" width="{$theme['tablewidth']}">
+	<tr>
+		<td>
+			<span class="smalltext">
+				<a href="printthread.php?tid={$tid}">{$lang->view_printable}</a><br />
+				<a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a><br />
+				<a href="usercp2.php?action=addsubscription&amp;tid={$tid}">{$lang->subscribe_thread}</a> | <a href="usercp2.php?action=addfavorite&amp;tid={$tid}">{$lang->add_favorites}</a>
+			</span>
+		</td>
+		<td style="text-align: right;">
+			{$ratethread}
+			<br />
+			{$forumjump}
+		</td>
+	</tr>
 </table>
 {$footer}
 </body>
 </html>]]></template>
-		<template name="showthread_ratethread" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
-<tr><td class="trow">
-<form action="ratethread.php" method="post">
-<span class="smalltext"><strong>{$lang->rate_thread}</strong></span>
-<select name="rating">
-<option value="">{$lang->select_rating}</option>
-<option value="5">{$lang->rating_5}</option>
-<option value="4">{$lang->rating_4}</option>
-<option value="3">{$lang->rating_3}</option>
-<option value="2">{$lang->rating_2}</option>
-<option value="1">{$lang->rating_1}</option>
-</select>
-<input type="hidden" name="tid" value="{$tid}" />
-{$gobutton}
+		<template name="showthread_ratethread" version="100.07"><![CDATA[<form action="ratethread.php" method="post">
+	<span class="smalltext"><strong>{$lang->rate_thread}</strong></span>
+	<select name="rating">
+		<option value="">{$lang->select_rating}</option>
+		<option value="5">{$lang->rating_5}</option>
+		<option value="4">{$lang->rating_4}</option>
+		<option value="3">{$lang->rating_3}</option>
+		<option value="2">{$lang->rating_2}</option>
+		<option value="1">{$lang->rating_1}</option>
+	</select>
+	<input type="hidden" name="tid" value="{$tid}" />
+	{$gobutton}
 </form>
-</td></tr>
-</table>
 ]]></template>
-		<template name="forumjump_advanced" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
-<tr><td class="trow" align="right">
-<form action="forumdisplay.php" method="get">
+		<template name="forumjump_advanced" version="100.07"><![CDATA[<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>{$lang->forumjump}</strong></span>
 <select name="{$name}" onchange="window.location=('forumdisplay.php?fid='+this.options[this.selectedIndex].value)">
 <option value="-1" {$jumpsel['default']}>{$lang->forumjump_select}</option>
@@ -704,8 +691,6 @@ var inlineId = {$tid};
 </select>
 {$gobutton}
 </form>
-</td></tr>
-</table>
 ]]></template>
 		<template name="forumdisplay_searchforum" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
 <tr><td>
@@ -3946,23 +3931,14 @@ var inlineId = {$fid};
 <td class="trow1">{$users['regdate']}</td>
 <td class="trow2">{$users['postnum']}</td>
 </tr>]]></template>
-		<template name="index_loginform" version="100.07"><![CDATA[<tr>
-<td align="right" class="trow">
+		<template name="index_loginform" version="100.07"><![CDATA[<br /><br />
 <form action="member.php" method="post">
-<input type="hidden" name="action" value="do_login" />
-<table width="100%" border="0" cellspacing="0" cellpadding="3">
-<tr>
-<td align="right" valign="middle" width="100%" class="trow"><span class="smalltext"><strong>{$lang->quick_login}</strong></span></td>
-<td align="right" valign="middle" nowrap="nowrap">
-<input type="text" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="this.value=''" />
-<input type="password" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="this.value=''" />
-{$gobutton}
-</td>
-</tr>
-</table>
-</form>
-</td>
-</tr>]]></template>
+	<input type="hidden" name="action" value="do_login" />
+	<span class="smalltext"><strong>{$lang->quick_login}</strong></span> 
+	<input type="text" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="this.value=''" />
+	<input type="password" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="this.value=''" />
+	{$gobutton}
+</form>]]></template>
 		<template name="multipage" version="100.07"><![CDATA[<span class="smalltext"><span class="pagenav">{$lang->multipage_pages}</span>{$start} {$prevpage} {$mppage} {$nextpage} {$end}</span>]]></template>
 		<template name="multipage_end" version="100.07"><![CDATA[<span class="pagenavbit"><a href="{$url}&amp;page={$pages}">{$lang->multipage_last} &raquo;</a></span>]]></template>
 		<template name="multipage_nextpage" version="100.07"><![CDATA[<span class="pagenavbit"><a href="{$url}&amp;page={$next}">&raquo;</a></span>]]></template>

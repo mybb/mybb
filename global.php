@@ -113,7 +113,7 @@ if(isset($mybb->input['fid']))
 	$query = $db->query("SELECT f.style, f.overridestyle FROM ".TABLE_PREFIX."forums f WHERE f.fid='".intval($mybb->input['fid'])."'");
 	$style = $db->fetch_array($query);
 }
-if(isset($style['style']))
+if(isset($style['style']) && $style['style'] > 0)
 {
 	if($style['overridestyle'] == "yes" || !isset($mybb->user['style']))
 	{
