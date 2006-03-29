@@ -84,7 +84,8 @@ var Thread = {
 		
 		scrollTo(0, offsetTop);
 		
-		this.spinner.destroy();		
+		this.spinner.destroy();	
+		this.spinner = '';	
 	},
 	
 	quickEditSave: function(pid)
@@ -108,6 +109,7 @@ var Thread = {
 		if(this.spinner)
 		{
 			this.spinner.destroy();
+			this.spinner = '';
 		}
 	},
 	
@@ -127,7 +129,9 @@ var Thread = {
 			$("pid_"+pid).innerHTML = request.responseText;
 		}
 		Thread.qeCache[pid] = "";
-		this.spinner.destroy();		
+		this.spinner.destroy();
+		this.spinner = '';
+
 	}
 }
 Event.observe(window, 'load', Thread.init);
