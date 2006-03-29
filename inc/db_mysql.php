@@ -590,7 +590,7 @@ class databaseEngine {
 	function is_fulltext($table, $index="")
 	{
 		$structure = $this->show_create_table($table);
-		if($index)
+		if($index != "")
 		{
 			if(preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure))
 			{

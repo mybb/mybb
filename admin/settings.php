@@ -54,6 +54,18 @@ if($mybb->input['action'] == "do_change") {
 		}
 	}
 	rebuildsettings();
+	// Check if we need to create our fulltext index after changing the search mode
+	if($mybb->settings['searchtype'] == "fulltext")
+	{
+		if(!$db->is_fulltext(TABLE_PREFIX."posts") && $db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
+		{
+			$db->create_fulltext_index(TABLE_PREFIX."posts", "message");
+		}
+		if(!$db->is_fulltext(TABLE_PREFIX."posts") && $db->supports_fulltext(TABLE_PREFIX."threads"))
+		{
+			$db->create_fulltext_index(TABLE_PREFIX."threads", "subject");
+		}
+	}
 	cpredirect("settings.php", $lang->settings_updated);
 }
 
