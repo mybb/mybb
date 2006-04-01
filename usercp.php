@@ -1498,7 +1498,7 @@ elseif($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_avatar_start");
 	require "./inc/functions_upload.php";
-	if($mybb->input['remove'])
+	if($mybb->input['remove']) // remove avatar
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."users SET avatar='', avatartype='' WHERE uid='".$mybb->user['uid']."'");
 		remove_avatars($mybb->user['uid']);
@@ -1519,7 +1519,7 @@ elseif($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		}
 		remove_avatars($mybb->user['uid']);
 	}
-	elseif($_FILES['avatarupload']['name'])
+	elseif($_FILES['avatarupload']['name']) // upload avatar
 	{
 		if($mybb->usergroup['canuploadavatars'] == "no")
 		{
@@ -1532,14 +1532,16 @@ elseif($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		}
 		$db->query("UPDATE ".TABLE_PREFIX."users SET avatar='".$avatar['avatar']."', avatartype='upload' WHERE uid='".$mybb->user['uid']."'");
 	}
-	else
+	else // remote avatar
 	{
 		$mybb->input['avatarurl'] = preg_replace("#script:#i", "", $mybb->input['avatarurl']);
 		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
 		$ext = getextension($mybb->input['avatarurl']);
-		if(preg_match("#gif|jpg|jpeg|jpe|bmp|png#i", $ext) && $mybb->settings['maxavatardims'] != "")
+		list($width, $height, $type) = @getimagesize($mybb->input['avatarurl']);
+		
+		//if(preg_match("#gif|jpg|jpeg|jpe|bmp|png#i", $ext) && $mybb->settings['maxavatardims'] != "")
+		if($width && $height && $mybb->settings['maxavatardims'] != "")
 		{
-			list($width, $height) = @getimagesize($mybb->input['avatarurl']);
 			list($maxwidth, $maxheight) = explode("x", $mybb->settings['maxavatardims']);
 			if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
 			{
