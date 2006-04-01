@@ -442,7 +442,7 @@ switch($mybb->input['action'])
 			error($lang->error_nomergeposts);
 		}
 
-		$moderation->merge_posts($mergepost, $tid);
+		$moderation->merge_posts($mergepost, $tid, $mybb->input['sep']);
 
 		markreports($plist, "posts");
 		logmod($modlogdata, $lang->merged_selective_posts);
@@ -832,7 +832,6 @@ switch($mybb->input['action'])
 			$moderation->delete_thread($tid);
 			$tlist[] = $tid;
 		}
-		updateforumcount($fid);
 		logmod($modlogdata, $lang->multi_deleted_threads);
 		clearinline($fid, "forum");
 		markreports($tlist, "threads");
@@ -914,7 +913,6 @@ switch($mybb->input['action'])
 		logmod($modlogdata, $lang->multi_unapproved_threads);
 		clearinline($fid, "forum");
 		$cache->updatestats();
-		updateforumcount($fid);
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsunapproved);
 		break;
 
@@ -982,14 +980,13 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$q = "tid='-1'";
 		$moveto = intval($mybb->input['moveto']);
 		$threadlist = explode("|", $mybb->input['threads']);
 		foreach($threadlist as $tid)
 		{
-			$q .= " OR tid='".intval($tid)."'";
+			$tids[] = $tid;
 		}
-		if(ismod($moveto, "canmanagethreads") != "yes")
+		/*if(ismod($moveto, "canmanagethreads") != "yes")
 		{
 			nopermission();
 		}
@@ -997,7 +994,7 @@ switch($mybb->input['action'])
 		if($newperms['canview'] == "no")
 		{
 			nopermission();
-		}
+		}*/
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
 		$newforum = $db->fetch_array($query);
 		if($newforum['type'] != "f")
@@ -1009,44 +1006,10 @@ switch($mybb->input['action'])
 			error($lang->error_movetosameforum);
 		}
 
-		// Update unapproved threads and posts count
-		$query = $db->query("SELECT COUNT(*) AS count FROM ".TABLE_PREFIX."threads WHERE ($q) AND visible='0'");
-		$unapproved_threads = $db->fetch_array($query);
-		$unapproved_threads = intval($unapproved_threads['count']);
-		$query = $db->query("SELECT COUNT(*) AS count FROM ".TABLE_PREFIX."posts WHERE ($q) AND visible='0'");
-		$unapproved_posts = $db->fetch_array($query);
-		$unapproved_posts = intval($unapproved_posts['count']);
-		if($method != "copy")
-		{
-			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads-$unapproved_threads, unapprovedposts=unapprovedposts-$unapprovedposts WHERE fid='$fid'");
-		}
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads+$unapproved_threads, unapprovedposts=unapprovedposts+$unapprovedposts WHERE fid='$moveto'");
+		$moderation->move_threads($tids, $moveto);
 
-		$sqlarray = array(
-			"fid" => $moveto,
-			);
-		$db->update_query(TABLE_PREFIX."threads", $sqlarray, $q);
-		$db->update_query(TABLE_PREFIX."posts", $sqlarray, $q);
 		logmod($modlogdata, $lang->multi_moved_threads);
-		$query = $db->query("SELECT COUNT(p.pid) AS posts, u.uid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE $q GROUP BY u.uid ORDER BY posts DESC");
-		while($posters = $db->fetch_array($query))
-		{
-			if($method == "copy" && $newforum['usepostcounts'] != "no")
-			{
-				$pcount = "+$posters[posts]";
-			}
-			if($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no"))
-			{
-				$pcount = "+$posters[posts]";
-			}
-			if($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no"))
-			{
-				$pcount = "-$posters[posts]";
-			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]')");
-		}
-		updateforumcount($moveto);
-		updateforumcount($fid);
+
 		redirect("forumdisplay.php?fid=$moveto", $lang->redirect_inline_threadsmoved);
 		break;
 
@@ -1085,7 +1048,7 @@ switch($mybb->input['action'])
 		foreach($postlist as $pid)
 		{
 			$pid = intval($pid);
-			deletepost($pid);
+			$moderation->delete_post($pid);
 			$plist[] = $pid;
 			$deletecount++;
 		}
@@ -1093,7 +1056,7 @@ switch($mybb->input['action'])
 		$numposts = $db->num_rows($query);
 		if(!$numposts)
 		{
-			deletethread($tid);
+			$moderation->delete_thread($tid);
 			markreports($tid, "thread");
 			$url = "forumdisplay.php?fid=$fid";
 		}
@@ -1135,47 +1098,14 @@ switch($mybb->input['action'])
 			nopermission();
 		}
 		$postlist = explode("|", $mybb->input['posts']);
-		$pidin = '';
-		$comma = '';
 		foreach($postlist as $pid)
 		{
 			$pid = intval($pid);
-			$pidin .= "$comma'$pid'";
-			$comma = ",";
 			$plist[] = $pid;
 		}
-		$first = 1;
-		$query = $db->query("SELECT pid, message FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC LIMIT 0, 1");
-		$master = $db->fetch_array($query);
-		$masterpid = $master['pid'];
-		$message = $master['message'];
-		$sqlarray = array(
-			"pid" => $masterpid,
-			);
-		$db->update_query(TABLE_PREFIX."attachments", $sqlarray, "pid IN($pidin)");
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC");
-		while($post = $db->fetch_array($query))
-		{
-			if($post['pid'] != $masterpid)
-			{ // these are the selected posts
-				if($mybb->input['sep'] == "new_line")
-				{
-					$message .= "\n\n$post[message]";
-				}
-				else
-				{
-					$message .= "[hr]$post[message]";
-				}
-				deletepost($post['pid']);
-			}
-		}
-		$message = $db->escape_string($message);
-		$sqlarray = array(
-			"message" => $message,
-			);
-		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$masterpid'");
-		updatethreadcount($tid);
-		updateforumcount($fid);
+
+		$moderation->merge_posts($plist, $tid, $mybb->input['sep']);
+
 		markreports($plist, "posts");
 		logmod($modlogdata, $lang->merged_selective_posts);
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsmerged);
@@ -1227,13 +1157,9 @@ switch($mybb->input['action'])
 			nopermission();
 		}
 		$postlist = explode("|", $mybb->input['posts']);
-		$pidin = '';
-		$comma = '';
 		foreach($postlist as $pid)
 		{
 			$pid = intval($pid);
-			$pidin .= "$comma'$pid'";
-			$comma = ",";
 			$plist[] = $pid;
 		}
 		if($mybb->input['moveto'])
@@ -1249,74 +1175,10 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_invalidforum);
 		}
-		$newsubject = $db->escape_string($mybb->input['newsubject']);
-		$db->query("INSERT INTO ".TABLE_PREFIX."threads (fid,subject,icon,uid,username,dateline,lastpost,lastposter,replies,visible) VALUES ('$moveto','$newsubject','$thread[icon]','$thread[uid]','$thread[username]','$thread[dateline]','$thread[lastpost]','$thread[lastposter]','$numyes','1')");
-		$newtid = $db->insert_id();
-		// move the selected posts over
-		$sqlarray = array(
-			"tid" => $newtid,
-			"fid" => $moveto,
-			);
-		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid IN($pidin)");
+		$newsubject = $mybb->input['newsubject'];
 
-		// Update unapproved post count
-		$query = $db->query("SELECT COUNT(*) AS count FROM ".TABLE_PREFIX."posts WHERE tid='$newtid' AND visible='0'");
-		$unapproved_posts = $db->fetch_array($query);
-		$unapproved_posts = intval($unapproved_posts['count']);
-		if($unapproved_posts)
-		{
-			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-$unapproved_posts WHERE fid='$fid'");
-			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts+$unapproved_posts WHERE fid='$moveto'");
-			$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-$unapproved_posts WHERE tid='$tid'");
-			$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+$unapproved_posts WHERE tid='$newtid'");
-		}
+		$moderation->split_posts($plist, $tid, $moveto, $newsubject);
 
-		// adjust user post counts accordingly
-		$query = $db->query("SELECT usepostcounts FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
-		$oldusepcounts = $db->result($query, 0);
-		$query = $db->query("SELECT usepostcounts FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
-		$newusepcounts = $db->result($query, 0);
-		$query = $db->query("SELECT COUNT(p.pid) AS posts, u.uid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='$tid' GROUP BY u.uid ORDER BY posts DESC");
-		while($posters = $db->fetch_array($query))
-		{
-			if($oldusepcounts == "yes" && $newusepcounts == "no")
-			{
-				$pcount = "-$posters[posts]";
-			}
-			if($oldusepcounts == "no" && $newusepcounts == "yes")
-			{
-				$pcount = "+$posters[posts]";
-			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]')");
-		}
-
-		// Update the subject of the first post in the new thread
-		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$newtid' ORDER BY dateline ASC LIMIT 1");
-		$newthread = $db->fetch_array($query);
-		$sqlarray = array(
-			"subject" => $newsubject,
-			);
-		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$newthread[pid]'");
-
-		// Update the subject of the first post in the old thread
-		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 1");
-		$oldthread = $db->fetch_array($query);
-		$sqlarray = array(
-			"subject" => $thread['subject'],
-			);
-		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$oldthread[pid]'");
-
-		logmod($modlogdata, $lang->thread_split);
-		markreports($plist, "posts");
-		update_first_post($newtid);
-		update_first_post($tid);
-		updatethreadcount($tid);
-		updatethreadcount($newtid);
-		if($moveto != $fid)
-		{
-			updateforumcount($moveto);
-		}
-		updateforumcount($fid);
 		redirect("showthread.php?tid=$newtid", $lang->redirect_threadsplit);
 		break;
 
@@ -1331,36 +1193,15 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_inline_nopostsselected);
 		}
-		$q = "pid='-1'";
-		$num_approved_posts = 0;
-		$num_approved_threads = 0;
+
+		$pids = array();
 		foreach($posts as $pid)
 		{
-			$q .= " OR pid='".intval($pid)."'";
-			$num_approved_posts++;
+			$pids[] = intval($pid);
 		}
 
-		// Make visible
-		$sqlarray = array(
-			"visible" => 1,
-			);
-		$db->query(TABLE_PREFIX."posts", $sqlarray, $q);
+		$moderation->approve_posts($pids, $tid, $fid);
 
-		// If this is the first post of the thread, also approve the thread
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($q) AND replyto='0' LIMIT 1");
-		while($post = $db->fetch_array($query))
-		{
-			$db->query(TABLE_PREFIX."threads", $sqlarray, "tid='$post[tid]'");
-			$cache->updatestats();
-			updateforumcount($fid);
-			$num_approved_threads = 1;
-		}
-
-		// Update unapproved thread and post counters
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-$num_approved_posts, unapprovedthreads=unapprovedthreads-$num_approved_threads WHERE fid='$fid'");
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-$num_approved_posts WHERE tid='$tid'");
-
-		updatethreadcount($tid);
 		logmod($modlogdata, $lang->multi_approve_posts);
 		clearinline($tid, "thread");
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsapproved);
@@ -1377,35 +1218,14 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_inline_nopostsselected);
 		}
-		$q = "pid='-1'";
-		$num_unapproved_posts = 0;
-		$num_unapproved_threads = 0;
+		$pids = array();
 		foreach($posts as $pid)
 		{
-			$q .= " OR pid='".intval($pid)."'";
-			$num_unapproved_posts++;
+			$pids[] = intval($pid);
 		}
 
-		$sqlarray = array(
-			"visible" => 0,
-			);
-		$db->query(TABLE_PREFIX."posts", $sqlarray, $q);
+		$moderation->unapprove_posts($pids, $tid, $fid);
 
-		// If this is the first post of the thread, also unapprove the thread
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($q) AND replyto='0' LIMIT 1");
-		while($post = $db->fetch_array($query))
-		{
-			$db->query(TABLE_PREFIX."threads", $sqlarray, "tid='$post[tid]'");
-			$cache->updatestats();
-			updateforumcount($fid);
-			$num_unapproved_threads = 1;
-		}
-
-		// Update unapproved thread and post counters
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts+$num_unapproved_posts, unapprovedthreads=unapprovedthreads+$num_unapproved_threads WHERE fid='$fid'");
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+$num_unapproved_posts WHERE tid='$tid'");
-
-		updatethreadcount($tid);
 		logmod($modlogdata, $lang->multi_unapprove_posts);
 		clearinline($tid, "thread");
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsunapproved);

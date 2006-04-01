@@ -319,6 +319,7 @@ class Moderation
 		$plugins->run_hooks("delete_post", $post['tid']);
 		$cache->updatestats();
 		updatethreadcount($post['tid']);
+		updateforumcount($post['fid']);
 
 		return true;
 	}
@@ -330,7 +331,7 @@ class Moderation
 	 * @param int Thread ID
 	 * @return boolean true
 	 */
-	function merge_posts($pids, $tid)
+	function merge_posts($pids, $tid, $sep="new_line")
 	{
 		global $db;
 
@@ -360,12 +361,13 @@ class Moderation
 			}
 			else
 			{ // these are the selected posts
-				$message .= "[hr]$post[message]";
-
-				// If the post is unapproved, count it
-				if($post['visible'] == 0)
+				if($sep == "new_line")
 				{
-					$num_unapproved_posts++;
+					$message .= "\n\n $post[message]";
+				}
+				else
+				{
+					$message .= "[hr]$post[message]";
 				}
 			}
 		}
@@ -630,6 +632,25 @@ class Moderation
 			);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid IN ($pids_list)");
 
+		// adjust user post counts accordingly
+		$query = $db->query("SELECT usepostcounts FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
+		$oldusepcounts = $db->result($query, 0);
+		$query = $db->query("SELECT usepostcounts FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
+		$newusepcounts = $db->result($query, 0);
+		$query = $db->query("SELECT COUNT(p.pid) AS posts, u.uid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='$tid' GROUP BY u.uid ORDER BY posts DESC");
+		while($posters = $db->fetch_array($query))
+		{
+			if($oldusepcounts == "yes" && $newusepcounts == "no")
+			{
+				$pcount = "-$posters[posts]";
+			}
+			if($oldusepcounts == "no" && $newusepcounts == "yes")
+			{
+				$pcount = "+$posters[posts]";
+			}
+			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]')");
+		}
+
 		// Update the subject of the first post in the new thread
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$newtid' ORDER BY dateline ASC LIMIT 1");
 		$newthread = $db->fetch_array($query);
@@ -660,6 +681,99 @@ class Moderation
 		if($destination_tid)
 		{
 			$this->merge_threads($newtid, $destination_tid, $subject);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Move multiple threads to new forum
+	 *
+	 * @param array Thread IDs
+	 * @param int Destination forum
+	 * @return boolean true
+	 */
+	function move_threads($tids, $moveto)
+	{
+		global $db;
+
+		$tid_list = implode(",", $tids);
+
+		$sqlarray = array(
+			"fid" => $moveto,
+			);
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "WHERE tid IN ($tid_list)");
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "WHERE tid IN ($tid_list)");
+
+		updateforumcount($moveto);
+		updateforumcount($fid);
+
+		return true;
+	}
+
+	/**
+	 * Approve multiple posts
+	 *
+	 * @param array PIDs
+	 * @param int Thread ID
+	 * @param int Forum ID
+	 * @return boolean true
+	 */
+	function approve_posts($pids, $tid, $fid)
+	{
+		global $db;
+
+		$where = "pid IN (".implode(",", $pids).")";
+
+		// Make visible
+		$approve = array(
+			"visible" => 1,
+			);
+		$db->query(TABLE_PREFIX."posts", $approve, $where);
+
+		updateforumcount($fid);
+		updatethreadcount($tid);
+
+		// If this is the first post of the thread, also approve the thread
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($where) AND replyto='0' LIMIT 1");
+		while($post = $db->fetch_array($query))
+		{
+			$db->query(TABLE_PREFIX."threads", $approve, "tid='$post[tid]'");
+			$cache->updatestats();
+		}
+
+		return true;
+	}
+
+	/**
+	 * Unapprove multiple posts
+	 *
+	 * @param array PIDs
+	 * @param int Thread ID
+	 * @param int Forum ID
+	 * @return boolean true
+	 */
+	function unapprove_posts($pids, $tid, $fid)
+	{
+		global $db;
+
+		$where = "pid IN (".implode(",", $pids).")";
+
+		// Make visible
+		$approve = array(
+			"visible" => 0,
+			);
+		$db->query(TABLE_PREFIX."posts", $unapprove, $where);
+
+		updateforumcount($fid);
+		updatethreadcount($tid);
+
+		// If this is the first post of the thread, also unapprove the thread
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($where) AND replyto='0' LIMIT 1");
+		while($post = $db->fetch_array($query))
+		{
+			$db->query(TABLE_PREFIX."threads", $unapprove, "tid='$post[tid]'");
+			$cache->updatestats();
 		}
 
 		return true;

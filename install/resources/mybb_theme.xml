@@ -4085,6 +4085,12 @@ var inlineId = {$fid};
 <tr>
 <td class="trow1" colspan="2">{$lang->merge_posts_note}</td>
 </tr>
+<tr>
+<td class="tcat" colspan="2"><strong>{$lang->post_separator}</strong></td>
+</tr>
+<tr>
+<td class="trow2" colspan="2"><label><input type="radio" class="radio" name="sep" value="hr" checked="checked" />&nbsp;{$lang->horizontal_rule}</label><br /><label><input type="radio" class="radio" name="sep" value="new_line" />&nbsp;{$lang->new_line}</label></td>
+</tr>
 {$posts}
 </table>
 <br />
