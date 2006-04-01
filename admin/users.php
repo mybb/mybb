@@ -444,8 +444,9 @@ if($mybb->input['action'] == "do_edit")
 		$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".addslashes($user['username'])."'");
 		$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".addslashes($user['username'])."'");
 	}
+	$cache->updatestats();
 
-	cpredirect("users.php?lastuid=$uid", $lang->profile_updated);
+	cpredirect("users.php?lastuid=".intval($mybb->input['uid']), $lang->profile_updated);
 }
 if($mybb->input['action'] == "do_delete")
 {
