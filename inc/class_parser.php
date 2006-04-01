@@ -82,11 +82,11 @@ class postParser
 		{
 			if($options['is_archive'] == "yes")
 			{
-				$message = $this->parse_smilies($message, $settings['bburl']);
+				$message = $this->parse_smilies($message, $settings['bburl'], $options['allow_html']);
 			}
 			else
 			{
-				$message = $this->parse_smilies($message);
+				$message = $this->parse_smilies($message, "", $options['allow_html']);
 			}
 		}
 
@@ -293,9 +293,10 @@ class postParser
 	 *
 	 * @param string The message being parsed.
 	 * @param string Base URL for the image tags created by smilies.
+	 * @param string Yes/No if HTML is allowed in the post
 	 * @return string The parsed message.
 	 */
-	function parse_smilies($message, $url="")
+	function parse_smilies($message, $url="", $allow_html="no")
 	{
 		if($this->smilies_cache == 0)
 		{
@@ -314,6 +315,10 @@ class postParser
 			reset($this->smilies_cache);
 			foreach($this->smilies_cache as $sid => $smilie)
 			{
+				if($allow_html == "no")
+				{
+					$smilie['find'] = $this->parse_html($smilie['find']);
+				}
 				$message = str_replace($smilie['find'], "<img src=\"".$url.$smilie['image']."\" style=\"vertical-align: middle;\" border=\"0\" alt=\"".$smilie['name']."\" title=\"".$smilie['name']."\" />", $message);
 			}
 		}
