@@ -234,21 +234,58 @@ if($mybb->input['action'] == "do_download")
 }
 if($mybb->input['action'] == "do_import")
 {
+	// Find out if there was an uploaded file
 	if($_FILES['compfile']['error'] != 4)
 	{
+		// Find out if there was an error with the uploaded file
+		if($_FILES['compfile']['error'] != 0)
+		{
+			$error = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
+			switch($_FILES['compfile']['error'])
+			{
+				case 1: // UPLOAD_ERR_INI_SIZE
+					$error .= $lang->error_uploadfailed_php1;
+					break;
+				case 2: // UPLOAD_ERR_FORM_SIZE
+					$error .= $lang->error_uploadfailed_php2;
+					break;
+				case 3: // UPLOAD_ERR_PARTIAL
+					$error .= $lang->error_uploadfailed_php3;
+					break;
+				case 4: // UPLOAD_ERR_NO_FILE
+					$error .= $lang->error_uploadfailed_php4;
+					break;
+				case 6: // UPLOAD_ERR_NO_TMP_DIR
+					$error .= $lang->error_uploadfailed_php6;
+					break;
+				case 7: // UPLOAD_ERR_CANT_WRITE
+					$error .= $lang->error_uploadfailed_php7;
+					break;
+				default:
+					$error .= sprintf($lang->error_uploadfailed_phpx, $_FILES['compfile']['error']);
+					break;
+			}
+			cperror($error);
+		}
+
+		// Was the temporary file found?
 		if(!is_uploaded_file($_FILES['compfile']['tmp_name']))
 		{
-			cperror($lang->upload_failed);
+			cperror($lang->error_uploadfailed_lost);
 		}
+		// Get the contents
 		$contents = @file_get_contents($_FILES['compfile']['tmp_name']);
-		@unlink($_FILES['compfile']['temp_name']);
+		// Delete the temporary file if possible
+		@unlink($_FILES['compfile']['tmp_name']);
+		// Are there contents?
 		if(!trim($contents))
 		{
-			cperror($lang->upload_failed);
+			cperror($lang->error_uploadfailed_nocontents);
 		}
 	}
 	elseif(!empty($mybb->input['localfile']))
 	{
+		// Get the contents
 		$contents = @file_get_contents($mybb->input['localfile']);
 		if(!$contents)
 		{
@@ -264,13 +301,17 @@ if($mybb->input['action'] == "do_import")
 	{
 		cperror($lang->failed_finding_theme);
 	}
-	if(!$name)
+	if(empty($mybb->input['name']))
 	{
 		$name = $theme['attributes']['name'];
 	}
+	else
+	{
+		$name = $mybb->input['name'];
+	}
 	$version = $theme['attributes']['version'];
 
-	$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."themes WHERE name='$name'");
+	$query = $db->simple_select(TABLE_PREFIX."themes", "tid", "name='".addslashes($name)."'", array("limit" => 1));
 	$existingtheme = $db->fetch_array($query);
 	if($existingtheme['tid'])
 	{
