@@ -975,7 +975,29 @@ function updateforumcount($fid) {
 		$nothreads = 0;
 		$noposts = 0;
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."forums SET posts='$noposts', threads='$nothreads' $lpadd WHERE fid='$fid'");
+
+	// Get unapproved posts/threads from this forum and its children
+	$query = $db->query("SELECT COUNT(*) AS totunthreads FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."forums f) WHERE t.fid=f.fid AND (t.fid='$fid' OR CONCAT(',',f.parentlist,',') LIKE '%,$fid,%') AND t.visible='0' AND t.closed NOT LIKE 'moved|%'");
+	$posts3 = $db->fetch_array($query);
+	if($posts3)
+	{
+		$nounthreads = $posts3['totunthreads'];
+	}
+	else
+	{
+		$nounthreads = 0;
+	}
+	$query = $db->query("SELECT COUNT(*) AS totunposts FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."forums f) WHERE p.fid=f.fid AND (p.fid='$fid' OR CONCAT(',',f.parentlist,',') LIKE '%,$fid,%') AND p.visible='0'");
+	$posts4 = $db->fetch_array($query);
+	if($posts4)
+	{
+		$nounposts = $posts4['totunposts'];
+	}
+	else
+	{
+		$nounposts = 0;
+	}
+	$db->query("UPDATE ".TABLE_PREFIX."forums SET posts='$noposts', threads='$nothreads', unapprovedposts='$nounposts', unapprovedthreads='$nounthreads' $lpadd WHERE fid='$fid'");
 	if($parentlist && $db->affected_rows())
 	{
 		$parentsexploded = explode(",", $parentlist);
@@ -1021,7 +1043,18 @@ function updatethreadcount($tid)
 	}
 	$lastpost['username'] = addslashes($lastpost['username']);
 	$firstpost['username'] = addslashes($firstpost['username']);
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', replies='$treplies' WHERE tid='$tid'");
+	// Unapproved posts
+	$query = $db->query("SELECT COUNT(*) AS totunposts FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND visible='0'");
+	$posts = $db->fetch_array($query);
+	if($posts)
+	{
+		$nounposts = $posts['totunposts'];
+	}
+	else
+	{
+		$nounposts = 0;
+	}
+	$db->query("UPDATE ".TABLE_PREFIX."threads SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', replies='$treplies', unapprovedposts='$nounposts' WHERE tid='$tid'");
 }
 
 function deletethread($tid)

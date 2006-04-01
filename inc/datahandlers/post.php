@@ -559,6 +559,8 @@ class PostDataHandler extends DataHandler
 
 		$plugins->run_hooks("datahandler_post_insert_post");
 
+
+
 		// Return the post's pid and whether or not it is visible.
 		return array(
 			"pid" => $pid,
@@ -858,19 +860,12 @@ class PostDataHandler extends DataHandler
 
 		$plugins->run_hooks("datahandler_post_insert_post");
 
-		// Thread is visible - update the forum counts.
-		if($visible == 1)
+		// Thread is public - update the forum counts.
+		if($visible == 1 || $visible == 0)
 		{
 			$cache->updatestats();
 			updatethreadcount($tid);
 			updateforumcount($thread['fid']);
-		}
-		// This thread is in the moderation queue. Update the moderation count for this forum.
-		else if($visible == 0)
-		{
-			$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+1 WHERE tid='$tid'");
-			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads+1, unapprovedposts=unapprovedposts+1 WHERE fid='".intval($thread['fid'])."'");
-
 		}
 
 		// Return the post's pid and whether or not it is visible.

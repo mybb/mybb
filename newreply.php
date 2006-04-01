@@ -359,8 +359,8 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$lang->redirect_newreply .= $lang->redirect_newreply_moderation;
 			$url = "showthread.php?tid=$tid";
 			// Update the unapproved posts count for the current thread and current forum
-			$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+1 WHERE tid='$tid'");
-			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts+1 WHERE fid='$fid'");
+			updatethreadcount($tid);
+			updateforumcount($fid);
 		}
 
 		if(!$post['savedraft'])
