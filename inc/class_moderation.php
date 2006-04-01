@@ -496,15 +496,18 @@ class Moderation
 			{
 				$pcount = "+$posters[posts]";
 			}
-			if($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no"))
+			elseif($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no"))
 			{
 				$pcount = "+$posters[posts]";
 			}
-			if($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no"))
+			elseif($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no"))
 			{
 				$pcount = "-$posters[posts]";
 			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]')");
+			if(!empty($pcount))
+			{
+				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]'");
+			}
 		}
 
 		// Update forum counts

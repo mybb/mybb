@@ -22,6 +22,7 @@ $l['custom_groups'] = "Custom Usergroups";
 $l['users'] = "# Users";
 $l['gid'] = "ID #";
 $l['controls'] = "Controls";
+$l['forum_team_order'] = "Forum Team Order";
 $l['list_users'] = "List Primary Users";
 $l['list_secondary_users'] = "List Secondary Users";
 

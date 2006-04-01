@@ -728,7 +728,7 @@ function usergroup_hop(gid)
 	echo "<td width=\"55%\">{$lang->title_list}</td>\n";
 	echo "<td width=\"20%\" align=\"center\">{$lang->users}</td>\n";
 	echo "<td width=\"20%\" align=\"center\">{$lang->controls}</td>\n";
-	echo "<td width=\"5%\">&nbsp;</td>\n";
+	echo "<td width=\"5%\">{$lang->forum_team_order}</td>\n";
 	echo "</tr>\n";
 
 	$sql_options = array(
@@ -783,7 +783,7 @@ function usergroup_hop(gid)
 		echo "<td width=\"55%\">{$lang->title}</td>\n";
 		echo "<td width=\"20%\" align=\"center\">{$lang->users}</td>\n";
 		echo "<td width=\"20%\" align=\"center\">{$lang->controls}</td>\n";
-		echo "<td width=\"5%\">&nbsp;</td>\n";
+		echo "<td width=\"5%\">{$lang->forum_team_order}</td>\n";
 		echo "</tr>\n";
 
 		while($usergroup = $db->fetch_array($query))
@@ -839,7 +839,7 @@ function usergroup_hop(gid)
 		echo "<td width=\"10%\" align=\"center\">{$lang->users}</td>\n";
 		echo "<td width=\"10%\" align=\"center\">{$lang->join_requests}</td>\n";
 		echo "<td width=\"20%\" align=\"center\">{$lang->controls}</td>\n";
-		echo "<td width=\"5%\">&nbsp;</td>\n";
+		echo "<td width=\"5%\">{$lang->forum_team_order}</td>\n";
 		echo "</tr>\n";
 		while($usergroup = $db->fetch_array($query))
 		{
