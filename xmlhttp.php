@@ -197,13 +197,13 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
 		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'])
 		{
-			xmlhttp_eror("You do not have permission to this title.");
+			xmlhttp_error("You do not have permission to this title.");
 		}
 		// If we're past the edit time limit - don't allow editing.
 		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (time()-($mybb->settings['edittimelimit']*60)))
 		{
 			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
-			xmlhttp_eror($lang->edit_time_limit);
+			xmlhttp_error($lang->edit_time_limit);
 		}
 	}
 	// Update the post subject in the posts table.
@@ -264,13 +264,13 @@ else if($mybb->input['action'] == "edit_post")
 		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
 		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'])
 		{
-			xmlhttp_eror("You do not have permission to this title.");
+			xmlhttp_error("You do not have permission to this title.");
 		}
 		// If we're past the edit time limit - don't allow editing.
 		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (time()-($mybb->settings['edittimelimit']*60)))
 		{
 			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
-			xmlhttp_eror($lang->edit_time_limit);
+			xmlhttp_error($lang->edit_time_limit);
 		}
 	}	
 	if($mybb->input['do'] == "get_post")
