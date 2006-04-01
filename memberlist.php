@@ -10,6 +10,7 @@
  */
 
 $templatelist = "memberlist,memberlist_row";
+$templatelist .= ",postbit_www,postbit_email";
 require "./global.php";
 
 // Load global language phrases
@@ -112,16 +113,18 @@ while($users = $db->fetch_array($query))
 {
 	$plugins->run_hooks("memberlist_user");
 
+	// Make variables for postbit templates
+	$post = &$users;
+
 	if($users['website'] == '' || $users['website'] == "http://")
 	{
 		$usersite = '';
 	}
 	else
 	{
-		$users['website'] = htmlspecialchars_uni($users['website']);
-		$usersite = "<a href=\"$users[website]\" target=\"_blank\"><img src=\"$theme[imglangdir]/postbit_www.gif\" border=0></a>";
+		eval("\$usersite = \"".$templates->get("postbit_www")."\";");
 	}
-	$users['location'] = $users[fid1];
+	$users['location'] = $users['fid1'];
 	$users['location'] = htmlspecialchars_uni(stripslashes($users['location']));
 	if($users['hideemail'] == "yes")
 	{
@@ -129,7 +132,7 @@ while($users = $db->fetch_array($query))
 	}
 	else
 	{
-		$useremail = "<a href=\"member.php?action=emailuser&uid=$users[uid]\"><img src=\"$theme[imglangdir]/postbit_email.gif\" border=\"0\" /></a>";
+		eval("\$useremail = \"".$templates->get("postbit_email")."\";");
 	}
 	$users['regdate'] = mydate($mybb->settings['dateformat'], $users['regdate']);
 	$users['username'] = formatname($users['username'], $users['usergroup'], $users['displaygroup']);
