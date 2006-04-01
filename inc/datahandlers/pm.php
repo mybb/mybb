@@ -126,7 +126,7 @@ class PMDataHandler extends DataHandler
 		}
 
 		// Collect group permissions for the sender and recipient.
-		$recipient_permissions = user_permissions($touser['toid']);
+		$recipient_permissions = user_permissions($touser['uid']);
 		$sender_permissions = user_permissions($pm['fromid']);
 
 		// See if the sender is on the recipients ignore list and that either

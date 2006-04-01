@@ -200,7 +200,11 @@ else
 		$altbg = alt_trow();
 		$regdate = mydate($mybb->settings['dateformat'], $user['regdate']);
 		$post = $user;
-		eval("\$sendpm = \"".$templates->get("postbit_pm")."\";");
+		$user_permissions = user_permissions($user['uid']);
+		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes" && $user_permissions['canusepms'] != "no" && strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		{
+			eval("\$sendpm = \"".$templates->get("postbit_pm")."\";");
+		}
 		if($user['hideemail'] != "yes")
 		{
 			eval("\$email = \"".$templates->get("postbit_email")."\";");

@@ -29,7 +29,7 @@ $plugins->run_hooks('showteam_start');
 //OR the user is apart of that group through display or usergroup settings
 $sql = "
 SELECT
-	g.gid, g.type, g.title, g.usertitle, u.uid, u.username, u.hideemail, u.receivepms, u.displaygroup, u.usergroup, l.lid, m.fid ,f.name
+	g.gid, g.type, g.title, g.usertitle, u.uid, u.username, u.hideemail, u.receivepms, u.displaygroup, u.usergroup, u.ignorelist, l.lid, m.fid ,f.name
 FROM
 (
 	(mybb_usergroups g, mybb_users u)
@@ -78,7 +78,9 @@ while($details = $db->fetch_array($query))
 		'hideemail' => $details['hideemail'],
 		'receivepms' => $details['receivepms'],
 		'displaygroup' => $details['displaygroup'],
+		'usergroup' => $details['usergroup'],
 		'lid' => $details['lid'],
+		'ignorelist' => $details['ignorelist'],
 	);
 	//If the user has an fid in the row, they are a moderator
 	if(!empty($details['fid']))
@@ -111,6 +113,8 @@ foreach($usergroup as $gid=>$usergrouptitle)
 			$user = $users[$uid];
 			$post['uid'] = $uid;
 
+			$user_permissions = user_permissions($uid);
+
 			$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 			if($user['hideemail'] != 'yes')
 			{
@@ -120,7 +124,7 @@ foreach($usergroup as $gid=>$usergrouptitle)
 			{
 				$emailcode = '';
 			}
-			if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no')
+			if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no' && $user_permissions['canusepms'] != 'no' && strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 			{
 				eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
 			}

@@ -1214,19 +1214,22 @@ elseif($mybb->input['action'] == "profile")
 	{
 		error($lang->error_nomember);
 	}
+
+	// Get member's permissions
+	$memperms = user_permissions($memprofile['uid']);
+
 	$lang->nav_profile = sprintf($lang->nav_profile, $memprofile['username']);
 	addnav($lang->nav_profile);
 
 	$lang->users_forum_info = sprintf($lang->users_forum_info, $memprofile['username']);
 	$lang->users_contact_details = sprintf($lang->users_contact_details, $memprofile['username']);
 
-	if($mybb->settings['enablepms'] != "no" && $memprofile['receivepms'] != "no")
+	if($mybb->settings['enablepms'] != "no" && $memprofile['receivepms'] != "no" && $memperms['canusepms'] != "no" && strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 	{
 		$lang->send_pm = sprintf($lang->send_pm, $memprofile['username']);
 	}
 	$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
 	$lang->users_additional_info = sprintf($lang->users_additional_info, $memprofile['username']);
-	$lang->send_user_email = sprintf($lang->send_user_email, $memprofile['username']);
 	$lang->users_signature = sprintf($lang->users_signature, $memprofile['username']);
 	$lang->send_user_email = sprintf($lang->send_user_email, $memprofile['username']);
 
