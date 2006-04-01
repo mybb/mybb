@@ -725,7 +725,9 @@ function ismod($fid="0", $action="", $uid="0")
 	if($mybbgroup['issupermod'] == "yes")
 	{
 		return "yes";
-	} else {
+	}
+	else
+	{
 		if(!$fid)
 		{
 			$query = $db->query("SELECT mid FROM ".TABLE_PREFIX."moderators WHERE uid='$uid'");

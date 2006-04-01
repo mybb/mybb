@@ -278,6 +278,7 @@ $tables[] = "CREATE TABLE mybb_moderators (
   canviewips char(3) NOT NULL default '',
   canopenclosethreads char(3) NOT NULL default '',
   canmanagethreads char(3) NOT NULL default '',
+  canmovetononmodforum char(3) NOT NULL default '',
   PRIMARY KEY  (mid)
 ) TYPE=MyISAM;";
 

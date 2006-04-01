@@ -268,6 +268,7 @@ if($mybb->input['action'] == "do_addmod") {
 			$canviewips = addslashes($mybb->input['canviewips']);
 			$canopenclosethreads = addslashes($mybb->input['canopenclosethreads']);
 			$canmanagethreads = addslashes($mybb->input['canmanagethreads']);
+			$canmovetononmodforum = addslashes($mybb->input['canmovetononmodforum']);
 			$newmod = array(
 				"fid" => $fid,
 				"uid" => $user['uid'],
@@ -275,7 +276,8 @@ if($mybb->input['action'] == "do_addmod") {
 				"candeleteposts" => $candeleteposts,
 				"canviewips" => $canviewips,
 				"canopenclosethreads" => $canopenclosethreads,
-				"canmanagethreads" => $canmanagethreads
+				"canmanagethreads" => $canmanagethreads,
+				"canmovetononmodforum" => $canmovetononmodforum
 				);
 
 			$db->insert_query(TABLE_PREFIX."moderators", $newmod);
@@ -479,6 +481,7 @@ if($mybb->input['action'] == "do_editmod") {
 			"canviewips" => addslashes($mybb->input['canviewips']),
 			"canopenclosethreads" => addslashes($mybb->input['canopenclosethreads']),
 			"canmanagethreads" => addslashes($mybb->input['canmanagethreads']),
+			"canmovetononmodforum" => addslashes($mybb->input['canmovetononmodforum'])
 			);
 
 		$db->update_query(TABLE_PREFIX."moderators", $sqlarray, "mid='".intval($mybb->input['mid'])."'");
@@ -593,6 +596,7 @@ if($mybb->input['action'] == "addmod") {
 	makeyesnocode($lang->canviewips, "canviewips", "yes");
 	makeyesnocode($lang->canopenclose, "canopenclosethreads", "yes");
 	makeyesnocode($lang->canmanage, "canmanagethreads", "yes");
+	makeyesnocode($lang->canmovetononmodforum, "canmovetononmodforum", "yes");
 	endtable();
 	endform($lang->add_moderator, $lang->reset_button);
 	cpfooter();
@@ -765,6 +769,7 @@ if($mybb->input['action'] == "editmod") {
 	makeyesnocode($lang->canviewips, "canviewips", $moderator['canviewips']);
 	makeyesnocode($lang->canopenclose, "canopenclosethreads", $moderator['canopenclosethreads']);
 	makeyesnocode($lang->canmanage, "canmanagethreads", $moderator['canmanagethreads']);
+	makeyesnocode($lang->canmovetononmodforum, "canmovetononmodforum", $moderator['canmovetononmodforum']);
 	endtable();
 	endform($lang->update_moderator, $lang->reset_button);
 	cpfooter();

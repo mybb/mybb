@@ -114,6 +114,7 @@ $l['candeleteposts'] = "Can Delete Posts";
 $l['canviewips'] = "Can View IPs";
 $l['canopenclose'] = "Can Open and Close Threads";
 $l['canmanage'] = "Can Manage Threads (Split, Move, Copy)";
+$l['canmovetononmodforum'] = "Can Move Threads to Forums that User Does Not Moderate";
 $l['update_moderator'] = "Update Moderator";
 
 $l['delete_forum'] = "Delete Forum: {1}";

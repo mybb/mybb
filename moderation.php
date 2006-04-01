@@ -473,17 +473,16 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		/* Moderators should now be able to move threads to any forum
-		if(ismod($moveto, "canmanagethreads") != "yes")
+		// Check if user has moderator permission to move to destination
+		if(ismod($moveto, "canmanagethreads") != "yes" && ismod($fid, "canmovetononmodforum") != "yes")
 		{
 			nopermission();
 		}
 		$newperms = forum_permissions($moveto);
-		if($newperms['canview'] == "no")
+		if($newperms['canview'] == "no" && ismod($fid, "canmovetononmodforum") != "yes")
 		{
 			nopermission();
 		}
-		*/
 		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE closed='moved|$tid' AND fid='$moveto'");
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
 		$newforum = $db->fetch_array($query);
@@ -498,7 +497,7 @@ switch($mybb->input['action'])
 
 		$the_thread = $tid;
 
-		$moderation->move_thread($tid, $moveto, $method);
+		$newtid = $moderation->move_thread($tid, $moveto, $method);
 
 		switch($method)
 		{
@@ -512,7 +511,7 @@ switch($mybb->input['action'])
 				break;
 		}
 
-		redirect("showthread.php?tid=$tid", $lang->redirect_threadmoved);
+		redirect("showthread.php?tid=$newtid", $lang->redirect_threadmoved);
 		break;
 
 	// Thread notes editor
@@ -788,7 +787,7 @@ switch($mybb->input['action'])
 			markreports($post['pid'], "post");
 		}
 
-		$moderation->split_posts($pids, $tid, $moveto, $mybb->input['newsubject']);
+		$newtid = $moderation->split_posts($pids, $tid, $moveto, $mybb->input['newsubject']);
 
 		logmod($modlogdata, $lang->thread_split);
 
@@ -986,15 +985,15 @@ switch($mybb->input['action'])
 		{
 			$tids[] = $tid;
 		}
-		/*if(ismod($moveto, "canmanagethreads") != "yes")
+		if(ismod($moveto, "canmanagethreads") != "yes" && ismod($fid, "canmovetononmodforum") != "yes")
 		{
 			nopermission();
 		}
 		$newperms = forum_permissions($moveto);
-		if($newperms['canview'] == "no")
+		if($newperms['canview'] == "no" && ismod($fid, "canmovetononmodforum") != "yes")
 		{
 			nopermission();
-		}*/
+		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
 		$newforum = $db->fetch_array($query);
 		if($newforum['type'] != "f")
@@ -1177,7 +1176,7 @@ switch($mybb->input['action'])
 		}
 		$newsubject = $mybb->input['newsubject'];
 
-		$moderation->split_posts($plist, $tid, $moveto, $newsubject);
+		$newtid = $moderation->split_posts($plist, $tid, $moveto, $newsubject);
 
 		redirect("showthread.php?tid=$newtid", $lang->redirect_threadsplit);
 		break;

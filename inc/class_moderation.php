@@ -400,7 +400,7 @@ class Moderation
 	 * @param int Thread to be moved
 	 * @param int Destination forum
 	 * @param string Method of movement (redirect, copy, move)
-	 * @return boolean true
+	 * @return int Thread ID
 	 */
 	function move_thread($tid, $new_fid, $method="redirect")
 	{
@@ -472,6 +472,7 @@ class Moderation
 				$db->query("INSERT INTO ".TABLE_PREFIX."posts (tid,fid,subject,icon,uid,username,dateline,message,ipaddress,includesig,smilieoff,edituid,edittime,visible) VALUES $postssql");
 	
 				update_first_post($newtid);
+				updatethreadcount($newtid);
 	
 				$the_thread = $newtid;
 				break;
@@ -510,7 +511,14 @@ class Moderation
 		updateforumcount($new_fid);
 		updateforumcount($fid);
 
-		return true;
+		if(isset($newtid))
+		{
+			return $newtid;
+		}
+		else
+		{
+			return $tid;
+		}
 	}
 
 	/**
@@ -594,7 +602,7 @@ class Moderation
 	 * @param int Destination forum
 	 * @param string New thread subject
 	 * @param int TID if moving into existing thread
-	 * @return boolean true
+	 * @return int New thread ID
 	 */
 	function split_posts($pids, $tid, $moveto, $newsubject, $destination_tid=0)
 	{
@@ -644,11 +652,15 @@ class Moderation
 			{
 				$pcount = "-$posters[posts]";
 			}
-			if($oldusepcounts == "no" && $newusepcounts == "yes")
+			elseif($oldusepcounts == "no" && $newusepcounts == "yes")
 			{
 				$pcount = "+$posters[posts]";
 			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]')");
+
+			if(!empty($pcount))
+			{
+				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]'");
+			}
 		}
 
 		// Update the subject of the first post in the new thread
@@ -671,11 +683,11 @@ class Moderation
 		update_first_post($newtid);
 		updatethreadcount($tid);
 		updatethreadcount($newtid);
-		if($moveto != $fid)
+		if($moveto != $thread['fid'])
 		{
 			updateforumcount($moveto);
 		}
-		updateforumcount($fid);
+		updateforumcount($thread['fid']);
 
 		// Merge new thread with destination thread if specified
 		if($destination_tid)
@@ -683,7 +695,7 @@ class Moderation
 			$this->merge_threads($newtid, $destination_tid, $subject);
 		}
 
-		return true;
+		return $newtid;
 	}
 
 	/**
@@ -702,8 +714,8 @@ class Moderation
 		$sqlarray = array(
 			"fid" => $moveto,
 			);
-		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "WHERE tid IN ($tid_list)");
-		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "WHERE tid IN ($tid_list)");
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid IN ($tid_list)");
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid IN ($tid_list)");
 
 		updateforumcount($moveto);
 		updateforumcount($fid);
@@ -729,7 +741,7 @@ class Moderation
 		$approve = array(
 			"visible" => 1,
 			);
-		$db->query(TABLE_PREFIX."posts", $approve, $where);
+		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
 
 		updateforumcount($fid);
 		updatethreadcount($tid);
@@ -738,7 +750,7 @@ class Moderation
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($where) AND replyto='0' LIMIT 1");
 		while($post = $db->fetch_array($query))
 		{
-			$db->query(TABLE_PREFIX."threads", $approve, "tid='$post[tid]'");
+			$db->update_query(TABLE_PREFIX."threads", $approve, "tid='$post[tid]'");
 			$cache->updatestats();
 		}
 
@@ -760,10 +772,10 @@ class Moderation
 		$where = "pid IN (".implode(",", $pids).")";
 
 		// Make visible
-		$approve = array(
+		$unapprove = array(
 			"visible" => 0,
 			);
-		$db->query(TABLE_PREFIX."posts", $unapprove, $where);
+		$db->update_query(TABLE_PREFIX."posts", $unapprove, $where);
 
 		updateforumcount($fid);
 		updatethreadcount($tid);
@@ -772,7 +784,7 @@ class Moderation
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($where) AND replyto='0' LIMIT 1");
 		while($post = $db->fetch_array($query))
 		{
-			$db->query(TABLE_PREFIX."threads", $unapprove, "tid='$post[tid]'");
+			$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='$post[tid]'");
 			$cache->updatestats();
 		}
 
