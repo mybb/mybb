@@ -412,10 +412,10 @@ class postParser
 		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#si",
 						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
 
-		$replace = array("<div class=\"quote_header\">$1 $lang->wrote</div><div class=\"quote_body\">$2</div>",
+		$replace = array("<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote</div><div class=\"quote_body\">$2</div>",
 						 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>");
 
-		while (preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
+		while(preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
 		{
 			$message = preg_replace($pattern, $replace, $message);
 		}

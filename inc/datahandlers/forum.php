@@ -16,6 +16,11 @@
 class ForumDataHandler extends DataHandler
 {
 
+	/**
+	* Verifies a forum name.
+	*
+	* @return boolean True if valid, false if invalid.
+	*/
 	function verify_name()
 	{
 		$forum = &$this->data;
@@ -23,9 +28,17 @@ class ForumDataHandler extends DataHandler
 		if(trim($forum['name']) == "")
 		{
 			$this->set_error("no_forum_name");
+			return false;
 		}
+
+		return true;
 	}
 
+	/**
+	* Verifies a forum type.
+	*
+	* @return boolean True if valid, false if invalid.
+	*/
 	function verify_type()
 	{
 		$forum = &$this->data;
@@ -42,6 +55,11 @@ class ForumDataHandler extends DataHandler
 		return true;
 	}
 
+	/**
+	* Verifies a forum parent.
+	*
+	* @return boolean True if valid, false if invalid.
+	*/
 	function verify_parent()
 	{
 		$forum = &$this->data;
@@ -58,6 +76,11 @@ class ForumDataHandler extends DataHandler
 		return true;
 	}
 
+	/**
+	* Verifies a forum's options.
+	*
+	* @return boolean True if valid, false if invalid.
+	*/
 	function verify_options()
 	{
 		$forum = &$this->data;
@@ -103,8 +126,16 @@ class ForumDataHandler extends DataHandler
 		{
 			$forum['options']['modattachments'] = "no";
 		}
+		if($forum['options']['showinjump'] != "yes")
+		{
+			$forum['options']['showinjump'] = "no";
+		}
 	}
 
+
+	/**
+	* Validates a forum.
+	*/
 	function validate_forum()
 	{
 		// Verify all forum assets.
@@ -125,6 +156,9 @@ class ForumDataHandler extends DataHandler
 		}
 	}
 
+	/**
+	* Inserts a forum.
+	*/
 	function insert_forum()
 	{
 		// Yes, validating is required.
@@ -140,6 +174,9 @@ class ForumDataHandler extends DataHandler
 		$forum = &$this->data;
 	}
 
+	/**
+	* Updates a forum.
+	*/
 	function update_forum()
 	{
 		// Yes, validating is required.
