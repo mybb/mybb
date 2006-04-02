@@ -166,9 +166,6 @@ function makepostbit($post, $pmprevann=0)
 	if($post['userusername'])
 	{ // This post was made by a registered user
 
-		// Get the poster's permissions
-		$poster_perms = user_permissions($post['uid']);
-
 		$post['username'] = $post['userusername'];
 		$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".formatname($post['username'], $post['usergroup'], $post['displaygroup'])."</a>";
 		if(trim($post['usertitle']) != "")
@@ -245,7 +242,7 @@ function makepostbit($post, $pmprevann=0)
 		}
 		eval("\$post['button_profile'] = \"".$templates->get("postbit_profile")."\";");
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
-		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes" && $poster_perms['canusepms'] != "no" && strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes" && strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
 		}

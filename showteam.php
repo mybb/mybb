@@ -113,8 +113,6 @@ foreach($usergroup as $gid=>$usergrouptitle)
 			$user = $users[$uid];
 			$post['uid'] = $uid;
 
-			$user_permissions = user_permissions($uid);
-
 			$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 			if($user['hideemail'] != 'yes')
 			{
@@ -124,7 +122,7 @@ foreach($usergroup as $gid=>$usergrouptitle)
 			{
 				$emailcode = '';
 			}
-			if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no' && $user_permissions['canusepms'] != 'no' && strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+			if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no' && strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 			{
 				eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
 			}
