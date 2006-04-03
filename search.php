@@ -275,7 +275,7 @@ if($mybb->input['action'] == "results")
 					}
 				}
 			}
-			$lastread = $$thread['lastread'];
+			$lastread = $thread['lastread'];
 			if(!$lastread)
 			{
 				$readcookie = $threadread = mygetarraycookie("threadread", $thread['tid']);
@@ -378,7 +378,7 @@ if($mybb->input['action'] == "results")
 		$plugins->run_hooks("search_results_end");
 		outputpage($searchresults);
 	}
-	else
+	else // Displaying results as posts
 	{
 		$postcount = 0;
 		if($search['querycache'] != "")
@@ -457,7 +457,7 @@ if($mybb->input['action'] == "results")
 			{
 				$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".$post['username']."</a>";
 			}
-			$post['subect'] = $parser->parse_badwords($post['subject']);
+			$post['subject'] = $parser->parse_badwords($post['subject']);
 			$post['subject'] = htmlspecialchars_uni($post['subject']);
 			$post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
 			$post['thread_subject'] = htmlspecialchars_uni($post['thread_subject']);
@@ -801,7 +801,7 @@ elseif($mybb->input['action'] == "do_search")
 	}
 	else
 	{
-		die("This database engine does not support searching.");
+		error($lang->error_no_search_support);
 	}
 	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(

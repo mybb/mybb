@@ -225,6 +225,7 @@ $l['error_percentnotallowed'] = "The percentage sign is not a valid keyword. Ple
 $l['error_messagelength'] = "Sorry, your message is too long and cannot be posted. Please try shortening your message and try again.";
 $l['error_message_too_short'] = "Sorry, your message is too short and cannot be posted.";
 $l['error_nosplitposts'] = "You cannot split this thread as you did not select any posts to split from this thread.";
+$l['error_no_search_support'] = "This database engine does not support searching.";
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";
