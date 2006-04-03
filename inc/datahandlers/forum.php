@@ -132,9 +132,94 @@ class ForumDataHandler extends DataHandler
 		}
 	}
 
+	/**
+	* Verifies a forum's display order.
+	*
+	* @return boolean True if valid, false if invalid.
+	*/
+	function verify_displayorder()
+	{
+		// Check if the display order has already been chosen?
+		// This is not in MyBB right now, but might be nice to implement.
+
+		$forum = &$this->data;
+
+		return true;
+	}
+
+	/**
+	* Verifies a forum's style.
+	*
+	* @return boolean True if valid, false if invalid.
+	*/
+	function verify_style()
+	{
+		// Check if the style exists.
+
+		$forum = &$this->data;
+
+		return true;
+	}
+
+
+	/**
+	* Verfies a forum's override style.
+	*
+	* @return boolean True if valid, false if invalid.
+	*/
+	function verify_overridestyle()
+	{
+		// Check if the override style exists.
+
+		$forum = &$this->data;
+
+		return true;
+	}
+
+	/**
+	* Verifies a forum's default settings.
+	*
+	* @return boolean True if valid, false if invalid.
+	*/
+	function verify_defaults()
+	{
+		$forum = &$this->data;
+
+		// Verify the default date cut for showing threads.
+		$forum['defaultdatecut'] = intval($forum['defaultdatecut']);
+		if($forum['defaultdatecut'] != 5 &&
+			$forum['defaultdatecut'] != 10 &&
+			$forum['defaultdatecut'] != 20 &&
+			$forum['defaultdatecut'] != 50 &&
+			$forum['defaultdatecut'] != 75 &&
+			$forum['defaultdatecut'] != 100 &&
+			$forum['defaultdatecut'] != 365)
+		{
+			$forum['defaultdatecut'] = 9999;
+		}
+
+		// Verify the default sort order field.
+		if($forum['defaultsortby'] != "posts" &&
+			$forum['defaultsortby'] != "replies" &&
+			$forum['defaultsortby'] != "views" &&
+			$forum['defaultsortby'] != "subject" &&
+			$forum['defaultsortby'] != "starter" &&
+			$forum['defaultsortby'] != "rating" &&
+		)
+		{
+			$forum['defaultsortby'] = "lastpost";
+		}
+
+		// Verify the default sort order.
+		if($forum['defaultsortorder'] != "asc")
+		{
+			$forum['defaultsortorder'] = "desc";
+		}
+	}
 
 	/**
 	* Validates a forum.
+	*
 	*/
 	function validate_forum()
 	{
@@ -143,6 +228,10 @@ class ForumDataHandler extends DataHandler
 		$this->verify_linkto();
 		$this->verify_parent();
 		$this->verify_options();
+		$this->verify_displayorder();
+		$this->verify_style();
+		$this->verify_overridestyle();
+		$this->verify_defaults();
 
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -158,6 +247,7 @@ class ForumDataHandler extends DataHandler
 
 	/**
 	* Inserts a forum.
+	*
 	*/
 	function insert_forum()
 	{
@@ -172,10 +262,54 @@ class ForumDataHandler extends DataHandler
 		}
 
 		$forum = &$this->data;
+
+		$insert_forum = array(
+			"name" => $db->escape_string($forum['name']),
+			"description" => $db->escape_string($forum['description']),
+			"linkto" => $db->escape_string($forum['linkto']),
+			"type" => $forum['type'],
+			"pid" => $forum['pid'],
+			"disporder" => $forum['disporder'],
+			"active" => $db->escape_string($mybb->input['isactive']),
+			"open" => $db->escape_string($mybb->input['isopen']),
+			"threads" => '0',
+			"posts" => '0',
+			"lastpost" => '0',
+			"lastposter" => '0',
+			"password" => $db->escape_string($mybb->input['password']),
+			"style" => $db->escape_string($forum['style']),
+			"overridestyle" => $db->escape_string($forum['overridestyle']),
+			"rulestype" => $db->escape_string($forum['rulestype']),
+			"rulestitle" => $db->escape_string($forum['rulestitle']),
+			"rules" => $db->escape_string($forum['rules']),
+			"defaultdatecut" => $forum['defaultdatecut'],
+			"defaultsortby" => $db->escape_string($forum['defaultsortby']),
+			"defaultsortorder" => $db->escape_string($forum['defaultsortorder']),
+			"allowhtml" => $db->escape_string($forum['options']['allowhtml']),
+			"allowmycode" => $db->escape_string($forum['options']['allowmycode']),
+			"allowsmilies" => $db->escape_string($forum['options']['allowsmilies']),
+			"allowimgcode" => $db->escape_string($forum['options']['allowimgcode']),
+			"allowpicons" => $db->escape_string($forum['options']['allowpicons']),
+			"allowtratings" => $db->escape_string($forum['options']['allowtratings']),
+			"usepostcounts" => $db->escape_string($forum['options']['usepostcounts']),
+			"showinjump" => $db->escape_string($forum['options']['showinjump']),
+			"modposts" => $db->escape_string($forum['options']['modposts']),
+			"modthreads" => $db->escape_string($forum['options']['modthreads']),
+			"modattachments" => $db->escape_string($forum['options']['modattachments']),
+		);
+		$db->insert_query(TABLE_PREFIX."forums", $insert_forum);
+
+		$fid = $db->insert_id();
+
+		return array(
+			"fid" => $fid;
+		);
+
 	}
 
 	/**
 	* Updates a forum.
+	*
 	*/
 	function update_forum()
 	{

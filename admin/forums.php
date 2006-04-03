@@ -250,7 +250,7 @@ if($mybb->input['action'] == "do_add") {
 	savequickperms($fid);
 	$cache->updateforums();
 	$cache->updateforumpermissions();
-	
+
 	cpredirect("forums.php", $lang->forum_added);
 }
 if($mybb->input['action'] == "do_addmod") {
@@ -299,7 +299,7 @@ if($mybb->input['action'] == "do_addmod") {
 }
 if($mybb->input['action'] == "do_delete") {
 	if($mybb->input['deletesubmit'])
-	{	
+	{
 		$fid = intval($mybb->input['fid']);
 		$db->query("DELETE FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE CONCAT(',', parentlist, ',') LIKE '%,$fid,%'");
@@ -345,7 +345,7 @@ if($mybb->input['action'] == "do_delete") {
 		$cache->updateforums();
 		$cache->updatemoderators();
 		$cache->updateforumpermissions();
-	
+
 		cpredirect("forums.php", $lang->forum_deleted);
 	}
 	else
@@ -404,12 +404,12 @@ if($mybb->input['action'] == "do_edit") {
 		{
 			$type = "f";
 		}
-		
+
 		if($mybb->input['pid'] == 0 && $type == "f")
 		{
 			cperror($lang->forum_noparent);
 		}
-		
+
 		$sqlarray = array(
 			"name" => addslashes($mybb->input['name']),
 			"description" => addslashes($mybb->input['description']),
@@ -440,7 +440,7 @@ if($mybb->input['action'] == "do_edit") {
 			"defaultsortby" => addslashes($mybb->input['defaultsortby']),
 			"defaultsortorder" => addslashes($mybb->input['defaultsortorder']),
 			);
-			
+
 		$db->update_query(TABLE_PREFIX."forums", $sqlarray, "fid='$fid'", 1);
 		if($pid != $forum['pid'])
 		{
@@ -460,7 +460,7 @@ if($mybb->input['action'] == "do_edit") {
 		}
 		$cache->updateforums();
 		$cache->updateforumpermissions();
-	
+
 		cpredirect("forums.php", $lang->forum_updated);
 	}
 }
@@ -516,7 +516,7 @@ if($mybb->input['action'] == "add") {
 	else
 	{
 		$typesel = "yes";
-	}	
+	}
 	makeyesnocode($lang->act_as_forum, "isforum", $typesel);
 	makeyesnocode($lang->forum_active, "isactive", "yes");
 	makeyesnocode($lang->forum_open, "isopen", "yes");
@@ -545,7 +545,7 @@ if($mybb->input['action'] == "add") {
 		75 => $lang->datelimit_75days,
 		100 => $lang->datelimit_100days,
 		365 => $lang->datelimit_lastyear,
-		1000 => $lang->datelimit_beginning,
+		9999 => $lang->datelimit_beginning,
 		);
 	makeselectcode_array($lang->default_datecut, "defaultdatecut", $datecut_array, "", true, $lang->board_default);
 	$sortby_array = array(
@@ -578,7 +578,7 @@ if($mybb->input['action'] == "add") {
 	quickpermissions("", $pid);
 	endform($lang->add_forum, $lang->reset_button);
 	cpfooter();
-	
+
 }
 if($mybb->input['action'] == "addmod") {
 	if(!$noheader)
@@ -656,7 +656,7 @@ if($mybb->input['action'] == "edit") {
 	{
 		$isforum = "yes";
 	}
-	
+
 	startform("forums.php", "", "do_edit");
 	makehiddencode("fid", $fid);
 	starttable();
@@ -804,7 +804,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 		$hopto[] = "<input type=\"button\" value=\"$lang->edit_forum_settings\" onclick=\"hopto('forums.php?action=edit&fid=$fid');\" class=\"hoptobutton\">";
 		$hopto[] = "<input type=\"button\" value=\"$lang->delete_forum2\" onclick=\"hopto('forums.php?action=delete&fid=$fid');\" class=\"hoptobutton\">";
 		makehoptolinks($hopto);
-		
+
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE pid='$fid'");
 		$child = $db->fetch_array($query);
 		if($child['fid'])

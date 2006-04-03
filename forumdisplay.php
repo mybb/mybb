@@ -261,31 +261,36 @@ else
 unset($rating);
 
 // Pick out some sorting options.
+// First, the date cut for the threads.
 if(!$mybb->input['datecut'])
 {
+	// If the user manually set a date cut, use it.
 	if($mybb->user['daysprune'])
 	{
 		$datecut = $mybb->user['daysprune'];
 	}
 	else
 	{
-		if($foruminfo['defaultdatecut'])
+		// If the forum has a non-default date cut, use it.
+		if(!empty($foruminfo['defaultdatecut']))
 		{
 			$datecut = $foruminfo['defaultdatecut'];
 		}
+		// Else set the date cut to 9999 days.
 		else
 		{
-			$datecut = "1000";
+			$datecut = 9999;
 		}
 	}
 }
+// If there was a manual date cut override, use it.
 else
 {
 	$datecut = intval($mybb->input['datecut']);
 }
 $datecut = intval($datecut);
 $datecutsel[$datecut] = "selected=\"selected\"";
-if($datecut != "1000")
+if($datecut != 9999)
 {
 	$checkdate = time() - ($datecut * 86400);
 	$datecutsql = "AND t.lastpost >= '$checkdate'";
@@ -710,7 +715,7 @@ if($threadcache)
 		{
 			$modbit = '';
 		}
-		
+
 		// Check if "Inline subject editing" is enabled.
 		if(1 == 1)
 		{
@@ -784,7 +789,7 @@ if($foruminfo['type'] != "c") {
 	}
 	if($load_inline_edit_js == 1)
 	{
-		eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");		
+		eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
 	}
 	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");
 }
