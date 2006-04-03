@@ -937,7 +937,8 @@ function serverload()
 	return $returnload;
 }
 
-function updateforumcount($fid) {
+function updateforumcount($fid)
+{
 	global $db, $cache;
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
 	while($childforum = $db->fetch_array($query))
@@ -945,7 +946,7 @@ function updateforumcount($fid) {
 		if($fid == $childforum['fid'])
 		{
 			$parentlist = $childforum['parentlist'];
-			$flastpost = $childforum['lastpost'];
+			$lasttid = $childforum['lastposttid'];
 		}
 		elseif($fid == $childforum['pid'])
 		{
@@ -954,14 +955,13 @@ function updateforumcount($fid) {
 		}
 		$childforums .= ",'".$childforum['fid']."'";
 	}
-	$query = $db->query("SELECT MAX(lastpost) AS lastpost FROM ".TABLE_PREFIX."threads WHERE fid IN (0$childforums) AND visible='1' AND closed NOT LIKE 'moved|%'");
+	
+	$query = $db->query("SELECT tid, lastpost, lastposter FROM ".TABLE_PREFIX."threads WHERE fid IN (0$childforums) AND visible='1' AND closed NOT LIKE 'moved|%' ORDER BY lastpost DESC LIMIT 0, 1");
 	$lastpost = $db->fetch_array($query);
-	if($lastpost['lastpost'] != $flastpost)
-	{ // Lastpost has changed, lets update
-		$query = $db->query("SELECT lastpost, lastposter, tid FROM ".TABLE_PREFIX."threads WHERE lastpost='".$lastpost['lastpost']."' AND visible='1' AND closed NOT LIKE 'moved|%'");
-		$lp = $db->fetch_array($query);
-		$lp['lastposter'] = addslashes($lp['lastposter']);
-		$lpadd = ",lastpost='".$lp['lastpost']."', lastposter='".$lp['lastposter']."', lastposttid='".$lp['tid']."'";
+	// If the last post tid is not equal to the queried one, update.
+	if($lastpost['lastposttid'] != $lasttid)
+	{
+		$lpadd = ",lastpost='".intval($lastpost['lastpost'])."', lastposter='".addslashes($lastpost['lastposter'])."', lastposttid='".intval($lastpost['tid'])."'";
 	}
 
 	// Get the post counters for this forum and its children

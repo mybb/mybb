@@ -484,8 +484,10 @@ if($mybb->input['action'] == "do_email")
 	}
 	if(is_array($search['usergroups']))
 	{
-		$groups = implode(",", $search['usergroups']);
-		$conditions .= " AND usergroup IN ($groups)";
+		foreach($search['usergroups'] as $group)
+		{
+			$conditions .= " AND (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
+		}
 	}
 
 	if($search['email'])
@@ -1367,11 +1369,6 @@ if($mybb->input['action'] == "find")
     {
         $search['usergroup'] = intval($search['usergroup']);
         $conditions .= " AND usergroup = '$search[usergroup]'";
-    }
-    if($search['additionalusergroups'])
-    {
-        $search['additionalusergroups'] = intval($search['additionalusergroups']);
-        $conditions .= " AND CONCAT(',',additionalgroups,',') LIKE '%,".$search['additionalusergroups'].",%'";
     }
     if(is_array($search['additionalgroups']))
     {
