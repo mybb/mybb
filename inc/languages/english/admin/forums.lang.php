@@ -66,7 +66,7 @@ $l['moderate_attachments'] = "Moderate New Attachments";
 $l['style_options'] = "Style Options";
 $l['style'] = "Style<br><small>If blank, will use the default forum of the user or forums.";
 $l['use_default'] = "Use Default";
-$l['override_style'] = "Override Users Selected Style<br><small>Do you want to use the user's selected custom style with this style?";
+$l['override_style'] = "Override User's Selected Style<br><small>Do you want to override the user's selected custom style with this style?";
 
 $l['default_viewing_options'] = "Default Viewing Options";
 $l['default_datecut'] = "Default Date Cut";

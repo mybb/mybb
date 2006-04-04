@@ -130,6 +130,10 @@ class ForumDataHandler extends DataHandler
 		{
 			$forum['options']['showinjump'] = "no";
 		}
+		if($forum['options']['overridetheme'] != "yes")
+		{
+			$forum['options']['overridetheme'] = "no";
+		}
 	}
 
 	/**
@@ -148,33 +152,28 @@ class ForumDataHandler extends DataHandler
 	}
 
 	/**
-	* Verifies a forum's style.
+	* Verifies a forum's theme.
 	*
 	* @return boolean True if valid, false if invalid.
 	*/
-	function verify_style()
+	function verify_theme()
 	{
-		// Check if the style exists.
-
 		$forum = &$this->data;
+
+		// Check if the theme exists.
+		$options = array(
+			"limit" => 1
+		);
+		$query = $db->simple_select(TABLE_PREFIX."theme", "tid", "theme=".$forum['theme'], $options);
+		if($db->num_rows($query) != 1)
+		{
+			$this->set_error("invalid_theme");
+			return false;
+		}
 
 		return true;
 	}
 
-
-	/**
-	* Verfies a forum's override style.
-	*
-	* @return boolean True if valid, false if invalid.
-	*/
-	function verify_overridestyle()
-	{
-		// Check if the override style exists.
-
-		$forum = &$this->data;
-
-		return true;
-	}
 
 	/**
 	* Verifies a forum's default settings.
@@ -229,8 +228,7 @@ class ForumDataHandler extends DataHandler
 		$this->verify_parent();
 		$this->verify_options();
 		$this->verify_displayorder();
-		$this->verify_style();
-		$this->verify_overridestyle();
+		$this->verify_theme();
 		$this->verify_defaults();
 
 		// We are done validating, return.
@@ -277,8 +275,7 @@ class ForumDataHandler extends DataHandler
 			"lastpost" => '0',
 			"lastposter" => '0',
 			"password" => $db->escape_string($mybb->input['password']),
-			"style" => $db->escape_string($forum['style']),
-			"overridestyle" => $db->escape_string($forum['overridestyle']),
+			"theme" => $db->escape_string($forum['theme']),
 			"rulestype" => $db->escape_string($forum['rulestype']),
 			"rulestitle" => $db->escape_string($forum['rulestitle']),
 			"rules" => $db->escape_string($forum['rules']),
@@ -296,6 +293,7 @@ class ForumDataHandler extends DataHandler
 			"modposts" => $db->escape_string($forum['options']['modposts']),
 			"modthreads" => $db->escape_string($forum['options']['modthreads']),
 			"modattachments" => $db->escape_string($forum['options']['modattachments']),
+			"overridetheme" => $db->escape_string($forum['options']['overridetheme'])
 		);
 		$db->insert_query(TABLE_PREFIX."forums", $insert_forum);
 
@@ -324,6 +322,42 @@ class ForumDataHandler extends DataHandler
 		}
 
 		$forum = &$this->data;
+
+		$update_forum = array(
+			"name" => $db->escape_string($forum['name']),
+			"description" => $db->escape_string($forum['description']),
+			"linkto" => $db->escape_string($forum['linkto']),
+			"type" => $forum['type'],
+			"pid" => $forum['pid'],
+			"disporder" => $forum['disporder'],
+			"active" => $db->escape_string($mybb->input['isactive']),
+			"open" => $db->escape_string($mybb->input['isopen']),
+			"threads" => '0',
+			"posts" => '0',
+			"lastpost" => '0',
+			"lastposter" => '0',
+			"password" => $db->escape_string($mybb->input['password']),
+			"theme" => $db->escape_string($forum['theme']),
+			"rulestype" => $db->escape_string($forum['rulestype']),
+			"rulestitle" => $db->escape_string($forum['rulestitle']),
+			"rules" => $db->escape_string($forum['rules']),
+			"defaultdatecut" => $forum['defaultdatecut'],
+			"defaultsortby" => $db->escape_string($forum['defaultsortby']),
+			"defaultsortorder" => $db->escape_string($forum['defaultsortorder']),
+			"allowhtml" => $db->escape_string($forum['options']['allowhtml']),
+			"allowmycode" => $db->escape_string($forum['options']['allowmycode']),
+			"allowsmilies" => $db->escape_string($forum['options']['allowsmilies']),
+			"allowimgcode" => $db->escape_string($forum['options']['allowimgcode']),
+			"allowpicons" => $db->escape_string($forum['options']['allowpicons']),
+			"allowtratings" => $db->escape_string($forum['options']['allowtratings']),
+			"usepostcounts" => $db->escape_string($forum['options']['usepostcounts']),
+			"showinjump" => $db->escape_string($forum['options']['showinjump']),
+			"modposts" => $db->escape_string($forum['options']['modposts']),
+			"modthreads" => $db->escape_string($forum['options']['modthreads']),
+			"modattachments" => $db->escape_string($forum['options']['modattachments']),
+			"overridetheme" => $db->escape_string($forum['options']['overridetheme'])
+		);
+		$db->update_query(TABLE_PREFIX."forums", $update_forum, "fid=".$forum['fid']);
 	}
 }
 ?>
