@@ -262,7 +262,7 @@ while($forumrow = $db->fetch_array($query))
 
 $pids = '';
 $comma="";
-$query = $db->query("SELECT p.pid, p.message, p.tid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid AND t.dateline=p.dateline) WHERE t.fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
+$query = $db->query("SELECT p.pid, p.message, p.tid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) WHERE t.fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
 while($getid = $db->fetch_array($query))
 {
 	$pids .= ",'$getid[pid]'";

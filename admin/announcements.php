@@ -87,7 +87,14 @@ if($mybb->input['action'] == "do_add")
 		}
 	}
 	$startdate = gmmktime($startdatehour, intval($mybb->input['startdatemin']), 0, intval($mybb->input['startdatemonth']), intval($mybb->input['startdateday']), intval($mybb->input['startdateyear']));
-	$enddate = gmmktime($enddatehour, intval($mybb->input['enddatemin']), 0, intval($mybb->input['enddatemonth']), intval($mybb->input['enddateday']), intval($mybb->input['enddateyear']));
+	if($mybb->input['end'] == "never")
+	{
+		$enddate = '0';
+	}
+	else
+	{
+		$enddate = gmmktime($enddatehour, intval($mybb->input['enddatemin']), 0, intval($mybb->input['enddatemonth']), intval($mybb->input['enddateday']), intval($mybb->input['enddateyear']));
+	}
 	$sqlarray = array(
 		"fid" => $fid,
 		"uid" => $mybbadmin['uid'],
@@ -104,7 +111,7 @@ if($mybb->input['action'] == "do_add")
 }
 if($mybb->input['action'] == "do_delete")
 {
-	if($deletesubmit)
+	if($mybb->input['deletesubmit'])
 	{	
 		$db->query("DELETE FROM ".TABLE_PREFIX."announcements WHERE aid='$aid'");
 		cpredirect("announcements.php", $lang->announcement_deleted);
@@ -140,7 +147,14 @@ if($mybb->input['action'] == "do_edit")
 		}
 	}
 	$startdate = gmmktime($startdatehour, intval($mybb->input['startdatemin']), 0, intval($mybb->input['startdatemonth']), intval($mybb->input['startdateday']), intval($mybb->input['startdateyear']));
-	$enddate = gmmktime($enddatehour, intval($mybb->input['enddatemin']), 0, intval($mybb->input['enddatemonth']), intval($mybb->input['enddateday']), intval($mybb->input['enddateyear']));
+	if($mybb->input['end'] == "never")
+	{
+		$enddate = '0';
+	}
+	else
+	{
+		$enddate = gmmktime($enddatehour, intval($mybb->input['enddatemin']), 0, intval($mybb->input['enddatemonth']), intval($mybb->input['enddateday']), intval($mybb->input['enddateyear']));
+	}
 	$sqlarray = array(
 		"aid" => intval($mybb->input['aid']), 
 		"fid" => $fid,
@@ -247,9 +261,9 @@ if($mybb->input['action'] == "add") {
 	$enddatemonth .= "<option value=\"12\" $monthsel[12]>December</option>\n";
 	$startdateyear = gmdate("Y", time());
 	$enddateyear = gmdate("Y", time()) + 1;
-
+	
 	makelabelcode($lang->start_date, "<select name=\"startdatehour\">\n$startdatehour</select>\n &nbsp; \n<select name=\"startdatemin\">\n$startdatemin</select>\n &nbsp; \n<select name=\"startdateampm\"><option value=\"am\" $amsel>AM</option><option value=\"pm\" $pmsel>PM</option></select>\n &nbsp; \n<select name=\"startdateday\">\n$startdateday</select>\n &nbsp; \n<select name=\"startdatemonth\">\n$startdatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"startdateyear\" value=\"$startdateyear\" size=\"4\" maxlength=\"4\"> (GMT)\n");
-	makelabelcode($lang->end_date, "<select name=\"enddatehour\">\n$enddatehour</select>\n &nbsp; \n<select name=\"enddatemin\">\n$enddatemin</select>\n &nbsp; \n<select name=\"enddateampm\"><option value=\"am\" $amsel>AM</option><option value=\"pm\" $pmsel>PM</option></select>\n &nbsp; \n<select name=\"enddateday\">\n$enddateday</select>\n &nbsp; \n<select name=\"enddatemonth\">\n$enddatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"enddateyear\" value=\"$enddateyear\" size=\"4\" maxlength=\"4\"> (GMT)\n");
+	makelabelcode($lang->end_date, "<input type=\"radio\" name=\"end\" value=\"selected\" checked=\"checked\" /> <select name=\"enddatehour\">\n$enddatehour</select>\n &nbsp; \n<select name=\"enddatemin\">\n$enddatemin</select>\n &nbsp; \n<select name=\"enddateampm\"><option value=\"am\" $amsel>AM</option><option value=\"pm\" $pmsel>PM</option></select>\n &nbsp; \n<select name=\"enddateday\">\n$enddateday</select>\n &nbsp; \n<select name=\"enddatemonth\">\n$enddatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"enddateyear\" value=\"$enddateyear\" size=\"4\" maxlength=\"4\"> (GMT)<br /><input type=\"radio\" name=\"end\" value=\"never\" /> $lang->never\n");
 	maketextareacode($lang->announcement, "message", "", "10", "50");
 	makeyesnocode($lang->allow_html, "allowhtml", "yes");
 	makeyesnocode($lang->allow_mycode, "allowmycode", "yes");
@@ -261,12 +275,12 @@ if($mybb->input['action'] == "add") {
 }
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE aid='$aid'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."announcements WHERE aid='".intval($mybb->input['aid'])."'");
 	$announcement = $db->fetch_array($query);
 	$announcement['subject'] = stripslashes($announcement['subject']);
 	cpheader();
 	startform("announcements.php", "", "do_delete");
-	makehiddencode("aid", $aid);
+	makehiddencode("aid", $mybb->input['aid']);
 	starttable();
 
 	$lang->delete_announcement2 = sprintf($lang->delete_announcement2, $announcement['subject']);
@@ -411,9 +425,20 @@ if($mybb->input['action'] == "edit")
 	$enddatemonth .= "<option value=\"11\" $endmonthsel[11]>November</option>\n";
 	$startdatemonth .= "<option value=\"12\" $startmonthsel[12]>December</option>\n";
 	$enddatemonth .= "<option value=\"12\" $endmonthsel[12]>December</option>\n";
+	
+	if($announcement['enddate'])
+	{
+		$endcheck = "checked=\"checked\"";
+		$endnever = "";
+	}
+	else
+	{
+		$endcheck = "";
+		$endnever = "checked=\"checked\"";
+	}
 
 	makelabelcode($lang->start_date, "<select name=\"startdatehour\">\n$startdatehour</select>\n &nbsp; \n<select name=\"startdatemin\">\n$startdatemin</select>\n &nbsp; \n<select name=\"startdateampm\"><option value=\"am\" $samsel>AM</option><option value=\"pm\" $spmsel>PM</option></select>\n &nbsp; \n<select name=\"startdateday\">\n$startdateday</select>\n &nbsp; \n<select name=\"startdatemonth\">\n$startdatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"startdateyear\" value=\"$startdate[2]\" size=\"4\" maxlength=\"4\"> (GMT)\n");
-	makelabelcode($lang->end_date, "<select name=\"enddatehour\">\n$enddatehour</select>\n &nbsp; \n<select name=\"enddatemin\">\n$enddatemin</select>\n &nbsp; \n<select name=\"enddateampm\"><option value=\"am\" $eamsel>AM</option><option value=\"pm\" $epmsel>PM</option></select>\n &nbsp; \n<select name=\"enddateday\">\n$enddateday</select>\n &nbsp; \n<select name=\"enddatemonth\">\n$enddatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"enddateyear\" value=\"$enddate[2]\" size=\"4\" maxlength=\"4\"> (GMT)\n");
+	makelabelcode($lang->end_date, "<input type=\"radio\" name=\"end\" value=\"selected\" $endcheck /> <select name=\"enddatehour\">\n$enddatehour</select>\n &nbsp; \n<select name=\"enddatemin\">\n$enddatemin</select>\n &nbsp; \n<select name=\"enddateampm\"><option value=\"am\" $eamsel>AM</option><option value=\"pm\" $epmsel>PM</option></select>\n &nbsp; \n<select name=\"enddateday\">\n$enddateday</select>\n &nbsp; \n<select name=\"enddatemonth\">\n$enddatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"enddateyear\" value=\"$enddate[2]\" size=\"4\" maxlength=\"4\"> (GMT)<br /><input type=\"radio\" name=\"end\" value=\"never\" $endnever /> $lang->never\n");
 	maketextareacode($lang->announcement, "message", "$announcement[message]", "10", "50");
 	makeyesnocode($lang->allow_html, "allowhtml", "$announcement[allowhtml]");
 	makeyesnocode($lang->allow_mycode, "allowmycode", "$announcement[allowmycode]");
