@@ -281,62 +281,6 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$pid = $postinfo['pid'];
 		$visible = $postinfo['visible'];
 
-		// Start Subscriptions
-		if(!$post['savedraft'])
-		{
-			$subject = $parser->parse_badwords($thread['subject']);
-			$excerpt = $parser->strip_mycode($post['message']);
-			$excerpt = substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-			$query = $db->query("
-				SELECT u.username, u.email, u.uid, u.language
-				FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u
-				WHERE f.type='s' AND f.tid='$tid'
-				AND u.uid=f.uid
-				AND f.uid!='".$mybb->user['uid']."'
-				AND u.lastactive>'".$thread['lastpost']."'
-			");
-			while($subscribedmember = $db->fetch_array($query))
-			{
-				if($subscribedmember['language'] != '' && $lang->languageExists($subscribedmember['language']))
-				{
-					$uselang = $subscribedmember['language'];
-				}
-				elseif($mybb->settings['bblanguage'])
-				{
-					$uselang = $mybb->settings['bblanguage'];
-				}
-				else
-				{
-					$uselang = "english";
-				}
-
-				if($uselang == $mybb->settings['bblanguage'])
-				{
-					$emailsubject = $lang->emailsubject_subscription;
-					$emailmessage = $lang->email_subscription;
-				}
-				else
-				{
-					if(!isset($langcache[$uselang]['emailsubject_subscription']))
-					{
-						$userlang = new MyLanguage;
-						$userlang->setPath("./inc/languages");
-						$userlang->setLanguage($uselang);
-						$userlang->load("messages");
-						$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
-						$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
-						unset($userlang);
-					}
-					$emailsubject =  $langcache[$uselang]['emailsubject_subscription'];
-					$emailmessage =  $langcache[$uselang]['email_subscription'];
-				}
-				$emailsubject = sprintf($emailsubject, $subject);
-				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
-				mymail($subscribedmember['email'], $emailsubject, $emailmessage);
-				unset($userlang);
-			}
-		}
-
 		// Deciding the fate
 		if($visible == -2)
 		{
@@ -349,35 +293,15 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			// Visible post
 			$lang->redirect_newreply .= $lang->redirect_newreply_post;
 			$url = "showthread.php?tid=$tid&pid=$pid#pid$pid";
-			updatethreadcount($tid);
-			updateforumcount($fid);
-			$cache->updatestats();
 		}
 		else
 		{
 			// Moderated post
 			$lang->redirect_newreply .= $lang->redirect_newreply_moderation;
 			$url = "showthread.php?tid=$tid";
-			// Update the unapproved posts count for the current thread and current forum
-			updatethreadcount($tid);
-			updateforumcount($fid);
 		}
 
-		if(!$post['savedraft'])
-		{
-			$now = time();
-			if($forum['usepostcounts'] != "no")
-			{
-					$queryadd = ",postnum=postnum+1";
-			}
-			else
-			{
-				$queryadd = '';
-			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$mybb->user['uid']."'");
-
-			$plugins->run_hooks("newreply_do_newreply_end");
-		}
+		$plugins->run_hooks("newreply_do_newreply_end");
 
 		$lang->redirect_newreply .= sprintf($lang->redirect_return_forum, $fid);
 		redirect($url, $lang->redirect_newreply);
