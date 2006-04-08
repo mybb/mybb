@@ -45,11 +45,11 @@ function upgrade5_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD caneditlangs char(3) NOT NULL default '' AFTER canedithelp;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD allowedgroups text NOT NULL default '' AFTER extracss;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."moderators ADD canmovetononmodforum char(3) NOT NULL default '' AFTER canmanagethreads;");
-	
+
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET optionscode='select\r\ninstant=Instant Activation\r\nverify=Send Email Verification\r\nrandompass=Send Random Password\r\nadmin=Administrator Activation' WHERE name = 'regtype'");
 	$db->query("UPDATE ".TABLE_PREFIX."users SET totalpms='-1', newpms='-1', unreadpms='-1'");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mycode");	
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mycode");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."mycode (
 		    cid int unsigned NOT NULL auto_increment,
 		    title varchar(100) NOT NULL default '',
@@ -109,8 +109,10 @@ function upgrade5_dbchanges()
 		  PRIMARY KEY  (sid)
 		) TYPE=MyISAM;");
 
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET name='bannedemails' WHERE name='emailban' LIMIT 1");
+
 	echo "Done</p>";
-	
+
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("5_dbchanges2");

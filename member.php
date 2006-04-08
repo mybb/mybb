@@ -151,7 +151,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$bademail = 1;
 	}
 	$email = strtolower($email);
-	$bannedemails = explode(" ", $mybb->settings['emailban']);
+	$bannedemails = explode(" ", $mybb->settings['bannedemails']);
 	if(is_array($bannedemails) && !$bademail)
 	{
 		foreach($bannedemails as $bannedemail)

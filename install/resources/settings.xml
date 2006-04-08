@@ -16,7 +16,7 @@
 			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="emailban">
+		<setting name="bannedemails">
 			<title>Ban by Email</title>
 			<description><![CDATA[You may specify specific email addresses to ban, or you may specify a domain.  You must separate email addresses and domains with a space.]]></description>
 			<disporder>3</disporder>

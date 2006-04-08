@@ -955,7 +955,7 @@ function updateforumcount($fid)
 		}
 		$childforums .= ",'".$childforum['fid']."'";
 	}
-	
+
 	$query = $db->query("SELECT tid, lastpost, lastposter FROM ".TABLE_PREFIX."threads WHERE fid IN (0$childforums) AND visible='1' AND closed NOT LIKE 'moved|%' ORDER BY lastpost DESC LIMIT 0, 1");
 	$lastpost = $db->fetch_array($query);
 	// If the last post tid is not equal to the queried one, update.
@@ -2387,7 +2387,7 @@ function get_thread($tid)
 {
 	global $db;
 	static $thread_cache;
-	
+
 	if(isset($thread_cache[$tid]))
 	{
 		return $thread_cache[$tid];
@@ -2396,7 +2396,7 @@ function get_thread($tid)
 	{
 		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($tid)."'");
 		$thread = $db->fetch_array($query);
-		
+
 		if($thread)
 		{
 			$thread_cache[$tid] = $thread;
@@ -2414,7 +2414,7 @@ function get_post($pid)
 {
 	global $db;
 	static $post_cache;
-	
+
 	if(isset($post_cache[$pid]))
 	{
 		return $post_cache[$pid];
@@ -2423,7 +2423,7 @@ function get_post($pid)
 	{
 		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid='".intval($pid)."'");
 		$post = $db->fetch_array($query);
-		
+
 		if($post)
 		{
 			$post_cache[$pid] = $post;
@@ -2434,7 +2434,7 @@ function get_post($pid)
 			$post_cache[$pid] = false;
 			return false;
 		}
-	}	
+	}
 }
 
 function get_inactive_forums()
@@ -2527,5 +2527,23 @@ function login_attempt_check($fatal = true)
 	}
 	//User can attempt another login
 	return $loginattempts;
+}
+
+/**
+* Validates the format of an email address.
+*
+* @param string The string to check.
+* @return boolean True when valid, false when invalid.
+*/
+function validate_email_format($email)
+{
+	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 ?>

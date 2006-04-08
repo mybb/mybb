@@ -18,32 +18,32 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Verifies if a username is valid or invalid.
 	 *
-	 * @param boolean True when valid, false when not.
+	 * @param boolean True when valid, false when invalid.
 	 */
 	function verify_username()
 	{
 		$username = &$this->data['username'];
-		
+
 		// Username = ''?
-		
+
 		// Check banned usernames
-		
+
 		// Check for certain characters in username (<, >, &, and slashes)
-		
+
 		// Check username length
-		
+
 		// Check if username exists or not
 	}
 
 	/**
 	* Verifies if a new password is valid or not.
 	*
-	* @return boolean True when valid, false when not.
+	* @return boolean True when valid, false when invalid.
 	*/
 	function verify_new_password()
 	{
 		global $mybb;
-		
+
 		$password = &$this->data['password'];
 
 		// Always check for the length of the password.
@@ -66,36 +66,69 @@ class UserDataHandler extends DataHandler
 		}
 		return true;
 	}
-	
+
+	/**
+	* Verifies if an email address is valid or not.
+	*
+	* @return boolean True when valid, false when invalid.
+	*/
 	function verify_email()
 	{
-		// Email = ''?
-		
-		// Check email valid or not - regex
-		
+		$email = &$this->data['email'];
+
+		// Check if an email address has actually been entered.
+		if(trim($email) == '')
+		{
+			$this->set_error("empty_email");
+			return false;
+		}
+
+		// Check if this is a proper email address.
+		if(validate_email_format($email) === false)
+		{
+			$this->set_error("invalid_email_format");
+			return false;
+		}
+
 		// Check banned emails
+		$bannedemails = explode(" ", $mybb->settings['bannedemails']);
+		if(is_array($bannedemails))
+		{
+			foreach($bannedemails as $bannedemail)
+			{
+				$bannedemail = strtolower(trim($bannedemail));
+				if($bannedemail != '')
+				{
+					if(strstr($email, $bannedemail) != '')
+					{
+						$this->set_error("banned_email");
+						return false;
+					}
+				}
+			}
+		}
 	}
-	
+
 	function verify_website()
 	{
 		// Website starts with http?
 	}
-	
+
 	function verify_birthday()
 	{
 		// Check user isn't over 100 years - if they are strip back to just date/month
 	}
-	
+
 	function verify_profile_fields()
 	{
 		// Loop through profile fields checking if they exist or not and are filled in.
 	}
-	
+
 	function verify_referrer()
 	{
 		// Referrer exists or not?
 	}
-	
+
 	function verify_reg_image()
 	{
 		// Verify reg image.
