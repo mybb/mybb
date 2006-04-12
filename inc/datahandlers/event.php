@@ -123,14 +123,26 @@ class EventDataHandler extends DataHandler
 
 		$event = &$this->data;
 
-		$this->verify_name();
+		if($this->method == "insert" || isset($event['name']))
+		{
+			$this->verify_name();
+		}
 
-		$this->verify_description();
+		if($this->method == "insert" || isset($event['description']))
+		{
+			$this->verify_description();
+		}
 
-		$this->verify_date();
-
-		$this->verify_scope();
-
+		if($this->method == "insert" || isset($event['day']))
+		{
+			$this->verify_date();
+		}
+		
+		if($this->method == "insert" || isset($event['private']))
+		{
+			$this->verify_scope();
+		}
+		
 		$plugins->run_hooks("datahandler_event_validate");
 
 		// We are done validating, return.
@@ -207,17 +219,30 @@ class EventDataHandler extends DataHandler
 		}
 
 		$event = &$this->data;
+		
+		$updateevent = array();
+		
+		if(isset($event['name']))
+		{
+			$updateevent['name'] = $db->escape_string($event['name']);
+		}
+		
+		if(isset($event['description']))
+		{
+			$updateevent['description'] = $db->escape_string($event['description']);
+		}
+		
+		if(isset($event['date']))
+		{
+			$updateevent['date'] = $db->escape_string($event['date'])
+		}
+		
+		if(isset($event['private']))
+		{
+			$updateevent['private'] = $db->escape_string($event['date']);
+		}
 
-		// Prepare an array for insertion into the database.
-		$updateevent = array(
-			"eid" => intval($event['eid']),
-			"subject" => $db->escape_string($event['name']),
-			"date" => $event['date'],
-			"description" => $db->escape_string($event['description']),
-			"private" => $event['private']
-		);
-
-		if($event['uid'])
+		if(isset($event['uid']))
 		{
 			$updateevent['author'] = intval($event['uid']);
 		}
