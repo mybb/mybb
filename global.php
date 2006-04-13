@@ -9,7 +9,7 @@
  * $Id$
  */
 
-if(stripos($_SERVER['PHP_SELF'], "global.php") !== false)
+if(strpos(strtolower($_SERVER['PHP_SELF']), "global.php") !== false)
 {
 	die("Direct initialization of this file is not allowed.");
 }
