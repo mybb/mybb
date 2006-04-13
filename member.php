@@ -1027,11 +1027,11 @@ else if($mybb->input['action'] == "login")
 	// Redirect to the page where the user came from, but not if that was the login page.
 	if($mybb->input['url'] && !preg_match("/^(member\.php)?([^\?action=login]+)/i", $mybb->input['url']))
 	{
-		$redirect_url = $mybb->input['url'];
+		$redirect_url = htmlentities($mybb->input['url']);
 	}
 	elseif($_SERVER['HTTP_REFERER'])
 	{
-		$redirect_url = $_SERVER['HTTP_REFERER'];
+		$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
 	}
 
 	eval("\$login = \"".$templates->get("member_login")."\";");
@@ -1091,7 +1091,7 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	if($mybb->input['url'])
 	{
-		redirect($mybb->input['url'], $lang->redirect_loggedin);
+		redirect(htmlentities($mybb->input['url']), $lang->redirect_loggedin);
 	}
 	else
 	{

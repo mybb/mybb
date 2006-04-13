@@ -9,6 +9,10 @@
  * $Id$
  */
 
+if(stripos($_SERVER['PHP_SELF'], "global.php") !== false)
+{
+	die("Direct initialization of this file is not allowed.");
+}
 require "./inc/init.php";
 
 $shutdown_queries = array();

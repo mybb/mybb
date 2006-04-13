@@ -9,6 +9,11 @@
  * $Id$
  */
 
+if(stripos($_SERVER['PHP_SELF'], "inc/init.php") !== false)
+{
+	die("Direct initialization of this file is not allowed.");
+}
+
 error_reporting(E_ALL & ~E_NOTICE);
 
 

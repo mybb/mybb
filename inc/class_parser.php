@@ -270,7 +270,7 @@ class postParser
 		// Convert images when allowed.
 		if($options['allow_imgcode'] != "no")
 		{
-			$message = preg_replace("#\[img\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$1$2\" border=\"0\" alt=\"\" />", $message);
+			$message = preg_replace("#\[img\](https?://([^<>\"']+))\[/img\]#i", "<img src=\"$1\" border=\"0\" alt=\"\" />", $message);
 			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$3$4\" style=\"border: 0; width: $1; height: $2;\" alt=\"\" />", $message);
 		}
 		
@@ -589,9 +589,13 @@ class postParser
 		{
 			$name = $email;
 		}
-		if(preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email))
+		if(preg_match("/^([a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+$/si", $email))
 		{
 			return "<a href=\"mailto:$email\">".$name."</a>";
+		}
+		else
+		{
+			return $email;
 		}
 	}
 
