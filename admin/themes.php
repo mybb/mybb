@@ -479,6 +479,7 @@ if($mybb->input['action'] == "edit") {
 	makecssinputedit($css);
 	makecsstoolbaredit($css);
 	makecssautocompleteedit($css);
+	makecsspopupmenuedit($css);
 
 	starttable();
 	tableheader($lang->additional_css, "", 1);

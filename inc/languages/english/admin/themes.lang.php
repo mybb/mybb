@@ -132,4 +132,5 @@ $l['form_elements_textarea'] = "Textareas";
 $l['form_elements_select'] = "Select Boxes";
 $l['form_elements_radio'] = "Radio Buttons";
 $l['form_elements_checkbox'] = "Check Boxes";
+$l['popup_menus'] = "Popup Menus";
 ?>

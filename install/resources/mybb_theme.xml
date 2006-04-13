@@ -223,6 +223,18 @@ font-size: small;]]></extra>
 			<background><![CDATA[#adcee7]]></background>
 			<color><![CDATA[#000]]></color>
 		</autocomplete_selected>
+		<popup_menu>
+			<background><![CDATA[#ccc]]></background>
+			<border><![CDATA[1px solid #000]]></border>
+		</popup_menu>
+		<popup_item>
+			<background><![CDATA[#fff]]></background>
+			<color><![CDATA[#000]]></border>
+		</popup_item>
+		<popup_item_hovered>
+			<background><![CDATA[#C7DBEE]]></background>
+			<color><![CDATA[#000]]></border>
+		</popup_item_hovered>
 	</cssbits>
 	<themebits>
 		<templateset><![CDATA[1]]></templateset>
@@ -379,6 +391,32 @@ hr {
 form {
 	margin: 0;
 	padding: 0;
+}
+
+.popup_menu ul {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+
+.popup_menu li {
+	margin: 1px;
+	padding: 0;
+	text-align: left;
+}
+
+.popup_menu .popup_item {
+	display: block;
+	padding: 3px;
+	text-decoration: none;
+}
+
+.popup_menu a.popup_item:hover {
+	text-decoration: none;
+}
+
+* html .popup_menu .popup_item {
+	width: 100%;
 }]]></extracss>
 	</themebits>
 	<templates>
@@ -2112,6 +2150,7 @@ var inlineId = {$fid};
 <script type="text/javascript" src="jscripts/prototype.lite.js"></script>
 <script type="text/javascript" src="jscripts/moo.ajax.js"></script>
 <script type="text/javascript" src="jscripts/general.js"></script>
+<script type="text/javascript" src="jscripts/popup_menu.js"></script>
 <link rel="stylesheet" type="text/css" href="css.php?theme={$theme['tid']}" />
 <script language="Javascript" type="text/javascript">
 	 var cookieDomain = "{$settings['cookiedomain']}";
@@ -2619,7 +2658,11 @@ var inlineId = {$fid};
 </tbody>
 </table>
 <br />]]></template>
-		<template name="postbit_edit" version="100.07"><![CDATA[<a href="editpost.php?pid={$post['pid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" border="0" alt="{$lang->postbit_edit}" /></a>]]></template>
+		<template name="postbit_edit" version="100.07"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" border="0" alt="{$lang->postbit_edit}" /></a>
+<script type="text/javascript">
+	document.write('<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><ul><li><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">Quick Edit</a></li><li><a href="editpost.php?pid={$post['pid']}" class="popup_item">Full Edit</a></li></ul></div>');
+	new PopupMenu("edit_post_{$post['pid']}");
+</script>]]></template>
 		<template name="postbit_email" version="100.07"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_email.gif" border="0" alt="{$lang->postbit_email}" /></a>]]></template>
 		<template name="postbit_find" version="100.07"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_find.gif" border="0" alt="{$lang->postbit_find}" /></a>]]></template>
 		<template name="postbit_pm" version="100.07"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_pm.gif" border="0" alt="{$lang->postbit_pm}" /></a>]]></template>

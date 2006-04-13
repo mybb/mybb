@@ -9,47 +9,48 @@
  * $Id$
  */
 
-$cssselectors = array("body" => "body",
-					  "container" => "#container",
-					  "content" => "#content",
-					  "menu" => ".menu ul",
-					  "panel" => "#panel",
-					  "table" => "table",
-					  "tborder" => ".tborder",
-					  "thead" => ".thead",
-					  "tcat" => ".tcat",
-					  "trow1" => ".trow1",
-					  "trow2" => ".trow2",
-					  "trow_shaded" => ".trow_shaded",
-					  "trow_sep" => ".trow_sep",
-					  "tfoot" => ".tfoot",
-					  "bottommenu" => ".bottommenu",
-					  "navigation" => ".navigation",
-					  "navigation_active" => ".navigation .active",
-					  "smalltext" => ".smalltext",
-					  "largetext" => ".largetext",
-					  "input" => "input",
-					  "textarea" => "textarea",
-					  "radio" => "input.radio",
-					  "checkbox" => "input.checkbox",
-					  "select" => "select",
-					  "button" => "input.button",
-    				  "editor" => ".editor",
-					  "toolbar_normal" => ".toolbar_normal",
-					  "toolbar_hover" => ".toolbar_hover",
-					  "toolbar_clicked" => ".toolbar_clicked",
-					  "autocomplete" => ".autocomplete",
-					  "autocomplete_selected" => ".autocomplete_selected",
+$cssselectors = array(
+	"body" => "body",
+	"container" => "#container",
+	"content" => "#content",
+	"menu" => ".menu ul",
+	"panel" => "#panel",
+	"table" => "table",
+	"tborder" => ".tborder",
+	"thead" => ".thead",
+	"tcat" => ".tcat",
+	"trow1" => ".trow1",
+	"trow2" => ".trow2",
+	"trow_shaded" => ".trow_shaded",
+	"trow_sep" => ".trow_sep",
+	"tfoot" => ".tfoot",
+	"bottommenu" => ".bottommenu",
+	"navigation" => ".navigation",
+	"navigation_active" => ".navigation .active",
+	 "smalltext" => ".smalltext",
+	"largetext" => ".largetext",
+	"input" => "input",
+	"textarea" => "textarea",
+	"radio" => "input.radio",
+	"checkbox" => "input.checkbox",
+	"select" => "select",
+	"button" => "input.button",
+	"editor" => ".editor",
+	"toolbar_normal" => ".toolbar_normal",
+	"toolbar_hover" => ".toolbar_hover",
+	"toolbar_clicked" => ".toolbar_clicked",
+	"autocomplete" => ".autocomplete",
+	"autocomplete_selected" => ".autocomplete_selected",
+	"popup_menu" => ".popup_menu",
+	"popup_item" => ".popup_menu .popup_item",
+	"popup_item_hovered" => ".popup_menu .popup_item:hover",
 
-					  // Link selectors
-					  "a_link" => "a:link",
-					  "a_visited" => "a:visited",
-					  "a_hover" => "a:hover");
+	// Link selectors
+	"a_link" => "a:link",
+	"a_visited" => "a:visited",
+	"a_hover" => "a:hover"
+);
 
-/*$cssselectors = array("body", "#container", "#content", ".menu ul", "#panel", "table", ".tborder", ".thead", ".tcat",
-					  ".trow1", ".trow2", ".navigation", ".navigation .active", ".smalltext", ".largetext", "textarea, input, select, object",
-					  ".toolbar_normal", ".toolbar_hover", ".toolbar_mousedown", ".toolbar_clicked");
-*/
 $themebitlist = array("templateset", "imgdir", "logo", "tablespace", "tablewidth", "borderwidth", "extracss");
 
 
@@ -518,8 +519,8 @@ function makecssautocompleteedit($css)
 	echo "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
 	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[autocomplete][background]\" value=\"".$css['autocomplete']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[autocomplete][border]\" value=\"".$css['editor']['autocomplete']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[autocomplete][color]\" value=\"".$css['editor']['autocomplete']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[autocomplete][border]\" value=\"".$css['autocomplete']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[autocomplete][color]\" value=\"".$css['autocomplete']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
@@ -528,6 +529,33 @@ function makecssautocompleteedit($css)
 	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[autocomplete_selected][color]\" value=\"".$css['autocomplete_selected']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
+	echo "</tr>\n";
+	endtable();
+}
+
+function makecsspopupmenuedit($css)
+{
+	global $lang;
+	starttable();
+	tableheader($lang->popup_menus, "", 3);
+	echo "<tr>\n<td class=\"subheader\" align=\"center\">".$lang->popup_menu."</td><td class=\"subheader\" align=\"center\">".$lang->popup_menu_items."</td><td class=\"subheader\" align=\"center\">".$lang->popup_menu_items_hovered."</td>\n</tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[popup_menu][background]\" value=\"".$css['popup_menu']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[popup_menu][border]\" value=\"".$css['popup_menu']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[popup_item][background]\" value=\"".$css['popup_item']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[popup_item][color]\" value=\"".$css['popup_item']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[popup_item_hovered][background]\" value=\"".$css['popup_item_hovered']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[popup_item_hovered][color]\" value=\"".$css['popup_item_hovered']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";	
 	echo "</tr>\n";
 	endtable();
 }
