@@ -126,6 +126,7 @@ if($mybb->input['thumbnail'])
 }
 else
 {
+	$ext = getextention($attachment['filename']);
 	if($ext == "txt" || $ext == "htm" || $ext == "html")
 	{
 		header("Content-disposition: attachment; filename=$attachment[filename]");
