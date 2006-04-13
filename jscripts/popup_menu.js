@@ -68,7 +68,17 @@ PopupMenu.prototype = {
 				this.menu.style.left = (parseInt(this.menu.style.left)-6)+"px";
 			}
 		}
-		this.menu.style.display = "";
+		if(typeof fx != "undefined")
+		{
+			this.menu.style.display = '';
+			menu = new fx.Opacity(this.menu.id, {duration: 250});
+			menu.hide();
+			menu.toggle();
+		}
+		else
+		{			
+			this.menu.style.display = "";
+		}
 		document.currentMenu = element.id;
 		document.onclick = this.closeMenu.bindAsEventListener(this);
 		return false;
@@ -79,7 +89,15 @@ PopupMenu.prototype = {
 		menu = document.currentMenu;
 		menu = $(menu+"_popup");
 		
-		menu.style.display = "none";
+		if(typeof fx != "undefined")
+		{
+			menu = new fx.Opacity(this.menu.id, {duration: 250});
+			menu.toggle();
+		}
+		else
+		{			
+			this.menu.style.display = "none";
+		}
 		document.currentMenu = "";
 		document.onclick = null;
 	}

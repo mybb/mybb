@@ -47,10 +47,12 @@ var Thread = {
 	{
 		if(!$("pid_"+pid))
 		{
+			alert('1');
 			return false;
 		}
 		if(Thread.qeCache[pid])
 		{
+			alert('2');
 			return false;
 		}
 		Thread.qeCache[pid] = $("pid_"+pid).innerHTML;
@@ -106,6 +108,7 @@ var Thread = {
 	quickEditCancel: function(pid)
 	{
 		$("pid_"+pid).innerHTML = Thread.qeCache[pid];
+		Thread.qeCache[pid] = "";
 		if(this.spinner)
 		{
 			this.spinner.destroy();
