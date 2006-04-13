@@ -152,7 +152,7 @@ if($mybb->input['action'] == "editset")
 	makeinputcode($lang->set_charset, "info[charset]", $langinfo['charset']);
 
 	// Check if file is writable, before allowing submission
-	if(!is_writable($editfile))
+	if(!is_writable($file))
 	{
 		$lang->update_button = '';
 		makelabelcode($lang->note_cannot_write, "", 2);
@@ -201,16 +201,19 @@ if($mybb->input['action'] == "do_edit")
 		$key = str_replace("'", '', $key);
 		$newfile .= "\$l['$key'] = \"$phrase\";\n";
 	}
-	foreach($mybb->input['newkey'] as $i => $key)
+	if(is_array($mybb->input['newkey']))
 	{
-		$phrase = $mybb->input['newvalue'][$i];
-		if(!empty($key) && !empty($phrase))
+		foreach($mybb->input['newkey'] as $i => $key)
 		{
-			$phrase = str_replace("\\", "\\\\", $phrase);
-			$phrase = str_replace("\"", '\"', $phrase);
-			$key = str_replace("\\", '', $key);
-			$key = str_replace("'", '', $key);
-			$newfile .= "\$l['$key'] = \"$phrase\";\n";
+			$phrase = $mybb->input['newvalue'][$i];
+			if(!empty($key) && !empty($phrase))
+			{
+				$phrase = str_replace("\\", "\\\\", $phrase);
+				$phrase = str_replace("\"", '\"', $phrase);
+				$key = str_replace("\\", '', $key);
+				$key = str_replace("'", '', $key);
+				$newfile .= "\$l['$key'] = \"$phrase\";\n";
+			}
 		}
 	}
 	$newfile .= "?>";
@@ -322,14 +325,13 @@ if($mybb->input['action'] == "edit")
 				{
 					tablesubheader($key, "", 1);
 					echo "<tr>\n";
-					echo "<td class=\"altbg1\"><strong>".$languages[$editwith]."<br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" disabled=\"disabled\" name=\"\">".htmlspecialchars($withvars[$key])."</textarea></td>\n";
+					echo "<td class=\"altbg1\"><strong>".$languages[$editwith]."</strong><br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" disabled=\"disabled\" name=\"\">".htmlspecialchars($withvars[$key])."</textarea></td>\n";
 					echo "</tr>";
 					echo "<tr>\n";
-					echo "<td class=\"altbg1\"><strong>".$languages[$editlang]."<br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" name=\"edit[$key]\">".htmlspecialchars($value)."</textarea></td>\n";
+					echo "<td class=\"altbg1\"><strong>".$languages[$editlang]."</strong><br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" name=\"edit[$key]\">".htmlspecialchars($value)."</textarea></td>\n";
 					echo "</tr>";
 				}
 			}
-			tablesubheader($lang->new_variables, "", 3);
 		}
 		else
 		{
@@ -347,7 +349,7 @@ if($mybb->input['action'] == "edit")
 				{
 					tablesubheader($key, "", 1);
 					echo "<tr>\n";
-					echo "<td class=\"altbg1\"><strong>".$languages[$editlang]."<br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" name=\"edit[$key]\">".htmlspecialchars($value)."</textarea></td>\n";
+					echo "<td class=\"altbg1\"><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" name=\"edit[$key]\">".htmlspecialchars($value)."</textarea></td>\n";
 					echo "</tr>";
 				}
 			}

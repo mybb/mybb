@@ -793,5 +793,68 @@ class Moderation
 
 		return true;
 	}
+
+	/**
+	 * Prepend to a thread subject
+	 *
+	 * @param mixed Thread ID
+	 * @param string Text to prepend
+	 * @return boolean true
+	 */
+	function prepend_thread_subject($tids, $text)
+	{
+		global $db;
+
+		// Get tids into list
+		if(!is_array($tids))
+		{
+			$tids = array(intval($tids));
+		}
+		$tid_list = implode(",", $tids);
+
+		// Get original subject
+		$query = $db->simple_select(TABLE_PREFIX."threads", "subject", "tid IN ($tid_list)");
+		$thread = $db->fetch_array($query);
+
+		// Update threads and first posts with new subject
+		$new_subject = array(
+			"subject" => addslashes($text.$thread['subject']),
+			);
+		$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid IN ($tid_list)", count($tids));
+		$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid IN ($tid_list) AND replyto='0'", count($tids));
+
+		return true;
+	}
+	/**
+	 * Append to a thread subject
+	 *
+	 * @param mixed Thread ID
+	 * @param string Text to prepend
+	 * @return boolean true
+	 */
+	function append_thread_subject($tids, $text)
+	{
+		global $db;
+
+		// Get tids into list
+		if(!is_array($tids))
+		{
+			$tids = array(intval($tids));
+		}
+		$tid_list = implode(",", $tids);
+
+		// Get original subject
+		$query = $db->simple_select(TABLE_PREFIX."threads", "subject", "tid IN ($tid_list)");
+		$thread = $db->fetch_array($query);
+
+		// Update threads and first posts with new subject
+		$new_subject = array(
+			"subject" => addslashes($thread['subject'].$text),
+			);
+		$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid IN ($tid_list)", count($tids));
+		$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid IN ($tid_list) AND replyto='0'", count($tids));
+
+		return true;
+	}
 }
 ?>
