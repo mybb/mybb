@@ -229,11 +229,11 @@ font-size: small;]]></extra>
 		</popup_menu>
 		<popup_item>
 			<background><![CDATA[#fff]]></background>
-			<color><![CDATA[#000]]></border>
+			<color><![CDATA[#000]]></color>
 		</popup_item>
 		<popup_item_hovered>
 			<background><![CDATA[#C7DBEE]]></background>
-			<color><![CDATA[#000]]></border>
+			<color><![CDATA[#000]]></color>
 		</popup_item_hovered>
 	</cssbits>
 	<themebits>

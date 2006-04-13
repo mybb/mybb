@@ -95,7 +95,6 @@ $attachment['filename'] = rawurlencode($attachment['filename']);
 
 $plugins->run_hooks("attachment_end");
 
-header("Content-disposition: filename=$attachment[filename]");
 if($mybb->input['thumbnail'])
 {
 	$ext = getextention($attachment['thumbnail']);
@@ -119,6 +118,7 @@ if($mybb->input['thumbnail'])
 			$type = "image/unknown";
 			break;
 	}
+	header("Content-disposition: filename=$attachment[filename]");
 	header("Content-type: ".$type);
 	$thumb = $settings['uploadspath']."/".$attachment['thumbnail'];
 	header("Content-length: ".@filesize($thumb));
@@ -126,6 +126,14 @@ if($mybb->input['thumbnail'])
 }
 else
 {
+	if($ext == "txt" || $ext == "htm" || $ext == "html")
+	{
+		header("Content-disposition: attachment; filename=$attachment[filename]");
+	}
+	else
+	{
+		header("Content-disposition: inline; filename=$attachment[filename]");
+	}	
 	header("Content-type: $attachment[filetype]");
 	header("Content-length: $attachment[filesize]");
 	echo file_get_contents($settings['uploadspath']."/".$attachment['attachname']);

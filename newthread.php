@@ -97,7 +97,7 @@ else
 	}
 	else
 	{
-		$username = $mybb->input['username'];
+		$username = htmlspecialchars($mybb->input['username']);
 	}
 	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 }
@@ -192,7 +192,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			// Otherwise use the name they specified.
 			else
 			{
-				$username = $mybb->input['username'];
+				$username = htmlspecialchars($mybb->input['username']);
 			}
 			$uid = 0;
 		}
@@ -402,7 +402,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$post = $db->fetch_array($query);
 		if(!$mybb->user['uid'] || !$post['username'])
 		{
-			$post['username'] = $mybb->input['username'];
+			$post['username'] = htmlspecialchars_uni($mybb->input['username']);
 		}
 		else
 		{
