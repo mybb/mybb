@@ -224,7 +224,7 @@ if($mybb->input['action'] == "do_download")
 	}
 	$xml .= "</theme>";
 	$theme['name'] = rawurlencode($theme['name']);
-	header("Content-disposition: filename=".$theme['name']."-theme.xml");
+	header("Content-disposition: attachment; filename=".$theme['name']."-theme.xml");
 	header("Content-Length: ".strlen($xml));
 	header("Content-type: application/octet-stream");
 	header("Pragma: no-cache");
