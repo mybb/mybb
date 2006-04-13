@@ -204,8 +204,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 	// Set up posthandler.
 	require_once "inc/datahandlers/post.php";
-	$posthandler = new PostDataHandler();
-	$posthandler->action = "post";
+	$posthandler = new PostDataHandler("insert");
 
 	// Set the post data that came from the input to the $post array.
 	$post = array(
@@ -241,12 +240,12 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
 		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
 	);
-	
+
 	// Apply moderation options if we have them
 	$post['modoptions'] = $mybb->input['modoptions'];
 
 	$posthandler->set_data($post);
-	
+
 	// Now let the post handler do all the hard work.
 	if(!$posthandler->validate_post())
 	{

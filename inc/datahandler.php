@@ -42,14 +42,14 @@ class DataHandler
 	 * @var boolean
 	 */
 	var $admin_override = false;
-	
+
 	/**
 	 * Defines if we're performing an update or an insert.
 	 *
 	 * @var string
 	 */
 	var $method;
-	
+
 	/**
 	 * Constructor for the data handler.
 	 *
@@ -57,7 +57,7 @@ class DataHandler
 	 */
 	function Datahandler($method="insert")
 	{
-		if($method != "update" || $method != "insert")
+		if($method != "update" && $method != "insert")
 		{
 			die("A valid method was not supplied to the data handler.");
 		}
@@ -89,7 +89,7 @@ class DataHandler
 		$this->errors[] = array(
 			"error_code" => $error,
 			"data" => $data
-		);	
+		);
 	}
 
 	/**

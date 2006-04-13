@@ -109,14 +109,39 @@ class UserDataHandler extends DataHandler
 		}
 	}
 
+	/**
+	* Verifies if a website is valid or not.
+	*
+	* @return boolean True when valid, false when invalid.
+	*/
 	function verify_website()
 	{
-		// Website starts with http?
+		$website = &$this->data['website'];
+
+		// Does the website start with http://?
+		if(substr_count($website, 'http://') == 0)
+		{
+			// Website does not start with http://, let's see if the user forgot.
+			$website = 'http://'.$website;
+			if(substr_count($website, 'http://') == 0)
+			{
+				$this->set_error("invalid_website");
+				return false;
+			}
+		}
+
+		return true;
 	}
 
+	/**
+	* Verifies if a birthday is valid or not.
+	*
+	* @return boolean True when valid, false when invalid.
+	*/
 	function verify_birthday()
 	{
-		// Check user isn't over 100 years - if they are strip back to just date/month
+		// Check user isn't over 100 years - if they are strip back to just date/month.
+		$birthday = &$this->data['birthday'];
 	}
 
 	function verify_profile_fields()

@@ -6,7 +6,7 @@ inlineEditor.prototype = {
 		this.url = url;
 		this.elements = new Array();
 		this.currentIndex = -1;
-		
+
 		if(!options.className && !options.textBox)
 		{
 			alert('You need to specify either a className or textBox in the options.');
@@ -42,12 +42,16 @@ inlineEditor.prototype = {
 			}
 		}
 	},
-	
+
 	makeEditable: function(element)
 	{
 		if(!this.editButton)
 		{
-			element.title = element.title+" (Click and hold to edit)";
+			if(element.title != "")
+			{
+				element.title = element.title+" ";
+			}
+			element.title = element.title+"(Click and hold to edit)";
 			element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 		}
 		else
@@ -67,23 +71,23 @@ inlineEditor.prototype = {
 		Event.stop(e);
 
 		this.currentIndex = element.index;
-		
+
 		this.downTime = 0;
-		
+
 		this.timeout = setTimeout(this.showTextbox.bindAsEventListener(this), 1200);
 
 		element.onmouseup = this.onMouseUp.bindAsEventListener(this);
-		
+
 		return false;
 	},
-	
+
 	onMouseUp: function(e)
 	{
 		clearTimeout(this.timeout);
-		
+
 		this.currentIndex = -1;
 	},
-	
+
 	onButtonClick: function(id)
 	{
 		if($(id))
@@ -93,7 +97,7 @@ inlineEditor.prototype = {
 		}
 		return false;
 	},
-	
+
 	showTextbox: function()
 	{
 		this.element = this.elements[this.currentIndex];
@@ -115,14 +119,14 @@ inlineEditor.prototype = {
 		this.element.style.display = "none";
 		this.textbox.value = MyBB.unHTMLchars(value);
 		this.element.parentNode.insertBefore(this.textbox, this.element);
-		this.textbox.focus();				
+		this.textbox.focus();
 	},
-	
+
 	onBlur: function(e)
 	{
 		this.hideTextbox();
 	},
-	
+
 	onKeyPress: function(e)
 	{
 		if((e.keyCode == Event.KEY_RETURN || e.keyCode == Event.KEY_ESC))
@@ -130,12 +134,12 @@ inlineEditor.prototype = {
 			this.hideTextbox();
 		}
 	},
-	
+
 	onSubmit: function(e)
 	{
 		this.hideTextbox();
 	},
-	
+
 	hideTextbox: function()
 	{
 		this.textbox.onblur = "";
@@ -163,7 +167,7 @@ inlineEditor.prototype = {
 		this.currentIndex = -1;
 		Element.remove(this.textbox);
 	},
-	
+
 	onComplete: function(request)
 	{
 		if(request.responseText.match(/<error>(.*)<\/error>/))
@@ -185,7 +189,7 @@ inlineEditor.prototype = {
 			this.hideSpinner();
 		}
 	},
-	
+
 	showSpinner: function()
 	{
 		if(!this.spinnerImage)
@@ -202,7 +206,7 @@ inlineEditor.prototype = {
 		}
 		this.textbox.parentNode.insertBefore(this.spinner, this.textbox);
 	},
-	
+
 	hideSpinner: function()
 	{
 		if(!this.spinnerImage)

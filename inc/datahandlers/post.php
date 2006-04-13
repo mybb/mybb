@@ -395,7 +395,7 @@ class PostDataHandler extends DataHandler
 	 */
 	function insert_post()
 	{
-		global $db, $mybb, $plugins;
+		global $db, $mybb, $plugins, $cache;
 
 		$post = &$this->data;
 
@@ -561,6 +561,9 @@ class PostDataHandler extends DataHandler
 
 		if($visible == 1)
 		{
+			require_once './inc/class_parser.php';
+			$parser = new Postparser();
+
 			$subject = $parser->parse_badwords($thread['subject']);
 			$excerpt = $parser->strip_mycode($post['message']);
 			$excerpt = substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
@@ -612,7 +615,7 @@ class PostDataHandler extends DataHandler
 				mymail($subscribedmember['email'], $emailsubject, $emailmessage);
 				unset($userlang);
 			}
-			
+
 			// Update forum count
 			updatethreadcount($post['tid']);
 			updateforumcount($post['fid']);
@@ -625,7 +628,7 @@ class PostDataHandler extends DataHandler
 			updatethreadcount($post['tid']);
 			updateforumcount($post['fid']);
 		}
-		
+
 		if($visible != 2)
 		{
 			$now = time();
@@ -639,7 +642,7 @@ class PostDataHandler extends DataHandler
 			}
 			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$post['uid']."'");
 		}
-					
+
 		// Return the post's pid and whether or not it is visible.
 		return array(
 			"pid" => $pid,
