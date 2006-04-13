@@ -524,7 +524,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$visibility = "p.visible='1'";
 		}
-		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' AND $visibility ORDER BY dateline DESC");
+		$query = $db->query("SELECT p.*, u.username AS userusername FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' AND $visibility ORDER BY dateline DESC");
 		$numposts = $db->num_rows($query);
 		if($numposts > $mybb->settings['postsperpage'])
 		{
@@ -544,13 +544,18 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			}
 			else
 			{
+				if($post['userusername'])
+				{
+					$post['username'] = $post['userusername'];
+				}
 				$reviewpostdate = mydate($mybb->settings['dateformat'], $post['dateline']);
 				$reviewposttime = mydate($mybb->settings['timeformat'], $post['dateline']);
 				$parser_options = array(
 					"allow_html" => $forum['allowhtml'],
 					"allow_mycode" => $forum['allowmycode'],
 					"allow_smilies" => $forum['allowsmilies'],
-					"allow_imgcode" => $forum['allowimgcode']
+					"allow_imgcode" => $forum['allowimgcode'],
+					"me_username" => $post['username']
 				);
 				if($post['smilieoff'] == "yes")
 				{

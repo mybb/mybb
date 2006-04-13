@@ -17,6 +17,7 @@ options = array(
 	nl2br
 	is_archive
 	filter_badwords
+	me_username
 )
 */
 
@@ -47,7 +48,7 @@ class postParser
 	 * Parses a message with the specified options.
 	 *
 	 * @param string The message to be parsed.
-	 * @param array Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br.
+	 * @param array Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username.
 	 * @return string The parsed message.
 	 */
 	function parse_message($message, $options=array())
@@ -240,6 +241,8 @@ class postParser
 	 */
 	function parse_mycode($message, $options=array())
 	{
+		global $lang;
+		
 		// Cache the MyCode globally if needed.
 		if($this->mycode_cache == 0)
 		{
@@ -269,6 +272,13 @@ class postParser
 		{
 			$message = preg_replace("#\[img\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$1$2\" border=\"0\" alt=\"\" />", $message);
 			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\]([a-z]+?://){1}(.+?)\[/img\]#i", "<img src=\"$3$4\" style=\"border: 0; width: $1; height: $2;\" alt=\"\" />", $message);
+		}
+		
+		// Replace "me" code and slaps if we have a username
+		if($options['me_username'])
+		{
+			$message = preg_replace('#^/me (.*)$#im', "<span style=\"color: red;\">* {$options['me_username']} \\1</span>", $message);
+			$message = preg_replace('#^/slap (.*)#iem', "'<span style=\"color: red;\">* {$options['me_username']} $lang->slaps '.str_replace('<br />', '', '\\1').' $lang->with_trout</span><br />'", $message);
 		}
 
 		$message = $this->mycode_auto_url($message);

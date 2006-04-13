@@ -31,9 +31,7 @@ function dobadwords($message)
 
 function domecode($message, $username)
 {
-	global $lang;
-	$message = preg_replace('#^/me (.*)$#im', "<span style=\"color: red;\">* $username \\1</span>", $message);
-	$message = preg_replace('#^/slap (.*)#iem', "'<span style=\"color: red;\">* $username $lang->slaps '.str_replace('<br />', '', '\\1').' $lang->with_trout</span><br />'", $message);
+	$message = "<strong>domecode: This function is now deprecated.</strong>";
 	return $message;
 }
 
@@ -76,6 +74,7 @@ function makepostbit($post, $pmprevann=0)
 			$parser_options['allow_mycode'] = $mybb->settings['pmsallowmycode'];
 			$parser_options['allow_smilies'] = $mybb->settings['pmsallowsmilies'];
 			$parser_options['allow_imgcode'] = $mybb->settings['pmsallowimgcode'];
+			$parser_options['me_username'] = $post['username'];
 			$id = $pmid;
 			break;
 		case "3": // Announcement
@@ -84,6 +83,7 @@ function makepostbit($post, $pmprevann=0)
 			$parser_options['allow_mycode'] = $announcementarray['allowmycode'];
 			$parser_options['allow_smilies'] = $announcementarray['allowsmilies'];
 			$parser_options['allow_imgcode'] = "yes";
+			$parser_options['me_username'] = $post['username'];			
 			break;
 		default: // Regular post
 			global $forum, $thread, $tid;
@@ -93,6 +93,14 @@ function makepostbit($post, $pmprevann=0)
 			$parser_options['allow_mycode'] = $forum['allow_mycode'];
 			$parser_options['allow_smilies'] = $forum['allowsmilies'];
 			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
+			if($post['userusername'])
+			{
+				$parser_options['me_username'] = $post['userusername'];
+			}
+			else
+			{
+				$parser_options['me_username'] = $post['username'];			
+			}
 			break;
 	}
 
