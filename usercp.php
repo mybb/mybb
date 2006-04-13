@@ -1282,7 +1282,7 @@ elseif($mybb->input['action'] == "editsig")
 	$plugins->run_hooks("usercp_editsig_start");
 	if($mybb->input['preview'])
 	{
-		$sig = addslashes($mybb->input['signature']);
+		$sig = $mybb->input['signature'];
 		$template = "usercp_editsig_preview";
 	}
 	else
@@ -1334,6 +1334,7 @@ elseif($mybb->input['action'] == "editsig")
 	{
 		$sigimgcode = $lang->off;
 	}
+	$sig = htmlspecialchars($sig);
 	$lang->edit_sig_note2 = sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 	eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
 	$plugins->run_hooks("usercp_endsig_end");
