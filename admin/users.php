@@ -1446,6 +1446,28 @@ if($mybb->input['action'] == "find")
 		}
 		$conditions .= " AND '$uids' LIKE CONCAT('%,',uid,',%')";
 	}
+	if(is_array($search['profilefields']))
+	{
+		foreach($search['profilefields'] as $fid => $value)
+		{
+			if($value == "")
+			{
+				continue;
+			}
+			$fid = "fid".$fid;
+			if(is_array($value))
+			{
+				foreach($value as $condition => $text)
+				{
+					$conditions .= " AND $fid='".addslashes($condition)."'";
+				}
+			}
+			else
+			{
+				$conditions .= " AND $fid='".addslashes($value)."'";
+			}
+		}
+	}
 	if($listall)
 	{
 		$conditions = "1=1";
@@ -1469,7 +1491,7 @@ if($mybb->input['action'] == "find")
 	}
 	$searchop['page']++;
 
-	$countquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions";
+	$countquery = "SELECT * FROM ".TABLE_PREFIX."users LEFT JOIN ".TABLE_PREFIX."userfields ON (ufid=uid) WHERE $conditions";
 	$query = $db->query($countquery);
 	$numusers = $db->num_rows($query);
 
@@ -1695,7 +1717,7 @@ if($mybb->input['action'] == "find")
 		{
 			while(list($key, $val) = each($search))
 			{
-				if ($key != 'additionalgroups[]')
+				if ($key != 'additionalgroups' && $key != "profilefields")
 				{
 					$hiddens .= "<input type=\"hidden\" name=\"search[$key]\" value=\"$val\">";
 				}
@@ -1706,6 +1728,23 @@ if($mybb->input['action'] == "find")
 			while(list($key, $val) = each($search))
 			{
 				$hiddens .= "<input type=\"hidden\" name=\"search[additionalgroups][]\" value=\"$val\">";
+			}
+		}
+		if(is_array($search['profilefields']))
+		{
+			foreach($search['profilefields'] as $fid => $value)
+			{
+				if(is_array($value))
+				{
+					foreach($value as $key => $field)
+					{
+						$hiddens .= "<input type=\"hidden\" name=\"search[profilefields][$fid][$key]\" value=\"".htmlspecialchars($field)."\" />";
+					}
+				}
+				else
+				{
+					$hiddens .= "<input type=\"hidden\" name=\"search[profilefields][$fid]\" value=\"".htmlspecialchars($value)."\" />";
+				}
 			}
 		}
 		while(list($key, $val) = each($searchop))
@@ -1988,7 +2027,91 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	makeinputcode($lang->posts_less, "search[postsless]");
 	makeinputcode($lang->and_reg_ip, "search[regip]");
 	makeinputcode($lang->and_post_ip, "search[postip]");
-
+	
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
+	$profilefields = $db->num_rows($query);
+	
+	if($profilefields > 0)
+	{
+		tablesubheader($lang->custom_profile_fields);
+		while($profilefield = $db->fetch_array($query))
+		{
+			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+			$thing = explode("\n", $profilefield['type'], "2");
+			$type = $thing[0];
+			$options = $thing[1];
+			$field = "search[profilefields][{$profilefield['fid']}]";
+			$select = '';
+			if($type == "multiselect")
+			{
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions)) {
+					$select .= "<option value=\"\">&nbsp;</option>";					
+					while(list($key, $val) = each($expoptions))
+					{
+						$val = trim($val);
+						$val = str_replace("\n", "\\n", $val);
+						$select .= "<option value=\"$val\">$val</option>\n";
+					}
+					if(!$profilefield['length'])
+					{
+						$profilefield['length'] = 3;
+					}
+					$code = "<select name=\"".$field."[]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
+				}
+			}
+			elseif($type == "select")
+			{
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					$select .= "<option value=\"\">&nbsp;</option>";
+					while(list($key, $val) = each($expoptions))
+					{
+						$val = trim($val);
+						$val = str_replace("\n", "\\n", $val);
+						$select .= "<option value=\"$val\">$val</option>";
+					}
+					if(!$profilefield['length'])
+					{
+						$profilefield['length'] = 1;
+					}
+					$code = "<select name=\"$field\" size=\"$profilefield[length]\">$select</select>";
+				}
+			}
+			elseif($type == "radio")
+			{
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					while(list($key, $val) = each($expoptions))
+					{
+						$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" /> $val<br>";
+					}
+				}
+			}
+			elseif($type == "checkbox")
+			{
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions)) {
+					while(list($key, $val) = each($expoptions))
+					{
+						$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" /> $val<br>";
+					}
+				}
+			}
+			elseif($type == "textarea")
+			{
+				$code = "<textarea name=\"$field\" rows=\"6\" cols=\"30\" style=\"width: 95%\"></textarea>";
+			}
+			else
+			{
+				$code = "<input type=\"text\" name=\"$field\" size=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" />";
+			}
+			makelabelcode($profilefield['name'], $code);
+		}
+	}
+	
 	tablesubheader($lang->sorting_misc_options);
 	$bgcolor = getaltbg();
 	echo "<tr>\n";
