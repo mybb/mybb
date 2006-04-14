@@ -1548,7 +1548,7 @@ var inlineId = {$fid};
 </tr>
 {$pwnote}
 <tr>
-<td class="trow1" align="center" colspan="2"><input type="password" name="pwverify" size="50" value=""></td>
+<td class="trow1" align="center" colspan="2"><input type="password" class="textbox" name="pwverify" size="50" value=""></td>
 </tr>
 </table>
 <br />
@@ -3533,7 +3533,7 @@ var inlineId = {$fid};
 <br />
 <form method="post" action="{$PHP_SELF}"><input type="hidden" name="action" value="do_login">
 {$lang->username}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
-{$lang->password}<br />&nbsp;&nbsp;<input type="password" name="password" value="" /><br />
+{$lang->password}<br />&nbsp;&nbsp;<input type="password" class="textbox" name="password" value="" /><br />
 <br /><input type="submit" class="button" name="loginsubmit" value="{$lang->login}" /></form>]]></template>
 		<template name="portal_latestthreads_thread" version="100.07"><![CDATA[<tr>
 <td class="{$altbg}">
@@ -3754,8 +3754,8 @@ var inlineId = {$fid};
 <td><span class="smalltext">{$lang->confirm_password}</strong></td>
 </tr>
 <tr>
-<td><input type="password" name="password" size="20" /></td>
-<td><input type="password" name="password2" size="20" /></td>
+<td><input type="password" class="textbox" name="password" size="20" /></td>
+<td><input type="password" class="textbox" name="password2" size="20" /></td>
 </tr>
 ]]></template>
 		<template name="usercp_forumsubscriptions_forum" version="100.07"><![CDATA[<tr>
@@ -3839,7 +3839,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->password}</strong><br /><span class="smalltext">{$lang->pw_note}</span></td>
-<td class="trow2"><input type="password" name="password" size="25"> (<a href="member.php?action=lostpw">{$lang->lostpw_note}</a>)</td>
+<td class="trow2"><input type="password" class="textbox" name="password" size="25"> (<a href="member.php?action=lostpw">{$lang->lostpw_note}</a>)</td>
 </tr>
 </table>
 <br />
@@ -3980,7 +3980,7 @@ var inlineId = {$fid};
 	<input type="hidden" name="action" value="do_login" />
 	<span class="smalltext"><strong>{$lang->quick_login}</strong></span> 
 	<input type="text" class="textbox" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="this.value=''" />
-	<input type="password" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="this.value=''" />
+	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="this.value=''" />
 	{$gobutton}
 </form>]]></template>
 		<template name="multipage" version="100.07"><![CDATA[<span class="smalltext"><span class="pagenav">{$lang->multipage_pages}</span>{$start} {$prevpage} {$mppage} {$nextpage} {$end}</span>]]></template>
@@ -4597,18 +4597,18 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="2"><strong>{$lang->current_password}</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" name="oldpassword" size="25"></td>
+<td class="trow1" colspan="2" align="center"><input type="password" class="textbox" name="oldpassword" size="25"></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->please_enter_confirm_new_password}</strong></td>
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_password}</strong></td>
-<td class="trow2" width="60%"><input type="password" name="password" size="25"></td>
+<td class="trow2" width="60%"><input type="password" class="textbox" name="password" size="25"></td>
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->confirm_password}</strong></td>
-<td class="trow1" width="60%"><input type="password" name="password2" size="25"></td>
+<td class="trow1" width="60%"><input type="password" class="textbox" name="password2" size="25"></td>
 </tr>
 </table>
 </td></tr></table>
@@ -4647,7 +4647,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="2"><strong>{$lang->enter_password}</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" name="password" size="25"></td>
+<td class="trow1" colspan="2" align="center"><input type="password" class="textbox" name="password" size="25"></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->please_enter_confirm_new_email}</strong></td>
@@ -4943,7 +4943,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->password}</strong></td>
-<td class="trow1"><input type="password" name="password" size="30" value="{$password}"></td>
+<td class="trow1"><input type="password" class="textbox" name="password" size="30" value="{$password}"></td>
 </tr>
 
 ]]></template>
@@ -5681,7 +5681,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->password}</strong></td>
-<td class="trow2"><input type="password" name="password"></td>
+<td class="trow2"><input type="password" class="textbox" name="password"></td>
 </tr>
 <tr>
 <td class="trow2" colspan="2"><span class="smalltext" style="float:right; padding-top:3px;"><a href="member.php?action=register">{$lang->need_reg}</a> | <a href="member.php?action=lostpw">{$lang->forgot_password}</a>&nbsp;</span>&nbsp;<input type="submit" class="button" value="{$lang->login}"></td>
