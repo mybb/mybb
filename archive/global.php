@@ -102,6 +102,8 @@ if(!$mybb->settings['bblanguage'])
 }
 $lang->setLanguage($mybb->settings['bblanguage']);
 
+$mybb->settings['bbname'] = stripslashes($mybb->settings['bbname']);
+
 // Load global language phrases
 $lang->load("global");
 $lang->load("messages");
