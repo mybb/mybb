@@ -206,7 +206,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	
 	// Set up posthandler.
 	require_once "inc/datahandlers/post.php";
-	$posthandler = new PostDataHandler();
+	$posthandler = new PostDataHandler("insert");
 	$posthandler->action = "thread";
 
 	// Set the thread data that came from the input to the $thread array.

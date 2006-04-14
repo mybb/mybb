@@ -133,21 +133,6 @@ else
 // Password protected forums ......... yhummmmy!
 checkpwforum($fid, $forum['password']);
 
-// Max images check
-if($mybb->input['action'] == "do_editpost") {
-	if($mybb->settings['maxpostimages'] != 0 && $mybb->usergroup['cancp'] != "yes") {
-		if($mybb->input['postoptions']['disablesmilies'] == "yes") {
-			$allowsmilies = "no";
-		} else {
-			$allowsmilies = $forum['allowsmilies'];
-		}
-		$imagecheck = postify($mybb->input['message'], $forum['allowhtml'], $forum['allowmycode'], $allowsmilies, $forum['allowimgcode']);
-		if(substr_count($imagecheck, "<img") > $mybb->settings['maxpostimages']) {
-			eval("\$maximageserror = \"".$templates->get("error_maxpostimages")."\";");
-			$mybb->input['action'] = "editpost";
-		}
-	}
-}
 if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_editpost" && $mybb->input['submit'] && $_FILES['attachment']))) {
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no") {
@@ -251,138 +236,122 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		redirect("showthread.php?tid=$tid", $lang->redirect_nodelete);
 	}
 }
-elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
+
+if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 {
 
 	$plugins->run_hooks("editpost_do_editpost_start");
+	
+	// Set up posthandler.
+	require_once "inc/datahandlers/post.php";
+	$posthandler = new PostDataHandler("update");
+	$posthandler->action = "post";
 
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."posts
-		WHERE tid='$tid'
-		ORDER BY dateline ASC
-		LIMIT 0,1
-	");
-	$firstcheck = $db->fetch_array($query);
-	if($firstcheck['pid'] == $pid)
-	{
-		$firstpost = 1;
-	}
-	else
-	{
-		$firstpost = 0;
-	}
+	// Set the post data that came from the input to the $post array.
+	$post = array(
+		"pid" => $mybb->input['pid'],
+		"subject" => $mybb->input['subject'],
+		"icon" => $mybb->input['icon'],
+		"uid" => $mybb->user['uid'],
+		"username" => $mybb->user['username'],
+		"message" => $mybb->input['message'],
+	);
 
-	if(strlen(trim($mybb->input['subject'])) == 0 && $firstpost)
-	{
-		error($lang->error_nosubject);
-	}
-	elseif(strlen(trim($mybb->input['subject'])) == 0)
-	{
-		$mybb->input['subject'] = "RE: " . $thread['subject'];
-	}
+	// Set up the post options from the input.
+	$post['options'] = array(
+		"signature" => $mybb->input['postoptions']['signature'],
+		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
+	);
 
-	if (strlen(trim($mybb->input['message'])) == 0)
+	$posthandler->set_data($post);
+
+	// Now let the post handler do all the hard work.
+	if(!$posthandler->validate_post())
 	{
-		error($lang->error_nomessage);
-	}
-
-	if(strlen(trim($mybb->input['message'])) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] != 0)
-	{
-		error($lang->error_messagelength);
-	}
-
-	$db->query("
-		DELETE FROM ".TABLE_PREFIX."attachments
-		WHERE filename='' AND filesize < 1
-	");
-
-	if(!$mybb->input['icon'] || $mybb->input['icon'] == -1)
-	{
-		$mybb->input['icon'] = "0";
-	}
-
-	if($firstpost)
-	{
-		$newpost = array(
-			"subject" => addslashes($mybb->input['subject']),
-			"icon" => intval($mybb->input['icon']),
-			);
-		$db->update_query(TABLE_PREFIX."threads", $newpost, "tid='$tid'");
-	}
-
-	$now = time();
-
-	$postoptions = $mybb->input['postoptions'];
-
-	if($postoptions['signature'] != "yes")
-	{
-		$postoptions['signature'] = "no";
-	}
-	if($postoptions['emailnotify'] != "yes")
-	{
-		$postoptions['emailnotify'] = "no";
-	}
-	if($postoptions['disablesmilies'] != "yes")
-	{
-		$postoptions['disablesmilies'] = "no";
-	}
-
-	// Start Auto Subscribe
-	if($postoptions['emailnotify'] != "no") {
-		$query = $db->query("
-			SELECT uid
-			FROM ".TABLE_PREFIX."favorites
-			WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'
-		");
-		$subcheck = $db->fetch_array($query);
-		if(!$subcheck['uid']) {
-			$subscriptionarray = array(
-				"uid" => $mybb->user['uid'],
-				"tid" => $tid,
-				"type" => "s"
-			);
-			$db->insert_query(TABLE_PREFIX."favorites", $subscriptionarray);
+		$errors = $posthandler->get_errors();
+		foreach($errors as $error)
+		{
+			//
+			// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
+			// Used to determine any missing language variables from the datahandlers
+			//
+			if($lang->$error['error_code'])
+			{
+				$post_errors[] = $lang->$error['error_code'];
+			}
+			else
+			{
+				$post_errors[] = "Missing language var: ".$error['error_code'];
+			}
+			//
+			// END TESTING CODE
+			//
+			/*
+				$post_errors[] =$lang->$error['error_code'];
+			*/
 		}
-	} else {
-		$db->query("
-			DELETE FROM ".TABLE_PREFIX."favorites
-			WHERE type='s' AND uid='".$mybb->user[uid]."' AND tid='$tid'
-		");
+		$post_errors = inlineerror($post_errors);
+		$mybb->input['action'] = "editpost";
 	}
-
-	if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
-	{
-		$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->input['numpolloptions'];
-		$redirect = $lang->redirect_postedited_poll;
-	}
+	// No errors were found, we can call the update method.
 	else
 	{
-		$url = "showthread.php?tid=$tid&pid=$pid#pid$pid";
-		$redirect = $lang->redirect_postedited;
+		$posthandler->update_post();
+
+		// Help keep our attachments table clean.
+		$db->query("
+			DELETE FROM ".TABLE_PREFIX."attachments
+			WHERE filename='' AND filesize < 1
+		");
+
+		// Start Auto Subscription - performed outside the handler because this just involves
+		// changing the current user's subscription status for the thread.
+		if($mybb->input['postoptions']['emailnotify'] != "no")
+		{
+			$query = $db->query("
+				SELECT uid
+				FROM ".TABLE_PREFIX."favorites
+				WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'
+			");
+			$subcheck = $db->fetch_array($query);
+			if(!$subcheck['uid'])
+			{
+				$subscriptionarray = array(
+					"uid" => $mybb->user['uid'],
+					"tid" => $tid,
+					"type" => "s"
+				);
+				$db->insert_query(TABLE_PREFIX."favorites", $subscriptionarray);
+			}
+		}
+		else
+		{
+			$db->query("
+				DELETE FROM ".TABLE_PREFIX."favorites
+				WHERE type='s' AND uid='".$mybb->user[uid]."' AND tid='$tid'
+			");
+		}
+
+		// Did the user choose to post a poll? Redirect them to the poll posting page.
+		if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
+		{
+			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->input['numpolloptions'];
+			$redirect = $lang->redirect_postedited_poll;
+		}
+		// Otherwise, send them back to their post
+		else
+		{
+			$url = "showthread.php?tid=$tid&pid=$pid#pid$pid";
+			$redirect = $lang->redirect_postedited;
+		}
+		$plugins->run_hooks("editpost_do_editpost_end");
+
+		redirect($url, $redirect);
 	}
-	$newpost = array(
-		"subject" => addslashes($mybb->input['subject']),
-		"message" => addslashes($mybb->input['message']),
-		"icon" => intval($mybb->input['icon']),
-		"smilieoff" => $postoptions['disablesmilies'],
-		"includesig" => $postoptions['signature']
-		);
-
-	$plugins->run_hooks("editpost_do_editpost_process");
-
-	if(($mybb->settings['showeditedby'] == "yes" && ismod($fid, "caneditposts") != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && ismod($fid, "caneditposts") == "yes")) {
-		$newpost['edituid'] = $mybb->user['uid'];
-		$newpost['edittime'] = $now;
-	}
-
-	$db->update_query(TABLE_PREFIX."posts", $newpost, "pid=$pid");
-
-	$plugins->run_hooks("editpost_do_editpost_end");
-
-	redirect($url, $redirect);
-} else {
-
+}
+	
+if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
+{
 	$plugins->run_hooks("editpost_start");
 
 	if(!$mybb->input['previewpost']) {
@@ -411,7 +380,8 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 	}
 
 	$bgcolor = "trow2";
-	if($forumpermissions['canpostattachments'] != "no") { // Get a listing of the current attachments, if there are any
+	if($forumpermissions['canpostattachments'] != "no")
+	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
 		$query = $db->query("
 			SELECT *
@@ -419,10 +389,12 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 			WHERE posthash='$posthash' OR pid='$pid'
 		");
 		$attachments = '';
-		while($attachment = $db->fetch_array($query)) {
+		while($attachment = $db->fetch_array($query))
+		{
 			$attachment['size'] = getfriendlysize($attachment['filesize']);
 			$attachment['icon'] = getattachicon(getextention($attachment['filename']));
-			if($forum['allowmycode'] != "no") {
+			if($forum['allowmycode'] != "no")
+			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
 			eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
@@ -476,7 +448,7 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
 
-	if($mybb->input['previewpost'] || $maximageserror)
+	if($mybb->input['previewpost'] || $post_errors)
 	{
 		$previewmessage = $message;
 		$message = htmlspecialchars_uni($message);
@@ -497,37 +469,11 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 			$postoptionschecked['disablesmilies'] = "checked";
 		}
 
-		// If user is not logged in, find out if a username was entered.
-		if(!$mybb->user['uid'])
-		{
-			if($mybb->input['username'])
-			{
-				$username = htmlspecialchars_uni($mybb->input['username']);
-			}
-			else
-			{
-				$username = $lang->guest;
-			}
-		}
-
-		// If the user is not logged in, see if the user tried.
-		if($username && !$mybb->user['uid'])
-		{
-			$query = $db->query("
-				SELECT *
-				FROM ".TABLE_PREFIX."users
-				WHERE username='$username'
-			");
-			$user = $db->fetch_array($query);
-			if($user['password'] == md5($mybb->input['password']) && $user['username'])
-			{
-				$mybb->user['username'] = $user['username'];
-				$mybb->user['uid'] = $user['uid'];
-			}
-		}
-
 		$pid = intval($mybb->input['pid']);
-		
+	}
+	
+	if($mybb->input['previewpost'])
+	{	
 		// Figure out the poster's uid and username.
 		$options = array(
 			"limit" => 1
@@ -559,15 +505,17 @@ elseif($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post
 		$postbit = makepostbit($postinfo, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
-	else
+	elseif(!$post_errors)
 	{
 		$message = htmlspecialchars_uni($message);
 		$subject = htmlspecialchars_uni($subject);
 
-		if($post['includesig'] != "no") {
+		if($post['includesig'] != "no")
+		{
 			$postoptionschecked['signature'] = "checked";
 		}
-		if($post['smilieoff'] == "yes") {
+		if($post['smilieoff'] == "yes")
+		{
 			$postoptionschecked['disablesmilies'] = "checked";
 		}
 		// Can we disable smilies or are they disabled already?

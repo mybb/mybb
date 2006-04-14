@@ -84,7 +84,7 @@ class PostDataHandler extends DataHandler
 		// Check for correct subject content.
 
 		// Are we editing an existing thread or post?
-		if($this->action == "edit" && $post['pid'])
+		if($this->method == "update" && $post['pid'])
 		{
 			// Here we determine if we're editing the first post of a thread or not.
 			$options = array(
@@ -362,17 +362,45 @@ class PostDataHandler extends DataHandler
 		$time = time();
 
 		// Verify all post assets.
-		$this->verify_author();
-		$this->verify_subject();
-		$this->verify_message();
-		$this->verify_dateline();
+		
+		if($this->method == "insert" || isset($post['uid']))
+		{
+			$this->verify_author();
+		}
+		
+		if($this->method == "insert" || isset($post['subject']))
+		{
+			$this->verify_subject();
+		}
+		
+		if($this->method == "insert" || isset($post['message']))
+		{
+			$this->verify_message();
+			$this->verify_image_count();
+		}
+		
+		if($this->method == "insert" || isset($post['dateline']))
+		{
+			$this->verify_dateline();
+		}
+		
 		$this->verify_post_flooding();
-		$this->verify_image_count();
-		$this->verify_reply_to();
-		$this->verify_post_icon();
-		$this->verify_post_icon();
-		$this->verify_options();
-
+		
+		if($this->method == "insert" || isset($post['replyto']))
+		{
+			$this->verify_reply_to();
+		}
+		
+		if($this->method == "insert" || isset($post['icon']))
+		{
+			$this->verify_post_icon();
+		}
+		
+		if($this->method == "insert" || isset($post['options']))
+		{
+			$this->verify_options();
+		}
+		
 		$plugins->run_hooks("datahandler_post_validate_post");
 
 		// We are done validating, return.
@@ -658,17 +686,44 @@ class PostDataHandler extends DataHandler
 	function validate_thread()
 	{
 		global $mybb, $db, $plugins;
+		
+		$thread = &$this->data;
 
 		// Validate all thread assets.
-		$this->verify_author();
-		$this->verify_subject();
-		$this->verify_message();
-		$this->verify_dateline();
-		$this->verify_post_flooding();
-		$this->verify_image_count();
-		$this->verify_post_icon();
-		$this->verify_options();
+		
+		if($this->method == "insert" || isset($thread['uid']))
+		{
+			$this->verify_author();
+		}
+		
+		if($this->method == "insert" || isset($thread['subject']))
+		{
+			$this->verify_subject();
+		}
+		
+		if($this->method == "insert" || isset($thread['message']))
+		{
+			$this->verify_message();
+			$this->verify_image_count();
+		}
+		
+		if($this->method == "insert" || isset($thread['dateline']))
+		{
+			$this->verify_dateline();
+		}
+		
+		if($this->method == "insert" || isset($thread['icon']))
+		{		
+			$this->verify_post_icon();
+		}
 
+		if($this->method == "insert" || isset($thread['options']))
+		{
+			$this->verify_options();
+		}
+		
+		$this->verify_post_flooding();
+		
 		$plugins->run_hooks("datahandler_post_validate_thread");
 
 		// We are done validating, return.
@@ -971,15 +1026,23 @@ class PostDataHandler extends DataHandler
 		{
 			die("The post needs to be validated before inserting it into the DB.");
 		}
-		if(count($this->get_errors() > 0))
+		if(count($this->get_errors()) > 0)
 		{
 			die("The post is not valid.");
 		}
 
-		$post = &$this->post;
+		$post = &$this->data;
 
 		$post['pid'] = intval($post['pid']);
 
+		// If we don't have a tid then we need to fetch it along with the forum id.
+		if(!$post['tid'])
+		{
+			$query = $db->simple_select(TABLE_PREFIX."posts", "tid,fid", "pid='".intval($post['pid'])."'");
+			$tid_fetch = $db->fetch_array($query);
+			$post['tid'] = $tid_fetch['tid'];
+			$post['fid'] = $tid_fetch['fid'];
+		}
 		// Check if this is the first post in a thread.
 		$options = array(
 			"orderby" => "dateline",
@@ -987,7 +1050,7 @@ class PostDataHandler extends DataHandler
 			"limit_start" => 0,
 			"limit" => 1
 		);
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$post['tid'], $options);
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='".intval($post['tid'])."'", $options);
 		$first_post_check = $db->fetch_array($query);
 		if($first_post_check['pid'] == $pid)
 		{
@@ -1001,21 +1064,52 @@ class PostDataHandler extends DataHandler
 		// Update the thread details that might have been changed first.
 		if($first_post)
 		{
-			$updatethread = array(
-				"subject" => $db->escape_string($post['subject']),
-				"icon" => intval($post['icon']),
-				);
-			$db->update_query(TABLE_PREFIX."threads", $updatethread, "tid='".$post['pid']."'");
+			$updatethread = array();
+			
+			if(isset($post['subject']))
+			{
+				$updatethread['subject'] = $db->escape_string($post['subject']);
+			}
+			
+			if(isset($post['icon']))
+			{
+				$updatethread['icon'] = intval($post['icon']);
+			}
+			if(count($updatethread) > 0)
+			{
+				$db->update_query(TABLE_PREFIX."threads", $updatethread, "tid='".intval($post['pid'])."'");
+			}
 		}
 
 		// Prepare array for post updating.
-		$updatepost = array(
-			"subject" => $db->escape_string($post['subject']),
-			"message" => $db->escape_string($post['message']),
-			"icon" => intval($post['icon']),
-			"smilieoff" => $post['options']['disablesmilies'],
-			"includesig" => $post['options']['signature']
-		);
+		$updatepost = array();
+		
+		if(isset($post['subject']))
+		{
+			$updatepost['subject'] = $db->escape_string($post['subject']);
+		}
+		
+		if(isset($post['message']))
+		{
+			$updatepost['message'] = $db->escape_string($post['message']);
+		}
+		
+		if(isset($post['icon']))
+		{
+			$updatepost['icon'] = intval($post['icon']);
+		}
+		
+		if(isset($post['options']))
+		{
+			if(isset($post['options']['disablesmilies']))
+			{
+				$updatepost['smilieoff'] = $db->escape_string($post['options']['disablesmilies']);
+			}
+			if(isset($post['options']['signature']))
+			{
+				$updatepost['includesig'] = $db->escape_string($post['options']['signature']);
+			}
+		}
 
 		// If we need to show the edited by, let's do so.
 		if(($mybb->settings['showeditedby'] == "yes" && ismod($post['fid'], "caneditposts", $post['edit_uid']) != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && ismod($post['fid'], "caneditposts", $post['edit_uid']) == "yes"))
@@ -1023,9 +1117,10 @@ class PostDataHandler extends DataHandler
 			$updatepost['edituid'] = intval($post['edit_uid']);
 			$updatepost['edittime'] = time();
 		}
+		
 		$plugins->run_hooks("datahandler_post_update");
 
-		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".$post['pid']."'");
+		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".intval($post['pid'])."'");
 	}
 
 	/**

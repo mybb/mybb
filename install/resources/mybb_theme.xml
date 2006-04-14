@@ -754,7 +754,7 @@ var inlineId = {$tid};
 <body>
 {$header}
 {$preview}
-{$maximageserror}
+{$post_errors}
 {$attacherror}
 <form action="editpost.php" method="post" name="editpost">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
