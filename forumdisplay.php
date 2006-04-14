@@ -121,7 +121,7 @@ checkpwforum($fid, $foruminfo['password']);
 // Make forum jump...
 $forumjump = makeforumjump("", $fid, 1);
 
-if($foruminfo['type'] == "f" && $foruminfo['open'] != "no" && $fpermissions['canpostthreads'] == "yes")
+if($foruminfo['type'] == "f" && $foruminfo['open'] != "no")
 {
 	eval("\$newthread = \"".$templates->get("forumdisplay_newthread")."\";");
 }

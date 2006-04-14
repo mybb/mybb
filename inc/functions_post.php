@@ -360,7 +360,7 @@ function makepostbit($post, $pmprevann=0)
 		}
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
-		if($forum['open'] != "no" && ($thread['closed'] != "yes" || ismod($forum['fid']) == "yes") && $mybb->usergroup['canpostreplys'] == "yes")
+		if($forum['open'] != "no" && ($thread['closed'] != "yes" || ismod($forum['fid']) == "yes"))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}

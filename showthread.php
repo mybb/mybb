@@ -355,26 +355,12 @@ if($mybb->input['action'] == "thread")
 	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
 	if($forum['open'] != "no")
 	{
-		//If user can make a new thread in the forum, display the button
-		if($mybb->usergroup['canpostthreads'] == "yes")
-		{
-			eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
-		}
-		else
-		{
-			$newthread = "";
-		}
+		eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
 
-		//If the thread is closed but the user is a mod, they can reply
-		//Else if the thread is not closed but the user can't reply then no button
-		//Else show reply button
-		if($thread['closed'] == "yes" && ismod($fid) != "yes")
+		// Show the appropriate reply button if this thread is open or closed
+		if($thread['closed'] == "yes")
 		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
-		}
-		elseif($thread['closed'] != "yes" && $mybb->usergroup['canpostreplys'] != "yes")
-		{
-			$newreply = "";
 		}
 		else
 		{
