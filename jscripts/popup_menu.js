@@ -50,7 +50,6 @@ PopupMenu.prototype = {
 		this.menu.style.zIndex = 10;
 		this.menu.style.top = (offsetTop+element.offsetHeight-1)+"px";
 		this.menu.style.left = offsetLeft+"px";
-		
 		if(this.menu.style.width)
 		{
 			menuWidth = parseInt(this.menu.style.width);
@@ -59,46 +58,27 @@ PopupMenu.prototype = {
 		{
 			menuWidth = this.menu.offsetWidth;
 		}
-		
-		if(offsetLeft+menuWidth >= document.body.clientWidth)
+		pageSize = DomLib.getPageSize();
+		if(offsetLeft+menuWidth >= pageSize[0])
 		{
-			this.menu.style.width = (offsetLeft+element.offsetWidth-menuWidth-2)+"px";
+			this.menu.style.left = (offsetLeft-menuWidth-2)+"px";
 			if(MyBB.browser == "ie")
 			{
-				this.menu.style.left = (parseInt(this.menu.style.left)-6)+"px";
+				this.menu.style.left = (parseInt(this.menu.style.left)-2)+"px";
 			}
 		}
-		if(typeof fx != "undefined")
-		{
-			this.menu.style.display = '';
-			menu = new fx.Opacity(this.menu.id, {duration: 250});
-			menu.hide();
-			menu.toggle();
-		}
-		else
-		{			
-			this.menu.style.display = "";
-		}
+		this.menu.style.display = '';	
+
 		document.currentMenu = element.id;
 		document.onclick = this.closeMenu.bindAsEventListener(this);
-		return false;
 	},
 	
 	closeMenu: function()
 	{
 		menu = document.currentMenu;
 		menu = $(menu+"_popup");
-		
-		if(typeof fx != "undefined")
-		{
-			menu = new fx.Opacity(this.menu.id, {duration: 250});
-			menu.toggle();
-		}
-		else
-		{			
-			this.menu.style.display = "none";
-		}
+		this.menu.style.display = "none";
 		document.currentMenu = "";
-		document.onclick = null;
+		document.onclick = function() { };
 	}
 };

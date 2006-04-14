@@ -47,12 +47,10 @@ var Thread = {
 	{
 		if(!$("pid_"+pid))
 		{
-			alert('1');
 			return false;
 		}
 		if(Thread.qeCache[pid])
 		{
-			alert('2');
 			return false;
 		}
 		Thread.qeCache[pid] = $("pid_"+pid).innerHTML;

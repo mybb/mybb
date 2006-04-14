@@ -521,22 +521,11 @@ ActivityIndicator.prototype = {
 		this.spinner.style.top = top + "px";
 		this.spinner.style.left = left + "px";
 		this.spinner.id = "spinner";
-		owner.insertBefore(this.spinner, owner.firstChild);		
-		if(typeof fx != "undefined")
-		{
-			spinner = new fx.Opacity("spinner", {duration: 250});
-			spinner.hide();
-			spinner.toggle();
-		}
+		owner.insertBefore(this.spinner, owner.firstChild);
 	},
 	
 	destroy: function()
 	{
-		if(typeof fx != "undefined")
-		{
-			spinner = new fx.Opacity("spinner", {duration: 250});
-			spinner.hide();
-		}		
 		Element.remove(this.spinner);
 	}
 }
