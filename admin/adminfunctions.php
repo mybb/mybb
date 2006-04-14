@@ -1378,7 +1378,7 @@ function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 		{
 			$parentbit = $parentbits[$themebit];
 			$childbit = $themebits[$themebit];
-			if($parentbit == $childbit || $revert_themebits[$themebit])
+			if(($parentbit == $childbit || $revert_themebits[$themebit]) && $themebit != "extracss")
 			{
 				$themebits['inherited'][$themebit] = $parentbits['inherited'][$themebit];
 				$themebits[$themebit] = $parentbit;
@@ -1411,6 +1411,7 @@ function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 		//unset($css); unset($cssbits);
 		unset($cssbits);
 		$themebits = build_theme_array($pid);
+		unset($themebits['extracss']);
 	}
 	$csscontents = build_css($css);
 	return array("css" => $csscontents, "cssbits" => $cssbits, "themebits" => $themebits);
@@ -1421,9 +1422,10 @@ function get_parent_theme_bits($pid)
 	global $db, $themebits;
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='$pid'");
 	$parent = $db->fetch_array($query);
+	$bits = unserialize($parent['themebits']);
 	foreach($themebits as $themebit)
 	{
-		$theme[$themebit] = $parent[$themebit];
+		$theme[$themebit] = $bits[$themebit];
 	}
 	return $theme;
 }
@@ -1545,10 +1547,6 @@ function makethemebitedit($title, $name)
 	}
 	elseif($name == "extracss")
 	{
-		if($custom == 1)
-		{
-			$revcustom = "<br /><input type=\"checkbox\" name=\"revert_themebits[extracss]\" id=\"revert_themebit_extracss\" value=\"1\" /><label for=\"revert_themebit_extracss\">".$lang->revert_customizations."</label>";
-		}
 		echo "<tr>\n";
 		echo "<td class=\"altbg1\" align=\"center\">\n";
 		echo "<textarea style=\"width: 98%; padding: 4px;\"	class=\"$highlight\" rows=\"9\"name=\"themebits[extracss]\">".htmlspecialchars_uni($theme['extracss'])."</textarea>$revcustom\n";
@@ -1738,14 +1736,6 @@ function update_theme($tid, $pid="", $themebits="", $css="", $child=0, $isnew=0)
 	$theme['extracss'] = $newtheme['themebits']['extracss'];
 	$tcache[$tid] = array_merge($tcache[$tid], $theme);
 	$masterextra = $tcache[1]['extracss'];
-	if(serialize($theme['extracss']) == serialize($masterextra) && $tid != 1)
-	{
-		unset($theme['extracss']);
-	}
-	if($isnew)
-	{
-		unset($theme['themebits']['inherited']['extracss']);
-	}
 
 	if($masterextra)
 	{
