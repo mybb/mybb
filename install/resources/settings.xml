@@ -2,15 +2,15 @@
 	<settinggroup name="Banning Options" description="" disporder="15" isdefault="yes">
 		<setting name="bannedusernames">
 			<title>Banned Usernames</title>
-			<description><![CDATA[Ban users from registering certain usernames.  Separate them with a space.]]></description>
+			<description><![CDATA[Ban users from registering certain usernames. You must seperate usernames with a comma.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="ipban">
+		<setting name="bannedips">
 			<title>Ban by IP</title>
-			<description><![CDATA[Here, you may specify IP addresses or a range of IP addresses.  You must separate each IP with a space.]]></description>
+			<description><![CDATA[Here, you may specify IP addresses or a range of IP addresses. You must separate each IP with a comma.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
@@ -18,7 +18,7 @@
 		</setting>
 		<setting name="bannedemails">
 			<title>Ban by Email</title>
-			<description><![CDATA[You may specify specific email addresses to ban, or you may specify a domain.  You must separate email addresses and domains with a space.]]></description>
+			<description><![CDATA[You may specify specific email addresses to ban, or you may specify a domain. You must separate email addresses and domains with a comma.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>

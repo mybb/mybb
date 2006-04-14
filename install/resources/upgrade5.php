@@ -110,6 +110,25 @@ function upgrade5_dbchanges()
 		) TYPE=MyISAM;");
 
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET name='bannedemails' WHERE name='emailban' LIMIT 1");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET name='bannedips' WHERE name='ipban' LIMIT 1");
+
+	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedusernames'");
+	$bannedusernames = $db->fetch_result($query, 0);
+	$bannedusernames = explode(" ", $bannedusernames);
+	$bannedusernames = implode(",", $bannedusernames);
+	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$bannedusernames." WHERE name='bannedusernames'");
+
+	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedemails'");
+	$bannedemails = $db->fetch_result($query, 0);
+	$bannedemails = explode(" ", $bannedemails);
+	$bannedemails = implode(",", $bannedemails);
+	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$bannedemails." WHERE name='bannedemails'");
+
+	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedips'");
+	$bannedips = $db->fetch_result($query, 0);
+	$bannedips = explode(" ", $bannedips);
+	$bannedips = implode(",", $bannedips);
+	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$bannedips." WHERE name='bannedips'");
 
 	echo "Done</p>";
 

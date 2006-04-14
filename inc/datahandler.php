@@ -51,6 +51,14 @@ class DataHandler
 	var $method;
 
 	/**
+	* The prefix for the language variables used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_prefix = '';
+
+
+	/**
 	 * Constructor for the data handler.
 	 *
 	 * @param string The method we're performing with this object.
@@ -93,12 +101,33 @@ class DataHandler
 	}
 
 	/**
-	 * Returns the error that occurred when handling data.
+	 * Returns the error(s) that occurred when handling data.
 	 *
-	 * @return string|array An error string or an array of errors.
+	 * @return string|array An array of errors.
 	 */
 	function get_errors()
 	{
+		return $this->errors;
+	}
+
+	/**
+	 * Returns the error(s) that occurred when handling data
+	 * in a format that MyBB can handle.
+	 *
+	 * @return An array of errors in a MyBB format.
+	 */
+	function get_friendly_errors()
+	{
+		// Prefix all the error codes with the language prefix.
+		foreach($this->errors as $error)
+		{
+			$friendly_errors[] = array(
+				'lang_string' => $this->language_prefix.$error['error_code'],
+				'error_code' => $error['error_code'],
+				'data' => $error['data']
+			);
+		}
+
 		return $this->errors;
 	}
 

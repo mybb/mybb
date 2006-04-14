@@ -275,7 +275,7 @@ $navbits[0]['name'] = $mybb->settings['bbname'];
 $navbits[0]['url'] = $mybb->settings['bburl']."/index.php";
 
 // Check banned ip addresses
-$bannedips = explode(" ", $mybb->settings['ipban']);
+$bannedips = explode(",", $mybb->settings['bannedips']);
 if(is_array($bannedips))
 {
 	foreach($bannedips as $key => $bannedip)
@@ -331,7 +331,7 @@ $allowable_actions = array(
 	"image.php" => array("regimage"),
 	);
 if($mybb->usergroup['canview'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && !(basename($_SERVER['PHP_SELF']) == "image.php" && in_array($mybb->input['action'], $allowable_actions['image.php'])))
-{ 
+{
 	nopermission();
 }
 

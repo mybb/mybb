@@ -219,7 +219,7 @@ class databaseEngine {
 
 
 	/**
-	 * Return a specified result for a quer.
+	 * Return a specified result for a query.
 	 *
 	 * @param resource The query data.
 	 * @param string The row to return.

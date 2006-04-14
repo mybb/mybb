@@ -126,7 +126,7 @@ function update_password($uid, $password, $salt="")
 
 	$newpassword = array();
 
-	// 
+	//
 	// If no salt was specified, check in database first, if still doesn't exist, create one
 	//
 	if(!$salt)
@@ -234,7 +234,7 @@ function update_loginkey($uid)
 }
 
 /**
- * Adds a thread to a user's favorite thread list. 
+ * Adds a thread to a user's favorite thread list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
  * @param int The tid of the thread to add to the list.
@@ -262,7 +262,7 @@ function add_favorite_thread($tid, $uid="")
 }
 
 /**
- * Removes a thread from a user's favorite thread list. 
+ * Removes a thread from a user's favorite thread list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
  * @param int The tid of the thread to remove from the list.
@@ -285,7 +285,7 @@ function remove_favorite_thread($tid, $uid="")
 }
 
 /**
- * Adds a thread to a user's thread subscription list. 
+ * Adds a thread to a user's thread subscription list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
  * @param int The tid of the thread to add to the list.
@@ -313,7 +313,7 @@ function add_subscribed_thread($tid, $uid="")
 }
 
 /**
- * Remove a thread from a user's thread subscription list. 
+ * Remove a thread from a user's thread subscription list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
  * @param int The tid of the thread to remove from the list.
@@ -336,7 +336,7 @@ function remove_subscribed_thread($tid, $uid="")
 }
 
 /**
- * Adds a forum to a user's forum subscription list. 
+ * Adds a forum to a user's forum subscription list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
  * @param int The fid of the forum to add to the list.
@@ -364,7 +364,7 @@ function add_subscribed_forum($fid, $uid="")
 }
 
 /**
- * Removes a forum from a user's forum subscription list. 
+ * Removes a forum from a user's forum subscription list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
  * @param int The fid of the forum to remove from the list.
@@ -523,7 +523,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 		$lastvisit = $mybb->user['lastvisit'];
 	}
 	// Else, if no last visit is specified, query for it.
-	elseif(intval($lastvisit) < 1) 
+	elseif(intval($lastvisit) < 1)
 	{
 		if(!$pm_lastvisit_cache[$uid])
 		{
@@ -559,5 +559,16 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 		$db->update_query(TABLE_PREFIX."users", $pmcount, "uid='".intval($uid)."'");
 	}
 	return $pmcount;
+}
+
+/**
+* Return a list of banned usernames.
+*
+* @return array The array of banned usernames.
+*/
+function get_banned_usernames()
+{
+	$bannedusernames = explode(",", $mybb->settings['bannedusernames']);
+	return $bannedusernames;
 }
 ?>

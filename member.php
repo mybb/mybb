@@ -102,7 +102,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	}
 
 	//Banned Username Code
-	$bannedusernames = explode(" ", $mybb->settings['bannedusernames']);
+	$bannedusernames = explode(",", $mybb->settings['bannedusernames']);
 	if(in_array($username, $bannedusernames))
 	{
 		$errors[] = $lang->error_bannedusername;
@@ -119,7 +119,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$errors[] = $lang->error_invalidusername;
 		$bannedusername = 1;
 	}
-	if(($mybb->settings['maxnamelength'] != 0 && strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && strlen($username) < $mybb->settings['minnamelength']) && !$bannedusername && !$missingname)
+	if(($mybb->settings['maxnamelength'] != 0 && my_strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && my_strlen($username) < $mybb->settings['minnamelength']) && !$bannedusername && !$missingname)
 	{
 		$lang->error_username_length = sprintf($lang->error_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
 		$errors[] = $lang->error_username_length;
@@ -151,7 +151,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$bademail = 1;
 	}
 	$email = strtolower($email);
-	$bannedemails = explode(" ", $mybb->settings['bannedemails']);
+	$bannedemails = explode(",", $mybb->settings['bannedemails']);
 	if(is_array($bannedemails) && !$bademail)
 	{
 		foreach($bannedemails as $bannedemail)

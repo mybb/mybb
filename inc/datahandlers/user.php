@@ -16,6 +16,13 @@
 class UserDataHandler extends DataHandler
 {
 	/**
+	* The prefix for the language variables used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_prefix = 'userdata_';
+
+	/**
 	 * Verifies if a username is valid or invalid.
 	 *
 	 * @param boolean True when valid, false when invalid.
@@ -23,16 +30,40 @@ class UserDataHandler extends DataHandler
 	function verify_username()
 	{
 		$username = &$this->data['username'];
+		require_once './inc/functions_user.php';
 
-		// Username = ''?
+		// Check if the username is not empty.
+		if(trim($username) == '')
+		{
+			$this->set_error("empty_username");
+			return false;
+		}
 
-		// Check banned usernames
+		// Check if the username belongs to the list of banned usernames.
+		$bannedusernames = get_banned_usernames();
+		if(in_array($username, $bannedusernames))
+		{
+			$this->set_error("banned_username");
+			return false;
+		}
 
 		// Check for certain characters in username (<, >, &, and slashes)
 
-		// Check username length
+		// Check if the username is of the correct length.
+		if(($mybb->settings['maxnamelength'] != 0 && my_strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && my_strlen($username) < $mybb->settings['minnamelength']) && !$bannedusername && !$missingname)
+		{
+			$this->set_error("invalid_username_length");
+			return false;
+		}
 
-		// Check if username exists or not
+		// Check if the username already exists or not.
+		if(username_exists($username))
+		{
+			$this->set_error("username_exists");
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -47,7 +78,7 @@ class UserDataHandler extends DataHandler
 		$password = &$this->data['password'];
 
 		// Always check for the length of the password.
-		if(my_strlen($password) < 6)
+		if(my_my_strlen($password) < 6)
 		{
 			$this->set_error("invalid_password_length");
 			return false;
