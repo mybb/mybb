@@ -165,12 +165,12 @@ padding: 6px;]]></extra>
 			<font-size><![CDATA[medium]]></font-size>
 			<font-weight><![CDATA[bold]]></font-weight>
 		</largetext>
-		<input>
+		<textbox>
 			<background><![CDATA[#ffffff]]></background>
 			<color><![CDATA[#000000]]></color>
 			<border><![CDATA[1px solid #0f5c8e]]></border>
 			<extra><![CDATA[padding: 1px;]]></extra>
-		</input>
+		</textbox>
 		<textarea>
 			<background><![CDATA[#ffffff]]></background>
 			<color><![CDATA[#000000]]></color>
@@ -193,10 +193,10 @@ font-size: small;]]></extra>
 			<border><![CDATA[1px solid #0f5c8e]]></border>
 		</select>
 		<button>
-			<background><![CDATA[#ffffff]]></background>
-			<color><![CDATA[#000000]]></color>
-			<border><![CDATA[1px solid #000000]]></border>
-			<extra><![CDATA[padding: 0;]]></extra>
+			<background><![CDATA[]]></background>
+			<color><![CDATA[]]></color>
+			<border><![CDATA[]]></border>
+			<extra><![CDATA[]]></extra>
 		</button>
 		<editor>
 			<background><![CDATA[#f1f1f1]]></background>
@@ -734,7 +734,7 @@ var inlineId = {$tid};
 		<template name="forumdisplay_searchforum" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
 <tr><td>
 <form action="search.php" method="post">
-<span class="smalltext"><strong>{$lang->search_forum}</strong></span> <input type="text" name="keywords" /> {$gobutton}
+<span class="smalltext"><strong>{$lang->search_forum}</strong></span> <input type="text" class="textbox" name="keywords" /> {$gobutton}
 <input type="hidden" name="action" value="do_search" />
 <input type="hidden" name="forums" value="{$fid}" />
 <input type="hidden" name="postthread" value="1" />
@@ -778,7 +778,7 @@ var inlineId = {$tid};
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->subject}</strong></td>
-<td class="trow2"><input type="text" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="1"></td>
+<td class="trow2"><input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="1"></td>
 </tr>
 {$posticons}
 <tr>
@@ -833,7 +833,7 @@ var inlineId = {$tid};
 {$loginbox}
 <tr>
 <td class="trow2" width="20%"><strong>{$lang->post_subject}</strong></td>
-<td class="trow2"><input type="text" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="1" /></td>
+<td class="trow2"><input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="1" /></td>
 </tr>
 {$posticons}
 <tr>
@@ -931,7 +931,7 @@ var inlineId = {$tid};
 {$loginbox}
 <tr>
 <td class="trow2" width="20%"><strong>{$lang->thread_subject}</strong></td>
-<td class="trow2"><input type="text" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="1" /></td>
+<td class="trow2"><input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="1" /></td>
 </tr>
 {$posticons}
 <tr>
@@ -1038,7 +1038,7 @@ var inlineId = {$tid};
 <td colspan="2"><span class="smalltext">{$lang->away_reason}</span></td>
 </tr>
 <tr>
-<td colspan="2"><input type="text" name="awayreason" value="{$mybbuser['awayreason']}" size="25" /></td>
+<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$mybbuser['awayreason']}" size="25" /></td>
 </tr>
 </table>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -1070,7 +1070,7 @@ var inlineId = {$tid};
 </select>
 </td>
 <td>
-<input type="text" size="4" maxlength="4" name="awayyear" value="{$returndate['2']}" />
+<input type="text" class="textbox" size="4" maxlength="4" name="awayyear" value="{$returndate['2']}" />
 </td>
 </tr>
 </table>
@@ -1449,7 +1449,7 @@ var inlineId = {$fid};
 <br />
 <span class="smalltext">{$lang->report_reason}</span>
 <br />
-<input type="text" name="reason" size="40" maxlength="250">
+<input type="text" class="textbox" name="reason" size="40" maxlength="250">
 <br />
 <br />
 <center><input type="submit" class="button" value="{$lang->report_post}"></center>
@@ -1507,11 +1507,11 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->your_name}</strong></td>
-<td class="trow1"><input type="text" name="from" size="40" value="{$mybbuser['username']}"></td>
+<td class="trow1"><input type="text" class="textbox" name="from" size="40" value="{$mybbuser['username']}"></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->your_email}</strong></td>
-<td class="trow1"><input type="text" name="fromemail" size="40" value="{$mybbuser['email']}"></td>
+<td class="trow1"><input type="text" class="textbox" name="fromemail" size="40" value="{$mybbuser['email']}"></td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->your_message}</strong></td>
@@ -1704,7 +1704,7 @@ var inlineId = {$fid};
 <td><span class="smalltext">{$lang->new_custom_usertitle}</span></td>
 </tr>
 <tr>
-<td><input type="text" name="usertitle" size="25" value="" maxlength="{$settings['customtitlemaxlength']}" /></td>
+<td><input type="text" class="textbox" name="usertitle" size="25" value="" maxlength="{$settings['customtitlemaxlength']}" /></td>
 </tr>
 </table>
 </fieldset>
@@ -1772,14 +1772,14 @@ var inlineId = {$fid};
 </select>
 </td>
 <td>
-<input type="text" size="4" maxlength="4" name="bday3" value="{$bday['2']}" />
+<input type="text" class="textbox" size="4" maxlength="4" name="bday3" value="{$bday['2']}" />
 </td>
 </tr>
 <tr>
 <td colspan="3"><span class="smalltext">{$lang->website_url}</span></td>
 </tr>
 <tr>
-<td colspan="3"><input type="text" name="website" size="25" maxlength="75" value="{$user['website']}" /></td>
+<td colspan="3"><input type="text" class="textbox" name="website" size="25" maxlength="75" value="{$user['website']}" /></td>
 </tr>
 </table>
 </fieldset>
@@ -1794,25 +1794,25 @@ var inlineId = {$fid};
 <td><span class="smalltext">{$lang->icq_number}</span></td>
 </tr>
 <tr>
-<td><input type="text" name="icq" size="25" value="{$icq}" /></td>
+<td><input type="text" class="textbox" name="icq" size="25" value="{$icq}" /></td>
 </tr>
 <tr>
 <td><span class="smalltext">{$lang->aim_screenname}</span></td>
 </tr>
 <tr>
-<td><input type="text" name="aim" size="25" value="{$user['aim']}" /></td>
+<td><input type="text" class="textbox" name="aim" size="25" value="{$user['aim']}" /></td>
 </tr>
 <tr>
 <td><span class="smalltext">{$lang->msn}</span></td>
 </tr>
 <tr>
-<td><input type="text" name="msn" size="25" value="{$user['msn']}" /></td>
+<td><input type="text" class="textbox" name="msn" size="25" value="{$user['msn']}" /></td>
 </tr>
 <tr>
 <td><span class="smalltext">{$lang->yahoo_id}</span></td>
 </tr>
 <tr>
-<td><input type="text" name="yahoo" size="25" value="{$user['yahoo']}" /></td>
+<td><input type="text" class="textbox" name="yahoo" size="25" value="{$user['yahoo']}" /></td>
 </tr>
 </table>
 </fieldset>
@@ -1976,7 +1976,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td>
-<input type="text" name="referrername" value="{$referrername}" />
+<input type="text" class="textbox" name="referrername" value="{$referrername}" />
 </td>
 </tr></table>
 </fieldset>
@@ -2006,7 +2006,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->join_reason}</strong></td>
-<td class="trow1"><input type="text" name="reason" value="" size="50" /></td>
+<td class="trow1"><input type="text" class="textbox" name="reason" value="" size="50" /></td>
 </tr>
 </table>
 <br />
@@ -2074,7 +2074,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->avatar_url}</strong></td>
-<td class="trow2" width="60%"><input type="text" name="avatarurl" size="45" value="{$avatarurl}" /></td>
+<td class="trow2" width="60%"><input type="text" class="textbox" name="avatarurl" size="45" value="{$avatarurl}" /></td>
 </tr>
 </table>
 <br />
@@ -2453,7 +2453,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow1">{$lang->username}</td>
-<td class="trow1"><input type="text" name="username" size="40" maxlength="{$settings['maxnamelength']}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="username" size="40" maxlength="{$settings['maxnamelength']}" /></td>
 </tr>
 </table>
 <br />
@@ -2533,11 +2533,11 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_to}</strong></td>
-<td class="trow1"><input type="text" name="to" id="to" size="40" maxlength="{$settings['maxnamelength']}" value="{$to}" tabindex="1" />{$autocompletejs}</td>
+<td class="trow1"><input type="text" class="textbox" name="to" id="to" size="40" maxlength="{$settings['maxnamelength']}" value="{$to}" tabindex="1" />{$autocompletejs}</td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->compose_subject}</strong></td>
-<td class="trow2"><input type="text" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="2" /></td>
+<td class="trow2"><input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="2" /></td>
 </tr>
 {$posticons}
 <tr>
@@ -2600,11 +2600,11 @@ var inlineId = {$fid};
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->question}</strong></td>
-<td class="trow2"><input type="text" name="question" size="40" maxlength="240" value="{$question}"></td>
+<td class="trow2"><input type="text" class="textbox" name="question" size="40" maxlength="240" value="{$question}"></td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$settings['maxpolloptions']}</span></td>
-<td class="trow1"><input type="text" name="numoptions" size="10" value="{$numoptions}">&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}"></td>
+<td class="trow1"><input type="text" class="textbox" name="numoptions" size="10" value="{$numoptions}">&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}"></td>
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_options}</strong></td>
@@ -2625,7 +2625,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</td>
-<td class="trow2"><input type="text" name="timeout" value="{$timeout}"> {$lang->days_after} {$polldate}</td>
+<td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}"> {$lang->days_after} {$polldate}</td>
 </tr>
 </table>
 <br />
@@ -2886,7 +2886,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow2" valign="top" width="30%"><strong>{$lang->date_limit}</strong></td>
-<td class="trow2"><select name="dayway"><option value="older">{$lang->date_limit_older}</option><option value="newer">{$lang->date_limit_newer}</option><option value="disregard">{$lang->date_limit_disregard}</option></select> <input type="text" name="daycut" value="30" size="3" maxlength="4" /> {$lang->date_limit_days}</td>
+<td class="trow2"><select name="dayway"><option value="older">{$lang->date_limit_older}</option><option value="newer">{$lang->date_limit_newer}</option><option value="disregard">{$lang->date_limit_disregard}</option></select> <input type="text" class="textbox" name="daycut" value="30" size="3" maxlength="4" /> {$lang->date_limit_days}</td>
 </tr>
 <tr>
 <td class="trow1" valign="top" width="30%"><strong>{$lang->export_unread}</strong></td>
@@ -2959,7 +2959,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->event_name}</strong></td>
-<td width="60%" class="trow2"><input type="text" size="50" name="subject" maxlength="120" /></td>
+<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" maxlength="120" /></td>
 </tr>
 <tr>
 <td valign="top" width="40%" class="trow1"><strong>{$lang->event_details}</strong></td>
@@ -2983,10 +2983,10 @@ var inlineId = {$fid};
 </body>
 </html>]]></template>
 		<template name="private_folders_folder" version="100.07"><![CDATA[<tr>
-<td class="trow1"><input type="text" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30"></td>
+<td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30"></td>
 </tr>]]></template>
 		<template name="private_folders_folder_unremovable" version="100.07"><![CDATA[<tr>
-<td class="trow1"><input type="text" name="folder[{$fid}]" size="25" value="{$foldername}"> <span class="smalltext">({$foldername2} - {$lang->cannot_be_removed})</span>
+<td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}"> <span class="smalltext">({$foldername2} - {$lang->cannot_be_removed})</span>
 </td>
 </tr>]]></template>
 		<template name="showteam_usergroup_user" version="100.07"><![CDATA[<tr>
@@ -3379,7 +3379,7 @@ var inlineId = {$fid};
 </select> {$lang->sort_in} <select name="order">
 <option value="ASC"{$ascsel}>{$lang->sort_asc}</option>
 <option value="DESC"{$descsel}>{$lang->sort_desc}</option>
-</select> {$lang->order} {$lang->search_for} <input type="text" name="usersearch" value="{$usersearch}" size="20" /> {$gobutton}
+</select> {$lang->order} {$lang->search_for} <input type="text" class="textbox" name="usersearch" value="{$usersearch}" size="20" /> {$gobutton}
 </td>
 </form>
 </tr>
@@ -3532,7 +3532,7 @@ var inlineId = {$fid};
 		<template name="portal_welcome_guesttext" version="100.07"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}<br />
 <br />
 <form method="post" action="{$PHP_SELF}"><input type="hidden" name="action" value="do_login">
-{$lang->username}<br />&nbsp;&nbsp;<input type="text" name="username" value="" /><br /><br />
+{$lang->username}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
 {$lang->password}<br />&nbsp;&nbsp;<input type="password" name="password" value="" /><br />
 <br /><input type="submit" class="button" name="loginsubmit" value="{$lang->login}" /></form>]]></template>
 		<template name="portal_latestthreads_thread" version="100.07"><![CDATA[<tr>
@@ -3562,7 +3562,7 @@ var inlineId = {$fid};
 <tr>
 <td class="trow1">
 <table><tr>
-<td valign="top"><input type="text" name="keywords" size="35" maxlength="250"></td>
+<td valign="top"><input type="text" class="textbox" name="keywords" size="35" maxlength="250"></td>
 </tr>
 <tr>
 <td>
@@ -3571,7 +3571,7 @@ var inlineId = {$fid};
 </td>
 <td class="trow1">
 <table><tr>
-<td class="trow1"><input type="text" name="author" size="35" maxlength="{$settings['maxnamelength']}"><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked>&nbsp; {$lang->match_username}</span></td>
+<td class="trow1"><input type="text" class="textbox" name="author" size="35" maxlength="{$settings['maxnamelength']}"><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked>&nbsp; {$lang->match_username}</span></td>
 <td class="trow1">&nbsp;</td>
 </tr></table>
 </td>
@@ -3586,7 +3586,7 @@ var inlineId = {$fid};
 <select name="findthreadst">
 <option value="1">{$lang->threads_at_least}</option>
 <option value="2">{$lang->threads_at_most}</option>
-</select> <input type="text" name="numreplies" size="2" maxlength="4"> {$lang->replies2}<br />
+</select> <input type="text" class="textbox" name="numreplies" size="2" maxlength="4"> {$lang->replies2}<br />
 <br />
 <select name="postdate">
 <option value="0">{$lang->find_anydate}</option>
@@ -3682,12 +3682,12 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td width="40%" class="trow1"><strong>{$lang->username}</strong></td>
-<td width="60%" class="trow1"><input type="text" size="50" name="touser" value="{$emailto['username']}" /></td>
+<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="touser" value="{$emailto['username']}" /></td>
 </tr>
 {$guestfields}
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->email_subject}</strong></td>
-<td width="60%" class="trow2"><input type="text" size="50" name="subject" /></td>
+<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" /></td>
 </tr>
 <tr>
 <td valign="top" width="40%" class="trow1"><strong>{$lang->email_message}</strong></td>
@@ -3772,7 +3772,7 @@ var inlineId = {$fid};
 </td>
 <td class="{$bgcolor}" valign="top">
 <span class="smalltext"><input type="checkbox" class="checkbox" name="postpoll" value="yes" {$postpollchecked}> <strong>{$lang->poll_check}</strong><br />
-{$lang->num_options} <input type="text" name="numpolloptions" value="{$numpolloptions}" size="10"> {$lang->max_options}</span>
+{$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10"> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
 		<template name="moderation_reports" version="100.07"><![CDATA[<html>
@@ -3835,7 +3835,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->username}</strong></td>
-<td class="trow1"><input type="text" name="username" size="25" maxlength="{$settings['maxnamelength']}"></td>
+<td class="trow1"><input type="text" class="textbox" name="username" size="25" maxlength="{$settings['maxnamelength']}"></td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->password}</strong><br /><span class="smalltext">{$lang->pw_note}</span></td>
@@ -3937,7 +3937,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow2" width="40%" valign="top"><strong>{$lang->syndication_limit}</strong><br /><span class="smalltext">{$lang->syndication_limit_desc}</span></td>
-<td class="trow2" width="60%"><input type="text" name="limit" value="{$limit}" size="3" /> {$lang->syndication_threads_time}</td>
+<td class="trow2" width="60%"><input type="text" class="textbox" name="limit" value="{$limit}" size="3" /> {$lang->syndication_threads_time}</td>
 </tr></table>
 <br />
 <div align="center"><input type="submit" class="button" name="make" value="{$lang->syndication_generate}" /></div>
@@ -3979,7 +3979,7 @@ var inlineId = {$fid};
 <form action="member.php" method="post">
 	<input type="hidden" name="action" value="do_login" />
 	<span class="smalltext"><strong>{$lang->quick_login}</strong></span> 
-	<input type="text" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="this.value=''" />
+	<input type="text" class="textbox" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="this.value=''" />
 	<input type="password" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="this.value=''" />
 	{$gobutton}
 </form>]]></template>
@@ -4228,11 +4228,11 @@ var inlineId = {$fid};
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->question}</strong></td>
-<td class="trow2"><input type="text" name="question" size="40" maxlength="240" value="{$question}"></td>
+<td class="trow2"><input type="text" class="textbox" name="question" size="40" maxlength="240" value="{$question}"></td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$settings['maxpolloptions']}</span></td>
-<td class="trow1"><input type="text" name="polloptions" size="10" value="{$polloptions}">&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}"></td>
+<td class="trow1"><input type="text" class="textbox" name="polloptions" size="10" value="{$polloptions}">&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}"></td>
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_options}</strong></td>
@@ -4252,7 +4252,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</td>
-<td class="trow2"><input type="text" name="timeout" value="{$timeout}"> {$lang->days}</td>
+<td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}"> {$lang->days}</td>
 </tr>
 </table>
 <br />
@@ -4470,7 +4470,7 @@ var inlineId = {$fid};
 <input type="hidden" name="postthread" value="1" />
 <input type="hidden" name="forums" value="all" />
 <input type="hidden" name="showresults" value="threads" />
-<input type="text" name="keywords" value="" />
+<input type="text" class="textbox" name="keywords" value="" />
 {$gobutton}<br />
 (<a href="{$settings['bburl']}/search.php">{$lang->advanced_search}</a>)
 </form>
@@ -4658,7 +4658,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->confirm_email}</strong></td>
-<td class="trow1" width="60%"><input type="text" name="email2" size="25" maxlength="100"></td>
+<td class="trow1" width="60%"><input type="text" class="textbox" name="email2" size="25" maxlength="100"></td>
 </tr>
 </table>
 </td></tr></table>
@@ -4784,7 +4784,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br />
 <span class="smalltext">{$lang->post_comments}</span>
 <br />
-<input type="text" name="comments" size="40" maxlength="250">
+<input type="text" class="textbox" name="comments" size="40" maxlength="250">
 <br />
 <br />
 <center><input type="submit" class="button" value="{$lang->add_to_reputation}"></center>
@@ -4878,11 +4878,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="member_emailuser_guest" version="100.07"><![CDATA[<tr>
 <td width="40%" class="trow2"><strong>{$lang->your_name}</strong><br /><span class="smalltext">{$lang->name_note}</span></td>
-<td width="60%" class="trow2"><input type="text" size="50" name="fromname" /></td>
+<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="fromname" /></td>
 </tr>
 <tr>
 <td width="40%" class="trow1"><strong>{$lang->your_email}</strong><br /><span class="smalltext">{$lang->email_note}</span></td>
-<td width="60%" class="trow1"><input type="text" size="50" name="fromemail" /></td>
+<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail" /></td>
 </tr>]]></template>
 		<template name="usercp_subscriptions" version="100.07"><![CDATA[<html>
 <head>
@@ -4939,7 +4939,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="loginbox" version="100.07"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->username}</strong></td>
-<td class="trow2"><input type="text" name="username" size="30" value="{$username}"></td>
+<td class="trow2"><input type="text" class="textbox" name="username" size="30" value="{$username}"></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->password}</strong></td>
@@ -4968,7 +4968,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2" align="right"><span class="smalltext">{$senddate}<br />{$sendtime}</span></td>
 <td class="trow1"><input type="checkbox" class="checkbox" name="unreadcheck[{$unreadmessage['pmid']}]" value="yes"></td>
 </tr>]]></template>
-		<template name="usercp_editlists_user" version="100.07"><![CDATA[<input type="text" name="listuser[{$uid}]" size="25" value="{$username}"><br />]]></template>
+		<template name="usercp_editlists_user" version="100.07"><![CDATA[<input type="text" class="textbox" name="listuser[{$uid}]" size="25" value="{$username}"><br />]]></template>
 		<template name="showthread_threadedbox" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -5152,7 +5152,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td align="center" class="trow1" width="5%"><input type="radio" class="radio" name="avatar" value="url"{$checked['url']} /></td>
 <td class="trow1" width="40%"><strong>{$lang->avatar_url}</strong><br /><span class="smalltext">{$lang->avatar_url_note}</span></td>
-<td class="trow1" width="55%"><input type="text" name="avatarurl" size="25" maxlength="100" value="{$avatarurl}" /></td>
+<td class="trow1" width="55%"><input type="text" class="textbox" name="avatarurl" size="25" maxlength="100" value="{$avatarurl}" /></td>
 </tr>
 <tr>
 <td align="center" class="trow2" width="5%"><input type="radio" class="radio" name="avatar" value="upload"{$checked['upload']} /></td>
@@ -5238,9 +5238,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="polls_editpoll_option" version="100.07"><![CDATA[<tr>
 <td class="trow">{$lang->option} {$counter}:</td>
-<td class="trow"><input type="text" name="options[{$counter}]" value="{$option}"></td>
+<td class="trow"><input type="text" class="textbox" name="options[{$counter}]" value="{$option}"></td>
 <td class="trow">{$lang->votes}</td>
-<td class="trow"><input type="text" name="votes[{$counter}]" value="{$optionvotes}"></td>
+<td class="trow"><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}"></td>
 </tr>]]></template>
 		<template name="member_resetpassword" version="100.07"><![CDATA[<html>
 <head>
@@ -5260,11 +5260,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow1" width="30%"><strong>{$lang->username}</strong></td>
-<td class="trow1"><input type="text" name="username" value="{$user['username']}"></td>
+<td class="trow1"><input type="text" class="textbox" name="username" value="{$user['username']}"></td>
 </tr>
 <tr>
 <td class="trow1" width="30%"><strong>{$lang->activation_code}</strong></td>
-<td class="trow1"><input type="text" name="code" value="{$code}"></td>
+<td class="trow1"><input type="text" class="textbox" name="code" value="{$code}"></td>
 </tr>
 </table>
 </td></tr></table>
@@ -5307,7 +5307,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->email_address}</strong></td>
-<td class="trow1" width="60%"><input type="text" name="email"></td>
+<td class="trow1" width="60%"><input type="text" class="textbox" name="email"></td>
 </tr>
 </table>
 <br />
@@ -5338,7 +5338,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_username}</strong></td>
-<td class="trow2" width="60%"><input type="text" name="username" size="25" maxlength="{$settings['maxnamelength']}" value="{$mybbuser['username']}"></td>
+<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$settings['maxnamelength']}" value="{$mybbuser['username']}"></td>
 </tr>
 </table>
 </td></tr></table>
@@ -5439,7 +5439,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->new_subject}</strong></td>
-<td class="trow2"><input type="text" name="newsubject" value="[split] {$thread['subject']}" size="50"></td>
+<td class="trow2"><input type="text" class="textbox" name="newsubject" value="[split] {$thread['subject']}" size="50"></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->new_forum}</strong></td>
@@ -5523,12 +5523,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td width="40%" class="trow1"><strong>{$lang->recipient}</strong><br /><span class="smalltext">{$lang->recipient_note}</span></td>
-<td width="60%" class="trow1"><input type="text" size="50" name="sendto" /></td>
+<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="sendto" /></td>
 </tr>
 {$guestfields}
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->subject}</strong></td>
-<td width="60%" class="trow2"><input type="text" size="50" name="subject" value="{$thread['subject']}" /></td>
+<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$thread['subject']}" /></td>
 </tr>
 <tr>
 <td valign="top" width="40%" class="trow1"><strong>{$lang->message}</strong></td>
@@ -5547,11 +5547,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="sendthread_guest" version="100.07"><![CDATA[<tr>
 <td width="40%" class="trow2"><strong>{$lang->your_name}</strong><br /><span class="smalltext">{$lang->name_note}</span></td>
-<td width="60%" class="trow2"><input type="text" size="50" name="fromname" /></td>
+<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="fromname" /></td>
 </tr>
 <tr>
 <td width="40%" class="trow1"><strong>{$lang->your_email}</strong><br /><span class="smalltext">{$lang->email_note}</span></td>
-<td width="60%" class="trow1"><input type="text" size="50" name="fromemail" /></td>
+<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail" /></td>
 </tr>]]></template>
 		<template name="usercp_editsig" version="100.07"><![CDATA[<html>
 <head>
@@ -5607,7 +5607,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td class="trow1" valign="top" width="40%"><span class="smalltext">{$lang->edit_sig_note}<br /><br />{$lang->edit_sig_note2}</span></td>
-<td class="trow1" width="60%"><textarea rows="5" cols="55" wrap="physical" name="signature" onKeyUp="sigLimit()" onKeyDown="sigLimit()">{$sig}</textarea><br /><input type="text" name="sigcounter" size="3" value="{$settings['siglength']}" disabled="disabled" /> <span class="smalltext">{$lang->characters_remaining}</span>
+<td class="trow1" width="60%"><textarea rows="5" cols="55" wrap="physical" name="signature" onKeyUp="sigLimit()" onKeyDown="sigLimit()">{$sig}</textarea><br /><input type="text" class="textbox" name="sigcounter" size="3" value="{$settings['siglength']}" disabled="disabled" /> <span class="smalltext">{$lang->characters_remaining}</span>
 <br /><br /><span class="smalltext">
 <input type="radio" class="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}<br />
 <input type="radio" class="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}<br />
@@ -5677,7 +5677,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->username}</strong></td>
-<td class="trow1"><input type="text" name="username"></td>
+<td class="trow1"><input type="text" class="textbox" name="username"></td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->password}</strong></td>
@@ -5806,11 +5806,11 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->new_subject}</strong></td>
-<td class="trow2"><input type="text" name="subject" value="{$thread['subject']}" size="40"></td>
+<td class="trow2"><input type="text" class="textbox" name="subject" value="{$thread['subject']}" size="40"></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->thread_to_merge_with}</strong><br /><span class="smalltext">{$lang->merge_with_note}</span></td>
-<td class="trow1" width="60%"><input type="text" name="threadurl" size="40">
+<td class="trow1" width="60%"><input type="text" class="textbox" name="threadurl" size="40">
 </td>
 </tr>
 </table>
@@ -5841,7 +5841,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </td>]]></template>
 		<template name="polls_newpoll_option" version="100.07"><![CDATA[<tr>
 <td class="trow">{$lang->option} {$i}:</td>
-<td class="trow"><input type="text" name="options[{$i}]" value="{$option}" width="250"></td>
+<td class="trow"><input type="text" class="textbox" name="options[{$i}]" value="{$option}" width="250"></td>
 </tr>]]></template>
 		<template name="showthread_poll_option_multiple" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="5%"><input type="checkbox" class="checkbox" name="option[{$number}]" value="yes"></td>
@@ -5869,11 +5869,11 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td class="trow1" width="30%"><strong>{$lang->username}</strong></td>
-<td class="trow1"><input type="text" name="username" value="{$user['username']}"></td>
+<td class="trow1"><input type="text" class="textbox" name="username" value="{$user['username']}"></td>
 </tr>
 <tr>
 <td class="trow1" width="30%"><strong>{$lang->activation_code}</strong></td>
-<td class="trow1"><input type="text" name="code" value="{$code}"></td>
+<td class="trow1"><input type="text" class="textbox" name="code" value="{$code}"></td>
 </tr>
 </table>
 </td></tr></table>
@@ -6056,7 +6056,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->event_name}</strong></td>
-<td width="60%" class="trow2"><input type="text" size="50" name="subject" value="{$event['subject']}" /></td>
+<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$event['subject']}" /></td>
 </tr>
 <tr>
 <td valign="top" width="40%" class="trow1"><strong>{$lang->event_details}</strong></td>
@@ -6329,7 +6329,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->email_address}</strong></td>
-<td class="trow1" width="60%"><input type="text" name="email"></td>
+<td class="trow1" width="60%"><input type="text" class="textbox" name="email"></td>
 </tr>
 </table>
 <br />
@@ -6444,7 +6444,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->new_subject}</strong></td>
-<td class="trow2"><input type="text" name="newsubject" value="[split] {$thread['subject']}" size="50"></td>
+<td class="trow2"><input type="text" class="textbox" name="newsubject" value="[split] {$thread['subject']}" size="50"></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->new_forum}</strong></td>
@@ -6469,7 +6469,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td rowspan="2" align="center"><img src="image.php?action=regimage&imagehash={$imagehash}" alt="{$lang->image_verification}" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span></td>
 </tr>
 <tr>
-<td><input type="text" name="imagestring" value="" /><input type="hidden" name="imagehash" value="{$imagehash}" /></td>
+<td><input type="text" class="textbox" name="imagestring" value="" /><input type="hidden" name="imagehash" value="{$imagehash}" /></td>
 </tr>
 </table>
 </fieldset>]]></template>
@@ -6507,7 +6507,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td colspan="2"><span class="smalltext">{$lang->username}</span></td>
 </tr>
 <tr>
-<td colspan="2"><input type="text" name="username" size="40" value="{$username}" /></td>
+<td colspan="2"><input type="text" class="textbox" name="username" size="40" value="{$username}" /></td>
 </tr>
 {$passboxes}
 <tr>
@@ -6515,8 +6515,8 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td><span class="smalltext">{$lang->confirm_email}</span></td>
 </tr>
 <tr>
-<td><input type="text" name="email" size="20" maxlength="50" value="{$email}" /></td>
-<td><input type="text" name="email2" size="20" maxlength="50" value="{$email2}" /></td>
+<td><input type="text" class="textbox" name="email" size="20" maxlength="50" value="{$email}" /></td>
+<td><input type="text" class="textbox" name="email2" size="20" maxlength="50" value="{$email2}" /></td>
 </tr>
 </table>
 </fieldset>

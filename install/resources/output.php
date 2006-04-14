@@ -90,7 +90,7 @@ END;
 	{
 		if(!$this->doneheader)
 		{
-			$this->print_header("", "", 0, 1);
+			$this->print_header("Error", "", 0, 1);
 		}
 		echo "			<div class=\"error\">\n				";
 		echo "<h3>Error</h3>";

@@ -29,7 +29,7 @@ $cssselectors = array(
 	"navigation_active" => ".navigation .active",
 	 "smalltext" => ".smalltext",
 	"largetext" => ".largetext",
-	"input" => "input",
+	"textbox" => "input.textbox",
 	"textarea" => "textarea",
 	"radio" => "input.radio",
 	"checkbox" => "input.checkbox",
@@ -569,7 +569,7 @@ function makecssinputedit($css)
 	}
 	starttable();
 	tableheader($lang->form_elements);
-	$form_elements = array("input", "textarea", "radio", "checkbox", "select", "button");
+	$form_elements = array("textbox", "textarea", "radio", "checkbox", "select", "button");
 	$c = 0;
 	foreach($form_elements as $key => $element)
 	{
