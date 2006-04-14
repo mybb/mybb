@@ -78,7 +78,7 @@ class UserDataHandler extends DataHandler
 		$password = &$this->data['password'];
 
 		// Always check for the length of the password.
-		if(my_my_strlen($password) < 6)
+		if(my_strlen($password) < 6)
 		{
 			$this->set_error("invalid_password_length");
 			return false;
