@@ -356,7 +356,8 @@ hr {
 	color: #000;
 	padding: 4px;
 	margin: 0 auto 8px auto;
-	font-family: monospace;
+	font-family: Monaco, Consolas, Courier, monospace;
+	font-size: 12px;
 }
 .usercpnav {
 	list-style: inside;
