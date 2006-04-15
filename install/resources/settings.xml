@@ -661,6 +661,14 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="repsperpage">
+			<title>Reputation Comments Per Page</title>
+			<description><![CDATA[Here you can enter the number of reputation comments to show per page on the reputation system]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[15]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="11" isdefault="yes">
 		<setting name="enablepms">

@@ -1355,22 +1355,33 @@ function logmod($data, $action="")
 	$db->insert_query(TABLE_PREFIX."moderatorlog", $sql_array);
 }
 
-function getreputation($reputation)
+function getreputation($reputation, $uid=0)
 {
 	global $theme;
-
-	if(strpos(" ".$reputation, "-"))
+	
+	if($uid != 0)
 	{
-		return "<span style=\"color: red;\">".$reputation."</span>";
+		$display_reputation = "<a href=\"reputation.php?uid={$uid}\">";
+	}
+	$display_reputation .= "<strong class=\"";
+	if($reputation < 0)
+	{
+		$display_reputation .= "reputation_negative";
 	}
 	else if($reputation > 0)
 	{
-		return "<span style=\"color: green;\">".$reputation."</span>";
+		$display_reputation .= "reputation_positive";
 	}
-	else if($reputation == 0)
+	else
 	{
-		return "0";
+		$display_reputation .= "reputation_neutral";
 	}
+	$display_reputation .= "\">{$reputation}</strong>";
+	if($uid != 0)
+	{
+		$display_reputation .= "</a>";
+	}
+	return $display_reputation;
 }
 
 function getip() {

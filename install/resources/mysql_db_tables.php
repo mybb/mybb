@@ -391,12 +391,13 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_reputation (
+  rid int unsigned NOT NULL auto_increment,  
   uid int unsigned NOT NULL default '0',
-  pid int unsigned NOT NULL default '0',
   adduid int unsigned NOT NULL default '0',
   reputation bigint(30) NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
-  comments text NOT NULL
+  comments text NOT NULL,
+  PRIMARY KEY(rid)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_searchlog (

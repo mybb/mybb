@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: 1.0 Final
+ * Upgrade Script: 1.0 / 1.1
  */
 
 $upgrade_detail = array(
@@ -116,20 +116,37 @@ function upgrade5_dbchanges()
 	$bannedusernames = $db->fetch_result($query, 0);
 	$bannedusernames = explode(" ", $bannedusernames);
 	$bannedusernames = implode(",", $bannedusernames);
-	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$bannedusernames." WHERE name='bannedusernames'");
+	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$db->escape_string($bannedusernames)." WHERE name='bannedusernames'");
 
 	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedemails'");
 	$bannedemails = $db->fetch_result($query, 0);
 	$bannedemails = explode(" ", $bannedemails);
 	$bannedemails = implode(",", $bannedemails);
-	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$bannedemails." WHERE name='bannedemails'");
+	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$db->escape_string($bannedemails)." WHERE name='bannedemails'");
 
 	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedips'");
 	$bannedips = $db->fetch_result($query, 0);
 	$bannedips = explode(" ", $bannedips);
 	$bannedips = implode(",", $bannedips);
-	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$bannedips." WHERE name='bannedips'");
+	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$db->escape_string($bannedips)." WHERE name='bannedips'");
 
+	$query = $db->query("DROP TABLE ".TABLE_PREFIX."reputation");
+	
+	$query = $db->query("CREATE TABLE ".TABLE_PREFIX."reputation (
+	  rid int unsigned NOT NULL auto_increment,  
+	  uid int unsigned NOT NULL default '0',
+	  adduid int unsigned NOT NULL default '0',
+	  reputation bigint(30) NOT NULL default '0',
+	  dateline bigint(30) NOT NULL default '0',
+	  comments text NOT NULL,
+      PRIMARY KEY(rid)
+	) TYPE=MyISAM;");
+	
+	$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='0'");
+	
+	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='1'");
+	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='2' WHERE cancp='yes'");
+	
 	echo "Done</p>";
 
 	$contents .= "Click next to continue with the upgrade process.</p>";
@@ -161,25 +178,6 @@ function upgrade5_dbchanges2()
 		);
 		$fulltext = "yes";
 	}
-	$new_setting_group = array(
-		"name" => "mybb:hidden",
-		"description" => "",
-		"disporder" => 0,
-		"isdefault" => "yes"
-	);
-	$db->insert_query(TABLE_PREFIX."settinggroups", $new_seting_group);
-	$gid = $db->insert_id();
-
-	$new_setting = array(
-		"name" => "fulltextsearching",
-		"title" => "",
-		"description" => "",
-		"optionscode" => "yesno",
-		"value" => $fulltext,
-		"disporder" => 0,
-		"gid" => $gid
-	);
-	$db->insert_query(TABLE_PREFIX."settings", $new_setting);
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("5_done");

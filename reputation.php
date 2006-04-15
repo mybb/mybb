@@ -15,149 +15,419 @@ require "./global.php";
 // Load global language phrases
 $lang->load("reputation");
 
+// Check if the reputation system is globally disabled or not.
 if($mybb->settings['enablereputation'] != "yes")
 {
 	error($lang->reputation_disabled);
 }
 
-// Get post info
-$pid = intval($mybb->input['pid']);
-$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid='".$pid."'");
-$post = $db->fetch_array($query);
-if(!$post['pid'])
-{
-	error($lang->error_invalidpost);
-}
-
-// Get author info
-$posteruid = $post['uid'];
-$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".$posteruid."'");
-$user = $db->fetch_array($query);
-
-// Get forum info
-$fid = $post['fid'];
-$forum = get_forum($fid);
-if(!$forum)
-{
-	error($lang->error_invalidforum);
-}
-
-// Do the permissions thing
-$usergroup = user_permissions($posteruid);
-$permissions = forum_permissions($fid);
-
-if($permissions['canview'] != "yes")
+// Does this user have permission to view the board?
+if($mybb->usergroup['canview'] != "yes")
 {
 	nopermission();
 }
-/*$query = $db->query("SELECT g.usereputationsystem FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g WHERE u.uid='".$post['uid']."' AND g.gid=u.usergroup");
-$usergroup = $db->fetch_array($query);*/
 
-if($usergroup['usereputationsystem'] != "yes" || $mybb->usergroup['cangivereputations'] != "yes")
+// If we have a specified incoming username, validate it and fetch permissions for it
+if($mybb->input['uid'])
 {
-	error($lang->error_reputationdisabled);
+	$user = get_user($mybb->input['uid']);
+	if(!$user['uid'])
+	{
+		error("invalid_user");
+	}
+	$user_permissions = user_permissions(intval($mybb->input['uid']));
 }
 
-checkpwforum($fid, $forum['password']);
+// Here we perform our validation when adding a reputation to see if the user
+// has permission or not. This is done here to save duplicating the same code.
+if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
+{
+	// This user doesn't have permission to give reputations.
+	if($mybb->usergroup['cangivereputations'] != "yes")
+	{
+		eval("\$error = \"".$templates->get("reputation_add_no_permission")."\";");
+		outputpage($error);		
+	}
+	
+	// The user we're trying to give a reputation to doesn't have permission to receive reps.
+	if($user_permissions['usereputationsystem'] != "yes")
+	{
+		eval("\$error = \"".$templates->get("reputation_add_disabled")."\";");
+		outputpage($error);		
+	}
+	
+	// Is this user trying to give themself a reputation?
+	if($mybb->input['uid'] == $mybb->user['uid'])
+	{
+		eval("\$error = \"".$templates->get("reputation_add_yours")."\";");
+		outputpage($error);
+	}
+	
+	// Check if this user has reached their "maximum reputations per day" quota
+	if($mybb->usergroup['maxreputationsday'] != 0)
+	{
+		$timesearch = time() - (60 * 60 * 24);
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
+		$numtoday = $db->num_rows($query);
+		
+		// Reached the quota - error.
+		if($numtoday >= $mybb->usergroup['maxreputationsday'])
+		{
+			eval("\$error = \"".$templates->get("reputation_add_maxperday")."\";");
+			outputpage($error);
+		}
+	}
+	
+	// Fetch the existing reputation for this user given by our current user if there is one.
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user[uid]."' AND uid='".intval($mybb->input['uid'])."'");
+	$existing_reputation = $db->fetch_array($query);			
+}
 
+// Saving the new reputation
 if($mybb->input['action'] == "do_add")
 {
 	$plugins->run_hooks("reputation_do_add_start");
-	if($posteruid == $mybb->user['uid'])
-	{ // let the user view their reputation
-		eval("\$reputationbit = \"".$templates->get("reputation_yourpost")."\";");
-		eval("\$reputation = \"".$templates->get("reputation")."\";");
-		outputpage($reputation);
+	
+	// Check if the reputation power they're trying to give is within their "power limit"
+	$reputation = $mybb->input['reputation'];
+	$reputation = intval(str_replace("-", "", $reputation));
+	if($mybb->input['reputation'] == "neutral")
+	{
+		$mybb->input['reputation'] = 0;
 	}
-	else
-	{ // user is trying to give a reputation
-		if($mybb->usergroup['maxreputationsday'] != 0)
-		{
-			$timesearch = time() - (60 * 60 * 24);
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
-			$numtoday = $db->num_rows($query);
-		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='".$pid."' AND adduid='".$mybb->user[uid]."'");
-		$reputation = $db->fetch_array($query);
-		if($reputation['uid'])
-		{
-			eval("\$reputationbit = \"".$templates->get("reputation_samepost")."\";");
-		}
-		elseif($numtoday >= $mybb->usergroup['maxreputationsday'] && $mybb->usergroup['maxreputationsday'] != 0)
-		{
-			eval("\$reputationbit = \"".$templates->get("reputation_maxperday")."\";");
-		}
-		else
-		{
-			// work out new reputation
-			$rep = $mybb->usergroup['reputationpower'];
-			if($mybb->input['add'] == "neg")
-			{
-				$rep = "-".$rep;
-			}
-			$reputation = array(
-				"uid" => $authorpid,
-				"pid" => $pid,
-				"adduid" => $mybb->user['uid'],
-				"reputation" => $rep,
-				"dateline" => time(),
-				"comments" => addslashes($mybb->input['comments'])
-				);
-			$plugins->run_hooks("reputation_do_add_process");
-			$db->insert_query(TABLE_PREFIX."reputation", $reputation);
-			$db->query("UPDATE ".TABLE_PREFIX."users SET reputation=reputation+'$rep' WHERE uid='$authorpid'");
-			$reputationbit = "<script type=\"text/javascript\">window.close();</script>";
-			$plugins->run_hooks("reputation_do_add_end");
-		}
-		eval("\$reputation = \"".$templates->get("reputation")."\";");
-		outputpage($reputation);
+	
+	// The power for the reputation they specified was invalid.
+	if($reputation > $mybb->usergroup['reputationpower'] || !is_numeric($mybb->input['reputation']))
+	{
+		eval("\$error = \"".$templates->get("reputation_add_invalidpower")."\";");
+		outputpage($error);
 	}
-}
-else
-{
-	$plugins->run_hooks("reputation_start");
+	
+	// Build array of reputation data.
+	$reputation = array(
+		"uid" => intval($mybb->input['uid']),
+		"adduid" => $mybb->user['uid'],
+		"reputation" => $db->escape_string($mybb->input['reputation']),
+		"dateline" => time(),
+		"comments" => $db->escape_string($mybb->input['comments'])
+	);
+	
+	$plugins->run_hooks("reputation_do_add_process");
+		
+	// Updating an existing reputation
+	if($existing_reputation['uid'])
+	{
+		$db->update_query(TABLE_PREFIX."reputation", $reputation, "rid='".$existing_reputation['rid']."'");
 
-	$lang->add_reputation = sprintf($lang->add_reputation, $user['username']);
-	if($posteruid == $mybb->user['uid'])
-	{ // let the user view their reputation
-		eval("\$reputationbit = \"".$templates->get("reputation_yourpost")."\";");
-		eval("\$reputation = \"".$templates->get("reputation")."\";");
-		outputpage($reputation);
+		// Update the total reputation count for the user we're reputing - take off existing reputation too
+		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation=reputation+'".$db->escape_string($mybb->input['reputation']-$existing_reputation['reputation'])."' WHERE uid='".intval($mybb->input['uid'])."'");
+
+	}
+	// Insert a new reputation
+	else
+	{
+		$db->insert_query(TABLE_PREFIX."reputation", $reputation);
+		
+		// Update the total reputation count for the user we're reputing.
+		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation=reputation+'".$db->escape_string($mybb->input['reputation'])."' WHERE uid='".intval($mybb->input['uid'])."'");
+	}
+	
+	$plugins->run_hooks("reputation_do_add_end");
+	
+	eval("\$reputation = \"".$templates->get("reputation_added")."\";");
+	outputpage($reputation);
+}
+
+// Adding a new reputation
+if($mybb->input['action'] == "add")
+{
+	$plugins->run_hooks("reputation_add_start");
+	
+	// If we have an existing reputation for this user, the user can modify or delete it.
+	if($existing_reputation['uid'])
+	{
+		$vote_title = sprintf($lang->update_reputation_vote, $user['username']);
+		$vote_button = $lang->update_vote;
+		$comments = htmlspecialchars_uni($existing_reputation['comments']);
+		$delete_button = "<input type=\"submit\" name=\"delete\" value=\"{$lang->delete_vote}\" />";
+	}
+	// Otherwise we're adding an entirely new reputation for this user.
+	else
+	{
+		$vote_title = sprintf($lang->add_reputation_vote, $user['username']);
+		$vote_button = $lang->add_vote;
+		$comments = '';
+		$delete_button = '';
+	}
+	$lang->user_comments = sprintf($lang->user_comments, $user['username']);
+
+	// Draw the "power" options
+	$positive_power = '';
+	$negative_power = '';
+	$vote_check = '';
+	if($existing_reputation['uid'])
+	{
+		$vote_check[$existing_reputation['reputation']] = "checked=\"checked\"";
+	}
+	$neutral_power = "&nbsp;&nbsp;<input type=\"radio\" name=\"reputation\" value=\"neutral\" id=\"neutral\" {$vote_check[0]} /> <label for=\"neutral\">{$lang->power_neutral}</label><br />";
+	for($i=1;$i<=$mybb->usergroup['reputationpower'];$i++)
+	{
+		$positive_title = sprintf($lang->power_positive, "+".$i);
+		$positive_power = "&nbsp;&nbsp;<input type=\"radio\" name=\"reputation\" value=\"+{$i}\" id=\"pos{$i}\" {$vote_check[+$i]} /> <label for=\"pos{$i}\">{$positive_title}</label><br />".$positive_power;
+		$negative_title = sprintf($lang->power_negative, "-".$i);
+		$negative_power .= "&nbsp;&nbsp;<input type=\"radio\" name=\"reputation\" value=\"-{$i}\" id=\"neg{$i}\" {$vote_check[-$i]} /> <label for=\"neg{$i}\">{$negative_title}</label><br />";
+	}
+	
+	eval("\$reputation_add = \"".$templates->get("reputation_add")."\";");
+	$plugins->run_hooks("reputation_add_end");
+	outputpage($reputation_add);
+}
+
+// Delete a specific reputation from a user.
+if($mybb->input['action'] == "delete")
+{
+	
+}
+
+// Otherwise, show a listing of reputations for the given user.
+if(!$mybb->input['action'])
+{
+	$lang->reputation_report = sprintf($lang->reputation_report, $user['username']);
+	
+	// Format the user name using the group username style
+	$username = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
+
+	// Set display group to their user group if they don't have a display group.
+	if(!$user['displaygroup'])
+	{
+		$user['displaygroup'] = $user['usergroup'];
+	}
+	
+	// Fetch display group properties.
+	$display_group = usergroup_displaygroup($user['displaygroup']);
+
+	// This user has a custom user title
+	if($user['usertitle'] != '')
+	{
+		$usertitle = $user['usertitle'];
+	}
+	// Using our display group's user title
+	else if($display_group['usertitle'] != '')
+	{
+		$usertitle = $display_group['usertitle'];
+	}
+	// Otherwise, fetch it from our titles table for the number of posts this user has
+	else
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE posts<='{$user['postnum']}' ORDER BY posts DESC");
+		$title = $db->fetch_array($query);
+		$usertitle = $title['title'];
+	}	
+
+	// If the user has permission to add reputations - show the image
+	if($mybb->usergroup['cangivereputations'] == "yes")
+	{
+		eval("\$add_reputation = \"".$templates->get("reputation_addlink")."\";");
 	}
 	else
-	{ // user is trying to give a reputation
-		if($mybb->usergroup['maxreputationsday'] != 0)
+	{
+		$add_reputation = '';
+	}
+	
+	// Build navigation menu
+	addnav($user['username'], "member.php?action=profile&uid={$user['uid']}");
+	addnav($lang->user_reputation);
+	
+	// Check our specified conditionals for what type of reputations to show
+	$show_select = '';
+	switch($mybb->input['show'])
+	{
+		case "positive":
+			$conditions = 'AND r.reputation>0';
+			$show_selected['positive'] = 'selected="selected"';
+			break;
+		case "neutral":
+			$conditions = 'AND r.reputation=0';
+			$show_selected['neutral'] = 'selected="selected"';
+			break;
+		case "negative":
+			$conditions = 'AND r.reputation<0';
+			$show_selected['negative'] = 'selected="selected"';
+			break;
+		default:
+			$conditions = '';
+			$show_select['all'] = 'selected="selected"';
+			break;
+	}
+	
+	// Check the sorting options for the reputation list
+	$sort_select = '';
+	switch($mybb->input['sort'])
+	{
+		case "username":
+			$order = "u.username ASC";
+			$sort_selected['username'] = 'selected="selected"';
+			break;
+		default:
+			$order = "r.dateline DESC";
+			$sort_selected['last_updated'] = 'selected="selected"';
+			break;
+	}
+	// Fetch the total number of reputations for this user
+	$query = $db->query("
+		SELECT COUNT(rid) AS reputation_count
+		FROM ".TABLE_PREFIX."reputation
+		WHERE uid='{$user['uid']}'
+	");
+	$reputation_count = $db->result($query, 0);
+	
+	// Set default count variables to 0
+	$positive_count = $negative_count = $neutral_count = 0;
+	$positive_week = $negative_week = $neutral_week = 0;
+	$positive_month = $negative_month = $neutral_month = 0;
+	$positive_6months = $negative_6months = $neutral_6months = 0;
+	
+	// Unix timestamps for when this week, month and last 6 months started
+	$last_week = time()-604800;
+	$last_month = time()-2678400;
+	$last_6months = time()-16070400;
+
+	// Query reputations for the "reputation card"
+	$query = $db->query("SELECT reputation, dateline FROM ".TABLE_PREFIX."reputation WHERE uid='{$user['uid']}'");
+	while($reputation_vote = $db->fetch_array($query))
+	{
+		// This is a positive reputation
+		if($reputation_vote['reputation'] > 0)
 		{
-			$timesearch = time() - (60 * 60 * 24);
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
-			$numtoday = $db->num_rows($query);
+			$positive_count++;
+			if($reputation_vote['dateline'] >= $last_week)
+			{
+				$positive_week++;
+			}
+			if($reputation_vote['dateline'] >= $last_month)
+			{
+				$positive_month++;
+			}
+			if($reputation_vote['dateline'] >= $last_6months)
+			{
+				$positive_6months++;
+			}
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE pid='".$pid."' AND adduid='".$mybb->user['uid']."'");
-		$reputation = $db->fetch_array($query);
-		if($reputation['uid'])
+		// Negative reputation given
+		else if($reputation_vote['reputation'] < 0)
 		{
-			eval("\$reputationbit = \"".$templates->get("reputation_samepost")."\";");
+			$negative_count++;
+			if($reputation_vote['dateline'] >= $last_week)
+			{
+				$negative_week++;
+			}
+			if($reputation_vote['dateline'] >= $last_month)
+			{
+				$negative_month++;
+			}
+			if($reputation_vote['dateline'] >= $last_6months)
+			{
+				$negative_6months++;
+			}
 		}
-		elseif($numtoday >= $mybb->usergroup['maxreputationsday'] && $mybb->usergroup['maxreputationsday'] != 0)
-		{
-			eval("\$reputationbit = \"".$templates->get("reputation_maxperday")."\";");
-		}
+		// Neutral reputation given
 		else
 		{
-			if($mybb->input['type'] == "n")
+			$neutral_count++;
+			if($reputation_vote['dateline'] >= $last_week)
 			{
-				$negcheck = "checked=\"checked\"";
+				$neutral_week++;
 			}
-			else
+			if($reputation_vote['dateline'] >= $last_month)
 			{
-				$poscheck = "checked=\"checked\"";
+				$neutral_month++;
 			}
-			eval("\$reputationbit = \"".$templates->get("reputation_add")."\";");
+			if($reputation_vote['dateline'] >= $last_6months)
+			{
+				$neutral_6months++;
+			}
 		}
-		$lang->add_reputation = sprintf($lang->add_reputation, $user['username']);
-		eval("\$reputation = \"".$templates->get("reputation")."\";");
-		$plugins->run_hooks("reputation_end");
-		outputpage($reputation);
 	}
+
+	// Check if we're browsing a specific page of results
+	if(intval($mybb->input['page']) > 0)
+	{
+		$page = $mybb->input['page'];
+		$start = ($page-1) *$mybb->settings['repsperpage'];
+		$pages = $reputation_count / $mybb->settings['repsperpage'];
+		$pages = ceil($pages);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
+	
+	// Build out multipage navigation
+	if($reputation_count > 0)
+	{
+		$multipage = multipage($reputation_count, $mybb->settings['repsperpage'], $page, "reputation.php?uid={$user['uid']}");
+	}
+	
+	// Fetch the reputations which will be displayed on this page
+	$query = $db->query("
+		SELECT r.*, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup
+		FROM ".TABLE_PREFIX."reputation r
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
+		WHERE r.uid='{$user['uid']}' $conditions
+		ORDER BY $order
+		LIMIT $start, {$mybb->settings['repsperpage']}
+	");
+	while($reputation_vote = $db->fetch_array($query))
+	{
+		// Format the username of this poster
+		$reputation_vote['username'] = formatname($reputation_vote['username'], $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
+		
+		// This is a negative reputation
+		if($reputation_vote['reputation'] < 0)
+		{
+			$status_class = "trow_reputation_negative";
+			$vote_type_css = "reputation_negative";
+			$vote_type = $lang->negative;
+		}
+		// This is a neutral reputation
+		else if($reputation_vote['reputation'] == 0)
+		{
+			$status_class = "trow_reputation_neutral";
+			$vote_type_css = "reputation_neutral";
+			$vote_type = $lang->neutral;
+		}
+		// Otherwise, this is a positive reputation
+		else
+		{
+			$status_class = "trow_reputation_positive";
+			$vote_type_css = "reputation_positive";
+			$vote_type = $lang->positive;
+		}
+		// Get the reputation for the user who posted this comment
+		$reputation_vote['user_reputation'] = getreputation($reputation_vote['user_reputation'], $reputation_vote['adduid']);
+		
+		// Format the date this reputation was last modified
+		$last_updated_date = mydate($settings['dateformat'], $reputation_vote['dateline']);
+		$last_updated_time = mydate($settings['timeformat'], $reputation_vote['dateline']);
+		$last_updated = sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
+		
+		eval("\$reputation_votes .= \"".$templates->get("reputation_vote")."\";");
+	}
+	
+	// If we don't have any reputations display a nice message.
+	if(!$reputation_votes)
+	{
+		eval("\$reputation_votes = \"".$templates->get("reputation_no_votes")."\";");
+	}
+	
+	eval("\$reputation = \"".$templates->get("reputation")."\";");
+	$plugins->run_hooks("reputation_end");
+	outputpage($reputation);
 }
 ?>

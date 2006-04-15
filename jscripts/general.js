@@ -98,9 +98,9 @@ var MyBB = {
 		}
 	},
 
-	reputation: function(pid, type)
+	reputation: function(uid)
 	{
-		MyBB.popupWindow("reputation.php?pid=" + pid + "&type=" + type, "reputation", 400, 300)
+		MyBB.popupWindow("reputation.php?action=add&uid="+uid, "reputation", 400, 300)
 	},
 
 	whoPosted: function(tid)

@@ -1400,7 +1400,7 @@ var inlineId = {$fid};
 <br />
 <br />
 <br />]]></template>
-		<template name="reputation_maxperday" version="100.07"><![CDATA[<strong>{$lang->error}</strong><br />
+		<template name="reputation_add_maxperday" version="100.07"><![CDATA[<strong>{$lang->error}</strong><br />
 <blockquote>{$lang->error_max_reputations_day}</blockquote>
 <br />
 <br />
@@ -2776,20 +2776,93 @@ var inlineId = {$fid};
 </html>]]></template>
 		<template name="reputation" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->reputation}</title>
+<title>{$settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
 </head>
 <body>
-<br />
+{$header}
+{$add_reputation}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="trow1" align="center">
-<br />
-<br />
-{$reputationbit}
-</td>
+	<td class="thead"><strong>{$lang->reputation_report}</strong></td>
+</tr>
+<tr>
+	<td class="tcat"><strong>{$lang->summary}</strong></td>
+</tr>
+<tr>
+	<td class="trow1">
+	<table width="100%" cellspacing="0" cellpadding="0" border="0">
+		<tr>
+			<td>
+				<span class="largetext"><strong>{$username}</strong></span><br />
+				<span class="smalltext">
+					({$usertitle})<br />
+					<br />
+					<strong>$lang->total_reputation:</strong> {$user['reputation']}<br />
+					<strong class="reputation_positive">{$lang->positive_count}:</strong> {$positive_count}<br />
+					<strong class="reputation_neutral">{$lang->neutral_count}:</strong> {$neutral_count}<br />
+					<strong class="reputation_negative">{$lang->negative_count}</strong> {$negative_count}
+				</span>
+			</td>
+			<td align="right" style="width: 300px;">
+					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder trow2">
+						<tr>
+							<td>&nbsp;</td>
+							<td><span class="smalltext reputation_positive">{$lang->positive_count}</span></td>
+							<td><span class="smalltext reputation_neutral">{$lang->neutral_count}</span></td>
+							<td><span class="smalltext reputation_negative">{$lang->negative_count}</span></td>
+						</tr>
+						<tr>
+							<td style="text-align: right;"><span class="smalltext">{$lang->last_week}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$positive_week}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$neutral_week}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$negative_week}</span></td>
+						</tr>
+						<tr>
+							<td style="text-align: right;"><span class="smalltext">{$lang->last_month}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$positive_month}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$neutral_month}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$negative_month}</span></td>
+						</tr>
+						<tr>
+							<td style="text-align: right;"><span class="smalltext">{$lang->last_6months}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$positive_6months}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$neutral_6months}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$negative_6months}</span></td>
+						</tr>
+					</table>
+			</td>
+		</tr>
+	</table>
+	</td>
+</tr>
+<tr>
+	<td class="tcat"><strong>{$lang->comments}</strong></td>
+</tr>
+{$reputation_votes}
+<tr>
+	<td class="tfoot" align="right">
+	<form action="reputation.php" method="get">
+		<input type="hidden" name="uid" value="{$user['uid']}" />
+		<select name="show">
+			<option value="all" {$show_selected['all']}>{$lang->show_all}</option>
+			<option value="positive" {$show_selected['positive']}>{$lang->show_positive}</option>
+			<option value="neutral" {$show_selected['neutral']}>{$lang->show_neutral}</option>
+			<option value="negative" {$show_selected['negative']}>{$lang->show_negative}</option>
+		</select>
+		<select name="sort">
+			<option value="dateline" {$sort_selected['last_updated']}>{$lang->sort_updated}</option>
+			<option value="username" {$sort_selected['username']}>{$lang->sort_username}</option>
+		</select>
+		$gobutton
+	</form>
+	</td>
 </tr>
 </table>
+<div>
+{$multipage}
+</div>
+{$footer}
 </body>
 </html>]]></template>
 		<template name="misc_buddypopup" version="100.07"><![CDATA[<html>
@@ -4773,23 +4846,39 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td align="center" class="{$bgcolor}">{$post['thread_views']}</td>
 	<td class="{$bgcolor}" nowrap="nowrap" align="center"><span class="smalltext">{$posted}</span></td>
 </tr>]]></template>
-		<template name="reputation_add" version="100.07"><![CDATA[<strong>{$lang->add_reputation}</strong>
-<form action="reputation.php" method="post">
-<input type="hidden" name="action" value="do_add">
-<input type="hidden" name="pid" value="{$pid}">
-<blockquote><input type="radio" class="radio" name="add" value="pos" {$poscheck}>&nbsp;{$lang->positive}<br />
-<input type="radio" class="radio" name="add" value="neg" {$negcheck}>&nbsp;{$lang->negative}<br />
-</blockquote>
+		<template name="reputation_add" version="100.07"><![CDATA[<html>
+<head>
+<title>{$settings['bbname']} - {$lang->reputation}</title>
+{$headerinclude}
+</head>
+<body>
 <br />
-<br />
-<span class="smalltext">{$lang->post_comments}</span>
-<br />
-<input type="text" class="textbox" name="comments" size="40" maxlength="250">
-<br />
-<br />
-<center><input type="submit" class="button" value="{$lang->add_to_reputation}"></center>
-</form>]]></template>
-		<template name="postbit_reputation" version="100.07"><![CDATA[<br />{$lang->postbit_reputation} {$post['neglink']}{$post['userreputation']}{$post['poslink']}]]></template>
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+		<td class="trow1" style="padding: 20px">
+			<strong>{$vote_title}</strong><br /><br />
+			<form action="reputation.php" method="post">
+				<input type="hidden" name="action" value="do_add">
+				<input type="hidden" name="uid" value="{$user['uid']}">
+				{$positive_power}
+				{$neutral_power}
+				{$negative_power}
+				<br /><br />
+				<span class="smalltext">{$lang->user_comments}</span>
+				<br />
+				<input type="text" class="textbox" name="comments" size="35" maxlength="250" value="{$comments}" style="width: 95%" />
+				<br /><br />
+				<div style="text-align: center;">
+					<input type="submit" class="button" value="{$vote_button}" />
+					{$delete_button}
+				</div>
+			</form>
+		</td>
+	</tr>
+</table>
+</body>
+</html>]]></template>
+		<template name="postbit_reputation" version="100.07"><![CDATA[<br />{$lang->postbit_reputation} {$post['userreputation']}]]></template>
 		<template name="usercp_latestreputations_bit" version="100.07"><![CDATA[<tr>
 <td class="{$bgclass}" align="center"><img src="{$theme['imgdir']}/{$posnegimg}"></td>
 <td class="{$bgclass}">{$postlink}</td>
@@ -6632,5 +6721,12 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 			</div>
 			<br style="clear: both;" />
 		</div>]]></template>
+		<template name="reputation_vote" version="100.07"><![CDATA[<tr>
+	<td class="trow1 {$status_class}">
+		{$reputation_vote['username']} <span class="smalltext">({$reputation_vote['user_reputation']}) - $last_updated<br /><br /></span>
+		<strong class="{$vote_type_class}">{$vote_type}:</strong> {$reputation_vote['comments']}
+	</td>
+</tr>]]></template>
+		<template name="reputation_addlink" version="100.07"><![CDATA[<div style="text-align: right;"><a href="javascript:MyBB.reputation({$user['uid']});">Add Vote</a></div>]]></template>
 	</templates>
 </theme>
