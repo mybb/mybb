@@ -567,6 +567,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				}
 
 				$reviewmessage = $parser->parse_message($post['message'], $parser_options);
+				$post['quickquote_message'] = str_replace("\"", "\\\"", htmlspecialchars($post['message']));
 				eval("\$reviewbits .= \"".$templates->get("newreply_threadreview_post")."\";");
 				if($altbg == "trow1")
 				{

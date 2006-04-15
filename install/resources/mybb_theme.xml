@@ -5465,7 +5465,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat"><span class="smalltext"><strong>{$lang->posted_by} {$post['username']} - {$reviewpostdate} {$reviewposttime}</strong></span></td>
 </tr>
 <tr>
-<td class="{$altbg}">{$reviewmessage}</td>
+<td class="{$altbg}">
+{$reviewmessage}
+<script type="text/javascript">document.write("<div style=\"display: none;\"><span id=\"qq{$post['pid']}\">{$post['quickquote_message']}</span><span id=\"qqauthor{$post['pid']}\">{$post['username']}</span></div><div style=\"text-align: right;\"><a href=\"javascript:Post.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /></a></div>");</script>
+</td>
 </tr>]]></template>
 		<template name="newreply_threadreview" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
