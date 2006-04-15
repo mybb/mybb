@@ -100,7 +100,7 @@ elseif($mybb->input['action'] == "help")
 	$lang->load("helpsections");
 	$lang->load("customhelpdocs");
 	$lang->load("customhelpsections");
-	
+
 	addnav($lang->nav_helpdocs, "misc.php?action=help");
 
 	$query = $db->query("SELECT h.*, s.enabled AS section FROM ".TABLE_PREFIX."helpdocs h LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid) WHERE h.hid='".intval($mybb->input['hid'])."'");
@@ -376,7 +376,7 @@ elseif($mybb->input['action'] == "imcenter")
 	$uid = intval($mybb->input['uid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$uid."' LIMIT 1");
 	$user = $db->fetch_array($query);
-	
+
 	if(!$user['username'])
 	{
 		error($lang->error_invaliduser);
@@ -458,7 +458,9 @@ elseif($mybb->input['action'] == "syndication")
 			$url .= "?fid=$syndicate";
 			$add = 1;
 		}
-		if($version != "rss")
+
+		// If the version is not RSS2.0, set the type to Atom1.0.
+		if($version != "rss2.0")
 		{
 			if(!$add)
 			{
@@ -468,7 +470,7 @@ elseif($mybb->input['action'] == "syndication")
 			{
 				$url .= "&";
 			}
-			$url .= "type=rss2.0";
+			$url .= "type=atom1.0";
 			$add = 1;
 		}
 		if(intval($limit) > 0)
@@ -498,15 +500,17 @@ elseif($mybb->input['action'] == "syndication")
 	{
 		$limit = 15;
 	}
-	if($version == "rss2.0")
+
+	// If there is no version in the input, check the default (RSS2.0).
+	if($version == "atom1.0")
 	{
-		$rss2check = "checked=\"checked\"";
-		$rsscheck = '';
+		$atom1check = "checked=\"checked\"";
+		$rss2check = '';
 	}
 	else
 	{
-		$rss2check = '';
-		$rsscheck = "checked=\"checked\"";
+		$atom1check = '';
+		$rss2check = "checked=\"checked\"";
 	}
 	$forumselect = makesyndicateforums("", $blah);
 
@@ -515,7 +519,7 @@ elseif($mybb->input['action'] == "syndication")
 	eval("\$syndication = \"".$templates->get("misc_syndication")."\";");
 	outputpage($syndication);
 }
-	
+
 
 if($mybb->input['action'] == "clearcookies")
 {

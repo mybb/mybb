@@ -3933,7 +3933,7 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow2" width="40%" valign="top"><strong>{$lang->syndication_version}</strong><br /><span class="smalltext">{$lang->syndication_version_desc}</span></td>
-<td class="trow2" width="60%"><input type="radio" class="radio" name="version" value="rss" {$rsscheck} />&nbsp;{$lang->syndication_version_rss}<br /><input type="radio" class="radio" name="version" value="rss2.0" {$rss2check} />&nbsp;{$lang->syndication_version_rss2}</td>
+<td class="trow2" width="60%"><input type="radio" class="radio" name="version" value="rss2.0" {$rss2check} />&nbsp;{$lang->syndication_version_rss2}<br /><input type="radio" class="radio" name="version" value="atom1.0" {$atom1check} />&nbsp;{$lang->syndication_version_atom1}</td>
 </tr>
 <tr>
 <td class="trow2" width="40%" valign="top"><strong>{$lang->syndication_limit}</strong><br /><span class="smalltext">{$lang->syndication_limit_desc}</span></td>
@@ -3978,7 +3978,7 @@ var inlineId = {$fid};
 		<template name="index_loginform" version="100.07"><![CDATA[<br /><br />
 <form action="member.php" method="post">
 	<input type="hidden" name="action" value="do_login" />
-	<span class="smalltext"><strong>{$lang->quick_login}</strong></span> 
+	<span class="smalltext"><strong>{$lang->quick_login}</strong></span>
 	<input type="text" class="textbox" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="this.value=''" />
 	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="this.value=''" />
 	{$gobutton}
