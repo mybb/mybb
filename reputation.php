@@ -192,6 +192,7 @@ if($mybb->input['action'] == "delete")
 // Otherwise, show a listing of reputations for the given user.
 if(!$mybb->input['action'])
 {
+	$lang->nav_profile = sprintf($lang->nav_profile, $user['username']);
 	$lang->reputation_report = sprintf($lang->reputation_report, $user['username']);
 	
 	// Format the user name using the group username style
@@ -235,8 +236,8 @@ if(!$mybb->input['action'])
 	}
 	
 	// Build navigation menu
-	addnav($user['username'], "member.php?action=profile&uid={$user['uid']}");
-	addnav($lang->user_reputation);
+	addnav($lang->nav_profile, "member.php?action=profile&uid={$user['uid']}");
+	addnav($lang->nav_reputation);
 	
 	// Check our specified conditionals for what type of reputations to show
 	$show_select = '';
@@ -277,7 +278,7 @@ if(!$mybb->input['action'])
 	$query = $db->query("
 		SELECT COUNT(rid) AS reputation_count
 		FROM ".TABLE_PREFIX."reputation
-		WHERE uid='{$user['uid']}'
+		WHERE uid='{$user['uid']}' $conditions
 	");
 	$reputation_count = $db->result($query, 0);
 	

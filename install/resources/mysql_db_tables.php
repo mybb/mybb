@@ -662,7 +662,6 @@ $tables[] = "CREATE TABLE mybb_users (
   awayreason varchar(200) NOT NULL default '',
   pmfolders text NOT NULL default '',
   notepad text NOT NULL default '',
-  rating text NOT NULL default '',
   referrer int unsigned NOT NULL default '0',
   reputation bigint(30) NOT NULL default '0',
   regip varchar(50) NOT NULL default '',

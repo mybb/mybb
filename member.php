@@ -51,9 +51,6 @@ switch($mybb->input['action'])
 	case "emailuser":
 		addnav($lang->nav_emailuser);
 		break;
-	case "rate":
-		addnav($lang->nav_rate);
-		break;
 }
 
 if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_register") && $mybb->usergroup['cancp'] != "yes")
@@ -1397,9 +1394,7 @@ elseif($mybb->input['action'] == "profile")
 	}
 	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
 
-	//
-	// Get the user's title...
-	//
+	// Get the user title for this user
 	if($displaygroup['usertitle'])
 	{
 		$usertitle = $displaygroup['usertitle'];
@@ -1449,23 +1444,18 @@ elseif($mybb->input['action'] == "profile")
 	}
 
 
-	if(!$memprofile['rating'])
+	// Fetch the reputation for this user
+	if($memperms['usereputationsystem'] == "yes")
 	{
-		$ratestars = $lang->not_rated;
-	}
-	else
-	{
-		$ratestars = '';
-		$rateinfo = explode("|", $memprofile['rating']);
-		$rating = round($rateinfo[0] / $rateinfo[1]);
-		for($i = 1; $i <= $rating; $i++)
+		$reputation = getreputation($memprofile['reputation']);
+
+		// If this user has permission to give reputations show the vote link
+		if($mybb->usergroup['cangivereputations'] == "yes")
 		{
-			$ratestars .= "<img src=\"$theme[imgdir]/star.gif\" border=\"0\" title=\"$rating out of 5\" />";
+			$vote_link = "[<a href=\"javascript:MyBB.reputation({$memprofile['uid']});\">{$lang->reputation_vote}</a>]";
 		}
-	}
-	if(!strstr($rateinfo[2], " ".$mybb->user['uid']." ") && $mybb->user['uid'] != 0 && $mybb->usergroup['canratemembers'] != "no" && $mybb->user['uid'] != $memprofile['uid'])
-	{
-		$ratelink = "[<a href=\"member.php?action=rate&uid=$uid\">$lang->rate_member</a>]";
+	
+		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
 	}
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='$uid'");
@@ -1610,67 +1600,5 @@ elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "pos
 	$plugins->run_hooks("member_do_emailuser_end");
 
 	redirect("member.php?action=profile&uid=$emailto[uid]", $lang->redirect_emailsent);
-}
-elseif($mybb->input['action'] == "rate" || $mybb->input['action'] == "do_rate")
-{
-	$plugins->run_hooks("member_rate_start");
-
-	$query = $db->query("SELECT uid, username, rating FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
-	$member = $db->fetch_array($query);
-	if(!$member['username'])
-	{
-		error($lang->error_nomember);
-	}
-
-	if($mybb->usergroup['canratemembers'] == "no" || $mybb->user['uid'] == 0 || $mybb->user['uid'] == $member['uid'])
-	{
-		nopermission();
-	}
-	$rateinfo = explode("|", $member['rating']);
-	if(strstr($rateinfo[2], " " . $mybb->user['uid'] . " "))
-	{
-		error($lang->error_alreadyratedmember);
-	}
-	if($mybb->input['action'] == "rate")
-	{
-		$plugins->run_hooks("member_rate_end");
-
-		$uid = $mybb->input['uid'];
-		eval("\$rate = \"".$templates->get("member_rate")."\";");
-		outputpage($rate);
-	}
-	elseif($mybb->input['action'] == "do_rate" && $mybb->request_method == "post")
-	{
-		$uid = $mybb->input['uid'];
-		$rating = intval($mybb->input['rating']);
-		if($rating < 1)
-		{
-			$rating = 1;
-		}
-		if($rating > 5)
-		{
-			$rating = 5;
-		}
-
-		if(!$member['rating'])
-		{
-			$newrating = $rating . "|1|" . " " . $mybb->user['uid'] . " ";
-		}
-		else
-		{
-			$newrating1 = $rateinfo[0] + $rating;
-			$newrating2 = $rateinfo[1] + 1;
-			$newrating3 = $rateinfo[2] . $mybb->user['uid'] . " ";
-			$newrating = $newrating1 . "|" . $newrating2 . "|" . $newrating3;
-		}
-		$rating = array(
-			"rating" => $newrating,
-			);
-		$db->update_query(TABLE_PREFIX."users", $rating, "uid='".$uid."'");
-
-		$plugins->run_hooks("member_do_rate_end");
-
-		redirect("member.php?action=profile&uid=$uid", $lang->redirect_memberrated);
-	}
 }
 ?>

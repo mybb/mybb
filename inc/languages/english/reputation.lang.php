@@ -1,4 +1,6 @@
 <?php
+$l['nav_reputation'] = "Reputation Report";
+$l['nav_profile'] = "Profile of {1}";
 $l['reputation_disabled'] = "You cannot use the reputation system as it has been disabled by the Administrator.";
 
 $l['reputation'] = "Reputation";
@@ -6,7 +8,6 @@ $l['error'] = "Error";
 $l['error_own_reputation'] = "You cannot add to or remove points from your own reputation.";
 $l['error_max_reputations_day'] = "You have reached the maximum number of reputations you can give to others per day.";
 $l['error_reputationdisabled'] = "You are not allowed to add reputation to this user.";
-$l['user_reputation'] = "Reputation";
 $l['reputation_report'] = "Reputation Report for {1}";
 $l['summary'] = "Summary";
 $l['total_reputation'] = "Total Reputation";
@@ -37,4 +38,5 @@ $l['show_negative'] = "Show: Negative Votes";
 $l['sort_updated'] = "Sort by: Last Updated";
 $l['sort_username'] = "Sort by: Username";
 $l['last_updated'] = "Last updated {1}, {2}";
+$l['no_reputation_votes'] = "This user currently does not have any reputation votes with the specified criteria below.";
 ?>

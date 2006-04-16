@@ -480,7 +480,7 @@ if($mybb->input['action'] == "edit") {
 	makecsstoolbaredit($css);
 	makecssautocompleteedit($css);
 	makecsspopupmenuedit($css);
-
+	makecssreputationedit($css);
 	starttable();
 	tableheader($lang->additional_css, "", 1);
 	tablesubheader($lang->additional_css_note, "", 1);

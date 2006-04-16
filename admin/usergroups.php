@@ -137,7 +137,6 @@ if($mybb->input['action'] == "do_add")
 		"cansearch" => addslashes($mybb->input['cansearch']),
 		"canusercp" => addslashes($mybb->input['canusercp']),
 		"canuploadavatars" => addslashes($mybb->input['canuploadavatars']),
-		"canratemembers" => addslashes($mybb->input['canratemembers']),
 		"canchangename" => addslashes($mybb->input['canchangename']),
 		"showforumteam" => addslashes($mybb->input['showforumteam']),
 		"usereputationsystem" => addslashes($mybb->input['usereputationsystem']),
@@ -292,7 +291,6 @@ if($mybb->input['action'] == "do_edit")
 		"cansearch" => addslashes($mybb->input['cansearch']),
 		"canusercp" => addslashes($mybb->input['canusercp']),
 		"canuploadavatars" => addslashes($mybb->input['canuploadavatars']),
-		"canratemembers" => addslashes($mybb->input['canratemembers']),
 		"canchangename" => addslashes($mybb->input['canchangename']),
 		"showforumteam" => addslashes($mybb->input['showforumteam']),
 		"usereputationsystem" => addslashes($mybb->input['usereputationsystem']),
@@ -400,7 +398,6 @@ if($mybb->input['action'] == "add")
 	tablesubheader($lang->perms_misc);
 	makeyesnocode($lang->can_view_mlist, "canviewmemberlist", "yes");
 	makeyesnocode($lang->can_send_emails, "cansendemail", "yes");
-	makeyesnocode($lang->can_rate_members, "canratemembers", "yes");
 	endtable();
 	endform($lang->add_group, $lang->reset_button);
 	cpfooter();
@@ -534,7 +531,6 @@ if($mybb->input['action'] == "edit")
 	tablesubheader($lang->perms_misc);
 	makeyesnocode($lang->can_view_mlist, "canviewmemberlist", $usergroup['canviewmemberlist']);
 	makeyesnocode($lang->can_send_emails, "cansendemail", $usergroup['cansendemail']);
-	makeyesnocode($lang->can_rate_members, "canratemembers", $usergroup['canratemembers']);
 	endtable();
 	endform($lang->update_group, $lang->reset_button);
 	cpfooter();

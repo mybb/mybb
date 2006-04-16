@@ -133,4 +133,12 @@ $l['form_elements_select'] = "Select Boxes";
 $l['form_elements_radio'] = "Radio Buttons";
 $l['form_elements_checkbox'] = "Check Boxes";
 $l['popup_menus'] = "Popup Menus";
+$l['reputation_system'] = "Reputation System";
+$l['positive_reputation_count'] = "Positive Reputation Count";
+$l['neutral_reputation_count'] = "Neutral Reputation Count";
+$l['negative_reputation_count'] = "Negative Reputation Count";
+$l['trow_positive_reputation'] = "Positive Reputation Row";
+$l['trow_neutral_reputation'] = "Neutral Reputation Row";
+$l['trow_negative_reputation'] = "Negative Reputation Row";
+
 ?>

@@ -44,6 +44,12 @@ $cssselectors = array(
 	"popup_menu" => ".popup_menu",
 	"popup_item" => ".popup_menu .popup_item",
 	"popup_item_hovered" => ".popup_menu .popup_item:hover",
+	"trow_reputation_positive" => ".trow_reputation_positive",
+	"trow_reputation_neutral" => ".trow_reputation_neutral",
+	"trow_reputation_negative" => ".trow_reputation_negative",
+	"reputation_positive" => ".reputation_positive",
+	"reputation_neutral" => ".reputation_neutral",
+	"reputation_negative" => ".reputation_negative",
 
 	// Link selectors
 	"a_link" => "a:link",
@@ -555,7 +561,55 @@ function makecsspopupmenuedit($css)
 	echo "<table width=\"100%\">\n";
 	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[popup_item_hovered][background]\" value=\"".$css['popup_item_hovered']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[popup_item_hovered][color]\" value=\"".$css['popup_item_hovered']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "</table>\n";	
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	endtable();
+}
+
+function makecssreputationedit($css)
+{
+	global $lang;
+	starttable();
+	tableheader($lang->reputation_system, "", 3);
+	echo "<tr>\n<td class=\"subheader\" align=\"center\">".$lang->positive_reputation_count."</td><td class=\"subheader\" align=\"center\">".$lang->neutral_reputation_count."</td><td class=\"subheader\" align=\"center\">".$lang->negative_reputation_count."</td>\n</tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[reputation_positive][color]\" value=\"".$css['reputation_positive']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[reputation_neutral][color]\" value=\"".$css['reputation_neutral']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[reputation_negative][color]\" value=\"".$css['reputation_negative']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n<td class=\"subheader\" align=\"center\">".$lang->trow_positive_reputation."</td><td class=\"subheader\" align=\"center\">".$lang->trow_neutral_reputation."</td><td class=\"subheader\" align=\"center\">".$lang->trow_negative_reputation."</td>\n</tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_positive][background]\" value=\"".$css['trow_reputation_positive']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_positive][color]\" value=\"".$css['trow_reputation_positive']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_neutral][background]\" value=\"".$css['trow_reputation_neutral']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_neutral][color]\" value=\"".$css['trow_reputation_neutral']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_negative][background]\" value=\"".$css['trow_reputation_negative']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_negative][color]\" value=\"".$css['trow_reputation_negative']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 	endtable();
 }

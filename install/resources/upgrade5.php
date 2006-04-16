@@ -146,6 +146,8 @@ function upgrade5_dbchanges()
 	
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='1'");
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='2' WHERE cancp='yes'");
+
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP rating;");
 	
 	echo "Done</p>";
 

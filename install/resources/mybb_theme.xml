@@ -235,6 +235,21 @@ font-size: small;]]></extra>
 			<background><![CDATA[#C7DBEE]]></background>
 			<color><![CDATA[#000]]></color>
 		</popup_item_hovered>
+		<trow_reputation_positive>
+			<background><![CDATA[#ccffcc]]></background>
+		</trow_reputation_positive>
+		<trow_reputation_negative>
+			<background><![CDATA[#ffcccc]]></background>
+		</trow_reputation_negative>
+		<reputation_positive>
+			<color><![CDATA[green]]></color>
+		</reputation_positive>
+		<reputation_neutral>
+			<color><![CDATA[#444]]></color>
+		</reputation_neutral>
+		<reputation_negative>
+			<color><![CDATA[red]]></color>
+		</reputation_negative>
 	</cssbits>
 	<themebits>
 		<templateset><![CDATA[1]]></templateset>
@@ -2232,10 +2247,7 @@ var inlineId = {$fid};
 <td class="trow2"><strong>{$lang->timeonline}</strong></td>
 <td class="trow2">{$timeonline}</td>
 </tr>
-<tr>
-<td class="trow1"><strong>{$lang->rating}</strong></td>
-<td class="trow1">{$ratestars} {$ratelink}</td>
-</tr>
+$reputation
 </table>
 </td></tr></table>
 <br />
@@ -2801,7 +2813,7 @@ var inlineId = {$fid};
 					<strong>$lang->total_reputation:</strong> {$user['reputation']}<br />
 					<strong class="reputation_positive">{$lang->positive_count}:</strong> {$positive_count}<br />
 					<strong class="reputation_neutral">{$lang->neutral_count}:</strong> {$neutral_count}<br />
-					<strong class="reputation_negative">{$lang->negative_count}</strong> {$negative_count}
+					<strong class="reputation_negative">{$lang->negative_count}:</strong> {$negative_count}
 				</span>
 			</td>
 			<td align="right" style="width: 300px;">
@@ -5568,36 +5580,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$reviewmore}
 </table>
 ]]></template>
-		<template name="member_rate" version="100.07"><![CDATA[<html>
-<head>
-<title>{$settings['bbname']} - {$lang->rate_member}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<form action="member.php" method="post">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2"><strong>{$lang->rate_member}</strong></td>
-</tr>
-<tr>
-<td class="trow1" width="40%"><strong>{$lang->rating}</strong></td>
-<td class="trow1" width="60%"><select name="rating">
-<option value="5">5 {$lang->best}</option>
-<option value="4">4</option>
-<option value="3">3</option>
-<option value="2">2</option>
-<option value="1">1 {$lang->worst}</option>
-</select></td>
-</tr>
-</table>
-<br />
-<center><input type="submit" class="button" value="{$lang->do_rate}"></center>
-<input type="hidden" name="action" value="do_rate" /><input type="hidden" name="uid" value="{$uid}" />
-</form>
-{$footer}
-</body>
-</html>]]></template>
 		<template name="sendthread" version="100.07"><![CDATA[<html>
 <head>
 <title>{$thread['subject']} - {$lang->send_thread}</title>
@@ -6727,6 +6709,13 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<strong class="{$vote_type_class}">{$vote_type}:</strong> {$reputation_vote['comments']}
 	</td>
 </tr>]]></template>
-		<template name="reputation_addlink" version="100.07"><![CDATA[<div style="text-align: right;"><a href="javascript:MyBB.reputation({$user['uid']});"><img src="{$theme['imglangdir']}/rateuser.gif" alt="" /></a></div>]]></template>
+		<template name="reputation_addlink" version="100.07"><![CDATA[<div style="text-align: right;"><a href="javascript:MyBB.reputation({$user['uid']});"><img src="{$theme['imglangdir']}/rateuser.gif" alt="" border="0" /></a></div>]]></template>
+		<template name="member_profile_reputation" version="100.07"><![CDATA[<tr>
+	<td class="trow1"><strong>{$lang->reputation}</strong></td>
+	<td class="trow1">$reputation [<a href="reputation.php?uid={$memprofile['uid']}">{$lang->reputation_details}</a>] $vote_link
+</tr>]]></template>
+		<template name="reputation_no_votes" version="100.07"><![CDATA[<tr>
+	<td class="trow1" style="text-align: center;">{$lang->no_reputation_votes}</td>
+</tr>]]></template>
 	</templates>
 </theme>
