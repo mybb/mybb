@@ -6727,6 +6727,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<strong class="{$vote_type_class}">{$vote_type}:</strong> {$reputation_vote['comments']}
 	</td>
 </tr>]]></template>
-		<template name="reputation_addlink" version="100.07"><![CDATA[<div style="text-align: right;"><a href="javascript:MyBB.reputation({$user['uid']});">Add Vote</a></div>]]></template>
+		<template name="reputation_addlink" version="100.07"><![CDATA[<div style="text-align: right;"><a href="javascript:MyBB.reputation({$user['uid']});"><img src="{$theme['imglangdir']}/rateuser.gif" alt="" /></a></div>]]></template>
 	</templates>
 </theme>
