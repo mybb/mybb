@@ -64,8 +64,8 @@ padding: 8px;]]></extra>
 		</table>
 		<tborder>
 			<background><![CDATA[#81A2C4]]></background>
-			<width><![CDATA[100%]]></width>
-			<extra><![CDATA[margin: auto auto;
+			<extra><![CDATA[width: 100%;
+margin: auto auto;
 border: 1px solid #0F5C8E;]]></extra>
 		</tborder>
 		<thead>
@@ -578,7 +578,7 @@ form {
 </tbody>
 </table>
 <br />
-<table align="center" width="{$theme['tablewidth']}">
+<table align="center" width="100%">
 	<tr>
 		<td>
 			<img src="{$theme['imgdir']}/on.gif" alt="{$lang->new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /> <span class="smalltext">{$lang->new_posts}</span><br />
@@ -663,7 +663,7 @@ var inlineId = {$tid};
 </head>
 <body>
 {$header}
-<table align="center" width="{$theme['tablewidth']}">
+<table align="center" width="100%">
 	<tr>
 		<td style="vertical-align: bottom;">{$multipage}</td>
 		<td style="text-align: right;">{$newreply}{$newthread}</td>
@@ -689,7 +689,7 @@ var inlineId = {$tid};
 </table>
 {$threadexbox}
 <br />
-<table align="center" width="{$theme['tablewidth']}">
+<table align="center" width="100%">
 	<tr>
 		<td>{$newreply}{$newthread}</td>
 	</tr>
@@ -698,7 +698,7 @@ var inlineId = {$tid};
 {$moderationoptions}
 {$similarthreads}
 <br />
-<table align="center" width="{$theme['tablewidth']}">
+<table align="center" width="100%">
 	<tr>
 		<td>
 			<span class="smalltext">
@@ -893,7 +893,7 @@ var inlineId = {$tid};
 <body>
 {$header}
 <form action="usercp.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -1098,7 +1098,7 @@ var inlineId = {$tid};
 <body>
 {$header}
 <form action="usercp.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -1366,7 +1366,7 @@ var inlineId = {$tid};
 </tr>
 {$polloptions}
 </table>
-<table width="{$theme['tablewidth']}" cellspacing="0" cellpadding="2" border="0" align="center">
+<table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
 <td class="trow"><input type="submit" class="button" value="{$lang->vote}" /></td>
 <td valign="top" align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a> | <a href="polls.php?action=editpoll&amp;pid={$poll['pid']}">{$lang->edit_poll}</a>]</span></td>
 </tr>
@@ -1565,7 +1565,7 @@ var inlineId = {$fid};
 <body>
 {$header}
 <form action="private.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -1699,7 +1699,7 @@ var inlineId = {$fid};
 <body>
 {$header}
 <form action="usercp.php" method="post" name="input">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -1832,7 +1832,7 @@ var inlineId = {$fid};
 <body>
 {$header}
 <form action="usercp.php" method="post" name="attachmentsmanager">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -1933,7 +1933,7 @@ var inlineId = {$fid};
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 <td valign="bottom" align="left">{$moderatedby}{$usersbrowsing}<br /><br />
 </td>
@@ -1967,7 +1967,7 @@ var inlineId = {$fid};
 <body>
 {$header}
 <form action="usercp.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -2008,7 +2008,7 @@ var inlineId = {$fid};
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -2075,7 +2075,7 @@ var inlineId = {$fid};
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -2186,7 +2186,7 @@ var inlineId = {$fid};
 {$awaybit}
 </table>
 <br />
-<table width="{$theme['tablewidth']}" cellspacing="0" cellpadding="0" border="0" align="center">
+<table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
 <td width="50%" valign="top">
 <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr><td class="tborder">
@@ -2351,7 +2351,7 @@ $reputation
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -2494,7 +2494,7 @@ $reputation
 <body>
 {$header}
 <form action="private.php" method="post" name="input">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -2904,7 +2904,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <body>
 {$header}
 <form action="private.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -2961,7 +2961,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$header}
 {$event_errors}
 <form action="calendar.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" class="tborder" align="center">
+<table cellspacing="0" cellpadding="0" border="0" width="100%" class="tborder" align="center">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
@@ -3058,7 +3058,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_dayview_birthdays" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" align="center" class="tborder">
+		<template name="calendar_dayview_birthdays" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" align="center" class="tborder">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
@@ -3074,7 +3074,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <br />
 ]]></template>
-		<template name="calendar_dayview_event" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" class="tborder" align="center">
+		<template name="calendar_dayview_event" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" class="tborder" align="center">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
@@ -3143,7 +3143,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$header}
 <form action="private.php" method="post">
 <input type="hidden" name="action" value="do_tracking">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -3260,7 +3260,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 {$daybits}
 </table>
-<table width="{$theme['tablewidth']}" align="center"><tr>
+<table width="100%" align="center"><tr>
 <tr>
 <td class="trow"><span class="smalltext"><a href="calendar.php?year={$prevyear}&month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span>
 <td align="right"><span class="smalltext"><a href="calendar.php?year={$nextyear}&month={$nextmonth}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
@@ -3317,7 +3317,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </head>
 <body>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" align="center">
+<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
@@ -3328,7 +3328,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 </td></tr></table>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" align="center">
+<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
 <tr>
 <td class="tborder">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
@@ -3422,7 +3422,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </form>
 </tr>
 </table>
-<table align="center" width="{$theme['tablewidth']}"><tr>
+<table align="center" width="100%"><tr>
 <td><span class="smalltext">[<a href="showteam.php">{$lang->forumteam}</a>]</span></td>
 <td align="right">{$multipage}</td>
 </tr></table>
@@ -3437,7 +3437,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <body>
 {$header}
 <form action="private.php" method="post" name="pmForm">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -3668,8 +3668,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="showthread_newreply" version="100.07"><![CDATA[<a href="newreply.php?tid={$tid}"><img src="{$theme['imglangdir']}/newreply.gif" border="0" alt="{$lang->post_reply_img}" /></a>&nbsp;]]></template>
 		<template name="showthread_newthread" version="100.07"><![CDATA[<a href="newthread.php?fid={$fid}"><img src="{$theme['imglangdir']}/newthread.gif" border="0" alt="{$lang->post_thread}" /></a>&nbsp;]]></template>
 		<template name="member_profile_groupimage" version="100.07"><![CDATA[<img src="{$displaygroup['image']}" alt="{$usertitle}" /><br />]]></template>
-		<template name="misc_help_section" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" align="center"><tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="misc_help_section" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" class="tborder">
 <thead>
 <tr>
 <td class="thead"><div class="expcolimage"><img src="{$theme['imgdir']}/{$expcolimage}" id="sid_{$section['sid']}_img" class="expander" border="0" alt="[-]" /></div><div><strong>{$section['name']}</strong></div></td>
@@ -3682,7 +3681,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$helpbits}
 </tbody>
 </table>
-</td></tr></table>
 <br />]]></template>
 		<template name="announcement" version="100.07"><![CDATA[<html>
 <head>
@@ -3711,10 +3709,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <body>
 {$header}
 <form action="member.php" method="post" name="input">
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" class="tborder" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->email_user}</strong></td>
 </tr>
@@ -3730,9 +3725,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td valign="top" width="40%" class="trow1"><strong>{$lang->email_message}</strong></td>
 <td width="60%" class="trow1"><textarea cols="50" rows="10" name="message"></textarea></td>
-</tr>
-</table>
-</td>
 </tr>
 </table>
 <br />
@@ -4725,12 +4717,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 
 ]]></template>
 		<template name="private_archive_html_folderhead" version="100.07"><![CDATA[</table>
-</td></tr></table>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->folder} {$foldername}</strong></td>
 </tr>]]></template>
@@ -4851,10 +4839,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->smilies_listing}</strong></td>
 </tr>
@@ -4864,7 +4849,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 {$smilies}
 </table>
-</td></tr></table>
 <br />
 {$footer}
 </body>
@@ -5291,10 +5275,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$header}
 <br />
 <form action="member.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->reset_password}</strong></td>
 </tr>
@@ -5307,7 +5288,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1"><input type="text" class="textbox" name="code" value="{$code}"></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="hidden" name="action" value="activate"><input type="submit" class="button" name="regsubmit" value="{$lang->send_password}">  </center>
 </form>
@@ -5527,10 +5507,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="sendthread.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" class="tborder" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->send_thread}</strong></td>
 </tr>
@@ -5546,9 +5523,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td valign="top" width="40%" class="trow1"><strong>{$lang->message}</strong></td>
 <td width="60%" class="trow1"><textarea cols="50" rows="10" name="message">{$message}</textarea></td>
-</tr>
-</table>
-</td>
 </tr>
 </table>
 <br />
@@ -5873,10 +5847,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 {$header}
 <br />
 <form action="member.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->activate_account}</strong></td>
 </tr>
@@ -5889,7 +5860,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow1"><input type="text" class="textbox" name="code" value="{$code}"></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center><input type="hidden" name="action" value="activate"><input type="submit" class="button" name="regsubmit" value="{$lang->activate_account}">  </center>
 </form>
@@ -6033,10 +6003,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <body>
 {$header}
 <form action="calendar.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" class="tborder" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->edit_event}</strong></td>
 </tr>
@@ -6080,9 +6047,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td width="60%" class="trow2">
 <input type="checkbox" class="checkbox" name="private" value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
 <input type="checkbox" class="checkbox" name="delete" value="yes" /><span class="smalltext">{$lang->delete_option}</span>
-</td>
-</tr>
-</table>
 </td>
 </tr>
 </table>
@@ -6188,8 +6152,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </head>
 <body>
 {$header}
-<table cellspacing="0" cellpadding="0" border="0" width="{$theme['tablewidth']}" align="center"><tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$helpdoc['name']}</strong></td>
 </tr>
@@ -6197,7 +6160,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td width="100%" class="trow1">{$helpdoc['document']}</td>
 </tr>
 </table>
-</td></tr></table>
 {$footer}
 </body>
 </html>]]></template>

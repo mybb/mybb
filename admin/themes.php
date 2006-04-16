@@ -462,7 +462,7 @@ if($mybb->input['action'] == "edit") {
 	makecssedit($css['menu'], "menu", $lang->top_menu, "");
 	makecssedit($css['panel'], "panel", $lang->panel, "");
 	makecssedit($css['table'], "table", $lang->tables, 1, 1, 0);
-	makecssedit($css['tborder'], "tborder", $lang->tborder, "", 1, 1, 0, 1);
+	makecssedit($css['tborder'], "tborder", $lang->tborder, "", 1, 1, 0, 0);
 	makecssedit($css['thead'], "thead", $lang->thead, "");
 	makecssedit($css['tcat'], "tcat", $lang->tcat, "");
 	makecssedit($css['trow1'], "trow1", $lang->trow1, "");
