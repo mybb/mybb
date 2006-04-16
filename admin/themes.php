@@ -453,7 +453,6 @@ if($mybb->input['action'] == "edit") {
 	makethemebitedit($lang->forum_logo, "logo");
 	makethemebitedit($lang->table_spacing, "tablespace");
 	makethemebitedit($lang->content_table_width, "tablewidth");
-	makethemebitedit($lang->inner_border_width, "borderwidth");
 	endtable();
 
 	makecssedit($css['body'], "body", $lang->body, "");

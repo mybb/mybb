@@ -256,7 +256,6 @@ font-size: small;]]></extra>
 		<imgdir><![CDATA[images]]></imgdir>
 		<logo><![CDATA[images/logo.gif]]></logo>
 		<tablespace><![CDATA[4]]></tablespace>
-		<tablewidth><![CDATA[100%]]></tablewidth>
 		<borderwidth><![CDATA[1]]></borderwidth>
 		<extracss><![CDATA[.clear {
 	clear: both;
@@ -436,14 +435,12 @@ form {
 }]]></extracss>
 	</themebits>
 	<templates>
-		<template name="forumdisplay_threadlist" version="100.07"><![CDATA[<table width="{$theme['tablewidth']}" align="center" border="0">
-		<tr>
-			<td valign="bottom" align="right">{$newthread}</td>
-		</tr>
-	</table>
-	<table width="{$theme['tablewidth']}" align="center" cellspacing="0">
-		<tr><td>{$multipage}</td></tr>
-	</table>
+		<template name="forumdisplay_threadlist" version="100.07"><![CDATA[<div style="text-align: right;">
+		{$newthread}
+	</div>
+	<div>
+		{$multipage}
+	</div>
 	<br />
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
@@ -502,7 +499,7 @@ form {
 		</tr>
 	</table>
 	<br />
-	<table width="{$theme['tablewidth']}" align="center" border="0">
+	<table width="100%" align="center" border="0">
 		<tr>
 			<td valign="top">{$multipage}</td>
 			<td align="right" valign="top">{$newthread}</td>
@@ -689,11 +686,9 @@ var inlineId = {$tid};
 </table>
 {$threadexbox}
 <br />
-<table align="center" width="100%">
-	<tr>
-		<td>{$newreply}{$newthread}</td>
-	</tr>
-</table>
+<div>
+	{$newreply}{$newthread}
+</div>
 {$quickreply}
 {$moderationoptions}
 {$similarthreads}
@@ -1366,7 +1361,7 @@ var inlineId = {$tid};
 </tr>
 {$polloptions}
 </table>
-<table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
+<table width="100%" align="center">
 <td class="trow"><input type="submit" class="button" value="{$lang->vote}" /></td>
 <td valign="top" align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a> | <a href="polls.php?action=editpoll&amp;pid={$poll['pid']}">{$lang->edit_poll}</a>]</span></td>
 </tr>
@@ -1378,9 +1373,7 @@ var inlineId = {$tid};
 		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="fid" value="{$fid}">
-<table cellspacing="0" cellpadding="0" border="0" align="right">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder"">
 <tr>
 <td class="trow1" align="right" nowrap="nowrap"><span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
 <select name="action">
@@ -1397,8 +1390,6 @@ var inlineId = {$tid};
 <input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
 </td>
 </tr>
-</table>
-</td></tr>
 </table>
 </form>
 <script language="JavaScript" type="text/javascript">
@@ -1569,10 +1560,7 @@ var inlineId = {$fid};
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->empty_folders}</strong></td>
 </tr>
@@ -1589,7 +1577,6 @@ var inlineId = {$fid};
 <td class="trow2" align="center" colspan="3"><input type="checkbox" class="checkbox" name="keepunread" value="yes" checked><strong>{$lang->keep_unread}</strong></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_empty">
@@ -1933,12 +1920,8 @@ var inlineId = {$fid};
 </head>
 <body>
 {$header}
-<table width="100%" border="0" align="center">
-<tr>
-<td valign="bottom" align="left">{$moderatedby}{$usersbrowsing}<br /><br />
-</td>
-</tr>
-</table>
+{$moderatedby}
+{$usersbrowsing}<br /><br />
 {$rules}
 {$subforums}
 {$threadslist}
@@ -2188,9 +2171,7 @@ var inlineId = {$fid};
 <br />
 <table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
 <td width="50%" valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->users_forum_info}</strong></td>
 </tr>
@@ -2212,11 +2193,8 @@ var inlineId = {$fid};
 </tr>
 $reputation
 </table>
-</td></tr></table>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->users_contact_details}</strong></td>
 </tr>
@@ -2246,7 +2224,6 @@ $reputation
 <td class="trow2"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&imtype=msn&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['msn']}</a></td>
 </tr>
 </table>
-</td></tr></table>
 </td>
 <td><img src="{$theme['imgdir']}/pixel.gif" height="1" width="8"></td>
 <td width="50%" valign="top">
@@ -2260,9 +2237,7 @@ $reputation
 </body>
 </html>]]></template>
 		<template name="member_profile_adminoptions" version="100.07"><![CDATA[
-<br /><table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<br /><table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->admin_options}</strong></td>
 </tr>
@@ -2275,7 +2250,6 @@ $reputation
 </td>
 </tr>
 </table>
-</td></tr></table>
 ]]></template>
 		<template name="header_welcomeblock_guest" version="100.07"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
 		{$lang->welcome_guest} (<a href="{$settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a> &mdash; <a href="{$settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)]]></template>
@@ -2500,9 +2474,7 @@ $reputation
 <td valign="top">
 {$preview}
 {$send_errors}
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->compose_pm}</strong></td>
 </tr>
@@ -2531,7 +2503,6 @@ $reputation
 </span></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <input type="hidden" name="action" value="do_send" />
 <input type="hidden" name="pmid" value="{$pmid}" />
@@ -2908,10 +2879,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->archive_messages}</strong></td>
 </tr>
@@ -2939,7 +2907,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1"><input type="radio" class="radio" name="exporttype" value="html" checked="checked" /> {$lang->export_html}<br /><input type="radio" class="radio" name="exporttype" value="txt" /> {$lang->export_txt}<br /><input type="radio" class="radio" name="exporttype" value="csv" /> {$lang->export_csv}</td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_export" />
@@ -2961,10 +2928,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$header}
 {$event_errors}
 <form action="calendar.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" class="tborder" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table cellspacing="0" cellpadding="0" border="0" class="tborder" align="center">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->add_event}</strong></td>
 </tr>
@@ -3007,9 +2971,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td width="40%" class="trow2"><strong>{$lang->event_options}</strong></td>
 <td width="60%" class="trow2">
 <input type="checkbox" class="checkbox" name="private" value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
-</td>
-</tr>
-</table>
 </td>
 </tr>
 </table>
@@ -3058,10 +3019,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_dayview_birthdays" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" align="center" class="tborder">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="calendar_dayview_birthdays" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->birthdays_on_day}</strong></td>
 </tr>
@@ -3069,15 +3027,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1"><span class="smalltext">{$birthdays}</span></td>
 </tr>
 </table>
-</td>
-</tr>
-</table>
 <br />
 ]]></template>
-		<template name="calendar_dayview_event" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" class="tborder" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="calendar_dayview_event" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$event['subject']}</strong></td>
 </tr>
@@ -3096,9 +3048,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <div style="float: right; width: auto; clear: both;">{$editbutton} {$deletebutton}</div></td>
 </tr>
 </table>
-</td>
-</tr>
-</table>
 <br />]]></template>
 		<template name="online_today" version="100.07"><![CDATA[<html>
 <head>
@@ -3107,9 +3056,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </head>
 <body>
 {$header}
-<table cellspacing="0" cellpadding="0" border="0" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" width="50%"><span class="smalltext"><strong>{$lang->on_username}</strong></span></td>
 <td class="thead" align="center" width="50%"><span class="smalltext"><strong>{$lang->time}</strong></span></td>
@@ -3118,8 +3065,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td align="center" colspan="2" class="trow1" nowrap="nowrap">{$onlinetoday}</td>
 </tr>
-</table>
-</td></tr>
 </table>
 {$footer}
 </body>
@@ -3147,9 +3092,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="5"><strong>{$lang->read_messages}</strong></td>
 </tr>
@@ -3164,11 +3107,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptracking" value="{$lang->stop_tracking}"> {$lang->selected_messages}</strong></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="5"><strong>{$lang->unread_messages}</strong></td>
 </tr>
@@ -3262,7 +3202,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <table width="100%" align="center"><tr>
 <tr>
-<td class="trow"><span class="smalltext"><a href="calendar.php?year={$prevyear}&month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span>
+<td><span class="smalltext"><a href="calendar.php?year={$prevyear}&month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span>
 <td align="right"><span class="smalltext"><a href="calendar.php?year={$nextyear}&month={$nextmonth}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
 </tr>
 </table>
@@ -3317,26 +3257,18 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </head>
 <body>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="1"><span class="largetext"><strong>{$lang->private_messages_for}</strong></span></td>
 </tr>
 {$pmsdownload}
 </table>
-</td></tr></table>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1" colspan="1">{$lang->exported_date}<br /><a href="{$settings['bburl']}">{$settings['bbname']}</a></td>
 </tr>
 </table>
-</td></tr></table>
 </body>]]></template>
 		<template name="private_messagebit" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/{$msgfolder}" border="0"></td>
@@ -3750,7 +3682,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tfoot" align="center"><strong>{$totpercent}</strong></td>
 </tr>
 </table>
-<table cellspacing="0" cellpadding="2" border="0" width="{$theme['tablewidth']}" align="center">
+<table cellspacing="0" cellpadding="2" border="0" width="100%" align="center">
 <tr>
 <td align="left"><span class="smalltext">{$lang->you_voted}</span></td>
 <td align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a> | <a href="polls.php?action=editpoll&amp;pid={$poll['pid']}">{$lang->edit_poll}</a>]</span></td>
@@ -3948,7 +3880,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <body>
 {$header}
 {$feedurl}
-<table border="0" cellspacing="0" cellpadding="{$theme['tablespace']}" width="{$theme['tablewidth']}">
+<table border="0" cellspacing="0" cellpadding="{$theme['tablespace']}" width="100%">
 <tr><td>{$lang->syndication_note}</td></tr>
 </table>
 <br />
@@ -3975,7 +3907,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$footer}
 </body>
 </html>]]></template>
-		<template name="misc_syndication_feedurl" version="100.07"><![CDATA[<table border="0" cellspacing="0" cellpadding="{$theme['tablespace']}" width="{$theme['tablewidth']}">
+		<template name="misc_syndication_feedurl" version="100.07"><![CDATA[<table border="0" cellspacing="0" cellpadding="{$theme['tablespace']}" width="100%">
 <tr><td>
 <strong>{$lang->syndication_generated_url}</strong><blockquote>
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder"><tr><td class="trow1">
@@ -4372,7 +4304,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" cellspacing="0" cellpadding="{$theme['tablespace']}" border="0" align="center">
+<table width="100%" cellspacing="0" cellpadding="{$theme['tablespace']}" border="0" align="center">
 <tr><td valign="top" width="200">
 {$welcome}
 {$pms}
@@ -4390,10 +4322,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$footer}
 </body>
 </html>]]></template>
-		<template name="portal_pms" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="portal_pms" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong><a href="{$settings['bburl']}/private.php">{$lang->private_messages}</a></strong></td>
 </tr>
@@ -4405,12 +4334,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
-		<template name="portal_stats" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="portal_stats" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->forum_stats}</strong></td>
 </tr>
@@ -4426,12 +4351,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
-		<template name="portal_welcome" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="portal_welcome" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->welcome}</strong></td>
 </tr>
@@ -4440,12 +4361,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$welcometext}
 </td>
 </tr>
-</table></td></tr></table>
-<br />]]></template>
-		<template name="portal_whosonline" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+</table><br />]]></template>
+		<template name="portal_whosonline" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->online}</strong></td>
 </tr>
@@ -4457,13 +4374,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
 		<template name="portal_announcement_numcomments" version="100.07"><![CDATA[- <a href="{$settings['bburl']}/showthread.php?tid={$announcement['tid']}">{$lang->replies}</a> ({$announcement['replies']})]]></template>
-		<template name="portal_announcement" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="portal_announcement" version="100.07"><![CDATA[<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$icon} <a href="{$settings['bburl']}/showthread.php?tid={$announcement['tid']}">{$announcement['subject']}</a></strong></td>
 </tr>
@@ -4480,15 +4393,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 </table>
-</td>
-</tr>
-</table>
 <br />]]></template>
 		<template name="portal_announcement_numcomments_no" version="100.07"><![CDATA[- {$lang->no_replies}]]></template>
-		<template name="portal_search" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="portal_search" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->search_forums}</strong></td>
 </tr>
@@ -4508,18 +4415,13 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
-		<template name="portal_latestthreads" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="portal_latestthreads" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->latest_threads}</strong></td>
 </tr>
 {$threadlist}
 </table>
-</td></tr></table>
 <br />]]></template>
 		<template name="portal_latestthreads_thread_lastpost" version="100.07"><![CDATA[<em>{$lang->latest_threads_lastpost}</em> <a href="{$settings['bburl']}/member.php?action=profile&amp;uid=lastposter&amp;tid={$thread['tid']}"> {$thread['lastposter']}</a><br />
 {$lastpostdate} {$lastposttime}<br />]]></template>
@@ -4531,12 +4433,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center"><tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1">
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -4548,10 +4449,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center"><tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="3"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
 <td class="thead" align="center"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
@@ -4562,9 +4461,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$threads}
 </table>
 </td></tr></table>
-</td>
-</tr>
-</table>
 <br />
 {$footer}
 </body>
@@ -4612,14 +4508,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="usercp.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->change_password}</strong></td>
 </tr>
@@ -4641,7 +4534,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1" width="60%"><input type="password" class="textbox" name="password2" size="25"></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_password">
@@ -4662,14 +4554,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="usercp.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->change_email}</strong></td>
 </tr>
@@ -4691,7 +4580,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1" width="60%"><input type="text" class="textbox" name="email2" size="25" maxlength="100"></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_email">
@@ -4751,7 +4639,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" align="center" border="0">
+<table width="100%" align="center" border="0">
 	<tr>
 		<td align="right" valign="top">{$multipage}</td>
 	</tr>
@@ -4772,7 +4660,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</tr>
 	{$results}
 </table>
-<table width="{$theme['tablewidth']}" align="center" border="0">
+<table width="100%" align="center" border="0">
 	<tr>
 		<td align="right" valign="top">{$multipage}</td>
 	</tr>
@@ -4860,7 +4748,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" align="center" border="0">
+<table width="100%" align="center" border="0">
 	<tr>
 		<td align="right" valign="top">{$multipage}</td>
 	</tr>
@@ -4881,7 +4769,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</tr>
 	{$results}
 </table>
-<table width="{$theme['tablewidth']}" align="center" border="0">
+<table width="100%" align="center" border="0">
 	<tr>
 		<td align="right" valign="top">{$multipage}</td>
 	</tr>
@@ -4915,12 +4803,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center"><tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1">
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -4932,10 +4819,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center"><tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="3"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
 <td class="thead" align="center"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
@@ -4945,7 +4830,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 {$threads}
 </table>
-</td></tr></table>
 </td>
 </tr>
 </table>
@@ -5031,17 +4915,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="member_profile_signature" version="100.07"><![CDATA[<br />
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->users_signature}</td>
 </tr>
 <tr>
 <td class="trow1">{$memprofile['signature']}</td>
 </tr>
-</table>
-</td></tr></table>]]></template>
+</table>]]></template>
 		<template name="newreply_modoptions" version="100.07"><![CDATA[<tr>
 <td class="{$bgcolor}" valign="top"><strong>{$lang->mod_options}</strong></td>
 <td class="{$bgcolor}"><span class="smalltext">
@@ -5058,9 +4939,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$headerinclude}
 </head>
 <body>
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="4"><strong>{$lang->smilies_listing}</strong></td>
 </tr>
@@ -5071,10 +4950,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td class="thead" colspan="4" align="center"><span class="smalltext">[<a href="javascript:window.close();">{$lang->close_window}</a>]</span></td>
 </tr>
-</table>
-</td></tr>
-</table>
-</td></tr>
 </table>
 </body>
 </html>]]></template>
@@ -5162,14 +5037,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form enctype="multipart/form-data" action="usercp.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->change_avatar}</strong></td>
 </tr>
@@ -5206,7 +5078,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td colspan="2" class="trow2" width="95%"><strong>{$lang->no_avatar}</strong><br /><span class="smalltext">{$lang->no_avatar_note}</span></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_avatar" />
@@ -5227,14 +5098,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="usercp.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->personal_notepad}</strong></td>
 </tr>
@@ -5244,7 +5112,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_notepad" />
@@ -5297,15 +5164,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="forumdisplay_thread_multipage" version="100.07"><![CDATA[ <span class="smalltext">({$lang->pages} {$threadpages}{$morelink})</span>]]></template>
 		<template name="forumdisplay_thread_multipage_page" version="100.07"><![CDATA[<a href="showthread.php?tid={$thread['tid']}&amp;page={$i}">{$i}</a> ]]></template>
 		<template name="forumdisplay_thread_multipage_more" version="100.07"><![CDATA[... <a href="showthread.php?tid={$thread['tid']}&amp;page=last">{$lang->pages_last}</a>]]></template>
-		<template name="member_profile_customfields" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="member_profile_customfields" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->users_additional_info}</strong></td>
 </tr>
 {$customfields}
-</table>
-</td></tr></table>]]></template>
+</table>]]></template>
 		<template name="member_profile_customfields_field" version="100.07"><![CDATA[<tr>
 <td class="{$bgcolor}"><strong>{$customfield['name']}:</strong></td>
 <td class="{$bgcolor}">{$customfieldval}</td>
@@ -5345,14 +5209,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="usercp.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->change_username}</strong></td>
 </tr>
@@ -5361,7 +5222,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$settings['maxnamelength']}" value="{$mybbuser['username']}"></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_changename">
@@ -5579,16 +5439,13 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <body onLoad="sigLimit()">
 {$header}
 <form action="usercp.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
 {$maximageserror}
 {$signature}
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->edit_sig}</strong></td>
 </tr>
@@ -5602,7 +5459,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_editsig" />
@@ -5701,14 +5557,11 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <body>
 {$header}
 <form action="private.php" method="post">
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->existing_folders}</strong></td>
 </tr>
@@ -5724,7 +5577,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 {$newfolders}
 </table>
-</td></tr></table>
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_folders">
@@ -5866,9 +5718,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 {$footer}
 </body>
 </html>]]></template>
-		<template name="smilieinsert" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" align="center" id="clickable_smilies">
-<tr><td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="smilieinsert" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><span class="smalltext"><strong>{$lang->smilieinsert}</strong></span></td>
 </tr>
@@ -5880,8 +5730,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </td>
 </tr>
 {$getmore}
-</table>
-</td></tr></table>]]></template>
+</table>]]></template>
 		<template name="misc_buddypopup_user_sendpm" version="100.07"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank">{$lang->pm_buddy}</a>&nbsp;&nbsp;]]></template>
 		<template name="usercp_editlists" version="100.07"><![CDATA[<html>
 <head>
@@ -5890,7 +5739,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -5898,10 +5747,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <tr>
 <td align="left" valign="top" width="50%">
 <form action="usercp.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center"><strong>{$lang->edit_buddy_list}</strong></td>
 </tr>
@@ -5915,7 +5761,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow2" align="center"><span class="smalltext">{$lang->remove_add_note}</span></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center>
 <input type="hidden" name="action" value="do_editlists">
@@ -5926,10 +5771,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </td>
 <td align="left" valign="top" width="50%">
 <form action="usercp.php" method="post">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center"><strong>{$lang->edit_ignore_list}</strong></td>
 </tr>
@@ -5943,7 +5785,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow2" align="center"><span class="smalltext">{$lang->remove_add_note}</span></td>
 </tr>
 </table>
-</td></tr></table>
 <br />
 <center>
 <input type="hidden" name="action" value="do_editlists">
@@ -6181,7 +6022,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </head>
 <body>
 {$header}
-<table width="{$theme['tablewidth']}" border="0" align="center">
+<table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
@@ -6264,10 +6105,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 </body>
 </html>]]></template>
-		<template name="usercp_editsig_current" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="usercp_editsig_current" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->current_sig}</strong></td>
 </tr>
@@ -6275,12 +6113,8 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow1">{$sigpreview}</td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
-		<template name="usercp_editsig_preview" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center">
-<tr>
-<td class="tborder">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
+		<template name="usercp_editsig_preview" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->sig_preview}</strong></td>
 </tr>
@@ -6288,7 +6122,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow1">{$sigpreview}</td>
 </tr>
 </table>
-</td></tr></table>
 <br />]]></template>
 		<template name="member_resendactivation" version="100.07"><![CDATA[<html>
 <head>

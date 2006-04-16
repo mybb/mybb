@@ -57,7 +57,7 @@ $cssselectors = array(
 	"a_hover" => "a:hover"
 );
 
-$themebitlist = array("templateset", "imgdir", "logo", "tablespace", "tablewidth", "borderwidth", "extracss");
+$themebitlist = array("templateset", "imgdir", "logo", "tablespace", "borderwidth", "extracss");
 
 
 function cpheader($title="", $donav=1, $onload="")
