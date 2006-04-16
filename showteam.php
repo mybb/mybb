@@ -20,186 +20,126 @@ addnav($lang->nav_showteam);
 
 $plugins->run_hooks('showteam_start');
 
-//SQL Explanation
-//SELECT everything from usergroups AND users (usergroup must contain users)
-//See if there are any leaders for that group
-//See if they are moderators and if there are, join with forums to get their details
-//WHERE usergroup is visible
-//AND The group is moderators (6) and the user is a mod of a forum (fid IS NOT NULL)
-//OR the user is apart of that group through display or usergroup settings
-$sql = "
-SELECT
-	g.gid, g.type, g.title, g.usertitle, u.uid, u.username, u.hideemail, u.receivepms, u.displaygroup, u.usergroup, u.ignorelist, l.lid, m.fid ,f.name
-FROM
-(
-	(mybb_usergroups g, mybb_users u)
-	LEFT JOIN
-		mybb_groupleaders l
-		ON l.gid = g.gid AND u.uid = l.uid
-	LEFT JOIN
-		(
-			mybb_moderators m
-			LEFT JOIN mybb_forums f
-				ON f.fid= m.fid
-		)
-		ON m.uid = u.uid
-)
-WHERE g.showforumteam = 'yes'
-AND
-(
-	(g.gid = 6 AND f.fid IS NOT NULL)
-	OR
-	((u.displaygroup = g.gid) OR (u.displaygroup = 0 AND g.gid IN (u.usergroup)))
-)
-ORDER BY g.disporder ASC, u.username ASC, f.disporder ASC
-";
-
+$usergroups = array();
+$moderators = array();
 $users = array();
-$mods = array();
-$usergroup = array();
-$groupusers = array();
-$query = $db->query($sql);
 
-//For each entry
-while($details = $db->fetch_array($query))
+// Fetch the list of groups which are to be shown on the page
+$query = $db->query("SELECT gid, title, usertitle FROM ".TABLE_PREFIX."usergroups WHERE showforumteam='yes' ORDER BY disporder");
+while($usergroup = $db->fetch_array($query))
 {
-	//Setup usergroup list
-	$usergroup[$details['gid']] = $details['title'];
-	if(!isset($groupusers[$details['gid']]))
-	{
-		$groupusers[$details['gid']] = array();
-	}
-	//Setup usergroup list with user ids
-	$groupusers[$details['gid']][$details['uid']] = TRUE;
-	//User information
-	$users[$details['uid']] = array(
-		'uid' => $details['uid'],
-		'username' => $details['username'],
-		'hideemail' => $details['hideemail'],
-		'receivepms' => $details['receivepms'],
-		'displaygroup' => $details['displaygroup'],
-		'usergroup' => $details['usergroup'],
-		'lid' => $details['lid'],
-		'ignorelist' => $details['ignorelist'],
-	);
-	//If the user has an fid in the row, they are a moderator
-	if(!empty($details['fid']))
-	{
-		if(!isset($mods[$details['uid']]))
-		{
-			$mods[$details['uid']] = array();
-		}
-		$mods[$details['uid']][$details['fid']] = array(
-			'fid' => $details['fid'],
-			'name' => $details['name'],
-		);
-	}
+	$usergroups[$usergroup['gid']] = $usergroup;
 }
-
-$usergroups = '';
-//For each usergroup
-foreach($usergroup as $gid=>$usergrouptitle)
-{
-	$groupleaderrows = '';
-	$usergrouprows = '';
-	$modrows = '';
-	$forumslist = '';
-	if(is_array($groupusers[$gid]))
-	{
-		//For every user in that group
-		foreach($groupusers[$gid] as $uid=>$bool)
-		{
-			$bgcolor = 'trow1';
-			$user = $users[$uid];
-			$post['uid'] = $uid;
-
-			$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
-			if($user['hideemail'] != 'yes')
-			{
-				eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
-			}
-			else
-			{
-				$emailcode = '';
-			}
-			if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no' && strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
-			{
-				eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
-			}
-			else
-			{
-				$pmcode = '';
-			}
-
-			//If the current group is a moderator group, do some special formatting
-			if($gid == 6)
-			{
-				$forumslist = '';
-				if(is_array($mods[$uid]))
-				{
-					foreach($mods[$uid] as $forum)
-					{
-						eval("\$forumslist .= \"".$templates->get("showteam_moderators_forum")."\";");
-					}
-					eval("\$modrows .= \"".$templates->get("showteam_moderators_mod")."\";");
-				}
-			}
-			else
-			{
-				//Separate team leaders, if settings allow
-				if($mybb->settings['showteamleaders'] == 'yes' && !empty($user['lid']))
-				{
-					eval("\$groupleaderrows .= \"".$templates->get("showteam_usergroup_user")."\";");
-				}
-				else
-				{
-					eval("\$usergrouprows .= \"".$templates->get("showteam_usergroup_user")."\";");
-				}
-			}
-
-			//Sort out background colour for next round
-			if($bgcolor == "trow1")
-			{
-				$bgcolor = "trow2";
-			}
-			else
-			{
-				$bgcolor = "trow1";
-			}
-			//Use this so we can determine which template to use after the foreach user loop
-			$last_gid = $gid;
-		}
-		//Format the group leaders
-		if(!empty($groupleaderrows))
-		{
-			$groupmemberrows = $usergrouprows;
-			$usergrouprows = '';
-			// There are leaders, so add them on first
-			eval("\$usergrouprows .= \"".$templates->get("showteam_leader_header")."\";");
-			$usergrouprows .= $groupleaderrows;
-			// If there are group members, add them on
-			if(!empty($groupmemberrows))
-			{
-				eval("\$usergrouprows .= \"".$templates->get("showteam_member_header")."\";");
-				$usergrouprows .= $groupmemberrows;
-			}
-		}
-		//Moderators need a different template
-		if($last_gid == 6)
-		{
-			eval("\$usergroups .= \"".$templates->get("showteam_moderators")."\";");
-		}
-		else
-		{
-			eval("\$usergroups .= \"".$templates->get("showteam_usergroup")."\";");
-		}
-	}
-}
-
 
 if(empty($usergroups))
 {
 	error($lang->error_noteamstoshow);
+}
+
+// Fetch specific forum moderator details
+$query = $db->query("SELECT m.*, f.name FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid) ORDER BY u.username");
+while($moderator = $db->fetch_array($query))
+{
+	$moderators[$moderator['uid']][] = $moderator;
+} 
+
+// Now query the users of those specific groups
+$groups_in = implode(",", array_keys($usergroups));
+$users_in = implode(",", array_keys($moderators));
+if(!$groups_in)
+{
+	$groups_in = 0;
+}
+if(!$users_in)
+{
+	$users_in = 0;
+}
+$forum_permissions = forum_permissions();
+
+$query = $db->query("SELECT uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms FROM ".TABLE_PREFIX."users WHERE usergroup IN ($groups_in) OR uid IN ($users_in) ORDER BY username");
+while($user = $db->fetch_array($query))
+{
+	// If this user is a moderator
+	if($moderators[$user['uid']])
+	{
+		foreach($moderators[$user['uid']] as $forum)
+		{
+			if($forum_permissions[$forum['fid']]['canview'] == "yes")
+			{
+				eval("\$forumslist .= \"".$templates->get("showteam_moderators_forum")."\";");
+			}
+		}
+		$user['forumlist'] = $forumlist;
+		$forumlist = '';
+		$usergroups[6]['user_list'][$user['uid']] = $user;
+	}
+	
+	// Are they also in another group which is being shown on the list?
+	if($usergroups[$user['usergroup']] && $user['usergroup'] != 6)
+	{
+		$usergroups[$user['usergroup']]['user_list'][$user['uid']] = $user;
+	}
+}
+
+// Now we have all of our user details we can display them.
+foreach($usergroups as $usergroup)
+{
+	// If we have no users - don't show this group
+	if(!$usergroup['user_list'])
+	{
+		continue;
+	}
+	$bgcolor = '';
+	foreach($usergroup['user_list'] as $user)
+	{
+		$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
+		if($user['hideemail'] != 'yes')
+		{
+			eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
+		}
+		else
+		{
+			$emailcode = '';
+		}
+		if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no' && strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		{
+			eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
+		}
+		else
+		{
+			$pmcode = '';
+		}
+		
+		if($bgcolor == 'trow1')
+		{
+			$bgcolor = 'trow2';
+		}
+		else
+		{
+			$bgcolor = 'trow1';
+		}
+
+		//If the current group is a moderator group
+		if($usergroup['gid'] == 6)
+		{
+			$forumlist = $user['forumlist'];
+			eval("\$modrows .= \"".$templates->get("showteam_moderators_mod")."\";");
+		}
+		else
+		{
+			eval("\$usergrouprows .= \"".$templates->get("showteam_usergroup_user")."\";");
+		}	
+	}
+	
+	if($usergroup['gid'] == 6)
+	{
+		eval("\$grouplist .= \"".$templates->get("showteam_moderators")."\";");
+	}
+	else
+	{
+		eval("\$grouplist .= \"".$templates->get("showteam_usergroup")."\";");
+	}
+	$usergrouprows = '';
 }
 
 eval("\$showteam = \"".$templates->get("showteam")."\";");

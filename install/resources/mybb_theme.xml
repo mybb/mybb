@@ -660,16 +660,23 @@ var inlineId = {$tid};
 </head>
 <body>
 {$header}
-<table align="center" width="100%">
-	<tr>
-		<td style="vertical-align: bottom;">{$multipage}</td>
-		<td style="text-align: right;">{$newreply}{$newthread}</td>
-	</tr>
-</table>
+<div style="float: right;">
+	{$newreply}{$newthread}
+</div>
+<div>
+	{$multipage}
+</div>
 {$pollbox}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="2"><strong>{$rating} {$thread['subject']}</strong></td>
+<td class="thead" colspan="2">
+	<div style="float: right;">
+		<span class="smalltext"><strong><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->threaded}</a> | <a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->linear}</a></strong></span>
+	</div>
+	<div>
+		<strong>{$rating} {$thread['subject']}</strong>
+	</div>
+</td>
 </tr>
 <tr>
 <td class="tcat" width="15%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
@@ -679,8 +686,7 @@ var inlineId = {$tid};
 {$threadpages}
 <tr>
 <td colspan="2" class="tfoot">
-<div style="float: right;"><strong>&laquo; <a href="showthread.php?tid={$tid}&amp;action=nextoldest">{$lang->next_oldest}</a> | <a href="showthread.php?tid={$tid}&amp;action=nextnewest">{$lang->next_newest}</a> &raquo;</strong></div>
-<div><strong><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->threaded}</a> | <a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->linear}</a></strong></div>
+<div><strong>&laquo; <a href="showthread.php?tid={$tid}&amp;action=nextoldest">{$lang->next_oldest}</a> | <a href="showthread.php?tid={$tid}&amp;action=nextnewest">{$lang->next_newest}</a> &raquo;</strong></div>
 </td>
 </tr>
 </table>
@@ -2632,15 +2638,9 @@ $reputation
 <td class="{$optionbg}" width="67" align="center">{$percent}%</td>
 </tr>
 ]]></template>
-		<template name="showteam_leader_header" version="100.07"><![CDATA[<tr>
-<td class="tcat" colspan="3">{$lang->group_leaders}</td>
-</tr>]]></template>
-		<template name="showteam_member_header" version="100.07"><![CDATA[<tr>
-<td class="tcat" colspan="3">{$lang->group_members}</td>
-</tr>]]></template>
 		<template name="showteam_usergroup" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="3"><strong>{$usergrouptitle}</strong></td>
+<td class="thead" colspan="3"><strong>{$usergroup['title']}</strong></td>
 </tr>
 <tr>
 <td class="tcat"><span class="smalltext"><strong>{$lang->uname}</strong></span></td>
@@ -4962,7 +4962,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </head>
 <body>
 {$header}
-{$usergroups}
+{$grouplist}
 {$footer}
 </body>
 </html>]]></template>
