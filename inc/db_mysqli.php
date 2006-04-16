@@ -1,12 +1,12 @@
 <?php
 /**
  * MyBB 1.0
- * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
+ * Copyright Â© 2005 MyBulletinBoard Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id$
+ * $Id: db_mysql.php 1370 2006-04-16 13:47:01Z chris $
  */
 
 class databaseEngine
@@ -16,7 +16,7 @@ class databaseEngine
 	 *
 	 * @var string
 	 */
-	var $title = "MySQL";
+	var $title = "MySQLi";
 
 	/**
 	 * A count of the number of queries.
@@ -85,14 +85,7 @@ class databaseEngine
 	 */
 	function connect($hostname="localhost", $username="root", $password="", $pconnect=0)
 	{
-		if($pconnect)
-		{
-			$this->link = @mysql_pconnect($hostname, $username, $password) or $this->dberror();
-		}
-		else
-		{
-			$this->link = @mysql_connect($hostname, $username, $password) or $this->dberror();
-		}
+		$this->link = @mysqli_connect($hostname, $username, $password) or $this->dberror();
 		return $this->link;
 	}
 
@@ -104,7 +97,7 @@ class databaseEngine
 	 */
 	function select_db($database)
 	{
-		return @mysql_select_db($database, $this->link) or $this->dberror();
+		return @mysqli_select_db($this->link, $database) or $this->dberror();
 	}
 
 	/**
@@ -118,7 +111,7 @@ class databaseEngine
 	{
 		global $pagestarttime, $querytime, $db, $mybb;
 		$qtimer = new timer();
-		$query = @mysql_query($string, $this->link);
+		$query = @mysqli_query($this->link, $string);
 		if($this->errno() && !$hideerr)
 		{
 			 $this->dberror($string);
@@ -145,7 +138,7 @@ class databaseEngine
 	{
 		if(preg_match("#^select#i", $string))
 		{
-			$query = mysql_query("EXPLAIN $string", $this->link);
+			$query = mysqli_query($this->link, "EXPLAIN $string");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
@@ -164,7 +157,7 @@ class databaseEngine
 				"<td><strong>Extra</strong></td>\n".
 				"</tr>\n";
 
-			while($table = mysql_fetch_array($query))
+			while($table = mysqli_fetch_assoc($query))
 			{
 				$this->explain .=
 					"<tr bgcolor=\"#ffffff\">\n".
@@ -210,13 +203,13 @@ class databaseEngine
 	/**
 	 * Return a result array for a query.
 	 *
-	 * @param resource The query ID.
+	 * @param resource The query data.
 	 * @param constant The type of array to return.
 	 * @return array The array of results.
 	 */
 	function fetch_array($query)
 	{
-		$array = mysql_fetch_assoc($query);
+		$array = mysqli_fetch_assoc($query);
 		return $array;
 	}
 
@@ -229,15 +222,12 @@ class databaseEngine
 	 */
 	function fetch_field($query, $field, $row=false)
 	{
-		if($row === false)
+		if($row !== false)
 		{
-			$array = $this->fetch_array($query);
-			return $array[$field];
+			$this->data_seek($query, $row);
 		}
-		else
-		{
-			return mysql_result($query, $row, $field);
-		}
+		$array = $this->fetch_array($query);
+		return $array[$field];
 	}
 
 	/**
@@ -248,18 +238,18 @@ class databaseEngine
 	 */
 	function data_seek($query, $row)
 	{
-		return mysql_data_seek($query, $row);
+		return mysqli_data_seek($query, $row);
 	}
 
 	/**
 	 * Return the number of rows resulting from a query.
 	 *
-	 * @param resource The query ID.
+	 * @param resource The query data.
 	 * @return int The number of rows in the result.
 	 */
 	function num_rows($query)
 	{
-		return mysql_num_rows($query);
+		return mysqli_num_rows($query);
 	}
 
 	/**
@@ -269,7 +259,7 @@ class databaseEngine
 	 */
 	function insert_id()
 	{
-		$id = mysql_insert_id($this->link);
+		$id = mysqli_insert_id($this->link);
 		return $id;
 	}
 
@@ -279,7 +269,7 @@ class databaseEngine
 	 */
 	function close()
 	{
-		@mysql_close($this->link);
+		@mysqli_close($this->link);
 	}
 
 	/**
@@ -289,7 +279,7 @@ class databaseEngine
 	 */
 	function errno()
 	{
-		return mysql_errno($this->link);
+		return mysqli_errno($this->link);
 	}
 
 	/**
@@ -299,7 +289,7 @@ class databaseEngine
 	 */
 	function error()
 	{
-		return mysql_error($this->link);
+		return mysqli_error($this->link);
 	}
 
 	/**
@@ -311,8 +301,8 @@ class databaseEngine
 	{
 		if($this->error_reporting)
 		{
-			echo "MySQL error: " . mysql_errno($this->link);
-			echo "<br />" . mysql_error($this->link);
+			echo "MySQLi error: ".$this->errno();
+			echo "<br />".$this->error();
 			echo "<br />Query: $string";
 			exit;
 		}
@@ -326,18 +316,18 @@ class databaseEngine
 	 */
 	function affected_rows()
 	{
-		return mysql_affected_rows($this-link);
+		return mysqli_affected_rows($this-link);
 	}
 
 	/**
 	 * Return the number of fields.
 	 *
-	 * @param resource The query ID.
+	 * @param resource The query data.
 	 * @return int The number of fields.
 	 */
 	function num_fields($query)
 	{
-		return mysql_num_fields($query);
+		return mysqli_num_fields($query);
 	}
 
 	/**
@@ -349,7 +339,7 @@ class databaseEngine
 	function list_tables($database)
 	{
 		$query = $this->query("SHOW TABLES FROM $database");
-		while(list($table) = mysql_fetch_array($query))
+		while(list($table) = mysqli_fetch_array($query))
 		{
 			$tables[] = $table;
 		}
@@ -545,7 +535,7 @@ class databaseEngine
 	 */
 	function escape_string($string)
 	{
-		$string = mysql_real_escape_string($string);
+		$string = mysqli_real_escape_string($string);
 		return $string;
 	}
 

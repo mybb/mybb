@@ -102,9 +102,9 @@ if($mybb->settings['portal_showwelcome'] != "no")
 		if($newposts)
 		{ // if there aren't any new posts, there is no point in wasting two more queries
 			$query = $db->query("SELECT COUNT(tid) AS newthreads FROM ".TABLE_PREFIX."threads WHERE dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
-			$newthreads = $db->result($query, 0);
+			$newthreads = $db->fetch_field($query, "newthreads");
 			$query = $db->query("SELECT COUNT(tid) AS newann FROM ".TABLE_PREFIX."threads WHERE dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere");
-			$newann = $db->result($query, 0);
+			$newann = $db->fetch_field($query, "newann");
 			if(!$newthreads) { $newthreads = 0; }
 			if(!$newann) { $newann = 0; }
 		}

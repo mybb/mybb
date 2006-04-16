@@ -36,7 +36,7 @@ elseif ($mybb->input['action']=="home")
 	cpheader();
 	// Get statistics
 	$phpversion = phpversion();
-	$dbversion = mysql_get_server_info();
+	$dbversion = $db->get_version;
 	$serverload = serverload();
 	if(!$serverload)
 	{
@@ -101,7 +101,7 @@ elseif ($mybb->input['action']=="home")
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->php_version</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"index.php?action=phpinfo\">$phpversion</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->mysql_version</b></td><td valign=\"top\" class=\"altbg2\">$dbversion</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->db_version</b></td><td valign=\"top\" class=\"altbg2\">{$db->title} $dbversion</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->server_load</b></td><td valign=\"top\" class=\"altbg2\">$serverload</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";

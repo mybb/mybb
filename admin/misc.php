@@ -27,7 +27,7 @@ if($mybb->input['action'] == "do_dbmaint")
 {
 	$tablelist = "";
 	$tables = $db->list_tables($config['database']);
-	while(list($tablename) = $db->fetch_array($tables, ""))
+	foreach($tables as $tablename)
 	{
 		if(!$tablelist)
 		{
