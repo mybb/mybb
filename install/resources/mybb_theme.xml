@@ -5724,7 +5724,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td class="trow1">
-<table width="100%" align="center" border="0" cellspacing="0" cellpadding="2">
+<table width="100%" align="center" border="0" cellspacing="0" cellpadding="2" id="clickable_smilies">
 {$smilies}
 </table>
 </td>
