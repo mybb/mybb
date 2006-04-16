@@ -1288,8 +1288,8 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$ppd = $memprofile['postnum'];
 	}
-	$query = $db->query("SELECT COUNT(pid) FROM ".TABLE_PREFIX."posts");
-	$posts = $db->result($query, 0);
+	$query = $db->query("SELECT COUNT(pid) AS posts FROM ".TABLE_PREFIX."posts");
+	$posts = $db->fetch_field($query, "posts");
 	if($posts == 0)
 	{
 		$percent = "0";
@@ -1300,8 +1300,8 @@ elseif($mybb->input['action'] == "profile")
 		$percent = round($percent, 2);
 	}
 
-	$query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE referrer='$memprofile[uid]'");
-	$referrals = $db->result($query, 0);
+	$query = $db->query("SELECT COUNT(*) AS referrals FROM ".TABLE_PREFIX."users WHERE referrer='$memprofile[uid]'");
+	$referrals = $db->fetch_field($query, "referrals");
 
 	if(!empty($memprofile['icq']))
 	{

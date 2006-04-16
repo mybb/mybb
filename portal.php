@@ -98,7 +98,7 @@ if($mybb->settings['portal_showwelcome'] != "no")
 		}
 		// get number of new posts, threads, announcements
 		$query = $db->query("SELECT COUNT(pid) AS newposts FROM ".TABLE_PREFIX."posts WHERE dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
-		$newposts = $db->result($query, 0);
+		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
 		{ // if there aren't any new posts, there is no point in wasting two more queries
 			$query = $db->query("SELECT COUNT(tid) AS newthreads FROM ".TABLE_PREFIX."threads WHERE dateline>'".$mybb->user['lastvisit']."' $unviewwhere");

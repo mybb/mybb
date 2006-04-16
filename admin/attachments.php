@@ -421,7 +421,7 @@ if($mybb->input['action'] == "delete")
 	// confirmation page for deleting an attachment type
 	$atid = intval($mybb->input['atid']);
 	$query = $db->query("SELECT name FROM ".TABLE_PREFIX."attachtypes WHERE atid='".$atid."'");
-	$name = stripslashes($db->result($query, 0));
+	$name = stripslashes($db->fetch_field($query, "name"));
 	cpheader();
 	startform("attachments.php", "", "do_delete");
 	makehiddencode("atid", $atid);

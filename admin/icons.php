@@ -306,7 +306,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	tablesubheader($lang->edit_delete, "", 5);
 
 	$query = $db->query("SELECT COUNT(iid) AS icons FROM ".TABLE_PREFIX."icons");
-	$iconcount = $db->result($query, 0);
+	$iconcount = $db->fetch_field($query, "icons");
 	$perpage = intval($mybb->input['perpage']);
 	$page = intval($mybb->input['page']);
 	if(!$perpage)

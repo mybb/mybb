@@ -92,12 +92,12 @@ if($mybb->input['action'] == "lastpost")
 	if(strstr($thread['closed'], "moved|"))
 	{
 		$query = $db->query("SELECT p.pid FROM ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t WHERE t.fid='".$thread[fid]."' AND t.closed NOT LIKE 'moved|%' AND p.tid=t.tid ORDER BY p.dateline DESC LIMIT 0, 1");
-		$pid = $db->result($query, 0);
+		$pid = $db->fetch_field($query, "pid");
 	}
 	else
 	{
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline DESC LIMIT 0, 1");
-		$pid = $db->result($query, 0);
+		$pid = $db->fetch_field($query, "pid");
 	}
 	header("Location:showthread.php?tid=$tid&pid=$pid#pid$pid");
 	exit;
@@ -128,7 +128,7 @@ if($mybb->input['action'] == "nextnewest")
 	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$nextthread['tid']);
 
 	// Redirect to the proper page.
-	$pid = $db->result($query, 0);
+	$pid = $db->fetch_field($query, "pid");
 	header("Location:showthread.php?tid=$nextthread[tid]&pid=$pid#pid$pid");
 }
 
@@ -157,7 +157,7 @@ if($mybb->input['action'] == "nextoldest")
 	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$nextthread['tid']);
 
 	// Redirect to the proper page.
-	$pid = $db->result($query, 0);
+	$pid = $db->fetch_field($query, "pid");
 	header("Location:showthread.php?tid=$nextthread[tid]&pid=$pid#pid$pid");
 }
 
@@ -535,12 +535,12 @@ if($mybb->input['action'] == "thread")
 		if($mybb->input['pid'])
 		{
 			$query = $db->query("
-				SELECT COUNT(pid) FROM ".TABLE_PREFIX."posts
+				SELECT COUNT(pid) AS count FROM ".TABLE_PREFIX."posts
 				WHERE tid='$tid'
 				AND pid <= '".$mybb->input['pid']."'
 				$visible
 			");
-			$result = $db->result($query, 0);
+			$result = $db->fetch_field($query, "count");
 			if(($result % $perpage) == 0)
 			{
 				$page = $result / $perpage;

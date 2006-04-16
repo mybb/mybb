@@ -46,7 +46,7 @@ if($mybb->input['action'] == "event")
 		"limit" => 1
 	);
 	$query = $db->simple_select(TABLE_PREFIX."events", "date", "eid=".$eid, $options);
-	$event_date = $db->result($query, 0);
+	$event_date = $db->fetch_field($query, "date");
 	if($event_date == FALSE)
 	{
 		error($lang->error_invalidevent);

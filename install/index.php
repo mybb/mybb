@@ -34,9 +34,23 @@ require "./resources/output.php";
 $output = new installerOutput;
 
 $dboptions = array();
+
+if(function_exists("mysqli_connect"))
+{
+	$dboptions['mysqli'] = array(
+		"title" => "MySQL Improved",
+		"structure_file" => "mysql_db_tables.php",
+		"population_file" => "mysql_db_inserts.php"
+	);
+}
+
 if(function_exists("mysql_connect"))
 {
-	$dboptions['mysql'] = "MySQL";
+	$dboptions['mysql'] = array(
+		"title" => "MySQL",
+		"structure_file" => "mysql_db_tables.php",
+		"population_file" => "mysql_db_inserts.php"
+	);
 }
 
 if(file_exists("lock"))
@@ -208,7 +222,11 @@ function requirements_check()
 	}
 	else
 	{
-		$dbsupportlist = implode(", ", $dboptions);
+		foreach($dboptions as $dboption)
+		{
+			$dbsupportlist[] = $dboption['title'];
+		}
+		$dbsupportlist = implode(", ", $dbsupportlist);
 	}
 
 	if(!function_exists("xml_parser_create"))
@@ -363,7 +381,10 @@ function database_info()
 		$dbuser = "";
 		$dbname = "";
 	}
-
+	foreach($dboptions as $dbfile => $dbtype)
+	{
+		$dbengines .= "<option value=\"$dbfile\">{$dbtype['title']}</option>";
+	}
 	echo <<<END
 		<div class="border_wrapper">
 			<div class="title">Database Configuration</div>
@@ -374,7 +395,7 @@ function database_info()
 		</tr>
 		<tr class="first">
 			<td class="first"><label for="dbengine">Database Engine:</label></td>
-			<td class="last alt_col"><select name="dbengine" id="dbengine"><option value="mysql">MySQL</option></select></td>
+			<td class="last alt_col"><select name="dbengine" id="dbengine">$dbengines</select></td>
 		</tr>
 		<tr class="alt_row">
 			<td class="first"><label for="dbhost">Database Host:</label></td>
@@ -421,7 +442,7 @@ function create_tables()
 	// Attempt to connect to the db
 	require "../inc/db_".$mybb->input['dbengine'].".php";
 	$db = new databaseEngine;
-	$db->error_reporting = 0;
+ 	$db->error_reporting = 0;
 
 	$connection = $db->connect($mybb->input['dbhost'], $mybb->input['dbuser'], $mybb->input['dbpass']);
 	if(!$connection)
@@ -458,10 +479,18 @@ function create_tables()
 	$output->print_header("Table Creation", "createtables");
 
 	echo "<p>Connection to the database server and table you specified was successful.</p>";
-	echo "<p>Database Engine: ".$dboptions[$mybb->input['dbengine']]." ".$db->get_version()."</p>";
+	echo "<p>Database Engine: ".$dboptions[$mybb->input['dbengine']]['title']." ".$db->get_version()."</p>";
 	echo "<p>The MyBB database tables will now be created.</p>";
 
-	require "./resources/".$mybb->input['dbengine']."_db_tables.php";
+	if($dboptions[$config['dbtype']]['structure_file'])
+	{
+		$structure_file = $dboptions[$config['dbtype']]['structure_file'];
+	}
+	else
+	{
+		$structure_file = "mysql_db_tables.php";
+	}
+	require "./resources/".$structure_file;
 	while(list($key, $val) = each($tables))
 	{
 		$val = preg_replace("#mybb_(\S+?)([\s\.,]|$)#", $mybb->input['tableprefix']."\\1\\2", $val);
@@ -485,6 +514,7 @@ function populate_tables()
 {
 	global $output, $myver;
 
+
 	require "../inc/config.php";
 	require "../inc/db_$config[dbtype].php";
 	$db=new databaseEngine;
@@ -496,7 +526,16 @@ function populate_tables()
 	$output->print_header("Table Population", "tablepopulate");
 	$contents = "<p>Now that the basic tables have been created, it's time to insert the default data.</p>";
 
-	require "./resources/".$config['dbtype']."_db_inserts.php";
+	if($dboptions[$config['dbtype']]['population_file'])
+	{
+		$population_file = $dboptions[$config['dbtype']]['population_file'];
+	}
+	else
+	{
+		$population_file = "mysql_db_inserts.php";
+	}
+
+	require "./resources/".$population_file;
 	while(list($key, $val) = each($inserts))
 	{
 		$val = preg_replace("#mybb_(\S+?)([\s\.,]|$)#", $config['table_prefix']."\\1\\2", $val);

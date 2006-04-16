@@ -645,9 +645,9 @@ class Moderation
 
 		// adjust user post counts accordingly
 		$query = $db->query("SELECT usepostcounts FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
-		$oldusepcounts = $db->result($query, 0);
+		$oldusepcounts = $db->fetch_field($query, "usepostcounts")
 		$query = $db->query("SELECT usepostcounts FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
-		$newusepcounts = $db->result($query, 0);
+		$newusepcounts = $db->fetch_field($query, "usepostcounts")
 		$query = $db->query("SELECT COUNT(p.pid) AS posts, u.uid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='$tid' GROUP BY u.uid ORDER BY posts DESC");
 		while($posters = $db->fetch_array($query))
 		{

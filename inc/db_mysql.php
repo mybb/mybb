@@ -207,28 +207,41 @@ class databaseEngine {
 	 * @param constant The type of array to return.
 	 * @return array The array of results.
 	 */
-	function fetch_array($query, $type=MYSQL_ASSOC)
+	function fetch_array($query)
 	{
-		if(!$type)
-		{
-			$type = MYSQL_BOTH;
-		}
-		$array = mysql_fetch_array($query, $type);
+		$array = mysql_fetch_assoc($query);
 		return $array;
 	}
 
+	/**
+	 * Return a specific field from a query.
+	 *
+	 * @param resource The query ID.
+	 * @param string The name of the field to return.
+	 * @param int The number of the row to fetch it from.
+	 */
+	function fetch_field($query, $field, $row=false)
+	{
+		if($row === false)
+		{
+			$array = $this->fetch_array($query);
+			return $array[$field];
+		}
+		else
+		{
+			return mysql_result($query, $row, $field);
+		}
+	}
 
 	/**
-	 * Return a specified result for a query.
+	 * Moves internal row pointer to the next row
 	 *
-	 * @param resource The query data.
-	 * @param string The row to return.
-	 * @return string The result of the query.
+	 * @param resource The query ID.
+	 * @param int The pointer to move the row to.
 	 */
-	function result($query, $row)
+	function data_seek($query, $row)
 	{
-		$result = mysql_result($query, $row);
-		return $result;
+		return mysql_data_seek($query, $row);
 	}
 
 	/**
@@ -249,7 +262,7 @@ class databaseEngine {
 	 */
 	function insert_id()
 	{
-		$id = mysql_insert_id();
+		$id = mysql_insert_id($this->link);
 		return $id;
 	}
 
@@ -269,7 +282,7 @@ class databaseEngine {
 	 */
 	function errno()
 	{
-		return mysql_errno();
+		return mysql_errno($this->link);
 	}
 
 	/**
@@ -279,7 +292,7 @@ class databaseEngine {
 	 */
 	function error()
 	{
-		return mysql_error();
+		return mysql_error($this->link);
 	}
 
 	/**
@@ -291,8 +304,8 @@ class databaseEngine {
 	{
 		if($this->error_reporting)
 		{
-			echo "mySQL error: " . mysql_errno();
-			echo "<br />" . mysql_error();
+			echo "MySQL error: " . mysql_errno($this->link);
+			echo "<br />" . mysql_error($this->link);
 			echo "<br />Query: $string";
 			exit;
 		}
@@ -306,7 +319,7 @@ class databaseEngine {
 	 */
 	function affected_rows()
 	{
-		return mysql_affected_rows();
+		return mysql_affected_rows($this-link);
 	}
 
 	/**
@@ -321,18 +334,6 @@ class databaseEngine {
 	}
 
 	/**
-	 * Return a field name.
-	 *
-	 * @param resource The query data.
-	 * @param int The field offset.
-	 * @return string The field name.
-	 */
-	function field_name($query, $i)
-	{
-		return mysql_field_name($query, $i);
-    }
-
-	/**
 	 * Lists all functions in the database.
 	 *
 	 * @param string The database name.
@@ -340,7 +341,7 @@ class databaseEngine {
 	 */
 	function list_tables($database)
 	{
-		return mysql_list_tables($database);
+		return $this->query("SHOW TABLES FROM $database");
 	}
 
 	/**

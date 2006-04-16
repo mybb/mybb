@@ -1054,7 +1054,7 @@ elseif($mybb->input['action'] == "favorites")
 	$plugins->run_hooks("usercp_favorites_start");
 	// Do Multi Pages
 	$query = $db->query("SELECT COUNT(f.tid) AS threads FROM ".TABLE_PREFIX."favorites f WHERE f.type='f' AND f.uid='".$mybb->user['uid']."'");
-	$threadcount = $db->result($query, 0);
+	$threadcount = $db->fetch_field($query, "threads");
 
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
@@ -1139,7 +1139,7 @@ elseif($mybb->input['action'] == "subscriptions")
 	$plugins->run_hooks("usercp_subscriptions_start");
 	// Do Multi Pages
 	$query = $db->query("SELECT COUNT(s.tid) AS threads FROM ".TABLE_PREFIX."favorites s WHERE s.type='s' AND s.uid='".$mybb->user['uid']."'");
-	$threadcount = $db->result($query, 0);
+	$threadcount = $db->fetch_field($query, "threads");
 
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);

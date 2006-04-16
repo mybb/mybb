@@ -111,7 +111,7 @@ if($mybb->input['action'] == "do_add")
 		
 		// Recount the reputation of this user - keep it in sync.
 		$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
-		$reputation_value = $db->result($query, 0);
+		$reputation_value = $db->fetch_field($query, "reputation_count");
 
 		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
 		eval("\$error = \"".$templates->get("reputation_deleted")."\";");
@@ -156,7 +156,7 @@ if($mybb->input['action'] == "do_add")
 
 		// Recount the reputation of this user - keep it in sync.
 		$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
-		$reputation_value = $db->result($query, 0);
+		$reputation_value = $db->fetch_field($query, "reputation_count");
 
 		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
 		
@@ -170,7 +170,7 @@ if($mybb->input['action'] == "do_add")
 		
 		// Recount the reputation of this user - keep it in sync.
 		$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
-		$reputation_value = $db->result($query, 0);
+		$reputation_value = $db->fetch_field($query, "reputation_count");
 
 		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
 	}
@@ -241,7 +241,7 @@ if($mybb->input['action'] == "delete")
 	
 	// Recount the reputation of this user - keep it in sync.
 	$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
-	$reputation_value = $db->result($query, 0);
+	$reputation_value = $db->fetch_field($query, "reputation_count");
 
 	$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
 
@@ -339,7 +339,7 @@ if(!$mybb->input['action'])
 		FROM ".TABLE_PREFIX."reputation
 		WHERE uid='{$user['uid']}' $conditions
 	");
-	$reputation_count = $db->result($query, 0);
+	$reputation_count = $db->fetch_field($query, "reputation_count");
 	
 	// Set default count variables to 0
 	$positive_count = $negative_count = $neutral_count = 0;

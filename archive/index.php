@@ -124,7 +124,7 @@ switch($action)
 		
 		// Paginate this forum
 		$query = $db->query("SELECT COUNT(t.tid) AS threads FROM ".TABLE_PREFIX."threads t WHERE t.fid='$id' AND t.visible='1'");
-		$threadcount = $db->result($query, 0);
+		$threadcount = $db->fetch_field($query, "threads")
 
 		// Build the navigation
 		makeforumnav($forum['fid'], 1);

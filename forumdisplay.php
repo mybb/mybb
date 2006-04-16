@@ -372,7 +372,7 @@ $query = $db->query("
 	FROM ".TABLE_PREFIX."threads t
 	WHERE t.fid='$fid' $visibleonly $datecutsql
 ");
-$threadcount = $db->result($query, 0);
+$threadcount = $db->fetch_field($query, "threads");
 
 $perpage = $mybb->settings['threadsperpage'];
 

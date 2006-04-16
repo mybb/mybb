@@ -331,7 +331,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	tablesubheader($lang->edit_delete, "", 5);
 	$theme[imgdir] = "images";
 	$query = $db->query("SELECT COUNT(sid) AS smilies FROM ".TABLE_PREFIX."smilies");
-	$smiliecount = $db->result($query, 0);
+	$smiliecount = $db->fetch_field($query, "smilies");
 	$perpage = intval($mybb->input['perpage']);
 	$page = intval($mybb->input['page']);
 	if(!$perpage)

@@ -887,7 +887,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		$ids .= ",'$message[pmid]'";
 	}
 	$query = $db->query("SELECT css FROM ".TABLE_PREFIX."themes WHERE tid='$theme[tid]'");
-	$css = $db->result($query, 0);
+	$css = $db->fetch_field($query, "css");
 
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
 	if($mybb->input['deletepms'] == "yes")

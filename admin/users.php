@@ -1191,8 +1191,8 @@ if($mybb->input['action'] == "stats")
 	{
 		$ppd = $user[postnum];
 	}
-	$query = $db->query("SELECT COUNT(pid) FROM ".TABLE_PREFIX."posts");
-	$posts = $db->result($query, 0);
+	$query = $db->query("SELECT COUNT(pid) AS count FROM ".TABLE_PREFIX."posts");
+	$posts = $db->fetch_field($query, "count");
 	if($posts == 0)
 	{
 		$percent = "0%";
@@ -1203,8 +1203,8 @@ if($mybb->input['action'] == "stats")
 		$percent = round($percent, 2)."%";
 	}
 
-	$query = $db->query("SELECT COUNT(*) FROM ".TABLE_PREFIX."users WHERE referrer='$user[uid]'");
-	$referrals = $db->result($query, 0);
+	$query = $db->query("SELECT COUNT(*) AS count FROM ".TABLE_PREFIX."users WHERE referrer='$user[uid]'");
+	$referrals = $db->fetch_field($query, "count");
 
 	$memregdate = mydate($settings['dateformat'], $user['regdate']);
 	$memlocaldate = gmdate($settings['dateformat'], time() + ($user[timezone] * 3600));

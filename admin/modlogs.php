@@ -79,8 +79,8 @@ if($mybb->input['action'] == "view")
 	{
 		$order = "l.dateline DESC";
 	}
-	$query = $db->query("SELECT COUNT(dateline) FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) $squery");
-	$rescount = $db->result($query, 0);
+	$query = $db->query("SELECT COUNT(dateline) AS count FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) $squery");
+	$rescount = $db->fetch_field($query, "count");
 	if(!$rescount)
 	{
 		cpmessage($lang->no_results);
