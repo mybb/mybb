@@ -276,7 +276,7 @@ function makepostbit($post, $pmprevann=0)
 		// Work out the reputation this user has
 		if($usergroup['usereputationsystem'] != "no" && $mybb->settings['enablereputation'] == "yes")
 		{
-			$post['userreputation'] = getreputation($post['reputation']);
+			$post['userreputation'] = getreputation($post['reputation'], $post['uid']);
 			eval("\$post['replink'] = \"".$templates->get("postbit_reputation")."\";");
 		}
 	}

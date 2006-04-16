@@ -12,6 +12,9 @@
 $templatesused = '';
 require "./global.php";
 
+require_once "./inc/class_parser.php";
+$parser = new postParser;
+
 // Load global language phrases
 $lang->load("reputation");
 
@@ -28,15 +31,12 @@ if($mybb->usergroup['canview'] != "yes")
 }
 
 // If we have a specified incoming username, validate it and fetch permissions for it
-if($mybb->input['uid'])
+$user = get_user($mybb->input['uid']);
+if(!$user['uid'])
 {
-	$user = get_user($mybb->input['uid']);
-	if(!$user['uid'])
-	{
-		error("invalid_user");
-	}
-	$user_permissions = user_permissions(intval($mybb->input['uid']));
+	error("invalid_user");
 }
+$user_permissions = user_permissions(intval($mybb->input['uid']));
 
 // Here we perform our validation when adding a reputation to see if the user
 // has permission or not. This is done here to save duplicating the same code.
@@ -45,26 +45,32 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	// This user doesn't have permission to give reputations.
 	if($mybb->usergroup['cangivereputations'] != "yes")
 	{
-		eval("\$error = \"".$templates->get("reputation_add_no_permission")."\";");
+		$message = $lang->add_no_permission;
+		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
 		outputpage($error);		
+		exit;
 	}
 	
 	// The user we're trying to give a reputation to doesn't have permission to receive reps.
 	if($user_permissions['usereputationsystem'] != "yes")
 	{
-		eval("\$error = \"".$templates->get("reputation_add_disabled")."\";");
+		$message = $lang->add_disabled;
+		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
 		outputpage($error);		
+		exit;
 	}
 	
 	// Is this user trying to give themself a reputation?
 	if($mybb->input['uid'] == $mybb->user['uid'])
 	{
-		eval("\$error = \"".$templates->get("reputation_add_yours")."\";");
-		outputpage($error);
+		$message = $lang->add_yours;
+		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
+		outputpage($error);		
+		exit;
 	}
 	
 	// Check if this user has reached their "maximum reputations per day" quota
-	if($mybb->usergroup['maxreputationsday'] != 0)
+	if($mybb->usergroup['maxreputationsday'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
 	{
 		$timesearch = time() - (60 * 60 * 24);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
@@ -73,8 +79,10 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		// Reached the quota - error.
 		if($numtoday >= $mybb->usergroup['maxreputationsday'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_maxperday")."\";");
-			outputpage($error);
+			$message = $lang->add_maxperday;
+			eval("\$error = \"".$templates->get("reputation_add_error")."\";");
+			outputpage($error);		
+			exit;
 		}
 	}
 	
@@ -95,12 +103,39 @@ if($mybb->input['action'] == "do_add")
 	{
 		$mybb->input['reputation'] = 0;
 	}
+
+	// Deleting our current reputation of this user.
+	if($mybb->input['delete'])
+	{
+		$db->query("DELETE FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."' AND adduid='".$mybb->user['uid']."'");
+		
+		// Recount the reputation of this user - keep it in sync.
+		$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
+		$reputation_value = $db->result($query, 0);
+
+		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
+		eval("\$error = \"".$templates->get("reputation_deleted")."\";");
+		outputpage($error);
+		exit;
+	}
+
+	if(trim($mybb->input['comments']) == "" || my_strlen($mybb->input['comments']) < 10)
+	{
+		$show_back = 1;
+		$message = $lang->add_no_comment;
+		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
+		outputpage($error);
+		exit;
+	}
 	
 	// The power for the reputation they specified was invalid.
 	if($reputation > $mybb->usergroup['reputationpower'] || !is_numeric($mybb->input['reputation']))
 	{
-		eval("\$error = \"".$templates->get("reputation_add_invalidpower")."\";");
-		outputpage($error);
+		$show_back = 1;
+		$message = $lang->add_invalidpower;
+		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
+		outputpage($error);	
+		exit;
 	}
 	
 	// Build array of reputation data.
@@ -119,21 +154,30 @@ if($mybb->input['action'] == "do_add")
 	{
 		$db->update_query(TABLE_PREFIX."reputation", $reputation, "rid='".$existing_reputation['rid']."'");
 
-		// Update the total reputation count for the user we're reputing - take off existing reputation too
-		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation=reputation+'".$db->escape_string($mybb->input['reputation']-$existing_reputation['reputation'])."' WHERE uid='".intval($mybb->input['uid'])."'");
+		// Recount the reputation of this user - keep it in sync.
+		$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
+		$reputation_value = $db->result($query, 0);
 
+		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
+		
+		$lang->vote_added = $lang->vote_updated;
+		$lang->vote_added_message = $lang->vote_updated_message;
 	}
 	// Insert a new reputation
 	else
 	{
 		$db->insert_query(TABLE_PREFIX."reputation", $reputation);
 		
-		// Update the total reputation count for the user we're reputing.
-		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation=reputation+'".$db->escape_string($mybb->input['reputation'])."' WHERE uid='".intval($mybb->input['uid'])."'");
+		// Recount the reputation of this user - keep it in sync.
+		$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
+		$reputation_value = $db->result($query, 0);
+
+		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
 	}
 	
 	$plugins->run_hooks("reputation_do_add_end");
-	
+
+
 	eval("\$reputation = \"".$templates->get("reputation_added")."\";");
 	outputpage($reputation);
 }
@@ -186,7 +230,22 @@ if($mybb->input['action'] == "add")
 // Delete a specific reputation from a user.
 if($mybb->input['action'] == "delete")
 {
+	// Only administrators as well as users who gave a specifc vote can delete one.
+	if($mybb->usergroup['cancp'] != "yes" && $existing_reputation['adduid'] != $mybb->user['uid'])
+	{
+		nopermission();
+	}
+
+	// Delete the specified reputation
+	$db->query("DELETE FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."' AND rid='".intval($mybb->input['rid'])."'");
 	
+	// Recount the reputation of this user - keep it in sync.
+	$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
+	$reputation_value = $db->result($query, 0);
+
+	$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
+
+	redirect("reputation.php?uid=".intval($mybb->input['uid']), $lang->vote_deleted_message);
 }
 
 // Otherwise, show a listing of reputations for the given user.
@@ -393,21 +452,21 @@ if(!$mybb->input['action'])
 		if($reputation_vote['reputation'] < 0)
 		{
 			$status_class = "trow_reputation_negative";
-			$vote_type_css = "reputation_negative";
+			$vote_type_class = "reputation_negative";
 			$vote_type = $lang->negative;
 		}
 		// This is a neutral reputation
 		else if($reputation_vote['reputation'] == 0)
 		{
 			$status_class = "trow_reputation_neutral";
-			$vote_type_css = "reputation_neutral";
+			$vote_type_class = "reputation_neutral";
 			$vote_type = $lang->neutral;
 		}
 		// Otherwise, this is a positive reputation
 		else
 		{
 			$status_class = "trow_reputation_positive";
-			$vote_type_css = "reputation_positive";
+			$vote_type_class = "reputation_positive";
 			$vote_type = $lang->positive;
 		}
 		// Get the reputation for the user who posted this comment
@@ -418,6 +477,25 @@ if(!$mybb->input['action'])
 		$last_updated_time = mydate($settings['timeformat'], $reputation_vote['dateline']);
 		$last_updated = sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
 		
+		// Does the current user have permission to delete this reputation? Show delete link
+		if($mybb->usergroup['cancp'] == "yes" || ($mybb->usergroup['cangivereputations'] == "yes" && $reputation['adduid'] == $mybb->user['uid']))
+		{
+			$delete_link = "[<a href=\"javascript:MyBB.deleteReputation({$reputation_vote['uid']}, {$reputation_vote['rid']});\">{$lang->delete_vote}</a>]";
+		}
+		else
+		{
+			$delete_link = '';
+		}
+
+		// Parse smilies in the reputation vote
+		$reputation_parser = array(
+			"allow_html" => "no",
+			"allow_mycode" => "no",
+			"allow_smilies" => "yes",
+			"allow_imgcode" => "no"
+		);
+
+		$reputation_vote['comments'] = $parser->parse_message($reputation_vote['comments'], $reputation_parser);
 		eval("\$reputation_votes .= \"".$templates->get("reputation_vote")."\";");
 	}
 	

@@ -1450,7 +1450,7 @@ elseif($mybb->input['action'] == "profile")
 		$reputation = getreputation($memprofile['reputation']);
 
 		// If this user has permission to give reputations show the vote link
-		if($mybb->usergroup['cangivereputations'] == "yes")
+		if($mybb->usergroup['cangivereputations'] == "yes" && $memprofile['uid'] != $mybb->user['uid'])
 		{
 			$vote_link = "[<a href=\"javascript:MyBB.reputation({$memprofile['uid']});\">{$lang->reputation_vote}</a>]";
 		}

@@ -1407,43 +1407,6 @@ var inlineType = "forum";
 var inlineId = {$fid};
 </script>
 <br /><br /><br />]]></template>
-		<template name="reputation_samepost" version="100.07"><![CDATA[<strong>{$lang->error}</strong><br />
-<blockquote>{$lang->error_reputation_same_post}</blockquote>
-<br />
-<br />
-<center><span class="smalltext">[<a href="javascript:window.close();">{$lang->close_window}</a>]</span></center>
-<br />
-<br />
-<br />]]></template>
-		<template name="reputation_add_maxperday" version="100.07"><![CDATA[<strong>{$lang->error}</strong><br />
-<blockquote>{$lang->error_max_reputations_day}</blockquote>
-<br />
-<br />
-<center><span class="smalltext">[<a href="javascript:window.close();">{$lang->close_window}</a>]</span></center>
-<br />
-<br />
-<br />]]></template>
-		<template name="report_thanks" version="100.07"><![CDATA[<html>
-<head>
-<title>{$settings['bbname']} - {$lang->report_post}</title>
-{$headerinclude}
-</head>
-<body>
-<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1" align="center">
-<br />
-<br />
-<strong>{$lang->thank_you}</strong>
-<blockquote>{$lang->post_reported}</blockquote>
-<br />
-<br />
-</td>
-</tr>
-</table>
-</body>
-</html>]]></template>
 		<template name="report" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->report_post}</title>
@@ -2790,6 +2753,9 @@ $reputation
 <head>
 <title>{$settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
+<script type="text/javascript">
+var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
+</script>
 </head>
 <body>
 {$header}
@@ -4803,14 +4769,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <a href="showthread.php?action=lastpost&amp;tid={$thread['tid']}">{$lang->lastpost}</a>: <a href="member.php?action=profile&amp;uid=lastposter&amp;tid={$thread['tid']}">{$lastposter}</a></span>
 	</td>
 </tr>]]></template>
-		<template name="reputation_yourpost" version="100.07"><![CDATA[<strong>{$lang->error}</strong><br />
-<blockquote>{$lang->error_own_reputation}</blockquote>
-<br />
-<br />
-<center><span class="smalltext">[<a href="javascript:window.close();">{$lang->close_window}</a>]</span></center>
-<br />
-<br />
-<br />]]></template>
 		<template name="search_results_threads" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->search_results}</title>
@@ -6705,7 +6663,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		</div>]]></template>
 		<template name="reputation_vote" version="100.07"><![CDATA[<tr>
 	<td class="trow1 {$status_class}">
-		{$reputation_vote['username']} <span class="smalltext">({$reputation_vote['user_reputation']}) - $last_updated<br /><br /></span>
+		{$reputation_vote['username']} <span class="smalltext">({$reputation_vote['user_reputation']}) - $last_updated $delete_link<br /><br /></span>
 		<strong class="{$vote_type_class}">{$vote_type}:</strong> {$reputation_vote['comments']}
 	</td>
 </tr>]]></template>
@@ -6717,5 +6675,50 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="reputation_no_votes" version="100.07"><![CDATA[<tr>
 	<td class="trow1" style="text-align: center;">{$lang->no_reputation_votes}</td>
 </tr>]]></template>
+		<template name="reputation_add_error" version="100.07"><![CDATA[<html>
+<head>
+<title>{$settings['bbname']} - {$lang->reputation}</title>
+{$headerinclude}
+<script type="text/javascript">var showBack = {$show_back};</script>
+</head>
+<body>
+<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+		<td class="trow1" style="padding: 20px">
+			<strong>{$lang->error}</strong><br /><br />
+			   <blockquote>{$message}</blockquote>
+				<br /><br />
+				<div style="text-align: center;">
+					<script type="text/javascript">
+					if(showBack == 1) { document.write('[<a href="javascript:history.go(-1);">{$lang->go_back}</a>]'); }
+					document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');</script>
+				</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>]]></template>
+		<template name="reputation_added" version="100.07"><![CDATA[<html>
+<head>
+<title>{$settings['bbname']} - {$lang->reputation}</title>
+{$headerinclude}
+</head>
+<body onunload="window.opener.location.reload();">
+<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+		<td class="trow1" style="padding: 20px">
+			<strong>{$lang->vote_added}</strong><br /><br />
+			   <blockquote>{$lang->vote_added_message}</blockquote>
+				<br /><br />
+				<div style="text-align: center;">
+					<script type="text/javascript">document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');</script>
+				</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>]]></template>
 	</templates>
 </theme>

@@ -100,7 +100,35 @@ var MyBB = {
 
 	reputation: function(uid)
 	{
-		MyBB.popupWindow("reputation.php?action=add&uid="+uid, "reputation", 400, 300)
+		MyBB.popupWindow("reputation.php?action=add&uid="+uid, "reputation", 400, 350)
+	},
+
+
+	deleteReputation: function(uid, rid)
+	{
+		confirmReturn = confirm(delete_reputation_confirm);
+		if(confirmReturn == true)
+		{
+			form = document.createElement("form");
+			form.setAttribute("method", "post");
+			form.setAttribute("action", "reputation.php?action=delete");
+			form.setAttribute("style", "display: none;");
+
+			var input = document.createElement("input");
+			input.setAttribute("name", "rid");
+			input.setAttribute("type", "hidden");
+			input.setAttribute("value", rid);
+			form.appendChild(input);
+	
+			var input = document.createElement("input");
+			input.setAttribute("name", "uid");
+			input.setAttribute("type", "hidden");
+			input.setAttribute("value", uid);
+			form.appendChild(input);
+
+			document.getElementsByTagName("body")[0].appendChild(form);
+			form.submit();
+		}
 	},
 
 	whoPosted: function(tid)
