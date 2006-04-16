@@ -2121,50 +2121,6 @@ else
 	}
 	$regdate = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $mybb->user['regdate']);
 
-	$query = $db->query("SELECT r.*, p.subject, p.tid FROM ".TABLE_PREFIX."reputation r LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=r.pid) WHERE r.uid='".$mybb->user['uid']."' ORDER BY r.dateline DESC LIMIT 0, 10");
-	$numreps = $db->num_rows($query);
-	$bgclass = "trow1";
-	$reputationbits = '';
-	if($numreps)
-	{
-		while($reputation = $db->fetch_array($query))
-		{
-			if($reputation['tid'])
-			{
-				if(!$reputation['subject'])
-				{
-					$reputation['subject'] = "[no subject]";
-				}
-				$postlink = "<a href=\"showthread.php?tid=$reputation[tid]&pid=$reputation[pid]#pid$reputation[pid]\">$reputation[subject]</a>";
-			}
-			else
-			{
-				$postlink = $lang->na_deleted;
-			}
-			$repdate = mydate($mybb->settings['dateformat'], $reputation['dateline']);
-			$reptime = mydate($mybb->settings['timeformat'], $reputation['dateline']);
-			$reputation['comments'] = htmlspecialchars_uni($reputation['comments']);
-			if(strpos(" ".$reputation['reputation'], "-"))
-			{ // negative
-				$posnegimg = "repbit_neg.gif";
-			}
-			else
-			{
-				$posnegimg = "repbit_pos.gif";
-			}
-			eval("\$reputationbits .= \"".$templates->get("usercp_latestreputations_bit")."\";");
-			if($bgclass == "trow1")
-			{
-				$bgclass = "trow2";
-			}
-			else
-			{
-				$bgclass = "trow1";
-			}
-		}
-		$lang->latest_reputations_received = sprintf($lang->latest_reputations_received, $mybb->user['reputation']);
-		eval("\$reputations = \"".$templates->get("usercp_latestreputations")."\";");
-	}
 	if($mybb->user['usergroup'] == 5)
 	{
 		$usergroup .= "<br />(<a href=\"member.php?action=resendactivation\">$lang->resend_activation</a>)";

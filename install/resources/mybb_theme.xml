@@ -2881,19 +2881,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 
 {$pmsdownload}]]></template>
 		<template name="postbit_avatar" version="100.07"><![CDATA[<img src="{$post['avatar']}" border="0" alt="" />]]></template>
-		<template name="usercp_latestreputations" version="100.07"><![CDATA[<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<td class="thead" colspan="4"><strong>{$lang->latest_reputations_received}</strong></td>
-</tr>
-<tr>
-<td class="tcat"><span class="smalltext">&nbsp;</span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->post}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->date_received}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->comments}</strong></span></td>
-</tr>
-{$reputationbits}
-</table><br />
-<span class="smalltext"><img src="{$theme['imgdir']}/repbit_pos.gif"> {$lang->positive_key}<br /><img src="{$theme['imgdir']}/repbit_neg.gif"> {$lang->negative_key}</span>]]></template>
 		<template name="usercp_profile_customfield" version="100.07"><![CDATA[<tr>
 <td><span class="smalltext">
 {$profilefield['name']}:</span></td>
@@ -4849,12 +4836,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="postbit_reputation" version="100.07"><![CDATA[<br />{$lang->postbit_reputation} {$post['userreputation']}]]></template>
-		<template name="usercp_latestreputations_bit" version="100.07"><![CDATA[<tr>
-<td class="{$bgclass}" align="center"><img src="{$theme['imgdir']}/{$posnegimg}"></td>
-<td class="{$bgclass}">{$postlink}</td>
-<td class="{$bgclass}">{$repdate} {$reptime}</td>
-<td class="{$bgclass}">{$reputation['comments']}</td>
-</tr>]]></template>
 		<template name="moderation_threadnotes_modaction" version="100.07"><![CDATA[<tr>
 <td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$modaction['uid']}">{$modaction['username']}</a></td>
 <td class="{$trow}" align="center">{$modaction['dateline']}</td>
