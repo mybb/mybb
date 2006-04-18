@@ -136,7 +136,7 @@ if(is_array($bannedips))
 // If our board is closed..
 if($mybb->settings['boardclosed'] == "yes")
 {
-	if($mybb->group['cancp'] != "yes")
+	if($mybb->usergroup['cancp'] != "yes")
 	{
 		$lang->error_boardclosed .= "<blockquote>".$mybb->settings['boardclosed_reason']."</blockquote>";
 		archive_error($lang->error_boardclosed);

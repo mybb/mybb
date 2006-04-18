@@ -133,7 +133,7 @@ if($mybb->input['action'] == "updateperms")
 	$uid = intval($mybb->input['uid']);
 	if($uid > 0)
 	{
-		$query = $db->query("SELECT u.uid, u.username, g.cancp FROM ".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g WHERE u.uid='$uid' AND u.usergroup=g.gid AND g.cancp='yes'");
+		$query = $db->query("SELECT u.uid, u.username, g.cancp FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g) WHERE u.uid='$uid' AND u.usergroup=g.gid AND g.cancp='yes'");
 		$admin = $db->fetch_array($query);
 		$tsub = sprintf($lang->edit_admin_perms, $admin['username']);
 		$permissions = getadminpermissions($uid);

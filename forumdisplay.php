@@ -400,7 +400,7 @@ if($upper > $threadcount)
 {
 	$upper = $threadcount;
 }
-$multipage = multipage($threadcount, $perpage, $page, "forumdisplay.php?fid=$fid&sortby=$sortby&order=$order&datecut=$datecut");
+$multipage = multipage($threadcount, $perpage, $page, "forumdisplay.php?fid=$fid&amp;sortby=$sortby&amp;order=$order&amp;$datecut=$datecut");
 
 if($foruminfo['allowtratings'] != "no")
 {
@@ -944,7 +944,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 								reset($moderatorcache[$mfid]);
 								while(list($key2, $moderator) = each($moderatorcache[$mfid]))
 								{
-									$moderators .= "$comma<a href=\"member.php?action=profile&uid=".$moderator['uid']."\">".$moderator['username']."</a>";
+									$moderators .= "$comma<a href=\"member.php?action=profile&amp;uid=".$moderator['uid']."\">".$moderator['username']."</a>";
 									$comma = ", ";
 								}
 							}

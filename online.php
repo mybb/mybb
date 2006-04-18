@@ -591,7 +591,7 @@ function show($user)
 				$invisiblemark = '';
 			}
 			$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
-			$onlinename = "<a href=\"member.php?action=profile&uid=".$user['uid']."\">".$user['username']."</a>".$invisiblemark;
+			$onlinename = "<a href=\"member.php?action=profile&amp;uid=".$user['uid']."\">".$user['username']."</a>".$invisiblemark;
 		}
 	}
 	elseif($user['bot'])

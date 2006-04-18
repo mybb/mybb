@@ -408,7 +408,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 								reset($moderatorcache[$mfid]);
 								while(list($key2, $moderator) = each($moderatorcache[$mfid]))
 								{
-									$moderators .= "$comma<a href=\"member.php?action=profile&uid=$moderator[uid]\">".$moderator['username']."</a>";
+									$moderators .= "$comma<a href=\"member.php?action=profile&amp;uid=$moderator[uid]\">".$moderator['username']."</a>";
 									$comma = ", ";
 								}
 							}

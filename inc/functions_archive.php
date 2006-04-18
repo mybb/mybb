@@ -131,7 +131,7 @@ function archive_multipage($count, $perpage, $page, $url)
 */
 function archive_footer()
 {
-	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $mybboard;
+	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $mybboard, $sent_header;
 	$totaltime = $maintimer->stop();
 	if($mybb->settings['showvernum'] == "on")
 	{
@@ -141,6 +141,7 @@ function archive_footer()
 	{
 		$mybbversion = "";
 	}
+	$sent_header = 1;
 ?>
 </div>
 <div class="navigation"><?php echo $nav; ?></div>
@@ -170,7 +171,11 @@ function archive_footer()
 */
 function archive_error($error)
 {
-	global $lang, $mybb;
+	global $lang, $mybb, $sent_header;
+	if(!$sent_header)
+	{
+		archive_header("", $mybb->settings['bbname'], $mybb->settings['bburl']."/index.php");
+	}
 ?>
 <div class="error">
 <div class="header"><?php echo $lang->error; ?></div>

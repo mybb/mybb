@@ -181,7 +181,7 @@ class postParser
 		$standard_mycode['url_complex']['regex'] = "#\[url=([a-z]+?://)([^\r\n\"\[<]+?)\](.+?)\[/url\]#esi";
 		$standard_mycode['url_complex']['replacement'] = "\$this->mycode_parse_url(\"$1$2\", \"$3\")";
 
-		$standard_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"\[<]+?)\](.+?)\[/ur\]#esi";
+		$standard_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"\[<&\(\)]+?)\](.+?)\[/ur\]#esi";
 		$standard_mycode['url_complex2']['replacement'] = "\$this->mycode_parse_url(\"$1\", \"$2\")";
 
 		$standard_mycode['email_simple']['regex'] = "#\[email\](.*?)\[/email\]#ei";

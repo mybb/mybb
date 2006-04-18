@@ -831,7 +831,7 @@ elseif($mybb->input['action'] == "activate")
 		if($activation['type'] == "e")
 		{
 			$newemail = array(
-				"email" => $activation['misc'],
+				"email" => $db->escape_string($activation['misc']),
 				);
 			$db->update_query(TABLE_PREFIX."users", $newemail, "uid='".$user['uid']."'");
 			if(function_exists("emailChanged"))
