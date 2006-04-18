@@ -545,7 +545,14 @@ class databaseEngine
 	 */
 	function escape_string($string)
 	{
-		$string = mysql_real_escape_string($string);
+		if(function_exists("mysql_real_escape_string"))
+		{
+			$string = mysql_real_escape_string($string);
+		}
+		else
+		{
+			$string = addslashes($string);
+		}
 		return $string;
 	}
 

@@ -535,7 +535,7 @@ class databaseEngine
 	 */
 	function escape_string($string)
 	{
-		$string = mysqli_real_escape_string($string);
+		$string = mysqli_real_escape_string($this->link, $string);
 		return $string;
 	}
 
