@@ -20,7 +20,7 @@ if($mybb->input['action'] == "regimage")
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."regimages WHERE imagehash='".addslashes($mybb->input['imagehash'])."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."regimages WHERE imagehash='".$db->escape_string($mybb->input['imagehash'])."'");
 		$regimage = $db->fetch_array($query);
 		$imagestring = $regimage['imagestring'];
 		for($i=0;$i<strlen($imagestring);$i++)

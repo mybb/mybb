@@ -121,7 +121,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$lang->error_username_length = sprintf($lang->error_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
 		$errors[] = $lang->error_username_length;
 	}
-	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='".addslashes($username)."'");
+	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($username)."'");
 	if($db->fetch_array($query))
 	{
 		$errors[] = $lang->error_usernametaken;
@@ -334,7 +334,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		if($mybb->input['referrername'])
 		{
-			$referrername = addslashes($mybb->input['referrername']);
+			$referrername = $db->escape_string($mybb->input['referrername']);
 			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='$referrername'");
 			$referrer = $db->fetch_array($query);
 			if(!$referrer['uid'])
@@ -347,8 +347,8 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	}
 	if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))
 	{
-		$imagehash = addslashes($mybb->input['imagehash']);
-		$imagestring = addslashes($mybb->input['imagestring']);
+		$imagehash = $db->escape_string($mybb->input['imagehash']);
+		$imagestring = $db->escape_string($mybb->input['imagestring']);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."regimages WHERE imagehash='$imagehash' AND imagestring='$imagestring'");
 		$imgcheck = $db->fetch_array($query);
 		if(!$imgcheck['dateline'])
@@ -389,20 +389,20 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 		$timenow = time();
 		$newuser = array(
-			"username" => addslashes($username),
+			"username" => $db->escape_string($username),
 			"password" => $saltedpw,
 			"salt" => $salt,
 			"loginkey" => $loginkey,
-			"email" => addslashes($email),
+			"email" => $db->escape_string($email),
 			"usergroup" => $usergroup,
 			"regdate" => $timenow,
 			"lastactive" => $timenow,
 			"lastvisit" => intval($lastvisit),
-			"website" => addslashes(htmlspecialchars($website)),
+			"website" => $db->escape_string(htmlspecialchars($website)),
 			"icq" => intval($mybb->input['icq']),
-			"aim" => addslashes(htmlspecialchars($mybb->input['aim'])),
-			"yahoo" => addslashes(htmlspecialchars($mybb->input['yahoo'])),
-			"msn" => addslashes(htmlspecialchars($mybb->input['msn'])),
+			"aim" => $db->escape_string(htmlspecialchars($mybb->input['aim'])),
+			"yahoo" => $db->escape_string(htmlspecialchars($mybb->input['yahoo'])),
+			"msn" => $db->escape_string(htmlspecialchars($mybb->input['msn'])),
 			"birthday" => $bday,
 			"allownotices" => $allownotices,
 			"hideemail" => $hideemail,
@@ -416,12 +416,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			"showquickreply" => "yes",
 			"invisible" => $invisible,
 			"style" => '0',
-			"timezone" => addslashes($mybb->input['timezoneoffset']),
+			"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
 			"dst" => $enabledst,
 			"threadmode" => $threadmode,
 			"daysprune" => intval($mybb->input['daysprune']),
 			"regip" => $ipaddress,
-			"language" => addslashes($mybb->input['language']),
+			"language" => $db->escape_string($mybb->input['language']),
 			"showcodebuttons" => 1,
 			);
 		if($mybb->settings['usertppoptions'])
@@ -613,7 +613,7 @@ if($mybb->input['action'] == "register")
 		{
 			if($_COOKIE['mybb']['referrer'])
 			{
-				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($_COOKIE['mybb']['referrer'])."'");
+				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($_COOKIE['mybb']['referrer'])."'");
 				$ref = $db->fetch_array($query);
 				$referrername = $_COOKIE['mybb']['referrer'];
 			}
@@ -625,7 +625,7 @@ if($mybb->input['action'] == "register")
 			}
 			elseif($referrername)
 			{
-				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($referrername)."'");
+				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($referrername)."'");
 				$ref = $db->fetch_array($query);
 				if(!$ref['uid'])
 				{
@@ -794,7 +794,7 @@ elseif($mybb->input['action'] == "activate")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['username'])."'");
 		$user = $db->fetch_array($query);
 		if(!$user['username'])
 		{
@@ -874,7 +874,7 @@ elseif($mybb->input['action'] == "do_resendactivation" && $mybb->request_method 
 {
 	$plugins->run_hooks("member_do_resendactivation_start");
 
-	$query = $db->query("SELECT u.uid, u.username, u.usergroup, u.email, a.code FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r') WHERE u.email='".addslashes($mybb->input['email'])."'");
+	$query = $db->query("SELECT u.uid, u.username, u.usergroup, u.email, a.code FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r') WHERE u.email='".$db->escape_string($mybb->input['email'])."'");
 	$numusers = $db->num_rows($query);
 	if($numusers < 1)
 	{
@@ -923,8 +923,8 @@ elseif($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_lostpw_start");
 
-	$email = addslashes($email);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE email='".addslashes($mybb->input['email'])."'");
+	$email = $db->escape_string($email);
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE email='".$db->escape_string($mybb->input['email'])."'");
 	$numusers = $db->num_rows($query);
 	if($numusers < 1)
 	{
@@ -963,7 +963,7 @@ elseif($mybb->input['action'] == "resetpassword")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['username'])."'");
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
@@ -1565,7 +1565,7 @@ elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "pos
 	{
 		nopermission();
 	}
-	$query = $db->query("SELECT uid, username, email, hideemail FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['touser'])."'");
+	$query = $db->query("SELECT uid, username, email, hideemail FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['touser'])."'");
 	$emailto = $db->fetch_array($query);
 	if(!$emailto['username'])
 	{

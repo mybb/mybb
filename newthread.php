@@ -423,7 +423,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		else
 		{
-			$attachwhere = "posthash='".addslashes($mybb->input['posthash'])."'";
+			$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
 		}
 
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
@@ -503,7 +503,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		else
 		{
-			$attachwhere = "posthash='".addslashes($posthash)."'";
+			$attachwhere = "posthash='".$db->escape_string($posthash)."'";
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
 		$attachments = '';

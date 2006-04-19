@@ -47,7 +47,7 @@ if($mybb->input['action'] == "do_add")
 	{
 		nopermission();
 	}
-	$query = $db->query("SELECT uid, additionalgroups, usergroup FROM ".TABLE_PREFIX."users WHERE username = '".addslashes($mybb->input['username'])."' LIMIT 1");
+	$query = $db->query("SELECT uid, additionalgroups, usergroup FROM ".TABLE_PREFIX."users WHERE username = '".$db->escape_string($mybb->input['username'])."' LIMIT 1");
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{

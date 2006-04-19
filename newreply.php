@@ -439,7 +439,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$attachwhere = "posthash='".addslashes($mybb->input['posthash'])."'";
+			$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
 		while($attachment = $db->fetch_array($query)) {
@@ -469,7 +469,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$attachwhere = "posthash='".addslashes($posthash)."'";
+			$attachwhere = "posthash='".$db->escape_string($posthash)."'";
 		}
 		$attachments = '';
 		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);

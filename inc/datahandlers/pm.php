@@ -110,7 +110,7 @@ class PMDataHandler extends DataHandler
 		// No user ID is specified, we need to query for it based on the username.
 		if(!isset($pm['toid']))
 		{
-			$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".addslashes($pm['username'])."'", array("limit" => 1));
+			$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".$db->escape_string($pm['username'])."'", array("limit" => 1));
 			$user = $db->fetch_array($query);
 			$pm['toid'] = $user['uid'];
 		}
@@ -312,9 +312,9 @@ class PMDataHandler extends DataHandler
 				"toid" => $pm['recipient']['uid'],
 				"fromid" => $pm['sender']['uid'],
 				"folder" => $pm['folder'],
-				"subject" => addslashes($pm['subject']),
+				"subject" => $db->escape_string($pm['subject']),
 				"icon" => intval($pm['icon']),
-				"message" => addslashes($pm['message']),
+				"message" => $db->escape_string($pm['message']),
 				"dateline" => time(),
 				"status" => 0,
 				"includesig" => $pm['options']['signature'],
@@ -341,9 +341,9 @@ class PMDataHandler extends DataHandler
 				"toid" => $pm['recipient']['uid'],
 				"fromid" => $pm['sender']['uid'],
 				"folder" => $pm['folder'],
-				"subject" => addslashes($pm['subject']),
+				"subject" => $db->escape_string($pm['subject']),
 				"icon" => intval($pm['icon']),
-				"message" => addslashes($pm['message']),
+				"message" => $db->escape_string($pm['message']),
 				"dateline" => time(),
 				"status" => 0,
 				"includesig" => $pm['options']['signature'],
@@ -390,9 +390,9 @@ class PMDataHandler extends DataHandler
 				"toid" => $pm['recipient']['uid'],
 				"fromid" => $pm['sender']['uid'],
 				"folder" => 2,
-				"subject" => addslashes($pm['subject']),
+				"subject" => $db->escape_string($pm['subject']),
 				"icon" => intval($pm['icon']),
-				"message" => addslashes($pm['message']),
+				"message" => $db->escape_string($pm['message']),
 				"dateline" => time(),
 				"status" => 1,
 				"includesig" => $pm['options']['signature'],

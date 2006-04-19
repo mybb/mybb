@@ -57,7 +57,7 @@ if($mybb->input['order'] != "DESC" && $mybb->input['order'] != "ASC")
 
 if($mybb->input['usersearch'])
 {
-	$query = $db->query("SELECT COUNT(*) AS users FROM ".TABLE_PREFIX."users WHERE username LIKE '%".addslashes($mybb->input['usersearch'])."%'");
+	$query = $db->query("SELECT COUNT(*) AS users FROM ".TABLE_PREFIX."users WHERE username LIKE '%".$db->escape_string($mybb->input['usersearch'])."%'");
 	$linkaddon = "&usersearch=".$mybb->input['usersearch'];
 }
 else
@@ -102,7 +102,7 @@ else
 
 if($mybb->input['usersearch'])
 {
-	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) WHERE u.username LIKE '%".addslashes($mybb->input['usersearch'])."%' ORDER BY u.".$mybb->input['by']." ".$mybb->input['order']." LIMIT $start, ".$mybb->settings['membersperpage']);
+	$query = $db->query("SELECT u.*, f.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) WHERE u.username LIKE '%".$db->escape_string($mybb->input['usersearch'])."%' ORDER BY u.".$mybb->input['by']." ".$mybb->input['order']." LIMIT $start, ".$mybb->settings['membersperpage']);
 }
 else
 {

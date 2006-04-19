@@ -287,7 +287,7 @@ else if($mybb->input['action'] == "edit_post")
 	{
 		$message = rawurldecode($mybb->input['value']);
 		$updatepost = array(
-			"message" => addslashes($message),
+			"message" => $db->escape_string($message),
 		);
 
 		// If we need to show the edited by, let's do so.

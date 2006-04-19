@@ -92,7 +92,7 @@ class templates
 		}
 		if($eslashes)
 		{
-			$template = str_replace("\\'", "'", addslashes($template));
+			$template = str_replace("\\'", "'", $db->escape_string($template));
 		}
 		return $template;
 	}

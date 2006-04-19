@@ -376,7 +376,7 @@ class Moderation
 
 		// Update the message
 		$mergepost = array(
-			"message" => addslashes($message),
+			"message" => $db->escape_string($message),
 			);
 		$db->update_query(TABLE_PREFIX."posts", $mergepost, "pid='$masterpid'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid IN($pidin) AND pid!='$masterpid'");
@@ -422,13 +422,13 @@ class Moderation
 				$db->update_query(TABLE_PREFIX."posts", $changefid, "tid='$tid'");
 				$threadarray = array(
 					"fid" => $thread['fid'],
-					"subject" => addslashes($thread['subject']),
+					"subject" => $db->escape_string($thread['subject']),
 					"icon" => $thread['icon'],
 					"uid" => $thread['uid'],
-					"username" => addslashes($thread['username']),
+					"username" => $db->escape_string($thread['username']),
 					"dateline" => $thread['dateline'],
 					"lastpost" => $thread['lastpost'],
-					"lastposter" => addslashes($thread['lastposter']),
+					"lastposter" => $db->escape_string($thread['lastposter']),
 					"views" => $thread['views'],
 					"replies" => $thread['replies'],
 					"closed" => "moved|$tid",
@@ -441,13 +441,13 @@ class Moderation
 				// we need to add code to copy attachments(?), polls, etc etc here
 				$threadarray = array(
 					"fid" => $new_fid,
-					"subject" => addslashes($thread['subject']),
+					"subject" => $db->escape_string($thread['subject']),
 					"icon" => $thread['icon'],
 					"uid" => $thread['uid'],
-					"username" => addslashes($thread['username']),
+					"username" => $db->escape_string($thread['username']),
 					"dateline" => $thread['dateline'],
 					"lastpost" => $thread['lastpost'],
-					"lastposter" => addslashes($thread['lastposter']),
+					"lastposter" => $db->escape_string($thread['lastposter']),
 					"views" => $thread['views'],
 					"replies" => $thread['replies'],
 					"closed" => $thread['closed'],
@@ -466,7 +466,7 @@ class Moderation
 					{
 						$postssql .= ", ";
 					}
-					$post['message'] = addslashes($post['message']);
+					$post['message'] = $db->escape_string($post['message']);
 					$postssql .= "('$newtid','$new_fid','$post[subject]','$post[icon]','$post[uid]','$post[username]','$post[dateline]','$post[message]','$post[ipaddress]','$post[includesig]','$post[smilieoff]','$post[edituid]','$post[edittime]','$post[visible]')";
 				}
 				$db->query("INSERT INTO ".TABLE_PREFIX."posts (tid,fid,subject,icon,uid,username,dateline,message,ipaddress,includesig,smilieoff,edituid,edittime,visible) VALUES $postssql");
@@ -568,7 +568,7 @@ class Moderation
 			}
 		}
 
-		$subject = addslashes($subject);
+		$subject = $db->escape_string($subject);
 
 		$sqlarray = array(
 			"tid" => $tid,
@@ -818,7 +818,7 @@ class Moderation
 
 		// Update threads and first posts with new subject
 		$new_subject = array(
-			"subject" => addslashes($text.$thread['subject']),
+			"subject" => $db->escape_string($text.$thread['subject']),
 			);
 		$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid IN ($tid_list)", count($tids));
 		$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid IN ($tid_list) AND replyto='0'", count($tids));
@@ -849,7 +849,7 @@ class Moderation
 
 		// Update threads and first posts with new subject
 		$new_subject = array(
-			"subject" => addslashes($thread['subject'].$text),
+			"subject" => $db->escape_string($thread['subject'].$text),
 			);
 		$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid IN ($tid_list)", count($tids));
 		$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid IN ($tid_list) AND replyto='0'", count($tids));

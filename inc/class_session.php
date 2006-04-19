@@ -52,7 +52,7 @@ class session
 		// Attempt to find a session id in the cookies.
 		if(isset($_COOKIE['sid']))
 		{
-			$this->sid = addslashes($_COOKIE['sid']);
+			$this->sid = $db->escape_string($_COOKIE['sid']);
 		}
 		else
 		{
@@ -440,11 +440,11 @@ class session
 			$onlinedata['uid'] = 0;
 		}
 		$onlinedata['time'] = time();
-		$onlinedata['location'] = addslashes(get_current_location());
-		$onlinedata['useragent'] = addslashes($this->useragent);
+		$onlinedata['location'] = $db->escape_string(get_current_location());
+		$onlinedata['useragent'] = $db->escape_string($this->useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
-		$sid = addslashes($sid);
+		$sid = $db->escape_string($sid);
 
 		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
 	}
@@ -484,8 +484,8 @@ class session
 		}
 		$onlinedata['time'] = time();
 		$onlinedata['ip'] = $this->ipaddress;
-		$onlinedata['location'] = addslashes(get_current_location());
-		$onlinedata['useragent'] = addslashes($this->useragent);
+		$onlinedata['location'] = $db->escape_string(get_current_location());
+		$onlinedata['useragent'] = $db->escape_string($this->useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
 		$db->insert_query(TABLE_PREFIX."sessions", $onlinedata);

@@ -98,7 +98,7 @@ class datacache
 		$this->cache[$name] = $contents;
 
 		// We ALWAYS keep a running copy in the db just incase we need it
-		$dbcontents = addslashes(serialize($contents));
+		$dbcontents = $db->escape_string(serialize($contents));
 		$db->query("REPLACE INTO ".TABLE_PREFIX."datacache (title, cache) VALUES ('$name','$dbcontents')");
 
 		// If using files, update the cache file too

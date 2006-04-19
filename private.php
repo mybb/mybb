@@ -543,7 +543,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 			if($val != '')
 			{
 				$foldername = $val;
-				$foldername = addslashes(htmlspecialchars_uni($foldername));
+				$foldername = $db->escape_string(htmlspecialchars_uni($foldername));
 				if(strpos($foldername, "$%%$") === false)
 				{
 					if($folders != '')
@@ -760,7 +760,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			reset($mybb->input['exportfolders']);
 			while(list($key, $val) = each($mybb->input['exportfolders']))
 			{
-				$val = addslashes($val);
+				$val = $db->escape_string($val);
 				if($val == "all")
 				{
 					$folderlst = '';

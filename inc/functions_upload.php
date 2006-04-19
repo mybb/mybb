@@ -133,7 +133,7 @@ function upload_attachment($attachment)
 {
 	global $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang;
 	
-	$posthash = addslashes($mybb->input['posthash']);
+	$posthash = $db->escape_string($mybb->input['posthash']);
 
 	if(isset($attachment['error']) && $attachment['error'] != 0)
 	{
@@ -200,7 +200,7 @@ function upload_attachment($attachment)
 	}
 
 	// Check if an attachment with this name is already in the post
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE filename='".addslashes($attachment['name'])."' AND (posthash='$posthash' OR (pid='$pid' AND pid!='0'))");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='$pid' AND pid!='0'))");
 	$prevattach = $db->fetch_array($query);
 	if($prevattach['aid'])
 	{
@@ -237,7 +237,7 @@ function upload_attachment($attachment)
 	$attacharray = array(
 		"posthash" => $posthash,
 		"uid" => $mybb->user['uid'],
-		"filename" => addslashes($file['original_filename']),
+		"filename" => $db->escape_string($file['original_filename']),
 		"filetype" => $file['type'],
 		"filesize" => $file['size'],
 		"attachname" => $filename,

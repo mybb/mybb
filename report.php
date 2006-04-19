@@ -87,8 +87,8 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 					"toid" => $mod['uid'],
 					"fromid" => -2,
 					"folder" => 1,
-					"subject" => addslashes($emailsubject),
-					"message" => addslashes($emailmessage),
+					"subject" => $db->escape_string($emailsubject),
+					"message" => $db->escape_string($emailmessage),
 					"dateline" => time(),
 					"status" => 0,
 					"readtime" => 0
@@ -111,7 +111,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			"uid" => $mybb->user['uid'],
 			"dateline" => time(),
 			"reportstatus" => 0,
-			"reason" => addslashes(htmlspecialchars_uni($mybb->input['reason']))
+			"reason" => $db->escape_string(htmlspecialchars_uni($mybb->input['reason']))
 			);
 		$db->insert_query(TABLE_PREFIX."reportedposts", $reportedpost);
 		$cache->updatereportedposts();

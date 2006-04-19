@@ -24,7 +24,7 @@ if($mybb->input['action'] == "markread")
 {
 	if($mybb->input['fid'])
 	{
-		$validforum = validateforum(addslashes($mybb->input['fid']));
+		$validforum = validateforum($db->escape_string($mybb->input['fid']));
 		if(!$validforum)
 		{
 			error($lang->error_invalidforum);
@@ -319,7 +319,7 @@ elseif($mybb->input['action'] == "smilies")
 		while($smilie = $db->fetch_array($query))
 		{
 			$smiliefind = $smilie['find'];
-			$smilie['find'] = addslashes($smilie['find']);
+			$smilie['find'] = $db->escape_string($smilie['find']);
 			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 			if($e == 2)
 			{

@@ -313,12 +313,12 @@ function perform_search_mysql($search)
 		$userids = array();
 		if($search['matchusername'])
 		{
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($search['author'])."'");
+			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($search['author'])."'");
 		}
 		else
 		{
 			$search['author'] = strtolower($search['author']);
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".addslashes($search['author'])."%'");
+			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
 		}
 		while($user = $db->fetch_array($query))
 		{
@@ -508,8 +508,8 @@ function perform_search_mysql_ft($search)
 				error($lang->error_minsearchlength);
 			}
 		}
-		$message_lookin = "MATCH(message) AGAINST('".addslashes($keywords)."' IN BOOLEAN MODE)";
-		$subject_lookin = "MATCH(subject) AGAINST('".addslashes($keywords)."' IN BOOLEAN MODE)";
+		$message_lookin = "MATCH(message) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
+		$subject_lookin = "MATCH(subject) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
 	}
 	$post_usersql = "";
 	$thread_usersql = "";
@@ -518,12 +518,12 @@ function perform_search_mysql_ft($search)
 		$userids = array();
 		if($search['matchusername'])
 		{
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($search['author'])."'");
+			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($search['author'])."'");
 		}
 		else
 		{
 			$search['author'] = strtolower($search['author']);
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".addslashes($search['author'])."%'");
+			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
 		}
 		while($user = $db->fetch_array($query))
 		{

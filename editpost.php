@@ -376,7 +376,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 	else
 	{
-		$posthash = addslashes($mybb->input['posthash']);
+		$posthash = $db->escape_string($mybb->input['posthash']);
 	}
 
 	$bgcolor = "trow2";

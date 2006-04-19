@@ -961,7 +961,7 @@ function updateforumcount($fid)
 	// If the last post tid is not equal to the queried one, update.
 	if($lastpost['lastposttid'] != $lasttid)
 	{
-		$lpadd = ",lastpost='".intval($lastpost['lastpost'])."', lastposter='".addslashes($lastpost['lastposter'])."', lastposttid='".intval($lastpost['tid'])."'";
+		$lpadd = ",lastpost='".intval($lastpost['lastpost'])."', lastposter='".$db->escape_string($lastpost['lastposter'])."', lastposttid='".intval($lastpost['tid'])."'";
 	}
 
 	// Get the post counters for this forum and its children
@@ -1043,8 +1043,8 @@ function updatethreadcount($tid)
 		$lastpost['uid'] = $firstpost['uid'];
 		$lastpost['dateline'] = $firstpost['dateline'];
 	}
-	$lastpost['username'] = addslashes($lastpost['username']);
-	$firstpost['username'] = addslashes($firstpost['username']);
+	$lastpost['username'] = $db->escape_string($lastpost['username']);
+	$firstpost['username'] = $db->escape_string($firstpost['username']);
 	// Unapproved posts
 	$query = $db->query("SELECT COUNT(*) AS totunposts FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND visible='0'");
 	$posts = $db->fetch_array($query);

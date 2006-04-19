@@ -38,7 +38,7 @@ $now = time();
 
 if($mybb->input['action'] == "results")
 {
-	$sid = addslashes($mybb->input['sid']);
+	$sid = $db->escape_string($mybb->input['sid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE sid='$sid'");
 	$search = $db->fetch_array($query);
 
@@ -613,7 +613,7 @@ elseif($mybb->input['action'] == "findguest")
 
 	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
-		"sid" => addslashes($sid),
+		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,
@@ -621,7 +621,7 @@ elseif($mybb->input['action'] == "findguest")
 		"posts" => '',
 		"searchtype" => "titles",
 		"resulttype" => "posts",
-		"querycache" => addslashes($where_sql),
+		"querycache" => $db->escape_string($where_sql),
 	);
 	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
@@ -644,7 +644,7 @@ elseif($mybb->input['action'] == "finduser")
 
 	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
-		"sid" => addslashes($sid),
+		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,
@@ -652,7 +652,7 @@ elseif($mybb->input['action'] == "finduser")
 		"posts" => '',
 		"searchtype" => "titles",
 		"resulttype" => "posts",
-		"querycache" => addslashes($where_sql),
+		"querycache" => $db->escape_string($where_sql),
 	);
 	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
@@ -675,7 +675,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 
 	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
-		"sid" => addslashes($sid),
+		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,
@@ -683,7 +683,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 		"posts" => '',
 		"searchtype" => "titles",
 		"resulttype" => "threads",
-		"querycache" => addslashes($where_sql),
+		"querycache" => $db->escape_string($where_sql),
 	);
 	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
@@ -707,7 +707,7 @@ elseif($mybb->input['action'] == "getnew")
 
 	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
-		"sid" => addslashes($sid),
+		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,
@@ -715,7 +715,7 @@ elseif($mybb->input['action'] == "getnew")
 		"posts" => '',
 		"searchtype" => "titles",
 		"resulttype" => "threads",
-		"querycache" => addslashes($where_sql),
+		"querycache" => $db->escape_string($where_sql),
 	);
 
 	$plugins->run_hooks("search_do_search_process");
@@ -750,7 +750,7 @@ elseif($mybb->input['action'] == "getdaily")
 
 	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
-		"sid" => addslashes($sid),
+		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
 		"ipaddress" => $ipaddress,
@@ -758,7 +758,7 @@ elseif($mybb->input['action'] == "getdaily")
 		"posts" => '',
 		"searchtype" => "titles",
 		"resulttype" => "threads",
-		"querycache" => addslashes($where_sql),
+		"querycache" => $db->escape_string($where_sql),
 	);
 
 	$plugins->run_hooks("search_do_search_process");
@@ -805,7 +805,7 @@ elseif($mybb->input['action'] == "do_search")
 	}
 	$sid = md5(uniqid(microtime(), 1));
 	$searcharray = array(
-		"sid" => addslashes($sid),
+		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => $now,
 		"ipaddress" => $ipaddress,

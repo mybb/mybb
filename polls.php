@@ -231,10 +231,10 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 	$newpoll = array(
 		"tid" => $thread['tid'],
-		"question" => addslashes($mybb->input['question']),
+		"question" => $db->escape_string($mybb->input['question']),
 		"dateline" => time(),
-		"options" => addslashes($optionslist),
-		"votes" => addslashes($voteslist),
+		"options" => $db->escape_string($optionslist),
+		"votes" => $db->escape_string($voteslist),
 		"numoptions" => intval($optioncount),
 		"numvotes" => 0,
 		"timeout" => $timeout,
@@ -511,9 +511,9 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		$timeout = 0;
 	}
 	$updatedpoll = array(
-		"question" => addslashes($mybb->input['question']),
-		"options" => addslashes($optionslist),
-		"votes" => addslashes($voteslist),
+		"question" => $db->escape_string($mybb->input['question']),
+		"options" => $db->escape_string($optionslist),
+		"votes" => $db->escape_string($voteslist),
 		"numoptions" => intval($numoptions),
 		"numvotes" => $numvotes,
 		"timeout" => $timeout,
@@ -726,7 +726,7 @@ if($mybb->input['action'] == "vote")
 		{
 			error($lang->error_nopolloptions);
 		}
-		$votesql = "('".$poll['pid']."','".$mybb->user['uid']."','".addslashes($option)."','$now')";
+		$votesql = "('".$poll['pid']."','".$mybb->user['uid']."','".$db->escape_string($option)."','$now')";
 		$votesarray[$option-1]++;
 		$numvotes = $numvotes+1;
 	}
@@ -742,7 +742,7 @@ if($mybb->input['action'] == "vote")
 		$voteslist .= $votesarray[$i-1];
 	}
 	$updatedpoll = array(
-		"votes" => addslashes($voteslist),
+		"votes" => $db->escape_string($voteslist),
 		"numvotes" => intval($numvotes),
 	);
 

@@ -461,11 +461,11 @@ elseif($mybb->input['action'] == "do_profile" && $mybb->request_method == "post"
 			{
 				$options = $mybb->input[$field];
 			}
-			$profilefields[$field] = addslashes($options);
+			$profilefields[$field] = $db->escape_string($options);
 		}
 		else
 		{
-			$profilefields[$field] = addslashes($mybb->user[$field]);
+			$profilefields[$field] = $db->escape_string($mybb->user[$field]);
 		}
 	}
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='".$mybb->user['uid']."'");
@@ -477,21 +477,21 @@ elseif($mybb->input['action'] == "do_profile" && $mybb->request_method == "post"
 	$db->update_query(TABLE_PREFIX."userfields", $profilefields, "ufid='".$mybb->user['uid']."'");
 
 	$newprofile = array(
-		"website" => addslashes(htmlspecialchars($mybb->input['website'])),
+		"website" => $db->escape_string(htmlspecialchars($mybb->input['website'])),
 		"icq" => intval($mybb->input['icq']),
-		"aim" => addslashes(htmlspecialchars($mybb->input['aim'])),
-		"yahoo" => addslashes(htmlspecialchars($mybb->input['yahoo'])),
-		"msn" => addslashes(htmlspecialchars($mybb->input['msn'])),
+		"aim" => $db->escape_string(htmlspecialchars($mybb->input['aim'])),
+		"yahoo" => $db->escape_string(htmlspecialchars($mybb->input['yahoo'])),
+		"msn" => $db->escape_string(htmlspecialchars($mybb->input['msn'])),
 		"birthday" => $bday,
 		"away" => $away,
 		"awaydate" => $awaydate,
 		"returndate" => $returndate,
-		"awayreason" => addslashes(htmlspecialchars($mybb->input['awayreason']))
+		"awayreason" => $db->escape_string(htmlspecialchars($mybb->input['awayreason']))
 		);
 
 	if($usertitle)
 	{
-		$newprofile['usertitle'] = addslashes(htmlspecialchars_uni($usertitle));
+		$newprofile['usertitle'] = $db->escape_string(htmlspecialchars_uni($usertitle));
 	}
 	$plugins->run_hooks("usercp_do_profile_process");
 
@@ -856,7 +856,7 @@ elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post"
 		"style" => intval($mybb->input['style']),
 		"dateformat" => intval($mybb->input['dateformat']),
 		"timeformat" => intval($mybb->input['timeformat']),
-		"timezone" => addslashes($mybb->input['timezoneoffset']),
+		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
 		"dst" => $mybb->input['dst'],
 		"threadmode" => $mybb->input['threadmode'],
 		"showsigs" => $mybb->input['showsigs'],
@@ -965,7 +965,7 @@ elseif($mybb->input['action'] == "do_email")
 			"code" => $activationcode,
 			"type" => "e",
 			"oldgroup" => $mybb->user['usergroup'],
-			"misc" => addslashes($mybb->input['email'])
+			"misc" => $db->escape_string($mybb->input['email'])
 			);
 		$db->insert_query(TABLE_PREFIX."awaitingactivation", $newactivation);
 
@@ -980,7 +980,7 @@ elseif($mybb->input['action'] == "do_email")
 	}
 	else
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET email='".addslashes($mybb->input['email'])."' WHERE uid='".$mybb->user['uid']."'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET email='".$db->escape_string($mybb->input['email'])."' WHERE uid='".$mybb->user['uid']."'");
 		$plugins->run_hooks("usercp_do_email_changed");
 		redirect("usercp.php", $lang->redirect_emailupdated);
 	}
@@ -1036,16 +1036,16 @@ elseif($mybb->input['action'] == "do_changename" && $mybb->request_method == "po
 	{
 		error($lang->error_bannedusername);
 	}
-	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username LIKE '".addslashes($mybb->input['username'])."'");
+	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username LIKE '".$db->escape_string($mybb->input['username'])."'");
 
 	if($db->fetch_array($query))
 	{
 		error($lang->error_usernametaken);
 	}
 	$plugins->run_hooks("usercp_do_changename_process");
-	$db->query("UPDATE ".TABLE_PREFIX."users SET username='".addslashes($mybb->input['username'])."' WHERE uid='".$mybb->user['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."forums SET lastposter='".addslashes($mybb->input['username'])."' WHERE lastposter='".addslashes($mybb->user['username'])."'");
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".addslashes($mybb->input['username'])."' WHERE lastposter='".addslashes($mybb->user['username'])."'");
+	$db->query("UPDATE ".TABLE_PREFIX."users SET username='".$db->escape_string($mybb->input['username'])."' WHERE uid='".$mybb->user['uid']."'");
+	$db->query("UPDATE ".TABLE_PREFIX."forums SET lastposter='".$db->escape_string($mybb->input['username'])."' WHERE lastposter='".$db->escape_string($mybb->user['username'])."'");
+	$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".$db->escape_string($mybb->input['username'])."' WHERE lastposter='".$db->escape_string($mybb->user['username'])."'");
 	$plugins->run_hooks("usercp_do_changename_end");
 	redirect("usercp.php", $lang->redirect_namechanged);
 }
@@ -1356,7 +1356,7 @@ elseif($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post"
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET includesig='no' WHERE uid='".$mybb->user['uid']."'");
 	}
 	$newsignature = array(
-		"signature" => addslashes($mybb->input['signature'])
+		"signature" => $db->escape_string($mybb->input['signature'])
 		);
 	$plugins->run_hooks("usercp_do_editsig_process");
 	$db->update_query(TABLE_PREFIX."users", $newsignature, "uid='".$mybb->user['uid']."'");
@@ -1508,11 +1508,11 @@ elseif($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	{
 		if($mybb->input['gallery'] == "default")
 		{
-			$avatarpath = addslashes($mybb->settings['avatardir']."/".$mybb->input['avatar']);
+			$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['avatar']);
 		}
 		else
 		{
-			$avatarpath = addslashes($mybb->settings['avatardir']."/".$mybb->input['gallery']."/".$mybb->input['avatar']);
+			$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['gallery']."/".$mybb->input['avatar']);
 		}
 		if(file_exists($avatarpath))
 		{
@@ -1550,7 +1550,7 @@ elseif($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 				error($lang->error_avatartoobig);
 			}
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."users SET avatar='".addslashes($mybb->input['avatarurl'])."', avatartype='remote' WHERE uid='".$mybb->user['uid']."'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET avatar='".$db->escape_string($mybb->input['avatarurl'])."', avatartype='remote' WHERE uid='".$mybb->user['uid']."'");
 		remove_avatars($mybb->user['uid']);
 	}
 	$plugins->run_hooks("usercp_do_avatar_end");
@@ -1567,7 +1567,7 @@ elseif($mybb->input['action'] == "notepad")
 elseif($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_notepad_start");
-	$db->query("UPDATE ".TABLE_PREFIX."users SET notepad='".addslashes($mybb->input['notepad'])."' WHERE uid='".$mybb->user['uid']."'");
+	$db->query("UPDATE ".TABLE_PREFIX."users SET notepad='".$db->escape_string($mybb->input['notepad'])."' WHERE uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks("usercp_do_notepad_end");
 	redirect("usercp.php", $lang->redirect_notepadupdated);
 }
@@ -1631,7 +1631,7 @@ elseif($mybb->input['action'] == "do_editlists" && $mybb->request_method == "pos
 	{
 		if(strtoupper($mybb->user['username']) != strtoupper($val))
 		{
-			$val = addslashes($val);
+			$val = $db->escape_string($val);
 			$users .= "$comma'$val'";
 			$comma = ",";
 		}
@@ -1817,12 +1817,12 @@ elseif($mybb->input['action'] == "usergroups")
 		}
 		if($mybb->input['do'] == "joingroup" && $usergroup['type'] == 4)
 		{
-			$reason = addslashes($reason);
+			$reason = $db->escape_string($reason);
 			$now = time();
 			$joinrequest = array(
 				"uid" => $mybb->user['uid'],
 				"gid" => intval($mybb->input['joingroup']),
-				"reason" => addslashes($mybb->input['reason']),
+				"reason" => $db->escape_string($mybb->input['reason']),
 				"dateline" => time()
 				);
 
@@ -2086,7 +2086,7 @@ elseif($mybb->input['action'] == "do_attachments" && $mybb->request_method == "p
 	{
 		error($lang->no_attachments_selected);
 	}
-	$aids = addslashes(implode(",", $mybb->input['attachments']));
+	$aids = $db->escape_string(implode(",", $mybb->input['attachments']));
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE aid IN ($aids) AND uid='".$mybb->user['uid']."'");
 	while($attachment = $db->fetch_array($query))
 	{

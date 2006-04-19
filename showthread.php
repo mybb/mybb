@@ -637,7 +637,7 @@ if($mybb->input['action'] == "thread")
 	{
 		$query = $db->query("
 			SELECT subject, tid, lastpost, username, replies,
-			MATCH (subject) AGAINST ('".addslashes($thread['subject'])."') AS relevance
+			MATCH (subject) AGAINST ('".$db->escape_string($thread['subject'])."') AS relevance
 			FROM ".TABLE_PREFIX."threads
 			WHERE fid='".$thread['fid']."'
 			AND tid <> '".$thread['tid']."'

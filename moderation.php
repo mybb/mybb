@@ -193,7 +193,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_do_deletethread");
 
-		$thread['subject'] = addslashes($thread['subject']);
+		$thread['subject'] = $db->escape_string($thread['subject']);
 		$lang->thread_deleted = sprintf($lang->thread_deleted, $thread['subject']);
 		logmod($modlogdata, $lang->thread_deleted);
 
@@ -583,7 +583,7 @@ switch($mybb->input['action'])
 
 		logmod($modlogdata, $lang->thread_notes_edited);
 		$sqlarray = array(
-			"notes" => addslashes($mybb->input['threadnotes']),
+			"notes" => $db->escape_string($mybb->input['threadnotes']),
 			);
 		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadnotesupdated);
