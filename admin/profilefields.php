@@ -44,15 +44,15 @@ if($mybb->input['action'] == "do_add")
 		$thing = $type;
 	}
 	$sqlarray = array(
-		"name" => addslashes($mybb->input['name']),
-		"description" => addslashes($mybb->input['description']),
+		"name" => $db->escape_string($mybb->input['name']),
+		"description" => $db->escape_string($mybb->input['description']),
 		"disporder" => intval($mybb->input['disporder']),
-		"type" => addslashes($thing),
+		"type" => $db->escape_string($thing),
 		"length" => intval($mybb->input['length']),
 		"maxlength" => intval($mybb->input['maxlength']),
-		"required" => addslashes($mybb->input['required']),
-		"editable" => addslashes($mybb->input['editable']),
-		"hidden" => addslashes($mybb->input['hidden']),
+		"required" => $db->escape_string($mybb->input['required']),
+		"editable" => $db->escape_string($mybb->input['editable']),
+		"hidden" => $db->escape_string($mybb->input['hidden']),
 		);
 	$db->insert_query(TABLE_PREFIX."profilefields", $sqlarray);
 	$fid = $db->insert_id();
@@ -90,15 +90,15 @@ if($mybb->input['action'] == "do_edit")
 		$thing = $type;
 	}
 	$sqlarray = array(
-		"name" => addslashes($mybb->input['name']),
-		"description" => addslashes($mybb->input['description']),
+		"name" => $db->escape_string($mybb->input['name']),
+		"description" => $db->escape_string($mybb->input['description']),
 		"disporder" => intval($mybb->input['disporder']),
-		"type" => addslashes($thing),
+		"type" => $db->escape_string($thing),
 		"length" => intval($mybb->input['length']),
 		"maxlength" => intval($mybb->input['maxlength']),
-		"required" => addslashes($mybb->input['required']),
-		"editable" => addslashes($mybb->input['editable']),
-		"hidden" => addslashes($mybb->input['hidden']),
+		"required" => $db->escape_string($mybb->input['required']),
+		"editable" => $db->escape_string($mybb->input['editable']),
+		"hidden" => $db->escape_string($mybb->input['hidden']),
 		);
 	$db->update_query(TABLE_PREFIX."profilefields", $sqlarray, "fid='".intval($mybb->input['fid'])."'");
 	cpredirect("profilefields.php", $lang->field_updated);

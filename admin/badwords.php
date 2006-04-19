@@ -36,8 +36,8 @@ switch($mybb->input['action'])
 if($mybb->input['action'] == "do_add")
 {
 	$sqlarray = array(
-		"badword" => addslashes($mybb->input['badword']),
-		"replacement" => addslashes($mybb->input['replacement']),
+		"badword" => $db->escape_string($mybb->input['badword']),
+		"replacement" => $db->escape_string($mybb->input['replacement']),
 		);
 	$db->insert_query(TABLE_PREFIX."badwords", $sqlarray);
 	$cache->updatebadwords();
@@ -48,8 +48,8 @@ if($mybb->input['action'] == "do_edit")
 {
 	$sqlarray = array(
 		"bid" => intval($mybb->input['bid']),
-		"badword" => addslashes($mybb->input['badword']),
-		"replacement" => addslashes($mybb->input['replacement']),
+		"badword" => $db->escape_string($mybb->input['badword']),
+		"replacement" => $db->escape_string($mybb->input['replacement']),
 		);
 	$db->update_query(TABLE_PREFIX."badwords", $sqlarray, "bid='".$sqlarray['bid']."'");
 	$cache->updatebadwords();

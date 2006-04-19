@@ -39,9 +39,9 @@ if($mybb->input['action'] == "do_add")
 		cperror($lang->error_fill_form);
 	}
 	$newsmilie = array(
-		"name" => addslashes($mybb->input['name']),
-		"find" => addslashes($mybb->input['find']),
-		"image" => addslashes($mybb->input['path']),
+		"name" => $db->escape_string($mybb->input['name']),
+		"find" => $db->escape_string($mybb->input['find']),
+		"image" => $db->escape_string($mybb->input['path']),
 		"disporder" => intval($mybb->input['disporder']),
 		"showclickable" => $mybb->input['showclickable']
 		);
@@ -72,9 +72,9 @@ if($mybb->input['action'] == "do_edit")
 		cperror($lang->error_fill_form);
 	}
 	$smilie = array(
-		"name" => addslashes($mybb->input['name']),
-		"find" => addslashes($mybb->input['find']),
-		"image" => addslashes($mybb->input['path']),
+		"name" => $db->escape_string($mybb->input['name']),
+		"find" => $db->escape_string($mybb->input['find']),
+		"image" => $db->escape_string($mybb->input['path']),
 		"disporder" => intval($mybb->input['disporder']),
 		"showclickable" => $mybb->input['showclickable']
 		);
@@ -179,9 +179,9 @@ if($mybb->input['action'] == "do_addmultiple")
 				$name = $smname[$image];
 				$imageurl = $path."/".$image;
 				$newsmilie = array(
-					"name" => addslashes($name),
-					"find" => addslashes($find),
-					"image" => addslashes($imageurl),
+					"name" => $db->escape_string($name),
+					"find" => $db->escape_string($find),
+					"image" => $db->escape_string($imageurl),
 					"showclickable" => "yes"
 				);
 				$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);

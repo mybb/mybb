@@ -34,8 +34,8 @@ if($mybb->input['action'] == "do_updateprefs")
 	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]' LIMIT 1");
 	$adminoptions = $db->fetch_array($query);
 	$sqlarray = array(
-		"notes" => addslashes($mybb->input['notes']),
-		"cpstyle" => addslashes($mybb->input['cpstyle']),
+		"notes" => $db->escape_string($mybb->input['notes']),
+		"cpstyle" => $db->escape_string($mybb->input['cpstyle']),
 		);
 	if(isset($adminoptions['uid']))
 	{
@@ -93,23 +93,23 @@ if($mybb->input['action'] == "do_updateperms")
 	$newperms = $mybb->input['newperms'];
 	$sqlarray = array(
 		"permsset" => '1',
-		"caneditsettings" => addslashes($newperms['caneditsettings']),
-		"caneditann" => addslashes($newperms['caneditann']),
-		"caneditforums" => addslashes($newperms['caneditforums']),
-		"canmodposts" => addslashes($newperms['canmodposts']),
-		"caneditsmilies" => addslashes($newperms['caneditsmilies']),
-		"caneditpicons" => addslashes($newperms['caneditpicons']),
-		"caneditthemes" => addslashes($newperms['caneditthemes']),
-		"canedittemps" => addslashes($newperms['canedittemps']),
-		"caneditusers" => addslashes($newperms['caneditusers']),
-		"caneditpfields" => addslashes($newperms['caneditpfields']),
-		"caneditugroups" => addslashes($newperms['caneditugroups']),
-		"caneditaperms" => addslashes($newperms['caneditaperms']),
-		"caneditutitles" => addslashes($newperms['caneditutitles']),
-		"caneditattach" => addslashes($newperms['caneditattach']),
-		"canedithelp" => addslashes($newperms['canedithelp']),
-		"caneditlangs" => addslashes($newperms['caneditlangs']),
-		"canrunmaint" => addslashes($newperms['canrunmaint']),
+		"caneditsettings" => $db->escape_string($newperms['caneditsettings']),
+		"caneditann" => $db->escape_string($newperms['caneditann']),
+		"caneditforums" => $db->escape_string($newperms['caneditforums']),
+		"canmodposts" => $db->escape_string($newperms['canmodposts']),
+		"caneditsmilies" => $db->escape_string($newperms['caneditsmilies']),
+		"caneditpicons" => $db->escape_string($newperms['caneditpicons']),
+		"caneditthemes" => $db->escape_string($newperms['caneditthemes']),
+		"canedittemps" => $db->escape_string($newperms['canedittemps']),
+		"caneditusers" => $db->escape_string($newperms['caneditusers']),
+		"caneditpfields" => $db->escape_string($newperms['caneditpfields']),
+		"caneditugroups" => $db->escape_string($newperms['caneditugroups']),
+		"caneditaperms" => $db->escape_string($newperms['caneditaperms']),
+		"caneditutitles" => $db->escape_string($newperms['caneditutitles']),
+		"caneditattach" => $db->escape_string($newperms['caneditattach']),
+		"canedithelp" => $db->escape_string($newperms['canedithelp']),
+		"caneditlangs" => $db->escape_string($newperms['caneditlangs']),
+		"canrunmaint" => $db->escape_string($newperms['canrunmaint']),
 		);
 	$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='$uid'");
 	

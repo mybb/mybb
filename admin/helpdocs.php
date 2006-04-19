@@ -39,11 +39,11 @@ if($mybb->input['action'] == "do_add")
 	{
 		$sqlarray = array(
 			"sid" => intval($mybb->input['sid']),
-			"name" => addslashes($mybb->input['name']),
-			"description" => addslashes($mybb->input['description']),
-			"document" => addslashes($mybb->input['document']),
-			"usetranslation" => addslashes($mybb->input['usetranslation']),
-			"enabled" => addslashes($mybb->input['enabled']),
+			"name" => $db->escape_string($mybb->input['name']),
+			"description" => $db->escape_string($mybb->input['description']),
+			"document" => $db->escape_string($mybb->input['document']),
+			"usetranslation" => $db->escape_string($mybb->input['usetranslation']),
+			"enabled" => $db->escape_string($mybb->input['enabled']),
 			"disporder" => intval($mybb->input['disporder']),
 			);
 		$db->insert_query(TABLE_PREFIX."helpdocs", $sqlarray);
@@ -52,10 +52,10 @@ if($mybb->input['action'] == "do_add")
 	elseif($mybb->input['add'] == "section")
 	{
 		$sqlarray = array(
-			"name" => addslashes($mybb->input['name']),
-			"description" => addslashes($mybb->input['description']),
-			"usetranslation" => addslashes($mybb->input['usetranslation']),
-			"enabled" => addslashes($mybb->input['enabled']),
+			"name" => $db->escape_string($mybb->input['name']),
+			"description" => $db->escape_string($mybb->input['description']),
+			"usetranslation" => $db->escape_string($mybb->input['usetranslation']),
+			"enabled" => $db->escape_string($mybb->input['enabled']),
 			"disporder" => intval($mybb->input['disporder']),
 			);
 		$db->insert_query(TABLE_PREFIX."helpsections", $sqlarray);
@@ -106,11 +106,11 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$sqlarray = array(
 			"sid" => intval($mybb->input['sid']),
-			"name" => addslashes($mybb->input['name']),
-			"description" => addslashes($mybb->input['description']),
-			"document" => addslashes($mybb->input['document']),
-			"usetranslation" => addslashes($mybb->input['usetranslation']),
-			"enabled" => addslashes($mybb->input['enabled']),
+			"name" => $db->escape_string($mybb->input['name']),
+			"description" => $db->escape_string($mybb->input['description']),
+			"document" => $db->escape_string($mybb->input['document']),
+			"usetranslation" => $db->escape_string($mybb->input['usetranslation']),
+			"enabled" => $db->escape_string($mybb->input['enabled']),
 			"disporder" => intval($mybb->input['disporder']),
 			);
 		$db->update_query(TABLE_PREFIX."helpdocs", $sqlarray, "hid='".intval($mybb->input['hid'])."'");
@@ -119,10 +119,10 @@ if($mybb->input['action'] == "do_edit")
 	elseif($mybb->input['sid'])
 	{
 		$sqlarray = array(
-			"name" => addslashes($mybb->input['name']),
-			"description" => addslashes($mybb->input['description']),
-			"usetranslation" => addslashes($mybb->input['usetranslation']),
-			"enabled" => addslashes($mybb->input['enabled']),
+			"name" => $db->escape_string($mybb->input['name']),
+			"description" => $db->escape_string($mybb->input['description']),
+			"usetranslation" => $db->escape_string($mybb->input['usetranslation']),
+			"enabled" => $db->escape_string($mybb->input['enabled']),
 			"disporder" => intval($mybb->input['disporder']),
 			);
 		$db->update_query(TABLE_PREFIX."helpsections", $sqlarray, "sid='".intval($mybb->input['sid'])."'");

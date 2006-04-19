@@ -68,7 +68,7 @@ if($mybb->input['do'] == "login")
 elseif($mybb->input['action'] != "logout")
 {
 	$logon = explode("_", $_COOKIE['mybbadmin'], 2);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".addslashes($logon[0])."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$db->escape_string($logon[0])."'");
 	$user = $db->fetch_array($query);
 	if($user['loginkey'] != $logon[1])
 	{

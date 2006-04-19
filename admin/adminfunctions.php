@@ -1802,10 +1802,10 @@ function update_theme($tid, $pid="", $themebits="", $css="", $child=0, $isnew=0)
 		$theme['css'] .= $theme['extracss'];
 	}
 
-	$theme['css'] = addslashes($theme['css']);
-	$theme['themebits'] = addslashes(serialize($theme['themebits']));
-	$theme['cssbits'] = addslashes(serialize($theme['cssbits']));
-	$theme['extracss'] = addslashes($theme['extracss']);
+	$theme['css'] = $db->escape_string($theme['css']);
+	$theme['themebits'] = $db->escape_string(serialize($theme['themebits']));
+	$theme['cssbits'] = $db->escape_string(serialize($theme['cssbits']));
+	$theme['extracss'] = $db->escape_string($theme['extracss']);
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET css='".$theme['css']."', cssbits='".$theme['cssbits']."', themebits='".$theme['themebits']."', extracss='".$theme['extracss']."' WHERE tid='$tid'");
 	// Update kids!
 	if(is_array($tcache2[$tid]))

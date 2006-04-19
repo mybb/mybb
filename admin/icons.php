@@ -37,8 +37,8 @@ switch($mybb->input['action'])
 if($mybb->input['action'] == "do_add")
 {
 	$sqlarray = array(
-		"name" => addslashes($mybb->input['name']),
-		"path" => addslashes($mybb->input['path']),
+		"name" => $db->escape_string($mybb->input['name']),
+		"path" => $db->escape_string($mybb->input['path']),
 		);
 	if(empty($sqlarray['name']) || empty($sqlarray['path']))
 	{
@@ -64,8 +64,8 @@ if($mybb->input['action'] == "do_delete")
 if($mybb->input['action'] == "do_edit")
 {
 	$sqlarray = array(
-		"name" => addslashes($mybb->input['name']),
-		"path" => addslashes($mybb->input['path']),
+		"name" => $db->escape_string($mybb->input['name']),
+		"path" => $db->escape_string($mybb->input['path']),
 		);
 	if(empty($sqlarray['name']) || empty($sqlarray['path']))
 	{
@@ -165,8 +165,8 @@ if($mybb->input['action'] == "do_addmultiple")
 			if($insert)
 			{
 				$sqlarray = array(
-					"name" => addslashes($mybb->input['piname'][$image]),
-					"path" => addslashes($path."/".$image),
+					"name" => $db->escape_string($mybb->input['piname'][$image]),
+					"path" => $db->escape_string($path."/".$image),
 					);
 				$db->insert_query(TABLE_PREFIX."icons", $sqlarray);
 			}

@@ -30,7 +30,7 @@ if($mybb->input['action'] == "do_prune")
 {
 	$time = time();
 	$days = intval($mybb->input['days']);
-	$fromscript = addslashes($mybb->input['fromscript']);
+	$fromscript = $db->escape_string($mybb->input['fromscript']);
 	$fromadmin = intval($mybb->input['fromadmin']);
 
 	$timecut = $time-($days*60*60*24);
@@ -65,7 +65,7 @@ if($mybb->input['action'] == "do_prune")
 elseif($mybb->input['action'] == "view")
 {
 	$perpage = intval($mybb->input['perpage']);
-	$fromscript = addslashes($mybb->input['fromscript']);
+	$fromscript = $db->escape_string($mybb->input['fromscript']);
 	$fromadmin = intval($mybb->input['fromadmin']);
 	$orderby = $mybb->input['orderby'];
 	$page = $mybb->input['page'];

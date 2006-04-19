@@ -54,10 +54,10 @@ if($mybb->input['action'] == "do_add")
 	if(($mybb->input['extension'] || $mybb->input['mimetype']) && $mybb->input['maxsize'])
 	{
 		$sqlarray = array(
-			"mimetype" => addslashes($mybb->input['mimetype']),
-			"extension" => addslashes($mybb->input['extension']),
-			"maxsize" => addslashes($mybb->input['maxsize']),
-			"icon" => addslashes($mybb->input['icon']),
+			"mimetype" => $db->escape_string($mybb->input['mimetype']),
+			"extension" => $db->escape_string($mybb->input['extension']),
+			"maxsize" => $db->escape_string($mybb->input['maxsize']),
+			"icon" => $db->escape_string($mybb->input['icon']),
 			);
 		$db->insert_query(TABLE_PREFIX."attachtypes", $sqlarray);
 		$cache->updateattachtypes();
@@ -91,10 +91,10 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$sqlarray = array(
 			"atid" => intval($mybb->input['atid']),
-			"mimetype" => addslashes($mybb->input['mimetype']),
-			"extension" => addslashes($mybb->input['extension']),
-			"maxsize" => addslashes($mybb->input['maxsize']),
-			"icon" => addslashes($mybb->input['icon']),
+			"mimetype" => $db->escape_string($mybb->input['mimetype']),
+			"extension" => $db->escape_string($mybb->input['extension']),
+			"maxsize" => $db->escape_string($mybb->input['maxsize']),
+			"icon" => $db->escape_string($mybb->input['icon']),
 			);
 		$db->update_query(TABLE_PREFIX."attachtypes", $sqlarray, "atid='".$sqlarray['atid']."'");
 		$cache->updateattachtypes();
@@ -112,17 +112,17 @@ if($mybb->input['action'] == "do_search")
 	$sql = "";
 	if($mybb->input['username'])
 	{
-		$username = addslashes($mybb->input['username']);
+		$username = $db->escape_string($mybb->input['username']);
 		$sql .= " AND u.username LIKE '%$username%'";
 	}
 	if($mybb->input['filename'])
 	{
-		$filename = addslashes($mybb->input['filename']);
+		$filename = $db->escape_string($mybb->input['filename']);
 		$sql .= " AND a.filename LIKE '%$filename%'";
 	}
 	if($mybb->input['mimetype'])
 	{
-		$mimetype = addslashes($mybb->input['mimetype']);
+		$mimetype = $db->escape_string($mybb->input['mimetype']);
 		$sql .= " AND a.filetype LIKE '%$mimetype%'";
 	}
 	if($mybb->input['forum'])
@@ -137,13 +137,13 @@ if($mybb->input['action'] == "do_search")
 	}
 	if($mybb->input['sizeless'])
 	{
-		$sizeless = addslashes($mybb->input['sizeless']);
+		$sizeless = $db->escape_string($mybb->input['sizeless']);
 		$sizeless *= 1024;
 		$sql .= " AND a.filesize < '$sizeless'";
 	}
 	if($mybb->input['sizemore'])
 	{
-		$sizemore = addslashes($mybb->input['sizemore']);
+		$sizemore = $db->escape_string($mybb->input['sizemore']);
 		$sizemore *= 1024;
 		$sql .= " AND a.filesize > '$sizemore'";
 	}

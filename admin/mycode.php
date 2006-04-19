@@ -56,11 +56,11 @@ if($mybb->input['action'] == "do_add")
 		cperror($lang->error_fill_form);
 	}
 	$newmycode = array(
-		"title" => addslashes($mybb->input['title']),
-		"description" => addslashes($mybb->input['description']),
-		"regex" => addslashes($mybb->input['regex']),
-		"replacement" => addslashes($mybb->input['replacement']),
-		"active" => addslashes($mybb->input['active'])
+		"title" => $db->escape_string($mybb->input['title']),
+		"description" => $db->escape_string($mybb->input['description']),
+		"regex" => $db->escape_string($mybb->input['regex']),
+		"replacement" => $db->escape_string($mybb->input['replacement']),
+		"active" => $db->escape_string($mybb->input['active'])
 		);
 
 	$db->insert_query(TABLE_PREFIX."mycode", $newmycode);
@@ -103,11 +103,11 @@ if($mybb->input['action'] == "do_edit")
 		cperror($lang->error_fill_form);
 	}
 	$mycode = array(
-		"title" => addslashes($mybb->input['title']),
-		"description" => addslashes($mybb->input['description']),
-		"regex" => addslashes($mybb->input['regex']),
-		"replacement" => addslashes($mybb->input['replacement']),
-		"active" => addslashes($mybb->input['active'])
+		"title" => $db->escape_string($mybb->input['title']),
+		"description" => $db->escape_string($mybb->input['description']),
+		"regex" => $db->escape_string($mybb->input['regex']),
+		"replacement" => $db->escape_string($mybb->input['replacement']),
+		"active" => $db->escape_string($mybb->input['active'])
 		);
 
 	$db->update_query(TABLE_PREFIX."mycode", $mycode, "cid='".intval($mybb->input['cid'])."'");

@@ -79,8 +79,8 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 			{
 				if($val != "no")
 				{
-					$subject = addslashes($mybb->input['threadsubject'][$tid]);
-					$message = addslashes($mybb->input['threadmessage'][$tid]);
+					$subject = $db->escape_string($mybb->input['threadsubject'][$tid]);
+					$message = $db->escape_string($mybb->input['threadmessage'][$tid]);
 					
 					$sql_array = array(
 						"visible" => 1,
@@ -122,8 +122,8 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 			{
 				if($val != "no")
 				{
-					$message = addslashes($mybb->input['postmessage'][$pid]);
-					$subject = addslashes($mybb->input['postsubject'][$pid]);
+					$message = $db->escape_string($mybb->input['postmessage'][$pid]);
+					$subject = $db->escape_string($mybb->input['postsubject'][$pid]);
 					
 					$sql_array = array(
 						"visible" => 1,

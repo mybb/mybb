@@ -49,7 +49,7 @@ if($mybb->input['action'] == "do_change") {
 	{
 		foreach($mybb->input['upsetting'] as $key => $val)
 		{
-			$val = addslashes($val);
+			$val = $db->escape_string($val);
 			$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$val' WHERE sid='$key'");
 		}
 	}
@@ -72,14 +72,14 @@ if($mybb->input['action'] == "do_change") {
 if($mybb->input['action'] == "do_add") {
 	if($mybb->input['add'] == "setting") {
 		if($mybb->input['type'] == "custom") {
-			$mybb->input['type'] = addslashes($mybb->input['code']);
+			$mybb->input['type'] = $db->escape_string($mybb->input['code']);
 		}
 		$settingarray = array(
-			"name" => addslashes($mybb->input['name']),
-			"title" => addslashes($mybb->input['title']),
-			"description" => addslashes($mybb->input['description']),
+			"name" => $db->escape_string($mybb->input['name']),
+			"title" => $db->escape_string($mybb->input['title']),
+			"description" => $db->escape_string($mybb->input['description']),
 			"optionscode" => $mybb->input['type'],
-			"value" => addslashes($mybb->input['value']),
+			"value" => $db->escape_string($mybb->input['value']),
 			"disporder" => intval($mybb->input['disporder']),
 			"gid" => intval($mybb->input['gid'])
 			);
@@ -89,15 +89,15 @@ if($mybb->input['action'] == "do_add") {
 		cpredirect("settings.php", $lang->setting_added);
 	}
 	else if($add == "group") {
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE name='".addslashes($mybb->input['name'])."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE name='".$db->escape_string($mybb->input['name'])."'");
 		$g = $db->fetch_array($query);
 		if($g['name'])
 		{
 			cperror($lang->group_exists);
 		}
 		$settinggrouparray = array(
-			"name" => addslashes($mybb->input['name']),
-			"description" => addslashes($mybb->input['description']),
+			"name" => $db->escape_string($mybb->input['name']),
+			"description" => $db->escape_string($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])
 			);
 		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
@@ -174,11 +174,11 @@ if($mybb->input['action'] == "do_edit") {
 	cpheader();
 	if($mybb->input['sid']) {
 		$settingarray = array(
-			"name" => addslashes($mybb->input['name']),
-			"title" => addslashes($mybb->input['title']),
-			"description" => addslashes($mybb->input['description']),
-			"optionscode" => addslashes($mybb->input['type']),
-			"value" => addslashes($mybb->input['value']),
+			"name" => $db->escape_string($mybb->input['name']),
+			"title" => $db->escape_string($mybb->input['title']),
+			"description" => $db->escape_string($mybb->input['description']),
+			"optionscode" => $db->escape_string($mybb->input['type']),
+			"value" => $db->escape_string($mybb->input['value']),
 			"disporder" => intval($mybb->input['disporder']),
 			"gid" => intval($mybb->input['gid'])
 			);
@@ -188,8 +188,8 @@ if($mybb->input['action'] == "do_edit") {
 	}
 	else if($mybb->input['gid']) {
 		$settinggrouparray = array(
-			"name" => addslashes($mybb->input['name']),
-			"description" => addslashes($mybb->input['description']),
+			"name" => $db->escape_string($mybb->input['name']),
+			"description" => $db->escape_string($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])
 			);
 		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {

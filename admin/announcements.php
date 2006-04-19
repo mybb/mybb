@@ -63,8 +63,8 @@ function getforums($pid="0")
 
 if($mybb->input['action'] == "do_add")
 {
-	$message = addslashes($mybb->input['message']);
-	$subject = addslashes($mybb->input['subject']);
+	$message = $db->escape_string($mybb->input['message']);
+	$subject = $db->escape_string($mybb->input['subject']);
 	$startdateampm = $mybb->input['startdateampm'];
 	$startdatehour = intval($mybb->input['startdatehour']);
 	$enddateampm = $mybb->input['enddateampm'];
@@ -102,9 +102,9 @@ if($mybb->input['action'] == "do_add")
 		"message" => $message,
 		"startdate" => $startdate,
 		"enddate" => $enddate,
-		"allowhtml" => addslashes($mybb->input['allowhtml']),
-		"allowmycode" => addslashes($mybb->input['allowmycode']),
-		"allowsmilies" => addslashes($mybb->input['allowsmilies']),
+		"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
+		"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
+		"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
 		);
 	$db->insert_query(TABLE_PREFIX."announcements", $sqlarray);
 	cpredirect("announcements.php", $lang->announcement_added);
@@ -123,8 +123,8 @@ if($mybb->input['action'] == "do_delete")
 }
 if($mybb->input['action'] == "do_edit")
 {
-	$message = addslashes($mybb->input['message']);
-	$subject = addslashes($mybb->input['subject']);
+	$message = $db->escape_string($mybb->input['message']);
+	$subject = $db->escape_string($mybb->input['subject']);
 	$startdateampm = $mybb->input['startdateampm'];
 	$startdatehour = intval($mybb->input['startdatehour']);
 	$enddateampm = $mybb->input['enddateampm'];
@@ -163,9 +163,9 @@ if($mybb->input['action'] == "do_edit")
 		"message" => $message,
 		"startdate" => $startdate,
 		"enddate" => $enddate,
-		"allowhtml" => addslashes($mybb->input['allowhtml']),
-		"allowmycode" => addslashes($mybb->input['allowmycode']),
-		"allowsmilies" => addslashes($mybb->input['allowsmilies']),
+		"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
+		"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
+		"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
 		);
 	$db->update_query(TABLE_PREFIX."announcements", $sqlarray, "aid='$aid'");
 	cpredirect("announcements.php", $lang->announcement_edited);

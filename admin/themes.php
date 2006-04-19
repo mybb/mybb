@@ -45,14 +45,14 @@ if($mybb->input['action'] == "do_add")
 	{
 		$mybb->input['pid'] = 1;
 	}
-	$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."themes WHERE name='".addslashes($mybb->input['name'])."'");
+	$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."themes WHERE name='".$db->escape_string($mybb->input['name'])."'");
 	$existingtheme = $db->fetch_array($query);
 	if($existingtheme['tid'])
 	{
 		cpmessage($lang->theme_exists);
 	}
 	$themearray = array(
-		"name" => addslashes($mybb->input['name']),
+		"name" => $db->escape_string($mybb->input['name']),
 		"pid" => $mybb->input['pid'],
 		);
 
@@ -100,7 +100,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 
 	$themearray = array(
-		"name" => addslashes($mybb->input['name']),
+		"name" => $db->escape_string($mybb->input['name']),
 		"pid" => $mybb->input['pid'],
 		"allowedgroups" => $allowedgroups,
 		);
@@ -311,7 +311,7 @@ if($mybb->input['action'] == "do_import")
 	}
 	$version = $theme['attributes']['version'];
 
-	$query = $db->simple_select(TABLE_PREFIX."themes", "tid", "name='".addslashes($name)."'", array("limit" => 1));
+	$query = $db->simple_select(TABLE_PREFIX."themes", "tid", "name='".$db->escape_string($name)."'", array("limit" => 1));
 	$existingtheme = $db->fetch_array($query);
 	if($existingtheme['tid'])
 	{
@@ -348,7 +348,7 @@ if($mybb->input['action'] == "do_import")
 		foreach($templates as $template)
 		{
 			$templatename = $template['attributes']['name'];
-			$templatevalue = addslashes($template['value']);
+			$templatevalue = $db->escape_string($template['value']);
 			$templateversion = $template['attributes']['version'];
 			$time = time();
 			$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$templateset','$templateversion','','$time')");
@@ -360,7 +360,7 @@ if($mybb->input['action'] == "do_import")
 		$mybb->input['pid'] = 1;
 	}
 	$themearray = array(
-		"name" => addslashes($name),
+		"name" => $db->escape_string($name),
 		"pid" => $mybb->input['pid'],
 		);
 

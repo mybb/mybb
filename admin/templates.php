@@ -69,20 +69,20 @@ checkadminpermissions("canedittemps");
 logadmin();
 
 if($mybb->input['action'] == "do_add") {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='".intval($mybb->input['setid'])."' AND title='".addslashes($mybb->input['title'])."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='".intval($mybb->input['setid'])."' AND title='".$db->escape_string($mybb->input['title'])."'");
 	$temp = $db->fetch_array($query);
 	if($temp[tid]) {
 		cperror($lang->name_exists);
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".addslashes($mybb->input['title'])."' AND sid='-2'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($mybb->input['title'])."' AND sid='-2'");
 	$templateinfo = $db->fetch_array($query);
 	if($templateinfo['template'] == $mybb->input['template'])
 	{
 		cperror($lang->template_same_master);
 	}
 	$newtemplate = array(
-		"title" => addslashes($mybb->input['title']),
-		"template" => addslashes($mybb->input['template']),
+		"title" => $db->escape_string($mybb->input['title']),
+		"template" => $db->escape_string($mybb->input['template']),
 		"sid" => $mybb->input['setid'],
 		"version" => $mybboard['vercode'],
 		"status" => "",
@@ -106,7 +106,7 @@ if($mybb->input['action'] == "do_add") {
 }
 if($mybb->input['action'] == "do_addset") {
 	$newset = array(
-		"title" => addslashes($mybb->input['title'])
+		"title" => $db->escape_string($mybb->input['title'])
 		);
 	$db->insert_query(TABLE_PREFIX."templatesets", $newset);
 	$setid = $db->insert_id();
@@ -145,7 +145,7 @@ if($mybb->input['action'] == "do_deleteset")
 }
 if($mybb->input['action'] == "do_editset")
 {
-	$db->query("UPDATE ".TABLE_PREFIX."templatesets SET title='".addslashes($mybb->input['title'])."' WHERE sid='".intval($mybb->input['setid'])."'");
+	$db->query("UPDATE ".TABLE_PREFIX."templatesets SET title='".$db->escape_string($mybb->input['title'])."' WHERE sid='".intval($mybb->input['setid'])."'");
 	cpredirect("templates.php", $lang->set_edited);
 }
 
@@ -159,8 +159,8 @@ if($mybb->input['action'] == "do_edit")
 		$mybb->input['title'] = $templateinfo['title'];
 	}
 	$updatedtemplate = array(
-		"title" => addslashes($mybb->input['title']),
-		"template" => addslashes($mybb->input['template']),
+		"title" => $db->escape_string($mybb->input['title']),
+		"template" => $db->escape_string($mybb->input['template']),
 		"sid" => intval($mybb->input['setid']),
 		"version" => $mybboard['vercode'],
 		"status" => "",
@@ -199,7 +199,7 @@ if($mybb->input['action'] == "do_replace") {
 			if($newtemplate != $template['template']) {
 				if($mybb->input['replace'] != "") {
 					$updatedtemplate = array(
-						"template" => addslashes($newtemplate)
+						"template" => $db->escape_string($newtemplate)
 						);
 					$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$template['tid']."'");
 					echo "$lang->search_updated $template[title]".
@@ -240,7 +240,7 @@ if($mybb->input['action'] == "edit") {
 	}
 	maketextareacode($lang->template, "template", $template['template'], "25", "80");
 	if($template[sid] != "-2") {
-		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."templates WHERE title='".addslashes($template['title'])."' AND sid='-2';");
+		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($template['title'])."' AND sid='-2';");
 		$master = $db->fetch_array($query);
 		if($master['tid'])
 		{
@@ -332,14 +332,14 @@ if($mybb->input['action'] == "makeoriginals") {
 	while($template = $db->fetch_array($query)) {
 		if($template[origtitle]) {
 			$updatedtemplate = array(
-				"template" => addslashes($template['template'])
+				"template" => $db->escape_string($template['template'])
 				);
 			$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "title='".$template['title']."' AND sid='-2'");
 		} else {
 			$newtemplate = array(
 				"sid" => -2,
-				"title" => addslashes($template['title']),
-				"template" => addslashes($template['template'])
+				"title" => $db->escape_string($template['title']),
+				"template" => $db->escape_string($template['template'])
 				);
 			$db->insert_query(TABLE_PREFIX."templates", $newtemplate);
 		}

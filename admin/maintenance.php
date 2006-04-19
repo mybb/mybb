@@ -42,7 +42,7 @@ if($mybb->input['action'] == "do_cache")
 	{
 		cpheader();
 		starttable();
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."datacache WHERE title='".addslashes($cacheitem)."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."datacache WHERE title='".$db->escape_string($cacheitem)."'");
 		$cacheitem = $db->fetch_array($query);
 		$cachecontents = unserialize($cacheitem['cache']);
 		if(empty($cachecontents))

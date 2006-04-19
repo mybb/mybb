@@ -1,4 +1,4 @@
-<?php
+$db->escape_string<?php
 /**
  * MyBB 1.0
  * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
@@ -41,9 +41,9 @@ if($mybb->input['action'] == "do_add")
 
 	$usertitle = array(
 		"posts" => intval($mybb->input['posts']),
-		"title" => addslashes($mybb->input['title']),
+		"title" => $db->escape_string($mybb->input['title']),
 		"stars" => intval($mybb->input['stars']),
-		"starimage" => addslashes($mybb->input['starimage'])
+		"starimage" => $db->escape_string($mybb->input['starimage'])
 		);
 
 	$db->insert_query(TABLE_PREFIX."usertitles", $usertitle);
@@ -71,9 +71,9 @@ if($mybb->input['action'] == "do_edit")
 
 	$usertitle = array(
 		"posts" => intval($mybb->input['posts']),
-		"title" => addslashes($mybb->input['title']),
+		"title" => $db->escape_string($mybb->input['title']),
 		"stars" => intval($mybb->input['stars']),
-		"starimage" => addslashes($mybb->input['starimage'])
+		"starimage" => $db->escape_string($mybb->input['starimage'])
 		);
 	$db->update_query(TABLE_PREFIX."usertitles", $usertitle, "utid='".intval($mybb->input['utid'])."'");
 	cpredirect("usertitles.php", $lang->title_updated);

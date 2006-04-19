@@ -53,7 +53,7 @@ if($mybb->input['action'] == "do_prune") {
 if($mybb->input['action'] == "view")
 {
 	$perpage = intval($mybb->input['perpage']);
-	$fromscript = addslashes($mybb->input['fromscript']);
+	$fromscript = $db->escape_string($mybb->input['fromscript']);
 	$frommod = intval($mybb->input['frommod']);
 	$orderby = $mybb->input['orderby'];
 	$page = intval($mybb->input['page']);

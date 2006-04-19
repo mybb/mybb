@@ -204,38 +204,38 @@ if($mybb->input['action'] == "do_add") {
 		cperror($lang->forum_noparent);
 	}
 	$sqlarray = array(
-		"name" => addslashes($mybb->input['name']),
-		"description" => addslashes($mybb->input['description']),
-		"linkto" => addslashes($mybb->input['linkto']),
+		"name" => $db->escape_string($mybb->input['name']),
+		"description" => $db->escape_string($mybb->input['description']),
+		"linkto" => $db->escape_string($mybb->input['linkto']),
 		"type" => $type,
 		"pid" => $pid,
 		"disporder" => intval($mybb->input['disporder']),
-		"active" => addslashes($mybb->input['isactive']),
-		"open" => addslashes($mybb->input['isopen']),
+		"active" => $db->escape_string($mybb->input['isactive']),
+		"open" => $db->escape_string($mybb->input['isopen']),
 		"threads" => '0',
 		"posts" => '0',
 		"lastpost" => '0',
 		"lastposter" => '0',
-		"allowhtml" => addslashes($mybb->input['allowhtml']),
-		"allowmycode" => addslashes($mybb->input['allowmycode']),
-		"allowsmilies" => addslashes($mybb->input['allowsmilies']),
-		"allowimgcode" => addslashes($mybb->input['allowimgcode']),
-		"allowpicons" => addslashes($mybb->input['allowpicons']),
-		"allowtratings" => addslashes($mybb->input['allowtratings']),
-		"usepostcounts" => addslashes($mybb->input['usepostcounts']),
-		"password" => addslashes($mybb->input['password']),
-		"showinjump" => addslashes($mybb->input['showinjump']),
-		"modposts" => addslashes($mybb->input['modposts']),
-		"modthreads" => addslashes($mybb->input['modthreads']),
-		"modattachments" => addslashes($mybb->input['modattachments']),
-		"style" => addslashes($mybb->input['fstyle']),
-		"overridestyle" => addslashes($mybb->input['overridestyle']),
-		"rulestype" => addslashes($mybb->input['rulestype']),
-		"rulestitle" => addslashes($mybb->input['rulestitle']),
-		"rules" => addslashes($mybb->input['rules']),
+		"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
+		"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
+		"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
+		"allowimgcode" => $db->escape_string($mybb->input['allowimgcode']),
+		"allowpicons" => $db->escape_string($mybb->input['allowpicons']),
+		"allowtratings" => $db->escape_string($mybb->input['allowtratings']),
+		"usepostcounts" => $db->escape_string($mybb->input['usepostcounts']),
+		"password" => $db->escape_string($mybb->input['password']),
+		"showinjump" => $db->escape_string($mybb->input['showinjump']),
+		"modposts" => $db->escape_string($mybb->input['modposts']),
+		"modthreads" => $db->escape_string($mybb->input['modthreads']),
+		"modattachments" => $db->escape_string($mybb->input['modattachments']),
+		"style" => $db->escape_string($mybb->input['fstyle']),
+		"overridestyle" => $db->escape_string($mybb->input['overridestyle']),
+		"rulestype" => $db->escape_string($mybb->input['rulestype']),
+		"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
+		"rules" => $db->escape_string($mybb->input['rules']),
 		"defaultdatecut" => intval($mybb->input['defaultdatecut']),
-		"defaultsortby" => addslashes($mybb->input['defaultsortby']),
-		"defaultsortorder" => addslashes($mybb->input['defaultsortorder']),
+		"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
+		"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 		);
 	$db->insert_query(TABLE_PREFIX."forums", $sqlarray);
 	$fid = $db->insert_id();
@@ -254,7 +254,7 @@ if($mybb->input['action'] == "do_add") {
 	cpredirect("forums.php", $lang->forum_added);
 }
 if($mybb->input['action'] == "do_addmod") {
-	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."' LIMIT 1");
+	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['username'])."' LIMIT 1");
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{
@@ -263,12 +263,12 @@ if($mybb->input['action'] == "do_addmod") {
 		$mod = $db->fetch_array($query);
 		if(!$mod['uid'])
 		{
-			$caneditposts = addslashes($mybb->input['caneditposts']);
-			$candeleteposts = addslashes($mybb->input['candeleteposts']);
-			$canviewips = addslashes($mybb->input['canviewips']);
-			$canopenclosethreads = addslashes($mybb->input['canopenclosethreads']);
-			$canmanagethreads = addslashes($mybb->input['canmanagethreads']);
-			$canmovetononmodforum = addslashes($mybb->input['canmovetononmodforum']);
+			$caneditposts = $db->escape_string($mybb->input['caneditposts']);
+			$candeleteposts = $db->escape_string($mybb->input['candeleteposts']);
+			$canviewips = $db->escape_string($mybb->input['canviewips']);
+			$canopenclosethreads = $db->escape_string($mybb->input['canopenclosethreads']);
+			$canmanagethreads = $db->escape_string($mybb->input['canmanagethreads']);
+			$canmovetononmodforum = $db->escape_string($mybb->input['canmovetononmodforum']);
 			$newmod = array(
 				"fid" => $fid,
 				"uid" => $user['uid'],
@@ -411,34 +411,34 @@ if($mybb->input['action'] == "do_edit") {
 		}
 
 		$sqlarray = array(
-			"name" => addslashes($mybb->input['name']),
-			"description" => addslashes($mybb->input['description']),
-			"linkto" => addslashes($mybb->input['linkto']),
+			"name" => $db->escape_string($mybb->input['name']),
+			"description" => $db->escape_string($mybb->input['description']),
+			"linkto" => $db->escape_string($mybb->input['linkto']),
 			"type" => $type,
 			"pid" => $pid,
 			"disporder" => intval($mybb->input['disporder']),
-			"active" => addslashes($mybb->input['isactive']),
-			"open" => addslashes($mybb->input['isopen']),
-			"allowhtml" => addslashes($mybb->input['allowhtml']),
-			"allowmycode" => addslashes($mybb->input['allowmycode']),
-			"allowsmilies" => addslashes($mybb->input['allowsmilies']),
-			"allowimgcode" => addslashes($mybb->input['allowimgcode']),
-			"allowpicons" => addslashes($mybb->input['allowpicons']),
-			"allowtratings" => addslashes($mybb->input['allowtratings']),
-			"usepostcounts" => addslashes($mybb->input['usepostcounts']),
-			"password" => addslashes($mybb->input['password']),
- 			"showinjump" => addslashes($mybb->input['showinjump']),
-			"modposts" => addslashes($mybb->input['modposts']),
-			"modthreads" => addslashes($mybb->input['modthreads']),
-			"modattachments" => addslashes($mybb->input['modattachments']),
+			"active" => $db->escape_string($mybb->input['isactive']),
+			"open" => $db->escape_string($mybb->input['isopen']),
+			"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
+			"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
+			"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
+			"allowimgcode" => $db->escape_string($mybb->input['allowimgcode']),
+			"allowpicons" => $db->escape_string($mybb->input['allowpicons']),
+			"allowtratings" => $db->escape_string($mybb->input['allowtratings']),
+			"usepostcounts" => $db->escape_string($mybb->input['usepostcounts']),
+			"password" => $db->escape_string($mybb->input['password']),
+ 			"showinjump" => $db->escape_string($mybb->input['showinjump']),
+			"modposts" => $db->escape_string($mybb->input['modposts']),
+			"modthreads" => $db->escape_string($mybb->input['modthreads']),
+			"modattachments" => $db->escape_string($mybb->input['modattachments']),
 			"style" => intval($mybb->input['fstyle']),
-			"overridestyle" => addslashes($mybb->input['overridestyle']),
-			"rulestype" => addslashes($mybb->input['rulestype']),
-			"rulestitle" => addslashes($mybb->input['rulestitle']),
-			"rules" => addslashes($mybb->input['rules']),
+			"overridestyle" => $db->escape_string($mybb->input['overridestyle']),
+			"rulestype" => $db->escape_string($mybb->input['rulestype']),
+			"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
+			"rules" => $db->escape_string($mybb->input['rules']),
 			"defaultdatecut" => intval($mybb->input['defaultdatecut']),
-			"defaultsortby" => addslashes($mybb->input['defaultsortby']),
-			"defaultsortorder" => addslashes($mybb->input['defaultsortorder']),
+			"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
+			"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 			);
 
 		$db->update_query(TABLE_PREFIX."forums", $sqlarray, "fid='$fid'", 1);
@@ -466,7 +466,7 @@ if($mybb->input['action'] == "do_edit") {
 }
 if($mybb->input['action'] == "do_editmod") {
 	cpheader();
-	$username = addslashes($mybb->input['username']);
+	$username = $db->escape_string($mybb->input['username']);
 	$fid = intval($mybb->input['fid']);
 
 	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='$username'");
@@ -476,12 +476,12 @@ if($mybb->input['action'] == "do_editmod") {
 		$sqlarray = array(
 			"fid" => intval($mybb->input['fid']),
 			"uid" => $user['uid'],
-			"caneditposts" => addslashes($mybb->input['caneditposts']),
-			"candeleteposts" => addslashes($mybb->input['candeleteposts']),
-			"canviewips" => addslashes($mybb->input['canviewips']),
-			"canopenclosethreads" => addslashes($mybb->input['canopenclosethreads']),
-			"canmanagethreads" => addslashes($mybb->input['canmanagethreads']),
-			"canmovetononmodforum" => addslashes($mybb->input['canmovetononmodforum'])
+			"caneditposts" => $db->escape_string($mybb->input['caneditposts']),
+			"candeleteposts" => $db->escape_string($mybb->input['candeleteposts']),
+			"canviewips" => $db->escape_string($mybb->input['canviewips']),
+			"canopenclosethreads" => $db->escape_string($mybb->input['canopenclosethreads']),
+			"canmanagethreads" => $db->escape_string($mybb->input['canmanagethreads']),
+			"canmovetononmodforum" => $db->escape_string($mybb->input['canmovetononmodforum'])
 			);
 
 		$db->update_query(TABLE_PREFIX."moderators", $sqlarray, "mid='".intval($mybb->input['mid'])."'");

@@ -204,35 +204,35 @@ if($mybb->input['action'] == "do_add")
 
 	$timenow = time();
 	$user = array(
-		"username" => addslashes($mybb->input['userusername']),
+		"username" => $db->escape_string($mybb->input['userusername']),
 		"password" => $md5password,
 		"salt" => $salt,
 		"loginkey" => $loginkey,
-		"email" => addslashes($mybb->input['email']),
+		"email" => $db->escape_string($mybb->input['email']),
 		"usergroup" => intval($mybb->input['usergroup']),
 		"additionalgroups" => $additionalgroups,
 		"displaygroup" => intval($mybb->input['displaygroup']),
-		"usertitle" => addslashes($mybb->input['usertitle']),
+		"usertitle" => $db->escape_string($mybb->input['usertitle']),
 		"regdate" => time(),
 		"lastactive" => time(),
 		"lastvisit" => time(),
-		"avatar" => addslashes($mybb->input['avatar']),
-		"website" => addslashes($mybb->input['website']),
-		"icq" => addslashes($mybb->input['icq']),
-		"aim" => addslashes($mybb->input['aim']),
-		"yahoo" => addslashes($mybb->input['yahoo']),
-		"msn" => addslashes($mybb->input['msn']),
-		"birthday" => addslashes($mybb->input['birthday']),
+		"avatar" => $db->escape_string($mybb->input['avatar']),
+		"website" => $db->escape_string($mybb->input['website']),
+		"icq" => $db->escape_string($mybb->input['icq']),
+		"aim" => $db->escape_string($mybb->input['aim']),
+		"yahoo" => $db->escape_string($mybb->input['yahoo']),
+		"msn" => $db->escape_string($mybb->input['msn']),
+		"birthday" => $db->escape_string($mybb->input['birthday']),
 		"allownotices" => $mybb->input['allownotices'],
 		"hideemail" => $mybb->input['hideemail'],
 		"emailnotify" => $mybb->input['emailnotify'],
 		"invisible" => $mybb->input['invisible'],
 		"style" => $mybb->input['style'],
-		"timezone" => addslashes($mybb->input['timezoneoffset']),
+		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
 		"receivepms" => $mybb->input['receivepms'],
 		"pmpopup" => $mybb->input['pmpopup'],
 		"pmnotify" => $mybb->input['pmnotify'],
-		"signature" => addslashes($mybb->input['signature'])
+		"signature" => $db->escape_string($mybb->input['signature'])
 		);
 	$db->insert_query(TABLE_PREFIX."users", $user);
 	$uid = $db->insert_id();
@@ -267,7 +267,7 @@ if($mybb->input['action'] == "do_add")
 		{
 			$options = $mybb->input[$field];
 		}
-		$options = addslashes($options);
+		$options = $db->escape_string($options);
 		$userfields[$field] = $options;
 	}
 	$userfields['ufid'] = $uid;
@@ -304,8 +304,8 @@ if($mybb->input['action'] == "do_edit")
 	$query = $db->query("
 		SELECT username
 		FROM ".TABLE_PREFIX."users
-		WHERE username='".addslashes($mybb->input['userusername'])."'
-		AND username!='".addslashes($user['username'])."'
+		WHERE username='".$db->escape_string($mybb->input['userusername'])."'
+		AND username!='".$db->escape_string($user['username'])."'
 	");
 	if($db->fetch_array($query))
 	{
@@ -359,7 +359,7 @@ if($mybb->input['action'] == "do_edit")
 		{
 			$options = $mybb->input[$field];
 		}
-		$options = addslashes($options);
+		$options = $db->escape_string($options);
 		$userfields[$field] = $options;
 	}
 	$userfields['ufid'] = intval($mybb->input['uid']);
@@ -402,29 +402,29 @@ if($mybb->input['action'] == "do_edit")
 
 	/* Update users table. */
 	$user_new = array(
-		"username" => addslashes($mybb->input['userusername']),
-		"email" => addslashes($mybb->input['email']),
+		"username" => $db->escape_string($mybb->input['userusername']),
+		"email" => $db->escape_string($mybb->input['email']),
 		"usergroup" => intval($mybb->input['usergroup']),
 		"additionalgroups" => $additionalgroups,
 		"displaygroup" => intval($mybb->input['displaygroup']),
-		"usertitle" => addslashes($mybb->input['usertitle']),
-		"avatar" => addslashes($mybb->input['avatar']),
-		"website" => addslashes($mybb->input['website']),
-		"icq" => addslashes($mybb->input['icq']),
-		"aim" => addslashes($mybb->input['aim']),
-		"yahoo" => addslashes($mybb->input['yahoo']),
-		"msn" => addslashes($mybb->input['msn']),
-		"birthday" => addslashes($mybb->input['birthday']),
+		"usertitle" => $db->escape_string($mybb->input['usertitle']),
+		"avatar" => $db->escape_string($mybb->input['avatar']),
+		"website" => $db->escape_string($mybb->input['website']),
+		"icq" => $db->escape_string($mybb->input['icq']),
+		"aim" => $db->escape_string($mybb->input['aim']),
+		"yahoo" => $db->escape_string($mybb->input['yahoo']),
+		"msn" => $db->escape_string($mybb->input['msn']),
+		"birthday" => $db->escape_string($mybb->input['birthday']),
 		"allownotices" => $mybb->input['allownotices'],
 		"hideemail" => $mybb->input['hideemail'],
 		"emailnotify" => $mybb->input['emailnotify'],
 		"invisible" => $mybb->input['invisible'],
 		"style" => $mybb->input['stylesel'],
-		"timezone" => addslashes($mybb->input['timezoneoffset']),
+		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
 		"receivepms" => $mybb->input['receivepms'],
 		"pmpopup" => $mybb->input['pmpopup'],
 		"pmnotify" => $mybb->input['pmnotify'],
-		"signature" => addslashes($mybb->input['signature']),
+		"signature" => $db->escape_string($mybb->input['signature']),
 		"postnum" => intval($mybb->input['postnum']),
 	);
 	$db->update_query(TABLE_PREFIX."users", $user_new, "uid='".intval($mybb->input['uid'])."'");
@@ -433,16 +433,16 @@ if($mybb->input['action'] == "do_edit")
 	if($mybb->input['userusername'] != $user['username'])
 	{
 		$username_update = array(
-			"username" => addslashes($mybb->input['userusername'])
+			"username" => $db->escape_string($mybb->input['userusername'])
 		);
 		$lastposter_update = array(
-			"lastposter" => addslashes($mybb->input['userusername'])
+			"lastposter" => $db->escape_string($mybb->input['userusername'])
 		);
 
 		$db->update_query(TABLE_PREFIX."posts", $username_update, "uid='".intval($mybb->input['uid'])."'");
 		$db->update_query(TABLE_PREFIX."threads", $username_update, "uid='".intval($mybb->input['uid'])."'");
-		$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".addslashes($user['username'])."'");
-		$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".addslashes($user['username'])."'");
+		$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".$db->escape_string($user['username'])."'");
+		$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".$db->escape_string($user['username'])."'");
 	}
 	$cache->updatestats();
 
@@ -480,7 +480,7 @@ if($mybb->input['action'] == "do_email")
 
 	if($search['username'])
 	{
-		$conditions .= " AND username LIKE '%".addslashes($search[username])."%'";
+		$conditions .= " AND username LIKE '%".$db->escape_string($search[username])."%'";
 	}
 	if(is_array($search['usergroups']))
 	{
@@ -492,35 +492,35 @@ if($mybb->input['action'] == "do_email")
 
 	if($search['email'])
 	{
-		$conditions .= " AND email LIKE '%".addslashes($search['email'])."%'";
+		$conditions .= " AND email LIKE '%".$db->escape_string($search['email'])."%'";
 	}
 	if($search['website'])
 	{
-		$conditions .= " AND website LIKE '%".addslashes($search['website'])."%'";
+		$conditions .= " AND website LIKE '%".$db->escape_string($search['website'])."%'";
 	}
 	if($search['icq'])
 	{
-		$conditions .= " AND icq LIKE '%".addslashes($search['icq'])."%'";
+		$conditions .= " AND icq LIKE '%".$db->escape_string($search['icq'])."%'";
 	}
 	if($search['aim'])
 	{
-		$conditions .= " AND aim LIKE '%".addslashes($search['aim'])."%'";
+		$conditions .= " AND aim LIKE '%".$db->escape_string($search['aim'])."%'";
 	}
 	if($search['yahoo'])
 	{
-		$conditions .= " AND yahoo LIKE '%".addslashes($search['yahoo'])."%'";
+		$conditions .= " AND yahoo LIKE '%".$db->escape_string($search['yahoo'])."%'";
 	}
 	if($search['msn'])
 	{
-		$conditions .= " AND msn LIKE '%".addslashes($search['msn'])."%'";
+		$conditions .= " AND msn LIKE '%".$db->escape_string($search['msn'])."%'";
 	}
 	if($search['signature'])
 	{
-		$conditions .= " AND signature LIKE '%".addslashes($search['signature'])."%'";
+		$conditions .= " AND signature LIKE '%".$db->escape_string($search['signature'])."%'";
 	}
 	if($search['usertitle'])
 	{
-		$conditions .= " AND usertitle LIKE '%".addslashes($search['usertitle'])."%'";
+		$conditions .= " AND usertitle LIKE '%".$db->escape_string($search['usertitle'])."%'";
 	}
 	if($search['postsgreater'])
 	{
@@ -585,7 +585,7 @@ if($mybb->input['action'] == "do_email")
 			elseif($searchop['type'] == "pm")
 			{
 				$now = time();
-				$sendmessage = addslashes($sendmessage);
+				$sendmessage = $db->escape_string($sendmessage);
 				$db->query("INSERT INTO ".TABLE_PREFIX."privatemessages(uid,toid,fromid,folder,subject,message,dateline,status,receipt) VALUES('$user[uid]','$user[uid]','$mybbadmin[uid]','1','$searchop[subject]','$sendmessage','$now','0','no');");
 				echo sprintf($lang->pm_sent, $user['username']);
 			}
@@ -631,14 +631,14 @@ if($mybb->input['action'] == "do_do_merge")
 		cpredirect("users.php?action=merge", $lang->users_not_merged);
 		exit;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['source'])."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['source'])."'");
 	$sourceuser = $db->fetch_array($query);
 	if(!$sourceuser[uid])
 	{
 		cperror($lang->error_invalid_source);
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['destination'])."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['destination'])."'");
 	$destuser = $db->fetch_array($query);
 	if(!$destuser[uid])
 	{
@@ -672,14 +672,14 @@ if($mybb->input['action'] == "do_do_merge")
 }
 if($mybb->input['action'] == "do_merge")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['source'])."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['source'])."'");
 	$sourceuser = $db->fetch_array($query);
 	if(!$sourceuser['uid'])
 	{
 		cperror($lang->error_invalid_source);
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['destination'])."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['destination'])."'");
 	$destuser = $db->fetch_array($query);
 	if(!$destuser['uid'])
 	{
@@ -1362,7 +1362,7 @@ if($mybb->input['action'] == "find")
 
 	if($search['username'])
 	{
-		$search['username'] = addslashes($search['username']);
+		$search['username'] = $db->escape_string($search['username']);
 		$conditions .= " AND username LIKE '%$search[username]%'";
 	}
     if($search['usergroup'])
@@ -1382,12 +1382,12 @@ if($mybb->input['action'] == "find")
     }
 	if($search['email'])
 	{
-		$search['email'] = addslashes($search['email']);
+		$search['email'] = $db->escape_string($search['email']);
 		$conditions .= " AND email LIKE '%$search[email]%'";
 	}
 	if($search['website'])
 	{
-		$search['website'] = addslashes($search['website']);
+		$search['website'] = $db->escape_string($search['website']);
 		$conditions .= " AND website LIKE '%$search[website]%'";
 	}
 	if($search['icq'])
@@ -1397,27 +1397,27 @@ if($mybb->input['action'] == "find")
 	}
 	if($search['aim'])
 	{
-		$search['aim'] = addslashes($search['aim']);
+		$search['aim'] = $db->escape_string($search['aim']);
 		$conditions .= " AND aim LIKE '%$search[aim]%'";
 	}
 	if($search['yahoo'])
 	{
-		$search['yahoo'] = addslashes($search['yahoo']);
+		$search['yahoo'] = $db->escape_string($search['yahoo']);
 		$conditions .= " AND yahoo LIKE '%$search[yahoo]%'";
 	}
 	if($search['msn'])
 	{
-		$search['msn'] = addslashes($search['msn']);
+		$search['msn'] = $db->escape_string($search['msn']);
 		$conditions .= " AND msn LIKE '%$search[msn]%'";
 	}
 	if($search['signature'])
 	{
-		$search['signature'] = addslashes($search['signature']);
+		$search['signature'] = $db->escape_string($search['signature']);
 		$conditions .= " AND signature LIKE '%$search[signature]%'";
 	}
 	if($search['usertitle'])
 	{
-		$search['usertitle'] = addslashes($search['usertitle']);
+		$search['usertitle'] = $db->escape_string($search['usertitle']);
 		$conditions .= " AND usertitle LIKE '%$search[usertitle]%'";
 	}
 	if($search['postsgreater'])
@@ -1432,12 +1432,12 @@ if($mybb->input['action'] == "find")
 	}
 	if($search['regip'])
 	{
-		$search['regip'] = addslashes($search['regip']);
+		$search['regip'] = $db->escape_string($search['regip']);
 		$conditions .= " AND regip LIKE '$search[regip]%'";
 	}
 	if($search['postip'])
 	{
-		$search['postip'] = addslashes($search['postip']);
+		$search['postip'] = $db->escape_string($search['postip']);
 		$query = $db->query("SELECT DISTINCT uid FROM ".TABLE_PREFIX."posts WHERE ipaddress LIKE '$search[postip]%'");
 		$uids = ',';
 		while($u = $db->fetch_array($query))
@@ -1459,12 +1459,12 @@ if($mybb->input['action'] == "find")
 			{
 				foreach($value as $condition => $text)
 				{
-					$conditions .= " AND $fid='".addslashes($condition)."'";
+					$conditions .= " AND $fid='".$db->escape_string($condition)."'";
 				}
 			}
 			else
 			{
-				$conditions .= " AND $fid='".addslashes($value)."'";
+				$conditions .= " AND $fid='".$db->escape_string($value)."'";
 			}
 		}
 	}
@@ -1786,7 +1786,7 @@ if($mybb->input['action'] == "do_manageban")
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".addslashes($mybb->input['username'])."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['username'])."'");
 		$user = $db->fetch_array($query);
 
 		if(!$user['uid'])
@@ -1821,7 +1821,7 @@ if($mybb->input['action'] == "do_manageban")
 			"gid" => $mybb->input['gid'],
 			"bantime" => $mybb->input['liftafter'],
 			"lifted" => $liftdate,
-			"reason" => addslashes($mybb->input['banreason'])
+			"reason" => $db->escape_string($mybb->input['banreason'])
 			);
 
 		$db->update_query(TABLE_PREFIX."banned", $banneduser, "uid='".$user['uid']."'");
@@ -1837,7 +1837,7 @@ if($mybb->input['action'] == "do_manageban")
 			"dateline" => time(),
 			"bantime" => $mybb->input['liftafter'],
 			"lifted" => $liftdate,
-			"reason" => addslashes($mybb->input['banreason'])
+			"reason" => $db->escape_string($mybb->input['banreason'])
 			);
 		$db->insert_query(TABLE_PREFIX."banned", $banneduser);
 		cpredirect("users.php?action=banned", $lang->ban_added);
