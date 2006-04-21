@@ -95,6 +95,8 @@ $l['error'] = "Board Message";
 $l['multipage_pages'] = "Pages ({1}):";
 $l['multipage_last'] = "Last";
 $l['multipage_first'] = "First";
+$l['multipage_next'] = "Next";
+$l['multipage_previous'] = "Previous";
 
 $l['font'] = "Font";
 $l['arial'] = "Arial";

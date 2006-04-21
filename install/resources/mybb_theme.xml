@@ -3947,10 +3947,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </form>]]></template>
 		<template name="multipage" version="100.07"><![CDATA[<span class="smalltext"><span class="pagenav">{$lang->multipage_pages}</span>{$start} {$prevpage} {$mppage} {$nextpage} {$end}</span>]]></template>
 		<template name="multipage_end" version="100.07"><![CDATA[<span class="pagenavbit"><a href="{$url}&amp;page={$pages}">{$lang->multipage_last} &raquo;</a></span>]]></template>
-		<template name="multipage_nextpage" version="100.07"><![CDATA[<span class="pagenavbit"><a href="{$url}&amp;page={$next}">&raquo;</a></span>]]></template>
+		<template name="multipage_nextpage" version="100.07"><![CDATA[<span class="pagenavbit"><a href="{$url}&amp;page={$next}">{$lang->multipage_next} &gt;</a></span>]]></template>
 		<template name="multipage_page" version="100.07"><![CDATA[ <span class="pagenavbit"><a href="{$url}&amp;page={$i}">{$i}</a></span>]]></template>
 		<template name="multipage_page_current" version="100.07"><![CDATA[ <span class="pagenavcurrent">[{$i}]</span>]]></template>
-		<template name="multipage_prevpage" version="100.07"><![CDATA[<span class="pagenavbit"><a href="{$url}&amp;page={$prev}">&laquo;</a></span>]]></template>
+		<template name="multipage_prevpage" version="100.07"><![CDATA[<span class="pagenavbit"><a href="{$url}&amp;page={$prev}">&lt; {$lang->multipage_previous}</a></span>]]></template>
 		<template name="multipage_start" version="100.07"><![CDATA[<span class="pagenavbit"><a href="{$url}&amp;page=1">&laquo; {$lang->multipage_first}</a></span>]]></template>
 		<template name="usercp_forumsubscriptions_none" version="100.07"><![CDATA[<tr>
 <td class="trow1" colspan="5">{$lang->no_forum_subscriptions}</td>
