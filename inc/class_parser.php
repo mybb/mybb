@@ -242,7 +242,7 @@ class postParser
 	function parse_mycode($message, $options=array())
 	{
 		global $lang;
-		
+
 		// Cache the MyCode globally if needed.
 		if($this->mycode_cache == 0)
 		{
@@ -273,7 +273,7 @@ class postParser
 			$message = preg_replace("#\[img\](https?://([^<>\"']+))\[/img\]#i", "<img src=\"$1\" border=\"0\" alt=\"\" />", $message);
 			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](https?://([^<>\"']+))\[/img\]#i", "<img src=\"$3\" style=\"border: 0; width: $1px; height: $2px;\" alt=\"\" />", $message);
 		}
-		
+
 		// Replace "me" code and slaps if we have a username
 		if($options['me_username'])
 		{
@@ -488,7 +488,7 @@ class postParser
 		}
 
 		// If the PHP version < 4.2, catch highlight_string() output.
-		if(version_compare(PHP_VERSION, "4.2.0", "<") === 1)
+		if(version_compare(PHP_VERSION, "4.2.0", "<"))
 		{
 			ob_start();
 			@highlight_string($str);
@@ -501,7 +501,7 @@ class postParser
 		}
 
 		// If < PHP 5, make XHTML compatible.
-		if(version_compare(PHP_VERSION, "5", "<") === 1)
+		if(version_compare(PHP_VERSION, "5", "<"))
 		{
 			$find = array(
 				"<font",

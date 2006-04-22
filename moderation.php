@@ -1341,3 +1341,5 @@ function extendinline($id, $type)
 	global $_COOKIE;
 	setcookie("inlinemod_$type$id", '', time()+3600);
 }
+
+?>
