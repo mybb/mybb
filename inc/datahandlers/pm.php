@@ -20,6 +20,12 @@ EXAMPLE USE:
  */
 class PMDataHandler extends DataHandler
 {
+	/**
+	* The prefix for the language variables used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_prefix = 'pmdata_';
 
 	/**
 	 * Verifies a private message subject.

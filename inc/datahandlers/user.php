@@ -183,6 +183,55 @@ class UserDataHandler extends DataHandler
 	function verify_profile_fields()
 	{
 		// Loop through profile fields checking if they exist or not and are filled in.
+		$userfields = array();
+		$comma = '';
+
+		// Fetch all profile fields first.
+		$options = array(
+			'order_by' => 'disporder'
+		);
+		$query = $db->simple_select(TABLE_PREFIX.'profilefields', 'type, fid, required', "editable='yes'", $options);
+
+		// Then loop through the profile fields.
+		while($profilefield = $db->fetch_array($query))
+		{
+			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+			$thing = explode("\n", $profilefield['type'], "2");
+			$type = trim($thing[0]);
+			$field = "fid$profilefield[fid]";
+
+			// If the profile field is required, but not filled in, present error.
+			if(!$mybb->input[$field] && $profilefield['required'] == "yes" && !$proferror)
+			{
+				$this->set_error('error_missingrequiredfield');
+				return false;
+			}
+
+			// Sort out multiselect/checkbox profile fields.
+			$options = '';
+			if($type == "multiselect" || $type == "checkbox")
+			{
+				if(is_array($mybb->input[$field]))
+				{
+					while(list($key, $val) = each($mybb->input[$field]))
+					{
+						if($options)
+						{
+							$options .= "\n";
+						}
+						$options .= "$val";
+					}
+				}
+			}
+			else
+			{
+				$options = $mybb->input[$field];
+			}
+			$userfields[$field] = $options;
+			$comma = ",";
+		}
+
+		return true;
 	}
 
 	/**

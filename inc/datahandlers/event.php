@@ -16,6 +16,13 @@
 class EventDataHandler extends DataHandler
 {
 	/**
+	* The prefix for the language variables used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_prefix = 'eventdata_';
+
+	/**
 	 * Verifies if an event name is valid or not and attempts to fix it
 	 *
 	 * @return boolean True if valid, false if invalid.

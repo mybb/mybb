@@ -15,6 +15,12 @@
  */
 class ForumDataHandler extends DataHandler
 {
+	/**
+	* The prefix for the language variables used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_prefix = 'forumdata_';
 
 	/**
 	* Verifies a forum name.

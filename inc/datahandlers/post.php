@@ -30,6 +30,13 @@ if($postHandler->validate_post($post))
 class PostDataHandler extends DataHandler
 {
 	/**
+	* The prefix for the language variables used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_prefix = 'postdata_';
+
+	/**
 	 * What are we performing?
 	 * post = New post
 	 * thread = New thread
