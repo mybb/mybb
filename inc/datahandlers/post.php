@@ -362,45 +362,45 @@ class PostDataHandler extends DataHandler
 		$time = time();
 
 		// Verify all post assets.
-		
+
 		if($this->method == "insert" || isset($post['uid']))
 		{
 			$this->verify_author();
 		}
-		
+
 		if($this->method == "insert" || isset($post['subject']))
 		{
 			$this->verify_subject();
 		}
-		
+
 		if($this->method == "insert" || isset($post['message']))
 		{
 			$this->verify_message();
 			$this->verify_image_count();
 		}
-		
+
 		if($this->method == "insert" || isset($post['dateline']))
 		{
 			$this->verify_dateline();
 		}
-		
+
 		$this->verify_post_flooding();
-		
+
 		if($this->method == "insert" || isset($post['replyto']))
 		{
 			$this->verify_reply_to();
 		}
-		
+
 		if($this->method == "insert" || isset($post['icon']))
 		{
 			$this->verify_post_icon();
 		}
-		
+
 		if($this->method == "insert" || isset($post['options']))
 		{
 			$this->verify_options();
 		}
-		
+
 		$plugins->run_hooks("datahandler_post_validate_post");
 
 		// We are done validating, return.
@@ -582,7 +582,7 @@ class PostDataHandler extends DataHandler
 			$attachmentassign = array(
 				"pid" => $post['pid']
 			);
-			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='".$post['posthash']."'");
+			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='{$post['posthash']}'");
 		}
 
 		$plugins->run_hooks("datahandler_post_insert_post");
@@ -668,7 +668,7 @@ class PostDataHandler extends DataHandler
 			{
 				$queryadd = '';
 			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='$now' $queryadd WHERE uid='".$post['uid']."'");
+			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
 		}
 
 		// Return the post's pid and whether or not it is visible.
@@ -686,34 +686,34 @@ class PostDataHandler extends DataHandler
 	function validate_thread()
 	{
 		global $mybb, $db, $plugins;
-		
+
 		$thread = &$this->data;
 
 		// Validate all thread assets.
-		
+
 		if($this->method == "insert" || isset($thread['uid']))
 		{
 			$this->verify_author();
 		}
-		
+
 		if($this->method == "insert" || isset($thread['subject']))
 		{
 			$this->verify_subject();
 		}
-		
+
 		if($this->method == "insert" || isset($thread['message']))
 		{
 			$this->verify_message();
 			$this->verify_image_count();
 		}
-		
+
 		if($this->method == "insert" || isset($thread['dateline']))
 		{
 			$this->verify_dateline();
 		}
-		
+
 		if($this->method == "insert" || isset($thread['icon']))
-		{		
+		{
 			$this->verify_post_icon();
 		}
 
@@ -721,9 +721,9 @@ class PostDataHandler extends DataHandler
 		{
 			$this->verify_options();
 		}
-		
+
 		$this->verify_post_flooding();
-		
+
 		$plugins->run_hooks("datahandler_post_validate_thread");
 
 		// We are done validating, return.
@@ -856,7 +856,7 @@ class PostDataHandler extends DataHandler
 
 			// Now that we have the post id for this first post, update the threads table.
 			$firstpostup = array("firstpost" => $pid);
-			$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='$tid'");
+			$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='{$tid}'");
 		}
 
 		// If we're not saving a draft there are some things we need to check now
@@ -905,7 +905,7 @@ class PostDataHandler extends DataHandler
 					$db->query("
 						UPDATE ".TABLE_PREFIX."threads
 						SET $newclosed$sep$newstick
-						WHERE tid='".$tid."'
+						WHERE tid='{$tid}'
 					");
 				}
 			}
@@ -935,7 +935,14 @@ class PostDataHandler extends DataHandler
 
 			// Send out any forum subscription notices to users who are subscribed to this forum.
 			$excerpt = substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-			$query = $db->query("SELECT u.username, u.email, u.uid, u.language FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u WHERE fs.fid='".intval($thread['fid'])."' AND u.uid=fs.uid AND fs.uid!='".intval($thread['uid'])."' AND u.lastactive>'".$forum['lastpost']."'");
+			$query = $db->query("
+				SELECT u.username, u.email, u.uid, u.language
+				FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u
+				WHERE fs.fid='".intval($thread['fid'])."'
+				AND u.uid=fs.uid
+				AND fs.uid!='".intval($thread['uid'])."'
+				AND u.lastactive>'{$forum['lastpost']}'
+			");
 			while($subscribedmember = $db->fetch_array($query))
 			{
 				// Determine the language pack we'll be using to send this email in and load it if it isn't already.
@@ -981,7 +988,12 @@ class PostDataHandler extends DataHandler
 			// Automatically subscribe the user to this thread if they've chosen to.
 			if($thread['options']['emailnotify'] != "no" && $thread['uid'] > 0)
 			{
-				$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".intval($thread['uid'])."','$tid','s')");
+				$insert_favorite = array(
+					'uid' => intval($thread['uid']),
+					'tid' => $tid,
+					'type' => 's'
+				);
+				$db->insert_query(TABLE_PREFIX.'favorites', $insert_favorite);
 			}
 		}
 
@@ -992,7 +1004,7 @@ class PostDataHandler extends DataHandler
 			$attachmentassign = array(
 				"pid" => $pid
 			);
-			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='".$thread['posthash']."'");
+			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
 		}
 
 		$plugins->run_hooks("datahandler_post_insert_post");
@@ -1065,12 +1077,12 @@ class PostDataHandler extends DataHandler
 		if($first_post)
 		{
 			$updatethread = array();
-			
+
 			if(isset($post['subject']))
 			{
 				$updatethread['subject'] = $db->escape_string($post['subject']);
 			}
-			
+
 			if(isset($post['icon']))
 			{
 				$updatethread['icon'] = intval($post['icon']);
@@ -1083,22 +1095,22 @@ class PostDataHandler extends DataHandler
 
 		// Prepare array for post updating.
 		$updatepost = array();
-		
+
 		if(isset($post['subject']))
 		{
 			$updatepost['subject'] = $db->escape_string($post['subject']);
 		}
-		
+
 		if(isset($post['message']))
 		{
 			$updatepost['message'] = $db->escape_string($post['message']);
 		}
-		
+
 		if(isset($post['icon']))
 		{
 			$updatepost['icon'] = intval($post['icon']);
 		}
-		
+
 		if(isset($post['options']))
 		{
 			if(isset($post['options']['disablesmilies']))
@@ -1117,7 +1129,7 @@ class PostDataHandler extends DataHandler
 			$updatepost['edituid'] = intval($post['edit_uid']);
 			$updatepost['edittime'] = time();
 		}
-		
+
 		$plugins->run_hooks("datahandler_post_update");
 
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".intval($post['pid'])."'");
@@ -1133,7 +1145,6 @@ class PostDataHandler extends DataHandler
 		global $db;
 
 		$post = get_post($pid);
-
 		if(!$post['pid'])
 		{
 			return false;
@@ -1146,7 +1157,7 @@ class PostDataHandler extends DataHandler
 			"limit_start" => 0,
 			"limit" => 1
 		);
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$post['tid'], $options);
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid={$post['tid']}", $options);
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $post['pid'])
 		{

@@ -300,27 +300,28 @@ class PMDataHandler extends DataHandler
 
 		// Assign data to common variable
 		$pm = &$this->data;
+		$pm['pmid'] = intval($pm['pmid']);
 
 		// Check if we're updating a draft or not.
-		$query = $db->simple_select(TABLE_PREFIX."privatemessages", "pmid", "folder='3' AND uid='".$pm['sender']['uid']."' AND pmid='".$pm['pmid']."'");
+		$query = $db->simple_select(TABLE_PREFIX."privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
 		$draftcheck = $db->fetch_array($query);
 
 		// This PM was previously a draft - update it
 		if($draftcheck['pmid'])
 		{
 			$updateddraft = array(
-				"toid" => $pm['recipient']['uid'],
-				"fromid" => $pm['sender']['uid'],
-				"folder" => $pm['folder'],
-				"subject" => $db->escape_string($pm['subject']),
-				"icon" => intval($pm['icon']),
-				"message" => $db->escape_string($pm['message']),
-				"dateline" => time(),
-				"status" => 0,
-				"includesig" => $pm['options']['signature'],
-				"smilieoff" => $pm['options']['disablesmilies'],
-				"receipt" => $pm['options']['readreceipt'],
-				"readtime" => 0
+				'toid' => $pm['recipient']['uid'],
+				'fromid' => $pm['sender']['uid'],
+				'folder' => $pm['folder'],
+				'subject' => $db->escape_string($pm['subject']),
+				'icon' => intval($pm['icon']),
+				'message' => $db->escape_string($pm['message']),
+				'dateline' => time(),
+				'status' => 0,
+				'includesig' => $pm['options']['signature'],
+				'smilieoff' => $pm['options']['disablesmilies'],
+				'receipt' => $pm['options']['readreceipt'],
+				'readtime' => 0
 			);
 
 			if($pm['saveasdraft'])
@@ -332,24 +333,24 @@ class PMDataHandler extends DataHandler
 				$updateddraft['uid'] = $pm['recipient']['uid'];
 			}
 			$plugins->run_hooks("datahandler_pm_insert_updatedraft");
-			$db->update_query(TABLE_PREFIX."privatemessages", $updateddraft, "pmid='".intval($pm['pmid'])."' AND uid='".$pm['sender']['uid']."'");
+			$db->update_query(TABLE_PREFIX."privatemessages", $updateddraft, "pmid='{$pm['pmid']}' AND uid='{$pm['sender']['uid']}'");
 		}
 		else
 		{
 			$newpm = array(
-				"uid" => $pm['recipient']['uid'],
-				"toid" => $pm['recipient']['uid'],
-				"fromid" => $pm['sender']['uid'],
-				"folder" => $pm['folder'],
-				"subject" => $db->escape_string($pm['subject']),
-				"icon" => intval($pm['icon']),
-				"message" => $db->escape_string($pm['message']),
-				"dateline" => time(),
-				"status" => 0,
-				"includesig" => $pm['options']['signature'],
-				"smilieoff" => $pm['options']['disablesmilies'],
-				"receipt" => $pm['options']['readreceipt'],
-				"readtime" => 0
+				'uid' => $pm['recipient']['uid'],
+				'toid' => $pm['recipient']['uid'],
+				'fromid' => $pm['sender']['uid'],
+				'folder' => $pm['folder'],
+				'subject' => $db->escape_string($pm['subject']),
+				'icon' => intval($pm['icon']),
+				'message' => $db->escape_string($pm['message']),
+				'dateline' => time(),
+				'status' => 0,
+				'includesig' => $pm['options']['signature'],
+				'smilieoff' => $pm['options']['disablesmilies'],
+				'receipt' => $pm['options']['readreceipt'],
+				'readtime' => 0
 			);
 
 			if($pm['saveasdraft'])
@@ -369,16 +370,16 @@ class PMDataHandler extends DataHandler
 			if($pm['do'] == "reply")
 			{
 				$sql_array = array(
-					"status" => 3
+					'status' => 3
 				);
-				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid=".intval($pm['pmid'])." AND uid=".$pm['sender']['uid']);
+				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}
 			elseif($pm['do'] == "forward")
 			{
 				$sql_array = array(
-					"status" => 4
+					'status' => 4
 				);
-				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid=".intval($pm['pmid'])." AND uid=".$pm['sender']['uid']);
+				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}
 		}
 
@@ -386,18 +387,18 @@ class PMDataHandler extends DataHandler
 		if($pm['options']['savecopy'] != "no" && !$pm['saveasdraft'])
 		{
 			$savedcopy = array(
-				"uid" => $pm['sender']['uid'],
-				"toid" => $pm['recipient']['uid'],
-				"fromid" => $pm['sender']['uid'],
-				"folder" => 2,
-				"subject" => $db->escape_string($pm['subject']),
-				"icon" => intval($pm['icon']),
-				"message" => $db->escape_string($pm['message']),
-				"dateline" => time(),
-				"status" => 1,
-				"includesig" => $pm['options']['signature'],
-				"smilieoff" => $pm['options']['disablesmilies'],
-				"receipt" => $pm['readreceipt']
+				'uid' => $pm['sender']['uid'],
+				'toid' => $pm['recipient']['uid'],
+				'fromid' => $pm['sender']['uid'],
+				'folder' => 2,
+				'subject' => $db->escape_string($pm['subject']),
+				'icon' => intval($pm['icon']),
+				'message' => $db->escape_string($pm['message']),
+				'dateline' => time(),
+				'status' => 1,
+				'includesig' => $pm['options']['signature'],
+				'smilieoff' => $pm['options']['disablesmilies'],
+				'receipt' => $pm['readreceipt']
 			);
 			$plugins->run_hooks("datahandler_pm_insert_savedcopy");
 			$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
@@ -416,7 +417,7 @@ class PMDataHandler extends DataHandler
 			$sql_array = array(
 				"pmpopup" => "new"
 			);
-			$db->update_query(TABLE_PREFIX."users", $sql_array, "uid=".$pm['recipient']['uid']);
+			$db->update_query(TABLE_PREFIX."users", $sql_array, "uid={$pm['recipient']['uid']}");
 		}
 
 		// Return back with appropriate data

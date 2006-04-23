@@ -82,7 +82,7 @@ class EventDataHandler extends DataHandler
 	function verify_scope()
 	{
 		global $mybb;
-		
+
 		$event = &$this->data;
 
 		$user_permissions = user_permissions($event['uid']);
@@ -137,12 +137,12 @@ class EventDataHandler extends DataHandler
 		{
 			$this->verify_date();
 		}
-		
+
 		if($this->method == "insert" || isset($event['private']))
 		{
 			$this->verify_scope();
 		}
-		
+
 		$plugins->run_hooks("datahandler_event_validate");
 
 		// We are done validating, return.
@@ -181,11 +181,11 @@ class EventDataHandler extends DataHandler
 
 		// Prepare an array for insertion into the database.
 		$newevent = array(
-			"subject" => $db->escape_string($event['name']),
-			"author" => intval($event['uid']),
-			"date" => $event['date'],
-			"description" => $db->escape_string($event['description']),
-			"private" => $event['private']
+			'subject' => $db->escape_string($event['name']),
+			'author' => intval($event['uid']),
+			'date' => $event['date'],
+			'description' => $db->escape_string($event['description']),
+			'private' => $event['private']
 		);
 		$db->insert_query(TABLE_PREFIX."events", $newevent);
 		$eid = $db->insert_id();
@@ -194,8 +194,8 @@ class EventDataHandler extends DataHandler
 
 		// Return the event's eid and whether or not it is private.
 		return array(
-			"eid" => $eid,
-			"private" => $event['private']
+			'eid' => $eid,
+			'private' => $event['private']
 		);
 	}
 
@@ -219,24 +219,24 @@ class EventDataHandler extends DataHandler
 		}
 
 		$event = &$this->data;
-		
+
 		$updateevent = array();
-		
+
 		if(isset($event['name']))
 		{
 			$updateevent['name'] = $db->escape_string($event['name']);
 		}
-		
+
 		if(isset($event['description']))
 		{
 			$updateevent['description'] = $db->escape_string($event['description']);
 		}
-		
+
 		if(isset($event['date']))
 		{
 			$updateevent['date'] = $db->escape_string($event['date'])
 		}
-		
+
 		if(isset($event['private']))
 		{
 			$updateevent['private'] = $db->escape_string($event['date']);
@@ -253,8 +253,8 @@ class EventDataHandler extends DataHandler
 
 		// Return the event's eid and whether or not it is private.
 		return array(
-			"eid" => $event['eid'],
-			"private" => $event['private']
+			'eid' => $event['eid'],
+			'private' => $event['private']
 		);
 	}
 

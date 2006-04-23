@@ -231,14 +231,14 @@ class UserDataHandler extends DataHandler
 			$options = array(
 				'limit' => 1
 			);
-			$query = $db->simple_select(TABLE_PREFIX.'regimages', 'dateline', "imagehash={$imagehash} AND imagestring={$imagestring}", $options);
+			$query = $db->simple_select(TABLE_PREFIX.'regimages', 'dateline', "imagehash='{$imagehash}' AND imagestring='{$imagestring}'", $options);
 			$imgcheck = $db->fetch_array($query);
 			if(!$imgcheck['dateline'])
 			{
 				$this->set_error('regimage_invalid');
 				return false;
 			}
-			$db->delete_query(TABLE_PREFIX.'regimages', "imagehash={$imagehash}", 1);
+			$db->delete_query(TABLE_PREFIX.'regimages', "imagehash='{$imagehash}'", 1);
 		}
 
 		return true;
@@ -295,7 +295,25 @@ class UserDataHandler extends DataHandler
 	*/
 	function validate_user()
 	{
+		$this->verify_options();
+		$this->verify_birthday();
+		$this->verify_email();
+		$this->verify_profile_fields();
+		$this->verify_referrer();
+		$this->verify_reg_image();
+		$this->verify_username();
+		$this->verify_website();
 
+		// We are done validating, return.
+		$this->set_validated(true);
+		if(count($this->get_errors()) > 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 
 	/**
@@ -303,7 +321,19 @@ class UserDataHandler extends DataHandler
 	*/
 	function insert_user()
 	{
+		global $db;
 
+		// Yes, validating is required.
+		if(!$this->get_validated())
+		{
+			die("The post needs to be validated before inserting it into the DB.");
+		}
+		if(count($this->get_errors()) > 0)
+		{
+			die("The post is not valid.");
+		}
+
+		$user = &$this->data;
 	}
 
 	/**
@@ -311,7 +341,19 @@ class UserDataHandler extends DataHandler
 	*/
 	function update_user()
 	{
+		global $db;
 
+		// Yes, validating is required.
+		if(!$this->get_validated())
+		{
+			die("The post needs to be validated before inserting it into the DB.");
+		}
+		if(count($this->get_errors()) > 0)
+		{
+			die("The post is not valid.");
+		}
+
+		$user = &$this->data;
 	}
 
 ?>

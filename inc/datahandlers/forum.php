@@ -296,7 +296,6 @@ class ForumDataHandler extends DataHandler
 			"overridetheme" => $db->escape_string($forum['options']['overridetheme'])
 		);
 		$db->insert_query(TABLE_PREFIX."forums", $insert_forum);
-
 		$fid = $db->insert_id();
 
 		return array(
