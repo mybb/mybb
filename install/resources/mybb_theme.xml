@@ -1332,6 +1332,7 @@ var inlineId = {$tid};
 <option value="+4.5" {$timezoneselect['45']}>{$lang->gmt} +4:30 {$lang->hours} ({$timein['45']})</option>
 <option value="+5" {$timezoneselect['50']}>{$lang->gmt} +5:00 {$lang->hours} ({$timein['50']})</option>
 <option value="+5.5" {$timezoneselect['55']}>{$lang->gmt} +5:30 {$lang->hours} ({$timein['55']})</option>
+<option value="+5.75" {$timezoneselect['575']}>{$lang->gmt} +5:45 {$lang->hours} ({$timein['575']})</option>
 <option value="+6" {$timezoneselect['60']}>{$lang->gmt} +6:00 {$lang->hours} ({$timein['60']})</option>
 <option value="+7" {$timezoneselect['70']}>{$lang->gmt} +7:00 {$lang->hours} ({$timein['70']})</option>
 <option value="+8" {$timezoneselect['80']}>{$lang->gmt} +8:00 {$lang->hours} ({$timein['80']})</option>
