@@ -32,6 +32,12 @@ class UserDataHandler extends DataHandler
 		$username = &$this->data['username'];
 		require_once './inc/functions_user.php';
 
+		// Fix bad characters
+		$username = str_replace(array(chr(160), chr(173)), array(" ", "-"), $username);
+
+		// Remove multiple spaces from the username
+		$username = preg_replace("#\s{2,}#", " ", $username);
+		
 		// Check if the username is not empty.
 		if(trim($username) == '')
 		{
@@ -48,6 +54,11 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check for certain characters in username (<, >, &, and slashes)
+		if(eregi("<", $username) || eregi(">", $username) || eregi("&", $username) || eregi("\\", $username) || eregi(";", $username))
+		{
+			$this->set_error("bad_characters_username");
+			return false;
+		}
 
 		// Check if the username is of the correct length.
 		if(($mybb->settings['maxnamelength'] != 0 && my_strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && my_strlen($username) < $mybb->settings['minnamelength']) && !$bannedusername && !$missingname)
@@ -56,14 +67,30 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		// Check if the username already exists or not.
-		if(username_exists($username))
+		return true;
+	}
+	
+	/**
+	* Verifies if a username is already in use or not.
+	*
+	* @return boolean False when the username is not in use, true when it is.
+	*/
+	
+	function verify_username_exists()
+	{
+		$username = &$this->data['username'];
+		
+		$query = $db->query("SELECT COUNT(uid) AS count FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($username)."'");
+		$user_count = $db->fetch_field($query, "count");
+		if($user_count > 0)
 		{
-			$this->set_error('username_exists');
+			$this->set_error("username_exists")
+			return true;
+		}
+		else
+		{
 			return false;
 		}
-
-		return true;
 	}
 
 	/**
@@ -75,10 +102,10 @@ class UserDataHandler extends DataHandler
 	{
 		global $mybb;
 
-		$password = &$this->data['password'];
+		$user = *&$this->data;
 
 		// Always check for the length of the password.
-		if(my_strlen($password) < 6)
+		if(my_strlen($user['password']) < 6)
 		{
 			$this->set_error('invalid_password_length');
 			return false;
@@ -89,12 +116,20 @@ class UserDataHandler extends DataHandler
 		{
 			// Complex passwords required, do some extra checks.
 			// First, see if there is one or more complex character(s) in the password.
-			if(!preg_match('#[\W]+#', $password))
+			if(!preg_match('#[\W]+#', $user['password']))
 			{
 				$this->set_error('no_complex_characters');
 				return false;
 			}
 		}
+		
+		// If we have a "password2" check if they both match
+		if(isset($user['password2']) && $user['password'] != $user['password2'])
+		{
+			$this->set_error("passwords_dont_match");
+			return false;
+		}
+		
 		return true;
 	}
 
@@ -105,17 +140,17 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_email()
 	{
-		$email = &$this->data['email'];
+		$user = &$this->data;
 
 		// Check if an email address has actually been entered.
-		if(trim($email) == '')
+		if(trim($user['email']) == '')
 		{
 			$this->set_error('empty_email');
 			return false;
 		}
 
 		// Check if this is a proper email address.
-		if(validate_email_format($email) === false)
+		if(validate_email_format($user['email']) === false)
 		{
 			$this->set_error('invalid_email_format');
 			return false;
@@ -130,13 +165,20 @@ class UserDataHandler extends DataHandler
 				$bannedemail = strtolower(trim($bannedemail));
 				if($bannedemail != '')
 				{
-					if(strstr($email, $bannedemail) != '')
+					if(strstr($user['email'], $bannedemail) != '')
 					{
 						$this->set_error('banned_email');
 						return false;
 					}
 				}
 			}
+		}
+		
+		// If we have an "email2", verify it matches the existing email
+		if(isset($user['email2']) && $user['email'] != $user['email2'])
+		{
+			$this->set_error("emails_dont_match");
+			return false;
 		}
 	}
 
@@ -260,34 +302,6 @@ class UserDataHandler extends DataHandler
 					return false;
 				}
 			}
-		}
-
-		return true;
-	}
-
-	/**
-	* Verifies if a user entered the correct code from the registration image.
-	*
-	* @return boolean True when valid, false when invalid.
-	*/
-	function verify_reg_image()
-	{
-		// Verify reg image.
-		if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))
-		{
-			$imagehash = $db->escape_string($mybb->input['imagehash']);
-			$imagestring = $db->escape_string($mybb->input['imagestring']);
-			$options = array(
-				'limit' => 1
-			);
-			$query = $db->simple_select(TABLE_PREFIX.'regimages', 'dateline', "imagehash='{$imagehash}' AND imagestring='{$imagestring}'", $options);
-			$imgcheck = $db->fetch_array($query);
-			if(!$imgcheck['dateline'])
-			{
-				$this->set_error('regimage_invalid');
-				return false;
-			}
-			$db->delete_query(TABLE_PREFIX.'regimages', "imagehash='{$imagehash}'", 1);
 		}
 
 		return true;

@@ -121,14 +121,18 @@ class DataHandler
 		// Prefix all the error codes with the language prefix.
 		foreach($this->errors as $error)
 		{
-			$friendly_errors[] = array(
-				'lang_string' => $this->language_prefix.$error['error_code'],
-				'error_code' => $error['error_code'],
-				'data' => $error['data']
-			);
+			$lang_string = $this->language_prefix.$error['error_code'];
+			if(is_array($error['data']))
+			{
+				$error_data = array_unshift($error['data'], $lang->string);
+				$errors[] = call_user_func_array("sprintf", $error_data);
+			}
+			else
+			{
+				$errors[] = $lang_string;
+			}
 		}
-
-		return $this->errors;
+		return $errors;
 	}
 
 	/**
