@@ -151,14 +151,26 @@ function mydate($format, $stamp, $offset="", $ty=1)
 		if(isset($mybb->user['timezone']))
 		{
 			$offset = $mybb->user['timezone'];
+			$dstcorrection = $mybb->user['dst'];
 		}
 		elseif(defined("IN_ADMINCP"))
 		{
 			$offset =  $mybbadmin['timezone'];
+			$dstcorrection = $mybbadmin['dst'];
 		}
 		else
 		{
 			$offset = $mybb->settings['timezoneoffset'];
+			$dstcorrection = $mybb->setings['dstcorrection'];
+		}
+		// If DST correction is enabled, add an additional hour to the timezone.
+		if($dstcorrection == "yes")
+		{
+			$offset++;
+			if(substr($offset, 0, 1) != "-")
+			{
+				$offset = "+".$offset;
+			}
 		}
 	}
 	if($offset == "-")

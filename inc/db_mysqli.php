@@ -316,7 +316,7 @@ class databaseEngine
 	 */
 	function affected_rows()
 	{
-		return mysqli_affected_rows($this-link);
+		return mysqli_affected_rows($this->link);
 	}
 
 	/**

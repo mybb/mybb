@@ -239,16 +239,6 @@ class session
 			}
 		}
 
-		// We might need to think about Daylight Savings Time.
-		if($mybb->user['dst'] == "yes")
-		{
-			$mybb->user['timezone']++;
-			if(substr($mybb->user['timezone'], 0, 1) != "-")
-			{
-				$mybb->user['timezone'] = "+".$mybb->user['timezone'];
-			}
-		}
-
 		// Find out the threads per page preference.
 		if($mybb->user['tpp'])
 		{
