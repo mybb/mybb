@@ -20,7 +20,7 @@ class UserDataHandler extends DataHandler
 	*
 	* @var string
 	*/
-	var $language_prefix = 'userdata_';
+	var $language_prefix = 'userdata';
 
 	/**
 	 * Verifies if a username is valid or invalid.
@@ -37,7 +37,7 @@ class UserDataHandler extends DataHandler
 
 		// Remove multiple spaces from the username
 		$username = preg_replace("#\s{2,}#", " ", $username);
-		
+
 		// Check if the username is not empty.
 		if(trim($username) == '')
 		{
@@ -69,7 +69,7 @@ class UserDataHandler extends DataHandler
 
 		return true;
 	}
-	
+
 	/**
 	 * Verifies if a username is already in use or not.
 	 *
@@ -78,9 +78,9 @@ class UserDataHandler extends DataHandler
 	function verify_username_exists()
 	{
 		global $db;
-		
+
 		$username = &$this->data['username'];
-		
+
 		$query = $db->query("SELECT COUNT(uid) AS count FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($username)."'");
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
@@ -123,26 +123,26 @@ class UserDataHandler extends DataHandler
 				return false;
 			}
 		}
-		
+
 		// If we have a "password2" check if they both match
 		if(isset($user['password2']) && $user['password'] != $user['password2'])
 		{
 			$this->set_error("passwords_dont_match");
 			return false;
 		}
-		
+
 		// MD5 the password
 		$user['md5password'] = md5($user['password']);
-		
+
 		// Generate our salt
 		$user['salt'] = generate_salt();
-		
+
 		// Combine the password and salt
 		$user['saltedpw'] = salt_password($user['md5password'], $user['salt']);
-		
+
 		// Generate the user login key
 		$user['loginkey'] = generate_loginkey();
-		
+
 		return true;
 	}
 
@@ -154,7 +154,7 @@ class UserDataHandler extends DataHandler
 	function verify_usergroup()
 	{
 		$user = &$this->data;
-	
+
 		if(intval($user['displaygroup']) <= 0 && $user['usergroup'])
 		{
 			$user['displaygroup'] = $user['usergroup'];
@@ -201,7 +201,7 @@ class UserDataHandler extends DataHandler
 				}
 			}
 		}
-		
+
 		// If we have an "email2", verify it matches the existing email
 		if(isset($user['email2']) && $user['email'] != $user['email2'])
 		{
@@ -218,7 +218,7 @@ class UserDataHandler extends DataHandler
 	function verify_website()
 	{
 		$website = &$this->data['website'];
-		
+
 		if($website == '')
 		{
 			return true;
@@ -238,7 +238,7 @@ class UserDataHandler extends DataHandler
 
 		return true;
 	}
-	
+
 	/**
 	 * Verifies if an ICQ number is valid or not.
 	 *
@@ -247,7 +247,7 @@ class UserDataHandler extends DataHandler
 	function verify_icq()
 	{
 		$icq = &$this->data['icq'];
-		
+
 		if($icq != '' && !is_numeric($icq))
 		{
 			$this->set_error("invalid_icq_number");
@@ -256,7 +256,7 @@ class UserDataHandler extends DataHandler
 		$icq = intval($icq);
 		return true;
 	}
-	
+
 	/**
 	 * Verifies if an MSN Messenger address is valid or not.
 	 *
@@ -265,7 +265,7 @@ class UserDataHandler extends DataHandler
 	function verify_msn()
 	{
 		$msn = &$this->data['msn'];
-		
+
 		if($msn != '' && validate_email_format($msn) == false)
 		{
 			$this->set_error("invalid_msn_address");
@@ -283,23 +283,23 @@ class UserDataHandler extends DataHandler
 	{
 		$user = &$this->data['user'];
 		$birthday = &$user['birthday'];
-		
+
 		if(!is_array($birthday))
 		{
 			return true;
 		}
-		
+
 		// Sanitize any input we have
 		$birthday['day'] = intval($birthday['day']);
 		$birthday['month'] = intval($birthday['month']);
 		$birthday['year'] = intval($birthday['year']);
-		
+
 		if($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12)
 		{
 			$this->set_error("invalid_birthday");
 			return false;
 		}
-		
+
 		if($birthday['year'] != 0 && ($birthday['year'] < (date("Y")-100)) || $birthday['year'] > date("Y"))
 		{
 			$this->set_error("invalid_birthday");
@@ -315,7 +315,7 @@ class UserDataHandler extends DataHandler
 		}
 		return true;
 	}
-	
+
 	/**
 	* Verifies if a profile fields are filled in correctly.
 	*
@@ -324,9 +324,9 @@ class UserDataHandler extends DataHandler
 	function verify_profile_fields()
 	{
 		global $db;
-		
+
 		$profile_fields = &$this->data['profile_fields'];
-		
+
 		// Loop through profile fields checking if they exist or not and are filled in.
 		$userfields = array();
 		$comma = '';
@@ -383,7 +383,7 @@ class UserDataHandler extends DataHandler
 	function verify_referrer()
 	{
 		global $db;
-		
+
 		$user = &$this->data;
 
 		// Does the referrer exist or not?
@@ -401,7 +401,7 @@ class UserDataHandler extends DataHandler
 			}
 		}
 		$user['referrer_uid'] = $referrer['uid'];
-	
+
 		return true;
 	}
 
@@ -462,7 +462,7 @@ class UserDataHandler extends DataHandler
 		if($this->method == "insert" || (isset($options['showsigs']) && $options['showsigs'] != "no"))
 		{
 			$options['showsigs'] = "yes";
-		}	
+		}
 		if($this->method == "insert" || (isset($options['showavatars']) && $options['showavatars'] != "no"))
 		{
 			$options['showavatars'] = "yes";
@@ -517,7 +517,7 @@ class UserDataHandler extends DataHandler
 			}
 		}
 	}
-	
+
 	/**
 	 * Verifies if a registration date is valid or not.
 	 *
@@ -526,7 +526,7 @@ class UserDataHandler extends DataHandler
 	function verify_regdate()
 	{
 		$regdate = &$this->data['regdate'];
-		
+
 		$regdate = intval($regdate);
 		// If the timestamp is below 0, set it to the current time.
 		if($regdate <= 0)
@@ -534,9 +534,9 @@ class UserDataHandler extends DataHandler
 			$regdate = time();
 		}
 		return true;
-		
+
 	}
-	
+
 	/**
 	 * Verifies if a last visit date is valid or not.
 	 *
@@ -545,7 +545,7 @@ class UserDataHandler extends DataHandler
 	function verify_lastvisit()
 	{
 		$lastvisit = &$this->data['lastvisit'];
-		
+
 		$lastvisit = intval($lastvisit);
 		// If the timestamp is below 0, set it to the current time.
 		if($lastvisit <= 0)
@@ -553,9 +553,9 @@ class UserDataHandler extends DataHandler
 			$lastvisit = time();
 		}
 		return true;
-		
+
 	}
-	
+
 	/**
 	 * Verifies if a last active date is valid or not.
 	 *
@@ -564,7 +564,7 @@ class UserDataHandler extends DataHandler
 	function verify_lastactive()
 	{
 		$lastactive = &$this->data['lastactive'];
-		
+
 		$lastactive = intval($lastactive);
 		// If the timestamp is below 0, set it to the current time.
 		if($lastactive <= 0)
@@ -572,9 +572,9 @@ class UserDataHandler extends DataHandler
 			$lastactive = time();
 		}
 		return true;
-		
+
 	}
-	
+
 	/**
 	 * Verifies if an away mode status is valid or not.
 	 *
@@ -583,11 +583,11 @@ class UserDataHandler extends DataHandler
 	function verify_away()
 	{
 		global $mybb;
-		
+
 		$user = &$this->data;
 		// If the board does not allow "away mode" or the user is marking as not away, set defaults.
 		if($mybb->settings['allowaway'] == "no" || $user['away']['away'] == "no")
-		{			
+		{
 			$user['away']['away'] = "no";
 			$user['away']['date'] = 0;
 			$user['away']['returndate'] = 0;
@@ -595,7 +595,7 @@ class UserDataHandler extends DataHandler
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Verifies if a langage is valid for this user or not.
 	 *
@@ -604,9 +604,9 @@ class UserDataHandler extends DataHandler
 	function verify_language()
 	{
 		global $lang;
-		
+
 		$language = &$this->data['language'];
-		
+
 		// An invalid language has been specified?
 		if($language != '' && !$lang->languageExists($language))
 		{
@@ -624,9 +624,9 @@ class UserDataHandler extends DataHandler
 	function validate_user()
 	{
 		global $mybb;
-		
+
 		$user = &$this->data;
-	
+
 		if($this->method == "insert" || isset($user['username']))
 		{
 			$this->verify_username();
@@ -780,13 +780,13 @@ class UserDataHandler extends DataHandler
 
 		$db->insert_query(TABLE_PREFIX."users", $newuser);
 		$uid = $db->insert_id();
-		
+
 		$user['user_fields']['ufid'] = $uid;
 		$db->insert_query(TABLE_PREFIX."userfields", $user['user_fields']);
-	
+
 		// Update forum stats
 		$cache->updatestats();
-		
+
 		return array(
 			"uid" => $uid,
 			"username" => $user['username'],
@@ -802,7 +802,7 @@ class UserDataHandler extends DataHandler
 	function update_user()
 	{
 		global $db;
-		
+
 		// Yes, validating is required.
 		if(!$this->get_validated())
 		{
@@ -814,9 +814,9 @@ class UserDataHandler extends DataHandler
 		}
 
 		$user = &$this->data;
-		
+
 		$updateuser = array();
-		
+
 		if(isset($user['username']))
 		{
 			$updateuser['username'] = $db->escape_string($user['username']);
@@ -899,7 +899,7 @@ class UserDataHandler extends DataHandler
 		if(isset($user['style']))
 		{
 			$updateuser['style'] = intval($user['style']);
-		}	
+		}
 		if(isset($user['timezone']))
 		{
 			$updateuser['timezone'] = $db->escape_string($user['timezone']);
@@ -907,7 +907,7 @@ class UserDataHandler extends DataHandler
 		if(isset($user['dateformat']))
 		{
 			$updateuser['dateformat'] = $db->escape_string($user['dateformat']);
-		}		
+		}
 		if(isset($user['timeformat']))
 		{
 			$updateuser['timeformat'] = $db->escape_string($user['timeformat']);

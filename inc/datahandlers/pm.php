@@ -25,7 +25,7 @@ class PMDataHandler extends DataHandler
 	*
 	* @var string
 	*/
-	var $language_prefix = 'pmdata_';
+	var $language_prefix = 'pmdata';
 
 	/**
 	 * Verifies a private message subject.

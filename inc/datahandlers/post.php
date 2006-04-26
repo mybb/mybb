@@ -34,7 +34,7 @@ class PostDataHandler extends DataHandler
 	*
 	* @var string
 	*/
-	var $language_prefix = 'postdata_';
+	var $language_prefix = 'postdata';
 
 	/**
 	 * What are we performing?
@@ -71,7 +71,7 @@ class PostDataHandler extends DataHandler
 		// After all of this, if we still don't have a username, force the username as "Guest"
 		if(!$post['username'])
 		{
-			$post['username'] = "Guest";
+			$post['username'] = $lang->guest;
 		}
 
 		// Sanitize the username
@@ -137,7 +137,7 @@ class PostDataHandler extends DataHandler
 		{
 			if(strlen(trim($subject)) == 0)
 			{
-				$this->set_error("no_subject");
+				$this->set_error("missing_subject");
 				return false;
 			}
 		}
@@ -158,7 +158,7 @@ class PostDataHandler extends DataHandler
 		// Do we even have a message at all?
 		if(trim($message) == "")
 		{
-			$this->set_error("no_message");
+			$this->set_error("missing_message");
 			return false;
 		}
 
@@ -289,7 +289,7 @@ class PostDataHandler extends DataHandler
 		// Check if the post being replied to actually exists in this thread.
 		if($post['replyto'])
 		{
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='".$post['replyto']."'");
+			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$post['replyto']}'");
 			$valid_post = $db->fetch_array($query);
 			if(!$valid_post['pid'])
 			{
@@ -310,7 +310,7 @@ class PostDataHandler extends DataHandler
 				"order_by" => "dateline",
 				"order_dir" => "asc"
 			);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='".$post['tid']."'", $options);
+			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$post['tid']}'", $options);
 			$reply_to = $db->fetch_array($query);
 			$post['replyto'] = $reply_to['pid'];
 		}
@@ -459,7 +459,7 @@ class PostDataHandler extends DataHandler
 				$query = $db->simple_select(
 					TABLE_PREFIX."favorites",
 					"uid",
-					"type='s' AND tid='".$post['tid']."' AND uid='".$post['uid']."'"
+					"type='s' AND tid='{$post['tid']}' AND uid='{$post['uid']}'"
 				);
 				$subcheck = $db->fetch_array($query);
 				if(!$subcheck['uid'])
@@ -521,7 +521,7 @@ class PostDataHandler extends DataHandler
 					$db->query("
 						UPDATE ".TABLE_PREFIX."threads
 						SET $newclosed$sep$newstick
-						WHERE tid='".$thread['tid']."'
+						WHERE tid='{$thread['tid']}'
 					");
 				}
 			}
@@ -556,7 +556,7 @@ class PostDataHandler extends DataHandler
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible
 				);
-			$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='".$post['pid']."'");
+			$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='{$post['pid']}'");
 			$pid = $post['pid'];
 		}
 		else
@@ -605,10 +605,10 @@ class PostDataHandler extends DataHandler
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language
 				FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u
-				WHERE f.type='s' AND f.tid='$tid'
+				WHERE f.type='s' AND f.tid='{$tid}'
 				AND u.uid=f.uid
-				AND f.uid!='".$mybb->user['uid']."'
-				AND u.lastactive>'".$thread['lastpost']."'
+				AND f.uid!='{$mybb->user['uid']}'
+				AND u.lastactive>'{$thread['lastpost']}'
 			");
 			while($subscribedmember = $db->fetch_array($query))
 			{

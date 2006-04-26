@@ -118,6 +118,8 @@ class DataHandler
 	 */
 	function get_friendly_errors()
 	{
+		global $lang;
+
 		// Prefix all the error codes with the language prefix.
 		foreach($this->errors as $error)
 		{
@@ -133,7 +135,17 @@ class DataHandler
 					}
 					$arg_info .= ")";
 				}
-				$errors[] = "Missing lang string: ".$this->language_prefix.$error['error_code'].$arg_info;
+
+				// Get the language string for this particular error.
+				if(empty($this->language_prefix))
+				{
+					$errors[] = "Missing language string: ".$error['error_code'].$arg_info;
+				}
+				else
+				{
+					$errors[] = "Missing language string: ".$this->language_prefix.'_'.$error['error_code'].$arg_info;
+				}
+
 				$arg_info = '';
 				continue;
 			}

@@ -20,7 +20,7 @@ class ForumDataHandler extends DataHandler
 	*
 	* @var string
 	*/
-	var $language_prefix = 'forumdata_';
+	var $language_prefix = 'forumdata';
 
 	/**
 	* Verifies a forum name.
@@ -33,7 +33,7 @@ class ForumDataHandler extends DataHandler
 
 		if(trim($forum['name']) == "")
 		{
-			$this->set_error("no_forum_name");
+			$this->set_error("missing_forum_name");
 			return false;
 		}
 

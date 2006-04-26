@@ -20,7 +20,7 @@ class EventDataHandler extends DataHandler
 	*
 	* @var string
 	*/
-	var $language_prefix = 'eventdata_';
+	var $language_prefix = 'eventdata';
 
 	/**
 	 * Verifies if an event name is valid or not and attempts to fix it
@@ -33,7 +33,7 @@ class EventDataHandler extends DataHandler
 		$name = trim($name);
 		if(!$name)
 		{
-			$this->set_error("no_name");
+			$this->set_error("missing_name");
 			return false;
 		}
 		return true;
@@ -50,7 +50,7 @@ class EventDataHandler extends DataHandler
 		$description = trim($description);
 		if(!$description)
 		{
-			$this->set_error("no_description");
+			$this->set_error("missing_description");
 			return false;
 		}
 		return true;
@@ -65,15 +65,17 @@ class EventDataHandler extends DataHandler
 	{
 		$event = &$this->data;
 
+		// Check if the date is complete.
 		if(!$event['day'] || !$event['month'] || !$event['year'])
 		{
 			$this->set_error("invalid_date");
 			return false;
 		}
+
 		// Check if the day actually exists.
 		if($event['day'] > date("t", mktime(0, 0, 0, $event['month'], 1, $event['year'])))
 		{
-			$this->set_error("incorrect_day");
+			$this->set_error("invalid_day");
 			return false;
 		}
 		$event['date'] = intval($event['day'])."-".intval($event['month'])."-".intval($event['year']);
