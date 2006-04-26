@@ -82,200 +82,10 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("member_do_register_start");
 
-	$username = $mybb->input['username'];
-
-	// Fix bad characters
-	$username = str_replace(array(chr(160), chr(173)), array(" ", "-"), $username);
-
-	// Remove multiple spaces from the username
-	$username = preg_replace("#\s{2,}#", " ", $username);
-
-
-	if(!trim($username))
+	if($mybb->settings['regtype'] == "randompass")
 	{
-		$errors[] = $lang->error_nousername;
-		$bannedusername = 1;
-		$missingname =1;
-	}
-
-	//Banned Username Code
-	$bannedusernames = explode(",", $mybb->settings['bannedusernames']);
-	if(in_array($username, $bannedusernames))
-	{
-		$errors[] = $lang->error_bannedusername;
-		$bannedusername = 1;
-	}
-	if(eregi("<", $username) || eregi(">", $username) || eregi("&", $username) && !$bannedusername)
-	{
-		$errors[] = $lang->error_invalidusername;
-		$bannedusername = 1;
-	}
-	$user2 = str_replace("\\", '', $username);
-	if($user2 != $username)
-	{
-		$errors[] = $lang->error_invalidusername;
-		$bannedusername = 1;
-	}
-	if(($mybb->settings['maxnamelength'] != 0 && my_strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && my_strlen($username) < $mybb->settings['minnamelength']) && !$bannedusername && !$missingname)
-	{
-		$lang->error_username_length = sprintf($lang->error_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
-		$errors[] = $lang->error_username_length;
-	}
-	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($username)."'");
-	if($db->fetch_array($query))
-	{
-		$errors[] = $lang->error_usernametaken;
-	}
-	$password = $mybb->input['password'];
-	$password2 = $mybb->input['password2'];
-
-	if(!trim($password) && $mybb->settings['regtype'] != "randompass")
-	{
-		$errors[] = $lang->error_nopassword;
-		$badpass = 1;
-	}
-	if($password != $password2 && $mybb->settings['regtype'] != "randompass" && !$badpass)
-	{
-		$errors[] = $lang->error_passwordmismatch;
-	}
-
-	$email = $mybb->input['email'];
-	$email2 = $mybb->input['email2'];
-
-	if(!trim($email))
-	{
-		$errors[] = $lang->error_noemail;
-		$bademail = 1;
-	}
-	$email = strtolower($email);
-	$bannedemails = explode(",", $mybb->settings['bannedemails']);
-	if(is_array($bannedemails) && !$bademail)
-	{
-		foreach($bannedemails as $bannedemail)
-		{
-			$bannedemail = strtolower(trim($bannedemail));
-			if($bannedemail != '')
-			{
-				if(strstr($email, $bannedemail) != '')
-				{
-					$errors[] = $lang->error_bannedemail;
-				}
-			}
-		}
-	}
-	if($email != $email2 && !$bademail)
-	{
-		$errors[] = $lang->error_emailmismatch;
-	}
-	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email) && !$bademail)
-	{
-		$errors[] = $lang->error_invalidemail;
-	}
-
-	$website = $mybb->input['website'];
-	if($website == "http://" || $website == "none")
-	{
-		$website = '';
-	}
-
-	$bday1 = intval($mybb->input['bday1']);
-	$bday2 = intval($mybb->input['bday2']);
-	$bday3 = intval($mybb->input['bday3']);
-
-	if($bday1 == '' || $bday2 == '')
-	{
-		$bday = '';
-	}
-	else
-	{
-		if(($bday3 >= (date("Y") - 100)) && ($bday3 < date("Y")))
-		{
-			$bday = "$bday1-$bday2-$bday3";
-		}
-		else
-		{
-			$bday = "$bday1-$bday2-";
-		}
-	}
-
-	if($mybb->input['allownotices'] != "yes")
-	{
-		$allownotices = "no";
-	}
-	else
-	{
-		$allownotices = "yes";
-		$allownoticescheck = "checked=\"checked\"";
-	}
-
-	if($mybb->input['hideemail'] != "yes")
-	{
-		$hideemail = "no";
-	}
-	else
-	{
-		$hideemail = "yes";
-		$hideemailcheck = "checked=\"checked\"";
-	}
-
-	if($mybb->input['emailnotify'] != "yes")
-	{
-		$emailnotify = "no";
-	}
-	else
-	{
-		$emailnotify = "yes";
-		$emailnotifycheck = "checked=\"checked\"";
-	}
-
-	if($mybb->input['receivepms'] != "yes")
-	{
-		$receivepms = "no";
-	}
-	else
-	{
-		$receivepms = "yes";
-		$receivepmscheck = "checked=\"checked\"";
-	}
-
-	if($mybb->input['pmpopup'] != "yes")
-	{
-		$pmpopup = "no";
-	}
-	else
-	{
-		$pmpopup = "yes";
-		$pmpopupcheck = "checked=\"checked\"";
-	}
-
-	if($mybb->input['emailpmnotify'] != "yes")
-	{
-		$emailpmnotify = "no";
-	}
-	else
-	{
-		$emailpmnotify = "yes";
-		$emailpmnotifycheck = "checked=\"checked\"";
-	}
-
-	if($mybb->input['invisible'] != "yes")
-	{
-		$invisible = "no";
-	}
-	else
-	{
-		$invisible = "yes";
-		$invisiblecheck = "checked=\"checked\"";
-	}
-
-	if($mybb->input['enabledst'] != "yes")
-	{
-		$enabledst = "no";
-	}
-	else
-	{
-		$enabledst = "yes";
-		$enabledstcheck = "checked=\"checked\"";
+		$mybb->input['password'] = randomstr();
+		$mybb->input['password2'] = $mybb->input['password'];
 	}
 
 	if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin")
@@ -286,65 +96,52 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$usergroup = 2;
 	}
-	$style = '';
-	// Custom profile fields baby!
-	$userfields = array();
-	$comma = '';
-	$query = $db->query("
-		SELECT type, fid, required
-		FROM ".TABLE_PREFIX."profilefields
-		WHERE editable='yes'
-		ORDER BY disporder
-	");
-	while($profilefield = $db->fetch_array($query))
-	{
-		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-		$thing = explode("\n", $profilefield['type'], "2");
-		$type = trim($thing[0]);
-		$field = "fid$profilefield[fid]";
-		if(!$mybb->input[$field] && $profilefield['required'] == "yes" && !$proferror)
-		{
-			$errors[] = $lang->error_missingrequiredfield;
-			$proferror = 1;
-		}
-		$options = '';
-		if($type == "multiselect" || $type == "checkbox")
-		{
-			if(is_array($mybb->input[$field]))
-			{
-				while(list($key, $val) = each($mybb->input[$field]))
-				{
-					if($options)
-					{
-						$options .= "\n";
-					}
-					$options .= "$val";
-				}
-			}
-		}
-		else
-		{
-			$options = $mybb->input[$field];
-		}
-		$userfields[$field] = $options;
-		$comma = ",";
-	}
+	
+	// Set up user handler.
+	require_once "inc/datahandlers/user.php";
+	$userhandler = new UserDataHandler("insert");
 
-	if($mybb->settings['usereferrals'] == "yes" && !$mybb->user['uid'])
+	// Set the data for the new user.
+	$user = array(
+		"username" => $mybb->input['username'],
+		"password" => $mybb->input['password'],
+		"password2" => $mybb->input['password2'],
+		"email" => $mybb->input['email'],
+		"email2" => $mybb->input['email'],
+		"usergroup" => $usergroup,
+		"referrer" => $mybb->input['referrername'],
+		"timezone" => $mybb->input['timezoneoffset'],
+		"language" => $mybb->input['language'],
+		"profile_fields" => $mybb->input['profile_fields'],
+		"regip" => $session->ipaddress
+	);
+	
+	$user['birthday'] = array(
+		"day" => $mybb->input['bday1'],
+		"month" => $mybb->input['bday2'],
+		"year" => $mybb->input['bday3']
+	);
+	
+	$user['options'] = array(
+		"allownotices" => $mybb->input['allownotices'],
+		"hideemail" => $mybb->input['hideemail'],
+		"emailnotify" => $mybb->input['emailnotify'],
+		"receivepms" => $mybb->input['receivepms'],
+		"pmpopup" => $mybb->input['pmpopup'],
+		"emailpmnotify" => $mybb->input['emailpmnotify'],
+		"invisible" => $mybb->input['invisible'],
+		"enabledst" => $mybb->input['enabledst']
+	);
+		
+	$userhandler->set_data($user);
+	
+	$errors = "";
+	
+	if(!$userhandler->validate_user())
 	{
-		if($mybb->input['referrername'])
-		{
-			$referrername = $db->escape_string($mybb->input['referrername']);
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='$referrername'");
-			$referrer = $db->fetch_array($query);
-			if(!$referrer['uid'])
-			{
-				$errors[] = $lang->error_badreferrer;
-			}
-			$refuid = intval($referrer['uid']);
-		}
-		$_COOKIE['mybb']['referrer'] = $referrername;
+		$errors = $userhandler->get_friendly_errors();	
 	}
+	
 	if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
@@ -364,115 +161,76 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$email = htmlspecialchars_uni($mybb->input['email']);
 		$email2 = htmlspecialchars_uni($mybb->input['email']);
 		$referrername = htmlspecialchars_uni($mybb->input['referrername']);
+		
+		if($mybb->input['allownotices'] == "yes")
+		{
+			$allownoticescheck = "checked=\"checked\"";
+		}
+
+		if($mybb->input['hideemail'] == "yes")
+		{
+			$hideemailcheck = "checked=\"checked\"";
+		}
+
+		if($mybb->input['emailnotify'] == "yes")
+		{
+			$emailnotifycheck = "checked=\"checked\"";
+		}
+
+		if($mybb->input['receivepms'] == "yes")
+		{
+			$receivepmscheck = "checked=\"checked\"";
+		}
+
+		if($mybb->input['pmpopup'] == "yes")
+		{
+			$pmpopupcheck = "checked=\"checked\"";
+		}
+
+		if($mybb->input['emailpmnotify'] == "yes")
+		{
+			$emailpmnotifycheck = "checked=\"checked\"";
+		}
+
+		if($mybb->input['invisible'] == "yes")
+		{
+			$invisiblecheck = "checked=\"checked\"";
+		}
+
+		if($mybb->input['enabledst'] == "yes")
+		{
+			$enabledstcheck = "checked=\"checked\"";
+		}
+
 		$regerrors = inlineerror($errors);
 		$mybb->input['action'] = "register";
 		$fromreg = 1;
 	}
 	else
 	{
-		if($mybb->settings['regtype'] == "randompass")
-		{
-			$password = random_str();
-			$md5password = md5($password);
-		}
-		else
-		{
-			$md5password = md5($mybb->input['password']);
-		}
-
-		//
-		// Generate salt, salted password, and login key
-		//
-		$salt = generate_salt();
-		$saltedpw = salt_password($md5password, $salt);
-		$loginkey = generate_loginkey();
-
-		$timenow = time();
-		$newuser = array(
-			"username" => $db->escape_string($username),
-			"password" => $saltedpw,
-			"salt" => $salt,
-			"loginkey" => $loginkey,
-			"email" => $db->escape_string($email),
-			"usergroup" => $usergroup,
-			"regdate" => $timenow,
-			"lastactive" => $timenow,
-			"lastvisit" => intval($lastvisit),
-			"website" => $db->escape_string(htmlspecialchars($website)),
-			"icq" => intval($mybb->input['icq']),
-			"aim" => $db->escape_string(htmlspecialchars($mybb->input['aim'])),
-			"yahoo" => $db->escape_string(htmlspecialchars($mybb->input['yahoo'])),
-			"msn" => $db->escape_string(htmlspecialchars($mybb->input['msn'])),
-			"birthday" => $bday,
-			"allownotices" => $allownotices,
-			"hideemail" => $hideemail,
-			"emailnotify" => $emailnotify,
-			"receivepms" => $receivepms,
-			"pmpopup" => $pmpopup,
-			"pmnotify" => $emailpmnotify,
-			"remember" => "yes",
-			"showsigs" => "yes",
-			"showavatars" => "yes",
-			"showquickreply" => "yes",
-			"invisible" => $invisible,
-			"style" => '0',
-			"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
-			"dst" => $enabledst,
-			"threadmode" => $threadmode,
-			"daysprune" => intval($mybb->input['daysprune']),
-			"regip" => $ipaddress,
-			"language" => $db->escape_string($mybb->input['language']),
-			"showcodebuttons" => 1,
-			);
-		if($mybb->settings['usertppoptions'])
-		{
-			$newuser['tpp'] = intval($mybb->input['tpp']);
-		}
-		if($mybb->settings['userpppoptions'])
-		{
-			$newuser['ppp'] = intval($mybb->input['ppp']);
-		}
-		if($refuid)
-		{
-			$newuser['referrer'] = $refuid;
-		}
-
-		$plugins->run_hooks("member_do_register_process");
-
-		$db->insert_query(TABLE_PREFIX."users", $newuser);
-		$uid = $db->insert_id();
-
-		$userfields['ufid'] = $uid;
-		$db->insert_query(TABLE_PREFIX."userfields", $userfields);
-
-		if(function_exists("accountCreated"))
-		{
-			accountCreated($uid);
-		}
+		$user_info = $userhandler->insert_user();
 
 		if($mybb->settings['regtype'] != "randompass")
 		{
 			// Log them in
-			mysetcookie("mybbuser", $uid."_".$loginkey);
+			mysetcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey']);
 		}
 
-		// Update forum stats
-		$cache->updatestats();
 		if($mybb->settings['regtype'] == "verify")
 		{
 			$activationcode = random_str();
 			$now = time();
 			$activationarray = array(
-				"uid" => $uid,
+				"uid" => $user['uid'],
 				"dateline" => time(),
 				"code" => $activationcode,
 				"type" => "r"
 			);
 			$db->insert_query(TABLE_PREFIX."awaitingactivation", $activationarray);
 			$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-			$emailmessage = sprintf($lang->email_activateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+			$emailmessage = sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 			mymail($email, $emailsubject, $emailmessage);
-			$lang->redirect_registered_activation = sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $username);
+			$lang->redirect_registered_activation = sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -481,7 +239,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		else if($mybb->settings['regtype'] == "randompass")
 		{
 			$emailsubject = sprintf($lang->emailsubject_randompassword, $mybb->settings['bbname']);
-			$emailmessage = sprintf($lang->email_randompassword, $username, $mybb->settings['bbname'], $username, $password);
+			$emailmessage = sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
 			mymail($email, $emailsubject, $emailmessage);
 
 			$plugins->run_hooks("member_do_register_end");
@@ -490,7 +248,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else if($mybb->settings['regtype'] == "admin")
 		{
-			$lang->redirect_registered_admin_activate = sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], $username);
+			$lang->redirect_registered_admin_activate = sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -498,7 +256,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$lang->redirect_registered = sprintf($lang->redirect_registered, $mybb->settings['bbname'], $username);
+			$lang->redirect_registered = sprintf($lang->redirect_registered, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
 

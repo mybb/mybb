@@ -268,28 +268,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 	// Now let the post handler do all the hard work.
 	if(!$posthandler->validate_post())
 	{
-		$errors = $posthandler->get_errors();
-		foreach($errors as $error)
-		{
-			//
-			// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
-			// Used to determine any missing language variables from the datahandlers
-			//
-			if($lang->$error['error_code'])
-			{
-				$post_errors[] = $lang->$error['error_code'];
-			}
-			else
-			{
-				$post_errors[] = "Missing language var: ".$error['error_code'];
-			}
-			//
-			// END TESTING CODE
-			//
-			/*
-				$post_errors[] =$lang->$error['error_code'];
-			*/
-		}
+		$post_errors = $posthandler->get_friendly_errors();
 		$post_errors = inlineerror($post_errors);
 		$mybb->input['action'] = "editpost";
 	}

@@ -135,28 +135,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	// Now let the pm handler do all the hard work.
 	if(!$pmhandler->validate_pm())
 	{
-		$errors = $pmhandler->get_errors();
-		foreach($errors as $error)
-		{
-			//
-			// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
-			// Used to determine any missing language variables from the datahandlers
-			//
-			if($lang->$error['error_code'])
-			{
-				$pm_errors[] = $lang->$error['error_code'];
-			}
-			else
-			{
-				$pm_errors[] = "Missing language var: ".$error['error_code'];
-			}
-			//
-			// END TESTING CODE
-			//
-			/*
-				$pm_errors[] =$lang->$error['error_code'];
-			*/
-		}
+		$pm_errors = $pmhandler->get_friendly_errors();
 		$send_errors = inlineerror($pm_errors);
 		$mybb->input['action'] = "send";
 	}

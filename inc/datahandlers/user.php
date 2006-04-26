@@ -54,7 +54,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check for certain characters in username (<, >, &, and slashes)
-		if(eregi("<", $username) || eregi(">", $username) || eregi("&", $username) || eregi("\\", $username) || eregi(";", $username))
+		if(eregi("<", $username) || eregi(">", $username) || eregi("&", $username) || strpos($username, "\\") !== false || eregi(";", $username))
 		{
 			$this->set_error("bad_characters_username");
 			return false;
@@ -63,7 +63,7 @@ class UserDataHandler extends DataHandler
 		// Check if the username is of the correct length.
 		if(($mybb->settings['maxnamelength'] != 0 && my_strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && my_strlen($username) < $mybb->settings['minnamelength']) && !$bannedusername && !$missingname)
 		{
-			$this->set_error('invalid_username_length');
+			$this->set_error('invalid_username_length', array($mybb->settings['maxnamelength']));
 			return false;
 		}
 
@@ -71,20 +71,21 @@ class UserDataHandler extends DataHandler
 	}
 	
 	/**
-	* Verifies if a username is already in use or not.
-	*
-	* @return boolean False when the username is not in use, true when it is.
-	*/
-	
+	 * Verifies if a username is already in use or not.
+	 *
+	 * @return boolean False when the username is not in use, true when it is.
+	 */
 	function verify_username_exists()
 	{
+		global $db;
+		
 		$username = &$this->data['username'];
 		
 		$query = $db->query("SELECT COUNT(uid) AS count FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($username)."'");
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
 		{
-			$this->set_error("username_exists")
+			$this->set_error("username_exists", array($username));
 			return true;
 		}
 		else
@@ -98,11 +99,11 @@ class UserDataHandler extends DataHandler
 	*
 	* @return boolean True when valid, false when invalid.
 	*/
-	function verify_new_password()
+	function verify_password()
 	{
 		global $mybb;
 
-		$user = *&$this->data;
+		$user = &$this->data;
 
 		// Always check for the length of the password.
 		if(my_strlen($user['password']) < 6)
@@ -130,9 +131,36 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 		
+		// MD5 the password
+		$user['md5password'] = md5($user['password']);
+		
+		// Generate our salt
+		$user['salt'] = generate_salt();
+		
+		// Combine the password and salt
+		$user['saltedpw'] = salt_password($user['md5password'], $user['salt']);
+		
+		// Generate the user login key
+		$user['loginkey'] = generate_loginkey();
+		
 		return true;
 	}
 
+	/**
+	* Verifies usergroup selections and other group details.
+	*
+	* @return boolean True when valid, false when invalid.
+	*/
+	function verify_usergroup()
+	{
+		$user = &$this->data;
+	
+		if(intval($user['displaygroup']) <= 0 && $user['usergroup'])
+		{
+			$user['displaygroup'] = $user['usergroup'];
+		}
+		return true;
+	}
 	/**
 	* Verifies if an email address is valid or not.
 	*
@@ -190,6 +218,11 @@ class UserDataHandler extends DataHandler
 	function verify_website()
 	{
 		$website = &$this->data['website'];
+		
+		if($website == '')
+		{
+			return true;
+		}
 
 		// Does the website start with http://?
 		if(substr_count($website, 'http://') == 0)
@@ -205,6 +238,41 @@ class UserDataHandler extends DataHandler
 
 		return true;
 	}
+	
+	/**
+	 * Verifies if an ICQ number is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_icq()
+	{
+		$icq = &$this->data['icq'];
+		
+		if($icq != '' && !is_numeric($icq))
+		{
+			$this->set_error("invalid_icq_number");
+			return false;
+		}
+		$icq = intval($icq);
+		return true;
+	}
+	
+	/**
+	 * Verifies if an MSN Messenger address is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_msn()
+	{
+		$msn = &$this->data['msn'];
+		
+		if($msn != '' && validate_email_format($msn) == false)
+		{
+			$this->set_error("invalid_msn_address");
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	* Verifies if a birthday is valid or not.
@@ -213,10 +281,41 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_birthday()
 	{
-		// Check user isn't over 100 years - if they are strip back to just date/month.
-		$birthday = &$this->data['birthday'];
+		$user = &$this->data['user'];
+		$birthday = &$user['birthday'];
+		
+		if(!is_array($birthday))
+		{
+			return true;
+		}
+		
+		// Sanitize any input we have
+		$birthday['day'] = intval($birthday['day']);
+		$birthday['month'] = intval($birthday['month']);
+		$birthday['year'] = intval($birthday['year']);
+		
+		if($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12)
+		{
+			$this->set_error("invalid_birthday");
+			return false;
+		}
+		
+		if($birthday['year'] != 0 && ($birthday['year'] < (date("Y")-100)) || $birthday['year'] > date("Y"))
+		{
+			$this->set_error("invalid_birthday");
+			return false;
+		}
+		if($birthday['year'] != 0)
+		{
+			$user['bday'] = $birthday['day']."-".$birthday['month']."-".$birthday['year'];
+		}
+		else
+		{
+			$user['bday'] = $birthday['day']."-".$birthday['month'];
+		}
+		return true;
 	}
-
+	
 	/**
 	* Verifies if a profile fields are filled in correctly.
 	*
@@ -224,6 +323,10 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_profile_fields()
 	{
+		global $db;
+		
+		$profile_fields = &$this->data['profile_fields'];
+		
 		// Loop through profile fields checking if they exist or not and are filled in.
 		$userfields = array();
 		$comma = '';
@@ -243,34 +346,30 @@ class UserDataHandler extends DataHandler
 			$field = "fid$profilefield[fid]";
 
 			// If the profile field is required, but not filled in, present error.
-			if(!$mybb->input[$field] && $profilefield['required'] == "yes" && !$proferror)
+			if(!$profile_fields[$field] && $profilefield['required'] == "yes" && !$proferror)
 			{
-				$this->set_error('error_missingrequiredfield');
+				$this->set_error('error_missingrequiredfields');
 				return false;
 			}
 
 			// Sort out multiselect/checkbox profile fields.
 			$options = '';
-			if($type == "multiselect" || $type == "checkbox")
+			if($type == "multiselect" || $type == "checkbox" && is_array($profile_fields[$field]))
 			{
-				if(is_array($mybb->input[$field]))
+				foreach($profile_fields[$field] as $value)
 				{
-					while(list($key, $val) = each($mybb->input[$field]))
+					if($options)
 					{
-						if($options)
-						{
-							$options .= "\n";
-						}
-						$options .= "$val";
+						$options .= "\n";
 					}
+					$options .= "$val";
 				}
 			}
 			else
 			{
-				$options = $mybb->input[$field];
+				$options = $value;
 			}
-			$userfields[$field] = $options;
-			$comma = ",";
+			$user['user_fields'][$field] = $options;
 		}
 
 		return true;
@@ -284,26 +383,25 @@ class UserDataHandler extends DataHandler
 	function verify_referrer()
 	{
 		global $db;
+		
+		$user = &$this->data;
 
 		// Does the referrer exist or not?
-		if($mybb->settings['usereferrals'] == "yes" && $mybb->user['uid'] == 0)
+		if($mybb->settings['usereferrals'] == "yes" && $user['referrer'] != '')
 		{
-			if($mybb->input['referrername'])
+			$options = array(
+				'limit' => 1
+			);
+			$query = $db->simple_select(TABLE_PREFIX.'users', 'uid', "username='".$db->escape_string($user['referrer'])."'", $options);
+			$referrer = $db->fetch_array($query);
+			if(!$referrer['uid'])
 			{
-				$referrername = $db->escape_string($mybb->input['referrername']);
-				$options = array(
-					'limit' => 1
-				);
-				$query = $db->simple_select(TABLE_PREFIX.'users', 'uid', "username={$referrername}", $options);
-				$referrer = $db->fetch_array($query);
-				if(!$referrer['uid'])
-				{
-					$this->set_error('error_badreferrer');
-					return false;
-				}
+				$this->set_error('error_badreferrer', array($user['referrer']));
+				return false;
 			}
 		}
-
+		$user['referrer_uid'] = $referrer['uid'];
+	
 		return true;
 	}
 
@@ -317,38 +415,205 @@ class UserDataHandler extends DataHandler
 		$options = &$this->data['options'];
 
 		// Verify yes/no options.
-		if($options['allownotices'] != "yes")
+		if($this->method == "insert" || (isset($options['allownotices']) && $options['allownotices'] != "yes"))
 		{
 			$options['allownotices'] = "no";
 		}
-		if($options['hideemail'] != "yes")
+		if($this->method == "insert" || (isset($options['hideemail']) && $options['hideemail'] != "yes"))
 		{
 			$options['hideemail'] = "no";
 		}
-		if($options['emailnotify'] != "yes")
+		if($this->method == "insert" || (isset($options['emailnotify']) && $options['emailnotify'] != "yes"))
 		{
 			$options['emailnotify'] = "no";
 		}
-		if($options['receivepms'] != "yes")
+		if($this->method == "insert" || (isset($options['receivepms']) && $options['receivepms'] != "no"))
 		{
-			$options['receivepms'] = "no";
+			$options['receivepms'] = "yes";
 		}
-		if($options['pmpopup'] != "yes")
+		if($this->method == "insert" || (isset($options['pmpopup']) && $options['pmpopup'] != "no"))
 		{
-			$options['pmpopup'] = "no";
+			$options['pmpopup'] = "yes";
 		}
-		if($options['emailpmnotify'] != "yes")
+		if($this->method == "insert" || (isset($options['emailpmnotify']) && $options['emailpmnotify'] != "no"))
 		{
-			$options['emailpmnotify'] = "no";
+			$options['emailpmnotify'] = "yes";
 		}
-		if($options['invisible'] != "yes")
+		if($this->method == "insert" || (isset($options['invisible']) && $options['invisible'] != "yes"))
 		{
 			$options['invisible'] = "no";
 		}
-		if($options['enabledst'] != "yes")
+		if($this->method == "insert" || (isset($options['remember']) && $options['remember'] != "no"))
 		{
-			$options['enabledst'] = "no";
+			$options['remember'] = "yes";
 		}
+		if($this->method == "insert" || (isset($options['dst']) && $options['dst '] != "yes"))
+		{
+			$options['dst'] = "no";
+		}
+		if($this->method == "insert" || (isset($options['showcodebuttons']) && $options['showcodebuttons'] != 0))
+		{
+			$options['showcodebuttons'] = 1;
+		}
+		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "threaded"))
+		{
+			$options['threadmode'] = 'linear';
+		}
+		if($this->method == "insert" || (isset($options['showsigs']) && $options['showsigs'] != "no"))
+		{
+			$options['showsigs'] = "yes";
+		}	
+		if($this->method == "insert" || (isset($options['showavatars']) && $options['showavatars'] != "no"))
+		{
+			$options['showavatars'] = "yes";
+		}
+		if($this->method == "insert" || (isset($options['showquickreply']) && $options['showquickreply'] != "no"))
+		{
+			$options['showquickreply'] = "yes";
+		}
+		if($this->method == "insert" || (isset($options['showredirect']) && $options['showredirect'] != "no"))
+		{
+			$options['showredirect'] = "yes";
+		}
+		// Verify the "threads per page" option.
+		if($this->method == "insert" || (isset($options['tpp']) && $mybb->settings['usetppoptions']))
+		{
+			$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
+			if(is_array($explodedtpp))
+			{
+				@asort($explodedtpp);
+				$biggest = $explodedtpp[count($explodedtpp)-1];
+				// Is the selected option greater than the allowed options?
+				if($options['tpp'] > $biggest)
+				{
+					$options['tpp'] = $biggest;
+				}
+			}
+			$options['tpp'] = intval($options['tpp']);
+		}
+		// Verify the "posts per page" option.
+		if($this->method == "insert" || (isset($options['ppp']) && $mybb->settings['usepppoptions']))
+		{
+			$explodedppp = explode(",", $mybb->settings['userpppoptions']);
+			if(is_array($explodedppp))
+			{
+				@asort($explodedppp);
+				$biggest = $explodedtpp[count($explodedppp)-1];
+				// Is the selected option greater than the allowed options?
+				if($options['ppp'] > $biggest)
+				{
+					$options['ppp'] = $biggest;
+				}
+			}
+			$options['ppp'] = intval($options['ppp']);
+		}
+		// Is our selected "days prune" option valid or not?
+		if($this->method == "insert" || isset($options['daysprune']))
+		{
+			$options['daysprune'] = intval($options['daysprune']);
+			if($options['daysprune'] < 0)
+			{
+				$options['daysprune'] = 0;
+			}
+		}
+	}
+	
+	/**
+	 * Verifies if a registration date is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_regdate()
+	{
+		$regdate = &$this->data['regdate'];
+		
+		$regdate = intval($regdate);
+		// If the timestamp is below 0, set it to the current time.
+		if($regdate <= 0)
+		{
+			$regdate = time();
+		}
+		return true;
+		
+	}
+	
+	/**
+	 * Verifies if a last visit date is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_lastvisit()
+	{
+		$lastvisit = &$this->data['lastvisit'];
+		
+		$lastvisit = intval($lastvisit);
+		// If the timestamp is below 0, set it to the current time.
+		if($lastvisit <= 0)
+		{
+			$lastvisit = time();
+		}
+		return true;
+		
+	}
+	
+	/**
+	 * Verifies if a last active date is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_lastactive()
+	{
+		$lastactive = &$this->data['lastactive'];
+		
+		$lastactive = intval($lastactive);
+		// If the timestamp is below 0, set it to the current time.
+		if($lastactive <= 0)
+		{
+			$lastactive = time();
+		}
+		return true;
+		
+	}
+	
+	/**
+	 * Verifies if an away mode status is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_away()
+	{
+		global $mybb;
+		
+		$user = &$this->data;
+		// If the board does not allow "away mode" or the user is marking as not away, set defaults.
+		if($mybb->settings['allowaway'] == "no" || $user['away']['away'] == "no")
+		{			
+			$user['away']['away'] = "no";
+			$user['away']['date'] = 0;
+			$user['away']['returndate'] = 0;
+			$user['away']['reason'] = '';
+			return true;
+		}
+	}
+	
+	/**
+	 * Verifies if a langage is valid for this user or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_language()
+	{
+		global $lang;
+		
+		$language = &$this->data['language'];
+		
+		// An invalid language has been specified?
+		if($language != '' && !$lang->languageExists($language))
+		{
+			$this->set_error("invalid_language");
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -358,15 +623,75 @@ class UserDataHandler extends DataHandler
 	*/
 	function validate_user()
 	{
-		$this->verify_options();
-		$this->verify_birthday();
-		$this->verify_email();
-		$this->verify_profile_fields();
-		$this->verify_referrer();
-		$this->verify_reg_image();
-		$this->verify_username();
-		$this->verify_website();
-
+		global $mybb;
+		
+		$user = &$this->data;
+	
+		if($this->method == "insert" || isset($user['username']))
+		{
+			$this->verify_username();
+			$this->verify_username_exists();
+		}
+		if($this->method == "insert" || isset($user['password']))
+		{
+			$this->verify_password();
+		}
+		if($this->method == "insert" || isset($user['usergroup']))
+		{
+			$this->verify_usergroup();
+		}
+		if($this->method == "insert" || isset($user['email']))
+		{
+			$this->verify_email();
+		}
+		if($this->method == "insert" || isset($user['website']))
+		{
+			$this->verify_website();
+		}
+		if($this->method == "insert" || isset($user['icq']))
+		{
+			$this->verify_icq();
+		}
+		if($this->method == "insert" || isset($user['msn']))
+		{
+			$this->verify_msn();
+		}
+		if($this->method == "insert" || isset($user['birthday']))
+		{
+			$this->verify_birthday();
+		}
+		if($this->method == "insert" || isset($user['profile_fields']))
+		{
+			$this->verify_profile_fields();
+		}
+		if($this->method == "insert" || isset($user['referrer']))
+		{
+			$this->verify_referrer();
+		}
+		if($this->method == "insert" || isset($user['options']))
+		{
+			$this->verify_options();
+		}
+		if($this->method == "insert" || isset($user['regdate']))
+		{
+			$this->verify_regdate();
+		}
+		if($this->method == "insert" || isset($user['lastvisit']))
+		{
+			$this->verify_lastvisit();
+		}
+		if($this->method == "insert" || isset($user['lastactive']))
+		{
+			$this->verify_lastactive();
+		}
+		if($this->method == "insert" || isset($user['away']))
+		{
+			$this->verify_away();
+		}
+		if($this->method == "insert" || isset($user['language']))
+		{
+			$this->verify_language();
+		}
 		// We are done validating, return.
 		$this->set_validated(true);
 		if(count($this->get_errors()) > 0)
@@ -384,19 +709,91 @@ class UserDataHandler extends DataHandler
 	*/
 	function insert_user()
 	{
-		global $db;
+		global $db, $cache;
 
 		// Yes, validating is required.
 		if(!$this->get_validated())
 		{
-			die("The post needs to be validated before inserting it into the DB.");
+			die("The user needs to be validated before inserting it into the DB.");
 		}
 		if(count($this->get_errors()) > 0)
 		{
-			die("The post is not valid.");
+			die("The user is not valid.");
 		}
 
 		$user = &$this->data;
+
+		$newuser = array(
+			"username" => $db->escape_string($user['username']),
+			"password" => $user['saltedpw'],
+			"salt" => $user['salt'],
+			"loginkey" => $user['loginkey'],
+			"email" => $db->escape_string($user['email']),
+			"postnum" => intval($user['postnum']),
+			"avatar" => $db->escape_string($user['avatar']),
+			"avatartype" => $db->escape_string($user['avatartype']),
+			"usergroup" => intval($user['usergroup']),
+			"additionalgroups" => $db->escape_string($user['additionalgroups']),
+			"displaygroup" => intval($user['displaygroup']),
+			"usertitle" => $db->escape_string($user['usertitle']),
+			"regdate" => intval($user['regdate']),
+			"lastactive" => intval($user['lastactive']),
+			"lastvisit" => intval($user['lastvisit']),
+			"website" => $db->escape_string(htmlspecialchars($user['website'])),
+			"icq" => intval($user['icq']),
+			"aim" => $db->escape_string(htmlspecialchars($user['aim'])),
+			"yahoo" => $db->escape_string(htmlspecialchars($user['yahoo'])),
+			"msn" => $db->escape_string(htmlspecialchars($user['msn'])),
+			"birthday" => $user['bday'],
+			"signature" => $db->escape_string($user['signature']),
+			"allownotices" => $user['options']['allownotices'],
+			"hideemail" => $user['options']['hideemail'],
+			"emailnotify" => $user['options']['emailnotify'],
+			"receivepms" => $user['options']['receivepms'],
+			"pmpopup" => $user['options']['pmpopup'],
+			"pmnotify" => $user['options']['emailpmnotify'],
+			"remember" => $user['options']['remember'],
+			"showsigs" => $user['options']['showsigs'],
+			"showavatars" => $user['options']['showavatars'],
+			"showquickreply" => $user['options']['showquickreply'],
+			"showredirect" => $user['options']['showredirect'],
+			"tpp" => intval($user['options']['tpp']),
+			"ppp" => intval($user['options']['ppp']),
+			"invisible" => $user['options']['invisible'],
+			"style" => intval($user['style']),
+			"timezone" => $db->escape_string($user['timezone']),
+			"dst" => $user['options']['dst'],
+			"threadmode" => $user['options']['threadmode'],
+			"daysprune" => intval($user['options']['daysprune']),
+			"dateformat" => $db->escape_string($user['dateformat']),
+			"timeformat" => $db->escape_string($user['timeformat']),
+			"regip" => $user['regip'],
+			"language" => $db->escape_string($user['language']),
+			"showcodebuttons" => $user['options']['showcodebuttons'],
+			"away" => $user['away']['away'],
+			"awaydate" => $user['away']['date'],
+			"returndate" => $user['away']['returndate'],
+			"awayreason" => $db->escape_string($user['away']['awayreason']),
+			"notepad" => $db->escape_string($user['notepad']),
+			"referrer" => intval($user['referrer_uid'])
+		);
+
+		$db->insert_query(TABLE_PREFIX."users", $newuser);
+		$uid = $db->insert_id();
+		
+		$user['user_fields']['ufid'] = $uid;
+		$db->insert_query(TABLE_PREFIX."userfields", $user['user_fields']);
+	
+		// Update forum stats
+		$cache->updatestats();
+		
+		return array(
+			"uid" => $uid,
+			"username" => $user['username'],
+			"email" => $user['email'],
+			"password" => $user['password'],
+			"usergroup" => $user['usergroup']
+		);
 	}
 
 	/**
@@ -405,18 +802,140 @@ class UserDataHandler extends DataHandler
 	function update_user()
 	{
 		global $db;
-
+		
 		// Yes, validating is required.
 		if(!$this->get_validated())
 		{
-			die("The post needs to be validated before inserting it into the DB.");
+			die("The user needs to be validated before inserting it into the DB.");
 		}
 		if(count($this->get_errors()) > 0)
 		{
-			die("The post is not valid.");
+			die("The user is not valid.");
 		}
 
 		$user = &$this->data;
+		
+		$updateuser = array();
+		
+		if(isset($user['username']))
+		{
+			$updateuser['username'] = $db->escape_string($user['username']);
+		}
+		if(isset($user['saltedpw']))
+		{
+			$updateuser['password'] = $user['saltedpw'];
+			$updateuser['salt'] = $user['salt'];
+			$updateuser['loginkey'] = $user['loginkey'];
+		}
+		if(isset($user['email']))
+		{
+			$updateuser['email'] = $user['email'];
+		}
+		if(isset($user['postnum']))
+		{
+			$updateuser['postnum'] = intval($user['postnum']);
+		}
+		if(isset($user['avatar']))
+		{
+			$updateuser['avatar'] = $db->escape_string($user['avatar']);
+			$updateuser['avatartype'] = $db->escape_string($user['avatartype']);
+		}
+		if(isset($user['usergroup']))
+		{
+			$updateuser['usergroup'] = intval($user['usergroup']);
+		}
+		if(isset($user['additionalgroups']))
+		{
+			$updateuser['additionalgroups'] = $db->escape_string($user['additionalgroups']);
+		}
+		if(isset($user['displaygroup']))
+		{
+			$updateuser['displaygroup'] = intval($user['displaygroup']);
+		}
+		if(isset($user['usertitle']))
+		{
+			$updateuser['usertitle'] = $db->escape_string($user['usertitle']);
+		}
+		if(isset($user['regdate']))
+		{
+			$updateuser['regdate'] = intval($user['regdate']);
+		}
+		if(isset($user['lastactive']))
+		{
+			$upateuser['lastactive'] = intval($user['lastactive']);
+		}
+		if(isset($user['lastvisit']))
+		{
+			$updateuser['lastvisit'] = intval($user['lastvisit']);
+		}
+		if(isset($user['signature']))
+		{
+			$updateuser['signature'] = $db->escape_string($user['signature']);
+		}
+		if(isset($user['website']))
+		{
+			$updateuser['website'] = $db->escape_string(htmlspecialchars($user['website']));
+		}
+		if(isset($user['icq']))
+		{
+			$updateuser['icq'] = intval($user['icq']);
+		}
+		if(isset($user['aim']))
+		{
+			$updateuser['aim'] = $db->escape_string(htmlspecialchars($user['aim']));
+		}
+		if(isset($user['yahoo']))
+		{
+			$updateuser['yahoo'] = $db->escape_string(htmlspecialchars($user['yahoo']));
+		}
+		if(isset($user['msn']))
+		{
+			$updateuser['msn'] = $db->escape_string(htmlspecialchars($user['msn']));
+		}
+		if(isset($user['bday']))
+		{
+			$updateuser['birthday'] = $user['bday'];
+		}
+		if(isset($user['style']))
+		{
+			$updateuser['style'] = intval($user['style']);
+		}	
+		if(isset($user['timezone']))
+		{
+			$updateuser['timezone'] = $db->escape_string($user['timezone']);
+		}
+		if(isset($user['dateformat']))
+		{
+			$updateuser['dateformat'] = $db->escape_string($user['dateformat']);
+		}		
+		if(isset($user['timeformat']))
+		{
+			$updateuser['timeformat'] = $db->escape_string($user['timeformat']);
+		}
+		if(isset($user['regip']))
+		{
+			$updateuser['regip'] = $db->escape_string($user['regip']);
+		}
+		if(isset($user['language']))
+		{
+			$updateuser['language'] = $user['language'];
+		}
+		if(isset($user['away']))
+		{
+			$updateuser['away'] = $user['away']['away'];
+			$updateuser['awaydate'] = $db->escape_string($user['away']['date']);
+			$updateuser['returndate'] = $db->escape_string($user['away']['returndate']);
+			$updateuser['awayreason'] = $db->escape_string($user['away']['awayreason']);
+		}
+		if(isset($user['notepad']))
+		{
+			$updateuser['notepad'] = $db->escape_string($user['notepad']);
+		}
+		foreach($user['options'] as $option => $value)
+		{
+			$updateuser[$option] = $value;
+		}
+		$db->update_query(TABLE_PREFIX."users", $updateuser, "uid='".intval($user['uid'])."'");
 	}
-
+}
 ?>

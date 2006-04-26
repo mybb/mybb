@@ -311,28 +311,7 @@ if($mybb->input['action'] == "do_addevent")
 	// Now let the eventhandler do all the hard work.
 	if(!$eventhandler->validate_event())
 	{
-		$errors = $eventhandler->get_errors();
-		foreach($errors as $error)
-		{
-			//
-			// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
-			// Used to determine any missing language variables from the datahandlers
-			//
-			if($lang->$error['error_code'])
-			{
-				$event_errors[] = $lang->$error['error_code'];
-			}
-			else
-			{
-				$event_errors[] = "Missing language var: ".$error['error_code'];
-			}
-			//
-			// END TESTING CODE
-			//
-			/*
-				$event_errors[] =$lang->$error['error_code'];
-			*/
-		}
+		$event_errors = $eventhandler->get_friendly_errors();
 		$event_errors = inlineerror($event_errors);
 		$mybb->input['action'] = "addevent";
 	}

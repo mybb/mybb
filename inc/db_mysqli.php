@@ -112,7 +112,7 @@ class databaseEngine
 		global $pagestarttime, $querytime, $db, $mybb;
 		$qtimer = new timer();
 		$query = @mysqli_query($this->link, $string);
-		if($this->errno() && !$hideerr)
+		if($this->error() && !$hideerr)
 		{
 			 $this->dberror($string);
 			 exit;
@@ -279,7 +279,7 @@ class databaseEngine
 	 */
 	function errno()
 	{
-		return mysqli_errno($this->link);
+		//return mysqli_errno($this->link);
 	}
 
 	/**
