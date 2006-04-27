@@ -1103,6 +1103,7 @@ var inlineId = {$tid};
 <tr>
 {$usercpnav}
 <td valign="top">
+{$errors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->edit_options}</strong></td>
@@ -1676,7 +1677,7 @@ var inlineId = {$fid};
 <td><span class="smalltext">{$lang->new_custom_usertitle}</span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="usertitle" size="25" value="" maxlength="{$settings['customtitlemaxlength']}" /></td>
+<td><input type="text" class="textbox" name="usertitle" size="25" value="" maxlength="{$settings['customtitlemaxlength']}" value="{$newtitle}" /></td>
 </tr>
 </table>
 </fieldset>
@@ -1697,6 +1698,7 @@ var inlineId = {$fid};
 <tr>
 {$usercpnav}
 <td valign="top">
+{$errors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->edit_profile}</strong></td>
@@ -1766,7 +1768,7 @@ var inlineId = {$fid};
 <td><span class="smalltext">{$lang->icq_number}</span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="icq" size="25" value="{$icq}" /></td>
+<td><input type="text" class="textbox" name="icq" size="25" value="{$user['icq']}" /></td>
 </tr>
 <tr>
 <td><span class="smalltext">{$lang->aim_screenname}</span></td>

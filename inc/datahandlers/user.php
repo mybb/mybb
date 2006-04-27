@@ -412,46 +412,25 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_options()
 	{
-		$options = &$this->data['options'];
-
+		$options = $this->data['options'];
+		
 		// Verify yes/no options.
-		if($this->method == "insert" || (isset($options['allownotices']) && $options['allownotices'] != "yes"))
-		{
-			$options['allownotices'] = "no";
-		}
-		if($this->method == "insert" || (isset($options['hideemail']) && $options['hideemail'] != "yes"))
-		{
-			$options['hideemail'] = "no";
-		}
-		if($this->method == "insert" || (isset($options['emailnotify']) && $options['emailnotify'] != "yes"))
-		{
-			$options['emailnotify'] = "no";
-		}
-		if($this->method == "insert" || (isset($options['receivepms']) && $options['receivepms'] != "no"))
-		{
-			$options['receivepms'] = "yes";
-		}
-		if($this->method == "insert" || (isset($options['pmpopup']) && $options['pmpopup'] != "no"))
-		{
-			$options['pmpopup'] = "yes";
-		}
-		if($this->method == "insert" || (isset($options['emailpmnotify']) && $options['emailpmnotify'] != "no"))
-		{
-			$options['emailpmnotify'] = "yes";
-		}
-		if($this->method == "insert" || (isset($options['invisible']) && $options['invisible'] != "yes"))
-		{
-			$options['invisible'] = "no";
-		}
-		if($this->method == "insert" || (isset($options['remember']) && $options['remember'] != "no"))
-		{
-			$options['remember'] = "yes";
-		}
-		if($this->method == "insert" || (isset($options['dst']) && $options['dst '] != "yes"))
-		{
-			$options['dst'] = "no";
-		}
-		if($this->method == "insert" || (isset($options['showcodebuttons']) && $options['showcodebuttons'] != 0))
+
+		$this->verify_yesno_option(&$options, 'allownotices', 'yes');
+		$this->verify_yesno_option(&$options, 'hideemail', 'no');
+		$this->verify_yesno_option(&$options, 'emailnotify', 'no');
+		$this->verify_yesno_option(&$options, 'receivepms', 'yes');
+		$this->verify_yesno_option(&$options, 'pmpopup', 'yes');
+		$this->verify_yesno_option(&$options, 'pmnotify', 'yes');
+		$this->verify_yesno_option(&$options, 'invisible', 'no');
+		$this->verify_yesno_option(&$options, 'remember', 'yes');
+		$this->verify_yesno_option(&$options, 'dst', 'no');
+		$this->verify_yesno_option(&$options, 'showsigs', 'yes');
+		$this->verify_yesno_option(&$options, 'showavatars', 'yes');
+		$this->verify_yesno_option(&$options, 'showquickreply', 'yes');
+		$this->verify_yesno_option(&$options, 'showredirect', 'yes');
+
+		if($this->method == "insert" || (array_key_exists('showcodebuttons', $options) && $options['showcodebuttons'] != 0))
 		{
 			$options['showcodebuttons'] = 1;
 		}
@@ -459,24 +438,9 @@ class UserDataHandler extends DataHandler
 		{
 			$options['threadmode'] = 'linear';
 		}
-		if($this->method == "insert" || (isset($options['showsigs']) && $options['showsigs'] != "no"))
-		{
-			$options['showsigs'] = "yes";
-		}
-		if($this->method == "insert" || (isset($options['showavatars']) && $options['showavatars'] != "no"))
-		{
-			$options['showavatars'] = "yes";
-		}
-		if($this->method == "insert" || (isset($options['showquickreply']) && $options['showquickreply'] != "no"))
-		{
-			$options['showquickreply'] = "yes";
-		}
-		if($this->method == "insert" || (isset($options['showredirect']) && $options['showredirect'] != "no"))
-		{
-			$options['showredirect'] = "yes";
-		}
+
 		// Verify the "threads per page" option.
-		if($this->method == "insert" || (isset($options['tpp']) && $mybb->settings['usetppoptions']))
+		if($this->method == "insert" || (array_key_exists('tpp', $options) && $mybb->settings['usetppoptions']))
 		{
 			$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
 			if(is_array($explodedtpp))
@@ -492,7 +456,7 @@ class UserDataHandler extends DataHandler
 			$options['tpp'] = intval($options['tpp']);
 		}
 		// Verify the "posts per page" option.
-		if($this->method == "insert" || (isset($options['ppp']) && $mybb->settings['usepppoptions']))
+		if($this->method == "insert" || (array_key_exists('ppp', $options) && $mybb->settings['usepppoptions']))
 		{
 			$explodedppp = explode(",", $mybb->settings['userpppoptions']);
 			if(is_array($explodedppp))
@@ -516,8 +480,35 @@ class UserDataHandler extends DataHandler
 				$options['daysprune'] = 0;
 			}
 		}
+		$this->data['options'] = $options;
 	}
 
+	function verify_yesno_option($options, $option, $default='yes')
+	{
+		if($this->method == "insert" || array_key_exists($option, $options))
+		{
+			if($options[$option] != $default && $options[$option] != "")
+			{
+				if($default == 'yes')
+				{
+					$options[$option] = "no";
+				}
+				else
+				{
+					$options[$option] = "yes";
+				}
+			}
+			else if($options[$option] == '')
+			{
+				$options[$option] = "no";
+			}
+			else
+			{
+				$options[$option] = $default;
+			}
+		}
+	}
+	
 	/**
 	 * Verifies if a registration date is valid or not.
 	 *
@@ -931,11 +922,25 @@ class UserDataHandler extends DataHandler
 		{
 			$updateuser['notepad'] = $db->escape_string($user['notepad']);
 		}
-		foreach($user['options'] as $option => $value)
+		if(is_array($user['options']))
 		{
-			$updateuser[$option] = $value;
+			foreach($user['options'] as $option => $value)
+			{
+				$updateuser[$option] = $value;
+			}
 		}
 		$db->update_query(TABLE_PREFIX."users", $updateuser, "uid='".intval($user['uid'])."'");
+
+		if(is_array($user['user_fields']))
+		{
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='".intval($user['uid'])."'");
+			$fields = $db->fetch_array($query);
+			if(!$fields['ufid'])
+			{
+				$db->query("INSERT INTO ".TABLE_PREFIX."userfields (ufid) VALUES ('".intval($user['uid'])."')");
+			}
+			$db->update_query(TABLE_PREFIX."userfields", $user['user_fields'], "ufid='".intval($user['uid'])."'");
+		}
 	}
 }
 ?>

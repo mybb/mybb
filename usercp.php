@@ -34,6 +34,8 @@ if(!$mybb->user['pmfolders'])
 	$db->query("UPDATE ".TABLE_PREFIX."users SET pmfolders='".$mybb->user['pmfolders']."' WHERE uid='".$mybb->user['uid']."'");
 }
 
+$errors = '';
+
 usercp_menu();
 
 if($mybb->input['action'] == "do_editsig")
@@ -65,18 +67,23 @@ addnav($lang->nav_usercp, "usercp.php");
 switch($mybb->input['action'])
 {
 	case "profile":
+	case "do_profile":
 		addnav($lang->nav_profile);
 		break;
 	case "options":
+	case "do_options":
 		addnav($lang->nav_options);
 		break;
 	case "email":
+	case "do_email":
 		addnav($lang->nav_email);
 		break;
 	case "password":
+	case "do_password":
 		addnav($lang->nav_password);
 		break;
 	case "changename":
+	case "do_changename":
 		addnav($lang->nav_changename);
 		break;
 	case "favorites":
@@ -89,15 +96,19 @@ switch($mybb->input['action'])
 		addnav($lang->nav_forumsubscriptions);
 		break;
 	case "editsig":
+	case "do_editsig":
 		addnav($lang->nav_editsig);
 		break;
 	case "avatar":
+	case "do_avatar":
 		addnav($lang->nav_avatar);
 		break;
 	case "notepad":
+	case "do_notepad":
 		addnav($lang->nav_notepad);
 		break;
 	case "editlists":
+	case "do_editlists":
 		addnav($lang->nav_editlists);
 		break;
 	case "drafts":
@@ -111,13 +122,95 @@ switch($mybb->input['action'])
 		break;
 }
 
+if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
+{
+	$plugins->run_hooks("usercp_do_profile_start");
+
+	if($mybb->input['away'] == "yes" && $mybb->settings['allowaway'] != "no")
+	{
+		$awaydate = time();
+		if($mybb->input['awayday'] && $mybb->input['awaymonth'] && $mybb->input['awayyear'])
+		{
+			$returntimestamp = gmmktime(0, 0, 0, $mybb->input['awaymonth'], $mybb->input['awayday'], $mybb->input['awayyear']);
+			$awaytimestamp = gmmktime(0, 0, 0, mydate('n', $awaydate), mydate('j', $awaydate), mydate('Y', $awaydate));
+			if ($returntimestamp < $awaytimestamp) {
+				error($lang->error_usercp_return_date_past);
+			}
+			$returndate = intval($mybb->input['awayday'])."-".intval($mybb->input['awaymonth'])."-".intval($mybb->input['awayyear']);
+		}
+		else
+		{
+			$returndate = "";
+		}
+		$aray = array(
+			"away" => "yes",
+			"date" => $awaydate,
+			"returndate" => $returndate,
+			"reason" => $mybb->input['awayreason']
+		);
+	}
+	else
+	{
+		$aray = array(
+			"away" => "no",
+			"date" => '',
+			"returndate" => '',
+			"reason" => ''
+		);
+	}
+	
+	// Set up user handler.
+	require_once "inc/datahandlers/user.php";
+	$userhandler = new UserDataHandler("update");
+	
+	$user = array(
+		"uid" => $mybb->user['uid'],
+		"website" => $db->escape_string(htmlspecialchars($mybb->input['website'])),
+		"icq" => intval($mybb->input['icq']),
+		"aim" => $db->escape_string(htmlspecialchars($mybb->input['aim'])),
+		"yahoo" => $db->escape_string(htmlspecialchars($mybb->input['yahoo'])),
+		"msn" => $db->escape_string(htmlspecialchars($mybb->input['msn'])),
+		"birthday" => $bday,
+		"away" => $away,
+		"profile_fields" => $mybb->input['profile_fields']
+	);
+	
+	if($mybb->usergroup['cancustomtitle'] == "yes")
+	{
+		$user['usertitle'] = $mybb->input['usertitle'];
+	}
+	$userhandler->set_data($user);
+	
+	if(!$userhandler->validate_user())
+	{
+		$errors = $userhandler->get_friendly_errors();
+		$errors = inlineerror($errors);
+		$mybb->input['action'] = "profile";
+	}
+	else
+	{
+		$userhandler->update_user();
+
+		$db->update_query(TABLE_PREFIX."users", $newprofile, "uid='".$mybb->user['uid']."'");
+		$plugins->run_hooks("usercp_do_profile_end");
+		redirect("usercp.php", $lang->redirect_profileupdated);
+	}
+}
+
 if($mybb->input['action'] == "profile")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->user['uid']."'");
-	$user = $db->fetch_array($query);
-
+	if($errors)
+	{
+		$user = $mybb->input;
+	}
+	else
+	{
+		$user = $mybb->user;
+	}
+	
 	$plugins->run_hooks("usercp_profile_start");
-	$bday = explode("-", $mybb->user['birthday']);
+
+	$bday = explode("-", $user['birthday']);
 	$bdaysel = '';
 	for($i=1;$i<=31;$i++)
 	{
@@ -140,13 +233,20 @@ if($mybb->input['action'] == "profile")
 	{
 		$user['website'] = htmlspecialchars_uni($user['website']);
 	}
+	
 	if($user['icq'] != "0")
 	{
-		$icq = intval($user['icq']);
+		$user['icq'] = intval($user['icq']);
 	}
-	else
+	if($user['icq'] == 0)
 	{
-		$icq = "";
+		$user['icq'] = "";
+	}
+	if($errors)
+	{
+		$user['msn'] = htmlspecialchars($user['msn']);
+		$user['aim'] = htmlspecialchars_uni($user['aim']);
+		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	}
 	if($mybb->settings['allowaway'] != "no")
 	{
@@ -191,9 +291,17 @@ if($mybb->input['action'] == "profile")
 		$options = $thing[1];
 		$field = "fid$profilefield[fid]";
 		$select = '';
+		if($errors)
+		{
+			$userfield = $user['profile_fields'][$field];
+		}
+		else
+		{
+			$userfield = $user[$field];
+		}
 		if($type == "multiselect")
 		{
-			$useropts = explode("\n", $mybb->user[$field]);
+			$useropts = explode("\n", $userfield);
 			while(list($key, $val) = each($useropts))
 			{
 				$seloptions[$val] = $val;
@@ -218,7 +326,7 @@ if($mybb->input['action'] == "profile")
 				{
 					$profilefield['length'] = 3;
 				}
-				$code = "<select name=\"".$field."[]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
+				$code = "<select name=\"profile_fields[$field][]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
 			}
 		}
 		elseif($type == "select")
@@ -230,7 +338,7 @@ if($mybb->input['action'] == "profile")
 				{
 					$val = trim($val);
 					$val = str_replace("\n", "\\n", $val);
-					if($val == $mybb->user[$field])
+					if($val == $userfield)
 					{
 						$sel = "selected";
 					}
@@ -244,7 +352,7 @@ if($mybb->input['action'] == "profile")
 				{
 					$profilefield['length'] = 1;
 				}
-				$code = "<select name=\"$field\" size=\"$profilefield[length]\">$select</select>";
+				$code = "<select name=\"profile_fields[$field]\" size=\"$profilefield[length]\">$select</select>";
 			}
 		}
 		elseif($type == "radio")
@@ -254,7 +362,7 @@ if($mybb->input['action'] == "profile")
 			{
 				while(list($key, $val) = each($expoptions))
 				{
-					if($val == $mybb->user[$field])
+					if($val == $userfield)
 					{
 						$checked = "checked";
 					}
@@ -262,13 +370,13 @@ if($mybb->input['action'] == "profile")
 					{
 						$checked = "";
 					}
-					$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" $checked /> $val<br>";
+					$code .= "<input type=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> $val<br>";
 				}
 			}
 		}
 		elseif($type == "checkbox")
 		{
-			$useropts = explode("\n", $mybb->user[$field]);
+			$useropts = explode("\n", $userfield);
 			while(list($key, $val) = each($useropts))
 			{
 				$seloptions[$val] = $val;
@@ -285,19 +393,19 @@ if($mybb->input['action'] == "profile")
 					{
 						$checked = "";
 					}
-					$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" $checked /> $val<br>";
+					$code .= "<input type=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\" $checked /> $val<br>";
 				}
 			}
 		}
 		elseif($type == "textarea")
 		{
-			$value = htmlspecialchars_uni($mybb->user[$field]);
-			$code = "<textarea name=\"$field\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
+			$value = htmlspecialchars_uni($userfield);
+			$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
 		}
 		else
 		{
-			$value = htmlspecialchars_uni($mybb->user[$field]);
-			$code = "<input type=\"text\" name=\"$field\" size=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
+			$value = htmlspecialchars_uni($userfield);
+			$code = "<input type=\"text\" name=\"profile_fields[$field]\" size=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
 		}
 		if($profilefield['required'] == "yes")
 		{
@@ -340,12 +448,17 @@ if($mybb->input['action'] == "profile")
 		{
 			$defaulttitle = $mybb->usergroup['usertitle'];
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$mybb->user['uid']."'");
-		$user = $db->fetch_array($query);
-		$mybb->user['usertitle'] = $user['usertitle'];
 		if(empty($user['usertitle']))
 		{
 			$lang->current_custom_usertitle = '';
+		}
+		else
+		{
+			if($errors)
+			{
+				$newtitle = htmlspecialchars($user['usertitle']);
+				$user['usertitle'] = $mybb->user['usertitle'];
+			}
 		}
 		eval("\$customtitle = \"".$templates->get("usercp_profile_customtitle")."\";");
 	}
@@ -357,154 +470,103 @@ if($mybb->input['action'] == "profile")
 	$plugins->run_hooks("usercp_profile_end");
 	outputpage($editprofile);
 }
-elseif($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
+
+if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 {
-	$plugins->run_hooks("usercp_do_profile_start");
-	if($mybb->input['website'] && !stristr($mybb->input['website'], "http://"))
+	$plugins->run_hooks("usercp_do_options_start");
+	
+	// Set up user handler.
+	require_once "inc/datahandlers/user.php";
+	$userhandler = new UserDataHandler("update");
+	
+	$user = array(
+		"uid" => $mybb->user['uid'],
+		"style" => intval($mybb->input['style']),
+		"dateformat" => intval($mybb->input['dateformat']),
+		"timeformat" => intval($mybb->input['timeformat']),
+		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
+		"language" => $mybb->input['language']
+	);
+	
+	$user['options'] = array(
+		"allownotices" => $mybb->input['allownotices'],
+		"hideemail" => $mybb->input['hideemail'],
+		"emailnotify" => $mybb->input['emailnotify'],
+		"invisible" => $mybb->input['invisible'],
+		"dst" => $mybb->input['dst'],
+		"threadmode" => $mybb->input['threadmode'],
+		"showsigs" => $mybb->input['showsigs'],
+		"showavatars" => $mybb->input['showavatars'],
+		"showquickreply" => $mybb->input['showquickreply'],
+		"remember" => $mybb->input['remember'],
+		"receivepms" => $mybb->input['receivepms'],
+		"pmpopup" => $mybb->input['pmpopup'],
+		"daysprune" => intval($mybb->input['daysprune']),
+		"showcodebuttons" => $mybb->input['showcodebuttons'],
+		"pmnotify" => $mybb->input['pmnotify'],
+		"showredirect" => $mybb->input['showredirect']
+	);
+	
+	if($mybb->settings['usertppoptions'])
 	{
-		$mybb->input['website'] = "";
+		$user['options']['tpp'] = intval($mybb->input['tpp']);
 	}
-	if($mybb->input['website'] == "http://" || $mybb->input['website'] == "none")
+
+	if($mybb->settings['userpppoptions'])
 	{
-		$mybb->input['website'] = "";
+		$user['options']['ppp'] = intval($mybb->input['ppp']);
 	}
-	if(strlen($mybb->input['website']) > 75)
+	
+	$userhandler->set_data($user);
+	
+
+	if(!$userhandler->validate_user())
 	{
-		error($lang->error_website_length);
-	}
-	if($mybb->input['bday1'] == "" || $mybb->input['bday2'] == "")
-	{
-		$bday = "";
-	}
-	else
-	{
-		if(($mybb->input['bday3']>=(date("Y")-100)) && ($mybb->input['bday3']<date("Y")))
-		{
-			$bday = intval($mybb->input['bday1'])."-".intval($mybb->input['bday2'])."-".intval($mybb->input['bday3']);
-		}
-		else
-		{
-			$bday = intval($mybb->input['bday1'])."-".intval($mybb->input['bday2'])."-";
-		}
-	}
-	$titleup == "";
-	$usertitle = "";
-	if($mybb->usergroup['cancustomtitle'] == "yes")
-	{
-		if(my_strlen($mybb->input['usertitle']) <= $mybb->settings['customtitlemaxlength'])
-		{
-			$usertitle = $mybb->input['usertitle'];
-		}
-		elseif(empty($mybb->input['usertitle']))
-		{
-			$usertitle = $mybb->user['usertitle'];
-		}
-		else
-		{
-			error($lang->error_customtitle_length);
-		}
-	}
-	if($mybb->input['away'] == "yes" && $mybb->settings['allowaway'] != "no")
-	{
-		$awaydate = time();
-		if($mybb->input['awayday'] && $mybb->input['awaymonth'] && $mybb->input['awayyear'])
-		{
-			$returntimestamp = gmmktime(0, 0, 0, $mybb->input['awaymonth'], $mybb->input['awayday'], $mybb->input['awayyear']);
-			$awaytimestamp = gmmktime(0, 0, 0, mydate('n', $awaydate), mydate('j', $awaydate), mydate('Y', $awaydate));
-			if ($returntimestamp < $awaytimestamp) {
-				error($lang->error_usercp_return_date_past);
-			}
-			$returndate = intval($mybb->input['awayday'])."-".intval($mybb->input['awaymonth'])."-".intval($mybb->input['awayyear']);
-		}
-		else
-		{
-			$returndate = "";
-		}
-		$away = "yes";
+		$errors = $userhandler->get_friendly_errors();
+		$errors = inlineerror($errors);
+		$mybb->input['action'] = "options";
 	}
 	else
 	{
-		$away = "no";
-		$awaydate = "0";
-		$returndate = "";
-		$mybb->input['awayreason'] = "";
-	}
-	// Custom profile fields baby!
-	$upquery = "";
-	$profilefields = array();
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
-	while($profilefield = $db->fetch_array($query))
-	{
-		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-		$thing = explode("\n", $profilefield['type'], "2");
-		$type = $thing[0];
-		$field = "fid$profilefield[fid]";
-		if($profilefield['editable'] == "yes")
+		$userhandler->update_user();
+
+		$db->update_query(TABLE_PREFIX."users", $updatedoptions, "uid='".$mybb->user['uid']."'");
+
+		// If the cookie settings are different, re-set the cookie
+		if($mybb->input['remember'] != $mybb->user['remember'])
 		{
-			if(!$mybb->input[$field] && $profilefield['required'] == "yes")
+			$mybb->user['remember'] = $mybb->input['remember'];
+			// Unset the old one
+			myunsetcookie("mybbuser");
+			// Set the new one
+			if($mybb->input['remember'] == "yes")
 			{
-				error($lang->error_missingrequiredfield);
-			}
-			$options = "";
-			if($type == "multiselect" || $type == "checkbox")
-			{
-				while(list($key, $val) = each($mybb->input[$field]))
-				{
-					if($options)
-					{
-						$options .= "\n";
-					}
-					$options .= $val;
-				}
+				mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
 			}
 			else
 			{
-				$options = $mybb->input[$field];
+				mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], -1);
 			}
-			$profilefields[$field] = $db->escape_string($options);
 		}
-		else
-		{
-			$profilefields[$field] = $db->escape_string($mybb->user[$field]);
-		}
-	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='".$mybb->user['uid']."'");
-	$fields = $db->fetch_array($query);
-	if(!$fields['ufid'])
-	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."userfields (ufid) VALUES ('".$mybb->user['uid']."')");
-	}
-	$db->update_query(TABLE_PREFIX."userfields", $profilefields, "ufid='".$mybb->user['uid']."'");
 
-	$newprofile = array(
-		"website" => $db->escape_string(htmlspecialchars($mybb->input['website'])),
-		"icq" => intval($mybb->input['icq']),
-		"aim" => $db->escape_string(htmlspecialchars($mybb->input['aim'])),
-		"yahoo" => $db->escape_string(htmlspecialchars($mybb->input['yahoo'])),
-		"msn" => $db->escape_string(htmlspecialchars($mybb->input['msn'])),
-		"birthday" => $bday,
-		"away" => $away,
-		"awaydate" => $awaydate,
-		"returndate" => $returndate,
-		"awayreason" => $db->escape_string(htmlspecialchars($mybb->input['awayreason']))
-		);
+		$plugins->run_hooks("usercp_do_options_end");
 
-	if($usertitle)
-	{
-		$newprofile['usertitle'] = $db->escape_string(htmlspecialchars_uni($usertitle));
+		redirect("usercp.php", $lang->redirect_optionsupdated);
 	}
-	$plugins->run_hooks("usercp_do_profile_process");
-
-	$db->update_query(TABLE_PREFIX."users", $newprofile, "uid='".$mybb->user['uid']."'");
-	setcookie("mybb[uid]", $mybb->user['uid']);
-	$plugins->run_hooks("usercp_do_profile_end");
-	redirect("usercp.php", $lang->redirect_profileupdated);
 }
-elseif($mybb->input['action'] == "options")
+
+if($mybb->input['action'] == "options")
 {
 	$plugins->run_hooks("usercp_options_start");
 
-	$user = $mybb->user;
+	if($errors != '')
+	{
+		$user = $mybb->input;
+	}
+	else
+	{
+		$user = $mybb->user;
+	}
 	$languages = $lang->getLanguages();
 	$langoptions = '';
 	foreach($languages as $lname => $language)
@@ -520,7 +582,7 @@ elseif($mybb->input['action'] == "options")
 	}
 
 	// Lets work out which options the user has selected and check the boxes
-	if($mybb->user['allownotices'] == "yes")
+	if($user['allownotices'] == "yes")
 	{
 		$allownoticescheck = "checked=\"checked\"";
 	}
@@ -529,7 +591,7 @@ elseif($mybb->input['action'] == "options")
 		$allownoticescheck = "";
 	}
 
-	if($mybb->user['invisible'] == "yes")
+	if($user['invisible'] == "yes")
 	{
 		$invisiblecheck = "checked=\"checked\"";
 	}
@@ -538,7 +600,7 @@ elseif($mybb->input['action'] == "options")
 		$invisiblecheck = "";
 	}
 
-	if($mybb->user['hideemail'] == "yes")
+	if($user['hideemail'] == "yes")
 	{
 		$hideemailcheck = "checked=\"checked\"";
 	}
@@ -547,7 +609,7 @@ elseif($mybb->input['action'] == "options")
 		$hideemailcheck = "";
 	}
 
-	if($mybb->user['emailnotify'] == "yes")
+	if($user['emailnotify'] == "yes")
 	{
 		$emailnotifycheck = "checked=\"checked\"";
 	}
@@ -556,7 +618,7 @@ elseif($mybb->input['action'] == "options")
 		$emailnotifycheck = "";
 	}
 
-	if($mybb->user['showsigs'] == "yes")
+	if($user['showsigs'] == "yes")
 	{
 		$showsigscheck = "checked=\"checked\"";;
 	}
@@ -565,7 +627,7 @@ elseif($mybb->input['action'] == "options")
 		$showsigscheck = "";
 	}
 
-	if($mybb->user['showavatars'] == "yes")
+	if($user['showavatars'] == "yes")
 	{
 		$showavatarscheck = "checked=\"checked\"";
 	}
@@ -574,7 +636,7 @@ elseif($mybb->input['action'] == "options")
 		$showavatarscheck = "";
 	}
 
-	if($mybb->user['showquickreply'] == "yes")
+	if($user['showquickreply'] == "yes")
 	{
 		$showquickreplycheck = "checked=\"checked\"";
 	}
@@ -583,7 +645,7 @@ elseif($mybb->input['action'] == "options")
 		$showquickreplycheck = "";
 	}
 
-	if($mybb->user['remember'] == "yes")
+	if($user['remember'] == "yes")
 	{
 		$remembercheck = "checked=\"checked\"";
 	}
@@ -592,7 +654,7 @@ elseif($mybb->input['action'] == "options")
 		$remembercheck = "";
 	}
 
-	if($mybb->user['receivepms'] == "yes")
+	if($user['receivepms'] == "yes")
 	{
 		$receivepmscheck = "checked=\"checked\"";
 	}
@@ -601,7 +663,7 @@ elseif($mybb->input['action'] == "options")
 		$receivepmscheck = "";
 	}
 
-	if($mybb->user['pmpopup'] == "yes")
+	if($user['pmpopup'] == "yes")
 	{
 		$pmpopupcheck = "checked=\"checked\"";
 	}
@@ -610,7 +672,7 @@ elseif($mybb->input['action'] == "options")
 		$pmpopupcheck = "";
 	}
 
-	if($mybb->user['dst'] == "yes")
+	if($user['dst'] == "yes")
 	{
 		$dstcheck = "checked=\"checked\"";
 		$mybb->user['timezone']--;
@@ -619,7 +681,7 @@ elseif($mybb->input['action'] == "options")
 	{
 		$dstcheck = "";
 	}
-	if($mybb->user['showcodebuttons'] == 1)
+	if($user['showcodebuttons'] == 1)
 	{
 		$showcodebuttonscheck = "checked=\"checked\"";
 	}
@@ -628,7 +690,7 @@ elseif($mybb->input['action'] == "options")
 		$showcodebuttonscheck = "";
 	}
 
-	if($mybb->user['showredirect'] != "no")
+	if($user['showredirect'] != "no")
 	{
 		$showredirectcheck = "checked=\"checked\"";
 	}
@@ -637,7 +699,7 @@ elseif($mybb->input['action'] == "options")
 		$showredirectcheck = "";
 	}
 
-	if($mybb->user['pmnotify'] != "no")
+	if($user['pmnotify'] != "no")
 	{
 		$pmnotifycheck = "checked=\"checked\"";
 	}
@@ -646,20 +708,20 @@ elseif($mybb->input['action'] == "options")
 		$pmnotifycheck = "";
 	}
 
-	if($mybb->input['threadmode'] != "threaded")
+	if($user['threadmode'] != "threaded")
 	{
-		$mybb->input['threadmode'] = "linear";
+		$user['threadmode'] = "linear";
 	}
 
-	$dateselect[$mybb->user['dateformat']] = "selected";
-	$timeselect[$mybb->user['timeformat']] = "selected";
-	$mybb->user['timezone'] = $mybb->user['timezone']*10;
-	$mybb->user['timezone'] = str_replace("-", "n", $mybb->user['timezone']);
-	$timezoneselect[$mybb->user['timezone']] = "selected";
+	$dateselect[$user['dateformat']] = "selected";
+	$timeselect[$user['timeformat']] = "selected";
+	$user['timezone'] = $user['timezone']*10;
+	$user['timezone'] = str_replace("-", "n", $user['timezone']);
+	$timezoneselect[$user['timezone']] = "selected";
 	// We need to revisit this to see if it can be optomitized and made smaller
 	// maybe in version 5
-	$tempzone = $mybb->user['timezone'];
-	$mybb->user['timezone'] = "";
+	$tempzone = $user['timezone'];
+	$user['timezone'] = "";
 	$timenow = mydate($mybb->settings['timeformat'], time(), "-");
 	for($i=-12;$i<=12;$i++) {
 		if($i == 0)
@@ -686,9 +748,9 @@ elseif($mybb->input['action'] == "options")
 	$mybb->user['timezone'] = $tempzone;
 	eval("\$tzselect = \"".$templates->get("usercp_options_timezoneselect")."\";");
 
-	$threadview[$mybb->user['threadmode']] = "selected";
-	$daysprunesel[$mybb->user['daysprune']] = "selected";
-	$stylelist = themeselect("style", $mybb->user['style']);
+	$threadview[$user['threadmode']] = "selected";
+	$daysprunesel[$user['daysprune']] = "selected";
+	$stylelist = themeselect("style", $user['style']);
 	if($mybb->settings['usertppoptions'])
 	{
 		$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
@@ -698,7 +760,7 @@ elseif($mybb->input['action'] == "options")
 			while(list($key, $val) = each($explodedtpp))
 			{
 				$val = trim($val);
-				if($mybb->user['tpp'] == $val)
+				if($user['tpp'] == $val)
 				{
 					$selected = "selected";
 				}
@@ -720,7 +782,7 @@ elseif($mybb->input['action'] == "options")
 			while(list($key, $val) = each($explodedppp))
 			{
 				$val = trim($val);
-				if($mybb->user['ppp'] == $val)
+				if($user['ppp'] == $val)
 				{
 					$selected = "selected";
 				}
@@ -737,185 +799,8 @@ elseif($mybb->input['action'] == "options")
 	$plugins->run_hooks("usercp_options_end");
 	outputpage($editprofile);
 }
-elseif($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
-{
-	$plugins->run_hooks("usercp_do_options_start");
 
-	if($mybb->input['showcodebuttons'] != 1)
-	{
-		$mybb->input['showcodebuttons'] = 0;
-	}
-
-	if($mybb->input['allownotices'] != "yes")
-	{
-		$mybb->input['allownotices'] = "no";
-	}
-
-	if($mybb->input['hideemail'] != "yes")
-	{
-		$mybb->input['hideemail'] = "no";
-	}
-
-	if($mybb->input['emailnotify'] != "yes")
-	{
-		$mybb->input['emailnotify'] = "no";
-	}
-
-	if($mybb->input['receivepms'] != "yes")
-	{
-		$mybb->input['receivepms'] = "no";
-	}
-
-	if($mybb->input['pmpopup'] != "yes")
-	{
-		$mybb->input['pmpopup'] = "no";
-	}
-
-	if($mybb->input['pmnotify'] != "yes")
-	{
-		$mybb->input['pmnotify'] = "no";
-	}
-
-	if($mybb->input['invisible'] != "yes")
-	{
-		$mybb->input['invisible'] = "no";
-	}
-
-	if($mybb->input['showsigs'] != "yes")
-	{
-		$mybb->input['showsigs'] = "no";
-	}
-
-	if($mybb->input['showavatars'] != "yes")
-	{
-		$mybb->input['showavatars'] = "no";
-	}
-
-	if($mybb->input['showquickreply'] != "yes")
-	{
-		$mybb->input['showquickreply'] = "no";
-	}
-
-	if($mybb->input['remember'] != "yes")
-	{
-		$mybb->input['remember'] = "no";
-	}
-
-	if($mybb->input['dst'] != "yes")
-	{
-		$mybb->input['dst'] = "no";
-	}
-
-	if($mybb->settings['usertppoptions'])
-	{
-		$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
-		if(is_array($explodedtpp))
-		{
-			@asort($explodedtpp);
-			$biggest = $explodedtpp[count($explodedtpp)-1];
-			if($mybb->input['tpp'] > $biggest)
-			{
-				$mybb->input['tpp'] = $biggest;
-			}
-		}
-	}
-	if($mybb->settings['userpppoptions'])
-	{
-		$explodedppp = explode(",", $mybb->settings['userpppoptions']);
-		if(is_array($explodedppp))
-		{
-			@asort($explodedppp);
-			$biggest = $explodedppp[count($explodedppp)-1];
-			if($mybb->input['ppp'] > $biggest)
-			{
-				$mybb->input['ppp'] = $biggest;
-			}
-		}
-	}
-
-	$languages = $lang->getLanguages();
-	if(!$languages[$mybb->input['language']])
-	{
-		$mybb->input['language'] = "";
-	}
-
-	if($mybb->input['threadmode'] != "threaded")
-	{
-		$mybb->input['threadmode'] = "linear";
-	}
-
-	if($mybb->input['showredirect'] != "yes")
-	{
-		$mybb->input['showredirect'] = "no";
-	}
-
-	$updatedoptions = array(
-		"allownotices" => $mybb->input['allownotices'],
-		"hideemail" => $mybb->input['hideemail'],
-		"emailnotify" => $mybb->input['emailnotify'],
-		"invisible" => $mybb->input['invisible'],
-		"style" => intval($mybb->input['style']),
-		"dateformat" => intval($mybb->input['dateformat']),
-		"timeformat" => intval($mybb->input['timeformat']),
-		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
-		"dst" => $mybb->input['dst'],
-		"threadmode" => $mybb->input['threadmode'],
-		"showsigs" => $mybb->input['showsigs'],
-		"showavatars" => $mybb->input['showavatars'],
-		"showquickreply" => $mybb->input['showquickreply'],
-		"remember" => $mybb->input['remember'],
-		"receivepms" => $mybb->input['receivepms'],
-		"pmpopup" => $mybb->input['pmpopup'],
-		"daysprune" => intval($mybb->input['daysprune']),
-		"language" => $mybb->input['language'],
-		"showcodebuttons" => $mybb->input['showcodebuttons'],
-		"pmnotify" => $mybb->input['pmnotify'],
-		"showredirect" => $mybb->input['showredirect']
-		);
-
-	if($mybb->settings['usertppoptions'])
-	{
-		$updatedoptions['tpp'] = intval($mybb->input['tpp']);
-	}
-
-	if($mybb->settings['userpppoptions'])
-	{
-		$updatedoptions['ppp'] = intval($mybb->input['ppp']);
-	}
-
-	$plugins->run_hooks("usercp_do_options_process");
-
-	$db->update_query(TABLE_PREFIX."users", $updatedoptions, "uid='".$mybb->user['uid']."'");
-
-	// If the cookie settings are different, re-set the cookie
-	if($mybb->input['remember'] != $mybb->user['remember'])
-	{
-		$mybb->user['remember'] = $mybb->input['remember'];
-		// Unset the old one
-		myunsetcookie("mybbuser");
-		// Set the new one
-		if($mybb->input['remember'] == "yes")
-		{
-			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
-		}
-		else
-		{
-			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], -1);
-		}
-	}
-
-	$plugins->run_hooks("usercp_do_options_end");
-
-	redirect("usercp.php", $lang->redirect_optionsupdated);
-}
-elseif($mybb->input['action'] == "email")
-{
-	$plugins->run_hooks("usercp_email_start");
-	eval("\$changemail = \"".$templates->get("usercp_email")."\";");
-	$plugins->run_hooks("usercp_email_end");
-	outputpage($changemail);
-}
-elseif($mybb->input['action'] == "do_email")
+if($mybb->input['action'] == "do_email")
 {
 	$plugins->run_hooks("usercp_do_email_start");
 	$user = validate_password_from_uid($mybb->user['uid'], $mybb->input['password']);
@@ -986,14 +871,16 @@ elseif($mybb->input['action'] == "do_email")
 		redirect("usercp.php", $lang->redirect_emailupdated);
 	}
 }
-elseif($mybb->input['action'] == "password")
+
+if($mybb->input['action'] == "email")
 {
-	$plugins->run_hooks("usercp_password_start");
-	eval("\$editpassword = \"".$templates->get("usercp_password")."\";");
-	$plugins->run_hooks("usercp_password_end");
-	outputpage($editpassword);
+	$plugins->run_hooks("usercp_email_start");
+	eval("\$changemail = \"".$templates->get("usercp_email")."\";");
+	$plugins->run_hooks("usercp_email_end");
+	outputpage($changemail);
 }
-elseif($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
+
+if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_password_start");
 	if(validate_password_from_uid($mybb->user['uid'], $mybb->input['oldpassword']) == false)
@@ -1015,18 +902,16 @@ elseif($mybb->input['action'] == "do_password" && $mybb->request_method == "post
 	$plugins->run_hooks("usercp_do_password_end");
 	redirect("usercp.php", $lang->redirect_passwordupdated);
 }
-elseif($mybb->input['action'] == "changename")
+
+if($mybb->input['action'] == "password")
 {
-	$plugins->run_hooks("usercp_changename_start");
-	if($mybb->usergroup['canchangename'] != "yes")
-	{
-		nopermission();
-	}
-	eval("\$changename = \"".$templates->get("usercp_changename")."\";");
-	$plugins->run_hooks("usercp_changename_end");
-	outputpage($changename);
+	$plugins->run_hooks("usercp_password_start");
+	eval("\$editpassword = \"".$templates->get("usercp_password")."\";");
+	$plugins->run_hooks("usercp_password_end");
+	outputpage($editpassword);
 }
-elseif($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
+
+if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_changename_start");
 	if($mybb->usergroup['canchangename'] != "yes")
@@ -1050,7 +935,20 @@ elseif($mybb->input['action'] == "do_changename" && $mybb->request_method == "po
 	$plugins->run_hooks("usercp_do_changename_end");
 	redirect("usercp.php", $lang->redirect_namechanged);
 }
-elseif($mybb->input['action'] == "favorites")
+
+if($mybb->input['action'] == "changename")
+{
+	$plugins->run_hooks("usercp_changename_start");
+	if($mybb->usergroup['canchangename'] != "yes")
+	{
+		nopermission();
+	}
+	eval("\$changename = \"".$templates->get("usercp_changename")."\";");
+	$plugins->run_hooks("usercp_changename_end");
+	outputpage($changename);
+}
+
+if($mybb->input['action'] == "favorites")
 {
 	$plugins->run_hooks("usercp_favorites_start");
 	// Do Multi Pages
@@ -1135,7 +1033,7 @@ elseif($mybb->input['action'] == "favorites")
 	$plugins->run_hooks("usercp_favorites_end");
 	outputpage($favorites);
 }
-elseif($mybb->input['action'] == "subscriptions")
+if($mybb->input['action'] == "subscriptions")
 {
 	$plugins->run_hooks("usercp_subscriptions_start");
 	// Do Multi Pages
@@ -1220,7 +1118,7 @@ elseif($mybb->input['action'] == "subscriptions")
 	$plugins->run_hooks("usercp_subscriptions_end");
 	outputpage($subscriptions);
 }
-elseif($mybb->input['action'] == "forumsubscriptions")
+if($mybb->input['action'] == "forumsubscriptions")
 {
 	$plugins->run_hooks("usercp_forumsubscriptions_start");
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions WHERE gid='".$mybb->user['usergroup']."'");
@@ -1278,7 +1176,33 @@ elseif($mybb->input['action'] == "forumsubscriptions")
 	eval("\$forumsubscriptions = \"".$templates->get("usercp_forumsubscriptions")."\";");
 	outputpage($forumsubscriptions);
 }
-elseif($mybb->input['action'] == "editsig")
+
+if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
+{
+	$plugins->run_hooks("usercp_do_editsig_start");
+	if($mybb->settings['siglength'] != 0 && my_strlen($mybb->input['signature']) > $mybb->settings['siglength'])
+	{
+		error($lang->sig_too_long);
+	}
+	if($mybb->input['updateposts'] == "enable")
+	{
+		$db->query("UPDATE ".TABLE_PREFIX."posts SET includesig='yes' WHERE uid='".$mybb->user['uid']."'");
+	}
+	elseif($mybb->input['updateposts'] == "disable")
+	{
+		$db->query("UPDATE ".TABLE_PREFIX."posts SET includesig='no' WHERE uid='".$mybb->user['uid']."'");
+	}
+	$newsignature = array(
+		"signature" => $db->escape_string($mybb->input['signature'])
+		);
+	$plugins->run_hooks("usercp_do_editsig_process");
+	$db->update_query(TABLE_PREFIX."users", $newsignature, "uid='".$mybb->user['uid']."'");
+	$plugins->run_hooks("usercp_do_editsig_end");
+	redirect("usercp.php?action=editsig", $lang->redirect_sigupdated);
+
+}
+
+if($mybb->input['action'] == "editsig")
 {
 	$plugins->run_hooks("usercp_editsig_start");
 	if($mybb->input['preview'])
@@ -1341,31 +1265,8 @@ elseif($mybb->input['action'] == "editsig")
 	$plugins->run_hooks("usercp_endsig_end");
 	outputpage($editsig);
 }
-elseif($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
-{
-	$plugins->run_hooks("usercp_do_editsig_start");
-	if($mybb->settings['siglength'] != 0 && my_strlen($mybb->input['signature']) > $mybb->settings['siglength'])
-	{
-		error($lang->sig_too_long);
-	}
-	if($mybb->input['updateposts'] == "enable")
-	{
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET includesig='yes' WHERE uid='".$mybb->user['uid']."'");
-	}
-	elseif($mybb->input['updateposts'] == "disable")
-	{
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET includesig='no' WHERE uid='".$mybb->user['uid']."'");
-	}
-	$newsignature = array(
-		"signature" => $db->escape_string($mybb->input['signature'])
-		);
-	$plugins->run_hooks("usercp_do_editsig_process");
-	$db->update_query(TABLE_PREFIX."users", $newsignature, "uid='".$mybb->user['uid']."'");
-	$plugins->run_hooks("usercp_do_editsig_end");
-	redirect("usercp.php?action=editsig", $lang->redirect_sigupdated);
 
-}
-elseif($mybb->input['action'] == "avatar")
+if($mybb->input['action'] == "avatar")
 {
 	$plugins->run_hooks("usercp_avatar_start");
 	// Get a listing of available galleries
@@ -1496,7 +1397,7 @@ elseif($mybb->input['action'] == "avatar")
 	}
 
 }
-elseif($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
+if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_avatar_start");
 	require "./inc/functions_upload.php";
@@ -1557,7 +1458,7 @@ elseif($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	$plugins->run_hooks("usercp_do_avatar_end");
 	redirect("usercp.php", $lang->redirect_avatarupdated);
 }
-elseif($mybb->input['action'] == "notepad")
+if($mybb->input['action'] == "notepad")
 {
 	$plugins->run_hooks("usercp_notepad_start");
 	$mybbuser['notepad'] = htmlspecialchars_uni($mybbuser['notepad']);
@@ -1565,14 +1466,14 @@ elseif($mybb->input['action'] == "notepad")
 	$plugins->run_hooks("usercp_notepad_end");
 	outputpage($notepad);
 }
-elseif($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
+if($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_notepad_start");
 	$db->query("UPDATE ".TABLE_PREFIX."users SET notepad='".$db->escape_string($mybb->input['notepad'])."' WHERE uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks("usercp_do_notepad_end");
 	redirect("usercp.php", $lang->redirect_notepadupdated);
 }
-elseif($mybb->input['action'] == "editlists")
+if($mybb->input['action'] == "editlists")
 {
 	$plugins->run_hooks("usercp_editlists_start");
 	$buddyarray = explode(",", $mybb->user['buddylist']);
@@ -1623,7 +1524,7 @@ elseif($mybb->input['action'] == "editlists")
 	$plugins->run_hooks("usercp_editlists_end");
 	outputpage($listpage);
 }
-elseif($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
+if($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_editlists_start");
 	$comma = '';
@@ -1658,7 +1559,7 @@ elseif($mybb->input['action'] == "do_editlists" && $mybb->request_method == "pos
 	$plugins->run_hooks("usercp_do_editlists_end");
 	redirect("usercp.php?action=editlists", $lang->$redirecttemplate);
 }
-elseif($mybb->input['action'] == "drafts")
+if($mybb->input['action'] == "drafts")
 {
 	$plugins->run_hooks("usercp_drafts_start");
 	// Show a listing of all of the current 'draft' posts or threads the user has.
@@ -1706,7 +1607,7 @@ elseif($mybb->input['action'] == "drafts")
 	outputpage($draftlist);
 
 }
-elseif($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
+if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_drafts_start");
 	if(!$mybb->input['deletedraft'])
@@ -1748,7 +1649,7 @@ elseif($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 	$plugins->run_hooks("usercp_do_drafts_end");
 	redirect("usercp.php?action=drafts", $lang->selected_drafts_deleted);
 }
-elseif($mybb->input['action'] == "usergroups")
+if($mybb->input['action'] == "usergroups")
 {
 	$plugins->run_hooks("usercp_usergroups_start");
 	$ingroups = ",".$mybb->user['usergroup'].",".$mybb->user['additionalgroups'].",".$mybb->user['displaygroup'].",";
@@ -2022,7 +1923,7 @@ elseif($mybb->input['action'] == "usergroups")
 	$plugins->run_hooks("usercp_usergroups_end");
 	outputpage($groupmemberships);
 }
-elseif($mybb->input['action'] == "attachments")
+if($mybb->input['action'] == "attachments")
 {
 	$plugins->run_hooks("usercp_attachments_start");
 	require "./inc/functions_upload.php";
@@ -2079,7 +1980,7 @@ elseif($mybb->input['action'] == "attachments")
 	$plugins->run_hooks("usercp_attachments_end");
 	outputpage($manageattachments);
 }
-elseif($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post")
+if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_attachments_start");
 	require "./inc/functions_upload.php";
@@ -2096,7 +1997,7 @@ elseif($mybb->input['action'] == "do_attachments" && $mybb->request_method == "p
 	$plugins->run_hooks("usercp_do_attachments_end");
 	redirect("usercp.php?action=attachments", $lang->attachments_deleted);
 }
-else
+if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("usercp_start");
 	// Get posts per day
