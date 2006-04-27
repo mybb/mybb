@@ -810,10 +810,13 @@ if($foruminfo['type'] != "c") {
 	{
 		eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
 	}
+	$lang->rss_discovery_forum = sprintf($lang->rss_discovery_forum, $forum['name']);
+	eval("\$rssdiscovery = \"".$templates->get("forumdisplay_rssdiscovery")."\";");
 	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");
 }
 else
 {
+	$rssdiscovery = '';
 	$threadslist = '';
 	if($forums == '')
 	{

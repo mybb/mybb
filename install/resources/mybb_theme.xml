@@ -443,14 +443,13 @@ form {
 }]]></extracss>
 	</themebits>
 	<templates>
-		<template name="forumdisplay_threadlist" version="100.07"><![CDATA[<div style="text-align: right;">
+		<template name="forumdisplay_threadlist" version="100.07"><![CDATA[<div class="float_right">
 		{$newthread}
 	</div>
 	<div>
 		{$multipage}
 	</div>
-	<br />
-	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;" />
 		<tr>
 			<td class="thead" colspan="{$colspan}">
 				<div style="float: right;">
@@ -506,17 +505,16 @@ form {
 			</td>
 		</tr>
 	</table>
-	<br />
-	<table width="100%" align="center" border="0">
-		<tr>
-			<td valign="top">{$multipage}</td>
-			<td align="right" valign="top">{$newthread}</td>
-		</tr>
-	</table>
+	<div class="float_right">
+		{$newthread}
+	</div>
+	<div>
+		{$multipage}
+	</div>
 	<br />
 	{$inlinemod}
 
-	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<table border="0" cellspacing="0" padding="0" width="100%">
 		<tr>
 			<td class="trow2">
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -1389,24 +1387,21 @@ var inlineId = {$tid};
 		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="fid" value="{$fid}">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder"">
-<tr>
-<td class="trow1" align="right" nowrap="nowrap"><span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
-<select name="action">
-<option value="multiclosethreads">{$lang->close_threads}</option>
-<option value="multiopenthreads">{$lang->open_threads}</option>
-<option value="multistickthreads">{$lang->stick_threads}</option>
-<option value="multiunstickthreads">{$lang->unstick_threads}</option>
-<option value="multideletethreads">{$lang->delete_threads}</option>
-<option value="multimovethreads">{$lang->move_threads}</option>
-<option value="multiapprovethreads">{$lang->approve_threads}</option>
-<option value="multiunapprovethreads">{$lang->unapprove_threads}</option>
-</select>
-<input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" name="inline_go" id="inline_go" />&nbsp;
-<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
-</td>
-</tr>
-</table>
+<div style="text-align: right;">
+	<span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
+	<select name="action">
+	<option value="multiclosethreads">{$lang->close_threads}</option>
+	<option value="multiopenthreads">{$lang->open_threads}</option>
+	<option value="multistickthreads">{$lang->stick_threads}</option>
+	<option value="multiunstickthreads">{$lang->unstick_threads}</option>
+	<option value="multideletethreads">{$lang->delete_threads}</option>
+	<option value="multimovethreads">{$lang->move_threads}</option>
+	<option value="multiapprovethreads">{$lang->approve_threads}</option>
+	<option value="multiunapprovethreads">{$lang->unapprove_threads}</option>
+	</select>
+	<input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" name="inline_go" id="inline_go" />&nbsp;
+	<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
+</div>
 </form>
 <script language="JavaScript" type="text/javascript">
 var go_text = "{$lang->inline_go}";
@@ -1934,6 +1929,7 @@ var inlineId = {$fid};
 <head>
 <title>{$settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
+{$rssdiscovery}
 </head>
 <body>
 {$header}
@@ -6513,5 +6509,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </body>
 </html>]]></template>
 		<template name="forumdisplay_thread_attachment_count" version="100.07"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.gif" alt="" title="{$attachment_count}" /></div>]]></template>
+		<template name="forumdisplay_rssdiscovery" version="100.07"><![CDATA[<<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$settings['bburl']/syndication.php?fid={$fid}" /> 
+<link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 0.3)" href="{$settings['bburl']}/syndication.php?type=atom1.0&fid={$fid}" />]]></template>
 	</templates>
 </theme>

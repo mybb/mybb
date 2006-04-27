@@ -625,6 +625,7 @@ messageEditor.prototype = {
 			{
 				var smilie = smilies[i];
 				smilie.onclick = this.insertSmilie.bindAsEventListener(this);
+				smilie.style.cursor = "pointer";
 			}
 		}
 	},

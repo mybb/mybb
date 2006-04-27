@@ -76,4 +76,5 @@ $l['icon_hot'] = " Hot thread.";
 $l['icon_lock'] = " Locked thread.";
 $l['attachment_count'] = "This thread contains 1 attachment.";
 $l['attachment_count_multiple'] = "This thread contains {1} attachments.";
+$l['rss_discovery_forum'] = "Latest Threads in {1}";
 ?>
