@@ -327,7 +327,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$editdraftpid = '';
 
 	// Set up the post options.
-	if($mybb->input['previewpost'] || $maximageserror || $reply_errors)
+	if($mybb->input['previewpost'] || $maximageserror || $reply_errors != '')
 	{
 		$postoptions = $mybb->input['postoptions'];
 		if($postoptions['signature'] == "yes")

@@ -853,7 +853,7 @@ var inlineId = {$tid};
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->your_message}</strong><br /><p align="center">{$smilieinserter}</p></td>
 <td class="trow2">
-<textarea id="message" name="message" rows="20" cols="70" /></textarea>
+<textarea id="message" name="message" rows="20" cols="70" />{$message}</textarea>
 {$codebuttons}
 </td>
 </tr>
