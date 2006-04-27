@@ -279,4 +279,25 @@ $l['view_members'] = "View Members";
 $l['view_requests'] = "Join Requests";
 $l['sig_too_long'] = "Sorry, but your signature is too long. Please do not go over the signature limit.";
 $l['cannot_leave_group'] = "You cannot leave this group because it is not a publically joinable group.";
+
+$l['redirect_ignoreupdated'] = "Thank you, your ignore list has successfully been updated.";
+$l['redirect_buddyupdated'] = "Thank you, your buddy list has successfully been updated.";
+$l['redirect_subscriptionsremoved'] = "Your thread subscriptions list has now been cleared. You will be returned to where you came from.";
+$l['redirect_favoritesremoved'] = "Your favorite threads list has been cleared.";
+$l['redirect_forumsubscriptionsremoved'] = "Your forum subscriptions list has now been cleared. You will be returned to where you came from.";
+$l['redirect_favoriteadded'] = "The selected thread has been added to your favorites list. You will now be returned to the location you came from.";
+$l['redirect_subscriptionadded'] = "The selected thread has been added to your subscriptions list. You will now be returned to the location you came from.";
+$l['redirect_optionsupdated'] = "Thank you, you have successfully updated your options.";
+$l['redirect_subscriptionremoved'] = "The selected thread has been removed from your subscriptions list.";
+$l['redirect_favoriteremoved'] = "The selected thread has been removed from your favorite threads list.";
+$l['redirect_sigupdated'] = "Your signature has been updated.<br />You will now be taken back to the Edit Signature page.";
+$l['redirect_notepadupdated'] = "Your personal notepad has been updated.<br />You will now be returned to the User CP.";
+$l['redirect_profileupdated'] = "Thank you, your profile has been updated successfully.<br />You will now be returned to the User CP.";
+$l['redirect_forumsubscriptionadded'] = "The selected forum has been added to your forum subscriptions list.<br />You will now be returned to where you came from.";
+$l['redirect_forumsubscriptionremoved'] = "The selected forum has been removed from your forum subscriptions list.<br />You will now be returned to where you came from.";
+$l['redirect_namechanged'] = "Your name has successfully been changed.<br />You will now be returned to the User CP.";
+$l['redirect_emailupdated'] = "Your email address has successfully been updated.<br />You will now be taken back to the user control panel";
+$l['redirect_passwordupdated'] = "Thank you, your password has successfully been updated.<br />You will  now be returned to the User CP.";
+$l['redirect_changeemail_activation'] = "Your email address has successfully been updated. For your new email address to become active, we require that you complete a valdation process.<p>Please check the new email address you specified for further instructions on how to complete the account activation process.</p>";
+
 ?>

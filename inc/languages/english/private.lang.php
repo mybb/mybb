@@ -108,4 +108,23 @@ $l['export_message'] = "Message";
 $l['not_sent'] = "N/A (not sent)";
 $l['at'] = "at";
 $l['nomessages'] = "There are no private messages in this folder.";
+
+$l['error_nopmsarchive'] = "Sorry, but there are no private messages matching the criteria you specified.";
+$l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";
+$l['error_invalidpmrecipient'] = "The recipient you entered is either invalid or doesn't exist. Please go back and enter a correct one.";
+$l['error_invalidpm'] = "Invalid PM";
+$l['error_pmrecipientreachedquota'] = "You cannot send a private message to {1} because he/she has reached their private messaging quota. They cannot be sent any message until their messages have been cleared out. An email has been sent to the user about this. Please try sending your message at a later stage.";
+$l['error_recipientpmturnedoff'] = "{1} has chosen not to receive private messages or may not be allowed to do so. Therefore you may not send your private message to this user.";
+$l['error_pmsturnedoff'] = "You currently have private messages disabled in your profile.<br />To be able to use the private messaging system this setting must be enabled.";
+$l['error_recipientignoring'] = "We are sorry but we cannot process your private message to {1}. You do not have permission to perform this action.";
+
+$l['redirect_pmsaved'] = "The private message has been saved in your Drafts folder.";
+$l['redirect_pmstrackingstopped'] = "Tracking of the selected PMs has been stopped.";
+$l['redirect_pmstrackingcancelled'] = "The selected unread PMs have been deleted from the recipient's inbox.";
+$l['redirect_pmsmoved'] = "The selected private messages have been moved.";
+$l['redirect_pmsdeleted'] = "The selected private messages have been deleted.<br />You will now be returned to your PM Inbox.";
+$l['redirect_pmsent'] = "Thank you, your private message has successfully been sent.<br />You will now be returned to your private message inbox.";
+$l['redirect_pmfoldersupdated'] = "Thank you, your private messaging folders have successfully been updated.<br />You will now be returned to your private message Inbox.";
+$l['redirect_pmfoldersemptied'] = "The selected private messaging folders have successfully been emptied.<br />You will now be taken back to your Private Messaging Inbox.";
+
 ?>

@@ -105,4 +105,39 @@ $l['multi_stuck_threads'] = "Threads Stuck";
 $l['multi_unstuck_threads'] = "Threads Unstuck";
 $l['multi_moved_threads'] = "Threads Moved";
 $l['multi_copied_threads'] = "Threads Copied";
+
+$l['error_nomergeposts'] = "You need to select one or more posts from the thread to be able to merge posts together.";
+$l['error_cantsplitonepost'] = "You cannot split a thread that contains only one post.";
+$l['error_badmergeurl'] = "The URL for the thread to be merged seems to be invalid or empty. Please copy the exact URL into the textbox.<br />Please go back and try again.";
+$l['error_inline_nothreadsselected'] = "Sorry, but you did not select any threads to perform inline moderation on, or your previous moderation session has expired (Automatically after 1 hour of inactivity). Please select some threads and try again.";
+$l['error_inline_nopostsselected'] = "Sorry, but you did not select any posts to perform inline moderation on, or your previous moderation session has expired (Automatically after 1 hour of inactivity). Please select some posts and try again.";
+$l['error_cantsplitall'] = "You cannot split all of the posts out of this thread! If you did, what would be left in the thread?";
+$l['error_nosplitposts'] = "You cannot split this thread as you did not select any posts to split from this thread.";
+$l['redirect_mergeposts'] = "The selected posts have now been merged together. You will now be taken back to the thread.";
+
+$l['redirect_openthread'] = "Thank you, the thread has successfully been opened.<br />You will now be taken back to the thread.";
+$l['redirect_closethread'] = "Thank you, the thread has successfully been closed.<br />You will now be taken back to the thread.";
+$l['redirect_stickthread']  = "Thank you, the thread has successfully been stuck.<br />You will now be taken back to the thread.";
+$l['redirect_unstickthread'] = "Thank you, the thread has successfully been unstuck.<br />You will now be taken back to the thread.";
+$l['redirect_threaddeleted'] = "Thank you, the thread has been deleted. <br />You will now be returned to the forum.";
+$l['redirect_threadmoved'] = "The thread has been moved or copied to the selected forum successfully.<br />You will now be returned to it.";
+$l['redirect_redirectsremoved'] = "All move redirects to this thread have now been removed.<br />You will now be taken back to the thread.";
+$l['redirect_threadapproved'] = "The thread has been approved successfully.";
+$l['redirect_threadunapproved'] = "The thread has been unapproved successfully.";
+$l['redirect_threadsplit'] = "The thread has been split successfully.<br />You will now be taken to the new thread.";
+$l['redirect_threadnotesupdated'] = "Thank you, the notes for this thread have successfully been updated.<br />You will now be returned to the thread.";
+$l['redirect_threadsmerged'] = "Thank you, the two threads have successfully been merged together.<br />You will now be taken to the new thread.";
+$l['redirect_inline_threadsdeleted'] = "The selected threads have been deleted.<br />You will now be returned to the forum.";
+$l['redirect_inline_threadsopened'] = "The selected threads have been opened.<br />You will now be returned to the forum.";
+$l['redirect_inline_threadsclosed'] = "The selected threads have been closed.<br />You will now be returned to the forum.";
+$l['redirect_inline_threadsstuck'] = "The selected threads have been stuck.<br />You will now be returned to the forum.";
+$l['redirect_inline_threadsunstuck'] = "The selected threads have been unstuck.<br />You will now be returned to the forum.";
+$l['redirect_inline_threadsmoved'] = "The selected threads have been moved.<br />You will now be taken to the new forum the threads are in.";
+$l['redirect_inline_threadsapproved'] = "The selected threads have been approved.<br />You will now be returned to the forum.";
+$l['redirect_inline_threadsunapproved'] = "The selected threads have been unapproved.<br />You will now be returned to the forum.";
+$l['redirect_inline_postsmerged'] = "The selected posts have been merged together.<br />You will now be taken back to the thread.";
+$l['redirect_inline_postsapproved'] = "The selected posts have been approved.<br />You will now be returned to the thread.";
+$l['redirect_inline_postsunapproved'] = "The selected posts have been unapproved.<br />You will now be returned to the thread.";
+$l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
+
 ?>

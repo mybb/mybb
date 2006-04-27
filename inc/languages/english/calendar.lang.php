@@ -57,4 +57,9 @@ $l['alt_edit'] = "Edit this event";
 $l['alt_delete'] = "Delete this event";
 
 $l['error_incorrectday'] = "The day you have entered does not appear to exist. Please go back and try again.";
+
+$l['redirect_eventdeleted'] = "The event has successfully been deleted.<br />You will now be taken back to the calendar.";
+$l['redirect_eventupdated'] = "The event has been successfully updated.<br />You will now be returned to it.";
+$l['redirect_eventadded'] = "Your event has been added successfully.<br />You will now be taken to it.";
+
 ?>

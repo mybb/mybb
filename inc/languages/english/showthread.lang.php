@@ -75,4 +75,8 @@ $l['inline_go'] = "Go";
 $l['clear'] = "Clear";
 $l['thread_closed'] = "Thread Closed";
 $l['no_subject'] = "No subject";
+
+$l['error_nonextnewest'] = "There are no threads that are newer than the one you were previously viewing.";
+$l['error_nonextoldest'] = "There are no threads that are older than the one you were previously viewing.";
+
 ?>

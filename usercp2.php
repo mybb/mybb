@@ -18,6 +18,8 @@ if($mybb->user['uid'] == 0)
 	nopermission();
 }
 
+$lang->load("usercp");
+
 $_SERVER['HTTP_REFERER'] = htmlspecialchars($_SERVER['HTTP_REFERER']);
 
 if($mybb->input['action'] == "addfavorite")
