@@ -514,36 +514,28 @@ form {
 	<br />
 	{$inlinemod}
 
-	<table border="0" cellspacing="0" padding="0" width="100%">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 		<tr>
-			<td class="trow2">
-				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<td valign="top" align="left">
+			<!-- start icon legend -->
+				<table width="5%" cellspacing="0" cellpadding="2" border="0">
 					<tr>
-						<td valign="top" align="left">
-						<!-- start icon legend -->
-							<table width="5%" cellspacing="0" cellpadding="2" border="0">
-								<tr>
-									<td nowrap="nowrap">
-										<img src="{$theme['imgdir']}/newfolder.gif" alt="{$lang->new_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->new_thread}</span><br />
-										<img src="{$theme['imgdir']}/newhotfolder.gif" alt="{$lang->new_hot_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->new_hot_thread}</span><br />
-										<img src="{$theme['imgdir']}/dot_folder.gif" alt="{$lang->posts_by_you}" />&nbsp;&nbsp;<span class="smalltext">{$lang->posts_by_you}</span>
-									</td>
-									<td nowrap="nowrap">
-										<img src="{$theme['imgdir']}/folder.gif" alt="{$lang->no_new_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->no_new_thread}</span><br />
-										<img src="{$theme['imgdir']}/hotfolder.gif" alt="{$lang->hot_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->hot_thread}</span><br />
-										<img src="{$theme['imgdir']}/lockfolder.gif" alt="{$lang->locked_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->locked_thread}</span>
-									</td>
-								</tr>
-							</table>
+						<td nowrap="nowrap">
+							<img src="{$theme['imgdir']}/newfolder.gif" alt="{$lang->new_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->new_thread}</span><br />
+							<img src="{$theme['imgdir']}/newhotfolder.gif" alt="{$lang->new_hot_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->new_hot_thread}</span><br />
+							<img src="{$theme['imgdir']}/dot_folder.gif" alt="{$lang->posts_by_you}" />&nbsp;&nbsp;<span class="smalltext">{$lang->posts_by_you}</span>
 						</td>
-						<td valign="middle" align="right">
-							<table>
-								<tr><td align="right">{$searchforum}</td></tr>
-								<tr><td align="right">{$forumjump}</td></tr>
-							</table>
+						<td nowrap="nowrap">
+							<img src="{$theme['imgdir']}/folder.gif" alt="{$lang->no_new_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->no_new_thread}</span><br />
+							<img src="{$theme['imgdir']}/hotfolder.gif" alt="{$lang->hot_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->hot_thread}</span><br />
+							<img src="{$theme['imgdir']}/lockfolder.gif" alt="{$lang->locked_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->locked_thread}</span>
 						</td>
 					</tr>
 				</table>
+			</td>
+			<td valign="middle" align="right">
+				{$searchforum}<br /><br />
+				{$forumjump}
 			</td>
 		</tr>
 	</table>
@@ -1365,7 +1357,7 @@ var inlineId = {$tid};
 		<template name="header_welcomeblock_member_admin" version="100.07"><![CDATA[ &mdash; <a href="{$settings['bburl']}/{$config['admindir']}/index.php">{$lang->welcome_admin}</a>]]></template>
 		<template name="forumdisplay_newthread" version="100.07"><![CDATA[<a href="newthread.php?fid={$fid}"><img src="{$theme['imglangdir']}/newthread.gif" border="0" alt="{$lang->post_thread}" /></a>]]></template>
 		<template name="showthread_threaded_bitactive" version="100.07"><![CDATA[<div style="margin-left: {{$indentsize}}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate} {$posttime}</span></div>]]></template>
-		<template name="showthread_threaded_bit" version="100.07"><![CDATA[<div style="margin-left: {{$indentsize}}px;"><a href="showthread.php?tid={$tid}&amp;pid={$post['pid']}&mode=threaded">{$post['subject']}</a> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}, {$posttime}</span></div>]]></template>
+		<template name="showthread_threaded_bit" version="100.07"><![CDATA[<div style="margin-left: {{$indentsize}}px;"><a href="showthread.php?tid={$tid}&amp;pid={$post['pid']}&amp;mode=threaded">{$post['subject']}</a> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}, {$posttime}</span></div>]]></template>
 		<template name="showthread_poll" version="100.07"><![CDATA[<form action="polls.php" method="get">
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="{$poll['pid']}" />
@@ -1387,7 +1379,7 @@ var inlineId = {$tid};
 		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="fid" value="{$fid}">
-<div style="text-align: right;">
+<div style="text-align: right; clear: both;">
 	<span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
 	<select name="action">
 	<option value="multiclosethreads">{$lang->close_threads}</option>
@@ -1888,7 +1880,7 @@ var inlineId = {$fid};
 		<template name="usercp_attachments_attachment" version="100.07"><![CDATA[<tr>
 <td class="{$altbg}" width="1">{$icon}</td>
 <td class="{$altbg}" width="40%"><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a><br /><span class="smalltext">{$sizedownloads}</span></td>
-<td class="{$altbg}"><a href="showthread.php?tid={$attachment['tid']}&pid={$attachment['pid']}#pid{$attachment['pid']}">{$attachment['subject']}</a><br /><span class="smalltext">{$lang->attachment_thread} <a href="showthread.php?tid={$attachment['tid']}">{$attachment['threadsubject']}</a></span></td>
+<td class="{$altbg}"><a href="showthread.php?tid={$attachment['tid']}&amp;pid={$attachment['pid']}#pid{$attachment['pid']}">{$attachment['subject']}</a><br /><span class="smalltext">{$lang->attachment_thread} <a href="showthread.php?tid={$attachment['tid']}">{$attachment['threadsubject']}</a></span></td>
 <td class="{$altbg}" align="center">{$attachdate}, {$attachtime}</td>
 <td class="{$altbg}" width="1"><input type="checkbox" class="checkbox" name="attachments[{$attachment['aid']}]" value="{$attachment['aid']}" /></td>
 </tr>]]></template>
@@ -1921,7 +1913,7 @@ var inlineId = {$fid};
 <br />]]></template>
 		<template name="forumdisplay_rules_link" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="trow1"><strong><a href="misc.php?action=rules&fid={$fid}">{$foruminfo['rulestitle']}</a></strong></td>
+<td class="trow1"><strong><a href="misc.php?action=rules&amp;fid={$fid}">{$foruminfo['rulestitle']}</a></strong></td>
 </tr>
 </table>
 <br />]]></template>
@@ -2121,7 +2113,7 @@ var inlineId = {$fid};
 </html>]]></template>
 		<template name="usercp_avatar_gallery_avatar" version="100.07"><![CDATA[<td width="20%" align="center"><label for="avatar-{$avatar}"><img src="{$avatarpath}" alt="{$avatar}" /><br /><input type="radio" class="radio" name="avatar" value="{$avatar}" id="avatar-{$avatar}" /><strong>{$avatarname}</strong></td>]]></template>
 		<template name="usercp_avatar_current" version="100.07"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$urltoavatar}" alt="{$lang->avatar}" /></td>]]></template>
-		<template name="headerinclude" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$settings['bburl']/syndication.php" />
+		<template name="headerinclude" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <script type="text/javascript" src="jscripts/prototype.lite.js"></script>
@@ -2224,19 +2216,19 @@ $reputation
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->icq_number}</strong></td>
-<td class="trow1"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&imtype=icq&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['icq']}</a></td>
+<td class="trow1"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=icq&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['icq']}</a></td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->aim_screenname}</strong></td>
-<td class="trow2"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&imtype=aim&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['aim']}</a></td>
+<td class="trow2"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['aim']}</a></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->yahoo_id}</strong></td>
-<td class="trow1"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&imtype=yahoo&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['yahoo']}</a></td>
+<td class="trow1"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['yahoo']}</a></td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->msn}</strong></td>
-<td class="trow2"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&imtype=msn&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['msn']}</a></td>
+<td class="trow2"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=msn&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['msn']}</a></td>
 </tr>
 </table>
 </td>
@@ -2424,7 +2416,7 @@ $reputation
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
 		<template name="managegroup_user" version="100.07"><![CDATA[<tr>
-<td class="{$altbg}"><a href="member.php?action=profile&uid={$user['uid']}">{$user['username']}</a> {$leader}</td>
+<td class="{$altbg}"><a href="member.php?action=profile&amp;uid={$user['uid']}">{$user['username']}</a> {$leader}</td>
 <td class="{$altbg}" align="center">{$email}</td>
 <td class="{$altbg}" align="center">{$sendpm}</td>
 <td class="{$altbg}" align="center">{$regdate}</td>
@@ -2434,7 +2426,7 @@ $reputation
 ]]></template>
 		<template name="managegroup_user_checkbox" version="100.07"><![CDATA[<input type="checkbox" class="checkbox" name="removeuser[{$user['uid']}]" value="{$user['uid']}" />]]></template>
 		<template name="managegroup_requestnote" version="100.07"><![CDATA[<p>
-<strong><a href="managegroup.php?action=joinrequests&gid={$gid}">{$lang->pending_requests}</a></strong><br />
+<strong><a href="managegroup.php?action=joinrequests&amp;gid={$gid}">{$lang->pending_requests}</a></strong><br />
 {$lang->num_requests_pending}
 </p>]]></template>
 		<template name="managegroup_joinrequests" version="100.07"><![CDATA[<html>
@@ -2468,7 +2460,7 @@ $reputation
 </body>
 </html>]]></template>
 		<template name="managegroup_joinrequests_request" version="100.07"><![CDATA[<tr>
-<td class="{$altbg}"><a href="member.php?action=profile&uid={$user['uid']}">{$user['username']}</a></td>
+<td class="{$altbg}"><a href="member.php?action=profile&amp;uid={$user['uid']}">{$user['username']}</a></td>
 <td class="{$altbg}" align="center">{$user['reason']}</td>
 <td class="{$altbg}" align="center"><input type="radio" class="radio" name="request[{$user['uid']}]" value="accept" /></td>
 <td class="{$altbg}" align="center"><input type="radio" class="radio" name="request[{$user['uid']}]" value="ignore" checked="checked" /></td>
@@ -2850,11 +2842,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="misc_buddypopup_user_offline" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid={$buddy['uid']}" target="_blank">{$buddy['username']}</a></span></td>
-<td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">{$pmbuddy}<a href="misc.php?action=buddypopup&removebuddy={$buddy['uid']}">{$lang->delete_buddy}</a></span></td>
+<td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">{$pmbuddy}<a href="misc.php?action=buddypopup&amp;removebuddy={$buddy['uid']}">{$lang->delete_buddy}</a></span></td>
 </tr>]]></template>
 		<template name="misc_buddypopup_user_online" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid={$buddy['uid']}" target="_blank">{$buddy['username']}</a></span></td>
-<td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">{$pmbuddy}<a href="misc.php?action=buddypopup&removebuddy={$buddy['uid']}">{$lang->delete_buddy}</a></span></td>
+<td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">{$pmbuddy}<a href="misc.php?action=buddypopup&amp;removebuddy={$buddy['uid']}">{$lang->delete_buddy}</a></span></td>
 </tr>]]></template>
 		<template name="private_archive_txt" version="100.07"><![CDATA[{$lang->private_messages_for}
 ({$lang->exported_date})
@@ -3211,8 +3203,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <table width="100%" align="center"><tr>
 <tr>
-<td><span class="smalltext"><a href="calendar.php?year={$prevyear}&month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span>
-<td align="right"><span class="smalltext"><a href="calendar.php?year={$nextyear}&month={$nextmonth}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
+<td><span class="smalltext"><a href="calendar.php?year={$prevyear}&amp;month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span>
+<td align="right"><span class="smalltext"><a href="calendar.php?year={$nextyear}&amp;month={$nextmonth}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
 </tr>
 </table>
 <br />
@@ -3775,10 +3767,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </body>
 </html>]]></template>
 		<template name="moderation_reports_report" version="100.07"><![CDATA[<tr>
-<td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" />&nbsp;<a href="showthread.php?pid={$report['pid']}&tid={$report['tid']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
-<td class="{$trow}" align="center"><a href="member.php?action=profile&uid={$report['postuid']}" target="_blank">{$report['postusername']}</a></td>
+<td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" />&nbsp;<a href="showthread.php?pid={$report['pid']}&amp;tid={$report['tid']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
+<td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['postuid']}" target="_blank">{$report['postusername']}</a></td>
 <td class="{$trow}"><a href="showthread.php?tid={$report['tid']}" target="_blank">{$report['threadsubject']}</a></td>
-<td class="{$trow}" align="center"><a href="member.php?action=profile&uid={$report['uid']}" target="_blank">{$report['username']}</a></td>
+<td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['uid']}" target="_blank">{$report['username']}</a></td>
 <td class="{$trow}">{$report['reason']}</td>
 <td class="{$trow}" align="center">{$reportdate}, {$reporttime}</td>
 </tr>]]></template>
@@ -4663,12 +4655,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		</td>
 	</tr>
 	<tr>
-		<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="{$sorturl}&sortby=subject&order=asc">{$lang->thread}</a> {$orderarrow['subject']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&sortby=starter&order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&sortby=forum&order=asc">{$lang->forum}</a> {$orderarrow['forum']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&sortby=replies&order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&sortby=views&order=desc">{$lang->views}</a></strong> {$orderarrow['views']}</span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&sortby=lastpost&order=desc">{$lang->lastpost}</a> {$orderarrow['lastpost']}</strong></span></td>
+		<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc">{$lang->thread}</a> {$orderarrow['subject']}</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=forum&amp;order=asc">{$lang->forum}</a> {$orderarrow['forum']}</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a></strong> {$orderarrow['views']}</span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=lastpost&amp;order=desc">{$lang->lastpost}</a> {$orderarrow['lastpost']}</strong></span></td>
 	</tr>
 	{$results}
 </table>
@@ -4772,12 +4764,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		</td>
 	</tr>
 	<tr>
-		<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="{$sorturl}&sortby=subject&order=asc">{$lang->post}</a> {$orderarrow['subject']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&sortby=starter&order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&sortby=forum&order=asc">{$lang->forum}</a> {$orderarrow['forum']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&sortby=replies&order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&sortby=views&order=desc">{$lang->views}</a></strong> {$orderarrow['views']}</span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&sortby=dateline&order=desc">{$lang->posted}</a> {$orderarrow['dateline']}</strong></span></td>
+		<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc">{$lang->post}</a> {$orderarrow['subject']}</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=forum&amp;order=asc">{$lang->forum}</a> {$orderarrow['forum']}</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a></strong> {$orderarrow['views']}</span></td>
+		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=dateline&amp;order=desc">{$lang->posted}</a> {$orderarrow['dateline']}</strong></span></td>
 	</tr>
 	{$results}
 </table>
@@ -4868,7 +4860,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 
 ]]></template>
 		<template name="misc_help_section_bit" version="100.07"><![CDATA[<tr>
-<td width="100%" class="{$altbg}"><a href="misc.php?action=help&hid={$helpdoc['hid']}">{$helpdoc['name']}</a><br /><span class="smalltext">{$helpdoc['description']}</span></td>
+<td width="100%" class="{$altbg}"><a href="misc.php?action=help&amp;hid={$helpdoc['hid']}">{$helpdoc['name']}</a><br /><span class="smalltext">{$helpdoc['description']}</span></td>
 </tr>
 ]]></template>
 		<template name="calendar_addpublicevent" version="100.07"><![CDATA[<a href="calendar.php?action=addevent&amp;type=public">{$lang->add_public_event}</a>]]></template>
@@ -5484,7 +5476,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_messagebit_denyreceipt" version="100.07"><![CDATA[<span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&denyreceipt=yes">{$lang->deny_receipt}</a></span>]]></template>
+		<template name="private_messagebit_denyreceipt" version="100.07"><![CDATA[<span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=yes">{$lang->deny_receipt}</a></span>]]></template>
 		<template name="private_read" version="100.07"><![CDATA[<html>
 <head>
 <title>{$lang->viewing_pm} {$pm['subject']}</title>
@@ -5498,11 +5490,11 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>{$pm['subject']}</strong></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
+<td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>{$pm['subject']}</strong></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
 </tr>
 {$message}
 <tr>
-<td class="tfoot" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="tfoot"><strong>{$pm['subject']}</strong></td><td class="tfoot" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
+<td class="tfoot" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="tfoot"><strong>{$pm['subject']}</strong></td><td class="tfoot" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
 </tr>
 </table>
 </td>
@@ -5680,14 +5672,14 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow2" align="right">{$similarthreaddate}<br />{$similarthreadtime}</td>
 </tr>
 ]]></template>
-		<template name="calendar_eventbit_public" version="100.07"><![CDATA[<a href="calendar.php?action=event&eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$settings['publiceventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
-		<template name="calendar_eventbit_private" version="100.07"><![CDATA[<a href="calendar.php?action=event&eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$settings['privateeventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
+		<template name="calendar_eventbit_public" version="100.07"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$settings['publiceventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
+		<template name="calendar_eventbit_private" version="100.07"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$settings['privateeventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
 		<template name="calendar_daybit_today" version="100.07"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
-<strong><a href="calendar.php?action=dayview&year={$year}&month={$month}&day={$i}">{$i}</a></strong>
+<strong><a href="calendar.php?action=dayview&amp;year={$year}&amp;month={$month}&amp;day={$i}">{$i}</a></strong>
 <br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
 </td>]]></template>
 		<template name="calendar_daybit" version="100.07"><![CDATA[<td width="14%" height="90" class="trow1" valign="top">
-<strong><a href="calendar.php?action=dayview&year={$year}&month={$month}&day={$i}">{$i}</a></strong>
+<strong><a href="calendar.php?action=dayview&amp;year={$year}&amp;month={$month}&amp;day={$i}">{$i}</a></strong>
 <br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
 </td>]]></template>
 		<template name="polls_newpoll_option" version="100.07"><![CDATA[<tr>
@@ -5847,7 +5839,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td align="center" class="trow2">{$onlinetime}</td>
 <td class="trow1" width="50%">{$locationname}</td>
 </tr>]]></template>
-		<template name="online_row_ip" version="100.07"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="online.php?action=iplookup&ip={$user['ip']}">{$lang->lookup}</a></span>]]></template>
+		<template name="online_row_ip" version="100.07"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="online.php?action=iplookup&amp;ip={$user['ip']}">{$lang->lookup}</a></span>]]></template>
 		<template name="calendar_editevent" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->calendar} - {$lang->edit_event}</title>
@@ -6107,12 +6099,12 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow1" align="center" colspan="2"><strong>{$user['yahoo']}</strong></td>
 </tr>
 <tr>
-<td class="trow1" align="center" colspan="2"><strong><img border=0 src="http://opi.yahoo.com/online?u={$user['yahoo']}&m=g&amp;t=2"></strong></td>
+<td class="trow1" align="center" colspan="2"><strong><img border=0 src="http://opi.yahoo.com/online?u={$user['yahoo']}&amp;m=g&amp;t=2"></strong></td>
 </tr>
 <tr>
-<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://edit.yahoo.com/config/send_webmesg?.target={$user['yahoo']}&.src=pg">{$lang->send_y_message}</a></span></td>
+<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://edit.yahoo.com/config/send_webmesg?.target={$user['yahoo']}&amp;.src=pg">{$lang->send_y_message}</a></span></td>
 </tr><tr>
-<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://members.yahoo.com/interests?.oc=t&.kw={$user['yahoo']}&.sb=1">{$lang->view_y_profile}</a></td>
+<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://members.yahoo.com/interests?.oc=t&amp;.kw={$user['yahoo']}&amp;.sb=1">{$lang->view_y_profile}</a></td>
 </tr>
 </table>
 </body>
@@ -6286,7 +6278,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
 <td><span class="smalltext">{$lang->verification_note}</span></td>
-<td rowspan="2" align="center"><img src="image.php?action=regimage&imagehash={$imagehash}" alt="{$lang->image_verification}" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span></td>
+<td rowspan="2" align="center"><img src="image.php?action=regimage&amp;imagehash={$imagehash}" alt="{$lang->image_verification}" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span></td>
 </tr>
 <tr>
 <td><input type="text" class="textbox" name="imagestring" value="" /><input type="hidden" name="imagehash" value="{$imagehash}" /></td>
@@ -6509,7 +6501,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </body>
 </html>]]></template>
 		<template name="forumdisplay_thread_attachment_count" version="100.07"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.gif" alt="" title="{$attachment_count}" /></div>]]></template>
-		<template name="forumdisplay_rssdiscovery" version="100.07"><![CDATA[<<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$settings['bburl']/syndication.php?fid={$fid}" /> 
-<link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 0.3)" href="{$settings['bburl']}/syndication.php?type=atom1.0&fid={$fid}" />]]></template>
+		<template name="forumdisplay_rssdiscovery" version="100.07"><![CDATA[<<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$settings['bburl']}/syndication.php?fid={$fid}" /> 
+<link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 0.3)" href="{$settings['bburl']}/syndication.php?type=atom1.0&amp;fid={$fid}" />]]></template>
 	</templates>
 </theme>
