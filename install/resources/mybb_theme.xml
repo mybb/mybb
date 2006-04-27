@@ -1301,7 +1301,7 @@ var inlineId = {$tid};
 <td class="trow1" colspan="7">{$lang->no_thread_subscriptions}</td>
 </tr>]]></template>
 		<template name="usercp_subscriptions_thread" version="100.07"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif"></td>
+<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" /></td>
 <td align="center" class="trow2">{$icon}</td>
 <td width="100%" class="trow1"><a href="showthread.php?tid={$subscription['tid']}">{$subscription['subject']}</a><br /><span class="smalltext"><a href="newreply.php?tid={$subscription['tid']}">{$lang->post_reply}</a> | <a href="usercp2.php?action=removesubscription&amp;tid={$subscription['tid']}">{$lang->unsubscribe}</a></span></td>
 <td align="center" class="trow2"><a href="member.php?action=profile&amp;uid={$subscription['author']}">{$subscription['username']}</a></td>
@@ -1346,7 +1346,7 @@ var inlineId = {$tid};
 <td class="trow1" colspan="7">{$lang->no_favorite_threads}</td>
 </tr>]]></template>
 		<template name="usercp_favorites_thread" version="100.07"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif"></td>
+<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" /></td>
 <td align="center" class="trow2">{$icon}</td>
 <td width="100%" class="trow1"><a href="showthread.php?tid={$favorite['tid']}">{$favorite['subject']}</a><br /><span class="smalltext"><a href="newreply.php?tid={$favorite['tid']}">{$lang->post_reply}</a> | <a href="usercp2.php?action=removefavorite&amp;tid={$favorite['tid']}">{$lang->delete_from_favorites}</a></span></td>
 <td align="center" class="trow2"><a href="member.php?action=profile&amp;uid={$favorite['author']}">{$favorite['username']}</a></td>
@@ -2232,7 +2232,7 @@ $reputation
 </tr>
 </table>
 </td>
-<td><img src="{$theme['imgdir']}/pixel.gif" height="1" width="8"></td>
+<td><img src="{$theme['imgdir']}/pixel.gif" height="1" width="8" /></td>
 <td width="50%" valign="top">
 {$profilefields}
 {$signature}
@@ -3272,7 +3272,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 </body>]]></template>
 		<template name="private_messagebit" version="100.07"><![CDATA[<tr>
-<td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/{$msgfolder}" border="0"></td>
+<td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/{$msgfolder}" border="0" /></td>
 <td align="center" class="trow2" width="5%">{$icon}</td>
 <td class="trow1" width="35%"><a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$denyreceipt}</td>
 <td align="center" class="trow2">{$tofromusername}</td>
@@ -3297,7 +3297,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <thead>
 <tr>
 <td colspan="2" class="thead">
-<div class="expcolimage"><img src="images/collapse{$collapsedimg['quickreply']}.gif" id="quickreply_img" class="expander" border="0"></div>
+<div class="expcolimage"><img src="images/collapse{$collapsedimg['quickreply']}.gif" id="quickreply_img" class="expander" border="0" /></div>
 <div><strong>{$lang->quick_reply}</strong></div>
 </td>
 </tr>
@@ -3432,7 +3432,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	</tr>
 </table>]]></template>
 		<template name="forumdisplay_announcements_announcement" version="100.07"><![CDATA[<tr>
-<td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}"></td>
+<td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}" /></td>
 <td align="center" class="{$bgcolor}">&nbsp;</td>
 <td class="{$bgcolor}"><a href="announcements.php?aid={$announcement['aid']}">{$announcement['subject']}</a></td>
 <td align="center" class="{$bgcolor}"><a href="member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a></td>
@@ -3722,7 +3722,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 ]]></template>
 		<template name="usercp_forumsubscriptions_forum" version="100.07"><![CDATA[<tr>
-<td class="trow1" align="center" valign="top"><img src="{$theme['imgdir']}/{$folder}.gif" valign="top"></td>
+<td class="trow1" align="center" valign="top"><img src="{$theme['imgdir']}/{$folder}.gif" valign="top" /></td>
 <td class="trow1" valign="top">
 <strong><a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><br /><span class="smalltext"><a href="usercp2.php?action=removesubscription&amp;type=forum&amp;fid={$forum['fid']}">{$lang->unsubscribe}</a> | <a href="newthread.php?fid={$forum['fid']}">{$lang->new_thread}</a></span></td>
 <td class="trow2" valign="top" align="center" nowrap="nowrap">{$posts}</td>
@@ -3824,18 +3824,18 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <!-- Begin AIM Remote -->
 <table align="center" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td align="center" nowrap="nowrap"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_man.gif" width=44 height=55 border=0 alt="Download AIM"></a><img src="http://www.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width=73 height=55 border=0 alt="AIM Remote"></td>
+<td align="center" nowrap="nowrap"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_man.gif" width=44 height=55 border=0 alt="Download AIM" /></a><img src="http://www.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width=73 height=55 border=0 alt="AIM Remote" /></td>
 </tr>
 <tr>
-<td align="center" nowrap="nowrap"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_im.gif" width=117 height=39 border=0 alt="Send me an Instant Message"></a></td>
+<td align="center" nowrap="nowrap"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_im.gif" width=117 height=39 border=0 alt="Send me an Instant Message" /></a></td>
 </tr>
 <tr>
-<td align="center" nowrap="nowrap"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_bud.gif" width=117 height=39 border=0 alt="Add me to Your Buddy List"></a></td>
+<td align="center" nowrap="nowrap"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_bud.gif" width=117 height=39 border=0 alt="Add me to Your Buddy List" /></a></td>
 </tr>
 <tr>
-<td align="center" nowrap="nowrap"><a href="http://www.aol.co.uk/aim/remote.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botadd.gif" width=117 height=23 border=0 alt="Add Remote to Your Page"></a></td>
+<td align="center" nowrap="nowrap"><a href="http://www.aol.co.uk/aim/remote.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botadd.gif" width=117 height=23 border=0 alt="Add Remote to Your Page" /></a></td>
 </tr>
-<td align="center" nowrap="nowrap"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width=117 height=29 border=0 alt="Download AOL Instant Messenger"></a></td>
+<td align="center" nowrap="nowrap"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width=117 height=29 border=0 alt="Download AOL Instant Messenger" /></a></td>
 </tr>
 </table>
 <!-- End AIM Remote -->
@@ -3919,7 +3919,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <br />]]></template>
 		<template name="forumdisplay_announcement" version="100.07"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}"></td>
+<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}" /></td>
 <td align="center" class="trow1">&nbsp;</td>
 <td width="100%" class="trow1"><strong>{$lang->announcement_prefix}</strong> <a href="announcements.php?fid={$fid}">{$announcement['subject']}</a></td>
 <td align="center" class="trow1"><a href="member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a></td>
@@ -4392,7 +4392,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="trow1">
 <table border="0" cellpadding="{$theme['tablespace']}" width="100%"><tr>{$avatar}<td class="trow1">{$message}{$post['attachments']}</td></tr>
-<tr><td align="right" colspan="2" valign="bottom"><span class="smalltext"><a href="{$settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$settings['bburl']}/{$theme['imgdir']}/printable.gif" border=0></a>&nbsp;<a href="{$settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$settings['bburl']}/{$theme['imgdir']}/send.gif" border=0></a></span></td></tr>
+<tr><td align="right" colspan="2" valign="bottom"><span class="smalltext"><a href="{$settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$settings['bburl']}/{$theme['imgdir']}/printable.gif" border="0" /></a>&nbsp;<a href="{$settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$settings['bburl']}/{$theme['imgdir']}/send.gif" border="0" /></a></span></td></tr>
 </table>
 </td>
 </tr>
@@ -4481,7 +4481,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 <table width="98%" align="center">
 <tr>
-<td valign="top"><a href="index.php"><img src="{$theme['logo']}" alt="{$settings['bbname']}" border="0"></a></td>
+<td valign="top"><a href="index.php"><img src="{$theme['logo']}" alt="{$settings['bbname']}" border="0" /></a></td>
 </tr>
 <tr>
 <td>
@@ -4621,11 +4621,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2">{$message['message']}</td>
 </tr>
 <tr>
-<td class="tcat" height="3"><img src="pixel.gif" height="3" width="1"></td>
+<td class="tcat" height="3"><img src="pixel.gif" height="3" width="1" /></td>
 </tr>]]></template>
 		<template name="private_archive_csv_message" version="100.07"><![CDATA[{$senddate},{$foldername},{$message['subject']},{$message['tousername']},{$message['fromusername']},{$message['message']}]]></template>
 		<template name="search_results_threads_thread" version="100.07"><![CDATA[<tr>
-	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif"></td>
+	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif" /></td>
 	<td align="center" class="{$bgcolor}" width="1">{$icon}</td>
 	<td class="{$bgcolor}">{$prefix} <a href="showthread.php?tid={$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</td>
 	<td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
@@ -4673,7 +4673,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="search_results_posts_post" version="100.07"><![CDATA[<tr>
-	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif"></td>
+	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif" /></td>
 	<td align="center" class="{$bgcolor}" width="1">{$icon}</td>
 	<td class="{$bgcolor}"><span class="smalltext">{$lang->post_thread} <a href="showthread.php?tid={$post['tid']}">{$post['thread_subject']}</a><br />{$lang->post_subject} <a href="showthread.php?tid={$post['tid']}&amp;pid={$post['pid']}#pid{$post['pid']}">{$post['subject']}</a></span><br />
 	<table width="100%"><tr><td><span class="smalltext"><em>{$prev}</em></span></td></tr></table></td>
@@ -4788,7 +4788,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 <br />]]></template>
 		<template name="misc_smilies_smilie" version="100.07"><![CDATA[<tr>
-<td class="{$class}" align="center"><img src="{$smilie['image']}"></td>
+<td class="{$class}" align="center"><img src="{$smilie['image']}" /></td>
 <td class="{$class}">{$smilie['name']}</td>
 <td class="{$class}">{$smilie['find']}</td>
 </tr>]]></template>
@@ -4867,14 +4867,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="calendar_addprivateevent" version="100.07"><![CDATA[<a href="calendar.php?action=addevent&amp;type=private">{$lang->add_private_event}</a>]]></template>
 		<template name="index_birthdays_birthday" version="100.07"><![CDATA[{$comma}<a href="member.php?action=profile&amp;uid={$bdayuser['uid']}">{$bdayuser['username']}</a>{$age}]]></template>
 		<template name="private_tracking_readmessage" version="100.07"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/old_pm.gif" border="0" alt=""></td>
+<td align="center" class="trow1"><img src="{$theme['imgdir']}/old_pm.gif" border="0" alt="" /></td>
 <td class="trow2">{$readmessage['subject']}</td>
 <td class="trow1"><a href="member.php?action=profile&amp;uid={$readmessage['toid']}">{$readmessage['tousername']}</a></td>
 <td class="trow2" align="right"><span class="smalltext">{$readdate}<br />{$readtime}</span></td>
 <td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="yes"></td>
 </tr>]]></template>
 		<template name="private_tracking_unreadmessage" version="100.07"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/new_pm.gif" border="0" alt=""></td>
+<td align="center" class="trow1"><img src="{$theme['imgdir']}/new_pm.gif" border="0" alt="" /></td>
 <td class="trow2">{$unreadmessage['subject']}</td>
 <td class="trow1"><a href="member.php?action=profile&amp;uid={$unreadmessage['toid']}">{$unreadmessage['tousername']}</a></td>
 <td class="trow2" align="right"><span class="smalltext">{$senddate}<br />{$sendtime}</span></td>
@@ -4957,7 +4957,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </body>
 </html>]]></template>
-		<template name="misc_smilies_popup_smilie" version="100.07"><![CDATA[<td class="{$class}" align="center"><a href="javascript:opener.addsmilie('{$smilie['find']}');"><img src="{$smilie['image']}" border="0" alt="{$smilie['find']}"></a></td>
+		<template name="misc_smilies_popup_smilie" version="100.07"><![CDATA[<td class="{$class}" align="center"><a href="javascript:opener.addsmilie('{$smilie['find']}');"><img src="{$smilie['image']}" border="0" alt="{$smilie['find']}" /></a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="showteam" version="100.07"><![CDATA[<html>
 <head>
@@ -5129,7 +5129,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="private_messagebit_sep" version="100.07"><![CDATA[<tr>
-<td class="tcat" align="center" colspan="6" height="1"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1"></td>
+<td class="tcat" align="center" colspan="6" height="1"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" /></td>
 </tr>]]></template>
 		<template name="polls_editpoll_option" version="100.07"><![CDATA[<tr>
 <td class="trow">{$lang->option} {$counter}:</td>
@@ -6099,7 +6099,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow1" align="center" colspan="2"><strong>{$user['yahoo']}</strong></td>
 </tr>
 <tr>
-<td class="trow1" align="center" colspan="2"><strong><img border=0 src="http://opi.yahoo.com/online?u={$user['yahoo']}&amp;m=g&amp;t=2"></strong></td>
+<td class="trow1" align="center" colspan="2"><strong><img border=0 src="http://opi.yahoo.com/online?u={$user['yahoo']}&amp;m=g&amp;t=2" /></strong></td>
 </tr>
 <tr>
 <td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://edit.yahoo.com/config/send_webmesg?.target={$user['yahoo']}&amp;.src=pg">{$lang->send_y_message}</a></span></td>
