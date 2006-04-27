@@ -46,7 +46,7 @@ if($pid)
 
 if($tid)
 {
-	$thread = getthread($tid);
+	$thread = get_thread($tid);
 	$fid = $thread['fid'];
 	if(!$thread['tid'])
 	{
@@ -57,7 +57,7 @@ if($tid)
 if($fid)
 {
 	$modlogdata['fid'] = $fid;
-	$forum = getforum($fid);
+	$forum = get_forum($fid);
 
 	// Make navigation
 	makeforumnav($fid);

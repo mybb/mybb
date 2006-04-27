@@ -924,7 +924,7 @@ class PostDataHandler extends DataHandler
 				// Only update the lastpost column of the user if the date of the thread is newer than their last post.
 				if($thread['dateline'] > $user['lastpost'])
 				{
-					$update_query[] = "lastpost='".$thread['dateline']."'";
+					$update_query[] = "lastpost='{$thread['dateline']}'";
 				}
 				// Update the post count if this forum allows post counts to be tracked
 				if($forum['usepostcounts'] != "no")
@@ -936,7 +936,7 @@ class PostDataHandler extends DataHandler
 				if(is_array($update_query))
 				{
 					$update_query = implode(", ", $update_query);
-					$db->query("UPDATE ".TABLE_PREFIX."users SET $update_query WHERE uid='".$thread['uid']."'");
+					$db->query("UPDATE ".TABLE_PREFIX."users SET {$update_query} WHERE uid='{$thread['uid']}'");
 				}
 			}
 
