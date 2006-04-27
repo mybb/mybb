@@ -2126,7 +2126,7 @@ var inlineId = {$fid};
 		<template name="usercp_avatar_gallery_avatar" version="100.07"><![CDATA[<td width="20%" align="center"><label for="avatar-{$avatar}"><img src="{$avatarpath}" alt="{$avatar}" /><br /><input type="radio" class="radio" name="avatar" value="{$avatar}" id="avatar-{$avatar}" /><strong>{$avatarname}</strong></td>]]></template>
 		<template name="usercp_avatar_current" version="100.07"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$urltoavatar}" alt="{$lang->avatar}" /></td>]]></template>
 		<template name="headerinclude" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$settings['bburl']/syndication.php" />
-<link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 0.3)" href="{$settings['bburl']}/syndication.php?type=atom1.0" />
+<link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <script type="text/javascript" src="jscripts/prototype.lite.js"></script>
 <script type="text/javascript" src="jscripts/moo.ajax.js"></script>
