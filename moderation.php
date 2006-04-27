@@ -36,7 +36,7 @@ $fid = intval($mybb->input['fid']);
 
 if($pid)
 {
-	$post = getpost($pid);
+	$post = get_post($pid);
 	$tid = $post['tid'];
 	if(!$post['pid'])
 	{

@@ -66,7 +66,7 @@ else
 	$linkaddon = '';
 }
 
-$num = $db->fetch_field($query, "users")
+$num = $db->fetch_field($query, "users");
 $page = intval($mybb->input['page']);
 if($page)
 {
