@@ -776,12 +776,12 @@ var inlineId = {$tid};
 <td class="thead" colspan="3"><strong>{$lang->delete_post}</strong></td>
 </tr>
 <tr>
-<td class="trow1" nowrap="nowrap"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9"> <strong>{$lang->delete_q}</strong></td>
+<td class="trow1" nowrap="nowrap"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9" /> <strong>{$lang->delete_q}</strong></td>
 <td class="trow1" width="100%">{$lang->delete_1}<br /><span class="smalltext">{$lang->delete_2}</span></td>
-<td class="trow1" nowrap="nowrap"><input type="submit" class="button" name="submit" value="{$lang->delete_now}" tabindex="10"></td>
+<td class="trow1" nowrap="nowrap"><input type="submit" class="button" name="submit" value="{$lang->delete_now}" tabindex="10" /></td>
 </table>
-<input type="hidden" name="action" value="deletepost">
-<input type="hidden" name="pid" value="{$pid}">
+<input type="hidden" name="action" value="deletepost" />
+<input type="hidden" name="pid" value="{$pid}" />
 </form>
 <br />
 <form action="editpost.php" method="post" enctype="multipart/form-data" name="input">
@@ -792,7 +792,7 @@ var inlineId = {$tid};
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->subject}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="1"></td>
+<td class="trow2"><input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="1" /></td>
 </tr>
 {$posticons}
 <tr>
@@ -805,25 +805,25 @@ var inlineId = {$tid};
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']}> {$lang->options_sig}<br />
-<input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']}> {$lang->options_emailnotify}
+<input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']} /> {$lang->options_sig}<br />
+<input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}
 {$disablesmilies}</span></td>
 </tr>
 {$attachbox}
 {$pollbox}
 </table>
 <br />
-<center><input type="submit" class="button" name="submit" value="{$lang->update_post}" tabindex="3">  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4"></center>
-<input type="hidden" name="action" value="do_editpost">
-<input type="hidden" name="pid" value="{$pid}">
-<input type="hidden" name="posthash" value="{$posthash}">
-<input type="hidden" name="removeattachment" value="">
+<center><input type="submit" class="button" name="submit" value="{$lang->update_post}" tabindex="3" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" ></center>
+<input type="hidden" name="action" value="do_editpost" />
+<input type="hidden" name="pid" value="{$pid}" />
+<input type="hidden" name="posthash" value="{$posthash}" />
+<input type="hidden" name="removeattachment" value="" />
 </form>
 {$footer}
 </body>
 </html>]]></template>
 		<template name="editpost_disablesmilies" version="100.07"><![CDATA[<br />
-<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8" {$postoptionschecked['disablesmilies']}> {$lang->options_disablesmilies}]]></template>
+<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8" {$postoptionschecked['disablesmilies']} />{$lang->options_disablesmilies}]]></template>
 		<template name="newreply" version="100.07"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
@@ -860,8 +860,8 @@ var inlineId = {$tid};
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']}> {$lang->options_sig}</label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']}> {$lang->options_emailnotify}</label>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']} />{$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']} />{$lang->options_emailnotify}</label>
 {$disablesmilies}
 </span></td>
 </tr>
@@ -870,11 +870,11 @@ var inlineId = {$tid};
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->post_reply}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" />{$savedraftbutton}</center>
-<input type="hidden" name="action" value="do_newreply">
-<input type="hidden" name="tid" value="{$tid}">
-<input type="hidden" name="replyto" value="{$pid}">
-<input type="hidden" name="posthash" value="{$posthash}">
-<input type="hidden" name="removeattachment" value="">
+<input type="hidden" name="action" value="do_newreply" />
+<input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="replyto" value="{$pid}" />
+<input type="hidden" name="posthash" value="{$posthash}" />
+<input type="hidden" name="removeattachment" value="" />
 {$editdraftpid}
 </form>
 {$forumrules}
@@ -883,7 +883,7 @@ var inlineId = {$tid};
 </body>
 </html>]]></template>
 		<template name="newreply_disablesmilies" version="100.07"><![CDATA[<br />
-<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']}> {$lang->options_disablesmilies}]]></template>
+<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']} />{$lang->options_disablesmilies}]]></template>
 		<template name="usercp_drafts" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->drafts}</title>
@@ -968,10 +968,10 @@ var inlineId = {$tid};
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->post_thread}" tabindex="4" accesskey="s">  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="5">{$savedraftbutton}</center>
-<input type="hidden" name="action" value="do_newthread">
-<input type="hidden" name="posthash" value="{$posthash}">
-<input type="hidden" name="fid" value="{$fid}">
-<input type="hidden" name="removeattachment" value="">
+<input type="hidden" name="action" value="do_newthread" />
+<input type="hidden" name="posthash" value="{$posthash}" />
+<input type="hidden" name="fid" value="{$fid}" />
+<input type="hidden" name="removeattachment" value="" />
 {$editdraftpid}
 </form>
 {$forumrules}
@@ -979,7 +979,7 @@ var inlineId = {$tid};
 </body>
 </html>]]></template>
 		<template name="newthread_disablesmilies" version="100.07"><![CDATA[<br />
-<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']}> {$lang->options_disablesmilies}]]></template>
+<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']} />{$lang->options_disablesmilies}]]></template>
 		<template name="usercp_nav" version="100.07"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -1287,7 +1287,7 @@ var inlineId = {$tid};
 </table>
 <br />
 <div align="center">
-<input type="hidden" name="action" value="do_options">
+<input type="hidden" name="action" value="do_options" />
 <input type="submit" class="button" name="regsubmit" value="{$lang->update_options}">
 </div>
 </td>
@@ -1378,7 +1378,7 @@ var inlineId = {$tid};
 </form>]]></template>
 		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
 		<form action="moderation.php" method="post">
-<input type="hidden" name="fid" value="{$fid}">
+<input type="hidden" name="fid" value="{$fid}" />
 <div style="text-align: right; clear: both;">
 	<span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
 	<select name="action">
@@ -1414,14 +1414,14 @@ var inlineId = {$fid};
 <br />
 <strong>{$lang->report_to_mod}</strong>
 <form action="report.php" method="post">
-<input type="hidden" name="action" value="do_report">
-<input type="hidden" name="pid" value="{$pid}">
+<input type="hidden" name="action" value="do_report" />
+<input type="hidden" name="pid" value="{$pid}" />
 <blockquote>{$lang->only_report}</blockquote>
 <br />
 <br />
 <span class="smalltext">{$lang->report_reason}</span>
 <br />
-<input type="text" class="textbox" name="reason" size="40" maxlength="250">
+<input type="text" class="textbox" name="reason" size="40" maxlength="250" />
 <br />
 <br />
 <center><input type="submit" class="button" value="{$lang->report_post}"></center>
@@ -1479,11 +1479,11 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->your_name}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="from" size="40" value="{$mybbuser['username']}"></td>
+<td class="trow1"><input type="text" class="textbox" name="from" size="40" value="{$mybbuser['username']}" /></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->your_email}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="fromemail" size="40" value="{$mybbuser['email']}"></td>
+<td class="trow1"><input type="text" class="textbox" name="fromemail" size="40" value="{$mybbuser['email']}" /></td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->your_message}</strong></td>
@@ -1493,8 +1493,8 @@ var inlineId = {$fid};
 <td class="trow1" align="center" colspan="2"><input type="submit" class="button" name="submit" value="{$lang->send_message}"></td>
 </tr>
 </table>
-<input type="hidden" name="subject" value="From WebPager Panel">
-<input type="hidden" name="to" value="{$user['icq']}">
+<input type="hidden" name="subject" value="From WebPager Panel" />
+<input type="hidden" name="to" value="{$user['icq']}" />
 </form>
 </body>
 </html>]]></template>
@@ -1520,7 +1520,7 @@ var inlineId = {$fid};
 </tr>
 {$pwnote}
 <tr>
-<td class="trow1" align="center" colspan="2"><input type="password" class="textbox" name="pwverify" size="50" value=""></td>
+<td class="trow1" align="center" colspan="2"><input type="password" class="textbox" name="pwverify" size="50" value="" /></td>
 </tr>
 </table>
 <br />
@@ -1577,12 +1577,12 @@ var inlineId = {$fid};
 </tr>
 {$folderlist}
 <tr>
-<td class="trow2" align="center" colspan="3"><input type="checkbox" class="checkbox" name="keepunread" value="yes" checked><strong>{$lang->keep_unread}</strong></td>
+<td class="trow2" align="center" colspan="3"><input type="checkbox" class="checkbox" name="keepunread" value="yes" checked="checked" /><strong>{$lang->keep_unread}</strong></td>
 </tr>
 </table>
 <br />
 <div align="center">
-<input type="hidden" name="action" value="do_empty">
+<input type="hidden" name="action" value="do_empty" />
 <input type="submit" class="button" name="submit" value="{$lang->delete}">
 </div>
 </td>
@@ -2503,10 +2503,10 @@ $reputation
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="options[signature]" value="yes" tabindex="8" {$optionschecked['signature']}> {$lang->options_sig}</label><br />
-<label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="yes" tabindex="9" {$optionschecked['disablesmilies']}> {$lang->options_disable_smilies}</label><br />
-<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="yes" tabindex="10" {$optionschecked['savecopy']}> {$lang->options_save_copy}</label><br />
-<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="yes" tabindex="11" {$optionschecked['readreceipt']}> {$lang->options_read_receipt}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[signature]" value="yes" tabindex="8" {$optionschecked['signature']} />{$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="yes" tabindex="9" {$optionschecked['disablesmilies']} />{$lang->options_disable_smilies}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="yes" tabindex="10" {$optionschecked['savecopy']} />{$lang->options_save_copy}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="yes" tabindex="11" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />
 </span></td>
 </tr>
 </table>
@@ -2537,12 +2537,12 @@ $reputation
 <td class="thead" colspan="3"><strong>{$lang->delete_poll}</strong></td>
 </tr>
 <tr>
-<td class="trow1" nowrap="nowrap"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9"> <strong>{$lang->delete_q}</strong></td>
+<td class="trow1" nowrap="nowrap"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9" /><strong>{$lang->delete_q}</strong></td>
 <td class="trow1" width="100%">{$lang->delete_note}<br /><span class="smalltext">{$lang->delete_note_2}</span></td>
 <td class="trow1" nowrap="nowrap"><input type="submit" class="button" name="submit" value="{$lang->delete_poll}" tabindex="10"></td>
 </table>
-<input type="hidden" name="action" value="do_deletepoll">
-<input type="hidden" name="tid" value="{$tid}">
+<input type="hidden" name="action" value="do_deletepoll" />
+<input type="hidden" name="tid" value="{$tid}" />
 </form>
 <br />
 <form action="polls.php" method="post">
@@ -2553,7 +2553,7 @@ $reputation
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->question}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="question" size="40" maxlength="240" value="{$question}"></td>
+<td class="trow2"><input type="text" class="textbox" name="question" size="40" maxlength="240" value="{$question}" /></td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$settings['maxpolloptions']}</span></td>
@@ -2578,15 +2578,15 @@ $reputation
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</td>
-<td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}"> {$lang->days_after} {$polldate}</td>
+<td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}" />{$lang->days_after} {$polldate}</td>
 </tr>
 </table>
 <br />
 <center>
 <input type="submit" class="button" name="submit" value="{$lang->update_poll}">
 </center>
-<input type="hidden" name="action" value="do_editpoll">
-<input type="hidden" name="pid" value="{$pid}">
+<input type="hidden" name="action" value="do_editpoll" />
+<input type="hidden" name="pid" value="{$pid}" />
 </form>
 {$footer}
 </body>
@@ -2983,10 +2983,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </body>
 </html>]]></template>
 		<template name="private_folders_folder" version="100.07"><![CDATA[<tr>
-<td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30"></td>
+<td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30" /></td>
 </tr>]]></template>
 		<template name="private_folders_folder_unremovable" version="100.07"><![CDATA[<tr>
-<td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}"> <span class="smalltext">({$foldername2} - {$lang->cannot_be_removed})</span>
+<td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" /><span class="smalltext">({$foldername2} - {$lang->cannot_be_removed})</span>
 </td>
 </tr>]]></template>
 		<template name="showteam_usergroup_user" version="100.07"><![CDATA[<tr>
@@ -3013,9 +3013,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->delete_posts}"></center>
-<input type="hidden" name="action" value="do_multideleteposts">
-<input type="hidden" name="tid" value="{$tid}">
-<input type="hidden" name="posts" value="{$inlineids}">
+<input type="hidden" name="action" value="do_multideleteposts" />
+<input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="posts" value="{$inlineids}" />
 </form>
 {$footer}
 </body>
@@ -3088,7 +3088,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <body>
 {$header}
 <form action="private.php" method="post">
-<input type="hidden" name="action" value="do_tracking">
+<input type="hidden" name="action" value="do_tracking" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -3153,8 +3153,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->update_notes}" tabindex="2"></center>
-<input type="hidden" name="action" value="do_threadnotes">
-<input type="hidden" name="tid" value="{$tid}">
+<input type="hidden" name="action" value="do_threadnotes" />
+<input type="hidden" name="tid" value="{$tid}" />
 <br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -3277,7 +3277,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1" width="35%"><a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$denyreceipt}</td>
 <td align="center" class="trow2">{$tofromusername}</td>
 <td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">{$senddate} {$sendtime}</span></td>
-<td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="yes"></td>
+<td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="yes" /></td>
 </tr>]]></template>
 		<template name="private_nomessages" version="100.07"><![CDATA[<tr>
 <td colspan="6" class="trow1">{$lang->nomessages}</td>
@@ -3396,7 +3396,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tcat" align="center" width="35%"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" width="30%" nowrap="nowrap"><span class="smalltext"><strong>{$sender}</strong></span></td>
 <td class="tcat" align="right"  width="20%" nowrap="nowrap"><span class="smalltext"><strong>{$lang->date_sent}</strong></span></td>
-<td class="tcat" align="center" width="5%" nowrap="nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="Check All" onClick="MyBB.checkAll(this.form)"></span></td>
+<td class="tcat" align="center" width="5%" nowrap="nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="Check All" onClick="MyBB.checkAll(this.form)" /></span></td>
 </tr>
 {$messagelist}
 <tr>
@@ -3419,7 +3419,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 </table>
-<input type="hidden" name="action" value="do_stuff">
+<input type="hidden" name="action" value="do_stuff" />
 </form>
 {$footer}
 </body>
@@ -3502,7 +3502,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="forumdisplay_threadlist_clearpass" version="100.07"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}">{$lang->clear_stored_password}</a>]]></template>
 		<template name="portal_welcome_guesttext" version="100.07"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}<br />
 <br />
-<form method="post" action="{$PHP_SELF}"><input type="hidden" name="action" value="do_login">
+<form method="post" action="{$PHP_SELF}"><input type="hidden" name="action" value="do_login" />
 {$lang->username}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
 {$lang->password}<br />&nbsp;&nbsp;<input type="password" class="textbox" name="password" value="" /><br />
 <br /><input type="submit" class="button" name="loginsubmit" value="{$lang->login}" /></form>]]></template>
@@ -3521,7 +3521,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </head>
 <body>
 {$header}
-<form method=post action="search.php"><input type="hidden" name="action" value="do_search">
+<form method=post action="search.php"><input type="hidden" name="action" value="do_search" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$settings['bbname']} - {$lang->search}</strong></td>
@@ -3533,16 +3533,16 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="trow1">
 <table><tr>
-<td valign="top"><input type="text" class="textbox" name="keywords" size="35" maxlength="250"></td>
+<td valign="top"><input type="text" class="textbox" name="keywords" size="35" maxlength="250" /></td>
 </tr>
 <tr>
 <td>
-<span class="smalltext"><input type="radio" class="radio" name="postthread" value="1" checked> {$lang->search_entire_post}<br /><input type="radio" class="radio" name="postthread" value="2"> {$lang->search_titles_only}</span></td>
+<span class="smalltext"><input type="radio" class="radio" name="postthread" value="1" checked="checked" />{$lang->search_entire_post}<br /><input type="radio" class="radio" name="postthread" value="2" />{$lang->search_titles_only}</span></td>
 </tr></table>
 </td>
 <td class="trow1">
 <table><tr>
-<td class="trow1"><input type="text" class="textbox" name="author" size="35" maxlength="{$settings['maxnamelength']}"><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked>&nbsp; {$lang->match_username}</span></td>
+<td class="trow1"><input type="text" class="textbox" name="author" size="35" maxlength="{$settings['maxnamelength']}" /><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked>&nbsp; {$lang->match_username}</span></td>
 <td class="trow1">&nbsp;</td>
 </tr></table>
 </td>
@@ -3557,7 +3557,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <select name="findthreadst">
 <option value="1">{$lang->threads_at_least}</option>
 <option value="2">{$lang->threads_at_most}</option>
-</select> <input type="text" class="textbox" name="numreplies" size="2" maxlength="4"> {$lang->replies2}<br />
+</select> <input type="text" class="textbox" name="numreplies" size="2" maxlength="4" />{$lang->replies2}<br />
 <br />
 <select name="postdate">
 <option value="0">{$lang->find_anydate}</option>
@@ -3568,7 +3568,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <option value="90">{$lang->find_3months}</option>
 <option value="180">{$lang->find_6months}</option>
 <option value="365">{$lang->find_year}</option>
-</select>&nbsp;&nbsp; <input type="radio" class="radio" name="pddir" value="1" checked> {$lang->and_newer}  <input type="radio" class="radio" name="pddir" value="0"> {$lang->and_older}
+</select>&nbsp;&nbsp; <input type="radio" class="radio" name="pddir" value="1" checked="checked" />{$lang->and_newer}  <input type="radio" class="radio" name="pddir" value="0" />{$lang->and_older}
 </td>
 </tr>
 <tr>
@@ -3580,14 +3580,14 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <option value="lastpost">{$lang->sort_lastpost}</option>
 <option value="starter">{$lang->sort_author}</option>
 <option value="forum">{$lang->sort_forum}</option>
-</select> {$lang->sort_in} <input type="radio" class="radio" name="sorder" value="asc"> {$lang->sort_asc} <input type="radio" class="radio" name="sorder" value="desc" checked> {$lang->sort_desc} {$lang->sort_order}
+</select> {$lang->sort_in} <input type="radio" class="radio" name="sorder" value="asc" />{$lang->sort_asc} <input type="radio" class="radio" name="sorder" value="desc" checked="checked" />{$lang->sort_desc} {$lang->sort_order}
 </td>
 </tr>
 <tr>
 <td class="tcat"><strong>{$lang->display_options}</td>
 </tr>
 <tr>
-<td class="trow1">{$lang->show_results_as} <input type="radio" class="radio" name="showresults" value="threads" checked> {$lang->show_results_threads} <input type="radio" class="radio" name="showresults" value="posts"> {$lang->show_results_posts}</td>
+<td class="trow1">{$lang->show_results_as} <input type="radio" class="radio" name="showresults" value="threads" checked="checked" />{$lang->show_results_threads} <input type="radio" class="radio" name="showresults" value="posts" />{$lang->show_results_posts}</td>
 </tr>
 </td>
 </table>
@@ -3734,8 +3734,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <strong>{$lang->poll}</strong><br /><span class="smalltext">{$lang->poll_desc}</span>
 </td>
 <td class="{$bgcolor}" valign="top">
-<span class="smalltext"><input type="checkbox" class="checkbox" name="postpoll" value="yes" {$postpollchecked}> <strong>{$lang->poll_check}</strong><br />
-{$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10"> {$lang->max_options}</span>
+<span class="smalltext"><input type="checkbox" class="checkbox" name="postpoll" value="yes" {$postpollchecked} /><strong>{$lang->poll_check}</strong><br />
+{$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" />{$lang->max_options}</span>
 </td>
 </tr>]]></template>
 		<template name="moderation_reports" version="100.07"><![CDATA[<html>
@@ -3798,16 +3798,16 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->username}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="username" size="25" maxlength="{$settings['maxnamelength']}"></td>
+<td class="trow1"><input type="text" class="textbox" name="username" size="25" maxlength="{$settings['maxnamelength']}" /></td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->password}</strong><br /><span class="smalltext">{$lang->pw_note}</span></td>
-<td class="trow2"><input type="password" class="textbox" name="password" size="25"> (<a href="member.php?action=lostpw">{$lang->lostpw_note}</a>)</td>
+<td class="trow2"><input type="password" class="textbox" name="password" size="25" />(<a href="member.php?action=lostpw">{$lang->lostpw_note}</a>)</td>
 </tr>
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->login}"></center>
-<input type="hidden" name="action" value="do_login">
+<input type="hidden" name="action" value="do_login" />
 <input type="hidden" name="url" value="{$redirect_url}" />
 </form>
 {$footer}
@@ -4008,8 +4008,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->delete_thread}"></center>
-<input type="hidden" name="action" value="do_deletethread">
-<input type="hidden" name="tid" value="{$tid}">
+<input type="hidden" name="action" value="do_deletethread" />
+<input type="hidden" name="tid" value="{$tid}" />
 </form>
 {$footer}
 </body>
@@ -4105,8 +4105,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->merge_posts}"></center>
-<input type="hidden" name="action" value="do_mergeposts">
-<input type="hidden" name="tid" value="{$tid}">
+<input type="hidden" name="action" value="do_mergeposts" />
+<input type="hidden" name="tid" value="{$tid}" />
 </form>
 {$footer}
 </body>
@@ -4115,7 +4115,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->posted_by} {$post['username']} - {$postdate} {$posttime}</strong></span></td>
 </tr>
 <tr>
-<td class="{$altbg}" valign="top" align="center" width="1"><input type="checkbox" class="checkbox" name="mergepost[{$post['pid']}]" value="yes"></td>
+<td class="{$altbg}" valign="top" align="center" width="1"><input type="checkbox" class="checkbox" name="mergepost[{$post['pid']}]" value="yes" /></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
 		<template name="stats" version="100.07"><![CDATA[<html>
@@ -4194,7 +4194,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->question}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="question" size="40" maxlength="240" value="{$question}"></td>
+<td class="trow2"><input type="text" class="textbox" name="question" size="40" maxlength="240" value="{$question}" /></td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$settings['maxpolloptions']}</span></td>
@@ -4218,13 +4218,13 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</td>
-<td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}"> {$lang->days}</td>
+<td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}" />{$lang->days}</td>
 </tr>
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->post_new_poll}"></center>
-<input type="hidden" name="action" value="do_newpoll">
-<input type="hidden" name="tid" value="{$tid}">
+<input type="hidden" name="action" value="do_newpoll" />
+<input type="hidden" name="tid" value="{$tid}" />
 </form>
 {$footer}
 </body>
@@ -4255,7 +4255,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 
 <br />
 <center>
-<input type="hidden" name="action" value="register">
+<input type="hidden" name="action" value="register" />
 <input type="submit" class="button" name="agree" value="{$lang->i_agree}">
 </center>
 </form>
@@ -4524,23 +4524,23 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="2"><strong>{$lang->current_password}</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" class="textbox" name="oldpassword" size="25"></td>
+<td class="trow1" colspan="2" align="center"><input type="password" class="textbox" name="oldpassword" size="25" /></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->please_enter_confirm_new_password}</strong></td>
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_password}</strong></td>
-<td class="trow2" width="60%"><input type="password" class="textbox" name="password" size="25"></td>
+<td class="trow2" width="60%"><input type="password" class="textbox" name="password" size="25" /></td>
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->confirm_password}</strong></td>
-<td class="trow1" width="60%"><input type="password" class="textbox" name="password2" size="25"></td>
+<td class="trow1" width="60%"><input type="password" class="textbox" name="password2" size="25" /></td>
 </tr>
 </table>
 <br />
 <div align="center">
-<input type="hidden" name="action" value="do_password">
+<input type="hidden" name="action" value="do_password" />
 <input type="submit" class="button" name="submit" value="{$lang->update_password}">
 </div>
 </td>
@@ -4570,23 +4570,23 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="2"><strong>{$lang->enter_password}</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" class="textbox" name="password" size="25"></td>
+<td class="trow1" colspan="2" align="center"><input type="password" class="textbox" name="password" size="25" /></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->please_enter_confirm_new_email}</strong></td>
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_email}</strong></td>
-<td class="trow2" width="60%"><input type="email" name="email" size="25" maxlength="150"></td>
+<td class="trow2" width="60%"><input type="email" name="email" size="25" maxlength="150" /></td>
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->confirm_email}</strong></td>
-<td class="trow1" width="60%"><input type="text" class="textbox" name="email2" size="25" maxlength="100"></td>
+<td class="trow1" width="60%"><input type="text" class="textbox" name="email2" size="25" maxlength="100" /></td>
 </tr>
 </table>
 <br />
 <div align="center">
-<input type="hidden" name="action" value="do_email">
+<input type="hidden" name="action" value="do_email" />
 <input type="submit" class="button" name="submit" value="{$lang->update_email}">
 </div>
 </td>
@@ -4695,8 +4695,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<td class="trow1" style="padding: 20px">
 			<strong>{$vote_title}</strong><br /><br />
 			<form action="reputation.php" method="post">
-				<input type="hidden" name="action" value="do_add">
-				<input type="hidden" name="uid" value="{$user['uid']}">
+				<input type="hidden" name="action" value="do_add" />
+				<input type="hidden" name="uid" value="{$user['uid']}" />
 				{$positive_power}
 				{$neutral_power}
 				{$negative_power}
@@ -4851,11 +4851,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="loginbox" version="100.07"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->username}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="username" size="30" value="{$username}"></td>
+<td class="trow2"><input type="text" class="textbox" name="username" size="30" value="{$username}" /></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->password}</strong></td>
-<td class="trow1"><input type="password" class="textbox" name="password" size="30" value="{$password}"></td>
+<td class="trow1"><input type="password" class="textbox" name="password" size="30" value="{$password}" /></td>
 </tr>
 
 ]]></template>
@@ -4871,16 +4871,16 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2">{$readmessage['subject']}</td>
 <td class="trow1"><a href="member.php?action=profile&amp;uid={$readmessage['toid']}">{$readmessage['tousername']}</a></td>
 <td class="trow2" align="right"><span class="smalltext">{$readdate}<br />{$readtime}</span></td>
-<td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="yes"></td>
+<td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="yes" /></td>
 </tr>]]></template>
 		<template name="private_tracking_unreadmessage" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="{$theme['imgdir']}/new_pm.gif" border="0" alt="" /></td>
 <td class="trow2">{$unreadmessage['subject']}</td>
 <td class="trow1"><a href="member.php?action=profile&amp;uid={$unreadmessage['toid']}">{$unreadmessage['tousername']}</a></td>
 <td class="trow2" align="right"><span class="smalltext">{$senddate}<br />{$sendtime}</span></td>
-<td class="trow1"><input type="checkbox" class="checkbox" name="unreadcheck[{$unreadmessage['pmid']}]" value="yes"></td>
+<td class="trow1"><input type="checkbox" class="checkbox" name="unreadcheck[{$unreadmessage['pmid']}]" value="yes" /></td>
 </tr>]]></template>
-		<template name="usercp_editlists_user" version="100.07"><![CDATA[<input type="text" class="textbox" name="listuser[{$uid}]" size="25" value="{$username}"><br />]]></template>
+		<template name="usercp_editlists_user" version="100.07"><![CDATA[<input type="text" class="textbox" name="listuser[{$uid}]" size="25" value="{$username}" /><br />]]></template>
 		<template name="showthread_threadedbox" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -4930,8 +4930,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="newreply_modoptions" version="100.07"><![CDATA[<tr>
 <td class="{$bgcolor}" valign="top"><strong>{$lang->mod_options}</strong></td>
 <td class="{$bgcolor}"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="yes" {$closecheck}> {$lang->close_thread}</label><br />
-<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="yes" {$stickycheck}> {$lang->stick_thread}</label>
+<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="yes" {$closecheck} />{$lang->close_thread}</label><br />
+<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="yes" {$stickycheck} />{$lang->stick_thread}</label>
 </span></td>
 </tr>]]></template>
 		<template name="smilieinsert_getmore" version="100.07"><![CDATA[<tr>
@@ -5133,9 +5133,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="polls_editpoll_option" version="100.07"><![CDATA[<tr>
 <td class="trow">{$lang->option} {$counter}:</td>
-<td class="trow"><input type="text" class="textbox" name="options[{$counter}]" value="{$option}"></td>
+<td class="trow"><input type="text" class="textbox" name="options[{$counter}]" value="{$option}" /></td>
 <td class="trow">{$lang->votes}</td>
-<td class="trow"><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}"></td>
+<td class="trow"><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}" /></td>
 </tr>]]></template>
 		<template name="member_resetpassword" version="100.07"><![CDATA[<html>
 <head>
@@ -5152,15 +5152,15 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow1" width="30%"><strong>{$lang->username}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="username" value="{$user['username']}"></td>
+<td class="trow1"><input type="text" class="textbox" name="username" value="{$user['username']}" /></td>
 </tr>
 <tr>
 <td class="trow1" width="30%"><strong>{$lang->activation_code}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="code" value="{$code}"></td>
+<td class="trow1"><input type="text" class="textbox" name="code" value="{$code}" /></td>
 </tr>
 </table>
 <br />
-<center><input type="hidden" name="action" value="activate"><input type="submit" class="button" name="regsubmit" value="{$lang->send_password}">  </center>
+<center><input type="hidden" name="action" value="activate" /><input type="submit" class="button" name="regsubmit" value="{$lang->send_password}">  </center>
 </form>
 {$footer}
 </body>
@@ -5195,7 +5195,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->email_address}</strong></td>
-<td class="trow1" width="60%"><input type="text" class="textbox" name="email"></td>
+<td class="trow1" width="60%"><input type="text" class="textbox" name="email" /></td>
 </tr>
 </table>
 <br />
@@ -5223,12 +5223,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_username}</strong></td>
-<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$settings['maxnamelength']}" value="{$mybbuser['username']}"></td>
+<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$settings['maxnamelength']}" value="{$mybbuser['username']}" /></td>
 </tr>
 </table>
 <br />
 <div align="center">
-<input type="hidden" name="action" value="do_changename">
+<input type="hidden" name="action" value="do_changename" />
 <input type="submit" class="button" name="submit" value="{$lang->update_username}">
 </div>
 </td>
@@ -5242,7 +5242,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->posted_by} {$post['username']} - {$postdate} {$posttime}</strong></span></td>
 </tr>
 <tr>
-<td class="{$altbg}" valign="top" align="center"><input type="checkbox" class="checkbox" name="splitpost[{$post['pid']}]" value="yes"></td>
+<td class="{$altbg}" valign="top" align="center"><input type="checkbox" class="checkbox" name="splitpost[{$post['pid']}]" value="yes" /></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
 		<template name="newreply_threadreview_more" version="100.07"><![CDATA[<tr>
@@ -5280,7 +5280,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->posted_by} {$post['username']} - {$postdate} {$posttime}</strong></span></td>
 </tr>
 <tr>
-<td class="{$altbg}" valign="top" align="center"><input type="checkbox" class="checkbox" name="deletepost[{$post['pid']}]" value="yes"></td>
+<td class="{$altbg}" valign="top" align="center"><input type="checkbox" class="checkbox" name="deletepost[{$post['pid']}]" value="yes" /></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
 		<template name="moderation_deleteposts" version="100.07"><![CDATA[<html>
@@ -5299,8 +5299,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->delete_selected_posts}"></center>
-<input type="hidden" name="action" value="do_deleteposts">
-<input type="hidden" name="tid" value="{$tid}">
+<input type="hidden" name="action" value="do_deleteposts" />
+<input type="hidden" name="tid" value="{$tid}" />
 </form>
 {$footer}
 </body>
@@ -5323,7 +5323,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->new_subject}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="newsubject" value="[split] {$thread['subject']}" size="50"></td>
+<td class="trow2"><input type="text" class="textbox" name="newsubject" value="[split] {$thread['subject']}" size="50" /></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->new_forum}</strong></td>
@@ -5339,8 +5339,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->split_thread}"></center>
-<input type="hidden" name="action" value="do_split">
-<input type="hidden" name="tid" value="{$tid}">
+<input type="hidden" name="action" value="do_split" />
+<input type="hidden" name="tid" value="{$tid}" />
 </form>
 {$footer}
 </body>
@@ -5516,19 +5516,19 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <li>{$lang->error_nopermission_guest_4}</li>
 </ol>
 <form action="member.php" method="post">
-<input type="hidden" name="action" value="do_login">
-<input type="hidden" name="url" value="{$url}">
+<input type="hidden" name="action" value="do_login" />
+<input type="hidden" name="url" value="{$url}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><span class="smalltext"><strong>{$lang->login}</strong></span></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->username}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="username"></td>
+<td class="trow1"><input type="text" class="textbox" name="username" /></td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->password}</strong></td>
-<td class="trow2"><input type="password" class="textbox" name="password"></td>
+<td class="trow2"><input type="password" class="textbox" name="password" /></td>
 </tr>
 <tr>
 <td class="trow2" colspan="2"><span class="smalltext" style="float:right; padding-top:3px;"><a href="member.php?action=register">{$lang->need_reg}</a> | <a href="member.php?action=lostpw">{$lang->forgot_password}</a>&nbsp;</span>&nbsp;<input type="submit" class="button" value="{$lang->login}"></td>
@@ -5583,7 +5583,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 <br />
 <div align="center">
-<input type="hidden" name="action" value="do_folders">
+<input type="hidden" name="action" value="do_folders" />
 <input type="submit" class="button" name="submit" value="{$lang->update_folders}">
 </div>
 </td>
@@ -5620,16 +5620,16 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->method}</strong></td>
 <td class="trow2">
-<label><input type="radio" class="radio" name="method" value="move"> {$lang->method_move}</label><br />
-<label><input type="radio" class="radio" name="method" value="redirect" checked> {$lang->method_move_redirect}</label><br />
-<label><input type="radio" class="radio" name="method" value="copy"> {$lang->method_copy}</label><br />
+<label><input type="radio" class="radio" name="method" value="move" />{$lang->method_move}</label><br />
+<label><input type="radio" class="radio" name="method" value="redirect" checked="checked" />{$lang->method_move_redirect}</label><br />
+<label><input type="radio" class="radio" name="method" value="copy" />{$lang->method_copy}</label><br />
 </td>
 </tr>
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->move_copy_thread}"></center>
-<input type="hidden" name="action" value="do_move">
-<input type="hidden" name="tid" value="{$tid}">
+<input type="hidden" name="action" value="do_move" />
+<input type="hidden" name="tid" value="{$tid}" />
 </form>
 {$footer}
 </body>
@@ -5649,18 +5649,18 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->new_subject}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="subject" value="{$thread['subject']}" size="40"></td>
+<td class="trow2"><input type="text" class="textbox" name="subject" value="{$thread['subject']}" size="40" /></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->thread_to_merge_with}</strong><br /><span class="smalltext">{$lang->merge_with_note}</span></td>
-<td class="trow1" width="60%"><input type="text" class="textbox" name="threadurl" size="40">
+<td class="trow1" width="60%"><input type="text" class="textbox" name="threadurl" size="40" />
 </td>
 </tr>
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->merge_threads}"></center>
-<input type="hidden" name="action" value="do_merge">
-<input type="hidden" name="tid" value="{$tid}">
+<input type="hidden" name="action" value="do_merge" />
+<input type="hidden" name="tid" value="{$tid}" />
 </form>
 {$footer}
 </body>
@@ -5684,14 +5684,14 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </td>]]></template>
 		<template name="polls_newpoll_option" version="100.07"><![CDATA[<tr>
 <td class="trow">{$lang->option} {$i}:</td>
-<td class="trow"><input type="text" class="textbox" name="options[{$i}]" value="{$option}" width="250"></td>
+<td class="trow"><input type="text" class="textbox" name="options[{$i}]" value="{$option}" width="250" /></td>
 </tr>]]></template>
 		<template name="showthread_poll_option_multiple" version="100.07"><![CDATA[<tr>
-<td class="trow1" width="5%"><input type="checkbox" class="checkbox" name="option[{$number}]" value="yes"></td>
+<td class="trow1" width="5%"><input type="checkbox" class="checkbox" name="option[{$number}]" value="yes" /></td>
 <td class="trow2" colspan="3">{$option}</td>
 </tr>]]></template>
 		<template name="showthread_poll_option" version="100.07"><![CDATA[<tr>
-<td class="trow1" width="5%"><input type="radio" class="radio" name="option" value="{$number}"></td>
+<td class="trow1" width="5%"><input type="radio" class="radio" name="option" value="{$number}" /></td>
 <td class="trow1" colspan="3">{$option}</td>
 </tr>]]></template>
 		<template name="member_activate" version="100.07"><![CDATA[<html>
@@ -5709,15 +5709,15 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td class="trow1" width="30%"><strong>{$lang->username}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="username" value="{$user['username']}"></td>
+<td class="trow1"><input type="text" class="textbox" name="username" value="{$user['username']}" /></td>
 </tr>
 <tr>
 <td class="trow1" width="30%"><strong>{$lang->activation_code}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="code" value="{$code}"></td>
+<td class="trow1"><input type="text" class="textbox" name="code" value="{$code}" /></td>
 </tr>
 </table>
 <br />
-<center><input type="hidden" name="action" value="activate"><input type="submit" class="button" name="regsubmit" value="{$lang->activate_account}">  </center>
+<center><input type="hidden" name="action" value="activate" /><input type="submit" class="button" name="regsubmit" value="{$lang->activate_account}">  </center>
 </form>
 {$footer}
 </body>
@@ -5767,8 +5767,8 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 <br />
 <center>
-<input type="hidden" name="action" value="do_editlists">
-<input type="hidden" name="list" value="buddy">
+<input type="hidden" name="action" value="do_editlists" />
+<input type="hidden" name="list" value="buddy" />
 <input type="submit" class="button" name="submit" value="{$lang->update_buddy_list}">
 </center>
 </form>
@@ -5791,8 +5791,8 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 <br />
 <center>
-<input type="hidden" name="action" value="do_editlists">
-<input type="hidden" name="list" value="ignore">
+<input type="hidden" name="action" value="do_editlists" />
+<input type="hidden" name="list" value="ignore" />
 <input type="submit" class="button" name="submit" value="{$lang->update_ignore_list}">
 </center>
 </form>
@@ -6058,7 +6058,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="private_empty_folder" version="100.07"><![CDATA[<tr>
 <td class="trow1"><strong>{$foldername}</strong></td>
 <td class="trow1" align="center">{$foldercount}</td>
-<td class="trow1" align="center"><input type="checkbox" class="checkbox" name="empty[{$fid}]" value="yes"></td>
+<td class="trow1" align="center"><input type="checkbox" class="checkbox" name="empty[{$fid}]" value="yes" /></td>
 </tr>]]></template>
 		<template name="misc_imcenter_msn" version="100.07"><![CDATA[<html>
 <head>
@@ -6141,7 +6141,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->email_address}</strong></td>
-<td class="trow1" width="60%"><input type="text" class="textbox" name="email"></td>
+<td class="trow1" width="60%"><input type="text" class="textbox" name="email" /></td>
 </tr>
 </table>
 <br />
@@ -6175,9 +6175,9 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->delete_threads}"></center>
-<input type="hidden" name="action" value="do_multideletethreads">
-<input type="hidden" name="fid" value="{$fid}">
-<input type="hidden" name="threads" value="{$inlineids}">
+<input type="hidden" name="action" value="do_multideletethreads" />
+<input type="hidden" name="fid" value="{$fid}" />
+<input type="hidden" name="threads" value="{$inlineids}" />
 </form>
 {$footer}
 </body>
@@ -6203,9 +6203,9 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->move_threads}"></center>
-<input type="hidden" name="action" value="do_multimovethreads">
-<input type="hidden" name="fid" value="{$fid}">
-<input type="hidden" name="threads" value="{$inlineids}">
+<input type="hidden" name="action" value="do_multimovethreads" />
+<input type="hidden" name="fid" value="{$fid}" />
+<input type="hidden" name="threads" value="{$inlineids}" />
 </form>
 {$footer}
 </body>
@@ -6231,9 +6231,9 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->merge_posts}"></center>
-<input type="hidden" name="action" value="do_multimergeposts">
-<input type="hidden" name="tid" value="{$tid}">
-<input type="hidden" name="posts" value="{$inlineids}">
+<input type="hidden" name="action" value="do_multimergeposts" />
+<input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="posts" value="{$inlineids}" />
 </form>
 {$footer}
 </body>
@@ -6256,7 +6256,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->new_subject}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="newsubject" value="[split] {$thread['subject']}" size="50"></td>
+<td class="trow2"><input type="text" class="textbox" name="newsubject" value="[split] {$thread['subject']}" size="50" /></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->new_forum}</strong></td>
@@ -6265,9 +6265,9 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->split_thread}"></center>
-<input type="hidden" name="action" value="do_multisplitposts">
-<input type="hidden" name="tid" value="{$tid}">
-<input type="hidden" name="posts" value="{$inlineids}">
+<input type="hidden" name="action" value="do_multisplitposts" />
+<input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="posts" value="{$inlineids}" />
 </form>
 {$footer}
 </body>
@@ -6402,7 +6402,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 <br />
 <center>
-<input type="hidden" name="action" value="do_register">
+<input type="hidden" name="action" value="do_register" />
 <input type="submit" class="button" name="regsubmit" value="{$lang->submit_registration}">
 </center>
 </form>
