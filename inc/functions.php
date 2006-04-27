@@ -615,33 +615,37 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		return $groupperms;
 	}
-	else // Okay, we'll do it the hard way because this forum must have some custom or inherited permissions
+	// Okay, we'll do it the hard way because this forum must have some custom or inherited permissions
+	
+	// The fix here for better working inheritance was provided by tinywizard - http://windizupdate.com/
+	// Many thanks.
+	foreach($fpermfields as $perm)
 	{
-		foreach($groups as $gid)
+		$forumpermissions[$perm] = "no";
+	}
+
+	foreach($groups as $gid)
+	{
+		if($gid && $groupscache[$gid])
 		{
-			if($gid && $groupscache[$gid])
-			{
-				if(!is_array($fpermcache[$fid][$gid]))
+			$p = is_array($fpermcache[$fid][$gid]) ? $fpermcache[$fid][$gid] : $groupperms;
+			if($p == NULL) {
+				foreach($forumpermissions as $k => $v)
 				{
-					continue;
+					$forumpermissions[$k] = 'yes';        // no inherited group, assume one has access
 				}
-				foreach($fpermcache[$fid][$gid] as $perm => $access)
+			}
+			else
+			{
+				foreach($p as $perm => $access)
 				{
-					if($perm != "fid" && $perm != "gid" && $perm != "pid")
+					if(isset($forumpermissions[$perm]) && $access == 'yes')
 					{
-						$permbit = $forumpermissions[$perm];
-						if($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit)
-						{
-							$forumpermissions[$perm] = $access;
-						}
+						$forumpermissions[$perm] = $access;
 					}
 				}
 			}
 		}
-	}
-	if(!isset($forumpermissions))
-	{
-		$forumpermissions = $groupperms;
 	}
 	return $forumpermissions;
 }

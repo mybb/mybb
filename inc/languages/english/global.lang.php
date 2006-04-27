@@ -262,4 +262,6 @@ $l['quickdelete_confirm'] = "Are you sure you want to delete this post?";
 $l['newpm_prompt'] = "You have received a new private message. Click OK to view it, or Cancel to hide this prompt.";
 $l['deleteevent_confirm'] = "Are you sure you want to delete this event?";
 $l['removeattach_confirm'] = "Are you sure you want to remove the selected attachment from this post?";
+
+$l['latest_threads'] = "Latest Threads";
 ?>

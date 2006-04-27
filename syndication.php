@@ -35,7 +35,7 @@ if($thread_limit > 50)
 }
 else if(!$thrad_limit)
 {
-	$thread_limit = 10;
+	$thread_limit = 20;
 }
 
 // Syndicate a specific forum or all viewable?
@@ -87,6 +87,12 @@ while($forum = $db->fetch_array($query))
 	$title .= $comma.$forum['name'];
 	$forumcache[$forum['fid']] = $forum;
 	$comma = ", ";
+}
+
+// If syndicating all forums then cut the title back to "All Forums"
+if(!empty($forumlist))
+{
+	$title = $mybb->settings['bbname']." - ".$lang->all_forums;
 }
 
 // Get the threads to syndicate.
