@@ -412,7 +412,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_options()
 	{
-		$options = $this->data['options'];
+		$options = &$this->data['options'];
 		
 		// Verify yes/no options.
 
