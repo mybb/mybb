@@ -306,7 +306,8 @@ else if($mybb->input['action'] == "edit_post")
 			"allow_html" => $forum['allowhtml'],
 			"allow_mycode" => $forum['allowmycode'],
 			"allow_smilies" => $forum['allowsmilies'],
-			"allow_imgcode" => $forum['allowimgcode']
+			"allow_imgcode" => $forum['allowimgcode'],
+			"me_username" => $post['username']
 		);
 		if($post['smilieoff'] == "yes")
 		{

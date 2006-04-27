@@ -57,7 +57,7 @@ $l['optional_info'] = "Optional Information";
 $l['account_prefs'] = "Account Preferences";
 $l['email_options'] = "Email Options";
 $l['search_results'] = "Search Results";
-$l['custom_profile_fields'] = "Custom Profiles are Like..";
+$l['custom_profile_fields'] = "Custom Profile Fields are Like..";
 
 $l['options'] = "Options";
 $l['display_options'] = "Display Options";
