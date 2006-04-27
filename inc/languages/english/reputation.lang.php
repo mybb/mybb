@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_reputation'] = "Reputation Report";
 $l['nav_profile'] = "Profile of {1}";
 $l['reputation_disabled'] = "You cannot use the reputation system as it has been disabled by the Administrator.";

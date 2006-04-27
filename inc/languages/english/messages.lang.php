@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['click_no_wait'] = "Click here if you don't want to wait any longer.";
 $l['redirect_mergeposts'] = "The selected posts have now been merged together. You will now be taken back to the thread.";
 $l['redirect_eventdeleted'] = "The event has successfully been deleted.<br />You will now be taken back to the calendar.";

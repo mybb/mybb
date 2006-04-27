@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_templates'] = "Template Manager";
 $l['nav_add_template'] = "New Template";
 $l['nav_edit_template'] = "Edit Template";

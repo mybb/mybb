@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_helpdocs'] = "Help Documents";
 $l['nav_add_helpdoc'] = "New Help Document";
 $l['nav_edit_helpdoc'] = "Edit Help Document";

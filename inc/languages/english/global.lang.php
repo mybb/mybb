@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['redirect_width'] = "50%";
 $l['lastvisit_never'] = "Never";
 

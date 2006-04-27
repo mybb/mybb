@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['post_thread'] = "Post Thread";
 $l['moderated_by'] = "Moderated By:";
 $l['nothreads'] = "Sorry but there are currently no threads in this forum with the specified date and time limiting options.";

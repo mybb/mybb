@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_moderate_threads'] = "Thread Moderation";
 $l['nav_moderate_posts'] = "Post Moderation";
 $l['nav_moderate_threadsposts'] = "Thread and Post Moderation";

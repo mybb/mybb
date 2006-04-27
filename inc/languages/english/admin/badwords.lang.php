@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_badwords'] = "Bad Word Filters";
 $l['nav_add_badword'] = "Add Bad Word Filter";
 $l['nav_edit_badword'] = "Edit Bad Word Filter";

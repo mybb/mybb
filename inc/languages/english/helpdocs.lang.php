@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 // Help Document 1
 $l['d1_name'] = "User Registration";
 $l['d1_desc'] = "Perks and privileges to user registration.";

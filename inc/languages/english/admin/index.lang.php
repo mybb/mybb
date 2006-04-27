@@ -1,4 +1,10 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
 
 $l['admin_center'] = "MyBB Admin Center";
 $l['cp_home'] = "Control Panel Home";

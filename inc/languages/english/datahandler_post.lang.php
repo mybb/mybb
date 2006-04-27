@@ -1,12 +1,9 @@
 <?php
 /**
- * MyBB 1.0
- * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
- *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/eula.html
- *
- * $Id:$
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
  */
 
 $l['postdata_invalid_user_id'] = 'The user id does not exist. Please supply a valid user id.';

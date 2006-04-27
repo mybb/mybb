@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_admin_permissions'] = "Administrator Permissions";
 $l['nav_admin_prefs'] = "Administrator Preferences";
 $l['nav_edit_permissions'] = "Edit Permissions for {1}";

@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_announcements'] = "Forum Announcements";
 $l['nav_edit_announcement'] = "Edit Announcement '{1}'";
 $l['nav_delete_announcement'] = "Delete Announcement";

@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_usercp'] = "User Control Panel";
 $l['nav_profile'] = "Edit Profile";
 $l['nav_options'] = "Edit Options";

@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_themes'] = "Theme Manager";
 $l['nav_add_theme'] = "New Theme";
 $l['nav_edit_theme'] = "Edit Theme";

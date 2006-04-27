@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_languages'] = "Translation Manager";
 $l['nav_editing_file'] = "Editing File {1}";
 $l['nav_editing_set'] = "Editing Language Set Properties";

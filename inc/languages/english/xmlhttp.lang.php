@@ -1,4 +1,10 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
 
 $l['missing_new_subject'] = 'You did not enter a new subject.';
 $l['post_does_not_exist'] = 'The specified post does not exist.';

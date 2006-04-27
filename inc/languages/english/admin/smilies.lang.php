@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_smilies'] = "Smilie Manager";
 $l['nav_add_smilie'] = "New Smilie";
 $l['nav_edit_smilie'] = "Edit Smilie";

@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_attachment_manager'] = "Attachment Manager";
 $l['nav_attachment_results'] = "Search Results";
 $l['nav_attachment_stats'] = "Attachment Statistics";

@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['delete_poll'] = "Delete Poll";
 $l['close_thread'] = "Close Thread";
 $l['stick_thread'] = "Stick Thread";

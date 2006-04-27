@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2006 MyBulletinBoard Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
 $l['nav_pms'] = "Private Messages";
 $l['nav_send'] = "Compose";
 $l['nav_tracking'] = "Message Tracking";
