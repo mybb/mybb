@@ -489,7 +489,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachment['size'] = getfriendlysize($attachment['filesize']);
-			$attachment['icon'] = getattachicon(getextention($attachment['filename']));
+			$attachment['icon'] = getattachicon(getextension($attachment['filename']));
 			if($forum['allowmycode'] != "no")
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");

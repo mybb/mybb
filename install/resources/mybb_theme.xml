@@ -267,6 +267,14 @@ font-size: small;]]></extra>
 	width: 1%;
 }
 
+.float_left {
+	float: left;
+}
+
+.float_right {
+	float: right;
+}
+
 .menu ul {
 	list-style: none;
 	margin: 0;
@@ -660,14 +668,14 @@ var inlineId = {$tid};
 </head>
 <body>
 {$header}
+{$pollbox}
 <div style="float: right;">
 	{$newreply}{$newthread}
 </div>
 <div>
 	{$multipage}
 </div>
-{$pollbox}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
 <tr>
 <td class="thead" colspan="2">
 	<div style="float: right;">
@@ -4038,7 +4046,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="forumdisplay_thread" version="100.07"><![CDATA[<tr>
 <td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt="{$folder_label}" title="{$folder_label}" /></td>
 <td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
-<td class="{$bgcolor}">{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</td>
+<td class="{$bgcolor}">
+	{$attachment_count}
+	<div>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</div>
+</td>
 <td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
 <td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a>{$unapproved_posts}</td>
 <td align="center" class="{$bgcolor}">{$thread['views']}</td>
@@ -6499,5 +6510,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 </body>
 </html>]]></template>
+		<template name="forumdisplay_thread_attachment_count" version="100.07"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.gif" alt="" title="{$attachment_count}" /></div>]]></template>
 	</templates>
 </theme>

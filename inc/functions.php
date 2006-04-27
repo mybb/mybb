@@ -1068,7 +1068,17 @@ function updatethreadcount($tid)
 	{
 		$nounposts = 0;
 	}
+	// Update the attachment count for this thread
+	update_thread_attachment_count($tid);
 	$db->query("UPDATE ".TABLE_PREFIX."threads SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', replies='$treplies', unapprovedposts='$nounposts' WHERE tid='$tid'");
+}
+
+function update_thread_attachment_count($tid)
+{
+	global $db;
+	$query = $db->query("SELECT COUNT(*) AS attachment_count FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid) WHERE p.tid='$tid'");
+	$attachment_count = $db->fetch_field($query, "attachment_count");
+	$db->query("UPDATE ".TABLE_PREFIX."threads SET attachmentcount='{$attachment_count}' WHERE tid='$tid'");
 }
 
 function deletethread($tid)
@@ -1718,34 +1728,16 @@ function pageheaders()
 
 function getthread($tid)
 {
-	global $tcache, $db;
-	if(!$tcache[$tid])
-	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
-		$tcache[$tid] = $db->fetch_array($query);
-	}
-	return $tcache[$tid];
+	die("<strong>Error:</strong> getthread is deprecated. Please use get_thread");
 }
 
 function getpost($pid)
 {
-	global $pcache, $db;
-	if(!$pcache[$pid])
-	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
-		$pcache[$pid] = $db->fetch_array($query);
-	}
-	return $pcache[$pid];
+	die("<strong>Error:</strong> getpost is deprecated. Please use get_post");
 }
 function getforum($fid)
 {
-	global $fcache, $db;
-	if(!$fcache[$fid])
-	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
-		$fcache[$fid] = $db->fetch_array($query);
-	}
-	return $fcache[$fid];
+	die("<strong>Error:</strong> getforum is deprecated. Please use get_forum");
 }
 
 function markreports($id, $type="post")

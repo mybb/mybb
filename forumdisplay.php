@@ -733,7 +733,8 @@ if($threadcache)
 
 		$moved = explode("|", $thread['closed']);
 
-		if($moved[0] == "moved") {
+		if($moved[0] == "moved")
+		{
 			$prefix = $lang->moved_prefix;
 			$thread['tid'] = $moved[1];
 			$thread['replies'] = "-";
@@ -760,6 +761,24 @@ if($threadcache)
 		else
 		{
 			$unapproved_posts = '';
+		}
+		
+		// If this thread has 1 or more attachments show the papperclip
+		if($thread['attachmentcount'] > 0)
+		{
+			if($thread['attachmentcount'] > 1)
+			{
+				$attachment_count = sprintf($lang->attachment_count_multiple, $thread['attachmentcount']);
+			}
+			else
+			{
+				$attachment_count = $lang->attachment_count;
+			}
+			eval("\$attachment_count = \"".$templates->get("forumdisplay_thread_attachment_count")."\";");
+		}
+		else
+		{
+			$attachment_count = '';
 		}
 
 		eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");

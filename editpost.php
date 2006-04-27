@@ -130,33 +130,37 @@ else
 	}
 }
 
-// Password protected forums ......... yhummmmy!
+// Password protected forums
 checkpwforum($fid, $forum['password']);
 
-if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_editpost" && $mybb->input['submit'] && $_FILES['attachment']))) {
+if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_editpost" && $mybb->input['submit'] && $_FILES['attachment'])))
+{
 	// If there's an attachment, check it and upload it
-	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no") {
+	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
+	{
 		$attachedfile = upload_attachment($_FILES['attachment']);
 	}
-	if($attachedfile['error']) {
+	if($attachedfile['error'])
+	{
 		eval("\$attacherror = \"".$templates->get("error_attacherror")."\";");
 		$mybb->input['action'] = "editpost";
 	}
-	if(!$mybb->input['submit']) {
+	if(!$mybb->input['submit'])
+	{
 		$mybb->input['action'] = "editpost";
 	}
 }
-if($mybb->input['removeattachment']) { // Lets remove the attachmen
+if($mybb->input['removeattachment']) // Lets remove the attachment
+{
 	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['removeattachment']);
-	if(!$mybb->input['submit']) {
+	if(!$mybb->input['submit'])
+	{
 		$mybb->input['action'] = "editpost";
 	}
-//	die($removeattachment);
 }
 
 if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
-
 	$plugins->run_hooks("editpost_deletepost");
 
 	if($mybb->input['delete'] == "yes")
@@ -213,15 +217,15 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				$query = $db->query("
 					SELECT *
 					FROM ".TABLE_PREFIX."posts
-					WHERE tid='$tid' AND dateline <= '$post[dateline]'
+					WHERE tid='{$tid}' AND dateline <= '{$post['dateline']}'
 					ORDER BY dateline DESC
 					LIMIT 0, 1
 				");
 				$p = $db->fetch_array($query);
 				if($p['pid']) {
-					$redir = "showthread.php?tid=$tid&pid=$p[pid]#pid$p[pid]";
+					$redir = "showthread.php?tid={$tid}&pid={$p['pid']}#pid{$p['pid']}";
 				} else {
-					$redir = "showthread.php?tid=$tid";
+					$redir = "showthread.php?tid={$tid}";
 				}
 				redirect($redir, $lang->redirect_postdeleted);
 			}
@@ -233,7 +237,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 	}
 	else
 	{
-		redirect("showthread.php?tid=$tid", $lang->redirect_nodelete);
+		redirect("showthread.php?tid={$tid}", $lang->redirect_nodelete);
 	}
 }
 
@@ -371,7 +375,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachment['size'] = getfriendlysize($attachment['filesize']);
-			$attachment['icon'] = getattachicon(getextention($attachment['filename']));
+			$attachment['icon'] = getattachicon(getextension($attachment['filename']));
 			if($forum['allowmycode'] != "no")
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");

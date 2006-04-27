@@ -83,7 +83,7 @@ if($mybb->input['action'] == "")
 	{
 		while($file = readdir($dir))
 		{
-			$ext = getextention($file);
+			$ext = getextension($file);
 			if($ext == "php")
 			{
 				$plugins_list[] = $file;

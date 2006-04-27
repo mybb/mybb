@@ -140,7 +140,6 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 		require_once "./inc/functions_upload.php";
 		$attachedfile = upload_attachment($_FILES['attachment']);
 	}
-	print_r($attachedfile);
 	if($attachedfile['error'])
 	{
 		eval("\$attacherror = \"".$templates->get("error_attacherror")."\";");
@@ -455,7 +454,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachment['size'] = getfriendlysize($attachment['filesize']);
-			$attachment['icon'] = getattachicon(getextention($attachment['filename']));
+			$attachment['icon'] = getattachicon(getextension($attachment['filename']));
 			if($forum['allowmycode'] != "no")
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");

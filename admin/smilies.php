@@ -220,7 +220,7 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		if($file != ".." && $file != ".")
 		{
-			$ext = getextention($file);
+			$ext = getextension($file);
 			if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
 			{
 				if(!$asmilies["$path/$file"])
@@ -296,7 +296,7 @@ if($mybb->input['action'] == "addmultiple")
 		for($i=$start;$i<$end;$i++)
 		{
 			$file = $smilies[$i];
-			$ext = getextention($smilies[$i]);
+			$ext = getextension($smilies[$i]);
 			$find = str_replace(".".$ext, "", $file);
 			$name = ucfirst($find);
 			$bgcolor = getaltbg();

@@ -330,7 +330,7 @@ while($announcement = $db->fetch_array($query))
 			{ // There is an attachment thats visible!
 				$attachment['name'] = htmlspecialchars_uni($attachment['name']);
 				$attachment['filesize'] = getfriendlysize($attachment['filesize']);
-				$ext = getextention($attachment['filename']);
+				$ext = getextension($attachment['filename']);
 				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
 				{
 					$isimage = true;

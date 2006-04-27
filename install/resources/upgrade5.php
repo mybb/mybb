@@ -149,6 +149,8 @@ function upgrade5_dbchanges()
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP rating;");
 	
+	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD attachmentcount int(10) unsigned NOT NULL default '0'");
+	
 	echo "Done</p>";
 
 	$contents .= "Click next to continue with the upgrade process.</p>";

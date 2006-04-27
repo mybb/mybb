@@ -97,7 +97,7 @@ $plugins->run_hooks("attachment_end");
 
 if($mybb->input['thumbnail'])
 {
-	$ext = getextention($attachment['thumbnail']);
+	$ext = getextension($attachment['thumbnail']);
 	switch($ext)
 	{
 		case "gif":
@@ -126,7 +126,7 @@ if($mybb->input['thumbnail'])
 }
 else
 {
-	$ext = getextention($attachment['filename']);
+	$ext = getextension($attachment['filename']);
 	if($ext == "txt" || $ext == "htm" || $ext == "html")
 	{
 		header("Content-disposition: attachment; filename=$attachment[filename]");

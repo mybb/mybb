@@ -67,4 +67,6 @@ $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
 $l['icon_lock'] = " Locked thread.";
+$l['attachment_count'] = "This thread contains 1 attachment.";
+$l['attachment_count_multiple'] = "This thread contains {1} attachments.";
 ?>

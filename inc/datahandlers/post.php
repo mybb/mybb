@@ -587,7 +587,7 @@ class PostDataHandler extends DataHandler
 		{
 			$post['posthash'] = $db->escape_string($post['posthash']);
 			$attachmentassign = array(
-				"pid" => $post['pid']
+				"pid" => $pid
 			);
 			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='{$post['posthash']}'");
 		}
@@ -1140,6 +1140,8 @@ class PostDataHandler extends DataHandler
 		$plugins->run_hooks("datahandler_post_update");
 
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".intval($post['pid'])."'");
+		
+		update_thread_attachment_count($post['tid']);
 	}
 
 	/**

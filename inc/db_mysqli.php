@@ -402,15 +402,9 @@ class databaseEngine
 	 */
 	function shutdown_query($query, $name=0)
 	{
-		if($name)
-		{
-			$this->shutdown_queries[$name] = $query;
-		}
-		else
-		{
-			$this->shutdown_queries[] = $query;
-		}
+		$query = $this->query($query);
 	}
+	
 	/**
 	 * Performs a simple select query.
 	 *
