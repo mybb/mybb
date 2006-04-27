@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.0
- * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
+ * MyBB 1.2
+ * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -118,8 +118,6 @@ class DataHandler
 	 */
 	function get_friendly_errors()
 	{
-		global $lang;
-
 		// Prefix all the error codes with the language prefix.
 		foreach($this->errors as $error)
 		{
@@ -135,17 +133,7 @@ class DataHandler
 					}
 					$arg_info .= ")";
 				}
-
-				// Get the language string for this particular error.
-				if(empty($this->language_prefix))
-				{
-					$errors[] = "Missing language string: ".$error['error_code'].$arg_info;
-				}
-				else
-				{
-					$errors[] = "Missing language string: ".$this->language_prefix.'_'.$error['error_code'].$arg_info;
-				}
-
+				$errors[] = "Missing lang string: ".$this->language_prefix.$error['error_code'].$arg_info;
 				$arg_info = '';
 				continue;
 			}

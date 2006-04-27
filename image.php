@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.0
- * Copyright © 2005 MyBulletinBoard Group, All Rights Reserved
+ * MyBB 1.2
+ * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
