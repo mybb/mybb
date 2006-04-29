@@ -63,4 +63,12 @@ $l['syndication_limit'] = "Limit:";
 $l['syndication_limit_desc'] = "The amount of threads to download at one time. Not recommended to be beyond 50.";
 $l['syndication_threads_time'] = "threads at a time";
 $l['syndicate_all_forums'] = "Syndicate All Forums";
+
+$l['redirect_markforumread'] = "The selected forum has been marked as read.";
+$l['redirect_markforumsread'] = "All the forums have been marked as read.";
+$l['redirect_forumpasscleared'] = "The stored password for this forum has been cleared.";
+$l['redirect_cookiescleared'] = "All cookies have been cleared.";
+
+$l['error_invalidimtype'] = "This user does not have a {1} instant messenger account specified in their profile.";
+$l['error_invalidhelpdoc'] = "The specified help document does not appear to exist.";
 ?>

@@ -12,6 +12,8 @@
 $templatelist = '';
 require "./global.php";
 
+$lang->load("ratethread");
+
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
 $thread = $db->fetch_array($query);
 if(!$thread['tid'])

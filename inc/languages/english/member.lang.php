@@ -127,4 +127,32 @@ $l['admin_ban_in_acp'] = "Ban this user in Admin CP";
 $l['reputation'] = "Reputation:";
 $l['reputation_vote'] = "Vote";
 $l['reputation_details'] = "Details";
+
+$l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";
+$l['redirect_accountactivated'] = "Your account has successfully been activated.<br />You will now be taken back to the main page.";
+$l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";
+$l['redirect_registered_admin_activate'] = "Thank you for registering on {1}, {2}.<br />Your registration must be activated by an administrator.  Until then, you may not be able to post on these forums.";
+$l['redirect_loggedin'] = "You have successfully been logged in.<br />You will now be taken back to where you came from.";
+$l['redirect_loggedout'] = "You have successfully been logged out.<br />You will now be taken back to the forum index.";
+$l['redirect_alreadyloggedout'] = "You were already logged out or have not logged in yet.<br />You will now be taken back to the forum index.";
+$l['redirect_lostpwsent'] = "Thank you, all accounts pertaining to that email address have now been sent an email with details on how to reset the passwords.<br /><br />You will now be taken to the forums' index.";
+$l['redirect_activationresent'] = "Your activation e-mail has been resent.";
+$l['redirect_passwordreset'] = "Thank you, the password for your account has been reset. The new randomly generated password has been emailed to the email address in your account.";
+$l['redirect_memberrated'] = "The member has successfully been rated.";
+$l['redirect_registered_passwordsent'] = "A random password has been generated and sent to your email address. Before you can login on these forums, you will need to check your email for this password.";
+$l['redirect_validated'] = "Thank you, your account has been validated.<br />You will now be taken to the forums.";
+
+$l['error_activated_by_admin'] = "You cannot resend your account activation email as all registrations must be approved by an Administrator."
+$l['error_alreadyregistered'] = "Sorry, but our system shows that you have already registered on these forums and the registration of multiple accounts has been disabled.";
+$l['error_alreadyregisteredtime'] = "We cannot process your registration because there has already been {1} new registration(s) from your ip address in the past {2} hours. Please try again later.";
+$l['error_badlostpwcode'] = "You seem to have entered an invalid password reset code. Please re-read the email you were sent or contact the forum administrators for more help.";
+$l['error_badactivationcode'] = "You have entered an invalid account activation code. To resend all activation emails to the email address on file, please click <a href=\"member.php?action=resendactivation\">here</a>.";
+$l['error_alreadyactivated'] = "It appears your account is already activated or does not require email verification.";
+$l['error_nothreadurl'] = "Your message does not contain the URL of the thread. Please use the \"send to friend\" feature for it's intended purpose.";
+$l['error_invalidusername'] = "You have entered an invalid username. Usernames can only contain alphanumeric characters.";
+$l['error_bannedusername'] = "You have entered a username that is banned from registration.  Please choose another username.";
+$l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malacious Javascript was attempting to log you out automatically.  If you intended to logout, please click the Logout button at the top menu.";
+$l['error_regimageinvalid'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
+$l['error_hideemail'] = "The recipient has chosen to hide his/her e-mail address.";
+
 ?>

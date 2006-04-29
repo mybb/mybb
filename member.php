@@ -625,6 +625,11 @@ elseif($mybb->input['action'] == "activate")
 elseif($mybb->input['action'] == "resendactivation")
 {
 	$plugins->run_hooks("member_resendactivation");
+	
+	if($mybb->settings['regtype'] == "admin")
+	{
+		error($lang->error_activated_by_admin);
+	}
 
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
 	outputpage($activate);
@@ -632,6 +637,11 @@ elseif($mybb->input['action'] == "resendactivation")
 elseif($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_resendactivation_start");
+	
+	if($mybb->settings['regtype'] == "admin")
+	{
+		error($lang->error_activated_by_admin);
+	}
 
 	$query = $db->query("SELECT u.uid, u.username, u.usergroup, u.email, a.code FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r') WHERE u.email='".$db->escape_string($mybb->input['email'])."'");
 	$numusers = $db->num_rows($query);

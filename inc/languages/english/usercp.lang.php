@@ -299,5 +299,11 @@ $l['redirect_namechanged'] = "Your name has successfully been changed.<br />You 
 $l['redirect_emailupdated'] = "Your email address has successfully been updated.<br />You will now be taken back to the user control panel";
 $l['redirect_passwordupdated'] = "Thank you, your password has successfully been updated.<br />You will  now be returned to the User CP.";
 $l['redirect_changeemail_activation'] = "Your email address has successfully been updated. For your new email address to become active, we require that you complete a valdation process.<p>Please check the new email address you specified for further instructions on how to complete the account activation process.</p>";
+$l['redirect_avatarupdated'] = "Your avatar has been changed successfully.<br />You will now be returned to your User CP.";
 
+$l['error_favoriteslogin'] = "You are either not logged in or did not properly choose a thread to add to your favorites list.";
+$l['error_noavatar'] = "You did not choose an avatar. Please go back and do so now. If you don't want an avatar, select the \"No avatar\" option.";
+$l['error_avatartype'] = "Invalid file type. An uploaded avatar must be in GIF, JPEG, or PNG format.";
+$l['error_alreadyingroup'] = "The user specified already is part of the usergroup.";
+$l['error_usercp_return_date_past'] = "You cannot return in the past!";
 ?>

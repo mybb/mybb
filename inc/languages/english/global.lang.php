@@ -264,4 +264,9 @@ $l['deleteevent_confirm'] = "Are you sure you want to delete this event?";
 $l['removeattach_confirm'] = "Are you sure you want to remove the selected attachment from this post?";
 
 $l['latest_threads'] = "Latest Threads";
+
+$l['error_loadlimit'] = "The maximum server load limit has been reached.  Please check back later once the server is less busy.";
+$l['error_boardclosed'] = "This bulletin board is currently closed. The Administrator has specified the reason as to why below.";
+$l['error_banned'] = "I'm sorry, but you are banned.  You may not post, read threads, or access the forum.  Please contact your forum administrator should you have any questions.";
+
 ?>

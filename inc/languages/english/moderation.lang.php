@@ -113,8 +113,11 @@ $l['error_inline_nothreadsselected'] = "Sorry, but you did not select any thread
 $l['error_inline_nopostsselected'] = "Sorry, but you did not select any posts to perform inline moderation on, or your previous moderation session has expired (Automatically after 1 hour of inactivity). Please select some posts and try again.";
 $l['error_cantsplitall'] = "You cannot split all of the posts out of this thread! If you did, what would be left in the thread?";
 $l['error_nosplitposts'] = "You cannot split this thread as you did not select any posts to split from this thread.";
-$l['redirect_mergeposts'] = "The selected posts have now been merged together. You will now be taken back to the thread.";
+$l['error_noselected_reports'] = "Sorry, but you did not select any reported posts to mark as read. Either that or the selected posts have already been marked read by another user.";
+$l['error_movetosameforum'] = "You cannot move this thread into the forum it is currently situated in. Please select a different forum.";
+$l['error_mergewithself'] = "Threads cannot be merged with themselves.<br />Please go back and enter a valid URL.";
 
+$l['redirect_mergeposts'] = "The selected posts have now been merged together. You will now be taken back to the thread.";
 $l['redirect_openthread'] = "Thank you, the thread has successfully been opened.<br />You will now be taken back to the thread.";
 $l['redirect_closethread'] = "Thank you, the thread has successfully been closed.<br />You will now be taken back to the thread.";
 $l['redirect_stickthread']  = "Thank you, the thread has successfully been stuck.<br />You will now be taken back to the thread.";
@@ -139,5 +142,6 @@ $l['redirect_inline_postsmerged'] = "The selected posts have been merged togethe
 $l['redirect_inline_postsapproved'] = "The selected posts have been approved.<br />You will now be returned to the thread.";
 $l['redirect_inline_postsunapproved'] = "The selected posts have been unapproved.<br />You will now be returned to the thread.";
 $l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
+$l['redirect_postsdeleted'] = "The selected posts have been deleted successfully.";
 
 ?>

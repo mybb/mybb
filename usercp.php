@@ -2023,7 +2023,7 @@ if(!$mybb->input['action'])
 	}
 	$regdate = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $mybb->user['regdate']);
 
-	if($mybb->user['usergroup'] == 5)
+	if($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin")
 	{
 		$usergroup .= "<br />(<a href=\"member.php?action=resendactivation\">$lang->resend_activation</a>)";
 	}

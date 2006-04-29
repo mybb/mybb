@@ -27,5 +27,11 @@ $l['num_options'] = "Number of options:";
 $l['max_options'] = "(Maximum: {1})";
 $l['delete_now'] = "Delete Now";
 $l['edit_time_limit'] = "Sorry but you cannot edit your post. The Administrator has set it so that posts can only be edited within {1} minutes of posting.";
+
+$l['redirect_nodelete'] = "The post was not deleted because you didn't check the \"Delete\" checkbox.";
+$l['redirect_postedited'] = "Thank you, this post has been edited. <br />You will now be returned to the thread.";
+$l['redirect_postedited_poll'] = "Thank you, this post has been edited. <br />Because you opted to post a poll, you'll now be taken to the poll creation page.";
 $l['error_invalidpost'] = "Sorry, but you seem to have followed an invalid address. Please be sure the specified post exists and try again.";
+$l['redirect_postdeleted'] = "Thank you, the post has been deleted.<br />You will now be returned to the thread.";
+$l['redirect_threadclosed'] = "You edit existing posts in this thread because it has been closed by a moderator.";
 ?>

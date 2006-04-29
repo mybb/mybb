@@ -27,4 +27,7 @@ $l['sort_desc'] = "descending";
 $l['order'] = "order";
 $l['search_for'] = "or search for user:";
 $l['forumteam'] = "Show Forum Team";
+
+$l['error_no_members'] = "No members found.";
+
 ?>

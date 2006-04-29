@@ -36,4 +36,20 @@ $l['days'] = "days";
 $l['poll_results'] = "Poll Results";
 $l['poll_total'] = "Total:";
 $l['poll_votes'] = "votes";
+
+$l['redirect_pollposted'] = "Your poll has been posted.<br />You will now be returned to the thread.";
+$l['redirect_pollpostedmoderated'] = "Your poll has been posted, but your thread is still pending moderation.<br />You will be returned to the forum.";
+$l['redirect_pollupdated'] = "The poll has been updated.<br />You will now be returned to the thread.";
+$l['redirect_votethanks'] = "Thank you for voting.<br />You will now be returned to the thread.";
+$l['redirect_polldeleted'] = "Thank you, the poll has successfully been removed from the thread.<br />You will now be taken back to the thread.";
+$l['redirect_pollnotdeleted'] = "The poll was not deleted because you did not check the \"Delete\" checkbox.<br />You will now be redirected back to the thread.";
+
+$l['error_polloptiontoolong'] = "One or more poll options you entered are longer than the acceptable limit. Please go back and shorten them.";
+$l['error_noquestionoptions'] = "You either did not enter a question for your poll or do not have enough options. The minimum number of options a poll can have is 2.<br />Please go back and correct this error.";
+$l['error_pollalready'] = "Thread already has poll!";
+$l['error_nopolloptions'] = "The specified poll option is invalid or does not exist.";
+$l['error_alreadyvoted'] = "You have already voted in this poll.";
+$l['error_invalidpoll'] = "The specified poll is invalid or does not exist.";
+$l['error_pollclosed'] = "You cannot vote in a poll that has been closed.";
+
 ?>
