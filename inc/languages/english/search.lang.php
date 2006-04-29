@@ -61,5 +61,5 @@ $l['redirect_searchresults'] = "Thank you, your search has been submitted and yo
 $l['error_minsearchlength'] = "One or more of your search terms were shorter than the minimum length. The minimum search term length is {1} characters.";
 $l['error_nosearchresults'] = "Sorry but no results were returned using the query information you provided. Please redefine your search terms and try again.";
 $l['error_no_search_support'] = "This database engine does not support searching.";
-
+$l['error_searchflooding'] = "Sorry but yoy can only perform one search every {1} seconds. Please try your search at a later time."
 ?>

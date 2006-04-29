@@ -769,6 +769,28 @@ elseif($mybb->input['action'] == "do_search")
 {
 	$plugins->run_hooks("search_do_search_start");
 
+	// Check if search flood  checking is enabled
+	if($mybb->settings['searchfloodtime'] > 0)
+	{
+		// Fetch the time this user last searched
+		if($mybb->user['uid'])
+		{
+			$conditions = "uid='{$mybb->user['uid']}'";
+		}
+		else
+		{
+			$conditions = "uid='0' AND ipaddress='{$ipaddress}'";
+		}
+		$timecut = time()-$mybb->settings['searchfloodtime'];
+		$query = $db->query("SELECT * FROM searchlog WHERE $conditions AND dateline>='$timecut' ORDER BY dateline DESC");
+		$last_search = $db->fetch_array($query);
+		// Users last search was within the flood time, show the error
+		if($last_search['sid'])
+		{
+			$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime']);
+			error($lang->error_searchflooding);
+		}
+	}
 	if($mybb->input['showresults'] == "threads")
 	{
 		$resulttype = "threads";
