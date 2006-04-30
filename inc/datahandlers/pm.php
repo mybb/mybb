@@ -39,13 +39,13 @@ class PMDataHandler extends DataHandler
 		// Subject is over 85 characters, too long.
 		if(strlen($subject) > 85)
 		{
-			$this->set_error("subject_too_long");
+			$this->set_error("too_long_subject");
 			return false;
 		}
 		// No subject, apply the default [no subject]
 		if(!$subject)
 		{
-			$subject = "[no subject]";
+			$subject = $lang->pmdata_code_no_subject;
 		}
 		return true;
 	}
@@ -62,7 +62,7 @@ class PMDataHandler extends DataHandler
 		// No message, return an error.
 		if(trim($message) == '')
 		{
-			$this->set_error("no_message");
+			$this->set_error("missing_message");
 			return false;
 		}
 		return true;
@@ -155,7 +155,7 @@ class PMDataHandler extends DataHandler
 		// Can the recipient actually receive private messages based on their permissions or user setting?
 		if($touser['receivepms'] == "no" || $recipient_permissions['canusepms'] == "no" && !$pm['saveasdraft'])
 		{
-			$this->set_error("recipient_pms_off");
+			$this->set_error("recipient_pms_disabled");
 			return false;
 		}
 

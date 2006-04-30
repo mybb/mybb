@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id:$
+ * $Id$
  */
 
 /**
@@ -63,7 +63,7 @@ class UserDataHandler extends DataHandler
 		// Check if the username is of the correct length.
 		if(($mybb->settings['maxnamelength'] != 0 && my_strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && my_strlen($username) < $mybb->settings['minnamelength']) && !$bannedusername && !$missingname)
 		{
-			$this->set_error('invalid_username_length', array($mybb->settings['maxnamelength']));
+			$this->set_error('invalid_username_length', array($mybb->settings['minnamelength'], $mybb->settings['maxnamelength']));
 			return false;
 		}
 
@@ -396,7 +396,7 @@ class UserDataHandler extends DataHandler
 			$referrer = $db->fetch_array($query);
 			if(!$referrer['uid'])
 			{
-				$this->set_error('error_badreferrer', array($user['referrer']));
+				$this->set_error('badreferrer', array($user['referrer']));
 				return false;
 			}
 		}
@@ -413,9 +413,8 @@ class UserDataHandler extends DataHandler
 	function verify_options()
 	{
 		$options = &$this->data['options'];
-		
-		// Verify yes/no options.
 
+		// Verify yes/no options.
 		$this->verify_yesno_option(&$options, 'allownotices', 'yes');
 		$this->verify_yesno_option(&$options, 'hideemail', 'no');
 		$this->verify_yesno_option(&$options, 'emailnotify', 'no');
@@ -508,7 +507,7 @@ class UserDataHandler extends DataHandler
 			}
 		}
 	}
-	
+
 	/**
 	 * Verifies if a registration date is valid or not.
 	 *
