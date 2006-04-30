@@ -142,7 +142,7 @@ $l['redirect_memberrated'] = "The member has successfully been rated.";
 $l['redirect_registered_passwordsent'] = "A random password has been generated and sent to your email address. Before you can login on these forums, you will need to check your email for this password.";
 $l['redirect_validated'] = "Thank you, your account has been validated.<br />You will now be taken to the forums.";
 
-$l['error_activated_by_admin'] = "You cannot resend your account activation email as all registrations must be approved by an Administrator."
+$l['error_activated_by_admin'] = "You cannot resend your account activation email as all registrations must be approved by an Administrator.";
 $l['error_alreadyregistered'] = "Sorry, but our system shows that you have already registered on these forums and the registration of multiple accounts has been disabled.";
 $l['error_alreadyregisteredtime'] = "We cannot process your registration because there has already been {1} new registration(s) from your ip address in the past {2} hours. Please try again later.";
 $l['error_badlostpwcode'] = "You seem to have entered an invalid password reset code. Please re-read the email you were sent or contact the forum administrators for more help.";

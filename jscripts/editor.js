@@ -638,5 +638,10 @@ messageEditor.prototype = {
 			return false;
 		}
 		this.performInsert(element.alt, "", true, false);
+	},
+	
+	insertAttachment: function(aid)
+	{
+		this.performInsert("[attachment="+aid+"]", "", true, false);
 	}
 };

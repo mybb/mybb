@@ -13,6 +13,8 @@
  * Upgrade Script: 1.0 / 1.1
  */
 
+// Todo - rebuild parent lists of forums to ensure they're correct
+
 $upgrade_detail = array(
 	"revert_all_templates" => 0,
 	"revert_all_themes" => 0,

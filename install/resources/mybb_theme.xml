@@ -4097,7 +4097,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="postbit_attachments_images" version="100.07"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_images}</strong></span><br />
 {$post['imagelist']}
 <br />]]></template>
-		<template name="post_attachments_attachment_postinsert" version="100.07"><![CDATA[<input type="button" name="insert" value="{$lang->insert_attachment_post}" onclick="doInsert('[attachment={$attachment['aid']}]');">]]></template>
+		<template name="post_attachments_attachment_postinsert" version="100.07"><![CDATA[<input type="button" name="insert" value="{$lang->insert_attachment_post}" onclick="editor.insertAttachment({$attachment['aid']}]);">]]></template>
 		<template name="moderation_mergeposts" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->merge_posts}</title>
