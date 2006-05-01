@@ -13,9 +13,10 @@
 chdir('./../');
 
 require "./inc/init.php";
-require "./inc/functions_archive.php";
-require "./inc/class_session.php";
-require "./inc/class_parser.php";
+
+require MYBB_ROOT."inc/functions_archive.php";
+require MYBB_ROOT."inc/class_session.php";
+require MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 $groupscache = $cache->read("usergroups");
@@ -28,7 +29,7 @@ $fpermissioncache = $cache->read("forumpermissions");
 
 pageheaders();
 
-if(is_dir("install") && !file_exists("install/lock"))
+if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
 	echo "Please remove the install directory from your server, or create a file called 'lock' in the install directory. Until you do so, your board will remain unaccessable";
 	exit;

@@ -292,8 +292,8 @@ if($mybb->input['action'] == "do_addevent")
 	$plugins->run_hooks("calendar_do_addevent_start");
 
 	// Set up eventhandler.
-	require_once "inc/datahandler.php";
-	require_once "inc/datahandlers/event.php";
+	require_once MYBB_ROOT."inc/datahandler.php";
+	require_once MYBB_ROOT."inc/datahandlers/event.php";
 	$eventhandler = new EventDataHandler();
 
 	// Prepare an array for the eventhandler.
@@ -409,7 +409,7 @@ if($mybb->input['action'] == "do_editevent")
 	if($mybb->input['delete'] == "yes")
 	{
 		// Set up eventhandler.
-		require_once "inc/datahandlers/event.php";
+		require_once MYBB_ROOT."inc/datahandlers/event.php";
 		$eventhandler = new EventDataHandler();
 
 		// Make the eventhandler delete the event.
@@ -421,7 +421,7 @@ if($mybb->input['action'] == "do_editevent")
 	else
 	{
 		// Set up eventhandler.
-		require_once "inc/datahandlers/event.php";
+		require_once MYBB_ROOT."inc/datahandlers/event.php";
 		$eventhandler = new EventDataHandler();
 
 		// Prepare an array for the eventhandler.

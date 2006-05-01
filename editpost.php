@@ -13,8 +13,8 @@ $templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,cha
 $templatelist .= "posticons";
 
 require "./global.php";
-require "./inc/functions_post.php";
-require "./inc/functions_upload.php";
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/functions_upload.php";
 
 // Load global language phrases
 $lang->load("editpost");
@@ -247,7 +247,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 	$plugins->run_hooks("editpost_do_editpost_start");
 	
 	// Set up posthandler.
-	require_once "inc/datahandlers/post.php";
+	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("update");
 	$posthandler->action = "post";
 
