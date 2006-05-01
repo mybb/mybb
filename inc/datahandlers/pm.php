@@ -45,7 +45,7 @@ class PMDataHandler extends DataHandler
 		// No subject, apply the default [no subject]
 		if(!$subject)
 		{
-			$subject = $lang->pmdata_code_no_subject;
+			$subject = "[no subject]";
 		}
 		return true;
 	}
