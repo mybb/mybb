@@ -13,8 +13,9 @@ $templatelist = "index,index_whosonline,index_welcomemembertext,index_welcomegue
 $templatelist .= ",index_birthdays_birthday,index_birthdays,index_pms,index_loginform,index_logoutlink,index_stats,forumbit_depth3";
 
 require "./global.php";
-require "./inc/functions_post.php";
-require "./inc/class_parser.php";
+
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 $plugins->run_hooks("index_start");

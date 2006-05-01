@@ -30,7 +30,7 @@ class UserDataHandler extends DataHandler
 	function verify_username()
 	{
 		$username = &$this->data['username'];
-		require_once './inc/functions_user.php';
+		require_once MYBB_ROOT.'inc/functions_user.php';
 
 		// Fix bad characters
 		$username = str_replace(array(chr(160), chr(173)), array(" ", "-"), $username);

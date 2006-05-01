@@ -153,6 +153,8 @@ function upgrade5_dbchanges()
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD attachmentcount int(10) unsigned NOT NULL default '0'");
 	
+	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD  posthash varchar(32) NOT NULL default '' AFTER visible");
+	
 	echo "Done</p>";
 
 	$contents .= "Click next to continue with the upgrade process.</p>";

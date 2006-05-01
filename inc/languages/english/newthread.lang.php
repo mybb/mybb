@@ -27,6 +27,8 @@ $l['close_thread'] = "<b>Close Thread</b>: prevent further posting in this threa
 $l['stick_thread'] = "<b>Stick Thread:</b> stick this thread to the top of the forum.";
 $l['draft_saved'] = "The new thread has successfully been saved as a draft.<br />You will now be taken to your draft listing.";
 
+$l['error_post_already_submitted'] = "You have already posted this thread in this forum. Please visit the forum to see your thread.";
+
 $l['redirect_newthread'] = "Thank you, your thread has been posted."; 
 $l['redirect_newthread_poll'] = "<br />You will now be taken to the poll options and configuration page."; 
 $l['redirect_newthread_moderation'] = "<br />The administrator has specified that all new threads require moderation. You will now be returned to the thread listing."; 

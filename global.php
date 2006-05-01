@@ -31,27 +31,23 @@ $fpermissioncache = $cache->read("forumpermissions");
 pageheaders();
 
 
-if(is_dir("install") && !file_exists("install/lock"))
+if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
 	$mybb->trigger_generic_error("install_directory");
 }
 
-//
-// Create this users session
-//
+// Create session for this user
 if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || isset($mybb->input['thumbnail']))
 {
 	define("NO_ONLINE", 1);
 }
-require "./inc/class_session.php";
+require MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
 
 $plugins->run_hooks("global_start");
 
-//
 // Set and load the language
-//
 if(!isset($mybb->settings['bblanguage']))
 {
 	$mybb->settings['bblanguage'] = "english";
@@ -60,6 +56,7 @@ if(isset($mybb->user['language']) && $lang->languageExists($mybb->user['language
 {
 	$mybb->settings['bblanguage'] = $mybb->user['language'];
 }
+$lang->setPath(MYBB_ROOT."inc/languages");
 $lang->setLanguage($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
@@ -190,7 +187,7 @@ $lang->welcome_current_time = sprintf($lang->welcome_current_time, $datenow.", "
 
 if($mybb->user['uid'] != 0)
 {
-	if($mybb->usergroup['cancp'] == "yes")
+	if($mybb->usergroup['cancp'] == "yes" && $mybb->config['hideadminlinks'] != 1)
 	{
 		eval("\$admincplink = \"".$templates->get("header_welcomeblock_member_admin")."\";");
 	}

@@ -46,7 +46,7 @@ function makepostbit($post, $pmprevann=0)
 	// Set up the message parser if it doesn't already exist.
 	if(!$parser)
 	{
-		require_once "class_parser.php";
+		require_once MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
 	}
 

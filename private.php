@@ -14,9 +14,9 @@ $templatelist .= ",private_folders,private_folders_folder,private_folders_folder
 $templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc";
 
 require "./global.php";
-require_once "./inc/functions_post.php";
-require_once "./inc/functions_user.php";
-require_once "./inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases
@@ -115,7 +115,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_send_do_send");
 
-	require_once "inc/datahandlers/pm.php";
+	require_once MYBB_ROOT."inc/datahandlers/pm.php";
 	$pmhandler = new PMDataHandler();
 
 	$pm = array(

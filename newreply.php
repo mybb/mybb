@@ -13,9 +13,9 @@ $templatelist = "newreply,previewpost,error_invalidforum,error_invalidthread,red
 $templatelist .= ",smilieinsert,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions";
 
 require "./global.php";
-require "./inc/functions_post.php";
-require "./inc/functions_user.php";
-require "./inc/class_parser.php";
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/functions_user.php";
+require MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 // Load global language phrases
 $lang->load("newreply");
@@ -137,7 +137,7 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 	// If there's an attachment, check it and upload it.
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
 	{
-		require_once "./inc/functions_upload.php";
+		require_once MYBB_ROOT."inc/functions_upload.php";
 		$attachedfile = upload_attachment($_FILES['attachment']);
 	}
 	if($attachedfile['error'])
@@ -154,7 +154,7 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 // Remove an attachment.
 if($mybb->input['removeattachment'])
 {
-	require_once "./inc/functions_upload.php";
+	require_once MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['removeattachment']);
 	if(!$mybb->input['submit'])
 	{
@@ -201,8 +201,27 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 	}
 
+	// Attempt to see if this post is a duplicate or not
+	if($uid > 0)
+	{
+		$user_check = "p.uid='{$uid}'";
+	}
+	else
+	{
+		$user_check = "p.ipaddress='{$session->ipaddress}'";
+	}
+	$query = $db->query("
+		SELECT p.pid
+		FROM ".TABLE_PREFIX."posts p
+		WHERE $user_check AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'
+	");
+	$duplicate_check = $db->fetch_field($query, "pid");
+	if($duplicate_check)
+	{
+		error($lang->error_post_already_submitted);
+	}
 	// Set up posthandler.
-	require_once "inc/datahandlers/post.php";
+	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("insert");
 
 	// Set the post data that came from the input to the $post array.

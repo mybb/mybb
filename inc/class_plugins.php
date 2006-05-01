@@ -31,9 +31,9 @@ class pluginSystem
 		{
 			foreach($pluginlist['active'] as $plugin)
 			{
-				if($plugin != "" && file_exists("./inc/plugins/".$plugin.".php"))
+				if($plugin != "" && file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
 				{
-					require_once "./inc/plugins/".$plugin.".php";
+					require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
 				}
 			}
 		}

@@ -10,7 +10,6 @@
  */
 
 // Lets pretend we're a level higher
-chdir('../');
 define("IN_ADMINCP", 1);
 $config = array();
 
@@ -19,16 +18,19 @@ if(!isset($config['admindir']))
 	$config['admindir'] = "admin";
 }
 
-require "./inc/init.php";
-require "./".$config['admindir']."/adminfunctions.php";
-require "./inc/functions_user.php";
+require "../inc/init.php";
 
-$style = "./styles/".$mybb->settings['cpstyle']."/stylesheet.css";
-if(!file_exists($config['admindir']."/".$style))
+define('MYBB_ADMIN_DIR', MYBB_ROOT."admin/");
+
+require MYBB_ADMIN_DIR."adminfunctions.php";
+require MYBB_ROOT."inc/functions_user.php";
+
+$style = "styles/".$mybb->settings['cpstyle']."/stylesheet.css";
+if(!file_exists(MYBB_ADMIN_DIR.$style))
 {
 	$style = "./styles/Axiom/stylesheet.css";
 }
-
+$lang->setPath(MYBB_ROOT."inc/languages");
 $lang->setLanguage($settings['cplanguage'], "admin");
 
 // Load global language phrases
@@ -39,7 +41,7 @@ $mybb->settings['bbname'] = stripslashes($mybb->settings['bbname']);
 
 $time = time();
 
-if(is_dir("install") && !file_exists("install/lock"))
+if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
 	$mybb->trigger_generic_error("install_directory");
 }
@@ -99,7 +101,7 @@ if($user['uid'])
 	$mybb->usergroup = $db->fetch_array($query);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]'");
 	$adminoptions = $db->fetch_array($query);
-	if($adminoptions['cpstyle'] && file_exists($config['admindir']."/styles/$adminoptions[cpstyle]/stylesheet.css"))
+	if($adminoptions['cpstyle'] && file_exists(MYBB_ADMIN_DIR."styles/$adminoptions[cpstyle]/stylesheet.css"))
 	{
 		$style = "./styles/$adminoptions[cpstyle]/stylesheet.css";
 	}

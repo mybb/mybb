@@ -11,7 +11,7 @@
 
 $templatelist = "announcement";
 require "./global.php";
-require "./inc/functions_post.php";
+require MYBB_ROOT."inc/functions_post.php";
 
 // Load global language phrases
 $lang->load("announcements");

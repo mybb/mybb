@@ -13,8 +13,8 @@ $templatelist = "newthread,previewpost,error_invalidforum,redirect_newthread,log
 $templatelist .= "posticons";
 
 require "./global.php";
-require "./inc/functions_post.php";
-require "./inc/functions_user.php";
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/functions_user.php";
 
 // Load global language phrases
 $lang->load("newthread");
@@ -120,7 +120,7 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
 	{
-		require "./inc/functions_upload.php";
+		require MYBB_ROOT."inc/functions_upload.php";
 		$attachedfile = upload_attachment($_FILES['attachment']);
 	}
 	
@@ -141,7 +141,7 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 // Are we removing an attachment from the thread?
 if($mybb->input['removeattachment'])
 {
-	require_once "./inc/functions_upload.php";
+	require_once MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment(0, $mybb->input['posthash'], $mybb->input['removeattachment']);
 	if(!$mybb->input['submit'])
 	{
@@ -204,8 +204,28 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		$uid = $mybb->user['uid'];
 	}
 	
+	// Attempt to see if this post is a duplicate or not
+	if($uid > 0)
+	{
+		$user_check = "p.uid='{$uid}'";
+	}
+	else
+	{
+		$user_check = "p.ipaddress='{$session->ipaddress}'";
+	}
+	$query = $db->query("
+		SELECT p.pid
+		FROM ".TABLE_PREFIX."posts p
+		WHERE $user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'
+	");
+	$duplicate_check = $db->fetch_field($query, "pid");
+	if($duplicate_check)
+	{
+		error($lang->error_post_already_submitted);
+	}
+	
 	// Set up posthandler.
-	require_once "inc/datahandlers/post.php";
+	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("insert");
 	$posthandler->action = "thread";
 

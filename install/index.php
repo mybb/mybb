@@ -465,8 +465,9 @@ function create_tables()
 		"\$config['password'] = \"".$mybb->input['dbpass']."\";\n".
 		"\$config['database'] = \"".$mybb->input['dbname']."\";\n".
 		"\$config['table_prefix'] = \"".$mybb->input['tableprefix']."\";\n".
-		"\n/* Admin CP URL */\n".
+		"\n/* Admin CP*/\n".
 		"\$config['admindir'] = \"admin\";\n".
+		"\$config['hideadminlinks'] = 0;\n".
 		"\n/* Datacache Configuration */\n".
 		"\n/* files = Stores datacache in files inside /inc/cache/ (Must be writable)*/\n".
 		"\n/* db = Stores datacache in the database*/\n".

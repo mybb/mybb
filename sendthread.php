@@ -11,8 +11,8 @@
 
 $templatelist = "sendthread,sendthread_guest,email_sendtofriend";
 require "./global.php";
-require "./inc/functions_post.php";
-require "./inc/class_parser.php";
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases

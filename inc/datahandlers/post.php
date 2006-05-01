@@ -554,7 +554,8 @@ class PostDataHandler extends DataHandler
 				"ipaddress" => $db->escape_string($post['ipaddress']),
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
-				"visible" => $visible
+				"visible" => $visible,
+				"posthash" => $db->escape_sting($post['posthash'])
 				);
 			$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='{$post['pid']}'");
 			$pid = $post['pid'];
@@ -575,7 +576,8 @@ class PostDataHandler extends DataHandler
 				"ipaddress" => $db->escape_string($post['ipaddress']),
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
-				"visible" => $visible
+				"visible" => $visible,
+				"posthash" => $db->escape_sting($post['posthash'])
 				);
 
 			$db->insert_query(TABLE_PREFIX."posts", $newreply);
@@ -596,7 +598,7 @@ class PostDataHandler extends DataHandler
 
 		if($visible == 1)
 		{
-			require_once './inc/class_parser.php';
+			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new Postparser();
 
 			$subject = $parser->parse_badwords($thread['subject']);
@@ -816,7 +818,8 @@ class PostDataHandler extends DataHandler
 				"ipaddress" => getip(),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
-				"visible" => $visible
+				"visible" => $visible,
+				"posthash" => $db->escape_string($thread['posthash'])
 			);
 
 			$db->update_query(TABLE_PREFIX."posts", $newpost, "pid='$pid'");
@@ -856,7 +859,8 @@ class PostDataHandler extends DataHandler
 				"ipaddress" => getip(),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
-				"visible" => $visible
+				"visible" => $visible,
+				"posthash" => $db->escape_string($thread['posthash'])
 			);
 			$db->insert_query(TABLE_PREFIX."posts", $newpost);
 			$pid = $db->insert_id();

@@ -13,9 +13,10 @@ $nosession['avatar'] = 1;
 $templatelist = "member_register,error_nousername,error_nopassword,error_passwordmismatch,error_invalidemail,error_usernametaken,error_emailmismatch,error_noemail,redirect_registered";
 $templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword";
 require "./global.php";
-require "./inc/functions_post.php";
-require "./inc/functions_user.php";
-require "./inc/class_parser.php";
+
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/functions_user.php";
+require MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases
@@ -98,7 +99,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	}
 	
 	// Set up user handler.
-	require_once "inc/datahandlers/user.php";
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("insert");
 
 	// Set the data for the new user.
@@ -1281,7 +1282,7 @@ elseif($mybb->input['action'] == "profile")
 		$timeonline = $lang->none_registered;
 	}
 
-	if($mybb->usergroup['cancp'] == "yes")
+	if($mybb->usergroup['cancp'] == "yes" && $mybb->config['hideadminlinks'] != 1)
 	{
 		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
 	}

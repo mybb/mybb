@@ -43,7 +43,7 @@ pageheaders();
 
 
 // Create the session
-require "./inc/class_session.php";
+require MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
 
@@ -299,7 +299,7 @@ else if($mybb->input['action'] == "edit_post")
 		
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".$mybb->input['pid']."'");
 		
-		require "./inc/class_parser.php";
+		require MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
 		
 		$parser_options = array(

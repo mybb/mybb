@@ -135,7 +135,7 @@ class session
 			if($mybb->user['newpms'] == -1) $update += 2;
 			if($mybb->user['unreadpms'] == -1) $update += 4;
 
-			require_once "./inc/functions_user.php";
+			require_once MYBB_ROOT."inc/functions_user.php";
 			$pmcount = update_pm_count("", $update);
 			if(is_array($pmcount))
 			{

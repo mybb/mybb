@@ -10,7 +10,7 @@
  */
 
 require "./global.php";
-require "./inc/class_xml.php";
+require MYBB_ROOT."inc/class_xml.php";
 
 
 // Get language packs for this section

@@ -10,7 +10,7 @@
  */
 
 require "./global.php";
-require "./inc/functions_upload.php";
+require MYBB_ROOT."inc/functions_upload.php";
 
 // Load language packs for this section
 global $lang;

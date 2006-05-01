@@ -32,7 +32,7 @@ if($mybb->input['action'] == "do_editset")
 
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
-	$file = "./inc/languages/".$editlang.".php";
+	$file = MYBB_ROOT."inc/languages/".$editlang.".php";
 	if(!file_exists($file))
 	{
 		cperror($lang->invalid_file);
@@ -109,7 +109,7 @@ if($mybb->input['action'] == "do_editset")
 if($mybb->input['action'] == "editset")
 {
 	$editlang = basename($mybb->input['lang']);
-	$file = "./inc/languages/".$editlang.".php";
+	$file = MYBB_ROOT."inc/languages/".$editlang.".php";
 	if(!file_exists($file))
 	{
 		cperror($lang->invalid_file);
@@ -237,12 +237,12 @@ if($mybb->input['action'] == "edit")
 
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
-	$folder = "./inc/languages/".$editlang."/";
+	$folder = MYBB_ROOT."inc/languages/".$editlang."/";
 	$editwith = basename($mybb->input['editwith']);
 	$editwithfolder = '';
 	if($editwith)
 	{
-		$editwithfolder = "./inc/languages/".$editwith."/";
+		$editwithfolder = MYBB_ROOT."inc/languages/".$editwith."/";
 	}
 	if(!file_exists($folder) || ($editwithfolder && !file_exists($editwithfolder)))
 	{
@@ -450,7 +450,7 @@ if(empty($mybb->input['action']))
 	foreach($languages as $key => $langname)
 	{
 		$bgcolor = getaltbg();
-		require "./inc/languages/".$key.".php";
+		require MYBB_ROOT."inc/languages/".$key.".php";
 
 		if(!empty($langinfo['website']))
 		{

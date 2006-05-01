@@ -17,7 +17,7 @@ class MyLanguage
 	 *
 	 * @var string
 	 */
-	var $path = "./inc/languages";
+	var $path;
 
 	/**
 	 * The language we are using.

@@ -16,6 +16,27 @@ if(strpos(strtolower($_SERVER['PHP_SELF']), "inc/init.php") !== false)
 
 error_reporting(E_ALL & ~E_NOTICE);
 
+if(!__FILE__)
+{
+	die("Your server does not support file name detection. You need to modify inc/init.php to set your root directory.");
+}
+/* Defines the root directory for MyBB.
+	
+	Uncomment the below line and set the path manually
+	if you experience problems. Acceptable values are:
+	
+	Always add a trailing slash to the end of the path.
+	
+	* Path to your copy of MyBB
+	* "./"
+ */
+//define('MYBB_ROOT', "./");
+
+// Attempt autodetection
+if(!defined('MYBB_ROOT'))
+{
+	define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
+}
 
 //
 // MYBB 1.2 DEVELOPMENT CODE - TO BE REMOVED BEFORE RELEASE
@@ -40,14 +61,14 @@ if(isset($_COOKIE['phpdbug']) || isset($_GET['phpdebug']))
 
 define("NO_SHUTDOWN", false);
 
-require "./inc/class_timers.php";
+require MYBB_ROOT."inc/class_timers.php";
 $maintimer = new timer();
 
-require "./inc/class_core.php";
+require MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
 
 // Include the required core files
-require "./inc/config.php";
+require MYBB_ROOT."inc/config.php";
 if(!isset($config['dbtype']))
 {
 	$mybb->trigger_generic_error("board_not_installed");
@@ -58,22 +79,22 @@ if(!isset($config['admindir']))
 }
 $mybb->config = $config;
 
-require "./inc/db_".$config['dbtype'].".php";
+require MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine;
 
-require "./inc/functions.php";
+require MYBB_ROOT."inc/functions.php";
 
-require "./inc/class_templates.php";
+require MYBB_ROOT."inc/class_templates.php";
 $templates = new templates;
 
-require "./inc/class_datacache.php";
+require MYBB_ROOT."inc/class_datacache.php";
 $cache = new datacache;
 
-require "./inc/class_plugins.php";
+require MYBB_ROOT."inc/class_plugins.php";
 $plugins = new pluginSystem;
 
 // Include our base data handler class
-require "./inc/datahandler.php";
+require MYBB_ROOT."inc/datahandler.php";
 
 
 // Connect to Database
@@ -82,15 +103,15 @@ $db->connect($config['hostname'], $config['username'], $config['password']);
 $db->select_db($config['database']);
 
 // Language initialisation
-require "./inc/class_language.php";
+require MYBB_ROOT."inc/class_language.php";
 $lang = new MyLanguage;
-$lang->setPath("./inc/languages");
+$lang->setPath(MYBB_ROOT."inc/languages");
 
 // Load cache
 $cache->cache();
 
 // Load Settings
-require "./inc/settings.php";
+require MYBB_ROOT."inc/settings.php";
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;
 $mybb->settings = $settings;
 

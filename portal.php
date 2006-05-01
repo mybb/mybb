@@ -22,9 +22,9 @@ if(!chdir($forumdir) && $forumdir)
 $templatelist = "portal_welcome,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread_lastpost,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_announcement_numcomments,portal";
 
 require "./global.php";
-require "./inc/functions_post.php";
-require "./inc/functions_user.php";
-require "./inc/class_parser.php";
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/functions_user.php";
+require MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 global $settings, $theme, $templates;

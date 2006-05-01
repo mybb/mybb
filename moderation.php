@@ -10,11 +10,11 @@
  */
 
 require "./global.php";
-require "./inc/functions_post.php";
-require "./inc/functions_upload.php";
-require "./inc/class_parser.php";
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/functions_upload.php";
+require MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
-require "./inc/class_moderation.php";
+require MYBB_ROOT."inc/class_moderation.php";
 $moderation = new Moderation;
 
 // Load global language phrases

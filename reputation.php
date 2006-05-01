@@ -12,7 +12,7 @@
 $templatesused = '';
 require "./global.php";
 
-require_once "./inc/class_parser.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases
