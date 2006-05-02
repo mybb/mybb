@@ -121,7 +121,7 @@ class DataHandler
 		// Prefix all the error codes with the language prefix.
 		foreach($this->errors as $error)
 		{
-			$lang_string = $this->language_prefix.''.$error['error_code'];
+			$lang_string = $this->language_prefix.'_'.$error['error_code'];
 			// MYBB 1.2 DEV CODE
 			if(!$lang->$lang_string) {
 				if(is_array($error['data']))
