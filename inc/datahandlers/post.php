@@ -253,6 +253,9 @@ class PostDataHandler extends DataHandler
 		{
 			if($post['options']['disablesmilies'] == "yes")
 			{
+				require_once MYBB_ROOT."inc/class_parser.php";
+				$parser = new postParser;
+				
 				// Parse the message.
 				$parser_options = array(
 					"allow_html" => $forum['allowhtml'],
