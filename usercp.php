@@ -177,7 +177,14 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	
 	if($mybb->usergroup['cancustomtitle'] == "yes")
 	{
-		$user['usertitle'] = $mybb->input['usertitle'];
+		if($user['usertitle'] != '')
+		{
+			$user['usertitle'] = $mybb->input['usertitle'];
+		}
+		else if($mybb->input['reverttitle'])
+		{
+			$user['usertitle'] = '';
+		}
 	}
 	$userhandler->set_data($user);
 	

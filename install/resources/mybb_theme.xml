@@ -1691,6 +1691,9 @@ var inlineId = {$fid};
 <tr>
 <td><input type="text" class="textbox" name="usertitle" size="25" value="" maxlength="{$settings['customtitlemaxlength']}" value="{$newtitle}" /></td>
 </tr>
+<tr>
+<td><span class="smalltext"><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {$lang->revert_usertitle}</td>
+</tr>
 </table>
 </fieldset>
 <br />]]></template>
