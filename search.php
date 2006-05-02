@@ -782,7 +782,7 @@ elseif($mybb->input['action'] == "do_search")
 			$conditions = "uid='0' AND ipaddress='{$ipaddress}'";
 		}
 		$timecut = time()-$mybb->settings['searchfloodtime'];
-		$query = $db->query("SELECT * FROM searchlog WHERE $conditions AND dateline>='$timecut' ORDER BY dateline DESC");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE $conditions AND dateline>='$timecut' ORDER BY dateline DESC");
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
 		if($last_search['sid'])
