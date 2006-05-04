@@ -41,7 +41,7 @@ class UserDataHandler extends DataHandler
 		// Check if the username is not empty.
 		if(trim($username) == '')
 		{
-			$this->set_error('empty_username');
+			$this->set_error('missing_username');
 			return false;
 		}
 
@@ -173,7 +173,7 @@ class UserDataHandler extends DataHandler
 		// Check if an email address has actually been entered.
 		if(trim($user['email']) == '')
 		{
-			$this->set_error('empty_email');
+			$this->set_error('missing_email');
 			return false;
 		}
 

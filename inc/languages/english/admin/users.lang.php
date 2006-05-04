@@ -2,7 +2,7 @@
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -84,8 +84,10 @@ $l['uid_header'] = "User ID";
 $l['name_header'] = "Name";
 $l['username'] = "Username";
 $l['password'] = "Password";
+$l['password2'] = "Confirm Password";
 $l['new_password'] = "New Password";
 $l['email'] = "Email Address";
+$l['email_confirm'] = "Confirm Email Address";
 $l['usergroup'] = "Usergroup";
 $l['primary_usergroup'] = "Primary Usergroup";
 $l['secondary_usergroups'] = "Secondary Usergroups";

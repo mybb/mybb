@@ -2,7 +2,7 @@
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -87,4 +87,17 @@ $l['quickperms_upload'] = "Can Upload";
 $l['quickperms_all'] = "All";
 
 $l['never'] = "Never";
+
+$l['month_1'] = "January";
+$l['month_2'] = "February";
+$l['month_3'] = "March";
+$l['month_4'] = "April";
+$l['month_5'] = "May";
+$l['month_6'] = "June";
+$l['month_7'] = "July";
+$l['month_8'] = "August";
+$l['month_9'] = "September";
+$l['month_10'] = "October";
+$l['month_11'] = "November";
+$l['month_12'] = "December";
 ?>

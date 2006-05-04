@@ -97,7 +97,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$usergroup = 2;
 	}
-	
+
 	// Set up user handler.
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("insert");
@@ -108,7 +108,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"password" => $mybb->input['password'],
 		"password2" => $mybb->input['password2'],
 		"email" => $mybb->input['email'],
-		"email2" => $mybb->input['email'],
+		"email2" => $mybb->input['email2'],
 		"usergroup" => $usergroup,
 		"referrer" => $mybb->input['referrername'],
 		"timezone" => $mybb->input['timezoneoffset'],
@@ -116,13 +116,13 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"profile_fields" => $mybb->input['profile_fields'],
 		"regip" => $session->ipaddress
 	);
-	
+
 	$user['birthday'] = array(
 		"day" => $mybb->input['bday1'],
 		"month" => $mybb->input['bday2'],
 		"year" => $mybb->input['bday3']
 	);
-	
+
 	$user['options'] = array(
 		"allownotices" => $mybb->input['allownotices'],
 		"hideemail" => $mybb->input['hideemail'],
@@ -133,16 +133,16 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"invisible" => $mybb->input['invisible'],
 		"enabledst" => $mybb->input['enabledst']
 	);
-		
+
 	$userhandler->set_data($user);
-	
+
 	$errors = "";
-	
+
 	if(!$userhandler->validate_user())
 	{
-		$errors = $userhandler->get_friendly_errors();	
+		$errors = $userhandler->get_friendly_errors();
 	}
-	
+
 	if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
@@ -162,7 +162,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$email = htmlspecialchars_uni($mybb->input['email']);
 		$email2 = htmlspecialchars_uni($mybb->input['email']);
 		$referrername = htmlspecialchars_uni($mybb->input['referrername']);
-		
+
 		if($mybb->input['allownotices'] == "yes")
 		{
 			$allownoticescheck = "checked=\"checked\"";
@@ -626,7 +626,7 @@ elseif($mybb->input['action'] == "activate")
 elseif($mybb->input['action'] == "resendactivation")
 {
 	$plugins->run_hooks("member_resendactivation");
-	
+
 	if($mybb->settings['regtype'] == "admin")
 	{
 		error($lang->error_activated_by_admin);
@@ -638,7 +638,7 @@ elseif($mybb->input['action'] == "resendactivation")
 elseif($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_resendactivation_start");
-	
+
 	if($mybb->settings['regtype'] == "admin")
 	{
 		error($lang->error_activated_by_admin);
@@ -1224,7 +1224,7 @@ elseif($mybb->input['action'] == "profile")
 		{
 			$vote_link = "[<a href=\"javascript:MyBB.reputation({$memprofile['uid']});\">{$lang->reputation_vote}</a>]";
 		}
-	
+
 		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
 	}
 

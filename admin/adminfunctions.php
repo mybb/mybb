@@ -725,11 +725,28 @@ function makewarning($text)
 function cperror($message="")
 {
 	global $lang;
-	if(!$message) { $message = $lang->error_msg; }
+
+	// If there is no message, use the default error message.
+	if(empty($message))
+	{
+		$error = $lang->error_msg;
+	}
+
+	// Are there multiple errors or is there just one?
+	if(is_array($message))
+	{
+		$error = '<ul>';
+		foreach($message as $item)
+		{
+			$error .= "<li>{$item}</li>";
+		}
+		$error .= '</ul>';
+	}
+
 	cpheader("", 0);
 	starttable("65%");
 	tableheader($lang->cp_error_header);
-	makelabelcode($message);
+	makelabelcode($error);
 	endtable();
 	cpfooter();
 	exit;
@@ -1857,4 +1874,116 @@ function rebuildsettings()
 	fclose($file);
 	$GLOBALS['settings'] = &$mybb->settings;
 }
+
+/**
+* Build a date dropdown and return the HTML for it.
+*
+* @param string The unique identifier for this dropdown, e.g. "birthday".
+* @param array Optional array of options for this dropdown.
+*/
+function build_date_dropdown($id, $options=array())
+{
+	global $lang;
+
+	// Add 31 days to the day dropdown.
+	$days = array();
+	for($d = 1; $d <= 31; $d++)
+	{
+		$days[$d] = $d;
+	}
+
+	// Add 12 months to the month dropdown.
+	$months = array();
+	for($m = 1; $m <= 12; $m++)
+	{
+		$month_lang = 'month_'.$m;
+		$months[$m] = $lang->$month_lang;
+	}
+
+	// Add years to the dropdown.
+	$this_year = date("Y");
+	$years = array();
+
+	// Is there a specified limit for showing the years?
+	if(array_key_exists('years_back', $options) && array_key_exists('years_ahead', $options))
+	{
+		for($y = $this_year-$options['years_back']; $y <= ($this_year+$options['years_ahead']); $y++)
+	    {
+	        $years[$y] = $y;
+		}
+	}
+	else
+	{
+		for($y = $this_year-5; $y <= ($this_year+5); $y++)
+	    {
+	        $years[$y] = $y;
+		}
+	}
+	krsort($years);
+
+	// Start building the dropdown HTML.
+	$dropdown = '';
+
+	// Now add the days.
+	$dropdown .= "<select name=\"{$id}_day\">\n";
+	foreach($days as $k => $v)
+	{
+		$dropdown .= "<option value=\"{$k}\">{$v}</option>\n";
+	}
+	$dropdown .= "</select>\n";
+
+	// The months.
+	$dropdown .= "<select name=\"{$id}_month\">\n";
+	foreach($months as $k => $v)
+	{
+		$dropdown .= "<option value=\"{$k}\">{$v}</option>\n";
+	}
+	$dropdown .= "</select>\n";
+
+	// And the years.
+	$dropdown .= "<select name=\"{$id}_year\">\n";
+	foreach($years as $k => $v)
+	{
+		$dropdown .= "<option value=\"{$k}\">{$v}</option>\n";
+	}
+	$dropdown .= "</select>\n";
+
+	// Add time, too?
+	if($options['show_time'] === true)
+	{
+		// Add 23 hours to the dropdown.
+		$hours = array();
+		for($h = 1; $h <= 23; $h++)
+		{
+			$hours[$h] = $h;
+		}
+
+		// Add 59 minutes to the dropdown.
+		$minutes = array();
+		for($min = 1; $min <= 59; $min++)
+		{
+			$minutes[$min] = $min;
+		}
+
+		// Build hours HTML.
+		$dropdown .= "<select name=\"{$id}_hours\">\n";
+		foreach($hours as $k => $v)
+		{
+			$dropdown .= "<option value=\"{$k}\">{$v}</option>\n";
+		}
+		$dropdown .= "</select>\n";
+
+		// And the minutes HTML.
+		$dropdown .= "<select name=\"{$id}_minutes\">\n";
+		foreach($minutes as $k => $v)
+		{
+			$dropdown .= "<option value=\"{$k}\">{$v}</option>\n";
+		}
+		$dropdown .= "</select>\n";
+	}
+
+	return $dropdown;
+
+}
+
 ?>

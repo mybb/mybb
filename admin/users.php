@@ -151,27 +151,10 @@ logadmin();
 
 if($mybb->input['action'] == "do_add")
 {
-	if(username_exists($mybb->input['userusername']))
-	{
-		cpmessage($lang->error_name_exists);
-	}
-	if(!$mybb->input['userusername'] || !$mybb->input['newpassword'] || !$mybb->input['email'])
-	{
-		cpmessage($lang->missing_fields);
-	}
-	if($mybb->input['website'] == "http://" || $mybb->input['website'] == "none")
-	{
-		$mybb->input['website'] = "";
-	}
-	$md5password = md5($mybb->input['newpassword']);
 
 	//
-	// Generate salt, salted password, and login key
+	// UNSURE ABOUT THIS PART - TO BE INSPECTED
 	//
-	$salt = generate_salt();
-	$md5password = salt_password($md5password, $salt);
-	$loginkey = generate_loginkey();
-
 	// Determine the usergroup stuff
 	if(is_array($mybb->input['additionalgroups']))
 	{
@@ -188,90 +171,84 @@ if($mybb->input['action'] == "do_add")
 	{
 		$additionalgroups = "";
 	}
-	$birthday = explode("-", $mybb->input['birthday']);
-	if($birthday[0] < 10 && $birthday[0] != "" && strlen($birthday[0]) < 2)
-	{
-		$nbirthday[0] = "0".$birthday[0];
-	}
-	if($birthday[1] < 10 && $birthday[1] != "" && strlen($birthday[0]) < 2)
-	{
-		$nbirthday[1] = "0".$birthday[1];
-	}
-	if($nbirthday[0] && $nbirthday[1])
-	{
-		$mybb->input['birthday'] = $nbirthday[0]."-".$nbirthday[1]."-".$nbirthday[2];
-	}
 
-	$timenow = time();
+	$usergroup = $mybb->input['usergroup'];
+
+	// $user['profile_fields'] needs to be passed too, unsure what goes in
+
+	//
+	// END UNSURE
+	//
+
+	// Set up user handler.
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
+	$userhandler = new UserDataHandler("insert");
+	$lang->load('userdata');
+
+	// Set the data for the new user.
 	$user = array(
-		"username" => $db->escape_string($mybb->input['userusername']),
-		"password" => $md5password,
-		"salt" => $salt,
-		"loginkey" => $loginkey,
-		"email" => $db->escape_string($mybb->input['email']),
-		"usergroup" => intval($mybb->input['usergroup']),
+		"username" => $mybb->input['userusername'],
+		"password" => $mybb->input['userpassword'],
+		"password2" => $mybb->input['userpassword2'],
+		"email" => $mybb->input['useremail'],
+		"email2" => $mybb->input['useremail2'],
+		"usergroup" => $usergroup,
 		"additionalgroups" => $additionalgroups,
-		"displaygroup" => intval($mybb->input['displaygroup']),
-		"usertitle" => $db->escape_string($mybb->input['usertitle']),
-		"regdate" => time(),
-		"lastactive" => time(),
-		"lastvisit" => time(),
-		"avatar" => $db->escape_string($mybb->input['avatar']),
-		"website" => $db->escape_string($mybb->input['website']),
-		"icq" => $db->escape_string($mybb->input['icq']),
-		"aim" => $db->escape_string($mybb->input['aim']),
-		"yahoo" => $db->escape_string($mybb->input['yahoo']),
-		"msn" => $db->escape_string($mybb->input['msn']),
-		"birthday" => $db->escape_string($mybb->input['birthday']),
-		"allownotices" => $db->escape_string($mybb->input['allownotices']),
-		"hideemail" => $db->escape_string($mybb->input['hideemail']),
-		"emailnotify" => $db->escape_string($mybb->input['emailnotify')],
-		"invisible" => $db->escape_string($mybb->input['invisible']),
-		"style" => $db->escape_string($mybb->input['style']),
-		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
-		"receivepms" => $db->escape_string($mybb->input['receivepms']),
-		"pmpopup" =>$db->escape_string( $mybb->input['pmpopup']),
-		"pmnotify" => $db->escape_string($mybb->input['pmnotify']),
-		"signature" => $db->escape_string($mybb->input['signature'])
-		);
-	$db->insert_query(TABLE_PREFIX."users", $user);
-	$uid = $db->insert_id();
+		"displaygroup" => $mybb->input['displaygroup'],
+		"usertitle" => $mybb->input['usertitle'],
+		"referrer" => $mybb->input['referrername'],
+		"timezone" => $mybb->input['timezoneoffset'],
+		"language" => $mybb->input['language'],
+		"profile_fields" => $mybb->input['profile_fields'],
+		"regip" => $session->ipaddress,
+		"avatar" => $mybb->input['avatar'],
+		"website" => $mybb->input['website'],
+		"icq" => $mybb->input['icq'],
+		"aim" => $mybb->input['aim'],
+		"yahoo" => $mybb->input['yahoo'],
+		"msn" => $mybb->input['msn'],
+		"style" => $mybb->input['style'],
+		"signature" => $mybb->input['signature']
+	);
 
-	// Custom profile fields
-	$querypart1 = "";
-	$querypart2 = "";
-	$comma = "";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
-	while($profilefield = $db->fetch_array($query))
+	$user['birthday'] = array(
+		"day" => $mybb->input['birthday_day'],
+		"month" => $mybb->input['birthday_month'],
+		"year" => $mybb->input['birthday_year']
+	);
+
+	$user['options'] = array(
+		"allownotices" => $mybb->input['allownotices'],
+		"hideemail" => $mybb->input['hideemail'],
+		"emailnotify" => $mybb->input['emailnotify'],
+		"receivepms" => $mybb->input['receivepms'],
+		"pmpopup" => $mybb->input['pmpopup'],
+		"emailpmnotify" => $mybb->input['emailpmnotify'],
+		"invisible" => $mybb->input['invisible'],
+		"enabledst" => $mybb->input['enabledst']
+	);
+
+	// Set the data of the user in the datahandler.
+	$userhandler->set_data($user);
+	$errors = "";
+
+	// Validate the user and get any errors that might have occurred.
+	if(!$userhandler->validate_user())
 	{
-		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-		$thing = explode("\n", $profilefield[type], "2");
-		$type = trim($thing[0]);
-		$field = "fid$profilefield[fid]";
-		$options = "";
-		if($type == "multiselect" || $type == "checkbox")
-		{
-			if(is_array($mybb->input[$field]))
-			{
-				while(list($key, $val) = each($mybb->input[$field]))
-				{
-					if($options)
-					{
-						$options .= "\n";
-					}
-					$options .= "$val";
-				}
-			}
-		}
-		else
-		{
-			$options = $mybb->input[$field];
-		}
-		$options = $db->escape_string($options);
-		$userfields[$field] = $options;
+		$errors = $userhandler->get_friendly_errors();
 	}
-	$userfields['ufid'] = $uid;
-	$db->insert_query(TABLE_PREFIX."userfields", $userfields);
+
+	// If there are errors, show them now.
+	if(is_array($errors))
+	{
+		cperror($errors);
+	}
+	else
+	{
+		$user_info = $userhandler->insert_user();
+	}
+
+	// Send out activation email when needed.
 	if($mybb->input['usergroup'] == 5)
 	{
 		$activationcode = random_str();
@@ -288,7 +265,7 @@ if($mybb->input['action'] == "do_add")
 		mymail($email, $emailsubject, $emailmessage);
 	}
 	$cache->updatestats();
-	cpredirect("users.php?lastuid=$uid", $lang->user_added);
+	cpredirect('users.php?lastuid='.$userinfo['uid'], $lang->user_added);
 }
 if($mybb->input['action'] == "do_edit")
 {
@@ -715,8 +692,10 @@ if($mybb->input['action'] == "add")
 	tableheader($lang->add_user);
 	tablesubheader($lang->required_info);
 	makeinputcode($lang->username, "userusername", "", 25, "", $mybb->settings['maxnamelength'], 0);
-	makepasswordcode($lang->password, "newpassword", "", 25, 0);
-	makeinputcode($lang->email, "email");
+	makepasswordcode($lang->password, "userpassword", "", 25, 0);
+	makepasswordcode($lang->password_confirm, "userpassword2", "", 25, 0);
+	makeinputcode($lang->email, "useremail");
+	makeinputcode($lang->email_confirm, "useremail2");
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", 2);
 	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
 	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", 0, "--".$lang->primary_usergroup."--");
@@ -729,7 +708,15 @@ if($mybb->input['action'] == "add")
 	makeinputcode($lang->aim_handle, "aim");
 	makeinputcode($lang->yahoo_handle, "yahoo");
 	makeinputcode($lang->msn_address, "msn");
-	makeinputcode($lang->birthday, "birthday");
+
+	// Add the birthday dropdown.
+	$options = array(
+		'years_back' => 100,
+		'years_ahead' => '0',
+	);
+	$birthday_dropdown = build_date_dropdown('birthday', $options);
+	makelabelcode($lang->birthday, $birthday_dropdown);
+
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
 	{
@@ -823,7 +810,7 @@ if($mybb->input['action'] == "add")
 	makeyesnocode($lang->email_notify, "emailnotify", "yes");
 	makeyesnocode($lang->enable_pms, "receivepms", "yes");
 	makeyesnocode($lang->pm_popup, "pmpopup", "yes");
-	makeyesnocode($lang->pm_notify, "pmnotify", "yes");
+	makeyesnocode($lang->pm_notify, "emailpmnotify", "yes");
 	makeinputcode($lang->time_offset, "timezoneoffset");
 	makeselectcode($lang->style, "style", "themes", "tid", "name", 0, $lang->use_default, "", "tid>1");
 	maketextareacode($lang->signature, "signature", "", 6, 50);
@@ -2029,10 +2016,10 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	makeinputcode($lang->posts_less, "search[postsless]");
 	makeinputcode($lang->and_reg_ip, "search[regip]");
 	makeinputcode($lang->and_post_ip, "search[postip]");
-	
+
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
 	$profilefields = $db->num_rows($query);
-	
+
 	if($profilefields > 0)
 	{
 		tablesubheader($lang->custom_profile_fields);
@@ -2048,7 +2035,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 			{
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions)) {
-					$select .= "<option value=\"\">&nbsp;</option>";					
+					$select .= "<option value=\"\">&nbsp;</option>";
 					while(list($key, $val) = each($expoptions))
 					{
 						$val = trim($val);
@@ -2113,7 +2100,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 			makelabelcode($profilefield['name'], $code);
 		}
 	}
-	
+
 	tablesubheader($lang->sorting_misc_options);
 	$bgcolor = getaltbg();
 	echo "<tr>\n";
