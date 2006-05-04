@@ -43,7 +43,7 @@ if($mybb->input['action'] == "do_add")
 		"find" => $db->escape_string($mybb->input['find']),
 		"image" => $db->escape_string($mybb->input['path']),
 		"disporder" => intval($mybb->input['disporder']),
-		"showclickable" => $mybb->input['showclickable']
+		"showclickable" => $db->escape_string($mybb->input['showclickable'])
 		);
 
 	$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
@@ -76,7 +76,7 @@ if($mybb->input['action'] == "do_edit")
 		"find" => $db->escape_string($mybb->input['find']),
 		"image" => $db->escape_string($mybb->input['path']),
 		"disporder" => intval($mybb->input['disporder']),
-		"showclickable" => $mybb->input['showclickable']
+		"showclickable" => $db->escape_string($mybb->input['showclickable'])
 		);
 
 	$db->update_query(TABLE_PREFIX."smilies", $smilie, "sid='".intval($mybb->input['sid'])."'");

@@ -116,19 +116,19 @@ if($mybb->input['action'] == "do_edit")
 	else
 	{
 		$sqlarray = array(
-			"canview" => $mybb->input['canview'],
-			"candlattachments" => $mybb->input['candlattachments'],
-			"canpostthreads" => $mybb->input['canpostthreads'],
-			"canpostreplys" => $mybb->input['canpostreplys'],
-			"canpostattachments" => $mybb->input['canpostattachments'],
-			"canratethreads" => $mybb->input['canratethreads'],
-			"caneditposts" => $mybb->input['caneditposts'],
-			"candeleteposts" => $mybb->input['candeleteposts'],
-			"candeletethreads" => $mybb->input['candeletethreads'],
-			"caneditattachments" => $mybb->input['caneditattachments'],
-			"canpostpolls" => $mybb->input['canpostpolls'],
-			"canvotepolls" => $mybb->input['canvotepolls'],
-			"cansearch" => $mybb->input['cansearch'],
+			"canview" => $db->escape_string($mybb->input['canview']),
+			"candlattachments" => $db->escape_string($mybb->input['candlattachments']),
+			"canpostthreads" => $db->escape_string($mybb->input['canpostthreads']),
+			"canpostreplys" => $db->escape_string($mybb->input['canpostreplys']),
+			"canpostattachments" => $db->escape_string($mybb->input['canpostattachments']),
+			"canratethreads" => $db->escape_string($mybb->input['canratethreads']),
+			"caneditposts" => $db->escape_string($mybb->input['caneditposts']),
+			"candeleteposts" => $db->escape_string($mybb->input['candeleteposts']),
+			"candeletethreads" => $db->escape_string($mybb->input['candeletethreads']),
+			"caneditattachments" => $db->escape_string($mybb->input['caneditattachments']),
+			"canpostpolls" => $db->escape_string($mybb->input['canpostpolls']),
+			"canvotepolls" => $db->escape_string($mybb->input['canvotepolls']),
+			"cansearch" => $db->escape_string($mybb->input['cansearch']),
 			);
 		if($fid)
 		{

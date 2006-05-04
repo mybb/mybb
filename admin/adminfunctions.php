@@ -1006,7 +1006,7 @@ function logadmin()
 	}
 	$now = time();
 	$ipaddress = getip();
-	$db->query("INSERT INTO ".TABLE_PREFIX."adminlog (uid,dateline,scriptname,action,querystring,ipaddress) VALUES ('".$mybbadmin['uid']."','".$now."','".$scriptname."','".$mybb->input['action']."','".$querystring."','".$ipaddress."')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."adminlog (uid,dateline,scriptname,action,querystring,ipaddress) VALUES ('".$mybbadmin['uid']."','".$now."','".$scriptname."','".$db->escape_string($mybb->input['action'])."','".$db->escape_string($querystring)."','".$ipaddress."')");
 }
 
 function buildacpnav($finished=1)
@@ -1847,7 +1847,7 @@ function rebuildsettings()
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings ORDER BY title ASC");
 	while($setting = $db->fetch_array($query))
 	{
-		$setting['value'] = addslashes($setting['value']);
+		$setting['value'] = $db->escape_string($setting['value']);
 		$settings .= "\$settings['".$setting['name']."'] = \"".$setting['value']."\";\n";
 		$mybb->settings[$setting['name']] = $setting['value'];
 	}

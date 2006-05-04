@@ -181,8 +181,8 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 	$leaderarray = array(
 		"gid" => $mybb->input['gid'],
 		"uid" => $user['uid'],
-		"canmanagemembers" => $mybb->input['canmanagemembers'],
-		"canmanagerequests" => $mybb->input['canmanagerequests'],
+		"canmanagemembers" => $db->escape_string($mybb->input['canmanagemembers']),
+		"canmanagerequests" => $db->escape_string($mybb->input['canmanagerequests']),
 		);
 
 	if($mybb->input['action'] == "do_editgroupleader")

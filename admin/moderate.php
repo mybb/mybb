@@ -246,7 +246,7 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 }
 if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts") {
 	$done = 0;
-	$query = $db->query("SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, f.name AS forumname, u.username AS username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.visible=0 ORDER BY p.dateline DESC");
+	$query = $db->query("SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, f.name AS forumname, u.username AS username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.visible=0 ORDER BY p.dateline DESC");
 	$count = $db->num_rows($query);
 	if(!$tcount && !$count && $mybb->input['action'] == "threadsposts")
 	{

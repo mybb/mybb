@@ -223,15 +223,15 @@ if($mybb->input['action'] == "do_add")
 		"yahoo" => $db->escape_string($mybb->input['yahoo']),
 		"msn" => $db->escape_string($mybb->input['msn']),
 		"birthday" => $db->escape_string($mybb->input['birthday']),
-		"allownotices" => $mybb->input['allownotices'],
-		"hideemail" => $mybb->input['hideemail'],
-		"emailnotify" => $mybb->input['emailnotify'],
-		"invisible" => $mybb->input['invisible'],
-		"style" => $mybb->input['style'],
+		"allownotices" => $db->escape_string($mybb->input['allownotices']),
+		"hideemail" => $db->escape_string($mybb->input['hideemail']),
+		"emailnotify" => $db->escape_string($mybb->input['emailnotify')],
+		"invisible" => $db->escape_string($mybb->input['invisible']),
+		"style" => $db->escape_string($mybb->input['style']),
 		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
-		"receivepms" => $mybb->input['receivepms'],
-		"pmpopup" => $mybb->input['pmpopup'],
-		"pmnotify" => $mybb->input['pmnotify'],
+		"receivepms" => $db->escape_string($mybb->input['receivepms']),
+		"pmpopup" =>$db->escape_string( $mybb->input['pmpopup']),
+		"pmnotify" => $db->escape_string($mybb->input['pmnotify']),
 		"signature" => $db->escape_string($mybb->input['signature'])
 		);
 	$db->insert_query(TABLE_PREFIX."users", $user);
@@ -415,15 +415,15 @@ if($mybb->input['action'] == "do_edit")
 		"yahoo" => $db->escape_string($mybb->input['yahoo']),
 		"msn" => $db->escape_string($mybb->input['msn']),
 		"birthday" => $db->escape_string($mybb->input['birthday']),
-		"allownotices" => $mybb->input['allownotices'],
-		"hideemail" => $mybb->input['hideemail'],
-		"emailnotify" => $mybb->input['emailnotify'],
-		"invisible" => $mybb->input['invisible'],
-		"style" => $mybb->input['stylesel'],
+		"allownotices" => $db->escape_string($mybb->input['allownotices']),
+		"hideemail" => $db->escape_string($mybb->input['hideemail']),
+		"emailnotify" => $db->escape_string($mybb->input['emailnotify')],
+		"invisible" => $db->escape_string($mybb->input['invisible']),
+		"style" => $db->escape_string($mybb->input['style']),
 		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
-		"receivepms" => $mybb->input['receivepms'],
-		"pmpopup" => $mybb->input['pmpopup'],
-		"pmnotify" => $mybb->input['pmnotify'],
+		"receivepms" => $db->escape_string($mybb->input['receivepms']),
+		"pmpopup" =>$db->escape_string( $mybb->input['pmpopup']),
+		"pmnotify" => $db->escape_string($mybb->input['pmnotify']),
 		"signature" => $db->escape_string($mybb->input['signature']),
 		"postnum" => intval($mybb->input['postnum']),
 	);
@@ -1476,6 +1476,8 @@ if($mybb->input['action'] == "find")
 	{
 		$searchop['sortby'] = "username";
 	}
+	$searchop['page'] = intval($searchop['page'];
+	$searchop['perpage'] = intval($searchop['perpage']);
 	if(!$searchop['perpage'])
 	{
 		$searchop['perpage'] = "30";
@@ -1818,8 +1820,8 @@ if($mybb->input['action'] == "do_manageban")
 		$banneduser = array(
 			"admin" => $mybbadmin['uid'],
 			"dateline" => time(),
-			"gid" => $mybb->input['gid'],
-			"bantime" => $mybb->input['liftafter'],
+			"gid" => intval($mybb->input['gid']),
+			"bantime" => $db->escape_string($mybb->input['liftafter']),
 			"lifted" => $liftdate,
 			"reason" => $db->escape_string($mybb->input['banreason'])
 			);
@@ -1835,7 +1837,7 @@ if($mybb->input['action'] == "do_manageban")
 			"gid" => $mybb->input['gid'],
 			"oldgroup" => $user['usergroup'],
 			"dateline" => time(),
-			"bantime" => $mybb->input['liftafter'],
+			"bantime" => $db->escape_string($mybb->input['liftafter']),
 			"lifted" => $liftdate,
 			"reason" => $db->escape_string($mybb->input['banreason'])
 			);

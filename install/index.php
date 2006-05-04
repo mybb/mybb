@@ -587,7 +587,7 @@ function insert_templates()
 	foreach($templates as $template)
 	{
 		$templatename = $template['attributes']['name'];
-		$templatevalue = addslashes($template['value']);
+		$templatevalue = $db->escape_string($template['value']);
 		$templateversion = $template['attributes']['version'];
 		$time = time();
 		$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$sid','$templateversion','','$time')");
@@ -762,8 +762,8 @@ function create_admin_user()
 		foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
 		{
 			$groupdata = array(
-				"name" => addslashes($settinggroup['attributes']['name']),
-				"description" => addslashes($settinggroup['attributes']['description']),
+				"name" => $db->escape_string($settinggroup['attributes']['name']),
+				"description" => $db->escape_string($settinggroup['attributes']['description']),
 				"disporder" => intval($settinggroup['attributes']['disporder']),
 				"isdefault" => $settinggroup['attributes']['isdefault']
 				);
@@ -773,11 +773,11 @@ function create_admin_user()
 			foreach($settinggroup['setting'] as $setting)
 			{
 				$settingdata = array(
-					"name" => addslashes($setting['attributes']['name']),
-					"title" => addslashes($setting['title'][0]['value']),
-					"description" => addslashes($setting['description'][0]['value']),
-					"optionscode" => addslashes($setting['optionscode'][0]['value']),
-					"value" => addslashes($setting['settingvalue'][0]['value']),
+					"name" => $db->escape_string($setting['attributes']['name']),
+					"title" => $db->escape_string($setting['title'][0]['value']),
+					"description" => $db->escape_string($setting['description'][0]['value']),
+					"optionscode" => $db->escape_string($setting['optionscode'][0]['value']),
+					"value" => $db->escape_string($setting['settingvalue'][0]['value']),
 					"disporder" => intval($setting['disporder'][0]['value']),
 					"gid" => $gid
 					);
@@ -795,14 +795,14 @@ function create_admin_user()
 		{
 			$mybb->input['bburl'] = substr($mybb->input['bburl'], 0, -1);
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".addslashes($mybb->input['bbname'])."' WHERE name='bbname'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".addslashes($mybb->input['bburl'])."' WHERE name='bburl'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".addslashes($mybb->input['websitename'])."' WHERE name='homename'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".addslashes($mybb->input['websiteurl'])."' WHERE name='homeurl'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".addslashes($mybb->input['cookiedomain'])."' WHERE name='cookiedomain'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".addslashes($mybb->input['cookiepath'])."' WHERE name='cookiepath'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".addslashes($mybb->input['contactemail'])."' WHERE name='adminemail'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='mailto:".addslashes($mybb->input['contactemail'])."' WHERE name='contactlink'");
+		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['bbname'])."' WHERE name='bbname'");
+		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['bburl'])."' WHERE name='bburl'");
+		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['websitename'])."' WHERE name='homename'");
+		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['websiteurl'])."' WHERE name='homeurl'");
+		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['cookiedomain'])."' WHERE name='cookiedomain'");
+		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['cookiepath'])."' WHERE name='cookiepath'");
+		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['contactemail'])."' WHERE name='adminemail'");
+		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='mailto:".$db->escape_string($mybb->input['contactemail'])."' WHERE name='contactlink'");
 
 		write_settings();
 
@@ -889,11 +889,11 @@ function install_done()
 	$saltedpw = md5(md5($salt).md5($mybb->input['adminpass']));
 
 	$newuser = array(
-		"username" => addslashes($mybb->input['adminuser']),
+		"username" => $db->escape_string($mybb->input['adminuser']),
 		"password" => $saltedpw,
 		"salt" => $salt,
 		"loginkey" => $loginkey,
-		"email" => addslashes($mybb->input['adminemail']),
+		"email" => $db->escape_string($mybb->input['adminemail']),
 		"usergroup" => 4,
 		"regdate" => $now,
 		"lastactive" => $now,
@@ -997,7 +997,7 @@ function write_settings()
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings ORDER BY title ASC");
 	while($setting = $db->fetch_array($query))
 	{
-		$setting['value'] = addslashes($setting['value']);
+		$setting['value'] = $db->escape_string($setting['value']);
 		$settings .= "\$settings['".$setting['name']."'] = \"".$setting['value']."\";\n";
 	}
 	$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n?>";

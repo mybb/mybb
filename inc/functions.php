@@ -911,7 +911,7 @@ function mysetarraycookie($name, $id, $value)
 	$cookie = $_COOKIE['mybb'];
 	$newcookie = unserialize($cookie[$name]);
 	$newcookie[$id] = $value;
-	$newcookie = addslashes(serialize($newcookie));
+	$newcookie = $db->escape_string(serialize($newcookie));
 	mysetcookie("mybb[$name]", $newcookie);
 }
 
@@ -1283,7 +1283,7 @@ function makesmilieinsert()
 					{
 						$smilies .=  "<tr>";
 					}
-					$find = addslashes(htmlspecialchars($find));
+					$find = $db->escape_string(htmlspecialchars($find));
 					$smilies .= "<td><img src=\"$image\" border=\"0\" class=\"smilie\" alt=\"$find\"></td>";
 					$i++;
 					$counter++;

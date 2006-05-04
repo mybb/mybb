@@ -551,7 +551,7 @@ class databaseEngine
 		}
 		else
 		{
-			$string = addslashes($string);
+			$string = $db->escape_string($string);
 		}
 		return $string;
 	}

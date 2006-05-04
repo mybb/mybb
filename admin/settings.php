@@ -50,6 +50,7 @@ if($mybb->input['action'] == "do_change") {
 		foreach($mybb->input['upsetting'] as $key => $val)
 		{
 			$val = $db->escape_string($val);
+			$key = intval($key);
 			$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$val' WHERE sid='$key'");
 		}
 	}
@@ -308,11 +309,13 @@ if($mybb->input['action'] == "add") {
 }
 if($mybb->input['action'] == "do_modify") {
 	cpheader();
-	while(list($sid, $order) = each($mybb->input['disporder'])) {
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET disporder='$order' WHERE sid='$sid'");
+	foreach($mybb->input['disporder']) as $sid => $order)
+	{
+		$db->query("UPDATE ".TABLE_PREFIX."settings SET disporder='".intval($order)."' WHERE sid='".intval($sid)."'");
 	}
-	while(list($gid, $order) = each($mybb->input['dispordercats'])) {
-		$db->query("UPDATE ".TABLE_PREFIX."settinggroups SET disporder='$order' WHERE gid='$gid'");
+	foreach($mybb->input['dispordercats']) as $gid => $order)
+	{
+		$db->query("UPDATE ".TABLE_PREFIX."settinggroups SET disporder='".intval($order)."' WHERE gid='".intval($gid)."'");
 	}
 	starttable();
 	tableheader($lang->cp_message_header);

@@ -18,6 +18,12 @@ $db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title=''");
 global $lang;
 $lang->load("templates");
 
+$mybb->input['tid'] = intval($mybb->input['tid']);
+$mybb->input['setid'] = intval($mybb->input['setid']);
+$mybb->input['expand'] = intval($mybb->input['expand']);
+$mybb->input['sid2'] = intval($mybb->input['sid2']);
+$mybb->input['sid'] = intval($mybb->input['sid']);
+
 addacpnav($lang->nav_templates, "templates.php");
 switch($mybb->input['action'])
 {
@@ -83,7 +89,7 @@ if($mybb->input['action'] == "do_add") {
 	$newtemplate = array(
 		"title" => $db->escape_string($mybb->input['title']),
 		"template" => $db->escape_string($mybb->input['template']),
-		"sid" => $mybb->input['setid'],
+		"sid" => intval($mybb->input['setid']),
 		"version" => $mybboard['vercode'],
 		"status" => "",
 		"dateline" => time()
@@ -349,8 +355,9 @@ if($mybb->input['action'] == "makeoriginals") {
 }
 
 if($mybb->input['action'] == "add") {
-	if($mybb->input['title']) {
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$mybb->input['title']."' AND sid='-2'");
+	if($mybb->input['title'])
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($mybb->input['title'])."' AND sid='-2'");
 		$template = $db->fetch_array($query);
 	}
 	cpheader();
@@ -404,12 +411,12 @@ if($mybb->input['action'] == "diff")
 	{
 		$mybb->input['sid1'] = -2;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$mybb->input['title']."' AND sid='".$mybb->input['sid1']."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($mybb->input['title'])."' AND sid='".$mybb->input['sid1']."'");
 	$template1 = $db->fetch_array($query);
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$mybb->input['title']."' AND sid='".$mybb->input['sid2']."'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($mybb->input['title'])."' AND sid='".$mybb->input['sid2']."'");
 	$template2 = $db->fetch_array($query);
-
+	
 	if($template1['template'] == $template2['template'])
 	{
 		cpmessage($lang->templates_the_same);
