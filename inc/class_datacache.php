@@ -452,5 +452,23 @@ class datacache
 		}
 		$this->update("mycode", $mycodes);
 	}
+	/**
+	 * Update the mailqueue cache
+	 *
+	 */
+	function updatemailqueue($last_run=0)
+	{
+		global $db;
+		$query = $db->query("SELECT COUNT(*) AS queue_size FROM ".TABLE_PREFIX."mailqueue");
+		$queue_size = $db->fetch_field($query, "queue_size");
+		
+		$mailqueue = $this->read("mailqueue");
+		$mailqueue['queue_size'] = $queue_size;
+		if($last_run > 0)
+		{
+			$mailqueue['last_run'] = $last_run;
+		}
+		$this->update("mailqueue", $mailqueue);
+	}
 }
 ?>

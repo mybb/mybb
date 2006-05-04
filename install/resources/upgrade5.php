@@ -144,6 +144,16 @@ function upgrade5_dbchanges()
       PRIMARY KEY(rid)
 	) TYPE=MyISAM;");
 	
+	$query = $db->query("CREATE TABLE ".TABLE_PREFIX."mailqueue (
+		mid int unsigned NOT NULL auto_increment,
+		mailto varchar(200) NOT NULL,
+		mailfrom varchar(200) NOT NULL,
+		subject varchar(200) NOT NULL,
+		message text NOT NULL,
+		headers text NOT NULL,
+		PRIMARY KEY(mid)
+	) TYPE=MyISAM;")
+	
 	$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='0'");
 	
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='1'");
@@ -154,6 +164,10 @@ function upgrade5_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD attachmentcount int(10) unsigned NOT NULL default '0'");
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD  posthash varchar(32) NOT NULL default '' AFTER visible");
+	
+	//
+	// NEED TO INSERT SETTINGS FOR FULLTEXT SEARCHING AND SHUTDOWN FUNCTION STUFF ____HERE____
+	//
 	
 	echo "Done</p>";
 
@@ -186,7 +200,21 @@ function upgrade5_dbchanges2()
 		);
 		$fulltext = "yes";
 	}
+	
+	// Register a shutdown function which actually tests if this functionality is working
+	register_shutdown_function('test_shutdown_function');
+	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("5_done");
+}
+
+
+
+function test_shutdown_function()
+{
+	global $db;
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='yes' WHERE name='useshutdownfunc'");
+	write_settings();
+}
 ?>

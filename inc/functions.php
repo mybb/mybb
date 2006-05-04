@@ -73,27 +73,87 @@ function outputpage($contents)
 	}
 	echo $contents;
 	$plugins->run_hooks("post_output_page");
-	if(NO_SHUTDOWN)
+	
+	// If the use shutdown functionality is turned off, run any shutdown related items now.
+	if($mybb->settings['useshutdownfunc'] == "no" && $mybb->use_shutdown == true)
 	{
 		run_shutdown();
 	}
 }
 
 /**
- * Runs the shutdown queries after the page has been sent to the browser.
+ * Adds a function to the list of functions to run on shutdown.
+ *
+ * @param string The name of the function.
+ */
+function add_shutdown($name)
+{
+	global $shutdown_functions;
+	if(function_exists($name))
+	{
+		$shutdown_functions[$name] = $name;
+	}
+}
+
+/**
+ * Runs the shutdown items after the page has been sent to the browser.
  *
  */
 function run_shutdown()
 {
-	global $db;
+	global $db, $cache, $shutdown_functions;
+	
+	// We have some shutdown queries needing to be run
 	if(is_array($db->shutdown_queries))
 	{
+		// Loop through and run them all
 		foreach($db->shutdown_queries as $query)
 		{
 			$db->query($query);
 		}
 	}
+	
+	// Run any shutdown functions if we have them
+	if(is_array($shutdown_functions))
+	{
+		foreach($shutdown_functions as $function)
+		{
+			$function();
+		}
+	}
 }
+
+/**
+ * Sends a specified amount of messages from the mail queue
+ *
+ * @param int The number of messages to send (Defaults to 20)
+ */
+function send_mail_queue($count=20)
+{
+	global $db, $cache;
+
+	// Check to see if the mail queue has messages needing to be sent
+	$mailcache = $cache->read("mailqueue");
+	if($mailcache['queue_size'] > 0)
+	{
+		$delete_ids = array();
+
+		// Fetch emails for this page view - and send them
+		$query = $db->simple_select(TABLE_PREFIX."mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
+		while($email = $db->fetch_array($query))
+		{
+			mymail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom']);
+			$delete_ids[$email['mid']] = $email['mid'];
+		}
+
+		// Delete those just sent from the queue
+		$delete_ids = implode(",", $delete_ids);
+		$db->delete_query(TABLE_PREFIX."mailqueue", "mid IN ({$delete_ids})");
+
+		// Update the mailqueue cache
+		$cache->updatemailqueue();
+	}
+}	
 
 /**
  * Parses the contents of a page before outputting it.
@@ -911,7 +971,7 @@ function mysetarraycookie($name, $id, $value)
 	$cookie = $_COOKIE['mybb'];
 	$newcookie = unserialize($cookie[$name]);
 	$newcookie[$id] = $value;
-	$newcookie = $db->escape_string(serialize($newcookie));
+	$newcookie = addslashes(serialize($newcookie));
 	mysetcookie("mybb[$name]", $newcookie);
 }
 

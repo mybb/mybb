@@ -433,7 +433,7 @@ class PostDataHandler extends DataHandler
 	 */
 	function insert_post()
 	{
-		global $db, $mybb, $plugins, $cache;
+		global $db, $mybb, $plugins, $cache, $lang;
 
 		$post = &$this->data;
 
@@ -558,7 +558,7 @@ class PostDataHandler extends DataHandler
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible,
-				"posthash" => $db->escape_sting($post['posthash'])
+				"posthash" => $db->escape_string($post['posthash'])
 				);
 			$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='{$post['pid']}'");
 			$pid = $post['pid'];
@@ -580,7 +580,7 @@ class PostDataHandler extends DataHandler
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible,
-				"posthash" => $db->escape_sting($post['posthash'])
+				"posthash" => $db->escape_string($post['posthash'])
 				);
 
 			$db->insert_query(TABLE_PREFIX."posts", $newreply);
@@ -607,16 +607,18 @@ class PostDataHandler extends DataHandler
 			$subject = $parser->parse_badwords($thread['subject']);
 			$excerpt = $parser->strip_mycode($post['message']);
 			$excerpt = substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+			
+			// Fetch any users subscribed to this thread and queue up their subscription notices
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language
 				FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u
-				WHERE f.type='s' AND f.tid='{$tid}'
+				WHERE f.type='s' AND f.tid='{$post['tid']}'
 				AND u.uid=f.uid
 				AND f.uid!='{$mybb->user['uid']}'
 				AND u.lastactive>'{$thread['lastpost']}'
 			");
 			while($subscribedmember = $db->fetch_array($query))
-			{
+			{echo 'fdsgdf';
 				if($subscribedmember['language'] != '' && $lang->languageExists($subscribedmember['language']))
 				{
 					$uselang = $subscribedmember['language'];
@@ -652,8 +654,20 @@ class PostDataHandler extends DataHandler
 				}
 				$emailsubject = sprintf($emailsubject, $subject);
 				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
-				mymail($subscribedmember['email'], $emailsubject, $emailmessage);
+				$new_email = array(
+					"mailto" => $db->escape_string($subscribedmember['email']),
+					"mailfrom" => '',
+					"subject" => $db->escape_string($emailsubject),
+					"message" => $db->escape_string($emailmessage)
+				);
+				$db->insert_query(TABLE_PREFIX."mailqueue", $new_email);
 				unset($userlang);
+				$queued_email = 1;
+			}
+			// Have one or more emails been queued? Update the queue count
+			if($queued_email == 1)
+			{
+				$cache->updatemailqueue();
 			}
 
 			// Update forum count
@@ -757,7 +771,7 @@ class PostDataHandler extends DataHandler
 	 */
 	function insert_thread()
 	{
-		global $db, $mybb, $plugins, $cache;
+		global $db, $mybb, $plugins, $cache, $lang;
 
 		// Yes, validating is required.
 		if(!$this->get_validated())
@@ -947,7 +961,7 @@ class PostDataHandler extends DataHandler
 				}
 			}
 
-			// Send out any forum subscription notices to users who are subscribed to this forum.
+			// Queue up any forum subscription notices to users who are subscribed to this forum.
 			$excerpt = substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language
@@ -995,10 +1009,21 @@ class PostDataHandler extends DataHandler
 				}
 				$emailsubject = sprintf($emailsubject, $forum['name']);
 				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $mybb->user['username'], $forum['name'], $mybb->settings['bbname'], $mybb->input['subject'], $excerpt, $mybb->settings['bburl'], $tid, $thread['fid']);
-				mymail($subscribedmember['email'], $emailsubject, $emailmessage);
+				$new_email = array(
+					"mailto" => $db->escape_string($subscribedmember['email']),
+					"mailfrom" => '',
+					"subject" => $db->escape_string($emailsubject),
+					"message" => $db->escape_string($emailmessage)
+				);
+				$db->insert_query(TABLE_PREFIX."mailqueue", $new_email);
 				unset($userlang);
+				$queued_email = 1;
 			}
-
+			// Have one or more emails been queued? Update the queue count
+			if($queued_email == 1)
+			{
+				$cache->updatemailqueue();
+			}
 			// Automatically subscribe the user to this thread if they've chosen to.
 			if($thread['options']['emailnotify'] != "no" && $thread['uid'] > 0)
 			{

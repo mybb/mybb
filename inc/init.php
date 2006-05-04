@@ -59,8 +59,6 @@ if(isset($_COOKIE['phpdbug']) || isset($_GET['phpdebug']))
 // END MYBB 1.2 DEVELOPMENT CODE
 //
 
-define("NO_SHUTDOWN", false);
-
 require MYBB_ROOT."inc/class_timers.php";
 $maintimer = new timer();
 
@@ -122,10 +120,8 @@ if(!defined("NO_PLUGINS"))
 	$plugins->load();
 }
 
-if(!NO_SHUTDOWN)
-{
-	register_shutdown_function("run_shutdown");
-}
+// Set up any shutdown functions we need to run globally
+add_shutdown('send_mail_queue');
 
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");

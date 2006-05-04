@@ -952,6 +952,9 @@ function install_done()
 		$db->update_query(TABLE_PREFIX."settings", $update_data, "name='searchtype'");
 		write_settings();
 	}
+	
+	// Register a shutdown function which actually tests if this functionality is working
+	register_shutdown_function('test_shutdown_function');
 
 	echo "<p>Building data cache's...";
 	require "../inc/class_datacache.php";
@@ -1004,5 +1007,12 @@ function write_settings()
 	$file = fopen("../inc/settings.php", "w");
 	fwrite($file, $settings);
 	fclose($file);
+}
+
+function test_shutdown_function()
+{
+	global $db;
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='yes' WHERE name='useshutdownfunc'");
+	write_settings();
 }
 ?>

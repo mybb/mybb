@@ -819,6 +819,14 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="useshutdownfunc">
+			<title>Use PHP's Shutdown Functionality</title>
+			<description><![CDATA[This setting for the most part is best left at the default which is detected upon installation. If thread indicators are not updating as well as other meta information, set this setting to 'No']]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[no]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="Show Forum Team Options" description="This section allows you to manage settings that affect the Forum Team Page (showteam.php)." disporder="10" isdefault="yes">
 		<setting name="showteamleaders">

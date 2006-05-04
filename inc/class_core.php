@@ -83,6 +83,12 @@ class MyBB {
 		"int" => array("tid", "pid", "uid", "eid", "pmid", "fid")
 	);
 
+	
+	/**
+	 * Using built in shutdown functionality provided by register_shutdown_function for < PHP 5?
+	 */
+	var $use_shutdown = false;
+	
 	/**
 	 * Constructor of class.
 	 *
@@ -129,6 +135,13 @@ class MyBB {
 			$this->debug = 1;
 		}
 		$this->clean_input();
+		
+		// Old version of PHP, need to register_shutdown_function
+		if(phpversion() < '5.0.5')
+		{
+			$this->use_shutdown = true;
+			register_shutdown_function(array(&$this, "__destruct"));
+		}
 	}
 
 	/**
@@ -246,6 +259,12 @@ class MyBB {
 		{
 			exit;
 		}
+	}
+	
+	function __destruct()
+	{
+		// Run shutdown function
+		run_shutdown();
 	}
 }
 ?>
