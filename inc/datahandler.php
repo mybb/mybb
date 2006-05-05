@@ -118,11 +118,16 @@ class DataHandler
 	 */
 	function get_friendly_errors()
 	{
+		global $lang;
+
 		// Prefix all the error codes with the language prefix.
 		foreach($this->errors as $error)
 		{
 			$lang_string = $this->language_prefix.'_'.$error['error_code'];
+
+			//
 			// MYBB 1.2 DEV CODE
+			//
 			if(!$lang->$lang_string) {
 				if(is_array($error['data']))
 				{
@@ -137,15 +142,18 @@ class DataHandler
 				$arg_info = '';
 				continue;
 			}
+			//
 			// END MYBB 1.2 DEV CODE
+			//
+
 			if(is_array($error['data']))
 			{
-				$error_data = array_unshift($error['data'], $lang->$lang->string);
+				$error_data = array_unshift($error['data'], $lang->$lang_string);
 				$errors[] = call_user_func_array("sprintf", $error_data);
 			}
 			else
 			{
-				$errors[] = $lang_string;
+				$errors[] = $lang->$lang_string;
 			}
 		}
 		return $errors;

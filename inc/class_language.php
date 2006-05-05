@@ -101,13 +101,22 @@ class MyLanguage
 	 *
 	 * @param string The section name.
 	 */
-	function load($section)
+	function load($section, $isdatahandler=false)
 	{
 		// Assign language variables.
-		$lfile = $this->path."/".$this->language."/".$section.".lang.php";
+		// Datahandlers are never in admin lang directory.
+		if($isdatahandler === true)
+		{
+			$this->language = str_replace('/admin', '', $this->language);
+			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
+		}
+		else
+		{
+			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
+		}
 		if(file_exists($lfile))
 		{
-			require $lfile;
+			require_once $lfile;
 		}
 		else
 		{

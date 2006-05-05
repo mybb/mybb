@@ -183,7 +183,7 @@ if($mybb->input['action'] == "do_add")
 	// Set up user handler.
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("insert");
-	$lang->load('userdata');
+	$lang->load('datahandler_user', true);
 
 	// Set the data for the new user.
 	$user = array(
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "do_add")
 		"timezone" => $mybb->input['timezoneoffset'],
 		"language" => $mybb->input['language'],
 		"profile_fields" => $mybb->input['profile_fields'],
-		"regip" => $session->ipaddress,
+		"regip" => $mybb->input['ipaddress'],
 		"avatar" => $mybb->input['avatar'],
 		"website" => $mybb->input['website'],
 		"icq" => $mybb->input['icq'],
@@ -394,7 +394,7 @@ if($mybb->input['action'] == "do_edit")
 		"birthday" => $db->escape_string($mybb->input['birthday']),
 		"allownotices" => $db->escape_string($mybb->input['allownotices']),
 		"hideemail" => $db->escape_string($mybb->input['hideemail']),
-		"emailnotify" => $db->escape_string($mybb->input['emailnotify')],
+		"emailnotify" => $db->escape_string($mybb->input['emailnotify']),
 		"invisible" => $db->escape_string($mybb->input['invisible']),
 		"style" => $db->escape_string($mybb->input['style']),
 		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
@@ -1463,7 +1463,7 @@ if($mybb->input['action'] == "find")
 	{
 		$searchop['sortby'] = "username";
 	}
-	$searchop['page'] = intval($searchop['page'];
+	$searchop['page'] = intval($searchop['page']);
 	$searchop['perpage'] = intval($searchop['perpage']);
 	if(!$searchop['perpage'])
 	{
