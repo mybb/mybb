@@ -309,11 +309,11 @@ if($mybb->input['action'] == "add") {
 }
 if($mybb->input['action'] == "do_modify") {
 	cpheader();
-	foreach($mybb->input['disporder']) as $sid => $order)
+	foreach($mybb->input['disporder'] as $sid => $order)
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."settings SET disporder='".intval($order)."' WHERE sid='".intval($sid)."'");
 	}
-	foreach($mybb->input['dispordercats']) as $gid => $order)
+	foreach($mybb->input['dispordercats'] as $gid => $order)
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."settinggroups SET disporder='".intval($order)."' WHERE gid='".intval($gid)."'");
 	}
