@@ -120,11 +120,11 @@ function checkbanned()
 {
 	global $db;
 	$time = time();
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE lifted<='$time' AND lifted!='perm'");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE lifted<='{$time}' AND lifted!='perm'");
 	while($banned = $db->fetch_array($query))
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='$banned[oldgroup]' WHERE uid='$banned[uid]'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='$banned[uid]'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='{$banned['oldgroup']}' WHERE uid='{$banned['uid']}'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='{$banned['uid']}'");
 	}
 }
 
@@ -149,12 +149,10 @@ $bantimes["0-0-2"] = "2 $lang->years";
 checkadminpermissions("caneditusers");
 logadmin();
 
+// Process adding of a user.
 if($mybb->input['action'] == "do_add")
 {
 
-	//
-	// UNSURE ABOUT THIS PART - TO BE INSPECTED
-	//
 	// Determine the usergroup stuff
 	if(is_array($mybb->input['additionalgroups']))
 	{
@@ -172,17 +170,49 @@ if($mybb->input['action'] == "do_add")
 		$additionalgroups = "";
 	}
 
-	$usergroup = $mybb->input['usergroup'];
+	//
+	// UNSURE ABOUT THIS PART - TO BE INSPECTED
+	//
 
 	// $user['profile_fields'] needs to be passed too, unsure what goes in
-
+	// Old code:
+	/*
+	while($profilefield = $db->fetch_array($query))
+	{
+		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+		$thing = explode("\n", $profilefield['type'], "2");
+		$type = trim($thing[0]);
+		$field = "fid$profilefield[fid]";
+		$options = "";
+		if($type == "multiselect" || $type == "checkbox")
+		{
+			if(is_array($mybb->input[$field]))
+			{
+				while(list($key, $val) = each($mybb->input[$field]))
+				{
+					if(!empty($options))
+					{
+						$options .= "\n";
+					}
+					$options .= "$val";
+				}
+			}
+		}
+		else
+		{
+			$options = $mybb->input[$field];
+		}
+		$options = $db->escape_string($options);
+		$userfields[$field] = $options;
+	}
+	*/
 	//
 	// END UNSURE
 	//
 
 	// Set up user handler.
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
-	$userhandler = new UserDataHandler("insert");
+	$userhandler = new UserDataHandler('insert');
 	$lang->load('datahandler_user', true);
 
 	// Set the data for the new user.
@@ -192,7 +222,7 @@ if($mybb->input['action'] == "do_add")
 		"password2" => $mybb->input['userpassword2'],
 		"email" => $mybb->input['useremail'],
 		"email2" => $mybb->input['useremail2'],
-		"usergroup" => $usergroup,
+		"usergroup" => $mybb->input['usergroup'],
 		"additionalgroups" => $additionalgroups,
 		"displaygroup" => $mybb->input['displaygroup'],
 		"usertitle" => $mybb->input['usertitle'],
@@ -265,87 +295,12 @@ if($mybb->input['action'] == "do_add")
 		mymail($email, $emailsubject, $emailmessage);
 	}
 	$cache->updatestats();
-	cpredirect('users.php?lastuid='.$userinfo['uid'], $lang->user_added);
+	cpredirect("users.php?lastuid={$userinfo['uid']}", $lang->user_added);
 }
+
+// Process editing of a user.
 if($mybb->input['action'] == "do_edit")
 {
-	/* Fetch user details */
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."users
-		WHERE uid='".intval($mybb->input['uid'])."'
-	");
-	$user = $db->fetch_array($query);
-
-	/* Check if the name entered already exists. */
-	$query = $db->query("
-		SELECT username
-		FROM ".TABLE_PREFIX."users
-		WHERE username='".$db->escape_string($mybb->input['userusername'])."'
-		AND username!='".$db->escape_string($user['username'])."'
-	");
-	if($db->fetch_array($query))
-	{
-		cpmessage($lang->error_name_exists);
-	}
-
-	if(!$mybb->input['email'])
-	{
-		cpmessage($lang->missing_fields);
-	}
-	if($mybb->input['website'] == "http://" || $mybb->input['website'] == "none")
-	{
-		$mybb->input['website'] = "";
-	}
-
-	if($mybb->input['newpassword'] != "")
-	{
-		update_password($user['uid'], md5($mybb->input['newpassword']), $user['salt']);
-	}
-	// Custom profile fields
-	$querypart1 = "";
-	$querypart2 = "";
-	$comma = "";
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."profilefields
-		ORDER BY disporder
-	");
-	while($profilefield = $db->fetch_array($query))
-	{
-		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-		$thing = explode("\n", $profilefield['type'], "2");
-		$type = trim($thing[0]);
-		$field = "fid$profilefield[fid]";
-		$options = "";
-		if($type == "multiselect" || $type == "checkbox")
-		{
-			if(is_array($mybb->input[$field]))
-			{
-				while(list($key, $val) = each($mybb->input[$field]))
-				{
-					if(!empty($options))
-					{
-						$options .= "\n";
-					}
-					$options .= "$val";
-				}
-			}
-		}
-		else
-		{
-			$options = $mybb->input[$field];
-		}
-		$options = $db->escape_string($options);
-		$userfields[$field] = $options;
-	}
-	$userfields['ufid'] = intval($mybb->input['uid']);
-	$db->query("
-		DELETE FROM ".TABLE_PREFIX."userfields
-		WHERE ufid='".intval($mybb->input['uid'])."'
-	");
-	$db->insert_query(TABLE_PREFIX."userfields", $userfields);
-
 	// Determine the usergroup stuff
 	if(is_array($mybb->input['additionalgroups']))
 	{
@@ -363,50 +318,80 @@ if($mybb->input['action'] == "do_edit")
 		$additionalgroups = "";
 	}
 
-	$birthday = explode("-", $mybb->input['birthday']);
-	if($birthday[0] < 10 && $birthday[0] != "")
-	{
-		$nbirthday[0] = "0".$birthday[0];
-	}
-	if($birthday[1] < 10 && $birthday[1] != "")
-	{
-		$nbirthday[1] = "0".$birthday[1];
-	}
-	if($nbirthday[0] && $nbirthday[1])
-	{
-		$mybb->input['birthday'] = $nbirthday[0]."-".$nbirthday[1]."-".$nbirthday[2];
-	}
+	// Set up user handler.
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
+	$userhandler = new UserDataHandler('update');
+	$lang->load('datahandler_user', true);
 
-	/* Update users table. */
-	$user_new = array(
-		"username" => $db->escape_string($mybb->input['userusername']),
-		"email" => $db->escape_string($mybb->input['email']),
-		"usergroup" => intval($mybb->input['usergroup']),
+	// Set the data for the new user.
+	$user = array(
+		"uid" => $mybb->input['uid'],
+		"username" => $mybb->input['userusername'],
+		"password" => $mybb->input['userpassword'],
+		"password2" => $mybb->input['userpassword2'],
+		"email" => $mybb->input['useremail'],
+		"email2" => $mybb->input['useremail2'],
+		"usergroup" => $mybb->input['usergroup'],
 		"additionalgroups" => $additionalgroups,
-		"displaygroup" => intval($mybb->input['displaygroup']),
-		"usertitle" => $db->escape_string($mybb->input['usertitle']),
-		"avatar" => $db->escape_string($mybb->input['avatar']),
-		"website" => $db->escape_string($mybb->input['website']),
-		"icq" => $db->escape_string($mybb->input['icq']),
-		"aim" => $db->escape_string($mybb->input['aim']),
-		"yahoo" => $db->escape_string($mybb->input['yahoo']),
-		"msn" => $db->escape_string($mybb->input['msn']),
-		"birthday" => $db->escape_string($mybb->input['birthday']),
-		"allownotices" => $db->escape_string($mybb->input['allownotices']),
-		"hideemail" => $db->escape_string($mybb->input['hideemail']),
-		"emailnotify" => $db->escape_string($mybb->input['emailnotify']),
-		"invisible" => $db->escape_string($mybb->input['invisible']),
-		"style" => $db->escape_string($mybb->input['style']),
-		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
-		"receivepms" => $db->escape_string($mybb->input['receivepms']),
-		"pmpopup" =>$db->escape_string( $mybb->input['pmpopup']),
-		"pmnotify" => $db->escape_string($mybb->input['pmnotify']),
-		"signature" => $db->escape_string($mybb->input['signature']),
-		"postnum" => intval($mybb->input['postnum']),
+		"displaygroup" => $mybb->input['displaygroup'],
+		"usertitle" => $mybb->input['usertitle'],
+		"referrer" => $mybb->input['referrername'],
+		"timezone" => $mybb->input['timezoneoffset'],
+		"language" => $mybb->input['language'],
+		"profile_fields" => $mybb->input['profile_fields'],
+		"regip" => $mybb->input['ipaddress'],
+		"avatar" => $mybb->input['avatar'],
+		"website" => $mybb->input['website'],
+		"icq" => $mybb->input['icq'],
+		"aim" => $mybb->input['aim'],
+		"yahoo" => $mybb->input['yahoo'],
+		"msn" => $mybb->input['msn'],
+		"style" => $mybb->input['style'],
+		"signature" => $mybb->input['signature']
 	);
-	$db->update_query(TABLE_PREFIX."users", $user_new, "uid='".intval($mybb->input['uid'])."'");
 
-	/* Update posts and threads made by this user to new username and also update last poster values. */
+	$user['birthday'] = array(
+		"day" => $mybb->input['birthday_day'],
+		"month" => $mybb->input['birthday_month'],
+		"year" => $mybb->input['birthday_year']
+	);
+
+	$user['options'] = array(
+		"allownotices" => $mybb->input['allownotices'],
+		"hideemail" => $mybb->input['hideemail'],
+		"emailnotify" => $mybb->input['emailnotify'],
+		"receivepms" => $mybb->input['receivepms'],
+		"pmpopup" => $mybb->input['pmpopup'],
+		"emailpmnotify" => $mybb->input['emailpmnotify'],
+		"invisible" => $mybb->input['invisible'],
+		"enabledst" => $mybb->input['enabledst']
+	);
+
+	// Set the data of the user in the datahandler.
+	$userhandler->set_data($user);
+	$errors = "";
+
+	// Validate the user and get any errors that might have occurred.
+	if(!$userhandler->validate_user())
+	{
+		$errors = $userhandler->get_friendly_errors();
+	}
+
+	// If there are errors, show them now.
+	if(is_array($errors))
+	{
+		cperror($errors);
+	}
+	else
+	{
+		$user_info = $userhandler->update_user();
+	}
+
+	//
+	// THE NEXT PIECE OF CODE MAY NEED TO BE MOVED INTO THE DATAHANDLER?
+	//
+
+	// Update posts and threads made by this user to new username and also update last poster values.
 	if($mybb->input['userusername'] != $user['username'])
 	{
 		$username_update = array(
@@ -421,10 +406,17 @@ if($mybb->input['action'] == "do_edit")
 		$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".$db->escape_string($user['username'])."'");
 		$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".$db->escape_string($user['username'])."'");
 	}
+
+	//
+	// END POSSIBLE DATAHANDLER CODE
+	//
+
 	$cache->updatestats();
 
-	cpredirect("users.php?lastuid=".intval($mybb->input['uid']), $lang->profile_updated);
+	cpredirect("users.php?lastuid={$userinfo['uid']}", $lang->profile_updated);
 }
+
+// Process the deleting of a user.
 if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])

@@ -348,7 +348,7 @@ class UserDataHandler extends DataHandler
 			// If the profile field is required, but not filled in, present error.
 			if(!$profile_fields[$field] && $profilefield['required'] == "yes" && !$proferror)
 			{
-				$this->set_error('error_missingrequiredfields');
+				$this->set_error('missing_required_fields');
 				return false;
 			}
 
@@ -396,7 +396,7 @@ class UserDataHandler extends DataHandler
 			$referrer = $db->fetch_array($query);
 			if(!$referrer['uid'])
 			{
-				$this->set_error('badreferrer', array($user['referrer']));
+				$this->set_error('invalid_referrer', array($user['referrer']));
 				return false;
 			}
 		}
@@ -406,7 +406,7 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	* Verifies if yes/no options haven't been modified.
+	* Verifies user options.
 	*
 	* @return boolean True when valid, false when invalid.
 	*/
@@ -415,19 +415,19 @@ class UserDataHandler extends DataHandler
 		$options = &$this->data['options'];
 
 		// Verify yes/no options.
-		$this->verify_yesno_option(&$options, 'allownotices', 'yes');
-		$this->verify_yesno_option(&$options, 'hideemail', 'no');
-		$this->verify_yesno_option(&$options, 'emailnotify', 'no');
-		$this->verify_yesno_option(&$options, 'receivepms', 'yes');
-		$this->verify_yesno_option(&$options, 'pmpopup', 'yes');
-		$this->verify_yesno_option(&$options, 'pmnotify', 'yes');
-		$this->verify_yesno_option(&$options, 'invisible', 'no');
-		$this->verify_yesno_option(&$options, 'remember', 'yes');
-		$this->verify_yesno_option(&$options, 'dst', 'no');
-		$this->verify_yesno_option(&$options, 'showsigs', 'yes');
-		$this->verify_yesno_option(&$options, 'showavatars', 'yes');
-		$this->verify_yesno_option(&$options, 'showquickreply', 'yes');
-		$this->verify_yesno_option(&$options, 'showredirect', 'yes');
+		$this->verify_yesno_option($options, 'allownotices', 'yes');
+		$this->verify_yesno_option($options, 'hideemail', 'no');
+		$this->verify_yesno_option($options, 'emailnotify', 'no');
+		$this->verify_yesno_option($options, 'receivepms', 'yes');
+		$this->verify_yesno_option($options, 'pmpopup', 'yes');
+		$this->verify_yesno_option($options, 'pmnotify', 'yes');
+		$this->verify_yesno_option($options, 'invisible', 'no');
+		$this->verify_yesno_option($options, 'remember', 'yes');
+		$this->verify_yesno_option($options, 'dst', 'no');
+		$this->verify_yesno_option($options, 'showsigs', 'yes');
+		$this->verify_yesno_option($options, 'showavatars', 'yes');
+		$this->verify_yesno_option($options, 'showquickreply', 'yes');
+		$this->verify_yesno_option($options, 'showredirect', 'yes');
 
 		if($this->method == "insert" || (array_key_exists('showcodebuttons', $options) && $options['showcodebuttons'] != 0))
 		{
@@ -482,7 +482,14 @@ class UserDataHandler extends DataHandler
 		$this->data['options'] = $options;
 	}
 
-	function verify_yesno_option($options, $option, $default='yes')
+	/**
+	* Verifies if yes/no options haven't been modified.
+	*
+	* @param array The user options array.
+	* @param string The specific option to check.
+	* @param string Optionally specify if the default should be used.
+	*/
+	function verify_yesno_option(&$options, $option, $default='yes')
 	{
 		if($this->method == "insert" || array_key_exists($option, $options))
 		{
