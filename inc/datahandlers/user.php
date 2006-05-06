@@ -108,7 +108,7 @@ class UserDataHandler extends DataHandler
 		// Always check for the length of the password.
 		if(my_strlen($user['password']) < 6)
 		{
-			$this->set_error('invalid_password_length');
+			$this->set_error('invalid_password_length', array($mybb->settings['minpasswordlength'], $mybb->settings['maxpasswordlength']));
 			return false;
 		}
 

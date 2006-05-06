@@ -26,6 +26,6 @@ $l['userdata_invalid_msn_address'] = 'The MSN address you entered is invalid. Pl
 $l['userdata_invalid_birthday'] = 'The birthday you entered is invalid. Please go back and enter a valid birthday or leave the field empty.';
 $l['userdata_invalid_referrer'] = 'The referrer you entered does not exist. Please go back and enter an existing referrer or leave the field empty.';
 $l['userdata_invalid_language'] = 'The language you selected does not exist. Please go back and select an existing language.';
-$l['userdata_missing_required_fields'] 'You did not enter all required profile fields. Please go back and fill in the required fields.';
+$l['userdata_missing_required_fields'] = 'You did not enter all required profile fields. Please go back and fill in the required fields.';
 
 ?>
