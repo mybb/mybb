@@ -63,4 +63,29 @@ $l['group_deleted'] = "The setting group has successfully been deleted.";
 $l['setting_edited'] = "The setting has successfully been modified.";
 $l['group_edited'] = "The setting group has successfully been edited.";
 $l['group_exists'] = "A setting group with that name already exists. Please choose another one.";
+
+/**
+ * Translation instructions for settings and setting groups:
+ *
+ * Groups:
+ *          * Obtain the group key from the edit group page.
+ *          * Add language variables in the following format:
+ *                $l['setting_group_{key}'] = "Group Name Here";
+ *                $l['setting_group_{key}_desc'] = "Group Description";
+ *
+ *            Ex:
+ *                $l['setting_group_general'] = "General Settings";
+ *                $l['setting_group_general_desc'] = "Description of general settings here";
+ *
+ * Settings:
+ *          * Obtain the setting name from the edit seting page.
+ *          * Add language variables in the following format:
+ *                $l['setting_{name}'] = "Setting Name Here";
+ *                $l['setting_{name}_desc'] = "Setting Description";
+ *
+ *            Ex:
+ *                $l['setting_bbname'] = "Board Name";
+ *                $l['setting_bbname_desc'] = "Description for board name here";
+ *
+ */
 ?>

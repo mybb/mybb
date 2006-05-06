@@ -766,6 +766,7 @@ function create_admin_user()
 		foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
 		{
 			$groupdata = array(
+				"key" => $db->escape_string($settinggroup['attributes']['key'])
 				"name" => $db->escape_string($settinggroup['attributes']['name']),
 				"description" => $db->escape_string($settinggroup['attributes']['description']),
 				"disporder" => intval($settinggroup['attributes']['disporder']),

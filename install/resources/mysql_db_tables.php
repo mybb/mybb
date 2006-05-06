@@ -444,6 +444,7 @@ $tables[] = "CREATE TABLE mybb_sessions (
 
 $tables[] = "CREATE TABLE mybb_settinggroups (
   gid smallint unsigned NOT NULL auto_increment,
+  key varchar(100) NOT NULL default '',
   name varchar(220) NOT NULL default '',
   description text NOT NULL default '',
   disporder smallint unsigned NOT NULL default '0',

@@ -1,5 +1,5 @@
 <settings version="100.06" exported="1129013345">
-	<settinggroup name="Banning Options" description="" disporder="15" isdefault="yes">
+	<settinggroup key="banning" name="Banning Options" description="" disporder="15" isdefault="yes">
 		<setting name="bannedusernames">
 			<title>Banned Usernames</title>
 			<description><![CDATA[Ban users from registering certain usernames. You must seperate usernames with a comma.]]></description>
@@ -33,7 +33,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="yes">
+	<settinggroup key="onlineoffline" name="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="yes">
 		<setting name="boardclosed">
 			<title>Board Closed</title>
 			<description><![CDATA[If you need to close your forums to make some changes or perform an upgrade, this is the global switch. Viewers will not be able to view your forums, however, they will see a message with the reason you specify below.<br>
@@ -53,7 +53,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar." disporder="12" isdefault="yes">
+	<settinggroup key="calendar" name="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar." disporder="12" isdefault="yes">
 		<setting name="enablecalendar">
 			<title>Enable Calendar Functionality</title>
 			<description><![CDATA[If you wish to disable the calendar on your board, set this option to no.]]></description>
@@ -79,7 +79,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Clickable Smilies and BB Code" description="" disporder="17" isdefault="yes">
+	<settinggroup key="clickablecode" name="Clickable Smilies and BB Code" description="" disporder="17" isdefault="yes">
 		<setting name="smilieinserter">
 			<title>Clickable Smilies Inserter</title>
 			<description><![CDATA[Clickable smilies will appear on the posting pages if this option is set to 'on'.]]></description>
@@ -105,7 +105,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Control Panel Preferences (Global)" description="" disporder="19" isdefault="yes">
+	<settinggroup key="cpprefs" name="Control Panel Preferences (Global)" description="" disporder="19" isdefault="yes">
 		<setting name="cplanguage">
 			<title>Control Panel Language</title>
 			<description><![CDATA[The language of the control panel.]]></description>
@@ -123,7 +123,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Date and Time Formats" description="Here you can specify the different date and time formats used to display dates and times on the forums." disporder="4" isdefault="yes">
+	<settinggroup key="datetime" name="Date and Time Formats" description="Here you can specify the different date and time formats used to display dates and times on the forums." disporder="4" isdefault="yes">
 		<setting name="dateformat">
 			<title>Date Format</title>
 			<description><![CDATA[The format of the dates used on the forum. This format uses the PHP date() function. We recommend not changing this unless you know what you're doing.]]></description>
@@ -199,7 +199,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Forum Display Options" description="This section allows you to manage the various settings used on the forum display (forumdisplay.php) of your boards such as enabling and disabling different features." disporder="6" isdefault="yes">
+	<settinggroup key="forumdisplay" name="Forum Display Options" description="This section allows you to manage the various settings used on the forum display (forumdisplay.php) of your boards such as enabling and disabling different features." disporder="6" isdefault="yes">
 		<setting name="threadsperpage">
 			<title>Threads Per Page</title>
 			<description><![CDATA[The number of threads to display per page on the forum display]]></description>
@@ -257,7 +257,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Forum Home Options" description="This section allows you to manage the various settings used on the forum home (index.php) of your boards such as enabling and disabling different features." disporder="5" isdefault="yes">
+	<settinggroup key="forumhome" name="Forum Home Options" description="This section allows you to manage the various settings used on the forum home (index.php) of your boards such as enabling and disabling different features." disporder="5" isdefault="yes">
 		<setting name="showdescriptions">
 			<title>Show Forum Descriptions?</title>
 			<description><![CDATA[This option will allow you to turn off showing the descriptions for forums.]]></description>
@@ -323,7 +323,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="General Configuration" description="This section contains various settings such as your board name and url, as well as your website name and url." disporder="2" isdefault="yes">
+	<settinggroup key="general" name="General Configuration" description="This section contains various settings such as your board name and url, as well as your website name and url." disporder="2" isdefault="yes">
 		<setting name="bbname">
 			<title>Board Name</title>
 			<description><![CDATA[The name of your message boards. We recommend that it is not over 75 characters.]]></description>
@@ -440,7 +440,7 @@ email=Sent via Email]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="10" isdefault="yes">
+	<settinggroup key="memberlist" name="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="10" isdefault="yes">
 		<setting name="enablememberlist">
 			<title>Enable Member List Functionality</title>
 			<description><![CDATA[If you wish to disable the member list on your board, set this option to no.]]></description>
@@ -479,7 +479,7 @@ DESC=Descending]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Portal Settings" description="" disporder="14" isdefault="yes">
+	<settinggroup key="portal" name="Portal Settings" description="" disporder="14" isdefault="yes">
 		<setting name="portal_announcementsfid">
 			<title>Forum ID to pull announcements from</title>
 			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.  Separate them with a comma (,).]]></description>
@@ -553,7 +553,7 @@ DESC=Descending]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Posting" description="These options control the various elements in relation to posting messages on the forums." disporder="9" isdefault="yes">
+	<settinggroup key="posting" name="Posting" description="These options control the various elements in relation to posting messages on the forums." disporder="9" isdefault="yes">
 		<setting name="messagelength">
 			<title>Maximum Message Length</title>
 			<description><![CDATA[The maximum number of characters to allow in a message. A setting of 0 allows an unlimited length.]]></description>
@@ -694,7 +694,7 @@ show=Show to all Users]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Reputation" description="" disporder="10" isdefault="yes">
+	<settinggroup key="reputation" name="Reputation" description="" disporder="10" isdefault="yes">
 		<setting name="enablereputation">
 			<title>Enable Reputation Functionality</title>
 			<description><![CDATA[If you wish to disable the reputation system on your board, set this option to no.]]></description>
@@ -712,7 +712,7 @@ show=Show to all Users]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="11" isdefault="yes">
+	<settinggroup key="privatemessaging" name="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="11" isdefault="yes">
 		<setting name="enablepms">
 			<title>Enable Private Messaging Functionality</title>
 			<description><![CDATA[If you wish to disable the private messaging system on your board, set this option to no.]]></description>
@@ -754,7 +754,7 @@ show=Show to all Users]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="yes">
+	<settinggroup key="server" name="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="yes">
 		<setting name="gzipoutput">
 			<title>Use GZip Page Compression?</title>
 			<description><![CDATA[Do you want to compress pages in GZip format when they are sent to the browser? This means quicker downloads for your visitors, and less traffic usage for you.]]></description>
@@ -828,7 +828,7 @@ show=Show to all Users]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Show Forum Team Options" description="This section allows you to manage settings that affect the Forum Team Page (showteam.php)." disporder="10" isdefault="yes">
+	<settinggroup key="showteam" name="Show Forum Team Options" description="This section allows you to manage settings that affect the Forum Team Page (showteam.php)." disporder="10" isdefault="yes">
 		<setting name="showteamleaders">
 			<title>Separate Group Leaders</title>
 			<description><![CDATA[If set to 'yes,' and if there are group leaders, they will be displayed above the other group members.]]></description>
@@ -838,7 +838,7 @@ show=Show to all Users]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Show Thread Options" description="This section allows you to manage the various settings used on the thread display page (showthread.php) of your boards such as enabling and disabling different features." disporder="7" isdefault="yes">
+	<settinggroup key="showthread" name="Show Thread Options" description="This section allows you to manage the various settings used on the thread display page (showthread.php) of your boards such as enabling and disabling different features." disporder="7" isdefault="yes">
 		<setting name="postsperpage">
 			<title>Posts Per Page:</title>
 			<description><![CDATA[The number of posts to display per page. We recommend its not higher than 20 for people with slower connections.]]></description>
@@ -912,7 +912,7 @@ show=Show to all Users]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="User Registration and Profile Options" description="Here you can control various settings with relation to user account registration and account management." disporder="8" isdefault="yes">
+	<settinggroup key="member" name="User Registration and Profile Options" description="Here you can control various settings with relation to user account registration and account management." disporder="8" isdefault="yes">
 		<setting name="sigmycode">
 			<title>Allow myCode in Signatures</title>
 			<description><![CDATA[Do you want to allow myCode to be used in users' signatures?]]></description>
@@ -1118,7 +1118,7 @@ admin=Administrator Activation]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Who's Online" description="Various settings regarding the Who is Online functionality." disporder="13" isdefault="yes">
+	<settinggroup key="whosonline" name="Who's Online" description="Various settings regarding the Who is Online functionality." disporder="13" isdefault="yes">
 		<setting name="wolcutoffmins">
 			<title>Cut-off Time (mins)</title>
 			<description><![CDATA[The number of minutes before a user is marked offline. Recommended: 15.]]></description>
@@ -1128,7 +1128,7 @@ admin=Administrator Activation]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads and posts in MyBB," disporder="14" isdefault="yes">
+	<settinggroup key="search" name="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads and posts in MyBB," disporder="14" isdefault="yes">
 		<setting name="searchtype">
 			<title>Search Type</title>
 			<description><![CDATA[Please select the type of search system you wish to use. You can either chose between "Standard", or "Full Text" (depending on your database). Fulltext searching is more powerful than the standard MyBB searching and quicker too.]]></description>

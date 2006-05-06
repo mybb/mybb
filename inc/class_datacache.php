@@ -108,7 +108,7 @@ class datacache
 			{
 				$mybb->trigger_generic_error("cache_no_write");
 			}
-			$cachefile = fopen("./inc/cache/$name.php", "w");
+			$cachefile = fopen(MYBB_ROOT."inc/cache/$name.php", "w");
 			$cachecontents = "<?php\n\n/** MyBB Generated Cache - Do Not Alter\n * Cache Name: $name\n * Generated: ".gmdate("r")."\n*/\n\n";
 			$cachecontents .= "\$$name = ".var_export($contents, true).";\n\n ?>";
 			fwrite($cachefile, $cachecontents);

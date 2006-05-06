@@ -90,13 +90,14 @@ if($mybb->input['action'] == "do_add") {
 		cpredirect("settings.php", $lang->setting_added);
 	}
 	else if($add == "group") {
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE name='".$db->escape_string($mybb->input['name'])."'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE key='".$db->escape_string($mybb->input['key'])."'");
 		$g = $db->fetch_array($query);
-		if($g['name'])
+		if($g['key'])
 		{
 			cperror($lang->group_exists);
 		}
 		$settinggrouparray = array(
+			"key" => $db->escape_string($mybb->input['key']),
 			"name" => $db->escape_string($mybb->input['name']),
 			"description" => $db->escape_string($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])
@@ -189,6 +190,7 @@ if($mybb->input['action'] == "do_edit") {
 	}
 	else if($mybb->input['gid']) {
 		$settinggrouparray = array(
+			"key" => $db->escape_string($mybb->input['key']),
 			"name" => $db->escape_string($mybb->input['name']),
 			"description" => $db->escape_string($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])
@@ -230,6 +232,7 @@ if($mybb->input['action'] == "edit") {
 		makehiddencode("gid", $mybb->input['gid']);
 		starttable();
 		tableheader($lang->modify_group);
+		makeinputcode($lang->group_key, "key", $group['key']);
 		makeinputcode($lang->group_name, "name", $group['name']);
 		maketextareacode($lang->description, "description", $group['description']);
 		makeinputcode($lang->disp_order, "disporder", $group['disporder'], 4);
@@ -287,6 +290,7 @@ if($mybb->input['action'] == "add") {
 	makehiddencode("add", "group");
 	starttable();
 	tableheader($lang->add_group);
+	makeinputcode($lang->group_key, "key");
 	makeinputcode($lang->group_name, "name");
 	makeinputcode($lang->disp_order, "disporder", "", 4);
 	endtable();
@@ -486,6 +490,17 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 					$settingcode = "$options";
 				}
 			}
+			// Check if a custom language string exists for this setting title and description
+			$title_lang = "setting_".$group['name'];
+			$desc_lang = $name_lang."_desc";
+			if($lang->$title_lang)
+			{
+				$setting['title'] = $lang->$title_lang;
+			}
+			if($lang->$desc_lang)
+			{
+				$setting['description'] = $lang->$desc_lang;
+			}
 			tablesubheader($setting[title], "", 2, "left");
 			makelabelcode("<small>$setting[description]</small>", $settingcode);
 			$settingcode = "";
@@ -515,6 +530,18 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 			{
 				$settings_count = $lang->setting_count;
 			}
+			// Check if a custom language string exists for this setting group name and description
+			$name_lang = "setting_group_".$group['key'];
+			$desc_lang = $name_lang."_desc";
+			if($lang->$name_lang)
+			{
+				$group['name'] = $lang->$name_lang;
+			}
+			if($lang->$desc_lang)
+			{
+				$group['description'] = $lang->$desc_lang;
+			}
+			
 			$bgcolor = getaltbg();
 			startform("settings.php");
 			makehiddencode("gid", $group['gid']);
