@@ -264,7 +264,10 @@ class MyBB {
 	function __destruct()
 	{
 		// Run shutdown function
-		run_shutdown();
+		if(function_exists("run_shutdown"))
+		{
+			run_shutdown();
+		}
 	}
 }
 ?>
