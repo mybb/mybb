@@ -371,8 +371,8 @@ function sync_settings($redo=0)
 		$db->query("DROP TABLE ".TABLE_PREFIX."settinggroups");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."settinggroups (
 		  gid smallint unsigned NOT NULL auto_increment,
-		  key varchar(100) NOT NULL default '',
-		  name varchar(220) NOT NULL default '',
+		  name varchar(100) NOT NULL default '',
+		  title varchar(220) NOT NULL default '',
 		  description text NOT NULL default '',
 		  disporder smallint unsigned NOT NULL default '0',
 		  isdefault char(3) NOT NULL default '',
@@ -400,7 +400,7 @@ function sync_settings($redo=0)
 		{
 			$settings[$setting['name']] = 1;
 		}
-		$query = $db->query("SELECT key,name,gid FROM ".TABLE_PREFIX."settinggroups");
+		$query = $db->query("SELECT name,title,gid FROM ".TABLE_PREFIX."settinggroups");
 		while($group = $db->fetch_array($query))
 		{
 			$settinggroups[$group['name']] = $group['gid'];
@@ -414,8 +414,8 @@ function sync_settings($redo=0)
 	foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
 	{
 		$groupdata = array(
-			"key" => $db->escape_string($settinggroup['attributes']['key']),
 			"name" => $db->escape_string($settinggroup['attributes']['name']),
+			"title" => $db->escape_string($settinggroup['attributes']['title']),
 			"description" => $db->escape_string($settinggroup['attributes']['description']),
 			"disporder" => intval($settinggroup['attributes']['disporder']),
 			"isdefault" => $settinggroup['attributes']['isdefault']
@@ -428,7 +428,7 @@ function sync_settings($redo=0)
 		}
 		else
 		{
-			$gid = $settinggroups[$settinggroup['attributes']['key']];
+			$gid = $settinggroups[$settinggroup['attributes']['name']];
 			$db->insert_query(TABLE_PREFIX."settinggroups", $groupdata, "gid='{$gid}");
 		}
 		if(!$gid)

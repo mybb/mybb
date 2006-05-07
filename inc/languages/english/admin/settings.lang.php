@@ -39,7 +39,8 @@ $l['setting_group_orders_updated'] = "The setting and setting group orders have 
 $l['add_group'] = "Add Setting Group";
 $l['modify_group'] = "Modify Setting Group";
 $l['update_group'] = "Update Group";
-$l['group_name'] = "Group Name";
+$l['group_name'] = "Group Name<br /><small>This is the unique identifying string for this group, which is also used for language variables.</small>";
+$l['group_title'] = "Group Title<br /><small>This is the friendly title to show for this group if a custom language variable does not exist.</small>";
 $l['add_setting'] = "Add Setting";
 $l['modify_setting'] = "Modify Setting";
 $l['setting_title'] = "Setting Title";
@@ -68,10 +69,10 @@ $l['group_exists'] = "A setting group with that name already exists. Please choo
  * Translation instructions for settings and setting groups:
  *
  * Groups:
- *          * Obtain the group key from the edit group page.
+ *          * Obtain the group name (not title) from the edit group page.
  *          * Add language variables in the following format:
- *                $l['setting_group_{key}'] = "Group Name Here";
- *                $l['setting_group_{key}_desc'] = "Group Description";
+ *                $l['setting_group_{name}'] = "Group Name Here";
+ *                $l['setting_group_{name}_desc'] = "Group Description";
  *
  *            Ex:
  *                $l['setting_group_general'] = "General Settings";

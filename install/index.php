@@ -766,12 +766,12 @@ function create_admin_user()
 		foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
 		{
 			$groupdata = array(
-				"key" => $db->escape_string($settinggroup['attributes']['key'])
 				"name" => $db->escape_string($settinggroup['attributes']['name']),
+				"title" => $db->escape_string($settinggroup['attributes']['title']),
 				"description" => $db->escape_string($settinggroup['attributes']['description']),
 				"disporder" => intval($settinggroup['attributes']['disporder']),
 				"isdefault" => $settinggroup['attributes']['isdefault']
-				);
+			);
 			$db->insert_query(TABLE_PREFIX."settinggroups", $groupdata);
 			$gid = $db->insert_id();
 			$groupcount++;

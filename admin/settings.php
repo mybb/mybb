@@ -33,7 +33,7 @@ switch($mybb->input['action'])
 		{
 			$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) WHERE g.gid='".intval($mybb->input['gid'])."' GROUP BY s.gid");
 			$groupinfo = $db->fetch_array($query);
-			addacpnav($groupinfo['name']);
+			addacpnav($groupinfo['title']);
 		}
 		break;
 	case "modify":
@@ -89,16 +89,16 @@ if($mybb->input['action'] == "do_add") {
 		rebuildsettings();
 		cpredirect("settings.php", $lang->setting_added);
 	}
-	else if($add == "group") {
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE key='".$db->escape_string($mybb->input['key'])."'");
+	else if($mybb->input['add'] == "group") {
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE name='".$db->escape_string($mybb->input['name'])."'");
 		$g = $db->fetch_array($query);
 		if($g['key'])
 		{
 			cperror($lang->group_exists);
 		}
 		$settinggrouparray = array(
-			"key" => $db->escape_string($mybb->input['key']),
 			"name" => $db->escape_string($mybb->input['name']),
+			"title" => $db->escape_string($mybb->input['title']),
 			"description" => $db->escape_string($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])
 			);
@@ -145,7 +145,7 @@ if($mybb->input['action'] == "export")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups $gidwhere ORDER BY name ASC");
 	while($settinggroup = $db->fetch_array($query))
 	{
-		$xml .= "\t<settinggroup name=\"".$settinggroup['name']."\" description=\"".$settinggroup['description']."\" disporder=\"".$settinggroup['disporder']."\" isdefault=\"".$settinggroup['isdefault']."\">\n";
+		$xml .= "\t<settinggroup name=\"".$settinggroup['name']."\" title=\"".$settinggroup['title']."\" description=\"".$settinggroup['description']."\" disporder=\"".$settinggroup['disporder']."\" isdefault=\"".$settinggroup['isdefault']."\">\n";
 		if(is_array($settinglist[$settinggroup['gid']]))
 		{
 			foreach($settinglist[$settinggroup['gid']] as $setting)
@@ -190,8 +190,8 @@ if($mybb->input['action'] == "do_edit") {
 	}
 	else if($mybb->input['gid']) {
 		$settinggrouparray = array(
-			"key" => $db->escape_string($mybb->input['key']),
 			"name" => $db->escape_string($mybb->input['name']),
+			"title" => $db->escape_string($mybb->input['title']),
 			"description" => $db->escape_string($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])
 			);
@@ -232,8 +232,8 @@ if($mybb->input['action'] == "edit") {
 		makehiddencode("gid", $mybb->input['gid']);
 		starttable();
 		tableheader($lang->modify_group);
-		makeinputcode($lang->group_key, "key", $group['key']);
 		makeinputcode($lang->group_name, "name", $group['name']);
+		makeinputcode($lang->group_title, "title", $group['title']);
 		maketextareacode($lang->description, "description", $group['description']);
 		makeinputcode($lang->disp_order, "disporder", $group['disporder'], 4);
 		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
@@ -290,8 +290,8 @@ if($mybb->input['action'] == "add") {
 	makehiddencode("add", "group");
 	starttable();
 	tableheader($lang->add_group);
-	makeinputcode($lang->group_key, "key");
 	makeinputcode($lang->group_name, "name");
+	makeinputcode($lang->group_title, "title");
 	makeinputcode($lang->disp_order, "disporder", "", 4);
 	endtable();
 	endform($lang->add_group, $lang->reset_button);
@@ -335,7 +335,7 @@ if($mybb->input['action'] == "modify") {
 	startform("settings.php", "", "do_modify");
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
 	while($group = $db->fetch_array($query)) {
-		$settinglist .= "<li><strong>$group[name]</strong> ($lang->disp_order_list <input type=\"text\" name=\"dispordercats[$group[gid]]\" size=\"4\" value=\"$group[disporder]\"> ".
+		$settinglist .= "<li><strong>$group[title]</strong> ($lang->disp_order_list <input type=\"text\" name=\"dispordercats[$group[gid]]\" size=\"4\" value=\"$group[disporder]\"> ".
 			makelinkcode($lang->edit, "settings.php?action=edit&gid=$group[gid]").
 			makelinkcode($lang->delete, "settings.php?action=delete&gid=$group[gid]").
 			"</li>\n<ul>\n";
@@ -369,7 +369,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 		startform("settings.php", "", "do_change");
 		makehiddencode("gid", $mybb->input['gid']);
 		starttable();
-		tableheader($groupinfo['name'], "", 2);
+		tableheader($groupinfo['title'], "", 2);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE gid='".intval($mybb->input['gid'])."' ORDER BY disporder");
 		while($setting = $db->fetch_array($query)) {
 			$options = "";
@@ -531,11 +531,11 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 				$settings_count = $lang->setting_count;
 			}
 			// Check if a custom language string exists for this setting group name and description
-			$name_lang = "setting_group_".$group['key'];
-			$desc_lang = $name_lang."_desc";
-			if($lang->$name_lang)
+			$title_lang = "setting_group_".$group['name'];
+			$desc_lang = $title_lang."_desc";
+			if($lang->$title_lang)
 			{
-				$group['name'] = $lang->$name_lang;
+				$group['title'] = $lang->$title_lang;
 			}
 			if($lang->$desc_lang)
 			{
@@ -546,7 +546,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
 			startform("settings.php");
 			makehiddencode("gid", $group['gid']);
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\" width=\"88%\"><strong><a href=\"settings.php?action=change&gid=".$group['gid']."\">".$group['name']."</a></strong> (".$settings_count.")<br /><small>".$group['description']."</small>";
+			echo "<td class=\"$bgcolor\" width=\"88%\"><strong><a href=\"settings.php?action=change&gid=".$group['gid']."\">".$group['title']."</a></strong> (".$settings_count.")<br /><small>".$group['description']."</small>";
 			if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" || $group['isdefault'] != "yes")
 			{
 				$options['change'] = $lang->modify_settings;
