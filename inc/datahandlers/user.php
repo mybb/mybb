@@ -811,9 +811,10 @@ class UserDataHandler extends DataHandler
 		}
 
 		$user = &$this->data;
+		$user['uid'] = intval($user['uid']);
 
+		// Set up the update data.
 		$updateuser = array();
-
 		if(isset($user['username']))
 		{
 			$updateuser['username'] = $db->escape_string($user['username']);
@@ -935,18 +936,45 @@ class UserDataHandler extends DataHandler
 				$updateuser[$option] = $value;
 			}
 		}
-		$db->update_query(TABLE_PREFIX."users", $updateuser, "uid='".intval($user['uid'])."'");
 
+		// First, grab the old user details for later use.
+		$options = array(
+			'limit' => 1
+		);
+		$query = $db->simple_select(TABLE_PREFIX.'users', 'username', "uid='{$user['uid']}'", $options);
+		$old_user = $db->fetch_array($query);
+
+		// Actual updating happens here.
+		$db->update_query(TABLE_PREFIX."users", $updateuser, "uid='{$user['uid']}'");
+
+		// Maybe some userfields need to be updated?
 		if(is_array($user['user_fields']))
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='".intval($user['uid'])."'");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='{$user['uid']}'");
 			$fields = $db->fetch_array($query);
 			if(!$fields['ufid'])
 			{
-				$db->query("INSERT INTO ".TABLE_PREFIX."userfields (ufid) VALUES ('".intval($user['uid'])."')");
+				$db->query("INSERT INTO ".TABLE_PREFIX."userfields (ufid) VALUES ('{$user['uid']}')");
 			}
-			$db->update_query(TABLE_PREFIX."userfields", $user['user_fields'], "ufid='".intval($user['uid'])."'");
+			$db->update_query(TABLE_PREFIX."userfields", $user['user_fields'], "ufid='{$user['uid']}'");
 		}
+
+		// Let's make sure the user's name gets changed everywhere in the db if it changed.
+		if($updateuser['username'] != $old_user['username'])
+		{
+			$username_update = array(
+				"username" => $db->escape_string($updateuser['username'])
+			);
+			$lastposter_update = array(
+				"lastposter" => $db->escape_string($updateuser['username'])
+			);
+
+			$db->update_query(TABLE_PREFIX."posts", $username_update, "uid='{$user['uid']}'");
+			$db->update_query(TABLE_PREFIX."threads", $username_update, "uid='{$user['uid']}'");
+			$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".$db->escape_string($updateuser['username'])."'");
+			$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".$db->escape_string($updateuser['username'])."'");
+		}
+
 	}
 }
 ?>

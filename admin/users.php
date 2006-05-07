@@ -386,31 +386,6 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$user_info = $userhandler->update_user();
 	}
-
-	//
-	// THE NEXT PIECE OF CODE MAY NEED TO BE MOVED INTO THE DATAHANDLER?
-	//
-
-	// Update posts and threads made by this user to new username and also update last poster values.
-	if($mybb->input['userusername'] != $user['username'])
-	{
-		$username_update = array(
-			"username" => $db->escape_string($mybb->input['userusername'])
-		);
-		$lastposter_update = array(
-			"lastposter" => $db->escape_string($mybb->input['userusername'])
-		);
-
-		$db->update_query(TABLE_PREFIX."posts", $username_update, "uid='".intval($mybb->input['uid'])."'");
-		$db->update_query(TABLE_PREFIX."threads", $username_update, "uid='".intval($mybb->input['uid'])."'");
-		$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".$db->escape_string($user['username'])."'");
-		$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".$db->escape_string($user['username'])."'");
-	}
-
-	//
-	// END POSSIBLE DATAHANDLER CODE
-	//
-
 	$cache->updatestats();
 
 	cpredirect("users.php?lastuid={$userinfo['uid']}", $lang->profile_updated);

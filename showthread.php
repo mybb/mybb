@@ -182,11 +182,11 @@ if($mybb->input['action'] == "newpost")
 	$newpost = $db->fetch_array($query);
 	if($newpost['pid'])
 	{
-		header("Location:showthread.php?tid=".$tid."&pid=".$newpost['pid']."#pid".$newpost['pid']);
+		header("Location:showthread.php?tid={$tid}&pid={$newpost['pid']}#pid{$newpost['pid']}");
 	}
 	else
 	{
-		header("Location:showthread.php?action=lastpost&tid=".$tid);
+		header("Location:showthread.php?action=lastpost&tid={$tid}");
 	}
 }
 
