@@ -3317,7 +3317,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <thead>
 <tr>
 <td colspan="2" class="thead">
-<div class="expcolimage"><img src="images/collapse{$collapsedimg['quickreply']}.gif" id="quickreply_img" class="expander" border="0" /></div>
+<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.gif" id="quickreply_img" class="expander" border="0" /></div>
 <div><strong>{$lang->quick_reply}</strong></div>
 </td>
 </tr>
