@@ -478,15 +478,13 @@ class postParser
 		$str = str_replace('&amp;', '&', $str);
 		$str = str_replace("\n", '', $str);
 		$original = $str;
-
 		// See if open and close tags are provided.
 		$added_open_close = false;
 		if(!preg_match("#^\s*<\?#si", $str))
 		{
 			$added_open_close = true;
-			$str = "<?php\n".$str."\n?>";
+			$str = '<?php\n'.$str.'\n?>';
 		}
-
 		// If the PHP version < 4.2, catch highlight_string() output.
 		if(version_compare(PHP_VERSION, "4.2.0", "<"))
 		{
@@ -499,7 +497,6 @@ class postParser
 		{
 			$code = highlight_string($str, true);
 		}
-
 		// If < PHP 5, make XHTML compatible.
 		if(version_compare(PHP_VERSION, "5", "<"))
 		{
@@ -521,7 +518,10 @@ class postParser
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
-
+		
+		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
+		$code = str_replace('\\', '&#092;', $code);
+		
 		if($added_open_close == true)
 		{
 			$code = str_replace("<code><span style=\"color: #0000BB\">&lt;?php<br /></span>", "<code>", $code);
