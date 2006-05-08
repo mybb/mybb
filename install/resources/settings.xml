@@ -343,6 +343,16 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[db]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="cssmedium">
+			<title>CSS Medium</title>
+			<description><![CDATA[Please select from the list how you want the theme and CSS data to be stored and retrieved.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[radio
+db=Stored in the Database
+file=Stored in a text file (in forum root directory)]]></optionscode>
+			<settingvalue><![CDATA[db]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="decpoint">
 			<title>Decimal Point</title>
 			<description><![CDATA[The decimal point you use in your region.]]></description>

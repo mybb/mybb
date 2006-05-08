@@ -106,6 +106,7 @@ if($mybb->input['action'] == "do_edit")
 		);
 
 	$db->update_query(TABLE_PREFIX."themes", $themearray, "tid='".intval($mybb->input['tid'])."'");
+	update_cssfile($mybb->input['tid']);
 
 	cpredirect("themes.php", $lang->theme_updated."<br />$themelist");
 }
@@ -113,10 +114,11 @@ if($mybb->input['action'] == "do_edit")
 if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
-	{	
+	{
 		$db->query("UPDATE ".TABLE_PREFIX."users SET style='' WHERE style='".intval($mybb->input['tid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
 		cpredirect("themes.php", $lang->theme_deleted);
+		@unlink('../css'.intval($mybb->input['tid']).'.css');
 	}
 	else
 	{
@@ -230,7 +232,7 @@ if($mybb->input['action'] == "do_download")
 	header("Pragma: no-cache");
 	header("Expires: 0");
 	echo $xml;
-	exit;	
+	exit;
 }
 if($mybb->input['action'] == "do_import")
 {
@@ -367,6 +369,7 @@ if($mybb->input['action'] == "do_import")
 	$db->insert_query(TABLE_PREFIX."themes", $themearray);
 	$tid = $db->insert_id();
 	update_theme($tid, $mybb->input['pid'], $themebits, $css, 0);
+	update_cssfile($tid);
 	$lang->theme_imported = sprintf($lang->theme_imported, $name);
 	cpredirect("themes.php", $lang->theme_imported);
 }
@@ -603,5 +606,28 @@ function theme_hop(tid)
 	cpfooter();
 }
 
+function update_cssfile($tid)
+{
+	global $mybb, $db;
+	$filename = '../css'.intval($tid).'.css';
+	//If the css storage medium is in a file, then create a new css file
+	if($mybb->settings['cssmedium'] == 'file')
+	{
+		$query = $db->simple_select(TABLE_PREFIX.'themes', 'css', "tid='".intval($tid)."'");
+		$theme = $db->fetch_array($query);
+		//Make sure the file is writeable if it exists. The is_writeable function does not work if the file doesn't exist
+		if((is_writeable($filename) && file_exists($filename)) || !file_exists($filename))
+		{
+			$cssfp = @fopen($filename, 'w');
+			if($cssfp)
+			{
+				fwrite($cssfp, $theme['css']);
+				fclose($cssfp);
+				return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}
 
 ?>
