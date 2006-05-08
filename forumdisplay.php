@@ -756,7 +756,15 @@ if($threadcache)
 		// Threads and posts requiring moderation
 		if($thread['unapprovedposts'] && $ismod)
 		{
-			$unapproved_posts = " (".mynumberformat($thread['unapprovedposts']).")";
+			if($forum['unapprovedposts'] > 1)
+			{
+				$unapproved_posts_count = sprintf($lang->thread_unapproved_posts_count, $forum['unapprovedthreads']);
+			}
+			else
+			{
+				$unapproved_posts_count = sprintf($lang->thread_unapproved_post_count, 1);
+			}
+			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".mynumberformat($thread['unapprovedposts']).")</span>";
 		}
 		else
 		{
@@ -938,19 +946,27 @@ function getforums($pid="0", $depth=1, $permissions="")
 					{
 						if($forum['unapprovedposts'])
 						{
-							$unapproved_posts = " (".mynumberformat($forum['unapprovedposts']).")";
-						}
-						else
-						{
-							$unapproved_posts = '';
+							if($forum['unapprovedposts'] > 1)
+							{
+								$unapproved_posts_count = sprintf($lang->unapproved_posts_count, $forum['unapprovedposts']);
+							}
+							else
+							{
+								$unapproved_posts_count = sprintf($lang->unapproved_post_count, 1);
+							}
+							$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".mynumberformat($forum['unapprovedposts']).")</span>";
 						}
 						if($forum['unapprovedthreads'])
 						{
-							$unapproved_threads = " (".mynumberformat($forum['unapprovedthreads']).")";
-						}
-						else
-						{
-							$unapproved_threads = '';
+							if($forum['unapprovedthread'] > 1)
+							{
+								$unapproved_threads_count = sprintf($lang->unapproved_thread_count, $forum['unapprovedthreads']);
+							}
+							else
+							{
+								$unapproved_threads_count = sprintf($lang->unapproved_thread_count, 1);
+							}
+							$unapproved_threads = " <span title=\"{$unapproved_threads_count}\">(".mynumberformat($forum['unapprovedthreads']).")</span>";
 						}
 					}
 

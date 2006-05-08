@@ -77,6 +77,12 @@ $l['icon_lock'] = " Locked thread.";
 $l['attachment_count'] = "This thread contains 1 attachment.";
 $l['attachment_count_multiple'] = "This thread contains {1} attachments.";
 $l['rss_discovery_forum'] = "Latest Threads in {1}";
+$l['forum_unapproved_posts_count'] = "There are currently {1} unapproved posts in this forum.";
+$l['forum_unapproved_post_count'] = "There is currently 1 unapproved post in this forum.";
+$l['forum_unapproved_threads_count'] = "There are currently {1} unapproved threads in this forum.";
+$l['forum_unapproved_thread_count'] = "There is currently 1 unapproved thread in this forum.";
+$l['thread_unapproved_posts_count'] = "There are currently {1} unapproved posts in this thread.";
+$l['thread_unapproved_post_count'] = "There is currently 1 unapproved post in this thread.";
 
 $l['error_containsnoforums'] = "Sorry but the forum you are currently viewing does not contain any child forums.";
 

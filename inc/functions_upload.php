@@ -235,6 +235,7 @@ function upload_attachment($attachment)
 
 	// Generate the array for the insert_query
 	$attacharray = array(
+		"pid" => intval($pid),
 		"posthash" => $posthash,
 		"uid" => $mybb->user['uid'],
 		"filename" => $db->escape_string($file['original_filename']),

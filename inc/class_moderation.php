@@ -736,7 +736,7 @@ class Moderation
 	 */
 	function approve_posts($pids, $tid, $fid)
 	{
-		global $db;
+		global $db, $cache;
 
 		$where = "pid IN (".implode(",", $pids).")";
 
@@ -770,7 +770,7 @@ class Moderation
 	 */
 	function unapprove_posts($pids, $tid, $fid)
 	{
-		global $db;
+		global $db, $cache;
 
 		$where = "pid IN (".implode(",", $pids).")";
 
