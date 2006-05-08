@@ -28,7 +28,7 @@ class datacache
 		if($mybb->config['cachestore'] == "files")
 		{
 			// Check if no files exist in cache directory, if not we need to create them (possible move from db to files)
-			if(!file_exists("./inc/cache/version.php"))
+			if(!file_exists(MYBB_ROOT."inc/cache/version.php"))
 			{
 				$query = $db->query("SELECT title,cache FROM ".TABLE_PREFIX."datacache");
 				while($data = $db->fetch_array($query))
@@ -61,11 +61,11 @@ class datacache
 		{
 			if($hard)
 			{
-				@include("./inc/cache/".$name.".php");
+				@include(MYBB_ROOT."inc/cache/".$name.".php");
 			}
 			else
 			{
-				@include_once("./inc/cache/".$name.".php");
+				@include_once(MYBB_ROOT."inc/cache/".$name.".php");
 			}
 			$this->cache[$name] = $$name;
 			unset($$name);
@@ -104,7 +104,7 @@ class datacache
 		// If using files, update the cache file too
 		if($mybb->config['cachestore'] == "files")
 		{
-			if(!@is_writable("./inc/cache/"))
+			if(!@is_writable(MYBB_ROOT."inc/cache/"))
 			{
 				$mybb->trigger_generic_error("cache_no_write");
 			}

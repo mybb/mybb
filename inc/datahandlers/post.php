@@ -642,7 +642,7 @@ class PostDataHandler extends DataHandler
 					if(!isset($langcache[$uselang]['emailsubject_subscription']))
 					{
 						$userlang = new MyLanguage;
-						$userlang->setPath("./inc/languages");
+						$userlang->setPath(MYBB_ROOT."inc/languages");
 						$userlang->setLanguage($uselang);
 						$userlang->load("messages");
 						$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
@@ -997,7 +997,7 @@ class PostDataHandler extends DataHandler
 					if(!isset($langcache[$uselang]['emailsubject_forumsubscription']))
 					{
 						$userlang = new MyLanguage;
-						$userlang->setPath("./inc/languages");
+						$userlang->setPath(MYBB_ROOT."inc/languages");
 						$userlang->setLanguage($uselang);
 						$userlang->load("messages");
 						$langcache[$uselang]['emailsubject_forumsubscription'] = $userlang->emailsubject_forumsubscription;

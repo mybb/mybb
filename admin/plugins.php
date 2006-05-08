@@ -49,12 +49,12 @@ if($mybb->input['action'] == "activate")
 	}
 
 	// Check if the file exists and throw an error if it doesn't
-	if(!file_exists("./inc/plugins/$file"))
+	if(!file_exists(MYBB_ROOT."inc/plugins/$file"))
 	{
 		cperror($lang->plugin_not_found);
 	}
 
-	include "./inc/plugins/$file";
+	include MYBB_ROOT."inc/plugins/$file";
 
 	//
 	// If this plugin has an activate/deactivate function then run it
@@ -78,7 +78,7 @@ if($mybb->input['action'] == "")
 	//
 	// Get a list of the plugin files which exist in the plugins directory
 	//
-	$dir = @opendir("./inc/plugins/");
+	$dir = @opendir(MYBB_ROOT."inc/plugins/");
 	if($dir)
 	{
 		while($file = readdir($dir))
@@ -106,7 +106,7 @@ if($mybb->input['action'] == "")
 	{
 		foreach($plugins_list as $plugin_file)
 		{
-			include "./inc/plugins/".$plugin_file;
+			include MYBB_ROOT."inc/plugins/".$plugin_file;
 			$codename = str_replace(".php", "", $plugin_file);
 			$infofunc = $codename."_info";
 			if(!function_exists($infofunc))

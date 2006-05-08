@@ -425,7 +425,7 @@ if($mybb->input['action'] == "diff")
 	$template1['template'] = explode("\n", htmlspecialchars($template1['template']));
 	$template2['template'] = explode("\n", htmlspecialchars($template2['template']));
 
-	require "./inc/class_diff.php";
+	require MYBB_ROOT."inc/class_diff.php";
 
 	$diff = &new Text_Diff($template1['template'], $template2['template']);
 	$renderer = &new Text_Diff_Renderer_inline();

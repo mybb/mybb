@@ -182,7 +182,7 @@ class PMDataHandler extends DataHandler
 			else
 			{
 				$userlang = new MyLanguage;
-				$userlang->setPath("./inc/languages");
+				$userlang->setPath(MYBB_ROOT."inc/languages");
 				$userlang->setLanguage($uselang);
 				$userlang->load("messages");
 				$emailsubject = $userlang->emailsubject_reachedpmquota;

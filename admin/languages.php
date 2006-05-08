@@ -171,7 +171,7 @@ if($mybb->input['action'] == "do_edit")
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
 	$editwith = basename($mybb->input['editwith']);
-	$folder = "./inc/languages/".$editlang."/";
+	$folder = MYBB_ROOT."/inc/languages/".$editlang."/";
 	if(!file_exists($folder))
 	{
 		cperror($lang->invalid_set);
