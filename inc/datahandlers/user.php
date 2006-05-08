@@ -281,7 +281,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_birthday()
 	{
-		$user = &$this->data['user'];
+		$user = &$this->data;
 		$birthday = &$user['birthday'];
 
 		if(!is_array($birthday))
@@ -623,11 +623,25 @@ class UserDataHandler extends DataHandler
 		global $mybb;
 
 		$user = &$this->data;
-
+		
+		// First, grab the old user details if this user exists
+		if($user['uid'])
+		{
+			$old_user = get_user($user['uid']);
+		}
+		
 		if($this->method == "insert" || isset($user['username']))
 		{
-			$this->verify_username();
-			$this->verify_username_exists();
+			// If the username is the same - no need to verify
+			if(!$old_user['username'] || $user['username'] != $old_user['username'])
+			{
+				$this->verify_username();
+				$this->verify_username_exists();
+			}
+			else
+			{
+				unset($user['username']);
+			}
 		}
 		if($this->method == "insert" || isset($user['password']))
 		{
@@ -938,11 +952,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// First, grab the old user details for later use.
-		$options = array(
-			'limit' => 1
-		);
-		$query = $db->simple_select(TABLE_PREFIX.'users', 'username', "uid='{$user['uid']}'", $options);
-		$old_user = $db->fetch_array($query);
+		$old_user = get_user($user['uid']);
 
 		// Actual updating happens here.
 		$db->update_query(TABLE_PREFIX."users", $updateuser, "uid='{$user['uid']}'");

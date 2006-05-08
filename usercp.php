@@ -159,6 +159,12 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		);
 	}
 	
+	$bday = array(
+		"day" => $mybb->input['bday1'],
+		"month" => $mybb->input['bday2'],
+		"year" => $mybb->input['bday3']
+	);
+	
 	// Set up user handler.
 	require_once "inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("update");

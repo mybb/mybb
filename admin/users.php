@@ -851,7 +851,13 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->aim_handle, "aim", $user['aim']);
 	makeinputcode($lang->yahoo_handle, "yahoo", $user['yahoo']);
 	makeinputcode($lang->msn_address, "msn", $user['msn']);
-	makeinputcode($lang->birthday, "birthday", $user['birthday']);
+	// Add the birthday dropdown.
+	$options = array(
+		'years_back' => 100,
+		'years_ahead' => '0',
+	);
+	$birthday_dropdown = build_date_dropdown('birthday', $options);
+	makelabelcode($lang->birthday, $birthday_dropdown);
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='$uid'");
 	$userfields = $db->fetch_array($query);
