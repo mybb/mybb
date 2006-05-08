@@ -742,6 +742,10 @@ function cperror($message="")
 		}
 		$error .= '</ul>';
 	}
+	else
+	{
+		$error = $message;
+	}
 
 	cpheader("", 0);
 	starttable("65%");
