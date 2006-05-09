@@ -166,6 +166,14 @@ function upgrade5_dbchanges()
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD  posthash varchar(32) NOT NULL default '' AFTER visible");
 	
+	
+	$db->query("DROP ".TALE_PREFIX."regimages");
+	$db->query("CREATE TABLE ".TABLE_PREFIX."captcha (
+	  imagehash varchar(32) NOT NULL default '',
+	  imagestring varchar(8) NOT NULL default '',
+	  dateline bigint(30) NOT NULL default '0'
+	) TYPE=MyISAM;");
+	
 	//
 	// NEED TO INSERT SETTINGS FOR FULLTEXT SEARCHING AND SHUTDOWN FUNCTION STUFF ____HERE____
 	//

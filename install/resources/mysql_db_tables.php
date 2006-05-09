@@ -116,6 +116,12 @@ $tables[] = "CREATE TABLE mybb_banned (
   reason varchar(255) NOT NULL default ''
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_captcha (
+  imagehash varchar(32) NOT NULL default '',
+  imagestring varchar(8) NOT NULL default '',
+  dateline bigint(30) NOT NULL default '0'
+) TYPE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_datacache (
   title varchar(50) NOT NULL default '',
   cache mediumtext NOT NULL default '',
@@ -382,12 +388,6 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   PRIMARY KEY  (fid)
 ) TYPE=MyISAM;";
 
-
-$tables[] = "CREATE TABLE mybb_regimages (
-  imagehash varchar(32) NOT NULL default '',
-  imagestring varchar(8) NOT NULL default '',
-  dateline bigint(30) NOT NULL default '0'
-) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_reportedposts (
   rid int unsigned NOT NULL auto_increment,

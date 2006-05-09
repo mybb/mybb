@@ -6298,7 +6298,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
 <td><span class="smalltext">{$lang->verification_note}</span></td>
-<td rowspan="2" align="center"><img src="image.php?action=regimage&amp;imagehash={$imagehash}" alt="{$lang->image_verification}" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span></td>
+<td rowspan="2" align="center"><img src="captcha.php?action=regimage&amp;imagehash={$imagehash}" alt="{$lang->image_verification}" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span></td>
 </tr>
 <tr>
 <td><input type="text" class="textbox" name="imagestring" value="" /><input type="hidden" name="imagehash" value="{$imagehash}" /></td>

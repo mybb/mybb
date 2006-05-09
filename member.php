@@ -147,13 +147,13 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."regimages WHERE imagehash='$imagehash' AND imagestring='$imagestring'");
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."captcha WHERE imagehash='$imagehash' AND imagestring='$imagestring'");
 		$imgcheck = $db->fetch_array($query);
 		if(!$imgcheck['dateline'])
 		{
 			$errors[]  = $lang->error_regimageinvalid;
 		}
-		$db->query("DELETE FROM ".TABLE_PREFIX."regimages WHERE imagehash='$imagehash'");
+		$db->query("DELETE FROM ".TABLE_PREFIX."captcha WHERE imagehash='$imagehash'");
 	}
 
 	if(is_array($errors))
@@ -519,7 +519,7 @@ if($mybb->input['action'] == "register")
 				"imagestring" => $randomstr,
 				"dateline" => time()
 				);
-			$db->insert_query(TABLE_PREFIX."regimages", $regimagearray);
+			$db->insert_query(TABLE_PREFIX."captcha", $regimagearray);
 			eval("\$regimage = \"".$templates->get("member_register_regimage")."\";");
 		}
 		if($mybb->settings['regtype'] != "randompass")

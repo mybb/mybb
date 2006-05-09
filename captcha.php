@@ -23,90 +23,108 @@ $max_size = 32;
 $min_angle = -30;
 $max_angle = 30;
 
-if($mybb->input['action'] == "regimage")
+
+if($mybb->input['imagehash'] == "test")
 {
-	if($mybb->input['imagehash'] == "test")
-	{
-		$imagestring = "MyBB";
-	}
-	else
-	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."regimages WHERE imagehash='".addslashes($mybb->input['imagehash'])."'");
-		$regimage = $db->fetch_array($query);
-		$imagestring = $regimage['imagestring'];
-	}
-	
-	$ttf_fonts = array();
-	// We have support for true-type fonts (FreeType 2)
-	if(function_exists("imagefttext"))
-	{
-		$ttfdir  = @opendir(MYBB_ROOT."inc/captcha_fonts");
-		if($ttfdir)
-		{
-			while($file = readdir($ttfdir))
-			{
-				if(is_file(MYBB_ROOT."inc/captcha_fonts/".$file) && getextension($file) == "ttf")
-				{
-					$ttf_fonts[] = MYBB_ROOT."inc/captcha_fonts/".$file;
-				}
-			}
-		}
-	}
-	if(count($ttf_fonts) > 0)
-	{
-		$use_ttf = 1;
-	}
-	else
-	{
-		$use_ttf = 0;
-	}
-
-	if(gd_version() >= 2)
-	{
-		$im = imagecreatetruecolor($img_width, $img_height);
-	}
-	else
-	{
-		$im = imagecreate($img_width, $img_height);
-	}
-	if(!$im)
-	{
-		die("No GD support.");
-	}
-	$bg_color = imagecolorallocate($im, 255, 255, 255);
-	imagefill($im, 0, 0, $bg_color);
-	$to_draw = rand(0, 2);
-	if($to_draw == 1)
-	{
-		draw_circles($im);
-	}
-	else if($to_draw == 2)
-	{
-		draw_squares($im);
-	}
-	else
-	{
-		draw_lines($im);
-	}
-	draw_dots($im);
-	draw_string($im, $imagestring);
-	$border_color = imagecolorallocate($im, 0, 0, 0);
-	imagerectangle($im, 0, 0, $img_width-1, $img_height-1, $border_color);
-
-	// Output the image
-	header("Content-type: image/png");
-	imagepng($im);
-	imagedestroy($im);
-	exit;
+	$imagestring = "MyBB";
 }
 else
 {
-	error($lang->error_invalidaction);
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."captcha WHERE imagehash='".addslashes($mybb->input['imagehash'])."'");
+	$regimage = $db->fetch_array($query);
+	$imagestring = $regimage['imagestring'];
+}
+	
+$ttf_fonts = array();
+
+// We have support for true-type fonts (FreeType 2)
+if(function_exists("imagefttext"))
+{
+	// Get a list of the files in the 'catpcha_fonts' directory
+	$ttfdir  = @opendir(MYBB_ROOT."inc/captcha_fonts");
+	if($ttfdir)
+	{
+		while($file = readdir($ttfdir))
+		{
+			// If this file is a ttf file, add it to the list
+			if(is_file(MYBB_ROOT."inc/captcha_fonts/".$file) && getextension($file) == "ttf")
+			{
+				$ttf_fonts[] = MYBB_ROOT."inc/captcha_fonts/".$file;
+			}
+		}
+	}
 }
 
-function draw_lines(&$im, $lines=50)
+// Have one or more TTF fonts in our array, we can use TTF captha's
+if(count($ttf_fonts) > 0)
+{
+	$use_ttf = 1;
+}
+else
+{
+	$use_ttf = 0;
+}
+
+// Check for GD >= 2, create base image
+if(gd_version() >= 2)
+{
+	$im = imagecreatetruecolor($img_width, $img_height);
+}
+else
+{
+	$im = imagecreate($img_width, $img_height);
+}
+
+// No GD support, die.
+if(!$im)
+{
+	die("No GD support.");
+}
+
+// Fill the background with white
+$bg_color = imagecolorallocate($im, 255, 255, 255);
+imagefill($im, 0, 0, $bg_color);
+
+// Draw random circles, squares or lines?
+$to_draw = rand(0, 2);
+if($to_draw == 1)
+{
+	draw_circles($im);
+}
+else if($to_draw == 2)
+{
+	draw_squares($im);
+}
+else
+{
+	draw_lines($im);
+}
+
+// Draw dots on the image
+draw_dots($im);
+
+// Write the image string to the image
+draw_string($im, $imagestring);
+
+// Draw a nice border around the image
+$border_color = imagecolorallocate($im, 0, 0, 0);
+imagerectangle($im, 0, 0, $img_width-1, $img_height-1, $border_color);
+
+// Output the image
+header("Content-type: image/png");
+imagepng($im);
+imagedestroy($im);
+exit;
+
+/**
+ * Draws a random number of lines on the image.
+ *
+ * @param resource The image.
+ */
+function draw_lines(&$im)
 {
 	global $img_width, $img_height;
+
 	for($i=10;$i<$img_width;$i+=10)
 	{
 		$color = imagecolorallocate($im, rand(150, 255), rand(150, 255), rand(150, 255));
@@ -119,6 +137,11 @@ function draw_lines(&$im, $lines=50)
 	}
 }
 
+/**
+ * Draws a random number of circles on the image.
+ *
+ * @param resource The image.
+ */
 function draw_circles(&$im)
 {
 	global $img_width, $img_height;
@@ -135,6 +158,11 @@ function draw_circles(&$im)
 	}
 }
 
+/**
+ * Draws a random number of dots on the image.
+ *
+ * @param resource The image.
+ */
 function draw_dots(&$im)
 {
 	global $img_width, $img_height;
@@ -146,6 +174,11 @@ function draw_dots(&$im)
 	}	
 }
 
+/**
+ * Draws a random number of squares on the image.
+ *
+ * @param resource The image.
+ */
 function draw_squares(&$im)
 {
 	global $img_width, $img_height;
@@ -162,12 +195,19 @@ function draw_squares(&$im)
 	}
 }
 
+/**
+ * Writes text to the image.
+ *
+ * @param resource The image.
+ * @param string The string to be written
+ */
 function draw_string(&$im, $string)
 {
 	global $use_ttf, $min_size, $max_size, $min_angle, $max_angle, $ttf_fonts, $img_height, $img_width;
 	$spacing = $img_width / strlen($string);
 	for($i=0;$i<strlen($string);$i++)
 	{
+		// Using TTF fonts
 		if($use_ttf)
 		{
 			// Select a random font size
@@ -212,6 +252,7 @@ function draw_string(&$im, $string)
 		}
 		else
 		{
+			// Get width/height of the character
 			$string_width = imagefontwidth(5);
 			$string_height = imagefontheight(5);
 
@@ -253,6 +294,11 @@ function draw_string(&$im, $string)
 	}
 }
 
+/**
+ * Obtain the version of GD installed.
+ *
+ * @return float Version of GD
+ */
 function gd_version()
 {
 	static $gd_version;
