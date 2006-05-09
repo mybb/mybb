@@ -2366,6 +2366,12 @@ function get_event_date($event)
 	return $event_date;
 }
 
+function get_profile_link($uid=0)
+{
+	$link = str_replace("{uid}", $uid, PROFILE_URL);
+	return $link;
+}
+
 function build_profile_link($username="", $uid=0)
 {
 	global $lang;
@@ -2380,35 +2386,34 @@ function build_profile_link($username="", $uid=0)
 	}
 	else
 	{
-		return "<a href=\"".str_replace("{uid}", $uid, PROFILE_URL)."\">".$htmlspecialchars."</a>";
+		return "<a href=\"".get_profile_link($uid)."\">".$htmlspecialchars."</a>";
 	}
 }
 
-function build_forum_link($fid, $title, $page=0)
+function get_forum_link($fid, $page=0)
 {
 	if($page > 0)
 	{
 		$forum_link = str_replace("{fid}", $fid, FORUM_URL_PAGED);
-		$forum_link = str_replace("{page}", $page, FORUM_URL_PAGED);
+		return str_replace("{page}", $page, $forum_link);
 	}
 	else
 	{
-		$forum_link = str_replace("{fid}", $fid, FORUM_URL);
+		return str_replace("{fid}", $fid, FORUM_URL);
 	}
-	return "<a href=\"".$forum_link."\">".$title."</a>";
 }
-function build_thread_link($tid, $subject, $page=0)
+
+function get_thread_link($tid, $page=0)
 {
 	if($page > 0)
 	{
 		$thread_link = str_replace("{tid}", $tid, THREAD_URL_PAGED);
-		$thread_link = str_replace("{page}", $page, THREAD_URL_PAGED);
+		return str_replace("{page}", $page, $thread_link);
 	}
 	else
 	{
-		$thread_link = str_replace("{tid}", $fid, THREAD_URL);
+		return str_replace("{tid}", $tid, THREAD_URL);
 	}
-	return "<a href=\"".$thread_link."\">".$subject."</a>";
 }
 
 function get_user($uid)

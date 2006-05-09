@@ -113,7 +113,7 @@ class session
 	*/
 	function load_user($uid, $password="")
 	{
-		global $_COOKIE, $mybbuser, $mybb, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang, $mybbgroups, $loadpmpopup, $session;
+		global $mybbuser, $mybb, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang, $mybbgroups, $loadpmpopup, $session;
 
 		$query = $db->query("SELECT u.*, f.*, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) WHERE u.uid='$uid'");
 		$mybb->user = $db->fetch_array($query);
@@ -304,7 +304,7 @@ class session
 	*/
 	function load_guest()
 	{
-		global $_COOKIE, $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $lang;
+		global $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $lang;
 
 		// Set up some defaults
 		$time = time();
@@ -348,7 +348,7 @@ class session
 		// Gather a full permission set for this guest
 		//
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
-		$mydisplaygroup = usergroup_displaygroup(1);
+		$mydisplaygroup = usergroup_displaygroup$mybb->user['displaygroup']);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
 		// Update the online data.
@@ -376,7 +376,7 @@ class session
 	*/
 	function load_spider($spider)
 	{
-		global $_COOKIE, $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $bots, $lang, $botgroup;
+		global $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $bots, $lang;
 
 		// Set up some defaults
 		$time = time();
@@ -387,11 +387,11 @@ class session
 		$mybb->user['username'] = "";
 		$mybb->user['uid'] = 0;
 		$mybbgroups = $this->botgroup;
-		$mybb->user['displaygroup'] = $botgroup;
+		$mybb->user['displaygroup'] = $this->botgroup;
 
 		// Gather a full permission set for this spider.
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
-		$mydisplaygroup = usergroup_displaygroup(1);
+		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
 		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE sid='bot=".$spider."'");

@@ -495,7 +495,7 @@ class postParser
 		}
 		else
 		{
-			$code = highlight_string($str, true);
+			$code = @highlight_string($str, true);
 		}
 		// If < PHP 5, make XHTML compatible.
 		if(version_compare(PHP_VERSION, "5", "<"))

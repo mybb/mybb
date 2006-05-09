@@ -72,7 +72,7 @@ if($mybb->input['action'] == "do_add")
 if($mybb->input['action'] == "do_delete")
 {
 	// remove type from database
-	if($deletesubmit)
+	if($mybb->input['deletesubmit'])
 	{
 		$db->query("DELETE FROM ".TABLE_PREFIX."attachtypes WHERE atid='".intval($mybb->input['atid'])."'");
 		$cache->updateattachtypes();
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "search")
 
 if($mybb->input['action'] == "edit")
 {
-	if($delete)
+	if($mybb->input['delete'])
 	{
 		$mybb->input['action'] = "delete";
 	}

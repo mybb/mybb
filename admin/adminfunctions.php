@@ -62,10 +62,10 @@ $themebitlist = array("templateset", "imgdir", "logo", "tablespace", "borderwidt
 
 function cpheader($title="", $donav=1, $onload="")
 {
-	global $settings, $style, $lang;
+	global $mybb, $style, $lang;
 	if(!$title)
 	{
-		$title = $lang->admin_center;
+		$title = $mybb->settings['bbname']." - ".$lang->admin_center;
 	}
 	$htmltag = "<html>\n";
 	if($lang->settings['rtl'] == 1)
@@ -114,8 +114,6 @@ function makehoptolinks($links)
 
 function startform($script, $name="", $action="", $autocomplete=1)
 {
-	global $mybb;
-
 	$acomplete = "";
 	if($autocomplete == 0)
 	{
@@ -257,14 +255,14 @@ function makeonoffcode($title, $name, $value="on")
 	}
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><label><input type=\"radio\" name=\"$name\" value=\"on\" $oncheck>&nbsp;$lang->on</label> &nbsp;&nbsp;<label><input type=\"radio\" name=\"$name\" value=\"off\" $offcheck>&nbsp;$lang->off</label></td>\n</tr>\n";
 }
-function makeselectcode($title, $name, $table, $tableid, $optiondisp, $selected="", $extra="", $blank="", $condition="")
+function makeselectcode($title, $name, $table, $tableid, $optiondisp, $selected="", $extra="", $blank="", $condition="", $order="")
 {
 	global $db;
 	$bgcolor = getaltbg();
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td><td class=\"$bgcolor\" valign=\"top\" width=\"60%\">\n<select name=\"$name\">\n";
 	if($order)
 	{
-		$orderby = "ORDER BY $optiondisp";
+		$orderby = "ORDER BY $order";
 	}
 	if($condition)
 	{
@@ -333,7 +331,7 @@ function makeselectcode_array($title, $name, $options, $selected="", $blank="", 
 	}
 	echo "</select>\n</td>\n</tr>\n";
 }
-function makedateselect($title, $name, $day, $month)
+function makedateselect($title, $name, $day, $month, $year)
 {
 	$dname = $name."[day]";
 	$mname = $name."[month]";
@@ -366,10 +364,13 @@ function makedateselect($title, $name, $day, $month)
 	$monthlist .= "<option value=\"11\" $monthsel[11]>November</option>\n";
 	$monthlist .= "<option value=\"12\" $monthsel[12]>December</option>\n";
 	$dateselect = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr>\n";
-	$dateselect .= "<td class=\"$bgcolor\"><b><small>Day</small></b><br>\n<select name=\"$dname\"><option value=\"\">--</option>\n$daylist</select></td>\n";
-	$dateselect .= "<td class=\"$bgcolor\"><b><small>Month</small></b><br>\n<select name=\"$mname\">$monthlist</select></td>\n";
-	$dateselect .= "<td class=\"$bgcolor\"><b><small>Year</small></b><br>\n<input name=\"$yname\" value=\"$year\" size=\"4\"></td>\n";
+	$dateselect .= "<td><b><small>Day</small></b><br>\n<select name=\"$dname\"><option value=\"\">--</option>\n$daylist</select></td>\n";
+	$dateselect .= "<td><b><small>Month</small></b><br>\n<select name=\"$mname\">$monthlist</select></td>\n";
+	$dateselect .= "<td><b><small>Year</small></b><br>\n<input name=\"$yname\" value=\"$year\" size=\"4\"></td>\n";
 	$dateselect .= "</tr></table>";
+
+	$bgcolor = getaltbg();
+
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\">$dateselect</tr>\n";
 }
 function makebuttoncode($name, $value, $type="submit")
@@ -833,13 +834,13 @@ function startnav()
 }
 function makenavoption($name, $url)
 {
-	global $noframes, $navoptions;
+	global $navoptions;
 	$name = htmlspecialchars_uni($name);
 	$navoptions .= "<li><a href=\"$url\">$name</a></li>\n";
 }
 function makenavselect($name)
 {
-	global $noframes, $navoptions, $navselects;
+	global $navoptions, $navselects;
 	$name = htmlspecialchars_uni($name);
 	echo "<table cellpadding=\"1\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"100%\" class=\"lnavbordercolor\">\n";
 	echo "<tr><td>\n";
@@ -1010,10 +1011,11 @@ function getadminpermissions($get_uid="", $get_gid="")
 
 function logadmin()
 {
-	global $_SERVER, $mybbadmin, $db, $mybb;
+	global $mybbadmin, $db, $mybb;
 	$scriptname = basename($_SERVER['PHP_SELF']);
 	$qstring = explode("&", $_SERVER['QUERY_STRING']);
-	while(list($key, $val) = each($qstring))
+	$sep = '';
+	forach($qstring as $key => $value)
 	{
 		$vale = explode("=", $val, 2);
 		if(trim($vale[0]) != "" && trim($vale[1]) != "")
@@ -1030,7 +1032,7 @@ function logadmin()
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminlog (uid,dateline,scriptname,action,querystring,ipaddress) VALUES ('".$mybbadmin['uid']."','".$now."','".$scriptname."','".$db->escape_string($mybb->input['action'])."','".$db->escape_string($querystring)."','".$ipaddress."')");
 }
 
-function buildacpnav($finished=1)
+function buildacpnav()
 {
 	global $nav, $navbits;
 	$navsep = " &raquo; ";
@@ -1066,7 +1068,7 @@ function addacpnav($name, $url="")
 
 function makeacpforumnav($fid)
 {
-	global $pforumcache, $db, $currentitem, $forum_cache, $navbits;
+	global $pforumcache, $db, $forum_cache, $navbits;
 	if(!$pforumcache)
 	{
 		if(!is_array($forum_cache))
@@ -1100,7 +1102,7 @@ function makeacpforumnav($fid)
 
 function quickpermissions($fid="", $pid="")
 {
-	global $db, $cache, $lang, $fpermscache;
+	global $db, $cache, $lang;
 	if($fid)
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
@@ -1111,7 +1113,6 @@ function quickpermissions($fid="", $pid="")
 			$fperms[$fperm[gid]] = $fperm;
 		}
 	}
-	$groupscache = $cache->read("usergroups");
 	echo "<script type=\"text/javascript\">\n";
 ?>
 function uncheckInheritPerm(id) {
@@ -1402,7 +1403,6 @@ function build_theme_bit_array($tid, $themebit, $addinherited=1)
 	}
 	$theme = $tcache[$tid];
 	$pid = $theme['pid'];
-	$parentbits = $tcache[$pid]['themebits'];
 	$themebits = $theme['themebits'];
 	if($themebits[$themebit] && !$themebits['inherited'][$themebit])
 	{
@@ -1472,8 +1472,6 @@ function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 			}
 			if($revert_css[$selector])
 			{
-				$rebuildrev = 1;
-				//print_r($parentbit);
 				$css[$selector] = $parentbit;
 				unset($cssbits[$selector]);
 			}
@@ -1840,7 +1838,7 @@ function update_theme($tid, $pid="", $themebits="", $css="", $child=0, $isnew=0)
 		{
 			$updatedthemes .= update_theme($ctid, $tid, "", "", 1, $isnew);
 		}
-		$updatedthemes . "</ul>";
+		$updatedthemes .= "</ul>";
 	}
 	return $updatedthemes;
 }

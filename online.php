@@ -288,7 +288,7 @@ else
 
 function show($user)
 {
-	global $threads, $forums, $forums_linkto, $posts, $events, $members, $settings, $theme, $mybb, $mybbuser, $onlinerows, $templates, $mybbgroup, $lang, $bots;
+	global $threads, $forums, $forums_linkto, $posts, $events, $members, $settings, $theme, $mybb, $mybbuser, $onlinerows, $templates, $mybbgroup, $lang, $session;
 
 	switch($user['activity'])
 	{
@@ -596,7 +596,7 @@ function show($user)
 	}
 	elseif($user['bot'])
 	{
-		$onlinename = formatname($user['bot'], $botgroup);
+		$onlinename = formatname($user['bot'], $session->botgroup);
 	}
 	else
 	{

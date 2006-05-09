@@ -92,7 +92,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 		elseif(strstr($user['sid'], "bot=") !== false && $session->bots[$botkey])
 		{
 			// The user is a search bot.
-			$onlinemembers .= $comma.formatname($session->bots[$botkey], $botgroup);
+			$onlinemembers .= $comma.formatname($session->bots[$botkey], $session->botgroup);
 			$comma = ", ";
 			++$botcount;
 		}
@@ -287,6 +287,8 @@ function getforums($pid="0", $depth=1, $permissions="")
 				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
 				{
 					$plugins->run_hooks("index_forum");
+					
+					$forum_url = build_forum_link($forum['fid']);
 
 					if($mybb->user['uid'] != 0)
 					{

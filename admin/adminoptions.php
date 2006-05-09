@@ -265,7 +265,7 @@ if($mybb->input['action'] == "updateprefs" || $mybb->input['action'] == "")
 	$dir = @opendir($config['admindir']."/styles");
 	while($folder = readdir($dir))
 	{
-		if($file != "." && $file != ".." && @file_exists($config['admindir']."/styles/$folder/stylesheet.css"))
+		if$folder != "." && $folder != ".." && @file_exists($config['admindir']."/styles/$folder/stylesheet.css"))
 		{
 			$folders[$folder] = $folder;
 		}

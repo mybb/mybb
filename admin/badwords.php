@@ -59,7 +59,7 @@ if($mybb->input['action'] == "do_edit")
 if($mybb->input['action'] == "edit")
 {
 	$bid = intval($mybb->input['bid']);
-	if($delete)
+	if($mybb->input['delete'])
 	{
 		$query = $db->query("DELETE FROM ".TABLE_PREFIX."badwords WHERE bid='$bid'");
 		cpredirect("badwords.php", $lang->badword_deleted);
