@@ -512,7 +512,7 @@ if($mybb->input['action'] == "register")
 		// Spambot registration image thingy
 		if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))
 		{
-			$randomstr = random_str();
+			$randomstr = random_str(5);
 			$imagehash = md5($randomstr);
 			$regimagearray = array(
 				"imagehash" => $imagehash,
