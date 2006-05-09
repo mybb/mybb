@@ -126,10 +126,20 @@ if(!$loadstyle)
 	$loadstyle = "def='1'";
 }
 
-$query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits", $loadstyle);
+$query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits, csscached", $loadstyle);
 $theme = $db->fetch_array($query);
 
 $theme = @array_merge($theme, unserialize($theme['themebits']));
+
+// Loading CSS from a file or from the server?
+if($theme['csscached'] > 0 && $mybb->settings['cssmedium'] == 'file')
+{
+	$theme['css_url'] = $settings['bburl']."/css/theme_{$theme['tid']}.css";
+}
+else
+{
+	$theme['css_url'] = $settings['bburl']."/css.php?tid={$theme['tid']}";
+}
 
 // Select the language to use.
 if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))

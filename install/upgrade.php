@@ -178,6 +178,7 @@ function upgradethemes()
 		  cssbits text NOT NULL,
 		  themebits text NOT NULL,
 		  extracss text NOT NULL,
+		  csscached bigint(30) NOT NULL default '0',
 		  PRIMARY KEY  (tid)
 		) TYPE=MyISAM;");
 		$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid) VALUES ('MyBB Master Style','0')");

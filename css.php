@@ -16,13 +16,6 @@ require "./inc/init.php";
 $theme = intval($mybb->input['theme']);
 $cssfile = "./css{$theme}.css";
 
-if($mybb->settings['cssmedium'] == 'file' && $theme != 0 && file_exists($cssfile) && is_readable($cssfile))
-{
-	header('Content-type: text/css');
-	echo file_get_contents($cssfile);
-	exit;
-}
-
 // If there is a theme set in the input, use the tid, otherwise use default.
 if($theme)
 {

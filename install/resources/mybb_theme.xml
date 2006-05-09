@@ -2140,7 +2140,7 @@ var inlineId = {$fid};
 <script type="text/javascript" src="jscripts/moo.ajax.js"></script>
 <script type="text/javascript" src="jscripts/general.js"></script>
 <script type="text/javascript" src="jscripts/popup_menu.js"></script>
-<link rel="stylesheet" type="text/css" href="css.php?theme={$theme['tid']}" />
+<link rel="stylesheet" type="text/css" href="{$theme['css_url']}" />
 <script language="Javascript" type="text/javascript">
 	 var cookieDomain = "{$settings['cookiedomain']}";
 	 var cookiePath = "{$settings['cookiepath']}";
