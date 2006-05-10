@@ -1032,12 +1032,12 @@ function updateforumcount($fid)
 		$childforums .= ",'".$childforum['fid']."'";
 	}
 
-	$query = $db->query("SELECT tid, lastpost, lastposter FROM ".TABLE_PREFIX."threads WHERE fid IN (0$childforums) AND visible='1' AND closed NOT LIKE 'moved|%' ORDER BY lastpost DESC LIMIT 0, 1");
+	$query = $db->query("SELECT tid, lastpost, lastposter, lastposteruid FROM ".TABLE_PREFIX."threads WHERE fid IN (0$childforums) AND visible='1' AND closed NOT LIKE 'moved|%' ORDER BY lastpost DESC LIMIT 0, 1");
 	$lastpost = $db->fetch_array($query);
 	// If the last post tid is not equal to the queried one, update.
 	if($lastpost['lastposttid'] != $lasttid)
 	{
-		$lpadd = ",lastpost='".intval($lastpost['lastpost'])."', lastposter='".$db->escape_string($lastpost['lastposter'])."', lastposttid='".intval($lastpost['tid'])."'";
+		$lpadd = ",lastpost='".intval($lastpost['lastpost'])."', lastposter='".$db->escape_string($lastpost['lastposter'])."', lastposteruid='".intval($lastpost['lastposteruid'])."', lastposttid='".intval($lastpost['tid'])."'";
 	}
 
 	// Get the post counters for this forum and its children
@@ -1134,7 +1134,7 @@ function updatethreadcount($tid)
 	}
 	// Update the attachment count for this thread
 	update_thread_attachment_count($tid);
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', replies='$treplies', unapprovedposts='$nounposts' WHERE tid='$tid'");
+	$db->query("UPDATE ".TABLE_PREFIX."threads SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', lastposteruid='".$lastpost['uid']."' replies='$treplies', unapprovedposts='$nounposts' WHERE tid='$tid'");
 }
 
 function update_thread_attachment_count($tid)

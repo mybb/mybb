@@ -109,19 +109,25 @@ function upload_avatar()
 		return $ret;
 	}
 
+	// Check if this is a valid image or not
+	$img_dimensions = @getimagesize($mybb->settings['avataruploadpath']."/".$filename);
+	if(!is_array($img_dimensions))
+	{
+		$ret['error'] = $lang->error_uploadfailed;
+		return $ret;
+	}
+	
 	// If we've got this far check dimensions
 	if(preg_match("#(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext) && $mybb->settings['maxavatardims'] != "")
 	{
-		list($width, $height) = @getimagesize($mybb->settings['avataruploadpath']."/".$filename);
 		list($maxwidth, $maxheight) = @explode("x", $mybb->settings['maxavatardims']);
-		if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
+		if(($maxwidth && $img_dimensions[0] > $maxwidth) || ($maxheight && $img_dimensions[1] > $maxheight))
 		{
 			$ret['error'] = sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 			@unlink($mybb->settings['avataruploadpath']."/".$filename);
 			return $ret;
 		}
 	}
-
 	// Everything is okay so lets delete old avatars for this user
 	remove_avatars($mybb->user['uid'], $filename);
 
