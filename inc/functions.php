@@ -1134,7 +1134,7 @@ function updatethreadcount($tid)
 	}
 	// Update the attachment count for this thread
 	update_thread_attachment_count($tid);
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', lastposteruid='".$lastpost['uid']."' replies='$treplies', unapprovedposts='$nounposts' WHERE tid='$tid'");
+	$db->query("UPDATE ".TABLE_PREFIX."threads SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', lastposteruid='".$lastpost['uid']."', replies='$treplies', unapprovedposts='$nounposts' WHERE tid='$tid'");
 }
 
 function update_thread_attachment_count($tid)

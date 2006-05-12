@@ -1015,7 +1015,7 @@ function logadmin()
 	$scriptname = basename($_SERVER['PHP_SELF']);
 	$qstring = explode("&", $_SERVER['QUERY_STRING']);
 	$sep = '';
-	forach($qstring as $key => $value)
+	foreach($qstring as $key => $value)
 	{
 		$vale = explode("=", $val, 2);
 		if(trim($vale[0]) != "" && trim($vale[1]) != "")

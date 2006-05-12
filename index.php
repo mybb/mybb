@@ -288,7 +288,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 				{
 					$plugins->run_hooks("index_forum");
 					
-					$forum_url = build_forum_link($forum['fid']);
+					$forum_url = get_forum_link($forum['fid']);
 
 					if($mybb->user['uid'] != 0)
 					{
