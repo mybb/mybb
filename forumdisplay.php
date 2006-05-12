@@ -400,7 +400,7 @@ if($upper > $threadcount)
 {
 	$upper = $threadcount;
 }
-$multipage = multipage($threadcount, $perpage, $page, "forumdisplay.php?fid=$fid&amp;sortby=$sortby&amp;order=$order&amp;$datecut=$datecut");
+$multipage = multipage($threadcount, $perpage, $page, "forumdisplay.php?fid=$fid&amp;sortby=$sortby&amp;order=$sortordernow&amp;datecut=$datecut");
 
 if($foruminfo['allowtratings'] != "no")
 {
