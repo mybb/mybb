@@ -81,7 +81,7 @@ $tables[] = "CREATE TABLE mybb_attachtypes (
   atid int unsigned NOT NULL auto_increment,
   name varchar(120) NOT NULL default '',
   mimetype varchar(120) NOT NULL default '',
-  extension varchar(4) NOT NULL default '',
+  extension varchar(10) NOT NULL default '',
   maxsize int(15) NOT NULL default '0',
   icon varchar(100) NOT NULL default '',
   PRIMARY KEY  (atid)
