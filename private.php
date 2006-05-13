@@ -115,6 +115,19 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_send_do_send");
 
+	// Attempt to see if this PM is a duplicate or not
+	$time_cutoff = time() - (5 * 60 * 60);
+	$query = $db->query("
+		SELECT pm.pmid
+		FROM (".TABLE_PREFIX."privatemessages pm, ".TABLE_PREFIX."users u)
+		WHERE pm.toid=u.uid AND u.username='".$db->escape_string($mybb->input['to'])."' AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->input['subject'])."' AND pm.message='".$db->escape_string($mybb->input['message'])."'
+	");
+	$duplicate_check = $db->fetch_field($query, "pmid");
+	if($duplicate_check)
+	{
+		error($lang->error_pm_already_submitted);
+	}
+
 	require_once MYBB_ROOT."inc/datahandlers/pm.php";
 	$pmhandler = new PMDataHandler();
 

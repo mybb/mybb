@@ -117,6 +117,7 @@ $l['error_pmrecipientreachedquota'] = "You cannot send a private message to {1} 
 $l['error_recipientpmturnedoff'] = "{1} has chosen not to receive private messages or may not be allowed to do so. Therefore you may not send your private message to this user.";
 $l['error_pmsturnedoff'] = "You currently have private messages disabled in your profile.<br />To be able to use the private messaging system this setting must be enabled.";
 $l['error_recipientignoring'] = "We are sorry but we cannot process your private message to {1}. You do not have permission to perform this action.";
+$l['error_pm_already_submitted'] = "You have already submitted the same private message to the same recipient within the last 5 minutes.";
 
 $l['redirect_pmsaved'] = "The private message has been saved in your Drafts folder.";
 $l['redirect_pmstrackingstopped'] = "Tracking of the selected PMs has been stopped.";
