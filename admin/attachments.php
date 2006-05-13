@@ -271,7 +271,7 @@ if($mybb->input['action'] == "orphans")
 	}
 	// Get attachments filenames from filesystem
 	$orphan_files = array();
-	if ($uploads = opendir($mybb->settings['uploadspath']))
+	if ($uploads = opendir(MYBB_ROOT.$mybb->settings['uploadspath']))
 	{
 		while (false !== ($file = readdir($uploads)))
 		{
@@ -296,7 +296,7 @@ if($mybb->input['action'] == "orphans")
 	$altbg = "altbg1";
 	foreach($orphan_files as $filename)
 	{
-		$filesize = getfriendlysize(filesize($mybb->settings['uploadspath']."/".$filename));
+		$filesize = getfriendlysize(filesize(MYBB_ROOT.$mybb->settings['uploadspath']."/".$filename));
 
 		echo "<tr>\n";
 		echo "<td class=\"$altbg\" align=\"center\"><input type=\"checkbox\" name=\"check[]\" value=\"$filename\"></td>\n";
@@ -470,7 +470,7 @@ if($mybb->input['action'] == "stats")
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=proflile&uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['downloads']."</a></td>\n";
 			echo "</tr>\n";
 		}
@@ -493,7 +493,7 @@ if($mybb->input['action'] == "stats")
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=proflile&uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['filesize']."</a></td>\n";
 			echo "</tr>\n";
 		}

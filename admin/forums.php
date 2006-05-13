@@ -444,11 +444,12 @@ if($mybb->input['action'] == "do_edit") {
 		$db->update_query(TABLE_PREFIX."forums", $sqlarray, "fid='$fid'", 1);
 		if($pid != $forum['pid'])
 		{
-				$sql_array = array(
-					"parentlist" => makeparentlist($fid),
-					);
-				$db->update_query(TABLE_PREFIX."forums", $sql_array, "fid='$fid'", 1);
-			// Rebuild the parentlist of all of the forums this forum was a parent of
+			// Update the parentlist of this forum.
+			$sql_array = array(
+				"parentlist" => makeparentlist($fid),
+				);
+			$db->update_query(TABLE_PREFIX."forums", $sql_array, "fid='$fid'", 1);
+			// Rebuild the parentlist of all of the subforums of this forum
 			$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
 			while($childforum = $db->fetch_array($query))
 			{

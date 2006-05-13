@@ -33,6 +33,8 @@ $l['forum_team_order'] = "Forum Team Order";
 $l['list_users'] = "List Primary Users";
 $l['list_secondary_users'] = "List Secondary Users";
 
+$l['update_orders'] = "Update Orders";
+
 $l['group_options'] = "Usergroup Options";
 $l['perms_viewing'] = "Permissions: Viewing";
 $l['perms_posting'] = "Permissions: Posting / Rating Threads";
