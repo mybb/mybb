@@ -349,7 +349,7 @@ email=Sent via Email]]></optionscode>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[radio
 db=Stored in the Database
-file=Stored in a text file (in forum root directory)]]></optionscode>
+file=Stored in a text file (in the 'css' folder)]]></optionscode>
 			<settingvalue><![CDATA[db]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
