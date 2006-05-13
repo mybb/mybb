@@ -215,10 +215,13 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 	{
 		cperror($lang->no_threads);
 	}
-	if($tcount)
+	if($tcount ||  $mybb->input['action'] == "threadsposts")
 	{
 		cpheader();
 		startform("moderate.php", "" , "do_".$mybb->input['action']);
+	}
+	if($tcount)
+	{
 		starttable();
 		tableheader($lang->threads_awaiting);
 	}
