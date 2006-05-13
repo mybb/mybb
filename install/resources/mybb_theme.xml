@@ -5641,7 +5641,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow1" valign="top"><strong>{$lang->method}</strong></td>
 <td class="trow2">
 <label><input type="radio" class="radio" name="method" value="move" />{$lang->method_move}</label><br />
-<label><input type="radio" class="radio" name="method" value="redirect" checked="checked" />{$lang->method_move_redirect}</label><br />
+<label><input type="radio" class="radio" name="method" value="redirect" checked="checked" />{$lang->method_move_redirect}</label> <input type="text" class="textbox" name="redirect_expire" size="3" /> {$lang->redirect_expire_note}<br />
 <label><input type="radio" class="radio" name="method" value="copy" />{$lang->method_copy}</label><br />
 </td>
 </tr>

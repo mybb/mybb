@@ -495,9 +495,15 @@ switch($mybb->input['action'])
 			error($lang->error_movetosameforum);
 		}
 
+		$expire = 0;
+		if(intval($mybb->input['redirect_expire']) > 0)
+		{
+			$expire = time() + (intval($mybb->input['redirect_expire']) * 86400);
+		}
+
 		$the_thread = $tid;
 
-		$newtid = $moderation->move_thread($tid, $moveto, $method);
+		$newtid = $moderation->move_thread($tid, $moveto, $method, $expire);
 
 		switch($method)
 		{

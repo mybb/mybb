@@ -549,6 +549,7 @@ $tables[] = "CREATE TABLE mybb_threads (
   visible int(1) NOT NULL default '0',
   unapprovedposts int(10) unsigned NOT NULL default '0',
   attachmentcount int(10) unsigned NOT NULL default '0',
+  deletetime int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (tid)
 ) TYPE=MyISAM;";
 

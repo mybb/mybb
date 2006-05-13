@@ -167,9 +167,11 @@ function upgrade5_dbchanges()
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD attachmentcount int(10) unsigned NOT NULL default '0'");
 	
-	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD  posthash varchar(32) NOT NULL default '' AFTER visible");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD posthash varchar(32) NOT NULL default '' AFTER visible");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes CHANGE extension extension varchar(10) NOT NULL;");
+
+	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD deletetime int(10) unsigned NOT NULL default '0' AFTER attachmentcount");
 	
 	
 	$db->query("DROP ".TALE_PREFIX."regimages");

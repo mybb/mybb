@@ -400,9 +400,10 @@ class Moderation
 	 * @param int Thread to be moved
 	 * @param int Destination forum
 	 * @param string Method of movement (redirect, copy, move)
+	 * @param int Expiry timestamp for redirect
 	 * @return int Thread ID
 	 */
-	function move_thread($tid, $new_fid, $method="redirect")
+	function move_thread($tid, $new_fid, $method="redirect", $redirect_expire=0)
 	{
 		global $db, $plugins;
 
@@ -436,6 +437,11 @@ class Moderation
 					"visible" => $thread['visible'],
 					);
 				$db->insert_query(TABLE_PREFIX."threads", $threadarray);
+				if($redirect_expire)
+				{
+					$redirect_tid = $db->insert_id();
+					$this->expire_thread($redirect_tid, $redirect_expire);
+				}
  				break;
 			case "copy":// copy thread
 				// we need to add code to copy attachments(?), polls, etc etc here
@@ -853,6 +859,24 @@ class Moderation
 			);
 		$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid IN ($tid_list)", count($tids));
 		$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid IN ($tid_list) AND replyto='0'", count($tids));
+
+		return true;
+	}
+	/**
+	 * Add thread expiry
+	 *
+	 * @param int Thread ID
+	 * @param int Timestamp when the thread is deleted
+	 * @return boolean true
+	 */
+	function expire_thread($tid, $deletetime)
+	{
+		global $db;
+
+		$update_thread = array(
+			"deletetime" => intval($deletetime)
+			);
+		$db->update_query(TABLE_PREFIX."threads", $update_thread, "tid='{$tid}'");
 
 		return true;
 	}
