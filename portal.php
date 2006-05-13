@@ -254,6 +254,14 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 }
 
 // Get latest news announcements
+// First validate announcement fids:
+$mybb->settings['portal_announcementsfid'] = explode(',', $mybb->settings['portal_announcementsfid']);
+foreach($mybb->settings['portal_announcementsfid'] as $fid)
+{
+	$fid_array[] = intval($fid);
+}
+$mybb->settings['portal_announcementsfid'] = implode(',', $fid_array);
+// And get them!
 $query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid IN (".$mybb->settings['portal_announcementsfid'].")");
 while($forumrow = $db->fetch_array($query))
 {
