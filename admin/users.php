@@ -851,6 +851,7 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->aim_handle, "aim", $user['aim']);
 	makeinputcode($lang->yahoo_handle, "yahoo", $user['yahoo']);
 	makeinputcode($lang->msn_address, "msn", $user['msn']);
+
 	// Add the birthday dropdown.
 	$options = array(
 		'years_back' => 100,

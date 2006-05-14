@@ -3822,7 +3822,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->password}</strong><br /><span class="smalltext">{$lang->pw_note}</span></td>
-<td class="trow2"><input type="password" class="textbox" name="password" size="25" />(<a href="member.php?action=lostpw">{$lang->lostpw_note}</a>)</td>
+<td class="trow2"><input type="password" class="textbox" name="password" size="25" /> (<a href="member.php?action=lostpw">{$lang->lostpw_note}</a>)</td>
 </tr>
 </table>
 <br />
@@ -6521,7 +6521,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </body>
 </html>]]></template>
 		<template name="forumdisplay_thread_attachment_count" version="100.07"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.gif" alt="" title="{$attachment_count}" /></div>]]></template>
-		<template name="forumdisplay_rssdiscovery" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$settings['bburl']}/syndication.php?fid={$fid}" /> 
+		<template name="forumdisplay_rssdiscovery" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$settings['bburl']}/syndication.php?fid={$fid}" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 0.3)" href="{$settings['bburl']}/syndication.php?type=atom1.0&amp;fid={$fid}" />]]></template>
 	</templates>
 </theme>
