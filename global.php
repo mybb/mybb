@@ -366,7 +366,7 @@ if($_COOKIE['collapsed'])
 // Expire threads
 if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 {
-	$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE expiretype='delete' AND expiretime != '0' AND expiretime<'".time()."'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE deletetime != '0' AND deletetime<'".time()."'");
 }
 
 $plugins->run_hooks("global_end");
