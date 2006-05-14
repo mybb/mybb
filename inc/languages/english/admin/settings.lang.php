@@ -14,6 +14,7 @@ $l['nav_modify'] = "Modify Settings and Groups";
 
 $l['add_new_setting'] = "Add New Setting";
 $l['manage_settings'] = "Manage Settings";
+$l['show_all_settings'] = "Show All Settings";
 
 $l['board_settings'] = "Board Settings";
 $l['settings_count'] = "{1} Settings";
