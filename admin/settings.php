@@ -29,7 +29,7 @@ switch($mybb->input['action'])
 		addacpnav($lang->nav_edit);
 		break;
 	case "change":
-		if($mybb->input['gid'])
+		if($mybb->input['gid'] && $mybb->input['gid'] != -1)
 		{
 			$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) WHERE g.gid='".intval($mybb->input['gid'])."' GROUP BY s.gid");
 			$groupinfo = $db->fetch_array($query);
@@ -44,7 +44,8 @@ switch($mybb->input['action'])
 checkadminpermissions("caneditsettings");
 logadmin();
 
-if($mybb->input['action'] == "do_change") {
+if($mybb->input['action'] == "do_change")
+{
 	if(is_array($mybb->input['upsetting']))
 	{
 		foreach($mybb->input['upsetting'] as $key => $val)
@@ -70,9 +71,12 @@ if($mybb->input['action'] == "do_change") {
 	cpredirect("settings.php", $lang->settings_updated);
 }
 
-if($mybb->input['action'] == "do_add") {
-	if($mybb->input['add'] == "setting") {
-		if($mybb->input['type'] == "custom") {
+if($mybb->input['action'] == "do_add")
+{
+	if($mybb->input['add'] == "setting")
+	{
+		if($mybb->input['type'] == "custom")
+		{
 			$mybb->input['type'] = $db->escape_string($mybb->input['code']);
 		}
 		$settingarray = array(
@@ -89,10 +93,11 @@ if($mybb->input['action'] == "do_add") {
 		rebuildsettings();
 		cpredirect("settings.php", $lang->setting_added);
 	}
-	else if($mybb->input['add'] == "group") {
+	else if($mybb->input['add'] == "group")
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE name='".$db->escape_string($mybb->input['name'])."'");
 		$g = $db->fetch_array($query);
-		if($g['key'])
+		if($g['name'])
 		{
 			cperror($lang->group_exists);
 		}
@@ -102,7 +107,8 @@ if($mybb->input['action'] == "do_add") {
 			"description" => $db->escape_string($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])
 			);
-		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
+		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7")
+		{
 			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
 		}
 		$db->insert_query(TABLE_PREFIX."settinggroups", $settinggrouparray);
@@ -111,20 +117,26 @@ if($mybb->input['action'] == "do_add") {
 	}
 }
 
-if($mybb->input['action'] == "do_delete") {
-	if($mybb->input['deletesubmit']) {	
-		if($mybb->input['sid']) {
+if($mybb->input['action'] == "do_delete")
+{
+	if($mybb->input['deletesubmit'])
+	{	
+		if($mybb->input['sid'])
+		{
 			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
 			rebuildsettings();
 			cpredirect("settings.php", $lang->setting_deleted);
 		}
-		else if($mybb->input['gid']) {
+		else if($mybb->input['gid'])
+		{
 			$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
 			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE gid='".intval($mybb->input['gid'])."'");
 			rebuildsettings();
 			cpredirect("settings.php", $lang->group_deleted);
 		}
-	} else {
+	}
+	else
+	{
 		header("Location: settings.php");
 	}
 }
@@ -172,9 +184,11 @@ if($mybb->input['action'] == "export")
 	echo $xml;
 	exit;	
 }
-if($mybb->input['action'] == "do_edit") {
+if($mybb->input['action'] == "do_edit")
+{
 	cpheader();
-	if($mybb->input['sid']) {
+	if($mybb->input['sid'])
+	{
 		$settingarray = array(
 			"name" => $db->escape_string($mybb->input['name']),
 			"title" => $db->escape_string($mybb->input['title']),
@@ -188,14 +202,16 @@ if($mybb->input['action'] == "do_edit") {
 		rebuildsettings();
 		cpredirect("settings.php", $lang->setting_edited);
 	}
-	else if($mybb->input['gid']) {
+	else if($mybb->input['gid'])
+	{
 		$settinggrouparray = array(
 			"name" => $db->escape_string($mybb->input['name']),
 			"title" => $db->escape_string($mybb->input['title']),
 			"description" => $db->escape_string($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])
 			);
-		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
+		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7")
+		{
 			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
 		}
 		$db->update_query(TABLE_PREFIX."settinggroups", $settinggrouparray, "gid='".intval($mybb->input['gid'])."'");
@@ -204,9 +220,11 @@ if($mybb->input['action'] == "do_edit") {
 	}
 }
 
-if($mybb->input['action'] == "edit") {
+if($mybb->input['action'] == "edit")
+{
 	cpheader();
-	if($mybb->input['sid']) {
+	if($mybb->input['sid'])
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
 		$setting = $db->fetch_array($query);
 		$type[$setting['type']] = "selected";
@@ -225,7 +243,8 @@ if($mybb->input['action'] == "edit") {
 		endtable();
 		endform($lang->modify_setting, $lang->reset_button);
 	}
-	else if($mybb->input['gid']) {
+	else if($mybb->input['gid'])
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
 		$group = $db->fetch_array($query);
 		startform("settings.php", "", "do_edit");
@@ -236,7 +255,8 @@ if($mybb->input['action'] == "edit") {
 		makeinputcode($lang->group_title, "title", $group['title']);
 		maketextareacode($lang->description, "description", $group['description']);
 		makeinputcode($lang->disp_order, "disporder", $group['disporder'], 4);
-		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
+		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7")
+		{
 			makeyesnocode($lang->is_default, "isdefault", $group['isdefault']);
 		}
 
@@ -246,9 +266,11 @@ if($mybb->input['action'] == "edit") {
 	cpfooter();
 }
 
-if($mybb->input['action'] == "delete") {
+if($mybb->input['action'] == "delete")
+{
 	cpheader();
-	if($mybb->input['sid']) {
+	if($mybb->input['sid'])
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
 		$setting = $db->fetch_array($query);
 		startform("settings.php", "", "do_delete");
@@ -261,7 +283,8 @@ if($mybb->input['action'] == "delete") {
 		endtable();
 		endform();
 	}
-	else if($mybb->input['gid']) {
+	else if($mybb->input['gid'])
+	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
 		$group = $db->fetch_array($query);
 		startform("settings.php", "", "do_delete");
@@ -277,10 +300,12 @@ if($mybb->input['action'] == "delete") {
 	cpfooter();
 }
 
-if($mybb->input['action'] == "add") {
+if($mybb->input['action'] == "add")
+{
 	cpheader();
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
-	while($group = $db->fetch_array($query)) {
+	while($group = $db->fetch_array($query))
+	{
 		$settinggroups[$group['gid']] = $group;
 	}
 	reset($settinggroups);
@@ -311,7 +336,8 @@ if($mybb->input['action'] == "add") {
 	endform($lang->add_setting, $lang->reset_button);
 	cpfooter();
 }
-if($mybb->input['action'] == "do_modify") {
+if($mybb->input['action'] == "do_modify")
+{
 	cpheader();
 	foreach($mybb->input['disporder'] as $sid => $order)
 	{
@@ -328,19 +354,23 @@ if($mybb->input['action'] == "do_modify") {
 	$noheader = 1;
 	$mybb->input['action'] = "modify";
 }
-if($mybb->input['action'] == "modify") {
-	if(!$noheader) {
+if($mybb->input['action'] == "modify")
+{
+	if(!$noheader)
+	{
 		cpheader();
 	}
 	startform("settings.php", "", "do_modify");
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
-	while($group = $db->fetch_array($query)) {
+	while($group = $db->fetch_array($query))
+	{
 		$settinglist .= "<li><strong>$group[title]</strong> ($lang->disp_order_list <input type=\"text\" name=\"dispordercats[$group[gid]]\" size=\"4\" value=\"$group[disporder]\"> ".
 			makelinkcode($lang->edit, "settings.php?action=edit&gid=$group[gid]").
 			makelinkcode($lang->delete, "settings.php?action=delete&gid=$group[gid]").
 			"</li>\n<ul>\n";
 		$query2 = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE gid='$group[gid]' ORDER BY disporder");
-		while($setting = $db->fetch_array($query2)) {
+		while($setting = $db->fetch_array($query2))
+		{
 			$settinglist .= "<li>$setting[title] ($lang->disp_order <input type=\"text\" name=\"disporder[$setting[sid]]\" size=\"4\" value=\"$setting[disporder]\">)".
 				makelinkcode($lang->edit, "settings.php?action=edit&sid=$setting[sid]").
 				makelinkcode($lang->delete, "settings.php?action=delete&sid=$setting[sid]").
@@ -358,160 +388,223 @@ if($mybb->input['action'] == "modify") {
 
 }
 
-if($mybb->input['action'] == "change" || $mybb->input['action'] == "") {
-	if(!$noheader) {
+if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
+{
+	if(!$noheader)
+	{
 		cpheader();
 	}
-	if($mybb->input['gid']) {
-		$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) WHERE g.gid='".intval($mybb->input['gid'])."' GROUP BY s.gid");
-		$groupinfo = $db->fetch_array($query);
-
+	if($mybb->input['gid'])
+	{
+		$setting_groups = '';
+		if($mybb->input['gid'] != -1)
+		{
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
+		}
+		else
+		{
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
+		}
+		while($group = $db->fetch_array($query))
+		{
+			$setting_groups[$group['gid']] = $group;
+		}
+		$group_ids = implode(",", array_keys($setting_groups));
+		
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE gid IN ($group_ids) ORDER BY disporder");
+		while($setting = $db->fetch_array($query))
+		{
+			$setting_list[$setting['gid']][$setting['sid']] = $setting;
+		}
+	
 		startform("settings.php", "", "do_change");
-		makehiddencode("gid", $mybb->input['gid']);
-		starttable();
-		tableheader($groupinfo['title'], "", 2);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE gid='".intval($mybb->input['gid'])."' ORDER BY disporder");
-		while($setting = $db->fetch_array($query)) {
-			$options = "";
-			$type = explode("\n", $setting['optionscode']);
-			$type[0] = trim($type[0]);
-			if($type[0] == "text" || $type[0] == "") {
-				$settingcode = "<input type=\"text\" name=\"upsetting[$setting[sid]]\" value=\"$setting[value]\" size=\"25\">";
-			}
-			else if($type[0] == "textarea") {
-				$settingcode = "<textarea name=\"upsetting[$setting[sid]]\" rows=\"6\" cols=\"50\">$setting[value]</textarea>";
-			}
-			else if($type[0] == "yesno") {
-				if($setting['value'] == "yes") {
-					$yeschecked = "checked";
-					$nochecked = "";
-				} else {
-					$nochecked = "checked";
-					$yeschecked = "";
-				}
-				$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"yes\" $yeschecked> $lang->yes <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"no\" $nochecked> $lang->no";
-			}
-			else if($type[0] == "onoff") {
-				if($setting['value'] == "on") {
-					$onchecked = "checked";
-					$offchecked = "";
-				} else {
-					$offchecked = "checked";
-					$onchecked = "";
-				}
-				$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"on\" $onchecked> $lang->on <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"off\" $offchecked> $lang->off";
-			}
-			elseif($type[0] == "cpstyle") {
-				$dir = @opendir($config['admindir']."/styles");
-				while($folder = readdir($dir)) {
-					if($file != "." && $file != ".." && @file_exists($config['admindir']."/styles/$folder/stylesheet.css")) {
-						$folders[$folder] = $folder;
-					}
-				}
-				closedir($dir);
-				ksort($folders);
-				while(list($key, $val) = each($folders)) {
-					if($val == $setting[value]) {
-						$sel = "selected";
-					} else {
-						$sel = "";
-					}
-					$options .= "<option value=\"$val\" $sel>$val</option>";
-				}
-				$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
-			}
-			elseif($type[0] == "language") {
-				$languages = $lang->getLanguages();
-				foreach($languages as $lname => $language)
-				{
-					if($setting['value'] == $lname)
-					{
-						$sel = "selected";
-					} else {
-						$sel = "";
-					}
-					$options .= "<option value=\"$lname\" $sel>$language</option>";
-				}
-				$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
-			}
-			elseif($type[0] == "adminlanguage") {
-				$languages = $lang->getLanguages(1);
-				foreach($languages as $lname => $language)
-				{
-					if($setting['value'] == $lname)
-					{
-						$sel = "selected";
-					} else {
-						$sel = "";
-					}
-					$options .= "<option value=\"$lname\" $sel>$language</option>";
-				}
-				$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
-			}
-			elseif($type[0] == "php")
+		
+		foreach($setting_groups as $groupinfo)
+		{
+			starttable();
+			tableheader($groupinfo['title'], "", 2);
+			
+			foreach($setting_list[$groupinfo['gid']] as $setting)
 			{
-				$setting['optionscode'] = substr($setting['optionscode'], 3);
-				eval("\$settingcode = \"".$setting['optionscode']."\";");
-			}
-			else {
-				for($i=0;$i<count($type);$i++) {
-					$optionsexp = explode("=", $type[$i]);
-					if(!$optionsexp[1]) {
-						continue;
+				$options = "";
+				$type = explode("\n", $setting['optionscode']);
+				$type[0] = trim($type[0]);
+				if($type[0] == "text" || $type[0] == "")
+				{
+					$settingcode = "<input type=\"text\" name=\"upsetting[$setting[sid]]\" value=\"$setting[value]\" size=\"25\">";
+				}
+				else if($type[0] == "textarea")
+				{
+					$settingcode = "<textarea name=\"upsetting[$setting[sid]]\" rows=\"6\" cols=\"50\">$setting[value]</textarea>";
+				}
+				else if($type[0] == "yesno")
+				{
+					if($setting['value'] == "yes")
+					{
+						$yeschecked = "checked";
+						$nochecked = "";
 					}
-					if($type[0] == "select") {
-						if($setting[value] == $optionsexp[0]) {
+					else
+					{
+						$nochecked = "checked";
+						$yeschecked = "";
+					}
+					$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"yes\" $yeschecked> $lang->yes <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"no\" $nochecked> $lang->no";
+				}
+				else if($type[0] == "onoff")
+				{
+					if($setting['value'] == "on")
+					{
+						$onchecked = "checked";
+						$offchecked = "";
+					}
+					else
+					{
+						$offchecked = "checked";
+						$onchecked = "";
+					}
+					$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"on\" $onchecked> $lang->on <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"off\" $offchecked> $lang->off";
+				}
+				elseif($type[0] == "cpstyle")
+				{
+					$dir = @opendir(MYBB_ADMIN_DIR."/styles");
+					while($folder = readdir($dir))
+					{
+						if($file != "." && $file != ".." && @file_exists(MYBB_ADMIN_DIR."/styles/$folder/stylesheet.css"))
+						{
+							$folders[$folder] = $folder;
+						}
+					}
+					closedir($dir);
+					ksort($folders);
+					while(list($key, $val) = each($folders))
+					{
+						if($val == $setting['value'])
+						{
+							$sel = "selected";
+						}
+						else
+						{
+							$sel = "";
+						}
+						$options .= "<option value=\"$val\" $sel>$val</option>";
+					}
+					$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
+				}
+				elseif($type[0] == "language")
+				{
+					$languages = $lang->getLanguages();
+					foreach($languages as $lname => $language)
+					{
+						if($setting['value'] == $lname)
+						{
 							$sel = "selected";
 						} else {
 							$sel = "";
 						}
-						$options .= "<option value=\"$optionsexp[0]\" $sel>$optionsexp[1]</option>";
+						$options .= "<option value=\"$lname\" $sel>$language</option>";
 					}
-					else if($type[0] == "radio") {
-						if($setting[value] == $optionsexp[0]) {
-							$sel = "checked";
+					$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
+				}
+				elseif($type[0] == "adminlanguage")
+				{
+					$languages = $lang->getLanguages(1);
+					foreach($languages as $lname => $language)
+					{
+						if($setting['value'] == $lname)
+						{
+							$sel = "selected";
 						} else {
 							$sel = "";
 						}
-						$options .= "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel>&nbsp;$optionsexp[1]<br>";
+						$options .= "<option value=\"$lname\" $sel>$language</option>";
 					}
-					else if($type[0] == "checkbox") {
-						if($setting[value] == $optionsexp[0]) {
-							$sel = "checked";
-						} else {
-							$sel = "";
+					$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
+				}
+				elseif($type[0] == "php")
+				{
+					$setting['optionscode'] = substr($setting['optionscode'], 3);
+					eval("\$settingcode = \"".$setting['optionscode']."\";");
+				}
+				else
+				{
+					for($i=0;$i<count($type);$i++)
+					{
+						$optionsexp = explode("=", $type[$i]);
+						if(!$optionsexp[1])
+						{
+							continue;
 						}
-						$options .= "<input type=\"checkbox\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel>&nbsp;$optionsexp[1]<br>";
+						if($type[0] == "select")
+						{
+							if($setting[value] == $optionsexp[0])
+							{
+								$sel = "selected";
+							}
+							else
+							{
+								$sel = "";
+							}
+							$options .= "<option value=\"$optionsexp[0]\" $sel>$optionsexp[1]</option>";
+						}
+						else if($type[0] == "radio")
+						{
+							if($setting[value] == $optionsexp[0])
+							{
+								$sel = "checked";
+							}
+							else
+							{
+								$sel = "";
+							}
+							$options .= "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel>&nbsp;$optionsexp[1]<br>";
+						}
+						else if($type[0] == "checkbox")
+						{
+							if($setting[value] == $optionsexp[0])
+							{
+								$sel = "checked";
+							}
+							else
+							{
+								$sel = "";
+							}
+							$options .= "<input type=\"checkbox\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel>&nbsp;$optionsexp[1]<br>";
+						}
+					}
+					if($type[0] == "select")
+					{
+						$settingcode = "<select name=\"upsetting[$setting[sid]]\">$options</select>";
+					}
+					else
+					{
+						$settingcode = "$options";
 					}
 				}
-				if($type[0] == "select") {
-					$settingcode = "<select name=\"upsetting[$setting[sid]]\">$options</select>";
-				} else {
-					$settingcode = "$options";
+				// Check if a custom language string exists for this setting title and description
+				$title_lang = "setting_".$group['name'];
+				$desc_lang = $name_lang."_desc";
+				if($lang->$title_lang)
+				{
+					$setting['title'] = $lang->$title_lang;
 				}
+				if($lang->$desc_lang)
+				{
+					$setting['description'] = $lang->$desc_lang;
+				}
+				tablesubheader($setting[title], "", 2, "left");
+				makelabelcode("<small>$setting[description]</small>", $settingcode);
+				$settingcode = "";
 			}
-			// Check if a custom language string exists for this setting title and description
-			$title_lang = "setting_".$group['name'];
-			$desc_lang = $name_lang."_desc";
-			if($lang->$title_lang)
-			{
-				$setting['title'] = $lang->$title_lang;
-			}
-			if($lang->$desc_lang)
-			{
-				$setting['description'] = $lang->$desc_lang;
-			}
-			tablesubheader($setting[title], "", 2, "left");
-			makelabelcode("<small>$setting[description]</small>", $settingcode);
-			$settingcode = "";
+			endtable();
 		}
-		endtable();
 		endform($lang->submit_changes, $lang->reset_button);
 	}
 	else
 	{ // Generate a listing of all of the setting groups
 		$hopto[] = "<input type=\"button\" value=\"$lang->add_new_setting\" onclick=\"hopto('settings.php?action=add');\" class=\"hoptobutton\">";
 		$hopto[] = "<input type=\"button\" value=\"$lang->manage_settings\" onclick=\"hopto('settings.php?action=modify');\" class=\"hoptobutton\">";
+		$hopto[] = "<input type=\"button\" value=\"$lang->show_all_settings\" onclick=\"hopto('settings.php?action=change&gid=-1');\" class=\"hoptobutton\">";
 		makehoptolinks($hopto);
 		starttable();
 		tableheader($lang->board_settings, "", "2");
