@@ -272,7 +272,7 @@ switch($mybb->input['action'])
 		$lang->thread_approved = sprintf($lang->thread_approved, $thread['subject']);
 		logmod($modlogdata, $lang->thread_approved);
 
-		$moderation->approve_thread($tid, $fid);
+		$moderation->approve_threads($tid, $fid);
 
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadapproved);
 		break;
