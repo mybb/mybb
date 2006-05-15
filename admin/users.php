@@ -528,9 +528,18 @@ if($mybb->input['action'] == "do_email")
 			}
 			elseif($searchop['type'] == "pm")
 			{
-				$now = time();
-				$sendmessage = $db->escape_string($sendmessage);
-				$db->query("INSERT INTO ".TABLE_PREFIX."privatemessages(uid,toid,fromid,folder,subject,message,dateline,status,receipt) VALUES('$user[uid]','$user[uid]','$mybbadmin[uid]','1','$searchop[subject]','$sendmessage','$now','0','no');");
+				$insert_pm = array(
+					'uid' => $user['uid'],
+					'toid' => $user['uid'],
+					'fromid' => $mybbadmin['uid'],
+					'folder' => 1,
+					'subject' => $db->escape_string($searchop['subject']),
+					'message' => $db->escape_string($sendmessage),
+					'dateline' => time(),
+					'status' => 0,
+					'receipt' => 'no'
+					);
+				$db->insert_query(TABLE_PREFIX."privatemessages", $insert_pm);
 				echo sprintf($lang->pm_sent, $user['username']);
 			}
 			elseif($user['email'] != "")
