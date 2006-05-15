@@ -1948,7 +1948,7 @@ if(!function_exists("file_get_contents"))
 			}
 			return $contents;
 		}
-		return $false;
+		return false;
 	}
 }
 
