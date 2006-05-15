@@ -446,11 +446,11 @@ if($mybb->input['action'] == "thread")
 	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
 	if($ismod)
 	{
-		$visible = "AND (visible='0' OR visible='1')";
+		$visible = "AND (p.visible='0' OR p.visible='1')";
 	}
 	else
 	{
-		$visible = "AND visible='1'";
+		$visible = "AND p.visible='1'";
 	}
 
 	// Threaded or lineair display?
@@ -504,7 +504,7 @@ if($mybb->input['action'] == "thread")
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon)
 			WHERE p.tid='$tid'
-			AND p.visible='1'
+			AND $visible
 			ORDER BY p.dateline
 		");
 		while($post = $db->fetch_array($query))
@@ -535,9 +535,9 @@ if($mybb->input['action'] == "thread")
 		if($mybb->input['pid'])
 		{
 			$query = $db->query("
-				SELECT COUNT(pid) AS count FROM ".TABLE_PREFIX."posts
-				WHERE tid='$tid'
-				AND pid <= '".$mybb->input['pid']."'
+				SELECT COUNT(p.pid) AS count FROM ".TABLE_PREFIX."posts p
+				WHERE p.tid='$tid'
+				AND p.pid <= '".$mybb->input['pid']."'
 				$visible
 			");
 			$result = $db->fetch_field($query, "count");
@@ -549,6 +549,12 @@ if($mybb->input['action'] == "thread")
 			{
 				$page = intval($result / $perpage) + 1;
 			}
+		}
+		// Recount replies if user is a moderator to take into account unapproved posts.
+		if($ismod)
+		{
+			$query = $db->query("SELECT COUNT(*) AS replies FROM ".TABLE_PREFIX."posts p WHERE p.tid='$tid' $visible");
+			$thread['replies'] = $db->fetch_field($query, 'replies')-1;
 		}
 		$postcount = intval($thread['replies'])+1;
 		$pages = $postcount / $perpage;
@@ -584,7 +590,7 @@ if($mybb->input['action'] == "thread")
 		// Lets get the pids of the posts on this page.
 		$pids = "";
 		$comma = '';
-		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' $visible ORDER BY dateline LIMIT $start, $perpage");
+		$query = $db->query("SELECT p.pid FROM ".TABLE_PREFIX."posts p WHERE p.tid='$tid' $visible ORDER BY p.dateline LIMIT $start, $perpage");
 		while($getid = $db->fetch_array($query))
 		{
 			$pids .= "$comma'$getid[pid]'";
