@@ -69,7 +69,7 @@ function outputpage($contents)
 
 	if($mybb->settings['gzipoutput'] != "no")
 	{
-		if(version_compare(PHP_VERSION, '4.2.0', '>=')
+		if(version_compare(PHP_VERSION, '4.2.0', '>='))
 		{
 			$contents = gzipencode($contents, $mybb->settings['gziplevel']);
 		}
