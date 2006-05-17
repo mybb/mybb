@@ -268,7 +268,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 if($mybb->input['action'] == "register")
 {
 
-	if(!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit']))
+	if(!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit']) && $mybb->request_method != "post")
 	{
 		$plugins->run_hooks("member_register_agreement");
 
