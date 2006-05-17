@@ -335,9 +335,8 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && isset($myb
 // Check pages allowable even when not allowed to view board
 $allowable_actions = array(
 	"member.php" => array("register", "do_register", "login", "do_login", "logout", "lostpw", "do_lostpw", "activate", "resendactivation", "do_resendactivation", "resetpassword"),
-	"image.php" => array("regimage"),
 	);
-if($mybb->usergroup['canview'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && !(basename($_SERVER['PHP_SELF']) == "image.php" && in_array($mybb->input['action'], $allowable_actions['image.php'])))
+if($mybb->usergroup['canview'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && basename($_SERVER['PHP_SELF']) != "captcha.php")
 {
 	nopermission();
 }
