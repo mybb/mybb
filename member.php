@@ -280,9 +280,9 @@ if($mybb->input['action'] == "register")
 		$plugins->run_hooks("member_register_start");
 
 		$bdaysel = '';
-		for($i=1;$i<=31;$i++)
+		for($i = 1; $i <= 31; $i++)
 		{
-			$bdaydaysel .= "<option value=\"$i\">$i</option>\n";
+			$bdaysel .= "<option value=\"$i\">$i</option>\n";
 		}
 
 		if(isset($mybb->input['timezoneoffset']))
