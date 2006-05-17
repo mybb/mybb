@@ -268,7 +268,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 if($mybb->input['action'] == "register")
 {
 
-	if(!$mybb->input['agree'] && !$mybb->input['regsubmit'])
+	if(!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit']))
 	{
 		$plugins->run_hooks("member_register_agreement");
 
@@ -277,7 +277,6 @@ if($mybb->input['action'] == "register")
 	}
 	else
 	{
-
 		$plugins->run_hooks("member_register_start");
 
 		$bdaysel = '';
@@ -313,7 +312,8 @@ if($mybb->input['action'] == "register")
 		}
 		$timenow = mydate($mybb->settings['timeformat'], time(), "-");
 		$lang->time_offset_desc = sprintf($lang->time_offset_desc, $timenow);
-		for($i=-12;$i<=12;$i++) {
+		for($i=-12;$i<=12;$i++)
+		{
 			if($i == 0)
 			{
 				$i2 = "-";
