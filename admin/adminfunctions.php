@@ -835,13 +835,11 @@ function startnav()
 function makenavoption($name, $url)
 {
 	global $navoptions;
-	$name = htmlspecialchars_uni($name);
 	$navoptions .= "<li><a href=\"$url\">$name</a></li>\n";
 }
 function makenavselect($name)
 {
 	global $navoptions, $navselects;
-	$name = htmlspecialchars_uni($name);
 	echo "<table cellpadding=\"1\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"100%\" class=\"lnavbordercolor\">\n";
 	echo "<tr><td>\n";
 	echo "<table cellpadding=\"6\" cellspacing=\"0\" border=\"0\" width=\"100%\">";

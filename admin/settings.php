@@ -531,6 +531,15 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 					for($i=0;$i<count($type);$i++)
 					{
 						$optionsexp = explode("=", $type[$i]);
+						$lang_string =  "setting_".$setting['name']."_".$optionsexp[0];
+						if($lang->$lang_string)
+						{
+							$lang_string = $lang->$lang_string;
+						}
+						else
+						{
+							$lang_string = $optionsexp[1];
+						}
 						if(!$optionsexp[1])
 						{
 							continue;
@@ -545,7 +554,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 							{
 								$sel = "";
 							}
-							$options .= "<option value=\"$optionsexp[0]\" $sel>$optionsexp[1]</option>";
+							$options .= "<option value=\"$optionsexp[0]\" $sel>{$lang_string}</option>";
 						}
 						else if($type[0] == "radio")
 						{
@@ -557,7 +566,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 							{
 								$sel = "";
 							}
-							$options .= "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel>&nbsp;$optionsexp[1]<br>";
+							$options .= "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel>&nbsp;{$lang_string}<br />";
 						}
 						else if($type[0] == "checkbox")
 						{
@@ -569,7 +578,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 							{
 								$sel = "";
 							}
-							$options .= "<input type=\"checkbox\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel>&nbsp;$optionsexp[1]<br>";
+							$options .= "<input type=\"checkbox\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel>&nbsp;{$lang_string}<br />";
 						}
 					}
 					if($type[0] == "select")
@@ -582,8 +591,8 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 					}
 				}
 				// Check if a custom language string exists for this setting title and description
-				$title_lang = "setting_".$group['name'];
-				$desc_lang = $name_lang."_desc";
+				$title_lang = "setting_".$setting['name'];
+				$desc_lang = $title_lang."_desc";
 				if($lang->$title_lang)
 				{
 					$setting['title'] = $lang->$title_lang;

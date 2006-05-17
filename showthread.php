@@ -504,7 +504,7 @@ if($mybb->input['action'] == "thread")
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon)
 			WHERE p.tid='$tid'
-			AND $visible
+			$visible
 			ORDER BY p.dateline
 		");
 		while($post = $db->fetch_array($query))
