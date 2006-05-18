@@ -646,7 +646,7 @@ if($mybb->input['action'] == "showresults")
 					}
 					else
 					{
-						$userlist .= $guestcomma.sprintf($lang->guest_count_multiple, $guest_count);
+						$userlist .= $guest_comma.sprintf($lang->guest_count_multiple, $guest_count);
 					}
 				}
 			}
