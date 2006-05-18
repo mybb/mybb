@@ -569,6 +569,8 @@ if($mybb->input['action'] == "showresults")
 	addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
 	addnav($lang->nav_pollresults);
 
+	$guest_count = 0;
+
 	$query = $db->query("SELECT v.*, u.username FROM ".TABLE_PREFIX."pollvotes v LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=v.uid) WHERE v.pid='$poll[pid]' ORDER BY u.username");
 	while($voter = $db->fetch_array($query))
 	{
@@ -576,7 +578,16 @@ if($mybb->input['action'] == "showresults")
 		{
 			$votedfor[$voter['voteoption']] = 1;
 		}
-		$voters[$voter['voteoption']][$voter['uid']] = $voter['username'];
+
+		if($voter['uid'] == 0)
+		{
+			$guestvoters[$voter['voteoption']][$guest_count] = $voter['username'];
+			$guest_count++;
+		}
+		else
+		{
+			$voters[$voter['voteoption']][$voter['uid']] = $voter['username'];
+		}
 	}
 	$optionsarray = explode("||~|~||", $poll['options']);
 	$votesarray = explode("||~|~||", $poll['votes']);
@@ -632,21 +643,28 @@ if($mybb->input['action'] == "showresults")
 						$userlist .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$uid}\">{$username}</a>";
 						$comma = $guest_comma = ', ';
 					}
-					else
-					{
-						$guest_count++;
-					}
+
 				}
-				if($guest_count > 0)
+
+			}
+
+			if(is_array($guestvoters[$number]))
+			{
+				foreach($guestvoters[$number] as $guid)
 				{
-					if($guest_count == 1)
-					{
-						$userlist .= $guest_comma.$lang->guest_count;
-					}
-					else
-					{
-						$userlist .= $guest_comma.sprintf($lang->guest_count_multiple, $guest_count);
-					}
+					$guest_count++;
+				}
+			}
+
+			if($guest_count > 0)
+			{
+				if($guest_count == 1)
+				{
+					$userlist .= $guest_comma.$lang->guest_count;
+				}
+				else
+				{
+					$userlist .= $guest_comma.sprintf($lang->guest_count_multiple, $guest_count);
 				}
 			}
 		}
