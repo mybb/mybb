@@ -250,6 +250,9 @@ $l['attach_quota'] = "You are currently using <strong>{1}</strong> of your alloc
 $l['view_attachments'] = "[View My Attachments]";
 $l['unlimited'] = "Unlimited";
 
+$l['guest_count'] = "1 Guest";
+$l['guest_count_multiple'] = "{1} Guests";
+
 $l['size_gb'] = "GB";
 $l['size_mb'] = "MB";
 $l['size_kb'] = "KB";
