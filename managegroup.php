@@ -18,7 +18,11 @@ $lang->load("managegroup");
 
 $gid = $mybb->input['gid'] = intval($mybb->input['gid']);
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
+$query = $db->query("
+	SELECT *
+	FROM ".TABLE_PREFIX."usergroups
+	WHERE gid='$gid'
+");
 $usergroup = $db->fetch_array($query);
 if(!$usergroup['gid'])
 {
@@ -34,7 +38,11 @@ if($mybb->input['action'] == "joinrequests")
 }
 
 // Check that this user is actually a leader of this group
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."groupleaders WHERE uid='".$mybb->user['uid']."' AND gid='$gid'");
+$query = $db->query("
+	SELECT *
+	FROM ".TABLE_PREFIX."groupleaders
+	WHERE uid='".$mybb->user['uid']."' AND gid='$gid'
+");
 $groupleader = $db->fetch_array($query);
 if(!$groupleader['uid'])
 {
@@ -47,7 +55,12 @@ if($mybb->input['action'] == "do_add")
 	{
 		nopermission();
 	}
-	$query = $db->query("SELECT uid, additionalgroups, usergroup FROM ".TABLE_PREFIX."users WHERE username = '".$db->escape_string($mybb->input['username'])."' LIMIT 1");
+	$query = $db->query("
+		SELECT uid, additionalgroups, usergroup
+		FROM ".TABLE_PREFIX."users
+		WHERE username = '".$db->escape_string($mybb->input['username'])."'
+		LIMIT 1
+	");
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{
@@ -93,7 +106,11 @@ elseif($mybb->input['action'] == "do_joinrequests")
 	if(is_array($uidin))
 	{
 		$uids = implode(",", $uidin);
-		$db->query("DELETE FROM ".TABLE_PREFIX."joinrequests WHERE uid IN($uids)");
+		$db->query("
+			DELETE
+			FROM ".TABLE_PREFIX."joinrequests
+			WHERE uid IN($uids)
+		");
 	}
 
 	$plugins->run_hooks("managegroup_do_joinrequests_end");
@@ -105,7 +122,13 @@ elseif($mybb->input['action'] == "joinrequests")
 	$users = "";
 	$plugins->run_hooks("managegroup_joinrequests_start");
 
-	$query = $db->query("SELECT j.*, u.uid, u.username, u.postnum, u.regdate FROM ".TABLE_PREFIX."joinrequests j LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid) WHERE j.gid='".$mybb->input['gid']."' ORDER BY u.username ASC");
+	$query = $db->query("
+		SELECT j.*, u.uid, u.username, u.postnum, u.regdate
+		FROM ".TABLE_PREFIX."joinrequests j
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid)
+		WHERE j.gid='".$mybb->input['gid']."'
+		ORDER BY u.username ASC
+	");
 	while($user = $db->fetch_array($query))
 	{
 		$user['reason'] = htmlspecialchars_uni($user['reason']);
@@ -153,7 +176,11 @@ else
 	$lang->add_member = sprintf($lang->add_member, $usergroup['title']);
 	if($usergroup['type'] == 4)
 	{
-		$query = $db->query("SELECT COUNT(*) AS req FROM ".TABLE_PREFIX."joinrequests WHERE gid='".$mybb->input['gid']."'");
+		$query = $db->query("
+			SELECT COUNT(*) AS req
+			FROM ".TABLE_PREFIX."joinrequests
+			WHERE gid='".$mybb->input['gid']."'
+		");
 		$numrequests = $db->fetch_array($query);
 		if($numrequests['req'])
 		{
@@ -176,8 +203,12 @@ else
 	}
 		
 
-	$uquery = "SELECT * FROM ".TABLE_PREFIX."users WHERE CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."' ORDER BY username ASC";
-	$query = $db->query($uquery);
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."users
+		WHERE CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'
+		ORDER BY username ASC
+	");
 	$numusers = $db->num_rows($query);
 	/*if(!$numusers && !$numrequests)
 	{
@@ -212,7 +243,11 @@ else
 		{
 			$email = '';
 		}
-		$query1 = $db->query("SELECT uid FROM ".TABLE_PREFIX."groupleaders WHERE uid='$user[uid]' AND gid='$gid'");
+		$query1 = $db->query("
+			SELECT uid
+			FROM ".TABLE_PREFIX."groupleaders
+			WHERE uid='$user[uid]' AND gid='$gid'
+		");
 		$isleader = $db->fetch_array($query1);
 		$user['username'] = formatname($user['username'], $user['usergroup']);
 		if($isleader['uid'])

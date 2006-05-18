@@ -43,7 +43,13 @@ if($mybb->input['action'] == "today")
 	$todaycount = 0;
 	$stime = time()-(60*60*24);
 	$todayrows = '';
-	$query = $db->query("SELECT u.* FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE u.lastactive > $stime ORDER BY u.lastactive DESC");
+	$query = $db->query("
+		SELECT u.*
+		FROM ".TABLE_PREFIX."users u
+		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
+		WHERE u.lastactive > $stime
+		ORDER BY u.lastactive DESC
+	");
 	while($online = $db->fetch_array($query))
 	{
 		if($online['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes")
@@ -127,7 +133,13 @@ else
 		$refresh_string = '';
 	}
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
-	$query = $db->query("SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY $sql");
+	$query = $db->query("
+		SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."sessions s
+		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		WHERE s.time>'$timesearch'
+		ORDER BY $sql
+	");
 	$membercount = 0;
 	$guestcount = 0;
 	$anoncount = 0;

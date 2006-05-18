@@ -217,7 +217,11 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_deletepoll");
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE tid='$tid'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."polls
+			WHERE tid='$tid'
+		");
 		$poll = $db->fetch_array($query);
 		if(!$poll['pid'])
 		{
@@ -241,7 +245,11 @@ switch($mybb->input['action'])
 				nopermission();
 			}
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."polls WHERE tid='$tid'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."polls
+			WHERE tid='$tid'
+		");
 		$poll = $db->fetch_array($query);
 		if(!$poll['pid'])
 		{
@@ -264,7 +272,11 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."threads
+			WHERE tid='$tid'
+		");
 		$thread = $db->fetch_array($query);
 
 		$plugins->run_hooks("moderation_approvethread");
@@ -283,7 +295,11 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='tid'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."threads
+			WHERE tid='tid'
+		");
 		$thread = $db->fetch_array($query);
 
 		$plugins->run_hooks("moderation_unapprovethread");
@@ -304,7 +320,13 @@ switch($mybb->input['action'])
 			nopermission();
 		}
 		$posts = "";
-		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");
+		$query = $db->query("
+			SELECT p.*, u.*
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+			WHERE tid='$tid'
+			ORDER BY dateline ASC
+		");
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
 		{
@@ -351,7 +373,11 @@ switch($mybb->input['action'])
 
 		$deletethread = "1";
 		$deletepost = $mybb->input['deletepost'];
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
+		$query = $db->query("
+			SELECT * 
+			FROM ".TABLE_PREFIX."posts
+			WHERE tid='$tid'
+		");
 		while($post = $db->fetch_array($query))
 		{
 			if($deletepost[$post['pid']] == "yes")
@@ -392,7 +418,13 @@ switch($mybb->input['action'])
 			nopermission();
 		}
 		$posts = "";
-		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");
+		$query = $db->query("
+			SELECT p.*, u.*
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+			WHERE tid='$tid' 
+			ORDER BY dateline ASC
+		");
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
 		{
@@ -483,8 +515,16 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE closed='moved|$tid' AND fid='$moveto'");
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
+		$db->query("
+			DELETE
+			FROM ".TABLE_PREFIX."threads
+			WHERE closed='moved|$tid' AND fid='$moveto'
+		");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."forums 
+			WHERE fid='$moveto'
+		");
 		$newforum = $db->fetch_array($query);
 		if($newforum['type'] != "f")
 		{
@@ -653,7 +693,11 @@ switch($mybb->input['action'])
 		}
 		if($parameters['pid'] && !$parameters['tid'])
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='".intval($parameters['pid'])."'");
+			$query = $db->query("
+				SELECT *
+				FROM ".TABLE_PREFIX."posts
+				WHERE pid='".intval($parameters['pid'])."'
+			");
 			$post = $db->fetch_array($query);
 			$mergetid = $post['tid'];
 		}
@@ -662,7 +706,11 @@ switch($mybb->input['action'])
 			$mergetid = $parameters['tid'];
 		}
 		$mergetid = intval($mergetid);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mergetid)."'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."threads
+			WHERE tid='".intval($mergetid)."'
+		");
 		$mergethread = $db->fetch_array($query);
 		if(!$mergethread['tid'])
 		{
@@ -699,7 +747,13 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");
+		$query = $db->query("
+			SELECT p.*, u.*
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+			WHERE tid='$tid'
+			ORDER BY dateline ASC
+		");
 		$numposts = $db->num_rows($query);
 		if($numposts <= "1")
 		{
@@ -757,7 +811,11 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_nosplitposts);
 		}
-		$query = $db->query("SELECT COUNT(*) AS totalposts FROM ".TABLE_PREFIX."posts WHERE tid='".intval($mybb->input['tid'])."'");
+		$query = $db->query("
+			SELECT COUNT(*) AS totalposts
+			FROM ".TABLE_PREFIX."posts
+			WHERE tid='".intval($mybb->input['tid'])."'
+		");
 		$count = $db->fetch_array($query);
 
 		if(!is_array($mybb->input['splitpost']))
@@ -776,14 +834,23 @@ switch($mybb->input['action'])
 		{
 			$moveto = $fid;
 		}
-		$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forums WHERE fid='$moveto' LIMIT 1");
+		$query = $db->query("
+			SELECT fid
+			FROM ".TABLE_PREFIX."forums
+			WHERE fid='$moveto'
+			LIMIT 1
+		");
 		if($db->num_rows($query) == 0)
 		{
 			error($lang->error_invalidforum);
 		}
 
 		// move the selected posts over
-		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
+		$query = $db->query("
+			SELECT pid
+			FROM ".TABLE_PREFIX."posts
+			WHERE tid='$tid'
+		");
 		while($post = $db->fetch_array($query))
 		{
 			if($mybb->input['splitpost'][$post['pid']] == "yes")
@@ -1123,7 +1190,13 @@ switch($mybb->input['action'])
 		{
 			nopermission();
 		}
-		$query = $db->query("SELECT p.*, u.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' ORDER BY dateline ASC");
+		$query = $db->query("
+			SELECT p.*, u.*
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+			WHERE tid='$tid'
+			ORDER BY dateline ASC
+		");
 		$numposts = $db->num_rows($query);
 		if($numposts <= "1")
 		{
@@ -1142,7 +1215,11 @@ switch($mybb->input['action'])
 			$pidin .= "$comma'$pid'";
 			$comma = ",";
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid NOT IN($pidin) AND tid='$tid'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."posts
+			WHERE pid NOT IN($pidin) AND tid='$tid'
+		");
 		$num = $db->num_rows($query);
 		if(!$num)
 		{
@@ -1175,7 +1252,11 @@ switch($mybb->input['action'])
 		{
 			$moveto = $fid;
 		}
-		$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forums WHERE fid='$moveto' LIMIT 1");
+		$query = $db->query("
+			SELECT fid
+			FROM ".TABLE_PREFIX."forums
+			WHERE fid='$moveto'
+		");
 		if($db->num_rows($query) == 0)
 		{
 			error($lang->error_invalidforum);
@@ -1245,7 +1326,11 @@ switch($mybb->input['action'])
 		$flist = '';
 		if($mybb->usergroup['issupermod'] != "yes")
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators WHERE uid='".$mybb->user['uid']."'");
+			$query = $db->query("
+				SELECT * 
+				FROM ".TABLE_PREFIX."moderators
+				WHERE uid='".$mybb->user['uid']."'
+			");
 			while($forum = $db->fetch_array($query))
 			{
 				$flist .= ",'".$forum['fid']."'";
@@ -1283,14 +1368,26 @@ switch($mybb->input['action'])
 			nopermission();
 		}
 
-		$query = $db->query("SELECT fid,name FROM ".TABLE_PREFIX."forums");
+		$query = $db->query("
+			SELECT fid,name
+			FROM ".TABLE_PREFIX."forums
+		");
 		while($forum = $db->fetch_array($query))
 		{
 			$forums[$forum['fid']] = $forum['name'];
 		}
 		$trow = "trow1";
 		$reports = '';
-		$query = $db->query("SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject FROM ".TABLE_PREFIX."reportedposts r LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid) LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid) LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid) WHERE r.reportstatus ='0' ORDER BY r.dateline ASC");
+		$query = $db->query("
+			SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject
+			FROM ".TABLE_PREFIX."reportedposts r
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid)
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
+			WHERE r.reportstatus ='0'
+			ORDER BY r.dateline ASC
+		");
 		while($report = $db->fetch_array($query))
 		{
 			$reportdate = mydate($mybb->settings['dateformat'], $report['dateline']);

@@ -39,7 +39,11 @@ if($mybb->input['action'] == "markread")
 	{
 		if($mybb->user['uid'] != 0)
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."users SET lastvisit='".time()."' WHERE uid='".$mybb->user[uid]."'");
+			$db->query("
+				UPDATE ".TABLE_PREFIX."users
+				SET lastvisit='".time()."'
+				WHERE uid='".$mybb->user[uid]."'
+			");
 		}
 		else
 		{
@@ -67,7 +71,11 @@ elseif($mybb->input['action'] == "rules")
 	{
 		$plugins->run_hooks("misc_rules_start");
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".intval($mybb->input['fid'])."' AND active!='no'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."forums
+			WHERE fid='".intval($mybb->input['fid'])."'AND active!='no'
+		");
 		$forum = $db->fetch_array($query);
 
 		$forumpermissions = forum_permissions($forum['fid']);
@@ -103,7 +111,12 @@ elseif($mybb->input['action'] == "help")
 
 	addnav($lang->nav_helpdocs, "misc.php?action=help");
 
-	$query = $db->query("SELECT h.*, s.enabled AS section FROM ".TABLE_PREFIX."helpdocs h LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid) WHERE h.hid='".intval($mybb->input['hid'])."'");
+	$query = $db->query("
+		SELECT h.*, s.enabled AS section
+		FROM ".TABLE_PREFIX."helpdocs h 
+		LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid)
+		WHERE h.hid='".intval($mybb->input['hid'])."'
+	");
 	$helpdoc = $db->fetch_array($query);
 	if($helpdoc['hid'])
 	{
@@ -136,14 +149,23 @@ elseif($mybb->input['action'] == "help")
 	{
 		$plugins->run_hooks("misc_help_section_start");
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs ORDER BY sid, disporder");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."helpdocs
+			ORDER BY sid, disporder
+		");
 		while($helpdoc = $db->fetch_array($query))
 		{
 			$helpdocs[$helpdoc['sid']][$helpdoc['disporder']][$helpdoc['hid']] = $helpdoc;
 		}
 		unset($helpdoc);
 		$sections = '';
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE enabled!='no' ORDER BY disporder");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."helpsections
+			WHERE enabled!='no'
+			ORDER BY disporder
+		");
 		while($section = $db->fetch_array($query))
 		{
 			if($section['usetranslation'] == "yes" || $section['sid'] <= 2)
@@ -236,7 +258,11 @@ elseif($mybb->input['action'] == "buddypopup")
 				}
 			}
 			$buddylist = implode(",", $namesarray);
-			$query = $db->query("UPDATE ".TABLE_PREFIX."users SET buddylist='$buddylist' WHERE uid='".$mybb->user['uid']."'");
+			$query = $db->query("
+				UPDATE ".TABLE_PREFIX."users
+				SET buddylist='$buddylist'
+				WHERE uid='".$mybb->user['uid']."'
+			");
 			$mybb->user['buddylist'] = $buddylist;
 		}
 	}
@@ -254,7 +280,12 @@ elseif($mybb->input['action'] == "buddypopup")
 			$comma = ",";
 		}
 		$timecut = time() - $mybb->settings['wolcutoff'];
-		$query = $db->query("SELECT u.*, g.canusepms FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE u.uid IN ($sql)");
+		$query = $db->query("
+			SELECT u.*, g.canusepms
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
+			WHERE u.uid IN ($sql
+		");
 		while($buddy = $db->fetch_array($query))
 		{
 			if($mybb->user['receivepms'] != "no" && $buddy['receivepms'] != "no" && $buddy['canusepms'] != "no")
@@ -286,7 +317,14 @@ elseif($mybb->input['action'] == "whoposted")
 	$numposts = 0;
 	$altbg = "trow1";
 	$whoposted = '';
-	$query = $db->query("SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='".intval($mybb->input['tid'])."' AND p.visible='1' GROUP BY u.uid ORDER BY posts DESC");
+	$query = $db->query("
+		SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username
+		FROM ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE tid='".intval($mybb->input['tid'])."' AND p.visible='1'
+		GROUP BY u.uid
+		ORDER BY posts DESC
+	");
 	while($poster = $db->fetch_array($query))
 	{
 		if($poster['username'] == '')
@@ -315,7 +353,11 @@ elseif($mybb->input['action'] == "smilies")
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies ORDER BY disporder");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."smilies
+			ORDER BY disporder
+		");
 		while($smilie = $db->fetch_array($query))
 		{
 			$smiliefind = $smilie['find'];
@@ -350,7 +392,11 @@ elseif($mybb->input['action'] == "smilies")
 	{
 		addnav($lang->nav_smilies);
 		$class = "trow1";
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies ORDER BY disporder");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."smilies
+			ORDER BY disporder
+		");
 		while($smilie = $db->fetch_array($query))
 		{
 			eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
@@ -374,7 +420,12 @@ elseif($mybb->input['action'] == "imcenter")
 		exit;
 	}
 	$uid = intval($mybb->input['uid']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$uid."' LIMIT 1");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."users
+		WHERE uid='".$uid."'
+		LIMIT 1
+	");
 	$user = $db->fetch_array($query);
 
 	if(!$user['username'])
@@ -553,7 +604,12 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	if(!is_array($forumcache))
 	{
 		// Get Forums
-		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f WHERE linkto='' ORDER BY f.pid, f.disporder");
+		$query = $db->query("
+			SELECT f.*
+			FROM ".TABLE_PREFIX."forums f
+			WHERE linkto=''
+			ORDER BY f.pid, f.disporder
+		");
 		while($forum = $db->fetch_array($query))
 		{
 			$forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;

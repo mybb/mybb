@@ -676,6 +676,7 @@ if($mybb->input['action'] == "thread")
 		eval("\$inlinemod = \"".$templates->get("showthread_inlinemoderation")."\";");
 		eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
 	}
+	$lang->newthread_in = sprintf($lang->newthread_in, $forum['name']);
 	eval("\$showthread = \"".$templates->get("showthread")."\";");
 	$plugins->run_hooks("showthread_end");
 	outputpage($showthread);

@@ -481,7 +481,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
 			$attachcount++;
 		}
-		$query = $db->query("SELECT SUM(filesize) AS ausage FROM ".TABLE_PREFIX."attachments WHERE uid='".$mybb->user['uid']."'");
+		$query = $db->query("
+			SELECT SUM(filesize) AS ausage
+			FROM ".TABLE_PREFIX."attachments
+			WHERE uid='".$mybb->user['uid']."'
+		");
 		$usage = $db->fetch_array($query);
 		if($usage['ausage'] > ($mybb->usergroup['attachquota']*1000) && $mybb->usergroup['attachquota'] != 0)
 		{
@@ -520,7 +524,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$visibility = "p.visible='1'";
 		}
-		$query = $db->query("SELECT p.*, u.username AS userusername FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE tid='$tid' AND $visibility ORDER BY dateline DESC");
+		$query = $db->query("
+			SELECT p.*, u.username AS userusername
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+			WHERE tid='$tid' AND $visibility
+			ORDER BY dateline DESC
+		");
 		$numposts = $db->num_rows($query);
 		if($numposts > $mybb->settings['postsperpage'])
 		{

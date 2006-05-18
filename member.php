@@ -68,7 +68,11 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 	{
 		$time = time();
 		$datecut = $time-(60*60*$mybb->settings['betweenregstime']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE regip='$ipaddress' AND regdate>'$datecut'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."users 
+			HERE regip='$ipaddress' AND regdate>'$datecut'
+		");
 		$regcount = $db->num_rows($query);
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
 		{
@@ -147,13 +151,21 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."captcha WHERE imagehash='$imagehash' AND imagestring='$imagestring'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."captcha
+			WHERE imagehash='$imagehash' AND imagestring='$imagestring'
+		");
 		$imgcheck = $db->fetch_array($query);
 		if(!$imgcheck['dateline'])
 		{
 			$errors[]  = $lang->error_regimageinvalid;
 		}
-		$db->query("DELETE FROM ".TABLE_PREFIX."captcha WHERE imagehash='$imagehash'");
+		$db->query("
+			DELETE
+			FROM ".TABLE_PREFIX."captcha
+			WHERE imagehash='$imagehash'
+		");
 	}
 
 	if(is_array($errors))
@@ -312,7 +324,7 @@ if($mybb->input['action'] == "register")
 		}
 		$timenow = mydate($mybb->settings['timeformat'], time(), "-");
 		$lang->time_offset_desc = sprintf($lang->time_offset_desc, $timenow);
-		for($i=-12;$i<=12;$i++)
+		for($i = -12; $i <= 12; $i++)
 		{
 			if($i == 0)
 			{
@@ -347,7 +359,7 @@ if($mybb->input['action'] == "register")
 			$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
 			if(is_array($explodedtpp))
 			{
-				while(list($key, $val) = each($explodedtpp))
+				foreach($explodedtp as $val)
 				{
 					$val = trim($val);
 					$tppoptions .= "<option value=\"$val\">".sprintf($lang->tpp_option, $val)."</option>\n";
@@ -361,7 +373,7 @@ if($mybb->input['action'] == "register")
 			$explodedppp = explode(",", $mybb->settings['userpppoptions']);
 			if(is_array($explodedppp))
 			{
-				while(list($key, $val) = each($explodedppp))
+				foreach($explodedppp as $val)
 				{
 					$val = trim($val);
 					$pppoptions .= "<option value=\"$val\">".sprintf($lang->ppp_option, $val)."</option>\n";
@@ -373,19 +385,31 @@ if($mybb->input['action'] == "register")
 		{
 			if($_COOKIE['mybb']['referrer'])
 			{
-				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($_COOKIE['mybb']['referrer'])."'");
+				$query = $db->query("
+					SELECT uid
+					FROM ".TABLE_PREFIX."users
+					WHERE username='".$db->escape_string($_COOKIE['mybb']['referrer'])."'
+				");
 				$ref = $db->fetch_array($query);
 				$referrername = $_COOKIE['mybb']['referrer'];
 			}
 			elseif($referrer)
 			{
-				$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='".intval($referrer['uid'])."'");
+				$query = $db->query("
+					SELECT username
+					FROM ".TABLE_PREFIX."users
+					WHERE uid='".intval($referrer['uid'])."'
+				");
 				$ref = $db->fetch_array($query);
 				$referrername = $ref['username'];
 			}
 			elseif($referrername)
 			{
-				$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($referrername)."'");
+				$query = $db->query("
+					SELECT uid
+					FROM ".TABLE_PREFIX."users
+					WHERE username='".$db->escape_string($referrername)."'
+				");
 				$ref = $db->fetch_array($query);
 				if(!$ref['uid'])
 				{
@@ -408,7 +432,12 @@ if($mybb->input['action'] == "register")
 		}
 		// Custom profile fields baby!
 		$altbg = trow1;
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."profilefields
+			WHERE editable='yes'
+			ORDER BY disporder
+		");
 		while($profilefield = $db->fetch_array($query))
 		{
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -422,7 +451,7 @@ if($mybb->input['action'] == "register")
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions))
 				{
-					while(list($key, $val) = each($expoptions))
+					foreach($expoptions as $val)
 					{
 						$val = trim($val);
 						$val = str_replace("\n", "\\n", $val);
@@ -440,7 +469,7 @@ if($mybb->input['action'] == "register")
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions))
 				{
-					while(list($key, $val) = each($expoptions))
+					foreach($expoptions as $val)
 					{
 						$val = trim($val);
 						$val = str_replace("\n", "\\n", $val);
@@ -458,7 +487,7 @@ if($mybb->input['action'] == "register")
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions))
 				{
-					while(list($key, $val) = each($expoptions))
+					foreach($expoptions as $val)
 					{
 						$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\"> $val<br>";
 					}
@@ -469,7 +498,7 @@ if($mybb->input['action'] == "register")
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions))
 				{
-					while(list($key, $val) = each($expoptions))
+					foreach($expoptions as $val)
 					{
 						$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\"> $val<br>";
 					}
@@ -554,7 +583,11 @@ elseif($mybb->input['action'] == "activate")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."users
+			WHERE username='".$db->escape_string($mybb->input['username'])."'
+		");
 		$user = $db->fetch_array($query);
 		if(!$user['username'])
 		{
@@ -564,13 +597,22 @@ elseif($mybb->input['action'] == "activate")
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."users
+			WHERE uid='".intval($mybb->input['uid'])."'
+		");
 		$user = $db->fetch_array($query);
 	}
 	if($mybb->input['code'] && $user['uid'])
 	{
 		$mybb->settings['awaitingusergroup'] = "5";
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user['uid']."' AND (type='r' OR type='e')");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."awaitingactivation
+			WHERE uid='".$user['uid']."'
+			AND (type='r' OR type='e')
+		");
 		$activation = $db->fetch_array($query);
 		if(!$activation['uid'])
 		{
@@ -580,7 +622,11 @@ elseif($mybb->input['action'] == "activate")
 		{
 			error($lang->error_badactivationcode);
 		}
-		$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user['uid']."' AND (type='r' OR type='e')");
+		$db->query("
+			DELETE
+			FROM ".TABLE_PREFIX."awaitingactivation
+			WHERE uid='".$user['uid']."' AND (type='r' OR type='e')
+		");
 		if($user['usergroup'] == 5 && $activation['type'] != "e")
 		{
 			$newgroup = array(
@@ -644,7 +690,12 @@ elseif($mybb->input['action'] == "do_resendactivation" && $mybb->request_method 
 		error($lang->error_activated_by_admin);
 	}
 
-	$query = $db->query("SELECT u.uid, u.username, u.usergroup, u.email, a.code FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r') WHERE u.email='".$db->escape_string($mybb->input['email'])."'");
+	$query = $db->query("
+		SELECT u.uid, u.username, u.usergroup, u.email, a.code
+		FROM ".TABLE_PREFIX."users u
+		LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r')
+		WHERE u.email='".$db->escape_string($mybb->input['email'])."'
+	");
 	$numusers = $db->num_rows($query);
 	if($numusers < 1)
 	{
@@ -694,7 +745,11 @@ elseif($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 	$plugins->run_hooks("member_do_lostpw_start");
 
 	$email = $db->escape_string($email);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE email='".$db->escape_string($mybb->input['email'])."'");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."users
+		WHERE email='".$db->escape_string($mybb->input['email'])."'
+	");
 	$numusers = $db->num_rows($query);
 	if($numusers < 1)
 	{
@@ -704,7 +759,11 @@ elseif($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 	{
 		while($user = $db->fetch_array($query))
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='$user[uid]' AND type='p'");
+			$db->query("
+				DELETE
+				FROM ".TABLE_PREFIX."awaitingactivation
+				WHERE uid='$user[uid]' AND type='p'
+			");
 			$user['activationcode'] = random_str();
 			$now = time();
 			$uid = $user['uid'];
@@ -733,7 +792,11 @@ elseif($mybb->input['action'] == "resetpassword")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."users
+			WHERE username='".$db->escape_string($mybb->input['username'])."'
+		");
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
@@ -742,19 +805,31 @@ elseif($mybb->input['action'] == "resetpassword")
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."users
+			WHERE uid='".intval($mybb->input['uid'])."'
+		");
 		$user = $db->fetch_array($query);
 	}
 	if($mybb->input['code'] && $user['uid'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user['uid']."' AND type='p'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."awaitingactivation
+			WHERE uid='".$user['uid']."' AND type='p'
+		");
 		$activation = $db->fetch_array($query);
 		$now = time();
 		if($activation['code'] != $mybb->input['code'])
 		{
 			error($lang->error_badlostpwcode);
 		}
-		$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE uid='".$user['uid']."' AND type='p'");
+		$db->query("
+			DELETE
+			FROM ".TABLE_PREFIX."awaitingactivation
+			WHERE uid='".$user['uid']."' AND type='p'
+		");
 		$username = $user['username'];
 
 		//
@@ -816,7 +891,11 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	if(!username_exists($mybb->input['username']))
 	{
 		mysetcookie('loginattempts', $logins + 1);
-		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts = loginattempts + 1 WHERE sid = '{$session->sid}'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."sessions
+			SET loginattempts = loginattempts + 1
+			WHERE sid = '{$session->sid}'
+		");
 		if($mybb->settings['failedlogintext'] == "yes")
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
@@ -827,7 +906,11 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	if(!$user['uid'])
 	{
 		mysetcookie('loginattempts', $logins + 1);
-		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts = loginattempts + 1 WHERE sid = '{$session->sid}'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."sessions
+			SET loginattempts = loginattempts + 1
+			WHERE sid = '{$session->sid}'
+		");
 		if($mybb->settings['failedlogintext'] == "yes")
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
@@ -836,7 +919,11 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	}
 
 	mysetcookie('loginattempts', 1);
-	$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'");
+	$db->query("
+		DELETE
+		FROM ".TABLE_PREFIX."sessions
+		WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'
+	");
 	$newsession = array(
 		"uid" => $user['uid'],
 		"loginattempts" => 1,
@@ -885,7 +972,11 @@ else if($mybb->input['action'] == "logout")
 				"lastvisit" => $time,
 				);
 			$db->update_query(TABLE_PREFIX."users", $lastvisit, "uid='".$mybb->user['uid']."'");
-			$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".$mybb->user['uid']."' OR ip='".$ipaddress."'");
+			$db->query("
+				DELETE
+				FROM ".TABLE_PREFIX."sessions
+				WHERE uid='".$mybb->user['uid']."' OR ip='".$ipaddress."'
+			");
 
 			if(function_exists("loggedOut"))
 			{
@@ -1058,7 +1149,10 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$ppd = $memprofile['postnum'];
 	}
-	$query = $db->query("SELECT COUNT(pid) AS posts FROM ".TABLE_PREFIX."posts");
+	$query = $db->query("
+		SELECT COUNT(pid) AS posts
+		FROM ".TABLE_PREFIX."posts
+	");
 	$posts = $db->fetch_field($query, "posts");
 	if($posts == 0)
 	{
@@ -1070,7 +1164,11 @@ elseif($mybb->input['action'] == "profile")
 		$percent = round($percent, 2);
 	}
 
-	$query = $db->query("SELECT COUNT(*) AS referrals FROM ".TABLE_PREFIX."users WHERE referrer='$memprofile[uid]'");
+	$query = $db->query("
+		SELECT COUNT(*) AS referrals
+		FROM ".TABLE_PREFIX."users
+		WHERE referrer='$memprofile[uid]'
+	");
 	$referrals = $db->fetch_field($query, "referrals");
 
 	if(!empty($memprofile['icq']))
@@ -1172,7 +1270,11 @@ elseif($mybb->input['action'] == "profile")
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles ORDER BY posts DESC");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."usertitles
+			ORDER BY posts DESC
+		");
 		while($title = $db->fetch_array($query))
 		{
 			if($memprofile['postnum'] >= $title['posts'])
@@ -1228,11 +1330,20 @@ elseif($mybb->input['action'] == "profile")
 		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='$uid'");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."userfields
+		WHERE ufid='$uid'
+	");
 	$userfields = $db->fetch_array($query);
 	$customfields = '';
 	$bgcolor = trow1;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE hidden='no' ORDER BY disporder");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."profilefields
+		WHERE hidden='no'
+		ORDER BY disporder
+	");
 	while($customfield = $db->fetch_array($query))
 	{
 		$field = "fid$customfield[fid]";
@@ -1240,9 +1351,9 @@ elseif($mybb->input['action'] == "profile")
 		$customfieldval = '';
 		if(is_array($useropts) && ($customfield['type'] == "multiselect" || $customfield['type'] == "checkbox"))
 		{
-			while(list($key, $val) = each($useropts))
+			foreach($useropts as $val)
 			{
-				$customfieldval .= "$val<br>";
+				$customfieldval .= "$val<br />";
 			}
 		}
 		else
@@ -1306,7 +1417,11 @@ elseif($mybb->input['action'] == "emailuser")
 	}
 	if($mybb->input['uid'])
 	{
-		$query = $db->query("SELECT username, hideemail FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
+		$query = $db->query("
+			SELECT username, hideemail
+			FROM ".TABLE_PREFIX."users
+			WHERE uid='".intval($mybb->input['uid'])."'
+		");
 		$emailto = $db->fetch_array($query);
 		if(!$emailto['username'])
 		{
@@ -1335,7 +1450,11 @@ elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "pos
 	{
 		nopermission();
 	}
-	$query = $db->query("SELECT uid, username, email, hideemail FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['touser'])."'");
+	$query = $db->query("
+		SELECT uid, username, email, hideemail
+		FROM ".TABLE_PREFIX."users
+		WHERE username='".$db->escape_string($mybb->input['touser'])."'
+	");
 	$emailto = $db->fetch_array($query);
 	if(!$emailto['username'])
 	{

@@ -397,7 +397,13 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 		}
-		$query = $db->query("SELECT u.*, f.*, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".intval($mybb->input['icon'])."') WHERE u.uid='".$mybb->user[uid]."'");
+		$query = $db->query("
+			SELECT u.*, f.*, i.path as iconpath, i.name as iconname
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".intval($mybb->input['icon'])."')
+			WHERE u.uid='".$mybb->user[uid]."'
+		");
 		$post = $db->fetch_array($query);
 		if(!$mybb->user['uid'] || !$post['username'])
 		{
@@ -425,7 +431,11 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
 		}
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."attachments
+			WHERE $attachwhere
+		");
 		while($attachment = $db->fetch_array($query)) {
 			$attachcache[0][$attachment['aid']] = $attachment;
 		}
@@ -517,7 +527,11 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
 			$attachcount++;
 		}
-		$query = $db->query("SELECT SUM(filesize) AS ausage FROM ".TABLE_PREFIX."attachments WHERE uid='".$mybb->user['uid']."'");
+		$query = $db->query("
+			SELECT SUM(filesize) AS ausage
+			FROM ".TABLE_PREFIX."attachments
+			WHERE uid='".$mybb->user['uid']."'
+		");
 		$usage = $db->fetch_array($query);
 		if($usage['ausage'] > ($mybb->usergroup['attachquota']*1000) && $mybb->usergroup['attachquota'] != 0)
 		{

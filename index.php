@@ -278,9 +278,9 @@ function getforums($pid="0", $depth=1, $permissions="")
 	$forumlisting = '';
 	if(is_array($fcache[$pid]))
 	{
-		while(list($key, $main) = each($fcache[$pid]))
+		foreach($fcache[$pid] as $main)
 		{
-			while(list($key, $forum) = each($main))
+			foreach($main as $forum)
 			{
 				$forums = $subforums = '';
 				$perms = $forumpermissions[$forum['fid']];
