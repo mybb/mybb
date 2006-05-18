@@ -109,7 +109,21 @@ $day = date("j", $stamp);
 $month = date("n", $stamp);
 $year = date("Y", $stamp);
 
-$monthnames = array("offset", $lang->alt_month_1, $lang->alt_month_2, $lang->alt_month_3, $lang->alt_month_4, $lang->alt_month_5, $lang->alt_month_6, $lang->alt_month_7, $lang->alt_month_8, $lang->alt_month_9, $lang->alt_month_10, $lang->alt_month_11, $lang->alt_month_12);
+$monthnames = array(
+	"offset",
+	$lang->alt_month_1,
+	$lang->alt_month_2,
+	$lang->alt_month_3,
+	$lang->alt_month_4,
+	$lang->alt_month_5,
+	$lang->alt_month_6,
+	$lang->alt_month_7,
+	$lang->alt_month_8,
+	$lang->alt_month_9,
+	$lang->alt_month_10,
+	$lang->alt_month_11,
+	$lang->alt_month_12
+);
 
 // Make navigation
 addnav($lang->nav_calendar, "calendar.php");
@@ -294,7 +308,7 @@ if($mybb->input['action'] == "do_addevent")
 	// Set up eventhandler.
 	require_once MYBB_ROOT."inc/datahandler.php";
 	require_once MYBB_ROOT."inc/datahandlers/event.php";
-	$eventhandler = new EventDataHandler();
+	$eventhandler = new EventDataHandler("insert");
 
 	// Prepare an array for the eventhandler.
 	$event = array(
@@ -422,7 +436,7 @@ if($mybb->input['action'] == "do_editevent")
 	{
 		// Set up eventhandler.
 		require_once MYBB_ROOT."inc/datahandlers/event.php";
-		$eventhandler = new EventDataHandler();
+		$eventhandler = new EventDataHandler("update");
 
 		// Prepare an array for the eventhandler.
 		$event = array(
@@ -441,28 +455,7 @@ if($mybb->input['action'] == "do_editevent")
 		// Now let the eventhandler do all the hard work.
 		if(!$eventhandler->validate_event())
 		{
-			$errors = $eventhandler->get_errors();
-			foreach($errors as $error)
-			{
-				//
-				// MYBB 1.2 DATA HANDLER ERROR HANDLING DEBUG/TESTING CODE (REMOVE BEFORE PUBLIC FINAL)
-				// Used to determine any missing language variables from the datahandlers
-				//
-				if($lang->$error)
-				{
-					$event_errors[] = $lang->$error;
-				}
-				else
-				{
-					$event_errors[] = "Missing language var: ".$error;
-				}
-				//
-				// END TESTING CODE
-				//
-				/*
-					$event_errors[] =$lang->$error;
-				*/
-			}
+			$event_errors = $eventhandler->get_friendly_errors();
 			$event_errors = inlineerror($event_errors);
 			$mybb->input['action'] = "editevent";
 		}

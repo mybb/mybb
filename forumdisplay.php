@@ -69,7 +69,13 @@ $fpermissions = $forumpermissions[$fid];
 
 
 // Get Forums
-$query = $db->query("SELECT f.*, t.subject AS lastpostsubject FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = f.lastposttid) WHERE active!='no' ORDER BY f.pid, f.disporder");
+$query = $db->query("
+	SELECT f.*, t.subject AS lastpostsubject
+	FROM ".TABLE_PREFIX."forums f
+	LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = f.lastposttid)
+	WHERE active!='no'
+	ORDER BY f.pid, f.disporder
+");
 while($forum = $db->fetch_array($query))
 {
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -133,12 +139,12 @@ if($fpermissions['cansearch'] != "no" && $foruminfo['type'] == "f")
 $modcomma = '';
 $modlist = '';
 $parentlistexploded = explode(",", $parentlist);
-while(list($key, $mfid) = each($parentlistexploded))
+foreach($parentlistexploded as $mfid)
 {
 	if($moderatorcache[$mfid])
 	{
 		reset($moderatorcache[$mfid]);
-		while(list($key2, $moderator) = each($moderatorcache[$mfid]))
+		foreach($moderatorcache[$mfid] as $moderator)
 		{
 			$moderator['username'] = formatname($moderator['username'], $moderator['usergroup'], $moderator['displaygroup']);
 			eval("\$modlist .= \"".$templates->get("forumdisplay_moderatedby_moderator", 1, 0)."\";");
@@ -161,7 +167,13 @@ if($mybb->settings['browsingthisforum'] != "off")
 	$membercount = 0;
 	$inviscount = 0;
 	$onlinemembers = '';
-	$query = $db->query("SELECT s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timecut' AND location1='$fid' AND nopermission!=1 ORDER BY u.username");
+	$query = $db->query("
+		SELECT s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."sessions s
+		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		WHERE s.time>'$timecut' AND location1='$fid' AND nopermission!=1
+		ORDER BY u.username
+	");
 	while($user = $db->fetch_array($query))
 	{
 		if($user['uid'] == 0)
@@ -431,7 +443,13 @@ if($mybb->settings['announcementlimit'])
 }
 $sql = buildparentlist($fid, "fid", "OR", $parentlist);
 $time = time();
-$query = $db->query("SELECT a.*, u.username FROM ".TABLE_PREFIX."announcements a LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=a.uid WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND ($sql OR fid='-1') ORDER BY a.startdate DESC $limit");
+$query = $db->query("
+	SELECT a.*, u.username
+	FROM ".TABLE_PREFIX."announcements a
+	LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=a.uid
+	WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND ($sql OR fid='-1')
+	ORDER BY a.startdate DESC $limit
+");
 while($announcement = $db->fetch_array($query))
 {
 	if($announcement['startdate'] > $mybb->user['lastvisit'])
@@ -481,7 +499,14 @@ if($announcements)
 }
 
 // Start Getting Threads
-$query = $db->query("SELECT t.*, $ratingadd i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE t.fid='$fid' $visibleonly $datecutsql ORDER BY t.sticky DESC, $sortfield $sortordernow LIMIT $start, $perpage");
+$query = $db->query("
+	SELECT t.*, $ratingadd i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username
+	FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon)
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+	WHERE t.fid='$fid' $visibleonly $datecutsql
+	ORDER BY t.sticky DESC, $sortfield $sortordernow
+	LIMIT $start, $perpage
+");
 while($thread = $db->fetch_array($query))
 {
 	$threadcache[$thread['tid']] = $thread;
@@ -492,7 +517,7 @@ if($tids)
 	$tids = implode(",", $tids);
 }
 
-// 'dot' Icons
+// Check participation by the current user in any of these threads - for 'dot' folder icons
 if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 {
 	$query = $db->query("
@@ -510,7 +535,12 @@ if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 // Read threads
 if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threadsread WHERE uid='".$mybb->user[uid]."' AND tid IN($tids)");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."threadsread
+		WHERE uid='".$mybb->user[uid]."'
+		AND tid IN($tids)
+	");
 	while($readthread = $db->fetch_array($query))
 	{
 		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline'];
