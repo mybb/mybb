@@ -188,25 +188,50 @@ if($mybb->input['action'] == "updateperms")
 }
 if($mybb->input['action'] == "adminpermissions")
 {
+	$usergroups = array();
+	
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE cancp='yes'");
+	while($usergroup = $db->fetch_array($query))
+	{
+		$usergroups[$usergroup['gid']] = $usergroup;
+	}
 	checkadminpermissions("caneditaperms");
 	cpheader();
 	starttable();
-	tableheader($lang->admin_perms.makelinkcode($lang->edit_default, "adminoptions.php?action=updateperms&uid=0", "", "header"), "", 5);
+	tableheader($lang->admin_perms.makelinkcode($lang->edit_default, "adminoptions.php?action=updateperms&uid=0", "", "header"), "", 4);
 	echo "<tr>\n";
 	echo "<td class=\"subheader\">$lang->username</td>\n";
-	echo "<td class=\"subheader\">$lang->usergroup</td>\n";
 	echo "<td class=\"subheader\">$lang->lastactive</td>\n";
 	echo "<td class=\"subheader\">$lang->perm_options</td>\n";
 	echo "<td class=\"subheader\">$lang->options</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT u.uid, u.username, u.lastactive, g.cancp, g.title as usergroup, a.permsset FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g) LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid=u.uid) WHERE u.usergroup=g.gid AND g.cancp='yes' ORDER BY u.username ASC");
+	$group_list = implode(',', array_keys($usergroups));
+	$secondary_groups = ','.$group_list.',';
+	$query = $db->query("SELECT u.uid, u.username, u.lastactive, u.usergroup, u.additionalgroups, a.permsset FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid=u.uid) WHERE (u.usergroup IN ($group_list) OR CONCAT(',', u.additionalgroups,',') LIKE '%{$secondary_groups}%') ORDER BY u.username ASC");
 	while($admin = $db->fetch_array($query))
 	{
 		$la = mydate($settings['dateformat'].",".$settings['timeformat'], $admin['lastactive']);
 		$bgcolor = getaltbg();
+		$usergroup_list = array();
+		// Build a list of group memberships that have access to the admin CP
+		if($usergroups[$admin['usergroup']]['cancp'] == "yes")
+		{
+			$usergroup_list[] = $usergroups[$admin['usergroup']]['title'];
+		}
+		$additional_groups = explode(',', $admin['additionalgroups']);
+		if(is_array($additional_groups))
+		{
+			foreach($additional_groups as $gid)
+			{
+				if($usergroups[$gid]['cancp'] == "yes")
+				{
+					$usergroup_list[] = $usergroups[$gid]['title'];
+				}
+			}
+		}
+		$usergroup_list = implode(", ", $usergroup_list);
 		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\">$admin[username]</td>\n";
-		echo "<td class=\"$bgcolor\">$admin[usergroup]</td>\n";
+		echo "<td class=\"$bgcolor\">{$admin['username']}<br /><small>{$usergroup_list}</small></td>\n";
 		echo "<td class=\"$bgcolor\">$la</td>\n";
 		echo "<td class=\"$bgcolor\">";
 		if($admin['permsset'])
@@ -262,10 +287,10 @@ if($mybb->input['action'] == "updateprefs" || $mybb->input['action'] == "")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]'");
 	$adminoptions = $db->fetch_array($query);
 
-	$dir = @opendir($config['admindir']."/styles");
+	$dir = @opendir(MYBB_ADMIN_DIR."/styles");
 	while($folder = readdir($dir))
 	{
-		if($folder != "." && $folder != ".." && @file_exists($config['admindir']."/styles/$folder/stylesheet.css"))
+		if($folder != "." && $folder != ".." && @file_exists(MYBB_ADMIN_DIR."/styles/$folder/stylesheet.css"))
 		{
 			$folders[$folder] = $folder;
 		}

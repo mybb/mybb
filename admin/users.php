@@ -253,9 +253,9 @@ if($mybb->input['action'] == "do_add")
 		"emailnotify" => $mybb->input['emailnotify'],
 		"receivepms" => $mybb->input['receivepms'],
 		"pmpopup" => $mybb->input['pmpopup'],
-		"emailpmnotify" => $mybb->input['emailpmnotify'],
+		"pmnotify" => $mybb->input['emailpmnotify'],
 		"invisible" => $mybb->input['invisible'],
-		"enabledst" => $mybb->input['enabledst']
+		"dst" => $mybb->input['enabledst']
 	);
 
 	// Set the data of the user in the datahandler.
@@ -362,9 +362,9 @@ if($mybb->input['action'] == "do_edit")
 		"emailnotify" => $mybb->input['emailnotify'],
 		"receivepms" => $mybb->input['receivepms'],
 		"pmpopup" => $mybb->input['pmpopup'],
-		"emailpmnotify" => $mybb->input['emailpmnotify'],
+		"pmnotify" => $mybb->input['emailpmnotify'],
 		"invisible" => $mybb->input['invisible'],
-		"enabledst" => $mybb->input['enabledst']
+		"dst" => $mybb->input['enabledst']
 	);
 
 	// Set the data of the user in the datahandler.
