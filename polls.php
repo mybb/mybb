@@ -631,7 +631,7 @@ if($mybb->input['action'] == "showresults")
 					{
 						$userlist .= "$comma<a href=\"member.php?action=profile&amp;uid=$uid\">$username</a>";
 						$comma = ', ';
-						$guest_comma = ',';
+						$guest_comma = ', ';
 					}
 					else
 					{
