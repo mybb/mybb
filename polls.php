@@ -643,15 +643,16 @@ if($mybb->input['action'] == "showresults")
 					$comma = $guest_comma = ', ';
 				}
 			}
+
 			if($guest_voters[$number] > 0)
 			{
-				if($guest_count == 1)
+				if($guest_voters[$number] == 1)
 				{
 					$userlist .= $guest_comma.$lang->guest_count;
 				}
 				else
 				{
-					$userlist .= $guest_comma.sprintf($lang->guest_count_multiple, $guest_count);
+					$userlist .= $guest_comma.sprintf($lang->guest_count_multiple, $guest_voters[$number]);
 				}
 			}
 		}
