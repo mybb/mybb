@@ -396,6 +396,7 @@ if($mybb->input['action'] == "results")
 		$query = $db->query("
 			SELECT COUNT(p.pid) AS resultcount
 			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE $where_conditions
 		");
 		$count = $db->fetch_array($query);
@@ -598,7 +599,7 @@ if($mybb->input['action'] == "results")
 }
 elseif($mybb->input['action'] == "findguest")
 {
-	$where_sql = "t.uid='0'";
+	$where_sql = "p.uid='0'";
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
