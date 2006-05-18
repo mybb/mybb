@@ -569,7 +569,7 @@ if($mybb->input['action'] == "showresults")
 	addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
 	addnav($lang->nav_pollresults);
 
-	$guest_count = 0;
+	$voters = array();
 
 	$query = $db->query("SELECT v.*, u.username FROM ".TABLE_PREFIX."pollvotes v LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=v.uid) WHERE v.pid='$poll[pid]' ORDER BY u.username");
 	while($voter = $db->fetch_array($query))
@@ -579,10 +579,11 @@ if($mybb->input['action'] == "showresults")
 			$votedfor[$voter['voteoption']] = 1;
 		}
 
-		if($voter['uid'] == 0)
+		// Count number of guests and users without a username (assumes they've been deleted)
+		if($voter['uid'] == 0 || $voter['username'] == '')
 		{
-			$guestvoters[$voter['voteoption']][$guest_count] = $voter['username'];
-			$guest_count++;
+			// Add one to the number of voters for guests
+			++$guest_voters[$voter['voteoption']];
 		}
 		else
 		{
@@ -638,25 +639,11 @@ if($mybb->input['action'] == "showresults")
 			{
 				foreach($voters[$number] as $uid => $username)
 				{
-					if($uid != 0 && $username != '')
-					{
-						$userlist .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$uid}\">{$username}</a>";
-						$comma = $guest_comma = ', ';
-					}
-
-				}
-
-			}
-
-			if(is_array($guestvoters[$number]))
-			{
-				foreach($guestvoters[$number] as $guid)
-				{
-					$guest_count++;
+					$userlist .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$uid}\">{$username}</a>";
+					$comma = $guest_comma = ', ';
 				}
 			}
-
-			if($guest_count > 0)
+			if($guest_voters[$number] > 0)
 			{
 				if($guest_count == 1)
 				{
