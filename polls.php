@@ -600,17 +600,17 @@ if($mybb->input['action'] == "showresults")
 		$number = $i;
 		if($votedfor[$number])
 		{
-			$optionbg = "trow2";
-			$votestar = "*";
+			$optionbg = 'trow2';
+			$votestar = '*';
 		}
 		else
 		{
-			$optionbg = "trow1";
-			$votestar = "";
+			$optionbg = 'trow1';
+			$votestar = '';
 		}
-		if ($votes == "0")
+		if ($votes == '0')
 		{
-			$percent = "0";
+			$percent = '0';
 		}
 		else
 		{
@@ -629,13 +629,12 @@ if($mybb->input['action'] == "showresults")
 				{
 					if($uid != 0 && $username != '')
 					{
-						$userlist .= "$comma<a href=\"member.php?action=profile&amp;uid=$uid\">$username</a>";
-						$comma = ', ';
-						$guest_comma = ', ';
+						$userlist .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$uid}\">{$username}</a>";
+						$comma = $guest_comma = ', ';
 					}
 					else
 					{
-						$guest_count ++;
+						$guest_count++;
 					}
 				}
 				if($guest_count > 0)
