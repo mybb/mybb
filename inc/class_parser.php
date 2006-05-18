@@ -43,6 +43,13 @@ class postParser
 	 * @var mixed
 	 */
 	var $badwords_cache = 0;
+	
+	/**
+	 * Base URL for smilies
+	 *
+	 * @var string
+	 */
+	var $base_url;
 
 	/**
 	 * Parses a message with the specified options.
@@ -53,7 +60,18 @@ class postParser
 	 */
 	function parse_message($message, $options=array())
 	{
-		global $plugins, $settings;
+		global $plugins, $mybb;
+		
+		// Set base URL for parsing smilies
+		$this->base_url = $mybb->settings['bburl'];
+
+		if($this->base_url != "")
+		{
+			if(substr($this->base_url, strlen($this->base_url) -1) != "/")
+			{
+				$this->base_url = $this->base_url."/";
+			}
+		}
 
 		// Always fix bad Javascript in the message.
 		$message = $this->fix_javascript($message);
@@ -77,20 +95,13 @@ class postParser
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>", $message);
 		}
-
-		// Replace smilies if requested.
+		
+		// If we can, parse smiliesa
 		if($options['allow_smilies'] != "no")
 		{
-			if($options['is_archive'] == "yes")
-			{
-				$message = $this->parse_smilies($message, $settings['bburl'], $options['allow_html']);
-			}
-			else
-			{
-				$message = $this->parse_smilies($message, "", $options['allow_html']);
-			}
+			$message = $this->parse_smilies($message, $options['allowhtml']);
 		}
-
+		
 		// Replace MyCode if requested.
 		if($options['allow_mycode'] != "no")
 		{
@@ -295,7 +306,12 @@ class postParser
 	{
 		global $cache;
 		$this->smilies_cache = array();
-		$this->smilies_cache = $cache->read("smilies");
+		
+		$smilies = $cache->read("smilies");
+		foreach($smilies as $sid => $smilie)
+		{
+			$this->smilies_cache[$smilie['find']] = "<img src=\"{$this->base_url}{$smilie['image']}\" style=\"vertical-align: middle;\" border=\"0\" alt=\"{$smilie['name']}\" title=\"{$smilie['name']}\" />";
+		}
 	}
 
 	/**
@@ -306,38 +322,26 @@ class postParser
 	 * @param string Yes/No if HTML is allowed in the post
 	 * @return string The parsed message.
 	 */
-	function parse_smilies($message, $url="", $allow_html="no")
+	function parse_smilies($message, $allow_html="no")
 	{
 		if($this->smilies_cache == 0)
 		{
 			$this->cache_smilies();
 		}
-
-		if($url != "")
-		{
-			if(substr($url, strlen($url) -1) != "/")
-			{
-				$url = $url."/";
-			}
-		}
 		if(is_array($this->smilies_cache))
 		{
 			reset($this->smilies_cache);
-			foreach($this->smilies_cache as $sid => $smilie)
+			foreach($this->smilies_cache as $find => $replace)
 			{
-				if($allow_html == "no")
+				
+				if($allow_html != "yes")
 				{
-					$smilie['find'] = $this->parse_html($smilie['find']);
+					$find = $this->parse_html($find);
 				}
-				$message = str_replace($smilie['find'], "<img src=\"".$url.$smilie['image']."\" style=\"vertical-align: middle;\" border=\"0\" alt=\"".$smilie['name']."\" title=\"".$smilie['name']."\" />", $message);
+				$message = str_replace($find, $replace, $message);
 			}
 		}
 		return $message;
-	}
-
-	function parse_mecode()
-	{
-		// Hi!
 	}
 
 	/**
@@ -637,13 +641,32 @@ class postParser
 		$list = preg_replace("#<(ol type=\"$type\"|ul)>\s*</li>#", "<$1>", $list);
 		return $list;
 	}
+	
+	/**
+	 * Strips smilies from a string
+ 	 *
+	 * @param string The message for smilies to be stripped from
+	 * @return string The message with smilies stripped
+	 */
+	function strip_smilies($message)
+	{
+		if($this->smilies_cache == 0)
+		{
+			$this->cache_smilies();
+		}
+		if(is_array($this->smilies_cache))
+		{
+			$message = str_replace($this->smilies_cache, array_keys($this->smilies_cache), $message);
+		}
+		return $message;
+	}
 
 	/**
-	* Strips MyCode.
-	*
-	* @param string The message to be parsed
-	* @return string The parsed message.
-	*/
+	 * Strips MyCode.
+	 *
+	 * @param string The message to be parsed
+	 * @return string The parsed message.
+	 */
 	function strip_mycode($message, $options=array())
 	{
 		if($options['allow_html'] != "yes")
