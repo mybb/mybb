@@ -17,6 +17,7 @@ $parser = new postParser;
 
 // Load global language phrases
 $lang->load("polls");
+//$lang->load("global");
 
 if($mybb->user['uid'] != 0)
 {
@@ -29,7 +30,7 @@ else
 
 if($mybb->input['preview'] || $mybb->input['updateoptions'])
 {
-	if($mybb->input['action'] == "do_editpoll") 
+	if($mybb->input['action'] == "do_editpoll")
 	{
 		$mybb->input['action'] = "editpoll";
 	}
@@ -48,7 +49,7 @@ if($mybb->input['action'] == "newpoll")
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
-	
+
 	if(!$thread['tid'])
 	{
 		error($lang->error_invalidthread);
@@ -128,7 +129,7 @@ if($mybb->input['action'] == "newpoll")
 	$plugins->run_hooks("polls_newpoll_end");
 
 	eval("\$newpoll = \"".$templates->get("polls_newpoll")."\";");
-	outputpage($newpoll);		
+	outputpage($newpoll);
 }
 if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 {
@@ -138,7 +139,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
-	
+
 	if(!$thread['tid'])
 	{
 		error($lang->error_invalidthread);
@@ -284,7 +285,7 @@ if($mybb->input['action'] == "editpoll")
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
 	$forum = $db->fetch_array($query);
-	
+
 
 	if($thread['visible'] == "no" || !$thread['tid'])
 	{
@@ -294,7 +295,7 @@ if($mybb->input['action'] == "editpoll")
 	{
 		nopermission();
 	}
-	$polldate = mydate($mybb->settings['dateformat'], $poll['dateline']);	
+	$polldate = mydate($mybb->settings['dateformat'], $poll['dateline']);
 	if(!$mybb->input['preview'] && !$mybb->input['updateoptions'])
 	{
 		if($poll['closed'] == "yes")
@@ -309,10 +310,10 @@ if($mybb->input['action'] == "editpoll")
 		{
 			$postoptionschecked['public'] = "checked";
 		}
-	
+
 		$optionsarray = explode("||~|~||", $poll['options']);
 		$votesarray = explode("||~|~||", $poll['votes']);
-	
+
 
 		for($i=1;$i<=$poll['numoptions'];$i++)
 		{
@@ -359,7 +360,7 @@ if($mybb->input['action'] == "editpoll")
 			$numoptions = $mybb->input['numoptions'];
 		}
 		$question = htmlspecialchars_uni($mybb->input['question']);
-		
+
 		$postoptions = $mybb->input['postoptions'];
 		if($postoptions['multiple'] == "yes")
 		{
@@ -420,7 +421,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."'");
 	$forum = $db->fetch_array($query);
-	
+
 	if($thread['visible'] == "no" || !$thread['tid'])
 	{
 		error($lang->error_invalidthread);
@@ -475,7 +476,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		error($lang->error_polloptiontoolong);
 	}
-	
+
 	if(trim($mybb->input['question']) == "" || $optioncount < 2)
 	{
 		error($lang->error_noquestionoptions);
@@ -585,14 +586,14 @@ if($mybb->input['action'] == "showresults")
 	}
 	$polloptions = '';
 	for($i=1;$i<=$poll['numoptions'];$i++)
-	{		
+	{
 		$parser_options = array(
 			"allow_html" => $forum['allowhtml'],
 			"allow_mycode" => $forum['allowmycode'],
 			"allow_smilies" => $forum['allowsmilies'],
 			"allow_imgcode" => $forum['allowimgcode']
 		);
-		
+
 		$option = $parser->parse_message($optionsarray[$i-1], $parser_options);
 
 		$votes = $votesarray[$i-1];
@@ -618,6 +619,7 @@ if($mybb->input['action'] == "showresults")
 		$imagewidth = (round($percent)/3) * 5;
 		$comma = '';
 		$userlist = '';
+		$guestlist = 0;
 		if($poll['public'] == "yes")
 		{
 			if(is_array($voters[$number]))
@@ -625,7 +627,28 @@ if($mybb->input['action'] == "showresults")
 				while(list($uid, $username) = each($voters[$number]))
 				{
 					$userlist .= "$comma<a href=\"member.php?action=profile&uid=$uid\">$username</a>";
-					$comma = ", ";
+					$comma = ', ';
+
+					if($uid == 0)
+                	{
+                    	if($guestlist > 0)
+                    	{
+                    		$guestcomma = ', ';
+                    	}
+                    	$guestlist++;
+                	}
+				}
+
+				if($guestlist > 0)
+				{
+					if($guestlist == 1)
+					{
+						$userlist .= $guestcomma.$lang->guest_count;
+					}
+					else
+					{
+						$userlist .= $guestcomma.sprintf($lang->guest_count_multiple, $guestlist);
+					}
 				}
 			}
 		}
@@ -671,7 +694,7 @@ if($mybb->input['action'] == "vote")
 	{
 		nopermission();
 	}
-	
+
 	$expiretime = $poll['dateline'] + $poll['timeout'];
 	$now = time();
 	if($poll['closed'] == "yes" || $thread['closed'] == "yes" || ($expiretime < $now && $poll['timeout']))
