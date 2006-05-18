@@ -631,11 +631,11 @@ if($mybb->input['action'] == "showresults")
 					{
 						$userlist .= "$comma<a href=\"member.php?action=profile&amp;uid=$uid\">$username</a>";
 						$comma = ', ';
+						$guest_comma = ',';
 					}
 					else
 					{
 						$guest_count ++;
-						$guest_comma = ',';
 					}
 				}
 				if($guest_count > 0)
