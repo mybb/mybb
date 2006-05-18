@@ -618,36 +618,35 @@ if($mybb->input['action'] == "showresults")
 		}
 		$imagewidth = (round($percent)/3) * 5;
 		$comma = '';
+		$guest_comma = '';
 		$userlist = '';
-		$guestlist = 0;
+		$guest_count = 0;
 		if($poll['public'] == "yes")
 		{
 			if(is_array($voters[$number]))
 			{
-				while(list($uid, $username) = each($voters[$number]))
+				foreach($voters[$number] as $uid => $username)
 				{
-					$userlist .= "$comma<a href=\"member.php?action=profile&uid=$uid\">$username</a>";
-					$comma = ', ';
-
-					if($uid == 0)
-                	{
-                    	if($guestlist > 0)
-                    	{
-                    		$guestcomma = ', ';
-                    	}
-                    	$guestlist++;
-                	}
-				}
-
-				if($guestlist > 0)
-				{
-					if($guestlist == 1)
+					if($uid != 0 && $username != '')
 					{
-						$userlist .= $guestcomma.$lang->guest_count;
+						$userlist .= "$comma<a href=\"member.php?action=profile&amp;uid=$uid\">$username</a>";
+						$comma = ', ';
 					}
 					else
 					{
-						$userlist .= $guestcomma.sprintf($lang->guest_count_multiple, $guestlist);
+						$guest_count ++;
+						$guest_comma = ',';
+					}
+				}
+				if($guest_count > 0)
+				{
+					if($guest_count == 1)
+					{
+						$userlist .= $guest_comma.$lang->guest_count;
+					}
+					else
+					{
+						$userlist .= $guestcomma.sprintf($lang->guest_count_multiple, $guest_count);
 					}
 				}
 			}
