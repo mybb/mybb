@@ -559,7 +559,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
-	$lang->newthread_in = sprintf($lang->newthread_in, $thread['subject']);
 
 	$plugins->run_hooks("newthread_end");
 
