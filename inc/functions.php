@@ -269,25 +269,56 @@ function mydate($format, $stamp, $offset="", $ty=1)
  * @param string The subject of the email being sent.
  * @param string The message being sent.
  * @param string The from address of the email, if blank, the board name will be used.
+ * @param string The chracter set being used to send this email.
  */
-function mymail($to, $subject, $message, $from="")
+function mymail($to, $subject, $message, $from="", $charset="")
 {
 	global $db, $mybb;
-	// For some reason sendmail/qmail doesn't like \r\n
-	$sendmail = @ini_get('sendmail_path');
-	if($sendmail)
-	{
-		$message = preg_replace("#(\r\n|\r|\n)#s", "\n", $message);
-	}
-	else
-	{
-		$message = preg_replace("#(\r\n|\r|\n)#s", "\r\n", $message);
-	}
+	// Build mail headers
 	if(strlen(trim($from)) == 0)
 	{
 		$from = "\"".$mybb->settings['bbname']." Mailer\" <".$mybb->settings['adminemail'].">";
 	}
-	mail($to, $subject, $message, "From: $from");
+	$headers = "From: {$from}\n";
+	$headers .= "Return-Path: {$mybb->settings['adminemail']}\n";
+	if($_SERVER['SERVER_NAME'])
+	{
+		$http_host = $_SERVER['SERVER_NAME'];
+	}
+	else if($_SERVER['HTTP_HOST'])
+	{
+		$http_host = $_SERVER['HTTP_HOST'];
+	}
+	else
+	{
+		$http_host = "unknown.local";
+	}
+	$headers .= "Message-ID: <". md5(uniqid(time()))."@{$http_host}>\n";
+	$headers .= "MIME-Version: 1.0\n";
+	if($charset == "")
+	{
+		$charset = "iso-8859-1";
+	}
+	$headers .= "Content-Type: text/plain; charset=\"{$charset}\"\n";
+	$headers .= "Content-Transfer-Encoding: 8bit\n";
+	$headers .= "X-Priority: 3\n";
+	$headers .= "X-MSMail-Priority: Normal\n";
+	$headers .= "X-Mailer: MyBB\n";	
+	
+	// For some reason sendmail/qmail doesn't like \r\n
+	$sendmail = @ini_get('sendmail_path');
+	if($sendmail)
+	{
+		$headers = preg_replace("#(\r\n|\r|\n)#s", "\n", $headers);
+		$message = preg_replace("#(\r\n|\r|\n)#s", "\n", $message);
+	}
+	else
+	{
+		$headers = preg_replace("#(\r\n|\r|\n)#s", "\r\n", $headers);
+		$message = preg_replace("#(\r\n|\r|\n)#s", "\r\n", $message);
+	}
+
+	mail($to, $subject, $message, $headers);
 }
 
 /**
