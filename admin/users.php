@@ -862,9 +862,13 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->msn_address, "msn", $user['msn']);
 
 	// Add the birthday dropdown.
+	$bday = explode("-", $user['birthday']);
 	$options = array(
 		'years_back' => 100,
 		'years_ahead' => '0',
+		'selected_day' => $bday[0],
+		'selected_month' => $bday[1],
+		'selected_year' => $bday[2]
 	);
 	$birthday_dropdown = build_date_dropdown('birthday', $options);
 	makelabelcode($lang->birthday, $birthday_dropdown);

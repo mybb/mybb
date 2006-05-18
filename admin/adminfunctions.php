@@ -1889,20 +1889,40 @@ function build_date_dropdown($id, $options=array())
 {
 	global $lang;
 
-	// Add 31 days to the day dropdown.
-	$days = array();
+	// Start building the dropdown HTML.
+	$dropdown = '';
+	// Now add the days.
+	$dropdown .= "<select name=\"{$id}_day\">\n";
 	for($d = 1; $d <= 31; $d++)
 	{
-		$days[$d] = $d;
+		if($d == $options['selected_day'])
+		{
+			$dropdown .= "<option selected=\"selected\" value=\"{$d}\">{$d}</option>\n";
+		}
+		else
+		{
+			$dropdown .= "<option value=\"{$d}\">{$d}</option>\n";
+		}
 	}
+	$dropdown .= "</select>\n";
 
-	// Add 12 months to the month dropdown.
-	$months = array();
+	// The months.
+	$dropdown .= "<select name=\"{$id}_month\">\n";
 	for($m = 1; $m <= 12; $m++)
 	{
 		$month_lang = 'month_'.$m;
-		$months[$m] = $lang->$month_lang;
+		$month = $lang->$month_lang;
+
+		if($m == $options['selected_month'])
+		{
+			$dropdown .= "<option selected=\"selected\" value=\"{$m}\">{$month}</option>\n";
+		}
+		else
+		{
+			$dropdown .= "<option value=\"{$m}\">{$month}</option>\n";
+		}
 	}
+	$dropdown .= "</select>\n";
 
 	// Add years to the dropdown.
 	$this_year = date("Y");
@@ -1924,45 +1944,12 @@ function build_date_dropdown($id, $options=array())
 		}
 	}
 	krsort($years);
-
-	// Start building the dropdown HTML.
-	$dropdown = '';
-
-	// Now add the days.
-	$dropdown .= "<select name=\"{$id}_day\">\n";
-	foreach($days as $k => $v)
-	{
-		if($k == $options['selected_day'])
-		{
-			$dropdown .= "<option selected=\"selected\" value=\"{$k}\">{$v}</option>\n";
-		}
-		else
-		{
-			$dropdown .= "<option value=\"{$k}\">{$v}</option>\n";
-		}
-	}
-	$dropdown .= "</select>\n";
-
-	// The months.
-	$dropdown .= "<select name=\"{$id}_month\">\n";
-	foreach($months as $k => $v)
-	{
-		if($k == $options['selected_month'])
-		{
-			$dropdown .= "<option selected=\"selected\" value=\"{$k}\">{$v}</option>\n";
-		}
-		else
-		{
-			$dropdown .= "<option value=\"{$k}\">{$v}</option>\n";
-		}
-	}
-	$dropdown .= "</select>\n";
-
+	
 	// And the years.
 	$dropdown .= "<select name=\"{$id}_year\">\n";
 	foreach($years as $k => $v)
 	{
-		if($k == $options['selected_year'])
+		if($k == $options['selected_year'] || !$options['selected_year'] && $k == $this_year)
 		{
 			$dropdown .= "<option selected=\"selected\" value=\"{$k}\">{$v}</option>\n";
 		}
@@ -1976,46 +1963,32 @@ function build_date_dropdown($id, $options=array())
 	// Add time, too?
 	if($options['show_time'] === true)
 	{
-		// Add 23 hours to the dropdown.
-		$hours = array();
-		for($h = 1; $h <= 23; $h++)
-		{
-			$hours[$h] = $h;
-		}
-
-		// Add 59 minutes to the dropdown.
-		$minutes = array();
-		for($min = 1; $min <= 59; $min++)
-		{
-			$minutes[$min] = $min;
-		}
-
 		// Build hours HTML.
 		$dropdown .= "<select name=\"{$id}_hours\">\n";
-		foreach($hours as $k => $v)
+		for($h = 0; $h <= 23; $h++)
 		{
-			if($k == $options['selected_hour'])
+			if($h == $options['selected_hour'])
 			{
-				$dropdown .= "<option selected=\"selected\" value=\"{$k}\">{$v}</option>\n";
+				$dropdown .= "<option selected=\"selected\" value=\"{$h}\">{$h}</option>\n";
 			}
 			else
 			{
-				$dropdown .= "<option value=\"{$k}\">{$v}</option>\n";
+				$dropdown .= "<option value=\"{$h}\">{$h}</option>\n";
 			}
 		}
 		$dropdown .= "</select>\n";
 
 		// And the minutes HTML.
 		$dropdown .= "<select name=\"{$id}_minutes\">\n";
-		foreach($minutes as $k => $v)
+		for($min = 0; $min <= 59; $min++)
 		{
-			if($k == $options['selected_minute'])
+			if($min == $options['selected_minute'])
 			{
-				$dropdown .= "<option selected=\"selected\" value=\"{$k}\">{$v}</option>\n";
+				$dropdown .= "<option selected=\"selected\" value=\"{$min}\">{$min}</option>\n";
 			}
 			else
 			{
-				$dropdown .= "<option value=\"{$k}\">{$v}</option>\n";
+				$dropdown .= "<option value=\"{$min}\">{$min}</option>\n";
 			}
 		}
 		$dropdown .= "</select>\n";
