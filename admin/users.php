@@ -653,6 +653,7 @@ if($mybb->input['action'] == "do_merge")
 	cpfooter();
 }
 
+// Show add user page
 if($mybb->input['action'] == "add")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");
@@ -794,6 +795,8 @@ if($mybb->input['action'] == "add")
 	endform($lang->add_user, $lang->reset_button);
 	cpfooter();
 }
+
+// Show edit user page
 if($mybb->input['action'] == "edit")
 {
 	$uid = intval($mybb->input['uid']);

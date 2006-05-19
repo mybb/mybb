@@ -623,13 +623,13 @@ class UserDataHandler extends DataHandler
 		global $mybb;
 
 		$user = &$this->data;
-		
+
 		// First, grab the old user details if this user exists
 		if($user['uid'])
 		{
 			$old_user = get_user($user['uid']);
 		}
-		
+
 		if($this->method == "insert" || isset($user['username']))
 		{
 			// If the username is the same - no need to verify
