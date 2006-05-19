@@ -121,7 +121,7 @@ else if(isset($mybb->input['tid']))
 	$query = $db->query("
 		SELECT f.style, f.overridestyle
 		FROM ".TABLE_PREFIX."forums f, ".TABLE_PREFIX."threads t
-		WHERE f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."
+		WHERE f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'
 	");
 	$style = $db->fetch_array($query);
 }
