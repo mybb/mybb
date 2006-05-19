@@ -217,7 +217,7 @@ else
 
 // If the board is closed and we have an Administrator, show board closed warning
 $bbclosedwarning = '';
-if($mybb->settings['boardclosed'] == "yes" && ($mybb->usergroup['cancp'] == "yes")
+if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] == "yes")
 {
 	eval("\$bbclosedwarning = \"".$templates->get("global_boardclosed_warning")."\";");
 }
@@ -235,7 +235,7 @@ if($mybb->user['uid'] != 0)
 	}
 	// Format the welcome back message
 	$lang->welcome_back = sprintf($lang->welcome_back, $mybb->user['username'], $lastvisit);
-	
+
 	// Tell the user their PM usage
 	$lang->welcome_pms_usage = sprintf($lang->welcome_pms_usage, mynumberformat($mybb->user['pms_new']), mynumberformat($mybb->user['pms_unread']), mynumberformat($mybb->user['pms_total']));
 	eval("\$welcomeblock = \"".$templates->get("header_welcomeblock_member")."\";");
@@ -252,7 +252,7 @@ if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes"
 {
 	// Read the reported posts cache
 	$reported = $cache->read("reportedposts");
-	
+
 	// 0 or more reported posts currently exist
 	if($reported['unread'] > 0)
 	{
