@@ -102,7 +102,7 @@ elseif($mybb->input['action'] == "iplookup")
 	if($mybb->usergroup['cancp'] == "yes")
 	{
 		eval("\$adminoptions = \"".$templates->get("online_iplookup_adminoptions")."\";");
-	}	
+	}
 	eval("\$iplookup = \"".$templates->get("online_iplookup")."\";");
 	outputpage($iplookup);
 }
@@ -598,7 +598,7 @@ function show($user)
 			{
 				$invisiblemark = "*";
 			}
-			else 
+			else
 			{
 				$invisiblemark = '';
 			}
@@ -647,7 +647,7 @@ function what($user)
 			$parameters[$temp2[0]] = $temp2[1];
 		}
 	}
-	
+
 	switch($filename)
 	{
 		case "announcements":
@@ -689,6 +689,10 @@ function what($user)
 				$user['activity'] = "calendar";
 			}
 			break;
+		case 'captcha':
+			// Only place where a user will see a captcha is on registration.
+			$user['activity'] = 'member_register';
+		break;
 		case "editpost":
 			$user['activity'] = "editpost";
 			break;
@@ -717,7 +721,7 @@ function what($user)
 			{
 				$user['activity'] = "member_login";
 			}
-			elseif($parameters['action'] == "logout") 
+			elseif($parameters['action'] == "logout")
 			{
 				$user['activity'] = "member_logout";
 			}
