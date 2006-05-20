@@ -137,10 +137,16 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		"icon" => $mybb->input['icon'],
 		"fromid" => $mybb->user['uid'],
 		"username" => $mybb->input['to'],
-		"options" => $mybb->input['options'],
 		"saveasdraft" => $mybb->input['saveasdraft'],
 		"do" => $mybb->input['do'],
 		"pmid" => $mybb->input['pmid']
+	);
+	
+	$pm['options'] = array(
+		"signature" => $mybb->input['options']['signature'],
+		"disablesmilies" => $mybb->input['options']['disablesmilies'],
+		"savecopy" => $mybb->input['options']['savecopy'],
+		"readreceipt" => $mybb->input['options']['readreceipt']
 	);
 
 	$pmhandler->set_data($pm);

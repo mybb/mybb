@@ -243,12 +243,12 @@ class EventDataHandler extends DataHandler
 
 		if(isset($event['date']))
 		{
-			$updateevent['date'] = $db->escape_string($event['date'])
+			$updateevent['date'] = $db->escape_string($event['date']);
 		}
 
 		if(isset($event['private']))
 		{
-			$updateevent['private'] = $db->escape_string($event['date']);
+			$updateevent['private'] = $db->escape_string($event['private']);
 		}
 
 		if(isset($event['uid']))

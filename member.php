@@ -71,7 +71,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 		$query = $db->query("
 			SELECT *
 			FROM ".TABLE_PREFIX."users 
-			HERE regip='$ipaddress' AND regdate>'$datecut'
+			WHERE regip='$ipaddress' AND regdate>'$datecut'
 		");
 		$regcount = $db->num_rows($query);
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
@@ -359,7 +359,7 @@ if($mybb->input['action'] == "register")
 			$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
 			if(is_array($explodedtpp))
 			{
-				foreach($explodedtp as $val)
+				foreach($explodedtpp as $val)
 				{
 					$val = trim($val);
 					$tppoptions .= "<option value=\"$val\">".sprintf($lang->tpp_option, $val)."</option>\n";

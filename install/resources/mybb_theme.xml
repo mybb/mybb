@@ -2948,7 +2948,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <body>
 {$header}
 {$event_errors}
-<form action="calendar.php" method="post">
+<form action="calendar.php" method="post" name="input">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->add_event}</strong></td>
@@ -2985,8 +2985,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" maxlength="120" /></td>
 </tr>
 <tr>
-<td valign="top" width="40%" class="trow1"><strong>{$lang->event_details}</strong></td>
-<td width="60%" class="trow1"><textarea cols="50" rows="10" name="description"></textarea></td>
+<td valign="top" width="40%" class="trow1"><strong>{$lang->event_details}</strong><p style="text-align: center;">{$smilieinserter}</td>
+<td width="60%" class="trow1"><textarea cols="50" rows="10" name="description" id="message"></textarea>
+{$codebuttons}</td>
 </tr>
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->event_options}</strong></td>
@@ -5867,7 +5868,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </head>
 <body>
 {$header}
-<form action="calendar.php" method="post">
+<form action="calendar.php" method="post" name="input">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->edit_event}</strong></td>
@@ -5904,8 +5905,9 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$event['subject']}" /></td>
 </tr>
 <tr>
-<td valign="top" width="40%" class="trow1"><strong>{$lang->event_details}</strong></td>
-<td width="60%" class="trow1"><textarea cols="50" rows="10" name="description">{$event['description']}</textarea></td>
+<td valign="top" width="40%" class="trow1"><strong>{$lang->event_details}</strong><p style="text-align: center;">{$smilieinserter}</p></td>
+<td width="60%" class="trow1"><textarea cols="50" rows="10" name="description" id="message">{$event['description']}</textarea>
+{$codebuttons}</td>
 </tr>
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->event_options}</strong></td>

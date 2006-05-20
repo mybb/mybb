@@ -144,6 +144,14 @@ if(	$mybb->input['action'] != "event" &&
 	$mybb->input['action'] = "calendar_main";
 }
 
+// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
+if($mybb->settings['bbcodeinserter'] != "off" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
+{
+	$codebuttons = makebbcodeinsert();
+	$smilieinserter = makesmilieinsert();
+}
+
+
 // View a specific event.
 if($mybb->input['action'] == "event")
 {

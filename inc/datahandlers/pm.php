@@ -88,7 +88,7 @@ class PMDataHandler extends DataHandler
 		// Check if the sender is over their quota or not - if they are, disable draft sending
 		if($pm['options']['savecopy'] != "no" && !$pm['saveasdraft'])
 		{
-			if($sender['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
+			if($sender_permissions['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
 			{
 				$pm['options']['savecopy'] = "no";
 			}
@@ -223,13 +223,13 @@ class PMDataHandler extends DataHandler
 		// Disable smilies in this PM.
 		if(isset($options['disablesmilies']) && $options['disablesmilies'] != "yes")
 		{
-			$options['disablesmilies'] = "yes";
+			$options['disablesmilies'] = "no";
 		}
 
 		// Save a copy of this PM for the sender.
 		if(isset($options['savecopy']) && $options['savecopy'] != "yes")
 		{
-			$options['savecopy'] = "yes";
+			$options['savecopy'] = "no";
 		}
 
 		// Requesting a read receipt?
@@ -257,9 +257,14 @@ class PMDataHandler extends DataHandler
 
 		// Verify all PM assets.
 		$this->verify_subject();
+		
 		$this->verify_sender();
+		
 		$this->verify_recipient();
+		
 		$this->verify_message();
+		
+		$this->verify_options();
 
 		$plugins->run_hooks("datahandler_pm_validate");
 
@@ -410,10 +415,7 @@ class PMDataHandler extends DataHandler
 			$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
 
 			// Because the sender saved a copy, update their total pm count
-			if($pm['sender']['uid'] != $pm['recipient']['uid'])
-			{
-				update_pm_count($pm['sender']['uid'], 4);
-			}
+			update_pm_count($pm['sender']['uid'], 4);
 		}
 
 		// If the recipient has pm popup functionality enabled, update it to show the popup.

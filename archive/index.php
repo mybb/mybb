@@ -71,7 +71,8 @@ switch($action)
 				"allow_html" => $forum['allow_html'],
 				"allow_mycode" => $forum['allow_mycode'],
 				"allow_smilies" => $forum['allowsmilies'],
-				"allow_imgcode" => $forum['allowimgcode']
+				"allow_imgcode" => $forum['allowimgcode'],
+				"me_username" => $post['userusername']
 			);
 			if($post['smilieoff'] == "yes")
 			{
@@ -79,11 +80,6 @@ switch($action)
 			}
 
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
-			// do me code
-			if($forum['allowmycode'] != "no")
-			{
-				$post['message'] = domecode($post['message'], $post['username']);
-			}
 
 			// Is there an attachment in this post?
 			if(is_array($acache[$post['pid']]))

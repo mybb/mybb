@@ -1103,7 +1103,7 @@ class PostDataHandler extends DataHandler
 		);
 		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='".intval($post['tid'])."'", $options);
 		$first_post_check = $db->fetch_array($query);
-		if($first_post_check['pid'] == $pid)
+		if($first_post_check['pid'] == $post['pid'])
 		{
 			$first_post = 1;
 		}
@@ -1111,7 +1111,6 @@ class PostDataHandler extends DataHandler
 		{
 			$first_post = 0;
 		}
-
 		// Update the thread details that might have been changed first.
 		if($first_post)
 		{
@@ -1128,7 +1127,7 @@ class PostDataHandler extends DataHandler
 			}
 			if(count($updatethread) > 0)
 			{
-				$db->update_query(TABLE_PREFIX."threads", $updatethread, "tid='".intval($post['pid'])."'");
+				$db->update_query(TABLE_PREFIX."threads", $updatethread, "tid='".intval($post['tid'])."'");
 			}
 		}
 

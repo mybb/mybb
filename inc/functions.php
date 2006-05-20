@@ -886,11 +886,15 @@ function getposticons()
 {
 	global $mybb, $db, $icon, $settings, $theme, $templates, $lang;
 	$listed = 0;
+	if($mybb->input['icon'])
+	{
+		$icon = $mybb->input['icon'];
+	}
 	$no_icons_checked = " checked=\"checked\"";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons ORDER BY name DESC");
 	while($dbicon = $db->fetch_array($query))
 	{
-		if($mybb->input['icon'] == $dbicon['iid'])
+		if($icon == $dbicon['iid'])
 		{
 			$iconlist .= "<input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked=\"checked\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" />";
 			$no_icons_checked = "";
