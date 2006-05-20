@@ -166,7 +166,7 @@ if($mybb->input['action'] == "do_search")
 	$num_results = $db->num_rows($query);
 
 	// Get attachments filenames from filesystem
-	if ($uploads = opendir($mybb->settings['uploadspath']))
+	if ($uploads = opendir(MYBB_ROOT.$mybb->settings['uploadspath']))
 	{
 		while (false !== ($file = readdir($uploads)))
 		{
@@ -293,25 +293,18 @@ if($mybb->input['action'] == "orphans")
 	echo "<td class=\"subheader\">$lang->filesize</td>\n";
 	echo "</tr>\n";
 
-	$altbg = "altbg1";
+	$bgcolor = getaltbg();
 	foreach($orphan_files as $filename)
 	{
 		$filesize = getfriendlysize(filesize(MYBB_ROOT.$mybb->settings['uploadspath']."/".$filename));
 
 		echo "<tr>\n";
-		echo "<td class=\"$altbg\" align=\"center\"><input type=\"checkbox\" name=\"check[]\" value=\"$filename\"></td>\n";
-		echo "<td class=\"$altbg\">$filename</td>\n";
-		echo "<td class=\"$altbg\">$filesize</td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"check[]\" value=\"$filename\"></td>\n";
+		echo "<td class=\"$bgcolor\">$filename</td>\n";
+		echo "<td class=\"$bgcolor\">$filesize</td>\n";
 		echo "</tr>\n";
 
-		if($altbg == "altbg1")
-		{
-			$altbg = "altbg2";
-		}
-		else
-		{
-			$altbg = "altbg1";
-		}
+		$bgcolor = getaltbg();
 	}
 	endtable();
 	endform($lang->delete_selected, $lang->clear_checks);
