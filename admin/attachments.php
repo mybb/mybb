@@ -271,11 +271,11 @@ if($mybb->input['action'] == "orphans")
 	}
 	// Get attachments filenames from filesystem
 	$orphan_files = array();
-	if ($uploads = opendir(MYBB_ROOT.$mybb->settings['uploadspath']))
+	if($uploads = opendir(MYBB_ROOT.$mybb->settings['uploadspath']))
 	{
-		while (false !== ($file = readdir($uploads)))
+		while(false !== ($file = readdir($uploads)))
 		{
-			if (substr($file, -7, 7) == ".attach" && !in_array($file, $db_list))
+			if(substr($file, -7, 7) == ".attach" && !in_array($file, $db_list))
 			{
 				$orphan_files[] = $file;
 			}
@@ -325,9 +325,9 @@ if($mybb->input['action'] == "do_orphan_delete")
 		$error = false;
 		foreach($mybb->input['check'] as $filename)
 		{
-			if(file_exists($mybb->settings['uploadspath']."/".basename($filename)))
+			if(file_exists(MYBB_ROOT.$mybb->settings['uploadspath']."/".basename($filename)))
 			{
-				if(!@unlink($mybb->settings['uploadspath']."/".basename($filename)))
+				if(!@unlink(MYBB_ROOT.$mybb->settings['uploadspath']."/".basename($filename)))
 				{
 					$error = true;
 				}
@@ -335,7 +335,7 @@ if($mybb->input['action'] == "do_orphan_delete")
 		}
 		if($error)
 		{
-			cpredirect("attachments.php?action=orphans", $lang->problem_deleting);
+			cperror($lang->problem_deleting);
 		}
 		else
 		{

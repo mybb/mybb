@@ -93,6 +93,8 @@ foreach($usergroups as $usergroup)
 	foreach($usergroup['user_list'] as $user)
 	{
 		$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
+		// for the postbit templates
+		$post['uid'] = $user['uid'];
 		if($user['hideemail'] != 'yes')
 		{
 			eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
