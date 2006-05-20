@@ -575,6 +575,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 
 	$plugins->run_hooks("newthread_end");
+	
+	$lang->newthread_in = sprintf($lang->newthread_in, $forum['name']);
 
 	eval("\$newthread = \"".$templates->get("newthread")."\";");
 	outputpage($newthread);

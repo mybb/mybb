@@ -944,7 +944,7 @@ var inlineId = {$tid};
 </tr>]]></template>
 		<template name="newthread" version="100.07"><![CDATA[<html>
 <head>
-<title>{$lang->newthread_in} {$forum['name']}</title>
+<title>{$lang->newthread_in}</title>
 {$headerinclude}
 <script type="text/javascript" src="jscripts/post.js"></script>
 </head>
