@@ -12,7 +12,6 @@
 $noonline = 1;
 require "./global.php";
 
-
 $img_width = 200;
 $img_height = 60;
 
@@ -22,7 +21,6 @@ $max_size = 32;
 
 $min_angle = -30;
 $max_angle = 30;
-
 
 if($mybb->input['imagehash'] == "test")
 {
@@ -129,12 +127,12 @@ function draw_lines(&$im)
 {
 	global $img_width, $img_height;
 
-	for($i=10;$i<$img_width;$i+=10)
+	for($i = 10; $i < $img_width; $i += 10)
 	{
 		$color = imagecolorallocate($im, rand(150, 255), rand(150, 255), rand(150, 255));
 		imageline($im, $i, 0, $i, $img_height, $color);
 	}
-	for($i=10;$i<$img_height;$i+=10)
+	for($i = 10;$ i < $img_height; $i += 10)
 	{
 		$color = imagecolorallocate($im, rand(150, 255), rand(150, 255), rand(150, 255));
 		imageline($im, 0, $i, $img_width, $i, $color);
@@ -151,7 +149,7 @@ function draw_circles(&$im)
 	global $img_width, $img_height;
 	
 	$circles = $img_width*$img_height / 100;
-	for($i=0;$i<=$circles;$i++)
+	for($i = 0; $i <= $circles; $i++)
 	{
 		$color = imagecolorallocate($im, rand(180, 255), rand(180, 255), rand(180, 255));
 		$pos_x = rand(1, $img_width);
@@ -170,8 +168,9 @@ function draw_circles(&$im)
 function draw_dots(&$im)
 {
 	global $img_width, $img_height;
+	
 	$dot_count = $img_width*$img_height/5;
-	for($i=0;$i<=$dot_count;$i++)
+	for($i = 0; $i <= $dot_count; $i++)
 	{
 		$color = imagecolorallocate($im, rand(200, 255), rand(200, 255), rand(200, 255));
 		imagesetpixel($im, rand(0, $img_width), rand(0, $img_height), $color);
@@ -186,8 +185,9 @@ function draw_dots(&$im)
 function draw_squares(&$im)
 {
 	global $img_width, $img_height;
+	
 	$square_count = 30;
-	for($i=0;$i<=$square_count;$i++)
+	for($i = 0; $i <= $square_count; $i++)
 	{
 		$color = imagecolorallocate($im, rand(150, 255), rand(150, 255), rand(150, 255));
 		$pos_x = rand(1, $img_width);
@@ -208,8 +208,9 @@ function draw_squares(&$im)
 function draw_string(&$im, $string)
 {
 	global $use_ttf, $min_size, $max_size, $min_angle, $max_angle, $ttf_fonts, $img_height, $img_width;
+	
 	$spacing = $img_width / strlen($string);
-	for($i=0;$i<strlen($string);$i++)
+	for($i = 0; $i < strlen($string); $i++)
 	{
 		// Using TTF fonts
 		if($use_ttf)
@@ -306,21 +307,24 @@ function draw_string(&$im, $string)
 function gd_version()
 {
 	static $gd_version;
+	
 	if($gd_versiom)
 	{
 		return $gd_version;
 	}
-	if (!extension_loaded('gd'))
+	if(!extension_loaded('gd'))
 	{
 		return;
 	}
+	
 	ob_start();
 	phpinfo(8);
-	$info=ob_get_contents();
+	$info = ob_get_contents();
 	ob_end_clean();
-	$info=stristr($info, 'gd version');
+	$info = stristr($info, 'gd version');
 	preg_match('/\d/', $info, $gd);
 	$gd_version = $gd[0];
+	
 	return $gd_version;
 }
 ?>

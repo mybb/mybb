@@ -27,6 +27,8 @@ switch($mybb->input['action'])
 	case "results":
 		addnav($lang->nav_results);
 		break;
+	default:
+		break;
 }
 
 if($mybb->usergroup['cansearch'] == "no")
@@ -39,7 +41,11 @@ $now = time();
 if($mybb->input['action'] == "results")
 {
 	$sid = $db->escape_string($mybb->input['sid']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE sid='$sid'");
+	$query = $db->query("
+		SELECT * 
+		FROM ".TABLE_PREFIX."searchlog 
+		WHERE sid='$sid'
+	");
 	$search = $db->fetch_array($query);
 
 	if(!$search['sid'])
@@ -425,7 +431,12 @@ if($mybb->input['action'] == "results")
 		// Read threads
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
-			$query = $db->query("SELECT tid,dateline FROM ".TABLE_PREFIX."threadsread WHERE uid='".$mybb->user['uid']."' AND tid IN(".$tids.")");
+			$query = $db->query("
+				SELECT tid, dateline 
+				FROM ".TABLE_PREFIX."threadsread 
+				WHERE uid='".$mybb->user['uid']."' 
+				AND tid IN(".$tids.")
+			");
 			while($readthread = $db->fetch_array($query))
 			{
 				$readthreads[$readthread['tid']] = $readthread['dateline'];
@@ -783,7 +794,13 @@ elseif($mybb->input['action'] == "do_search")
 			$conditions = "uid='0' AND ipaddress='{$ipaddress}'";
 		}
 		$timecut = time()-$mybb->settings['searchfloodtime'];
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."searchlog WHERE $conditions AND dateline>='$timecut' ORDER BY dateline DESC");
+		$query = $db->query("
+			SELECT * 
+			FROM ".TABLE_PREFIX."searchlog 
+			WHERE $conditions 
+			AND dateline >= '$timecut' 
+			ORDER BY dateline DESC
+		");
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
 		if($last_search['sid'])

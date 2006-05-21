@@ -84,7 +84,6 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 
 if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 {
-
 	$plugins->run_hooks("member_do_register_start");
 
 	if($mybb->settings['regtype'] == "randompass")
@@ -578,7 +577,6 @@ if($mybb->input['action'] == "register")
 }
 elseif($mybb->input['action'] == "activate")
 {
-
 	$plugins->run_hooks("member_activate_start");
 
 	if($mybb->input['username'])
@@ -988,7 +986,8 @@ else if($mybb->input['action'] == "logout")
 
 		redirect("index.php", $lang->redirect_loggedout);
 	}
-	else {
+	else 
+	{
 		error($lang->error_notloggedout);
 	}
 }
@@ -1368,6 +1367,10 @@ elseif($mybb->input['action'] == "profile")
 			}
 		}
 		eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
+		
+		$bgcolor = alt_trow();
+		
+		/*
 		if($bgcolor == "trow2")
 		{
 			$bgcolor = "trow1";
@@ -1376,6 +1379,8 @@ elseif($mybb->input['action'] == "profile")
 		{
 			$bgcolor = "trow2";
 		}
+		*/
+		
 	}
 	if($customfields)
 	{

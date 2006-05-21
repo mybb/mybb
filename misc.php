@@ -80,10 +80,12 @@ elseif($mybb->input['action'] == "rules")
 
 		$forumpermissions = forum_permissions($forum['fid']);
 
-		if($forum['type'] != "f" || $forum['rules'] == '') {
+		if($forum['type'] != "f" || $forum['rules'] == '') 
+		{
 			error($lang->error_invalidforum);
 		}
-		if($forumpermissions['canview'] != "yes") {
+		if($forumpermissions['canview'] != "yes")
+		{
 			nopermission();
 		}
 		if(!$forum['rulestitle'])
@@ -163,7 +165,7 @@ elseif($mybb->input['action'] == "help")
 		$query = $db->query("
 			SELECT *
 			FROM ".TABLE_PREFIX."helpsections
-			WHERE enabled!='no'
+			WHERE enabled != 'no'
 			ORDER BY disporder
 		");
 		while($section = $db->fetch_array($query))
@@ -467,7 +469,6 @@ elseif($mybb->input['action'] == "imcenter")
 }
 elseif($mybb->input['action'] == "syndication")
 {
-
 	$plugins->run_hooks("misc_syndication_start");
 
 	$fid = $mybb->input['fid'];
@@ -596,6 +597,7 @@ if($mybb->input['action'] == "clearcookies")
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
 	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $flist, $lang;
+	
 	$pid = intval($pid);
 	if(!$permissions)
 	{

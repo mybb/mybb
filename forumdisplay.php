@@ -197,7 +197,6 @@ if($mybb->settings['browsingthisforum'] != "off")
 				}
 				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] =="yes" || $user['uid'] == $mybb->user['uid'])
 				{
-
 					$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
 					$comma = ", ";
@@ -561,7 +560,6 @@ if($threadcache)
 {
 	foreach($threadcache as $thread)
 	{
-
 		$plugins->run_hooks("forumdisplay_thread");
 
 		if($thread['visible'] == 0)
@@ -600,7 +598,8 @@ if($threadcache)
 			$icon = "&nbsp;";
 		}
 		$prefix = '';
-		if($thread['poll']) {
+		if($thread['poll']) 
+		{
 			$prefix = $lang->poll_prefix;
 		}
 		if($thread['sticky'] == "1" && !$donestickysep)
@@ -714,7 +713,7 @@ if($threadcache)
 			{
 				$pagesstop = $thread['pages'];
 			}
-			for($i=1; $i<=$pagesstop; ++$i)
+			for($i = 1; $i <= $pagesstop; ++$i)
 			{
 				eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
 			}
@@ -835,7 +834,8 @@ if($threadcache)
 }
 
 // Is this a real forum with threads?
-if($foruminfo['type'] != "c") {
+if($foruminfo['type'] != "c") 
+{
 	if(!$threadcount)
 	{
 		eval("\$threads = \"".$templates->get("forumdisplay_nothreads")."\";");
@@ -961,7 +961,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 					}
 					if($forum['linkto'] != '' || $hideinfo == 1)
 					{
-						$lastpost = "<center>-</center>";
+						$lastpost = "<div align=\"center\">-</div>";
 						$posts = "-";
 						$threads = "-";
 					}
@@ -1078,7 +1078,11 @@ function getforums($pid="0", $depth=1, $permissions="")
 if($rand == 5 && $mybb->settings['threadreadcut'] > 0)
 {
 	$cut = time()-($mybb->settings['threadreadcut']*60*60*24);
-	$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."threadsread WHERE dateline < '$cut'");
+	$db->shutdown_query("
+		DELETE 
+		FROM ".TABLE_PREFIX."threadsread 
+		WHERE dateline < '$cut'
+	");
 }
 
 $plugins->run_hooks("forumdisplay_end");

@@ -9,8 +9,7 @@
  * $Id$
  */
 
-$templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,changeuserbox,attachment";
-$templatelist .= "posticons";
+$templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,changeuserbox,attachment,posticons";
 
 require "./global.php";
 require MYBB_ROOT."inc/functions_post.php";
@@ -110,14 +109,18 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 }
 else
 {
-	if(ismod($fid, "caneditposts") != "yes") {
-		if($thread['closed'] == "yes") {
+	if(ismod($fid, "caneditposts") != "yes") 
+	{
+		if($thread['closed'] == "yes") 
+		{
 			redirect("showthread.php?tid=$tid", $lang->redirect_threadclosed);
 		}
-		if($forumpermissions['caneditposts'] == "no") {
+		if($forumpermissions['caneditposts'] == "no") 
+		{
 			nopermission();
 		}
-		if($mybb->user['uid'] != $post['uid']) {
+		if($mybb->user['uid'] != $post['uid']) 
+		{
 			nopermission();
 		}
 		// Edit time limit
@@ -222,9 +225,12 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					LIMIT 0, 1
 				");
 				$p = $db->fetch_array($query);
-				if($p['pid']) {
+				if($p['pid']) 
+				{
 					$redir = "showthread.php?tid={$tid}&pid={$p['pid']}#pid{$p['pid']}";
-				} else {
+				} 
+				else 
+				{
 					$redir = "showthread.php?tid={$tid}";
 				}
 				redirect($redir, $lang->redirect_postdeleted);
@@ -337,7 +343,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 {
 	$plugins->run_hooks("editpost_start");
 
-	if(!$mybb->input['previewpost']) {
+	if(!$mybb->input['previewpost']) 
+	{
 		$icon = $post['icon'];
 	}
 
@@ -346,15 +353,19 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$posticons = getposticons();
 	}
 
-	if($mybb->user['uid'] != 0) {
+	if($mybb->user['uid'] != 0) 
+	{
 		eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
-	} else {
+	} 
+	else 
+	{
 		eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 	}
 
 	// Setup a unique posthash for attachment management
-	if(!$mybb->input['posthash']) {
-	    mt_srand ((double) microtime() * 1000000);
+	if(!$mybb->input['posthash']) 
+	{
+	    mt_srand((double) microtime() * 1000000);
 	    $posthash = md5($post['pid'].$mybb->user['uid'].mt_rand());
 	}
 	else
@@ -516,7 +527,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'
 		");
 		$subcheck = $db->fetch_array($query);
-		if($subcheck['tid']) {
+		if($subcheck['tid']) 
+		{
 			$postoptionschecked['emailnotify'] = "checked";
 		}
 	}

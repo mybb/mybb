@@ -9,7 +9,7 @@
  * $Id$
  */
 
- define("KILL_GLOBALS", 1);
+define("KILL_GLOBALS", 1);
 
 require "./global.php";
 
@@ -70,7 +70,8 @@ if($mybb->input['action'] == "do_add")
 			join_usergroup($user['uid'], $gid);
 			redirect("managegroup.php?gid=".$gid, $lang->user_added);
 		}
-		else {
+		else 
+		{
 			error($lang->error_alreadyingroup);
 		}
 	}

@@ -25,6 +25,7 @@ function outputpage($contents)
 {
 	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser, $mybbgroup;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
+	
 	$ptimer = new timer();
 	$contents = parsepage($contents);
 	$parsetime = $ptimer->stop();
@@ -79,8 +80,9 @@ function outputpage($contents)
 		}
 	}
 	echo $contents;
-	$plugins->run_hooks("post_output_page");
 	
+	$plugins->run_hooks("post_output_page");
+
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
 	if($mybb->settings['useshutdownfunc'] == "no" && $mybb->use_shutdown == true)
 	{
@@ -96,6 +98,7 @@ function outputpage($contents)
 function add_shutdown($name)
 {
 	global $shutdown_functions;
+	
 	if(function_exists($name))
 	{
 		$shutdown_functions[$name] = $name;
@@ -109,7 +112,7 @@ function add_shutdown($name)
 function run_shutdown()
 {
 	global $db, $cache, $shutdown_functions;
-	
+
 	// We have some shutdown queries needing to be run
 	if(is_array($db->shutdown_queries))
 	{
@@ -119,7 +122,7 @@ function run_shutdown()
 			$db->query($query);
 		}
 	}
-	
+
 	// Run any shutdown functions if we have them
 	if(is_array($shutdown_functions))
 	{
@@ -160,7 +163,7 @@ function send_mail_queue($count=20)
 		// Update the mailqueue cache
 		$cache->updatemailqueue();
 	}
-}	
+}
 
 /**
  * Parses the contents of a page before outputting it.
@@ -170,8 +173,7 @@ function send_mail_queue($count=20)
  */
 function parsepage($contents)
 {
-	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup, $htmldoctype;
-	global $loadpmpopup;
+	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup, $htmldoctype, $loadpmpopup;
 
 	$contents = str_replace("<navigation>", buildnav(1), $contents);
 	if($htmldoctype)
@@ -213,6 +215,7 @@ function parsepage($contents)
 function mydate($format, $stamp, $offset="", $ty=1)
 {
 	global $mybb, $lang, $mybbadmin;
+	
 	if(!$offset)
 	{
 		if(isset($mybb->user['timezone']))
@@ -247,7 +250,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
 	$date = gmdate($format, $stamp + ($offset * 3600));
 	if($mybb->settings['dateformat'] == $format && $ty)
 	{
-		$stamp = mktime();
+		$stamp = time();
 		$todaysdate = gmdate($format, $stamp + ($offset * 3600));
 		$yesterdaysdate = gmdate($format, ($stamp - 86400) + ($offset * 3600));
 		if($todaysdate == $date)
@@ -274,6 +277,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
 function mymail($to, $subject, $message, $from="", $charset="")
 {
 	global $db, $mybb;
+	
 	// Build mail headers
 	if(strlen(trim($from)) == 0)
 	{
@@ -371,6 +375,7 @@ function buildparentlist($fid, $column="fid", $joiner="OR", $parentlist="")
 function cache_forums()
 {
 	global $forum_cache, $db, $cache;
+	
 	if(!$forum_cache)
 	{
 		$forum_cache = $cache->read("forums");
@@ -389,6 +394,7 @@ function cache_forums()
 function error($error, $title="")
 {
 	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $db, $templates, $lang, $mybb;
+	
 	$title = (!$title) ? $mybb->settings['bbname'] : $title;
 	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	resetnav();
@@ -423,6 +429,7 @@ function inlineerror($errors, $title="")
 function nopermission()
 {
 	global $REQUEST_URI, $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang, $plugins, $session;
+	
 	$time = time();
 	$plugins->run_hooks("no_permission");
 	$noperm_array = array (
@@ -443,6 +450,7 @@ function nopermission()
 function redirect($url, $message="You will now be redirected", $title="")
 {
 	global $header, $footer, $css, $toplinks, $settings, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
+	
 	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	$plugins->run_hooks("redirect");
 	if(!$title)
@@ -470,6 +478,7 @@ function redirect($url, $message="You will now be redirected", $title="")
 function multipage($count, $perpage, $page, $url)
 {
 	global $settings, $theme, $templates, $lang, $mybb;
+	
 	if($count > $perpage)
 	{
 		$pages = $count / $perpage;
@@ -506,7 +515,7 @@ function multipage($count, $perpage, $page, $url)
 		{
 			$to = $page+4;
 		}
-		for($i=$from;$i<=$to;$i++)
+		for($i = $from; $i <= $to; $i++)
 		{
 			$plate = "multipage_page".(($i==$page) ? "_current":"");
 			eval("\$mppage .= \"".$templates->get($plate)."\";");
@@ -525,9 +534,17 @@ function multipage($count, $perpage, $page, $url)
 function validateforum($fid)
 {
 	global $db;
-	$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
+	
+	$query = $db->query("
+		SELECT fid 
+		FROM ".TABLE_PREFIX."forums 
+		WHERE fid='$fid'
+	");
 	$validforum = $db->fetch_array($query);
-	return (($fid=$validforum['fid'])? true:false);
+	
+	// Should this really be:
+	//return ($fid == $validforum['fid']) ? true : false;
+	return (($fid=$validforum['fid'])? true:false);	
 }
 
 //
@@ -579,6 +596,7 @@ function user_permissions($uid=0)
 function usergroup_permissions($gid=0)
 {
 	global $cache, $groupscache, $grouppermignore, $groupzerogreater;
+	
 	if(!is_array($groupscache))
 	{
 		$groupscache = $cache->read("usergroups");
@@ -631,6 +649,7 @@ function usergroup_permissions($gid=0)
 function usergroup_displaygroup($gid)
 {
 	global $cache, $groupscache, $displaygroupfields;
+	
 	if(!is_array($groupscache))
 	{
 		$groupscache = $cache->read("usergroups");
@@ -650,7 +669,8 @@ function usergroup_displaygroup($gid)
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
 	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybbgroup, $mybbuser, $mybb, $usercache, $fpermissionscache;
-	if(!$uid)
+	
+	if($uid == 0)
 	{
 		$uid = $mybb->user['uid'];
 	}
@@ -714,7 +734,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 		return $groupperms;
 	}
 	// Okay, we'll do it the hard way because this forum must have some custom or inherited permissions
-	
+
 	// The fix here for better working inheritance was provided by tinywizard - http://windizupdate.com/
 	// Many thanks.
 	foreach($fpermfields as $perm)
@@ -727,7 +747,8 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 		if($gid && $groupscache[$gid])
 		{
 			$p = is_array($fpermcache[$fid][$gid]) ? $fpermcache[$fid][$gid] : $groupperms;
-			if($p == NULL) {
+			if($p == NULL) 
+			{
 				foreach($forumpermissions as $k => $v)
 				{
 					$forumpermissions[$k] = 'yes';        // no inherited group, assume one has access
@@ -753,7 +774,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 //
 function checkpwforum($fid, $password="")
 {
-	global $mybb, $mybbuser, $toplinks, $header, $settings, $footer, $css, $headerinclude, $theme, $_SERVER, $breadcrumb, $templates, $lang;
+	global $mybb, $mybbuser, $toplinks, $header, $settings, $footer, $css, $headerinclude, $theme, $breadcrumb, $templates, $lang;
 	$showform = 1;
 
 	if($password)
@@ -802,6 +823,7 @@ function getmodpermissions($fid, $uid="0", $parentslist="")
 {
 	global $mybb, $mybbuser, $db;
 	static $modpermscache;
+	
 	if($uid < 1)
 	{
 		$uid = $mybb->user['uid'];
@@ -813,7 +835,12 @@ function getmodpermissions($fid, $uid="0", $parentslist="")
 			$parentslist = getparentlist($fid);
 		}
 		$sql = buildparentlist($fid, "fid", "OR", $parentslist);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."moderators WHERE uid='$uid' AND $sql");
+		$query = $db->query("
+			SELECT * 
+			FROM ".TABLE_PREFIX."moderators 
+			WHERE uid='$uid' 
+			AND $sql
+		");
 		$perms = $db->fetch_array($query);
 		$modpermscache[$uid][$fid] = $perms;
 	}
@@ -831,7 +858,7 @@ function ismod($fid="0", $action="", $uid="0")
 {
 	global $mybb, $mybbuser, $db, $mybbgroup;
 
-	if(!$uid)
+	if($uid == 0)
 	{
 		$uid = $mybb->user['uid'];
 	}
@@ -844,7 +871,11 @@ function ismod($fid="0", $action="", $uid="0")
 	{
 		if(!$fid)
 		{
-			$query = $db->query("SELECT mid FROM ".TABLE_PREFIX."moderators WHERE uid='$uid'");
+			$query = $db->query("
+				SELECT mid 
+				FROM ".TABLE_PREFIX."moderators 
+				WHERE uid='$uid'
+			");
 			$modcheck = $db->fetch_array($query);
 			if($modcheck['mid'])
 			{
@@ -885,13 +916,18 @@ function ismod($fid="0", $action="", $uid="0")
 function getposticons()
 {
 	global $mybb, $db, $icon, $settings, $theme, $templates, $lang;
+	
 	$listed = 0;
 	if($mybb->input['icon'])
 	{
 		$icon = $mybb->input['icon'];
 	}
 	$no_icons_checked = " checked=\"checked\"";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons ORDER BY name DESC");
+	$query = $db->query("
+		SELECT * 
+		FROM ".TABLE_PREFIX."icons 
+		ORDER BY name DESC
+	");
 	while($dbicon = $db->fetch_array($query))
 	{
 		if($icon == $dbicon['iid'])
@@ -924,6 +960,7 @@ function getposticons()
 function mysetcookie($name, $value="", $expires="")
 {
 	global $mybb;
+	
 	if(!$mybb->settings['cookiepath'])
 	{
 		$mybb->settings['cookiepath'] = "/";
@@ -961,6 +998,7 @@ function mysetcookie($name, $value="", $expires="")
 function myunsetcookie($name)
 {
 	global $mybb;
+	
 	$expires = time()-3600;
 	if(!$mybb->settings['cookiepath'])
 	{
@@ -1058,7 +1096,12 @@ function serverload()
 function updateforumcount($fid)
 {
 	global $db, $cache;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
+	
+	$query = $db->query("
+		SELECT * 
+		FROM ".TABLE_PREFIX."forums 
+		WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'
+	");
 	while($childforum = $db->fetch_array($query))
 	{
 		if($fid == $childforum['fid'])
@@ -1074,7 +1117,16 @@ function updateforumcount($fid)
 		$childforums .= ",'".$childforum['fid']."'";
 	}
 
-	$query = $db->query("SELECT tid, lastpost, lastposter, lastposteruid FROM ".TABLE_PREFIX."threads WHERE fid IN (0$childforums) AND visible='1' AND closed NOT LIKE 'moved|%' ORDER BY lastpost DESC LIMIT 0, 1");
+	$query = $db->query("
+		SELECT tid, lastpost, lastposter, lastposteruid 
+		FROM ".TABLE_PREFIX."threads 
+		WHERE fid IN (0$childforums) 
+		AND visible='1' 
+		AND closed 
+		NOT LIKE 'moved|%' 
+		ORDER BY lastpost DESC 
+		LIMIT 0, 1
+	");
 	$lastpost = $db->fetch_array($query);
 	// If the last post tid is not equal to the queried one, update.
 	if($lastpost['lastposttid'] != $lasttid)
@@ -1083,7 +1135,14 @@ function updateforumcount($fid)
 	}
 
 	// Get the post counters for this forum and its children
-	$query = $db->query("SELECT COUNT(*) AS totthreads, SUM(replies) AS totreplies FROM ".TABLE_PREFIX."threads WHERE fid='$fid' AND visible='1' AND closed NOT LIKE 'moved|%'");
+	$query = $db->query("
+		SELECT COUNT(*) AS totthreads, SUM(replies) AS totreplies 
+		FROM ".TABLE_PREFIX."threads 
+		WHERE fid='$fid' 
+		AND visible='1' 
+		AND closed 
+		NOT LIKE 'moved|%'
+	");
 	$posts2 = $db->fetch_array($query);
 	if($posts2)
 	{
@@ -1097,7 +1156,15 @@ function updateforumcount($fid)
 	}
 
 	// Get unapproved posts/threads from this forum and its children
-	$query = $db->query("SELECT COUNT(*) AS totunthreads FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."forums f) WHERE t.fid=f.fid AND (t.fid='$fid' OR CONCAT(',',f.parentlist,',') LIKE '%,$fid,%') AND t.visible='0' AND t.closed NOT LIKE 'moved|%'");
+	$query = $db->query("
+		SELECT COUNT(*) AS totunthreads 
+		FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."forums f) 
+		WHERE t.fid=f.fid 
+		AND (t.fid='$fid' OR CONCAT(',',f.parentlist,',') LIKE '%,$fid,%') 
+		AND t.visible='0' 
+		AND t.closed 
+		NOT LIKE 'moved|%'
+	");
 	$posts3 = $db->fetch_array($query);
 	if($posts3)
 	{
@@ -1107,7 +1174,13 @@ function updateforumcount($fid)
 	{
 		$nounthreads = 0;
 	}
-	$query = $db->query("SELECT COUNT(*) AS totunposts FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."forums f) WHERE p.fid=f.fid AND (p.fid='$fid' OR CONCAT(',',f.parentlist,',') LIKE '%,$fid,%') AND p.visible='0'");
+	$query = $db->query("
+		SELECT COUNT(*) AS totunposts 
+		FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."forums f) 
+		WHERE p.fid=f.fid 
+		AND (p.fid='$fid' OR CONCAT(',',f.parentlist,',') LIKE '%,$fid,%') 
+		AND p.visible='0'
+	");
 	$posts4 = $db->fetch_array($query);
 	if($posts4)
 	{
@@ -1117,7 +1190,12 @@ function updateforumcount($fid)
 	{
 		$nounposts = 0;
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."forums SET posts='$noposts', threads='$nothreads', unapprovedposts='$nounposts', unapprovedthreads='$nounthreads' $lpadd WHERE fid='$fid'");
+	$db->query("
+		UPDATE 
+		".TABLE_PREFIX."forums 
+		SET posts='$noposts', threads='$nothreads', unapprovedposts='$nounposts', unapprovedthreads='$nounthreads' $lpadd 
+		WHERE fid='$fid'
+	");
 	if($parentlist && $db->affected_rows())
 	{
 		$parentsexploded = explode(",", $parentlist);
@@ -1134,17 +1212,35 @@ function updateforumcount($fid)
 function updatethreadcount($tid)
 {
 	global $db, $cache;
-	$query = $db->query("SELECT COUNT(*) AS replies FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND visible='1'");
+	$query = $db->query("
+		SELECT COUNT(*) AS replies 
+		FROM ".TABLE_PREFIX."posts 
+		WHERE tid='$tid' 
+		AND visible='1'
+	");
 	$replies = $db->fetch_array($query);
 	$treplies = $replies['replies'] - 1;
 	if($treplies < 0)
 	{
 		$treplies = 0;
 	}
-	$query = $db->query("SELECT u.uid, u.username, p.username AS postusername, p.dateline FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.tid='$tid' AND p.visible='1' ORDER BY p.dateline DESC LIMIT 1");
+	$query = $db->query("
+		SELECT u.uid, u.username, p.username AS postusername, p.dateline 
+		FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) 
+		WHERE p.tid='$tid' AND p.visible='1' 
+		ORDER BY p.dateline DESC 
+		LIMIT 1"
+	);
 	$lastpost = $db->fetch_array($query);
 
-	$query = $db->query("SELECT u.uid, u.username, p.username AS postusername, p.dateline FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.tid='$tid' AND p.visible='1' ORDER BY p.dateline ASC LIMIT 0,1");
+	$query = $db->query("
+		SELECT u.uid, u.username, p.username AS postusername, p.dateline 
+		FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) 
+		WHERE p.tid='$tid' 
+		AND p.visible='1' 
+		ORDER BY p.dateline ASC 
+		LIMIT 0,1
+	");
 	$firstpost = $db->fetch_array($query);
 	if(!$firstpost['username'])
 	{
@@ -1164,7 +1260,12 @@ function updatethreadcount($tid)
 	$lastpost['username'] = $db->escape_string($lastpost['username']);
 	$firstpost['username'] = $db->escape_string($firstpost['username']);
 	// Unapproved posts
-	$query = $db->query("SELECT COUNT(*) AS totunposts FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND visible='0'");
+	$query = $db->query("
+		SELECT COUNT(*) AS totunposts 
+		FROM ".TABLE_PREFIX."posts 
+		WHERE tid='$tid' 
+		AND visible='0'
+	");
 	$posts = $db->fetch_array($query);
 	if($posts)
 	{
@@ -1176,15 +1277,27 @@ function updatethreadcount($tid)
 	}
 	// Update the attachment count for this thread
 	update_thread_attachment_count($tid);
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', lastposteruid='".$lastpost['uid']."', replies='$treplies', unapprovedposts='$nounposts' WHERE tid='$tid'");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."threads 
+		SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', lastposteruid='".$lastpost['uid']."', replies='$treplies', unapprovedposts='$nounposts' 
+		WHERE tid='$tid'
+	");
 }
 
 function update_thread_attachment_count($tid)
 {
 	global $db;
-	$query = $db->query("SELECT COUNT(*) AS attachment_count FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid) WHERE p.tid='$tid'");
+	$query = $db->query("
+		SELECT COUNT(*) AS attachment_count 
+		FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid) 
+		WHERE p.tid='$tid'
+	");
 	$attachment_count = $db->fetch_field($query, "attachment_count");
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET attachmentcount='{$attachment_count}' WHERE tid='$tid'");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."threads 
+		SET attachmentcount='{$attachment_count}' 
+		WHERE tid='$tid'
+	");
 }
 
 function deletethread($tid)
@@ -1213,6 +1326,7 @@ function deletepost($pid, $tid="")
 function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $permissions="", $name="fid")
 {
 	global $db, $forum_cache, $fjumpcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang, $mybbgroup;
+	
 	$pid = intval($pid);
 	if($permissions)
 	{
@@ -1305,7 +1419,7 @@ function random_str($length="8")
 {
 	$set = array("a","A","b","B","c","C","d","D","e","E","f","F","g","G","h","H","i","I","j","J","k","K","l","L","m","M","n","N","o","O","p","P","q","Q","r","R","s","S","t","T","u","U","v","V","w","W","x","X","y","Y","z","Z","1","2","3","4","5","6","7","8","9");
 	$str;
-	for($i=1;$i<=$length;$i++)
+	for($i = 1; $i <= $length; $i++)
 	{
 		$ch = rand(0, count($set)-1);
 		$str .= $set[$ch];
@@ -1316,6 +1430,7 @@ function random_str($length="8")
 function formatname($username, $usergroup, $displaygroup="")
 {
 	global $groupscache, $cache;
+	
 	if(!is_array($groupscache))
 	{
 		$groupscache = $cache->read("usergroups");
@@ -1339,6 +1454,7 @@ function formatname($username, $usergroup, $displaygroup="")
 function makebbcodeinsert()
 {
 	global $db, $mybb, $settings, $theme, $templates, $lang;
+	
 	if($mybb->settings['bbcodeinserter'] != "off")
 	{
 		eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
@@ -1348,12 +1464,18 @@ function makebbcodeinsert()
 function makesmilieinsert()
 {
 	global $db, $smiliecache, $settings, $theme, $templates, $lang, $mybb;
+	
 	if($mybb->settings['smilieinserter'] != "off" && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 	{
 		$smiliecount = 0;
 		if(!$smiliecache)
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies WHERE showclickable!='no' ORDER BY disporder");
+			$query = $db->query("
+				SELECT * 
+				FROM ".TABLE_PREFIX."smilies 
+				WHERE showclickable != 'no' 
+				ORDER BY disporder
+			");
 
 			while($smilie = $db->fetch_array($query))
 			{
@@ -1417,18 +1539,18 @@ function makesmilieinsert()
 
 function gzipencode($contents, $level=1)
 {
-	global $_SERVER;
 	if(function_exists("gzcompress") && function_exists("crc32") && !headers_sent())
 	{
-		if(strpos(" ".$_SERVER['HTTP_ACCEPT_ENCODING'], "x-gzip"))
+		$httpaccept_encoding = (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) ? $_SERVER['HTTP_ACCEPT_ENCODING'] : "";
+		if(strpos(" ".$httpaccept_encoding, "x-gzip"))
 		{
 			$encoding = "x-gzip";
 		}
-		if(strpos(" ".$_SERVER['HTTP_ACCEPT_ENCODING'], "gzip"))
+		if(strpos(" ".$httpaccept_encoding, "gzip"))
 		{
 			$encoding = "gzip";
 		}
-		if($encoding)
+		if(isset($encoding))
 		{
 			header("Content-Encoding: $encoding");
 			if(function_exists("gzencode"))
@@ -1486,7 +1608,7 @@ function logmod($data, $action="")
 function getreputation($reputation, $uid=0)
 {
 	global $theme;
-	
+
 	if($uid != 0)
 	{
 		$display_reputation = "<a href=\"reputation.php?uid={$uid}\">";
@@ -1512,8 +1634,8 @@ function getreputation($reputation, $uid=0)
 	return $display_reputation;
 }
 
-function getip() {
-	global $_SERVER;
+function getip() 
+{
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 	{
 		if(preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses))
@@ -1545,6 +1667,7 @@ function getip() {
 function getfriendlysize($size)
 {
 	global $lang;
+	
 	if($size >= 1073741824)
 	{
 		$size = round(($size / 1073741824), 2) . " " . $lang->size_gb;
@@ -1571,7 +1694,11 @@ function getfriendlysize($size)
 function getattachicon($ext)
 {
 	global $cache, $attachtypes;
-	if(!$attachtypes) $attachtypes = $cache->read("attachtypes");
+	
+	if(!$attachtypes) 
+	{
+		$attachtypes = $cache->read("attachtypes");
+	}
 	$ext = strtolower($ext);
 	if($attachtypes[$ext])
 	{
@@ -1586,6 +1713,7 @@ function getattachicon($ext)
 function getunviewableforums()
 {
 	global $db, $forum_cache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $unviewable, $templates, $mybbgroup, $forumpass;
+	
 	$pid = intval($pid);
 
 	if(!$permissions)
@@ -1650,6 +1778,7 @@ function fixmktime($format, $year)
 function buildnav($finished=1)
 {
 	global $nav, $navbits, $templates, $settings, $theme, $lang;
+	
 	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
 
 	if(is_array($navbits))
@@ -1666,7 +1795,8 @@ function buildnav($finished=1)
 	}
 	$navsize = count($navbits);
 	$navbit = $navbits[$navsize-1];
-	if($nav) {
+	if($nav) 
+	{
 		eval("\$activesep = \"".$templates->get("nav_sep_active")."\";");
 	}
 	eval("\$activebit = \"".$templates->get("nav_bit_active")."\";");
@@ -1674,8 +1804,10 @@ function buildnav($finished=1)
 	return $donenav;
 }
 
-function addnav($name, $url="") {
+function addnav($name, $url="") 
+{
 	global $navbits;
+	
 	$navsize = count($navbits);
 	$navbits[$navsize]['name'] = $name;
 	$navbits[$navsize]['url'] = $url;
@@ -1684,6 +1816,7 @@ function addnav($name, $url="") {
 function makeforumnav($fid, $archive=0)
 {
 	global $pforumcache, $db, $currentitem, $forum_cache, $navbits, $lang, $archiveurl;
+	
 	if(!$pforumcache)
 	{
 		if(!is_array($forum_cache))
@@ -1730,15 +1863,18 @@ function makeforumnav($fid, $archive=0)
 
 function resetnav()
 {
-	global $navbits, $_GLOBAL;
+	global $navbits;
+	
 	$newnav[0]['name'] = $navbits[0]['name'];
 	$newnav[0]['url'] = $navbits[0]['url'];
 	unset($GLOBALS['navbits']);
 	$GLOBALS['navbits'] = $newnav;
 }
 
-function debugpage() {
+function debugpage() 
+{
 	global $db, $querytime, $debug, $templatecache, $templatelist, $htmldoctype, $mybb, $mybbuser, $maintimer, $globaltime, $settings, $mybbgroup, $lang, $ptimer, $parsetime;
+	
 	$totaltime = $maintimer->totaltime;
 	$phptime = $maintimer->format($maintimer->totaltime - $querytime);
 	$querytime = $maintimer->format($querytime);
@@ -1823,6 +1959,7 @@ function debugpage() {
 function pageheaders()
 {
 	global $mybb;
+	
 	if($mybb->settings['nocacheheaders'] == "yes" && $mybb->settings['standardheaders'] != "yes")
 	{
 		header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
@@ -1849,6 +1986,7 @@ function getforum($fid)
 function markreports($id, $type="post")
 {
 	global $db, $cache, $plugins;
+	
 	switch($type)
 	{
 		case "posts":
@@ -1856,28 +1994,57 @@ function markreports($id, $type="post")
 			{
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->query("UPDATE ".TABLE_PREFIX."reportedposts SET reportstatus='1' WHERE pid IN($rids) AND reportstatus='0'");
+				$db->query("
+					UPDATE ".TABLE_PREFIX."reportedposts 
+					SET reportstatus='1' 
+					WHERE pid IN($rids) 
+					AND reportstatus='0'
+				");
 			}
 			break;
 		case "post":
-			$db->query("UPDATE ".TABLE_PREFIX."reportedposts SET reportstatus='1' WHERE pid='$id' AND reportstatus='0'");
+			$db->query("
+				UPDATE ".TABLE_PREFIX."reportedposts 
+				SET reportstatus='1' 
+				WHERE pid='$id' 
+				AND reportstatus='0'
+			");
 			break;
 		case "threads":
 			if(is_array($id))
 			{
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->query("UPDATE ".TABLE_PREFIX."reportedposts SET reportstatus='1' WHERE tid IN($rids) AND reportstatus='0'");
+				$db->query("
+					UPDATE ".TABLE_PREFIX."reportedposts 
+					SET reportstatus='1' 
+					WHERE tid IN($rids) 
+					AND reportstatus='0'
+				");
 			}
 			break;
 		case "thread":
-			$db->query("UPDATE ".TABLE_PREFIX."reportedposts SET reportstatus='1' WHERE tid='$id' AND reportstatus='0'");
+			$db->query("
+				UPDATE ".TABLE_PREFIX."reportedposts 
+				SET reportstatus='1' 
+				WHERE tid='$id' 
+				AND reportstatus='0'
+			");
 			break;
 		case "forum":
-			$db->query("UPDATE ".TABLE_PREFIX."reportedposts SET reportstatus='1' WHERE fid='$id' AND reportstatus='0'");
+			$db->query("
+				UPDATE ".TABLE_PREFIX."reportedposts 
+				SET reportstatus='1' 
+				WHERE fid='$id' 
+				AND reportstatus='0'
+			");
 			break;
 		case "all":
-			$db->query("UPDATE ".TABLE_PREFIX."reportedposts SET reportstatus='1' WHERE reportstatus='0'");
+			$db->query("
+				UPDATE ".TABLE_PREFIX."reportedposts 
+				SET reportstatus='1' 
+				WHERE reportstatus='0'
+			");
 			break;
 	}
 	$plugins->run_hooks("mark_reports");
@@ -2012,13 +2179,18 @@ function alt_trow($reset=0)
 function join_usergroup($uid, $joingroup)
 {
 	global $db, $mybbuser;
+	
 	if($uid == $mybbuser['uid'])
 	{
 		$user = $mybbuser;
 	}
 	else
 	{
-		$query = $db->query("SELECT additionalgroups, usergroup FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+		$query = $db->query("
+			SELECT additionalgroups, usergroup 
+			FROM ".TABLE_PREFIX."users 
+			WHERE uid='$uid'
+		");
 		$user = $db->fetch_array($query);
 	}
 
@@ -2039,19 +2211,35 @@ function join_usergroup($uid, $joingroup)
 			}
 		}
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."users SET additionalgroups='$groupslist' WHERE uid='$uid'");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."users 
+		SET additionalgroups='$groupslist' 
+		WHERE uid='$uid'
+	");
 }
 
 function leave_usergroup($uid, $leavegroup)
 {
 	global $db, $mybbuser;
-	if($uid == $mybbuser['uid'])
+	
+	// should be changed to this? Same with above function ^^
+	//global $db, $mybb;
+	
+	//if($uid == $mybb->user['uid'])
+	//{
+		//$user = $mybb->user;
+	//}
+	if($uid == $mybbuser['uid'];
 	{
 		$user = $mybbuser;
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+		$query = $db->query("
+			SELECT * 
+			FROM ".TABLE_PREFIX."users 
+			WHERE uid='$uid'
+		");
 		$user = $db->fetch_array($query);
 	}
 	$usergroups = "";
@@ -2074,12 +2262,15 @@ function leave_usergroup($uid, $leavegroup)
 	{
 		$dispupdate = ", displaygroup=usergroup";
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."users SET additionalgroups='$groupslist' $dispupdate WHERE uid='$uid'");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."users 
+		SET additionalgroups='$groupslist' $dispupdate 
+		WHERE uid='$uid'
+	");
 }
 
 function get_current_location()
 {
-	global $_ENV, $_SERVER, $_POST;
 	if(defined("MYBB_LOCATION"))
 	{
 		return MYBB_LOCATION;
@@ -2157,7 +2348,8 @@ function get_current_location()
 function themeselect($name, $selected="", $tid=0, $depth="", $usergroup_override=0)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb;
-	if(!$tid)
+	
+	if($tid == 0)
 	{
 		$themeselect = "<select name=\"$name\">";
 		$themeselect .= "<option value=\"0\">".$lang->use_default."</option>\n";
@@ -2165,7 +2357,11 @@ function themeselect($name, $selected="", $tid=0, $depth="", $usergroup_override
 	}
 	if(!is_array($tcache))
 	{
-		$query = $db->query("SELECT name,pid,tid,allowedgroups FROM ".TABLE_PREFIX."themes ORDER BY pid, name");
+		$query = $db->query("
+			SELECT name, pid, tid, allowedgroups 
+			FROM ".TABLE_PREFIX."themes 
+			ORDER BY pid, name
+		");
 		while($theme = $db->fetch_array($query))
 		{
 			$tcache[$theme['pid']][$theme['tid']] = $theme;
@@ -2297,6 +2493,7 @@ function get_bdays($in)
 function format_bdays($display, $bm, $bd, $by, $wd)
 {
 	global $lang;
+	
 	$bdays = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
 	$bmonth = array($lang->month_1, $lang->month_2, $lang->month_3, $lang->month_4, $lang->month_5, $lang->month_6, $lang->month_7, $lang->month_8, $lang->month_9, $lang->month_10, $lang->month_11, $lang->month_12);
 	$find = array('m', 'd', 'y', 'Y', 'j', 'S', 'F', 'l');
@@ -2335,7 +2532,14 @@ function get_age($birthday)
 function update_first_post($tid)
 {
 	global $db;
-	$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 0,1");
+	
+	$query = $db->query("
+		SELECT pid 
+		FROM ".TABLE_PREFIX."posts 
+		WHERE tid='$tid' 
+		ORDER BY dateline ASC 
+		LIMIT 0,1
+	");
 	$post = $db->fetch_array($query);
 	$firstpostup = array("firstpost" => $post['pid']);
 	$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='$tid'");
@@ -2473,7 +2677,11 @@ function get_user($uid)
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."'");
+		$query = $db->query("
+			SELECT * 
+			FROM ".TABLE_PREFIX."users 
+			WHERE uid='".intval($uid)."'
+		");
 		$user_cache[$uid] = $db->fetch_array($query);
 		return $user_cache[$uid];
 	}
@@ -2566,6 +2774,7 @@ function get_post($pid)
 function get_inactive_forums()
 {
 	global $forum_cache, $db, $cache, $inactiveforums;
+	
 	if(!$forum_cache)
 	{
 		cache_forums();
@@ -2599,6 +2808,7 @@ function get_inactive_forums()
 function login_attempt_check($fatal = true)
 {
 	global $mybb, $lang, $session, $db;
+	
 	if($mybb->settings['failedlogincount'] == 0)
 	{
 		return 1;
