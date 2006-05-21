@@ -1418,6 +1418,27 @@ var inlineType = "forum";
 var inlineId = {$fid};
 </script>
 <br />]]></template>
+		<template name="report_thanks"><![CDATA[<html>
+<head>
+<title>$settings[bbname] - $lang->report_post</title>
+$headerinclude
+</head>
+<body>
+<br />
+<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+<tr>
+<td class="trow1" align="center">
+<br />
+<br />
+<strong>$lang->thank_you</strong>
+<blockquote>$lang->post_reported</blockquote>
+<br />
+<br />
+</td>
+</tr>
+</table>
+</body>
+</html>]]></template>
 		<template name="report" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->report_post}</title>
