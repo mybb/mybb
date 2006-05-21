@@ -1342,10 +1342,19 @@ elseif($mybb->input['action'] == "profile")
 	$userfields = $db->fetch_array($query);
 	$customfields = '';
 	$bgcolor = trow1;
+	// If this user is an Administrator or a Moderator then we wish to show all profile fields
+	if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->usergroup['gid'] == 6)
+	{
+		$field_hidden = '1=1';
+	}
+	else
+	{
+		$field_hidden = "hidden='no'";
+	}
 	$query = $db->query("
 		SELECT *
 		FROM ".TABLE_PREFIX."profilefields
-		WHERE hidden='no'
+		WHERE {$field_hidden}
 		ORDER BY disporder
 	");
 	while($customfield = $db->fetch_array($query))
@@ -1374,18 +1383,6 @@ elseif($mybb->input['action'] == "profile")
 		eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
 		
 		$bgcolor = alt_trow();
-		
-		/*
-		if($bgcolor == "trow2")
-		{
-			$bgcolor = "trow1";
-		}
-		else
-		{
-			$bgcolor = "trow2";
-		}
-		*/
-		
 	}
 	if($customfields)
 	{
