@@ -264,6 +264,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		"icon" => $mybb->input['icon'],
 		"uid" => $mybb->user['uid'],
 		"username" => $mybb->user['username'],
+		"edit_uid" => $mybb->user['uid'],
 		"message" => $mybb->input['message'],
 	);
 
