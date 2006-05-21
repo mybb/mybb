@@ -233,7 +233,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$activationcode = random_str();
 			$now = time();
 			$activationarray = array(
-				"uid" => $user['uid'],
+				"uid" => $user_info['uid'],
 				"dateline" => time(),
 				"code" => $activationcode,
 				"type" => "r"
@@ -536,6 +536,11 @@ if($mybb->input['action'] == "register")
 			$pmpopupcheck = "checked=\"checked\"";
 			$pmnotifycheck = '';
 			$invisiblecheck = '';
+			if($mybb->settings['dstcorrection'] == "yes")
+			{
+				$enabledstcheck = "checked=\"checked\"";
+			}
+			
 		}
 		// Spambot registration image thingy
 		if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))

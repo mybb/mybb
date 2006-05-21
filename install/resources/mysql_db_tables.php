@@ -437,7 +437,7 @@ $tables[] = "CREATE TABLE mybb_sessions (
   location1 int(10) NOT NULL default '0',
   location2 int(10) NOT NULL default '0',
   loginattempts tinyint(2) NOT NULL default '1',
-  failedlogin bigint(30) NOT NULL,
+  failedlogin bigint(30) NOT NULL default '0',
   PRIMARY KEY(sid),
   KEY location1 (location1),
   KEY location2 (location2)

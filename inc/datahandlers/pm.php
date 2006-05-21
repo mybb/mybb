@@ -21,6 +21,13 @@ EXAMPLE USE:
 class PMDataHandler extends DataHandler
 {
 	/**
+	* The language file used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_file = 'datahandler_pm';
+
+	/**
 	* The prefix for the language variables used in the data handler.
 	*
 	* @var string

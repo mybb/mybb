@@ -16,6 +16,13 @@
 class UserDataHandler extends DataHandler
 {
 	/**
+	* The language file used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_file = 'datahandler_user';
+
+	/**
 	* The prefix for the language variables used in the data handler.
 	*
 	* @var string
@@ -294,7 +301,7 @@ class UserDataHandler extends DataHandler
 		$birthday['month'] = intval($birthday['month']);
 		$birthday['year'] = intval($birthday['year']);
 
-		if($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12)
+		if($birthday['day'] && $irthday['month'] && ($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12))
 		{
 			$this->set_error("invalid_birthday");
 			return false;
@@ -583,7 +590,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 		// If the board does not allow "away mode" or the user is marking as not away, set defaults.
-		if($mybb->settings['allowaway'] == "no" || $user['away']['away'] == "no")
+		if($mybb->settings['allowaway'] == "no" || $user['away']['away'] != 'yes')
 		{
 			$user['away']['away'] = "no";
 			$user['away']['date'] = 0;

@@ -286,7 +286,7 @@ elseif($mybb->input['action'] == "buddypopup")
 			SELECT u.*, g.canusepms
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
-			WHERE u.uid IN ($sql
+			WHERE u.uid IN ($sql)
 		");
 		while($buddy = $db->fetch_array($query))
 		{

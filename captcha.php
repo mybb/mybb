@@ -132,7 +132,7 @@ function draw_lines(&$im)
 		$color = imagecolorallocate($im, rand(150, 255), rand(150, 255), rand(150, 255));
 		imageline($im, $i, 0, $i, $img_height, $color);
 	}
-	for($i = 10;$ i < $img_height; $i += 10)
+	for($i = 10; $i < $img_height; $i += 10)
 	{
 		$color = imagecolorallocate($im, rand(150, 255), rand(150, 255), rand(150, 255));
 		imageline($im, 0, $i, $img_width, $i, $color);

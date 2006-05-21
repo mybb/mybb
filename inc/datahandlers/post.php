@@ -30,6 +30,13 @@ if($postHandler->validate_post($post))
 class PostDataHandler extends DataHandler
 {
 	/**
+	* The language file used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_file = 'datahandler_post';
+	
+	/**
 	* The prefix for the language variables used in the data handler.
 	*
 	* @var string
@@ -332,11 +339,8 @@ class PostDataHandler extends DataHandler
 
 		$post = &$this->data;
 
-		// Verify that the post icon actually exists if we have one.
-		// TO BE WRITTEN
-
 		// If we don't assign it as 0.
-		if(!$post['icon'])
+		if(!$post['icon'] || $post['icon'] < 0)
 		{
 			$post['icon'] = 0;
 		}
@@ -601,6 +605,7 @@ class PostDataHandler extends DataHandler
 
 		if($visible == 1)
 		{
+			$thread = get_thread($post['tid']);
 			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new Postparser();
 
@@ -618,7 +623,7 @@ class PostDataHandler extends DataHandler
 				AND u.lastactive>'{$thread['lastpost']}'
 			");
 			while($subscribedmember = $db->fetch_array($query))
-			{echo 'fdsgdf';
+			{
 				if($subscribedmember['language'] != '' && $lang->languageExists($subscribedmember['language']))
 				{
 					$uselang = $subscribedmember['language'];
@@ -653,7 +658,7 @@ class PostDataHandler extends DataHandler
 					$emailmessage =  $langcache[$uselang]['email_subscription'];
 				}
 				$emailsubject = sprintf($emailsubject, $subject);
-				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $tid);
+				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $thread['tid']);
 				$new_email = array(
 					"mailto" => $db->escape_string($subscribedmember['email']),
 					"mailfrom" => '',
@@ -1008,7 +1013,7 @@ class PostDataHandler extends DataHandler
 					$emailmessage = $langcache[$uselang]['email_forumsubscription'];
 				}
 				$emailsubject = sprintf($emailsubject, $forum['name']);
-				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $mybb->user['username'], $forum['name'], $mybb->settings['bbname'], $mybb->input['subject'], $excerpt, $mybb->settings['bburl'], $tid, $thread['fid']);
+				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $mybb->user['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], $tid, $thread['fid']);
 				$new_email = array(
 					"mailto" => $db->escape_string($subscribedmember['email']),
 					"mailfrom" => '',

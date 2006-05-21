@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id:$
+ * $Id$
  */
 
 /**
@@ -15,6 +15,13 @@
  */
 class ForumDataHandler extends DataHandler
 {
+	/**
+	* The language file used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_file = 'datahandler_forum';
+
 	/**
 	* The prefix for the language variables used in the data handler.
 	*

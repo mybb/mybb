@@ -120,6 +120,11 @@ class DataHandler
 	{
 		global $lang;
 
+		// Load the language pack we need
+		if($this->language_file)
+		{
+			$lang->load($this->language_file, true);
+		}
 		// Prefix all the error codes with the language prefix.
 		foreach($this->errors as $error)
 		{

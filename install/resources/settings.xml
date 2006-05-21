@@ -913,7 +913,7 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[on]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="similarlimit">
+		<setting name="quickquote">
 			<title>Show Quick Quote Buttons</title>
 			<description><![CDATA[Quick quote buttons allow users to instantly quote a post using the quick reply form. Be warned that this option adds extra data to the page and can cause pages to take longer to download. The quick reply option must also be enabled.]]></description>
 			<disporder>10</disporder>

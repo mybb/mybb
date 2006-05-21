@@ -23,9 +23,9 @@ $l['add_title'] = "Add User Title";
 $l['title'] = "Title:";
 $l['minimum_posts'] = "Minimum Posts:";
 $l['stars'] = "No. of Stars:";
-$l['stars_description'] = "If empty the default usergroup stars will be shown.";
+$l['stars_description'] = "If empty the default user group stars will be shown.";
 $l['star_image'] = "Star Image:";
-$l['star_image_description'] = "If empty the usergroup star image will be used.";
+$l['star_image_description'] = "If empty the user group star image will be used.";
 
 $l['delete_title'] = "Delete User Title";
 $l['delete_title_confirm'] = "Are you sure you wish to delete the selected user title?";

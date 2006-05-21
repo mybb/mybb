@@ -184,7 +184,7 @@ function requirements_check()
 	}
 
 	// Check config file is writeable
-	$configwritable = is_writeable('../inc/config.php');
+	$configwritable = @fopen('../inc/config.php', 'w');
 	if(!$configwritable)
 	{
 		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_configfile);
@@ -195,9 +195,10 @@ function requirements_check()
 	{
 		$configstatus = sprintf($lang->req_step_span_pass, $lang->writeable);
 	}
-
+	@fclose($configwritable);
+		
 	// Check settings file is writeable
-	$settingswritable = is_writeable('../inc/settings.php');
+	$settingswritable = @fopen('../inc/settings.php', 'w');
 	if(!$settingswritable)
 	{
 		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_settingsfile);
@@ -208,9 +209,10 @@ function requirements_check()
 	{
 		$settingsstatus = sprintf($lang->req_step_span_pass, $lang->writeable);
 	}
+	@fclose($settingswritable);
 
 	// Check upload directory is writeable
-	$uploadswritable = is_writeable('../uploads');
+	$uploadswritable = @fopen('../uploads/test.write', 'w');
 	if(!$uploadswritable)
 	{
 		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
@@ -221,9 +223,10 @@ function requirements_check()
 	{
 		$uploadsstatus = sprintf($lang->req_step_span_pass, $lang->writeable);
 	}
+	@fclose($uploadswritable);
 
 	// Check avatar directory is writeable
-	$avatarswritable = is_writeable('../uploads/avatars');
+	$avatarswritable = @fopen('../uploads/avatars/test.write', 'w');
 	if(!$avatarswritable)
 	{
 		$errors[] =  sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
@@ -234,7 +237,8 @@ function requirements_check()
 	{
 		$avatarsstatus = sprintf($lang->req_step_span_pass, $lang->writeable);
 	}
-
+	@fclose($avatarswritable);
+	
 	// Output requirements page
 	echo sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $xmlstatus, $configstatus, $settingsstatus, $uploadsstatus, $avatarsstatus);
 

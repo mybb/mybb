@@ -2178,11 +2178,10 @@ function alt_trow($reset=0)
 
 function join_usergroup($uid, $joingroup)
 {
-	global $db, $mybbuser;
 	
-	if($uid == $mybbuser['uid'])
+	if($uid == $mybb->user['uid'])
 	{
-		$user = $mybbuser;
+		$user = $mybb->user;
 	}
 	else
 	{
@@ -2220,18 +2219,11 @@ function join_usergroup($uid, $joingroup)
 
 function leave_usergroup($uid, $leavegroup)
 {
-	global $db, $mybbuser;
+	global $db, $mybb;
 	
-	// should be changed to this? Same with above function ^^
-	//global $db, $mybb;
-	
-	//if($uid == $mybb->user['uid'])
-	//{
-		//$user = $mybb->user;
-	//}
-	if($uid == $mybbuser['uid'];
+	if($uid == $mybb->user['uid'])
 	{
-		$user = $mybbuser;
+		$user = $mybb->user;
 	}
 	else
 	{

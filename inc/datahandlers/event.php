@@ -16,6 +16,13 @@
 class EventDataHandler extends DataHandler
 {
 	/**
+	* The language file used in the data handler.
+	*
+	* @var string
+	*/
+	var $language_file = 'datahandler_event';
+	
+	/**
 	* The prefix for the language variables used in the data handler.
 	*
 	* @var string
