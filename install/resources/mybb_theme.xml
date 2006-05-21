@@ -2975,8 +2975,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td colspan="2" width="100%" class="thead"><strong>{$lang->add_event}</strong></td>
 </tr>
 <tr>
-<td width="40%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td width="60%" class="trow1">
+<td width="20%" class="trow1"><strong>{$lang->event_date}</strong></td>
+<td class="trow1">
 <select name="month">
 <option value="1"{$msel['1']}>{$lang->month_1}</option>
 <option value="2"{$msel['2']}>{$lang->month_2}</option>
@@ -3002,17 +3002,17 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 <tr>
-<td width="40%" class="trow2"><strong>{$lang->event_name}</strong></td>
-<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" maxlength="120" /></td>
+<td width="20%" class="trow2"><strong>{$lang->event_name}</strong></td>
+<td class="trow2"><input type="text" class="textbox" size="50" name="subject" maxlength="120" /></td>
 </tr>
 <tr>
-<td valign="top" width="40%" class="trow1"><strong>{$lang->event_details}</strong><p style="text-align: center;">{$smilieinserter}</td>
-<td width="60%" class="trow1"><textarea cols="50" rows="10" name="description" id="message"></textarea>
+<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><p style="text-align: center;">{$smilieinserter}</td>
+<td class="trow1"><textarea name="description" id="message" rows="20" cols="70"></textarea>
 {$codebuttons}</td>
 </tr>
 <tr>
-<td width="40%" class="trow2"><strong>{$lang->event_options}</strong></td>
-<td width="60%" class="trow2">
+<td width="20%" class="trow2"><strong>{$lang->event_options}</strong></td>
+<td class="trow2">
 <input type="checkbox" class="checkbox" name="private" value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
 </td>
 </tr>
@@ -5764,7 +5764,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 {$footer}
 </body>
 </html>]]></template>
-		<template name="smilieinsert" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="smilieinsert" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" width="150">
 <tr>
 <td class="thead"><span class="smalltext"><strong>{$lang->smilieinsert}</strong></span></td>
 </tr>
@@ -5895,8 +5895,8 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td colspan="2" width="100%" class="thead"><strong>{$lang->edit_event}</strong></td>
 </tr>
 <tr>
-<td width="40%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td width="60%" class="trow1">
+<td width="20%" class="trow1"><strong>{$lang->event_date}</strong></td>
+<td class="trow1">
 <select name="month">
 <option value="1"{$msel['1']}>{$lang->month_1}</option>
 <option value="2"{$msel['2']}>{$lang->month_2}</option>
@@ -5922,17 +5922,17 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </td>
 </tr>
 <tr>
-<td width="40%" class="trow2"><strong>{$lang->event_name}</strong></td>
-<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$event['subject']}" /></td>
+<td width="20%" class="trow2"><strong>{$lang->event_name}</strong></td>
+<td  class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$event['subject']}" /></td>
 </tr>
 <tr>
-<td valign="top" width="40%" class="trow1"><strong>{$lang->event_details}</strong><p style="text-align: center;">{$smilieinserter}</p></td>
-<td width="60%" class="trow1"><textarea cols="50" rows="10" name="description" id="message">{$event['description']}</textarea>
+<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><p style="text-align: center;">{$smilieinserter}</p></td>
+<td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{$event['description']}</textarea>
 {$codebuttons}</td>
 </tr>
 <tr>
-<td width="40%" class="trow2"><strong>{$lang->event_options}</strong></td>
-<td width="60%" class="trow2">
+<td width="20%" class="trow2"><strong>{$lang->event_options}</strong></td>
+<td class="trow2">
 <input type="checkbox" class="checkbox" name="private" value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
 <input type="checkbox" class="checkbox" name="delete" value="yes" /><span class="smalltext">{$lang->delete_option}</span>
 </td>
