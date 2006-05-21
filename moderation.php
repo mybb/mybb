@@ -777,7 +777,7 @@ switch($mybb->input['action'])
 				$parser_options['allow_smilies'] = "no";
 			}
 
-			$message = $parser->parse_message($message, $parser_options);
+			$message = $parser->parse_message($post['message'], $parser_options);
 			eval("\$posts .= \"".$templates->get("moderation_split_post")."\";");
 			if($altbg == "trow1")
 			{
