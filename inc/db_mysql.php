@@ -641,7 +641,14 @@ class databaseEngine
 		$version = $this->get_version();
 		$query = $this->query("SHOW TABLE STATUS LIKE '$table'");
 		$status = $this->fetch_array($query);
-		$table_type = strtoupper($status['Engine']);
+		if($status['Engine'])
+		{
+			$table_type = strtoupper($status['Engine']);
+		}
+		else
+		{
+			$table_type = strtoupper($status['Type']);
+		}
 		if($version >= '3.23.23' && $table_type == 'MYISAM')
 		{
 			return true;
