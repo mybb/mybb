@@ -44,7 +44,7 @@ This MyBulletinBoard End-User License Agreement ("EULA") is a legal agreement be
 <h3>This EULA grants you the following rights:</h3>
 <ul>
 <li><strong>Installation and Use</strong><br />
-You may install and use an unlimited amount of copies of MyBB on your domain(s) or website(s). However, each download must be registered at the MyBB Website.
+You may install and use an unlimited amount of copies of MyBB on your domain(s) or website(s).
 </li>
 <li><strong>Reproduction and Distribution</strong><br />
 You may not reproduce or distribute the MyBB  SOFTWARE for any reason with out express written consent from the entire MyBulletinBoard seat holding Admin Board.
@@ -67,7 +67,7 @@ All title and copyrights in and to the MyBB  SOFTWARE(including but not limited 
 <br /><br />
 At all times, the MyBB "Powered by" and copyright lines must be present and clearly in the footer of your board. You may not alter or change the "Powered by" and copyright lines in any way without express permission from the MyBB Group.
 <h3>U.S. GOVERNMENT RESTRICTED RIGHTS</h3>
-The MyBB  SOFTWARE and documentation are provided with RESTRICTED RIGHTS. Use, duplication, or disclosure by the Government is subject to restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and Computer Software clause at DFARS 252.227-7013 or subparagraphs (c)(1) and (2) of the Commercial Computer Software-Restricted Rights at 48 CFR 52.227-19, as applicable. Manufacturer is MyBulletinBoard @ www.mybboard.com
+The MyBB  SOFTWARE and documentation are provided with RESTRICTED RIGHTS. Use, duplication, or disclosure by the Government is subject to restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and Computer Software clause at DFARS 252.227-7013 or subparagraphs (c)(1) and (2) of the Commercial Computer Software-Restricted Rights at 48 CFR 52.227-19, as applicable. Manufacturer is MyBulletinBoard @ www.mybboard.com (www [dot] mybboard [dot] com)
 
 <h3>MISCELLANEOUS</h3>
 <ul>
@@ -117,9 +117,13 @@ $l['req_step_reqtable'] = '<div class="border_wrapper">
 			<td class="first">File Uploads Directory Writable:</td>
 			<td class="last alt_col">{6}</td>
 		</tr>
-		<tr class="last">
+		<tr class="alt_row">
 			<td class="first">Avatar Uploads Directory Writable:</td>
 			<td class="last alt_col">{7}</td>
+		</tr>
+		<tr class="last">
+			<td class="first">Css Directory Writable:</td>
+			<td class="last alt_col">{8}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -138,6 +142,7 @@ $l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is no
 $l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the chmod permissions to allow it to be written to.';
 $l['req_step_error_uploaddir'] = 'The uploads directory (uploads/) is not writable. Please adjust the chmod permissions to allow it to be written to.';
 $l['req_step_error_avatardir'] = 'The avatars directory (uploads/avatars/) is not writable. Please adjust the chmod permissions to allow it to be written to.';
+$l['req_step_error_cssddir'] = 'The css directory (css/) is not writable. Please adjust the chmod permissions to allow it to be written to.';
 $l['req_step_error_tablelist'] = '<div class="error">
 <h3>Error</h3>
 <p>The MyBB Requirements check failed due to the reasons below. MyBB installation cannot continue because you did not meet the MyBB requirements. Please correct the errors below and try again:</p>

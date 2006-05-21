@@ -152,7 +152,7 @@ function requirements_check()
 	}
 	else
 	{
-		$phpversion = sprintf($lang->req_step_span_pass, $phpversion);;
+		$phpversion = sprintf($lang->req_step_span_pass, $phpversion);
 	}
 
 	// Check database engines
@@ -239,8 +239,21 @@ function requirements_check()
 	}
 	@fclose($avatarswritable);
 	
+	$csswritable = @fopen('../css/test.write', 'w');
+	if(!$csswritable)
+	{
+		$errors[] =  sprintf($lang->req_step_error_box, $lang->req_step_error_cssdir);
+		$cssstatus = sprintf($lang->req_step_span_fail, $lang->not_writeable);
+		$showerror = 1;
+	}
+	else
+	{
+		$cssstatus = sprintf($lang->req_step_span_pass, $lang->writeable);
+	}
+	@fclose($csswritable);
+	
 	// Output requirements page
-	echo sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $xmlstatus, $configstatus, $settingsstatus, $uploadsstatus, $avatarsstatus);
+	echo sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $xmlstatus, $configstatus, $settingsstatus, $uploadsstatus, $avatarsstatus, $cssstatus);
 
 	if($showerror == 1)
 	{
