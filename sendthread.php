@@ -21,8 +21,7 @@ $lang->load("sendthread");
 // Get thread info
 $tid = intval($mybb->input['tid']);
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
-$thread = $db->fetch_array($query);
+$thread = get_thread($tid);
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 if(!$thread['tid'])
 {

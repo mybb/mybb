@@ -53,7 +53,11 @@ if($rand == 5)
 }
 
 $timecut = time()-(60*60*24*7);
-$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE dateline<=$timecut AND folder='4' AND uid='".$mybb->user['uid']."'");
+$db->query("
+	DELETE
+	FROM ".TABLE_PREFIX."privatemessages
+	WHERE dateline<=$timecut AND folder='4' AND uid='".$mybb->user['uid']."'
+");
 
 
 $folderjump = "<select name=\"jumpto\">\n";
@@ -195,7 +199,14 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->input['preview'])
 	{
-		$query = $db->query("SELECT u.username AS userusername, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.namestyle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.usereputationsystem FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".intval($mybb->input['icon'])."') LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE u.uid='".$mybb->user[uid]."'");
+		$query = $db->query("
+			SELECT u.username AS userusername, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.namestyle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.usereputationsystem
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".intval($mybb->input['icon'])."')
+			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
+			WHERE u.uid='".$mybb->user[uid]."'
+		");
 		$post = $db->fetch_array($query);
 		$post['userusername'] = $mybb->user['username'];
 		$post['postusername'] = $mybb->user['username'];
@@ -240,7 +251,12 @@ if($mybb->input['action'] == "send")
 	}
 	if($mybb->input['pmid'] && !$mybb->input['preview'])
 	{
-		$query = $db->query("SELECT pm.*, u.username AS quotename FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user[uid]."'");
+		$query = $db->query("
+			SELECT pm.*, u.username AS quotename
+			FROM ".TABLE_PREFIX."privatemessages pm
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
+			WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user[uid]."'
+		");
 		$pm = $db->fetch_array($query);
 		$message = $pm['message'];
 		$message = htmlspecialchars_uni($message);
@@ -278,7 +294,11 @@ if($mybb->input['action'] == "send")
 			{
 				$subject = "Re: $subject";
 				$uid = $pm['fromid'];
-				$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='".$uid."'");
+				$query = $db->query("
+					SELECT username
+					FROM ".TABLE_PREFIX."users
+					WHERE uid='".$uid."'
+				");
 				$user = $db->fetch_array($query);
 				$to = $user['username'];
 			}
@@ -286,7 +306,11 @@ if($mybb->input['action'] == "send")
 	}
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
-	$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
+	$query = $db->query("
+		SELECT username
+		FROM ".TABLE_PREFIX."users
+		WHERE uid='".intval($mybb->input['uid'])."'
+	");
 	$user = $db->fetch_array($query);
 	$to = $user['username'];
 	}
@@ -294,34 +318,6 @@ if($mybb->input['action'] == "send")
 	// Load the auto complete javascript if it is enabled.
 	eval("\$autocompletejs = \"".$templates->get("private_send_autocomplete")."\";");
 	
-	// Load Buddys
-	/*
-	$buddies = $mybb->user['buddylist'];
-	$namesarray = explode(",",$buddies);
-	$comma = '';
-	$sql = '';
-	if(is_array($namesarray))
-	{
-		while(list($key, $buddyid) = each($namesarray))
-		{
-			$sql .= "$comma'$buddyid'";
-			$comma = ",";
-		}
-		$timecut = time() - $mybb->settings['wolcutoff'];
-		$query = $db->query("SELECT u.*, g.canusepms FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE u.uid IN ($sql)");
-		$buddies = '';
-		while($buddy = $db->fetch_array($query))
-		{
-			if($mybb->user['receivepms'] != "no" && $buddy['receivepms'] != "no" && $buddy['canusepms'] != "no")
-			{
-				$buddies .= "<option value=\"$buddy[username]\">$buddy[username]</option>\n";
-			}
-		}
-		if($buddies)
-		{
-			eval("\$buddyselect = \"".$templates->get("private_send_buddyselect")."\";");
-		}
-	} */
 	$pmid = $mybb->input['pmid'];
 	$do = $mybb->input['do'];
 	eval("\$send = \"".$templates->get("private_send")."\";");
@@ -336,7 +332,15 @@ if($mybb->input['action'] == "read")
 
 	$pmid = intval($mybb->input['pmid']);
 
-	$query = $db->query("SELECT pm.*, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user[uid]."'");
+	$query = $db->query("
+		SELECT pm.*, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle
+		FROM ".TABLE_PREFIX."privatemessages pm
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
+		LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+		LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon)
+		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
+		WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user[uid]."'
+	");
 	$pm = $db->fetch_array($query);
 	if($pm['folder'] == 3)
 	{
@@ -386,7 +390,12 @@ if($mybb->input['action'] == "tracking")
 	$plugins->run_hooks("private_tracking_start");
 	$readmessages = '';
 	$unreadmessages = '';
-	$query = $db->query("SELECT pm.*, u.username as tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid) WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user[uid]."'");
+	$query = $db->query("
+		SELECT pm.*, u.username as tousername
+		FROM ".TABLE_PREFIX."privatemessages pm
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
+		WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user[uid]."'
+	");
 	while($readmessage = $db->fetch_array($query))
 	{
 		$readmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($readmessage['subject']));
@@ -394,7 +403,12 @@ if($mybb->input['action'] == "tracking")
 		$readtime = mydate($mybb->settings['timeformat'], $readmessage['readtime']);
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
 	}
-	$query = $db->query("SELECT pm.*, u.username AS tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid) WHERE receipt='1' AND status='0' AND fromid='".$mybb->user[uid]."'");
+	$query = $db->query("
+		SELECT pm.*, u.username AS tousername
+		FROM ".TABLE_PREFIX."privatemessages pm
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
+		WHERE receipt='1' AND status='0' AND fromid='".$mybb->user[uid]."'
+	");
 	while($unreadmessage = $db->fetch_array($query))
 	{
 		$unreadmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($unreadmessage['subject']));
@@ -448,12 +462,20 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 				$pmids[$pmid] = intval($pmid);
 			}
 			$pmids = implode(",", $pmids);
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN ($pmids) AND fromid='".$mybb->user['uid']."'");
+			$query = $db->query("
+				SELECT uid
+				FROM ".TABLE_PREFIX."privatemessages
+				WHERE pmid IN ($pmids) AND fromid='".$mybb->user['uid']."'
+			");
 			while($pm = $db->fetch_array($query))
 			{
 				$pmuids[$pm['uid']] = $pm['uid'];
 			}
-			$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN ($pmids) AND fromid='".$mybb->user['uid']."'");
+			$db->query("
+				DELETE
+				FROM ".TABLE_PREFIX."privatemessages
+				WHERE pmid IN ($pmids) AND fromid='".$mybb->user['uid']."'
+			");
 			foreach($pmuids as $uid)
 			{
 				// Message is cancelled, update PM count for this user
@@ -557,7 +579,11 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 			}
 			else
 			{
-				$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE folder='$fid' AND uid='".$mybb->user['uid']."'");
+				$db->query("
+					DELETE
+					FROM ".TABLE_PREFIX."privatemessages
+					WHERE folder='$fid' AND uid='".$mybb->user['uid']."'
+				");
 			}
 		}
 	}
@@ -580,7 +606,11 @@ if($mybb->input['action'] == "empty")
 		$folderinfo = explode("**", $folders, 2);
 		$fid = $folderinfo[0];
 		$foldername = $folderinfo[1];
-		$query = $db->query("SELECT COUNT(*) AS pmsinfolder FROM ".TABLE_PREFIX."privatemessages WHERE folder='$fid' AND uid='".$mybb->user[uid]."'");
+		$query = $db->query("
+			SELECT COUNT(*) AS pmsinfolder
+			FROM ".TABLE_PREFIX."privatemessages
+			WHERE folder='$fid' AND uid='".$mybb->user[uid]."'
+		");
 		$thing = $db->fetch_array($query);
 		$foldercount = mynumberformat($thing['pmsinfolder']);
 		eval("\$folderlist .= \"".$templates->get("private_empty_folder")."\";");
@@ -612,7 +642,11 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 		{
 			$keepunreadq = " AND status!='0'";
 		}
-		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE ($emptyq) AND uid='".$mybb->user[uid]."' $keepunreadq");
+		$db->query("
+			DELETE
+			FROM ".TABLE_PREFIX."privatemessages
+			WHERE ($emptyq) AND uid='".$mybb->user[uid]."' $keepunreadq
+		");
 	}
 	// Update PM count
 	update_pm_count();
@@ -658,7 +692,12 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				}
 				$pmssql .= "'".intval($key)."'";
 			}
-			$query = $db->query("SELECT pmid, folder FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN ($pmssql) AND uid='".$mybb->user['uid']."' AND folder='4' ORDER BY pmid");
+			$query = $db->query("
+				SELECT pmid, folder
+				FROM ".TABLE_PREFIX."privatemessages
+				WHERE pmid IN ($pmssql) AND uid='".$mybb->user['uid']."' AND folder='4'
+				ORDER BY pmid
+			");
 			while($delpm = $db->fetch_array($query))
 			{
 				$deletepms[$delpm['pmid']] = 1;
@@ -669,7 +708,11 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				$key = intval($key);
 				if($deletepms[$key])
 				{
-					$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid='$key' AND uid='".$mybb->user['uid']."'");
+					$db->query("
+						DELETE
+						FROM ".TABLE_PREFIX."privatemessages
+						WHERE pmid='$key' AND uid='".$mybb->user['uid']."'
+					");
 				}
 				else
 				{
@@ -791,7 +834,14 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$wsql .= " AND pm.status!='0'";
 		}
 	}
-	$query = $db->query("SELECT pm.*, fu.username AS fromusername, tu.username AS tousername FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid) WHERE $wsql AND pm.uid='".$mybb->user['uid']."' ORDER BY pm.folder ASC, pm.dateline DESC");
+	$query = $db->query("
+		SELECT pm.*, fu.username AS fromusername, tu.username AS tousername
+		FROM ".TABLE_PREFIX."privatemessages pm
+		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
+		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
+		WHERE $wsql AND pm.uid='".$mybb->user['uid']."'
+		ORDER BY pm.folder ASC, pm.dateline DESC
+	");
 	$numpms = $db->num_rows($query);
 	if(!$numpms)
 	{
@@ -884,13 +934,21 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_message", 1, 0)."\";");
 		$ids .= ",'$message[pmid]'";
 	}
-	$query = $db->query("SELECT css FROM ".TABLE_PREFIX."themes WHERE tid='$theme[tid]'");
+	$query = $db->query("
+		SELECT css
+		FROM ".TABLE_PREFIX."themes
+		WHERE tid='$theme[tid]'
+	");
 	$css = $db->fetch_field($query, "css");
 
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
 	if($mybb->input['deletepms'] == "yes")
 	{ // delete the archived pms
-		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE pmid IN (''$ids)");
+		$db->query("
+			DELETE
+			FROM ".TABLE_PREFIX."privatemessages
+			WHERE pmid IN (''$ids)
+		");
 		// Update PM count
 		update_pm_count();
 	}
@@ -957,7 +1015,11 @@ if(!$mybb->input['action'])
 	$doneunread = 0;
 	$doneread = 0;
 	// get total messages
-	$query = $db->query("SELECT COUNT(*) AS total FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$mybb->user[uid]."'");
+	$query = $db->query("
+		SELECT COUNT(*) AS total 
+		FROM ".TABLE_PREFIX."privatemessages
+		WHERE uid='".$mybb->user[uid]."'
+	");
 	$pmscount = $db->fetch_array($query);
 	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != "yes")
 	{
@@ -965,7 +1027,11 @@ if(!$mybb->input['action'])
 	}
 
 	// Do Multi Pages
-	$query = $db->query("SELECT COUNT(*) AS total FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$mybb->user[uid]."' AND folder='$folder'");
+	$query = $db->query("
+		SELECT COUNT(*) AS total
+		FROM ".TABLE_PREFIX."privatemessages
+		WHERE uid='".$mybb->user[uid]."' AND folder='$folder'
+	");
 	$pmscount = $db->fetch_array($query);
 
 	$perpage = $mybb->settings['threadsperpage'];
@@ -988,7 +1054,16 @@ if(!$mybb->input['action'])
 	}
 	$multipage = multipage($pmscount['total'], $perpage, $page, "private.php?fid=$folder");
 	$messagelist = '';
-	$query = $db->query("SELECT pm.*, fu.username AS fromusername, tu.username AS tousername, i.path as iconpath, i.name as iconname FROM ".TABLE_PREFIX."privatemessages pm LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid) LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon) WHERE pm.folder='$folder' AND pm.uid='".$mybb->user[uid]."' ORDER BY pm.dateline DESC LIMIT $start, $perpage");
+	$query = $db->query("
+		SELECT pm.*, fu.username AS fromusername, tu.username AS tousername, i.path as iconpath, i.name as iconname
+		FROM ".TABLE_PREFIX."privatemessages pm
+		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
+		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
+		LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon)
+		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user[uid]."'
+		ORDER BY pm.dateline DESC
+		LIMIT $start, $perpage
+	");
 	if($db->num_rows($query) > 0)
 	{
 		while($message = $db->fetch_array($query))
@@ -1078,7 +1153,11 @@ if(!$mybb->input['action'])
 
 	if($mybb->usergroup['pmquota'] != "0")
 	{
-		$query = $db->query("SELECT COUNT(*) AS total FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$mybb->user['uid']."'");
+		$query = $db->query("
+			SELECT COUNT(*) AS total
+			FROM ".TABLE_PREFIX."privatemessages
+			WHERE uid='".$mybb->user['uid']."'
+		");
 		$pmscount = $db->fetch_array($query);
 		$spaceused = $pmscount['total'] / $mybb->usergroup['pmquota'] * 100;
 		$spaceused2 = 100 - $spaceused;

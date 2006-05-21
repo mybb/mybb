@@ -47,7 +47,11 @@ if($mybb->input['action'] == "do_login")
 		error($lang->error_invalidpassword);
 	}
 
-	$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'");
+	$db->query("
+		DELETE 
+		FROM ".TABLE_PREFIX."sessions
+		WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'
+	");
 	$newsession = array(
 		"uid" => $user['uid'],
 		);
@@ -82,7 +86,11 @@ if($mybb->settings['portal_showwelcome'] != "no")
 	{
 		if($mybb->user['receivepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->settings['portal_showpms'] != "no" && $mybb->settings['enablepms'] != "no")
 		{
-			$query = $db->query("SELECT COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$mybb->user['uid']."'");
+			$query = $db->query("
+				SELECT COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread
+				FROM ".TABLE_PREFIX."privatemessages
+				WHERE uid='".$mybb->user['uid']."'
+			");
 			$messages = $db->fetch_array($query);
 			if(!$messages['pms_new'])
 			{
@@ -97,13 +105,25 @@ if($mybb->settings['portal_showwelcome'] != "no")
 			eval("\$pms = \"".$templates->get("portal_pms")."\";");
 		}
 		// get number of new posts, threads, announcements
-		$query = $db->query("SELECT COUNT(pid) AS newposts FROM ".TABLE_PREFIX."posts WHERE dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
+		$query = $db->query("
+			SELECT COUNT(pid) AS newposts
+			FROM ".TABLE_PREFIX."posts
+			WHERE dateline>'".$mybb->user['lastvisit']."' $unviewwhere
+		");
 		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
 		{ // if there aren't any new posts, there is no point in wasting two more queries
-			$query = $db->query("SELECT COUNT(tid) AS newthreads FROM ".TABLE_PREFIX."threads WHERE dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
+			$query = $db->query("
+				SELECT COUNT(tid) AS newthreads
+				FROM ".TABLE_PREFIX."threads
+				WHERE dateline>'".$mybb->user['lastvisit']."' $unviewwhere
+			");
 			$newthreads = $db->fetch_field($query, "newthreads");
-			$query = $db->query("SELECT COUNT(tid) AS newann FROM ".TABLE_PREFIX."threads WHERE dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere");
+			$query = $db->query("
+				SELECT COUNT(tid) AS newann
+				FROM ".TABLE_PREFIX."threads
+				WHERE dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere
+			");
 			$newann = $db->fetch_field($query, "newann");
 			if(!$newthreads) { $newthreads = 0; }
 			if(!$newann) { $newann = 0; }
@@ -163,7 +183,13 @@ if($mybb->settings['portal_showwol'] != "no")
 	$guestcount = 0;
 	$membercount = 0;
 	$onlinemembers = '';
-	$query = $db->query("SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY u.username ASC, s.time DESC");
+	$query = $db->query("
+		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."sessions s
+		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		WHERE s.time>'$timesearch'
+		ORDER BY u.username ASC, s.time DESC
+	");
 	while($user = $db->fetch_array($query))
 	{
 		if($user['uid'] == "0")
@@ -218,7 +244,14 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 {
 	$altbg = "trow1";
 	$threadlist = '';
-	$query = $db->query("SELECT t.*, u.username FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid) WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.lastpost DESC  LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']);
+	$query = $db->query("
+		SELECT t.*, u.username
+		FROM ".TABLE_PREFIX."threads t
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
+		WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+		ORDER BY t.lastpost DESC 
+		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
+	);
 	while($thread = $db->fetch_array($query))
 	{
 
@@ -262,7 +295,11 @@ foreach($mybb->settings['portal_announcementsfid'] as $fid)
 }
 $mybb->settings['portal_announcementsfid'] = implode(',', $fid_array);
 // And get them!
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid IN (".$mybb->settings['portal_announcementsfid'].")");
+$query = $db->query("
+	SELECT *
+	FROM ".TABLE_PREFIX."forums
+	WHERE fid IN (".$mybb->settings['portal_announcementsfid'].")
+");
 while($forumrow = $db->fetch_array($query))
 {
     $forum[$forumrow['fid']] = $forumrow;
@@ -270,7 +307,14 @@ while($forumrow = $db->fetch_array($query))
 
 $pids = '';
 $comma="";
-$query = $db->query("SELECT p.pid, p.message, p.tid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) WHERE t.fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
+$query = $db->query("
+	SELECT p.pid, p.message, p.tid
+	FROM ".TABLE_PREFIX."posts p
+	LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+	WHERE t.fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
+	ORDER BY t.dateline DESC 
+	LIMIT 0, ".$mybb->settings['portal_numannouncements']
+);
 while($getid = $db->fetch_array($query))
 {
 	$pids .= ",'$getid[pid]'";
@@ -289,7 +333,15 @@ foreach($forum as $fid => $forumrow)
     $forumpermissions[$fid] = forum_permissions($fid);
 }
 $announcements = '';
-$query = $db->query("SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' ORDER BY t.dateline DESC LIMIT 0, ".$mybb->settings['portal_numannouncements']);
+$query = $db->query("
+	SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar
+	FROM ".TABLE_PREFIX."threads t
+	LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon)
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+	WHERE fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+	ORDER BY t.dateline DESC
+	LIMIT 0, ".$mybb->settings['portal_numannouncements']
+);
 while($announcement = $db->fetch_array($query))
 {
 	$announcement['message'] = $posts[$announcement['tid']]['message'];

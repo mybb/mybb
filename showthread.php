@@ -91,12 +91,24 @@ if($mybb->input['action'] == "lastpost")
 {
 	if(strstr($thread['closed'], "moved|"))
 	{
-		$query = $db->query("SELECT p.pid FROM ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t WHERE t.fid='".$thread[fid]."' AND t.closed NOT LIKE 'moved|%' AND p.tid=t.tid ORDER BY p.dateline DESC LIMIT 0, 1");
+		$query = $db->query("
+			SELECT p.pid
+			FROM ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t
+			WHERE t.fid='".$thread[fid]."' AND t.closed NOT LIKE 'moved|%' AND p.tid=t.tid
+			ORDER BY p.dateline DESC
+			LIMIT 0, 1
+		");
 		$pid = $db->fetch_field($query, "pid");
 	}
 	else
 	{
-		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline DESC LIMIT 0, 1");
+		$query = $db->query("
+			SELECT pid
+			FROM ".TABLE_PREFIX."posts
+			WHERE tid='$tid'
+			ORDER BY dateline DESC
+			LIMIT 0, 1
+		");
 		$pid = $db->fetch_field($query, "pid");
 	}
 	header("Location:showthread.php?tid=$tid&pid=$pid#pid$pid");
@@ -344,7 +356,10 @@ if($mybb->input['action'] == "thread")
 	if($mybb->settings['threadreadcut'] && ($mybb->user['uid'] != 0))
 	{
 		// For registered users, store the information in the database.
-		$db->shutdown_query("REPLACE INTO ".TABLE_PREFIX."threadsread SET tid='$tid', uid='".$mybb->user['uid']."', dateline='".time()."'");
+		$db->shutdown_query("
+			REPLACE INTO ".TABLE_PREFIX."threadsread
+			SET tid='$tid', uid='".$mybb->user['uid']."', dateline='".time()."'
+		");
 	}
 	else
 	{
@@ -422,7 +437,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Increment the thread view.
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='$tid'");
+	$db->shutdown_query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='$tid'");
 	++$thread['views'];
 
 	// Work out the thread rating for this thread.
@@ -590,7 +605,13 @@ if($mybb->input['action'] == "thread")
 		// Lets get the pids of the posts on this page.
 		$pids = "";
 		$comma = '';
-		$query = $db->query("SELECT p.pid FROM ".TABLE_PREFIX."posts p WHERE p.tid='$tid' $visible ORDER BY p.dateline LIMIT $start, $perpage");
+		$query = $db->query("
+			SELECT p.pid
+			FROM ".TABLE_PREFIX."posts p
+			WHERE p.tid='$tid' $visible
+			ORDER BY p.dateline
+			LIMIT $start, $perpage
+		");
 		while($getid = $db->fetch_array($query))
 		{
 			$pids .= "$comma'$getid[pid]'";
@@ -600,7 +621,11 @@ if($mybb->input['action'] == "thread")
 		{
 			$pids = "pid IN($pids)";
 			// Now lets fetch all of the attachments for these posts.
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $pids");
+			$query = $db->query("
+				SELECT *
+				FROM ".TABLE_PREFIX."attachments
+				WHERE $pids
+			");
 			while($attachment = $db->fetch_array($query))
 			{
 				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;

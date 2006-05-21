@@ -73,7 +73,11 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	if($mybb->usergroup['maxreputationsday'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
 	{
 		$timesearch = time() - (60 * 60 * 24);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."reputation
+			WHERE adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'
+		");
 		$numtoday = $db->num_rows($query);
 		
 		// Reached the quota - error.
@@ -87,7 +91,11 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	}
 	
 	// Fetch the existing reputation for this user given by our current user if there is one.
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."reputation WHERE adduid='".$mybb->user[uid]."' AND uid='".intval($mybb->input['uid'])."'");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."reputation
+		WHERE adduid='".$mybb->user[uid]."' AND uid='".intval($mybb->input['uid'])."'
+	");
 	$existing_reputation = $db->fetch_array($query);			
 }
 
@@ -107,13 +115,25 @@ if($mybb->input['action'] == "do_add")
 	// Deleting our current reputation of this user.
 	if($mybb->input['delete'])
 	{
-		$db->query("DELETE FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."' AND adduid='".$mybb->user['uid']."'");
+		$db->query("
+			DELETE
+			FROM ".TABLE_PREFIX."reputation
+			WHERE uid='".intval($mybb->input['uid'])."' AND adduid='".$mybb->user['uid']."'
+		");
 		
 		// Recount the reputation of this user - keep it in sync.
-		$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
+		$query = $db->query("
+			SELECT SUM(reputation) AS reputation_count
+			FROM ".TABLE_PREFIX."reputation
+			WHERE uid='".intval($mybb->input['uid'])."'
+		");
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
-		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."users
+			SET reputation='".intval($reputation_value)."'
+			WHERE uid='".intval($mybb->input['uid'])."'
+		");
 		eval("\$error = \"".$templates->get("reputation_deleted")."\";");
 		outputpage($error);
 		exit;
@@ -155,10 +175,18 @@ if($mybb->input['action'] == "do_add")
 		$db->update_query(TABLE_PREFIX."reputation", $reputation, "rid='".$existing_reputation['rid']."'");
 
 		// Recount the reputation of this user - keep it in sync.
-		$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
+		$query = $db->query("
+			SELECT SUM(reputation) AS reputation_count
+			FROM ".TABLE_PREFIX."reputation
+			WHERE uid='".intval($mybb->input['uid'])."'
+		");
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
-		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."users
+			SET reputation='".intval($reputation_value)."'
+			WHERE uid='".intval($mybb->input['uid'])."'
+		");
 		
 		$lang->vote_added = $lang->vote_updated;
 		$lang->vote_added_message = $lang->vote_updated_message;
@@ -169,10 +197,18 @@ if($mybb->input['action'] == "do_add")
 		$db->insert_query(TABLE_PREFIX."reputation", $reputation);
 		
 		// Recount the reputation of this user - keep it in sync.
-		$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
+		$query = $db->query("
+			SELECT SUM(reputation) AS reputation_count
+			FROM ".TABLE_PREFIX."reputation
+			WHERE uid='".intval($mybb->input['uid'])."'
+		");
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
-		$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."users 
+			SET reputation='".intval($reputation_value)."'
+			WHERE uid='".intval($mybb->input['uid'])."'
+		");
 	}
 	
 	$plugins->run_hooks("reputation_do_add_end");
@@ -237,13 +273,25 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// Delete the specified reputation
-	$db->query("DELETE FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."' AND rid='".intval($mybb->input['rid'])."'");
+	$db->query("
+		DELETE
+		FROM ".TABLE_PREFIX."reputation
+		WHERE uid='".intval($mybb->input['uid'])."'AND rid='".intval($mybb->input['rid'])."'
+	");
 	
 	// Recount the reputation of this user - keep it in sync.
-	$query = $db->query("SELECT SUM(reputation) AS reputation_count FROM ".TABLE_PREFIX."reputation WHERE uid='".intval($mybb->input['uid'])."'");
+	$query = $db->query("
+		SELECT SUM(reputation) AS reputation_count
+		FROM ".TABLE_PREFIX."reputation
+		WHERE uid='".intval($mybb->input['uid'])."'
+	");
 	$reputation_value = $db->fetch_field($query, "reputation_count");
 
-	$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='".intval($reputation_value)."' WHERE uid='".intval($mybb->input['uid'])."'");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."users
+		SET reputation='".intval($reputation_value)."'
+		WHERE uid='".intval($mybb->input['uid'])."'
+	");
 
 	redirect("reputation.php?uid=".intval($mybb->input['uid']), $lang->vote_deleted_message);
 }
@@ -279,7 +327,12 @@ if(!$mybb->input['action'])
 	// Otherwise, fetch it from our titles table for the number of posts this user has
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE posts<='{$user['postnum']}' ORDER BY posts DESC");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."usertitles
+			WHERE posts<='{$user['postnum']}'
+			ORDER BY posts DESC
+		");
 		$title = $db->fetch_array($query);
 		$usertitle = $title['title'];
 	}	
@@ -353,7 +406,11 @@ if(!$mybb->input['action'])
 	$last_6months = time()-16070400;
 
 	// Query reputations for the "reputation card"
-	$query = $db->query("SELECT reputation, dateline FROM ".TABLE_PREFIX."reputation WHERE uid='{$user['uid']}'");
+	$query = $db->query("
+		SELECT reputation, dateline
+		FROM ".TABLE_PREFIX."reputation
+		WHERE uid='{$user['uid']}'
+	");
 	while($reputation_vote = $db->fetch_array($query))
 	{
 		// This is a positive reputation

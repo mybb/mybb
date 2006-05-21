@@ -21,7 +21,11 @@ $lang->load("printthread");
 
 $plugins->run_hooks("printthread_start");
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."' AND visible='1'");
+$query = $db->query("
+	SELECT *
+	FROM ".TABLE_PREFIX."threads
+	WHERE tid='".intval($mybb->input['tid'])."' AND visible='1'
+");
 $thread = $db->fetch_array($query);
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 if(!$thread['tid'])
@@ -62,7 +66,13 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] =
 checkpwforum($fid, $forum['password']);
 
 $postrows = '';
-$query = $db->query("SELECT u.*, u.username AS userusername, p.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.tid='$tid' AND p.visible=1 ORDER BY p.dateline");
+$query = $db->query("
+	SELECT u.*, u.username AS userusername, p.*
+	FROM ".TABLE_PREFIX."posts p
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+	WHERE p.tid='$tid' AND p.visible=1
+	ORDER BY p.dateline
+");
 while($postrow = $db->fetch_array($query))
 {
 	if($postrow['userusername'])
@@ -104,7 +114,12 @@ function makeprintablenav($pid="0", $depth="--")
 	if(!is_array($pforumcache))
 	{
 		$parlist = buildparentlist($fid, "fid", "OR", $forum['parentlist']);
-		$query = $db->query("SELECT name, fid, pid FROM ".TABLE_PREFIX."forums WHERE 1=1 AND $parlist ORDER BY pid, disporder");
+		$query = $db->query("
+			SELECT name, fid, pid
+			FROM ".TABLE_PREFIX."forums
+			WHERE 1=1 AND $parlist
+			ORDER BY pid, disporder
+		");
 		while($forumnav = $db->fetch_array($query))
 		{
 			$pforumcache[$forumnav['pid']][$forumnav['fid']] = $forumnav;

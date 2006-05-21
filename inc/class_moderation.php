@@ -146,7 +146,12 @@ class Moderation
 		global $db, $cache, $plugins;
 
 		// Find the pid, uid, visibility, and forum post count status
-		$query = $db->query("SELECT p.pid, p.uid, p.visible, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.tid='$tid'");
+		$query = $db->query("
+			SELECT p.pid, p.uid, p.visible, f.usepostcounts
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
+			WHERE p.tid='$tid'
+		");
 		$num_unapproved_posts = 0;
 		while($post = $db->fetch_array($query))
 		{
@@ -298,7 +303,12 @@ class Moderation
 		global $db, $cache, $plugins;
 
 		// Get pid, uid, fid, tid, visibility, forum post count status of post
-		$query = $db->query("SELECT p.pid, p.uid, p.fid, p.tid, p.visible, f.usepostcounts FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid) WHERE p.pid='$pid'");
+		$query = $db->query("
+			SELECT p.pid, p.uid, p.fid, p.tid, p.visible, f.usepostcounts
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
+			WHERE p.pid='$pid'
+		");
 		$post = $db->fetch_array($query);
 		// If post counts enabled in this forum, remove 1
 		if($post['usepostcounts'] != "no")
@@ -348,7 +358,12 @@ class Moderation
 		}
 		$first = 1;
 		// Get the messages to be merged
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid' AND pid IN($pidin) ORDER BY dateline ASC");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."posts
+			WHERE tid='$tid' AND pid IN($pidin)
+			ORDER BY dateline ASC
+		");
 		$num_unapproved_posts = 0;
 		$message = '';
 		while($post = $db->fetch_array($query))
@@ -495,7 +510,14 @@ class Moderation
 		}
 
 		// Do post count changes if changing between countable and non-countable forums
-		$query = $db->query("SELECT COUNT(p.pid) AS posts, u.uid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='$tid' GROUP BY u.uid ORDER BY posts DESC");
+		$query = $db->query("
+			SELECT COUNT(p.pid) AS posts, u.uid
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			WHERE tid='$tid'
+			GROUP BY u.uid
+			ORDER BY posts DESC
+		");
 		while($posters = $db->fetch_array($query))
 		{
 			if($method == "copy" && $newforum['usepostcounts'] != "no")

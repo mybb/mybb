@@ -25,8 +25,7 @@ if($mybb->input['action'] != "do_report")
 	$mybb->input['action'] = "report";
 }
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE pid='".intval($mybb->input['pid'])."'");
-$post = $db->fetch_array($query);
+$post = get_post($mybb->input['pid']);
 
 if(!$post['pid'])
 {
@@ -42,8 +41,7 @@ if(!$forum)
 // Password protected forums ......... yhummmmy!
 checkpwforum($forum['fid'], $forum['password']);
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".$post['tid']."'");
-$thread = $db->fetch_array($query);
+$thread = get_thread($post['tid']);
 
 if($mybb->input['action'] == "report")
 {
@@ -64,16 +62,21 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 	}
 	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pm")
 	{
-
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread[fid]."'");
-		$forum = $db->fetch_array($query);
-	
-		$query = $db->query("SELECT DISTINCT u.username, u.email, u.receivepms, u.uid FROM ".TABLE_PREFIX."moderators m, ".TABLE_PREFIX."users u WHERE u.uid=m.uid AND m.fid IN (".$forum[parentlist].")");
+		$query = $db->query("
+			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
+			FROM ".TABLE_PREFIX."moderators m, ".TABLE_PREFIX."users u
+			WHERE u.uid=m.uid AND m.fid IN (".$forum[parentlist].")
+		");
 		$nummods = $db->num_rows($query);
 		if(!$nummods)
 		{
 			unset($query);
-			$query = $db->query("SELECT u.username, u.email, u.receivepms, u.uid FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) WHERE (g.cancp='yes' OR g.issupermod='yes')");
+			$query = $db->query("
+				SELECT u.username, u.email, u.receivepms, u.uid
+				FROM ".TABLE_PREFIX."users u
+				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
+				WHERE (g.cancp='yes' OR g.issupermod='yes')
+			");
 		}
 		while($mod = $db->fetch_array($query))
 		{

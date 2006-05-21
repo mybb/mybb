@@ -24,8 +24,7 @@ $_SERVER['HTTP_REFERER'] = htmlspecialchars($_SERVER['HTTP_REFERER']);
 
 if($mybb->input['action'] == "addfavorite")
 {
-	$query = $db->query("SELECT tid,fid FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
-	$thread = $db->fetch_array($query);
+	$thread  = get_thread($mybb->input['tid']);
 	if(!$thread['tid'])
 	{
 		error($lang->error_invalidthread);
@@ -48,8 +47,7 @@ if($mybb->input['action'] == "addfavorite")
 }
 elseif($mybb->input['action'] == "removefavorite")
 {
-	$query = $db->query("SELECT tid,fid FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
-	$thread = $db->fetch_array($query);
+	$thread  = get_thread($mybb->input['tid']);
 	if(!$thread['tid'])
 	{
 		error($lang->error_invalidthread);
@@ -69,8 +67,7 @@ elseif($mybb->input['action'] == "addsubscription")
 {
 	if($mybb->input['type'] == "forum")
 	{
-		$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forums WHERE fid='".intval($mybb->input['fid'])."'");
-		$forum = $db->fetch_array($query);
+		$forum = get_forum($mybb->input['gid']);
 		if(!$forum['fid'])
 		{
 			error($lang->error_invalidforum);
@@ -93,8 +90,7 @@ elseif($mybb->input['action'] == "addsubscription")
 	}
 	else
 	{
-		$query = $db->query("SELECT tid, fid FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
-		$thread = $db->fetch_array($query);
+		$thread  = get_thread($mybb->input['tid']);
 		if(!$thread['tid'])
 		{
 			error($lang->error_invalidthread);
@@ -120,8 +116,7 @@ elseif($mybb->input['action'] == "removesubscription")
 {
 	if($mybb->input['type'] == "forum")
 	{
-		$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".intval($mybb->input['fid'])."' AND uid='".$mybb->user['uid']."'");
-		$forum = $db->fetch_array($query);
+		$forum = get_forum($mybb->input['fid']);
 		if(!$forum['fid'])
 		{
 			error($lang->error_invalidforum);
@@ -139,8 +134,7 @@ elseif($mybb->input['action'] == "removesubscription")
 	}
 	else
 	{
-		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."favorites WHERE tid='".intval($mybb->input['tid'])."' AND type='s' AND uid='".$mybb->user['uid']."'");
-		$thread = $db->fetch_array($query);
+		$thread  = get_thread($mybb->input['tid']);
 		if(!$thread['tid'])
 		{
 			error($lang->error_invalidthread);

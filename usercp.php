@@ -295,7 +295,12 @@ if($mybb->input['action'] == "profile")
 	$altbg = "trow1";
 	$requiredfields = '';
 	$customfields = '';
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."profilefields
+		WHERE editable='yes'
+		ORDER BY disporder
+	");
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -453,7 +458,13 @@ if($mybb->input['action'] == "profile")
 	{
 		if($mybb->usergroup['usertitle'] == "")
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE posts <='".$mybb->user['postnum']."' ORDER BY posts DESC LIMIT 1");
+			$query = $db->query("
+				SELECT *
+				FROM ".TABLE_PREFIX."usertitles
+				WHERE posts <='".$mybb->user['postnum']."'
+				ORDER BY posts DESC
+				LIMIT 1
+			");
 			$utitle = $db->fetch_array($query);
 			$defaulttitle = $utitle['title'];
 		}
@@ -942,9 +953,21 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 		error($lang->error_usernametaken);
 	}
 	$plugins->run_hooks("usercp_do_changename_process");
-	$db->query("UPDATE ".TABLE_PREFIX."users SET username='".$db->escape_string($mybb->input['username'])."' WHERE uid='".$mybb->user['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."forums SET lastposter='".$db->escape_string($mybb->input['username'])."' WHERE lastposter='".$db->escape_string($mybb->user['username'])."'");
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".$db->escape_string($mybb->input['username'])."' WHERE lastposter='".$db->escape_string($mybb->user['username'])."'");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."users
+		SET username='".$db->escape_string($mybb->input['username'])."'
+		WHERE uid='".$mybb->user['uid']."'
+	");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."forums
+		SET lastposter='".$db->escape_string($mybb->input['username'])."'
+		WHERE lastposter='".$db->escape_string($mybb->user['username'])."'
+	");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."threads
+		SET lastposter='".$db->escape_string($mybb->input['username'])."'
+		WHERE lastposter='".$db->escape_string($mybb->user['username'])."'
+	");
 	$plugins->run_hooks("usercp_do_changename_end");
 	redirect("usercp.php", $lang->redirect_namechanged);
 }
@@ -965,7 +988,11 @@ if($mybb->input['action'] == "favorites")
 {
 	$plugins->run_hooks("usercp_favorites_start");
 	// Do Multi Pages
-	$query = $db->query("SELECT COUNT(f.tid) AS threads FROM ".TABLE_PREFIX."favorites f WHERE f.type='f' AND f.uid='".$mybb->user['uid']."'");
+	$query = $db->query("
+		SELECT COUNT(f.tid) AS threads
+		FROM ".TABLE_PREFIX."favorites f
+		WHERE f.type='f' AND f.uid='".$mybb->user['uid']."'
+	");
 	$threadcount = $db->fetch_field($query, "threads");
 
 	$perpage = $mybb->settings['threadsperpage'];
@@ -988,7 +1015,15 @@ if($mybb->input['action'] == "favorites")
 	}
 	$multipage = multipage($threadcount, $perpage, $page, "usercp.php?action=favorites");
 	$fpermissions = forum_permissions();
-	$query = $db->query("SELECT f.*, t.*, i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username FROM ".TABLE_PREFIX."favorites f LEFT JOIN ".TABLE_PREFIX."threads t ON (f.tid=t.tid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE f.type='f' AND f.uid='".$mybb->user['uid']."' ORDER BY t.lastpost DESC");
+	$query = $db->query("
+		SELECT f.*, t.*, i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username 
+		FROM ".TABLE_PREFIX."favorites f
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (f.tid=t.tid)
+		LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon)
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+		WHERE f.type='f' AND f.uid='".$mybb->user['uid']."'
+		ORDER BY t.lastpost DESC
+	");
 	while($favorite = $db->fetch_array($query))
 	{
 		$forumpermissions = $fpermissions[$favorite['fid']];
@@ -1050,7 +1085,11 @@ if($mybb->input['action'] == "subscriptions")
 {
 	$plugins->run_hooks("usercp_subscriptions_start");
 	// Do Multi Pages
-	$query = $db->query("SELECT COUNT(s.tid) AS threads FROM ".TABLE_PREFIX."favorites s WHERE s.type='s' AND s.uid='".$mybb->user['uid']."'");
+	$query = $db->query("
+		SELECT COUNT(s.tid) AS threads
+		FROM ".TABLE_PREFIX."favorites s
+		WHERE s.type='s' AND s.uid='".$mybb->user['uid']."'
+	");
 	$threadcount = $db->fetch_field($query, "threads");
 
 	$perpage = $mybb->settings['threadsperpage'];
@@ -1073,7 +1112,16 @@ if($mybb->input['action'] == "subscriptions")
 	}
 	$multipage = multipage($threadcount, $perpage, $page, "usercp.php?action=subscriptions");
 	$fpermissions = forum_permissions();
-	$query = $db->query("SELECT s.*, t.*, i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username FROM ".TABLE_PREFIX."favorites s LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid) LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid) WHERE s.type='s' AND s.uid='".$mybb->user['uid']."' ORDER BY t.lastpost DESC LIMIT $start, $perpage");
+	$query = $db->query("
+		SELECT s.*, t.*, i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username
+		FROM ".TABLE_PREFIX."favorites s
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
+		LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon)
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+		WHERE s.type='s' AND s.uid='".$mybb->user['uid']."'
+		ORDER BY t.lastpost DESC
+		LIMIT $start, $perpage
+	");
 	while($subscription = $db->fetch_array($query))
 	{
 		$forumpermissions = $fpermissions[$subscription['fid']];
@@ -1134,13 +1182,24 @@ if($mybb->input['action'] == "subscriptions")
 if($mybb->input['action'] == "forumsubscriptions")
 {
 	$plugins->run_hooks("usercp_forumsubscriptions_start");
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions WHERE gid='".$mybb->user['usergroup']."'");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."forumpermissions
+		WHERE gid='".$mybb->user['usergroup']."'
+	");
 	while($permissions = $db->fetch_array($query))
 	{
 		$permissioncache[$permissions['gid']][$permissions['fid']] = $permissions;
 	}
 	$fpermissions = forum_permissions();
-	$query = $db->query("SELECT fs.*, f.*, t.subject AS lastpostsubject FROM ".TABLE_PREFIX."forumsubscriptions fs LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid = fs.fid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = f.lastposttid) WHERE f.type='f' AND fs.uid='".$mybb->user['uid']."' ORDER BY f.name ASC");
+	$query = $db->query("
+		SELECT fs.*, f.*, t.subject AS lastpostsubject
+		FROM ".TABLE_PREFIX."forumsubscriptions fs
+		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid = fs.fid)
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = f.lastposttid)
+		WHERE f.type='f' AND fs.uid='".$mybb->user['uid']."'
+		ORDER BY f.name ASC
+	");
 	$forums = '';
 	while($forum = $db->fetch_array($query))
 	{
@@ -1199,11 +1258,19 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 	}
 	if($mybb->input['updateposts'] == "enable")
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET includesig='yes' WHERE uid='".$mybb->user['uid']."'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."posts
+			SET includesig='yes'
+			WHERE uid='".$mybb->user['uid']."
+		");
 	}
 	elseif($mybb->input['updateposts'] == "disable")
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET includesig='no' WHERE uid='".$mybb->user['uid']."'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."posts
+			SET includesig='no'
+			WHERE uid='".$mybb->user['uid']."'
+		");
 	}
 	$newsignature = array(
 		"signature" => $db->escape_string($mybb->input['signature'])
@@ -1416,7 +1483,11 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	require MYBB_ROOT."inc/functions_upload.php";
 	if($mybb->input['remove']) // remove avatar
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET avatar='', avatartype='' WHERE uid='".$mybb->user['uid']."'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."users
+			SET avatar='', avatartype=''
+			WHERE uid='".$mybb->user['uid']."'
+		");
 		remove_avatars($mybb->user['uid']);
 	}
 	elseif($mybb->input['gallery']) // Gallery avatar
@@ -1431,7 +1502,11 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		}
 		if(file_exists($avatarpath))
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."users SET avatar='$avatarpath', avatartype='gallery' WHERE uid='".$mybb->user['uid']."'");
+			$db->query("
+				UPDATE ".TABLE_PREFIX."users
+				SET avatar='$avatarpath', avatartype='gallery'
+				WHERE uid='".$mybb->user['uid']."'
+			");
 		}
 		remove_avatars($mybb->user['uid']);
 	}
@@ -1446,7 +1521,11 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		{
 			error($avatar['error']);
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."users SET avatar='".$avatar['avatar']."', avatartype='upload' WHERE uid='".$mybb->user['uid']."'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."users
+			SET avatar='".$avatar['avatar']."', avatartype='upload'
+			WHERE uid='".$mybb->user['uid']."'
+		");
 	}
 	else // remote avatar
 	{
@@ -1465,7 +1544,11 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 				error($lang->error_avatartoobig);
 			}
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."users SET avatar='".$db->escape_string($mybb->input['avatarurl'])."', avatartype='remote' WHERE uid='".$mybb->user['uid']."'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."users
+			SET avatar='".$db->escape_string($mybb->input['avatarurl'])."', avatartype='remote'
+			WHERE uid='".$mybb->user['uid']."'
+		");
 		remove_avatars($mybb->user['uid']);
 	}
 	$plugins->run_hooks("usercp_do_avatar_end");
@@ -1482,7 +1565,11 @@ if($mybb->input['action'] == "notepad")
 if($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_notepad_start");
-	$db->query("UPDATE ".TABLE_PREFIX."users SET notepad='".$db->escape_string($mybb->input['notepad'])."' WHERE uid='".$mybb->user['uid']."'");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."users
+		SET notepad='".$db->escape_string($mybb->input['notepad'])."'
+		WHERE uid='".$mybb->user['uid']."'
+	");
 	$plugins->run_hooks("usercp_do_notepad_end");
 	redirect("usercp.php", $lang->redirect_notepadupdated);
 }
@@ -1500,7 +1587,11 @@ if($mybb->input['action'] == "editlists")
 			$buddysql .= "$comma'$buddyid'";
 			$comma = ",";
 		}
-		$query = $db->query("SELECT username, uid FROM ".TABLE_PREFIX."users WHERE uid IN ($buddysql)");
+		$query = $db->query("
+			SELECT username, uid
+			FROM ".TABLE_PREFIX."users
+			WHERE uid IN ($buddysql)
+		");
 		while($buddy = $db->fetch_array($query))
 		{
 			$uid = $buddy['uid'];
@@ -1518,7 +1609,11 @@ if($mybb->input['action'] == "editlists")
 			$ignoresql .= "$comma2'$ignoreid'";
 			$comma2 = ",";
 		}
-		$query = $db->query("SELECT username, uid FROM ".TABLE_PREFIX."users WHERE uid IN ($ignoresql)");
+		$query = $db->query("
+			SELECT username, uid
+			FROM ".TABLE_PREFIX."users
+			WHERE uid IN ($ignoresql)
+		");
 		while($ignoreuser = $db->fetch_array($query))
 		{
 			$uid = $ignoreuser['uid'];
@@ -1553,7 +1648,11 @@ if($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
 	}
 	$comma2 = '';
 	$newlist = '';
-	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username IN ($users)");
+	$query = $db->query("
+		SELECT uid
+		FROM ".TABLE_PREFIX."users
+		WHERE username IN ($users)
+	");
 	while($user = $db->fetch_array($query))
 	{
 		$newlist .= "$comma2$user[uid]";
@@ -1567,7 +1666,11 @@ if($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
 	{
 		$type = "buddylist";
 	}
-	$db->query("UPDATE ".TABLE_PREFIX."users SET $type='$newlist' WHERE uid='".$mybb->user['uid']."'");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."users
+		SET $type='$newlist'
+		WHERE uid='".$mybb->user['uid']."'
+	");
 	$redirecttemplate = "redirect_".$mybb->input['list']."updated";
 	$plugins->run_hooks("usercp_do_editlists_end");
 	redirect("usercp.php?action=editlists", $lang->$redirecttemplate);
@@ -1577,7 +1680,14 @@ if($mybb->input['action'] == "drafts")
 	$plugins->run_hooks("usercp_drafts_start");
 	// Show a listing of all of the current 'draft' posts or threads the user has.
 	$drafts = '';
-	$query = $db->query("SELECT p.subject, p.pid, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE p.uid='".$mybb->user['uid']."' AND p.visible='-2' ORDER BY p.dateline DESC");
+	$query = $db->query("
+		SELECT p.subject, p.pid, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible
+		FROM ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
+		WHERE p.uid='".$mybb->user['uid']."' AND p.visible='-2'
+		ORDER BY p.dateline DESC
+	");
 	while($draft = $db->fetch_array($query))
 	{
 		if($trow == "trow1")
@@ -1643,7 +1753,11 @@ if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 	if($tidin)
 	{
 		$tidin = implode(",", $tidin);
-		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE tid IN ($tidin) AND visible='-2' AND uid='".$mybb->user['uid']."'");
+		$db->query("
+			DELETE
+			FROM ".TABLE_PREFIX."threads
+			WHERE tid IN ($tidin) AND visible='-2' AND uid='".$mybb->user['uid']."'
+		");
 		$tidinp = "OR tid IN ($tidin)";
 	}
 	if($pidin || $tidinp)
@@ -1657,7 +1771,11 @@ if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 		{
 			$pidinq = "1=0";
 		}
-		$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE ($pidinq $tidinp) AND visible='-2' AND uid='".$mybb->user['uid']."'");
+		$db->query("
+			DELETE
+			FROM ".TABLE_PREFIX."posts
+			WHERE ($pidinq $tidinp) AND visible='-2' AND uid='".$mybb->user['uid']."'
+		");
 	}
 	$plugins->run_hooks("usercp_do_drafts_end");
 	redirect("usercp.php?action=drafts", $lang->selected_drafts_deleted);
@@ -1674,13 +1792,21 @@ if($mybb->input['action'] == "usergroups")
 		{
 			error($lang->not_member_of_group);
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['displaygroup'])."'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."usergroups
+			WHERE gid='".intval($mybb->input['displaygroup'])."'
+		");
 		$dispgroup = $db->fetch_array($query);
 		if($dispgroup['candisplaygroup'] != "yes")
 		{
 			error($lang->cannot_set_displaygroup);
 		}
-		$db->query("UPDATE ".TABLE_PREFIX."users SET displaygroup='".intval($mybb->input['displaygroup'])."' WHERE uid='".$mybb->user['uid']."'");
+		$db->query("
+			UPDATE ".TABLE_PREFIX."users
+			SET displaygroup='".intval($mybb->input['displaygroup'])."'
+			WHERE uid='".$mybb->user['uid']."'
+		");
 		$plugins->run_hooks("usercp_usergroups_change_displaygroup");
 		redirect("usercp.php?action=usergroups", $lang->display_group_changed);
 		exit;
@@ -1697,7 +1823,11 @@ if($mybb->input['action'] == "usergroups")
 		{
 			error($lang->cannot_leave_primary_group);
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['leavegroup'])."'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."usergroups
+			WHERE gid='".intval($mybb->input['leavegroup'])."'
+		");
 		$usergroup = $db->fetch_array($query);
 		if($usergroup['type'] != 4 && $usergroup['type'] != 3)
 		{
@@ -1711,7 +1841,11 @@ if($mybb->input['action'] == "usergroups")
 	// Joining a group
 	if($mybb->input['joingroup'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['joingroup'])."'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."usergroups
+			WHERE gid='".intval($mybb->input['joingroup'])."
+		");
 		$usergroup = $db->fetch_array($query);
 
 		if($usergroup['type'] != 4 && $usergroup['type'] != 3)
@@ -1724,7 +1858,11 @@ if($mybb->input['action'] == "usergroups")
 			error($lang->already_member_of_group);
 		}
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."joinrequests WHERE uid='".$mybb->user['uid']."' AND gid='".intval($mybb->input['joingroup'])."'");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."joinrequests
+			WHERE uid='".$mybb->user['uid']."' AND gid='".intval($mybb->input['joingroup'])."'
+		");
 		$joinrequest = $db->fetch_array($query);
 		if($joinrequest['rid'])
 		{
@@ -1762,7 +1900,12 @@ if($mybb->input['action'] == "usergroups")
 	// Show listing of various group related things
 
 	// List of usergroup leaders
-	$query = $db->query("SELECT g.*, u.username FROM ".TABLE_PREFIX."groupleaders g LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid) ORDER BY u.username ASC");
+	$query = $db->query("
+		SELECT g.*, u.username
+		FROM ".TABLE_PREFIX."groupleaders g
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
+		ORDER BY u.username ASC
+	");
 	while($leader = $db->fetch_array($query))
 	{
 		$groupleaders[$leader['gid']][$leader['uid']] = $leader;
@@ -1771,15 +1914,11 @@ if($mybb->input['action'] == "usergroups")
 	// List of groups this user is a leader of
 	$groupsledlist = '';
 	$query = $db->query("
-		SELECT
-			g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
+		SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
 		FROM ".TABLE_PREFIX."groupleaders l
-			LEFT JOIN ".TABLE_PREFIX."usergroups g
-				ON (g.gid=l.gid)
-			LEFT JOIN ".TABLE_PREFIX."users u
-				ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
-			LEFT JOIN ".TABLE_PREFIX."joinrequests j
-				ON (j.gid=g.gid)
+		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=l.gid)
+		LEFT JOIN ".TABLE_PREFIX."users u ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
+		LEFT JOIN ".TABLE_PREFIX."joinrequests JOIN (j.gid=g.gid)
 		WHERE l.uid='".$mybb->user['uid']."'
 		GROUP BY l.gid
 	");
@@ -1806,7 +1945,11 @@ if($mybb->input['action'] == "usergroups")
 
 	// Fetch the list of groups the member is in
 	// Do the primary group first
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".$mybb->user['usergroup']."'");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."usergroups
+		WHERE gid='".$mybb->user['usergroup']."'
+	");
 	$usergroup = $db->fetch_array($query);
 	$leavelink = "<span class=\"smalltext\"><center>$lang->usergroup_leave_primary</center></span>";
 	$trow = alt_trow();
@@ -1827,7 +1970,12 @@ if($mybb->input['action'] == "usergroups")
 	$showmemberof = false;
 	if($mybb->user['additionalgroups'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user['usergroup']."' ORDER BY title ASC");
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."usergroups
+			WHERE gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user['usergroup']."'
+			ORDER BY title ASC
+		");
 		while($usergroup = $db->fetch_array($query))
 		{
 			$showmemberof = true;
@@ -1870,7 +2018,11 @@ if($mybb->input['action'] == "usergroups")
 	eval("\$membergroups = \"".$templates->get("usercp_usergroups_memberof")."\";");
 
 	// List of groups this user has applied for but has not been accepted in to
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."joinrequests WHERE uid='".$mybb->user['uid']."'");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."joinrequests
+		WHERE uid='".$mybb->user['uid']."'
+	");
 	while($request = $db->fetch_array($query))
 	{
 		$appliedjoin[$request['gid']] = $request['dateline'];
@@ -1883,7 +2035,12 @@ if($mybb->input['action'] == "usergroups")
 		$existinggroups .= ",".$mybb->user['additionalgroups'];
 	}
 	$joinablegroups = '';
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE (type='3' OR type='4') AND gid NOT IN ($existinggroups) ORDER BY title ASC");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."usergroups
+		WHERE (type='3' OR type='4') AND gid NOT IN ($existinggroups)
+		ORDER BY title ASC
+	");
 	while($usergroup = $db->fetch_array($query))
 	{
 		$trow = alt_trow();
@@ -1941,7 +2098,14 @@ if($mybb->input['action'] == "attachments")
 	$plugins->run_hooks("usercp_attachments_start");
 	require MYBB_ROOT."inc/functions_upload.php";
 	$attachments = '';
-	$query = $db->query("SELECT a.*, p.subject, p.dateline, t.tid, t.subject AS threadsubject FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) WHERE a.uid='".$mybb->user['uid']."' AND a.pid!='0' ORDER BY p.dateline DESC");
+	$query = $db->query("
+		SELECT a.*, p.subject, p.dateline, t.tid, t.subject AS threadsubject
+		FROM ".TABLE_PREFIX."attachments a
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		WHERE a.uid='".$mybb->user['uid']."' AND a.pid!='0'
+		ORDER BY p.dateline DESC
+	");
 	$bandwidth = $totaldownloads = 0;
 	while($attachment = $db->fetch_array($query))
 	{
@@ -1966,7 +2130,11 @@ if($mybb->input['action'] == "attachments")
 			remove_attachment($attachment['pid'], $attachment['posthash'], $attachment['aid']);
 		}
 	}
-	$query = $db->query("SELECT SUM(filesize) AS ausage, COUNT(aid) AS acount FROM ".TABLE_PREFIX."attachments WHERE uid='".$mybb->user['uid']."'");
+	$query = $db->query("
+		SELECT SUM(filesize) AS ausage, COUNT(aid) AS acount
+		FROM ".TABLE_PREFIX."attachments
+		WHERE uid='".$mybb->user['uid']."'
+	");
 	$usage = $db->fetch_array($query);
 	$totalusage = $usage['ausage'];
 	$totalattachments = $usage['acount'];
@@ -2002,7 +2170,11 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 		error($lang->no_attachments_selected);
 	}
 	$aids = $db->escape_string(implode(",", $mybb->input['attachments']));
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE aid IN ($aids) AND uid='".$mybb->user['uid']."'");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."attachments
+		WHERE aid IN ($aids) AND uid='".$mybb->user['uid']."'
+	");
 	while($attachment = $db->fetch_array($query))
 	{
 		remove_attachment($attachment['pid'], '', $attachment['aid']);

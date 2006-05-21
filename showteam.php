@@ -25,7 +25,12 @@ $moderators = array();
 $users = array();
 
 // Fetch the list of groups which are to be shown on the page
-$query = $db->query("SELECT gid, title, usertitle FROM ".TABLE_PREFIX."usergroups WHERE showforumteam='yes' ORDER BY disporder");
+$query = $db->query("
+	SELECT gid, title, usertitle
+	FROM ".TABLE_PREFIX."usergroups
+	WHERE showforumteam='yes'
+	ORDER BY disporder
+");
 while($usergroup = $db->fetch_array($query))
 {
 	$usergroups[$usergroup['gid']] = $usergroup;
@@ -37,7 +42,13 @@ if(empty($usergroups))
 }
 
 // Fetch specific forum moderator details
-$query = $db->query("SELECT m.*, f.name FROM ".TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid) ORDER BY u.username");
+$query = $db->query("
+	SELECT m.*, f.name
+	FROM ".TABLE_PREFIX."moderators m
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid)
+	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid)
+	ORDER BY u.username
+");
 while($moderator = $db->fetch_array($query))
 {
 	$moderators[$moderator['uid']][] = $moderator;
@@ -56,7 +67,12 @@ if(!$users_in)
 }
 $forum_permissions = forum_permissions();
 
-$query = $db->query("SELECT uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms FROM ".TABLE_PREFIX."users WHERE usergroup IN ($groups_in) OR uid IN ($users_in) ORDER BY username");
+$query = $db->query("
+	SELECT uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms
+	FROM ".TABLE_PREFIX."users
+	WHERE usergroup IN ($groups_in) OR uid IN ($users_in)
+	ORDER BY username
+");
 while($user = $db->fetch_array($query))
 {
 	// If this user is a moderator

@@ -14,7 +14,11 @@ require "./global.php";
 
 $lang->load("ratethread");
 
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
+$query = $db->query("
+	SELECT *
+	FROM ".TABLE_PREFIX."threads
+	WHERE tid='".intval($mybb->input['tid'])."'
+");
 $thread = $db->fetch_array($query);
 if(!$thread['tid'])
 {
@@ -56,7 +60,11 @@ else
 {
 	$whereclause = "ipaddress='$ipaddress'";
 }
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threadratings WHERE $whereclause AND tid='".intval($mybb->input['tid'])."'");
+$query = $db->query("
+	SELECT *
+	FROM ".TABLE_PREFIX."threadratings
+	WHERE $whereclause AND tid='".intval($mybb->input['tid'])."'
+");
 $ratecheck = $db->fetch_array($query);
 
 if($ratecheck['rid'])
@@ -71,14 +79,24 @@ else
 	}
 	$plugins->run_hooks("ratethread_process");
 
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET numratings=numratings+1, totalratings=totalratings+'".$mybb->input['rating']."' WHERE tid='".intval($mybb->input['tid'])."'");
+	$db->query("
+		UPDATE ".TABLE_PREFIX."threads
+		SET numratings=numratings+1, totalratings=totalratings+'".$mybb->input['rating']."'
+		WHERE tid='".intval($mybb->input['tid'])."'
+	");
 	if($mybb->user['uid'] != "0")
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."threadratings (tid,uid,rating,ipaddress) VALUES ('".intval($mybb->input['tid'])."','".$mybb->user[uid]."','".$mybb->input['rating']."','$ipaddress')");
+		$db->query("
+			INSERT INTO ".TABLE_PREFIX."threadratings (tid,uid,rating,ipaddress)
+			VALUES ('".intval($mybb->input['tid'])."','".$mybb->user[uid]."','".$mybb->input['rating']."','$ipaddress')
+		");
 	}
 	else
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."threadratings (tid,rating,ipaddress) VALUES ('".intval($mybb->input['tid'])."','".$mybb->input['rating']."','$ipaddress')");
+		$db->query("
+			INSERT INTO ".TABLE_PREFIX."threadratings (tid,rating,ipaddress)
+			VALUES ('".intval($mybb->input['tid'])."','".$mybb->input['rating']."','$ipaddress')
+		");
 		$time = time();
 		mysetcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
 	}

@@ -33,7 +33,12 @@ $repliesperthread = mynumberformat(round((($stats['numposts'] - $stats['numthrea
 $postspermember = mynumberformat(round(($stats['numposts'] / $stats['numusers']), 2));
 
 // Get number of days since board start (might need improvement)
-$query = $db->query("SELECT regdate FROM ".TABLE_PREFIX."users ORDER BY regdate LIMIT 1");
+$query = $db->query("
+	SELECT regdate
+	FROM ".TABLE_PREFIX."users
+	ORDER BY regdate
+	LIMIT 1
+");
 $result = $db->fetch_array($query);
 $days = (time() - $result['regdate']) / 86400;
 
@@ -50,7 +55,13 @@ if($unviewableforums)
 }
 
 // Most replied-to threads
-$query = $db->query("SELECT tid, subject, replies FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY replies DESC LIMIT 0, ".$mybb->settings[statslimit]);
+$query = $db->query("
+	SELECT tid, subject, replies
+	FROM ".TABLE_PREFIX."threads
+	WHERE 1=1 $fidnot
+	ORDER BY replies DESC
+	LIMIT 0, ".$mybb->settings[statslimit]
+);
 while($thread = $db->fetch_array($query))
 {
 	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
@@ -60,7 +71,13 @@ while($thread = $db->fetch_array($query))
 }
 
 // Most viewed threads
-$query = $db->query("SELECT tid, subject, views FROM ".TABLE_PREFIX."threads WHERE 1=1 $fidnot ORDER BY views DESC LIMIT 0, ".$mybb->settings[statslimit]);
+$query = $db->query("
+	SELECT tid, subject, views
+	FROM ".TABLE_PREFIX."threads
+	WHERE 1=1 $fidnot
+	ORDER BY views DESC
+	LIMIT 0, ".$mybb->settings[statslimit]
+);
 while($thread = $db->fetch_array($query))
 {
 	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
@@ -70,7 +87,13 @@ while($thread = $db->fetch_array($query))
 }
 
 // Top forum
-$query = $db->query("SELECT fid, name, threads, posts FROM ".TABLE_PREFIX."forums WHERE 1=1 $fidnot AND type='f' ORDER BY posts DESC LIMIT 1");
+$query = $db->query("
+	SELECT fid, name, threads, posts
+	FROM ".TABLE_PREFIX."forums
+	WHERE 1=1 $fidnot AND type='f'
+	ORDER BY posts DESC
+	LIMIT 1
+");
 $forum = $db->fetch_array($query);
 if(!$forum['posts'])
 {
@@ -87,7 +110,14 @@ else
 
 // Today's top poster
 $timesearch = time() - 86400;
-$query = $db->query("SELECT u.uid, u.username, COUNT(*) AS poststoday FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) WHERE p.dateline > $timesearch GROUP BY p.uid ORDER BY poststoday DESC LIMIT 1");
+$query = $db->query("
+	SELECT u.uid, u.username, COUNT(*) AS poststoday
+	FROM ".TABLE_PREFIX."posts p
+	LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+	WHERE p.dateline > $timesearch
+	GROUP BY p.uid ORDER BY poststoday DESC
+	LIMIT 1
+");
 $user = $db->fetch_array($query);
 if(!$user['poststoday'])
 {
@@ -108,7 +138,11 @@ else
 }
 
 // What percent of members have posted?
-$query = $db->query("SELECT COUNT(*) AS count FROM ".TABLE_PREFIX."users WHERE postnum > 0");
+$query = $db->query("
+	SELECT COUNT(*) AS count
+	FROM ".TABLE_PREFIX."users
+	WHERE postnum > 0
+");
 $posters = $db->fetch_field($query, "count");
 $havepostedpercent = mynumberformat(round((($posters / $stats['numusers']) * 100), 2)) . "%";
 

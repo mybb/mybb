@@ -30,7 +30,10 @@ class datacache
 			// Check if no files exist in cache directory, if not we need to create them (possible move from db to files)
 			if(!file_exists(MYBB_ROOT."inc/cache/version.php"))
 			{
-				$query = $db->query("SELECT title,cache FROM ".TABLE_PREFIX."datacache");
+				$query = $db->query("
+					SELECT title,cache
+					FROM ".TABLE_PREFIX."datacache
+				");
 				while($data = $db->fetch_array($query))
 				{
 					$this->update($data['title'], unserialize($data['cache']));
@@ -39,7 +42,10 @@ class datacache
 		}
 		else
 		{
-			$query = $db->query("SELECT title,cache FROM ".TABLE_PREFIX."datacache");
+			$query = $db->query("
+				SELECT title,cache
+				FROM ".TABLE_PREFIX."datacache
+			");
 			while($data = $db->fetch_array($query))
 			{
 				$this->cache[$data['title']] = unserialize($data['cache']);
@@ -74,7 +80,11 @@ class datacache
 		{
 			if($hard)
 			{
-				$query = $db->query("SELECT title, cache FROM ".TABLE_PREFIX."datacache WHERE title='$name'");
+				$query = $db->query("
+					SELECT title, cache
+					FROM ".TABLE_PREFIX."datacache
+					WHERE title='$name'
+				");
 				$data = $db->fetch_array($query);
 				$this->cache[$data['title']] = unserialize($data['cache']);
 			}
@@ -99,7 +109,10 @@ class datacache
 
 		// We ALWAYS keep a running copy in the db just incase we need it
 		$dbcontents = $db->escape_string(serialize($contents));
-		$db->query("REPLACE INTO ".TABLE_PREFIX."datacache (title, cache) VALUES ('$name','$dbcontents')");
+		$db->query("
+			REPLACE INTO ".TABLE_PREFIX."datacache (title, cache)
+			VALUES ('$name','$dbcontents')
+		");
 
 		// If using files, update the cache file too
 		if($mybb->config['cachestore'] == "files")
@@ -459,7 +472,10 @@ class datacache
 	function updatemailqueue($last_run=0)
 	{
 		global $db;
-		$query = $db->query("SELECT COUNT(*) AS queue_size FROM ".TABLE_PREFIX."mailqueue");
+		$query = $db->query("
+			SELECT COUNT(*) AS queue_size
+			FROM ".TABLE_PREFIX."mailqueue
+		");
 		$queue_size = $db->fetch_field($query, "queue_size");
 		
 		$mailqueue = $this->read("mailqueue");

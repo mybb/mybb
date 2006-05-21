@@ -45,7 +45,11 @@ if($mybb->input['action'] == "newpoll")
 
 	$plugins->run_hooks("polls_newpoll_start");
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mybb->input['tid'])."'");
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."threads
+		WHERE tid='".intval($mybb->input['tid'])."'
+	");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
