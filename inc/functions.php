@@ -1319,7 +1319,7 @@ function deletepost($pid, $tid="")
 		require_once MYBB_ROOT."inc/class_moderation.php";
 		$moderation = new Moderation;
 	}
-	return $moderation->delete_post($tid);
+	return $moderation->delete_post($pid);
 }
 
 
