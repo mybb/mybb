@@ -322,12 +322,10 @@ if($mybb->input['action'] == "thread")
 			if($alreadyvoted)
 			{
 				$pollstatus = $lang->already_voted;
-				eval("\$pollstatus = \"".$templates->get("showthread_poll_results_voted")."\";");
 			}
 			else
 			{
 				$pollstatus = $lang->poll_closed;
-				eval("\$pollstatus = \"".$templates->get("showthread_poll_results_closed")."\";");
 			}
 			$lang->total_votes = sprintf($lang->total_votes, $poll['numvotes']);
 			eval("\$pollbox = \"".$templates->get("showthread_poll_results")."\";");
