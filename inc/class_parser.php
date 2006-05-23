@@ -289,7 +289,7 @@ class postParser
 		if($options['me_username'])
 		{
 			$message = preg_replace('#^/me (.*)$#im', "<span style=\"color: red;\">* {$options['me_username']} \\1</span>", $message);
-			$message = preg_replace('#^/slap (.*)#iem', "'<span style=\"color: red;\">* {$options['me_username']} $lang->slaps '.str_replace('<br />', '', '\\1').' $lang->with_trout</span><br />'", $message);
+			$message = preg_replace('#^/slap (.*)#iem', "'<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} '.str_replace('<br />', '', '\\1').' {$lang->with_trout}</span><br />'", $message);
 		}
 
 		$message = $this->mycode_auto_url($message);
@@ -332,8 +332,7 @@ class postParser
 		{
 			reset($this->smilies_cache);
 			foreach($this->smilies_cache as $find => $replace)
-			{
-				
+			{				
 				if($allow_html != "yes")
 				{
 					$find = $this->parse_html($find);
@@ -480,14 +479,14 @@ class postParser
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
 		$str = str_replace('&amp;', '&', $str);
-		$str = str_replace("\n", '', $str);
+		$str = str_replace('\n', "\n", $str);
 		$original = $str;
 		// See if open and close tags are provided.
-		$added_open_close = false;
+		$added_open_close = true;
 		if(!preg_match("#^\s*<\?#si", $str))
 		{
-			$added_open_close = true;
-			$str = '<?php\n'.$str.'\n?>';
+			$added_open_close = false;
+			$str = "<?php\n".$str."\n?>";
 		}
 		// If the PHP version < 4.2, catch highlight_string() output.
 		if(version_compare(PHP_VERSION, "4.2.0", "<"))
@@ -521,14 +520,14 @@ class postParser
 		// Do the actual replacing.
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
-		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
-		
-		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
+		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);		
 		$code = str_replace('\\', '&#092;', $code);
+		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
+		
 		
 		if($added_open_close == true)
 		{
-			$code = str_replace("<code><span style=\"color: #0000BB\">&lt;?php<br /></span>", "<code>", $code);
+			$code = preg_replace("#<code><span style=\"color: \#0000BB\">&lt;?php(.*?)</span>#", "<code>", $code);
 			$code = str_replace("<span style=\"color: #0000BB\">?&gt;</span></code>", "</code>", $code);
 		}
 
@@ -550,6 +549,8 @@ class postParser
 	function mycode_parse_url($url, $name="")
 	{
 		$fullurl = $url;
+		$url = str_replace('&amp;', '&', $url);
+		
 		if(strpos($url, "www.") === 0)
 		{
 			$fullurl = "http://".$fullurl;
@@ -572,10 +573,12 @@ class postParser
 		if($name == $url)
 		{
 			if(strlen($url) > 55)
-			{
+			{				
 				$name = substr($url, 0, 40)."...".substr($url, -10);
 			}
 		}
+		
+		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name);
 		$link = "<a href=\"$fullurl\" target=\"_blank\">$name</a>";
 		return $link;
 	}
