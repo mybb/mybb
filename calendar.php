@@ -38,7 +38,7 @@ if($mybb->usergroup['canviewcalendar'] == "no")
 }
 
 // Make $eid an easy-to-use variable.
-$eid = $mybb->input['eid'];
+$eid = intval($mybb->input['eid']);
 
 /* If we are looking at an event, select the date for that event first. */
 if($mybb->input['action'] == "event")
@@ -185,7 +185,7 @@ if($mybb->input['action'] == "event")
 	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 	if($event['username'])
 	{
-		$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">" . formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
+		$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">".formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
 	}
 	else
 	{
@@ -484,7 +484,7 @@ if($mybb->input['action'] == "editevent")
 	$eid = intval($mybb->input['eid']);
 
 	$query = $db->query("
-		SELECT eid, author, date
+		SELECT *
 		FROM ".TABLE_PREFIX."events
 		WHERE eid='$eid'
 		LIMIT 1
@@ -515,7 +515,7 @@ if($mybb->input['action'] == "editevent")
 	}
 
 	$dayopts = '';
-	for($i=1;$i<=31;$i++)
+	for($i = 1; $i <= 31; $i++)
 	{
 		if($i == $eventdate[0])
 		{
@@ -530,6 +530,7 @@ if($mybb->input['action'] == "editevent")
 	$event['subject'] = htmlspecialchars_uni($event['subject']);
 	$event['description'] = htmlspecialchars_uni($event['description']);
 
+	$privatecheck = '';
 	if($event['private'] == "yes")
 	{
 		$privatecheck = " checked=\"checked\"";
@@ -546,7 +547,6 @@ if($mybb->input['action'] == "editevent")
 // Show the main calendar view.
 if($mybb->input['action'] == "calendar_main")
 {
-
 	$plugins->run_hooks("calendar_start");
 
 	$time = mktime(0, 0, 0, $month, 1, $year);
@@ -586,10 +586,10 @@ if($mybb->input['action'] == "calendar_main")
 	$events = array();
 	// Load Events
 	$query = $db->query("
-		SELECT subject, private, date
+		SELECT subject, private, date, eid 
 		FROM ".TABLE_PREFIX."events
 		WHERE date LIKE '%-$month-$year'
-		AND ((author='".$mybb->user[uid]."'
+		AND ((author='".$mybb->user['uid']."'
 		AND private='yes')
 		OR (private!='yes'))
 	");
@@ -623,7 +623,7 @@ if($mybb->input['action'] == "calendar_main")
 	}
 	for($i = 1; $i <= $days; $i++)
 	{
-		if($bdays[$i])
+		if(isset($bdays[$i]))
 		{
 			if($bdays[$i] > 1)
 			{
@@ -638,7 +638,7 @@ if($mybb->input['action'] == "calendar_main")
 		{
 			$birthdays = '';
 		}
-		if ((date("d") == $i) && (date("n") == $month) && (date("Y") == $year))
+		if((date("d") == $i) && (date("n") == $month) && (date("Y") == $year))
 		{
 			eval("\$daybits .= \"".$templates->get("calendar_daybit_today")."\";");
 		}
@@ -686,7 +686,7 @@ if($mybb->input['action'] == "calendar_main")
 	$nextyear = date("Y", $next);
 	$nextmonth = date("n", $next);
 
-	$yearsel == '';
+	$yearsel = '';
 	for($i = date("Y"); $i < (date("Y") + 5); $i++)
 	{
 		$yearsel .= "<option value=\"$i\">$i</option>\n";

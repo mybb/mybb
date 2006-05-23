@@ -34,13 +34,13 @@ class EventDataHandler extends DataHandler
 	 *
 	 * @return boolean True if valid, false if invalid.
 	 */
-	function verify_name()
+	function verify_subject()
 	{
-		$name = &$this->data['name'];
-		$name = trim($name);
-		if(!$name)
+		$subject = &$this->data['subject'];
+		$subject = trim($subject);
+		if(!$subject)
 		{
-			$this->set_error("missing_name");
+			$this->set_error("missing_subject");
 			return false;
 		}
 		return true;
@@ -139,7 +139,7 @@ class EventDataHandler extends DataHandler
 
 		$event = &$this->data;
 
-		if($this->method == "insert" || isset($event['name']))
+		if($this->method == "insert" || isset($event['subject']))
 		{
 			$this->verify_name();
 		}
@@ -220,9 +220,9 @@ class EventDataHandler extends DataHandler
 	 *
 	 * @param array The event data array.
 	 */
-	function update_event($event)
+	function update_event()
 	{
-		global $db;
+		global $db, $plugins;
 
 		// Yes, validating is required.
 		if(!$this->get_validated())
@@ -238,9 +238,9 @@ class EventDataHandler extends DataHandler
 
 		$updateevent = array();
 
-		if(isset($event['name']))
+		if(isset($event['subject']))
 		{
-			$updateevent['name'] = $db->escape_string($event['name']);
+			$updateevent['subject'] = $db->escape_string($event['subject']);
 		}
 
 		if(isset($event['description']))
@@ -281,7 +281,7 @@ class EventDataHandler extends DataHandler
 	 */
 	function delete_by_eid($eid)
 	{
-		global $db;
+		global $db, $plugins;
 
 		$db->delete_query(TABLE_PREFIX."events", "eid=".intval($eid), 1);
 
