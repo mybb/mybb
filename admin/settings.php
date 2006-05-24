@@ -33,6 +33,13 @@ switch($mybb->input['action'])
 		{
 			$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) WHERE g.gid='".intval($mybb->input['gid'])."' GROUP BY s.gid");
 			$groupinfo = $db->fetch_array($query);
+			
+			$title_lang = "setting_group_".$groupinfo['name'];
+			if($lang->$title_lang)
+			{
+				$groupinfo['title'] = $lang->$title_lang;
+			}
+			
 			addacpnav($groupinfo['title']);
 		}
 		break;
@@ -422,6 +429,11 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 		foreach($setting_groups as $groupinfo)
 		{
 			starttable();
+			$title_lang = "setting_group_".$groupinfo['name'];
+			if($lang->$title_lang)
+			{
+				$groupinfo['title'] = $lang->$title_lang;
+			}
 			tableheader($groupinfo['title'], "", 2);
 			
 			foreach($setting_list[$groupinfo['gid']] as $setting)

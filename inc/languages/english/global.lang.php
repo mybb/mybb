@@ -207,6 +207,8 @@ $l['postbit_profile'] = "View authors profile";
 $l['postbit_pm'] = "Send the author a private message";
 $l['postbit_edit'] = "Edit this post";
 $l['postbit_qquote'] = "Quote this post in a quick reply";
+$l['postbit_quick_edit'] = "Quick Edit";
+$l['postbit_full_edit'] = "Full Edit";
 
 $l['forumjump'] = "Forum Jump:";
 $l['forumjump_select'] = "Please select one:";
@@ -267,6 +269,12 @@ $l['deleteevent_confirm'] = "Are you sure you want to delete this event?";
 $l['removeattach_confirm'] = "Are you sure you want to remove the selected attachment from this post?";
 
 $l['latest_threads'] = "Latest Threads";
+
+$l['folder_inbox'] = "Inbox";
+$l['folder_sent_items'] = "Sent Items";
+$l['folder_drafts'] = "Drafts";
+$l['folder_trash'] = "Trash";
+$l['folder_untitled'] = "Untitled Folder";
 
 $l['error_loadlimit'] = "The maximum server load limit has been reached.  Please check back later once the server is less busy.";
 $l['error_boardclosed'] = "This bulletin board is currently closed. The Administrator has specified the reason as to why below.";

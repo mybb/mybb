@@ -38,7 +38,7 @@ if($mybb->user['receivepms'] == "no")
 
 if(!$mybb->user['pmfolders'])
 {
-	$mybb->user['pmfolders'] = "1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can";
+	$mybb->user['pmfolders'] = "1**$%%$2**$%%$3**$%%$4**";
 	
 	$sql_array = array(
 		 "pmfolders" => $mybb->user['pmfolders']
@@ -76,6 +76,7 @@ while(list($key, $folders) = each($foldersexploded))
 	{
 		$sel = "";
 	}
+	$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
 	$folderjump .= "<option value=\"$folderinfo[0]\" $sel>$folderinfo[1]</option>\n";
 	$folderjump2 .= "<option value=\"$folderinfo[0]\" $sel>$folderinfo[1]</option>\n";
 	$folderoplist .= "<option value=\"$folderinfo[0]\" $sel>$folderinfo[1]</option>\n";
@@ -497,10 +498,10 @@ if($mybb->input['action'] == "folders")
 		$folderinfo = explode("**", $folders, 2);
 		$foldername = $folderinfo[1];
 		$fid = $folderinfo[0];
+		$foldername = get_pm_folder_name($fid, $foldername);
 		if($folderinfo[0] == "1" || $folderinfo[0] == "2" || $folderinfo[0] == "3" || $folderinfo[0] == "4")
 		{
-			$name = "folder".$folderinfo[0];
-			$foldername2 = $lang->$name;
+			$foldername2 = get_pm_folder_name($fid);
 			eval("\$folderlist .= \"".$templates->get("private_folders_folder_unremovable")."\";");
 			unset($name);
 		}
@@ -542,25 +543,36 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 				{
 					$highestid = $key;
 				}
-				if($key == "1" && $val == '')
-				{
-					$val = "Inbox";
-				}
-				if($key == "2" && $val == '')
-				{
-					$val = "Sent Items";
-				}
-				if($key == "3" && $val == '')
-				{
-					$val = "Drafts";
-				}
-				if($key == "4" && $val == '')
-				{
-					$val = "Trash Can";
-				}
 				$fid = intval($key);
+				switch($fid)
+				{
+					case 1:
+						if($val == $lang->folder_inbox)
+						{
+							$val = '';
+						}
+						break;
+					case 2:
+						if($val == $lang->folder_sent_items)
+						{
+							$val = '';
+						}
+						break;
+					case 3:
+						if($val == $lang->folder_drafts)
+						{
+							$val = '';
+						}
+						break;
+					case 4:
+						if($val == $lang->folder_trash)
+						{
+							$val = '';
+						}
+						break;
+				}
 			}
-			if($val != '')
+			if($val != '' || ($key >= 1 && $key <= 4))
 			{
 				$foldername = $val;
 				$foldername = $db->escape_string(htmlspecialchars_uni($foldername));
@@ -605,7 +617,7 @@ if($mybb->input['action'] == "empty")
 	{
 		$folderinfo = explode("**", $folders, 2);
 		$fid = $folderinfo[0];
-		$foldername = $folderinfo[1];
+		$foldername = get_pm_folder_name($fid, $folderinfo[1]);
 		$query = $db->query("
 			SELECT COUNT(*) AS pmsinfolder
 			FROM ".TABLE_PREFIX."privatemessages
@@ -755,6 +767,7 @@ if($mybb->input['action'] == "export")
 	while(list($key, $folders) = each($foldersexploded))
 	{
 		$folderinfo = explode("**", $folders, 2);
+		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
 		$folderlist .= "<option value=\"$folderinfo[0]\">$folderinfo[1]</option>\n";
 	}
 	$folderlist .= "</select>\n";
@@ -988,21 +1001,18 @@ if(!$mybb->input['action'])
 	{
 		$mybb->input['fid'] = 1;
 	}
+
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	while(list($key, $folders) = each($foldersexploded))
 	{
 		$folderinfo = explode("**", $folders, 2);
 		if($folderinfo[0] == $mybb->input['fid'])
 		{
-			$foldername = $folderinfo[1];
 			$folder = $folderinfo[0];
+			$foldername = get_pm_folder_name($folder, $folderinfo[1]);
 		}
 	}
-	if(!$folder)
-	{
-		$folder = "1";
-		$foldername = $lang->inbox;
-	}
+
 	$lang->pms_in_folder = sprintf($lang->pms_in_folder, $foldername);
 	if($folder == 2 || $folder == 3)
 	{ // Sent Items Folder

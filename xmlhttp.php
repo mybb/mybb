@@ -89,7 +89,7 @@ else
 	}
 }
 
-//$lang->load("xmlhttp");
+$lang->load("xmlhttp");
 
 // Load basic theme information that we could be needing.
 
@@ -137,7 +137,7 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 	// If we don't have a new subject, quit straight away with an error.
 	if(strlen(trim($mybb->input['value'])) == 0)
 	{
-		xmlhttp_error("You did not enter a new subject.");
+		xmlhttp_error($lang->no_new_subject);
 	}
 	
 	// Editing a post subject.
@@ -149,7 +149,7 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 		// No result, die.
 		if(!$post['pid'])
 		{
-			xmlhttp_error("The specified post does not exist.");
+			xmlhttp_error($lang->post_doesnt_exist);
 		}
 		
 		// Fetch the thread associated with this post.
@@ -180,7 +180,7 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 	// Missing thread, invalid forum? Error.
 	if(!$thread['tid'] || !$forum['fid'] || $forum['type'] != "f")
 	{
-		xmlhttp_error("The specified thread does not exist.");
+		xmlhttp_error($lang->thread_doesnt_exist);
 	}
 	
 	// Fetch forum permissions.
@@ -192,12 +192,12 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 		// Thread is closed - no editing allowed.
 		if($thread['closed'] == "yes")
 		{
-			xmlhttp_error("This thread is closed and you may not edit subjects.");
+			xmlhttp_error($lang->thread_closed_edit_subjects);
 		}
 		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
 		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'])
 		{
-			xmlhttp_error("You do not have permission to this title.");
+			xmlhttp_error($lang->no_permission_edit_subject);
 		}
 		// If we're past the edit time limit - don't allow editing.
 		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (time()-($mybb->settings['edittimelimit']*60)))
@@ -235,7 +235,7 @@ else if($mybb->input['action'] == "edit_post")
 	// No result, die.
 	if(!$post['pid'])
 	{
-		xmlhttp_error("The specified post does not exist.");
+		xmlhttp_error($lang->post_doesnt_exist);
 	}
 	
 	// Fetch the thread associated with this post.
@@ -247,7 +247,7 @@ else if($mybb->input['action'] == "edit_post")
 	// Missing thread, invalid forum? Error.
 	if(!$thread['tid'] || !$forum['fid'] || $forum['type'] != "f")
 	{
-		xmlhttp_error("The specified thread does not exist.");
+		xmlhttp_error($lang->thread_doesnt_exist);
 	}
 	
 	// Fetch forum permissions.
@@ -259,12 +259,12 @@ else if($mybb->input['action'] == "edit_post")
 		// Thread is closed - no editing allowed.
 		if($thread['closed'] == "yes")
 		{
-			xmlhttp_error("This thread is closed and you may not edit subjects.");
+			xmlhttp_error($lang->thread_closed_edit_message);
 		}
 		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
 		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'])
 		{
-			xmlhttp_error("You do not have permission to this title.");
+			xmlhttp_error($lang->no_permission_edit_post);
 		}
 		// If we're past the edit time limit - don't allow editing.
 		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (time()-($mybb->settings['edittimelimit']*60)))

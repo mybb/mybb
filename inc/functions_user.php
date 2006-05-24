@@ -396,9 +396,7 @@ function usercp_menu()
 
 	$lang->load("usercpnav");
 
-	//
 	// Add the default items as plugins with separated priorities of 10
-	//
 	if($mybb->settings['enablepms'] != "no")
 	{
 		$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
@@ -429,6 +427,7 @@ function usercp_menu_messenger()
 	while(list($key, $folders) = each($foldersexploded))
 	{
 		$folderinfo = explode("**", $folders, 2);
+		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
 		$folderlinks .= "<li class=\"pmfolders\"><a href=\"private.php?fid=$folderinfo[0]\">$folderinfo[1]</a></li>\n";
 	}
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_messenger")."\";");
@@ -570,5 +569,40 @@ function get_banned_usernames()
 {
 	$bannedusernames = explode(",", $mybb->settings['bannedusernames']);
 	return $bannedusernames;
+}
+
+/**
+ * Return the language specific name for a PM folder.
+ *
+ * @param int The ID of the folder.
+ * @param string The folder name - can be blank, will use language default.
+ * @return string The name of the folder.
+ */
+function get_pm_folder_name($fid, $name="")
+{
+	global $lang;
+
+	if($name != '')
+	{
+		return $name;
+	}
+
+	switch($fid)
+	{
+		case 1;
+			return $lang->folder_inbox;
+			break;
+		case 2:
+			return $lang->folder_sent_items;
+			break;
+		case 3:
+			return $lang->folder_drafts;
+			break;
+		case 4:
+			return $lang->folder_trash;
+			break;
+		default:
+			return $lang->folder_untitled;
+	}
 }
 ?>

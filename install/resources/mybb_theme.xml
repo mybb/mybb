@@ -2655,7 +2655,7 @@ $reputation
 <br />]]></template>
 		<template name="postbit_edit" version="100.07"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" border="0" alt="{$lang->postbit_edit}" /></a>
 <script type="text/javascript">
-	document.write('<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><ul><li><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">Quick Edit</a></li><li><a href="editpost.php?pid={$post['pid']}" class="popup_item">Full Edit</a></li></ul></div>');
+	document.write('<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><ul><li><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}</a></li><li><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></li></ul></div>');
 	new PopupMenu("edit_post_{$post['pid']}");
 </script>]]></template>
 		<template name="postbit_email" version="100.07"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_email.gif" border="0" alt="{$lang->postbit_email}" /></a>]]></template>
