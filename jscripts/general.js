@@ -77,7 +77,7 @@ var MyBB = {
 		}
 	},
 
-	deleteEvent: function()
+	deleteEvent: function(eid)
 	{
 		confirmReturn = confirm(deleteevent_confirm);
 		if(confirmReturn == true) {
