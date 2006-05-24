@@ -141,7 +141,7 @@ class EventDataHandler extends DataHandler
 
 		if($this->method == "insert" || isset($event['subject']))
 		{
-			$this->verify_name();
+			$this->verify_subject();
 		}
 
 		if($this->method == "insert" || isset($event['description']))
@@ -153,12 +153,11 @@ class EventDataHandler extends DataHandler
 		{
 			$this->verify_date();
 		}
-
+	
 		if($this->method == "insert" || isset($event['private']))
 		{
 			$this->verify_scope();
 		}
-
 		$plugins->run_hooks("datahandler_event_validate");
 
 		// We are done validating, return.
@@ -197,7 +196,7 @@ class EventDataHandler extends DataHandler
 
 		// Prepare an array for insertion into the database.
 		$newevent = array(
-			'subject' => $db->escape_string($event['name']),
+			'subject' => $db->escape_string($event['subject']),
 			'author' => intval($event['uid']),
 			'date' => $event['date'],
 			'description' => $db->escape_string($event['description']),
@@ -263,7 +262,7 @@ class EventDataHandler extends DataHandler
 			$updateevent['author'] = intval($event['uid']);
 		}
 
-		$db->insert_query(TABLE_PREFIX."events", $updateevent, "eid='".intval($event['eid'])."'");
+		$db->update_query(TABLE_PREFIX."events", $updateevent, "eid='".intval($event['eid'])."'");
 
 		$plugins->run_hooks("datahandler_event_update");
 

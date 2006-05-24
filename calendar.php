@@ -320,7 +320,7 @@ if($mybb->input['action'] == "do_addevent")
 
 	// Prepare an array for the eventhandler.
 	$event = array(
-		"name" => $mybb->input['subject'],
+		"subject" => $mybb->input['subject'],
 		"uid" => $mybb->user['uid'],
 		"description" => $mybb->input['description'],
 		"day" => $mybb->input['day'],
@@ -449,7 +449,7 @@ if($mybb->input['action'] == "do_editevent")
 		// Prepare an array for the eventhandler.
 		$event = array(
 			"eid" => $eid,
-			"name" => $mybb->input['subject'],
+			"subject" => $mybb->input['subject'],
 			"uid" => $mybb->user['uid'],
 			"description" => $mybb->input['description'],
 			"day" => $mybb->input['day'],
