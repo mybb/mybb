@@ -8,7 +8,7 @@ $l['writeable'] = 'Writeable';
 $l['done'] = 'done';
 
 $l['welcome'] = 'Welcome';
-$l['lisence_agreement'] = 'License Agreement';
+$l['license_agreement'] = 'License Agreement';
 $l['req_check'] = 'Requirements Check';
 $l['db_config'] = 'Database Configuration';
 $l['table_creation'] = 'Table Creation';
@@ -36,50 +36,8 @@ $l['welcome_step'] = '<p>Welcome to the installation wizard for MyBB {1}. This w
 <p>After each step has successfully been completed, click Next to move on to the next step.</p>
 <p>Click "Next" to view the MyBB license agreement.</p>';
 
-$l['lisence_step'] = '<div class="license_agreement">
-		<h3>IMPORTANT- READ CAREFULLY:</h3>
-
-This MyBulletinBoard End-User License Agreement ("EULA") is a legal agreement between you (either an individual or a single entity) and MyBulletinBoard for the MyBulletinBoard product identified above, which includes computer software and may include associated media, printed materials, and "online" or electronic documentation ("MyBulletinBoard"). By installing, copying, or otherwise using the MyBulletinBoard  PRODUCT, you agree to be bound by the terms of this EULA. If you do not agree to the terms of this EULA, do not install or use the MyBulletinBoard Product; you may, however, return it to MyBulletinBoard.<br />
-<br />
-<h3>This EULA grants you the following rights:</h3>
-<ul>
-<li><strong>Installation and Use</strong><br />
-You may install and use an unlimited amount of copies of MyBB on your domain(s) or website(s).
-</li>
-<li><strong>Reproduction and Distribution</strong><br />
-You may not reproduce or distribute the MyBB  SOFTWARE for any reason with out express written consent from the entire MyBulletinBoard seat holding Admin Board.
-</li>
-</ul>
-<h3>DESCRIPTION OF OTHER RIGHTS AND LIMITATIONS.</h3>
-
-<ul>
-<li><strong>Limitations on Reverse Engineering, Decompilation, and Disassembly</strong><br />
-You may not Reverse Engineer, Decompile, or Disassemble the MyBB  SOFTWARE. You may add modifications ("HACKS") to the software that MyBulletinBoard personally releases.</li>
-<li><strong>Separation of Components</strong><br />
-The MyBB  SOFTWARE is licensed as a single product. Its component parts may not be separated for use on more than one computer.
-</li>
-<li><strong>Termination</strong><br />
-Without prejudice to any other rights, MyBulletinBoard may terminate this EULA if you fail to comply with the terms and conditions of this EULA. In such event, you must destroy all copies of the MyBB  SOFTWARE and all of its component parts. MyBulletinBoard and the MyBulletinBoard Group also reserve the right to revoke any license or copy of MyBB for any reasons they specify.
-</li>
-</ul>
-<h3>COPYRIGHT</h3>
-All title and copyrights in and to the MyBB  SOFTWARE(including but not limited to any images, photographs, animations, video, audio, music, text, and "applets" incorporated into the MyBB  SOFTWARE), the accompanying materials, and any copies of the MyBB  SOFTWARE are owned by MyBulletinBoard. The MyBB  SOFTWARE is protected by copyright laws and international treaty provisions. Therefore, you must treat the MyBB  SOFTWARE like any other copyrighted material.
-<br /><br />
-At all times, the MyBB "Powered by" and copyright lines must be present and clearly in the footer of your board. You may not alter or change the "Powered by" and copyright lines in any way without express permission from the MyBB Group.
-<h3>U.S. GOVERNMENT RESTRICTED RIGHTS</h3>
-The MyBB  SOFTWARE and documentation are provided with RESTRICTED RIGHTS. Use, duplication, or disclosure by the Government is subject to restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and Computer Software clause at DFARS 252.227-7013 or subparagraphs (c)(1) and (2) of the Commercial Computer Software-Restricted Rights at 48 CFR 52.227-19, as applicable. Manufacturer is MyBulletinBoard @ www.mybboard.com (www [dot] mybboard [dot] com)
-
-<h3>MISCELLANEOUS</h3>
-<ul>
-<li>If you acquired this product in the United States, this EULA is governed by the laws of the State of Washington.<br /></li>
-<li>If you acquired this product in Canada, this EULA is governed by the laws of the Province of Ontario, Canada. Each of the parties hereto irrevocably attorns to the jurisdiction of the courts of the Province of Ontario and further agrees to commence any litigation which may arise hereunder in the courts located in the Judicial District of York, Province of Ontario. <br /></li>
-<li>If this product was acquired outside the United States or Canada, then local law may apply.<br /></li>
-<li>Should you have any questions concerning this EULA, or if you desire to contact MyBulletinBoard for any reason, please contact MyBulletinBoard at www.mybboard.com.<br /></li>
-<li>NO WARRANTIES. MyBulletinBoard expressly disclaims any warranty for the MyBB  SOFTWARE. The MyBB  SOFTWARE and any related documentation is provided "as is" without warranty of any kind, either express or implied, including, without limitation, the implied warranties or merchantability, fitness for a particular purpose, or noninfringement. The entire risk arising out of use or performance of the MyBB  SOFTWARE remains with you. <br /></li>
-<li>NO LIABILITY FOR DAMAGES. In no event shall MyBulletinBoard or its suppliers be liable for any damages whatsoever (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or any other pecuniary loss) arising out of the use of or inability to use this MyBulletinBoard product, even if MyBulletinBoard has been advised of the possibility of such damages. Because some states/jurisdictions do not allow the exclusion or limitation of liability for consequential or incidental damages, the above limitation may not apply to you.</li>
-
-<li>MyBulletinBoard reserves the right to make modifications to this License Grant at any given time and will apply to all current and existing copies of the MyBB Software.</li>
-</ul>
+$l['license_step'] = '<div class="license_agreement">
+{1}
 </div>
 <p><strong>By clicking Next, you agree to the terms stated in the MyBB License Agreement above.</strong></p>';
 
@@ -117,13 +75,9 @@ $l['req_step_reqtable'] = '<div class="border_wrapper">
 			<td class="first">File Uploads Directory Writable:</td>
 			<td class="last alt_col">{6}</td>
 		</tr>
-		<tr class="alt_row">
+		<tr class="last">
 			<td class="first">Avatar Uploads Directory Writable:</td>
 			<td class="last alt_col">{7}</td>
-		</tr>
-		<tr class="last">
-			<td class="first">Css Directory Writable:</td>
-			<td class="last alt_col">{8}</td>
 		</tr>
 		</tbody>
 		</table>

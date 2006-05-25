@@ -343,16 +343,6 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[db]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="cssmedium">
-			<title>CSS Medium</title>
-			<description><![CDATA[Please select from the list how you want the theme and CSS data to be stored and retrieved.]]></description>
-			<disporder>1</disporder>
-			<optionscode><![CDATA[radio
-db=Stored in the Database
-file=Stored in a text file (in the 'css' folder)]]></optionscode>
-			<settingvalue><![CDATA[db]]></settingvalue>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="decpoint">
 			<title>Decimal Point</title>
 			<description><![CDATA[The decimal point you use in your region.]]></description>
@@ -835,6 +825,16 @@ show=Show to all Users]]></optionscode>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[no]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="cssmedium">
+			<title>CSS Medium</title>
+			<description><![CDATA[Please select from the list how you want the theme and CSS data to be stored and retrieved.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[php
+<input type=\"radio\" name=\"upsetting[{$setting['sid']}]\" value=\"db\" ".($setting['value'] == 'db' || !is_writable(MYBB_ROOT."/css")?"checked=\"checked\"":"")." /> Stored in the Database<br />
+<input type=\"radio\" name=\"upsetting[{$setting['sid']}]\" value=\"file\" ".($setting['value'] == 'file' && is_writable(MYBB_ROOT."/css")?"checked=\"checked\"":"").(!is_writable(MYBB_ROOT."/css")?" disabled=\"disabled\"":"")." /> Stored in the file system (In the 'css' folder)".(!is_writable(MYBB_ROOT."/css")?"<br /><br />To cache CSS to the file system, the CSS folder must be made writable.":"")."]]></optionscode>
+			<settingvalue><![CDATA[db]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
