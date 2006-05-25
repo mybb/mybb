@@ -35,7 +35,7 @@ class PostDataHandler extends DataHandler
 	* @var string
 	*/
 	var $language_file = 'datahandler_post';
-	
+
 	/**
 	* The prefix for the language variables used in the data handler.
 	*
@@ -48,6 +48,8 @@ class PostDataHandler extends DataHandler
 	 * post = New post
 	 * thread = New thread
 	 * edit = Editing a thread or post
+	 *
+	 * @var string
 	 */
 	var $action;
 
@@ -270,7 +272,7 @@ class PostDataHandler extends DataHandler
 			{
 				require_once MYBB_ROOT."inc/class_parser.php";
 				$parser = new postParser;
-				
+
 				// Parse the message.
 				$parser_options = array(
 					"allow_html" => $forum['allowhtml'],
@@ -620,7 +622,7 @@ class PostDataHandler extends DataHandler
 			$subject = $parser->parse_badwords($thread['subject']);
 			$excerpt = $parser->strip_mycode($post['message']);
 			$excerpt = substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-			
+
 			// Fetch any users subscribed to this thread and queue up their subscription notices
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language
@@ -1183,7 +1185,7 @@ class PostDataHandler extends DataHandler
 
 		$plugins->run_hooks("datahandler_post_update");
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".intval($post['pid'])."'");
-		
+
 		update_thread_attachment_count($post['tid']);
 	}
 
