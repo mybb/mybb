@@ -436,7 +436,7 @@ if($_COOKIE['collapsed'])
 // Randomly expire threads
 if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 {
-	$db->qelete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime<'".time()."'");
+	$db->delete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime < '".time()."'");
 }
 
 // Run hooks for end of global.php
