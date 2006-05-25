@@ -212,19 +212,16 @@ if($mybb->input['action'] == "dayview")
 	// If we have 1st March and this year isn't a leap year, fetch birthdays on the 29th.
 	if($day == 1 && $month == 3 && date("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
 	{
-		$bday_where = "u.birthday LIKE '$day-$month-%' OR u.birthday LIKE '29-2-%'";
+		$bday_where = "birthday LIKE '$day-$month-%' OR birthday LIKE '29-2-%'";
 		$feb_fix = 1;
 	}
 	else // Fetch only for this day
 	{
-		$bday_where = "u.birthday LIKE '$day-$month-%'";
+		$bday_where = "birthday LIKE '$day-$month-%'";
 		$feb_fix = 0;
 	}
-	$query = $db->query(
-		"SELECT u.uid, u.username, u.birthday, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."users u
-		WHERE $bday_where
-	");
+	$query = $db->simple_query(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
+
 	$alterbg = $theme['trow1'];
 	$comma = '';
 	$birthdays = '';
@@ -411,11 +408,7 @@ if($mybb->input['action'] == "do_editevent")
 {
 	$plugins->run_hooks("calendar_do_editevent_start");
 
-	$query = $db->query("
-		SELECT author
-		FROM ".TABLE_PREFIX."events
-		WHERE eid='$eid'
-	");
+	$query = $db->simple_query(TABLE_PREFIX."events", "*", "eid='{$eid}'");
 	$event = $db->fetch_array($query);
 
 	if(!is_numeric($event['author']))
@@ -483,12 +476,7 @@ if($mybb->input['action'] == "editevent")
 
 	$eid = intval($mybb->input['eid']);
 
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."events
-		WHERE eid='$eid'
-		LIMIT 1
-	");
+	$query = $db->simple_query(TABLE_PREFIX."events", "*", "eid='{$eid}'");
 	$event = $db->fetch_array($query);
 
 	if(!$event['eid'])
@@ -557,20 +545,16 @@ if($mybb->input['action'] == "calendar_main")
 	// If we have 1st March and this year isn't a leap year, fetch birthdays on the 29th.
 	if($day == 1 && $month == 3 && date("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
 	{
-		$bday_where = "u.birthday LIKE '%-$month-%' OR u.birthday LIKE '29-2-%'";
+		$bday_where = "birthday LIKE '%-$month-%' OR birthday LIKE '29-2-%'";
 		$feb_fix = 1;
 	}
 	else // Fetch only for this day
 	{
-		$bday_where = "u.birthday LIKE '%-$month-%'";
+		$bday_where = "birthday LIKE '%-$month-%'";
 		$feb_fix = 0;
 	}
-	$query = $db->query(
-		"SELECT u.uid, u.username, u.birthday, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."users u
-		WHERE $bday_where
-	");
-
+	
+	$query = $db->simple_query(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
 	while($user = $db->fetch_array($query))
 	{
 		$bday = explode("-", $user['birthday']);
@@ -585,14 +569,7 @@ if($mybb->input['action'] == "calendar_main")
 	}
 	$events = array();
 	// Load Events
-	$query = $db->query("
-		SELECT subject, private, date, eid 
-		FROM ".TABLE_PREFIX."events
-		WHERE date LIKE '%-$month-$year'
-		AND ((author='".$mybb->user['uid']."'
-		AND private='yes')
-		OR (private!='yes'))
-	");
+	$query = $db->simple_query(TABLE_PREFIX."events", "subject, private, date, eid", "date LIKE '%-{$month}-{$year}' AND ((author='{$mybb->user['uid']}' AND private='yes') OR (private!='yes'))");
 	while($event = $db->fetch_array($query))
 	{
 		$event['subject'] = htmlspecialchars_uni($event['subject']);

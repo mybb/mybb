@@ -17,13 +17,7 @@ require "./global.php";
 $lang->load("managegroup");
 
 $gid = $mybb->input['gid'] = intval($mybb->input['gid']);
-
-$query = $db->query("
-	SELECT *
-	FROM ".TABLE_PREFIX."usergroups
-	WHERE gid='$gid'
-");
-$usergroup = $db->fetch_array($query);
+$usergroup = $groupscache[$mybb->input['gid']];
 if(!$usergroup['gid'])
 {
 	error($lang->invalid_group);
@@ -38,11 +32,7 @@ if($mybb->input['action'] == "joinrequests")
 }
 
 // Check that this user is actually a leader of this group
-$query = $db->query("
-	SELECT *
-	FROM ".TABLE_PREFIX."groupleaders
-	WHERE uid='".$mybb->user['uid']."' AND gid='$gid'
-");
+$query = $db->simple_select(TABLE_PREFIX."groupleaders", "*", "uid='{$mybb->user['uid']}' AND gid='{$gid}'");
 $groupleader = $db->fetch_array($query);
 if(!$groupleader['uid'])
 {
@@ -55,12 +45,7 @@ if($mybb->input['action'] == "do_add")
 	{
 		nopermission();
 	}
-	$query = $db->query("
-		SELECT uid, additionalgroups, usergroup
-		FROM ".TABLE_PREFIX."users
-		WHERE username = '".$db->escape_string($mybb->input['username'])."'
-		LIMIT 1
-	");
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->input['username'])."'", array("limit" => 1));
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{
@@ -107,11 +92,7 @@ elseif($mybb->input['action'] == "do_joinrequests")
 	if(is_array($uidin))
 	{
 		$uids = implode(",", $uidin);
-		$db->query("
-			DELETE
-			FROM ".TABLE_PREFIX."joinrequests
-			WHERE uid IN($uids)
-		");
+		$db->delete_query(TABLE_PREFIX."joinrequests", "uid IN ({$uids})");
 	}
 
 	$plugins->run_hooks("managegroup_do_joinrequests_end");
@@ -244,11 +225,7 @@ else
 		{
 			$email = '';
 		}
-		$query1 = $db->query("
-			SELECT uid
-			FROM ".TABLE_PREFIX."groupleaders
-			WHERE uid='$user[uid]' AND gid='$gid'
-		");
+		$query1 = $db->simple_select(TABLE_PREFIX."groupleaders", "uid", "uid='{$user['uid']}' AND gid='{$gid}'");
 		$isleader = $db->fetch_array($query1);
 		$user['username'] = formatname($user['username'], $user['usergroup']);
 		if($isleader['uid'])

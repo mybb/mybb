@@ -452,7 +452,7 @@ class databaseEngine
 			$query .= " ORDER BY ".$options['order_by'];
 			if(isset($options['order_dir']))
 			{
-				$query .= " ".$options['order_dir'];
+				$query .= " ".strtoupper($options['order_dir']);
 			}
 		}
 		if(isset($options['limit_start']) && isset($options['limit']))
@@ -573,8 +573,7 @@ class databaseEngine
 		}
 		else
 		{
-			$string = $db->escape_string($string);
-			// I don't think this'll work? should htmlenities/addslashes instead?
+			$string = addslashes($string);
 		}
 		return $string;
 	}
@@ -619,7 +618,6 @@ class databaseEngine
 	{
 		$this->query("ANALYZE TABLE ".$table."");
 	}
-	// CHRIS - You May remove this function if you want, but if you do change line 42 in admin/misc.php back to $db->query("ANALYZE TABLE $tablelist");
 
 	/**
 	 * Show the "create table" command for a specific table.

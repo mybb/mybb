@@ -43,7 +43,13 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 	// Get the online users.
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
 	$comma = '';
-	$query = $db->query("SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup FROM ".TABLE_PREFIX."sessions s LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid) WHERE s.time>'$timesearch' ORDER BY u.username ASC, s.time DESC");
+	$query = $db->query("
+		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."sessions s
+		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		WHERE s.time>'$timesearch'
+		ORDER BY u.username ASC, s.time DESC
+	");
 	$membercount = 0;
 	$onlinemembers = '';
 	$guestcount = 0;

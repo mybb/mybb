@@ -519,12 +519,7 @@ if($tids)
 // Check participation by the current user in any of these threads - for 'dot' folder icons
 if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 {
-	$query = $db->query("
-		SELECT tid,uid
-		FROM ".TABLE_PREFIX."posts
-		WHERE uid='".$mybb->user['uid']."'
-		AND tid IN($tids)
-	");
+	$query = $db->simple_select(TABLE_PREFIX."posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
 	while($post = $db->fetch_array($query))
 	{
 		$threadcache[$post['tid']]['doticon'] = 1;
@@ -534,12 +529,7 @@ if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 // Read threads
 if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 {
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."threadsread
-		WHERE uid='".$mybb->user[uid]."'
-		AND tid IN($tids)
-	");
+	$query = $db->simple_select(TABLE_PREFIX."threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
 	while($readthread = $db->fetch_array($query))
 	{
 		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline'];
@@ -745,20 +735,16 @@ if($threadcache)
 			$modbit = '';
 		}
 
-		// Check if "Inline subject editing" is enabled.
-		if(1 == 1)
+		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
+		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes") || $ismod == true)
 		{
-			// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
-			if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes") || $ismod == true)
-			{
-				$inline_edit_class = "subject_editable";
-			}
-			else
-			{
-				$inline_edit_class = "";
-			}
-			$load_inline_edit_js = 1;
+			$inline_edit_class = "subject_editable";
 		}
+		else
+		{
+			$inline_edit_class = "";
+		}
+		$load_inline_edit_js = 1;
 
 		$moved = explode("|", $thread['closed']);
 

@@ -41,12 +41,7 @@ if(!$post['pid'])
 
 // Get thread info
 $tid = $post['tid'];
-$query = $db->query("
-	SELECT *
-	FROM ".TABLE_PREFIX."threads
-	WHERE tid='$tid'
-");
-$thread = $db->fetch_array($query);
+$thread = get_thread($tid);
 
 if(!$thread['tid'])
 {
@@ -168,13 +163,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 	if($mybb->input['delete'] == "yes")
 	{
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."posts
-			WHERE tid='$tid'
-			ORDER BY dateline ASC
-			LIMIT 0,1
-		");
+		$query = $db->simple_query(TABLE_PREFIX."posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $pid)
 		{
@@ -217,17 +206,11 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				{
 					logmod($modlogdata, "Deleted Post");
 				}
-				$query = $db->query("
-					SELECT *
-					FROM ".TABLE_PREFIX."posts
-					WHERE tid='{$tid}' AND dateline <= '{$post['dateline']}'
-					ORDER BY dateline DESC
-					LIMIT 0, 1
-				");
-				$p = $db->fetch_array($query);
-				if($p['pid']) 
+				$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline" => "order_dir" => "desc"));
+				$next_post = $db->fetch_array($query);
+				if($next_post['pid']) 
 				{
-					$redir = "showthread.php?tid={$tid}&pid={$p['pid']}#pid{$p['pid']}";
+					$redir = "showthread.php?tid={$tid}&pid={$next_post['pid']}#pid{$next_post['pid']}";
 				} 
 				else 
 				{
@@ -289,20 +272,13 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		$posthandler->update_post();
 
 		// Help keep our attachments table clean.
-		$db->query("
-			DELETE FROM ".TABLE_PREFIX."attachments
-			WHERE filename='' AND filesize < 1
-		");
+		$db->delete_query(TABLE_PREFIX."attachments", "filename='' OR filesize<1");
 
 		// Start Auto Subscription - performed outside the handler because this just involves
 		// changing the current user's subscription status for the thread.
 		if($mybb->input['postoptions']['emailnotify'] != "no")
 		{
-			$query = $db->query("
-				SELECT uid
-				FROM ".TABLE_PREFIX."favorites
-				WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'
-			");
+			$query = $db->simple_select(TABLE_PREFIX."favorites", "uid", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
 			$subcheck = $db->fetch_array($query);
 			if(!$subcheck['uid'])
 			{
@@ -316,10 +292,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$db->query("
-				DELETE FROM ".TABLE_PREFIX."favorites
-				WHERE type='s' AND uid='".$mybb->user[uid]."' AND tid='$tid'
-			");
+			$db->delete_query(TABLE_PREFIX."favorites", "type='s' AND uid='{$mybb->user['uid']}' AND tid='{$tid}");
 		}
 
 		// Did the user choose to post a poll? Redirect them to the poll posting page.
@@ -378,11 +351,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	if($forumpermissions['canpostattachments'] != "no")
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."attachments
-			WHERE posthash='$posthash' OR pid='$pid'
-		");
+		$query = $db->simple_query(TABLE_PREFIX."attachments", "*", "posthash='{$posthash}' OR pid='{$pid}'");
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{
@@ -428,13 +397,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$subject = $mybb->input['subject'];
 	}
 
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."posts
-		WHERE tid='$tid'
-		ORDER BY dateline ASC
-		LIMIT 0,1
-	");
+	$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 	$firstcheck = $db->fetch_array($query);
 	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != "no" && $thread['poll'] < 1)
 	{
@@ -522,11 +485,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
 		}
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."favorites
-			WHERE type='s' AND tid='$tid' AND uid='".$mybb->user[uid]."'
-		");
+		$query = $db->simple_query(TABLE_PREFIX."favorites", "*", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
 		$subcheck = $db->fetch_array($query);
 		if($subcheck['tid']) 
 		{

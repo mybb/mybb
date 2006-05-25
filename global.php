@@ -284,12 +284,7 @@ $bannedwarning = '';
 if($mybb->usergroup['isbannedgroup'] == "yes")
 {
 	// Fetch details on their ban
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."banned
-		WHERE uid = ".$mybb->user['uid']."
-		LIMIT 1
-	");
+	$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='{$mybb->user['uid']}'");
 	if($query)
 	{
 		// Format their ban lift date and reason appropriately
@@ -311,8 +306,10 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 	{
 		$banlift = $lang->unknown;
 	}
-	// Display a nice warning to the user
-	eval("\$bannedwarning = \"".$templates->get("global_bannedwarning")."\";");
+	if($ban['uid'])
+	{
+		// Display a nice warning to the user
+	}	eval("\$bannedwarning = \"".$templates->get("global_bannedwarning")."\";");
 }
 
 // Set up some of the default templates
@@ -354,10 +351,7 @@ if(is_array($bannedips))
 			if(strstr($ipaddress, $bannedip))
 			{
 				error($lang->error_banned);
-				$db->query("
-					DELETE FROM ".TABLE_PREFIX."sessions
-					WHERE ip='$ipaddress' OR uid='".$mybb->user['uid']."'
-				");
+				$db->delete_query(TABLE_PREFIX."sessions", "ip='{$ipaddress}' OR uid='{$mybb->user['uid']}'");
 			}
 		}
 	}
@@ -389,11 +383,7 @@ if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 // If there is a valid referrer in the URL, cookie it
 if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && isset($mybb->input['referrer']) && !isset($_COOKIE['mybb']['referrer']))
 {
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."users
-		WHERE uid='".intval($mybb->input['referrer'])."'
-	");
+	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['referrer'])."'");
 	$referrer = $db->fetch_array($query);
 	if($referrer['uid'])
 	{
@@ -446,11 +436,7 @@ if($_COOKIE['collapsed'])
 // Randomly expire threads
 if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 {
-	$db->query("
-		DELETE
-		FROM ".TABLE_PREFIX."threads
-		WHERE deletetime != '0' AND deletetime<'".time()."'
-	");
+	$db->qelete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime<'".time()."'");
 }
 
 // Run hooks for end of global.php
