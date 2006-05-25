@@ -134,12 +134,6 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 	// Sanitize the incoming subject.
 	$mybb->input['value'] = rawurldecode($mybb->input['value']);
 		
-	// If we don't have a new subject, quit straight away with an error.
-	if(strlen(trim($mybb->input['value'])) == 0)
-	{
-		xmlhttp_error($lang->no_new_subject);
-	}
-	
 	// Editing a post subject.
 	if($mybb->input['pid'])
 	{
@@ -206,18 +200,34 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 			xmlhttp_error($lang->edit_time_limit);
 		}
 	}
-	// Update the post subject in the posts table.
-	$new_subject = array(
-		"subject" => $db->escape_string($mybb->input['value'])
+	
+	// Set up posthandler.
+	require_once MYBB_ROOT."inc/datahandlers/post.php";
+	$posthandler = new PostDataHandler("update");
+	$posthandler->action = "post";
+
+	// Set the post data that came from the input to the $post array.
+	$updatepost = array(
+		"pid" => $post['pid'],
+		"tid" => $thread['tid'],
+		"subject" => $mybb->input['value'],
+		"edit_uid" => $mybb->user['uid']
 	);
-	$db->update_query(TABLE_PREFIX."posts", $new_subject, "pid='".$post['pid']."'");
-	
-	// If this is a thread subject we're editing, also update the thread subject.
-	if($mybb->input['tid'])
+	$posthandler->set_data($updatepost);
+
+	// Now let the post handler do all the hard work.
+	if(!$posthandler->validate_post())
 	{
-		$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid='".$thread['tid']."'");
+		$post_errors = $posthandler->get_friendly_errors();
+		$errors = implode("\n\n", $post_errors);
+		xmlhttp_error($errors);
 	}
-	
+	// No errors were found, we can call the update method.
+	else
+	{
+		$posthandler->update_post();
+	}
+
 	// Send our headers.
 	header("Content-type: text/html; charset=utf-8");
 	
@@ -272,7 +282,7 @@ else if($mybb->input['action'] == "edit_post")
 			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
-	}	
+	}
 	if($mybb->input['do'] == "get_post")
 	{
 		// Send our headers.
@@ -286,19 +296,33 @@ else if($mybb->input['action'] == "edit_post")
 	else if($mybb->input['do'] == "update_post")
 	{
 		$message = rawurldecode($mybb->input['value']);
-		$updatepost = array(
-			"message" => $db->escape_string($message),
-		);
 
-		// If we need to show the edited by, let's do so.
-		if(($mybb->settings['showeditedby'] == "yes" && ismod($post['fid'], "caneditposts", $post['edit_uid']) != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && ismod($post['fid'], "caneditposts", $post['edit_uid']) == "yes"))
+		// Set up posthandler.
+		require_once MYBB_ROOT."inc/datahandlers/post.php";
+		$posthandler = new PostDataHandler("update");
+		$posthandler->action = "post";
+
+		// Set the post data that came from the input to the $post array.
+		$updatepost = array(
+			"pid" => $mybb->input['pid'],
+			"message" => $message,
+			"edit_uid" => $mybb->user['uid']
+		);
+		$posthandler->set_data($updatepost);
+
+		// Now let the post handler do all the hard work.
+		if(!$posthandler->validate_post())
 		{
-			$updatepost['edituid'] = intval($post['edit_uid']);
-			$updatepost['edittime'] = time();
+			$post_errors = $posthandler->get_friendly_errors();
+			$errors = implode("\n\n", $post_errors);
+			xmlhttp_error($errors);
 		}
-		
-		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".$mybb->input['pid']."'");
-		
+		// No errors were found, we can call the update method.
+		else
+		{
+			$posthandler->update_post();
+		}
+
 		require MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
 		

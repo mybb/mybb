@@ -94,12 +94,18 @@ class PostDataHandler extends DataHandler
 	 */
 	function verify_subject()
 	{
-		$subject = &$this->data['subject'];
-		// Check for correct subject content.
+		global $db;
+		$post = &$this->data;
+		$subject = &$post['subject'];
 
 		// Are we editing an existing thread or post?
 		if($this->method == "update" && $post['pid'])
 		{
+			if(!$post['tid'])
+			{
+				$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='".intval($post['pid'])."'");
+				$post['tid'] = $db->fetch_field($query, "tid");
+			}
 			// Here we determine if we're editing the first post of a thread or not.
 			$options = array(
 				"limit" => 1,
@@ -107,7 +113,7 @@ class PostDataHandler extends DataHandler
 				"order_by" => "dateline",
 				"order_dir" => "asc"
 			);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid, $options);
+			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='".$post['tid']."'", $options);
 			$first_check = $db->fetch_array($query);
 			if($first_check['pid'] == $post['pid'])
 			{
@@ -126,7 +132,8 @@ class PostDataHandler extends DataHandler
 			}
 			elseif(strlen(trim($subject)) == 0)
 			{
-				$subject = "[no subject]";
+				$thread = get_thread($post['tid']);
+				$subject = "RE: ".$thread['subject'];
 			}
 		}
 
@@ -135,7 +142,8 @@ class PostDataHandler extends DataHandler
 		{
 			if(strlen(trim($subject)) == 0)
 			{
-				$subject = "[no subject]";
+				$thread = get_thread($post['tid']);
+				$subject = "RE: ".$thread['subject'];
 			}
 		}
 
@@ -218,7 +226,7 @@ class PostDataHandler extends DataHandler
 	{
 		global $mybb;
 
-		$post = &$this->post;
+		$post = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
 		if($mybb->settings['postfloodcheck'] == "on" && $post['uid'] != 0 && $this->admin_override == false)
@@ -1174,7 +1182,6 @@ class PostDataHandler extends DataHandler
 		}
 
 		$plugins->run_hooks("datahandler_post_update");
-
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".intval($post['pid'])."'");
 		
 		update_thread_attachment_count($post['tid']);

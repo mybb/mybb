@@ -110,6 +110,7 @@ inlineEditor.prototype = {
 		value = this.element.innerHTML;
 		this.textbox = document.createElement("input");
 		this.textbox.style.width = "95%";
+		this.textbox.className = "textbox";
 		this.textbox.type = "text";
 		this.textbox.onblur = this.onBlur.bindAsEventListener(this);
 		this.textbox.onkeypress = this.onKeyPress.bindAsEventListener(this);
@@ -144,7 +145,7 @@ inlineEditor.prototype = {
 	{
 		this.textbox.onblur = "";
 		newValue = MyBB.HTMLchars(this.textbox.value);
-		if(newValue != this.element.innerHTML)
+		if(typeof(newValue) != "undefined" && newValue != '' && newValue != this.element.innerHTML)
 		{
 			this.element.innerHTML = newValue;
 			this.lastIndex = this.currentIndex;

@@ -31,15 +31,18 @@ if(!$announcement)
 
 // Get forum info
 $fid = $announcement['fid'];
-$forum = get_forum($fid);
-
-if(!$forum)
+if($fid > 0)
 {
-	error($lang->error_invalidforum);
-}
+	$forum = get_forum($fid);
 
-// Make navigation
-makeforumnav($forum['fid']);
+	if(!$forum)
+	{
+		error($lang->error_invalidforum);
+	}
+
+	// Make navigation
+	makeforumnav($forum['fid']);
+}
 addnav($lang->nav_announcements);
 
 // Permissions

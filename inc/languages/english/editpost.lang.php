@@ -32,6 +32,7 @@ $l['redirect_nodelete'] = "The post was not deleted because you didn't check the
 $l['redirect_postedited'] = "Thank you, this post has been edited. <br />You will now be returned to the thread.";
 $l['redirect_postedited_poll'] = "Thank you, this post has been edited. <br />Because you opted to post a poll, you'll now be taken to the poll creation page.";
 $l['error_invalidpost'] = "Sorry, but you seem to have followed an invalid address. Please be sure the specified post exists and try again.";
+$l['redirect_threaddeleted'] = "Thank you, the thread has been deleted.<br />You will now be returned to the forum.";
 $l['redirect_postdeleted'] = "Thank you, the post has been deleted.<br />You will now be returned to the thread.";
 $l['redirect_threadclosed'] = "You edit existing posts in this thread because it has been closed by a moderator.";
 ?>
