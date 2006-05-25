@@ -1,4 +1,4 @@
-<?php
+z<?php
 /**
  * MyBB 1.2
  * Copyright © 2006 MyBB Group, All Rights Reserved
@@ -266,7 +266,7 @@ function makeselectcode($title, $name, $table, $tableid, $optiondisp, $selected=
 			"order_by" => $order
 		);
 	}
-	
+
 	$query = $db->simple_select(TABLE_PREFIX."$table", "$tableid, $optiondisp", $condition, $options);
 	if($blank && !$selected)
 	{
@@ -759,9 +759,9 @@ function cperror($message="")
 function cpmessage($message="")
 {
 	global $lang;
-	if(!$message) 
-	{ 
-		$message = $lang->cp_message; 
+	if(!$message)
+	{
+		$message = $lang->cp_message;
 	}
 	cpheader("", 0);
 	starttable("65%");
@@ -774,9 +774,9 @@ function cpmessage($message="")
 function cpredirect($url, $message="")
 {
 	global $lang;
-	if(!$message) 
-	{ 
-		$message = $lang->redirect_msg; 
+	if(!$message)
+	{
+		$message = $lang->redirect_msg;
 	}
 	cpheader("", 0);
 	starttable("65%");
@@ -927,12 +927,12 @@ function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $ext
 		$forumselect .= ">$depth$startforum[name]</option>";
 		$depth .= "--";
 	}
-	
+
 	$options = array(
 		"order_by" => "disporder"
 	);
 	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='$fid'", $options);
-	
+
 	while($forum = $db->fetch_array($query))
 	{
 		forumselect($name, $selected, $forum[fid], $depth, $shownone, $extra);
@@ -981,8 +981,8 @@ function getadminpermissions($get_uid="", $get_gid="")
 			"order_dir" => "ASC",
 			"limit" => "1"
 		);
-		
-		// A group only		
+
+		// A group only
 		$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "(uid='$gid' OR uid='0') AND permsset != ''", $options);
 		$perms = $db->fetch_array($query);
 		return $perms;
@@ -1049,7 +1049,7 @@ function logadmin()
 	}
 	$now = time();
 	$ipaddress = getip();
-	
+
 	$insertquery = array(
 		"uid" => $mybbadmin['uid'],
 		"dateline" => $now,
@@ -1058,8 +1058,8 @@ function logadmin()
 		"querystring" => $db->escape_string($querystring),
 		"ipaddress" => $ipaddress
 	);
-	
-	$db->insert_query(TABLE_PREFIX."adminlog", $insertquery);	
+
+	$db->insert_query(TABLE_PREFIX."adminlog", $insertquery);
 }
 
 function buildacpnav()
@@ -1206,11 +1206,11 @@ function getElemRefs(id) {
 	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_upload."</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_all."</td>\n";
 	echo "</tr>\n";
-	
+
 	$options = array(
-		"order_by" = > "title"
+		"order_by" => "title"
 	);
-	
+
 	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "", $options);
 
 	while($usergroup = $db->fetch_array($query))
@@ -1307,9 +1307,9 @@ function getElemRefs(id) {
 function savequickperms($fid)
 {
 	global $db, $inherit, $canview, $canpostthreads, $canpostreplies, $canpostpolls, $canpostattachments, $cache;
-	
+
 	$query = $db->simple_select(TABLE_PREFIX."usergroups");
-	
+
 	while($usergroup = $db->fetch_array($query))
 	{
 		// Delete existing permissions
@@ -1366,7 +1366,7 @@ function savequickperms($fid)
 			{
 				$ppost = "yes";
 			}
-			
+
 			$insertquery = array(
 				"fid" => $fid,
 				"gid" => $usergroup['gid'],
@@ -1384,7 +1384,7 @@ function savequickperms($fid)
 				"canvotepolls" => $pview,
 				"cansearch" => $pview
 			);
- 			
+
 			$db->insert_query(TABLE_PREFIX."forumpermissions", $insertquery);
 		}
 	}
@@ -1550,7 +1550,7 @@ function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 function get_parent_theme_bits($pid)
 {
 	global $db, $themebits;
-	
+
 	$query = $db->simple_select(TABLE_PREFIX."themes", "themebits", "tid='$pid'");
 	$parent = $db->fetch_array($query);
 	$bits = unserialize($parent['themebits']);
@@ -1668,7 +1668,7 @@ function makethemebitedit($title, $name)
 			"order_by" => "title",
 			"order_dir" => "ASC"
 		);
-		
+
 		$query = $db->simple_select(TABLE_PREFIX."templatesets", "*", "", $options);
 
 		while($templateset = $db->fetch_array($query))
@@ -1715,11 +1715,11 @@ function makethemebitedit($title, $name)
 function cache_themes()
 {
 	global $db, $tcache;
-	
+
 	$options = array(
 		"order_by" => "pid, name"
 	);
-	
+
 	$query = $db->simple_select(TABLE_PREFIX."themes", "*", "", $options);
 
 	while($theme = $db->fetch_array($query))
@@ -1740,8 +1740,8 @@ function make_theme_list($tid="0", $depth="")
 	if(!is_array($tcache2))
 	{
 		$query = $db->query("
-			SELECT style, COUNT(uid) AS users 
-			FROM ".TABLE_PREFIX."users 
+			SELECT style, COUNT(uid) AS users
+			FROM ".TABLE_PREFIX."users
 			GROUP BY style
 		");
 		while($userstyle = $db->fetch_array($query))
@@ -1900,7 +1900,7 @@ function update_theme($tid, $pid="", $themebits="", $css="", $child=0, $isnew=0)
 	$theme['cssbits'] = $db->escape_string(serialize($theme['cssbits']));
 	$theme['extracss'] = $db->escape_string($theme['extracss']);
 	$db->update_query(TABLE_PREFIX."themes", $theme, "WHERE tid='$tid'");
-	
+
 	// Cache the CSS if we're supposed to
 	update_css_file($tid);
 
@@ -1941,7 +1941,7 @@ function killempty($array)
 function rebuildsettings()
 {
 	global $db, $mybb;
-	
+
 	$options = array(
 		"order_by" => "title",
 		"order_dir" => "ASC"
@@ -2026,7 +2026,7 @@ function build_date_dropdown($id, $options=array())
 		}
 	}
 	krsort($years);
-	
+
 	// And the years.
 	$dropdown .= "<select name=\"{$id}_year\">\n";
 	foreach($years as $k => $v)
