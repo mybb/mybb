@@ -34,13 +34,17 @@ function getforums($pid="0")
 	global $db, $forumlist, $ownperms, $parentperms, $lang;
 	if(!$ownperms)
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions");
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions");
 		while($permissions = $db->fetch_array($query))
 		{
 			$ownperms[$permissions['fid']][$permissions['gid']] = $permissions['pid'];
 		}
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE pid='$pid' ORDER BY disporder ASC");
+	$options = array(
+		"order_by" => "disporder",
+		"order_dir" => "ASC"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='$pid'", $options);
 	while($forum = $db->fetch_array($query))
 	{
 		$forumlist .= "\n<li><b>$forum[name]</b>\n";
@@ -57,7 +61,7 @@ function getforums($pid="0")
 			else
 			{
 				$sql = buildparentlist($forum['fid']);
-				$cusquery = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions WHERE $sql AND gid='$usergroup[gid]'");
+				$cssquery = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "$sql AND gid='$usergroup[gid]'");
 				$customperms = $db->fetch_array($cusquery);
 				if($customperms['pid'])
 				{
@@ -110,7 +114,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		if($pid)
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."forumpermissions WHERE pid='$pid'");
+			$db->delete_query(TABLE_PREFIX."forumpermissions", "pid='$pid'");
 		}
 	}
 	else
@@ -136,7 +140,25 @@ if($mybb->input['action'] == "do_edit")
 			$sqlarray['fid'] = $fid;
 			$sqlarray['gid'] = intval($mybb->input['gid']);
 			$db->insert_query(TABLE_PREFIX."forumpermissions", $sqlarray);
-			$db->query("INSERT INTO ".TABLE_PREFIX."forumpermissions (fid, gid, canview, candlattachments, canpostthreads, canpostreplys, canpostattachments, canratethreads, caneditposts, candeleteposts, candeletethreads, caneditattachments, canpostpolls, canvotepolls, cansearch) VALUES ('$fid', '$gid', '$canview', '$candlattachments', '$canpostthreads', '$canpostreplys', '$canpostattachments', '$canratethreads', '$caneditposts', '$candeleteposts', '$candeletethreads', '$caneditattachments', '$canpostpolls', '$canvotepolls', '$cansearch')");
+			$insertquery = array(
+				"fid" => $fid,
+				"gid" => $gid,
+				"canview" => $canview,
+				"candlattachments" => $candlattachments,
+				"canpostthreads" => $canpostthreads,
+				"canpostreplys" => $canpostreplys,
+				"canpostattachments" => $canpostattachments,
+				"canratethreads" => $canratethreads,
+				"caneditposts" => $caneditposts,
+				"candeleteposts" => $candeleteposts,
+				"candeletethreads" => $candeletethreads,
+				"caneditattachments" => $caneditattachments,
+				"canpostpolls" => $canpostpolls,
+				"canvotepolls" => $canvotepolls,
+				"cansearch" => $cansearch
+			);
+			
+			$db->insert_query(TABLE_PREFIX."forumpermissions", $insertquery);
 		}
 		else
 		{
@@ -157,11 +179,14 @@ if($mybb->input['action'] == "edit")
 	}
 	if($pid)
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions WHERE pid='$pid'");
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "pid='$pid'");
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions WHERE fid='$fid' AND gid='$gid' LIMIT 1");
+		$options = array(
+			"limit" => "1"
+		);
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "fid='$fid' AND gid='$gid'", $options);
 	}
 	$forumpermissions = $db->fetch_array($query);
 	if(!$fid)
@@ -172,15 +197,15 @@ if($mybb->input['action'] == "edit")
 	{
 		$gid = $forumpermissions['gid'];
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$gid'");
+	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='$gid'");
 	$usergroup = $db->fetch_array($query);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$fid'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
 	$forum = $db->fetch_array($query);
 	startform("forumpermissions.php", "", "do_edit");
 	$sperms = $forumpermissions;
 
 	$sql = buildparentlist($fid);
-	$cusquery = $db->query("SELECT * FROM ".TABLE_PREFIX."forumpermissions WHERE $sql AND gid='$gid'");
+	$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "$sql AND gid='$gid'");
 	$customperms = $db->fetch_array($cusquery);
 
 	if($forumpermissions['pid'])
@@ -209,7 +234,7 @@ if($mybb->input['action'] == "edit")
 		starttable();
 		makelabelcode($lang->inherit_note);
 		endtable();
-		echo "<br>";
+		echo "<br />";
 	}
 	starttable();
 	$lang->edit_permissions = sprintf($lang->edit_permissions, $usergroup['title'], $forum['name']);

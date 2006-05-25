@@ -39,7 +39,7 @@ if($mybb->input['action'] == "do_add")
 	$sqlarray = array(
 		"name" => $db->escape_string($mybb->input['name']),
 		"path" => $db->escape_string($mybb->input['path']),
-		);
+	);
 	if(empty($sqlarray['name']) || empty($sqlarray['path']))
 	{
 		cperror($lang->error_fill_form);
@@ -52,7 +52,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{	
-		$db->query("DELETE FROM ".TABLE_PREFIX."icons WHERE iid='$iid'");
+		$db->delete_query(TABLE_PREFIX."icons", "iid='$iid'");
 		cpredirect("icons.php", $lang->icon_deleted);
 	}
 	else
@@ -66,7 +66,7 @@ if($mybb->input['action'] == "do_edit")
 	$sqlarray = array(
 		"name" => $db->escape_string($mybb->input['name']),
 		"path" => $db->escape_string($mybb->input['path']),
-		);
+	);
 	if(empty($sqlarray['name']) || empty($sqlarray['path']))
 	{
 		cperror($lang->error_fill_form);
@@ -77,7 +77,7 @@ if($mybb->input['action'] == "do_edit")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons WHERE iid='$iid'");
+	$query = $db->simple_select(TABLE_PREFIX."icons", "*", "iid='$iid'");
 	$icon = $db->fetch_array($query);
 	
 	if(!$icon['iid'])
@@ -103,7 +103,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons WHERE iid='$iid'");
+	$query = $db->simple_select(TABLE_PREFIX."icons", "*", "iid='$iid'");
 	$icon = $db->fetch_array($query);
 	if(!$icon['iid'])
 	{
@@ -118,7 +118,7 @@ if($mybb->input['action'] == "delete")
 	tableheader($lang->delete_icon, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
-	makelabelcode("<center>$lang->delete_icon_confirm<br><br>$yes$no</center>", "");
+	makelabelcode("<div align=\"center\">$lang->delete_icon_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
 	cpfooter();
@@ -187,7 +187,7 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		cperror($lang->invalid_directory);
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons");
+	$query = $db->simple_select(TABLE_PREFIX."icons");
 	while($icon = $db->fetch_array($query))
 	{
 		$aicons[$icon['path']] = 1;
@@ -272,7 +272,7 @@ if($mybb->input['action'] == "addmultiple")
 		echo "<td class=\"subheader\" align=\"center\">$lang->name</td>\n";
 		echo "<td class=\"subheader\" align=\"center\">$lang->del</td>\n";
 		echo "</tr>\n";
-		for($i=$start;$i<$end;$i++)
+		for($i = $start; $i < $end; $i++)
 		{
 			$file = $icons[$i];
 			$ext = getextension($icons[$i]);
@@ -280,7 +280,7 @@ if($mybb->input['action'] == "addmultiple")
 			$name = ucfirst($find);
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><img src=\"../$path/$file\"><br><small>$file</small></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><img src=\"../$path/$file\"><br /><small>$file</small></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"text\" name=\"piname[$file]\" value=\"$name\"></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"right\"><input type=\"checkbox\" name=\"piimport[$file]\" value=\"1\">\n";
 			echo "</tr>\n";
@@ -305,7 +305,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	tableheader($lang->posticons, "", 5);
 	tablesubheader($lang->edit_delete, "", 5);
 
-	$query = $db->query("SELECT COUNT(iid) AS icons FROM ".TABLE_PREFIX."icons");
+	$query = $db->simple_select(TABLE_PREFIX."icons", "COUNT(iid) AS icons");
 	$iconcount = $db->fetch_field($query, "icons");
 	$perpage = intval($mybb->input['perpage']);
 	$page = intval($mybb->input['page']);
@@ -324,7 +324,13 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	}
 	$listed = 0;
 	$altbg = "altbg1";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."icons ORDER BY name ASC LIMIT $start, $perpage");
+	$options = array(
+		"order_by" => "name",
+		"order_dir" => "ASC",
+		"limit_start" => $start,
+		"limit" => $perpage
+	);
+	$query = $db->simple_select(TABLE_PREFIX."icons", "*", "", $options);
 	while($icon = $db->fetch_array($query))
 	{
 		if($listed == "0")
@@ -339,7 +345,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		{
 			$image = "../$icon[path]";
 		}
-		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$icon[name]<br><br><img src=\"$image\"><br><br>";
+		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$icon[name]<br /><br /><img src=\"$image\"><br /><br />";
 		echo "<a href=\"icons.php?action=edit&iid=$icon[iid]&page=$page&perpage=$perpage\">$lang->edit</a> <a href=\"icons.php?action=delete&iid=$icon[iid]&page=$page&perpage=$perpage\">$lang->delete</a>";
 		echo "</td>";
 		$listed++;
@@ -384,7 +390,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			$next = $page + 1;
 			$nextpage = "<a href=\"icons.php?page=$next&perpage=$perpage\">$lang->nextpage</a>";
 		}
-		for($i=1;$i<=$pages;$i++)
+		for($i = 1; $i <= $pages; $i++)
 		{
 			if($i == $page)
 			{

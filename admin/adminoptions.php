@@ -31,7 +31,10 @@ switch($mybb->input['action'])
 
 if($mybb->input['action'] == "do_updateprefs")
 {
-	$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]' LIMIT 1");
+	$options = array(
+		"limit" => "1"
+	);
+	$query $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'", $options);
 	$adminoptions = $db->fetch_array($query);
 	$sqlarray = array(
 		"notes" => $db->escape_string($mybb->input['notes']),
@@ -72,12 +75,10 @@ if($mybb->input['action'] == "do_updateperms")
 	checkadminpermissions("caneditaperms");
 	
 	// Check if there are custom permissions for this admin.
-	$query = $db->query("
-		SELECT permsset
-		FROM ".TABLE_PREFIX."adminoptions
-		WHERE uid='$uid'
-		LIMIT 1
-	");
+	$options = array(
+		"limit" => "1"
+	);
+	$query $db->simple_select(TABLE_PREFIX."adminoptions", "permset", "uid='$uid'", $options);
 	$adminoptions = $db->fetch_array($query);
 	
 	// If no custom permissions are set for this admin, create a blank custom set first.
@@ -133,7 +134,13 @@ if($mybb->input['action'] == "updateperms")
 	$uid = intval($mybb->input['uid']);
 	if($uid > 0)
 	{
-		$query = $db->query("SELECT u.uid, u.username, g.cancp FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g) WHERE u.uid='$uid' AND u.usergroup=g.gid AND g.cancp='yes'");
+		$query = $db->query("
+			SELECT u.uid, u.username, g.cancp 
+			FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g) 
+			WHERE u.uid='$uid' 
+			AND u.usergroup=g.gid 
+			AND g.cancp='yes'
+		");
 		$admin = $db->fetch_array($query);
 		$tsub = sprintf($lang->edit_admin_perms, $admin['username']);
 		$permissions = getadminpermissions($uid);
@@ -190,7 +197,7 @@ if($mybb->input['action'] == "adminpermissions")
 {
 	$usergroups = array();
 	
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE cancp='yes'");
+	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "cancp='yes'");
 	while($usergroup = $db->fetch_array($query))
 	{
 		$usergroups[$usergroup['gid']] = $usergroup;
@@ -207,7 +214,15 @@ if($mybb->input['action'] == "adminpermissions")
 	echo "</tr>\n";
 	$group_list = implode(',', array_keys($usergroups));
 	$secondary_groups = ','.$group_list.',';
-	$query = $db->query("SELECT u.uid, u.username, u.lastactive, u.usergroup, u.additionalgroups, a.permsset FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid=u.uid) WHERE (u.usergroup IN ($group_list) OR CONCAT(',', u.additionalgroups,',') LIKE '%{$secondary_groups}%') ORDER BY u.username ASC");
+	$query = $db->query("
+		SELECT u.uid, u.username, u.lastactive, u.usergroup, u.additionalgroups, a.permsset 
+		FROM ".TABLE_PREFIX."users u 
+		LEFT JOIN ".TABLE_PREFIX."adminoptions a 
+		ON (a.uid=u.uid) 
+		WHERE (u.usergroup IN ($group_list) OR CONCAT(',', u.additionalgroups,',') 
+		LIKE '%{$secondary_groups}%') 
+		ORDER BY u.username ASC
+	");
 	while($admin = $db->fetch_array($query))
 	{
 		$la = mydate($settings['dateformat'].",".$settings['timeformat'], $admin['lastactive']);
@@ -258,7 +273,14 @@ if($mybb->input['action'] == "adminpermissions")
 	echo "<td class=\"subheader\">$lang->groupname</td>\n";
 	echo "<td class=\"subheader\">$lang->perm_options</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT g.title, g.cancp, a.permsset, g.gid FROM (".TABLE_PREFIX."usergroups g) LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid = -g.gid) WHERE g.cancp='yes' ORDER BY g.title ASC");
+	$query = $db->query("
+		SELECT g.title, g.cancp, a.permsset, g.gid 
+		FROM (".TABLE_PREFIX."usergroups g) 
+		LEFT JOIN ".TABLE_PREFIX."adminoptions a 
+		ON (a.uid = -g.gid) 
+		WHERE g.cancp='yes' 
+		ORDER BY g.title ASC
+	");
 	while($group = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
@@ -284,7 +306,7 @@ if($mybb->input['action'] == "adminpermissions")
 }
 if($mybb->input['action'] == "updateprefs" || $mybb->input['action'] == "")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]'");
+	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'");
 	$adminoptions = $db->fetch_array($query);
 
 	$dir = @opendir(MYBB_ADMIN_DIR."/styles");
@@ -316,7 +338,7 @@ if($mybb->input['action'] == "updateprefs" || $mybb->input['action'] == "")
 	tablesubheader($lang->prefs);
 	makelabelcode($lang->cp_style, "<select name=\"cpstyle\" size=\"4\">\n<option value=\"\">Default</option>\n<option value=\"\">---------</option>\n$options</select>");
 	tablesubheader($lang->notepad);
-	makelabelcode("<center><textarea name=\"notes\" rows=\"25\" cols=\"80\">$adminoptions[notes]</textarea></center>", "", 2);
+	makelabelcode("<div align=\"center\"><textarea name=\"notes\" rows=\"25\" cols=\"80\">$adminoptions[notes]</textarea></div>", "", 2);
 	endtable();
 	endform($lang->update_prefs, $lang->reset_button);
 	cpfooter();

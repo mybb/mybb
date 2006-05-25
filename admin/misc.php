@@ -38,8 +38,8 @@ if($mybb->input['action'] == "do_dbmaint")
 			$tablelist .= "," . $tablename;
 		}
 	}
-	$db->query("OPTIMIZE TABLE $tablelist");
-	$db->query("ANALYZE TABLE $tablelist");
+	$db->optimize_table($tablelist);
+	$db->analyze_table($tablelist);
 	cpmessage($lang->dbmaint_done);
 }
 
@@ -50,7 +50,7 @@ if($mybb->input['action'] == "dbmaint")
 	starttable();
 	tableheader($lang->dbmaint);
 	$button = makebuttoncode("dbmaintsubmit", $lang->proceed);
-	makelabelcode("<center>$lang->dbmaint_notice<br><br>$button</center>");
+	makelabelcode("<div align=\"center\">$lang->dbmaint_notice<br /><br />$button</div>");
 	endtable();
 	endform();
 	cpfooter();

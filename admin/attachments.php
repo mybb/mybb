@@ -74,7 +74,7 @@ if($mybb->input['action'] == "do_delete")
 	// remove type from database
 	if($mybb->input['deletesubmit'])
 	{
-		$db->query("DELETE FROM ".TABLE_PREFIX."attachtypes WHERE atid='".intval($mybb->input['atid'])."'");
+		$db->delete_query(TABLE_PREFIX."attachtypes", "atid='".intval($mybb->input['atid'])."'");
 		$cache->updateattachtypes();
 		cpredirect("attachments.php", $lang->type_deleted);
 	}
@@ -162,15 +162,24 @@ if($mybb->input['action'] == "do_search")
 		$sql = substr_replace($sql, "WHERE", 0, 4);
 	}
 	// Get attachments from database list
-	$query = $db->query("SELECT a.*, p.tid, p.fid, t.subject, f.name, u.uid, u.username FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (p.fid=f.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) $sql ORDER BY a.filename");
+	$query = $db->query("
+		SELECT a.*, p.tid, p.fid, t.subject, f.name, u.uid, u.username 
+		FROM ".TABLE_PREFIX."attachments a 
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) 
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) 
+		LEFT JOIN ".TABLE_PREFIX."forums f ON (p.fid=f.fid) 
+		LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) 
+		$sql 
+		ORDER BY a.filename
+	");
 	$num_results = $db->num_rows($query);
 
 	// Get attachments filenames from filesystem
-	if ($uploads = opendir(MYBB_ROOT.$mybb->settings['uploadspath']))
+	if($uploads = opendir(MYBB_ROOT.$mybb->settings['uploadspath']))
 	{
-		while (false !== ($file = readdir($uploads)))
+		while(false !== ($file = readdir($uploads)))
 		{
-			if (substr($file, -7, 7) == ".attach")
+			if(substr($file, -7, 7) == ".attach")
 			{
 				$uploaded_files[] = $file;
 			}
@@ -228,14 +237,7 @@ if($mybb->input['action'] == "do_search")
 		echo "<td class=\"$altbg\">$result[downloads]</td>\n";
 		echo "</tr>\n";
 
-		if($altbg == "altbg1")
-		{
-			$altbg = "altbg2";
-		}
-		else
-		{
-			$altbg = "altbg1";
-		}
+		$altbg = getaltbg();
 	}
 	endtable();
 	endform($lang->delete_selected, $lang->clear_checks);
@@ -249,7 +251,7 @@ if($mybb->input['action'] == "do_search_delete")
 	{
 		foreach($mybb->input['check'] as $aid)
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='".intval($aid)."'");
+			$db->delete_query(TABLE_PREFIX."attachments", "aid='".intval($aid)."'");
 		}
 		cpredirect("attachments.php?action=search", $lang->attachs_deleted);
 	}
@@ -389,7 +391,10 @@ if($mybb->input['action'] == "edit")
 	{
 		// form for editing an attachment type
 		$atid = intval($mybb->input['atid']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes WHERE atid='".$atid."' LIMIT 1");
+		$options = array(
+			"limit" => "1"
+		);
+		$query = $db->simple_select(TABLE_PREFIX."attachtypes", "*", "atid='".$atid."'", $options);
 		$type = $db->fetch_array($query);
 		$type['name'] = htmlspecialchars_uni(stripslashes($type['name']));
 		cpheader();
@@ -413,7 +418,7 @@ if($mybb->input['action'] == "delete")
 {
 	// confirmation page for deleting an attachment type
 	$atid = intval($mybb->input['atid']);
-	$query = $db->query("SELECT name FROM ".TABLE_PREFIX."attachtypes WHERE atid='".$atid."'");
+	$query = $db->simple_select(TABLE_PREFIX."attachtypes", "name", "atid='".$atid."'");
 	$name = stripslashes($db->fetch_field($query, "name"));
 	cpheader();
 	startform("attachments.php", "", "do_delete");
@@ -424,7 +429,7 @@ if($mybb->input['action'] == "delete")
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
 	$lang->delete_confirm = sprintf($lang->delete_confirm, $name);
-	makelabelcode("<center>$lang->delete_confirm<br><br>$yes$no</center>", "");
+	makelabelcode("<div align=\"center\">$lang->delete_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
 	cpfooter();
@@ -433,7 +438,7 @@ if($mybb->input['action'] == "stats")
 {
 	cpheader();
 	
-	$query = $db->query("SELECT COUNT(*) AS attachments, SUM(filesize) AS totalsize, SUM(downloads) AS downloads FROM ".TABLE_PREFIX."attachments");
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS attachments, SUM(filesize) AS totalsize, SUM(downloads) AS downloads");
 	$stats = $db->fetch_array($query);
 	if(!$stats['downloads'])
 	{
@@ -456,7 +461,15 @@ if($mybb->input['action'] == "stats")
 		echo "<td class=\"subheader\" align=\"center\" width=\"20%\">$lang->username</td>\n";
 		echo "<td class=\"subheader\" align=\"center\" width=\"10%\">$lang->downloads</td>\n";
 		echo "</tr>\n";
-		$query = $db->query("SELECT a.*, p.tid, p.subject, u.username FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid) ORDER BY downloads DESC LIMIT 0, 5");
+		
+		$options = array(
+			"order_by" => "downloads",
+			"order_dir" => "DESC",
+			"limit_start" => "0",
+			"limit" => "5"
+		);
+		
+		$query = $db->simple_select(TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)", "a.*, p.tid, p.subject, u.username", "", $options);
 		while($attachment = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
@@ -478,7 +491,15 @@ if($mybb->input['action'] == "stats")
 		echo "<td class=\"subheader\" align=\"center\" width=\"10%\">$lang->filesize</td>\n";
 		echo "</tr>\n";
 		echo "</tr>\n";
-		$query = $db->query("SELECT a.*, p.tid, p.subject, u.username FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid) ORDER BY filesize DESC LIMIT 0, 5");
+		
+		$options = array(
+			"order_by" => "filesize",
+			"order_dir" => "DESC",
+			"limit_start" => "0",
+			"limit" => "5"
+		);
+		
+		$query = $db->simple_select(TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)", "a.*, p.tid, p.subject, u.username", "", $options);
 		while($attachment = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
@@ -510,7 +531,10 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 	echo "<td class=\"subheader\" align=\"center\">$lang->type_max_size</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" colspan=\"2\">$lang->controls</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes ORDER BY name");
+	$options = array(
+		"order_by" => "name"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."attachtypes", "*", "", $options);
 	while($type = $db->fetch_array($query))
 	{
 		$type['name'] = stripslashes($type['name']);

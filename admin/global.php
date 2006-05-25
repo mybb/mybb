@@ -62,7 +62,7 @@ if($mybb->input['do'] == "login")
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if($user['uid'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$user['uid']."'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".$user['uid']."'");
 		$user = $db->fetch_array($query);
 	}
 	$failcheck = 1;
@@ -70,7 +70,7 @@ if($mybb->input['do'] == "login")
 elseif($mybb->input['action'] != "logout")
 {
 	$logon = explode("_", $_COOKIE['mybbadmin'], 2);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".$db->escape_string($logon[0])."'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".$db->escape_string($logon[0])."'");
 	$user = $db->fetch_array($query);
 	if($user['loginkey'] != $logon[1])
 	{
@@ -97,9 +97,9 @@ if($user['uid'])
 	$expires = $time+60*60*24;
 	setcookie("mybbadmin", $user['uid']."_".$user['loginkey'], $expires);
 	$mybbadmin = $mybb->user = $user;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='$user[usergroup]'");
+	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='$user[usergroup]'");
 	$mybb->usergroup = $db->fetch_array($query);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='$user[uid]'");
+	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'");
 	$adminoptions = $db->fetch_array($query);
 	if($adminoptions['cpstyle'] && file_exists(MYBB_ADMIN_DIR."styles/$adminoptions[cpstyle]/stylesheet.css"))
 	{
@@ -171,5 +171,5 @@ else
 }
 $navbits[0]['name'] = $mybb->settings['bbname']." ".$lang->control_panel;
 $navbits[0]['url'] = "index.php?action=home";
-//addacpnav($lang->mybb_admin, "index.php");
+
 ?>

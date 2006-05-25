@@ -57,8 +57,12 @@ if($mybb->input['action'] == "do_add")
 	$db->insert_query(TABLE_PREFIX."profilefields", $sqlarray);
 	$fid = $db->insert_id();
 	$fieldname = "fid$fid";
-	$db->query("ALTER TABLE ".TABLE_PREFIX."userfields ADD $fieldname TEXT;");
-	$db->query("OPTIMIZE TABLE ".TABLE_PREFIX."userfields");
+	$db->query("
+		ALTER 
+		TABLE ".TABLE_PREFIX."userfields 
+		ADD $fieldname TEXT
+	");
+	$db->optimize_table(TABLE_PREFIX."userfields");
 	cpredirect("profilefields.php", $lang->field_added);
 }
 if($mybb->input['action'] == "do_delete")
@@ -66,10 +70,14 @@ if($mybb->input['action'] == "do_delete")
 	if($mybb->input['deletesubmit'])
 	{	
 		$fid = intval($mybb->input['fid']);
-		$db->query("DELETE FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
+		$db->delete_query(TABLE_PREFIX."profilefields", "fid='$fid'");
 		$fieldname = "fid$fid";
-		$db->query("ALTER TABLE ".TABLE_PREFIX."userfields DROP $fieldname");
-		$db->query("OPTIMIZE TABLE ".TABLE_PREFIX."userfields");
+		$db->query("
+			ALTER 
+			TABLE ".TABLE_PREFIX."userfields 
+			DROP $fieldname
+		");
+		$db->optimize_table(TABLE_PREFIX."userfields");
 		cpredirect("profilefields.php", $lang->field_deleted);
 	}
 	else
@@ -126,7 +134,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "delete")
 {
 	$fid = intval($mybb->input['fid']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
+	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "fid='$fid'");
 	$profilefield = $db->fetch_array($query);
 	cpheader();
 	startform("profilefields.php", "", "do_delete");
@@ -137,7 +145,7 @@ if($mybb->input['action'] == "delete")
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
 	$lang->delete_confirm = sprintf($lang->delete_confirm, $profilefield['name']);
-	makelabelcode("<center>$lang->delete_confirm<br><br>$yes$no</center>", "");
+	makelabelcode("<div align=\"center\">$lang->delete_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
 	cpfooter();
@@ -145,7 +153,7 @@ if($mybb->input['action'] == "delete")
 if($mybb->input['action'] == "edit")
 {
 	$fid = intval($mybb->input['fid']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE fid='$fid'");
+	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "fid='$fid'");
 	$profilefield = $db->fetch_array($query);
 
 	$profilefield['name'] = stripslashes($profilefield['name']);
@@ -195,7 +203,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	echo "<td class=\"subheader\" align=\"center\">$lang->hidden</td>\n";
 	echo "<td class=\"subheader\" align=\"center\">$lang->controls</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
+	$options = array(
+		"order_by" => "disporder"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "", $options);
 	while($profilefield = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();

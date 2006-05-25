@@ -53,7 +53,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{	
-		$db->query("DELETE FROM ".TABLE_PREFIX."usertitles WHERE utid='".intval($mybb->input['utid'])."'");
+		$db->delete_query(TABLE_PREFIX."usertitles", "utid='".intval($mybb->input['utid'])."'");
 		cpredirect("usertitles.php", $lang->title_deleted);
 	}
 	else
@@ -86,15 +86,16 @@ if($mybb->input['action'] == "add")
 	tableheader($lang->new_title);
 	makeinputcode($lang->title, "title");
 	makeinputcode($lang->minimum_posts, "posts", "", "4");
-	makeinputcode($lang->stars."<br><small>$lang->stars_description</small>", "stars");
-	makeinputcode($lang->star_image."<br><small>$lang->star_image_description</small>", "starimage");
+	makeinputcode($lang->stars."<br /><small>$lang->stars_description</small>", "stars");
+	makeinputcode($lang->star_image."<br /><small>$lang->star_image_description</small>", "starimage");
 	endtable();
 	endform($lang->add_title, $lang->reset_button);
 	cpfooter();
 }
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE utid='".intval($mybb->input['utid'])."'");
+	
+	$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$title = $db->fetch_array($query);
 	$lang->delete_title = sprintf($lang->delete_title, $title['title']);
 	$lang->delete_title_confirm = sprintf($lang->delete_title_confirm, $title['title']);
@@ -105,14 +106,14 @@ if($mybb->input['action'] == "delete")
 	tableheader($lang->delete_title, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
-	makelabelcode("<center>$lang->delete_title_confirm<br><br>$yes$no</center>", "");
+	makelabelcode("<div align=\"center\">$lang->delete_title_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
 	cpfooter();
 }
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles WHERE utid='".intval($mybb->input['utid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$title = $db->fetch_array($query);
 	$lang->edit_title = sprintf($lang->edit_title, $title['title']);
 	cpheader();
@@ -122,8 +123,8 @@ if($mybb->input['action'] == "edit")
 	tableheader($lang->edit_title);
 	makeinputcode($lang->title, "title", $title[title]);
 	makeinputcode($lang->minimum_posts, "posts", "$title[posts]", "4");
-	makeinputcode($lang->stars."<br><small>$lang->stars_description</small>", "stars", $title[stars]);
-	makeinputcode($lang->star_image."<br><small>$lang->star_image_description</small>", "starimage", $title[starimage]);
+	makeinputcode($lang->stars."<br /><small>$lang->stars_description</small>", "stars", $title[stars]);
+	makeinputcode($lang->star_image."<br /><small>$lang->star_image_description</small>", "starimage", $title[starimage]);
 	endtable();
 	endform($lang->update_title, $lang->reset_button);
 	cpfooter();
@@ -140,7 +141,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	starttable();
 	tableheader($lang->usertitles);
 	tablesubheader($lang->select_edit_delete);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles ORDER BY posts");
+	$options = array(
+		"order_by" => "posts"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "" $options);
 	while($title = $db->fetch_array($query))
 	{
 		$usertitles .= "\n<li><b>$title[title]</b> ($lang->minimum_posts $title[posts]) ".

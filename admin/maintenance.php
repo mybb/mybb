@@ -42,7 +42,7 @@ if($mybb->input['action'] == "do_cache")
 	{
 		cpheader();
 		starttable();
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."datacache WHERE title='".$db->escape_string($cacheitem)."'");
+		$query = $db->simple_select(TABLE_PREFIX."datacache", "*", "title='".$db->escape_string($cacheitem)."'");
 		$cacheitem = $db->fetch_array($query);
 		$cachecontents = unserialize($cacheitem['cache']);
 		if(empty($cachecontents))
@@ -82,7 +82,7 @@ if($mybb->input['action'] == "cache")
 	echo "<td class=\"subheader\" align=\"center\">$lang->size</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" colspan=\"2\">$lang->options</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT title,cache FROM ".TABLE_PREFIX."datacache");
+	$query = $db->simple_select(TABLE_PREFIX."datacache", "title,cache");
 	while($cacheitem = $db->fetch_array($query))
 	{
 		$size = getfriendlysize(strlen($cacheitem['cache']));
@@ -121,7 +121,7 @@ if($mybb->input['action'] == "rebuildstats")
 	starttable();
 	tableheader($lang->rebuildstats);
 	$button = makebuttoncode("rebuildstatssubmit", $lang->proceed);
-	makelabelcode("<center>$lang->rebuildstats_notice<br><br>$button</center>");
+	makelabelcode("<div align=\"center\">$lang->rebuildstats_notice<br /><br />$button</div>");
 	endtable();
 	endform();
 	cpfooter();

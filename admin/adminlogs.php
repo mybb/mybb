@@ -59,7 +59,7 @@ if($mybb->input['action'] == "do_prune")
 	{
 		$thequery = "WHERE $thequery";
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."adminlog $thequery");
+	$db->delete_query(TABLE_PREFIX."adminlog", $thequery);
 	cpredirect("adminlogs.php", $lang->log_pruned);
 }
 elseif($mybb->input['action'] == "view")
@@ -103,7 +103,13 @@ elseif($mybb->input['action'] == "view")
 	{
 		$order = "l.dateline DESC";
 	}
-	$query = $db->query("SELECT COUNT(dateline) AS count FROM ".TABLE_PREFIX."adminlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) ".$squery);
+	$query = $db->query("
+		SELECT COUNT(dateline) AS count 
+		FROM ".TABLE_PREFIX."adminlog l 
+		LEFT JOIN ".TABLE_PREFIX."users u 
+		ON (u.uid=l.uid) ".
+		$squery
+	);
 	$rescount = $db->fetch_field($query, "count");
 	if(!$rescount)
 	{
@@ -157,7 +163,14 @@ elseif($mybb->input['action'] == "view")
 	echo "<td class=\"subheader\" align=\"center\">$lang->queryinfo</td>\n";
 	echo "<td class=\"subheader\" align=\"center\">$lang->ipaddress</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT l.*, u.username FROM ".TABLE_PREFIX."adminlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) $squery ORDER BY $order LIMIT $start, $perpage");
+	$query = $db->query("
+		SELECT l.*, u.username 
+		FROM ".TABLE_PREFIX."adminlog l 
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) 
+		$squery 
+		ORDER BY $order 
+		LIMIT $start, $perpage
+	");
 	while($logitem = $db->fetch_array($query))
 	{
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
@@ -173,19 +186,29 @@ elseif($mybb->input['action'] == "view")
 	}
 	if($prevpage || $nextpage)
 	{
-		tablesubheader("<center>$firstpage$prevpage$nextpage$lastpage</center>", "", 6);
+		tablesubheader("<div align=\"center\">$firstpage$prevpage$nextpage$lastpage</div>", "", 6);
 	}
 	endtable();
 	cpfooter();
 }
 else
 {
-	$query = $db->query("SELECT DISTINCT scriptname FROM ".TABLE_PREFIX."adminlog ORDER BY scriptname ASC");
+	$query = $db->query("
+		SELECT DISTINCT scriptname 
+		FROM ".TABLE_PREFIX."adminlog 
+		ORDER BY scriptname ASC
+	");
 	while($script = $db->fetch_array($query))
 	{
 		$soptions .= "<option value=\"$script[scriptname]\">$script[scriptname]</option>\n";
 	}
-	$query = $db->query("SELECT DISTINCT l.uid, u.username FROM ".TABLE_PREFIX."adminlog l LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid) ORDER BY u.username ASC");
+	$query = $db->query("
+		SELECT DISTINCT l.uid, u.username 
+		FROM ".TABLE_PREFIX."adminlog l 
+		LEFT JOIN ".TABLE_PREFIX."users u 
+		ON (l.uid=u.uid) 
+		ORDER BY u.username ASC
+	");
 	while($user = $db->fetch_array($query))
 	{
 		$uoptions .= "<option value=\"$user[uid]\">$user[username]</option>\n";

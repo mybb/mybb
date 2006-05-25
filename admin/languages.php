@@ -316,7 +316,7 @@ if($mybb->input['action'] == "edit")
 			//tablesubheader(array($lang->variable, $languages[$editlang], $languages[$editwith]));
 			if(count($editvars) == 0)
 			{
-				makelabelcode("<center>".$lang->no_variables."</center>", "", 1);
+				makelabelcode("<div align=\"center\">".$lang->no_variables."</div>", "", 1);
 			}
 			else
 			{
@@ -340,7 +340,7 @@ if($mybb->input['action'] == "edit")
 			tableheader($lang->editing_file_in_set, "", 1);
 			if(count($editvars) == 0)
 			{
-				makelabelcode("<center>".$lang->no_variables."</center>", "", 1);
+				makelabelcode("<div align=\"center\">".$lang->no_variables."</div>", "", 1);
 			}
 			else
 			{
@@ -358,7 +358,7 @@ if($mybb->input['action'] == "edit")
 		{
 			tablesubheader($lang->new_variables, "", 3);
 			// Make rows for creating new variables
-			for($i=0; $i<5; $i++)
+			for($i = 0; $i < 5; $i++)
 			{
 				$bgcolor = getaltbg();
 				echo "<tr>\n";
@@ -383,7 +383,8 @@ if($mybb->input['action'] == "edit")
 		
 		// Get files in main folder
 		$filenames = array();
-		if($handle = opendir($folder)) {
+		if($handle = opendir($folder)) 
+		{
 			while(false !== ($file = readdir($handle)))
 			{
 				if(preg_match("#\.lang\.php$#", $file))
@@ -396,7 +397,8 @@ if($mybb->input['action'] == "edit")
 		}
 		// Get files in admin folder
 		$adminfilenames = array();
-		if($handle = opendir($folder."/admin")) {
+		if($handle = opendir($folder."/admin")) 
+		{
 			while(false !== ($file = readdir($handle)))
 			{
 				if(preg_match("#\.lang\.php$#", $file))
@@ -471,7 +473,7 @@ if(empty($mybb->input['action']))
 		// Make other options select list
 		$optionlist = array(
 			"editset" => $lang->edit_set,
-			);
+		);
 		$options = "<form method=\"get\">";
 		$options .= "<input type=\"hidden\" name=\"lang\" value=\"$key\" />";
 		$options .= makehopper("action", $optionlist);

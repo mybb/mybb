@@ -69,16 +69,16 @@ if($mybb->input['action'] == "do_delete")
 	{	
 		if(!empty($mybb->input['hid']))
 		{
-			$db->query("DELETE FROM ".TABLE_PREFIX."helpdocs WHERE hid='".intval($mybb->input['hid'])."'");
+			$db->delete_query(TABLE_PREFIX."helpdocs", "hid='".intval($mybb->input['hid'])."'");
 			cpredirect("helpdocs.php", $lang->doc_deleted);
 		}
 		elseif(!empty($mybb->input['sid']))
 		{
 			$sid = intval($mybb->input['sid']);
-			$db->query("DELETE FROM ".TABLE_PREFIX."helpsections WHERE sid='".$sid."'");
-			$db->query("DELETE FROM ".TABLE_PREFIX."helpdocs WHERE sid='".$sid."' AND hid>'7'");
+			$db->delete_query(TABLE_PREFIX."helpsections", "sid='".$sid."'");
+			$db->delete_query(TABLE_PREFIX."helpdocs", "WHERE sid='".$sid."' AND hid>'7'");
 			// Move back any defaults left without a category
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE sid='".$sid."'");
+			$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "sid='".$sid."'");
 			while($doc = $db->fetch_array($query))
 			{
 				if($doc['hid'] <= 4)
@@ -89,7 +89,10 @@ if($mybb->input['action'] == "do_delete")
 				{
 					$newsid = "2";
 				}
-				$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET sid='$newsid' WHERE hid='$doc[hid]'");
+				$updatearray = array(
+					"sid" => $newsid
+				);
+				$db->update_query(TABLE_PREFIX."helpdocs", $updatearray, "hid='$doc[hid]'");
 			}
 			cpredirect("helpdocs.php", $lang->section_deleted);
 		}
@@ -136,7 +139,7 @@ if($mybb->input['action'] == "edit")
 	if($mybb->input['hid'])
 	{
 		$hid = intval($mybb->input['hid']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
+		$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "hid='$hid'");
 		$doc = $db->fetch_array($query);
 		$doc['description'] = stripslashes($doc['description']);
 		$doc['document'] = stripslashes($doc['document']);
@@ -169,7 +172,7 @@ if($mybb->input['action'] == "edit")
 	elseif($mybb->input['sid'])
 	{
 		$sid = intval($mybb->input['sid']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid='$sid'");
+		$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "sid='$sid'");
 		$section = $db->fetch_array($query);
 		startform("helpdocs.php", "", "do_edit");
 		makehiddencode("sid", "$sid");
@@ -203,7 +206,7 @@ if($mybb->input['action'] == "delete")
 	if($mybb->input['hid'])
 	{
 		$hid = intval($mybb->input['hid']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE hid='$hid'");
+		$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "hid='$hid'");
 		$doc = $db->fetch_array($query);
 		if($mybb->input['hid'] > 7)
 		{
@@ -215,7 +218,7 @@ if($mybb->input['action'] == "delete")
 			tableheader($lang->delete_doc, "", 1);
 			$yes = makebuttoncode("deletesubmit", $lang->yes);
 			$no = makebuttoncode("no", $lang->no);
-			makelabelcode("<center>$lang->delete_doc_confirm<br><br>$yes$no</center>", "");
+			makelabelcode("<div align=\"center\">$lang->delete_doc_confirm<br /><br />$yes$no</div>", "");
 			endtable();
 			endform();
 		}
@@ -223,7 +226,7 @@ if($mybb->input['action'] == "delete")
 	elseif($mybb->input['sid'])
 	{
 		$sid = intval($mybb->input['sid']);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid='$sid'");
+		$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "sid='$sid'");
 		$section = $db->fetch_array($query);
 		if($section['sid'] > 2)
 		{
@@ -235,7 +238,7 @@ if($mybb->input['action'] == "delete")
 			tableheader($lang->delete_section, "", 1);
 			$yes = makebuttoncode("deletesubmit", $lang->yes);
 			$no = makebuttoncode("no", $lang->no);
-			makelabelcode("<center>$lang->delete_section_confirm<br><br>$yes$no</center>", "");
+			makelabelcode("<div align=\"center\">$lang->delete_section_confirm<br /><br />$yes$no</div>", "");
 			endtable();
 			endform();
 		}
@@ -283,8 +286,12 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	$hopto[] = "<input type=\"button\" value=\"$lang->hopto_add\" onclick=\"hopto('helpdocs.php?action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 	// Get default sections/documents
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid<='2' ORDER BY disporder");
-	while($section = $db->fetch_array($query)) {
+	$options = array(
+		"order_by" => "disporder"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "sid <= '2'", $options);
+	while($section = $db->fetch_array($query)) 
+	{
 		$disablednote = "";
 		if($section['enabled'] == "no")
 		{
@@ -293,7 +300,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		$defaulthelpsections .= "<li><b>$section[name]</b> $disablednote".
 			makelinkcode($lang->edit, "helpdocs.php?action=edit&sid=$section[sid]").
 			"</li>\n<ul>\n";
-		$query2 = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE sid='$section[sid]' ORDER BY disporder");
+		$options = array(
+			"order_by" => "disporder"
+		);
+		$query2 = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "sid='$section[sid]'", $options);
 		while($doc = $db->fetch_array($query2))
 		{
 			$disablednote = "";
@@ -312,7 +322,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		$defaulthelpsections .= "</ul>\n<br />\n";
 	}
 	// Get custom help sections/documents
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."helpsections WHERE sid>'2' ORDER BY disporder");
+	$options = array(
+		"order_by" => "disporder"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "sid > '2'", $options);
 	while($section = $db->fetch_array($query))
 	{
 		$disablednote = "";
@@ -324,7 +337,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			makelinkcode($lang->edit, "helpdocs.php?action=edit&sid=$section[sid]").
 			makelinkcode($lang->delete, "helpdocs.php?action=delete&sid=$section[sid]").
 			"</li>\n<ul>\n";
-		$query2 = $db->query("SELECT * FROM ".TABLE_PREFIX."helpdocs WHERE sid='$section[sid]' ORDER BY disporder");
+		$options = array(
+			"order_by" => "disporder"
+		);
+		$query2 = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "sid='$section[sid]'", $options);
 		while($doc = $db->fetch_array($query2))
 		{
 			$disablednote = "";

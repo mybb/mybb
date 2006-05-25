@@ -15,7 +15,7 @@ require "./global.php";
 global $lang;
 $lang->load("index");
 
-if ($mybb->input['action']=="header")
+if($mybb->input['action'] == "header")
 {
 	echo "<html ".($lang->settings['rtl'] ? "dir=\"rtl\"" : "")."lang=\"".($lang->settings['htmllang'])."\">\n";
 	echo "<head>";
@@ -29,8 +29,7 @@ if ($mybb->input['action']=="header")
 	echo "</body>";
 	echo "</html>";
 }
-
-elseif ($mybb->input['action']=="home")
+elseif($mybb->input['action'] == "home")
 {
 	logadmin();
 	cpheader();
@@ -144,7 +143,7 @@ elseif ($mybb->input['action']=="home")
 	tableheader($lang->mybb_credits);
 	tablesubheader($lang->contributed);
 	makelabelcode("<b>$lang->product_managers</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a>");
-	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com/\">Chris Boulton</a><br><a href=\"http://mods.mybboard.com/\">Musicalmidget</a><br><a href=\"http://www.dennistt.net/\">DennisTT</a><br><a href=\"http://www.linuxbox.co.nz/~kieran/\">k776</a><br /><a href=\"http://www.peterakkies.com\">Peter</a>");
+	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com/\">Chris Boulton</a><br /><a href=\"http://mods.mybboard.com/\">Musicalmidget</a><br /><a href=\"http://www.dennistt.net/\">DennisTT</a><br /><a href=\"http://www.linuxbox.co.nz/~kieran/\">k776</a><br /><a href=\"http://www.peterakkies.com\">Peter</a>");
 	makelabelcode("<b>$lang->graphics_and_style</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a><br /><a href=\"http://www.templatesforall.com\">Scott Hough</a>");
 	endtable();
 
@@ -171,8 +170,8 @@ elseif ($mybb->input['action']=="home")
 	endtable();
 	cpfooter();
 }
-
-elseif($mybb->input['action'] == "vercheck") {
+elseif($mybb->input['action'] == "vercheck") 
+{
 	logadmin();
 
 	$current_version = rawurlencode($mybboard['vercode']);
@@ -206,10 +205,10 @@ elseif($mybb->input['action'] == "vercheck") {
 	makelabelcode($lang->latest_version, $latest_version);
 	if($version_warn)
 	{
-		makelabelcode("<center><b><font color=red>$lang->newer_ver</font></b>", "", 2);
+		makelabelcode("<div align=\"center\"><b><font color=red>$lang->newer_ver</font></b></div>", "", 2);
 	}
 	endtable();
-	echo "<br>";
+	echo "<br />";
 	starttable();
 	tableheader($lang->latest_ann);
 	while(list($key, $val) = each($lann))
@@ -228,8 +227,7 @@ elseif($mybb->input['action'] == "vercheck") {
 	endtable();
 	cpfooter();
 }
-
-elseif ($mybb->input['action']=="navigation")
+elseif ($mybb->input['action'] == "navigation")
 {
 ?>
 <html>
@@ -322,12 +320,10 @@ makenavselect($lang->nav_maintenance);
 </html>
 <?php
 }
-
 elseif($mybb->input['action'] == "phpinfo")
 {
 	phpinfo();
 }
-
 else
 {
 	if(!empty($mybb->input['goto']))

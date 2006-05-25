@@ -44,7 +44,7 @@ if($mybb->input['action'] == "do_attachments")
 			$aid = intval($aid);
 			if($attachdelete[$aid] == "yes")
 			{
-				$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='$aid'");
+				$db->delete_query(TABLE_PREFIX."attachments", "aid='$aid'");
 			}
 			else
 			{
@@ -68,7 +68,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 		while(list($tid, $val) = each($mybb->input['threadvalidate']))
 		{
 			$tid = intval($tid);
-			$query = $db->query("SELECT subject, fid FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "subject, fid", "tid='$tid'");
 			$thread = $db->fetch_array($query);
 			if($mybb->input['threaddelete'][$tid] == "yes")
 			{
@@ -97,7 +97,11 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 					$updateforumcount[$thread['fid']] = 1;
 
 					// Update unapproved thread count
-					$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads-1, unapprovedposts=unapprovedposts-1 WHERE fid='$thread[fid]'");
+					$updatequery = array(
+						"unapprovedthreads" => "unapprovedthreads-1",
+						"unapprovedposts" => "unapprovedposts-1"
+					);
+					$db->update_query(TABLE_PREFIX."forums", $updatequery, "fid='$thread[fid]'");
 				}
 			}
 		}
@@ -108,9 +112,9 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 		while(list($pid, $val) = each($mybb->input['postvalidate']))
 		{
 			$pid = intval($pid);
-			$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
+			$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='$pid'");
 			$post = $db->fetch_array($query);
-			$query = $db->query("SELECT fid FROM ".TABLE_PREFIX."threads WHERE tid='$post[tid]'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "fid", "tid='$post[tid]'");
 			$thread = $db->fetch_array($query);
 			if($mybb->input['postdelete'][$pid] == "yes")
 			{
@@ -135,18 +139,23 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 					$updateforumcount[$thread['fid']] = 1;
 
 					// Update unapproved thread count
-					$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-1 WHERE tid='$post[tid]'");
+					$updatequery = array(
+					 	"unapprovedposts" => "unapprovedposts-1"
+					);
+					$db->update_query(TABLE_PREFIX."forums", $updatequery, "tid='$post[tid]'");
 				}
 			}
 		}
 	}
-	if(is_array($updatethreadcount)) {
+	if(is_array($updatethreadcount)) 
+	{
 		while(list($tid, $val) = each($updatethreadcount))
 		{
 			updatethreadcount($tid);
 		}
 	}
-	if(is_array($updateforumcount)) {
+	if(is_array($updateforumcount)) 
+	{
 		while(list($fid, $val) = each($updateforumcount))
 		{
 			updateforumcount($fid);
@@ -156,7 +165,11 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 }
 if($mybb->input['action'] == "attachments")
 {
-	$query = $db->query("SELECT a.*, p.subject AS postsubject, p.pid AS postpid, p.tid, p.username AS postusername, p.uid AS postuid, t.subject AS threadsubject, f.name AS forumname, p.fid FROM ".TABLE_PREFIX."attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) WHERE a.pid=p.pid AND t.tid=p.tid AND a.visible!='1' ORDER BY p.dateline DESC");
+	$options = array(
+		"order_by" => "p.dateline",
+		"order_dir" => "DESC"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)", "a.*, p.subject AS postsubject, p.pid AS postpid, p.tid, p.username AS postusername, p.uid AS postuid, t.subject AS threadsubject, f.name AS forumname, p.fid", "a.pid=p.pid AND t.tid=p.tid AND a.visible!='1'", $options);
 	$count = $db->num_rows($query);
 	if(!$count)
 	{
@@ -208,7 +221,11 @@ if($mybb->input['action'] == "attachments")
 if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadsposts")
 {
 	$done = 0;
-	$query = $db->query("SELECT t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid) WHERE t.visible=0 AND p.tid=t.tid ORDER BY t.lastpost DESC");
+	$options = array(
+		"order_by" => "t.lastpost",
+		"order_dir" => "DESC"
+	);
+	$query = $db->simple_select("(".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)", "t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username", "t.visible=0 AND p.tid=t.tid", $options);
 	$tcount = $db->num_rows($query);
 
 	if($tcount < 1 && $mybb->input['action'] != "threadsposts")
@@ -242,14 +259,20 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 	{
 		endtable();
 	}
-	if($mybb->input['action'] != "threadsposts") {
+	if($mybb->input['action'] != "threadsposts") 
+	{
 		endform($lang->moderate_threads, $lang->reset_button);
 		cpfooter();
 	}
 }
-if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts") {
+if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts") 
+{
 	$done = 0;
-	$query = $db->query("SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, f.name AS forumname, u.username AS username FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.visible=0 ORDER BY p.dateline DESC");
+	$options = array(
+		"order_by" => "p.dateline",
+		"order_dir" => "DESC"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)", "p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, f.name AS forumname, u.username AS username", "p.visible=0", $options);
 	$count = $db->num_rows($query);
 	if(!$tcount && !$count && $mybb->input['action'] == "threadsposts")
 	{
@@ -260,7 +283,8 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 	{
 		cperror($lang->no_posts);
 	}
-	if($mybb->input['action'] != "threadsposts") {
+	if($mybb->input['action'] != "threadsposts") 
+	{
 		cpheader();
 		startform("moderate.php", "" , "do_posts");
 	}

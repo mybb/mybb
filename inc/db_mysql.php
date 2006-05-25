@@ -348,7 +348,10 @@ class databaseEngine
 	 */
 	function list_tables($database)
 	{
-		$query = $this->query("SHOW TABLES FROM $database");
+		$query = $this->query("
+			SHOW TABLES 
+			FROM $database
+		");
 		while(list($table) = mysql_fetch_array($query))
 		{
 			$tables[] = $table;
@@ -366,7 +369,10 @@ class databaseEngine
 	{
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
-		$query = $this->query("SHOW TABLES LIKE '$table'");
+		$query = $this->query("
+			SHOW TABLES 
+			LIKE '$table'
+		");
 		$exists = $this->num_rows($query);
 		$this->error_reporting = $err;
 		if($exists > 0)
@@ -391,7 +397,11 @@ class databaseEngine
 		global $db;
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
-		$query = $this->query("SHOW COLUMNS FROM $table LIKE '$field'");
+		$query = $this->query("
+			SHOW COLUMNS 
+			FROM $table 
+			LIKE '$field'
+		");
 		$exists = $this->num_rows($query);
 		$this->error_reporting = $err;
 		if($exists > 0)
@@ -480,7 +490,11 @@ class databaseEngine
 			$query2 .= $comma."'".$value."'";
 			$comma = ", ";
 		}
-		return $this->query("INSERT INTO ".$table." (".$query1.") VALUES (".$query2.");");
+		return $this->query("
+			INSERT 
+			INTO ".$table." (".$query1.") 
+			VALUES (".$query2.")
+		");
 	}
 
 	/**
@@ -513,7 +527,10 @@ class databaseEngine
 		{
 			$query .= " LIMIT $limit";
 		}
-		return $this->query("UPDATE $table SET $query");
+		return $this->query("
+			UPDATE $table 
+			SET $query
+		");
 	}
 
 	/**
@@ -535,7 +552,11 @@ class databaseEngine
 		{
 			$query .= " LIMIT $limit";
 		}
-		return $this->query("DELETE FROM $table $query");
+		return $this->query("
+			DELETE 
+			FROM $table 
+			$query
+		");
 	}
 
 	/**
@@ -553,6 +574,7 @@ class databaseEngine
 		else
 		{
 			$string = $db->escape_string($string);
+			// I don't think this'll work? should htmlenities/addslashes instead?
 		}
 		return $string;
 	}
@@ -585,8 +607,19 @@ class databaseEngine
 	 */
 	function optimize_table($table)
 	{
-		$this->query("OPTIMIZE TABLE ".$table.");");
+		$this->query("OPTIMIZE TABLE ".$table."");
 	}
+	
+	/**
+	 * Analyzes a specific table.
+	 *
+	 * @param string The name of the table to be analyzed.
+	 */
+	function analyze_table($table)
+	{
+		$this->query("ANALYZE TABLE ".$table."");
+	}
+	// CHRIS - You May remove this function if you want, but if you do change line 42 in admin/misc.php back to $db->query("ANALYZE TABLE $tablelist");
 
 	/**
 	 * Show the "create table" command for a specific table.
@@ -682,7 +715,10 @@ class databaseEngine
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
-		$this->query("ALTER TABLE $table ADD FULLTEXT $name ($column)");
+		$this->query("
+			ALTER TABLE $table 
+			ADD FULLTEXT $name ($column)
+		");
 	}
 
 	/**
@@ -693,7 +729,10 @@ class databaseEngine
 	 */
 	function drop_index($table, $name)
 	{
-		$this->query("ALTER TABLE $table DROP INDEX $name");
+		$this->query("
+			ALTER TABLE $table 
+			DROP INDEX $name
+		");
 	}
 }
 ?>

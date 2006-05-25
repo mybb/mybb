@@ -22,11 +22,14 @@ switch($mybb->input['action'])
 	case "view":
 		addacpnav($lang->nav_search_results);
 		break;
+	default:
+		break;
 }
 
 logadmin();
 
-if($mybb->input['action'] == "do_prune") {
+if($mybb->input['action'] == "do_prune") 
+{
 	$time = time();
 	$timecut = $time-(intval($mybb->input['days'])*60*60*24);
 	$frommod = intval($mybb->input['frommod']);
@@ -43,11 +46,7 @@ if($mybb->input['action'] == "do_prune") {
 	{
 		$thequery .= " uid='$frommod'";
 	}
-	if($thequery)
-	{
-		$thequery = "WHERE $thequery";
-	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."moderatorlog $thequery");
+	$db->delete_query(TABLE_PREFIX."moderatorlog", $thequery);
 	cpredirect("modlogs.php", $lang->modlog_pruned);
 }
 if($mybb->input['action'] == "view")
@@ -67,19 +66,17 @@ if($mybb->input['action'] == "view")
 	{
 		$squery .= "l.uid='$frommod'";
 	}
-	if($squery)
-	{
-		$squery = "WHERE $squery";
-	}
 	if($orderby == "nameasc")
 	{
-		$order = "u.username ASC";
+		$order = "u.username";
+		$orderby = "ASC";
 	}
 	else
 	{
-		$order = "l.dateline DESC";
+		$order = "l.dateline";
+		$orderby = "DESC";
 	}
-	$query = $db->query("SELECT COUNT(dateline) AS count FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) $squery");
+	$query = $db->simple_select(TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)", "COUNT(dateline) AS count", $squery);
 	$rescount = $db->fetch_field($query, "count");
 	if(!$rescount)
 	{
@@ -126,7 +123,13 @@ if($mybb->input['action'] == "view")
 	echo "<td class=\"subheader\" align=\"center\">$lang->information</td>\n";
 	echo "<td class=\"subheader\" align=\"center\">$lang->ipaddress</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid) $squery ORDER BY $order LIMIT $start, $perpage");
+	$options = array(
+		"order_by" => $order,
+		"order_dir" => $orderdir,
+		"limit_start" => $start,
+		"limit" => $perpage
+	);
+	$query = $db->simple_select(TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)", "l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject", $squery, $options);
 	while($logitem = $db->fetch_array($query))
 	{
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
@@ -138,11 +141,11 @@ if($mybb->input['action'] == "view")
 		echo "<td class=\"$bgcolor\">";
 		if($logitem['tsubject'])
 		{
-			echo "<b>$lang->thread</b> <a href=\"../showthread.php?tid=$logitem[tid]\" target=\"_blank\">$logitem[tsubject]</a><br>";
+			echo "<b>$lang->thread</b> <a href=\"../showthread.php?tid=$logitem[tid]\" target=\"_blank\">$logitem[tsubject]</a><br />";
 		}
 		if($logitem['fname'])
 		{
-			echo "<b>$lang->forum</b> <a href=\"../forumdisplay.php?fid=$logitem[fid]\" target=\"_blank\">$logitem[fname]</a><br>";
+			echo "<b>$lang->forum</b> <a href=\"../forumdisplay.php?fid=$logitem[fid]\" target=\"_blank\">$logitem[fname]</a><br />";
 		}
 		if($logitem['psubject'])
 		{
@@ -154,7 +157,7 @@ if($mybb->input['action'] == "view")
 	}
 	if($prevpage || $nextpage)
 	{
-		tablesubheader("<center>$firstpage$prevpage$nextpage$lastpage</center>", "", 6);
+		tablesubheader("<div align=\"center\">$firstpage$prevpage$nextpage$lastpage</div>", "", 6);
 	}
 	endtable();
 	cpfooter();
@@ -162,7 +165,11 @@ if($mybb->input['action'] == "view")
 }
 if($mybb->input['action'] == "")
 {
-	$query = $db->query("SELECT DISTINCT l.uid, u.username FROM ".TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid) ORDER BY u.username ASC");
+	$options = array(
+		"order_by" => "u.username",
+		"order_dir" => "ASC"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid)", "DISTINCT l.uid, u.username", "", $options);
 	while($user = $db->fetch_array($query))
 	{
 		$uoptions .= "<option value=\"$user[uid]\">$user[username]</option>\n";
@@ -177,8 +184,8 @@ if($mybb->input['action'] == "")
 	makelabelcode($lang->order_by, "<select name=\"orderby\"><option value=\"datedesc\">$lang->order_date_desc</option>\n<option value=\"nameasc\">$lang->order_name_asc</option>");
 	endtable();
 	endform($lang->search_log, $lang->reset_button);
-	echo "<br>\n";
-	echo "<br>\n";
+	echo "<br />\n";
+	echo "<br />\n";
 	startform("modlogs.php", "", "do_prune");
 	starttable();
 	tableheader($lang->prune_modlogs);
@@ -186,6 +193,5 @@ if($mybb->input['action'] == "")
 	makeinputcode($lang->prune_days, "days", 30, 4);
 	endtable();
 	endform($lang->prune_log, $lang->reset_button);
-
 }
 ?>

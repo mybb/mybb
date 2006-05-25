@@ -78,7 +78,7 @@ if($mybb->input['action'] == "edit")
 		exit;
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."mycode WHERE cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 
 	cpheader();
@@ -119,7 +119,7 @@ if($mybb->input['action'] == "do_edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."mycode WHERE cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 	if(!$mycode['cid'])
 	{
@@ -132,7 +132,7 @@ if($mybb->input['action'] == "delete")
 	tableheader($lang->delete_mycode, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
-	makelabelcode("<center>$lang->delete_confirm<br><br>$yes$no</center>", "");
+	makelabelcode("<div align=\"center\">$lang->delete_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
 	cpfooter();
@@ -142,7 +142,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{
-		$db->query("DELETE FROM ".TABLE_PREFIX."mycode WHERE cid='".intval($mybb->input['cid'])."'");
+		$db->delete_query(TABLE_PREFIX."mycode", "cid='".intval($mybb->input['cid'])."'");
 		$cache->updatemycode();
 		cpredirect("mycode.php", $lang->mycode_deleted);
 	}
@@ -163,7 +163,11 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 	echo "<td class=\"subheader\" align=\"center\">$lang->mycode_title</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" colspan=\"2\">$lang->options</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."mycode ORDER BY title ASC");
+	$options = array(
+		"order_by" => "title",
+		"order_dir" => "ASC"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."mycode", "*", "", $options);
 	while($mycode = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
@@ -179,7 +183,7 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 	}
 	if(!$done)
 	{
-		makelabelcode("<center>$lang->no_custom_mycode</center>", "", 4);
+		makelabelcode("<div align=\"center\">$lang->no_custom_mycode</div>", "", 4);
 	}
 	endtable();
 	cpfooter();

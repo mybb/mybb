@@ -61,12 +61,12 @@ if($mybb->input['action'] == "edit")
 	$bid = intval($mybb->input['bid']);
 	if($mybb->input['delete'])
 	{
-		$query = $db->query("DELETE FROM ".TABLE_PREFIX."badwords WHERE bid='$bid'");
+		$db->delete_query(TABLE_PREFIX."badwords", "bid='$bid'");
 		cpredirect("badwords.php", $lang->badword_deleted);
 		$cache->updatebadwords();
 		exit;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."badwords WHERE bid='$bid'");
+	$query = $db->simple_select(TABLE_PREFIX."badwords", "*", "bid='$bid'");
 	$badword = $db->fetch_array($query);
 	cpheader();
 	startform("badwords.php", "", "do_edit");
@@ -106,7 +106,11 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	echo "<td class=\"subheader\" align=\"center\">$lang->replacement_title</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" colspan=\"2\">$lang->options</td>\n";
 	echo "</tr>\n";
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."badwords ORDER BY badword ASC");
+	$options = array(
+		"order_by" => "badword",
+		"order_dir" => "ASC"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."badwords", "*", "", $options);
 	while($badword = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
@@ -123,7 +127,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	}
 	if(!$done)
 	{
-		makelabelcode("<center>$lang->no_badwords</center>", "", 4);
+		makelabelcode("<div align=\"center\">$lang->no_badwords</div>", "", 4);
 	}
 	endtable();
 	cpfooter();
