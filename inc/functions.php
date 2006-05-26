@@ -1097,30 +1097,11 @@ function updateforumcount($fid)
 {
 	global $db, $cache;
 	
+	// Fetch the last post for this forum
 	$query = $db->query("
-		SELECT * 
-		FROM ".TABLE_PREFIX."forums 
-		WHERE CONCAT(',',parentlist,',') LIKE '%,$fid,%'
-	");
-	while($childforum = $db->fetch_array($query))
-	{
-		if($fid == $childforum['fid'])
-		{
-			$parentlist = $childforum['parentlist'];
-			$lasttid = $childforum['lastposttid'];
-		}
-		elseif($fid == $childforum['pid'])
-		{
-			$threads = $threads + $childforum['threads'];
-			$posts = $posts + $childforum['posts'];
-		}
-		$childforums .= ",'".$childforum['fid']."'";
-	}
-
-	$query = $db->query("
-		SELECT tid, lastpost, lastposter, lastposteruid 
+		SELECT tid, lastpost, lastposter, lastposteruid, subject
 		FROM ".TABLE_PREFIX."threads 
-		WHERE fid IN (0$childforums) 
+		WHERE fid='{$fid}'
 		AND visible='1' 
 		AND closed 
 		NOT LIKE 'moved|%' 
@@ -1128,85 +1109,44 @@ function updateforumcount($fid)
 		LIMIT 0, 1
 	");
 	$lastpost = $db->fetch_array($query);
-	// If the last post tid is not equal to the queried one, update.
-	if($lastpost['lastposttid'] != $lasttid)
-	{
-		$lpadd = ",lastpost='".intval($lastpost['lastpost'])."', lastposter='".$db->escape_string($lastpost['lastposter'])."', lastposteruid='".intval($lastpost['lastposteruid'])."', lastposttid='".intval($lastpost['tid'])."'";
-	}
 
-	// Get the post counters for this forum and its children
+	// Fetch the number of threads and replies in this forum (Approved only)
 	$query = $db->query("
-		SELECT COUNT(*) AS totthreads, SUM(replies) AS totreplies 
+		SELECT COUNT(*) AS threads, SUM(replies) AS replies 
 		FROM ".TABLE_PREFIX."threads 
 		WHERE fid='$fid' 
 		AND visible='1' 
 		AND closed 
 		NOT LIKE 'moved|%'
 	");
-	$posts2 = $db->fetch_array($query);
-	if($posts2)
-	{
-		$nothreads = $posts2['totthreads'] + $threads;
-		$noposts = $posts2['totthreads'] + $posts2['totreplies'] + $posts;
-	}
-	else
-	{
-		$nothreads = 0;
-		$noposts = 0;
-	}
-
-	// Get unapproved posts/threads from this forum and its children
+	$count = $db->fetch_array($query);
+	$count['posts'] = $count['threads'] + $count['replies'];
+	
+	// Fetch the number of threads and replies in this forum (Unapproved only)
 	$query = $db->query("
-		SELECT COUNT(*) AS totunthreads 
-		FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."forums f) 
-		WHERE t.fid=f.fid 
-		AND (t.fid='$fid' OR CONCAT(',',f.parentlist,',') LIKE '%,$fid,%') 
-		AND t.visible='0' 
-		AND t.closed 
+		SELECT COUNT(*) AS threads, SUM(replies) AS replies 
+		FROM ".TABLE_PREFIX."threads 
+		WHERE fid='$fid' 
+		AND visible='0' 
+		AND closed 
 		NOT LIKE 'moved|%'
 	");
-	$posts3 = $db->fetch_array($query);
-	if($posts3)
-	{
-		$nounthreads = $posts3['totunthreads'];
-	}
-	else
-	{
-		$nounthreads = 0;
-	}
-	$query = $db->query("
-		SELECT COUNT(*) AS totunposts 
-		FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."forums f) 
-		WHERE p.fid=f.fid 
-		AND (p.fid='$fid' OR CONCAT(',',f.parentlist,',') LIKE '%,$fid,%') 
-		AND p.visible='0'
-	");
-	$posts4 = $db->fetch_array($query);
-	if($posts4)
-	{
-		$nounposts = $posts4['totunposts'];
-	}
-	else
-	{
-		$nounposts = 0;
-	}
-	$db->query("
-		UPDATE 
-		".TABLE_PREFIX."forums 
-		SET posts='$noposts', threads='$nothreads', unapprovedposts='$nounposts', unapprovedthreads='$nounthreads' $lpadd 
-		WHERE fid='$fid'
-	");
-	if($parentlist && $db->affected_rows())
-	{
-		$parentsexploded = explode(",", $parentlist);
-		foreach($parentsexploded as $key => $val)
-		{
-			if($val && $val != $fid)
-			{
-				updateforumcount($val);
-			}
-		}
-	}
+	$unapproved_count = $db->fetch_array($query);
+	$unapproved_count['posts'] = $unapproved_count['threads'] + $unapproved_count['replies'];
+	
+	$update_count = array(
+		"posts" => intval($count['posts']),
+		"threads" => intval($count['threads']),
+		"unapprovedposts" => intval($unapproved_count['posts']),
+		"unapprovedthreads" => intval($unapproved_count['threads']),
+		"lastpost" => intval($lastpost['lastpost']),
+		"lastposter" => $db->escape_string($lastpost['lastposter']),
+		"lastposteruid" => intval($lastpost['lastposteruid']),
+		"lastposttid" => intval($lastpost['lastposttid']),
+		"lastpostsubject" => $db->escape_string($lastpost['subject'])
+	);
+	
+	$db->update_query(TABLE_PREFIX."forums", $update_count, "fid='{$fid}'");
 }
 
 function updatethreadcount($tid)

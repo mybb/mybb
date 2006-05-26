@@ -237,7 +237,7 @@ class datacache
 	 */
 	function updateforumpermissions()
 	{
-		global $forumcache, $fcache, $db, $usergroupcache, $fperms, $fpermfields, $forumpermissions;
+		global $forum_cache, $fcache, $db, $usergroupcache, $fperms, $fpermfields, $forumpermissions;
 
 		// Get usergroups
 		$query = $db->query("
@@ -259,12 +259,12 @@ class datacache
 	
 		// Get our forum list
 		cache_forums();
-		if(!is_array($forumcache))
+		if(!is_array($forum_cache))
 		{
 			return false;
 		}
-		reset($forumcache);
-		foreach($forumcache as $fid => $forum)
+		reset($forum_cache);
+		foreach($forum_cache as $fid => $forum)
 		{
 			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 		}

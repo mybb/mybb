@@ -772,8 +772,8 @@ var inlineId = {$tid};
 </td></tr>
 </table>]]></template>
 		<template name="forumbit_depth2_forum_lastpost" version="100.07"><![CDATA[<span class="smalltext">
-<a href="showthread.php?tid={$lastposttid}&amp;action=lastpost" title="{$fulllastpostsubject}"><strong>{$lastpostsubject}</strong></a>
-<br />{$lastpostdate} {$lastposttime}<br />{$lang->by} <a href="member.php?action=profile&amp;uid=lastposter&amp;fid={$forum['fid']}">{$lastposter}</a></span>
+<a href="showthread.php?tid={$lastposttid}&amp;action=lastpost" title="{$fulllastpost_subject}"><strong>{$lastpost_subject}</strong></a>
+<br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} <a href="member.php?action=profile&amp;uid=lastposter&amp;fid={$forum['fid']}">{$lastposter}</a></span>
 ]]></template>
 		<template name="editpost" version="100.07"><![CDATA[<html>
 <head>
@@ -1578,17 +1578,17 @@ $headerinclude
 </table>
 <br />]]></template>
 		<template name="forumbit_depth2_forum" version="100.07"><![CDATA[<tr>
-<td class="{$bgcolor}" align="center" valign="top"><img src="{$theme['imgdir']}/{$folder}.gif" alt="{$altonoff}" title="{$altonoff}" /></td>
+<td class="{$bgcolor}" align="center" valign="top"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" /></td>
 <td class="{$bgcolor}" valign="top">
 <strong><a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><br /><div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
 </td>
-<td class="{$bgcolor}" valign="top" align="center" nowrap="nowrap">{$threads}{$unapproved_threads}</td>
-<td class="{$bgcolor}" valign="top" align="center" nowrap="nowrap">{$posts}{$unapproved_posts}</td>
+<td class="{$bgcolor}" valign="top" align="center" nowrap="nowrap">{$threads}{$unapproved['unapproved_threads']}</td>
+<td class="{$bgcolor}" valign="top" align="center" nowrap="nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
 <td class="{$bgcolor}" valign="top" align="right" nowrap="nowrap">{$lastpost}</td>
 </tr>]]></template>
 		<template name="forumbit_depth3" version="100.07"><![CDATA[{$comma}<a href="forumdisplay.php?fid={$forum['fid']}">{$statusicon} {$forum['name']}</a>]]></template>
-		<template name="forumbit_depth3_statusicon" version="100.07"><![CDATA[<img src="{$theme['imgdir']}/{$folder}.gif" alt="{$altonoff}" title="{$altonoff}" class="subforumicon" />]]></template>
-		<template name="forumbit_subforums" version="100.07"><![CDATA[<br />{$lang->subforums} {$forums}]]></template>
+		<template name="forumbit_depth3_statusicon" version="100.07"><![CDATA[<img src="{$theme['imgdir']}/{$lgithbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" />]]></template>
+		<template name="forumbit_subforums" version="100.07"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
 		<template name="private_empty" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->empty_folders}</title>
@@ -2649,7 +2649,7 @@ $reputation
 <td class="tcat" width="65" align="center" nowrap="nowrap"><strong>{$lang->forumbit_posts}</strong></td>
 <td class="tcat" width="200" align="center"><strong>{$lang->forumbit_lastpost}</strong></td>
 </tr>
-{$forums}
+{$sub_forums}
 </tbody>
 </table>
 <br />]]></template>
@@ -4003,21 +4003,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1">{$lang->no_events}</td>
 </tr>
 </table>]]></template>
-		<template name="forumbit_depth1_forum" version="100.07"><![CDATA[<tr>
-<td class="{$bgcolor}" valign="top" colspan="2">
-<table cellspacing="0" cellpadding="0" border="0" width="100%"><tr>
-<td width="15" align="left"><img src="{$theme['imgdir']}/{$folder}.gif" alt="{$altonoff}" title="{$altonoff}" /></td>
-<td width="5">&nbsp;</td>
-<td valign="top"><strong><a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong>
-<br /><span class="smalltext">{$forum['description']}{$modlist}</span>
-</td>
-</tr></table>
-</td>
-<td class="{$bgcolor}" valign="top" align="center" nowrap="nowrap">{$threads}{$unapproved_threads}</td>
-<td class="{$bgcolor}" valign="top" align="center" nowrap="nowrap">{$posts}{$unapproved_posts}</td>
-<td class="{$bgcolor}" valign="top" align="right" nowrap="nowrap">{$lastpost}</td>
-</tr>
-{$forums}]]></template>
 		<template name="index_whosonline" version="100.07"><![CDATA[<tr>
 <td class="tcat"><strong>{$lang->whos_online}</strong> [<a href="online.php">{$lang->complete_list}</a>]</td>
 </tr>
@@ -4539,10 +4524,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </body>
 </html>]]></template>
-		<template name="forumbit_depth1_forum_lastpost" version="100.07"><![CDATA[<span class="smalltext">
-<a href="showthread.php?tid={$lastposttid}&amp;action=lastpost"><strong>{$lastpostsubject}</strong></a>
-<br />{$lastpostdate} {$lastposttime}<br />{$lang->by} <a href="member.php?action=profile&amp;uid=lastposter&amp;fid={$forum['fid']}">{$lastposter}</a></span>
-]]></template>
 		<template name="forumdisplay_nothreads" version="100.07"><![CDATA[<tr>
 <td colspan="{$colspan}" class="trow1">{$lang->nothreads}</td>
 </tr>]]></template>
@@ -5993,9 +5974,9 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="forumdisplay_moderatedby" version="100.07"><![CDATA[<span class="smalltext">{$lang->moderated_by} <strong>{$modlist}</strong></span><br />]]></template>
 		<template name="forumbit_depth2_cat" version="100.07"><![CDATA[<tr>
 <td class="tcat">&nbsp;</td>
-<td class="tcat" colspan="5"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><br /><span class="smalltext">{$forum['description']}{$subforums}</span></td></tr>]]></template>
+<td class="tcat" colspan="5"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><br /><span class="smalltext">{$forum['description']}{$sub_forums}</span></td></tr>]]></template>
 		<template name="forumbit_depth1_cat_subforum" version="100.07"><![CDATA[<tr>
-<td class="tcat" colspan="6"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><br /><span class="smalltext">{$forum['description']}</span></td></tr>{$forums}]]></template>
+<td class="tcat" colspan="6"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><br /><span class="smalltext">{$forum['description']}</span></td></tr>{$sub_forums}]]></template>
 		<template name="misc_help" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->help_docs}</title>

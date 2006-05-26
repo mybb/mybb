@@ -17,6 +17,7 @@ $templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep";
 require "./global.php";
 require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/functions_forumlist.php";
 require MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
@@ -68,30 +69,35 @@ $forumpermissions = forum_permissions();
 $fpermissions = $forumpermissions[$fid];
 
 
-// Get Forums
-$query = $db->query("
-	SELECT f.*, t.subject AS lastpostsubject
+// Get the forums we will need to show.
+$query = $db->query(
+	"SELECT f.*
 	FROM ".TABLE_PREFIX."forums f
-	LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = f.lastposttid)
 	WHERE active!='no'
 	ORDER BY f.pid, f.disporder
 ");
+// Build a forum cache.
 while($forum = $db->fetch_array($query))
 {
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 
 }
+$forumpermissions = forum_permissions();
 
-// Get forum moderators (we need to do this here so we can show the mods of this forum).
-$query = $db->query("
-	SELECT m.uid, m.fid, u.username, u.usergroup, u.displaygroup
-	FROM ".TABLE_PREFIX."moderators m
-	LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
-	ORDER BY u.username
-");
-while($moderator = $db->fetch_array($query))
+// Get the forum moderators if the setting is enabled.
+if($mybb->settings['modlist'] != "off")
 {
-	$moderatorcache[$moderator['fid']][] = $moderator;
+	$query = $db->query("
+		SELECT m.uid, m.fid, u.username
+		FROM ".TABLE_PREFIX."moderators m
+		LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
+		ORDER BY u.username
+	");
+	// Build a moderator cache.
+	while($moderator = $db->fetch_array($query))
+	{
+		$moderatorcache[$moderator['fid']][] = $moderator;
+	}
 }
 
 $bgcolor = "trow1";
@@ -103,7 +109,8 @@ else
 {
 	$showdepth =2;
 }
-$forums = getforums($fid, 1);
+$child_forums = build_forumbits($fid, 2);
+$forums = $child_forums['forum_list'];
 if($forums)
 {
 	$lang->sub_forums_in = sprintf($lang->sub_forums_in, $foruminfo['name']);
@@ -848,219 +855,7 @@ else
 	}
 }
 
-/**
- * Get a list of forums.
- *
- * @param unknown_type $pid
- * @param unknown_type $depth
- * @param unknown_type $permissions
- * @return unknown
- */
-function getforums($pid="0", $depth=1, $permissions="")
-{
-	global $fcache, $moderatorcache, $forumpermissions, $settings, $theme, $mybb, $mybbforumread, $mybbuser, $excols, $fcollapse, $templates, $bgcolor, $collapsed, $mybbgroup, $lang, $showdepth, $parser;
-	if(is_array($fcache[$pid]))
-	{
-		while(list($key, $main) = each($fcache[$pid]))
-		{
-			while(list($key, $forum) = each($main))
-			{
-				$perms = $forumpermissions[$forum['fid']];
-				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
-				{
-					$forumread = mygetarraycookie("forumread", $forum['fid']);
-					if($forum['lastpost'] > $mybb->user['lastvisit'] && $forum['lastpost'] > $forumread && $forum['lastpost'] != 0)
-					{
-						$folder = "on";
-						$altonoff = $lang->new_posts;
-					}
-					else
-					{
-						$folder = "off";
-						$altonoff = $lang->no_new_posts;
-					}
-					if($forum['open'] == "no")
-					{
-						$folder = "offlock";
-						$altonoff = $lang->forum_locked;
-					}
-					$forumread = 0;
-					if($depth == 3)
-					{
-						$minifolder = $folder."mini";
-						eval("\$forumlisting .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
-						$comma = ", ";
-						++$donecount;
-						if($donecount == $mybb->settings['subforumsindex'])
-						{
-							if(count($main) > $donecount)
-							{
-								$forumlisting .= $comma;
-								$forumlisting .= sprintf($lang->more_subforums, (count($main) - $donecount));
-							}
-							return $forumlisting;
-						}
-						continue;
-					}
-					if($forum['type'] == "c")
-					{
-						if($depth == 1)
-						{
-							$forumcat = "_cat_subforum";
-						}
-						else
-						{
-							$forumcat = "_cat";
-						}
-					}
-					else
-					{
-						$forumcat = "_forum";
-					}
-					$hideinfo = 0;
-					if($forum['type'] == "f" && $forum['linkto'] == '')
-					{
-						if($forum['password'] != '' && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
-						{
-							$hideinfo = 1;
-						}
-						elseif($forum['lastpost'] == 0 || $forum['lastposter'] == '')
-						{
-							$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
-						}
-						else
-						{
-							$lastpostdate = mydate($mybb->settings['dateformat'], $forum['lastpost']);
-							$lastposttime = mydate($mybb->settings['timeformat'], $forum['lastpost']);
-							$lastposter = $forum['lastposter'];
-							$lastposttid = $forum['lastposttid'];
-							$forum['lastpostsubject'] = $parser->parse_badwords($forum['lastpostsubject']);
-							$lastpostsubject = $fulllastpostsubject = $forum['lastpostsubject'];
-							if(strlen($lastpostsubject) > 25)
-							{
-								$lastpostsubject = substr($lastpostsubject, 0, 25) . "...";
-							}
-							$lastpostsubject = htmlspecialchars_uni($lastpostsubject);
-							$fulllastpostsubject = htmlspecialchars_uni($fulllastpostsubject);
-							eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
-						}
-					}
-					if($forum['linkto'] != '' || $hideinfo == 1)
-					{
-						$lastpost = "<div align=\"center\">-</div>";
-						$posts = "-";
-						$threads = "-";
-					}
-					else
-					{
-						$posts = mynumberformat($forum['posts']);
-						$threads = mynumberformat($forum['threads']);
-					}
-
-					// Threads and posts requiring moderation
-					if(ismod($forum['fid']) == "yes")
-					{
-						if($forum['unapprovedposts'])
-						{
-							if($forum['unapprovedposts'] > 1)
-							{
-								$unapproved_posts_count = sprintf($lang->unapproved_posts_count, $forum['unapprovedposts']);
-							}
-							else
-							{
-								$unapproved_posts_count = sprintf($lang->unapproved_post_count, 1);
-							}
-							$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".mynumberformat($forum['unapprovedposts']).")</span>";
-						}
-						if($forum['unapprovedthreads'])
-						{
-							if($forum['unapprovedthread'] > 1)
-							{
-								$unapproved_threads_count = sprintf($lang->unapproved_thread_count, $forum['unapprovedthreads']);
-							}
-							else
-							{
-								$unapproved_threads_count = sprintf($lang->unapproved_thread_count, 1);
-							}
-							$unapproved_threads = " <span title=\"{$unapproved_threads_count}\">(".mynumberformat($forum['unapprovedthreads']).")</span>";
-						}
-					}
-
-					if($mybb->settings['modlist'] != "off")
-					{
-						$moderators = '';
-						$parentlistexploded = explode(",", $forum['parentlist']);
-						$comma = '';
-						while(list($key, $mfid) = each($parentlistexploded))
-						{
-							if($moderatorcache[$mfid])
-							{
-								reset($moderatorcache[$mfid]);
-								while(list($key2, $moderator) = each($moderatorcache[$mfid]))
-								{
-									$moderators .= "$comma<a href=\"member.php?action=profile&amp;uid=".$moderator['uid']."\">".$moderator['username']."</a>";
-									$comma = ", ";
-								}
-							}
-						}
-						if($moderators)
-						{
-							eval("\$modlist = \"".$templates->get("forumbit_moderators")."\";");
-						}
-						else
-						{
-							$modlist = '';
-						}
-					}
-					if($mybb->settings['showdescriptions'] == "no")
-					{
-						$forum['description'] = '';
-					}
-					$cname = "cat_".$forum['fid']."_c";
-
-					/* Show collapsed or non-collapsed image */
-					if($collapsed[$cname] == "display: show;")
-					{
-						$expcolimage = "collapse_collapsed.gif";
-						$expdisplay = "display: none;";
-					}
-					else
-					{
-						$expcolimage = "collapse.gif";
-					}
-
-					if($fcache[$forum['fid']] && $depth < $showdepth)
-					{
-						$newdepth = $depth + 1;
-						$forums = getforums($forum['fid'], $newdepth, $perms);
-						if($depth == 2 && $forums)
-						{
-							eval("\$subforums = \"".$templates->get("forumbit_subforums")."\";");
-							$forums = '';
-						}
-					}
-					if($depth != 2 && !$subforums)
-					{
-						if($bgcolor == "trow2")
-						{
-							$bgcolor = "trow1";
-						}
-						else
-						{
-							$bgcolor = "trow2";
-						}
-					}
-
-					eval("\$forumlisting .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
-				}
-				$forums = $subforums = '';
-			}
-		}
-	}
-	return $forumlisting;
-}
-
-/* On a random occasion, delete all the threadsread. */
+/* On a random occasion, delete all the threadsread which were read before a certain date cut. */
 if($rand == 5 && $mybb->settings['threadreadcut'] > 0)
 {
 	$cut = time()-($mybb->settings['threadreadcut']*60*60*24);

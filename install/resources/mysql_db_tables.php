@@ -183,6 +183,7 @@ $tables[] = "CREATE TABLE mybb_forums (
   lastposter varchar(120) NOT NULL default '',
   lastposteruid int(10) unsigned NOT NULL default '0',
   lastposttid int(10) NOT NULL default '0',
+  lastpostsubject varchar(120) NOT NULL default '',
   allowhtml char(3) NOT NULL default '',
   allowmycode char(3) NOT NULL default '',
   allowsmilies char(3) NOT NULL default '',
