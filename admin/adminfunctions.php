@@ -1899,7 +1899,7 @@ function update_theme($tid, $pid="", $themebits="", $css="", $child=0, $isnew=0)
 	$theme['themebits'] = $db->escape_string(serialize($theme['themebits']));
 	$theme['cssbits'] = $db->escape_string(serialize($theme['cssbits']));
 	$theme['extracss'] = $db->escape_string($theme['extracss']);
-	$db->update_query(TABLE_PREFIX."themes", $theme, "WHERE tid='$tid'");
+	$db->update_query(TABLE_PREFIX."themes", $theme, "tid='$tid'");
 
 	// Cache the CSS if we're supposed to
 	update_css_file($tid);
