@@ -166,10 +166,10 @@ function getforums($pid=0, $depth=1)
 	}
 }
 
-function makeparentlist($fid, $navsep=",") 
+function makeparentlist($fid, $navsep=",")
 {
 	global $pforumcache, $db;
-	if(!$pforumcache) 
+	if(!$pforumcache)
 	{
 		$options = array(
 			"order_by" => "disporder, pid"
@@ -182,15 +182,15 @@ function makeparentlist($fid, $navsep=",")
 	}
 	reset($pforumcache);
 	reset($pforumcache[$fid]);
-	while(list($key, $forum) = each($pforumcache[$fid])) 
+	while(list($key, $forum) = each($pforumcache[$fid]))
 	{
-		if($fid == $forum[fid]) 
+		if($fid == $forum[fid])
 		{
 			if($pforumcache[$forum[pid]])
 			{
 				$navigation = makeparentlist($forum[pid], $navsep) . $navigation;
 			}
-			if($navigation) 
+			if($navigation)
 			{
 				$navigation .= $navsep;
 			}
@@ -199,7 +199,7 @@ function makeparentlist($fid, $navsep=",")
 	}
 	return $navigation;
 }
-if($mybb->input['action'] == "do_add") 
+if($mybb->input['action'] == "do_add")
 {
 	$pid = intval($mybb->input['pid']);
 	if($mybb->input['isforum'] == "no")
@@ -254,7 +254,7 @@ if($mybb->input['action'] == "do_add")
 	$updatearray = array(
 		"parentlist" => "$parentlist"
 	);
-	$db->update_query(TABLE_PREFIX."forums", $updatearray, "WHERE fid='$fid'");
+	$db->update_query(TABLE_PREFIX."forums", $updatearray, "fid='$fid'");
 	$inherit = $mybb->input['inherit'];
 	$canview = $mybb->input['canview'];
 	$canpostthreads = $mybb->input['canpostthreads'];
@@ -267,7 +267,7 @@ if($mybb->input['action'] == "do_add")
 
 	cpredirect("forums.php", $lang->forum_added);
 }
-if($mybb->input['action'] == "do_addmod") 
+if($mybb->input['action'] == "do_addmod")
 {
 	$options = array(
 		"limit" => "1"
@@ -320,7 +320,7 @@ if($mybb->input['action'] == "do_addmod")
 	}
 	$noheader = 1;
 }
-if($mybb->input['action'] == "do_delete") 
+if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{
@@ -338,7 +338,7 @@ if($mybb->input['action'] == "do_delete")
 		 * checks if they moderate any other forums, and if they don't
 		 * it moves them back to the registered usergroup
 		 */
-		
+
 		$query = $db->query(TABLE_PREFIX."moderators", "*", "fid='$fid'");
 		while($mod = $db->fetch_array($query))
 		{
@@ -381,7 +381,7 @@ if($mybb->input['action'] == "do_delete")
 	}
 }
 
-if($mybb->input['action'] == "do_deletemod") 
+if($mybb->input['action'] == "do_deletemod")
 {
 	if($mybb->input['deletesubmit'])
 	{
@@ -406,7 +406,7 @@ if($mybb->input['action'] == "do_deletemod")
 	}
 }
 
-if($mybb->input['action'] == "do_edit") 
+if($mybb->input['action'] == "do_edit")
 {
 	$fid = intval($mybb->input['fid']);
 	$pid = intval($mybb->input['pid']);
@@ -497,7 +497,7 @@ if($mybb->input['action'] == "do_edit")
 		cpredirect("forums.php", $lang->forum_updated);
 	}
 }
-if($mybb->input['action'] == "do_editmod") 
+if($mybb->input['action'] == "do_editmod")
 {
 	cpheader();
 	$username = $db->escape_string($mybb->input['username']);
@@ -528,7 +528,7 @@ if($mybb->input['action'] == "do_editmod")
 	}
 }
 
-if($mybb->input['action'] == "add") 
+if($mybb->input['action'] == "add")
 {
 	cpheader();
 	startform("forums.php", "" , "do_add");
@@ -615,7 +615,7 @@ if($mybb->input['action'] == "add")
 	cpfooter();
 
 }
-if($mybb->input['action'] == "addmod") 
+if($mybb->input['action'] == "addmod")
 {
 	if(!$noheader)
 	{
@@ -638,7 +638,7 @@ if($mybb->input['action'] == "addmod")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "delete") 
+if($mybb->input['action'] == "delete")
 {
 	$fid = intval($mybb->input['fid']);
 	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
@@ -658,7 +658,7 @@ if($mybb->input['action'] == "delete")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "deletemod") 
+if($mybb->input['action'] == "deletemod")
 {
 	$mid = intval($mybb->input['mid']);
 	$fid = intval($mybb->input['fid']);
@@ -676,7 +676,7 @@ if($mybb->input['action'] == "deletemod")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "edit") 
+if($mybb->input['action'] == "edit")
 {
 	if(!$noheader)
 	{
@@ -721,7 +721,7 @@ if($mybb->input['action'] == "edit")
 	makeyesnocode($lang->moderate_attachments, "modattachments", $forum['modattachments']);
 
 	tablesubheader($lang->style_options);
-	if(!$forum['style']) 
+	if(!$forum['style'])
 	{
 		$forum['style'] = "0";
 	}
@@ -787,7 +787,7 @@ if($mybb->input['action'] == "edit")
 	endform($lang->update_forum, $lang->reset_button);
 	cpfooter();
 }
-if($mybb->input['action'] == "editmod") 
+if($mybb->input['action'] == "editmod")
 {
 	if(!$noheader)
 	{
@@ -816,7 +816,7 @@ if($mybb->input['action'] == "editmod")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "do_modify") 
+if($mybb->input['action'] == "do_modify")
 {
 	while(list($fid, $order) = each($mybb->input['disporder']))
 	{
@@ -831,7 +831,7 @@ if($mybb->input['action'] == "do_modify")
 	cpredirect("forums.php", $lang->orders_updated);
 }
 
-if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") 
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	cpheader();
 	$fid = intval($mybb->input['fid']);

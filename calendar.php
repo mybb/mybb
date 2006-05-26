@@ -553,8 +553,8 @@ if($mybb->input['action'] == "calendar_main")
 		$bday_where = "birthday LIKE '%-$month-%'";
 		$feb_fix = 0;
 	}
-	
-	$query = $db->simple_query(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
+
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
 	while($user = $db->fetch_array($query))
 	{
 		$bday = explode("-", $user['birthday']);

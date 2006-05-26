@@ -34,7 +34,7 @@ if($mybb->input['action'] == "do_updateprefs")
 	$options = array(
 		"limit" => "1"
 	);
-	$query $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'", $options);
+	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'", $options);
 	$adminoptions = $db->fetch_array($query);
 	$sqlarray = array(
 		"notes" => $db->escape_string($mybb->input['notes']),
@@ -54,7 +54,7 @@ if($mybb->input['action'] == "revokeperms")
 {
 	$uid = intval($mybb->input['uid']);
 	checkadminpermissions("caneditaperms");
-	
+
 	$newperms = array(
 		"permsset" => 0
 		);
@@ -73,14 +73,14 @@ if($mybb->input['action'] == "do_updateperms")
 {
 	$uid = intval($mybb->input['uid']);
 	checkadminpermissions("caneditaperms");
-	
+
 	// Check if there are custom permissions for this admin.
 	$options = array(
 		"limit" => "1"
 	);
 	$query $db->simple_select(TABLE_PREFIX."adminoptions", "permset", "uid='$uid'", $options);
 	$adminoptions = $db->fetch_array($query);
-	
+
 	// If no custom permissions are set for this admin, create a blank custom set first.
 	if(!isset($adminoptions['permsset']))
 	{
@@ -89,7 +89,7 @@ if($mybb->input['action'] == "do_updateperms")
 		);
 		$db->insert_query(TABLE_PREFIX."adminoptions", $options_update);
 	}
-	
+
 	// Update the admin to the new permissions.
 	$newperms = $mybb->input['newperms'];
 	$sqlarray = array(
@@ -113,7 +113,7 @@ if($mybb->input['action'] == "do_updateperms")
 		"canrunmaint" => $db->escape_string($newperms['canrunmaint']),
 		);
 	$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='$uid'");
-	
+
 	// Redirect based on what the user did.
 	if($uid == 0)
 	{
@@ -135,10 +135,10 @@ if($mybb->input['action'] == "updateperms")
 	if($uid > 0)
 	{
 		$query = $db->query("
-			SELECT u.uid, u.username, g.cancp 
-			FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g) 
-			WHERE u.uid='$uid' 
-			AND u.usergroup=g.gid 
+			SELECT u.uid, u.username, g.cancp
+			FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g)
+			WHERE u.uid='$uid'
+			AND u.usergroup=g.gid
 			AND g.cancp='yes'
 		");
 		$admin = $db->fetch_array($query);
@@ -190,13 +190,13 @@ if($mybb->input['action'] == "updateperms")
 	endtable();
 	endform($lang->update_permissions, $lang->reset_button);
 
-	
+
 	cpfooter();
 }
 if($mybb->input['action'] == "adminpermissions")
 {
 	$usergroups = array();
-	
+
 	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "cancp='yes'");
 	while($usergroup = $db->fetch_array($query))
 	{
@@ -215,12 +215,12 @@ if($mybb->input['action'] == "adminpermissions")
 	$group_list = implode(',', array_keys($usergroups));
 	$secondary_groups = ','.$group_list.',';
 	$query = $db->query("
-		SELECT u.uid, u.username, u.lastactive, u.usergroup, u.additionalgroups, a.permsset 
-		FROM ".TABLE_PREFIX."users u 
-		LEFT JOIN ".TABLE_PREFIX."adminoptions a 
-		ON (a.uid=u.uid) 
-		WHERE (u.usergroup IN ($group_list) OR CONCAT(',', u.additionalgroups,',') 
-		LIKE '%{$secondary_groups}%') 
+		SELECT u.uid, u.username, u.lastactive, u.usergroup, u.additionalgroups, a.permsset
+		FROM ".TABLE_PREFIX."users u
+		LEFT JOIN ".TABLE_PREFIX."adminoptions a
+		ON (a.uid=u.uid)
+		WHERE (u.usergroup IN ($group_list) OR CONCAT(',', u.additionalgroups,',')
+		LIKE '%{$secondary_groups}%')
 		ORDER BY u.username ASC
 	");
 	while($admin = $db->fetch_array($query))
@@ -274,11 +274,11 @@ if($mybb->input['action'] == "adminpermissions")
 	echo "<td class=\"subheader\">$lang->perm_options</td>\n";
 	echo "</tr>\n";
 	$query = $db->query("
-		SELECT g.title, g.cancp, a.permsset, g.gid 
-		FROM (".TABLE_PREFIX."usergroups g) 
-		LEFT JOIN ".TABLE_PREFIX."adminoptions a 
-		ON (a.uid = -g.gid) 
-		WHERE g.cancp='yes' 
+		SELECT g.title, g.cancp, a.permsset, g.gid
+		FROM (".TABLE_PREFIX."usergroups g)
+		LEFT JOIN ".TABLE_PREFIX."adminoptions a
+		ON (a.uid = -g.gid)
+		WHERE g.cancp='yes'
 		ORDER BY g.title ASC
 	");
 	while($group = $db->fetch_array($query))
