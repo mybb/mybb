@@ -34,7 +34,7 @@ if($mybb->settings['enablecalendar'] == "no")
 
 if($mybb->usergroup['canviewcalendar'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // Make $eid an easy-to-use variable.
@@ -126,11 +126,11 @@ $monthnames = array(
 );
 
 // Make navigation
-addnav($lang->nav_calendar, "calendar.php");
+add_breadcrumb($lang->nav_calendar, "calendar.php");
 
 if($month && $year)
 {
-	addnav("$monthnames[$month] $year", "calendar.php?month=$month&year=$year");
+	add_breadcrumb("$monthnames[$month] $year", "calendar.php?month=$month&year=$year");
 }
 
 // No weird actions allowed.
@@ -147,8 +147,8 @@ if(	$mybb->input['action'] != "event" &&
 // If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
 if($mybb->settings['bbcodeinserter'] != "off" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
-	$codebuttons = makebbcodeinsert();
-	$smilieinserter = makesmilieinsert();
+	$codebuttons = build_mycode_inserter();
+	$smilieinserter = build_clickable_smilies();
 }
 
 
@@ -172,7 +172,7 @@ if($mybb->input['action'] == "event")
 
 	if($event['private'] == "yes" && $event['username'] != $mybb->user['username'])
 	{
-		nopermission();
+		error_no_permission();
 	}
 
 	if(($event['author'] == $mybb->user['uid'] && $mybb->user['uid'] != 0) || $mybb->usergroup['cancp'] == "yes")
@@ -185,7 +185,7 @@ if($mybb->input['action'] == "event")
 	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 	if($event['username'])
 	{
-		$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">".formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
+		$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">".format_name($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
 	}
 	else
 	{
@@ -195,12 +195,12 @@ if($mybb->input['action'] == "event")
 	$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
 	$eventdate = mydate($mybb->settings['dateformat'], $eventdate);
 
-	addnav($lang->nav_viewevent);
+	add_breadcrumb($lang->nav_viewevent);
 
 	$plugins->run_hooks("calendar_event_end");
 
 	eval("\$eventpage = \"".$templates->get("calendar_event")."\";");
-	outputpage($eventpage);
+	output_page($eventpage);
 }
 
 // View all events on a specific day.
@@ -237,7 +237,7 @@ if($mybb->input['action'] == "dayview")
 		{
 			$age = '';
 		}
-		$bdays['username'] = formatname($bdays['username'], $bdays['usergroup'], $bdays['displaygroup']);
+		$bdays['username'] = format_name($bdays['username'], $bdays['usergroup'], $bdays['displaygroup']);
 		eval("\$birthdays .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
 
 		if($alterbg == $theme['trow1'])
@@ -274,7 +274,7 @@ if($mybb->input['action'] == "dayview")
 		$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 		if($event['username'])
 		{
-			$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">" . formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
+			$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">" . format_name($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
 		}
 		else
 		{
@@ -297,12 +297,12 @@ if($mybb->input['action'] == "dayview")
 		$lang->birthdays_on_day = sprintf($lang->birthdays_on_day, $bdaydate);
 		eval("\$bdaylist = \"".$templates->get("calendar_dayview_birthdays")."\";");
 	}
-	addnav($lang->nav_dayview);
+	add_breadcrumb($lang->nav_dayview);
 
 	$plugins->run_hooks("calendar_dayview_end");
 
 	eval("\$dayview = \"".$templates->get("calendar_dayview")."\";");
-	outputpage($dayview);
+	output_page($dayview);
 }
 
 // Process the adding of an event.
@@ -332,7 +332,7 @@ if($mybb->input['action'] == "do_addevent")
 	if(!$eventhandler->validate_event())
 	{
 		$event_errors = $eventhandler->get_friendly_errors();
-		$event_errors = inlineerror($event_errors);
+		$event_errors = inline_error($event_errors);
 		$mybb->input['action'] = "addevent";
 	}
 	else
@@ -385,22 +385,22 @@ if($mybb->input['action'] == "addevent")
 		$privatecheck = " checked=\"checked\"";
 		if($mybb->usergroup['canaddprivateevents'] == "no")
 		{
-			nopermission();
+			error_no_permission();
 		}
 	}
 	else
 	{
 		if($mybb->usergroup['canaddpublicevents'] == "no")
 		{
-			nopermission();
+			error_no_permission();
 		}
 	}
-	addnav($lang->nav_addevent);
+	add_breadcrumb($lang->nav_addevent);
 
 	$plugins->run_hooks("calendar_addevent_end");
 
 	eval("\$addevent = \"".$templates->get("calendar_addevent")."\";");
-	outputpage($addevent);
+	output_page($addevent);
 }
 
 // Process the editing of an event.
@@ -417,7 +417,7 @@ if($mybb->input['action'] == "do_editevent")
 	}
 	elseif(($event['author'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $mybb->usergroup['cancp'] != "yes")
 	{
-		nopermission();
+		error_no_permission();
 	}
 
 	// Are we going to delete this event or just edit it?
@@ -457,7 +457,7 @@ if($mybb->input['action'] == "do_editevent")
 		if(!$eventhandler->validate_event())
 		{
 			$event_errors = $eventhandler->get_friendly_errors();
-			$event_errors = inlineerror($event_errors);
+			$event_errors = inline_error($event_errors);
 			$mybb->input['action'] = "editevent";
 		}
 		else
@@ -485,7 +485,7 @@ if($mybb->input['action'] == "editevent")
 	}
 	elseif(($event['author'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $mybb->usergroup['cancp'] != "yes")
 	{
-		nopermission();
+		error_no_permission();
 	}
 	$eventdate = explode("-", $event['date']);
 	$msel[$eventdate[1]] = " selected=\"selected\"";
@@ -523,12 +523,12 @@ if($mybb->input['action'] == "editevent")
 	{
 		$privatecheck = " checked=\"checked\"";
 	}
-	addnav($lang->nav_editevent);
+	add_breadcrumb($lang->nav_editevent);
 
 	$plugins->run_hooks("calendar_editevent_end");
 
 	eval("\$editevent = \"".$templates->get("calendar_editevent")."\";");
-	outputpage($editevent);
+	output_page($editevent);
 }
 
 
@@ -684,6 +684,6 @@ if($mybb->input['action'] == "calendar_main")
 	$plugins->run_hooks("calendar_end");
 
 	eval("\$calendar = \"".$templates->get("calendar")."\";");
-	outputpage($calendar);
+	output_page($calendar);
 }
 ?>

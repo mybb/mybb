@@ -27,7 +27,7 @@ if($mybb->settings['enablereputation'] != "yes")
 // Does this user have permission to view the board?
 if($mybb->usergroup['canview'] != "yes")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // If we have a specified incoming username, validate it and fetch permissions for it
@@ -47,7 +47,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	{
 		$message = $lang->add_no_permission;
 		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
-		outputpage($error);		
+		output_page($error);		
 		exit;
 	}
 	
@@ -56,7 +56,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	{
 		$message = $lang->add_disabled;
 		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
-		outputpage($error);		
+		output_page($error);		
 		exit;
 	}
 	
@@ -65,7 +65,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	{
 		$message = $lang->add_yours;
 		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
-		outputpage($error);		
+		output_page($error);		
 		exit;
 	}
 	
@@ -85,7 +85,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		{
 			$message = $lang->add_maxperday;
 			eval("\$error = \"".$templates->get("reputation_add_error")."\";");
-			outputpage($error);		
+			output_page($error);		
 			exit;
 		}
 	}
@@ -135,7 +135,7 @@ if($mybb->input['action'] == "do_add")
 			WHERE uid='".intval($mybb->input['uid'])."'
 		");
 		eval("\$error = \"".$templates->get("reputation_deleted")."\";");
-		outputpage($error);
+		output_page($error);
 		exit;
 	}
 
@@ -144,7 +144,7 @@ if($mybb->input['action'] == "do_add")
 		$show_back = 1;
 		$message = $lang->add_no_comment;
 		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
-		outputpage($error);
+		output_page($error);
 		exit;
 	}
 	
@@ -154,7 +154,7 @@ if($mybb->input['action'] == "do_add")
 		$show_back = 1;
 		$message = $lang->add_invalidpower;
 		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
-		outputpage($error);	
+		output_page($error);	
 		exit;
 	}
 	
@@ -215,7 +215,7 @@ if($mybb->input['action'] == "do_add")
 
 
 	eval("\$reputation = \"".$templates->get("reputation_added")."\";");
-	outputpage($reputation);
+	output_page($reputation);
 }
 
 // Adding a new reputation
@@ -260,7 +260,7 @@ if($mybb->input['action'] == "add")
 	
 	eval("\$reputation_add = \"".$templates->get("reputation_add")."\";");
 	$plugins->run_hooks("reputation_add_end");
-	outputpage($reputation_add);
+	output_page($reputation_add);
 }
 
 // Delete a specific reputation from a user.
@@ -269,7 +269,7 @@ if($mybb->input['action'] == "delete")
 	// Only administrators as well as users who gave a specifc vote can delete one.
 	if($mybb->usergroup['cancp'] != "yes" && $existing_reputation['adduid'] != $mybb->user['uid'])
 	{
-		nopermission();
+		error_no_permission();
 	}
 
 	// Delete the specified reputation
@@ -303,7 +303,7 @@ if(!$mybb->input['action'])
 	$lang->reputation_report = sprintf($lang->reputation_report, $user['username']);
 	
 	// Format the user name using the group username style
-	$username = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
+	$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 
 	// Set display group to their user group if they don't have a display group.
 	if(!$user['displaygroup'])
@@ -348,8 +348,8 @@ if(!$mybb->input['action'])
 	}
 	
 	// Build navigation menu
-	addnav($lang->nav_profile, "member.php?action=profile&uid={$user['uid']}");
-	addnav($lang->nav_reputation);
+	add_breadcrumb($lang->nav_profile, "member.php?action=profile&uid={$user['uid']}");
+	add_breadcrumb($lang->nav_reputation);
 	
 	// Check our specified conditionals for what type of reputations to show
 	$show_select = '';
@@ -503,7 +503,7 @@ if(!$mybb->input['action'])
 	while($reputation_vote = $db->fetch_array($query))
 	{
 		// Format the username of this poster
-		$reputation_vote['username'] = formatname($reputation_vote['username'], $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
+		$reputation_vote['username'] = format_name($reputation_vote['username'], $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
 		
 		// This is a negative reputation
 		if($reputation_vote['reputation'] < 0)
@@ -527,7 +527,7 @@ if(!$mybb->input['action'])
 			$vote_type = $lang->positive;
 		}
 		// Get the reputation for the user who posted this comment
-		$reputation_vote['user_reputation'] = getreputation($reputation_vote['user_reputation'], $reputation_vote['adduid']);
+		$reputation_vote['user_reputation'] = get_reputation($reputation_vote['user_reputation'], $reputation_vote['adduid']);
 		
 		// Format the date this reputation was last modified
 		$last_updated_date = mydate($settings['dateformat'], $reputation_vote['dateline']);
@@ -564,6 +564,6 @@ if(!$mybb->input['action'])
 	
 	eval("\$reputation = \"".$templates->get("reputation")."\";");
 	$plugins->run_hooks("reputation_end");
-	outputpage($reputation);
+	output_page($reputation);
 }
 ?>

@@ -50,7 +50,7 @@ else
 }
 
 // Get the forums the user is not allowed to see.
-$unviewable = getunviewableforums();
+$unviewable = get_unviewable_forums();
 $inactiveforums = get_inactive_forums();
 
 // If there are any, add SQL to exclude them.

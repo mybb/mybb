@@ -20,12 +20,12 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("search");
 
-addnav($lang->nav_search, "search.php");
+add_breadcrumb($lang->nav_search, "search.php");
 
 switch($mybb->input['action'])
 {
 	case "results":
-		addnav($lang->nav_results);
+		add_breadcrumb($lang->nav_results);
 		break;
 	default:
 		break;
@@ -33,7 +33,7 @@ switch($mybb->input['action'])
 
 if($mybb->usergroup['cansearch'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 $now = time();
@@ -382,7 +382,7 @@ if($mybb->input['action'] == "results")
 		}
 		eval("\$searchresults = \"".$templates->get("search_results_threads")."\";");
 		$plugins->run_hooks("search_results_end");
-		outputpage($searchresults);
+		output_page($searchresults);
 	}
 	else // Displaying results as posts
 	{
@@ -605,7 +605,7 @@ if($mybb->input['action'] == "results")
 
 		eval("\$searchresults = \"".$templates->get("search_results_posts")."\";");
 		$plugins->run_hooks("search_results_end");
-		outputpage($searchresults);
+		output_page($searchresults);
 	}
 }
 elseif($mybb->input['action'] == "findguest")
@@ -877,7 +877,7 @@ else
 	$srchlist = make_searchable_forums("", "$fid");
 	eval("\$search = \"".$templates->get("search")."\";");
 	$plugins->run_hooks("search_end");
-	outputpage($search);
+	output_page($search);
 }
 
 ?>

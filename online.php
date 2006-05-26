@@ -19,19 +19,19 @@ $lang->load("online");
 
 if($mybb->usergroup['canviewonline'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // Make navigation
-addnav($lang->nav_online, "online.php");
+add_breadcrumb($lang->nav_online, "online.php");
 
 switch($mybb->input['action'])
 {
 	case "today":
-		addnav($lang->nav_onlinetoday);
+		add_breadcrumb($lang->nav_onlinetoday);
 		break;
 	case "iplookup":
-		addnav($lang->nav_iplookup);
+		add_breadcrumb($lang->nav_iplookup);
 		break;
 }
 
@@ -63,7 +63,7 @@ if($mybb->input['action'] == "today")
 				$invisiblemark = "";
 			}
 			$username = $online['username'];
-			$username = formatname($username, $online['usergroup'], $online['displaygroup']);
+			$username = format_name($username, $online['usergroup'], $online['displaygroup']);
 			$onlinetime = mydate($mybb->settings['timeformat'], $online['lastactive']);
 			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
 		}
@@ -81,13 +81,13 @@ if($mybb->input['action'] == "today")
 	$plugins->run_hooks("online_today_end");
 
 	eval("\$today = \"".$templates->get("online_today")."\";");
-	outputpage($today);
+	output_page($today);
 }
 elseif($mybb->input['action'] == "iplookup")
 {
 	if($mybb->usergroup['canviewonlineips'] == "no")
 	{
-		nopermission();
+		error_no_permission();
 	}
 	$ip = $mybb->input['ip'];
 	$host = @gethostbyaddr($ip);
@@ -104,7 +104,7 @@ elseif($mybb->input['action'] == "iplookup")
 		eval("\$adminoptions = \"".$templates->get("online_iplookup_adminoptions")."\";");
 	}
 	eval("\$iplookup = \"".$templates->get("online_iplookup")."\";");
-	outputpage($iplookup);
+	output_page($iplookup);
 }
 else
 {
@@ -174,7 +174,7 @@ else
 	}
 
 	// Get forum permissions
-	$unviewableforums = getunviewableforums();
+	$unviewableforums = get_unviewable_forums();
 	if($unviewableforums)
 	{
 		$fidnot = " AND fid NOT IN ($unviewableforums)";
@@ -295,7 +295,7 @@ else
 	$plugins->run_hooks("online_end");
 
 	eval("\$online = \"".$templates->get("online")."\";");
-	outputpage($online);
+	output_page($online);
 }
 
 function show($user)
@@ -602,17 +602,17 @@ function show($user)
 			{
 				$invisiblemark = '';
 			}
-			$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
+			$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 			$onlinename = "<a href=\"member.php?action=profile&amp;uid=".$user['uid']."\">".$user['username']."</a>".$invisiblemark;
 		}
 	}
 	elseif($user['bot'])
 	{
-		$onlinename = formatname($user['bot'], $session->botgroup);
+		$onlinename = format_name($user['bot'], $session->botgroup);
 	}
 	else
 	{
-		$onlinename = formatname($lang->guest, 1);
+		$onlinename = format_name($lang->guest, 1);
 	}
 	$onlinetime = mydate($mybb->settings['timeformat'], $user['time']);
 	if($mybb->usergroup['canviewonlineips'] == "yes")

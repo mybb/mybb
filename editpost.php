@@ -21,7 +21,7 @@ $lang->load("editpost");
 // No permission for guests
 if(!$mybb->user['uid'])
 {
-	nopermission();
+	error_no_permission();
 }
 
 // Get post info
@@ -59,24 +59,24 @@ if(!$forum || $forum['type'] != "f")
 }
 if($forum['open'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // Make navigation
-makeforumnav($fid);
-addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
-addnav($lang->nav_editpost);
+build_forum_breadcrumb($fid);
+add_breadcrumb($thread['subject'], "showthread.php?tid=$thread[tid]");
+add_breadcrumb($lang->nav_editpost);
 
 $forumpermissions = forum_permissions($fid);
 
 
 if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user[showcodebuttons] != 0)
 {
-	$codebuttons = makebbcodeinsert();
+	$codebuttons = build_mycode_inserter();
 }
 if($mybb->settings['smilieinserter'] != "off")
 {
-	$smilieinserter = makesmilieinsert();
+	$smilieinserter = build_clickable_smilies();
 }
 
 if(!$mybb->input['action'] || $mybb->input['previewpost'])
@@ -86,7 +86,7 @@ if(!$mybb->input['action'] || $mybb->input['previewpost'])
 
 if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
-	if(ismod($fid, "candeleteposts") != "yes")
+	if(is_moderator($fid, "candeleteposts") != "yes")
 	{
 		if($thread['closed'] == "yes")
 		{
@@ -94,17 +94,17 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		}
 		if($forumpermissions['candeleteposts'] == "no")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		if($mybb->user['uid'] != $post['uid'])
 		{
-			nopermission();
+			error_no_permission();
 		}
 	}
 }
 else
 {
-	if(ismod($fid, "caneditposts") != "yes") 
+	if(is_moderator($fid, "caneditposts") != "yes") 
 	{
 		if($thread['closed'] == "yes") 
 		{
@@ -112,11 +112,11 @@ else
 		}
 		if($forumpermissions['caneditposts'] == "no") 
 		{
-			nopermission();
+			error_no_permission();
 		}
 		if($mybb->user['uid'] != $post['uid']) 
 		{
-			nopermission();
+			error_no_permission();
 		}
 		// Edit time limit
 		$time = time();
@@ -129,7 +129,7 @@ else
 }
 
 // Password protected forums
-checkpwforum($fid, $forum['password']);
+check_forum_password($fid, $forum['password']);
 
 if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_editpost" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
@@ -179,18 +179,18 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			if($forumpermissions['candeletethreads'] == "yes")
 			{
-				deletethread($tid);
-				updateforumcount($fid);
-				markreports($tid, "thread");
-				if(ismod($fid, "candeleteposts") != "yes")
+				delete_thread($tid);
+				update_forum_count($fid);
+				mark_reports($tid, "thread");
+				if(is_moderator($fid, "candeleteposts") != "yes")
 				{
-					logmod($modlogdata, "Deleted Thread");
+					log_moderator_action($modlogdata, "Deleted Thread");
 				}
 				redirect("forumdisplay.php?fid=$fid", $lang->redirect_threaddeleted);
 			}
 			else
 			{
-				nopermission();
+				error_no_permission();
 			}
 		}
 		else
@@ -198,13 +198,13 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 			if($forumpermissions['candeleteposts'] == "yes")
 			{
 				// Select the first post before this
-				deletepost($pid, $tid);
-				updatethreadcount($tid);
-				updateforumcount($fid);
-				markreports($pid, "post");
-				if(ismod($fid, "candeleteposts") != "yes")
+				delete_post($pid, $tid);
+				update_thread_count($tid);
+				update_forum_count($fid);
+				mark_reports($pid, "post");
+				if(is_moderator($fid, "candeleteposts") != "yes")
 				{
-					logmod($modlogdata, "Deleted Post");
+					log_moderator_action($modlogdata, "Deleted Post");
 				}
 				$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline" => "order_dir" => "desc"));
 				$next_post = $db->fetch_array($query);
@@ -220,7 +220,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 			}
 			else
 			{
-				nopermission();
+				error_no_permission();
 			}
 		}
 	}
@@ -263,7 +263,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 	if(!$posthandler->validate_post())
 	{
 		$post_errors = $posthandler->get_friendly_errors();
-		$post_errors = inlineerror($post_errors);
+		$post_errors = inline_error($post_errors);
 		$mybb->input['action'] = "editpost";
 	}
 	// No errors were found, we can call the update method.
@@ -324,7 +324,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 	if($forum['allowpicons'] != "no")
 	{
-		$posticons = getposticons();
+		$posticons = get_post_icons();
 	}
 
 	if($mybb->user['uid'] != 0) 
@@ -355,8 +355,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{
-			$attachment['size'] = getfriendlysize($attachment['filesize']);
-			$attachment['icon'] = getattachicon(getextension($attachment['filename']));
+			$attachment['size'] = get_friendly_size($attachment['filesize']);
+			$attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
 			if($forum['allowmycode'] != "no")
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
@@ -376,9 +376,9 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 		else
 		{
-			$friendlyquota = getfriendlysize($mybb->usergroup['attachquota']*1000);
+			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1000);
 		}
-		$friendlyusage = getfriendlysize($usage['ausage']);
+		$friendlyusage = get_friendly_size($usage['ausage']);
 		$lang->attach_quota = sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount <= $mybb->settings['maxattachments']) && !$noshowattach)
 		{
@@ -496,6 +496,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$plugins->run_hooks("editpost_end");
 
 	eval("\$editpost = \"".$templates->get("editpost")."\";");
-	outputpage($editpost);
+	output_page($editpost);
 }
 ?>

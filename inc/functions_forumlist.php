@@ -251,7 +251,7 @@ function get_forum_unapproved($forum)
 	global $lang;
 	
 	$unapproved_threads = $unapproved_posts = '';
-	if(ismod($forum['fid']) == "yes")
+	if(is_moderator($forum['fid']) == "yes")
 	{
 		if($forum['unapprovedposts'])
 		{

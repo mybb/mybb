@@ -17,7 +17,7 @@ $lang->load("report");
 
 if($mybb->usergroup['canview'] == "no" || !$mybb->user['uid'])
 {
-	nopermission();
+	error_no_permission();
 }
 
 if($mybb->input['action'] != "do_report")
@@ -39,7 +39,7 @@ if(!$forum)
 	error($lang->error_invalidforum);
 }
 // Password protected forums ......... yhummmmy!
-checkpwforum($forum['fid'], $forum['password']);
+check_forum_password($forum['fid'], $forum['password']);
 
 $thread = get_thread($post['tid']);
 
@@ -49,7 +49,7 @@ if($mybb->input['action'] == "report")
 	$pid = $mybb->input['pid'];
 	eval("\$report = \"".$templates->get("report")."\";");
 	$plugins->run_hooks("report_end");
-	outputpage($report);
+	output_page($report);
 }
 elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 {
@@ -57,7 +57,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 	if(!trim($mybb->input['reason']))
 	{
 		eval("\$report = \"".$templates->get("report_noreason")."\";");
-		outputpage($report);
+		output_page($report);
 		exit;
 	}
 	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pm")
@@ -121,6 +121,6 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 	}
 	eval("\$report = \"".$templates->get("report_thanks")."\";");
 	$plugins->run_hooks("report_do_report_end");
-	outputpage($report);
+	output_page($report);
 }
 ?>

@@ -146,7 +146,7 @@ class MyLanguage
 		$dir = @opendir($this->path);
 		while($lang = readdir($dir))
 		{
-			$ext = strtolower(getextension($lang));
+			$ext = strtolower(get_extension($lang));
 			if($lang != "." && $lang != ".." && $ext == "php")
 			{
 				$lname = str_replace(".".$ext, "", $lang);

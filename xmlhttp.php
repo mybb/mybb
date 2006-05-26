@@ -39,7 +39,7 @@ $fpermissioncache = $cache->read("forumpermissions");
 
 
 // Send page headers
-pageheaders();
+send_page_headers();
 
 
 // Create the session
@@ -181,7 +181,7 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 	$forumpermissions = forum_permissions($forum['fid']);
 	
 	// If this user is not a moderator with "caneditposts" permissions.
-	if(ismod($forum['fid'], "caneditposts") != "yes")
+	if(is_moderator($forum['fid'], "caneditposts") != "yes")
 	{
 		// Thread is closed - no editing allowed.
 		if($thread['closed'] == "yes")
@@ -264,7 +264,7 @@ else if($mybb->input['action'] == "edit_post")
 	$forumpermissions = forum_permissions($forum['fid']);
 	
 	// If this user is not a moderator with "caneditposts" permissions.
-	if(ismod($forum['fid'], "caneditposts") != "yes")
+	if(is_moderator($forum['fid'], "caneditposts") != "yes")
 	{
 		// Thread is closed - no editing allowed.
 		if($thread['closed'] == "yes")

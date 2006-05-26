@@ -81,7 +81,7 @@ function upload_avatar()
 	}
 	
 	// Check we have a valid extension
-	$ext = getextension(strtolower($avatar['name']));
+	$ext = get_extension(strtolower($avatar['name']));
 	if(!preg_match("#(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext)) {
 		$ret['error'] = $lang->error_avatartype;
 		return $ret;
@@ -175,7 +175,7 @@ function upload_attachment($attachment)
 		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_php4;
 		return $ret;
 	}
-	$ext = getextension($attachment['name']);
+	$ext = get_extension($attachment['name']);
 	// Check if we have a valid extension
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes WHERE extension='$ext'");
 	$attachtype = $db->fetch_array($query);
@@ -199,7 +199,7 @@ function upload_attachment($attachment)
 		$usage = $usage['ausage']+$attachment['size'];
 		if($usage > ($mybb->usergroup['attachquota']*1000))
 		{
-			$friendlyquota = getfriendlysize($mybb->usergroup['attachquota']*1000);
+			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1000);
 			$ret['error'] = sprintf($lang->error_reachedattachquota, $friendlyquota);
 			return $ret;
 		}

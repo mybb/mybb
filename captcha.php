@@ -45,7 +45,7 @@ if(function_exists("imagefttext"))
 		while($file = readdir($ttfdir))
 		{
 			// If this file is a ttf file, add it to the list
-			if(is_file(MYBB_ROOT."inc/captcha_fonts/".$file) && getextension($file) == "ttf")
+			if(is_file(MYBB_ROOT."inc/captcha_fonts/".$file) && get_extension($file) == "ttf")
 			{
 				$ttf_fonts[] = MYBB_ROOT."inc/captcha_fonts/".$file;
 			}

@@ -23,12 +23,12 @@ if(!$usergroup['gid'])
 	error($lang->invalid_group);
 }
 $lang->nav_group_management = sprintf($lang->nav_group_management, $usergroup['title']);
-addnav($lang->nav_group_memberships, "usercp.php?action=usergroups");
-addnav($lang->nav_group_management, "managegroup.php?gid=$gid");
+add_breadcrumb($lang->nav_group_memberships, "usercp.php?action=usergroups");
+add_breadcrumb($lang->nav_group_management, "managegroup.php?gid=$gid");
 
 if($mybb->input['action'] == "joinrequests")
 {
-	addnav($lang->nav_join_requests);
+	add_breadcrumb($lang->nav_join_requests);
 }
 
 // Check that this user is actually a leader of this group
@@ -43,7 +43,7 @@ if($mybb->input['action'] == "do_add")
 {
 	if($groupleader['canmanagemembers'] == "no")
 	{
-		nopermission();
+		error_no_permission();
 	}
 	$query = $db->simple_select(TABLE_PREFIX."users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->input['username'])."'", array("limit" => 1));
 	$user = $db->fetch_array($query);
@@ -69,7 +69,7 @@ elseif($mybb->input['action'] == "do_joinrequests")
 {
 	if($groupleader['canmanagerequests'] == "no")
 	{
-		nopermission();
+		error_no_permission();
 	}
 
 	$plugins->run_hooks("managegroup_do_joinrequests_start");
@@ -127,13 +127,13 @@ elseif($mybb->input['action'] == "joinrequests")
 	$plugins->run_hooks("managegroup_joinrequests_end");
 
 	eval("\$joinrequests = \"".$templates->get("managegroup_joinrequests")."\";");
-	outputpage($joinrequests);
+	output_page($joinrequests);
 }
 elseif($mybb->input['action'] == "do_manageusers")
 {
 	if($groupleader['canmanagemembers'] == "no")
 	{
-		nopermission();
+		error_no_permission();
 	}
 
 	$plugins->run_hooks("managegroup_do_manageusers_start");
@@ -227,7 +227,7 @@ else
 		}
 		$query1 = $db->simple_select(TABLE_PREFIX."groupleaders", "uid", "uid='{$user['uid']}' AND gid='{$gid}'");
 		$isleader = $db->fetch_array($query1);
-		$user['username'] = formatname($user['username'], $user['usergroup']);
+		$user['username'] = format_name($user['username'], $user['usergroup']);
 		if($isleader['uid'])
 		{
 			$leader = $lang->leader;
@@ -258,6 +258,6 @@ else
 	$plugins->run_hooks("managegroup_end");
 
 	eval("\$manageusers = \"".$templates->get("managegroup")."\";");
-	outputpage($manageusers);
+	output_page($manageusers);
 }
 ?>

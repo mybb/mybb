@@ -13,7 +13,7 @@
  * Upgrade Script: 1.0 / 1.1
  */
 
-// Todo - rebuild parent lists of forums to ensure they're correct, updateforumcount for each forum
+// Todo - rebuild parent lists of forums to ensure they're correct, update_forum_count for each forum
 
 $upgrade_detail = array(
 	"revert_all_templates" => 1,

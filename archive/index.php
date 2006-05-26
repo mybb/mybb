@@ -30,11 +30,11 @@ switch($action)
 		// Check if we have permission to view this thread
 		$forumpermissions = forum_permissions($forum['fid']);
 		if($forumpermissions['canview'] != "yes") {
-			archive_nopermission();
+			archive_error_no_permission();
 		}
 		// Build the navigation
-		makeforumnav($forum['fid'], 1);
-		addnav($thread['subject']);
+		build_forum_breadcrumb($forum['fid'], 1);
+		add_breadcrumb($thread['subject']);
 
 		archive_header($thread['subject'], $thread['subject'], $mybb->settings['bburl']."/showthread.php?tid=$id");
 
@@ -115,7 +115,7 @@ switch($action)
 		// Check if we have permission to view this forum
 		$forumpermissions = forum_permissions($forum['fid']);
 		if($forumpermissions['canview'] != "yes") {
-			archive_nopermission();
+			archive_error_no_permission();
 		}
 		
 		// Paginate this forum
@@ -123,7 +123,7 @@ switch($action)
 		$threadcount = $db->fetch_field($query, "threads");
 
 		// Build the navigation
-		makeforumnav($forum['fid'], 1);
+		build_forum_breadcrumb($forum['fid'], 1);
 		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid=$id");
 		
 		if($threadcount < 1)

@@ -28,7 +28,7 @@ if(!$thread['tid'])
 $forumpermissions = forum_permissions($thread['fid']);
 if($forumpermissions['canview'] == "no" || $forumpermissions['canratethreads'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // Get forum info
@@ -39,11 +39,11 @@ if(!$forum)
 	error($lang->error_invalidforum);
 }
 // Password protected forums ......... yhummmmy!
-checkpwforum($forum['fid'], $forum['password']);
+check_forum_password($forum['fid'], $forum['password']);
 
 if($forum['allowtratings'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 $mybb->input['rating'] = intval($mybb->input['rating']);
 if($mybb->input['rating'] < 1 || $mybb->input['rating'] > 5)

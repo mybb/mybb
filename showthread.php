@@ -44,7 +44,7 @@ $tid = $thread['tid'];
 $fid = $thread['fid'];
 
 // Is the currently logged in user a moderator of this forum?
-if(ismod($fid) == "yes")
+if(is_moderator($fid) == "yes")
 {
 	$ismod = true;
 }
@@ -60,8 +60,8 @@ if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['
 }
 
 // Build the navigation.
-makeforumnav($fid);
-addnav($thread['subject'], "showthread.php?tid=$tid");
+build_forum_breadcrumb($fid);
+add_breadcrumb($thread['subject'], "showthread.php?tid=$tid");
 
 $forum = get_forum($fid);
 
@@ -74,11 +74,11 @@ $forumpermissions = forum_permissions($forum['fid']);
 
 if($forumpermissions['canview'] != "yes")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // Check that this forum is not password protected.
-checkpwforum($forum['fid'], $forum['password']);
+check_forum_password($forum['fid'], $forum['password']);
 
 // If there is no specific action, we must be looking at the thread.
 if(!$mybb->input['action'])
@@ -348,7 +348,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the forum jump dropdown box.
-	$forumjump = makeforumjump("", $fid, 1);
+	$forumjump = build_forum_jump("", $fid, 1);
 
 	// Mark this thread read for the currently logged in user.
 	if($mybb->settings['threadreadcut'] && ($mybb->user['uid'] != 0))
@@ -417,7 +417,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Decide whether or not to include signatures.
-	if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || ismod($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no")
+	if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no")
 	{
 		if($mybb->user['signature'])
 		{
@@ -702,7 +702,7 @@ if($mybb->input['action'] == "thread")
 	$lang->newthread_in = sprintf($lang->newthread_in, $forum['name']);
 	eval("\$showthread = \"".$templates->get("showthread")."\";");
 	$plugins->run_hooks("showthread_end");
-	outputpage($showthread);
+	output_page($showthread);
 }
 
 /**

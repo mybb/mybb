@@ -21,13 +21,13 @@ $mybboard['vercode'] = "100.07";
  *
  * @param string The contents of the page.
  */
-function outputpage($contents)
+function output_page($contents)
 {
 	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser, $mybbgroup;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 	
 	$ptimer = new timer();
-	$contents = parsepage($contents);
+	$contents = parse_page($contents);
 	$parsetime = $ptimer->stop();
 	$totaltime = $maintimer->stop();
 	if($mybbgroup['cancp'] == "yes")
@@ -37,7 +37,7 @@ function outputpage($contents)
 		$percentphp = number_format((($phptime/$maintimer->totaltime)*100), 2);
 		$percentsql = number_format((($querytime/$maintimer->totaltime)*100), 2);
 		$phpversion = phpversion();
-		$serverload = serverload();
+		$serverload = get_server_load();
 		if(strstr(getenv("REQUEST_URI"), "?"))
 		{
 			$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "&debug=1";
@@ -59,7 +59,7 @@ function outputpage($contents)
 		$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		if(isset($mybb->input['debug']))
 		{
-			debugpage();
+			debug_page();
 		}
 	}
 	else
@@ -72,11 +72,11 @@ function outputpage($contents)
 	{
 		if(version_compare(PHP_VERSION, '4.2.0', '>='))
 		{
-			$contents = gzipencode($contents, $mybb->settings['gziplevel']);
+			$contents = gzip_encode($contents, $mybb->settings['gziplevel']);
 		}
 		else
 		{
-			$contents = gzipencode($contents);
+			$contents = gzip_encode($contents);
 		}
 	}
 	echo $contents;
@@ -171,11 +171,11 @@ function send_mail_queue($count=20)
  * @param string The contents of the page.
  * @return string The parsed page.
  */
-function parsepage($contents)
+function parse_page($contents)
 {
 	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup, $htmldoctype, $loadpmpopup;
 
-	$contents = str_replace("<navigation>", buildnav(1), $contents);
+	$contents = str_replace("<navigation>", build_breadcrumb(1), $contents);
 	if($htmldoctype)
 	{
 		$contents = $htmldoctype.$contents;
@@ -331,7 +331,7 @@ function mymail($to, $subject, $message, $from="", $charset="")
  * @param int The forum id to get the parent list for.
  * @return string The comma-separated parent list.
  */
-function getparentlist($fid)
+function get_parent_list($fid)
 {
 	global $db, $forum_cache;
 	static $forumarraycache;
@@ -354,9 +354,9 @@ function getparentlist($fid)
 //
 // Generate a parent list suitable for queries
 //
-function buildparentlist($fid, $column="fid", $joiner="OR", $parentlist="")
+function build_parent_list($fid, $column="fid", $joiner="OR", $parentlist="")
 {
-	$parentlist = (!$parentlist) ? getparentlist($fid) : $parentlist;
+	$parentlist = (!$parentlist) ? get_parent_list($fid) : $parentlist;
 	$parentsexploded = explode(",", $parentlist);
 	$builtlist = "(";
 	$sep = '';
@@ -397,17 +397,17 @@ function error($error, $title="")
 	
 	$title = (!$title) ? $mybb->settings['bbname'] : $title;
 	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
-	resetnav();
-	addnav($lang->error);
+	reset_breadcrumb();
+	add_breadcrumb($lang->error);
 	eval("\$errorpage = \"".$templates->get("error")."\";");
-	outputpage($errorpage);
+	output_page($errorpage);
 	exit;
 }
 
 //
 // Produce an inline error message
 //
-function inlineerror($errors, $title="")
+function inline_error($errors, $title="")
 {
 	global $theme, $mybb, $db, $lang, $templates, $settings;
 	if(!$title)
@@ -426,7 +426,7 @@ function inlineerror($errors, $title="")
  * Presents the user with a "no permission" page
  *
  */
-function nopermission()
+function error_no_permission()
 {
 	global $REQUEST_URI, $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang, $plugins, $session;
 	
@@ -460,7 +460,7 @@ function redirect($url, $message="You will now be redirected", $title="")
 	if($mybb->settings['redirects'] == "on" && $mybb->user['showredirect'] != "no")
 	{
 		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
-		outputpage($redirectpage);
+		output_page($redirectpage);
 	}
 	else
 	{
@@ -526,25 +526,6 @@ function multipage($count, $perpage, $page, $url)
 		eval("\$multipage = \"".$templates->get("multipage")."\";");
 		return $multipage;
 	}
-}
-
-//
-// Check if a certain forum by id exists
-//
-function validateforum($fid)
-{
-	global $db;
-	
-	$query = $db->query("
-		SELECT fid 
-		FROM ".TABLE_PREFIX."forums 
-		WHERE fid='$fid'
-	");
-	$validforum = $db->fetch_array($query);
-	
-	// Should this really be:
-	//return ($fid == $validforum['fid']) ? true : false;
-	return (($fid=$validforum['fid'])? true:false);	
 }
 
 //
@@ -772,7 +753,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 //
 // Check the password given on a certain forum for validity
 //
-function checkpwforum($fid, $password="")
+function check_forum_password($fid, $password="")
 {
 	global $mybb, $mybbuser, $toplinks, $header, $settings, $footer, $css, $headerinclude, $theme, $breadcrumb, $templates, $lang;
 	$showform = 1;
@@ -811,7 +792,7 @@ function checkpwforum($fid, $password="")
 	if($showform)
 	{
 		eval("\$pwform = \"".$templates->get("forumdisplay_password")."\";");
-		outputpage($pwform);
+		output_page($pwform);
 		exit;
 	}
 }
@@ -819,7 +800,7 @@ function checkpwforum($fid, $password="")
 //
 // Get the permissions for a specific moderator in a certain forum
 //
-function getmodpermissions($fid, $uid="0", $parentslist="")
+function get_moderator_permissions($fid, $uid="0", $parentslist="")
 {
 	global $mybb, $mybbuser, $db;
 	static $modpermscache;
@@ -832,9 +813,9 @@ function getmodpermissions($fid, $uid="0", $parentslist="")
 	{
 		if(!$parentslist)
 		{
-			$parentslist = getparentlist($fid);
+			$parentslist = get_parent_list($fid);
 		}
-		$sql = buildparentlist($fid, "fid", "OR", $parentslist);
+		$sql = build_parent_list($fid, "fid", "OR", $parentslist);
 		$query = $db->query("
 			SELECT * 
 			FROM ".TABLE_PREFIX."moderators 
@@ -854,7 +835,7 @@ function getmodpermissions($fid, $uid="0", $parentslist="")
 //
 // Returns the permissions a moderator has to perform a specific function
 //
-function ismod($fid="0", $action="", $uid="0")
+function is_moderator($fid="0", $action="", $uid="0")
 {
 	global $mybb, $mybbuser, $db, $mybbgroup;
 
@@ -888,7 +869,7 @@ function ismod($fid="0", $action="", $uid="0")
 		}
 		else
 		{
-			$modperms = getmodpermissions($fid, $uid);
+			$modperms = get_moderator_permissions($fid, $uid);
 			if(!$action && $modperms)
 			{
 				return "yes";
@@ -913,7 +894,7 @@ function ismod($fid="0", $action="", $uid="0")
  *
  * @return string The template of posticons.
  */
-function getposticons()
+function get_post_icons()
 {
 	global $mybb, $db, $icon, $settings, $theme, $templates, $lang;
 	
@@ -1060,7 +1041,7 @@ function mysetarraycookie($name, $id, $value)
  *
  * @return int The serverload of the system.
  */
-function serverload()
+function get_server_load()
 {
 	global $lang;
 	if(strtolower(substr(PHP_OS, 0, 3)) === 'win')
@@ -1093,7 +1074,7 @@ function serverload()
 	return $returnload;
 }
 
-function updateforumcount($fid)
+function update_forum_count($fid)
 {
 	global $db, $cache;
 	
@@ -1149,7 +1130,7 @@ function updateforumcount($fid)
 	$db->update_query(TABLE_PREFIX."forums", $update_count, "fid='{$fid}'");
 }
 
-function updatethreadcount($tid)
+function update_thread_count($tid)
 {
 	global $db, $cache;
 	$query = $db->query("
@@ -1240,7 +1221,7 @@ function update_thread_attachment_count($tid)
 	");
 }
 
-function deletethread($tid)
+function delete_thread($tid)
 {
 	global $moderation;
 	if(!is_object($moderation))
@@ -1251,7 +1232,7 @@ function deletethread($tid)
 	return $moderation->delete_thread($tid);
 }
 
-function deletepost($pid, $tid="")
+function delete_post($pid, $tid="")
 {
 	global $moderation;
 	if(!is_object($moderation))
@@ -1263,7 +1244,7 @@ function deletepost($pid, $tid="")
 }
 
 
-function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $permissions="", $name="fid")
+function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $permissions="", $name="fid")
 {
 	global $db, $forum_cache, $fjumpcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang, $mybbgroup;
 	
@@ -1309,7 +1290,7 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
 					if($forum_cache[$forum['fid']])
 					{
 						$newdepth = $depth."--";
-						$forumjumpbits .= makeforumjump($forum['fid'], $selitem, 0, $newdepth, $showextras);
+						$forumjumpbits .= build_forum_jump($forum['fid'], $selitem, 0, $newdepth, $showextras);
 					}
 				}
 			}
@@ -1344,7 +1325,7 @@ function makeforumjump($pid="0", $selitem="", $addselect="1", $depth="", $showex
  * @param string The filename.
  * @return string The extension of the file.
  */
-function getextension($file)
+function get_extension($file)
 {
 	return strtolower(substr(strrchr($file, "."), 1));
 }
@@ -1367,7 +1348,7 @@ function random_str($length="8")
 	return $str;
 }
 
-function formatname($username, $usergroup, $displaygroup="")
+function format_name($username, $usergroup, $displaygroup="")
 {
 	global $groupscache, $cache;
 	
@@ -1391,7 +1372,7 @@ function formatname($username, $usergroup, $displaygroup="")
 	return str_replace("{username}", $username, $format);
 }
 
-function makebbcodeinsert()
+function build_mycode_inserter()
 {
 	global $db, $mybb, $settings, $theme, $templates, $lang;
 	
@@ -1401,7 +1382,7 @@ function makebbcodeinsert()
 	}
 	return $codeinsert;
 }
-function makesmilieinsert()
+function build_clickable_smilies()
 {
 	global $db, $smiliecache, $settings, $theme, $templates, $lang, $mybb;
 	
@@ -1477,7 +1458,7 @@ function makesmilieinsert()
 	return $clickablesmilies;
 }
 
-function gzipencode($contents, $level=1)
+function gzip_encode($contents, $level=1)
 {
 	if(function_exists("gzcompress") && function_exists("crc32") && !headers_sent())
 	{
@@ -1518,7 +1499,7 @@ function gzipencode($contents, $level=1)
  * @param array The data of the moderator's action.
  * @param string The message to enter for the action the moderator performed.
  */
-function logmod($data, $action="")
+function log_moderator_action($data, $action="")
 {
 	global $mybb, $mybbuser, $db, $session;
 
@@ -1545,7 +1526,7 @@ function logmod($data, $action="")
 	$db->insert_query(TABLE_PREFIX."moderatorlog", $sql_array);
 }
 
-function getreputation($reputation, $uid=0)
+function get_reputation($reputation, $uid=0)
 {
 	global $theme;
 
@@ -1574,7 +1555,7 @@ function getreputation($reputation, $uid=0)
 	return $display_reputation;
 }
 
-function getip() 
+function get_ip() 
 {
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 	{
@@ -1604,7 +1585,7 @@ function getip()
 	return $ip;
 }
 
-function getfriendlysize($size)
+function get_friendly_size($size)
 {
 	global $lang;
 	
@@ -1631,7 +1612,7 @@ function getfriendlysize($size)
 	return $size;
 }
 
-function getattachicon($ext)
+function get_attachment_icon($ext)
 {
 	global $cache, $attachtypes;
 	
@@ -1650,7 +1631,7 @@ function getattachicon($ext)
 	}
 }
 
-function getunviewableforums()
+function get_unviewable_forums()
 {
 	global $db, $forum_cache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $unviewable, $templates, $mybbgroup, $forumpass;
 	
@@ -1715,7 +1696,7 @@ function fixmktime($format, $year)
 	return $format;
 }
 
-function buildnav($finished=1)
+function build_breadcrumb($finished=1)
 {
 	global $nav, $navbits, $templates, $settings, $theme, $lang;
 	
@@ -1744,7 +1725,7 @@ function buildnav($finished=1)
 	return $donenav;
 }
 
-function addnav($name, $url="") 
+function add_breadcrumb($name, $url="") 
 {
 	global $navbits;
 	
@@ -1753,7 +1734,7 @@ function addnav($name, $url="")
 	$navbits[$navsize]['url'] = $url;
 }
 
-function makeforumnav($fid, $archive=0)
+function build_forum_breadcrumb($fid, $archive=0)
 {
 	global $pforumcache, $db, $currentitem, $forum_cache, $navbits, $lang, $archiveurl;
 	
@@ -1776,7 +1757,7 @@ function makeforumnav($fid, $archive=0)
 			{
 				if($pforumcache[$forumnav['pid']])
 				{
-					makeforumnav($forumnav['pid'], $archive);
+					build_forum_breadcrumb($forumnav['pid'], $archive);
 				}
 				$navsize = count($navbits);
 				$navbits[$navsize]['name'] = $forumnav['name'];
@@ -1801,7 +1782,7 @@ function makeforumnav($fid, $archive=0)
 	return 1;
 }
 
-function resetnav()
+function reset_breadcrumb()
 {
 	global $navbits;
 	
@@ -1811,7 +1792,7 @@ function resetnav()
 	$GLOBALS['navbits'] = $newnav;
 }
 
-function debugpage() 
+function debug_page() 
 {
 	global $db, $querytime, $debug, $templatecache, $templatelist, $htmldoctype, $mybb, $mybbuser, $maintimer, $globaltime, $settings, $mybbgroup, $lang, $ptimer, $parsetime;
 	
@@ -1821,7 +1802,7 @@ function debugpage()
 	$percentphp = number_format((($phptime/$maintimer->totaltime)*100), 2);
 	$percentsql = number_format((($querytime/$maintimer->totaltime)*100), 2);
 	$phpversion = phpversion();
-	$serverload = serverload();
+	$serverload = get_server_load();
 	if(strstr(getenv("REQUEST_URI"), "?"))
 	{
 		$debuglink = getenv("REQUEST_URI") . "&debug=1";
@@ -1896,7 +1877,7 @@ function debugpage()
  * Outputs the correct page headers.
  *
  */
-function pageheaders()
+function send_page_headers()
 {
 	global $mybb;
 	
@@ -1909,21 +1890,7 @@ function pageheaders()
 	}
 }
 
-function getthread($tid)
-{
-	die("<strong>Error:</strong> getthread is deprecated. Please use get_thread");
-}
-
-function getpost($pid)
-{
-	die("<strong>Error:</strong> getpost is deprecated. Please use get_post");
-}
-function getforum($fid)
-{
-	die("<strong>Error:</strong> getforum is deprecated. Please use get_forum");
-}
-
-function markreports($id, $type="post")
+function mark_reports($id, $type="post")
 {
 	global $db, $cache, $plugins;
 	
@@ -2277,7 +2244,7 @@ function get_current_location()
 	return $location;
 }
 
-function themeselect($name, $selected="", $tid=0, $depth="", $usergroup_override=0)
+function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=0)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb;
 	
@@ -2337,7 +2304,7 @@ function themeselect($name, $selected="", $tid=0, $depth="", $usergroup_override
 				}
 				if(is_array($tcache[$theme['tid']]))
 				{
-					themeselect($name, $selected, $theme['tid'], $depthit, $usergroup_override);
+					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override);
 				}
 			}
 		}
@@ -2519,7 +2486,7 @@ function get_event_poster($event)
 {
 	if($event['username'])
 	{
-		$event_poster = "<a href=\"member.php?action=profile&amp;uid=".$event['author']."\">" . formatname($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
+		$event_poster = "<a href=\"member.php?action=profile&amp;uid=".$event['author']."\">" . format_name($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
 	}
 	else
 	{

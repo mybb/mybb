@@ -16,7 +16,7 @@ require "./global.php";
 // Load global language phrases
 $lang->load('showteam');
 
-addnav($lang->nav_showteam);
+add_breadcrumb($lang->nav_showteam);
 
 $plugins->run_hooks('showteam_start');
 
@@ -108,7 +108,7 @@ foreach($usergroups as $usergroup)
 	$bgcolor = '';
 	foreach($usergroup['user_list'] as $user)
 	{
-		$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
+		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		// for the postbit templates
 		$post['uid'] = $user['uid'];
 		if($user['hideemail'] != 'yes')
@@ -162,5 +162,5 @@ foreach($usergroups as $usergroup)
 
 eval("\$showteam = \"".$templates->get("showteam")."\";");
 $plugins->run_hooks("showteam_end");
-outputpage($showteam);
+output_page($showteam);
 ?>

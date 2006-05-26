@@ -59,11 +59,11 @@ if($forum['type'] != "f")
 }
 if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // Password protected forums ......... yhummmmy!
-checkpwforum($fid, $forum['password']);
+check_forum_password($fid, $forum['password']);
 
 $postrows = '';
 $query = $db->query("
@@ -106,14 +106,14 @@ eval("\$printable = \"".$templates->get("printthread")."\";");
 
 $plugins->run_hooks("printthread_end");
 
-outputpage($printable);
+output_page($printable);
 
 function makeprintablenav($pid="0", $depth="--")
 {
 	global $db, $pforumcache, $fid, $forum, $lang;
 	if(!is_array($pforumcache))
 	{
-		$parlist = buildparentlist($fid, "fid", "OR", $forum['parentlist']);
+		$parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);
 		$query = $db->query("
 			SELECT name, fid, pid
 			FROM ".TABLE_PREFIX."forums

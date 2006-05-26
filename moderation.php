@@ -26,8 +26,8 @@ $plugins->run_hooks("moderation_start");
 switch($mybb->input['action'])
 {
 	case "reports":
-//		addnav($lang->moderator_cp, "moderation.php");
-		addnav($lang->reported_posts);
+//		add_breadcrumb($lang->moderator_cp, "moderation.php");
+		add_breadcrumb($lang->reported_posts);
 		break;
 }
 $tid = intval($mybb->input['tid']);
@@ -60,12 +60,12 @@ if($fid)
 	$forum = get_forum($fid);
 
 	// Make navigation
-	makeforumnav($fid);
+	build_forum_breadcrumb($fid);
 }
 
 if($tid)
 {
-	addnav($parser->parse_badwords($thread['subject']), "showthread.php?tid=$thread[tid]");
+	add_breadcrumb($parser->parse_badwords($thread['subject']), "showthread.php?tid=$thread[tid]");
 	$modlogdata['tid'] = $tid;
 }
 
@@ -75,7 +75,7 @@ $permissions = forum_permissions($fid);
 if($fid)
 {
 	// Password protected forums ......... yhummmmy!
-	checkpwforum($fid, $forum['password']);
+	check_forum_password($fid, $forum['password']);
 }
 
 if($mybb->user['uid'] != 0)
@@ -92,9 +92,9 @@ switch($mybb->input['action'])
 {
 	// Open or close a thread
 	case "openclosethread":
-		if(ismod($fid, "canopenclosethreads") != "yes")
+		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$plugins->run_hooks("moderation_openclosethread");
@@ -114,16 +114,16 @@ switch($mybb->input['action'])
 
 		$lang->mod_process = sprintf($lang->mod_process, $openclose);
 
-		logmod($modlogdata, $lang->mod_process);
+		log_moderator_action($modlogdata, $lang->mod_process);
 
 		redirect("showthread.php?tid=$tid", $redirect);
 		break;
 
 	// Stick or unstick that post to the top bab!
 	case "stick";
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$plugins->run_hooks("moderation_stick");
@@ -143,51 +143,51 @@ switch($mybb->input['action'])
 
 		$lang->mod_process = sprintf($lang->mod_process, $stuckunstuck);
 
-		logmod($modlogdata, $lang->mod_process);
+		log_moderator_action($modlogdata, $lang->mod_process);
 
 		redirect("showthread.php?tid=$tid", $redirect);
 		break;
 
 	// Remove redirects to a specific thread
 	case "removeredirects":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$plugins->run_hooks("moderation_removeredirects");
 
 		$moderation->remove_redirects($tid);
 
-		logmod($modlogdata, $lang->redirects_removed);
+		log_moderator_action($modlogdata, $lang->redirects_removed);
 		redirect("showthread.php?tid=$tid", $lang->redirect_redirectsremoved);
 		break;
 
 	// Delete thread confirmation page
 	case "deletethread":
-		addnav($lang->nav_deletethread);
+		add_breadcrumb($lang->nav_deletethread);
 
-		if(ismod($fid, "candeleteposts") != "yes")
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
 			{
-				nopermission();
+				error_no_permission();
 			}
 		}
 
 		$plugins->run_hooks("moderation_deletethread");
 
 		eval("\$deletethread = \"".$templates->get("moderation_deletethread")."\";");
-		outputpage($deletethread);
+		output_page($deletethread);
 		break;
 
 	// Delete the actual thread here
 	case "do_deletethread":
-		if(ismod($fid, "candeleteposts") != "yes")
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
 			{
-				nopermission();
+				error_no_permission();
 			}
 		}
 
@@ -195,23 +195,23 @@ switch($mybb->input['action'])
 
 		$thread['subject'] = $db->escape_string($thread['subject']);
 		$lang->thread_deleted = sprintf($lang->thread_deleted, $thread['subject']);
-		logmod($modlogdata, $lang->thread_deleted);
+		log_moderator_action($modlogdata, $lang->thread_deleted);
 
 		$moderation->delete_thread($tid);
 
-		markreports($tid, "thread");
+		mark_reports($tid, "thread");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_threaddeleted);
 		break;
 
 	// Delete the poll from a thread confirmation page
 	case "deletepoll":
-		addnav($lang->nav_deletepoll);
+		add_breadcrumb($lang->nav_deletepoll);
 
-		if(ismod($fid, "candeleteposts") != "yes")
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
 			{
-				nopermission();
+				error_no_permission();
 			}
 		}
 
@@ -229,7 +229,7 @@ switch($mybb->input['action'])
 		}
 
 		eval("\$deletepoll = \"".$templates->get("moderation_deletepoll")."\";");
-		outputpage($deletepoll);
+		output_page($deletepoll);
 		break;
 
 	// Delete the actual poll here!
@@ -238,11 +238,11 @@ switch($mybb->input['action'])
 		{
 			redirect("showthread.php?tid=$tid", $lang->redirect_pollnotdeleted);
 		}
-		if(ismod($fid, "candeleteposts") != "yes")
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
 			{
-				nopermission();
+				error_no_permission();
 			}
 		}
 		$query = $db->query("
@@ -259,7 +259,7 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_do_deletepoll");
 
 		$lang->poll_deleted = sprintf($lang->poll_deleted, $thread['subject']);
-		logmod($modlogdata, $lang->poll_deleted);
+		log_moderator_action($modlogdata, $lang->poll_deleted);
 
 		$moderation->delete_poll($poll['pid']);
 
@@ -268,9 +268,9 @@ switch($mybb->input['action'])
 
 	// Approve a thread
 	case "approvethread":
-		if(ismod($fid, "canopenclosethreads") != "yes")
+		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$query = $db->query("
 			SELECT *
@@ -282,7 +282,7 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_approvethread");
 
 		$lang->thread_approved = sprintf($lang->thread_approved, $thread['subject']);
-		logmod($modlogdata, $lang->thread_approved);
+		log_moderator_action($modlogdata, $lang->thread_approved);
 
 		$moderation->approve_threads($tid, $fid);
 
@@ -291,9 +291,9 @@ switch($mybb->input['action'])
 
 	// Unapprove a thread
 	case "unapprovethread":
-		if(ismod($fid, "canopenclosethreads") != "yes")
+		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$query = $db->query("
 			SELECT *
@@ -305,7 +305,7 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_unapprovethread");
 
 		$lang->thread_unapproved = sprintf($lang->thread_unapproved, $thread['subject']);
-		logmod($modlogdata, $lang->thread_unapproved);
+		log_moderator_action($modlogdata, $lang->thread_unapproved);
 
 		$moderation->unapprove_threads($tid, $fid);
 
@@ -314,10 +314,10 @@ switch($mybb->input['action'])
 
 	// Delete selective posts in a thread
 	case "deleteposts":
-		addnav($lang->nav_deleteposts);
-		if(ismod($fid, "candeleteposts") != "yes")
+		add_breadcrumb($lang->nav_deleteposts);
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$posts = "";
 		$query = $db->query("
@@ -359,14 +359,14 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_deleteposts");
 
 		eval("\$deleteposts = \"".$templates->get("moderation_deleteposts")."\";");
-		outputpage($deleteposts);
+		output_page($deleteposts);
 		break;
 
 	// Lets delete those selected posts!
 	case "do_deleteposts":
-		if(ismod($fid, "candeleteposts") != "yes")
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$plugins->run_hooks("moderation_do_deleteposts");
@@ -395,27 +395,27 @@ switch($mybb->input['action'])
 		{
 			$moderation->delete_thread($tid);
 			$url = "forumdisplay.php?fid=$fid";
-			markreports($plist, "posts");
+			mark_reports($plist, "posts");
 		}
 		else
 		{
-			updatethreadcount($tid);
+			update_thread_count($tid);
 			$url = "showthread.php?tid=$tid";
-			markreports($tid, "thread");
+			mark_reports($tid, "thread");
 		}
 		$lang->deleted_selective_posts = sprintf($lang->deleted_selective_posts, $deletecount);
-		logmod($modlogdata, $lang->deleted_selective_posts);
-		updateforumcount($fid);
+		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
+		update_forum_count($fid);
 		redirect($url, $lang->redirect_postsdeleted);
 		break;
 
 	// Merge selected posts selection screen
 	case "mergeposts":
-		addnav($lang->nav_mergeposts);
+		add_breadcrumb($lang->nav_mergeposts);
 
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$posts = "";
 		$query = $db->query("
@@ -456,14 +456,14 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_mergeposts");
 
 		eval("\$mergeposts = \"".$templates->get("moderation_mergeposts")."\";");
-		outputpage($mergeposts);
+		output_page($mergeposts);
 		break;
 
 	// Lets merge those selected posts!
 	case "do_mergeposts":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$plugins->run_hooks("moderation_do_mergeposts");
@@ -476,24 +476,24 @@ switch($mybb->input['action'])
 
 		$moderation->merge_posts($mergepost, $tid, $mybb->input['sep']);
 
-		markreports($plist, "posts");
-		logmod($modlogdata, $lang->merged_selective_posts);
+		mark_reports($plist, "posts");
+		log_moderator_action($modlogdata, $lang->merged_selective_posts);
 		redirect("showthread.php?tid=$tid", $lang->redirect_mergeposts);
 		break;
 
 	// Move a thread
 	case "move":
-		addnav($lang->nav_move);
-		if(ismod($fid, "canmanagethreads") != "yes")
+		add_breadcrumb($lang->nav_move);
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$plugins->run_hooks("moderation_move");
 
-		$forumselect = makeforumjump("", '', 1, '', 0, '', "moveto");
+		$forumselect = build_forum_jump("", '', 1, '', 0, '', "moveto");
 		eval("\$movethread = \"".$templates->get("moderation_move")."\";");
-		outputpage($movethread);
+		output_page($movethread);
 		break;
 
 	// Lets get this thing moving!
@@ -501,19 +501,19 @@ switch($mybb->input['action'])
 		$moveto = intval($mybb->input['moveto']);
 		$method = $mybb->input['method'];
 
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		// Check if user has moderator permission to move to destination
-		if(ismod($moveto, "canmanagethreads") != "yes" && ismod($fid, "canmovetononmodforum") != "yes")
+		if(is_moderator($moveto, "canmanagethreads") != "yes" && is_moderator($fid, "canmovetononmodforum") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$newperms = forum_permissions($moveto);
-		if($newperms['canview'] == "no" && ismod($fid, "canmovetononmodforum") != "yes")
+		if($newperms['canview'] == "no" && is_moderator($fid, "canmovetononmodforum") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$db->query("
 			DELETE
@@ -548,12 +548,12 @@ switch($mybb->input['action'])
 		switch($method)
 		{
 			case "copy":
-				logmod($modlogdata, $lang->thread_copied);
+				log_moderator_action($modlogdata, $lang->thread_copied);
 				break;
 			default:
 			case "move":
 			case "redirect":
-				logmod($modlogdata, $lang->thread_moved);
+				log_moderator_action($modlogdata, $lang->thread_moved);
 				break;
 		}
 
@@ -562,10 +562,10 @@ switch($mybb->input['action'])
 
 	// Thread notes editor
 	case "threadnotes":
-		addnav($lang->nav_threadnotes);
-		if(ismod($fid, "canmanagethreads") != "yes")
+		add_breadcrumb($lang->nav_threadnotes);
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$thread['notes'] = htmlspecialchars_uni($parser->parse_badwords($thread['notes']));
 		$trow = "trow1";
@@ -615,19 +615,19 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_threadnotes");
 
 		eval("\$threadnotes = \"".$templates->get("moderation_threadnotes")."\";");
-		outputpage($threadnotes);
+		output_page($threadnotes);
 		break;
 
 	// Update the thread notes!
 	case "do_threadnotes":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$plugins->run_hooks("moderation_do_threadnotes");
 
-		logmod($modlogdata, $lang->thread_notes_edited);
+		log_moderator_action($modlogdata, $lang->thread_notes_edited);
 		$sqlarray = array(
 			"notes" => $db->escape_string($mybb->input['threadnotes']),
 			);
@@ -637,10 +637,10 @@ switch($mybb->input['action'])
 
 	// Lets look up the ip address of a post
 	case "getip":
-		addnav($lang->nav_getip);
-		if(ismod($fid, "canviewips") != "yes")
+		add_breadcrumb($lang->nav_getip);
+		if(is_moderator($fid, "canviewips") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$hostname = @gethostbyaddr($post['ipaddress']);
@@ -657,28 +657,28 @@ switch($mybb->input['action'])
 		}
 
 		eval("\$getip = \"".$templates->get("moderation_getip")."\";");
-		outputpage($getip);
+		output_page($getip);
 		break;
 
 	// Merge threads
 	case "merge":
-		addnav($lang->nav_merge);
-		if(ismod($fid, "canmanagethreads") != "yes")
+		add_breadcrumb($lang->nav_merge);
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$plugins->run_hooks("moderation_merge");
 
 		eval("\$merge = \"".$templates->get("moderation_merge")."\";");
-		outputpage($merge);
+		output_page($merge);
 		break;
 
 	// Lets get those threads together baby! (Merge threads)
 	case "do_merge":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$plugins->run_hooks("moderation_do_merge");
@@ -720,9 +720,9 @@ switch($mybb->input['action'])
 		{ // sanity check
 			error($lang->error_mergewithself);
 		}
-		if(ismod($mergethread['fid'], "canmanagethreads") != "yes")
+		if(is_moderator($mergethread['fid'], "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		if($mybb->input['subject'])
 		{
@@ -735,17 +735,17 @@ switch($mybb->input['action'])
 
 		$moderation->merge_threads($mergetid, $tid, $subject);
 
-		logmod($modlogdata, $lang->thread_merged);
+		log_moderator_action($modlogdata, $lang->thread_merged);
 
 		redirect("showthread.php?tid=$tid", $lang->redirect_threadsmerged);
 		break;
 
 	// Divorce the posts in this thread (Split!)
 	case "split":
-		addnav($lang->nav_split);
-		if(ismod($fid, "canmanagethreads") != "yes")
+		add_breadcrumb($lang->nav_split);
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$query = $db->query("
 			SELECT p.*, u.*
@@ -788,19 +788,19 @@ switch($mybb->input['action'])
 				$altbg = "trow1";
 			}
 		}
-		$forumselect = makeforumjump("", $fid, 1, '', 0, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, '', "moveto");
 
 		$plugins->run_hooks("moderation_split");
 
 		eval("\$split = \"".$templates->get("moderation_split")."\";");
-		outputpage($split);
+		output_page($split);
 		break;
 
 	// Lets break them up buddy! (Do the split)
 	case "do_split":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$plugins->run_hooks("moderation_do_split");
@@ -857,24 +857,24 @@ switch($mybb->input['action'])
 			{
 				$pids[] = $post['pid'];
 			}
-			markreports($post['pid'], "post");
+			mark_reports($post['pid'], "post");
 		}
 
 		$newtid = $moderation->split_posts($pids, $tid, $moveto, $mybb->input['newsubject']);
 
-		logmod($modlogdata, $lang->thread_split);
+		log_moderator_action($modlogdata, $lang->thread_split);
 
 		redirect("showthread.php?tid=$newtid", $lang->redirect_threadsplit);
 		break;
 
 	// Delete Threads - Inline moderation
 	case "multideletethreads":
-		addnav($lang->nav_multi_deletethreads);
-		if(ismod($fid, "candeleteposts") != "yes")
+		add_breadcrumb($lang->nav_multi_deletethreads);
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
 			{
-				nopermission();
+				error_no_permission();
 			}
 		}
 		$threads = getids($fid, "forum");
@@ -885,16 +885,16 @@ switch($mybb->input['action'])
 		$inlineids = implode("|", $threads);
 		clearinline($fid, "forum");
 		eval("\$multidelete = \"".$templates->get("moderation_inline_deletethreads")."\";");
-		outputpage($multidelete);
+		output_page($multidelete);
 		break;
 
 	// Actually delete the threads - Inline moderation
 	case "do_multideletethreads":
-		if(ismod($fid, "candeleteposts") != "yes")
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
 			{
-				nopermission();
+				error_no_permission();
 			}
 		}
 		$threadlist = explode("|", $mybb->input['threads']);
@@ -904,17 +904,17 @@ switch($mybb->input['action'])
 			$moderation->delete_thread($tid);
 			$tlist[] = $tid;
 		}
-		logmod($modlogdata, $lang->multi_deleted_threads);
+		log_moderator_action($modlogdata, $lang->multi_deleted_threads);
 		clearinline($fid, "forum");
-		markreports($tlist, "threads");
+		mark_reports($tlist, "threads");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsdeleted);
 		break;
 
 	// Open threads - Inline moderation
 	case "multiopenthreads":
-		if(ismod($fid, "canopenclosethreads") != "yes")
+		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
 		if(!is_array($threads))
@@ -924,16 +924,16 @@ switch($mybb->input['action'])
 
 		$moderation->open_threads($threads);
 
-		logmod($modlogdata, $lang->multi_opened_threads);
+		log_moderator_action($modlogdata, $lang->multi_opened_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsopened);
 		break;
 
 	// Close threads - Inline moderation
 	case "multiclosethreads":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
 		if(!is_array($threads))
@@ -943,16 +943,16 @@ switch($mybb->input['action'])
 
 		$moderation->open_threads($threads);
 
-		logmod($modlogdata, $lang->multi_closed_threads);
+		log_moderator_action($modlogdata, $lang->multi_closed_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsclosed);
 		break;
 
 	// Approve threads - Inline moderation
 	case "multiapprovethreads":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
 		if(!is_array($threads))
@@ -962,7 +962,7 @@ switch($mybb->input['action'])
 
 		$moderation->approve_threads($threads, $fid);
 
-		logmod($modlogdata, $lang->multi_approved_threads);
+		log_moderator_action($modlogdata, $lang->multi_approved_threads);
 		clearinline($fid, "forum");
 		$cache->updatestats();
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsapproved);
@@ -970,9 +970,9 @@ switch($mybb->input['action'])
 
 	// Unapprove threads - Inline moderation
 	case "multiunapprovethreads":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
 		if(!is_array($threads))
@@ -982,7 +982,7 @@ switch($mybb->input['action'])
 
 		$moderation->unapprove_threads($threads, $fid);
 
-		logmod($modlogdata, $lang->multi_unapproved_threads);
+		log_moderator_action($modlogdata, $lang->multi_unapproved_threads);
 		clearinline($fid, "forum");
 		$cache->updatestats();
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsunapproved);
@@ -990,9 +990,9 @@ switch($mybb->input['action'])
 
 	// Stick threads - Inline moderation
 	case "multistickthreads":
-		if(ismod($fid, "canopenclosethreads") != "yes")
+		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
 		if(!is_array($threads))
@@ -1002,16 +1002,16 @@ switch($mybb->input['action'])
 
 		$moderation->stick_threads($threads);
 
-		logmod($modlogdata, $lang->multi_stuck_threads);
+		log_moderator_action($modlogdata, $lang->multi_stuck_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsstuck);
 		break;
 
 	// Unstick threads - Inline moderaton
 	case "multiunstickthreads":
-		if(ismod($fid, "canopenclosethreads") != "yes")
+		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
 		if(!is_array($threads))
@@ -1021,14 +1021,14 @@ switch($mybb->input['action'])
 
 		$moderation->unstick_threads($threads);
 
-		logmod($modlogdata, $lang->multi_unstuck_threads);
+		log_moderator_action($modlogdata, $lang->multi_unstuck_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsunstuck);
 		break;
 
 	// Move threads - Inline moderation
 	case "multimovethreads":
-		addnav($lang->nav_multi_movethreads);
+		add_breadcrumb($lang->nav_multi_movethreads);
 		$threads = getids($fid, "forum");
 		if(!is_array($threads))
 		{
@@ -1037,20 +1037,20 @@ switch($mybb->input['action'])
 		$inlineids = implode("|", $threads);
 		clearinline($fid, "forum");
 
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
-		$forumselect = makeforumjump("", '', 1, '', 0, '', "moveto");
+		$forumselect = build_forum_jump("", '', 1, '', 0, '', "moveto");
 		eval("\$movethread = \"".$templates->get("moderation_inline_movethreads")."\";");
-		outputpage($movethread);
+		output_page($movethread);
 		break;
 
 	// Actually move the threads in Inline moderation
 	case "do_multimovethreads":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$moveto = intval($mybb->input['moveto']);
 		$threadlist = explode("|", $mybb->input['threads']);
@@ -1058,14 +1058,14 @@ switch($mybb->input['action'])
 		{
 			$tids[] = $tid;
 		}
-		if(ismod($moveto, "canmanagethreads") != "yes" && ismod($fid, "canmovetononmodforum") != "yes")
+		if(is_moderator($moveto, "canmanagethreads") != "yes" && is_moderator($fid, "canmovetononmodforum") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$newperms = forum_permissions($moveto);
-		if($newperms['canview'] == "no" && ismod($fid, "canmovetononmodforum") != "yes")
+		if($newperms['canview'] == "no" && is_moderator($fid, "canmovetononmodforum") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
 		$newforum = $db->fetch_array($query);
@@ -1080,17 +1080,17 @@ switch($mybb->input['action'])
 
 		$moderation->move_threads($tids, $moveto);
 
-		logmod($modlogdata, $lang->multi_moved_threads);
+		log_moderator_action($modlogdata, $lang->multi_moved_threads);
 
 		redirect("forumdisplay.php?fid=$moveto", $lang->redirect_inline_threadsmoved);
 		break;
 
 	// Delete posts - Inline moderation
 	case "multideleteposts":
-		addnav($lang->nav_multi_deleteposts);
-		if(ismod($fid, "candeleteposts") != "yes")
+		add_breadcrumb($lang->nav_multi_deleteposts);
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$posts = getids($tid, "thread");
 		if(!is_array($posts))
@@ -1106,14 +1106,14 @@ switch($mybb->input['action'])
 			error($lang->error_inline_nopostsselected);
 		}
 		eval("\$multidelete = \"".$templates->get("moderation_inline_deleteposts")."\";");
-		outputpage($multidelete);
+		output_page($multidelete);
 		break;
 
 	// Actually delete the posts in inline moderation
 	case "do_multideleteposts":
-		if(ismod($fid, "candeleteposts") != "yes")
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$postlist = explode("|", $mybb->input['posts']);
 		$deletecount = 0;
@@ -1129,27 +1129,27 @@ switch($mybb->input['action'])
 		if(!$numposts)
 		{
 			$moderation->delete_thread($tid);
-			markreports($tid, "thread");
+			mark_reports($tid, "thread");
 			$url = "forumdisplay.php?fid=$fid";
 		}
 		else
 		{
-			updatethreadcount($tid);
-			markreports($plist, "posts");
+			update_thread_count($tid);
+			mark_reports($plist, "posts");
 			$url = "showthread.php?tid=$tid";
 		}
 		$lang->deleted_selective_posts = sprintf($lang->deleted_selective_posts, $deletecount);
-		logmod($modlogdata, $lang->deleted_selective_posts);
-		updateforumcount($fid);
+		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
+		update_forum_count($fid);
 		redirect($url, $lang->redirect_postsdeleted);
 		break;
 
 	// Merge posts - Inline moderation
 	case "multimergeposts":
-		addnav($lang->nav_multi_mergeposts);
-		if(ismod($fid, "candeleteposts") != "yes")
+		add_breadcrumb($lang->nav_multi_mergeposts);
+		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$posts = getids($tid, "thread");
 		if(!is_array($posts))
@@ -1160,14 +1160,14 @@ switch($mybb->input['action'])
 		clearinline($tid, "thread");
 
 		eval("\$multimerge = \"".$templates->get("moderation_inline_mergeposts")."\";");
-		outputpage($multimerge);
+		output_page($multimerge);
 		break;
 
 	// Actually merge the posts - Inline moderation
 	case "do_multimergeposts":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$postlist = explode("|", $mybb->input['posts']);
 		foreach($postlist as $pid)
@@ -1178,17 +1178,17 @@ switch($mybb->input['action'])
 
 		$moderation->merge_posts($plist, $tid, $mybb->input['sep']);
 
-		markreports($plist, "posts");
-		logmod($modlogdata, $lang->merged_selective_posts);
+		mark_reports($plist, "posts");
+		log_moderator_action($modlogdata, $lang->merged_selective_posts);
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsmerged);
 		break;
 
 	// Split posts - Inline moderation
 	case "multisplitposts":
-		addnav($lang->nav_multi_splitposts);
-		if(ismod($fid, "canmanagethreads") != "yes")
+		add_breadcrumb($lang->nav_multi_splitposts);
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$query = $db->query("
 			SELECT p.*, u.*
@@ -1227,16 +1227,16 @@ switch($mybb->input['action'])
 		}
 		$inlineids = implode("|", $posts);
 		clearinline($tid, "thread");
-		$forumselect = makeforumjump("", $fid, 1, '', 0, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, '', "moveto");
 		eval("\$splitposts = \"".$templates->get("moderation_inline_splitposts")."\";");
-		outputpage($splitposts);
+		output_page($splitposts);
 		break;
 
 	// Actually split the posts - Inline moderation
 	case "do_multisplitposts":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$postlist = explode("|", $mybb->input['posts']);
 		foreach($postlist as $pid)
@@ -1270,9 +1270,9 @@ switch($mybb->input['action'])
 
 	// Approve posts - Inline moderation
 	case "multiapproveposts":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$posts = getids($tid, "thread");
 		if(!is_array($posts))
@@ -1288,16 +1288,16 @@ switch($mybb->input['action'])
 
 		$moderation->approve_posts($pids, $tid, $fid);
 
-		logmod($modlogdata, $lang->multi_approve_posts);
+		log_moderator_action($modlogdata, $lang->multi_approve_posts);
 		clearinline($tid, "thread");
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsapproved);
 		break;
 
 	// Unapprove posts - Inline moderation
 	case "multiunapproveposts":
-		if(ismod($fid, "canmanagethreads") != "yes")
+		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$posts = getids($tid, "thread");
 		if(!is_array($posts))
@@ -1312,16 +1312,16 @@ switch($mybb->input['action'])
 
 		$moderation->unapprove_posts($pids, $tid, $fid);
 
-		logmod($modlogdata, $lang->multi_unapprove_posts);
+		log_moderator_action($modlogdata, $lang->multi_unapprove_posts);
 		clearinline($tid, "thread");
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsunapproved);
 		break;
 
 	// Manage selected reported posts
 	case "do_reports":
-		if(ismod() != "yes")
+		if(is_moderator() != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$flist = '';
 		if($mybb->usergroup['issupermod'] != "yes")
@@ -1363,9 +1363,9 @@ switch($mybb->input['action'])
 
 	// Show a listing of the reported posts
 	case "reports":
-		if(ismod() != "yes")
+		if(is_moderator() != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 
 		$query = $db->query("
@@ -1410,10 +1410,10 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_reports");
 
 		eval("\$reportedposts = \"".$templates->get("moderation_reports")."\";");
-		outputpage($reportedposts);
+		output_page($reportedposts);
 		break;
 	default:
-		nopermission();
+		error_no_permission();
 		break;
 }
 

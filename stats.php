@@ -18,7 +18,7 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("stats");
 
-addnav($lang->nav_stats);
+add_breadcrumb($lang->nav_stats);
 
 $stats = $cache->read("stats");
 
@@ -48,7 +48,7 @@ $threadsperday = mynumberformat(round(($stats['numthreads'] / $days), 2));
 $membersperday = mynumberformat(round(($stats['numusers'] / $days), 2));
 
 // Get forum permissions
-$unviewableforums = getunviewableforums();
+$unviewableforums = get_unviewable_forums();
 if($unviewableforums)
 {
 	$fidnot = " AND fid NOT IN ($unviewableforums)";
@@ -155,5 +155,5 @@ $stats['numusers'] = mynumberformat($stats['numusers']);
 
 eval("\$stats = \"".$templates->get("stats")."\";");
 $plugins->run_hooks("stats_end");
-outputpage($stats);
+output_page($stats);
 ?>

@@ -35,7 +35,7 @@ if(!is_array($groupscache))
 $fpermissioncache = $cache->read("forumpermissions");
 
 // Send page headers
-pageheaders();
+send_page_headers();
 
 // Trigger an error if the installation directory exists
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
@@ -409,7 +409,7 @@ $allowable_actions = array(
 );
 if($mybb->usergroup['canview'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && basename($_SERVER['PHP_SELF']) != "captcha.php")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // work out which items the user has collapsed
@@ -436,7 +436,7 @@ if($_COOKIE['collapsed'])
 // Randomly expire threads
 if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 {
-	$db->delete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime < '".time()."'");
+	$db->qelete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime<'".time()."'");
 }
 
 // Run hooks for end of global.php

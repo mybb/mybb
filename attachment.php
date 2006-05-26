@@ -61,7 +61,7 @@ $forumpermissions = forum_permissions($fid);
 
 if(($forumpermissions['canview'] == "no" || $forumpermissions['candlattachments'] == "no") && !$mybb->input['thumbnail'])
 {
-	nopermission();
+	error_no_permission();
 }
 
 if(!$attachment['aid'] || !$attachment['attachname'])
@@ -81,7 +81,7 @@ $plugins->run_hooks("attachment_end");
 
 if($mybb->input['thumbnail'])
 {
-	$ext = getextension($attachment['thumbnail']);
+	$ext = get_extension($attachment['thumbnail']);
 	switch($ext)
 	{
 		case "gif":
@@ -110,7 +110,7 @@ if($mybb->input['thumbnail'])
 }
 else
 {
-	$ext = getextension($attachment['filename']);
+	$ext = get_extension($attachment['filename']);
 	if($ext == "txt" || $ext == "htm" || $ext == "html")
 	{
 		header("Content-disposition: attachment; filename=$attachment[filename]");

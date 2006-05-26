@@ -23,11 +23,11 @@ if($mybb->settings['enablememberlist'] == "no")
 
 $plugins->run_hooks("memberlist_start");
 
-addnav($lang->nav_memberlist);
+add_breadcrumb($lang->nav_memberlist);
 
 if($mybb->usergroup['canviewmemberlist'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 if($mybb->input['by'] != "regdate" && $mybb->input['by'] != "postnum" && $mybb->input['by'] != "username")
@@ -155,7 +155,7 @@ while($users = $db->fetch_array($query))
 		eval("\$useremail = \"".$templates->get("postbit_email")."\";");
 	}
 	$users['regdate'] = mydate($mybb->settings['dateformat'], $users['regdate']);
-	$users['username'] = formatname($users['username'], $users['usergroup'], $users['displaygroup']);
+	$users['username'] = format_name($users['username'], $users['usergroup'], $users['displaygroup']);
 	eval("\$member .= \"".$templates->get("memberlist_row")."\";");
 }
 
@@ -169,5 +169,5 @@ $usersearch = htmlspecialchars_uni($mybb->input['usersearch']);
 $plugins->run_hooks("memberlist_end");
 
 eval("\$memberlist = \"".$templates->get("memberlist")."\";");
-outputpage($memberlist);
+output_page($memberlist);
 ?>

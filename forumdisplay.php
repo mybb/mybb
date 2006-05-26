@@ -62,7 +62,7 @@ if(!$foruminfo)
 }
 
 $currentitem = $fid;
-makeforumnav($fid);
+build_forum_breadcrumb($fid);
 $parentlist = $foruminfo['parentlist'];
 
 $forumpermissions = forum_permissions();
@@ -121,7 +121,7 @@ $excols = "forumdisplay";
 
 if($fpermissions['canview'] != "yes")
 {
-	nopermission();
+	error_no_permission();
 }
 if($foruminfo['linkto'])
 {
@@ -129,10 +129,10 @@ if($foruminfo['linkto'])
 	exit;
 }
 // Password protected forums
-checkpwforum($fid, $foruminfo['password']);
+check_forum_password($fid, $foruminfo['password']);
 
 // Make forum jump...
-$forumjump = makeforumjump("", $fid, 1);
+$forumjump = build_forum_jump("", $fid, 1);
 
 if($foruminfo['type'] == "f" && $foruminfo['open'] != "no")
 {
@@ -153,7 +153,7 @@ foreach($parentlistexploded as $mfid)
 		reset($moderatorcache[$mfid]);
 		foreach($moderatorcache[$mfid] as $moderator)
 		{
-			$moderator['username'] = formatname($moderator['username'], $moderator['usergroup'], $moderator['displaygroup']);
+			$moderator['username'] = format_name($moderator['username'], $moderator['usergroup'], $moderator['displaygroup']);
 			eval("\$modlist .= \"".$templates->get("forumdisplay_moderatedby_moderator", 1, 0)."\";");
 			$modcomma=", ";
 		}
@@ -204,7 +204,7 @@ if($mybb->settings['browsingthisforum'] != "off")
 				}
 				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] =="yes" || $user['uid'] == $mybb->user['uid'])
 				{
-					$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
 					$comma = ", ";
 				}
@@ -262,7 +262,7 @@ $bgcolor = "trow1";
 $visibleonly = "AND t.visible='1'";
 
 // Check if the active user is a moderator and get the inline moderation tools.
-if(ismod($fid) == "yes")
+if(is_moderator($fid) == "yes")
 {
 	eval("\$inlinemodcol = \"".$templates->get("forumdisplay_inlinemoderation_col")."\";");
 	$ismod = true;
@@ -447,7 +447,7 @@ if($mybb->settings['announcementlimit'])
 {
 	$limit = "LIMIT 0, ".$mybb->settings['announcementlimit'];
 }
-$sql = buildparentlist($fid, "fid", "OR", $parentlist);
+$sql = build_parent_list($fid, "fid", "OR", $parentlist);
 $time = time();
 $query = $db->query("
 	SELECT a.*, u.username
@@ -869,5 +869,5 @@ if($rand == 5 && $mybb->settings['threadreadcut'] > 0)
 $plugins->run_hooks("forumdisplay_end");
 
 eval("\$forums = \"".$templates->get("forumdisplay")."\";");
-outputpage($forums);
+output_page($forums);
 ?>

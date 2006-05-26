@@ -29,7 +29,7 @@ if($mybb->settings['enablepms'] == "no")
 
 if($mybb->user['uid'] == "/" || $mybb->user['uid'] == "0" || $mybb->usergroup['canusepms'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 if($mybb->user['receivepms'] == "no")
 {
@@ -90,23 +90,23 @@ usercp_menu();
 
 
 // Make navigation
-addnav($lang->nav_pms, "private.php");
+add_breadcrumb($lang->nav_pms, "private.php");
 
 switch($mybb->input['action']) {
 	case "send":
-		addnav($lang->nav_send);
+		add_breadcrumb($lang->nav_send);
 		break;
 	case "tracking":
-		addnav($lang->nav_tracking);
+		add_breadcrumb($lang->nav_tracking);
 		break;
 	case "folders":
-		addnav($lang->nav_folders);
+		add_breadcrumb($lang->nav_folders);
 		break;
 	case "empty":
-		addnav($lang->nav_empty);
+		add_breadcrumb($lang->nav_empty);
 		break;
 	case "export":
-		addnav($lang->nav_export);
+		add_breadcrumb($lang->nav_export);
 		break;
 }
 if($mybb->input['preview'])
@@ -160,7 +160,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	if(!$pmhandler->validate_pm())
 	{
 		$pm_errors = $pmhandler->get_friendly_errors();
-		$send_errors = inlineerror($pm_errors);
+		$send_errors = inline_error($pm_errors);
 		$mybb->input['action'] = "send";
 	}
 	else
@@ -187,14 +187,14 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->settings['bbcodeinserter'] != "off" && $mybb->settings['pmsallowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
 	{
-		$codebuttons = makebbcodeinsert();
+		$codebuttons = build_mycode_inserter();
 	}
 	if($mybb->settings['pmsallowsmilies'] != "no")
 	{
-		$smilieinserter = makesmilieinsert();
+		$smilieinserter = build_clickable_smilies();
 	}
 
-	$posticons = getposticons();
+	$posticons = get_post_icons();
 	$previewmessage = $mybb->input['message'];
 	$message = htmlspecialchars_uni($mybb->input['message']);
 
@@ -323,7 +323,7 @@ if($mybb->input['action'] == "send")
 	$do = $mybb->input['do'];
 	eval("\$send = \"".$templates->get("private_send")."\";");
 	$plugins->run_hooks("private_send_end");
-	outputpage($send);
+	output_page($send);
 }
 
 
@@ -379,11 +379,11 @@ if($mybb->input['action'] == "read")
 		$pm['username'] = "MyBB Engine";
 	}
 	
-	addnav($pm['subject']);
+	add_breadcrumb($pm['subject']);
 	$message = makepostbit($pm, "2");
 	eval("\$read = \"".$templates->get("private_read")."\";");
 	$plugins->run_hooks("private_read_end");
-	outputpage($read);
+	output_page($read);
 }	
 
 if($mybb->input['action'] == "tracking")
@@ -419,7 +419,7 @@ if($mybb->input['action'] == "tracking")
 	}
 	eval("\$tracking = \"".$templates->get("private_tracking")."\";");
 	$plugins->run_hooks("private_tracking_end");
-	outputpage($tracking);
+	output_page($tracking);
 }
 if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 {
@@ -519,7 +519,7 @@ if($mybb->input['action'] == "folders")
 	}
 	eval("\$folders = \"".$templates->get("private_folders")."\";");
 	$plugins->run_hooks("private_folders_end");
-	outputpage($folders);
+	output_page($folders);
 }
 
 if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
@@ -629,7 +629,7 @@ if($mybb->input['action'] == "empty")
 	}
 	eval("\$folders = \"".$templates->get("private_empty")."\";");
 	$plugins->run_hooks("private_empty_end");
-	outputpage($folders);
+	output_page($folders);
 }
 
 if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
@@ -773,7 +773,7 @@ if($mybb->input['action'] == "export")
 	$folderlist .= "</select>\n";
 	eval("\$archive = \"".$templates->get("private_archive")."\";");
 	$plugins->run_hooks("private_export_end");
-	outputpage($archive);
+	output_page($archive);
 }
 
 if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
@@ -986,7 +986,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	$plugins->run_hooks("private_do_export_end");
 	if($mybb->input['exporttype'] == "html")
 	{
-		outputpage($archived);
+		output_page($archived);
 	}
 	else
 	{
@@ -1183,6 +1183,6 @@ if(!$mybb->input['action'])
 	}
 	eval("\$folder = \"".$templates->get("private")."\";");
 	$plugins->run_hooks("private_end");
-	outputpage($folder);
+	output_page($folder);
 }
 ?>

@@ -54,7 +54,7 @@ if($mybb->input['action'] == "logout")
 }
 
 $showlogin = 1;
-$ipaddress = getip();
+$ipaddress = get_ip();
 
 unset($user);
 if($mybb->input['do'] == "login")
@@ -111,7 +111,7 @@ else
 	if($failcheck)
 	{
 		$md5pw = md5($mybb->input['password']);
-		$ipaddress = getip();
+		$ipaddress = get_ip();
 		$iphost = @gethostbyaddr($ipaddress);
 		$lang->invalidlogin_message = sprintf($lang->invalidlogin_message, $mybb->settings['bbname'], $mybb->input['username'], $mybb->input['password'], $md5pw, $ipaddress, $iphost);
 		$lang->invalidlogin_subject = sprintf($lang->invalidlogin_subject, $mybb->settings['bbname']);

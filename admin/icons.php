@@ -196,7 +196,7 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		if($file != ".." && $file != ".")
 		{
-			$ext = getextension($file);
+			$ext = get_extension($file);
 			if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
 			{
 				if(!isset($aicons[$mybb->input['path'].'/'.$file])) {
@@ -275,7 +275,7 @@ if($mybb->input['action'] == "addmultiple")
 		for($i = $start; $i < $end; $i++)
 		{
 			$file = $icons[$i];
-			$ext = getextension($icons[$i]);
+			$ext = get_extension($icons[$i]);
 			$find = str_replace(".".$ext, "", $file);
 			$name = ucfirst($find);
 			$bgcolor = getaltbg();

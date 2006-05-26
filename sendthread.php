@@ -31,9 +31,9 @@ $fid = $thread['fid'];
 
 
 // Make navigation
-makeforumnav($fid);
-addnav($thread['subject'], "showthread.php?tid=$tid");
-addnav($lang->nav_sendthread);
+build_forum_breadcrumb($fid);
+add_breadcrumb($thread['subject'], "showthread.php?tid=$tid");
+add_breadcrumb($lang->nav_sendthread);
 
 // Get forum info
 $forum = get_forum($fid);
@@ -46,15 +46,15 @@ if(!$forum || $forum['type'] != "f")
 }
 if($forumpermissions['canview'] != "yes")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // Password protected forums
-checkpwforum($fid, $forum['password']);
+check_forum_password($fid, $forum['password']);
 
 if($mybb->usergroup['cansendemail'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post")
@@ -102,6 +102,6 @@ else
 	$message = sprintf($lang->email_sendtofriend, $mybb->settings['bbname'], $mybb->settings['bburl'], $tid);
 	eval("\$sendtofriend = \"".$templates->get("sendthread")."\";");
 	$plugins->run_hooks("sendthread_end");
-	outputpage($sendtofriend);
+	output_page($sendtofriend);
 }
 ?>

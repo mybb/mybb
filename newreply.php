@@ -57,19 +57,19 @@ if(!$forum)
 }
 
 // Make navigation
-makeforumnav($fid);
+build_forum_breadcrumb($fid);
 $thread['subject'] = htmlspecialchars_uni($thread['subject']);
-addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
-addnav($lang->nav_newreply);
+add_breadcrumb($thread['subject'], "showthread.php?tid=$thread[tid]");
+add_breadcrumb($lang->nav_newreply);
 
 $forumpermissions = forum_permissions($fid);
 
 // See if everything is valid up to here.
-if(isset($post) && (($post['visible'] == 0 && ismod($fid) != "yes") || $post['visible'] < 0))
+if(isset($post) && (($post['visible'] == 0 && is_moderator($fid) != "yes") || $post['visible'] < 0))
 {
 	error($lang->error_invalidpost);
 }
-if(!$thread['subject'] || (($thread['visible'] == 0 && ismod($fid) != "yes") || $thread['visible'] < 0))
+if(!$thread['subject'] || (($thread['visible'] == 0 && is_moderator($fid) != "yes") || $thread['visible'] < 0))
 {
 	error($lang->error_invalidthread);
 }
@@ -79,18 +79,18 @@ if($forum['open'] == "no" || $forum['type'] != "f")
 }
 if($forumpermissions['canview'] == "no" || $forumpermissions['canpostreplys'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // Password protected forums ......... yhummmmy!
-checkpwforum($fid, $forum['password']);
+check_forum_password($fid, $forum['password']);
 
 if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
-	$codebuttons = makebbcodeinsert();
+	$codebuttons = build_mycode_inserter();
 	if($forum['allowsmilies'] != "no")
 	{
-		$smilieinserter = makesmilieinsert();
+		$smilieinserter = build_clickable_smilies();
 	}
 }
 
@@ -113,7 +113,7 @@ else
 }
 
 // Check to see if the thread is closed, and if the user is a mod.
-if(ismod($fid, "caneditposts") != "yes")
+if(is_moderator($fid, "caneditposts") != "yes")
 {
 	if($thread['closed'] == "yes")
 	{
@@ -234,7 +234,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		"uid" => $mybb->user['uid'],
 		"username" => $mybb->user['username'],
 		"message" => $mybb->input['message'],
-		"ipaddress" => getip(),
+		"ipaddress" => get_ip(),
 		"posthash" => $mybb->input['posthash']
 	);
 
@@ -268,7 +268,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	if(!$posthandler->validate_post())
 	{
 		$post_errors = $posthandler->get_friendly_errors();
-		$reply_errors = inlineerror($post_errors);
+		$reply_errors = inline_error($post_errors);
 		$mybb->input['action'] = "newreply";
 	}
 	else
@@ -391,7 +391,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	if($forum['allowpicons'] != "no")
 	{
-		$posticons = getposticons();
+		$posticons = get_post_icons();
 	}
 
 	// Preview a post that was written.
@@ -472,8 +472,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
 		while($attachment = $db->fetch_array($query))
 		{
-			$attachment['size'] = getfriendlysize($attachment['filesize']);
-			$attachment['icon'] = getattachicon(getextension($attachment['filename']));
+			$attachment['size'] = get_friendly_size($attachment['filesize']);
+			$attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
 			if($forum['allowmycode'] != "no")
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
@@ -497,9 +497,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$friendlyquota = getfriendlysize($mybb->usergroup['attachquota']*1000);
+			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1000);
 		}
-		$friendlyusage = getfriendlysize($usage['ausage']);
+		$friendlyusage = get_friendly_size($usage['ausage']);
 		$lang->attach_quota = sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
@@ -516,7 +516,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	if($mybb->settings['threadreview'] != "off")
 	{
-		if(ismod($fid) == "yes")
+		if(is_moderator($fid) == "yes")
 		{
 			$visibility = "(p.visible='1' OR p.visible='0')";
 		}
@@ -598,7 +598,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
 	}
 	// Show the moderator options.
-	if(ismod($fid) == "yes")
+	if(is_moderator($fid) == "yes")
 	{
 		if($thread['closed'] == "yes")
 		{
@@ -624,6 +624,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$plugins->run_hooks("newreply_end");
 
 	eval("\$newreply = \"".$templates->get("newreply")."\";");
-	outputpage($newreply);
+	output_page($newreply);
 }
 ?>

@@ -189,7 +189,7 @@ function archive_error($error)
 /**
 * Ouput a "no permission"page.
 */
-function archive_nopermission()
+function archive_error_no_permission()
 {
 	global $lang;
 	archive_error($lang->archive_nopermission);

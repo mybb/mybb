@@ -175,7 +175,7 @@ function makepostbit($post, $pmprevann=0)
 	{ // This post was made by a registered user
 
 		$post['username'] = $post['userusername'];
-		$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".formatname($post['username'], $post['usergroup'], $post['displaygroup'])."</a>";
+		$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".format_name($post['username'], $post['usergroup'], $post['displaygroup'])."</a>";
 		if(trim($post['usertitle']) != "")
 		{
 			$hascustomtitle = 1;
@@ -276,14 +276,14 @@ function makepostbit($post, $pmprevann=0)
 		// Work out the reputation this user has
 		if($usergroup['usereputationsystem'] != "no" && $mybb->settings['enablereputation'] == "yes")
 		{
-			$post['userreputation'] = getreputation($post['reputation'], $post['uid']);
+			$post['userreputation'] = get_reputation($post['reputation'], $post['uid']);
 			eval("\$post['replink'] = \"".$templates->get("postbit_reputation")."\";");
 		}
 	}
 	else
 	{ // Message was posted by a guest or an unknown user
 		$post['username'] = $post['username'];
-		$post['profilelink'] = formatname($post['username'], 1);
+		$post['profilelink'] = format_name($post['username'], 1);
 		if($usergroup['usertitle'])
 		{
 			$post['usertitle'] = $usergroup['usertitle'];
@@ -314,12 +314,12 @@ function makepostbit($post, $pmprevann=0)
 			$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
-		if((ismod($fid, "caneditposts") == "yes" || $mybb->user['uid'] == $post['uid']) && $mybb->user['uid'] != 0)
+		if((is_moderator($fid, "caneditposts") == "yes" || $mybb->user['uid'] == $post['uid']) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
 		// Quick Delete button
-		if((ismod($fid, "candeleteposts") == "yes" || $mybb->user['uid'] == $post['uid']) && $mybb->user['uid'] != 0)
+		if((is_moderator($fid, "candeleteposts") == "yes" || $mybb->user['uid'] == $post['uid']) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
 		}
@@ -347,11 +347,11 @@ function makepostbit($post, $pmprevann=0)
 		}
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
-		if($forum['open'] != "no" && ($thread['closed'] != "yes" || ismod($forum['fid']) == "yes"))
+		if($forum['open'] != "no" && ($thread['closed'] != "yes" || is_moderator($forum['fid']) == "yes"))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
-		if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || ismod($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->settings['quickquote'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no" && !$pmprevann)
+		if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->settings['quickquote'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no" && !$pmprevann)
 		{
 			eval("\$post['button_quickquote'] = \"".$templates->get("postbit_quickquote")."\";");
 			$post['quickquote_message'] = htmlspecialchars($post['message']);
@@ -397,8 +397,8 @@ function makepostbit($post, $pmprevann=0)
 			if($attachment['visible'])
 			{ // There is an attachment thats visible!
 				$attachment['name'] = htmlspecialchars_uni($attachment['name']);
-				$attachment['filesize'] = getfriendlysize($attachment['filesize']);
-				$ext = getextension($attachment['filename']);
+				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
+				$ext = get_extension($attachment['filename']);
 				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
 				{
 					$isimage = true;
@@ -407,7 +407,7 @@ function makepostbit($post, $pmprevann=0)
 				{
 					$isimage = false;
 				}
-				$attachment['icon'] = getattachicon($ext);
+				$attachment['icon'] = get_attachment_icon($ext);
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{

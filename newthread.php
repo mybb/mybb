@@ -49,8 +49,8 @@ if(!$forum)
 }
 
 // Draw the navigation
-makeforumnav($fid);
-addnav($lang->nav_newthread);
+build_forum_breadcrumb($fid);
+add_breadcrumb($lang->nav_newthread);
 
 $forumpermissions = forum_permissions($fid);
 
@@ -61,25 +61,25 @@ if($forum['open'] == "no" || $forum['type'] != "f")
 
 if($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 // Check if this forum is password protected and if we've got the right password to access it.
-checkpwforum($fid, $forum['password']);
+check_forum_password($fid, $forum['password']);
 
 // If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
 if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
-	$codebuttons = makebbcodeinsert();
+	$codebuttons = build_mycode_inserter();
 	if($forum['allowsmilies'] != "no")
 	{
-		$smilieinserter = makesmilieinsert();
+		$smilieinserter = build_clickable_smilies();
 	}
 }
 
 // Does this forum allow post icons? If so, fetch the post icons.
 if($forum['allowpicons'] != "no")
 {
-	$posticons = getposticons();
+	$posticons = get_post_icons();
 }
 
 // If we have a currently logged in user then fetch the change user box.
@@ -237,7 +237,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		"uid" => $mybb->user['uid'],
 		"username" => $mybb->user['username'],
 		"message" => $mybb->input['message'],
-		"ipaddress" => getip(),
+		"ipaddress" => get_ip(),
 		"posthash" => $mybb->input['posthash']
 	);
 
@@ -273,7 +273,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	if(!$posthandler->validate_thread())
 	{
 		$post_errors = $posthandler->get_friendly_errors();
-		$thread_errors = inlineerror($post_errors);
+		$thread_errors = inline_error($post_errors);
 		$mybb->input['action'] = "newthread";
 	}
 	
@@ -474,7 +474,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 
 	// Show the moderator options
-	if(ismod($fid) == "yes")
+	if(is_moderator($fid) == "yes")
 	{
 		$modoptions = $mybb->input['modoptions'];
 		if($modoptions['closethread'] == "yes")
@@ -518,8 +518,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{
-			$attachment['size'] = getfriendlysize($attachment['filesize']);
-			$attachment['icon'] = getattachicon(getextension($attachment['filename']));
+			$attachment['size'] = get_friendly_size($attachment['filesize']);
+			$attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
 			if($forum['allowmycode'] != "no")
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
@@ -543,9 +543,9 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		else
 		{
-			$friendlyquota = getfriendlysize($mybb->usergroup['attachquota']*1000);
+			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1000);
 		}
-		$friendlyusage = getfriendlysize($usage['ausage']);
+		$friendlyusage = get_friendly_size($usage['ausage']);
 		$lang->attach_quota = sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
@@ -579,7 +579,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	$lang->newthread_in = sprintf($lang->newthread_in, $forum['name']);
 
 	eval("\$newthread = \"".$templates->get("newthread")."\";");
-	outputpage($newthread);
+	output_page($newthread);
 
 }
 ?>

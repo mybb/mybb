@@ -60,7 +60,7 @@ function getforums($pid="0")
 			}
 			else
 			{
-				$sql = buildparentlist($forum['fid']);
+				$sql = build_parent_list($forum['fid']);
 				$cusquery = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "$sql AND gid='$usergroup[gid]'");
 				$customperms = $db->fetch_array($cusquery);
 				if($customperms['pid'])
@@ -203,7 +203,7 @@ if($mybb->input['action'] == "edit")
 	startform("forumpermissions.php", "", "do_edit");
 	$sperms = $forumpermissions;
 
-	$sql = buildparentlist($fid);
+	$sql = build_parent_list($fid);
 	$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "$sql AND gid='$gid'");
 	$customperms = $db->fetch_array($query);
 

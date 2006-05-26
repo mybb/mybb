@@ -72,8 +72,8 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 			$thread = $db->fetch_array($query);
 			if($mybb->input['threaddelete'][$tid] == "yes")
 			{
-				deletethread($tid);
-				$updateforumcount[$thread['fid']] = 1;
+				delete_thread($tid);
+				$update_forum_count[$thread['fid']] = 1;
 			}
 			else
 			{
@@ -94,7 +94,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 						"visible" => 1
 					);
 					$db->update_query(TABLE_PREFIX."posts", $sql_array, "tid = '".$tid."'");
-					$updateforumcount[$thread['fid']] = 1;
+					$update_forum_count[$thread['fid']] = 1;
 
 					// Update unapproved thread count
 					$updatequery = array(
@@ -118,9 +118,9 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 			$thread = $db->fetch_array($query);
 			if($mybb->input['postdelete'][$pid] == "yes")
 			{
-				deletepost($pid);
-				$updatethreadcount[$post['tid']] = 1;
-				$updateforumcount[$thread['fid']] = 1;
+				delete_post($pid);
+				$update_thread_count[$post['tid']] = 1;
+				$update_forum_count[$thread['fid']] = 1;
 			}
 			else
 			{
@@ -135,8 +135,8 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 						"subject" => $subject
 					);
 					$db->update_query(TABLE_PREFIX."posts", $sql_array, "pid = '".$pid."'");
-					$updatethreadcount[$post['tid']] = 1;
-					$updateforumcount[$thread['fid']] = 1;
+					$update_thread_count[$post['tid']] = 1;
+					$update_forum_count[$thread['fid']] = 1;
 
 					// Update unapproved thread count
 					$updatequery = array(
@@ -147,18 +147,18 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 			}
 		}
 	}
-	if(is_array($updatethreadcount)) 
+	if(is_array($update_thread_count)) 
 	{
-		while(list($tid, $val) = each($updatethreadcount))
+		while(list($tid, $val) = each($update_thread_count))
 		{
-			updatethreadcount($tid);
+			update_thread_count($tid);
 		}
 	}
-	if(is_array($updateforumcount)) 
+	if(is_array($update_forum_count)) 
 	{
-		while(list($fid, $val) = each($updateforumcount))
+		while(list($fid, $val) = each($update_forum_count))
 		{
-			updateforumcount($fid);
+			update_forum_count($fid);
 		}
 	}
 	cpmessage($lang->threadsposts_moderated);

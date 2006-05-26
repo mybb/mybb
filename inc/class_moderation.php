@@ -129,7 +129,7 @@ class Moderation
 		// Update the forum stats of the fids found above
 		foreach($fids as $fid)
 		{
-			updateforumcount($fid);
+			update_forum_count($fid);
 		}
 
 		return true;
@@ -204,7 +204,7 @@ class Moderation
 		$db->query("DELETE FROM ".TABLE_PREFIX."polls WHERE tid='$tid'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."pollvotes WHERE pid='".$thread['poll']."'");
 		$cache->updatestats();
-		updateforumcount($thread['fid']);
+		update_forum_count($thread['fid']);
 		$plugins->run_hooks("delete_thread", $tid);
 
 		return true;
@@ -255,7 +255,7 @@ class Moderation
 		
 		// Update stats
 		$cache->updatestats();
-		updateforumcount($fid);
+		update_forum_count($fid);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1 WHERE tid IN ($tid_list)");
 
 		return true;
@@ -286,7 +286,7 @@ class Moderation
 
 		// Update stats
 		$cache->updatestats();
-		updateforumcount($fid);
+		update_forum_count($fid);
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+1 WHERE tid IN ($tid_list)");
 
 		return true;
@@ -328,8 +328,8 @@ class Moderation
 		}
 		$plugins->run_hooks("delete_post", $post['tid']);
 		$cache->updatestats();
-		updatethreadcount($post['tid']);
-		updateforumcount($post['fid']);
+		update_thread_count($post['tid']);
+		update_forum_count($post['fid']);
 
 		return true;
 	}
@@ -403,8 +403,8 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."attachments", $mergepost2, "pid IN($pidin)");
 
 		// Update stats
-		updatethreadcount($tid);
-		updateforumcount($fid);
+		update_thread_count($tid);
+		update_forum_count($fid);
 
 		return true;
 	}
@@ -493,7 +493,7 @@ class Moderation
 				$db->query("INSERT INTO ".TABLE_PREFIX."posts (tid,fid,subject,icon,uid,username,dateline,message,ipaddress,includesig,smilieoff,edituid,edittime,visible) VALUES $postssql");
 	
 				update_first_post($newtid);
-				updatethreadcount($newtid);
+				update_thread_count($newtid);
 	
 				$the_thread = $newtid;
 				break;
@@ -539,8 +539,8 @@ class Moderation
 		}
 
 		// Update forum counts
-		updateforumcount($new_fid);
-		updateforumcount($fid);
+		update_forum_count($new_fid);
+		update_forum_count($fid);
 
 		if(isset($newtid))
 		{
@@ -615,12 +615,12 @@ class Moderation
 		update_first_post($tid);
 
 		$this->delete_thread($mergetid);
-		updatethreadcount($tid);
+		update_thread_count($tid);
 		if($thread['fid'] != $mergethread['fid'])
 		{
-			updateforumcount($mergethread['fid']);
+			update_forum_count($mergethread['fid']);
 		}
-		updateforumcount($fid);
+		update_forum_count($fid);
 
 		return true;
 	}
@@ -712,13 +712,13 @@ class Moderation
 
 		update_first_post($tid);
 		update_first_post($newtid);
-		updatethreadcount($tid);
-		updatethreadcount($newtid);
+		update_thread_count($tid);
+		update_thread_count($newtid);
 		if($moveto != $thread['fid'])
 		{
-			updateforumcount($moveto);
+			update_forum_count($moveto);
 		}
-		updateforumcount($thread['fid']);
+		update_forum_count($thread['fid']);
 
 		// Merge new thread with destination thread if specified
 		if($destination_tid)
@@ -748,8 +748,8 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid IN ($tid_list)");
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid IN ($tid_list)");
 
-		updateforumcount($moveto);
-		updateforumcount($fid);
+		update_forum_count($moveto);
+		update_forum_count($fid);
 
 		return true;
 	}
@@ -774,8 +774,8 @@ class Moderation
 			);
 		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
 
-		updateforumcount($fid);
-		updatethreadcount($tid);
+		update_forum_count($fid);
+		update_thread_count($tid);
 
 		// If this is the first post of the thread, also approve the thread
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($where) AND replyto='0' LIMIT 1");
@@ -808,8 +808,8 @@ class Moderation
 			);
 		$db->update_query(TABLE_PREFIX."posts", $unapprove, $where);
 
-		updateforumcount($fid);
-		updatethreadcount($tid);
+		update_forum_count($fid);
+		update_thread_count($tid);
 
 		// If this is the first post of the thread, also unapprove the thread
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($where) AND replyto='0' LIMIT 1");

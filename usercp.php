@@ -25,7 +25,7 @@ $lang->load("usercp");
 
 if($mybb->user['uid'] == 0 || $mybb->usergroup['canusercp'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 if(!$mybb->user['pmfolders'])
@@ -62,63 +62,63 @@ if($mybb->input['action'] == "do_editsig")
 }
 
 // Make navigation
-addnav($lang->nav_usercp, "usercp.php");
+add_breadcrumb($lang->nav_usercp, "usercp.php");
 
 switch($mybb->input['action'])
 {
 	case "profile":
 	case "do_profile":
-		addnav($lang->nav_profile);
+		add_breadcrumb($lang->nav_profile);
 		break;
 	case "options":
 	case "do_options":
-		addnav($lang->nav_options);
+		add_breadcrumb($lang->nav_options);
 		break;
 	case "email":
 	case "do_email":
-		addnav($lang->nav_email);
+		add_breadcrumb($lang->nav_email);
 		break;
 	case "password":
 	case "do_password":
-		addnav($lang->nav_password);
+		add_breadcrumb($lang->nav_password);
 		break;
 	case "changename":
 	case "do_changename":
-		addnav($lang->nav_changename);
+		add_breadcrumb($lang->nav_changename);
 		break;
 	case "favorites":
-		addnav($lang->nav_favorites);
+		add_breadcrumb($lang->nav_favorites);
 		break;
 	case "subscriptions":
-		addnav($lang->nav_subthreads);
+		add_breadcrumb($lang->nav_subthreads);
 		break;
 	case "forumsubscriptions":
-		addnav($lang->nav_forumsubscriptions);
+		add_breadcrumb($lang->nav_forumsubscriptions);
 		break;
 	case "editsig":
 	case "do_editsig":
-		addnav($lang->nav_editsig);
+		add_breadcrumb($lang->nav_editsig);
 		break;
 	case "avatar":
 	case "do_avatar":
-		addnav($lang->nav_avatar);
+		add_breadcrumb($lang->nav_avatar);
 		break;
 	case "notepad":
 	case "do_notepad":
-		addnav($lang->nav_notepad);
+		add_breadcrumb($lang->nav_notepad);
 		break;
 	case "editlists":
 	case "do_editlists":
-		addnav($lang->nav_editlists);
+		add_breadcrumb($lang->nav_editlists);
 		break;
 	case "drafts":
-		addnav($lang->nav_drafts);
+		add_breadcrumb($lang->nav_drafts);
 		break;
 	case "usergroups":
-		addnav($lang->nav_usergroups);
+		add_breadcrumb($lang->nav_usergroups);
 		break;
 	case "attachments":
-		addnav($lang->nav_attachments);
+		add_breadcrumb($lang->nav_attachments);
 		break;
 }
 
@@ -197,7 +197,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
-		$errors = inlineerror($errors);
+		$errors = inline_error($errors);
 		$mybb->input['action'] = "profile";
 	}
 	else
@@ -492,7 +492,7 @@ if($mybb->input['action'] == "profile")
 	}
 	eval("\$editprofile = \"".$templates->get("usercp_profile")."\";");
 	$plugins->run_hooks("usercp_profile_end");
-	outputpage($editprofile);
+	output_page($editprofile);
 }
 
 if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
@@ -547,7 +547,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
-		$errors = inlineerror($errors);
+		$errors = inline_error($errors);
 		$mybb->input['action'] = "options";
 	}
 	else
@@ -774,7 +774,7 @@ if($mybb->input['action'] == "options")
 
 	$threadview[$user['threadmode']] = "selected";
 	$daysprunesel[$user['daysprune']] = "selected";
-	$stylelist = themeselect("style", $user['style']);
+	$stylelist = build_theme_select("style", $user['style']);
 	if($mybb->settings['usertppoptions'])
 	{
 		$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
@@ -821,7 +821,7 @@ if($mybb->input['action'] == "options")
 	}
 	eval("\$editprofile = \"".$templates->get("usercp_options")."\";");
 	$plugins->run_hooks("usercp_options_end");
-	outputpage($editprofile);
+	output_page($editprofile);
 }
 
 if($mybb->input['action'] == "do_email")
@@ -901,7 +901,7 @@ if($mybb->input['action'] == "email")
 	$plugins->run_hooks("usercp_email_start");
 	eval("\$changemail = \"".$templates->get("usercp_email")."\";");
 	$plugins->run_hooks("usercp_email_end");
-	outputpage($changemail);
+	output_page($changemail);
 }
 
 if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
@@ -932,7 +932,7 @@ if($mybb->input['action'] == "password")
 	$plugins->run_hooks("usercp_password_start");
 	eval("\$editpassword = \"".$templates->get("usercp_password")."\";");
 	$plugins->run_hooks("usercp_password_end");
-	outputpage($editpassword);
+	output_page($editpassword);
 }
 
 if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
@@ -940,7 +940,7 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 	$plugins->run_hooks("usercp_do_changename_start");
 	if($mybb->usergroup['canchangename'] != "yes")
 	{
-		nopermission();
+		error_no_permission();
 	}
 	if(!trim($mybb->input['username']) || eregi("<|>|&", $mybb->input['username']))
 	{
@@ -977,11 +977,11 @@ if($mybb->input['action'] == "changename")
 	$plugins->run_hooks("usercp_changename_start");
 	if($mybb->usergroup['canchangename'] != "yes")
 	{
-		nopermission();
+		error_no_permission();
 	}
 	eval("\$changename = \"".$templates->get("usercp_changename")."\";");
 	$plugins->run_hooks("usercp_changename_end");
-	outputpage($changename);
+	output_page($changename);
 }
 
 if($mybb->input['action'] == "favorites")
@@ -1079,7 +1079,7 @@ if($mybb->input['action'] == "favorites")
 	}
 	eval("\$favorites = \"".$templates->get("usercp_favorites")."\";");
 	$plugins->run_hooks("usercp_favorites_end");
-	outputpage($favorites);
+	output_page($favorites);
 }
 if($mybb->input['action'] == "subscriptions")
 {
@@ -1177,7 +1177,7 @@ if($mybb->input['action'] == "subscriptions")
 	}
 	eval("\$subscriptions = \"".$templates->get("usercp_subscriptions")."\";");
 	$plugins->run_hooks("usercp_subscriptions_end");
-	outputpage($subscriptions);
+	output_page($subscriptions);
 }
 if($mybb->input['action'] == "forumsubscriptions")
 {
@@ -1246,7 +1246,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 	}
 	$plugins->run_hooks("usercp_forumsubscriptions_end");
 	eval("\$forumsubscriptions = \"".$templates->get("usercp_forumsubscriptions")."\";");
-	outputpage($forumsubscriptions);
+	output_page($forumsubscriptions);
 }
 
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
@@ -1343,7 +1343,7 @@ if($mybb->input['action'] == "editsig")
 	$lang->edit_sig_note2 = sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 	eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
 	$plugins->run_hooks("usercp_endsig_end");
-	outputpage($editsig);
+	output_page($editsig);
 }
 
 if($mybb->input['action'] == "avatar")
@@ -1433,7 +1433,7 @@ if($mybb->input['action'] == "avatar")
 		}
 		eval("\$gallery = \"".$templates->get("usercp_avatar_gallery")."\";");
 		$plugins->run_hooks("usercp_avatar_end");
-		outputpage($gallery);
+		output_page($gallery);
 	}
 	// Show main avatar page
 	else
@@ -1468,12 +1468,12 @@ if($mybb->input['action'] == "avatar")
 		}
 		if($mybb->settings['avatarsize'])
 		{
-			$maxsize = getfriendlysize($mybb->settings['avatarsize']*1024);
+			$maxsize = get_friendly_size($mybb->settings['avatarsize']*1024);
 			$lang->avatar_note .= "<br />".sprintf($lang->avatar_note_size, $maxsize);
 		}
 		eval("\$avatar = \"".$templates->get("usercp_avatar")."\";");
 		$plugins->run_hooks("usercp_avatar_end");
-		outputpage($avatar);
+		output_page($avatar);
 	}
 
 }
@@ -1514,7 +1514,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	{
 		if($mybb->usergroup['canuploadavatars'] == "no")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		$avatar = upload_avatar();
 		if($avatar['error'])
@@ -1531,7 +1531,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	{
 		$mybb->input['avatarurl'] = preg_replace("#script:#i", "", $mybb->input['avatarurl']);
 		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
-		$ext = getextension($mybb->input['avatarurl']);
+		$ext = get_extension($mybb->input['avatarurl']);
 		list($width, $height, $type) = @getimagesize($mybb->input['avatarurl']);
 		
 		//if(preg_match("#gif|jpg|jpeg|jpe|bmp|png#i", $ext) && $mybb->settings['maxavatardims'] != "")
@@ -1560,7 +1560,7 @@ if($mybb->input['action'] == "notepad")
 	$mybbuser['notepad'] = htmlspecialchars_uni($mybbuser['notepad']);
 	eval("\$notepad = \"".$templates->get("usercp_notepad")."\";");
 	$plugins->run_hooks("usercp_notepad_end");
-	outputpage($notepad);
+	output_page($notepad);
 }
 if($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
 {
@@ -1630,7 +1630,7 @@ if($mybb->input['action'] == "editlists")
 	}
 	eval("\$listpage = \"".$templates->get("usercp_editlists")."\";");
 	$plugins->run_hooks("usercp_editlists_end");
-	outputpage($listpage);
+	output_page($listpage);
 }
 if($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
 {
@@ -1727,7 +1727,7 @@ if($mybb->input['action'] == "drafts")
 	}
 	eval("\$draftlist = \"".$templates->get("usercp_drafts")."\";");
 	$plugins->run_hooks("usercp_drafts_end");
-	outputpage($draftlist);
+	output_page($draftlist);
 
 }
 if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
@@ -1888,7 +1888,7 @@ if($mybb->input['action'] == "usergroups")
 		{
 			$joingroup = $mybb->input['joingroup'];
 			eval("\$joinpage = \"".$templates->get("usercp_usergroups_joingroup")."\";");
-			outputpage($joinpage);
+			output_page($joinpage);
 		}
 		else
 		{
@@ -2091,7 +2091,7 @@ if($mybb->input['action'] == "usergroups")
 
 	eval("\$groupmemberships = \"".$templates->get("usercp_usergroups")."\";");
 	$plugins->run_hooks("usercp_usergroups_end");
-	outputpage($groupmemberships);
+	output_page($groupmemberships);
 }
 if($mybb->input['action'] == "attachments")
 {
@@ -2113,8 +2113,8 @@ if($mybb->input['action'] == "attachments")
 		{
 			$attachment['subject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['subject']));
 			$attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
-			$size = getfriendlysize($attachment['filesize']);
-			$icon = getattachicon(getextension($attachment['filename']));
+			$size = get_friendly_size($attachment['filesize']);
+			$icon = get_attachment_icon(get_extension($attachment['filename']));
 			$sizedownloads = sprintf($lang->attachment_size_downloads, $size, $attachment['downloads']);
 			$attachdate = mydate($mybb->settings['dateformat'], $attachment['dateline']);
 			$attachtime = mydate($mybb->settings['timeformat'], $attachment['dateline']);
@@ -2138,12 +2138,12 @@ if($mybb->input['action'] == "attachments")
 	$usage = $db->fetch_array($query);
 	$totalusage = $usage['ausage'];
 	$totalattachments = $usage['acount'];
-	$friendlyusage = getfriendlysize($totalusage);
-	$bandwidth = getfriendlysize($bandwidth);
+	$friendlyusage = get_friendly_size($totalusage);
+	$bandwidth = get_friendly_size($bandwidth);
 	if($mybb->usergroup['attachquota'])
 	{
 		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1000))*100)."%";
-		$attachquota = getfriendlysize($mybb->usergroup['attachquota']*1000);
+		$attachquota = get_friendly_size($mybb->usergroup['attachquota']*1000);
 		$usagenote = sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
 	}
 	else
@@ -2159,7 +2159,7 @@ if($mybb->input['action'] == "attachments")
 	}
 	eval("\$manageattachments = \"".$templates->get("usercp_attachments")."\";");
 	$plugins->run_hooks("usercp_attachments_end");
-	outputpage($manageattachments);
+	output_page($manageattachments);
 }
 if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post")
 {
@@ -2215,6 +2215,6 @@ if(!$mybb->input['action'])
 	$mybbuser['postnum'] = mynumberformat($mybb->user['postnum']);
 	eval("\$usercp = \"".$templates->get("usercp")."\";");
 	$plugins->run_hooks("usercp_end");
-	outputpage($usercp);
+	output_page($usercp);
 }
 ?>

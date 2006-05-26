@@ -32,7 +32,7 @@ global $settings, $theme, $templates;
 // Load global language phrases
 $lang->load("portal");
 
-addnav($lang->nav_portal, "portal.php");
+add_breadcrumb($lang->nav_portal, "portal.php");
 
 // This allows users to login if the portal is stored offsite or in a different directory
 if($mybb->input['action'] == "do_login")
@@ -74,7 +74,7 @@ $plugins->run_hooks("portal_start");
 
 
 // get forums user cannot view
-$unviewable = getunviewableforums();
+$unviewable = get_unviewable_forums();
 if($unviewable)
 {
 	$unviewwhere = " AND fid NOT IN ($unviewable)";
@@ -212,7 +212,7 @@ if($mybb->settings['portal_showwol'] != "no")
 					{
 						$invisiblemark = '';
 					}
-					$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
 					$comma = ", ";
 				}
@@ -389,8 +389,8 @@ while($announcement = $db->fetch_array($query))
 			if($attachment['visible'])
 			{ // There is an attachment thats visible!
 				$attachment['name'] = htmlspecialchars_uni($attachment['name']);
-				$attachment['filesize'] = getfriendlysize($attachment['filesize']);
-				$ext = getextension($attachment['filename']);
+				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
+				$ext = get_extension($attachment['filename']);
 				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
 				{
 					$isimage = true;
@@ -399,7 +399,7 @@ while($announcement = $db->fetch_array($query))
 				{
 					$isimage = false;
 				}
-				$attachment['icon'] = getattachicon($ext);
+				$attachment['icon'] = get_attachment_icon($ext);
 				// Support for [attachment=id] code
 				if(stripos($announcement['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
@@ -483,6 +483,6 @@ eval("\$portal = \"".$templates->get("portal")."\";");
 
 $plugins->run_hooks("portal_end");
 
-outputpage($portal);
+output_page($portal);
 
 ?>

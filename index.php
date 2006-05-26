@@ -88,7 +88,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 					}
 
 					// Properly format the username and assign the template.
-					$user['username'] = formatname($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"".$templates->get("index_whosonline_memberbit", 1, 0)."\";");
 					$comma = ", ";
 				}
@@ -99,7 +99,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 		elseif(strstr($user['sid'], "bot=") !== false && $session->bots[$botkey])
 		{
 			// The user is a search bot.
-			$onlinemembers .= $comma.formatname($session->bots[$botkey], $session->botgroup);
+			$onlinemembers .= $comma.format_name($session->bots[$botkey], $session->botgroup);
 			$comma = ", ";
 			++$botcount;
 		}
@@ -274,6 +274,6 @@ $forums = $forum_list['forum_list'];
 $plugins->run_hooks("index_end");
 
 eval("\$index = \"".$templates->get("index")."\";");
-outputpage($index);
+output_page($index);
 
 ?>

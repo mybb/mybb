@@ -27,7 +27,7 @@ if(!is_array($groupscache))
 }
 $fpermissioncache = $cache->read("forumpermissions");
 
-pageheaders();
+send_page_headers();
 
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
@@ -111,7 +111,7 @@ $lang->load("messages");
 $lang->load("archive");
 
 // Get our visitors IP
-$ipaddress = getip();
+$ipaddress = get_ip();
 
 // Draw up the basic part of our naviagation
 $navbits[0]['name'] = $mybb->settings['bbname'];
@@ -160,6 +160,6 @@ if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 
 if($mybb->user['canview'] == "no" && $action != "register" && $action != "do_register" && $action != "login" && $action != "do_login")
 {
-	archive_nopermission();
+	archive_error_no_permission();
 }
 ?>

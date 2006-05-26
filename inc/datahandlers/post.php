@@ -35,7 +35,7 @@ class PostDataHandler extends DataHandler
 	* @var string
 	*/
 	var $language_file = 'datahandler_post';
-
+	
 	/**
 	* The prefix for the language variables used in the data handler.
 	*
@@ -48,8 +48,6 @@ class PostDataHandler extends DataHandler
 	 * post = New post
 	 * thread = New thread
 	 * edit = Editing a thread or post
-	 *
-	 * @var string
 	 */
 	var $action;
 
@@ -180,14 +178,14 @@ class PostDataHandler extends DataHandler
 		}
 
 		// If this board has a maximum message length check if we're over it.
-		else if(strlen($message) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && ismod($post['fid'], "", $post['uid']) != "yes")
+		else if(strlen($message) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
 		{
 			$this->set_error("message_too_long");
 			return false;
 		}
 
 		// And if we've got a minimum message length do we meet that requirement too?
-		else if(strlen($message) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && ismod($post['fid'], "", $post['uid']) != "yes")
+		else if(strlen($message) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
 		{
 			$this->set_error("message_too_short");
 			return false;
@@ -237,7 +235,7 @@ class PostDataHandler extends DataHandler
 			$user = get_user($post['uid']);
 
 			// A little bit of calculation magic and moderator status checking.
-			if(time()-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && ismod($post['fid'], "", $user['uid']) != "yes")
+			if(time()-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && is_moderator($post['fid'], "", $user['uid']) != "yes")
 			{
 				// Oops, user has been flooding - throw back error message.
 				$this->set_error("post_flooding");
@@ -272,7 +270,7 @@ class PostDataHandler extends DataHandler
 			{
 				require_once MYBB_ROOT."inc/class_parser.php";
 				$parser = new postParser;
-
+				
 				// Parse the message.
 				$parser_options = array(
 					"allow_html" => $forum['allowhtml'],
@@ -491,7 +489,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(ismod($post['fid'], "", $post['uid']) == "yes" && $post['modoptions'])
+			if(is_moderator($post['fid'], "", $post['uid']) == "yes" && $post['modoptions'])
 			{
 				// Fetch the thread
 				$thread = get_thread($post['tid']);
@@ -504,28 +502,28 @@ class PostDataHandler extends DataHandler
 				if($modoptions['closethread'] == "yes" && $thread['closed'] != "yes")
 				{
 					$newclosed = "closed='yes'";
-					logmod($modlogdata, "Thread closed");
+					log_moderator_action($modlogdata, "Thread closed");
 				}
 
 				// Open the thread.
 				if($modoptions['closethread'] != "yes" && $thread['closed'] == "yes")
 				{
 					$newclosed = "closed='no'";
-					logmod($modlogdata, "Thread opened");
+					log_moderator_action($modlogdata, "Thread opened");
 				}
 
 				// Stick the thread.
 				if($modoptions['stickthread'] == "yes" && $thread['sticky'] != 1)
 				{
 					$newstick = "sticky='1'";
-					logmod($modlogdata, "Thread stuck");
+					log_moderator_action($modlogdata, "Thread stuck");
 				}
 
 				// Unstick the thread.
 				if($modoptions['stickthread'] != "yes" && $thread['sticky'])
 				{
 					$newstick = "sticky='0'";
-					logmod($modlogdata, "Thread unstuck");
+					log_moderator_action($modlogdata, "Thread unstuck");
 				}
 
 				// Execute moderation options.
@@ -622,7 +620,7 @@ class PostDataHandler extends DataHandler
 			$subject = $parser->parse_badwords($thread['subject']);
 			$excerpt = $parser->strip_mycode($post['message']);
 			$excerpt = substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-
+			
 			// Fetch any users subscribed to this thread and queue up their subscription notices
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language
@@ -686,16 +684,16 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Update forum count
-			updatethreadcount($post['tid']);
-			updateforumcount($post['fid']);
+			update_thread_count($post['tid']);
+			update_forum_count($post['fid']);
 			$cache->updatestats();
 		}
 		// Post is stuck in moderation queue
 		else if($visiblle == 0)
 		{
 			// Update the unapproved posts count for the current thread and current forum
-			updatethreadcount($post['tid']);
-			updateforumcount($post['fid']);
+			update_thread_count($post['tid']);
+			update_forum_count($post['fid']);
 		}
 
 		if($visible != 2)
@@ -847,7 +845,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
 				"message" => $db->escape_string($thread['message']),
-				"ipaddress" => getip(),
+				"ipaddress" => get_ip(),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
 				"visible" => $visible,
@@ -888,7 +886,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
 				"message" => $db->escape_string($thread['message']),
-				"ipaddress" => getip(),
+				"ipaddress" => get_ip(),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
 				"visible" => $visible,
@@ -918,7 +916,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(ismod($thread['fid'], "", $thread['uid']) == "yes" && is_array($thread['modoptions']))
+			if(is_moderator($thread['fid'], "", $thread['uid']) == "yes" && is_array($thread['modoptions']))
 			{
 				$modoptions = $thread['modoptions'];
 				$modlogdata['fid'] = $tid;
@@ -928,14 +926,14 @@ class PostDataHandler extends DataHandler
 				if($modoptions['closethread'] == "yes")
 				{
 					$newclosed = "closed='yes'";
-					logmod($modlogdata, "Thread closed");
+					log_moderator_action($modlogdata, "Thread closed");
 				}
 
 				// Stick the thread.
 				if($modoptions['stickthread'] == "yes")
 				{
 					$newstick = "sticky='1'";
-					logmod($modlogdata, "Thread stuck");
+					log_moderator_action($modlogdata, "Thread stuck");
 				}
 
 				// Execute moderation options.
@@ -1067,8 +1065,8 @@ class PostDataHandler extends DataHandler
 		if($visible == 1 || $visible == 0)
 		{
 			$cache->updatestats();
-			updatethreadcount($tid);
-			updateforumcount($thread['fid']);
+			update_thread_count($tid);
+			update_forum_count($thread['fid']);
 		}
 
 		// Return the post's pid and whether or not it is visible.
@@ -1177,7 +1175,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// If we need to show the edited by, let's do so.
-		if(($mybb->settings['showeditedby'] == "yes" && ismod($post['fid'], "caneditposts", $post['edit_uid']) != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && ismod($post['fid'], "caneditposts", $post['edit_uid']) == "yes"))
+		if(($mybb->settings['showeditedby'] == "yes" && is_moderator($post['fid'], "caneditposts", $post['edit_uid']) != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && is_moderator($post['fid'], "caneditposts", $post['edit_uid']) == "yes"))
 		{
 			$updatepost['edituid'] = intval($post['edit_uid']);
 			$updatepost['edittime'] = time();
@@ -1185,7 +1183,7 @@ class PostDataHandler extends DataHandler
 
 		$plugins->run_hooks("datahandler_post_update");
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".intval($post['pid'])."'");
-
+		
 		update_thread_attachment_count($post['tid']);
 	}
 
@@ -1225,16 +1223,16 @@ class PostDataHandler extends DataHandler
 		// Delete the whole thread or this post only?
 		if($firstpost === true)
 		{
-			deletethread($post['tid']);
-			updateforumcount($post['fid']);
+			delete_thread($post['tid']);
+			update_forum_count($post['fid']);
 
 			$plugins->run_hooks("datahandler_post_delete_thread");
 		}
 		else
 		{
-			deletepost($post['pid']);
-			updatethreadcount($post['tid']);
-			updateforumcount($post['fid']);
+			delete_post($post['pid']);
+			update_thread_count($post['tid']);
+			update_forum_count($post['fid']);
 
 			$plugins->run_hooks("datahandler_post_delete_post");
 		}

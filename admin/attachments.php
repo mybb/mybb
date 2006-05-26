@@ -225,7 +225,7 @@ if($mybb->input['action'] == "do_search")
 			$filename = "<em>".$filename."</em>";
 		}
 		
-		$filesize = getfriendlysize($result['filesize']);
+		$filesize = get_friendly_size($result['filesize']);
 
 		echo "<tr>\n";
 		echo "<td class=\"$altbg\" align=\"center\"><input type=\"checkbox\" name=\"check[$result[aid]]\" value=\"$result[aid]\"></td>\n";
@@ -298,7 +298,7 @@ if($mybb->input['action'] == "orphans")
 	$bgcolor = getaltbg();
 	foreach($orphan_files as $filename)
 	{
-		$filesize = getfriendlysize(filesize(MYBB_ROOT.$mybb->settings['uploadspath']."/".$filename));
+		$filesize = get_friendly_size(filesize(MYBB_ROOT.$mybb->settings['uploadspath']."/".$filename));
 
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"check[]\" value=\"$filename\"></td>\n";
@@ -447,7 +447,7 @@ if($mybb->input['action'] == "stats")
 	starttable();
 	tableheader($lang->overall_attachment_statistics, "");
 	makelabelcode($lang->total_attachments, $stats['attachments']);
-	makelabelcode($lang->total_size, getfriendlysize($stats['totalsize']));
+	makelabelcode($lang->total_size, get_friendly_size($stats['totalsize']));
 	makelabelcode($lang->total_downloads, $stats['downloads']);
 	endtable();
 
@@ -503,7 +503,7 @@ if($mybb->input['action'] == "stats")
 		while($attachment = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
-			$attachment['filesize'] = getfriendlysize($attachment['filesize']);
+			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
@@ -538,7 +538,7 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 	while($type = $db->fetch_array($query))
 	{
 		$type['name'] = stripslashes($type['name']);
-		$size = getfriendlysize($type['maxsize']*1024);
+		$size = get_friendly_size($type['maxsize']*1024);
 		if($type['icon'])
 		{
 			$icon = "<img src=\"../$type[icon]\">";

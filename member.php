@@ -32,25 +32,25 @@ switch($mybb->input['action'])
 {
 	case "register":
 	case "do_register":
-		addnav($lang->nav_register);
+		add_breadcrumb($lang->nav_register);
 		break;
 	case "activate":
-		addnav($lang->nav_activate);
+		add_breadcrumb($lang->nav_activate);
 		break;
 	case "resendactivation":
-		addnav($lang->nav_resendactivation);
+		add_breadcrumb($lang->nav_resendactivation);
 		break;
 	case "lostpw":
-		addnav($lang->nav_lostpw);
+		add_breadcrumb($lang->nav_lostpw);
 		break;
 	case "resetpassword":
-		addnav($lang->nav_resetpassword);
+		add_breadcrumb($lang->nav_resetpassword);
 		break;
 	case "login":
-		addnav($lang->nav_login);
+		add_breadcrumb($lang->nav_login);
 		break;
 	case "emailuser":
-		addnav($lang->nav_emailuser);
+		add_breadcrumb($lang->nav_emailuser);
 		break;
 }
 
@@ -214,7 +214,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$enabledstcheck = "checked=\"checked\"";
 		}
 
-		$regerrors = inlineerror($errors);
+		$regerrors = inline_error($errors);
 		$mybb->input['action'] = "register";
 		$fromreg = 1;
 	}
@@ -284,7 +284,7 @@ if($mybb->input['action'] == "register")
 		$plugins->run_hooks("member_register_agreement");
 
 		eval("\$agreement = \"".$templates->get("member_register_agreement")."\";");
-		outputpage($agreement);
+		output_page($agreement);
 	}
 	else
 	{
@@ -350,7 +350,7 @@ if($mybb->input['action'] == "register")
 
 		eval("\$tzselect = \"".$templates->get("usercp_options_timezoneselect")."\";");
 
-		$stylelist = themeselect("style");
+		$stylelist = build_theme_select("style");
 
 		if($mybb->settings['usertppoptions'])
 		{
@@ -577,7 +577,7 @@ if($mybb->input['action'] == "register")
 		$plugins->run_hooks("member_register_end");
 
 		eval("\$registration = \"".$templates->get("member_register")."\";");
-		outputpage($registration);
+		output_page($registration);
 	}
 }
 elseif($mybb->input['action'] == "activate")
@@ -669,7 +669,7 @@ elseif($mybb->input['action'] == "activate")
 		$plugins->run_hooks("member_activate_form");
 
 		eval("\$activate = \"".$templates->get("member_activate")."\";");
-		outputpage($activate);
+		output_page($activate);
 	}
 }
 elseif($mybb->input['action'] == "resendactivation")
@@ -682,7 +682,7 @@ elseif($mybb->input['action'] == "resendactivation")
 	}
 
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
-	outputpage($activate);
+	output_page($activate);
 }
 elseif($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "post")
 {
@@ -741,7 +741,7 @@ elseif($mybb->input['action'] == "lostpw")
 	$plugins->run_hooks("member_lostpw");
 
 	eval("\$lostpw = \"".$templates->get("member_lostpw")."\";");
-	outputpage($lostpw);
+	output_page($lostpw);
 }
 elseif($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 {
@@ -858,7 +858,7 @@ elseif($mybb->input['action'] == "resetpassword")
 		$plugins->run_hooks("member_resetpassword_form");
 
 		eval("\$activate = \"".$templates->get("member_resetpassword")."\";");
-		outputpage($activate);
+		output_page($activate);
 	}
 }
 else if($mybb->input['action'] == "login")
@@ -880,7 +880,7 @@ else if($mybb->input['action'] == "login")
 	}
 
 	eval("\$login = \"".$templates->get("member_login")."\";");
-	outputpage($login);
+	output_page($login);
 }
 else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
@@ -1002,7 +1002,7 @@ elseif($mybb->input['action'] == "profile")
 
 	if($mybb->usergroup['canviewprofiles'] == "no")
 	{
-		nopermission();
+		error_no_permission();
 	}
 	if($mybb->input['uid'] == "lastposter")
 	{
@@ -1081,7 +1081,7 @@ elseif($mybb->input['action'] == "profile")
 	$memperms = user_permissions($memprofile['uid']);
 
 	$lang->nav_profile = sprintf($lang->nav_profile, $memprofile['username']);
-	addnav($lang->nav_profile);
+	add_breadcrumb($lang->nav_profile);
 
 	$lang->users_forum_info = sprintf($lang->users_forum_info, $memprofile['username']);
 	$lang->users_contact_details = sprintf($lang->users_contact_details, $memprofile['username']);
@@ -1323,7 +1323,7 @@ elseif($mybb->input['action'] == "profile")
 	// Fetch the reputation for this user
 	if($memperms['usereputationsystem'] == "yes")
 	{
-		$reputation = getreputation($memprofile['reputation']);
+		$reputation = get_reputation($memprofile['reputation']);
 
 		// If this user has permission to give reputations show the vote link
 		if($mybb->usergroup['cangivereputations'] == "yes" && $memprofile['uid'] != $mybb->user['uid'])
@@ -1390,7 +1390,7 @@ elseif($mybb->input['action'] == "profile")
 	}
 	$memprofile['postnum'] = mynumberformat($memprofile['postnum']);
 	$lang->ppd_percent_total = sprintf($lang->ppd_percent_total, mynumberformat($ppd), $percent);
-	$formattedname = formatname($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
+	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
 	if($memprofile['timeonline'] > 0)
 	{
 		$timeonline = nice_time($memprofile['timeonline']);
@@ -1412,7 +1412,7 @@ elseif($mybb->input['action'] == "profile")
 	$plugins->run_hooks("member_profile_end");
 
 	eval("\$profile = \"".$templates->get("member_profile")."\";");
-	outputpage($profile);
+	output_page($profile);
 }
 elseif($mybb->input['action'] == "emailuser")
 {
@@ -1420,7 +1420,7 @@ elseif($mybb->input['action'] == "emailuser")
 
 	if($mybb->usergroup['cansendemail'] == "no")
 	{
-		nopermission();
+		error_no_permission();
 	}
 	if($mybb->input['uid'])
 	{
@@ -1447,7 +1447,7 @@ elseif($mybb->input['action'] == "emailuser")
 	$plugins->run_hooks("member_emailuser_end");
 
 	eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
-	outputpage($emailuser);
+	output_page($emailuser);
 }
 elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 {
@@ -1455,7 +1455,7 @@ elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "pos
 
 	if($mybb->usergroup['cansendemail'] == "no")
 	{
-		nopermission();
+		error_no_permission();
 	}
 	$query = $db->query("
 		SELECT uid, username, email, hideemail

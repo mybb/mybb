@@ -24,7 +24,7 @@ if($mybb->input['action'] == "markread")
 {
 	if($mybb->input['fid'])
 	{
-		$validforum = validateforum($db->escape_string($mybb->input['fid']));
+		$validforum = get_forum($db->escape_string($mybb->input['fid']));
 		if(!$validforum)
 		{
 			error($lang->error_invalidforum);
@@ -86,7 +86,7 @@ elseif($mybb->input['action'] == "rules")
 		}
 		if($forumpermissions['canview'] != "yes")
 		{
-			nopermission();
+			error_no_permission();
 		}
 		if(!$forum['rulestitle'])
 		{
@@ -94,13 +94,13 @@ elseif($mybb->input['action'] == "rules")
 		}
 		$forum['rules'] = postify($forum['rules'], "yes", "yes", "yes", "yes");
 		// Make navigation
-		makeforumnav($mybb->input['fid']);
-		addnav($forum['rulestitle']);
+		build_forum_breadcrumb($mybb->input['fid']);
+		add_breadcrumb($forum['rulestitle']);
 
 		$plugins->run_hooks("misc_rules_end");
 
 		eval("\$rules = \"".$templates->get("misc_rules_forum")."\";");
-		outputpage($rules);
+		output_page($rules);
 	}
 
 }
@@ -111,7 +111,7 @@ elseif($mybb->input['action'] == "help")
 	$lang->load("customhelpdocs");
 	$lang->load("customhelpsections");
 
-	addnav($lang->nav_helpdocs, "misc.php?action=help");
+	add_breadcrumb($lang->nav_helpdocs, "misc.php?action=help");
 
 	$query = $db->query("
 		SELECT h.*, s.enabled AS section
@@ -135,12 +135,12 @@ elseif($mybb->input['action'] == "help")
 				$helpdoc['description'] = $lang->$langdescvar;
 				$helpdoc['document'] = $lang->$langdocvar;
 			}
-			addnav($helpdoc['name']);
+			add_breadcrumb($helpdoc['name']);
 
 			$plugins->run_hooks("misc_help_helpdoc_end");
 
 			eval("\$helppage = \"".$templates->get("misc_help_helpdoc")."\";");
-			outputpage($helppage);
+			output_page($helppage);
 		}
 		else
 		{
@@ -235,7 +235,7 @@ elseif($mybb->input['action'] == "help")
 		$plugins->run_hooks("misc_help_section_end");
 
 		eval("\$help = \"".$templates->get("misc_help")."\";");
-		outputpage($help);
+		output_page($help);
 	}
 }
 elseif($mybb->input['action'] == "buddypopup")
@@ -244,7 +244,7 @@ elseif($mybb->input['action'] == "buddypopup")
 
 	if($mybb->user['uid'] == 0)
 	{
-		nopermission();
+		error_no_permission();
 	}
 	if($mybb->input['removebuddy'])
 	{
@@ -312,7 +312,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	$plugins->run_hooks("misc_buddypopup_end");
 
 	eval("\$buddylist = \"".$templates->get("misc_buddypopup")."\";");
-	outputpage($buddylist);
+	output_page($buddylist);
 }
 elseif($mybb->input['action'] == "whoposted")
 {
@@ -345,7 +345,7 @@ elseif($mybb->input['action'] == "whoposted")
 		}
 	}
 	eval("\$whop = \"".$templates->get("misc_whoposted")."\";");
-	outputpage($whop);
+	output_page($whop);
 }
 elseif($mybb->input['action'] == "smilies")
 {
@@ -388,11 +388,11 @@ elseif($mybb->input['action'] == "smilies")
 			$smilies .= "<td colspan=\"2\" class=\"$class\">&nbsp;</td></tr>";
 		}
 		eval("\$smiliespage = \"".$templates->get("misc_smilies_popup")."\";");
-		outputpage($smiliespage);
+		output_page($smiliespage);
 	}
 	else
 	{
-		addnav($lang->nav_smilies);
+		add_breadcrumb($lang->nav_smilies);
 		$class = "trow1";
 		$query = $db->query("
 			SELECT *
@@ -412,7 +412,7 @@ elseif($mybb->input['action'] == "smilies")
 			}
 		}
 		eval("\$smiliespage = \"".$templates->get("misc_smilies")."\";");
-		outputpage($smiliespage);
+		output_page($smiliespage);
 	}
 }
 elseif($mybb->input['action'] == "imcenter")
@@ -465,7 +465,7 @@ elseif($mybb->input['action'] == "imcenter")
 	$lang->view_y_profile = sprintf($lang->view_y_profile, $user['username']);
 	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
 	eval("\$imcenter = \"".$templates->get($imtemplate)."\";");
-	outputpage($imcenter);
+	output_page($imcenter);
 }
 elseif($mybb->input['action'] == "syndication")
 {
@@ -476,8 +476,8 @@ elseif($mybb->input['action'] == "syndication")
 	$limit = $mybb->input['limit'];
 	$forums = $mybb->input['forums'];
 
-	addnav($lang->nav_syndication);
-	$unviewable = getunviewableforums();
+	add_breadcrumb($lang->nav_syndication);
+	$unviewable = get_unviewable_forums();
 	if(is_array($forums))
 	{
 		$unexp = explode(",", $unviewable);
@@ -569,7 +569,7 @@ elseif($mybb->input['action'] == "syndication")
 	$plugins->run_hooks("misc_syndication_end");
 
 	eval("\$syndication = \"".$templates->get("misc_syndication")."\";");
-	outputpage($syndication);
+	output_page($syndication);
 }
 
 

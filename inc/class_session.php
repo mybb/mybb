@@ -40,7 +40,7 @@ class session
 		global $ipaddress, $db, $mybb, $noonline;
 
 		// Get our visitor's IP.
-		$this->ipaddress = $ipaddress = getip();
+		$this->ipaddress = $ipaddress = get_ip();
 
 		// Find out the user agent.
 		$this->useragent = $_SERVER['HTTP_USER_AGENT'];

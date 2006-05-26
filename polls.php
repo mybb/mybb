@@ -59,24 +59,24 @@ if($mybb->input['action'] == "newpoll")
 		error($lang->error_invalidthread);
 	}
 	// Make navigation
-	makeforumnav($fid);
-	addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
-	addnav($lang->nav_postpoll);
+	build_forum_breadcrumb($fid);
+	add_breadcrumb($thread['subject'], "showthread.php?tid=$thread[tid]");
+	add_breadcrumb($lang->nav_postpoll);
 
-	if($thread['uid'] != $mybb->user['uid'] && ismod($fid) != "yes")
+	if($thread['uid'] != $mybb->user['uid'] && is_moderator($fid) != "yes")
 	{
 		$db->query("UPDATE threads SET visible='1' WHERE tid='$tid'");
-		nopermission();
+		error_no_permission();
 	}
 	if($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no")
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='$tid'");
-		nopermission();
+		error_no_permission();
 	}
 	if($forumpermissions['canpostpolls'] == "no")
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='$tid'");
-		nopermission();
+		error_no_permission();
 	}
 	if($thread['poll'])
 	{
@@ -133,7 +133,7 @@ if($mybb->input['action'] == "newpoll")
 	$plugins->run_hooks("polls_newpoll_end");
 
 	eval("\$newpoll = \"".$templates->get("polls_newpoll")."\";");
-	outputpage($newpoll);
+	output_page($newpoll);
 }
 if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 {
@@ -149,20 +149,20 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		error($lang->error_invalidthread);
 	}
 
-	if($thread['uid'] != $mybb->user['uid'] && ismod($fid) != "yes")
+	if($thread['uid'] != $mybb->user['uid'] && is_moderator($fid) != "yes")
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='".$thread['tid']."'");
-		nopermission();
+		error_no_permission();
 	}
 	if($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no")
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='".$thread['tid']."'");
-		nopermission();
+		error_no_permission();
 	}
 	if($forumpermissions['canpostpolls'] == "no")
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='".$thread['tid']."'");
-		nopermission();
+		error_no_permission();
 	}
 	if($thread['poll'])
 	{
@@ -280,9 +280,9 @@ if($mybb->input['action'] == "editpoll")
 	$tid = $thread['tid'];
 
 	// Make navigation
-	makeforumnav($fid);
-	addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
-	addnav($lang->nav_editpoll);
+	build_forum_breadcrumb($fid);
+	add_breadcrumb($thread['subject'], "showthread.php?tid=$thread[tid]");
+	add_breadcrumb($lang->nav_editpoll);
 
 
 	$forumpermissions = forum_permissions($thread['fid']);
@@ -295,9 +295,9 @@ if($mybb->input['action'] == "editpoll")
 	{
 		error($lang->error_invalidthread);
 	}
-	if(ismod($thread['fid'], "caneditposts") != "yes")
+	if(is_moderator($thread['fid'], "caneditposts") != "yes")
 	{
-		nopermission();
+		error_no_permission();
 	}
 	$polldate = mydate($mybb->settings['dateformat'], $poll['dateline']);
 	if(!$mybb->input['preview'] && !$mybb->input['updateoptions'])
@@ -409,7 +409,7 @@ if($mybb->input['action'] == "editpoll")
 	$plugins->run_hooks("polls_editpoll_end");
 
 	eval("\$editpoll = \"".$templates->get("polls_editpoll")."\";");
-	outputpage($editpoll);
+	output_page($editpoll);
 }
 if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 {
@@ -430,9 +430,9 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		error($lang->error_invalidthread);
 	}
-	if(ismod($thread['fid'], "caneditposts") != "yes")
+	if(is_moderator($thread['fid'], "caneditposts") != "yes")
 	{
-		nopermission();
+		error_no_permission();
 	}
 
 	if($mybb->settings['maxpolloptions'] && $mybb->input['numoptions'] > $mybb->settings['maxpolloptions'])
@@ -569,9 +569,9 @@ if($mybb->input['action'] == "showresults")
 	}
 
 	// Make navigation
-	makeforumnav($fid);
-	addnav($thread['subject'], "showthread.php?tid=$thread[tid]");
-	addnav($lang->nav_pollresults);
+	build_forum_breadcrumb($fid);
+	add_breadcrumb($thread['subject'], "showthread.php?tid=$thread[tid]");
+	add_breadcrumb($lang->nav_pollresults);
 
 	$voters = array();
 
@@ -674,7 +674,7 @@ if($mybb->input['action'] == "showresults")
 	$plugins->run_hooks("polls_showresults_end");
 
 	eval("\$showresults = \"".$templates->get("polls_showresults")."\";");
-	outputpage($showresults);
+	output_page($showresults);
 }
 if($mybb->input['action'] == "vote")
 {
@@ -700,7 +700,7 @@ if($mybb->input['action'] == "vote")
 	$forumpermissions = forum_permissions($fid);
 	if($forumpermissions['canvotepolls'] == "no")
 	{
-		nopermission();
+		error_no_permission();
 	}
 
 	$expiretime = $poll['dateline'] + $poll['timeout'];

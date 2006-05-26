@@ -41,9 +41,9 @@ if($fid > 0)
 	}
 
 	// Make navigation
-	makeforumnav($forum['fid']);
+	build_forum_breadcrumb($forum['fid']);
 }
-addnav($lang->nav_announcements);
+add_breadcrumb($lang->nav_announcements);
 
 // Permissions
 $forumpermissions = forum_permissions($forum['fid']);
@@ -51,7 +51,7 @@ $parentlist = $forum['parentlist'];
 
 if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
 {
-	nopermission();
+	error_no_permission();
 }
 
 // Get announcement info
@@ -74,5 +74,5 @@ $lang->forum_announcement = sprintf($lang->forum_announcement, $announcementarra
 $plugins->run_hooks("announcements_end");
 
 eval("\$forumannouncement = \"".$templates->get("announcement")."\";");
-outputpage($forumannouncement);
+output_page($forumannouncement);
 ?>

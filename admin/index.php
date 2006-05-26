@@ -36,7 +36,7 @@ elseif($mybb->input['action'] == "home")
 	// Get statistics
 	$phpversion = phpversion();
 	$dbversion = $db->get_version;
-	$serverload = serverload();
+	$serverload = get_server_load();
 	if(!$serverload)
 	{
 		$serverload = $lang->unknown;
@@ -85,7 +85,7 @@ elseif($mybb->input['action'] == "home")
 	// Get the number and total file size of attachments
 	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused");
 	$attachs = $db->fetch_array($query);
-	$attachs['spaceused'] = getfriendlysize($attachs['spaceused']);
+	$attachs['spaceused'] = get_friendly_size($attachs['spaceused']);
 
 	// Get the number of unapproved attachments
 	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs", "visible='0' AND pid>0");

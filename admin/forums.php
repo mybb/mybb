@@ -884,7 +884,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			}
 			else
 			{
-				$sql = buildparentlist($fid);
+				$sql = build_parent_list($fid);
 				$cusquery = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "$sql AND gid='$usergroup[gid]'");
 				$customperms = $db->fetch_array($cusquery);
 				if($customperms['gid'])
@@ -908,7 +908,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		tableheader($lang->forum_moderators);
 		makelabelcode($lang->mods_colors_note, '', 2);
 		tablesubheader("<div align=\"right\"><input type=\"button\" value=\"$lang->add_mod\" onclick=\"hopto('forums.php?action=addmod&fid=$fid');\" class=\"submitbutton\"></div>");
-		$parentlist = buildparentlist($fid, 'm.fid');
+		$parentlist = build_parent_list($fid, 'm.fid');
 		$options = array(
 			"order_by" => "u.username"
 		);

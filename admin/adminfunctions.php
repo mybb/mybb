@@ -1048,7 +1048,7 @@ function logadmin()
 		}
 	}
 	$now = time();
-	$ipaddress = getip();
+	$ipaddress = get_ip();
 
 	$insertquery = array(
 		"uid" => $mybbadmin['uid'],
