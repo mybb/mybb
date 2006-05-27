@@ -173,7 +173,7 @@ class session
 		}
 
 		// Sort out the language and forum preferences.
-		if($mybb->user['language'] && $lang->languageExists($user['language']))
+		if($mybb->user['language'] && $lang->language_exists($user['language']))
 		{
 			$mybb->settings['bblanguage'] = $user['language'];
 		}

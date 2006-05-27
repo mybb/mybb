@@ -505,7 +505,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				}
 				elseif($type[0] == "language")
 				{
-					$languages = $lang->getLanguages();
+					$languages = $lang->get_languages();
 					foreach($languages as $lname => $language)
 					{
 						if($setting['value'] == $lname)
@@ -520,7 +520,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				}
 				elseif($type[0] == "adminlanguage")
 				{
-					$languages = $lang->getLanguages(1);
+					$languages = $lang->get_languages(1);
 					foreach($languages as $lname => $language)
 					{
 						if($setting['value'] == $lname)

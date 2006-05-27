@@ -101,7 +101,7 @@ if(!$mybb->settings['bblanguage'])
 {
 	$mybb->settings['bblanguage'] = "english";
 }
-$lang->setLanguage($mybb->settings['bblanguage']);
+$lang->set_language($mybb->settings['bblanguage']);
 
 $mybb->settings['bbname'] = stripslashes($mybb->settings['bbname']);
 

@@ -115,7 +115,6 @@ class MyThumbnail {
 		if($didgifjpg) // Fix/cheat because of the poor imagegif function
 		{
 			$ret['thumbnail'] = "JPG|".$thumbnail;
-//			die($return['thumbnail']);
 		}
 		else
 		{

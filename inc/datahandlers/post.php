@@ -632,7 +632,7 @@ class PostDataHandler extends DataHandler
 			");
 			while($subscribedmember = $db->fetch_array($query))
 			{
-				if($subscribedmember['language'] != '' && $lang->languageExists($subscribedmember['language']))
+				if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 				{
 					$uselang = $subscribedmember['language'];
 				}
@@ -655,8 +655,8 @@ class PostDataHandler extends DataHandler
 					if(!isset($langcache[$uselang]['emailsubject_subscription']))
 					{
 						$userlang = new MyLanguage;
-						$userlang->setPath(MYBB_ROOT."inc/languages");
-						$userlang->setLanguage($uselang);
+						$userlang->set_path(MYBB_ROOT."inc/languages");
+						$userlang->set_language($uselang);
 						$userlang->load("messages");
 						$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
 						$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
@@ -987,7 +987,7 @@ class PostDataHandler extends DataHandler
 			while($subscribedmember = $db->fetch_array($query))
 			{
 				// Determine the language pack we'll be using to send this email in and load it if it isn't already.
-				if($subscribedmember['language'] != '' && $lang->languageExists($subscribedmember['language']))
+				if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 				{
 					$uselang = $subscribedmember['language'];
 				}
@@ -1010,8 +1010,8 @@ class PostDataHandler extends DataHandler
 					if(!isset($langcache[$uselang]['emailsubject_forumsubscription']))
 					{
 						$userlang = new MyLanguage;
-						$userlang->setPath(MYBB_ROOT."inc/languages");
-						$userlang->setLanguage($uselang);
+						$userlang->set_path(MYBB_ROOT."inc/languages");
+						$userlang->set_language($uselang);
 						$userlang->load("messages");
 						$langcache[$uselang]['emailsubject_forumsubscription'] = $userlang->emailsubject_forumsubscription;
 						$langcache[$uselang]['email_forumsubscription'] = $userlang->email_forumsubscription;

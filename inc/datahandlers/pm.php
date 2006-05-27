@@ -169,7 +169,7 @@ class PMDataHandler extends DataHandler
 		// Check to see if the user has reached their private message quota - if they have, email them.
 		if($recipient_permissions['pmquota'] != "0" && $touser['pms_total'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != "yes" && $sender_permissions['cancp'] != "yes" && !$pm['saveasdraft'] && !$this->admin_override)
 		{
-			if(trim($touser['language']) != '' && $lang->languageExists($touser['language']))
+			if(trim($touser['language']) != '' && $lang->language_exists($touser['language']))
 			{
 				$uselang = trim($touser['language']);
 			}
@@ -189,8 +189,8 @@ class PMDataHandler extends DataHandler
 			else
 			{
 				$userlang = new MyLanguage;
-				$userlang->setPath(MYBB_ROOT."inc/languages");
-				$userlang->setLanguage($uselang);
+				$userlang->set_path(MYBB_ROOT."inc/languages");
+				$userlang->set_language($uselang);
 				$userlang->load("messages");
 				$emailsubject = $userlang->emailsubject_reachedpmquota;
 				$emailmessage = $userlang->email_reachedpmquota;

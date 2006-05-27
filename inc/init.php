@@ -103,7 +103,7 @@ $db->select_db($config['database']);
 // Language initialisation
 require MYBB_ROOT."inc/class_language.php";
 $lang = new MyLanguage;
-$lang->setPath(MYBB_ROOT."inc/languages");
+$lang->set_path(MYBB_ROOT."inc/languages");
 
 // Load cache
 $cache->cache();

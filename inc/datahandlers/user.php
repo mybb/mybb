@@ -612,7 +612,7 @@ class UserDataHandler extends DataHandler
 		$language = &$this->data['language'];
 
 		// An invalid language has been specified?
-		if($language != '' && !$lang->languageExists($language))
+		if($language != '' && !$lang->language_exists($language))
 		{
 			$this->set_error("invalid_language");
 			return false;

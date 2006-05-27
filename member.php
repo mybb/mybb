@@ -560,7 +560,7 @@ if($mybb->input['action'] == "register")
 			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
 		}
 
-		$languages = $lang->getLanguages();
+		$languages = $lang->get_languages();
 		$langoptions = '';
 		foreach($languages as $lname => $language)
 		{

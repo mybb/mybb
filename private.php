@@ -215,7 +215,7 @@ if($mybb->input['action'] == "send")
 		$post['subject'] = $mybb->input['subject'];
 		$post['icon'] = $mybb->input['icon'];
 		$post['dateline'] = time();
-		$postbit = makepostbit($post, 2);
+		$postbit = build_postbit($post, 2);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 
 		$options = $mybb->input['options'];
@@ -380,7 +380,7 @@ if($mybb->input['action'] == "read")
 	}
 	
 	add_breadcrumb($pm['subject']);
-	$message = makepostbit($pm, "2");
+	$message = build_postbit($pm, "2");
 	eval("\$read = \"".$templates->get("private_read")."\";");
 	$plugins->run_hooks("private_read_end");
 	output_page($read);

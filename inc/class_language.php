@@ -38,7 +38,7 @@ class MyLanguage
 	 *
 	 * @param string The path to the language folder.
 	 */
-	function setPath($path)
+	function set_path($path)
 	{
 		$this->path = $path;
 	}
@@ -49,7 +49,7 @@ class MyLanguage
 	 * @param string The language to check for.
 	 * @return boolean True when exists, false when does not exist.
 	 */
-	function languageExists($language)
+	function language_exists($language)
 	{
 		if(file_exists($this->path."/".$language.".php"))
 		{
@@ -67,10 +67,10 @@ class MyLanguage
 	 * @param string The language to use.
 	 * @param string The area to set the language for.
 	 */
-	function setLanguage($language="english", $area="user")
+	function set_language($language="english", $area="user")
 	{
 		// Check if the language exists.
-		if(!$this->languageExists($language))
+		if(!$this->language_exists($language))
 		{
 			die("Language $language ($this->path/$language) is not installed");
 		}
@@ -141,7 +141,7 @@ class MyLanguage
 	 * @param boolean Admin variables when true, user when false.
 	 * @return array The language variables.
 	 */
-	function getLanguages($admin=0)
+	function get_languages($admin=0)
 	{
 		$dir = @opendir($this->path);
 		while($lang = readdir($dir))

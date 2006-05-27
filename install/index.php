@@ -24,7 +24,7 @@ require '../inc/class_xml.php';
 require '../inc/functions_user.php';
 require '../inc/class_language.php';
 $lang = new MyLanguage();
-$lang->setPath('resources/');
+$lang->set_path('resources/');
 $lang->load('language');
 
 // Include the necessary contants for installation

@@ -9,33 +9,7 @@
  * $Id$
  */
 
-function postify($message, $allowhtml="no", $allowmycode="yes", $allowsmilies="yes", $allowimgcode="yes", $archive=0)
-{
-	global $db, $mybb, $theme, $plugins;
-	$message = "<strong>postify: This function is now deprecated.</strong>";
-	return $message;
-}
-
-function fixjavascript($message)
-{
-	$message = "<strong>fixjavascript: This function is now deprecated.</strong>";
-	return $message;
-}
-
-function dobadwords($message)
-{
-	global $db, $badwordcache, $cache;
-	$message = "<strong>dobadwords: This function is now deprecated.</strong>";
-	return $message;
-}
-
-function domecode($message, $username)
-{
-	$message = "<strong>domecode: This function is now deprecated.</strong>";
-	return $message;
-}
-
-function makepostbit($post, $pmprevann=0)
+function build_postbit($post, $pmprevann=0)
 {
 	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter, $titlescache, $page, $templates;
 	global $forumpermissions, $attachcache, $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;

@@ -151,7 +151,7 @@ elseif($mybb->input['action'] == "home")
 	starttable();
 	tableheader($lang->installed_langs);
 	tablesubheader($lang->lang_authors);
-	$languages = $lang->getLanguages();
+	$languages = $lang->get_languages();
 	asort($languages);
 	foreach($languages as $key => $langname)
 	{

@@ -533,7 +533,7 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 		$threadedbits = buildtree();
-		$posts = makepostbit($showpost);
+		$posts = build_postbit($showpost);
 		eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
 		$plugins->run_hooks("showthread_threaded");
 	}
@@ -654,7 +654,7 @@ if($mybb->input['action'] == "thread")
 			{
 				$post['visible'] = 0;
 			}
-			$posts .= makepostbit($post);
+			$posts .= build_postbit($post);
 			$post = '';
 			$pfirst = false;
 		}

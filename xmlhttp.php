@@ -52,11 +52,11 @@ if(!isset($mybb->settings['bblanguage']))
 {
 	$mybb->settings['bblanguage'] = "english";
 }
-if(isset($mybb->user['language']) && $lang->languageExists($mybb->user['language']))
+if(isset($mybb->user['language']) && $lang->language_exists($mybb->user['language']))
 {
 	$mybb->settings['bblanguage'] = $mybb->user['language'];
 }
-$lang->setLanguage($mybb->settings['bblanguage']);
+$lang->set_language($mybb->settings['bblanguage']);
 
 // Load the language pack for this file.
 if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)

@@ -351,12 +351,21 @@ function get_parent_list($fid)
 	}
 }
 
-//
-// Generate a parent list suitable for queries
-//
+/**
+ * Build a parent list of a specific forum, suitable for querying
+ *
+ * @param int The forum ID
+ * @param string The column name to add to the query
+ * @param string The joiner for each forum for querying (OR | AND | etc)
+ * @param string The parent list of the forum - if you have it
+ * @return string The query string generated
+ */
 function build_parent_list($fid, $column="fid", $joiner="OR", $parentlist="")
 {
-	$parentlist = (!$parentlist) ? get_parent_list($fid) : $parentlist;
+	if(!$parentlist)
+	{
+		$parentlist = get_parent_list($fid);
+	}
 	$parentsexploded = explode(",", $parentlist);
 	$builtlist = "(";
 	$sep = '';
@@ -369,9 +378,9 @@ function build_parent_list($fid, $column="fid", $joiner="OR", $parentlist="")
 	return $builtlist;
 }
 
-//
-// Cache forums in the memory
-//
+/**
+ * Load the forum cache in to memory
+ */
 function cache_forums()
 {
 	global $forum_cache, $db, $cache;
@@ -388,14 +397,20 @@ function cache_forums()
 	return $forum_cache;
 }
 
-//
-// Produce a user friendly error message page
-//
+/**
+ * Produce a friendly error message page
+ *
+ * @param string The error message to be shown
+ * @param string The title of the message shown in the title of the page and the error table
+ */
 function error($error, $title="")
 {
 	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $db, $templates, $lang, $mybb;
 	
-	$title = (!$title) ? $mybb->settings['bbname'] : $title;
+	if(!$title)
+	{
+		$title = $mybb->settings['bbname'];
+	}
 	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	reset_breadcrumb();
 	add_breadcrumb($lang->error);
@@ -404,9 +419,13 @@ function error($error, $title="")
 	exit;
 }
 
-//
-// Produce an inline error message
-//
+/**
+ * Produce an error message for displaying inline on a page
+ *
+ * @param array Array of errors to be shown
+ * @param string The title of the error message
+ * @return string The inline error HTML
+ */
 function inline_error($errors, $title="")
 {
 	global $theme, $mybb, $db, $lang, $templates, $settings;
@@ -424,7 +443,6 @@ function inline_error($errors, $title="")
 
 /**
  * Presents the user with a "no permission" page
- *
  */
 function error_no_permission()
 {
@@ -444,9 +462,12 @@ function error_no_permission()
 	error($errorpage);
 }
 
-//
-// Redirect the user to the given url with the given message
-//
+/**
+ * Redirect the user to a given URL with a given message
+ *
+ * @param string The URL to redirect the user to
+ * @param string The redirection message to be shown
+ */
 function redirect($url, $message="You will now be redirected", $title="")
 {
 	global $header, $footer, $css, $toplinks, $settings, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
@@ -472,9 +493,15 @@ function redirect($url, $message="You will now be redirected", $title="")
 	exit;
 }
 
-//
-// Generate the multi page listing
-//
+/**
+ * Generate a listing of page - pagination
+ *
+ * @param int The number of items
+ * @param int The number of items to be shown per page
+ * @param int The current page number
+ * @param string The URL to have page numbers tacked on to
+ * @return string The generated pagination
+ */
 function multipage($count, $perpage, $page, $url)
 {
 	global $settings, $theme, $templates, $lang, $mybb;
@@ -528,9 +555,12 @@ function multipage($count, $perpage, $page, $url)
 	}
 }
 
-//
-// Build the usergroup permissions for a specific user
-//
+/**
+ * Fetch the permissions for a specific user
+ *
+ * @param int The user ID
+ * @return array Array of user permissions for the specified user
+ */
 function user_permissions($uid=0)
 {
 	global $mybb, $cache, $groupscache, $user_cache;
@@ -571,9 +601,12 @@ function user_permissions($uid=0)
 	}
 }
 
-//
-// Build the usergroup permissions for a user in group(s)
-//
+/**
+ * Fetch the usergroup permissions for a specic group or series of groups combined
+ *
+ * @param mixed A list of groups (Can be a single integer, or a list of groups separated by a comma)
+ * @return array Array of permissions generated for the groups
+ */
 function usergroup_permissions($gid=0)
 {
 	global $cache, $groupscache, $grouppermignore, $groupzerogreater;
@@ -624,9 +657,12 @@ function usergroup_permissions($gid=0)
 	return $usergroup;
 }
 
-//
-// Build the display group details for the given group
-//
+/**
+ * Fetch the display group properties for a specific display group
+ *
+ * @param int The group ID to fetch the display properties for
+ * @return array Array of display properties for the group
+ */
 function usergroup_displaygroup($gid)
 {
 	global $cache, $groupscache, $displaygroupfields;
@@ -1372,6 +1408,11 @@ function format_name($username, $usergroup, $displaygroup="")
 	return str_replace("{username}", $username, $format);
 }
 
+/**
+ * Build the javascript based MyCode inserter
+ *
+ * @return string The MyCode inserter
+ */
 function build_mycode_inserter()
 {
 	global $db, $mybb, $settings, $theme, $templates, $lang;
@@ -1382,6 +1423,12 @@ function build_mycode_inserter()
 	}
 	return $codeinsert;
 }
+
+/**
+ * Build the javascript clickable smilie inserter
+ *
+ * @return string The clickable smilies list
+ */
 function build_clickable_smilies()
 {
 	global $db, $smiliecache, $settings, $theme, $templates, $lang, $mybb;

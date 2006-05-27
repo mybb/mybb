@@ -63,13 +63,13 @@ if(!isset($mybb->settings['bblanguage']))
 	$mybb->settings['bblanguage'] = "english";
 }
 // User has a custom language set which exists - use it
-if(isset($mybb->user['language']) && $lang->languageExists($mybb->user['language']))
+if(isset($mybb->user['language']) && $lang->language_exists($mybb->user['language']))
 {
 	$mybb->settings['bblanguage'] = $mybb->user['language'];
 }
 // Load language
-$lang->setPath(MYBB_ROOT."inc/languages");
-$lang->setLanguage($mybb->settings['bblanguage']);
+$lang->set_path(MYBB_ROOT."inc/languages");
+$lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
 
@@ -436,7 +436,7 @@ if($_COOKIE['collapsed'])
 // Randomly expire threads
 if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 {
-	$db->delete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime<'".time()."'");
+	$db->qelete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime<'".time()."'");
 }
 
 // Run hooks for end of global.php

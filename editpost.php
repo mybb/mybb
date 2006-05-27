@@ -460,7 +460,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$postinfo['smilieoff'] = $postoptions['disablesmilies'];
 		$postinfo['dateline'] = time();
 
-		$postbit = makepostbit($postinfo, 1);
+		$postbit = build_postbit($postinfo, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
 	elseif(!$post_errors)

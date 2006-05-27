@@ -440,7 +440,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$attachcache[0][$attachment['aid']] = $attachment;
 		}
 
-		$postbit = makepostbit($post, 1);
+		$postbit = build_postbit($post, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);

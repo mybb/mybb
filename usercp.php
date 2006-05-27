@@ -591,7 +591,7 @@ if($mybb->input['action'] == "options")
 	{
 		$user = $mybb->user;
 	}
-	$languages = $lang->getLanguages();
+	$languages = $lang->get_languages();
 	$langoptions = '';
 	foreach($languages as $lname => $language)
 	{

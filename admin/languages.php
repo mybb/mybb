@@ -15,7 +15,7 @@ require "./global.php";
 global $lang;
 $lang->load("languages");
 
-$languages = $lang->getLanguages();
+$languages = $lang->get_languages();
 
 addacpnav($lang->nav_languages, "languages.php");
 

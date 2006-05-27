@@ -443,7 +443,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$attachcache[0][$attachment['aid']] = $attachment;
 		}
 
-		$postbit = makepostbit($post, 1);
+		$postbit = build_postbit($post, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
 	$subject = htmlspecialchars_uni($subject);
