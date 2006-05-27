@@ -137,9 +137,9 @@ function upgrade5_dbchanges()
 	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$db->escape_string($bannedips)." WHERE name='bannedips'");
 
 	$query = $db->query("DROP TABLE ".TABLE_PREFIX."reputation");
-	
+
 	$query = $db->query("CREATE TABLE ".TABLE_PREFIX."reputation (
-	  rid int unsigned NOT NULL auto_increment,  
+	  rid int unsigned NOT NULL auto_increment,
 	  uid int unsigned NOT NULL default '0',
 	  adduid int unsigned NOT NULL default '0',
 	  reputation bigint(30) NOT NULL default '0',
@@ -147,7 +147,7 @@ function upgrade5_dbchanges()
 	  comments text NOT NULL,
       PRIMARY KEY(rid)
 	) TYPE=MyISAM;");
-	
+
 	$query = $db->query("CREATE TABLE ".TABLE_PREFIX."mailqueue (
 		mid int unsigned NOT NULL auto_increment,
 		mailto varchar(200) NOT NULL,
@@ -157,34 +157,36 @@ function upgrade5_dbchanges()
 		headers text NOT NULL,
 		PRIMARY KEY(mid)
 	) TYPE=MyISAM;")
-	
+
 	$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='0'");
-	
+
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='1'");
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='2' WHERE cancp='yes'");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP rating;");
-	
+
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD attachmentcount int(10) unsigned NOT NULL default '0'");
-	
+
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD posthash varchar(32) NOT NULL default '' AFTER visible");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes CHANGE extension extension varchar(10) NOT NULL;");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD deletetime int(10) unsigned NOT NULL default '0' AFTER attachmentcount");
-	
-	
+
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canviewthreads char(3) NOT NULL default ''");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD canviewthreads char(3) NOT NULL default ''");
+
 	$db->query("DROP ".TALE_PREFIX."regimages");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."captcha (
 	  imagehash varchar(32) NOT NULL default '',
 	  imagestring varchar(8) NOT NULL default '',
 	  dateline bigint(30) NOT NULL default '0'
 	) TYPE=MyISAM;");
-	
+
 	//
 	// NEED TO INSERT SETTINGS FOR FULLTEXT SEARCHING AND SHUTDOWN FUNCTION STUFF ____HERE____
 	//
-	
+
 	echo "Done</p>";
 
 	$contents .= "Click next to continue with the upgrade process.</p>";
@@ -216,10 +218,10 @@ function upgrade5_dbchanges2()
 		);
 		$fulltext = "yes";
 	}
-	
+
 	// Register a shutdown function which actually tests if this functionality is working
 	register_shutdown_function('test_shutdown_function');
-	
+
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("5_done");

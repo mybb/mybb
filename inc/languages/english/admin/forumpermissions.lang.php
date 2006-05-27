@@ -2,7 +2,7 @@
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -23,6 +23,7 @@ $l['use_custom'] = "Use Custom Settings Below";
 
 $l['perms_viewing'] = "Permissions: Viewing";
 $l['canview'] = "Can View Forum";
+$l['canviewthreads'] = "Can View Threads Within Forum";
 $l['candlattachments'] = "Can Download Attachments";
 
 $l['perms_posting'] = "Permissions: Posting / Rating";

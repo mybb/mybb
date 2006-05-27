@@ -21,12 +21,12 @@ if(!__FILE__)
 	die("Your server does not support file name detection. You need to modify inc/init.php to set your root directory.");
 }
 /* Defines the root directory for MyBB.
-	
+
 	Uncomment the below line and set the path manually
 	if you experience problems. Acceptable values are:
-	
+
 	Always add a trailing slash to the end of the path.
-	
+
 	* Path to your copy of MyBB
 	* "./"
  */
@@ -94,7 +94,6 @@ $plugins = new pluginSystem;
 // Include our base data handler class
 require MYBB_ROOT."inc/datahandler.php";
 
-
 // Connect to Database
 define("TABLE_PREFIX", $config['table_prefix']);
 $db->connect($config['hostname'], $config['username'], $config['password']);
@@ -126,8 +125,24 @@ add_shutdown('send_mail_queue');
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-// These are fields in the usergroups table that are also forum permission specific
-$fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
+
+// These are fields in the usergroups table that are also forum permission specific.
+$fpermfields = array(
+	'canview',
+	'canviewthreads',
+	'candlattachments',
+	'canpostthreads',
+	'canpostreplys',
+	'canpostattachments',
+	'canratethreads',
+	'caneditposts',
+	'candeleteposts',
+	'candeletethreads',
+	'caneditattachments',
+	'canpostpolls',
+	'canvotepolls',
+	'cansearch'
+);
 
 // Generate a random number for performing random actions.
 $rand = rand(0, 10);

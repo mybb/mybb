@@ -151,6 +151,7 @@ $tables[] = "CREATE TABLE mybb_forumpermissions (
   fid int unsigned NOT NULL default '0',
   gid int unsigned NOT NULL default '0',
   canview char(3) NOT NULL default '',
+  canviewthreads char(3) NOT NULL default '',
   candlattachments char(3) NOT NULL default '',
   canpostthreads char(3) NOT NULL default '',
   canpostreplys char(3) NOT NULL default '',
@@ -404,7 +405,7 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_reputation (
-  rid int unsigned NOT NULL auto_increment,  
+  rid int unsigned NOT NULL auto_increment,
   uid int unsigned NOT NULL default '0',
   adduid int unsigned NOT NULL default '0',
   reputation bigint(30) NOT NULL default '0',
@@ -582,6 +583,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   disporder smallint unsigned NOT NULL,
   isbannedgroup char(3) NOT NULL default '',
   canview char(3) NOT NULL default '',
+  canviewthreads char(3) NOT NULL default '',
   canviewprofiles char(3) NOT NULL default '',
   candlattachments char(3) NOT NULL default '',
   canpostthreads char(3) NOT NULL default '',

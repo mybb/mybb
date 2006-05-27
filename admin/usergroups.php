@@ -107,6 +107,7 @@ if($mybb->input['action'] == "do_add")
 		"image" => $db->escape_string($mybb->input['image']),
 		"isbannedgroup" => $db->escape_string($mybb->input['isbannedgroup']),
 		"canview" => $db->escape_string($mybb->input['canview']),
+		"canviewthreads" => $db->escape_string($mybb->input['canviewthreads'])
 		"canviewprofiles" => $db->escape_string($mybb->input['canviewprofiles']),
 		"candlattachments" => $db->escape_string($mybb->input['candlattachments']),
 		"canpostthreads" => $db->escape_string($mybb->input['canpostthreads']),
@@ -261,6 +262,7 @@ if($mybb->input['action'] == "do_edit")
 		"image" => $db->escape_string($mybb->input['image']),
 		"isbannedgroup" => $db->escape_string($mybb->input['isbannedgroup']),
 		"canview" => $db->escape_string($mybb->input['canview']),
+		"canviewthreads" => $db->escape_string($mybb->input['canviewthreads']),
 		"canviewprofiles" => $db->escape_string($mybb->input['canviewprofiles']),
 		"candlattachments" => $db->escape_string($mybb->input['candlattachments']),
 		"canpostthreads" => $db->escape_string($mybb->input['canpostthreads']),
@@ -336,6 +338,7 @@ if($mybb->input['action'] == "add")
 
 	tablesubheader($lang->perms_viewing);
 	makeyesnocode($lang->can_view_board, "canview", "yes");
+	makeyesnocode($lang->can_view_threads, 'canviewthreads', 'yes');
 	makeyesnocode($lang->can_search_forums, "cansearch", "yes");
 	makeyesnocode($lang->can_view_profiles, "canviewprofiles", "yes");
 	makeyesnocode($lang->can_download_attachments, "candlattachments", "yes");
@@ -470,6 +473,7 @@ if($mybb->input['action'] == "edit")
 
 	tablesubheader($lang->perms_viewing);
 	makeyesnocode($lang->can_view_board, "canview", $usergroup['canview']);
+	makeyesnocode($lang->can_view_threads, 'canviewthreads', $usergroup['canviewthreads']);
 	makeyesnocode($lang->can_search_forums, "cansearch", $usergroup['cansearch']);
 	makeyesnocode($lang->can_view_profiles, "canviewprofiles", $usergroup['canviewprofiles']);
 	makeyesnocode($lang->can_download_attachments, "candlattachments", $usergroup['candlattachments']);

@@ -63,16 +63,16 @@ if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['
 build_forum_breadcrumb($fid);
 add_breadcrumb($thread['subject'], "showthread.php?tid=$tid");
 
+// Does the thread belong to a valid forum?
 $forum = get_forum($fid);
-
 if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
 
+// Does the user have permission to view this thread?
 $forumpermissions = forum_permissions($forum['fid']);
-
-if($forumpermissions['canview'] != "yes")
+if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] != "yes")
 {
 	error_no_permission();
 }

@@ -25,7 +25,7 @@ function output_page($contents)
 {
 	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser, $mybbgroup;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
-	
+
 	$ptimer = new timer();
 	$contents = parse_page($contents);
 	$parsetime = $ptimer->stop();
@@ -80,7 +80,7 @@ function output_page($contents)
 		}
 	}
 	echo $contents;
-	
+
 	$plugins->run_hooks("post_output_page");
 
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
@@ -98,7 +98,7 @@ function output_page($contents)
 function add_shutdown($name)
 {
 	global $shutdown_functions;
-	
+
 	if(function_exists($name))
 	{
 		$shutdown_functions[$name] = $name;
@@ -215,7 +215,7 @@ function parse_page($contents)
 function mydate($format, $stamp, $offset="", $ty=1)
 {
 	global $mybb, $lang, $mybbadmin;
-	
+
 	if(!$offset)
 	{
 		if(isset($mybb->user['timezone']))
@@ -277,7 +277,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
 function mymail($to, $subject, $message, $from="", $charset="")
 {
 	global $db, $mybb;
-	
+
 	// Build mail headers
 	if(strlen(trim($from)) == 0)
 	{
@@ -307,8 +307,8 @@ function mymail($to, $subject, $message, $from="", $charset="")
 	$headers .= "Content-Transfer-Encoding: 8bit\n";
 	$headers .= "X-Priority: 3\n";
 	$headers .= "X-MSMail-Priority: Normal\n";
-	$headers .= "X-Mailer: MyBB\n";	
-	
+	$headers .= "X-Mailer: MyBB\n";
+
 	// For some reason sendmail/qmail doesn't like \r\n
 	$sendmail = @ini_get('sendmail_path');
 	if($sendmail)
@@ -384,7 +384,7 @@ function build_parent_list($fid, $column="fid", $joiner="OR", $parentlist="")
 function cache_forums()
 {
 	global $forum_cache, $db, $cache;
-	
+
 	if(!$forum_cache)
 	{
 		$forum_cache = $cache->read("forums");
@@ -406,7 +406,7 @@ function cache_forums()
 function error($error, $title="")
 {
 	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $db, $templates, $lang, $mybb;
-	
+
 	if(!$title)
 	{
 		$title = $mybb->settings['bbname'];
@@ -447,7 +447,7 @@ function inline_error($errors, $title="")
 function error_no_permission()
 {
 	global $REQUEST_URI, $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang, $plugins, $session;
-	
+
 	$time = time();
 	$plugins->run_hooks("no_permission");
 	$noperm_array = array (
@@ -471,7 +471,7 @@ function error_no_permission()
 function redirect($url, $message="You will now be redirected", $title="")
 {
 	global $header, $footer, $css, $toplinks, $settings, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
-	
+
 	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	$plugins->run_hooks("redirect");
 	if(!$title)
@@ -505,7 +505,7 @@ function redirect($url, $message="You will now be redirected", $title="")
 function multipage($count, $perpage, $page, $url)
 {
 	global $settings, $theme, $templates, $lang, $mybb;
-	
+
 	if($count > $perpage)
 	{
 		$pages = $count / $perpage;
@@ -610,7 +610,7 @@ function user_permissions($uid=0)
 function usergroup_permissions($gid=0)
 {
 	global $cache, $groupscache, $grouppermignore, $groupzerogreater;
-	
+
 	if(!is_array($groupscache))
 	{
 		$groupscache = $cache->read("usergroups");
@@ -666,7 +666,7 @@ function usergroup_permissions($gid=0)
 function usergroup_displaygroup($gid)
 {
 	global $cache, $groupscache, $displaygroupfields;
-	
+
 	if(!is_array($groupscache))
 	{
 		$groupscache = $cache->read("usergroups");
@@ -686,7 +686,7 @@ function usergroup_displaygroup($gid)
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
 	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybbgroup, $mybbuser, $mybb, $usercache, $fpermissionscache;
-	
+
 	if($uid == 0)
 	{
 		$uid = $mybb->user['uid'];
@@ -744,7 +744,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 //
 function fetch_forum_permissions($fid, $gid, $groupperms)
 {
-	global $groupscache, $forum_cache, $fpermcache, $mybb;
+	global $groupscache, $forum_cache, $fpermcache, $mybb, $fpermfields;
 	$groups = explode(",", $gid);
 	if(!$fpermcache[$fid]) // This forum has no custom or inherited permisssions so lets just return the group permissions
 	{
@@ -764,7 +764,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 		if($gid && $groupscache[$gid])
 		{
 			$p = is_array($fpermcache[$fid][$gid]) ? $fpermcache[$fid][$gid] : $groupperms;
-			if($p == NULL) 
+			if($p == NULL)
 			{
 				foreach($forumpermissions as $k => $v)
 				{
@@ -840,7 +840,7 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 {
 	global $mybb, $mybbuser, $db;
 	static $modpermscache;
-	
+
 	if($uid < 1)
 	{
 		$uid = $mybb->user['uid'];
@@ -853,9 +853,9 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 		}
 		$sql = build_parent_list($fid, "fid", "OR", $parentslist);
 		$query = $db->query("
-			SELECT * 
-			FROM ".TABLE_PREFIX."moderators 
-			WHERE uid='$uid' 
+			SELECT *
+			FROM ".TABLE_PREFIX."moderators
+			WHERE uid='$uid'
 			AND $sql
 		");
 		$perms = $db->fetch_array($query);
@@ -889,8 +889,8 @@ function is_moderator($fid="0", $action="", $uid="0")
 		if(!$fid)
 		{
 			$query = $db->query("
-				SELECT mid 
-				FROM ".TABLE_PREFIX."moderators 
+				SELECT mid
+				FROM ".TABLE_PREFIX."moderators
 				WHERE uid='$uid'
 			");
 			$modcheck = $db->fetch_array($query);
@@ -933,7 +933,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 function get_post_icons()
 {
 	global $mybb, $db, $icon, $settings, $theme, $templates, $lang;
-	
+
 	$listed = 0;
 	if($mybb->input['icon'])
 	{
@@ -941,8 +941,8 @@ function get_post_icons()
 	}
 	$no_icons_checked = " checked=\"checked\"";
 	$query = $db->query("
-		SELECT * 
-		FROM ".TABLE_PREFIX."icons 
+		SELECT *
+		FROM ".TABLE_PREFIX."icons
 		ORDER BY name DESC
 	");
 	while($dbicon = $db->fetch_array($query))
@@ -977,7 +977,7 @@ function get_post_icons()
 function mysetcookie($name, $value="", $expires="")
 {
 	global $mybb;
-	
+
 	if(!$mybb->settings['cookiepath'])
 	{
 		$mybb->settings['cookiepath'] = "/";
@@ -1015,7 +1015,7 @@ function mysetcookie($name, $value="", $expires="")
 function myunsetcookie($name)
 {
 	global $mybb;
-	
+
 	$expires = time()-3600;
 	if(!$mybb->settings['cookiepath'])
 	{
@@ -1113,44 +1113,44 @@ function get_server_load()
 function update_forum_count($fid)
 {
 	global $db, $cache;
-	
+
 	// Fetch the last post for this forum
 	$query = $db->query("
 		SELECT tid, lastpost, lastposter, lastposteruid, subject
-		FROM ".TABLE_PREFIX."threads 
+		FROM ".TABLE_PREFIX."threads
 		WHERE fid='{$fid}'
-		AND visible='1' 
-		AND closed 
-		NOT LIKE 'moved|%' 
-		ORDER BY lastpost DESC 
+		AND visible='1'
+		AND closed
+		NOT LIKE 'moved|%'
+		ORDER BY lastpost DESC
 		LIMIT 0, 1
 	");
 	$lastpost = $db->fetch_array($query);
 
 	// Fetch the number of threads and replies in this forum (Approved only)
 	$query = $db->query("
-		SELECT COUNT(*) AS threads, SUM(replies) AS replies 
-		FROM ".TABLE_PREFIX."threads 
-		WHERE fid='$fid' 
-		AND visible='1' 
-		AND closed 
+		SELECT COUNT(*) AS threads, SUM(replies) AS replies
+		FROM ".TABLE_PREFIX."threads
+		WHERE fid='$fid'
+		AND visible='1'
+		AND closed
 		NOT LIKE 'moved|%'
 	");
 	$count = $db->fetch_array($query);
 	$count['posts'] = $count['threads'] + $count['replies'];
-	
+
 	// Fetch the number of threads and replies in this forum (Unapproved only)
 	$query = $db->query("
-		SELECT COUNT(*) AS threads, SUM(replies) AS replies 
-		FROM ".TABLE_PREFIX."threads 
-		WHERE fid='$fid' 
-		AND visible='0' 
-		AND closed 
+		SELECT COUNT(*) AS threads, SUM(replies) AS replies
+		FROM ".TABLE_PREFIX."threads
+		WHERE fid='$fid'
+		AND visible='0'
+		AND closed
 		NOT LIKE 'moved|%'
 	");
 	$unapproved_count = $db->fetch_array($query);
 	$unapproved_count['posts'] = $unapproved_count['threads'] + $unapproved_count['replies'];
-	
+
 	$update_count = array(
 		"posts" => intval($count['posts']),
 		"threads" => intval($count['threads']),
@@ -1162,7 +1162,7 @@ function update_forum_count($fid)
 		"lastposttid" => intval($lastpost['lastposttid']),
 		"lastpostsubject" => $db->escape_string($lastpost['subject'])
 	);
-	
+
 	$db->update_query(TABLE_PREFIX."forums", $update_count, "fid='{$fid}'");
 }
 
@@ -1170,9 +1170,9 @@ function update_thread_count($tid)
 {
 	global $db, $cache;
 	$query = $db->query("
-		SELECT COUNT(*) AS replies 
-		FROM ".TABLE_PREFIX."posts 
-		WHERE tid='$tid' 
+		SELECT COUNT(*) AS replies
+		FROM ".TABLE_PREFIX."posts
+		WHERE tid='$tid'
 		AND visible='1'
 	");
 	$replies = $db->fetch_array($query);
@@ -1182,20 +1182,20 @@ function update_thread_count($tid)
 		$treplies = 0;
 	}
 	$query = $db->query("
-		SELECT u.uid, u.username, p.username AS postusername, p.dateline 
-		FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) 
-		WHERE p.tid='$tid' AND p.visible='1' 
-		ORDER BY p.dateline DESC 
+		SELECT u.uid, u.username, p.username AS postusername, p.dateline
+		FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE p.tid='$tid' AND p.visible='1'
+		ORDER BY p.dateline DESC
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
 
 	$query = $db->query("
-		SELECT u.uid, u.username, p.username AS postusername, p.dateline 
-		FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) 
-		WHERE p.tid='$tid' 
-		AND p.visible='1' 
-		ORDER BY p.dateline ASC 
+		SELECT u.uid, u.username, p.username AS postusername, p.dateline
+		FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE p.tid='$tid'
+		AND p.visible='1'
+		ORDER BY p.dateline ASC
 		LIMIT 0,1
 	");
 	$firstpost = $db->fetch_array($query);
@@ -1218,9 +1218,9 @@ function update_thread_count($tid)
 	$firstpost['username'] = $db->escape_string($firstpost['username']);
 	// Unapproved posts
 	$query = $db->query("
-		SELECT COUNT(*) AS totunposts 
-		FROM ".TABLE_PREFIX."posts 
-		WHERE tid='$tid' 
+		SELECT COUNT(*) AS totunposts
+		FROM ".TABLE_PREFIX."posts
+		WHERE tid='$tid'
 		AND visible='0'
 	");
 	$posts = $db->fetch_array($query);
@@ -1235,8 +1235,8 @@ function update_thread_count($tid)
 	// Update the attachment count for this thread
 	update_thread_attachment_count($tid);
 	$db->query("
-		UPDATE ".TABLE_PREFIX."threads 
-		SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', lastposteruid='".$lastpost['uid']."', replies='$treplies', unapprovedposts='$nounposts' 
+		UPDATE ".TABLE_PREFIX."threads
+		SET username='".$firstpost['username']."', uid='".$firstpost['uid']."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', lastposteruid='".$lastpost['uid']."', replies='$treplies', unapprovedposts='$nounposts'
 		WHERE tid='$tid'
 	");
 }
@@ -1245,14 +1245,14 @@ function update_thread_attachment_count($tid)
 {
 	global $db;
 	$query = $db->query("
-		SELECT COUNT(*) AS attachment_count 
-		FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid) 
+		SELECT COUNT(*) AS attachment_count
+		FROM ".TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 		WHERE p.tid='$tid'
 	");
 	$attachment_count = $db->fetch_field($query, "attachment_count");
 	$db->query("
-		UPDATE ".TABLE_PREFIX."threads 
-		SET attachmentcount='{$attachment_count}' 
+		UPDATE ".TABLE_PREFIX."threads
+		SET attachmentcount='{$attachment_count}'
 		WHERE tid='$tid'
 	");
 }
@@ -1283,7 +1283,7 @@ function delete_post($pid, $tid="")
 function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $permissions="", $name="fid")
 {
 	global $db, $forum_cache, $fjumpcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang, $mybbgroup;
-	
+
 	$pid = intval($pid);
 	if($permissions)
 	{
@@ -1387,7 +1387,7 @@ function random_str($length="8")
 function format_name($username, $usergroup, $displaygroup="")
 {
 	global $groupscache, $cache;
-	
+
 	if(!is_array($groupscache))
 	{
 		$groupscache = $cache->read("usergroups");
@@ -1416,7 +1416,7 @@ function format_name($username, $usergroup, $displaygroup="")
 function build_mycode_inserter()
 {
 	global $db, $mybb, $settings, $theme, $templates, $lang;
-	
+
 	if($mybb->settings['bbcodeinserter'] != "off")
 	{
 		eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
@@ -1432,16 +1432,16 @@ function build_mycode_inserter()
 function build_clickable_smilies()
 {
 	global $db, $smiliecache, $settings, $theme, $templates, $lang, $mybb;
-	
+
 	if($mybb->settings['smilieinserter'] != "off" && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 	{
 		$smiliecount = 0;
 		if(!$smiliecache)
 		{
 			$query = $db->query("
-				SELECT * 
-				FROM ".TABLE_PREFIX."smilies 
-				WHERE showclickable != 'no' 
+				SELECT *
+				FROM ".TABLE_PREFIX."smilies
+				WHERE showclickable != 'no'
 				ORDER BY disporder
 			");
 
@@ -1602,7 +1602,7 @@ function get_reputation($reputation, $uid=0)
 	return $display_reputation;
 }
 
-function get_ip() 
+function get_ip()
 {
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 	{
@@ -1635,7 +1635,7 @@ function get_ip()
 function get_friendly_size($size)
 {
 	global $lang;
-	
+
 	if($size >= 1073741824)
 	{
 		$size = round(($size / 1073741824), 2) . " " . $lang->size_gb;
@@ -1662,8 +1662,8 @@ function get_friendly_size($size)
 function get_attachment_icon($ext)
 {
 	global $cache, $attachtypes;
-	
-	if(!$attachtypes) 
+
+	if(!$attachtypes)
 	{
 		$attachtypes = $cache->read("attachtypes");
 	}
@@ -1681,7 +1681,7 @@ function get_attachment_icon($ext)
 function get_unviewable_forums()
 {
 	global $db, $forum_cache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $unviewable, $templates, $mybbgroup, $forumpass;
-	
+
 	$pid = intval($pid);
 
 	if(!$permissions)
@@ -1746,7 +1746,7 @@ function fixmktime($format, $year)
 function build_breadcrumb($finished=1)
 {
 	global $nav, $navbits, $templates, $settings, $theme, $lang;
-	
+
 	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
 
 	if(is_array($navbits))
@@ -1763,7 +1763,7 @@ function build_breadcrumb($finished=1)
 	}
 	$navsize = count($navbits);
 	$navbit = $navbits[$navsize-1];
-	if($nav) 
+	if($nav)
 	{
 		eval("\$activesep = \"".$templates->get("nav_sep_active")."\";");
 	}
@@ -1772,10 +1772,10 @@ function build_breadcrumb($finished=1)
 	return $donenav;
 }
 
-function add_breadcrumb($name, $url="") 
+function add_breadcrumb($name, $url="")
 {
 	global $navbits;
-	
+
 	$navsize = count($navbits);
 	$navbits[$navsize]['name'] = $name;
 	$navbits[$navsize]['url'] = $url;
@@ -1784,7 +1784,7 @@ function add_breadcrumb($name, $url="")
 function build_forum_breadcrumb($fid, $archive=0)
 {
 	global $pforumcache, $db, $currentitem, $forum_cache, $navbits, $lang, $archiveurl;
-	
+
 	if(!$pforumcache)
 	{
 		if(!is_array($forum_cache))
@@ -1832,17 +1832,17 @@ function build_forum_breadcrumb($fid, $archive=0)
 function reset_breadcrumb()
 {
 	global $navbits;
-	
+
 	$newnav[0]['name'] = $navbits[0]['name'];
 	$newnav[0]['url'] = $navbits[0]['url'];
 	unset($GLOBALS['navbits']);
 	$GLOBALS['navbits'] = $newnav;
 }
 
-function debug_page() 
+function debug_page()
 {
 	global $db, $querytime, $debug, $templatecache, $templatelist, $htmldoctype, $mybb, $mybbuser, $maintimer, $globaltime, $settings, $mybbgroup, $lang, $ptimer, $parsetime;
-	
+
 	$totaltime = $maintimer->totaltime;
 	$phptime = $maintimer->format($maintimer->totaltime - $querytime);
 	$querytime = $maintimer->format($querytime);
@@ -1927,7 +1927,7 @@ function debug_page()
 function send_page_headers()
 {
 	global $mybb;
-	
+
 	if($mybb->settings['nocacheheaders'] == "yes" && $mybb->settings['standardheaders'] != "yes")
 	{
 		header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
@@ -1940,7 +1940,7 @@ function send_page_headers()
 function mark_reports($id, $type="post")
 {
 	global $db, $cache, $plugins;
-	
+
 	switch($type)
 	{
 		case "posts":
@@ -1949,18 +1949,18 @@ function mark_reports($id, $type="post")
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
 				$db->query("
-					UPDATE ".TABLE_PREFIX."reportedposts 
-					SET reportstatus='1' 
-					WHERE pid IN($rids) 
+					UPDATE ".TABLE_PREFIX."reportedposts
+					SET reportstatus='1'
+					WHERE pid IN($rids)
 					AND reportstatus='0'
 				");
 			}
 			break;
 		case "post":
 			$db->query("
-				UPDATE ".TABLE_PREFIX."reportedposts 
-				SET reportstatus='1' 
-				WHERE pid='$id' 
+				UPDATE ".TABLE_PREFIX."reportedposts
+				SET reportstatus='1'
+				WHERE pid='$id'
 				AND reportstatus='0'
 			");
 			break;
@@ -1970,33 +1970,33 @@ function mark_reports($id, $type="post")
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
 				$db->query("
-					UPDATE ".TABLE_PREFIX."reportedposts 
-					SET reportstatus='1' 
-					WHERE tid IN($rids) 
+					UPDATE ".TABLE_PREFIX."reportedposts
+					SET reportstatus='1'
+					WHERE tid IN($rids)
 					AND reportstatus='0'
 				");
 			}
 			break;
 		case "thread":
 			$db->query("
-				UPDATE ".TABLE_PREFIX."reportedposts 
-				SET reportstatus='1' 
-				WHERE tid='$id' 
+				UPDATE ".TABLE_PREFIX."reportedposts
+				SET reportstatus='1'
+				WHERE tid='$id'
 				AND reportstatus='0'
 			");
 			break;
 		case "forum":
 			$db->query("
-				UPDATE ".TABLE_PREFIX."reportedposts 
-				SET reportstatus='1' 
-				WHERE fid='$id' 
+				UPDATE ".TABLE_PREFIX."reportedposts
+				SET reportstatus='1'
+				WHERE fid='$id'
 				AND reportstatus='0'
 			");
 			break;
 		case "all":
 			$db->query("
-				UPDATE ".TABLE_PREFIX."reportedposts 
-				SET reportstatus='1' 
+				UPDATE ".TABLE_PREFIX."reportedposts
+				SET reportstatus='1'
 				WHERE reportstatus='0'
 			");
 			break;
@@ -2132,7 +2132,7 @@ function alt_trow($reset=0)
 
 function join_usergroup($uid, $joingroup)
 {
-	
+
 	if($uid == $mybb->user['uid'])
 	{
 		$user = $mybb->user;
@@ -2140,8 +2140,8 @@ function join_usergroup($uid, $joingroup)
 	else
 	{
 		$query = $db->query("
-			SELECT additionalgroups, usergroup 
-			FROM ".TABLE_PREFIX."users 
+			SELECT additionalgroups, usergroup
+			FROM ".TABLE_PREFIX."users
 			WHERE uid='$uid'
 		");
 		$user = $db->fetch_array($query);
@@ -2165,8 +2165,8 @@ function join_usergroup($uid, $joingroup)
 		}
 	}
 	$db->query("
-		UPDATE ".TABLE_PREFIX."users 
-		SET additionalgroups='$groupslist' 
+		UPDATE ".TABLE_PREFIX."users
+		SET additionalgroups='$groupslist'
 		WHERE uid='$uid'
 	");
 }
@@ -2174,7 +2174,7 @@ function join_usergroup($uid, $joingroup)
 function leave_usergroup($uid, $leavegroup)
 {
 	global $db, $mybb;
-	
+
 	if($uid == $mybb->user['uid'])
 	{
 		$user = $mybb->user;
@@ -2182,8 +2182,8 @@ function leave_usergroup($uid, $leavegroup)
 	else
 	{
 		$query = $db->query("
-			SELECT * 
-			FROM ".TABLE_PREFIX."users 
+			SELECT *
+			FROM ".TABLE_PREFIX."users
 			WHERE uid='$uid'
 		");
 		$user = $db->fetch_array($query);
@@ -2209,8 +2209,8 @@ function leave_usergroup($uid, $leavegroup)
 		$dispupdate = ", displaygroup=usergroup";
 	}
 	$db->query("
-		UPDATE ".TABLE_PREFIX."users 
-		SET additionalgroups='$groupslist' $dispupdate 
+		UPDATE ".TABLE_PREFIX."users
+		SET additionalgroups='$groupslist' $dispupdate
 		WHERE uid='$uid'
 	");
 }
@@ -2294,7 +2294,7 @@ function get_current_location()
 function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=0)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb;
-	
+
 	if($tid == 0)
 	{
 		$themeselect = "<select name=\"$name\">";
@@ -2304,8 +2304,8 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 	if(!is_array($tcache))
 	{
 		$query = $db->query("
-			SELECT name, pid, tid, allowedgroups 
-			FROM ".TABLE_PREFIX."themes 
+			SELECT name, pid, tid, allowedgroups
+			FROM ".TABLE_PREFIX."themes
 			ORDER BY pid, name
 		");
 		while($theme = $db->fetch_array($query))
@@ -2439,7 +2439,7 @@ function get_bdays($in)
 function format_bdays($display, $bm, $bd, $by, $wd)
 {
 	global $lang;
-	
+
 	$bdays = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
 	$bmonth = array($lang->month_1, $lang->month_2, $lang->month_3, $lang->month_4, $lang->month_5, $lang->month_6, $lang->month_7, $lang->month_8, $lang->month_9, $lang->month_10, $lang->month_11, $lang->month_12);
 	$find = array('m', 'd', 'y', 'Y', 'j', 'S', 'F', 'l');
@@ -2478,12 +2478,12 @@ function get_age($birthday)
 function update_first_post($tid)
 {
 	global $db;
-	
+
 	$query = $db->query("
-		SELECT pid 
-		FROM ".TABLE_PREFIX."posts 
-		WHERE tid='$tid' 
-		ORDER BY dateline ASC 
+		SELECT pid
+		FROM ".TABLE_PREFIX."posts
+		WHERE tid='$tid'
+		ORDER BY dateline ASC
 		LIMIT 0,1
 	");
 	$post = $db->fetch_array($query);
@@ -2624,8 +2624,8 @@ function get_user($uid)
 	else
 	{
 		$query = $db->query("
-			SELECT * 
-			FROM ".TABLE_PREFIX."users 
+			SELECT *
+			FROM ".TABLE_PREFIX."users
 			WHERE uid='".intval($uid)."'
 		");
 		$user_cache[$uid] = $db->fetch_array($query);
@@ -2720,7 +2720,7 @@ function get_post($pid)
 function get_inactive_forums()
 {
 	global $forum_cache, $db, $cache, $inactiveforums;
-	
+
 	if(!$forum_cache)
 	{
 		cache_forums();
@@ -2754,7 +2754,7 @@ function get_inactive_forums()
 function login_attempt_check($fatal = true)
 {
 	global $mybb, $lang, $session, $db;
-	
+
 	if($mybb->settings['failedlogincount'] == 0)
 	{
 		return 1;

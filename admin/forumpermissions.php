@@ -94,7 +94,7 @@ if($mybb->input['action'] == "do_quickperms")
 	cpredirect("forumpermissions.php", $lang->perms_updated);
 }
 
-		
+
 if($mybb->input['action'] == "quickperms")
 {
 	$fid = intval($mybb->input['fid']);
@@ -114,13 +114,14 @@ if($mybb->input['action'] == "do_edit")
 	{
 		if($pid)
 		{
-			$db->delete_query(TABLE_PREFIX."forumpermissions", "pid='$pid'");
+			$db->delete_query(TABLE_PREFIX."forumpermissions", "pid='{$pid}'");
 		}
 	}
 	else
 	{
 		$sqlarray = array(
 			"canview" => $db->escape_string($mybb->input['canview']),
+			"canviewthreads" => $db->escape_string($mybb->input['canviewthreads']),
 			"candlattachments" => $db->escape_string($mybb->input['candlattachments']),
 			"canpostthreads" => $db->escape_string($mybb->input['canpostthreads']),
 			"canpostreplys" => $db->escape_string($mybb->input['canpostreplys']),
@@ -133,31 +134,12 @@ if($mybb->input['action'] == "do_edit")
 			"canpostpolls" => $db->escape_string($mybb->input['canpostpolls']),
 			"canvotepolls" => $db->escape_string($mybb->input['canvotepolls']),
 			"cansearch" => $db->escape_string($mybb->input['cansearch']),
-			);
+		);
 		if($fid)
 		{
 			$sqlarray['fid'] = $fid;
 			$sqlarray['gid'] = intval($mybb->input['gid']);
 			$db->insert_query(TABLE_PREFIX."forumpermissions", $sqlarray);
-			$insertquery = array(
-				"fid" => $fid,
-				"gid" => $gid,
-				"canview" => $canview,
-				"candlattachments" => $candlattachments,
-				"canpostthreads" => $canpostthreads,
-				"canpostreplys" => $canpostreplys,
-				"canpostattachments" => $canpostattachments,
-				"canratethreads" => $canratethreads,
-				"caneditposts" => $caneditposts,
-				"candeleteposts" => $candeleteposts,
-				"candeletethreads" => $candeletethreads,
-				"caneditattachments" => $caneditattachments,
-				"canpostpolls" => $canpostpolls,
-				"canvotepolls" => $canvotepolls,
-				"cansearch" => $cansearch
-			);
-			
-			$db->insert_query(TABLE_PREFIX."forumpermissions", $insertquery);
 		}
 		else
 		{
@@ -178,14 +160,14 @@ if($mybb->input['action'] == "edit")
 	}
 	if($pid)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "pid='$pid'");
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "pid='{$pid}'");
 	}
 	else
 	{
 		$options = array(
 			"limit" => "1"
 		);
-		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "fid='$fid' AND gid='$gid'", $options);
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "fid='{$fid}' AND gid='{$gid}'", $options);
 	}
 	$forumpermissions = $db->fetch_array($query);
 	if(!$fid)
@@ -240,9 +222,10 @@ if($mybb->input['action'] == "edit")
 	tableheader($lang->edit_permissions);
 	makelabelcode("<input type=\"radio\" name=\"usecustom\" value=\"no\" $useusergroup> $lang->use_default_inherit", "", 2);
 	makelabelcode("<input type=\"radio\" name=\"usecustom\" value=\"yes\" $usecustom> $lang->use_custom", "", 2);
-	
+
 	tablesubheader($lang->perms_viewing);
 	makepermscode($lang->canview, "canview", $forumpermissions['canview']);
+	makepermscode($lang->canviewthreads, 'canviewthreads', $forumpermissions['canviewthreads']);
 	makepermscode($lang->candlattachments, "candlattachments", $forumpermissions['candlattachments']);
 
 	tablesubheader($lang->perms_posting);
@@ -250,13 +233,13 @@ if($mybb->input['action'] == "edit")
 	makepermscode($lang->canpostreplies, "canpostreplys", $forumpermissions['canpostreplys']);
 	makepermscode($lang->canpostattachments, "canpostattachments", $forumpermissions['canpostattachments']);
 	makepermscode($lang->canratethreads, "canratethreads", $forumpermissions['canratethreads']);
-	
+
 	tablesubheader($lang->perms_editing);
 	makepermscode($lang->caneditposts, "caneditposts", $forumpermissions['caneditposts']);
 	makepermscode($lang->candeleteposts, "candeleteposts", $forumpermissions['candeleteposts']);
 	makepermscode($lang->candeletethreads, "candeletethreads", $forumpermissions['candeletethreads']);
 	makepermscode($lang->caneditattachments, "caneditattachments", $forumpermissions['caneditattachments']);
-	
+
 	tablesubheader($lang->perms_polls);
 	makepermscode($lang->canpostpolls, "canpostpolls", $forumpermissions['canpostpolls']);
 	makepermscode($lang->canvotepolls, "canvotepolls", $forumpermissions['canvotepolls']);
