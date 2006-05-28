@@ -1159,7 +1159,7 @@ function update_forum_count($fid)
 		"lastpost" => intval($lastpost['lastpost']),
 		"lastposter" => $db->escape_string($lastpost['lastposter']),
 		"lastposteruid" => intval($lastpost['lastposteruid']),
-		"lastposttid" => intval($lastpost['lastposttid']),
+		"lastposttid" => intval($lastpost['tid']),
 		"lastpostsubject" => $db->escape_string($lastpost['subject'])
 	);
 
