@@ -60,6 +60,7 @@ $l['group_image'] = "Group Image<br><small>Here you can set a group image which 
 $l['show_team_page'] = "Show on 'Forum Team' Page?<br><small>Should this usergroup be shown on the forum team page?</small>";
 $l['banned_group'] = "Is 'Banned' Group<br><small>If this group is a 'banned' usergroup, users will be able to be 'banned' into this usergroup.</small>";
 $l['can_view_board'] = "Can View Board";
+$l['can_view_threads'] = "Can View Threads";
 $l['can_view_profiles'] = "Can View Profiles";
 $l['can_download_attachments'] = "Can Download Attachments";
 $l['can_post_threads'] = "Can Post Thread";

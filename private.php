@@ -354,7 +354,7 @@ if($mybb->input['action'] == "read")
 	}
 	if($pm['receipt'] == "1")
 	{
-		if($mybb->usergroup['cantrackpms'] && $mybb->usergroup['candenypmreceipts'] && $mybb->input['denyreceipt'] == "yes")
+		if($mybb->usergroup['cantrackpms'] == 'yes' && $mybb->usergroup['candenypmreceipts'] == 'yes' && $mybb->input['denyreceipt'] == "yes")
 		{
 			$receiptadd = ", receipt='0'";
 		}
@@ -1117,10 +1117,10 @@ if(!$mybb->input['action'])
 				$tofromuid = $message['fromid'];
 				if($tofromuid == -2)
 				{
-					$tofromusername = "MyBB Engine";
+					$tofromusername = 'MyBB Engine';
 				}
 			}
-			if($mybb->usergroup['cantrackpms'] && $mybb->usergroup['candenypmreceipts'] && $message['receipt'] == "1" && $message['folder'] != "3")
+			if($mybb->usergroup['cantrackpms'] == 'yes' && $mybb->usergroup['candenypmreceipts'] == 'yes' && $message['receipt'] == '1' && $message['folder'] != '3')
 			{
 				eval("\$denyreceipt = \"".$templates->get("private_messagebit_denyreceipt")."\";");
 			}
@@ -1161,7 +1161,7 @@ if(!$mybb->input['action'])
 		eval("\$messagelist .= \"".$templates->get("private_nomessages")."\";");
 	}
 
-	if($mybb->usergroup['pmquota'] != "0")
+	if($mybb->usergroup['pmquota'] != '0')
 	{
 		$query = $db->query("
 			SELECT COUNT(*) AS total
