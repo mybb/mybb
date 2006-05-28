@@ -47,7 +47,7 @@ $l['perms_wol'] = "Permissions: Who's Online";
 $l['perms_account'] = "Permissions: Account Management";
 $l['perms_admin'] = "Permissions: Administrative";
 $l['perms_misc'] = "Permissions: Misc";
-$l['perms_attachments'] ="Permissions: Attachments";
+$l['perms_attachments'] = "Permissions: Attachments";
 
 $l['title'] = "Title";
 $l['title_list'] = "Title";
@@ -79,7 +79,7 @@ $l['can_vote_polls'] = "Can Vote on Polls";
 $l['can_use_pms'] = "Can Use Private Messaging";
 $l['can_send_pms'] = "Can Send PMs";
 $l['can_track_pms'] = "Can Track PMs";
-$l['can_deny_pms'] = "Can't Deny PM Receipts";
+$l['can_deny_pms'] = "Can Deny PM Receipts";
 $l['pm_quota'] = "PM Quota<br><small>Here you can set the maximum number of stored pms for this group. If empty users can store unlimited pms.</small>";
 $l['can_view_calendar'] = "Can View Calendar";
 $l['can_add_public'] = "Can Add Public Events";
