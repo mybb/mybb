@@ -107,7 +107,7 @@ if($mybb->input['action'] == "do_add")
 		"image" => $db->escape_string($mybb->input['image']),
 		"isbannedgroup" => $db->escape_string($mybb->input['isbannedgroup']),
 		"canview" => $db->escape_string($mybb->input['canview']),
-		"canviewthreads" => $db->escape_string($mybb->input['canviewthreads'])
+		"canviewthreads" => $db->escape_string($mybb->input['canviewthreads']),
 		"canviewprofiles" => $db->escape_string($mybb->input['canviewprofiles']),
 		"candlattachments" => $db->escape_string($mybb->input['candlattachments']),
 		"canpostthreads" => $db->escape_string($mybb->input['canpostthreads']),
