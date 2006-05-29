@@ -398,9 +398,8 @@ hr {
 }
 
 .subforumicon {
-	width: 11px;
-	height: 11px;
 	border: 0;
+	vertical-align: middle;
 }
 
 .separator {
@@ -1586,8 +1585,8 @@ $headerinclude
 <td class="{$bgcolor}" valign="top" align="center" nowrap="nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
 <td class="{$bgcolor}" valign="top" align="right" nowrap="nowrap">{$lastpost}</td>
 </tr>]]></template>
-		<template name="forumbit_depth3" version="100.07"><![CDATA[{$comma}<a href="forumdisplay.php?fid={$forum['fid']}">{$statusicon} {$forum['name']}</a>]]></template>
-		<template name="forumbit_depth3_statusicon" version="100.07"><![CDATA[<img src="{$theme['imgdir']}/{$lgithbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" />]]></template>
+		<template name="forumbit_depth3" version="100.07"><![CDATA[{$comma}<a href="forumdisplay.php?fid={$forum['fid']}">{$statusicon}{$forum['name']}</a>]]></template>
+		<template name="forumbit_depth3_statusicon" version="100.07"><![CDATA[<img src="{$theme['imgdir']}/{$llightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" />]]></template>
 		<template name="forumbit_subforums" version="100.07"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
 		<template name="private_empty" version="100.07"><![CDATA[<html>
 <head>

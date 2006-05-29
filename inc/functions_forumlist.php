@@ -107,7 +107,7 @@ function build_forumbits($pid=0, $depth=1)
 				// Showing mini status icons for this forum
 				if($mybb->settings['subforumsstatusicons'] == "yes")
 				{
-					$lightbulb['folder'] .= "mini";
+					$lightbulb['folder'] = "mini".$lightbulb['folder'];
 					eval("\$statusicon = \"".$templates->get("forumbit_depth3_statusicon", 1, 0)."\";");
 				}
 				
@@ -274,7 +274,7 @@ function build_forumbits($pid=0, $depth=1)
  */
 function get_forum_lightbulb($forum, $lastpost)
 {
-	global $mybb;
+	global $mybb, $lang;
 	
 	// Fetch the last read date for this forum
 	$forumread = mygetarraycookie("forumread", $forum['fid']);
