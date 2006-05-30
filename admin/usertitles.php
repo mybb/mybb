@@ -144,7 +144,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	$options = array(
 		"order_by" => "posts"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "" $options);
+	$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "", $options);
 	while($title = $db->fetch_array($query))
 	{
 		$usertitles .= "\n<li><b>$title[title]</b> ($lang->minimum_posts $title[posts]) ".

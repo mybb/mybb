@@ -43,12 +43,23 @@ $l['size_less'] = "Size is LESS than";
 $l['size_greater'] = "Size is GREATER than";
 $l['downloads_less'] = "Download Count is LESS than";
 $l['downloads_greater'] = "Download Count is GREATER than";
+$l['sort_options'] = "Sort Options";
+$l['sort_field'] = "Sort By";
+$l['sort_field_filename'] = "Filename";
+$l['sort_field_filesize'] = "Filesize";
+$l['sort_field_dateline'] = "Date Uploaded";
+$l['sort_field_username'] = "Username";
+$l['sort_field_forumname'] = "Forum Name";
+$l['sort_dir'] = "Sort Direction";
+$l['sort_dir_asc'] = "Ascending";
+$l['sort_dir_desc'] = "Descending";
 $l['search'] = "Search";
 
 $l['no_attachments'] = "No attachments were found matching your query.";
 $l['attach_search_results'] = "Attachment Search Results";
 $l['attach_search_results_note'] = "Attachments in <span class=\"highlight1\">this colour</span> were not found on the file system and should be deleted.<br />Attachments in <em>italics</em> are unapproved attachments.";
 $l['orphan_search_results'] = "Orphan Attachment Search Results";
+$l['orphan_search_results_note'] = "The files listed here are have the MyBB attachment file extension, but do not have a record in the database.";
 $l['delete'] = "Delete?";
 $l['filename'] = "Filename";
 $l['author'] = "Author";
@@ -88,5 +99,6 @@ $l['username'] = "Username";
 $l['downloads'] = "Downloads";
 $l['largest_attachments'] = "5 Largest Attachments";
 $l['filesize'] = "File Size";
+$l['top_uploaders'] = "5 Top Uploading Users by Total Filesize";
 
 ?>

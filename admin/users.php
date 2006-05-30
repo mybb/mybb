@@ -1133,7 +1133,13 @@ if($mybb->input['action'] == "misc")
 	cpheader();
 	$uid = intval($mybb->input['uid']);
 	starttable();
-	makelabelcode("<ul>\n<li><a href=\"users.php?action=showreferrers&uid=$uid\">$lang->show_referred_members</a></li>\n<li><a href=\"users.php?action=pmstats&uid=$uid\">$lang->pm_stats</a></li>\n<li><a href=\"users.php?action=stats&uid=$uid\">$lang->general_stats</a></li>\n<li><a href=\"users.php?action=findips&uid=$uid\">$lang->ip_addresses</a></li>\n</ul>");
+	makelabelcode("<ul>\n
+		<li><a href=\"users.php?action=showreferrers&uid=$uid\">$lang->show_referred_members</a></li>\n
+		<li><a href=\"users.php?action=pmstats&uid=$uid\">$lang->pm_stats</a></li>\n
+		<li><a href=\"users.php?action=stats&uid=$uid\">$lang->general_stats</a></li>\n
+		<li><a href=\"users.php?action=findips&uid=$uid\">$lang->ip_addresses</a></li>\n
+		<li><a href=\"attachments.php?action=do_search&uid=$uid\">$lang->show_attachments</a></li>\n
+		</ul>");
 	endtable();
 	cpfooter();
 }
@@ -1571,10 +1577,10 @@ if($mybb->input['action'] == "find")
 
 		$options['edit'] = $lang->edit;
 		$options['delete'] = $lang->delete;
-		$options['manageban'] = $lang->ban_user;
+		$options['manageban'] = $lang->ban;
 		$options['showreferrers'] = $lang->show_referred;
-		$options['misc'] = $lang->misc_options;
 		$options['findips'] = $lang->ip_addresses;
+		$options['misc'] = $lang->misc_options;
 		while($user = $db->fetch_array($query))
 		{
 			foreach($user as $name => $value)
@@ -1732,7 +1738,7 @@ if($mybb->input['action'] == "find")
 		{
 			$hiddens .= "<input type=\"hidden\" name=\"searchdisp[$key]\" value=\"$val\">";
 		}
-		echo "$hiddens";
+		echo $hiddens;
 		if($numusers > $searchop['perpage'])
 		{
 			endform($lang->next_page, "");

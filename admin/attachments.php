@@ -24,7 +24,7 @@ switch($mybb->input['action'])
 		addacpnav($lang->nav_attachment_manager);
 		break;
 	case "do_search":
-	case "do_orphan_search":
+	case "orphans":
 		addacpnav($lang->nav_attachment_manager, "attachments.php?action=search");
 		addacpnav($lang->nav_attachment_results);
 		break;
@@ -110,6 +110,11 @@ if($mybb->input['action'] == "do_search")
 {
 	// search for the attachments
 	$sql = "";
+	if($mybb->input['uid'])
+	{
+		$uid = intval($mybb->input['uid']);
+		$sql .= " AND u.uid='$uid'";
+	}
 	if($mybb->input['username'])
 	{
 		$username = $db->escape_string($mybb->input['username']);
@@ -161,6 +166,33 @@ if($mybb->input['action'] == "do_search")
 	{
 		$sql = substr_replace($sql, "WHERE", 0, 4);
 	}
+	switch($mybb->input['sortfield'])
+	{
+		case 'filesize':
+			$order_by = 'a.filesize';
+			break;
+		case 'dateline':
+			$order_by = 'p.dateline';
+			break;
+		case 'username':
+			$order_by = 'u.username';
+			break;
+		case 'forumname':
+			$order_by = 'f.name';
+			break;
+		case 'filename':
+		default:
+			$order_by = 'a.filename';
+			break;
+	}
+	if($mybb->input['sortdir'] == 'desc')
+	{
+		$sort_dir = 'DESC';
+	}
+	else
+	{
+		$sort_dir = 'ASC';
+	}
 	// Get attachments from database list
 	$query = $db->query("
 		SELECT a.*, p.tid, p.fid, t.subject, f.name, u.uid, u.username 
@@ -169,8 +201,8 @@ if($mybb->input['action'] == "do_search")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) 
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (p.fid=f.fid) 
 		LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid) 
-		$sql 
-		ORDER BY a.filename
+		{$sql} 
+		ORDER BY {$order_by} {$sort_dir}
 	");
 	$num_results = $db->num_rows($query);
 
@@ -289,6 +321,7 @@ if($mybb->input['action'] == "orphans")
 	startform("attachments.php", "", "do_orphan_delete");
 	starttable();
 	tableheader($lang->orphan_search_results, "", "3");
+	makelabelcode($lang->orphan_search_results_note, '', '3');
 	echo "<tr>\n";
 	echo "<td class=\"subheader\">$lang->delete</td>\n";
 	echo "<td class=\"subheader\">$lang->filename</td>\n";
@@ -376,6 +409,20 @@ if($mybb->input['action'] == "search")
 	makeinputcode($lang->size_greater, "sizemore", "", 5, ' ('.$lang->size_kb.')');
 	makeinputcode($lang->downloads_less, "downloadsless", "", 5);
 	makeinputcode($lang->downloads_greater, "downloadsmore", "", 5);
+	tablesubheader($lang->sort_options);
+	$sort_field_options = array(
+		'filename' => $lang->sort_field_filename,
+		'filesize' => $lang->sort_field_filesize,
+		'dateline' => $lang->sort_field_dateline,
+		'username' => $lang->sort_field_username,
+		'forumname' =>  $lang->sort_field_forumname
+		);
+	makeselectcode_array($lang->sort_field, 'sortfield', $sort_field_options, 'filename');
+	$sort_dir_options = array(
+		'asc' => $lang->sort_dir_asc,
+		'desc' => $lang->sort_dir_desc
+		);
+	makeselectcode_array($lang->sort_dir, 'sortdir', $sort_dir_options, 'asc');
 	endtable();
 	endform($lang->search, $lang->reset_button);
 	cpfooter();
@@ -509,6 +556,34 @@ if($mybb->input['action'] == "stats")
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['filesize']."</a></td>\n";
+			echo "</tr>\n";
+		}
+		endtable();
+
+		// Top uploaders
+		starttable();
+		tableheader($lang->top_uploaders, "", 3);
+		echo "<tr>\n";
+		echo "<td class=\"subheader\" width=\"50%\">$lang->username</td>\n";
+		echo "<td class=\"subheader\" width=\"50%\">$lang->total_size</td>\n";
+		echo "</tr>\n";
+
+		$query = $db->query("
+			SELECT a.*, u.uid, u.username, SUM(a.filesize) as totalsize
+			FROM ".TABLE_PREFIX."attachments a  
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
+			GROUP BY a.uid
+			ORDER BY totalsize DESC
+			LIMIT 0, 5
+			");
+ 
+		while($user = $db->fetch_array($query))
+		{
+			$bgcolor = getaltbg();
+			$user['totalsize'] = get_friendly_size($user['totalsize']);
+			echo "<tr>\n";
+			echo "<td class=\"$bgcolor\"><a href=\"../member.php?action=profile&amp;uid=".$user['uid']."\">".$user['username']."</a></td>\n";
+			echo "<td class=\"$bgcolor\"><a href=\"attachments.php?action=do_search&amp;username=".urlencode($user['username'])."\">".$user['totalsize']."</a></td>\n";
 			echo "</tr>\n";
 		}
 		endtable();

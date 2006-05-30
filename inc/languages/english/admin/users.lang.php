@@ -37,11 +37,12 @@ $l['list_new_regs'] = "List New Registrations";
 $l['list_awaiting_activation'] = "List Users Awaiting Activation";
 
 $l['edit'] = "Edit Profile & Settings";
-$l['delete'] = "Delete This User";
-$l['ban'] = "Ban This User";
+$l['delete'] = "Delete";
+$l['ban'] = "Ban";
 $l['show_referred'] = "Show Referred Users";
 $l['misc_options'] = "Miscellaneous Options";
-$l['activate'] = "Activate This User";
+$l['ip_addresses'] = "Show IP addresses";
+$l['activate'] = "Activate";
 
 $l['modify_user'] = "Modify User Account for {1}";
 $l['delete_user'] = "Delete Registered User: {1}";
@@ -67,6 +68,7 @@ $l['view_user_stats'] = "View statistics on this user";
 $l['show_referred_members'] = "Show users this member referred";
 $l['pm_stats'] = "Private Messaging statistics for this user";
 $l['general_stats'] = "General statistics for this user";
+$l['show_attachments'] = "Show attachments uploaded by this user";
 
 $l['hours'] = "Hours";
 $l['day'] = "Day";
@@ -242,7 +244,6 @@ $l['send_pm'] = "Private Message";
 $l['send_method'] = "Delivery Method";
 $l['override_notice'] = "Override \"Allow Notices\" Preference";
 
-$l['ip_addresses'] = "Show IP addresses";
 $l['ip_addresses_user'] = "IP addresses for {1}";
 $l['post_ip'] = "Post IPs";
 $l['find_users_reg_with_ip'] = "Find users registered with this IP";

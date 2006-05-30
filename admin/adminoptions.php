@@ -78,7 +78,7 @@ if($mybb->input['action'] == "do_updateperms")
 	$options = array(
 		"limit" => "1"
 	);
-	$query $db->simple_select(TABLE_PREFIX."adminoptions", "permset", "uid='$uid'", $options);
+	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "permset", "uid='$uid'", $options);
 	$adminoptions = $db->fetch_array($query);
 
 	// If no custom permissions are set for this admin, create a blank custom set first.
