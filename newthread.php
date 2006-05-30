@@ -115,7 +115,7 @@ if($mybb->input['previewpost'])
 }
 
 // Handle attachments if we've got any.
-if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newthread" && $mybb->input['submit'] && $_FILES['attachment'])))
+if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newthread" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
@@ -139,10 +139,10 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 }
 
 // Are we removing an attachment from the thread?
-if($mybb->input['removeattachment'])
+if($mybb->input['attachmentaid'])
 {
 	require_once MYBB_ROOT."inc/functions_upload.php";
-	remove_attachment(0, $mybb->input['posthash'], $mybb->input['removeattachment']);
+	remove_attachment(0, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	if(!$mybb->input['submit'])
 	{
 		$mybb->input['action'] = "newthread";
@@ -333,7 +333,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// c -> adding a new attachment
 	// d -> have errors from posting
 	
-	if($mybb->input['previewpost'] || $mybb->input['removeattachment'] || $mybb->input['newattachment'] || $thread_errors)
+	if($mybb->input['previewpost'] || $mybb->input['attachmentaid'] || $mybb->input['newattachment'] || $thread_errors)
 	{
 		$postoptions = $mybb->input['postoptions'];
 		if($postoptions['signature'] == "yes")
@@ -447,7 +447,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 	
 	// Removing an attachment or adding a new one, or showting thread errors.
-	else if($mybb->input['removeattachment'] || $mybb->input['newattachment'] || $thread_errors) {
+	else if($mybb->input['attachmentaid'] || $mybb->input['newattachment'] || $thread_errors) {
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
@@ -524,7 +524,15 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
-			eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
+			$attach_mod_options = '';
+			if($attachment['visible'] != 1)
+			{
+				eval("\$attachments .= \"".$templates->get("post_attachments_attachment_unapproved")."\";");
+			}
+			else
+			{
+				eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
+			}
 			$attachcount++;
 		}
 		$query = $db->query("

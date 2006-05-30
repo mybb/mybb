@@ -132,7 +132,7 @@ if($mybb->input['previewpost'])
 {
 	$mybb->input['action'] = "newreply";
 }
-if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newreply" && $mybb->input['submit'] && $_FILES['attachment'])))
+if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newreply" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
 	// If there's an attachment, check it and upload it.
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
@@ -152,10 +152,10 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 }
 
 // Remove an attachment.
-if($mybb->input['removeattachment'])
+if($mybb->input['attachmentaid'])
 {
 	require_once MYBB_ROOT."inc/functions_upload.php";
-	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['removeattachment']);
+	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	if(!$mybb->input['submit'])
 	{
 		$mybb->input['action'] = "newreply";
@@ -478,7 +478,15 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
-			eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
+			$attach_mod_options = '';
+			if($attachment['visible'] != 1)
+			{
+				eval("\$attachments .= \"".$templates->get("post_attachments_attachment_unapproved")."\";");
+			}
+			else
+			{
+				eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
+			}
 			$attachcount++;
 		}
 		$query = $db->query("

@@ -591,7 +591,6 @@ if($mybb->input['action'] == "stats")
 	cpfooter();
 }
 
-
 if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 {
 	// list all attachment types so user can pick one to edit/delete

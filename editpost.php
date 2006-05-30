@@ -131,7 +131,7 @@ else
 // Password protected forums
 check_forum_password($fid, $forum['password']);
 
-if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_editpost" && $mybb->input['submit'] && $_FILES['attachment'])))
+if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_editpost" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
@@ -148,9 +148,24 @@ if(!$mybb->input['removeattachment'] && ($mybb->input['newattachment'] || ($mybb
 		$mybb->input['action'] = "editpost";
 	}
 }
-if($mybb->input['removeattachment']) // Lets remove the attachment
+
+if($mybb->input['attachmentaid']) // Lets remove/approve/unapprove the attachment
 {
-	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['removeattachment']);
+	$mybb->input['attachmentaid'] = intval($mybb->input['attachmentaid']); 
+	if(isset($mybb->input['rem']))
+	{
+		remove_attachment($pid, $mybb->input['posthash'], $mybb->input['attachmentaid']);
+	}
+	elseif(isset($mybb->input['approveattach']))
+	{
+		$update_sql = array("visible" => 1);
+		$db->update_query(TABLE_PREFIX."attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
+	}
+	elseif(isset($mybb->input['unapproveattach']))
+	{
+		$update_sql = array("visible" => 0);
+		$db->update_query(TABLE_PREFIX."attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
+	}
 	if(!$mybb->input['submit'])
 	{
 		$mybb->input['action'] = "editpost";
@@ -206,7 +221,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				{
 					log_moderator_action($modlogdata, "Deleted Post");
 				}
-				$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline" => "order_dir" => "desc"));
+				$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
 				$next_post = $db->fetch_array($query);
 				if($next_post['pid']) 
 				{
@@ -351,7 +366,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	if($forumpermissions['canpostattachments'] != "no")
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		$query = $db->simple_query(TABLE_PREFIX."attachments", "*", "posthash='{$posthash}' OR pid='{$pid}'");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "posthash='{$posthash}' OR pid='{$pid}'");
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{
@@ -361,7 +376,27 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
-			eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
+			// Moderating options
+			$attach_mod_options = '';
+			if(is_moderator($fid) == "yes")
+			{
+				if($attachment['visible'] == 1)
+				{
+					eval("\$attach_mod_options = \"".$templates->get("post_attachments_attachment_mod_unapprove")."\";");
+				}
+				else
+				{
+					eval("\$attach_mod_options = \"".$templates->get("post_attachments_attachment_mod_approve")."\";");
+				}
+			}
+			if($attachment['visible'] != 1)
+			{
+				eval("\$attachments .= \"".$templates->get("post_attachments_attachment_unapproved")."\";");
+			}
+			else
+			{
+				eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
+			}
 			$attachcount++;
 		}
 		$query = $db->query("SELECT SUM(filesize) AS ausage FROM ".TABLE_PREFIX."attachments WHERE uid='".$mybb->user['uid']."'");
@@ -386,7 +421,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 	}
-	if(!$mybb->input['removeattachment'] && !$mybb->input['newattachment'] && !$mybb->input['previewpost'] && !$maximageserror)
+	if(!$mybb->input['attachmentaid'] && !$mybb->input['newattachment'] && !$mybb->input['previewpost'] && !$maximageserror)
 	{
 		$message = $post['message'];
 		$subject = $post['subject'];
@@ -485,7 +520,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
 		}
-		$query = $db->simple_query(TABLE_PREFIX."favorites", "*", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
+		$query = $db->simple_select(TABLE_PREFIX."favorites", "*", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
 		$subcheck = $db->fetch_array($query);
 		if($subcheck['tid']) 
 		{

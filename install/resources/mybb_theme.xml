@@ -832,7 +832,8 @@ var inlineId = {$tid};
 <input type="hidden" name="action" value="do_editpost" />
 <input type="hidden" name="pid" value="{$pid}" />
 <input type="hidden" name="posthash" value="{$posthash}" />
-<input type="hidden" name="removeattachment" value="" />
+<input type="hidden" name="attachmentaid" value="" />
+<input type="hidden" name="attachmentact" value="" />
 </form>
 {$footer}
 </body>
@@ -889,7 +890,8 @@ var inlineId = {$tid};
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="replyto" value="{$pid}" />
 <input type="hidden" name="posthash" value="{$posthash}" />
-<input type="hidden" name="removeattachment" value="" />
+<input type="hidden" name="attachmentaid" value="" />
+<input type="hidden" name="attachmentact" value="" />
 {$editdraftpid}
 </form>
 {$forumrules}
@@ -986,7 +988,8 @@ var inlineId = {$tid};
 <input type="hidden" name="action" value="do_newthread" />
 <input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="fid" value="{$fid}" />
-<input type="hidden" name="removeattachment" value="" />
+<input type="hidden" name="attachmentaid" value="" />
+<input type="hidden" name="attachmentact" value="" />
 {$editdraftpid}
 </form>
 {$forumrules}
@@ -4084,8 +4087,15 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="post_attachments_attachment" version="100.07"><![CDATA[<tr>
 <td width="5%" align="center">{$attachment['icon']}</td>
 <td nowrap="nowrap">{$attachment['filename']} ({$attachment['size']})</td>
-<td nowrap="nowrap" align="right"><input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});">&nbsp;{$postinsert}</td>
+<td nowrap="nowrap" align="right">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />&nbsp;{$postinsert}</td>
 </tr>]]></template>
+		<template name="post_attachments_attachment_unapproved" version="100.07"><![CDATA[<tr>
+<td width="5%" align="center">{$attachment['icon']}</td>
+<td nowrap="nowrap"><em>{$attachment['filename']} ({$attachment['size']})</em></td>
+<td nowrap="nowrap" align="right">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />&nbsp;{$postinsert}</td>
+</tr>]]></template>
+	<template name="post_attachments_attachment_mod_approve" version="100.07"><![CDATA[<input type="submit" class="button" name="approveattach" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
+	<template name="post_attachments_attachment_mod_unapprove" version="100.07"><![CDATA[<input type="submit" class="button" name="unapproveattach" value="{$lang->unapprove_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'unapprove');" />]]></template>
 		<template name="error_attacherror" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder"><tr>
 <td class="thead"><strong>{$lang->error_attach_file}</strong></td>
 </tr>
@@ -4103,6 +4113,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$post['attachmentlist']}
 </fieldset>]]></template>
 		<template name="postbit_attachments_attachment" version="100.07"><![CDATA[<br />{$attachment['icon']}&nbsp;&nbsp;<a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$lang->postbit_attachment_size} {$attachment['filesize']} / {$lang->postbit_attachment_downloads} {$attachment['downloads']})]]></template>
+		<template name="postbit_attachments_attachment_unapproved" version="100.07"><![CDATA[<strong>{$lang->postbit_unapproved_attachments}</strong>]]></template>
 		<template name="postbit_attachments_images" version="100.07"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_images}</strong></span><br />
 {$post['imagelist']}
 <br />]]></template>

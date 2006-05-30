@@ -39,23 +39,31 @@ if($mybb->input['action'] == "do_attachments")
 {
 	if(is_array($mybb->input['attachvalidate']))
 	{
-		while(list($aid, $val) = each($mybb->input['attachvalidate']))
+		$delete_aids = $approve_aids = array(0);
+		foreach($mybb->input['attachvalidate'] as $aid => $val)
 		{
 			$aid = intval($aid);
-			if($attachdelete[$aid] == "yes")
+			if($attachdelete[$aid] == 'yes')
 			{
-				$db->delete_query(TABLE_PREFIX."attachments", "aid='$aid'");
+				$delete_aids[] = $aid;
 			}
-			else
-			{
-				if($val != "no")
-				{					
-					$sql_array = array(
-						"visible" => 1
-					);
-					$db->update_query(TABLE_PREFIX."attachments", $sql_array, "aid = '".$aid."'");
-				}
+			elseif($val != 'no')
+			{					
+				$approve_aids[] = $aid;
 			}
+		}
+		if(count($delete_aids) > 1)
+		{
+			$aids = implode(',', $delete_aids);
+			$db->delete_query(TABLE_PREFIX."attachments", "aid IN ({$aids})");
+		}
+		if(count($approve_aids) > 1)
+		{
+			$aids = implode(',', $approve_aids);
+			$sql_array = array(
+				"visible" => 1
+				);
+			$db->update_query(TABLE_PREFIX."attachments", $sql_array, "aid IN ({$aids})");
 		}
 	}
 	cpmessage($lang->attachments_moderated);
@@ -65,7 +73,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 {
 	if(is_array($mybb->input['threadvalidate']) && $mybb->input['action'] != "do_posts")
 	{
-		while(list($tid, $val) = each($mybb->input['threadvalidate']))
+		foreach($mybb->input['threadvalidate'] as $tid => $val)
 		{
 			$tid = intval($tid);
 			$query = $db->simple_select(TABLE_PREFIX."threads", "subject, fid", "tid='$tid'");
@@ -109,7 +117,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 
 	if(is_array($mybb->input['postvalidate']) && $mybb->input['action'] != "do_threads")
 	{
-		while(list($pid, $val) = each($mybb->input['postvalidate']))
+		foreach($mybb->input['postvalidate'] as $pid => $val)
 		{
 			$pid = intval($pid);
 			$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='$pid'");
@@ -230,7 +238,7 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 
 	if($tcount < 1 && $mybb->input['action'] != "threadsposts")
 	{
-		cperror($lang->no_threads);
+		cpmessage($lang->no_threads);
 	}
 	if($tcount ||  $mybb->input['action'] == "threadsposts")
 	{
@@ -276,12 +284,12 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 	$count = $db->num_rows($query);
 	if(!$tcount && !$count && $mybb->input['action'] == "threadsposts")
 	{
-		cperror($lang->no_threadsposts);
+		cpmessage($lang->no_threadsposts);
 	}
 
 	if($count < 1 && $mybb->input['action'] != "threadsposts")
 	{
-		cperror($lang->no_posts);
+		cpmessage($lang->no_posts);
 	}
 	if($mybb->input['action'] != "threadsposts") 
 	{

@@ -21,13 +21,21 @@ var Post = {
 	{
 		if(confirm(removeattach_confirm) == true)
 		{
-			document.input.removeattachment.value = aid;
+			document.input.attachmentaid.value = aid;
+			document.input.attachmentact.value = "remove";
 		}
 		else
 		{
-			document.input.removeattachment.value = 0;
+			document.input.attachmentaid.value = 0;
+			document.input.attachmentact.value = "";
 			return false;
 		}
+	},
+
+	attachmentAction: function(aid,action)
+	{
+		document.input.attachmentaid.value = aid;
+		document.input.attachmentact.value = action;
 	}
 }
 Event.observe(window, 'load', Post.init);

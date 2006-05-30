@@ -11,6 +11,7 @@
 
 require "./global.php";
 
+// Find the AID we're looking for
 if($mybb->input['thumbnail'])
 {
 	$aid = intval($mybb->input['thumbnail']);
@@ -24,6 +25,7 @@ $plugins->run_hooks("attachment_start");
 
 $pid = intval($mybb->input['pid']);
 
+// Select attachment data from database
 if($aid)
 {
 	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "aid='{$aid}'");
@@ -35,12 +37,12 @@ else
 $attachment = $db->fetch_array($query);
 $pid = $attachment['pid'];
 
+// Get thread info
 if(!$tid)
 {
 	$post = get_post($pid);
 	$tid = $post['tid'];
 }
-
 $thread = get_thread($tid);
 
 if(!$thread['tid'] && !$mybb->input['thumbnail'])
@@ -59,15 +61,18 @@ if(!$forum)
 // Permissions
 $forumpermissions = forum_permissions($fid);
 
+// No Permission page if user cannot view or download attachments in this forum (if not calling the thumbnail)
 if(($forumpermissions['canview'] == "no" || $forumpermissions['candlattachments'] == "no") && !$mybb->input['thumbnail'])
 {
 	error_no_permission();
 }
 
-if(!$attachment['aid'] || !$attachment['attachname'])
+// Error if attachment is invalid or not visible
+if(!$attachment['aid'] || !$attachment['attachname'] || (is_moderator($fid) == 'no' && $attachment['visible'] != 1))
 {
 	error($lang->error_invalidattachment);
 }
+
 if(!$mybb->input['thumbnail']) // Only increment the download count if this is not a thumbnail
 {
 	$attachupdate = array(

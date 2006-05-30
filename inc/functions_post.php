@@ -362,10 +362,10 @@ function build_postbit($post, $pmprevann=0)
 		$parser_options['allow_smilies'] = "no";
 	}
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
-
+	
+	$validationcount = 0;
 	if(is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
-		$validationcount = 0;
 		foreach($attachcache[$id] as $aid => $attachment)
 		{
 			if($attachment['visible'])
@@ -428,6 +428,18 @@ function build_postbit($post, $pmprevann=0)
 			{
 				$validationcount++;
 			}
+		}
+		if($validationcount > 0 && is_moderator($fid) == 'yes')
+		{
+			if($validationcount == 1)
+			{
+				$lang->postbit_unapproved_attachments = $lang->postbit_unapproved_attachment;
+			}
+			else
+			{
+				$lang->postbit_unapproved_attachments = sprintf($lang->postbit_unapproved_attachments, $validationcount);
+			}
+			eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment_unapproved")."\";");
 		}
 		if($post['thumblist'])
 		{
