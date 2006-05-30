@@ -40,7 +40,14 @@ usercp_menu();
 
 if($mybb->input['action'] == "do_editsig")
 {
-	$imagecheck = postify($mybb->input['signature'], $mybb->settings['sightml'], $mybb->settings['sigmycode'], $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode']);
+	$parser_options = array(
+		'allow_html' => $mybb->settings['sightml'],
+		'filter_badwords' => 'yes',
+		'allow_mycode' => $mybb->settings['sigmycode'],
+		'allow_smilies' => $mybb->settings['sigsmilies'],
+		'allow_imgcode' => $mybb->settings['sigimgcode']
+		);
+	$imagecheck = $parser->parse_message($mybb->input['signature'], $parser_options);
 	if(($mybb->settings['sigimgcode'] == "no" && substr_count($imagecheck, "<img") > 0) || ($mybb->settings['sigimgcode'] == "yes" && substr_count($imagecheck, "<img") > $mybb->settings['maxsigimages']))
 	{
 		if($mybb->settings['sigimgcode'] == "yes")
@@ -53,7 +60,7 @@ if($mybb->input['action'] == "do_editsig")
 		}
 		$lang->too_many_sig_images2 = sprintf($lang->too_many_sig_images2, $imgsallowed);
 		eval("\$maximageserror = \"".$templates->get("error_maxsigimages")."\";");
-		$mybb->input['action'] = "editsig";
+		$mybb->input['preview'] = 1;
 	}
 	if($mybb->input['preview'])
 	{
