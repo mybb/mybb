@@ -150,7 +150,7 @@ if($mybb->input['attachmentaid'])
 }
 
 $thread_errors = "";
-
+$hide_captcha = false;
 // Performing the posting of a new thread.
 if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 {
@@ -234,8 +234,8 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		"fid" => $forum['fid'],
 		"subject" => $mybb->input['subject'],
 		"icon" => $mybb->input['icon'],
-		"uid" => $mybb->user['uid'],
-		"username" => $mybb->user['username'],
+		"uid" => $uid,
+		"username" => $username,
 		"message" => $mybb->input['message'],
 		"ipaddress" => get_ip(),
 		"posthash" => $mybb->input['posthash']
@@ -270,13 +270,46 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	$posthandler->set_data($new_thread);
 	
 	// Now let the post handler do all the hard work.
-	if(!$posthandler->validate_thread())
+	$valid_thread = $posthandler->validate_thread();
+	
+	$post_errors = array();
+	// Fetch friendly error messages if this is an invalid thread
+	if(!$valid_thread)
 	{
 		$post_errors = $posthandler->get_friendly_errors();
-		$thread_errors = inline_error($post_errors);
-		$mybb->input['action'] = "newthread";
 	}
 	
+	
+	// Check captcha image
+	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
+	{
+		echo 'checking';
+		$imagehash = $db->escape_string($mybb->input['imagehash']);
+		$imagestring = $db->escape_string($mybb->input['imagestring']);
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."captcha
+			WHERE imagehash='$imagehash'
+		");
+		$imgcheck = $db->fetch_array($query);
+		if($imgcheck['imagestring'] != $imagestring)
+		{
+			$post_errors[] = $lang->invalid_captcha;
+		}
+		else
+		{
+			$db->delete_query(TABLE_PREFIX."captcha", "imagehash='$imagehash'");
+			$hide_captcha = true;
+		}
+	}
+
+	
+	// One or more erors returned, fetch error list and throw to newthread page
+	if(count($post_errors) > 0)
+	{
+		$thread_errors = inline_error($post_errors);
+		$mybb->input['action'] = "newthread";		
+	}
 	// No errors were found, it is safe to insert the thread.
 	else
 	{
@@ -575,7 +608,46 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton")."\";");
 	}
-
+	
+	// Show captcha image for guests if enabled
+	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
+	{
+		$correct = false;
+		// If previewing a post - check their current captcha input - if correct, hide the captcha input area
+		if($mybb->input['previewpost'] || $hide_captcha == true)
+		{
+			$imagehash = $db->escape_string($mybb->input['imagehash']);
+			$imagestring = $db->escape_string($mybb->input['imagestring']);
+			$query = $db->query("
+				SELECT *
+				FROM ".TABLE_PREFIX."captcha
+				WHERE imagehash='$imagehash' AND imagestring='$imagestring'
+			");
+			$imgcheck = $db->fetch_array($query);
+			if($imgcheck['dateline'] > 0)
+			{
+				eval("\$captcha = \"".$templates->get("post_captcha_hidden")."\";");			
+				$correct = true;
+			}
+			else
+			{
+				$db->delete_query(TABLE_PREFIX."captcha", "imagehash='$imagehash'");
+			}
+		}
+		if(!$correct)
+		{	
+			$randomstr = random_str(5);
+			$imagehash = md5($randomstr);
+			$imagearray = array(
+				"imagehash" => $imagehash,
+				"imagestring" => $randomstr,
+				"dateline" => time()
+				);
+			$db->insert_query(TABLE_PREFIX."captcha", $imagearray);
+			eval("\$captcha = \"".$templates->get("post_captcha")."\";");			
+		}
+	}
+	
 	if($forumpermissions['canpostpolls'] != "no")
 	{
 		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);

@@ -146,7 +146,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$errors = $userhandler->get_friendly_errors();
 	}
 
-	if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))
+	if($mybb->settings['captchaimage'] == "on" && function_exists("imagecreatefrompng"))
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
@@ -543,7 +543,7 @@ if($mybb->input['action'] == "register")
 			
 		}
 		// Spambot registration image thingy
-		if($mybb->settings['regimage'] == "on" && function_exists("imagecreatefrompng"))
+		if($mybb->settings['captchaimage'] == "on" && function_exists("imagecreatefrompng"))
 		{
 			$randomstr = random_str(5);
 			$imagehash = md5($randomstr);

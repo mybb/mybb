@@ -26,7 +26,10 @@ $l['mod_options'] ="Moderator Options:";
 $l['close_thread'] = "<b>Close Thread</b>: prevent further posting in this thread.";
 $l['stick_thread'] = "<b>Stick Thread:</b> stick this thread to the top of the forum.";
 $l['draft_saved'] = "The new thread has successfully been saved as a draft.<br />You will now be taken to your draft listing.";
-
+$l['image_verification'] = "Image Verification";
+$l['verification_note'] = "Please enter the text contained within the image on the right in to the text box to the right of it. This process is used to prevent automated signups.";
+$l['verification_subnote'] = "(case in-sensitive)";
+$l['invalid_captcha'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_post_already_submitted'] = "You have already posted this thread in this forum. Please visit the forum to see your thread.";
 
 $l['redirect_newthread'] = "Thank you, your thread has been posted."; 

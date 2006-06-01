@@ -132,6 +132,7 @@ if($mybb->input['previewpost'])
 {
 	$mybb->input['action'] = "newreply";
 }
+
 if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newreply" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
 	// If there's an attachment, check it and upload it.
@@ -170,34 +171,50 @@ if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
 }
 
 $reply_errors = "";
+$hide_captcha = false;
 if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("newreply_do_newreply_start");
 
-	// If we are not logged in, either login or post as a guest.
+	// If this isn't a logged in user, then we need to do some special validation.
 	if($mybb->user['uid'] == 0)
 	{
 		$username = htmlspecialchars_uni($mybb->input['username']);
+	
+		// Check if username exists.
 		if(username_exists($mybb->input['username']))
 		{
+			// If it does and no password is given throw back "username is taken"
 			if(!$mybb->input['password'])
 			{
 				error($lang->error_usernametaken);
 			}
+			
+			// If the user specified a password but it is wrong, throw back invalid password.
 			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 			if(!$mybb->user['uid'])
 			{
 				error($lang->error_invalidpassword);
 			}
+			// Otherwise they've logged in successfully.
+			
 			$mybb->input['username'] = $username = $mybb->user['username'];
 			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
 		}
+		// This username does not exist.
 		else
 		{
+			// If they didn't specify a username then give them "Guest"
 			if(!$mybb->input['username'])
 			{
-				$$mybb->input['username'] = $lang->guest;
+				$username = $lang->guest;
 			}
+			// Otherwise use the name they specified.
+			else
+			{
+				$username = htmlspecialchars($mybb->input['username']);
+			}
+			$uid = 0;
 		}
 	}
 
@@ -231,8 +248,8 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		"fid" => $thread['fid'],
 		"subject" => $mybb->input['subject'],
 		"icon" => $mybb->input['icon'],
-		"uid" => $mybb->user['uid'],
-		"username" => $mybb->user['username'],
+		"uid" => $uid,
+		"username" => $username,
 		"message" => $mybb->input['message'],
 		"ipaddress" => get_ip(),
 		"posthash" => $mybb->input['posthash']
@@ -265,9 +282,41 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	$posthandler->set_data($post);
 
 	// Now let the post handler do all the hard work.
-	if(!$posthandler->validate_post())
+	$valid_post = $posthandler->validate_post();
+	
+	$post_errors = array();
+	// Fetch friendly error messages if this is an invalid post
+	if(!$valid_post)
 	{
 		$post_errors = $posthandler->get_friendly_errors();
+	}
+	
+	// Check captcha image
+	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
+	{
+		echo 'checking';
+		$imagehash = $db->escape_string($mybb->input['imagehash']);
+		$imagestring = $db->escape_string($mybb->input['imagestring']);
+		$query = $db->query("
+			SELECT *
+			FROM ".TABLE_PREFIX."captcha
+			WHERE imagehash='$imagehash'
+		");
+		$imgcheck = $db->fetch_array($query);
+		if($imgcheck['imagestring'] != $imagestring)
+		{
+			$post_errors[] = $lang->invalid_captcha;
+		}
+		else
+		{
+			$db->delete_query(TABLE_PREFIX."captcha", "imagehash='$imagehash'");
+			$hide_captcha = true;
+		}
+	}
+
+	// One or more erors returned, fetch error list and throw to newreply page
+	if(count($post_errors) > 0)
+	{
 		$reply_errors = inline_error($post_errors);
 		$mybb->input['action'] = "newreply";
 	}
@@ -522,6 +571,46 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton")."\";");
 	}
+	
+	// Show captcha image for guests if enabled
+	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
+	{
+		$correct = false;
+		// If previewing a post - check their current captcha input - if correct, hide the captcha input area
+		if($mybb->input['previewpost'] || $hide_captcha == true)
+		{
+			$imagehash = $db->escape_string($mybb->input['imagehash']);
+			$imagestring = $db->escape_string($mybb->input['imagestring']);
+			$query = $db->query("
+				SELECT *
+				FROM ".TABLE_PREFIX."captcha
+				WHERE imagehash='$imagehash' AND imagestring='$imagestring'
+			");
+			$imgcheck = $db->fetch_array($query);
+			if($imgcheck['dateline'] > 0)
+			{
+				eval("\$captcha = \"".$templates->get("post_captcha_hidden")."\";");			
+				$correct = true;
+			}
+			else
+			{
+				$db->delete_query(TABLE_PREFIX."captcha", "imagehash='$imagehash'");
+			}
+		}
+		if(!$correct)
+		{	
+			$randomstr = random_str(5);
+			$imagehash = md5($randomstr);
+			$imagearray = array(
+				"imagehash" => $imagehash,
+				"imagestring" => $randomstr,
+				"dateline" => time()
+				);
+			$db->insert_query(TABLE_PREFIX."captcha", $imagearray);
+			eval("\$captcha = \"".$templates->get("post_captcha")."\";");			
+		}
+	}
+	
 	if($mybb->settings['threadreview'] != "off")
 	{
 		if(is_moderator($fid) == "yes")

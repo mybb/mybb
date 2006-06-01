@@ -439,6 +439,14 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="captchaimage">
+			<title>CAPTCHA Images for Registration &amp; Posting</title>
+			<description><![CDATA[If yes, and GD is installed, an image will be shown during registration and posting where users are required to enter the text contained within the image to continue. This helps prevent automated registrations and postings.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[onoff]]></optionscode>
+			<settingvalue><![CDATA[on]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="10" isdefault="yes">
 		<setting name="enablememberlist">
@@ -941,14 +949,6 @@ verify=Send Email Verification
 randompass=Send Random Password
 admin=Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[verify]]></settingvalue>
-			<helpkey></helpkey>
-		</setting>
-		<setting name="regimage">
-			<title>Antispam Registration Image</title>
-			<description><![CDATA[If yes, and GD is installed, an image will be shown during registration where users are required to enter the text contained within the image to continue with registration.]]></description>
-			<disporder>1</disporder>
-			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[on]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxavatardims">

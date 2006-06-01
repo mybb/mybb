@@ -883,6 +883,7 @@ var inlineId = {$tid};
 </tr>
 {$attachbox}
 {$modoptions}
+{$captcha}
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->post_reply}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" />{$savedraftbutton}</center>
@@ -982,6 +983,7 @@ var inlineId = {$tid};
 {$modoptions}
 {$attachbox}
 {$pollbox}
+{$captcha}
 </table>
 <br />
 <center><input type="submit" class="button" name="submit" value="{$lang->post_thread}" tabindex="4" accesskey="s">  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="5">{$savedraftbutton}</center>
@@ -6537,5 +6539,16 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="forumdisplay_thread_attachment_count" version="100.07"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.gif" alt="" title="{$attachment_count}" /></div>]]></template>
 		<template name="forumdisplay_rssdiscovery" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$settings['bburl']}/syndication.php?fid={$fid}" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 0.3)" href="{$settings['bburl']}/syndication.php?type=atom1.0&amp;fid={$fid}" />]]></template>
+		<template name="post_captcha" version="100.07"><![CDATA[<tr>
+<td class="trow2" valign="top"><strong>{$lang->image_verification}</strong></td>
+<td class="trow2">
+	<table style="width: 300px;">
+			<tr><td><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span><</td>
+		<td><input type="text" class="textbox" name="imagestring" value="" /><input type="hidden" name="imagehash" value="{$imagehash}" /></td></tr>
+	</table>
+</td>
+</tr>]]></template>
+	<template name="post_captcha_hidden" version="100.07"><![CDATA[<input type="hidden" name="imagehash" value="{$imagehash}" />
+	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
 	</templates>
 </theme>

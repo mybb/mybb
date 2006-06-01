@@ -26,7 +26,10 @@ $l['thread_review'] = "Thread Review (Newest First)";
 $l['thread_review_more'] = "This thread has more than {1} replies. <a href=\"showthread.php?tid={2}\">Read the whole thread.</a>";
 $l['posted_by'] = "Posted by";
 $l['draft_saved'] = "The new post has successfully been saved as a draft.<br />You will now be taken to your draft listing.";
-
+$l['image_verification'] = "Image Verification";
+$l['verification_note'] = "Please enter the text contained within the image on the right in to the text box to the right of it. This process is used to prevent automated signups.";
+$l['verification_subnote'] = "(case in-sensitive)";
+$l['invalid_captcha'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_post_already_submitted'] = "You have already posted this reply to the specified thread. Please visit the thread to see your reply.";
 
 $l['redirect_newreply'] = "Thank you, your reply has been posted.";
