@@ -1668,7 +1668,7 @@ function get_attachment_icon($ext)
 		$attachtypes = $cache->read("attachtypes");
 	}
 	$ext = strtolower($ext);
-	if($attachtypes[$ext])
+	if($attachtypes[$ext]['icon'])
 	{
 		return "<img src=\"".$attachtypes[$ext]['icon']."\" border=\"0\" alt=\".$ext File\" />";
 	}
