@@ -194,6 +194,10 @@ messageEditor.prototype = {
 		textInput.style.height = area.style.height;
 		textInput.style.width = area.style.width;
 		textInput.value = oldTextarea.value;
+		if(oldTextarea.tabindex)
+		{
+			textInput.tabindex = oldTextarea.tabindex;
+		}
 		area.appendChild(textInput);
 		editor.appendChild(area);
 		if(oldTextarea.form)
