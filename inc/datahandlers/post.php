@@ -1109,7 +1109,7 @@ class PostDataHandler extends DataHandler
 		}
 		// Check if this is the first post in a thread.
 		$options = array(
-			"orderby" => "dateline",
+			"order_by" => "dateline",
 			"order_dir" => "asc",
 			"limit_start" => 0,
 			"limit" => 1

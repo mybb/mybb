@@ -217,7 +217,13 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$uid = 0;
 		}
 	}
-
+	// This user is logged in.
+	else
+	{
+		$username = $mybb->user['username'];
+		$uid = $mybb->user['uid'];
+	}
+	
 	// Attempt to see if this post is a duplicate or not
 	if($uid > 0)
 	{
