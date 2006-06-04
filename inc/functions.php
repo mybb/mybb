@@ -40,7 +40,7 @@ function output_page($contents)
 		$serverload = get_server_load();
 		if(strstr(getenv("REQUEST_URI"), "?"))
 		{
-			$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "&debug=1";
+			$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "&amp;debug=1";
 		}
 		else
 		{
@@ -1473,23 +1473,23 @@ function build_clickable_smilies()
 				{
 					if($counter == 0)
 					{
-						$smilies .=  "<tr>";
+						$smilies .=  "<tr>\n";
 					}
 					$find = $db->escape_string(htmlspecialchars($find));
-					$smilies .= "<td><img src=\"$image\" border=\"0\" class=\"smilie\" alt=\"$find\"></td>";
+					$smilies .= "<td><img src=\"{$image}\" border=\"0\" class=\"smilie\" alt=\"{$find}\" /></td>\n";
 					$i++;
 					$counter++;
 					if($counter == $mybb->settings['smilieinsertercols'])
 					{
 						$counter = 0;
-						$smilies .= "</tr><tr>";
+						$smilies .= "</tr>\n";
 					}
 				}
 			}
-			$colspan = $mybb->settings['smilieinsertercols'] - $counter;
-			if($colspan > 0)
+			if($counter != 0)
 			{
-				$smilies .= "<td colspan=\"$colspan\">&nbsp;</td></tr>";
+				$colspan = $mybb->settings['smilieinsertercols'] - $counter;
+				$smilies .= "<td colspan=\"{$colspan}\">&nbsp;</td>\n</tr>\n";
 			}
 			eval("\$clickablesmilies = \"".$templates->get("smilieinsert")."\";");
 		}

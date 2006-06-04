@@ -39,7 +39,7 @@ if($mybb->user['receivepms'] == "no")
 if(!$mybb->user['pmfolders'])
 {
 	$mybb->user['pmfolders'] = "1**$%%$2**$%%$3**$%%$4**";
-	
+
 	$sql_array = array(
 		 "pmfolders" => $mybb->user['pmfolders']
 	);
@@ -146,7 +146,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		"do" => $mybb->input['do'],
 		"pmid" => $mybb->input['pmid']
 	);
-	
+
 	$pm['options'] = array(
 		"signature" => $mybb->input['options']['signature'],
 		"disablesmilies" => $mybb->input['options']['disablesmilies'],
@@ -167,7 +167,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	{
 		$pminfo = $pmhandler->insert_pm();
 		$plugins->run_hooks("private_do_send_end");
-	
+
 		if(isset($pm['draftsaved']))
 		{
 			redirect("private.php", $lang->redirect_pmsaved);
@@ -315,10 +315,10 @@ if($mybb->input['action'] == "send")
 	$user = $db->fetch_array($query);
 	$to = $user['username'];
 	}
-	
+
 	// Load the auto complete javascript if it is enabled.
 	eval("\$autocompletejs = \"".$templates->get("private_send_autocomplete")."\";");
-	
+
 	$pmid = $mybb->input['pmid'];
 	$do = $mybb->input['do'];
 	eval("\$send = \"".$templates->get("private_send")."\";");
@@ -378,13 +378,13 @@ if($mybb->input['action'] == "read")
 	{
 		$pm['username'] = "MyBB Engine";
 	}
-	
+
 	add_breadcrumb($pm['subject']);
 	$message = build_postbit($pm, "2");
 	eval("\$read = \"".$templates->get("private_read")."\";");
 	$plugins->run_hooks("private_read_end");
 	output_page($read);
-}	
+}
 
 if($mybb->input['action'] == "tracking")
 {
@@ -599,7 +599,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 			}
 		}
 	}
-	
+
 	$sql_array = array(
 		"pmfolders" => $folders
 	);
@@ -745,7 +745,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("private_delete_start");
-	
+
 	$sql_array = array(
 		"folder" => 4
 	);
@@ -940,7 +940,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 					{
 						eval("\$pmsdownload .= \"".$templates->get("private_archive_".$nmybb->input['exporttype']."_folderhead", 1, 0)."\";");
 					}
-					$donefolder[$message['folder']] = 1;				
+					$donefolder[$message['folder']] = 1;
 				}
 			}
 		}
@@ -1026,7 +1026,7 @@ if(!$mybb->input['action'])
 	$doneread = 0;
 	// get total messages
 	$query = $db->query("
-		SELECT COUNT(*) AS total 
+		SELECT COUNT(*) AS total
 		FROM ".TABLE_PREFIX."privatemessages
 		WHERE uid='".$mybb->user[uid]."'
 	");
@@ -1078,25 +1078,30 @@ if(!$mybb->input['action'])
 	{
 		while($message = $db->fetch_array($query))
 		{
+			$msgalt = '';
 			// Determine Folder Icon
 			if($message['status'] == 0)
 			{
-				$msgfolder = "new_pm.gif";
+				$msgfolder = 'new_pm.gif';
+				$msgalt = $lang->new_pm;
 				$doneunread = 1;
 			}
 			elseif($message['status'] == 1)
 			{
-				$msgfolder = "old_pm.gif";
+				$msgfolder = 'old_pm.gif';
+				$msgalt = $lang->old_pm;
 				$doneread = 1;
 			}
 			elseif($message['status'] == 3)
 			{
-				$msgfolder = "re_pm.gif";
+				$msgfolder = 're_pm.gif';
+				$msgalt = $lang->reply_pm;
 				$doneread = 1;
 			}
 			elseif($message['status'] == 4)
 			{
-				$msgfolder = "fw_pm.gif";
+				$msgfolder = 'fw_pm.gif';
+				$msgalt = $lang->fwd_pm;
 				$doneread = 1;
 			}
 			if($folder == 2 || $folder == 3)

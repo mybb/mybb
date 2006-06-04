@@ -442,13 +442,11 @@ form {
 }]]></extracss>
 	</themebits>
 	<templates>
-		<template name="forumdisplay_threadlist" version="100.07"><![CDATA[<div class="float_right" style="padding-bottom: 4px;">
+		    <template name="forumdisplay_threadlist" version="100.07"><![CDATA[<div class="float_right" style="padding-bottom: 4px;">
 	{$newthread}
 </div>
-<div>
-	{$multipage}
-</div>
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;" />
+{$multipage}
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;" >
 	<tr>
 		<td class="thead" colspan="{$colspan}">
 			<div style="float: right;">
@@ -507,13 +505,11 @@ form {
 <div class="float_right" style="padding-top: 4px;">
 	{$newthread}
 </div>
-<div>
-	{$multipage}
-</div>
+{$multipage}
 <br style="clear: both;" />
 {$inlinemod}
 
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;" >
 	<tr>
 		<td class="trow1">
 			<table width="100%" border="0">
@@ -637,8 +633,7 @@ form {
 </td>
 </tr>
 </table>]]></template>
-		<template name="showthread_inlinemoderation" version="100.07"><![CDATA[
-<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
+		<template name="showthread_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="{$tid}" />
 <span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
@@ -649,7 +644,7 @@ form {
 <option value="multiapproveposts">{$lang->inline_approve_posts}</option>
 <option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>
 </select>
-<input type="submit" class="button" name="go" value="{$lang->go} ({$inlinecount})" name="inline_go" id="inline_go" />&nbsp;
+<input type="submit" class="button" name="go" value="{$lang->go} ({$inlinecount})" id="inline_go" />&nbsp;
 <input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
 </form>
 <script language="JavaScript" type="text/javascript">
@@ -672,9 +667,7 @@ var inlineId = {$tid};
 <div style="float: right; padding-bottom: 4px;">
 	{$newreply}{$newthread}
 </div>
-<div>
-	{$multipage}
-</div>
+{$multipage}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
 <tr>
 <td class="thead" colspan="2">
@@ -1412,7 +1405,7 @@ var inlineId = {$tid};
 	<option value="multiapprovethreads">{$lang->approve_threads}</option>
 	<option value="multiunapprovethreads">{$lang->unapprove_threads}</option>
 	</select>
-	<input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" name="inline_go" id="inline_go" />&nbsp;
+	<input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" id="inline_go" />&nbsp;
 	<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
 </div>
 </form>
@@ -1613,7 +1606,7 @@ $headerinclude
 <td class="trow1" colspan="3"><span class="smalltext">{$lang->empty_note}</span></td>
 </tr>
 <tr>
-<td class="tcat" align="center"><strong>{$lang->folder}</strong></td>
+<td class="tcat" align="center"><strong>{$lang->export_folder}</strong></td>
 <td class="tcat" align="center"><strong>{$lang->num_messages}</strong></td>
 <td class="tcat" align="center"><strong>{$lang->empty_q}</strong></td>
 </tr>
@@ -1625,7 +1618,7 @@ $headerinclude
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_empty" />
-<input type="submit" class="button" name="submit" value="{$lang->delete}">
+<input type="submit" class="button" name="submit" value="{$lang->delete}" />
 </div>
 </td>
 </tr>
@@ -1646,6 +1639,7 @@ $headerinclude
 {$usercpnav}
 <td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
 <td class="thead" colspan="{$colspan}"><strong>{$lang->brief_summary}</strong></td>
 </tr>
 <tr>
@@ -1949,7 +1943,7 @@ $headerinclude
 </html>]]></template>
 		<template name="forumdisplay_rules" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="{$colspan}"><strong>{$foruminfo['rulestitle']}</td>
+<td class="thead"><strong>{$foruminfo['rulestitle']}</strong></td>
 </tr>
 <tr>
 <td class="trow1"><span class="smalltext">{$foruminfo['rules']}</span></td>
@@ -2222,6 +2216,7 @@ $headerinclude
 </table>
 <br />
 <table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
+<tr>
 <td width="50%" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -2257,7 +2252,7 @@ $reputation
 {$sendemail}
 <tr>
 <td class="trow2"><strong>{$lang->pm}</strong></td>
-<td class="trow2"><a href="private.php?action=send&amp;uid={$memprofile['uid']}">{$lang->send_pm}</td>
+<td class="trow2"><a href="private.php?action=send&amp;uid={$memprofile['uid']}">{$lang->send_pm}</a></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->icq_number}</strong></td>
@@ -2277,7 +2272,7 @@ $reputation
 </tr>
 </table>
 </td>
-<td><img src="{$theme['imgdir']}/pixel.gif" height="1" width="8" /></td>
+<td><img src="{$theme['imgdir']}/pixel.gif" height="1" width="8" alt=""/></td>
 <td width="50%" valign="top">
 {$profilefields}
 {$signature}
@@ -2540,7 +2535,7 @@ $reputation
 </tr>
 {$posticons}
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->compose_message}</strong><p align="center">{$smilieinserter}</p></td>
+<td class="trow2" valign="top"><strong>{$lang->compose_message}</strong><br/><br/><div style="margin:auto">{$smilieinserter}</div></td>
 <td class="trow2">
 <textarea name="message" id="message" rows="20" cols="60" tabindex="3">{$message}</textarea>
 {$codebuttons}
@@ -2559,7 +2554,7 @@ $reputation
 <input type="hidden" name="action" value="do_send" />
 <input type="hidden" name="pmid" value="{$pmid}" />
 <input type="hidden" name="do" value="{$do}" />
-<center><input type="submit" class="button" name="submit" value="{$lang->send_message}" tabindex="4" accesskey="s" />  <input type="submit" class="button" name="saveasdraft" value="{$lang->save_draft}" tabindex="5" />  <input type="submit" class="button" name="preview" value="{$lang->preview}" tabindex="6" />
+<div style="text-align:center"><input type="submit" class="button" name="submit" value="{$lang->send_message}" tabindex="4" accesskey="s" />  <input type="submit" class="button" name="saveasdraft" value="{$lang->save_draft}" tabindex="5" />  <input type="submit" class="button" name="preview" value="{$lang->preview}" tabindex="6" /></div>
 </td>
 </tr>
 </table>
@@ -2659,7 +2654,7 @@ $reputation
 <br />]]></template>
 		<template name="postbit_edit" version="100.07"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" border="0" alt="{$lang->postbit_edit}" /></a>
 <script type="text/javascript">
-	document.write('<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><ul><li><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}</a></li><li><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></li></ul></div>');
+	document.write('<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><ul><li><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}<\/a><\/li><li><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}<\/a><\/li><\/ul><\/div>');
 	new PopupMenu("edit_post_{$post['pid']}");
 </script>]]></template>
 		<template name="postbit_email" version="100.07"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_email.gif" border="0" alt="{$lang->postbit_email}" /></a>]]></template>
@@ -3144,14 +3139,14 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="thead" align="center" colspan="5"><strong>{$lang->read_messages}</strong></td>
 </tr>
 <tr>
-<td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$lang->_message_title}</strong></span></td>
+<td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>{$lang->dateread}</strong></span></td>
 <td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>?</strong></span></td>
 </tr>
 {$readmessages}
 <tr>
-<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptracking" value="{$lang->stop_tracking}"> {$lang->selected_messages}</strong></td>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptracking" value="{$lang->stop_tracking}" /> {$lang->selected_messages}</strong></td>
 </tr>
 </table>
 <br />
@@ -3160,20 +3155,17 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="thead" align="center" colspan="5"><strong>{$lang->unread_messages}</strong></td>
 </tr>
 <tr>
-<td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$lang->_message_title}</strong></span></td>
+<td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>{$lang->datesent}</strong></span></td>
 <td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>?</strong></span></td>
 </tr>
 {$unreadmessages}
 <tr>
-<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}"> / <input type="submit" class="button" name="cancel" value="{$lang->cancel}"> {$lang->selected_messages}</strong></td>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->cancel}" /> {$lang->selected_messages}</strong></td>
 </tr>
 </table>
 </td></tr></table>
-</td>
-</tr>
-</table>
 </form>
 {$footer}
 </body>
@@ -3318,7 +3310,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 </body>]]></template>
 		<template name="private_messagebit" version="100.07"><![CDATA[<tr>
-<td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/{$msgfolder}" border="0" /></td>
+<td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/{$msgfolder}" border="0" alt="{$msgalt}"/></td>
 <td align="center" class="trow2" width="5%">{$icon}</td>
 <td class="trow1" width="35%"><a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$denyreceipt}</td>
 <td align="center" class="trow2">{$tofromusername}</td>
@@ -3343,7 +3335,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <thead>
 <tr>
 <td colspan="2" class="thead">
-<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.gif" id="quickreply_img" class="expander" border="0" /></div>
+<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.gif" id="quickreply_img" class="expander" border="0" alt="[-]"/></div>
 <div><strong>{$lang->quick_reply}</strong></div>
 </td>
 </tr>
@@ -3353,9 +3345,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1" valign="top">
 <strong>{$lang->message}</strong><br />
 <span class="smalltext">{$lang->message_note}<br /><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" {$postoptionschecked['signature']}>&nbsp;<strong>{$lang->signature}</strong></label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" {$postoptionschecked['emailnotify']}>&nbsp;<strong>{$lang->email_notify}</strong></label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes">&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" {$postoptionschecked['emailnotify']} />&nbsp;<strong>{$lang->email_notify}</strong></label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" />&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
 </td>
 <td class="trow1"><textarea name="message" rows="7" cols="70" wrap="virtual" tabindex="1"></textarea></td>
 </tr>
@@ -3425,7 +3417,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1">
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
 <tr>
-<td class="trow1"><span style="float:right">{$pmspacebar}</span><span class="smalltext"><a href="private.php">{$lang->inbox}</a> | <a href="private.php?action=send">{$lang->compose_message2}</a> | <a  href="private.php?action=folders">{$lang->manage_folders}</a></td>
+<td class="trow1">{$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a> | <a href="private.php?action=send">{$lang->compose_message2}</a> | <a  href="private.php?action=folders">{$lang->manage_folders}</a></span></td>
 </tr>
 </table>
 </td>
@@ -3446,7 +3438,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 {$messagelist}
 <tr>
-<td class="tfoot" align="right" colspan="6"><input type="submit" class="button" name="moveto" value="{$lang->move_to}"> {$folderoplist} {$lang->or} <input type="submit" class="button" name="delete" value="{$lang->delete}"> {$lang->selected_messages}</td>
+<td class="tfoot" align="right" colspan="6"><input type="submit" class="button" name="moveto" value="{$lang->move_to}" /> {$folderoplist} {$lang->or} <input type="submit" class="button" name="delete" value="{$lang->delete}" /> {$lang->selected_messages}</td>
 </tr>
 </table>
 <br />
@@ -3455,8 +3447,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1">
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
 <tr>
-<td class="trow1"><span class="smalltext">{$multipage}</span></td>
-<td class="trow1" align="right"><span class="smalltext"><strong>{$lang->jump_folder} {$folderjump} <input type="submit" class="button" name="hop" value="{$lang->go}"></strong></span></td>
+<td class="trow1">{$multipage}</td>
+<td class="trow1" align="right"><span class="smalltext"><strong>{$lang->jump_folder} {$folderjump} <input type="submit" class="button" name="hop" value="{$lang->go}" /></strong></span></td>
 </tr>
 </table>
 </td>
@@ -3470,22 +3462,22 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_pmspace" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" width="230" style="border: solid 1px #000000;">
+		<template name="private_pmspace" version="100.07"><![CDATA[<span style="float:right"><table cellspacing="0" cellpadding="0" width="230" style="border: solid 1px #000000;">
 	<tr>
 		<td width="{$spaceused}" bgcolor="red" align="center"><span class="smalltext"><strong>{$overhalf}</strong></span></td>
 		<td width="{$spaceused2}" bgcolor="green" align="center"><span class="smalltext"><strong>{$belowhalf}</strong></span></td>
 		<td width="130" align="center"><span class="smalltext"><strong>{$lang->pmspaceused}</strong></span></td>
 	</tr>
-</table>]]></template>
+</table></span>]]></template>
 		<template name="forumdisplay_announcements_announcement" version="100.07"><![CDATA[<tr>
-<td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}" /></td>
+<td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}" alt=""/></td>
 <td align="center" class="{$bgcolor}">&nbsp;</td>
 <td class="{$bgcolor}"><a href="announcements.php?aid={$announcement['aid']}">{$announcement['subject']}</a></td>
 <td align="center" class="{$bgcolor}"><a href="member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a></td>
 <td align="center" class="{$bgcolor}">-</td>
 <td align="center" class="{$bgcolor}">-</td>
 {$rating}
-<td class="{$bgcolor}" nowrap="nowrap">{$postdate} {$posttime}</span></td>
+<td class="{$bgcolor}" nowrap="nowrap">{$postdate} {$posttime}</td>
 {$modann}
 </tr>
 ]]></template>
@@ -3992,7 +3984,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="this.value=''" />
 	{$gobutton}
 </form>]]></template>
-		<template name="multipage" version="100.07"><![CDATA[<span class="smalltext"><span class="pagenav">{$lang->multipage_pages}</span>{$start} {$prevpage} {$mppage} {$nextpage} {$end}</span>]]></template>
+		<template name="multipage" version="100.07"><![CDATA[<div><span class="smalltext"><span class="pagenav">{$lang->multipage_pages}</span>{$start} {$prevpage} {$mppage} {$nextpage} {$end}</span></div>]]></template>
 		<template name="multipage_end" version="100.07"><![CDATA[<span class="pagenavbit"><a href="{$url}&amp;page={$pages}">{$lang->multipage_last} &raquo;</a></span>]]></template>
 		<template name="multipage_nextpage" version="100.07"><![CDATA[<span class="pagenavbit"><a href="{$url}&amp;page={$next}">{$lang->multipage_next} &gt;</a></span>]]></template>
 		<template name="multipage_page" version="100.07"><![CDATA[ <span class="pagenavbit"><a href="{$url}&amp;page={$i}">{$i}</a></span>]]></template>
@@ -4882,7 +4874,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="member_profile_email" version="100.07"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->email}</strong></td>
-<td class="trow2"><a href="member.php?action=emailuser&amp;uid={$memprofile['uid']}">{$lang->send_user_email}</td>
+<td class="trow2"><a href="member.php?action=emailuser&amp;uid={$memprofile['uid']}">{$lang->send_user_email}</a></td>
 </tr>]]></template>
 		<template name="loginbox" version="100.07"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->username}</strong></td>
@@ -5164,8 +5156,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="private_messagebit_sep" version="100.07"><![CDATA[<tr>
-<td class="tcat" align="center" colspan="6" height="1"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" /></td>
-</tr>]]></template>
+<td class="tcat" align="center" colspan="6" height="1"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt=""/></td>
+</tr>]]>
+    </template>
 		<template name="polls_editpoll_option" version="100.07"><![CDATA[<tr>
 <td class="trow">{$lang->option} {$counter}:</td>
 <td class="trow"><input type="text" class="textbox" name="options[{$counter}]" value="{$option}" /></td>
@@ -5619,7 +5612,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_folders" />
-<input type="submit" class="button" name="submit" value="{$lang->update_folders}">
+<input type="submit" class="button" name="submit" value="{$lang->update_folders}" />
 </div>
 </td>
 </tr>
@@ -6457,7 +6450,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <br />]]></template>
 		<template name="htmldoctype" version="100.07"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="postbit_qqmessage" version="100.07"><![CDATA[<div style="display: none;"><span id="qq{$post['pid']}">{$post['quickquote_message']}</span><span id="qqauthor{$post['pid']}">{$post['username']}</span></div>]]></template>
-		<template name="postbit_quickquote" version="100.07"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /></a>");</script>]]></template>
+		<template name="postbit_quickquote" version="100.07"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /><\/a>");</script>]]></template>
 		<template name="private_send_autocomplete" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js"></script>
 <script type="text/javascript">
 	new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username"});

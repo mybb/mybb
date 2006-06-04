@@ -2,7 +2,7 @@
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -12,6 +12,11 @@ $l['nav_tracking'] = "Message Tracking";
 $l['nav_folders'] = "Folder Management";
 $l['nav_empty'] = "Empty Folders";
 $l['nav_export'] = "Export Messages";
+
+$l['new_pm'] = "New Message";
+$l['old_pm'] = "Old Message";
+$l['reply_pm'] = "Replied To";
+$l['fwd_pm'] = "Forwarded Message";
 
 $l['pms_disabled'] = "You cannot use the private messaging functionality as it has been disabled by the Administrator.";
 
@@ -56,13 +61,13 @@ $l['to'] = "To:";
 $l['from'] = "From:";
 $l['sent'] = "Sent:";
 $l['empty_folders'] = "Empty Private Messaging Folders";
-$l['empty_note'] = "Here you can delete private messages from selected folders at one time. Simply select the folders you wish the messages to be deleted from and click 'Delete'. You cannot undo these changes.<br /><b>Note: Once these messages are deleted there is no way to recover them.";
+$l['empty_note'] = "Here you can delete private messages from selected folders at one time. Simply select the folders you wish the messages to be deleted from and click 'Delete'. You cannot undo these changes.<br /><strong>Note: Once these messages are deleted there is no way to recover them.</strong>";
 $l['num_messages'] = "No. Messages:";
 $l['empty_q'] = "Empty?";
 $l['keep_unread'] = "Keep Unread Messages";
 $l['pm_folders'] = "Private Messaging Folders";
 $l['existing_folders'] = "Existing Folders";
-$l['edit_folder_note'] = "You can change the names of your current private messaging folders here. To delete a folder, delete the name of the folder. Some folders cannot be removed.<br /><b>Note: Deleting a folder will also delete any messages in it.";
+$l['edit_folder_note'] = "You can change the names of your current private messaging folders here. To delete a folder, delete the name of the folder. Some folders cannot be removed.<br /><strong>Note: Deleting a folder will also delete any messages in it.</strong>";
 $l['new_folders'] = "Add New Folders";
 $l['add_folders_note'] = "Here you can create additional message folders. You do not have to fill in all of the text boxes.";
 $l['update_folders'] = "Update Folders";
@@ -79,10 +84,10 @@ $l['compose_subject'] = "Subject:";
 $l['compose_message2'] = "Compose Message";
 $l['compose_message'] = "Message:";
 $l['compose_options'] = "Options:";
-$l['options_sig'] = "<b>Signature:</b> include your signature in this message.";
-$l['options_disable_smilies'] = "<b>Disable Smilies:</b> disable smilies from showing in this message.";
-$l['options_save_copy'] = "<b>Save a Copy:</b> save a copy of this message in your Sent Items folder.";
-$l['options_read_receipt'] = "<b>Request Read Receipt:</b> receive a message when this message is read.";
+$l['options_sig'] = "<strong>Signature:</strong> include your signature in this message.";
+$l['options_disable_smilies'] = "<strong>Disable Smilies:</strong> disable smilies from showing in this message.";
+$l['options_save_copy'] = "<strong>Save a Copy:</strong> save a copy of this message in your Sent Items folder.";
+$l['options_read_receipt'] = "<strong>Request Read Receipt:</strong> receive a message when this message is read.";
 $l['send_message'] = "Send Message";
 $l['save_draft'] = "Save as Draft";
 $l['preview'] = "Preview";
