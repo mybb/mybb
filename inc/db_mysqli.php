@@ -411,7 +411,7 @@ class databaseEngine
 			$this->shutdown_queries[] = $query;
 		}
 	}
-	
+
 	/**
 	 * Performs a simple select query.
 	 *
@@ -568,7 +568,7 @@ class databaseEngine
 	 */
 	function optimize_table($table)
 	{
-		$this->query("OPTIMIZE TABLE ".$table.");");
+		$this->query("OPTIMIZE TABLE ".$table."");
 	}
 
 	/**
