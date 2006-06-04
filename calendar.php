@@ -569,7 +569,7 @@ if($mybb->input['action'] == "calendar_main")
 	}
 	$events = array();
 	// Load Events
-	$query = $db->simple_query(TABLE_PREFIX."events", "subject, private, date, eid", "date LIKE '%-{$month}-{$year}' AND ((author='{$mybb->user['uid']}' AND private='yes') OR (private!='yes'))");
+	$query = $db->simple_select(TABLE_PREFIX."events", "subject, private, date, eid", "date LIKE '%-{$month}-{$year}' AND ((author='{$mybb->user['uid']}' AND private='yes') OR (private!='yes'))");
 	while($event = $db->fetch_array($query))
 	{
 		$event['subject'] = htmlspecialchars_uni($event['subject']);
