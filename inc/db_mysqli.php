@@ -570,6 +570,16 @@ class databaseEngine
 	{
 		$this->query("OPTIMIZE TABLE ".$table."");
 	}
+	
+	/**
+	 * Analyzes a specific table.
+	 *
+	 * @param string The name of the table to be analyzed.
+	 */
+	function analyze_table($table)
+	{
+		$this->query("ANALYZE TABLE ".$table."");
+	}
 
 	/**
 	 * Show the "create table" command for a specific table.
