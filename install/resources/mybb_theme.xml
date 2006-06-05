@@ -860,9 +860,9 @@ var inlineId = {$tid};
 </tr>
 {$posticons}
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->your_message}</strong><br /><p align="center">{$smilieinserter}</p></td>
+<td class="trow2" valign="top"><strong>{$lang->your_message}</strong><br /><div style="margin:auto">{$smilieinserter}</div></td>
 <td class="trow2">
-<textarea id="message" name="message" rows="20" cols="70" tabindex="2" />{$message}</textarea>
+<textarea id="message" name="message" rows="20" cols="70" tabindex="2" >{$message}</textarea>
 {$codebuttons}
 </td>
 </tr>
@@ -960,7 +960,7 @@ var inlineId = {$tid};
 </tr>
 {$posticons}
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->your_message}</strong><br /><p align="center">{$smilieinserter}</p></td>
+<td class="trow2" valign="top"><strong>{$lang->your_message}</strong><br /><div style="magin:auto">{$smilieinserter}</div></td>
 <td class="trow2">
 <textarea name="message" id="message" rows="20" cols="70" tabindex="2">{$message}</textarea>
 {$codebuttons}
@@ -979,7 +979,7 @@ var inlineId = {$tid};
 {$captcha}
 </table>
 <br />
-<center><input type="submit" class="button" name="submit" value="{$lang->post_thread}" tabindex="4" accesskey="s">  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="5">{$savedraftbutton}</center>
+<div style="text-align:center"><input type="submit" class="button" name="submit" value="{$lang->post_thread}" tabindex="4" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="5" />{$savedraftbutton}</div>
 <input type="hidden" name="action" value="do_newthread" />
 <input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="fid" value="{$fid}" />
@@ -1381,6 +1381,7 @@ var inlineId = {$tid};
 {$polloptions}
 </table>
 <table width="100%" align="center">
+<tr>
 <td class="trow"><input type="submit" class="button" value="{$lang->vote}" /></td>
 <td valign="top" align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a> | <a href="polls.php?action=editpoll&amp;pid={$poll['pid']}">{$lang->edit_poll}</a>]</span></td>
 </tr>
@@ -1469,7 +1470,7 @@ $headerinclude
 		<template name="redirect" version="100.07"><![CDATA[<html>
 <head>
 <title>{$title}</title>
-<meta http-equiv="refresh" content="2;URL={$url}">
+<meta http-equiv="refresh" content="2;URL={$url}" />
 {$headerinclude}
 </head>
 <body>
@@ -2183,10 +2184,9 @@ $headerinclude
 </table>]]></template>
 		<template name="nav_sep" version="100.07"><![CDATA[ / ]]></template>
 		<template name="post_attachments_new" version="100.07"><![CDATA[<tr>
-<td colspan="3" nowrap="nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" /> <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="12">
+<td colspan="3" nowrap="nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" /> <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="12" />
 </td>
-</tr>
-]]></template>
+</tr>]]></template>
 		<template name="nav_sep_active" version="100.07"><![CDATA[ / ]]></template>
 		<template name="member_profile" version="100.07"><![CDATA[<html>
 <head>
@@ -2578,8 +2578,8 @@ $reputation
 </tr>
 <tr>
 <td class="trow1" nowrap="nowrap"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9" /><strong>{$lang->delete_q}</strong></td>
-<td class="trow1" width="100%">{$lang->delete_note}<br /><span class="smalltext">{$lang->delete_note_2}</span></td>
-<td class="trow1" nowrap="nowrap"><input type="submit" class="button" name="submit" value="{$lang->delete_poll}" tabindex="10"></td>
+<td class="trow1" width="100%">{$lang->delete_note}<br /><span class="smalltext">{$lang->delete_note2}</span></td>
+<td class="trow1" nowrap="nowrap"><input type="submit" class="button" name="submit" value="{$lang->delete_poll}" tabindex="10" /></td>
 </table>
 <input type="hidden" name="action" value="do_deletepoll" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -2597,11 +2597,11 @@ $reputation
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$settings['maxpolloptions']}</span></td>
-<td class="trow1"><input type="text" class="textbox" name="numoptions" size="10" value="{$numoptions}">&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}"></td>
+<td class="trow1"><input type="text" class="textbox" name="numoptions" size="10" value="{$numoptions}" />&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}" /></td>
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_options}</strong></td>
-<td class="trow2"><span class="smalltext">{$lang->options_note}</span>
+<td class="trow2"><span class="smalltext">{$lang->poll_options_note}</span>
 <table border="0" cellspacing="0" cellpadding="0">
 {$optionbits}
 </table>
@@ -2610,20 +2610,20 @@ $reputation
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" class="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']}>&nbsp;{$lang->option_multiple}<br />
-<input type="checkbox" class="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']}>&nbsp;{$lang->option_public}<br />
-<input type="checkbox" class="checkbox" name="postoptions[closed]" value="yes" {$postoptionschecked['closed']}>&nbsp;{$lang->option_closed}
+<input type="checkbox" class="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']} />&nbsp;{$lang->option_multiple}<br />
+<input type="checkbox" class="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']} />&nbsp;{$lang->option_public}<br />
+<input type="checkbox" class="checkbox" name="postoptions[closed]" value="yes" {$postoptionschecked['closed']} />&nbsp;{$lang->option_closed}
 </span>
 </td>
 </tr>
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</td>
+<td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</span></td>
 <td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}" />{$lang->days_after} {$polldate}</td>
 </tr>
 </table>
 <br />
 <center>
-<input type="submit" class="button" name="submit" value="{$lang->update_poll}">
+<input type="submit" class="button" name="submit" value="{$lang->update_poll}" />
 </center>
 <input type="hidden" name="action" value="do_editpoll" />
 <input type="hidden" name="pid" value="{$pid}" />
@@ -3737,7 +3737,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$header}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="4" align="center"><strong>{$poll['question']}</strong><br /><span class="smalltext">{$pollstatus}</span></td>
+<td class="thead" colspan="4" align="center"><strong>{$poll['question']}</strong></td>
 </tr>
 {$polloptions}
 <tr>
@@ -4111,7 +4111,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="postbit_attachments_images" version="100.07"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_images}</strong></span><br />
 {$post['imagelist']}
 <br />]]></template>
-		<template name="post_attachments_attachment_postinsert" version="100.07"><![CDATA[<input type="button" name="insert" value="{$lang->insert_attachment_post}" onclick="editor.insertAttachment({$attachment['aid']});">]]></template>
+		<template name="post_attachments_attachment_postinsert" version="100.07"><![CDATA[<input type="button" name="insert" value="{$lang->insert_attachment_post}" onclick="editor.insertAttachment({$attachment['aid']});" />]]></template>
 		<template name="moderation_mergeposts" version="100.07"><![CDATA[<html>
 <head>
 <title>{$settings['bbname']} - {$lang->merge_posts}</title>
@@ -4229,11 +4229,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$settings['maxpolloptions']}</span></td>
-<td class="trow1"><input type="text" class="textbox" name="polloptions" size="10" value="{$polloptions}">&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}"></td>
+<td class="trow1"><input type="text" class="textbox" name="polloptions" size="10" value="{$polloptions}" />&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}" /></td>
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_options}</strong></td>
-<td class="trow2"><span class="smalltext">{$lang->options_note}</span>
+<td class="trow2"><span class="smalltext">{$lang->poll_options_note}</span>
 <table border="0" cellspacing="0" cellpadding="0">
 {$optionbits}
 </table>
@@ -4242,18 +4242,18 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" class="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']}>&nbsp;{$lang->option_multiple}<br />
-<input type="checkbox" class="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']}>&nbsp;{$lang->option_public}
+<input type="checkbox" class="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']} />&nbsp;{$lang->option_multiple}<br />
+<input type="checkbox" class="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']} />&nbsp;{$lang->option_public}
 </span>
 </td>
 </tr>
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</td>
+<td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</span></td>
 <td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}" />{$lang->days}</td>
 </tr>
 </table>
 <br />
-<center><input type="submit" class="button" name="submit" value="{$lang->post_new_poll}"></center>
+<center><input type="submit" class="button" name="submit" value="{$lang->post_new_poll}" /></center>
 <input type="hidden" name="action" value="do_newpoll" />
 <input type="hidden" name="tid" value="{$tid}" />
 </form>
@@ -5379,7 +5379,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td class="{$altbg}">
 {$reviewmessage}
-<script type="text/javascript">document.write("<div style=\"display: none;\"><span id=\"qq{$post['pid']}\">{$post['quickquote_message']}</span><span id=\"qqauthor{$post['pid']}\">{$post['username']}</span></div><div style=\"text-align: right;\"><a href=\"javascript:Post.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /></a></div>");</script>
+<script type="text/javascript">document.write("<div style=\"display: none;\"><span id=\"qq{$post['pid']}\">{$post['quickquote_message']}<\/span><span id=\"qqauthor{$post['pid']}\">{$post['username']}<\/span><\/div><div style=\"text-align: right;\"><a href=\"javascript:Post.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /><\/a><\/div>");</script>
 </td>
 </tr>]]></template>
 		<template name="newreply_threadreview" version="100.07"><![CDATA[<br />
@@ -5712,7 +5712,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </td>]]></template>
 		<template name="polls_newpoll_option" version="100.07"><![CDATA[<tr>
 <td class="trow">{$lang->option} {$i}:</td>
-<td class="trow"><input type="text" class="textbox" name="options[{$i}]" value="{$option}" width="250" /></td>
+<td class="trow"><input type="text" class="textbox" name="options[{$i}]" value="{$option}" size="25" /></td>
 </tr>]]></template>
 		<template name="showthread_poll_option_multiple" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="5%"><input type="checkbox" class="checkbox" name="option[{$number}]" value="yes" /></td>
@@ -6317,6 +6317,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="error_inline" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder"><tr>
 <td class="thead"><strong>{$title}</strong></td>
 </tr>
+<tr>
 <td class="trow1">
 <ul>
 {$errorlist}

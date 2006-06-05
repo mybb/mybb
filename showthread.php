@@ -333,6 +333,7 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
+			$publicnote = '&nbsp;';
 			if($poll['public'] == "yes")
 			{
 				$publicnote = $lang->public_note;

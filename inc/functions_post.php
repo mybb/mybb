@@ -57,7 +57,7 @@ function build_postbit($post, $pmprevann=0)
 			$parser_options['allow_mycode'] = $announcementarray['allowmycode'];
 			$parser_options['allow_smilies'] = $announcementarray['allowsmilies'];
 			$parser_options['allow_imgcode'] = "yes";
-			$parser_options['me_username'] = $post['username'];			
+			$parser_options['me_username'] = $post['username'];
 			break;
 		default: // Regular post
 			global $forum, $thread, $tid;
@@ -73,7 +73,7 @@ function build_postbit($post, $pmprevann=0)
 			}
 			else
 			{
-				$parser_options['me_username'] = $post['username'];			
+				$parser_options['me_username'] = $post['username'];
 			}
 			break;
 	}
@@ -102,6 +102,10 @@ function build_postbit($post, $pmprevann=0)
 	// Dont want any little 'nasties' in the subject
 	$post['subject'] = $parser->parse_badwords($post['subject']);
 	$post['subject'] = htmlspecialchars_uni($post['subject']);
+	if(empty($post['subject']))
+	{
+		$post['subject'] = '&nbsp;';
+	}
 
 	$post['author'] = $post['uid'];
 
@@ -279,6 +283,11 @@ function build_postbit($post, $pmprevann=0)
 		$post['onlinestatus'] = $lang->unknown;
 		$post['replink'] = '';
 	}
+	$post['button_edit'] = '&nbsp;';
+	$post['button_quickdelete'] = '&nbsp;';
+	$post['button_quote'] = '&nbsp;';
+	$post['button_quickquote'] = '&nbsp;';
+	$post['button_report'] = '&nbsp;';
 	if(!$pmprevann)
 	{
 		if($post['edituid'] != "" && $post['edittime'] != "" && $post['editusername'] != "")
@@ -362,7 +371,11 @@ function build_postbit($post, $pmprevann=0)
 		$parser_options['allow_smilies'] = "no";
 	}
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
-	
+	if(empty($post['message']))
+	{
+		$post['message'] = '&nbsp;';
+	}
+
 	$validationcount = 0;
 	if(is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
