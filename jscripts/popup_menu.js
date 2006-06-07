@@ -19,17 +19,20 @@ PopupMenu.prototype = {
 			return false;
 		}
 		
-		if(options.width)
+		if(options)
 		{
-			if(options.width == "owner")
+			if(options.width)
 			{
-				if(element.style.width)
+				if(options.width == "owner")
 				{
-					this.menu.style.width = element.style.width;
-				}
-				else
-				{
-					this.menu.style.width = element.offsetWidth+"px";
+					if(element.style.width)
+					{
+						this.menu.style.width = element.style.width;
+					}
+					else
+					{
+						this.menu.style.width = element.offsetWidth+"px";
+					}
 				}
 			}
 		}
