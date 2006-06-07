@@ -149,20 +149,20 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		{
 			$returndate = "";
 		}
-		$aray = array(
+		$away = array(
 			"away" => "yes",
 			"date" => $awaydate,
 			"returndate" => $returndate,
-			"reason" => $mybb->input['awayreason']
+			"awayreason" => $mybb->input['awayreason']
 		);
 	}
 	else
 	{
-		$aray = array(
+		$away = array(
 			"away" => "no",
 			"date" => '',
 			"returndate" => '',
-			"reason" => ''
+			"awayreason" => ''
 		);
 	}
 	
