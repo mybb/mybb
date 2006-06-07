@@ -828,7 +828,7 @@ elseif($mybb->input['action'] == "do_search")
 		"forums" => $mybb->input['forums']
 	);
 
-	if($config['dbtype'] == "mysql")
+	if($config['dbtype'] == "mysql" || $config['dbtype'] == "mysqli")
 	{
 		if($settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean(TABLE_PREFIX."posts") && $db->is_fulltext(TABLE_PREFIX."posts"))
 		{

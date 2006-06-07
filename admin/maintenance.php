@@ -30,7 +30,11 @@ switch($mybb->input['action'])
 			addacpnav($lang->nav_view_cache);
 		}
 		break;
+	case "rebuild":
+		addacpnav($lang->nav_recount_rebuild, "maintenance.php?action=rebuild");
+		break;
 	case "rebuildstats":
+		addacpnav($lang->nav_recount_rebuild, "maintenance.php?action=rebuild");
 		addacpnav($lang->rebuildstats);
 		break;
 }
@@ -124,6 +128,21 @@ if($mybb->input['action'] == "rebuildstats")
 	makelabelcode("<div align=\"center\">$lang->rebuildstats_notice<br /><br />$button</div>");
 	endtable();
 	endform();
+	cpfooter();
+}
+
+if($mybb->input['action'] == "rebuild")
+{
+	cpheader();
+	
+	// Recount forums
+	startform("maintenance.php", "", "do_rebuildforums");
+	starttable();
+	tableheader($lang->rebuild_forum_counters);
+	makelabelcode("<div style=\"text-align: center;\">{$lang->rebuild_forum_counters_note}</div>");
+	makeinputcode($lang->disporder, "perpage", "15", "4");
+	endtable();
+	endform($lang->rebuild_button);
 	cpfooter();
 }
 ?>

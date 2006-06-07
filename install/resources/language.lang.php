@@ -3,8 +3,8 @@
 $l['none'] = 'None';
 $l['not_installed'] = 'Not Installed';
 $l['installed'] = 'Installed';
-$l['not_writeable'] = 'Not Writeable';
-$l['writeable'] = 'Writeable';
+$l['not_writable'] = 'Not Writable';
+$l['writable'] = 'Writable';
 $l['done'] = 'done';
 
 $l['welcome'] = 'Welcome';

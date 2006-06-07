@@ -228,59 +228,59 @@ function requirements_check()
 		$xmlstatus = sprintf($lang->req_step_span_pass, $lang->installed);
 	}
 
-	// Check config file is writeable
+	// Check config file is writable
 	$configwritable = @fopen('../inc/config.php', 'w');
 	if(!$configwritable)
 	{
 		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_configfile);
-		$configstatus = sprintf($lang->req_step_span_fail, $lang->not_writeable);
+		$configstatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
 	}
 	else
 	{
-		$configstatus = sprintf($lang->req_step_span_pass, $lang->writeable);
+		$configstatus = sprintf($lang->req_step_span_pass, $lang->writable);
 	}
 	@fclose($configwritable);
 		
-	// Check settings file is writeable
+	// Check settings file is writable
 	$settingswritable = @fopen('../inc/settings.php', 'w');
 	if(!$settingswritable)
 	{
 		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_settingsfile);
-		$settingsstatus = sprintf($lang->req_step_span_fail, $lang->not_writeable);
+		$settingsstatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
 	}
 	else
 	{
-		$settingsstatus = sprintf($lang->req_step_span_pass, $lang->writeable);
+		$settingsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
 	}
 	@fclose($settingswritable);
 
-	// Check upload directory is writeable
+	// Check upload directory is writable
 	$uploadswritable = @fopen('../uploads/test.write', 'w');
 	if(!$uploadswritable)
 	{
 		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
-		$uploadsstatus = sprintf($lang->req_step_span_fail, $lang->not_writeable);
+		$uploadsstatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
 	}
 	else
 	{
-		$uploadsstatus = sprintf($lang->req_step_span_pass, $lang->writeable);
+		$uploadsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
 	}
 	@fclose($uploadswritable);
 
-	// Check avatar directory is writeable
+	// Check avatar directory is writable
 	$avatarswritable = @fopen('../uploads/avatars/test.write', 'w');
 	if(!$avatarswritable)
 	{
 		$errors[] =  sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
-		$avatarsstatus = sprintf($lang->req_step_span_fail, $lang->not_writeable);
+		$avatarsstatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
 	}
 	else
 	{
-		$avatarsstatus = sprintf($lang->req_step_span_pass, $lang->writeable);
+		$avatarsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
 	}
 	@fclose($avatarswritable);
 	

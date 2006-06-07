@@ -45,7 +45,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $pid) 
 $options = array(
 	"limit" => 1
 );
-$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid=".$tid);
+$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".$tid."'");
 $thread = $db->fetch_array($query);
 $fid = $thread['fid'];
 

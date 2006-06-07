@@ -283,11 +283,11 @@ function build_postbit($post, $pmprevann=0)
 		$post['onlinestatus'] = $lang->unknown;
 		$post['replink'] = '';
 	}
-	$post['button_edit'] = '&nbsp;';
-	$post['button_quickdelete'] = '&nbsp;';
-	$post['button_quote'] = '&nbsp;';
-	$post['button_quickquote'] = '&nbsp;';
-	$post['button_report'] = '&nbsp;';
+	$post['button_edit'] = '';
+	$post['button_quickdelete'] = '';
+	$post['button_quote'] = '';
+	$post['button_quickquote'] = '';
+	$post['button_report'] = '';
 	if(!$pmprevann)
 	{
 		if($post['edituid'] != "" && $post['edittime'] != "" && $post['editusername'] != "")

@@ -285,6 +285,7 @@ $tables[] = "CREATE TABLE mybb_moderatorlog (
   tid int unsigned NOT NULL default '0',
   pid int unsigned NOT NULL default '0',
   action text NOT NULL default '',
+  data text NOT NULL default '',
   ipaddress varchar(50) NOT NULL default ''
 ) TYPE=MyISAM;";
 

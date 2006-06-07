@@ -173,8 +173,8 @@ function upgrade5_dbchanges()
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD deletetime int(10) unsigned NOT NULL default '0' AFTER attachmentcount");
 
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canviewthreads char(3) NOT NULL default ''");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD canviewthreads char(3) NOT NULL default ''");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
 
 	$db->query("DROP ".TALE_PREFIX."regimages");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."captcha (
@@ -182,6 +182,8 @@ function upgrade5_dbchanges()
 	  imagestring varchar(8) NOT NULL default '',
 	  dateline bigint(30) NOT NULL default '0'
 	) TYPE=MyISAM;");
+	
+	$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL default '' AFTER action;");
 
 	//
 	// NEED TO INSERT SETTINGS FOR FULLTEXT SEARCHING AND SHUTDOWN FUNCTION STUFF ____HERE____

@@ -2,7 +2,7 @@ var PopupMenu = Class.create();
 
 PopupMenu.prototype = {
 
-	initialize: function(id)
+	initialize: function(id, options)
 	{
 		document.currentMenu = "";
 
@@ -17,6 +17,21 @@ PopupMenu.prototype = {
 		if(!$(popupMenu))
 		{
 			return false;
+		}
+		
+		if(options.width)
+		{
+			if(options.width == "owner")
+			{
+				if(element.style.width)
+				{
+					this.menu.style.width = element.style.width;
+				}
+				else
+				{
+					this.menu.style.width = element.offsetWidth+"px";
+				}
+			}
 		}
 		this.menu = $(popupMenu);
 		this.menu.style.display = "none";

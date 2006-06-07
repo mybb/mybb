@@ -1626,11 +1626,27 @@ function log_moderator_action($data, $action="")
 	/* If the fid or tid is not set, set it at 0 so MySQL doesn't choke on it. */
 	if($data['fid'] == '')
 	{
-		$data['fid'] = 0;
+		$fid = 0;
+	}
+	else
+	{
+		$fid = $data['fid'];
+		unset($data['fid']);
 	}
 	if($data['tid'] == '')
 	{
-		$data['tid'] = 0;
+		$tid = 0;
+	}
+	else
+	{
+		$tid = $data['tid'];
+		unset($data['tid']);
+	}
+	
+	// Any remaining extra data - we serialize and insert in to its own column
+	if(is_array($data))
+	{
+		$data = serialize($data);
 	}
 
 	$time = time();
@@ -1638,9 +1654,10 @@ function log_moderator_action($data, $action="")
 	$sql_array = array(
 		"uid" => $mybb->user['uid'],
 		"dateline" => $time,
-		"fid" => $data['fid'],
-		"tid" => $data['tid'],
+		"fid" => $fid,
+		"tid" => $tid,
 		"action" => $db->escape_string($action),
+		"data" => $db->escape_string($data);
 		"ipaddress" => $session->ipaddress
 	);
 	$db->insert_query(TABLE_PREFIX."moderatorlog", $sql_array);

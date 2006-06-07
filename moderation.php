@@ -192,6 +192,9 @@ switch($mybb->input['action'])
 		}
 
 		$plugins->run_hooks("moderation_do_deletethread");
+		
+		// Log the subject of the deleted thread
+		$modlogdata['thread_subject'] = $thread['subject'];
 
 		$thread['subject'] = $db->escape_string($thread['subject']);
 		$lang->thread_deleted = sprintf($lang->thread_deleted, $thread['subject']);
