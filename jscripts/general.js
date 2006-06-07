@@ -416,6 +416,7 @@ var expandables = {
 					continue;
 				}
 				Event.observe(expander, "click", this.expandCollapse.bindAsEventListener(this));
+				expander.style.cursor = "pointer";
 				expander.controls = expander.id.replace("_img", "");
 				var row = $(expander.controls);
 				if(row)
