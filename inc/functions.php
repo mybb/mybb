@@ -680,9 +680,14 @@ function usergroup_displaygroup($gid)
 	return $displaygroup;
 }
 
-//
-// Build forum permissions for the specific forum, user or group
-//
+/**
+ * Build the forum permissions for a specific forum, user or group
+ *
+ * @param int The forum ID to build permissions for (0 builds for all forums)
+ * @param int The user to build the permissions for (0 assumes current logged in user)
+ * @param int The group of the user to build permissions for (0 will fetch it)
+ * @return array Forum permissions for the specific forum or forums
+ */
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
 	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybbgroup, $mybbuser, $mybb, $usercache, $fpermissionscache;
@@ -739,9 +744,15 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 	return $permissions;
 }
 
-//
-// Perform inheritance scheme for forum permissions
-//
+/**
+ * Fetches the permissions for a specific forum/group applying the inheritance scheme.
+ * Called by forum_permissions()
+ *
+ * @param int The forum ID
+ * @param string A comma separated list of usergroups
+ * @param array Group permissions
+ * @return array Permissions for this forum 
+*/
 function fetch_forum_permissions($fid, $gid, $groupperms)
 {
 	global $groupscache, $forum_cache, $fpermcache, $mybb, $fpermfields;
@@ -750,8 +761,6 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		return $groupperms;
 	}
-	// Okay, we'll do it the hard way because this forum must have some custom or inherited permissions
-
 	// The fix here for better working inheritance was provided by tinywizard - http://windizupdate.com/
 	// Many thanks.
 	foreach($fpermfields as $perm)
@@ -786,9 +795,12 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	return $forumpermissions;
 }
 
-//
-// Check the password given on a certain forum for validity
-//
+/**
+ * Check the password given on a certain forum for validity
+ *
+ * @param int The forum ID
+ * @param string The plain text password for the forum
+ */
 function check_forum_password($fid, $password="")
 {
 	global $mybb, $mybbuser, $toplinks, $header, $settings, $footer, $css, $headerinclude, $theme, $breadcrumb, $templates, $lang;
@@ -833,9 +845,14 @@ function check_forum_password($fid, $password="")
 	}
 }
 
-//
-// Get the permissions for a specific moderator in a certain forum
-//
+/**
+ * Return the permissions for a moderator in a specific forum
+ *
+ * @param fid The forum ID
+ * @param uid The user ID to fetch permissions for (0 assumes current logged in user)
+ * @param string The parent list for the forum (if blank, will be fetched)
+ * @return array Array of moderator permissions for the specific forum
+ */
 function get_moderator_permissions($fid, $uid="0", $parentslist="")
 {
 	global $mybb, $mybbuser, $db;
@@ -868,9 +885,14 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 	return $perms;
 }
 
-//
-// Returns the permissions a moderator has to perform a specific function
-//
+/**
+ * Checks if a moderator has permissions to perform an action in a specific forum
+ *
+ * @param int The forum ID (0 assumes global)
+ * @param string The action tyring to be performed. (blank assumes any action at all)
+ * @param int The user ID (0 assumes current user)
+ * @return yes|no Returns yes if the user has permission, no if they do not
+ */
 function is_moderator($fid="0", $action="", $uid="0")
 {
 	global $mybb, $mybbuser, $db, $mybbgroup;
@@ -1110,6 +1132,11 @@ function get_server_load()
 	return $returnload;
 }
 
+/**
+ * Update the forum counters for a specific forum
+ *
+ * @param int The forum ID
+ */
 function update_forum_count($fid)
 {
 	global $db, $cache;
@@ -1166,6 +1193,11 @@ function update_forum_count($fid)
 	$db->update_query(TABLE_PREFIX."forums", $update_count, "fid='{$fid}'");
 }
 
+/**
+ * Update the thread counters for a specific thread
+ *
+ * @param int The thread ID
+ */
 function update_thread_count($tid)
 {
 	global $db, $cache;
@@ -1241,6 +1273,11 @@ function update_thread_count($tid)
 	");
 }
 
+/**
+ * Updates the number of attachments for a specific thread
+ *
+ * @param int The thread ID
+ */
 function update_thread_attachment_count($tid)
 {
 	global $db;
@@ -1257,6 +1294,11 @@ function update_thread_attachment_count($tid)
 	");
 }
 
+/**
+ * Deletes a thread from the database
+ *
+ * @param int The thread ID
+ */
 function delete_thread($tid)
 {
 	global $moderation;
@@ -1268,6 +1310,11 @@ function delete_thread($tid)
 	return $moderation->delete_thread($tid);
 }
 
+/**
+ * Deletes a post from the database
+ *
+ * @param int The thread ID
+ */
 function delete_post($pid, $tid="")
 {
 	global $moderation;
@@ -1279,7 +1326,18 @@ function delete_post($pid, $tid="")
 	return $moderation->delete_post($pid);
 }
 
-
+/**
+ * Builds a forum jump menu
+ *
+ * @param int The parent forum to start with
+ * @param int The selected item ID
+ * @param int If we need to add select boxes to this cal or not
+ * @param int The current depth of forums we're at
+ * @param int Whether or not to show extra items such as User CP, Forum home
+ * @param array Array of permissions
+ * @param string The name of the forum jump
+ * @return string Forum jump items
+ */
 function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $permissions="", $name="fid")
 {
 	global $db, $forum_cache, $fjumpcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang, $mybbgroup;
@@ -1384,6 +1442,14 @@ function random_str($length="8")
 	return $str;
 }
 
+/**
+ * Formats a username based on their display group
+ *
+ * @param string The username
+ * @param int The usergroup for the user (if not specified, will be fetched)
+ * @param int The display group for the user (if not specified, will be fetched)
+ * @return string The formatted username
+ */
 function format_name($username, $usergroup, $displaygroup="")
 {
 	global $groupscache, $cache;
@@ -1505,6 +1571,13 @@ function build_clickable_smilies()
 	return $clickablesmilies;
 }
 
+/**
+ * Gzip encodes text to a specified level
+ *
+ * @param string The string to encode
+ * @param int The level (1-9) to encode at
+ * @return string The encoded string
+ */
 function gzip_encode($contents, $level=1)
 {
 	if(function_exists("gzcompress") && function_exists("crc32") && !headers_sent())

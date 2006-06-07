@@ -351,6 +351,44 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$lang->redirect_newreply .= $lang->redirect_newreply_moderation;
 			$url = "showthread.php?tid=$tid";
 		}
+		
+		// Mark any quoted posts so they're no longer selected - attempts to maintain those which weren't selected
+		if($mybb->input['quoted_ids'] && $_COOKIE['multiquote'] && $mybb->settings['multiquote'] != "off")
+		{
+			// We quoted all posts - remove the entire cookie
+			if($mybb->input['quoted_ids'] == "all")
+			{
+				myunsetcookie("multiquote");
+			}
+			// Only quoted a few - attempt to remove them from the cookie
+			else
+			{
+				$quoted_ids = explode("|", $mybb->input['quoted_ids']);
+				$multiquote = explode("|", $_COOKIE['multiquote']);
+				if(is_array($multiquote) && is_array($quoted_ids))
+				{
+					foreach($multiquote as $key => $quoteid)
+					{
+						// If this ID was quoted, remove it from the multiquote list
+						if(in_array($quoteid, $quoted_ids))
+						{
+							unset($multiquote[$key]);
+						}
+					}
+					// Still have an array - set the new cookie
+					if(is_array($multiquote))
+					{
+						$new_multiquote = implode(",", $multiquote);
+						mysetcookie("multiquote", $new_multiquote);
+					}
+					// Otherwise, unset it
+					else
+					{
+						myunsetcookie("multiquote");
+					}
+				}
+			}
+		}
 
 		$plugins->run_hooks("newreply_do_newreply_end");
 
@@ -364,31 +402,92 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 {
 	$plugins->run_hooks("newreply_start");
 
-	// Handle quotes in the post.
-	if($pid && !$mybb->input['previewpost'] && $mybb->input['action'] != "editdraft")
+	$quote_ids = '';
+	// If this isn't a preview and we're not editing a draft, then handle quoted posts
+	if(!$mybb->input['previewpost'] && $mybb->input['action'] != "editdraft")
 	{
-		$query = $db->query("
-			SELECT p.*, u.username FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE p.pid='$pid'
-			AND p.tid='$tid'
-			AND p.visible='1'
-		");
-		$quoted = $db->fetch_array($query);
-		$quoted['subject'] = preg_replace("#RE:#i", '', $quoted['subject']);
-		$subject = "RE: ".$quoted['subject'];
-		$quoted['message'] = preg_replace('#^/me (.*)$#im', "* $quoted[username] \\1", $quoted['message']);
-		if($quoted['username'])
+		$message = '';
+		$quoted_posts = array();
+		// Handle multiquote
+		if($_COOKIE['multiquote'] && $mybb->settings['multiquote'] != "off")
 		{
-			$message = "[quote=$quoted[username]]\n$quoted[message]\n[/quote]";
+			$multiquoted = explode("|", $_COOKIE['multiquote']);
+			foreach($multiquoted as $post)
+			{
+				$quoted_posts[$post] = intval($post);
+			}
 		}
-		else
+		// Handle incoming 'quote' button
+		if($pid)
 		{
-			$message = "[quote]\n$quoted[message]\n[/quote]";
+			$quoted_posts[$pid] = $pid;
 		}
-		// Remove [attachment=x] from quoted posts.
-		$message = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $message);
+	
+		// Quoting more than one post - fetch them
+		if(count($quoted_posts) > 0)
+		{
+			$external_quotes = 0;
+			$quoted_posts = implode(",", $quoted_posts);
+			$unviewable_forums = get_unviewable_forums();
+			if($unviewable_forums)
+			{
+				$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
+			}
+			$query = $db->query("
+				SELECT p.subject, p.message, p.pid, p.tid, p.username, u.username AS userusername
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+				WHERE p.pid IN ($quoted_posts) {$unviewable_forums} AND p.visible='1'
+			");
+			while($quoted_post = $db->fetch_array($query))
+			{
+				// Only show messages for the current thread
+				if($quoted_post['tid'] == $tid)
+				{
+					// If this post was the post for which a quote button was clicked, set the subject
+					if($pid == $quoted_post['pid'])
+					{
+						$subject = preg_replace('#RE:#i', '', $quoted_post['subject']);
+					}
+					if($quoted_post['userusername'])
+					{
+						$quoted_post['username'] = $quoted_post['userusername'];
+					}
+					$quoted_post['message'] = preg_replace('#^/me (.*)$#im', "* $quoted[username] \\1", $quoted_post['message']);
+					$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
+					$message .= "[quote={$quoted_post['username']}]\n{$quoted_post['message']}\n[/quote]\n\n";
+					$quoted_ids[] = $quoted_post['pid'];
+				}
+				// Count the rest
+				else
+				{
+					++$external_quotes;
+				}
+			}
+			if($external_quotes > 0)
+			{
+				if($external_quotes == 1)
+				{
+					$multiquote_text = $lang->multiquote_external_one;
+					$multiquote_deselect = $lang->multiquote_external_one_deselect;
+					$multiquote_quote = $lang->multiquote_external_one_quote;
+				}
+				else
+				{
+					$multiquote_text = sprintf($lang->multiquote_external, $external_quotes);
+					$multiquote_deselect = $lang->multiquote_external_deselect;
+					$multiquote_quote = $lang->multiquote_external_quote;
+				}
+				eval("\$multiquote_external = \"".$templates->get("newreply_multiquote_external")."\";");				
+			}
+			if(count($quoted_ids) > 0)
+			{
+				$quoted_ids = implode("|", $quoted_ids);
+			}
+		}
 	}
+
 	if($mybb->input['previewpost'])
 	{
 		$previewmessage = $mybb->input['message'];
@@ -452,6 +551,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	// Preview a post that was written.
 	if($mybb->input['previewpost'])
 	{
+		$quote_ids = htmlspecialchars_uni($mybb->input['quote_ids']);
 		if(!$mybb->input['username'])
 		{
 			$mybb->input['username'] = $lang->guest;

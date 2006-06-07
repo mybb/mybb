@@ -348,7 +348,69 @@ else if($mybb->input['action'] == "edit_post")
 		exit;	
 	}
 }
+// Fetch the list of multiquoted posts which are not in a specific thread
+else if($mybb->input['action'] == "get_multiquoted")
+{
+	// If the cookie does not exist, exit
+	if(!array_key_exists("multiquote", $_COOKIE))
+	{
+		echo 'no 1';
+		exit;
+	}
+	// Divide up the cookie using our delimeter
+	$multiquoted = explode("|", $_COOKIE['multiquote']);
+	
+	// No values - exit
+	if(!is_array($multiquoted))
+	{
+		echo 'no2';
+		exit;
+	}
+	
+	// Loop through each post ID and sanitize it before querying
+	foreach($multiquoted as $post)
+	{
+		$quoted_posts[$post] = intval($post);
+	}
 
+	// Join the post IDs back together
+	$quoted_posts = implode(",", $quoted_posts);
+	
+	// Fetch unviewable forums
+	$unviewable_forums = get_unviewable_forums();
+	if($unviewable_forums)
+	{
+		$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
+	}
+	$message = '';
+	// Query for any posts in the list which are not within the specified thread
+	$query = $db->query("
+		SELECT p.subject, p.message, p.pid, p.tid, p.username, u.username AS userusername
+		FROM ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE p.tid != '".intval($mybb->input['tid'])."' AND p.pid IN ($quoted_posts) {$unviewable_forums} AND p.visible='1'
+	");
+	while($quoted_post = $db->fetch_array($query))
+	{
+		// Swap username over if we have a registered user
+		if($quoted_post['userusername'])
+		{
+			$quoted_post['username'] = $quoted_post['userusername'];
+		}
+		// Clean up the message
+		$quoted_post['message'] = preg_replace('#^/me (.*)$#im', "* $quoted[username] \\1", $quoted_post['message']);
+		$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
+		
+		// Tack on to list of messages
+		$message .= "[quote={$quoted_post['username']}]\n{$quoted_post['message']}\n[/quote]\n\n";
+	}
+	
+	// Send our headers.
+	header("Content-type: text/plain; charset=utf-8");
+	echo $message;
+	exit;	
+}
 /**
  * Spits an XML Http based error message back to the browser
  *

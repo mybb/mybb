@@ -921,9 +921,9 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[on]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="quickquote">
-			<title>Show Quick Quote Buttons</title>
-			<description><![CDATA[Quick quote buttons allow users to instantly quote a post using the quick reply form. Be warned that this option adds extra data to the page and can cause pages to take longer to download. The quick reply option must also be enabled.]]></description>
+		<setting name="multiquote">
+			<title>Show Multi-quote Buttons</title>
+			<description><![CDATA[The multi-quote button allows users to select a series of posts then click Reply and have those posts quoted in their message.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[on]]></settingvalue>

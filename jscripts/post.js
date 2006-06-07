@@ -3,18 +3,42 @@ var Post = {
 	{
 	},
 	
-	quickQuote: function(pid)
+	loadMultiQuoted: function()
 	{
-		post = $("qq"+pid);
-		author = $("qqauthor"+pid);
-		
-		if(!post)
+		tid = document.input.tid.value;
+		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
+		new ajax('xmlhttp.php?action=get_multiquoted&tid='+tid, {method: 'get', onComplete: function(request) {Post.multiQuotedLoaded(request); }});		
+	},
+	
+	multiQuotedLoaded: function(request)
+	{
+		if(request.responseText.match(/<error>(.*)<\/error>/))
 		{
-			return false;
+			message = request.responseText.match(/<error>(.*)<\/error>/);
+			if(!message[1])
+			{
+				message[1] = "An unknown error occurred.";
+			}
+			alert('There was an error fetching the posts.\n\n'+message[1]);
 		}
-		
-		document.input.message.value += "[quote="+author.innerHTML+"]"+MyBB.unHTMLchars(post.innerHTML)+"[/quote]\n\n";
-		document.input.message.focus();
+		else if(request.responseText)
+		{
+			if($('message').value)
+			{
+				$('message').value += "\n\n";
+			}
+			$('message').value += request.responseText;
+		}
+		$('multiquote_unloaded').style.display = 'none';
+		document.input.quoted_ids.value = 'all';
+		this.spinner.destroy();	
+		this.spinner = '';	
+	},
+	
+	clearMultiQuoted: function()
+	{
+		$('multiquote_unloaded').style.display = 'none';
+		Cookie.unset('multiquote');
 	},
 
 	removeAttachment: function(aid)

@@ -31,6 +31,12 @@ $l['verification_note'] = "Please enter the text contained within the image on t
 $l['verification_subnote'] = "(case in-sensitive)";
 $l['invalid_captcha'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_post_already_submitted'] = "You have already posted this reply to the specified thread. Please visit the thread to see your reply.";
+$l['multiquote_external_one'] = "You have selected one post outside of this thread.";
+$l['multiquote_external'] = "You have selected {1} posts outside of this thread.";
+$l['multiquote_external_one_deselect'] = "deselect this post";
+$l['multiquote_external_deselect'] = "deselect these posts";
+$l['multiquote_external_one_quote'] = "Quote this post too";
+$l['multiquote_external_quote'] = "Quote these posts too";
 
 $l['redirect_newreply'] = "Thank you, your reply has been posted.";
 $l['redirect_newreply_moderation'] = "<br />The administrator has specified that all new posts require moderation. You will now be returned to the thread.";

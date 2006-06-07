@@ -864,6 +864,7 @@ var inlineId = {$tid};
 <td class="trow2">
 <textarea id="message" name="message" rows="20" cols="70" tabindex="2" >{$message}</textarea>
 {$codebuttons}
+{$multiquote_external}
 </td>
 </tr>
 <tr>
@@ -886,6 +887,7 @@ var inlineId = {$tid};
 <input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />
+<input type="hidden" name="quoted_ids" value="{$quoted_ids}" />
 {$editdraftpid}
 </form>
 {$forumrules}
@@ -3513,7 +3515,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </div>
 {$post['attachments']}
 {$post['signature']}
-{$post['qqmessage']}
 <div style="text-align: right; vertical-align: bottom;">
 {$post['editedmsg']}
 {$post['iplogged']}
@@ -5379,7 +5380,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td class="{$altbg}">
 {$reviewmessage}
-<script type="text/javascript">document.write("<div style=\"display: none;\"><span id=\"qq{$post['pid']}\">{$post['quickquote_message']}<\/span><span id=\"qqauthor{$post['pid']}\">{$post['username']}<\/span><\/div><div style=\"text-align: right;\"><a href=\"javascript:Post.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /><\/a><\/div>");</script>
 </td>
 </tr>]]></template>
 		<template name="newreply_threadreview" version="100.07"><![CDATA[<br />
@@ -6450,8 +6450,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>
 <br />]]></template>
 		<template name="htmldoctype" version="100.07"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
-		<template name="postbit_qqmessage" version="100.07"><![CDATA[<div style="display: none;"><span id="qq{$post['pid']}">{$post['quickquote_message']}</span><span id="qqauthor{$post['pid']}">{$post['username']}</span></div>]]></template>
-		<template name="postbit_quickquote" version="100.07"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.quickQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_quickquote.gif\" border=\"0\" alt=\"{$lang->postbit_qquote}\" /><\/a>");</script>]]></template>
+		<template name="postbit_multiquote" version="100.07"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.multiQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_multiquote.gif\" border=\"0\" alt=\"{$lang->postbit_multiquote}\" id=\"multiquote_{$post['pid']}\" /><\/a>");</script>]]></template>
 		<template name="private_send_autocomplete" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js"></script>
 <script type="text/javascript">
 	new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username"});
@@ -6544,5 +6543,6 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>]]></template>
 	<template name="post_captcha_hidden" version="100.07"><![CDATA[<input type="hidden" name="imagehash" value="{$imagehash}" />
 	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
+	<template name="newreply_multiquote_external" version="100.07"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext" />{$multiquote_text} <a href="javascript:Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
 	</templates>
 </theme>

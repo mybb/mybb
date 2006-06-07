@@ -2,20 +2,60 @@ var Thread = {
 	init: function()
 	{
 		Thread.qeCache = new Array();
+		Thread.initMultiQuote();
 	},
-
-	quickQuote: function(pid)
+	
+	initMultiQuote: function()
 	{
-		post = $("qq"+pid);
-		author = $("qqauthor"+pid);
-		
-		if(!post)
+		var quoted = Cookie.get("multiquote");
+		if(quoted)
 		{
-			return false;
+			var post_ids = quoted.split("|");
+			for(var i=0; i < post_ids.length; i++)
+			{
+				if(post_ids[i] != '')
+				{
+					if($("multiquote_"+post_ids[i]))
+					{
+						element = $("multiquote_"+post_ids[i]);
+						element.src = element.src.replace("postbit_multiquote.gif", "postbit_multiquote_on.gif");
+					}
+				}
+			}
 		}
-		
-		document.input.message.value += "[quote="+author.innerHTML+"]"+MyBB.unHTMLchars(post.innerHTML)+"[/quote]\n\n";
-		document.input.message.focus();
+	},
+	
+	multiQuote: function(pid)
+	{
+		var new_post_ids = new Array();
+		var quoted = Cookie.get("multiquote");
+		var is_new = true;
+		if(quoted)
+		{
+			var post_ids = quoted.split("|");
+			for(var i = 0; i < post_ids.length; i++)
+			{
+				if(post_ids[i] != pid && post_ids[pid] != '')
+				{
+					new_post_ids[new_post_ids.length] = post_ids[i];
+				}
+				else if(post_ids[i] == pid)
+				{
+					is_new = false;
+				}
+			}
+		}
+		element = $("multiquote_"+pid);
+		if(is_new == true)
+		{
+			element.src = element.src.replace("postbit_multiquote.gif", "postbit_multiquote_on.gif");
+			new_post_ids[new_post_ids.length] = pid;
+		}
+		else
+		{
+			element.src = element.src.replace("postbit_multiquote_on.gif", "postbit_multiquote.gif");
+		}
+		Cookie.set("multiquote", new_post_ids.join("|"));		
 	},
 
 	deletePost: function(pid)

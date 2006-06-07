@@ -334,11 +334,9 @@ function build_postbit($post, $pmprevann=0)
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
-		if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->settings['quickquote'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no" && !$pmprevann)
+		if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['multiquote'] != "off" && $forum['open'] != "no" && !$pmprevann)
 		{
-			eval("\$post['button_quickquote'] = \"".$templates->get("postbit_quickquote")."\";");
-			$post['quickquote_message'] = htmlspecialchars($post['message']);
-			eval("\$post['qqmessage'] = \"".$templates->get("postbit_qqmessage")."\";");
+			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
 		if($mybb->user['uid'] != "0")
 		{
