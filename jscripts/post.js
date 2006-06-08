@@ -25,7 +25,7 @@ var Post = {
 		{
 			if($('message').value)
 			{
-				$('message').value += "\n\n";
+				$('message').value += "\n";
 			}
 			$('message').value += request.responseText;
 		}
