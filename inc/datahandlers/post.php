@@ -98,6 +98,8 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 		$subject = &$post['subject'];
 
+		$subject = trim($subject);
+		
 		// Are we editing an existing thread or post?
 		if($this->method == "update" && $post['pid'])
 		{
@@ -125,12 +127,12 @@ class PostDataHandler extends DataHandler
 			}
 
 			// If this is the first post there needs to be a subject, else make it the default one.
-			if(strlen(trim($subject)) == 0 && $first_post)
+			if(strlen($subject) == 0 && $first_post)
 			{
 				$this->set_error("firstpost_no_subject");
 				return false;
 			}
-			elseif(strlen(trim($subject)) == 0)
+			elseif(strlen($subject) == 0)
 			{
 				$thread = get_thread($post['tid']);
 				$subject = "RE: ".$thread['subject'];
@@ -140,7 +142,7 @@ class PostDataHandler extends DataHandler
 		// This is a new post
 		else if($this->action == "post")
 		{
-			if(strlen(trim($subject)) == 0)
+			if(strlen($subject) == 0)
 			{
 				$thread = get_thread($post['tid']);
 				$subject = "RE: ".$thread['subject'];
@@ -150,7 +152,7 @@ class PostDataHandler extends DataHandler
 		// This is a new thread and we require that a subject is present.
 		else
 		{
-			if(strlen(trim($subject)) == 0)
+			if(strlen($subject) == 0)
 			{
 				$this->set_error("missing_subject");
 				return false;
@@ -170,8 +172,9 @@ class PostDataHandler extends DataHandler
 	{
 		$message = &$this->data['message'];
 
+		$message = trim($message);
 		// Do we even have a message at all?
-		if(trim($message) == "")
+		if(strlen($message) == 0)
 		{
 			$this->set_error("missing_message");
 			return false;
