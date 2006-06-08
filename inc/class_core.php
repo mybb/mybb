@@ -143,7 +143,7 @@ class MyBB {
 			register_shutdown_function(array(&$this, "__destruct"));
 		}
 		
-		if($this->input['mybbcheck'] == 1)
+		if($this->input['intcheck'] == 1)
 		{
 			die("&#077;&#089;&#066;&#066;");
 		}
