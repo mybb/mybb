@@ -58,7 +58,7 @@ $l['parentforum'] = "Parent Forum";
 $l['parentforum_none'] = "None";
 
 $l['access_perm_options'] = "Access and Permission Options";
-$l['forum_password'] = "Forum Password<br><small>If you want to protect this forum you can enter a password here. Note, the user groups needs permission to access the as well.</small>";
+$l['forum_password'] = "Forum Password<br><small>If you want to protect this forum you can enter a password here. Note, the user groups needs permission to access the forum as well.</small>";
 
 $l['posting_options'] = "Posting and Thread Listing Options";
 $l['act_as_forum'] = "Act As Forum?<br /><small>If no, will act as a category.";
