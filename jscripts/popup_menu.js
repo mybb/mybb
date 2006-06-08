@@ -19,25 +19,8 @@ PopupMenu.prototype = {
 			return false;
 		}
 		
-		if(options)
-		{
-			if(options.width)
-			{
-				if(options.width == "owner")
-				{
-					if(element.style.width)
-					{
-						this.menu.style.width = element.style.width;
-					}
-					else
-					{
-						this.menu.style.width = element.offsetWidth+"px";
-					}
-				}
-			}
-		}
 		this.menu = $(popupMenu);
-		this.menu.style.display = "none";
+		//this.menu.style.display = "none";
 		element.onclick = this.openMenu.bindAsEventListener(this);
 	},
 	
@@ -62,12 +45,13 @@ PopupMenu.prototype = {
 			offsetLeft += element.offsetLeft || 0;
 			element = element.offsetParent;
 		} while(element);
-
 		element = $(this.id);
 		this.menu.style.position = "absolute";
 		this.menu.style.zIndex = 10;
 		this.menu.style.top = (offsetTop+element.offsetHeight-1)+"px";
 		this.menu.style.left = offsetLeft+"px";
+		this.menu.style.visibility = 'hidden';
+		this.menu.style.display = '';
 		if(this.menu.style.width)
 		{
 			menuWidth = parseInt(this.menu.style.width);
@@ -85,7 +69,8 @@ PopupMenu.prototype = {
 				this.menu.style.left = (parseInt(this.menu.style.left)-2)+"px";
 			}
 		}
-		this.menu.style.display = '';	
+		//this.menu.style.display = '';	
+		this.menu.style.visibility = 'visible';
 
 		document.currentMenu = element.id;
 		document.onclick = this.closeMenu.bindAsEventListener(this);
