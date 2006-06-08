@@ -43,7 +43,7 @@ class postParser
 	 * @var mixed
 	 */
 	var $badwords_cache = 0;
-	
+
 	/**
 	 * Base URL for smilies
 	 *
@@ -61,7 +61,7 @@ class postParser
 	function parse_message($message, $options=array())
 	{
 		global $plugins, $mybb;
-		
+
 		// Set base URL for parsing smilies
 		$this->base_url = $mybb->settings['bburl'];
 
@@ -95,13 +95,13 @@ class postParser
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>", $message);
 		}
-		
+
 		// If we can, parse smiliesa
 		if($options['allow_smilies'] != "no")
 		{
 			$message = $this->parse_smilies($message, $options['allowhtml']);
 		}
-		
+
 		// Replace MyCode if requested.
 		if($options['allow_mycode'] != "no")
 		{
@@ -307,7 +307,7 @@ class postParser
 	{
 		global $cache;
 		$this->smilies_cache = array();
-		
+
 		$smilies = $cache->read("smilies");
 		foreach($smilies as $sid => $smilie)
 		{
@@ -333,7 +333,7 @@ class postParser
 		{
 			reset($this->smilies_cache);
 			foreach($this->smilies_cache as $find => $replace)
-			{				
+			{
 				if($allow_html != "yes")
 				{
 					$find = $this->parse_html($find);
@@ -376,7 +376,7 @@ class postParser
 			{
 				if(!$badword['replacement']) $badword['replacement'] = "*****";
 				$badword['badword'] = preg_quote($badword['badword']);
-				$message = preg_replace("#".$badword['badword']."#i", $badword['replacement'], $message);
+				$message = preg_replace("#\b".$badword['badword']."\b#i", $badword['replacement'], $message);
 			}
 		}
 		if($options['strip_tags'] == "yes")
@@ -520,11 +520,11 @@ class postParser
 		// Do the actual replacing.
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
-		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);		
+		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
 		$code = str_replace('\\', '&#092;', $code);
 		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
-		
-		
+
+
 		if($added_open_close == true)
 		{
 			$code = preg_replace("#<code><span style=\"color: \#0000BB\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #0000BB\">", $code);
@@ -550,7 +550,7 @@ class postParser
 	{
 		$fullurl = $url;
 		$url = str_replace('&amp;', '&', $url);
-		
+
 		if(strpos($url, "www.") === 0)
 		{
 			$fullurl = "http://".$fullurl;
@@ -573,11 +573,11 @@ class postParser
 		if($name == $url)
 		{
 			if(strlen($url) > 55)
-			{				
+			{
 				$name = substr($url, 0, 40)."...".substr($url, -10);
 			}
 		}
-		
+
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name);
 		$link = "<a href=\"$fullurl\" target=\"_blank\">$name</a>";
 		return $link;
@@ -644,7 +644,7 @@ class postParser
 		$list = preg_replace("#<(ol type=\"$type\"|ul)>\s*</li>#", "<$1>", $list);
 		return $list;
 	}
-	
+
 	/**
 	 * Strips smilies from a string
  	 *
