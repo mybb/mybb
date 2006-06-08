@@ -1682,8 +1682,15 @@ $headerinclude
 		<hr class="hidden" />
 			<div id="copyright">
 				<div id="debug"><debugstuff></div>
+				<!-- You may NOT remove, modify or hinder the visibility of the MyBB copyright at any time.
+				     It must contain the links to the MyBB website and be formatted appropriately.
+				
+					 Failure to comply with the above will result in prosecution to the full extent of the law.
+					 This is free software, support us and we'll support you. -->
 {$lang->powered_by} <a href="http://www.mybboard.com" target="_blank">MyBB</a> {$mybbversion}<br />
-				{$lang->copyright} &copy; 2002-{$copy_year} <strong><a href="http://www.mybboard.com" target="_blank">MyBB Group</a></strong><br />
+				{$lang->copyright} &copy; 2002-{$copy_year} <strong><a href="http://www.mybboard.com" target="_blank">MyBB Group</a></strong>
+				<!-- End copyright -->
+				<br />
 <br class="clear" />
 		</div>
 		</div>]]></template>
