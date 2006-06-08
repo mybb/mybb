@@ -15,7 +15,11 @@ var MyBB = {
 		this.useragent = navigator.userAgent.toLowerCase();
 		this.useragent_version = parseInt(navigator.appVersion);
 
-		if(navigator.product == "Gecko")
+		if(navigator.product == "Gecko" && navigator.vendor.indexOf("Apple Computer") != -1)
+		{
+			this.browser = "safari";
+		}
+		else if(navigator.product == "Gecko")
 		{
 			this.browser = "mozilla";
 		}

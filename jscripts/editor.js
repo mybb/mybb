@@ -91,8 +91,8 @@ messageEditor.prototype = {
 		editor.style.padding = "3px";
 
 		// Create the first toolbar
-		toolbar = document.createElement("div");
-		toolbar.style.height = "26px";
+		toolBar = document.createElement("div");
+		toolBar.style.height = "26px";
 
 		// Create the font drop down.
 		fontSelect = document.createElement("select");
@@ -103,7 +103,7 @@ messageEditor.prototype = {
 			fontSelect.options[fontSelect.options.length] = new Option(this.fonts[font], font);
 		}
 		Event.observe(fontSelect, "change", this.changeFont.bindAsEventListener(this));
-		toolbar.appendChild(fontSelect);
+		toolBar.appendChild(fontSelect);
 
 		// Create the font size drop down.
 		sizeSelect = document.createElement("select");
@@ -114,7 +114,7 @@ messageEditor.prototype = {
 			sizeSelect.options[sizeSelect.options.length] = new Option(this.sizes[size], size);
 		}
 		Event.observe(sizeSelect, "change", this.changeSize.bindAsEventListener(this));
-		toolbar.appendChild(sizeSelect);
+		toolBar.appendChild(sizeSelect);
 
 		// Create the colour drop down.
 		colorSelect = document.createElement("select");
@@ -127,9 +127,9 @@ messageEditor.prototype = {
 			colorSelect.options[colorSelect.options.length-1].style.color = color;
 		}
 		Event.observe(colorSelect, "change", this.changeColor.bindAsEventListener(this));
-		toolbar.appendChild(colorSelect);
+		toolBar.appendChild(colorSelect);
 		// Append first toolbar to the editor
-		editor.appendChild(toolbar);
+		editor.appendChild(toolBar);
 
 		// Create the second toolbar.
 		toolbar2 = document.createElement("div");
@@ -172,27 +172,25 @@ messageEditor.prototype = {
 		editor.appendChild(toolbar2);
 
 		// Create our new text area
-		area = document.createElement("div");
+		areaContainer = document.createElement("div");
 
 		// Set the width/height of the area
 		if(MyBB.browser == "mozilla")
 		{
-			subtract = 6;
-			subtract2 = 1;
+			subtract = subtract2 = parseInt(editor.style.padding)*2;
 		}
 		else
 		{
 			subtract = subtract2 = 0;
 		}
-		area.style.height = parseInt(editor.style.height)-parseInt(toolbar.style.height)-parseInt(toolbar2.style.height)-subtract+"px";
-		area.style.width = parseInt(editor.style.width)-parseInt(editor.style.padding)-subtract2+"px";
-
+		areaContainer.style.height = parseInt(editor.style.height)-parseInt(toolBar.style.height)-parseInt(toolbar2.style.height)-subtract+"px";
+		areaContainer.style.width = (parseInt(editor.style.width)-subtract2)+"px";
 		// Create text area
 		textInput = document.createElement("textarea");
 		textInput.id = this.textarea;
 		textInput.name = oldTextarea.name;
-		textInput.style.height = area.style.height;
-		textInput.style.width = area.style.width;
+		textInput.style.height = areaContainer.style.height;
+		textInput.style.width = areaContainer.style.width;
 		if(oldTextarea.value != '')
 		{
 			textInput.value = oldTextarea.value;
@@ -201,8 +199,8 @@ messageEditor.prototype = {
 		{
 			textInput.tabIndex = oldTextarea.tabIndex;
 		}
-		area.appendChild(textInput);
-		editor.appendChild(area);
+		areaContainer.appendChild(textInput);
+		editor.appendChild(areaContainer);
 		if(oldTextarea.form)
 		{
 			Event.observe(oldTextarea.form, "submit", this.closeTags.bindAsEventListener(this));

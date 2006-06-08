@@ -418,9 +418,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			}
 		}
 		// Handle incoming 'quote' button
-		if($pid)
+		if($mybb->input['pid'])
 		{
-			$quoted_posts[$pid] = $pid;
+			$quoted_posts[$mybb->input['pid']] = $mybb->input['pid'];
 		}
 	
 		// Quoting more than one post - fetch them
