@@ -944,7 +944,7 @@ switch($mybb->input['action'])
 			error($lang->error_inline_nothreadsselected);
 		}
 
-		$moderation->open_threads($threads);
+		$moderation->close_threads($threads);
 
 		log_moderator_action($modlogdata, $lang->multi_closed_threads);
 		clearinline($fid, "forum");
