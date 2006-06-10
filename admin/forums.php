@@ -30,6 +30,9 @@ switch($mybb->input['action'])
 	case "delete":
 		addacpnav($lang->nav_delete_forum);
 		break;
+	case "copy":
+		addacpnav($lang->nav_copy_forum);
+		break;
 	case "addmod":
 		makeacpforumnav($fid);
 		addacpnav($lang->nav_add_mod);
@@ -831,6 +834,145 @@ if($mybb->input['action'] == "do_modify")
 	cpredirect("forums.php", $lang->orders_updated);
 }
 
+if($mybb->input['action'] == "do_copy") // Actually copy the forum
+{
+	$from = intval($mybb->input['from']);
+	$to = intval($mybb->input['to']);
+
+	// Find the source forum
+	$query = $db->simple_select(TABLE_PREFIX."forums", '*', "fid='{$from}'");
+	$from_forum = $db->fetch_array($query);
+	if(!$db->num_rows($query))
+	{
+		cperror($lang->invalid_source_forum);
+	}
+
+	if($to == -1)
+	{
+		// Create a new forum
+		if(empty($mybb->input['name']))
+		{
+			cperror($lang->new_forum_needs_name);
+		}
+		if($mybb->input['isforum'] == 'no')
+		{
+			$type = 'c';
+		}
+		else
+		{
+			$type = 'f';
+		}
+		if($mybb->input['pid'] == 0 && $type == 'f')
+		{
+			cperror($lang->forum_noparent);
+		}
+
+		$new_forum = $from_forum;
+		unset($new_forum['fid']);
+		$new_forum['name'] = $db->escape_string($mybb->input['name']);
+		$new_forum['description'] = $db->escape_string($mybb->input['description']);
+		$new_forum['type'] = $type;
+		$new_forum['pid'] = intval($mybb->input['pid']);
+		
+		$db->insert_query(TABLE_PREFIX."forums", $new_forum);
+		$to = $db->insert_id();
+
+		// Generate parent list
+		$parentlist = makeparentlist($to);
+		$updatearray = array(
+			'parentlist' => $parentlist
+		);
+		$db->update_query(TABLE_PREFIX."forums", $updatearray, "fid='{$to}'");
+	}
+	elseif($mybb->input['copyforumsettings'] == "yes")
+	{
+		// Copy settings to existing forum
+		$query = $db->simple_select(TABLE_PREFIX."forums", '*', "fid='{$to}'");
+		$to_forum = $db->fetch_array($query);
+		if(!$db->num_rows($query))
+		{
+			cperror($lang->invalid_destination_forum);
+		}
+
+		$new_forum = $from_forum;
+		unset($new_forum['fid']);
+		$new_forum['name'] = $db->escape_string($to_forum['name']);
+		$new_forum['description'] = $db->escape_string($to_forum['description']);
+		$new_forum['pid'] = $db->escape_string($to_forum['pid']);
+		$new_forum['parentlist'] = $db->escape_string($to_forum['parentlist']);
+
+		$db->update_query(TABLE_PREFIX."forums", $new_forum, "fid='{$to}'");
+	}
+	
+	// Copy permissions
+	if(is_array($mybb->input['copygroups']) && count($mybb->input['copygroups'] > 0))
+	{
+		foreach($mybb->input['copygroups'] as $gid)
+		{
+			$groups[] = intval($gid);
+		}
+		$groups = implode(',', $groups);
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", '*', "fid='{$from}' AND gid IN ({$groups})");
+		$db->delete_query(TABLE_PREFIX."forumpermissions", "fid='{$to}' AND gid IN ({$groups})", 1);
+		while($permissions = $db->fetch_array($query))
+		{
+			unset($permissions['pid']);
+			$permissions['fid'] = $to;
+
+			$db->insert_query(TABLE_PREFIX."forumpermissions", $permissions);
+		}
+	}
+	$cache->updateforums();
+	$cache->updateforumpermissions();
+
+	cpmessage($lang->copy_successful);
+}
+
+if($mybb->input['action'] == "copy") // Show the copy forum form
+{
+	$from = intval($mybb->input['from']);
+	$to = intval($mybb->input['to']);
+	if(!$noheader)
+	{
+		cpheader();
+	}
+	startform('forums.php', '', 'do_copy');
+	starttable();
+	tableheader($lang->copy_forum);
+	makelabelcode($lang->copy_forum_note, '', 2);
+	makelabelcode($lang->source_forum, forumselect('from', $from, '', '', 0));
+	unset($forumselect);
+	makelabelcode($lang->destination_forum, forumselect('to', $to, '', '', 0, $lang->no_copy_to_existing));
+
+	tablesubheader($lang->copy_to_new_forum);
+	makeinputcode($lang->name, 'name');
+	maketextareacode($lang->description, 'description');
+	unset($forumselect);
+	makelabelcode($lang->parentforum, forumselect('pid'));
+	makeyesnocode($lang->act_as_forum, 'isforum', 'yes');
+
+	tablesubheader($lang->copy_settings);
+	if(!isset($mybb->input['copyforumsettings']))
+	{
+		$mybb->input['copyforumsettings'] = 'yes';
+	}
+	makeyesnocode($lang->copy_forum_settings, 'copyforumsettings', $mybb->input['copyforumsettings']);
+	$query = $db->query("SELECT gid, title FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");
+	while($usergroup = $db->fetch_array($query))
+	{
+		$selected = '';
+		if($mybb->input['copygroups'] == 'all' || (is_array($mybb->input['copygroups']) && in_array($usergroup['gid'], $mybb->input['copygroups'])))
+		{
+			$selected = ' checked="checked"';
+		}
+		$group_list[] = "<input type=\"checkbox\" name=\"copygroups[]\" value=\"$usergroup[gid]\"$selected /> $usergroup[title]";
+	}
+	$group_list = implode("<br />\n", $group_list);
+	makelabelcode($lang->copy_usergroups, "<small>$group_list</small>");
+	endtable();
+	endform($lang->copy_forum_button, $lang->reset_button);
+	cpfooter();
+}
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	cpheader();
@@ -849,6 +991,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		$hopto[] = "<input type=\"button\" value=\"$lang->add_child_forum\" onclick=\"hopto('forums.php?action=add&pid=$fid');\" class=\"hoptobutton\">";
 		$hopto[] = "<input type=\"button\" value=\"$lang->edit_forum_settings\" onclick=\"hopto('forums.php?action=edit&fid=$fid');\" class=\"hoptobutton\">";
 		$hopto[] = "<input type=\"button\" value=\"$lang->delete_forum2\" onclick=\"hopto('forums.php?action=delete&fid=$fid');\" class=\"hoptobutton\">";
+		$hopto[] = "<input type=\"button\" value=\"$lang->copy_forum_button\" onclick=\"hopto('forums.php?action=copy&from=$fid');\" class=\"hoptobutton\">";
 		makehoptolinks($hopto);
 
 		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='$fid'");
@@ -936,6 +1079,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		$hopto[] = "<input type=\"button\" value=\"$lang->create_new_forum\" onclick=\"hopto('forums.php?action=add');\" class=\"hoptobutton\">";
 		$hopto[] = "<input type=\"button\" value=\"$lang->forum_announcements\" onclick=\"hopto('announcements.php');\" class=\"hoptobutton\">";
 		$hopto[] = "<input type=\"button\" value=\"$lang->forum_permissions\" onclick=\"hopto('forumpermissions.php');\" class=\"hoptobutton\">";
+		$hopto[] = "<input type=\"button\" value=\"$lang->copy_forum_button\" onclick=\"hopto('forums.php?action=copy');\" class=\"hoptobutton\">";
 		makehoptolinks($hopto);
 		startform("forums.php", "", "do_modify");
 		starttable();

@@ -10,6 +10,7 @@ $l['nav_forums'] = "Forum Management";
 $l['nav_add_forum'] = "New Forum";
 $l['nav_edit_forum'] = "Edit Forum Settings";
 $l['nav_delete_forum'] = "Delete Forum";
+$l['nav_copy_forum'] = "Copy Forum Settings";
 $l['nav_add_mod'] = "Add Moderator";
 $l['nav_edit_mod'] = "Edit Moderator";
 $l['nav_delete_mod'] = "Delete Moderator";
@@ -150,4 +151,18 @@ $l['display_rules_link'] = "Display a link to the rules";
 $l['rules_title'] = "Rules Title";
 $l['rules'] = "Rules";
 
+$l['copy_forum'] = "Copy Forum";
+$l['copy_forum_note'] = "This will allow you to copy the settings and/or usergroup forum permissions of one forum to another.";
+$l['source_forum'] = "Source Forum";
+$l['destination_forum'] = "Destination Forum";
+$l['copy_settings'] = "Settings";
+$l['copy_forum_settings'] = "Copy Forum Settings and Properties<br /><small>Only applies if destination forum exists</small>";
+$l['copy_usergroups'] = "Copy Usergroup Permissions";
+$l['copy_forum_button'] = "Copy Forum";
+$l['copy_to_new_forum'] = "New Forum Settings (Required only if copying to a new forum)";
+$l['no_copy_to_existing'] = "Copy To New Forum";
+$l['new_forum_needs_name'] = "You need to give your new forum a name.";
+$l['invalid_source_forum'] = "Invalid source forum.";
+$l['invalid_destination_forum'] = "Invalid destination forum.";
+$l['copy_successful'] = "Forum copied successfully";
 ?>

@@ -15,6 +15,8 @@ $l['guide2'] = "Black - using usergroup defaults<br><font color=\"red\">Red</fon
 $l['select_usergroup'] = "Please select a usergroup inside a forum to edit permissions for.";
 $l['edit_perms'] = "edit permissions";
 $l['set_perms'] = "set permissions";
+$l['copy_permissions_from'] = "copy permissions from...";
+$l['copy_permissions_to'] = "copy permissions to...";
 
 $l['inherit_note'] = "This forum is currently using permissions inherited from a parent forum.";
 $l['edit_permissions'] = "Edit Forum Permissions for {1} in {2}";

@@ -47,7 +47,10 @@ function getforums($pid="0")
 	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='$pid'", $options);
 	while($forum = $db->fetch_array($query))
 	{
-		$forumlist .= "\n<li><b>$forum[name]</b>\n";
+		$forumlist .= "\n<li>";
+		$forumlist .= "<div style=\"float:right\"><small>".makelinkcode($lang->copy_permissions_to, "forums.php?action=copy&from=$forum[fid]&copyforumsettings=no&copygroups=all");
+		$forumlist .= makelinkcode($lang->copy_permissions_from, "forums.php?action=copy&to=$forum[fid]&copyforumsettings=no&copygroups=all")."</small></div>";
+		$forumlist .= "<b>$forum[name]</b>\n";
 		$forumlist .= "<ul>\n";
 		$groupquery = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title");
 		while($usergroup = $db->fetch_array($groupquery))
