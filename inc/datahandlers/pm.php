@@ -175,7 +175,7 @@ class PMDataHandler extends DataHandler
 			}
 			elseif($mybb->settings['bblanguage'])
 			{
-				$uselang = $mybb->settings['language'];
+				$uselang = $mybb->settings['bblanguage'];
 			}
 			else
 			{
