@@ -1684,7 +1684,7 @@ $headerinclude
 				<div id="debug"><debugstuff></div>
 				<!-- You may NOT remove, modify or hinder the visibility of the MyBB copyright at any time.
 				     It must contain the links to the MyBB website and be formatted appropriately.
-				
+
 					 Failure to comply with the above will result in prosecution to the full extent of the law.
 					 This is free software, support us and we'll support you. -->
 {$lang->powered_by} <a href="http://www.mybboard.com" target="_blank">MyBB</a> {$mybbversion}<br />
@@ -4668,7 +4668,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
 	<td class="{$bgcolor}" width="1" nowrap="nowrap"><span class="smalltext">{$lastpostdate} {$lastposttime}<br />
-<a href="showthread.php?action=lastpost&amp;tid={$thread['tid']}">{$lang->lastpost}</a>: <a href="member.php?action=profile&amp;uid=lastposter&amp;tid={$thread['tid']}">{$lastposter}</a></span>
+<a href="showthread.php?action=lastpost&amp;tid={$thread['tid']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 </tr>]]></template>
 		<template name="search_results_threads" version="100.07"><![CDATA[<html>

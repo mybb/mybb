@@ -42,8 +42,8 @@ if($mybb->input['action'] == "results")
 {
 	$sid = $db->escape_string($mybb->input['sid']);
 	$query = $db->query("
-		SELECT * 
-		FROM ".TABLE_PREFIX."searchlog 
+		SELECT *
+		FROM ".TABLE_PREFIX."searchlog
 		WHERE sid='$sid'
 	");
 	$search = $db->fetch_array($query);
@@ -231,7 +231,7 @@ if($mybb->input['action'] == "results")
 			}
 			$folder = '';
 			$prefix = '';
-			
+
 			if(!$thread['username'])
 			{
 				$thread['username'] = $thread['threadusername'];
@@ -265,7 +265,7 @@ if($mybb->input['action'] == "results")
 			$isnew = 0;
 			$donenew = 0;
 			$lastread = 0;
-	
+
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
 			{
 				$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
@@ -357,6 +357,17 @@ if($mybb->input['action'] == "results")
 			$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
 			$lastposter = $thread['lastposter'];
 			$lastposteruid = $thread['lastposter'];
+
+			// Don't link to guest's profiles (they have no profile).
+			if($lastposteruid == 0)
+			{
+				$lastposterlink = $lastposter;
+			}
+			else
+			{
+				$lastposterlink = "<a href=\"".str_replace("{uid}", $lastposteruid, PROFILE_URL)."\">".$lastposter."</a>";
+			}
+
 			$thread['replies'] = mynumberformat($thread['replies']);
 			$thread['views'] = mynumberformat($thread['views']);
 
@@ -369,7 +380,7 @@ if($mybb->input['action'] == "results")
 				$thread['forumlink'] = "";
 			}
 			$plugins->run_hooks("search_results_thread");
-			eval("\$results .= \"".$templates->get("search_results_threads_thread")."\";");	
+			eval("\$results .= \"".$templates->get("search_results_threads_thread")."\";");
 		}
 		if(!$results)
 		{
@@ -412,7 +423,7 @@ if($mybb->input['action'] == "results")
 			error($lang->nosearchresults);
 		}
 		$postcount = $count['resultcount'];
-		
+
 		$tids = array();
 		$query = $db->query("
 			SELECT p.tid
@@ -432,9 +443,9 @@ if($mybb->input['action'] == "results")
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
 			$query = $db->query("
-				SELECT tid, dateline 
-				FROM ".TABLE_PREFIX."threadsread 
-				WHERE uid='".$mybb->user['uid']."' 
+				SELECT tid, dateline
+				FROM ".TABLE_PREFIX."threadsread
+				WHERE uid='".$mybb->user['uid']."'
 				AND tid IN(".$tids.")
 			");
 			while($readthread = $db->fetch_array($query))
@@ -467,7 +478,15 @@ if($mybb->input['action'] == "results")
 			}
 			else
 			{
-				$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".$post['username']."</a>";
+				// If the user is a guest, don't link to the profile.
+				if($post['uid'] == 0)
+				{
+					$post['profilelink'] = $post['username'];
+				}
+				else
+				{
+					$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".$post['username']."</a>";
+				}
 			}
 			$post['subject'] = $parser->parse_badwords($post['subject']);
 			$post['subject'] = htmlspecialchars_uni($post['subject']);
@@ -591,7 +610,7 @@ if($mybb->input['action'] == "results")
 			$posted = mydate($mybb->settings['dateformat'], $post['dateline']).", ".mydate($mybb->settings['timeformat'], $post['dateline']);
 
 			$plugins->run_hooks("search_results_post");
-			eval("\$results .= \"".$templates->get("search_results_posts_post")."\";");	
+			eval("\$results .= \"".$templates->get("search_results_posts_post")."\";");
 		}
 		if(!$results)
 		{
@@ -795,10 +814,10 @@ elseif($mybb->input['action'] == "do_search")
 		}
 		$timecut = time()-$mybb->settings['searchfloodtime'];
 		$query = $db->query("
-			SELECT * 
-			FROM ".TABLE_PREFIX."searchlog 
-			WHERE $conditions 
-			AND dateline >= '$timecut' 
+			SELECT *
+			FROM ".TABLE_PREFIX."searchlog
+			WHERE $conditions
+			AND dateline >= '$timecut'
 			ORDER BY dateline DESC
 		");
 		$last_search = $db->fetch_array($query);

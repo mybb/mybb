@@ -102,16 +102,16 @@ if($mybb->input['action'] == "lastpost")
 	}
 	else
 	{
-		$query = $db->query("
-			SELECT pid
-			FROM ".TABLE_PREFIX."posts
-			WHERE tid='$tid'
-			ORDER BY dateline DESC
-			LIMIT 0, 1
-		");
+		$options = array(
+			'order_by' => 'dateline',
+			'order_dir' => 'desc',
+			'limit_start' => 0,
+			'limit' => 1
+		);
+		$query = $db->simple_select(TABLE_PREFIX.'posts', 'pid', "tid={$tid}", $options);
 		$pid = $db->fetch_field($query, "pid");
 	}
-	header("Location:showthread.php?tid=$tid&pid=$pid#pid$pid");
+	header("Location:showthread.php?tid={$tid}&pid={$pid}#pid{$pid}");
 	exit;
 }
 
@@ -123,7 +123,7 @@ if($mybb->input['action'] == "nextnewest")
 		"limit" => 1,
 		"order_by" => "lastpost"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid=".$thread['fid']." AND lastpost > ".$thread['lastpost']." AND visible=1 AND closed NOT LIKE 'moved|%'");
+	$query = $db->simple_select(TABLE_PREFIX.'threads', '*', "fid={$thread['fid']} AND lastpost > {$thread['lastpost']} AND visible=1 AND closed NOT LIKE 'moved|%'");
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next newest posts?
@@ -137,11 +137,11 @@ if($mybb->input['action'] == "nextnewest")
 		"order_by" => "dateline",
 		"order_dir" => "desc"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$nextthread['tid']);
+	$query = $db->simple_select(TABLE_PREFIX.'posts', 'pid', "tid={$nextthread['tid']}");
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
-	header("Location:showthread.php?tid=$nextthread[tid]&pid=$pid#pid$pid");
+	header("Location:showthread.php?tid={$nextthread['tid']}&pid={$pid}#pid{$pid}");
 }
 
 // Jump to the next oldest posts.
