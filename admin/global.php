@@ -46,6 +46,8 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 	$mybb->trigger_generic_error("install_directory");
 }
 
+$plugins->run_hooks("admin_global_start");
+
 if($mybb->input['action'] == "logout")
 {
 	$expires = $time-60*60*24;
@@ -117,6 +119,7 @@ else
 		$lang->invalidlogin_subject = sprintf($lang->invalidlogin_subject, $mybb->settings['bbname']);
 		$lang->invalidlogin_headers = sprintf($lang->invalidlogin_headers, $mybb->settings['bbname'], $mybb->settings['adminemail']);
 		mail($settings['adminemail'], $lang->invalidlogin_subject, $message, $lang->invalidlogin_headers);
+		$plugins->run_hooks("admin_global_invalid_login");
 	}
 
 	if(!empty($mybb->input['goto']))
@@ -127,6 +130,7 @@ else
 	{
 		$goto = '';
 	}
+	$plugins->run_hooks("admin_global_login");
 	cpheader("", 0, "javascript:document.loginform.username.focus();");
 	echo "<br />\n<br />\n<br />";
 	echo "<form action=\"$_SERVER[PHP_SELF]\" method=\"post\" name=\"loginform\">\n";
@@ -172,4 +176,5 @@ else
 $navbits[0]['name'] = $mybb->settings['bbname']." ".$lang->control_panel;
 $navbits[0]['url'] = "index.php?action=home";
 
+$plugins->run_hooks("admin_global_end");
 ?>

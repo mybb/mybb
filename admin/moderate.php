@@ -35,8 +35,11 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_moderate_start");
+
 if($mybb->input['action'] == "do_attachments")
 {
+	$plugins->run_hooks("admin_moderate_do_attachments");
 	if(is_array($mybb->input['attachvalidate']))
 	{
 		$delete_aids = $approve_aids = array(0);
@@ -71,6 +74,7 @@ if($mybb->input['action'] == "do_attachments")
 
 if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts" || $mybb->input['action'] == "do_threadsposts")
 {
+	$plugins->run_hooks("admin_moderate_do_threadsposts");
 	if(is_array($mybb->input['threadvalidate']) && $mybb->input['action'] != "do_posts")
 	{
 		foreach($mybb->input['threadvalidate'] as $tid => $val)
@@ -183,6 +187,7 @@ if($mybb->input['action'] == "attachments")
 	{
 		cperror($lang->no_attachments);
 	}
+	$plugins->run_hooks("admin_moderate_attachments");
 	cpheader();
 	startform("moderate.php", "" , "do_attachments");
 	starttable();
@@ -240,6 +245,7 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 	{
 		cpmessage($lang->no_threads);
 	}
+	$plugins->run_hooks("admin_moderate_threads");
 	if($tcount ||  $mybb->input['action'] == "threadsposts")
 	{
 		cpheader();
@@ -291,6 +297,7 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 	{
 		cpmessage($lang->no_posts);
 	}
+	$plugins->run_hooks("admin_moderate_posts");
 	if($mybb->input['action'] != "threadsposts") 
 	{
 		cpheader();

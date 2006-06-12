@@ -32,6 +32,8 @@ switch($mybb->input['action'])
 checkadminpermissions("caneditpfields");
 logadmin();
 
+$plugins->run_hooks("admin_profilefields_start");
+
 if($mybb->input['action'] == "do_add")
 {
 	$type = $mybb->input['type'];
@@ -54,6 +56,7 @@ if($mybb->input['action'] == "do_add")
 		"editable" => $db->escape_string($mybb->input['editable']),
 		"hidden" => $db->escape_string($mybb->input['hidden']),
 		);
+	$plugins->run_hooks("admin_profilefields_do_ad");
 	$db->insert_query(TABLE_PREFIX."profilefields", $sqlarray);
 	$fid = $db->insert_id();
 	$fieldname = "fid$fid";
@@ -70,6 +73,7 @@ if($mybb->input['action'] == "do_delete")
 	if($mybb->input['deletesubmit'])
 	{	
 		$fid = intval($mybb->input['fid']);
+		$plugins->run_hooks("admin_profilefields_do_delete");
 		$db->delete_query(TABLE_PREFIX."profilefields", "fid='$fid'");
 		$fieldname = "fid$fid";
 		$db->query("
@@ -108,11 +112,13 @@ if($mybb->input['action'] == "do_edit")
 		"editable" => $db->escape_string($mybb->input['editable']),
 		"hidden" => $db->escape_string($mybb->input['hidden']),
 		);
+	$plugins->run_hooks("admin_profilefields_do_edit");
 	$db->update_query(TABLE_PREFIX."profilefields", $sqlarray, "fid='".intval($mybb->input['fid'])."'");
 	cpredirect("profilefields.php", $lang->field_updated);
 }
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_profilefields_add");
 	cpheader();
 	startform("profilefields.php", "" , "do_add");
 	starttable();
@@ -136,6 +142,7 @@ if($mybb->input['action'] == "delete")
 	$fid = intval($mybb->input['fid']);
 	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "fid='$fid'");
 	$profilefield = $db->fetch_array($query);
+	$plugins->run_hooks("admin_profilefields_delete");
 	cpheader();
 	startform("profilefields.php", "", "do_delete");
 	makehiddencode("fid", $fid);
@@ -164,6 +171,8 @@ if($mybb->input['action'] == "edit")
 	$typesel[$type[0]] = "selected";
 	$options = $type[1];
 
+	$plugins->run_hooks("admin_profilefields_edit");
+	
 	cpheader();
 	startform("profilefields.php", "" , "do_edit");
 	makehiddencode("fid", $profilefield['fid']);
@@ -186,6 +195,7 @@ if($mybb->input['action'] == "edit")
 }
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_profilefields_modify");
 	if(!$noheader)
 	{
 		cpheader();

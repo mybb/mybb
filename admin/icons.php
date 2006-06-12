@@ -34,6 +34,8 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_icons_start");
+
 if($mybb->input['action'] == "do_add")
 {
 	$sqlarray = array(
@@ -44,6 +46,7 @@ if($mybb->input['action'] == "do_add")
 	{
 		cperror($lang->error_fill_form);
 	}
+	$plugins->run_hooks("admin_icons_do_add");
 	$db->insert_query(TABLE_PREFIX."icons", $sqlarray);
 	cpredirect("icons.php", $lang->icon_added);
 }
@@ -52,6 +55,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{	
+		$plugins->run_hooks("admin_icons_do_delete");
 		$db->delete_query(TABLE_PREFIX."icons", "iid='$iid'");
 		cpredirect("icons.php", $lang->icon_deleted);
 	}
@@ -71,6 +75,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		cperror($lang->error_fill_form);
 	}
+	$plugins->run_hooks("admin_icons_do_edit");
 	$db->update_query(TABLE_PREFIX."icons", $sqlarray, "iid='$iid'");
 	cpredirect("icons.php", $lang->icon_updated);
 }
@@ -79,7 +84,7 @@ if($mybb->input['action'] == "edit")
 {
 	$query = $db->simple_select(TABLE_PREFIX."icons", "*", "iid='$iid'");
 	$icon = $db->fetch_array($query);
-	
+	$plugins->run_hooks("admin_icons_edit");
 	if(!$icon['iid'])
 	{
 		cperror($lang->invalid_icon);
@@ -105,6 +110,7 @@ if($mybb->input['action'] == "delete")
 {
 	$query = $db->simple_select(TABLE_PREFIX."icons", "*", "iid='$iid'");
 	$icon = $db->fetch_array($query);
+	$plugins->run_hooks("admin_icons_delete");
 	if(!$icon['iid'])
 	{
 		cperror($lang->invalid_icon);
@@ -126,6 +132,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_icons_add");
 	cpheader();
 	startform("icons.php", "", "do_add");
 	starttable();
@@ -149,6 +156,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "do_addmultiple")
 {
+	$plugins->run_hooks("admin_icons_do_addmultiple");
 	if($mybb->input['page'])
 	{
 		$mybb->input['action'] = "addmultiple";
@@ -177,6 +185,7 @@ if($mybb->input['action'] == "do_addmultiple")
 
 if($mybb->input['action'] == "addmultiple")
 {
+	$plugins->run_hooks("admin_icons_addmultiple");
 	$perpage = intval($mybb->input['perpage']);
 	if(!$perpage)
 	{
@@ -297,6 +306,7 @@ if($mybb->input['action'] == "addmultiple")
 
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_icons_modify");
 	if(!$noheader)
 	{
 		cpheader();

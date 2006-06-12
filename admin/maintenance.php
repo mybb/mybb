@@ -18,6 +18,8 @@ $lang->load("maintenance");
 checkadminpermissions("canrunmaint");
 logadmin();
 
+$plugins->run_hooks("admin_maintenance_start");
+
 switch($mybb->input['action'])
 {
 	case "cache":
@@ -42,6 +44,7 @@ switch($mybb->input['action'])
 if($mybb->input['action'] == "do_cache")
 {
 	$cacheitem = $mybb->input['cacheitem'];
+	$plugins->run_hooks("admin_maintenance_do_cache");
 	if($mybb->input['view'])
 	{
 		cpheader();
@@ -78,6 +81,7 @@ if($mybb->input['action'] == "do_cache")
 
 if($mybb->input['action'] == "cache")
 {
+	$plugins->run_hooks("admin_maintenance_cache");
 	cpheader();
 	starttable();
 	tableheader($lang->cache_manager, "", "4");
@@ -114,12 +118,14 @@ if($mybb->input['action'] == "cache")
 
 if($mybb->input['action'] == "do_rebuildstats")
 {
+	$plugins->run_hooks("admin_maintenance_do_rebuildstats");
 	$cache->updatestats();
 	cpmessage($lang->stats_rebuilt);
 }
 
 if($mybb->input['action'] == "rebuildstats")
 {
+	$plugins->run_hooks("admin_maintenance_rebuildstats");
 	cpheader();
 	startform("maintenance.php", "" , "do_rebuildstats");
 	starttable();
@@ -133,6 +139,7 @@ if($mybb->input['action'] == "rebuildstats")
 
 if($mybb->input['action'] == "rebuild")
 {
+	$plugins->run_hooks("admin_maintenance_rebuild");
 	cpheader();
 	
 	// Recount forums

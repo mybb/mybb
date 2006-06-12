@@ -28,6 +28,8 @@ switch($mybb->input['action'])
 
 logadmin();
 
+$plugins->run_hooks("admin_modlogs_start");
+
 if($mybb->input['action'] == "do_prune") 
 {
 	$time = time();
@@ -46,6 +48,7 @@ if($mybb->input['action'] == "do_prune")
 	{
 		$thequery .= " uid='$frommod'";
 	}
+	$plugins->run_hooks("admin_modlogs_do_prune");
 	$db->delete_query(TABLE_PREFIX."moderatorlog", $thequery);
 	cpredirect("modlogs.php", $lang->modlog_pruned);
 }
@@ -100,6 +103,7 @@ if($mybb->input['action'] == "view")
 	{
 		$pages = 1;
 	}
+	$plugins->run_hooks("admin_modlogs_view");
 	if($page != $pages)
 	{
 		$npage = $page+1;
@@ -174,6 +178,8 @@ if($mybb->input['action'] == "")
 	{
 		$uoptions .= "<option value=\"$user[uid]\">$user[username]</option>\n";
 	}
+	
+	$plugins->run_hooks("admin_modlogs_view");
 
 	cpheader();
 	startform("modlogs.php", "", "view");

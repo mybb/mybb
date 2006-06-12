@@ -117,13 +117,15 @@ if($mybb->input['action'] == "do_add")
 		"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
 		"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
 		);
+	$plugins->run_hooks("admin_announcements_do_add");
 	$db->insert_query(TABLE_PREFIX."announcements", $sqlarray);
 	cpredirect("announcements.php", $lang->announcement_added);
 }
 if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
-	{	
+	{
+		$plugins->run_hooks("admin_announcements_do_delete");
 		$db->query("
 			DELETE 
 			FROM ".TABLE_PREFIX."announcements 
@@ -182,11 +184,13 @@ if($mybb->input['action'] == "do_edit")
 		"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
 		"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
 		);
+	$plugins->run_hooks("admin_announcements_do_edit");
 	$db->update_query(TABLE_PREFIX."announcements", $sqlarray, "aid='$aid'");
 	cpredirect("announcements.php", $lang->announcement_edited);
 }
 if($mybb->input['action'] == "add") 
 {
+	$plugins->run_hooks("admin_announcements_add");
 	cpheader();
 	startform("announcements.php", "" , "do_add");
 	starttable();
@@ -291,13 +295,13 @@ if($mybb->input['action'] == "add")
 }
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_announcements_delete");
 	$query = $db->query("
 		SELECT * 
 		FROM ".TABLE_PREFIX."announcements 
 		WHERE aid = '".intval($mybb->input['aid'])."'
 	");
 	$announcement = $db->fetch_array($query);
-	$announcement['subject'] = stripslashes($announcement['subject']);
 	cpheader();
 	startform("announcements.php", "", "do_delete");
 	makehiddencode("aid", $mybb->input['aid']);
@@ -322,8 +326,9 @@ if($mybb->input['action'] == "edit")
 		WHERE aid = '$aid'
 	");
 	$announcement = $db->fetch_array($query);
-	$announcement['subject'] = stripslashes($announcement['subject']);
-	$announcement['message'] = stripslashes($announcement['message']);
+
+	$plugins->run_hooks("admin_announcements_edit");
+	
 	$lang->nav_edit_announcement = sprintf($lang->nav_edit_announcement, $announcement['subject']);
 	addacpnav($lang->nav_edit_announcement);
 	if(!$noheader)
@@ -474,6 +479,7 @@ if($mybb->input['action'] == "edit")
 }
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_announcements_modify");
 	if(!$noheader)
 	{
 		cpheader();

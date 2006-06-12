@@ -29,6 +29,8 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_forumpermissions_start");
+
 function getforums($pid="0")
 {
 	global $db, $forumlist, $ownperms, $parentperms, $lang;
@@ -93,6 +95,7 @@ if($mybb->input['action'] == "do_quickperms")
 	$canpostreplies = $mybb->input['canpostreplies'];
 	$canpostpolls = $mybb->input['canpostpolls'];
 	$canpostattachments = $mybb->input['canpostattachments'];
+	$plugins->run_hooks("admin_forumpermissions_do_quickperms");
 	savequickperms($fid);
 	cpredirect("forumpermissions.php", $lang->perms_updated);
 }
@@ -100,6 +103,7 @@ if($mybb->input['action'] == "do_quickperms")
 
 if($mybb->input['action'] == "quickperms")
 {
+	$plugins->run_hooks("admin_forumpermissions_quickperms");
 	$fid = intval($mybb->input['fid']);
 	cpheader();
 	startform("forumpermissions.php", "", "do_quickperms");
@@ -138,6 +142,7 @@ if($mybb->input['action'] == "do_edit")
 			"canvotepolls" => $db->escape_string($mybb->input['canvotepolls']),
 			"cansearch" => $db->escape_string($mybb->input['cansearch']),
 		);
+		$plugins->run_hooks("admin_forumpermissions_do_edit");
 		if($fid)
 		{
 			$sqlarray['fid'] = $fid;
@@ -157,10 +162,6 @@ if($mybb->input['action'] == "edit")
 	$pid = intval($mybb->input['pid']);
 	$gid = intval($mybb->input['gid']);
 	$fid = intval($mybb->input['fid']);
-	if(!$noheader)
-	{
-		cpheader();
-	}
 	if($pid)
 	{
 		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "pid='{$pid}'");
@@ -185,6 +186,8 @@ if($mybb->input['action'] == "edit")
 	$usergroup = $db->fetch_array($query);
 	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
 	$forum = $db->fetch_array($query);
+	$plugins->run_hooks("admin_forumpermissions_edit");
+	cpheader();
 	startform("forumpermissions.php", "", "do_edit");
 	$sperms = $forumpermissions;
 
@@ -261,6 +264,7 @@ function makepermscode($title, $name, $value)
 
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_forumpermissions_modify");
 	if(!$noheader)
 	{
 		cpheader();

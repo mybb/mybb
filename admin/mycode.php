@@ -33,8 +33,11 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_mycode_start");
+
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_mycode_add");
 	cpheader();
 	startform("mycode.php", "", "do_add");
 	starttable();
@@ -62,7 +65,7 @@ if($mybb->input['action'] == "do_add")
 		"replacement" => $db->escape_string($mybb->input['replacement']),
 		"active" => $db->escape_string($mybb->input['active'])
 		);
-
+	$plugins->run_hooks("admin_mycode_do_add");
 	$db->insert_query(TABLE_PREFIX."mycode", $newmycode);
 
 	$cache->updatemycode();
@@ -80,7 +83,7 @@ if($mybb->input['action'] == "edit")
 
 	$query = $db->simple_select(TABLE_PREFIX."mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
-
+	$plugins->run_hooks("admin_mycode_edit");
 	cpheader();
 	startform("mycode.php", "", "do_edit");
 	makehiddencode("cid", $mycode['cid']);
@@ -109,6 +112,8 @@ if($mybb->input['action'] == "do_edit")
 		"replacement" => $db->escape_string($mybb->input['replacement']),
 		"active" => $db->escape_string($mybb->input['active'])
 		);
+	
+	$plugins->run_hooks("admin_mycode_do_edit");
 
 	$db->update_query(TABLE_PREFIX."mycode", $mycode, "cid='".intval($mybb->input['cid'])."'");
 
@@ -125,6 +130,7 @@ if($mybb->input['action'] == "delete")
 	{
 		cperror($lang->invalid_mycode);
 	}
+	$plugins->run_hooks("admin_mycode_delete");
 	cpheader();
 	startform("mycode.php", "", "do_delete");
 	makehiddencode("cid", $mycode['cid']);
@@ -142,6 +148,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{
+		$plugins->run_hooks("admin_mycode_do_delete");
 		$db->delete_query(TABLE_PREFIX."mycode", "cid='".intval($mybb->input['cid'])."'");
 		$cache->updatemycode();
 		cpredirect("mycode.php", $lang->mycode_deleted);
@@ -154,6 +161,7 @@ if($mybb->input['action'] == "do_delete")
 
 if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_mycode_modify");
 	cpheader();
 	$hopto[] = "<input type=\"button\" value=\"$lang->add_mycode\" onclick=\"hopto('mycode.php?action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);

@@ -15,8 +15,12 @@ require "./global.php";
 global $lang;
 $lang->load("index");
 
+$plugins->run_hooks("admin_index_start");
+
 if($mybb->input['action'] == "header")
 {
+	$plugins->run_hooks("admin_index_header");
+	
 	echo "<html ".($lang->settings['rtl'] ? "dir=\"rtl\"" : "")."lang=\"".($lang->settings['htmllang'])."\">\n";
 	echo "<head>";
 	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".$lang->settings['charset']."\">";
@@ -90,6 +94,8 @@ elseif($mybb->input['action'] == "home")
 	// Get the number of unapproved attachments
 	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs", "visible='0' AND pid>0");
 	$unapproved_attachs = $db->fetch_array($query);
+	
+	$plugins->run_hooks("admin_index_home");
 
 	// Program Statistics table
 	starttable();
@@ -195,7 +201,8 @@ elseif($mybb->input['action'] == "vercheck")
 		$version_warn = 1;
 	}
 
-
+	$plugins->run_hooks("admin_index_vercheck");
+	
 	$lann = @file("http://www.mybboard.com/latestann.php");
 	cpheader();
 	starttable();
@@ -229,6 +236,7 @@ elseif($mybb->input['action'] == "vercheck")
 }
 elseif ($mybb->input['action'] == "navigation")
 {
+	$plugins->run_hooks("admin_index_navigation");
 ?>
 <html>
 <head>
@@ -237,6 +245,9 @@ elseif ($mybb->input['action'] == "navigation")
 </head>
 <body class="lnav">
 <?php
+
+// STILL NEED TO FIX PLUGIN HOOKS FOR MENU ITEMS
+
 makenavoption($lang->cp_home, "index.php?action=home");
 makenavoption($lang->cp_prefs, "adminoptions.php");
 makenavoption($lang->vercheck, "index.php?action=vercheck");
@@ -329,6 +340,7 @@ elseif($mybb->input['action'] == "phpinfo")
 }
 else
 {
+	$plugins->run_hooks("admin_index_frameset");
 	if(!empty($mybb->input['goto']))
 	{
 		$goto = htmlspecialchars_uni($mybb->input['goto']);

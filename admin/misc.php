@@ -23,8 +23,11 @@ if($mybb->input['action'] == "dbmaint")
 	addacpnav($lang->dbmaint);
 }
 
+$plugins->run_hooks("admin_misc_start");
+
 if($mybb->input['action'] == "do_dbmaint")
 {
+	$plugins->run_hooks("admin_misc_do_dbmaint");
 	$tablelist = "";
 	$tables = $db->list_tables($config['database']);
 	foreach($tables as $tablename)
@@ -45,6 +48,7 @@ if($mybb->input['action'] == "do_dbmaint")
 
 if($mybb->input['action'] == "dbmaint")
 {
+	$plugins->run_hooks("admin_misc_dbmaint");
 	cpheader();
 	startform("misc.php", "" , "do_dbmaint");
 	starttable();

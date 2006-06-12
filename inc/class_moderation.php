@@ -1122,16 +1122,12 @@ class CustomModeration extends Moderation
 					// Set the post data that came from the input to the $post array.
 					$post = array(
 						"tid" => $new_tid,
-						"replyto" => 0,
 						"fid" => $thread['fid'],
 						"subject" => $post_options['splitpostsreplysubject'],
-						"icon" => -1,
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
 						"message" => $post_options['splitpostsaddreply'],
 						"ipaddress" => get_ip(),
-						"posthash" => '',
-						"savedraft" => 0
 					);
 					// Set up the post options from the input.
 					$post['options'] = array(
@@ -1277,13 +1273,10 @@ class CustomModeration extends Moderation
 						"replyto" => $thread['firstpost'],
 						"fid" => $thread['fid'],
 						"subject" => $thread_options['replysubject'],
-						"icon" => -1,
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
 						"message" => $thread_options['addreply'],
 						"ipaddress" => get_ip(),
-						"posthash" => '',
-						"savedraft" => 0
 					);
 					// Set up the post options from the input.
 					$post['options'] = array(

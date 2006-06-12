@@ -39,6 +39,7 @@ if($mybb->input['action'] == "do_add")
 		"badword" => $db->escape_string($mybb->input['badword']),
 		"replacement" => $db->escape_string($mybb->input['replacement']),
 		);
+	$plugins->run_hooks("admin_badwords_do_add");
 	$db->insert_query(TABLE_PREFIX."badwords", $sqlarray);
 	$cache->updatebadwords();
 	cpredirect("badwords.php", $lang->badword_added);
@@ -51,6 +52,7 @@ if($mybb->input['action'] == "do_edit")
 		"badword" => $db->escape_string($mybb->input['badword']),
 		"replacement" => $db->escape_string($mybb->input['replacement']),
 		);
+	$plugins->run_hooks("admin_badwords_do_edit");
 	$db->update_query(TABLE_PREFIX."badwords", $sqlarray, "bid='".$sqlarray['bid']."'");
 	$cache->updatebadwords();
 	cpredirect("badwords.php", $lang->badword_edited);
@@ -61,6 +63,7 @@ if($mybb->input['action'] == "edit")
 	$bid = intval($mybb->input['bid']);
 	if($mybb->input['delete'])
 	{
+		$plugins->run_hooks("admin_badwords_delete");
 		$db->delete_query(TABLE_PREFIX."badwords", "bid='$bid'");
 		cpredirect("badwords.php", $lang->badword_deleted);
 		$cache->updatebadwords();
@@ -68,6 +71,7 @@ if($mybb->input['action'] == "edit")
 	}
 	$query = $db->simple_select(TABLE_PREFIX."badwords", "*", "bid='$bid'");
 	$badword = $db->fetch_array($query);
+	$plugins->run_hooks("admin_badwords_edit");
 	cpheader();
 	startform("badwords.php", "", "do_edit");
 	makehiddencode("bid", $bid);
@@ -82,6 +86,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_badwords_add");
 	cpheader();
 	startform("badwords.php", "", "do_add");
 	makehiddencode("bid", $bid);
@@ -96,6 +101,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_badwords_modify");
 	cpheader();
 	$hopto[] = "<input type=\"button\" value=\"$lang->add_badword_filter\" onclick=\"hopto('badwords.php?action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);

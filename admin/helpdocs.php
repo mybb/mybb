@@ -33,6 +33,8 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_helpdocs_start");
+
 if($mybb->input['action'] == "do_add")
 {
 	if($mybb->input['add'] == "doc")
@@ -46,6 +48,7 @@ if($mybb->input['action'] == "do_add")
 			"enabled" => $db->escape_string($mybb->input['enabled']),
 			"disporder" => intval($mybb->input['disporder']),
 			);
+		$plugins->run_hooks("admin_helpdocs_do_add_doc");
 		$db->insert_query(TABLE_PREFIX."helpdocs", $sqlarray);
 		cpredirect("helpdocs.php", $lang->doc_added);
 	}
@@ -58,6 +61,7 @@ if($mybb->input['action'] == "do_add")
 			"enabled" => $db->escape_string($mybb->input['enabled']),
 			"disporder" => intval($mybb->input['disporder']),
 			);
+		$plugins->run_hooks("admin_helpdocs_do_add_section");
 		$db->insert_query(TABLE_PREFIX."helpsections", $sqlarray);
 		cpredirect("helpdocs.php", $lang->section_added);
 	}
@@ -69,11 +73,13 @@ if($mybb->input['action'] == "do_delete")
 	{	
 		if(!empty($mybb->input['hid']))
 		{
+			$plugins->run_hooks("admin_helpdocs_do_delete_doc");
 			$db->delete_query(TABLE_PREFIX."helpdocs", "hid='".intval($mybb->input['hid'])."'");
 			cpredirect("helpdocs.php", $lang->doc_deleted);
 		}
 		elseif(!empty($mybb->input['sid']))
 		{
+			$plugins->run_hooks("admin_helpdocs_do_delete_section");
 			$sid = intval($mybb->input['sid']);
 			$db->delete_query(TABLE_PREFIX."helpsections", "sid='".$sid."'");
 			$db->delete_query(TABLE_PREFIX."helpdocs", "WHERE sid='".$sid."' AND hid>'7'");
@@ -116,6 +122,7 @@ if($mybb->input['action'] == "do_edit")
 			"enabled" => $db->escape_string($mybb->input['enabled']),
 			"disporder" => intval($mybb->input['disporder']),
 			);
+		$plugins->run_hooks("admin_helpdocs_do_edit_doc");
 		$db->update_query(TABLE_PREFIX."helpdocs", $sqlarray, "hid='".intval($mybb->input['hid'])."'");
 		cpredirect("helpdocs.php", $lang->doc_updated);
 	}
@@ -128,6 +135,7 @@ if($mybb->input['action'] == "do_edit")
 			"enabled" => $db->escape_string($mybb->input['enabled']),
 			"disporder" => intval($mybb->input['disporder']),
 			);
+		$plugins->run_hooks("admin_helpdocs_do_edit_section");
 		$db->update_query(TABLE_PREFIX."helpsections", $sqlarray, "sid='".intval($mybb->input['sid'])."'");
 		cpredirect("helpdocs.php", $lang->section_updated);
 	}
@@ -141,8 +149,7 @@ if($mybb->input['action'] == "edit")
 		$hid = intval($mybb->input['hid']);
 		$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "hid='$hid'");
 		$doc = $db->fetch_array($query);
-		$doc['description'] = stripslashes($doc['description']);
-		$doc['document'] = stripslashes($doc['document']);
+		$plugins->run_hooks("admin_helpdocs_edit_doc");
 		startform("helpdocs.php", "", "do_edit");
 		makehiddencode("hid", "$hid");
 		starttable();
@@ -171,6 +178,7 @@ if($mybb->input['action'] == "edit")
 	}
 	elseif($mybb->input['sid'])
 	{
+		$plugins->run_hooks("admin_helpdocs_edit_section");
 		$sid = intval($mybb->input['sid']);
 		$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "sid='$sid'");
 		$section = $db->fetch_array($query);
@@ -208,6 +216,7 @@ if($mybb->input['action'] == "delete")
 		$hid = intval($mybb->input['hid']);
 		$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "hid='$hid'");
 		$doc = $db->fetch_array($query);
+		$plugins->run_hooks("admin_helpdocs_delete_doc");
 		if($mybb->input['hid'] > 7)
 		{
 			$lang->delete_doc = sprintf($lang->delete_doc, $doc[name]);
@@ -228,6 +237,7 @@ if($mybb->input['action'] == "delete")
 		$sid = intval($mybb->input['sid']);
 		$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "sid='$sid'");
 		$section = $db->fetch_array($query);
+		$plugins->run_hooks("admin_helpdocs_delete_section");
 		if($section['sid'] > 2)
 		{
 			$lang->delete_section = sprintf($lang->delete_section, $section[name]);
@@ -248,6 +258,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_helpdocs_add");
 	cpheader();
 	startform("helpdocs.php", "", "do_add");
 	makehiddencode("add", "section");
@@ -279,6 +290,7 @@ if($mybb->input['action'] == "add")
 }
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_helpdocs_modify");
 	if(!$noheader)
 	{
 		cpheader();

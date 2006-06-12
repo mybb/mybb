@@ -26,10 +26,14 @@ if(!isset($mybb->input['action']))
 	$mybb->input['action'] = '';
 }
 
+$plugins->run_hooks("admin_languages_start");
+
 if($mybb->input['action'] == "do_editset")
 {
 	// Update the language set file
 
+	$plugins->run_hooks("admin_languages_do_editset");
+	
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
 	$file = MYBB_ROOT."inc/languages/".$editlang.".php";
@@ -120,6 +124,8 @@ if($mybb->input['action'] == "editset")
 
 	// Get language info
 	require $file;
+	
+	$plugins->run_hooks("admin_languages_editset");
 	
 	cpheader();
 	startform("languages.php", "editset", "do_editset");
@@ -217,7 +223,7 @@ if($mybb->input['action'] == "do_edit")
 		}
 	}
 	$newfile .= "?>";
-
+	$plugins->run_hooks("admin_languages_do_edit");
 	// Put it in!
 	if($file = fopen($editfile, "w"))
 	{
@@ -295,6 +301,8 @@ if($mybb->input['action'] == "edit")
 			$withvars = $l;
 			unset($l);
 		}
+		
+		$plugins->run_hooks("admin_languages_edit_edit");
 
 		// Start output
 		cpheader();
@@ -410,6 +418,8 @@ if($mybb->input['action'] == "edit")
 			sort($adminfilenames);
 		}
 		
+		$plugins->run_hooks("admin_languages_edit_list");
+		
 		// Output
 		cpheader();
 		startform("languages.php", "choose", "edit");
@@ -435,6 +445,8 @@ if($mybb->input['action'] == "edit")
 
 if(empty($mybb->input['action']))
 {
+	$plugins->run_hooks("admin_languages_list");
+	
 	// List language packs
 	cpheader();
 	starttable();

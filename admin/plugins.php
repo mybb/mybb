@@ -22,6 +22,8 @@ addacpnav($lang->nav_plugins, "plugins.php");
 checkadminpermissions("caneditsettings");
 logadmin();
 
+$plugins->run_hooks("admin_plugins_start");
+
 //
 // Read the plugins cache
 //
@@ -40,12 +42,15 @@ if($mybb->input['action'] == "activate")
 		$active_plugins[$codename] = $codename;
 		$userfunc = $codename."_activate";
 		$message = $lang->plugin_activated;
+		$plugins->run_hooks("admin_plugins_activate");
+
 	}
 	elseif($mybb->input['deactivate'])
 	{
 		unset($active_plugins[$codename]);
 		$userfunc = $codename."_deactivate";
 		$message = $lang->plugin_deactivated;
+		$plugins->run_hooks("admin_plugins_deactivate");
 	}
 
 	// Check if the file exists and throw an error if it doesn't
@@ -54,7 +59,7 @@ if($mybb->input['action'] == "activate")
 		cperror($lang->plugin_not_found);
 	}
 
-	include MYBB_ROOT."inc/plugins/$file";
+	require_once MYBB_ROOT."inc/plugins/$file";
 
 	//
 	// If this plugin has an activate/deactivate function then run it
@@ -92,7 +97,7 @@ if($mybb->input['action'] == "")
 		@sort($plugins_list);
 	}
 	@closedir($dir);
-
+	$plugins->run_hooks("admin_plugins_modify");
 	cpheader();
 	starttable();
 	tableheader($lang->plugin_manager, "", 4);
@@ -106,7 +111,7 @@ if($mybb->input['action'] == "")
 	{
 		foreach($plugins_list as $plugin_file)
 		{
-			include MYBB_ROOT."inc/plugins/".$plugin_file;
+			require_once MYBB_ROOT."inc/plugins/".$plugin_file;
 			$codename = str_replace(".php", "", $plugin_file);
 			$infofunc = $codename."_info";
 			if(!function_exists($infofunc))

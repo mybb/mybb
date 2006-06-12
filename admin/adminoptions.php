@@ -29,6 +29,8 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_adminoptions_start");
+	
 if($mybb->input['action'] == "do_updateprefs")
 {
 	$options = array(
@@ -40,6 +42,7 @@ if($mybb->input['action'] == "do_updateprefs")
 		"notes" => $db->escape_string($mybb->input['notes']),
 		"cpstyle" => $db->escape_string($mybb->input['cpstyle']),
 		);
+	$plugins->run_hooks("admin_adminoptions_do_updateprefs");
 	if(isset($adminoptions['uid']))
 	{
 		$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='".$user['uid']."'");
@@ -58,6 +61,7 @@ if($mybb->input['action'] == "revokeperms")
 	$newperms = array(
 		"permsset" => 0
 		);
+	$plugins->run_hooks("admin_adminoptions_revokeperms");
 	$db->update_query(TABLE_PREFIX."adminoptions", $newperms, "uid='$uid'");
 
 	if($uid < 0)
@@ -112,6 +116,9 @@ if($mybb->input['action'] == "do_updateperms")
 		"caneditlangs" => $db->escape_string($newperms['caneditlangs']),
 		"canrunmaint" => $db->escape_string($newperms['canrunmaint']),
 		);
+		
+	$plugins->run_hooks("admin_adminoptions_do_updateperms");
+	
 	$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='$uid'");
 
 	// Redirect based on what the user did.
@@ -132,6 +139,9 @@ if($mybb->input['action'] == "updateperms")
 {
 	checkadminpermissions("caneditaperms");
 	$uid = intval($mybb->input['uid']);
+
+	$plugins->run_hooks("admin_adminoptions_updateperms");
+	
 	if($uid > 0)
 	{
 		$query = $db->query("
@@ -195,6 +205,8 @@ if($mybb->input['action'] == "updateperms")
 }
 if($mybb->input['action'] == "adminpermissions")
 {
+	$plugins->run_hooks("admin_adminoptions_adminpermissions");
+	
 	$usergroups = array();
 
 	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "cancp='yes'");
@@ -306,9 +318,12 @@ if($mybb->input['action'] == "adminpermissions")
 }
 if($mybb->input['action'] == "updateprefs" || $mybb->input['action'] == "")
 {
+	
 	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'");
 	$adminoptions = $db->fetch_array($query);
 
+	$plugins->run_hooks("admin_adminoptions_updateprefs");
+	
 	$dir = @opendir(MYBB_ADMIN_DIR."/styles");
 	while($folder = readdir($dir))
 	{

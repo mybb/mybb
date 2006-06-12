@@ -33,11 +33,14 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_moderation_start");
+
 if($mybb->input['action'] == "do_delete")
 {
 	if(isset($mybb->input['deletesubmit']))
 	{
 		$tid = intval($mybb->input['tid']);
+		$plugins->run_hooks("admin_moderation_do_delete");
 		$db->delete_query(TABLE_PREFIX."modtools", "tid='$tid'");
 
 		cpredirect("moderation.php", $lang->tool_deleted);
@@ -53,6 +56,7 @@ if($mybb->input['action'] == "delete")
 	$tid = intval($mybb->input['tid']);
 	$query = $db->simple_select(TABLE_PREFIX."modtools", 'name', "tid='$tid'");
 	$tool = $db->fetch_array($query);
+	$plugins->run_hooks("admin_moderation_delete");
 	cpheader();
 	startform('moderation.php', '', 'do_delete');
 	makehiddencode('tid', $tid);
@@ -118,6 +122,8 @@ if($mybb->input['action'] == "do_edit")
 	$update_tool['name'] = $db->escape_string($mybb->input['name']);
 	$update_tool['description'] = $db->escape_string($mybb->input['description']);
 
+	$plugins->run_hooks("admin_moderation_do_edit");
+	
 	$db->update_query(TABLE_PREFIX."modtools", $update_tool, 'tid="'.intval($mybb->input['tid']).'"');
 
 	cpredirect('moderation.php', $lang->tool_edited);
@@ -125,6 +131,8 @@ if($mybb->input['action'] == "do_edit")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_moderation_edit");
+	
 	// Form to edit tool
 	if(!$noheader)
 	{
@@ -248,6 +256,8 @@ if($mybb->input['action'] == "do_addposttool" || $mybb->input['action'] == "do_a
 		cperror($lang->no_name);
 	}
 
+	$plugins->run_hooks("admin_moderation_do_add");
+	
 	$new_tool = array('type' => 't');
 	if($mybb->input['action'] == 'do_addposttool')
 	{
@@ -298,6 +308,7 @@ if($mybb->input['action'] == "do_addposttool" || $mybb->input['action'] == "do_a
 
 if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthreadtool")
 {
+	$plugins->run_hooks("admin_moderation_add");
 	// Form to add tool
 	if(!$noheader)
 	{
@@ -388,6 +399,7 @@ if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthre
 }
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 {
+	$plugins->run_hooks("admin_moderation_modify");
 	if(!$noheader)
 	{
 		cpheader();

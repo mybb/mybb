@@ -48,6 +48,8 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_attachments_start");
+
 if($mybb->input['action'] == "do_add")
 {
 	// add new type to database
@@ -59,6 +61,7 @@ if($mybb->input['action'] == "do_add")
 			"maxsize" => $db->escape_string($mybb->input['maxsize']),
 			"icon" => $db->escape_string($mybb->input['icon']),
 			);
+		$plugins->run_hooks("admin_attachments_do_add");
 		$db->insert_query(TABLE_PREFIX."attachtypes", $sqlarray);
 		$cache->updateattachtypes();
 		cpredirect("attachments.php", $lang->type_added);
@@ -74,6 +77,7 @@ if($mybb->input['action'] == "do_delete")
 	// remove type from database
 	if($mybb->input['deletesubmit'])
 	{
+		$plugins->run_hooks("admin_attachments_do_delete");
 		$db->delete_query(TABLE_PREFIX."attachtypes", "atid='".intval($mybb->input['atid'])."'");
 		$cache->updateattachtypes();
 		cpredirect("attachments.php", $lang->type_deleted);
@@ -96,6 +100,7 @@ if($mybb->input['action'] == "do_edit")
 			"maxsize" => $db->escape_string($mybb->input['maxsize']),
 			"icon" => $db->escape_string($mybb->input['icon']),
 			);
+		$plugins->run_hooks("admin_attachments_do_edit");
 		$db->update_query(TABLE_PREFIX."attachtypes", $sqlarray, "atid='".$sqlarray['atid']."'");
 		$cache->updateattachtypes();
 		cpredirect("attachments.php", $lang->type_updated);
@@ -193,6 +198,7 @@ if($mybb->input['action'] == "do_search")
 	{
 		$sort_dir = 'ASC';
 	}
+	$plugins->run_hooks("admin_attachments_do_search");
 	// Get attachments from database list
 	$query = $db->query("
 		SELECT a.*, p.tid, p.fid, t.subject, f.name, u.uid, u.username 
@@ -281,6 +287,7 @@ if($mybb->input['action'] == "do_search_delete")
 	// delete selected attachments from database
 	if(is_array($mybb->input['check']) && !empty($mybb->input['check']))
 	{
+		$plugins->run_hooks("admin_attachments_do_search_delete");
 		foreach($mybb->input['check'] as $aid)
 		{
 			$db->delete_query(TABLE_PREFIX."attachments", "aid='".intval($aid)."'");
@@ -316,7 +323,8 @@ if($mybb->input['action'] == "orphans")
 		}
 		closedir($uploads);
 	}
-
+	$plugins->run_hooks("admin_attachments_orphans");
+	
 	cpheader();
 	startform("attachments.php", "", "do_orphan_delete");
 	starttable();
@@ -351,6 +359,7 @@ if($mybb->input['action'] == "do_orphan_delete")
 	if(is_array($mybb->input['check']) && !empty($mybb->input['check']))
 	{
 		$error = false;
+		$plugins->run_hooks("admin_do_orphan_delete");
 		foreach($mybb->input['check'] as $filename)
 		{
 			if(file_exists(MYBB_ROOT.$mybb->settings['uploadspath']."/".basename($filename)))
@@ -378,6 +387,7 @@ if($mybb->input['action'] == "do_orphan_delete")
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_attacments_add");
 	// form for adding new attachment type
 	cpheader();
 	startform("attachments.php", "", "do_add");
@@ -395,6 +405,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "search")
 {
+	$plugins->run_hooks("admin_attachments_search");
 	cpheader();
 	startform("attachments.php", "", "do_search");
 	starttable();
@@ -443,6 +454,7 @@ if($mybb->input['action'] == "edit")
 		);
 		$query = $db->simple_select(TABLE_PREFIX."attachtypes", "*", "atid='".$atid."'", $options);
 		$type = $db->fetch_array($query);
+		$plugins->run_hooks("admin_attachments_edit");
 		$type['name'] = htmlspecialchars_uni(stripslashes($type['name']));
 		cpheader();
 		startform("attachments.php", "", "do_edit");
@@ -466,6 +478,7 @@ if($mybb->input['action'] == "delete")
 	// confirmation page for deleting an attachment type
 	$atid = intval($mybb->input['atid']);
 	$query = $db->simple_select(TABLE_PREFIX."attachtypes", "name", "atid='".$atid."'");
+	$plugins->run_hooks("admin_attachments_delete");
 	$name = stripslashes($db->fetch_field($query, "name"));
 	cpheader();
 	startform("attachments.php", "", "do_delete");
@@ -483,6 +496,7 @@ if($mybb->input['action'] == "delete")
 }
 if($mybb->input['action'] == "stats")
 {
+	$plugins->run_hooks("admin_attachments_stats");
 	cpheader();
 	
 	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS attachments, SUM(filesize) AS totalsize, SUM(downloads) AS downloads");
@@ -593,6 +607,7 @@ if($mybb->input['action'] == "stats")
 
 if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_attachments_modify");
 	// list all attachment types so user can pick one to edit/delete
 	cpheader();
 	$hopto[] = "<input type=\"button\" value=\"$lang->add_attach_type\" onclick=\"hopto('attachments.php?action=add');\" class=\"hoptobutton\">";

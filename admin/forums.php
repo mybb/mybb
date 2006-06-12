@@ -51,6 +51,8 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_forums_start");
+
 function getforums($pid=0, $depth=1)
 {
 	global $db, $iforumcache, $lang, $forum_cache, $comma;
@@ -252,6 +254,7 @@ if($mybb->input['action'] == "do_add")
 		"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 		);
 	$db->insert_query(TABLE_PREFIX."forums", $sqlarray);
+	$plugins->run_hooks("admin_forums_do_add");
 	$fid = $db->insert_id();
 	$parentlist = makeparentlist($fid);
 	$updatearray = array(
@@ -303,7 +306,7 @@ if($mybb->input['action'] == "do_addmod")
 				"canmanagethreads" => $canmanagethreads,
 				"canmovetononmodforum" => $canmovetononmodforum
 				);
-
+			$plugins->run_hooks("admin_forums_do_addmod");
 			$db->insert_query(TABLE_PREFIX."moderators", $newmod);
 			$updatequery = array(
 				"usergroup" => "6"
@@ -335,6 +338,8 @@ if($mybb->input['action'] == "do_delete")
 			$fids[$f['fid']] = $fid;
 			$delquery .= " OR fid='$f[fid]'";
 		}
+		
+		$plugins->run_hooks("admin_forums_do_delete");
 
 		/**
 		 * This slab of code pulls out the moderators for this forum,
@@ -391,6 +396,7 @@ if($mybb->input['action'] == "do_deletemod")
 		$mid = intval($mybb->input['mid']);
 		$query = $db->simple_select(TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=m.uid", "m.*, u.usergroup", "m.mid='$mid'");
 		$mod = $db->fetch_array($query);
+		$plugins->run_hooks("admin_forums_do_deletemod");
 		$db->delete_query(TABLE_PREFIX."moderators", "mid='$mid'");
 		$query = $db->simple_select(TABLE_PREFIX."moderators", "*", "uid='$mod[uid]'");
 		if($db->fetch_array($query))
@@ -475,7 +481,7 @@ if($mybb->input['action'] == "do_edit")
 			"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 			"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 			);
-
+		$plugins->run_hooks("admin_forums_do_edit");
 		$db->update_query(TABLE_PREFIX."forums", $sqlarray, "fid='$fid'", 1);
 		if($pid != $forum['pid'])
 		{
@@ -520,7 +526,7 @@ if($mybb->input['action'] == "do_editmod")
 			"canmanagethreads" => $db->escape_string($mybb->input['canmanagethreads']),
 			"canmovetononmodforum" => $db->escape_string($mybb->input['canmovetononmodforum'])
 			);
-
+		$plugins->run_hooks("admin_forums_do_editmod");
 		$db->update_query(TABLE_PREFIX."moderators", $sqlarray, "mid='".intval($mybb->input['mid'])."'");
 		$cache->updatemoderators();
 		cpredirect("forums.php?fid=$fid", $lang->mod_updated);
@@ -533,6 +539,7 @@ if($mybb->input['action'] == "do_editmod")
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_forums_add");
 	cpheader();
 	startform("forums.php", "" , "do_add");
 	starttable();
@@ -620,6 +627,7 @@ if($mybb->input['action'] == "add")
 }
 if($mybb->input['action'] == "addmod")
 {
+	$plugins->run_hooks("admin_forums_addmod");
 	if(!$noheader)
 	{
 		cpheader();
@@ -646,6 +654,7 @@ if($mybb->input['action'] == "delete")
 	$fid = intval($mybb->input['fid']);
 	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
 	$forum = $db->fetch_array($query);
+	$plugins->run_hooks("admin_forums_delete");
 	cpheader();
 	startform("forums.php", "", "do_delete");
 	makehiddencode("fid", $fid);
@@ -663,8 +672,10 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "deletemod")
 {
+	
 	$mid = intval($mybb->input['mid']);
 	$fid = intval($mybb->input['fid']);
+	$plugins->run_hooks("admin_forums_deletemod");
 	cpheader();
 	startform("forums.php", "", "do_deletemod");
 	makehiddencode("mid", $mid);
@@ -698,7 +709,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$isforum = "yes";
 	}
-
+	$plugins->run_hooks("admin_forums_edit");
 	startform("forums.php", "", "do_edit");
 	makehiddencode("fid", $fid);
 	starttable();
@@ -800,6 +811,7 @@ if($mybb->input['action'] == "editmod")
 	$fid = intval($mybb->input['fid']);
 	$query = $db->simple_select(TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid)", "m.*, u.username", "m.mid='$mid'");
 	$moderator = $db->fetch_array($query);
+	$plugins->run_hooks("admin_forums_editmod");
 	startform("forums.php", "", "do_editmod");
 	makehiddencode("mid", $mid);
 	makehiddencode("fid", $fid);
@@ -821,6 +833,7 @@ if($mybb->input['action'] == "editmod")
 
 if($mybb->input['action'] == "do_modify")
 {
+	$plugins->run_hooks("admin_forums_do_modify");
 	while(list($fid, $order) = each($mybb->input['disporder']))
 	{
 		$fid = intval($fid);
@@ -836,6 +849,7 @@ if($mybb->input['action'] == "do_modify")
 
 if($mybb->input['action'] == "do_copy") // Actually copy the forum
 {
+	$plugins->run_hooks("admin_forums_do_copy");
 	$from = intval($mybb->input['from']);
 	$to = intval($mybb->input['to']);
 
@@ -930,6 +944,7 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 
 if($mybb->input['action'] == "copy") // Show the copy forum form
 {
+	$plugins->run_hooks("admin_forums_copy");
 	$from = intval($mybb->input['from']);
 	$to = intval($mybb->input['to']);
 	if(!$noheader)
@@ -975,6 +990,7 @@ if($mybb->input['action'] == "copy") // Show the copy forum form
 }
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_forums_modify");
 	cpheader();
 	$fid = intval($mybb->input['fid']);
 	if($fid)

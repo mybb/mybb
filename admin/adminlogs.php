@@ -26,6 +26,8 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_adminlogs_start");
+
 if($mybb->input['action'] == "do_prune")
 {
 	$time = time();
@@ -60,10 +62,14 @@ if($mybb->input['action'] == "do_prune")
 		$thequery = "WHERE $thequery";
 	}
 	$db->delete_query(TABLE_PREFIX."adminlog", $thequery);
+	$plugins->run_hooks("admin_adminlogs_do_prune");
 	cpredirect("adminlogs.php", $lang->log_pruned);
 }
-elseif($mybb->input['action'] == "view")
+else if($mybb->input['action'] == "view")
 {
+	
+	$plugins->run_hooks("admin_adminlogs_view");
+		
 	$perpage = intval($mybb->input['perpage']);
 	$fromscript = $db->escape_string($mybb->input['fromscript']);
 	$fromadmin = intval($mybb->input['fromadmin']);
@@ -103,6 +109,7 @@ elseif($mybb->input['action'] == "view")
 	{
 		$order = "l.dateline DESC";
 	}
+
 	$query = $db->query("
 		SELECT COUNT(dateline) AS count 
 		FROM ".TABLE_PREFIX."adminlog l 
@@ -193,6 +200,8 @@ elseif($mybb->input['action'] == "view")
 }
 else
 {
+	$plugins->run_hooks("admin_adminlogs_search");
+		
 	$query = $db->query("
 		SELECT DISTINCT scriptname 
 		FROM ".TABLE_PREFIX."adminlog 
