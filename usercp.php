@@ -1268,7 +1268,7 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		$db->query("
 			UPDATE ".TABLE_PREFIX."posts
 			SET includesig='yes'
-			WHERE uid='".$mybb->user['uid']."
+			WHERE uid='".$mybb->user['uid']."'
 		");
 	}
 	elseif($mybb->input['updateposts'] == "disable")
