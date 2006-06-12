@@ -128,6 +128,7 @@ $l['nav_view_phpinfo'] = "View PHP Info";
 $l['nav_find_updated'] = "Find Updated";
 $l['nav_custom_mycode'] = "Custom MyCode";
 $l['nav_language_packs'] = "Language Packs";
+$l['nav_mod_toolbox'] = "Moderator Toolbox";
 
 $l['mybb_admin'] = "MyBB Administration";
 

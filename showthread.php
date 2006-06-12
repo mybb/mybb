@@ -697,6 +697,19 @@ if($mybb->input['action'] == "thread")
 	// If the user is a moderator, show the moderation tools.
 	if($ismod)
 	{
+		$customthreadtools = $customposttools = '';
+		$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, name, type');
+		while($tool = $db->fetch_array($query))
+		{
+			if($tool['type'] == 'p')
+			{
+				eval("\$customposttools .= \"".$templates->get("showthread_inlinemoderation_custom")."\";");
+			}
+			else
+			{
+				eval("\$customthreadtools .= \"".$templates->get("showthread_moderationoptions_custom")."\";");
+			}
+		}
 		eval("\$inlinemod = \"".$templates->get("showthread_inlinemoderation")."\";");
 		eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
 	}

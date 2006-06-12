@@ -302,6 +302,16 @@ $tables[] = "CREATE TABLE mybb_moderators (
   PRIMARY KEY  (mid)
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_modtools (
+	tid smallint unsigned NOT NULL auto_increment,
+	name varchar(200) NOT NULL,
+	description text NOT NULL,
+	type char(1) NOT NULL default '',
+	postoptions text NOT NULL,
+	threadoptions text NOT NULL,
+	PRIMARY KEY (tid)
+) TYPE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_mycode (
   cid int unsigned NOT NULL auto_increment,
   title varchar(100) NOT NULL default '',

@@ -1462,6 +1462,42 @@ switch($mybb->input['action'])
 		output_page($allreportedposts);
 		break;
 	default:
+		$custommod = new CustomModeration;
+		$tool = $custommod->tool_info(intval($mybb->input['action']));
+		if($tool !== false)
+		{
+			if($tool['type'] == 't' && $mybb->input['modtype'] == 'inlinethread')
+			{
+				$tids = getids($fid, "forum");
+				$custommod->execute(intval($mybb->input['action']), $tids);
+ 				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
+				log_moderator_action($modlogdata, $lang->custom_tool);
+				clearinline($fid, "forum");
+				$lang->redirect_customtool_forum = sprintf($lang->redirect_customtool_forum, $tool['name']);
+				redirect("forumdisplay.php?fid=$fid", $lang->redirect_customtool_forum);
+				break;
+			}
+			elseif($tool['type'] == 't' && $mybb->input['modtype'] == 'thread')
+			{
+				$custommod->execute(intval($mybb->input['action']), $tid);
+ 				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
+				log_moderator_action($modlogdata, $lang->custom_tool);
+				$lang->redirect_customtool_thread = sprintf($lang->redirect_customtool_thread, $tool['name']);
+				redirect("showthread.php?tid=$tid", $lang->redirect_customtool_thread);
+				break;
+			}
+			elseif($tool['type'] == 'p' && $mybb->input['modtype'] == 'inlinepost')
+			{
+				$pids = getids($tid, "thread");
+				$custommod->execute(intval($mybb->input['action']));
+ 				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
+				log_moderator_action($modlogdata, $lang->custom_tool);
+				clearinline($tid, "thread");
+				$lang->redirect_customtool_thread = sprintf($lang->redirect_customtool_thread, $tool['name']);
+				redirect("showthread.php?tid=$tid", $lang->redirect_customtool_thread);
+				break;
+			}
+		}
 		error_no_permission();
 		break;
 }

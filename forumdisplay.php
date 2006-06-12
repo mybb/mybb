@@ -822,6 +822,12 @@ if($threadcache)
 
 	if($ismod)
 	{
+		$customthreadtools = '';
+		$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, name', 'type=\'t\'');
+		while($tool = $db->fetch_array($query))
+		{
+			eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
+		}
 		eval("\$inlinemod = \"".$templates->get("forumdisplay_inlinemoderation")."\";");
 	}
 }

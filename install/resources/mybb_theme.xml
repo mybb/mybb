@@ -609,8 +609,9 @@ form {
 <tr>
 <td>
 <form action="moderation.php" method="get" style="margin-top: 0; margin-bottom: 0;">
+<input type="hidden" name="modtype" value="thread" />
 <input type="hidden" name="tid" value="{$tid}" /><span class="smalltext">
-<strong>{$lang->moderation_options}</strong></span> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}')">
+<strong>{$lang->moderation_options}</strong></span> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}&amp;modtype=thread')">
 <option value="threadnotes">{$lang->thread_notes}</option>
 <option value="openclosethread">{$lang->open_close_thread}</option>
 <option value="deletethread">{$lang->delete_thread}</option>
@@ -623,6 +624,7 @@ form {
 <option value="mergeposts">{$lang->merge_posts}</option>
 <option value="removeredirects">{$lang->remove_redirects}</option>
 {$approveunapprovethread}
+{$customthreadtools}
 </select>
 {$gobutton}
 </form>
@@ -633,9 +635,12 @@ form {
 </td>
 </tr>
 </table>]]></template>
+		<template name="showthread_moderationoptions_custom" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
+		<template name="showthread_inlinemoderation_custom" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="modtype" value="inlinepost" />
 <span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
 <select name="action">
 <option value="multideleteposts">{$lang->inline_delete_posts}</option>
@@ -643,6 +648,7 @@ form {
 <option value="multisplitposts">{$lang->inline_split_posts}</option>
 <option value="multiapproveposts">{$lang->inline_approve_posts}</option>
 <option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>
+{$customposttools}
 </select>
 <input type="submit" class="button" name="go" value="{$lang->go} ({$inlinecount})" id="inline_go" />&nbsp;
 <input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
@@ -1392,9 +1398,11 @@ var inlineId = {$tid};
 </tr>
 </table>
 </form>]]></template>
+		<template name="forumdisplay_inlinemoderation_custom" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="fid" value="{$fid}" />
+<input type="hidden" name="modtype" value="inlinethread" />
 <br />
 <div style="text-align: right; clear: both;">
 	<span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
@@ -1407,6 +1415,7 @@ var inlineId = {$tid};
 	<option value="multimovethreads">{$lang->move_threads}</option>
 	<option value="multiapprovethreads">{$lang->approve_threads}</option>
 	<option value="multiunapprovethreads">{$lang->unapprove_threads}</option>
+	{$customthreadtools}
 	</select>
 	<input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" id="inline_go" />&nbsp;
 	<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />

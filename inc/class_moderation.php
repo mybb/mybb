@@ -127,9 +127,12 @@ class Moderation
 		// Delete the redirects
 		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE closed='moved|$tid'");
 		// Update the forum stats of the fids found above
-		foreach($fids as $fid)
+		if(is_array($fids))
 		{
-			update_forum_count($fid);
+			foreach($fids as $fid)
+			{
+				update_forum_count($fid);
+			}
 		}
 
 		return true;
@@ -823,13 +826,13 @@ class Moderation
 	}
 
 	/**
-	 * Prepend to a thread subject
+	 * Change thread subject
 	 *
-	 * @param mixed Thread ID
-	 * @param string Text to prepend
+	 * @param mixed Thread ID(s)
+	 * @param string Format of new subject (with {subject})
 	 * @return boolean true
 	 */
-	function prepend_thread_subject($tids, $text)
+	function change_thread_subject($tids, $format)
 	{
 		global $db;
 
@@ -842,48 +845,19 @@ class Moderation
 
 		// Get original subject
 		$query = $db->simple_select(TABLE_PREFIX."threads", "subject", "tid IN ($tid_list)");
-		$thread = $db->fetch_array($query);
-
-		// Update threads and first posts with new subject
-		$new_subject = array(
-			"subject" => $db->escape_string($text.$thread['subject']),
-			);
-		$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid IN ($tid_list)", count($tids));
-		$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid IN ($tid_list) AND replyto='0'", count($tids));
-
-		return true;
-	}
-	/**
-	 * Append to a thread subject
-	 *
-	 * @param mixed Thread ID
-	 * @param string Text to prepend
-	 * @return boolean true
-	 */
-	function append_thread_subject($tids, $text)
-	{
-		global $db;
-
-		// Get tids into list
-		if(!is_array($tids))
+		while($thread = $db->fetch_array($query))
 		{
-			$tids = array(intval($tids));
+			// Update threads and first posts with new subject
+			$new_subject = array(
+				"subject" => $db->escape_string(str_replace('{subject}', $thread['subject'], $format))
+				);
+			$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid='$thread[tid]'", 1);
+			$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid='$thread[tid]' AND replyto='0'", 1);
 		}
-		$tid_list = implode(",", $tids);
-
-		// Get original subject
-		$query = $db->simple_select(TABLE_PREFIX."threads", "subject", "tid IN ($tid_list)");
-		$thread = $db->fetch_array($query);
-
-		// Update threads and first posts with new subject
-		$new_subject = array(
-			"subject" => $db->escape_string($thread['subject'].$text),
-			);
-		$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid IN ($tid_list)", count($tids));
-		$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid IN ($tid_list) AND replyto='0'", count($tids));
-
+	
 		return true;
 	}
+
 	/**
 	 * Add thread expiry
 	 *
@@ -900,6 +874,432 @@ class Moderation
 			);
 		$db->update_query(TABLE_PREFIX."threads", $update_thread, "tid='{$tid}'");
 
+		return true;
+	}
+
+	/**
+	 * Toggle post visibility (approved/unapproved)
+	 *
+	 * @param array Post IDs
+	 * @param int Thread ID
+	 * @param int Forum ID
+	 * @return boolean true
+	 */
+	function toggle_post_visibility($pids, $tid, $fid)
+	{
+		global $db;
+		$pid_list = implode(',', $pids);
+		$query = $db->simple_select(TABLE_PREFIX."posts", 'pid, visible', "pid IN ($pid_list)");
+		while($post = $db->fetch_array($query))
+		{
+			if($post['visible'] == 1)
+			{
+				$unapprove[] = $post['pid'];
+			}
+			else
+			{
+				$approve[] = $post['pid'];
+			}
+		}
+		if(is_array($unapprove))
+		{
+			$this->unapprove_posts($unapprove, $tid, $fid);
+		}
+		if(is_array($approve))
+		{
+			$this->approve_posts($approve, $tid, $fid);
+		}
+		return true;
+	}
+
+	/**
+	 * Toggle thread visibility (approved/unapproved)
+	 *
+	 * @param array Thread IDs
+	 * @param int Forum ID
+	 * @return boolean true
+	 */
+	function toggle_thread_visibility($tids, $fid)
+	{
+		global $db;
+		$tid_list = implode(',', $tids);
+		$query = $db->simple_select(TABLE_PREFIX."threads", 'tid, visible', "tid IN ($tid_list)");
+		while($thread = $db->fetch_array($query))
+		{
+			if($thread['visible'] == 1)
+			{
+				$unapprove[] = $thread['tid'];
+			}
+			else
+			{
+				$approve[] = $thread['tid'];
+			}
+		}
+		if(is_array($unapprove))
+		{
+			$this->unapprove_threads($unapprove, $fid);
+		}
+		if(is_array($approve))
+		{
+			$this->approve_threads($approve, $fid);
+		}
+		return true;
+	}
+
+	/**
+	 * Toggle threads open/closed
+	 *
+	 * @param array Thread IDs
+	 * @return boolean true
+	 */
+	function toggle_thread_status($tids)
+	{
+		global $db;
+		$tid_list = implode(',', $tids);
+		$query = $db->simple_select(TABLE_PREFIX."threads", 'tid, closed', "tid IN ($tid_list)");
+		while($thread = $db->fetch_array($query))
+		{
+			if($thread['closed'] == "yes")
+			{
+				$open[] = $thread['tid'];
+			}
+			elseif($thread['closed'] == '')
+			{
+				$close[] = $thread['tid'];
+			}
+		}
+		if(is_array($open))
+		{
+			$this->open_threads($open);
+		}
+		if(is_array($close))
+		{
+			$this->close_threads($close);
+		}
+		return true;
+	}
+}
+class CustomModeration extends Moderation
+{
+	/**
+	 * Get info on a tool
+	 *
+	 * @param int Tool ID
+	 * @param mixed Thread IDs
+	 * @param mixed Post IDs
+	 * @return mixed Returns type of tool, or boolean false.
+	 */
+	function tool_info($tool_id)
+	{
+		global $db;
+
+		// Get tool info
+		$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, type, name, description', 'tid="'.intval($tool_id).'"');
+		$tool = $db->fetch_array($query);
+		if(!$tool['tid'])
+		{
+			return false;
+		}
+		else
+		{
+			return $tool;
+		}
+	}
+
+	/**
+	 * Execute Custom Moderation Tool
+	 *
+	 * @param int Tool ID
+	 * @param mixed Thread IDs
+	 * @param mixed Post IDs
+	 * @return boolean true
+	 */
+	function execute($tool_id, $tids=0, $pids=0)
+	{
+		global $db;
+
+		// Get tool info
+		$query = $db->simple_select(TABLE_PREFIX."modtools", '*', 'tid="'.intval($tool_id).'"');
+		$tool = $db->fetch_array($query);
+		if(!$tool['tid'])
+		{
+			return false;
+		}
+
+		// Format single tid and pid
+		if(!is_array($tids))
+		{
+			$tids = array($tids);
+		}
+		if(!is_array($pids))
+		{
+			$pids = array($pids);
+		}
+
+		// Unserialize custom moderation
+		$post_options = unserialize($tool['postoptions']);
+		$thread_options = unserialize($tool['threadoptions']);
+
+		if($tool['type'] == 'p')
+		{
+			$this->execute_post_moderation($post_options, $pids, $tid);
+		}
+		$this->execute_thread_moderation($thread_options, $tids);
+
+		return true;
+	}
+
+	/**
+	 * Execute Inline Post Moderation
+	 *
+	 * @param array Moderation information
+	 * @param mixed Post IDs
+	 * @param array Thread IDs
+	 * @return boolean true
+	 */
+	function execute_post_moderation($post_options, $pids, $tid)
+	{
+		global $db, $mybb;
+		// If deleting posts, only do that
+		if($post_options['deleteposts'] == 'yes')
+		{
+			foreach($pids as $pid)
+			{
+				$this->delete_post($pid);
+			}
+		}
+		else
+		{
+			// Get the information about thread
+			$tid = intval($tid[0]); // There's only 1 thread when doing inline post moderation
+			$query = $db->simple_select(TABLE_PREFIX."threads", 'fid,subject', "tid='$tid'");
+			$thread = $db->fetch_array($query);
+
+			if($post_options['mergeposts'] == 'yes') // Merge posts
+			{
+				$this->merge_posts($pids, $tid);
+			}
+
+			if($post_options['approveposts'] == 'approve') // Approve posts
+			{
+				$this->approve_posts($pids, $tid, $thread['fid']);
+			}
+			elseif($post_options['approveposts'] == 'unapprove') // Unapprove posts
+			{
+				$this->unapprove_posts($pids, $tid, $thread['fid']);
+			}
+			elseif($post_options['approveposts'] == 'toggle') // Toggle post visibility
+			{
+				$this->toggle_post_visibility($pids, $tid, $thread['fid']);
+			}
+
+			if($post_options['splitposts'] > 0) // Split posts
+			{
+				$new_subject = str_replace('{subject}', $thread['subject'], $post_options['splitpostsnewsubject']);
+				$new_tid = $this->split_posts($pids, $tid, $post_options['splitposts'], $new_subject);
+				if($post_options['splitpostsclose'] == 'close') // Close new thread
+				{
+					$this->close_threads($new_tid);
+				}
+				if($post_options['splitpostsstick'] == 'stick') // Stick new thread
+				{
+					$this->stick_threads($new_tid);
+				}
+				if($post_options['splitpostsunapprove'] == 'unapprove') // Unapprove new thread
+				{
+					$this->unapprove_threads($new_tid);
+				}
+				if(!empty($post_options['splitpostsaddreply'])) // Add reply to new thread
+				{
+					require_once MYBB_ROOT."inc/datahandlers/post.php";
+					$posthandler = new PostDataHandler("insert");
+
+					if(empty($post_options['splitpostsreplysubject']))
+					{
+						$post_options['splitpostsreplysubject'] = 'RE: '.$new_subject;
+					}	
+
+					// Set the post data that came from the input to the $post array.
+					$post = array(
+						"tid" => $new_tid,
+						"replyto" => 0,
+						"fid" => $thread['fid'],
+						"subject" => $post_options['splitpostsreplysubject'],
+						"icon" => -1,
+						"uid" => $mybb->user['uid'],
+						"username" => $mybb->user['username'],
+						"message" => $post_options['splitpostsaddreply'],
+						"ipaddress" => get_ip(),
+						"posthash" => '',
+						"savedraft" => 0
+					);
+					// Set up the post options from the input.
+					$post['options'] = array(
+						"signature" => 'yes',
+						"emailnotify" => 'no',
+						"disablesmilies" => 'no'
+					);
+
+					$posthandler->set_data($post);
+
+					if($posthandler->validate_post($post))
+					{
+						$posthandler->insert_post($post);
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Execute Normal and Inline Thread Moderation
+	 *
+	 * @param array Moderation information
+	 * @param mixed Thread IDs
+	 * @return boolean true
+	 */
+	function execute_thread_moderation($thread_options, $tids)
+	{
+		global $db, $mybb;
+		// If deleting threads, only do that
+		if($thread_options['deletethread'] == 'yes')
+		{
+			foreach($tids as $tid)
+			{
+				$this->delete_thread($tid);
+			}
+		}
+		else
+		{
+			if($thread_options['mergethreads'] == 'yes' && count($tids) > 1) // Merge Threads (ugly temp code until find better fix)
+			{
+				$tid_list = implode(',', $tids);
+				$options = array('order_by' => 'dateline', 'order_dir' => 'DESC');
+				$query = $db->simple_select(TABLE_PREFIX."threads", 'tid', "tid IN ($tid_list)", $options); // Select threads from newest to oldest
+				$last_tid = 0;
+				while($tid = $db->fetch_array($query))
+				{
+					if($last_tid != 0)
+					{
+						$this->merge_threads($last_tid, $tid); // And keep merging them until we get down to one thread. 
+					}
+					$last_tid = $tid;
+				}
+			}
+			if($thread_options['deletepoll'] == 'yes') // Delete poll
+			{
+				foreach($tids as $tid)
+				{
+					$this->delete_poll($tid);
+				}
+			}
+			if($thread_options['removeredirects'] == 'yes') // Remove redirects
+			{
+				foreach($tids as $tid)
+				{
+					$this->remove_redirects($tid);
+				}
+			}
+
+			$tid = intval($tids[0]); // Take the first thread
+			$query = $db->simple_select(TABLE_PREFIX."threads", 'fid', "tid='$tid'");
+			$thread = $db->fetch_array($query);
+			if($thread_options['approvethread'] == 'approve') // Approve thread
+			{
+				$this->approve_threads($tids, $thread['fid']);
+			}
+			elseif($thread_options['approvethread'] == 'unapprove') // Unapprove thread
+			{
+				$this->unapprove_threads($tids, $thread['fid']);
+			}
+			elseif($thread_options['approvethread'] == 'toggle') // Toggle thread visibility
+			{
+				$this->toggle_thread_visibility($tids, $thread['fid']);
+			}
+
+			if($thread_options['openthread'] == 'open') // Open thread
+			{
+				$this->open_threads($tids);
+			}
+			elseif($thread_options['openthread'] == 'close') // Close thread
+			{
+				$this->close_threads($tids);
+			}
+			elseif($thread_options['openthread'] == 'toggle') // Toggle thread visibility
+			{
+				$this->toggle_thread_status($tids);
+			}
+
+			if($thread_options['movethread'] > 0) // Move thread
+			{
+				if($thread_options['movethreadredirect'] == 'yes') // Move Thread with redirect
+				{
+					$time = time() + ($thread_options['movethreadredirectexpire'] * 86400);
+					foreach($tids as $tid)
+					{
+						$this->move_thread($tid, $thread_options['movethread'], 'redirect', $time);
+					}
+				}
+				else // Normal move
+				{
+					$this->move_threads($tids, $thread_options['movethread']);
+				}
+			}
+			if($thread_options['copythread'] > 0) // Copy thread
+			{
+				foreach($tids as $tid)
+				{
+					$this->move_thread($tid, $thread_options['copythread'], 'copy');
+				}
+			}
+			if(trim($thread_options['newsubject']) != '{subject}') // Update thread subjects
+			{
+				$this->change_thread_subject($tids, $thread_options['newsubject']);
+			}
+			if(!empty($thread_options['addreply'])) // Add reply to thread
+			{
+				$tid_list = implode(',', $tids);
+				$query = $db->simple_select(TABLE_PREFIX."threads", 'fid, subject, tid, firstpost', "tid IN ($tid_list)");
+				require_once MYBB_ROOT."inc/datahandlers/post.php";
+				while($thread = $db->fetch_array($query))
+				{
+					$posthandler = new PostDataHandler("insert");
+			
+					if(empty($thread_options['replysubject']))
+					{
+						$thread_options['replysubject'] = 'RE: '.$thread['subject'];
+					}	
+	
+					// Set the post data that came from the input to the $post array.
+					$post = array(
+						"tid" => $new_tid,
+						"replyto" => $thread['firstpost'],
+						"fid" => $thread['fid'],
+						"subject" => $thread_options['replysubject'],
+						"icon" => -1,
+						"uid" => $mybb->user['uid'],
+						"username" => $mybb->user['username'],
+						"message" => $thread_options['addreply'],
+						"ipaddress" => get_ip(),
+						"posthash" => '',
+						"savedraft" => 0
+					);
+					// Set up the post options from the input.
+					$post['options'] = array(
+						"signature" => 'yes',
+						"emailnotify" => 'no',
+						"disablesmilies" => 'no'
+						);
+	
+					$posthandler->set_data($post);
+					if($posthandler->validate_post($post))
+					{
+						$posthandler->insert_post($post);
+					}
+				}
+			}
+		}
 		return true;
 	}
 }

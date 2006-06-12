@@ -298,6 +298,9 @@ makenavselect($lang->nav_templates);
 makenavoption($lang->nav_manage, "languages.php");
 makenavselect($lang->nav_language_packs);
 
+makenavoption($lang->nav_manage, "moderation.php");
+makenavselect($lang->nav_mod_toolbox);
+
 makenavoption($lang->nav_add, "icons.php?action=add");
 makenavoption($lang->nav_modify_delete, "icons.php?action=modify");
 makenavselect($lang->nav_posticons);
