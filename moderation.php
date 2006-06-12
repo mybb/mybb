@@ -26,9 +26,12 @@ $plugins->run_hooks("moderation_start");
 switch($mybb->input['action'])
 {
 	case "reports":
-//		add_breadcrumb($lang->moderator_cp, "moderation.php");
 		add_breadcrumb($lang->reported_posts);
 		break;
+	case "allreports":
+		add_breadcrumb($lang->all_reported_posts);
+		break;
+		
 }
 $tid = intval($mybb->input['tid']);
 $pid = intval($mybb->input['pid']);
@@ -1396,14 +1399,7 @@ switch($mybb->input['action'])
 			$reportdate = mydate($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = mydate($mybb->settings['timeformat'], $report['dateline']);
 			eval("\$reports .= \"".$templates->get("moderation_reports_report")."\";");
-			if($trow == "trow2")
-			{
-				$trow = "trow1";
-			}
-			else
-			{
-				$trow = "trow1";
-			}
+			alt_trow();
 		}
 		if(!$reports)
 		{
@@ -1414,6 +1410,56 @@ switch($mybb->input['action'])
 
 		eval("\$reportedposts = \"".$templates->get("moderation_reports")."\";");
 		output_page($reportedposts);
+		break;
+	case "allreports":
+		if(is_moderator() != "yes")
+		{
+			error_no_permission();
+		}
+
+		$query = $db->query("
+			SELECT fid,name
+			FROM ".TABLE_PREFIX."forums
+		");
+		while($forum = $db->fetch_array($query))
+		{
+			$forums[$forum['fid']] = $forum['name'];
+		}
+		$trow = "trow1";
+		$reports = '';
+		$query = $db->query("
+			SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject
+			FROM ".TABLE_PREFIX."reportedposts r
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid)
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
+			ORDER BY r.dateline ASC
+		");
+		while($report = $db->fetch_array($query))
+		{
+			$reportdate = mydate($mybb->settings['dateformat'], $report['dateline']);
+			$reporttime = mydate($mybb->settings['timeformat'], $report['dateline']);
+			if($report['reportstatus'] == 0)
+			{
+				$report['read'] = $lang->no;
+			}
+			else
+			{
+				$report['read'] = $lang->yes;
+			}
+			eval("\$allreports .= \"".$templates->get("moderation_reports_allreport")."\";");
+			alt_trow();
+		}
+		if(!$allreports)
+		{
+			eval("\$allreports = \"".$templates->get("moderation_reports_allnoreports")."\";");
+		}
+
+		$plugins->run_hooks("moderation_reports");
+
+		eval("\$allreportedposts = \"".$templates->get("moderation_allreports")."\";");
+		output_page($allreportedposts);
 		break;
 	default:
 		error_no_permission();

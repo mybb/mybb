@@ -3805,6 +3805,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
 </tr>
 {$reports}
+<tr>
+<td class="tfoot" colspan="6" align="right"><span class="smalltext"><strong><a href="moderation.php?action=allreports">{$lang->view_all_reported_posts}</a></strong></span></td>
+</tr>
 </table>
 <br />
 <div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" class="button" name="reportsubmit" value="{$lang->mark_read}" /></div>
@@ -3820,9 +3823,55 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="{$trow}">{$report['reason']}</td>
 <td class="{$trow}" align="center">{$reportdate}, {$reporttime}</td>
 </tr>]]></template>
+	<template name="moderation_allreports" version="100.07"><![CDATA[<html>
+<head>
+<title>{$settings['bbname']} - {$lang->all_reported_posts}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="7"><strong>{$lang->all_reported_posts}</strong></td>
+</tr>
+<tr>
+<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->read}</strong></span></td>
+<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
+<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->poster}</strong></span></td>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
+<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reporter}</strong></span></td>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
+<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
+</tr>
+{$allreports}
+</table>
+{$footer}
+</body>
+</html>]]></template>
+	<template name="moderation_reports_allreport" version="100.07"><![CDATA[<tr>
+<td class="{$trow}" align="center">{$report['read']}</td>
+<td class="{$trow}" align="center"><a href="showthread.php?pid={$report['pid']}&amp;tid={$report['tid']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></td>
+<td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['postuid']}" target="_blank">{$report['postusername']}</a></td>
+<td class="{$trow}"><a href="showthread.php?tid={$report['tid']}" target="_blank">{$report['threadsubject']}</a></td>
+<td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['uid']}" target="_blank">{$report['username']}</a></td>
+<td class="{$trow}">{$report['reason']}</td>
+<td class="{$trow}" align="center">{$reportdate}, {$reporttime}</td>
+</tr>]]></template>
+	<template name="moderation_reports_allnoreports" version="100.07"><![CDATA[<tr>
+<td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
+</tr>]]></template>
 		<template name="moderation_reports_noreports" version="100.07"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="6">{$lang->no_reports}</td>
 </tr>]]></template>
+		<template name="newthread_postpoll" version="100.07"><![CDATA[<tr>
+<td class="{$bgcolor}" valign="top">
+<strong>{$lang->poll}</strong><br /><span class="smalltext">{$lang->poll_desc}</span>
+</td>
+<td class="{$bgcolor}" valign="top">
+<span class="smalltext"><input type="checkbox" class="checkbox" name="postpoll" value="yes" {$postpollchecked} /><strong>{$lang->poll_check}</strong><br />
+{$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" />{$lang->max_options}</span>
+</td>
+</tr>]]></template>		
 		<template name="global_unreadreports" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1" align="right"><span class="smalltext"><a href="moderation.php?action=reports">{$lang->unread_reports}</a></span></td>

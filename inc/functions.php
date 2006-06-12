@@ -1931,7 +1931,7 @@ function reset_breadcrumb()
 
 function debug_page()
 {
-	global $db, $querytime, $debug, $templatecache, $templatelist, $htmldoctype, $mybb, $mybbuser, $maintimer, $globaltime, $settings, $mybbgroup, $lang, $ptimer, $parsetime;
+	global $db, $querytime, $debug, $templatelist, $htmldoctype, $mybb, $maintimer, $globaltime, $ptimer, $parsetime;
 
 	$totaltime = $maintimer->totaltime;
 	$phptime = $maintimer->format($maintimer->totaltime - $querytime);
@@ -2001,7 +2001,7 @@ function debug_page()
 	{
 		echo "<b>Cached templates:</b> ";
 		$comma = "";
-		while(list($key, $val) = each($templates->cache))
+		foreach($templates->cache as $key => $val)
 		{
 			echo "$comma$key";
 			$comma = ", ";
