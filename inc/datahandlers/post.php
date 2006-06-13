@@ -665,8 +665,8 @@ class PostDataHandler extends DataHandler
 						$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
 						unset($userlang);
 					}
-					$emailsubject =  $langcache[$uselang]['emailsubject_subscription'];
-					$emailmessage =  $langcache[$uselang]['email_subscription'];
+					$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
+					$emailmessage = $langcache[$uselang]['email_subscription'];
 				}
 				$emailsubject = sprintf($emailsubject, $subject);
 				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $username, $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $thread['tid']);
@@ -692,7 +692,7 @@ class PostDataHandler extends DataHandler
 			$cache->updatestats();
 		}
 		// Post is stuck in moderation queue
-		else if($visiblle == 0)
+		else if($visible == 0)
 		{
 			// Update the unapproved posts count for the current thread and current forum
 			update_thread_count($post['tid']);
@@ -1188,6 +1188,8 @@ class PostDataHandler extends DataHandler
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".intval($post['pid'])."'");
 		
 		update_thread_attachment_count($post['tid']);
+
+		update_forum_count($post['fid']);
 	}
 
 	/**
