@@ -72,6 +72,7 @@ $l['options'] = "Options";
 $l['edit_tool'] = "edit";
 $l['delete_tool'] = "delete";
 $l['post_tool'] = "Post";
-$l['thread_tool'] = "Thread"; 
+$l['thread_tool'] = "Thread";
+$l['no_tools'] = "There are no custom moderator tools to show."; 
 
 ?>

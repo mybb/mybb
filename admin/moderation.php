@@ -95,7 +95,7 @@ if($mybb->input['action'] == "do_edit")
 			'splitpostsclose' => $mybb->input['splitpostsclose'],
 			'splitpostsstick' => $mybb->input['splitpostsstick'],
 			'splitpostsunapprove' => $mybb->input['splitpostsunapprove'],
-			'splitpostsnewsubject' => $mybb->input['splitpostssubject'],
+			'splitpostsnewsubject' => $mybb->input['splitpostsnewsubject'],
 			'splitpostsaddreply' => $mybb->input['splitpostsaddreply'],
 			'splitpostsreplysubject' => $mybb->input['splitpostsreplysubject'],
 			);
@@ -274,7 +274,7 @@ if($mybb->input['action'] == "do_addposttool" || $mybb->input['action'] == "do_a
 			'splitpostsclose' => $mybb->input['splitpostsclose'],
 			'splitpostsstick' => $mybb->input['splitpostsstick'],
 			'splitpostsunapprove' => $mybb->input['splitpostsunapprove'],
-			'splitpostsnewsubject' => $mybb->input['splitpostssubject'],
+			'splitpostsnewsubject' => $mybb->input['splitpostsnewsubject'],
 			'splitpostsaddreply' => $mybb->input['splitpostsaddreply'],
 			'splitpostsreplysubject' => $mybb->input['splitpostsreplysubject'],
 			);
@@ -437,6 +437,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 		}
 		echo "<td width=\"30%\" class=\"$bgcolor\">$options</td>\n";
 		echo "</tr>\n";
+	}
+	if(!$db->num_rows($query))
+	{
+		makelabelcode($lang->no_tools, '', 3);
 	}
 	endtable();
 	cpfooter();

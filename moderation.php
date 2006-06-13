@@ -1271,6 +1271,10 @@ switch($mybb->input['action'])
 
 		$newtid = $moderation->split_posts($plist, $tid, $moveto, $newsubject);
 
+		$pid_list = implode(', ', $plist);
+		$lang->split_selective_posts = sprintf($lang->split_selective_posts, $pid_list, $newtid);
+		log_moderator_action($modlogdata, $lang->split_selective_posts);
+
 		redirect("showthread.php?tid=$newtid", $lang->redirect_threadsplit);
 		break;
 
@@ -1462,6 +1466,7 @@ switch($mybb->input['action'])
 		output_page($allreportedposts);
 		break;
 	default:
+		require MYBB_ROOT."inc/class_custommoderation.php";
 		$custommod = new CustomModeration;
 		$tool = $custommod->tool_info(intval($mybb->input['action']));
 		if($tool !== false)
@@ -1479,22 +1484,38 @@ switch($mybb->input['action'])
 			}
 			elseif($tool['type'] == 't' && $mybb->input['modtype'] == 'thread')
 			{
-				$custommod->execute(intval($mybb->input['action']), $tid);
+				$ret = $custommod->execute(intval($mybb->input['action']), $tid);
  				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
-				$lang->redirect_customtool_thread = sprintf($lang->redirect_customtool_thread, $tool['name']);
-				redirect("showthread.php?tid=$tid", $lang->redirect_customtool_thread);
+				if($ret == 'forum')
+				{
+					$lang->redirect_customtool_forum = sprintf($lang->redirect_customtool_forum, $tool['name']);
+					redirect("forumdisplay.php?fid=$fid", $lang->redirect_customtool_forum);
+				}
+				else
+				{
+					$lang->redirect_customtool_thread = sprintf($lang->redirect_customtool_thread, $tool['name']);
+					redirect("showthread.php?tid=$tid", $lang->redirect_customtool_thread);
+				}
 				break;
 			}
 			elseif($tool['type'] == 'p' && $mybb->input['modtype'] == 'inlinepost')
 			{
 				$pids = getids($tid, "thread");
-				$custommod->execute(intval($mybb->input['action']));
+				$ret = $custommod->execute(intval($mybb->input['action']));
  				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				clearinline($tid, "thread");
-				$lang->redirect_customtool_thread = sprintf($lang->redirect_customtool_thread, $tool['name']);
-				redirect("showthread.php?tid=$tid", $lang->redirect_customtool_thread);
+				if($ret == 'forum')
+				{
+					$lang->redirect_customtool_forum = sprintf($lang->redirect_customtool_forum, $tool['name']);
+					redirect("forumdisplay.php?fid=$fid", $lang->redirect_customtool_forum);
+				}
+				else
+				{
+					$lang->redirect_customtool_thread = sprintf($lang->redirect_customtool_thread, $tool['name']);
+					redirect("showthread.php?tid=$tid", $lang->redirect_customtool_thread);
+				}
 				break;
 			}
 		}

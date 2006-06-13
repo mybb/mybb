@@ -93,6 +93,7 @@ $l['thread_approved'] = "Thread Approved: {1}";
 $l['thread_unapproved'] = "Thread Unapproved: {1}";
 $l['deleted_selective_posts'] = "Deleted Selective Posts ({1})";
 $l['merged_selective_posts'] = "Merged Selective Posts";
+$l['split_selective_posts'] = "Split posts (PIDs: {1}) to thread (TID: {2})";
 $l['thread_moved'] = "Thread Moved";
 $l['thread_copied'] = "Thread Copied";
 $l['thread_merged'] = "Threads Merged";
@@ -110,6 +111,7 @@ $l['multi_unstuck_threads'] = "Threads Unstuck";
 $l['multi_moved_threads'] = "Threads Moved";
 $l['multi_copied_threads'] = "Threads Copied";
 $l['custom_tool'] = "Custom Moderator Tool: {1}";
+
 
 $l['error_nomergeposts'] = "You need to select one or more posts from the thread to be able to merge posts together.";
 $l['error_cantsplitonepost'] = "You cannot split a thread that contains only one post.";
@@ -148,7 +150,7 @@ $l['redirect_inline_postsapproved'] = "The selected posts have been approved.<br
 $l['redirect_inline_postsunapproved'] = "The selected posts have been unapproved.<br />You will now be returned to the thread.";
 $l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
 $l['redirect_postsdeleted'] = "The selected posts have been deleted successfully.";
-$l['redirect_customtool_thread'] = "{1} moderation tool executed successfully.<br />You will now be returned to the thread.";
-$l['redirect_customtool_forum'] = "{1} moderation tool executed successfully.<br />You will now be returned to the foru.";
+$l['redirect_customtool_thread'] = "\"{1}\" moderation tool executed successfully.<br />You will now be returned to the thread.";
+$l['redirect_customtool_forum'] = "\"{1}\" moderation tool executed successfully.<br />You will now be returned to the forum.";
 
 ?>
