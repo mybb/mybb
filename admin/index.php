@@ -309,7 +309,9 @@ makenavselect($lang->nav_templates);
 makenavoption($lang->nav_manage, "languages.php");
 makenavselect($lang->nav_language_packs);
 
-makenavoption($lang->nav_manage, "moderation.php");
+makenavoption($lang->nav_add_post_mod_tool, "moderation.php?action=addposttool");
+makenavoption($lang->nav_add_thread_mod_tool, "moderation.php?action=addthreadtool");
+makenavoption($lang->nav_modify_delete, "moderation.php");
 makenavselect($lang->nav_mod_toolbox);
 
 makenavoption($lang->nav_add, "icons.php?action=add");

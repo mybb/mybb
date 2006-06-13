@@ -119,7 +119,11 @@ class CustomModeration extends Moderation
 
 			if($post_options['mergeposts'] == 'yes') // Merge posts
 			{
-				$this->merge_posts($pids, $tid);
+				foreach($pids as $pid)
+				{
+					$merge[$pid] = 'yes';
+				}
+				$this->merge_posts($merge, $tid);
 			}
 
 			if($post_options['approveposts'] == 'approve') // Approve posts
@@ -135,8 +139,12 @@ class CustomModeration extends Moderation
 				$this->toggle_post_visibility($pids, $tid, $thread['fid']);
 			}
 
-			if($post_options['splitposts'] > 0) // Split posts
+			if($post_options['splitposts'] > 0 || $post_options['splitposts'] == -2) // Split posts
 			{
+				if($post_options['splitposts'] == -2)
+				{
+					$post_options['splitposts'] = $thread['fid'];
+				}
 				if(empty($post_options['splitpostsnewsubject']))
 				{
 					// Enter in a subject if a predefined one does not exist.
@@ -154,7 +162,7 @@ class CustomModeration extends Moderation
 				}
 				if($post_options['splitpostsunapprove'] == 'unapprove') // Unapprove new thread
 				{
-					$this->unapprove_threads($new_tid);
+					$this->unapprove_threads($new_tid, $thread['fid']);
 				}
 				if(!empty($post_options['splitpostsaddreply'])) // Add reply to new thread
 				{
@@ -275,7 +283,7 @@ class CustomModeration extends Moderation
 				$this->toggle_thread_status($tids);
 			}
 
-			if($thread_options['movethread'] > 0) // Move thread
+			if($thread_options['movethread'] > 0 && $thread_options['movethread'] != $thread['fid']) // Move thread
 			{
 				if($thread_options['movethreadredirect'] == 'yes') // Move Thread with redirect
 				{
@@ -290,8 +298,13 @@ class CustomModeration extends Moderation
 					$this->move_threads($tids, $thread_options['movethread']);
 				}
 			}
-			if($thread_options['copythread'] > 0) // Copy thread
+			if($thread_options['copythread'] > 0 || $thread_options['copythread'] == -2) // Copy thread
 			{
+				if($thread_options['copythread'] == -2)
+				{
+					$thread_options['copythread'] = $thread['fid'];
+				}
+				var_dump($tids);
 				foreach($tids as $tid)
 				{
 					$this->move_thread($tid, $thread_options['copythread'], 'copy');

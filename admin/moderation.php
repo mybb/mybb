@@ -202,7 +202,7 @@ if($mybb->input['action'] == "edit")
 		$split_thread_extras .= "<label><input type=\"checkbox\" name=\"splitpostsclose\" value=\"close\"$close_checked /> $lang->close</label> <br />\n";
 		$split_thread_extras .= "<label><input type=\"checkbox\" name=\"splitpostsstick\" value=\"stick\"$stick_checked /> $lang->stick</label> <br />\n";
 		$split_thread_extras .= "<label><input type=\"checkbox\" name=\"splitpostsunapprove\" value=\"unapprove\"$unapprove_check /> $lang->unapprove</label> </small>";
-		makelabelcode($lang->split_posts, forumselect('splitposts', $post_options['splitposts'], '', '', 0, $lang->do_not_split).$split_thread_extras);
+		makelabelcode($lang->split_posts, forumselect('splitposts', $post_options['splitposts'], '', '', 0, $lang->do_not_split, $lang->split_to_same_forum).$split_thread_extras);
 		unset($forumselect);
 		makeinputcode($lang->split_new_subject, 'splitpostsnewsubject', $post_options['splitpostsnewsubject']);
 		maketextareacode($lang->add_reply_split, 'splitpostsaddreply', $post_options['splitpostsaddreply']);
@@ -238,7 +238,7 @@ if($mybb->input['action'] == "edit")
 	unset($forumselect);
 	makeyesnocode($lang->leave_redirect, 'movethreadredirect', $thread_options['movethreadredirect']);
 	makeinputcode($lang->redirect_expire, 'movethreadredirectexpire', $thread_options['movethreadredirectexpire']);
-	makelabelcode($lang->copy_thread, forumselect('copythread', $thread_options['copythread'], '', '', 0, $lang->do_not_copy));
+	makelabelcode($lang->copy_thread, forumselect('copythread', $thread_options['copythread'], '', '', 0, $lang->do_not_copy, $lang->copy_to_same_forum));
 	unset($forumselect);
 	makeinputcode($lang->new_subject, 'newsubject', $thread_options['newsubject']);
 	maketextareacode($lang->add_reply, 'addreply', $thread_options['addreply']);
@@ -353,7 +353,7 @@ if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthre
 		$split_thread_extras .= "<label><input type=\"checkbox\" name=\"splitpostsclose\" value=\"close\" /> $lang->close</label> <br />\n";
 		$split_thread_extras .= "<label><input type=\"checkbox\" name=\"splitpostsstick\" value=\"stick\" /> $lang->stick</label> <br />\n";
 		$split_thread_extras .= "<label><input type=\"checkbox\" name=\"splitpostsunapprove\" value=\"unapprove\" /> $lang->unapprove</label> </small>";
-		makelabelcode($lang->split_posts, forumselect('splitposts', '', '', '', 0, $lang->do_not_split).$split_thread_extras);
+		makelabelcode($lang->split_posts, forumselect('splitposts', '', '', '', 0, $lang->do_not_split, $lang->split_to_same_forum).$split_thread_extras);
 		unset($forumselect);
 		makeinputcode($lang->split_new_subject, 'splitpostsnewsubject', '{subject}');
 		maketextareacode($lang->add_reply_split, 'splitpostsaddreply');
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthre
 	unset($forumselect);
 	makeyesnocode($lang->leave_redirect, 'movethreadredirect', 'yes');
 	makeinputcode($lang->redirect_expire, 'movethreadredirectexpire');
-	makelabelcode($lang->copy_thread, forumselect('copythread', '', '', '', 0, $lang->do_not_copy));
+	makelabelcode($lang->copy_thread, forumselect('copythread', '', '', '', 0, $lang->do_not_copy, $lang->copy_to_same_forum));
 	unset($forumselect);
 	makeinputcode($lang->new_subject, 'newsubject', '{subject}');
 	maketextareacode($lang->add_reply, 'addreply');
@@ -405,16 +405,16 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 		cpheader();
 	}
 
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_post_action\" onclick=\"hopto('moderation.php?action=addposttool');\" class=\"hoptobutton\">";
 	$hopto[] = "<input type=\"button\" value=\"$lang->add_thread_action\" onclick=\"hopto('moderation.php?action=addthreadtool');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 
+	// Thread tools
 	starttable();
-	tableheader($lang->moderator_toolbox, '', 3);
-	tablesubheader(array($lang->tool_name, $lang->type, $lang->options));
+	tableheader($lang->thread_tools);
+	tablesubheader(array($lang->tool_name, $lang->options));
 
 	$options = array('order_by' => 'name', 'orderdir' => 'ASC');
-	$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, name, description, type', '', $options);
+	$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, name, description, type', "type='t'", $options);
 	while($tool = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
@@ -427,15 +427,40 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 		}
 		echo "<tr>\n";
 		echo "<td width=\"50%\" class=\"$bgcolor\">$name</td>\n";
-		if($tool['type'] == 'p')
+		echo "<td width=\"50%\" class=\"$bgcolor\">$options</td>\n";
+		echo "</tr>\n";
+	}
+	if(!$db->num_rows($query))
+	{
+		makelabelcode($lang->no_tools, '', 3);
+	}
+	endtable();
+
+
+	// Inline Post Tools
+	unset($hopto);
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_post_action\" onclick=\"hopto('moderation.php?action=addposttool');\" class=\"hoptobutton\">";
+	makehoptolinks($hopto);
+
+	starttable();
+	tableheader($lang->post_tools);
+	tablesubheader(array($lang->tool_name, $lang->options));
+
+	$options = array('order_by' => 'name', 'orderdir' => 'ASC');
+	$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, name, description, type', "type='p'", $options);
+	while($tool = $db->fetch_array($query))
+	{
+		$bgcolor = getaltbg();
+		$options = makelinkcode($lang->edit_tool, "moderation.php?action=edit&tid=$tool[tid]");
+		$options .= makelinkcode($lang->delete_tool, "moderation.php?action=delete&tid=$tool[tid]");
+		$name = htmlspecialchars_uni($tool['name']);
+		if(!empty($tool['description']))
 		{
-			echo "<td width=\"20%\" class=\"$bgcolor\">".$lang->post_tool."</td>\n";
+			$name .= '<br /><small>'.htmlspecialchars_uni($tool['description']).'</small>';
 		}
-		else
-		{
-			echo "<td width=\"20%\" class=\"$bgcolor\">".$lang->thread_tool."</td>\n";
-		}
-		echo "<td width=\"30%\" class=\"$bgcolor\">$options</td>\n";
+		echo "<tr>\n";
+		echo "<td width=\"50%\" class=\"$bgcolor\">$name</td>\n";
+		echo "<td width=\"50%\" class=\"$bgcolor\">$options</td>\n";
 		echo "</tr>\n";
 	}
 	if(!$db->num_rows($query))

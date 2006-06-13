@@ -899,7 +899,7 @@ function makehopper($name, $values)
 	return "<select name=\"$name\"  onchange=\"this.form.submit();\">$options</select>&nbsp;<input type=\"submit\" value=\"Go\">\n";
 }
 
-function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $extra="")
+function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $extra="", $extra2="")
 {
 	global $db, $forumselect, $lang;
 
@@ -908,7 +908,25 @@ function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $ext
 		$forumselect .= "<select name=\"$name\">";
 		if($extra)
 		{
-			$forumselect .= "<option value=\"-1\">$extra</option><option value=\"0\">-----------</option>";
+			$selected1 = '';
+			if($selected == -1)
+			{
+				$selected1 = ' selected="selected"';
+			}
+			$forumselect .= "<option value=\"-1\"$selected1>$extra</option>";
+		}
+		if($extra2)
+		{
+			$selected2 = '';
+			if($selected == -2)
+			{
+				$selected2 = ' selected="selected"';
+			}
+			$forumselect .= "<option value=\"-2\"$selected2>$extra2</option>";
+		}
+		if($extra || $extra2)
+		{
+			$forumselect .= "<option value=\"0\">-----------</option>";
 		}
 		if($shownone)
 		{
