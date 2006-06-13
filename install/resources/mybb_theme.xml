@@ -3814,6 +3814,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
 </tr>
 {$reports}
+{$reportspages}
 <tr>
 <td class="tfoot" colspan="6" align="right"><span class="smalltext"><strong><a href="moderation.php?action=allreports">{$lang->view_all_reported_posts}</a></strong></span></td>
 </tr>
@@ -3831,6 +3832,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['uid']}" target="_blank">{$report['username']}</a></td>
 <td class="{$trow}">{$report['reason']}</td>
 <td class="{$trow}" align="center">{$reportdate}, {$reporttime}</td>
+</tr>]]></template>
+	<template name="moderation_reports_multipage" version="100.07"><![CDATA[<tr>
+<td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
 </tr>]]></template>
 	<template name="moderation_allreports" version="100.07"><![CDATA[<html>
 <head>
@@ -3853,6 +3857,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
 </tr>
 {$allreports}
+{$allreportspages}
 </table>
 {$footer}
 </body>
@@ -3865,6 +3870,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['uid']}" target="_blank">{$report['username']}</a></td>
 <td class="{$trow}">{$report['reason']}</td>
 <td class="{$trow}" align="center">{$reportdate}, {$reporttime}</td>
+</tr>]]></template>
+	<template name="moderation_allreports_multipage" version="100.07"><![CDATA[<tr>
+<td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
 </tr>]]></template>
 	<template name="moderation_reports_allnoreports" version="100.07"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>

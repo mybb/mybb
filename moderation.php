@@ -1377,6 +1377,68 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
+		
+		// Figure out if we need to display multiple pages.
+		//$perpage = $mybb->settings['postsperpage'];
+		$perpage = 5;
+		if($mybb->input['page'] != "last")
+		{
+			$page = intval($mybb->input['page']);
+		}
+		
+		$query = $db->query("
+				SELECT COUNT(r.rid) AS count 
+				FROM ".TABLE_PREFIX."reportedposts r
+			");
+		$warnings = $db->fetch_field($query, "count");
+		
+		if($mybb->input['rid'])
+		{
+			$query = $db->query("
+				SELECT COUNT(r.rid) AS count 
+				FROM ".TABLE_PREFIX."reportedposts r
+				WHERE r.rid <= '".$mybb->input['rid']."'
+			");
+			$result = $db->fetch_field($query, "count");
+			if(($result % $perpage) == 0)
+			{
+				$page = $result / $perpage;
+			}
+			else
+			{
+				$page = intval($result / $perpage) + 1;
+			}
+		}
+		$postcount = intval($warnings)+1;
+		$pages = $postcount / $perpage;
+		$pages = ceil($pages);
+
+		if($mybb->input['page'] == "last")
+		{
+			$page = $pages;
+		}
+
+		if($page > $pages)
+		{
+			$page = 1;
+		}
+
+		if($page)
+		{
+			$start = ($page-1) * $perpage;
+		}
+		else
+		{
+			$start = 0;
+			$page = 1;
+		}
+		$upper = $start+$perpage;
+
+		$multipage = multipage($postcount, $perpage, $page, "moderation.php?action=reports");
+		if($postcount > $perpage)
+		{
+			eval("\$reportspages = \"".$templates->get("moderation_reports_multipage")."\";");
+		}
 
 		$query = $db->query("
 			SELECT fid,name
@@ -1386,7 +1448,6 @@ switch($mybb->input['action'])
 		{
 			$forums[$forum['fid']] = $forum['name'];
 		}
-		$trow = "trow1";
 		$reports = '';
 		$query = $db->query("
 			SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject
@@ -1397,13 +1458,14 @@ switch($mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
 			WHERE r.reportstatus ='0'
 			ORDER BY r.dateline ASC
+			LIMIT $start, $perpage
 		");
 		while($report = $db->fetch_array($query))
 		{
+			$trow = alt_trow();
 			$reportdate = mydate($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = mydate($mybb->settings['timeformat'], $report['dateline']);
 			eval("\$reports .= \"".$templates->get("moderation_reports_report")."\";");
-			alt_trow();
 		}
 		if(!$reports)
 		{
@@ -1420,6 +1482,68 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
+		
+		// Figure out if we need to display multiple pages.
+		//$perpage = $mybb->settings['postsperpage'];
+		$perpage = 10;
+		if($mybb->input['page'] != "last")
+		{
+			$page = intval($mybb->input['page']);
+		}
+		
+		$query = $db->query("
+				SELECT COUNT(r.rid) AS count 
+				FROM ".TABLE_PREFIX."reportedposts r
+			");
+		$warnings = $db->fetch_field($query, "count");
+		
+		if($mybb->input['rid'])
+		{
+			$query = $db->query("
+				SELECT COUNT(r.rid) AS count 
+				FROM ".TABLE_PREFIX."reportedposts r
+				WHERE r.rid <= '".$mybb->input['rid']."'
+			");
+			$result = $db->fetch_field($query, "count");
+			if(($result % $perpage) == 0)
+			{
+				$page = $result / $perpage;
+			}
+			else
+			{
+				$page = intval($result / $perpage) + 1;
+			}
+		}
+		$postcount = intval($warnings)+1;
+		$pages = $postcount / $perpage;
+		$pages = ceil($pages);
+
+		if($mybb->input['page'] == "last")
+		{
+			$page = $pages;
+		}
+
+		if($page > $pages)
+		{
+			$page = 1;
+		}
+
+		if($page)
+		{
+			$start = ($page-1) * $perpage;
+		}
+		else
+		{
+			$start = 0;
+			$page = 1;
+		}
+		$upper = $start+$perpage;
+
+		$multipage = multipage($postcount, $perpage, $page, "moderation.php?action=allreports");
+		if($postcount > $perpage)
+		{
+			eval("\$allreportspages = \"".$templates->get("moderation_allreports_multipage")."\";");
+		}
 
 		$query = $db->query("
 			SELECT fid,name
@@ -1429,7 +1553,6 @@ switch($mybb->input['action'])
 		{
 			$forums[$forum['fid']] = $forum['name'];
 		}
-		$trow = "trow1";
 		$reports = '';
 		$query = $db->query("
 			SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject
@@ -1439,9 +1562,11 @@ switch($mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
 			ORDER BY r.dateline ASC
+			LIMIT $start, $perpage
 		");
 		while($report = $db->fetch_array($query))
 		{
+			$trow = alt_trow();
 			$reportdate = mydate($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = mydate($mybb->settings['timeformat'], $report['dateline']);
 			if($report['reportstatus'] == 0)
@@ -1453,7 +1578,7 @@ switch($mybb->input['action'])
 				$report['read'] = $lang->yes;
 			}
 			eval("\$allreports .= \"".$templates->get("moderation_reports_allreport")."\";");
-			alt_trow();
+			
 		}
 		if(!$allreports)
 		{

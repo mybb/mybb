@@ -23,8 +23,7 @@ $mybboard['vercode'] = "100.07";
  */
 function output_page($contents)
 {
-	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser, $mybbgroup;
-	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
+	global $db, $plugins, $mybb, $mybbgroup, $querytime, $debug, $maintimer, $globaltime, $parsetime;
 
 	$ptimer = new timer();
 	$contents = parse_page($contents);
@@ -173,7 +172,7 @@ function send_mail_queue($count=20)
  */
 function parse_page($contents)
 {
-	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup, $htmldoctype, $loadpmpopup;
+	global $lang, $htmldoctype, $loadpmpopup;
 
 	$contents = str_replace("<navigation>", build_breadcrumb(1), $contents);
 	if($htmldoctype)
@@ -276,7 +275,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
  */
 function mymail($to, $subject, $message, $from="", $charset="")
 {
-	global $db, $mybb;
+	global $mybb;
 
 	// Build mail headers
 	if(strlen(trim($from)) == 0)
@@ -333,7 +332,7 @@ function mymail($to, $subject, $message, $from="", $charset="")
  */
 function get_parent_list($fid)
 {
-	global $db, $forum_cache;
+	global $forum_cache;
 	static $forumarraycache;
 
 	if($forumarraycache[$fid])
@@ -383,7 +382,7 @@ function build_parent_list($fid, $column="fid", $joiner="OR", $parentlist="")
  */
 function cache_forums()
 {
-	global $forum_cache, $db, $cache;
+	global $forum_cache, $cache;
 
 	if(!$forum_cache)
 	{
@@ -405,7 +404,7 @@ function cache_forums()
  */
 function error($error, $title="")
 {
-	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $db, $templates, $lang, $mybb;
+	global $lang, $mybb;
 
 	if(!$title)
 	{
@@ -428,7 +427,7 @@ function error($error, $title="")
  */
 function inline_error($errors, $title="")
 {
-	global $theme, $mybb, $db, $lang, $templates, $settings;
+	global $mybb, $lang, $templates;
 	if(!$title)
 	{
 		$title = $lang->please_correct_errors;
@@ -446,7 +445,7 @@ function inline_error($errors, $title="")
  */
 function error_no_permission()
 {
-	global $REQUEST_URI, $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang, $plugins, $session;
+	global $mybb, $templates, $lang, $plugins, $session;
 
 	$time = time();
 	$plugins->run_hooks("no_permission");
@@ -457,7 +456,7 @@ function error_no_permission()
 	);
 	$db->update_query(TABLE_PREFIX."sessions", $noperm_array, "sid='".$session->sid."'");
 	$plate = "error_nopermission".(($mybb->user['uid']!=0)?"_loggedin":"");
-	$url = $REQUEST_URI;
+	$url = $_SERVER['REQUEST_URI']; 
 	eval("\$errorpage = \"".$templates->get($plate)."\";");
 	error($errorpage);
 }
@@ -470,7 +469,7 @@ function error_no_permission()
  */
 function redirect($url, $message="You will now be redirected", $title="")
 {
-	global $header, $footer, $css, $toplinks, $settings, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
+	global $mybb, $templates, $plugins;
 
 	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	$plugins->run_hooks("redirect");
@@ -504,7 +503,7 @@ function redirect($url, $message="You will now be redirected", $title="")
  */
 function multipage($count, $perpage, $page, $url)
 {
-	global $settings, $theme, $templates, $lang, $mybb;
+	global $templates, $lang, $mybb;
 
 	if($count > $perpage)
 	{
@@ -563,7 +562,7 @@ function multipage($count, $perpage, $page, $url)
  */
 function user_permissions($uid=0)
 {
-	global $mybb, $cache, $groupscache, $user_cache;
+	global $mybb, $cache, $user_cache;
 
 	// If no user id is specified, assume it is the current user
 	if($uid == 0)
@@ -2036,59 +2035,49 @@ function mark_reports($id, $type="post")
 		case "posts":
 			if(is_array($id))
 			{
+				$sqlarray = array(
+					'reportstatus' => 1
+				);
+				;
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->query("
-					UPDATE ".TABLE_PREFIX."reportedposts
-					SET reportstatus='1'
-					WHERE pid IN($rids)
-					AND reportstatus='0'
-				");
+				$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "pid IN($rids) AND reportstatus='0'");
 			}
 			break;
 		case "post":
-			$db->query("
-				UPDATE ".TABLE_PREFIX."reportedposts
-				SET reportstatus='1'
-				WHERE pid='$id'
-				AND reportstatus='0'
-			");
+			$sqlarray = array(
+				'reportstatus' => 1
+			);
+			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "pid='$id' AND reportstatus='0'");
 			break;
 		case "threads":
 			if(is_array($id))
 			{
+				$sqlarray = array(
+					'reportstatus' => 1
+				);				
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->query("
-					UPDATE ".TABLE_PREFIX."reportedposts
-					SET reportstatus='1'
-					WHERE tid IN($rids)
-					AND reportstatus='0'
-				");
+				$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "tid IN($rids) AND reportstatus='0'");
 			}
 			break;
 		case "thread":
-			$db->query("
-				UPDATE ".TABLE_PREFIX."reportedposts
-				SET reportstatus='1'
-				WHERE tid='$id'
-				AND reportstatus='0'
-			");
+			$sqlarray = array(
+				'reportstatus' => 1
+			);
+			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "tid='$id' AND reportstatus='0'");
 			break;
 		case "forum":
-			$db->query("
-				UPDATE ".TABLE_PREFIX."reportedposts
-				SET reportstatus='1'
-				WHERE fid='$id'
-				AND reportstatus='0'
-			");
+			$sqlarray = array(
+				'reportstatus' => 1
+			);
+			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "fid='$id' AND reportstatus='0'");
 			break;
 		case "all":
-			$db->query("
-				UPDATE ".TABLE_PREFIX."reportedposts
-				SET reportstatus='1'
-				WHERE reportstatus='0'
-			");
+			$sqlarray = array(
+				'reportstatus' => 1
+			);
+			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "reportstatus='0'");
 			break;
 	}
 	$plugins->run_hooks("mark_reports");
@@ -2619,6 +2608,7 @@ function unhtmlentities($string)
  * @param array The event data array.
  * @return string The link to the event poster.
  */
+ 
 function get_event_poster($event)
 {
 	if($event['username'])
