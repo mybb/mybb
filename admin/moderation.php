@@ -204,10 +204,9 @@ if($mybb->input['action'] == "edit")
 		$split_thread_extras .= "<label><input type=\"checkbox\" name=\"splitpostsunapprove\" value=\"unapprove\"$unapprove_check /> $lang->unapprove</label> </small>";
 		makelabelcode($lang->split_posts, forumselect('splitposts', $post_options['splitposts'], '', '', 0, $lang->do_not_split).$split_thread_extras);
 		unset($forumselect);
+		makeinputcode($lang->split_new_subject, 'splitpostsnewsubject', $post_options['splitpostsnewsubject']);
 		maketextareacode($lang->add_reply_split, 'splitpostsaddreply', $post_options['splitpostsaddreply']);
 		makeinputcode($lang->reply_subject, 'splitpostsreplysubject', $post_options['splitpostsreplysubject']);
-		makeinputcode($lang->split_new_subject, 'splitpostsnewsubject', $post_options['splitpostsnewsubject']);
-		
 	}
 	// Settings for normal thread moderation
 	tablesubheader($lang->thread_moderation);
@@ -356,9 +355,10 @@ if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthre
 		$split_thread_extras .= "<label><input type=\"checkbox\" name=\"splitpostsunapprove\" value=\"unapprove\" /> $lang->unapprove</label> </small>";
 		makelabelcode($lang->split_posts, forumselect('splitposts', '', '', '', 0, $lang->do_not_split).$split_thread_extras);
 		unset($forumselect);
+		makeinputcode($lang->split_new_subject, 'splitpostsnewsubject', '{subject}');
 		maketextareacode($lang->add_reply_split, 'splitpostsaddreply');
 		makeinputcode($lang->reply_subject, 'splitpostsreplysubject');
-		makeinputcode($lang->split_new_subject, 'splitpostsnewsubject', '{subject}');
+
 		
 	}
 	// Settings for normal thread moderation

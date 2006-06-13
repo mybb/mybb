@@ -1627,7 +1627,7 @@ switch($mybb->input['action'])
 			elseif($tool['type'] == 'p' && $mybb->input['modtype'] == 'inlinepost')
 			{
 				$pids = getids($tid, "thread");
-				$ret = $custommod->execute(intval($mybb->input['action']));
+				$ret = $custommod->execute(intval($mybb->input['action']), $tid, $pids);
  				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				clearinline($tid, "thread");
