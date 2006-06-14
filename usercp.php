@@ -1851,7 +1851,7 @@ if($mybb->input['action'] == "usergroups")
 		$query = $db->query("
 			SELECT *
 			FROM ".TABLE_PREFIX."usergroups
-			WHERE gid='".intval($mybb->input['joingroup'])."
+			WHERE gid='".intval($mybb->input['joingroup'])."'
 		");
 		$usergroup = $db->fetch_array($query);
 
@@ -1925,7 +1925,7 @@ if($mybb->input['action'] == "usergroups")
 		FROM ".TABLE_PREFIX."groupleaders l
 		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=l.gid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
-		LEFT JOIN ".TABLE_PREFIX."joinrequests JOIN (j.gid=g.gid)
+		LEFT JOIN ".TABLE_PREFIX."joinrequests j ON (j.gid=g.gid)
 		WHERE l.uid='".$mybb->user['uid']."'
 		GROUP BY l.gid
 	");

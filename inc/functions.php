@@ -751,7 +751,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
  * @param int The forum ID
  * @param string A comma separated list of usergroups
  * @param array Group permissions
- * @return array Permissions for this forum 
+ * @return array Permissions for this forum
 */
 function fetch_forum_permissions($fid, $gid, $groupperms)
 {
@@ -1642,7 +1642,7 @@ function log_moderator_action($data, $action="")
 		$tid = $data['tid'];
 		unset($data['tid']);
 	}
-	
+
 	// Any remaining extra data - we serialize and insert in to its own column
 	if(is_array($data))
 	{
@@ -2036,40 +2036,40 @@ function mark_reports($id, $type="post")
 		case "posts":
 			if(is_array($id))
 			{
-				$sqlarray = array( 
-			 		'reportstatus' => 1 
-			 	); 
+				$sqlarray = array(
+			 		'reportstatus' => 1
+			 	);
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "pid IN($rids) AND reportstatus='0'"); 
+				$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "pid IN($rids) AND reportstatus='0'");
 			}
 			break;
 		case "post":
-			$sqlarray = array( 
-	 			'reportstatus' => 1 
+			$sqlarray = array(
+	 			'reportstatus' => 1
 	 		);
 			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "pid='$id' AND reportstatus='0'");
 			break;
 		case "threads":
 			if(is_array($id))
 			{
-				$sqlarray = array( 
-			 		'reportstatus' => 1 
-			 	);				
+				$sqlarray = array(
+			 		'reportstatus' => 1
+			 	);
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
 				$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "tid IN($rids) AND reportstatus='0'");
 			}
 			break;
 		case "thread":
-			$sqlarray = array( 
-	 			'reportstatus' => 1 
+			$sqlarray = array(
+	 			'reportstatus' => 1
 	 		);
 			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "tid='$id' AND reportstatus='0'");
 			break;
 		case "forum":
-			$sqlarray = array( 
-	 			'reportstatus' => 1 
+			$sqlarray = array(
+	 			'reportstatus' => 1
 	 		);
 			$db->query("
 				UPDATE ".TABLE_PREFIX."reportedposts
@@ -2080,8 +2080,8 @@ function mark_reports($id, $type="post")
 			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "fid='$id' AND reportstatus='0'");
 			break;
 		case "all":
-			$sqlarray = array( 
-	 			'reportstatus' => 1 
+			$sqlarray = array(
+	 			'reportstatus' => 1
 	 		);
 			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "reportstatus='0'");
 			break;
@@ -2217,7 +2217,7 @@ function alt_trow($reset=0)
 
 function join_usergroup($uid, $joingroup)
 {
-
+	global $db;
 	if($uid == $mybb->user['uid'])
 	{
 		$user = $mybb->user;
