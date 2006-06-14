@@ -1939,7 +1939,7 @@ if($mybb->input['action'] == "usergroups")
 		}
 		if($usergroup['joinrequests'] > 0 && $usergroup['canmanagerequests'] == "yes")
 		{
-			$moderaterequestslink = " [<a href=\"managegroup.php?action=joinrequests&gid=".$usergroup['gid']."\">".$lang->view_requests."</a>]";
+			$moderaterequestslink = " [<a href=\"managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}\">{$lang->view_requests}</a>]";
 		}
 		$groupleader[$usergroup['gid']] = 1;
 		$trow = alt_trow();
@@ -1958,7 +1958,7 @@ if($mybb->input['action'] == "usergroups")
 		WHERE gid='".$mybb->user['usergroup']."'
 	");
 	$usergroup = $db->fetch_array($query);
-	$leavelink = "<span class=\"smalltext\"><center>$lang->usergroup_leave_primary</center></span>";
+	$leavelink = "<div style=\"text-align:center;\"><span class=\"smalltext\">{$lang->usergroup_leave_primary}</span></div>";
 	$trow = alt_trow();
 	if($usergroup['candisplaygroup'] == "yes" && $usergroup['gid'] == $mybb->user['displaygroup'])
 	{
@@ -1988,7 +1988,7 @@ if($mybb->input['action'] == "usergroups")
 			$showmemberof = true;
 			if($groupleader[$usergroup['gid']])
 			{
-				$leavelink = "<span class=\"smalltext\"><center>$lang->usergroup_leave_leader</center></span>";
+				$leavelink = "<div style=\"text-align:center;\"><span class=\"smalltext\">$lang->usergroup_leave_leader</span></div>";
 			}
 			else
 			{
@@ -2075,7 +2075,7 @@ if($mybb->input['action'] == "usergroups")
 		}
 		else
 		{
-			$joinlink = "<a href=\"usercp.php?action=usergroups&joingroup=".$usergroup['gid']."\">".$lang->join_group."</a>";
+			$joinlink = "<a href=\"usercp.php?action=usergroups&amp;joingroup={$usergroup['gid']}\">{$lang->join_group}</a>";
 		}
 		$usergroupleaders = '';
 		if($groupleaders[$usergroup['gid']])
@@ -2084,7 +2084,7 @@ if($mybb->input['action'] == "usergroups")
 			$usergroupleaders = '';
 			foreach($groupleaders[$usergroup['gid']] as $leader)
 			{
-				$usergroupleaders .= "$comma<a href=\"member.php?action=profile&uid=".$leader['uid']."\">".$leader['username']."</a>";
+				$usergroupleaders .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$leader['uid']}\">{$leader['username']}</a>";
 				$comma = ", ";
 			}
 			$usergroupleaders = $lang->usergroup_leaders." ".$usergroupleaders;

@@ -2400,7 +2400,6 @@ $reputation
 </td>
 </tr>
 </table>
-</form>
 {$footer}
 </body>
 </html>]]></template>
