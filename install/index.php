@@ -68,7 +68,7 @@ else
 {
 	$output->steps = array(
 		'intro' => $lang->welcome,
-		'license' => $lang->lisence_agreement,
+		'license' => $lang->license_agreement,
 		'requirements_check' => $lang->req_check,
 		'database_info' => $lang->db_config,
 		'create_tables' => $lang->table_creation,
@@ -241,7 +241,7 @@ function requirements_check()
 		$configstatus = sprintf($lang->req_step_span_pass, $lang->writable);
 	}
 	@fclose($configwritable);
-		
+
 	// Check settings file is writable
 	$settingswritable = @fopen('../inc/settings.php', 'w');
 	if(!$settingswritable)
@@ -283,7 +283,7 @@ function requirements_check()
 		$avatarsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
 	}
 	@fclose($avatarswritable);
-	
+
 
 	// Output requirements page
 	echo sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $xmlstatus, $configstatus, $settingsstatus, $uploadsstatus, $avatarsstatus);

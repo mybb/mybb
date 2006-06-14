@@ -59,6 +59,7 @@ a:hover {
 	width: 160px;
 	float: left;
 	padding: 10px;
+	padding-right: 0px;
 	font-size: 11px;
 }
 #progress ul {
