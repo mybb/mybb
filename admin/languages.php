@@ -33,7 +33,7 @@ if($mybb->input['action'] == "do_editset")
 	// Update the language set file
 
 	$plugins->run_hooks("admin_languages_do_editset");
-	
+
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
 	$file = MYBB_ROOT."inc/languages/".$editlang.".php";
@@ -124,9 +124,9 @@ if($mybb->input['action'] == "editset")
 
 	// Get language info
 	require $file;
-	
+
 	$plugins->run_hooks("admin_languages_editset");
-	
+
 	cpheader();
 	startform("languages.php", "editset", "do_editset");
 	starttable();
@@ -185,7 +185,7 @@ if($mybb->input['action'] == "do_edit")
 	$file = basename($mybb->input['file']);
 	if($mybb->input['inadmin'] == 1)
 	{
-		$file = "admin/".$file;
+		$file = $config['admindir'].'/'.$file;
 	}
 	$editfile = $folder.$file;
 	if(!file_exists($editfile))
@@ -265,7 +265,7 @@ if($mybb->input['action'] == "edit")
 		$file = basename($mybb->input['file']);
 		if($mybb->input['inadmin'] == 1)
 		{
-			$file = "admin/".$file;
+			$file = $config['admindir'].'/'.$file;
 		}
 		$editfile = $folder.$file;
 		$withfile = '';
@@ -292,7 +292,7 @@ if($mybb->input['action'] == "edit")
 			$editvars = array();
 		}
 		unset($l);
-		
+
 		$withvars = array();
 		// Get edit with file in an array
 		if($editwithfile)
@@ -301,7 +301,7 @@ if($mybb->input['action'] == "edit")
 			$withvars = $l;
 			unset($l);
 		}
-		
+
 		$plugins->run_hooks("admin_languages_edit_edit");
 
 		// Start output
@@ -316,7 +316,7 @@ if($mybb->input['action'] == "edit")
 		}
 
 		starttable();
-		if($editwithfile) 
+		if($editwithfile)
 		{
 			// Editing with another file
 			$lang->editing_file_in_set_with = sprintf($lang->editing_file_in_set_with, $file, $languages[$editlang], $languages[$editwith]);
@@ -374,24 +374,24 @@ if($mybb->input['action'] == "edit")
 				echo "</tr>";
 			}
 		}
-	
+
 		endtable();
 
 		makehiddencode("lang", $editlang);
 		makehiddencode("editwith", $editwith);
 		makehiddencode("inadmin", intval($mybb->input['inadmin']));
 		makehiddencode("file", $file);
-	
+
 		endform($lang->update_button, $lang->reset_button);
 		cpfooter();
 	}
 	else
 	{
 		// List files in specific language
-		
+
 		// Get files in main folder
 		$filenames = array();
-		if($handle = opendir($folder)) 
+		if($handle = opendir($folder))
 		{
 			while(false !== ($file = readdir($handle)))
 			{
@@ -405,7 +405,7 @@ if($mybb->input['action'] == "edit")
 		}
 		// Get files in admin folder
 		$adminfilenames = array();
-		if($handle = opendir($folder."/admin")) 
+		if($handle = opendir($folder."/admin"))
 		{
 			while(false !== ($file = readdir($handle)))
 			{
@@ -417,25 +417,40 @@ if($mybb->input['action'] == "edit")
 			closedir($handle);
 			sort($adminfilenames);
 		}
-		
+
+		$allfilenames = array_merge($filenames, $adminfilenames);
+		$allfilenames = array_unique($allfilenames);
+		asort($allfilenames);
+
 		$plugins->run_hooks("admin_languages_edit_list");
-		
+
 		// Output
 		cpheader();
 		startform("languages.php", "choose", "edit");
 		makehiddencode("lang", $editlang);
 		makehiddencode("editwith", $editwith);
 		starttable();
-		tableheader($lang->choose_file_to_edit);
-		tablesubheader($lang->main_folder);
-		foreach($filenames as $filename)
+		tableheader($lang->choose_file_to_edit, '', 3);
+		tablesubheader(array('&nbsp;', $lang->main_folder, $lang->admin_folder));
+		foreach($allfilenames as $filename)
 		{
-			makelabelcode($filename, makelinkcode($lang->edit_link, "languages.php?action=edit&amp;lang=$editlang&amp;editwith=$editwith&amp;file=$filename"));
-		}
-		tablesubheader($lang->admin_folder);
-		foreach($adminfilenames as $filename)
-		{
-			makelabelcode("admin/".$filename, makelinkcode($lang->edit_link, "languages.php?action=edit&amp;lang=$editlang&amp;editwith=$editwith&amp;file=$filename&inadmin=1"));
+			$bgcolor = getaltbg();
+			$normal_link = '';
+			$admin_link = '';
+			if(in_array($filename, $filenames))
+			{
+				$normal_link = makelinkcode($lang->edit_link, "languages.php?action=edit&amp;lang=$editlang&amp;editwith=$editwith&amp;file=$filename");
+			}
+			if(in_array($filename, $adminfilenames))
+			{
+				$admin_link = makelinkcode($lang->edit_link, "languages.php?action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&inadmin=1");
+			}
+			echo "<tr class=\"{$bgcolor}\">
+	<td>{$filename}</td>
+	<td align=\"center\">{$normal_link}</td>
+	<td align=\"center\">{$admin_link}</td>
+</tr>
+";
 		}
 		endtable();
 		endform();
@@ -446,7 +461,7 @@ if($mybb->input['action'] == "edit")
 if(empty($mybb->input['action']))
 {
 	$plugins->run_hooks("admin_languages_list");
-	
+
 	// List language packs
 	cpheader();
 	starttable();
