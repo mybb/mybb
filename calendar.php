@@ -130,7 +130,7 @@ add_breadcrumb($lang->nav_calendar, "calendar.php");
 
 if($month && $year)
 {
-	add_breadcrumb("$monthnames[$month] $year", "calendar.php?month=$month&year=$year");
+	add_breadcrumb("$monthnames[$month] $year", "calendar.php?month={$month}&amp;year={$year}");
 }
 
 // No weird actions allowed.
@@ -220,7 +220,7 @@ if($mybb->input['action'] == "dayview")
 		$bday_where = "birthday LIKE '$day-$month-%'";
 		$feb_fix = 0;
 	}
-	$query = $db->simple_query(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
 
 	$alterbg = $theme['trow1'];
 	$comma = '';
@@ -253,7 +253,7 @@ if($mybb->input['action'] == "dayview")
 	$events = '';
 	// Load Events
 	$query = $db->query("
-		SELECT e.eid, e.author, e.subject, e.description, u.username, u.usergroup, u.displaygroup
+		SELECT e.eid, e.author, e.subject, e.description, e.date, u.username, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."events e
 		LEFT JOIN ".TABLE_PREFIX."users u ON (e.author=u.uid)
 		WHERE date LIKE '$day-$month-$year'
@@ -408,7 +408,7 @@ if($mybb->input['action'] == "do_editevent")
 {
 	$plugins->run_hooks("calendar_do_editevent_start");
 
-	$query = $db->simple_query(TABLE_PREFIX."events", "*", "eid='{$eid}'");
+	$query = $db->simple_select(TABLE_PREFIX."events", "*", "eid='{$eid}'");
 	$event = $db->fetch_array($query);
 
 	if(!is_numeric($event['author']))
@@ -476,7 +476,7 @@ if($mybb->input['action'] == "editevent")
 
 	$eid = intval($mybb->input['eid']);
 
-	$query = $db->simple_query(TABLE_PREFIX."events", "*", "eid='{$eid}'");
+	$query = $db->simple_select(TABLE_PREFIX."events", "*", "eid='{$eid}'");
 	$event = $db->fetch_array($query);
 
 	if(!$event['eid'])
@@ -604,16 +604,16 @@ if($mybb->input['action'] == "calendar_main")
 		{
 			if($bdays[$i] > 1)
 			{
-				$birthdays = "<a href=\"calendar.php?action=dayview&year=$year&month=$month&day=$i\">$bdays[$i] $lang->birthdays</a><br />\n";
+				$birthdays = "<a href=\"calendar.php?action=dayview&amp;year={$year}&amp;month={$month}&amp;day={$i}\">{$bdays[$i]} {$lang->birthdays}</a><br />\n";
 			}
 			else
 			{
-				$birthdays = "<a href=\"calendar.php?action=dayview&year=$year&month=$month&day=$i\">$bdays[$i] $lang->birthday</a><br />\n";
+				$birthdays = "<a href=\"calendar.php?action=dayview&amp;year={$year}&amp;month={$month}&amp;day={$i}\">{$bdays[$i]} {$lang->birthday}</a><br />\n";
 			}
 		}
 		else
 		{
-			$birthdays = '';
+			$birthdays = '&nbsp;';
 		}
 		if((date("d") == $i) && (date("n") == $month) && (date("Y") == $year))
 		{

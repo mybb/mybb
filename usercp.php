@@ -165,17 +165,17 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			"awayreason" => ''
 		);
 	}
-	
+
 	$bday = array(
 		"day" => $mybb->input['bday1'],
 		"month" => $mybb->input['bday2'],
 		"year" => $mybb->input['bday3']
 	);
-	
+
 	// Set up user handler.
 	require_once "inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("update");
-	
+
 	$user = array(
 		"uid" => $mybb->user['uid'],
 		"website" => $db->escape_string(htmlspecialchars($mybb->input['website'])),
@@ -187,7 +187,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"away" => $away,
 		"profile_fields" => $mybb->input['profile_fields']
 	);
-	
+
 	if($mybb->usergroup['cancustomtitle'] == "yes")
 	{
 		if($mybb->input['usertitle'] != '')
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		}
 	}
 	$userhandler->set_data($user);
-	
+
 	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
@@ -227,7 +227,7 @@ if($mybb->input['action'] == "profile")
 	{
 		$user = $mybb->user;
 	}
-	
+
 	$plugins->run_hooks("usercp_profile_start");
 
 	$bday = explode("-", $user['birthday']);
@@ -253,7 +253,7 @@ if($mybb->input['action'] == "profile")
 	{
 		$user['website'] = htmlspecialchars_uni($user['website']);
 	}
-	
+
 	if($user['icq'] != "0")
 	{
 		$user['icq'] = intval($user['icq']);
@@ -505,11 +505,11 @@ if($mybb->input['action'] == "profile")
 if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_options_start");
-	
+
 	// Set up user handler.
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("update");
-	
+
 	$user = array(
 		"uid" => $mybb->user['uid'],
 		"style" => intval($mybb->input['style']),
@@ -518,7 +518,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"timezone" => $db->escape_string($mybb->input['timezoneoffset']),
 		"language" => $mybb->input['language']
 	);
-	
+
 	$user['options'] = array(
 		"allownotices" => $mybb->input['allownotices'],
 		"hideemail" => $mybb->input['hideemail'],
@@ -537,7 +537,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"pmnotify" => $mybb->input['pmnotify'],
 		"showredirect" => $mybb->input['showredirect']
 	);
-	
+
 	if($mybb->settings['usertppoptions'])
 	{
 		$user['options']['tpp'] = intval($mybb->input['tpp']);
@@ -547,9 +547,9 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 	{
 		$user['options']['ppp'] = intval($mybb->input['ppp']);
 	}
-	
+
 	$userhandler->set_data($user);
-	
+
 
 	if(!$userhandler->validate_user())
 	{
@@ -1023,7 +1023,7 @@ if($mybb->input['action'] == "favorites")
 	$multipage = multipage($threadcount, $perpage, $page, "usercp.php?action=favorites");
 	$fpermissions = forum_permissions();
 	$query = $db->query("
-		SELECT f.*, t.*, i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username 
+		SELECT f.*, t.*, i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."favorites f
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (f.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon)
@@ -1540,7 +1540,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
 		$ext = get_extension($mybb->input['avatarurl']);
 		list($width, $height, $type) = @getimagesize($mybb->input['avatarurl']);
-		
+
 		//if(preg_match("#gif|jpg|jpeg|jpe|bmp|png#i", $ext) && $mybb->settings['maxavatardims'] != "")
 		if($width && $height && $mybb->settings['maxavatardims'] != "")
 		{
@@ -1708,14 +1708,14 @@ if($mybb->input['action'] == "drafts")
 		if($draft['threadvisible'] == 1) // We're looking at a draft post
 		{
 			$detail = $lang->thread." <a href=\"showthread.php?tid=".$draft['tid']."\">".htmlspecialchars_uni($draft['threadsubject'])."</a>";
-			$editurl = "newreply.php?action=editdraft&pid=$draft[pid]";
+			$editurl = "newreply.php?action=editdraft&amp;pid={$draft['pid']}";
 			$id = $draft['pid'];
 			$type = "post";
 		}
 		elseif($draft['threadvisible'] == -2) // We're looking at a draft thread
 		{
 			$detail = $lang->forum." <a href=\"forumdisplay.php?fid=".$draft['fid']."\">".htmlspecialchars_uni($draft['forumname'])."</a>";
-			$editurl = "newthread.php?action=editdraft&tid=$draft[tid]";
+			$editurl = "newthread.php?action=editdraft&amp;tid=$draft[tid]";
 			$id = $draft['tid'];
 			$type = "thread";
 		}

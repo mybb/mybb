@@ -117,7 +117,7 @@ if($mybb->input['action'] == "results")
 	$lower = $start+1;
 	$upper = $end;
 
-	$sorturl = "search.php?action=results&sid=$sid";
+	$sorturl = "search.php?action=results&amp;sid={$sid}";
 
 	// Read some caches we will be using
 	$forumcache = $cache->read("forums");

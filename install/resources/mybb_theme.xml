@@ -923,7 +923,7 @@ var inlineId = {$tid};
 <td class="tcat" align="center" width="50%"><span class="smalltext"><strong>{$lang->draft_title}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_saved}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_options}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->delete_draft}</strong></span></td>
+<td class="tcat" align="center">&nbsp;</td>
 </tr>
 {$drafts}
 </table>
@@ -1083,13 +1083,13 @@ var inlineId = {$tid};
 <tr>
 <td>
 <select name="awayday">
-<option value=""></option>
+<option value="">&nbsp;</option>
 {$returndatesel}
 </select>
 </td>
 <td>
 <select name="awaymonth">
-<option value=""> </option>
+<option value="">&nbsp;</option>
 <option value="1" {$returndatemonthsel['1']}>{$lang->month_1}</option>
 <option value="2" {$returndatemonthsel['2']}>{$lang->month_2}</option>
 <option value="3" {$returndatemonthsel['3']}>{$lang->month_3}</option>
@@ -1309,7 +1309,7 @@ var inlineId = {$tid};
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_options" />
-<input type="submit" class="button" name="regsubmit" value="{$lang->update_options}">
+<input type="submit" class="button" name="regsubmit" value="{$lang->update_options}" />
 </div>
 </td>
 </tr>
@@ -1322,7 +1322,7 @@ var inlineId = {$tid};
 <td class="trow1" colspan="7">{$lang->no_thread_subscriptions}</td>
 </tr>]]></template>
 		<template name="usercp_subscriptions_thread" version="100.07"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" /></td>
+<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" alt="" /></td>
 <td align="center" class="trow2">{$icon}</td>
 <td width="100%" class="trow1"><a href="showthread.php?tid={$subscription['tid']}">{$subscription['subject']}</a><br /><span class="smalltext"><a href="newreply.php?tid={$subscription['tid']}">{$lang->post_reply}</a> | <a href="usercp2.php?action=removesubscription&amp;tid={$subscription['tid']}">{$lang->unsubscribe}</a></span></td>
 <td align="center" class="trow2"><a href="member.php?action=profile&amp;uid={$subscription['author']}">{$subscription['username']}</a></td>
@@ -1367,7 +1367,7 @@ var inlineId = {$tid};
 <td class="trow1" colspan="7">{$lang->no_favorite_threads}</td>
 </tr>]]></template>
 		<template name="usercp_favorites_thread" version="100.07"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" /></td>
+<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 <td align="center" class="trow2">{$icon}</td>
 <td width="100%" class="trow1"><a href="showthread.php?tid={$favorite['tid']}">{$favorite['subject']}</a><br /><span class="smalltext"><a href="newreply.php?tid={$favorite['tid']}">{$lang->post_reply}</a> | <a href="usercp2.php?action=removefavorite&amp;tid={$favorite['tid']}">{$lang->delete_from_favorites}</a></span></td>
 <td align="center" class="trow2"><a href="member.php?action=profile&amp;uid={$favorite['author']}">{$favorite['username']}</a></td>
@@ -1727,10 +1727,10 @@ $headerinclude
 <td><span class="smalltext">{$lang->new_custom_usertitle}</span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="usertitle" size="25" value="" maxlength="{$settings['customtitlemaxlength']}" value="{$newtitle}" /></td>
+<td><input type="text" class="textbox" name="usertitle" size="25" maxlength="{$settings['customtitlemaxlength']}" value="{$newtitle}" /></td>
 </tr>
 <tr>
-<td><span class="smalltext"><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {$lang->revert_usertitle}</td>
+<td><span class="smalltext"><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {$lang->revert_usertitle}</span></td>
 </tr>
 </table>
 </fieldset>
@@ -1777,13 +1777,13 @@ $headerinclude
 <tr>
 <td>
 <select name="bday1">
-<option value=""></option>
+<option value="">&nbsp;</option>
 {$bdaydaysel}
 </select>
 </td>
 <td>
 <select name="bday2">
-<option value=""> </option>
+<option value="">&nbsp;</option>
 <option value="1" {$bdaymonthsel['1']}>{$lang->month_1}</option>
 <option value="2" {$bdaymonthsel['2']}>{$lang->month_2}</option>
 <option value="3" {$bdaymonthsel['3']}>{$lang->month_3}</option>
@@ -2068,7 +2068,7 @@ $headerinclude
 <td>{$lang->avatar_note}{$avatarmsg}
 </td>
 {$currentavatar}
-</td></tr></table>
+</tr></table>
 </td>
 </tr>
 <tr>
@@ -3396,8 +3396,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 {$member}
 <tr>
-<form action="memberlist.php" method="post">
 <td align="center" colspan="6" class="tfoot">
+<form action="memberlist.php" method="post">
 <input type="hidden" name="page" value="{$page}" />
 {$lang->sort_by} <select name="by">
 <option value="regdate"{$regdatesel}>{$lang->sort_regdate}</option>
@@ -3407,8 +3407,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <option value="ASC"{$ascsel}>{$lang->sort_asc}</option>
 <option value="DESC"{$descsel}>{$lang->sort_desc}</option>
 </select> {$lang->order} {$lang->search_for} <input type="text" class="textbox" name="usersearch" value="{$usersearch}" size="20" /> {$gobutton}
-</td>
 </form>
+</td>
 </tr>
 </table>
 <table align="center" width="100%"><tr>
@@ -3597,13 +3597,13 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 <td class="trow1">
 <table><tr>
-<td class="trow1"><input type="text" class="textbox" name="author" size="35" maxlength="{$settings['maxnamelength']}" /><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked>&nbsp; {$lang->match_username}</span></td>
+<td class="trow1"><input type="text" class="textbox" name="author" size="35" maxlength="{$settings['maxnamelength']}" /><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked="checked" />&nbsp; {$lang->match_username}</span></td>
 <td class="trow1">&nbsp;</td>
 </tr></table>
 </td>
 </tr>
 <tr>
-<td class="tcat"><strong>{$lang->search_forums}</td>
+<td class="tcat"><strong>{$lang->search_forums}</strong></td>
 <td class="tcat"><strong>{$lang->search_options}</strong></td>
 </tr>
 <tr>
@@ -3627,7 +3627,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 <tr>
-<td class="tcat"><strong>{$lang->sorting_options}</td>
+<td class="tcat"><strong>{$lang->sorting_options}</strong></td>
 </tr>
 <tr>
 <td class="trow1">
@@ -3639,12 +3639,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 <tr>
-<td class="tcat"><strong>{$lang->display_options}</td>
+<td class="tcat"><strong>{$lang->display_options}</strong></td>
 </tr>
 <tr>
 <td class="trow1">{$lang->show_results_as} <input type="radio" class="radio" name="showresults" value="threads" checked="checked" />{$lang->show_results_threads} <input type="radio" class="radio" name="showresults" value="posts" />{$lang->show_results_posts}</td>
 </tr>
-</td>
 </table>
 <center><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></center>
 </form>
@@ -3888,7 +3887,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <span class="smalltext"><input type="checkbox" class="checkbox" name="postpoll" value="yes" {$postpollchecked} /><strong>{$lang->poll_check}</strong><br />
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" />{$lang->max_options}</span>
 </td>
-</tr>]]></template>		
+</tr>]]></template>
 		<template name="global_unreadreports" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1" align="right"><span class="smalltext"><a href="moderation.php?action=reports">{$lang->unread_reports}</a></span></td>
@@ -4642,7 +4641,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_password" />
-<input type="submit" class="button" name="submit" value="{$lang->update_password}">
+<input type="submit" class="button" name="submit" value="{$lang->update_password}" />
 </div>
 </td>
 </tr>
@@ -4688,7 +4687,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_email" />
-<input type="submit" class="button" name="submit" value="{$lang->update_email}">
+<input type="submit" class="button" name="submit" value="{$lang->update_email}" />
 </div>
 </td>
 </tr>
@@ -4726,7 +4725,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="private_archive_csv_message" version="100.07"><![CDATA[{$senddate},{$foldername},{$message['subject']},{$message['tousername']},{$message['fromusername']},{$message['message']}]]></template>
 		<template name="search_results_threads_thread" version="100.07"><![CDATA[<tr>
-	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif" /></td>
+	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 	<td align="center" class="{$bgcolor}" width="1">{$icon}</td>
 	<td class="{$bgcolor}">{$prefix} <a href="showthread.php?tid={$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</td>
 	<td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
@@ -4774,7 +4773,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="search_results_posts_post" version="100.07"><![CDATA[<tr>
-	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif" /></td>
+	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 	<td align="center" class="{$bgcolor}" width="1">{$icon}</td>
 	<td class="{$bgcolor}"><span class="smalltext">{$lang->post_thread} <a href="showthread.php?tid={$post['tid']}">{$post['thread_subject']}</a><br />{$lang->post_subject} <a href="showthread.php?tid={$post['tid']}&amp;pid={$post['pid']}#pid{$post['pid']}">{$post['subject']}</a></span><br />
 	<table width="100%"><tr><td><span class="smalltext"><em>{$prev}</em></span></td></tr></table></td>
@@ -5331,7 +5330,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_changename" />
-<input type="submit" class="button" name="submit" value="{$lang->update_username}">
+<input type="submit" class="button" name="submit" value="{$lang->update_username}" />
 </div>
 </td>
 </tr>
@@ -5358,10 +5357,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <title>{$lang->who_posted}</title>
 {$headerinclude}
 </head>
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" class="trow2">
+<body style="margin:0px;top:0px;left:0px" class="trow2">
 <table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
 <tr>
-<td colspan="2" class="thead"><strong>{$lang->total_posts} {$numposts}</td>
+<td colspan="2" class="thead"><strong>{$lang->total_posts} {$numposts}</strong></td>
 </tr>
 <tr>
 <td class="tcat"><span class="smalltext"><strong>{$lang->user}</strong></span></td>
@@ -5848,7 +5847,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <tr>
 {$usercpnav}
 <td valign="top">
-<table width="100%" height="100%" valign="top" cellpadding="2">
+<table style="width:auto;height:auto;vertical-align:top;" cellpadding="2">
 <tr>
 <td align="left" valign="top" width="50%">
 <form action="usercp.php" method="post">
@@ -5870,7 +5869,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <center>
 <input type="hidden" name="action" value="do_editlists" />
 <input type="hidden" name="list" value="buddy" />
-<input type="submit" class="button" name="submit" value="{$lang->update_buddy_list}">
+<input type="submit" class="button" name="submit" value="{$lang->update_buddy_list}" />
 </center>
 </form>
 </td>
@@ -5894,7 +5893,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <center>
 <input type="hidden" name="action" value="do_editlists" />
 <input type="hidden" name="list" value="ignore" />
-<input type="submit" class="button" name="submit" value="{$lang->update_ignore_list}">
+<input type="submit" class="button" name="submit" value="{$lang->update_ignore_list}" />
 </center>
 </form>
 </td>
@@ -5985,7 +5984,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td  class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$event['subject']}" /></td>
 </tr>
 <tr>
-<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><p style="text-align: center;">{$smilieinserter}</p></td>
+<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><div style="text-align: center;">{$smilieinserter}</div></td>
 <td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{$event['description']}</textarea>
 {$codebuttons}</td>
 </tr>
