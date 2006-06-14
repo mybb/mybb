@@ -177,7 +177,7 @@ class CustomModeration extends Moderation
 					// Set the post data that came from the input to the $post array.
 					$post = array(
 						"tid" => $new_tid,
-						"fid" => $thread['fid'],
+						"fid" => $post_options['splitposts'],
 						"subject" => $post_options['splitpostsreplysubject'],
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
@@ -197,6 +197,9 @@ class CustomModeration extends Moderation
 					{
 						$posthandler->insert_post($post);
 					}
+
+					update_thread_count($new_tid);
+					update_forum_count($post_options['splitposts']);
 				}
 			}
 		}
@@ -223,19 +226,23 @@ class CustomModeration extends Moderation
 		}
 		else
 		{
+			$tid = intval($tids[0]); // Take the first thread to get thread data from
+			$query = $db->simple_select(TABLE_PREFIX."threads", 'fid', "tid='$tid'");
+			$thread = $db->fetch_array($query);
+
 			if($thread_options['mergethreads'] == 'yes' && count($tids) > 1) // Merge Threads (ugly temp code until find better fix)
 			{
 				$tid_list = implode(',', $tids);
 				$options = array('order_by' => 'dateline', 'order_dir' => 'DESC');
-				$query = $db->simple_select(TABLE_PREFIX."threads", 'tid', "tid IN ($tid_list)", $options); // Select threads from newest to oldest
+				$query = $db->simple_select(TABLE_PREFIX."threads", 'tid, subject', "tid IN ($tid_list)", $options); // Select threads from newest to oldest
 				$last_tid = 0;
 				while($tid = $db->fetch_array($query))
 				{
 					if($last_tid != 0)
 					{
-						$this->merge_threads($last_tid, $tid); // And keep merging them until we get down to one thread. 
+						$this->merge_threads($last_tid, $tid['tid'], $tid['subject']); // And keep merging them until we get down to one thread. 
 					}
-					$last_tid = $tid;
+					$last_tid = $tid['tid'];
 				}
 			}
 			if($thread_options['deletepoll'] == 'yes') // Delete poll
@@ -252,10 +259,6 @@ class CustomModeration extends Moderation
 					$this->remove_redirects($tid);
 				}
 			}
-
-			$tid = intval($tids[0]); // Take the first thread to get thread data from
-			$query = $db->simple_select(TABLE_PREFIX."threads", 'fid', "tid='$tid'");
-			$thread = $db->fetch_array($query);
 
 			if($thread_options['approvethread'] == 'approve') // Approve thread
 			{
@@ -354,6 +357,10 @@ class CustomModeration extends Moderation
 					}
 				}
 			}
+		}
+		foreach($tids as $tid)
+		{
+			update_thread_count($tid);
 		}
 		return true;
 	}
