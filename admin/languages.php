@@ -185,7 +185,7 @@ if($mybb->input['action'] == "do_edit")
 	$file = basename($mybb->input['file']);
 	if($mybb->input['inadmin'] == 1)
 	{
-		$file = $config['admindir'].'/'.$file;
+		$file = 'admin/'.$file;
 	}
 	$editfile = $folder.$file;
 	if(!file_exists($editfile))
@@ -265,7 +265,7 @@ if($mybb->input['action'] == "edit")
 		$file = basename($mybb->input['file']);
 		if($mybb->input['inadmin'] == 1)
 		{
-			$file = $config['admindir'].'/'.$file;
+			$file = 'admin/'.$file;
 		}
 		$editfile = $folder.$file;
 		$withfile = '';
