@@ -595,7 +595,7 @@ form {
 </body>
 </html>]]></template>
 		<template name="header_welcomeblock_member" version="100.07"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
-		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;uid={$mybb-user['uid']}">{$lang->welcome_logout}</a>)<br />
+		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;uid={$mybb->user['uid']}">{$lang->welcome_logout}</a>)<br />
 				<span class="links">
 					<a href="#" onclick="MyBB.popupWindow('misc.php?action=buddypopup', 'buddyList', 170, 300);">{$lang->welcome_open_buddy_list}</a>
 				</span>
@@ -1053,7 +1053,7 @@ var inlineId = {$tid};
 <li><a href="usercp.php?action=forumsubscriptions">{$lang->ucp_nav_forum_subscriptions}</a></li>
 <li><a href="usercp.php?action=notepad">{$lang->ucp_nav_notepad}</a></li>
 <li class="separator">&nbsp;</li>
-<li><a href="member.php?action=profile&amp;uid={$mybb-user['uid']}">{$lang->ucp_nav_view_profile}</a></li>
+<li><a href="member.php?action=profile&amp;uid={$mybb->user['uid']}">{$lang->ucp_nav_view_profile}</a></li>
 <li><a href="usercp.php">{$lang->ucp_nav_home}</a></li>
 </ul>
 </td>
@@ -1073,7 +1073,7 @@ var inlineId = {$tid};
 <td colspan="2"><span class="smalltext">{$lang->away_reason}</span></td>
 </tr>
 <tr>
-<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$mybb-user['awayreason']}" size="25" /></td>
+<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$mybb->user['awayreason']}" size="25" /></td>
 </tr>
 </table>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -1526,11 +1526,11 @@ $headerinclude
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->your_name}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="from" size="40" value="{$mybb-user['username']}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="from" size="40" value="{$mybb->user['username']}" /></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->your_email}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="fromemail" size="40" value="{$mybb-user['email']}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="fromemail" size="40" value="{$mybb->user['email']}" /></td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->your_message}</strong></td>
@@ -1657,7 +1657,7 @@ $headerinclude
 <tr>
 {$avatar}
 <td class="trow1" width="50%"><strong>{$lang->username}</strong></td>
-<td class="trow1" width="50%">{$mybb-user['username']}</td>
+<td class="trow1" width="50%">{$mybb->user['username']}</td>
 </tr>
 <tr>
 <td class="trow2" width="50%"><strong>{$lang->primary_usergroup}</strong></td>
@@ -1669,11 +1669,11 @@ $headerinclude
 </tr>
 <tr>
 <td class="trow2" width="50%"><strong>{$lang->postnum}</strong></td>
-<td class="trow2" width="50%">{$mybb-user['postnum']} {$lang->posts_day}</td>
+<td class="trow2" width="50%">{$mybb->user['postnum']} {$lang->posts_day}</td>
 </tr>
 <tr>
 <td class="trow1" width="50%"><strong>{$lang->email}</strong></td>
-<td class="trow1" width="50%">{$mybb-user['email']}</td>
+<td class="trow1" width="50%">{$mybb->user['email']}</td>
 </tr>
 </table>
 {$reputations}
@@ -1683,7 +1683,7 @@ $headerinclude
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_currentavatar" version="100.07"><![CDATA[<td class="trow1" rowspan="5" valign="middle" align="center" width="1"><img src="{$mybb-user['avatar']}" alt="{$mybb-user['username']}" /></td>]]></template>
+		<template name="usercp_currentavatar" version="100.07"><![CDATA[<td class="trow1" rowspan="5" valign="middle" align="center" width="1"><img src="{$mybb->user['avatar']}" alt="{$mybb->user['username']}" /></td>]]></template>
 		<template name="footer" version="100.07"><![CDATA[			<br />
 			<div class="bottommenu"><span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="archive/index.php">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>
 			</div>
@@ -3722,7 +3722,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="changeuserbox" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
-<td class="trow1">{$mybb-user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;uid={$mybb-user['uid']}">{$lang->change_user}</a></strong>]</span></td>
+<td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;uid={$mybb->user['uid']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>
 ]]></template>
 		<template name="showthread_poll_results" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -5118,7 +5118,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </select>
 </td>
 </tr>]]></template>
-		<template name="index_logoutlink" version="100.07"><![CDATA[<a href="member.php?action=logout&amp;uid={$mybb-user['uid']}">{$lang->index_logout}</a> | ]]></template>
+		<template name="index_logoutlink" version="100.07"><![CDATA[<a href="member.php?action=logout&amp;uid={$mybb->user['uid']}">{$lang->index_logout}</a> | ]]></template>
 		<template name="postbit_iplogged_show" version="100.07"><![CDATA[<br /><span class="smalltext">{$lang->postbit_ipaddress} {$post['ipaddress']}</span>]]></template>
 		<template name="calendar_dayview" version="100.07"><![CDATA[<html>
 <head>
@@ -5211,7 +5211,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td align="center" class="trow1" width="100%">
-<textarea name="notepad" cols="80" rows="15" wrap="virtual">{$mybb-user['notepad']}</textarea>
+<textarea name="notepad" cols="80" rows="15" wrap="virtual">{$mybb->user['notepad']}</textarea>
 </td>
 </tr>
 </table>
@@ -5323,7 +5323,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_username}</strong></td>
-<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$mybb->settings['maxnamelength']}" value="{$mybb-user['username']}" /></td>
+<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$mybb->settings['maxnamelength']}" value="{$mybb->user['username']}" /></td>
 </tr>
 </table>
 <br />
@@ -5648,7 +5648,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->username}</strong></td>
-<td class="trow1">{$mybb-user['username']}</td>
+<td class="trow1">{$mybb->user['username']}</td>
 </tr>
 </table>
 <br />]]></template>
