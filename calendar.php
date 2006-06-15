@@ -79,19 +79,19 @@ else
 	$time = mktime(0, 0, 0, $month, 1, $year);
 	$days = date("t", $time);
 	// Now the specific day
-	if($mybb->input['day'] >= 1 && $mybb->input['day'] <= $days)
+	if(isset($mybb->input['day']) && $mybb->input['day'] >= 1 && $mybb->input['day'] <= $days)
 	{
 		$day = $mybb->input['day'];
 	}
 	else
 	{
 		// Make the day the last day of the month, if the user overshot the number of days in the month
-		if($mybb->input['day'] > $days)
+		if(isset($mybb->input['day']) && $mybb->input['day'] > $days)
 		{
 			$day = $days;
 		}
 		// Make the day the first day of the month, if the user undershot the number of days in the month
-		elseif($mybb->input['day'] < 1)
+		elseif(isset($mybb->input['day']) && $mybb->input['day'] < 1)
 		{
 			$day = 1;
 		}
