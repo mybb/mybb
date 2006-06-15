@@ -2627,9 +2627,9 @@ $reputation
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" class="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']} />&nbsp;{$lang->option_multiple}<br />
-<input type="checkbox" class="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']} />&nbsp;{$lang->option_public}<br />
-<input type="checkbox" class="checkbox" name="postoptions[closed]" value="yes" {$postoptionschecked['closed']} />&nbsp;{$lang->option_closed}
+<label><input type="checkbox" class="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']} />&nbsp;{$lang->option_multiple}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']} />&nbsp;{$lang->option_public}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[closed]" value="yes" {$postoptionschecked['closed']} />&nbsp;{$lang->option_closed}</label>
 </span>
 </td>
 </tr>
@@ -3787,7 +3787,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <strong>{$lang->poll}</strong><br /><span class="smalltext">{$lang->poll_desc}</span>
 </td>
 <td class="{$bgcolor}" valign="top">
-<span class="smalltext"><input type="checkbox" class="checkbox" name="postpoll" value="yes" {$postpollchecked} /><strong>{$lang->poll_check}</strong><br />
+<span class="smalltext"><label><input type="checkbox" class="checkbox" name="postpoll" value="yes" {$postpollchecked} /><strong>{$lang->poll_check}</strong></label><br />
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" />{$lang->max_options}</span>
 </td>
 </tr>]]></template>
@@ -4314,8 +4314,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" class="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']} />&nbsp;{$lang->option_multiple}<br />
-<input type="checkbox" class="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']} />&nbsp;{$lang->option_public}
+<label><input type="checkbox" class="checkbox" name="postoptions[multiple]" value="yes" {$postoptionschecked['multiple']} />&nbsp;{$lang->option_multiple}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[public]" value="yes" {$postoptionschecked['public']} />&nbsp;{$lang->option_public}</label>
 </span>
 </td>
 </tr>
