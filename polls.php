@@ -65,7 +65,7 @@ if($mybb->input['action'] == "newpoll")
 
 	if($thread['uid'] != $mybb->user['uid'] && is_moderator($fid) != "yes")
 	{
-		$db->query("UPDATE threads SET visible='1' WHERE tid='$tid'");
+		$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1' WHERE tid='$tid'");
 		error_no_permission();
 	}
 	if($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no")
@@ -83,13 +83,13 @@ if($mybb->input['action'] == "newpoll")
 		error($lang->error_pollalready);
 	}
 
-	if($mybb->settings['maxpolloptions'] && $mybb->input['polloptions'] > $mybb->settings['maxpolloptions'])
-	{
-		$polloptions = $mybb->settings['maxpolloptions'];
-	}
 	if($mybb->input['numpolloptions'] > 0)
 	{
 		$mybb->input['polloptions'] = $mybb->input['numpolloptions'];
+	}
+	if($mybb->settings['maxpolloptions'] && $mybb->input['polloptions'] > $mybb->settings['maxpolloptions'])
+	{
+		$polloptions = $mybb->settings['maxpolloptions'];
 	}
 	elseif(!$mybb->input['polloptions'])
 	{
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "newpoll")
 
 	$options = $mybb->input['options'];
 	$optionbits = '';
-	for($i=1;$i<=$polloptions;$i++)
+	for($i = 1; $i <= $polloptions; $i++)
 	{
 		$option = $options[$i];
 		$option = htmlspecialchars_uni($option);
@@ -191,7 +191,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 	$optioncount = "0";
 	$options = $mybb->input['options'];
-	for($i=1;$i<=$polloptions;$i++)
+	for($i = 1; $i <= $polloptions; $i++)
 	{
 		if(trim($options[$i]) != "")
 		{
@@ -213,7 +213,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 	$optionslist = "";
 	$voteslist = "";
-	for($i=1;$i<=$optioncount;$i++)
+	for($i = 1; $i <= $optioncount; $i++)
 	{
 		if(trim($options[$i]) != "")
 		{
@@ -291,7 +291,7 @@ if($mybb->input['action'] == "editpoll")
 	$forum = $db->fetch_array($query);
 
 
-	if($thread['visible'] == "no" || !$thread['tid'])
+	if($thread['visible'] == "0" || !$thread['tid'])
 	{
 		error($lang->error_invalidthread);
 	}
@@ -319,14 +319,14 @@ if($mybb->input['action'] == "editpoll")
 		$votesarray = explode("||~|~||", $poll['votes']);
 
 
-		for($i=1;$i<=$poll['numoptions'];$i++)
+		for($i = 1; $i <= $poll['numoptions']; $i++)
 		{
 			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 		}
 		$question = htmlspecialchars_uni($poll['question']);
 		$numoptions = $poll['numoptions'];
 		$optionbits = "";
-		for($i=0;$i<$numoptions;$i++)
+		for($i = 0; $i < $numoptions; $i++)
 		{
 			$counter = $i + 1;
 			$option = $optionsarray[$i];
@@ -382,7 +382,7 @@ if($mybb->input['action'] == "editpoll")
 		$options = $mybb->input['options'];
 		$votes = $mybb->input['votes'];
 		$optionbits = '';
-		for($i=1;$i<=$numoptions;$i++)
+		for($i = 1; $i <= $numoptions; $i++)
 		{
 			$counter = $i;
 			$option = $options[$i];
@@ -464,7 +464,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$optioncount = "0";
 	$options = $mybb->input['options'];
 
-	for($i=1;$i<=$numoptions;$i++)
+	for($i = 1; $i <= $numoptions; $i++)
 	{
 		if(trim($options[$i]) != "")
 		{
@@ -489,7 +489,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$voteslist = "";
 	$numvotes = "";
 	$votes = $mybb->input['votes'];
-	for($i=1;$i<=$optioncount;$i++)
+	for($i = 1; $i <= $optioncount; $i++)
 	{
 		if(trim($options[$i]) != "")
 		{
@@ -596,12 +596,12 @@ if($mybb->input['action'] == "showresults")
 	}
 	$optionsarray = explode("||~|~||", $poll['options']);
 	$votesarray = explode("||~|~||", $poll['votes']);
-	for($i=1;$i<=$poll['numoptions'];$i++)
+	for($i = 1; $i <= $poll['numoptions']; $i++)
 	{
 		$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 	}
 	$polloptions = '';
-	for($i=1;$i<=$poll['numoptions'];$i++)
+	for($i = 1; $i <= $poll['numoptions']; $i++)
 	{
 		$parser_options = array(
 			"allow_html" => $forum['allowhtml'],
@@ -737,7 +737,7 @@ if($mybb->input['action'] == "vote")
 	$numvotes = $poll['numvotes'];
 	if($poll['multiple'] == "yes")
 	{
-		while(list($voteoption, $vote) = each($option))
+		foreach($option as $voteoption => $vote)
 		{
 			if($vote == "yes" && isset($votesarray[$voteoption-1]))
 			{
@@ -764,7 +764,7 @@ if($mybb->input['action'] == "vote")
 
 	$db->query("INSERT INTO ".TABLE_PREFIX."pollvotes (pid,uid,voteoption,dateline) VALUES $votesql");
 	$voteslist = '';
-	for($i=1;$i<=$poll['numoptions'];$i++)
+	for($i = 1; $i <= $poll['numoptions']; $i++)
 	{
 		if($i > 1)
 		{
