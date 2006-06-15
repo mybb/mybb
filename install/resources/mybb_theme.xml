@@ -551,7 +551,7 @@ form {
 		<template name="post_savedraftbutton" version="100.07"><![CDATA[&nbsp;<input type="submit" class="button" name="savedraft" value="{$lang->save_draft}" />]]></template>
 		<template name="index" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']}</title>
+<title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
 </head>
 <body>
@@ -595,7 +595,7 @@ form {
 </body>
 </html>]]></template>
 		<template name="header_welcomeblock_member" version="100.07"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
-		{$lang->welcome_back} (<a href="{$settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$settings['bburl']}/member.php?action=logout&amp;uid={$mybbuser['uid']}">{$lang->welcome_logout}</a>)<br />
+		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;uid={$mybb-user['uid']}">{$lang->welcome_logout}</a>)<br />
 				<span class="links">
 					<a href="#" onclick="MyBB.popupWindow('misc.php?action=buddypopup', 'buddyList', 170, 300);">{$lang->welcome_open_buddy_list}</a>
 				</span>
@@ -775,7 +775,7 @@ var inlineId = {$tid};
 ]]></template>
 		<template name="editpost" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->edit_post}</title>
+<title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
 <script type="text/javascript" src="jscripts/post.js"></script>
 </head>
@@ -905,7 +905,7 @@ var inlineId = {$tid};
 <input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']} />{$lang->options_disablesmilies}]]></template>
 		<template name="usercp_drafts" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->drafts}</title>
+<title>{$mybb->settings['bbname']} - {$lang->drafts}</title>
 {$headerinclude}
 </head>
 <body>
@@ -1053,7 +1053,7 @@ var inlineId = {$tid};
 <li><a href="usercp.php?action=forumsubscriptions">{$lang->ucp_nav_forum_subscriptions}</a></li>
 <li><a href="usercp.php?action=notepad">{$lang->ucp_nav_notepad}</a></li>
 <li class="separator">&nbsp;</li>
-<li><a href="member.php?action=profile&amp;uid={$mybbuser['uid']}">{$lang->ucp_nav_view_profile}</a></li>
+<li><a href="member.php?action=profile&amp;uid={$mybb-user['uid']}">{$lang->ucp_nav_view_profile}</a></li>
 <li><a href="usercp.php">{$lang->ucp_nav_home}</a></li>
 </ul>
 </td>
@@ -1073,7 +1073,7 @@ var inlineId = {$tid};
 <td colspan="2"><span class="smalltext">{$lang->away_reason}</span></td>
 </tr>
 <tr>
-<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$mybbuser['awayreason']}" size="25" /></td>
+<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$mybb-user['awayreason']}" size="25" /></td>
 </tr>
 </table>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -1112,7 +1112,7 @@ var inlineId = {$tid};
 </fieldset>]]></template>
 		<template name="usercp_options" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->edit_options}</title>
+<title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
 {$headerinclude}
 </head>
 <body>
@@ -1375,7 +1375,7 @@ var inlineId = {$tid};
 <td align="center" class="trow2">{$favorite['views']}</td>
 <td class="trow1" nowrap="nowrap">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} <a href="member.php?action=profile&amp;uid=lastposter&amp;tid={$favorite['tid']}">{$lastposter}</a></span></td>
 </tr>]]></template>
-		<template name="header_welcomeblock_member_admin" version="100.07"><![CDATA[ &mdash; <a href="{$settings['bburl']}/{$config['admindir']}/index.php">{$lang->welcome_admin}</a>]]></template>
+		<template name="header_welcomeblock_member_admin" version="100.07"><![CDATA[ &mdash; <a href="{$mybb->settings['bburl']}/{$config['admindir']}/index.php">{$lang->welcome_admin}</a>]]></template>
 		<template name="forumdisplay_newthread" version="100.07"><![CDATA[<a href="newthread.php?fid={$fid}"><img src="{$theme['imglangdir']}/newthread.gif" border="0" alt="{$lang->post_thread}" /></a>]]></template>
 		<template name="showthread_threaded_bitactive" version="100.07"><![CDATA[<div style="margin-left: {{$indentsize}}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate} {$posttime}</span></div>]]></template>
 		<template name="showthread_threaded_bit" version="100.07"><![CDATA[<div style="margin-left: {{$indentsize}}px;"><a href="showthread.php?tid={$tid}&amp;pid={$post['pid']}&amp;mode=threaded">{$post['subject']}</a> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}, {$posttime}</span></div>]]></template>
@@ -1429,7 +1429,7 @@ var inlineId = {$fid};
 <br />]]></template>
 		<template name="report_thanks"><![CDATA[<html>
 <head>
-<title>$settings[bbname] - $lang->report_post</title>
+<title>$mybb->settings[bbname] - $lang->report_post</title>
 $headerinclude
 </head>
 <body>
@@ -1450,7 +1450,7 @@ $headerinclude
 </html>]]></template>
 		<template name="report" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->report_post}</title>
+<title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
 {$headerinclude}
 </head>
 <body>
@@ -1526,11 +1526,11 @@ $headerinclude
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->your_name}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="from" size="40" value="{$mybbuser['username']}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="from" size="40" value="{$mybb-user['username']}" /></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->your_email}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="fromemail" size="40" value="{$mybbuser['email']}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="fromemail" size="40" value="{$mybb-user['email']}" /></td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->your_message}</strong></td>
@@ -1549,7 +1549,7 @@ $headerinclude
 ]]></template>
 		<template name="forumdisplay_password" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->password_required} </title>
+<title>{$mybb->settings['bbname']} - {$lang->password_required} </title>
 {$headerinclude}
 </head>
 <body>
@@ -1600,7 +1600,7 @@ $headerinclude
 		<template name="forumbit_subforums" version="100.07"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
 		<template name="private_empty" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->empty_folders}</title>
+<title>{$mybb->settings['bbname']} - {$lang->empty_folders}</title>
 {$headerinclude}
 </head>
 <body>
@@ -1657,7 +1657,7 @@ $headerinclude
 <tr>
 {$avatar}
 <td class="trow1" width="50%"><strong>{$lang->username}</strong></td>
-<td class="trow1" width="50%">{$mybbuser['username']}</td>
+<td class="trow1" width="50%">{$mybb-user['username']}</td>
 </tr>
 <tr>
 <td class="trow2" width="50%"><strong>{$lang->primary_usergroup}</strong></td>
@@ -1669,11 +1669,11 @@ $headerinclude
 </tr>
 <tr>
 <td class="trow2" width="50%"><strong>{$lang->postnum}</strong></td>
-<td class="trow2" width="50%">{$mybbuser['postnum']} {$lang->posts_day}</td>
+<td class="trow2" width="50%">{$mybb-user['postnum']} {$lang->posts_day}</td>
 </tr>
 <tr>
 <td class="trow1" width="50%"><strong>{$lang->email}</strong></td>
-<td class="trow1" width="50%">{$mybbuser['email']}</td>
+<td class="trow1" width="50%">{$mybb-user['email']}</td>
 </tr>
 </table>
 {$reputations}
@@ -1683,9 +1683,9 @@ $headerinclude
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_currentavatar" version="100.07"><![CDATA[<td class="trow1" rowspan="5" valign="middle" align="center" width="1"><img src="{$mybbuser['avatar']}" alt="{$mybbuser['username']}" /></td>]]></template>
+		<template name="usercp_currentavatar" version="100.07"><![CDATA[<td class="trow1" rowspan="5" valign="middle" align="center" width="1"><img src="{$mybb-user['avatar']}" alt="{$mybb-user['username']}" /></td>]]></template>
 		<template name="footer" version="100.07"><![CDATA[			<br />
-			<div class="bottommenu"><span class="smalltext"><a href="{$settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$settings['homeurl']}">{$settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="archive/index.php">{$lang->bottomlinks_litemode}</a> | <a href="{$settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>
+			<div class="bottommenu"><span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="archive/index.php">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>
 			</div>
 			</div>
 		<hr class="hidden" />
@@ -1727,7 +1727,7 @@ $headerinclude
 <td><span class="smalltext">{$lang->new_custom_usertitle}</span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="usertitle" size="25" maxlength="{$settings['customtitlemaxlength']}" value="{$newtitle}" /></td>
+<td><input type="text" class="textbox" name="usertitle" size="25" maxlength="{$mybb->settings['customtitlemaxlength']}" value="{$newtitle}" /></td>
 </tr>
 <tr>
 <td><span class="smalltext"><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {$lang->revert_usertitle}</span></td>
@@ -1741,7 +1741,7 @@ $headerinclude
 		<template name="usercp_nav_changename" version="100.07"><![CDATA[<li><a href="usercp.php?action=changename">{$lang->ucp_nav_change_username}</a><br /></li>]]></template>
 		<template name="usercp_profile" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->edit_profile}</title>
+<title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
 {$headerinclude}
 </head>
 <body>
@@ -1875,7 +1875,7 @@ $headerinclude
 </tr>]]></template>
 		<template name="usercp_attachments" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->attachments_manager}</title>
+<title>{$mybb->settings['bbname']} - {$lang->attachments_manager}</title>
 {$headerinclude}
 </head>
 <body>
@@ -1944,7 +1944,7 @@ $headerinclude
 </tr>]]></template>
 		<template name="misc_rules_forum" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$forum['rulestitle']}</title>
+<title>{$mybb->settings['bbname']} - {$forum['rulestitle']}</title>
 {$headerinclude}
 </head>
 <body>
@@ -1977,7 +1977,7 @@ $headerinclude
 <br />]]></template>
 		<template name="forumdisplay" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$foruminfo['name']} </title>
+<title>{$mybb->settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
 {$rssdiscovery}
 </head>
@@ -2007,7 +2007,7 @@ $headerinclude
 <br />]]></template>
 		<template name="usercp_usergroups_joingroup" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->request_join_usergroup}</title>
+<title>{$mybb->settings['bbname']} - {$lang->request_join_usergroup}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2049,7 +2049,7 @@ $headerinclude
 </html>]]></template>
 		<template name="usercp_avatar" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->change_avatar}</title>
+<title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2116,7 +2116,7 @@ $headerinclude
 </html>]]></template>
 		<template name="usercp_avatar_gallery" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->change_avatar}</title>
+<title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2171,8 +2171,8 @@ $headerinclude
 </html>]]></template>
 		<template name="usercp_avatar_gallery_avatar" version="100.07"><![CDATA[<td width="20%" align="center"><label for="avatar-{$avatar}"><img src="{$avatarpath}" alt="{$avatar}" /><br /><input type="radio" class="radio" name="avatar" value="{$avatar}" id="avatar-{$avatar}" /><strong>{$avatarname}</strong></td>]]></template>
 		<template name="usercp_avatar_current" version="100.07"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$urltoavatar}" alt="{$lang->avatar}" /></td>]]></template>
-		<template name="headerinclude" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$settings['bburl']}/syndication.php" />
-<link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$settings['bburl']}/syndication.php?type=atom1.0" />
+		<template name="headerinclude" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+<link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <script type="text/javascript" src="jscripts/prototype.lite.js"></script>
 <script type="text/javascript" src="jscripts/moo.ajax.js"></script>
@@ -2180,8 +2180,8 @@ $headerinclude
 <script type="text/javascript" src="jscripts/popup_menu.js"></script>
 <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" />
 <script language="Javascript" type="text/javascript">
-	 var cookieDomain = "{$settings['cookiedomain']}";
-	 var cookiePath = "{$settings['cookiepath']}";
+	 var cookieDomain = "{$mybb->settings['cookiedomain']}";
+	 var cookiePath = "{$mybb->settings['cookiepath']}";
 	 var newpm_prompt = "{$lang->newpm_prompt}";
 	 var deleteevent_confirm = "{$lang->deleteevent_confirm}";
 	 var removeattach_confirm = "{$lang->removeattach_confirm}";
@@ -2208,7 +2208,7 @@ $headerinclude
 		<template name="nav_sep_active" version="100.07"><![CDATA[ / ]]></template>
 		<template name="member_profile" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->profile}</title>
+<title>{$mybb->settings['bbname']} - {$lang->profile}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2309,25 +2309,25 @@ $reputation
 <tr>
 <td class="trow1">
 <ul>
-<li><a href="{$settings['bburl']}/{$config['admindir']}/index.php?goto=users%2Ephp%3Faction%3Dedit%26uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
-<li><a href="{$settings['bburl']}/{$config['admindir']}/index.php?goto=users%2Ephp%3Faction%3Dmanageban%26auid={$uid}">{$lang->admin_ban_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$config['admindir']}/index.php?goto=users%2Ephp%3Faction%3Dedit%26uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$config['admindir']}/index.php?goto=users%2Ephp%3Faction%3Dmanageban%26auid={$uid}">{$lang->admin_ban_in_acp}</a></li>
 </ul>
 </td>
 </tr>
 </table>
 ]]></template>
 		<template name="header_welcomeblock_guest" version="100.07"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
-		{$lang->welcome_guest} (<a href="{$settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a> &mdash; <a href="{$settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)]]></template>
+		{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)]]></template>
 		<template name="header" version="100.07"><![CDATA[	<a name="top"></a>
 	<div id="container">
 		<div id="header">
-			<div class="logo"><a href="{$settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$settings['bbname']}" border="0" /></a></div>
+			<div class="logo"><a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" border="0" /></a></div>
 			<div class="menu">
 				<ul>
-					<li><a href="{$settings['bburl']}/search.php"><img src="{$theme['imgdir']}/toplinks/search.gif" border="0" alt="{$lang->toplinks_search}" />{$lang->toplinks_search}</a></li>
-					<li><a href="{$settings['bburl']}/memberlist.php"><img src="{$theme['imgdir']}/toplinks/memberlist.gif" border="0" alt="{$lang->toplinks_memberlist}" />{$lang->toplinks_memberlist}</a></li>
-					<li><a href="{$settings['bburl']}/calendar.php"><img src="{$theme['imgdir']}/toplinks/calendar.gif" border="0" alt="{$lang->toplinks_calendar}" />{$lang->toplinks_calendar}</a></li>
-					<li><a href="{$settings['bburl']}/misc.php?action=help"><img src="{$theme['imgdir']}/toplinks/help.gif" border="0" alt="{$lang->toplinks_help}" />{$lang->toplinks_help}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/search.php"><img src="{$theme['imgdir']}/toplinks/search.gif" border="0" alt="{$lang->toplinks_search}" />{$lang->toplinks_search}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/memberlist.php"><img src="{$theme['imgdir']}/toplinks/memberlist.gif" border="0" alt="{$lang->toplinks_memberlist}" />{$lang->toplinks_memberlist}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/calendar.php"><img src="{$theme['imgdir']}/toplinks/calendar.gif" border="0" alt="{$lang->toplinks_calendar}" />{$lang->toplinks_calendar}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/misc.php?action=help"><img src="{$theme['imgdir']}/toplinks/help.gif" border="0" alt="{$lang->toplinks_help}" />{$lang->toplinks_help}</a></li>
 				</ul>
 			</div>
 			<hr class="hidden" />
@@ -2385,7 +2385,7 @@ $reputation
 </tr>]]></template>
 		<template name="usercp_usergroups" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->group_memberships}</title>
+<title>{$mybb->settings['bbname']} - {$lang->group_memberships}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2424,7 +2424,7 @@ $reputation
 <br />]]></template>
 		<template name="managegroup" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->members_of}</title>
+<title>{$mybb->settings['bbname']} - {$lang->members_of}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2466,7 +2466,7 @@ $reputation
 </tr>
 <tr>
 <td class="trow1">{$lang->username}</td>
-<td class="trow1"><input type="text" class="textbox" name="username" size="40" maxlength="{$settings['maxnamelength']}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="username" size="40" maxlength="{$mybb->settings['maxnamelength']}" /></td>
 </tr>
 </table>
 <br />
@@ -2488,7 +2488,7 @@ $reputation
 </p>]]></template>
 		<template name="managegroup_joinrequests" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->join_requests}</title>
+<title>{$mybb->settings['bbname']} - {$lang->join_requests}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2544,7 +2544,7 @@ $reputation
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_to}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="to" id="to" size="40" maxlength="{$settings['maxnamelength']}" value="{$to}" tabindex="1" />{$autocompletejs}</td>
+<td class="trow1"><input type="text" class="textbox" name="to" id="to" size="40" maxlength="{$mybb->settings['maxnamelength']}" value="{$to}" tabindex="1" />{$autocompletejs}</td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->compose_subject}</strong></td>
@@ -2582,7 +2582,7 @@ $reputation
 		<template name="showthread_newreply_closed" version="100.07"><![CDATA[<a href="newreply.php?tid={$tid}"><img src="{$theme['imglangdir']}/closed.gif" border="0" alt="{$lang->thread_closed}" /></a>&nbsp;]]></template>
 		<template name="polls_editpoll" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->edit_poll}</title>
+<title>{$mybb->settings['bbname']} - {$lang->edit_poll}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2613,7 +2613,7 @@ $reputation
 <td class="trow2"><input type="text" class="textbox" name="question" size="40" maxlength="240" value="{$question}" /></td>
 </tr>
 <tr>
-<td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$settings['maxpolloptions']}</span></td>
+<td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$mybb->settings['maxpolloptions']}</span></td>
 <td class="trow1"><input type="text" class="textbox" name="numoptions" size="10" value="{$numoptions}" />&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}" /></td>
 </tr>
 <tr>
@@ -2710,7 +2710,7 @@ $reputation
 <br />]]></template>
 		<template name="calendar_event" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->calendar} - {$lang->view_event}</title>
+<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->view_event}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2759,7 +2759,7 @@ $reputation
 </tr>]]></template>
 		<template name="report_noreason" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->report_post}</title>
+<title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2780,7 +2780,7 @@ $reputation
 </html>]]></template>
 		<template name="reputation" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->reputation_report}</title>
+<title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
 <script type="text/javascript">
 var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
@@ -2927,7 +2927,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </fieldset>]]></template>
 		<template name="private_archive" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->archive_messages}</title>
+<title>{$mybb->settings['bbname']} - {$lang->archive_messages}</title>
 {$headerinclude}
 </head>
 <body>
@@ -2979,7 +2979,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="calendar_addevent" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->calendar} - {$lang->add_event}</title>
+<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->add_event}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3055,7 +3055,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="showteam_moderators_forum" version="100.07"><![CDATA[<a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a><br/>]]></template>
 		<template name="moderation_inline_deleteposts" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->delete_posts}</title>
+<title>{$mybb->settings['bbname']} - {$lang->delete_posts}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3110,7 +3110,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <br />]]></template>
 		<template name="online_today" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->online_today}</title>
+<title>{$mybb->settings['bbname']} - {$lang->online_today}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3140,7 +3140,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="forumdisplay_thread_gotounread" version="100.07"><![CDATA[<a href="showthread.php?action=newpost&amp;tid={$thread['tid']}"><img src="{$theme['imgdir']}/jump.gif" alt="{$lang->goto_first_unread}" border="0" /></a>&nbsp;]]></template>
 		<template name="private_tracking" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->pm_tracking}</title>
+<title>{$mybb->settings['bbname']} - {$lang->pm_tracking}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3189,7 +3189,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="moderation_threadnotes" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->thread_notes_editor}</title>
+<title>{$mybb->settings['bbname']} - {$lang->thread_notes_editor}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3232,14 +3232,14 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="thead"><strong>{$lang->error_too_many_images}</strong></td>
 </tr>
 <tr>
-<td class="trow1">{$lang->error_too_many_images2}<br /><span class="smalltext">{$lang->error_too_many_images3} {$settings['maxpostimages']}.</span>
+<td class="trow1">{$lang->error_too_many_images2}<br /><span class="smalltext">{$lang->error_too_many_images3} {$mybb->settings['maxpostimages']}.</span>
 </td>
 </tr>
 </table>
 <br />]]></template>
 		<template name="calendar" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->calendar}</title>
+<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3308,7 +3308,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="private_archive_html" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->private_messages_for}</title>
+<title>{$mybb->settings['bbname']} - {$lang->private_messages_for}</title>
 <style type="text/css">{$css}</style>
 </head>
 <body>
@@ -3322,7 +3322,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="trow1" colspan="1">{$lang->exported_date}<br /><a href="{$settings['bburl']}">{$settings['bbname']}</a></td>
+<td class="trow1" colspan="1">{$lang->exported_date}<br /><a href="{$mybb->settings['bburl']}">{$mybb->settings['bbname']}</a></td>
 </tr>
 </table>
 </body>]]></template>
@@ -3376,7 +3376,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </form>]]></template>
 		<template name="memberlist" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->member_list}</title>
+<title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3419,7 +3419,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="private" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->private_messaging}</title>
+<title>{$mybb->settings['bbname']} - {$lang->private_messaging}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3562,7 +3562,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <br /><input type="submit" class="button" name="loginsubmit" value="{$lang->login}" /></form>]]></template>
 		<template name="portal_latestthreads_thread" version="100.07"><![CDATA[<tr>
 <td class="{$altbg}">
-<strong><a href="{$settings['bburl']}/showthread.php?tid={$thread['tid']}">{$thread['subject']}</a></strong><span class="smalltext"><br />
+<strong><a href="{$mybb->settings['bburl']}/showthread.php?tid={$thread['tid']}">{$thread['subject']}</a></strong><span class="smalltext"><br />
 {$lastpost}
 <strong>&raquo; </strong>{$lang->latest_threads_replies} {$thread['replies']}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_views} {$thread['views']}
@@ -3570,7 +3570,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>]]></template>
 		<template name="search" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->search}</title>
+<title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3578,7 +3578,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <form method=post action="search.php"><input type="hidden" name="action" value="do_search" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td colspan="2" class="thead"><strong>{$settings['bbname']} - {$lang->search}</strong></td>
+<td colspan="2" class="thead"><strong>{$mybb->settings['bbname']} - {$lang->search}</strong></td>
 </tr>
 <tr>
 <td class="tcat" width="50%"><strong>{$lang->search_keyword}</strong></td>
@@ -3596,7 +3596,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 <td class="trow1">
 <table><tr>
-<td class="trow1"><input type="text" class="textbox" name="author" size="35" maxlength="{$settings['maxnamelength']}" /><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked="checked" />&nbsp; {$lang->match_username}</span></td>
+<td class="trow1"><input type="text" class="textbox" name="author" size="35" maxlength="{$mybb->settings['maxnamelength']}" /><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked="checked" />&nbsp; {$lang->match_username}</span></td>
 <td class="trow1">&nbsp;</td>
 </tr></table>
 </td>
@@ -3689,7 +3689,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="member_emailuser" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->email_user}</title>
+<title>{$mybb->settings['bbname']} - {$lang->email_user}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3722,7 +3722,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="changeuserbox" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
-<td class="trow1">{$mybbuser['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;uid={$mybbuser['uid']}">{$lang->change_user}</a></strong>]</span></td>
+<td class="trow1">{$mybb-user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;uid={$mybb-user['uid']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>
 ]]></template>
 		<template name="showthread_poll_results" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -3745,7 +3745,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <br />]]></template>
 		<template name="polls_showresults" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->poll_results}</title>
+<title>{$mybb->settings['bbname']} - {$lang->poll_results}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3793,7 +3793,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>]]></template>
 		<template name="moderation_reports" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->reported_posts}</title>
+<title>{$mybb->settings['bbname']} - {$lang->reported_posts}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3836,7 +3836,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>]]></template>
 	<template name="moderation_allreports" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->all_reported_posts}</title>
+<title>{$mybb->settings['bbname']} - {$lang->all_reported_posts}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3895,7 +3895,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <br />]]></template>
 		<template name="member_login" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->login}</title>
+<title>{$mybb->settings['bbname']} - {$lang->login}</title>
 {$headerinclude}
 </head>
 <body>
@@ -3908,7 +3908,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->username}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="username" size="25" maxlength="{$settings['maxnamelength']}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="username" size="25" maxlength="{$mybb->settings['maxnamelength']}" /></td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->password}</strong><br /><span class="smalltext">{$lang->pw_note}</span></td>
@@ -3985,7 +3985,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>]]></template>
 		<template name="misc_syndication" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->syndication}</title>
+<title>{$mybb->settings['bbname']} - {$lang->syndication}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4089,7 +4089,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>]]></template>
 		<template name="moderation_deletethread" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->delete_thread}</title>
+<title>{$mybb->settings['bbname']} - {$lang->delete_thread}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4186,7 +4186,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="post_attachments_attachment_postinsert" version="100.07"><![CDATA[<input type="button" name="insert" value="{$lang->insert_attachment_post}" onclick="editor.insertAttachment({$attachment['aid']});" />]]></template>
 		<template name="moderation_mergeposts" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->merge_posts}</title>
+<title>{$mybb->settings['bbname']} - {$lang->merge_posts}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4223,7 +4223,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>]]></template>
 		<template name="stats" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->board_stats}</title>
+<title>{$mybb->settings['bbname']} - {$lang->board_stats}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4283,7 +4283,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="polls_newpoll" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->post_new_poll}</title>
+<title>{$mybb->settings['bbname']} - {$lang->post_new_poll}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4300,7 +4300,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow2"><input type="text" class="textbox" name="question" size="40" maxlength="240" value="{$question}" /></td>
 </tr>
 <tr>
-<td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$settings['maxpolloptions']}</span></td>
+<td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$mybb->settings['maxpolloptions']}</span></td>
 <td class="trow1"><input type="text" class="textbox" name="polloptions" size="10" value="{$polloptions}" />&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}" /></td>
 </tr>
 <tr>
@@ -4334,7 +4334,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="member_register_agreement" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->agreement}</title>
+<title>{$mybb->settings['bbname']} - {$lang->agreement}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4343,7 +4343,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <form action="member.php" method="post">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="2"><strong>{$settings['bbname']} - {$lang->agreement}</strong></td>
+<td class="thead" colspan="2"><strong>{$mybb->settings['bbname']} - {$lang->agreement}</strong></td>
 </tr>
 <tr>
 <td class="trow1">
@@ -4368,7 +4368,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="stats_thread" version="100.07"><![CDATA[<a href="showthread.php?tid={$thread['tid']}"><strong>{$thread['subject']}</strong></a> ({$numberbit} {$numbertype})<br />]]></template>
 		<template name="online" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->users_online}</title>
+<title>{$mybb->settings['bbname']} - {$lang->users_online}</title>
 {$headerinclude}
 {$refresh}
 </head>
@@ -4402,11 +4402,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <strong>&raquo;</strong> {$lang->new_announcements}<br />
 <strong>&raquo;</strong> {$lang->new_threads}<br />
 <strong>&raquo;</strong> {$lang->new_posts}<br /><br />
-<a href="{$settings['bburl']}/search.php?action=getnew">{$lang->view_new}</a><br /><a href="{$settings['bburl']}/search.php?action=getdaily">{$lang->view_todays}</a>
+<a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->view_new}</a><br /><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->view_todays}</a>
 </span>]]></template>
 		<template name="portal" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']}</title>
+<title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4431,7 +4431,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="portal_pms" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead"><strong><a href="{$settings['bburl']}/private.php">{$lang->private_messages}</a></strong></td>
+<td class="thead"><strong><a href="{$mybb->settings['bburl']}/private.php">{$lang->private_messages}</a></strong></td>
 </tr>
 <tr>
 <td class="trow1">
@@ -4450,10 +4450,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1">
 <span class="smalltext">
 <strong>&raquo; </strong>{$lang->num_members} {$stats['numusers']}<br />
-<strong>&raquo; </strong>{$lang->latest_member} <a href="{$settings['bburl']}/member.php?action=profile&amp;uid={$stats['lastuid']}">{$stats['lastusername']}</a><br />
+<strong>&raquo; </strong>{$lang->latest_member} <a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$stats['lastuid']}">{$stats['lastusername']}</a><br />
 <strong>&raquo; </strong>{$lang->num_threads} {$stats['numthreads']}<br />
 <strong>&raquo; </strong>{$lang->num_posts} {$stats['numposts']}
-<br /><br /><a href="{$settings['bburl']}/stats.php">{$lang->full_stats}</a>
+<br /><br /><a href="{$mybb->settings['bburl']}/stats.php">{$lang->full_stats}</a>
 </span>
 </td>
 </tr>
@@ -4482,20 +4482,20 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 </table>
 <br />]]></template>
-		<template name="portal_announcement_numcomments" version="100.07"><![CDATA[- <a href="{$settings['bburl']}/showthread.php?tid={$announcement['tid']}">{$lang->replies}</a> ({$announcement['replies']})]]></template>
+		<template name="portal_announcement_numcomments" version="100.07"><![CDATA[- <a href="{$mybb->settings['bburl']}/showthread.php?tid={$announcement['tid']}">{$lang->replies}</a> ({$announcement['replies']})]]></template>
 		<template name="portal_announcement" version="100.07"><![CDATA[<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead"><strong>{$icon} <a href="{$settings['bburl']}/showthread.php?tid={$announcement['tid']}">{$announcement['subject']}</a></strong></td>
+<td class="thead"><strong>{$icon} <a href="{$mybb->settings['bburl']}/showthread.php?tid={$announcement['tid']}">{$announcement['subject']}</a></strong></td>
 </tr>
 <tr>
 <td class="trow2" align="right">
-<span class="smalltext">{$lang->posted_by} <a href="{$settings['bburl']}/member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a>  - {$anndate} {$anntime} {$numcomments}</span>
+<span class="smalltext">{$lang->posted_by} <a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a>  - {$anndate} {$anntime} {$numcomments}</span>
 </td>
 </tr>
 <tr>
 <td class="trow1">
 <table border="0" cellpadding="{$theme['tablespace']}" width="100%"><tr>{$avatar}<td class="trow1">{$message}{$post['attachments']}</td></tr>
-<tr><td align="right" colspan="2" valign="bottom"><span class="smalltext"><a href="{$settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$settings['bburl']}/{$theme['imgdir']}/printable.gif" border="0" /></a>&nbsp;<a href="{$settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$settings['bburl']}/{$theme['imgdir']}/send.gif" border="0" /></a></span></td></tr>
+<tr><td align="right" colspan="2" valign="bottom"><span class="smalltext"><a href="{$mybb->settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/printable.gif" border="0" /></a>&nbsp;<a href="{$mybb->settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/send.gif" border="0" /></a></span></td></tr>
 </table>
 </td>
 </tr>
@@ -4509,14 +4509,14 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="trow1" align="center">
 <span class="smalltext"><br />
-<form method="post" action="{$settings['bburl']}/search.php">
+<form method="post" action="{$mybb->settings['bburl']}/search.php">
 <input type="hidden" name="action" value="do_search" />
 <input type="hidden" name="postthread" value="1" />
 <input type="hidden" name="forums" value="all" />
 <input type="hidden" name="showresults" value="threads" />
 <input type="text" class="textbox" name="keywords" value="" />
 {$gobutton}<br />
-(<a href="{$settings['bburl']}/search.php">{$lang->advanced_search}</a>)
+(<a href="{$mybb->settings['bburl']}/search.php">{$lang->advanced_search}</a>)
 </form>
 </span>
 </td>
@@ -4530,12 +4530,12 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$threadlist}
 </table>
 <br />]]></template>
-		<template name="portal_latestthreads_thread_lastpost" version="100.07"><![CDATA[<em>{$lang->latest_threads_lastpost}</em> <a href="{$settings['bburl']}/member.php?action=profile&amp;uid=lastposter&amp;tid={$thread['tid']}"> {$thread['lastposter']}</a><br />
+		<template name="portal_latestthreads_thread_lastpost" version="100.07"><![CDATA[<em>{$lang->latest_threads_lastpost}</em> <a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid=lastposter&amp;tid={$thread['tid']}"> {$thread['lastposter']}</a><br />
 {$lastpostdate} {$lastposttime}<br />]]></template>
-		<template name="portal_whosonline_memberbit" version="100.07"><![CDATA[{$comma}<a href="{$settings['bburl']}/member.php?action=profile&amp;uid={$user['uid']}">{$user['username']}</a>{$invisiblemark}]]></template>
+		<template name="portal_whosonline_memberbit" version="100.07"><![CDATA[{$comma}<a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$user['uid']}">{$user['username']}</a>{$invisiblemark}]]></template>
 		<template name="usercp_favorites" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->favorites}</title>
+<title>{$mybb->settings['bbname']} - {$lang->favorites}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4584,13 +4584,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 <table width="98%" align="center">
 <tr>
-<td valign="top"><a href="index.php"><img src="{$theme['logo']}" alt="{$settings['bbname']}" border="0" /></a></td>
+<td valign="top"><a href="index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" border="0" /></a></td>
 </tr>
 <tr>
 <td>
 <span class="largetext">{$thread['subject']} - {$lang->printable_version}</span><br />
 <br />
-+- {$settings['bbname']} (<em>{$settings['bburl']}</em>)<br />
++- {$mybb->settings['bbname']} (<em>{$mybb->settings['bburl']}</em>)<br />
 {$breadcrumb}
 +{$tdepth} {$lang->thread} {$thread['subject']} (<em>/showthread.php?tid={$tid}</em>)</td>
 </tr>
@@ -4605,7 +4605,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="usercp_password" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->change_password}</title>
+<title>{$mybb->settings['bbname']} - {$lang->change_password}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4651,7 +4651,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="usercp_email" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->change_email}</title>
+<title>{$mybb->settings['bbname']} - {$lang->change_email}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4737,7 +4737,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="search_results_threads" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->search_results}</title>
+<title>{$mybb->settings['bbname']} - {$lang->search_results}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4784,7 +4784,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="reputation_add" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->reputation}</title>
+<title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4824,7 +4824,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 ]]></template>
 		<template name="misc_smilies" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->smilies_listing}</title>
+<title>{$mybb->settings['bbname']} - {$lang->smilies_listing}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4846,7 +4846,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="search_results_posts" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->search_results}</title>
+<title>{$mybb->settings['bbname']} - {$lang->search_results}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4901,7 +4901,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="usercp_subscriptions" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->subscriptions}</title>
+<title>{$mybb->settings['bbname']} - {$lang->subscriptions}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4996,7 +4996,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="forumbit_moderators" version="100.07"><![CDATA[<br />{$lang->forumbit_moderated_by} {$moderators}]]></template>
 		<template name="moderation_deletepoll" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->delete_poll}</title>
+<title>{$mybb->settings['bbname']} - {$lang->delete_poll}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5038,7 +5038,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="misc_smilies_popup" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->smilies_listing}</title>
+<title>{$mybb->settings['bbname']} - {$lang->smilies_listing}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5060,7 +5060,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="showteam" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->forum_team}</title>
+<title>{$mybb->settings['bbname']} - {$lang->forum_team}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5075,7 +5075,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="moderation_getip" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->get_post_ip}</title>
+<title>{$mybb->settings['bbname']} - {$lang->get_post_ip}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5118,11 +5118,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </select>
 </td>
 </tr>]]></template>
-		<template name="index_logoutlink" version="100.07"><![CDATA[<a href="member.php?action=logout&amp;uid={$mybbuser['uid']}">{$lang->index_logout}</a> | ]]></template>
+		<template name="index_logoutlink" version="100.07"><![CDATA[<a href="member.php?action=logout&amp;uid={$mybb-user['uid']}">{$lang->index_logout}</a> | ]]></template>
 		<template name="postbit_iplogged_show" version="100.07"><![CDATA[<br /><span class="smalltext">{$lang->postbit_ipaddress} {$post['ipaddress']}</span>]]></template>
 		<template name="calendar_dayview" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->calendar} - {$lang->day_view}</title>
+<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->day_view}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5134,7 +5134,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="usercp_changeavatar" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->change_avatar}</title>
+<title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5165,7 +5165,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
 <tr>
 <td valign="middle">
-<select name="avatarlist" size="5" onChange="document.images.avatarpic.src='{$settings['avatardir']}/'+this[this.selectedIndex].value;">
+<select name="avatarlist" size="5" onChange="document.images.avatarpic.src='{$mybb->settings['avatardir']}/'+this[this.selectedIndex].value;">
 {$listoptions}
 </select>
 </td>
@@ -5195,7 +5195,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="usercp_notepad" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->personal_notepad}</title>
+<title>{$mybb->settings['bbname']} - {$lang->personal_notepad}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5211,7 +5211,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td align="center" class="trow1" width="100%">
-<textarea name="notepad" cols="80" rows="15" wrap="virtual">{$mybbuser['notepad']}</textarea>
+<textarea name="notepad" cols="80" rows="15" wrap="virtual">{$mybb-user['notepad']}</textarea>
 </td>
 </tr>
 </table>
@@ -5239,7 +5239,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="member_resetpassword" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->reset_password}</title>
+<title>{$mybb->settings['bbname']} - {$lang->reset_password}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5283,7 +5283,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="forumdisplay_usersbrowsing" version="100.07"><![CDATA[<span class="smalltext">{$lang->users_browsing_forum} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>]]></template>
 		<template name="member_lostpw" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->lost_pw}</title>
+<title>{$mybb->settings['bbname']} - {$lang->lost_pw}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5307,7 +5307,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="usercp_changename" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->change_username}</title>
+<title>{$mybb->settings['bbname']} - {$lang->change_username}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5323,7 +5323,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_username}</strong></td>
-<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$settings['maxnamelength']}" value="{$mybbuser['username']}" /></td>
+<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$mybb->settings['maxnamelength']}" value="{$mybb-user['username']}" /></td>
 </tr>
 </table>
 <br />
@@ -5385,7 +5385,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="moderation_deleteposts" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->delete_posts}</title>
+<title>{$mybb->settings['bbname']} - {$lang->delete_posts}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5407,7 +5407,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="moderation_split" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->split_thread}</title>
+<title>{$mybb->settings['bbname']} - {$lang->split_thread}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5505,14 +5505,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="usercp_editsig" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->edit_sig}</title>
+<title>{$mybb->settings['bbname']} - {$lang->edit_sig}</title>
 {$headerinclude}
 <script language="JavaScript" type="text/javascript">
 <!--
 function sigLimit() {
 var count_modifier = 0;
 var loops = 0;
-if('{$settings['sigcountmycode']}' == 'no'){
+if('{$mybb->settings['sigcountmycode']}' == 'no'){
 var regexp = /(\[.+\].+\[\/.+\])/i;
 var sig_string = document.forms[0].signature.value;
 sig_string = sig_string.replace(/\n/g, "");
@@ -5531,10 +5531,10 @@ loops++;
 }
 }
 sig_length = document.forms[0].signature.value.length - count_modifier;
-if (sig_length > {$settings['siglength']})
-document.forms[0].signature.value = document.forms[0].signature.value.substring(0, {$settings['siglength']});
+if (sig_length > {$mybb->settings['siglength']})
+document.forms[0].signature.value = document.forms[0].signature.value.substring(0, {$mybb->settings['siglength']});
 else
-document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
+document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length;
 }
 //-->
 </script>
@@ -5554,7 +5554,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td class="trow1" valign="top" width="40%"><span class="smalltext">{$lang->edit_sig_note}<br /><br />{$lang->edit_sig_note2}</span></td>
-<td class="trow1" width="60%"><textarea rows="5" cols="55" wrap="physical" name="signature" onKeyUp="sigLimit()" onKeyDown="sigLimit()">{$sig}</textarea><br /><input type="text" class="textbox" name="sigcounter" size="3" value="{$settings['siglength']}" disabled="disabled" /> <span class="smalltext">{$lang->characters_remaining}</span>
+<td class="trow1" width="60%"><textarea rows="5" cols="55" wrap="physical" name="signature" onKeyUp="sigLimit()" onKeyDown="sigLimit()">{$sig}</textarea><br /><input type="text" class="textbox" name="sigcounter" size="3" value="{$mybb->settings['siglength']}" disabled="disabled" /> <span class="smalltext">{$lang->characters_remaining}</span>
 <br /><br /><span class="smalltext">
 <input type="radio" class="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}<br />
 <input type="radio" class="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}<br />
@@ -5648,13 +5648,13 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->username}</strong></td>
-<td class="trow1">{$mybbuser['username']}</td>
+<td class="trow1">{$mybb-user['username']}</td>
 </tr>
 </table>
 <br />]]></template>
 		<template name="private_folders" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->pm_folders}</title>
+<title>{$mybb->settings['bbname']} - {$lang->pm_folders}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5701,7 +5701,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 ]]></template>
 		<template name="moderation_move" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->move_copy_thread}</title>
+<title>{$mybb->settings['bbname']} - {$lang->move_copy_thread}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5735,7 +5735,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </html>]]></template>
 		<template name="moderation_merge" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->merge_threads}</title>
+<title>{$mybb->settings['bbname']} - {$lang->merge_threads}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5771,8 +5771,8 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="trow2" align="right">{$similarthreaddate}<br />{$similarthreadtime}</td>
 </tr>
 ]]></template>
-		<template name="calendar_eventbit_public" version="100.07"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$settings['publiceventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
-		<template name="calendar_eventbit_private" version="100.07"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$settings['privateeventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
+		<template name="calendar_eventbit_public" version="100.07"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$mybb->settings['publiceventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
+		<template name="calendar_eventbit_private" version="100.07"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$mybb->settings['privateeventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
 		<template name="calendar_daybit_today" version="100.07"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
 <strong><a href="calendar.php?action=dayview&amp;year={$year}&amp;month={$month}&amp;day={$i}">{$i}</a></strong>
 <br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
@@ -5795,7 +5795,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>]]></template>
 		<template name="member_activate" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->account_activation}</title>
+<title>{$mybb->settings['bbname']} - {$lang->account_activation}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5837,7 +5837,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="misc_buddypopup_user_sendpm" version="100.07"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank">{$lang->pm_buddy}</a>&nbsp;&nbsp;]]></template>
 		<template name="usercp_editlists" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->edit_lists}</title>
+<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5905,7 +5905,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </html>]]></template>
 		<template name="online_iplookup" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->ip_lookup}</title>
+<title>{$mybb->settings['bbname']} - {$lang->ip_lookup}</title>
 {$headerinclude}
 </head>
 <body>
@@ -5941,7 +5941,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="online_row_ip" version="100.07"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="online.php?action=iplookup&amp;ip={$user['ip']}">{$lang->lookup}</a></span>]]></template>
 		<template name="calendar_editevent" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->calendar} - {$lang->edit_event}</title>
+<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->edit_event}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6055,7 +6055,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <td class="tcat" colspan="6"><strong>&raquo;&nbsp;&nbsp;<a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><br /><span class="smalltext">{$forum['description']}</span></td></tr>{$sub_forums}]]></template>
 		<template name="misc_help" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->help_docs}</title>
+<title>{$mybb->settings['bbname']} - {$lang->help_docs}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6092,7 +6092,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </table>]]></template>
 		<template name="misc_help_helpdoc" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->help_docs}</title>
+<title>{$mybb->settings['bbname']} - {$lang->help_docs}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6121,7 +6121,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>]]></template>
 		<template name="usercp_forumsubscriptions" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->forum_subscriptions}</title>
+<title>{$mybb->settings['bbname']} - {$lang->forum_subscriptions}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6229,7 +6229,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <br />]]></template>
 		<template name="member_resendactivation" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->resend_activation}</title>
+<title>{$mybb->settings['bbname']} - {$lang->resend_activation}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6259,7 +6259,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="nav_bit_active" version="100.07"><![CDATA[<span class="active">{$navbit['name']}</span>]]></template>
 		<template name="moderation_inline_deletethreads" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->delete_threads}</title>
+<title>{$mybb->settings['bbname']} - {$lang->delete_threads}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6285,7 +6285,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 		<template name="postbit_inlinecheck" version="100.07"><![CDATA[| <input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" {$inlinecheck}  />]]></template>
 		<template name="moderation_inline_movethreads" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->move_threads}</title>
+<title>{$mybb->settings['bbname']} - {$lang->move_threads}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6312,7 +6312,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </html>]]></template>
 		<template name="moderation_inline_mergeposts" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->merge_posts}</title>
+<title>{$mybb->settings['bbname']} - {$lang->merge_posts}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6340,7 +6340,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </html>]]></template>
 		<template name="moderation_inline_splitposts" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->split_thread}</title>
+<title>{$mybb->settings['bbname']} - {$lang->split_thread}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6399,7 +6399,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 <br />]]></template>
 		<template name="member_register" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->registration}</title>
+<title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6557,7 +6557,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </tr>]]></template>
 		<template name="reputation_add_error" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->reputation}</title>
+<title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
 {$headerinclude}
 <script type="text/javascript">var showBack = {$show_back};</script>
 </head>
@@ -6581,7 +6581,7 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </html>]]></template>
 		<template name="reputation_added" version="100.07"><![CDATA[<html>
 <head>
-<title>{$settings['bbname']} - {$lang->reputation}</title>
+<title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
 {$headerinclude}
 </head>
 <body onunload="window.opener.location.reload();">
@@ -6601,8 +6601,8 @@ document.forms[0].sigcounter.value = {$settings['siglength']} - sig_length;
 </body>
 </html>]]></template>
 		<template name="forumdisplay_thread_attachment_count" version="100.07"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.gif" alt="" title="{$attachment_count}" /></div>]]></template>
-		<template name="forumdisplay_rssdiscovery" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$settings['bburl']}/syndication.php?fid={$fid}" />
-<link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 0.3)" href="{$settings['bburl']}/syndication.php?type=atom1.0&amp;fid={$fid}" />]]></template>
+		<template name="forumdisplay_rssdiscovery" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php?fid={$fid}" />
+<link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 0.3)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0&amp;fid={$fid}" />]]></template>
 		<template name="post_captcha" version="100.07"><![CDATA[<tr>
 <td class="trow2" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow2">
