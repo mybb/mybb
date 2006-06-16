@@ -2344,29 +2344,13 @@ function get_current_location()
 
 	if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
 	{
-		if(isset($_POST['action']))
+		$postarray = array("action", "fid", "pid", "tid", "uid", "eid")
+		foreach($_POST as $id => $data)
 		{
-			$addloc[] = "action=".$_POST['action'];
-		}
-		if(isset($_POST['fid']))
-		{
-			$addloc[] = "fid=".$_POST['fid'];
-		}
-		if(isset($_POST['tid']))
-		{
-			$addloc[] = "tid=".$_POST['tid'];
-		}
-		if(isset($_POST['pid']))
-		{
-			$addloc[] = "pid=".$_POST['pid'];
-		}
-		if(isset($_POST['uid']))
-		{
-			$addloc[] ="uid=".$_POST['uid'];
-		}
-		if(isset($_POST['eid']))
-		{
-			$addloc[] = "eid=".$_POST['eid'];
+			if(in_array($id, $postarray)
+			{
+				$addloc[] = $id."=".$data;
+			}
 		}
 		if(isset($addlock) && is_array($addloc))
 		{
@@ -2596,7 +2580,12 @@ function my_strlen($string)
 	return $string_length;
 }
 
-// From PHP Manual...
+/**
+ * Returns any html entities to their original character
+ *
+ * @param string The string to un-htmlentitize.
+ * @return int The un-htmlentitied' string.
+ */
 function unhtmlentities($string)
 {
    // replace numeric entities
@@ -2643,12 +2632,25 @@ function get_event_date($event)
 	return $event_date;
 }
 
+/**
+ * Get the profile link.
+ *
+ * @param int The user id of the profile.
+ * @return string The url to the profile.
+ */
 function get_profile_link($uid=0)
 {
 	$link = str_replace("{uid}", $uid, PROFILE_URL);
 	return $link;
 }
 
+/**
+ * Build the profile link.
+ *
+ * @param string The Username of the profile.
+ * @param int The user id of the profile.
+ * @return string The url to the profile.
+ */
 function build_profile_link($username="", $uid=0)
 {
 	global $lang;
@@ -2667,6 +2669,13 @@ function build_profile_link($username="", $uid=0)
 	}
 }
 
+/**
+ * Build the forum link.
+ *
+ * @param int The forum id of the forum.
+ * @param int (Optional) The page number of the forum.
+ * @return string The url to the forum.
+ */
 function get_forum_link($fid, $page=0)
 {
 	if($page > 0)
@@ -2680,6 +2689,13 @@ function get_forum_link($fid, $page=0)
 	}
 }
 
+/**
+ * Build the thread link.
+ *
+ * @param int The thread id of the thread.
+ * @param int (Optional) The page number of the thread.
+ * @return string The url to the thread.
+ */
 function get_thread_link($tid, $page=0)
 {
 	if($page > 0)
@@ -2693,6 +2709,12 @@ function get_thread_link($tid, $page=0)
 	}
 }
 
+/**
+ * Get the username of a user id.
+ *
+ * @param int The user id of the user.
+ * @return string The username of the user.
+ */
 function get_user($uid)
 {
 	global $mybb, $db;
@@ -2718,6 +2740,13 @@ function get_user($uid)
 	}
 }
 
+/**
+ * Get the forum of a specific forum id.
+ *
+ * @param int The forum id of the forum.
+ * @param int (Optional) If set to 1, will override the active forum status
+ * @return array The database row of a forum.
+ */
 function get_forum($fid, $active_override=0)
 {
 	global $cache;
@@ -2748,6 +2777,12 @@ function get_forum($fid, $active_override=0)
 	return $forum_cache[$fid];
 }
 
+/**
+ * Get the thread of a thread id.
+ *
+ * @param int The thread id of the thread.
+ * @return string The database row of the thread.
+ */
 function get_thread($tid)
 {
 	global $db;
@@ -2775,6 +2810,12 @@ function get_thread($tid)
 	}
 }
 
+/**
+ * Get the post of a post id.
+ *
+ * @param int The post id of the post.
+ * @return string The database row of the post.
+ */
 function get_post($pid)
 {
 	global $db;

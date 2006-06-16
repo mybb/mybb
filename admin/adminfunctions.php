@@ -27,7 +27,7 @@ $cssselectors = array(
 	"bottommenu" => ".bottommenu",
 	"navigation" => ".navigation",
 	"navigation_active" => ".navigation .active",
-	 "smalltext" => ".smalltext",
+	"smalltext" => ".smalltext",
 	"largetext" => ".largetext",
 	"textbox" => "input.textbox",
 	"textarea" => "textarea",
@@ -104,6 +104,10 @@ function makehoptolinks($links)
 {
 	echo "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"100%\">\n";
 	echo "<tr><td class=\"hoptobuttons\">";
+	if(!is_array($links))
+	{
+		$links[] = $links;
+	}	
 	foreach($links as $key => $val)
 	{
 		echo $val;
@@ -191,7 +195,6 @@ function makelinkcode($text, $url, $newwin=0, $class="")
 function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxlength="", $autocomplete=1)
 {
 	$bgcolor = getaltbg();
-	//$value = stripslashes($value);
 	$value = htmlspecialchars_uni($value);
 	if($autocomplete != 1)
 	{
@@ -217,13 +220,11 @@ function makepasswordcode($title, $name, $value="", $size="25", $autocomplete=1)
 function maketextareacode($title, $name, $value="", $rows="4", $columns="40")
 {
 	$bgcolor = getaltbg();
-	//$value = stripslashes($value);
 	$value = htmlspecialchars_uni($value);
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><textarea name=\"$name\" rows=\"$rows\" cols=\"$columns\">$value</textarea></td>\n</tr>\n";
 }
 function makehiddencode($name, $value="")
 {
-	//$value = stripslashes($value);
 	$value = htmlspecialchars_uni($value);
 	echo "<input type=\"hidden\" name=\"$name\" value=\"$value\">\n";
 }
@@ -316,6 +317,10 @@ function makeselectcode_array($title, $name, $options, $selected="", $blank="", 
 	if($blank)
 	{
 		echo "<option value=\"\"> $blank_label</option>";
+	}
+	if(!is_array($options))
+	{
+		$options[] = $options;
 	}
 	foreach($options as $value => $label)
 	{
@@ -666,17 +671,17 @@ function makecssinputedit($css)
 		}
 		$header_buffer .= "<td class=\"subheader\" align=\"center\">".$name."</td>\n";
 
-		$content_buffer .=  "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
-		$content_buffer .=  "<table width=\"100%\">\n";
-		$content_buffer .=  "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[$element][background]\" value=\"".$css[$element]['background']."\" size=\"25\" class=\"$highlight\"/></td>\n</tr>\n";
-		$content_buffer .=  "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[$element][color]\" value=\"".$css[$element]['color']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
-		$content_buffer .=  "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[$element][border]\" value=\"".$css[$element]['border']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
-		$content_buffer .=  "<tr>\n";
-		$content_buffer .=  "<td class=\"altbg1\" width=\"50%\" valign=\"top\" colspan=\"2\">\n";
-		$content_buffer .=  "<textarea style=\"width: 98%; padding: 4px;\" rows=\"4\" name=\"css[$element][extra]\" class=\"$highlight\">".htmlspecialchars_uni($css[$element]['extra'])."</textarea>\n";
+		$content_buffer .= "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
+		$content_buffer .= "<table width=\"100%\">\n";
+		$content_buffer .= "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[$element][background]\" value=\"".$css[$element]['background']."\" size=\"25\" class=\"$highlight\"/></td>\n</tr>\n";
+		$content_buffer .= "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[$element][color]\" value=\"".$css[$element]['color']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		$content_buffer .= "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[$element][border]\" value=\"".$css[$element]['border']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		$content_buffer .= "<tr>\n";
+		$content_buffer .= "<td class=\"altbg1\" width=\"50%\" valign=\"top\" colspan=\"2\">\n";
+		$content_buffer .= "<textarea style=\"width: 98%; padding: 4px;\" rows=\"4\" name=\"css[$element][extra]\" class=\"$highlight\">".htmlspecialchars_uni($css[$element]['extra'])."</textarea>\n";
 		$content_buffer .= $revert;
-		$content_buffer .=  "</td>\n";
-		$content_buffer .=  "</tr>\n";
+		$content_buffer .= "</td>\n";
+		$content_buffer .= "</tr>\n";
 		$content_buffer .= "</table>\n";
 		$content_buffer .= "</td>\n";
 	}
@@ -801,8 +806,7 @@ function cpredirect($url, $message="")
 
 function cpfooter($showversion=1)
 {
-	global $mybboard, $db, $maintimer;
-	global $lang;
+	global $mybboard, $db, $maintimer, $lang;
 	echo "<div align=\"center\"><br /><br />\n";
 	$totaltime = $maintimer->stop();
 	$lang->footer_stats = sprintf($lang->footer_stats, $totaltime, $db->query_count);
@@ -892,7 +896,11 @@ function makenavgroup($name="")
 
 function makehopper($name, $values)
 {
-	while(list($action, $title) = each($values))
+	if(!is_array($values))
+	{
+		$values[] = $values;
+	}
+	foreach($values as $action => $title)
 	{
 		$options .= "<option value=\"$action\">$title</option>\n";
 	}
@@ -1124,14 +1132,14 @@ function makeacpforumnav($fid)
 			cache_forums();
 		}
 		reset($forum_cache);
-		while(list($key, $val) = each($forum_cache))
+		foreach($forum_cache as $key => $val)
 		{
 			$pforumcache[$val['fid']][$val['pid']] = $val;
 		}
 	}
 	if(is_array($pforumcache[$fid]))
 	{
-		while(list($key, $forumnav) = each($pforumcache[$fid]))
+		foreach($pforumcache[$fid] as $key => $forumnav)
 		{
 			if($fid == $forumnav['fid'])
 			{
