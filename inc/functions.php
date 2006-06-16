@@ -2344,12 +2344,12 @@ function get_current_location()
 
 	if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
 	{
-		$postarray = array("action", "fid", "pid", "tid", "uid", "eid")
-		foreach($_POST as $id => $data)
+		$post_array = array('action', 'fid', 'pid', 'tid', 'uid', 'eid');
+		foreach($post_array as $var)
 		{
-			if(in_array($id, $postarray)
+			if(isset($_POST[$var]))
 			{
-				$addloc[] = $id."=".$data;
+				$addloc[] = $var.'='.$_POST[$var];
 			}
 		}
 		if(isset($addlock) && is_array($addloc))
