@@ -627,7 +627,7 @@ if($mybb->input['action'] == "showresults")
 			{
 				foreach($voters[$number] as $uid => $username)
 				{
-					$member_link = str_replace('{uid}', $uid, PROFILE_URL);
+					$member_link = get_profile_link($uid);
 					$userlist .= "{$comma}<a href=\"{$member_link}\">{$username}</a>";
 					$comma = $guest_comma = ', ';
 				}
