@@ -191,7 +191,7 @@ elseif($mybb->input['action'] == "vercheck")
 	}
 
 	$parser = new XMLParser($contents);
-	$tree = $parser->getTree();
+	$tree = $parser->get_tree();
 
 	$latest_code = $tree['mybb']['version_code']['value'];
 	$latest_version = $tree['mybb']['latest_version']['value']." (".$latest_code.")";

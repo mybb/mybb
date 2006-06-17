@@ -294,7 +294,7 @@ if($mybb->input['action'] == "do_import")
 		}
 	}
 	$parser = new XMLParser($contents);
-	$tree = $parser->getTree();
+	$tree = $parser->get_tree();
 
 	$theme = $tree['theme'];
 
@@ -325,8 +325,8 @@ if($mybb->input['action'] == "do_import")
 		cperror($lang->version_warning);
 	}
 
-	$css = killtags($theme['cssbits']);
-	$themebits = killtags($theme['themebits']);
+	$css = kill_tags($theme['cssbits']);
+	$themebits = kill_tags($theme['themebits']);
 	$templates = $theme['templates']['template'];
 
 	if($master == "yes")
