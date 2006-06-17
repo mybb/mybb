@@ -478,15 +478,12 @@ function insert_templates()
 	$templateset = $db->insert_id();
 
 	$contents = @file_get_contents('./resources/mybb_theme.xml');
-	//$arr = @file('./resources/mybb_theme.xml');
-	//$contents = @implode('', $arr);
-
 	$parser = new XMLParser($contents);
-	$tree = $parser->getTree();
+	$tree = $parser->get_tree();
 
 	$theme = $tree['theme'];
-	$css = killtags($theme['cssbits']);
-	$themebits = killtags($theme['themebits']);
+	$css = killempty($theme['cssbits']);
+	$themebits = killempty($theme['themebits']);
 	$templates = $theme['templates']['template'];
 	$themebits['templateset'] = $templateset;
 	$sid = -2;
@@ -593,7 +590,7 @@ function create_admin_user()
 		$settings = file_get_contents('./resources/settings.xml');
 		$parser = new XMLParser($settings);
 		$parser->collapse_dups = 0;
-		$tree = $parser->getTree();
+		$tree = $parser->get_tree();
 
 		// Insert all the settings
 		foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
