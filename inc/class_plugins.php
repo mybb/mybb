@@ -111,7 +111,12 @@ class pluginSystem
 	 */
 	function remove_hook($hook, $function, $file="", $priority=10)
 	{
-		@unset($this->hooks[$hook][$priority][$function]);
+		// Check to see if we don't already have this hook running at this priority
+		if(!isset($this->hooks[$hook][$priority][$function]))
+		{
+			return true;
+		}
+		unset($this->hooks[$hook][$priority][$function]);
 	}
 }
 ?>
