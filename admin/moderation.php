@@ -121,6 +121,15 @@ if($mybb->input['action'] == "do_edit")
 	$update_tool['threadoptions'] = $db->escape_string(serialize($thread_options));
 	$update_tool['name'] = $db->escape_string($mybb->input['name']);
 	$update_tool['description'] = $db->escape_string($mybb->input['description']);
+	$update_tool['forums'] = '';
+	if(is_array($mybb->input['forums']))
+	{
+		foreach($mybb->input['forums'] as $fid)
+		{
+			$checked[] = intval($fid);
+		}
+		$update_tool['forums'] = implode(',', $checked);
+	}
 
 	$plugins->run_hooks("admin_moderation_do_edit");
 	
@@ -170,6 +179,7 @@ if($mybb->input['action'] == "edit")
 	tablesubheader($lang->general_options);
 	makeinputcode($lang->name, 'name', $tool['name']);
 	maketextareacode($lang->description, 'description', $tool['description']);
+	makelabelcode($lang->available_in_forums, forum_checkbox_list('forums', $tool['forums'], '0', '', $lang->all_forums));
 	
 	if($mode == 'p')
 	{
@@ -299,6 +309,15 @@ if($mybb->input['action'] == "do_addposttool" || $mybb->input['action'] == "do_a
 	$new_tool['threadoptions'] = $db->escape_string(serialize($thread_options));
 	$new_tool['name'] = $db->escape_string($mybb->input['name']);
 	$new_tool['description'] = $db->escape_string($mybb->input['description']);
+	$new_tool['forums'] = '';
+	if(is_array($mybb->input['forums']))
+	{
+		foreach($mybb->input['forums'] as $fid)
+		{
+			$checked[] = intval($fid);
+		}
+		$new_tool['forums'] = implode(',', $checked);
+	}
 
 	$db->insert_query(TABLE_PREFIX."modtools", $new_tool);
 
@@ -335,6 +354,7 @@ if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthre
 	tablesubheader($lang->general_options);
 	makeinputcode($lang->name, 'name');
 	maketextareacode($lang->description, 'description');
+	makelabelcode($lang->available_in_forums, forum_checkbox_list('forums', '-1', '0', '', $lang->all_forums));
 	
 	if($mode == 'p')
 	{

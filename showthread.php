@@ -698,7 +698,7 @@ if($mybb->input['action'] == "thread")
 	if($ismod)
 	{
 		$customthreadtools = $customposttools = '';
-		$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, name, type');
+		$query = $db->simple_select(TABLE_PREFIX."modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%'");
 		while($tool = $db->fetch_array($query))
 		{
 			if($tool['type'] == 'p')

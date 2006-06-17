@@ -907,9 +907,34 @@ function makehopper($name, $values)
 	return "<select name=\"$name\"  onchange=\"this.form.submit();\">$options</select>&nbsp;<input type=\"submit\" value=\"Go\">\n";
 }
 
+/**
+* Build a dropdown to select a forum
+*
+* @param string The unique identifier for this dropdown, e.g. "selectedforum".
+* @param int Optional number indicating the forum ID to pre-select
+* @param int Optional forum ID to start the select (usually left at zero if making a complete list)
+* @param string Used to indent the forum list, used in recursion
+* @param int Optional toggle to show the 'no parent' option
+* @param string Optional label for the value -1
+* @param string Optional label for the value -2
+* @return string The completed dropdown
+*/
 function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $extra="", $extra2="")
 {
-	global $db, $forumselect, $lang;
+	global $db, $forumselect, $lang, $cforumcache;
+
+	if(!is_array($cforumcache))
+	{
+		$options = array(
+			'order_by' => 'disporder'
+		);
+		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "", $options);
+		while($forum = $db->fetch_array($query))
+		{
+			$cforumcache['pid'][$forum['pid']][$forum['fid']] = $forum;
+			$cforumcache['fid'][$forum['fid']] = $forum;
+		}
+	}
 
 	if(!$fid)
 	{
@@ -940,11 +965,11 @@ function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $ext
 		{
 			$forumselect .= "<option value=\"0\">$lang->parentforum_none</option><option value=\"0\">-----------</option>";
 		}
+		$fid = 0;
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
-		$startforum = $db->fetch_array($query);
+		$startforum = $cforumcache['fid'][$fid];
 		$forumselect .= "<option value=\"$startforum[fid]\"";
 		if($selected == $startforum[fid])
 		{
@@ -954,20 +979,80 @@ function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $ext
 		$depth .= "--";
 	}
 
-	$options = array(
-		"order_by" => "disporder"
-	);
-	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='$fid'", $options);
-
-	while($forum = $db->fetch_array($query))
+	if(is_array($cforumcache['pid'][$fid]))
 	{
-		forumselect($name, $selected, $forum[fid], $depth, $shownone, $extra);
+		foreach($cforumcache['pid'][$fid] as $forum)	
+		{
+			forumselect($name, $selected, $forum[fid], $depth, $shownone, $extra, $extra2);
+		}
 	}
 	if(!$fid)
 	{
 		$forumselect .= "</select>";
 	}
 	return $forumselect;
+}
+
+/**
+* Build a list of checkboxes to select multiple forums
+*
+* @param string The unique identifier for this list, e.g. "selectedforums".
+* @param int Optional number indicating the forum ID to pre-select
+* @param int Optional forum ID to start the select (usually left at zero if making a complete list)
+* @param string Used to indent the forum list, used in recursion
+* @param string Optional label for the value -1
+* @return string The completed checkbox list
+*/
+function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra="")
+{
+	global $db, $forumchecklist, $lang, $cforumcache;
+	if(!is_array($cforumcache))
+	{
+		$options = array(
+			'order_by' => 'disporder'
+		);
+		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "", $options);
+		while($forum = $db->fetch_array($query))
+		{
+			$cforumcache['pid'][$forum['pid']][$forum['fid']] = $forum;
+			$cforumcache['fid'][$forum['fid']] = $forum;
+		}
+	}
+
+	if(!$fid)
+	{
+		if($extra)
+		{
+			$selected1 = '';
+			if($selected == -1)
+			{
+				$selected1 = ' checked="checked"';
+			}
+			$forumchecklist .= "<input type=\"checkbox\" name=\"{$name}[]\" value=\"-1\"$selected1 /> $extra <br /><br />";
+		}
+		$fid = 0;
+	}
+	else
+	{
+		$startforum = $cforumcache['fid'][$fid];
+		$forumchecklist .= "$depth<input type=\"checkbox\" name=\"{$name}[]\" value=\"$startforum[fid]\"";
+		if($selected == $startforum['fid'])
+		{
+			$forumchecklist .= ' checked="checked"';
+		}
+		$forumchecklist .= " /> $startforum[name]<br />";
+		$depth .= "&nbsp;&nbsp;&nbsp;&nbsp;";
+	}
+
+	if(is_array($cforumcache['pid'][$fid]))
+	{
+		foreach($cforumcache['pid'][$fid] as $forum)
+		{
+			forum_checkbox_list($name, $selected, $forum['fid'], $depth, $extra);
+		}
+	}
+
+	return $forumchecklist;
 }
 
 function checkadminpermissions($action)
