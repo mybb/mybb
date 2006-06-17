@@ -35,6 +35,9 @@ class session
 		"yahoo" => "Yahoo! Slurp"
 		);
 
+	/**
+	 * Initialize a session
+	 */
 	function init()
 	{
 		global $ipaddress, $db, $mybb, $noonline;
@@ -106,11 +109,11 @@ class session
 	}
 
 	/**
-	* Load a user via the user credentials.
-	*
-	* @param int The user id.
-	* @param string The user's password.
-	*/
+	 * Load a user via the user credentials.
+	 *
+	 * @param int The user id.
+	 * @param string The user's password.
+	 */
 	function load_user($uid, $password="")
 	{
 		global $mybbuser, $mybb, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang, $mybbgroups, $loadpmpopup, $session;
@@ -299,9 +302,9 @@ class session
 	}
 
 	/**
-	* Load a guest user.
-	*
-	*/
+	 * Load a guest user.
+	 *
+	 */
 	function load_guest()
 	{
 		global $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $lang;
@@ -370,10 +373,10 @@ class session
 	}
 
 	/**
-	* Load a search engine spider.
-	*
-	* @param string The spider name.
-	*/
+	 * Load a search engine spider.
+	 *
+	 * @param string The spider name.
+	 */
 	function load_spider($spider)
 	{
 		global $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $bots, $lang;
@@ -410,11 +413,11 @@ class session
 	}
 
 	/**
-	* Update a user session.
-	*
-	* @param int The session id.
-	* @param int The user id.
-	*/
+	 * Update a user session.
+	 *
+	 * @param int The session id.
+	 * @param int The user id.
+	 */
 	function update_session($sid, $uid="")
 	{
 		global $db;
@@ -440,10 +443,10 @@ class session
 	}
 
 	/**
-	* Create a new session.
-	*
-	* @param int The user id to bind the session to.
-	*/
+	 * Create a new session.
+	 *
+	 * @param int The user id to bind the session to.
+	 */
 	function create_session($uid=0)
 	{
 		global $db;
@@ -484,10 +487,10 @@ class session
 	}
 
 	/**
-	* Find out the special locations.
-	*
-	* @return array Special locations array.
-	*/
+	 * Find out the special locations.
+	 *
+	 * @return array Special locations array.
+	 */
 	function get_special_locations()
 	{
 		global $mybb;

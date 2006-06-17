@@ -9,13 +9,6 @@
  * $Id$
  */
 
-/*
-Example code:
-
-TO BE WRITTEN
-
-*/
-
 class FeedGenerator
 {
 	/**

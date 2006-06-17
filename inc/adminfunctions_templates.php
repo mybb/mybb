@@ -9,11 +9,16 @@
  * $Id$
  */
 
-//
-// A function to search through all template sets for a particular template
-// replace something in that template, and then update it. It can also create
-// (by default) templates for sets which arent customised, based off the master
-//
+/**
+ * Find and replace a string in a particular template through every template set.
+ *
+ * @param string The name of the template
+ * @param string The regular expression to match in the template
+ * @param string The replacement string
+ * @param int Set to 1 to automatically create templates which do not exist for that set (based off master) - Defaults to 1
+ * @return bolean true if matched template name, false if not.
+ */
+
 function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 {
 	global $db;

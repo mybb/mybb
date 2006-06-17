@@ -9,6 +9,13 @@
  * $Id$
  */
 
+/**
+ * Build a post bit
+ *
+ * @param array The post data
+ * @param int The type of post bit we're building (1 = preview, 2 = pm, 3 = announcement, else = post)
+ * @return string The built post bit
+ */
 function build_postbit($post, $pmprevann=0)
 {
 	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter, $titlescache, $page, $templates;

@@ -21,12 +21,20 @@ class XMLParser {
 	var $collapse_dups = 1;
 	var $index_numeric = 0;
 
+	/**
+	 * Initialize the parser and store the XML data to be parsed.
+	 */
 	function XMLParser($data)
 	{
 		$this->data = $data;
 	}
 
-	function getTree()
+	/**
+	 * Build a tree based structure based from the parsed data
+	 *
+	 * @return array The tree based structure
+	 */
+	function get_tree()
 	{
 		$parser = xml_parser_create();
 		xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 0);
@@ -34,10 +42,19 @@ class XMLParser {
 		xml_parse_into_struct($parser, $this->data, $vals, $index);
 
 		$i = -1;
-		return $this->getChildren($vals, $i);
+		return $this->get_children($vals, $i);
 	}
 
-	function buildTag($thisvals, $vals, &$i, $type)
+	/**
+	 * Private: Build a completed tag by fetching all child nodes and attributes
+	 *
+	 * @param array Array of values from the current tag
+	 * @param array Array of child nodes
+	 * @param int Internal counter
+	 * @param string Type of tag. Complete is a single line tag with attributes
+	 * @return array Completed tag array
+	 */
+	function build_tag($thisvals, $vals, &$i, $type)
 	{
 		$tag['tag'] = $thisvals['tag'];
 		if(isset($thisvals['attributes']))
@@ -51,12 +68,19 @@ class XMLParser {
 		}
 		else
 		{
-			$tag = array_merge($tag, $this->getChildren($vals, $i));
+			$tag = array_merge($tag, $this->get_children($vals, $i));
 		}
 		return $tag;
 	}
-
-	function getChildren($vals, &$i)
+	
+	/**
+	 * Fetch the children for from a specific node array
+	 *
+	 * @param array Array of children
+	 * @param int Internal counter
+	 * @return array Array of child nodes
+	 */
+	function get_children($vals, &$i)
 	{
 		$children = array();
 
@@ -74,7 +98,7 @@ class XMLParser {
 			}
 			elseif($type == "complete" || $type == "open")
 			{
-				$tag = $this->buildTag($vals[$i], $vals, $i, $type);
+				$tag = $this->build_tag($vals[$i], $vals, $i, $type);
 				if($this->index_numeric)
 				{
 					$tag['tag'] = $vals[$i]['tag'];
@@ -105,16 +129,12 @@ class XMLParser {
 }
 
 /**
- * Why this function did not work had me,
- * Chris, stumped for days. 2 Hours of
- * Matt Light's expertise and it was working
- * perfectly.
-
- * 	http://www.mephex.com
- * 	^ Visit him, he does great things with
- * 	  your code
+ * Kill off unnecessary tags and return a clean array of XML data
+ *
+ * @param array Array of parsed XML data
+ * @return array Cleaned array of XML data
  */
-function killtags($array)
+function kill_tags($array)
 {
 	foreach($array as $key => $val)
 	{
@@ -125,7 +145,7 @@ function killtags($array)
 		elseif(is_array($val))
 		{
 			// kill any nested tag or value indexes
-			$array[$key] = killtags($val);
+			$array[$key] = kill_tags($val);
 
 			// if the array no longer has any key/val sets
 			// and therefore is at the deepest level, then

@@ -10,12 +10,12 @@
  */
 
 /**
-* Output the archive page header.
-*
-* @param string The page title.
-* @param string The full page title.
-* @param string The full page URL.
-*/
+ * Output the archive page header.
+ *
+ * @param string The page title.
+ * @param string The full page title.
+ * @param string The full page URL.
+ */
 function archive_header($title="", $fulltitle="", $fullurl="")
 {
 	global $mybb, $lang, $db, $nav, $archiveurl;
@@ -65,10 +65,11 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 }
 
 /**
-* Build the archive navigation.
-*
-*/
-function archive_navigation($addlinks=1)
+ * Build the archive navigation.
+ *
+ * @return string The build navigation
+ */
+function archive_navigation()
 {
 	global $navbits, $mybb, $lang;
 	$navsep = " &gt; ";
@@ -94,12 +95,12 @@ function archive_navigation($addlinks=1)
 }
 
 /**
-* Output multipage navigation.
-*
-* @param int The total number of items.
-* @param int The items per page.
-* @param int The current page.
-* @param string The URL base.
+ * Output multipage navigation.
+ *
+ * @param int The total number of items.
+ * @param int The items per page.
+ * @param int The current page.
+ * @param string The URL base.
 */
 function archive_multipage($count, $perpage, $page, $url)
 {
@@ -126,9 +127,9 @@ function archive_multipage($count, $perpage, $page, $url)
 }
 
 /**
-* Output the archive footer.
-*
-*/
+ * Output the archive footer.
+ *
+ */
 function archive_footer()
 {
 	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $mybboard, $sent_header;
@@ -165,10 +166,10 @@ function archive_footer()
 }
 
 /**
-* Output an archive error.
-*
-* @param string The error language string identifier.
-*/
+ * Output an archive error.
+ *
+ * @param string The error language string identifier.
+ */
 function archive_error($error)
 {
 	global $lang, $mybb, $sent_header;
@@ -187,8 +188,8 @@ function archive_error($error)
 }
 
 /**
-* Ouput a "no permission"page.
-*/
+ * Ouput a "no permission"page.
+ */
 function archive_error_no_permission()
 {
 	global $lang;

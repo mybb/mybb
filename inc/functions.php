@@ -2238,10 +2238,16 @@ function nice_time($stamp)
 	}
 }
 
+/**
+ * Select an alternating row colour based on the previous call to this function
+ *
+ * @param int 1 to reset the row to trow1.
+ * @return string trow1 or trow2 depending on the previous call
+ */
 function alt_trow($reset=0)
 {
 	global $alttrow;
-	if($alttrow == "trow1" || $reset)
+	if($alttrow == "trow1" && !$reset)
 	{
 		$trow = "trow2";
 	}
@@ -2253,6 +2259,12 @@ function alt_trow($reset=0)
 	return $trow;
 }
 
+/**
+ * Add a user to a specific additional user group.
+ *
+ * @param int The user ID
+ * @param int The user group ID to join
+ */
 function join_usergroup($uid, $joingroup)
 {
 	global $db;
@@ -2294,6 +2306,12 @@ function join_usergroup($uid, $joingroup)
 	");
 }
 
+/**
+ * Remove a user from a specific additional user group
+ *
+ * @param int The user ID
+ * @param int The user group ID
+ */
 function leave_usergroup($uid, $leavegroup)
 {
 	global $db, $mybb;
@@ -2338,6 +2356,11 @@ function leave_usergroup($uid, $leavegroup)
 	");
 }
 
+/**
+ * Get the current location taking in to account different web serves and systems
+ *
+ * @return string The current URL being accessed
+ */
 function get_current_location()
 {
 	if(defined("MYBB_LOCATION"))
@@ -2398,6 +2421,16 @@ function get_current_location()
 	return $location;
 }
 
+/**
+ * Build a theme selection menu
+ *
+ * @param string The name of the menu
+ * @param int The ID of the selected theme
+ * @param int The ID of the parent theme to select from
+ * @param int The current selection depth
+ * @param int Whether or not to override usergroup permissions (1 to override)
+ * @return string The theme selection list
+ */
 function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=0)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb;
@@ -2470,6 +2503,12 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 	return $themeselect;
 }
 
+/**
+ * Custom function for htmlspecialchars which takes in to account unicode
+ *
+ * @param string The string to format
+ * @return string The string with htmlspecialchars applied
+ */
 function htmlspecialchars_uni($message)
 {
 	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
@@ -2512,7 +2551,14 @@ function mynumberformat($number)
 	}
 }
 
-// Birthday code fix's provided by meme
+/**
+ * Workaround for date limitation in PHP to establish the day of a birthday (Provided by meme)
+ *
+ * @param int The month of the birthday
+ * @param int The day of the birthday
+ * @param int The year of the bithday
+ * @return int The numeric day of the week for the birthday
+ */
 function get_weekday($month, $day, $year)
 {
 	$h = 4;
@@ -2538,11 +2584,27 @@ function get_weekday($month, $day, $year)
 	}
 }
 
+/**
+ * Workaround for date limitation in PHP to establish the day of a birthday (Provided by meme)
+ *
+ * @param int The yar.
+ * @return array The number of days in each month of that year
+ */
 function get_bdays($in)
 {
 	return(array(31, ($in % 4 == 0 && ($in % 100 > 0 || $in % 400 == 0) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31));
 }
 
+/**
+ * Formats a birthday appropriately
+ *
+ * @param string The PHP date format string
+ * @param int The month of the birthday
+ * @param int The day of the birthday
+ * @param int The year of the birthday
+ * @param int The weekday of the birthday
+ * @return string The formatted birthday
+ */
 function format_bdays($display, $bm, $bd, $by, $wd)
 {
 	global $lang;
@@ -2993,6 +3055,11 @@ function validate_email_format($email)
 	}
 }
 
+/**
+ * Below are compatibility functions which replicate functions in newer versions of PHP.
+ *
+ * This allows MyBB to continue working on older installations of PHP without these functions.
+ */
 
 if(!function_exists("stripos"))
 {

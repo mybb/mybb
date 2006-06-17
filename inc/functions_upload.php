@@ -9,6 +9,14 @@
  * $Id$
  */
 
+
+/**
+ * Remove an attachment from a specific post
+ *
+ * @param int The post ID
+ * @param string The posthash if available
+ * @param int The attachment ID
+ */
 function remove_attachment($pid, $posthash, $aid)
 {
 	global $db, $mybb;
@@ -30,6 +38,12 @@ function remove_attachment($pid, $posthash, $aid)
 	}
 }
 
+/**
+ * Remove all of the attachments from a specific post
+ *
+ * @param int The post ID
+ * @param string The posthash if available
+ */ 
 function remove_attachments($pid, $posthash="")
 {
 	global $db, $mybb;
@@ -52,6 +66,12 @@ function remove_attachments($pid, $posthash="")
 	}
 }
 
+/**
+ * Remove any matching avatars for a specific user ID
+ *
+ * @param int The user ID
+ * @param string A file name to be excluded from the removal
+ */
 function remove_avatars($uid, $exclude="")
 {
 	global $mybb;
@@ -70,6 +90,11 @@ function remove_avatars($uid, $exclude="")
 	}
 }
 
+/**
+ * Upload a new avatar in to the file system
+ *
+ * @return array Array of errors if any, otherwise filename of successful.
+ */
 function upload_avatar()
 {
 	global $db, $mybb, $lang, $_FILES;
@@ -135,6 +160,12 @@ function upload_avatar()
 	return $ret;
 }
 
+/**
+ * Upload an attachment in to the file system
+ *
+ * @param array Attachment data (as fed by PHPs $_FILE)
+ * @return array Array of attachment data if successful, otherwise array of error data
+ */
 function upload_attachment($attachment)
 {
 	global $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang;
@@ -282,6 +313,13 @@ function upload_attachment($attachment)
 	return $ret;
 }
 
+/**
+ * Actually move a file to the uploads directory
+ *
+ * @param array The PHP $_FILE array for the file
+ * @param string The path to save the file in
+ * @param string The filename for the file (if blank, current is used)
+ */
 function upload_file($file, $path, $filename="")
 {
 	if($file['name'] == "" || $file['name'] == "none" || $file['size'] < 1)

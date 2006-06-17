@@ -102,16 +102,16 @@ class pluginSystem
 	}
 
 	/**
-	* Remove a specific hook.
-	*
-	* @param string The name of the hook.
-	* @param string The function of the hook.
-	* @param string The filename of the plugin.
-	* @param int The priority of the hook.
-	*/
+	 * Remove a specific hook.
+	 *
+	 * @param string The name of the hook.
+	 * @param string The function of the hook.
+	 * @param string The filename of the plugin.
+	 * @param int The priority of the hook.
+	 */
 	function remove_hook($hook, $function, $file="", $priority=10)
 	{
-		//@unset($this->hooks[$hook][$priority][$function]);
+		@unset($this->hooks[$hook][$priority][$function]);
 	}
 }
 ?>

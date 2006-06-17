@@ -9,14 +9,20 @@
  * $Id$
  */
 
-function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
+/**
+ * Build a select box list of forums the current user has permission to search
+ *
+ * @param int The parent forum ID to start at
+ * @param int The selected forum ID
+ * @param int Add select boxes at this call or not
+ * @param int The current depth
+ * @return string The forum select boxes
+ */
+function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth="")
 {
 	global $db, $pforumcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $mybbgroup, $lang, $forumpass;
 	$pid = intval($pid);
-	if(!$permissions)
-	{
-		$permissions = $mybb->usergroup;
-	}
+
 	if(!is_array($pforumcache))
 	{
 		// Get Forums
@@ -67,7 +73,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 					if($pforumcache[$forum['fid']])
 					{
 						$newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
-						$forumlistbits .= make_searchable_forums($forum['fid'], $selitem, 0, $newdepth, $perms);
+						$forumlistbits .= make_searchable_forums($forum['fid'], $selitem, 0, $newdepth, );
 					}
 				}
 			}
@@ -80,6 +86,13 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 	return $forumlist;
 }
 
+/**
+ * Build a comma separated list of the forums this user cannot search
+ *
+ * @param int The parent ID to build from
+ * @param int First rotation or not (leave at default)
+ * @return return a CSV list of forums the user cannot search
+ */
 function get_unsearchable_forums($pid="0", $first=1)
 {
 	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $mybbgroup, $unsearchableforums, $unsearchable, $templates, $forumpass;
@@ -141,6 +154,12 @@ function get_unsearchable_forums($pid="0", $first=1)
 	return $unsearchable;
 }
 
+/**
+ * Clean search keywords and make them safe for querying
+ *
+ * @param string The keywords to be cleaned
+ * @return string The cleaned keywords
+ */
 function clean_keywords($keywords)
 {
 	$keywords = strtolower($keywords);
@@ -152,6 +171,12 @@ function clean_keywords($keywords)
 	return trim($keywords);
 }
 
+/**
+ * Clean search keywords for fulltext searching, making them safe for querying
+ *
+ * @param string The keywords to be cleaned
+ * @return string The cleaned keywords
+ */
 function clean_keywords_ft($keywords)
 {
 	if(!$keywords)
@@ -240,6 +265,12 @@ function clean_keywords_ft($keywords)
 
 /* Database engine specific search functions */
 
+/**
+ * Perform a thread and post search under MySQL or MySQLi
+ *
+ * @param array Array of search data
+ * @return array Array of search data with results mixed in
+ */
 function perform_search_mysql($search)
 {
 	global $mybb, $db, $lang;
@@ -481,6 +512,12 @@ function perform_search_mysql($search)
 	);
 }
 
+/**
+ * Perform a thread and post search under MySQL or MySQLi using boolean fulltext capabilities
+ *
+ * @param array Array of search data
+ * @return array Array of search data with results mixed in
+ */
 function perform_search_mysql_ft($search)
 {
 	global $mybb, $db, $lang;
