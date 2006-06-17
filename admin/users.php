@@ -55,9 +55,9 @@ switch($mybb->input['action'])
 
 function date2timestamp($date)
 {
-	$d = explode("-", $date);
+	$d = explode('-', $date);
 	$nowdate = date("H-j-n-Y");
-	$n = explode("-", $nowdate);
+	$n = explode('-', $nowdate);
 	if($n[0] >= 12)
 	{
 		$n[1] += 1;
@@ -120,7 +120,7 @@ function checkbanned()
 {
 	global $db;
 	$time = time();
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE lifted<='{$time}' AND lifted!='perm'");
+	$query = $db->simple_select(TABLE_PREFIX."banned", "*", "lifted<='{$time}' AND lifted!='perm'");
 	while($banned = $db->fetch_array($query))
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='{$banned['oldgroup']}' WHERE uid='{$banned['uid']}'");
@@ -163,11 +163,11 @@ if($mybb->input['action'] == "do_add")
 				unset($mybb->input['additionalgroups'][$gid]);
 			}
 		}
-		$additionalgroups = implode(",", $mybb->input['additionalgroups']);
+		$additionalgroups = implode(',', $mybb->input['additionalgroups']);
 	}
 	else
 	{
-		$additionalgroups = "";
+		$additionalgroups = '';
 	}
 
 	//
@@ -183,7 +183,7 @@ if($mybb->input['action'] == "do_add")
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = trim($thing[0]);
 		$field = "fid$profilefield[fid]";
-		$options = "";
+		$options = '';
 		if($type == "multiselect" || $type == "checkbox")
 		{
 			if(is_array($mybb->input[$field]))
@@ -259,7 +259,7 @@ if($mybb->input['action'] == "do_add")
 
 	// Set the data of the user in the datahandler.
 	$userhandler->set_data($user);
-	$errors = "";
+	$errors = '';
 
 	// Validate the user and get any errors that might have occurred.
 	if(!$userhandler->validate_user())
@@ -283,10 +283,10 @@ if($mybb->input['action'] == "do_add")
 		$activationcode = random_str();
 		$now = time();
 		$activationarray = array(
-			"uid" => $uid,
+			"uid" => $user_info['uid'],
 			"dateline" => time(),
 			"code" => $activationcode,
-			"type" => "r"
+			"type" => 'r'
 		);
 		$db->query(TABLE_PREFIX."awaitingactivation", $activationarray);
 		$emailsubject = sprintf($lang->emailsubject_activateaccount, $settings['bbname']);
@@ -294,7 +294,7 @@ if($mybb->input['action'] == "do_add")
 		mymail($email, $emailsubject, $emailmessage);
 	}
 	$cache->updatestats();
-	cpredirect("users.php?lastuid={$userinfo['uid']}", $lang->user_added);
+	cpredirect("users.php?lastuid={$user_info['uid']}", $lang->user_added);
 }
 
 // Process editing of a user.
@@ -314,7 +314,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 	else
 	{
-		$additionalgroups = "";
+		$additionalgroups = '';
 	}
 
 	// Set up user handler.
@@ -367,7 +367,7 @@ if($mybb->input['action'] == "do_edit")
 
 	// Set the data of the user in the datahandler.
 	$userhandler->set_data($user);
-	$errors = "";
+	$errors = '';
 
 	// Validate the user and get any errors that might have occurred.
 	if(!$userhandler->validate_user())
@@ -386,7 +386,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 	$cache->updatestats();
 
-	cpredirect("users.php?lastuid={$userinfo['uid']}", $lang->profile_updated);
+	cpredirect("users.php?lastuid={$mybb->input['uid']}", $lang->profile_updated);
 }
 
 // Process the deleting of a user.
@@ -472,7 +472,7 @@ if($mybb->input['action'] == "do_email")
 	{
 		$conditions .= " AND postnum<".intval($search['postsless']);
 	}
-	if($search['overridenotice'] != "yes")
+	if($search['overridenotice'] != 'yes')
 	{
 		$conditions .= " AND allownotices!='no'";
 	}
@@ -495,7 +495,7 @@ if($mybb->input['action'] == "do_email")
 
 	$query = $db->query("SELECT COUNT(*) AS results FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT $searchop[start], $searchop[perpage]");
 	$num = $db->fetch_array($query);
-	if(!$num[results])
+	if(!$num['results'])
 	{
 		cpmessage($lang->error_no_users);
 	}
@@ -520,7 +520,7 @@ if($mybb->input['action'] == "do_email")
 			$sendmessage = str_replace("{bbname}", $settings['bbname'], $sendmessage);
 			$sendmessage = str_replace("{bburl}", $settings['bburl'], $sendmessage);
 
-			if($searchop['type'] == "html" && $user['email'] != "")
+			if($searchop['type'] == "html" && $user['email'] != '')
 			{
 				echo sprintf($lang->email_sent, $user['username']);
 			}
@@ -540,7 +540,7 @@ if($mybb->input['action'] == "do_email")
 				$db->insert_query(TABLE_PREFIX."privatemessages", $insert_pm);
 				echo sprintf($lang->pm_sent, $user['username']);
 			}
-			elseif($user['email'] != "")
+			elseif($user['email'] != '')
 			{
 				mymail($user['email'], $searchop['subject'], $sendmessage, $searchop[from]);
 				echo sprintf($lang->email_sent, $user['username']);
@@ -551,25 +551,35 @@ if($mybb->input['action'] == "do_email")
 			}
 			echo "<br />";
 		}
-		echo "<br>".$lang->done;
+		echo "'-'".$lang->done;
 		echo "</td>\n</tr>\n";
 		endtable();
-		startform("users.php", "", "do_email");
+		startform("users.php", '', "do_email");
 		if(is_array($search))
 		{
-			while(list($key, $val) = each($search))
+			foreach($search as $key => $val)
 			{
-				$hiddens .= "<input type=\"hidden\" name=\"search[$key]\" value=\"$val\">";
+				if(is_array($val))
+				{
+					foreach($val as $subkey => $subval)
+					{
+						$hiddens .= "\n<input type=\"hidden\" name=\"search[$key][$subkey]\" value=\"$subval\" />";
+					}
+				}
+				else
+				{
+					$hiddens .= "\n<input type=\"hidden\" name=\"search[$key]\" value=\"$val\" />";
+				}
 			}
 		}
-		while(list($key, $val) = each($searchop))
+		foreach($searchop as $key => $val)
 		{
-			$hiddens .= "<input type=\"hidden\" name=\"searchop[$key]\" value=\"$val\">";
+			$hiddens .= "\n<input type=\"hidden\" name=\"searchop[$key]\" value=\"$val\" />";
 		}
-		echo "$hiddens";
+		echo $hiddens;
 		if($num['results'] > $searchop['perpage'])
 		{
-			endform($lang->next_page, "");
+			endform($lang->next_page, '');
 		}
 
 		cpfooter();
@@ -582,16 +592,16 @@ if($mybb->input['action'] == "do_do_merge")
 		cpredirect("users.php?action=merge", $lang->users_not_merged);
 		exit;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['source'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['source'])."'");
 	$sourceuser = $db->fetch_array($query);
-	if(!$sourceuser[uid])
+	if(!$sourceuser['uid'])
 	{
 		cperror($lang->error_invalid_source);
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['destination'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['destination'])."'");
 	$destuser = $db->fetch_array($query);
-	if(!$destuser[uid])
+	if(!$destuser['uid'])
 	{
 		cperror($lang->error_invalid_destination);
 	}
@@ -623,14 +633,14 @@ if($mybb->input['action'] == "do_do_merge")
 }
 if($mybb->input['action'] == "do_merge")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['source'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username", "username='".$db->escape_string($mybb->input['source'])."'");
 	$sourceuser = $db->fetch_array($query);
 	if(!$sourceuser['uid'])
 	{
 		cperror($lang->error_invalid_source);
 	}
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['destination'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username", "username='".$db->escape_string($mybb->input['destination'])."'");
 	$destuser = $db->fetch_array($query);
 	if(!$destuser['uid'])
 	{
@@ -638,14 +648,14 @@ if($mybb->input['action'] == "do_merge")
 	}
 	$lang->confirm_merge = sprintf($lang->confirm_merge, $sourceuser['username'], $destuser['username'], $sourceuser['username']);
 	cpheader();
-	startform("users.php", "", "do_do_merge");
+	startform("users.php", '', "do_do_merge");
 	makehiddencode("source", $mybb->input['source']);
 	makehiddencode("destination", $mybb->input['destination']);
 	starttable();
-	tableheader($lang->merge_accounts, "", 1);
+	tableheader($lang->merge_accounts, '', 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
-	makelabelcode("<center>$lang->confirm_merge<br><br>$yes$no</center>", "");
+	$no = makebuttoncode('no', $lang->no);
+	makelabelcode("<center>$lang->confirm_merge<br /><br />$yes$no</center>", '');
 	endtable();
 	endform();
 	cpfooter();
@@ -654,25 +664,18 @@ if($mybb->input['action'] == "do_merge")
 // Show add user page
 if($mybb->input['action'] == "add")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");
-	while($usergroup = $db->fetch_array($query))
-	{
-		$additionalgroups[] = "<input type=\"checkbox\" name=\"additionalgroups[]\" value=\"$usergroup[gid]\" /> $usergroup[title]";
-	}
-	$additionalgroups = implode("<br />", $additionalgroups);
-
 	cpheader();
 	starttable();
-	startform("users.php", "", "do_add", 0);
+	startform("users.php", '', "do_add", 0);
 	tableheader($lang->add_user);
 	tablesubheader($lang->required_info);
-	makeinputcode($lang->username, "userusername", "", 25, "", $mybb->settings['maxnamelength'], 0);
-	makepasswordcode($lang->password, "userpassword", "", 25, 0);
-	makepasswordcode($lang->password_confirm, "userpassword2", "", 25, 0);
+	makeinputcode($lang->username, "userusername", '', 25, '', $mybb->settings['maxnamelength'], 0);
+	makepasswordcode($lang->password, "userpassword", '', 25, 0);
+	makepasswordcode($lang->password_confirm, "userpassword2", '', 25, 0);
 	makeinputcode($lang->email, "useremail");
 	makeinputcode($lang->email_confirm, "useremail2");
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", 2);
-	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
+	makelabelcode($lang->secondary_usergroups, "<small>".make_usergroup_checkbox_code("additionalgroups")."</small>");
 	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", 0, "--".$lang->primary_usergroup."--");
 
 	tablesubheader($lang->optional_info);
@@ -692,10 +695,11 @@ if($mybb->input['action'] == "add")
 	$birthday_dropdown = build_date_dropdown('birthday', $options);
 	makelabelcode($lang->birthday, $birthday_dropdown);
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
+	$options = array('order_by' => 'disporder');
+	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", '', $options);
 	while($profilefield = $db->fetch_array($query))
 	{
-		$profilefield[type] = htmlspecialchars_uni(stripslashes($profilefield['type']));
+		$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = trim($thing[0]);
 		$options = $thing[1];
@@ -743,7 +747,7 @@ if($mybb->input['action'] == "add")
 			{
 				while(list($key, $val) = each($expoptions))
 				{
-					$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\"> $val<br>";
+					$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" /> $val<br />";
 				}
 			}
 		}
@@ -754,7 +758,7 @@ if($mybb->input['action'] == "add")
 			{
 				while(list($key, $val) = each($expoptions))
 				{
-					$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\"> $val<br>";
+					$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" /> $val<br />";
 				}
 			}
 		}
@@ -765,30 +769,24 @@ if($mybb->input['action'] == "add")
 		else
 		{
 			$value = htmlspecialchars_uni($mybbuser[$field]);
-			$code = "<input type=\"text\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\">";
+			$code = "<input type=\"text\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" />";
 		}
 		makelabelcode("$profilefield[name]", $code);
-		$code = "";
-		$select = "";
-		$val = "";
-		$options = "";
-		$expoptions = "";
-		$useropts = "";
-		$seloptions = "";
+		$code = $select = $val = $options = $expoptions = $useropts = $seloptions = '';
 	}
 
 
 	tablesubheader($lang->account_prefs);
-	makeyesnocode($lang->invisible_mode, "invisible", "no");
-	makeyesnocode($lang->admin_emails, "allownotices", "yes");
-	makeyesnocode($lang->hide_email, "hideemail", "no");
-	makeyesnocode($lang->email_notify, "emailnotify", "yes");
-	makeyesnocode($lang->enable_pms, "receivepms", "yes");
-	makeyesnocode($lang->pm_popup, "pmpopup", "yes");
-	makeyesnocode($lang->pm_notify, "emailpmnotify", "yes");
+	makeyesnocode($lang->invisible_mode, "invisible", 'no');
+	makeyesnocode($lang->admin_emails, "allownotices", 'yes');
+	makeyesnocode($lang->hide_email, "hideemail", 'no');
+	makeyesnocode($lang->email_notify, "emailnotify", 'yes');
+	makeyesnocode($lang->enable_pms, "receivepms", 'yes');
+	makeyesnocode($lang->pm_popup, "pmpopup", 'yes');
+	makeyesnocode($lang->pm_notify, "emailpmnotify", 'yes');
 	makeinputcode($lang->time_offset, "timezoneoffset");
-	makeselectcode($lang->style, "style", "themes", "tid", "name", 0, $lang->use_default, "", "tid>1");
-	maketextareacode($lang->signature, "signature", "", 6, 50);
+	makeselectcode($lang->style, "style", "themes", "tid", "name", 0, $lang->use_default, '', "tid>1");
+	maketextareacode($lang->signature, "signature", '', 6, 50);
 	endtable();
 	endform($lang->add_user, $lang->reset_button);
 	cpfooter();
@@ -798,36 +796,10 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "edit")
 {
 	$uid = intval($mybb->input['uid']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='$uid'");
 	$user = $db->fetch_array($query);
 
 	$additionalgroups = explode(",", $user['additionalgroups']);
-	if($additionalgroups)
-	{
-		foreach($additionalgroups as $gid)
-		{
-			if($gid != $user['usergroup'])
-			{
-				$secondarygroups[$gid] = 1;
-			}
-		}
-	}
-	unset($additionalgroups);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");
-	while($usergroup = $db->fetch_array($query))
-	{
-		$checked = "";
-		if($secondarygroups[$usergroup['gid']])
-		{
-			$checked = "checked=\"checked\"";
-		}
-		if($user['usergroup'] != $usergroup['gid'])
-		{
-			$additionalgroups[] = "<input type=\"checkbox\" name=\"additionalgroups[]\" value=\"$usergroup[gid]\" $checked /> $usergroup[title]";
-		}
-	}
-	$additionalgroups = implode("<br />", $additionalgroups);
-
 
 	$lang->modify_user = sprintf($lang->modify_user, $user['username']);
 
@@ -837,15 +809,15 @@ if($mybb->input['action'] == "edit")
 	endtable();
 
 	starttable();
-	startform("users.php", "", "do_edit", 0);
+	startform("users.php", '', "do_edit", 0);
 	makehiddencode("uid", $uid);
 	tableheader($lang->modify_user);
 	tablesubheader($lang->required_info);
-	makeinputcode($lang->username, "userusername", $user['username'], 25, "", $mybb->settings['maxnamelength'], 0);
-	makepasswordcode($lang->new_password, "newpassword", "", 25, 0);
+	makeinputcode($lang->username, "userusername", $user['username'], 25, '', $mybb->settings['maxnamelength'], 0);
+	makepasswordcode($lang->new_password, "newpassword", '', 25, 0);
 	makeinputcode($lang->email, "email", $user['email']);
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", $user['usergroup']);
-	makelabelcode($lang->secondary_usergroups, "<small>$additionalgroups</small>");
+	makelabelcode($lang->secondary_usergroups, "<small>".make_usergroup_checkbox_code("additionalgroups", $additionalgroups)."</small>");
 	if(!$user['displaygroup'])
 	{
 		$user['displaygroup'] = 0;
@@ -863,7 +835,7 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->msn_address, "msn", $user['msn']);
 
 	// Add the birthday dropdown.
-	$bday = explode("-", $user['birthday']);
+	$bday = explode('-', $user['birthday']);
 	$options = array(
 		'years_back' => 100,
 		'years_ahead' => '0',
@@ -874,7 +846,7 @@ if($mybb->input['action'] == "edit")
 	$birthday_dropdown = build_date_dropdown('birthday', $options);
 	makelabelcode($lang->birthday, $birthday_dropdown);
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='$uid'");
+	$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='$uid'");
 	$userfields = $db->fetch_array($query);
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
@@ -905,7 +877,7 @@ if($mybb->input['action'] == "edit")
 					}
 					else
 					{
-						$sel = "";
+						$sel = '';
 					}
 					$select .= "<option value=\"$val\" $sel>$val</option>\n";
 				}
@@ -930,7 +902,7 @@ if($mybb->input['action'] == "edit")
 					}
 					else
 					{
-						$sel = "";
+						$sel = '';
 					}
 					$select .= "<option value=\"$val\" $sel>$val</option>";
 				}
@@ -954,9 +926,9 @@ if($mybb->input['action'] == "edit")
 					}
 					else
 					{
-						$checked = "";
+						$checked = '';
 					}
-					$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" $checked> $val<br>";
+					$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" $checked /> $val<br />";
 				}
 			}
 		}
@@ -978,9 +950,9 @@ if($mybb->input['action'] == "edit")
 					}
 					else
 					{
-						$checked = "";
+						$checked = '';
 					}
-					$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" $checked> $val<br>";
+					$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" $checked /> $val<br />";
 				}
 			}
 		}
@@ -992,16 +964,16 @@ if($mybb->input['action'] == "edit")
 		else
 		{
 			$value = htmlspecialchars_uni($userfields[$field]);
-			$code = "<input type=\"text\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\">";
+			$code = "<input type=\"text\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
 		}
 		makelabelcode($profilefield[name], $code);
-		$code = "";
-		$select = "";
-		$val = "";
-		$options = "";
-		$expoptions = "";
-		$useropts = "";
-		$seloptions = "";
+		$code = '';
+		$select = '';
+		$val = '';
+		$options = '';
+		$expoptions = '';
+		$useropts = '';
+		$seloptions = '';
 	}
 
 
@@ -1018,7 +990,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$user['style'] = 0;
 	}
-	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user['style'], $lang->use_default, "", "tid>1");
+	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user['style'], $lang->use_default, '', "tid>1");
 	maketextareacode($lang->signature, "signature", $user['signature'], 6, 50);
 	if(!$user['regip']) { $user['regip'] = "&nbsp;"; }
 	makelabelcode($lang->reg_ip, $user['regip']);
@@ -1029,18 +1001,18 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	$uid = intval($mybb->input['uid']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='$uid'");
 	$user = $db->fetch_array($query);
 	$lang->delete_user = sprintf($lang->delete_user, $user['username']);
 	$lang->confirm_delete_user = sprintf($lang->confirm_delete_user, $user['username']);
 	cpheader();
-	startform("users.php", "", "do_delete");
+	startform("users.php", '', "do_delete");
 	makehiddencode("uid", $uid);
 	starttable();
-	tableheader($lang->delete_user, "", 1);
+	tableheader($lang->delete_user, '', 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
-	makelabelcode("<center>$lang->confirm_delete_user<br><br>$yes$no</center>", "");
+	$no = makebuttoncode('no', $lang->no);
+	makelabelcode("<center>$lang->confirm_delete_user<br /><br />$yes$no</center>", '');
 	endtable();
 	endform();
 	cpfooter();
@@ -1052,12 +1024,12 @@ if($mybb->input['action'] == "showreferrers")
 	$uid = intval($mybb->input['uid']);
 	if($uid)
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='$uid'");
 		$user = $db->fetch_array($query);
 		$lang->members_referred_by = sprintf($lang->members_referred_by, $user['username']);
 
 		starttable();
-		tableheader($lang->members_referred_by, "", 6);
+		tableheader($lang->members_referred_by, '', 6);
 		echo "<tr>\n";
 		echo "<td class=\"subheader\">$lang->username</td>\n";
 		echo "<td class=\"subheader\">$lang->posts</td>\n";
@@ -1087,7 +1059,7 @@ if($mybb->input['action'] == "findips")
 {
 	cpheader();
 	$uid = intval($mybb->input['uid']);
-	$query = $db->query("SELECT uid,username,regip FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid,username,regip", "uid='$uid'");
 	$user = $db->fetch_array($query);
 	if (!$user['uid'])
 	{
@@ -1095,17 +1067,17 @@ if($mybb->input['action'] == "findips")
 	}
 	starttable();
 	$lang->ip_addresses_user = sprintf($lang->ip_addresses_user, $user['username']);
-	tableheader($lang->ip_addresses_user, "");
-	tablesubheader($lang->reg_ip, "");
+	tableheader($lang->ip_addresses_user, '');
+	tablesubheader($lang->reg_ip, '');
 	if(!empty($user['regip']))
 	{
 		echo "<tr>\n<td class=\"$bgcolor\" width=\"40%\">$user[regip]</td>\n";
-		echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$user[regip]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$user[regip]');\" class=\"submitbutton\">";
+		echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$user[regip]');\" class=\"submitbutton\" />  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$user[regip]');\" class=\"submitbutton\" />";
 		echo "</td>\n</tr>\n";
 	}
 	else
 	{
-		makelabelcode($lang->error_no_ips, "", 2);
+		makelabelcode($lang->error_no_ips, '', 2);
 	}
 	tablesubheader($lang->post_ip);
 	$query = $db->query("SELECT DISTINCT ipaddress FROM ".TABLE_PREFIX."posts WHERE uid='$uid'");
@@ -1117,14 +1089,14 @@ if($mybb->input['action'] == "findips")
 			{
 				$bgcolor = getaltbg();
 				echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$row[ipaddress]</td>\n";
-				echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\">  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\">";
+				echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\" />  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\" />";
 				echo "</td>\n</tr>\n";
 			}
 		}
 	}
 	else
 	{
-		makelabelcode($lang->error_no_ips, "", 2);
+		makelabelcode($lang->error_no_ips, '', 2);
 	}
 	endtable();
 }
@@ -1146,11 +1118,11 @@ if($mybb->input['action'] == "misc")
 if($mybb->input['action'] == "merge")
 {
 	cpheader();
-	startform("users.php", "", "do_merge");
+	startform("users.php", '', "do_merge");
 	starttable();
 	tableheader($lang->merge_user_accounts);
 	tablesubheader($lang->instructions);
-	makelabelcode($lang->merge_instructions, "", 2);
+	makelabelcode($lang->merge_instructions, '', 2);
 	tablesubheader($lang->user_accounts);
 	makeinputcode($lang->source_account, "source");
 	makeinputcode($lang->dest_account, "destination");
@@ -1161,7 +1133,7 @@ if($mybb->input['action'] == "merge")
 if($mybb->input['action'] == "stats")
 {
 	$uid = intval($mybb->input['uid']);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='$uid'");
 	$user = $db->fetch_array($query);
 	$lang->general_user_stats = sprintf($lang->general_user_stats, $user['username']);
 
@@ -1170,10 +1142,10 @@ if($mybb->input['action'] == "stats")
 	$ppd = round($ppd, 2);
 	if(!$ppd || $ppd > $user['postnum'])
 	{
-		$ppd = $user[postnum];
+		$ppd = $user['postnum'];
 	}
-	$query = $db->query("SELECT COUNT(pid) AS count FROM ".TABLE_PREFIX."posts");
-	$posts = $db->fetch_field($query, "count");
+	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS count");
+	$posts = $db->fetch_field($query, 'count');
 	if($posts == 0)
 	{
 		$percent = "0%";
@@ -1181,21 +1153,21 @@ if($mybb->input['action'] == "stats")
 	else
 	{
 		$percent = $user['postnum']*100/$posts;
-		$percent = round($percent, 2)."%";
+		$percent = round($percent, 2).'%';
 	}
 
-	$query = $db->query("SELECT COUNT(*) AS count FROM ".TABLE_PREFIX."users WHERE referrer='$user[uid]'");
-	$referrals = $db->fetch_field($query, "count");
+	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS count", "referrer='$user[uid]'");
+	$referrals = $db->fetch_field($query, 'count');
 
 	$memregdate = mydate($settings['dateformat'], $user['regdate']);
-	$memlocaldate = gmdate($settings['dateformat'], time() + ($user[timezone] * 3600));
-	$memlocaltime = gmdate($settings['timeformat'], time() + ($user[timezone] * 3600));
+	$memlocaldate = gmdate($settings['dateformat'], time() + ($user['timezone'] * 3600));
+	$memlocaltime = gmdate($settings['timeformat'], time() + ($user['timezone'] * 3600));
 	$memlastvisitdate = mydate($settings['dateformat'], $user['lastvisit']);
 	$memlastvisittime = mydate($settings['timeformat'], $user['lastvisit']);
 
 	if($user['birthday'])
 	{
-		$membday = explode("-", $user['birthday']);
+		$membday = explode('-', $user['birthday']);
 		if($membday[2])
 		{
 			$bdayformat = fixmktime($settings['dateformat'], $membday[2]);
@@ -1207,7 +1179,7 @@ if($mybb->input['action'] == "stats")
 		{
 			$membday = mktime(0, 0, 0, $membday[1], $membday[0], 0);
 			$membday = gmdate("F j", $membday);
-			$membdayage = "";
+			$membdayage = '';
 		}
 	}
 	else
@@ -1237,13 +1209,13 @@ if($mybb->input['action'] == "pmstats")
 	$lang->pm_stats = sprintf($lang->pm_stats, $user['username']);
 	$lang->custom_pm_folders = sprintf($lang->custom_pm_folders, $user['username']);
 
-	$query = $db->query("SELECT COUNT(*) AS total FROM ".TABLE_PREFIX."privatemessages WHERE uid='$uid'");
+	$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS total", "uid='$uid'");
 	$pmscount = $db->fetch_array($query);
 
-	$query = $db->query("SELECT COUNT(*) AS newpms FROM ".TABLE_PREFIX."privatemessages WHERE uid='$uid' AND dateline>$user[lastvisit]  AND folder='1'");
+	$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS newpms", "uid='$uid' AND dateline>$user[lastvisit] AND folder='1'");
 	$newpmscount = $db->fetch_array($query);
 
-	$query = $db->query("SELECT COUNT(*) AS unreadpms FROM ".TABLE_PREFIX."privatemessages WHERE uid='$uid' AND status='0' AND folder='1'");
+	$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS unreadpms", "uid='$uid' AND status='0' AND folder='1'");
 	$unreadpmscount = $db->fetch_array($query);
 
 	cpheader();
@@ -1253,14 +1225,14 @@ if($mybb->input['action'] == "pmstats")
 	makelabelcode($lang->new_pms, $newpmscount['newpms']);
 	makelabelcode($lang->unread_pms, $unreadpmscount['unreadpms']);
 	tablesubheader($lang->custom_pm_folders);
-	$pmfolders = explode("$%%$", $user['pmfolders']);
-	while(list($key, $folder) = each($pmfolders))
+	$pmfolders = explode('$%%$', $user['pmfolders']);
+	foreach($pmfolders as $key => $folder);
 	{
-		$folderinfo = explode("**", $folder, 2);
+		$folderinfo = explode('**', $folder, 2);
 		$query = $db->query("SELECT COUNT(*) AS inthisfolder FROM ".TABLE_PREFIX."privatemessages WHERE uid='$uid' AND folder='$folderinfo[0]'");
 		$thecount = $db->fetch_array($query);
 		makelabelcode("$folderinfo[1]", "<b>$thecount[inthisfolder]</b> ".$lang->messages);
-		$thecount = "";
+		$thecount = '';
 	}
 	endtable();
 	cpfooter();
@@ -1273,26 +1245,30 @@ if($mybb->input['action'] == "email")
 	{
 		cpheader();
 	}
-	startform("users.php", "", "do_email");
+	startform("users.php", '', "do_email");
 	starttable();
 	tableheader($lang->mass_email_users);
 	tablesubheader($lang->email_options);
 	makeinputcode($lang->per_page, "searchop[perpage]", "500", "10");
 	makeinputcode($lang->from, "searchop[from]", $settings['adminemail']);
 	makeinputcode($lang->subject, "searchop[subject]");
-	maketextareacode($lang->message, "searchop[message]", "", 10, 50);
+	maketextareacode($lang->message, "searchop[message]", '', 10, 50);
 	$typeoptions = "<input type=\"radio\" name=\"searchop[type]\" value=\"email\" checked=\"checked\" /> $lang->normal_email<br />\n";
 //	$typeoptions .= "<input type=\"radio\" name=\"searchop[type]\" value=\"html\" /> $lang->html_email<br />\n";
 	$typeoptions .= "<input type=\"radio\" name=\"searchop[type]\" value=\"pm\" /> $lang->send_pm<br />\n";
-	makelabelcode($lang->send_method, "$typeoptions");
+	makelabelcode($lang->send_method, $typeoptions);
 	tablesubheader($lang->email_users);
 	makeinputcode($lang->name_contains, "search[username]");
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");
+	$options = array(
+		'order_by' => 'title',
+		'order_dir' => 'ASC',
+		);
+	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", '', $options);
 	while($usergroup = $db->fetch_array($query))
 	{
 		$groups[] = "<input type=\"checkbox\" name=\"search[usergroups][]\" value=\"$usergroup[gid]\" /> $usergroup[title]";
 	}
-	$groups = implode("<br />", $groups);
+	$groups = implode('<br />', $groups);
 
 	makelabelcode($lang->primary_group, "<small>$groups</small>");
 	makeinputcode($lang->and_email, "search[email]");
@@ -1305,7 +1281,7 @@ if($mybb->input['action'] == "email")
 	makeinputcode($lang->and_title, "search[usertitle]");
 	makeinputcode($lang->posts_more, "search[postsgreater]");
 	makeinputcode($lang->posts_less, "search[postsless]");
-	makeyesnocode($lang->override_notice, "search[overridenotice]", "no");
+	makeyesnocode($lang->override_notice, "search[overridenotice]", 'no');
 	endtable();
 	endform($lang->send_mail, $lang->reset_button);
 	cpfooter();
@@ -1318,28 +1294,28 @@ if($mybb->input['action'] == "find")
 	$searchop = $mybb->input['searchop'];
 
 	$dispcount = count($searchdisp);
-	$yescount = "0";
+	$yescount = 0;
 	if($mybb->input['searchdisp'])
 	{
 		foreach($mybb->input['searchdisp'] as $disp)
 		{
-			if($disp == "yes")
+			if($disp == 'yes')
 			{
 				$yescount++;
 			}
 		}
 	}
-	if($yescount == "0")
+	if($yescount == 0)
 	{
-		$searchdisp['username'] = "yes";
-		$searchdisp['ops'] = "yes";
-		$searchdisp['email'] = "yes";
-		$searchdisp['regdate'] = "yes";
-		$searchdisp['lastvisit'] = "yes";
-		$searchdisp['postnum'] = "yes";
+		$searchdisp['username'] = 'yes';
+		$searchdisp['ops'] = 'yes';
+		$searchdisp['email'] = 'yes';
+		$searchdisp['regdate'] = 'yes';
+		$searchdisp['lastvisit'] = 'yes';
+		$searchdisp['postnum'] = 'yes';
 		$dispcount = count($searchdisp);
 	}
-	$conditions = "1=1";
+	$conditions = '1=1';
 
 	if($search['username'])
 	{
@@ -1431,7 +1407,7 @@ if($mybb->input['action'] == "find")
 	{
 		foreach($search['profilefields'] as $fid => $value)
 		{
-			if($value == "")
+			if($value == '')
 			{
 				continue;
 			}
@@ -1451,7 +1427,7 @@ if($mybb->input['action'] == "find")
 	}
 	if($listall)
 	{
-		$conditions = "1=1";
+		$conditions = '1=1';
 	}
 	if(!$searchop['sortby'])
 	{
@@ -1461,12 +1437,12 @@ if($mybb->input['action'] == "find")
 	$searchop['perpage'] = intval($searchop['perpage']);
 	if(!$searchop['perpage'])
 	{
-		$searchop['perpage'] = "30";
+		$searchop['perpage'] = '30';
 	}
 	if(!$searchop['page'])
 	{
-		$searchop['page'] = "1";
-		$searchop['start'] = "0";
+		$searchop['page'] = '1';
+		$searchop['start'] = '0';
 	}
 	else
 	{
@@ -1491,7 +1467,7 @@ if($mybb->input['action'] == "find")
 	}
 	else
 	{
-		$query2 = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups");
+		$query2 = $db->simple_select(TABLE_PREFIX."usergroups");
 		while($usergroup = $db->fetch_array($query2))
 		{
 			$usergroups[$usergroup['gid']] = $usergroup;
@@ -1505,71 +1481,71 @@ if($mybb->input['action'] == "find")
 		starttable();
 		echo "<tr>\n";
 
-		if($searchdisp['uid'] == "yes")
+		if($searchdisp['uid'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->uid_header</td>\n";
 		}
-		if($searchdisp['username'] == "yes")
+		if($searchdisp['username'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->name_header</td>\n";
 		}
-		if($searchdisp['usergroup'] == "yes")
+		if($searchdisp['usergroup'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->usergroup</td>\n";
 		}
-		if($searchdisp['email'] == "yes")
+		if($searchdisp['email'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->email</td>\n";
 		}
-		if($searchdisp['website'] == "yes")
+		if($searchdisp['website'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->website</td>\n";
 		}
-		if($searchdisp['icq'] == "yes")
+		if($searchdisp['icq'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->icq_number</td>\n";
 		}
-		if($searchdisp['aim'] == "yes")
+		if($searchdisp['aim'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->aim_handle</td>\n";
 		}
-		if($searchdisp['yahoo'] == "yes")
+		if($searchdisp['yahoo'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->yahoo_handle</td>\n";
 		}
-		if($searchdisp['msn'] == "yes")
+		if($searchdisp['msn'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->msn_address</td>\n";
 		}
-		if($searchdisp['signature'] == "yes")
+		if($searchdisp['signature'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->signature</td>\n";
 		}
-		if($searchdisp['usertitle'] == "yes")
+		if($searchdisp['usertitle'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->usertitle</td>\n";
 		}
-		if($searchdisp['regdate'] == "yes")
+		if($searchdisp['regdate'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->reg_date</td>\n";
 		}
-		if($searchdisp['lastvisit'] == "yes")
+		if($searchdisp['lastvisit'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->last_visit</td>\n";
 		}
-		if($searchdisp['postnum'] == "yes")
+		if($searchdisp['postnum'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->posts</td>\n";
 		}
-		if($searchdisp['birthday'] == "yes")
+		if($searchdisp['birthday'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->birthday</td>\n";
 		}
-		if($searchdisp['regip'] == "yes")
+		if($searchdisp['regip'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->reg_ip</td>\n";
 		}
-		if($searchdisp['ops'] == "yes")
+		if($searchdisp['ops'] == 'yes')
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->options</td>\n";
 		}
@@ -1596,15 +1572,15 @@ if($mybb->input['action'] == "find")
 			makehiddencode("uid", $user['uid']);
 			makehiddencode("auid", $user['uid']);
 			echo "<tr>\n";
-			if($searchdisp['uid'] == "yes")
+			if($searchdisp['uid'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\">$user[uid]</td>\n";
 			}
-			if($searchdisp['username'] == "yes")
+			if($searchdisp['username'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\">$user[username]</td>\n";
 			}
-			if($searchdisp['usergroup'] == "yes")
+			if($searchdisp['usergroup'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\" align=\"center\">";
 				if(isset($usergroups[$user['usergroup']]))
@@ -1626,44 +1602,44 @@ if($mybb->input['action'] == "find")
 				}
 				echo "</td>\n";
 			}
-			if($searchdisp['email'] == "yes")
+			if($searchdisp['email'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\"><a href=\"mailto:$user[email]\">$user[email]</td>\n";
 			}
-			if($searchdisp['website'] == "yes")
+			if($searchdisp['website'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\"><a href=\"$user[website]\" target=\"_blank\">$user[website]</a></td>\n";
 			}
-			if($searchdisp['icq'] == "yes")
+			if($searchdisp['icq'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\">$user[icq]</td>\n";
 			}
-			if($searchdisp['aim'] == "yes")
+			if($searchdisp['aim'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\">$user[aim]</td>\n";
 			}
-			if($searchdisp['yahoo'] == "yes")
+			if($searchdisp['yahoo'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\">$user[yahoo]</td>\n";
 			}
-			if($searchdisp['msn'] == "yes") {
+			if($searchdisp['msn'] == 'yes') {
 				echo "<td class=\"$bgcolor\">$user[msn]</td>\n";
 			}
-			if($searchdisp['signature'] == "yes")
+			if($searchdisp['signature'] == 'yes')
 			{
 				$user['signature'] = nl2br($user['signature']);
 				echo "<td class=\"$bgcolor\">$user[signature]</td>\n";
 			}
-			if($searchdisp['usertitle'] == "yes")
+			if($searchdisp['usertitle'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\">$user[usertitle]</td>\n";
 			}
-			if($searchdisp['regdate'] == "yes")
+			if($searchdisp['regdate'] == 'yes')
 			{
 				$date = gmdate("d-m-Y", $user['regdate']);
 				echo "<td class=\"$bgcolor\">$date</td>\n";
 			}
-			if($searchdisp['lastvisit'] == "yes")
+			if($searchdisp['lastvisit'] == 'yes')
 			{
 				if(!$user['lastvisit'])
 				{
@@ -1675,19 +1651,19 @@ if($mybb->input['action'] == "find")
 				}
 				echo "<td class=\"$bgcolor\">$date</td>\n";
 			}
-			if($searchdisp['postnum'] == "yes")
+			if($searchdisp['postnum'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\"><a href=\"../search.php?action=finduser&uid=$user[uid]\">$user[postnum]</a></td>\n";
 			}
-			if($searchdisp['birthday'] == "yes")
+			if($searchdisp['birthday'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\">$user[birthday]</td>\n";
 			}
-			if($searchdisp['regip'] == "yes")
+			if($searchdisp['regip'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\">$user[regip]</td>\n";
 			}
-			if($searchdisp['ops'] == "yes")
+			if($searchdisp['ops'] == 'yes')
 			{
 				echo "<td class=\"$bgcolor\" align=\"right\">".makehopper("action", $options)."</td>\n";
 			}
@@ -1695,22 +1671,22 @@ if($mybb->input['action'] == "find")
 			endform();
 		}
 		endtable();
-		startform("users.php", "", "find");
+		startform("users.php", '', "find");
 		if(is_array($search))
 		{
-			while(list($key, $val) = each($search))
+			foreach($search as $key => $val)
 			{
 				if ($key != 'additionalgroups' && $key != "profilefields")
 				{
-					$hiddens .= "<input type=\"hidden\" name=\"search[$key]\" value=\"$val\">";
+					$hiddens .= "<input type=\"hidden\" name=\"search[$key]\" value=\"$val\" />";
 				}
 			}
 		}
 		if(is_array($search['additionalgroups']))
 		{
-			while(list($key, $val) = each($search))
+			foreach($search['additionalgroups'] as $key => $val)
 			{
-				$hiddens .= "<input type=\"hidden\" name=\"search[additionalgroups][]\" value=\"$val\">";
+				$hiddens .= "<input type=\"hidden\" name=\"search[additionalgroups][]\" value=\"$val\" />";
 			}
 		}
 		if(is_array($search['profilefields']))
@@ -1730,18 +1706,18 @@ if($mybb->input['action'] == "find")
 				}
 			}
 		}
-		while(list($key, $val) = each($searchop))
+		foreach($searchop as $key => $val)
 		{
-			$hiddens .= "<input type=\"hidden\" name=\"searchop[$key]\" value=\"$val\">";
+			$hiddens .= "<input type=\"hidden\" name=\"searchop[$key]\" value=\"$val\" />";
 		}
-		while(list($key, $val) = each($searchdisp))
+		foreach($searchdisp as $key => $val)
 		{
-			$hiddens .= "<input type=\"hidden\" name=\"searchdisp[$key]\" value=\"$val\">";
+			$hiddens .= "<input type=\"hidden\" name=\"searchdisp[$key]\" value=\"$val\" />";
 		}
 		echo $hiddens;
 		if($numusers > $searchop['perpage'])
 		{
-			endform($lang->next_page, "");
+			endform($lang->next_page, '');
 		}
 	}
 }
@@ -1754,10 +1730,10 @@ if($mybb->input['action'] == "do_manageban")
 {
 	if($mybb->input['uid'])
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='".intval($mybb->input['uid'])."'");
 		$ban = $db->fetch_array($query);
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 
 		if(!$ban['uid'])
@@ -1769,21 +1745,21 @@ if($mybb->input['action'] == "do_manageban")
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
 		$user = $db->fetch_array($query);
 
 		if(!$user['uid'])
 		{
 			cperror($lang->error_not_found);
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='$user[uid]'");
+		$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='$user[uid]'");
 		$bancheck = $db->fetch_array($query);
 		$uid = $user['uid'];
 	}
-	if($mybb->input['liftafter'] == "---")
+	if($mybb->input['liftafter'] == '---')
 	{ // permanent ban
 		$liftdate = "perm";
-		$mybb->input['liftafter'] = "perm";
+		$mybb->input['liftafter'] = 'perm';
 	}
 	else
 	{
@@ -1828,28 +1804,28 @@ if($mybb->input['action'] == "do_manageban")
 }
 if($mybb->input['action'] == "liftban")
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='".intval($mybb->input['uid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='".intval($mybb->input['uid'])."'");
 	$ban = $db->fetch_array($query);
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 	$lang->ban_lifted = sprintf($lang->ban_lifted, $user['username']);
 	if(!$ban['uid'])
 	{
 		cperror($lang->error_not_banned);
 	}
-	$groupupdate = array("usergroup" => $ban['oldgroup']);
+	$groupupdate = array('usergroup' => $ban['oldgroup']);
 	$db->update_query(TABLE_PREFIX."users", $groupupdate, "uid='".intval($mybb->input['uid'])."'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".intval($mybb->input['uid'])."'");
+	$db->delete_query(TABLE_PREFIX."banned", "uid='".intval($mybb->input['uid'])."'");
 	cpredirect("users.php?action=banned", $lang->ban_lifted);
 }
 if($mybb->input['action'] == "manageban")
 {
 	if($mybb->input['uid'] && !$mybb->input['auid'])
 	{ // editing a ban
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."banned WHERE uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='".intval($mybb->input['uid'])."'");
 		$ban = $db->fetch_array($query);
 
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 		$lang->edit_banning_options = sprintf($lang->edit_banning_options, $user['username']);
 
@@ -1860,38 +1836,38 @@ if($mybb->input['action'] == "manageban")
 
 		cpheader();
 		starttable();
-		startform("users.php", "", "do_manageban");
+		startform("users.php", '', "do_manageban");
 		makehiddencode("uid", $mybb->input['uid']);
 		tableheader($lang->edit_banning_options);
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['auid'])."'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['auid'])."'");
 		$user = $db->fetch_array($query);
 
 		cpheader();
 		starttable();
-		startform("users.php", "", "do_manageban");
+		startform("users.php", '', "do_manageban");
 		tableheader($lang->ban_user);
-		$ban[bantime] = "1-0-0";
+		$ban[bantime] = '1-0-0';
 		makeinputcode($lang->username, "username", $user['username']);
 	}
 	makeinputcode($lang->ban_reason, "banreason", $ban['reason']);
-	makeselectcode($lang->move_banned_group, "usergroup", "usergroups", "gid", "title", $user['usergroup'], "", "", "isbannedgroup='yes'");
+	makeselectcode($lang->move_banned_group, "usergroup", "usergroups", "gid", "title", $user['usergroup'], '', '', "isbannedgroup='yes'");
 	reset($bantimes);
 	while(list($time, $title) = each($bantimes))
 	{
 		$liftlist .= "<option value=\"$time\" ";
 		if($time == $ban[bantime])
 		{
-			$liftlist .= "selected";
+			$liftlist .= 'selected="selected"';
 		}
 		$thatime = date("D, jS M Y @ g:ia", date2timestamp($time));
 		$liftlist .= ">$title ($thatime)</option>\n";
 	}
 	if($ban[bantime] == "perm" || $ban[bantime] == "---")
 	{
-		$permsel = "selected";
+		$permsel = 'selected="selected"';
 	}
 	makelabelcode($lang->lift_ban_after, "<select name=\"liftafter\">\n$liftlist\n<option value=\"---\" $permsel>$lang->perm_ban</option>\n</select>\n");
 	endtable();
@@ -1911,11 +1887,11 @@ if($mybb->input['action'] == "banned")
 	$query = $db->query("SELECT b.*, a.username AS adminuser, u.username FROM ".TABLE_PREFIX."banned b LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid) ORDER BY lifted ASC");
 	$numbans = $db->num_rows($query);
 	cpheader();
-	$hopto[] = "<input type=\"button\" value=\"$lang->ban_user\" onclick=\"hopto('users.php?action=manageban');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->ban_user\" onclick=\"hopto('users.php?action=manageban');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 
 	starttable();
-	tableheader($lang->banned_users, "", 7);
+	tableheader($lang->banned_users, '', 7);
 	echo "<tr>\n";
 	echo "<td class=\"subheader\" align=\"center\">$lang->username</td>\n";
 	echo "<td class=\"subheader\" align=\"center\">$lang->banned_by</td>\n";
@@ -1927,17 +1903,17 @@ if($mybb->input['action'] == "banned")
 	echo "</tr>\n";
 	if(!$numbans)
 	{
-		makelabelcode("<center>$lang->error_no_banned</center>", "", 7);
+		makelabelcode("<center>$lang->error_no_banned</center>", '', 7);
 	}
 	else
 	{
 		while($user = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
-			if($user[lifted] == "perm" || $user[lifted] == "" || $user[bantime] == "perm" || $user[bantime] == "---")
+			if($user[lifted] == 'perm' || $user['lifted'] == '' || $user[bantime] == 'perm' || $user['bantime'] == '---')
 			{
 				$banlength = $lang->permanent;
-				$timeremaining = "-";
+				$timeremaining = '-';
 				$liftedon = $lang->never;
 			}
 			else
@@ -1970,20 +1946,14 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	}
 	else
 	{
-		echo "<br />";
+		echo '<br />';
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");
-	while($usergroup = $db->fetch_array($query))
-	{
-		$groups[] = "<input type=\"checkbox\" name=\"search[additionalgroups][]\" value=\"$usergroup[gid]\" /> $usergroup[title]";
-	}
-	$groups = implode("<br />", $groups);
 
 	//If there was a user previously edited, get their username:
 	if(isset($mybb->input['lastuid']))
 	{
 		$last_uid = intval($mybb->input['lastuid']);
-		$query = $db->query("SELECT username FROM ".TABLE_PREFIX."users WHERE uid='$last_uid' LIMIT 1");
+		$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='$last_uid'");
 		$last_user = $db->fetch_array($query);
 		$lang->last_edited = sprintf($lang->last_edited, $last_user['username']);
 		$last_user['username'] = urlencode($last_user['username']);
@@ -1991,14 +1961,14 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	}
 
 	starttable();
-	startform("users.php", "", "find");
+	startform("users.php", '', "find");
 	tableheader($lang->user_management);
 	tablesubheader($lang->quick_search_listing);
-	makelabelcode("<ul>\n$last_edited<li><a href=\"users.php?action=find\">$lang->list_all</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n<li><a href=\"users.php?action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n</ul>", "", 2);
+	makelabelcode("<ul>\n$last_edited<li><a href=\"users.php?action=find\">$lang->list_all</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n<li><a href=\"users.php?action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n</ul>", '', 2);
 	tablesubheader($lang->search_users_where);
 	makeinputcode($lang->name_contains, "search[username]");
 	makeinputcode($lang->and_email, "search[email]");
-	makelabelcode($lang->is_member_of, $groups);
+	makelabelcode($lang->is_member_of, make_usergroup_checkbox_code("search[usergroups]"));
 	makeinputcode($lang->and_website, "search[homepage]");
 	makeinputcode($lang->and_icq, "search[icq]");
 	makeinputcode($lang->and_aim, "search[aim]");
@@ -2069,7 +2039,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 				{
 					while(list($key, $val) = each($expoptions))
 					{
-						$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" /> $val<br>";
+						$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" /> $val<br />";
 					}
 				}
 			}
@@ -2079,7 +2049,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 				if(is_array($expoptions)) {
 					while(list($key, $val) = each($expoptions))
 					{
-						$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" /> $val<br>";
+						$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" /> $val<br />";
 					}
 				}
 			}
@@ -2114,23 +2084,23 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	makeinputcode($lang->results_per_page, "searchop[perpage]", "30");
 
 	tablesubheader($lang->display_options);
-	makeyesnocode($lang->display_uid, "searchdisp[uid]", "no");
-	makeyesnocode($lang->display_username, "searchdisp[username]", "yes");
-	makeyesnocode($lang->display_options_2, "searchdisp[ops]", "yes");
-	makeyesnocode($lang->display_group, "searchdisp[usergroup]", "no");
-	makeyesnocode($lang->display_email, "searchdisp[email]", "yes");
-	makeyesnocode($lang->display_website, "searchdisp[website]", "no");
-	makeyesnocode($lang->display_icq, "searchdisp[icq]", "no");
-	makeyesnocode($lang->display_aim, "searchdisp[aim]", "no");
-	makeyesnocode($lang->display_yahoo, "searchdisp[yahoo]", "no");
-	makeyesnocode($lang->display_msn, "searchdisp[msn]", "no");
-	makeyesnocode($lang->display_sig, "searchdisp[signature]", "no");
-	makeyesnocode($lang->display_title, "searchdisp[usertitle]", "no");
-	makeyesnocode($lang->display_reg_date, "searchdisp[regdate]", "yes");
-	makeyesnocode($lang->display_last_visit, "searchdisp[lastvisit]", "yes");
-	makeyesnocode($lang->display_num_posts, "searchdisp[postnum]", "yes");
-	makeyesnocode($lang->display_birthday, "searchdisp[birthday]", "no");
-	makeyesnocode($lang->display_regip, "searchdisp[regip]", "no");
+	makeyesnocode($lang->display_uid, "searchdisp[uid]", 'no');
+	makeyesnocode($lang->display_username, "searchdisp[username]", 'yes');
+	makeyesnocode($lang->display_options_2, "searchdisp[ops]", 'yes');
+	makeyesnocode($lang->display_group, "searchdisp[usergroup]", 'no');
+	makeyesnocode($lang->display_email, "searchdisp[email]", 'yes');
+	makeyesnocode($lang->display_website, "searchdisp[website]", 'no');
+	makeyesnocode($lang->display_icq, "searchdisp[icq]", 'no');
+	makeyesnocode($lang->display_aim, "searchdisp[aim]", 'no');
+	makeyesnocode($lang->display_yahoo, "searchdisp[yahoo]", 'no');
+	makeyesnocode($lang->display_msn, "searchdisp[msn]", 'no');
+	makeyesnocode($lang->display_sig, "searchdisp[signature]", 'no');
+	makeyesnocode($lang->display_title, "searchdisp[usertitle]", 'no');
+	makeyesnocode($lang->display_reg_date, "searchdisp[regdate]", 'yes');
+	makeyesnocode($lang->display_last_visit, "searchdisp[lastvisit]", 'yes');
+	makeyesnocode($lang->display_num_posts, "searchdisp[postnum]", 'yes');
+	makeyesnocode($lang->display_birthday, "searchdisp[birthday]", 'no');
+	makeyesnocode($lang->display_regip, "searchdisp[regip]", 'no');
 
 	endtable();
 	endform($lang->search, $lang->reset_button);

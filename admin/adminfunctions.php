@@ -2237,4 +2237,37 @@ function fix_css_urls($url)
 		return "url({$url})";
 	}
 }
+
+/**
+* Build a checkbox list of usergroups
+*
+* @param string The unique identifier for this list, e.g. "additionalgroups".
+* @param array Optional array of preselected groups.
+* @param string Optional SQL where limiter
+* @return string Completed list of checkboxes
+*/
+function make_usergroup_checkbox_code($name, $checked_groups='', $where='')
+{
+	global $db;
+	if(!is_array($checked_groups))
+	{
+		$checked_groups = array($checked_groups);
+	}
+	$options = array(
+		'order_by' => 'title',
+		'order_dir' => 'ASC'
+		);
+	$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title", $where, $options);
+	while($usergroup = $db->fetch_array($query))
+	{
+		$checked = '';
+		if(in_array($usergroup['gid'], $checked_groups))
+		{
+			$checked = ' checked="checked"';
+		}
+		$groups[] = "<input type=\"checkbox\" name=\"{$name}[]\" value=\"{$usergroup['gid']}\"{$checked} /> {$usergroup['title']}";
+	}
+	$groups = implode('<br />', $groups);
+	return $groups;
+}
 ?>
