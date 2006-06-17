@@ -1663,6 +1663,13 @@ function log_moderator_action($data, $action="")
 	$db->insert_query(TABLE_PREFIX."moderatorlog", $sql_array);
 }
 
+/**
+ * Get the formatted reputation for a user.
+ *
+ * @param int The reputation value
+ * @param int The user ID (if not specified, the generated reputation will not be a link)
+ * @return string The formatted repuation
+ */
 function get_reputation($reputation, $uid=0)
 {
 	global $theme;
@@ -1692,6 +1699,11 @@ function get_reputation($reputation, $uid=0)
 	return $display_reputation;
 }
 
+/**
+ * Fetch the IP address of the current user.
+ *
+ * @return string The IP address.
+ */
 function get_ip()
 {
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
@@ -1722,6 +1734,12 @@ function get_ip()
 	return $ip;
 }
 
+/**
+ * Fetch the friendly size (GB, MB, KB, B) for a specified file size.
+ *
+ * @param int The size in bytes
+ * @return string The friendly file size
+ */
 function get_friendly_size($size)
 {
 	global $lang;
@@ -1749,6 +1767,12 @@ function get_friendly_size($size)
 	return $size;
 }
 
+/**
+ * Get the attachment icon for a specific file extension
+ *
+ * @param string The file extension
+ * @return string The attachment icon
+ */
 function get_attachment_icon($ext)
 {
 	global $cache, $attachtypes;
@@ -1768,6 +1792,11 @@ function get_attachment_icon($ext)
 	}
 }
 
+/**
+ * Get a list of the unviewable forums for the current user
+ *
+ * @return string Comma separated values list of the forum IDs which the user cannot view
+ */
 function get_unviewable_forums()
 {
 	global $db, $forum_cache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $unviewable, $templates, $mybbgroup, $forumpass;
@@ -1816,14 +1845,6 @@ function get_unviewable_forums()
 	return $unviewableforums;
 }
 
-if(!function_exists("stripos"))
-{
-	function stripos($haystack, $needle, $offset=0)
-	{
-		return strpos(strtoupper($haystack), strtoupper($needle), $offset);
-	}
-}
-
 function fixmktime($format, $year)
 {
 	// Our little work around for the date < 1970 thing.
@@ -1833,7 +1854,12 @@ function fixmktime($format, $year)
 	return $format;
 }
 
-function build_breadcrumb($finished=1)
+/**
+ * Build the breadcrumb navigation trail from the specified items
+ *
+ * @return The formatted breadcrumb navigation trail
+ */
+function build_breadcrumb()
 {
 	global $nav, $navbits, $templates, $settings, $theme, $lang;
 
@@ -1862,6 +1888,12 @@ function build_breadcrumb($finished=1)
 	return $donenav;
 }
 
+/**
+ * Add a breadcrumb menu item to the list.
+ *
+ * @param string The name of the item to add
+ * @param string The URL of the item to add
+ */
 function add_breadcrumb($name, $url="")
 {
 	global $navbits;
@@ -1871,6 +1903,12 @@ function add_breadcrumb($name, $url="")
 	$navbits[$navsize]['url'] = $url;
 }
 
+/**
+ * Build the forum breadcrumb nagiation (the navigation to a specific forum including all parent forums)
+ *
+ * @param int The forum ID to build the navigation for
+ * @param int 1 if we're in archive mode, 0 if not
+ */
 function build_forum_breadcrumb($fid, $archive=0)
 {
 	global $pforumcache, $db, $currentitem, $forum_cache, $navbits, $lang, $archiveurl;
@@ -1919,6 +1957,9 @@ function build_forum_breadcrumb($fid, $archive=0)
 	return 1;
 }
 
+/**
+ * Resets the breadcrumb navigation to the first item, and clears the rest
+ */
 function reset_breadcrumb()
 {
 	global $navbits;
@@ -1929,6 +1970,9 @@ function reset_breadcrumb()
 	$GLOBALS['navbits'] = $newnav;
 }
 
+/**
+ * Prints a debug information page
+ */
 function debug_page()
 {
 	global $db, $querytime, $debug, $templatelist, $htmldoctype, $mybb, $maintimer, $globaltime, $ptimer, $parsetime;
@@ -2012,7 +2056,6 @@ function debug_page()
 
 /**
  * Outputs the correct page headers.
- *
  */
 function send_page_headers()
 {
@@ -2027,6 +2070,12 @@ function send_page_headers()
 	}
 }
 
+/**
+ * Mark specific reported posts of a certain type as dealt with
+ *
+ * @param mixed An array or int of the ID numbers you're marking as dealt with
+ * @param string The type of item the above IDs are for - post, posts, thread, threads, forum, all
+ */
 function mark_reports($id, $type="post")
 {
 	global $db, $cache, $plugins;
@@ -2090,6 +2139,12 @@ function mark_reports($id, $type="post")
 	$cache->updatereportedposts();
 }
 
+/**
+ * Fetch a friendly x days, y months etc date stamp from a timestamp
+ *
+ * @param int The timestamp
+ * @return string The friendly formatted timestamp
+ */
 function nice_time($stamp)
 {
 	global $lang;
@@ -2180,23 +2235,6 @@ function nice_time($stamp)
 	if(is_array($nicetime))
 	{
 		return implode(", ", $nicetime);
-	}
-}
-
-if(!function_exists("file_get_contents"))
-{
-	function file_get_contents($file)
-	{
-		$handle = @fopen($file, "rb");
-		if($handle)
-		{
-			while(!@feof($handle))
-			{
-				$contents .= @fread($handle, 8192);
-			}
-			return $contents;
-		}
-		return false;
 	}
 }
 
@@ -2665,7 +2703,7 @@ function build_profile_link($username="", $uid=0)
 	}
 	else
 	{
-		return "<a href=\"".get_profile_link($uid)."\">".$htmlspecialchars."</a>";
+		return "<a href=\"".get_profile_link($uid)."\">".htmlspecialchars($username)."</a>";
 	}
 }
 
@@ -2952,6 +2990,33 @@ function validate_email_format($email)
 	else
 	{
 		return true;
+	}
+}
+
+
+if(!function_exists("stripos"))
+{
+	function stripos($haystack, $needle, $offset=0)
+	{
+		return strpos(strtoupper($haystack), strtoupper($needle), $offset);
+	}
+}
+
+
+if(!function_exists("file_get_contents"))
+{
+	function file_get_contents($file)
+	{
+		$handle = @fopen($file, "rb");
+		if($handle)
+		{
+			while(!@feof($handle))
+			{
+				$contents .= @fread($handle, 8192);
+			}
+			return $contents;
+		}
+		return false;
 	}
 }
 ?>

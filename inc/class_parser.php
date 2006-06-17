@@ -288,7 +288,6 @@ class postParser
 		// Replace "me" code and slaps if we have a username
 		if($options['me_username'])
 		{
-			//$options['me_username'] = str_replace("'", "\'", "'");
 			$message = preg_replace('#^/me (.*)$#im', "<span style=\"color: red;\">* {$options['me_username']} \\1</span>", $message);
 			$message = preg_replace('#^/slap ([^\r\n]*)#im', "<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\1 {$lang->with_trout}</span><br />", $message);
 		}
