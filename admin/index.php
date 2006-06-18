@@ -39,7 +39,7 @@ elseif($mybb->input['action'] == "home")
 	cpheader();
 	// Get statistics
 	$phpversion = phpversion();
-	$dbversion = $db->get_version;
+	$dbversion = $db->get_version();
 	$serverload = get_server_load();
 	if(!$serverload)
 	{
