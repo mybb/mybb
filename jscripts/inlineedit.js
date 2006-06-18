@@ -34,7 +34,7 @@ inlineEditor.prototype = {
 			this.elements = DomLib.getElementsByClassName(document, "*", options.className);
 			if(this.elements)
 			{
-				for(var i=0;i<this.elements.length;i++)
+				for(var i = 0; i < this.elements.length; i++)
 				{
 					this.elements[i].index = i;
 					this.makeEditable(this.elements[i]);
@@ -110,6 +110,7 @@ inlineEditor.prototype = {
 		value = this.element.innerHTML;
 		this.textbox = document.createElement("input");
 		this.textbox.style.width = "95%";
+		this.textbox.maxlength="85";
 		this.textbox.className = "textbox";
 		this.textbox.type = "text";
 		this.textbox.onblur = this.onBlur.bindAsEventListener(this);

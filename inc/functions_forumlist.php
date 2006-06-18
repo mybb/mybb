@@ -121,8 +121,7 @@ function build_forumbits($pid=0, $depth=1)
 				{
 					if(count($main) > $donecount)
 					{
-						$forum_list .= $comma;
-						$forum_list .= sprintf($lang->more_subforums, (count($main) - $donecount));
+						$forum_list .= $comma.sprintf($lang->more_subforums, (count($main) - $donecount));
 					}
 					break;
 				}
@@ -164,9 +163,9 @@ function build_forumbits($pid=0, $depth=1)
 					$lastposter = $lastpost_data['lastposter'];
 					$lastposttid = $lastpost_data['lastposttid'];
 					$lastpost_subject = $full_lastpost_subject = $parser->parse_badwords($lastpost_data['lastpostsubject']);
-					if(strlen($lastpost_subject) > 25)
+					if(my_strlen($lastpost_subject) > 25)
 					{
-						$lastpost_subject = substr($lastpost_subject, 0, 25) . "...";
+						$lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
 					}
 					$lastpost_subject = htmlspecialchars_uni($lastpost_subject);
 					$full_lastpost_subject = htmlspecialchars_uni($full_lastpost_subject);
@@ -244,14 +243,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 			
 			// Swap over the alternate backgrounds
-			if($bgcolor == "trow2")
-			{
-				$bgcolor = "trow1";
-			}
-			else
-			{
-				$bgcolor = "trow2";
-			}
+			$bgcolor = alt_trow();
 		
 			// Add the forum to the list
 			eval("\$forum_list .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");

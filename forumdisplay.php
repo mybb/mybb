@@ -16,6 +16,7 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
 $templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col";
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep";
 require "./global.php";
+require MYBB_ROOT."inc/functions.php";
 require MYBB_ROOT."inc/functions_post.php";
 require MYBB_ROOT."inc/functions_forumlist.php";
 require MYBB_ROOT."inc/class_parser.php";
@@ -68,14 +69,8 @@ $parentlist = $foruminfo['parentlist'];
 $forumpermissions = forum_permissions();
 $fpermissions = $forumpermissions[$fid];
 
-
 // Get the forums we will need to show.
-$query = $db->query(
-	"SELECT f.*
-	FROM ".TABLE_PREFIX."forums f
-	WHERE active!='no'
-	ORDER BY f.pid, f.disporder
-");
+$query = $db->simple_select(TABLE_PREFIX."forums f", "f.*", "active != 'no'", array('order_by' => 'f.pid f.disporder'));
 // Build a forum cache.
 while($forum = $db->fetch_array($query))
 {
@@ -107,7 +102,7 @@ if($mybb->settings['subforumsindex'] != 0)
 }
 else
 {
-	$showdepth =2;
+	$showdepth = 2;
 }
 $child_forums = build_forumbits($fid, 2);
 $forums = $child_forums['forum_list'];
@@ -489,14 +484,7 @@ while($announcement = $db->fetch_array($query))
 		$modann = '';
 	}
 	eval("\$announcements  .= \"".$templates->get("forumdisplay_announcements_announcement")."\";");
-	if($bgcolor == "trow2")
-	{
-		$bgcolor = "trow1";
-	}
-	else
-	{
-		$bgcolor = "trow2";
-	}
+	$bgcolor = alt_trow();
 }
 if($announcements)
 {
@@ -553,7 +541,7 @@ if($mybb->user['lastvisit'] > $forumread)
 $unreadpost = 0;
 $threads = '';
 $load_inline_edit_js = 0;
-if($threadcache)
+if(is_array($threadcache))
 {
 	foreach($threadcache as $thread)
 	{
@@ -563,13 +551,9 @@ if($threadcache)
 		{
 			$bgcolor = "trow_shaded";
 		}
-		elseif($bgcolor == "trow2")
-		{
-			$bgcolor = "trow1";
-		}
 		else
 		{
-			$bgcolor = "trow2";
+			$bgcolor = alt_trow();
 		}
 		$folder = '';
 		$prefix = '';
@@ -582,7 +566,7 @@ if($threadcache)
 		}
 		else
 		{
-			$thread['profilelink'] = "<a href=\"".str_replace("{uid}", $thread['uid'], PROFILE_URL)."\">".$thread['username']."</a>";
+			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 		}
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);

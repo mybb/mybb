@@ -70,7 +70,7 @@ add_breadcrumb($lang->nav_editpost);
 $forumpermissions = forum_permissions($fid);
 
 
-if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user[showcodebuttons] != 0)
+if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
 {
 	$codebuttons = build_mycode_inserter();
 }

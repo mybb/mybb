@@ -1580,7 +1580,7 @@ function build_clickable_smilies()
  */
 function gzip_encode($contents, $level=1)
 {
-	if(function_exists("gzcompress") && function_exists("crc32") && !headers_sent())
+	if(function_exists("gzcompress") && function_exists("crc32") && !headers_sent() && !ini_get('output_buffering'))
 	{
 		$httpaccept_encoding = (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) ? $_SERVER['HTTP_ACCEPT_ENCODING'] : "";
 		if(strpos(" ".$httpaccept_encoding, "x-gzip"))
@@ -2681,6 +2681,42 @@ function my_strlen($string)
 }
 
 /**
+ * Cuts a string at a specified point, mb strings accounted for
+ *
+ * @param string The string to cut.
+ * @param int Where to cut
+ * @param int (optional) How much to cut
+ * @return int The cut part of the string.
+ */
+function my_substr($string, $start, $length="")
+{
+	if(function_exists("mb_substr"))
+	{
+		if($length != "")
+		{
+			$cut_string = mb_substr($string, $start, $length);
+		}
+		else
+		{
+			$cut_string = mb_substr($string, $start);
+		}
+	}
+	else
+	{
+		if($length != "")
+		{
+			$cut_string = substr($string, $start, $length);
+		}
+		else
+		{
+			$cut_string = substr($string, $start);
+		}
+	}
+
+	return $cut_string;
+}
+
+/**
  * Returns any html entities to their original character
  *
  * @param string The string to un-htmlentitize.
@@ -2943,6 +2979,11 @@ function get_post($pid)
 	}
 }
 
+/**
+ * Get inactivate forums.
+ *
+ * @return string The comma seperated values of the inactivate forum.
+ */
 function get_inactive_forums()
 {
 	global $forum_cache, $db, $cache, $inactiveforums;
