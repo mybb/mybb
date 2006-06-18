@@ -25,7 +25,7 @@ switch($mybb->input['action'])
 		addacpnav($lang->nav_edit_permissions);
 		break;
 	default:
-		addacpnav($lang->nav_forum_permissions, "forumpermissions.php");
+		addacpnav($lang->nav_forum_permissions, "forumpermissions.php?".SID);
 		break;
 }
 
@@ -50,8 +50,8 @@ function getforums($pid="0")
 	while($forum = $db->fetch_array($query))
 	{
 		$forumlist .= "\n<li>";
-		$forumlist .= "<div style=\"float:right\"><small>".makelinkcode($lang->copy_permissions_to, "forums.php?action=copy&from=$forum[fid]&copyforumsettings=no&copygroups=all");
-		$forumlist .= makelinkcode($lang->copy_permissions_from, "forums.php?action=copy&to=$forum[fid]&copyforumsettings=no&copygroups=all")."</small></div>";
+		$forumlist .= "<div style=\"float:right\"><small>".makelinkcode($lang->copy_permissions_to, "forums.php?".SID."&action=copy&from=$forum[fid]&copyforumsettings=no&copygroups=all");
+		$forumlist .= makelinkcode($lang->copy_permissions_from, "forums.php?".SID."&action=copy&to=$forum[fid]&copyforumsettings=no&copygroups=all")."</small></div>";
 		$forumlist .= "<b>$forum[name]</b>\n";
 		$forumlist .= "<ul>\n";
 		$groupquery = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title");
@@ -61,7 +61,7 @@ function getforums($pid="0")
 			{
 				$pid = $ownperms[$forum['fid']][$usergroup['gid']];
 				$forumlist .= "<li><font color=\"red\">$usergroup[title]</font> ";
-				$forumlist .= makelinkcode("<font color=\"red\">$lang->edit_perms</font>", "forumpermissions.php?action=edit&pid=$pid&fid=$forum[fid]");
+				$forumlist .= makelinkcode("<font color=\"red\">$lang->edit_perms</font>", "forumpermissions.php?".SID."&action=edit&pid=$pid&fid=$forum[fid]");
 			}
 			else
 			{
@@ -71,12 +71,12 @@ function getforums($pid="0")
 				if($customperms['pid'])
 				{
 					$forumlist .= "<li><font color=\"blue\">$usergroup[title]</font> ";
-					$forumlist .= makelinkcode("<font color=\"blue\">$lang->set_perms</font>", "forumpermissions.php?action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
+					$forumlist .= makelinkcode("<font color=\"blue\">$lang->set_perms</font>", "forumpermissions.php?".SID."&action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
 				}
 				else
 				{
 					$forumlist .= "<li><font color=\"black\">$usergroup[title]</font> ";
-					$forumlist .= makelinkcode("<font color=\"black\">$lang->set_perms</font>", "forumpermissions.php?action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
+					$forumlist .= makelinkcode("<font color=\"black\">$lang->set_perms</font>", "forumpermissions.php?".SID."&action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
 				}
 			}
 			$forumlist .= "</font></li>\n";
@@ -97,7 +97,7 @@ if($mybb->input['action'] == "do_quickperms")
 	$canpostattachments = $mybb->input['canpostattachments'];
 	$plugins->run_hooks("admin_forumpermissions_do_quickperms");
 	savequickperms($fid);
-	cpredirect("forumpermissions.php", $lang->perms_updated);
+	cpredirect("forumpermissions.php?".SID, $lang->perms_updated);
 }
 
 
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "do_edit")
 		}
 	}
 	$cache->updateforumpermissions();
-	cpredirect("forumpermissions.php", $lang->perms_updated);
+	cpredirect("forumpermissions.php?".SID, $lang->perms_updated);
 }
 if($mybb->input['action'] == "edit")
 {

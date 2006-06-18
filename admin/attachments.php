@@ -25,18 +25,18 @@ switch($mybb->input['action'])
 		break;
 	case "do_search":
 	case "orphans":
-		addacpnav($lang->nav_attachment_manager, "attachments.php?action=search");
+		addacpnav($lang->nav_attachment_manager, "attachments.php?".SID."&action=search");
 		addacpnav($lang->nav_attachment_results);
 		break;
 	case "add":
-		addacpnav($lang->nav_attachtypes, "attachments.php");
+		addacpnav($lang->nav_attachtypes, "attachments.php?".SID);
 		addacpnav($lang->nav_add_attachtype);
 		break;
 	case "delete":
-		addacpnav($lang->nav_attachtypes, "attachments.php");
+		addacpnav($lang->nav_attachtypes, "attachments.php?".SID);
 		addacpnav($lang->nav_delete_attachtype);
 	case "edit":
-		addacpnav($lang->nav_attachtypes, "attachments.php");
+		addacpnav($lang->nav_attachtypes, "attachments.php?".SID);
 		addacpnav($lang->nav_edit_attachtype);
 		break;
 	case "stats":
@@ -64,7 +64,7 @@ if($mybb->input['action'] == "do_add")
 		$plugins->run_hooks("admin_attachments_do_add");
 		$db->insert_query(TABLE_PREFIX."attachtypes", $sqlarray);
 		$cache->updateattachtypes();
-		cpredirect("attachments.php", $lang->type_added);
+		cpredirect("attachments.php?".SID, $lang->type_added);
 	}
 	else
 	{
@@ -80,7 +80,7 @@ if($mybb->input['action'] == "do_delete")
 		$plugins->run_hooks("admin_attachments_do_delete");
 		$db->delete_query(TABLE_PREFIX."attachtypes", "atid='".intval($mybb->input['atid'])."'");
 		$cache->updateattachtypes();
-		cpredirect("attachments.php", $lang->type_deleted);
+		cpredirect("attachments.php?".SID, $lang->type_deleted);
 	}
 	else
 	{
@@ -103,7 +103,7 @@ if($mybb->input['action'] == "do_edit")
 		$plugins->run_hooks("admin_attachments_do_edit");
 		$db->update_query(TABLE_PREFIX."attachtypes", $sqlarray, "atid='".$sqlarray['atid']."'");
 		$cache->updateattachtypes();
-		cpredirect("attachments.php", $lang->type_updated);
+		cpredirect("attachments.php?".SID, $lang->type_updated);
 	}
 	else
 	{
@@ -292,7 +292,7 @@ if($mybb->input['action'] == "do_search_delete")
 		{
 			$db->delete_query(TABLE_PREFIX."attachments", "aid='".intval($aid)."'");
 		}
-		cpredirect("attachments.php?action=search", $lang->attachs_deleted);
+		cpredirect("attachments.php?".SID."&action=search", $lang->attachs_deleted);
 	}
 	else
 	{
@@ -376,7 +376,7 @@ if($mybb->input['action'] == "do_orphan_delete")
 		}
 		else
 		{
-			cpredirect("attachments.php?action=orphans", $lang->attachs_deleted);
+			cpredirect("attachments.php?".SID."&action=orphans", $lang->attachs_deleted);
 		}
 	}
 	else
@@ -610,7 +610,7 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 	$plugins->run_hooks("admin_attachments_modify");
 	// list all attachment types so user can pick one to edit/delete
 	cpheader();
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_attach_type\" onclick=\"hopto('attachments.php?action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_attach_type\" onclick=\"hopto('attachments.php?".SID."&action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->attachment_types, "", "6");

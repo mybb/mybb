@@ -45,7 +45,7 @@ function getforums($pid="0")
 	
 	while($forum = $db->fetch_array($query))
 	{
-		$forumlist .= "\n<li><b>$forum[name]</b>".makelinkcode($lang->add_announcement, "announcements.php?action=add&fid=$forum[fid]");
+		$forumlist .= "\n<li><b>$forum[name]</b>".makelinkcode($lang->add_announcement, "announcements.php?".SID."&action=add&fid=$forum[fid]");
 		$annquery = $db->query("
 			SELECT * 
 			FROM ".TABLE_PREFIX."announcements 
@@ -59,8 +59,8 @@ function getforums($pid="0")
 			{
 				$announcement['subject'] = stripslashes($announcement['subject']);
 				$forumlist .= "<li>$announcement[subject]".
-				makelinkcode($lang->edit_announcement, "announcements.php?action=edit&aid=$announcement[aid]").
-				makelinkcode($lang->delete_announcement, "announcements.php?action=delete&aid=$announcement[aid]")."</li>\n";
+				makelinkcode($lang->edit_announcement, "announcements.php?".SID."&action=edit&aid=$announcement[aid]").
+				makelinkcode($lang->delete_announcement, "announcements.php?".SID."&action=delete&aid=$announcement[aid]")."</li>\n";
 			}
 			$forumlist .= "</ul>\n";
 		}
@@ -119,7 +119,7 @@ if($mybb->input['action'] == "do_add")
 		);
 	$plugins->run_hooks("admin_announcements_do_add");
 	$db->insert_query(TABLE_PREFIX."announcements", $sqlarray);
-	cpredirect("announcements.php", $lang->announcement_added);
+	cpredirect("announcements.php?".SID, $lang->announcement_added);
 }
 if($mybb->input['action'] == "do_delete")
 {
@@ -131,7 +131,7 @@ if($mybb->input['action'] == "do_delete")
 			FROM ".TABLE_PREFIX."announcements 
 			WHERE aid = '$aid'
 		");
-		cpredirect("announcements.php", $lang->announcement_deleted);
+		cpredirect("announcements.php?".SID, $lang->announcement_deleted);
 	}
 	else
 	{
@@ -186,7 +186,7 @@ if($mybb->input['action'] == "do_edit")
 		);
 	$plugins->run_hooks("admin_announcements_do_edit");
 	$db->update_query(TABLE_PREFIX."announcements", $sqlarray, "aid='$aid'");
-	cpredirect("announcements.php", $lang->announcement_edited);
+	cpredirect("announcements.php?".SID, $lang->announcement_edited);
 }
 if($mybb->input['action'] == "add") 
 {
@@ -487,7 +487,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	starttable();
 	tableheader($lang->forum_announcements);
 	$forumlist = getforums();
-	$globallist = "\n<li><b>$lang->global_announcements</b>".makelinkcode($lang->add_announcement, "announcements.php?action=add&fid=-1")."\n<ul>";
+	$globallist = "\n<li><b>$lang->global_announcements</b>".makelinkcode($lang->add_announcement, "announcements.php?".SID."&action=add&fid=-1")."\n<ul>";
 	$query = $db->query("
 		SELECT * 
 		FROM ".TABLE_PREFIX."announcements 
@@ -496,8 +496,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	while($globannouncement = $db->fetch_array($query))
 	{
 		$globallist .= "<li>$globannouncement[subject]".
-			makelinkcode($lang->edit_announcement, "announcements.php?action=edit&aid=$globannouncement[aid]").
-			makelinkcode($lang->delete_announcement, "announcements.php?action=delete&aid=$globannouncement[aid]")."</li>\n";
+			makelinkcode($lang->edit_announcement, "announcements.php?".SID."&action=edit&aid=$globannouncement[aid]").
+			makelinkcode($lang->delete_announcement, "announcements.php?".SID."&action=delete&aid=$globannouncement[aid]")."</li>\n";
 	}
 	$globallist .= "</ul>\n</li>";
 	makelabelcode($lang->edit_delete_notice."<br /><ul>$globallist\n$forumlist</ul>", "");

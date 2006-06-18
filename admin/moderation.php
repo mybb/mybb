@@ -18,7 +18,7 @@ $lang->load("moderation");
 //checkadminpermissions("caneditmodactions");
 logadmin();
 
-addacpnav($lang->nav_moderation, "moderation.php");
+addacpnav($lang->nav_moderation, "moderation.php?".SID);
 switch($mybb->input['action'])
 {
 	case "addthreadtool":
@@ -43,7 +43,7 @@ if($mybb->input['action'] == "do_delete")
 		$plugins->run_hooks("admin_moderation_do_delete");
 		$db->delete_query(TABLE_PREFIX."modtools", "tid='$tid'");
 
-		cpredirect("moderation.php", $lang->tool_deleted);
+		cpredirect("moderation.php?".SID, $lang->tool_deleted);
 	}
 	else
 	{
@@ -135,7 +135,7 @@ if($mybb->input['action'] == "do_edit")
 	
 	$db->update_query(TABLE_PREFIX."modtools", $update_tool, 'tid="'.intval($mybb->input['tid']).'"');
 
-	cpredirect('moderation.php', $lang->tool_edited);
+	cpredirect('moderation.php?'.SID, $lang->tool_edited);
 }
 
 if($mybb->input['action'] == "edit")
@@ -322,7 +322,7 @@ if($mybb->input['action'] == "do_addposttool" || $mybb->input['action'] == "do_a
 
 	$db->insert_query(TABLE_PREFIX."modtools", $new_tool);
 
-	cpredirect('moderation.php', $lang->tool_added);
+	cpredirect('moderation.php?'.SID, $lang->tool_added);
 }
 
 if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthreadtool")
@@ -426,7 +426,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 		cpheader();
 	}
 
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_thread_action\" onclick=\"hopto('moderation.php?action=addthreadtool');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_thread_action\" onclick=\"hopto('moderation.php?".SID."&action=addthreadtool');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 
 	// Thread tools
@@ -439,8 +439,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 	while($tool = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
-		$options = makelinkcode($lang->edit_tool, "moderation.php?action=edit&tid=$tool[tid]");
-		$options .= makelinkcode($lang->delete_tool, "moderation.php?action=delete&tid=$tool[tid]");
+		$options = makelinkcode($lang->edit_tool, "moderation.php?".SID."&action=edit&tid=$tool[tid]");
+		$options .= makelinkcode($lang->delete_tool, "moderation.php?".SID."&action=delete&tid=$tool[tid]");
 		$name = htmlspecialchars_uni($tool['name']);
 		if(!empty($tool['description']))
 		{
@@ -460,7 +460,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 
 	// Inline Post Tools
 	unset($hopto);
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_post_action\" onclick=\"hopto('moderation.php?action=addposttool');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_post_action\" onclick=\"hopto('moderation.php?".SID."&action=addposttool');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 
 	starttable();
@@ -472,8 +472,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 	while($tool = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
-		$options = makelinkcode($lang->edit_tool, "moderation.php?action=edit&tid=$tool[tid]");
-		$options .= makelinkcode($lang->delete_tool, "moderation.php?action=delete&tid=$tool[tid]");
+		$options = makelinkcode($lang->edit_tool, "moderation.php?".SID."&action=edit&tid=$tool[tid]");
+		$options .= makelinkcode($lang->delete_tool, "moderation.php?".SID."&action=delete&tid=$tool[tid]");
 		$name = htmlspecialchars_uni($tool['name']);
 		if(!empty($tool['description']))
 		{

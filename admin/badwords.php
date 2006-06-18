@@ -19,7 +19,7 @@ $lang->load("badwords");
 checkadminpermissions("caneditsmilies");
 logadmin();
 
-addacpnav($lang->nav_badwords, "badwords.php");
+addacpnav($lang->nav_badwords, "badwords.php?".SID);
 switch($mybb->input['action'])
 {
 	case "add":
@@ -42,7 +42,7 @@ if($mybb->input['action'] == "do_add")
 	$plugins->run_hooks("admin_badwords_do_add");
 	$db->insert_query(TABLE_PREFIX."badwords", $sqlarray);
 	$cache->updatebadwords();
-	cpredirect("badwords.php", $lang->badword_added);
+	cpredirect("badwords.php?".SID, $lang->badword_added);
 }
 
 if($mybb->input['action'] == "do_edit")
@@ -55,7 +55,7 @@ if($mybb->input['action'] == "do_edit")
 	$plugins->run_hooks("admin_badwords_do_edit");
 	$db->update_query(TABLE_PREFIX."badwords", $sqlarray, "bid='".$sqlarray['bid']."'");
 	$cache->updatebadwords();
-	cpredirect("badwords.php", $lang->badword_edited);
+	cpredirect("badwords.php?".SID, $lang->badword_edited);
 }
 
 if($mybb->input['action'] == "edit")
@@ -65,7 +65,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$plugins->run_hooks("admin_badwords_delete");
 		$db->delete_query(TABLE_PREFIX."badwords", "bid='$bid'");
-		cpredirect("badwords.php", $lang->badword_deleted);
+		cpredirect("badwords.php?".SID, $lang->badword_deleted);
 		$cache->updatebadwords();
 		exit;
 	}
@@ -103,7 +103,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	$plugins->run_hooks("admin_badwords_modify");
 	cpheader();
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_badword_filter\" onclick=\"hopto('badwords.php?action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_badword_filter\" onclick=\"hopto('badwords.php?".SID."&action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->badwords, "", 4);

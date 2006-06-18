@@ -21,7 +21,7 @@ switch($mybb->input['action'])
 {
 	case "adminpermissions":
 	case "updateperms":
-		addacpnav($lang->nav_admin_permissions, "adminoptions.php?action=adminpermissions");
+		addacpnav($lang->nav_admin_permissions, "adminoptions.php?".SID."&action=adminpermissions");
 		break;
 	case "":
 	case "updateprefs":
@@ -51,7 +51,7 @@ if($mybb->input['action'] == "do_updateprefs")
 	{
 		$db->insert_query(TABLE_PREFIX."adminoptions", $sqlarray);
 	}
-	cpredirect("adminoptions.php", $lang->prefs_updated);
+	cpredirect("adminoptions.php?".SID, $lang->prefs_updated);
 }
 if($mybb->input['action'] == "revokeperms")
 {
@@ -66,11 +66,11 @@ if($mybb->input['action'] == "revokeperms")
 
 	if($uid < 0)
 	{
-		cpredirect("adminoptions.php?action=adminpermissions", $lang->group_perms_revoked);
+		cpredirect("adminoptions.php?".SID."&action=adminpermissions", $lang->group_perms_revoked);
 	}
 	else
 	{
-		cpredirect("adminoptions.php?action=adminpermissions", $lang->perms_revoked);
+		cpredirect("adminoptions.php?".SID."&action=adminpermissions", $lang->perms_revoked);
 	}
 }
 if($mybb->input['action'] == "do_updateperms")
@@ -124,15 +124,15 @@ if($mybb->input['action'] == "do_updateperms")
 	// Redirect based on what the user did.
 	if($uid == 0)
 	{
-		cpredirect("adminoptions.php?action=adminpermissions", $lang->default_perms_updated);
+		cpredirect("adminoptions.php?".SID."&action=adminpermissions", $lang->default_perms_updated);
 	}
 	elseif($uid < 0)
 	{
-		cpredirect("adminoptions.php?action=adminpermissions", $lang->group_perms_updated);
+		cpredirect("adminoptions.php?".SID."&action=adminpermissions", $lang->group_perms_updated);
 	}
 	else
 	{
-		cpredirect("adminoptions.php?action=adminpermissions", $lang->perms_updated);
+		cpredirect("adminoptions.php?".SID."&action=adminpermissions", $lang->perms_updated);
 	}
 }
 if($mybb->input['action'] == "updateperms")
@@ -217,7 +217,7 @@ if($mybb->input['action'] == "adminpermissions")
 	checkadminpermissions("caneditaperms");
 	cpheader();
 	starttable();
-	tableheader($lang->admin_perms.makelinkcode($lang->edit_default, "adminoptions.php?action=updateperms&uid=0", "", "header"), "", 4);
+	tableheader($lang->admin_perms.makelinkcode($lang->edit_default, "adminoptions.php?".SID."&action=updateperms&uid=0", "", "header"), "", 4);
 	echo "<tr>\n";
 	echo "<td class=\"subheader\">$lang->username</td>\n";
 	echo "<td class=\"subheader\">$lang->lastactive</td>\n";
@@ -263,16 +263,16 @@ if($mybb->input['action'] == "adminpermissions")
 		echo "<td class=\"$bgcolor\">";
 		if($admin['permsset'])
 		{
-			echo makelinkcode($lang->edit_perms2, "adminoptions.php?action=updateperms&uid=$admin[uid]");
-			echo makelinkcode($lang->revoke_custom_perms, "adminoptions.php?action=revokeperms&uid=$admin[uid]");
+			echo makelinkcode($lang->edit_perms2, "adminoptions.php?".SID."&action=updateperms&uid=$admin[uid]");
+			echo makelinkcode($lang->revoke_custom_perms, "adminoptions.php?".SID."&action=revokeperms&uid=$admin[uid]");
 		}
 		else
 		{
-			echo makelinkcode($lang->set_perms, "adminoptions.php?action=updateperms&uid=$admin[uid]");
+			echo makelinkcode($lang->set_perms, "adminoptions.php?".SID."&action=updateperms&uid=$admin[uid]");
 		}
 		echo "</td>\n";
 		echo "<td class=\"$bgcolor\">";
-		echo makelinkcode($lang->admin_log, "adminlogs.php?action=view&fromadmin=$admin[uid]")."\n";
+		echo makelinkcode($lang->admin_log, "adminlogs.php?".SID."&action=view&fromadmin=$admin[uid]")."\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -302,12 +302,12 @@ if($mybb->input['action'] == "adminpermissions")
 		$uid = -$group['gid'];
 		if($group['permsset'])
 		{
-			echo makelinkcode($lang->edit_perms2, "adminoptions.php?action=updateperms&uid=$uid");
-			echo makelinkcode($lang->revoke_custom_perms, "adminoptions.php?action=revokeperms&uid=$uid");
+			echo makelinkcode($lang->edit_perms2, "adminoptions.php?".SID."&action=updateperms&uid=$uid");
+			echo makelinkcode($lang->revoke_custom_perms, "adminoptions.php?".SID."&action=revokeperms&uid=$uid");
 		}
 		else
 		{
-			echo makelinkcode($lang->set_perms, "adminoptions.php?action=updateperms&uid=$uid");
+			echo makelinkcode($lang->set_perms, "adminoptions.php?".SID."&action=updateperms&uid=$uid");
 		}
 		echo "</td>\n";
 		echo "</tr>\n";

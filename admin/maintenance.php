@@ -23,20 +23,20 @@ $plugins->run_hooks("admin_maintenance_start");
 switch($mybb->input['action'])
 {
 	case "cache":
-		addacpnav($lang->nav_cache_manager, "maintenance.php?action=cache");
+		addacpnav($lang->nav_cache_manager, "maintenance.php?".SID."&action=cache");
 		break;
 	case "do_cache":
 		if($view)
 		{
-			addacpnav($lang->cache_manager, "maintenance.php?action=cache");
+			addacpnav($lang->cache_manager, "maintenance.php?".SID."&action=cache");
 			addacpnav($lang->nav_view_cache);
 		}
 		break;
 	case "rebuild":
-		addacpnav($lang->nav_recount_rebuild, "maintenance.php?action=rebuild");
+		addacpnav($lang->nav_recount_rebuild, "maintenance.php?".SID."&action=rebuild");
 		break;
 	case "rebuildstats":
-		addacpnav($lang->nav_recount_rebuild, "maintenance.php?action=rebuild");
+		addacpnav($lang->nav_recount_rebuild, "maintenance.php?".SID."&action=rebuild");
 		addacpnav($lang->rebuildstats);
 		break;
 }
@@ -70,7 +70,7 @@ if($mybb->input['action'] == "do_cache")
 		{
 			$func = "update$cacheitem";
 			$cache->$func();
-			cpredirect("maintenance.php?action=cache", $lang->cache_updated);
+			cpredirect("maintenance.php?".SID."&action=cache", $lang->cache_updated);
 		}
 		else
 		{

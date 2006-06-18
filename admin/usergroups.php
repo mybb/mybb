@@ -17,15 +17,15 @@ $lang->load("usergroups");
 
 if($mybb->input['action'] == "listusers")
 {
-	header("Location: users.php?action=find&search[usergroup]=".$mybb->input['gid']);
+	header("Location: users.php?".SID."&action=find&search[usergroup]=".$mybb->input['gid']);
 	exit;
 }
 if($mybb->input['action'] == "listsecondaryusers")
 {
-	header("Location: users.php?action=find&search[additionalusergroups]=".$mybb->input['gid']);
+	header("Location: users.php?".SID."&action=find&search[additionalusergroups]=".$mybb->input['gid']);
 	exit;
 }
-addacpnav($lang->nav_usergroups, "usergroups.php");
+addacpnav($lang->nav_usergroups, "usergroups.php?".SID);
 switch($mybb->input['action'])
 {
 	case "add":
@@ -152,13 +152,13 @@ if($mybb->input['action'] == "do_add")
 	$db->insert_query(TABLE_PREFIX."usergroups", $grouparray);
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();
-	cpredirect("usergroups.php", $lang->group_added.$namenote);
+	cpredirect("usergroups.php?".SID, $lang->group_added.$namenote);
 }
 
 if($mybb->input['action'] == "do_deletegroupleader")
 {
 	$db->query("DELETE FROM ".TABLE_PREFIX."groupleaders WHERE uid='".intval($mybb->input['uid'])."' AND gid='".intval($mybb->input['gid'])."'");
-	cpredirect("usergroups.php?action=groupleaders&gid=".$mybb->input['gid'], $lang->leader_deleted);
+	cpredirect("usergroups.php?".SID."&action=groupleaders&gid=".$mybb->input['gid'], $lang->leader_deleted);
 }
 
 if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "do_editgroupleader")
@@ -198,7 +198,7 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 		$success_text= sprintf($lang->leader_added, $usergroup['title']);
 	}
 
-	cpredirect("usergroups.php?action=groupleaders&gid=".$mybb->input['gid'], $success_text);
+	cpredirect("usergroups.php?".SID."&action=groupleaders&gid=".$mybb->input['gid'], $success_text);
 }
 
 if($mybb->input['action'] == "do_delete")
@@ -210,7 +210,7 @@ if($mybb->input['action'] == "do_delete")
 		$db->query("UPDATE ".TABLE_PREFIX."users SET displaygroup=usergroup WHERE displaygroup='".intval($mybb->input['gid'])."'");
 		$cache->updateusergroups();
 		$cache->updateforumpermissions();
-		cpredirect("usergroups.php", $lang->group_deleted);
+		cpredirect("usergroups.php?".SID, $lang->group_deleted);
 	}
 	else
 	{
@@ -311,7 +311,7 @@ if($mybb->input['action'] == "do_edit")
 	$db->update_query(TABLE_PREFIX."usergroups", $grouparray, "gid='".$mybb->input['gid']."'");
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();
-	cpredirect("usergroups.php", $lang->group_updated.$namenote);
+	cpredirect("usergroups.php?".SID, $lang->group_updated.$namenote);
 }
 if($mybb->input['action'] == "add")
 {
@@ -580,9 +580,9 @@ if($mybb->input['action'] == "groupleaders")
 	$query = $db->query("SELECT l.*, u.username FROM ".TABLE_PREFIX."groupleaders l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) WHERE l.gid='".intval($mybb->input['gid'])."' ORDER BY u.username ASC");
 	while($leader = $db->fetch_array($query))
 	{
-		$edit = makelinkcode($lang->edit_leader, "usergroups.php?action=editgroupleader&lid=".$leader['lid']);
-		$delete = makelinkcode($lang->delete_leader, "usergroups.php?action=do_deletegroupleader&gid=".$mybb->input['gid']."&uid=".$leader['uid']);
-		$editprofile = makelinkcode($lang->edit_profile, "users.php?action=edit&uid=".$leader['uid']);
+		$edit = makelinkcode($lang->edit_leader, "usergroups.php?".SID."&action=editgroupleader&lid=".$leader['lid']);
+		$delete = makelinkcode($lang->delete_leader, "usergroups.php?".SID."&action=do_deletegroupleader&gid=".$mybb->input['gid']."&uid=".$leader['uid']);
+		$editprofile = makelinkcode($lang->edit_profile, "users.php?".SID."&action=edit&uid=".$leader['uid']);
 		makelabelcode("<a href=\"../member.php?action=profile&uid=".$leader['uid']."\">".$leader['username']."</a>", "$edit $delete $editprofile");
 	}
 	if(!$editprofile) // Talk about cheating!
@@ -625,7 +625,7 @@ if($mybb->input['action'] == "do_joinrequests")
 		$uids = implode(",", $uidin);
 		$db->query("DELETE FROM ".TABLE_PREFIX."joinrequests WHERE uid IN($uids)");
 	}
-	cpredirect("usergroups.php", $lang->join_requests_moderated);
+	cpredirect("usergroups.php?".SID, $lang->join_requests_moderated);
 }
 
 if($mybb->input['action'] == "joinrequests")
@@ -674,7 +674,7 @@ function radioAll(formName, value)
 	{
 		$bgcolor = getaltbg();
 		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\" width=\"25%\"><a href=\"member.php?action=profile&uid=".$user['uid']."\">".$user['username']."</a></td>\n";
+		echo "<td class=\"$bgcolor\" width=\"25%\"><a href=\"../member.php?action=profile&uid=".$user['uid']."\">".$user['username']."</a></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"30%\">".$user['reason']."</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"15%\"><input type=\"radio\" name=\"request[".$user['uid']."]\" value=\"accept\" /></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"15%\"><input type=\"radio\" name=\"request[".$user['uid']."]\" value=\"ignore\" checked=\"checked\" /></td>\n";
@@ -715,7 +715,7 @@ function usergroup_hop(gid)
 {
 	usergroupaction = "usergroup_"+gid;
 	action = eval("document.usergroups.usergroup_"+gid+".options[document.usergroups.usergroup_"+gid+".selectedIndex].value");
-	window.location = "usergroups.php?action="+action+"&gid="+gid;
+	window.location = "usergroups.php?<?php echo SID; ?>&action="+action+"&gid="+gid;
 }
 -->
 </script>
@@ -723,7 +723,7 @@ function usergroup_hop(gid)
 	//startform('', 'usergroups');
 	startform('usergroups.php', 'usergroups');
 
-	$hopto[] = "<input type=\"button\" value=\"$lang->create_new_group\" onclick=\"hopto('usergroups.php?action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->create_new_group\" onclick=\"hopto('usergroups.php?".SID."&action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->default_groups, '', 4);

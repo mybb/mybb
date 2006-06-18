@@ -18,7 +18,7 @@ $lang->load("usertitles");
 checkadminpermissions("caneditutitles");
 logadmin();
 
-addacpnav($lang->nav_usertitles, "usertitles.php");
+addacpnav($lang->nav_usertitles, "usertitles.php?".SID);
 switch($mybb->input['action'])
 {
 	case "add":
@@ -47,14 +47,14 @@ if($mybb->input['action'] == "do_add")
 		);
 
 	$db->insert_query(TABLE_PREFIX."usertitles", $usertitle);
-	cpredirect("usertitles.php", $lang->title_added);
+	cpredirect("usertitles.php?".SID, $lang->title_added);
 }
 if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{	
 		$db->delete_query(TABLE_PREFIX."usertitles", "utid='".intval($mybb->input['utid'])."'");
-		cpredirect("usertitles.php", $lang->title_deleted);
+		cpredirect("usertitles.php?".SID, $lang->title_deleted);
 	}
 	else
 	{
@@ -76,7 +76,7 @@ if($mybb->input['action'] == "do_edit")
 		"starimage" => $db->escape_string($mybb->input['starimage'])
 		);
 	$db->update_query(TABLE_PREFIX."usertitles", $usertitle, "utid='".intval($mybb->input['utid'])."'");
-	cpredirect("usertitles.php", $lang->title_updated);
+	cpredirect("usertitles.php?".SID, $lang->title_updated);
 }
 if($mybb->input['action'] == "add")
 {
@@ -135,7 +135,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		cpheader();
 	}
-	$hopto[] = "<input type=\"button\" value=\"$lang->new_usertitle\" onclick=\"hopto('usertitles.php?action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->new_usertitle\" onclick=\"hopto('usertitles.php?".SID."&action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 
 	starttable();
@@ -148,8 +148,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	while($title = $db->fetch_array($query))
 	{
 		$usertitles .= "\n<li><b>$title[title]</b> ($lang->minimum_posts $title[posts]) ".
-			makelinkcode($lang->edit, "usertitles.php?action=edit&utid=$title[utid]").
-			makelinkcode($lang->delete, "usertitles.php?action=delete&utid=$title[utid]")."\n";
+			makelinkcode($lang->edit, "usertitles.php?".SID."&action=edit&utid=$title[utid]").
+			makelinkcode($lang->delete, "usertitles.php?".SID."&action=delete&utid=$title[utid]")."\n";
 	}
 	makelabelcode("<ul>\n$usertitles\n</ul>", "");
 	endtable();

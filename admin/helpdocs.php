@@ -18,7 +18,7 @@ $lang->load("helpdocs");
 checkadminpermissions("canedithelp");
 logadmin();
 
-addacpnav($lang->nav_helpdocs, "helpdocs.php?action=modify");
+addacpnav($lang->nav_helpdocs, "helpdocs.php?".SID."&action=modify");
 
 switch($mybb->input['action'])
 {
@@ -50,7 +50,7 @@ if($mybb->input['action'] == "do_add")
 			);
 		$plugins->run_hooks("admin_helpdocs_do_add_doc");
 		$db->insert_query(TABLE_PREFIX."helpdocs", $sqlarray);
-		cpredirect("helpdocs.php", $lang->doc_added);
+		cpredirect("helpdocs.php?".SID, $lang->doc_added);
 	}
 	elseif($mybb->input['add'] == "section")
 	{
@@ -63,7 +63,7 @@ if($mybb->input['action'] == "do_add")
 			);
 		$plugins->run_hooks("admin_helpdocs_do_add_section");
 		$db->insert_query(TABLE_PREFIX."helpsections", $sqlarray);
-		cpredirect("helpdocs.php", $lang->section_added);
+		cpredirect("helpdocs.php?".SID, $lang->section_added);
 	}
 }
 
@@ -75,7 +75,7 @@ if($mybb->input['action'] == "do_delete")
 		{
 			$plugins->run_hooks("admin_helpdocs_do_delete_doc");
 			$db->delete_query(TABLE_PREFIX."helpdocs", "hid='".intval($mybb->input['hid'])."'");
-			cpredirect("helpdocs.php", $lang->doc_deleted);
+			cpredirect("helpdocs.php?".SID, $lang->doc_deleted);
 		}
 		elseif(!empty($mybb->input['sid']))
 		{
@@ -100,7 +100,7 @@ if($mybb->input['action'] == "do_delete")
 				);
 				$db->update_query(TABLE_PREFIX."helpdocs", $updatearray, "hid='$doc[hid]'");
 			}
-			cpredirect("helpdocs.php", $lang->section_deleted);
+			cpredirect("helpdocs.php?".SID, $lang->section_deleted);
 		}
 	}
 	else
@@ -124,7 +124,7 @@ if($mybb->input['action'] == "do_edit")
 			);
 		$plugins->run_hooks("admin_helpdocs_do_edit_doc");
 		$db->update_query(TABLE_PREFIX."helpdocs", $sqlarray, "hid='".intval($mybb->input['hid'])."'");
-		cpredirect("helpdocs.php", $lang->doc_updated);
+		cpredirect("helpdocs.php?".SID, $lang->doc_updated);
 	}
 	elseif($mybb->input['sid'])
 	{
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "do_edit")
 			);
 		$plugins->run_hooks("admin_helpdocs_do_edit_section");
 		$db->update_query(TABLE_PREFIX."helpsections", $sqlarray, "sid='".intval($mybb->input['sid'])."'");
-		cpredirect("helpdocs.php", $lang->section_updated);
+		cpredirect("helpdocs.php?".SID, $lang->section_updated);
 	}
 }
 
@@ -295,7 +295,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		cpheader();
 	}
-	$hopto[] = "<input type=\"button\" value=\"$lang->hopto_add\" onclick=\"hopto('helpdocs.php?action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->hopto_add\" onclick=\"hopto('helpdocs.php?".SID."&action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 	// Get default sections/documents
 	$options = array(
@@ -310,7 +310,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			$disablednote = $lang->disabled_note;
 		}
 		$defaulthelpsections .= "<li><b>$section[name]</b> $disablednote".
-			makelinkcode($lang->edit, "helpdocs.php?action=edit&sid=$section[sid]").
+			makelinkcode($lang->edit, "helpdocs.php?".SID."&action=edit&sid=$section[sid]").
 			"</li>\n<ul>\n";
 		$options = array(
 			"order_by" => "disporder"
@@ -324,10 +324,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 				$disablednote = $lang->disabled_note;
 			}
 			$defaulthelpsections .= "<li>$doc[name] $disablednote".
-				makelinkcode($lang->edit, "helpdocs.php?action=edit&hid=$doc[hid]");
+				makelinkcode($lang->edit, "helpdocs.php?".SID."&action=edit&hid=$doc[hid]");
 				if($doc['hid'] > 7)
 				{
-					$defaulthelpsections .= makelinkcode($lang->delete, "helpdocs.php?action=delete&hid=$doc[hid]");
+					$defaulthelpsections .= makelinkcode($lang->delete, "helpdocs.php?".SID."&action=delete&hid=$doc[hid]");
 				}
 			$defaulthelpsections .= "</li>\n";
 		}
@@ -346,8 +346,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			$disablednote = $lang->disabled_note;
 		}
 		$customhelpsections .= "<li><b>$section[name]</b> $disablednote".
-			makelinkcode($lang->edit, "helpdocs.php?action=edit&sid=$section[sid]").
-			makelinkcode($lang->delete, "helpdocs.php?action=delete&sid=$section[sid]").
+			makelinkcode($lang->edit, "helpdocs.php?".SID."&action=edit&sid=$section[sid]").
+			makelinkcode($lang->delete, "helpdocs.php?".SID."&action=delete&sid=$section[sid]").
 			"</li>\n<ul>\n";
 		$options = array(
 			"order_by" => "disporder"
@@ -361,10 +361,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 				$disablednote = $lang->disabled_note;
 			}
 			$customhelpsections .= "<li>$doc[name] $disablednote".
-				makelinkcode($lang->edit, "helpdocs.php?action=edit&hid=$doc[hid]");
+				makelinkcode($lang->edit, "helpdocs.php?".SID."&action=edit&hid=$doc[hid]");
 				if($doc['hid'] > 7)
 				{
-					$customhelpsections .= makelinkcode($lang->delete, "helpdocs.php?action=delete&hid=$doc[hid]");
+					$customhelpsections .= makelinkcode($lang->delete, "helpdocs.php?".SID."&action=delete&hid=$doc[hid]");
 				}
 			$customhelpsections .= "</li>\n";
 		}

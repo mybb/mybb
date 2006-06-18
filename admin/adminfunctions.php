@@ -118,12 +118,14 @@ function makehoptolinks($links)
 
 function startform($script, $name="", $action="", $autocomplete=1)
 {
+	global $admin_session;
 	$acomplete = "";
 	if($autocomplete == 0)
 	{
 		$acomplete = "autocomplete=\"off\"";
 	}
 	echo "<form action=\"$script\" method=\"post\" name=\"$name\" enctype=\"multipart/form-data\" $acomplete>\n";
+	makehiddencode("adminsid", $admin_session['sid']);
 	if($action != "")
 	{
 		makehiddencode("action", $action);

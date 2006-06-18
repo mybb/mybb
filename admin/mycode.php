@@ -18,7 +18,7 @@ $lang->load("mycode");
 //checkadminpermissions("caneditmycode");
 //logadmin();
 
-addacpnav($lang->nav_mycode, "mycode.php?action=modify");
+addacpnav($lang->nav_mycode, "mycode.php?".SID."&action=modify");
 
 switch($mybb->input['action'])
 {
@@ -70,14 +70,14 @@ if($mybb->input['action'] == "do_add")
 
 	$cache->updatemycode();
 
-	cpredirect("mycode.php", $lang->mycode_added);
+	cpredirect("mycode.php?".SID, $lang->mycode_added);
 }
 
 if($mybb->input['action'] == "edit")
 {
 	if($mybb->input['delete'])
 	{
-		header("Location: mycode.php?action=delete&cid=".intval($mybb->input['cid']));
+		header("Location: mycode.php?".SID."&action=delete&cid=".intval($mybb->input['cid']));
 		exit;
 	}
 
@@ -119,7 +119,7 @@ if($mybb->input['action'] == "do_edit")
 
 	$cache->updatemycode();
 
-	cpredirect("mycode.php", $lang->mycode_updated);
+	cpredirect("mycode.php?".SID, $lang->mycode_updated);
 }
 
 if($mybb->input['action'] == "delete")
@@ -151,7 +151,7 @@ if($mybb->input['action'] == "do_delete")
 		$plugins->run_hooks("admin_mycode_do_delete");
 		$db->delete_query(TABLE_PREFIX."mycode", "cid='".intval($mybb->input['cid'])."'");
 		$cache->updatemycode();
-		cpredirect("mycode.php", $lang->mycode_deleted);
+		cpredirect("mycode.php?".SID, $lang->mycode_deleted);
 	}
 	else
 	{
@@ -163,7 +163,7 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_mycode_modify");
 	cpheader();
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_mycode\" onclick=\"hopto('mycode.php?action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_mycode\" onclick=\"hopto('mycode.php?".SID."&action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->custom_mycode, "", 4);

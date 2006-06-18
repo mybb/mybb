@@ -45,6 +45,14 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   PRIMARY KEY  (uid)
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_adminsessions (
+	sid varchar(32) NOT NULL default '',
+	uid int unsigned NOT NULL default '0',
+	loginkey varchar(50) NOT NULL default '',
+	ip varchar(40) NOT NULL default '',
+	dateline bigint(30) NOT NULL default '0',
+	lastactive bigint(30) NOT NULL default '0'
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_announcements (

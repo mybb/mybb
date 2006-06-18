@@ -15,7 +15,7 @@ require "./global.php";
 global $lang;
 $lang->load("users");
 
-addacpnav($lang->nav_users, "users.php");
+addacpnav($lang->nav_users, "users.php?".SID);
 switch($mybb->input['action'])
 {
 	case "add":
@@ -294,7 +294,7 @@ if($mybb->input['action'] == "do_add")
 		mymail($email, $emailsubject, $emailmessage);
 	}
 	$cache->updatestats();
-	cpredirect("users.php?lastuid={$user_info['uid']}", $lang->user_added);
+	cpredirect("users.php?".SID."&lastuid={$user_info['uid']}", $lang->user_added);
 }
 
 // Process editing of a user.
@@ -386,7 +386,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 	$cache->updatestats();
 
-	cpredirect("users.php?lastuid={$mybb->input['uid']}", $lang->profile_updated);
+	cpredirect("users.php?".SID."&lastuid={$mybb->input['uid']}", $lang->profile_updated);
 }
 
 // Process the deleting of a user.
@@ -407,11 +407,11 @@ if($mybb->input['action'] == "do_delete")
 		// Update forum stats
 		$cache->updatestats();
 
-		cpredirect("users.php", $lang->user_deleted);
+		cpredirect("users.php?".SID, $lang->user_deleted);
 	}
 	else
 	{
-		header("Location: users.php?123");
+		header("Location: users.php?".SID."&123");
 	}
 }
 if($mybb->input['action'] == "do_email")
@@ -589,7 +589,7 @@ if($mybb->input['action'] == "do_do_merge")
 {
 	if(!$mybb->input['deletesubmit'])
 	{
-		cpredirect("users.php?action=merge", $lang->users_not_merged);
+		cpredirect("users.php?".SID."&action=merge", $lang->users_not_merged);
 		exit;
 	}
 	$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['source'])."'");
@@ -805,7 +805,7 @@ if($mybb->input['action'] == "edit")
 
 	cpheader();
 	starttable();
-	makelabelcode("<ul>\n<li><a href=\"users.php?action=delete&uid=$uid\">$lang->delete_account</a></li>\n<li><a href=\"users.php?action=misc&uid=$uid\">$lang->view_user_stats</a></li>\n</ul>");
+	makelabelcode("<ul>\n<li><a href=\"users.php?".SID."&action=delete&uid=$uid\">$lang->delete_account</a></li>\n<li><a href=\"users.php?".SID."&action=misc&uid=$uid\">$lang->view_user_stats</a></li>\n</ul>");
 	endtable();
 
 	starttable();
@@ -1072,7 +1072,7 @@ if($mybb->input['action'] == "findips")
 	if(!empty($user['regip']))
 	{
 		echo "<tr>\n<td class=\"$bgcolor\" width=\"40%\">$user[regip]</td>\n";
-		echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$user[regip]');\" class=\"submitbutton\" />  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$user[regip]');\" class=\"submitbutton\" />";
+		echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?".SID."&action=find&search[regip]=$user[regip]');\" class=\"submitbutton\" />  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?".SID."&action=find&search[postip]=$user[regip]');\" class=\"submitbutton\" />";
 		echo "</td>\n</tr>\n";
 	}
 	else
@@ -1089,7 +1089,7 @@ if($mybb->input['action'] == "findips")
 			{
 				$bgcolor = getaltbg();
 				echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$row[ipaddress]</td>\n";
-				echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\" />  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\" />";
+				echo "<td class=\"$bgcolor\" align=\"right\" width=\"60%\"><input type=\"button\" value=\"$lang->find_users_reg_with_ip\" onclick=\"hopto('users.php?".SID."&action=find&search[regip]=$row[ipaddress]');\" class=\"submitbutton\" />  <input type=\"button\" value=\"$lang->find_users_posted_with_ip\" onclick=\"hopto('users.php?".SID."&action=find&search[postip]=$row[ipaddress]');\" class=\"submitbutton\" />";
 				echo "</td>\n</tr>\n";
 			}
 		}
@@ -1106,11 +1106,11 @@ if($mybb->input['action'] == "misc")
 	$uid = intval($mybb->input['uid']);
 	starttable();
 	makelabelcode("<ul>\n
-		<li><a href=\"users.php?action=showreferrers&uid=$uid\">$lang->show_referred_members</a></li>\n
-		<li><a href=\"users.php?action=pmstats&uid=$uid\">$lang->pm_stats</a></li>\n
-		<li><a href=\"users.php?action=stats&uid=$uid\">$lang->general_stats</a></li>\n
-		<li><a href=\"users.php?action=findips&uid=$uid\">$lang->ip_addresses</a></li>\n
-		<li><a href=\"attachments.php?action=do_search&uid=$uid\">$lang->show_attachments</a></li>\n
+		<li><a href=\"users.php?".SID."&action=showreferrers&uid=$uid\">$lang->show_referred_members</a></li>\n
+		<li><a href=\"users.php?".SID."&action=pmstats&uid=$uid\">$lang->pm_stats</a></li>\n
+		<li><a href=\"users.php?".SID."&action=stats&uid=$uid\">$lang->general_stats</a></li>\n
+		<li><a href=\"users.php?".SID."&action=findips&uid=$uid\">$lang->ip_addresses</a></li>\n
+		<li><a href=\"attachments.php?".SID."&action=do_search&uid=$uid\">$lang->show_attachments</a></li>\n
 		</ul>");
 	endtable();
 	cpfooter();
@@ -1724,7 +1724,7 @@ if($mybb->input['action'] == "find")
 if($mybb->input['action'] == "activate")
 {
 	$query = $db->query("UPDATE ".TABLE_PREFIX."users SET usergroup = '2' WHERE uid='".intval($mybb->input['uid'])."' AND usergroup = '5'");
-	cpredirect("users.php", $lang->activated);
+	cpredirect("users.php?".SID, $lang->activated);
 }
 if($mybb->input['action'] == "do_manageban")
 {
@@ -1784,7 +1784,7 @@ if($mybb->input['action'] == "do_manageban")
 			);
 
 		$db->update_query(TABLE_PREFIX."banned", $banneduser, "uid='".$user['uid']."'");
-		cpredirect("users.php?action=banned", $lang->ban_updated);
+		cpredirect("users.php?".SID."&action=banned", $lang->ban_updated);
 	}
 	else
 	{
@@ -1799,7 +1799,7 @@ if($mybb->input['action'] == "do_manageban")
 			"reason" => $db->escape_string($mybb->input['banreason'])
 			);
 		$db->insert_query(TABLE_PREFIX."banned", $banneduser);
-		cpredirect("users.php?action=banned", $lang->ban_added);
+		cpredirect("users.php?".SID."&action=banned", $lang->ban_added);
 	}
 }
 if($mybb->input['action'] == "liftban")
@@ -1816,7 +1816,7 @@ if($mybb->input['action'] == "liftban")
 	$groupupdate = array('usergroup' => $ban['oldgroup']);
 	$db->update_query(TABLE_PREFIX."users", $groupupdate, "uid='".intval($mybb->input['uid'])."'");
 	$db->delete_query(TABLE_PREFIX."banned", "uid='".intval($mybb->input['uid'])."'");
-	cpredirect("users.php?action=banned", $lang->ban_lifted);
+	cpredirect("users.php?".SID."&action=banned", $lang->ban_lifted);
 }
 if($mybb->input['action'] == "manageban")
 {
@@ -1887,7 +1887,7 @@ if($mybb->input['action'] == "banned")
 	$query = $db->query("SELECT b.*, a.username AS adminuser, u.username FROM ".TABLE_PREFIX."banned b LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid) ORDER BY lifted ASC");
 	$numbans = $db->num_rows($query);
 	cpheader();
-	$hopto[] = "<input type=\"button\" value=\"$lang->ban_user\" onclick=\"hopto('users.php?action=manageban');\" class=\"hoptobutton\" />";
+	$hopto[] = "<input type=\"button\" value=\"$lang->ban_user\" onclick=\"hopto('users.php?".SID."&action=manageban');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 
 	starttable();
@@ -1925,13 +1925,13 @@ if($mybb->input['action'] == "banned")
 			$user['banreason'] = htmlspecialchars_uni($user['banreason']);
 			$bannedon = mydate($settings['dateformat'], $user['dateline']);
 			echo "<tr title='$user[reason]'>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"users.php?action=edit&uid=$user[uid]\">$user[username]</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"users.php?".SID."&action=edit&uid=$user[uid]\">$user[username]</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$user[adminuser]</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$bannedon</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$banlength</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$liftedon</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$timeremaining</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".makelinkcode("edit", "users.php?action=manageban&uid=$user[uid]")." ".makelinkcode("lift", "users.php?action=liftban&uid=$user[uid]")."</td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".makelinkcode("edit", "users.php?".SID."&action=manageban&uid=$user[uid]")." ".makelinkcode("lift", "users.php?".SID."&action=liftban&uid=$user[uid]")."</td>\n";
 		}
 	}
 	endtable();
@@ -1957,14 +1957,14 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 		$last_user = $db->fetch_array($query);
 		$lang->last_edited = sprintf($lang->last_edited, $last_user['username']);
 		$last_user['username'] = urlencode($last_user['username']);
-		$last_edited = "<li><a href=\"users.php?action=find&search[username]=$last_user[username]&searchop[sortby]=regdate&searchop[order]=desc\">".$lang->last_edited."</li>\n";
+		$last_edited = "<li><a href=\"users.php?".SID."&action=find&search[username]=$last_user[username]&searchop[sortby]=regdate&searchop[order]=desc\">".$lang->last_edited."</li>\n";
 	}
 
 	starttable();
 	startform("users.php", '', "find");
 	tableheader($lang->user_management);
 	tablesubheader($lang->quick_search_listing);
-	makelabelcode("<ul>\n$last_edited<li><a href=\"users.php?action=find\">$lang->list_all</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n<li><a href=\"users.php?action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n<li><a href=\"users.php?action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n</ul>", '', 2);
+	makelabelcode("<ul>\n$last_edited<li><a href=\"users.php?".SID."&action=find\">$lang->list_all</a></li>\n<li><a href=\"users.php?".SID."&action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n<li><a href=\"users.php?".SID."&action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n<li><a href=\"users.php?".SID."&action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n</ul>", '', 2);
 	tablesubheader($lang->search_users_where);
 	makeinputcode($lang->name_contains, "search[username]");
 	makeinputcode($lang->and_email, "search[email]");

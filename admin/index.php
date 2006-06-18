@@ -29,7 +29,7 @@ if($mybb->input['action'] == "header")
 	echo "<body id=\"logo\">";
 	echo "<h1><span class=\"hidden\">MyBB Admin CP</span></h1>";
 	$lang->logout_cp = sprintf($lang->logout_cp, $user['username']);
-	echo "<div id=\"header-links\"><a href=\"index.php?action=home\" target=\"body\">".$lang->cp_home."</a><a href=\"../index.php\" target=\"body\">".$lang->view_forums."</a><a href=\"index.php?action=logout\" target=\"_parent\">".$lang->logout_cp."</a></div>";
+	echo "<div id=\"header-links\"><a href=\"index.php?".SID."&action=home\" target=\"body\">".$lang->cp_home."</a><a href=\"../index.php\" target=\"body\">".$lang->view_forums."</a><a href=\"index.php?".SID."&action=logout\" target=\"_parent\">".$lang->logout_cp."</a></div>";
 	echo "</body>";
 	echo "</html>";
 }
@@ -103,30 +103,30 @@ elseif($mybb->input['action'] == "home")
 	tablesubheader($lang->program_stats, "", 4);
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>".$lang->mybb_version."</b></td><td valign=\"top\" class=\"altbg2\">$mybboard[internalver]</td>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->php_version</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"index.php?action=phpinfo\">$phpversion</a></td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->php_version</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"index.php?".SID."&action=phpinfo\">$phpversion</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->db_version</b></td><td valign=\"top\" class=\"altbg2\">{$db->title} $dbversion</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->server_load</b></td><td valign=\"top\" class=\"altbg2\">$serverload</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_users</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?action=find\">$users[numusers]</a></td>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->users_awaiting_activation</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$awaitingusers[awaitingusers]</a></td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_users</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?".SID."&action=find\">$users[numusers]</a></td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->users_awaiting_activation</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?".SID."&action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$awaitingusers[awaitingusers]</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->new_users_today</b></td><td valign=\"top\" class=\"altbg2\">$newusers[newusers]</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->active_users_today</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"../online.php?action=today\">$activeusers[activeusers]</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_threads</b></td><td valign=\"top\" class=\"altbg2\">$threads[numthreads] (<a href=\"moderate.php?action=threads\" title=\"$lang->unapproved_threads\">$unapproved_threads[numthreads]</a>)</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_threads</b></td><td valign=\"top\" class=\"altbg2\">$threads[numthreads] (<a href=\"moderate.php?".SID."&action=threads\" title=\"$lang->unapproved_threads\">$unapproved_threads[numthreads]</a>)</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->threads_today</b></td><td valign=\"top\" class=\"altbg2\">$newthreads[newthreads]</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_posts</b></td><td valign=\"top\" class=\"altbg2\">$posts[numposts] (<a href=\"moderate.php?action=posts\" title=\"$lang->unapproved_posts\">$unapproved_posts[numposts]</a>)</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_posts</b></td><td valign=\"top\" class=\"altbg2\">$posts[numposts] (<a href=\"moderate.php?".SID."&action=posts\" title=\"$lang->unapproved_posts\">$unapproved_posts[numposts]</a>)</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->posts_today</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"../search.php?action=getdaily\">$newposts[newposts]</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_attachments</b></td><td valign=\"top\" class=\"altbg2\">$attachs[numattachs] (<a href=\"moderate.php?action=attachments\" title=\"$lang->unapproved_attachs\">$unapproved_attachs[numattachs]</a>)</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_attachments</b></td><td valign=\"top\" class=\"altbg2\">$attachs[numattachs] (<a href=\"moderate.php?".SID."&action=attachments\" title=\"$lang->unapproved_attachs\">$unapproved_attachs[numattachs]</a>)</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->attachment_space</b></td><td valign=\"top\" class=\"altbg2\">$attachs[spaceused]</td>\n";
 	echo "</tr>\n";
 	endtable();
@@ -248,88 +248,88 @@ elseif ($mybb->input['action'] == "navigation")
 
 // STILL NEED TO FIX PLUGIN HOOKS FOR MENU ITEMS
 
-makenavoption($lang->cp_home, "index.php?action=home");
-makenavoption($lang->cp_prefs, "adminoptions.php");
-makenavoption($lang->vercheck, "index.php?action=vercheck");
+makenavoption($lang->cp_home, "index.php?".SID."&action=home");
+makenavoption($lang->cp_prefs, "adminoptions.php?".SID);
+makenavoption($lang->vercheck, "index.php?".SID."&action=vercheck");
 makenavselect("");
 
-makenavoption($lang->nav_change, "settings.php?action=change");
-makenavoption($lang->nav_add_setting, "settings.php?action=add");
-makenavoption($lang->nav_plugin_manager, "plugins.php");
+makenavoption($lang->nav_change, "settings.php?".SID."&action=change");
+makenavoption($lang->nav_add_setting, "settings.php?".SID."&action=add");
+makenavoption($lang->nav_plugin_manager, "plugins.php?".SID);
 makenavselect($lang->nav_settings);
 
-makenavoption($lang->nav_add_forum, "forums.php?action=add");
-makenavoption($lang->nav_manage_forums, "forums.php?action=modify");
-makenavoption($lang->nav_forum_announcements, "announcements.php?action=modify");
-makenavoption($lang->nav_forum_permissions, "forumpermissions.php");
+makenavoption($lang->nav_add_forum, "forums.php?".SID."&action=add");
+makenavoption($lang->nav_manage_forums, "forums.php?".SID."&action=modify");
+makenavoption($lang->nav_forum_announcements, "announcements.php?".SID."&action=modify");
+makenavoption($lang->nav_forum_permissions, "forumpermissions.php?".SID);
 makenavselect($lang->nav_forums);
 
-makenavoption($lang->nav_threads_and_posts, "moderate.php?action=threadsposts");
-makenavoption($lang->nav_threads_only, "moderate.php?action=threads");
-makenavoption($lang->nav_posts_only, "moderate.php?action=posts");
-makenavoption($lang->nav_attachments, "moderate.php?action=attachments");
+makenavoption($lang->nav_threads_and_posts, "moderate.php?".SID."&action=threadsposts");
+makenavoption($lang->nav_threads_only, "moderate.php?".SID."&action=threads");
+makenavoption($lang->nav_posts_only, "moderate.php?".SID."&action=posts");
+makenavoption($lang->nav_attachments, "moderate.php?".SID."&action=attachments");
 makenavselect($lang->nav_moderation_queue);
 
-makenavoption($lang->nav_search_attachments, "attachments.php?action=search");
-makenavoption($lang->nav_search_orphan_attachments, "attachments.php?action=orphans");
-makenavoption($lang->nav_attach_stats, "attachments.php?action=stats");
-makenavoption($lang->nav_add_type, "attachments.php?action=add");
-makenavoption($lang->nav_manage_attachment_types, "attachments.php?action=modify");
+makenavoption($lang->nav_search_attachments, "attachments.php?".SID."&action=search");
+makenavoption($lang->nav_search_orphan_attachments, "attachments.php?".SID."&action=orphans");
+makenavoption($lang->nav_attach_stats, "attachments.php?".SID."&action=stats");
+makenavoption($lang->nav_add_type, "attachments.php?".SID."&action=add");
+makenavoption($lang->nav_manage_attachment_types, "attachments.php?".SID."&action=modify");
 makenavselect($lang->nav_attachments);
 
-makenavoption($lang->nav_add_user, "users.php?action=add");
-makenavoption($lang->nav_search_users, "users.php?action=search");
-makenavoption($lang->nav_manage_groups, "usergroups.php?action=modify");
-makenavoption($lang->nav_usertitles, "usertitles.php?action=modify");
-makenavoption($lang->nav_merge_users, "users.php?action=merge");
-makenavoption($lang->nav_custom_fields, "profilefields.php?action=modify");
-makenavoption($lang->nav_mass_email, "users.php?action=email");
-makenavoption($lang->nav_banning, "users.php?action=banned");
-makenavoption($lang->nav_adminperms, "adminoptions.php?action=adminpermissions");
+makenavoption($lang->nav_add_user, "users.php?".SID."&action=add");
+makenavoption($lang->nav_search_users, "users.php?".SID."&action=search");
+makenavoption($lang->nav_manage_groups, "usergroups.php?".SID."&action=modify");
+makenavoption($lang->nav_usertitles, "usertitles.php?".SID."&action=modify");
+makenavoption($lang->nav_merge_users, "users.php?".SID."&action=merge");
+makenavoption($lang->nav_custom_fields, "profilefields.php?".SID."&action=modify");
+makenavoption($lang->nav_mass_email, "users.php?".SID."&action=email");
+makenavoption($lang->nav_banning, "users.php?".SID."&action=banned");
+makenavoption($lang->nav_adminperms, "adminoptions.php?".SID."&action=adminpermissions");
 makenavselect($lang->nav_users_groups);
 
-makenavoption($lang->nav_smilie_manager, "smilies.php?action=modify");
-makenavoption($lang->nav_manage_badwords, "badwords.php?action=modify");
-makenavoption($lang->nav_custom_mycode, "mycode.php?action=modify");
+makenavoption($lang->nav_smilie_manager, "smilies.php?".SID."&action=modify");
+makenavoption($lang->nav_manage_badwords, "badwords.php?".SID."&action=modify");
+makenavoption($lang->nav_custom_mycode, "mycode.php?".SID."&action=modify");
 makenavselect($lang->nav_message_filters);
 
-makenavoption($lang->nav_add, "themes.php?action=add");
-makenavoption($lang->nav_modify_delete, "themes.php?action=modify");
-makenavoption($lang->nav_import, "themes.php?action=import");
-makenavoption($lang->nav_download, "themes.php?action=download");
+makenavoption($lang->nav_add, "themes.php?".SID."&action=add");
+makenavoption($lang->nav_modify_delete, "themes.php?".SID."&action=modify");
+makenavoption($lang->nav_import, "themes.php?".SID."&action=import");
+makenavoption($lang->nav_download, "themes.php?".SID."&action=download");
 makenavselect($lang->nav_themes);
 
-makenavoption($lang->nav_add, "templates.php?action=add");
-makenavoption($lang->nav_modify_delete, "templates.php?action=modify");
-makenavoption($lang->nav_search, "templates.php?action=search");
-makenavoption($lang->nav_addset, "templates.php?action=addset");
-makenavoption($lang->nav_find_updated, "templates.php?action=findupdated");
+makenavoption($lang->nav_add, "templates.php?".SID."&action=add");
+makenavoption($lang->nav_modify_delete, "templates.php?".SID."&action=modify");
+makenavoption($lang->nav_search, "templates.php?".SID."&action=search");
+makenavoption($lang->nav_addset, "templates.php?".SID."&action=addset");
+makenavoption($lang->nav_find_updated, "templates.php?".SID."&action=findupdated");
 makenavselect($lang->nav_templates);
 
-makenavoption($lang->nav_manage, "languages.php");
+makenavoption($lang->nav_manage, "languages.php?".SID);
 makenavselect($lang->nav_language_packs);
 
-makenavoption($lang->nav_add_post_mod_tool, "moderation.php?action=addposttool");
-makenavoption($lang->nav_add_thread_mod_tool, "moderation.php?action=addthreadtool");
-makenavoption($lang->nav_modify_delete, "moderation.php");
+makenavoption($lang->nav_add_post_mod_tool, "moderation.php?".SID."&action=addposttool");
+makenavoption($lang->nav_add_thread_mod_tool, "moderation.php?".SID."&action=addthreadtool");
+makenavoption($lang->nav_modify_delete, "moderation.php?".SID);
 makenavselect($lang->nav_mod_toolbox);
 
-makenavoption($lang->nav_add, "icons.php?action=add");
-makenavoption($lang->nav_modify_delete, "icons.php?action=modify");
+makenavoption($lang->nav_add, "icons.php?".SID."&action=add");
+makenavoption($lang->nav_modify_delete, "icons.php?".SID."&action=modify");
 makenavselect($lang->nav_posticons);
 
-makenavoption($lang->nav_admin_log, "adminlogs.php");
-makenavoption($lang->nav_mod_log, "modlogs.php");
+makenavoption($lang->nav_admin_log, "adminlogs.php?".SID);
+makenavoption($lang->nav_mod_log, "modlogs.php?".SID);
 makenavselect($lang->nav_stats_and_logging);
 
-makenavoption($lang->nav_add, "helpdocs.php?action=add");
-makenavoption($lang->nav_modify_delete, "helpdocs.php?action=modify");
+makenavoption($lang->nav_add, "helpdocs.php?".SID."&action=add");
+makenavoption($lang->nav_modify_delete, "helpdocs.php?".SID."&action=modify");
 makenavselect($lang->nav_helpdocs);
 
-makenavoption($lang->nav_db_maint, "misc.php?action=dbmaint");
-makenavoption($lang->nav_cache_manager, "maintenance.php?action=cache");
-makenavoption($lang->nav_recount_stats, "maintenance.php?action=rebuildstats");
-makenavoption($lang->nav_view_phpinfo, "index.php?action=phpinfo");
+makenavoption($lang->nav_db_maint, "misc.php?".SID."&action=dbmaint");
+makenavoption($lang->nav_cache_manager, "maintenance.php?".SID."&action=cache");
+makenavoption($lang->nav_recount_stats, "maintenance.php?".SID."&action=rebuildstats");
+makenavoption($lang->nav_view_phpinfo, "index.php?".SID."&action=phpinfo");
 makenavselect($lang->nav_maintenance);
 ?>
 </body>
@@ -345,28 +345,39 @@ else
 	$plugins->run_hooks("admin_index_frameset");
 	if(!empty($mybb->input['goto']))
 	{
-		$goto = htmlspecialchars_uni($mybb->input['goto']);
+		// Strip session ID from goto
+		$goto = preg_replace("#adminsid=[a-zA-Z0-9]{32}#i", "", $mybb->input['goto']);
+		$parsed_url = parse_url($goto);
+		if(!$parsed_url['query'])
+		{
+			$goto .= "?".SID;
+		}
+		else
+		{
+			$goto .= "&".SID;
+		}
+		$goto = htmlspecialchars_uni($goto);
 	}
 	else
 	{
-		$goto = 'index.php?action=home';
+		$goto = 'index.php?'.SID.'&action=home';
 	}
 	echo "<html>\n";
 	echo "<head>\n";
 	echo "<title>$lang->mybb_admin</title>\n";
 	echo "</head>\n";
 	echo "<frameset rows=\"78, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-	echo "<frame name=\"header\" noresize scrolling=\"no\" src=\"index.php?action=header\">\n";
+	echo "<frame name=\"header\" noresize scrolling=\"no\" src=\"index.php?".SID."&action=header\">\n";
 	if($lang->settings['rtl'])
 	{
 		echo "<frameset cols=\"*,200\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
 		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\">\n";
-		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?action=navigation\">\n";
+		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&action=navigation\">\n";
 	}
 	else
 	{
 		echo "<frameset cols=\"200, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?action=navigation\">\n";
+		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&action=navigation\">\n";
 		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\">\n";
 	}
 	echo "</frameset>\n";

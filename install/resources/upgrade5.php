@@ -184,6 +184,15 @@ function upgrade5_dbchanges()
 	) TYPE=MyISAM;");
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL default '' AFTER action;");
+	
+	$db->query("CREATE TABLE mybb_adminsessions (
+		sid varchar(32) NOT NULL default '',
+		uid int unsigned NOT NULL default '0',
+		loginkey varchar(50) NOT NULL default '',
+		ip varchar(40) NOT NULL default '',
+		dateline bigint(30) NOT NULL default '0',
+		lastactive bigint(30) NOT NULL default '0'
+	) TYPE=MyISAM;");	
 
 	//
 	// NEED TO INSERT SETTINGS FOR FULLTEXT SEARCHING AND SHUTDOWN FUNCTION STUFF ____HERE____

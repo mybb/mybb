@@ -15,7 +15,7 @@ require "./global.php";
 global $lang;
 $lang->load("profilefields");
 
-addacpnav($lang->nav_profile_fields, "profilefields.php");
+addacpnav($lang->nav_profile_fields, "profilefields.php?".SID);
 
 switch($mybb->input['action'])
 {
@@ -66,7 +66,7 @@ if($mybb->input['action'] == "do_add")
 		ADD $fieldname TEXT
 	");
 	$db->optimize_table(TABLE_PREFIX."userfields");
-	cpredirect("profilefields.php", $lang->field_added);
+	cpredirect("profilefields.php?".SID, $lang->field_added);
 }
 if($mybb->input['action'] == "do_delete")
 {
@@ -82,7 +82,7 @@ if($mybb->input['action'] == "do_delete")
 			DROP $fieldname
 		");
 		$db->optimize_table(TABLE_PREFIX."userfields");
-		cpredirect("profilefields.php", $lang->field_deleted);
+		cpredirect("profilefields.php?".SID, $lang->field_deleted);
 	}
 	else
 	{
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "do_edit")
 		);
 	$plugins->run_hooks("admin_profilefields_do_edit");
 	$db->update_query(TABLE_PREFIX."profilefields", $sqlarray, "fid='".intval($mybb->input['fid'])."'");
-	cpredirect("profilefields.php", $lang->field_updated);
+	cpredirect("profilefields.php?".SID, $lang->field_updated);
 }
 if($mybb->input['action'] == "add")
 {
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		cpheader();
 	}
-	$hopto[] = "<input type=\"button\" value=\"$lang->create_profilefield\" onclick=\"hopto('profilefields.php?action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->create_profilefield\" onclick=\"hopto('profilefields.php?".SID."&action=add');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 
 	starttable();

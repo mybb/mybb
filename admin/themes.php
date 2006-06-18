@@ -17,7 +17,7 @@ require MYBB_ROOT."inc/class_xml.php";
 global $lang;
 $lang->load("themes");
 
-addacpnav($lang->nav_themes, "themes.php");
+addacpnav($lang->nav_themes, "themes.php?".SID);
 switch($mybb->input['action'])
 {
 	case "add":
@@ -59,7 +59,7 @@ if($mybb->input['action'] == "do_add")
 	$db->insert_query(TABLE_PREFIX."themes", $themearray);
 	$tid = $db->insert_id();
 	update_theme($tid, $mybb->input['pid'], "", "", 0, 1);
-	cpredirect("themes.php", $lang->theme_added);
+	cpredirect("themes.php?".SID, $lang->theme_added);
 }
 
 if($mybb->input['action'] == "do_edit")
@@ -107,7 +107,7 @@ if($mybb->input['action'] == "do_edit")
 
 	$db->update_query(TABLE_PREFIX."themes", $themearray, "tid='".intval($mybb->input['tid'])."'");
 
-	cpredirect("themes.php", $lang->theme_updated."<br />$themelist");
+	cpredirect("themes.php?".SID, $lang->theme_updated."<br />$themelist");
 }
 
 if($mybb->input['action'] == "do_delete")
@@ -116,7 +116,7 @@ if($mybb->input['action'] == "do_delete")
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."users SET style='' WHERE style='".intval($mybb->input['tid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
-		cpredirect("themes.php", $lang->theme_deleted);
+		cpredirect("themes.php?".SID, $lang->theme_deleted);
 		@unlink(MYBB_ROOT.'css/theme_'.intval($mybb->input['tid']).'.css');
 	}
 	else
@@ -128,7 +128,7 @@ if($mybb->input['action'] == "default")
 {
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='0'");
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='1' WHERE tid='".intval($mybb->input['tid'])."'");
-	cpredirect("themes.php", $lang->default_updated);
+	cpredirect("themes.php?".SID, $lang->default_updated);
 }
 if($mybb->input['action'] == "do_download")
 {
@@ -369,7 +369,7 @@ if($mybb->input['action'] == "do_import")
 	$tid = $db->insert_id();
 	update_theme($tid, $mybb->input['pid'], $themebits, $css, 0);
 	$lang->theme_imported = sprintf($lang->theme_imported, $name);
-	cpredirect("themes.php", $lang->theme_imported);
+	cpredirect("themes.php?".SID, $lang->theme_imported);
 }
 if($mybb->input['action'] == "add")
 {
@@ -571,24 +571,24 @@ function theme_hop(tid)
 		confirmReturn = confirm('<?php echo $lang->export_advanced_settings; ?>');
 		if(confirmReturn == false)
 		{
-			window.location = "themes.php?action=do_download&tid="+tid+"&customonly=yes&inctemps=yes&customtempsonly=yes";
+			window.location = "themes.php?<?php echo SID; ?>&action=do_download&tid="+tid+"&customonly=yes&inctemps=yes&customtempsonly=yes";
 		}
 		else
 		{
-			window.location = "themes.php?action=download&tid="+tid;
+			window.location = "themes.php?<?php echo SID; ?>&action=download&tid="+tid;
 		}
 	}
 	else if(action != "")
 	{
-		window.location = "themes.php?action="+action+"&tid="+tid;
+		window.location = "themes.php?<?php echo SID; ?>&action="+action+"&tid="+tid;
 	}
 }
 -->
 </script>
 <?php
-	$hopto[] = "<input type=\"button\" value=\"$lang->new_theme\" onclick=\"hopto('themes.php?action=add');\" class=\"hoptobutton\">";
-	$hopto[] = "<input type=\"button\" value=\"$lang->import_theme\" onclick=\"hopto('themes.php?action=import');\" class=\"hoptobutton\">";
-	$hopto[] = "<input type=\"button\" value=\"$lang->download_theme\" onclick=\"hopto('themes.php?action=download');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->new_theme\" onclick=\"hopto('themes.php?".SID."&action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->import_theme\" onclick=\"hopto('themes.php?".SID."&action=import');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->download_theme\" onclick=\"hopto('themes.php?".SID."&action=download');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 
 	startform("themes.php", "themes" , "do_modify");

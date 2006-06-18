@@ -17,7 +17,7 @@ $lang->load("languages");
 
 $languages = $lang->get_languages();
 
-addacpnav($lang->nav_languages, "languages.php");
+addacpnav($lang->nav_languages, "languages.php?".SID);
 
 checkadminpermissions("caneditlangs");
 logadmin();
@@ -102,7 +102,7 @@ if($mybb->input['action'] == "do_editset")
 	{
 		fwrite($file, $newfile);
 		fclose($file);
-		cpredirect("languages.php", $lang->updated);
+		cpredirect("languages.php?".SID, $lang->updated);
 	}
 	else
 	{
@@ -119,7 +119,7 @@ if($mybb->input['action'] == "editset")
 		cperror($lang->invalid_file);
 	}
 
-	addacpnav($languages[$editlang], "languages.php?action=edit&lang=$editlang");
+	addacpnav($languages[$editlang], "languages.php?".SID."&action=edit&lang=$editlang");
 	addacpnav($lang->nav_editing_set);
 
 	// Get language info
@@ -229,7 +229,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		fwrite($file, $newfile);
 		fclose($file);
-		cpredirect("languages.php?action=edit&lang=$editlang&editwith=$editwith", $lang->updated);
+		cpredirect("languages.php?".SID."&action=edit&lang=$editlang&editwith=$editwith", $lang->updated);
 	}
 	else
 	{
@@ -255,7 +255,7 @@ if($mybb->input['action'] == "edit")
 		cperror($lang->invalid_set);
 	}
 
-	addacpnav($languages[$editlang], "languages.php?action=edit&amp;lang=$editlang&amp;editwith=$editwith");
+	addacpnav($languages[$editlang], "languages.php?".SID."&action=edit&amp;lang=$editlang&amp;editwith=$editwith");
 
 	if(isset($mybb->input['file']))
 	{
@@ -439,11 +439,11 @@ if($mybb->input['action'] == "edit")
 			$admin_link = '';
 			if(in_array($filename, $filenames))
 			{
-				$normal_link = makelinkcode($lang->edit_link, "languages.php?action=edit&amp;lang=$editlang&amp;editwith=$editwith&amp;file=$filename");
+				$normal_link = makelinkcode($lang->edit_link, "languages.php?".SID."&action=edit&amp;lang=$editlang&amp;editwith=$editwith&amp;file=$filename");
 			}
 			if(in_array($filename, $adminfilenames))
 			{
-				$admin_link = makelinkcode($lang->edit_link, "languages.php?action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&inadmin=1");
+				$admin_link = makelinkcode($lang->edit_link, "languages.php?".SID."&action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&inadmin=1");
 			}
 			echo "<tr class=\"{$bgcolor}\">
 	<td>{$filename}</td>

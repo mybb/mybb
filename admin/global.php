@@ -11,7 +11,9 @@
 
 // Lets pretend we're a level higher
 define("IN_ADMINCP", 1);
-$config = array();
+
+// Here you can change how much of an Admin CP IP address must match in a previous session for the user is validated (defaults to 3 which matches a.b.c)
+define("ADMIN_IP_SEGMENTS", 3);
 
 if(!isset($config['admindir']))
 {
@@ -50,9 +52,7 @@ $plugins->run_hooks("admin_global_start");
 
 if($mybb->input['action'] == "logout")
 {
-	$expires = $time-60*60*24;
-	@setcookie("mybbadmin", "", $expires);
-	$lang->invalid_admin = $lang->logged_out_admin;
+
 }
 
 $showlogin = 1;
@@ -68,17 +68,96 @@ if($mybb->input['do'] == "login")
 		$user = $db->fetch_array($query);
 	}
 	$failcheck = 1;
-}
-elseif($mybb->input['action'] != "logout")
-{
-	$logon = explode("_", $_COOKIE['mybbadmin'], 2);
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".$db->escape_string($logon[0])."'");
-	$user = $db->fetch_array($query);
-	if($user['loginkey'] != $logon[1])
+	
+	if($user['uid'])
 	{
-		unset($user);
+		// Create a new admin session for this user
+		$admin_session = array(
+			"sid" => md5(uniqid(microtime())),
+			"uid" => $user['uid'],
+			"loginkey" => $user['loginkey'],
+			"ip" => get_ip(),
+			"dateline" => time(),
+			"lastactive" => time()
+		);
+		$db->insert_query(TABLE_PREFIX."adminsessions", $admin_session);
 	}
 }
+else if($mybb->input['action'] == "logout")
+{
+	$lang->invalid_admin = $lang->logged_out_admin;
+	// Delete session from the database
+	$db->delete_query(TABLE_PREFIX."adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+}
+else
+{
+	// No admin session - show message on the login screen
+	if(!$mybb->input['adminsid'])
+	{
+		$lang->invalid_admin = $lang->no_admin_session;
+	}
+	// Otherwise, check admin session
+	else
+	{
+		$query = $db->simple_select(TABLE_PREFIX."adminsessions", "*", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+		$admin_session = $db->fetch_array($query);
+		
+		// No matching admin session found - show message on login screen
+		if(!$admin_session['sid'])
+		{
+			$lang->invalid_admin = $lang->invalid_admin_session;
+		}
+		else
+		{
+			// Fetch the user from the admin session
+			$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='{$admin_session['uid']}'");
+			$user = $db->fetch_array($query);
+
+			// Login key has changed - force logout
+			if(!$user['uid'] && $user['lognkey'] != $admin_session['lognkey'])
+			{
+				unset($user);
+			}
+			else
+			{
+				// Admin CP sessions 2 hours old are expired
+				if($admin_session['lastactive'] < time()-7200)
+				{
+					$lang->invalid_admin = $lang->admin_session_expired;
+					$db->delete_query(TABLE_PREFIX."adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+					unset($user);
+				}
+				// If IP matching is set - check IP address against the session IP
+				else if(ADMIN_IP_SEGMENTS > 0)
+				{
+					$exploded_ip = explode(".", $ipaddress);
+					$exploded_admin_ip = explode(".", $admin_session['ip']);
+					$matches = 0;
+					$valid_ip = false;
+					for($i = 0; $i < ADMIN_IP_SEGMENTS; $i++)
+					{
+						if($exploded_ip[$i] == $exploded_admin_ip[$i])
+						{
+							++$matches;
+						}
+						if($matches == ADMIN_IP_SEGMENTS)
+						{
+							$valid_ip = true;
+							break;
+						}
+					}
+					// IP doesn't match properly - show message on logon screen
+					if(!$valid_ip)
+					{
+						$lang->invalid_admin = $lang->invalid_admin_ip;
+						unset($user);
+					}	
+				}
+			}
+		}
+	}
+}
+
 $mybbgroups = $user['usergroup'].",".$user['additionalgroups'];
 
 if(!$user['usergroup'])
@@ -96,8 +175,6 @@ if($admingroup['cancp'] != "yes" || !$user['uid'])
 
 if($user['uid'])
 {
-	$expires = $time+60*60*24;
-	setcookie("mybbadmin", $user['uid']."_".$user['loginkey'], $expires);
 	$mybbadmin = $mybb->user = $user;
 	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='$user[usergroup]'");
 	$mybb->usergroup = $db->fetch_array($query);
@@ -107,6 +184,17 @@ if($user['uid'])
 	{
 		$style = "./styles/$adminoptions[cpstyle]/stylesheet.css";
 	}
+	
+	// Update the session information in the DB
+	if($admin_session['sid'])
+	{
+		$updated_session = array(
+			"lastactive" => time(),
+			"ip" => $ipaddress
+		);
+		$db->update_query(TABLE_PREFIX."adminsessions", $updated_sessions, "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+	}
+	define("SID", "adminsid={$admin_session['sid']}");
 }
 else
 {
@@ -131,7 +219,7 @@ else
 		$goto = '';
 	}
 	$plugins->run_hooks("admin_global_login");
-	cpheader("", 0, "javascript:document.loginform.username.focus();");
+	cpheader("", 0, "javascript:document.loginform.username.focus(); if (top.location != location) { top.location.href = document.location.href; }");
 	echo "<br />\n<br />\n<br />";
 	echo "<form action=\"$_SERVER[PHP_SELF]\" method=\"post\" name=\"loginform\">\n";
 	echo "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"450\" align=\"center\">\n";
@@ -174,7 +262,13 @@ else
 	exit;
 }
 $navbits[0]['name'] = $mybb->settings['bbname']." ".$lang->control_panel;
-$navbits[0]['url'] = "index.php?action=home";
+$navbits[0]['url'] = "index.php?".SID."&action=home";
+
+if($rand == 2 || $rand == 5)
+{
+	$stamp = time()-604800;
+	$db->delete_query(TABLE_PREFIX."adminsessions", "lastactive<'$stamp'");
+}
 
 $plugins->run_hooks("admin_global_end");
 ?>

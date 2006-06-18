@@ -15,7 +15,7 @@ require "./global.php";
 global $lang;
 $lang->load("modlogs");
 
-addacpnav($lang->nav_mod_logs, "modlogs.php");
+addacpnav($lang->nav_mod_logs, "modlogs.php?".SID);
 
 switch($mybb->input['action'])
 {
@@ -50,7 +50,7 @@ if($mybb->input['action'] == "do_prune")
 	}
 	$plugins->run_hooks("admin_modlogs_do_prune");
 	$db->delete_query(TABLE_PREFIX."moderatorlog", $thequery);
-	cpredirect("modlogs.php", $lang->modlog_pruned);
+	cpredirect("modlogs.php?".SID, $lang->modlog_pruned);
 }
 if($mybb->input['action'] == "view")
 {
@@ -107,14 +107,14 @@ if($mybb->input['action'] == "view")
 	if($page != $pages)
 	{
 		$npage = $page+1;
-		$nextpage = "<input type=\"button\" value=\"$lang->nextpage\" onClick=\"hopto('modlogs.php?action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$npage')\">&nbsp;";
-		$lastpage = "<input type=\"button\" value=\"$lang->lastpage\" onClick=\"hopto('modlogs.php?action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$pages')\">&nbsp;";
+		$nextpage = "<input type=\"button\" value=\"$lang->nextpage\" onClick=\"hopto('modlogs.php?".SID."&action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$npage')\">&nbsp;";
+		$lastpage = "<input type=\"button\" value=\"$lang->lastpage\" onClick=\"hopto('modlogs.php?".SID."&action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$pages')\">&nbsp;";
 	}
 	if($page != 1)
 	{
 		$ppage = $page-1;
-		$prevpage = "<input type=\"button\" value=\"$lang->prevpage\" onClick=\"hopto('modlogs.php?action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$ppage')\">&nbsp;";
-		$firstpage = "<input type=\"button\" value=\"$lang->firstpage\" onClick=\"hopto('modlogs.php?action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=1')\">&nbsp;";
+		$prevpage = "<input type=\"button\" value=\"$lang->prevpage\" onClick=\"hopto('modlogs.php?".SID."&action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$ppage')\">&nbsp;";
+		$firstpage = "<input type=\"button\" value=\"$lang->firstpage\" onClick=\"hopto('modlogs.php?".SID."&action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=1')\">&nbsp;";
 	}
 	cpheader();
 	starttable();
@@ -139,7 +139,7 @@ if($mybb->input['action'] == "view")
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
 		$bgcolor = getaltbg();
 		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\"><a href=\"users.php?action=edit&uid=$logitem[uid]\">$logitem[username]</a></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\"><a href=\"users.php?".SID."&action=edit&uid=$logitem[uid]\">$logitem[username]</a></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\">$logitem[dateline]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\">$logitem[action]</td>";
 		echo "<td class=\"$bgcolor\">";

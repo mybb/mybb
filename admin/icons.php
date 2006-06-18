@@ -20,7 +20,7 @@ $iid = intval($mybb->input['iid']);
 checkadminpermissions("caneditpicons");
 logadmin();
 
-addacpnav($lang->nav_posticons, "icons.php");
+addacpnav($lang->nav_posticons, "icons.php?".SID);
 switch($mybb->input['action'])
 {
 	case "add":
@@ -48,7 +48,7 @@ if($mybb->input['action'] == "do_add")
 	}
 	$plugins->run_hooks("admin_icons_do_add");
 	$db->insert_query(TABLE_PREFIX."icons", $sqlarray);
-	cpredirect("icons.php", $lang->icon_added);
+	cpredirect("icons.php?".SID, $lang->icon_added);
 }
 
 if($mybb->input['action'] == "do_delete")
@@ -57,7 +57,7 @@ if($mybb->input['action'] == "do_delete")
 	{	
 		$plugins->run_hooks("admin_icons_do_delete");
 		$db->delete_query(TABLE_PREFIX."icons", "iid='$iid'");
-		cpredirect("icons.php", $lang->icon_deleted);
+		cpredirect("icons.php?".SID, $lang->icon_deleted);
 	}
 	else
 	{
@@ -77,7 +77,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 	$plugins->run_hooks("admin_icons_do_edit");
 	$db->update_query(TABLE_PREFIX."icons", $sqlarray, "iid='$iid'");
-	cpredirect("icons.php", $lang->icon_updated);
+	cpredirect("icons.php?".SID, $lang->icon_updated);
 }
 
 if($mybb->input['action'] == "edit")
@@ -143,7 +143,6 @@ if($mybb->input['action'] == "add")
 	endform($lang->add_icon, $lang->reset_button);
 	echo "<br />\n";
 	echo "<br />\n";
-
 	startform("icons.php", "", "addmultiple");
 	starttable();
 	tableheader($lang->add_multiple);
@@ -179,7 +178,7 @@ if($mybb->input['action'] == "do_addmultiple")
 				$db->insert_query(TABLE_PREFIX."icons", $sqlarray);
 			}
 		}
-		cpredirect("icons.php", $lang->icons_added);
+		cpredirect("icons.php?".SID, $lang->icons_added);
 	}
 }
 
@@ -257,7 +256,7 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		if($finishedmulti)
 		{
-			cpredirect("icons.php", $lang->finished_adding);
+			cpredirect("icons.php?".SID, $lang->finished_adding);
 		}
 		else
 		{
@@ -356,7 +355,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			$image = "../$icon[path]";
 		}
 		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$icon[name]<br /><br /><img src=\"$image\"><br /><br />";
-		echo "<a href=\"icons.php?action=edit&iid=$icon[iid]&page=$page&perpage=$perpage\">$lang->edit</a> <a href=\"icons.php?action=delete&iid=$icon[iid]&page=$page&perpage=$perpage\">$lang->delete</a>";
+		echo "<a href=\"icons.php?".SID."&action=edit&iid=$icon[iid]&page=$page&perpage=$perpage\">$lang->edit</a> <a href=\"icons.php?".SID."&action=delete&iid=$icon[iid]&page=$page&perpage=$perpage\">$lang->delete</a>";
 		echo "</td>";
 		$listed++;
 		if($listed == 5)
@@ -393,12 +392,12 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		if($page > 1)
 		{
 			$prev = $page - 1;
-			$prevpage = "<a href=\"icons.php?page=$prev&perpage=$perpage\">$lang->prevpage</a>";
+			$prevpage = "<a href=\"icons.php?".SID."&page=$prev&perpage=$perpage\">$lang->prevpage</a>";
 		}
 		if($page < $pages)
 		{
 			$next = $page + 1;
-			$nextpage = "<a href=\"icons.php?page=$next&perpage=$perpage\">$lang->nextpage</a>";
+			$nextpage = "<a href=\"icons.php?".SID."&page=$next&perpage=$perpage\">$lang->nextpage</a>";
 		}
 		for($i = 1; $i <= $pages; $i++)
 		{
@@ -408,7 +407,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			}
 			else
 			{
-				$pagelist .= "<a href=\"icons.php?page=$i&perpage=$perpage\">$i</a> ";
+				$pagelist .= "<a href=\"icons.php?".SID."&page=$i&perpage=$perpage\">$i</a> ";
 			}
 		}
 	}
@@ -416,7 +415,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		echo "<tr><td class=\"altbg1\" colspan=\"5\">$prevpage $pagelist $nextpage</td></tr>";
 	}
-	echo "<form action=\"icons.php?page=$page\" method=\"post\"><tr><td class=\"altbg2\" colspan=\"5\">$lang->icons_per_page <input type=\"text\" name=\"perpage\" value=\"$perpage\"> <input type=\"submit\" name=\"submit\" value=\"Go\"></td></tr></form>";
+	echo "<form action=\"icons.php?".SID."&page=$page\" method=\"post\"><tr><td class=\"altbg2\" colspan=\"5\">$lang->icons_per_page <input type=\"text\" name=\"perpage\" value=\"$perpage\"> <input type=\"submit\" name=\"submit\" value=\"Go\"></td></tr></form>";
 	endtable();
 	cpfooter();
 }

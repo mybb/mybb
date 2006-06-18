@@ -15,7 +15,7 @@ require "./global.php";
 global $lang;
 $lang->load("smilies");
 
-addacpnav($lang->nav_smilies, "smilies.php");
+addacpnav($lang->nav_smilies, "smilies.php?".SID);
 switch($mybb->input['action'])
 {
 	case "add":
@@ -48,7 +48,7 @@ if($mybb->input['action'] == "do_add")
 
 	$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
 	$cache->updatesmilies();
-	cpredirect("smilies.php", $lang->smilie_added);
+	cpredirect("smilies.php?".SID, $lang->smilie_added);
 }
 
 if($mybb->input['action'] == "do_delete")
@@ -57,7 +57,7 @@ if($mybb->input['action'] == "do_delete")
 	{
 		$db->query("DELETE FROM ".TABLE_PREFIX."smilies WHERE sid='".$mybb->input['sid']."'");
 		$cache->updatesmilies();
-		cpredirect("smilies.php", $lang->smilie_deleted);
+		cpredirect("smilies.php?".SID, $lang->smilie_deleted);
 	}
 	else
 	{
@@ -81,7 +81,7 @@ if($mybb->input['action'] == "do_edit")
 
 	$db->update_query(TABLE_PREFIX."smilies", $smilie, "sid='".intval($mybb->input['sid'])."'");
 	$cache->updatesmilies();
-	cpredirect("smilies.php", $lang->smilie_updated);
+	cpredirect("smilies.php?".SID, $lang->smilie_updated);
 }
 
 if($mybb->input['action'] == "edit")
@@ -269,7 +269,7 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		if($finishedmulti)
 		{
-			cpredirect("smilies.php", $lang->all_sel_added);
+			cpredirect("smilies.php?".SID, $lang->all_sel_added);
 		}
 		else
 		{
@@ -323,8 +323,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		cpheader();
 	}
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_new_smilie\" onclick=\"hopto('smilies.php?action=add');\" class=\"hoptobutton\">";
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_multiple_smilies\" onclick=\"hopto('smilies.php?action=add&multi=1');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_new_smilie\" onclick=\"hopto('smilies.php?".SID."&action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_multiple_smilies\" onclick=\"hopto('smilies.php?".SID."&action=add&multi=1');\" class=\"hoptobutton\">";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->smilies, "", 5);
@@ -365,7 +365,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			$image = "../$smilie[image]";
 		}
 		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$smilie[name]<br><br><img src=\"$image\">&nbsp;&nbsp;<b>".stripslashes($smilie[find])."</b><br><br>";
-		echo "<a href=\"smilies.php?action=edit&sid=$smilie[sid]&page=$page&perpage=$perpage\">$lang->edit</a> <a href=\"smilies.php?action=delete&sid=$smilie[sid]&page=$page&perpage=$perpage\">$lang->delete</a>";
+		echo "<a href=\"smilies.php?".SID."&action=edit&sid=$smilie[sid]&page=$page&perpage=$perpage\">$lang->edit</a> <a href=\"smilies.php?".SID."&action=delete&sid=$smilie[sid]&page=$page&perpage=$perpage\">$lang->delete</a>";
 		echo "</td>";
 		$listed++;
 		if($listed == 5)
@@ -403,12 +403,12 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		if($page > 1)
 		{
 			$prev = $page - 1;
-			$prevpage = "<a href=\"smilies.php?page=$prev&perpage=$perpage\">$lang->prevpage</a>";
+			$prevpage = "<a href=\"smilies.php?".SID."&page=$prev&perpage=$perpage\">$lang->prevpage</a>";
 		}
 		if($page < $pages)
 		{
 			$next = $page + 1;
-			$nextpage = "<a href=\"smilies.php?page=$next&perpage=$perpage\">$lang->nextpage</a>";
+			$nextpage = "<a href=\"smilies.php?".SID."&page=$next&perpage=$perpage\">$lang->nextpage</a>";
 		}
 		for($i=1;$i<=$pages;$i++)
 		{
@@ -418,7 +418,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			}
 			else
 			{
-				$pagelist .= "<a href=\"smilies.php?page=$i&perpage=$perpage\">$i</a>";
+				$pagelist .= "<a href=\"smilies.php?".SID."&page=$i&perpage=$perpage\">$i</a>";
 			}
 		}
 	}
@@ -426,7 +426,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		echo "<tr><td class=\"altbg1\" colspan=\"5\">$prevpage $pagelist $nextpage</td></tr>";
 	}
-	echo "<form action=\"smilies.php?page=$page\" method=\"post\"><tr><td class=\"altbg2\" colspan=\"5\">$lang->smilies_per_page <input type=\"text\" name=\"perpage\" value=\"$perpage\"> <input type=\"submit\" name=\"submit\" value=\"$lang->go\"></td></tr></form>";
+	echo "<form action=\"smilies.php?".SID."&page=$page\" method=\"post\"><tr><td class=\"altbg2\" colspan=\"5\">$lang->smilies_per_page <input type=\"text\" name=\"perpage\" value=\"$perpage\"> <input type=\"submit\" name=\"submit\" value=\"$lang->go\"></td></tr></form>";
 	echo "</table>\n";
 	echo "</td></tr></table>";
 	cpfooter();

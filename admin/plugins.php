@@ -17,7 +17,7 @@ require "./global.php";
 // Load language packs for this section
 $lang->load("plugins");
 
-addacpnav($lang->nav_plugins, "plugins.php");
+addacpnav($lang->nav_plugins, "plugins.php?".SID);
 
 checkadminpermissions("caneditsettings");
 logadmin();
@@ -75,7 +75,7 @@ if($mybb->input['action'] == "activate")
 	$plugins_cache['active'] = $active_plugins;
 	$cache->update("plugins", $plugins_cache);
 
-	cpredirect("plugins.php", $message);
+	cpredirect("plugins.php?".SID, $message);
 }
 
 if($mybb->input['action'] == "")
