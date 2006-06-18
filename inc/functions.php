@@ -1580,9 +1580,13 @@ function build_clickable_smilies()
  */
 function gzip_encode($contents, $level=1)
 {
-	if(function_exists("gzcompress") && function_exists("crc32") && !headers_sent() && !ini_get('output_buffering'))
+	if(function_exists("gzcompress") && function_exists("crc32") && !headers_sent() && !(ini_get('output_buffering') && strpos(' '.ini_get('output_handler'), 'ob_gzhandler')))
 	{
-		$httpaccept_encoding = (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) ? $_SERVER['HTTP_ACCEPT_ENCODING'] : "";
+		$httpaccept_encoding = '';
+		if(isset($_SERVER['HTTP_ACCEPT_ENCODING']))
+		{
+			$httpaccept_encoding = $_SERVER['HTTP_ACCEPT_ENCODING'];
+		}
 		if(strpos(" ".$httpaccept_encoding, "x-gzip"))
 		{
 			$encoding = "x-gzip";
