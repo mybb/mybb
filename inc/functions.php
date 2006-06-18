@@ -2089,54 +2089,30 @@ function mark_reports($id, $type="post")
 		case "posts":
 			if(is_array($id))
 			{
-				$sqlarray = array(
-			 		'reportstatus' => 1
-			 	);
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "pid IN($rids) AND reportstatus='0'");
+				$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "pid IN($rids) AND reportstatus='0'");
 			}
 			break;
 		case "post":
-			$sqlarray = array(
-	 			'reportstatus' => 1
-	 		);
-			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "pid='$id' AND reportstatus='0'");
+			$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "pid='$id' AND reportstatus='0'");
 			break;
 		case "threads":
 			if(is_array($id))
 			{
-				$sqlarray = array(
-			 		'reportstatus' => 1
-			 	);
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "tid IN($rids) AND reportstatus='0'");
+				$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "tid IN($rids) AND reportstatus='0'");
 			}
 			break;
 		case "thread":
-			$sqlarray = array(
-	 			'reportstatus' => 1
-	 		);
-			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "tid='$id' AND reportstatus='0'");
+			$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "tid='$id' AND reportstatus='0'");
 			break;
 		case "forum":
-			$sqlarray = array(
-	 			'reportstatus' => 1
-	 		);
-			$db->query("
-				UPDATE ".TABLE_PREFIX."reportedposts
-				SET reportstatus='1'
-				WHERE fid='$id'
-				AND reportstatus='0'
-			");
-			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "fid='$id' AND reportstatus='0'");
+			$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "fid='$id' AND reportstatus='0'");
 			break;
 		case "all":
-			$sqlarray = array(
-	 			'reportstatus' => 1
-	 		);
-			$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "reportstatus='0'");
+			$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "reportstatus='0'");
 			break;
 	}
 	$plugins->run_hooks("mark_reports");

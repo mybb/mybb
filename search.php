@@ -41,11 +41,7 @@ $now = time();
 if($mybb->input['action'] == "results")
 {
 	$sid = $db->escape_string($mybb->input['sid']);
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."searchlog
-		WHERE sid='$sid'
-	");
+	$query = $db->simple_select(TABLE_PREFIX."searchlog", "*", "sid='$sid'");
 	$search = $db->fetch_array($query);
 
 	if(!$search['sid'])
@@ -133,11 +129,7 @@ if($mybb->input['action'] == "results")
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->query("
-				SELECT t.tid
-				FROM ".TABLE_PREFIX."threads t
-				WHERE $where_conditions
-			");
+			$query = $db->simple_select(TABLE_PREFIX."threads t", "t.tid", $where_conditions);
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -159,11 +151,7 @@ if($mybb->input['action'] == "results")
 		else
 		{
 			$where_conditions = "t.tid IN (".$search['threads'].")";
-			$query = $db->query("
-				SELECT COUNT(t.tid) AS resultcount
-				FROM ".TABLE_PREFIX."threads t
-				WHERE $where_conditions
-			");
+			$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS resultcount", $where_conditions);
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])
@@ -173,13 +161,13 @@ if($mybb->input['action'] == "results")
 			$threadcount = $count['resultcount'];
 		}
 		// Begin selecting matching threads, cache them.
-		$query = $db->query("
-			SELECT t.*
-			FROM ".TABLE_PREFIX."threads t
-			WHERE $where_conditions
-			ORDER BY $sortfield $order
-			LIMIT $start, $perpage
-		");
+		$sqlarray = array(
+			'order_by' => $sortfield,
+			'order_dir' => $order,
+			'limit_start' => $start,
+			'limit' => $perpage
+		);
+		$query = $db->simple_select(TABLE_PREFIX."threads t", "t.*", $where_conditions, $sqlarray);
 		$thread_cache = array();
 		while($thread = $db->fetch_array($query))
 		{
@@ -206,12 +194,7 @@ if($mybb->input['action'] == "results")
 		// Fetch the read threads.
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
-			$query = $db->query("
-				SELECT tid,dateline
-				FROM ".TABLE_PREFIX."threadsread
-				WHERE uid='".$mybb->user['uid']."'
-				AND tid IN(".$thread_ids.")
-			");
+			$query = $db->simple_select(TABLE_PREFIX."threadsread", "tid,dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
 			while($readthread = $db->fetch_array($query))
 			{
 				$thread_cache[$readthread['tid']]['last_read'] = $readthread['dateline'];
@@ -221,14 +204,7 @@ if($mybb->input['action'] == "results")
 		// Fetch thread 'dots'
 		foreach($thread_cache as $thread)
 		{
-			if($bgcolor == "trow1")
-			{
-				$bgcolor = "trow2";
-			}
-			else
-			{
-				$bgcolor = "trow1";
-			}
+			$bgcolor = alt_trow();
 			$folder = '';
 			$prefix = '';
 
@@ -239,7 +215,7 @@ if($mybb->input['action'] == "results")
 			}
 			else
 			{
-				$thread['profilelink'] = "<a href=\"".str_replace("{uid}", $thread['uid'], PROFILE_URL)."\">".$thread['username']."</a>";
+				$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 			}
 			$thread['subject'] = $parser->parse_badwords($thread['subject']);
 			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
@@ -341,7 +317,7 @@ if($mybb->input['action'] == "results")
 				{
 					$pagesstop = $thread['pages'];
 				}
-				for($i=1; $i<=$pagesstop; ++$i)
+				for($i = 1; $i <= $pagesstop; ++$i)
 				{
 					eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
 				}
@@ -365,7 +341,7 @@ if($mybb->input['action'] == "results")
 			}
 			else
 			{
-				$lastposterlink = "<a href=\"".str_replace("{uid}", $lastposteruid, PROFILE_URL)."\">".$lastposter."</a>";
+				$lastposterlink = build_profile_link($lastposter, $lastposteruid);
 			}
 
 			$thread['replies'] = mynumberformat($thread['replies']);
@@ -373,7 +349,7 @@ if($mybb->input['action'] == "results")
 
 			if($forumcache[$thread['fid']])
 			{
-				$thread['forumlink'] = "<a href=\"".str_replace("{fid}", $thread['fid'], FORUM_URL)."\">".$forumcache[$thread['fid']]['name']."</a>";
+				$thread['forumlink'] = "<a href=\"".get_forum_link($thread['fid'])."\">".$forumcache[$thread['fid']]['name']."</a>";
 			}
 			else
 			{
@@ -442,12 +418,7 @@ if($mybb->input['action'] == "results")
 		// Read threads
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
-			$query = $db->query("
-				SELECT tid, dateline
-				FROM ".TABLE_PREFIX."threadsread
-				WHERE uid='".$mybb->user['uid']."'
-				AND tid IN(".$tids.")
-			");
+			$query = $db->simple_select(TABLE_PREFIX."threadsread", "tid, dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$tids.")");
 			while($readthread = $db->fetch_array($query))
 			{
 				$readthreads[$readthread['tid']] = $readthread['dateline'];
@@ -463,14 +434,7 @@ if($mybb->input['action'] == "results")
 		");
 		while($post = $db->fetch_array($query))
 		{
-			if($bgcolor == "trow1")
-			{
-				$bgcolor = "trow2";
-			}
-			else
-			{
-				$bgcolor = "trow1";
-			}
+			$bgcolor = alt_trow();
 			if(!$post['username'])
 			{
 				$post['username'] = $post['postusername'];
@@ -485,7 +449,7 @@ if($mybb->input['action'] == "results")
 				}
 				else
 				{
-					$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".$post['username']."</a>";
+					$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 				}
 			}
 			$post['subject'] = $parser->parse_badwords($post['subject']);
@@ -505,7 +469,7 @@ if($mybb->input['action'] == "results")
 
 			if($forumcache[$thread['fid']])
 			{
-				$post['forumlink'] = "<a href=\"".str_replace("{fid}", $post['fid'], FORUM_URL)."\">".$forumcache[$post['fid']]['name']."</a>";
+				$post['forumlink'] = "<a href=\"".get_forum_link($post['fid'])."\">".$forumcache[$post['fid']]['name']."</a>";
 			}
 			else
 			{
@@ -580,7 +544,7 @@ if($mybb->input['action'] == "results")
 
 			if($forumcache[$post['fid']])
 			{
-				$post['forumlink'] = "<a href=\"".str_replace("{fid}", $post['fid'], FORUM_URL)."\">".$forumcache[$post['fid']]['name']."</a>";
+				$post['forumlink'] = "<a href=\"".get_forum_link($post['fid'])."\">".$forumcache[$post['fid']]['name']."</a>";
 			}
 			else
 			{
@@ -591,17 +555,17 @@ if($mybb->input['action'] == "results")
 			{
 				$post['subject'] = $post['message'];
 			}
-			if(strlen($post['subject']) > 50)
+			if(my_strlen($post['subject']) > 50)
 			{
-				$post['subject'] = substr($post['subject'], 0, 50)."...";
+				$post['subject'] = my_substr($post['subject'], 0, 50)."...";
 			}
 			else
 			{
 				$post['subject'] = $post['subject'];
 			}
-			if(strlen($post['message']) > 200)
+			if(my_strlen($post['message']) > 200)
 			{
-				$prev = htmlspecialchars_uni(substr($post['message'], 0, 200)."...");
+				$prev = htmlspecialchars_uni(my_substr($post['message'], 0, 200)."...");
 			}
 			else
 			{
@@ -813,13 +777,7 @@ elseif($mybb->input['action'] == "do_search")
 			$conditions = "uid='0' AND ipaddress='{$ipaddress}'";
 		}
 		$timecut = time()-$mybb->settings['searchfloodtime'];
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."searchlog
-			WHERE $conditions
-			AND dateline >= '$timecut'
-			ORDER BY dateline DESC
-		");
+		$query = $db->query(TABLE_PREFIX."searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
 		if($last_search['sid'])

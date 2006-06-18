@@ -26,7 +26,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 	if(!is_array($pforumcache))
 	{
 		// Get Forums
-		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f WHERE linkto='' ORDER BY f.pid, f.disporder");
+		$query = $db->simple_select(TABLE_PREFIX."forums f", "f.*", "linkto=''", array('order_by' => "f.pid, f.disporder"));
 		while($forum = $db->fetch_array($query))
 		{
 			$pforumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -38,9 +38,9 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 	}
 	if(is_array($pforumcache[$pid]))
 	{
-		while(list($key, $main) = each($pforumcache[$pid]))
+		foreach($pforumcache[$pid] as $key => $main)
 		{
-			while(list($key, $forum) = each($main))
+			foreach($main as $key => $forum)
 			{
 				$perms = $permissioncache[$forum['fid']];
 				if(($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no") && $perms['cansearch'] != "no")
@@ -73,7 +73,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 					if($pforumcache[$forum['fid']])
 					{
 						$newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
-						$forumlistbits .= make_searchable_forums($forum['fid'], $selitem, 0, $newdepth, );
+						$forumlistbits .= make_searchable_forums($forum['fid'], $selitem, 0, $newdepth);
 					}
 				}
 			}
@@ -81,7 +81,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 	}
 	if($addselect)
 	{
-		$forumlist = "<select name=\"forums\" size=\"15\" multiple=\"multiple\">\n<option value=\"all\" selected>$lang->search_all_forums</option>\n<option value=\"all\">----------------------</option>\n$forumlistbits\n</select>";
+		$forumlist = "<select name=\"forums\" size=\"15\" multiple=\"multiple\">\n<option value=\"all\" selected=\"selected\">$lang->search_all_forums</option>\n<option value=\"all\">----------------------</option>\n$forumlistbits\n</select>";
 	}
 	return $forumlist;
 }
