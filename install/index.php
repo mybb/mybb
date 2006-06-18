@@ -482,8 +482,8 @@ function insert_templates()
 	$tree = $parser->get_tree();
 
 	$theme = $tree['theme'];
-	$css = killempty($theme['cssbits']);
-	$themebits = killempty($theme['themebits']);
+	$css = kill_tags($theme['cssbits']);
+	$themebits = kill_tags($theme['themebits']);
 	$templates = $theme['templates']['template'];
 	$themebits['templateset'] = $templateset;
 	$sid = -2;
