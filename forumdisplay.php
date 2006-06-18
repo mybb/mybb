@@ -69,7 +69,7 @@ $forumpermissions = forum_permissions();
 $fpermissions = $forumpermissions[$fid];
 
 // Get the forums we will need to show.
-$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active != 'no'", array('order_by' => 'f.pid, f.disporder'));
+$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active != 'no'", array('order_by' => 'pid, disporder'));
 // Build a forum cache.
 while($forum = $db->fetch_array($query))
 {
