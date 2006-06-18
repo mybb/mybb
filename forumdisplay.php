@@ -16,7 +16,6 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
 $templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col";
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep";
 require "./global.php";
-require MYBB_ROOT."inc/functions.php";
 require MYBB_ROOT."inc/functions_post.php";
 require MYBB_ROOT."inc/functions_forumlist.php";
 require MYBB_ROOT."inc/class_parser.php";
