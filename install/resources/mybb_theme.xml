@@ -827,7 +827,7 @@ var inlineId = {$tid};
 {$pollbox}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->update_post}" tabindex="3" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" ></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->update_post}" tabindex="3" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" /></div>
 <input type="hidden" name="action" value="do_editpost" />
 <input type="hidden" name="pid" value="{$pid}" />
 <input type="hidden" name="posthash" value="{$posthash}" />
@@ -1471,7 +1471,7 @@ $headerinclude
 <input type="text" class="textbox" name="reason" size="40" maxlength="250" />
 <br />
 <br />
-<div align="center"><input type="submit" class="button" value="{$lang->report_post}"></div>
+<div align="center"><input type="submit" class="button" value="{$lang->report_post}" /></div>
 </form>
 </td>
 </tr>
@@ -1571,7 +1571,7 @@ $headerinclude
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->verify_forum_password}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->verify_forum_password}" /></div>
 </form>
 {$footer}
 </body>
@@ -3070,7 +3070,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$loginbox}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_posts}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_posts}" /></div>
 <input type="hidden" name="action" value="do_multideleteposts" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="posts" value="{$inlineids}" />
@@ -3207,7 +3207,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->update_notes}" tabindex="2"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->update_notes}" tabindex="2" /></div>
 <input type="hidden" name="action" value="do_threadnotes" />
 <input type="hidden" name="tid" value="{$tid}" />
 <br />
@@ -3916,7 +3916,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->login}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->login}" /></div>
 <input type="hidden" name="action" value="do_login" />
 <input type="hidden" name="url" value="{$redirect_url}" />
 </form>
@@ -4102,7 +4102,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$loginbox}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_thread}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_thread}" /></div>
 <input type="hidden" name="action" value="do_deletethread" />
 <input type="hidden" name="tid" value="{$tid}" />
 </form>
@@ -4207,7 +4207,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$posts}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->merge_posts}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->merge_posts}" /></div>
 <input type="hidden" name="action" value="do_mergeposts" />
 <input type="hidden" name="tid" value="{$tid}" />
 </form>
@@ -4357,7 +4357,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 
 <br />
-<div align="center"><
+<div align="center">
 <input type="hidden" name="action" value="register" />
 <input type="submit" class="button" name="agree" value="{$lang->i_agree}">
 </div>
@@ -5009,7 +5009,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$loginbox}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_poll}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_poll}" /></div>
 <input type="hidden" name="action" value="do_deletepoll" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="delete" value="1" />
@@ -5260,7 +5260,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 <br />
-<div align="center"><input type="hidden" name="action" value="activate" /><input type="submit" class="button" name="regsubmit" value="{$lang->send_password}"></div>
+<div align="center"><input type="hidden" name="action" value="activate" /><input type="submit" class="button" name="regsubmit" value="{$lang->send_password}" /></div>
 </form>
 {$footer}
 </body>
@@ -5299,7 +5299,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" value="{$lang->request_user_pass}"></div>
+<div align="center"><input type="submit" class="button" value="{$lang->request_user_pass}" /></div>
 <input type="hidden" name="action" value="do_lostpw" />
 </form>
 {$footer}
@@ -5398,7 +5398,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$posts}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_selected_posts}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_selected_posts}" /></div>
 <input type="hidden" name="action" value="do_deleteposts" />
 <input type="hidden" name="tid" value="{$tid}" />
 </form>
@@ -5438,7 +5438,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$posts}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->split_thread}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->split_thread}" /></div>
 <input type="hidden" name="action" value="do_split" />
 <input type="hidden" name="tid" value="{$tid}" />
 </form>
@@ -5726,7 +5726,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->move_copy_thread}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->move_copy_thread}" /></div>
 <input type="hidden" name="action" value="do_move" />
 <input type="hidden" name="tid" value="{$tid}" />
 </form>
@@ -5757,7 +5757,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->merge_threads}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->merge_threads}" /></div>
 <input type="hidden" name="action" value="do_merge" />
 <input type="hidden" name="tid" value="{$tid}" />
 </form>
@@ -5816,7 +5816,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 </table>
 <br />
-<div align="center"><input type="hidden" name="action" value="activate" /><input type="submit" class="button" name="regsubmit" value="{$lang->activate_account}"></div>
+<div align="center"><input type="hidden" name="action" value="activate" /><input type="submit" class="button" name="regsubmit" value="{$lang->activate_account}" /></div>
 </form>
 {$footer}
 </body>
@@ -6245,7 +6245,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" value="{$lang->request_activation}"></div>
+<div align="center"><input type="submit" class="button" value="{$lang->request_activation}" /></div>
 <input type="hidden" name="action" value="do_resendactivation" />
 </form>
 {$footer}
@@ -6274,7 +6274,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 {$loginbox}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_threads}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_threads}" /></div>
 <input type="hidden" name="action" value="do_multideletethreads" />
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="threads" value="{$inlineids}" />
@@ -6302,7 +6302,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->move_threads}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->move_threads}" /></div>
 <input type="hidden" name="action" value="do_multimovethreads" />
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="threads" value="{$inlineids}" />
@@ -6330,7 +6330,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->merge_posts}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->merge_posts}" /></div>
 <input type="hidden" name="action" value="do_multimergeposts" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="posts" value="{$inlineids}" />
@@ -6364,7 +6364,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->split_thread}"></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->split_thread}" /></div>
 <input type="hidden" name="action" value="do_multisplitposts" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="posts" value="{$inlineids}" />
@@ -6504,7 +6504,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_register" />
-<input type="submit" class="button" name="regsubmit" value="{$lang->submit_registration}">
+<input type="submit" class="button" name="regsubmit" value="{$lang->submit_registration}" />
 </div>
 </form>
 {$footer}
