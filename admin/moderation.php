@@ -81,7 +81,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 
 	$update_tool = array();
-	if($mybb->input['action'] == 'addposttool')
+	if($mybb->input['type'] == 'p')
 	{
 		if(stripos($mybb->input['splitpostsnewsubject'], '{subject}') === false)
 		{
@@ -172,6 +172,7 @@ if($mybb->input['action'] == "edit")
 
 	startform('moderation.php', '', 'do_edit');
 	makehiddencode('tid', $tool['tid']);
+	makehiddencode('type', $mode);
 
 	starttable();
 	tableheader($title);
