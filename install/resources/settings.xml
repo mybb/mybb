@@ -847,9 +847,9 @@ show=Show to all Users]]></optionscode>
 		</setting>
 		<setting name="extraadmininfo">
 			<title>Advanced Stats / Debug information</title>
-			<description><![CDATA[Shows Server load, parse time, generation time, Gzip compression, etc on the bottom of all pages in the root folder. Please note that only administrators see this information]]></description>
+			<description><![CDATA[Shows Server load, parse time, generation time, Gzip compression, etc on the bottom of all pages in the root folder. Please note that only administrators see this information.]]></description>
 			<disporder>11</disporder>
-			<optionscode><![CDATA[yesno]]></optioncode>
+			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 		</setting>
 	</settinggroup>
