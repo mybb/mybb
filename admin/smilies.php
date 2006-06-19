@@ -29,6 +29,8 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_smilies_start");
+
 checkadminpermissions("caneditsmilies");
 logadmin();
 
@@ -45,7 +47,7 @@ if($mybb->input['action'] == "do_add")
 		"disporder" => intval($mybb->input['disporder']),
 		"showclickable" => $db->escape_string($mybb->input['showclickable'])
 		);
-
+	$plugins->run_hooks("admin_smilies_do_add");
 	$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
 	$cache->updatesmilies();
 	cpredirect("smilies.php?".SID, $lang->smilie_added);
@@ -55,6 +57,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{
+		$plugins->run_hooks("admin_smilies_do_delete");
 		$db->query("DELETE FROM ".TABLE_PREFIX."smilies WHERE sid='".$mybb->input['sid']."'");
 		$cache->updatesmilies();
 		cpredirect("smilies.php?".SID, $lang->smilie_deleted);
@@ -78,7 +81,7 @@ if($mybb->input['action'] == "do_edit")
 		"disporder" => intval($mybb->input['disporder']),
 		"showclickable" => $db->escape_string($mybb->input['showclickable'])
 		);
-
+	$plugins->run_hooks("admin_smilies_do_edit");
 	$db->update_query(TABLE_PREFIX."smilies", $smilie, "sid='".intval($mybb->input['sid'])."'");
 	$cache->updatesmilies();
 	cpredirect("smilies.php?".SID, $lang->smilie_updated);
@@ -92,6 +95,7 @@ if($mybb->input['action'] == "edit")
 	{
 		cperror($lang->invalid_smilie);
 	}
+	$plugins->run_hooks("admin_smilies_edit");
 	$theme['imgdir'] = "images";
 	cpheader();
 	startform("smilies.php", "", "do_edit");
@@ -116,6 +120,7 @@ if($mybb->input['action'] == "delete")
 	{
 		cperror($lang->invalid_smilie);
 	}
+	$plugins->run_hooks("admin_smilies_delete");
 	cpheader();
 	startform("smilies.php", "", "do_delete");
 	makehiddencode("sid", $mybb->input['sid']);
@@ -131,6 +136,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_smilies_add");
 	cpheader();
 	if(!$mybb->input['multi'])
 	{
@@ -170,6 +176,7 @@ if($mybb->input['action'] == "do_addmultiple")
 	}
 	else
 	{
+		$plugins->run_hooks("admin_smilies_do_addmultiple");
 		reset($mybb->input['smimport']);
 		while(list($image,$insert) = each($mybb->input['smimport']))
 		{
@@ -211,6 +218,7 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		cperror($lang->bad_directory);
 	}
+	$plugins->run_hooks("admin_smilies_addmultiple");
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies");
 	while($smilie = $db->fetch_array($query))
 	{
@@ -319,6 +327,7 @@ if($mybb->input['action'] == "addmultiple")
 
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_smilies_modify");
 	if(!$noheader)
 	{
 		cpheader();

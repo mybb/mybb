@@ -45,12 +45,15 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_usergroups_start");
+
 checkadminpermissions("caneditugroups");
 logadmin();
 
 //Change the ordering of the usergroups
 if($mybb->input['action'] == "disporder")
 {
+	$plugins->run_hooks("admin_usergroups_disporder");
 	foreach($mybb->input['disporder'] as $gid=>$order)
 	{
 		$gid = intval($gid);
@@ -148,7 +151,7 @@ if($mybb->input['action'] == "do_add")
 		"attachquota" => intval($mybb->input['attachquota']),
 		"cancustomtitle" => $db->escape_string($mybb->input['cancustomtitle'])
 		);
-
+	$plugins->run_hooks("admin_usergroups_do_add");
 	$db->insert_query(TABLE_PREFIX."usergroups", $grouparray);
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();
@@ -157,6 +160,7 @@ if($mybb->input['action'] == "do_add")
 
 if($mybb->input['action'] == "do_deletegroupleader")
 {
+	$plugins->run_hooks("admin_usergroups_do_deletegroupleader");
 	$db->query("DELETE FROM ".TABLE_PREFIX."groupleaders WHERE uid='".intval($mybb->input['uid'])."' AND gid='".intval($mybb->input['gid'])."'");
 	cpredirect("usergroups.php?".SID."&action=groupleaders&gid=".$mybb->input['gid'], $lang->leader_deleted);
 }
@@ -185,7 +189,7 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 		"canmanagemembers" => $db->escape_string($mybb->input['canmanagemembers']),
 		"canmanagerequests" => $db->escape_string($mybb->input['canmanagerequests']),
 		);
-
+	$plugins->run_hooks("admin_usergroups_do_editgroupleader");
 	if($mybb->input['action'] == "do_editgroupleader")
 	{
 		$lid = intval($mybb->input['lid']);
@@ -205,6 +209,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{
+		$plugins->run_hooks("admin_usergroups_do_delete");
 		$db->query("DELETE FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."' AND type!='1'");
 		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='2' WHERE usergroup='".intval($mybb->input['gid'])."'");
 		$db->query("UPDATE ".TABLE_PREFIX."users SET displaygroup=usergroup WHERE displaygroup='".intval($mybb->input['gid'])."'");
@@ -307,7 +312,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$grouparray['candisplaygroup'] = $db->escape_string($mybb->input['candisplaygroup']);
 	}
-
+	$plugins->run_hooks("admin_usergroups_do_delete");
 	$db->update_query(TABLE_PREFIX."usergroups", $grouparray, "gid='".$mybb->input['gid']."'");
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();
@@ -315,6 +320,7 @@ if($mybb->input['action'] == "do_edit")
 }
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_usergroups_add");
 	cpheader();
 	startform("usergroups.php", "" , "do_add");
 	starttable();
@@ -409,6 +415,7 @@ if($mybb->input['action'] == "delete")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
+	$plugins->run_hooks("admin_usergroups_delete");
 	$lang->delete_group = sprintf($lang->delete_group, $usergroup['title']);
 	$lang->confirm_delete_group = sprintf($lang->confirm_delete_group, $usergroup['title']);
 	cpheader();
@@ -442,6 +449,7 @@ if($mybb->input['action'] == "edit")
 		$joinable = "no";
 		$moderate = "no";
 	}
+	$plugins->run_hooks("admin_usergroups_edit");
 	$lang->edit_group = sprintf($lang->edit_group, $usergroup['title']);
 	cpheader();
 	startform("usergroups.php", "", "do_edit");
@@ -550,7 +558,7 @@ if($mybb->input['action'] == "editgroupleader")
 	{
 		cperror($lang->invalid_leader);
 	}
-
+	$plugins->run_hooks("admin_usergroups_editgroupleader");
 	cpheader();
 	startform("usergroups.php", "", "do_editgroupleader");
 	makehiddencode("gid", $leader['gid']);
@@ -569,7 +577,7 @@ if($mybb->input['action'] == "groupleaders")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
-
+	$plugins->run_hooks("admin_usergroups_groupleaders");
 	cpheader();
 	$lang->manage_group_leaders_for = sprintf($lang->manage_group_leaders_for, $usergroup['title']);
 	startform("usergroups.php", "", "do_groupleaders");
@@ -605,6 +613,7 @@ if($mybb->input['action'] == "groupleaders")
 
 if($mybb->input['action'] == "do_joinrequests")
 {
+	$plugins->run_hooks("admin_usergroups_do_joinrequests");
 	if(is_array($mybb->input['request']))
 	{
 		foreach($mybb->input['request'] as $uid => $what)
@@ -638,6 +647,7 @@ if($mybb->input['action'] == "joinrequests")
 	{
 		cperror($lang->no_join_requests);
 	}
+	$plugins->run_hooks("admin_usergroups_joinrequests");
 		cpheader();
 ?>
 <script type="text/javascript">
@@ -689,6 +699,7 @@ function radioAll(formName, value)
 
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_usergroups_modify");
 	cpheader();
 
 	$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) GROUP BY gid;");

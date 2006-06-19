@@ -39,6 +39,8 @@ switch($mybb->input['action'])
 checkadminpermissions("caneditthemes");
 logadmin();
 
+$plugins->run_hooks("admin_themes_start");
+
 if($mybb->input['action'] == "do_add")
 {
 	if(!$mybb->input['pid'])
@@ -55,7 +57,7 @@ if($mybb->input['action'] == "do_add")
 		"name" => $db->escape_string($mybb->input['name']),
 		"pid" => $mybb->input['pid'],
 		);
-
+	$plugins->run_hooks("admin_themes_do_add");
 	$db->insert_query(TABLE_PREFIX."themes", $themearray);
 	$tid = $db->insert_id();
 	update_theme($tid, $mybb->input['pid'], "", "", 0, 1);
@@ -104,7 +106,7 @@ if($mybb->input['action'] == "do_edit")
 		"pid" => $mybb->input['pid'],
 		"allowedgroups" => $allowedgroups,
 		);
-
+	$plugins->run_hooks("admin_themes_do_edit");
 	$db->update_query(TABLE_PREFIX."themes", $themearray, "tid='".intval($mybb->input['tid'])."'");
 
 	cpredirect("themes.php?".SID, $lang->theme_updated."<br />$themelist");
@@ -114,6 +116,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{
+		$plugins->run_hooks("admin_themes_do_delete");
 		$db->query("UPDATE ".TABLE_PREFIX."users SET style='' WHERE style='".intval($mybb->input['tid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
 		cpredirect("themes.php?".SID, $lang->theme_deleted);
@@ -126,6 +129,7 @@ if($mybb->input['action'] == "do_delete")
 }
 if($mybb->input['action'] == "default")
 {
+	$plugins->run_hooks("admin_themes_default");
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='0'");
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='1' WHERE tid='".intval($mybb->input['tid'])."'");
 	cpredirect("themes.php?".SID, $lang->default_updated);
@@ -140,6 +144,7 @@ if($mybb->input['action'] == "do_download")
 	$inheritedbits = $themebits['inherited'];
 	unset($themebits['inherited']);
 
+	$plugins->run_hooks("admin_themes_do_download");
 	if($mybb->input['customonly'] == "no")
 	{
 		$css = build_css_array($mybb->input['tid'], 0);
@@ -293,6 +298,7 @@ if($mybb->input['action'] == "do_import")
 			cperror($lang->error_local_file);
 		}
 	}
+	$plugins->run_hooks("admin_themes_do_import");
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
@@ -373,6 +379,7 @@ if($mybb->input['action'] == "do_import")
 }
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_themes_add");
 	cpheader();
 	startform("themes.php", "" , "do_add");
 	starttable();
@@ -387,6 +394,7 @@ if($mybb->input['action'] == "add")
 }
 if($mybb->input['action'] == "settings")
 {
+	$plugins->run_hooks("admin_themes_settings");
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='".$mybb->input['tid']."'");
 	$theme = $db->fetch_array($query);
 	cpheader();
@@ -434,7 +442,7 @@ if($mybb->input['action'] == "edit") {
 	}
 	$usergroups[] = "<input type=\"checkbox\" name=\"allowedgroups[]\" value=\"all\"$checked /> <strong>$lang->all_groups</strong>";
 	$usergroups = implode("<br />", $usergroups);
-
+	$plugins->run_hooks("admin_themes_do_edit");
 	$lang->modify_theme = sprintf($lang->modify_theme, $theme['name']);
 	cpheader();
 	startform("themes.php", "" , "do_edit");
@@ -495,6 +503,7 @@ if($mybb->input['action'] == "edit") {
 if($mybb->input['action'] == "delete") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
+	$plugins->run_hooks("admin_themes_delete");
 	$lang->delete_theme = sprintf($lang->delete_theme, $theme['name']);
 	$lang->delete_theme_confirm = sprintf($lang->delete_theme_confirm, $theme['name']);
 	cpheader();
@@ -519,6 +528,7 @@ if($mybb->input['action'] == "delete") {
 }
 if($mybb->input['action'] == "import")
 {
+	$plugins->run_hooks("admin_themes_import");
 	cpheader();
 	startform("themes.php", "" , "do_import");
 	starttable();
@@ -540,6 +550,7 @@ if($mybb->input['action'] == "download")
 	{
 		cpheader();
 	}
+	$plugins->run_hooks("admin_themes_download");
 	startform("themes.php", "" , "do_download");
 	starttable();
 	tableheader($lang->download_theme, "");
@@ -554,6 +565,7 @@ if($mybb->input['action'] == "download")
 }
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_themes_modify");
 	if(!$noheader)
 	{
 		cpheader();

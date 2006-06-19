@@ -51,8 +51,11 @@ switch($mybb->input['action'])
 checkadminpermissions("caneditsettings");
 logadmin();
 
+$plugins->run_hooks("admin_settings_start");
+
 if($mybb->input['action'] == "do_change")
 {
+	$plugins->run_hooks("admin_settings_do_change");
 	if(is_array($mybb->input['upsetting']))
 	{
 		foreach($mybb->input['upsetting'] as $key => $val)
@@ -95,7 +98,7 @@ if($mybb->input['action'] == "do_add")
 			"disporder" => intval($mybb->input['disporder']),
 			"gid" => intval($mybb->input['gid'])
 			);
-
+		$plugins->run_hooks("admin_settings_do_add_setting");
 		$db->insert_query(TABLE_PREFIX."settings", $settingarray);
 		rebuildsettings();
 		cpredirect("settings.php?".SID, $lang->setting_added);
@@ -118,6 +121,7 @@ if($mybb->input['action'] == "do_add")
 		{
 			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
 		}
+		$plugins->run_hooks("admin_settings_do_add_group");
 		$db->insert_query(TABLE_PREFIX."settinggroups", $settinggrouparray);
 		rebuildsettings();
 		cpredirect("settings.php?".SID, $lang->group_added);
@@ -130,12 +134,14 @@ if($mybb->input['action'] == "do_delete")
 	{	
 		if($mybb->input['sid'])
 		{
+			$plugins->run_hooks("admin_settings_do_delete_setting");
 			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
 			rebuildsettings();
 			cpredirect("settings.php?".SID, $lang->setting_deleted);
 		}
 		else if($mybb->input['gid'])
 		{
+			$plugins->run_hooks("admin_settings_do_delete_group");
 			$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
 			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE gid='".intval($mybb->input['gid'])."'");
 			rebuildsettings();
@@ -159,6 +165,7 @@ if($mybb->input['action'] == "export")
 	{
 		$settinglist[$setting['gid']][] = $setting;
 	}
+	$plugins->run_hooks("admin_settings_export");
 	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
 	$xml = "<settings version=\"".$mybboard['vercode']."\" exported=\"".time()."\">\n";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups $gidwhere ORDER BY name ASC");
@@ -205,6 +212,7 @@ if($mybb->input['action'] == "do_edit")
 			"disporder" => intval($mybb->input['disporder']),
 			"gid" => intval($mybb->input['gid'])
 			);
+		$plugins->run_hooks("admin_settings_do_edit_setting");
 		$db->update_query(TABLE_PREFIX."settings", $settingarray, "sid='".intval($mybb->input['sid'])."'");
 		rebuildsettings();
 		cpredirect("settings.php?".SID, $lang->setting_edited);
@@ -221,6 +229,7 @@ if($mybb->input['action'] == "do_edit")
 		{
 			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
 		}
+		$plugins->run_hooks("admin_setings_do_edit_group");
 		$db->update_query(TABLE_PREFIX."settinggroups", $settinggrouparray, "gid='".intval($mybb->input['gid'])."'");
 		rebuildsettings();
 		cpredirect("settings.php?".SID, $lang->group_edited);
@@ -234,8 +243,8 @@ if($mybb->input['action'] == "edit")
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
 		$setting = $db->fetch_array($query);
+		$plugins->run_hooks("admin_settings_edit_seting");
 		$type[$setting['type']] = "selected";
-		$setting['description'] = stripslashes($setting[description]);
 		startform("settings.php", "", "do_edit");
 		makehiddencode("sid", $mybb->input['sid']);
 		starttable();
@@ -254,6 +263,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
 		$group = $db->fetch_array($query);
+		$plugins->run_hooks("admin_settings_edit_group");
 		startform("settings.php", "", "do_edit");
 		makehiddencode("gid", $mybb->input['gid']);
 		starttable();
@@ -280,6 +290,7 @@ if($mybb->input['action'] == "delete")
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
 		$setting = $db->fetch_array($query);
+		$plugins->run_hooks("admin_settings_delete_setting");
 		startform("settings.php", "", "do_delete");
 		makehiddencode("sid", $mybb->input['sid']);
 		starttable();
@@ -294,6 +305,7 @@ if($mybb->input['action'] == "delete")
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
 		$group = $db->fetch_array($query);
+		$plugins->run_hooks("admin_settings_delete_group");
 		startform("settings.php", "", "do_delete");
 		makehiddencode("gid", $mybb->input['gid']);
 		starttable();
@@ -317,6 +329,7 @@ if($mybb->input['action'] == "add")
 	}
 	reset($settinggroups);
 	unset($group);
+	$plugins->run_hooks("admin_settings_add");
 
 	startform("settings.php", "", "do_add");
 	makehiddencode("add", "group");
@@ -346,6 +359,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "do_modify")
 {
 	cpheader();
+	$plugins->run_hooks("admin_settings_do_modify");
 	foreach($mybb->input['disporder'] as $sid => $order)
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."settings SET disporder='".intval($order)."' WHERE sid='".intval($sid)."'");
@@ -363,6 +377,7 @@ if($mybb->input['action'] == "do_modify")
 }
 if($mybb->input['action'] == "modify")
 {
+	$plugins->run_hooks("admin_settings_modify");
 	if(!$noheader)
 	{
 		cpheader();
@@ -397,6 +412,7 @@ if($mybb->input['action'] == "modify")
 
 if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_settings_change");
 	if(!$noheader)
 	{
 		cpheader();

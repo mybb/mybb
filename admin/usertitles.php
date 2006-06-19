@@ -32,6 +32,8 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_usertitles_start");
+
 if($mybb->input['action'] == "do_add")
 {
 	if($mybb->input['stars'] < 1)
@@ -45,7 +47,7 @@ if($mybb->input['action'] == "do_add")
 		"stars" => intval($mybb->input['stars']),
 		"starimage" => $db->escape_string($mybb->input['starimage'])
 		);
-
+	$plugins->run_hooks("admin_usertitles_do_add");
 	$db->insert_query(TABLE_PREFIX."usertitles", $usertitle);
 	cpredirect("usertitles.php?".SID, $lang->title_added);
 }
@@ -53,6 +55,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{	
+		$plugins->run_hooks("admin_usertitles_do_delete");
 		$db->delete_query(TABLE_PREFIX."usertitles", "utid='".intval($mybb->input['utid'])."'");
 		cpredirect("usertitles.php?".SID, $lang->title_deleted);
 	}
@@ -75,11 +78,13 @@ if($mybb->input['action'] == "do_edit")
 		"stars" => intval($mybb->input['stars']),
 		"starimage" => $db->escape_string($mybb->input['starimage'])
 		);
+	$plugins->run_hooks("admin_usertitles_do_edit");
 	$db->update_query(TABLE_PREFIX."usertitles", $usertitle, "utid='".intval($mybb->input['utid'])."'");
 	cpredirect("usertitles.php?".SID, $lang->title_updated);
 }
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_usertitles_add");
 	cpheader();
 	startform("usertitles.php", "" , "do_add");
 	starttable();
@@ -94,7 +99,7 @@ if($mybb->input['action'] == "add")
 }
 if($mybb->input['action'] == "delete")
 {
-	
+	$plugins->run_hooks("admin_usertitles_delete");
 	$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$title = $db->fetch_array($query);
 	$lang->delete_title = sprintf($lang->delete_title, $title['title']);
@@ -115,6 +120,7 @@ if($mybb->input['action'] == "edit")
 {
 	$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$title = $db->fetch_array($query);
+	$plugins->run_hooks("admin_usertitles_edit");
 	$lang->edit_title = sprintf($lang->edit_title, $title['title']);
 	cpheader();
 	startform("usertitles.php", "" , "do_edit");
@@ -131,6 +137,7 @@ if($mybb->input['action'] == "edit")
 }
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
+	$plugins->run_hooks("admin_usertitles_modify");
 	if(!$noheader)
 	{
 		cpheader();

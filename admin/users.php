@@ -52,7 +52,6 @@ switch($mybb->input['action'])
 		break;
 }
 
-
 function date2timestamp($date)
 {
 	$d = explode('-', $date);
@@ -148,6 +147,8 @@ $bantimes["0-0-2"] = "2 $lang->years";
 
 checkadminpermissions("caneditusers");
 logadmin();
+
+$plugins->run_hooks("admin_users_start");
 
 // Process adding of a user.
 if($mybb->input['action'] == "do_add")
@@ -257,6 +258,8 @@ if($mybb->input['action'] == "do_add")
 		"dst" => $mybb->input['enabledst']
 	);
 
+	$plugins->run_hooks("admin_users_do_add");
+	
 	// Set the data of the user in the datahandler.
 	$userhandler->set_data($user);
 	$errors = '';
@@ -365,6 +368,8 @@ if($mybb->input['action'] == "do_edit")
 		"dst" => $mybb->input['enabledst']
 	);
 
+	$plugins->run_hooks("admin_users_do_edit");
+	
 	// Set the data of the user in the datahandler.
 	$userhandler->set_data($user);
 	$errors = '';
@@ -394,6 +399,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{
+		$plugins->run_hooks("admin_users_do_delete");
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET uid='0' WHERE uid='".intval($mybb->input['uid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='".intval($mybb->input['uid'])."'");
@@ -492,6 +498,8 @@ if($mybb->input['action'] == "do_email")
 		$searchop['start'] = ($searchop['page']-1) * $searchop['perpage'];
 	}
 	$searchop['page']++;
+	
+	$plugins->run_hooks("admin_users_do_email");
 
 	$query = $db->query("SELECT COUNT(*) AS results FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT $searchop[start], $searchop[perpage]");
 	$num = $db->fetch_array($query);
@@ -605,6 +613,7 @@ if($mybb->input['action'] == "do_do_merge")
 	{
 		cperror($lang->error_invalid_destination);
 	}
+	$plugins->run_hooks("admin_users_do_do_merge");
 	$db->query("UPDATE ".TABLE_PREFIX."adminlog SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
 	$db->query("UPDATE ".TABLE_PREFIX."announcements SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
 	$db->query("UPDATE ".TABLE_PREFIX."events SET author='".$destuser['uid']."' WHERE author='".$sourceuser['uid']."'");
@@ -646,6 +655,7 @@ if($mybb->input['action'] == "do_merge")
 	{
 		cperror($lang->error_invalid_destination);
 	}
+	$plugins->run_hooks("admin_users_do_merge");
 	$lang->confirm_merge = sprintf($lang->confirm_merge, $sourceuser['username'], $destuser['username'], $sourceuser['username']);
 	cpheader();
 	startform("users.php", '', "do_do_merge");
@@ -664,6 +674,7 @@ if($mybb->input['action'] == "do_merge")
 // Show add user page
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_users_add");
 	cpheader();
 	starttable();
 	startform("users.php", '', "do_add", 0);
@@ -795,6 +806,7 @@ if($mybb->input['action'] == "add")
 // Show edit user page
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_users_edit");
 	$uid = intval($mybb->input['uid']);
 	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='$uid'");
 	$user = $db->fetch_array($query);
@@ -1003,6 +1015,7 @@ if($mybb->input['action'] == "delete")
 	$uid = intval($mybb->input['uid']);
 	$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='$uid'");
 	$user = $db->fetch_array($query);
+	$plugins->run_hooks("admin_users_delete");
 	$lang->delete_user = sprintf($lang->delete_user, $user['username']);
 	$lang->confirm_delete_user = sprintf($lang->confirm_delete_user, $user['username']);
 	cpheader();
@@ -1026,6 +1039,7 @@ if($mybb->input['action'] == "showreferrers")
 	{
 		$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='$uid'");
 		$user = $db->fetch_array($query);
+		$plugins->run_hooks("admin_users_showreferrers");
 		$lang->members_referred_by = sprintf($lang->members_referred_by, $user['username']);
 
 		starttable();
@@ -1057,6 +1071,7 @@ if($mybb->input['action'] == "showreferrers")
 }
 if($mybb->input['action'] == "findips")
 {
+	$plugins->run_hooks("admin_users_findips");
 	cpheader();
 	$uid = intval($mybb->input['uid']);
 	$query = $db->simple_select(TABLE_PREFIX."users", "uid,username,regip", "uid='$uid'");
@@ -1102,6 +1117,7 @@ if($mybb->input['action'] == "findips")
 }
 if($mybb->input['action'] == "misc")
 {
+	$plugins->run_hooks("admin_users_misc");
 	cpheader();
 	$uid = intval($mybb->input['uid']);
 	starttable();
@@ -1117,6 +1133,7 @@ if($mybb->input['action'] == "misc")
 }
 if($mybb->input['action'] == "merge")
 {
+	$plugins->run_hooks("admin_users_merge");
 	cpheader();
 	startform("users.php", '', "do_merge");
 	starttable();
@@ -1187,6 +1204,7 @@ if($mybb->input['action'] == "stats")
 		$membday = $lang->not_specified;
 		$membdayage = $lang->not_specified;
 	}
+	$plugins->run_hooks("admin_users_stats");
 	cpheader();
 	starttable();
 	tableheader($lang->general_user_stats);
@@ -1218,6 +1236,8 @@ if($mybb->input['action'] == "pmstats")
 	$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS unreadpms", "uid='$uid' AND status='0' AND folder='1'");
 	$unreadpmscount = $db->fetch_array($query);
 
+	$plugins->run_hooks("admin_users_pmstats");
+	
 	cpheader();
 	starttable();
 	tableheader($lang->pm_stats);
@@ -1241,6 +1261,7 @@ if($mybb->input['action'] == "pmstats")
 
 if($mybb->input['action'] == "email")
 {
+	$plugins->run_hooks("admin_users_email");
 	if(!$noheader)
 	{
 		cpheader();
@@ -1449,6 +1470,8 @@ if($mybb->input['action'] == "find")
 		$searchop['start'] = ($searchop['page']-1) * $searchop['perpage'];
 	}
 	$searchop['page']++;
+	
+	$plugins->run_hooks("admin_users_find");
 
 	$countquery = "SELECT * FROM ".TABLE_PREFIX."users LEFT JOIN ".TABLE_PREFIX."userfields ON (ufid=uid) WHERE $conditions";
 	$query = $db->query($countquery);
@@ -1723,11 +1746,13 @@ if($mybb->input['action'] == "find")
 }
 if($mybb->input['action'] == "activate")
 {
+	$plugins->run_hooks("admin_users_activate");
 	$query = $db->query("UPDATE ".TABLE_PREFIX."users SET usergroup = '2' WHERE uid='".intval($mybb->input['uid'])."' AND usergroup = '5'");
 	cpredirect("users.php?".SID, $lang->activated);
 }
 if($mybb->input['action'] == "do_manageban")
 {
+	$plugins->run_hooks("admin_users_do_manageban");
 	if($mybb->input['uid'])
 	{
 		$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='".intval($mybb->input['uid'])."'");
@@ -1808,6 +1833,7 @@ if($mybb->input['action'] == "liftban")
 	$ban = $db->fetch_array($query);
 	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
+	$plugins->run_hooks("admin_users_liftban");
 	$lang->ban_lifted = sprintf($lang->ban_lifted, $user['username']);
 	if(!$ban['uid'])
 	{
@@ -1820,6 +1846,7 @@ if($mybb->input['action'] == "liftban")
 }
 if($mybb->input['action'] == "manageban")
 {
+	$plugins->run_hooks("admin_users_manageban");
 	if($mybb->input['uid'] && !$mybb->input['auid'])
 	{ // editing a ban
 		$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='".intval($mybb->input['uid'])."'");
@@ -1883,6 +1910,7 @@ if($mybb->input['action'] == "manageban")
 }
 if($mybb->input['action'] == "banned")
 {
+	$plugins->run_hooks("admin_users_banned");
 	checkbanned();
 	$query = $db->query("SELECT b.*, a.username AS adminuser, u.username FROM ".TABLE_PREFIX."banned b LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid) ORDER BY lifted ASC");
 	$numbans = $db->num_rows($query);
@@ -1940,6 +1968,7 @@ if($mybb->input['action'] == "banned")
 
 if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_users_search");
 	if(!$noheader)
 	{
 		cpheader();

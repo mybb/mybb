@@ -68,6 +68,8 @@ switch($mybb->input['action'])
 		break;
 }
 
+$plugins->run_hooks("admin_templates_start");
+
 $expand = $mybb->input['expand'];
 $group = $mybb->input['group'];
 
@@ -94,6 +96,7 @@ if($mybb->input['action'] == "do_add") {
 		"status" => "",
 		"dateline" => time()
 		);
+	$plugins->run_hooks("admin_templates_do_add");
 	$db->insert_query(TABLE_PREFIX."templates", $newtemplate);
 	$tid = $db->insert_id();
 	if($mybb->input['group'])
@@ -114,6 +117,7 @@ if($mybb->input['action'] == "do_addset") {
 	$newset = array(
 		"title" => $db->escape_string($mybb->input['title'])
 		);
+	$plugins->run_hooks("admin_templates_do_addset");
 	$db->insert_query(TABLE_PREFIX."templatesets", $newset);
 	$setid = $db->insert_id();
 	cpredirect("templates.php?".SID."&expand=$setid", $lang->set_added);
@@ -122,7 +126,7 @@ if($mybb->input['action'] == "do_addset") {
 if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
-	{	
+	{	$plugins->run_hooks("admin_templates_do_delete");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 		if($mybb->input['group'])
 		{
@@ -140,6 +144,7 @@ if($mybb->input['action'] == "do_deleteset")
 {
 	if($mybb->input['deletesubmit'])
 	{	
+		$plugins->run_hooks("admin_templates_do_deleteset");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
 		cpredirect("templates.php?".SID."&action=modify", $lang->set_deleted);
@@ -151,6 +156,7 @@ if($mybb->input['action'] == "do_deleteset")
 }
 if($mybb->input['action'] == "do_editset")
 {
+	$plugins->run_hooks("admin_templates_do_editset");
 	$db->query("UPDATE ".TABLE_PREFIX."templatesets SET title='".$db->escape_string($mybb->input['title'])."' WHERE sid='".intval($mybb->input['setid'])."'");
 	cpredirect("templates.php?".SID, $lang->set_edited);
 }
@@ -172,6 +178,7 @@ if($mybb->input['action'] == "do_edit")
 		"status" => "",
 		"dateline" => time()
 		);
+	$plugins->run_hooks("admin_templates_do_edit");
 	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
 	if($mybb->input['group'])
 	{
@@ -208,7 +215,7 @@ if($mybb->input['action'] == "do_replace")
 		{
 			$template_groups[$tgroup['sid']] = $tgroup['title'];
 		}
-
+		$plugins->run_hooks("admin_templates_do_replace");
 		// Select all templates with that search term
 		$query = $db->query("SELECT tid, title, template, sid FROM ".TABLE_PREFIX."templates WHERE template LIKE '%".$db->escape_string($mybb->input['find'])."%' ORDER BY sid,title ASC");
 		while($template = $db->fetch_array($query))
@@ -297,6 +304,7 @@ if($mybb->input['action'] == "do_search_names")
 	}
 	else
 	{ // Yup!
+		$plugins->run_hooks("admin_templates_do_search_names");
 		cpheader();
 		starttable();
 		tableheader($lang->search_results);
@@ -339,6 +347,7 @@ if($mybb->input['action'] == "do_search_names")
 if($mybb->input['action'] == "edit") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 	$template = $db->fetch_array($query);
+	$plugins->run_hooks("admin_templates_edit");
 	cpheader();
 	if($template[sid] != "-2") {
 		startform("templates.php", "" , "do_edit");
@@ -390,6 +399,7 @@ if($mybb->input['action'] == "edit") {
 if($mybb->input['action'] == "editset") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 	$set = $db->fetch_array($query);
+	$plugins->run_hooks("admin_templates_editset");
 	cpheader();
 	startform("templates.php", "" , "do_editset");
 	makehiddencode("setid", $mybb->input['setid']);
@@ -404,7 +414,7 @@ if($mybb->input['action'] == "editset") {
 if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 	$template = $db->fetch_array($query);
-
+	$plugins->run_hooks("admin_templates_delete");
 	cpheader();
 	startform("templates.php", "", "do_delete");
 	makehiddencode("tid", $mybb->input['tid']);
@@ -431,6 +441,7 @@ if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert") {
 if($mybb->input['action'] == "deleteset") {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 	$templateset = $db->fetch_array($query);
+	$plugins->run_hooks("admin_templates_deleteset");
 	cpheader();
 	startform("templates.php", "", "do_deleteset");
 	makehiddencode("setid", $mybb->input['setid']);
@@ -444,6 +455,7 @@ if($mybb->input['action'] == "deleteset") {
 	cpfooter();
 }
 if($mybb->input['action'] == "makeoriginals") {
+	$plugins->run_hooks("admin_templates_makeoriginals");
 	$query = $db->query("SELECT t1.*, t2.title AS origtitle FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t1.title=t2.title AND t2.sid='-2') WHERE t1.sid='".$mybb->input['setid']."'");
 	$query2 = $db->query("SELECT t1.* FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t1.title=t2.title AND t2.sid='-2') WHERE t1.sid='$set[sid]' AND ISNULL(t2.template) ORDER BY t1.title ASC");
 
@@ -473,6 +485,7 @@ if($mybb->input['action'] == "add") {
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($mybb->input['title'])."' AND sid='-2'");
 		$template = $db->fetch_array($query);
 	}
+	$plugins->run_hooks("admin_templates_add");
 	cpheader();
 	startform("templates.php", "" , "do_add");
 	starttable();
@@ -495,6 +508,7 @@ if($mybb->input['action'] == "add") {
 	cpfooter();
 }
 if($mybb->input['action'] == "addset") {
+	$plugins->run_hooks("admin_templates_addset");
 	cpheader();
 	startform("templates.php", "" , "do_addset");
 	starttable();
@@ -506,6 +520,7 @@ if($mybb->input['action'] == "addset") {
 }
 if($mybb->input['action'] == "search")
 {
+	$plugins->run_hooks("admin_templates_search");
 	if(!$noheader)
 	{
 		cpheader();
@@ -548,6 +563,7 @@ if($mybb->input['action'] == "diff")
 	$template1['template'] = explode("\n", htmlspecialchars($template1['template']));
 	$template2['template'] = explode("\n", htmlspecialchars($template2['template']));
 
+	$plugins->run_hooks("admin_templates_diff");
 	require MYBB_ROOT."inc/class_diff.php";
 
 	$diff = &new Text_Diff($template1['template'], $template2['template']);
@@ -577,6 +593,7 @@ if($mybb->input['action'] == "findupdated")
 	{
 		cpmessage($lang->no_updated_templates);
 	}
+	$plugins->run_hooks("admin_templates_findupdated");
 	cpheader();
 
 	$query = $db->query("SELECT* FROM ".TABLE_PREFIX."templatesets ORDER BY title ASC");
@@ -615,7 +632,7 @@ if($mybb->input['action'] == "findupdated")
 }
 
 if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
-
+	$plugins->run_hooks("admin_templates_modify");
 	if(!$noheader) {
 		cpheader();
 	}

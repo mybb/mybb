@@ -236,6 +236,8 @@ elseif($mybb->input['action'] == "vercheck")
 }
 elseif ($mybb->input['action'] == "navigation")
 {
+	$menu = array();
+
 	$plugins->run_hooks("admin_index_navigation");
 ?>
 <html>
@@ -246,91 +248,159 @@ elseif ($mybb->input['action'] == "navigation")
 <body class="lnav">
 <?php
 
-// STILL NEED TO FIX PLUGIN HOOKS FOR MENU ITEMS
+$menu[10] = array(
+	"title" => "",
+	"items" => array(
+		10 => array("title" => $lang->cp_home, "url" => "index.php?".SID."&action=home"),
+		20 => array("title" => $lang->cp_prefs, "url" => "adminoptions.php?".SID),
+		30 => array("title" => $lang->vercheck, "url" => "index.php?".SID."&action=vercheck"),
+	)
+);
 
-makenavoption($lang->cp_home, "index.php?".SID."&action=home");
-makenavoption($lang->cp_prefs, "adminoptions.php?".SID);
-makenavoption($lang->vercheck, "index.php?".SID."&action=vercheck");
-makenavselect("");
+$menu[20] = array(
+	"title" => $lang->nav_settings,
+	"items" => array(
+		10 => array("title" => $lang->nav_change, "url" => "settings.php?".SID."&action=change"),
+		20 => array("title" => $lang->nav_add_setting, "url" => "settings.php?".SID."&action=add"),
+		30 => array("title" => $lang->nav_plugin_manager, "url" => "plugins.php?".SID)
+	)
+);
 
-makenavoption($lang->nav_change, "settings.php?".SID."&action=change");
-makenavoption($lang->nav_add_setting, "settings.php?".SID."&action=add");
-makenavoption($lang->nav_plugin_manager, "plugins.php?".SID);
-makenavselect($lang->nav_settings);
+$menu[30] = array(
+	"title" => $lang->nav_forums,
+	"items" => array(
+		10 => array("title" => $lang->nav_add_forum, "url" => "forums.php?".SID."&action=add"),
+		20 => array("title" => $lang->nav_manage_forums, "url" => "forums.php?".SID."&action=modify"),
+		30 => array("title" => $lang->nav_forum_announcements, "url" => "announcements.php?".SID."&action=modify"),
+		40 => array("title" => $lang->nav_forum_permissions, "url" => "forumpermissions.php?".SID)
+	)
+);
 
-makenavoption($lang->nav_add_forum, "forums.php?".SID."&action=add");
-makenavoption($lang->nav_manage_forums, "forums.php?".SID."&action=modify");
-makenavoption($lang->nav_forum_announcements, "announcements.php?".SID."&action=modify");
-makenavoption($lang->nav_forum_permissions, "forumpermissions.php?".SID);
-makenavselect($lang->nav_forums);
+$menu[40] = array(
+	"title" => $lang->nav_moderation_queue,
+	"items" => array(
+		10 => array("title" => $lang->nav_threads_and_posts, "url" => "moderate.php?".SID."&action=threadsposts"),
+		20 => array("title" => $lang->nav_threads_only, "url" => "moderate.php?".SID."&action=threads"),
+		30 => array("title" => $lang->nav_posts_only, "url" => "moderate.php?".SID."&action=posts"),
+		40 => array("title" => $lang->nav_attachments, "url" => "moderate.php?".SID."&action=attachments")
+	)
+);
 
-makenavoption($lang->nav_threads_and_posts, "moderate.php?".SID."&action=threadsposts");
-makenavoption($lang->nav_threads_only, "moderate.php?".SID."&action=threads");
-makenavoption($lang->nav_posts_only, "moderate.php?".SID."&action=posts");
-makenavoption($lang->nav_attachments, "moderate.php?".SID."&action=attachments");
-makenavselect($lang->nav_moderation_queue);
+$menu[50] = array(
+	"title" => $lang->nav_attachments,
+	"items" => array(
+		10 => array("title" => $lang->nav_search_attachments, "url" => "attachments.php?".SID."&action=search"),
+		20 => array("title" => $lang->nav_search_orphan_attachments, "url" => "attachments.php?".SID."&action=orphans"),
+		30 => array("title" => $lang->nav_attach_stats, "url" => "attachments.php?".SID."&action=stats"),
+		40 => array("title" => $lang->nav_add_type, "url" => "attachments.php?".SID."&action=add"),
+		50 => array("title" => $lang->nav_manage_attachment_types, "url" => "attachments.php?".SID."&action=modify"),
+	)
+);
 
-makenavoption($lang->nav_search_attachments, "attachments.php?".SID."&action=search");
-makenavoption($lang->nav_search_orphan_attachments, "attachments.php?".SID."&action=orphans");
-makenavoption($lang->nav_attach_stats, "attachments.php?".SID."&action=stats");
-makenavoption($lang->nav_add_type, "attachments.php?".SID."&action=add");
-makenavoption($lang->nav_manage_attachment_types, "attachments.php?".SID."&action=modify");
-makenavselect($lang->nav_attachments);
+$menu[60] = array(
+	"title" => $lang->nav_users_groups,
+	"items" => array(
+		10 => array("title" => $lang->nav_add_user, "url" => "users.php?".SID."&action=add"),
+		20 => array("title" => $lang->nav_search_users, "url" => "users.php?".SID."&action=search"),
+		30 => array("title" => $lang->nav_manage_groups, "url" => "usergroups.php?".SID."&action=modify"),
+		40 => array("title" => $lang->nav_usertitles, "url" => "usertitles.php?".SID."&action=modify"),
+		50 => array("title" => $lang->nav_merge_users, "url" => "users.php?".SID."&action=merge"),
+		60 => array("title" => $lang->nav_custom_fields, "url" => "profilefields.php?".SID."&action=modify"),
+		70 => array("title" => $lang->nav_mass_email, "url" => "users.php?".SID."&action=email"),
+		80 => array("title" => $lang->nav_banning, "url" => "users.php?".SID."&action=banned"),
+		90 => array("title" => $lang->nav_adminperms, "url" => "adminoptions.php?".SID."&action=adminpermissions")
+	)
+);
 
-makenavoption($lang->nav_add_user, "users.php?".SID."&action=add");
-makenavoption($lang->nav_search_users, "users.php?".SID."&action=search");
-makenavoption($lang->nav_manage_groups, "usergroups.php?".SID."&action=modify");
-makenavoption($lang->nav_usertitles, "usertitles.php?".SID."&action=modify");
-makenavoption($lang->nav_merge_users, "users.php?".SID."&action=merge");
-makenavoption($lang->nav_custom_fields, "profilefields.php?".SID."&action=modify");
-makenavoption($lang->nav_mass_email, "users.php?".SID."&action=email");
-makenavoption($lang->nav_banning, "users.php?".SID."&action=banned");
-makenavoption($lang->nav_adminperms, "adminoptions.php?".SID."&action=adminpermissions");
-makenavselect($lang->nav_users_groups);
+$menu[70] = array(
+	"title" => $lang->nav_message_filters,
+	"items" => array(
+		10 => array("title" => $lang->nav_smilie_manager, "url" => "smilies.php?".SID."&action=modify"),
+		20 => array("title" => $lang->nav_manage_badwords, "url" => "badwords.php?".SID."&action=modify"),
+		30 => array("title" => $lang->nav_custom_mycode, "url" => "mycode.php?".SID."&action=modify")
+	)
+);
 
-makenavoption($lang->nav_smilie_manager, "smilies.php?".SID."&action=modify");
-makenavoption($lang->nav_manage_badwords, "badwords.php?".SID."&action=modify");
-makenavoption($lang->nav_custom_mycode, "mycode.php?".SID."&action=modify");
-makenavselect($lang->nav_message_filters);
+$menu[80] = array(
+	"title" => $lang->nav_themes,
+	"items" => array(
+		10 => array("title" => $lang->nav_add, "url" => "themes.php?".SID."&action=add"),
+		20 => array("title" => $lang->nav_modify_delete, "url" => "themes.php?".SID."&action=modify"),
+		30 => array("title" => $lang->nav_import, "url" => "themes.php?".SID."&action=import"),
+		40 => array("title" => $lang->nav_download, "url" => "themes.php?".SID."&action=download")
+	)
+);
 
-makenavoption($lang->nav_add, "themes.php?".SID."&action=add");
-makenavoption($lang->nav_modify_delete, "themes.php?".SID."&action=modify");
-makenavoption($lang->nav_import, "themes.php?".SID."&action=import");
-makenavoption($lang->nav_download, "themes.php?".SID."&action=download");
-makenavselect($lang->nav_themes);
+$menu[90] = array(
+	"title" => $lang->nav_templates,
+	"items" => array(
+		10 => array("title" => $lang->nav_add, "url" => "templates.php?".SID."&action=add"),
+		20 => array("title" => $lang->nav_modify_delete, "url" => "templates.php?".SID."&action=modify"),
+		30 => array("title" => $lang->nav_search, "url" => "templates.php?".SID."&action=search"),
+		40 => array("title" => $lang->nav_addset, "url" => "templates.php?".SID."&action=addset"),
+		50 => array("title" => $lang->nav_find_updated, "url" => "templates.php?".SID."&action=findupdated")
+	)
+);
 
-makenavoption($lang->nav_add, "templates.php?".SID."&action=add");
-makenavoption($lang->nav_modify_delete, "templates.php?".SID."&action=modify");
-makenavoption($lang->nav_search, "templates.php?".SID."&action=search");
-makenavoption($lang->nav_addset, "templates.php?".SID."&action=addset");
-makenavoption($lang->nav_find_updated, "templates.php?".SID."&action=findupdated");
-makenavselect($lang->nav_templates);
+$menu[100] = array(
+	"title" => $lang->nav_language_packs,
+	"items" => array(
+		10 => array("title" => $lang->nav_manage, "url" => "languages.php?".SID)
+	)
+);
 
-makenavoption($lang->nav_manage, "languages.php?".SID);
-makenavselect($lang->nav_language_packs);
+$menu[110] = array(
+	"title" => $lang->nav_mod_toolbox,
+	"items" => array(
+		10 => array("title" => $lang->nav_add_post_mod_tool, "url" => "moderation.php?".SID."&action=addposttool"),
+		20 => array("title" => $lang->nav_add_thread_mod_tool, "url" => "moderation.php?".SID."&action=addthreadtool"),
+		30 => array("title" => $lang->nav_modify_delete, "url" => "moderation.php?".SID),
+	)
+);
 
-makenavoption($lang->nav_add_post_mod_tool, "moderation.php?".SID."&action=addposttool");
-makenavoption($lang->nav_add_thread_mod_tool, "moderation.php?".SID."&action=addthreadtool");
-makenavoption($lang->nav_modify_delete, "moderation.php?".SID);
-makenavselect($lang->nav_mod_toolbox);
+$menu[120] = array(
+	"title" => $lang->nav_posticons,
+	"items" => array(
+		10 => array("title" => $lang->nav_add, "url" => "icons.php?".SID."&action=add"),
+		20 => array("title" => $lang->nav_modify_delete, "url" => "icons.php?".SID."&action=modify")
+	)
+);
 
-makenavoption($lang->nav_add, "icons.php?".SID."&action=add");
-makenavoption($lang->nav_modify_delete, "icons.php?".SID."&action=modify");
-makenavselect($lang->nav_posticons);
+$menu[130] = array(
+	"title" => $lang->nav_stats_and_logging,
+	"items" => array(
+		10 => array("title" => $lang->nav_admin_log, "url" => "adminlogs.php?".SID),
+		20 => array("title" => $lang->nav_mod_log, "url" => "modlogs.php?".SID)
+	)
+);
 
-makenavoption($lang->nav_admin_log, "adminlogs.php?".SID);
-makenavoption($lang->nav_mod_log, "modlogs.php?".SID);
-makenavselect($lang->nav_stats_and_logging);
+$menu[140] = array(
+	"title" => $lang->nav_helpdocs,
+	"items" => array(
+		10 => array("title" => $lang->nav_add, "url" => "helpdocs.php?".SID."&action=add"),
+		20 => array("title" => $lang->nav_modify_delete, "url" => "helpdocs.php?".SID."&action=modify")
+	)
+);
 
-makenavoption($lang->nav_add, "helpdocs.php?".SID."&action=add");
-makenavoption($lang->nav_modify_delete, "helpdocs.php?".SID."&action=modify");
-makenavselect($lang->nav_helpdocs);
+$menu[150] = array(
+	"title" => $lang->nav_maintenance,
+	"items" => array(
+		10 => array("title" => $lang->nav_db_maint, "url" => "misc.php?".SID."&action=dbmaint"),
+		20 => array("title" => $lang->nav_cache_manager, "url" => "maintenance.php?".SID."&action=cache"),
+		30 => array("title" => $lang->nav_recount_stats, "url" => "maintenance.php?".SID."&action=rebuildstats"),
+		40 => array("title" => $lang->nav_view_phpinfo, "url" => "index.php?".SID."&action=phpinfo")
+	)
+);
 
-makenavoption($lang->nav_db_maint, "misc.php?".SID."&action=dbmaint");
-makenavoption($lang->nav_cache_manager, "maintenance.php?".SID."&action=cache");
-makenavoption($lang->nav_recount_stats, "maintenance.php?".SID."&action=rebuildstats");
-makenavoption($lang->nav_view_phpinfo, "index.php?".SID."&action=phpinfo");
-makenavselect($lang->nav_maintenance);
+foreach($menu as $menu_section)
+{
+	foreach($menu_section['items'] as $item)
+	{
+		makenavoption($item['title'], $item['url']);
+	}
+	makenavselect($menu_section['title']);
+}
+
 ?>
 </body>
 </html>
