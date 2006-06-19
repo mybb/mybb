@@ -54,9 +54,12 @@ function output_page($contents)
 		{
 			$gzipen = "Disabled";
 		}
-		$other = "PHP version: $phpversion / Server Load: $serverload / GZip Compression: $gzipen";
-		$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% MySQL)<br />MySQL Queries: $db->query_count / Parsing $parsetime / Global Parsing Time: $globaltime<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
-		$contents = str_replace("<debugstuff>", $debugstuff, $contents);
+		if($mybb->settings['extraadmininfo'] != "no")
+		{
+			$other = "PHP version: $phpversion / Server Load: $serverload / GZip Compression: $gzipen";
+			$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% MySQL)<br />MySQL Queries: $db->query_count / Parsing $parsetime / Global Parsing Time: $globaltime<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
+			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
+		}
 		if(isset($mybb->input['debug']))
 		{
 			debug_page();
@@ -276,7 +279,20 @@ function mydate($format, $stamp, $offset="", $ty=1)
  */
 function mymail($to, $subject, $message, $from="", $charset="")
 {
-	global $db, $mybb;
+	global $db, $mybb, $lang;
+	
+	if($charset == "")
+	{
+		//$charset = "ISO-8859-1";
+		$charset = $lang->settings['charset'];
+	}
+
+	if(function_exists('mb_language') && function_exists('mb_encode_mimeheader'))
+	{
+		mb_language($lang->settings['htmllang']);
+  		$subject = str_replace('ISO-8859-1', $charset, mb_encode_mimeheader($subject));
+ 		$from = str_replace('ISO-8859-1', $charset, mb_encode_mimeheader($from));
+	}
 
 	// Build mail headers
 	if(strlen(trim($from)) == 0)
@@ -299,10 +315,6 @@ function mymail($to, $subject, $message, $from="", $charset="")
 	}
 	$headers .= "Message-ID: <". md5(uniqid(time()))."@{$http_host}>\n";
 	$headers .= "MIME-Version: 1.0\n";
-	if($charset == "")
-	{
-		$charset = "iso-8859-1";
-	}
 	$headers .= "Content-Type: text/plain; charset=\"{$charset}\"\n";
 	$headers .= "Content-Transfer-Encoding: 8bit\n";
 	$headers .= "X-Priority: 3\n";

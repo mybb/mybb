@@ -351,7 +351,7 @@ if($mybb->input['action'] == "add")
 	maketextareacode($lang->setting_type, "type", "", 6, 50);
 	makeinputcode($lang->value, "value");
 	makeinputcode($lang->disp_order, "disporder", "", 4);
-	makeselectcode($lang->group, "gid", "settinggroups", "gid", "name");
+	makeselectcode($lang->group, "gid", "settinggroups", "gid", "title");
 	endtable();
 	endform($lang->add_setting, $lang->reset_button);
 	cpfooter();

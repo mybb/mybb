@@ -845,6 +845,13 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[db]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="extraadmininfo">
+			<title>Advanced Stats / Debug information</title>
+			<description><![CDATA[Shows Server load, parse time, generation time, Gzip compression, etc on the bottom of all pages in the root folder. Please note that only administrators see this information]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[yesno]]></optioncode>
+			<settingvalue><![CDATA[yes]]></settingvalue>
+		</setting>
 	</settinggroup>
 	<settinggroup name="showteam" title="Show Forum Team Options" description="This section allows you to manage settings that affect the Forum Team Page (showteam.php)." disporder="10" isdefault="yes">
 		<setting name="showteamleaders">
