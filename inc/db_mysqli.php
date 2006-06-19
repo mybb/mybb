@@ -420,6 +420,7 @@ class databaseEngine
 	 * @param string SQL formatted list of conditions to be matched.
 	 * @param array List of options, order by, order direction, limit, limit start
 	 */
+	
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM ".$table;
@@ -432,7 +433,7 @@ class databaseEngine
 			$query .= " ORDER BY ".$options['order_by'];
 			if(isset($options['order_dir']))
 			{
-				$query .= " ".$options['order_dir'];
+				$query .= " ".strtoupper($options['order_dir']);
 			}
 		}
 		if(isset($options['limit_start']) && isset($options['limit']))
@@ -445,7 +446,63 @@ class databaseEngine
 		}
 		return $this->query($query);
 	}
-
+	
+	/**
+	 * Performs a select query
+	 *
+	 * @param array Array of query information
+	 * @return resource The query data.
+	 */
+	function select_query($data)
+	{
+		$select = array($data['select']);
+		$join_sql = '';
+		if(is_array($data['joins']))
+		{
+			foreach($data['joins'] as $join)
+			{
+				if($join['select'])
+				{
+					$select[] = $join['select'];
+				}
+				if($join['type'] == "left")
+				{
+					$join_sql .= "LEFT JOIN {$join['table']} ";
+					if($join['where'])
+					{
+						$join_sql .= "ON ({$join['where']}) ";
+					}
+				}
+				else if($join['type'] == "inner")
+				{
+					$join_sql .= "INNER JOIN {$join['table']} ";
+					if($join['where'])
+					{
+						$join_sql .= "ON ({$join['where']}) ";
+					}
+				}
+			}
+		}
+		$select = implode(", ", $select);
+		$query = "SELECT {$select} FROM ({$data['table']}) {$join_sql}";
+		if($data['where'])
+		{
+			$query .= " WHERE {$data['where']}";
+		}
+		if($data['order'])
+		{
+			$query .= " ORDER BY {$data['order']}";
+		}
+		if(is_array($data['limit']))
+		{
+			$query .= " LIMIT {$data['limit'][0]}";
+			if($data['limit'][1])
+			{
+				$query .= ", {$data['limit'][1]}";
+			}
+		}
+		return $this->query($query);
+	}
 
 	/**
 	 * Build an insert query from an array.
