@@ -38,7 +38,7 @@ $errors = '';
 
 usercp_menu();
 
-if($mybb->input['action'] == "do_editsig")
+if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
 	$parser_options = array(
 		'allow_html' => $mybb->settings['sightml'],
@@ -831,7 +831,7 @@ if($mybb->input['action'] == "options")
 	output_page($editprofile);
 }
 
-if($mybb->input['action'] == "do_email")
+if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_email_start");
 	$user = validate_password_from_uid($mybb->user['uid'], $mybb->input['password']);

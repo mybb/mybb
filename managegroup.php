@@ -39,7 +39,7 @@ if(!$groupleader['uid'])
 	error($lang->not_leader_of_this_group);
 }
 
-if($mybb->input['action'] == "do_add")
+if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 {
 	if($groupleader['canmanagemembers'] == "no")
 	{
@@ -65,7 +65,7 @@ if($mybb->input['action'] == "do_add")
 		error($lang->error_invalidusername);
 	}
 }
-elseif($mybb->input['action'] == "do_joinrequests")
+elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "post")
 {
 	if($groupleader['canmanagerequests'] == "no")
 	{
@@ -129,7 +129,7 @@ elseif($mybb->input['action'] == "joinrequests")
 	eval("\$joinrequests = \"".$templates->get("managegroup_joinrequests")."\";");
 	output_page($joinrequests);
 }
-elseif($mybb->input['action'] == "do_manageusers")
+elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "post")
 {
 	if($groupleader['canmanagemembers'] == "no")
 	{

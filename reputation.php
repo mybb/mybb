@@ -100,7 +100,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 }
 
 // Saving the new reputation
-if($mybb->input['action'] == "do_add")
+if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("reputation_do_add_start");
 	

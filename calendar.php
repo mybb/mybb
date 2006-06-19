@@ -306,7 +306,7 @@ if($mybb->input['action'] == "dayview")
 }
 
 // Process the adding of an event.
-if($mybb->input['action'] == "do_addevent")
+if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("calendar_do_addevent_start");
 
@@ -404,7 +404,7 @@ if($mybb->input['action'] == "addevent")
 }
 
 // Process the editing of an event.
-if($mybb->input['action'] == "do_editevent")
+if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("calendar_do_editevent_start");
 
