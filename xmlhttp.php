@@ -339,8 +339,8 @@ else if($mybb->input['action'] == "edit_post")
 		}
 	
 		$message = $parser->parse_message($message, $parser_options);
-		$post['editdate'] = mydate($mybb->settings['dateformat'], $post['edittime']);
-		$post['edittime'] = mydate($mybb->settings['timeformat'], $post['edittime']);
+		$post['editdate'] = mydate($mybb->settings['dateformat'], time());
+		$post['edittime'] = mydate($mybb->settings['timeformat'], time());
 		$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
 		eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		
@@ -349,7 +349,7 @@ else if($mybb->input['action'] == "edit_post")
 		echo "<p>\n";
 		echo $message;
 		echo "</p>\n";
-		echo "<editmsg>".$post['editedmsg']."</timeofedit>";
+		echo "<editmsg>{$post['editedmsg']}</quickedit>";
 		exit;	
 	}
 }

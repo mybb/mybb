@@ -14,5 +14,6 @@ $l['no_permission_edit_subject'] = "You do not have permission to edit this thre
 $l['thread_closed_edit_message'] = "This thread is closed and you may not edit messages within it.";
 $l['no_permission_edit_post'] = "You do not have permission to edit this message.";
 $l['edit_time_limit'] = "You can only edit messages for {1} minutes after they were posted.";
+$l['postbit_edited'] = "This post was last modified: {1} {2} by";
 
 ?>

@@ -174,6 +174,7 @@ var Thread = {
 					{
 							$("pid_editmsg_"+pid).innerHTML = editmsg[1];
 					}
+					request.responseText = request.responseText.replace(/<editmsg>(.*)<\/editmsg>/, '')
 			}
 			$("pid_"+pid).innerHTML = request.responseText;
 		}
