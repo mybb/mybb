@@ -349,7 +349,7 @@ else if($mybb->input['action'] == "edit_post")
 		echo "<p>\n";
 		echo $message;
 		echo "</p>\n";
-		echo "<editmsg>{$post['editedmsg']}</quickedit>";
+		echo "<editmsg>{$post['editedmsg']}</editmsg>";
 		exit;	
 	}
 }
