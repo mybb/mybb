@@ -63,19 +63,19 @@ elseif($mybb->input['action'] == "home")
 	$activeusers = $db->fetch_array($query);
 
 	// Get the number of threads
-	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS numthreads");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS numthreads", "visible='1' AND closed NOT LIKE 'moved|%'");
 	$threads = $db->fetch_array($query);
 
 	// Get the number of unapproved threads
-	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS numthreads", "visible='0'");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS numthreads", "visible='0' AND closed NOT LIKE 'moved|%'");
 	$unapproved_threads = $db->fetch_array($query);
 
 	// Get the number of new threads for today
-	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS newthreads", "dateline>'$timecut'");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS newthreads", "dateline>'$timecut' AND visible='1' AND closed NOT LIKE 'moved|%'");
 	$newthreads = $db->fetch_array($query);
 
 	// Get the number of posts
-	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS numposts");
+	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS numposts", "visible='1'");
 	$posts = $db->fetch_array($query);
 
 	// Get the number of unapproved posts
@@ -83,11 +83,11 @@ elseif($mybb->input['action'] == "home")
 	$unapproved_posts = $db->fetch_array($query);
 
 	// Get the number of new posts for today
-	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS newposts", "dateline>'$timecut'");
+	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS newposts", "dateline>'$timecut' AND visible='1'");
 	$newposts = $db->fetch_array($query);
 
 	// Get the number and total file size of attachments
-	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused");
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused", "visible='1' AND pid>0");
 	$attachs = $db->fetch_array($query);
 	$attachs['spaceused'] = get_friendly_size($attachs['spaceused']);
 
