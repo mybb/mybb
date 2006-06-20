@@ -60,6 +60,7 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] =
 
 // Get announcement info
 $time = time();
+// You made those nice skiny queries all fat and shit
 $query = $db->select_query(array(
 	'select' => "a.*",
 	'from' => TABLE_PREFIX."announcements a",
