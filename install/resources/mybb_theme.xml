@@ -3531,7 +3531,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$post['attachments']}
 {$post['signature']}
 <div style="text-align: right; vertical-align: bottom;">
+<div id="pid_editmsg_{$post['pid']}">
 {$post['editedmsg']}
+</div>
 {$post['iplogged']}
 </div>
 </td></tr>
