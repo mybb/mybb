@@ -342,6 +342,8 @@ else if($mybb->input['action'] == "edit_post")
 		$post['editdate'] = mydate($mybb->settings['dateformat'], time());
 		$post['edittime'] = mydate($mybb->settings['timeformat'], time());
 		$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
+		$post['edituid'] = $mybb->user['uid'];
+		$post['editusername'] = $mybb->user['username'];
 		eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		
 		// Send our headers.

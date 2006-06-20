@@ -629,8 +629,8 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				{
 					$setting['description'] = $lang->$desc_lang;
 				}
-				tablesubheader($setting[title], "", 2, "left");
-				makelabelcode("<small>$setting[description]</small>", $settingcode);
+				tablesubheader("<span title=\"{$setting['name']}\">{$setting['title']}</span>", "", 2, "left");
+				makelabelcode("<small>{$setting['description']}</small>", $settingcode);
 				$settingcode = "";
 			}
 			endtable();
