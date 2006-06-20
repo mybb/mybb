@@ -65,10 +65,7 @@ function output_page($contents)
 			debug_page();
 		}
 	}
-	else
-	{
-		$contents = str_replace("<debugstuff>", "", $contents);
-	}
+	$contents = str_replace("<debugstuff>", "", $contents);
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->settings['gzipoutput'] != "no")
