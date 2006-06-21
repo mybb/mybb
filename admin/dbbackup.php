@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id:$
+ * $Id$
  */
 
 require "./global.php";
@@ -15,7 +15,7 @@ require "./global.php";
 global $lang;
 $lang->load('dbbackup');
 
-checkadminpermissions("canrundbbackup");
+checkadminpermissions("canusedbbackup");
 logadmin();
 
 addacpnav($lang->nav_db_tools, 'dbbackup.php?'.SID.'&action=backup');
@@ -42,9 +42,9 @@ if($mybb->input['action'] == 'do_delete')
 	{
 		$file = $mybb->input['file'];
 		
-		if(file_exists('./backups/'.$file))
+		if(file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
 		{
-			$delete = @unlink('./backups/'.$file);
+			$delete = @unlink(MYBB_ADMIN_DIR.'backups/'.$file);
 			
 			if($delete)
 			{
@@ -68,7 +68,7 @@ if($mybb->input['action'] == 'do_restore')
 	{
 		$file = $mybb->input['file'];
 		
-		if(file_exists('./backups/'.$file))
+		if(file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
 		{
 			$timer = new timer();
 			
@@ -79,15 +79,19 @@ if($mybb->input['action'] == 'do_restore')
 			if($file_ext == 'gz')
 			{
 				$type = 'gzip';
-				$fp = gzopen('./backups/'.$file, 'r');
+				$fp = gzopen(MYBB_ADMIN_DIR.'backups/'.$file, 'r');
 			}
 			else
 			{
 				$type = 'sql';
-				$fp = fopen('./backups/'.$file, 'r');
+				$fp = fopen(MYBB_ADMIN_DIR.'backups/'.$file, 'r');
 			}
 			
-			while(($type == 'gzip') ? gzeof($fp) : feof($fp))
+			if(!$fp)
+			{
+				cperror($lang->error_restore_fail);
+			}
+			while(($type == 'gzip') ? !gzeof($fp) : !feof($fp))
 			{
 				if($type == 'gzip')
 				{
@@ -100,12 +104,16 @@ if($mybb->input['action'] == 'do_restore')
 				
 				if(substr($output, -2) == ";\n")
 				{
-					$row = substr($output, 0, -2);
+					$row .= substr($output, 0, -2);
 					$db->query($row);
 					unset($row);
 				}
 				else
 				{
+					if(substr($output, 0, 2) == '--')
+					{
+						continue;
+					}
 					$row .= $output;
 				}
 			}
@@ -137,7 +145,7 @@ if($mybb->input['action'] == 'do_restore')
 
 if($mybb->input['action'] == 'do_backup')
 {
-	if(!is_array($_POST['tables']))
+	if(!is_array($mybb->input['tables']))
 	{
 		cperror($lang->error_no_tables_selected);
 	}
@@ -147,10 +155,10 @@ if($mybb->input['action'] == 'do_backup')
 	$host = explode('.', $_SERVER['REMOTE_ADDR']);
 	$host = sprintf('%02X', $host[0]).sprintf('%02X', $host[1]).sprintf('%02X', $host[2]).sprintf('%02X', $host[3]);
 	
-	$file_ext = ($_POST['type'] == 'gzip') ? 'gz' : 'sql';
-	$file = './backups/'.time().$host.'.'.$file_ext;
+	$file_ext = ($mybb->input['type'] == 'gzip') ? 'gz' : 'sql';
+	$file = MYBB_ADMIN_DIR.'backups/'.time().$host.'.'.$file_ext;
 	
-	if($_POST['type'] == 'gzip')
+	if($mybb->input['type'] == 'gzip')
 	{
 		$type = 'gzip';
 		$fp = gzopen($file, 'w9');
@@ -176,12 +184,12 @@ if($mybb->input['action'] == 'do_backup')
 	$check = array(chr(10), chr(13), chr(39));
 	$replace = array(chr(92).chr(110), '', chr(92).chr(39));
 	
-	$table_list = $_POST['tables'];
+	$table_list = $mybb->input['tables'];
 	
 	$comma = '';
 	foreach($table_list as $table)
 	{
-		if($_POST['analyse'] == 'yes')
+		if($mybb->input['analyse'] == 'yes')
 		{
 			$tables .= $comma.$table;
 			$comma = ', ';
@@ -195,19 +203,17 @@ if($mybb->input['action'] == 'do_backup')
 			$table_list[$table][] = $row;
 		}
 		
-		if($_POST['defs'] == 'yes')
+		if($mybb->input['defs'] == 'yes')
 		{
 			$output = "DROP TABLE IF EXISTS ".$table.";\n";
-			$output .= "CREATE TABLE (\n";
+			$output .= "CREATE TABLE ".$table." (\n";
 			
-			$key = '';
-			$comma2 = '';
+			$key = array();
 			foreach($table_list[$table] as $field)
 			{
 				if(strlen(trim($field['Key'])) != 0)
 				{
-					$key = $comma2.$field['Field'];
-					$comma2 = ', ';
+					$key[$field['Field']] = $field['Key'];
 				}
 				
 				$output .= " `".$field['Field']."` ".$field['Type'];
@@ -216,8 +222,36 @@ if($mybb->input['action'] == 'do_backup')
 				$output .= (strlen(trim($field['Extra'])) == 0) ? '' : ' '.$field['Extra'];
 				$output .= ",\n";
 			}
+
+			// Deal with the keys
+			$keys = $key_comma = '';
+			$primary_key = array_keys($key, 'PRI');
+			if(count($primary_key) > 1)
+			{
+				$keyname = '';
+				foreach($primary_key as $col)
+				{
+					$keyname .= $col; // generalization for tiduid in threadsread table
+					$keylist[] = $col;
+				}
+				$keylist = implode(',', $keylist);
+				$keys .= '  UNIQUE KEY '.$keyname.' ('.$keylist.')  ';
+				$key_comma = ', ';
+			}
+			elseif(count($primary_key) == 1)
+			{
+				$keys .= '  PRIMARY KEY  ('.$primary_key[0].')  ';
+				$key_comma = ', ';
+			}
+			foreach($key as $col => $type)
+			{
+				if($type != 'PRI')
+				{
+					$keys .= $key_comma. '  KEY '.$col.' ('.$col.')  '; // again a generalization
+				}
+			}
 			
-			$output .= (strlen(trim($key)) == 0) ? '' : "  PRIMARY KEY(".$key.")  ";
+			$output .= (!empty($keys)) ? $keys : '';
 			$output = substr($output, 0, -2);
 			$output .= "\n);\n";
 			$output .= "DELETE FROM ".$table.";\n";
@@ -287,7 +321,7 @@ if($mybb->input['action'] == 'do_backup')
 		}
 	}
 	
-	if($_POST['analyse'] == 'yes')
+	if($mybb->input['analyse'] == 'yes')
 	{
 		$output = "OPTIMIZE TABLE ".$tables."\n";
 		$output .= "ANALYZE TABLE ".$tables."\n";
@@ -367,11 +401,11 @@ if($mybb->input['action'] == "restore")
 	tableheader($lang->restore_database, 'restore_database', 5);
 	
 	$backups = array();
-	$dir = './backups/';
+	$dir = MYBB_ADMIN_DIR.'backups/';
 	$handle = opendir($dir);
 	while(($file = readdir($handle)) !== false)
 	{
-		if(filetype('./backups/'.$file) == 'file')
+		if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
 		{
 			$ext = explode('.', basename($file));
 			
@@ -396,6 +430,8 @@ if($mybb->input['action'] == "restore")
 		echo "<td class=\"subheader\" align=\"center\">".$lang->creation_date."</td>\n";
 		echo "<td class=\"subheader\" align=\"center\">".$lang->options."</td>\n";
 		echo "</tr>\n";
+
+		$dir = './backups/';
 		
 		foreach($keys as $key)
 		{
@@ -475,8 +511,8 @@ if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 	echo "<tr>\n";
 	echo "<td class=\"$bgcolor\">".$lang->export_file_type."</td>\n";
 	echo "<td class=\"$bgcolor\">\n";
-	echo "<input type=\"radio\" name=\"type\" value=\"gzip\" checked=\"checked\" /> ".$lang->gzip_compressed."\n";
-	echo "<input type=\"radio\" name=\"type\" value=\"text\" /> ".$lang->plain_text."\n";
+	echo "<label><input type=\"radio\" name=\"type\" value=\"gzip\" checked=\"checked\" /> ".$lang->gzip_compressed."</label>\n";
+	echo "<label><input type=\"radio\" name=\"type\" value=\"text\" /> ".$lang->plain_text."</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	makeyesnocode($lang->include_table_defs, 'defs');

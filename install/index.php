@@ -724,7 +724,7 @@ function install_done()
 	$db->insert_query(TABLE_PREFIX.'users', $newuser);
 	$uid = $db->insert_id();
 
-	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('{$uid}','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('{$uid}','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
 
 	// Automatic Login
 	mysetcookie('mybbadmin', $uid.'_'.$loginkey);

@@ -379,7 +379,7 @@ else
 eval("\$orderarrow[$sortby] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 // How many pages are there?
-$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(t.tid) AS threads", "t.fid = '$fid' $visibleonly $datecutsql");
+$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS threads", "t.fid = '$fid' $visibleonly $datecutsql");
 $threadcount = $db->fetch_field($query, "threads");
 
 $perpage = $mybb->settings['threadsperpage'];

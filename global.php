@@ -121,7 +121,7 @@ else if(isset($mybb->input['tid']))
 // We have a forum id - simply load the theme from it
 else if(isset($mybb->input['fid']))
 {
-	$query = $db->simple_select(TABLE_PREFIX."forums", "style, overridestyle", "f.fid='".intval($mybb->input['fid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'");
 	$style = $db->fetch_array($query);
 }
 
