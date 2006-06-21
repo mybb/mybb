@@ -197,14 +197,15 @@ if($mybb->settings['showindexstats'] != "no")
 	}
 	else
 	{
-		$newestmember = "<a href=\"member.php?action=profile&amp;uid=".$stats['lastuid']."\">".$stats['lastusername']."</a>";
+		$newestmember = build_profile_link($stats['lastusername'], $stats['lastuid']);
+		//$newestmember = "<a href=\"member.php?action=profile&amp;uid=".$stats['lastuid']."\">".$stats['lastusername']."</a>";
 	}
 
 	// Format the stats language.
 	$lang->stats_posts_threads = sprintf($lang->stats_posts_threads, mynumberformat($stats['numposts']), mynumberformat($stats['numthreads']));
 	$lang->stats_numusers = sprintf($lang->stats_numusers, mynumberformat($stats['numusers']));
 	$lang->stats_newestuser = sprintf($lang->stats_newestuser, $newestmember);
-
+	
 	// Find out what the highest users online count is.
 	$mostonline = $cache->read("mostonline");
 	if($onlinecount > $mostonline['numusers'])
@@ -225,12 +226,8 @@ if($mybb->settings['showindexstats'] != "no")
 }
 
 // Get the forums we will need to show.
-$query = $db->query(
-	"SELECT f.*
-	FROM ".TABLE_PREFIX."forums f
-	WHERE active!='no'
-	ORDER BY f.pid, f.disporder
-");
+$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active != 'no'", array('order_by' => 'pid, disporder'));
+
 // Build a forum cache.
 while($forum = $db->fetch_array($query))
 {

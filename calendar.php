@@ -134,12 +134,8 @@ if($month && $year)
 }
 
 // No weird actions allowed.
-if(	$mybb->input['action'] != "event" &&
-	$mybb->input['action'] != "addevent" &&
-	$mybb->input['action'] != "do_addevent" &&
-	$mybb->input['action'] != "editevent" &&
-	$mybb->input['action'] != "do_editevent" &&
-	$mybb->input['action'] != "dayview")
+$accepted_actions = array("event", "addevent", "do_addevent", "editevent", "do_editevent", "dayview");
+if(!in_array($mybb->input['action'], $accepted_actions))
 {
 	$mybb->input['action'] = "calendar_main";
 }

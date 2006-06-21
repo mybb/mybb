@@ -24,7 +24,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $mybb-
 {
 	$thread = get_thread($mybb->input['tid']);
 	
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='".intval($mybb->input['tid'])."' AND visible='-2' ORDER BY dateline ASC LIMIT 0, 1");
+	$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid='".intval($mybb->input['tid'])."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
 	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2)
@@ -213,11 +213,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	{
 		$user_check = "p.ipaddress='{$session->ipaddress}'";
 	}
-	$query = $db->query("
-		SELECT p.pid
-		FROM ".TABLE_PREFIX."posts p
-		WHERE $user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'
-	");
+	$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
 	$duplicate_check = $db->fetch_field($query, "pid");
 	if($duplicate_check)
 	{
@@ -286,11 +282,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		echo 'checking';
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."captcha
-			WHERE imagehash='$imagehash'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash'"); 
 		$imgcheck = $db->fetch_array($query);
 		if($imgcheck['imagestring'] != $imagestring)
 		{
@@ -464,12 +456,9 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
 		}
 
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."attachments
-			WHERE $attachwhere
-		");
-		while($attachment = $db->fetch_array($query)) {
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
+		while($attachment = $db->fetch_array($query)) 
+		{
 			$attachcache[0][$attachment['aid']] = $attachment;
 		}
 
@@ -547,7 +536,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$attachwhere = "posthash='".$db->escape_string($posthash)."'";
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{
@@ -568,11 +557,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			}
 			$attachcount++;
 		}
-		$query = $db->query("
-			SELECT SUM(filesize) AS ausage
-			FROM ".TABLE_PREFIX."attachments
-			WHERE uid='".$mybb->user['uid']."'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
 		if($usage['ausage'] > ($mybb->usergroup['attachquota']*1000) && $mybb->usergroup['attachquota'] != 0)
 		{
@@ -594,14 +579,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 
-		if($bgcolor == "trow1")
-		{
-			$bgcolor = "trow2";
-		}
-		else
-		{
-			$bgcolor = "trow1";
-		}
+		$bgcolor = alt_trow();
 	}
 
 	if($mybb->user['uid'])
@@ -618,11 +596,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$imagehash = $db->escape_string($mybb->input['imagehash']);
 			$imagestring = $db->escape_string($mybb->input['imagestring']);
-			$query = $db->query("
-				SELECT *
-				FROM ".TABLE_PREFIX."captcha
-				WHERE imagehash='$imagehash' AND imagestring='$imagestring'
-			");
+			$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash' AND imagestring='$imagestring'");
 			$imgcheck = $db->fetch_array($query);
 			if($imgcheck['dateline'] > 0)
 			{

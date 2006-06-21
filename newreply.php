@@ -233,11 +233,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	{
 		$user_check = "p.ipaddress='{$session->ipaddress}'";
 	}
-	$query = $db->query("
-		SELECT p.pid
-		FROM ".TABLE_PREFIX."posts p
-		WHERE $user_check AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'
-	");
+	$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "WHERE $user_check AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
 	$duplicate_check = $db->fetch_field($query, "pid");
 	if($duplicate_check)
 	{
@@ -303,11 +299,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		echo 'checking';
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."captcha
-			WHERE imagehash='$imagehash'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash'");
 		$imgcheck = $db->fetch_array($query);
 		if($imgcheck['imagestring'] != $imagestring)
 		{
@@ -593,8 +585,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $attachwhere");
-		while($attachment = $db->fetch_array($query)) {
+		
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
+		while($attachment = $db->fetch_array($query)) 
+		{
 			$attachcache[0][$attachment['aid']] = $attachment;
 		}
 
@@ -644,11 +638,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			}
 			$attachcount++;
 		}
-		$query = $db->query("
-			SELECT SUM(filesize) AS ausage
-			FROM ".TABLE_PREFIX."attachments
-			WHERE uid='".$mybb->user['uid']."'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
 		if($usage['ausage'] > ($mybb->usergroup['attachquota']*1000) && $mybb->usergroup['attachquota'] != 0)
 		{
@@ -687,11 +677,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$imagehash = $db->escape_string($mybb->input['imagehash']);
 			$imagestring = $db->escape_string($mybb->input['imagestring']);
-			$query = $db->query("
-				SELECT *
-				FROM ".TABLE_PREFIX."captcha
-				WHERE imagehash='$imagehash' AND imagestring='$imagestring'
-			");
+			$query = $db->simple_select(TABLE_PREFIX."captcha", "*",b"imagehash='$imagehash' AND imagestring='$imagestring'");
 			$imgcheck = $db->fetch_array($query);
 			if($imgcheck['dateline'] > 0)
 			{

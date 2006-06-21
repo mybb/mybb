@@ -57,19 +57,12 @@ if($mybb->input['order'] != "DESC" && $mybb->input['order'] != "ASC")
 
 if($mybb->input['usersearch'])
 {
-	$query = $db->query("
-		SELECT COUNT(*) AS users
-		FROM ".TABLE_PREFIX."users
-		WHERE username LIKE '%".$db->escape_string($mybb->input['usersearch'])."%'
-	");
+	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS users", "username LIKE '%".$db->escape_string($mybb->input['usersearch'])."%'");
 	$linkaddon = "&usersearch=".$mybb->input['usersearch'];
 }
 else
 {
-	$query = $db->query("
-		SELECT COUNT(*) AS users
-		FROM ".TABLE_PREFIX."users
-	");
+	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS users");
 	$linkaddon = '';
 }
 

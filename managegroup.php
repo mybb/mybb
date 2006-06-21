@@ -158,11 +158,7 @@ else
 	$lang->add_member = sprintf($lang->add_member, $usergroup['title']);
 	if($usergroup['type'] == 4)
 	{
-		$query = $db->query("
-			SELECT COUNT(*) AS req
-			FROM ".TABLE_PREFIX."joinrequests
-			WHERE gid='".$mybb->input['gid']."'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."joinrequests", "COUNT(*) AS req", "gid='".$mybb->input['gid']."'");
 		$numrequests = $db->fetch_array($query);
 		if($numrequests['req'])
 		{

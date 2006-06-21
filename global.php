@@ -107,33 +107,21 @@ if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 // If we're accessing a post, fetch the forum theme for it and if we're overriding it
 if(isset($mybb->input['pid']))
 {
-	$query = $db->query("
-		SELECT f.style, f.overridestyle
-		FROM ".TABLE_PREFIX."forums f, ".TABLE_PREFIX."posts p
-		WHERE f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'
-	");
+	$query = $db->simple_select(TABLE_PREFIX."forums f, ".TABLE_PREFIX."posts p", "f.style, f.overridestyle", "f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'");
 	$style = $db->fetch_array($query);
 }
 
 // We have a thread id and a forum id, we can easily fetch the theme for this forum
 else if(isset($mybb->input['tid']))
 {
-	$query = $db->query("
-		SELECT f.style, f.overridestyle
-		FROM ".TABLE_PREFIX."forums f, ".TABLE_PREFIX."threads t
-		WHERE f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'
-	");
+	$query = $db->simple_select(TABLE_PREFIX."forums f, ".TABLE_PREFIX."threads t", "f.style, f.overridestyle", "f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'");
 	$style = $db->fetch_array($query);
 }
 
 // We have a forum id - simply load the theme from it
 else if(isset($mybb->input['fid']))
 {
-	$query = $db->query("
-		SELECT f.style, f.overridestyle
-		FROM ".TABLE_PREFIX."forums f
-		WHERE f.fid='".intval($mybb->input['fid'])."'
-	");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "style, overridestyle", "f.fid='".intval($mybb->input['fid'])."'");
 	$style = $db->fetch_array($query);
 }
 

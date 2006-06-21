@@ -39,11 +39,7 @@ if($mybb->input['action'] == "markread")
 	{
 		if($mybb->user['uid'] != 0)
 		{
-			$db->query("
-				UPDATE ".TABLE_PREFIX."users
-				SET lastvisit='".time()."'
-				WHERE uid='".$mybb->user[uid]."'
-			");
+			$db->update_query(TABLE_PREFIX."users", array('lastvisit' => time()), "uid='".$mybb->user['uid']."'");
 		}
 		else
 		{
@@ -71,11 +67,7 @@ elseif($mybb->input['action'] == "rules")
 	{
 		$plugins->run_hooks("misc_rules_start");
 
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."forums
-			WHERE fid='".intval($mybb->input['fid'])."'AND active!='no'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='".intval($mybb->input['fid'])."' AND active!='no'");
 		$forum = $db->fetch_array($query);
 
 		$forumpermissions = forum_permissions($forum['fid']);
@@ -151,23 +143,14 @@ elseif($mybb->input['action'] == "help")
 	{
 		$plugins->run_hooks("misc_help_section_start");
 
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."helpdocs
-			ORDER BY sid, disporder
-		");
+		$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "", array('order_by' => 'sid, disporder'));
 		while($helpdoc = $db->fetch_array($query))
 		{
 			$helpdocs[$helpdoc['sid']][$helpdoc['disporder']][$helpdoc['hid']] = $helpdoc;
 		}
 		unset($helpdoc);
 		$sections = '';
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."helpsections
-			WHERE enabled != 'no'
-			ORDER BY disporder
-		");
+		$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "enabled != 'no'", array('order_by' => 'disporder');
 		while($section = $db->fetch_array($query))
 		{
 			if($section['usetranslation'] == "yes" || $section['sid'] <= 2)
@@ -192,9 +175,9 @@ elseif($mybb->input['action'] == "help")
 					mysetcookie("fcollapse[$section[sid]]", "y");
 					$scollapse[$section['sid']] = "y";
 				}
-				while(list($key, $bit) = each($helpdocs[$section['sid']]))
+				foreach($helpdocs[$section['sid']] as $key => $bit)
 				{
-					while(list($key, $helpdoc) = each($bit))
+					foreach($bit as $key => $helpdoc)
 					{
 						if($helpdoc['enabled'] != "no")
 						{
@@ -206,14 +189,7 @@ elseif($mybb->input['action'] == "help")
 								$helpdoc['description'] = $lang->$langdescvar;
 							}
 							eval("\$helpbits .= \"".$templates->get("misc_help_section_bit")."\";");
-							if($altbg == "trow2")
-							{
-								$altbg = "trow1";
-							}
-							else
-							{
-								$altbg = "trow2";
-							}
+							$altbg = alt_trow();
 						}
 					}
 					$expdisplay = '';
@@ -260,11 +236,7 @@ elseif($mybb->input['action'] == "buddypopup")
 				}
 			}
 			$buddylist = implode(",", $namesarray);
-			$query = $db->query("
-				UPDATE ".TABLE_PREFIX."users
-				SET buddylist='$buddylist'
-				WHERE uid='".$mybb->user['uid']."'
-			");
+			$query = $db->update_query(TABLE_PREFIX."users", array('buddylist' => $buddylist), "uid='".$mybb->user['uid']."'");
 			$mybb->user['buddylist'] = $buddylist;
 		}
 	}
@@ -335,14 +307,7 @@ elseif($mybb->input['action'] == "whoposted")
 		}
 		$numposts += $poster['posts'];
 		eval("\$whoposted .= \"".$templates->get("misc_whoposted_poster")."\";");
-		if($altbg == "trow2")
-		{
-			$altbg = "trow1";
-		}
-		else
-		{
-			$altbg = "trow2";
-		}
+		$altbg = alt_trow();
 	}
 	eval("\$whop = \"".$templates->get("misc_whoposted")."\";");
 	output_page($whop);
@@ -355,11 +320,7 @@ elseif($mybb->input['action'] == "smilies")
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."smilies
-			ORDER BY disporder
-		");
+		$query = $db->simple_select(TABLE_PREFIX."smilies", "*", "", array('order_by' => 'disporder'));
 		while($smilie = $db->fetch_array($query))
 		{
 			$smiliefind = $smilie['find'];
@@ -369,14 +330,7 @@ elseif($mybb->input['action'] == "smilies")
 			{
 				$smilies .= "</tr>";
 				$e = 1;
-				if($class == "trow1")
-				{
-					$class = "trow2";
-				}
-				else
-				{
-					$class = "trow1";
-				}
+				$class = alt_trow();
 			}
 			else
 			{
@@ -394,22 +348,11 @@ elseif($mybb->input['action'] == "smilies")
 	{
 		add_breadcrumb($lang->nav_smilies);
 		$class = "trow1";
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."smilies
-			ORDER BY disporder
-		");
+		$query = $db->simple_select(TABLE_PREFIX."smilies", "*", "", array('order_by' => 'disporder'));
 		while($smilie = $db->fetch_array($query))
 		{
 			eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
-			if($class == "trow1")
-			{
-				$class = "trow2";
-			}
-			else
-			{
-				$class = "trow1";
-			}
+			$class = alt_trow();
 		}
 		eval("\$smiliespage = \"".$templates->get("misc_smilies")."\";");
 		output_page($smiliespage);
@@ -422,12 +365,7 @@ elseif($mybb->input['action'] == "imcenter")
 		exit;
 	}
 	$uid = intval($mybb->input['uid']);
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."users
-		WHERE uid='".$uid."'
-		LIMIT 1
-	");
+	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".$uid."'", array('limit' => 1));
 	$user = $db->fetch_array($query);
 
 	if(!$user['username'])
@@ -606,12 +544,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	if(!is_array($forumcache))
 	{
 		// Get Forums
-		$query = $db->query("
-			SELECT f.*
-			FROM ".TABLE_PREFIX."forums f
-			WHERE linkto=''
-			ORDER BY f.pid, f.disporder
-		");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "linkto = ''", array('order_by' => 'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -623,9 +556,9 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	}
 	if(is_array($forumcache[$pid]))
 	{
-		while(list($key, $main) = each($forumcache[$pid]))
+		foreach($forumcache[$pid] as $key => $main)
 		{
-			while(list($key, $forum) = each($main))
+			foreach($main as $key => $forum)
 			{
 				$perms = $permissioncache[$forum['fid']];
 				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")

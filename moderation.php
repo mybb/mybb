@@ -223,11 +223,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_deletepoll");
 
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."polls
-			WHERE tid='$tid'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."polls", "*", "tid='$tid'");
 		$poll = $db->fetch_array($query);
 		if(!$poll['pid'])
 		{
@@ -251,11 +247,7 @@ switch($mybb->input['action'])
 				error_no_permission();
 			}
 		}
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."polls
-			WHERE tid='$tid'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."polls", "*", "tid='$tid'");
 		$poll = $db->fetch_array($query);
 		if(!$poll['pid'])
 		{
@@ -278,11 +270,7 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."threads
-			WHERE tid='$tid'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='$tid'");
 		$thread = $db->fetch_array($query);
 
 		$plugins->run_hooks("moderation_approvethread");
@@ -301,11 +289,7 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."threads
-			WHERE tid='tid'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='$tid'");
 		$thread = $db->fetch_array($query);
 
 		$plugins->run_hooks("moderation_unapprovethread");
@@ -352,14 +336,7 @@ switch($mybb->input['action'])
 
 			$message = $parser->parse_message($message, $parser_options);
 			eval("\$posts .= \"".$templates->get("moderation_deleteposts_post")."\";");
-			if($altbg == "trow1")
-			{
-				$altbg = "trow2";
-			}
-			else
-			{
-				$altbg = "trow1";
-			}
+			$altbg = alt_trow();
 		}
 
 		$plugins->run_hooks("moderation_deleteposts");
@@ -379,11 +356,7 @@ switch($mybb->input['action'])
 
 		$deletethread = "1";
 		$deletepost = $mybb->input['deletepost'];
-		$query = $db->query("
-			SELECT * 
-			FROM ".TABLE_PREFIX."posts
-			WHERE tid='$tid'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid='$tid'");
 		while($post = $db->fetch_array($query))
 		{
 			if($deletepost[$post['pid']] == "yes")
@@ -449,14 +422,7 @@ switch($mybb->input['action'])
 
 			$message = $parser->parse_message($post['message'], $parser_options);
 			eval("\$posts .= \"".$templates->get("moderation_mergeposts_post")."\";");
-			if($altbg == "trow1")
-			{
-				$altbg = "trow2";
-			}
-			else
-			{
-				$altbg = "trow1";
-			}
+			$altbg = alt_trow();
 		}
 
 		$plugins->run_hooks("moderation_mergeposts");
@@ -521,16 +487,8 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
-		$db->query("
-			DELETE
-			FROM ".TABLE_PREFIX."threads
-			WHERE closed='moved|$tid' AND fid='$moveto'
-		");
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."forums 
-			WHERE fid='$moveto'
-		");
+		$db->delete_query(TABLE_PREFIX."threads", "closed='moved|$tid' AND fid='$moveto'");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$moveto'");
 		$newforum = $db->fetch_array($query);
 		if($newforum['type'] != "f")
 		{
@@ -604,14 +562,7 @@ switch($mybb->input['action'])
 			}
 
 			eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
-			if($trow == "trow2")
-			{
-				$trow = "trow1";
-			}
-			else
-			{
-				$trow = "trow2";
-			}
+			$trow = alt_trow();
 		}
 		if(!$modactions)
 		{
@@ -699,11 +650,7 @@ switch($mybb->input['action'])
 		}
 		if($parameters['pid'] && !$parameters['tid'])
 		{
-			$query = $db->query("
-				SELECT *
-				FROM ".TABLE_PREFIX."posts
-				WHERE pid='".intval($parameters['pid'])."'
-			");
+			$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid='".intval($parameters['pid'])."'");
 			$post = $db->fetch_array($query);
 			$mergetid = $post['tid'];
 		}
@@ -712,11 +659,7 @@ switch($mybb->input['action'])
 			$mergetid = $parameters['tid'];
 		}
 		$mergetid = intval($mergetid);
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."threads
-			WHERE tid='".intval($mergetid)."'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mergetid)."'");
 		$mergethread = $db->fetch_array($query);
 		if(!$mergethread['tid'])
 		{
@@ -785,14 +728,7 @@ switch($mybb->input['action'])
 
 			$message = $parser->parse_message($post['message'], $parser_options);
 			eval("\$posts .= \"".$templates->get("moderation_split_post")."\";");
-			if($altbg == "trow1")
-			{
-				$altbg = "trow2";
-			}
-			else
-			{
-				$altbg = "trow1";
-			}
+			$altbg = alt_trow();
 		}
 		$forumselect = build_forum_jump("", $fid, 1, '', 0, '', "moveto");
 
@@ -817,11 +753,7 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_nosplitposts);
 		}
-		$query = $db->query("
-			SELECT COUNT(*) AS totalposts
-			FROM ".TABLE_PREFIX."posts
-			WHERE tid='".intval($mybb->input['tid'])."'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS totalposts", "tid='".intval($mybb->input['tid'])."'");
 		$count = $db->fetch_array($query);
 
 		if(!is_array($mybb->input['splitpost']))
@@ -840,23 +772,14 @@ switch($mybb->input['action'])
 		{
 			$moveto = $fid;
 		}
-		$query = $db->query("
-			SELECT fid
-			FROM ".TABLE_PREFIX."forums
-			WHERE fid='$moveto'
-			LIMIT 1
-		");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "fid", "fid='$moveto'", array('limit' => 1));
 		if($db->num_rows($query) == 0)
 		{
 			error($lang->error_invalidforum);
 		}
 
 		// move the selected posts over
-		$query = $db->query("
-			SELECT pid
-			FROM ".TABLE_PREFIX."posts
-			WHERE tid='$tid'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='$tid'");
 		while($post = $db->fetch_array($query))
 		{
 			if($mybb->input['splitpost'][$post['pid']] == "yes")
@@ -1073,7 +996,7 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$moveto'");
 		$newforum = $db->fetch_array($query);
 		if($newforum['type'] != "f")
 		{
@@ -1130,7 +1053,7 @@ switch($mybb->input['action'])
 			$plist[] = $pid;
 			$deletecount++;
 		}
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid='$tid'");
 		$numposts = $db->num_rows($query);
 		if(!$numposts)
 		{
@@ -1221,11 +1144,7 @@ switch($mybb->input['action'])
 			$pidin .= "$comma'$pid'";
 			$comma = ",";
 		}
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."posts
-			WHERE pid NOT IN($pidin) AND tid='$tid'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid NOT IN($pidin) AND tid='$tid'");
 		$num = $db->num_rows($query);
 		if(!$num)
 		{
@@ -1258,11 +1177,7 @@ switch($mybb->input['action'])
 		{
 			$moveto = $fid;
 		}
-		$query = $db->query("
-			SELECT fid
-			FROM ".TABLE_PREFIX."forums
-			WHERE fid='$moveto'
-		");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "fid", "fid='$moveto'");
 		if($db->num_rows($query) == 0)
 		{
 			error($lang->error_invalidforum);
@@ -1336,11 +1251,7 @@ switch($mybb->input['action'])
 		$flist = '';
 		if($mybb->usergroup['issupermod'] != "yes")
 		{
-			$query = $db->query("
-				SELECT * 
-				FROM ".TABLE_PREFIX."moderators
-				WHERE uid='".$mybb->user['uid']."'
-			");
+			$query = $db->simple_select(TABLE_PREFIX."moderators", "*", "uid='".$mybb->user['uid']."'");
 			while($forum = $db->fetch_array($query))
 			{
 				$flist .= ",'".$forum['fid']."'";
@@ -1386,19 +1297,12 @@ switch($mybb->input['action'])
 			$page = intval($mybb->input['page']);
 		}
 		
-		$query = $db->query("
-				SELECT COUNT(r.rid) AS count 
-				FROM ".TABLE_PREFIX."reportedposts r
-			");
+		$query = $db->simple_select(TABLE_PREFIX."reportedposts", "COUNT(rid) AS count");
 		$warnings = $db->fetch_field($query, "count");
 		
 		if($mybb->input['rid'])
 		{
-			$query = $db->query("
-				SELECT COUNT(r.rid) AS count 
-				FROM ".TABLE_PREFIX."reportedposts r
-				WHERE r.rid <= '".$mybb->input['rid']."'
-			");
+			$query = $db->simple_select(TABLE_PREFIX."reportedposts", "COUNT(r.rid) AS count", "r.rid <= '".$mybb->input['rid']."'");
 			$result = $db->fetch_field($query, "count");
 			if(($result % $perpage) == 0)
 			{
@@ -1440,10 +1344,7 @@ switch($mybb->input['action'])
 			eval("\$reportspages = \"".$templates->get("moderation_reports_multipage")."\";");
 		}
 
-		$query = $db->query("
-			SELECT fid,name
-			FROM ".TABLE_PREFIX."forums
-		");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "fid,name");
 		while($forum = $db->fetch_array($query))
 		{
 			$forums[$forum['fid']] = $forum['name'];
@@ -1491,19 +1392,12 @@ switch($mybb->input['action'])
 			$page = intval($mybb->input['page']);
 		}
 		
-		$query = $db->query("
-				SELECT COUNT(r.rid) AS count 
-				FROM ".TABLE_PREFIX."reportedposts r
-			");
+		$query = $db->simple_select(TABLE_PREFIX."reportedposts", "COUNT(rid) AS count");
 		$warnings = $db->fetch_field($query, "count");
 		
 		if($mybb->input['rid'])
 		{
-			$query = $db->query("
-				SELECT COUNT(r.rid) AS count 
-				FROM ".TABLE_PREFIX."reportedposts r
-				WHERE r.rid <= '".$mybb->input['rid']."'
-			");
+			$query = $db->simple_select(TABLE_PREFIX."reportedposts", "COUNT(rid) AS count", "rid <= '".$mybb->input['rid']."'");
 			$result = $db->fetch_field($query, "count");
 			if(($result % $perpage) == 0)
 			{
@@ -1545,10 +1439,7 @@ switch($mybb->input['action'])
 			eval("\$allreportspages = \"".$templates->get("moderation_allreports_multipage")."\";");
 		}
 
-		$query = $db->query("
-			SELECT fid,name
-			FROM ".TABLE_PREFIX."forums
-		");
+		$query = $db->aimple_select(TABLE_PREFIX."forums", "fid,name");
 		while($forum = $db->fetch_array($query))
 		{
 			$forums[$forum['fid']] = $forum['name'];

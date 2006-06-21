@@ -234,7 +234,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	$db->insert_query(TABLE_PREFIX."polls", $newpoll);
 	$pid = $db->insert_id();
 
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET poll='$pid' WHERE tid='".$thread['tid']."'");
+	$db->update_query(TABLE_PREFIX."threads", array('poll' => $pid), "tid='".$thread['tid']."'");
 
 	$plugins->run_hooks("polls_do_newpoll_end");
 
@@ -405,7 +405,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$forumpermissions = forum_permissions($thread['fid']);
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='".$thread['fid']."'");
 	$forum = $db->fetch_array($query);
 
 	if($thread['visible'] == "no" || !$thread['tid'])
@@ -558,7 +558,13 @@ if($mybb->input['action'] == "showresults")
 	$voters = array();
 
 	// Calculate votes
-	$query = $db->query("SELECT v.*, u.username FROM ".TABLE_PREFIX."pollvotes v LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=v.uid) WHERE v.pid='$poll[pid]' ORDER BY u.username");
+	$query = $db->query("
+		SELECT v.*, u.username 
+		FROM ".TABLE_PREFIX."pollvotes v 
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=v.uid) 
+		WHERE v.pid='$poll[pid]' 
+		ORDER BY u.username
+	");
 	while($voter = $db->fetch_array($query))
 	{
 		// Mark for current user's vote
@@ -627,8 +633,7 @@ if($mybb->input['action'] == "showresults")
 			{
 				foreach($voters[$number] as $uid => $username)
 				{
-					$member_link = get_profile_link($uid);
-					$userlist .= "{$comma}<a href=\"{$member_link}\">{$username}</a>";
+					$userlist. = $comma.build_profile_link($username, $uid);
 					$comma = $guest_comma = ', ';
 				}
 			}
@@ -745,7 +750,11 @@ if($mybb->input['action'] == "vote")
 		$numvotes = $numvotes+1;
 	}
 
-	$db->query("INSERT INTO ".TABLE_PREFIX."pollvotes (pid,uid,voteoption,dateline) VALUES $votesql");
+	$db->query("
+		INSERT INTO 
+		".TABLE_PREFIX."pollvotes (pid,uid,voteoption,dateline) 
+		VALUES $votesql
+	");
 	$voteslist = '';
 	for($i = 1; $i <= $poll['numoptions']; $i++)
 	{

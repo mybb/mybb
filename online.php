@@ -181,7 +181,7 @@ else
 	}
 	if($uidsql)
 	{
-		$query = $db->query("SELECT uid,username FROM ".TABLE_PREFIX."users WHERE uid IN (0$uidsql)");
+		$query = $db->simple_select(TABLE_PREFIX."users", "uid,username" "uid IN (0$uidsql)");
 		while($user = $db->fetch_array($query))
 		{
 			$members[$user['uid']] = $user['username'];
@@ -189,7 +189,7 @@ else
 	}
 	if($aidsql)
 	{
-		$query = $db->query("SELECT aid,pid FROM ".TABLE_PREFIX."attachments WHERE aid IN(0$aidsql)");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "aid,pid" "aid IN (0$aidsql)");
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachments[$attachment['aid']] = $attachment['pid'];
@@ -198,7 +198,7 @@ else
 	}
 	if($pidsql)
 	{
-		$query = $db->query("SELECT pid,tid FROM ".TABLE_PREFIX."posts WHERE pid IN(0$pidsql) $fidnot");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid,tid" "pid IN (0$pidsql) $fidnot");
 		while($post = $db->fetch_array($query))
 		{
 			$posts[$post['pid']] = $post['tid'];
@@ -207,7 +207,7 @@ else
 	}
 	if($tidsql)
 	{
-		$query = $db->query("SELECT fid,tid,subject FROM ".TABLE_PREFIX."threads WHERE tid IN(0$tidsql) $fidnot");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "fid,tid,subject", "tid IN(0$tidsql) $fidnot");
 		while($thread = $db->fetch_array($query))
 		{
 			$threads[$thread['tid']] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
@@ -216,7 +216,7 @@ else
 	}
 	if($fidsql)
 	{
-		$query = $db->query("SELECT fid,name,linkto FROM ".TABLE_PREFIX."forums WHERE fid IN (0$fidsql) $fidnot");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "fid,name,linkto", "fid IN (0$fidsql) $fidnot");
 		while($forum = $db->fetch_array($query))
 		{
 			$forums[$forum['fid']] = $forum['name'];
@@ -225,7 +225,7 @@ else
 	}
 	if($eidsql)
 	{
-		$query = $db->query("SELECT eid,subject FROM ".TABLE_PREFIX."events WHERE eid IN (0$eidsql)");
+		$query = $db->simple_select(TABLE_PREFIX."events", "eid,subject", "eid IN (0$eidsql)");
 		while($event = $db->fetch_array($query))
 		{
 			$events[$event['eid']] = htmlspecialchars_uni($parser->parse_badwords($event['subject']));
@@ -235,7 +235,7 @@ else
 	if(is_array($users))
 	{
 		reset($users);
-		while(list($key, $val) = each($users))
+		foreach($users as $key => $val)
 		{
 			$users[$key] = show($val);
 		}
@@ -244,7 +244,7 @@ else
 	if(is_array($guests))
 	{
 		reset($guests);
-		while(list($key, $val) = each($guests))
+		foreach($guests as $key => $val)
 		{
 			$guests[$key] = show($val);
 		}
@@ -603,7 +603,7 @@ function show($user)
 				$invisiblemark = '';
 			}
 			$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-			$onlinename = "<a href=\"member.php?action=profile&amp;uid=".$user['uid']."\">".$user['username']."</a>".$invisiblemark;
+			$onlinename = build_profile_link($user['username'], $user['uid']).$invisiblemark;
 		}
 	}
 	elseif($user['bot'])
@@ -759,6 +759,7 @@ function what($user)
 			$user['activity'] = "memberlist";
 			break;
 		case "misc":
+			$accepted_parameters = array("markread", "help", "buddypopup", "smilies", "syndication", "imcenter");
 			if($parameters['action'] == "whoposted")
 			{
 				if(is_numeric($parameters['tid']))
@@ -768,29 +769,10 @@ function what($user)
 				$user['activity'] = "misc_whoposted";
 				$user['tid'] = $parameters['tid'];
 			}
-			elseif($parameters['action'] == "markread")
+			
+			elseif(in_array($parameters['action'], $accepted_parameters)
 			{
-				$user['activity'] = "misc_markread";
-			}
-			elseif($parameters['action'] == "help")
-			{
-				$user['activity'] = "misc_help";
-			}
-			elseif($parameters['action'] == "buddypopup")
-			{
-				$user['activity'] = "misc_buddypopup";
-			}
-			elseif($parameters['action'] == "smilies")
-			{
-				$user['activity'] = "misc_smilies";
-			}
-			elseif($parameters['action'] == "syndication")
-			{
-				$user['activity'] = "misc_syndication";
-			}
-			elseif($parameters['action'] == "imcenter")
-			{
-				$user['activity'] = "misc_imcenter";
+				$user['activity'] = "misc_".$parameters['action'];
 			}
 			else
 			{

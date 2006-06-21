@@ -27,11 +27,7 @@ if(!$mybb->user['uid'])
 // Get post info
 $pid = intval($mybb->input['pid']);
 
-$query = $db->query("
-	SELECT *
-	FROM ".TABLE_PREFIX."posts
-	WHERE pid='$pid'
-");
+$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid='$pid'");
 $post = $db->fetch_array($query);
 
 if(!$post['pid'])
