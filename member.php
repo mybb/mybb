@@ -824,7 +824,7 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	if(!username_exists($mybb->input['username']))
 	{
 		mysetcookie('loginattempts', $logins + 1);
-		$db->update_query(TABLE_PREFIX."sessions", array('loginattempts' => 'loginattempts + 1'), "sid = '{$session->sid}'");
+		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == "yes")
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
@@ -835,7 +835,7 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	if(!$user['uid'])
 	{
 		mysetcookie('loginattempts', $logins + 1);
-		$db->update_query(TABLE_PREFIX."sessions", array('loginattempts' => 'loginattempts + 1'), "sid = '{$session->sid}'");
+		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == "yes")
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
@@ -1054,7 +1054,7 @@ elseif($mybb->input['action'] == "profile")
 		$percent = round($percent, 2);
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "$COUNT(*) AS referrals", "referrer='{$memprofile['uid']}'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS referrals", "referrer='{$memprofile['uid']}'");
 	$referrals = $db->fetch_field($query, "referrals");
 
 	if(!empty($memprofile['icq']))

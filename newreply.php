@@ -233,7 +233,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	{
 		$user_check = "p.ipaddress='{$session->ipaddress}'";
 	}
-	$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "WHERE $user_check AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
 	$duplicate_check = $db->fetch_field($query, "pid");
 	if($duplicate_check)
 	{
@@ -677,7 +677,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$imagehash = $db->escape_string($mybb->input['imagehash']);
 			$imagestring = $db->escape_string($mybb->input['imagestring']);
-			$query = $db->simple_select(TABLE_PREFIX."captcha", "*",b"imagehash='$imagehash' AND imagestring='$imagestring'");
+			$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash' AND imagestring='$imagestring'");
 			$imgcheck = $db->fetch_array($query);
 			if($imgcheck['dateline'] > 0)
 			{
