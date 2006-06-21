@@ -332,7 +332,7 @@ class datacache
 		$query = $db->query("
 			SELECT tid
 			FROM ".TABLE_PREFIX."threads
-			WHERE visible='1'
+			WHERE visible='1' AND closed NOT LIKE 'moved|%'
 		");
 		$stats['numthreads'] = $db->num_rows($query);
 		$query = $db->query("
@@ -344,7 +344,7 @@ class datacache
 		$query = $db->query("
 			SELECT uid, username
 			FROM ".TABLE_PREFIX."users
-			ORDER BY uid DESC
+			ORDER BY uid DESC LIMIT 1
 		");
 		$stats['numusers'] = $db->num_rows($query);
 		$lastmember = $db->fetch_array($query);
