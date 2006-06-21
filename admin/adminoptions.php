@@ -115,6 +115,7 @@ if($mybb->input['action'] == "do_updateperms")
 		"canedithelp" => $db->escape_string($newperms['canedithelp']),
 		"caneditlangs" => $db->escape_string($newperms['caneditlangs']),
 		"canrunmaint" => $db->escape_string($newperms['canrunmaint']),
+		"canusedbbackup" => $db->escape-string($newperms['canusedbbackup']),
 		);
 		
 	$plugins->run_hooks("admin_adminoptions_do_updateperms");
@@ -197,6 +198,7 @@ if($mybb->input['action'] == "updateperms")
 	makeyesnocode($lang->can_manage_helpdocs, "newperms[canedithelp]", $permissions['canedithelp']);
 	makeyesnocode($lang->can_manage_languages, "newperms[caneditlangs]", $permissions['caneditlangs']);
 	makeyesnocode($lang->can_use_maint, "newperms[canrunmaint]", $permissions['canrunmaint']);
+	makeyesnocode($lang->can_use_dbbackup, "newperms[canusedbbackup]", $permissions['canusedbbackup']);
 	endtable();
 	endform($lang->update_permissions, $lang->reset_button);
 

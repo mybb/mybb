@@ -131,6 +131,9 @@ $l['nav_language_packs'] = "Language Packs";
 $l['nav_mod_toolbox'] = "Moderator Toolbox";
 $l['nav_add_post_mod_tool'] = "Add Post Tool";
 $l['nav_add_thread_mod_tool'] = "Add Thread Tool";
+$l['nav_db_backup'] = "Backup Database";
+$l['nav_db_restore'] = "Restore Database";
+$l['nav_db_tools'] = "Database Tools";
 
 $l['mybb_admin'] = "MyBB Administration";
 

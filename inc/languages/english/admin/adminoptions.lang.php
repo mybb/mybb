@@ -41,6 +41,7 @@ $l['can_manage_attachments'] = "Can Manage Attachments / Att. Types";
 $l['can_manage_helpdocs'] = "Can Manage Help Docs";
 $l['can_manage_languages'] = "Can Manage Languages";
 $l['can_use_maint'] = "Can Use Maintenance Tools";
+$l['can_use_dbbackup'] = "Can Use Database Backup Tools";
 $l['update_permissions'] = "Update Permissions";
 
 $l['admin_perms'] = "Administrator Permissions";

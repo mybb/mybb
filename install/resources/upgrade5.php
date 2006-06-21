@@ -48,6 +48,7 @@ function upgrade5_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."groupleaders ADD canmanagemembers char(3) NOT NULL default '' AFTER uid;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."groupleaders ADD canmanagerequests char(3) NOT NULL default '' AFTER canmanagemembers;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD caneditlangs char(3) NOT NULL default '' AFTER canedithelp;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD canusedbtools char(3) NOT NULL default ''");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD allowedgroups text NOT NULL default '' AFTER extracss;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."moderators ADD canmovetononmodforum char(3) NOT NULL default '' AFTER canmanagethreads;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD csscached bigint(30) NOT NULL default '0'");
