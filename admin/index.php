@@ -392,6 +392,14 @@ $menu[150] = array(
 	)
 );
 
+$menu[160] = array(
+	"title" => $lang->nav_db_tools,
+	"items" => array(
+		10 => array("title" => $lang->nav_db_backup, "url" => "dbbackup.php?".SID."&action=backup"),
+		20 => array("title" => $lang->nav_db_restore, "url" => "dbbackup.php?".SID."&action=restore")
+	)
+);
+
 foreach($menu as $menu_section)
 {
 	foreach($menu_section['items'] as $item)
