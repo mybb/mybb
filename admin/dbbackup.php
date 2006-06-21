@@ -206,6 +206,9 @@ if($mybb->input['action'] == 'do_backup')
 		if($mybb->input['defs'] == 'yes')
 		{
 			$output = "DROP TABLE IF EXISTS ".$table.";\n";
+			/*$table_query = $db->query("SHOW CREATE TABLE ".$table);
+			$table_out = $db->fetch_array($table_query);
+			$output .= $table_out['Create Table'];*/
 			$output .= "CREATE TABLE ".$table." (\n";
 			
 			$key = array();
@@ -225,7 +228,51 @@ if($mybb->input['action'] == 'do_backup')
 
 			// Deal with the keys
 			$keys = $key_comma = '';
-			$primary_key = array_keys($key, 'PRI');
+			$key_array = $key_names = $skip_key = array();
+
+			$index = $db->query("SHOW INDEX FROM ".$table);
+			while($i = $db->fetch_array($index))
+			{
+				$key_array[] = $i;
+				$key_names[] = $i['Key_name'];
+			}
+			foreach($key_array as $id => $index)
+			{
+				if(in_array($id, $skip_key))
+				{
+					continue;
+				}
+				$same_key_name = array_keys($key_names, $index['Key_name']);
+				if($index['Key_name'] == 'PRIMARY') // Primary key
+				{
+					$keys .= $key_comma.'  PRIMARY KEY  ('.$index['Column_name'].')  ';
+					$key_comma = ', ';
+				}
+				elseif($index['Index_type'] == 'FULLTEXT') // Fulltext key
+				{
+					$keys .= $key_comma.'  FULLTEXT KEY `'.$index['Key_name'].'` (`'.$index['Column_name'].'`)  ';
+					$key_comma = ', ';
+				}
+				elseif(count($same_key_name) > 1) // Unique key -- not really sure how this works
+				{
+					$keylist = array();
+					foreach($same_key_name as $kid)
+					{
+						$keylist[] = $key_array[$kid]['Column_name'];
+						$skip_key[] = $kid;
+					}
+					$keylist = implode(',', $keylist);
+					$keys .= $key_comma.'  UNIQUE KEY '.$index['Key_name'].' ('.$keylist.')  ';
+					$key_comma = ', ';
+				}
+				else // Key of some sort
+				{
+					$keys .= $key_comma.'  KEY '.$index['Key_name'].' ('.$index['Column_name'].')  ';
+					$key_comma = ', ';
+				}
+			}
+
+			/*$primary_key = array_keys($key, 'PRI');
 			if(count($primary_key) > 1)
 			{
 				$keyname = '';
@@ -249,7 +296,7 @@ if($mybb->input['action'] == 'do_backup')
 				{
 					$keys .= $key_comma. '  KEY '.$col.' ('.$col.')  '; // again a generalization
 				}
-			}
+			}*/
 			
 			$output .= (!empty($keys)) ? $keys : '';
 			$output = substr($output, 0, -2);
