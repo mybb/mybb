@@ -136,7 +136,7 @@ if(isset($style['style']) && $style['style'] > 0)
 }
 
 // After all of that no theme? Load the board default
-if(!$loadstyle)
+if(empty($loadstyle))
 {
 	$loadstyle = "def='1'";
 }

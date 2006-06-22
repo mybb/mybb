@@ -15,7 +15,7 @@ require "./global.php";
 global $lang;
 $lang->load('dbbackup');
 
-checkadminpermissions("canusedbbackup");
+checkadminpermissions("canrundbtools");
 logadmin();
 
 addacpnav($lang->nav_db_tools, 'dbbackup.php?'.SID.'&action=backup');
@@ -40,7 +40,7 @@ if($mybb->input['action'] == 'do_delete')
 {
 	if($mybb->input['deletesubmit'])
 	{
-		$file = $mybb->input['file'];
+		$file = basename($mybb->input['file']);
 		
 		if(file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
 		{
@@ -66,7 +66,7 @@ if($mybb->input['action'] == 'do_restore')
 {
 	if($mybb->input['restoresubmit'])
 	{
-		$file = $mybb->input['file'];
+		$file = basename($mybb->input['file']);
 		
 		if(file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
 		{
@@ -102,18 +102,25 @@ if($mybb->input['action'] == 'do_restore')
 					$output = fgets($fp, 20480);
 				}
 				
-				if(substr($output, -2) == ";\n")
+				if(substr($output, -2) == ";\n") // Find the end of line to execute query
 				{
 					$row .= substr($output, 0, -2);
 					$db->query($row);
-					unset($row);
+					$row = '';
+				}
+				elseif(substr($row, 0, 12) == 'CREATE TABLE' && substr($output, 0, 1) == ')') // Find the end of the CREATE TABLE
+				{
+					$row .= $output;
+					$db->query($row);
+					$row = '';
 				}
 				else
 				{
-					if(substr($output, 0, 2) == '--')
+					if(substr($output, 0, 2) == '--') // Continue to next line if this line is a comment
 					{
 						continue;
 					}
+					// Append this output to the existing query as this line is not the end of the query
 					$row .= $output;
 				}
 			}
@@ -194,113 +201,15 @@ if($mybb->input['action'] == 'do_backup')
 			$tables .= $comma.$table;
 			$comma = ', ';
 			
-			$db->query("OPTIMIZE TABLE ".$table);
+			$db->optimize_table($table);
 		}
 		
-		$query = $db->query("SHOW FIELDS FROM ".$table);
-		while($row = $db->fetch_array($query))
-		{
-			$table_list[$table][] = $row;
-		}
+		$fields = $db->show_fields_from($table);
 		
 		if($mybb->input['defs'] == 'yes')
 		{
 			$output = "DROP TABLE IF EXISTS ".$table.";\n";
-			/*$table_query = $db->query("SHOW CREATE TABLE ".$table);
-			$table_out = $db->fetch_array($table_query);
-			$output .= $table_out['Create Table'];*/
-			$output .= "CREATE TABLE ".$table." (\n";
-			
-			$key = array();
-			foreach($table_list[$table] as $field)
-			{
-				if(strlen(trim($field['Key'])) != 0)
-				{
-					$key[$field['Field']] = $field['Key'];
-				}
-				
-				$output .= " `".$field['Field']."` ".$field['Type'];
-				$output .= ($field['Null'] == 'YES') ? '' : ' NOT NULL';
-				$output .= (strlen(trim($field['Default'])) == 0) ? '' : " default '".$field['Default']."'";
-				$output .= (strlen(trim($field['Extra'])) == 0) ? '' : ' '.$field['Extra'];
-				$output .= ",\n";
-			}
-
-			// Deal with the keys
-			$keys = $key_comma = '';
-			$key_array = $key_names = $skip_key = array();
-
-			$index = $db->query("SHOW INDEX FROM ".$table);
-			while($i = $db->fetch_array($index))
-			{
-				$key_array[] = $i;
-				$key_names[] = $i['Key_name'];
-			}
-			foreach($key_array as $id => $index)
-			{
-				if(in_array($id, $skip_key))
-				{
-					continue;
-				}
-				$same_key_name = array_keys($key_names, $index['Key_name']);
-				if($index['Key_name'] == 'PRIMARY') // Primary key
-				{
-					$keys .= $key_comma.'  PRIMARY KEY  ('.$index['Column_name'].')  ';
-					$key_comma = ', ';
-				}
-				elseif($index['Index_type'] == 'FULLTEXT') // Fulltext key
-				{
-					$keys .= $key_comma.'  FULLTEXT KEY `'.$index['Key_name'].'` (`'.$index['Column_name'].'`)  ';
-					$key_comma = ', ';
-				}
-				elseif(count($same_key_name) > 1) // Unique key -- not really sure how this works
-				{
-					$keylist = array();
-					foreach($same_key_name as $kid)
-					{
-						$keylist[] = $key_array[$kid]['Column_name'];
-						$skip_key[] = $kid;
-					}
-					$keylist = implode(',', $keylist);
-					$keys .= $key_comma.'  UNIQUE KEY '.$index['Key_name'].' ('.$keylist.')  ';
-					$key_comma = ', ';
-				}
-				else // Key of some sort
-				{
-					$keys .= $key_comma.'  KEY '.$index['Key_name'].' ('.$index['Column_name'].')  ';
-					$key_comma = ', ';
-				}
-			}
-
-			/*$primary_key = array_keys($key, 'PRI');
-			if(count($primary_key) > 1)
-			{
-				$keyname = '';
-				foreach($primary_key as $col)
-				{
-					$keyname .= $col; // generalization for tiduid in threadsread table
-					$keylist[] = $col;
-				}
-				$keylist = implode(',', $keylist);
-				$keys .= '  UNIQUE KEY '.$keyname.' ('.$keylist.')  ';
-				$key_comma = ', ';
-			}
-			elseif(count($primary_key) == 1)
-			{
-				$keys .= '  PRIMARY KEY  ('.$primary_key[0].')  ';
-				$key_comma = ', ';
-			}
-			foreach($key as $col => $type)
-			{
-				if($type != 'PRI')
-				{
-					$keys .= $key_comma. '  KEY '.$col.' ('.$col.')  '; // again a generalization
-				}
-			}*/
-			
-			$output .= (!empty($keys)) ? $keys : '';
-			$output = substr($output, 0, -2);
-			$output .= "\n);\n";
+			$output .= $db->show_create_table($table)."\n";
 			$output .= "DELETE FROM ".$table.";\n";
 		}
 		else
@@ -317,16 +226,16 @@ if($mybb->input['action'] == 'do_backup')
 			fputs($fp, $output, strlen($output));
 		}
 		
-		$query = $db->query("SELECT * FROM ".$table);
+		$query = $db->simple_select($table);
 		while($row = $db->fetch_array($query))
 		{
 			$output = "INSERT INTO ".$table." VALUES(";
 			
-			foreach($table_list[$table] as $field)
+			foreach($fields as $field)
 			{
 				if(!strstr($field['Type'], 'blob'))
 				{
-					$tmp = stripslashes($row[$field['Field']]);
+					$tmp = $row[$field['Field']];
 					$tmp = "'".str_replace($check, $replace, $tmp)."',";
 				}
 				else

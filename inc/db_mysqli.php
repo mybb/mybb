@@ -657,6 +657,22 @@ class databaseEngine
 	}
 
 	/**
+	 * Show the "show fields from" command for a specific table.
+	 *
+	 * @param string The name of the table.
+	 * @return string Field info for that table
+	 */
+	function show_fields_from($table)
+	{
+		$query = $this->query("SHOW FIELDS FROM ".$table."");
+		while($field = $this->fetch_array($query))
+		{
+			$field_info[] = $field;
+		}
+		return $field_info;
+	}
+
+	/**
 	 * Returns whether or not the table contains a fulltext index.
 	 *
 	 * @param string The name of the table.
