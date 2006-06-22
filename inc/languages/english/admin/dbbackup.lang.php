@@ -13,7 +13,7 @@ $l['file_size'] = "File Size";
 $l['file_type'] = "File Type";
 $l['creation_date'] = "Creation Date";
 $l['options'] = "Options";
-$l['restore'] = "Restore";
+$l['restore'] = "restore";
 
 $l['table_selection_desc'] = "You may select the database tables you wish to backup here.  Hold down CTRL to select multiple tables.";
 $l['export_file_type'] = "Export File Type";
@@ -28,12 +28,12 @@ $l['perform_backup'] = "Perform Backup";
 
 $l['restore_database_desc'] = "Below is a list of the existing database backups that you can restore.";
 $l['no_existing_backups'] = "There are currently no database backups to restore.";
-$l['delete'] = "Delete";
+$l['delete'] = "delete";
 
 $l['confirm_delete_text'] = "Are you sure you would like to delete the selected backup?<br >This process cannot be undone.";
 $l['confirm_restore_text'] = "Are you sure you would like to restore this backup?";
 
-$l['backup_complete'] = "Backup generated in {1} seconds.";
+$l['backup_complete'] = "Backup generated in {1} seconds.<br /><br />The backup was saved to:<br />{2}<br /><br /><a href=\"{3}\">Download this backup</a>.";
 $l['backup_deleted'] = "Backup Deleted Successfully";
 $l['restore_complete'] = "Restoration completed in {1} seconds.";
 
@@ -42,6 +42,7 @@ $l['error_no_backup_specified'] = "No backup was selected for {1}.";
 $l['error_delete_fail'] = "Could not delete selected backup.";
 $l['error_restore_fail'] = "Could not restore selected backup.";
 $l['error_backup_not_found'] = "The selected backup could not be found.";
+$l['error_no_zlib'] = "The zlib library for PHP is not enabled, so your request could not be performed.";
 
 $l['restoration'] = "restoration";
 $l['deletion'] = "deletion";

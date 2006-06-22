@@ -78,6 +78,10 @@ if($mybb->input['action'] == 'do_restore')
 			
 			if($file_ext == 'gz')
 			{
+				if(!function_exists('gzopen')) // check zlib-ness
+				{
+					cperror($lang->error_no_zlib);
+				}
 				$type = 'gzip';
 				$fp = gzopen(MYBB_ADMIN_DIR.'backups/'.$file, 'r');
 			}
@@ -163,11 +167,16 @@ if($mybb->input['action'] == 'do_backup')
 	$host = sprintf('%02X', $host[0]).sprintf('%02X', $host[1]).sprintf('%02X', $host[2]).sprintf('%02X', $host[3]);
 	
 	$file_ext = ($mybb->input['type'] == 'gzip') ? 'gz' : 'sql';
-	$file = MYBB_ADMIN_DIR.'backups/'.time().$host.'.'.$file_ext;
+	$file_from_admindir = 'backups/'.time().$host.'.'.$file_ext;
+	$file = MYBB_ADMIN_DIR.$file_from_admindir;
 	
 	if($mybb->input['type'] == 'gzip')
 	{
 		$type = 'gzip';
+		if(!function_exists('gzopen')) // check zlib-ness
+		{
+			cperror($lang->error_no_zlib);
+		}
 		$fp = gzopen($file, 'w9');
 	}
 	else
@@ -303,8 +312,8 @@ if($mybb->input['action'] == 'do_backup')
 	
 	$timer->stop();
 	
-	$lang->backup_complete = sprintf($lang->backup_complete, $timer->gettime());
-	cpredirect('dbbackup.php?'.SID.'&action=backup', $lang->backup_complete);
+	$lang->backup_complete = sprintf($lang->backup_complete, $timer->gettime(), $file, $file_from_admindir);
+	cpmessage($lang->backup_complete);
 }
 
 if($mybb->input['action'] == "confirm_restore")
@@ -396,12 +405,17 @@ if($mybb->input['action'] == "restore")
 			$type = $file[1];
 			$file = $dir.$filename.'.'.$type;
 			$bgcolor = getaltbg();
+			$restore_link = '['.$lang->restore.']';
+			if(function_exists('gzopen') || $type != 'gz')
+			{
+				$restore_link = makelinkcode($lang->restore, "dbbackup.php?".SID."&action=confirm_restore&backup=".$filename.'.'.$type);
+			}
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"".$file."\">".$filename."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".filesize($file)."</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".strtoupper($type)."</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".date('jS M Y \a\t H:i', $key)."</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"dbbackup.php?".SID."&action=confirm_restore&backup=".$filename.'.'.$type."\">[ Restore ]</a> <a href=\"dbbackup.php?".SID."&action=delete&backup=".$filename.'.'.$type."\">[ Delete ]</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".date('jS M Y H:i', $key)."</td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".$restore_link.' '.makelinkcode($lang->delete, "dbbackup.php?".SID."&action=delete&backup=".$filename.'.'.$type)."</td>\n";
 			echo "</tr>\n";
 		}
 	}
@@ -467,8 +481,13 @@ if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 	echo "<tr>\n";
 	echo "<td class=\"$bgcolor\">".$lang->export_file_type."</td>\n";
 	echo "<td class=\"$bgcolor\">\n";
-	echo "<label><input type=\"radio\" name=\"type\" value=\"gzip\" checked=\"checked\" /> ".$lang->gzip_compressed."</label>\n";
-	echo "<label><input type=\"radio\" name=\"type\" value=\"text\" /> ".$lang->plain_text."</label>\n";
+	$plain_checked = ' checked="checked"';
+	if(function_exists('gzopen'))
+	{
+		$plain_checked = '';
+		echo "<label><input type=\"radio\" name=\"type\" value=\"gzip\" checked=\"checked\" /> ".$lang->gzip_compressed."</label>\n";
+	}
+	echo "<label><input type=\"radio\" name=\"type\" value=\"text\"".$plain_checked." /> ".$lang->plain_text."</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	makeyesnocode($lang->include_table_defs, 'defs');
