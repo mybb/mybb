@@ -47,11 +47,7 @@ if($mybb->input['action'] == "do_login")
 		error($lang->error_invalidpassword);
 	}
 
-	$db->query("
-		DELETE 
-		FROM ".TABLE_PREFIX."sessions
-		WHERE ip='".$session->ipaddress."' AND sid<>'".$session->sid."'
-	");
+	$db->delete_query(TABLE_PREFIX."sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
 		);
@@ -86,11 +82,7 @@ if($mybb->settings['portal_showwelcome'] != "no")
 	{
 		if($mybb->user['receivepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->settings['portal_showpms'] != "no" && $mybb->settings['enablepms'] != "no")
 		{
-			$query = $db->query("
-				SELECT COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread
-				FROM ".TABLE_PREFIX."privatemessages
-				WHERE uid='".$mybb->user['uid']."'
-			");
+			$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
 			$messages = $db->fetch_array($query);
 			if(!$messages['pms_new'])
 			{
@@ -105,25 +97,13 @@ if($mybb->settings['portal_showwelcome'] != "no")
 			eval("\$pms = \"".$templates->get("portal_pms")."\";");
 		}
 		// get number of new posts, threads, announcements
-		$query = $db->query("
-			SELECT COUNT(pid) AS newposts
-			FROM ".TABLE_PREFIX."posts
-			WHERE dateline>'".$mybb->user['lastvisit']."' $unviewwhere
-		");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS newposts", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
 		{ // if there aren't any new posts, there is no point in wasting two more queries
-			$query = $db->query("
-				SELECT COUNT(tid) AS newthreads
-				FROM ".TABLE_PREFIX."threads
-				WHERE dateline>'".$mybb->user['lastvisit']."' $unviewwhere
-			");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS newthreads", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 			$newthreads = $db->fetch_field($query, "newthreads");
-			$query = $db->query("
-				SELECT COUNT(tid) AS newann
-				FROM ".TABLE_PREFIX."threads
-				WHERE dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere
-			");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS newann", "dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere");
 			$newann = $db->fetch_field($query, "newann");
 			if(!$newthreads) { $newthreads = 0; }
 			if(!$newann) { $newann = 0; }
@@ -166,7 +146,7 @@ if($mybb->settings['portal_showstats'] != "no")
 	}
 	else
 	{
-		$newestmember = "<a href=\"".$mybb->settings[bburl]."/member.php?action=profile&uid=$stats[lastuid]\">$stats[lastusername]</a>";
+		$newestmember = build_profile_link($stats['lastusername'], $stats['lastuid']);
 	}
 	eval("\$stats = \"".$templates->get("portal_stats")."\";");
 }
@@ -271,14 +251,7 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 		}
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
-		if($altbg == "trow1")
-		{
-			$altbg = "trow2";
-		}
-		else
-		{
-			$altbg = "trow1";
-		}
+		$altbg = alt_trow();
 	}
 	if($threadlist)
 	{ // show the table only if there are threads
@@ -295,11 +268,7 @@ foreach($mybb->settings['portal_announcementsfid'] as $fid)
 }
 $mybb->settings['portal_announcementsfid'] = implode(',', $fid_array);
 // And get them!
-$query = $db->query("
-	SELECT *
-	FROM ".TABLE_PREFIX."forums
-	WHERE fid IN (".$mybb->settings['portal_announcementsfid'].")
-");
+$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid IN (".$mybb->settings['portal_announcementsfid'].")");
 while($forumrow = $db->fetch_array($query))
 {
     $forum[$forumrow['fid']] = $forumrow;

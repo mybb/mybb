@@ -484,7 +484,12 @@ class databaseEngine
 			}
 		}
 		$select = implode(", ", $select);
-		$query = "SELECT {$select} FROM ({$data['table']}) {$join_sql}";
+		$rows = "";
+		if($data['rows'] != "")
+		{
+			$rows = "({$data['rows']})";
+		}
+		$query = "SELECT {$select} FROM {$data['table']} $rows {$join_sql}";
 		if($data['where'])
 		{
 			$query .= " WHERE {$data['where']}";

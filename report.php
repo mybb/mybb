@@ -97,7 +97,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 					"readtime" => 0
 					);
 				$db->insert_query(TABLE_PREFIX."privatemessages", $reportpm);
-				$db->query("UPDATE ".TABLE_PREFIX."users SET pmpopup='new' WHERE uid='$mod[uid]'");
+				$db->update_query(TABLE_PREFIX."users", array('pmpopup' => 'new'), "uid='{$mod['uid']}'");
 			}
 			else
 			{

@@ -23,7 +23,7 @@ $plugins->run_hooks("announcements_start");
 // Get announcement fid
 $query = $db->select_query(array(
 	'select' => "fid",
-	'from' => TABLE_PREFIX."announcements",
+	'table' => TABLE_PREFIX."announcements",
 	'where' => "aid='$aid'"
 ));
 $announcement = $db->fetch_array($query);
@@ -60,26 +60,25 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] =
 
 // Get announcement info
 $time = time();
-// You made those nice skiny queries all fat and shit
 $query = $db->select_query(array(
 	'select' => "a.*",
-	'from' => TABLE_PREFIX."announcements a",
+	'table' => TABLE_PREFIX."announcements a",
 	'where' => "a.startdate<={$time} AND a.enddate>={$time} AND a.aid={$aid}",
 	'joins' => array(
 		0 => array(
 			'type' => "left",
 			'select' => "u.*",
-			'from' => TABLE_PREFIX."users u",
+			'table' => TABLE_PREFIX."users u",
 			'where' => "u.uid=a.uid"),
 		1 => array(
 			'type' => "left",
 			'select' => "f.*",
-			'from' => TABLE_PREFIX."userfields f",
+			'table' => TABLE_PREFIX."userfields f",
 			'where' => "f.ufid=u.uid"),
 		2 => array(
 			'type' => "left",
-			'select' => "g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle, g.usereputationsystem"
-			'from' => TABLE_PREFIX."usergroups g",
+			'select' => "g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle, g.usereputationsystem",
+			'table' => TABLE_PREFIX."usergroups g",
 			'where' => "g.gid=u.usergroup")
 	)
 ));

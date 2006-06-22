@@ -212,7 +212,8 @@ if($mybb->input['action'] == "thread")
 		update_first_post($tid);
 	}
 	// Does this thread have a poll?
-	if($thread['poll']) {
+	if($thread['poll']) 
+	{
 		$options = array(
 			"limit" => 1
 		);
@@ -251,7 +252,7 @@ if($mybb->input['action'] == "thread")
 		$polloptions = '';
 
 		// Loop through the poll options.
-		for($i=1; $i<=$poll['numoptions']; ++$i)
+		for($i = 1; $i <= $poll['numoptions']; ++$i)
 		{
 			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 
@@ -567,7 +568,7 @@ if($mybb->input['action'] == "thread")
 		// Recount replies if user is a moderator to take into account unapproved posts.
 		if($ismod)
 		{
-			$query = $db->query("SELECT COUNT(*) AS replies FROM ".TABLE_PREFIX."posts p WHERE p.tid='$tid' $visible");
+			$query = $db->simple_select(TABLE_PREFIX."posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
 			$thread['replies'] = $db->fetch_field($query, 'replies')-1;
 		}
 		$postcount = intval($thread['replies'])+1;
@@ -604,13 +605,7 @@ if($mybb->input['action'] == "thread")
 		// Lets get the pids of the posts on this page.
 		$pids = "";
 		$comma = '';
-		$query = $db->query("
-			SELECT p.pid
-			FROM ".TABLE_PREFIX."posts p
-			WHERE p.tid='$tid' $visible
-			ORDER BY p.dateline
-			LIMIT $start, $perpage
-		");
+		$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "p.tid='$tid' $visible", array('order_by' => 'p.dateline', 'limit_start' => $start, 'limit' => $perpage));
 		while($getid = $db->fetch_array($query))
 		{
 			$pids .= "$comma'$getid[pid]'";
@@ -620,11 +615,7 @@ if($mybb->input['action'] == "thread")
 		{
 			$pids = "pid IN($pids)";
 			// Now lets fetch all of the attachments for these posts.
-			$query = $db->query("
-				SELECT *
-				FROM ".TABLE_PREFIX."attachments
-				WHERE $pids
-			");
+			$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $pids);
 			while($attachment = $db->fetch_array($query))
 			{
 				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
@@ -740,7 +731,7 @@ function buildtree($replyto="0", $indent="0")
 	++$indent;
 	if(is_array($tree[$replyto]))
 	{
-		while(list($key, $post) = each($tree[$replyto]))
+		foreach($tree[$replyto] as $key => $post)
 		{
 			$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = mydate($mybb->settings['timeformat'], $post['dateline']);
@@ -751,7 +742,7 @@ function buildtree($replyto="0", $indent="0")
 			}
 			if($post['userusername'])
 			{
-				$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".$post['userusername']."</a>";
+				$post['profilelink'] = build_profile_link($post['userusername'], $post['uid']);
 			}
 			else
 			{

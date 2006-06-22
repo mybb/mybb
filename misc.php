@@ -150,7 +150,7 @@ elseif($mybb->input['action'] == "help")
 		}
 		unset($helpdoc);
 		$sections = '';
-		$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "enabled != 'no'", array('order_by' => 'disporder');
+		$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "enabled != 'no'", array('order_by' => 'disporder'));
 		while($section = $db->fetch_array($query))
 		{
 			if($section['usetranslation'] == "yes" || $section['sid'] <= 2)

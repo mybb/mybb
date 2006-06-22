@@ -24,7 +24,7 @@ $feedgenerator = new FeedGenerator();
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 $parser_options = array(
-	"allow_html" => "yes"
+	'allow_html' => "yes"
 );
 
 // Find out the thread limit.

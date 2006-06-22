@@ -21,11 +21,7 @@ $lang->load("printthread");
 
 $plugins->run_hooks("printthread_start");
 
-$query = $db->query("
-	SELECT *
-	FROM ".TABLE_PREFIX."threads
-	WHERE tid='".intval($mybb->input['tid'])."' AND visible='1'
-");
+$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."' AND visible='1'");
 $thread = $db->fetch_array($query);
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 if(!$thread['tid'])
@@ -47,7 +43,7 @@ $breadcrumb = makeprintablenav();
 $parentsexp = explode(",", $forum['parentlist']);
 $numparents = count($parentsexp);
 $tdepth = "-";
-for($i=0;$i<$numparents;$i++)
+for($i = 0; $i < $numparents; $i++)
 {
 	$tdepth .= "-";
 }
@@ -86,7 +82,7 @@ while($postrow = $db->fetch_array($query))
 		"allow_html" => $forum['allow_html'],
 		"allow_mycode" => $forum['allow_mycode'],
 		"allow_smilies" => $forum['allowsmilies'],
-		"allow_imgcode" => $forum['allowimgcode']
+		"allow_imgcode" => $forum['allowimgcode'],
 	);
 	if($postrow['smilieoff'] == "yes")
 	{
@@ -94,11 +90,6 @@ while($postrow = $db->fetch_array($query))
 	}
 
 	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
-	/* Do /me code */
-	if($forum['allowmycode'] != "no")
-	{
-		$postrow['message'] = domecode($postrow['message'], $postrow['username']);
-	}
 	$plugins->run_hooks("printthread_post");
 	eval("\$postrows .= \"".$templates->get("printthread_post")."\";");
 }
@@ -114,12 +105,7 @@ function makeprintablenav($pid="0", $depth="--")
 	if(!is_array($pforumcache))
 	{
 		$parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);
-		$query = $db->query("
-			SELECT name, fid, pid
-			FROM ".TABLE_PREFIX."forums
-			WHERE 1=1 AND $parlist
-			ORDER BY pid, disporder
-		");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "$parlist", array('order_by' => 'pid, disporder'));
 		while($forumnav = $db->fetch_array($query))
 		{
 			$pforumcache[$forumnav['pid']][$forumnav['fid']] = $forumnav;
@@ -128,9 +114,9 @@ function makeprintablenav($pid="0", $depth="--")
 	}
 	if(is_array($pforumcache[$pid]))
 	{
-		while(list($key, $forumnav) = each($pforumcache[$pid]))
+		foreach($pforumcache[$pid] as $key => $forumnav)
 		{
-			$forums .= "+".$depth." $lang->forum $forumnav[name] (<i>".$mybb->settings[bburl]."/forumdisplay.php?fid=$forumnav[fid]</i>)<br>\n";
+			$forums .= "+".$depth." $lang->forum $forumnav[name] (<i>".$mybb->settings['bburl']."/forumdisplay.php?fid=$forumnav[fid]</i>)<br>\n";
 			if($pforumcache[$forumnav['fid']])
 			{
 				$newdepth = $depth."-";

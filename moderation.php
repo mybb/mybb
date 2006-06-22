@@ -1439,7 +1439,7 @@ switch($mybb->input['action'])
 			eval("\$allreportspages = \"".$templates->get("moderation_allreports_multipage")."\";");
 		}
 
-		$query = $db->aimple_select(TABLE_PREFIX."forums", "fid,name");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "fid,name");
 		while($forum = $db->fetch_array($query))
 		{
 			$forums[$forum['fid']] = $forum['name'];

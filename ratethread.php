@@ -14,11 +14,7 @@ require "./global.php";
 
 $lang->load("ratethread");
 
-$query = $db->query("
-	SELECT *
-	FROM ".TABLE_PREFIX."threads
-	WHERE tid='".intval($mybb->input['tid'])."'
-");
+$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."'");
 $thread = $db->fetch_array($query);
 if(!$thread['tid'])
 {
@@ -60,11 +56,7 @@ else
 {
 	$whereclause = "ipaddress='$ipaddress'";
 }
-$query = $db->query("
-	SELECT *
-	FROM ".TABLE_PREFIX."threadratings
-	WHERE $whereclause AND tid='".intval($mybb->input['tid'])."'
-");
+$query = $db->simple_select(TABLE_PREFIX."threadratings", "*", "$whereclause AND tid='".intval($mybb->input['tid'])."'");
 $ratecheck = $db->fetch_array($query);
 
 if($ratecheck['rid'])
@@ -86,17 +78,22 @@ else
 	");
 	if($mybb->user['uid'] != "0")
 	{
-		$db->query("
-			INSERT INTO ".TABLE_PREFIX."threadratings (tid,uid,rating,ipaddress)
-			VALUES ('".intval($mybb->input['tid'])."','".$mybb->user[uid]."','".$mybb->input['rating']."','$ipaddress')
-		");
+		$updatearray = array(
+			'tid' => intval($mybb->input['tid']),
+			'uid' => $mybb->user['uid'],
+			'rating' => $mybb->input['rating'],
+			'ipaddress' => $ipaddress
+		);
+		$db->insert_query(TABLE_PREFIX."threadratings", $updatearray);
 	}
 	else
 	{
-		$db->query("
-			INSERT INTO ".TABLE_PREFIX."threadratings (tid,rating,ipaddress)
-			VALUES ('".intval($mybb->input['tid'])."','".$mybb->input['rating']."','$ipaddress')
-		");
+		$updatearray = array(
+			'tid' => intval($mybb->input['tid']),
+			'rating' => $mybb->input['rating'],
+			'ipaddress' => $ipaddress
+		);
+		$db->insert_query(TABLE_PREFIX."threadratings", $updatearray);
 		$time = time();
 		mysetcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
 	}

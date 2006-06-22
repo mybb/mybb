@@ -155,7 +155,7 @@ elseif($mybb->input['action'] == "removesubscriptions")
 {
 	if($mybb->input['type'] == "forum")
 	{
-		$db->query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE uid='".$mybb->user[uid]."'");
+		$db->delete_query(TABLE_PREFIX."forumsubscriptions", "uid='".$mybb->user['uid']."'");
 		if($_SERVER['HTTP_REFERER'])
 		{
 			$url = $_SERVER['HTTP_REFERER'];
@@ -168,7 +168,7 @@ elseif($mybb->input['action'] == "removesubscriptions")
 	}
 	else
 	{
-		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE type='s' AND uid='".$mybb->user[uid]."'");
+		$db->delete_query(TABLE_PREFIX."favorites", "type='s' AND uid='".$mybb->user['uid']."'");
 		if($_SERVER['HTTP_REFERER'])
 		{
 			$url = $_SERVER['HTTP_REFERER'];
@@ -182,7 +182,7 @@ elseif($mybb->input['action'] == "removesubscriptions")
 }
 elseif($mybb->input['action'] == "removefavorites")
 {
-	$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE type='f' AND uid='".$mybb->user[uid]."'");
+	$db->delete_query(TABLE_PREFIX."favorites", "type='f' AND uid='".$mybb->user['uid']."'");
 	if($_SERVER['HTTP_REFERER'])
 	{
 		$url = $_SERVER['HTTP_REFERER'];

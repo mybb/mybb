@@ -25,12 +25,7 @@ $moderators = array();
 $users = array();
 
 // Fetch the list of groups which are to be shown on the page
-$query = $db->query("
-	SELECT gid, title, usertitle
-	FROM ".TABLE_PREFIX."usergroups
-	WHERE showforumteam='yes'
-	ORDER BY disporder
-");
+$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title, usertitle", "showforumteam='yes'", array('order_by' => 'disporder'));
 while($usergroup = $db->fetch_array($query))
 {
 	$usergroups[$usergroup['gid']] = $usergroup;
@@ -67,12 +62,7 @@ if(!$users_in)
 }
 $forum_permissions = forum_permissions();
 
-$query = $db->query("
-	SELECT uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms
-	FROM ".TABLE_PREFIX."users
-	WHERE usergroup IN ($groups_in) OR uid IN ($users_in)
-	ORDER BY username
-");
+$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms", "usergroup IN ($groups_in) OR uid IN ($users_in)", array('order_by' => 'username'));
 while($user = $db->fetch_array($query))
 {
 	// If this user is a moderator
@@ -128,14 +118,7 @@ foreach($usergroups as $usergroup)
 			$pmcode = '';
 		}
 		
-		if($bgcolor == 'trow1')
-		{
-			$bgcolor = 'trow2';
-		}
-		else
-		{
-			$bgcolor = 'trow1';
-		}
+		$bgcolor = alt_trow();
 
 		//If the current group is a moderator group
 		if($usergroup['gid'] == 6)

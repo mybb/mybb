@@ -489,9 +489,12 @@ if(empty($mybb->input['action']))
 		{
 			$author = $langinfo['author'];
 		}
-
+		
+		list($adminkey, $adminvalue) = explode("=", SID);
 		// Make edit with language select list
-		$langselect = "<form method=\"get\">";
+		$langselect = "<form action=\"languages.php\" method=\"get\">";
+		$langselect .= "<input type=\"hidden\" name=\"$adminkey\" value=\"$adminvalue\" />";
+		$langselect .= "<input type=\"hidden\" name=\"action\" value=\"editset\" />";
 		$langselect .= "<input type=\"hidden\" name=\"action\" value=\"edit\" />";
 		$langselect .= "<input type=\"hidden\" name=\"lang\" value=\"$key\" />";
 		$langselect .= makehopper("editwith", $langselectlangs);
@@ -501,7 +504,9 @@ if(empty($mybb->input['action']))
 		$optionlist = array(
 			"editset" => $lang->edit_set,
 		);
-		$options = "<form method=\"get\">";
+		$options = "<form action=\"languages.php\" method=\"get\">";
+		$options .= "<input type=\"hidden\" name=\"$adminkey\" value=\"$adminvalue\" />";
+		$options .= "<input type=\"hidden\" name=\"action\" value=\"editset\" />";
 		$options .= "<input type=\"hidden\" name=\"lang\" value=\"$key\" />";
 		$options .= makehopper("action", $optionlist);
 		$options .= "</form>";

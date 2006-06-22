@@ -179,12 +179,7 @@ if($mybb->input['action'] == "results")
 		// Fetch dot icons if enabled
 		if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $thread_cache)
 		{
-			$query = $db->query("
-				SELECT DISTINCT tid,uid
-				FROM ".TABLE_PREFIX."posts
-				WHERE uid='".$mybb->user['uid']."'
-				AND tid IN(".$thread_ids.")
-			");
+			$query = $db->simple_select(TABLE_PREFIX."posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
 			while($post = $db->fetch_array($query))
 			{
 				$thread_cache[$post['tid']]['dot_icon'] = 1;
@@ -777,7 +772,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 			$conditions = "uid='0' AND ipaddress='{$ipaddress}'";
 		}
 		$timecut = time()-$mybb->settings['searchfloodtime'];
-		$query = $db->query(TABLE_PREFIX."searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+		$query = $db->simple_select(TABLE_PREFIX."searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
 		if($last_search['sid'])
