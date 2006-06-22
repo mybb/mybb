@@ -215,6 +215,10 @@ if($mybb->input['action'] == "do_add")
 	{
 		$type = "f";
 	}
+	if(!trim($mybb->input['name']))
+	{
+		cperror($lang->forum_noname);
+	}
 	if($mybb->input['pid'] == 0 && $type == "f")
 	{
 		cperror($lang->forum_noparent);
@@ -347,7 +351,7 @@ if($mybb->input['action'] == "do_delete")
 		 * it moves them back to the registered usergroup
 		 */
 
-		$query = $db->query(TABLE_PREFIX."moderators", "*", "fid='$fid'");
+		$query = $db->simple_select(TABLE_PREFIX."moderators", "*", "fid='$fid'");
 		while($mod = $db->fetch_array($query))
 		{
 			$moderators[$mod['uid']] = $mod['uid'];
@@ -445,7 +449,10 @@ if($mybb->input['action'] == "do_edit")
 		{
 			$type = "f";
 		}
-
+		if(!trim($mybb->input['name']))
+		{
+			cperror($lang->forum_noname);
+		}
 		if($mybb->input['pid'] == 0 && $type == "f")
 		{
 			cperror($lang->forum_noparent);

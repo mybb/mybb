@@ -136,7 +136,7 @@ $l['forum_deleted'] = "The forum has successfully been deleted.";
 $l['forum_updated'] = "The forum has successfully been updated.";
 $l['forum_parent_itself'] = "The forum parent cannot be the forum itself.";
 $l['forum_noparent'] = "The forum must belong to a parent forum or category.  If you have no existing forums, create a category first (by setting 'Act as Forum' to 'No') before creating a forum.";
-
+$l['forum_noname'] = "You did not enter a name for this forum.";
 $l['mod_added'] = "The moderator has sucessfully been added to the forum.";
 $l['mod_alreadyismod'] = "The user is already a moderator of the forum.";
 $l['mod_user_notfound'] = "The user was not found.";
