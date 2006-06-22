@@ -15,7 +15,6 @@ options = array(
 	allow_smilies
 	allow_mycode
 	nl2br
-	is_archive
 	filter_badwords
 	me_username
 )
@@ -573,7 +572,7 @@ class postParser
 		{
 			if(strlen($url) > 55)
 			{
-				$name = substr($url, 0, 40)."...".substr($url, -10);
+				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
 			}
 		}
 
@@ -616,7 +615,7 @@ class postParser
 		$message = " ".$message;
 		$message = preg_replace("#([\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#ie", "\"$1\".\$this->mycode_parse_url(\"$2://$3\")", $message);
 		$message = preg_replace("#([\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#ie", "\"$1\".\$this->mycode_parse_url(\"$2.$3\", \"$2.$3\")", $message);
-		$message = substr($message, 1);
+		$message = my_substr($message, 1);
 		return $message;
 	}
 
