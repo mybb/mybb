@@ -229,7 +229,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$db->insert_query(TABLE_PREFIX."awaitingactivation", $activationarray);
 			$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-			mymail($email, $emailsubject, $emailmessage);
+			mymail($user_info['email'], $emailsubject, $emailmessage);
 			$lang->redirect_registered_activation = sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
@@ -240,7 +240,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		{
 			$emailsubject = sprintf($lang->emailsubject_randompassword, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
-			mymail($email, $emailsubject, $emailmessage);
+			mymail($user_info['email'], $emailsubject, $emailmessage);
 
 			$plugins->run_hooks("member_do_register_end");
 
