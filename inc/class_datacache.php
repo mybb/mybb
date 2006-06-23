@@ -330,26 +330,30 @@ class datacache
 		global $db;
 		
 		$query = $db->query("
-			SELECT tid
+			SELECT COUNT(tid) AS threads
 			FROM ".TABLE_PREFIX."threads
 			WHERE visible='1' AND closed NOT LIKE 'moved|%'
 		");
-		$stats['numthreads'] = $db->num_rows($query);
+		$stats['numthreads'] = $db->fetch_field($query, 'threads');
 		$query = $db->query("
-			SELECT pid
+			SELECT COUNT(pid) AS posts
 			FROM ".TABLE_PREFIX."posts
 			WHERE visible='1'
 		");
-		$stats['numposts'] = $db->num_rows($query);
+		$stats['numposts'] = $db->fetch_field($query, 'posts');
 		$query = $db->query("
 			SELECT uid, username
 			FROM ".TABLE_PREFIX."users
 			ORDER BY uid DESC LIMIT 1
 		");
-		$stats['numusers'] = $db->num_rows($query);
 		$lastmember = $db->fetch_array($query);
 		$stats['lastuid'] = $lastmember['uid'];
 		$stats['lastusername'] = $lastmember['username'];
+		$query = $db->query("
+			SELECT COUNT(uid) AS users
+			FROM ".TABLE_PREFIX."users
+		");
+		$stats['numusers'] = $db->fetch_field($query, 'users');		
 		$this->update("stats", $stats);
 	}
 
