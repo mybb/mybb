@@ -958,7 +958,7 @@ elseif($mybb->input['action'] == "profile")
 		}
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid'='$uid'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid'$uid'");
 	$memprofile = $db->fetch_array($query);
 
 	if(!$memprofile['uid'])
