@@ -307,7 +307,7 @@ class CustomModeration extends Moderation
 				{
 					$thread_options['copythread'] = $thread['fid'];
 				}
-				var_dump($tids);
+				//var_dump($tids);
 				foreach($tids as $tid)
 				{
 					$this->move_thread($tid, $thread_options['copythread'], 'copy');
@@ -348,7 +348,7 @@ class CustomModeration extends Moderation
 						"signature" => 'yes',
 						"emailnotify" => 'no',
 						"disablesmilies" => 'no'
-						);
+					);
 	
 					$posthandler->set_data($post);
 					if($posthandler->validate_post($post))

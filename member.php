@@ -297,7 +297,7 @@ if($mybb->input['action'] == "register")
 			// Multiply it by 10 as required by the system and make any negative disappear
 			$selzonetime = abs(intval($mybb->settings['timezoneoffset'])*10);
 			// If the timezone is negative, use a prefix n, else no prefix.
-			if(substr($mybb->settings['timezoneoffset'], 0, 1) == "-")
+			if(my_substr($mybb->settings['timezoneoffset'], 0, 1) == "-")
 			{
 				$selzoneway = "n";
 			}
@@ -1086,7 +1086,7 @@ elseif($mybb->input['action'] == "profile")
 	if($memprofile['dst'] == "yes")
 	{
 		$memprofile['timezone']++;
-		if(substr($memprofile['timezone'], 0, 1) != "-")
+		if(my_substr($memprofile['timezone'], 0, 1) != "-")
 		{
 			$memprofile['timezone'] = "+$memprofile[timezone]";
 		}

@@ -68,7 +68,7 @@ function getforums($pid=0, $depth=1)
 		}
 
 		reset($forum_cache);
-		while(list($key, $val) = each($forum_cache))
+		foreach($forum_cache as $key => $val)
 		{
 			$iforumcache[$val['pid']][$val['disporder']][$val['fid']] = $val;
 		}

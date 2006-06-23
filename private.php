@@ -523,7 +523,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 	{
 		if(!$donefolders[$val])
 		{
-			if(substr($key, 0, 3) == "new")
+			if(my_substr($key, 0, 3) == "new")
 			{
 				$highestid++;
 				$fid = intval($highestid);

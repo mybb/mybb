@@ -24,7 +24,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 	global $db;
 	if($autocreate != 0)
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='$title' AND sid='-2'");
+		$query = $db->simple_select(TABLE_PREFIX."templates", "*", "title='$title' AND sid='-2'");
 		$master = $db->fetch_array($query);
 		$oldmaster = $master['template'];
 		$master['template'] = preg_replace($find, $replace, $master['template']);
@@ -34,7 +34,11 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 		}
 		$master['template'] = $db->escape_string($master['template']);
 	}
-	$query = $db->query("SELECT s.sid, t.template, t.tid FROM ".TABLE_PREFIX."templatesets s LEFT JOIN ".TABLE_PREFIX."templates t ON (t.title='$title' AND t.sid=s.sid)");
+	$query = $db->query("
+		SELECT s.sid, t.template, t.tid 
+		FROM ".TABLE_PREFIX."templatesets s 
+		LEFT JOIN ".TABLE_PREFIX."templates t ON (t.title='$title' AND t.sid=s.sid)
+	");
 	while($template = $db->fetch_array($query))
 	{
 		if($template['template']) // Custom template exists for this group
@@ -53,7 +57,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 				"title" => $title,
 				"template" => $master['template'],
 				"sid" => $template['sid']
-				);
+			);
 			$db->insert_query(TABLE_PREFIX."templates", $newtemp);
 		}
 	}
@@ -67,3 +71,4 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 	}
 	return true;
 }
+?>

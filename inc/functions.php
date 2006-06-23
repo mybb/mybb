@@ -195,7 +195,7 @@ function parse_page($contents)
 
 	if($loadpmpopup)
 	{
-		if(substr($_SERVER['PHP_SELF'], -strlen("private.php")) != "private.php")
+		if(my_substr($_SERVER['PHP_SELF'], -strlen("private.php")) != "private.php")
 		{
 			$contents = str_replace("<body", "<body onload=\"Javascript:MyBB.newPM()\"", $contents);
 		}
@@ -237,7 +237,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
 		if($dstcorrection == "yes")
 		{
 			$offset++;
-			if(substr($offset, 0, 1) != "-")
+			if(my_substr($offset, 0, 1) != "-")
 			{
 				$offset = "+".$offset;
 			}
@@ -1430,7 +1430,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
  */
 function get_extension($file)
 {
-	return strtolower(substr(strrchr($file, "."), 1));
+	return strtolower(my_substr(strrchr($file, "."), 1));
 }
 
 /**
@@ -1616,7 +1616,7 @@ function gzip_encode($contents, $level=1)
 				$size = strlen($contents);
 				$crc = crc32($contents);
 				$gzdata = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff";
-				$gzdata .= substr(gzcompress($contents, $level), 2, -4);
+				$gzdata .= my_substr(gzcompress($contents, $level), 2, -4);
 				$gzdata .= pack("V", $crc);
 				$gzdata .= pack("V", $size);
 				$contents = $gzdata;
@@ -1723,7 +1723,7 @@ function get_ip()
 	{
 		if(preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses))
 		{
-			while(list($key, $val) = each($addresses[0]))
+			foreach($addresses[0] as $key => $val)
 			{
 				if(!preg_match("#^(10|172\.16|192\.168)\.#", $val))
 				{
@@ -1863,7 +1863,7 @@ function fixmktime($format, $year)
 	// Our little work around for the date < 1970 thing.
 	// -2 idea provided by Matt Light (http://www.mephex.com)
 	$format = str_replace("Y", $year, $format);
-	$format = str_replace("y", substr($year, -2), $format);
+	$format = str_replace("y", my_substr($year, -2), $format);
 	return $format;
 }
 
@@ -2601,7 +2601,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 	$bdays = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
 	$bmonth = array($lang->month_1, $lang->month_2, $lang->month_3, $lang->month_4, $lang->month_5, $lang->month_6, $lang->month_7, $lang->month_8, $lang->month_9, $lang->month_10, $lang->month_11, $lang->month_12);
 	$find = array('m', 'd', 'y', 'Y', 'j', 'S', 'F', 'l');
-	$replace = array((sprintf('%02s', $bm)), (sprintf('%02s', $bd)), (substr($by, 2)), $by, ($bd[0] == 0 ? substr($bd, 1) : $bd), ($db == 1 || $db == 21 || $db == 31 ? 'st' : ($db == 2 || $db == 22 ? 'nd' : ($db == 3 || $db == 23 ? 'rd' : 'th'))), $bmonth[$bm-1], $bdays[$wd]);
+	$replace = array((sprintf('%02s', $bm)), (sprintf('%02s', $bd)), (my_substr($by, 2)), $by, ($bd[0] == 0 ? my_substr($bd, 1) : $bd), ($db == 1 || $db == 21 || $db == 31 ? 'st' : ($db == 2 || $db == 22 ? 'nd' : ($db == 3 || $db == 23 ? 'rd' : 'th'))), $bmonth[$bm-1], $bdays[$wd]);
 	return(str_replace($find, $replace, $display));
 }
 

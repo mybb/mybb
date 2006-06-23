@@ -217,7 +217,7 @@ if($mybb->input['action'] == "do_search")
 	{
 		while(false !== ($file = readdir($uploads)))
 		{
-			if(substr($file, -7, 7) == ".attach")
+			if(my_substr($file, -7, 7) == ".attach")
 			{
 				$uploaded_files[] = $file;
 			}
@@ -316,7 +316,7 @@ if($mybb->input['action'] == "orphans")
 	{
 		while(false !== ($file = readdir($uploads)))
 		{
-			if(substr($file, -7, 7) == ".attach" && !in_array($file, $db_list))
+			if(my_substr($file, -7, 7) == ".attach" && !in_array($file, $db_list))
 			{
 				$orphan_files[] = $file;
 			}

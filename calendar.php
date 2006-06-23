@@ -572,7 +572,7 @@ if($mybb->input['action'] == "calendar_main")
 		$event['fullsubject'] = $event['subject'];
 		if(strlen($event['subject']) > 15)
 		{
-			$event['subject'] = substr($event['subject'], 0, 15) . "...";
+			$event['subject'] = my_substr($event['subject'], 0, 15) . "...";
 		}
 		$eventdate = explode("-", $event['date']);
 		if($event['private'] == "yes")

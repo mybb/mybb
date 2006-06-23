@@ -1243,6 +1243,51 @@ function makeacpforumnav($fid)
 	return 1;
 }
 
+//////////
+// Experimental Add Menu Item Code
+// Havn't even tested it yet. It probably doesnt work, but it would be a nice thing to see implimented :P
+// The code sucks right now. I bet it could be improved alot :P
+//////////
+function addmenuitem($menuid, $item="", $position="end", $newmenu)
+{
+	global $menu;
+	
+	$menuitem = $menu[$menuid];
+	if($item != "")
+	{
+		$navitem = $menuitem['items'][$item];
+		if($position == "first")
+		{
+			array_merge((array)$newmenu['item'], $navitems);
+		}
+		elseif($position == "end")
+		{
+			array_push($navitems, $newmenu['item']);
+		}
+		else if(is_numeric($position))
+		{
+			if(!array_key_exists($position, $menu))
+			{
+				$menu[$position] = $newmenu[key($newmemu)];
+			}
+		}
+	}
+	else
+	{
+		if($position == "newmenu")
+		{
+			if(!array_key_exists(key($newmenu), $menu))
+			{
+				$menu[key($newmenu)] = $newmenu[key($newmenu)];
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+} 
+
 function quickpermissions($fid="", $pid="")
 {
 	global $db, $cache, $lang;

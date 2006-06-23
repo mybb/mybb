@@ -47,7 +47,7 @@ else
 	$url = $_SERVER['PHP_SELF'];
 }
 
-$endpart = substr(strrchr($url, "/"), 1);
+$endpart = my_substr(strrchr($url, "/"), 1);
 $action = "index";
 
 // This seems to work the same as the block below except without the css bugs O_o

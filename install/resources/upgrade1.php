@@ -119,7 +119,7 @@ function upgrade1_dbchanges2()
 	$themefile = explode("|#*^^&&^^*#|", $thcontents);
 	$themeq1 = "";
 	$themeq2 = "";
-	while(list($key, $val) = each($themefile))
+	foreach($themefile as $key => $val)
 	{
 		list($item, $value) = explode("|#*!!**!!*#|", $val);
 		if($db->field_exists($item, "themes"))
@@ -133,7 +133,7 @@ function upgrade1_dbchanges2()
 	$tquery1 = "";
 	$tquery2 = "";
 	unset($themebits['templateset']);
-	while(list($key, $val) = each($themebits))
+	foreach($themebits as $key => $val)
 	{
 		if($key && $val)
 		{

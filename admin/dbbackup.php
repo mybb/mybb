@@ -106,13 +106,13 @@ if($mybb->input['action'] == 'do_restore')
 					$output = fgets($fp, 20480);
 				}
 				
-				if(substr($output, -2) == ";\n") // Find the end of line to execute query
+				if(my_substr($output, -2) == ";\n") // Find the end of line to execute query
 				{
-					$row .= substr($output, 0, -2);
+					$row .= my_substr($output, 0, -2);
 					$db->query($row);
 					$row = '';
 				}
-				elseif(substr($row, 0, 12) == 'CREATE TABLE' && substr($output, 0, 1) == ')') // Find the end of the CREATE TABLE
+				elseif(my_substr($row, 0, 12) == 'CREATE TABLE' && my_substr($output, 0, 1) == ')') // Find the end of the CREATE TABLE
 				{
 					$row .= $output;
 					$db->query($row);
@@ -120,7 +120,7 @@ if($mybb->input['action'] == 'do_restore')
 				}
 				else
 				{
-					if(substr($output, 0, 2) == '--') // Continue to next line if this line is a comment
+					if(my_substr($output, 0, 2) == '--') // Continue to next line if this line is a comment
 					{
 						continue;
 					}
@@ -262,7 +262,7 @@ if($mybb->input['action'] == 'do_backup')
 				$output .= $tmp;
 			}
 			
-			$output = substr($output, 0, -1);
+			$output = my_substr($output, 0, -1);
 			$output .= ");\n";
 				
 			if($type == 'gzip')
@@ -376,7 +376,7 @@ if($mybb->input['action'] == "restore")
 			
 			if($ext[1] == 'gz' || $ext[1] == 'sql')
 			{
-				$time = substr($ext[0], 0, 10);
+				$time = my_substr($ext[0], 0, 10);
 				$backups[$time] = $file;
 			}
 		}

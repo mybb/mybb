@@ -189,7 +189,7 @@ if($mybb->input['action'] == "do_add")
 		{
 			if(is_array($mybb->input[$field]))
 			{
-				while(list($key, $val) = each($mybb->input[$field]))
+				foreach($mybb->input[$field] as $key => $val)
 				{
 					if(!empty($options))
 					{
@@ -720,7 +720,7 @@ if($mybb->input['action'] == "add")
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
 			{
-				while(list($key, $val) = each($expoptions))
+				foreach($expoptions as $key => $val)
 				{
 					$val = trim($val);
 					$val = str_replace("\n", "\\n", $val);
@@ -738,7 +738,7 @@ if($mybb->input['action'] == "add")
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
 			{
-				while(list($key, $val) = each($expoptions))
+				foreach($expoptions as $key => $val)
 				{
 					$val = trim($val);
 					$val = str_replace("\n", "\\n", $val);
@@ -767,7 +767,7 @@ if($mybb->input['action'] == "add")
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
 			{
-				while(list($key, $val) = each($expoptions))
+				foreach($expoptions as $key => $val)
 				{
 					$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" /> $val<br />";
 				}
@@ -872,7 +872,7 @@ if($mybb->input['action'] == "edit")
 		if($type == "multiselect")
 		{
 			$useropts = explode("\n", $userfields[$field]);
-			while(list($key, $val) = each($useropts))
+			foreach($useropts as $key => $val)
 			{
 				$seloptions[$val] = $val;
 			}
@@ -904,7 +904,7 @@ if($mybb->input['action'] == "edit")
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
 			{
-				while(list($key, $val) = each($expoptions))
+				foreach($expoptions as $key => $val)
 				{
 					$val = trim($val);
 					$val = str_replace("\n", "\\n", $val);
@@ -930,7 +930,7 @@ if($mybb->input['action'] == "edit")
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
 			{
-				while(list($key, $val) = each($expoptions))
+				foreach($expoptions as $key => $val)
 				{
 					if($val == $userfields[$field])
 					{
@@ -947,14 +947,14 @@ if($mybb->input['action'] == "edit")
 		elseif($type == "checkbox")
 		{
 			$useropts = explode("\n", $userfields[$field]);
-			while(list($key, $val) = each($useropts))
+			foreach($useropts as $key => $val)
 			{
 				$seloptions[$val] = $val;
 			}
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
 			{
-				while(list($key, $val) = each($expoptions))
+				foreach($expoptions as $key => $val)
 				{
 					if($val == $seloptions[$val])
 					{
@@ -2029,7 +2029,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions)) {
 					$select .= "<option value=\"\">&nbsp;</option>";
-					while(list($key, $val) = each($expoptions))
+					foreach($expoptions as $key => $val)
 					{
 						$val = trim($val);
 						$val = str_replace("\n", "\\n", $val);
@@ -2048,7 +2048,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 				if(is_array($expoptions))
 				{
 					$select .= "<option value=\"\">&nbsp;</option>";
-					while(list($key, $val) = each($expoptions))
+					foreach($expoptions as $key => $val)
 					{
 						$val = trim($val);
 						$val = str_replace("\n", "\\n", $val);
@@ -2066,7 +2066,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions))
 				{
-					while(list($key, $val) = each($expoptions))
+					foreach($expoptions as $key => $val)
 					{
 						$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" /> $val<br />";
 					}
@@ -2075,8 +2075,9 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 			elseif($type == "checkbox")
 			{
 				$expoptions = explode("\n", $options);
-				if(is_array($expoptions)) {
-					while(list($key, $val) = each($expoptions))
+				if(is_array($expoptions)) 
+				{
+					foreach($expoptions as $key => $val)
 					{
 						$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" /> $val<br />";
 					}

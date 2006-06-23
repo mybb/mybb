@@ -463,13 +463,15 @@ function sync_settings($redo=0)
 	if($redo == 1)
 	{
 		require "../inc/settings.php";
-		while(list($key, $val) = each($settings)) {
-			$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$val' WHERE name='$key'");
+		foreach($settings as $key => $val)
+		{
+			$db->update_query(TABLE_PREFIX."settings", array('value' => $val), "name='$key'");
 		}
 	}
 	unset($settings);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings ORDER BY title ASC");
-	while($setting = $db->fetch_array($query)) {
+	while($setting = $db->fetch_array($query)) 
+	{
 		$setting['value'] = $db->escape_string($setting['value']);
 		$settings .= "\$settings[".$setting['name']."] = \"".$setting['value']."\";\n";
 	}

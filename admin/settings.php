@@ -505,7 +505,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 					}
 					closedir($dir);
 					ksort($folders);
-					while(list($key, $val) = each($folders))
+					foreach($folders as $key => $val)
 					{
 						if($val == $setting['value'])
 						{
@@ -551,7 +551,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				}
 				elseif($type[0] == "php")
 				{
-					$setting['optionscode'] = substr($setting['optionscode'], 3);
+					$setting['optionscode'] = my_substr($setting['optionscode'], 3);
 					eval("\$settingcode = \"".$setting['optionscode']."\";");
 				}
 				else

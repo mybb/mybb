@@ -336,7 +336,7 @@ if($mybb->input['action'] == "updateprefs" || $mybb->input['action'] == "")
 	}
 	closedir($dir);
 	ksort($folders);
-	while(list($key, $val) = each($folders))
+	foreach($folders as $key => $val)
 	{
 		if($val == $adminoptions['cpstyle'])
 		{

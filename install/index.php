@@ -538,7 +538,7 @@ function configure()
 		$currentscript = $hostname.get_current_location();
 		if($currentscript)
 		{
-			$bburl = substr($currentscript, 0, strpos($currentscript, '/install/'));
+			$bburl = my_substr($currentscript, 0, strpos($currentscript, '/install/'));
 		}
 		$bbname = 'Forums';
 		$cookiedomain = '';
@@ -623,9 +623,9 @@ function create_admin_user()
 		}
 		echo sprintf($lang->admin_step_insertesettings, $settingcount, $groupcount);
 
-		if (substr($mybb->input['bburl'], -1, 1) == '/')
+		if (my_substr($mybb->input['bburl'], -1, 1) == '/')
 		{
-			$mybb->input['bburl'] = substr($mybb->input['bburl'], 0, -1);
+			$mybb->input['bburl'] = my_substr($mybb->input['bburl'], 0, -1);
 		}
 
 		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['bbname'])."' WHERE name='bbname'");

@@ -66,7 +66,7 @@ class postParser
 
 		if($this->base_url != "")
 		{
-			if(substr($this->base_url, strlen($this->base_url) -1) != "/")
+			if(my_substr($this->base_url, strlen($this->base_url) -1) != "/")
 			{
 				$this->base_url = $this->base_url."/";
 			}

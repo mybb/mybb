@@ -132,7 +132,7 @@ function upgrade3_convertattachments()
 	while($attachment = $db->fetch_array($query))
 	{
 		$filename = "post_".$attachment['puid']."_".$attachment['dateline'].$attachment['aid'].".attach";
-		$ext = strtolower(substr(strrchr($attachment['filename'], "."), 1));
+		$ext = strtolower(my_substr(strrchr($attachment['filename'], "."), 1));
 		$fp = fopen("../uploads/".$filename, "wb");
 		if(!$fp)
 		{

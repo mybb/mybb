@@ -247,7 +247,7 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 		}
 		if(strlen($thread['subject']) > 25)
 		{
-			$thread['subject'] = substr($thread['subject'], 0, 25) . "...";
+			$thread['subject'] = my_substr($thread['subject'], 0, 25) . "...";
 		}
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");

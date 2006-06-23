@@ -636,11 +636,11 @@ function what($user)
 	}
 	else
 	{
-		$filename = substr($splitloc[0], -strpos(strrev($splitloc[0]), "/"));
+		$filename = my_substr($splitloc[0], -strpos(strrev($splitloc[0]), "/"));
 	}
 	if($splitloc[1])
 	{
-		$temp = explode("&", substr($splitloc[1], 1));
+		$temp = explode("&", my_substr($splitloc[1], 1));
 		for ($i = 0; $i < count($temp); $i++)
 		{
 			$temp2 = explode("=", $temp[$i], 2);

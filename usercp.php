@@ -1557,7 +1557,7 @@ if($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
 	$plugins->run_hooks("usercp_do_editlists_start");
 	$comma = '';
 	$users = '';
-	while(list($key, $val) = each($mybb->input['listuser']))
+	foreach($mybb->input['listuser'] as $key => $val)
 	{
 		if(strtoupper($mybb->user['username']) != strtoupper($val))
 		{
