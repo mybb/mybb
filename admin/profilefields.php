@@ -37,6 +37,7 @@ $plugins->run_hooks("admin_profilefields_start");
 if($mybb->input['action'] == "do_add")
 {
 	$type = $mybb->input['type'];
+	$options = preg_replace("#(\r\n|\r|\n)#s", "\n", $mybb->input['options']);
 	if($type != "text" && $type != "textarea")
 	{
 		$thing = "$type\n$options";
@@ -93,6 +94,7 @@ if($mybb->input['action'] == "do_delete")
 if($mybb->input['action'] == "do_edit")
 {
 	$type = $mybb->input['type'];
+	$options = preg_replace("#(\r\n|\r|\n)#s", "\n", $mybb->input['options']);
 	if($type != "text" && $type != "textarea")
 	{
 		$thing = "$type\n$options";
