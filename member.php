@@ -415,7 +415,7 @@ if($mybb->input['action'] == "register")
 			$type = trim($thing[0]);
 			$options = $thing[1];
 			$select = '';
-			$field = "fid$profilefield[fid]";
+			$field = "profile_fields[{$profilefield['fid']}";
 			if($type == "multiselect")
 			{
 				$expoptions = explode("\n", $options);
@@ -425,7 +425,7 @@ if($mybb->input['action'] == "register")
 					{
 						$val = trim($val);
 						$val = str_replace("\n", "\\n", $val);
-						$select .= "<option value\"$val\">$val</option>\n";
+						$select .= "<option value=\"$val\">$val</option>\n";
 					}
 					if(!$profilefield['length'])
 					{
