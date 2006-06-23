@@ -6484,7 +6484,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <td>{$tzselect}</td>
 </tr>
 <tr>
-<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enableddst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledstcheck">{$lang->enable_dst}</label></span>
+<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enableddst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledst">{$lang->enable_dst}</label></span>
 </tr>
 </table>
 </fieldset>
