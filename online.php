@@ -770,7 +770,7 @@ function what($user)
 				$user['tid'] = $parameters['tid'];
 			}
 			
-			elseif(in_array($parameters['action'], $accepted_parameters)
+			elseif(in_array($parameters['action'], $accepted_parameters))
 			{
 				$user['activity'] = "misc_".$parameters['action'];
 			}
