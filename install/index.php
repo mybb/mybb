@@ -672,6 +672,9 @@ function install_done()
 
 	require '../inc/config.php';
 	$db = db_connection($config);
+	
+	require '../inc/settings.php';
+	$mybb->setings = &$settings;
 
 	ob_start();
 	$output->print_header($lang->finish_setup, 'finish');
@@ -727,7 +730,6 @@ function install_done()
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('{$uid}','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
 
 	// Automatic Login
-	mysetcookie('mybbadmin', $uid.'_'.$loginkey);
 	mysetcookie('mybbuser', $uid.'_'.$loginkey);
 	ob_end_flush();
 
