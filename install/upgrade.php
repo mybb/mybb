@@ -169,15 +169,16 @@ function upgradethemes()
 	if($system_upgrade_detail['revert_all_themes'] > 0)
 	{
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."themes");
-		$db->query("CREATE TABLE ".TABLE_PREFIX."themes (
+		$db->query("CREATE TABLE mybb_themes (
 		  tid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
 		  pid smallint unsigned NOT NULL default '0',
 		  def smallint(1) NOT NULL default '0',
-		  css text NOT NULL,
-		  cssbits text NOT NULL,
-		  themebits text NOT NULL,
-		  extracss text NOT NULL,
+		  css text NOT NULL default '',
+		  cssbits text NOT NULL default '',
+		  themebits text NOT NULL default '',
+		  extracss text NOT NULL default '',
+		  allowedgroups text NOT NULL default '',
 		  csscached bigint(30) NOT NULL default '0',
 		  PRIMARY KEY  (tid)
 		) TYPE=MyISAM;");
