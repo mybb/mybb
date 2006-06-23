@@ -1778,7 +1778,7 @@ if($mybb->input['action'] == "usergroups")
 
 	// List of usergroup leaders
 	$query = $db->query("
-		SELECT g.*, u.username
+		SELECT g.*, u.username, u.displaygroup, u.usergroup
 		FROM ".TABLE_PREFIX."groupleaders g
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
 		ORDER BY u.username ASC
@@ -1936,7 +1936,8 @@ if($mybb->input['action'] == "usergroups")
 			$usergroupleaders = '';
 			foreach($groupleaders[$usergroup['gid']] as $leader)
 			{
-				$usergroupleaders .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$leader['uid']}\">{$leader['username']}</a>";
+				$leader['username'] = format_name($leader['username'], $leader['usergroup'], $leader['displaygroup']);
+				$usergroupleaders .= $comma.build_profile_link($leader['username'], $leader['uid']);
 				$comma = ", ";
 			}
 			$usergroupleaders = $lang->usergroup_leaders." ".$usergroupleaders;

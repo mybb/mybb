@@ -44,10 +44,10 @@ $membersperday = mynumberformat(round(($stats['numusers'] / $days), 2));
 
 // Get forum permissions
 $unviewableforums = get_unviewable_forums();
-$fidnot = '';
+$fidnot = '1=1';
 if($unviewableforums)
 {
-	$fidnot = "WHERE fid NOT IN ($unviewableforums)";
+	$fidnot = "fid NOT IN ($unviewableforums)";
 }
 
 // Most replied-to threads
