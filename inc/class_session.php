@@ -119,7 +119,13 @@ class session
 		global $mybbuser, $mybb, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang, $mybbgroups, $loadpmpopup, $session;
 
 		$uid = intval($uid);
-		$query = $db->query("SELECT u.*, f.*, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) WHERE u.uid='$uid'");
+		$query = $db->query("
+			SELECT u.*, f.*, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup 
+			FROM ".TABLE_PREFIX."users u 
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) 
+			LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) 
+			WHERE u.uid='$uid'
+		");
 		$mybb->user = $db->fetch_array($query);
 
 		// Check the password if we're not using a session
@@ -268,9 +274,10 @@ class session
 		if($mybb->user['bandate'] && $mybb->user['banlifted'] && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
 			// must have been good.. bans up :D
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user[uid]."'");
-			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user[uid]."'");
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".$mybb->user['banoldgroup']."' LIMIT 1"); // we better do this..otherwise they have dodgy permissions
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user['uid']."'");
+			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
+			// we better do this..otherwise they have dodgy permissions
+			$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='".$mybb->user['banoldgroup']."'", array('limit' => 1)); 
 			$group = $db->fetch_array($query);
 			$mybb->user['usergroup'] = $group['usergroup'];
 		}
@@ -375,7 +382,7 @@ class session
 			}
 		}
 
-		// Deprecated...
+		// Deprecated... 
 		$mybbuser = $mybb->user;
 		$mybbgroup = $mybb->usergroup;
 	}
