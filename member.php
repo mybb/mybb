@@ -415,7 +415,7 @@ if($mybb->input['action'] == "register")
 			$type = trim($thing[0]);
 			$options = $thing[1];
 			$select = '';
-			$field = "profile_fields[{$profilefield['fid']}";
+			$field = "profile_fields[{$profilefield['fid']}]";
 			if($type == "multiselect")
 			{
 				$expoptions = explode("\n", $options);
