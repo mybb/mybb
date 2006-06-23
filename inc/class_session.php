@@ -13,26 +13,26 @@ class session
 {
 	var $sid = 0;
 	var $uid = 0;
-	var $ipaddress = "";
-	var $useragent = "";
+	var $ipaddress = '';
+	var $useragent = '';
 	var $botgroup = 1;
 	var $is_spider = false;
 	var $logins = 1;
 	var $failedlogin = 0;
 
 	var $bots = array(
-		"google" => "GoogleBot",
-		"lycos" => "Lycos.com",
-		"ask jeeves" => "Ask Jeeves",
-		"slurp@inktomi" => "Hot Bot",
-		"whatuseek" => "What You Seek",
-		"is_archiver" => "Archive.org",
-		"scooter" => "Altavista",
-		"fast-webcrawler" => "AlltheWeb",
-		"grub.org" => "Grub Client",
-		"turnitinbot" => "Turnitin.com",
-		"msnbot" => "MSN Search",
-		"yahoo" => "Yahoo! Slurp"
+		'google' => 'GoogleBot',
+		'lycos' => 'Lycos.com',
+		'ask jeeves' => 'Ask Jeeves',
+		'slurp@inktomi' => 'Hot Bot',
+		'whatuseek' => 'What You Seek',
+		'is_archiver' => 'Archive.org',
+		'scooter' => 'Altavista',
+		'fast-webcrawler' => 'AlltheWeb',
+		'grub.org' => 'Grub Client',
+		'turnitinbot' => 'Turnitin.com',
+		'msnbot' => 'MSN Search',
+		'yahoo' => 'Yahoo! Slurp'
 		);
 
 	/**
@@ -114,10 +114,11 @@ class session
 	 * @param int The user id.
 	 * @param string The user's password.
 	 */
-	function load_user($uid, $password="")
+	function load_user($uid, $password='')
 	{
 		global $mybbuser, $mybb, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang, $mybbgroups, $loadpmpopup, $session;
 
+		$uid = intval($uid);
 		$query = $db->query("SELECT u.*, f.*, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) WHERE u.uid='$uid'");
 		$mybb->user = $db->fetch_array($query);
 
@@ -134,12 +135,21 @@ class session
 		if(($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1 || $mybb->user['newpms'] == -1) && $mybb->settings['enablepms'] != "no") // Forced recount
 		{
 			$update = 0;
-			if($mybb->user['totalpms'] == -1) $update += 1;
-			if($mybb->user['newpms'] == -1) $update += 2;
-			if($mybb->user['unreadpms'] == -1) $update += 4;
+			if($mybb->user['totalpms'] == -1)
+			{
+				$update += 1;
+			}
+			if($mybb->user['newpms'] == -1)
+			{
+				$update += 2;
+			}
+			if($mybb->user['unreadpms'] == -1)
+			{
+				$update += 4;
+			}
 
 			require_once MYBB_ROOT."inc/functions_user.php";
-			$pmcount = update_pm_count("", $update);
+			$pmcount = update_pm_count('', $update);
 			if(is_array($pmcount))
 			{
 				$mybb->user = array_merge($mybb->user, $pmcount);
@@ -180,7 +190,7 @@ class session
 		{
 			$mybb->settings['bblanguage'] = $user['language'];
 		}
-		if($mybb->user['dateformat'] != "0" || $mybb->user['dateformat'] != "")
+		if($mybb->user['dateformat'] != "0" || $mybb->user['dateformat'] != '')
 		{
 			// Choose date format.
 			switch($mybb->user['dateformat'])
@@ -227,7 +237,7 @@ class session
 		}
 
 		// Choose time format.
-		if($mybb->user['timeformat'] != "0" || $mybb->user['timeformat'] != "")
+		if($mybb->user['timeformat'] != "0" || $mybb->user['timeformat'] != '')
 		{
 			switch($mybb->user['timeformat']) {
 				case "1":
@@ -255,16 +265,14 @@ class session
 		}
 
 		// Check if this user is currently banned and if we have to lift it.
-		if($mybb->user['bandate'] && $mybb->user['banlifted'])  // hmmm...bad user... how did you get banned =/
+		if($mybb->user['bandate'] && $mybb->user['banlifted'] && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
-			if($mybb->user['banlifted'] < $time) // must have been good.. bans up :D
-			{
-				$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user[uid]."'");
-				$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user[uid]."'");
-				$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".$mybb->user['banoldgroup']."' LIMIT 1"); // we better do this..otherwise they have dodgy permissions
-				$group = $db->fetch_array($query);
-				$mybb->user['usergroup'] = $group['usergroup'];
-			}
+			// must have been good.. bans up :D
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user[uid]."'");
+			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user[uid]."'");
+			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".$mybb->user['banoldgroup']."' LIMIT 1"); // we better do this..otherwise they have dodgy permissions
+			$group = $db->fetch_array($query);
+			$mybb->user['usergroup'] = $group['usergroup'];
 		}
 
 		// Gather a full permission set for this user and the groups they are in.
@@ -312,8 +320,8 @@ class session
 		// Set up some defaults
 		$time = time();
 		$mybb->user['usergroup'] = 1;
-		$mybb->user['username'] = "";
-		$mybb->user['username'] = "";
+		$mybb->user['username'] = '';
+		$mybb->user['username'] = '';
 		$mybb->user['uid'] = 0;
 		$mybbgroups = 1;
 		$mybb->user['displaygroup'] = 1;
@@ -386,8 +394,8 @@ class session
 		$this->is_spider = true;
 		$spidername = $bots[$spider];
 		$mybb->user['usergroup'] = $this->botgroup;
-		$mybb->user['username'] = "";
-		$mybb->user['username'] = "";
+		$mybb->user['username'] = '';
+		$mybb->user['username'] = '';
 		$mybb->user['uid'] = 0;
 		$mybbgroups = $this->botgroup;
 		$mybb->user['displaygroup'] = $this->botgroup;
@@ -397,7 +405,6 @@ class session
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
-		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE sid='bot=".$spider."'");
 		$db->delete_query(TABLE_PREFIX."sessions", "sid='bot".$spider."'", 1);
 
 		// Update the online data.
@@ -418,7 +425,7 @@ class session
 	 * @param int The session id.
 	 * @param int The user id.
 	 */
-	function update_session($sid, $uid="")
+	function update_session($sid, $uid='')
 	{
 		global $db;
 
@@ -496,15 +503,15 @@ class session
 	function get_special_locations()
 	{
 		global $mybb;
-		$array = array("1" => "", "2" => "");
+		$array = array('1' => '', '2' => '');
 		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['fid']) > 0)
 		{
 			$array[1] = intval($mybb->input['fid']);
-			$array[2] = "";
+			$array[2] = '';
 		}
 		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['tid']) > 0)
 		{
-			$array[1] = "";
+			$array[1] = '';
 			$array[2] = intval($mybb->input['tid']);
 		}
 		return $array;
