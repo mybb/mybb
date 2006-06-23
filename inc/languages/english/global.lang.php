@@ -280,6 +280,8 @@ $l['folder_drafts'] = "Drafts";
 $l['folder_trash'] = "Trash";
 $l['folder_untitled'] = "Untitled Folder";
 
+$l['custom_mod_tools'] = "Custom Tools";
+
 $l['error_loadlimit'] = "The maximum server load limit has been reached.  Please check back later once the server is less busy.";
 $l['error_boardclosed'] = "This bulletin board is currently closed. The Administrator has specified the reason as to why below.";
 $l['error_banned'] = "I'm sorry, but you are banned.  You may not post, read threads, or access the forum.  Please contact your forum administrator should you have any questions.";

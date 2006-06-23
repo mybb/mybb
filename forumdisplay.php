@@ -805,7 +805,11 @@ if(is_array($threadcache))
 		$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%') AND type = 't'");
 		while($tool = $db->fetch_array($query))
 		{
-			eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
+			eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
+		}
+		if(!empty($customthreadtools))
+		{
+			eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
 		}
 		eval("\$inlinemod = \"".$templates->get("forumdisplay_inlinemoderation")."\";");
 	}

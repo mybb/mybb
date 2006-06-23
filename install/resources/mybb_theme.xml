@@ -635,8 +635,10 @@ form {
 </td>
 </tr>
 </table>]]></template>
-		<template name="showthread_moderationoptions_custom" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="showthread_inlinemoderation_custom" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
+		<template name="showthread_moderationoptions_custom" version="100.07"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
+		<template name="showthread_moderationoptions_custom_tool" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
+		<template name="showthread_inlinemoderation_custom" version="100.07"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
+		<template name="showthread_inlinemoderation_custom_tool" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="{$tid}" />
@@ -1398,7 +1400,8 @@ var inlineId = {$tid};
 </tr>
 </table>
 </form>]]></template>
-		<template name="forumdisplay_inlinemoderation_custom" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
+		<template name="forumdisplay_inlinemoderation_custom" version="100.07"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
+		<template name="forumdisplay_inlinemoderation_custom_tool" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="fid" value="{$fid}" />
@@ -1657,7 +1660,7 @@ $headerinclude
 <tr>
 {$avatar}
 <td class="trow1" width="50%"><strong>{$lang->username}</strong></td>
-<td class="trow1" width="50%">{$mybb->user['username']}</td>
+<td class="trow1" width="50%">{$username}</td>
 </tr>
 <tr>
 <td class="trow2" width="50%"><strong>{$lang->primary_usergroup}</strong></td>
@@ -1669,20 +1672,24 @@ $headerinclude
 </tr>
 <tr>
 <td class="trow2" width="50%"><strong>{$lang->postnum}</strong></td>
-<td class="trow2" width="50%">{$mybb->user['postnum']} {$lang->posts_day}</td>
+<td class="trow2" width="50%"><a href="search.php?action=finduser&uid={$mybb->user['uid']}">{$mybb->user['postnum']}</a> {$lang->posts_day}</td>
 </tr>
 <tr>
 <td class="trow1" width="50%"><strong>{$lang->email}</strong></td>
 <td class="trow1" width="50%">{$mybb->user['email']}</td>
 </tr>
+{$reputation}
 </table>
-{$reputations}
 </td>
 </tr>
 </table>
 {$footer}
 </body>
 </html>]]></template>
+		<template name="usercp_reputation" version="100.07"><![CDATA[<tr>
+<td class="trow2" width="50%"><strong>{$lang->reputation}</strong></td>
+<td class="trow2" width="50%">{$reputation_link}</td>
+</tr>]]></template>
 		<template name="usercp_currentavatar" version="100.07"><![CDATA[<td class="trow1" rowspan="5" valign="middle" align="center" width="1"><img src="{$mybb->user['avatar']}" alt="{$mybb->user['username']}" /></td>]]></template>
 		<template name="footer" version="100.07"><![CDATA[			<br />
 			<div class="bottommenu"><span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="archive/index.php">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>

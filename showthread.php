@@ -694,14 +694,25 @@ if($mybb->input['action'] == "thread")
 		{
 			if($tool['type'] == 'p')
 			{
-				eval("\$customposttools .= \"".$templates->get("showthread_inlinemoderation_custom")."\";");
+				eval("\$customposttools .= \"".$templates->get("showthread_inlinemoderation_custom_tool")."\";");
 			}
 			else
 			{
-				eval("\$customthreadtools .= \"".$templates->get("showthread_moderationoptions_custom")."\";");
+				eval("\$customthreadtools .= \"".$templates->get("showthread_moderationoptions_custom_tool")."\";");
 			}
 		}
+		// Build inline moderation dropdown
+		if(!empty($customposttools))
+		{
+			eval("\$customposttools = \"".$templates->get("showthread_inlinemoderation_custom")."\";");
+		}
 		eval("\$inlinemod = \"".$templates->get("showthread_inlinemoderation")."\";");
+
+		// Build thread moderation dropdown
+		if(!empty($customthreadtools))
+		{
+			eval("\$customthreadtools = \"".$templates->get("showthread_moderationoptions_custom")."\";");
+		}
 		eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
 	}
 	$lang->newthread_in = sprintf($lang->newthread_in, $forum['name']);

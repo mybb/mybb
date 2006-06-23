@@ -89,7 +89,13 @@ function build_forumbits($pid=0, $depth=1)
 			}
 	
 			// Get the lightbulb status indicator for this forum based on the lastpost
-			$lightbulb = get_forum_lightbulb($forum, $lastpost_data);
+			// This forum has a password, and the user isn't authenticated with it - hide post information
+			$hideinfo = 0;
+			if($forum['password'] != '' && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			{
+				$hideinfo = 1;
+			}
+			$lightbulb = get_forum_lightbulb($forum, $lastpost_data, $hideinfo);
 			
 			// Fetch the number of unapproved threads and posts for this forum
 			$unapproved = get_forum_unapproved($forum);
@@ -140,20 +146,15 @@ function build_forumbits($pid=0, $depth=1)
 				$forumcat = "_forum";
 			}
 			
-			$hideinfo = 0;
+
 			if($forum['type'] == "f" && $forum['linkto'] == '')
 			{
-				// This forum has a password, and the user isn't authenticated with it - hide post information
-				if($forum['password'] != '' && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
-				{
-					$hideinfo = 1;
-				}
 				// No posts have been made in this forum - show never text
-				else if($forum['lastpost'] == 0 || $forum['lastposter'] == '')
+				if($forum['lastpost'] == 0 || $forum['lastposter'] == '' && $hideinfo != 1)
 				{
 					$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
 				}
-				else
+				elseif($hideinfo != 1)
 				{
 					// Format lastpost date and time
 					$lastpost_date = mydate($mybb->settings['dateformat'], $lastpost_data['lastpost']);
@@ -264,30 +265,32 @@ function build_forumbits($pid=0, $depth=1)
  * @param array Array of information about the lastpost date
  * @return array Array of the folder image to be shown and the alt text
  */
-function get_forum_lightbulb($forum, $lastpost)
+function get_forum_lightbulb($forum, $lastpost, $locked=0)
 {
 	global $mybb, $lang;
-	
-	// Fetch the last read date for this forum
-	$forumread = mygetarraycookie("forumread", $forum['fid']);
-	
-	// If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post
-	if($lastpost['lastpost'] > $mybb->user['lastvisit'] && $lastpost['lastpost'] > $forumread && $lastpost['lastpost'] != 0)
-	{
-		$folder = "on";
-		$altonoff = $lang->new_posts;
-	}
-	// Otherwise, no new posts
-	else
-	{
-		$folder = "off";
-		$altonoff = $lang->no_new_posts;
-	}
+
 	// This forum is closed, so override the folder icon with the "offlock" icon.
-	if($forum['open'] == "no")
+	if($forum['open'] == "no" || $locked)
 	{
 		$folder = "offlock";
 		$altonoff = $lang->forum_locked;
+	}
+	else {
+		// Fetch the last read date for this forum
+		$forumread = mygetarraycookie("forumread", $forum['fid']);
+		
+		// If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post
+		if($lastpost['lastpost'] > $mybb->user['lastvisit'] && $lastpost['lastpost'] > $forumread && $lastpost['lastpost'] != 0)
+		{
+			$folder = "on";
+			$altonoff = $lang->new_posts;
+		}
+		// Otherwise, no new posts
+		else
+		{
+			$folder = "off";
+			$altonoff = $lang->no_new_posts;
+		}
 	}
 	
 	return array(

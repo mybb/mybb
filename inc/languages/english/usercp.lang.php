@@ -38,6 +38,7 @@ $l['postnum'] = "Posts:";
 $l['posts_day'] = "({1} per day)";
 $l['additional_contact_details'] = "Additional Contact Information";
 $l['email'] = "Email:";
+$l['reputation'] = "Reputation:";
 $l['website'] = "Website:";
 $l['usergroup'] = "User Group:";
 $l['birthday'] = "Birthday:";

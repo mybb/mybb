@@ -487,7 +487,7 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
-		$db->delete_query(TABLE_PREFIX."threads", "closed='moved|$tid' AND fid='$moveto'");
+
 		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$moveto'");
 		$newforum = $db->fetch_array($query);
 		if($newforum['type'] != "f")

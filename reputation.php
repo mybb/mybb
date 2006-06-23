@@ -433,7 +433,7 @@ if(!$mybb->input['action'])
 	
 	// Fetch the reputations which will be displayed on this page
 	$query = $db->query("
-		SELECT r.*, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup
+		SELECT r.*, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup
 		FROM ".TABLE_PREFIX."reputation r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
 		WHERE r.uid='{$user['uid']}' $conditions
@@ -444,6 +444,7 @@ if(!$mybb->input['action'])
 	{
 		// Format the username of this poster
 		$reputation_vote['username'] = format_name($reputation_vote['username'], $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
+		$reputation_vote['username'] = build_profile_link($reputation_vote['username'], $reputation_vote['uid']);
 		
 		// This is a negative reputation
 		if($reputation_vote['reputation'] < 0)

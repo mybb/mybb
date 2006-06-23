@@ -434,6 +434,7 @@ class Moderation
 			case "redirect": // move (and leave redirect) thread
 				$plugins->run_hooks("moderation_do_move_redirect");
 	
+				$db->delete_query(TABLE_PREFIX."threads", "closed='moved|$tid' AND fid='$moveto'");
 				$changefid = array(
 					"fid" => $new_fid,
 					);

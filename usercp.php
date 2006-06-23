@@ -2064,7 +2064,21 @@ if(!$mybb->input['action'])
 	{
 		$usergroup .= "<br />(<a href=\"member.php?action=resendactivation\">$lang->resend_activation</a>)";
 	}
+	// Make reputations row
+	$reputations = '';
+	if($mybb->usergroup['usereputationsystem'] == 'yes')
+	{
+		$reputation_link = get_reputation($mybb->user['reputation'], $mybb->user['uid']);
+		eval("\$reputation = \"".$templates->get("usercp_reputation")."\";");
+	}
+
+	// Format username
+	$username = format_name($mybb->user['username'], $mybb->user['usergroup'], $mybb->user['displaygroup']);
+	$username = build_profile_link($username, $mybb->user['uid']);
+
+	// Format post numbers
 	$mybbuser['postnum'] = mynumberformat($mybb->user['postnum']);
+
 	eval("\$usercp = \"".$templates->get("usercp")."\";");
 	$plugins->run_hooks("usercp_end");
 	output_page($usercp);
