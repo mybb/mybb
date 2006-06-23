@@ -2790,7 +2790,7 @@ function build_profile_link($username="", $uid=0)
 	}
 	else
 	{
-		return "<a href=\"".get_profile_link($uid)."\">".htmlspecialchars($username)."</a>";
+		return "<a href=\"".get_profile_link($uid)."\">{$username}</a>";
 	}
 }
 
