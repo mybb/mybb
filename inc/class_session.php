@@ -437,6 +437,7 @@ class session
 		$onlinedata['useragent'] = $db->escape_string($this->useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
+		$onlinedata['nopermission'] = 0;
 		$sid = $db->escape_string($sid);
 
 		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
@@ -481,6 +482,7 @@ class session
 		$onlinedata['useragent'] = $db->escape_string($this->useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
+		$onlinedata['nopermission'] = 0;
 		$db->insert_query(TABLE_PREFIX."sessions", $onlinedata);
 		$this->sid = $onlinedata['sid'];
 		$this->uid = $onlinedata['uid'];
