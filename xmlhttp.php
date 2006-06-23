@@ -339,20 +339,12 @@ else if($mybb->input['action'] == "edit_post")
 		}
 	
 		$message = $parser->parse_message($message, $parser_options);
-		$post['editdate'] = mydate($mybb->settings['dateformat'], time());
-		$post['edittime'] = mydate($mybb->settings['timeformat'], time());
-		$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
-		$post['edituid'] = $mybb->user['uid'];
-		$post['editusername'] = $mybb->user['username'];
-		eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		
 		// Send our headers.
 		header("Content-type: text/plain; charset=utf-8");
 		echo "<p>\n";
 		echo $message;
 		echo "</p>\n";
-		echo "<editmsg>{$post['editedmsg']}</editmsg>";
-		exit;	
 	}
 }
 // Fetch the list of multiquoted posts which are not in a specific thread
@@ -361,7 +353,6 @@ else if($mybb->input['action'] == "get_multiquoted")
 	// If the cookie does not exist, exit
 	if(!array_key_exists("multiquote", $_COOKIE))
 	{
-		echo 'no 1';
 		exit;
 	}
 	// Divide up the cookie using our delimeter
@@ -370,7 +361,6 @@ else if($mybb->input['action'] == "get_multiquoted")
 	// No values - exit
 	if(!is_array($multiquoted))
 	{
-		echo 'no2';
 		exit;
 	}
 	

@@ -167,15 +167,6 @@ var Thread = {
 		}
 		else if(request.responseText)
 		{
-			if(request.responseText.match(/<editmsg>(.*)<\/editmsg>/))
-			{
-					editmsg = request.responseText.match(/<editmsg>(.*)<\/editmsg>/);
-					if(editmsg[1])
-					{
-							$("pid_editmsg_"+pid).innerHTML = editmsg[1];
-					}
-					request.responseText = request.responseText.replace(/<editmsg>(.*)<\/editmsg>/, '')
-			}
 			$("pid_"+pid).innerHTML = request.responseText;
 		}
 		Thread.qeCache[pid] = "";
