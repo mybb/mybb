@@ -63,7 +63,7 @@ class session
 		}
 
 		// Attempt to load the session from the database.
-		$query = $db->simple_select(TABLE_PREFIX."sessions", "sid, uid", "sid='".$this->sid."' AND ip='".$this->ipaddress."'", 1);
+		$query = $db->simple_select(TABLE_PREFIX."sessions", "*", "sid='".$this->sid."' AND ip='".$this->ipaddress."'", 1);
 		$session = $db->fetch_array($query);
 		if($session['sid'])
 		{
@@ -123,7 +123,7 @@ class session
 		$mybb->user = $db->fetch_array($query);
 
 		// Check the password if we're not using a session
-		if($password != $mybb->user['loginkey'])
+		if($password != $mybb->user['loginkey'] || !$mybb->user['uid'])
 		{
 			unset($mybb->user);
 			$this->uid = 0;
