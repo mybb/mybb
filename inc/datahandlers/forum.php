@@ -97,56 +97,18 @@ class ForumDataHandler extends DataHandler
 	function verify_options()
 	{
 		$forum = &$this->data;
-
+		
+		$forum_options = array('allowhtml', 'allowmycode', 'allowsmilies', 'allowimgcode', 'allowpicon', 'allowtratings', 
+							   'usepostcounts', 'modposts', 'modthreads', 'modattachments', 'showinjump', 'overridetheme');
+		
 		// Clean all the forum options.
-		if($forum['options']['allowhtml'] != "yes")
+		foreach($forum_options as $key => $option)
 		{
-			$forum['options']['allowhtml'] = "no";
-		}
-		if($forum['options']['allowmycode'] != "yes")
-		{
-			$forum['options']['allowmycode'] = "no";
-		}
-		if($forum['options']['allowsmilies'] != "yes")
-		{
-			$forum['options']['allowsmilies'] = "no";
-		}
-		if($forum['options']['allowimgcode'] != "yes")
-		{
-			$forum['options']['allowimgcode'] = "no";
-		}
-		if($forum['options']['allowpicon'] != "yes")
-		{
-			$forum['options']['allowpicon'] = "no";
-		}
-		if($forum['options']['allowtratings'] != "yes")
-		{
-			$forum['options']['allowtratings'] = "no";
-		}
-		if($forum['options']['usepostcounts'] != "yes")
-		{
-			$forum['options']['usepostcounts'] = "no";
-		}
-		if($forum['options']['modposts'] != "yes")
-		{
-			$forum['options']['modposts'] = "no";
-		}
-		if($forum['options']['modthreads'] != "yes")
-		{
-			$forum['options']['modthreads'] = "no";
-		}
-		if($forum['options']['modattachments'] != "yes")
-		{
-			$forum['options']['modattachments'] = "no";
-		}
-		if($forum['options']['showinjump'] != "yes")
-		{
-			$forum['options']['showinjump'] = "no";
-		}
-		if($forum['options']['overridetheme'] != "yes")
-		{
-			$forum['options']['overridetheme'] = "no";
-		}
+			if($forum['options'][$option] != 'yes')
+			{
+				$forum['options'][$option] = 'no';
+			}
+		}		
 	}
 
 	/**

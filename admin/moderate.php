@@ -161,14 +161,14 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 	}
 	if(is_array($update_thread_count)) 
 	{
-		while(list($tid, $val) = each($update_thread_count))
+		foreach($update_thread_count as $tid => $val)
 		{
 			update_thread_count($tid);
 		}
 	}
 	if(is_array($update_forum_count)) 
 	{
-		while(list($fid, $val) = each($update_forum_count))
+		foreach($update_forum_count as $fid => $val)
 		{
 			update_forum_count($fid);
 		}

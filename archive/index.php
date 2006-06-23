@@ -20,7 +20,7 @@ switch($action)
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
 		// Fetch the forum this thread is in
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums WHERE fid='".$thread['fid']."' AND active!='no' AND type='f' AND password=''");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='".$thread['fid']."' AND active!='no' AND type='f' AND password=''");
 		$forum = $db->fetch_array($query);
 		if(!$forum['fid'])
 		{
@@ -29,7 +29,8 @@ switch($action)
 
 		// Check if we have permission to view this thread
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != "yes") {
+		if($forumpermissions['canview'] != "yes") 
+		{
 			archive_error_no_permission();
 		}
 		// Build the navigation
@@ -47,22 +48,32 @@ switch($action)
 		{
 			$page = 1;
 		}
-		if($page) {
+		if($page) 
+		{
 			$start = ($page-1) * $perpage;
-		} else {
+		} 
+		else 
+		{
 			$start = 0;
 			$page = 1;
 		}
 
 		// Build attachments cache
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments");
+		$query = $db->simple_select(TABLE_PREFIX."attachments");
 		while($attachment = $db->fetch_array($query))
 		{
 			$acache[$attachment['pid']][$attachment['aid']] = $attachment;
 		}
 		
 		// Start fetching the posts
-		$query = $db->query("SELECT u.*, u.username AS userusername, p.* FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE p.tid='$id' AND visible='1' ORDER BY p.dateline LIMIT $start, $perpage");
+		$query = $db->query("
+			SELECT u.*, u.username AS userusername, p.* 
+			FROM ".TABLE_PREFIX."posts p 
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) 
+			WHERE p.tid='$id' AND visible='1' 
+			ORDER BY p.dateline 
+			LIMIT $start, $perpage
+		");
 		while($post = $db->fetch_array($query))
 		{
 			$post['date'] = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $post['dateline'], "", 0);
@@ -84,7 +95,7 @@ switch($action)
 			// Is there an attachment in this post?
 			if(is_array($acache[$post['pid']]))
 			{
-				while(list($aid, $attachment) = each($acache[$post['pid']]))
+				foreach($acache[$post['pid']] as $aid => $attachment)
 				{
 					$post['message'] = str_replace("[attachment=$attachment[aid]]", "[<a href=\"".$mybb->settings['bburl']."/attachment.php?aid=$attachment[aid]\">attachment=$attachment[aid]</a>]", $post['message']);
 				}
@@ -97,15 +108,8 @@ switch($action)
 			}
 
 			// Finally show the post
-			?>
-<div class="post">
-<div class="header">
-<div class="author"><?php echo $post['username']; ?></div>
-<div class="dateline"><?php echo $post['date']; ?></div>
-</div>
-<div class="message"><?php echo $post['message']; ?></div>
-</div>
-			<?php
+			echo '<div class="post">\n<div class="header">\n<div class="author">'.$post['username'].'</div>';
+			echo '<div class="dateline">'.$post['date'].'</div>\n</div>\n<div class="message">'.$post['message'].'</div>\n</div>\n';
 		}
 		archive_multipage($postcount, $perpage, $page, "thread-$id");
 
@@ -114,12 +118,13 @@ switch($action)
 	case "forum":
 		// Check if we have permission to view this forum
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != "yes") {
+		if($forumpermissions['canview'] != "yes") 
+		{
 			archive_error_no_permission();
 		}
 		
 		// Paginate this forum
-		$query = $db->query("SELECT COUNT(t.tid) AS threads FROM ".TABLE_PREFIX."threads t WHERE t.fid='$id' AND t.visible='1'");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS threads", "fid='$id' AND visible='1'");
 		$threadcount = $db->fetch_field($query, "threads");
 
 		// Build the navigation
@@ -137,20 +142,19 @@ switch($action)
 		{
 			$page = 1;
 		}
-		if($page) {
+		if($page) 
+		{
 			$start = ($page-1) * $perpage;
-		} else {
+		} 
+		else 
+		{
 			$start = 0;
 			$page = 1;
 		}
-		?>
-<div class="threadlist">
-<div class="header"><?php echo $forum['name']; ?></div>
-<div class="threads">
-<ol>
-		<?php
+		echo '<div class="threadlist">\n<div class="header">'.$forum['name'].'</div>\n<div class="threads">\n<ol>';
 		// Start fetching the threads
-		$query = $db->query("SELECT t.* FROM ".TABLE_PREFIX."threads t WHERE t.fid='$id' AND t.visible='1' ORDER BY t.sticky DESC, t.lastpost DESC LIMIT $start, $perpage");
+		$options = array('order_by' => 'sticky, lastpost', 'order_dir' => 'desc', 'limit_start' => $start, 'limit' => $perpage);
+		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='$id' AND visible='1'", $options);
 		while($thread = $db->fetch_array($query))
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
@@ -159,7 +163,6 @@ switch($action)
 			{
 				$prefix = "<span class=\"threadprefix\">".$lang->archive_sticky."</span> ";
 			}
-
 			if($thread['replies'] != 1)
 			{
 				$lang_reply_text = $lang->archive_replies;
@@ -168,15 +171,10 @@ switch($action)
 			{
 				$lang_reply_text = $lang->archive_reply;
 			}
-			?>
-<li><?php echo $prefix; ?><a href="<?php echo $archiveurl."/index.php/thread-".$thread['tid'].".html"; ?>"><?php echo $thread['subject']; ?></a> <span class="replycount">(<?php echo $thread['replies'] ." ".$lang_reply_text; ?>)</span></li>
-			<?php
+			echo '<li>'.$prefix.'<a href="'.$archiveurl."/index.php/thread-".$thread['tid'].".html".'">'.$$thread['subject'].'</a>';
+			echo '<span class="replycount">('.$thread['replies'].' '.$lang_reply_text.')</span></li>';
 		}
-		?>
-</ol>
-</div>
-</div>
-		<?php
+		echo '</ol>\n</div>\n</div>\n';
 		archive_multipage($threadcount, $perpage, $page, "forum-$id");
 		archive_footer();
 		break;
@@ -185,7 +183,7 @@ switch($action)
 		$forumpermissions = forum_permissions();
 
 		// Fetch forums
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forums f WHERE active!='no' AND password='' ORDER BY pid, disporder");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active!='no' AND password=''", array('order_by' =>'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -194,31 +192,21 @@ switch($action)
 		// Build our forum listing
 		$forums = getforums();
 		archive_header("", $mybb->settings['bbname'], $mybb->settings['bburl']."/index.php");
-?>
-<div class="forumlist">
-<div class="header"><?php echo $mybb->settings['bbname']; ?></div>
-<div class="forums">
-<ul>
-<?php
+		echo '<div class="forumlist">\n<div class="header">'.$mybb->settings['bbname'].'</div>\n<div class="forums">\n<ul>\n';
 		echo $forums;
-?>
-</ul>
-</div>
-</div>
-<?php
+		echo '\n</ul>\n</div>\n</div>';
 		archive_footer();
 		break;
 }
-
 
 function getforums($pid="0", $depth=1, $permissions="")
 {
 	global $fcache, $forumpermissions, $mybb, $lang, $archiveurl;
 	if(is_array($fcache[$pid]))
 	{
-		while(list($key, $main) = each($fcache[$pid]))
+		foreach($fcache[$pid] as $key => $main)
 		{
-			while(list($key, $forum) = each($main))
+			foreach($main as $key => $forum)
 			{
 				$perms = $forumpermissions[$forum['fid']];
 				if(($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no") && $forum['active'] != "no")

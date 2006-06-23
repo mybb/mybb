@@ -292,7 +292,7 @@ function mymail($to, $subject, $message, $from="", $charset="")
 	}
 
 	// Build mail headers
-	if(strlen(trim($from)) == 0)
+	if(my_strlen(trim($from)) == 0)
 	{
 		$from = "\"".$mybb->settings['bbname']." Mailer\" <".$mybb->settings['adminemail'].">";
 	}
@@ -1613,7 +1613,7 @@ function gzip_encode($contents, $level=1)
 			}
 			else
 			{
-				$size = strlen($contents);
+				$size = my_strlen($contents);
 				$crc = crc32($contents);
 				$gzdata = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff";
 				$gzdata .= my_substr(gzcompress($contents, $level), 2, -4);
@@ -2530,7 +2530,7 @@ function mynumberformat($number)
 		$parts = explode('.', $number);
 		if(isset($parts[1]))
 		{
-			$decimals = strlen($parts[1]);
+			$decimals = my_strlen($parts[1]);
 		}
 		else
 		{

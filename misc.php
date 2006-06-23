@@ -248,7 +248,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	{
 		$comma = '';
 		$sql = '';
-		while(list($key, $buddyid) = each($namesarray))
+		foreach($namesarray as $key => $buddyid)
 		{
 			$sql .= "$comma'$buddyid'";
 			$comma = ",";

@@ -44,7 +44,7 @@ class PMDataHandler extends DataHandler
 		$subject = &$this->data['subject'];
 
 		// Subject is over 85 characters, too long.
-		if(strlen($subject) > 85)
+		if(my_strlen($subject) > 85)
 		{
 			$this->set_error("too_long_subject");
 			return false;

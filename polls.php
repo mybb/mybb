@@ -178,7 +178,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		{
 			$optioncount++;
 		}
-		if(strlen($options[$i]) > $mybb->settings['polloptionlimit'] && $mybb->settings['polloptionlimit'] != 0)
+		if(my_strlen($options[$i]) > $mybb->settings['polloptionlimit'] && $mybb->settings['polloptionlimit'] != 0)
 		{
 			$lengtherror = 1;
 			break;
@@ -452,7 +452,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		{
 			$optioncount++;
 		}
-		if(strlen($options[$i]) > $mybb->settings['polloptionlimit'] && $mybb->settings['polloptionlimit'] != 0)
+		if(my_strlen($options[$i]) > $mybb->settings['polloptionlimit'] && $mybb->settings['polloptionlimit'] != 0)
 		{
 			$lengtherror = 1;
 			break;

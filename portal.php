@@ -245,7 +245,7 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 		{
 			$lastpost = '';
 		}
-		if(strlen($thread['subject']) > 25)
+		if(my_strlen($thread['subject']) > 25)
 		{
 			$thread['subject'] = my_substr($thread['subject'], 0, 25) . "...";
 		}

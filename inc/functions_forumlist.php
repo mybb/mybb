@@ -275,7 +275,8 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 		$folder = "offlock";
 		$altonoff = $lang->forum_locked;
 	}
-	else {
+	else 
+	{
 		// Fetch the last read date for this forum
 		$forumread = mygetarraycookie("forumread", $forum['fid']);
 		

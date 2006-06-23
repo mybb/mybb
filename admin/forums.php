@@ -187,7 +187,7 @@ function makeparentlist($fid, $navsep=",")
 	}
 	reset($pforumcache);
 	reset($pforumcache[$fid]);
-	while(list($key, $forum) = each($pforumcache[$fid]))
+	foreach($pforumcache[$fid] as $key => $forum)
 	{
 		if($fid == $forum[fid])
 		{
@@ -841,7 +841,7 @@ if($mybb->input['action'] == "editmod")
 if($mybb->input['action'] == "do_modify")
 {
 	$plugins->run_hooks("admin_forums_do_modify");
-	while(list($fid, $order) = each($mybb->input['disporder']))
+	foreach($mybb->input['disporder'] as $fid => $order)
 	{
 		$fid = intval($fid);
 		$order = intval($order);

@@ -190,11 +190,11 @@ if($mybb->input['action'] == 'do_backup')
 	
 	if($type == 'gzip')
 	{
-		gzwrite($fp, $header, strlen($header));
+		gzwrite($fp, $header, my_strlen($header));
 	}
 	else
 	{
-		fputs($fp, $header, strlen($header));
+		fputs($fp, $header, my_strlen($header));
 	}
 	
 	$check = array(chr(10), chr(13), chr(39));
@@ -228,11 +228,11 @@ if($mybb->input['action'] == 'do_backup')
 		
 		if($type == 'gzip')
 		{
-			gzwrite($fp, $output, strlen($output));
+			gzwrite($fp, $output, my_strlen($output));
 		}
 		else
 		{
-			fputs($fp, $output, strlen($output));
+			fputs($fp, $output, my_strlen($output));
 		}
 		
 		$query = $db->simple_select($table);
@@ -249,7 +249,7 @@ if($mybb->input['action'] == 'do_backup')
 				}
 				else
 				{
-					if(strlen($row[$field['Field']]) == 0)
+					if(my_strlen($row[$field['Field']]) == 0)
 					{
 						$tmp = "'',";
 					}
@@ -267,22 +267,22 @@ if($mybb->input['action'] == 'do_backup')
 				
 			if($type == 'gzip')
 			{
-				gzwrite($fp, $output, strlen($output));
+				gzwrite($fp, $output, my_strlen($output));
 			}
 			else
 			{
-				fputs($fp, $output, strlen($output));
+				fputs($fp, $output, my_strlen($output));
 			}
 		}
 			
 		$output = "\n";
 		if($type == 'gzip')
 		{
-			gzwrite($fp, $output, strlen($output));
+			gzwrite($fp, $output, my_strlen($output));
 		}
 		else
 		{
-			fputs($fp, $output, strlen($output));
+			fputs($fp, $output, my_strlen($output));
 		}
 	}
 	
@@ -293,11 +293,11 @@ if($mybb->input['action'] == 'do_backup')
 		
 		if($type == 'gzip')
 		{
-			gzwrite($fp, $output, strlen($output));
+			gzwrite($fp, $output, my_strlen($output));
 		}
 		else
 		{
-			fputs($fp, $output, strlen($output));
+			fputs($fp, $output, my_strlen($output));
 		}
 	}
 	

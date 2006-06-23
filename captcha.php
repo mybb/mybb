@@ -205,8 +205,9 @@ function draw_string(&$im, $string)
 {
 	global $use_ttf, $min_size, $max_size, $min_angle, $max_angle, $ttf_fonts, $img_height, $img_width;
 	
-	$spacing = $img_width / strlen($string);
-	for($i = 0; $i < strlen($string); $i++)
+	$spacing = $img_width / my_strlen($string);
+	$string_length = my_strlen($string);
+	for($i = 0; $i < $string_length; $i++)
 	{
 		// Using TTF fonts
 		if($use_ttf)

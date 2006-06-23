@@ -127,12 +127,12 @@ class PostDataHandler extends DataHandler
 			}
 
 			// If this is the first post there needs to be a subject, else make it the default one.
-			if(strlen($subject) == 0 && $first_post)
+			if(my_strlen($subject) == 0 && $first_post)
 			{
 				$this->set_error("firstpost_no_subject");
 				return false;
 			}
-			elseif(strlen($subject) == 0)
+			elseif(my_strlen($subject) == 0)
 			{
 				$thread = get_thread($post['tid']);
 				$subject = "RE: ".$thread['subject'];
@@ -142,7 +142,7 @@ class PostDataHandler extends DataHandler
 		// This is a new post
 		else if($this->action == "post")
 		{
-			if(strlen($subject) == 0)
+			if(my_strlen($subject) == 0)
 			{
 				$thread = get_thread($post['tid']);
 				$subject = "RE: ".$thread['subject'];
@@ -152,7 +152,7 @@ class PostDataHandler extends DataHandler
 		// This is a new thread and we require that a subject is present.
 		else
 		{
-			if(strlen($subject) == 0)
+			if(my_strlen($subject) == 0)
 			{
 				$this->set_error("missing_subject");
 				return false;
@@ -174,21 +174,21 @@ class PostDataHandler extends DataHandler
 
 		$message = trim($message);
 		// Do we even have a message at all?
-		if(strlen($message) == 0)
+		if(my_strlen($message) == 0)
 		{
 			$this->set_error("missing_message");
 			return false;
 		}
 
 		// If this board has a maximum message length check if we're over it.
-		else if(strlen($message) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
+		else if(my_strlen($message) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
 		{
 			$this->set_error("message_too_long");
 			return false;
 		}
 
 		// And if we've got a minimum message length do we meet that requirement too?
-		else if(strlen($message) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
+		else if(my_strlen($message) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
 		{
 			$this->set_error("message_too_short");
 			return false;

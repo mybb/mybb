@@ -191,7 +191,7 @@ if($mybb->input['action'] == "export")
 	$xml .= "</settings>";
 	$settings['bbname'] = urlencode($settings['bbname']);
 	header("Content-disposition: filename=".$settings['bbname']."-settings.xml");
-	header("Content-Length: ".strlen($xml));
+	header("Content-Length: ".my_strlen($xml));
 	header("Content-type: unknown/unknown");
 	header("Pragma: no-cache");
 	header("Expires: 0");

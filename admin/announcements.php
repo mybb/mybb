@@ -36,21 +36,12 @@ function getforums($pid="0")
 {
 	global $db, $forumlist, $lang;
 	
-	$query = $db->query("
-		SELECT * 
-		FROM ".TABLE_PREFIX."forums 
-		WHERE pid = '$pid' 
-		ORDER BY disporder ASC
-	");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid = '$pid'", array('order_by' => 'disporder'));
 	
 	while($forum = $db->fetch_array($query))
 	{
 		$forumlist .= "\n<li><b>$forum[name]</b>".makelinkcode($lang->add_announcement, "announcements.php?".SID."&action=add&fid=$forum[fid]");
-		$annquery = $db->query("
-			SELECT * 
-			FROM ".TABLE_PREFIX."announcements 
-			WHERE fid = '$forum[fid]'
-		");
+		$annquery = $db->simple_select(TABLE_PREFIX."announcements", "*", "fid = '{$forum['fid']}'");
 		$numannouncements = $db->num_rows($annquery);
 		if($numannouncements != "0")
 		{
@@ -116,7 +107,7 @@ if($mybb->input['action'] == "do_add")
 		"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
 		"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
 		"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
-		);
+	);
 	$plugins->run_hooks("admin_announcements_do_add");
 	$db->insert_query(TABLE_PREFIX."announcements", $sqlarray);
 	cpredirect("announcements.php?".SID, $lang->announcement_added);
@@ -126,11 +117,7 @@ if($mybb->input['action'] == "do_delete")
 	if($mybb->input['deletesubmit'])
 	{
 		$plugins->run_hooks("admin_announcements_do_delete");
-		$db->query("
-			DELETE 
-			FROM ".TABLE_PREFIX."announcements 
-			WHERE aid = '$aid'
-		");
+		$db->delete_query(TABLE_PREFIX."announcements", "aid = '$aid'");
 		cpredirect("announcements.php?".SID, $lang->announcement_deleted);
 	}
 	else
@@ -183,7 +170,7 @@ if($mybb->input['action'] == "do_edit")
 		"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
 		"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
 		"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
-		);
+	);
 	$plugins->run_hooks("admin_announcements_do_edit");
 	$db->update_query(TABLE_PREFIX."announcements", $sqlarray, "aid='$aid'");
 	cpredirect("announcements.php?".SID, $lang->announcement_edited);
@@ -296,11 +283,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_announcements_delete");
-	$query = $db->query("
-		SELECT * 
-		FROM ".TABLE_PREFIX."announcements 
-		WHERE aid = '".intval($mybb->input['aid'])."'
-	");
+	$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "aid = '".intval($mybb->input['aid'])."'");
 	$announcement = $db->fetch_array($query);
 	cpheader();
 	startform("announcements.php", "", "do_delete");
@@ -320,11 +303,7 @@ if($mybb->input['action'] == "delete")
 }
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->query("
-		SELECT * 
-		FROM ".TABLE_PREFIX."announcements 
-		WHERE aid = '$aid'
-	");
+	$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "aid = '$aid'");
 	$announcement = $db->fetch_array($query);
 
 	$plugins->run_hooks("admin_announcements_edit");

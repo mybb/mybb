@@ -66,7 +66,7 @@ class postParser
 
 		if($this->base_url != "")
 		{
-			if(my_substr($this->base_url, strlen($this->base_url) -1) != "/")
+			if(my_substr($this->base_url, my_strlen($this->base_url) -1) != "/")
 			{
 				$this->base_url = $this->base_url."/";
 			}
@@ -570,7 +570,7 @@ class postParser
 		$fullurl = stripslashes($fullurl);
 		if($name == $url)
 		{
-			if(strlen($url) > 55)
+			if(my_strlen($url) > 55)
 			{
 				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
 			}

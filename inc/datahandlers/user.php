@@ -88,7 +88,7 @@ class UserDataHandler extends DataHandler
 
 		$username = &$this->data['username'];
 
-		$query = $db->query("SELECT COUNT(uid) AS count FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($username)."'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) AS count", "username='".$db->escape_string($username)."'");
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
 		{
@@ -967,11 +967,11 @@ class UserDataHandler extends DataHandler
 		// Maybe some userfields need to be updated?
 		if(is_array($user['user_fields']))
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."userfields WHERE ufid='{$user['uid']}'");
+			$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='{$user['uid']}'");
 			$fields = $db->fetch_array($query);
 			if(!$fields['ufid'])
 			{
-				$db->query("INSERT INTO ".TABLE_PREFIX."userfields (ufid) VALUES ('{$user['uid']}')");
+				$db->insert_query(TABLE_PREFIX."userfields", array('ufid' => $user['uid']));
 			}
 			$db->update_query(TABLE_PREFIX."userfields", $user['user_fields'], "ufid='{$user['uid']}'");
 		}

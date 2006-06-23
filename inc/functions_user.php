@@ -424,7 +424,7 @@ function usercp_menu_messenger()
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	while(list($key, $folders) = each($foldersexploded))
+	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);
 		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);

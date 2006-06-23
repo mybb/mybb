@@ -570,7 +570,7 @@ if($mybb->input['action'] == "calendar_main")
 	{
 		$event['subject'] = htmlspecialchars_uni($event['subject']);
 		$event['fullsubject'] = $event['subject'];
-		if(strlen($event['subject']) > 15)
+		if(my_strlen($event['subject']) > 15)
 		{
 			$event['subject'] = my_substr($event['subject'], 0, 15) . "...";
 		}

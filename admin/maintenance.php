@@ -93,7 +93,7 @@ if($mybb->input['action'] == "cache")
 	$query = $db->simple_select(TABLE_PREFIX."datacache", "title,cache");
 	while($cacheitem = $db->fetch_array($query))
 	{
-		$size = get_friendly_size(strlen($cacheitem['cache']));
+		$size = get_friendly_size(my_strlen($cacheitem['cache']));
 		$bgcolor = getaltbg();
 		startform("maintenance.php", "", "do_cache");
 		makehiddencode("cacheitem", $cacheitem['title']);

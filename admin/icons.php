@@ -167,14 +167,14 @@ if($mybb->input['action'] == "do_addmultiple")
 	else
 	{
 		reset($mybb->input['piimport']);
-		while(list($image,$insert) = each($mybb->input['piimport']))
+		foreach($mybb->input['piimport'] as $image => $insert)
 		{
 			if($insert)
 			{
 				$sqlarray = array(
 					"name" => $db->escape_string($mybb->input['piname'][$image]),
 					"path" => $db->escape_string($path."/".$image),
-					);
+				);
 				$db->insert_query(TABLE_PREFIX."icons", $sqlarray);
 			}
 		}

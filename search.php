@@ -90,8 +90,7 @@ if($mybb->input['action'] == "results")
 			$sortfield = "t.lastpost";
 			break;
 	}
-
-
+	
 	if($order != "asc")
 	{
 		$order = "desc";
@@ -826,7 +825,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		"searchtype" => $search_results['searchtype'],
 		"resulttype" => $resulttype,
 		"querycache" => $search_results['querycache'],
-		);
+	);
 	$plugins->run_hooks("search_do_search_process");
 
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);

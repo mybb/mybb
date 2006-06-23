@@ -178,7 +178,7 @@ if($mybb->input['action'] == "do_addmultiple")
 	{
 		$plugins->run_hooks("admin_smilies_do_addmultiple");
 		reset($mybb->input['smimport']);
-		while(list($image,$insert) = each($mybb->input['smimport']))
+		foreach($mybb->input['smimport'] as $image => $insert)
 		{
 			if($insert)
 			{

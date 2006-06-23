@@ -756,7 +756,7 @@ if($mybb->input['action'] == "add")
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
 			{
-				while(list($key, $val) = each($expoptions))
+				foreach($expoptions as $key => $val)
 				{
 					$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" /> $val<br />";
 				}
@@ -879,7 +879,7 @@ if($mybb->input['action'] == "edit")
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
 			{
-				while(list($key, $val) = each($expoptions))
+				foreach($expoptions as $key => $val)
 				{
 					$val = trim($val);
 					$val = str_replace("\n", "\\n", $val);
@@ -1882,7 +1882,7 @@ if($mybb->input['action'] == "manageban")
 	makeinputcode($lang->ban_reason, "banreason", $ban['reason']);
 	makeselectcode($lang->move_banned_group, "usergroup", "usergroups", "gid", "title", $user['usergroup'], '', '', "isbannedgroup='yes'");
 	reset($bantimes);
-	while(list($time, $title) = each($bantimes))
+	foreach($bantimes as $time => $title)
 	{
 		$liftlist .= "<option value=\"$time\" ";
 		if($time == $ban[bantime])

@@ -308,7 +308,7 @@ function perform_search_mysql($search)
 				}
 				else
 				{
-					if(strlen($word) < $mybb->settings['minsearchword'])
+					if(my_strlen($word) < $mybb->settings['minsearchword'])
 					{
 						$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 						error($lang->error_minsearchlength);
@@ -325,7 +325,7 @@ function perform_search_mysql($search)
 		}
 		else
 		{
-			if(strlen($keywords) < $mybb->settings['minsearchword'])
+			if(my_strlen($keywords) < $mybb->settings['minsearchword'])
 			{
 				$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 				error($lang->error_minsearchlength);
@@ -539,7 +539,7 @@ function perform_search_mysql_ft($search)
 		foreach($words as $word)
 		{
 			$word = str_replace(array("+", "-", "*"), "", $word);
-			if(strlen($word) < $mybb->settings['minsearchword'])
+			if(my_strlen($word) < $mybb->settings['minsearchword'])
 			{
 				$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 				error($lang->error_minsearchlength);

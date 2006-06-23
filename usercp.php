@@ -1180,7 +1180,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 				$lastposttid = $forum['lastposttid'];
 				$lastposter = $forum['lastposter'];
 				$lastpostsubject = $forum['lastpostsubject'];
-				if(strlen($lastpostsubject) > 25)
+				if(my_strlen($lastpostsubject) > 25)
 				{
 					$lastpostsubject = my_substr($lastpostsubject, 0, 25) . "...";
 				}
