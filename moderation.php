@@ -747,8 +747,6 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_do_split");
 
-		$numyes = "0";
-		$numno = "0";
 		if(!is_array($mybb->input['splitpost']))
 		{
 			error($lang->error_nosplitposts);
@@ -756,11 +754,7 @@ switch($mybb->input['action'])
 		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS totalposts", "tid='".intval($mybb->input['tid'])."'");
 		$count = $db->fetch_array($query);
 
-		if(!is_array($mybb->input['splitpost']))
-		{
-			error($lang->error_nosplitposts);
-		}
-		elseif($count['totalposts'] == count($mybb->input['splitpost']))
+		if($count['totalposts'] == count($mybb->input['splitpost']))
 		{
 			error($lang->error_cantsplitall);
 		}

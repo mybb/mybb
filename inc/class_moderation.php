@@ -661,7 +661,7 @@ class Moderation
 			"dateline" => $thread['dateline'],
 			"lastpost" => $thread['lastpost'],
 			"lastposter" => $thread['lastposter'],
-			"replies" => $numyes,
+			"replies" => count($pids)-1,
 			"visible" => "1",
 		);
 		$db->insert_query(TABLE_PREFIX."threads", $query);
