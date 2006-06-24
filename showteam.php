@@ -62,11 +62,11 @@ if(!$users_in)
 }
 $forum_permissions = forum_permissions();
 
-$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms", "usergroup IN ($groups_in) OR uid IN ($users_in)", array('order_by' => 'username'));
+$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
 while($user = $db->fetch_array($query))
 {
 	// If this user is a moderator
-	if($moderators[$user['uid']])
+	if(isset($moderators[$user['uid']]))
 	{
 		foreach($moderators[$user['uid']] as $forum)
 		{
@@ -81,17 +81,27 @@ while($user = $db->fetch_array($query))
 	}
 	
 	// Are they also in another group which is being shown on the list?
-	if($usergroups[$user['usergroup']] && $user['usergroup'] != 6)
+	if($user['displaygroup'] != 0)
 	{
-		$usergroups[$user['usergroup']]['user_list'][$user['uid']] = $user;
+		$group = $user['displaygroup'];
+	}
+	else
+	{
+		$group = $user['usergroup'];
+	}
+	
+	if($usergroups[$group] && $group != 6)
+	{
+		$usergroups[$group]['user_list'][$user['uid']] = $user;
 	}
 }
 
 // Now we have all of our user details we can display them.
+$grouplist = '';
 foreach($usergroups as $usergroup)
 {
 	// If we have no users - don't show this group
-	if(!$usergroup['user_list'])
+	if(!isset($usergroup['user_list']))
 	{
 		continue;
 	}
@@ -101,21 +111,14 @@ foreach($usergroups as $usergroup)
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		// for the postbit templates
 		$post['uid'] = $user['uid'];
+		$emailcode = $pmcode = '';
 		if($user['hideemail'] != 'yes')
 		{
 			eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
 		}
-		else
-		{
-			$emailcode = '';
-		}
 		if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no' && strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
-		}
-		else
-		{
-			$pmcode = '';
 		}
 		
 		$bgcolor = alt_trow();
@@ -141,6 +144,11 @@ foreach($usergroups as $usergroup)
 		eval("\$grouplist .= \"".$templates->get("showteam_usergroup")."\";");
 	}
 	$usergrouprows = '';
+}
+
+if(empty($grouplist))
+{
+	error($lang->error_noteamstoshow);
 }
 
 eval("\$showteam = \"".$templates->get("showteam")."\";");
