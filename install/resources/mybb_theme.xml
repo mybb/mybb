@@ -1690,7 +1690,7 @@ $headerinclude
 <td class="trow2" width="50%"><strong>{$lang->reputation}</strong></td>
 <td class="trow2" width="50%">{$reputation_link}</td>
 </tr>]]></template>
-		<template name="usercp_currentavatar" version="100.07"><![CDATA[<td class="trow1" rowspan="5" valign="middle" align="center" width="1"><img src="{$mybb->user['avatar']}" alt="{$mybb->user['username']}" /></td>]]></template>
+		<template name="usercp_currentavatar" version="100.07"><![CDATA[<td class="trow1" rowspan="6" valign="middle" align="center" width="1"><img src="{$mybb->user['avatar']}" alt="{$mybb->user['username']}" /></td>]]></template>
 		<template name="footer" version="100.07"><![CDATA[			<br />
 			<div class="bottommenu"><span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="archive/index.php">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>
 			</div>
