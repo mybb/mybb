@@ -226,8 +226,8 @@ if($mybb->input['action'] == "edit")
 	starttable();
 	$lang->edit_permissions = sprintf($lang->edit_permissions, $usergroup['title'], $forum['name']);
 	tableheader($lang->edit_permissions);
-	makelabelcode("<input type=\"radio\" name=\"usecustom\" value=\"no\" $useusergroup> $lang->use_default_inherit", "", 2);
-	makelabelcode("<input type=\"radio\" name=\"usecustom\" value=\"yes\" $usecustom> $lang->use_custom", "", 2);
+	makelabelcode("<label><input type=\"radio\" name=\"usecustom\" value=\"no\" $useusergroup> $lang->use_default_inherit</label>", "", 2);
+	makelabelcode("<label><input type=\"radio\" name=\"usecustom\" value=\"yes\" $usecustom> $lang->use_custom</label>", "", 2);
 
 	tablesubheader($lang->perms_viewing);
 	makepermscode($lang->canview, "canview", $forumpermissions['canview']);
