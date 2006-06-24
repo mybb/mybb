@@ -332,6 +332,7 @@ class UserDataHandler extends DataHandler
 	{
 		global $db;
 
+		$user = &$this->data;
 		$profile_fields = &$this->data['profile_fields'];
 
 		// Loop through profile fields checking if they exist or not and are filled in.
@@ -369,12 +370,12 @@ class UserDataHandler extends DataHandler
 					{
 						$options .= "\n";
 					}
-					$options .= "$val";
+					$options .= $value;
 				}
 			}
 			else
 			{
-				$options = $value;
+				$options = $profile_fields[$field];
 			}
 			$user['user_fields'][$field] = $options;
 		}
