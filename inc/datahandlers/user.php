@@ -370,12 +370,12 @@ class UserDataHandler extends DataHandler
 					{
 						$options .= "\n";
 					}
-					$options .= $value;
+					$options .= $db->escape_string($value);
 				}
 			}
 			else
 			{
-				$options = $profile_fields[$field];
+				$options = $db->escape_string($profile_fields[$field]);
 			}
 			$user['user_fields'][$field] = $options;
 		}
