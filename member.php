@@ -1212,7 +1212,7 @@ elseif($mybb->input['action'] == "profile")
 		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
 	}
 
-	$query = $db->select_query(TABLE_PREFIX."userfields", "*", "ufid='$uid'");
+	$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='$uid'");
 	$userfields = $db->fetch_array($query);
 	$customfields = '';
 	$bgcolor = trow1;
