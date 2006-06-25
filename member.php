@@ -1233,7 +1233,7 @@ elseif($mybb->input['action'] == "profile")
 	while($customfield = $db->fetch_array($query))
 	{
 		$field = "fid$customfield[fid]";
-		$useropts = explode("\n", $userfields[$field]);
+		$useropts = explode("\n", $customfield[$field]);
 		$customfieldval = '';
 		if(is_array($useropts) && ($customfield['type'] == "multiselect" || $customfield['type'] == "checkbox"))
 		{

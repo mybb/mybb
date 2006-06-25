@@ -361,7 +361,7 @@ if($mybb->input['action'] == "profile")
 					$sel = "";
 					if($val == $userfield)
 					{
-						$sel = "selecte=\"selected\"";
+						$sel = "selected=\"selected\"";
 					}
 					$select .= "<option value=\"$val\" $sel>$val</option>";
 				}
