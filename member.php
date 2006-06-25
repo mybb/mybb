@@ -1212,11 +1212,7 @@ elseif($mybb->input['action'] == "profile")
 		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
 	}
 
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."userfields
-		WHERE ufid='$uid'
-	");
+	$query = $db->select_query(TABLE_PREFIX."userfields", "*", "ufid='$uid'");
 	$userfields = $db->fetch_array($query);
 	$customfields = '';
 	$bgcolor = trow1;
@@ -1232,8 +1228,11 @@ elseif($mybb->input['action'] == "profile")
 	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "{$field_hidden}", array('order_by' => 'disporder'));
 	while($customfield = $db->fetch_array($query))
 	{
+		$thing = explode("\n", $customfield['type'], "2");
+		$type = trim($thing[0]);
+
 		$field = "fid$customfield[fid]";
-		$useropts = explode("\n", $customfield[$field]);
+		$useropts = explode("\n", $userfields[$field]);
 		$customfieldval = '';
 		if(is_array($useropts) && ($customfield['type'] == "multiselect" || $customfield['type'] == "checkbox"))
 		{
