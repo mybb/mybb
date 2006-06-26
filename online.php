@@ -619,7 +619,7 @@ function show($user)
 	{
 		eval("\$userip = \"".$templates->get("online_row_ip")."\";");
 	}
-	if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes")
+	if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
 	{
 		eval("\$onlinerows .= \"".$templates->get("online_row")."\";");
 	}
