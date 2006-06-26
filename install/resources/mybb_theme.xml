@@ -495,7 +495,7 @@ form {
 				<option value="75" {$datecutsel['75']}>{$lang->datelimit_75days}</option>
 				<option value="100" {$datecutsel['100']}>{$lang->datelimit_100days}</option>
 				<option value="365" {$datecutsel['365']}>{$lang->datelimit_lastyear}</option>
-				<option value="1000" {$datecutsel['1000']}>{$lang->datelimit_beginning}</option>
+				<option value="9999" {$datecutsel['9999']}>{$lang->datelimit_beginning}</option>
 			</select>
 			{$gobutton}
 		</form>
