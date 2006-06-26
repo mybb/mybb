@@ -171,7 +171,7 @@ switch($action)
 			{
 				$lang_reply_text = $lang->archive_reply;
 			}
-			echo "<li>'.$prefix.'<a href=\"{$archiveurl}/index.php/thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
+			echo "<li>{$prefix}<a href=\"{$archiveurl}/index.php/thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
 			echo "<span class=\"replycount\">({$thread['replies']} {$lang_reply_text})</span></li>";
 		}
 		echo "</ol>\n</div>\n</div>\n";
