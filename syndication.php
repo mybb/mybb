@@ -58,9 +58,9 @@ if($unviewable)
 {
 	$unviewable = "AND f.fid NOT IN($unviewable)";
 }
-if($unviewable)
+if($inactiveforums)
 {
-	$unviewable = "AND f.fid NOT IN($inactiveforums)";
+	$unviewable .= " AND f.fid NOT IN($inactiveforums)";
 }
 
 // If there are no forums to syndicate, syndicate all viewable.
