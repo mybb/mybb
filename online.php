@@ -52,7 +52,7 @@ if($mybb->input['action'] == "today")
 	");
 	while($online = $db->fetch_array($query))
 	{
-		if($online['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes")
+		if($online['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $online['uid'] == $mybb->user['uid'])
 		{
 			if($online['invisible'] == "yes")
 			{
