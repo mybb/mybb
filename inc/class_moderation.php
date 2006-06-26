@@ -710,7 +710,7 @@ class Moderation
 		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 1");
 		$oldthread = $db->fetch_array($query);
 		$sqlarray = array(
-			"subject" => $thread['subject'],
+			"subject" => $db->escape_string($thread['subject']),
 			);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$oldthread[pid]'");
 
