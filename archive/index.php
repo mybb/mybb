@@ -108,8 +108,8 @@ switch($action)
 			}
 
 			// Finally show the post
-			echo '<div class="post">\n<div class="header">\n<div class="author">'.$post['username'].'</div>';
-			echo '<div class="dateline">'.$post['date'].'</div>\n</div>\n<div class="message">'.$post['message'].'</div>\n</div>\n';
+			echo "<div class=\"post\">\n<div class=\"header\">\n<div class=\"author\">{$post['username']}</div>";
+			echo "<div class=\"dateline\">{$post['date']}</div>\n</div>\n<div class=\"message\">{$post['message']}</div>\n</div>\n";
 		}
 		archive_multipage($postcount, $perpage, $page, "thread-$id");
 
@@ -151,7 +151,7 @@ switch($action)
 			$start = 0;
 			$page = 1;
 		}
-		echo '<div class="threadlist">\n<div class="header">'.$forum['name'].'</div>\n<div class="threads">\n<ol>';
+		echo "<div class=\"threadlist\">\n<div class=\"header\">{$forum['name']}</div>\n<div class=\"threads\">\n<ol>";
 		// Start fetching the threads
 		$options = array('order_by' => 'sticky, lastpost', 'order_dir' => 'desc', 'limit_start' => $start, 'limit' => $perpage);
 		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='$id' AND visible='1'", $options);
@@ -171,10 +171,10 @@ switch($action)
 			{
 				$lang_reply_text = $lang->archive_reply;
 			}
-			echo '<li>'.$prefix.'<a href="'.$archiveurl."/index.php/thread-".$thread['tid'].".html".'">'.$$thread['subject'].'</a>';
-			echo '<span class="replycount">('.$thread['replies'].' '.$lang_reply_text.')</span></li>';
+			echo "<li>'.$prefix.'<a href=\"{$archiveurl}/index.php/thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
+			echo "<span class=\"replycount\">({$thread['replies']} {$lang_reply_text})</span></li>";
 		}
-		echo '</ol>\n</div>\n</div>\n';
+		echo "</ol>\n</div>\n</div>\n";
 		archive_multipage($threadcount, $perpage, $page, "forum-$id");
 		archive_footer();
 		break;
@@ -192,9 +192,9 @@ switch($action)
 		// Build our forum listing
 		$forums = getforums();
 		archive_header("", $mybb->settings['bbname'], $mybb->settings['bburl']."/index.php");
-		echo '<div class="forumlist">\n<div class="header">'.$mybb->settings['bbname'].'</div>\n<div class="forums">\n<ul>\n';
+		echo "<div class=\"forumlist\">\n<div class=\"header\">{$mybb->settings['bbname']}</div>\n<div class=\"forums\">\n<ul>\n";
 		echo $forums;
-		echo '\n</ul>\n</div>\n</div>';
+		echo "\n</ul>\n</div>\n</div>";
 		archive_footer();
 		break;
 }
