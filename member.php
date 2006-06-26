@@ -1233,13 +1233,15 @@ elseif($mybb->input['action'] == "profile")
 
 		$field = "fid$customfield[fid]";
 		$useropts = explode("\n", $userfields[$field]);
-		$customfieldval = '';
+		$customfieldval = $comma = '';
 		if(is_array($useropts) && ($customfield['type'] == "multiselect" || $customfield['type'] == "checkbox"))
 		{
+			$customfieldval .= '<ul>';
 			foreach($useropts as $val)
 			{
-				$customfieldval .= "$val<br />";
+				$customfieldval .= "<li>{$val}</li>";
 			}
+			$customfieldval .= '</ul>';
 		}
 		else
 		{
