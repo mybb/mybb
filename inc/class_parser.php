@@ -203,7 +203,7 @@ class postParser
 		$standard_mycode['color']['regex'] = "#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#si";
 		$standard_mycode['color']['replacement'] = "<span style=\"color: $1;\">$2</span>";
 
-		$standard_mycode['size']['regex'] = "#\[size=(small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si";
+		$standard_mycode['size']['regex'] = "#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si";
 		$standard_mycode['size']['replacement'] = "<span style=\"font-size: $1;\">$2</span>";
 
 		$standard_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si";
