@@ -534,7 +534,7 @@ if($mybb->input['action'] == "import")
 	starttable();
 	tableheader($lang->import_theme, "");
 	makeuploadcode($lang->theme_file, "compfile");
-	makeinputcode($lang->local_file_name, "localfile", "./install/resources/mybb-templates.xml");
+	makeinputcode($lang->local_file_name, "localfile", "../install/resources/mybb_theme.xml");
 	tablesubheader($lang->import_options);
 	makeinputcode($lang->import_name, "name");
 	makelabelcode($lang->theme_parent, make_theme_select("pid", 1));

@@ -24,6 +24,7 @@ $l['msn_address_is'] = "{1}'s MSN Address is:";
 $l['yahoo_center'] = "Yahoo! Center";
 $l['send_y_message'] = "Send {1} a Yahoo! Message.";
 $l['view_y_profile'] = "View {1}'s Yahoo! Profile.";
+$l['aim_center'] = "AOL IM Center";
 
 $l['buddy_list'] = "Buddy List";
 $l['online'] = "Online";

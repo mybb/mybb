@@ -1515,11 +1515,11 @@ $headerinclude
 <title>{$lang->icq_message_center}</title>
 {$headerinclude}
 </head>
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" class="trow2">
+<body style="margin:0;top:0;left:0;" class="trow2">
 <form action="http://msg.mirabilis.com/scripts/WWPMsg.dll" method="get" name="frmPager">
-<table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
+<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
-<td class="thead" align="center" colspan="2"><strong>{$lang->icq_message_center}</strong></td>
+<td class="thead" align="center" colspan="2"><strong>{$user['username']} - {$lang->icq_message_center}</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
@@ -1529,15 +1529,15 @@ $headerinclude
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->your_name}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="from" size="40" value="{$mybb->user['username']}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="from" style="width:100%" value="{$mybb->user['username']}" /></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->your_email}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="fromemail" size="40" value="{$mybb->user['email']}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="fromemail" style="width:100%" value="{$mybb->user['email']}" /></td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->your_message}</strong></td>
-<td class="trow1"><textarea wrap="virtual" cols="50" rows="12" name="body"></textarea></td>
+<td class="trow1"><textarea wrap="virtual" style="width:100%" rows="12" name="body"></textarea></td>
 </tr>
 <tr>
 <td class="trow1" align="center" colspan="2"><input type="submit" class="button" name="submit" value="{$lang->send_message}"></td>
@@ -2882,11 +2882,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="misc_buddypopup" version="100.07"><![CDATA[<html>
 <head>
 <title>{$lang->buddy_list}</title>
-<META HTTP-EQUIV="refresh" CONTENT="60; URL=misc.php?action=buddypopup">
+<meta http-equiv="refresh" content="60; URL=misc.php?action=buddypopup" />
 {$headerinclude}
 </head>
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" class="trow2">
-<table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
+<body style="margin:0px;top:0px;left:0px" class="trow2">
+<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->buddy_list}</strong></td>
 </tr>
@@ -2905,11 +2905,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </body>
 </html>]]></template>
 		<template name="misc_buddypopup_user_offline" version="100.07"><![CDATA[<tr>
-<td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid={$buddy['uid']}" target="_blank">{$buddy['username']}</a></span></td>
+<td class="trow1" width="100%"><span class="smalltext">{$profile_link}</span></td>
 <td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">{$pmbuddy}<a href="misc.php?action=buddypopup&amp;removebuddy={$buddy['uid']}">{$lang->delete_buddy}</a></span></td>
 </tr>]]></template>
 		<template name="misc_buddypopup_user_online" version="100.07"><![CDATA[<tr>
-<td class="trow1" width="100%"><span class="smalltext"><a href="member.php?action=profile&amp;uid={$buddy['uid']}" target="_blank">{$buddy['username']}</a></span></td>
+<td class="trow1" width="100%"><span class="smalltext">{$profile_link}</span></td>
 <td class="trow1" align="right" nowrap="nowrap"><span class="smalltext">{$pmbuddy}<a href="misc.php?action=buddypopup&amp;removebuddy={$buddy['uid']}">{$lang->delete_buddy}</a></span></td>
 </tr>]]></template>
 		<template name="private_archive_txt" version="100.07"><![CDATA[{$lang->private_messages_for}
@@ -3934,12 +3934,19 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="misc_imcenter_aim" version="100.07"><![CDATA[<html>
 <head>
-<title>{$lang->aol_im}</title>
+<title>{$lang->aim_center}</title>
 {$headerinclude}
 </head>
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" class="trow2">
-<br />
-<br />
+<body style="margin:0;left:0;top:0" class="trow2">
+<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="2"><strong>{$user['username']} - {$lang->aim_center}</strong></td>
+</tr>
+<tr>
+<td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
+</tr>
+<tr>
+<td class="trow2">
 <!-- Begin AIM Remote -->
 <table align="center" cellspacing="0" cellpadding="0" border="0">
 <tr>
@@ -3958,7 +3965,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 </table>
 <!-- End AIM Remote -->
-
+</td>
+</tr>
+</table>
 </body>
 </html>]]></template>
 		<template name="showthread_adminoptions" version="100.07"><![CDATA[<br />
@@ -5366,13 +5375,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$headerinclude}
 </head>
 <body style="margin:0px;top:0px;left:0px" class="trow2">
-<table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
+<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->total_posts} {$numposts}</strong></td>
 </tr>
 <tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->user}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->num_posts}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong><a href="misc.php?action=whoposted&amp;tid={$tid}&amp;sort=username">{$lang->user}</a></strong></span></td>
+<td class="tcat"><span class="smalltext"><strong><a href="misc.php?action=whoposted&amp;tid={$tid}&amp;sort=numposts">{$lang->num_posts}</a></strong></span></td>
 </tr>
 {$whoposted}
 <tr>
@@ -5382,7 +5391,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="misc_whoposted_poster" version="100.07"><![CDATA[<tr>
-<td class="{$altbg}"><a href="member.php?action=profile&amp;uid={$poster['uid']}" target="_new">{$poster['username']}</a></td>
+<td class="{$altbg}">{$profile_link}</a></td>
 <td class="{$altbg}">{$poster['posts']}</td>
 </tr>]]></template>
 		<template name="moderation_deleteposts_post" version="100.07"><![CDATA[<tr>
@@ -6174,16 +6183,13 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <title>{$lang->msn_messenger_center}</title>
 {$headerinclude}
 </head>
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" class="trow2">
-<table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
+<body style="margin:0;left:0;top:0" class="trow2">
+<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td class="thead" align="center"><strong>{$user['username']} - {$lang->msn_messenger_center}</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
-</tr>
-<tr>
-<td class="trow1" align="center">{$user['msn']}</td>
 </tr>
 <tr>
 <td class="trow1" align="center">{$lang->msn_address_is}<br />{$user['msn']}</td>
@@ -6196,8 +6202,8 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <title>{$lang->yahoo_center}</title>
 {$headerinclude}
 </head>
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" class="trow2">
-<table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">
+<body style="margin:0;left:0;top:0" class="trow2">
+<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td class="thead" align="center"><strong>{$user['username']} - {$lang->yahoo_center}</strong></td>
 </tr>

@@ -235,7 +235,7 @@ elseif($mybb->input['action'] == "buddypopup")
 					unset($namesarray[$key]);
 				}
 			}
-			$buddylist = implode(",", $namesarray);
+			$buddylist = implode(',', $namesarray);
 			$query = $db->update_query(TABLE_PREFIX."users", array('buddylist' => $buddylist), "uid='".$mybb->user['uid']."'");
 			$mybb->user['buddylist'] = $buddylist;
 		}
@@ -243,7 +243,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	// Load Buddies
 	$buddies = $mybb->user['buddylist'];
 	$buddys = array();
-	$namesarray = explode(",",$buddies);
+	$namesarray = explode(',', $buddies);
 	if(is_array($namesarray))
 	{
 		$comma = '';
@@ -262,6 +262,8 @@ elseif($mybb->input['action'] == "buddypopup")
 		");
 		while($buddy = $db->fetch_array($query))
 		{
+			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
+			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
 			if($mybb->user['receivepms'] != "no" && $buddy['receivepms'] != "no" && $buddy['canusepms'] != "no")
 			{
 				eval("\$pmbuddy = \"".$templates->get("misc_buddypopup_user_sendpm")."\";");
@@ -291,13 +293,22 @@ elseif($mybb->input['action'] == "whoposted")
 	$numposts = 0;
 	$altbg = "trow1";
 	$whoposted = '';
+	$tid = intval($mybb->input['tid']);
+	if($mybb->input['sort'] != 'username')
+	{
+		$sortsql = ' ORDER BY posts DESC';
+	}
+	else
+	{
+		$sortsql = ' ORDER BY p.username ASC';
+	}
 	$query = $db->query("
-		SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username
+		SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-		WHERE tid='".intval($mybb->input['tid'])."' AND p.visible='1'
+		WHERE tid='".$tid."' AND p.visible='1'
 		GROUP BY u.uid
-		ORDER BY posts DESC
+		".$sortsql."
 	");
 	while($poster = $db->fetch_array($query))
 	{
@@ -305,6 +316,8 @@ elseif($mybb->input['action'] == "whoposted")
 		{
 			$poster['username'] = $poster['postusername'];
 		}
+		$poster_name = format_name($poster['username'], $poster['usergroup'], $poster['displaygroup']);
+		$profile_link = build_profile_link($poster_name, $poster['uid'], '_blank');
 		$numposts += $poster['posts'];
 		eval("\$whoposted .= \"".$templates->get("misc_whoposted_poster")."\";");
 		$altbg = alt_trow();
@@ -362,7 +375,7 @@ elseif($mybb->input['action'] == "imcenter")
 {
 	if(!$mybb->input['imtype'])
 	{
-		exit;
+		error($lang->error_invalidimtype);
 	}
 	$uid = intval($mybb->input['uid']);
 	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".$uid."'", array('limit' => 1));
@@ -378,21 +391,21 @@ elseif($mybb->input['action'] == "imcenter")
 	}
 
 	// build im navigation bar
-	$navigationbar = '';
+	$navigationbar = $navsep = '';
 	if($user['aim'])
 	{
 		$navigationbar .= "<a href=\"misc.php?action=imcenter&imtype=aim&uid=$uid\">$lang->aol_im</a>";
-		$navsep = " - ";
+		$navsep = ' - ';
 	}
 	if($user['icq'])
 	{
 		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&imtype=icq&uid=$uid\">$lang->icq</a>";
-		$navsep = " - ";
+		$navsep = ' - ';
 	}
 	if($user['msn'])
 	{
 		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&imtype=msn&uid=$uid\">$lang->msn</a>";
-		$navsep = " - ";
+		$navsep = ' - ';
 	}
 	if($user['yahoo'])
 	{

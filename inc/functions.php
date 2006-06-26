@@ -2774,23 +2774,31 @@ function get_profile_link($uid=0)
  *
  * @param string The Username of the profile.
  * @param int The user id of the profile.
+ * @param string The target frame
  * @return string The url to the profile.
  */
-function build_profile_link($username="", $uid=0)
+function build_profile_link($username="", $uid=0, $target="")
 {
 	global $lang;
 
-	if(!$username)
+	if(!$username && $uid == 0)
 	{
+		// Return Guest phrase for no UID, no guest nickname
 		return $lang->guest;
 	}
-	else if($uid == 0)
+	elseif($uid == 0)
 	{
+		// Return the guest's nickname if user is a guest but has a nickname 
 		return $username;
 	}
 	else
 	{
-		return "<a href=\"".get_profile_link($uid)."\">{$username}</a>";
+		// Build the profile link for the registered user
+		if(!empty($target))
+		{
+			$target = " target=\"{$target}\"";
+		}
+		return "<a href=\"".get_profile_link($uid)."\"{$target}>{$username}</a>";
 	}
 }
 
