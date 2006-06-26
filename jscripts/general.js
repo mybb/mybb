@@ -73,19 +73,36 @@ var MyBB = {
 		}
 	},
 
-	deletePost: function()
-	{
-		confirmReturn = confirm(quickdelete_confirm);
-		if(confirmReturn == true) {
-			window.location = "editpost.php?action=deletepost&pid="+pid+"&delete=yes";
-		}
-	},
-
 	deleteEvent: function(eid)
 	{
 		confirmReturn = confirm(deleteevent_confirm);
-		if(confirmReturn == true) {
-			window.location = "calendar.php?action=do_editevent&eid="+eid+"&delete=yes";
+		if(confirmReturn == true)
+		{
+			form = document.createElement("form");
+			form.setAttribute("method", "post");
+			form.setAttribute("action", "calendar.php");
+			form.setAttribute("style", "display: none;");
+
+			var input = document.createElement("input");
+			input.setAttribute("name", "action");
+			input.setAttribute("type", "hidden");
+			input.setAttribute("value", "do_editevent");
+			form.appendChild(input);
+	
+			var input = document.createElement("input");
+			input.setAttribute("name", "eid");
+			input.setAttribute("type", "hidden");
+			input.setAttribute("value", eid);
+			form.appendChild(input);
+			
+			var input = document.createElement("input");
+			input.setAttribute("name", "delete");
+			input.setAttribute("type", "hidden");
+			input.setAttribute("value", "yes");
+			form.appendChild(input);
+
+			document.getElementsByTagName("body")[0].appendChild(form);
+			form.submit();
 		}
 	},
 
