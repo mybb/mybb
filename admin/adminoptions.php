@@ -146,15 +146,16 @@ if($mybb->input['action'] == "updateperms")
 	if($uid > 0)
 	{
 		$query = $db->query("
-			SELECT u.uid, u.username, g.cancp
+			SELECT u.uid, u.username, g.cancp, g.gid
 			FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g)
 			WHERE u.uid='$uid'
 			AND u.usergroup=g.gid
 			AND g.cancp='yes'
+			LIMIT 1
 		");
 		$admin = $db->fetch_array($query);
 		$tsub = sprintf($lang->edit_admin_perms, $admin['username']);
-		$permissions = getadminpermissions($uid);
+		$permissions = getadminpermissions($uid, $admin['gid']);
 		$lang->nav_edit_permissions = sprintf($lang->nav_edit_permissions, $admin['username']);
 		addacpnav($lang->nav_edit_permissions);
 	}
