@@ -145,15 +145,15 @@ if($mybb->input['action'] == "view")
 		echo "<td class=\"$bgcolor\">";
 		if($logitem['tsubject'])
 		{
-			echo "<b>$lang->thread</b> <a href=\"../showthread.php?tid=$logitem[tid]\" target=\"_blank\">$logitem[tsubject]</a><br />";
+			echo "<b>$lang->thread</b> <a href=\"../showthread.php?tid=$logitem[tid]\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 		}
 		if($logitem['fname'])
 		{
-			echo "<b>$lang->forum</b> <a href=\"../forumdisplay.php?fid=$logitem[fid]\" target=\"_blank\">$logitem[fname]</a><br />";
+			echo "<b>$lang->forum</b> <a href=\"../forumdisplay.php?fid=$logitem[fid]\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
 		}
 		if($logitem['psubject'])
 		{
-			echo "<b>$lang->post</b> <a href=\"../showthread.php?tid=$logitem[tid]&pid=$logitem[pid]#pid$logitem[pid]\">$logitem[psubject]</a>";
+			echo "<b>$lang->post</b> <a href=\"../showthread.php?tid=$logitem[tid]&pid=$logitem[pid]#pid$logitem[pid]\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 		echo "</td>";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\">$logitem[ipaddress]</td>";
