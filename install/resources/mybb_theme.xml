@@ -821,8 +821,8 @@ var inlineId = {$tid};
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']} /> {$lang->options_sig}<br />
-<input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
 {$disablesmilies}</span></td>
 </tr>
 {$attachbox}
@@ -840,7 +840,7 @@ var inlineId = {$tid};
 </body>
 </html>]]></template>
 		<template name="editpost_disablesmilies" version="100.07"><![CDATA[<br />
-<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}]]></template>
+<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="newreply" version="100.07"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
@@ -878,8 +878,8 @@ var inlineId = {$tid};
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']} />{$lang->options_sig}</label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']} />{$lang->options_emailnotify}</label>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
 {$disablesmilies}
 </span></td>
 </tr>
@@ -904,7 +904,7 @@ var inlineId = {$tid};
 </body>
 </html>]]></template>
 		<template name="newreply_disablesmilies" version="100.07"><![CDATA[<br />
-<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}]]></template>
+<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="usercp_drafts" version="100.07"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>
@@ -1002,7 +1002,7 @@ var inlineId = {$tid};
 </body>
 </html>]]></template>
 		<template name="newthread_disablesmilies" version="100.07"><![CDATA[<br />
-<input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}]]></template>
+<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="usercp_nav" version="100.07"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
