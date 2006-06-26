@@ -300,7 +300,7 @@ $l['redirect_forumsubscriptionremoved'] = "The selected forum has been removed f
 $l['redirect_namechanged'] = "Your name has successfully been changed.<br />You will now be returned to the User CP.";
 $l['redirect_emailupdated'] = "Your email address has successfully been updated.<br />You will now be taken back to the user control panel";
 $l['redirect_passwordupdated'] = "Thank you, your password has successfully been updated.<br />You will  now be returned to the User CP.";
-$l['redirect_changeemail_activation'] = "Your email address has successfully been updated. For your new email address to become active, we require that you complete a valdation process.<p>Please check the new email address you specified for further instructions on how to complete the account activation process.</p>";
+$l['redirect_changeemail_activation'] = "Your email address has successfully been updated. For your new email address to become active, we require that you complete a validation process.<p>Please check the new email address you specified for further instructions on how to complete the account activation process.</p>";
 $l['redirect_avatarupdated'] = "Your avatar has been changed successfully.<br />You will now be returned to your User CP.";
 
 $l['error_favoriteslogin'] = "You are either not logged in or did not properly choose a thread to add to your favorites list.";

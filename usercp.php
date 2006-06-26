@@ -858,7 +858,6 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 		$uid = $mybb->user['uid'];
 		$lang->emailsubject_changeemail = sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
 		$lang->email_changeemail = sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->input['email'], $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
-		die($lang->email_changeemail);
 		mymail($mybb->input['email'], $lang->emailsubject_changeemail, $lang->email_changeemail);
 		$plugins->run_hooks("usercp_do_email_verify");
 		error($lang->redirect_changeemail_activation);

@@ -129,6 +129,7 @@ $l['reputation_vote'] = "Vote";
 $l['reputation_details'] = "Details";
 
 $l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";
+$l['redirect_emailupdated'] = "Your email has been successfully changed.<br />You will now be taken back to the main page.";
 $l['redirect_accountactivated'] = "Your account has successfully been activated.<br />You will now be taken back to the main page.";
 $l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";
 $l['redirect_registered_admin_activate'] = "Thank you for registering on {1}, {2}.<br />Your registration must be activated by an administrator.  Until then, you may not be able to post on these forums.";

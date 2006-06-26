@@ -4694,7 +4694,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_email}</strong></td>
-<td class="trow2" width="60%"><input type="email" name="email" size="25" maxlength="150" /></td>
+<td class="trow2" width="60%"><input type="text" class="textbox" name="email" size="25" maxlength="150" /></td>
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->confirm_email}</strong></td>
