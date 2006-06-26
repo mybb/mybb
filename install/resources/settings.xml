@@ -1000,7 +1000,7 @@ admin=Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="failedlogincount">
 			<title>Number of times to allow failed logins</title>
-			<description><![CDATA[The number of times to allow someone to attemp to login. 0 to disable]]></description>
+			<description><![CDATA[The number of times to allow someone to attempt to login. 0 to disable]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
