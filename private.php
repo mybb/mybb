@@ -138,7 +138,6 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		"icon" => $mybb->input['icon'],
 		"fromid" => $mybb->user['uid'],
 		"username" => $mybb->input['to'],
-		"saveasdraft" => $mybb->input['saveasdraft'],
 		"do" => $mybb->input['do'],
 		"pmid" => $mybb->input['pmid']
 	);
@@ -150,6 +149,10 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		"readreceipt" => $mybb->input['options']['readreceipt']
 	);
 
+	if($mybb->input['saveasdraft'])
+	{
+		$pm['saveasdraft'] = 1;
+	}
 	$pmhandler->set_data($pm);
 
 	// Now let the pm handler do all the hard work.
@@ -164,7 +167,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		$pminfo = $pmhandler->insert_pm();
 		$plugins->run_hooks("private_do_send_end");
 
-		if(isset($pm['draftsaved']))
+		if(isset($pminfo['draftsaved']))
 		{
 			redirect("private.php", $lang->redirect_pmsaved);
 		}
@@ -968,9 +971,9 @@ if(!$mybb->input['action'])
 	}
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	foreach($foldersexploded as $key => $folder)
+	foreach($foldersexploded as $key => $folders)
 	{
-		$folderinfo = explode("**", $folder, 2);
+		$folderinfo = explode("**", $folders, 2);
 		if($folderinfo[0] == $mybb->input['fid'])
 		{
 			$folder = $folderinfo[0];

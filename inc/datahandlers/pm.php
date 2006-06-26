@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $$
+ * $Id$
  */
 
  /*
@@ -103,7 +103,8 @@ class PMDataHandler extends DataHandler
 
 		// Assign the sender information to the data.
 		$pm['sender'] = array(
-			"uid" => $sender['uid']
+			"uid" => $sender['uid'],
+			"username" => $sender['username']
 		);
 
 		return true;
@@ -207,7 +208,11 @@ class PMDataHandler extends DataHandler
 		$pm['recipient'] = array(
 			"uid" => $touser['uid'],
 			"username" => $touser['username'],
-			"pmpopup" => $touser['pmpopup']
+			"email" => $touser['email'],
+			"lastactive" => $touser['lastactive'],
+			"pmpopup" => $touser['pmpopup'],
+			"pmnotify" => $touser['pmnotify'],
+			"language" => $touser['language']
 		);
 		return true;
 	}
@@ -261,16 +266,16 @@ class PMDataHandler extends DataHandler
 		global $plugins;
 
 		$pm = &$this->data;
-
+		
 		// Verify all PM assets.
 		$this->verify_subject();
-		
+
 		$this->verify_sender();
-		
+
 		$this->verify_recipient();
 		
 		$this->verify_message();
-		
+
 		$this->verify_options();
 
 		$plugins->run_hooks("datahandler_pm_validate");
@@ -373,7 +378,7 @@ class PMDataHandler extends DataHandler
 
 			if($pm['saveasdraft'])
 			{
-				$newpm['uid'] = $pm['recipient']['uid'];
+				$newpm['uid'] = $pm['sender']['uid'];
 			}
 			$plugins->run_hooks("datahandler_pm_insert");
 			$db->insert_query(TABLE_PREFIX."privatemessages", $newpm);
@@ -435,6 +440,41 @@ class PMDataHandler extends DataHandler
 			$db->update_query(TABLE_PREFIX."users", $sql_array, "uid={$pm['recipient']['uid']}");
 		}
 
+		// Send email notification of new PM if it is enabled for the recipient
+		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$pm['recipient']['uid']."' AND folder='1' ORDER BY dateline DESC LIMIT 1");
+		$lastpm = $db->fetch_array($query);
+		if($pm['recipient']['pmnotify'] == "yes" && $pm['recipient']['lastactive'] > $lastpm['dateline'] && !$mybb->input['saveasdraft'])
+		{
+			if($pm['recipient']['language'] != "" && $lang->languageExists($touser['language']))
+			{
+				$uselang = $touser['language'];
+			}
+			elseif($mybb->settings['bblanguage'])
+			{
+				$uselang = $mybb->settings['bblanguage'];
+			}
+			else
+			{
+				$uselang = "english";
+			}
+			if($uselang == $mybb->settings['bblanguage'])
+			{
+				$emailsubject = $lang->emailsubject_newpm;
+				$emailmessage = $lang->email_newpm;
+			}
+			else
+			{
+				$userlang = new MyLanguage;
+				$userlang->setPath("./inc/languages");
+				$userlang->setLanguage($uselang);
+				$userlang->load("messages");
+				$emailsubject = $userlang->emailsubject_newpm;
+				$emailmessage = $userlang->email_newpm;
+			}
+			$emailmessage = sprintf($emailmessage, $pm['recipient']['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+			$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
+			mymail($pm['recipient']['email'], $emailsubject, $emailmessage);
+		}
 		// Return back with appropriate data
 		if($pm['saveasdraft'])
 		{
