@@ -109,11 +109,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 					$update_forum_count[$thread['fid']] = 1;
 
 					// Update unapproved thread count
-					$updatequery = array(
-						"unapprovedthreads" => "unapprovedthreads-1",
-						"unapprovedposts" => "unapprovedposts-1"
-					);
-					$db->update_query(TABLE_PREFIX."forums", $updatequery, "fid='$thread[fid]'");
+					$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads-1,unapprovedposts=unapprovedposts-1 WHERE fid='$thread[fid]'");
 				}
 			}
 		}
@@ -151,10 +147,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 					$update_forum_count[$thread['fid']] = 1;
 
 					// Update unapproved thread count
-					$updatequery = array(
-					 	"unapprovedposts" => "unapprovedposts-1"
-					);
-					$db->update_query(TABLE_PREFIX."forums", $updatequery, "tid='$post[tid]'");
+					$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-1 WHERE tid='$post[tid]'");
 				}
 			}
 		}
