@@ -166,7 +166,14 @@ if($mybb->input['action'] == "results")
 			'limit_start' => $start,
 			'limit' => $perpage
 		);
-		$query = $db->simple_select(TABLE_PREFIX."threads t", "t.*", $where_conditions, $sqlarray);
+		$query = $db->query("
+			SELECT t.*, u.username AS userusername
+			FROM ".TABLE_PREFIX."threads t
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=.uid)
+			$where_conditions
+			ORDER BY $sortfield $order
+			LIMIT $start, $perpage
+		");
 		$thread_cache = array();
 		while($thread = $db->fetch_array($query))
 		{
@@ -202,15 +209,12 @@ if($mybb->input['action'] == "results")
 			$folder = '';
 			$prefix = '';
 
-			if(!$thread['username'])
+			if($thread['userusername'])
 			{
-				$thread['username'] = $thread['threadusername'];
-				$thread['profilelink'] = $thread['threadusername'];
+				$thread['username'] = $thread['userusername'];
 			}
-			else
-			{
-				$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
-			}
+			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
+
 			$thread['subject'] = $parser->parse_badwords($thread['subject']);
 			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
@@ -419,9 +423,10 @@ if($mybb->input['action'] == "results")
 			}
 		}
 		$query = $db->query("
-			SELECT p.*, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed
+			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE $where_conditions
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
@@ -429,23 +434,11 @@ if($mybb->input['action'] == "results")
 		while($post = $db->fetch_array($query))
 		{
 			$bgcolor = alt_trow();
-			if(!$post['username'])
+			if($post['userusername'])
 			{
-				$post['username'] = $post['postusername'];
-				$post['profilelink'] = $post['postusername'];
+				$post['username'] = $post['userusername'];
 			}
-			else
-			{
-				// If the user is a guest, don't link to the profile.
-				if($post['uid'] == 0)
-				{
-					$post['profilelink'] = $post['username'];
-				}
-				else
-				{
-					$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
-				}
-			}
+			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 			$post['subject'] = $parser->parse_badwords($post['subject']);
 			$post['subject'] = htmlspecialchars_uni($post['subject']);
 			$post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
