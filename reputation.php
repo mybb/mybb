@@ -335,7 +335,7 @@ if(!$mybb->input['action'])
 			break;
 	}
 	// Fetch the total number of reputations for this user
-	$query = $db->simple_select(TABLE_PREFIX."reputation", "COUNT(rid) AS reputation_count", "uid='{$user['uid']}' $conditions");
+	$query = $db->simple_select(TABLE_PREFIX."reputation", "COUNT(r.rid) AS reputation_count", "r.uid='{$user['uid']}' $conditions");
 	$reputation_count = $db->fetch_field($query, "reputation_count");
 	
 	// Set default count variables to 0

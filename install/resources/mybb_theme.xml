@@ -6615,6 +6615,27 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </table>
 </body>
 </html>]]></template>
+		<template name="reputation_deleted" version="100.07"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
+{$headerinclude}
+</head>
+<body onunload="window.opener.location.reload();">
+<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+		<td class="trow1" style="padding: 20px">
+			<strong>{$lang->vote_added}</strong><br /><br />
+			   <blockquote>{$lang->vote_deleted_message}</blockquote>
+				<br /><br />
+				<div style="text-align: center;">
+					<script type="text/javascript">document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');</script>
+				</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>]]></template>
 		<template name="forumdisplay_thread_attachment_count" version="100.07"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.gif" alt="" title="{$attachment_count}" /></div>]]></template>
 		<template name="forumdisplay_rssdiscovery" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php?fid={$fid}" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 0.3)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0&amp;fid={$fid}" />]]></template>
