@@ -633,7 +633,7 @@ if($mybb->input['action'] == "showresults")
 			{
 				foreach($voters[$number] as $uid => $username)
 				{
-					$userlist. = $comma.build_profile_link($username, $uid);
+					$userlist .= $comma.build_profile_link($username, $uid);
 					$comma = $guest_comma = ', ';
 				}
 			}
