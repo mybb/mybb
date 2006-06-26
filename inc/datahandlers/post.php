@@ -862,8 +862,9 @@ class PostDataHandler extends DataHandler
 				"visible" => $visible,
 				"posthash" => $db->escape_string($thread['posthash'])
 			);
-
 			$db->update_query(TABLE_PREFIX."posts", $newpost, "pid='{$thread['pid']}'");
+			$tid = $thread['tid'];
+			$pid = $thread['pid'];
 		}
 
 		// Inserting a new thread into the database.
