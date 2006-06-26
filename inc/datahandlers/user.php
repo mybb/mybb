@@ -161,11 +161,6 @@ class UserDataHandler extends DataHandler
 	function verify_usergroup()
 	{
 		$user = &$this->data;
-
-		if(intval($user['displaygroup']) <= 0 && $user['usergroup'])
-		{
-			$user['displaygroup'] = $user['usergroup'];
-		}
 		return true;
 	}
 	/**

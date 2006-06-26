@@ -169,7 +169,7 @@ function upgradethemes()
 	if($system_upgrade_detail['revert_all_themes'] > 0)
 	{
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."themes");
-		$db->query("CREATE TABLE mybb_themes (
+		$db->query("CREATE TABLE ".TABLE_PREFIX."themes" (
 		  tid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
 		  pid smallint unsigned NOT NULL default '0',
