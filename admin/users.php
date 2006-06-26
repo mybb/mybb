@@ -2023,7 +2023,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 			$type = $thing[0];
 			$options = $thing[1];
 			$field = "search[profilefields][{$profilefield['fid']}]";
-			$select = '';
+			$select = $code = '';
 			if($type == "multiselect")
 			{
 				$expoptions = explode("\n", $options);

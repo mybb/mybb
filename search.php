@@ -155,7 +155,7 @@ if($mybb->input['action'] == "results")
 
 			if(!$count['resultcount'])
 			{
-				error($lang->nosearchresults);
+				error($lang->error_nosearchresults);
 			}
 			$threadcount = $count['resultcount'];
 		}
@@ -394,7 +394,7 @@ if($mybb->input['action'] == "results")
 
 		if(!$count['resultcount'])
 		{
-			error($lang->nosearchresults);
+			error($lang->error_nosearchresults);
 		}
 		$postcount = $count['resultcount'];
 
@@ -751,8 +751,8 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("search_do_search_start");
 
-	// Check if search flood  checking is enabled
-	if($mybb->settings['searchfloodtime'] > 0)
+	// Check if search flood checking is enabled and user is not admin
+	if($mybb->settings['searchfloodtime'] > 0 && $mybb->usergroup['cancp'] != 'yes')
 	{
 		// Fetch the time this user last searched
 		if($mybb->user['uid'])
