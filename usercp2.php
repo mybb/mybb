@@ -67,7 +67,7 @@ elseif($mybb->input['action'] == "addsubscription")
 {
 	if($mybb->input['type'] == "forum")
 	{
-		$forum = get_forum($mybb->input['gid']);
+		$forum = get_forum($mybb->input['fid']);
 		if(!$forum['fid'])
 		{
 			error($lang->error_invalidforum);
