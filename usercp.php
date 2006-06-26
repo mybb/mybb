@@ -1044,7 +1044,7 @@ if($mybb->input['action'] == "subscriptions")
 {
 	$plugins->run_hooks("usercp_subscriptions_start");
 	// Do Multi Pages
-	$query = $db->query(TABLE_PREFIX."favorites", "COUNT(tid) AS threads", "type='s' AND uid='".$mybb->user['uid']."'");
+	$query = $db->simple_select(TABLE_PREFIX."favorites", "COUNT(tid) AS threads", "type='s' AND uid='".$mybb->user['uid']."'");
 	$threadcount = $db->fetch_field($query, "threads");
 
 	$perpage = $mybb->settings['threadsperpage'];
