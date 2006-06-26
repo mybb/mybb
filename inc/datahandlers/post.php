@@ -830,7 +830,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
-		if($post['pid'])
+		if($thread['pid'])
 		{
 			$newthread = array(
 				"subject" => $db->escape_string($thread['subject']),

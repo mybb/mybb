@@ -236,6 +236,11 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		"ipaddress" => get_ip(),
 		"posthash" => $mybb->input['posthash']
 	);
+	
+	if($pid != '')
+	{
+		$new_thread['pid'] = $pid;
+	}
 
 	// Are we saving a draft thread?
 	if($mybb->input['savedraft'] && $mybb->user['uid'])
