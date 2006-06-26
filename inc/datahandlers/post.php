@@ -828,6 +828,13 @@ class PostDataHandler extends DataHandler
 				$visible = 1;
 			}
 		}
+		
+		// Have a post ID but not a thread ID - fetch thread ID
+		if($thread['pid'] && !$thread['tid'])
+		{
+			$db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['pid']}");
+			$thread['tid'] = $db->fetch_field($query, "tid");
+		}
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
 		if($thread['pid'])
@@ -841,7 +848,7 @@ class PostDataHandler extends DataHandler
 				"lastposter" => $db->escape_string($thread['username']),
 				"visible" => $visible
 				);
-			$db->update_query(TABLE_PREFIX."threads", $newthread, "tid='$tid'");
+			$db->update_query(TABLE_PREFIX."threads", $newthread, "tid='{$thread['tid']}'");
 
 			$newpost = array(
 				"subject" => $db->escape_string($thread['subject']),
@@ -856,7 +863,7 @@ class PostDataHandler extends DataHandler
 				"posthash" => $db->escape_string($thread['posthash'])
 			);
 
-			$db->update_query(TABLE_PREFIX."posts", $newpost, "pid='$pid'");
+			$db->update_query(TABLE_PREFIX."posts", $newpost, "pid='{$thread['pid']}'");
 		}
 
 		// Inserting a new thread into the database.

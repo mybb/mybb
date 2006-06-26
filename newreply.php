@@ -233,12 +233,16 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	{
 		$user_check = "p.ipaddress='{$session->ipaddress}'";
 	}
-	$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
-	$duplicate_check = $db->fetch_field($query, "pid");
-	if($duplicate_check)
+	if(!$mybb->input['savedraft'])
 	{
-		error($lang->error_post_already_submitted);
+		$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
+		$duplicate_check = $db->fetch_field($query, "pid");
+		if($duplicate_check)
+		{
+			error($lang->error_post_already_submitted);
+		}
 	}
+	
 	// Set up posthandler.
 	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("insert");
