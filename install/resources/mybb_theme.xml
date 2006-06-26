@@ -3770,7 +3770,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tfoot" align="center"><strong>{$totpercent}</strong></td>
 </tr>
 </table>
-<br />
 {$footer}
 </body>
 </html>]]></template>
@@ -4586,7 +4585,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$threads}
 </table>
 </td></tr></table>
-<br />
 {$footer}
 </body>
 </html>]]></template>
@@ -4858,7 +4856,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 {$smilies}
 </table>
-<br />
 {$footer}
 </body>
 </html>]]></template>
@@ -4954,7 +4951,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>
 </table>
-<br />
 {$footer}
 </body>
 </html>]]></template>
@@ -5113,7 +5109,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 {$adminoptions}
 </table>
-<br />
 {$footer}
 </body>
 </html>]]></template>
@@ -6161,7 +6156,6 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </td>
 </tr>
 </table>
-<br />
 {$footer}
 </body>
 </html>]]></template>

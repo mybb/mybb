@@ -257,14 +257,15 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		"posthash" => $mybb->input['posthash']
 	);
 
+	if($draft_pid)
+	{
+		$post['pid'] = $draft_pid;
+	}
+	
 	// Are we saving a draft post?
 	if($mybb->input['savedraft'] && $mybb->user['uid'])
 	{
 		$post['savedraft'] = 1;
-		if($draft_pid)
-		{
-			$post['pid'] = $draft_pid;
-		}
 	}
 	else
 	{
