@@ -439,7 +439,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 		$event = array(
 			"eid" => $eid,
 			"subject" => $mybb->input['subject'],
-			"uid" => $mybb->user['uid'],
+			"uid" => $event['author'],
 			"description" => $mybb->input['description'],
 			"day" => $mybb->input['day'],
 			"month" => $mybb->input['month'],
