@@ -169,7 +169,7 @@ if($mybb->input['action'] == "results")
 		$query = $db->query("
 			SELECT t.*, u.username AS userusername
 			FROM ".TABLE_PREFIX."threads t
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=.uid)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE $where_conditions
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
