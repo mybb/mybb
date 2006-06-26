@@ -1248,7 +1248,7 @@ var inlineId = {$tid};
 <option value="75" {$daysprunesel['75']}>{$lang->thread_view_75days}</option>
 <option value="100" {$daysprunesel['100']}>{$lang->thread_view_100days}</option>
 <option value="365" {$daysprunesel['365']}>{$lang->thread_view_year}</option>
-<option value="1000" {$daysprunesel['1000']}>{$lang->thread_view_all}</option>
+<option value="9999" {$daysprunesel['9999']}>{$lang->thread_view_all}</option>
 </select>
 </td>
 </tr>

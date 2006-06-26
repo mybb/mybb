@@ -752,8 +752,8 @@ if($mybb->input['action'] == "options")
 	$mybb->user['timezone'] = $tempzone;
 	eval("\$tzselect = \"".$templates->get("usercp_options_timezoneselect")."\";");
 
-	$threadview[$user['threadmode']] = "selected";
-	$daysprunesel[$user['daysprune']] = "selected";
+	$threadview[$user['threadmode']] = 'selected="selected"';
+	$daysprunesel[$user['daysprune']] = 'selected="selected"';
 	$stylelist = build_theme_select("style", $user['style']);
 	if($mybb->settings['usertppoptions'])
 	{
