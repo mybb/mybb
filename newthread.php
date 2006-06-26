@@ -213,7 +213,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	{
 		$user_check = "p.ipaddress='{$session->ipaddress}'";
 	}
-	if(!$mybb->input['savedraft'])
+	if(!$mybb->input['savedraft'] && !$pid)
 	{
 		$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
 		$duplicate_check = $db->fetch_field($query, "pid");
