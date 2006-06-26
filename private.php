@@ -968,9 +968,9 @@ if(!$mybb->input['action'])
 	}
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	foreach($foldersexploded as $key => $val)
+	foreach($foldersexploded as $key => $folder)
 	{
-		$folderinfo = explode("**", $folders, 2);
+		$folderinfo = explode("**", $folder, 2);
 		if($folderinfo[0] == $mybb->input['fid'])
 		{
 			$folder = $folderinfo[0];
