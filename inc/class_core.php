@@ -80,7 +80,7 @@ class MyBB {
 	 * @var array
 	 */
 	var $clean_variables = array(
-		"int" => array("tid", "pid", "uid", "eid", "pmid", "fid")
+		"int" => array("tid", "pid", "uid", "eid", "pmid", "fid", "aid")
 	);
 
 	

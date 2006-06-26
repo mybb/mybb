@@ -633,11 +633,14 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 				$emptyq .= "folder='$key'";
 			}
 		}
-		if($mybb->input['keepunread'] == "yes")
+		if($emptyq != '')
 		{
-			$keepunreadq = " AND status!='0'";
+			if($mybb->input['keepunread'] == "yes")
+			{
+				$keepunreadq = " AND status!='0'";
+			}
+			$db->delete_query(TABLE_PREFIX."privatemessages", "($emptyq) AND uid='".$mybb->user['uid']."' $keepunreadq");
 		}
-		$db->delete_query(TABLE_PREFIX."privatemessages", "($emptyq) AND uid='".$mybb->user['uid']."' $keepunreadq");
 	}
 	// Update PM count
 	update_pm_count();
