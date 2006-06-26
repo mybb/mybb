@@ -291,8 +291,8 @@ function perform_search_mysql($search)
 		// Complex search
 		if(preg_match("# and|or #", $keywords))
 		{
-			$subject_lookin = "(";
-			$message_lookin = "(";
+			$subject_lookin = " AND (";
+			$message_lookin = " AND (";
 			$matches = preg_split("#\s{1,}(and|or)\s{1,}#", $keywords, -1, PREG_SPLIT_DELIM_CAPTURE);
 			$count_matches = count($matches);
 			for($i=0;$i<$count_matches;$i++)
@@ -330,10 +330,10 @@ function perform_search_mysql($search)
 				$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 				error($lang->error_minsearchlength);
 			}
-			$subject_lookin = " LOWER(t.subject) LIKE '%".trim($keywords)."%'";
+			$subject_lookin = " AND LOWER(t.subject) LIKE '%".trim($keywords)."%'";
 			if($search['postthread'] == 1)
 			{
-				$message_lookin = " LOWER(p.message) LIKE '%".trim($keywords)."%'";
+				$message_lookin = " AND LOWER(p.message) LIKE '%".trim($keywords)."%'";
 			}
 		}
 	}
@@ -437,7 +437,7 @@ function perform_search_mysql($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' AND ($subject_lookin)
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -451,7 +451,7 @@ function perform_search_mysql($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 $post_datecut $forumin $post_usersql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' AND ($message_lookin)
+			WHERE 1=1 $post_datecut $forumin $post_usersql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -473,7 +473,7 @@ function perform_search_mysql($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND ($subject_lookin)
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -545,8 +545,8 @@ function perform_search_mysql_ft($search)
 				error($lang->error_minsearchlength);
 			}
 		}
-		$message_lookin = "MATCH(message) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
-		$subject_lookin = "MATCH(subject) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
+		$message_lookin = "AND MATCH(message) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
+		$subject_lookin = "AND MATCH(subject) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
 	}
 	$post_usersql = "";
 	$thread_usersql = "";
@@ -648,7 +648,7 @@ function perform_search_mysql_ft($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' AND ($subject_lookin)
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -662,7 +662,7 @@ function perform_search_mysql_ft($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 $post_datecut $forumin $post_usersql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' AND ($message_lookin)
+			WHERE 1=1 $post_datecut $forumin $post_usersql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
 		");
 		while($post = $db->fetch_array($query))
 		{
