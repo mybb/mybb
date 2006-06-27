@@ -410,7 +410,10 @@ class PostDataHandler extends DataHandler
 			$this->verify_dateline();
 		}
 
-		$this->verify_post_flooding();
+		if($this->action != "edit")
+		{
+			$this->verify_post_flooding();
+		}
 
 		if($this->method == "insert" || isset($post['replyto']))
 		{
