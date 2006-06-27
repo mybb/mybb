@@ -213,6 +213,7 @@ if($mybb->input['action'] == "send")
 		$post['message'] = $previewmessage;
 		$post['subject'] = $mybb->input['subject'];
 		$post['icon'] = $mybb->input['icon'];
+		$post['smilieoff'] = $options['disablesmilies'];
 		$post['dateline'] = time();
 		$postbit = build_postbit($post, 2);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
