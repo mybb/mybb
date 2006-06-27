@@ -29,7 +29,7 @@ switch($action)
 
 		// Check if we have permission to view this thread
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != "yes") 
+		if($forumpermissions['canview'] != "yes")
 		{
 			archive_error_no_permission();
 		}
@@ -48,11 +48,11 @@ switch($action)
 		{
 			$page = 1;
 		}
-		if($page) 
+		if($page)
 		{
 			$start = ($page-1) * $perpage;
-		} 
-		else 
+		}
+		else
 		{
 			$start = 0;
 			$page = 1;
@@ -64,14 +64,14 @@ switch($action)
 		{
 			$acache[$attachment['pid']][$attachment['aid']] = $attachment;
 		}
-		
+
 		// Start fetching the posts
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.* 
-			FROM ".TABLE_PREFIX."posts p 
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) 
-			WHERE p.tid='$id' AND visible='1' 
-			ORDER BY p.dateline 
+			SELECT u.*, u.username AS userusername, p.*
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			WHERE p.tid='$id' AND visible='1'
+			ORDER BY p.dateline
 			LIMIT $start, $perpage
 		");
 		while($post = $db->fetch_array($query))
@@ -100,7 +100,7 @@ switch($action)
 					$post['message'] = str_replace("[attachment=$attachment[aid]]", "[<a href=\"".$mybb->settings['bburl']."/attachment.php?aid=$attachment[aid]\">attachment=$attachment[aid]</a>]", $post['message']);
 				}
 			}
-			
+
 			// Damn thats a lot of parsing, now to determine which username to show..
 			if($post['userusername'])
 			{
@@ -108,7 +108,7 @@ switch($action)
 			}
 
 			// Finally show the post
-			echo "<div class=\"post\">\n<div class=\"header\">\n<div class=\"author\">{$post['username']}</div>";
+			echo "<div class=\"post\">\n<div class=\"header\">\n<div class=\"author\"><h2>{$post['username']}</h2></div>";
 			echo "<div class=\"dateline\">{$post['date']}</div>\n</div>\n<div class=\"message\">{$post['message']}</div>\n</div>\n";
 		}
 		archive_multipage($postcount, $perpage, $page, "thread-$id");
@@ -118,23 +118,25 @@ switch($action)
 	case "forum":
 		// Check if we have permission to view this forum
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != "yes") 
+		if($forumpermissions['canview'] != "yes")
 		{
 			archive_error_no_permission();
 		}
-		
+
 		// Paginate this forum
-		$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS threads", "fid='$id' AND visible='1'");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS threads", "fid='{$id}' AND visible='1'");
 		$threadcount = $db->fetch_field($query, "threads");
+
+		// No threads and not a category? Error!
+		if($threadcount < 1 && $forum['type'] != 'c')
+		{
+			archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid={$id}");
+			archive_error($lang->error_nothreads);
+		}
 
 		// Build the navigation
 		build_forum_breadcrumb($forum['fid'], 1);
-		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid=$id");
-		
-		if($threadcount < 1)
-		{
-			archive_error($lang->error_nothreads);
-		}
+		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid={$id}");
 
 		$perpage = $mybb->settings['threadsperpage'];
 		$pages = ceil($threadcount/$perpage);
@@ -142,39 +144,122 @@ switch($action)
 		{
 			$page = 1;
 		}
-		if($page) 
+		if($page)
 		{
 			$start = ($page-1) * $perpage;
-		} 
-		else 
+		}
+		else
 		{
 			$start = 0;
 			$page = 1;
 		}
-		echo "<div class=\"threadlist\">\n<div class=\"header\">{$forum['name']}</div>\n<div class=\"threads\">\n<ol>";
-		// Start fetching the threads
-		$options = array('order_by' => 'sticky, lastpost', 'order_dir' => 'desc', 'limit_start' => $start, 'limit' => $perpage);
-		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='$id' AND visible='1'", $options);
-		while($thread = $db->fetch_array($query))
+
+		// Decide what type of listing to show.
+		if($forum['type'] == 'f')
 		{
-			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-			$prefix = "";
-			if($thread['sticky'] == 1)
-			{
-				$prefix = "<span class=\"threadprefix\">".$lang->archive_sticky."</span> ";
-			}
-			if($thread['replies'] != 1)
-			{
-				$lang_reply_text = $lang->archive_replies;
-			}
-			else
-			{
-				$lang_reply_text = $lang->archive_reply;
-			}
-			echo "<li>{$prefix}<a href=\"{$archiveurl}/index.php/thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
-			echo "<span class=\"replycount\">({$thread['replies']} {$lang_reply_text})</span></li>";
+			echo "<div class=\"listing\">\n<div class=\"header\"><h2>{$forum['name']}</h2></div>\n";
 		}
-		echo "</ol>\n</div>\n</div>\n";
+		elseif($forum['type'] == 'c')
+		{
+			echo "<div class=\"listing\">\n<div class=\"header\"><h2>{$forum['name']}</h2></div>\n";
+		}
+
+		// Get subforums.
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='{$id}' AND status='1'");
+		if($db->num_rows($query) > 0)
+		{
+			echo "<div class=\"forumlist\">\n";
+			echo "<h3>{$lang->subforums}</h3>\n";
+			echo "<ol>\n";
+			while($subforum = $db->fetch_array($query))
+			{
+				echo "<li><a href=\"{$archiveurl}/index.php/forum-{$subforum['fid']}.html\">{$subforum['name']}</a></li>";
+			}
+			echo "</ol>\n</div>\n";
+		}
+
+		// Get the announcements if the forum is not a category.
+		if($forum['type'] == 'f')
+		{
+			$time = time();
+			$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "startdate < '{$time}' AND (enddate > '{$time}' OR enddate=0)");
+			if($db->num_rows($query) > 0)
+			{
+				echo "<div class=\"announcementlist\">\n";
+				echo "<h3>{$lang->forumbit_announcements}</h3>";
+				echo "<ol>\n";
+				while($announcement = $db->fetch_array($query))
+				{
+					echo "<li><a href=\"{$archiveurl}/index.php/announcement-{$announcement['aid']}.html\">{$announcement['subject']}</a></li>";
+				}
+				echo "</ol>\n</div>\n";
+			}
+
+		}
+
+		// Get the stickies if the forum is not a category.
+		if($forum['type'] == 'f')
+		{
+			$options = array(
+				'order_by' => 'sticky, lastpost',
+				'order_dir' => 'desc',
+				'limit_start' => $start,
+				'limit' => $perpage
+			);
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='{$id}' AND visible='1' AND sticky='1'", $options);
+			if($db->num_rows($query) > 0)
+			{
+				echo "<div class=\"threadlist\">\n";
+				echo "<h3>{$lang->forumbit_stickies}</h3>";
+				echo "<ol>\n";
+				while($sticky = $db->fetch_array($query))
+				{
+					echo "<li>{$prefix}<a href=\"{$archiveurl}/index.php/thread-{$sticky['tid']}.html\">{$sticky['subject']}</li></a>";
+				}
+				echo "</ol>\n</div>\n";
+			}
+		}
+
+		// Get the threads if the forum is not a category.
+		if($forum['type'] == 'f')
+		{
+			$options = array(
+				'order_by' => 'sticky, lastpost',
+				'order_dir' => 'desc',
+				'limit_start' => $start,
+				'limit' => $perpage
+			);
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='{$id}' AND visible='1' AND sticky='0'", $options);
+			if($db->num_rows($query) > 0)
+			{
+				echo "<div class=\"threadlist\">\n";
+				echo "<h3>{$lang->forumbit_threads}</h3>";
+				echo "<ol>\n";
+				while($thread = $db->fetch_array($query))
+				{
+					$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+					$prefix = "";
+					if($thread['sticky'] == 1)
+					{
+						$prefix = "<span class=\"threadprefix\">".$lang->archive_sticky."</span> ";
+					}
+					if($thread['replies'] != 1)
+					{
+						$lang_reply_text = $lang->archive_replies;
+					}
+					else
+					{
+						$lang_reply_text = $lang->archive_reply;
+					}
+					echo "<li>{$prefix}<a href=\"{$archiveurl}/index.php/thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
+					echo "<span class=\"replycount\"> ({$thread['replies']} {$lang_reply_text})</span></li>";
+				}
+				echo "</ol>\n</div>\n";
+			}
+		}
+
+		echo "</div>\n";
+
 		archive_multipage($threadcount, $perpage, $page, "forum-$id");
 		archive_footer();
 		break;

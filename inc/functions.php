@@ -277,7 +277,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
 function mymail($to, $subject, $message, $from="", $charset="")
 {
 	global $db, $mybb, $lang;
-	
+
 	if($charset == "")
 	{
 		//$charset = "ISO-8859-1";
@@ -1951,7 +1951,8 @@ function build_forum_breadcrumb($fid, $archive=0)
 				$navbits[$navsize]['name'] = $forumnav['name'];
 				if($archive == 1)
 				{
-					if($pforumcache[$fid][$forumnav['pid']]['type'] == "f")
+					// Set up link to forum in breadcrumb.
+					if($pforumcache[$fid][$forumnav['pid']]['type'] == 'f' || $pforumcache[$fid][$forumnav['pid']]['type'] == 'c')
 					{
 						$navbits[$navsize]['url'] = $archiveurl."/index.php/forum-".$forumnav['fid'].".html";
 					}
@@ -2788,7 +2789,7 @@ function build_profile_link($username="", $uid=0, $target="")
 	}
 	elseif($uid == 0)
 	{
-		// Return the guest's nickname if user is a guest but has a nickname 
+		// Return the guest's nickname if user is a guest but has a nickname
 		return $username;
 	}
 	else

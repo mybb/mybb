@@ -2,7 +2,7 @@
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -38,6 +38,8 @@ $l['sticky_prefix'] = "<strong>Sticky:</strong>";
 $l['poll_prefix'] = "Poll:";
 $l['announcement_prefix'] = "<strong>Announcement:</strong>";
 
+$l['forumbit_announcements'] = "Announcements";
+$l['forumbit_stickies'] = "Important threads";
 $l['forumbit_forum'] = "Forum";
 $l['forumbit_threads'] = "Threads";
 $l['forumbit_posts'] = "Posts";

@@ -18,7 +18,7 @@
  */
 function archive_header($title="", $fulltitle="", $fullurl="")
 {
-	global $mybb, $lang, $db, $nav, $archiveurl;
+	global $mybb, $lang, $db, $nav, $archiveurl, $sent_header;
 
 	// Build the archive navigation.
 	$nav = archive_navigation();
@@ -62,6 +62,7 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 <div id="infobox"><?php echo sprintf($lang->archive_note, $fullurl); ?></div>
 <div id="content">
 <?php
+	$sent_header = 1;
 }
 
 /**
@@ -80,17 +81,26 @@ function archive_navigation()
 		{
 			if($navbits[$key+1])
 			{
-				if($navbits[$key+2]) { $sep = $navsep; } else { $sep = ""; }
+				if($navbits[$key+2])
+				{
+					$sep = $navsep;
+				}
+				else
+				{
+					$sep = "";
+				}
 				$nav .= "<a href=\"".$navbit['url']."\">".$navbit['name']."</a>$sep";
 			}
 		}
 	}
 	$navsize = count($navbits);
 	$navbit = $navbits[$navsize-1];
-	if($nav) {
+	if($nav)
+	{
 		$activesep = $navsep;
 	}
 	$nav .= $activesep.$navbit['name'];
+
 	return $nav;
 }
 
@@ -142,7 +152,6 @@ function archive_footer()
 	{
 		$mybbversion = "";
 	}
-	$sent_header = 1;
 ?>
 </div>
 <div class="navigation"><?php echo $nav; ?></div>

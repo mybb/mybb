@@ -62,7 +62,7 @@ if($endpart != "index.php")
 	$id = intval($todo[1]);
 	if($action == "thread")
 	{
-		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='$id' AND visible='1' AND closed NOT LIKE 'moved|%'");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='{$id}' AND visible='1' AND closed NOT LIKE 'moved|%'");
 		$thread = $db->fetch_array($query);
 		if(!$thread['tid'])
 		{
@@ -71,7 +71,7 @@ if($endpart != "index.php")
 	}
 	elseif($action == "forum")
 	{
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$id' AND active!='no' AND type='f' AND password=''");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='{$id}' AND active!='no' AND password=''");
 		$forum = $db->fetch_array($query);
 		if(!$forum['fid'])
 		{
@@ -82,11 +82,11 @@ if($endpart != "index.php")
 
 if($action == "thread")
 {
-	define(MYBB_LOCATION, "showthread.php?tid=$id");
+	define(MYBB_LOCATION, "showthread.php?tid={$id}");
 }
 elseif($action == "forum")
 {
-	define(MYBB_LOCATION, "forumdisplay.php?fid=$id");
+	define(MYBB_LOCATION, "forumdisplay.php?fid={$id}");
 }
 else
 {
