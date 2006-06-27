@@ -611,7 +611,7 @@ elseif($mybb->input['action'] == "findguest")
 }
 elseif($mybb->input['action'] == "finduser")
 {
-	$where_sql = "t.uid='".intval($mybb->input['uid'])."'";
+	$where_sql = "p.uid='".intval($mybb->input['uid'])."'";
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
