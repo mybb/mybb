@@ -218,14 +218,14 @@ elseif($mybb->input['action'] == "vercheck")
 	echo "<br />";
 	starttable();
 	tableheader($lang->latest_ann);
-	while(list($key, $val) = each($lann))
+	foreach($lann as $key => $val)
 	{
 		$dstore = explode("|\|", $val);
 		$subject = $dstore[0];
 		$item = $dstore[1];
 		$url = $dstore[2];
 		tablesubheader($subject);
-		if(strlen(trim($url)) > 0)
+		if(my_strlen(trim($url)) > 0)
 		{
 			$item .= "<div align=\"right\"><a href=\"$url\">$lang->latest_ann_more</a></div>";
 		}
@@ -399,6 +399,8 @@ $menu[160] = array(
 		20 => array("title" => $lang->nav_db_restore, "url" => "dbbackup.php?".SID."&action=restore")
 	)
 );
+
+$plugins->run_hooks("admin_index_navigation_end");
 
 foreach($menu as $menu_section)
 {
