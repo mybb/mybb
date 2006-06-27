@@ -617,7 +617,7 @@ function perform_search_mysql_ft($search)
 				{
 					while($sforum = $db->fetch_array($query))
 					{
-						$fidlist[] = $sforum['sid'];
+						$fidlist[] = $sforum['fid'];
 					}
 					if(count($fidlist) > 1)
 					{
