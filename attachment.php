@@ -76,7 +76,7 @@ if(!$attachment['aid'] || !$attachment['attachname'] || (is_moderator($fid) == '
 if(!$mybb->input['thumbnail']) // Only increment the download count if this is not a thumbnail
 {
 	$attachupdate = array(
-		"downloads" => $attachment['downloads'],
+		"downloads" => $attachment['downloads']+1,
 	);
 	$db->update_query(TABLE_PREFIX."attachments", $attachupdate, "aid='{$attachment['aid']}'");
 }
