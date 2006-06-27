@@ -199,6 +199,7 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->input['preview'])
 	{
+		$options = $mybb->input['options'];
 		$query = $db->query("
 			SELECT u.username AS userusername, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.namestyle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.usereputationsystem
 			FROM ".TABLE_PREFIX."users u
@@ -218,7 +219,6 @@ if($mybb->input['action'] == "send")
 		$postbit = build_postbit($post, 2);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 
-		$options = $mybb->input['options'];
 		if($options['signature'] == "yes")
 		{
 			$optionschecked['signature'] = "checked";
