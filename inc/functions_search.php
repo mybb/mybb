@@ -406,7 +406,7 @@ function perform_search_mysql($search)
 				{
 					while($sforum = $db->fetch_array($query))
 					{
-						$fidlist[] = $sforum['sid'];
+						$fidlist[] = $sforum['fid'];
 					}
 					if(count($fidlist) > 1)
 					{
