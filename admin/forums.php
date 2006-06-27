@@ -315,7 +315,7 @@ if($mybb->input['action'] == "do_addmod")
 			$updatequery = array(
 				"usergroup" => "6"
 			);
-			$db->insert_query(TABLE_PREFIX."users", $updatequery, "uid='$user[uid]' AND usergroup='2'");
+			$db->update_query(TABLE_PREFIX."users", $updatequery, "uid='$user[uid]' AND usergroup='2'");
 			$cache->updatemoderators();
 			cpredirect("forums.php?".SID."&fid=$fid", $lang->mod_added);
 		}
