@@ -1725,10 +1725,11 @@ if($mybb->input['action'] == "usergroups")
 	// Joining a group
 	if($mybb->input['joingroup'])
 	{
+		$mybb->input['joingroup'] = intval($mybb->input['joingroup']);
 		$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='".intval($mybb->input['joingroup'])."'");
 		$usergroup = $db->fetch_array($query);
 
-		if($usergroup['type'] != 4 && $usergroup['type'] != 3)
+		if(($usergroup['type'] != 4 && $usergroup['type'] != 3) || !$usergroup['gid'])
 		{
 			error($lang->cannot_join_group);
 		}
