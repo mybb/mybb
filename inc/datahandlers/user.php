@@ -221,8 +221,9 @@ class UserDataHandler extends DataHandler
 	{
 		$website = &$this->data['website'];
 
-		if($website == '')
+		if($website == '' || $website == 'http://')
 		{
+			$website = '';
 			return true;
 		}
 
