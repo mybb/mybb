@@ -18,9 +18,9 @@ autoComplete.prototype = {
 		this.textbox = $(textbox);
 		this.textbox.setAttribute("autocomplete", "off");
 		this.textbox.autocompletejs = this;
-		this.textbox.onkeydown = this.onKeyDown.bindAsEventListener(this);
+		Event.observe(this.textbox, "keypress", this.onKeyPress.bindAsEventListener(this));
 		this.textbox.onblur = this.onBlur.bindAsEventListener(this);
-	
+		
 		this.url = url;
 		
 		this.currentIndex = -1;
@@ -46,17 +46,18 @@ autoComplete.prototype = {
 		Event.observe(document, "unload", this.clearCache.bindAsEventListener(this));
 	},
 	
+	
 	onBlur: function(e)
 	{
 		this.hidePopup(1);
 	},
 	
-	onKeyDown: function(e)
+	onKeyPress: function(e)
 	{
 		if(this.timeout)
 		{
 			clearTimeout(this.timeout);
-		}		
+		}
 		switch(e.keyCode)
 		{
 			case Event.KEY_LEFT:
@@ -67,30 +68,15 @@ autoComplete.prototype = {
 				{
 					this.highlightItem(this.currentIndex-1);
 				}
-				if(e.returnValue)
-				{
-					event.returnValue = false;
-				}
-				else
-				{
-					e.preventDefault();
-				}
+				Event.stop(e);
 				break;
 			case Event.KEY_DOWN:
 				if(this.currentIndex+1 < this.popup.childNodes.length)
 				{
 					this.highlightItem(this.currentIndex+1);
 				}
-				if(e.returnValue)
-				{
-					event.returnValue = false;
-				}
-				else
-				{
-					e.preventDefault();
-				}
+				Event.stop(e);
 				break;
-			case Event.KEY_RETURN:
 			case Event.KEY_TAB:
 				if(this.popup.display != "none" && this.currentIndex > -1)
 				{
@@ -98,6 +84,13 @@ autoComplete.prototype = {
 					this.hidePopup(1);
 					return false;
 				}
+			case Event.KEY_RETURN:
+				if(this.popup.display != "none" && this.currentIndex > -1)
+				{
+					this.updateValue(this.popup.childNodes[this.currentIndex]);
+					this.hidePopup(1);
+				}
+				Event.stop(e);
 				break;
 			case Event.KEY_ESC:
 				this.hidePopup();
@@ -144,6 +137,10 @@ autoComplete.prototype = {
 	
 	onComplete: function(request)
 	{
+		if(this.status == 'hidden')
+		{
+			return;
+		}
 		this.hidePopup();		
 		// Cached results or fresh ones?
 		if(request)
@@ -154,11 +151,6 @@ autoComplete.prototype = {
 			}
 			this.popup.innerHTML = request.responseText;
 			this.cache[this.textbox.value] = this.popup.innerHTML;
-		}
-		if(this.status == 'hidden')
-		{
-			alert('hiding');
-			return;
 		}
 		this.currentIndex = -1;
 		if(this.popup.childNodes.length < 1)
@@ -229,7 +221,9 @@ autoComplete.prototype = {
 		this.textbox.onkeypress = '';
 		Event.stopObserving(document, "click", this.hidePopup.bindAsEventListener(this));
 		if(typeof(hard) != 'undefined' && hard == '1')
-		this.status = 'hidden';
+		{
+			this.status = 'hidden';
+		}
 	},
 	
 	updateValue: function(selectedItem)
