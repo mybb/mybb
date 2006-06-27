@@ -147,7 +147,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 					$update_forum_count[$thread['fid']] = 1;
 
 					// Update unapproved thread count
-					$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-1 WHERE tid='$post[tid]'");
+					$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1 WHERE tid='$post[tid]'");
 				}
 			}
 		}
