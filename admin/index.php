@@ -395,8 +395,8 @@ $menu[150] = array(
 $menu[160] = array(
 	"title" => $lang->nav_db_tools,
 	"items" => array(
-		10 => array("title" => $lang->nav_db_backup, "url" => "dbbackup.php?".SID."&action=backup"),
-		20 => array("title" => $lang->nav_db_restore, "url" => "dbbackup.php?".SID."&action=restore")
+		10 => array("title" => $lang->nav_db_backup, "url" => "dbtools.php?".SID."&action=backup"),
+		20 => array("title" => $lang->nav_db_existing_backups, "url" => "dbtools.php?".SID."&action=existing")
 	)
 );
 
