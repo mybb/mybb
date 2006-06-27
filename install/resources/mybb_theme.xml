@@ -2551,7 +2551,7 @@ $reputation
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_to}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="to" id="to" size="40" maxlength="{$mybb->settings['maxnamelength']}" value="{$to}" tabindex="1" />{$autocompletejs}</td>
+<td class="trow1"><input type="text" class="textbox" name="to" id="to" size="40" maxlength="{$mybb->settings['maxnamelength']}" value="{$to}" tabindex="1" /></td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->compose_subject}</strong></td>
@@ -2584,6 +2584,7 @@ $reputation
 </table>
 </form>
 {$footer}
+{$autocompletejs}
 </body>
 </html>]]></template>
 		<template name="showthread_newreply_closed" version="100.07"><![CDATA[<a href="newreply.php?tid={$tid}"><img src="{$theme['imglangdir']}/closed.gif" border="0" alt="{$lang->thread_closed}" /></a>&nbsp;]]></template>

@@ -9,6 +9,8 @@ autoComplete.prototype = {
 			return false;
 		}
 		
+		this.status = '';
+		
 		this.cache = new Array();
 	
 		this.lastValue = '';
@@ -17,6 +19,7 @@ autoComplete.prototype = {
 		this.textbox.setAttribute("autocomplete", "off");
 		this.textbox.autocompletejs = this;
 		this.textbox.onkeydown = this.onKeyDown.bindAsEventListener(this);
+		this.textbox.onblur = this.onBlur.bindAsEventListener(this);
 	
 		this.url = url;
 		
@@ -41,6 +44,11 @@ autoComplete.prototype = {
 		this.timeout = false;
 		
 		Event.observe(document, "unload", this.clearCache.bindAsEventListener(this));
+	},
+	
+	onBlur: function(e)
+	{
+		this.hidePopup(1);
 	},
 	
 	onKeyDown: function(e)
@@ -87,7 +95,7 @@ autoComplete.prototype = {
 				if(this.popup.display != "none" && this.currentIndex > -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
-					this.hidePopup();
+					this.hidePopup(1);
 					return false;
 				}
 				break;
@@ -95,6 +103,7 @@ autoComplete.prototype = {
 				this.hidePopup();
 				break;
 			default:
+				this.status = '';
 				setTimeout("$('"+this.textbox.id+"').autocompletejs.doRequest();", 500);
 				break;
 		}
@@ -146,6 +155,11 @@ autoComplete.prototype = {
 			this.popup.innerHTML = request.responseText;
 			this.cache[this.textbox.value] = this.popup.innerHTML;
 		}
+		if(this.status == 'hidden')
+		{
+			alert('hiding');
+			return;
+		}
 		this.currentIndex = -1;
 		if(this.popup.childNodes.length < 1)
 		{
@@ -182,7 +196,6 @@ autoComplete.prototype = {
 			this.popup.style.overflowY = "auto";
 		}
 		this.popup.style.width = this.textbox.offsetWidth-2+"px";
-		
 		element = this.textbox;
 		offsetTop = offsetLeft = 0;
 		do
@@ -193,7 +206,14 @@ autoComplete.prototype = {
 		} while(element);
 		
 		this.popup.style.marginTop = "-1px";
-		this.popup.style.left = offsetLeft+"px";
+		if(MyBB.browser == "ie")
+		{
+			this.popup.style.left = offsetLeft+1+"px";			
+		}
+		else
+		{
+			this.popup.style.left = offsetLeft+"px";
+		}
 		this.popup.style.top = offsetTop+this.textbox.offsetHeight+"px";
 		
 		this.popup.scrollTop = 0;		
@@ -203,11 +223,13 @@ autoComplete.prototype = {
 		this.textbox.onkeypress = function(e) { if(!e) { e = window.event } if(e.keyCode == 13) { return false } };
 	},
 	
-	hidePopup: function()
+	hidePopup: function(hard)
 	{
 		this.popup.style.display = "none";
 		this.textbox.onkeypress = '';
 		Event.stopObserving(document, "click", this.hidePopup.bindAsEventListener(this));
+		if(typeof(hard) != 'undefined' && hard == '1')
+		this.status = 'hidden';
 	},
 	
 	updateValue: function(selectedItem)
@@ -252,7 +274,7 @@ autoComplete.prototype = {
 		var element = Event.findElement(event, 'DIV');
 		selectedItem = element.index;
 		this.updateValue(this.popup.childNodes[selectedItem]);
-		this.hidePopup();
+		this.hidePopup(1);
 		this.textbox.focus();
 	},
 	
