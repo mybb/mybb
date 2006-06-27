@@ -19,7 +19,6 @@ autoComplete.prototype = {
 		this.textbox.setAttribute("autocomplete", "off");
 		this.textbox.autocompletejs = this;
 		Event.observe(this.textbox, "keypress", this.onKeyPress.bindAsEventListener(this));
-		this.textbox.onblur = this.onBlur.bindAsEventListener(this);
 		
 		this.url = url;
 		
@@ -45,12 +44,7 @@ autoComplete.prototype = {
 		
 		Event.observe(document, "unload", this.clearCache.bindAsEventListener(this));
 	},
-	
-	
-	onBlur: function(e)
-	{
-		this.hidePopup(1);
-	},
+
 	
 	onKeyPress: function(e)
 	{
@@ -139,6 +133,7 @@ autoComplete.prototype = {
 	{
 		if(this.status == 'hidden')
 		{
+			alert('returning');
 			return;
 		}
 		this.hidePopup();		
@@ -169,7 +164,7 @@ autoComplete.prototype = {
 			var item = this.popup.childNodes[i];
 			item.index = i;
 			item.style.padding = "2px";
-			item.style.height = "1.0em";
+			item.style.height = "1em";
 			Event.observe(item, "mouseover", this.itemOver.bindAsEventListener(this));
 			Event.observe(item, "click", this.itemClick.bindAsEventListener(this));
 		}
@@ -212,14 +207,12 @@ autoComplete.prototype = {
 		Event.observe(document, "click", this.hidePopup.bindAsEventListener(this));
 		this.highlightItem(0);
 		this.popup.style.display = "";
-		this.textbox.onkeypress = function(e) { if(!e) { e = window.event } if(e.keyCode == 13) { return false } };
 	},
 	
 	hidePopup: function(hard)
 	{
 		this.popup.style.display = "none";
 		this.textbox.onkeypress = '';
-		Event.stopObserving(document, "click", this.hidePopup.bindAsEventListener(this));
 		if(typeof(hard) != 'undefined' && hard == '1')
 		{
 			this.status = 'hidden';
@@ -259,6 +252,7 @@ autoComplete.prototype = {
 	itemOver: function(event)
 	{
 		var element = Event.findElement(event, 'DIV');
+		element.style.cursor = 'pointer';
 		selectedItem = element.index;
 		this.highlightItem(selectedItem);
 	},

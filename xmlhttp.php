@@ -121,9 +121,10 @@ if($mybb->input['action'] == "get_users")
 	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username", "username LIKE '".$db->escape_string($mybb->input['query'])."%'", $query_options);
 	while($user = $db->fetch_array($query))
 	{
+		$user['username'] = htmlspecialchars_uni($user['username']);
 		// Send the result to the browser for this user.
 		echo "<div>\n";
-		echo "<span class=\"username\">".htmlspecialchars_uni($user['username'])."</span>\n";
+		echo "<span class=\"username\">{$user['username']}</span>\n";
 		//echo "<span class=\"uid\">".$user['uid']."</span>\n";
 		echo "</div>\n";
 	}
