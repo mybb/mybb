@@ -11,9 +11,9 @@ PopupMenu.prototype = {
 			return false;
 		}
 		this.id = id;
-		element = $(id);
+		var element = $(id);
 		
-		popupMenu = element.id+"_popup";
+		var popupMenu = element.id+"_popup";
 		if(!$(popupMenu))
 		{
 			return false;
@@ -39,7 +39,7 @@ PopupMenu.prototype = {
 		}
 		
 		offsetTop = offsetLeft = 0;
-		element = $(this.id);
+		var element = $(this.id);
 		do
 		{
 			offsetTop += element.offsetTop || 0;

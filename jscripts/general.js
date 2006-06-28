@@ -3,6 +3,7 @@ var MyBB = {
 	{
 		this.detectBrowser();
 		Event.observe(window, "load", MyBB.pageLoaded);
+		return true;
 	},
 
 	pageLoaded: function()
@@ -492,6 +493,7 @@ var expandables = {
 				this.saveCollapsed(element.controls, 1);
 			}
 		}
+		return true;
 	},
 
 	saveCollapsed: function(id, add)
