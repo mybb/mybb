@@ -472,9 +472,14 @@ class postParser
 	function mycode_parse_php($str)
 	{
 		global $lang;
+		
 
 		// Clean the string before parsing.
 		$str = trim($str);
+		if(!$str)
+		{
+			return;
+		}
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
 		$str = str_replace('&amp;', '&', $str);
@@ -526,7 +531,7 @@ class postParser
 		if($added_open_close == true)
 		{
 			$code = preg_replace("#<code><span style=\"color: \#0000BB\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #0000BB\">", $code);
-			$code = str_replace("<span style=\"color: #0000BB\">?&gt;</span></code>", "</code>", $code);
+			$code = str_replace("?&gt;</span></code>", "</span></code>", $code);
 		}
 
 		$code = str_replace("<code>", "<code><div dir=\"ltr\">", $code);
