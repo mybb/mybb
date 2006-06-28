@@ -292,7 +292,7 @@ switch($action)
 		// Build our forum listing
 		$forums = build_archive_forumbits(0);
 		archive_header("", $mybb->settings['bbname'], $mybb->settings['bburl']."/index.php");
-		echo "<div class=\"forumlist\">\n<div class=\"header\">{$mybb->settings['bbname']}</div>\n<div class=\"forums\">\n<ul>\n";
+		echo "<div class=\"listing forumlist\">\n<div class=\"header\">{$mybb->settings['bbname']}</div>\n<div class=\"forums\">\n<ul>\n";
 		echo $forums;
 		echo "\n</ul>\n</div>\n</div>";
 		archive_footer();
