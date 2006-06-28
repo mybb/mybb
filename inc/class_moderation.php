@@ -348,17 +348,7 @@ class Moderation
 	{
 		global $db;
 
-		// Put the pids into a usable format
-		$comma = $pidin = '';
-		foreach($pids as $pid => $yes)
-		{
-			if($yes == "yes")
-			{
-				$pidin .= $comma.$pid;
-				$comma = ",";
-				$plist[] = $pid;
-			}
-		}
+		$pdin = implode(",", $pids);
 		$first = 1;
 		// Get the messages to be merged
 		$query = $db->query("

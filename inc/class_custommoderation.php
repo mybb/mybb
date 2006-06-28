@@ -119,11 +119,7 @@ class CustomModeration extends Moderation
 
 			if($post_options['mergeposts'] == 'yes') // Merge posts
 			{
-				foreach($pids as $pid)
-				{
-					$merge[$pid] = 'yes';
-				}
-				$this->merge_posts($merge, $tid);
+				$this->merge_posts($pidse, $tid);
 			}
 
 			if($post_options['approveposts'] == 'approve') // Approve posts

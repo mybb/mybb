@@ -446,7 +446,11 @@ switch($mybb->input['action'])
 			error($lang->error_nomergeposts);
 		}
 
-		$moderation->merge_posts($mergepost, $tid, $mybb->input['sep']);
+		foreach($mergepost as $pid)
+		{
+			$plist[] = $pid;
+		}
+		$moderation->merge_posts($plist, $tid, $mybb->input['sep']);
 
 		mark_reports($plist, "posts");
 		log_moderator_action($modlogdata, $lang->merged_selective_posts);
