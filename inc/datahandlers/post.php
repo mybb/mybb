@@ -1115,7 +1115,7 @@ class PostDataHandler extends DataHandler
 		$post['pid'] = intval($post['pid']);
 
 		// If we don't have a tid then we need to fetch it along with the forum id.
-		if(!$post['tid'])
+		if(!$post['tid'] || !$post['fid'])
 		{
 			$query = $db->simple_select(TABLE_PREFIX."posts", "tid,fid", "pid='".intval($post['pid'])."'");
 			$tid_fetch = $db->fetch_array($query);
