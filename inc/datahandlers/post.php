@@ -478,13 +478,9 @@ class PostDataHandler extends DataHandler
 			// Automatic subscription to the thread
 			if($post['options']['emailnotify'] != "no" && $post['uid'] > 0)
 			{
-				$query = $db->simple_select(
-					TABLE_PREFIX."favorites",
-					"uid",
-					"type='s' AND tid='{$post['tid']}' AND uid='{$post['uid']}'"
-				);
-				$subcheck = $db->fetch_array($query);
-				if(!$subcheck['uid'])
+				$query = $db->simple_select(TABLE_PREFIX."favorites", "fid", "tid='".intval($thread['uid'])."' AND tid='".intval($tid)."' AND type='s'", array("limit" => 1));
+				$already_subscribed = $db->fetch_field($query, "fid");
+				if(!$already_subscribed)
 				{
 					$favoriteadd = array(
 						"uid" => intval($post['uid']),
@@ -922,17 +918,12 @@ class PostDataHandler extends DataHandler
 			// Automatic subscription to the thread
 			if($thread['options']['emailnotify'] != "no" && $thread['uid'] > 0)
 			{
-				$query = $db->simple_select(TABLE_PREFIX."favorites", "fid", "WHERE tid='".intval($thread['uid'])."' AND tid='".intval($tid)."'", array("limit" => 1));
-				$already_subscribed = $db->fetch_field($query, "fid");
-				if(!$already_subscribed)
-				{
-					$favoriteadd = array(
-						"uid" => intval($thread['uid']),
-						"tid" => intval($tid),
-						"type" => "s"
-					);
-					$db->insert_query(TABLE_PREFIX."favorites", $favoriteadd);
-				}
+				$favoriteadd = array(
+					"uid" => intval($thread['uid']),
+					"tid" => intval($tid),
+					"type" => "s"
+				);
+				$db->insert_query(TABLE_PREFIX."favorites", $favoriteadd);
 			}
 
 			// Perform any selected moderation tools.
