@@ -156,7 +156,7 @@ inlineEditor.prototype = {
 		if(typeof(newValue) != "undefined" && newValue != '' && MyBB.HTMLchars(newValue) != this.oldValue)
 		{
 			this.parentNode.innerHTML = this.cache;
-			this.element = DomLib.getElementsByClassName(this.parentNode, "*", this.options.className)[0];
+			this.element = this.parentNode.firstChild;
 			this.element.innerHTML = newValue;
 			this.element.index = this.currentIndex;
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
@@ -181,7 +181,7 @@ inlineEditor.prototype = {
 		{
 			Element.remove(this.textbox);
 			this.parentNode.innerHTML = this.cache;
- 			this.element = DomLib.getElementsByClassName(this.parentNode, "*", this.options.className)[0];
+ 			this.element = this.parentNode.firstChild;
 			this.element.index = this.currentIndex;
 			this.elements[this.element.index] = this.element;
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
@@ -203,6 +203,7 @@ inlineEditor.prototype = {
 		}
 		else if(request.responseText)
 		{
+			alert(this.element.innerHTML);
 			this.element.innerHTML = MyBB.HTMLchars(request.responseText);
 		}
 		if(this.spinnerImage)
