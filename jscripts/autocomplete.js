@@ -133,7 +133,6 @@ autoComplete.prototype = {
 	{
 		if(this.status == 'hidden')
 		{
-			alert('returning');
 			return;
 		}
 		this.hidePopup();		

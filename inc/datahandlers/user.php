@@ -487,39 +487,6 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	* Verifies if yes/no options haven't been modified.
-	*
-	* @param array The user options array.
-	* @param string The specific option to check.
-	* @param string Optionally specify if the default should be used.
-	*/
-	function verify_yesno_option(&$options, $option, $default='yes')
-	{
-		if($this->method == "insert" || array_key_exists($option, $options))
-		{
-			if($options[$option] != $default && $options[$option] != "")
-			{
-				if($default == 'yes')
-				{
-					$options[$option] = "no";
-				}
-				else
-				{
-					$options[$option] = "yes";
-				}
-			}
-			else if($options[$option] == '')
-			{
-				$options[$option] = "no";
-			}
-			else
-			{
-				$options[$option] = $default;
-			}
-		}
-	}
-
-	/**
 	 * Verifies if a registration date is valid or not.
 	 *
 	 * @return boolean True when valid, false when invalid.

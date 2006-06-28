@@ -226,23 +226,8 @@ class PMDataHandler extends DataHandler
 	{
 		$options = &$this->data['options'];
 
-		// Include signature or not.
-		if(isset($options['signature']) && $options['signature'] != "yes")
-		{
-			$options['signature'] = "no";
-		}
-
-		// Disable smilies in this PM.
-		if(isset($options['disablesmilies']) && $options['disablesmilies'] != "yes")
-		{
-			$options['disablesmilies'] = "no";
-		}
-
-		// Save a copy of this PM for the sender.
-		if(isset($options['savecopy']) && $options['savecopy'] != "yes")
-		{
-			$options['savecopy'] = "no";
-		}
+		$this->verify_yesno_option($options, 'signature', 'yes');
+		$this->verify_yesno_option($options, 'savecopy', 'yes');
 
 		// Requesting a read receipt?
 		if(isset($options['readreceipt']) && $options['readreceipt'] == "yes")
