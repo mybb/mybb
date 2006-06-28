@@ -229,6 +229,7 @@ var MyBB = {
 		text = text.replace(/&lt;/g, "<");  
 		text = text.replace(/&gt;/g, ">");  
 		text = text.replace(/&amp;/g, "&");
+		text = text.replace(/&nbsp;/g, " ");
 		return text;
 	},
 	
