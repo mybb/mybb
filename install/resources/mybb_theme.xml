@@ -1692,7 +1692,7 @@ $headerinclude
 </tr>]]></template>
 		<template name="usercp_currentavatar" version="100.07"><![CDATA[<td class="trow1" rowspan="6" valign="middle" align="center" width="1"><img src="{$mybb->user['avatar']}" alt="{$mybb->user['username']}" /></td>]]></template>
 		<template name="footer" version="100.07"><![CDATA[			<br />
-			<div class="bottommenu"><span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="<archive_url></a>">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>
+			<div class="bottommenu"><span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="<archive_url>">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>
 			</div>
 			</div>
 		<hr class="hidden" />
