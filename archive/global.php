@@ -27,13 +27,16 @@ if(!is_array($groupscache))
 }
 $fpermissioncache = $cache->read("forumpermissions");
 
+// Send headers before anything else.
 send_page_headers();
 
+// If the installer has not been removed and no lock exists, die.
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
 	echo "Please remove the install directory from your server, or create a file called 'lock' in the install directory. Until you do so, your board will remain unaccessable";
 	exit;
 }
+
 if($_SERVER['REDIRECT_URL'])
 {
 	$url = $_SERVER['REDIRECT_URL'];
@@ -60,7 +63,19 @@ if($endpart != "index.php")
 	$action = $todo[0];
 	$page = $todo[2];
 	$id = intval($todo[1]);
-	if($action == "thread")
+
+	// Get the thread, announcement or forum information.
+	if($action == "announcement")
+	{
+		$time = time();
+		$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "aid='{$id}' AND startdate < '{$time}' AND (enddate > '{$time}' OR enddate = 0)");
+		$announcement = $db->fetch_array($query);
+		if(!$announcement['aid'])
+		{
+			$action = "index";
+		}
+	}
+	elseif($action == "thread")
 	{
 		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='{$id}' AND visible='1' AND closed NOT LIKE 'moved|%'");
 		$thread = $db->fetch_array($query);
@@ -80,6 +95,7 @@ if($endpart != "index.php")
 	}
 }
 
+// Define the full MyBB version location of this page.
 if($action == "thread")
 {
 	define(MYBB_LOCATION, "showthread.php?tid={$id}");
@@ -87,6 +103,10 @@ if($action == "thread")
 elseif($action == "forum")
 {
 	define(MYBB_LOCATION, "forumdisplay.php?fid={$id}");
+}
+elseif($action == "announcement")
+{
+	define(MYBB_LOCATION, "announcement.php?aid={$id}");
 }
 else
 {

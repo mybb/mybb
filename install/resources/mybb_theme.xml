@@ -1432,7 +1432,7 @@ var inlineId = {$fid};
 <br />]]></template>
 		<template name="report_thanks"><![CDATA[<html>
 <head>
-<title>$mybb->settings[bbname] - $lang->report_post</title>
+<title>{$mybb->settings['bbname']} - $lang->report_post</title>
 $headerinclude
 </head>
 <body>

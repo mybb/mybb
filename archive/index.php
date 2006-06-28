@@ -16,6 +16,25 @@ $lang->load("index");
 
 switch($action)
 {
+	// Display an announcement.
+	case "announcement":
+		$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
+
+		// Build the navigation
+		add_breadcrumb($announcement['subject']);
+		archive_header($announcement['subject'], $announcement['subject'], $mybb->settings['bburl']."/announcement.php?aid={$id}");
+
+		// Format announcement contents.
+		$announcement['startdate'] = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $announcement['startdate']);
+
+		// Show announcement contents.
+		echo "<div class=\"post\">\n<div class=\"header\">\n<h2>{$announcement['subject']}</h2>";
+		echo "<div class=\"dateline\">{$announcement['startdate']}</div>\n</div>\n<div class=\"message\">{$announcement['message']}</div>\n</div>\n";
+
+		archive_footer();
+		break;
+
+	// Display a thread.
 	case "thread":
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
@@ -115,7 +134,10 @@ switch($action)
 
 		archive_footer();
 		break;
+
+	// Display a category or a forum.
 	case "forum":
+
 		// Check if we have permission to view this forum
 		$forumpermissions = forum_permissions($forum['fid']);
 		if($forumpermissions['canview'] != "yes")
@@ -127,6 +149,9 @@ switch($action)
 		$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS threads", "fid='{$id}' AND visible='1'");
 		$threadcount = $db->fetch_field($query, "threads");
 
+		// Build the navigation
+		build_forum_breadcrumb($forum['fid'], 1);
+
 		// No threads and not a category? Error!
 		if($threadcount < 1 && $forum['type'] != 'c')
 		{
@@ -134,8 +159,7 @@ switch($action)
 			archive_error($lang->error_nothreads);
 		}
 
-		// Build the navigation
-		build_forum_breadcrumb($forum['fid'], 1);
+		// Build the archive header.
 		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid={$id}");
 
 		$perpage = $mybb->settings['threadsperpage'];
@@ -263,12 +287,14 @@ switch($action)
 		archive_multipage($threadcount, $perpage, $page, "forum-$id");
 		archive_footer();
 		break;
+
+	// Display the board home.
 	default:
 		// Fetch all of the forum permissions
 		$forumpermissions = forum_permissions();
 
 		// Fetch forums
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active!='no' AND password=''", array('order_by' =>'pid, disporder'));
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active!='no' AND password=''", array('order_by' => 'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -302,7 +328,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 					}
 					elseif($forum['type'] == "c")
 					{
-						$forums .= "<li><strong>".$forum['name']."</strong>";
+						$forums .= "<li><strong><a href=\"{$archiveurl}/index.php/forum-{$forum['fid']}.html\">{$forum['name']}</a></strong>";
 					}
 					else
 					{
