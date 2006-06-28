@@ -889,15 +889,11 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 				"allow_html" => $mybb->settings['pmsallowhtml'],
 				"allow_mycode" => $mybb->settings['pmsallowmycode'],
 				"allow_smilies" => "no",
-				"allow_imgcode" => $mybb->settings['pmsallowimgcode']
+				"allow_imgcode" => $mybb->settings['pmsallowimgcode'],
+				"me_username" => $mybb->user['username']
 			);
 
 			$message['message'] = $parser->parse_message($message['message'], $parser_options);
-			// do me code
-			if($mybb->settings['pmsallowmycode'] != "no")
-			{
-				$message['message'] = domecode($message['message'], $message['username']);
-			}
 		}
 		if($mybb->input['exporttype'] == "txt" || $mybb->input['exporttype'] == "csv")
 		{
