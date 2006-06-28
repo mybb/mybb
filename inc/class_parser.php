@@ -92,7 +92,7 @@ class postParser
 		{
 			// First we split up the contents of code and php tags to ensure they're not parsed.
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
-			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>", $message);
+			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
 		}
 
 		// If we can, parse smiliesa
@@ -125,7 +125,7 @@ class postParser
 					{
 						$code = $this->mycode_parse_php($text[2]);
 					}
-					$message = preg_replace("#<mybb-code>#", $code, $message, 1);
+					$message = preg_replace("#<mybb-code>\n#", $code, $message, 1);
 				}
 			}
 		}
@@ -133,6 +133,7 @@ class postParser
 		if($options['nl2br'] != "no")
 		{
 			$message = nl2br($message);
+			$message = str_replace("</div><br />", "</div>", $message);
 		}
 		return $message;
 	}
@@ -268,13 +269,13 @@ class postParser
 		// Special code requiring special attention
 		while(preg_match("#\[list\](.*?)\[/list\]#esi", $message))
 		{
-			$message = preg_replace("#\[list\](.*?)\[/list\](\r\n?|\n?)#esi", "\$this->mycode_parse_list('$1')", $message);
+			$message = preg_replace("#\[list\](.*?)\[/list\](\r\n?|\n?)#esi", "\$this->mycode_parse_list('$1')\n", $message);
 		}
 
 		// Replace lists.
 		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\](\r\n?|\n?)#esi", $message))
 		{
-			$message = preg_replace("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "\$this->mycode_parse_list('$2', '$1')", $message);
+			$message = preg_replace("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "\$this->mycode_parse_list('$2', '$1')\n", $message);
 		}
 
 		// Convert images when allowed.
@@ -287,8 +288,8 @@ class postParser
 		// Replace "me" code and slaps if we have a username
 		if($options['me_username'])
 		{
-			$message = preg_replace('#^/me (.*)$#im', "<span style=\"color: red;\">* {$options['me_username']} \\1</span>", $message);
-			$message = preg_replace('#^/slap ([^\r\n]*)#im', "<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\1 {$lang->with_trout}</span><br />", $message);
+			$message = preg_replace('#(\r|\n)/me ([^\r\n<]*)#i', "\n<span style=\"color: red;\">* {$options['me_username']} \\2</span>", $message);
+			$message = preg_replace('#(\r|\n)/slap ([^\r\n]*)#i', "\n<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span><br />", $message);
 		}
 
 		$message = $this->mycode_auto_url($message);
@@ -429,8 +430,8 @@ class postParser
 		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#si",
 						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
 
-		$replace = array("<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote</div><div class=\"quote_body\">$2</div>",
-						 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>");
+		$replace = array("<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote</div><div class=\"quote_body\">$2</div>\n",
+						 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>\n");
 
 		while(preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
 		{
@@ -460,7 +461,7 @@ class postParser
 	{
 		global $lang;
 		$code = trim($code);
-		return "<div class=\"code_header\">".$lang->code."</div><div class=\"code_body\"><code><div dir=\"ltr\">".$code."</div></code></div>";
+		return "<div class=\"code_header\">".$lang->code."</div><div class=\"code_body\"><code><div dir=\"ltr\">".$code."</div></code></div>\n";
 	}
 
 	/**
@@ -539,7 +540,7 @@ class postParser
 		$code = preg_replace("#\s*$#", "", $code);
 
 		// Send back the code all nice and pretty
-		return "<div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div>";
+		return "<div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div>\n";
 	}
 
 	/**

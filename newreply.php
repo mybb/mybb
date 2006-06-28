@@ -451,7 +451,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					{
 						$quoted_post['username'] = $quoted_post['userusername'];
 					}
-					$quoted_post['message'] = preg_replace('#^/me (.*)$#im', "* $quoted[username] \\1", $quoted_post['message']);
+					$quoted_post['message'] = preg_replace('#^/me (.*)$#im', "* $quoted_post[username] \\1", $quoted_post['message']);
 					$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
 					$message .= "[quote={$quoted_post['username']}]\n{$quoted_post['message']}\n[/quote]\n\n";
 					$quoted_ids[] = $quoted_post['pid'];
