@@ -555,15 +555,7 @@ class postParser
 		$fullurl = $url;
 		$url = str_replace('&amp;', '&', $url);
 
-		if(strpos($url, "www.") === 0)
-		{
-			$fullurl = "http://".$fullurl;
-		}
-		if(strpos($url, "ftp.") === 0)
-		{
-			$fullurl = "ftp://".$fullurl;
-		}
-		if(strpos($fullurl, "://") === false)
+		if(!preg_match("#[a-z0-9]+://#i", $fullurl))
 		{
 			$fullurl = "http://".$fullurl;
 		}

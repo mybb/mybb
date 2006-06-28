@@ -49,6 +49,7 @@ function remove_attachment($pid, $posthash, $aid)
 function remove_attachments($pid, $posthash="")
 {
 	global $db, $mybb;
+	$posthash = $db->escape_string($posthash);
 	if($posthash != "" && !$pid)
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE posthash='$posthash'");
