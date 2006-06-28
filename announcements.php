@@ -62,8 +62,9 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] =
 
 // Get announcement info
 $time = time();
+
 $query = $db->query("
-	SELECT u.*, a.*, f.*, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle, g.usereputationsystem
+	SELECT u.*, u.username AS userusername, a.*, f.*, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle, g.usereputationsystem
 	FROM ".TABLE_PREFIX."announcements a
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 	LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
