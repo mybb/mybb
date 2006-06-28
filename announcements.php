@@ -69,10 +69,9 @@ $query = $db->query("
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 	LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 	LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
-	WHERE a.startdate<='$time' AND a.enddate>='$time' AND a.aid='$aid'
+	WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND a.aid='$aid'
 ");
 $announcementarray = $db->fetch_array($query);
-
 $announcementarray['dateline'] = $announcementarray['startdate'];
 $announcementarray['userusername'] = $announcementarray['username'];
 $announcement = build_postbit($announcementarray, 3);
