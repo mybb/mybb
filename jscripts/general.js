@@ -88,13 +88,13 @@ var MyBB = {
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", "do_editevent");
 			form.appendChild(input);
-	
+
 			var input = document.createElement("input");
 			input.setAttribute("name", "eid");
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", eid);
 			form.appendChild(input);
-			
+
 			var input = document.createElement("input");
 			input.setAttribute("name", "delete");
 			input.setAttribute("type", "hidden");
@@ -140,7 +140,7 @@ var MyBB = {
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", rid);
 			form.appendChild(input);
-	
+
 			var input = document.createElement("input");
 			input.setAttribute("name", "uid");
 			input.setAttribute("type", "hidden");
@@ -226,18 +226,18 @@ var MyBB = {
 
 	unHTMLchars: function(text)
 	{
-		text = text.replace(/&lt;/g, "<");  
-		text = text.replace(/&gt;/g, ">");  
+		text = text.replace(/&lt;/g, "<");
+		text = text.replace(/&gt;/g, ">");
 		text = text.replace(/&amp;/g, "&");
 		text = text.replace(/&nbsp;/g, " ");
 		return text;
 	},
-	
+
 	HTMLchars: function(text)
 	{
 		text = text.replace(/&/g, "&amp;");
-		text = text.replace(/</g, "&lt;");  
-		text = text.replace(/>/g, "&gt;");  
+		text = text.replace(/</g, "&lt;");
+		text = text.replace(/>/g, "&gt;");
 		return text;
 	}
 }
@@ -337,7 +337,7 @@ var DomLib = {
 	    }
 	    return (arrReturnElements)
 	},
-	
+
 	// This function is from quirksmode.org
 	// Modified for use in MyBB
 	getPageScroll: function()
@@ -366,12 +366,12 @@ var DomLib = {
 		var xScroll, yScroll;
 
 		if(window.innerHeight && window.scrollMaxY)
-		{	
+		{
 			xScroll = document.body.scrollWidth;
 			yScroll = window.innerHeight + window.scrollMaxY;
-		} 
+		}
 		else if(document.body.scrollHeight > document.body.offsetHeight) // all but Explorer Mac
-		{ 
+		{
 			xScroll = document.body.scrollWidth;
 			yScroll = document.body.scrollHeight;
 		}
@@ -396,7 +396,7 @@ var DomLib = {
 		{
 			windowWidth = document.body.clientWidth;
 			windowHeight = document.body.clientHeight;
-		}	
+		}
 
 		// for small pages with total height less then height of the viewport
 		if(yScroll < windowHeight)
@@ -404,13 +404,13 @@ var DomLib = {
 			pageHeight = windowHeight;
 		}
 		else
-		{ 
+		{
 			pageHeight = yScroll;
 		}
 
 		// for small pages with total width less then width of the viewport
 		if(xScroll < windowWidth)
-		{	
+		{
 			pageWidth = windowWidth;
 		}
 		else
@@ -462,7 +462,7 @@ var expandables = {
 
 		if(expandedItem && collapsedItem)
 		{
-			if(expandedItem.style.display = "none")
+			if(expandedItem.style.display == "none")
 			{
 				expandedItem.style.display = "";
 				collapsedItem.style.display = "none";
@@ -555,7 +555,7 @@ ActivityIndicator.prototype = {
 				left += element.offsetLeft || 0;
 				element = element.offsetParent;
 			} while(element);
-			
+
 			left += owner.offsetWidth;
 			top += owner.offsetHeight;
 		}
@@ -574,7 +574,7 @@ ActivityIndicator.prototype = {
 		this.spinner.id = "spinner";
 		owner.insertBefore(this.spinner, owner.firstChild);
 	},
-	
+
 	destroy: function()
 	{
 		Element.remove(this.spinner);
