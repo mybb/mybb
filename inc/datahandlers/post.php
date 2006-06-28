@@ -922,12 +922,17 @@ class PostDataHandler extends DataHandler
 			// Automatic subscription to the thread
 			if($thread['options']['emailnotify'] != "no" && $thread['uid'] > 0)
 			{
-				$favoriteadd = array(
-					"uid" => intval($thread['uid']),
-					"tid" => intval($tid),
-					"type" => "s"
-				);
-				$db->insert_query(TABLE_PREFIX."favorites", $favoriteadd);
+				$query = $db->simple_select(TABLE_PREFIX."favorites", "fid", "WHERE tid='".intval($thread['uid'])."' AND tid='".intval($tid)."'", array("limit" => 1));
+				$already_subscribed = $db->fetch_field($query, "fid");
+				if(!$already_subscribed)
+				{
+					$favoriteadd = array(
+						"uid" => intval($thread['uid']),
+						"tid" => intval($tid),
+						"type" => "s"
+					);
+					$db->insert_query(TABLE_PREFIX."favorites", $favoriteadd);
+				}
 			}
 
 			// Perform any selected moderation tools.
