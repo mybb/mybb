@@ -539,7 +539,7 @@ if($mybb->input['action'] == "calendar_main")
 
 	// Load Birthdays
 	// If we have 1st March and this year isn't a leap year, fetch birthdays on the 29th.
-	if($day == 1 && $month == 3 && date("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
+	if($month == 3 && date("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
 	{
 		$bday_where = "birthday LIKE '%-$month-%' OR birthday LIKE '29-2-%'";
 		$feb_fix = 1;
