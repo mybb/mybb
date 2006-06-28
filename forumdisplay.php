@@ -61,6 +61,8 @@ if(!$foruminfo)
 	error($lang->error_invalidforum);
 }
 
+$archive_url = $mybb->settings['bburl']."/archive/index.php/forum-{$fid}.html";
+
 $currentitem = $fid;
 build_forum_breadcrumb($fid);
 $parentlist = $foruminfo['parentlist'];
@@ -574,7 +576,7 @@ if(is_array($threadcache))
 			$icon = "&nbsp;";
 		}
 		$prefix = '';
-		if($thread['poll']) 
+		if($thread['poll'])
 		{
 			$prefix = $lang->poll_prefix;
 		}
@@ -771,7 +773,7 @@ if(is_array($threadcache))
 		{
 			$unapproved_posts = '';
 		}
-		
+
 		// If this thread has 1 or more attachments show the papperclip
 		if($thread['attachmentcount'] > 0)
 		{
@@ -816,7 +818,7 @@ if(is_array($threadcache))
 }
 
 // Is this a real forum with threads?
-if($foruminfo['type'] != "c") 
+if($foruminfo['type'] != "c")
 {
 	if(!$threadcount)
 	{
@@ -849,8 +851,8 @@ if($rand == 5 && $mybb->settings['threadreadcut'] > 0)
 {
 	$cut = time()-($mybb->settings['threadreadcut']*60*60*24);
 	$db->shutdown_query("
-		DELETE 
-		FROM ".TABLE_PREFIX."threadsread 
+		DELETE
+		FROM ".TABLE_PREFIX."threadsread
 		WHERE dateline < '$cut'
 	");
 }

@@ -427,6 +427,9 @@ if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 	$db->delete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime<'".time()."'");
 }
 
+// Set the link to the archive.
+$archive_url = $mybb->settings['bburl']."archive/index.php";
+
 // Run hooks for end of global.php
 $plugins->run_hooks("global_end");
 

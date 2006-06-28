@@ -173,9 +173,11 @@ function send_mail_queue($count=20)
  */
 function parse_page($contents)
 {
-	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup, $htmldoctype, $loadpmpopup;
+	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup, $htmldoctype, $loadpmpopup, $archive_url;
 
-	$contents = str_replace("<navigation>", build_breadcrumb(1), $contents);
+	$contents = str_replace('<navigation>', build_breadcrumb(1), $contents);
+	$contents = str_replace('<archive_url>', $archive_url, $contents);
+
 	if($htmldoctype)
 	{
 		$contents = $htmldoctype.$contents;

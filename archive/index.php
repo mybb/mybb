@@ -188,17 +188,16 @@ switch($action)
 			echo "<div class=\"listing\">\n<div class=\"header\"><h2>{$forum['name']}</h2></div>\n";
 		}
 
-		// Get subforums.
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='{$id}' AND status='1'");
-		if($db->num_rows($query) > 0)
+		// Show subforums.
+		$query = $db->simple_select(TABLE_PREFIX."forums", "COUNT(fid) AS subforums", "pid='{$id}' AND status='1'");
+		$subforumcount = $db->fetch_field($query, "subforums");
+		if($subforumcount > 0)
 		{
 			echo "<div class=\"forumlist\">\n";
 			echo "<h3>{$lang->subforums}</h3>\n";
 			echo "<ol>\n";
-			while($subforum = $db->fetch_array($query))
-			{
-				echo "<li><a href=\"{$archiveurl}/index.php/forum-{$subforum['fid']}.html\">{$subforum['name']}</a></li>";
-			}
+			$forums = build_archive_forumbits($forum['fid']);
+			echo $forums;
 			echo "</ol>\n</div>\n";
 		}
 
@@ -290,18 +289,8 @@ switch($action)
 
 	// Display the board home.
 	default:
-		// Fetch all of the forum permissions
-		$forumpermissions = forum_permissions();
-
-		// Fetch forums
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active!='no' AND password=''", array('order_by' => 'pid, disporder'));
-		while($forum = $db->fetch_array($query))
-		{
-			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
-		}
-
 		// Build our forum listing
-		$forums = getforums();
+		$forums = build_archive_forumbits(0);
 		archive_header("", $mybb->settings['bbname'], $mybb->settings['bburl']."/index.php");
 		echo "<div class=\"forumlist\">\n<div class=\"header\">{$mybb->settings['bbname']}</div>\n<div class=\"forums\">\n<ul>\n";
 		echo $forums;
@@ -310,9 +299,30 @@ switch($action)
 		break;
 }
 
-function getforums($pid="0", $depth=1, $permissions="")
+/**
+* Gets a list of forums and possibly subforums.
+*
+* @param int The parent forum to get the childforums for.
+* @return array Array of information regarding the child forums of this parent forum
+*/
+function build_archive_forumbits($pid=0)
 {
-	global $fcache, $forumpermissions, $mybb, $lang, $archiveurl;
+	global $db, $forumpermissions, $mybb, $lang, $archiveurl;
+
+	// Sort out the forum cache first.
+	static $fcache;
+	if(!is_array($fcache))
+	{
+		// Fetch forums
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active!='no' AND password=''", array('order_by' =>'pid, disporder'));
+		while($forum = $db->fetch_array($query))
+		{
+			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
+		}
+		$forumpermissions = forum_permissions();
+	}
+
+	// Start the process.
 	if(is_array($fcache[$pid]))
 	{
 		foreach($fcache[$pid] as $key => $main)
@@ -324,7 +334,7 @@ function getforums($pid="0", $depth=1, $permissions="")
 				{
 					if($forum['linkto'])
 					{
-						$forums .= "<li><a href=\"".$forum['linkto']."\">".$forum['name']."</a>";
+						$forums .= "<li><a href=\"{$forum['linkto']}\">{$forum['name']}</a>";
 					}
 					elseif($forum['type'] == "c")
 					{
@@ -332,14 +342,13 @@ function getforums($pid="0", $depth=1, $permissions="")
 					}
 					else
 					{
-						$forums .= "<li><a href=\"$archiveurl/index.php/forum-".$forum['fid'].".html\">".$forum['name']."</a>";
+						$forums .= "<li><a href=\"{$archiveurl}/index.php/forum-{$forum['fid']}.html\">{$forum['name']}</a>";
 					}
 					if($fcache[$forum['fid']])
 					{
-						$forums .= "\n<ul>\n";
-						$newdepth = $depth + 1;
-						$forums .= getforums($forum['fid'], $newdepth, $perms);
-						$forums .= "</ul>\n";
+						$forums .= "\n<ol>\n";
+						$forums .= build_archive_forumbits($forum['fid']);
+						$forums .= "</ol>\n";
 					}
 					$forums .= "</li>\n";
 				}
