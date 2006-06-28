@@ -6,7 +6,7 @@ inlineEditor.prototype = {
 		this.url = url;
 		this.elements = new Array();
 		this.currentIndex = -1;
-
+		this.options = options;
 		if(!options.className && !options.textBox)
 		{
 			alert('You need to specify either a className or textBox in the options.');
@@ -59,33 +59,31 @@ inlineEditor.prototype = {
 			editButton = $(element.id+"_inlineedit");
 			if(editButton)
 			{
-				editButton.onclick = function() {this.onButtonClick(element.id)}.bindAsEventListener(this);
+				editButton.onclick = function() {this.onButtonClick(element.id)}.bind(this);
 			}
 		}
 	},
 
 	onMouseDown: function(e)
 	{
-		element = Event.element(e);
-
+		var element = Event.element(e);
 		Event.stop(e);
-
+		// Fix for konqueror which likes to set event element as the text not the link
+		if(typeof(element.index) == "undefined" && typeof(element.parentNode.index) != "undefined")
+		{
+			element.index = element.parentNode.index;
+		}
 		this.currentIndex = element.index;
-
-		this.downTime = 0;
-
-		this.timeout = setTimeout(this.showTextbox.bindAsEventListener(this), 1200);
-
+		this.timeout = setTimeout(this.showTextbox.bind(this), 1200);
 		element.onmouseup = this.onMouseUp.bindAsEventListener(this);
-
 		return false;
 	},
-
+	
 	onMouseUp: function(e)
 	{
 		clearTimeout(this.timeout);
-
-		this.currentIndex = -1;
+		Event.stop(e);	
+		return false;
 	},
 
 	onButtonClick: function(id)
@@ -97,30 +95,39 @@ inlineEditor.prototype = {
 		}
 		return false;
 	},
-
+	
 	showTextbox: function()
 	{
 		this.element = this.elements[this.currentIndex];
-
-		if(!this.element.parentNode || typeof(this.element.index) == "undefined")
+		if(typeof(this.element.parentNode) == "undefined" || typeof(this.element.index) == "undefined")
 		{
 			return false;
 		}
 		this.currentIndex = this.element.index;
-		value = this.element.innerHTML;
+		this.oldValue = this.element.innerHTML;
+		this.parentNode = this.element.parentNode;
+		if(!this.parentNode)
+		{
+			alert(this.element.index);
+			alert('no parent node');
+		}
+		this.cache = this.parentNode.innerHTML;
+		
 		this.textbox = document.createElement("input");
 		this.textbox.style.width = "95%";
 		this.textbox.maxlength="85";
 		this.textbox.className = "textbox";
 		this.textbox.type = "text";
-		this.textbox.onblur = this.onBlur.bindAsEventListener(this);
-		this.textbox.onkeypress = this.onKeyPress.bindAsEventListener(this);
+		Event.observe(this.textbox, "blur", this.onBlur.bindAsEventListener(this));
+		Event.observe(this.textbox, "keyup", this.onKeyUp.bindAsEventListener(this));
 		this.textbox.setAttribute("autocomplete", "off");
 		this.textbox.name = "value";
 		this.textbox.index = this.element.index;
-		this.element.style.display = "none";
-		this.textbox.value = MyBB.unHTMLchars(value);
-		this.element.parentNode.insertBefore(this.textbox, this.element);
+		this.textbox.value = MyBB.unHTMLchars(this.oldValue);
+		
+		Element.remove(this.element);
+		this.parentNode.innerHTML = '';
+		this.parentNode.appendChild(this.textbox);
 		this.textbox.focus();
 	},
 
@@ -129,7 +136,7 @@ inlineEditor.prototype = {
 		this.hideTextbox();
 	},
 
-	onKeyPress: function(e)
+	onKeyUp: function(e)
 	{
 		if((e.keyCode == Event.KEY_RETURN || e.keyCode == Event.KEY_ESC))
 		{
@@ -144,13 +151,18 @@ inlineEditor.prototype = {
 
 	hideTextbox: function()
 	{
-		this.textbox.onblur = "";
-		newValue = MyBB.HTMLchars(this.textbox.value);
-		if(typeof(newValue) != "undefined" && newValue != '' && newValue != this.element.innerHTML)
+		Event.stopObserving(this.textbox, "blur", this.onBlur.bindAsEventListener(this));
+		var newValue = this.textbox.value;
+		if(typeof(newValue) != "undefined" && newValue != '' && MyBB.HTMLchars(newValue) != this.oldValue)
 		{
+			this.parentNode.innerHTML = this.cache;
+			this.element = DomLib.getElementsByClassName(this.parentNode, "*", this.options.className)[0];
 			this.element.innerHTML = newValue;
+			this.element.index = this.currentIndex;
+			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
+			this.elements[this.element.index] = this.element;
 			this.lastIndex = this.currentIndex;
-			postData = "value="+encodeURIComponent(this.textbox.value)
+			postData = "value="+encodeURIComponent(newValue)
 			if(this.spinnerImage)
 			{
 				this.showSpinner();
@@ -163,11 +175,18 @@ inlineEditor.prototype = {
 					postData = postData+"&"+idInfo[0]+"="+idInfo[1];
 				}
 			}
-			new ajax(this.url, {method: 'post', postBody: postData, onComplete: this.onComplete.bindAsEventListener(this)});
+			new ajax(this.url, {method: 'post', postBody: postData, onComplete: this.onComplete.bind(this)});
 		}
-		this.element.style.display = "";
+		else
+		{
+			Element.remove(this.textbox);
+			this.parentNode.innerHTML = this.cache;
+ 			this.element = DomLib.getElementsByClassName(this.parentNode, "*", this.options.className)[0];
+			this.element.index = this.currentIndex;
+			this.elements[this.element.index] = this.element;
+			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
+		}
 		this.currentIndex = -1;
-		Element.remove(this.textbox);
 	},
 
 	onComplete: function(request)
@@ -206,7 +225,7 @@ inlineEditor.prototype = {
 			this.spinner.style.verticalAlign = "middle";
 			this.spinner.style.paddingRight = "3px";
 		}
-		this.textbox.parentNode.insertBefore(this.spinner, this.textbox);
+		this.parentNode.insertBefore(this.spinner, this.parentNode.firstChild);
 	},
 
 	hideSpinner: function()

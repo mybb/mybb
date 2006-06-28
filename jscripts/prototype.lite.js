@@ -28,11 +28,12 @@ Function.prototype.bind = function(object) {
 }
 
 Function.prototype.bindAsEventListener = function(object) {
-var __method = this;
-	return function(event) {
-		__method.call(object, event || window.event);
-	}
+  var __method = this;
+  return function(event) {
+    return __method.call(object, event || window.event);
+  }
 }
+
 
 function $() {
 	if (arguments.length == 1) return get$(arguments[0]);
@@ -155,12 +156,11 @@ Object.extend(Event, {
   },
 
   stop: function(event) {
-    if (event.preventDefault) {
-      event.preventDefault();
-      event.stopPropagation();
+    if (event.preventDefault) { 
+      event.preventDefault(); 
+      event.stopPropagation(); 
     } else {
       event.returnValue = false;
-      event.cancelBubble = true;
     }
   },
 

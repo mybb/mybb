@@ -9,8 +9,6 @@ autoComplete.prototype = {
 			return false;
 		}
 		
-		this.status = '';
-		
 		this.cache = new Array();
 	
 		this.lastValue = '';
@@ -75,14 +73,14 @@ autoComplete.prototype = {
 				if(this.popup.display != "none" && this.currentIndex > -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
-					this.hidePopup(1);
+					this.hidePopup();
 					return false;
 				}
 			case Event.KEY_RETURN:
 				if(this.popup.display != "none" && this.currentIndex > -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
-					this.hidePopup(1);
+					this.hidePopup();
 				}
 				Event.stop(e);
 				break;
@@ -90,7 +88,6 @@ autoComplete.prototype = {
 				this.hidePopup();
 				break;
 			default:
-				this.status = '';
 				setTimeout("$('"+this.textbox.id+"').autocompletejs.doRequest();", 500);
 				break;
 		}
@@ -112,35 +109,38 @@ autoComplete.prototype = {
 	
 	doRequest: function()
 	{
+		if(this.lastValue == this.textbox.value)
+		{
+			return false;
+		}
+		this.lastValue = this.textbox.value;
 		if(this.textbox.value.length >= this.minChars)
 		{
-			if(this.lastValue == this.textbox.value)
-			{
-				return false;
-			}
-			this.lastValue = this.textbox.value;
 						
 			if(this.cache[this.textbox.value])
 			{
 				this.popup.innerHTML = this.cache[this.textbox.value];
 				this.onComplete();
 			}
-			new ajax(this.buildURL(), {method: 'get', onComplete: this.onComplete.bindAsEventListener(this)});
+			else
+			{
+				new ajax(this.buildURL(), {method: 'get', onComplete: this.onComplete.bindAsEventListener(this)});
+			}
+		}
+		else
+		{
+			this.hidePopup();
 		}
 	},
 	
 	onComplete: function(request)
 	{
-		if(this.status == 'hidden')
-		{
-			return;
-		}
-		this.hidePopup();		
 		// Cached results or fresh ones?
 		if(request)
 		{
 			if(request.responseText.charAt(0) != "<")
 			{
+				this.hidePopup();
 				return false;
 			}
 			this.popup.innerHTML = request.responseText;
@@ -157,6 +157,11 @@ autoComplete.prototype = {
 			{
 				this.popup.removeChild(this.popup.childNodes[i]);
 			}		
+		}
+		if(this.popup.childNodes.length < 1)
+		{
+			this.hidePopup();
+			return false;
 		}
 		for(var i=0;i<this.popup.childNodes.length;i++)
 		{
@@ -208,14 +213,10 @@ autoComplete.prototype = {
 		this.popup.style.display = "";
 	},
 	
-	hidePopup: function(hard)
+	hidePopup: function()
 	{
 		this.popup.style.display = "none";
 		this.textbox.onkeypress = '';
-		if(typeof(hard) != 'undefined' && hard == '1')
-		{
-			this.status = 'hidden';
-		}
 	},
 	
 	updateValue: function(selectedItem)
@@ -261,7 +262,7 @@ autoComplete.prototype = {
 		var element = Event.findElement(event, 'DIV');
 		selectedItem = element.index;
 		this.updateValue(this.popup.childNodes[selectedItem]);
-		this.hidePopup(1);
+		this.hidePopup();
 		this.textbox.focus();
 	},
 	
