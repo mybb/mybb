@@ -21,6 +21,7 @@ var inlineModeration = {
 				Event.observe(element, "click", inlineModeration.checkItem);
 			}
 		}
+		return true;
 	},
 
 	checkItem: function(e)
@@ -70,6 +71,7 @@ var inlineModeration = {
 		}
 		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
 		Cookie.set(inlineModeration.cookieName, inlineData, 120);
+		return true;
 	},
 	
 	clearChecked: function()
@@ -92,6 +94,7 @@ var inlineModeration = {
 		goButton = $("inline_go");
 		goButton.value = go_text+" (0)";
 		Cookie.unset(inlineModeration.cookieName);
+		return true;
 	}
 }
 Event.observe(window, "load", inlineModeration.init);

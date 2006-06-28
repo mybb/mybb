@@ -22,6 +22,7 @@ PopupMenu.prototype = {
 		this.menu = $(popupMenu);
 		//this.menu.style.display = "none";
 		element.onclick = this.openMenu.bindAsEventListener(this);
+		return true;
 	},
 	
 	openMenu: function(e)
@@ -74,6 +75,7 @@ PopupMenu.prototype = {
 
 		document.currentMenu = element.id;
 		document.onclick = this.closeMenu.bindAsEventListener(this);
+		return true;
 	},
 	
 	closeMenu: function()
@@ -83,5 +85,6 @@ PopupMenu.prototype = {
 		this.menu.style.display = "none";
 		document.currentMenu = "";
 		document.onclick = function() { };
+		return true;
 	}
 };

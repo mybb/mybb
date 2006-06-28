@@ -7,61 +7,37 @@ inlineEditor.prototype = {
 		this.elements = new Array();
 		this.currentIndex = -1;
 		this.options = options;
-		if(!options.className && !options.textBox)
+		if(!options.className)
 		{
-			alert('You need to specify either a className or textBox in the options.');
+			alert('You need to specify either a className in the options.');
 			return false;
 		}
 		if(options.spinnerImage)
 		{
 			this.spinnerImage = options.spinnerImage;
 		}
-		if(options.editButton == true)
+
+		this.elements = DomLib.getElementsByClassName(document, "*", options.className);
+		if(this.elements)
 		{
-			this.editButton = true;
-		}
-		if(options.textBox)
-		{
-			if(!$(options.textBox))
+			for(var i = 0; i < this.elements.length; i++)
 			{
-				return false;
-			}
-			this.elements[0] = $(options.textBox);
-			this.makeEditable($(options.textBox));
-		}
-		else
-		{
-			this.elements = DomLib.getElementsByClassName(document, "*", options.className);
-			if(this.elements)
-			{
-				for(var i = 0; i < this.elements.length; i++)
-				{
-					this.elements[i].index = i;
-					this.makeEditable(this.elements[i]);
-				}
+				this.elements[i].index = i;
+				this.makeEditable(this.elements[i]);
 			}
 		}
+		return true;
 	},
 
 	makeEditable: function(element)
 	{
-		if(!this.editButton)
+		if(element.title != "")
 		{
-			if(element.title != "")
-			{
-				element.title = element.title+" ";
-			}
-			element.title = element.title+"(Click and hold to edit)";
-			element.onmousedown = this.onMouseDown.bindAsEventListener(this);
+			element.title = element.title+" ";
 		}
-		else
-		{
-			editButton = $(element.id+"_inlineedit");
-			if(editButton)
-			{
-				editButton.onclick = function() {this.onButtonClick(element.id)}.bind(this);
-			}
-		}
+		element.title = element.title+"(Click and hold to edit)";
+		element.onmousedown = this.onMouseDown.bindAsEventListener(this);
+		return true;
 	},
 
 	onMouseDown: function(e)
@@ -129,11 +105,13 @@ inlineEditor.prototype = {
 		this.parentNode.innerHTML = '';
 		this.parentNode.appendChild(this.textbox);
 		this.textbox.focus();
+		return true;
 	},
 
 	onBlur: function(e)
 	{
 		this.hideTextbox();
+		return true;
 	},
 
 	onKeyUp: function(e)
@@ -142,11 +120,13 @@ inlineEditor.prototype = {
 		{
 			this.hideTextbox();
 		}
+		return true;
 	},
 
 	onSubmit: function(e)
 	{
 		this.hideTextbox();
+		return true;
 	},
 
 	hideTextbox: function()
@@ -187,6 +167,7 @@ inlineEditor.prototype = {
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 		}
 		this.currentIndex = -1;
+		return true;
 	},
 
 	onComplete: function(request)
@@ -210,6 +191,7 @@ inlineEditor.prototype = {
 		{
 			this.hideSpinner();
 		}
+		return true;
 	},
 
 	showSpinner: function()
@@ -227,6 +209,7 @@ inlineEditor.prototype = {
 			this.spinner.style.paddingRight = "3px";
 		}
 		this.parentNode.insertBefore(this.spinner, this.parentNode.firstChild);
+		return true;
 	},
 
 	hideSpinner: function()
@@ -236,5 +219,6 @@ inlineEditor.prototype = {
 			return false;
 		}
 		Element.remove(this.spinner);
+		return true;
 	}
 }
