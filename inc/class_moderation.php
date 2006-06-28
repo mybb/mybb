@@ -348,7 +348,7 @@ class Moderation
 	{
 		global $db;
 
-		$pdin = implode(",", $pids);
+		$pidin = implode(",", $pids);
 		$first = 1;
 		// Get the messages to be merged
 		$query = $db->query("
