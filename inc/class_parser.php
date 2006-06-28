@@ -281,8 +281,8 @@ class postParser
 		// Convert images when allowed.
 		if($options['allow_imgcode'] != "no")
 		{
-			$message = preg_replace("#\[img\](https?://([^<>\"']+))\[/img\]#i", "<img src=\"$1\" border=\"0\" alt=\"\" />", $message);
-			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](https?://([^<>\"']+))\[/img\]#i", "<img src=\"$3\" style=\"border: 0; width: $1px; height: $2px;\" alt=\"\" />", $message);
+			$message = preg_replace("#\[img\](https?://([^<>\"']+?))\[/img\]#i", "<img src=\"$1\" border=\"0\" alt=\"\" />", $message);
+			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](https?://([^<>\"']+?))\[/img\]#i", "<img src=\"$3\" style=\"border: 0; width: $1px; height: $2px;\" alt=\"\" />", $message);
 		}
 
 		// Replace "me" code and slaps if we have a username
