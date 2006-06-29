@@ -482,14 +482,14 @@ var expandables = {
 			{
 				expandedItem.style.display = "";
 				element.src = element.src.replace("collapse_collapsed.gif", "collapse.gif");
-				element.alt = element.alt.replace("[+]", "[-]");
+				element.alt = "[-]";
 				this.saveCollapsed(element.controls);
 			}
 			else
 			{
 				expandedItem.style.display = "none";
 				element.src = element.src.replace("collapse.gif", "collapse_collapsed.gif");
-				element.alt = element.alt.replace("[-]", "[+]");
+				element.alt = "[+]";
 				this.saveCollapsed(element.controls, 1);
 			}
 		}
