@@ -114,7 +114,7 @@ else
 			$user = $db->fetch_array($query);
 
 			// Login key has changed - force logout
-			if(!$user['uid'] && $user['lognkey'] != $admin_session['lognkey'])
+			if(!$user['uid'] && $user['loginkey'] != $admin_session['loginkey'])
 			{
 				unset($user);
 			}
@@ -221,7 +221,7 @@ else
 	$plugins->run_hooks("admin_global_login");
 	cpheader("", 0, "javascript:document.loginform.username.focus();");
 	echo "<br />\n<br />\n<br />";
-	echo "<form action=\"$_SERVER[PHP_SELF]\" method=\"post\" name=\"loginform\">\n";
+	echo "<form action=\"$_SERVER[PHP_SELF]\" method=\"post\" name=\"loginform\" target=\"_top">\n";
 	echo "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"450\" align=\"center\">\n";
 	echo "<tr><td class=\"bordercolor\">\n";
 	echo "<table border=\"0\" cellspacing=\"1\" cellpadding=\"4\" width=\"100%\">\n";

@@ -1706,7 +1706,7 @@ if($mybb->input['action'] == "find")
 		{
 			foreach($search as $key => $val)
 			{
-				if ($key != 'additionalgroups' && $key != "profilefields")
+				if($key != 'additionalgroups' && $key != "profilefields")
 				{
 					$hiddens .= "<input type=\"hidden\" name=\"search[$key]\" value=\"$val\" />";
 				}
