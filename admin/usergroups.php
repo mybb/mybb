@@ -22,7 +22,7 @@ if($mybb->input['action'] == "listusers")
 }
 if($mybb->input['action'] == "listsecondaryusers")
 {
-	header("Location: users.php?".SID."&action=find&search[additionalusergroups]=".$mybb->input['gid']);
+	header("Location: users.php?".SID."&action=find&search[additionalgroups][]=".$mybb->input['gid']);
 	exit;
 }
 addacpnav($lang->nav_usergroups, "usergroups.php?".SID);

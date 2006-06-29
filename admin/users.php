@@ -1343,21 +1343,28 @@ if($mybb->input['action'] == "find")
 		$search['username'] = $db->escape_string($search['username']);
 		$conditions .= " AND username LIKE '%$search[username]%'";
 	}
-    if($search['usergroup'])
+    if($search['usergroup']) 
     {
+		// Searching for primary usergroup users
         $search['usergroup'] = intval($search['usergroup']);
         $conditions .= " AND usergroup = '$search[usergroup]'";
     }
-    if(is_array($search['additionalgroups']))
+    if(is_array($search['additionalgroups']) && count($search['additionalgroups']) > 0)
     {
-		if(count($search['additionalgroups']) > 0)
+		// Searching for users in secondary usergroups
+		foreach($search['additionalgroups'] as $group)
 		{
-			foreach($search['additionalgroups'] as $group)
-			{
-				$conditions .= " AND (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
-			}
+			$conditions .= " AND CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%'";
 		}
-    }
+	}
+    if(is_array($search['usergroups']) && count($search['usergroups']) > 0)
+    {
+		// Searching for users in both primary usergroups and secondary usergroups
+		foreach($search['usergroups'] as $group)
+		{
+			$conditions .= " AND (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
+		}
+	}
 	if($search['email'])
 	{
 		$search['email'] = $db->escape_string($search['email']);
@@ -1993,7 +2000,13 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	startform("users.php", '', "find");
 	tableheader($lang->user_management);
 	tablesubheader($lang->quick_search_listing);
-	makelabelcode("<ul>\n$last_edited<li><a href=\"users.php?".SID."&action=find\">$lang->list_all</a></li>\n<li><a href=\"users.php?".SID."&action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n<li><a href=\"users.php?".SID."&action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n<li><a href=\"users.php?".SID."&action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n</ul>", '', 2);
+	makelabelcode("<ul>\n
+		$last_edited
+		<li><a href=\"users.php?".SID."&action=find\">$lang->list_all</a></li>\n
+		<li><a href=\"users.php?".SID."&action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n
+		<li><a href=\"users.php?".SID."&action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n
+		<li><a href=\"users.php?".SID."&action=find&search[usergroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n
+		</ul>", '', 2);
 	tablesubheader($lang->search_users_where);
 	makeinputcode($lang->name_contains, "search[username]");
 	makeinputcode($lang->and_email, "search[email]");
