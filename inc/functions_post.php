@@ -304,12 +304,12 @@ function build_postbit($post, $pmprevann=0)
 			$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
-		if((is_moderator($fid, "caneditposts") == "yes" || $mybb->user['uid'] == $post['uid']) && $mybb->user['uid'] != 0)
+		if((is_moderator($fid, "caneditposts") == "yes" || ($forumpermissions['caneditposts'] == 'yes' && $mybb->user['uid'] == $post['uid'])) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
 		// Quick Delete button
-		if((is_moderator($fid, "candeleteposts") == "yes" || $mybb->user['uid'] == $post['uid']) && $mybb->user['uid'] != 0)
+		if((is_moderator($fid, "candeleteposts") == "yes" || ($forumpermissions['candeleteposts'] == 'yes' && $mybb->user['uid'] == $post['uid'])) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
 		}
