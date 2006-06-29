@@ -309,7 +309,19 @@ function build_postbit($post, $pmprevann=0)
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
 		// Quick Delete button
-		if((is_moderator($fid, "candeleteposts") == "yes" || ($forumpermissions['candeleteposts'] == 'yes' && $mybb->user['uid'] == $post['uid']) || ($forumpermissions['candeletethreads'] == 'yes' && $postcounter == 1)) && $mybb->user['uid'] != 0)
+		$can_delete = 'no';
+		if($mybb->user['uid'] == $post['uid'])
+		{
+			if($forumpermissions['candeletethreads'] == "yes" && $postcounter == 1)
+			{
+				$can_delete = 'yes';
+			}
+			elseif($forumpermissions['candeleteposts'] == "yes" && $postcounter != 1)
+			{
+				$can_delete = 'yes';
+			}
+		}
+		if((is_moderator($fid, "candeleteposts") == "yes" || $can_delete == "yes") && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
 		}
