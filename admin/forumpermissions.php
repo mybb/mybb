@@ -117,7 +117,7 @@ if($mybb->input['action'] == "do_edit")
 {
 	$pid = intval($mybb->input['pid']);
 	$fid = intval($mybb->input['fid']);
-	if($usecustom == "no")
+	if($mybb->input['usecustom'] == "no")
 	{
 		if($pid)
 		{
@@ -197,7 +197,7 @@ if($mybb->input['action'] == "edit")
 
 	if($forumpermissions['pid'])
 	{
-		$usecustom = "checked";
+		$usecustom = "checked=\"checked\"";
 		makehiddencode("pid", $pid);
 	}
 	else
