@@ -75,7 +75,6 @@ PopupMenu.prototype = {
 
 		document.currentMenu = element.id;
 		document.onclick = this.closeMenu.bindAsEventListener(this);
-		return true;
 	},
 	
 	closeMenu: function()
@@ -85,6 +84,5 @@ PopupMenu.prototype = {
 		this.menu.style.display = "none";
 		document.currentMenu = "";
 		document.onclick = function() { };
-		return true;
 	}
 };

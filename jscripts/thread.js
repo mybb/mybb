@@ -57,7 +57,6 @@ var Thread = {
 			element.src = element.src.replace("postbit_multiquote_on.gif", "postbit_multiquote.gif");
 		}
 		Cookie.set("multiquote", new_post_ids.join("|"));
-		return true;		
 	},
 
 	deletePost: function(pid)
@@ -78,13 +77,11 @@ var Thread = {
 			document.getElementsByTagName("body")[0].appendChild(form);
 			form.submit();
 		}
-		return true;
 	},
 	
 	reportPost: function(pid)
 	{
 		MyBB.popupWindow("report.php?pid="+pid, "reportPost", 400, 300)
-		return true;
 	},
 	
 	quickEdit: function(pid)
@@ -100,7 +97,7 @@ var Thread = {
 		Thread.qeCache[pid] = $("pid_"+pid).innerHTML;
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 		new ajax('xmlhttp.php?action=edit_post&do=get_post&pid='+pid, {method: 'get', onComplete: function(request) { Thread.quickEditLoaded(request, pid); }});
-		return true;
+		return false;
 	},
 	
 	quickEditLoaded: function(request, pid)
@@ -131,7 +128,6 @@ var Thread = {
 		
 		this.spinner.destroy();	
 		this.spinner = '';	
-		return true;
 	},
 	
 	quickEditSave: function(pid)
@@ -147,7 +143,6 @@ var Thread = {
 		postData += "&pid="+pid;
 
 		new ajax('xmlhttp.php?action=edit_post&do=update_post', {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});		
-		return true;
 	},
 	
 	quickEditCancel: function(pid)
@@ -159,7 +154,6 @@ var Thread = {
 			this.spinner.destroy();
 			this.spinner = '';
 		}
-		return true;
 	},
 	
 	quickEditSaved: function(request, pid)
@@ -180,7 +174,6 @@ var Thread = {
 		Thread.qeCache[pid] = "";
 		this.spinner.destroy();
 		this.spinner = '';
-		return true;
 	}
 }
 Event.observe(window, 'load', Thread.init);
