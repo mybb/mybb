@@ -13,6 +13,7 @@ $l['postdata_missing_message'] = 'The message is missing. Please go back and ent
 $l['postdata_message_too_long'] = 'The message is too long. Please go back and enter a shorter message';
 $l['postdata_message_too_short'] = 'The message is too short. Please go back and enter a longer message';
 $l['postdata_post_flooding'] = 'You are trying to post a message too quickly after posting a previous message. Please wait {1} more seconds.';
+$l['postdata_post_flooding_one_second'] = 'You are trying to post a message too quickly after posting a previous message. Please wait 1 more second.';
 $l['postdata_too_many_images'] = 'The message you entered contained {1} images, while only {2} images per message are allowed. Please lower the image count in your message to meet the limit.';
 
 ?>

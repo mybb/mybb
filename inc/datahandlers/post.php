@@ -241,8 +241,15 @@ class PostDataHandler extends DataHandler
 			if(time()-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && is_moderator($post['fid'], "", $user['uid']) != "yes")
 			{
 				// Oops, user has been flooding - throw back error message.
-				$time_to_wait = ($mybb->settings['postfloodsecs'] - (time()-$user['lastpost'])) + 1; // adding 1 to prevent waiting for zero seconds.
-				$this->set_error("post_flooding", array($time_to_wait));
+				$time_to_wait = ($mybb->settings['postfloodsecs'] - (time()-$user['lastpost'])) + 1;
+				if($time_to_wait == 1)
+				{
+					$this->set_error("post_flooding_one_second");
+				}
+				else
+				{
+					$this->set_error("post_flooding", array($time_to_wait));
+				}
 				return false;
 			}
 		}
