@@ -1212,17 +1212,23 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 	}
 	if($mybb->input['updateposts'] == "enable")
 	{
-		$db->update_query(TABLE_PREFIX."posts", "includesig='yes'", "uid='".$mybb->user['uid']."'");
+		$update_signature = array(
+			"includesig" => "yes"
+		);
+		$db->update_query(TABLE_PREFIX."posts", $update_signature, "uid='".$mybb->user['uid']."'");
 	}
 	elseif($mybb->input['updateposts'] == "disable")
 	{
-		$db->update_query(TABLE_PREFIX."posts", "includesig='no'", "uid='".$mybb->user['uid']."'");
+		$update_signature = array(
+			"includesig" => "no"
+		);
+		$db->update_query(TABLE_PREFIX."posts", $update_signature, "uid='".$mybb->user['uid']."'");
 	}
-	$newsignature = array(
+	$new_signature = array(
 		"signature" => $db->escape_string($mybb->input['signature'])
 	);
 	$plugins->run_hooks("usercp_do_editsig_process");
-	$db->update_query(TABLE_PREFIX."users", $newsignature, "uid='".$mybb->user['uid']."'");
+	$db->update_query(TABLE_PREFIX."users", $new_signature, "uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks("usercp_do_editsig_end");
 	redirect("usercp.php?action=editsig", $lang->redirect_sigupdated);
 
