@@ -428,7 +428,7 @@ if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 }
 
 // Set the link to the archive.
-$archive_url = $mybb->settings['bburl']."archive/index.php";
+$archive_url = $mybb->settings['bburl']."/archive/index.php";
 
 // Run hooks for end of global.php
 $plugins->run_hooks("global_end");

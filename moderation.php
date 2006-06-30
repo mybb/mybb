@@ -1288,14 +1288,13 @@ switch($mybb->input['action'])
 		}
 		
 		// Figure out if we need to display multiple pages.
-		//$perpage = $mybb->settings['postsperpage'];
-		$perpage = 5;
+		$perpage = $mybb->settings['threadsperpage'];
 		if($mybb->input['page'] != "last")
 		{
 			$page = intval($mybb->input['page']);
 		}
 		
-		$query = $db->simple_select(TABLE_PREFIX."reportedposts", "COUNT(rid) AS count");
+		$query = $db->simple_select(TABLE_PREFIX."reportedposts", "COUNT(rid) AS count", "r.reportstatus ='0'");
 		$warnings = $db->fetch_field($query, "count");
 		
 		if($mybb->input['rid'])
@@ -1383,8 +1382,7 @@ switch($mybb->input['action'])
 		}
 		
 		// Figure out if we need to display multiple pages.
-		//$perpage = $mybb->settings['postsperpage'];
-		$perpage = 10;
+		$perpage = $mybb->settings['threadsperpage'];
 		if($mybb->input['page'] != "last")
 		{
 			$page = intval($mybb->input['page']);
