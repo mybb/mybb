@@ -778,5 +778,4 @@ if($mybb->input['action'] == "vote")
 	redirect("showthread.php?tid=".$poll['tid'], $lang->redirect_votethanks);
 }
 
-error($lang->error_invalidaction);
 ?>
