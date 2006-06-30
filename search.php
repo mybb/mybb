@@ -769,7 +769,8 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		// Users last search was within the flood time, show the error
 		if($last_search['sid'])
 		{
-			$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime']);
+			$remaining_time = $mybb->settings['searchfloodtime']-(time()-$last_search['dateline']);
+			$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
 			error($lang->error_searchflooding);
 		}
 	}
