@@ -1194,66 +1194,31 @@ class PostDataHandler extends DataHandler
 			$updatepost['edituid'] = intval($post['edit_uid']);
 			$updatepost['edittime'] = time();
 		}
-
+		
 		$plugins->run_hooks("datahandler_post_update");
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".intval($post['pid'])."'");
 		
+		// Automatic subscription to the thread
+		if($post['options']['emailnotify'] != "no" && $post['uid'] > 0)
+		{
+			$query = $db->simple_select(TABLE_PREFIX."favorites", "fid", "tid='".intval($thread['uid'])."' AND tid='".intval($tid)."' AND type='s'", array("limit" => 1));
+			$already_subscribed = $db->fetch_field($query, "fid");
+			if(!$already_subscribed)
+			{
+				$favoriteadd = array(
+					"uid" => intval($post['uid']),
+					"tid" => intval($post['tid']),
+					"type" => "s"
+				);
+				$db->insert_query(TABLE_PREFIX."favorites", $favoriteadd);
+			}
+		}
+		else
+		{
+			$db->delete_query(TABLE_PREFIX."favorites", "type='s' AND uid='{$post['uid']}' AND tid='{$post['tid']}'");
+		}
 		update_thread_attachment_count($post['tid']);
 
 		update_forum_count($post['fid']);
 	}
-
-	/**
-	 * Delete a post from the database.
-	 *
-	 * @param int The post id of the post that is to be deleted.
-	 */
-	function delete_by_pid($pid)
-	{
-		global $db;
-
-		$post = get_post($pid);
-		if(!$post['pid'])
-		{
-			return false;
-		}
-
-		// Is this the first post of a thread? If so, we'll need to delete the whole thread.
-		$options = array(
-			"orderby" => "dateline",
-			"order_dir" => "asc",
-			"limit_start" => 0,
-			"limit" => 1
-		);
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid={$post['tid']}", $options);
-		$firstcheck = $db->fetch_array($query);
-		if($firstcheck['pid'] == $post['pid'])
-		{
-			$firstpost = true;
-		}
-		else
-		{
-			$firstpost = false;
-		}
-
-		// Delete the whole thread or this post only?
-		if($firstpost === true)
-		{
-			delete_thread($post['tid']);
-			update_forum_count($post['fid']);
-
-			$plugins->run_hooks("datahandler_post_delete_thread");
-		}
-		else
-		{
-			delete_post($post['pid']);
-			update_thread_count($post['tid']);
-			update_forum_count($post['fid']);
-
-			$plugins->run_hooks("datahandler_post_delete_post");
-		}
-		return true;
-	}
-}
-
 ?>
