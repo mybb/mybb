@@ -309,6 +309,11 @@ class PMDataHandler extends DataHandler
 		// Assign data to common variable
 		$pm = &$this->data;
 		$pm['pmid'] = intval($pm['pmid']);
+		
+		if(!$pm['icon'] || $pm['icon'] < 0)
+		{
+			$pm['icon'] = 0;
+		}
 
 		// Check if we're updating a draft or not.
 		$query = $db->simple_select(TABLE_PREFIX."privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
