@@ -58,7 +58,7 @@ else
 {
 	// Let's find the date we're looking at.
 	// First of all, the year
-	if($mybb->input['year'])
+	if($mybb->input['year'] && $mybb->input['year'] <= date("Y")+5)
 	{
 		$year = intval($mybb->input['year']);
 	}

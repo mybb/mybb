@@ -78,6 +78,13 @@ class EventDataHandler extends DataHandler
 			$this->set_error("invalid_date");
 			return false;
 		}
+		
+		// Calendar events can only be within the next 5 years
+		if($event['year'] > date("Y") + 5)
+		{
+			$this->set_error("invalid_year");
+			return false;
+		}
 
 		// Check if the day actually exists.
 		if($event['day'] > date("t", mktime(0, 0, 0, $event['month'], 1, $event['year'])))
