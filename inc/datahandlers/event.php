@@ -146,22 +146,22 @@ class EventDataHandler extends DataHandler
 
 		$event = &$this->data;
 
-		if($this->method == "insert" || isset($event['subject']))
+		if($this->method == "insert" || array_key_exists('subject', $event))
 		{
 			$this->verify_subject();
 		}
 
-		if($this->method == "insert" || isset($event['description']))
+		if($this->method == "insert" || array_key_exists('description', $event))
 		{
 			$this->verify_description();
 		}
 
-		if($this->method == "insert" || isset($event['day']))
+		if($this->method == "insert" || array_key_exists('day', $event))
 		{
 			$this->verify_date();
 		}
 	
-		if($this->method == "insert" || isset($event['private']))
+		if($this->method == "insert" || array_key_exists('private', $event))
 		{
 			$this->verify_scope();
 		}
@@ -244,27 +244,27 @@ class EventDataHandler extends DataHandler
 
 		$updateevent = array();
 
-		if(isset($event['subject']))
+		if($this->method == "insert" || isset($event['subject']))
 		{
 			$updateevent['subject'] = $db->escape_string($event['subject']);
 		}
 
-		if(isset($event['description']))
+		if($this->method == "insert" || isset($event['description']))
 		{
 			$updateevent['description'] = $db->escape_string($event['description']);
 		}
 
-		if(isset($event['date']))
+		if($this->method == "insert" || isset($event['date']))
 		{
 			$updateevent['date'] = $db->escape_string($event['date']);
 		}
 
-		if(isset($event['private']))
+		if($this->method == "insert" || isset($event['private']))
 		{
 			$updateevent['private'] = $db->escape_string($event['private']);
 		}
 
-		if(isset($event['uid']))
+		if($this->method == "insert" || isset($event['uid']))
 		{
 			$updateevent['author'] = intval($event['uid']);
 		}

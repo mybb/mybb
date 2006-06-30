@@ -601,7 +601,7 @@ class UserDataHandler extends DataHandler
 			$old_user = get_user($user['uid']);
 		}
 
-		if($this->method == "insert" || isset($user['username']))
+		if($this->method == "insert" || array_key_exists('usernane', $user))
 		{
 			// If the username is the same - no need to verify
 			if(!$old_user['username'] || $user['username'] != $old_user['username'])
@@ -614,63 +614,63 @@ class UserDataHandler extends DataHandler
 				unset($user['username']);
 			}
 		}
-		if($this->method == "insert" || isset($user['password']))
+		if($this->method == "insert" || array_key_exists('password', $user))
 		{
 			$this->verify_password();
 		}
-		if($this->method == "insert" || isset($user['usergroup']))
+		if($this->method == "insert" || array_key_exists('usergroup', $user))
 		{
 			$this->verify_usergroup();
 		}
-		if($this->method == "insert" || isset($user['email']))
+		if($this->method == "insert" || array_key_exists('email', $user))
 		{
 			$this->verify_email();
 		}
-		if($this->method == "insert" || isset($user['website']))
+		if($this->method == "insert" || array_key_exists('website', $user))
 		{
 			$this->verify_website();
 		}
-		if($this->method == "insert" || isset($user['icq']))
+		if($this->method == "insert" || array_key_exists('icq', $user))
 		{
 			$this->verify_icq();
 		}
-		if($this->method == "insert" || isset($user['msn']))
+		if($this->method == "insert" || array_key_exists('msn', $user))
 		{
 			$this->verify_msn();
 		}
-		if($this->method == "insert" || isset($user['birthday']))
+		if($this->method == "insert" || is_array($user['birthday']))
 		{
 			$this->verify_birthday();
 		}
-		if($this->method == "insert" || isset($user['profile_fields']))
+		if($this->method == "insert" || array_key_exists('profile_fields', $user))
 		{
 			$this->verify_profile_fields();
 		}
-		if($this->method == "insert" || isset($user['referrer']))
+		if($this->method == "insert" || array_key_exists('referrer', $user))
 		{
 			$this->verify_referrer();
 		}
-		if($this->method == "insert" || isset($user['options']))
+		if($this->method == "insert" || array_key_exists('options', $user))
 		{
 			$this->verify_options();
 		}
-		if($this->method == "insert" || isset($user['regdate']))
+		if($this->method == "insert" || array_key_exists('regdate', $user))
 		{
 			$this->verify_regdate();
 		}
-		if($this->method == "insert" || isset($user['lastvisit']))
+		if($this->method == "insert" || array_key_exists('lastvisit', $user))
 		{
 			$this->verify_lastvisit();
 		}
-		if($this->method == "insert" || isset($user['lastactive']))
+		if($this->method == "insert" || array_key_exists('lastactive', $user))
 		{
 			$this->verify_lastactive();
 		}
-		if($this->method == "insert" || isset($user['away']))
+		if($this->method == "insert" || array_key_exists('away', $user))
 		{
 			$this->verify_away();
 		}
-		if($this->method == "insert" || isset($user['language']))
+		if($this->method == "insert" || array_key_exists('language', $user))
 		{
 			$this->verify_language();
 		}

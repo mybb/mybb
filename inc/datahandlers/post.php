@@ -205,18 +205,11 @@ class PostDataHandler extends DataHandler
 	{
 		$options = &$this->data['options'];
 
-		if($options['signature'] != "yes")
-		{
-			$options['signature'] = "no";
-		}
-		if($options['emailnotify'] != "yes")
-		{
-			$options['emailnotify'] = "no";
-		}
-		if($options['disablesmilies'] != "yes")
-		{
-			$options['disablesmilies'] = "no";
-		}
+		// Verify yes/no options.
+		$this->verify_yesno_option($options, 'signature', 'no');
+		$this->verify_yesno_option($options, 'emailnotify', 'no');
+		$this->verify_yesno_option($options, 'disablesmilies', 'no');
+
 		return true;
 	}
 
@@ -396,43 +389,43 @@ class PostDataHandler extends DataHandler
 
 		// Verify all post assets.
 
-		if($this->method == "insert" || isset($post['uid']))
+		if($this->method == "insert" || array_key_exists('uid', $post))
 		{
 			$this->verify_author();
 		}
 
-		if($this->method == "insert" || isset($post['subject']))
+		if($this->method == "insert" || array_key_exists('subject', $post))
 		{
 			$this->verify_subject();
 		}
 
-		if($this->method == "insert" || isset($post['message']))
+		if($this->method == "insert" || array_key_exists('message', $post))
 		{
 			$this->verify_message();
 			$this->verify_image_count();
 		}
 
-		if($this->method == "insert" || isset($post['dateline']))
+		if($this->method == "insert" || array_key_exists('dateline', $post))
 		{
 			$this->verify_dateline();
 		}
 
-		if($this->action != "edit")
+		if($this->action != "edit" && !$post['savedraft'])
 		{
 			$this->verify_post_flooding();
 		}
 
-		if($this->method == "insert" || isset($post['replyto']))
+		if($this->method == "insert" || array_key_exists('replyto', $post))
 		{
 			$this->verify_reply_to();
 		}
 
-		if($this->method == "insert" || isset($post['icon']))
+		if($this->method == "insert" || array_key_exists('icon', $post))
 		{
 			$this->verify_post_icon();
 		}
 
-		if($this->method == "insert" || isset($post['options']))
+		if($this->method == "insert" || array_key_exists('options', $post))
 		{
 			$this->verify_options();
 		}
@@ -740,39 +733,42 @@ class PostDataHandler extends DataHandler
 
 		// Validate all thread assets.
 
-		if($this->method == "insert" || isset($thread['uid']))
+		if($this->method == "insert" || array_key_exists('uid', $thread))
 		{
 			$this->verify_author();
 		}
 
-		if($this->method == "insert" || isset($thread['subject']))
+		if($this->method == "insert" || array_key_exists('subject', $thread))
 		{
 			$this->verify_subject();
 		}
 
-		if($this->method == "insert" || isset($thread['message']))
+		if($this->method == "insert" || array_key_exists('message', $thread))
 		{
 			$this->verify_message();
 			$this->verify_image_count();
 		}
 
-		if($this->method == "insert" || isset($thread['dateline']))
+		if($this->method == "insert" || array_key_exists('dateline', $thread))
 		{
 			$this->verify_dateline();
 		}
 
-		if($this->method == "insert" || isset($thread['icon']))
+		if($this->method == "insert" || array_key_exists('icon', $thread))
 		{
 			$this->verify_post_icon();
 		}
 
-		if($this->method == "insert" || isset($thread['options']))
+		if($this->method == "insert" || array_key_exists('options', $thread))
 		{
 			$this->verify_options();
 		}
 
-		$this->verify_post_flooding();
-
+		if(!$thread['savedraft'])
+		{
+			$this->verify_post_flooding();
+		}
+		
 		$plugins->run_hooks("datahandler_post_validate_thread");
 
 		// We are done validating, return.
