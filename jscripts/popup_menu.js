@@ -22,7 +22,6 @@ PopupMenu.prototype = {
 		this.menu = $(popupMenu);
 		//this.menu.style.display = "none";
 		element.onclick = this.openMenu.bindAsEventListener(this);
-		return true;
 	},
 	
 	openMenu: function(e)
@@ -74,7 +73,7 @@ PopupMenu.prototype = {
 		this.menu.style.visibility = 'visible';
 
 		document.currentMenu = element.id;
-		document.onclick = this.closeMenu.bindAsEventListener(this);
+		Event.observe(document, 'click', this.closeMenu.bindAsEventListener(this));
 	},
 	
 	closeMenu: function()

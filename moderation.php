@@ -1294,7 +1294,7 @@ switch($mybb->input['action'])
 			$page = intval($mybb->input['page']);
 		}
 		
-		$query = $db->simple_select(TABLE_PREFIX."reportedposts", "COUNT(rid) AS count", "r.reportstatus ='0'");
+		$query = $db->simple_select(TABLE_PREFIX."reportedposts", "COUNT(rid) AS count", "reportstatus ='0'");
 		$warnings = $db->fetch_field($query, "count");
 		
 		if($mybb->input['rid'])

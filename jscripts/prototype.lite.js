@@ -161,6 +161,7 @@ Object.extend(Event, {
       event.stopPropagation(); 
     } else {
       event.returnValue = false;
+	  event.cancelBubble = true; 
     }
   },
 
