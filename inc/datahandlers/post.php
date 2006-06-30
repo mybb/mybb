@@ -1221,4 +1221,5 @@ class PostDataHandler extends DataHandler
 
 		update_forum_count($post['fid']);
 	}
+}
 ?>
