@@ -121,7 +121,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	$query = $db->query("
 		SELECT pm.pmid
 		FROM (".TABLE_PREFIX."privatemessages pm, ".TABLE_PREFIX."users u)
-		WHERE pm.toid=u.uid AND u.username='".$db->escape_string($mybb->input['to'])."' AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->input['subject'])."' AND pm.message='".$db->escape_string($mybb->input['message'])."'
+		WHERE pm.toid=u.uid AND u.username='".$db->escape_string($mybb->input['to'])."' AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->input['subject'])."' AND pm.message='".$db->escape_string($mybb->input['message'])."' AND pm.folder!='3'
 	");
 	$duplicate_check = $db->fetch_field($query, "pmid");
 	if($duplicate_check)
