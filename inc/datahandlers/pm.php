@@ -333,7 +333,7 @@ class PMDataHandler extends DataHandler
 				'status' => 0,
 				'includesig' => $pm['options']['signature'],
 				'smilieoff' => $pm['options']['disablesmilies'],
-				'receipt' => $pm['options']['readreceipt'],
+				'receipt' => intval($pm['options']['readreceipt']),
 				'readtime' => 0
 			);
 
@@ -362,7 +362,7 @@ class PMDataHandler extends DataHandler
 				'status' => 0,
 				'includesig' => $pm['options']['signature'],
 				'smilieoff' => $pm['options']['disablesmilies'],
-				'receipt' => $pm['options']['readreceipt'],
+				'receipt' => intval($pm['options']['readreceipt']),
 				'readtime' => 0
 			);
 
@@ -411,7 +411,7 @@ class PMDataHandler extends DataHandler
 				'status' => 1,
 				'includesig' => $pm['options']['signature'],
 				'smilieoff' => $pm['options']['disablesmilies'],
-				'receipt' => $pm['readreceipt']
+				'receipt' => intval($pm['options']['readreceipt'])
 			);
 			$plugins->run_hooks("datahandler_pm_insert_savedcopy");
 			$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
