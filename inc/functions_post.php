@@ -47,6 +47,11 @@ function build_postbit($post, $pmprevann=0)
 	{
 		case "1": // Message preview
 			global $forum;
+			$parser_options['allow_html'] = $forum['allowhtml'];
+			$parser_options['allow_mycode'] = $forum['allowmycode'];
+			$parser_options['allow_smilies'] = $forum['allowsmilies'];
+			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
+			$parser_options['me_username'] = $post['username'];
 			$id = 0;
 			break;
 		case "2": // Private message
@@ -71,7 +76,7 @@ function build_postbit($post, $pmprevann=0)
 			$oldforum = $forum;
 			$id = $post['pid'];
 			$parser_options['allow_html'] = $forum['allowhtml'];
-			$parser_options['allow_mycode'] = $forum['allow_mycode'];
+			$parser_options['allow_mycode'] = $forum['allowmycode'];
 			$parser_options['allow_smilies'] = $forum['allowsmilies'];
 			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
 			if($post['userusername'])
