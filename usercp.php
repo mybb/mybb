@@ -1327,7 +1327,7 @@ if($mybb->input['action'] == "avatar")
 	}
 
 	// Check to see if we're in a gallery or not
-	if($mybb->input['gallery'])
+	if($activegallery)
 	{
 		$gallery = str_replace("..", "", $mybb->input['gallery']);
 		$lang->avatars_in_gallery = sprintf($lang->avatars_in_gallery, $friendlyname);
