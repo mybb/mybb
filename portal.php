@@ -35,24 +35,48 @@ $lang->load("portal");
 add_breadcrumb($lang->nav_portal, "portal.php");
 
 // This allows users to login if the portal is stored offsite or in a different directory
-if($mybb->input['action'] == "do_login")
+if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
+	$plugins->run_hooks("portal_do_login_start");
+
+	//Checks to make sure the user can login; they haven't had too many tries at logging in.
+	//Is a fatal call if user has had too many tries
+	$logins = login_attempt_check();
+	$login_text = '';
+
 	if(!username_exists($mybb->input['username']))
 	{
-		error($lang->error_invalidusername);
+		mysetcookie('loginattempts', $logins + 1);
+		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
+		if($mybb->settings['failedlogintext'] == "yes")
+		{
+			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+		}
+		error($lang->error_invalidusername.$login_text);
 	}
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if(!$user['uid'])
 	{
-		error($lang->error_invalidpassword);
+		mysetcookie('loginattempts', $logins + 1);
+		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
+		if($mybb->settings['failedlogintext'] == "yes")
+		{
+			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+		}
+		error($lang->error_invalidpassword.$login_text);
 	}
 
+	mysetcookie('loginattempts', 1);
 	$db->delete_query(TABLE_PREFIX."sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
+		"loginattempts" => 1,
 		);
 	$db->update_query(TABLE_PREFIX."sessions", $newsession, "sid='".$session->sid."'");
-	
+
+	// Temporarily set the cookie remember option for the login cookies
+	$mybb->user['remember'] = $user['remember'];
+
 	mysetcookie("mybbuser", $user['uid']."_".$user['loginkey']);
 	mysetcookie("sid", $session->sid, -1);
 
@@ -61,7 +85,7 @@ if($mybb->input['action'] == "do_login")
 		loggedIn($user['uid']);
 	}
 
-	$plugins->run_hooks("logged_in", $user['uid']);
+	$plugins->run_hooks("portal_do_login_end");
 
 	redirect("portal.php", $lang->redirect_loggedin);
 }
@@ -105,8 +129,14 @@ if($mybb->settings['portal_showwelcome'] != "no")
 			$newthreads = $db->fetch_field($query, "newthreads");
 			$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS newann", "dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere");
 			$newann = $db->fetch_field($query, "newann");
-			if(!$newthreads) { $newthreads = 0; }
-			if(!$newann) { $newann = 0; }
+			if(!$newthreads)
+			{
+				$newthreads = 0;
+			}
+			if(!$newann)
+			{
+				$newann = 0;
+			}
 		}
 		else
 		{
@@ -114,9 +144,32 @@ if($mybb->settings['portal_showwelcome'] != "no")
 			$newthreads = 0;
 			$newann = 0;
 		}
-		$lang->new_announcements = sprintf($lang->new_announcements, $newann);
-		$lang->new_threads = sprintf($lang->new_threads, $newthreads);
-		$lang->new_posts = sprintf($lang->new_posts, $newposts);
+
+		// Make the text
+		if($newann == 1)
+		{
+			$lang->new_announcements = $lang->new_announcement;
+		}
+		else
+		{
+			$lang->new_announcements = sprintf($lang->new_announcements, $newann);
+		}
+		if($newthreads == 1)
+		{
+			$lang->new_threads = $lang->new_thread;
+		}
+		else
+		{
+			$lang->new_threads = sprintf($lang->new_threads, $newthreads);
+		}
+		if($newposts == 1)
+		{
+			$lang->new_posts = $lang->new_post;
+		}
+		else
+		{
+			$lang->new_posts = sprintf($lang->new_posts, $newposts);
+		}
 		eval("\$welcometext = \"".$templates->get("portal_welcome_membertext")."\";");
 
 	}
