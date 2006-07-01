@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright  2006 MyBB Group, All Rights Reserved
+ * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -27,7 +27,7 @@ $mcache = $cache->read("moderators");
 // If the groups cache doesn't exist, update it and re-read it
 if(!is_array($groupscache))
 {
-	$cache->updateusergroups();
+	$cache->updateuserfile:///home/dennis/MyBB/SVN/mybb/trunk/global.phpgroups();
 	$groupscache = $cache->read("usergroups");
 }
 
