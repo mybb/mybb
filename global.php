@@ -27,7 +27,7 @@ $mcache = $cache->read("moderators");
 // If the groups cache doesn't exist, update it and re-read it
 if(!is_array($groupscache))
 {
-	$cache->updateuserfile:///home/dennis/MyBB/SVN/mybb/trunk/global.phpgroups();
+	$cache->updateusergroups();
 	$groupscache = $cache->read("usergroups");
 }
 
