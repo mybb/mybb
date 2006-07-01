@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2006 MyBB Group, All Rights Reserved
+ * Copyright  2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -95,7 +95,7 @@ if(!isset($mybb->input['mode']))
 }
 
 // Select the board theme to use.
-$loadstyle = "";
+$loadstyle = '';
 $style = array();
 
 // This user has a custom theme set in their profile
@@ -179,7 +179,7 @@ else
 // Load Main Templates and Cached Templates
 if(isset($templatelist))
 {
-	$templatelist .= ",";
+	$templatelist .= ',';
 }
 $templatelist .= "css,headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin";
 $templatelist .= ",header_toplinks_weblogs,header_toplinks_gallery,header_toplinks_shoutbox,header_toplinks_arcade";
@@ -189,12 +189,12 @@ $templates->cache($db->escape_string($templatelist));
 // Set the current date and time now
 $datenow = mydate($mybb->settings['dateformat'], time(), '', false);
 $timenow = mydate($mybb->settings['timeformat'], time());
-$lang->welcome_current_time = sprintf($lang->welcome_current_time, $datenow.", ".$timenow);
+$lang->welcome_current_time = sprintf($lang->welcome_current_time, $datenow.', '.$timenow);
 
 // Format the last visit date of this user appropriately
 if(isset($mybb->user['lastvisit']))
 {
-	$lastvisit = mydate($mybb->settings['dateformat'], $mybb->user['lastvisit']) . ", " . mydate($mybb->settings['timeformat'], $mybb->user['lastvisit']);
+	$lastvisit = mydate($mybb->settings['dateformat'], $mybb->user['lastvisit']) . ', ' . mydate($mybb->settings['timeformat'], $mybb->user['lastvisit']);
 }
 
 // Otherwise, they've never visited before
@@ -234,7 +234,7 @@ else
 	eval("\$welcomeblock = \"".$templates->get("header_welcomeblock_guest")."\";");
 }
 
-$unreadreports = "";
+$unreadreports = '';
 // This user is a moderator, super moderator or administrator
 if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->usergroup['gid'] == 6)
 {
@@ -318,7 +318,7 @@ if($mybb->settings['showvernum'] == "on")
 }
 else
 {
-	$mybbversion = "";
+	$mybbversion = '';
 }
 eval("\$footer = \"".$templates->get("footer")."\";");
 
@@ -333,7 +333,7 @@ if(is_array($bannedips))
 	foreach($bannedips as $key => $bannedip)
 	{
 		$bannedip = trim($bannedip);
-		if($bannedip != "")
+		if($bannedip != '')
 		{
 			// This address is banned, show an error and delete the session
 			if(strstr($ipaddress, $bannedip))

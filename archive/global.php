@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2006 MyBB Group, All Rights Reserved
+ * Copyright  2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -178,7 +178,7 @@ if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 	}
 }
 
-if($mybb->user['canview'] == "no" && $action != "register" && $action != "do_register" && $action != "login" && $action != "do_login")
+if($mybb->usergroup['canview'] == "no")
 {
 	archive_error_no_permission();
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2006 MyBB Group, All Rights Reserved
+ * Copyright  2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -48,7 +48,7 @@ switch($action)
 
 		// Check if we have permission to view this thread
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != "yes")
+		if($forumpermissions['canview'] != "yes" && $forumpermissions['canviewthreads'] != 'yes')
 		{
 			archive_error_no_permission();
 		}
