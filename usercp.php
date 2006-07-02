@@ -1253,7 +1253,8 @@ if($mybb->input['action'] == "editsig")
 			"allow_html" => $mybb->settings['sightml'],
 			"allow_mycode" => $mybb->settings['sigmycode'],
 			"allow_smilies" => $mybb->settings['sigsmilies'],
-			"allow_imgcode" => $mybb->settings['sigimgcode']
+			"allow_imgcode" => $mybb->settings['sigimgcode'],
+			"me_username" => $mybb->user['username'],
 		);
 
 		$sigpreview = $parser->parse_message($sig, $sig_parser);

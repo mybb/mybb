@@ -496,7 +496,8 @@ function build_postbit($post, $pmprevann=0)
 			"allow_html" => $mybb->settings['sightml'],
 			"allow_mycode" => $mybb->settings['sigmycode'],
 			"allow_smilies" => $mybb->settings['sigsmilies'],
-			"allow_imgcode" => $mybb->settings['sigimgcode']
+			"allow_imgcode" => $mybb->settings['sigimgcode'],
+			"me_username" => $post['username']
 		);
 
 		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);
