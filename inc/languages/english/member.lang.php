@@ -116,8 +116,7 @@ $l['registration_errors'] = "The following errors occurred with your registratio
 $l['timeonline'] = "Time Spent Online:";
 $l['registrations_disabled'] = "Sorry but you cannot register at this time because the administrator has disabled new account registrations.";
 $l['error_username_length'] = "Your username is invalid. Usernames have to be within {1} to {2} characters.";
-$l['failed_login_wait'] = "You have failed to login within the required number of attempts. You must now wait {1}h {2}m {3}s before you can login again.";
-$l['failed_login_again'] = "<br/>You have <strong>{1}</strong> more login attempts.";
+
 $l['none_registered'] = "None Registered";
 $l['not_specified'] = "Not Specified";
 $l['membdayage'] = "({1} years old)";
@@ -133,7 +132,6 @@ $l['redirect_emailupdated'] = "Your email has been successfully changed.<br />Yo
 $l['redirect_accountactivated'] = "Your account has successfully been activated.<br />You will now be taken back to the main page.";
 $l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";
 $l['redirect_registered_admin_activate'] = "Thank you for registering on {1}, {2}.<br />Your registration must be activated by an administrator.  Until then, you may not be able to post on these forums.";
-$l['redirect_loggedin'] = "You have successfully been logged in.<br />You will now be taken back to where you came from.";
 $l['redirect_loggedout'] = "You have successfully been logged out.<br />You will now be taken back to the forum index.";
 $l['redirect_alreadyloggedout'] = "You were already logged out or have not logged in yet.<br />You will now be taken back to the forum index.";
 $l['redirect_lostpwsent'] = "Thank you, all accounts pertaining to that email address have now been sent an email with details on how to reset the passwords.<br /><br />You will now be taken to the forums' index.";

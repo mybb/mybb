@@ -864,8 +864,9 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("member_do_login_end");
 
-	if($mybb->input['url'])
+	if(isset($mybb->input['url']) && strpos(basename($mybb->input['url']), 'member.php') === false)
 	{
+		// Redirect to the URL if it is not member.php
 		redirect(htmlentities($mybb->input['url']), $lang->redirect_loggedin);
 	}
 	else

@@ -9,6 +9,7 @@
 $l['click_no_wait'] = "Click here if you don't want to wait any longer.";
 $l['redirect_return_forum'] = "<br /><br />Alternatively, <a href=\"forumdisplay.php?fid={1}\">return to the forum</a>.";
 $l['redirect_emailsent'] = "Your e-mail message has been sent successfully.";
+$l['redirect_loggedin'] = "You have successfully been logged in.<br />You will now be taken back to where you came from.";
 
 $l['error_alreadyuploaded'] = "It appears you have already uploaded the same file (judged by filename and size) into this post. Please choose a different file to attach.";
 $l['error_nomessage'] = "Sorry, we cannot proceed because you did not enter a valid message. Please go back and do so.";
@@ -66,6 +67,8 @@ $l['error_invaliduser'] = "The specified user is invalid or does not exist.";
 $l['error_invalidaction'] = "Invalid action";
 $l['error_messagelength'] = "Sorry, your message is too long and cannot be posted. Please try shortening your message and try again.";
 $l['error_message_too_short'] = "Sorry, your message is too short and cannot be posted.";
+$l['failed_login_wait'] = "You have failed to login within the required number of attempts. You must now wait {1}h {2}m {3}s before you can login again.";
+$l['failed_login_again'] = "<br/>You have <strong>{1}</strong> more login attempts.";
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";
