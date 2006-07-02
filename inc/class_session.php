@@ -328,7 +328,6 @@ class session
 		$time = time();
 		$mybb->user['usergroup'] = 1;
 		$mybb->user['username'] = '';
-		$mybb->user['username'] = '';
 		$mybb->user['uid'] = 0;
 		$mybbgroups = 1;
 		$mybb->user['displaygroup'] = 1;
@@ -349,6 +348,10 @@ class session
 			{
 				mysetcookie("mybb[lastvisit]", $mybb->user['lastactive']);
 				$mybb->user['lastvisit'] = $mybb->user['lastactive'];
+			}
+			else
+			{
+				$mybb->user['lastvisit'] = $_COOKIE['mybb']['lastactive'];
 			}
 		}
 
