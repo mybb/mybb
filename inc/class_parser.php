@@ -552,7 +552,12 @@ class postParser
 	*/
 	function mycode_parse_url($url, $name="")
 	{
+		if(!preg_match("#^[a-z0-9]+://#i", $url))
+		{
+			$url = "http://".$url;
+		}  
 		$fullurl = $url;
+
 		$url = str_replace('&amp;', '&', $url);
 
 		if(!preg_match("#[a-z0-9]+://#i", $fullurl))
