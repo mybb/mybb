@@ -393,8 +393,8 @@ class postParser
 	 */
 	function fix_javascript($message)
 	{
-		$message = preg_replace("#(java)(script:)#i", "$1 $2", $message);
 		$js_array = array(
+			"#(j)(avascript)#ie",
 			"#(a)(lert)#ie",
 			"#(o)(nmouseover)#ie",
 			"#(o)(nmouseout)#ie",
