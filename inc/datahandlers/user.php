@@ -297,24 +297,35 @@ class UserDataHandler extends DataHandler
 		$birthday['month'] = intval($birthday['month']);
 		$birthday['year'] = intval($birthday['year']);
 
-		if($birthday['day'] && $irthday['month'] && ($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12))
+		// Error if a day and month exists, and the birthday day and range is not in range
+		if($birthday['day'] && $birthday['month'] && ($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12))
 		{
 			$this->set_error("invalid_birthday");
 			return false;
 		}
 
+		// Error if a year exists and the year is out of range
 		if($birthday['year'] != 0 && ($birthday['year'] < (date("Y")-100)) || $birthday['year'] > date("Y"))
 		{
 			$this->set_error("invalid_birthday");
 			return false;
 		}
+
+		// Make the user's birthday field
 		if($birthday['year'] != 0)
 		{
+			// If the year is specified, put together a d-m-y string
 			$user['bday'] = $birthday['day']."-".$birthday['month']."-".$birthday['year'];
+		}
+		elseif($birthday['day'] && $birthday['month'])
+		{
+			// If only a day and month are specified, put together a d-m string
+			$user['bday'] = $birthday['day']."-".$birthday['month'];
 		}
 		else
 		{
-			$user['bday'] = $birthday['day']."-".$birthday['month'];
+			// No field is specified, so return an empty string for an unknown birthday
+			$user['bday'] = '';
 		}
 		return true;
 	}
