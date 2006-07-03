@@ -217,6 +217,10 @@ else
 	elseif(strpos($_SERVER['PHP_SELF'], 'index.php') === false))
 	{
 		$goto = htmlspecialchars_uni($_SERVER['PHP_SELF']);
+		if(!empty($_SERVER['QUERY_STRING']))
+		{
+			$goto .= '?'.$_SERVER['QUERY_STRING'];
+		}
 	}
 	else
 	{
