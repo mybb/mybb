@@ -39,16 +39,15 @@ switch($action)
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
 		// Fetch the forum this thread is in
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='".$thread['fid']."' AND active!='no' AND type='f' AND password=''");
-		$forum = $db->fetch_array($query);
-		if(!$forum['fid'])
+		$forum = get_forum($thread['fid']);
+		if(!$forum['fid'] || $forum['password'] != '')
 		{
 			archive_error($lang->error_invalidforum);
 		}
 
 		// Check if we have permission to view this thread
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != "yes" && $forumpermissions['canviewthreads'] != 'yes')
+		if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] != 'yes')
 		{
 			archive_error_no_permission();
 		}
@@ -137,7 +136,6 @@ switch($action)
 
 	// Display a category or a forum.
 	case "forum":
-
 		// Check if we have permission to view this forum
 		$forumpermissions = forum_permissions($forum['fid']);
 		if($forumpermissions['canview'] != "yes")
