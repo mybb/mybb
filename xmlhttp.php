@@ -89,6 +89,7 @@ else
 	}
 }
 
+$lang->load("global");
 $lang->load("xmlhttp");
 
 // Load basic theme information that we could be needing.

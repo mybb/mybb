@@ -152,7 +152,8 @@ if($mybb->input['action'] == "nextoldest")
 	$options = array(
 		"limit" => 1,
 		"limit_start" => 0,
-		"order_by" => "lastpost"
+		"order_by" => "lastpost",
+		"order_dir" => "desc"
 	);
 	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid=".$thread['fid']." AND lastpost < ".$thread['lastpost']." AND visible=1 AND closed NOT LIKE 'moved|%'");
 	$nextthread = $db->fetch_array($query);
