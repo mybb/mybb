@@ -356,6 +356,14 @@ if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 		}
 		</script>";
 	cpheader();
+
+	// Check if file is writable, before allowing submission
+	if(!is_writable(MYBB_ADMIN_DIR."/backups"))
+	{
+		$lang->update_button = '';
+		makewarning($lang->note_cannot_write_backup);
+		$cannot_write = true;
+	}
 	startform('dbtools.php', 'table_selection', 'do_backup');
 	starttable();
 	tableheader($lang->backup_database);
@@ -378,7 +386,7 @@ if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 	echo "<tr>\n";
 	echo "<td class=\"$bgcolor\">".$lang->export_file_type."</td>\n";
 	echo "<td class=\"$bgcolor\">\n";
-	if(function_exists("gzwrite"))
+	if(function_exists("gzwrite") && function_exists("gzencode"))
 	{
 		echo "<label><input type=\"radio\" name=\"type\" value=\"gzip\" checked=\"checked\" /> ".$lang->gzip_compressed."</label><br />\n";
 		echo "<label><input type=\"radio\" name=\"type\" value=\"text\" /> ".$lang->plain_text."</label>\n";
@@ -393,7 +401,7 @@ if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 	echo "<tr>\n";
 	echo "<td class=\"$bgcolor\">".$lang->download_save."</td>\n";
 	echo "<td class=\"$bgcolor\">\n";
-	echo "<label><input type=\"radio\" name=\"write\" value=\"disk\" /> ".$lang->save_backup_directory."</label><br />\n";
+	echo "<label><input type=\"radio\" name=\"write\" value=\"disk\" ".($cannot_write?"disabled=\"disabled\"":"")." /> ".$lang->save_backup_directory."</label><br />\n";
 	echo "<label><input type=\"radio\" name=\"write\" value=\"download\" checked=\"checked\" /> ".$lang->download."</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";

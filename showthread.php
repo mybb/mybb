@@ -412,8 +412,8 @@ if($mybb->input['action'] == "thread")
 		{
 			$stickch = "checked";
 		}
-		$closeoption = "<br /><label><input type=\"checkbox\" name=\"modoptions[closethread]\" value=\"yes\" $closelinkch />&nbsp;<strong>".$lang->close_thread."</strong></label>";
-		$closeoption .= "<br /><label><input type=\"checkbox\" name=\"modoptions[stickthread]\" value=\"yes\" $stickch />&nbsp;<strong>".$lang->stick_thread."</strong></label>";
+		$closeoption = "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[closethread]\" value=\"yes\" $closelinkch />&nbsp;<strong>".$lang->close_thread."</strong></label>";
+		$closeoption .= "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[stickthread]\" value=\"yes\" $stickch />&nbsp;<strong>".$lang->stick_thread."</strong></label>";
 		$inlinecount = "0";
 		$inlinecookie = "inlinemod_thread".$tid;
 		$plugins->run_hooks("showthread_ismod");
