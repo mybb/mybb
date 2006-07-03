@@ -323,6 +323,16 @@ if($mybb->input['action'] == "thread")
 			$totpercent = "0%";
 		}
 
+		// Check if user is allowed to edit posts; if so, show "edit poll" link.
+		if(is_moderator($fid, 'caneditposts') != 'yes')
+		{
+			$edit_poll = '';
+		}
+		else
+		{
+			$edit_poll = "| <a href=\"polls.php?action=editpoll&amp;pid={$poll['pid']}\">{$lang->edit_poll}</a>";
+		}
+
 		// Decide what poll status to show depending on the status of the poll and whether or not the user voted already.
 		if($alreadyvoted || $showresults)
 		{

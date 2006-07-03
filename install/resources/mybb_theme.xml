@@ -1397,7 +1397,7 @@ var inlineId = {$tid};
 <table width="100%" align="center">
 <tr>
 <td class="trow"><input type="submit" class="button" value="{$lang->vote}" /></td>
-<td valign="top" align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a> | <a href="polls.php?action=editpoll&amp;pid={$poll['pid']}">{$lang->edit_poll}</a>]</span></td>
+<td valign="top" align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a>{$edit_poll}]</span></td>
 </tr>
 <tr>
 <td colspan="2"><span class="smalltext">{$publicnote}</span></td>
@@ -3755,7 +3755,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <table cellspacing="0" cellpadding="2" border="0" width="100%" align="center">
 <tr>
 <td align="left"><span class="smalltext">{$lang->you_voted}</span></td>
-<td align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a> | <a href="polls.php?action=editpoll&amp;pid={$poll['pid']}">{$lang->edit_poll}</a>]</span></td>
+<td align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a>{$edit_poll}]</span></td>
 </tr>
 </table>
 <br />]]></template>
