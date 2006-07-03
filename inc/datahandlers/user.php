@@ -770,7 +770,6 @@ class UserDataHandler extends DataHandler
 			"notepad" => $db->escape_string($user['notepad']),
 			"referrer" => intval($user['referrer_uid'])
 		);
-
 		$db->insert_query(TABLE_PREFIX."users", $newuser);
 		$uid = $db->insert_id();
 

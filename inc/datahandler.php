@@ -213,7 +213,7 @@ class DataHandler
 					$options[$option] = "yes";
 				}
 			}
-			else if($options[$option] == '')
+			else if(array_key_exists($option, $options) && $options[$option] == '')
 			{
 				$options[$option] = "no";
 			}
