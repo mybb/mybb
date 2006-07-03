@@ -459,7 +459,7 @@ if($mybb->input['action'] == "register")
 				{
 					foreach($expoptions as $val)
 					{
-						$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\"> $val<br>";
+						$code .= "<input type=\"radio\" class=\"radio\" name=\"$field\" value=\"$val\"> $val<br>";
 					}
 				}
 			}
@@ -470,7 +470,7 @@ if($mybb->input['action'] == "register")
 				{
 					foreach($expoptions as $val)
 					{
-						$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\"> $val<br>";
+						$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"".$field."[]\" value=\"$val\"> $val<br>";
 					}
 				}
 			}
@@ -480,7 +480,7 @@ if($mybb->input['action'] == "register")
 			}
 			else
 			{
-				$code = "<input type=\"text\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\">";
+				$code = "<input type=\"text\" class=\"textbox\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\">";
 			}
 			if($profilefield['required'] == "yes")
 			{

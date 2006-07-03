@@ -384,7 +384,7 @@ if($mybb->input['action'] == "profile")
 					{
 						$checked = "checked=\"checked\"";
 					}
-					$code .= "<input type=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> $val<br>";
+					$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> $val<br>";
 				}
 			}
 		}
@@ -405,7 +405,7 @@ if($mybb->input['action'] == "profile")
 					{
 						$checked = "checked=\"checked\"";
 					}
-					$code .= "<input type=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\" $checked /> $val<br>";
+					$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\" $checked /> $val<br>";
 				}
 			}
 		}
@@ -417,7 +417,7 @@ if($mybb->input['action'] == "profile")
 		else
 		{
 			$value = htmlspecialchars_uni($userfield);
-			$code = "<input type=\"text\" name=\"profile_fields[$field]\" size=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
+			$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
 		}
 		if($profilefield['required'] == "yes")
 		{
