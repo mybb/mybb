@@ -214,12 +214,16 @@ else
 	{
 		$goto = htmlspecialchars_uni($_GET['goto']);
 	}
-	else
+	elseif(strpos($_SERVER['PHP_SELF'], 'index.php') === false))
 	{
 		$goto = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 	}
+	else
+	{
+		$goto = '';
+	}
 	$plugins->run_hooks("admin_global_login");
-	cpheader('', 0, "javascript:document.loginform.username.focus();");
+	cpheader('', 0, 'javascript:document.loginform.username.focus();');
 	echo "<br />\n<br />\n<br />";
 	echo "<form action=\"index.php\" method=\"post\" name=\"loginform\" target=\"_top\">\n";
 	echo "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"450\" align=\"center\">\n";
