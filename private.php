@@ -87,7 +87,7 @@ usercp_menu();
 // Make navigation
 add_breadcrumb($lang->nav_pms, "private.php");
 
-switch($mybb->input['action']) 
+switch($mybb->input['action'])
 {
 	case "send":
 		add_breadcrumb($lang->nav_send);
@@ -337,7 +337,7 @@ if($mybb->input['action'] == "read")
 	$pm = $db->fetch_array($query);
 	if($pm['folder'] == 3)
 	{
-		header("Location: private.php?action=send&pmid=$pm[pmid]");
+		header("Location: private.php?action=send&pmid={$pm['pmid']}");
 		exit;
 	}
 	if(!$pm['pmid'])
@@ -359,18 +359,18 @@ if($mybb->input['action'] == "read")
 	{
 		$time = time();
 		/* Do not convert to update_query() as $receiptadd will break. */
-		
+
 		$updatearray = array(
 			'status' => 1,
 			'readtime' => $time
-			
+
 		);
-		if($receiptadd != "") 
+		if($receiptadd != "")
 		{
 			$updatearray['receipt'] = $receiptadd;
 		}
-		
-		$db->update_query(TABLE_PREFIX."privatemessages", $updatearray, "pmid='$pmid'");
+
+		$db->update_query(TABLE_PREFIX."privatemessages", $updatearray, "pmid='{$pmid}'");
 
 		// Update the unread count - it has now changed.
 		update_pm_count("", 4);

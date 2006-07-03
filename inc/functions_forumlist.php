@@ -9,9 +9,9 @@
 function build_forumbits($pid=0, $depth=1)
 {
 	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser;
-	
+
 	$forum_listing = '';
-	
+
 	// If no forums exist with this parent, do nothing
 	if(!is_array($fcache[$pid]))
 	{
@@ -26,21 +26,21 @@ function build_forumbits($pid=0, $depth=1)
 			$forums = $subforums = $sub_forums = '';
 			$lastpost_data ='';
 			$counters = '';
-			
+
 			// Get the permissions for this forum
 			$permissions = $forumpermissions[$forum['fid']];
-			
+
 			// If this user doesnt have permission to view this forum and we're hiding private forums, skip this forum
 			if($permissions['canview'] != "yes" && $mybb->settings['hideprivateforums'] == "yes")
 			{
 				continue;
 			}
-		
+
 			$plugins->run_hooks("build_forumbits_forum");
-			
+
 			// Build the link to this forum
 			$forum_url = get_forum_link($forum['fid']);
-		
+
 			// Set the lastpost data for the lastpost in this forum
 			$lastpost_data = array(
 				"lastpost" => $forum['lastpost'],
@@ -49,45 +49,45 @@ function build_forumbits($pid=0, $depth=1)
 				"lastposttid" => $forum['lastposttid'],
 				"lastposteruid" => $forum['lastposteruid']
 			);
-			
+
 			// Fetch subforums of this forum
 			if(isset($fcache[$forum['fid']]))
 			{
 				$forum_info = build_forumbits($forum['fid'], $depth+1);
-				
+
 				// Increment forum counters with counters from child forums
 				$forum['threads'] += $forum_info['counters']['threads'];
 				$forum['posts'] += $forum_info['counters']['posts'];
 				$forum['unapprovedthreads'] += $forum_info['counters']['unapprovedthreads'];
 				$forum['unapprovedposts'] += $forum_info['counters']['unapprovedposts'];
-				
+
 				// If the child forums' lastpost is greater than the one for this forum, set it as the child forums greatest.
 				if($forum_info['lastpost']['lastpost'] > $lastpost_data['lastpost'])
 				{
 					$lastpost_data = $forum_info['lastpost'];
 				}
-				
+
 				$sub_forums = $forum_info['forum_list'];
 			}
-			
+
 			// If the current forums lastpost is greater than other child forums of the current parent, overwrite it
 			if($lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
 			{
 				$parent_lastpost = $lastpost_data;
 			}
-			
+
 			// Increment the counters for the parent forum (returned later)
 			$parent_counters['threads'] += $forum['threads'];
 			$parent_counters['posts'] += $forum['posts'];
 			$parent_counters['unapprovedposts'] += $forum['unapprovedposts'];
 			$parent_counters['unapprovedthreads'] += $forum['unapprovedthreads'];
-			
+
 			// Done with our math, lets talk about displaying - only display forums which are under a certain depth
 			if($depth > $showdepth)
 			{
 				continue;
 			}
-	
+
 			// Get the lightbulb status indicator for this forum based on the lastpost
 			// This forum has a password, and the user isn't authenticated with it - hide post information
 			$hideinfo = 0;
@@ -96,10 +96,10 @@ function build_forumbits($pid=0, $depth=1)
 				$hideinfo = 1;
 			}
 			$lightbulb = get_forum_lightbulb($forum, $lastpost_data, $hideinfo);
-			
+
 			// Fetch the number of unapproved threads and posts for this forum
 			$unapproved = get_forum_unapproved($forum);
-	
+
 			// If this is a forum and we've got subforums of it, load the subforums list template
 			if($depth == 2 && $sub_forums)
 			{
@@ -109,18 +109,18 @@ function build_forumbits($pid=0, $depth=1)
 			else if($depth == 3)
 			{
 				$statusicon = '';
-				
+
 				// Showing mini status icons for this forum
 				if($mybb->settings['subforumsstatusicons'] == "yes")
 				{
 					$lightbulb['folder'] = "mini".$lightbulb['folder'];
 					eval("\$statusicon = \"".$templates->get("forumbit_depth3_statusicon", 1, 0)."\";");
 				}
-				
+
 				// Fetch the template and append it to the list
 				eval("\$forum_list .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
 				$comma = ", ";
-				
+
 				// Have we reached our max visible subforums? put a nice message and break out of the loop
 				++$donecount;
 				if($donecount == $mybb->settings['subforumsindex'])
@@ -133,8 +133,8 @@ function build_forumbits($pid=0, $depth=1)
 				}
 				continue;
 			}
-			
-			
+
+
 			// Forum is a category, set template type
 			if($forum['type'] == "c")
 			{
@@ -145,7 +145,7 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				$forumcat = "_forum";
 			}
-			
+
 
 			if($forum['type'] == "f" && $forum['linkto'] == '')
 			{
@@ -159,7 +159,7 @@ function build_forumbits($pid=0, $depth=1)
 					// Format lastpost date and time
 					$lastpost_date = mydate($mybb->settings['dateformat'], $lastpost_data['lastpost']);
 					$lastpost_time = mydate($mybb->settings['timeformat'], $lastpost_data['lastpost']);
-					
+
 					// Set up the last poster, last post thread id, last post subject and format appropriately
 					$lastposter = $lastpost_data['lastposter'];
 					$lastposttid = $lastpost_data['lastposttid'];
@@ -170,7 +170,7 @@ function build_forumbits($pid=0, $depth=1)
 					}
 					$lastpost_subject = htmlspecialchars_uni($lastpost_subject);
 					$full_lastpost_subject = htmlspecialchars_uni($full_lastpost_subject);
-					
+
 					// Call lastpost template
 					eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
 
@@ -188,7 +188,7 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				$posts = mynumberformat($forum['posts']);
 				$threads = mynumberformat($forum['threads']);
-			}		
+			}
 
 			// Moderator column is not off
 			if($mybb->settings['modlist'] != "off")
@@ -204,13 +204,13 @@ function build_forumbits($pid=0, $depth=1)
 						// Fetch each moderator from the ache and format it, appending it to the list
 						foreach($moderatorcache[$mfid] as $moderator)
 						{
-							$moderators .= "$comma<a href=\"member.php?action=profile&amp;uid=$moderator[uid]\">".$moderator['username']."</a>";
+							$moderators .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$moderator['uid']}\">{$moderator['username']}</a>";
 							$comma = ", ";
 						}
 					}
 				}
 				$comma = '';
-				
+
 				// If we have a moderators list, load the template
 				if($moderators)
 				{
@@ -221,16 +221,16 @@ function build_forumbits($pid=0, $depth=1)
 					$modlist = '';
 				}
 			}
-			
+
 			// Descriptions aren't being shown - blank them
 			if($mybb->settings['showdescriptions'] == "no")
 			{
 				$forum['description'] = '';
 			}
-			
+
 			// Check if this category is either expanded or collapsed and hide it as necessary.
 			$expdisplay = '';
-			$collapsed_name = "cat_".$forum['fid']."_c";
+			$collapsed_name = "cat_{$forum['fid']}_c";
 			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
 			{
 				$expcolimage = "collapse_collapsed.gif";
@@ -242,10 +242,10 @@ function build_forumbits($pid=0, $depth=1)
 				$expcolimage = "collapse.gif";
 				$expaltext = "[-]";
 			}
-			
+
 			// Swap over the alternate backgrounds
 			$bgcolor = alt_trow();
-		
+
 			// Add the forum to the list
 			eval("\$forum_list .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 		}
@@ -275,11 +275,11 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 		$folder = "offlock";
 		$altonoff = $lang->forum_locked;
 	}
-	else 
+	else
 	{
 		// Fetch the last read date for this forum
 		$forumread = mygetarraycookie("forumread", $forum['fid']);
-		
+
 		// If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post
 		if($lastpost['lastpost'] > $mybb->user['lastvisit'] && $lastpost['lastpost'] > $forumread && $lastpost['lastpost'] != 0)
 		{
@@ -293,7 +293,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 			$altonoff = $lang->no_new_posts;
 		}
 	}
-	
+
 	return array(
 		"folder" => $folder,
 		"altonoff" => $altonoff
@@ -309,9 +309,9 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 function get_forum_unapproved($forum)
 {
 	global $lang;
-	
+
 	$unapproved_threads = $unapproved_posts = '';
-	
+
 	// If the user is a moderator we need to fetch the count
 	if(is_moderator($forum['fid']) == "yes")
 	{

@@ -18,12 +18,13 @@
  */
 function build_postbit($post, $pmprevann=0)
 {
-	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter, $titlescache, $page, $templates;
-	global $forumpermissions, $attachcache, $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
+	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter;
+	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
+	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
 	global $plugins, $parser;
 
 	$GLOBALS['post'] = $post;
-	
+
 	// Set up the message parser if it doesn't already exist.
 	if(!$parser)
 	{
@@ -113,7 +114,12 @@ function build_postbit($post, $pmprevann=0)
 
 	// Dont want any little 'nasties' in the subject
 	$post['subject'] = $parser->parse_badwords($post['subject']);
-	$post['subject'] = htmlspecialchars_uni($post['subject']);
+
+	// Pm's have been htmlspecialchars_uni()'ed already.
+	if($pmprevann != 2)
+	{
+		$post['subject'] = htmlspecialchars_uni($post['subject']);
+	}
 	if(empty($post['subject']))
 	{
 		$post['subject'] = '&nbsp;';
