@@ -125,7 +125,7 @@ function build_forumbits($pid=0, $depth=1)
 				++$donecount;
 				if($donecount == $mybb->settings['subforumsindex'])
 				{
-					if(count($main) > $donecount)
+					if(count($parent) > $donecount)
 					{
 						$forum_list .= $comma.sprintf($lang->more_subforums, (count($parent) - $donecount));
 					}
