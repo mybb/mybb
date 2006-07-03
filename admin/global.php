@@ -206,7 +206,7 @@ else
 		$lang->invalidlogin_message = sprintf($lang->invalidlogin_message, $mybb->settings['bbname'], $mybb->input['username'], $mybb->input['password'], $md5pw, $ipaddress, $iphost);
 		$lang->invalidlogin_subject = sprintf($lang->invalidlogin_subject, $mybb->settings['bbname']);
 		$lang->invalidlogin_headers = sprintf($lang->invalidlogin_headers, $mybb->settings['bbname'], $mybb->settings['adminemail']);
-		mail($settings['adminemail'], $lang->invalidlogin_subject, $message, $lang->invalidlogin_headers);
+		mail($settings['adminemail'], $lang->invalidlogin_subject, $lang->invalidlogin_message, $lang->invalidlogin_headers);
 		$plugins->run_hooks("admin_global_invalid_login");
 	}
 
@@ -214,7 +214,7 @@ else
 	{
 		$goto = htmlspecialchars_uni($_GET['goto']);
 	}
-	elseif(strpos($_SERVER['PHP_SELF'], 'index.php') === false))
+	elseif(strpos($_SERVER['PHP_SELF'], 'index.php') === false)
 	{
 		$goto = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 		if(!empty($_SERVER['QUERY_STRING']))
