@@ -415,7 +415,6 @@ messageEditor.prototype = {
 				this.insertEmail();
 				break;
 			default:
-				var last_index = 0;
 				var already_open = false;
 				var no_insert = false;
 				if(extra)
@@ -426,6 +425,7 @@ messageEditor.prototype = {
 				{
 					var full_tag = code;
 				}
+				var newTags = new Array();
 				for(var i=0;i<this.openTags.length;i++)
 				{
 					if(this.openTags[i])
@@ -433,29 +433,24 @@ messageEditor.prototype = {
 						exploded_tag = this.openTags[i].split("_");
 						if(exploded_tag[0] == code)
 						{
-							last_index = i;
 							already_open = true;
-							break;
+							this.performInsert("[/"+exploded_tag[0]+"]", "", false);
+							if($(this.openTags[i]))
+							{
+								$(this.openTags[i]).className = "toolbar_normal";
+							}
+							if(this.openTags[i] == full_tag)
+							{
+								no_insert = true;
+							}
+						}
+						else
+						{
+							newTags[newTags.length] = this.openTags[i];
 						}
 					}
 				}
-				if(already_open == true)
-				{
-					while(this.openTags[i])
-					{
-						tag = MyBB.arrayPop(this.openTags);
-						exploded_tag = tag.split("_");
-						this.performInsert("[/"+exploded_tag[0]+"]", "", false);
-						if($(tag))
-						{
-							DomLib.removeClass($(tag), "toolbar_clicked");
-						}
-						if(tag == full_tag)
-						{
-							no_insert = true;
-						}
-					}
-				}
+				this.openTags = newTags;
 				var do_insert = false;
 				if(extra != "" && extra != "-" && no_insert == false)
 				{
