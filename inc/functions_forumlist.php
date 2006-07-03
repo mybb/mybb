@@ -127,7 +127,7 @@ function build_forumbits($pid=0, $depth=1)
 				{
 					if(count($main) > $donecount)
 					{
-						$forum_list .= $comma.sprintf($lang->more_subforums, (count($main) - $donecount));
+						$forum_list .= $comma.sprintf($lang->more_subforums, (count($parent) - $donecount));
 					}
 					break;
 				}
