@@ -130,7 +130,7 @@ if($mybb->input['action'] == "get_users")
 	}
 }
 // This action provides editing of thread/post subjects from within their respective list pages.
-else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == "post")
+else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "post")
 {
 	// Sanitize the incoming subject.
 	$mybb->input['value'] = rawurldecode($mybb->input['value']);
@@ -200,6 +200,11 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
+		$ismod = false;
+	}
+	else
+	{
+		$ismod = true;
 	}
 	
 	// Set up posthandler.
@@ -227,6 +232,15 @@ else if($mybb->input['action'] == "edit_subject")// && $mybb->request_method == 
 	else
 	{
 		$posthandler->update_post();
+		if($ismod == true)
+		{
+			$modlogdata = array(
+				"tid" => $thread['tid'],
+				"pid" => $post['pid'],
+				"fid" => $forum['fid']
+			);
+			log_moderator_action($modlogdata, "Edited Post");
+		}
 	}
 
 	// Send our headers.

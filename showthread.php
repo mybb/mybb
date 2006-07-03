@@ -253,11 +253,14 @@ if($mybb->input['action'] == "thread")
 		$poll['question'] = htmlspecialchars_uni($poll['question']);
 		$polloptions = '';
 
+		for($i = 1; $i <= $poll['numoptions']; $i++)
+		{
+			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
+		}
+
 		// Loop through the poll options.
 		for($i = 1; $i <= $poll['numoptions']; ++$i)
 		{
-			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
-
 			// Set up the parser options.
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],

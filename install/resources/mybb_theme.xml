@@ -4151,7 +4151,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 <td class="{$bgcolor}">
 	{$attachment_count}
-	<div>{$prefix} {$gotounread}<span><a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</span></div>
+	<div>{$prefix} {$gotounread}<span><a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span></div>
 </td>
 <td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
 <td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a>{$unapproved_posts}</td>

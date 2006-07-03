@@ -723,18 +723,9 @@ if(is_array($threadcache))
 			$modbit = '';
 		}
 
-		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
-		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes") || $ismod == true)
-		{
-			$inline_edit_class = "subject_editable";
-		}
-		else
-		{
-			$inline_edit_class = "";
-		}
-		$load_inline_edit_js = 1;
-
 		$moved = explode("|", $thread['closed']);
+
+		$inline_edit_tid = $thread['tid'];
 
 		if($moved[0] == "moved")
 		{
@@ -745,6 +736,17 @@ if(is_array($threadcache))
 			$folder .= "lock";
 			$gotounread = '';
 		}
+
+		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
+		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes") || $ismod == true)
+		{
+			$inline_edit_class = "subject_editable";
+		}
+		else
+		{
+			$inline_edit_class = "";
+		}
+		$load_inline_edit_js = 1;
 
 		$folder .= "folder";
 
