@@ -282,6 +282,7 @@ $l['folder_drafts'] = "Drafts";
 $l['folder_trash'] = "Trash";
 $l['folder_untitled'] = "Untitled Folder";
 
+$l['standard_mod_tools'] = "Standard Tools";
 $l['custom_mod_tools'] = "Custom Tools";
 
 $l['error_loadlimit'] = "The maximum server load limit has been reached.  Please check back later once the server is less busy.";

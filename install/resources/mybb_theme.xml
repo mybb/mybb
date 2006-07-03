@@ -612,18 +612,20 @@ form {
 <input type="hidden" name="modtype" value="thread" />
 <input type="hidden" name="tid" value="{$tid}" /><span class="smalltext">
 <strong>{$lang->moderation_options}</strong></span> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}&amp;modtype=thread')">
-<option value="threadnotes">{$lang->thread_notes}</option>
-<option value="openclosethread">{$lang->open_close_thread}</option>
-<option value="deletethread">{$lang->delete_thread}</option>
-{$adminpolloptions}
-<option value="deleteposts">{$lang->delete_posts}</option>
-<option value="move">{$lang->move_thread}</option>
-<option value="stick">{$lang->stick_unstick_thread}</option>
-<option value="split">{$lang->split_thread}</option>
-<option value="merge">{$lang->merge_threads}</option>
-<option value="mergeposts">{$lang->merge_posts}</option>
-<option value="removeredirects">{$lang->remove_redirects}</option>
-{$approveunapprovethread}
+<optgroup label="{$lang->standard_mod_tools}">
+	<option value="threadnotes">{$lang->thread_notes}</option>
+	<option value="openclosethread">{$lang->open_close_thread}</option>
+	<option value="deletethread">{$lang->delete_thread}</option>
+	{$adminpolloptions}
+	<option value="deleteposts">{$lang->delete_posts}</option>
+	<option value="move">{$lang->move_thread}</option>
+	<option value="stick">{$lang->stick_unstick_thread}</option>
+	<option value="split">{$lang->split_thread}</option>
+	<option value="merge">{$lang->merge_threads}</option>
+	<option value="mergeposts">{$lang->merge_posts}</option>
+	<option value="removeredirects">{$lang->remove_redirects}</option>
+	{$approveunapprovethread}
+</optgroup>
 {$customthreadtools}
 </select>
 {$gobutton}
@@ -639,17 +641,19 @@ form {
 		<template name="showthread_moderationoptions_custom_tool" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_inlinemoderation_custom" version="100.07"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="showthread_inlinemoderation_custom_tool" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="showthread_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
+		<template name="showthread_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="modtype" value="inlinepost" />
 <span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
 <select name="action">
-<option value="multideleteposts">{$lang->inline_delete_posts}</option>
-<option value="multimergeposts">{$lang->inline_merge_posts}</option>
-<option value="multisplitposts">{$lang->inline_split_posts}</option>
-<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
-<option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>
+<optgroup label="{$lang->standard_mod_tools}">
+	<option value="multideleteposts">{$lang->inline_delete_posts}</option>
+	<option value="multimergeposts">{$lang->inline_merge_posts}</option>
+	<option value="multisplitposts">{$lang->inline_split_posts}</option>
+	<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
+	<option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>
+</optgroup>
 {$customposttools}
 </select>
 <input type="submit" class="button" name="go" value="{$lang->go} ({$inlinecount})" id="inline_go" />&nbsp;
@@ -667,7 +671,7 @@ var inlineId = {$tid};
 <script type="text/javascript">
 		 var quickdelete_confirm = "{$lang->quickdelete_confirm}";
 </script>
-<script type="text/javascript" src="jscripts/thread.js"></script>
+<script type="text/javascript" src="jscripts/thread.js?ver=120"></script>
 </head>
 <body>
 {$header}
@@ -779,7 +783,7 @@ var inlineId = {$tid};
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=120"></script>
 </head>
 <body>
 {$header}
@@ -845,7 +849,7 @@ var inlineId = {$tid};
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=120"></script>
 </head>
 <body>
 {$header}
@@ -951,7 +955,7 @@ var inlineId = {$tid};
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=120"></script>
 </head>
 <body>
 {$header}
@@ -1402,7 +1406,7 @@ var inlineId = {$tid};
 </form>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom" version="100.07"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom_tool" version="100.07"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js"></script>
+		<template name="forumdisplay_inlinemoderation" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="modtype" value="inlinethread" />
@@ -1410,15 +1414,17 @@ var inlineId = {$tid};
 <div style="text-align: right; clear: both;">
 	<span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
 	<select name="action">
-	<option value="multiclosethreads">{$lang->close_threads}</option>
-	<option value="multiopenthreads">{$lang->open_threads}</option>
-	<option value="multistickthreads">{$lang->stick_threads}</option>
-	<option value="multiunstickthreads">{$lang->unstick_threads}</option>
-	<option value="multideletethreads">{$lang->delete_threads}</option>
-	<option value="multimovethreads">{$lang->move_threads}</option>
-	<option value="multiapprovethreads">{$lang->approve_threads}</option>
-	<option value="multiunapprovethreads">{$lang->unapprove_threads}</option>
-	{$customthreadtools}
+		<optgroup label="{$lang->standard_mod_tools}">
+			<option value="multiclosethreads">{$lang->close_threads}</option>
+			<option value="multiopenthreads">{$lang->open_threads}</option>
+			<option value="multistickthreads">{$lang->stick_threads}</option>
+			<option value="multiunstickthreads">{$lang->unstick_threads}</option>
+			<option value="multideletethreads">{$lang->delete_threads}</option>
+			<option value="multimovethreads">{$lang->move_threads}</option>
+			<option value="multiapprovethreads">{$lang->approve_threads}</option>
+			<option value="multiunapprovethreads">{$lang->unapprove_threads}</option>
+		</optgroup>
+		{$customthreadtools}
 	</select>
 	<input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" id="inline_go" />&nbsp;
 	<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
@@ -2181,10 +2187,10 @@ $headerinclude
 		<template name="headerinclude" version="100.07"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
-<script type="text/javascript" src="jscripts/prototype.lite.js"></script>
-<script type="text/javascript" src="jscripts/moo.ajax.js"></script>
-<script type="text/javascript" src="jscripts/general.js"></script>
-<script type="text/javascript" src="jscripts/popup_menu.js"></script>
+<script type="text/javascript" src="jscripts/prototype.lite.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/moo.ajax.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/general.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/popup_menu.js?ver=120"></script>
 <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" />
 <script language="Javascript" type="text/javascript">
 	 var cookieDomain = "{$mybb->settings['cookiedomain']}";
@@ -3346,7 +3352,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td colspan="6" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
 		<template name="private_send_buddyselect" version="100.07"><![CDATA[<br /><span class="smalltext">{$lang->select_buddy}<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>{$buddies}</select>]]></template>
-		<template name="codebuttons" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/editor.js"></script>
+		<template name="codebuttons" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=120"></script>
 <script type="text/javascript">
 	var editor = new messageEditor("message");
 	editor.bindSmilieInserter("clickable_smilies");
@@ -3970,37 +3976,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 </body>
 </html>]]></template>
-		<template name="showthread_adminoptions" version="100.07"><![CDATA[<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">
-<table cellspacing="0" cellpadding="0" border="0" width="100%">
-<tr>
-<td>
-<form action="moderation.php" method="get" style="margin-top: 0; margin-bottom: 0;">
-<input type="hidden" name="tid" value="{$tid}" />
-<strong>{$lang->admin_options}:</strong> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}')">
-<option value="threadnotes">{$lang->thread_notes}</option>
-<option value="openclosethread">{$lang->open_close_thread}</option>
-<option value="deletethread">{$lang->delete_thread}</option>
-{$adminpolloptions}
-<option value="deleteposts">{$lang->delete_posts}</option>
-<option value="move">{$lang->move_thread}</option>
-<option value="stick">{$lang->stick_unstick_thread}</option>
-<option value="split">{$lang->split_thread}</option>
-<option value="merge">{$lang->merge_threads}</option>
-<option value="mergeposts">{$lang->merge_posts}</option>
-<option value="removeredirects">{$lang->remove_redirects}</option>
-</select>
-{$gobutton}
-</form>
-</td>
-<td align="right">{$inlinemod}</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>]]></template>
 		<template name="misc_syndication" version="100.07"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->syndication}</title>
@@ -6532,11 +6507,11 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <br />]]></template>
 		<template name="htmldoctype" version="100.07"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="postbit_multiquote" version="100.07"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.multiQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_multiquote.gif\" border=\"0\" alt=\"{$lang->postbit_multiquote}\" title=\"{$lang->postbit_multiquote}\" id=\"multiquote_{$post['pid']}\" /><\/a>");</script>]]></template>
-		<template name="private_send_autocomplete" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js"></script>
+		<template name="private_send_autocomplete" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
 <script type="text/javascript">
 	new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username"});
 </script>]]></template>
-		<template name="forumdisplay_threadlist_inlineedit_js" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inlineedit.js"></script>
+		<template name="forumdisplay_threadlist_inlineedit_js" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=120"></script>
 <script type="text/javascript">
 	new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif"});
 </script>]]></template>

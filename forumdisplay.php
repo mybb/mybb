@@ -215,11 +215,12 @@ if($mybb->settings['browsingthisforum'] != "off")
 	{
 		$onlinesep = ", ";
 	}
-	if($inviscount && $mybb->usergroup['canviewwolinvis'] != "yes")
+	$invisonline = '';
+	if($inviscount && $mybb->usergroup['canviewwolinvis'] != "yes" && ($inviscount != 1 && $mybb->user['invisible'] != "yes"))
 	{
 		$invisonline = sprintf($lang->users_browsing_forum_invis, $inviscount);
 	}
-	if($inviscount && $guestcount)
+	if($invisonline != '' && $guestcount)
 	{
 		$onlinesep2 = ", ";
 	}
