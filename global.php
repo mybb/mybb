@@ -217,7 +217,7 @@ unset($admincplink);
 if($mybb->user['uid'] != 0)
 {
 	// User can access the admin cp and we're not hiding admin cp links, fetch it
-	if($mybb->usergroup['cancp'] == "yes" && $mybb->config['hideadminlinks'] != 1)
+	if($mybb->usergroup['cancp'] == "yes" && $mybb->config['hide_admin_links'] != 1)
 	{
 		eval("\$admincplink = \"".$templates->get("header_welcomeblock_member_admin")."\";");
 	}

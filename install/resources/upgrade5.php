@@ -200,16 +200,94 @@ function upgrade5_dbchanges()
 	//
 
 	echo "Done</p>";
-
-	$contents .= "Click next to continue with the upgrade process.</p>";
+	echo "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("5_dbchanges2");
+	$output->print_footer("5_redoconfig");
 }
 
-function upgrade5_dbchanges2()
+function upgrade5_redoconfig()
 {
+	global $db, $output, $config;
+	$output->print_header("Rewriting config.php");
+	
+	$fh = @fopen("../inc/config.php", "w");
+	if(!$fh)
+	{
+		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p>";
+		$output->print_footer("5_redoconfig");
+		exit;
+	}
+
+	$configdata = "<?php
+/**
+ * Daatabase configuration
+ */
+
+\$config['dbtype'] = \"{$config['dbtype']}\";
+\$config['hostname'] = \"{$config['hostname']}\";
+\$config['username'] = \"{$config['username']}}\";
+\$config['password'] = \"{$config['password']}\";
+\$config['database'] = \"{$config['database']}\";
+\$config['table_prefix'] = \"{$config['table_prefix']}\";
+
+/**
+ * Admin CP directory
+ *  For security reasons, it is recommended you
+ *  rename your Admin CP directory. You then need
+ *  to adjust the value below to point to the
+ *  new directory.
+ */
+
+\$config['admin_dir'] = \"{$config['admindir']}\";
+
+/**
+ * Hide all Admin CP links
+ *  If you wish to hide all Admin CP links
+ *  on the front end of the board after
+ *  renaming your Admin CP directory, set this
+ *  to 1.
+ */
+
+\$config['hide_admin_links'] = 0;
+
+/**
+ * Data-cache configuration
+ *  The data cache is a temporary cache
+ *  of the most commonly accessed data in MyBB.
+ *  By default, the database is used to store this data.
+ *
+ *  If you wish to use the file system (inc/cache directory)
+ *  you can change the value below to 'files' from 'db'.
+ */
+
+\$config['cache_store'] = \"{$config['cachestore']}\";
+
+/**
+ * Super Administrators
+ *  A comma separated list of user IDs who cannot
+ *  be edited, deleted or banned in the Admin CP.
+ *  The administrator permissions for these users
+ *  cannot be altered either.
+ */
+
+\$config['super_admins'] = \"1\";
+
+?>";
+
+	fwrite($file, $configdata);
+	fclose($file);
+	echo "<p>The settings file has successfully been rewritten.</p>";
+	echo "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_footer("upgrade5_indexes");
+
+}
+
+function upgrade5_indexes()
+{
+	global $db, $output;
+
 	$output->print_header("Indexing");
-	echo "<p>Checking and creating database indexes..</p>";
+	echo "<p>Checking and creating fulltext database indexes..</p>";
 
 	$db->drop_index(TABLE_PREFIX."threads", "subject");
 	if($db->is_fulltext(TABLE_PREFIX."threads", "subject_2"))
@@ -221,18 +299,25 @@ function upgrade5_dbchanges2()
 	{
 		$db->create_fulltext_index(TABLE_PREFIX."threads", "subject");
 	}
-	$fulltext = "no";
 	if($db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
 	{
 		$db->create_fulltext_index(TABLE_PREFIX."posts", "message");
-		$update_data = array(
-			"value" => "yes"
+		// Insert a temporary setting (will be overwritten by sync_settings)
+		$settingdata = array(
+			"name" => "searchtype",
+			"title" => "Temporary setting",
+			"description" => "",
+			"optionscode" => "",
+			"disporder" => 0,
+			"gid" => 0,
+			"value" => "fulltext"
 		);
-		$fulltext = "yes";
+		$db->insert_query(TABLE_PREFIX."settings");
+		write_settings();
 	}
 
 	// Register a shutdown function which actually tests if this functionality is working
-	register_shutdown_function('test_shutdown_function');
+	add_shutdown('test_shutdown_function');
 
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

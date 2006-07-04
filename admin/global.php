@@ -15,9 +15,9 @@ define("IN_ADMINCP", 1);
 // Here you can change how much of an Admin CP IP address must match in a previous session for the user is validated (defaults to 3 which matches a.b.c)
 define("ADMIN_IP_SEGMENTS", 3);
 
-if(!isset($config['admindir']))
+if(!isset($config['admin_dir']))
 {
-	$config['admindir'] = "admin";
+	$config['admin_dir'] = "admin";
 }
 
 require "../inc/init.php";

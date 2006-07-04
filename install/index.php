@@ -390,7 +390,7 @@ function create_tables()
  *  new directory.
  */
 
-\$config['admindir'] = \"admin\";
+\$config['admin_dir'] = \"admin\";
 
 /**
  * Hide all Admin CP links
@@ -400,7 +400,7 @@ function create_tables()
  *  to 1.
  */
 
-\$config['hideadminlinks'] = 0;
+\$config['hide_admin_links'] = 0;
 
 /**
  * Data-cache configuration
@@ -412,7 +412,7 @@ function create_tables()
  *  you can change the value below to 'files' from 'db'.
  */
 
-\$config['cachestore'] = \"db\";
+\$config['cache_store'] = \"db\";
 
 /**
  * Super Administrators
@@ -780,7 +780,7 @@ function install_done()
 	{
 		$db->create_fulltext_index(TABLE_PREFIX.'posts', 'message');
 		$update_data = array(
-			'value' => 'yes'
+			'value' => 'fulltext'
 		);
 		$db->update_query(TABLE_PREFIX.'settings', $update_data, 'name=\'searchtype\'');
 		write_settings();

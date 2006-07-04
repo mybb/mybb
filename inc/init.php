@@ -71,9 +71,9 @@ if(!isset($config['dbtype']))
 {
 	$mybb->trigger_generic_error("board_not_installed");
 }
-if(!isset($config['admindir']))
+if(!isset($config['admin_dir']))
 {
-	$config['admindir'] = "admin";
+	$config['admin_dir'] = "admin";
 }
 $mybb->config = $config;
 

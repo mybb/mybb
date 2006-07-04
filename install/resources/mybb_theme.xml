@@ -2322,8 +2322,8 @@ $reputation
 <tr>
 <td class="trow1">
 <ul>
-<li><a href="{$mybb->settings['bburl']}/{$config['admindir']}/index.php?goto=users%2Ephp%3Faction%3Dedit%26uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
-<li><a href="{$mybb->settings['bburl']}/{$config['admindir']}/index.php?goto=users%2Ephp%3Faction%3Dmanageban%26auid={$uid}">{$lang->admin_ban_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dedit%26uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dmanageban%26auid={$uid}">{$lang->admin_ban_in_acp}</a></li>
 </ul>
 </td>
 </tr>
@@ -5091,8 +5091,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="moderation_getip_adminoptions" version="100.07"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->admin_options}</strong></td>
 <td class="trow2">
-	<a href="{$config['admindir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bregip%5D%3D{$post['ipaddress']}">{$lang->search_regip_users}</a><br />
-	<a href="{$config['admindir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bpostip%5D%3D{$post['ipaddress']}">{$lang->search_postip_users}</a>
+	<a href="{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bregip%5D%3D{$post['ipaddress']}">{$lang->search_regip_users}</a><br />
+	<a href="{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bpostip%5D%3D{$post['ipaddress']}">{$lang->search_postip_users}</a>
 </td>
 </tr>]]></template>
 		<template name="postbit_iplogged_hiden" version="100.07"><![CDATA[<br /><span class="smalltext">{$lang->postbit_ipaddress} <a href="moderation.php?action=getip&amp;pid={$post['pid']}">{$lang->postbit_ipaddress_logged}</a></span>]]></template>
@@ -5918,8 +5918,8 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 		<template name="online_iplookup_adminoptions"><![CDATA[<tr>
 <td class="trow1"><strong>{$lang->admin_options}</strong></td>
 <td class="trow2">
-	<a href="{$config['admindir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bregip%5D%3D{$post['ipaddress']}">{$lang->search_regip_users}</a><br />
-	<a href="{$config['admindir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bpostip%5D%3D{$post['ipaddress']}">{$lang->search_postip_users}</a>
+	<a href="{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bregip%5D%3D{$post['ipaddress']}">{$lang->search_regip_users}</a><br />
+	<a href="{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bpostip%5D%3D{$post['ipaddress']}">{$lang->search_postip_users}</a>
 </td>
 </tr>]]></template>
 		<template name="online_row" version="100.07"><![CDATA[<tr>

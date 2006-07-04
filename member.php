@@ -1275,7 +1275,7 @@ elseif($mybb->input['action'] == "profile")
 		$timeonline = $lang->none_registered;
 	}
 
-	if($mybb->usergroup['cancp'] == "yes" && $mybb->config['hideadminlinks'] != 1)
+	if($mybb->usergroup['cancp'] == "yes" && $mybb->config['hide_admin_links'] != 1)
 	{
 		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
 	}

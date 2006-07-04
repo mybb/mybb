@@ -25,7 +25,7 @@ class datacache
 	function cache()
 	{
 		global $db, $mybb;
-		if($mybb->config['cachestore'] == "files")
+		if($mybb->config['cache_store'] == "files")
 		{
 			// Check if no files exist in cache directory, if not we need to create them (possible move from db to files)
 			if(!file_exists(MYBB_ROOT."inc/cache/version.php"))
@@ -63,7 +63,7 @@ class datacache
 	function read($name, $hard=false)
 	{
 		global $db, $test, $mybb;
-		if($mybb->config['cachestore'] == "files")
+		if($mybb->config['cache_store'] == "files")
 		{
 			if($hard)
 			{
@@ -115,7 +115,7 @@ class datacache
 		");
 
 		// If using files, update the cache file too
-		if($mybb->config['cachestore'] == "files")
+		if($mybb->config['cache_store'] == "files")
 		{
 			if(!@is_writable(MYBB_ROOT."inc/cache/"))
 			{
