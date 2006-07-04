@@ -301,7 +301,6 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	// Check captcha image
 	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
 	{
-		echo 'checking';
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
 		$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash'");
