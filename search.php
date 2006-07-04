@@ -198,7 +198,7 @@ if($mybb->input['action'] == "results")
 			$query = $db->simple_select(TABLE_PREFIX."threadsread", "tid,dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
 			while($readthread = $db->fetch_array($query))
 			{
-				$thread_cache[$readthread['tid']]['last_read'] = $readthread['dateline'];
+				$thread_cache[$readthread['tid']]['lastread'] = $readthread['dateline'];
 			}
 		}
 
