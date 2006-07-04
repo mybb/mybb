@@ -689,10 +689,6 @@ function what($user)
 				$user['activity'] = "calendar";
 			}
 			break;
-		case 'captcha':
-			// Only place where a user will see a captcha is on registration.
-			$user['activity'] = 'member_register';
-		break;
 		case "editpost":
 			$user['activity'] = "editpost";
 			break;

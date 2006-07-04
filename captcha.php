@@ -9,7 +9,7 @@
  * $Id$
  */
 
-$noonline = 1;
+define("NO_ONLINE", 1);
 require "./global.php";
 
 $img_width = 200;
