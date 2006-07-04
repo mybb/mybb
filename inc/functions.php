@@ -1237,7 +1237,6 @@ function update_thread_count($tid)
 		SELECT u.uid, u.username, p.username AS postusername, p.dateline
 		FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid'
-		AND p.visible='1'
 		ORDER BY p.dateline ASC
 		LIMIT 0,1
 	");
