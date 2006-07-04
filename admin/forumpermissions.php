@@ -31,62 +31,82 @@ switch($mybb->input['action'])
 
 $plugins->run_hooks("admin_forumpermissions_start");
 
-function getforums($pid="0")
+function build_permission_forumbits($pid=0)
 {
-	global $db, $forumlist, $ownperms, $parentperms, $lang;
-	if(!$ownperms)
+	global $db, $lang, $cache;
+
+	// Sort out the forum cache first.
+	static $fcache, $forumpermissions, $usergroups, $cachedforumpermissions;
+	if(!is_array($fcache))
 	{
-		$query = $db->simple_select(TABLE_PREFIX."forumpermissions");
-		while($permissions = $db->fetch_array($query))
+		// Fetch usergroups
+		$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title", "", array("order_by" => "title", "order_dir" => "asc"));
+		while($usergroup = $db->fetch_array($query))
 		{
-			$ownperms[$permissions['fid']][$permissions['gid']] = $permissions['pid'];
+			$usergroups[$usergroup['gid']] = $usergroup;
+		}
+		
+		// Fetch forum permissions
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "fid, gid, pid");
+		while($forumpermission = $db->fetch_array($query))
+		{
+			$forumpermissions[$forumpermission['fid']][$forumpermission['gid']] = $forumpermission['pid'];
+		}
+		
+		// Fetch forums
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "", array('order_by' =>'pid, disporder'));
+		while($forum = $db->fetch_array($query))
+		{
+			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
+		}
+		
+		$cachedforumpermissions = $cache->read("forumpermissions");
+	}
+
+	// Start the process.
+	if(is_array($fcache[$pid]))
+	{
+		foreach($fcache[$pid] as $key => $main)
+		{
+			foreach($main as $key => $forum)
+			{
+				$forum_list .= "\n<li>";
+				$forum_list .= "<div style=\"float:right\"><small>".makelinkcode($lang->copy_permissions_to, "forums.php?".SID."&action=copy&from=$forum[fid]&copyforumsettings=no&copygroups=all");
+				$forum_list .= makelinkcode($lang->copy_permissions_from, "forums.php?".SID."&action=copy&to=$forum[fid]&copyforumsettings=no&copygroups=all")."</small></div>";
+				$forum_list .= "<b>$forum[name]</b>\n";
+				$forum_list .= "<ul>\n";
+				foreach($usergroups as $usergroup)
+				{
+					// This forum has custom permissions for this group
+					if($forumpermissions[$forum['fid']][$usergroup['gid']])
+					{
+						$pid = $forumpermissions[$forum['fid']][$usergroup['gid']];
+						$forum_list .= "<li><font color=\"red\">$usergroup[title]</font> ";
+						$forum_list .= makelinkcode("<font color=\"red\">$lang->edit_perms</font>", "forumpermissions.php?".SID."&action=edit&pid=$pid&fid=$forum[fid]");
+					}
+					// This forum is inheriting permissions from the parent forum
+					else if($cachedforumpermissions[$forum['fid']][$usergroup['gid']])
+					{
+						$forum_list .= "<li><font color=\"blue\">$usergroup[title]</font> ";
+						$forum_list .= makelinkcode("<font color=\"blue\">$lang->set_perms</font>", "forumpermissions.php?".SID."&action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
+					}
+					// Otherwise, this forum has no permissions set and is inheriting from usergroup
+					else
+					{
+						$forum_list .= "<li><font color=\"black\">$usergroup[title]</font> ";
+						$forum_list .= makelinkcode("<font color=\"black\">$lang->set_perms</font>", "forumpermissions.php?".SID."&action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
+					}
+				}
+				$forum_list .= "</font></li>\n";
+				$forum_list .= build_permission_forumbits($forum['fid']);
+				$forum_list .= "</ul>\n";
+				$forum_list .= "</li>\n";
+			}
 		}
 	}
-	$options = array(
-		"order_by" => "disporder",
-		"order_dir" => "ASC"
-	);
-	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='$pid'", $options);
-	while($forum = $db->fetch_array($query))
-	{
-		$forumlist .= "\n<li>";
-		$forumlist .= "<div style=\"float:right\"><small>".makelinkcode($lang->copy_permissions_to, "forums.php?".SID."&action=copy&from=$forum[fid]&copyforumsettings=no&copygroups=all");
-		$forumlist .= makelinkcode($lang->copy_permissions_from, "forums.php?".SID."&action=copy&to=$forum[fid]&copyforumsettings=no&copygroups=all")."</small></div>";
-		$forumlist .= "<b>$forum[name]</b>\n";
-		$forumlist .= "<ul>\n";
-		$groupquery = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups ORDER BY title");
-		while($usergroup = $db->fetch_array($groupquery))
-		{
-			if($ownperms[$forum['fid']][$usergroup['gid']])
-			{
-				$pid = $ownperms[$forum['fid']][$usergroup['gid']];
-				$forumlist .= "<li><font color=\"red\">$usergroup[title]</font> ";
-				$forumlist .= makelinkcode("<font color=\"red\">$lang->edit_perms</font>", "forumpermissions.php?".SID."&action=edit&pid=$pid&fid=$forum[fid]");
-			}
-			else
-			{
-				$sql = build_parent_list($forum['fid']);
-				$cusquery = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "$sql AND gid='$usergroup[gid]'");
-				$customperms = $db->fetch_array($cusquery);
-				if($customperms['pid'])
-				{
-					$forumlist .= "<li><font color=\"blue\">$usergroup[title]</font> ";
-					$forumlist .= makelinkcode("<font color=\"blue\">$lang->set_perms</font>", "forumpermissions.php?".SID."&action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
-				}
-				else
-				{
-					$forumlist .= "<li><font color=\"black\">$usergroup[title]</font> ";
-					$forumlist .= makelinkcode("<font color=\"black\">$lang->set_perms</font>", "forumpermissions.php?".SID."&action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
-				}
-			}
-			$forumlist .= "</font></li>\n";
-		}
-		getforums($forum['fid']);
-		$forumlist .= "</ul>\n";
-		$forumlist .= "</li>\n";
-	}
-	return $forumlist;
+	return $forum_list;
 }
+
 if($mybb->input['action'] == "do_quickperms")
 {
 	$inherit = $mybb->input['inherit'];
@@ -274,7 +294,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	tablesubheader($lang->guide);
 	makelabelcode($lang->guide2);
 	tablesubheader($lang->select_usergroup);
-	$forumlist = getforums();
+	$forumlist = build_permission_forumbits();
 	makelabelcode("<ul>$forumlist</ul>", "");
 	endtable();
 	cpfooter();

@@ -13,8 +13,8 @@
    technical support
 */
 
-$mybboard['internalver'] = "1.00";
-$mybboard['vercode'] = "100.07";
+$mybboard['internalver'] = "1.2.0";
+$mybboard['vercode'] = "120";
 
 /**
  * Outputs a page directly to the browser, parsing anything which needs to be parsed.
