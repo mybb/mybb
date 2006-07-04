@@ -459,10 +459,12 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				$type[0] = trim($type[0]);
 				if($type[0] == "text" || $type[0] == "")
 				{
+					$setting['value'] = htmlentities($seting['value']);
 					$settingcode = "<input type=\"text\" name=\"upsetting[$setting[sid]]\" value=\"$setting[value]\" size=\"25\">";
 				}
 				else if($type[0] == "textarea")
 				{
+					$setting['value'] = htmlspecialchars_uni($setting['value']);
 					$settingcode = "<textarea name=\"upsetting[$setting[sid]]\" rows=\"6\" cols=\"50\">$setting[value]</textarea>";
 				}
 				else if($type[0] == "yesno")

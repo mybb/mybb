@@ -415,19 +415,19 @@ function makecssedit($css, $selector, $name, $description="", $showfonts=1, $sho
 	echo "<table width=\"100%\">\n";
 	if($showbackground)
 	{
-		echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[$selector][background]\" value=\"".$css['background']."\" size=\"25\" class=\"$highlight\"/></td>\n</tr>\n";
+		echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[$selector][background]\" value=\"".htmlspecialchars_uni($css['background'])."\" size=\"25\" class=\"$highlight\"/></td>\n</tr>\n";
 	}
 	if($showwidth)
 	{
-		echo "<tr>\n<td>".$lang->width."</td>\n<td><input type=\"text\" name=\"css[$selector][width]\" value=\"".$css['width']."\" size=\"25\" class=\"$highlight\" /></td>\n</tr>\n";
+		echo "<tr>\n<td>".$lang->width."</td>\n<td><input type=\"text\" name=\"css[$selector][width]\" value=\"".htmlspecialchars_uni($css['width'])."\" size=\"25\" class=\"$highlight\" /></td>\n</tr>\n";
 	}
 	if($showfonts)
 	{
-		echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[$selector][color]\" value=\"".$css['color']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
-		echo "<tr>\n<td>".$lang->font_family."</td>\n<td><input type=\"text\" name=\"css[$selector][font-family]\" value=\"".$css['font-family']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
-		echo "<tr>\n<td>".$lang->font_size."</td>\n<td><input type=\"text\" name=\"css[$selector][font-size]\" value=\"".$css['font-size']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
-		echo "<tr>\n<td>".$lang->font_style."</td>\n<td><input type=\"text\" name=\"css[$selector][font-style]\" value=\"".$css['font-style']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
-		echo "<tr>\n<td>".$lang->font_weight."</td>\n<td><input type=\"text\" name=\"css[$selector][font-weight]\" value=\"".$css['font-weight']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[$selector][color]\" value=\"".htmlspecialchars_uni($css['color'])."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		echo "<tr>\n<td>".$lang->font_family."</td>\n<td><input type=\"text\" name=\"css[$selector][font-family]\" value=\"".htmlspecialchars_uni($css['font-family'])."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		echo "<tr>\n<td>".$lang->font_size."</td>\n<td><input type=\"text\" name=\"css[$selector][font-size]\" value=\"".htmlspecialchars_uni($css['font-size'])."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		echo "<tr>\n<td>".$lang->font_style."</td>\n<td><input type=\"text\" name=\"css[$selector][font-style]\" value=\"".htmlspecialchars_uni($css['font-style'])."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		echo "<tr>\n<td>".$lang->font_weight."</td>\n<td><input type=\"text\" name=\"css[$selector][font-weight]\" value=\"".htmlspecialchars_uni($css['font-weight'])."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
 	}
 	echo "</table>\n";
 	echo "</td>\n";
@@ -477,9 +477,9 @@ function makecsslinkedit($selector, $type, $name, $css, $highlight=1)
 	echo "<fieldset>\n";
 	echo "<legend>".$name."</legend>\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr><td>".$lang->background."</td><td><input type=\"text\" name=\"css[$selector][$type][background]\" value=\"".$css['background']."\" size=\"8\" class=\"$highlight\" /></td></tr>\n";
-	echo "<tr><td>".$lang->font_color."</td><td><input type=\"text\" name=\"css[$selector][$type][color]\" value=\"".$css['color']."\" size=\"8\" class=\"$highlight\" /></td></tr>\n";
-	echo "<tr><td>".$lang->text_decoration."</td><td><input type=\"text\" name=\"css[$selector][$type][text-decoration]\" value=\"".$css['text-decoration']."\" size=\"8\" class=\"$highlight\" /></td></tr>\n";
+	echo "<tr><td>".$lang->background."</td><td><input type=\"text\" name=\"css[$selector][$type][background]\" value=\"".htmlspecialchars_uni($css['background'])."\" size=\"8\" class=\"$highlight\" /></td></tr>\n";
+	echo "<tr><td>".$lang->font_color."</td><td><input type=\"text\" name=\"css[$selector][$type][color]\" value=\"".htmlspecialchars_uni($css['color'])."\" size=\"8\" class=\"$highlight\" /></td></tr>\n";
+	echo "<tr><td>".$lang->text_decoration."</td><td><input type=\"text\" name=\"css[$selector][$type][text-decoration]\" value=\"".htmlspecialchars_uni($css['text-decoration'])."\" size=\"8\" class=\"$highlight\" /></td></tr>\n";
 	echo "</table>\n";
 	echo "</fieldset>\n";
 }
@@ -493,14 +493,14 @@ function makecsstoolbaredit($css)
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" width=\"50%\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[editor][background]\" value=\"".$css['editor']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[editor][border]\" value=\"".$css['editor']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[editor][background]\" value=\"".htmlspecialchars_uni($css['editor']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[editor][border]\" value=\"".htmlspecialchars_uni($css['editor']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"50%\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_normal][background]\" value=\"".$css['toolbar_normal']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_normal][border]\" value=\"".$css['toolbar_normal']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_normal][background]\" value=\"".htmlspecialchars_uni($css['toolbar_normal']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_normal][border]\" value=\"".htmlspecialchars_uni($css['toolbar_normal']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -508,14 +508,14 @@ function makecsstoolbaredit($css)
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" width=\"50%\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_hover][background]\" value=\"".$css['toolbar_hover']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_hover][border]\" value=\"".$css['toolbar_hover']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_hover][background]\" value=\"".htmlspecialchars_uni($css['toolbar_hover']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_hover][border]\" value=\"".htmlspecialchars_uni($css['toolbar_hover']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"50%\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_clicked][background]\" value=\"".$css['toolbar_clicked']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_clicked][border]\" value=\"".$css['toolbar_clicked']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_clicked][background]\" value=\"".htmlspecialchars_uni($css['toolbar_clicked']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_clicked][border]\" value=\"".htmlspecialchars_uni($css['toolbar_clicked']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -531,15 +531,15 @@ function makecssautocompleteedit($css)
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[autocomplete][background]\" value=\"".$css['autocomplete']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[autocomplete][border]\" value=\"".$css['autocomplete']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[autocomplete][color]\" value=\"".$css['autocomplete']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[autocomplete][background]\" value=\"".htmlspecialchars_uni($css['autocomplete']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[autocomplete][border]\" value=\"".htmlspecialchars_uni($css['autocomplete']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[autocomplete][color]\" value=\"".htmlspecialchars_uni($css['autocomplete']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[autocomplete_selected][background]\" value=\"".$css['autocomplete_selected']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[autocomplete_selected][color]\" value=\"".$css['autocomplete_selected']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[autocomplete_selected][background]\" value=\"".htmlspecialchars_uni($css['autocomplete_selected']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[autocomplete_selected][color]\" value=\"".htmlspecialchars_uni($css['autocomplete_selected']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -555,19 +555,19 @@ function makecsspopupmenuedit($css)
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[popup_menu][background]\" value=\"".$css['popup_menu']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[popup_menu][border]\" value=\"".$css['popup_menu']['border']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[popup_menu][background]\" value=\"".htmlspecialchars_uni($css['popup_menu']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[popup_menu][border]\" value=\"".htmlspecialchars_uni($css['popup_menu']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[popup_item][background]\" value=\"".$css['popup_item']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[popup_item][color]\" value=\"".$css['popup_item']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[popup_item][background]\" value=\"".htmlspecialchars_uni($css['popup_item']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[popup_item][color]\" value=\"".htmlspecialchars_uni($css['popup_item']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[popup_item_hovered][background]\" value=\"".$css['popup_item_hovered']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[popup_item_hovered][color]\" value=\"".$css['popup_item_hovered']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[popup_item_hovered][background]\" value=\"".htmlspecialchars_uni($css['popup_item_hovered']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[popup_item_hovered][color]\" value=\"".htmlspecialchars_uni($css['popup_item_hovered']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -583,17 +583,17 @@ function makecssreputationedit($css)
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[reputation_positive][color]\" value=\"".$css['reputation_positive']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[reputation_positive][color]\" value=\"".htmlspecialchars_uni($css['reputation_positive']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[reputation_neutral][color]\" value=\"".$css['reputation_neutral']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[reputation_neutral][color]\" value=\"".htmlspecialchars_uni($css['reputation_neutral']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[reputation_negative][color]\" value=\"".$css['reputation_negative']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[reputation_negative][color]\" value=\"".htmlspecialchars_uni($css['reputation_negative']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -601,20 +601,20 @@ function makecssreputationedit($css)
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_positive][background]\" value=\"".$css['trow_reputation_positive']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_positive][color]\" value=\"".$css['trow_reputation_positive']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_positive][background]\" value=\"".htmlspecialchars_uni($css['trow_reputation_positive']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_positive][color]\" value=\"".htmlspecialchars_uni($css['trow_reputation_positive']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_neutral][background]\" value=\"".$css['trow_reputation_neutral']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_neutral][color]\" value=\"".$css['trow_reputation_neutral']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_neutral][background]\" value=\"".htmlspecialchars_uni($css['trow_reputation_neutral']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_neutral][color]\" value=\"".htmlspecialchars_uni($css['trow_reputation_neutral']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_negative][background]\" value=\"".$css['trow_reputation_negative']['background']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_negative][color]\" value=\"".$css['trow_reputation_negative']['color']."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_negative][background]\" value=\"".htmlspecialchars_uni($css['trow_reputation_negative']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[trow_reputation_negative][color]\" value=\"".htmlspecialchars_uni($css['trow_reputation_negative']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -675,9 +675,9 @@ function makecssinputedit($css)
 
 		$content_buffer .= "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
 		$content_buffer .= "<table width=\"100%\">\n";
-		$content_buffer .= "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[$element][background]\" value=\"".$css[$element]['background']."\" size=\"25\" class=\"$highlight\"/></td>\n</tr>\n";
-		$content_buffer .= "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[$element][color]\" value=\"".$css[$element]['color']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
-		$content_buffer .= "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[$element][border]\" value=\"".$css[$element]['border']."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		$content_buffer .= "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[$element][background]\" value=\"".htmlspecialchars_uni($css[$element]['background'])."\" size=\"25\" class=\"$highlight\"/></td>\n</tr>\n";
+		$content_buffer .= "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[$element][color]\" value=\"".htmlspecialchars_uni($css[$element]['color'])."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
+		$content_buffer .= "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[$element][border]\" value=\"".htmlspecialchars_uni($css[$element]['border'])."\" size=\"25\"  class=\"$highlight\" /></td>\n</tr>\n";
 		$content_buffer .= "<tr>\n";
 		$content_buffer .= "<td class=\"altbg1\" width=\"50%\" valign=\"top\" colspan=\"2\">\n";
 		$content_buffer .= "<textarea style=\"width: 98%; padding: 4px;\" rows=\"4\" name=\"css[$element][extra]\" class=\"$highlight\">".htmlspecialchars_uni($css[$element]['extra'])."</textarea>\n";
