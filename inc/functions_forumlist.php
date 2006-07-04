@@ -161,7 +161,7 @@ function build_forumbits($pid=0, $depth=1)
 					$lastpost_time = mydate($mybb->settings['timeformat'], $lastpost_data['lastpost']);
 
 					// Set up the last poster, last post thread id, last post subject and format appropriately
-					$lastposter = $lastpost_data['lastposter'];
+					$lastpost_profilelink = build_profile_link($lastpost_data['lastposter'], $lastpost_data['lastposteruid']);
 					$lastposttid = $lastpost_data['lastposttid'];
 					$lastpost_subject = $full_lastpost_subject = $parser->parse_badwords($lastpost_data['lastpostsubject']);
 					if(my_strlen($lastpost_subject) > 25)

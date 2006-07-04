@@ -777,7 +777,7 @@ var inlineId = {$tid};
 </table>]]></template>
 		<template name="forumbit_depth2_forum_lastpost" version="100.07"><![CDATA[<span class="smalltext">
 <a href="showthread.php?tid={$lastposttid}&amp;action=lastpost" title="{$fulll_astpost_subject}"><strong>{$lastpost_subject}</strong></a>
-<br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} <a href="member.php?action=profile&amp;uid=lastposter&amp;fid={$forum['fid']}">{$lastposter}</a></span>
+<br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} $lastpost_profilelink/span>
 ]]></template>
 		<template name="editpost" version="100.07"><![CDATA[<html>
 <head>
