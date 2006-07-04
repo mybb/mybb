@@ -56,6 +56,12 @@ if($mybb->input['action'] == "do_updateprefs")
 if($mybb->input['action'] == "revokeperms")
 {
 	$uid = intval($mybb->input['uid']);
+	
+	if(is_super_admin($uid) && $mybb->user['uid'] != $uid)
+	{
+		cperror($lang->cannot_perform_action_super_admin);
+	}
+	
 	checkadminpermissions("caneditaperms");
 
 	$newperms = array(
@@ -76,6 +82,12 @@ if($mybb->input['action'] == "revokeperms")
 if($mybb->input['action'] == "do_updateperms")
 {
 	$uid = intval($mybb->input['uid']);
+	
+	if(is_super_admin($uid) && $mybb->user['uid'] != $uid)
+	{
+		cperror($lang->cannot_perform_action_super_admin);
+	}
+	
 	checkadminpermissions("caneditaperms");
 
 	// Check if there are custom permissions for this admin.
@@ -138,8 +150,12 @@ if($mybb->input['action'] == "do_updateperms")
 }
 if($mybb->input['action'] == "updateperms")
 {
-	checkadminpermissions("caneditaperms");
 	$uid = intval($mybb->input['uid']);
+	if(is_super_admin($uid) && $mybb->user['uid'] != $uid)
+	{
+		cperror($lang->cannot_perform_action_super_admin);
+	}
+	checkadminpermissions("caneditaperms");
 
 	$plugins->run_hooks("admin_adminoptions_updateperms");
 	

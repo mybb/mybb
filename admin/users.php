@@ -171,46 +171,6 @@ if($mybb->input['action'] == "do_add")
 		$additionalgroups = '';
 	}
 
-	//
-	// UNSURE ABOUT THIS PART - TO BE INSPECTED
-	//
-
-	// $user['profile_fields'] needs to be passed too, unsure what goes in
-	// Old code:
-	/*
-	while($profilefield = $db->fetch_array($query))
-	{
-		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-		$thing = explode("\n", $profilefield['type'], "2");
-		$type = trim($thing[0]);
-		$field = "fid$profilefield[fid]";
-		$options = '';
-		if($type == "multiselect" || $type == "checkbox")
-		{
-			if(is_array($mybb->input[$field]))
-			{
-				foreach($mybb->input[$field] as $key => $val)
-				{
-					if(!empty($options))
-					{
-						$options .= "\n";
-					}
-					$options .= "$val";
-				}
-			}
-		}
-		else
-		{
-			$options = $mybb->input[$field];
-		}
-		$options = $db->escape_string($options);
-		$userfields[$field] = $options;
-	}
-	*/
-	//
-	// END UNSURE
-	//
-
 	// Set up user handler.
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler('insert');
@@ -303,6 +263,11 @@ if($mybb->input['action'] == "do_add")
 // Process editing of a user.
 if($mybb->input['action'] == "do_edit")
 {
+	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'])
+	{
+		cperror($lang->cannot_perform_action_super_admin);
+	}
+	
 	// Determine the usergroup stuff
 	if(is_array($mybb->input['additionalgroups']))
 	{
@@ -399,6 +364,11 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{
+		if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'])
+		{
+			cperror($lang->cannot_perform_action_super_admin);
+		}
+		
 		$plugins->run_hooks("admin_users_do_delete");
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET uid='0' WHERE uid='".intval($mybb->input['uid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
@@ -806,6 +776,11 @@ if($mybb->input['action'] == "add")
 // Show edit user page
 if($mybb->input['action'] == "edit")
 {
+	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'])
+	{
+		cperror($lang->cannot_perform_action_super_admin);
+	}
+		
 	$plugins->run_hooks("admin_users_edit");
 	$uid = intval($mybb->input['uid']);
 	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='$uid'");
@@ -1012,6 +987,11 @@ if($mybb->input['action'] == "edit")
 }
 if($mybb->input['action'] == "delete")
 {
+	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'])
+	{
+		cperror($lang->cannot_perform_action_super_admin);
+	}
+		
 	$uid = intval($mybb->input['uid']);
 	$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='$uid'");
 	$user = $db->fetch_array($query);
@@ -1820,6 +1800,11 @@ if($mybb->input['action'] == "do_manageban")
 	}
 	else
 	{
+		if(is_super_admin($user['uid']) && $mybb->user['uid'] != $user['uid'])
+		{
+			cperror($lang->cannot_perform_action_super_admin);
+		}
+		
 		$banneduser = array(
 			"uid" => $user['uid'],
 			"admin" => $mybbadmin['uid'],
@@ -1876,6 +1861,11 @@ if($mybb->input['action'] == "manageban")
 	}
 	else
 	{
+		if(is_super_admin($mybb->input['auid']) && $mybb->user['uid'] != $mybb->input['auid'])
+		{
+			cperror($lang->cannot_perform_action_super_admin);
+		}
+		
 		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['auid'])."'");
 		$user = $db->fetch_array($query);
 

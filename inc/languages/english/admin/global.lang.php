@@ -74,6 +74,8 @@ $l['invalidlogin_subject'] = "Warning: {1} Login Attempt";
 $l['invalidlogin_headers'] = "From: \"{1} Admin CP\" <{2}>";
 $l['invalidlogin_message'] = "A user has tried to access the Administration Control Panel for {1}. They were unable to succeed in doing so.\nBelow are the login details:\n\nUsername: {2}\nPassword: {3} (MD5: {4})\n\nIP Address: {5}\nHostname: {6}\n\nThank you.";
 
+$l['cannot_perform_action_super_admin'] = "Sorry, but you cannot perform this action on the specified user as they are a super administrator.";
+
 $l['error_fill_form'] = "One or more form fields were invalid or left blank.  Please go back and try again.";
 
 $l['size_gb'] = "GB";

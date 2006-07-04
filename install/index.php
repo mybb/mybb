@@ -371,7 +371,10 @@ function create_tables()
 
 	// Write the configuration file
 	$configdata = "<?php
-/* Database Configuration */
+/**
+ * Daatabase configuration
+ */
+
 \$config['dbtype'] = \"{$mybb->input['dbengine']}\";
 \$config['hostname'] = \"{$mybb->input['dbhost']}\";
 \$config['username'] = \"{$mybb->input['dbuser']}\";
@@ -379,16 +382,48 @@ function create_tables()
 \$config['database'] = \"{$mybb->input['dbname']}\";
 \$config['table_prefix'] = \"{$mybb->input['tableprefix']}\";
 
-/* Admin CP*/
+/**
+ * Admin CP directory
+ *  For security reasons, it is recommended you
+ *  rename your Admin CP directory. You then need
+ *  to adjust the value below to point to the
+ *  new directory.
+ */
+
 \$config['admindir'] = \"admin\";
+
+/**
+ * Hide all Admin CP links
+ *  If you wish to hide all Admin CP links
+ *  on the front end of the board after
+ *  renaming your Admin CP directory, set this
+ *  to 1.
+ */
+
 \$config['hideadminlinks'] = 0;
 
-/* Datacache Configuration */
+/**
+ * Data-cache configuration
+ *  The data cache is a temporary cache
+ *  of the most commonly accessed data in MyBB.
+ *  By default, the database is used to store this data.
+ *
+ *  If you wish to use the file system (inc/cache directory)
+ *  you can change the value below to 'files' from 'db'.
+ */
 
-/* files = Stores datacache in files inside /inc/cache/ (Must be writable)*/
-
-/* db = Stores datacache in the database*/
 \$config['cachestore'] = \"db\";
+
+/**
+ * Super Administrators
+ *  A comma separated list of user IDs who cannot
+ *  be edited, deleted or banned in the Admin CP.
+ *  The administrator permissions for these users
+ *  cannot be altered either.
+ */
+
+\$config['super_admins'] = \"1\";
+ 
 ?>";
 
 	$file = fopen('../inc/config.php', 'w');
