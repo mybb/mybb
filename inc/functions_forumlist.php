@@ -41,7 +41,13 @@ function build_forumbits($pid=0, $depth=1)
 			// Build the link to this forum
 			$forum_url = get_forum_link($forum['fid']);
 
-			// Set the lastpost data for the lastpost in this forum
+			// This forum has a password, and the user isn't authenticated with it - hide post information
+			$hideinfo = 0;
+			if($forum['password'] != '' && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			{
+				$hideinfo = 1;
+			}
+			
 			$lastpost_data = array(
 				"lastpost" => $forum['lastpost'],
 				"lastpostsubject" => $forum['lastpostsubject'],
@@ -70,6 +76,12 @@ function build_forumbits($pid=0, $depth=1)
 				$sub_forums = $forum_info['forum_list'];
 			}
 
+			// If we are hiding information (lastpost) because we aren't authenticated against the password for this forum, remove them
+			if($hideinfo == 1)
+			{
+				unset($lastpost_data);
+			}
+			
 			// If the current forums lastpost is greater than other child forums of the current parent, overwrite it
 			if($lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
 			{
@@ -89,12 +101,6 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// Get the lightbulb status indicator for this forum based on the lastpost
-			// This forum has a password, and the user isn't authenticated with it - hide post information
-			$hideinfo = 0;
-			if($forum['password'] != '' && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
-			{
-				$hideinfo = 1;
-			}
 			$lightbulb = get_forum_lightbulb($forum, $lastpost_data, $hideinfo);
 
 			// Fetch the number of unapproved threads and posts for this forum
