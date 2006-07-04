@@ -294,7 +294,7 @@ class PMDataHandler extends DataHandler
 	 */
 	function insert_pm()
 	{
-		global $db, $mybb, $plugins;
+		global $db, $mybb, $plugins, $lang;
 
 		// Yes, validating is required.
 		if(!$this->get_validated())
@@ -315,6 +315,42 @@ class PMDataHandler extends DataHandler
 			$pm['icon'] = 0;
 		}
 
+		// Send email notification of new PM if it is enabled for the recipient
+		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$pm['recipient']['uid']."' AND folder='1' ORDER BY dateline DESC LIMIT 1");
+		$lastpm = $db->fetch_array($query);
+		if($pm['recipient']['pmnotify'] == "yes" && $pm['recipient']['lastactive'] > $lastpm['dateline'] && !$mybb->input['saveasdraft'])
+		{
+			if($pm['recipient']['language'] != "" && $lang->language_exists($touser['language']))
+			{
+				$uselang = $touser['language'];
+			}
+			elseif($mybb->settings['bblanguage'])
+			{
+				$uselang = $mybb->settings['bblanguage'];
+			}
+			else
+			{
+				$uselang = "english";
+			}
+			if($uselang == $mybb->settings['bblanguage'])
+			{
+				$emailsubject = $lang->emailsubject_newpm;
+				$emailmessage = $lang->email_newpm;
+			}
+			else
+			{
+				$userlang = new MyLanguage;
+				$userlang->set_path("./inc/languages");
+				$userlang->set_language($uselang);
+				$userlang->load("messages");
+				$emailsubject = $userlang->emailsubject_newpm;
+				$emailmessage = $userlang->email_newpm;
+			}
+			$emailmessage = sprintf($emailmessage, $pm['recipient']['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+			$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
+			mymail($pm['recipient']['email'], $emailsubject, $emailmessage);
+		}
+		
 		// Check if we're updating a draft or not.
 		$query = $db->simple_select(TABLE_PREFIX."privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
 		$draftcheck = $db->fetch_array($query);
@@ -430,41 +466,7 @@ class PMDataHandler extends DataHandler
 			$db->update_query(TABLE_PREFIX."users", $sql_array, "uid={$pm['recipient']['uid']}");
 		}
 
-		// Send email notification of new PM if it is enabled for the recipient
-		$query = $db->query("SELECT dateline FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$pm['recipient']['uid']."' AND folder='1' ORDER BY dateline DESC LIMIT 1");
-		$lastpm = $db->fetch_array($query);
-		if($pm['recipient']['pmnotify'] == "yes" && $pm['recipient']['lastactive'] > $lastpm['dateline'] && !$mybb->input['saveasdraft'])
-		{
-			if($pm['recipient']['language'] != "" && $lang->languageExists($touser['language']))
-			{
-				$uselang = $touser['language'];
-			}
-			elseif($mybb->settings['bblanguage'])
-			{
-				$uselang = $mybb->settings['bblanguage'];
-			}
-			else
-			{
-				$uselang = "english";
-			}
-			if($uselang == $mybb->settings['bblanguage'])
-			{
-				$emailsubject = $lang->emailsubject_newpm;
-				$emailmessage = $lang->email_newpm;
-			}
-			else
-			{
-				$userlang = new MyLanguage;
-				$userlang->setPath("./inc/languages");
-				$userlang->setLanguage($uselang);
-				$userlang->load("messages");
-				$emailsubject = $userlang->emailsubject_newpm;
-				$emailmessage = $userlang->email_newpm;
-			}
-			$emailmessage = sprintf($emailmessage, $pm['recipient']['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-			$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
-			mymail($pm['recipient']['email'], $emailsubject, $emailmessage);
-		}
+
 		// Return back with appropriate data
 		if($pm['saveasdraft'])
 		{
