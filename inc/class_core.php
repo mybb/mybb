@@ -259,7 +259,7 @@ class MyBB {
 			default:
 				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.com\">MyBB Website</a>";
 		}
-		include "./inc/generic_error.html";
+		include MYBB_ROOT."inc/generic_error.html";
 		if($halt)
 		{
 			exit;
