@@ -95,6 +95,9 @@ class postParser
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
 		}
 
+		// Breaking up long lines (experimental for now)
+		$message = wordwrap($message, 50, ' ', true);
+
 		// If we can, parse smiliesa
 		if($options['allow_smilies'] != "no")
 		{

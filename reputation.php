@@ -433,7 +433,7 @@ if(!$mybb->input['action'])
 	
 	// Fetch the reputations which will be displayed on this page
 	$query = $db->query("
-		SELECT r.*, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup
+		SELECT r.*, r.uid AS rated_uid, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup
 		FROM ".TABLE_PREFIX."reputation r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
 		WHERE r.uid='{$user['uid']}' $conditions
@@ -478,7 +478,7 @@ if(!$mybb->input['action'])
 		// Does the current user have permission to delete this reputation? Show delete link
 		if($mybb->usergroup['cancp'] == "yes" || ($mybb->usergroup['cangivereputations'] == "yes" && $reputation['adduid'] == $mybb->user['uid']))
 		{
-			$delete_link = "[<a href=\"javascript:MyBB.deleteReputation({$reputation_vote['uid']}, {$reputation_vote['rid']});\">{$lang->delete_vote}</a>]";
+			$delete_link = "[<a href=\"javascript:MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']});\">{$lang->delete_vote}</a>]";
 		}
 		else
 		{

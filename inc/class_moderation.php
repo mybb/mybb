@@ -768,16 +768,16 @@ class Moderation
 			);
 		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
 
-		update_forum_count($fid);
-		update_thread_count($tid);
-
 		// If this is the first post of the thread, also approve the thread
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($where) AND replyto='0' LIMIT 1");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "({$where}) AND replyto='0'", array("limit" => 1));
 		while($post = $db->fetch_array($query))
 		{
 			$db->update_query(TABLE_PREFIX."threads", $approve, "tid='$post[tid]'");
-			$cache->updatestats();
 		}
+
+		update_forum_count($fid);
+		update_thread_count($tid);
+		$cache->updatestats();
 
 		return true;
 	}
@@ -802,16 +802,16 @@ class Moderation
 			);
 		$db->update_query(TABLE_PREFIX."posts", $unapprove, $where);
 
-		update_forum_count($fid);
-		update_thread_count($tid);
-
 		// If this is the first post of the thread, also unapprove the thread
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($where) AND replyto='0' LIMIT 1");
 		while($post = $db->fetch_array($query))
 		{
 			$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='$post[tid]'");
-			$cache->updatestats();
 		}
+
+		update_forum_count($fid);
+		update_thread_count($tid);
+		$cache->updatestats();
 
 		return true;
 	}

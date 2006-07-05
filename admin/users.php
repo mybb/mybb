@@ -670,6 +670,8 @@ if($mybb->input['action'] == "add")
 
 	// Add the birthday dropdown.
 	$options = array(
+		'blank_fields' => true,
+		'no_selected_year' => true,
 		'years_back' => 100,
 		'years_ahead' => '0',
 	);
@@ -824,6 +826,8 @@ if($mybb->input['action'] == "edit")
 	// Add the birthday dropdown.
 	$bday = explode('-', $user['birthday']);
 	$options = array(
+		'blank_fields' => true,
+		'no_selected_year' => true,
 		'years_back' => 100,
 		'years_ahead' => '0',
 		'selected_day' => $bday[0],

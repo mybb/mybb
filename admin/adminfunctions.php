@@ -2088,6 +2088,10 @@ function build_date_dropdown($id, $options=array())
 	$dropdown = '';
 	// Now add the days.
 	$dropdown .= "<select name=\"{$id}_day\">\n";
+	if(isset($options['blank_fields']) && $options['blank_fields'] == true)
+	{
+		$dropdown .= "<option value=\"0\"></option>\n";
+	}
 	for($d = 1; $d <= 31; $d++)
 	{
 		if($d == $options['selected_day'])
@@ -2103,6 +2107,10 @@ function build_date_dropdown($id, $options=array())
 
 	// The months.
 	$dropdown .= "<select name=\"{$id}_month\">\n";
+	if(isset($options['blank_fields']) && $options['blank_fields'] == true)
+	{
+		$dropdown .= "<option value=\"0\"></option>\n";
+	}
 	for($m = 1; $m <= 12; $m++)
 	{
 		$month_lang = 'month_'.$m;
@@ -2142,9 +2150,13 @@ function build_date_dropdown($id, $options=array())
 
 	// And the years.
 	$dropdown .= "<select name=\"{$id}_year\">\n";
+	if(isset($options['blank_fields']) && $options['blank_fields'] == true)
+	{
+		$dropdown .= "<option value=\"0\"></option>\n";
+	}
 	foreach($years as $k => $v)
 	{
-		if($k == $options['selected_year'] || !$options['selected_year'] && $k == $this_year)
+		if($k == $options['selected_year'] || (!$options['selected_year'] && $k == $this_year && !isset($options['no_selected_year'])))
 		{
 			$dropdown .= "<option selected=\"selected\" value=\"{$k}\">{$v}</option>\n";
 		}
@@ -2160,6 +2172,10 @@ function build_date_dropdown($id, $options=array())
 	{
 		// Build hours HTML.
 		$dropdown .= "<select name=\"{$id}_hours\">\n";
+		if(isset($options['blank_fields']) && $options['blank_fields'] == true)
+		{
+			$dropdown .= "<option value=\"0\"></option>\n";
+		}
 		for($h = 0; $h <= 23; $h++)
 		{
 			if($h == $options['selected_hour'])
@@ -2175,6 +2191,10 @@ function build_date_dropdown($id, $options=array())
 
 		// And the minutes HTML.
 		$dropdown .= "<select name=\"{$id}_minutes\">\n";
+		if(isset($options['blank_fields']) && $options['blank_fields'] == true)
+		{
+			$dropdown .= "<option value=\"0\"></option>\n";
+		}
 		for($min = 0; $min <= 59; $min++)
 		{
 			if($min == $options['selected_minute'])

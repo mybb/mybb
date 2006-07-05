@@ -324,7 +324,12 @@ if($mybb->input['action'] == "orphans")
 		closedir($uploads);
 	}
 	$plugins->run_hooks("admin_attachments_orphans");
-	
+
+	if(count($orphan_files) < 1)
+	{
+		cpmessage($lang->no_orphans);
+	}
+
 	cpheader();
 	startform("attachments.php", "", "do_orphan_delete");
 	starttable();
@@ -349,6 +354,7 @@ if($mybb->input['action'] == "orphans")
 
 		$bgcolor = getaltbg();
 	}
+
 	endtable();
 	endform($lang->delete_selected, $lang->clear_checks);
 	cpfooter();
