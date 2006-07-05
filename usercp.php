@@ -1411,7 +1411,7 @@ if($mybb->input['action'] == "avatar")
 			if($avatar_dimensions[0] && $avatar_dimensions[1])
 			{
 				$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
-			}	
+			}
 			eval("\$currentavatar = \"".$templates->get("usercp_avatar_current")."\";");
 			$colspan = 1;
 		}
@@ -1433,7 +1433,6 @@ if($mybb->input['action'] == "avatar")
 		$plugins->run_hooks("usercp_avatar_end");
 		output_page($avatar);
 	}
-
 }
 if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
@@ -1441,7 +1440,12 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	require MYBB_ROOT."inc/functions_upload.php";
 	if($mybb->input['remove']) // remove avatar
 	{
-		$db->update_query(TABLE_PREFIX."users", array('avatar' => '', 'avatardimensions='', ''avatartype' => ''), "uid='".$mybb->user['uid']."'");
+		$updated_avatar = array(
+			"avatar" => "",
+			"avatardimensions" => "",
+			"avatartype" => ""
+		);
+		$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
 		remove_avatars($mybb->user['uid']);
 	}
 	elseif($mybb->input['gallery']) // Gallery avatar
@@ -1456,7 +1460,12 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		}
 		if(file_exists($avatarpath))
 		{
-			$db->update_query(TABLE_PREFIX."users", array('avatar' => $avatarpath, 'avatardimensions' => '', 'avatartype' => 'gallery'), "uid='".$mybb->user['uid']."'");
+			$updated_avatar = array(
+				"avatar" => $avatarpath,
+				"avatardimensions" => "",
+				"avatartype" => "gallery"
+			);
+			$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
 		}
 		remove_avatars($mybb->user['uid']);
 	}
@@ -1471,7 +1480,16 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		{
 			error($avatar['error']);
 		}
-		$db->update_query(TABLE_PREFIX."users", array('avatar' => $avatar['avatar'], 'avatardimensions' => "{$avatar['width']}|{$avatar['height']}", 'avatartype' => 'upload'), "uid='".$mybb->user['uid']."'");
+		if($avatar['width'] > 0 && $avatar['height'] > 0)
+		{
+			$avatar_dimensions = $avatar['width']."|".$avatar['height'];
+		}
+		$updated_avatar = array(
+			"avatar" => $avatar['avatar'],
+			"avatardimensions" => $avatar_dimensions,
+			"avatartype" => "upload"
+		);
+		$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
 	}
 	else // remote avatar
 	{
@@ -1489,7 +1507,16 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 				error($lang->error_avatartoobig);
 			}
 		}
-		$db->update_query(TABLE_PREFIX."users", array('avatar' => $db->escape_string($mybb->input['avatarurl']), 'avatardimensions' => "{$width}|{$height}", 'avatartype' => 'remote'), "uid='".$mybb->user['uid']."'");
+		if($width > 0 && $height > 0)
+		{
+			$avatar_dimensions = intval($width)."|".intval($height);
+		}
+		$updated_avatar = array(
+			"avatar" => $db->escape_string($mybb->input['avatarurl']),
+			"avatardimensions" => $avatar_dimensions,
+			"avatartype" => "remote"
+		);
+		$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
 		remove_avatars($mybb->user['uid']);
 	}
 	$plugins->run_hooks("usercp_do_avatar_end");
@@ -2062,6 +2089,11 @@ if(!$mybb->input['action'])
 	$colspan = 2;
 	if($mybb->user['avatar'])
 	{
+		$avatar_dimensions = explode("|", $mybb->user['avatardimensions']);
+		if($avatar_dimensions[0] && $avatar_dimensions[1])
+		{
+			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
+		}
 		eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
 		$colspan = 3;
 	}
