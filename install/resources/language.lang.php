@@ -194,7 +194,7 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 					<td class="last alt_col"><input type="text" class="text_input" name="websiteurl" id="websiteurl" value="{4}" /></td>
 				</tr>
 				<tr>
-					<th colspan="2" class="first last">Cookie settings</th>
+					<th colspan="2" class="first last">Cookie settings <a title="Whats this?" target="_blank" href="http://wiki.mybboard.com/index.php/Cookie_Settings">(?)</a></th>
 				</tr>
 				<tr>
 					<td class="first"><label for="cookiedomain">Cookie Domain:</label></td>
