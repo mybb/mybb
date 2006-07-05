@@ -298,19 +298,29 @@ class UserDataHandler extends DataHandler
 		$birthday['year'] = intval($birthday['year']);
 
 		// Error if a day and month exists, and the birthday day and range is not in range
-		if($birthday['day'] && $birthday['month'] && ($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12))
-		{
-			$this->set_error("invalid_birthday");
-			return false;
-		}
+		if($birthday['day'] && $birthday['month'])
+		{ 
+			if($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12 || ($birthday['month'] == 2 && $birthday['day'] > 29))
+			{
+				$this->set_error("invalid_birthday");
+				return false;
+			}
 
+			// Check if the day actually exists.
+			if($birthday['day'] > date("t", mktime(0, 0, 0, $birthday['month'], 1, $birthday['year'])))
+			{
+				$this->set_error("invalid_birthday");
+				return false;
+			}
+		}
+		
 		// Error if a year exists and the year is out of range
 		if($birthday['year'] != 0 && ($birthday['year'] < (date("Y")-100)) || $birthday['year'] > date("Y"))
 		{
 			$this->set_error("invalid_birthday");
 			return false;
 		}
-
+		
 		// Make the user's birthday field
 		if($birthday['year'] != 0)
 		{
