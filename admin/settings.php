@@ -459,7 +459,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				$type[0] = trim($type[0]);
 				if($type[0] == "text" || $type[0] == "")
 				{
-					$setting['value'] = htmlentities($seting['value']);
+					$setting['value'] = htmlentities($setting['value']);
 					$settingcode = "<input type=\"text\" name=\"upsetting[$setting[sid]]\" value=\"$setting[value]\" size=\"25\">";
 				}
 				else if($type[0] == "textarea")
