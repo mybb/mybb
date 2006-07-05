@@ -2548,7 +2548,7 @@ function mynumberformat($number)
  * @param string The string to be word wrapped
  * @return string The word wraped string
  */
-function my_wordwrap($string)
+function my_wordwrap($message)
 {
 	global $mybb;
 
