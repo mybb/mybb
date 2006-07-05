@@ -2557,6 +2557,7 @@ function my_wordwrap($string)
 		$message = preg_replace("#(?>[^\s<>&/\"-]{50})#", "$0 ", $message); 
 	}
 	return $message;
+}
 
 /**
  * Workaround for date limitation in PHP to establish the day of a birthday (Provided by meme)
