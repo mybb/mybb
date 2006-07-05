@@ -997,7 +997,12 @@ elseif($mybb->input['action'] == "profile")
 	if($memprofile['avatar'])
 	{
 		$memprofile['avatar'] = htmlspecialchars_uni($memprofile['avatar']);
-		$avatar = "<img src=\"$memprofile[avatar]\">";
+		$avatar_dimensions = explode("|", $memprofile['avatardimensions']);
+		if($avatar_dimensions[0] && $avatar_dimensions[1])
+		{
+			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
+		}
+		$avatar = "<img src=\"$memprofile[avatar]\" $avatar_width_height />";
 	}
 	else
 	{

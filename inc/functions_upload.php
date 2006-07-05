@@ -144,9 +144,9 @@ function upload_avatar()
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
-	
+
 	// If we've got this far check dimensions
-	if(preg_match("#(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext) && $mybb->settings['maxavatardims'] != "")
+	if($mybb->settings['maxavatardims'] != "")
 	{
 		list($maxwidth, $maxheight) = @explode("x", $mybb->settings['maxavatardims']);
 		if(($maxwidth && $img_dimensions[0] > $maxwidth) || ($maxheight && $img_dimensions[1] > $maxheight))
@@ -159,7 +159,11 @@ function upload_avatar()
 	// Everything is okay so lets delete old avatars for this user
 	remove_avatars($mybb->user['uid'], $filename);
 
-	$ret['avatar'] = $mybb->settings['avataruploadpath']."/".$filename;
+	$ret = array(
+		"avatar" => $mybb->settings['avataruploadpath']."/".$filename,
+		"width" => intval($img_dimensions[0]),
+		"height" => intval($img_dimensions[1])
+	);
 	return $ret;
 }
 

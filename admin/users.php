@@ -293,10 +293,8 @@ if($mybb->input['action'] == "do_edit")
 	$user = array(
 		"uid" => $mybb->input['uid'],
 		"username" => $mybb->input['userusername'],
-		"password" => $mybb->input['userpassword'],
-		"password2" => $mybb->input['userpassword2'],
 		"email" => $mybb->input['useremail'],
-		"email2" => $mybb->input['useremail2'],
+		"email2" => $mybb->input['useremail'],
 		"usergroup" => $mybb->input['usergroup'],
 		"additionalgroups" => $additionalgroups,
 		"displaygroup" => $mybb->input['displaygroup'],
@@ -315,6 +313,12 @@ if($mybb->input['action'] == "do_edit")
 		"style" => $mybb->input['style'],
 		"signature" => $mybb->input['signature']
 	);
+	
+	if($mybb->input['userpassword'])
+	{
+		$user['password'] = $mybb->input['userpassword'];
+		$user['password2'] = $mybb->input['userpassword'];
+	}
 
 	$user['birthday'] = array(
 		"day" => $mybb->input['birthday_day'],
@@ -686,7 +690,7 @@ if($mybb->input['action'] == "add")
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = trim($thing[0]);
 		$options = $thing[1];
-		$field = "fid$profilefield[fid]";
+		$field = "profile_fields[fid$profilefield[fid]]";
 		if($type == "multiselect")
 		{
 			$expoptions = explode("\n", $options);
@@ -803,8 +807,8 @@ if($mybb->input['action'] == "edit")
 	tableheader($lang->modify_user);
 	tablesubheader($lang->required_info);
 	makeinputcode($lang->username, "userusername", $user['username'], 25, '', $mybb->settings['maxnamelength'], 0);
-	makepasswordcode($lang->new_password, "newpassword", '', 25, 0);
-	makeinputcode($lang->email, "email", $user['email']);
+	makepasswordcode($lang->new_password, "userpassword", '', 25, 0);
+	makeinputcode($lang->email, "useremail", $user['email']);
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", $user['usergroup']);
 	makelabelcode($lang->secondary_usergroups, "<small>".make_usergroup_checkbox_code("additionalgroups", $additionalgroups)."</small>");
 	if(!$user['displaygroup'])
@@ -876,7 +880,7 @@ if($mybb->input['action'] == "edit")
 				{
 					$profilefield['length'] = 3;
 				}
-				$code = "<select name=\"".$field."[]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
+				$code = "<select name=\"profile_fields[".$field."][]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
 			}
 		}
 		elseif($type == "select") {
@@ -901,7 +905,7 @@ if($mybb->input['action'] == "edit")
 				{
 					$profilefield['length'] = 1;
 				}
-				$code = "<select name=\"$field\" size=\"$profilefield[length]\">$select</select>";
+				$code = "<select name=\"profile_fields[$field]\" size=\"$profilefield[length]\">$select</select>";
 			}
 		}
 		elseif($type == "radio")
@@ -919,7 +923,7 @@ if($mybb->input['action'] == "edit")
 					{
 						$checked = '';
 					}
-					$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" $checked /> $val<br />";
+					$code .= "<input type=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> $val<br />";
 				}
 			}
 		}
@@ -943,19 +947,19 @@ if($mybb->input['action'] == "edit")
 					{
 						$checked = '';
 					}
-					$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" $checked /> $val<br />";
+					$code .= "<input type=\"checkbox\" name=\"profile_fields[".$field."][]\" value=\"$val\" $checked /> $val<br />";
 				}
 			}
 		}
 		elseif($type == "textarea")
 		{
 			$value = htmlspecialchars_uni($userfields[$field]);
-			$code = "<textarea name=\"$field\" rows=\"6\" cols=\"50\">$value</textarea>";
+			$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"50\">$value</textarea>";
 		}
 		else
 		{
 			$value = htmlspecialchars_uni($userfields[$field]);
-			$code = "<input type=\"text\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
+			$code = "<input type=\"text\" name=\"profile_fields[$field]\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
 		}
 		makelabelcode($profilefield[name], $code);
 		$code = '';

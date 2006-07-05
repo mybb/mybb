@@ -384,7 +384,12 @@ while($announcement = $db->fetch_array($query))
 	}
 	if($announcement['avatar'] != '')
 	{
-		$avatar = "<td class=\"trow\" class=\"trow1\" width=1 align=\"center\" valign=\"top\"><img src=\"$announcement[avatar]\"></td>";
+		$avatar_dimensions = explode("|", $announcement['avatardimensions']);
+		if($avatar_dimensions[0] && $avatar_dimensions[1])
+		{
+			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
+		}		
+		$avatar = "<td class=\"trow\" class=\"trow1\" width=1 align=\"center\" valign=\"top\"><img src=\"$announcement[avatar]\" {$avatar_width_height} /></td>";
 	}
 	else
 	{

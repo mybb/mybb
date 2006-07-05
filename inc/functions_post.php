@@ -238,6 +238,11 @@ function build_postbit($post, $pmprevann=0)
 		if($post['avatar'] != "" && $mybb->user['showavatars'] != "no")
 		{
 			$post['avatar'] = htmlspecialchars_uni($post['avatar']);
+			$avatar_dimensions = explode("|", $post['avatardimensions']);
+			if($avatar_dimensions[0] && $avatar_dimensions[1])
+			{
+				$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
+			}
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
 		}
 		else
