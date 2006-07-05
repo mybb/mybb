@@ -5528,7 +5528,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 //-->
 </script>
 </head>
-<body onLoad="sigLimit()">
+<body onload="sigLimit()">
 {$header}
 <form action="usercp.php" method="post">
 <table width="100%" border="0" align="center">
@@ -5543,11 +5543,11 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 <tr>
 <td class="trow1" valign="top" width="40%"><span class="smalltext">{$lang->edit_sig_note}<br /><br />{$lang->edit_sig_note2}</span></td>
-<td class="trow1" width="60%"><textarea rows="5" cols="55" wrap="physical" name="signature" onKeyUp="sigLimit()" onKeyDown="sigLimit()">{$sig}</textarea><br /><input type="text" class="textbox" name="sigcounter" size="3" value="{$mybb->settings['siglength']}" disabled="disabled" /> <span class="smalltext">{$lang->characters_remaining}</span>
+<td class="trow1" width="60%"><textarea rows="5" cols="55" wrap="physical" name="signature" onkeyup="sigLimit()" onkeydown="sigLimit()">{$sig}</textarea><br /><input type="text" class="textbox" name="sigcounter" size="3" value="{$mybb->settings['siglength']}" disabled="disabled" /> <span class="smalltext">{$lang->characters_remaining}</span>
 <br /><br /><span class="smalltext">
-<input type="radio" class="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}<br />
-<input type="radio" class="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}<br />
-<input type="radio" class="radio" name="updateposts" value="no" checked="checked" />&nbsp;{$lang->leave_sig_settings}</span>
+<label><input type="radio" class="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}</label><br />
+<label><input type="radio" class="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}</label><br />
+<label><input type="radio" class="radio" name="updateposts" value="no" checked="checked" />&nbsp;{$lang->leave_sig_settings}</label></span>
 </td>
 </tr>
 </table>

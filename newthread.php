@@ -452,6 +452,12 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $postoptions['disablesmilies'];
 		$post['dateline'] = time();
+		$post['includesig'] = $mybb->input['postoptions']['signature'];
+		if($post['includesig'] != "yes")
+		{
+			$post['includesig'] = "no";
+		}
+
 
 		// Fetch attachments assigned to this post
 		if($mybb->input['pid'])
