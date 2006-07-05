@@ -72,9 +72,6 @@ class postParser
 			}
 		}
 
-		// Always fix bad Javascript in the message.
-		$message = $this->fix_javascript($message);
-
 		// If HTML is disallowed, clean the post of it.
 		if($options['allow_html'] != "yes")
 		{
@@ -94,9 +91,6 @@ class postParser
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
 		}
-
-		// Breaking up long lines (experimental for now)
-		$message = wordwrap($message, 50, ' ', true);
 
 		// If we can, parse smiliesa
 		if($options['allow_smilies'] != "no")
@@ -138,6 +132,11 @@ class postParser
 			$message = nl2br($message);
 			$message = str_replace("</div><br />", "</div>", $message);
 		}
+		// Always fix bad Javascript in the message.
+		$message = $this->fix_javascript($message);
+		
+		$message = my_wordwrap($message);
+		
 		return $message;
 	}
 
@@ -487,6 +486,7 @@ class postParser
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
 		$str = str_replace('&amp;', '&', $str);
+		$str = str_replace('&quot;', "\"", $str);
 		$original = $str;
 		// See if open and close tags are provided.
 		$added_open_close = false;
@@ -528,7 +528,7 @@ class postParser
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
-		$code = str_replace('\\', '&#092;', $code);
+		$code = str_replace("\\", '&#092;', $code);
 		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
 
 

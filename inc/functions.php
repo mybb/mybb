@@ -2543,6 +2543,22 @@ function mynumberformat($number)
 }
 
 /**
+ * Replacement function for PHP's wordwrap(). This version does not break up HTML tags, URLs or unicode references.
+ *
+ * @param string The string to be word wrapped
+ * @return string The word wraped string
+ */
+function my_wordwrap($string)
+{
+	global $mybb;
+
+	if($mybb->settings['wordwrap'] > 0)
+	{
+		$message = preg_replace("#(?>[^\s<>&/\"-]{50})#", "$0 ", $message); 
+	}
+	return $message;
+
+/**
  * Workaround for date limitation in PHP to establish the day of a birthday (Provided by meme)
  *
  * @param int The month of the birthday

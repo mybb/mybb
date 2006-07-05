@@ -701,6 +701,14 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="wordwrap">
+			<title>Number of Characters before Word Wrapping Occurs</title>
+			<description><![CDATA[The maximum number of characters that can be present in a word before a space is automatically inserted. (helps preservation of the forum layout). Set to 0 to disable.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[50]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="reputation" title="Reputation" description="" disporder="10" isdefault="yes">
 		<setting name="enablereputation">
