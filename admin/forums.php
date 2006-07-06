@@ -171,39 +171,6 @@ function getforums($pid=0, $depth=1)
 	}
 }
 
-function makeparentlist($fid, $navsep=",")
-{
-	global $pforumcache, $db;
-	if(!$pforumcache)
-	{
-		$options = array(
-			"order_by" => "disporder, pid"
-		);
-		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "", $options);
-		while($forum = $db->fetch_array($query))
-		{
-			$pforumcache[$forum[fid]][$forum[pid]] = $forum;
-		}
-	}
-	reset($pforumcache);
-	reset($pforumcache[$fid]);
-	foreach($pforumcache[$fid] as $key => $forum)
-	{
-		if($fid == $forum[fid])
-		{
-			if($pforumcache[$forum[pid]])
-			{
-				$navigation = makeparentlist($forum[pid], $navsep) . $navigation;
-			}
-			if($navigation)
-			{
-				$navigation .= $navsep;
-			}
-			$navigation .= "$forum[fid]";
-		}
-	}
-	return $navigation;
-}
 if($mybb->input['action'] == "do_add")
 {
 	$pid = intval($mybb->input['pid']);

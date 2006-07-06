@@ -2311,4 +2311,45 @@ function is_super_admin($uid)
 		return true;
 	}
 }
+
+/**
+ * Makes a parent list for forums
+ *
+ * @param int The forum ID
+ * @param string The separator of the parent forum IDs
+ * @return string The generated parent list
+ */
+function makeparentlist($fid, $navsep=",")
+{
+	global $pforumcache, $db;
+	if(!$pforumcache)
+	{
+		$options = array(
+			"order_by" => "disporder, pid"
+		);
+		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "", $options);
+		while($forum = $db->fetch_array($query))
+		{
+			$pforumcache[$forum[fid]][$forum[pid]] = $forum;
+		}
+	}
+	reset($pforumcache);
+	reset($pforumcache[$fid]);
+	foreach($pforumcache[$fid] as $key => $forum)
+	{
+		if($fid == $forum[fid])
+		{
+			if($pforumcache[$forum[pid]])
+			{
+				$navigation = makeparentlist($forum[pid], $navsep) . $navigation;
+			}
+			if($navigation)
+			{
+				$navigation .= $navsep;
+			}
+			$navigation .= "$forum[fid]";
+		}
+	}
+	return $navigation;
+}
 ?>

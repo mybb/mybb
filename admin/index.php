@@ -388,7 +388,8 @@ $menu[150] = array(
 		10 => array("title" => $lang->nav_db_maint, "url" => "misc.php?".SID."&action=dbmaint"),
 		20 => array("title" => $lang->nav_cache_manager, "url" => "maintenance.php?".SID."&action=cache"),
 		30 => array("title" => $lang->nav_recount_stats, "url" => "maintenance.php?".SID."&action=rebuildstats"),
-		40 => array("title" => $lang->nav_view_phpinfo, "url" => "index.php?".SID."&action=phpinfo")
+		40 => array("title" => $lang->nav_recount_forums, "url" => "maintenance.php?".SID."&action=rebuildforums"),
+		50 => array("title" => $lang->nav_view_phpinfo, "url" => "index.php?".SID."&action=phpinfo")
 	)
 );
 

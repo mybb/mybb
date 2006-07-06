@@ -32,11 +32,10 @@ switch($mybb->input['action'])
 			addacpnav($lang->nav_view_cache);
 		}
 		break;
-	case "rebuild":
-		addacpnav($lang->nav_recount_rebuild, "maintenance.php?".SID."&action=rebuild");
+	case "rebuildforums":
+		addacpnav($lang->rebuild_forum_counters);
 		break;
 	case "rebuildstats":
-		addacpnav($lang->nav_recount_rebuild, "maintenance.php?".SID."&action=rebuild");
 		addacpnav($lang->rebuildstats);
 		break;
 }
@@ -137,19 +136,33 @@ if($mybb->input['action'] == "rebuildstats")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "rebuild")
+if($mybb->input['action'] == "do_rebuildforums")
 {
-	$plugins->run_hooks("admin_maintenance_rebuild");
+	$plugins->run_hooks("admin_maintenance_do_rebuildforums");
+
+	$query = $db->simple_select(TABLE_PREFIX."forums", "fid");
+	while($forum = $db->fetch_array($query))
+	{
+		$update['parentlist'] = makeparentlist($forum['fid']);
+		$db->update_query(TABLE_PREFIX."forums", $update, "fid='{$forum['fid']}'");
+		update_forum_count($forum['fid']);
+	}
+
+	$cache->updateforums();
+	cpmessage($lang->forums_rebuilt);
+}
+
+if($mybb->input['action'] == "rebuildforums")
+{
+	$plugins->run_hooks("admin_maintenance_rebuildforums");
 	cpheader();
 	
-	// Recount forums
-	startform("maintenance.php", "", "do_rebuildforums");
+	startform("maintenance.php", "" , "do_rebuildforums");
 	starttable();
 	tableheader($lang->rebuild_forum_counters);
-	makelabelcode("<div style=\"text-align: center;\">{$lang->rebuild_forum_counters_note}</div>");
-	makeinputcode($lang->disporder, "perpage", "15", "4");
+	$button = makebuttoncode("rebuildstatssubmit", $lang->proceed);
+	makelabelcode("<div align=\"center\">$lang->rebuild_forum_counters_note<br /><br />$button</div>");
 	endtable();
-	endform($lang->rebuild_button);
-	cpfooter();
+	endform();
 }
 ?>
