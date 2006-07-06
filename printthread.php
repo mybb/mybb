@@ -83,6 +83,8 @@ while($postrow = $db->fetch_array($query))
 		"allow_mycode" => $forum['allow_mycode'],
 		"allow_smilies" => $forum['allowsmilies'],
 		"allow_imgcode" => $forum['allowimgcode'],
+		"me_username" => $postrow['username'],
+		"shorten_urls" => "no"
 	);
 	if($postrow['smilieoff'] == "yes")
 	{

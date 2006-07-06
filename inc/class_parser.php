@@ -17,6 +17,7 @@ options = array(
 	nl2br
 	filter_badwords
 	me_username
+	shorten_urls
 )
 */
 
@@ -49,6 +50,14 @@ class postParser
 	 * @var string
 	 */
 	var $base_url;
+	
+	/**
+	 * Options for this parsed message (Private - set by parse_message argument)
+	 *
+	 * @access private
+	 * @var array
+	 */
+	var $options;
 
 	/**
 	 * Parses a message with the specified options.
@@ -71,6 +80,9 @@ class postParser
 				$this->base_url = $this->base_url."/";
 			}
 		}
+		
+		// Set the options		
+		$this->options = $options;
 
 		// If HTML is disallowed, clean the post of it.
 		if($options['allow_html'] != "yes")
@@ -475,7 +487,6 @@ class postParser
 	function mycode_parse_php($str)
 	{
 		global $lang;
-		
 
 		// Clean the string before parsing.
 		$str = trim($str);
@@ -574,7 +585,7 @@ class postParser
 		$name = stripslashes($name);
 		$url = stripslashes($url);
 		$fullurl = stripslashes($fullurl);
-		if($name == $url)
+		if($name == $url && $this->options['shorten_urls'] != "no")
 		{
 			if(my_strlen($url) > 55)
 			{
