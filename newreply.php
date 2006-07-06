@@ -453,6 +453,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					if($pid == $quoted_post['pid'])
 					{
 						$subject = preg_replace('#RE:#i', '', $quoted_post['subject']);
+						$subject = "RE: ".$subject;
 					}
 					if($quoted_post['userusername'])
 					{

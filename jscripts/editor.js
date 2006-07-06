@@ -43,9 +43,17 @@ messageEditor.prototype = {
 
 		// Here we get the ID of the textarea we're replacing and store it.
 		this.textarea = textarea;
-
+		
+		this.options = options;
+		
+		// Only swap it over once the page has loaded (add event)
+		Event.observe(window, "load", this.showEditor.bindAsEventListener(this));
+	},
+	
+	showEditor: function()
+	{
 		// Assign the old textarea to a variable for later use.
-		oldTextarea = $(textarea);
+		oldTextarea = $(this.textarea);
 
 		// Begin the creation of our new editor.
 
@@ -54,9 +62,9 @@ messageEditor.prototype = {
 		editor.className = "editor";
 
 		// Determine the overall height and width - messy, but works
-		if(options && options.width)
+		if(this.options && this.options.width)
 		{
-			w = options.width;
+			w = this.options.width;
 		}
 		else if(oldTextarea.style.width)
 		{
@@ -70,9 +78,9 @@ messageEditor.prototype = {
 		{
 			w = "560px";
 		}
-		if(options && options.height)
+		if(this.options && this.options.height)
 		{
-			w = options.height;
+			w = this.options.height;
 		}
 		else if(oldTextarea.style.height)
 		{
