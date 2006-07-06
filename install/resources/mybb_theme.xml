@@ -2337,10 +2337,10 @@ $reputation
 			<div class="logo"><a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" border="0" /></a></div>
 			<div class="menu">
 				<ul>
-					<li><a href="{$mybb->settings['bburl']}/search.php"><img src="{$theme['imgdir']}/toplinks/search.gif" border="0" alt="{$lang->toplinks_search}" />{$lang->toplinks_search}</a></li>
-					<li><a href="{$mybb->settings['bburl']}/memberlist.php"><img src="{$theme['imgdir']}/toplinks/memberlist.gif" border="0" alt="{$lang->toplinks_memberlist}" />{$lang->toplinks_memberlist}</a></li>
-					<li><a href="{$mybb->settings['bburl']}/calendar.php"><img src="{$theme['imgdir']}/toplinks/calendar.gif" border="0" alt="{$lang->toplinks_calendar}" />{$lang->toplinks_calendar}</a></li>
-					<li><a href="{$mybb->settings['bburl']}/misc.php?action=help"><img src="{$theme['imgdir']}/toplinks/help.gif" border="0" alt="{$lang->toplinks_help}" />{$lang->toplinks_help}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/search.php"><img src="{$theme['imgdir']}/toplinks/search.gif" border="0" alt="" />{$lang->toplinks_search}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/memberlist.php"><img src="{$theme['imgdir']}/toplinks/memberlist.gif" border="0" alt="" />{$lang->toplinks_memberlist}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/calendar.php"><img src="{$theme['imgdir']}/toplinks/calendar.gif" border="0" alt="" />{$lang->toplinks_calendar}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/misc.php?action=help"><img src="{$theme['imgdir']}/toplinks/help.gif" border="0" alt="" />{$lang->toplinks_help}</a></li>
 				</ul>
 			</div>
 			<hr class="hidden" />
