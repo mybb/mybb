@@ -230,7 +230,6 @@ $l['confirm_merge'] = "Are you sure you want to merge the account <b>{1}</b> int
 $l['activated'] = "The user has been activated";
 
 $l['done'] = "Done!";
-$l['next_page'] = "View Next Page";
 $l['sort_results'] = "Sort results by";
 $l['use_default'] = "Use Forum Default";
 $l['missing_fields'] = "Sorry, but you did not fill in one or more required fields (the username, password or email address). Please go back and do so.";

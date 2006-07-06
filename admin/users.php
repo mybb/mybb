@@ -1450,6 +1450,7 @@ if($mybb->input['action'] == "find")
 		$searchop['sortby'] = "username";
 	}
 	$searchop['page'] = intval($searchop['page']);
+	var_dump($searchop['page']);
 	$searchop['perpage'] = intval($searchop['perpage']);
 	if(!$searchop['perpage'])
 	{
@@ -1464,7 +1465,7 @@ if($mybb->input['action'] == "find")
 	{
 		$searchop['start'] = ($searchop['page']-1) * $searchop['perpage'];
 	}
-	$searchop['page']++;
+	$searchop['page'];
 	
 	$plugins->run_hooks("admin_users_find");
 
@@ -1689,7 +1690,8 @@ if($mybb->input['action'] == "find")
 			endform();
 		}
 		endtable();
-		startform("users.php", '', "find");
+
+		// Generate hiddens for form for next/prev pages	
 		if(is_array($search))
 		{
 			foreach($search as $key => $val)
@@ -1726,18 +1728,57 @@ if($mybb->input['action'] == "find")
 		}
 		foreach($searchop as $key => $val)
 		{
-			$hiddens .= "<input type=\"hidden\" name=\"searchop[$key]\" value=\"$val\" />";
+			if($key != 'page')
+			{
+				$hiddens .= "<input type=\"hidden\" name=\"searchop[$key]\" value=\"$val\" />";
+			}
 		}
 		foreach($searchdisp as $key => $val)
 		{
 			$hiddens .= "<input type=\"hidden\" name=\"searchdisp[$key]\" value=\"$val\" />";
 		}
-		echo $hiddens;
-		if($numusers > $searchop['perpage'])
+
+		$first_page_button = $prev_page_button = $next_page_button = $last_page_button = '';
+		if($searchop['page'] != 1)
 		{
-			endform($lang->next_page, '');
+			echo '<div style="float: left">';
+			echo "<form action=\"users.php?action=find\" method=\"post\" style=\"display:inline;\">";
+			echo $hiddens;
+			makehiddencode('adminsid', $admin_session['sid']);
+			makehiddencode('searchop[page]', 1);
+			echo makebuttoncode('pageact', $lang->firstpage);
+			echo '</form>';
+
+			echo "<form action=\"users.php?action=find\" method=\"post\" style=\"display:inline;\">";
+			echo $hiddens;
+			makehiddencode('adminsid', $admin_session['sid']);
+			makehiddencode('searchop[page]', ($searchop['page']-1));
+			echo makebuttoncode('pageact', $lang->prevpage);
+			echo '</form>';
+			echo '</div>';
 		}
+		if($searchop['page'] != ceil($numusers / $searchop['perpage']))
+		{
+			echo '<div style="float: right">';
+			echo "<form action=\"users.php?action=find\" method=\"post\" style=\"display:inline;\">";
+			echo $hiddens;
+			makehiddencode('adminsid', $admin_session['sid']);
+			makehiddencode('searchop[page]', ($searchop['page']+1));
+			echo makebuttoncode('pageact', $lang->nextpage);
+			echo '</form>';
+
+			echo "<form action=\"users.php?action=find\" method=\"post\" style=\"display:inline;\">";
+			echo $hiddens;
+			makehiddencode('adminsid', $admin_session['sid']);
+			makehiddencode('searchop[page]', (ceil($numusers / $searchop['perpage'])));
+			echo makebuttoncode('pageact', $lang->lastpage);
+			echo '</form>';
+			echo '</div>';
+		}
+		echo $first_page_button.$prev_page_button.$next_page_button.$last_page_button;
+		echo '</div>';
 	}
+	cpfooter();
 }
 if($mybb->input['action'] == "activate")
 {
