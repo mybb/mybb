@@ -279,7 +279,7 @@
 			<description><![CDATA[Show icons indicating whether or not a subforum contains new posts or not?  This won't have any effect unless you enabled subforums display on the index.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showbirthdays">
