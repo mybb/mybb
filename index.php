@@ -198,7 +198,6 @@ if($mybb->settings['showindexstats'] != "no")
 	else
 	{
 		$newestmember = build_profile_link($stats['lastusername'], $stats['lastuid']);
-		//$newestmember = "<a href=\"member.php?action=profile&amp;uid=".$stats['lastuid']."\">".$stats['lastusername']."</a>";
 	}
 
 	// Format the stats language.
