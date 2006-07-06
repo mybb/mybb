@@ -1173,12 +1173,18 @@ function update_forum_count($fid)
 
 	// Fetch the number of threads and replies in this forum (Unapproved only)
 	$query = $db->query("
-		SELECT COUNT(*) AS threads, SUM(unapprovedposts) AS posts
+		SELECT COUNT(*) AS threads
 		FROM ".TABLE_PREFIX."threads
 		WHERE fid='$fid' AND visible='0' AND closed NOT LIKE 'moved|%'
 	");
-	$unapproved_count = $db->fetch_array($query);
-
+	$unapproved_count['threads'] = $db->fetch_field($query, "threads");
+	$query = $db->query("
+		SELECT SUM(unapprovedposts) AS posts
+		FROM ".TABLE_PREFIX."threads
+		WHERE fid='$fid' AND closed NOT LIKE 'moved|%'
+	");
+	$unapproved_count['posts'] = $db->fetch_field($query, "posts");
+	
 	$update_count = array(
 		"posts" => intval($count['posts']),
 		"threads" => intval($count['threads']),
