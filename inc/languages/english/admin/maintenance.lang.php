@@ -26,5 +26,8 @@ $l['stats_rebuilt'] = "The forum statistics have successfully been rebuilt.";
 $l['rebuild_forum_counters'] = "Rebuild Forum Counters";
 $l['rebuild_forum_counters_note'] = "When you run this function, the counters and 'last post' of each forum will be updated to reflect the correct values.";
 $l['forums_rebuilt'] = "The forum counters have been successfully rebuilt.";
+$l['forums_per_page'] = "Forums Per Page";
+$l['updated'] = "Updated:";
+
 $l['proceed'] = "Proceed";
 ?>

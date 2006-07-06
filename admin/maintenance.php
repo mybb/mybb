@@ -32,6 +32,7 @@ switch($mybb->input['action'])
 			addacpnav($lang->nav_view_cache);
 		}
 		break;
+	case "do_rebuildforums":
 	case "rebuildforums":
 		addacpnav($lang->rebuild_forum_counters);
 		break;
@@ -140,16 +141,53 @@ if($mybb->input['action'] == "do_rebuildforums")
 {
 	$plugins->run_hooks("admin_maintenance_do_rebuildforums");
 
-	$query = $db->simple_select(TABLE_PREFIX."forums", "fid");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "COUNT(*) as num_forums");
+	$num_forums = $db->fetch_field($query, 'num_forums');
+
+	// Stupid pagination code implemented by Dennis :)
+	if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
+	{
+		$mybb->input['page'] = 1;
+	}
+	$page = intval($mybb->input['page']);
+	if(!isset($mybb->input['perpage']) || intval($mybb->input['perpage']) < 1)
+	{
+		$mybb->input['perpage'] = 15;
+	}
+	$per_page = intval($mybb->input['perpage']);
+	$start = ($page-1) * $per_page;
+	$end = $start + $per_page;
+
+	cpheader();
+	startform("maintenance.php", "" , "do_rebuildforums");
+	starttable();
+	tableheader($lang->rebuild_forum_counters);
+
+	$query = $db->simple_select(TABLE_PREFIX."forums", "fid, name", '', array('limit_start' => $start, 'limit' => $per_page));
 	while($forum = $db->fetch_array($query))
 	{
 		$update['parentlist'] = makeparentlist($forum['fid']);
 		$db->update_query(TABLE_PREFIX."forums", $update, "fid='{$forum['fid']}'");
 		update_forum_count($forum['fid']);
+		makelabelcode($lang->updated, $forum['name'], 1, '10%', '90%');
 	}
 
-	$cache->updateforums();
-	cpmessage($lang->forums_rebuilt);
+	if($end >= $num_forums)
+	{
+		makelabelcode($lang->forums_rebuilt, '', 2);
+		$cache->updateforums();
+		endtable();
+		endform();
+	}
+	else
+	{
+		makehiddencode('page', ++$page);
+		makehiddencode('perpage', $per_page);
+		endtable();
+		endform($lang->proceed);
+	}
+
+	cpfooter();
 }
 
 if($mybb->input['action'] == "rebuildforums")
@@ -160,9 +198,10 @@ if($mybb->input['action'] == "rebuildforums")
 	startform("maintenance.php", "" , "do_rebuildforums");
 	starttable();
 	tableheader($lang->rebuild_forum_counters);
-	$button = makebuttoncode("rebuildstatssubmit", $lang->proceed);
-	makelabelcode("<div align=\"center\">$lang->rebuild_forum_counters_note<br /><br />$button</div>");
+	makelabelcode("<div align=\"center\">{$lang->rebuild_forum_counters_note}</div>", '', 2);
+	makeinputcode($lang->forums_per_page, 'perpage', 15);
+	makehiddencode('page', 1);
 	endtable();
-	endform();
+	endform($lang->proceed);
 }
 ?>
