@@ -291,7 +291,7 @@ class postParser
 		if($options['me_username'])
 		{
 			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} \\2</span>", $message);
-			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
+			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
 
 		$message = $this->mycode_auto_url($message);

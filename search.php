@@ -128,7 +128,7 @@ if($mybb->input['action'] == "results")
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select(TABLE_PREFIX."threads t", "t.tid", $where_conditions);
+			$query = $db->simple_select(TABLE_PREFIX."threads t", "t.tid", $where_conditions. " AND t.visible>0");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -150,7 +150,7 @@ if($mybb->input['action'] == "results")
 		else
 		{
 			$where_conditions = "t.tid IN (".$search['threads'].")";
-			$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS resultcount", $where_conditions);
+			$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND t.visible>0");
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])
@@ -170,7 +170,7 @@ if($mybb->input['action'] == "results")
 			SELECT t.*, u.username AS userusername
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-			WHERE $where_conditions
+			WHERE $where_conditions AND t.visible>0 
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
@@ -360,7 +360,7 @@ if($mybb->input['action'] == "results")
 		{
 			error($lang->error_nosearchresults);
 		}
-		$multipage = multipage($threadcount, $perpage, $page, "search.php?action=results&sid=$sid&sortby=$sortby&order=$order&uid=".$mybb->input['uid']);
+		$multipage = multipage($threadcount, $perpage, $page, "search.php?action=results&amp;sid=$sid&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->input['uid']);
 		if($upper > $threadcount)
 		{
 			$upper = $threadcount;
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "results")
 			SELECT COUNT(p.pid) AS resultcount
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE $where_conditions
+			WHERE $where_conditions  AND p.visible>0 AND t.visible>0 
 		");
 		$count = $db->fetch_array($query);
 
@@ -403,7 +403,7 @@ if($mybb->input['action'] == "results")
 			SELECT p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE $where_conditions
+			WHERE $where_conditions AND p.visible>0 AND t.visible>0 
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
@@ -427,7 +427,7 @@ if($mybb->input['action'] == "results")
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE $where_conditions
+			WHERE $where_conditions AND p.visible>0 AND t.visible>0 
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");

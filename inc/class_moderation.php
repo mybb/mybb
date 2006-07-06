@@ -775,8 +775,8 @@ class Moderation
 			$db->update_query(TABLE_PREFIX."threads", $approve, "tid='$post[tid]'");
 		}
 
-		update_forum_count($fid);
 		update_thread_count($tid);
+		update_forum_count($fid);
 		$cache->updatestats();
 
 		return true;
@@ -809,8 +809,8 @@ class Moderation
 			$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='$post[tid]'");
 		}
 
-		update_forum_count($fid);
 		update_thread_count($tid);
+		update_forum_count($fid);
 		$cache->updatestats();
 
 		return true;

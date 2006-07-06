@@ -84,8 +84,7 @@ inlineEditor.prototype = {
 		this.parentNode = this.element.parentNode;
 		if(!this.parentNode)
 		{
-			alert(this.element.index);
-			alert('no parent node');
+			return false;
 		}
 		this.cache = this.parentNode.innerHTML;
 		
@@ -184,7 +183,6 @@ inlineEditor.prototype = {
 		}
 		else if(request.responseText)
 		{
-			alert(this.element.innerHTML);
 			this.element.innerHTML = MyBB.HTMLchars(request.responseText);
 		}
 		if(this.spinnerImage)

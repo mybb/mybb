@@ -1156,10 +1156,7 @@ function update_forum_count($fid)
 	$query = $db->query("
 		SELECT tid, lastpost, lastposter, lastposteruid, subject
 		FROM ".TABLE_PREFIX."threads
-		WHERE fid='{$fid}'
-		AND visible='1'
-		AND closed
-		NOT LIKE 'moved|%'
+		WHERE fid='{$fid}' AND visible='1' AND closed NOT LIKE 'moved|%'
 		ORDER BY lastpost DESC
 		LIMIT 0, 1
 	");
@@ -1169,25 +1166,18 @@ function update_forum_count($fid)
 	$query = $db->query("
 		SELECT COUNT(*) AS threads, SUM(replies) AS replies
 		FROM ".TABLE_PREFIX."threads
-		WHERE fid='$fid'
-		AND visible='1'
-		AND closed
-		NOT LIKE 'moved|%'
+		WHERE fid='$fid' AND visible='1' AND closed	NOT LIKE 'moved|%'
 	");
 	$count = $db->fetch_array($query);
 	$count['posts'] = $count['threads'] + $count['replies'];
 
 	// Fetch the number of threads and replies in this forum (Unapproved only)
 	$query = $db->query("
-		SELECT COUNT(*) AS threads, SUM(replies) AS replies
+		SELECT COUNT(*) AS threads, SUM(unapprovedposts) AS posts
 		FROM ".TABLE_PREFIX."threads
-		WHERE fid='$fid'
-		AND visible='0'
-		AND closed
-		NOT LIKE 'moved|%'
+		WHERE fid='$fid' AND visible='0' AND closed NOT LIKE 'moved|%'
 	");
 	$unapproved_count = $db->fetch_array($query);
-	$unapproved_count['posts'] = $unapproved_count['threads'] + $unapproved_count['replies'];
 
 	$update_count = array(
 		"posts" => intval($count['posts']),
@@ -1262,18 +1252,10 @@ function update_thread_count($tid)
 	$query = $db->query("
 		SELECT COUNT(*) AS totunposts
 		FROM ".TABLE_PREFIX."posts
-		WHERE tid='$tid'
-		AND visible='0'
+		WHERE tid='$tid' AND visible='0'
 	");
-	$posts = $db->fetch_array($query);
-	if($posts)
-	{
-		$nounposts = $posts['totunposts'];
-	}
-	else
-	{
-		$nounposts = 0;
-	}
+	$nounposts = $db->fetch_field($query, "totunposts");
+
 	// Update the attachment count for this thread
 	update_thread_attachment_count($tid);
 	$db->query("

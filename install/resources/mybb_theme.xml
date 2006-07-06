@@ -4728,41 +4728,41 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</td>
 </tr>]]></template>
 		<template name="search_results_threads" version="100.07"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->search_results}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<table width="100%" align="center" border="0">
-	<tr>
-		<td align="right" valign="top">{$multipage}</td>
-	</tr>
-</table>
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-	<tr>
-		<td colspan="8" class="thead">
-			<strong>{$lang->search_results}</strong>
-		</td>
-	</tr>
-	<tr>
-		<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc">{$lang->thread}</a> {$orderarrow['subject']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=forum&amp;order=asc">{$lang->forum}</a> {$orderarrow['forum']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a></strong> {$orderarrow['views']}</span></td>
-		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=lastpost&amp;order=desc">{$lang->lastpost}</a> {$orderarrow['lastpost']}</strong></span></td>
-	</tr>
-	{$results}
-</table>
-<table width="100%" align="center" border="0">
-	<tr>
-		<td align="right" valign="top">{$multipage}</td>
-	</tr>
-</table>
-{$footer}
-</body>
-</html>]]></template>
+		<head>
+		<title>{$mybb->settings['bbname']} - {$lang->search_results}</title>
+		{$headerinclude}
+		</head>
+		<body>
+		{$header}
+		<table width="100%" align="center" border="0">
+			<tr>
+				<td align="right" valign="top">{$multipage}</td>
+			</tr>
+		</table>
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+			<tr>
+				<td colspan="8" class="thead">
+					<strong>{$lang->search_results}</strong>
+				</td>
+			</tr>
+			<tr>
+				<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc" width="42%">{$lang->thread}</a> {$orderarrow['subject']}</strong></span></td>
+				<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
+				<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=forum&amp;order=asc">{$lang->forum}</a> {$orderarrow['forum']}</strong></span></td>
+				<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
+				<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a></strong> {$orderarrow['views']}</span></td>
+				<td class="tcat" align="center" width="200"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=lastpost&amp;order=desc">{$lang->lastpost}</a> {$orderarrow['lastpost']}</strong></span></td>
+			</tr>
+			{$results}
+		</table>
+		<table width="100%" align="center" border="0">
+			<tr>
+				<td align="right" valign="top">{$multipage}</td>
+			</tr>
+		</table>
+		{$footer}
+		</body>
+		</html>]]></template>
 		<template name="search_results_posts_post" version="100.07"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 	<td align="center" class="{$bgcolor}" width="1">{$icon}</td>

@@ -75,10 +75,10 @@ class PostDataHandler extends DataHandler
 			$post['username'] = $user['username'];
 		}
 
-		// After all of this, if we still don't have a username, force the username as "Guest"
+		// After all of this, if we still don't have a username, force the username as "Guest" (Note, this is not translatable as it is always a fallback)
 		if(!$post['username'])
 		{
-			$post['username'] = $lang->guest;
+			$post['username'] = "Guest";
 		}
 
 		// Sanitize the username
