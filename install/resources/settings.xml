@@ -706,7 +706,7 @@ show=Show to all Users]]></optionscode>
 			<description><![CDATA[The maximum number of characters that can be present in a word before a space is automatically inserted. (helps preservation of the forum layout). Set to 0 to disable.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[50]]></settingvalue>
+			<settingvalue><![CDATA[80]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
