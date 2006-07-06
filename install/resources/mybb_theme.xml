@@ -4723,7 +4723,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td class="{$bgcolor}">{$thread['forumlink']}</td>
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
-	<td class="{$bgcolor}" width="1" nowrap="nowrap"><span class="smalltext">{$lastpostdate} {$lastposttime}<br />
+	<td class="{$bgcolor}" nowrap="nowrap"><span class="smalltext">{$lastpostdate} {$lastposttime}<br />
 <a href="showthread.php?action=lastpost&amp;tid={$thread['tid']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 </tr>]]></template>
