@@ -398,7 +398,8 @@ var DomLib = {
 			windowWidth = document.body.clientWidth;
 			windowHeight = document.body.clientHeight;
 		}
-
+		
+		var pageHeight, pageWidth;
 		// for small pages with total height less then height of the viewport
 		if(yScroll < windowHeight)
 		{
@@ -418,7 +419,7 @@ var DomLib = {
 		{
 			pageWidth = xScroll;
 		}
-		arrayPageSize = new Array(pageWidth,pageHeight,windowWidth,windowHeight);
+		var arrayPageSize = new Array(pageWidth,pageHeight,windowWidth,windowHeight);
 		return arrayPageSize;
 	}
 
@@ -525,6 +526,7 @@ var ActivityIndicator = Class.create();
 ActivityIndicator.prototype = {
 	initialize: function(owner, options)
 	{
+		var image;
 		if(options && options.image)
 		{
 			image = "<img src=\""+options.image+"\" alt=\"Loading\" />";
