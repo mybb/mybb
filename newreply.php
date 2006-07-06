@@ -429,12 +429,20 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
 			}
+			if(is_moderator($fid))
+			{
+				$visible_where = "AND p.visible != 2";
+			}
+			else
+			{
+				$visible_where = "AND p.visible > 0";
+			}
 			$query = $db->query("
 				SELECT p.subject, p.message, p.pid, p.tid, p.username, u.username AS userusername
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-				WHERE p.pid IN ($quoted_posts) {$unviewable_forums} AND p.visible='1'
+				WHERE p.pid IN ($quoted_posts) {$unviewable_forums} {$visible_where}
 			");
 			while($quoted_post = $db->fetch_array($query))
 			{

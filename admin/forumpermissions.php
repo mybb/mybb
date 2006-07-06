@@ -116,7 +116,7 @@ if($mybb->input['action'] == "do_quickperms")
 	$canpostpolls = $mybb->input['canpostpolls'];
 	$canpostattachments = $mybb->input['canpostattachments'];
 	$plugins->run_hooks("admin_forumpermissions_do_quickperms");
-	savequickperms($fid);
+	savequickperms($mybb->input['fid']);
 	cpredirect("forumpermissions.php?".SID, $lang->perms_updated);
 }
 

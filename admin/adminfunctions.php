@@ -1320,30 +1320,32 @@ function getElemRefs(id) {
 	echo "<td class=\"subheader\" align=\"center\" width=\"10%\">".$lang->quickperms_all."</td>\n";
 	echo "</tr>\n";
 
+	$cachedforumpermissions = $cache->read("forumpermissions");
+
 	$options = array(
 		"order_by" => "title"
 	);
 
 	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "", $options);
-
 	while($usergroup = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
 		if($fperms[$usergroup['gid']])
 		{
+			echo "has custom";
 			$perms = $fperms[$usergroup['gid']];
 		}
-		elseif($pid)
+		elseif($pid && $cachedforumpermissions[$pid][$usergroup['gid']])
 		{
-			$perms = forum_permissions($pid, 0, $usergroup['gid']);
+			$perms = $cachedforumpermissions[$pid][$usergroup['gid']];
 		}
-		elseif($fid)
+		elseif($fid && $cachedforumpermissions[$fid][$usergroup['gid']])
 		{
-			$perms = forum_permissions($fid, 0, $usergroup['gid']);
+			$perms = $cachedforumpermissions[$fid][$usergroup['gid']];
 		}
 		if(!is_array($perms))
 		{
-			$perms = usergroup_permissions($usergroup['gid']);
+			$perms = $usergroup;
 		}
 		if($fperms[$usergroup['gid']])
 		{
@@ -1497,7 +1499,6 @@ function savequickperms($fid)
 				"canvotepolls" => $pview,
 				"cansearch" => $pview
 			);
-
 			$db->insert_query(TABLE_PREFIX."forumpermissions", $insertquery);
 		}
 	}
