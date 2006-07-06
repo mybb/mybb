@@ -2542,7 +2542,7 @@ function my_wordwrap($message)
 
 	if($mybb->settings['wordwrap'] > 0)
 	{
-		$message = preg_replace("#(?>[^\s<>&/\"-]{50})#", "$0 ", $message); 
+		$message = preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#", "$0<br />", $message);
 	}
 	return $message;
 }
