@@ -344,7 +344,6 @@ if($mybb->input['action'] == "rebuild")
 	startform("maintenance.php", "" , "do_rebuildstats");
 	starttable();
 	tableheader($lang->rebuildstats);
-	makelabelcode($lang->rebuild_)
 	makelabelcode("<div align=\"center\">$lang->rebuildstats_notice</div>");
 	endtable();
 	endform($lang->proceed);
