@@ -305,7 +305,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
 		$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash'");
 		$imgcheck = $db->fetch_array($query);
-		if($imgcheck['imagestring'] != $imagestring)
+		if(strtolower($imgcheck['imagestring']) != strtolower($imagestring))
 		{
 			$post_errors[] = $lang->invalid_captcha;
 		}
@@ -400,7 +400,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	$quote_ids = '';
 	// If this isn't a preview and we're not editing a draft, then handle quoted posts
-	if(!$mybb->input['previewpost'] && $mybb->input['action'] != "editdraft")
+	if(!$mybb->input['previewpost'] && !$reply_errors && $mybb->input['action'] != "editdraft")
 	{
 		$message = '';
 		$quoted_posts = array();

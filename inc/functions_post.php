@@ -42,6 +42,7 @@ function build_postbit($post, $pmprevann=0)
 	{
 		$altbg = "trow1";
 	}
+	$post['fid'] = $fid;
 	switch($pmprevann)
 	{
 		case "1": // Message preview
@@ -407,6 +408,67 @@ function build_postbit($post, $pmprevann=0)
 		$post['message'] = '&nbsp;';
 	}
 
+	get_post_attachments($id, $post);
+
+	if($post['includesig'] != "no" && $post['username'] && $post['signature'] != "" && $mybb->user['showsigs'] != "no")
+	{
+		$sig_parser = array(
+			"allow_html" => $mybb->settings['sightml'],
+			"allow_mycode" => $mybb->settings['sigmycode'],
+			"allow_smilies" => $mybb->settings['sigsmilies'],
+			"allow_imgcode" => $mybb->settings['sigimgcode'],
+			"me_username" => $post['username']
+		);
+
+		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);
+		eval("\$post['signature'] = \"".$templates->get("postbit_signature")."\";");
+	}
+	else
+	{
+		$post['signature'] = "";
+	}
+
+	if($post['iconpath'])
+	{
+		$post['icon'] = "<img src=\"".$post['iconpath']."\" alt=\"".$post['iconname']."\">&nbsp;";
+	}
+	else
+	{
+		$post['icon'] = "";
+	}
+	$GLOBALS['post'] =& $post;
+	switch($pmprevann)
+	{
+		case 1: // Message preview
+			$plugins->run_hooks("postbit_prev", $post);
+			break;
+		case 2: // Private message
+			$plugins->run_hooks("postbit_pm", $post);
+			break;
+		case 3: // Announcement
+			$plugins->run_hooks("postbit_announcement", $post);
+			break;
+		default: // Regular post
+			eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
+			$plugins->run_hooks("postbit", $post);
+			break;
+	}
+	eval("\$postbit = \"".$templates->get("postbit")."\";");
+	return $postbit;
+	$GLOBALS['post'] = "";
+}
+
+/**
+ * Fetch the attachments for a specific post and parse inline [attachment=id] code.
+ * Note: assumes you have $attachcache, an array of attachments set up.
+ *
+ * @param int The ID of the item.
+ * @param array The post or item passed by reference.
+ */
+function get_post_attachments($id, &$post)
+{
+	global $attachcache, $mybb, $theme, $templates, $forumpermission, $lang;
+
 	$validationcount = 0;
 	if(is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
@@ -473,7 +535,7 @@ function build_postbit($post, $pmprevann=0)
 				$validationcount++;
 			}
 		}
-		if($validationcount > 0 && is_moderator($fid) == 'yes')
+		if($validationcount > 0 && is_moderator($post['fid']) == 'yes')
 		{
 			if($validationcount == 1)
 			{
@@ -498,52 +560,5 @@ function build_postbit($post, $pmprevann=0)
 			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
 		}
 	}
-
-	if($post['includesig'] != "no" && $post['username'] && $post['signature'] != "" && $mybb->user['showsigs'] != "no")
-	{
-		$sig_parser = array(
-			"allow_html" => $mybb->settings['sightml'],
-			"allow_mycode" => $mybb->settings['sigmycode'],
-			"allow_smilies" => $mybb->settings['sigsmilies'],
-			"allow_imgcode" => $mybb->settings['sigimgcode'],
-			"me_username" => $post['username']
-		);
-
-		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);
-		eval("\$post['signature'] = \"".$templates->get("postbit_signature")."\";");
-	}
-	else
-	{
-		$post['signature'] = "";
-	}
-
-	if($post['iconpath'])
-	{
-		$post['icon'] = "<img src=\"".$post['iconpath']."\" alt=\"".$post['iconname']."\">&nbsp;";
-	}
-	else
-	{
-		$post['icon'] = "";
-	}
-	$GLOBALS['post'] =& $post;
-	switch($pmprevann)
-	{
-		case 1: // Message preview
-			$plugins->run_hooks("postbit_prev", $post);
-			break;
-		case 2: // Private message
-			$plugins->run_hooks("postbit_pm", $post);
-			break;
-		case 3: // Announcement
-			$plugins->run_hooks("postbit_announcement", $post);
-			break;
-		default: // Regular post
-			eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
-			$plugins->run_hooks("postbit", $post);
-			break;
-	}
-	eval("\$postbit = \"".$templates->get("postbit")."\";");
-	return $postbit;
-	$GLOBALS['post'] = "";
 }
 ?>

@@ -356,12 +356,23 @@ else if($mybb->input['action'] == "edit_post")
 			$parser_options['allow_smilies'] = "no";
 		}
 	
-		$message = $parser->parse_message($message, $parser_options);
+		$post['message'] = $parser->parse_message($message, $parser_options);
+		
+		// Now lets fetch all of the attachments for these posts.
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid='{$post['pid']}'");
+		while($attachment = $db->fetch_array($query))
+		{
+			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+		}
+		
+		require_once MYBB_ROOT."/inc/functions_post.php";
+		
+		get_post_attachments($post['pid'], $post);
 		
 		// Send our headers.
 		header("Content-type: text/plain; charset=utf-8");
 		echo "<p>\n";
-		echo $message;
+		echo $post['message'];
 		echo "</p>\n";
 	}
 }

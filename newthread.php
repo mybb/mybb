@@ -291,7 +291,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
 		$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash'"); 
 		$imgcheck = $db->fetch_array($query);
-		if($imgcheck['imagestring'] != $imagestring)
+		if(strtolower($imgcheck['imagestring']) != strtolower($imagestring))
 		{
 			$post_errors[] = $lang->invalid_captcha;
 		}
