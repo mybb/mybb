@@ -23,8 +23,6 @@ function build_postbit($post, $pmprevann=0)
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
 	global $plugins, $parser;
 
-	$GLOBALS['post'] = $post;
-
 	// Set up the message parser if it doesn't already exist.
 	if(!$parser)
 	{
@@ -531,17 +529,17 @@ function build_postbit($post, $pmprevann=0)
 	switch($pmprevann)
 	{
 		case 1: // Message preview
-			$plugins->run_hooks("postbit_prev");
+			$plugins->run_hooks("postbit_prev", $post);
 			break;
 		case 2: // Private message
-			$plugins->run_hooks("postbit_pm");
+			$plugins->run_hooks("postbit_pm", $post);
 			break;
 		case 3: // Announcement
-			$plugins->run_hooks("postbit_announcement");
+			$plugins->run_hooks("postbit_announcement", $post);
 			break;
 		default: // Regular post
 			eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
-			$plugins->run_hooks("postbit");
+			$plugins->run_hooks("postbit", $post);
 			break;
 	}
 	eval("\$postbit = \"".$templates->get("postbit")."\";");

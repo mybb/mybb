@@ -430,7 +430,7 @@ class PostDataHandler extends DataHandler
 			$this->verify_options();
 		}
 
-		$plugins->run_hooks("datahandler_post_validate_post");
+		$plugins->run_hooks("datahandler_post_validate_post", $this);
 
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -612,7 +612,7 @@ class PostDataHandler extends DataHandler
 			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='{$post['posthash']}'");
 		}
 
-		$plugins->run_hooks("datahandler_post_insert_post");
+		$plugins->run_hooks("datahandler_post_insert_post", $this);
 
 		if($visible == 1)
 		{
@@ -769,7 +769,7 @@ class PostDataHandler extends DataHandler
 			$this->verify_post_flooding();
 		}
 		
-		$plugins->run_hooks("datahandler_post_validate_thread");
+		$plugins->run_hooks("datahandler_post_validate_thread", $this);
 
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -850,6 +850,9 @@ class PostDataHandler extends DataHandler
 				"lastposter" => $db->escape_string($thread['username']),
 				"visible" => $visible
 				);
+
+			$plugins->run_hooks("datahandler_post_insert_thread", $this);
+
 			$db->update_query(TABLE_PREFIX."threads", $newthread, "tid='{$thread['tid']}'");
 
 			$newpost = array(
@@ -864,6 +867,8 @@ class PostDataHandler extends DataHandler
 				"visible" => $visible,
 				"posthash" => $db->escape_string($thread['posthash'])
 			);
+			$plugins->run_hooks("datahandler_post_insert_thread_post", $this);
+
 			$db->update_query(TABLE_PREFIX."posts", $newpost, "pid='{$thread['pid']}'");
 			$tid = $thread['tid'];
 			$pid = $thread['pid'];
@@ -886,7 +891,7 @@ class PostDataHandler extends DataHandler
 				"visible" => $visible
 			);
 
-			$plugins->run_hooks("newthread_do_newthread_process");
+			$plugins->run_hooks("datahandler_post_insert_thread", $this);
 
 			$db->insert_query(TABLE_PREFIX."threads", $newthread);
 			$tid = $db->insert_id();
@@ -906,6 +911,7 @@ class PostDataHandler extends DataHandler
 				"visible" => $visible,
 				"posthash" => $db->escape_string($thread['posthash'])
 			);
+			$plugins->run_hooks("datahandler_post_insert_thread_post", $this);			
 			$db->insert_query(TABLE_PREFIX."posts", $newpost);
 			$pid = $db->insert_id();
 
@@ -1073,7 +1079,7 @@ class PostDataHandler extends DataHandler
 			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
 		}
 
-		$plugins->run_hooks("datahandler_post_insert_post");
+		$plugins->run_hooks("datahandler_post_insert_post", $this);
 
 		// Thread is public - update the forum counts.
 		if($visible == 1 || $visible == 0)
@@ -1195,7 +1201,7 @@ class PostDataHandler extends DataHandler
 			$updatepost['edittime'] = time();
 		}
 		
-		$plugins->run_hooks("datahandler_post_update");
+		$plugins->run_hooks("datahandler_post_update", $this);
 		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".intval($post['pid'])."'");
 		
 		// Automatic subscription to the thread

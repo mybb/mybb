@@ -165,7 +165,7 @@ class EventDataHandler extends DataHandler
 		{
 			$this->verify_scope();
 		}
-		$plugins->run_hooks("datahandler_event_validate");
+		$plugins->run_hooks("datahandler_event_validate", $this);
 
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -212,7 +212,7 @@ class EventDataHandler extends DataHandler
 		$db->insert_query(TABLE_PREFIX."events", $newevent);
 		$eid = $db->insert_id();
 
-		$plugins->run_hooks("datahandler_event_insert");
+		$plugins->run_hooks("datahandler_event_insert", $this);
 
 		// Return the event's eid and whether or not it is private.
 		return array(
@@ -271,27 +271,13 @@ class EventDataHandler extends DataHandler
 
 		$db->update_query(TABLE_PREFIX."events", $updateevent, "eid='".intval($event['eid'])."'");
 
-		$plugins->run_hooks("datahandler_event_update");
+		$plugins->run_hooks("datahandler_event_update", $this);
 
 		// Return the event's eid and whether or not it is private.
 		return array(
 			'eid' => $event['eid'],
 			'private' => $event['private']
 		);
-	}
-
-	/**
-	 * Delete an event from the database.
-	 *
-	 * @param int The event id of the even that is to be deleted.
-	 */
-	function delete_by_eid($eid)
-	{
-		global $db, $plugins;
-
-		$db->delete_query(TABLE_PREFIX."events", "eid=".intval($eid), 1);
-
-		$plugins->run_hooks("datahandler_event_delete");
 	}
 }
 

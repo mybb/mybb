@@ -695,6 +695,9 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_language();
 		}
+		
+		$plugins->run_hooks("datahandler_user_validate", $this);
+		
 		// We are done validating, return.
 		$this->set_validated(true);
 		if(count($this->get_errors()) > 0)
@@ -780,6 +783,9 @@ class UserDataHandler extends DataHandler
 			"notepad" => $db->escape_string($user['notepad']),
 			"referrer" => intval($user['referrer_uid'])
 		);
+		
+		$plugins->run_hooks("datahandler_user_insert", $this);
+		
 		$db->insert_query(TABLE_PREFIX."users", $newuser);
 		$uid = $db->insert_id();
 
@@ -944,6 +950,8 @@ class UserDataHandler extends DataHandler
 
 		// First, grab the old user details for later use.
 		$old_user = get_user($user['uid']);
+
+		$plugins->run_hooks("datahandler_user_update", $this);
 
 		// Actual updating happens here.
 		$db->update_query(TABLE_PREFIX."users", $updateuser, "uid='{$user['uid']}'");
