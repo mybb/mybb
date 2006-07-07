@@ -286,7 +286,7 @@ switch($action)
 		break;
 
 	// Display the board home.
-	default:
+	case "index":
 		// Build our forum listing
 		$forums = build_archive_forumbits(0);
 		archive_header("", $mybb->settings['bbname'], $mybb->settings['bburl']."/index.php");
@@ -295,6 +295,9 @@ switch($action)
 		echo "\n</ul>\n</div>\n</div>";
 		archive_footer();
 		break;
+	default:
+		header("HTTP/1.0 404 Not Found");
+		exit;
 }
 
 /**

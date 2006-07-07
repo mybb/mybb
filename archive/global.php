@@ -72,7 +72,7 @@ if($endpart != "index.php")
 		$announcement = $db->fetch_array($query);
 		if(!$announcement['aid'])
 		{
-			$action = "index";
+			$action = "404";
 		}
 	}
 	elseif($action == "thread")
@@ -81,7 +81,7 @@ if($endpart != "index.php")
 		$thread = $db->fetch_array($query);
 		if(!$thread['tid'])
 		{
-			$action = "index";
+			$action = "404";
 		}
 	}
 	elseif($action == "forum")
@@ -90,8 +90,12 @@ if($endpart != "index.php")
 		$forum = $db->fetch_array($query);
 		if(!$forum['fid'])
 		{
-			$action = "index";
+			$action = "404";
 		}
+	}
+	else
+	{
+		$action = "404";
 	}
 }
 
