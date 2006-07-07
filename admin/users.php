@@ -127,6 +127,150 @@ function checkbanned()
 	}
 }
 
+function make_profile_field_input($required=0, $uid=0)
+{
+	global $db, $mybb, $lang;
+	if($uid != 0)
+	{
+		$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='$uid'");
+		$userfields = $db->fetch_array($query);
+	}
+	
+	if($required == 1)
+	{
+		$required = 'yes';
+	}
+	else
+	{
+		$required= 'no';
+	}
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE required='{$required}' ORDER BY disporder");
+	while($profilefield = $db->fetch_array($query))
+	{
+		$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
+		$thing = explode("\n", $profilefield['type'], "2");
+		$type = trim($thing[0]);
+		$options = $thing[1];
+		$field = "fid$profilefield[fid]";
+		if($type == "multiselect")
+		{
+			$useropts = explode("\n", $userfields[$field]);
+			foreach($useropts as $key => $val)
+			{
+				$seloptions[$val] = $val;
+			}
+			$expoptions = explode("\n", $options);
+			if(is_array($expoptions))
+			{
+				foreach($expoptions as $key => $val)
+				{
+					$val = trim($val);
+					$val = str_replace("\n", "\\n", $val);
+					if($val == $seloptions[$val])
+					{
+						$sel = "selected";
+					}
+					else
+					{
+						$sel = '';
+					}
+					$select .= "<option value=\"$val\" $sel>$val</option>\n";
+				}
+				if(!$profilefield['length'])
+				{
+					$profilefield['length'] = 3;
+				}
+				$code = "<select name=\"profile_fields[".$field."][]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
+			}
+		}
+		elseif($type == "select") {
+			$expoptions = explode("\n", $options);
+			if(is_array($expoptions))
+			{
+				foreach($expoptions as $key => $val)
+				{
+					$val = trim($val);
+					$val = str_replace("\n", "\\n", $val);
+					if($val == $userfields[$field])
+					{
+						$sel = "selected";
+					}
+					else
+					{
+						$sel = '';
+					}
+					$select .= "<option value=\"$val\" $sel>$val</option>";
+				}
+				if(!$profilefield['length'])
+				{
+					$profilefield['length'] = 1;
+				}
+				$code = "<select name=\"profile_fields[$field]\" size=\"$profilefield[length]\">$select</select>";
+			}
+		}
+		elseif($type == "radio")
+		{
+			$expoptions = explode("\n", $options);
+			if(is_array($expoptions))
+			{
+				foreach($expoptions as $key => $val)
+				{
+					if($val == $userfields[$field])
+					{
+						$checked = "checked";
+					}
+					else
+					{
+						$checked = '';
+					}
+					$code .= "<input type=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> $val<br />";
+				}
+			}
+		}
+		elseif($type == "checkbox")
+		{
+			$useropts = explode("\n", $userfields[$field]);
+			foreach($useropts as $key => $val)
+			{
+				$seloptions[$val] = $val;
+			}
+			$expoptions = explode("\n", $options);
+			if(is_array($expoptions))
+			{
+				foreach($expoptions as $key => $val)
+				{
+					if($val == $seloptions[$val])
+					{
+						$checked = "checked";
+					}
+					else
+					{
+						$checked = '';
+					}
+					$code .= "<input type=\"checkbox\" name=\"profile_fields[".$field."][]\" value=\"$val\" $checked /> $val<br />";
+				}
+			}
+		}
+		elseif($type == "textarea")
+		{
+			$value = htmlspecialchars_uni($userfields[$field]);
+			$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"50\">$value</textarea>";
+		}
+		else
+		{
+			$value = htmlspecialchars_uni($userfields[$field]);
+			$code = "<input type=\"text\" name=\"profile_fields[$field]\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
+		}
+		makelabelcode($profilefield[name], $code);
+		$code = '';
+		$select = '';
+		$val = '';
+		$options = '';
+		$expoptions = '';
+		$useropts = '';
+		$seloptions = '';
+	}	
+}
 $bantimes["1-0-0"] = "1 $lang->day";
 $bantimes["2-0-0"] = "2 $lang->days";
 $bantimes["3-0-0"] = "3 $lang->days";
@@ -662,7 +806,7 @@ if($mybb->input['action'] == "add")
 	makeselectcode($lang->primary_usergroup, "usergroup", "usergroups", "gid", "title", 2);
 	makelabelcode($lang->secondary_usergroups, "<small>".make_usergroup_checkbox_code("additionalgroups")."</small>");
 	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", 0, "--".$lang->primary_usergroup."--");
-
+	make_profile_field_input(1);
 	tablesubheader($lang->optional_info);
 	makeinputcode($lang->custom_title, "usertitle");
 	makeinputcode($lang->avatar_url, "avatar");
@@ -681,88 +825,7 @@ if($mybb->input['action'] == "add")
 	);
 	$birthday_dropdown = build_date_dropdown('birthday', $options);
 	makelabelcode($lang->birthday, $birthday_dropdown);
-
-	$options = array('order_by' => 'disporder');
-	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", '', $options);
-	while($profilefield = $db->fetch_array($query))
-	{
-		$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
-		$thing = explode("\n", $profilefield['type'], "2");
-		$type = trim($thing[0]);
-		$options = $thing[1];
-		$field = "profile_fields[fid$profilefield[fid]]";
-		if($type == "multiselect")
-		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$val = trim($val);
-					$val = str_replace("\n", "\\n", $val);
-					$select .= "<option value\"$val\">$val</option>\n";
-				}
-				if(!$profilefield['length'])
-				{
-					$profilefield['length'] = 3;
-				}
-				$code = "<select name=\"".$field."[]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
-			}
-		}
-		elseif($type == "select")
-		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$val = trim($val);
-					$val = str_replace("\n", "\\n", $val);
-					$select .= "<option value\"$val\">$val</option>";
-				}
-				if(!$profilefield['length'])
-				{
-					$profilefield['length'] = 1;
-				}
-				$code = "<select name=\"$field\" size=\"$profilefield[length]\">$select</select>";
-			}
-		}
-		elseif($type == "radio")
-		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$code .= "<input type=\"radio\" name=\"$field\" value=\"$val\" /> $val<br />";
-				}
-			}
-		}
-		elseif($type == "checkbox")
-		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$code .= "<input type=\"checkbox\" name=\"".$field."[]\" value=\"$val\" /> $val<br />";
-				}
-			}
-		}
-		elseif($type == "textarea")
-		{
-			$code = "<textarea name=\"$field\" rows=\"6\" cols=\"50\"></textarea>";
-		}
-		else
-		{
-			$value = htmlspecialchars_uni($mybbuser[$field]);
-			$code = "<input type=\"text\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" />";
-		}
-		makelabelcode("$profilefield[name]", $code);
-		$code = $select = $val = $options = $expoptions = $useropts = $seloptions = '';
-	}
-
-
+	make_profile_field_input();
 	tablesubheader($lang->account_prefs);
 	makeyesnocode($lang->invisible_mode, "invisible", 'no');
 	makeyesnocode($lang->admin_emails, "allownotices", 'yes');
@@ -817,7 +880,7 @@ if($mybb->input['action'] == "edit")
 	}
 	makeselectcode($lang->display_group, "displaygroup", "usergroups", "gid", "title", $user['displaygroup'], "--".$lang->primary_usergroup."--");
 	makeinputcode($lang->post_count, "postnum", $user['postnum'], 4);
-
+	make_profile_field_input(1, $user['uid']);
 	tablesubheader($lang->optional_info);
 	makeinputcode($lang->custom_title, "usertitle", $user['usertitle']);
 	makeinputcode($lang->avatar_url, "avatar", $user['avatar']);
@@ -840,138 +903,7 @@ if($mybb->input['action'] == "edit")
 	);
 	$birthday_dropdown = build_date_dropdown('birthday', $options);
 	makelabelcode($lang->birthday, $birthday_dropdown);
-
-	$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='$uid'");
-	$userfields = $db->fetch_array($query);
-
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields ORDER BY disporder");
-	while($profilefield = $db->fetch_array($query))
-	{
-		$profilefield['type'] = htmlspecialchars_uni(stripslashes($profilefield['type']));
-		$thing = explode("\n", $profilefield['type'], "2");
-		$type = trim($thing[0]);
-		$options = $thing[1];
-		$field = "fid$profilefield[fid]";
-		if($type == "multiselect")
-		{
-			$useropts = explode("\n", $userfields[$field]);
-			foreach($useropts as $key => $val)
-			{
-				$seloptions[$val] = $val;
-			}
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$val = trim($val);
-					$val = str_replace("\n", "\\n", $val);
-					if($val == $seloptions[$val])
-					{
-						$sel = "selected";
-					}
-					else
-					{
-						$sel = '';
-					}
-					$select .= "<option value=\"$val\" $sel>$val</option>\n";
-				}
-				if(!$profilefield['length'])
-				{
-					$profilefield['length'] = 3;
-				}
-				$code = "<select name=\"profile_fields[".$field."][]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
-			}
-		}
-		elseif($type == "select") {
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$val = trim($val);
-					$val = str_replace("\n", "\\n", $val);
-					if($val == $userfields[$field])
-					{
-						$sel = "selected";
-					}
-					else
-					{
-						$sel = '';
-					}
-					$select .= "<option value=\"$val\" $sel>$val</option>";
-				}
-				if(!$profilefield['length'])
-				{
-					$profilefield['length'] = 1;
-				}
-				$code = "<select name=\"profile_fields[$field]\" size=\"$profilefield[length]\">$select</select>";
-			}
-		}
-		elseif($type == "radio")
-		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					if($val == $userfields[$field])
-					{
-						$checked = "checked";
-					}
-					else
-					{
-						$checked = '';
-					}
-					$code .= "<input type=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> $val<br />";
-				}
-			}
-		}
-		elseif($type == "checkbox")
-		{
-			$useropts = explode("\n", $userfields[$field]);
-			foreach($useropts as $key => $val)
-			{
-				$seloptions[$val] = $val;
-			}
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					if($val == $seloptions[$val])
-					{
-						$checked = "checked";
-					}
-					else
-					{
-						$checked = '';
-					}
-					$code .= "<input type=\"checkbox\" name=\"profile_fields[".$field."][]\" value=\"$val\" $checked /> $val<br />";
-				}
-			}
-		}
-		elseif($type == "textarea")
-		{
-			$value = htmlspecialchars_uni($userfields[$field]);
-			$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"50\">$value</textarea>";
-		}
-		else
-		{
-			$value = htmlspecialchars_uni($userfields[$field]);
-			$code = "<input type=\"text\" name=\"profile_fields[$field]\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
-		}
-		makelabelcode($profilefield[name], $code);
-		$code = '';
-		$select = '';
-		$val = '';
-		$options = '';
-		$expoptions = '';
-		$useropts = '';
-		$seloptions = '';
-	}
-
-
+	make_profile_field_input(0, $user['uid']);
 	tablesubheader($lang->account_prefs);
 	makeyesnocode($lang->invisible_mode, "invisible", $user['invisible']);
 	makeyesnocode($lang->admin_emails, "allownotices", $user['allownotices']);
