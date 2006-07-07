@@ -74,6 +74,7 @@ if(!$forum || $forum['type'] != "f")
 
 // Does the user have permission to view this thread?
 $forumpermissions = forum_permissions($forum['fid']);
+
 if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] != "yes")
 {
 	error_no_permission();

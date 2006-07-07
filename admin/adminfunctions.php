@@ -1494,6 +1494,7 @@ function savequickperms($fid)
 				"fid" => $fid,
 				"gid" => $usergroup['gid'],
 				"canview" => $pview,
+				"canviewthreads" => $pview,
 				"candlattachments" => $pview,
 				"canpostthreads" => $pthreads,
 				"canpostreplys" => $preplies,

@@ -137,11 +137,16 @@ if($mybb->input['action'] == "do_edit")
 {
 	$pid = intval($mybb->input['pid']);
 	$fid = intval($mybb->input['fid']);
+	$gid = intval($mybb->input['gid']);
 	if($mybb->input['usecustom'] == "no")
 	{
 		if($pid)
 		{
 			$db->delete_query(TABLE_PREFIX."forumpermissions", "pid='{$pid}'");
+		}
+		else
+		{
+			$db->delete_query(TABLE_PREFIX."forumpermissions", "gid='{$gid}' AND fid='{$fid}'");
 		}
 	}
 	else
