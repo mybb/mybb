@@ -123,28 +123,13 @@ if($mybb->input['action'] == "do_rebuildstats")
 	cpmessage($lang->stats_rebuilt);
 }
 
-if($mybb->input['action'] == "rebuildstats")
-{
-	$plugins->run_hooks("admin_maintenance_rebuildstats");
-	cpheader();
-	startform("maintenance.php", "" , "do_rebuildstats");
-	starttable();
-	tableheader($lang->rebuildstats);
-	$button = makebuttoncode("rebuildstatssubmit", $lang->proceed);
-	makelabelcode("<div align=\"center\">$lang->rebuildstats_notice<br /><br />$button</div>");
-	endtable();
-	endform();
-	cpfooter();
-}
-
 if($mybb->input['action'] == "do_rebuildforums")
 {
 	$plugins->run_hooks("admin_maintenance_do_rebuildforums");
 
 	$query = $db->simple_select(TABLE_PREFIX."forums", "COUNT(*) as num_forums");
 	$num_forums = $db->fetch_field($query, 'num_forums');
-
-	// Stupid pagination code implemented by Dennis :)
+	
 	if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
 	{
 		$mybb->input['page'] = 1;
@@ -152,7 +137,7 @@ if($mybb->input['action'] == "do_rebuildforums")
 	$page = intval($mybb->input['page']);
 	if(!isset($mybb->input['perpage']) || intval($mybb->input['perpage']) < 1)
 	{
-		$mybb->input['perpage'] = 15;
+		$mybb->input['perpage'] = 50;
 	}
 	$per_page = intval($mybb->input['perpage']);
 	$start = ($page-1) * $per_page;
@@ -163,13 +148,12 @@ if($mybb->input['action'] == "do_rebuildforums")
 	starttable();
 	tableheader($lang->rebuild_forum_counters);
 
-	$query = $db->simple_select(TABLE_PREFIX."forums", "fid, name", '', array('limit_start' => $start, 'limit' => $per_page));
+	$query = $db->simple_select(TABLE_PREFIX."forums", "fid", '', array('order_by' => 'fid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
 	while($forum = $db->fetch_array($query))
 	{
 		$update['parentlist'] = makeparentlist($forum['fid']);
 		$db->update_query(TABLE_PREFIX."forums", $update, "fid='{$forum['fid']}'");
 		update_forum_count($forum['fid']);
-		makelabelcode($lang->updated, $forum['name'], 1, '10%', '90%');
 	}
 
 	if($end >= $num_forums)
@@ -181,6 +165,7 @@ if($mybb->input['action'] == "do_rebuildforums")
 	}
 	else
 	{
+		makelabelcode($lang->click_next_continue, '', 2);
 		makehiddencode('page', ++$page);
 		makehiddencode('perpage', $per_page);
 		endtable();
@@ -190,16 +175,212 @@ if($mybb->input['action'] == "do_rebuildforums")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "rebuildforums")
+if($mybb->input['action'] == "do_rebuildthreads")
 {
-	$plugins->run_hooks("admin_maintenance_rebuildforums");
+	$plugins->run_hooks("admin_maintenance_do_rebuildthreads");
+
+	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) as num_threads");
+	$num_threads = $db->fetch_field($query, 'num_threads');
+	
+	if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
+	{
+		$mybb->input['page'] = 1;
+	}
+	$page = intval($mybb->input['page']);
+	if(!isset($mybb->input['perpage']) || intval($mybb->input['perpage']) < 1)
+	{
+		$mybb->input['perpage'] = 50;
+	}
+	$per_page = intval($mybb->input['perpage']);
+	$start = ($page-1) * $per_page;
+	$end = $start + $per_page;
+
 	cpheader();
+	startform("maintenance.php", "" , "do_rebuildthreads");
+	starttable();
+	tableheader($lang->rebuild_thread_counters);
+
+	$query = $db->simple_select(TABLE_PREFIX."threads", "tid", '', array('order_by' => 'tid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	while($thread = $db->fetch_array($query))
+	{
+		update_thread_count($thread['tid']);
+	}
+
+	if($end >= $num_threads)
+	{
+		makelabelcode($lang->threads_rebuilt, '', 2);
+		endtable();
+		endform();
+	}
+	else
+	{
+		makelabelcode($lang->click_next_continue, '', 2);
+		makehiddencode('page', ++$page);
+		makehiddencode('perpage', $per_page);
+		endtable();
+		endform($lang->proceed);
+	}
+
+	cpfooter();
+}
+
+if($mybb->input['action'] == "do_recountpostcounts")
+{
+	$plugins->run_hooks("admin_maintenance_do_recountpostcounts");
+
+	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) as num_users");
+	$num_users = $db->fetch_field($query, 'num_users');
+	
+	if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
+	{
+		$mybb->input['page'] = 1;
+	}
+	$page = intval($mybb->input['page']);
+	if(!isset($mybb->input['perpage']) || intval($mybb->input['perpage']) < 1)
+	{
+		$mybb->input['perpage'] = 50;
+	}
+	$per_page = intval($mybb->input['perpage']);
+	$start = ($page-1) * $per_page;
+	$end = $start + $per_page;
+
+	cpheader();
+	startform("maintenance.php", "" , "do_recountpostcounts");
+	starttable();
+	tableheader($lang->recount_user_post_counts);
+
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	while($user = $db->fetch_array($query))
+	{
+		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS post_count", "uid='{$user['uid']}' AND visible>0");
+		$num_posts = $db->fetch_field($query, "post_count");
+		$db->update_query(TABLE_PREFIX."users", array("postnum" => intval($num_posts)), "uid='{$user['uid']}'");
+	}
+
+	if($end >= $num_users)
+	{
+		makelabelcode($lang->user_post_counts_rebuilt, '', 2);
+		endtable();
+		endform();
+	}
+	else
+	{
+		makelabelcode($lang->click_next_continue, '', 2);
+		makehiddencode('page', ++$page);
+		makehiddencode('perpage', $per_page);
+		endtable();
+		endform($lang->proceed);
+	}
+
+	cpfooter();
+}
+
+if($mybb->input['action'] == "do_rebuildthumbnails")
+{
+	$plugins->run_hooks("admin_maintenance_do_rebuild_thumbnails");
+
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(aid) as num_attachments");
+	$num_attachments = $db->fetch_field($query, 'num_attachments');
+	
+	if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
+	{
+		$mybb->input['page'] = 1;
+	}
+	$page = intval($mybb->input['page']);
+	if(!isset($mybb->input['perpage']) || intval($mybb->input['perpage']) < 1)
+	{
+		$mybb->input['perpage'] = 50;
+	}
+	$per_page = intval($mybb->input['perpage']);
+	$start = ($page-1) * $per_page;
+	$end = $start + $per_page;
+
+	cpheader();
+	startform("maintenance.php", "" , "do_rebuildthumbnails");
+	starttable();
+	tableheader($lang->rebuild_thumbnails);
+
+	require_once "../inc/functions_image.php";
+	
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", '', array('order_by' => 'aid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	while($attachment = $db->fetch_array($query))
+	{
+		$ext = strtolower(my_substr(strrchr($attachment['filename'], "."), 1));
+		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
+		{
+			$thumbname = str_replace(".attach", "_thumb.$ext", $attachment['attachname']);
+			$thumbnail = generate_thumbnail("../uploads/".$attachment['attachname'], "../uploads", $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
+			if($thumbnail['code'] == 4)
+			{
+				$thumbnail['filename'] = "SMALL";
+			}
+			$db->update_query(TABLE_PREFIX."attachments", array("thumbnail" => $thumbnail['filename']), "aid='{$attachment['aid']}'");
+		}
+	}
+
+	if($end >= $num_attachments)
+	{
+		makelabelcode($lang->thumbnails_rebuilt, '', 2);
+		endtable();
+		endform();
+	}
+	else
+	{
+		makelabelcode($lang->click_next_continue, '', 2);
+		makehiddencode('page', ++$page);
+		makehiddencode('perpage', $per_page);
+		endtable();
+		endform($lang->proceed);
+	}
+
+	cpfooter();
+}
+
+if($mybb->input['action'] == "rebuild")
+{
+	$plugins->run_hooks("admin_maintenance_rebuild");
+	cpheader();
+	
+	startform("maintenance.php", "" , "do_rebuildstats");
+	starttable();
+	tableheader($lang->rebuildstats);
+	$button = makebuttoncode("rebuildstatssubmit", $lang->proceed);
+	makelabelcode("<div align=\"center\">$lang->rebuildstats_notice<br /><br />$button</div>");
+	endtable();
+	endform();
 	
 	startform("maintenance.php", "" , "do_rebuildforums");
 	starttable();
 	tableheader($lang->rebuild_forum_counters);
 	makelabelcode("<div align=\"center\">{$lang->rebuild_forum_counters_note}</div>", '', 2);
-	makeinputcode($lang->forums_per_page, 'perpage', 15);
+	makeinputcode($lang->forums_per_page, 'perpage', 50);
+	makehiddencode('page', 1);
+	endtable();
+	endform($lang->proceed);
+	
+	startform("maintenance.php", "" , "do_rebuildthreads");
+	starttable();
+	tableheader($lang->rebuild_thread_counters);
+	makelabelcode("<div align=\"center\">{$lang->rebuild_thread_counters_note}</div>", '', 2);
+	makeinputcode($lang->threads_per_page, 'perpage', 500);
+	makehiddencode('page', 1);
+	endtable();
+	endform($lang->proceed);
+	
+	startform("maintenance.php", "" , "do_recountpostcounts");
+	starttable();
+	tableheader($lang->recount_user_post_counts);
+	makelabelcode("<div align=\"center\">{$lang->recount_user_post_counts_note}</div>", '', 2);
+	makeinputcode($lang->users_per_page, 'perpage', 500);
+	makehiddencode('page', 1);
+	endtable();
+	endform($lang->proceed);
+	
+	startform("maintenance.php", "" , "do_rebuildthumbnails");
+	starttable();
+	tableheader($lang->rebuild_thumbnails);
+	makelabelcode("<div align=\"center\">{$lang->rebuild_thumbnails_note}</div>", '', 2);
+	makeinputcode($lang->thumbnails_per_page, 'perpage', 20);
 	makehiddencode('page', 1);
 	endtable();
 	endform($lang->proceed);

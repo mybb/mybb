@@ -19,7 +19,7 @@ $l['file_type'] = "File Type";
 $l['creation_date'] = "Creation Date";
 $l['file_delete'] = "Delete";
 
-$l['table_selection_desc'] = "You may select the database tables you wish to backup here.  Hold down CTRL to select multiple tables.";
+$l['table_selection_desc'] = "You may select the database tables you wish to peform this action on here.  Hold down CTRL to select multiple tables.";
 $l['export_file_type'] = "Export File Type";
 $l['download_save'] = "Save Backup";
 $l['contents'] = "Backup Contents";
@@ -36,6 +36,9 @@ $l['deselect_all'] = "Deselect all";
 $l['select_forum_tables'] = "Select Forum Tables";
 $l['perform_backup'] = "Perform Backup";
 
+$l['tables_optimized'] = "The selected database tables have successfully been optimized.";
+$l['optimize_tables'] = "Optimize Database Tables";
+
 $l['restore_database_desc'] = "Below is a list of the existing database backups stored in the MyBB backups directory.";
 $l['no_existing_backups'] = "There are currently no existing database backups stored in the MyBB backups directory.";
 $l['delete'] = "delete";
@@ -45,7 +48,7 @@ $l['confirm_delete_text'] = "Are you sure you would like to delete the selected 
 $l['backup_complete'] = "Backup generated successfully.<br /><br />The backup was saved to:<br />{1}<br /><br /><a href=\"{2}\">Download this backup</a>.";
 $l['backup_deleted'] = "Backup Deleted Successfully";
 
-$l['error_no_tables_selected'] = "No tables have been selected for backup.";
+$l['error_no_tables_selected'] = "You did not select any tables.";
 $l['error_no_backup_specified'] = "No backup was selected for {1}.";
 $l['error_delete_fail'] = "Could not delete selected backup.";
 $l['error_backup_not_found'] = "The selected backup could not be found.";

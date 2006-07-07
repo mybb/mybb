@@ -121,9 +121,6 @@ $l['nav_admin_log'] = "Administrator Log";
 $l['nav_mod_log'] = "Moderator Log";
 $l['nav_stats_and_logging'] = "Statistics and Logging";
 $l['nav_helpdocs'] = "Help Docs";
-$l['nav_db_maint'] = "DB Maintenance";
-$l['nav_recount_stats'] = "Recount Stats";
-$l['nav_recount_forums'] = "Recount Forums";
 $l['nav_maintenance'] = "Maintenance";
 $l['nav_view_phpinfo'] = "View PHP Info";
 $l['nav_find_updated'] = "Find Updated";
@@ -135,7 +132,8 @@ $l['nav_add_thread_mod_tool'] = "Add Thread Tool";
 $l['nav_db_backup'] = "Backup Database";
 $l['nav_db_existing_backups'] = "Existing Backups";
 $l['nav_db_tools'] = "Database Tools";
-
+$l['nav_db_optimize'] = "Optimize Database";
+$l['nav_recount_rebuild'] = "Recount & Rebuild";
 $l['mybb_admin'] = "MyBB Administration";
 
 ?>

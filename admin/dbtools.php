@@ -27,6 +27,9 @@ switch($mybb->input['action'])
 	case 'backup':
 		addacpnav($lang->backup_database);
 		break;
+	case 'optimize':
+		addacpnav($lang->optimize_database);
+		break;
 }
 
 if($mybb->input['action'] == 'do_delete')
@@ -240,6 +243,24 @@ if($mybb->input['action'] == 'do_backup')
 	}
 }
 
+if($mybb->input['action'] == "do_optimize")
+{
+	$plugins->run_hooks("admin_dbtools_do_optimize");
+
+	if(!is_array($mybb->input['tables']))
+	{
+		cperror($lang->error_no_tables_selected);
+	}
+	
+	foreach($mybb->input['tables'] as $table)
+	{
+		$db->optimize_table($table);
+		$db->analyze_table($table);
+	}
+	
+	cpmessage($lang->tables_optimized);
+}
+
 if($mybb->input['action'] == 'existing')
 {
 	cpheader();
@@ -326,8 +347,63 @@ if($mybb->input['action'] == 'delete')
 	cpfooter();
 }
 
+if($mybb->input['action'] == 'optimize')
+{
+	$plugins->run_hooks("admin_dbtools_optimize");
+	cpheader();
+	echo "<script type=\"text/javascript\" language=\"Javascript\">
+		function changeSelection(action, prefix)
+		{
+			var select_box = document.getElementById('table_select');
+			
+			for(var i = 0; i < select_box.length; i++)
+			{
+				if(action == 'select')
+				{
+					document.table_selection.table_select[i].selected = true;
+				}
+				else if(action == 'deselect')
+				{
+					document.table_selection.table_select[i].selected = false;
+				}
+				else if(action == 'forum' && prefix != 0)
+				{
+					var row = document.table_selection.table_select[i].value;
+					var subString = row.substring(prefix.length, 0);
+					if(subString == prefix)
+					{
+						document.table_selection.table_select[i].selected = true;
+					}
+				}
+			}
+		}
+	</script>";	
+	
+	startform("dbtools.php", "" , "do_optimize");
+	starttable();
+	tableheader($lang->optimize_tables);
+	tablesubheader($lang->table_selection);
+	$bgcolor = getaltbg();
+	echo "<tr>\n";
+	echo "<td class=\"$bgcolor\" valign=\"top\">".$lang->table_selection_desc."<br /><br /><a href=\"javascript:changeSelection('select', 0);\">".$lang->select_all."</a><br /><a href=\"javascript:changeSelection('deselect', 0);\">".$lang->deselect_all."</a><br /><a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">".$lang->select_forum_tables."</a></td>\n";
+	echo "<td class=\"$bgcolor\">\n";
+	echo "<select id=\"table_select\" name=\"tables[]\" multiple=\"multiple\">\n";
+	$table_list = $db->list_tables($config['database']);
+	foreach($table_list as $id => $table_name)
+	{
+		echo "<option value=\"".$table_name."\" selected=\"selected\">".$table_name."</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	endtable();
+	endform($lang->optimize_tables);
+	cpfooter();
+}
+
 if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 {
+	cpheader();
 	echo "<script type=\"text/javascript\" language=\"Javascript\">
 		function changeSelection(action, prefix)
 		{
@@ -355,8 +431,6 @@ if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 			}
 		}
 		</script>";
-	cpheader();
-
 	// Check if file is writable, before allowing submission
 	if(!is_writable(MYBB_ADMIN_DIR."/backups"))
 	{

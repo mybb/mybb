@@ -445,6 +445,8 @@ if($mybb->input['action'] == "thread")
 		{
 			$postoptionschecked['emailnotify'] = "checked";
 		}
+	    mt_srand ((double) microtime() * 1000000);
+	    $posthash = md5($mybb->user['uid'].mt_rand());		
 		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
 	}
 	else

@@ -619,9 +619,17 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$subject = "RE: " . $thread['subject'];
 	}
-	// Setup a unique posthash for attachment management.
-	$posthash = $mybb->input['posthash'];
-
+	// Setup a unique posthash for attachment management
+	if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
+	{
+	    mt_srand ((double) microtime() * 1000000);
+	    $posthash = md5($mybb->user['uid'].mt_rand());
+	}
+	else
+	{
+		$posthash = $mybb->input['posthash'];
+	}
+	
 	// Get a listing of the current attachments.
 	$bgcolor = "trow2";
 	if($forumpermissions['canpostattachments'] != "no")

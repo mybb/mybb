@@ -385,11 +385,9 @@ $menu[140] = array(
 $menu[150] = array(
 	"title" => $lang->nav_maintenance,
 	"items" => array(
-		10 => array("title" => $lang->nav_db_maint, "url" => "misc.php?".SID."&action=dbmaint"),
-		20 => array("title" => $lang->nav_cache_manager, "url" => "maintenance.php?".SID."&action=cache"),
-		30 => array("title" => $lang->nav_recount_stats, "url" => "maintenance.php?".SID."&action=rebuildstats"),
-		40 => array("title" => $lang->nav_recount_forums, "url" => "maintenance.php?".SID."&action=rebuildforums"),
-		50 => array("title" => $lang->nav_view_phpinfo, "url" => "index.php?".SID."&action=phpinfo")
+		10 => array("title" => $lang->nav_cache_manager, "url" => "maintenance.php?".SID."&action=cache"),
+		20 => array("title" => $lang->nav_recount_rebuild, "url" => "maintenance.php?".SID."&action=rebuild"),
+		30 => array("title" => $lang->nav_view_phpinfo, "url" => "index.php?".SID."&action=phpinfo")
 	)
 );
 
@@ -397,7 +395,9 @@ $menu[160] = array(
 	"title" => $lang->nav_db_tools,
 	"items" => array(
 		10 => array("title" => $lang->nav_db_backup, "url" => "dbtools.php?".SID."&action=backup"),
-		20 => array("title" => $lang->nav_db_existing_backups, "url" => "dbtools.php?".SID."&action=existing")
+		20 => array("title" => $lang->nav_db_existing_backups, "url" => "dbtools.php?".SID."&action=existing"),
+		30 => array("title" => $lang->nav_db_optimize, "url" => "dbtools.php?".SID."&action=optimize"),
+
 	)
 );
 
