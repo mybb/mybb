@@ -202,12 +202,16 @@ function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxleng
 	{
 		$ac = "autocomplete=\"off\"";
 	}
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"text\" class=\"inputbox\" name=\"$name\" value=\"$value\" size=\"$size\" maxlength=\"$maxlength\" $ac>$extra</td>\n</tr>\n";
+	if($vaue != '')
+	{
+		$value = "value=\"{$value}\"";
+	}
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"text\" class=\"inputbox\" name=\"$name\" size=\"$size\" maxlength=\"$maxlength\" $ac $value />$extra</td>\n</tr>\n";
 }
 function makeuploadcode($title, $name, $size="25", $extra="")
 {
 	$bgcolor = getaltbg();
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"file\" class=\"inputbox\" name=\"$name\" size=\"$size\">$extra</td>\n</tr>\n";
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"file\" class=\"inputbox\" name=\"$name\" size=\"$size\" />$extra</td>\n</tr>\n";
 }
 function makepasswordcode($title, $name, $value="", $size="25", $autocomplete=1)
 {
@@ -217,7 +221,11 @@ function makepasswordcode($title, $name, $value="", $size="25", $autocomplete=1)
 	{
 		$ac = "autocomplete=\"off\"";
 	}
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"password\" class=\"inputbox\" name=\"$name\" value=\"$value\" size=\"$size\" $ac></td>\n</tr>\n";
+	if($vaue != '')
+	{
+		$value = "value=\"{$value}\"";
+	}	
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"password\" class=\"inputbox\" name=\"$name\" size=\"$size\" $ac $value /></td>\n</tr>\n";
 }
 function maketextareacode($title, $name, $value="", $rows="4", $columns="40")
 {
