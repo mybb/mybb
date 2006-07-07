@@ -1450,7 +1450,6 @@ if($mybb->input['action'] == "find")
 		$searchop['sortby'] = "username";
 	}
 	$searchop['page'] = intval($searchop['page']);
-	var_dump($searchop['page']);
 	$searchop['perpage'] = intval($searchop['perpage']);
 	if(!$searchop['perpage'])
 	{
@@ -1777,8 +1776,8 @@ if($mybb->input['action'] == "find")
 		}
 		echo $first_page_button.$prev_page_button.$next_page_button.$last_page_button;
 		echo '</div>';
+		cpfooter();
 	}
-	cpfooter();
 }
 if($mybb->input['action'] == "activate")
 {
