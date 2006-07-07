@@ -28,7 +28,7 @@ switch($mybb->input['action'])
 		addacpnav($lang->backup_database);
 		break;
 	case 'optimize':
-		addacpnav($lang->optimize_database);
+		addacpnav($lang->optimize_tables);
 		break;
 }
 
@@ -379,7 +379,7 @@ if($mybb->input['action'] == 'optimize')
 		}
 	</script>";	
 	
-	startform("dbtools.php", "" , "do_optimize");
+	startform("dbtools.php", "table_selection" , "do_optimize");
 	starttable();
 	tableheader($lang->optimize_tables);
 	tablesubheader($lang->table_selection);
