@@ -16,7 +16,14 @@ if(strpos(strtolower($_SERVER['PHP_SELF']), "global.php") !== false)
 }
 
 // Load main MyBB core file which begins all of the magic
-require "./inc/init.php";
+if(!__FILE__)
+{
+	require "./inc/init.php";
+}
+else
+{
+	require dirname(__FILE__)."/inc/init.php";
+}
 
 $shutdown_queries = array();
 
