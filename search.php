@@ -128,7 +128,7 @@ if($mybb->input['action'] == "results")
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select(TABLE_PREFIX."threads t", "t.tid", $where_conditions. " AND t.visible>0");
+			$query = $db->simple_select(TABLE_PREFIX."threads t", "t.tid", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -150,7 +150,7 @@ if($mybb->input['action'] == "results")
 		else
 		{
 			$where_conditions = "t.tid IN (".$search['threads'].")";
-			$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND t.visible>0");
+			$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])
@@ -170,7 +170,7 @@ if($mybb->input['action'] == "results")
 			SELECT t.*, u.username AS userusername
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-			WHERE $where_conditions AND t.visible>0 
+			WHERE $where_conditions AND t.visible>0 AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
@@ -330,7 +330,7 @@ if($mybb->input['action'] == "results")
 			$lastpostdate = mydate($mybb->settings['dateformat'], $thread['lastpost']);
 			$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
 			$lastposter = $thread['lastposter'];
-			$lastposteruid = $thread['lastposter'];
+			$lastposteruid = $thread['lastposteruid'];
 
 			// Don't link to guest's profiles (they have no profile).
 			if($lastposteruid == 0)
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "results")
 			SELECT COUNT(p.pid) AS resultcount
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE $where_conditions  AND p.visible>0 AND t.visible>0 
+			WHERE $where_conditions  AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' 
 		");
 		$count = $db->fetch_array($query);
 
@@ -403,7 +403,7 @@ if($mybb->input['action'] == "results")
 			SELECT p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE $where_conditions AND p.visible>0 AND t.visible>0 
+			WHERE $where_conditions AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' 
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
@@ -427,7 +427,7 @@ if($mybb->input['action'] == "results")
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE $where_conditions AND p.visible>0 AND t.visible>0 
+			WHERE $where_conditions AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");

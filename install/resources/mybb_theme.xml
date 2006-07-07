@@ -6614,7 +6614,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <td class="trow2" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow2">
 	<table style="width: 300px;">
-			<tr><td><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span><</td>
+			<tr><td><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span></td>
 		<td><input type="text" class="textbox" name="imagestring" value="" /><input type="hidden" name="imagehash" value="{$imagehash}" /></td></tr>
 	</table>
 </td>
