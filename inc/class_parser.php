@@ -295,8 +295,8 @@ class postParser
 		// Convert images when allowed.
 		if($options['allow_imgcode'] != "no")
 		{
-			$message = preg_replace("#\[img\](https?://([^<>\"']+?))\[/img\]#i", "<img src=\"$1\" border=\"0\" alt=\"\" />", $message);
-			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](https?://([^<>\"']+?))\[/img\]#i", "<img src=\"$3\" style=\"border: 0; width: $1px; height: $2px;\" alt=\"\" />", $message);
+			$message = preg_replace("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$2')\n", $message);
+			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$4', array('$2', '$3'));", $message);
 		}
 
 		// Replace "me" code and slaps if we have a username
@@ -408,25 +408,25 @@ class postParser
 	function fix_javascript($message)
 	{
 		$js_array = array(
-			"#(j)(avascript)#ie",
-			"#(a)(lert)#ie",
-			"#(o)(nmouseover)#ie",
-			"#(o)(nmouseout)#ie",
-			"#(o)(nmousedown)#ie",
-			"#(o)(nmousemove)#ie",
-			"#(o)(nmouseup)#ie",
-			"#(o)(nclick)#ie",
-			"#(o)(ndblclick)#ie",
-			"#(o)(nload)#ie",
-			"#(o)(nsubmit)#ie",
-			"#(o)(nblur)#ie",
-			"#(o)(nchange)#ie",
-			"#(o)(nfocus)#ie",
-			"#(o)(nselect)#ie",
-			"#(o)(nunload)#ie",
-			"#(o)(nkeypress)#ie"
+			"#(j)(avascript)#i",
+			"#(a)(lert)#i",
+			"#(o)(nmouseover)#i",
+			"#(o)(nmouseout)#i",
+			"#(o)(nmousedown)#i",
+			"#(o)(nmousemove)#i",
+			"#(o)(nmouseup)#i",
+			"#(o)(nclick)#i",
+			"#(o)(ndblclick)#i",
+			"#(o)(nload)#i",
+			"#(o)(nsubmit)#i",
+			"#(o)(nblur)#i",
+			"#(o)(nchange)#i",
+			"#(o)(nfocus)#i",
+			"#(o)(nselect)#i",
+			"#(o)(nunload)#i",
+			"#(o)(nkeypress)#i"
 			);
-		$message = preg_replace($js_array, "'&#'.ord($1).';$2'", $message);
+		$message = preg_replace($js_array, "$1<strong></strong>$2", $message);
 		return $message;
 	}
 
@@ -596,6 +596,25 @@ class postParser
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name);
 		$link = "<a href=\"$fullurl\" target=\"_blank\">$name</a>";
 		return $link;
+	}
+	
+	/**
+	 * Parses IMG MyCode.
+	 *
+	 * @param string The URL to the image
+	 * @param array Optional array of dimensions
+	 */
+	function mycode_parse_img($url, $dimensions=array())
+	{
+		$url = trim($url);
+		if($dimensions[0] > 0 && $dimensions[1] > 0)
+		{
+			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\{$dimensions[1]}\" border=\"0\" alt=\"\" />";
+		}
+		else
+		{
+			return "<img src=\"{$url}\" border=\"0\" alt=\"\" />";			
+		}
 	}
 
 	/**

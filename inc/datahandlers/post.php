@@ -410,7 +410,7 @@ class PostDataHandler extends DataHandler
 			$this->verify_dateline();
 		}
 
-		if($this->action != "edit" && !$post['savedraft'])
+		if($this->method != "update" && !$post['savedraft'])
 		{
 			$this->verify_post_flooding();
 		}
