@@ -38,6 +38,8 @@ if(!$user['uid'])
 }
 $user_permissions = user_permissions(intval($mybb->input['uid']));
 
+$show_back = '0';
+
 // Here we perform our validation when adding a reputation to see if the user
 // has permission or not. This is done here to save duplicating the same code.
 if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
