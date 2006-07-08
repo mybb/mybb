@@ -29,7 +29,7 @@ else
 	require dirname(dirname(__FILE__))."/inc/init.php";
 }
 
-define('MYBB_ADMIN_DIR', MYBB_ROOT."admin/");
+define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
 
 require MYBB_ADMIN_DIR."adminfunctions.php";
 require MYBB_ROOT."inc/functions_user.php";
