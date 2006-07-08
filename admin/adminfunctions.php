@@ -202,7 +202,7 @@ function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxleng
 	{
 		$ac = "autocomplete=\"off\"";
 	}
-	if($vaue != '')
+	if($value != '')
 	{
 		$value = "value=\"{$value}\"";
 	}
@@ -221,7 +221,7 @@ function makepasswordcode($title, $name, $value="", $size="25", $autocomplete=1)
 	{
 		$ac = "autocomplete=\"off\"";
 	}
-	if($vaue != '')
+	if($value != '')
 	{
 		$value = "value=\"{$value}\"";
 	}	
