@@ -376,9 +376,17 @@ if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 }
 
 // If there is a valid referrer in the URL, cookie it
-if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && isset($mybb->input['referrer']) && !isset($_COOKIE['mybb']['referrer']))
+if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && (isset($mybb->input['referrer']) || isset($mybb->input['referrername'])))
 {
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['referrer'])."'");
+	if(isset($mybb->input['referrername']))
+	{
+		$condition = "username='".$db->escape_string($mybb->input['referrername'])."'";
+	}
+	else
+	{
+		$condition = "uid='".intval($mybb->input['referrer'])."'";
+	}
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid", $condition);
 	$referrer = $db->fetch_array($query);
 	if($referrer['uid'])
 	{

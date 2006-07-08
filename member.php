@@ -372,9 +372,9 @@ if($mybb->input['action'] == "register")
 		{
 			if($_COOKIE['mybb']['referrer'])
 			{
-				$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".$db->escape_string($_COOKIE['mybb']['referrer'])."'");
+				$query = $db->simple_select(TABLE_PREFIX."users", "uid,username", "uid='".$db->escape_string($_COOKIE['mybb']['referrer'])."'");
 				$ref = $db->fetch_array($query);
-				$referrername = $_COOKIE['mybb']['referrer'];
+				$referrername = $ref['username'];
 			}
 			elseif($referrer)
 			{
