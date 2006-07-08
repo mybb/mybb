@@ -828,7 +828,7 @@ function cpfooter($showversion=1)
 	{
 		$mybbversion = $mybboard['internalver'];
 	}
-	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">".$lang->footer_powered_by." <b><a href=\"mybboard.com\" target=\"_blank\">MyBB</a> $mybbversion</b><br />".$lang->footer_copyright." &copy; 2002-".date("Y")." MyBB Group<br />".$lang->footer_stats."</font></div>\n";
+	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">".$lang->footer_powered_by." <b><a href=\"http://www.mybboard.com\" target=\"_blank\">MyBB</a> $mybbversion</b><br />".$lang->footer_copyright." &copy; 2002-".date("Y")." <a href=\"http://www.mybboard.com\">MyBB Group</a><br />".$lang->footer_stats."</font></div>\n";
 	echo "</body>\n";
 	echo "</html>";
 }
