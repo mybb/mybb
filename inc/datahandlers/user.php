@@ -583,6 +583,14 @@ class UserDataHandler extends DataHandler
 			$user['away']['reason'] = '';
 			return true;
 		}
+		else
+		{
+			list($returnday, $returnmonth, $returnyear) = explode('-', $user['away']['returndate']);
+			if(!$returnday || !$returnmonth || !$returnyear)
+			{
+				$this->set_error("missing_returndate");
+			}
+		}
 	}
 
 	/**
