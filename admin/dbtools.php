@@ -228,7 +228,7 @@ if($mybb->input['action'] == 'do_backup')
 			$ext = '.sql';
 		}
 		
-		$file_from_admindir = MYBB_ADMIN_DIR.'backups/'.$file.$ext;
+		$file_from_admindir = 'dbtools.php?'.SID.'&amp;action=dlbackup&amp;file='.basename($file).$ext;
 		$lang->backup_complete = sprintf($lang->backup_complete, $file.$ext, $file_from_admindir);
 		cpmessage($lang->backup_complete);
 	}
@@ -240,6 +240,30 @@ if($mybb->input['action'] == 'do_backup')
 			// Compress
 			// Echo compressed
 		}
+	}
+}
+
+if($mybb->input['action'] == "dlbackup")
+{
+	if(empty($mybb->input['file']))
+	{
+		cperror($lang->error_download_no_file);
+	}
+	
+	$file = basename($mybb->input['file']);
+	$ext = get_extension(basename($file));	
+		
+	if(file_exists(MYBB_ADMIN_DIR.'backups/'.$file) && filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file' && ($ext == 'gz' || $ext == 'sql'))
+	{
+		$time = my_substr($ext, -10, 10);
+		header('Content-disposition: attachment; filename='.$file);
+		header("Content-type: ".$ext);
+		header("Content-length: ".filesize('./backups/'.$file));
+		echo file_get_contents('./backups/'.$file);
+	}
+	else
+	{
+		cperror($lang->error_download_fail);
 	}
 }
 
@@ -309,8 +333,8 @@ if($mybb->input['action'] == 'existing')
 			$delete_link = "<a href=\"dbtools.php?".SID."&action=delete&backup=".$filename.".".$type."\">[ ".$lang->delete." ]</a>";
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\"><a href=\"".$file."\">".$filename."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".filesize($file)."</td>\n";
+			echo "<td class=\"$bgcolor\"><a href=\"dbtools.php?".SID."&amp;action=dlbackup&amp;file=".basename($filename).".".$type."\">".$filename."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".get_friendly_size(filesize($file))."</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".strtoupper($type)."</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".date('jS M Y H:i', $key)."</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$delete_link."</td>\n";

@@ -53,6 +53,8 @@ $l['error_no_backup_specified'] = "No backup was selected for {1}.";
 $l['error_delete_fail'] = "Could not delete selected backup.";
 $l['error_backup_not_found'] = "The selected backup could not be found.";
 $l['error_no_zlib'] = "The zlib library for PHP is not enabled, so your request could not be performed.";
+$l['error_download_no_file'] = "You did not specify a database backup to download, so your request could not be performed.";
+$l['error_download_fail'] = "An error occured while attempting to download your database backup.";
 
 $l['note_cannot_write_backup'] = "Your backups directory (within the Admin CP directory) is not writable. You cannot save backups on the server.";
 
