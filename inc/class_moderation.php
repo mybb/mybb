@@ -259,7 +259,6 @@ class Moderation
 		// Update stats
 		$cache->updatestats();
 		update_forum_count($fid);
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1 WHERE tid IN ($tid_list)");
 
 		return true;
 	}
@@ -290,7 +289,6 @@ class Moderation
 		// Update stats
 		$cache->updatestats();
 		update_forum_count($fid);
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts+1 WHERE tid IN ($tid_list)");
 
 		return true;
 	}

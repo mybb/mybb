@@ -446,7 +446,7 @@ switch($mybb->input['action'])
 			error($lang->error_nomergeposts);
 		}
 
-		foreach($mergepost as $pid)
+		foreach($mergepost as $pid => $yes)
 		{
 			$plist[] = $pid;
 		}
