@@ -612,7 +612,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function validate_user()
 	{
-		global $mybb;
+		global $mybb, $plugins;
 
 		$user = &$this->data;
 
@@ -715,7 +715,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function insert_user()
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 
 		// Yes, validating is required.
 		if(!$this->get_validated())
@@ -809,7 +809,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function update_user()
 	{
-		global $db;
+		global $db, $plugins;
 
 		// Yes, validating is required.
 		if(!$this->get_validated())

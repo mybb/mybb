@@ -314,7 +314,7 @@ if($mybb->input['action'] == "profile")
 		$select = '';
 		if($errors)
 		{
-			$userfield = $user['profile_fields'][$field];
+			$userfield = $mybb->input['profile_fields'][$field];
 		}
 		else
 		{
@@ -322,7 +322,14 @@ if($mybb->input['action'] == "profile")
 		}
 		if($type == "multiselect")
 		{
-			$useropts = explode("\n", $userfield);
+			if($errors)
+			{
+				$useropts = $userfield;
+			}
+			else
+			{
+				$useropts = explode("\n", $userfield);
+			}
 			foreach($useropts as $key => $val)
 			{
 				$seloptions[$val] = $val;
@@ -384,13 +391,20 @@ if($mybb->input['action'] == "profile")
 					{
 						$checked = "checked=\"checked\"";
 					}
-					$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> $val<br>";
+					$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
 				}
 			}
 		}
 		elseif($type == "checkbox")
 		{
-			$useropts = explode("\n", $userfield);
+			if($errors)
+			{
+				$useropts = $userfield;
+			}
+			else
+			{
+				$useropts = explode("\n", $userfield);
+			}
 			foreach($useropts as $key => $val)
 			{
 				$seloptions[$val] = $val;
@@ -405,7 +419,7 @@ if($mybb->input['action'] == "profile")
 					{
 						$checked = "checked=\"checked\"";
 					}
-					$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\" $checked /> $val<br>";
+					$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
 				}
 			}
 		}
@@ -2084,7 +2098,20 @@ if(!$mybb->input['action'])
 	{
 		$perday = $mybb->user['postnum'];
 	}
-	$lang->posts_day = sprintf($lang->posts_day, mynumberformat($perday));
+
+	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS posts", "visible > 0");
+	$posts = $db->fetch_field($query, "posts");
+	if($posts == 0)
+	{
+		$percent = "0";
+	}
+	else
+	{
+		$percent = $mybb->user['postnum']*100/$posts;
+		$percent = round($percent, 2);
+	}
+		
+	$lang->posts_day = sprintf($lang->posts_day, mynumberformat($perday), $percent);
 	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
 
 	$colspan = 2;

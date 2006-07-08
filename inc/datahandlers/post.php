@@ -557,6 +557,15 @@ class PostDataHandler extends DataHandler
 				$visible = 1;
 			}
 		}
+		
+		if($post['username'] == '')
+		{
+			echo "Something has gone horribly wrong. Report this as a bug and include the information below.<hr /><pre>";
+			print_r($this);
+			echo "</pre></hr />";
+			echo "Good evening, and good night.";
+			exit;
+		}
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
 		if($post['pid'])
@@ -837,6 +846,15 @@ class PostDataHandler extends DataHandler
 			$db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['pid']}");
 			$thread['tid'] = $db->fetch_field($query, "tid");
 		}
+		
+		if($thread['username'] == '')
+		{
+			echo "Something has gone horribly wrong. Report this as a bug and include the information below.<hr /><pre>";
+			print_r($this);
+			echo "</pre></hr />";
+			echo "Good evening, and good night.";
+			exit;
+		}		
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
 		if($thread['pid'])

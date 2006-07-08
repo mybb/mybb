@@ -403,10 +403,6 @@ function build_postbit($post, $pmprevann=0)
 		$parser_options['allow_smilies'] = "no";
 	}
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
-	if(empty($post['message']))
-	{
-		$post['message'] = '&nbsp;';
-	}
 
 	get_post_attachments($id, $post);
 

@@ -35,17 +35,17 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				continue;
 			}
-
+			
 			$plugins->run_hooks("build_forumbits_forum");
 
 			// Build the link to this forum
 			$forum_url = get_forum_link($forum['fid']);
 
 			// This forum has a password, and the user isn't authenticated with it - hide post information
-			$hideinfo = 0;
+			$hideinfo = false;
 			if($forum['password'] != '' && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 			{
-				$hideinfo = 1;
+				$hideinfo = true;
 			}
 			
 			$lastpost_data = array(
@@ -77,7 +77,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// If we are hiding information (lastpost) because we aren't authenticated against the password for this forum, remove them
-			if($hideinfo == 1)
+			if($hideinfo == true)
 			{
 				unset($lastpost_data);
 			}
@@ -89,10 +89,13 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// Increment the counters for the parent forum (returned later)
-			$parent_counters['threads'] += $forum['threads'];
-			$parent_counters['posts'] += $forum['posts'];
-			$parent_counters['unapprovedposts'] += $forum['unapprovedposts'];
-			$parent_counters['unapprovedthreads'] += $forum['unapprovedthreads'];
+			if($hideinfo != true)
+			{
+				$parent_counters['threads'] += $forum['threads'];
+				$parent_counters['posts'] += $forum['posts'];
+				$parent_counters['unapprovedposts'] += $forum['unapprovedposts'];
+				$parent_counters['unapprovedthreads'] += $forum['unapprovedthreads'];
+			}
 
 			// Done with our math, lets talk about displaying - only display forums which are under a certain depth
 			if($depth > $showdepth)
@@ -114,18 +117,21 @@ function build_forumbits($pid=0, $depth=1)
 			// A depth of three indicates a comma separated list of forums within a forum
 			else if($depth == 3)
 			{
-				$statusicon = '';
-
-				// Showing mini status icons for this forum
-				if($mybb->settings['subforumsstatusicons'] == "yes")
+				if($donecount < $mybb->settings['subforumsindex'])
 				{
-					$lightbulb['folder'] = "mini".$lightbulb['folder'];
-					eval("\$statusicon = \"".$templates->get("forumbit_depth3_statusicon", 1, 0)."\";");
-				}
+					$statusicon = '';
 
-				// Fetch the template and append it to the list
-				eval("\$forum_list .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
-				$comma = ", ";
+					// Showing mini status icons for this forum
+					if($mybb->settings['subforumsstatusicons'] == "yes")
+					{
+						$lightbulb['folder'] = "mini".$lightbulb['folder'];
+						eval("\$statusicon = \"".$templates->get("forumbit_depth3_statusicon", 1, 0)."\";");
+					}
+
+					// Fetch the template and append it to the list
+					eval("\$forum_list .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
+					$comma = ", ";
+				}
 
 				// Have we reached our max visible subforums? put a nice message and break out of the loop
 				++$donecount;
@@ -135,7 +141,6 @@ function build_forumbits($pid=0, $depth=1)
 					{
 						$forum_list .= $comma.sprintf($lang->more_subforums, (count($parent) - $donecount));
 					}
-					break;
 				}
 				continue;
 			}
@@ -156,7 +161,7 @@ function build_forumbits($pid=0, $depth=1)
 			if($forum['type'] == "f" && $forum['linkto'] == '')
 			{
 				// No posts have been made in this forum - show never text
-				if($forum['lastpost'] == 0 || $forum['lastposter'] == '' && $hideinfo != 1)
+				if($forum['lastpost'] == 0 || $forum['lastposter'] == '' && $hideinfo != true)
 				{
 					$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
 				}
@@ -183,7 +188,7 @@ function build_forumbits($pid=0, $depth=1)
 				}
 			}
 			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost and counters to "-"
-			if($forum['linkto'] != '' || $hideinfo == 1)
+			if($forum['linkto'] != '' || $hideinfo == true)
 			{
 				$lastpost = "<span style=\"text-align: center;\">-</span>";
 				$posts = "-";

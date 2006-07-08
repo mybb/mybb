@@ -1694,7 +1694,7 @@ $headerinclude
 </html>]]></template>
 		<template name="usercp_reputation" version="100.07"><![CDATA[<tr>
 <td class="trow2" width="50%"><strong>{$lang->reputation}</strong></td>
-<td class="trow2" width="50%">{$reputation_link}</td>
+<td class="trow2" width="50%">{$reputation_link} [<a href="reputation.php?uid={$mybb->user['uid']}">{$lang->details}</a>]</td>
 </tr>]]></template>
 		<template name="usercp_currentavatar" version="100.07"><![CDATA[<td class="trow1" rowspan="6" valign="middle" align="center" width="1"><img src="{$mybb->user['avatar']}" alt="{$mybb->user['username']}" {$avatar_width_height} /></td>]]></template>
 		<template name="footer" version="100.07"><![CDATA[			<br />

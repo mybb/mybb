@@ -35,7 +35,7 @@ $l['username'] = "Username:";
 $l['user_id'] = "User ID:";
 $l['title'] = "User Title:";
 $l['postnum'] = "Posts:";
-$l['posts_day'] = "({1} per day)";
+$l['posts_day'] = "({1} per day | {2} percent of total posts)";
 $l['additional_contact_details'] = "Additional Contact Information";
 $l['email'] = "Email:";
 $l['reputation'] = "Reputation:";
@@ -281,7 +281,7 @@ $l['view_members'] = "View Members";
 $l['view_requests'] = "Join Requests";
 $l['sig_too_long'] = "Sorry, but your signature is too long. Please do not go over the signature limit.";
 $l['cannot_leave_group'] = "You cannot leave this group because it is not a publically joinable group.";
-
+$k['details'] = "Details";
 $l['redirect_ignoreupdated'] = "Thank you, your ignore list has successfully been updated.";
 $l['redirect_buddyupdated'] = "Thank you, your buddy list has successfully been updated.";
 $l['redirect_subscriptionsremoved'] = "Your thread subscriptions list has now been cleared. You will be returned to where you came from.";

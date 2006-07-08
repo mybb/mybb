@@ -65,7 +65,7 @@ add_breadcrumb($lang->nav_newreply);
 $forumpermissions = forum_permissions($fid);
 
 // See if everything is valid up to here.
-if(isset($post) && (($post['visible'] == 0 && is_moderator($fid) != "yes") || $post['visible'] < 0))
+if(isset($post) && (($post['visible'] == 0 && is_moderator($fid) != "yes") || $post['visible'] == 0))
 {
 	error($lang->error_invalidpost);
 }
