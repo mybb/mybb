@@ -1174,16 +1174,17 @@ if($mybb->input['action'] == "forumsubscriptions")
 			}
 			else
 			{
-				$lastpostdate = mydate($mybb->settings['dateformat'], $forum['lastpost']);
-				$lastposttime = mydate($mybb->settings['timeformat'], $forum['lastpost']);
+				$lastpost_date = mydate($mybb->settings['dateformat'], $forum['lastpost']);
+				$lastpost_time = mydate($mybb->settings['timeformat'], $forum['lastpost']);
 				$lastposttid = $forum['lastposttid'];
 				$lastposter = $forum['lastposter'];
-				$lastpostsubject = $forum['lastpostsubject'];
-				if(my_strlen($lastpostsubject) > 25)
+				$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
+				$lastpost_subject = $forum['lastpostsubject'];
+				if(my_strlen($lastpost_subject) > 25)
 				{
-					$lastpostsubject = my_substr($lastpostsubject, 0, 25) . "...";
+					$lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
 				}
-				eval("\$lastpost = \"".$templates->get("forumbit_depth1_forum_lastpost")."\";");
+				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost")."\";");
 			}
 		}
 		$posts = mynumberformat($forum['posts']);

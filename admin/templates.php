@@ -76,10 +76,12 @@ $group = $mybb->input['group'];
 checkadminpermissions("canedittemps");
 logadmin();
 
-if($mybb->input['action'] == "do_add") {
+if($mybb->input['action'] == "do_add") 
+{
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='".intval($mybb->input['setid'])."' AND title='".$db->escape_string($mybb->input['title'])."'");
 	$temp = $db->fetch_array($query);
-	if($temp[tid]) {
+	if($temp['tid']) 
+	{
 		cperror($lang->name_exists);
 	}
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($mybb->input['title'])."' AND sid='-2'");
@@ -113,7 +115,8 @@ if($mybb->input['action'] == "do_add") {
 	}
 	cpredirect($editurl, $lang->template_added);
 }
-if($mybb->input['action'] == "do_addset") {
+if($mybb->input['action'] == "do_addset") 
+{
 	$newset = array(
 		"title" => $db->escape_string($mybb->input['title'])
 		);
@@ -126,7 +129,8 @@ if($mybb->input['action'] == "do_addset") {
 if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
-	{	$plugins->run_hooks("admin_templates_do_delete");
+	{	
+		$plugins->run_hooks("admin_templates_do_delete");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 		if($mybb->input['group'])
 		{
@@ -177,7 +181,7 @@ if($mybb->input['action'] == "do_edit")
 		"version" => $mybboard['vercode'],
 		"status" => "",
 		"dateline" => time()
-		);
+	);
 	$plugins->run_hooks("admin_templates_do_edit");
 	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
 	if($mybb->input['group'])
@@ -344,30 +348,45 @@ if($mybb->input['action'] == "do_search_names")
 		cpfooter();
 	}
 }
-if($mybb->input['action'] == "edit") {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
-	$template = $db->fetch_array($query);
+if($mybb->input['action'] == "edit") 
+{
+	if(isset($mybb->input['title']))
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($mybb->input['title'])."'");
+		$template = $db->fetch_array($query);
+	}
+	else
+	{
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='".intval($mybb->input['tid'])."'");
+		$template = $db->fetch_array($query);
+	}
 	$plugins->run_hooks("admin_templates_edit");
 	cpheader();
-	if($template[sid] != "-2") {
+	if($template['sid'] != "-2") 
+	{
 		startform("templates.php", "" , "do_edit");
 		makehiddencode("tid", $mybb->input['tid']);
 		starttable();
 		tableheader($lang->modify_template);
 		makeinputcode($lang->title, "title", $template[title]);
-	} elseif(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template[sid] == -2) {
+	} 
+	elseif(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template['sid'] == -2) 
+	{
 		startform("templates.php", "" , "do_edit");
 		makehiddencode("tid", $mybb->input['tid']);
 		starttable();
 		tableheader($lang->modify_master_template);
 		makeinputcode($lang->title, "title", $template['title']);
-	} else {
+	} 
+	else 
+	{
 		starttable();
 		tableheader($lang->view_template);
 		makelabelcode($lang->title, $template[title]);
 	}
 	maketextareacode($lang->template, "template", $template['template'], "25", "80");
-	if($template[sid] != "-2") {
+	if($template['sid'] != "-2") 
+	{
 		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($template['title'])."' AND sid='-2';");
 		$master = $db->fetch_array($query);
 		if($master['tid'])
@@ -375,7 +394,9 @@ if($mybb->input['action'] == "edit") {
 			makelabelcode($lang->options, "<a href=\"templates.php?".SID."&action=edit&tid=".$master['tid']."\">".$lang->view_original."</a><br /><a href=\"templates.php?".SID."&action=diff&title=$template[title]&sid2=$template[sid]\">".$lang->diff_with_original."</a>");
 		}
 		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $template['sid'], "-1=Global - All Template Sets");
-	} else {
+	} 
+	else 
+	{
 		makehiddencode("setid", $template['sid']);
 	}
 	if($mybb->input['continue'])
@@ -386,17 +407,20 @@ if($mybb->input['action'] == "edit") {
 	{
 		$continue = "no";
 	}
-	if(($template[sid] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template[sid] == -2)) {
+	if(($template['sid'] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template['sid'] == -2)) 
+	{
 		makeyesnocode($lang->continue_editing, "continue", $continue);
 	}
 	endtable();
 	makehiddencode("group", $mybb->input['group']);
-	if(($template[sid] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template[sid] == -2)) {
+	if(($template['sid'] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template['sid'] == -2)) 
+	{
 		endform($lang->update_template, $lang->reset_button);
 	}
 	cpfooter();
 }
-if($mybb->input['action'] == "editset") {
+if($mybb->input['action'] == "editset") 
+{
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 	$set = $db->fetch_array($query);
 	$plugins->run_hooks("admin_templates_editset");
@@ -411,7 +435,8 @@ if($mybb->input['action'] == "editset") {
 	cpfooter();
 }
 
-if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert") {
+if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert") 
+{
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 	$template = $db->fetch_array($query);
 	$plugins->run_hooks("admin_templates_delete");
@@ -438,7 +463,8 @@ if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert") {
 	cpfooter();
 }
 
-if($mybb->input['action'] == "deleteset") {
+if($mybb->input['action'] == "deleteset") 
+{
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 	$templateset = $db->fetch_array($query);
 	$plugins->run_hooks("admin_templates_deleteset");
@@ -454,24 +480,28 @@ if($mybb->input['action'] == "deleteset") {
 	endform();
 	cpfooter();
 }
-if($mybb->input['action'] == "makeoriginals") {
+if($mybb->input['action'] == "makeoriginals") 
+{
 	$plugins->run_hooks("admin_templates_makeoriginals");
 	$query = $db->query("SELECT t1.*, t2.title AS origtitle FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t1.title=t2.title AND t2.sid='-2') WHERE t1.sid='".$mybb->input['setid']."'");
 	$query2 = $db->query("SELECT t1.* FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t1.title=t2.title AND t2.sid='-2') WHERE t1.sid='$set[sid]' AND ISNULL(t2.template) ORDER BY t1.title ASC");
 
 	$query = $db->query("SELECT * FROM templates WHERE sid='".$mybb->input['setid']."'");
-	while($template = $db->fetch_array($query)) {
+	while($template = $db->fetch_array($query)) 
+	{
 		if($template[origtitle]) {
 			$updatedtemplate = array(
 				"template" => $db->escape_string($template['template'])
-				);
+			);
 			$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "title='".$template['title']."' AND sid='-2'");
-		} else {
+		} 
+		else 
+		{
 			$newtemplate = array(
 				"sid" => -2,
 				"title" => $db->escape_string($template['title']),
 				"template" => $db->escape_string($template['template'])
-				);
+			);
 			$db->insert_query(TABLE_PREFIX."templates", $newtemplate);
 		}
 	}
@@ -479,7 +509,8 @@ if($mybb->input['action'] == "makeoriginals") {
 	cpredirect("templates.php?".SID."&expand=$setid", $lang->originals_made);
 }
 
-if($mybb->input['action'] == "add") {
+if($mybb->input['action'] == "add") 
+{
 	if($mybb->input['title'])
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($mybb->input['title'])."' AND sid='-2'");
@@ -489,16 +520,22 @@ if($mybb->input['action'] == "add") {
 	cpheader();
 	startform("templates.php", "" , "do_add");
 	starttable();
-	if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
+	if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") 
+	{
 		tableheader($lang->add_master_template);
-	} else {
+	} 
+	else 
+	{
 		tableheader($lang->add_template);
 	}
 	makeinputcode($lang->title, "title", $template[title]);
 	maketextareacode($lang->template, "template", $template[template], "25", "80");
-	if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") {
+	if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") 
+	{
 		makehiddencode("setid", -2);
-	} else {
+	} 
+	else 
+	{
 		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $mybb->input['sid'], "-1=".$lang->global_sel);
 	}
 	makeyesnocode($lang->continue_editing, "continue", "no");
@@ -507,7 +544,8 @@ if($mybb->input['action'] == "add") {
 	endform($lang->add_template, $lang->reset_button);
 	cpfooter();
 }
-if($mybb->input['action'] == "addset") {
+if($mybb->input['action'] == "addset") 
+{
 	$plugins->run_hooks("admin_templates_addset");
 	cpheader();
 	startform("templates.php", "" , "do_addset");
@@ -631,9 +669,11 @@ if($mybb->input['action'] == "findupdated")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") 
+{
 	$plugins->run_hooks("admin_templates_modify");
-	if(!$noheader) {
+	if(!$noheader) 
+	{
 		cpheader();
 	}
 	// Fetch the listing of themes so we can see which template sets are associated to themes
@@ -800,7 +840,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 
 			// Query for original templates
 			$query3 = $db->query("SELECT t1.title AS originaltitle, t1.tid AS originaltid, t2.tid FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t2.title=t1.title AND t2.sid='".$set['sid']."') WHERE t1.sid='-2' ORDER BY t1.title ASC");
-			while($template = $db->fetch_array($query3)) {
+			while($template = $db->fetch_array($query3)) 
+			{
 				$templatelist[$template['originaltitle']] = $template;
 			}
 			reset($templatelist);
@@ -856,9 +897,9 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") {
 				}
 				if(!$template['tid'])
 				{
-					echo "<a href=\"templates.php?".SID."&action=add&title=".$template['originaltitle']."&sid=".$set['sid'].$opengroup."\"><span class=\"highlight4\">".$template['originaltitle']."</span></a></td>\n";
+					echo "<a href=\"templates.php?".SID."&action=edit&title=".$template['originaltitle']."&sid=".$set['sid'].$opengroup."\"><span class=\"highlight4\">".$template['originaltitle']."</span></a></td>\n";
 					echo "<td class=\"$altbg\" align=\"right\">";
-					echo "<input type=\"button\" value=\"$lang->change_original\" onclick=\"hopto('templates.php?".SID."&action=add&title=".$template['originaltitle']."&sid=".$set['sid']."&group=$grouptype');\" class=\"submitbutton\">";
+					echo "<input type=\"button\" value=\"$lang->change_original\" onclick=\"hopto('templates.php?".SID."&action=edit&title=".$template['originaltitle']."&sid=".$set['sid']."&group=$grouptype');\" class=\"submitbutton\">";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
