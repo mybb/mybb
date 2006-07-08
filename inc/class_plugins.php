@@ -71,7 +71,7 @@ class pluginSystem
 	 * @param string The argument for the hook that is run.
 	 * @return string The arguments for the hook.
 	 */
-	function run_hooks($hook, &$arguments="")
+	function run_hooks($hook, $arguments="")
 	{
 		if(!is_array($this->hooks[$hook]))
 		{
