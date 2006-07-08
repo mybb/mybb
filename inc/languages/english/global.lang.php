@@ -224,6 +224,9 @@ $l['forumjump_wol'] = "Who's Online";
 $l['forumjump_search'] = "Search";
 $l['forumjump_home'] = "Forum Home";
 
+$l['redirect'] = "You will now be redirected";
+$l['error'] = "An unknown error has occured.";
+
 $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "get more";
 $l['on'] = "On";

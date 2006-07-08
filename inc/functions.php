@@ -414,10 +414,14 @@ function cache_forums()
  * @param string The error message to be shown
  * @param string The title of the message shown in the title of the page and the error table
  */
-function error($error, $title="")
+function error($error="", $title="")
 {
 	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $db, $templates, $lang, $mybb;
 
+	if(!$error)
+	{
+		$error = $lang->error;
+	}
 	if(!$title)
 	{
 		$title = $mybb->settings['bbname'];
@@ -479,10 +483,14 @@ function error_no_permission()
  * @param string The URL to redirect the user to
  * @param string The redirection message to be shown
  */
-function redirect($url, $message="You will now be redirected", $title="")
+function redirect($url, $message="", $title="")
 {
 	global $header, $footer, $css, $toplinks, $settings, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 
+	if(!$message)
+	{
+		$message = $lang->redirect;
+	}
 	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
 	$plugins->run_hooks("redirect");
 	if(!$title)
