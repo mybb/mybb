@@ -149,7 +149,7 @@ elseif($mybb->input['action'] == "home")
 	tableheader($lang->mybb_credits);
 	tablesubheader($lang->contributed);
 	makelabelcode("<b>$lang->product_managers</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a>");
-	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com/\">Chris Boulton</a><br /><a href=\"http://mods.mybboard.com/\">Musicalmidget</a><br /><a href=\"http://www.dennistt.net/\">DennisTT</a><br /><a href=\"http://www.linuxbox.co.nz/~kieran/\">k776</a><br /><a href=\"http://www.peterakkies.com\">Peter</a>");
+	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com/\">Chris Boulton</a><br /><a href=\"http://mods.mybboard.com/\">Musicalmidget</a><br /><a href=\"http://www.dennistt.net/\">DennisTT</a><br /><a href=\"http://www.linuxbox.co.nz/~kieran/\">k776</a><br /><a href=\"http://www.peterakkies.com\">Peter</a><br /><a href=\"http://www.tiki.rct3x.net\">Tikitiki</a>");
 	makelabelcode("<b>$lang->graphics_and_style</b>", "<a href=\"http://www.surfionline.com\">Chris Boulton</a><br /><a href=\"http://www.templatesforall.com\">Scott Hough</a>");
 	endtable();
 
