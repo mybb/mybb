@@ -56,6 +56,7 @@ function upgrade5_dbchanges()
 
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET optionscode='select\r\ninstant=Instant Activation\r\nverify=Send Email Verification\r\nrandompass=Send Random Password\r\nadmin=Administrator Activation' WHERE name = 'regtype'");
 	$db->query("UPDATE ".TABLE_PREFIX."users SET totalpms='-1', newpms='-1', unreadpms='-1'");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET name='maxmessagelength' WHERE name='messagelength'");
 
 	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mycode");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."mycode (

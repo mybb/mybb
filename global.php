@@ -80,10 +80,6 @@ $lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
 
-// Remove slashes from bbname
-$mybb->settings['bbname'] = stripslashes($mybb->settings['bbname']);
-$settings['bbname'] = stripslashes($mybb->settings['bbname']);
-
 // Which thread mode is our user using?
 if(!isset($mybb->input['mode']))
 {
@@ -315,9 +311,6 @@ eval("\$header = \"".$templates->get("header")."\";");
 
 $copy_year = date("Y");
 
-// Strip slashes from the website name
-$settings['homename'] = stripslashes($settings['homename']);
-
 // Are we showing version numbers in the footer?
 if($mybb->settings['showvernum'] == "on")
 {
@@ -355,7 +348,7 @@ if(is_array($bannedips))
 if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && ($mybb->input['action'] == "login" || $mybb->input['action'] == "do_login" || $mybb->input['action'] == "logout")))
 {
 	// Show error
-	$lang->error_boardclosed .= "<blockquote>".stripslashes($mybb->settings['boardclosed_reason'])."</blockquote>";
+	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
 	error($lang->error_boardclosed);
 	exit;
 }

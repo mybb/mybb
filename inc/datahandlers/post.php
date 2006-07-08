@@ -170,27 +170,29 @@ class PostDataHandler extends DataHandler
 	 */
 	function verify_message()
 	{
-		$message = &$this->data['message'];
+		global $mybb;
+		
+		$post = &$this->data;
 
-		$message = trim($message);
+		$post['message'] = trim($post['message']);
 		// Do we even have a message at all?
-		if(my_strlen($message) == 0)
+		if(my_strlen($post['message']) == 0)
 		{
 			$this->set_error("missing_message");
 			return false;
 		}
 
 		// If this board has a maximum message length check if we're over it.
-		else if(my_strlen($message) > $mybb->settings['messagelength'] && $mybb->settings['messagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
+		else if(my_strlen($post['message']) > $mybb->settings['maxmessagelength'] && $mybb->settings['maxmessagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
 		{
-			$this->set_error("message_too_long");
+			$this->set_error("message_too_long", array($mybb->settings['maxmessagelength']));
 			return false;
 		}
 
 		// And if we've got a minimum message length do we meet that requirement too?
-		else if(my_strlen($message) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
+		else if(my_strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
 		{
-			$this->set_error("message_too_short");
+			$this->set_error("message_too_short", array($mybb->settings['minmessagelength']));
 			return false;
 		}
 		return true;

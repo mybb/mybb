@@ -283,7 +283,7 @@ function perform_search_mysql($search)
 
 	if($mybb->settings['minsearchword'] < 1)
 	{
-		$mybb->settings['minsearchword'] = 4;
+		$mybb->settings['minsearchword'] = 3;
 	}
 
 	if($keywords)
@@ -528,7 +528,7 @@ function perform_search_mysql_ft($search)
 		error($lang->error_nosearchterms);
 	}
 
-	if($mybb->settings['minsearchword'] < 1)
+	if($mybb->settings['minsearchword'] < 4)
 	{
 		$mybb->settings['minsearchword'] = 4;
 	}

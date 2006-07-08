@@ -897,9 +897,9 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 				}
 				if(!$template['tid'])
 				{
-					echo "<a href=\"templates.php?".SID."&action=edit&title=".$template['originaltitle']."&sid=".$set['sid'].$opengroup."\"><span class=\"highlight4\">".$template['originaltitle']."</span></a></td>\n";
+					echo "<a href=\"templates.php?".SID."&action=add&title=".$template['originaltitle']."&sid=".$set['sid'].$opengroup."\"><span class=\"highlight4\">".$template['originaltitle']."</span></a></td>\n";
 					echo "<td class=\"$altbg\" align=\"right\">";
-					echo "<input type=\"button\" value=\"$lang->change_original\" onclick=\"hopto('templates.php?".SID."&action=edit&title=".$template['originaltitle']."&sid=".$set['sid']."&group=$grouptype');\" class=\"submitbutton\">";
+					echo "<input type=\"button\" value=\"$lang->change_original\" onclick=\"hopto('templates.php?".SID."&action=add&title=".$template['originaltitle']."&sid=".$set['sid']."&group=$grouptype');\" class=\"submitbutton\">";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}

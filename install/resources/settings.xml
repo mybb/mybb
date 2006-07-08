@@ -562,7 +562,7 @@ DESC=Descending]]></optionscode>
 		</setting>
 	</settinggroup>
 	<settinggroup name="posting" title="Posting" description="These options control the various elements in relation to posting messages on the forums." disporder="9" isdefault="yes">
-		<setting name="messagelength">
+		<setting name="maxmessagelength">
 			<title>Maximum Message Length</title>
 			<description><![CDATA[The maximum number of characters to allow in a message. A setting of 0 allows an unlimited length.]]></description>
 			<disporder>1</disporder>
@@ -1169,6 +1169,14 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="minsearchword">
+			<title>Minimum Search Word Length</title>
+			<description><![CDATA[Enter the minimum number of characters an individual word in a search query can be. Set to 0 to disable (and accept the hard limit default of 3 for standard searching and 4 for MySQL fulltext searching). If you use MySQL fulltext searching and set this lower than the MySQL setting - MySQL will override it.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>

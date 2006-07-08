@@ -980,6 +980,10 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$lang->send_pm = sprintf($lang->send_pm, $memprofile['username']);
 	}
+	else
+	{
+		$lang->send_pm = '';
+	}
 	$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
 	$lang->users_additional_info = sprintf($lang->users_additional_info, $memprofile['username']);
 	$lang->users_signature = sprintf($lang->users_signature, $memprofile['username']);

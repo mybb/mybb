@@ -2072,7 +2072,7 @@ function rebuildsettings()
 
 	while($setting = $db->fetch_array($query))
 	{
-		$setting['value'] = $db->escape_string($setting['value']);
+		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
 		$settings .= "\$settings['".$setting['name']."'] = \"".$setting['value']."\";\n";
 		$mybb->settings[$setting['name']] = $setting['value'];
 	}

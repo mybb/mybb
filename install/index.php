@@ -854,7 +854,7 @@ function write_settings()
 	$query = $db->query('SELECT * FROM '.TABLE_PREFIX.'settings ORDER BY title ASC');
 	while($setting = $db->fetch_array($query))
 	{
-		$setting['value'] = $db->escape_string($setting['value']);
+		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
 		$settings .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
 	}
 	if(!empty($settings))
