@@ -1340,7 +1340,6 @@ function getElemRefs(id) {
 		$bgcolor = getaltbg();
 		if($fperms[$usergroup['gid']])
 		{
-			echo "has custom";
 			$perms = $fperms[$usergroup['gid']];
 		}
 		elseif($pid && $cachedforumpermissions[$pid][$usergroup['gid']])
