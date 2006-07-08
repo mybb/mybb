@@ -111,7 +111,7 @@ elseif($mybb->input['action'] == "home")
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_users</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?".SID."&action=find\">$users[numusers]</a></td>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->users_awaiting_activation</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?".SID."&action=find&search[additionalgroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$awaitingusers[awaitingusers]</a></td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->users_awaiting_activation</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?".SID."&action=find&search[usergroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$awaitingusers[awaitingusers]</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->new_users_today</b></td><td valign=\"top\" class=\"altbg2\">$newusers[newusers]</td>\n";
