@@ -566,9 +566,12 @@ class PostDataHandler extends DataHandler
 			echo "Good evening, and good night.";
 			exit;
 		}
+		
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
+		$draft_check = $db->fetch_field($query, "pid");
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
-		if($post['pid'])
+		if($draft_check)
 		{
 			// Update a post that is a draft
 			$updatedpost = array(
@@ -856,8 +859,11 @@ class PostDataHandler extends DataHandler
 			exit;
 		}		
 
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
+		$draft_check = $db->fetch_field($query, "pid");
+		
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
-		if($thread['pid'])
+		if($draft_check)
 		{
 			$newthread = array(
 				"subject" => $db->escape_string($thread['subject']),

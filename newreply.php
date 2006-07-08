@@ -26,7 +26,8 @@ $tid = $mybb->input['tid'];
 
 // Edit a draft post.
 $draft_pid = 0;
-if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $pid) || ($tid && $pid))
+$editdraftpid = '';
+if($mybb->input['action'] == "editdraft" && $pid)
 {
 	$options = array(
 		"limit" => 1
@@ -39,6 +40,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $pid) 
 	}
 	$draft_pid = $post['pid'];
 	$tid = $post['tid'];
+	$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$draft_pid\" />";
 }
 
 // Set up $thread and $forum for later use.
@@ -502,7 +504,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$message = $mybb->input['message'];
 	}
 	$message = htmlspecialchars_uni($message);
-	$editdraftpid = '';
 
 	// Set up the post options.
 	if($mybb->input['previewpost'] || $maximageserror || $reply_errors != '')
@@ -534,7 +535,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
 		}
-		$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" />";
 		$mybb->input['icon'] = $post['icon'];
 	}
 	else

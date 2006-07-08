@@ -35,6 +35,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $mybb-
 	$pid = $post['pid'];
 	$fid = $thread['fid'];
 	$tid = $thread['tid'];
+	$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" /><input type=\"hidden\" name=\"tid\" value=\"$tid\" />";
 }
 else
 {
@@ -400,7 +401,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$postoptionschecked['disablesmilies'] = "checked";
 		}
-		$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" /><input type=\"hidden\" name=\"tid\" value=\"$tid\" />";
 		$icon = $post['icon'];
 	}
 	
