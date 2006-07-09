@@ -358,8 +358,6 @@ if($mybb->input['action'] == "read")
 	if($pm['status'] == "0")
 	{
 		$time = time();
-		/* Do not convert to update_query() as $receiptadd will break. */
-
 		$updatearray = array(
 			'status' => 1,
 			'readtime' => $time
@@ -373,7 +371,7 @@ if($mybb->input['action'] == "read")
 		$db->update_query(TABLE_PREFIX."privatemessages", $updatearray, "pmid='{$pmid}'");
 
 		// Update the unread count - it has now changed.
-		update_pm_count("", 4);
+		update_pm_count($mybb->user['uid'], 6);
 	}
 	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));

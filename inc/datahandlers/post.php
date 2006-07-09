@@ -649,6 +649,11 @@ class PostDataHandler extends DataHandler
 			");
 			while($subscribedmember = $db->fetch_array($query))
 			{
+				if($done_users[$subscribedmember['uid']])
+				{
+					continue;
+				}
+				$done_users[$subscribedmember['uid']] = 1;
 				if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 				{
 					$uselang = $subscribedmember['language'];
@@ -1032,6 +1037,11 @@ class PostDataHandler extends DataHandler
 			");
 			while($subscribedmember = $db->fetch_array($query))
 			{
+				if($done_users[$subscribedmember['uid']])
+				{
+					continue;
+				}
+				$done_users[$subscribedmember['uid']] = 1;
 				// Determine the language pack we'll be using to send this email in and load it if it isn't already.
 				if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 				{

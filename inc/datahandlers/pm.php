@@ -410,7 +410,7 @@ class PMDataHandler extends DataHandler
 			$db->insert_query(TABLE_PREFIX."privatemessages", $newpm);
 
 			// Update private message count (total, new and unread) for recipient
-			update_pm_count($pm['recipient']['uid']);
+			update_pm_count($pm['recipient']['uid'], 7, $pm['recipient']['lastactive']);
 		}
 
 		// Are we replying or forwarding an existing PM?
@@ -453,7 +453,7 @@ class PMDataHandler extends DataHandler
 			$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
 
 			// Because the sender saved a copy, update their total pm count
-			update_pm_count($pm['sender']['uid'], 4);
+			update_pm_count($pm['sender']['uid'], 1);
 		}
 
 		// If the recipient has pm popup functionality enabled, update it to show the popup.

@@ -208,12 +208,12 @@ if($mybb->input['action'] == "dayview")
 	// If we have 1st March and this year isn't a leap year, fetch birthdays on the 29th.
 	if($day == 1 && $month == 3 && date("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
 	{
-		$bday_where = "birthday LIKE '$day-$month-%' OR birthday LIKE '29-2-%'";
+		$bday_where = "birthday LIKE '$day-$month-%' OR birthday LIKE '29-2%' OR birthday LIKE '$day-$month'";
 		$feb_fix = 1;
 	}
 	else // Fetch only for this day
 	{
-		$bday_where = "birthday LIKE '$day-$month-%'";
+		$bday_where = "birthday LIKE '$day-$month-%' OR birthday LIKE '$day-$month'";
 		$feb_fix = 0;
 	}
 	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
@@ -541,12 +541,12 @@ if($mybb->input['action'] == "calendar_main")
 	// If we have 1st March and this year isn't a leap year, fetch birthdays on the 29th.
 	if($month == 3 && date("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
 	{
-		$bday_where = "birthday LIKE '%-$month-%' OR birthday LIKE '29-2-%'";
+		$bday_where = "birthday LIKE '%-$month-%' OR birthday LIKE '29-2%' OR birthday LIKE '%-$month'";
 		$feb_fix = 1;
 	}
 	else // Fetch only for this day
 	{
-		$bday_where = "birthday LIKE '%-$month-%'";
+		$bday_where = "birthday LIKE '%-$month-%' OR birthday LIKE '%-$month'";
 		$feb_fix = 0;
 	}
 

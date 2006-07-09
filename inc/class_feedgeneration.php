@@ -95,7 +95,7 @@ class FeedGenerator
 				$this->channel['date'] = date("Y-m-d\TH:i:s\Z", $this->channel['date']);
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 				$this->xml .= "<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
-				$this->xml .= "\t<title>".htmlentities($this->channel['title'])."</title>\n";
+				$this->xml .= "\t<title><![CDATA[".htmlentities($this->channel['title'])."]]></title>\n";
 				$this->xml .= "\t<id>".$this->channel['link']."/</id>\n";
 				$this->xml .= "\t<link rel=\"alternate\" type=\"text/html\" href=\"".$this->channel['link']."\"/>\n";
 				$this->xml .= "\t<modified>".$this->channel['date']."</modified>\n";
@@ -107,7 +107,7 @@ class FeedGenerator
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 				$this->xml .= "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"	xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
 				$this->xml .= "\t<channel>\n";
-				$this->xml .= "\t\t<title>".htmlentities($this->channel['title'])."</title>\n";
+				$this->xml .= "\t\t<title><![CDATA[".htmlentities($this->channel['title'])."]]></title>\n";
 				$this->xml .= "\t\t<link>".$this->channel['link']."</link>\n";
 				$this->xml .= "\t\t<description>".htmlentities($this->channel['description'])."</description>\n";
 				$this->xml .= "\t\t<pubDate>".$this->channel['date']."</pubDate>\n";
@@ -130,10 +130,10 @@ class FeedGenerator
 					if($item['author'])
 					{
 						$this->xml .= "\t\t<author>\n";
-						$this->xml .= "\t\t\t<name>".htmlentities($item['author'])."</name>\n";
+						$this->xml .= "\t\t\t<name><![CDATA[".htmlentities($item['author'])."]]></name>\n";
 						$this->xml .= "\t\t</author>\n";
 					}
-					$this->xml .= "\t\t<title type=\"text/html\" mode=\"escaped\">".htmlentities($item['title'])."</title>\n";
+					$this->xml .= "\t\t<title type=\"text/html\" mode=\"escaped\"><![CDATA[".htmlentities($item['title'])."]]></title>\n";
 					$this->xml .= "\t\t<link rel=\"alternate\" type=\"text/html\" href=\"".$item['link']."\" />\n";
 					$this->xml .= "\t\t<id>".$item['link']."</id>\n";
 					$this->xml .= "\t\t<modified>{$item['date']}</modified>\n";
@@ -147,12 +147,12 @@ class FeedGenerator
 				default:
 					$item['date'] = date("D, d M Y H:i:s O", $item['date']);
 					$this->xml .= "\t\t<item>\n";
-					$this->xml .= "\t\t\t<title>".htmlentities($item['title'])."</title>\n";
+					$this->xml .= "\t\t\t<title><![CDATA[".htmlentities($item['title'])."]]></title>\n";
 					$this->xml .= "\t\t\t<link>".$item['link']."</link>\n";
 					$this->xml .= "\t\t\t<pubDate>".$item['date']."</pubDate>\n";
 					if($item['author'])
 					{
-						$this->xml .= "\t\t\t<dc:creator>".htmlentities($item['author'])."</dc:creator>\n";
+						$this->xml .= "\t\t\t<dc:creator><![CDATA[".htmlentities($item['author'])."]]></dc:creator>\n";
 					}
 					$this->xml .= "\t\t\t<guid isPermaLink=\"false\">".$item['link']."</guid>\n";
 					$this->xml .= "\t\t\t<description><![CDATA[".strip_tags($item['description'])."]]></description>\n";

@@ -620,7 +620,7 @@ if($mybb->input['action'] == "do_joinrequests")
 		{
 			if($what == "accept")
 			{
-				join_usergroup(intval($uid), $gid);
+				join_usergroup(intval($uid), $mybb->input['gid']);
 				$uidin[] = $uid;
 			}
 			elseif($what == "decline")
@@ -757,6 +757,10 @@ function usergroup_hop(gid)
 		makehiddencode('gid', $usergroup['gid']);
 		echo "<tr class=\"{$bgcolor}\">\n";
 		echo "<td>{$usergroup['title']}<br><small>{$usergroup['description']}</td>\n";
+		if(!$primaryusers[$usergroup['gid']])
+		{
+			$primaryusers[$usergroup['gid']] = 0;
+		}
 		echo "<td align=\"center\">".$primaryusers[$usergroup['gid']];
 		if($secondaryusers[$usergroup['gid']])
 		{
@@ -807,6 +811,10 @@ function usergroup_hop(gid)
 			makehiddencode('gid', $usergroup['gid']);
 			echo "<tr class=\"{$bgcolor}\">\n";
 			echo "<td>{$usergroup['title']}</td>\n";
+			if(!$primaryusers[$usergroup['gid']])
+			{
+				$primaryusers[$usergroup['gid']] = 0;
+			}
 			echo "<td align=\"center\">".$primaryusers[$usergroup['gid']];
 			if($secondaryusers[$usergroup['gid']])
 			{
@@ -862,6 +870,10 @@ function usergroup_hop(gid)
 			makehiddencode('gid', $usergroup['gid']);
 			echo "<tr class=\"{$bgcolor}\">\n";
 			echo "<td>{$usergroup['title']}</td>\n";
+			if(!$primaryusers[$usergroup['gid']])
+			{
+				$primaryusers[$usergroup['gid']] = 0;
+			}
 			echo "<td align=\"center\">".$primaryusers[$usergroup['gid']];
 			if($secondaryusers[$usergroup['gid']])
 			{
@@ -870,7 +882,7 @@ function usergroup_hop(gid)
 			$modrequests = '';
 			if($joinrequests[$usergroup['gid']] > 0)
 			{
-				$usergroup['joinrequests'] = "<span class=\"highlight1\">".$joinrequests[$usergroup['gid']]."</span>";
+				$usergroup['joinrequests'] = "<a href=\"usergroups.php?".SID."&action=joinrequests&gid={$usergroup['gid']}\"><span class=\"highlight1\">".$joinrequests[$usergroup['gid']]."</span></a>";
 				$modrequests = "<option value=\"joinrequests\">{$lang->moderate_join_requests}</option>\n";
 			}
 			echo "</td>\n";

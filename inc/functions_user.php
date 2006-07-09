@@ -504,7 +504,6 @@ function get_usertitle($uid="")
  * @param int Bitwise value for what to update. 1 = total, 2 = new, 4 = unread. Combinations accepted.
  * @param int The unix timestamp the user with uid last visited. If not specified, will be queried.
  */
-
 function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 {
 	global $db, $mybb;

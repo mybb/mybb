@@ -183,6 +183,7 @@ class session
 		{
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='".$mybb->user['lastactive']."', lastactive='$time' $popupadd WHERE uid='".$mybb->user['uid']."'");
 			$mybb->user['lastvisit'] = $mybb->user['lastactive'];
+			update_pm_count('', 2);
 		}
 		else
 		{

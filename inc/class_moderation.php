@@ -531,7 +531,10 @@ class Moderation
 		}
 
 		// Update forum counts
-		update_forum_count($new_fid);
+		if($fid != $new_fid)
+		{
+			update_forum_count($new_fid);
+		}
 		update_forum_count($fid);
 
 		if(isset($newtid))
@@ -733,6 +736,12 @@ class Moderation
 		global $db;
 
 		$tid_list = implode(",", $tids);
+		
+		$query = $db->simple_select(TABLE_PREFIX."threads", "fid", "tid IN ($tid_list)");
+		while($thread = $db->fetch_array($query))
+		{
+			$update_forums[$thread['fid']] = $thread['fid'];
+		}
 
 		$sqlarray = array(
 			"fid" => $moveto,
@@ -741,8 +750,10 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid IN ($tid_list)");
 
 		update_forum_count($moveto);
-		update_forum_count($fid);
-
+		foreach($update_forums as $fid)
+		{
+			update_forum_count($fid);
+		}
 		return true;
 	}
 
