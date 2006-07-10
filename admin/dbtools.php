@@ -67,7 +67,7 @@ if($mybb->input['action'] == 'do_backup')
 	
 	if($mybb->input['write'] == 'disk')
 	{
-		$file = MYBB_ADMIN_DIR.'backups/backup_'.time();
+		$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].time().random_str()), 0, 10);
 		
 		if($mybb->input['type'] == 'gzip')
 		{
@@ -85,7 +85,7 @@ if($mybb->input['action'] == 'do_backup')
 	}
 	else
 	{
-		$file = 'backup_'.time();
+		$file = 'backup_'.substr(md5($mybb->user['uid'].time().random_str()), 0, 10);
 		if($mybb->input['type'] == 'gzip')
 		{
 			// Send headers for gzip file (do ob_start too)
@@ -289,17 +289,18 @@ if($mybb->input['action'] == 'existing')
 	{
 		if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
 		{
-			$ext = explode('.', basename($file));
-			
-			if($ext[1] == 'gz' || $ext[1] == 'sql')
+			$ext = get_extension($file);
+			if($ext == 'gz' || $ext == 'sql')
 			{
-				$time = my_substr($ext[0], -10, 10);
-				$backups[$time] = $file;
+				$backups[] = array(
+					"file" => $file,
+					"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
+					"type" => $ext
+				);
 			}
 		}
 	}
 	
-	$keys = array_keys($backups);
 	$count = count($backups);
 	
 	if($count != 0)
@@ -315,19 +316,25 @@ if($mybb->input['action'] == 'existing')
 
 		$dir = './backups/';
 		
-		foreach($keys as $key)
+		foreach($backups as $backup)
 		{
-			$file = explode('.', $backups[$key]);
-			$filename = $file[0];
-			$type = $file[1];
-			$file = $dir.$filename.'.'.$type;
-			$delete_link = "<a href=\"dbtools.php?".SID."&action=delete&backup=".$filename.".".$type."\">[ ".$lang->delete." ]</a>";
+			$filename = $backup['file'];
+			if($backup['time'])
+			{
+				$time = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $backup['time']);
+			}
+			else
+			{
+				$time = "-";
+			}
+			$type = $backup['type'];
+			$delete_link = "<a href=\"dbtools.php?".SID."&action=delete&backup=".$filename."\">[ ".$lang->delete." ]</a>";
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\"><a href=\"dbtools.php?".SID."&amp;action=dlbackup&amp;file=".basename($filename).".".$type."\">".$filename."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".get_friendly_size(filesize($file))."</td>\n";
+			echo "<td class=\"$bgcolor\"><a href=\"dbtools.php?".SID."&amp;action=dlbackup&amp;file=".$filename."\">".$filename."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".get_friendly_size(filesize(MYBB_ADMIN_DIR.'backups/'.$file))."</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".strtoupper($type)."</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".date('jS M Y H:i', $key)."</td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">{$time}</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$delete_link."</td>\n";
 			echo "</tr>\n";
 		}
