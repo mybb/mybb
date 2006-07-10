@@ -84,6 +84,9 @@ class postParser
 		// Set the options		
 		$this->options = $options;
 
+		// Get rid of cartridge returns for they are the workings of the devil
+		$message = str_replace("\r", "", $message);
+		
 		// If HTML is disallowed, clean the post of it.
 		if($options['allow_html'] != "yes")
 		{
