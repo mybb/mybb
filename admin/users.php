@@ -1748,6 +1748,12 @@ if($mybb->input['action'] == "do_manageban")
 		$bancheck = $db->fetch_array($query);
 		$uid = $user['uid'];
 	}
+	
+	if(is_super_admin($user['uid']) && $mybb->user['uid'] != $user['uid'])
+	{
+		cperror($lang->cannot_perform_action_super_admin);
+	}
+		
 	if($mybb->input['liftafter'] == '---')
 	{ // permanent ban
 		$liftdate = "perm";
@@ -1780,11 +1786,6 @@ if($mybb->input['action'] == "do_manageban")
 	}
 	else
 	{
-		if(is_super_admin($user['uid']) && $mybb->user['uid'] != $user['uid'])
-		{
-			cperror($lang->cannot_perform_action_super_admin);
-		}
-		
 		$banneduser = array(
 			"uid" => $user['uid'],
 			"admin" => $mybbadmin['uid'],

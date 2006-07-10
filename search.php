@@ -116,7 +116,7 @@ if($mybb->input['action'] == "results")
 
 	// Read some caches we will be using
 	$forumcache = $cache->read("forums");
-	$iconcache = $cache->read("posticons");
+	$icon_cache = $cache->read("posticons");
 
 	$threads = array();
 
@@ -218,9 +218,9 @@ if($mybb->input['action'] == "results")
 			$thread['subject'] = $parser->parse_badwords($thread['subject']);
 			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
-			if($iconcache[$thread['iid']])
+			if($icon_cache[$thread['icon']])
 			{
-				$posticon = $iconcache[$thread['iid']];
+				$posticon = $icon_cache[$thread['icon']];
 				$icon = "<img src=\"".$posticon['path']."\" alt=\"".$posticon['name']."\" />";
 			}
 			else
@@ -444,9 +444,9 @@ if($mybb->input['action'] == "results")
 			$post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
 			$post['thread_subject'] = htmlspecialchars_uni($post['thread_subject']);
 
-			if($iconcache[$post['iid']])
+			if($icon_cache[$post['icon']])
 			{
-				$posticon = $iconcache[$post['iid']];
+				$posticon = $icon_cache[$post['icon']];
 				$icon = "<img src=\"".$posticon['path']."\" alt=\"".$posticon['name']."\" />";
 			}
 			else

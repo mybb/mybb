@@ -4719,7 +4719,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="search_results_threads_thread" version="100.07"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 	<td align="center" class="{$bgcolor}" width="1">{$icon}</td>
-	<td class="{$bgcolor}">{$prefix} <a href="showthread.php?tid={$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</td>
+	<td class="{$bgcolor}">{$gotounread}{$prefix} <a href="showthread.php?tid={$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</td>
 	<td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
 	<td class="{$bgcolor}">{$thread['forumlink']}</td>
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a></td>

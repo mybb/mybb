@@ -72,7 +72,7 @@ while($user = $db->fetch_array($query))
 		{
 			if($forum_permissions[$forum['fid']]['canview'] == "yes")
 			{
-				eval("\$forumslist .= \"".$templates->get("showteam_moderators_forum")."\";");
+				eval("\$forumlist .= \"".$templates->get("showteam_moderators_forum")."\";");
 			}
 		}
 		$user['forumlist'] = $forumlist;

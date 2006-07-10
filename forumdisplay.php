@@ -84,7 +84,7 @@ $forumpermissions = forum_permissions();
 if($mybb->settings['modlist'] != "off")
 {
 	$query = $db->query("
-		SELECT m.uid, m.fid, u.username
+		SELECT m.uid, m.fid, u.username, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."moderators m
 		LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
 		ORDER BY u.username

@@ -180,7 +180,7 @@ if($mybb->input['action'] == "edit")
 	tablesubheader($lang->general_options);
 	makeinputcode($lang->name, 'name', $tool['name']);
 	maketextareacode($lang->description, 'description', $tool['description']);
-	makelabelcode($lang->available_in_forums, forum_checkbox_list('forums', $tool['forums'], '0', '', $lang->all_forums));
+	makelabelcode($lang->available_in_forums, forum_checkbox_list('forums', explode("," $tool['forums']), '0', '', $lang->all_forums));
 	
 	if($mode == 'p')
 	{
