@@ -471,9 +471,16 @@ function error_no_permission()
 		"location2" => 0
 	);
 	$db->update_query(TABLE_PREFIX."sessions", $noperm_array, "sid='".$session->sid."'");
-	$plate = "error_nopermission".(($mybb->user['uid']!=0)?"_loggedin":"");
 	$url = $_SERVER['REQUEST_URI'];
-	eval("\$errorpage = \"".$templates->get($plate)."\";");
+	if($mybb->user['uid'])
+	{
+		$lang->error_nopermission_user_5 = sprintf($lang->error_nopermission_user_5, $mybb->user['username']);
+		eval("\$errorpage = \"error_nopermission_loggedin\";");		
+	}
+	else
+	{
+		eval("\$errorpage = \"error_nopermission\";");				
+	}
 	error($errorpage);
 }
 

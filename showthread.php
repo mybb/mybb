@@ -15,8 +15,8 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_seperator";
 
 require "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases

@@ -15,9 +15,9 @@ $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile
 
 
 require "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_user.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases
@@ -1452,7 +1452,7 @@ if($mybb->input['action'] == "avatar")
 if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_avatar_start");
-	require MYBB_ROOT."inc/functions_upload.php";
+	require_once MYBB_ROOT."inc/functions_upload.php";
 	if($mybb->input['remove']) // remove avatar
 	{
 		$updated_avatar = array(
@@ -2009,7 +2009,7 @@ if($mybb->input['action'] == "usergroups")
 if($mybb->input['action'] == "attachments")
 {
 	$plugins->run_hooks("usercp_attachments_start");
-	require MYBB_ROOT."inc/functions_upload.php";
+	require_once MYBB_ROOT."inc/functions_upload.php";
 	$attachments = '';
 	$query = $db->query("
 		SELECT a.*, p.subject, p.dateline, t.tid, t.subject AS threadsubject
@@ -2073,7 +2073,7 @@ if($mybb->input['action'] == "attachments")
 if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_attachments_start");
-	require MYBB_ROOT."inc/functions_upload.php";
+	require_once MYBB_ROOT."inc/functions_upload.php";
 	if(!is_array($mybb->input['attachments']))
 	{
 		error($lang->no_attachments_selected);

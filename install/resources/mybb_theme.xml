@@ -1137,7 +1137,7 @@ var inlineId = {$tid};
 <td width="50%" class="trow1" valign="top">
 <fieldset class="trow2">
 <legend><strong>{$lang->login_cookies_privacy}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<table cellspacing="0" cellpadding="2">
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="yes" {$invisiblecheck} /></td>
 <td><span class="smalltext"><label for="invisible">{$lang->invisible_mode}</label></span></td>
@@ -1151,7 +1151,7 @@ var inlineId = {$tid};
 <br />
 <fieldset class="trow2">
 <legend><strong>{$lang->messaging_notification}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<table cellspacing="0" cellpadding="2">
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="allownotices" id="allownotices" value="yes" {$allownoticescheck} /></td>
 <td><span class="smalltext"><label for="allownotices">{$lang->allow_notices}</label></span></td>
@@ -1181,7 +1181,7 @@ var inlineId = {$tid};
 <br />
 <fieldset class="trow2">
 <legend><strong>{$lang->date_time_options}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<table cellspacing="0" cellpadding="2">
 <tr>
 <td><span class="smalltext">{$lang->date_format}</span></td>
 </tr>
@@ -1224,7 +1224,7 @@ var inlineId = {$tid};
 <td >{$tzselect}</td>
 </tr>
 </table>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<table cellspacing="0" cellpadding="2">
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="dst" id="dst" value="yes" {$dstcheck} /></td>
 <td><span class="smalltext"><label for="dst">{$lang->dst}</label></span></td>
@@ -1235,7 +1235,7 @@ var inlineId = {$tid};
 <td width="50%" class="trow1" valign="top">
 <fieldset class="trow2">
 <legend><strong>{$lang->forum_display_options}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<table cellspacing="0" cellpadding="2">
 {$tppselect}
 <tr>
 <td><span class="smalltext">{$lang->thread_view}</span></td>
@@ -1261,7 +1261,7 @@ var inlineId = {$tid};
 <br />
 <fieldset class="trow2">
 <legend><strong>{$lang->thread_view_options}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<table cellspacing="0" cellpadding="2">
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showsigs" id="showsigs" value="yes" {$showsigscheck} /></td>
 <td><span class="smalltext"><label for="showsigs">{$lang->show_sigs}</label></span></td>
@@ -1286,7 +1286,7 @@ var inlineId = {$tid};
 <br />
 <fieldset class="trow2">
 <legend><strong>{$lang->other_options}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<table cellspacing="0" cellpadding="2">
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showredirect" id="showredirect" value="yes" {$showredirectcheck} /></td>
 <td><span class="smalltext"><label for="showredirect">{$lang->show_redirect}</label></span></td>
@@ -2240,7 +2240,7 @@ $headerinclude
 <strong>{$lang->birthday}</strong> {$membday} {$membdayage}<br />
 <strong>{$lang->local_time}</strong> {$localtime}<br />
 </span>
-</td><td width="25%" align="center" valign="middle">{$avatar}</td></tr></table>
+</td><td width="25%" align="right" valign="middle">{$avatar}</td></tr></table>
 </td>
 </tr>
 {$awaybit}
@@ -3151,7 +3151,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 </table>
 ]]></template>
-		<template name="forumdisplay_thread_gotounread" version="100.07"><![CDATA[<a href="showthread.php?action=newpost&amp;tid={$thread['tid']}"><img src="{$theme['imgdir']}/jump.gif" alt="{$lang->goto_first_unread}" border="0" /></a>&nbsp;]]></template>
+		<template name="forumdisplay_thread_gotounread" version="100.07"><![CDATA[<a href="showthread.php?action=newpost&amp;tid={$thread['tid']}"><img src="{$theme['imgdir']}/jump.gif" alt="{$lang->goto_first_unread}" border="0" /></a> ]]></template>
 		<template name="private_tracking" version="100.07"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_tracking}</title>
@@ -3804,7 +3804,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 <td class="{$bgcolor}" valign="top">
 <span class="smalltext"><label><input type="checkbox" class="checkbox" name="postpoll" value="yes" {$postpollchecked} /><strong>{$lang->poll_check}</strong></label><br />
-{$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" />{$lang->max_options}</span>
+{$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" /> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
 		<template name="moderation_reports" version="100.07"><![CDATA[<html>
@@ -4127,7 +4127,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 <td class="{$bgcolor}">
 	{$attachment_count}
-	<div>{$prefix} {$gotounread}<span><a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span></div>
+	<div><span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span></div>
 </td>
 <td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
 <td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a>{$unapproved_posts}</td>
@@ -4147,12 +4147,12 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="post_attachments_attachment" version="100.07"><![CDATA[<tr>
 <td width="5%" align="center">{$attachment['icon']}</td>
 <td nowrap="nowrap">{$attachment['filename']} ({$attachment['size']})</td>
-<td nowrap="nowrap" align="right">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />&nbsp;{$postinsert}</td>
+<td nowrap="nowrap" align="right">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
 </tr>]]></template>
 		<template name="post_attachments_attachment_unapproved" version="100.07"><![CDATA[<tr>
 <td width="5%" align="center">{$attachment['icon']}</td>
 <td nowrap="nowrap"><em>{$attachment['filename']} ({$attachment['size']})</em></td>
-<td nowrap="nowrap" align="right">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />&nbsp;{$postinsert}</td>
+<td nowrap="nowrap" align="right">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
 </tr>]]></template>
 	<template name="post_attachments_attachment_mod_approve" version="100.07"><![CDATA[<input type="submit" class="button" name="approveattach" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
 	<template name="post_attachments_attachment_mod_unapprove" version="100.07"><![CDATA[<input type="submit" class="button" name="unapproveattach" value="{$lang->unapprove_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'unapprove');" />]]></template>
@@ -4196,7 +4196,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tcat" colspan="2"><strong>{$lang->post_separator}</strong></td>
 </tr>
 <tr>
-<td class="trow2" colspan="2"><label><input type="radio" class="radio" name="sep" value="hr" checked="checked" />&nbsp;{$lang->horizontal_rule}</label><br /><label><input type="radio" class="radio" name="sep" value="new_line" />&nbsp;{$lang->new_line}</label></td>
+<td class="trow2" colspan="2"><label><input type="radio" class="radio" name="sep" value="hr" checked="checked" /> {$lang->horizontal_rule}</label><br /><label><input type="radio" class="radio" name="sep" value="new_line" /> {$lang->new_line}</label></td>
 </tr>
 {$posts}
 </table>
@@ -4295,7 +4295,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->num_options}</strong><br /><span class="smalltext">{$lang->max_options} {$mybb->settings['maxpolloptions']}</span></td>
-<td class="trow1"><input type="text" class="textbox" name="polloptions" size="10" value="{$polloptions}" />&nbsp;&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="polloptions" size="10" value="{$polloptions}" />&nbsp;<input type="submit" class="button" name="updateoptions" value="{$lang->update_options}" /></td>
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_options}</strong></td>
@@ -5265,8 +5265,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$customfields}
 </table>]]></template>
 		<template name="member_profile_customfields_field" version="100.07"><![CDATA[<tr>
-<td class="{$bgcolor}"><strong>{$customfield['name']}:</strong></td>
-<td class="{$bgcolor}">{$customfieldval}</td>
+<td class="{$bgcolor}" width="40%"><strong>{$customfield['name']}:</strong></td>
+<td class="{$bgcolor}" width="60%">{$customfieldval}</td>
 </tr>
 ]]></template>
 		<template name="forumdisplay_usersbrowsing_user" version="100.07"><![CDATA[{$comma}<a href="member.php?action=profile&amp;uid={$user['uid']}">{$user['username']}</a>{$invisiblemark}]]></template>
@@ -5565,7 +5565,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_messagebit_denyreceipt" version="100.07"><![CDATA[<span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=yes">{$lang->deny_receipt}</a></span>]]></template>
+		<template name="private_messagebit_denyreceipt" version="100.07"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=yes">{$lang->deny_receipt}</a></span>]]></template>
 		<template name="private_read" version="100.07"><![CDATA[<html>
 <head>
 <title>{$lang->viewing_pm} {$pm['subject']}</title>
@@ -5627,21 +5627,12 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <br />]]></template>
 		<template name="error_nopermission_loggedin" version="100.07"><![CDATA[{$lang->error_nopermission_user_1}
 <ol>
-<li>{$lang->error_nopermission_user_2}</li>
-<li>{$lang->error_nopermission_user_3}</li>
-<li>{$lang->error_nopermission_user_4} (<a href="member.php?action=resendactivation">{$lang->error_nopermission_user_resendactivation}</a>)</li>
+	<li>{$lang->error_nopermission_user_2}</li>
+	<li>{$lang->error_nopermission_user_3}</li>
+	<li>{$lang->error_nopermission_user_4} (<a href="member.php?action=resendactivation">{$lang->error_nopermission_user_resendactivation}</a>)</li>
 </ol>
 <br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2"><span class="smalltext"><strong>{$lang->logged_in_user}</strong></span></td>
-</tr>
-<tr>
-<td class="trow1"><strong>{$lang->username}</strong></td>
-<td class="trow1">{$mybb->user['username']}</td>
-</tr>
-</table>
-<br />]]></template>
+{$lang->error_nopermission_user_5}]]></template>
 		<template name="private_folders" version="100.07"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_folders}</title>
@@ -6066,20 +6057,6 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 {$postbit}
 </table>
 <br />]]></template>
-		<template name="member_profile_avatar" version="100.07"><![CDATA[<table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" class="tborder">
-<tr>
-<td>
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%">
-<tr>
-<td width="100%" class="thead"><strong>{$lang->avatar}</strong></td>
-</tr>
-<tr>
-<td class="trow1"><div align="center"><img src="{$memprofile['avatar']}" /></div></td>
-</tr>
-</table>
-</td>
-</tr>
-</table>]]></template>
 		<template name="misc_help_helpdoc" version="100.07"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->help_docs}</title>

@@ -14,9 +14,9 @@ $templatelist = "member_register,error_nousername,error_nopassword,error_passwor
 $templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword";
 require "./global.php";
 
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_user.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases
@@ -84,7 +84,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	if($mybb->settings['regtype'] == "randompass")
 	{
-		$mybb->input['password'] = randomstr();
+		$mybb->input['password'] = random_str();
 		$mybb->input['password2'] = $mybb->input['password'];
 	}
 
@@ -1244,14 +1244,19 @@ elseif($mybb->input['action'] == "profile")
 		$field = "fid$customfield[fid]";
 		$useropts = explode("\n", $userfields[$field]);
 		$customfieldval = $comma = '';
-		if(is_array($useropts) && ($customfield['type'] == "multiselect" || $customfield['type'] == "checkbox"))
+		if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 		{
-			$customfieldval .= '<ul>';
 			foreach($useropts as $val)
 			{
-				$customfieldval .= "<li>{$val}</li>";
+				if($val != '')
+				{
+					$customfieldval .= "<li style=\"margin-left: 0;\">{$val}</li>";
+				}
 			}
-			$customfieldval .= '</ul>';
+			if($customfieldval != '')
+			{
+				$customfieldval = "<ul style=\"margin: 0; padding-left: 15px;\">{$customfieldval}</ul>";
+			}
 		}
 		else
 		{
@@ -1265,7 +1270,6 @@ elseif($mybb->input['action'] == "profile")
 			}
 		}
 		eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
-		
 		$bgcolor = alt_trow();
 	}
 	if($customfields)

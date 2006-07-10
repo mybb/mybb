@@ -341,7 +341,7 @@ else if($mybb->input['action'] == "edit_post")
 			$posthandler->update_post();
 		}
 
-		require MYBB_ROOT."inc/class_parser.php";
+		require_once MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
 		
 		$parser_options = array(

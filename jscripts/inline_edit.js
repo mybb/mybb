@@ -94,7 +94,7 @@ inlineEditor.prototype = {
 		this.textbox.className = "textbox";
 		this.textbox.type = "text";
 		Event.observe(this.textbox, "blur", this.onBlur.bindAsEventListener(this));
-		Event.observe(this.textbox, "keyup", this.onKeyUp.bindAsEventListener(this));
+		Event.observe(this.textbox, "keypress", this.onKeyUp.bindAsEventListener(this));
 		this.textbox.setAttribute("autocomplete", "off");
 		this.textbox.name = "value";
 		this.textbox.index = this.element.index;
@@ -115,9 +115,13 @@ inlineEditor.prototype = {
 
 	onKeyUp: function(e)
 	{
-		if((e.keyCode == Event.KEY_RETURN || e.keyCode == Event.KEY_ESC))
+		if(e.keyCode == Event.KEY_RETURN)
 		{
 			this.hideTextbox();
+		}
+		else if(e.keyCode == Event.KEY_ESC)
+		{
+			this.cancelEdit();
 		}
 		return true;
 	},
@@ -167,6 +171,17 @@ inlineEditor.prototype = {
 		}
 		this.currentIndex = -1;
 		return true;
+	},
+	
+	cancelEdit: function()
+	{
+		Element.remove(this.textbox);
+		this.parentNode.innerHTML = this.cache;
+		this.element = this.parentNode.firstChild;
+		this.element.index = this.currentIndex;
+		this.elements[this.element.index] = this.element;
+		this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);		
+		this.currentIndex = -1;
 	},
 
 	onComplete: function(request)

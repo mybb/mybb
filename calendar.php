@@ -12,8 +12,8 @@
 $templatelist = "calendar,calendar_eventbit_public,calendar_eventbit_private,calendar_addpublicevent,calendar_addprivateevent,calendar_addevent,calendar_event,calendar_daybit,calendar_daybit_today";
 require "./global.php";
 
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 $event_parser_options = array(

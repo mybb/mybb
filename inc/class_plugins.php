@@ -90,7 +90,7 @@ class pluginSystem
 						require_once $hook['file'];
 					}
 					$oldreturnargs = $returnargs;
-					$returnargs = call_user_func($hook['function'], &$arguments);
+					$returnargs = call_user_func_array($hook['function'], array(&$arguments));
 					if($returnargs)
 					{
 						$arguments = $returnargs;

@@ -114,12 +114,13 @@ autoComplete.prototype = {
 			return false;
 		}
 		this.lastValue = this.textbox.value;
+		cacheValue = this.textbox.length+this.textbox.value;
 		if(this.textbox.value.length >= this.minChars)
 		{
 						
-			if(this.cache[this.textbox.value])
+			if(this.cache[cacheValue])
 			{
-				this.popup.innerHTML = this.cache[this.textbox.value];
+				this.popup.innerHTML = this.cache[cacheValue];
 				this.onComplete();
 			}
 			else
@@ -143,8 +144,9 @@ autoComplete.prototype = {
 				this.hidePopup();
 				return false;
 			}
+			cacheValue = this.textbox.length+this.textbox.value;
 			this.popup.innerHTML = request.responseText;
-			this.cache[this.textbox.value] = this.popup.innerHTML;
+			this.cache[cacheValue] = this.popup.innerHTML;
 		}
 		this.currentIndex = -1;
 		if(this.popup.childNodes.length < 1)

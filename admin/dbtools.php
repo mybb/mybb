@@ -232,15 +232,6 @@ if($mybb->input['action'] == 'do_backup')
 		$lang->backup_complete = sprintf($lang->backup_complete, $file.$ext, $file_from_admindir);
 		cpmessage($lang->backup_complete);
 	}
-	else
-	{
-		if($mybb->input['type'] == 'gzip')
-		{
-			// End ob
-			// Compress
-			// Echo compressed
-		}
-	}
 }
 
 if($mybb->input['action'] == "dlbackup")

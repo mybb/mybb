@@ -407,7 +407,7 @@ if($mybb->input['action'] == "do_add")
 // Process editing of a user.
 if($mybb->input['action'] == "do_edit")
 {
-	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'])
+	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
 	{
 		cperror($lang->cannot_perform_action_super_admin);
 	}
@@ -512,7 +512,7 @@ if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
 	{
-		if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'])
+		if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
 		{
 			cperror($lang->cannot_perform_action_super_admin);
 		}
@@ -845,7 +845,7 @@ if($mybb->input['action'] == "add")
 // Show edit user page
 if($mybb->input['action'] == "edit")
 {
-	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'])
+	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
 	{
 		cperror($lang->cannot_perform_action_super_admin);
 	}
@@ -927,7 +927,7 @@ if($mybb->input['action'] == "edit")
 }
 if($mybb->input['action'] == "delete")
 {
-	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'])
+	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
 	{
 		cperror($lang->cannot_perform_action_super_admin);
 	}
@@ -1749,7 +1749,7 @@ if($mybb->input['action'] == "do_manageban")
 		$uid = $user['uid'];
 	}
 	
-	if(is_super_admin($user['uid']) && $mybb->user['uid'] != $user['uid'])
+	if(is_super_admin($user['uid']) && $mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid']))
 	{
 		cperror($lang->cannot_perform_action_super_admin);
 	}
@@ -1842,7 +1842,7 @@ if($mybb->input['action'] == "manageban")
 	}
 	else
 	{
-		if(is_super_admin($mybb->input['auid']) && $mybb->user['uid'] != $mybb->input['auid'])
+		if(is_super_admin($mybb->input['auid']) && $mybb->user['uid'] != $mybb->input['auid'] && !is_super_admin($mybb->user['uid']))
 		{
 			cperror($lang->cannot_perform_action_super_admin);
 		}

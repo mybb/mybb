@@ -566,9 +566,9 @@ function configure()
 		{
 			$hostname = 'http://'.$_SERVER['SERVER_NAME'];
 		}
-		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80)
+		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
 		{
-			$hostname .= ':'.$_SERVER['PORT'];
+			$hostname .= ':'.$_SERVER['SERVER_PORT'];
 		}
 		$currentscript = $hostname.get_current_location();
 		if($currentscript)
@@ -709,7 +709,7 @@ function install_done()
 	$db = db_connection($config);
 	
 	require '../inc/settings.php';
-	$mybb->setings = &$settings;
+	$mybb->settings = &$settings;
 
 	ob_start();
 	$output->print_header($lang->finish_setup, 'finish');

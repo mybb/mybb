@@ -12,9 +12,9 @@
 $templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post";
 $templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 require "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_search.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_search.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases

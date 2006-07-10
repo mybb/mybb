@@ -13,9 +13,9 @@ $templatelist = "newreply,previewpost,error_invalidforum,error_invalidthread,red
 $templatelist .= ",smilieinsert,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions";
 
 require "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_user.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 // Load global language phrases
 $lang->load("newreply");

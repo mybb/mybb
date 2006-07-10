@@ -11,7 +11,7 @@
 
 /* This file does all the misc operations of usercp.php */
 require "./global.php";
-require MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/functions_user.php";
 
 if($mybb->user['uid'] == 0)
 {

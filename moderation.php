@@ -10,11 +10,11 @@
  */
 
 require "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_upload.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_upload.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
-require MYBB_ROOT."inc/class_moderation.php";
+require_once MYBB_ROOT."inc/class_moderation.php";
 $moderation = new Moderation;
 
 // Load global language phrases
@@ -805,7 +805,7 @@ switch($mybb->input['action'])
 			}
 		}
 		$threads = getids($fid, "forum");
-		if(!is_array($threads))
+		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
 		}
@@ -844,7 +844,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
-		if(!is_array($threads))
+		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
 		}
@@ -863,7 +863,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
-		if(!is_array($threads))
+		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
 		}
@@ -882,7 +882,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
-		if(!is_array($threads))
+		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
 		}
@@ -902,7 +902,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
-		if(!is_array($threads))
+		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
 		}
@@ -922,7 +922,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
-		if(!is_array($threads))
+		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
 		}
@@ -941,7 +941,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
-		if(!is_array($threads))
+		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
 		}
@@ -957,7 +957,7 @@ switch($mybb->input['action'])
 	case "multimovethreads":
 		add_breadcrumb($lang->nav_multi_movethreads);
 		$threads = getids($fid, "forum");
-		if(!is_array($threads))
+		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
 		}
@@ -1020,7 +1020,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$posts = getids($tid, "thread");
-		if(!is_array($posts))
+		if(count($posts) < 1)
 		{
 			error($lang->error_inline_nopostsselected);
 		}
@@ -1028,10 +1028,6 @@ switch($mybb->input['action'])
 		//clearinline($pid, "post");
 		clearinline($tid, "thread");
 
-		if(!is_array($posts))
-		{
-			error($lang->error_inline_nopostsselected);
-		}
 		eval("\$multidelete = \"".$templates->get("moderation_inline_deleteposts")."\";");
 		output_page($multidelete);
 		break;
@@ -1079,7 +1075,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$posts = getids($tid, "thread");
-		if(!is_array($posts))
+		if(count($posts) < 1)
 		{
 			error($lang->error_inline_nopostsselected);
 		}
@@ -1130,7 +1126,7 @@ switch($mybb->input['action'])
 			error($lang->error_cantsplitonepost);
 		}
 		$posts = getids($tid, "thread");
-		if(!is_array($posts))
+		if(count($posts) < 1)
 		{
 			error($lang->error_inline_nopostsselected);
 		}
@@ -1198,7 +1194,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$posts = getids($tid, "thread");
-		if(!is_array($posts))
+		if(count($posts) < 1)
 		{
 			error($lang->error_inline_nopostsselected);
 		}
@@ -1223,7 +1219,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$posts = getids($tid, "thread");
-		if(!is_array($posts))
+		if(count($posts) < 1)
 		{
 			error($lang->error_inline_nopostsselected);
 		}

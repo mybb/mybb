@@ -13,8 +13,8 @@ $templatelist = "newthread,previewpost,error_invalidforum,redirect_newthread,log
 $templatelist .= "posticons";
 
 require "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_user.php";
 
 // Load global language phrases
 $lang->load("newthread");

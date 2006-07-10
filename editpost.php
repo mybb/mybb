@@ -12,8 +12,8 @@
 $templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,changeuserbox,attachment,posticons";
 
 require "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_upload.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_upload.php";
 
 // Load global language phrases
 $lang->load("editpost");

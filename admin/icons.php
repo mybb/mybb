@@ -190,7 +190,7 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		$perpage = 15;
 	}
-	$dir = @opendir($mybb->input['path']);
+	$dir = @opendir("../".$mybb->input['path']);
 	if(!$dir)
 	{
 		cperror($lang->invalid_directory);
