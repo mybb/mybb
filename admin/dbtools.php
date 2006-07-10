@@ -332,7 +332,7 @@ if($mybb->input['action'] == 'existing')
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"dbtools.php?".SID."&amp;action=dlbackup&amp;file=".$filename."\">".$filename."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".get_friendly_size(filesize(MYBB_ADMIN_DIR.'backups/'.$file))."</td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".get_friendly_size(filesize(MYBB_ADMIN_DIR.'backups/'.$filename))."</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".strtoupper($type)."</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">{$time}</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$delete_link."</td>\n";
