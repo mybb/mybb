@@ -9,7 +9,7 @@
  * $Id$
  */
 
-$templatesused = '';
+$templatelist = '';
 require "./global.php";
 
 require_once MYBB_ROOT."inc/class_parser.php";

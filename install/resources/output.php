@@ -27,7 +27,6 @@ class installerOutput {
 <head>
 	<title>$this->title &gt; $title</title>
 	<link rel="stylesheet" href="stylesheet.css" type="text/css" />
-	<script src="general.js" type="text/javascript" /></script>
 </head>
 <body>
 END;

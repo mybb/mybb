@@ -235,7 +235,7 @@ table.general td {
 }
 
 table.general th {
-	background: #ADCBE6 url(images/tsubhead_bg.gif) repeat-x;
+	background: #ADCBE6;
 	text-align: left;
 	color: #000;
 	padding: 5px;

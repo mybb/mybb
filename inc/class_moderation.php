@@ -414,8 +414,8 @@ class Moderation
 		global $db, $plugins;
 
 		// Get thread info
-		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='$tid'");
-		$thread = $db->fetch_array($query);
+		$thread = get_thread($tid);
+		$newforum = get_forum($newfid);
 		$fid = $thread['fid'];
 		switch($method)
 		{

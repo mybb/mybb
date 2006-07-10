@@ -227,7 +227,7 @@ switch($action)
 				'limit_start' => $start,
 				'limit' => $perpage
 			);
-			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='{$id}' AND visible='1' AND sticky='1'", $options);
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='{$id}' AND visible='1' AND sticky='1' AND closed NOT LIKE 'moved|%'", $options);
 			if($db->num_rows($query) > 0)
 			{
 				echo "<div class=\"threadlist\">\n";
@@ -250,7 +250,7 @@ switch($action)
 				'limit_start' => $start,
 				'limit' => $perpage
 			);
-			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='{$id}' AND visible='1' AND sticky='0'", $options);
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='{$id}' AND visible='1' AND sticky='0' AND closed NOT LIKE 'moved|%'", $options);
 			if($db->num_rows($query) > 0)
 			{
 				echo "<div class=\"threadlist\">\n";

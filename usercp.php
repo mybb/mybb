@@ -223,15 +223,19 @@ if($mybb->input['action'] == "profile")
 	if($errors)
 	{
 		$user = $mybb->input;
+		$bday = array();
+		$bday[0] = $mybb->input['bday1'];
+		$bday[1] = $mybb->input['bday2'];
+		$bday[2] = intval($mybb->input['bday3']);
 	}
 	else
 	{
 		$user = $mybb->user;
+		$bday = explode("-", $user['birthday']);
 	}
 
 	$plugins->run_hooks("usercp_profile_start");
 
-	$bday = explode("-", $user['birthday']);
 	$bdaysel = '';
 	for($i = 1; $i <= 31; $i++)
 	{
@@ -271,18 +275,38 @@ if($mybb->input['action'] == "profile")
 	}
 	if($mybb->settings['allowaway'] != "no")
 	{
-		if($mybb->user['away'] == "yes")
+		if($errors)
 		{
-			$awaydate = mydate($mybb->settings['dateformat'], $mybb->user['awaydate']);
-			$awaycheck['yes'] = "checked";
-			$awaynotice = sprintf($lang->away_notice_away, $awaydate);
+			if($user['away'] == "yes")
+			{
+				$awaycheck['yes'] = "checked";
+			}
+			else
+			{
+				$awaycheck['no'] = "checked";
+			}
+			$returndate = array();
+			$returndate[0] = $mybb->input['awayday'];
+			$returndate[1] = $mybb->input['awaymonth'];
+			$returndate[2] = intval($mybb->input['awayyear']);
+			$user['awayreason'] = htmlspecialchars_uni($mybb->input['awayreason']);
 		}
 		else
 		{
-			$awaynotice = $lang->away_notice;
-			$awaycheck['no'] = "checked";
+			
+			if($mybb->user['away'] == "yes")
+			{
+				$awaydate = mydate($mybb->settings['dateformat'], $mybb->user['awaydate']);
+				$awaycheck['yes'] = "checked";
+				$awaynotice = sprintf($lang->away_notice_away, $awaydate);
+			}
+			else
+			{
+				$awaynotice = $lang->away_notice;
+				$awaycheck['no'] = "checked";
+			}
+			$returndate = explode("-", $mybb->user['returndate']);
 		}
-		$returndate = explode("-", $mybb->user['returndate']);
 		$returndatesel = '';
 		for($i = 1; $i <= 31; $i++)
 		{
@@ -330,9 +354,12 @@ if($mybb->input['action'] == "profile")
 			{
 				$useropts = explode("\n", $userfield);
 			}
-			foreach($useropts as $key => $val)
-			{
-				$seloptions[$val] = $val;
+			if(is_array($useropts))
+			{		
+				foreach($useropts as $key => $val)
+				{
+					$seloptions[$val] = $val;
+				}
 			}
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions)) 
@@ -405,9 +432,12 @@ if($mybb->input['action'] == "profile")
 			{
 				$useropts = explode("\n", $userfield);
 			}
-			foreach($useropts as $key => $val)
+			if(is_array($useropts))
 			{
-				$seloptions[$val] = $val;
+				foreach($useropts as $key => $val)
+				{
+					$seloptions[$val] = $val;
+				}
 			}
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions)) 

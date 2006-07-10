@@ -212,8 +212,7 @@ else
 		$iphost = @gethostbyaddr($ipaddress);
 		$lang->invalidlogin_message = sprintf($lang->invalidlogin_message, $mybb->settings['bbname'], $mybb->input['username'], $mybb->input['password'], $md5pw, $ipaddress, $iphost);
 		$lang->invalidlogin_subject = sprintf($lang->invalidlogin_subject, $mybb->settings['bbname']);
-		$lang->invalidlogin_headers = sprintf($lang->invalidlogin_headers, $mybb->settings['bbname'], $mybb->settings['adminemail']);
-		mail($settings['adminemail'], $lang->invalidlogin_subject, $lang->invalidlogin_message, $lang->invalidlogin_headers);
+		mymail($settings['adminemail'], $lang->invalidlogin_subject, $lang->invalidlogin_message);
 		$plugins->run_hooks("admin_global_invalid_login");
 	}
 

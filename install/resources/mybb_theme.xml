@@ -1079,7 +1079,7 @@ var inlineId = {$tid};
 <td colspan="2"><span class="smalltext">{$lang->away_reason}</span></td>
 </tr>
 <tr>
-<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$mybb->user['awayreason']}" size="25" /></td>
+<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$user['awayreason']}" size="25" /></td>
 </tr>
 </table>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">

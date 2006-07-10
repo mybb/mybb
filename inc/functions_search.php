@@ -259,7 +259,7 @@ function clean_keywords_ft($keywords)
 			$boolean = "";
 		}
 	}
-	$keywords = "".trim($keywords);
+	$keywords = "+".trim($keywords);
 	return $keywords;
 }
 
@@ -684,7 +684,7 @@ function perform_search_mysql_ft($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND ($subject_lookin)
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{

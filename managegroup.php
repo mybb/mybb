@@ -9,8 +9,6 @@
  * $Id$
  */
 
-define("KILL_GLOBALS", 1);
-
 require "./global.php";
 
 // Load language files

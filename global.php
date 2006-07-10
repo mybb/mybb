@@ -276,10 +276,10 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 {
 	// Fetch details on their ban
 	$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='{$mybb->user['uid']}'");
-	if($query)
+	$ban = $db->fetch_array($query);
+	if($ban['uid'])
 	{
 		// Format their ban lift date and reason appropriately
-		$ban = $db->fetch_array($query);
 		if($ban['lifted'] > 0)
 		{
 			$banlift = mydate($mybb->settings['dateformat'], $ban['lifted']) . ", " . mydate($mybb->settings['timeformat'], $ban['lifted']);
@@ -338,8 +338,8 @@ if(is_array($bannedips))
 			// This address is banned, show an error and delete the session
 			if(strstr($ipaddress, $bannedip))
 			{
-				error($lang->error_banned);
 				$db->delete_query(TABLE_PREFIX."sessions", "ip='{$ipaddress}' OR uid='{$mybb->user['uid']}'");
+				error($lang->error_banned);
 			}
 		}
 	}
