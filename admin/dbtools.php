@@ -242,14 +242,13 @@ if($mybb->input['action'] == "dlbackup")
 	}
 	
 	$file = basename($mybb->input['file']);
-	$ext = get_extension(basename($file));	
+	$ext = get_extension($file);	
 		
 	if(file_exists(MYBB_ADMIN_DIR.'backups/'.$file) && filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file' && ($ext == 'gz' || $ext == 'sql'))
 	{
-		$time = my_substr($ext, -10, 10);
 		header('Content-disposition: attachment; filename='.$file);
 		header("Content-type: ".$ext);
-		header("Content-length: ".filesize('./backups/'.$file));
+		header("Content-length: ".filesize(MYBB_ADMIN_DIR.'backups/'.$file));
 		echo file_get_contents('./backups/'.$file);
 	}
 	else
