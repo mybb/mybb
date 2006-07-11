@@ -241,7 +241,7 @@ function upgradethemes()
 	$output->print_footer("rebuild_settings");
 }
 
-function rebuildd_settings()
+function rebuild_settings()
 {
 	global $db, $output, $system_upgrade_detail;
 
