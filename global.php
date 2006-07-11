@@ -396,7 +396,7 @@ $allowable_actions = array(
 		"resetpassword"
 	),
 );
-if($mybb->usergroup['canview'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && basename($_SERVER['PHP_SELF']) != "captcha.php")
+if($mybb->usergroup['canview'] != "yes" && !(strtolower(basename($_SERVER['PHP_SELF'])) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && strtolower(basename($_SERVER['PHP_SELF'])) != "captcha.php")
 {
 	error_no_permission();
 }
