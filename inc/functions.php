@@ -420,7 +420,7 @@ function error($error="", $title="")
 
 	if(!$error)
 	{
-		$error = $lang->error;
+		$error = $lang->unknown_error;
 	}
 	if(!$title)
 	{
