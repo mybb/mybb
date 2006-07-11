@@ -77,7 +77,7 @@ function upgrade5_dbchanges()
 			PRIMARY KEY (gid)
 			) TYPE=MyISAM;");
 
-	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('1','calendar','<lang:group_calendar>');";
+	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('1','calendar','<lang:group_calendar>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('2','editpost','<lang:group_editpost>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('3','email','<lang:group_email>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('4','emailsubject','<lang:group_emailsubject>');");
@@ -105,7 +105,7 @@ function upgrade5_dbchanges()
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('26','member','<lang:group_member>');");
 
 	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."searchlog");
-	$db->query("CREATE TABLE mybb_searchlog (
+	$db->query("CREATE TABLE ".TABLE_PREFIX."searchlog (
 		  sid varchar(32) NOT NULL default '',
 		  uid int unsigned NOT NULL default '0',
 		  dateline bigint(30) NOT NULL default '0',
@@ -122,19 +122,19 @@ function upgrade5_dbchanges()
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET name='bannedips' WHERE name='ipban' LIMIT 1");
 
 	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedusernames'");
-	$bannedusernames = $db->fetch_result($query, 0);
+	$bannedusernames = $db->fetch_field($query, 'sid');
 	$bannedusernames = explode(" ", $bannedusernames);
 	$bannedusernames = implode(",", $bannedusernames);
 	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$db->escape_string($bannedusernames)." WHERE name='bannedusernames'");
 
 	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedemails'");
-	$bannedemails = $db->fetch_result($query, 0);
+	$bannedemails = $db->fetch_field($query, 'sid');
 	$bannedemails = explode(" ", $bannedemails);
 	$bannedemails = implode(",", $bannedemails);
 	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$db->escape_string($bannedemails)." WHERE name='bannedemails'");
 
 	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedips'");
-	$bannedips = $db->fetch_result($query, 0);
+	$bannedips = $db->fetch_field($query, 'sid');
 	$bannedips = explode(" ", $bannedips);
 	$bannedips = implode(",", $bannedips);
 	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$db->escape_string($bannedips)." WHERE name='bannedips'");
@@ -159,7 +159,7 @@ function upgrade5_dbchanges()
 		message text NOT NULL,
 		headers text NOT NULL,
 		PRIMARY KEY(mid)
-	) TYPE=MyISAM;")
+	) TYPE=MyISAM;");
 
 	$db->query("UPDATE ".TABLE_PREFIX."users SET reputation='0'");
 
@@ -212,7 +212,7 @@ function upgrade5_redoconfig()
 	global $db, $output, $config;
 	$output->print_header("Rewriting config.php");
 	
-	$fh = @fopen("../inc/config.php", "w");
+	$fh = @fopen(MYBB_ROOT."/inc/config.php", "w");
 	if(!$fh)
 	{
 		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p>";

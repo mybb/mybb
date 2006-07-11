@@ -13,32 +13,34 @@ error_reporting(E_ALL & ~E_NOTICE);
 // The version number of MyBB we are installing
 $myver = "1.2";
 
-require "../inc/class_core.php";
+define("MYBB_ROOT", dirname(dirname(__FILE__)));
+
+require MYBB_ROOT."/inc/class_core.php";
 $mybb = new MyBB;
 
 // Include the files necessary for installation
-require "../inc/class_timers.php";
-require "../inc/functions.php";
-require "../inc/class_xml.php";
-require "../inc/config.php";
-require "../inc/db_".$config['dbtype'].".php";
+require MYBB_ROOT."/inc/class_timers.php";
+require MYBB_ROOT."/inc/functions.php";
+require MYBB_ROOT."/inc/class_xml.php";
+require MYBB_ROOT."/inc/config.php";
+require MYBB_ROOT."/inc/db_".$config['dbtype'].".php";
 
 // If there's a custom admin dir, use it.
 
 // Legacy for those boards trying to upgrade from an older version
 if(isset($config['admindir']))
 {
-	require "../".$config['admindir']."/adminfunctions.php";	
+	require MYBB_ROOT."/".$config['admindir']."/adminfunctions.php";	
 }
 // Current
 else if(isset($config['admin_dir']))
 {
-	require "../".$config['admin_dir']."/adminfunctions.php";
+	require MYBB_ROOT."/".$config['admin_dir']."/adminfunctions.php";
 }
 // No custom set
 else
 {
-	require "../admin/adminfunctions.php";
+	require MYBB_ROOT."/admin/adminfunctions.php";
 }
 
 // Include the necessary contants for installation
@@ -125,7 +127,7 @@ else
 	}
 	elseif($mybb->input['action'] == "rebuildsettings")
 	{
-		$runfunction = "rebuildsettings";
+		$runfunction = "rebuild_settings";
 	}
 	elseif($mybb->input['action'] == "buildcaches")
 	{
@@ -236,10 +238,10 @@ function upgradethemes()
 	}
 	update_theme(1, 0, $themebits, $css, 0);
 	$output->print_contents("<p>All of the templates have successfully been reverted to the new ones contained in this release. Please press next to continue with the upgrade process.</p>");
-	$output->print_footer("rebuildsettings");
+	$output->print_footer("rebuild_settings");
 }
 
-function rebuildsettings()
+function rebuildd_settings()
 {
 	global $db, $output, $system_upgrade_detail;
 
