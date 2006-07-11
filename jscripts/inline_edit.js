@@ -12,6 +12,7 @@ inlineEditor.prototype = {
 			alert('You need to specify either a className in the options.');
 			return false;
 		}
+		this.className = options.className;
 		if(options.spinnerImage)
 		{
 			this.spinnerImage = options.spinnerImage;
@@ -139,7 +140,7 @@ inlineEditor.prototype = {
 		if(typeof(newValue) != "undefined" && newValue != '' && MyBB.HTMLchars(newValue) != this.oldValue)
 		{
 			this.parentNode.innerHTML = this.cache;
-			this.element = this.parentNode.firstChild;
+			this.element = DomLib.getElementsByClassName(this.parentNode, "*", this.className)[0];
 			this.element.innerHTML = newValue;
 			this.element.index = this.currentIndex;
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
@@ -164,7 +165,7 @@ inlineEditor.prototype = {
 		{
 			Element.remove(this.textbox);
 			this.parentNode.innerHTML = this.cache;
- 			this.element = this.parentNode.firstChild;
+ 			this.element = DomLib.getElementsByClassName(this.parentNode, "*", this.className)[0];
 			this.element.index = this.currentIndex;
 			this.elements[this.element.index] = this.element;
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
@@ -177,7 +178,7 @@ inlineEditor.prototype = {
 	{
 		Element.remove(this.textbox);
 		this.parentNode.innerHTML = this.cache;
-		this.element = this.parentNode.firstChild;
+		this.element = DomLib.getElementsByClassName(this.parentNode, "*", this.className)[0];
 		this.element.index = this.currentIndex;
 		this.elements[this.element.index] = this.element;
 		this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);		

@@ -1142,7 +1142,7 @@ elseif($mybb->input['action'] == "profile")
 		else
 		{
 			$membday = mktime(0, 0, 0, $membday[1], $membday[0], 0);
-			$membday = gmdate("F j", $membday);
+			$membday = date("F j", $membday);
 			$membdayage = '';
 		}
 	}

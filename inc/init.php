@@ -16,10 +16,6 @@ if(strpos(strtolower($_SERVER['PHP_SELF']), "inc/init.php") !== false)
 
 error_reporting(E_ALL & ~E_NOTICE);
 
-if(!__FILE__)
-{
-	die("Your server does not support file name detection. You need to modify inc/init.php to set your root directory.");
-}
 /* Defines the root directory for MyBB.
 
 	Uncomment the below line and set the path manually

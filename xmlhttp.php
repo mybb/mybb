@@ -166,10 +166,6 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		$query = $db->simple_select(TABLE_PREFIX."posts", "pid,uid,dateline", "tid='".$thread['tid']."'", $query_options);
 		$post = $db->fetch_array($query);
 	}
-	else
-	{
-		xmlhttp_error("");
-	}
 	// Fetch the specific forum this thread/post is in.
 	$forum = get_forum($thread['fid']);
 
