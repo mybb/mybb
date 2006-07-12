@@ -929,7 +929,7 @@ var inlineId = {$tid};
 <td class="tcat" align="center" width="50%"><span class="smalltext"><strong>{$lang->draft_title}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_saved}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_options}</strong></span></td>
-<td class="tcat" align="center">&nbsp;</td>
+<td class="tcat" align="center" width="1"><input type="checkbox" class="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></td>
 </tr>
 {$drafts}
 </table>
@@ -1326,6 +1326,9 @@ var inlineId = {$tid};
 </html>]]></template>
 		<template name="usercp_subscriptions_none" version="100.07"><![CDATA[<tr>
 <td class="trow1" colspan="7">{$lang->no_thread_subscriptions}</td>
+</tr>]]></template>
+		<template name="usercp_drafts_none" version="100.07"><![CDATA[<tr>
+<td class="trow1" colspan="7">{$lang->no_drafts}</td>
 </tr>]]></template>
 		<template name="usercp_subscriptions_thread" version="100.07"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" alt="" /></td>
@@ -3173,7 +3176,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>{$lang->dateread}</strong></span></td>
-<td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>?</strong></span></td>
+<td class="tcat" align="center" nowrap="nowrap" width="1"><span class="smalltext"><input type="checkbox" class="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></span></td>
 </tr>
 {$readmessages}
 <tr>
@@ -3189,7 +3192,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>{$lang->datesent}</strong></span></td>
-<td class="tcat" align="center" nowrap="nowrap"><span class="smalltext"><strong>?</strong></span></td>
+<td class="tcat" align="center" nowrap="nowrap" width="1"><span class="smalltext"><input type="checkbox" class="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></span></td>
 </tr>
 {$unreadmessages}
 <tr>

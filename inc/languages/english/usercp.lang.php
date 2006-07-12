@@ -193,6 +193,7 @@ $l['unsubscribe'] = "Unsubscribe";
 $l['no_favorite_threads'] = "You do not currently have any favorite threads.<p>To mark a thread as one of your favorites:</p><ol><li>Navigate to the thread you wish to mark as a favorite.</li><li>Click the 'Add thread to favorites' link towards the bottom of the page.</li></ol>";
 $l['no_thread_subscriptions'] = "You're currently not subscribed to any threads.<p>To subscribe to a thread:</p><ol><li>Navigate to the thread you wish to subscribe to.</li><li>Click the 'Subscribe to this thread' link towards the bottom of the page.</li></ol>";
 $l['no_forum_subscriptions'] = "You're currently not subscribed to any forums.<p>To subscribe to a forum:</p><ol><li>Navigate to the forum you wish to subscribe to.</li><li>Click the 'Subscribe to this forum' link at the bottom of the list of threads in that forum.</li></ol>";
+$l['no_drafts'] = "You do not currently have any draft threads or posts.<p>To save a draft thread or post:</p><ol><li>Proceed to the normal posting pages for the action you wish to perform (post a new thread or reply to an existing one).</li><li>Fill in as much or as little as you want on the posting page.</li><li>Click the 'Save as Draft' button below the posting area.</lo></ol>";
 $l['thread'] = "Thread";
 $l['forum'] = "Forum";
 $l['drafts'] = "Saved Drafts";
