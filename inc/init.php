@@ -9,7 +9,7 @@
  * $Id$
  */
 
-if(strpos(strtolower($_SERVER['PHP_SELF']), "inc/init.php") !== false)
+if(preg_match("#inc/+init.php#i", $_SERVER['PHP_SELF']))
 {
 	die("Direct initialization of this file is not allowed.");
 }
