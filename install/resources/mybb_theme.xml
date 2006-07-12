@@ -3183,7 +3183,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptracking" value="{$lang->stop_tracking}" /> {$lang->selected_messages}</strong></td>
 </tr>
 </table>
+</form>
 <br />
+<form action="private.php" method="post">
+<input type="hidden" name="action" value="do_tracking" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="5"><strong>{$lang->unread_messages}</strong></td>
