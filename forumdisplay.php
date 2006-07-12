@@ -770,7 +770,7 @@ if(is_array($threadcache))
 		$lastpostdate = mydate($mybb->settings['dateformat'], $thread['lastpost']);
 		$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
 		$lastposter = $thread['lastposter'];
-		$lastposteruid = $thread['lastposter'];
+		$lastposteruid = $thread['lastposteruid'];
 
 		// Don't link to guest's profiles (they have no profile).
 		if($lastposteruid == 0)
