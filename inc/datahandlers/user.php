@@ -806,6 +806,7 @@ class UserDataHandler extends DataHandler
 		return array(
 			"uid" => $uid,
 			"username" => $user['username'],
+			"loginkey" => $user['loginkey'],
 			"email" => $user['email'],
 			"password" => $user['password'],
 			"usergroup" => $user['usergroup']

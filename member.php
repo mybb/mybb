@@ -130,7 +130,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"pmpopup" => $mybb->input['pmpopup'],
 		"emailpmnotify" => $mybb->input['emailpmnotify'],
 		"invisible" => $mybb->input['invisible'],
-		"enabledst" => $mybb->input['enabledst']
+		"dst" => $mybb->input['enabledst']
 	);
 
 	$userhandler->set_data($user);
@@ -415,23 +415,52 @@ if($mybb->input['action'] == "register")
 			$type = trim($thing[0]);
 			$options = $thing[1];
 			$select = '';
-			$field = "profile_fields[fid{$profilefield['fid']}]";
+			$field = "fid{$profilefield['fid']}";
+			if($errors)
+			{
+				$userfield = $mybb->input['profile_fields'][$field];
+			}
+			else
+			{
+				$userfield = '';
+			}
 			if($type == "multiselect")
 			{
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions))
+				if($errors)
 				{
-					foreach($expoptions as $val)
+					$useropts = $userfield;
+				}
+				else
+				{
+					$useropts = explode("\n", $userfield);
+				}
+				if(is_array($useropts))
+				{		
+					foreach($useropts as $key => $val)
+					{
+						$seloptions[$val] = $val;
+					}
+				}
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions)) 
+				{
+					foreach($expoptions as $key => $val)
 					{
 						$val = trim($val);
 						$val = str_replace("\n", "\\n", $val);
-						$select .= "<option value=\"$val\">$val</option>\n";
+
+						$sel = "";
+						if($val == $seloptions[$val])
+						{
+							$sel = "selected=\"selected\"";
+						}
+						$select .= "<option value=\"$val\" $sel>$val</option>\n";
 					}
 					if(!$profilefield['length'])
 					{
 						$profilefield['length'] = 3;
 					}
-					$code = "<select name=\"".$field."[]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
+					$code = "<select name=\"profile_fields[$field][]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
 				}
 			}
 			elseif($type == "select")
@@ -439,17 +468,22 @@ if($mybb->input['action'] == "register")
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions))
 				{
-					foreach($expoptions as $val)
+					foreach($expoptions as $key => $val)
 					{
 						$val = trim($val);
 						$val = str_replace("\n", "\\n", $val);
-						$select .= "<option value=\"$val\">$val</option>";
+						$sel = "";
+						if($val == $userfield)
+						{
+							$sel = "selected=\"selected\"";
+						}
+						$select .= "<option value=\"$val\" $sel>$val</option>";
 					}
 					if(!$profilefield['length'])
 					{
 						$profilefield['length'] = 1;
 					}
-					$code = "<select name=\"$field\" size=\"$profilefield[length]\">$select</select>";
+					$code = "<select name=\"profile_fields[$field]\" size=\"$profilefield[length]\">$select</select>";
 				}
 			}
 			elseif($type == "radio")
@@ -457,30 +491,57 @@ if($mybb->input['action'] == "register")
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions))
 				{
-					foreach($expoptions as $val)
+					foreach($expoptions as $key => $val)
 					{
-						$code .= "<input type=\"radio\" class=\"radio\" name=\"$field\" value=\"$val\"> $val<br />";
+						$checked = "";
+						if($val == $userfield)
+						{
+							$checked = "checked=\"checked\"";
+						}
+						$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
 					}
 				}
 			}
 			elseif($type == "checkbox")
 			{
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions))
+				if($errors)
 				{
-					foreach($expoptions as $val)
+					$useropts = $userfield;
+				}
+				else
+				{
+					$useropts = explode("\n", $userfield);
+				}
+				if(is_array($useropts))
+				{
+					foreach($useropts as $key => $val)
 					{
-						$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"".$field."[]\" value=\"$val\"> $val<br />";
+						$seloptions[$val] = $val;
+					}
+				}
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions)) 
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$checked = "";
+						if($val == $seloptions[$val])
+						{
+							$checked = "checked=\"checked\"";
+						}
+						$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
 					}
 				}
 			}
 			elseif($type == "textarea")
 			{
-				$code = "<textarea name=\"$field\" rows=\"6\" cols=\"50\">$value</textarea>";
+				$value = htmlspecialchars_uni($userfield);
+				$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
 			}
 			else
 			{
-				$code = "<input type=\"text\" class=\"textbox\" name=\"$field\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\">";
+				$value = htmlspecialchars_uni($userfield);
+				$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
 			}
 			if($profilefield['required'] == "yes")
 			{
