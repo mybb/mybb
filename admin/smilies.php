@@ -128,7 +128,7 @@ if($mybb->input['action'] == "delete")
 	tableheader($lang->delete_smilie, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
-	makelabelcode("<center>$lang->delete_confirm<br><br>$yes$no</center>", "");
+	makelabelcode("<center>$lang->delete_confirm<br /><br />$yes$no</center>", "");
 	endtable();
 	endform();
 	cpfooter();
@@ -199,7 +199,7 @@ if($mybb->input['action'] == "do_addmultiple")
 		starttable();
 		makelabelcode($lang->all_sel_added);
 		endtable();
-		echo "<br>";
+		echo "<br />";
 		$finishedinsert = 1;
 		$mybb->input['action'] = "add";
 	}
@@ -309,7 +309,7 @@ if($mybb->input['action'] == "addmultiple")
 			$name = ucfirst($find);
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><img src=\"../$path/$file\"><br><small>$file</small></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><img src=\"../$path/$file\"><br /><small>$file</small></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"text\" name=\"smname[$file]\" value=\"$name\"></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"text\" name=\"smcode[$file]\" value=\":$find:\"></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"right\"><input type=\"checkbox\" name=\"smimport[$file]\" value=\"1\">\n";
@@ -373,7 +373,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		{
 			$image = "../$smilie[image]";
 		}
-		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$smilie[name]<br><br><img src=\"$image\">&nbsp;&nbsp;<b>".stripslashes($smilie[find])."</b><br><br>";
+		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$smilie[name]<br /><br /><img src=\"$image\">&nbsp;&nbsp;<b>".stripslashes($smilie[find])."</b><br /><br />";
 		echo "<a href=\"smilies.php?".SID."&action=edit&sid=$smilie[sid]&page=$page&perpage=$perpage\">$lang->edit</a> <a href=\"smilies.php?".SID."&action=delete&sid=$smilie[sid]&page=$page&perpage=$perpage\">$lang->delete</a>";
 		echo "</td>";
 		$listed++;

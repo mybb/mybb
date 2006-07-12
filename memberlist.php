@@ -58,7 +58,7 @@ if($mybb->input['order'] != "DESC" && $mybb->input['order'] != "ASC")
 if($mybb->input['usersearch'])
 {
 	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS users", "username LIKE '%".$db->escape_string($mybb->input['usersearch'])."%'");
-	$linkaddon = "&usersearch=".$mybb->input['usersearch'];
+	$linkaddon = "&amp;usersearch=".$mybb->input['usersearch'];
 }
 else
 {
@@ -77,7 +77,7 @@ else
 	$start = 0;
 	$page = 1;
 }
-$multipage = multipage($num, $mybb->settings['membersperpage'], $page, "memberlist.php?by=".$mybb->input['by']."&order=".$mybb->input['order'].$linkaddon);
+$multipage = multipage($num, $mybb->settings['membersperpage'], $page, "memberlist.php?by=".$mybb->input['by']."&amp;order=".$mybb->input['order'].$linkaddon);
 
 if($mybb->input['by'] == "postnum")
 {

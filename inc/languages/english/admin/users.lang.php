@@ -133,7 +133,7 @@ $l['messages'] = "messages";
 $l['per_page'] = "Messages to send at once";
 $l['from'] = "From";
 $l['subject'] = "Subject";
-$l['message'] = "Message<br><small>You may use {uid}, {username}, {email}, {bbname}, {bburl} in your message.";
+$l['message'] = "Message<br /><small>You may use {uid}, {username}, {email}, {bbname}, {bburl} in your message.";
 $l['email_users'] = "Email Users Where...";
 $l['name_contains'] = "Username contains";
 $l['group_is'] = "User group is";
@@ -173,12 +173,12 @@ $l['display_birthday'] = "Display birthday";
 $l['display_regip'] = "Display registration IP";
 
 $l['instructions'] = "Instructions";
-$l['merge_instructions'] = "This tool can merge two users accounts into one single account. The source account will be combined with the destination account.<br><br>The source users posts, threads, private messages, calendar events, post count and buddy list will be merged into the Destination users account.<br><br><b>NOTE: This process cannot be undone.</b>";
+$l['merge_instructions'] = "This tool can merge two users accounts into one single account. The source account will be combined with the destination account.<br /><br />The source users posts, threads, private messages, calendar events, post count and buddy list will be merged into the Destination users account.<br /><br /><b>NOTE: This process cannot be undone.</b>";
 $l['user_accounts'] = "User Accounts";
 $l['source_account'] = "Source Account";
 $l['dest_account'] = "Destination Account";
 
-$l['move_banned_group'] = "Move to Banned Group<br><small>To be able to ban this user, they have to be moved to a usergroup that members can be banned to.</small>";
+$l['move_banned_group'] = "Move to Banned Group<br /><small>To be able to ban this user, they have to be moved to a usergroup that members can be banned to.</small>";
 $l['lift_ban_after'] = "Lift Ban After";
 $l['perm_ban'] = "Permanent - Don't Lift this Ban";
 $l['banned_by'] = "Banned by";
@@ -224,9 +224,9 @@ $l['user_deleted'] = "The user has successfully been deleted.";
 $l['ban_added'] = "The ban on {1} has successfully been added.";
 $l['ban_lifted'] = "The ban on {1} has successfully been lifted.";
 $l['ban_updated'] = "The ban on {1} has successfully been updated.";
-$l['users_merged'] = "The two user accounts have successfully been merged and the user {1} has been deleted.<br><br>Any old forum permissions, moderator permissions, or bans {2} had, you will need to recreate again for {3} if you want them to work.";
+$l['users_merged'] = "The two user accounts have successfully been merged and the user {1} has been deleted.<br /><br />Any old forum permissions, moderator permissions, or bans {2} had, you will need to recreate again for {3} if you want them to work.";
 $l['users_not_merged'] = "You chose not to merge the two users. You will now be taken back to the merge page";
-$l['confirm_merge'] = "Are you sure you want to merge the account <b>{1}</b> into the account <b>{2}</b>? <br><br><b>{3}</b> will be deleted after the accounts have been merged.";
+$l['confirm_merge'] = "Are you sure you want to merge the account <b>{1}</b> into the account <b>{2}</b>? <br /><br /><b>{3}</b> will be deleted after the accounts have been merged.";
 $l['activated'] = "The user has been activated";
 
 $l['done'] = "Done!";

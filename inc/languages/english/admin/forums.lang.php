@@ -53,13 +53,13 @@ $l['edit_forum'] ="Edit settings for forum {1}";
 
 $l['name'] = "Name";
 $l['description'] = "Description";
-$l['forumlink'] = "Forum Link<br><small>Enter a link here to make the forum redirect to another URL. This will not be an actual forum, however, permissions can still be set for it.</small>";
+$l['forumlink'] = "Forum Link<br /><small>Enter a link here to make the forum redirect to another URL. This will not be an actual forum, however, permissions can still be set for it.</small>";
 $l['disporder'] = "Display Order";
 $l['parentforum'] = "Parent Forum";
 $l['parentforum_none'] = "None";
 
 $l['access_perm_options'] = "Access and Permission Options";
-$l['forum_password'] = "Forum Password<br><small>If you want to protect this forum you can enter a password here. Note, the user groups needs permission to access the forum as well.</small>";
+$l['forum_password'] = "Forum Password<br /><small>If you want to protect this forum you can enter a password here. Note, the user groups needs permission to access the forum as well.</small>";
 
 $l['posting_options'] = "Posting and Thread Listing Options";
 $l['act_as_forum'] = "Act As Forum?<br /><small>If no, will act as a category.";
@@ -72,9 +72,9 @@ $l['moderate_threads'] = "Moderate New Threads";
 $l['moderate_attachments'] = "Moderate New Attachments";
 
 $l['style_options'] = "Style Options";
-$l['style'] = "Style<br><small>If blank, will use the default forum of the user or forums.";
+$l['style'] = "Style<br /><small>If blank, will use the default forum of the user or forums.";
 $l['use_default'] = "Use Default";
-$l['override_style'] = "Override User's Selected Style<br><small>Do you want to override the user's selected custom style with this style?";
+$l['override_style'] = "Override User's Selected Style<br /><small>Do you want to override the user's selected custom style with this style?";
 
 $l['default_viewing_options'] = "Default Viewing Options";
 $l['default_datecut'] = "Default Date Cut";

@@ -3253,70 +3253,72 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <br />]]></template>
 		<template name="calendar" version="100.07"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
-{$headerinclude}
+	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
+	{$headerinclude}
 </head>
 <body>
-{$header}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" width="14%" align="center">{$lang->sunday}</td>
-<td class="thead" width="14%" align="center">{$lang->monday}</td>
-<td class="thead" width="14%" align="center">{$lang->tuesday}</td>
-<td class="thead" width="14%" align="center">{$lang->wednesday}</td>
-<td class="thead" width="14%" align="center">{$lang->thursday}</td>
-<td class="thead" width="14%" align="center">{$lang->friday}</td>
-<td class="thead" width="14%" align="center">{$lang->saturday}</td>
-</tr>
-{$daybits}
-</table>
-<table width="100%" align="center"><tr>
-<tr>
-<td><span class="smalltext"><a href="calendar.php?year={$prevyear}&amp;month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span>
-<td align="right"><span class="smalltext"><a href="calendar.php?year={$nextyear}&amp;month={$nextmonth}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
-</tr>
-</table>
-<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-<form action="calendar.php" method="post">
-<td class="trow1">{$addpublicevent}{$neweventsep}{$addprivateevent}</td>
-<td class="trow1" align="right"><span class="smalltext"><strong>{$lang->jump_month}</strong>
-<select name="month">
-<option value="{$month}">{$monthnames[$month]}</option>
-<option value="{$month}">----------</option>
-<option value="1">{$lang->alt_month_1}</option>
-<option value="2">{$lang->alt_month_2}</option>
-<option value="3">{$lang->alt_month_3}</option>
-<option value="4">{$lang->alt_month_4}</option>
-<option value="5">{$lang->alt_month_5}</option>
-<option value="6">{$lang->alt_month_6}</option>
-<option value="7">{$lang->alt_month_7}</option>
-<option value="8">{$lang->alt_month_8}</option>
-<option value="9">{$lang->alt_month_9}</option>
-<option value="10">{$lang->alt_month_10}</option>
-<option value="11">{$lang->alt_month_11}</option>
-<option value="12">{$lang->alt_month_12}</option>
-</select>
-&nbsp;
-<select name="year">
-<option value="{$year}">{$year}</option>
-<option value="{$year}">----------</option>
-{$yearsel}
-</select>
-&nbsp;
-{$gobutton}
-</span>
-</td>
-</form>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+	{$header}
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead" width="14%" align="center">{$lang->sunday}</td>
+			<td class="thead" width="14%" align="center">{$lang->monday}</td>
+			<td class="thead" width="14%" align="center">{$lang->tuesday}</td>
+			<td class="thead" width="14%" align="center">{$lang->wednesday}</td>
+			<td class="thead" width="14%" align="center">{$lang->thursday}</td>
+			<td class="thead" width="14%" align="center">{$lang->friday}</td>
+			<td class="thead" width="14%" align="center">{$lang->saturday}</td>
+		</tr>
+		{$daybits}
+	</table>
+
+	<table width="100%" align="center">
+		<tr>
+			<td><span class="smalltext"><a href="calendar.php?year={$prevyear}&amp;month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span>
+			<td align="right"><span class="smalltext"><a href="calendar.php?year={$nextyear}&amp;month={$nextmonth}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
+		</tr>
+	</table>
+
+	<br />
+
+	<form action="calendar.php" method="post">
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+			<tr>
+				<td class="trow1">
+					<table width="100%" cellspacing="0" cellpadding="0" border="0">
+						<tr>
+							<td class="trow1">{$addpublicevent}{$neweventsep}{$addprivateevent}</td>
+							<td class="trow1" align="right"><span class="smalltext"><strong>{$lang->jump_month}</strong>
+							<select name="month">
+								<option value="{$month}">{$monthnames[$month]}</option>
+								<option value="{$month}">----------</option>
+								<option value="1">{$lang->alt_month_1}</option>
+								<option value="2">{$lang->alt_month_2}</option>
+								<option value="3">{$lang->alt_month_3}</option>
+								<option value="4">{$lang->alt_month_4}</option>
+								<option value="5">{$lang->alt_month_5}</option>
+								<option value="6">{$lang->alt_month_6}</option>
+								<option value="7">{$lang->alt_month_7}</option>
+								<option value="8">{$lang->alt_month_8}</option>
+								<option value="9">{$lang->alt_month_9}</option>
+								<option value="10">{$lang->alt_month_10}</option>
+								<option value="11">{$lang->alt_month_11}</option>
+								<option value="12">{$lang->alt_month_12}</option>
+							</select>
+							&nbsp;
+							<select name="year">
+								<option value="{$year}">{$year}</option>
+								<option value="{$year}">----------</option>
+								{$yearsel}
+							</select>
+							&nbsp;
+							{$gobutton}
+						</span></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	</form>
 {$footer}
 </body>
 </html>]]></template>
@@ -3782,8 +3784,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </body>
 </html>]]></template>
 		<template name="member_register_password" version="100.07"><![CDATA[<tr>
-<td><span class="smalltext">{$lang->password}</strong></td>
-<td><span class="smalltext">{$lang->confirm_password}</strong></td>
+<td><span class="smalltext">{$lang->password}</span></td>
+<td><span class="smalltext">{$lang->confirm_password}</span></td>
 </tr>
 <tr>
 <td><input type="password" class="textbox" name="password" size="20" /></td>
@@ -5997,7 +5999,6 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 		<template name="member_register_customfield" version="100.07"><![CDATA[<tr>
 <td><span class="smalltext">{$profilefield['name']}</span></td>
 <tr>
-<tr>
 <td>{$code}</td>
 </tr>]]></template>
 		<template name="error" version="100.07"><![CDATA[<html>
@@ -6439,13 +6440,13 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <legend><strong>{$lang->time_offset}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
-<td colspan="2"><span class="smalltext">{$lang->time_offset_desc}</td>
+<td colspan="2"><span class="smalltext">{$lang->time_offset_desc}</span></td>
 </tr>
 <tr>
 <td>{$tzselect}</td>
 </tr>
 <tr>
-<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enableddst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledst">{$lang->enable_dst}</label></span>
+<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enabledst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledst">{$lang->enable_dst}</label></span>
 </tr>
 </table>
 </fieldset>
@@ -6454,7 +6455,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <legend><strong>{$lang->lang_select}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
-<td colspan="2"><span class="smalltext">{$lang->lang_select_desc}</td>
+<td colspan="2"><span class="smalltext">{$lang->lang_select_desc}</span></td>
 </tr>
 <tr>
 <td><select name="language"><option value="">{$lang->lang_select_default}</option><option value="">-----------</option>{$langoptions}</select></td>

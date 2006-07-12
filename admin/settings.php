@@ -297,7 +297,7 @@ if($mybb->input['action'] == "delete")
 		tableheader($lang->delete_setting, "", 1);
 		$yes = makebuttoncode("deletesubmit", $lang->yes);
 		$no = makebuttoncode("no", $lang->no);
-		makelabelcode("<center>$lang->delete_setting_confirm<br><br>$yes$no</center>", "");
+		makelabelcode("<center>$lang->delete_setting_confirm<br /><br />$yes$no</center>", "");
 		endtable();
 		endform();
 	}
@@ -312,7 +312,7 @@ if($mybb->input['action'] == "delete")
 		tableheader($lang->delete_group, "", 1);
 		$yes = makebuttoncode("deletesubmit", $lang->yes);
 		$no = makebuttoncode("no", $lang->no);
-		makelabelcode("<center>$lang->delete_group_confirm<br><br>$yes$no</center>", "");
+		makelabelcode("<center>$lang->delete_group_confirm<br /><br />$yes$no</center>", "");
 		endtable();
 		endform();
 	}

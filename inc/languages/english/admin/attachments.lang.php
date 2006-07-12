@@ -77,10 +77,10 @@ $l['problem_deleting'] = "There was a problem deleting one or more of the select
 
 $l['new_attach_type'] = "New Attachment Type";
 $l['edit_attach_type'] = "Edit Attachment Type";
-$l['name'] = "Name<br><small>Enter a short name that will be used to identify this type.<br>Example: Text File</small>";
-$l['mimetype'] = "MIME Type<br><small>The MIME type of this attachment type.<br>Example: text/plain</small>";
-$l['extension'] = "Extension<br><small>The file extension of this attachment type.<br>Example: txt</small>";
-$l['max_size'] = "Maximum Size<br><small>The maximum file size (in kilobytes) for this type of attachment.</small>";
+$l['name'] = "Name<br /><small>Enter a short name that will be used to identify this type.<br />Example: Text File</small>";
+$l['mimetype'] = "MIME Type<br /><small>The MIME type of this attachment type.<br />Example: text/plain</small>";
+$l['extension'] = "Extension<br /><small>The file extension of this attachment type.<br />Example: txt</small>";
+$l['max_size'] = "Maximum Size<br /><small>The maximum file size (in kilobytes) for this type of attachment.</small>";
 $l['control_note'] = "<small>Note: For more specific file type control, you can leave either the MIME type or file extension field blank.</small>";
 $l['add_type'] = "Add Type";
 $l['update_type'] = "Update Attachment Type";

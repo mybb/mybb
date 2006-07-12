@@ -425,7 +425,7 @@ if($mybb->input['action'] == "delete")
 	tableheader($lang->delete_group, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
-	makelabelcode("<center>$lang->confirm_delete_group<br><br>$yes$no</center>", "");
+	makelabelcode("<center>$lang->confirm_delete_group<br /><br />$yes$no</center>", "");
 	endtable();
 	endform();
 	cpfooter();
@@ -756,7 +756,7 @@ function usergroup_hop(gid)
 		$bgcolor = getaltbg();
 		makehiddencode('gid', $usergroup['gid']);
 		echo "<tr class=\"{$bgcolor}\">\n";
-		echo "<td>{$usergroup['title']}<br><small>{$usergroup['description']}</td>\n";
+		echo "<td>{$usergroup['title']}<br /><small>{$usergroup['description']}</td>\n";
 		if(!$primaryusers[$usergroup['gid']])
 		{
 			$primaryusers[$usergroup['gid']] = 0;

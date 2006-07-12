@@ -11,7 +11,7 @@ $l['nav_edit_permissions'] = "Edit Permissions";
 
 $l['forum_permissions'] = "Forum Permissions";
 $l['guide'] = "Key";
-$l['guide2'] = "Black - using usergroup defaults<br><font color=\"red\">Red</font> - using custom permissions for this forum.<br><font color=\"blue\">Blue</font> - using custom permissions inherited from a parent forum.";
+$l['guide2'] = "Black - using usergroup defaults<br /><font color=\"red\">Red</font> - using custom permissions for this forum.<br /><font color=\"blue\">Blue</font> - using custom permissions inherited from a parent forum.";
 $l['select_usergroup'] = "Please select a usergroup inside a forum to edit permissions for.";
 $l['edit_perms'] = "edit permissions";
 $l['set_perms'] = "set permissions";

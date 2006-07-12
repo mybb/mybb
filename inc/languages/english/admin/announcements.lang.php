@@ -16,7 +16,7 @@ $l['global_announcements'] = "Global Announcements";
 $l['add_announcement'] = "add announcement";
 $l['edit_announcement'] = "edit";
 $l['delete_announcement'] = "delete";
-$l['edit_delete_notice'] = "Please select an announcement from the list below to edit or delete.<br>You can also create new announcements by clicking 'add announcement' next to the name of the forum.<br>Global announcements are shown in all forums.";
+$l['edit_delete_notice'] = "Please select an announcement from the list below to edit or delete.<br />You can also create new announcements by clicking 'add announcement' next to the name of the forum.<br />Global announcements are shown in all forums.";
 $l['announcements'] = "Announcements:";
 
 $l['announcement_added'] = "The announcement has successfully been added.";

@@ -36,8 +36,8 @@
 	<settinggroup name="onlineoffline" title="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="yes">
 		<setting name="boardclosed">
 			<title>Board Closed</title>
-			<description><![CDATA[If you need to close your forums to make some changes or perform an upgrade, this is the global switch. Viewers will not be able to view your forums, however, they will see a message with the reason you specify below.<br>
-<br>
+			<description><![CDATA[If you need to close your forums to make some changes or perform an upgrade, this is the global switch. Viewers will not be able to view your forums, however, they will see a message with the reason you specify below.<br />
+<br />
 <b>Administrators will still be able to view the forums.</b>]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
@@ -334,7 +334,7 @@
 		</setting>
 		<setting name="bburl">
 			<title>Board URL</title>
-			<description><![CDATA[The url to your forums.<br>Include the http://. Do NOT include a trailing slash.]]></description>
+			<description><![CDATA[The url to your forums.<br />Include the http://. Do NOT include a trailing slash.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
