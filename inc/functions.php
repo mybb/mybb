@@ -154,7 +154,7 @@ function send_mail_queue($count=10)
 		while($email = $db->fetch_array($query))
 		{
 			// Delete the message from the queue
-			$db->delete_query(TABLE_PREFIX."mailqueue", "mid='{$email['mid']}");
+			$db->delete_query(TABLE_PREFIX."mailqueue", "mid='{$email['mid']}'");
 
 			mymail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom']);
 		}
