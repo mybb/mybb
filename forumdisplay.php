@@ -505,7 +505,9 @@ while($thread = $db->fetch_array($query))
 	// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
 	if(substr($thread['closed'], 0, 5) == "moved")
 	{
-		$tids[$thread['tid']] = substr($thread['closed'], 6);
+		$tid = substr($thread['closed'], 6);
+		$moved_threads[$tid] = $thread['tid'];
+		$tids[$thread['tid']] = $tid;
 	}
 	// Otherwise - set it to the plain thread ID
 	else
@@ -524,6 +526,10 @@ if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 	$query = $db->simple_select(TABLE_PREFIX."posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
 	while($post = $db->fetch_array($query))
 	{
+		if($moved_threads[$post['tid']])
+		{
+			$post['tid'] = $moved_threads[$post['tid']];
+		}
 		$threadcache[$post['tid']]['doticon'] = 1;
 	}
 }
@@ -534,6 +540,10 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 	$query = $db->simple_select(TABLE_PREFIX."threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
 	while($readthread = $db->fetch_array($query))
 	{
+		if($moved_threads[$readthread['tid']])
+		{
+			$readthread['tid'] = $moved_threads[$readthread['tid']];
+		}		
 		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline'];
 	}
 }
@@ -670,20 +680,6 @@ if(is_array($threadcache))
 			$modbit = '';
 		}
 
-		$moved = explode("|", $thread['closed']);
-
-		$inline_edit_tid = $thread['tid'];
-
-		if($moved[0] == "moved")
-		{
-			$prefix = $lang->moved_prefix;
-			$thread['tid'] = $moved[1];
-			$thread['replies'] = "-";
-			$thread['views'] = "-";
-			$thread['lastread'] = $threadcache[$thread['tid']]['lastread'];
-			$thread['doticon'] = $threadcache[$thread['tid']]['doticon'];
-		}
-
 		// Determine the folder
 		$folder = '';
 		$folder_label = '';
@@ -756,6 +752,18 @@ if(is_array($threadcache))
 		
 		$folder .= "folder";
 		
+		$moved = explode("|", $thread['closed']);
+
+		$inline_edit_tid = $thread['tid'];
+
+		if($moved[0] == "moved")
+		{
+			$prefix = $lang->moved_prefix;
+			$thread['tid'] = $moved[1];
+			$thread['replies'] = "-";
+			$thread['views'] = "-";
+		}
+
 		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
 		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes" && $mybb->user['uid'] != 0) || $ismod == true)
 		{
