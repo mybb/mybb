@@ -22,11 +22,6 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("member");
 
-if(!$mybb->input['action'])
-{
-	$mybb->input['action'] = "register";
-}
-
 // Make navigation
 switch($mybb->input['action'])
 {
