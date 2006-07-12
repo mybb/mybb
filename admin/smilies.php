@@ -128,7 +128,7 @@ if($mybb->input['action'] == "delete")
 	tableheader($lang->delete_smilie, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
-	makelabelcode("<center>$lang->delete_confirm<br /><br />$yes$no</center>", "");
+	makelabelcode("<div align=\"center\">$lang->delete_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
 	cpfooter();

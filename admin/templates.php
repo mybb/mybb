@@ -449,12 +449,12 @@ if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert")
 	if($mybb->input['action'] == "revert")
 	{
 		tableheader($lang->revert_template, "", 1);
-		makelabelcode("<center>$lang->revert_template_notice<br /><br />$yes$no</center>", "");
+		makelabelcode("<div align=\"center\">$lang->revert_template_notice<br /><br />$yes$no</div>", "");
 	}
 	else
 	{
 		tableheader($lang->delete_template, "", 1);
-		makelabelcode("<center>$lang->delete_template_notice<br /><br />$yes$no</center>", "");
+		makelabelcode("<div align=\"center\">$lang->delete_template_notice<br /><br />$yes$no</div>", "");
 	}
 	makehiddencode("expand", $mybb->input['expand']);
 	makehiddencode("group", $mybb->input['group']);
@@ -475,7 +475,7 @@ if($mybb->input['action'] == "deleteset")
 	tableheader($lang->delete_template_set, "", 1);
 	$yes = makebuttoncode("deletesubmit", "Yes");
 	$no = makebuttoncode("no", "No");
-	makelabelcode("<center>$lang->delete_set_notice $templateset[title]?<br /><br />$yes$no</center>", "");
+	makelabelcode("<div align=\"center\">$lang->delete_set_notice {$templateset['title']}?<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
 	cpfooter();

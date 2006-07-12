@@ -29,7 +29,7 @@ if($mybb->input['action'] == "header")
 	echo "<body id=\"logo\">";
 	echo "<h1><span class=\"hidden\">MyBB Admin CP</span></h1>";
 	$lang->logout_cp = sprintf($lang->logout_cp, $user['username']);
-	echo "<div id=\"header-links\"><a href=\"index.php?".SID."&action=home\" target=\"body\">".$lang->cp_home."</a><a href=\"../index.php\" target=\"body\">".$lang->view_forums."</a><a href=\"index.php?".SID."&action=logout\" target=\"_parent\">".$lang->logout_cp."</a></div>";
+	echo "<div id=\"header-links\"><a href=\"index.php?".SID."&amp;action=home\" target=\"body\">".$lang->cp_home."</a><a href=\"../index.php\" target=\"body\">".$lang->view_forums."</a><a href=\"index.php?".SID."&amp;action=logout\" target=\"_parent\">".$lang->logout_cp."</a></div>";
 	echo "</body>";
 	echo "</html>";
 }
@@ -441,24 +441,24 @@ else
 	}
 	else
 	{
-		$goto = 'index.php?'.SID.'&action=home';
-	}
+		$goto = 'index.php?'.SID.'&amp;action=home';
+	}	
 	echo "<html>\n";
 	echo "<head>\n";
 	echo "<title>$lang->mybb_admin</title>\n";
 	echo "</head>\n";
 	echo "<frameset rows=\"78, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-	echo "<frame name=\"header\" noresize scrolling=\"no\" src=\"index.php?".SID."&action=header\">\n";
+	echo "<frame name=\"header\" noresize scrolling=\"no\" src=\"index.php?".SID."&amp;action=header\">\n";
 	if($lang->settings['rtl'])
 	{
 		echo "<frameset cols=\"*,200\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
 		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\">\n";
-		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&action=navigation\">\n";
+		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&amp;action=navigation\">\n";
 	}
 	else
 	{
 		echo "<frameset cols=\"200, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&action=navigation\">\n";
+		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&amp;action=navigation\">\n";
 		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\">\n";
 	}
 	echo "</frameset>\n";

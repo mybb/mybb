@@ -16,7 +16,7 @@ $l['hopto_add'] = "Add Help Section / Document";
 $l['helpdocs'] = "Help Documents Management";
 $l['default_sections'] = "Default Help Documents/sections";
 $l['custom_sections'] = "Custom Help Documents/sections";
-$l['select_edit_delete'] = "<center>Please select a help document or section to edit or delete.</center>";
+$l['select_edit_delete'] = "<div align=\"center\">Please select a help document or section to edit or delete.</div>";
 $l['edit'] = "edit";
 $l['delete'] = "delete";
 $l['disabled_note'] = "<span style=\"color: red\">(disabled)</span>";

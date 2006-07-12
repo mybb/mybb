@@ -39,8 +39,8 @@ $l['import_local_file'] = "Import Theme From a Local File";
 $l['import_from_pc'] = "Import Theme From Your Computer";
 $l['import_remote_url'] = "Import Theme From a Remote URL";
 
-$l['delete_theme_confirm'] = "<center>Are you sure you want to delete the theme titled {1}?<br />All users and forums using this theme will be reverted to the forums default.<br /><br />$yes$no</center>";
-$l['error_delete_default'] = "<center>You cannot delete this theme because it is set as the default theme for your forums.<br />Please change the default theme then try deleting this theme again.</center>";
+$l['delete_theme_confirm'] = "<div align=\"center\">Are you sure you want to delete the theme titled {1}?<br />All users and forums using this theme will be reverted to the forums default.<br /><br />$yes$no</div>";
+$l['error_delete_default'] = "<div align=\"center\">You cannot delete this theme because it is set as the default theme for your forums.<br />Please change the default theme then try deleting this theme again.</di>";
 
 $l['theme_name'] = "Name<br /><small>Enter the name of this theme here.</small>";
 $l['template_set'] = "Template Set<br /><small>Select the name of the template set you wish to use for this theme.</small>";

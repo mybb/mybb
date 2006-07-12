@@ -478,7 +478,7 @@ class postParser
 	{
 		global $lang;
 		$code = trim($code);
-		return "<div class=\"code_header\">".$lang->code."</div><div class=\"code_body\"><code><div dir=\"ltr\">".$code."</div></code></div>\n";
+		return "<div class=\"code_header\">".$lang->code."</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n";
 	}
 
 	/**
@@ -552,8 +552,8 @@ class postParser
 			$code = str_replace("?&gt;</span></code>", "</span></code>", $code);
 		}
 
-		$code = str_replace("<code>", "<code><div dir=\"ltr\">", $code);
-		$code = str_replace("</code>", "</div></code>", $code);
+		$code = str_replace("<code>", "<div dir=\"ltr\"><code>", $code);
+		$code = str_replace("</code>", "</code></div>", $code);
 		$code = preg_replace("#\s*$#", "", $code);
 
 		// Send back the code all nice and pretty

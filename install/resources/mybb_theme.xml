@@ -1546,7 +1546,7 @@ $headerinclude
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->your_message}</strong></td>
-<td class="trow1"><textarea wrap="virtual" style="width:100%" rows="12" name="body"></textarea></td>
+<td class="trow1"><textarea style="width:100%" rows="12" name="body"></textarea></td>
 </tr>
 <tr>
 <td class="trow1" align="center" colspan="2"><input type="submit" class="button" name="submit" value="{$lang->send_message}"></td>
@@ -3223,7 +3223,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="trow2" colspan="2">{$lang->below_notes}</td>
 </tr>
-<td class="trow1" align="center" colspan="2"><textarea name="threadnotes" cols="80" rows="10" wrap="virtual" tabindex="1">{$thread['notes']}</textarea></td>
+<td class="trow1" align="center" colspan="2"><textarea name="threadnotes" cols="80" rows="10" tabindex="1">{$thread['notes']}</textarea></td>
 </tr>
 </table>
 <br />
@@ -3389,7 +3389,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" {$postoptionschecked['emailnotify']} />&nbsp;<strong>{$lang->email_notify}</strong></label><br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" />&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
 </td>
-<td class="trow1"><textarea name="message" rows="7" cols="70" wrap="virtual" tabindex="1"></textarea></td>
+<td class="trow1"><textarea name="message" rows="7" cols="70" tabindex="1"></textarea></td>
 </tr>
 <tr>
 <td colspan="2" align="center" class="tfoot"><input type="submit" class="button" value="{$lang->post_reply}" tabindex="2" accesskey="s" /> <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="3" /></td>
@@ -3549,8 +3549,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <table width="100%">
 <tr><td class="trow">{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']}</strong></span>
 <div id="pid_{$post['pid']}">
-<p>{$post['message']}</p>
+{$post['message']}
 </div>
+<br />
+<br />
 {$post['attachments']}
 {$post['signature']}
 <div style="text-align: right; vertical-align: bottom;">
@@ -5211,7 +5213,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td align="center" class="trow1" width="100%">
-<textarea name="notepad" cols="80" rows="15" wrap="virtual">{$mybb->user['notepad']}</textarea>
+<textarea name="notepad" cols="80" rows="15">{$mybb->user['notepad']}</textarea>
 </td>
 </tr>
 </table>
@@ -5554,7 +5556,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 <tr>
 <td class="trow1" valign="top" width="40%"><span class="smalltext">{$lang->edit_sig_note}<br /><br />{$lang->edit_sig_note2}</span></td>
-<td class="trow1" width="60%"><textarea rows="5" cols="55" wrap="physical" name="signature" onkeyup="sigLimit()" onkeydown="sigLimit()">{$sig}</textarea><br /><input type="text" class="textbox" name="sigcounter" size="3" value="{$mybb->settings['siglength']}" disabled="disabled" /> <span class="smalltext">{$lang->characters_remaining}</span>
+<td class="trow1" width="60%"><textarea rows="5" cols="55" name="signature" onkeyup="sigLimit()" onkeydown="sigLimit()">{$sig}</textarea><br /><input type="text" class="textbox" name="sigcounter" size="3" value="{$mybb->settings['siglength']}" disabled="disabled" /> <span class="smalltext">{$lang->characters_remaining}</span>
 <br /><br /><span class="smalltext">
 <label><input type="radio" class="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}</label><br />
 <label><input type="radio" class="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}</label><br />

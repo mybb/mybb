@@ -515,7 +515,7 @@ if($mybb->input['action'] == "delete") {
 	{
 		$yes = makebuttoncode("deletesubmit", $lang->yes);
 		$no = makebuttoncode("no", $lang->no);
-		makelabelcode("<center>".$lang->delete_theme_confirm."<br /><br />$yes$no</center>", "");
+		makelabelcode("<div align=\"center\">".$lang->delete_theme_confirm."<br /><br />$yes$no</div>", "");
 	}
 	else
 	{

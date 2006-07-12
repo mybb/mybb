@@ -783,7 +783,7 @@ if($mybb->input['action'] == "do_merge")
 	tableheader($lang->merge_accounts, '', 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode('no', $lang->no);
-	makelabelcode("<center>$lang->confirm_merge<br /><br />$yes$no</center>", '');
+	makelabelcode("<div align=\"center\">$lang->confirm_merge<br /><br />$yes$no</div>", '');
 	endtable();
 	endform();
 	cpfooter();
@@ -945,7 +945,7 @@ if($mybb->input['action'] == "delete")
 	tableheader($lang->delete_user, '', 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode('no', $lang->no);
-	makelabelcode("<center>$lang->confirm_delete_user<br /><br />$yes$no</center>", '');
+	makelabelcode("<div align=\"center\">$lang->confirm_delete_user<br /><br />$yes$no</div>", '');
 	endtable();
 	endform();
 	cpfooter();
@@ -1909,7 +1909,7 @@ if($mybb->input['action'] == "banned")
 	echo "</tr>\n";
 	if(!$numbans)
 	{
-		makelabelcode("<center>$lang->error_no_banned</center>", '', 7);
+		makelabelcode("<div align=\"center\">$lang->error_no_banned</div>", '', 7);
 	}
 	else
 	{

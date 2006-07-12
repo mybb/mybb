@@ -50,11 +50,6 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 
 $plugins->run_hooks("admin_global_start");
 
-if($mybb->input['action'] == "logout")
-{
-
-}
-
 $showlogin = 1;
 $ipaddress = get_ip();
 
@@ -176,13 +171,13 @@ if($admingroup['cancp'] != "yes" || !$user['uid'])
 if($user['uid'])
 {
 	$mybbadmin = $mybb->user = $user;
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='$user[usergroup]'");
+	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='{$user['usergroup']}'");
 	$mybb->usergroup = $db->fetch_array($query);
-	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'");
+	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='{$user['uid']}'");
 	$adminoptions = $db->fetch_array($query);
-	if($adminoptions['cpstyle'] && file_exists(MYBB_ADMIN_DIR."styles/$adminoptions[cpstyle]/stylesheet.css"))
+	if($adminoptions['cpstyle'] && file_exists(MYBB_ADMIN_DIR."styles/{$adminoptions['cpstyle']}/stylesheet.css"))
 	{
-		$style = "./styles/$adminoptions[cpstyle]/stylesheet.css";
+		$style = "./styles/{$adminoptions['cpstyle']}/stylesheet.css";
 	}
 	
 	// Update the session information in the DB
@@ -246,7 +241,7 @@ else
 	echo "<table width=\"100%\">\n";
 	echo "<tr>\n";
 	echo "<td><b>".$lang->login_username."</b></td>\n";
-	echo "<td><input type=\"text\" name=\"username\"></td>\n";
+	echo "<td><input type=\"text\" name=\"username\" /></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td><b>".$lang->login_password."</b></td>\n";
@@ -256,15 +251,14 @@ else
 	echo "</td>";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td class=\"altbg2\" align=\"center\"><input type=\"submit\" value=\"".$lang->login."\">&nbsp;&nbsp;&nbsp;<input type=\"reset\" value=\"".$lang->reset."\"></td>\n";
-	echo "</td>\n";
+	echo "<td class=\"altbg2\" align=\"center\"><input type=\"submit\" value=\"".$lang->login."\" />&nbsp;&nbsp;&nbsp;<input type=\"reset\" value=\"".$lang->reset."\" /></td>\n";
+	echo "</tr>\n";
 	echo "</table>\n";
 	echo "</td></tr></table>\n";
-	echo "</td></tr></table>\n";
-	echo "<input type=\"hidden\" name=\"do\" value=\"login\">\n";
-	echo "<input type=\"hidden\" name=\"goto\" value=\"".$goto."\">\n";
+	echo "<input type=\"hidden\" name=\"do\" value=\"login\" />\n";
+	echo "<input type=\"hidden\" name=\"goto\" value=\"".$goto."\" />\n";
 	echo "</form>\n";
-	echo "<p style=\"text-align: center\"><a href=\"../\">".$lang->back_to_forum."</a></p>\n";
+	echo "<p style=\"text-align: center\"><a href=\"../index.php\">".$lang->back_to_forum."</a></p>\n";
 	cpfooter(0);
 	exit;
 }

@@ -425,7 +425,7 @@ if($mybb->input['action'] == "delete")
 	tableheader($lang->delete_group, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode("no", $lang->no);
-	makelabelcode("<center>$lang->confirm_delete_group<br /><br />$yes$no</center>", "");
+	makelabelcode("<div align=\"center\">$lang->confirm_delete_group<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
 	cpfooter();
@@ -595,7 +595,7 @@ if($mybb->input['action'] == "groupleaders")
 	}
 	if(!$editprofile) // Talk about cheating!
 	{
-		makelabelcode("<center>$lang->no_group_leaders</center>", "", 2);
+		makelabelcode("<div align=\"center\">$lang->no_group_leaders</div>", "", 2);
 	}
 	endtable();
 
