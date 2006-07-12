@@ -9,7 +9,7 @@
  * $Id$
  */
 
-$templatelist = "forumdisplay,forumdisplay_thread,breadcrumb_bit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_thread_lastpost,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby_moderator,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_orderarrow,forumdisplay_thread_rating,forumdisplay_announcement,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating,forumdisplay_subforums_modcolumn,forumbit_moderators,forumbit_subforums,forumbit_depth2_forum_lastpost";
+$templatelist = "forumdisplay,forumdisplay_thread,breadcrumb_bit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby_moderator,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_orderarrow,forumdisplay_thread_rating,forumdisplay_announcement,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating,forumdisplay_subforums_modcolumn,forumbit_moderators,forumbit_subforums,forumbit_depth2_forum_lastpost";
 $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more";
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
@@ -771,7 +771,16 @@ if(is_array($threadcache))
 		$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
 		$lastposter = $thread['lastposter'];
 		$lastposteruid = $thread['lastposter'];
-		eval("\$lastpost = \"".$templates->get("forumdisplay_thread_lastpost")."\";");
+
+		// Don't link to guest's profiles (they have no profile).
+		if($lastposteruid == 0)
+		{
+			$lastposterlink = $lastposter;
+		}
+		else
+		{
+			$lastposterlink = build_profile_link($lastposter, $lastposteruid);
+		}
 		$thread['replies'] = mynumberformat($thread['replies']);
 		$thread['views'] = mynumberformat($thread['views']);
 

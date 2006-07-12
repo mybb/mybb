@@ -287,16 +287,16 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 	);
 	while($thread = $db->fetch_array($query))
 	{
-
-		if($thread['lastpost'] != '' && $thread['lastposter'] != '')
+		$lastpostdate = mydate($mybb->settings['dateformat'], $thread['lastpost']);
+		$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
+		// Don't link to guest's profiles (they have no profile).
+		if($thread['lastposteruid'] == 0)
 		{
-			$lastpostdate = mydate($mybb->settings['dateformat'], $thread['lastpost']);
-			$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
-			eval("\$lastpost = \"".$templates->get("portal_latestthreads_thread_lastpost")."\";");
+			$lastposterlink = $thread['lastposter'];
 		}
 		else
 		{
-			$lastpost = '';
+			$lastposterlink = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
 		}
 		if(my_strlen($thread['subject']) > 25)
 		{

@@ -294,8 +294,63 @@ function upgrade5_redoconfig()
 	fclose($file);
 	echo "<p>The settings file has successfully been rewritten.</p>";
 	echo "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_footer("upgrade5_indexes");
+	$output->print_footer("upgrade5_lasposts");
 
+}
+
+function upgrade5_lastposts()
+{
+	global $db, $output;
+	$output->print_header("Rebuilding Last Post Columns");
+	
+	if(!$_POST['tpp'])
+	{
+		echo "<p>The next step in the upgrade process involves rebuilding the last post information for every thread in your forum. Below, please enter the number of threads to process per page.</p>";
+		$contents .= "<p><strong>Threads Per Page:</strong> <input type=\"text\" size=\"3\" value=\"200\" name=\"tpp\" /></p>";
+		$contents .= "<p>Once you're ready, press next to begin the rebuild process.</p>";
+	}
+	else
+	{
+		$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) as num_threads");
+		$num_threads = $db->fetch_field($query, 'num_threads');
+		$tpp = intval($_POST['tpp']);
+		$start = intval($_POST['start']);
+		$end = $start+$tpp;
+		echo "<p>Updating {$start} to {$end} of {$num_threads}...</p>";
+		$query = $db->simple_select(TABLE_PREFIX."threads", "tid", "", array("order_by" => "tid", "order_dir" => "asc", "limit" => $tpp, "start" => $start));
+		while($thread = $db->fetch_array($query))
+		{
+			update_thread_count($thread['tid']);
+		}
+		echo "<p>Done</p>";
+		if($end >= $num_forums)
+		{
+			echo "<p>The rebuild process has completed successfully. Click next to continue with the upgrade.";
+			$output->print_footer("upgrade5_lastposts");
+		}
+		else
+		{
+			echo "<p>Click Next to continue with the build process.</p>";
+			echo "<input type=\"hidden\" name=\"tpp\" value=\"{$tpp}\" />";
+			echo "<input type=\"hidden\" name=\"start\" value=\"{$end}\" />";
+			$output->print_footer("upgrade5_forumlastposts");
+		}
+	}
+}
+
+function upgrade5_forumlastposts()
+{
+	global $db, $output;
+	$output->print_header("Rebuilding Forum Last Posts");
+	echo "<p>Rebuilding last post information for forums..</p>";
+	$query = $db->simple_select(TABLE_PREFIX."forums", "fid");
+	while($forum = $db->fetch_array($query))
+	{
+		update_forum_count($forum['fid']);
+	}
+	echo "<p>Done>";
+	echo "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_footer("upgrade5_indexes");
 }
 
 function upgrade5_indexes()

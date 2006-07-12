@@ -1334,7 +1334,7 @@ var inlineId = {$tid};
 <td align="center" class="trow2"><a href="member.php?action=profile&amp;uid={$subscription['author']}">{$subscription['username']}</a></td>
 <td align="center" class="trow1">{$subscription['replies']}</td>
 <td align="center" class="trow2">{$subscription['views']}</td>
-<td class="trow1" nowrap="nowrap">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} <a href="member.php?action=profile&amp;uid=lastposter&amp;tid={$subscription['tid']}">{$lastposter}</a></span></td>]]></template>
+<td class="trow1" nowrap="nowrap">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} {$lastposterlink}</span></td>]]></template>
 		<template name="usercp_options_timezoneselect" version="100.07"><![CDATA[<select name="timezoneoffset">
 <option value="-12" {$timezoneselect['n120']}>{$lang->gmt} -12:00 {$lang->hours} ({$timein['n120']})</option>
 <option value="-11" {$timezoneselect['n110']}>{$lang->gmt} -11:00 {$lang->hours} ({$timein['n110']})</option>
@@ -1379,7 +1379,7 @@ var inlineId = {$tid};
 <td align="center" class="trow2"><a href="member.php?action=profile&amp;uid={$favorite['author']}">{$favorite['username']}</a></td>
 <td align="center" class="trow1">{$favorite['replies']}</td>
 <td align="center" class="trow2">{$favorite['views']}</td>
-<td class="trow1" nowrap="nowrap">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} <a href="member.php?action=profile&amp;uid=lastposter&amp;tid={$favorite['tid']}">{$lastposter}</a></span></td>
+<td class="trow1" nowrap="nowrap">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} {$lastposterlink}</span></td>
 </tr>]]></template>
 		<template name="header_welcomeblock_member_admin" version="100.07"><![CDATA[ &mdash; <a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php">{$lang->welcome_admin}</a>]]></template>
 		<template name="forumdisplay_newthread" version="100.07"><![CDATA[<a href="newthread.php?fid={$fid}"><img src="{$theme['imglangdir']}/newthread.gif" border="0" alt="{$lang->post_thread}" /></a>]]></template>
@@ -3582,7 +3582,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="portal_latestthreads_thread" version="100.07"><![CDATA[<tr>
 <td class="{$altbg}">
 <strong><a href="{$mybb->settings['bburl']}/showthread.php?tid={$thread['tid']}">{$thread['subject']}</a></strong><span class="smalltext"><br />
-{$lastpost}
+<em>{$lang->latest_threads_lastpost}</em> {$lastposterlink}<br />
+{$lastpostdate} {$lastposttime}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_replies} {$thread['replies']}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_views} {$thread['views']}
 </td>
@@ -4125,17 +4126,20 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="forumdisplay_threadlist_rating" version="100.07"><![CDATA[<td class="tcat" align="center" width="60"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span></td>
 ]]></template>
 		<template name="forumdisplay_thread" version="100.07"><![CDATA[<tr>
-<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt="{$folder_label}" title="{$folder_label}" /></td>
-<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
-<td class="{$bgcolor}">
-	{$attachment_count}
-	<div><span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span></div>
-</td>
-<td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
-<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a>{$unapproved_posts}</td>
-<td align="center" class="{$bgcolor}">{$thread['views']}</td>
-{$rating}
-<td class="{$bgcolor}" nowrap="nowrap">{$lastpost}</td>
+	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt="{$folder_label}" title="{$folder_label}" /></td>
+	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
+	<td class="{$bgcolor}">
+		{$attachment_count}
+		<div><span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span></div>
+	</td>
+	<td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
+	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a>{$unapproved_posts}</td>
+	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
+	{$rating}
+	<td class="{$bgcolor}" nowrap="nowrap">
+		<span class="smalltext">{$lastpostdate} {$lastposttime}<br />
+		<a href="showthread.php?action=lastpost&amp;tid={$thread['tid']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
+	</td>
 {$modbit}
 </tr>
 ]]></template>
@@ -4526,8 +4530,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$threadlist}
 </table>
 <br />]]></template>
-		<template name="portal_latestthreads_thread_lastpost" version="100.07"><![CDATA[<em>{$lang->latest_threads_lastpost}</em> <a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid=lastposter&amp;tid={$thread['tid']}"> {$thread['lastposter']}</a><br />
-{$lastpostdate} {$lastposttime}<br />]]></template>
 		<template name="portal_whosonline_memberbit" version="100.07"><![CDATA[{$comma}<a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$user['uid']}">{$user['username']}</a>{$invisiblemark}]]></template>
 		<template name="usercp_favorites" version="100.07"><![CDATA[<html>
 <head>
@@ -6120,8 +6122,6 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <td class="trow1" align="center" colspan="2"><strong>{$lang->wrong_forum_password}</strong></td>
 </tr>
 ]]></template>
-		<template name="forumdisplay_thread_lastpost" version="100.07"><![CDATA[<span class="smalltext">{$lastpostdate} {$lastposttime}<br />
-<a href="showthread.php?action=lastpost&amp;tid={$thread['tid']}">{$lang->lastpost}</a>: <a href="member.php?action=profile&amp;uid=lastposter&amp;tid={$thread['tid']}">{$lastposter}</a></span>]]></template>
 		<template name="private_empty_folder" version="100.07"><![CDATA[<tr>
 <td class="trow1"><strong>{$foldername}</strong></td>
 <td class="trow1" align="center">{$foldercount}</td>

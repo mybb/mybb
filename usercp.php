@@ -1033,7 +1033,14 @@ if($mybb->input['action'] == "favorites")
 		{
 			$lastpostdate = mydate($mybb->settings['dateformat'], $favorite['lastpost']);
 			$lastposttime = mydate($mybb->settings['timeformat'], $favorite['lastpost']);
-			$lastposter = $favorite['lastposter'];
+			if($favorite['lastposteruid'] == 0)
+			{
+				$lastposterlink = $favorite['lastposter'];
+			}
+			else
+			{
+				$lastposterlink = build_profile_link($favorite['lastposter'], $favorite['lastposteruid']);
+			}
 			$favorite['author'] = $favorite['uid'];
 			if(!$favorite['username'])
 			{
@@ -1127,7 +1134,15 @@ if($mybb->input['action'] == "subscriptions")
 		{
 			$lastpostdate = mydate($mybb->settings['dateformat'], $subscription['lastpost']);
 			$lastposttime = mydate($mybb->settings['timeformat'], $subscription['lastpost']);
-			$lastposter = $subscription['lastposter'];
+			// Don't link to guest's profiles (they have no profile).
+			if($subscription['lastposteruid'] == 0)
+			{
+				$lastposterlink = $subscription['lastposter'];
+			}
+			else
+			{
+				$lastposterlink = build_profile_link($subscription['lastposter'], $subscription['lastposteruid']);
+			}
 			$subscription['author'] = $subscription['uid'];
 			if(!$subscription['username'])
 			{
