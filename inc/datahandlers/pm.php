@@ -447,7 +447,7 @@ class PMDataHandler extends DataHandler
 				'status' => 1,
 				'includesig' => $pm['options']['signature'],
 				'smilieoff' => $pm['options']['disablesmilies'],
-				'receipt' => 0)
+				'receipt' => 0
 			);
 			$plugins->run_hooks("datahandler_pm_insert_savedcopy", $this);
 			$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
