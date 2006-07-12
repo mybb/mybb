@@ -1080,7 +1080,7 @@ if(!$mybb->input['action'])
 					$tofromusername = 'MyBB Engine';
 				}
 			}
-			if($mybb->usergroup['cantrackpms'] == 'yes' && $mybb->usergroup['candenypmreceipts'] == 'yes' && $message['receipt'] == '1' && $message['folder'] != '3')
+			if($mybb->usergroup['cantrackpms'] == 'yes' && $mybb->usergroup['candenypmreceipts'] == 'yes' && $message['receipt'] == '1' && $message['folder'] != '3' && $message['folder'] != 2)
 			{
 				eval("\$denyreceipt = \"".$templates->get("private_messagebit_denyreceipt")."\";");
 			}

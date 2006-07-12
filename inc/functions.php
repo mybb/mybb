@@ -138,30 +138,28 @@ function run_shutdown()
  *
  * @param int The number of messages to send (Defaults to 20)
  */
-function send_mail_queue($count=20)
+function send_mail_queue($count=10)
 {
 	global $db, $cache;
 
 	// Check to see if the mail queue has messages needing to be sent
 	$mailcache = $cache->read("mailqueue");
-	if($mailcache['queue_size'] > 0)
+	if($mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < time()-300))
 	{
-		$delete_ids = array();
-
+		// Lock the queue so no other messages can be sent whilst these are (for popular boards)
+		$cache->updatemailqueue(0, time());
+		
 		// Fetch emails for this page view - and send them
 		$query = $db->simple_select(TABLE_PREFIX."mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
 		while($email = $db->fetch_array($query))
 		{
+			// Delete the message from the queue
+			$db->delete_query(TABLE_PREFIX."mailqueue", "mid='{$email['mid']}");
+
 			mymail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom']);
-			$delete_ids[$email['mid']] = $email['mid'];
 		}
-
-		// Delete those just sent from the queue
-		$delete_ids = implode(",", $delete_ids);
-		$db->delete_query(TABLE_PREFIX."mailqueue", "mid IN ({$delete_ids})");
-
-		// Update the mailqueue cache
-		$cache->updatemailqueue();
+		// Update the mailqueue cache and remove the lock
+		$cache->updatemailqueue(time(), 0);
 	}
 }
 
@@ -220,7 +218,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
 
 	if(!$offset)
 	{
-		if(isset($mybb->user['timezone']))
+		if($mybb->user['timezone'])
 		{
 			$offset = $mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
@@ -233,7 +231,7 @@ function mydate($format, $stamp, $offset="", $ty=1)
 		else
 		{
 			$offset = $mybb->settings['timezoneoffset'];
-			$dstcorrection = $mybb->setings['dstcorrection'];
+			$dstcorrection = $mybb->settings['dstcorrection'];
 		}
 		// If DST correction is enabled, add an additional hour to the timezone.
 		if($dstcorrection == "yes")

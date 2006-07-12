@@ -502,7 +502,16 @@ $query = $db->query("
 while($thread = $db->fetch_array($query))
 {
 	$threadcache[$thread['tid']] = $thread;
-	$tids[$thread['tid']] = $thread['tid'];
+	// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
+	if(substr($thread['closed'], 0, 5) == "moved")
+	{
+		$tids[$thread['tid']] = substr($thread['closed'], 6);
+	}
+	// Otherwise - set it to the plain thread ID
+	else
+	{
+		$tids[$thread['tid']] = $thread['tid'];
+	}
 }
 if($tids)
 {
@@ -593,69 +602,6 @@ if(is_array($threadcache))
 			$shownormalsep = false;
 		}
 
-		// Determine the folder
-		$folder = '';
-		$folder_label = '';
-		if($thread['doticon'])
-		{
-			$folder = "dot_";
-			$folder_label .= $lang->icon_dot;
-		}
-		$gotounread = '';
-		$isnew = 0;
-		$donenew = 0;
-		$lastread = 0;
-
-		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
-		{
-			$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
-			if($thread['lastpost'] > $cutoff)
-			{
-				if($thread['lastread'])
-				{
-					$lastread = $thread['lastread'];
-				}
-				else
-				{
-					$lastread = 1;
-				}
-			}
-		}
-		if(!$lastread)
-		{
-			$readcookie = $threadread = mygetarraycookie("threadread", $thread['tid']);
-			if($readcookie > $forumread)
-			{
-				$lastread = $readcookie;
-			}
-			else
-			{
-				$lastread = $forumread;
-			}
-		}
-
-		if($thread['lastpost'] > $lastread && $lastread)
-		{
-			$folder .= "new";
-			$folder_label .= $lang->icon_new;
-			eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
-			$unreadpost = 1;
-		}
-		else
-		{
-			$folder_label .= $lang->icon_no_new;
-		}
-
-		if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews'])
-		{
-			$folder .= "hot";
-			$folder_label .= $lang->icon_hot;
-		}
-		if($thread['closed'] == "yes")
-		{
-			$folder .= "lock";
-			$folder_label .= $lang->icon_lock;
-		}
 		if($foruminfo['allowtratings'] != "no")
 		{
 			$thread['averagerating'] = round($thread['averagerating'], 2);
@@ -734,10 +680,82 @@ if(is_array($threadcache))
 			$thread['tid'] = $moved[1];
 			$thread['replies'] = "-";
 			$thread['views'] = "-";
-			$folder .= "lock";
-			$gotounread = '';
+			$thread['lastread'] = $threadcache[$thread['tid']]['lastread'];
+			$thread['doticon'] = $threadcache[$thread['tid']]['doticon'];
 		}
 
+		// Determine the folder
+		$folder = '';
+		$folder_label = '';
+		if($thread['doticon'])
+		{
+			$folder = "dot_";
+			$folder_label .= $lang->icon_dot;
+		}
+		$gotounread = '';
+		$isnew = 0;
+		$donenew = 0;
+		$lastread = 0;
+		
+		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
+		{
+			$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+			if($thread['lastpost'] > $cutoff)
+			{
+				if($thread['lastread'])
+				{
+					$lastread = $thread['lastread'];
+				}
+				else
+				{
+					$lastread = 1;
+				}
+			}
+		}
+		if(!$lastread)
+		{
+			$readcookie = $threadread = mygetarraycookie("threadread", $thread['tid']);
+			if($readcookie > $forumread)
+			{
+				$lastread = $readcookie;
+			}
+			else
+			{
+				$lastread = $forumread;
+			}
+		}
+
+		if($thread['lastpost'] > $lastread && $lastread)
+		{
+			$folder .= "new";
+			$folder_label .= $lang->icon_new;
+			eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+			$unreadpost = 1;
+		}
+		else
+		{
+			$folder_label .= $lang->icon_no_new;
+		}
+
+		if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews'])
+		{
+			$folder .= "hot";
+			$folder_label .= $lang->icon_hot;
+		}
+		if($thread['closed'] == "yes")
+		{
+			$folder .= "lock";
+			$folder_label .= $lang->icon_lock;
+		}
+		
+		if($moved[0] == "moved")
+		{
+			$folder .= "lock";
+			$gotounread = '';			
+		}
+		
+		$folder .= "folder";
+		
 		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
 		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes" && $mybb->user['uid'] != 0) || $ismod == true)
 		{
@@ -748,8 +766,6 @@ if(is_array($threadcache))
 			$inline_edit_class = "";
 		}
 		$load_inline_edit_js = 1;
-
-		$folder .= "folder";
 
 		$lastpostdate = mydate($mybb->settings['dateformat'], $thread['lastpost']);
 		$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);

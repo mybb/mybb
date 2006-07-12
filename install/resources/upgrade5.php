@@ -197,10 +197,6 @@ function upgrade5_dbchanges()
 		lastactive bigint(30) NOT NULL default '0'
 	) TYPE=MyISAM;");	
 
-	//
-	// NEED TO INSERT SETTINGS FOR FULLTEXT SEARCHING AND SHUTDOWN FUNCTION STUFF ____HERE____
-	//
-
 	echo "Done</p>";
 	echo "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
@@ -216,6 +212,24 @@ function upgrade5_redoconfig()
 	if(!$fh)
 	{
 		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p>";
+		$output->print_footer("5_redoconfig");
+		exit;
+	}
+	$uid = 0;
+	if($mybb->input['username'])
+	{
+		$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".$db->escape_string($mybb->input['username'])."'");
+		$uid = $db->fetch_field($query, "uid");
+		if(!$uid)
+		{
+			echo "<p><span style=\"color: red; font-weight: bold;\">The username you entered could not be found.</span><br />Please ensure you corectly enter a valid username.</p>";
+		}
+	}
+	if(!$uid)
+	{
+		echo "<p>Please enter your primary administrator username. The user ID of the username you enter here will be written in to the new configuration file which will prevent this account from being banned, edited or deleted.</p>";
+		echo "<p>Username:</p>";
+		echo "<p><input type=\"text\" name=\"username\" value=\"\" />";
 		$output->print_footer("5_redoconfig");
 		exit;
 	}
@@ -272,7 +286,7 @@ function upgrade5_redoconfig()
  *  cannot be altered either.
  */
 
-\$config['super_admins'] = \"1\";
+\$config['super_admins'] = \"{$uid}\";
 
 ?>";
 

@@ -37,13 +37,8 @@ else
 $attachment = $db->fetch_array($query);
 $pid = $attachment['pid'];
 
-// Get thread info
-if(!$tid)
-{
-	$post = get_post($pid);
-	$tid = $post['tid'];
-}
-$thread = get_thread($tid);
+$post = get_post($pid);
+$thread = get_thread($post['tid']);
 
 if(!$thread['tid'] && !$mybb->input['thumbnail'])
 {
@@ -53,10 +48,6 @@ $fid = $thread['fid'];
 
 // Get forum info
 $forum = get_forum($fid);
-if(!$forum)
-{
-	error($lang->error_invalidforum);
-}
 
 // Permissions
 $forumpermissions = forum_permissions($fid);

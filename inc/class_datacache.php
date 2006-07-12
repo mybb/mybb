@@ -473,7 +473,7 @@ class datacache
 	 * Update the mailqueue cache
 	 *
 	 */
-	function updatemailqueue($last_run=0)
+	function updatemailqueue($last_run=0, $lock_time=0)
 	{
 		global $db;
 		$query = $db->query("
@@ -488,6 +488,7 @@ class datacache
 		{
 			$mailqueue['last_run'] = $last_run;
 		}
+		$mailqueue['locked'] = $lock_time;
 		$this->update("mailqueue", $mailqueue);
 	}
 }

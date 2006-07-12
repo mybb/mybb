@@ -733,75 +733,85 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		if(is_moderator($fid) == "yes")
 		{
-			$visibility = "(p.visible='1' OR p.visible='0')";
+			$visibility = "(visible='1' OR visible='0')";
 		}
 		else
 		{
-			$visibility = "p.visible='1'";
+			$visibility = "visible='1'";
 		}
-		$query = $db->query("
-			SELECT p.*, u.username AS userusername
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-			WHERE tid='$tid' AND $visibility
-			ORDER BY dateline DESC
-		");
-		$numposts = $db->num_rows($query);
+		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
+		$numposts = $db->fetch_field($query, "post_count");
+		
 		if($numposts > $mybb->settings['postsperpage'])
 		{
 			$numposts = $mybb->settings['postsperpage'];
 			$lang->thread_review_more = sprintf($lang->thread_review_more, $mybb->settings['postsperpage'], $tid);
-			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
+			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");			
 		}
+		
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['perpage']));
+		while($post = $db->fetch_array($query))
+		{
+			$pidin[] = $post['pid'];		
+		}
+		
+		$pidin = implode(",", $pidin);
+		
+		// Fetch attachments
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid IN ($pidin)");
+		while($attachment = $db->fetch_array($query)) 
+		{
+			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+		}	
+		$query = $db->query("
+			SELECT p.*, u.username AS userusername
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+			WHERE pid IN ($pidin)
+			ORDER BY dateline DESC
+		");
 		$postsdone = 0;
 		$altbg = "trow1";
 		$reviewbits = '';
 		while($post = $db->fetch_array($query))
 		{
-			$postsdone++;
-			if($postsdone > $numposts)
+			if($post['userusername'])
 			{
-				continue;
+				$post['username'] = $post['userusername'];
+			}
+			$reviewpostdate = mydate($mybb->settings['dateformat'], $post['dateline']);
+			$reviewposttime = mydate($mybb->settings['timeformat'], $post['dateline']);
+			$parser_options = array(
+				"allow_html" => $forum['allowhtml'],
+				"allow_mycode" => $forum['allowmycode'],
+				"allow_smilies" => $forum['allowsmilies'],
+				"allow_imgcode" => $forum['allowimgcode'],
+				"me_username" => $post['username']
+			);
+			if($post['smilieoff'] == "yes")
+			{
+				$parser_options['allow_smilies'] = "no";
+			}
+
+			if($post['visible'] != 1)
+			{
+				$altbg = "trow_shaded";
+			}
+
+			$post['message'] = $parser->parse_message($post['message'], $parser_options);
+			get_post_attachments($post['pid'], $post);
+			$reviewmessage = $post['message'];	
+			eval("\$reviewbits .= \"".$templates->get("newreply_threadreview_post")."\";");
+			if($altbg == "trow1")
+			{
+				$altbg = "trow2";
 			}
 			else
 			{
-				if($post['userusername'])
-				{
-					$post['username'] = $post['userusername'];
-				}
-				$reviewpostdate = mydate($mybb->settings['dateformat'], $post['dateline']);
-				$reviewposttime = mydate($mybb->settings['timeformat'], $post['dateline']);
-				$parser_options = array(
-					"allow_html" => $forum['allowhtml'],
-					"allow_mycode" => $forum['allowmycode'],
-					"allow_smilies" => $forum['allowsmilies'],
-					"allow_imgcode" => $forum['allowimgcode'],
-					"me_username" => $post['username']
-				);
-				if($post['smilieoff'] == "yes")
-				{
-					$parser_options['allow_smilies'] = "no";
-				}
-
-				if($post['visible'] != 1)
-				{
-					$altbg = "trow_shaded";
-				}
-
-				$reviewmessage = $parser->parse_message($post['message'], $parser_options);
-				$post['quickquote_message'] = str_replace("\"", "\\\"", htmlspecialchars($post['message']));
-				eval("\$reviewbits .= \"".$templates->get("newreply_threadreview_post")."\";");
-				if($altbg == "trow1")
-				{
-					$altbg = "trow2";
-				}
-				else
-				{
-					$altbg = "trow1";
-				}
+				$altbg = "trow1";
 			}
-			eval("\$threadreview = \"".$templates->get("newreply_threadreview")."\";");
 		}
+		eval("\$threadreview = \"".$templates->get("newreply_threadreview")."\";");
 	}
 	// Can we disable smilies or are they disabled already?
 	if($forum['allowsmilies'] != "no")

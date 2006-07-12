@@ -74,7 +74,7 @@ function build_postbit($post, $pmprevann=0)
 		default: // Regular post
 			global $forum, $thread, $tid;
 			$oldforum = $forum;
-			$id = $post['pid'];
+			$id = intval($post['pid']);
 			$parser_options['allow_html'] = $forum['allowhtml'];
 			$parser_options['allow_mycode'] = $forum['allowmycode'];
 			$parser_options['allow_smilies'] = $forum['allowsmilies'];
@@ -463,7 +463,7 @@ function build_postbit($post, $pmprevann=0)
  */
 function get_post_attachments($id, &$post)
 {
-	global $attachcache, $mybb, $theme, $templates, $forumpermission, $lang;
+	global $attachcache, $mybb, $theme, $templates, $forumpermissions, $lang;
 
 	$validationcount = 0;
 	if(is_array($attachcache[$id]))

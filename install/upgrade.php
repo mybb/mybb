@@ -127,7 +127,7 @@ else
 	}
 	elseif($mybb->input['action'] == "rebuildsettings")
 	{
-		$runfunction = "rebuild_settings";
+		$runfunction = "buildsettings";
 	}
 	elseif($mybb->input['action'] == "buildcaches")
 	{
@@ -241,7 +241,7 @@ function upgradethemes()
 	$output->print_footer("rebuild_settings");
 }
 
-function rebuild_settings()
+function buildsettings()
 {
 	global $db, $output, $system_upgrade_detail;
 

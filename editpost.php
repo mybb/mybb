@@ -463,28 +463,27 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	
 	if($mybb->input['previewpost'])
 	{	
-		// Figure out the poster's uid and username.
-		$options = array(
-			"limit" => 1
-		);
-		$query = $db->simple_select(TABLE_PREFIX."posts", "uid, username", "pid=".$pid, $options);
-		$post_poster = $db->fetch_array($query);
-		
 		// Figure out the poster's other information.
 		$query = $db->query("
 			SELECT u.*, f.*, i.path as iconpath, i.name as iconname
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='$icon')
-			WHERE u.uid='".$post_poster['uid']."'
+			WHERE u.uid='".$post['uid']."'
 			LIMIT 1
 		");
 		$postinfo = $db->fetch_array($query);
 		
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid='".intval($mybb->input['pid'])."'");
+		while($attachment = $db->fetch_array($query)) 
+		{
+			$attachcache[0][$attachment['aid']] = $attachment;
+		}		
+		
 		// Set the values of the post info array.
-		$postinfo['username'] = $post_poster['username'];
-		$postinfo['userusername'] = $post_poster['username'];
-		$postinfo['uid'] = $post_poster['uid'];
+		$postinfo['username'] = $postinfo['username'];
+		$postinfo['userusername'] = $postinfo['username'];
+		$postinfo['uid'] = $postinfo['uid'];
 		$postinfo['message'] = $previewmessage;
 		$postinfo['subject'] = $subject;
 		$postinfo['icon'] = $icon;
