@@ -376,7 +376,7 @@ while($announcement = $db->fetch_array($query))
 	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 	if($announcement['iconpath'])
 	{
-		$icon = "<img src=\"$announcement[iconpath]\" alt=\"$announcement[iconname]\">";
+		$icon = "<img src=\"$announcement[iconpath]\" alt=\"$announcement[iconname]\" />";
 	}
 	else
 	{

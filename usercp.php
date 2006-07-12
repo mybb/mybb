@@ -1042,7 +1042,7 @@ if($mybb->input['action'] == "favorites")
 			$favorite['subject'] = htmlspecialchars_uni($parser->parse_badwords($favorite['subject']));
 			if($favorite['iconpath'])
 			{
-				$icon = "<img src=\"$favorite[iconpath]\" alt=\"$favorite[iconname]\">";
+				$icon = "<img src=\"$favorite[iconpath]\" alt=\"$favorite[iconname]\" />";
 			}
 			else
 			{
@@ -1136,7 +1136,7 @@ if($mybb->input['action'] == "subscriptions")
 			$subscription['subject'] = htmlspecialchars_uni($parser->parse_badwords($subscription['subject']));
 			if($subscription['iconpath'])
 			{
-				$icon = "<img src=\"$subscription[iconpath]\" alt=\"$subscription[iconname]\">";
+				$icon = "<img src=\"$subscription[iconpath]\" alt=\"$subscription[iconname]\" />";
 			}
 			else
 			{

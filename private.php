@@ -1090,7 +1090,7 @@ if(!$mybb->input['action'])
 			}
 			if($message['iconpath'])
 			{
-				$icon = "<img src=\"$message[iconpath]\" alt=\"$message[iconname]\">&nbsp;";
+				$icon = "<img src=\"$message[iconpath]\" alt=\"$message[iconname]\" />&nbsp;";
 			}
 			else
 			{
