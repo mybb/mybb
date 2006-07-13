@@ -419,12 +419,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	// Are we going to delete this event or just edit it?
 	if($mybb->input['delete'] == "yes")
 	{
-		// Set up eventhandler.
-		require_once MYBB_ROOT."inc/datahandlers/event.php";
-		$eventhandler = new EventDataHandler();
-
-		// Make the eventhandler delete the event.
-		$eventhandler->delete_by_eid($eid);
+		$db->delete_query(TABLE_PREFIX."events", "eid='{$event['eid']}'");
 
 		// Redirect back to the main calendar view.
 		redirect("calendar.php", $lang->redirect_eventdeleted);

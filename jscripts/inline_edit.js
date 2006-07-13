@@ -45,6 +45,10 @@ inlineEditor.prototype = {
 	{
 		var element = Event.element(e);
 		Event.stop(e);
+		if(this.currentIndex != -1)
+		{
+			return false;
+		}
 		// Fix for konqueror which likes to set event element as the text not the link
 		if(typeof(element.index) == "undefined" && typeof(element.parentNode.index) != "undefined")
 		{
@@ -205,6 +209,7 @@ inlineEditor.prototype = {
 		{
 			this.hideSpinner();
 		}
+		this.currentIndex = -1;
 		return true;
 	},
 

@@ -165,7 +165,7 @@ class EventDataHandler extends DataHandler
 		{
 			$this->verify_scope();
 		}
-		$plugins->run_hooks("datahandler_event_validate", $this);
+		$plugins->run_hooks_by_ref("datahandler_event_validate", $this);
 
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -212,7 +212,7 @@ class EventDataHandler extends DataHandler
 		$db->insert_query(TABLE_PREFIX."events", $newevent);
 		$eid = $db->insert_id();
 
-		$plugins->run_hooks("datahandler_event_insert", $this);
+		$plugins->run_hooks_by_ref("datahandler_event_insert", $this);
 
 		// Return the event's eid and whether or not it is private.
 		return array(
@@ -271,7 +271,7 @@ class EventDataHandler extends DataHandler
 
 		$db->update_query(TABLE_PREFIX."events", $updateevent, "eid='".intval($event['eid'])."'");
 
-		$plugins->run_hooks("datahandler_event_update", $this);
+		$plugins->run_hooks_by_ref("datahandler_event_update", $this);
 
 		// Return the event's eid and whether or not it is private.
 		return array(

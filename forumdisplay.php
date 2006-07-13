@@ -680,6 +680,15 @@ if(is_array($threadcache))
 			$modbit = '';
 		}
 
+
+		if($moved[0] == "moved")
+		{
+			$prefix = $lang->moved_prefix;
+			$thread['tid'] = $moved[1];
+			$thread['replies'] = "-";
+			$thread['views'] = "-";
+		}
+		
 		// Determine the folder
 		$folder = '';
 		$folder_label = '';
@@ -755,14 +764,6 @@ if(is_array($threadcache))
 		$moved = explode("|", $thread['closed']);
 
 		$inline_edit_tid = $thread['tid'];
-
-		if($moved[0] == "moved")
-		{
-			$prefix = $lang->moved_prefix;
-			$thread['tid'] = $moved[1];
-			$thread['replies'] = "-";
-			$thread['views'] = "-";
-		}
 
 		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
 		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes" && $mybb->user['uid'] != 0) || $ismod == true)

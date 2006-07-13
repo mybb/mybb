@@ -5922,8 +5922,8 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 		<template name="online_iplookup_adminoptions"><![CDATA[<tr>
 <td class="trow1"><strong>{$lang->admin_options}</strong></td>
 <td class="trow2">
-	<a href="{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bregip%5D%3D{$post['ipaddress']}">{$lang->search_regip_users}</a><br />
-	<a href="{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bpostip%5D%3D{$post['ipaddress']}">{$lang->search_postip_users}</a>
+	<a href="{$config['admin_dir']}/users.php?action=find&searchop[sortby]=username&searchop[order]=asc&search[regip]={$ip}">{$lang->search_regip_users}</a><br />
+	<a href="{$config['admin_dir']}/users.php?action=find&searchop[sortby]=username&searchop[order]=asc&search[postip]={$ip}">{$lang->search_postip_users}</a>
 </td>
 </tr>]]></template>
 		<template name="online_row" version="100.07"><![CDATA[<tr>
@@ -6254,7 +6254,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 {$footer}
 </body>
 </html>]]></template>
-		<template name="postbit_inlinecheck" version="100.07"><![CDATA[| <input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" {$inlinecheck}  />]]></template>
+		<template name="postbit_inlinecheck" version="100.07"><![CDATA[| <input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  />]]></template>
 		<template name="moderation_inline_movethreads" version="100.07"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->move_threads}</title>

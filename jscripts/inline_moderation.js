@@ -13,6 +13,11 @@ var inlineModeration = {
 		{
 			return false;
 		}
+		inlineCookie = Cookie.get(inlineModeration.cookieName);
+		if(inlineCookie)
+		{
+			inlineIds = inlineCookie.split("|");
+		}
 		for(var i=0;i<inputs.length;i++)
 		{
 			var element = inputs[i];
@@ -20,7 +25,33 @@ var inlineModeration = {
 			{
 				Event.observe(element, "click", inlineModeration.checkItem);
 			}
+			if(inlineCookie)
+			{
+				inlineCheck = element.id.split("_");
+				id = inlineCheck[1];
+				if(MyBB.inArray(id, inlineIds))
+				{
+					element.checked = true;
+				}
+				else
+				{
+					element.checked = false;
+				}
+			}
 		}
+		if(inlineCookie)
+		{
+			goButton = $("inline_go");
+			if(inlineModeration.inlineCount < 0)
+			{
+				inlineModeration.inlineCount = 0;
+			}
+			else
+			{
+				inlineModeration.inlineCount = inlineIds.length-2;
+			}
+			goButton.value = go_text+" ("+(inlineIds.length-2)+")";
+		}	
 		return true;
 	},
 
@@ -70,7 +101,7 @@ var inlineModeration = {
 			inlineModeration.inlineCount = 0;
 		}
 		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
-		Cookie.set(inlineModeration.cookieName, inlineData, 120);
+		Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
 		return true;
 	},
 	

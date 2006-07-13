@@ -100,6 +100,37 @@ class pluginSystem
 		}
 		return $arguments;
 	}
+	
+	/**
+	 * Run the hooks that have plugins but passes REQUIRED argument by reference.
+	 * This is a separate function to provide backwards compat with PHP 4.
+	 *
+	 * @param string The name of the hook that is run.
+	 * @param string The argument for the hook that is run - passed by reference
+	 */
+	function run_hooks_by_ref($hook, &$arguments)
+	{
+		if(!is_array($this->hooks[$hook]))
+		{
+			return $arguments;
+		}
+
+		ksort($this->hooks[$hook]);
+		foreach($this->hooks[$hook] as $priority => $hooks)
+		{
+			if(is_array($hooks))
+			{
+				foreach($hooks as $hook)
+				{
+					if($hook['file'])
+					{
+						require_once $hook['file'];
+					}
+					call_user_func_array($hook['function'], array(&$arguments));
+				}
+			}
+		}
+	}	
 
 	/**
 	 * Remove a specific hook.
