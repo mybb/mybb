@@ -3548,6 +3548,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="{$altbg}" width="100%" valign="top">
 <table width="100%">
 <tr><td class="trow">{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']}</strong></span>
+<br />
 <div id="pid_{$post['pid']}">
 {$post['message']}
 </div>
