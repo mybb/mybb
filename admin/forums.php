@@ -191,7 +191,7 @@ if($mybb->input['action'] == "do_add")
 		cperror($lang->forum_noparent);
 	}
 	$sqlarray = array(
-		"name" => $db->escape_string($mybb->input['name']),
+		"name" => htmlspecialchars_uni($db->escape_string($mybb->input['name'])),
 		"description" => $db->escape_string($mybb->input['description']),
 		"linkto" => $db->escape_string($mybb->input['linkto']),
 		"type" => $type,
@@ -426,7 +426,7 @@ if($mybb->input['action'] == "do_edit")
 		}
 
 		$sqlarray = array(
-			"name" => $db->escape_string($mybb->input['name']),
+			"name" => htmlspecialchars_uni($db->escape_string($mybb->input['name'])),
 			"description" => $db->escape_string($mybb->input['description']),
 			"linkto" => $db->escape_string($mybb->input['linkto']),
 			"type" => $type,

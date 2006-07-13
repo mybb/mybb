@@ -107,8 +107,9 @@ table {
 
 /* left navigation menu styles */
 
-.lnav body {
+.lnav {
  color: #000000;
+ padding: 10px;
 }
 
 .lnav a:link, .lnav a:visited, .lnav a:active {
