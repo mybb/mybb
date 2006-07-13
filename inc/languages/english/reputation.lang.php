@@ -2,7 +2,7 @@
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -57,4 +57,5 @@ $l['sort_username'] = "Sort by: Username";
 $l['last_updated'] = "Last updated {1}, {2}";
 $l['no_reputation_votes'] = "This user currently does not have any reputation votes with the specified criteria below.";
 $l['delete_reputation_confirm'] = "Are you sure you wish to delete this reputation vote?";
+$l['rate_user'] = "Rate user";
 ?>

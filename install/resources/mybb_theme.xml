@@ -6520,7 +6520,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 		<strong class="{$vote_type_class}">{$vote_type}:</strong> {$reputation_vote['comments']}
 	</td>
 </tr>]]></template>
-		<template name="reputation_addlink" version="100.07"><![CDATA[<div class="float_right" style="padding-bottom: 4px;"><a href="javascript:MyBB.reputation({$user['uid']});"><img src="{$theme['imglangdir']}/rateuser.gif" alt="" border="0" /></a></div>]]></template>
+		<template name="reputation_addlink" version="100.07"><![CDATA[<div class="float_right" style="padding-bottom: 4px;"><a href="javascript:MyBB.reputation({$user['uid']});"><img src="{$theme['imglangdir']}/rateuser.gif" alt="{$lang->rate_user}" border="0" /></a></div>]]></template>
 		<template name="member_profile_reputation" version="100.07"><![CDATA[<tr>
 	<td class="trow1"><strong>{$lang->reputation}</strong></td>
 	<td class="trow1">$reputation [<a href="reputation.php?uid={$memprofile['uid']}">{$lang->reputation_details}</a>] $vote_link
