@@ -379,7 +379,7 @@ else
 {
 	$sorturl = "forumdisplay.php?fid=$fid&amp;datecut=$datecut";
 }
-eval("\$orderarrow[$sortby] = \"".$templates->get("forumdisplay_orderarrow")."\";");
+eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 // How many pages are there?
 $query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS threads", "t.fid = '$fid' $visibleonly $datecutsql");
@@ -543,7 +543,7 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 		if($moved_threads[$readthread['tid']])
 		{
 			$readthread['tid'] = $moved_threads[$readthread['tid']];
-		}		
+		}
 		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline'];
 	}
 }
@@ -688,7 +688,7 @@ if(is_array($threadcache))
 			$thread['replies'] = "-";
 			$thread['views'] = "-";
 		}
-		
+
 		// Determine the folder
 		$folder = '';
 		$folder_label = '';
@@ -701,7 +701,7 @@ if(is_array($threadcache))
 		$isnew = 0;
 		$donenew = 0;
 		$lastread = 0;
-		
+
 		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
 		{
 			$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
@@ -752,15 +752,15 @@ if(is_array($threadcache))
 			$folder .= "lock";
 			$folder_label .= $lang->icon_lock;
 		}
-		
+
 		if($moved[0] == "moved")
 		{
 			$folder .= "lock";
-			$gotounread = '';			
+			$gotounread = '';
 		}
-		
+
 		$folder .= "folder";
-		
+
 		$moved = explode("|", $thread['closed']);
 
 		$inline_edit_tid = $thread['tid'];

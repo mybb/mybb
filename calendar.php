@@ -58,13 +58,13 @@ else
 {
 	// Let's find the date we're looking at.
 	// First of all, the year
-	if($mybb->input['year'] && $mybb->input['year'] <= date("Y")+5)
+	if($mybb->input['year'] && $mybb->input['year'] <= mydate("Y")+5)
 	{
 		$year = intval($mybb->input['year']);
 	}
 	else
 	{
-		$year = date("Y");
+		$year = mydate("Y");
 	}
 	// Then the month
 	if($mybb->input['month'] >=1 && $mybb->input['month'] <= 12)
@@ -73,11 +73,11 @@ else
 	}
 	else
 	{
-		$month = date("n");
+		$month = mydate("n");
 	}
 	// Find the number of days in that month
 	$time = mktime(0, 0, 0, $month, 1, $year);
-	$days = date("t", $time);
+	$days = mydate("t", $time);
 	// Now the specific day
 	if(isset($mybb->input['day']) && $mybb->input['day'] >= 1 && $mybb->input['day'] <= $days)
 	{
@@ -98,16 +98,16 @@ else
 		// This shouldn't be needed, but just in case if someone falls into the hole...
 		else
 		{
-			$day = date("j");
+			$day = mydate("j");
 		}
 	}
 }
 
 // Make sure there's no leading zeros
 $stamp = mktime(0, 0, 0, $month, $day, $year);
-$day = date("j", $stamp);
-$month = date("n", $stamp);
-$year = date("Y", $stamp);
+$day = mydate("j", $stamp);
+$month = mydate("n", $stamp);
+$year = mydate("Y", $stamp);
 
 $monthnames = array(
 	"offset",
@@ -206,7 +206,7 @@ if($mybb->input['action'] == "dayview")
 
 	// Load Birthdays
 	// If we have 1st March and this year isn't a leap year, fetch birthdays on the 29th.
-	if($day == 1 && $month == 3 && date("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
+	if($day == 1 && $month == 3 && mydate("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
 	{
 		$bday_where = "birthday LIKE '$day-$month-%' OR birthday LIKE '29-2%' OR birthday LIKE '$day-$month'";
 		$feb_fix = 1;
@@ -348,7 +348,7 @@ if($mybb->input['action'] == "addevent")
 	$yearopts = '';
 
 	//Construct option list for years
-	for($i = date("Y"); $i < (date("Y") + 5); $i++)
+	for($i = mydate("Y"); $i < (mydate("Y") + 5); $i++)
 	{
 		if($i == $year)
 		{
@@ -529,12 +529,12 @@ if($mybb->input['action'] == "calendar_main")
 	$plugins->run_hooks("calendar_start");
 
 	$time = mktime(0, 0, 0, $month, 1, $year);
-	$days = date("t", $time);
+	$days = mydate("t", $time);
 	$bdays = array();
 
 	// Load Birthdays
 	// If we have 1st March and this year isn't a leap year, fetch birthdays on the 29th.
-	if($month == 3 && date("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
+	if($month == 3 && mydate("L", mktime(0, 0, 0, $month, 1, $year)) != 1)
 	{
 		$bday_where = "birthday LIKE '%-$month-%' OR birthday LIKE '29-2%' OR birthday LIKE '%-$month'";
 		$feb_fix = 1;
@@ -581,7 +581,7 @@ if($mybb->input['action'] == "calendar_main")
 	}
 	$daybits = "<tr>\n";
 	$count = 0;
-	$sblanks = date("w", $time);
+	$sblanks = mydate("w", $time);
 	// Blank space before first day
 	if($sblanks)
 	{
@@ -606,7 +606,7 @@ if($mybb->input['action'] == "calendar_main")
 		{
 			$birthdays = '';
 		}
-		if((date("d") == $i) && (date("n") == $month) && (date("Y") == $year))
+		if((mydate("d") == $i) && (mydate("n") == $month) && (mydate("Y") == $year))
 		{
 			eval("\$daybits .= \"".$templates->get("calendar_daybit_today")."\";");
 		}
@@ -647,15 +647,15 @@ if($mybb->input['action'] == "calendar_main")
 		$daybits .= "</tr>\n";
 	}
 
-	$prev = mktime(0, 0, 0, date("n", $time) - 1, 1, $year);
-	$next = mktime(0, 0, 0, date("n", $time) + 1, 1, $year);
-	$prevyear = date("Y", $prev);
-	$prevmonth = date("n", $prev);
-	$nextyear = date("Y", $next);
-	$nextmonth = date("n", $next);
+	$prev = mktime(0, 0, 0, mydate("n", $time) - 1, 1, $year);
+	$next = mktime(0, 0, 0, mydate("n", $time) + 1, 1, $year);
+	$prevyear = mydate("Y", $prev);
+	$prevmonth = mydate("n", $prev);
+	$nextyear = mydate("Y", $next);
+	$nextmonth = mydate("n", $next);
 
 	$yearsel = '';
-	for($i = date("Y"); $i < (date("Y") + 5); $i++)
+	for($i = mydate("Y"); $i < (mydate("Y") + 5); $i++)
 	{
 		$yearsel .= "<option value=\"$i\">$i</option>\n";
 	}

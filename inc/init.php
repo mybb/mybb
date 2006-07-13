@@ -37,9 +37,9 @@ if(!defined('MYBB_ROOT'))
 //
 // MYBB 1.2 DEVELOPMENT CODE - TO BE REMOVED BEFORE RELEASE
 //
-if(isset($_COOKIE['phpdbug']) || isset($_GET['phpdebug']))
+if(isset($_COOKIE['phpdebug']) || isset($_GET['phpdebug']))
 {
-	error_reporting(E_ALL);
+	error_reporting(E_ALL | E_STRICT);
 
 	function my_devel_error_handler($errno, $errstr, $errfile, $errline)
 	{

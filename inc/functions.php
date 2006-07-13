@@ -148,7 +148,7 @@ function send_mail_queue($count=10)
 	{
 		// Lock the queue so no other messages can be sent whilst these are (for popular boards)
 		$cache->updatemailqueue(0, time());
-		
+
 		// Fetch emails for this page view - and send them
 		$query = $db->simple_select(TABLE_PREFIX."mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
 		while($email = $db->fetch_array($query))
@@ -212,9 +212,15 @@ function parse_page($contents)
  * @param int Whether or not to use today/yesterday formatting.
  * @return string The formatted timestamp.
  */
-function mydate($format, $stamp, $offset="", $ty=1)
+function mydate($format, $stamp="", $offset="", $ty=1)
 {
 	global $mybb, $lang, $mybbadmin;
+
+	// If the stamp isn't set, use time()
+	if($stamp == "")
+	{
+		$stamp = time();
+	}
 
 	if(!$offset)
 	{
@@ -473,11 +479,11 @@ function error_no_permission()
 	if($mybb->user['uid'])
 	{
 		$lang->error_nopermission_user_5 = sprintf($lang->error_nopermission_user_5, $mybb->user['username']);
-		eval("\$errorpage = \"error_nopermission_loggedin\";");		
+		eval("\$errorpage = \"error_nopermission_loggedin\";");
 	}
 	else
 	{
-		eval("\$errorpage = \"error_nopermission\";");				
+		eval("\$errorpage = \"error_nopermission\";");
 	}
 	error($errorpage);
 }
@@ -1197,7 +1203,7 @@ function update_forum_count($fid)
 		WHERE fid='$fid' AND closed NOT LIKE 'moved|%'
 	");
 	$unapproved_count['posts'] = $db->fetch_field($query, "posts");
-	
+
 	$update_count = array(
 		"posts" => intval($count['posts']),
 		"threads" => intval($count['threads']),

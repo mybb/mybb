@@ -302,7 +302,7 @@ eval("\$gobutton = \"".$templates->get("gobutton")."\";");
 eval("\$htmldoctype = \"".$templates->get("htmldoctype", 1, 0)."\";");
 eval("\$header = \"".$templates->get("header")."\";");
 
-$copy_year = date("Y");
+$copy_year = mydate("Y", time());
 
 // Are we showing version numbers in the footer?
 if($mybb->settings['showvernum'] == "on")
