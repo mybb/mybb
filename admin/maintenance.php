@@ -49,7 +49,7 @@ if($mybb->input['action'] == "do_cache")
 	{
 		cpheader();
 		starttable();
-		$query = $db->simple_select(TABLE_PREFIX."datacache", "*", "title='".$db->escape_string($cacheitem)."'");
+		$query = $db->simple_select("datacache", "*", "title='".$db->escape_string($cacheitem)."'");
 		$cacheitem = $db->fetch_array($query);
 		$cachecontents = unserialize($cacheitem['cache']);
 		if(empty($cachecontents))
@@ -90,7 +90,7 @@ if($mybb->input['action'] == "cache")
 	echo "<td class=\"subheader\" align=\"center\">$lang->size</td>\n";
 	echo "<td class=\"subheader\" align=\"center\" colspan=\"2\">$lang->options</td>\n";
 	echo "</tr>\n";
-	$query = $db->simple_select(TABLE_PREFIX."datacache", "title,cache");
+	$query = $db->simple_select("datacache", "title,cache");
 	while($cacheitem = $db->fetch_array($query))
 	{
 		$size = get_friendly_size(my_strlen($cacheitem['cache']));
@@ -127,7 +127,7 @@ if($mybb->input['action'] == "do_rebuildforums")
 {
 	$plugins->run_hooks("admin_maintenance_do_rebuildforums");
 
-	$query = $db->simple_select(TABLE_PREFIX."forums", "COUNT(*) as num_forums");
+	$query = $db->simple_select("forums", "COUNT(*) as num_forums");
 	$num_forums = $db->fetch_field($query, 'num_forums');
 	
 	if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
@@ -143,7 +143,7 @@ if($mybb->input['action'] == "do_rebuildforums")
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
-	$query = $db->simple_select(TABLE_PREFIX."forums", "fid", '', array('order_by' => 'fid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	$query = $db->simple_select("forums", "fid", '', array('order_by' => 'fid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
 	while($forum = $db->fetch_array($query))
 	{
 		$update['parentlist'] = makeparentlist($forum['fid']);
@@ -175,7 +175,7 @@ if($mybb->input['action'] == "do_rebuildthreads")
 {
 	$plugins->run_hooks("admin_maintenance_do_rebuildthreads");
 
-	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) as num_threads");
+	$query = $db->simple_select("threads", "COUNT(*) as num_threads");
 	$num_threads = $db->fetch_field($query, 'num_threads');
 	
 	if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
@@ -191,7 +191,7 @@ if($mybb->input['action'] == "do_rebuildthreads")
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
-	$query = $db->simple_select(TABLE_PREFIX."threads", "tid", '', array('order_by' => 'tid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	$query = $db->simple_select("threads", "tid", '', array('order_by' => 'tid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
 	while($thread = $db->fetch_array($query))
 	{
 		update_thread_count($thread['tid']);
@@ -221,7 +221,7 @@ if($mybb->input['action'] == "do_recountpostcounts")
 {
 	$plugins->run_hooks("admin_maintenance_do_recountpostcounts");
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) as num_users");
+	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 	
 	if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
@@ -237,10 +237,10 @@ if($mybb->input['action'] == "do_recountpostcounts")
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	$query = $db->simple_select("users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
 	while($user = $db->fetch_array($query))
 	{
-		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS post_count", "uid='{$user['uid']}' AND visible>0");
+		$query = $db->simple_select("posts", "COUNT(pid) AS post_count", "uid='{$user['uid']}' AND visible>0");
 		$num_posts = $db->fetch_field($query, "post_count");
 		$db->update_query(TABLE_PREFIX."users", array("postnum" => intval($num_posts)), "uid='{$user['uid']}'");
 	}
@@ -269,7 +269,7 @@ if($mybb->input['action'] == "do_rebuildthumbnails")
 {
 	$plugins->run_hooks("admin_maintenance_do_rebuild_thumbnails");
 
-	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(aid) as num_attachments");
+	$query = $db->simple_select("attachments", "COUNT(aid) as num_attachments");
 	$num_attachments = $db->fetch_field($query, 'num_attachments');
 	
 	if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
@@ -287,7 +287,7 @@ if($mybb->input['action'] == "do_rebuildthumbnails")
 
 	require_once "../inc/functions_image.php";
 	
-	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", '', array('order_by' => 'aid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	$query = $db->simple_select("attachments", "*", '', array('order_by' => 'aid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
 	while($attachment = $db->fetch_array($query))
 	{
 		$ext = strtolower(my_substr(strrchr($attachment['filename'], "."), 1));

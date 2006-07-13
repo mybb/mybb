@@ -79,7 +79,7 @@ if($mybb->input['action'] == "view")
 		$order = "l.dateline";
 		$orderby = "DESC";
 	}
-	$query = $db->simple_select(TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)", "COUNT(dateline) AS count", $squery);
+	$query = $db->simple_select("moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)", "COUNT(dateline) AS count", $squery);
 	$rescount = $db->fetch_field($query, "count");
 	if(!$rescount)
 	{
@@ -133,7 +133,7 @@ if($mybb->input['action'] == "view")
 		"limit_start" => $start,
 		"limit" => $perpage
 	);
-	$query = $db->simple_select(TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)", "l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject", $squery, $options);
+	$query = $db->simple_select("moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)", "l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject", $squery, $options);
 	while($logitem = $db->fetch_array($query))
 	{
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
@@ -173,7 +173,7 @@ if($mybb->input['action'] == "")
 		"order_by" => "u.username",
 		"order_dir" => "ASC"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid)", "DISTINCT l.uid, u.username", "", $options);
+	$query = $db->simple_select("moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid)", "DISTINCT l.uid, u.username", "", $options);
 	while($user = $db->fetch_array($query))
 	{
 		$uoptions .= "<option value=\"$user[uid]\">$user[username]</option>\n";

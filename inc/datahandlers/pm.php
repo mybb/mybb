@@ -124,7 +124,7 @@ class PMDataHandler extends DataHandler
 		// No user ID is specified, we need to query for it based on the username.
 		if(!isset($pm['toid']))
 		{
-			$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".$db->escape_string($pm['username'])."'", array("limit" => 1));
+			$query = $db->simple_select("users", "uid", "username='".$db->escape_string($pm['username'])."'", array("limit" => 1));
 			$user = $db->fetch_array($query);
 			$pm['toid'] = $user['uid'];
 		}
@@ -352,7 +352,7 @@ class PMDataHandler extends DataHandler
 		}
 		
 		// Check if we're updating a draft or not.
-		$query = $db->simple_select(TABLE_PREFIX."privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
+		$query = $db->simple_select("privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
 		$draftcheck = $db->fetch_array($query);
 
 		// This PM was previously a draft - update it

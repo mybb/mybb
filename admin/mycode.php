@@ -81,7 +81,7 @@ if($mybb->input['action'] == "edit")
 		exit;
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."mycode", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 	$plugins->run_hooks("admin_mycode_edit");
 	cpheader();
@@ -124,7 +124,7 @@ if($mybb->input['action'] == "do_edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select(TABLE_PREFIX."mycode", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 	if(!$mycode['cid'])
 	{
@@ -175,7 +175,7 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 		"order_by" => "title",
 		"order_dir" => "ASC"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."mycode", "*", "", $options);
+	$query = $db->simple_select("mycode", "*", "", $options);
 	while($mycode = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();

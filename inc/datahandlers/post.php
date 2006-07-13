@@ -105,7 +105,7 @@ class PostDataHandler extends DataHandler
 		{
 			if(!$post['tid'])
 			{
-				$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='".intval($post['pid'])."'");
+				$query = $db->simple_select("posts", "tid", "pid='".intval($post['pid'])."'");
 				$post['tid'] = $db->fetch_field($query, "tid");
 			}
 			// Here we determine if we're editing the first post of a thread or not.
@@ -115,7 +115,7 @@ class PostDataHandler extends DataHandler
 				"order_by" => "dateline",
 				"order_dir" => "asc"
 			);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='".$post['tid']."'", $options);
+			$query = $db->simple_select("posts", "pid", "tid='".$post['tid']."'", $options);
 			$first_check = $db->fetch_array($query);
 			if($first_check['pid'] == $post['pid'])
 			{
@@ -313,7 +313,7 @@ class PostDataHandler extends DataHandler
 		// Check if the post being replied to actually exists in this thread.
 		if($post['replyto'])
 		{
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$post['replyto']}'");
+			$query = $db->simple_select("posts", "pid", "pid='{$post['replyto']}'");
 			$valid_post = $db->fetch_array($query);
 			if(!$valid_post['pid'])
 			{
@@ -334,7 +334,7 @@ class PostDataHandler extends DataHandler
 				"order_by" => "dateline",
 				"order_dir" => "asc"
 			);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$post['tid']}'", $options);
+			$query = $db->simple_select("posts", "pid", "tid='{$post['tid']}'", $options);
 			$reply_to = $db->fetch_array($query);
 			$post['replyto'] = $reply_to['pid'];
 		}
@@ -480,7 +480,7 @@ class PostDataHandler extends DataHandler
 			// Automatic subscription to the thread
 			if($post['options']['emailnotify'] != "no" && $post['uid'] > 0)
 			{
-				$query = $db->simple_select(TABLE_PREFIX."favorites", "fid", "tid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."' AND type='s'", array("limit" => 1));
+				$query = $db->simple_select("favorites", "fid", "tid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."' AND type='s'", array("limit" => 1));
 				$already_subscribed = $db->fetch_field($query, "fid");
 				if(!$already_subscribed)
 				{
@@ -569,7 +569,7 @@ class PostDataHandler extends DataHandler
 			exit;
 		}
 		
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
+		$query = $db->simple_select("posts", "pid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
 		$draft_check = $db->fetch_field($query, "pid");
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
@@ -853,7 +853,7 @@ class PostDataHandler extends DataHandler
 		// Have a post ID but not a thread ID - fetch thread ID
 		if($thread['pid'] && !$thread['tid'])
 		{
-			$db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['pid']}");
+			$db->simple_select("posts", "tid", "pid='{$thread['pid']}");
 			$thread['tid'] = $db->fetch_field($query, "tid");
 		}
 		
@@ -866,7 +866,7 @@ class PostDataHandler extends DataHandler
 			exit;
 		}		
 
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
+		$query = $db->simple_select("posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
 		$draft_check = $db->fetch_field($query, "pid");
 		
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
@@ -1158,7 +1158,7 @@ class PostDataHandler extends DataHandler
 		// If we don't have a tid then we need to fetch it along with the forum id.
 		if(!$post['tid'] || !$post['fid'])
 		{
-			$query = $db->simple_select(TABLE_PREFIX."posts", "tid,fid", "pid='".intval($post['pid'])."'");
+			$query = $db->simple_select("posts", "tid,fid", "pid='".intval($post['pid'])."'");
 			$tid_fetch = $db->fetch_array($query);
 			$post['tid'] = $tid_fetch['tid'];
 			$post['fid'] = $tid_fetch['fid'];
@@ -1170,7 +1170,7 @@ class PostDataHandler extends DataHandler
 			"limit_start" => 0,
 			"limit" => 1
 		);
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='".intval($post['tid'])."'", $options);
+		$query = $db->simple_select("posts", "pid", "tid='".intval($post['tid'])."'", $options);
 		$first_post_check = $db->fetch_array($query);
 		if($first_post_check['pid'] == $post['pid'])
 		{
@@ -1243,7 +1243,7 @@ class PostDataHandler extends DataHandler
 		// Automatic subscription to the thread
 		if($post['options']['emailnotify'] != "no" && $post['uid'] > 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."favorites", "fid", "uid='".intval($post['uid'])."' AND tid='".intval($tid)."' AND type='s'", array("limit" => 1));
+			$query = $db->simple_select("favorites", "fid", "uid='".intval($post['uid'])."' AND tid='".intval($tid)."' AND type='s'", array("limit" => 1));
 			$already_subscribed = $db->fetch_field($query, "fid");
 			if(!$already_subscribed)
 			{

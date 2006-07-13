@@ -46,7 +46,7 @@ if($mybb->input['action'] == "event")
 	$options = array(
 		"limit" => 1
 	);
-	$query = $db->simple_select(TABLE_PREFIX."events", "date", "eid=".$eid, $options);
+	$query = $db->simple_select("events", "date", "eid=".$eid, $options);
 	$event_date = $db->fetch_field($query, "date");
 	if($event_date == FALSE)
 	{
@@ -216,7 +216,7 @@ if($mybb->input['action'] == "dayview")
 		$bday_where = "birthday LIKE '$day-$month-%' OR birthday LIKE '$day-$month'";
 		$feb_fix = 0;
 	}
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
+	$query = $db->simple_select("users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
 
 	$alterbg = $theme['trow1'];
 	$comma = '';
@@ -404,7 +404,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("calendar_do_editevent_start");
 
-	$query = $db->simple_select(TABLE_PREFIX."events", "*", "eid='{$eid}'");
+	$query = $db->simple_select("events", "*", "eid='{$eid}'");
 	$event = $db->fetch_array($query);
 
 	if(!is_numeric($event['author']))
@@ -467,7 +467,7 @@ if($mybb->input['action'] == "editevent")
 
 	$eid = intval($mybb->input['eid']);
 
-	$query = $db->simple_select(TABLE_PREFIX."events", "*", "eid='{$eid}'");
+	$query = $db->simple_select("events", "*", "eid='{$eid}'");
 	$event = $db->fetch_array($query);
 
 	if(!$event['eid'])
@@ -545,7 +545,7 @@ if($mybb->input['action'] == "calendar_main")
 		$feb_fix = 0;
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
+	$query = $db->simple_select("users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
 	while($user = $db->fetch_array($query))
 	{
 		$bday = explode("-", $user['birthday']);
@@ -560,7 +560,7 @@ if($mybb->input['action'] == "calendar_main")
 	}
 	$events = array();
 	// Load Events
-	$query = $db->simple_select(TABLE_PREFIX."events", "subject, private, date, eid", "date LIKE '%-{$month}-{$year}' AND ((author='{$mybb->user['uid']}' AND private='yes') OR (private!='yes'))");
+	$query = $db->simple_select("events", "subject, private, date, eid", "date LIKE '%-{$month}-{$year}' AND ((author='{$mybb->user['uid']}' AND private='yes') OR (private!='yes'))");
 	while($event = $db->fetch_array($query))
 	{
 		$event['subject'] = htmlspecialchars_uni($event['subject']);

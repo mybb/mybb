@@ -295,7 +295,7 @@ if($mybb->input['action'] == "send")
 			{
 				$subject = "Re: $subject";
 				$uid = $pm['fromid'];
-				$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='".$uid."'");
+				$query = $db->simple_select("users", "username", "uid='".$uid."'");
 				$user = $db->fetch_array($query);
 				$to = $user['username'];
 			}
@@ -303,7 +303,7 @@ if($mybb->input['action'] == "send")
 	}
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
-	$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='".intval($mybb->input['uid'])."'");
+	$query = $db->simple_select("users", "username", "uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 	$to = $user['username'];
 	}
@@ -464,7 +464,7 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 				$pmids[$pmid] = intval($pmid);
 			}
 			$pmids = implode(",", $pmids);
-			$query = $db->simple_select(TABLE_PREFIX."privatemessages", "uid", "pmid IN ($pmids) AND fromid='".$mybb->user['uid']."'");
+			$query = $db->simple_select("privatemessages", "uid", "pmid IN ($pmids) AND fromid='".$mybb->user['uid']."'");
 			while($pm = $db->fetch_array($query))
 			{
 				$pmuids[$pm['uid']] = $pm['uid'];
@@ -607,7 +607,7 @@ if($mybb->input['action'] == "empty")
 		$folderinfo = explode("**", $folders, 2);
 		$fid = $folderinfo[0];
 		$foldername = get_pm_folder_name($fid, $folderinfo[1]);
-		$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid' AND uid='".$mybb->user['uid']."'");
+		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid' AND uid='".$mybb->user['uid']."'");
 		$thing = $db->fetch_array($query);
 		$foldercount = mynumberformat($thing['pmsinfolder']);
 		eval("\$folderlist .= \"".$templates->get("private_empty_folder")."\";");
@@ -688,7 +688,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				}
 				$pmssql .= "'".intval($key)."'";
 			}
-			$query = $db->simple_select(TABLE_PREFIX."privatemessages", "pmid, folder", "pmid IN ($pmssql) AND uid='".$mybb->user['uid']."' AND folder='4'", array('order_by' => 'pmid'));
+			$query = $db->simple_select("privatemessages", "pmid, folder", "pmid IN ($pmssql) AND uid='".$mybb->user['uid']."' AND folder='4'", array('order_by' => 'pmid'));
 			while($delpm = $db->fetch_array($query))
 			{
 				$deletepms[$delpm['pmid']] = 1;
@@ -918,7 +918,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_message", 1, 0)."\";");
 		$ids .= ",'$message[pmid]'";
 	}
-	$query = $db->simple_select(TABLE_PREFIX."themes", "css", "tid='{$theme['tid']}'");
+	$query = $db->simple_select("themes", "css", "tid='{$theme['tid']}'");
 	$css = $db->fetch_field($query, "css");
 
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
@@ -988,7 +988,7 @@ if(!$mybb->input['action'])
 	$doneunread = 0;
 	$doneread = 0;
 	// get total messages
-	$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
 	$pmscount = $db->fetch_array($query);
 	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != "yes")
 	{
@@ -996,7 +996,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Do Multi Pages
-	$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
 	$pmscount = $db->fetch_array($query);
 
 	$perpage = $mybb->settings['threadsperpage'];
@@ -1123,7 +1123,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->usergroup['pmquota'] != '0')
 	{
-		$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
+		$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
 		$pmscount = $db->fetch_array($query);
 		$spaceused = $pmscount['total'] / $mybb->usergroup['pmquota'] * 100;
 		$spaceused2 = 100 - $spaceused;

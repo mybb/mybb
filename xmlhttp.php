@@ -68,7 +68,7 @@ else
 	$loadstyle = "def=1";
 }
 
-$query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits", $loadstyle);
+$query = $db->simple_select("themes", "name, tid, themebits", $loadstyle);
 $theme = $db->fetch_array($query);
 $theme = @array_merge($theme, unserialize($theme['themebits']));
 
@@ -119,7 +119,7 @@ if($mybb->input['action'] == "get_users")
 		"limit_start" => 0,
 		"limit" => 15
 	);
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username", "username LIKE '".$db->escape_string($mybb->input['query'])."%'", $query_options);
+	$query = $db->simple_select("users", "uid, username", "username LIKE '".$db->escape_string($mybb->input['query'])."%'", $query_options);
 	while($user = $db->fetch_array($query))
 	{
 		$user['username'] = htmlspecialchars_uni($user['username']);
@@ -163,7 +163,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 			"order_by" => "dateline",
 			"order_dir" => "asc",
 		);
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid,uid,dateline", "tid='".$thread['tid']."'", $query_options);
+		$query = $db->simple_select("posts", "pid,uid,dateline", "tid='".$thread['tid']."'", $query_options);
 		$post = $db->fetch_array($query);
 	}
 	// Fetch the specific forum this thread/post is in.
@@ -355,7 +355,7 @@ else if($mybb->input['action'] == "edit_post")
 		$post['message'] = $parser->parse_message($message, $parser_options);
 		
 		// Now lets fetch all of the attachments for these posts.
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid='{$post['pid']}'");
+		$query = $db->simple_select("attachments", "*", "pid='{$post['pid']}'");
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;

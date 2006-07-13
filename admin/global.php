@@ -59,7 +59,7 @@ if($mybb->input['do'] == "login")
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if($user['uid'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".$user['uid']."'");
+		$query = $db->simple_select("users", "*", "uid='".$user['uid']."'");
 		$user = $db->fetch_array($query);
 	}
 	$failcheck = 1;
@@ -94,7 +94,7 @@ else
 	// Otherwise, check admin session
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."adminsessions", "*", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+		$query = $db->simple_select("adminsessions", "*", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
 		$admin_session = $db->fetch_array($query);
 		
 		// No matching admin session found - show message on login screen
@@ -105,7 +105,7 @@ else
 		else
 		{
 			// Fetch the user from the admin session
-			$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='{$admin_session['uid']}'");
+			$query = $db->simple_select("users", "*", "uid='{$admin_session['uid']}'");
 			$user = $db->fetch_array($query);
 
 			// Login key has changed - force logout
@@ -171,9 +171,9 @@ if($admingroup['cancp'] != "yes" || !$user['uid'])
 if($user['uid'])
 {
 	$mybbadmin = $mybb->user = $user;
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='{$user['usergroup']}'");
+	$query = $db->simple_select("usergroups", "*", "gid='{$user['usergroup']}'");
 	$mybb->usergroup = $db->fetch_array($query);
-	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='{$user['uid']}'");
+	$query = $db->simple_select("adminoptions", "*", "uid='{$user['uid']}'");
 	$adminoptions = $db->fetch_array($query);
 	if($adminoptions['cpstyle'] && file_exists(MYBB_ADMIN_DIR."styles/{$adminoptions['cpstyle']}/stylesheet.css"))
 	{

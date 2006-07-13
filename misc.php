@@ -67,7 +67,7 @@ elseif($mybb->input['action'] == "rules")
 	{
 		$plugins->run_hooks("misc_rules_start");
 
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='".intval($mybb->input['fid'])."' AND active!='no'");
+		$query = $db->simple_select("forums", "*", "fid='".intval($mybb->input['fid'])."' AND active!='no'");
 		$forum = $db->fetch_array($query);
 
 		$forumpermissions = forum_permissions($forum['fid']);
@@ -143,14 +143,14 @@ elseif($mybb->input['action'] == "help")
 	{
 		$plugins->run_hooks("misc_help_section_start");
 
-		$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "", array('order_by' => 'sid, disporder'));
+		$query = $db->simple_select("helpdocs", "*", "", array('order_by' => 'sid, disporder'));
 		while($helpdoc = $db->fetch_array($query))
 		{
 			$helpdocs[$helpdoc['sid']][$helpdoc['disporder']][$helpdoc['hid']] = $helpdoc;
 		}
 		unset($helpdoc);
 		$sections = '';
-		$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "enabled != 'no'", array('order_by' => 'disporder'));
+		$query = $db->simple_select("helpsections", "*", "enabled != 'no'", array('order_by' => 'disporder'));
 		while($section = $db->fetch_array($query))
 		{
 			if($section['usetranslation'] == "yes" || $section['sid'] <= 2)
@@ -333,7 +333,7 @@ elseif($mybb->input['action'] == "smilies")
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";
-		$query = $db->simple_select(TABLE_PREFIX."smilies", "*", "", array('order_by' => 'disporder'));
+		$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
 		while($smilie = $db->fetch_array($query))
 		{
 			$smiliefind = $smilie['find'];
@@ -361,7 +361,7 @@ elseif($mybb->input['action'] == "smilies")
 	{
 		add_breadcrumb($lang->nav_smilies);
 		$class = "trow1";
-		$query = $db->simple_select(TABLE_PREFIX."smilies", "*", "", array('order_by' => 'disporder'));
+		$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
 		while($smilie = $db->fetch_array($query))
 		{
 			eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
@@ -378,7 +378,7 @@ elseif($mybb->input['action'] == "imcenter")
 		error($lang->error_invalidimtype);
 	}
 	$uid = intval($mybb->input['uid']);
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".$uid."'", array('limit' => 1));
+	$query = $db->simple_select("users", "*", "uid='".$uid."'", array('limit' => 1));
 	$user = $db->fetch_array($query);
 
 	if(!$user['username'])
@@ -557,7 +557,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	if(!is_array($forumcache))
 	{
 		// Get Forums
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "linkto = ''", array('order_by' => 'pid, disporder'));
+		$query = $db->simple_select("forums", "*", "linkto = ''", array('order_by' => 'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;

@@ -54,7 +54,7 @@ if($mybb->input['action'] == "do_delete")
 if($mybb->input['action'] == "delete")
 {
 	$tid = intval($mybb->input['tid']);
-	$query = $db->simple_select(TABLE_PREFIX."modtools", 'name', "tid='$tid'");
+	$query = $db->simple_select("modtools", 'name', "tid='$tid'");
 	$tool = $db->fetch_array($query);
 	$plugins->run_hooks("admin_moderation_delete");
 	cpheader();
@@ -149,7 +149,7 @@ if($mybb->input['action'] == "edit")
 	}
 
 	// Get the tool
-	$query = $db->simple_select(TABLE_PREFIX."modtools", '*', 'tid="'.intval($mybb->input['tid']).'"');
+	$query = $db->simple_select("modtools", '*', 'tid="'.intval($mybb->input['tid']).'"');
 	$tool = $db->fetch_array($query);
 
 	if(!$tool['tid'])
@@ -435,7 +435,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 	tablesubheader(array($lang->tool_name, $lang->options));
 
 	$options = array('order_by' => 'name', 'orderdir' => 'ASC');
-	$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, name, description, type', "type='t'", $options);
+	$query = $db->simple_select("modtools", 'tid, name, description, type', "type='t'", $options);
 	while($tool = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
@@ -468,7 +468,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 	tablesubheader(array($lang->tool_name, $lang->options));
 
 	$options = array('order_by' => 'name', 'orderdir' => 'ASC');
-	$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, name, description, type', "type='p'", $options);
+	$query = $db->simple_select("modtools", 'tid, name, description, type', "type='p'", $options);
 	while($tool = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();

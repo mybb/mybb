@@ -21,7 +21,7 @@ $lang->load("printthread");
 
 $plugins->run_hooks("printthread_start");
 
-$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."' AND visible='1'");
+$query = $db->simple_select("threads", "*", "tid='".intval($mybb->input['tid'])."' AND visible='1'");
 $thread = $db->fetch_array($query);
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 if(!$thread['tid'])
@@ -107,7 +107,7 @@ function makeprintablenav($pid="0", $depth="--")
 	if(!is_array($pforumcache))
 	{
 		$parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);
-		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "$parlist", array('order_by' => 'pid, disporder'));
+		$query = $db->simple_select("forums", "name, fid, pid", "$parlist", array('order_by' => 'pid, disporder'));
 		while($forumnav = $db->fetch_array($query))
 		{
 			$pforumcache[$forumnav['pid']][$forumnav['fid']] = $forumnav;

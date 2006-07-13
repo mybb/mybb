@@ -26,7 +26,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 	if(!is_array($pforumcache))
 	{
 		// Get Forums
-		$query = $db->simple_select(TABLE_PREFIX."forums f", "f.*", "linkto=''", array('order_by' => "f.pid, f.disporder"));
+		$query = $db->simple_select("forums f", "f.*", "linkto=''", array('order_by' => "f.pid, f.disporder"));
 		while($forum = $db->fetch_array($query))
 		{
 			$pforumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;

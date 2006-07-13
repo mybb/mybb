@@ -327,7 +327,7 @@ if($mybb->input['action'] == "profile")
 	$altbg = "trow1";
 	$requiredfields = '';
 	$customfields = '';
-	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "editable='yes'", array('order_by' => 'disporder'));
+	$query = $db->simple_select("profilefields", "*", "editable='yes'", array('order_by' => 'disporder'));
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -489,7 +489,7 @@ if($mybb->input['action'] == "profile")
 	{
 		if($mybb->usergroup['usertitle'] == "")
 		{
-			$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "posts <='".$mybb->user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
+			$query = $db->simple_select("usertitles", "*", "posts <='".$mybb->user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
 			$utitle = $db->fetch_array($query);
 			$defaulttitle = $utitle['title'];
 		}
@@ -964,7 +964,7 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 	{
 		error($lang->error_bannedusername);
 	}
-	$query = $db->simple_select(TABLE_PREFIX."users", "username", "username LIKE '".$db->escape_string($mybb->input['username'])."'");
+	$query = $db->simple_select("users", "username", "username LIKE '".$db->escape_string($mybb->input['username'])."'");
 
 	if($db->fetch_array($query))
 	{
@@ -994,7 +994,7 @@ if($mybb->input['action'] == "favorites")
 {
 	$plugins->run_hooks("usercp_favorites_start");
 	// Do Multi Pages
-	$query = $db->simple_select(TABLE_PREFIX."favorites", "COUNT(tid) AS threads", "type='f' AND uid='".$mybb->user['uid']."'");
+	$query = $db->simple_select("favorites", "COUNT(tid) AS threads", "type='f' AND uid='".$mybb->user['uid']."'");
 	$threadcount = $db->fetch_field($query, "threads");
 
 	$perpage = $mybb->settings['threadsperpage'];
@@ -1094,7 +1094,7 @@ if($mybb->input['action'] == "subscriptions")
 {
 	$plugins->run_hooks("usercp_subscriptions_start");
 	// Do Multi Pages
-	$query = $db->simple_select(TABLE_PREFIX."favorites", "COUNT(tid) AS threads", "type='s' AND uid='".$mybb->user['uid']."'");
+	$query = $db->simple_select("favorites", "COUNT(tid) AS threads", "type='s' AND uid='".$mybb->user['uid']."'");
 	$threadcount = $db->fetch_field($query, "threads");
 
 	$perpage = $mybb->settings['threadsperpage'];
@@ -1611,7 +1611,7 @@ if($mybb->input['action'] == "editlists")
 			$buddysql .= "$comma'$buddyid'";
 			$comma = ",";
 		}
-		$query = $db->simple_select(TABLE_PREFIX."users", "username, uid", "uid IN ($buddysql)");
+		$query = $db->simple_select("users", "username, uid", "uid IN ($buddysql)");
 		while($buddy = $db->fetch_array($query))
 		{
 			$uid = $buddy['uid'];
@@ -1630,7 +1630,7 @@ if($mybb->input['action'] == "editlists")
 			$ignoresql .= "$comma2'$ignoreid'";
 			$comma2 = ",";
 		}
-		$query = $db->simple_select(TABLE_PREFIX."users", "username, uid", "uid IN ($ignoresql)");
+		$query = $db->simple_select("users", "username, uid", "uid IN ($ignoresql)");
 		while($ignoreuser = $db->fetch_array($query))
 		{
 			$uid = $ignoreuser['uid'];
@@ -1665,7 +1665,7 @@ if($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
 	}
 	$comma2 = '';
 	$newlist = '';
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username IN ($users)");
+	$query = $db->simple_select("users", "uid", "username IN ($users)");
 	while($user = $db->fetch_array($query))
 	{
 		$newlist .= "$comma2$user[uid]";
@@ -1786,7 +1786,7 @@ if($mybb->input['action'] == "usergroups")
 		{
 			error($lang->not_member_of_group);
 		}
-		$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='".intval($mybb->input['displaygroup'])."'");
+		$query = $db->simple_select("usergroups", "*", "gid='".intval($mybb->input['displaygroup'])."'");
 		$dispgroup = $db->fetch_array($query);
 		if($dispgroup['candisplaygroup'] != "yes")
 		{
@@ -1809,7 +1809,7 @@ if($mybb->input['action'] == "usergroups")
 		{
 			error($lang->cannot_leave_primary_group);
 		}
-		$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='".intval($mybb->input['leavegroup'])."'");
+		$query = $db->simple_select("usergroups", "*", "gid='".intval($mybb->input['leavegroup'])."'");
 		$usergroup = $db->fetch_array($query);
 		if($usergroup['type'] != 4 && $usergroup['type'] != 3)
 		{
@@ -1824,7 +1824,7 @@ if($mybb->input['action'] == "usergroups")
 	if($mybb->input['joingroup'])
 	{
 		$mybb->input['joingroup'] = intval($mybb->input['joingroup']);
-		$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='".intval($mybb->input['joingroup'])."'");
+		$query = $db->simple_select("usergroups", "*", "gid='".intval($mybb->input['joingroup'])."'");
 		$usergroup = $db->fetch_array($query);
 
 		if(($usergroup['type'] != 4 && $usergroup['type'] != 3) || !$usergroup['gid'])
@@ -1837,7 +1837,7 @@ if($mybb->input['action'] == "usergroups")
 			error($lang->already_member_of_group);
 		}
 
-		$query = $db->simple_select(TABLE_PREFIX."joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".intval($mybb->input['joingroup'])."'");
+		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".intval($mybb->input['joingroup'])."'");
 		$joinrequest = $db->fetch_array($query);
 		if($joinrequest['rid'])
 		{
@@ -1920,7 +1920,7 @@ if($mybb->input['action'] == "usergroups")
 
 	// Fetch the list of groups the member is in
 	// Do the primary group first
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='".$mybb->user['usergroup']."'");
+	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->user['usergroup']."'");
 	$usergroup = $db->fetch_array($query);
 	$leavelink = "<div style=\"text-align:center;\"><span class=\"smalltext\">{$lang->usergroup_leave_primary}</span></div>";
 	$trow = alt_trow();
@@ -1941,7 +1941,7 @@ if($mybb->input['action'] == "usergroups")
 	$showmemberof = false;
 	if($mybb->user['additionalgroups'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user['usergroup']."'", array('order_by' => 'title'));
+		$query = $db->simple_select("usergroups", "*", "gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user['usergroup']."'", array('order_by' => 'title'));
 		while($usergroup = $db->fetch_array($query))
 		{
 			$showmemberof = true;
@@ -1984,7 +1984,7 @@ if($mybb->input['action'] == "usergroups")
 	eval("\$membergroups = \"".$templates->get("usercp_usergroups_memberof")."\";");
 
 	// List of groups this user has applied for but has not been accepted in to
-	$query = $db->simple_select(TABLE_PREFIX."joinrequests", "*", "uid='".$mybb->user['uid']."'");
+	$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."'");
 	while($request = $db->fetch_array($query))
 	{
 		$appliedjoin[$request['gid']] = $request['dateline'];
@@ -1997,7 +1997,7 @@ if($mybb->input['action'] == "usergroups")
 		$existinggroups .= ",".$mybb->user['additionalgroups'];
 	}
 	$joinablegroups = '';
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "(type='3' OR type='4') AND gid NOT IN ($existinggroups)", array('order_by' => 'title'));
+	$query = $db->simple_select("usergroups", "*", "(type='3' OR type='4') AND gid NOT IN ($existinggroups)", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
 		$trow = alt_trow();
@@ -2088,7 +2088,7 @@ if($mybb->input['action'] == "attachments")
 			remove_attachment($attachment['pid'], $attachment['posthash'], $attachment['aid']);
 		}
 	}
-	$query = $db->simple_select(TABLE_PREFIX."attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
+	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
 	$usage = $db->fetch_array($query);
 	$totalusage = $usage['ausage'];
 	$totalattachments = $usage['acount'];
@@ -2124,7 +2124,7 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 		error($lang->no_attachments_selected);
 	}
 	$aids = $db->escape_string(implode(",", $mybb->input['attachments']));
-	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "aid IN ($aids) AND uid='".$mybb->user['uid']."'");
+	$query = $db->simple_select("attachments", "*", "aid IN ($aids) AND uid='".$mybb->user['uid']."'");
 	while($attachment = $db->fetch_array($query))
 	{
 		remove_attachment($attachment['pid'], '', $attachment['aid']);
@@ -2144,7 +2144,7 @@ if(!$mybb->input['action'])
 		$perday = $mybb->user['postnum'];
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS posts", "visible > 0");
+	$query = $db->simple_select("posts", "COUNT(pid) AS posts", "visible > 0");
 	$posts = $db->fetch_field($query, "posts");
 	if($posts == 0)
 	{

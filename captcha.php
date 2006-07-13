@@ -28,7 +28,7 @@ if($mybb->input['imagehash'] == "test")
 }
 else
 {
-	$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='".$db->escape_string($mybb->input['imagehash'])."'", array("limit" => 1));
+	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string($mybb->input['imagehash'])."'", array("limit" => 1));
 	$regimage = $db->fetch_array($query);
 	$imagestring = $regimage['imagestring'];
 }

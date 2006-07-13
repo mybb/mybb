@@ -24,7 +24,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 	global $db;
 	if($autocreate != 0)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."templates", "*", "title='$title' AND sid='-2'");
+		$query = $db->simple_select("templates", "*", "title='$title' AND sid='-2'");
 		$master = $db->fetch_array($query);
 		$oldmaster = $master['template'];
 		$master['template'] = preg_replace($find, $replace, $master['template']);

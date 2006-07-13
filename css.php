@@ -22,14 +22,14 @@ if($theme)
 	$options = array(
 		"limit" => 1
 	);
-	$query = $db->simple_select(TABLE_PREFIX."themes", "css", "tid=".$theme, $options);
+	$query = $db->simple_select("themes", "css", "tid=".$theme, $options);
 }
 else
 {
 	$options = array(
 		"limit" => 1
 	);
-	$query = $db->simple_select(TABLE_PREFIX."themes", "css", "def=1", $options);
+	$query = $db->simple_select("themes", "css", "def=1", $options);
 }
 $theme = $db->fetch_array($query);
 

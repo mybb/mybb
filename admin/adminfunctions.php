@@ -278,7 +278,7 @@ function makeselectcode($title, $name, $table, $tableid, $optiondisp, $selected=
 		);
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."$table", "$tableid, $optiondisp", $condition, $options);
+	$query = $db->simple_select("$table", "$tableid, $optiondisp", $condition, $options);
 	if($blank && !$selected)
 	{
 		echo "<option value=\"\" selected> </option>";
@@ -938,7 +938,7 @@ function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $ext
 		$options = array(
 			'order_by' => 'disporder'
 		);
-		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "", $options);
+		$query = $db->simple_select("forums", "name, fid, pid", "", $options);
 		while($forum = $db->fetch_array($query))
 		{
 			$cforumcache['pid'][$forum['pid']][$forum['fid']] = $forum;
@@ -1021,7 +1021,7 @@ function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra=""
 		$options = array(
 			'order_by' => 'disporder'
 		);
-		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "", $options);
+		$query = $db->simple_select("forums", "name, fid, pid", "", $options);
 		while($forum = $db->fetch_array($query))
 		{
 			$cforumcache['pid'][$forum['pid']][$forum['fid']] = $forum;
@@ -1104,7 +1104,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 		);
 
 		// A group only
-		$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "(uid='$gid' OR uid='0') AND permsset != ''", $options);
+		$query = $db->simple_select("adminoptions", "*", "(uid='$gid' OR uid='0') AND permsset != ''", $options);
 		$perms = $db->fetch_array($query);
 		return $perms;
 	}
@@ -1115,7 +1115,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 			"order_dir" => "DESC"
 		);
 		// A user and/or group
-		$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "(uid='$uid' OR uid='0' OR uid='$gid') AND permsset != ''", $options);
+		$query = $db->simple_select("adminoptions", "*", "(uid='$uid' OR uid='0' OR uid='$gid') AND permsset != ''", $options);
 
 		while($perm = $db->fetch_array($query))
 		{
@@ -1256,9 +1256,9 @@ function quickpermissions($fid="", $pid="")
 	global $db, $cache, $lang;
 	if($fid)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
+		$query = $db->simple_select("forums", "*", "fid='$fid'");
 		$forum = $db->fetch_array($query);
-		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "fid='$fid'");
+		$query = $db->simple_select("forumpermissions", "*", "fid='$fid'");
 		while($fperm = $db->fetch_array($query))
 		{
 			$fperms[$fperm[gid]] = $fperm;
@@ -1334,7 +1334,7 @@ function getElemRefs(id) {
 		"order_by" => "title"
 	);
 
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "", $options);
+	$query = $db->simple_select("usergroups", "*", "", $options);
 	while($usergroup = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
@@ -1430,7 +1430,7 @@ function savequickperms($fid)
 {
 	global $db, $inherit, $canview, $canpostthreads, $canpostreplies, $canpostpolls, $canpostattachments, $cache;
 
-	$query = $db->simple_select(TABLE_PREFIX."usergroups");
+	$query = $db->simple_select("usergroups");
 
 	while($usergroup = $db->fetch_array($query))
 	{
@@ -1609,7 +1609,7 @@ function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 	global $db, $themebitlist, $cssselectors, $revert_css, $revert_themebits;
 	if(!$css || !$themebits || $isnew)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."themes", "*", "tid='$pid'");
+		$query = $db->simple_select("themes", "*", "tid='$pid'");
 		$parent = $db->fetch_array($query);
 		if(!$themebits || $isnew)
 		{
@@ -1673,7 +1673,7 @@ function get_parent_theme_bits($pid)
 {
 	global $db, $themebits;
 
-	$query = $db->simple_select(TABLE_PREFIX."themes", "themebits", "tid='$pid'");
+	$query = $db->simple_select("themes", "themebits", "tid='$pid'");
 	$parent = $db->fetch_array($query);
 	$bits = unserialize($parent['themebits']);
 	foreach($themebits as $themebit)
@@ -1791,7 +1791,7 @@ function makethemebitedit($title, $name)
 			"order_dir" => "ASC"
 		);
 
-		$query = $db->simple_select(TABLE_PREFIX."templatesets", "*", "", $options);
+		$query = $db->simple_select("templatesets", "*", "", $options);
 
 		while($templateset = $db->fetch_array($query))
 		{
@@ -1842,7 +1842,7 @@ function cache_themes()
 		"order_by" => "pid, name"
 	);
 
-	$query = $db->simple_select(TABLE_PREFIX."themes", "*", "", $options);
+	$query = $db->simple_select("themes", "*", "", $options);
 
 	while($theme = $db->fetch_array($query))
 	{
@@ -2068,7 +2068,7 @@ function rebuildsettings()
 		"order_by" => "title",
 		"order_dir" => "ASC"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."settings", "value, name", "", $options);
+	$query = $db->simple_select("settings", "value, name", "", $options);
 
 	while($setting = $db->fetch_array($query))
 	{
@@ -2230,7 +2230,7 @@ function update_css_file($tid)
 	//If the CSS storage medium is in a file, then create a new css file
 	if($mybb->settings['cssmedium'] == 'file')
 	{
-		$query = $db->simple_select(TABLE_PREFIX.'themes', 'tid,name,css', "tid='".intval($tid)."'");
+		$query = $db->simple_select('themes', 'tid,name,css', "tid='".intval($tid)."'");
 		$theme = $db->fetch_array($query);
 
 		$theme['css'] = "/**\n * CSS for theme \"{$theme['name']}\" (tid {$theme['tid']})\n * Cached:".mydate("r")."\n *\n * DO NOT EDIT THIS FILE\n *\n */\n\n".$theme['css'];
@@ -2288,7 +2288,7 @@ function make_usergroup_checkbox_code($name, $checked_groups='', $where='')
 		'order_by' => 'title',
 		'order_dir' => 'ASC'
 		);
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title", $where, $options);
+	$query = $db->simple_select("usergroups", "gid, title", $where, $options);
 	while($usergroup = $db->fetch_array($query))
 	{
 		$checked = '';
@@ -2336,7 +2336,7 @@ function makeparentlist($fid, $navsep=",")
 		$options = array(
 			"order_by" => "disporder, pid"
 		);
-		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "", $options);
+		$query = $db->simple_select("forums", "name, fid, pid", "", $options);
 		while($forum = $db->fetch_array($query))
 		{
 			$pforumcache[$forum[fid]][$forum[pid]] = $forum;

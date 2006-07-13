@@ -41,7 +41,7 @@ $now = time();
 if($mybb->input['action'] == "results")
 {
 	$sid = $db->escape_string($mybb->input['sid']);
-	$query = $db->simple_select(TABLE_PREFIX."searchlog", "*", "sid='$sid'");
+	$query = $db->simple_select("searchlog", "*", "sid='$sid'");
 	$search = $db->fetch_array($query);
 
 	if(!$search['sid'])
@@ -128,7 +128,7 @@ if($mybb->input['action'] == "results")
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select(TABLE_PREFIX."threads t", "t.tid", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
+			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -150,7 +150,7 @@ if($mybb->input['action'] == "results")
 		else
 		{
 			$where_conditions = "t.tid IN (".$search['threads'].")";
-			$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
+			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])
@@ -185,7 +185,7 @@ if($mybb->input['action'] == "results")
 		// Fetch dot icons if enabled
 		if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $thread_cache)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
+			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
 			while($post = $db->fetch_array($query))
 			{
 				$thread_cache[$post['tid']]['dot_icon'] = 1;
@@ -195,7 +195,7 @@ if($mybb->input['action'] == "results")
 		// Fetch the read threads.
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."threadsread", "tid,dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
+			$query = $db->simple_select("threadsread", "tid,dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
 			while($readthread = $db->fetch_array($query))
 			{
 				$thread_cache[$readthread['tid']]['lastread'] = $readthread['dateline'];
@@ -416,7 +416,7 @@ if($mybb->input['action'] == "results")
 		// Read threads
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."threadsread", "tid, dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$tids.")");
+			$query = $db->simple_select("threadsread", "tid, dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$tids.")");
 			while($readthread = $db->fetch_array($query))
 			{
 				$readthreads[$readthread['tid']] = $readthread['dateline'];
@@ -764,7 +764,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 			$conditions = "uid='0' AND ipaddress='{$ipaddress}'";
 		}
 		$timecut = time()-$mybb->settings['searchfloodtime'];
-		$query = $db->simple_select(TABLE_PREFIX."searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
 		if($last_search['sid'])
