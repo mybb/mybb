@@ -442,6 +442,7 @@ if($mybb->input['action'] == "do_edit")
 		"usergroup" => $mybb->input['usergroup'],
 		"additionalgroups" => $additionalgroups,
 		"displaygroup" => $mybb->input['displaygroup'],
+		"postnum" => $mybb->input['postnum'],
 		"usertitle" => $mybb->input['usertitle'],
 		"referrer" => $mybb->input['referrername'],
 		"timezone" => $mybb->input['timezoneoffset'],
