@@ -109,7 +109,7 @@ $l['db_step_config_table'] = '<div class="border_wrapper">
 <div class="title">Database Configuration</div>
 <table class="general" cellspacing="0">
 <tr>
-	<th colspan="2" class="first last">Database Settings</td>
+	<th colspan="2" class="first last">Database Settings</th>
 </tr>
 <tr class="first">
 	<td class="first"><label for="dbengine">Database Engine:</label></td>

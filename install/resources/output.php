@@ -124,6 +124,7 @@ END;
 			</div>
 		</div>
 		</div>
+		</div>
 		$formend
 </body>
 </html>
