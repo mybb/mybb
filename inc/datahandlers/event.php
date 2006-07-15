@@ -16,19 +16,38 @@
 class EventDataHandler extends DataHandler
 {
 	/**
-	* The language file used in the data handler.
-	*
-	* @var string
-	*/
+	 * The language file used in the data handler.
+	 *
+	 * @var string
+	 */
 	var $language_file = 'datahandler_event';
 	
 	/**
-	* The prefix for the language variables used in the data handler.
-	*
-	* @var string
-	*/
+	 * The prefix for the language variables used in the data handler.
+	 *
+	 * @var string
+	 */
 	var $language_prefix = 'eventdata';
+	
+	/**
+	 * Array of data inserted in to an event.
+	 *
+	 * @var array
+	 */
+	var $event_insert_data = array();
 
+	/**
+	 * Array of data used to update an event.
+	 *
+	 * @var array
+	 */
+	var $event_update_data = array();
+	
+	/**
+	 * Event ID currently being manipulated by the datahandlers.
+	 */
+	var $eid = 0;
+	
 	/**
 	 * Verifies if an event name is valid or not and attempts to fix it
 	 *
@@ -202,21 +221,22 @@ class EventDataHandler extends DataHandler
 		$event = &$this->data;
 
 		// Prepare an array for insertion into the database.
-		$newevent = array(
+		$this->event_insert_data = array(
 			'subject' => $db->escape_string($event['subject']),
 			'author' => intval($event['uid']),
 			'date' => $event['date'],
 			'description' => $db->escape_string($event['description']),
 			'private' => $event['private']
 		);
-		$db->insert_query(TABLE_PREFIX."events", $newevent);
-		$eid = $db->insert_id();
 
 		$plugins->run_hooks_by_ref("datahandler_event_insert", $this);
 
+		$db->insert_query(TABLE_PREFIX."events", $newevent);
+		$this->eid = $db->insert_id();
+
 		// Return the event's eid and whether or not it is private.
 		return array(
-			'eid' => $eid,
+			'eid' => $this->eid,
 			'private' => $event['private']
 		);
 	}
@@ -241,37 +261,37 @@ class EventDataHandler extends DataHandler
 		}
 
 		$event = &$this->data;
-
-		$updateevent = array();
+		
+		$this->eid = $event['eid'];
 
 		if($this->method == "insert" || isset($event['subject']))
 		{
-			$updateevent['subject'] = $db->escape_string($event['subject']);
+			$this->event_update_data['subject'] = $db->escape_string($event['subject']);
 		}
 
 		if($this->method == "insert" || isset($event['description']))
 		{
-			$updateevent['description'] = $db->escape_string($event['description']);
+			$this->event_update_data['description'] = $db->escape_string($event['description']);
 		}
 
 		if($this->method == "insert" || isset($event['date']))
 		{
-			$updateevent['date'] = $db->escape_string($event['date']);
+			$this->event_update_data['date'] = $db->escape_string($event['date']);
 		}
 
 		if($this->method == "insert" || isset($event['private']))
 		{
-			$updateevent['private'] = $db->escape_string($event['private']);
+			$this->event_update_data['private'] = $db->escape_string($event['private']);
 		}
 
 		if($this->method == "insert" || isset($event['uid']))
 		{
-			$updateevent['author'] = intval($event['uid']);
+			$this->event_update_data['author'] = intval($event['uid']);
 		}
 
-		$db->update_query(TABLE_PREFIX."events", $updateevent, "eid='".intval($event['eid'])."'");
-
 		$plugins->run_hooks_by_ref("datahandler_event_update", $this);
+
+		$db->update_query(TABLE_PREFIX."events", $this->event_update_data, "eid='".intval($event['eid'])."'");
 
 		// Return the event's eid and whether or not it is private.
 		return array(

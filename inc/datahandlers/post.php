@@ -50,6 +50,48 @@ class PostDataHandler extends DataHandler
 	 * edit = Editing a thread or post
 	 */
 	var $action;
+	
+	/**
+	 * Array of data inserted in to a post.
+	 *
+	 * @var array
+	 */
+	var $post_insert_data = array();
+
+	/**
+	 * Array of data used to update a post.
+	 *
+	 * @var array
+	 */
+	var $post_update_data = array();
+	
+	/**
+	 * Post ID currently being manipulated by the datahandlers.
+	 *
+	 * @var int
+	 */
+	var $pid = 0;	
+	
+	/**
+	 * Array of data inserted in to a thread.
+	 *
+	 * @var array
+	 */
+	var $thread_insert_data = array();
+
+	/**
+	 * Array of data used to update a thread.
+	 *
+	 * @var array
+	 */
+	var $thread_update_data = array();
+	
+	/**
+	 * Thread ID currently being manipulated by the datahandlers.
+	 *
+	 * @var int
+	 */
+	var $tid = 0;	
 
 	/**
 	 * Verifies the author of a post and fetches the username if necessary.
@@ -576,7 +618,7 @@ class PostDataHandler extends DataHandler
 		if($draft_check)
 		{
 			// Update a post that is a draft
-			$updatedpost = array(
+			$this->post_insert_data = array(
 				"subject" => $db->escape_string($post['subject']),
 				"icon" => intval($post['icon']),
 				"uid" => intval($post['uid']),
@@ -588,14 +630,17 @@ class PostDataHandler extends DataHandler
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible,
 				"posthash" => $db->escape_string($post['posthash'])
-				);
+			);
+	
+			$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
+				
 			$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='{$post['pid']}'");
-			$pid = $post['pid'];
+			$this->pid = $post['pid'];
 		}
 		else
 		{
 			// Insert the post.
-			$newreply = array(
+			$this->post_insert_data = array(
 				"tid" => intval($post['tid']),
 				"replyto" => intval($post['replyto']),
 				"fid" => intval($post['fid']),
@@ -610,10 +655,12 @@ class PostDataHandler extends DataHandler
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible,
 				"posthash" => $db->escape_string($post['posthash'])
-				);
+			);
 
-			$db->insert_query(TABLE_PREFIX."posts", $newreply);
-			$pid = $db->insert_id();
+			$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
+
+			$db->insert_query(TABLE_PREFIX."posts", $this->post_insert_data);
+			$this->pid = $db->insert_id();
 		}
 
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
@@ -621,12 +668,10 @@ class PostDataHandler extends DataHandler
 		{
 			$post['posthash'] = $db->escape_string($post['posthash']);
 			$attachmentassign = array(
-				"pid" => $pid
+				"pid" => $this->pid
 			);
 			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='{$post['posthash']}'");
 		}
-
-		$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
 
 		if($visible == 1)
 		{
@@ -734,7 +779,7 @@ class PostDataHandler extends DataHandler
 
 		// Return the post's pid and whether or not it is visible.
 		return array(
-			"pid" => $pid,
+			"pid" => $this->pid,
 			"visible" => $visible
 		);
 	}
@@ -872,7 +917,7 @@ class PostDataHandler extends DataHandler
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
 		if($draft_check)
 		{
-			$newthread = array(
+			$this->thread_insert_data = array(
 				"subject" => $db->escape_string($thread['subject']),
 				"icon" => intval($thread['icon']),
 				"username" => $db->escape_string($thread['username']),
@@ -880,13 +925,13 @@ class PostDataHandler extends DataHandler
 				"lastpost" => intval($thread['dateline']),
 				"lastposter" => $db->escape_string($thread['username']),
 				"visible" => $visible
-				);
+			);
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread", $this);
 
-			$db->update_query(TABLE_PREFIX."threads", $newthread, "tid='{$thread['tid']}'");
+			$db->update_query(TABLE_PREFIX."threads", $this->thread_insert_data, "tid='{$thread['tid']}'");
 
-			$newpost = array(
+			$this->post_insert_data = array(
 				"subject" => $db->escape_string($thread['subject']),
 				"icon" => intval($thread['icon']),
 				"username" => $db->escape_string($thread['username']),
@@ -900,15 +945,15 @@ class PostDataHandler extends DataHandler
 			);
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread_post", $this);
 
-			$db->update_query(TABLE_PREFIX."posts", $newpost, "pid='{$thread['pid']}'");
-			$tid = $thread['tid'];
-			$pid = $thread['pid'];
+			$db->update_query(TABLE_PREFIX."posts", $this->post_insert_data, "pid='{$thread['pid']}'");
+			$this->tid = $thread['tid'];
+			$this->pid = $thread['pid'];
 		}
 
 		// Inserting a new thread into the database.
 		else
 		{
-			$newthread = array(
+			$this->thread_insert_data = array(
 				"fid" => $thread['fid'],
 				"subject" => $db->escape_string($thread['subject']),
 				"icon" => intval($thread['icon']),
@@ -924,10 +969,10 @@ class PostDataHandler extends DataHandler
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread", $this);
 
-			$db->insert_query(TABLE_PREFIX."threads", $newthread);
-			$tid = $db->insert_id();
+			$db->insert_query(TABLE_PREFIX."threads",$this->thread_insert_data);
+			$this->tid = $db->insert_id();
 
-			$newpost = array(
+			$this->post_insert_data = array(
 				"tid" => $tid,
 				"fid" => $thread['fid'],
 				"subject" => $db->escape_string($thread['subject']),
@@ -942,9 +987,10 @@ class PostDataHandler extends DataHandler
 				"visible" => $visible,
 				"posthash" => $db->escape_string($thread['posthash'])
 			);
-			$plugins->run_hooks_by_ref("datahandler_post_insert_thread_post", $this);			
-			$db->insert_query(TABLE_PREFIX."posts", $newpost);
-			$pid = $db->insert_id();
+			$plugins->run_hooks_by_ref("datahandler_post_insert_thread_post", $this);
+					
+			$db->insert_query(TABLE_PREFIX."posts", $this->post_insert_data);
+			$this->pid = $db->insert_id();
 
 			// Now that we have the post id for this first post, update the threads table.
 			$firstpostup = array("firstpost" => $pid);
@@ -960,7 +1006,7 @@ class PostDataHandler extends DataHandler
 			{
 				$favoriteadd = array(
 					"uid" => intval($thread['uid']),
-					"tid" => intval($tid),
+					"tid" => intval($this->tid),
 					"type" => "s"
 				);
 				$db->insert_query(TABLE_PREFIX."favorites", $favoriteadd);
@@ -970,7 +1016,7 @@ class PostDataHandler extends DataHandler
 			if(is_moderator($thread['fid'], "", $thread['uid']) == "yes" && is_array($thread['modoptions']))
 			{
 				$modoptions = $thread['modoptions'];
-				$modlogdata['fid'] = $tid;
+				$modlogdata['fid'] = $this->tid;
 				$modlogdata['tid'] = $thread['tid'];
 
 				// Close the thread.
@@ -997,7 +1043,7 @@ class PostDataHandler extends DataHandler
 					$db->query("
 						UPDATE ".TABLE_PREFIX."threads
 						SET $newclosed$sep$newstick
-						WHERE tid='{$tid}'
+						WHERE tid='{$this->tid}'
 					");
 				}
 			}
@@ -1077,7 +1123,7 @@ class PostDataHandler extends DataHandler
 					$emailmessage = $langcache[$uselang]['email_forumsubscription'];
 				}
 				$emailsubject = sprintf($emailsubject, $forum['name']);
-				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], $tid, $thread['fid']);
+				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], $this->tid, $thread['fid']);
 				$new_email = array(
 					"mailto" => $db->escape_string($subscribedmember['email']),
 					"mailfrom" => '',
@@ -1098,7 +1144,7 @@ class PostDataHandler extends DataHandler
 			{
 				$insert_favorite = array(
 					'uid' => intval($thread['uid']),
-					'tid' => $tid,
+					'tid' => $this->tid,
 					'type' => 's'
 				);
 				$db->insert_query(TABLE_PREFIX.'favorites', $insert_favorite);
@@ -1110,25 +1156,23 @@ class PostDataHandler extends DataHandler
 		{
 			$thread['posthash'] = $db->escape_string($thread['posthash']);
 			$attachmentassign = array(
-				"pid" => $pid
+				"pid" => $this->pid
 			);
 			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
 		}
-
-		$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
 
 		// Thread is public - update the forum counts.
 		if($visible == 1 || $visible == 0)
 		{
 			$cache->updatestats();
-			update_thread_count($tid);
+			update_thread_count($this->tid);
 			update_forum_count($thread['fid']);
 		}
 
 		// Return the post's pid and whether or not it is visible.
 		return array(
-			"pid" => $pid,
-			"tid" => $tid,
+			"pid" => $this->pid,
+			"tid" => $this->tid,
 			"visible" => $visible
 		);
 	}
@@ -1183,67 +1227,71 @@ class PostDataHandler extends DataHandler
 		// Update the thread details that might have been changed first.
 		if($first_post)
 		{
-			$updatethread = array();
-
+			$this->tid = $post['tid'];
+			
 			if(isset($post['subject']))
 			{
-				$updatethread['subject'] = $db->escape_string($post['subject']);
+				$this->thread_update_data['subject'] = $db->escape_string($post['subject']);
 			}
 
 			if(isset($post['icon']))
 			{
-				$updatethread['icon'] = intval($post['icon']);
+				$this->thread_update_data['icon'] = intval($post['icon']);
 			}
 			if(count($updatethread) > 0)
 			{
-				$db->update_query(TABLE_PREFIX."threads", $updatethread, "tid='".intval($post['tid'])."'");
+				$plugins->run_hooks_by_ref("datahandler_post_update_thread", $this);
+				
+				$db->update_query(TABLE_PREFIX."threads", $this->thread_update_data, "tid='".intval($post['tid'])."'");
 			}
 		}
 
 		// Prepare array for post updating.
-		$updatepost = array();
 
+		$this->pid = $post['pid'];
+		
 		if(isset($post['subject']))
 		{
-			$updatepost['subject'] = $db->escape_string($post['subject']);
+			$this->this->post_update_data['subject'] = $db->escape_string($post['subject']);
 		}
 
 		if(isset($post['message']))
 		{
-			$updatepost['message'] = $db->escape_string($post['message']);
+			$this->post_update_data['message'] = $db->escape_string($post['message']);
 		}
 
 		if(isset($post['icon']))
 		{
-			$updatepost['icon'] = intval($post['icon']);
+			$this->post_update_data['icon'] = intval($post['icon']);
 		}
 
 		if(isset($post['options']))
 		{
 			if(isset($post['options']['disablesmilies']))
 			{
-				$updatepost['smilieoff'] = $db->escape_string($post['options']['disablesmilies']);
+				$this->post_update_data['smilieoff'] = $db->escape_string($post['options']['disablesmilies']);
 			}
 			if(isset($post['options']['signature']))
 			{
-				$updatepost['includesig'] = $db->escape_string($post['options']['signature']);
+				$this->post_update_data['includesig'] = $db->escape_string($post['options']['signature']);
 			}
 		}
 
 		// If we need to show the edited by, let's do so.
 		if(($mybb->settings['showeditedby'] == "yes" && is_moderator($post['fid'], "caneditposts", $post['edit_uid']) != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && is_moderator($post['fid'], "caneditposts", $post['edit_uid']) == "yes"))
 		{
-			$updatepost['edituid'] = intval($post['edit_uid']);
-			$updatepost['edittime'] = time();
+			$this->post_update_data['edituid'] = intval($post['edit_uid']);
+			$this->post_update_data['edittime'] = time();
 		}
 		
 		$plugins->run_hooks_by_ref("datahandler_post_update", $this);
-		$db->update_query(TABLE_PREFIX."posts", $updatepost, "pid='".intval($post['pid'])."'");
+		
+		$db->update_query(TABLE_PREFIX."posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
 		
 		// Automatic subscription to the thread
 		if($post['options']['emailnotify'] != "no" && $post['uid'] > 0)
 		{
-			$query = $db->simple_select("favorites", "fid", "uid='".intval($post['uid'])."' AND tid='".intval($tid)."' AND type='s'", array("limit" => 1));
+			$query = $db->simple_select("favorites", "fid", "uid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."' AND type='s'", array("limit" => 1));
 			$already_subscribed = $db->fetch_field($query, "fid");
 			if(!$already_subscribed)
 			{

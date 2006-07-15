@@ -33,6 +33,25 @@ class PMDataHandler extends DataHandler
 	* @var string
 	*/
 	var $language_prefix = 'pmdata';
+	
+	/**
+	 * Array of data inserted in to a private message.
+	 *
+	 * @var array
+	 */
+	var $pm_insert_data = array();
+
+	/**
+	 * Array of data used to update a private message.
+	 *
+	 * @var array
+	 */
+	var $pm_update_data = array();
+	
+	/**
+	 * PM ID currently being manipulated by the datahandlers.
+	 */
+	var $pmid = 0;	
 
 	/**
 	 * Verifies a private message subject.
@@ -358,7 +377,7 @@ class PMDataHandler extends DataHandler
 		// This PM was previously a draft - update it
 		if($draftcheck['pmid'])
 		{
-			$updateddraft = array(
+			$this->pm_insert_data = array(
 				'toid' => $pm['recipient']['uid'],
 				'fromid' => $pm['sender']['uid'],
 				'folder' => $pm['folder'],
@@ -382,11 +401,11 @@ class PMDataHandler extends DataHandler
 				$updateddraft['uid'] = $pm['recipient']['uid'];
 			}
 			$plugins->run_hooks_by_ref("datahandler_pm_insert_updatedraft", $this);
-			$db->update_query(TABLE_PREFIX."privatemessages", $updateddraft, "pmid='{$pm['pmid']}' AND uid='{$pm['sender']['uid']}'");
+			$db->update_query(TABLE_PREFIX."privatemessages", $this->pm_insert_data, "pmid='{$pm['pmid']}' AND uid='{$pm['sender']['uid']}'");
 		}
 		else
 		{
-			$newpm = array(
+			$this->pm_insert_data = array(
 				'uid' => $pm['recipient']['uid'],
 				'toid' => $pm['recipient']['uid'],
 				'fromid' => $pm['sender']['uid'],
@@ -407,7 +426,9 @@ class PMDataHandler extends DataHandler
 				$newpm['uid'] = $pm['sender']['uid'];
 			}
 			$plugins->run_hooks_by_ref("datahandler_pm_insert", $this);
-			$db->insert_query(TABLE_PREFIX."privatemessages", $newpm);
+			$db->insert_query(TABLE_PREFIX."privatemessages", $this->pm_insert_data);
+
+			$this->pmid = $db->insert_id();
 
 			// Update private message count (total, new and unread) for recipient
 			update_pm_count($pm['recipient']['uid'], 7, $pm['recipient']['lastactive']);
@@ -435,7 +456,7 @@ class PMDataHandler extends DataHandler
 		// If we're saving a copy
 		if($pm['options']['savecopy'] != "no" && !$pm['saveasdraft'])
 		{
-			$savedcopy = array(
+			$this->pm_insert_data = array(
 				'uid' => $pm['sender']['uid'],
 				'toid' => $pm['recipient']['uid'],
 				'fromid' => $pm['sender']['uid'],
@@ -450,7 +471,7 @@ class PMDataHandler extends DataHandler
 				'receipt' => 0
 			);
 			$plugins->run_hooks_by_ref("datahandler_pm_insert_savedcopy", $this);
-			$db->insert_query(TABLE_PREFIX."privatemessages", $savedcopy);
+			$db->insert_query(TABLE_PREFIX."privatemessages", $this->pm_insert_data);
 
 			// Because the sender saved a copy, update their total pm count
 			update_pm_count($pm['sender']['uid'], 1);

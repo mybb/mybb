@@ -28,6 +28,27 @@ class UserDataHandler extends DataHandler
 	* @var string
 	*/
 	var $language_prefix = 'userdata';
+	
+	/**
+	 * Array of data inserted in to a user.
+	 *
+	 * @var array
+	 */
+	var $user_insert_data = array();
+
+	/**
+	 * Array of data used to update a user.
+	 *
+	 * @var array
+	 */
+	var $user_update_data = array();
+	
+	/**
+	 * User ID currently being manipulated by the datahandlers.
+	 *
+	 * @var int
+	 */
+	var $uid = 0;	
 
 	/**
 	 * Verifies if a username is valid or invalid.
@@ -738,7 +759,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$newuser = array(
+		$this->user_insert_data = array(
 			"username" => $db->escape_string($user['username']),
 			"password" => $user['saltedpw'],
 			"salt" => $user['salt'],
@@ -795,17 +816,17 @@ class UserDataHandler extends DataHandler
 		
 		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);
 		
-		$db->insert_query(TABLE_PREFIX."users", $newuser);
-		$uid = $db->insert_id();
+		$db->insert_query(TABLE_PREFIX."users", $this->user_insert_data);
+		$this->uid = $db->insert_id();
 
-		$user['user_fields']['ufid'] = $uid;
+		$user['user_fields']['ufid'] = $this->uid;
 		$db->insert_query(TABLE_PREFIX."userfields", $user['user_fields']);
 
 		// Update forum stats
 		$cache->updatestats();
 
 		return array(
-			"uid" => $uid,
+			"uid" => $this->uid,
 			"username" => $user['username'],
 			"loginkey" => $user['loginkey'],
 			"email" => $user['email'],
@@ -833,128 +854,128 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 		$user['uid'] = intval($user['uid']);
+		$this->uid = $user['uid'];
 
 		// Set up the update data.
-		$updateuser = array();
 		if(isset($user['username']))
 		{
-			$updateuser['username'] = $db->escape_string($user['username']);
+			$this->user_update_dataa['username'] = $db->escape_string($user['username']);
 		}
 		if(isset($user['saltedpw']))
 		{
-			$updateuser['password'] = $user['saltedpw'];
-			$updateuser['salt'] = $user['salt'];
-			$updateuser['loginkey'] = $user['loginkey'];
+			$this->user_update_data['password'] = $user['saltedpw'];
+			$this->user_update_data['salt'] = $user['salt'];
+			$this->user_update_data['loginkey'] = $user['loginkey'];
 		}
 		if(isset($user['email']))
 		{
-			$updateuser['email'] = $user['email'];
+			$this->user_update_data['email'] = $user['email'];
 		}
 		if(isset($user['postnum']))
 		{
-			$updateuser['postnum'] = intval($user['postnum']);
+			$this->user_update_data['postnum'] = intval($user['postnum']);
 		}
 		if(isset($user['avatar']))
 		{
-			$updateuser['avatar'] = $db->escape_string($user['avatar']);
-			$updateuser['avatartype'] = $db->escape_string($user['avatartype']);
+			$this->user_update_data['avatar'] = $db->escape_string($user['avatar']);
+			$this->user_update_data['avatartype'] = $db->escape_string($user['avatartype']);
 		}
 		if(isset($user['usergroup']))
 		{
-			$updateuser['usergroup'] = intval($user['usergroup']);
+			$this->user_update_data['usergroup'] = intval($user['usergroup']);
 		}
 		if(isset($user['additionalgroups']))
 		{
-			$updateuser['additionalgroups'] = $db->escape_string($user['additionalgroups']);
+			$this->user_update_data['additionalgroups'] = $db->escape_string($user['additionalgroups']);
 		}
 		if(isset($user['displaygroup']))
 		{
-			$updateuser['displaygroup'] = intval($user['displaygroup']);
+			$this->user_update_data['displaygroup'] = intval($user['displaygroup']);
 		}
 		if(isset($user['usertitle']))
 		{
-			$updateuser['usertitle'] = $db->escape_string($user['usertitle']);
+			$this->user_update_data['usertitle'] = $db->escape_string($user['usertitle']);
 		}
 		if(isset($user['regdate']))
 		{
-			$updateuser['regdate'] = intval($user['regdate']);
+			$this->user_update_data['regdate'] = intval($user['regdate']);
 		}
 		if(isset($user['lastactive']))
 		{
-			$upateuser['lastactive'] = intval($user['lastactive']);
+			$this->user_update_data['lastactive'] = intval($user['lastactive']);
 		}
 		if(isset($user['lastvisit']))
 		{
-			$updateuser['lastvisit'] = intval($user['lastvisit']);
+			$this->user_update_data['lastvisit'] = intval($user['lastvisit']);
 		}
 		if(isset($user['signature']))
 		{
-			$updateuser['signature'] = $db->escape_string($user['signature']);
+			$this->user_update_data['signature'] = $db->escape_string($user['signature']);
 		}
 		if(isset($user['website']))
 		{
-			$updateuser['website'] = $db->escape_string(htmlspecialchars($user['website']));
+			$this->user_update_data['website'] = $db->escape_string(htmlspecialchars($user['website']));
 		}
 		if(isset($user['icq']))
 		{
-			$updateuser['icq'] = intval($user['icq']);
+			$this->user_update_data['icq'] = intval($user['icq']);
 		}
 		if(isset($user['aim']))
 		{
-			$updateuser['aim'] = $db->escape_string(htmlspecialchars($user['aim']));
+			$this->user_update_data['aim'] = $db->escape_string(htmlspecialchars($user['aim']));
 		}
 		if(isset($user['yahoo']))
 		{
-			$updateuser['yahoo'] = $db->escape_string(htmlspecialchars($user['yahoo']));
+			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars($user['yahoo']));
 		}
 		if(isset($user['msn']))
 		{
-			$updateuser['msn'] = $db->escape_string(htmlspecialchars($user['msn']));
+			$this->user_update_data['msn'] = $db->escape_string(htmlspecialchars($user['msn']));
 		}
 		if(isset($user['bday']))
 		{
-			$updateuser['birthday'] = $user['bday'];
+			$this->user_update_data['birthday'] = $user['bday'];
 		}
 		if(isset($user['style']))
 		{
-			$updateuser['style'] = intval($user['style']);
+			$this->user_update_data['style'] = intval($user['style']);
 		}
 		if(isset($user['timezone']))
 		{
-			$updateuser['timezone'] = $db->escape_string($user['timezone']);
+			$this->user_update_data['timezone'] = $db->escape_string($user['timezone']);
 		}
 		if(isset($user['dateformat']))
 		{
-			$updateuser['dateformat'] = $db->escape_string($user['dateformat']);
+			$this->user_update_data['dateformat'] = $db->escape_string($user['dateformat']);
 		}
 		if(isset($user['timeformat']))
 		{
-			$updateuser['timeformat'] = $db->escape_string($user['timeformat']);
+			$this->user_update_data['timeformat'] = $db->escape_string($user['timeformat']);
 		}
 		if(isset($user['regip']))
 		{
-			$updateuser['regip'] = $db->escape_string($user['regip']);
+			$this->user_update_data['regip'] = $db->escape_string($user['regip']);
 		}
 		if(isset($user['language']))
 		{
-			$updateuser['language'] = $user['language'];
+			$this->user_update_data['language'] = $user['language'];
 		}
 		if(isset($user['away']))
 		{
-			$updateuser['away'] = $user['away']['away'];
-			$updateuser['awaydate'] = $db->escape_string($user['away']['date']);
-			$updateuser['returndate'] = $db->escape_string($user['away']['returndate']);
-			$updateuser['awayreason'] = $db->escape_string($user['away']['awayreason']);
+			$this->user_update_data['away'] = $user['away']['away'];
+			$this->user_update_data['awaydate'] = $db->escape_string($user['away']['date']);
+			$this->user_update_data['returndate'] = $db->escape_string($user['away']['returndate']);
+			$this->user_update_data['awayreason'] = $db->escape_string($user['away']['awayreason']);
 		}
 		if(isset($user['notepad']))
 		{
-			$updateuser['notepad'] = $db->escape_string($user['notepad']);
+			$this->user_update_data['notepad'] = $db->escape_string($user['notepad']);
 		}
 		if(is_array($user['options']))
 		{
 			foreach($user['options'] as $option => $value)
 			{
-				$updateuser[$option] = $value;
+				$this->user_update_data[$option] = $value;
 			}
 		}
 
@@ -964,7 +985,7 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks_by_ref("datahandler_user_update", $this);
 
 		// Actual updating happens here.
-		$db->update_query(TABLE_PREFIX."users", $updateuser, "uid='{$user['uid']}'");
+		$db->update_query(TABLE_PREFIX."users", $this->user_update_data, "uid='{$user['uid']}'");
 
 		// Maybe some userfields need to be updated?
 		if(is_array($user['user_fields']))
@@ -979,19 +1000,19 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Let's make sure the user's name gets changed everywhere in the db if it changed.
-		if($updateuser['username'] != $old_user['username'])
+		if($this->user_update_data['username'] != $old_user['username'])
 		{
 			$username_update = array(
-				"username" => $db->escape_string($updateuser['username'])
+				"username" => $db->escape_string($this->user_update_data['username'])
 			);
 			$lastposter_update = array(
-				"lastposter" => $db->escape_string($updateuser['username'])
+				"lastposter" => $db->escape_string($this->user_update_data['username'])
 			);
 
 			$db->update_query(TABLE_PREFIX."posts", $username_update, "uid='{$user['uid']}'");
 			$db->update_query(TABLE_PREFIX."threads", $username_update, "uid='{$user['uid']}'");
-			$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".$db->escape_string($updateuser['username'])."'");
-			$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".$db->escape_string($updateuser['username'])."'");
+			$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".$db->escape_string($this->user_update_data['username'])."'");
+			$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".$db->escape_string($this->user_update_data['username'])."'");
 		}
 
 	}
