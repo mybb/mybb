@@ -1289,7 +1289,7 @@ class PostDataHandler extends DataHandler
 		$db->update_query(TABLE_PREFIX."posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
 		
 		// Automatic subscription to the thread
-		if($post['options']['emailnotify'] != "no" && $post['uid'] > 0)
+		if($post['options']['emailnotify'] == "yes" && $post['uid'] > 0)
 		{
 			$query = $db->simple_select("favorites", "fid", "uid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."' AND type='s'", array("limit" => 1));
 			$already_subscribed = $db->fetch_field($query, "fid");
