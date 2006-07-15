@@ -308,7 +308,7 @@ class UserDataHandler extends DataHandler
 
 			// Check if the day actually exists.
 			$months = get_bdays($birthday['year']);
-			if($birthday['day'] > $months[$birthday['month'])
+			if($birthday['day'] > $months[$birthday['month']])
 			{
 				$this->set_error("invalid_birthday");
 				return false;
