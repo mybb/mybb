@@ -26,9 +26,7 @@ function output_page($contents)
 	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser, $mybbgroup;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
-	$ptimer = new timer();
 	$contents = parse_page($contents);
-	$parsetime = $ptimer->stop();
 	$totaltime = $maintimer->stop();
 	if($mybbgroup['cancp'] == "yes")
 	{
@@ -56,8 +54,12 @@ function output_page($contents)
 		}
 		if($mybb->settings['extraadmininfo'] != "no")
 		{
+			if(function_exists("memory_get_usage"))
+			{
+				$memory_usage = " / Memory Usage: ".get_friendly_size(memory_get_usage());
+			}
 			$other = "PHP version: $phpversion / Server Load: $serverload / GZip Compression: $gzipen";
-			$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% MySQL)<br />MySQL Queries: $db->query_count / Parsing $parsetime / Global Parsing Time: $globaltime<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
+			$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% MySQL)<br />MySQL Queries: $db->query_count /  Global Parsing Time: $globaltime$memory_usage<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
 		if(isset($mybb->input['debug']))
