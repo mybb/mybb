@@ -428,7 +428,7 @@ function build_postbit($post, $pmprevann=0)
 	if($post['icon'] > 0 && $icon_cache[$post['icon']])
 	{
 		$icon = $icon_cache[$post['icon']];
-		$post['icon'] = "<img src=\"{$icon['path']}"\" alt=\"{$icon['name']}\">&nbsp;";
+		$post['icon'] = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\">&nbsp;";
 	}
 	else
 	{
