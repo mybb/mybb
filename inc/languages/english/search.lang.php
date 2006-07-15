@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
@@ -64,5 +64,4 @@ $l['error_no_search_support'] = "This database engine does not support searching
 $l['error_nosearchterms'] = "You did not enter any search terms. At a minium, you must enter either some search terms or a username to search by.";
 $l['error_searchflooding'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another {2} seconds before attempting to search again.";
 $l['error_invalidsearch'] = "An invalid search was specified.  Please go back and try again.";
-$l['error_nosearchterms'] = "You did not provide any search terms.  Please go back and try again.";
 ?>
