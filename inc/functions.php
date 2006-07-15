@@ -2064,6 +2064,17 @@ function debug_page()
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">No. Templates Used:</font></b></td>\n";
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".count($templates->cache)." (".intval(count(explode(",", $templatelist)))." Cached / ".intval(count($templates->uncached_templates))." Manually Loaded)</font></td>\n";	
 	echo "</tr>\n";
+	if(function_exists("memory_get_usage"))
+	{
+		$memory_usage = memory_get_usage();
+		$memory_limit = @ini_get("memory_limit");
+		echo "<tr>\n";
+		echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Usage:</font></b></td>\n";
+		echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".get_friendly_size($memory_usage)." ({$memory_usage bytes})</font></td>\n";
+		echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Limit:</font></b></td>\n";
+		echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_limit}</font></td>\n";	
+		echo "</tr>\n";
+	}
 	echo "</table>\n";
 	echo "<h2>Database Queries (".$db->query_count." Total) </h2>\n";
 	echo $db->explain;
