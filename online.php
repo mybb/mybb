@@ -181,7 +181,7 @@ else
 	}
 	if($uidsql)
 	{
-		$query = $db->simple_select("users", "uid,username", "uid IN (0$uidsql)");
+		$query = $db->simple_select(TABLE_PREFIX."users", "uid,username", "uid IN (0$uidsql)");
 		while($user = $db->fetch_array($query))
 		{
 			$members[$user['uid']] = $user['username'];
@@ -189,7 +189,7 @@ else
 	}
 	if($aidsql)
 	{
-		$query = $db->simple_select("attachments", "aid,pid", "aid IN (0$aidsql)");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "aid,pid", "aid IN (0$aidsql)");
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachments[$attachment['aid']] = $attachment['pid'];
@@ -198,7 +198,7 @@ else
 	}
 	if($pidsql)
 	{
-		$query = $db->simple_select("posts", "pid,tid", "pid IN (0$pidsql) $fidnot");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid,tid", "pid IN (0$pidsql) $fidnot");
 		while($post = $db->fetch_array($query))
 		{
 			$posts[$post['pid']] = $post['tid'];
@@ -207,7 +207,7 @@ else
 	}
 	if($tidsql)
 	{
-		$query = $db->simple_select("threads", "fid,tid,subject", "tid IN(0$tidsql) $fidnot");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "fid,tid,subject", "tid IN(0$tidsql) $fidnot");
 		while($thread = $db->fetch_array($query))
 		{
 			$threads[$thread['tid']] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
@@ -216,7 +216,7 @@ else
 	}
 	if($fidsql)
 	{
-		$query = $db->simple_select("forums", "fid,name,linkto", "fid IN (0$fidsql) $fidnot");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "fid,name,linkto", "fid IN (0$fidsql) $fidnot");
 		while($forum = $db->fetch_array($query))
 		{
 			$forums[$forum['fid']] = $forum['name'];
@@ -225,7 +225,7 @@ else
 	}
 	if($eidsql)
 	{
-		$query = $db->simple_select("events", "eid,subject", "eid IN (0$eidsql)");
+		$query = $db->simple_select(TABLE_PREFIX."events", "eid,subject", "eid IN (0$eidsql)");
 		while($event = $db->fetch_array($query))
 		{
 			$events[$event['eid']] = htmlspecialchars_uni($parser->parse_badwords($event['subject']));

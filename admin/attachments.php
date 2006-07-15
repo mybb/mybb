@@ -304,7 +304,7 @@ if($mybb->input['action'] == "orphans")
 {
 	// Search files that do not exist in the database
 	// Get attachments from database list
-	$query = $db->simple_select("attachments", "attachname");
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "attachname");
 	$db_list = array();
 	while($file = $db->fetch_array($query))
 	{
@@ -458,7 +458,7 @@ if($mybb->input['action'] == "edit")
 		$options = array(
 			"limit" => "1"
 		);
-		$query = $db->simple_select("attachtypes", "*", "atid='".$atid."'", $options);
+		$query = $db->simple_select(TABLE_PREFIX."attachtypes", "*", "atid='".$atid."'", $options);
 		$type = $db->fetch_array($query);
 		$plugins->run_hooks("admin_attachments_edit");
 		$type['name'] = htmlspecialchars_uni(stripslashes($type['name']));
@@ -483,7 +483,7 @@ if($mybb->input['action'] == "delete")
 {
 	// confirmation page for deleting an attachment type
 	$atid = intval($mybb->input['atid']);
-	$query = $db->simple_select("attachtypes", "name", "atid='".$atid."'");
+	$query = $db->simple_select(TABLE_PREFIX."attachtypes", "name", "atid='".$atid."'");
 	$plugins->run_hooks("admin_attachments_delete");
 	$name = stripslashes($db->fetch_field($query, "name"));
 	cpheader();
@@ -505,7 +505,7 @@ if($mybb->input['action'] == "stats")
 	$plugins->run_hooks("admin_attachments_stats");
 	cpheader();
 	
-	$query = $db->simple_select("attachments", "COUNT(*) AS attachments, SUM(filesize) AS totalsize, SUM(downloads) AS downloads");
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS attachments, SUM(filesize) AS totalsize, SUM(downloads) AS downloads");
 	$stats = $db->fetch_array($query);
 	if(!$stats['downloads'])
 	{
@@ -536,7 +536,7 @@ if($mybb->input['action'] == "stats")
 			"limit" => "5"
 		);
 		
-		$query = $db->simple_select("attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)", "a.*, p.tid, p.subject, u.username", "", $options);
+		$query = $db->simple_select(TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)", "a.*, p.tid, p.subject, u.username", "", $options);
 		while($attachment = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
@@ -566,7 +566,7 @@ if($mybb->input['action'] == "stats")
 			"limit" => "5"
 		);
 		
-		$query = $db->simple_select("attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)", "a.*, p.tid, p.subject, u.username", "", $options);
+		$query = $db->simple_select(TABLE_PREFIX."attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)", "a.*, p.tid, p.subject, u.username", "", $options);
 		while($attachment = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
@@ -629,7 +629,7 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 	$options = array(
 		"order_by" => "name"
 	);
-	$query = $db->simple_select("attachtypes", "*", "", $options);
+	$query = $db->simple_select(TABLE_PREFIX."attachtypes", "*", "", $options);
 	while($type = $db->fetch_array($query))
 	{
 		$type['name'] = stripslashes($type['name']);

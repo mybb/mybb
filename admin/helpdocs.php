@@ -84,7 +84,7 @@ if($mybb->input['action'] == "do_delete")
 			$db->delete_query(TABLE_PREFIX."helpsections", "sid='".$sid."'");
 			$db->delete_query(TABLE_PREFIX."helpdocs", "WHERE sid='".$sid."' AND hid>'7'");
 			// Move back any defaults left without a category
-			$query = $db->simple_select("helpdocs", "*", "sid='".$sid."'");
+			$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "sid='".$sid."'");
 			while($doc = $db->fetch_array($query))
 			{
 				if($doc['hid'] <= 4)
@@ -147,7 +147,7 @@ if($mybb->input['action'] == "edit")
 	if($mybb->input['hid'])
 	{
 		$hid = intval($mybb->input['hid']);
-		$query = $db->simple_select("helpdocs", "*", "hid='$hid'");
+		$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "hid='$hid'");
 		$doc = $db->fetch_array($query);
 		$plugins->run_hooks("admin_helpdocs_edit_doc");
 		startform("helpdocs.php", "", "do_edit");
@@ -180,7 +180,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$plugins->run_hooks("admin_helpdocs_edit_section");
 		$sid = intval($mybb->input['sid']);
-		$query = $db->simple_select("helpsections", "*", "sid='$sid'");
+		$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "sid='$sid'");
 		$section = $db->fetch_array($query);
 		startform("helpdocs.php", "", "do_edit");
 		makehiddencode("sid", "$sid");
@@ -214,7 +214,7 @@ if($mybb->input['action'] == "delete")
 	if($mybb->input['hid'])
 	{
 		$hid = intval($mybb->input['hid']);
-		$query = $db->simple_select("helpdocs", "*", "hid='$hid'");
+		$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "hid='$hid'");
 		$doc = $db->fetch_array($query);
 		$plugins->run_hooks("admin_helpdocs_delete_doc");
 		if($mybb->input['hid'] > 7)
@@ -235,7 +235,7 @@ if($mybb->input['action'] == "delete")
 	elseif($mybb->input['sid'])
 	{
 		$sid = intval($mybb->input['sid']);
-		$query = $db->simple_select("helpsections", "*", "sid='$sid'");
+		$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "sid='$sid'");
 		$section = $db->fetch_array($query);
 		$plugins->run_hooks("admin_helpdocs_delete_section");
 		if($section['sid'] > 2)
@@ -301,7 +301,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	$options = array(
 		"order_by" => "disporder"
 	);
-	$query = $db->simple_select("helpsections", "*", "sid <= '2'", $options);
+	$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "sid <= '2'", $options);
 	while($section = $db->fetch_array($query)) 
 	{
 		$disablednote = "";
@@ -315,7 +315,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		$options = array(
 			"order_by" => "disporder"
 		);
-		$query2 = $db->simple_select("helpdocs", "*", "sid='$section[sid]'", $options);
+		$query2 = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "sid='$section[sid]'", $options);
 		while($doc = $db->fetch_array($query2))
 		{
 			$disablednote = "";
@@ -337,7 +337,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	$options = array(
 		"order_by" => "disporder"
 	);
-	$query = $db->simple_select("helpsections", "*", "sid > '2'", $options);
+	$query = $db->simple_select(TABLE_PREFIX."helpsections", "*", "sid > '2'", $options);
 	while($section = $db->fetch_array($query))
 	{
 		$disablednote = "";
@@ -352,7 +352,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		$options = array(
 			"order_by" => "disporder"
 		);
-		$query2 = $db->simple_select("helpdocs", "*", "sid='$section[sid]'", $options);
+		$query2 = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "sid='$section[sid]'", $options);
 		while($doc = $db->fetch_array($query2))
 		{
 			$disablednote = "";

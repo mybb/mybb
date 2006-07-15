@@ -749,7 +749,7 @@ function usergroup_hop(gid)
 		'order_by' => 'disporder',
 		'order_dir' => 'ASC',
 	);
-	$query = $db->simple_select('usergroups', '*', "type='1'", $sql_options);
+	$query = $db->simple_select(TABLE_PREFIX.'usergroups', '*', "type='1'", $sql_options);
 
 	while($usergroup = $db->fetch_array($query))
 	{
@@ -791,7 +791,7 @@ function usergroup_hop(gid)
 		'order_by' => 'disporder',
 		'order_dir' => 'ASC',
 	);
-	$query = $db->simple_select('usergroups', '*', "type='2'", $sql_options);
+	$query = $db->simple_select(TABLE_PREFIX.'usergroups', '*', "type='2'", $sql_options);
 	$count = $db->num_rows($query);
 	if($count > 0)
 	{
@@ -850,7 +850,7 @@ function usergroup_hop(gid)
 		'order_by' => 'disporder',
 		'order_dir' => 'ASC',
 	);
-	$query = $db->simple_select('usergroups', '*', "type='3' OR type='4'", $sql_options);
+	$query = $db->simple_select(TABLE_PREFIX.'usergroups', '*', "type='3' OR type='4'", $sql_options);
 	$count = $db->num_rows($query);
 	if($count > 0)
 	{

@@ -80,7 +80,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 		foreach($mybb->input['threadvalidate'] as $tid => $val)
 		{
 			$tid = intval($tid);
-			$query = $db->simple_select("threads", "subject, fid", "tid='$tid'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "subject, fid", "tid='$tid'");
 			$thread = $db->fetch_array($query);
 			if($mybb->input['threaddelete'][$tid] == "yes")
 			{
@@ -120,9 +120,9 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 		foreach($mybb->input['postvalidate'] as $pid => $val)
 		{
 			$pid = intval($pid);
-			$query = $db->simple_select("posts", "tid", "pid='$pid'");
+			$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='$pid'");
 			$post = $db->fetch_array($query);
-			$query = $db->simple_select("threads", "fid", "tid='$post[tid]'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "fid", "tid='$post[tid]'");
 			$thread = $db->fetch_array($query);
 			if($mybb->input['postdelete'][$pid] == "yes")
 			{
@@ -174,7 +174,7 @@ if($mybb->input['action'] == "attachments")
 		"order_by" => "p.dateline",
 		"order_dir" => "DESC"
 	);
-	$query = $db->simple_select("attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)", "a.*, p.subject AS postsubject, p.pid AS postpid, p.tid, p.username AS postusername, p.uid AS postuid, t.subject AS threadsubject, f.name AS forumname, p.fid", "a.pid=p.pid AND t.tid=p.tid AND a.visible!='1'", $options);
+	$query = $db->simple_select(TABLE_PREFIX."attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)", "a.*, p.subject AS postsubject, p.pid AS postpid, p.tid, p.username AS postusername, p.uid AS postuid, t.subject AS threadsubject, f.name AS forumname, p.fid", "a.pid=p.pid AND t.tid=p.tid AND a.visible!='1'", $options);
 	$count = $db->num_rows($query);
 	if(!$count)
 	{
@@ -231,7 +231,7 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 		"order_by" => "t.lastpost",
 		"order_dir" => "DESC"
 	);
-	$query = $db->simple_select("(".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)", "t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username", "t.visible=0 AND p.tid=t.tid", $options);
+	$query = $db->simple_select(TABLE_PREFIX."(".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)", "t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username", "t.visible=0 AND p.tid=t.tid", $options);
 	$tcount = $db->num_rows($query);
 
 	if($tcount < 1 && $mybb->input['action'] != "threadsposts")
@@ -279,7 +279,7 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 		"order_by" => "p.dateline",
 		"order_dir" => "DESC"
 	);
-	$query = $db->simple_select("posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)", "p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, f.name AS forumname, u.username AS username", "p.visible=0", $options);
+	$query = $db->simple_select(TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)", "p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, f.name AS forumname, u.username AS username", "p.visible=0", $options);
 	$count = $db->num_rows($query);
 	if(!$tcount && !$count && $mybb->input['action'] == "threadsposts")
 	{

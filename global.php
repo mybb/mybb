@@ -103,21 +103,21 @@ if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 // If we're accessing a post, fetch the forum theme for it and if we're overriding it
 if(isset($mybb->input['pid']))
 {
-	$query = $db->simple_select("forums f, ".TABLE_PREFIX."posts p", "f.style, f.overridestyle", "f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."forums f, ".TABLE_PREFIX."posts p", "f.style, f.overridestyle", "f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'");
 	$style = $db->fetch_array($query);
 }
 
 // We have a thread id and a forum id, we can easily fetch the theme for this forum
 else if(isset($mybb->input['tid']))
 {
-	$query = $db->simple_select("forums f, ".TABLE_PREFIX."threads t", "f.style, f.overridestyle", "f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."forums f, ".TABLE_PREFIX."threads t", "f.style, f.overridestyle", "f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'");
 	$style = $db->fetch_array($query);
 }
 
 // We have a forum id - simply load the theme from it
 else if(isset($mybb->input['fid']))
 {
-	$query = $db->simple_select("forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'");
 	$style = $db->fetch_array($query);
 }
 
@@ -138,7 +138,7 @@ if(empty($loadstyle))
 }
 
 // Fetch the theme to load from the database
-$query = $db->simple_select("themes", "name, tid, themebits, csscached", $loadstyle);
+$query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits, csscached", $loadstyle);
 $theme = $db->fetch_array($query);
 
 $theme = @array_merge($theme, unserialize($theme['themebits']));
@@ -268,7 +268,7 @@ $bannedwarning = '';
 if($mybb->usergroup['isbannedgroup'] == "yes")
 {
 	// Fetch details on their ban
-	$query = $db->simple_select("banned", "*", "uid='{$mybb->user['uid']}'");
+	$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='{$mybb->user['uid']}'");
 	$ban = $db->fetch_array($query);
 	if($ban['uid'])
 	{
@@ -372,7 +372,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && (isset($my
 	{
 		$condition = "uid='".intval($mybb->input['referrer'])."'";
 	}
-	$query = $db->simple_select("users", "uid", $condition);
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid", $condition);
 	$referrer = $db->fetch_array($query);
 	if($referrer['uid'])
 	{

@@ -69,7 +69,7 @@ if($mybb->input['action'] == "edit")
 		$cache->updatebadwords();
 		exit;
 	}
-	$query = $db->simple_select("badwords", "*", "bid='$bid'");
+	$query = $db->simple_select(TABLE_PREFIX."badwords", "*", "bid='$bid'");
 	$badword = $db->fetch_array($query);
 	$plugins->run_hooks("admin_badwords_edit");
 	cpheader();
@@ -116,7 +116,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		"order_by" => "badword",
 		"order_dir" => "ASC"
 	);
-	$query = $db->simple_select("badwords", "*", "", $options);
+	$query = $db->simple_select(TABLE_PREFIX."badwords", "*", "", $options);
 	while($badword = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();

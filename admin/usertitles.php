@@ -100,7 +100,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_usertitles_delete");
-	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$title = $db->fetch_array($query);
 	$lang->delete_title = sprintf($lang->delete_title, $title['title']);
 	$lang->delete_title_confirm = sprintf($lang->delete_title_confirm, $title['title']);
@@ -118,7 +118,7 @@ if($mybb->input['action'] == "delete")
 }
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$title = $db->fetch_array($query);
 	$plugins->run_hooks("admin_usertitles_edit");
 	$lang->edit_title = sprintf($lang->edit_title, $title['title']);
@@ -151,7 +151,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	$options = array(
 		"order_by" => "posts"
 	);
-	$query = $db->simple_select("usertitles", "*", "", $options);
+	$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "", $options);
 	while($title = $db->fetch_array($query))
 	{
 		$usertitles .= "\n<li><b>$title[title]</b> ($lang->minimum_posts $title[posts]) ".

@@ -318,7 +318,7 @@ if($mybb->input['action'] == "do_import")
 	}
 	$version = $theme['attributes']['version'];
 
-	$query = $db->simple_select("themes", "tid", "name='".$db->escape_string($name)."'", array("limit" => 1));
+	$query = $db->simple_select(TABLE_PREFIX."themes", "tid", "name='".$db->escape_string($name)."'", array("limit" => 1));
 	$existingtheme = $db->fetch_array($query);
 	if($existingtheme['tid'])
 	{
@@ -423,7 +423,7 @@ if($mybb->input['action'] == "edit") {
 		"order_by" => "title",
 		"order_dir" => "ASC"
 		);
-	$query = $db->simple_select("usergroups", "gid, title", "", $options);
+	$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title", "", $options);
 	$has_check = 0;
 	while($usergroup = $db->fetch_array($query))
 	{

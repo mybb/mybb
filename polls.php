@@ -46,7 +46,7 @@ if($mybb->input['action'] == "newpoll")
 
 	$plugins->run_hooks("polls_newpoll_start");
 
-	$query = $db->simple_select("threads", "*", "tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
@@ -129,7 +129,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("polls_do_newpoll_start");
 
-	$query = $db->simple_select("threads", "*", "tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
@@ -253,10 +253,10 @@ if($mybb->input['action'] == "editpoll")
 
 	$plugins->run_hooks("polls_editpoll_start");
 
-	$query = $db->simple_select("polls", "*", "pid='$pid'");
+	$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='$pid'");
 	$poll = $db->fetch_array($query);
 
-	$query = $db->simple_select("threads", "*", "poll='$pid'");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "poll='$pid'");
 	$thread = $db->fetch_array($query);
 	$tid = $thread['tid'];
 	$fid = $thread['fid'];
@@ -269,7 +269,7 @@ if($mybb->input['action'] == "editpoll")
 
 	$forumpermissions = forum_permissions($fid);
 
-	$query = $db->simple_select("forums", "*", "fid='$fid'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
 	$forum = $db->fetch_array($query);
 
 
@@ -397,15 +397,15 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("polls_do_editpoll_start");
 
-	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 
-	$query = $db->simple_select("threads", "*", "poll='".intval($mybb->input['pid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "poll='".intval($mybb->input['pid'])."'");
 	$thread = $db->fetch_array($query);
 
 	$forumpermissions = forum_permissions($thread['fid']);
 
-	$query = $db->simple_select("forums", "*", "fid='".$thread['fid']."'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='".$thread['fid']."'");
 	$forum = $db->fetch_array($query);
 
 	if($thread['visible'] == "no" || !$thread['tid'])
@@ -519,10 +519,10 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 }
 if($mybb->input['action'] == "showresults")
 {
-	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 	$tid = $poll['tid'];
-	$query = $db->simple_select("threads", "*", "tid='$tid'");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='$tid'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 
@@ -668,7 +668,7 @@ if($mybb->input['action'] == "showresults")
 }
 if($mybb->input['action'] == "vote")
 {
-	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 	$poll['timeout'] = $poll['timeout']*60*60*24;
 
@@ -679,7 +679,7 @@ if($mybb->input['action'] == "vote")
 		error($lang->error_invalidpoll);
 	}
 
-	$query = $db->simple_select("threads", "*", "poll='".$poll['pid']."'");
+	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "poll='".$poll['pid']."'");
 	$thread = $db->fetch_array($query);
 
 	if(!$thread['tid'])
@@ -706,7 +706,7 @@ if($mybb->input['action'] == "vote")
 	// Check if the user has voted before...
 	if($mybb->user['uid'])
 	{
-		$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
+		$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
 		$votecheck = $db->fetch_array($query);
 	}
 	if($votecheck['vid'] || $_COOKIE['pollvotes'][$poll['pid']])

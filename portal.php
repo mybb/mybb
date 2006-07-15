@@ -106,7 +106,7 @@ if($mybb->settings['portal_showwelcome'] != "no")
 	{
 		if($mybb->user['receivepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->settings['portal_showpms'] != "no" && $mybb->settings['enablepms'] != "no")
 		{
-			$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
+			$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
 			$messages = $db->fetch_array($query);
 			if(!$messages['pms_new'])
 			{
@@ -121,13 +121,13 @@ if($mybb->settings['portal_showwelcome'] != "no")
 			eval("\$pms = \"".$templates->get("portal_pms")."\";");
 		}
 		// get number of new posts, threads, announcements
-		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS newposts", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
 		{ // if there aren't any new posts, there is no point in wasting two more queries
-			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS newthreads", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 			$newthreads = $db->fetch_field($query, "newthreads");
-			$query = $db->simple_select("threads", "COUNT(tid) AS newann", "dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS newann", "dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere");
 			$newann = $db->fetch_field($query, "newann");
 			if(!$newthreads)
 			{
@@ -321,7 +321,7 @@ foreach($mybb->settings['portal_announcementsfid'] as $fid)
 }
 $mybb->settings['portal_announcementsfid'] = implode(',', $fid_array);
 // And get them!
-$query = $db->simple_select("forums", "*", "fid IN (".$mybb->settings['portal_announcementsfid'].")");
+$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid IN (".$mybb->settings['portal_announcementsfid'].")");
 while($forumrow = $db->fetch_array($query))
 {
     $forum[$forumrow['fid']] = $forumrow;

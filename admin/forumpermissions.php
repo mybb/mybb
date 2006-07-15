@@ -40,21 +40,21 @@ function build_permission_forumbits($pid=0)
 	if(!is_array($fcache))
 	{
 		// Fetch usergroups
-		$query = $db->simple_select("usergroups", "gid, title", "", array("order_by" => "title", "order_dir" => "asc"));
+		$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title", "", array("order_by" => "title", "order_dir" => "asc"));
 		while($usergroup = $db->fetch_array($query))
 		{
 			$usergroups[$usergroup['gid']] = $usergroup;
 		}
 		
 		// Fetch forum permissions
-		$query = $db->simple_select("forumpermissions", "fid, gid, pid");
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "fid, gid, pid");
 		while($forumpermission = $db->fetch_array($query))
 		{
 			$forumpermissions[$forumpermission['fid']][$forumpermission['gid']] = $forumpermission['pid'];
 		}
 		
 		// Fetch forums
-		$query = $db->simple_select("forums", "*", "", array('order_by' =>'pid, disporder'));
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "", array('order_by' =>'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -189,14 +189,14 @@ if($mybb->input['action'] == "edit")
 	$fid = intval($mybb->input['fid']);
 	if($pid)
 	{
-		$query = $db->simple_select("forumpermissions", "*", "pid='{$pid}'");
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "pid='{$pid}'");
 	}
 	else
 	{
 		$options = array(
 			"limit" => "1"
 		);
-		$query = $db->simple_select("forumpermissions", "*", "fid='{$fid}' AND gid='{$gid}'", $options);
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "fid='{$fid}' AND gid='{$gid}'", $options);
 	}
 	$forumpermissions = $db->fetch_array($query);
 	if(!$fid)
@@ -207,9 +207,9 @@ if($mybb->input['action'] == "edit")
 	{
 		$gid = $forumpermissions['gid'];
 	}
-	$query = $db->simple_select("usergroups", "*", "gid='$gid'");
+	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='$gid'");
 	$usergroup = $db->fetch_array($query);
-	$query = $db->simple_select("forums", "*", "fid='$fid'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
 	$forum = $db->fetch_array($query);
 	$plugins->run_hooks("admin_forumpermissions_edit");
 	cpheader();
@@ -217,7 +217,7 @@ if($mybb->input['action'] == "edit")
 	$sperms = $forumpermissions;
 
 	$sql = build_parent_list($fid);
-	$query = $db->simple_select("forumpermissions", "*", "$sql AND gid='$gid'");
+	$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "$sql AND gid='$gid'");
 	$customperms = $db->fetch_array($query);
 
 	if($forumpermissions['pid'])

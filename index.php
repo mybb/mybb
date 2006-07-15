@@ -159,7 +159,7 @@ if($mybb->settings['showbirthdays'] != "no")
 	$year = mydate("Y", $bdaytime, '', 0);
 
 	// Select all users who have their birthday today.
-	$query = $db->simple_select("users", "uid, username, birthday", "birthday LIKE '$bdaydate-%'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, birthday", "birthday LIKE '$bdaydate-%'");
 	$comma = '';
 	while($bdayuser = $db->fetch_array($query))
 	{
@@ -225,7 +225,7 @@ if($mybb->settings['showindexstats'] != "no")
 }
 
 // Get the forums we will need to show.
-$query = $db->simple_select("forums", "*", "active != 'no'", array('order_by' => 'pid, disporder'));
+$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active != 'no'", array('order_by' => 'pid, disporder'));
 
 // Build a forum cache.
 while($forum = $db->fetch_array($query))

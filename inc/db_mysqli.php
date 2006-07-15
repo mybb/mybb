@@ -73,13 +73,6 @@ class databaseEngine
 	 * @var string
 	 */
 	var $table_type = "myisam";
-	
-	/**
-	 * The current table prefix to be used in simple_select queries
-	 *
-	 * @var string
-	 */
-	var $table_prefix = "mybb_";
 
 	/**
 	 * Connect to the database server.
@@ -105,16 +98,6 @@ class databaseEngine
 	function select_db($database)
 	{
 		return @mysqli_select_db($this->link, $database) or $this->dberror();
-	}
-	
-	/**
-	 * Sets the table prefix to use.
-	 *
-	 * @param string The table prefix name.
-	 */
-	function set_prefix($prefix)
-	{
-		$this->table_prefix = $prefix;
 	}
 
 	/**
@@ -439,7 +422,7 @@ class databaseEngine
 	
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
-		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
+		$query = "SELECT ".$fields." FROM ".$table;
 		if($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;

@@ -152,7 +152,7 @@ function send_mail_queue($count=10)
 		$cache->updatemailqueue(0, time());
 
 		// Fetch emails for this page view - and send them
-		$query = $db->simple_select("mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
+		$query = $db->simple_select(TABLE_PREFIX."mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
 		while($email = $db->fetch_array($query))
 		{
 			// Delete the message from the queue
@@ -2989,7 +2989,7 @@ function get_thread($tid)
 	}
 	else
 	{
-		$query = $db->simple_select("threads", "*", "tid='".intval($tid)."'");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($tid)."'");
 		$thread = $db->fetch_array($query);
 
 		if($thread)
@@ -3022,7 +3022,7 @@ function get_post($pid)
 	}
 	else
 	{
-		$query = $db->simple_select("posts", "*", "pid='".intval($pid)."'");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid='".intval($pid)."'");
 		$post = $db->fetch_array($query);
 
 		if($post)

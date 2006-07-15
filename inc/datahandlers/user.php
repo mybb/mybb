@@ -109,7 +109,7 @@ class UserDataHandler extends DataHandler
 
 		$username = &$this->data['username'];
 
-		$query = $db->simple_select("users", "COUNT(uid) AS count", "username='".$db->escape_string($username)."'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) AS count", "username='".$db->escape_string($username)."'");
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
 		{
@@ -382,7 +382,7 @@ class UserDataHandler extends DataHandler
 		$options = array(
 			'order_by' => 'disporder'
 		);
-		$query = $db->simple_select('profilefields', 'type, fid, required', "editable='yes'", $options);
+		$query = $db->simple_select(TABLE_PREFIX.'profilefields', 'type, fid, required', "editable='yes'", $options);
 
 		// Then loop through the profile fields.
 		while($profilefield = $db->fetch_array($query))
@@ -439,7 +439,7 @@ class UserDataHandler extends DataHandler
 			$options = array(
 				'limit' => 1
 			);
-			$query = $db->simple_select('users', 'uid', "username='".$db->escape_string($user['referrer'])."'", $options);
+			$query = $db->simple_select(TABLE_PREFIX.'users', 'uid', "username='".$db->escape_string($user['referrer'])."'", $options);
 			$referrer = $db->fetch_array($query);
 			if(!$referrer['uid'])
 			{
@@ -990,7 +990,7 @@ class UserDataHandler extends DataHandler
 		// Maybe some userfields need to be updated?
 		if(is_array($user['user_fields']))
 		{
-			$query = $db->simple_select("userfields", "*", "ufid='{$user['uid']}'");
+			$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='{$user['uid']}'");
 			$fields = $db->fetch_array($query);
 			if(!$fields['ufid'])
 			{

@@ -249,7 +249,7 @@ if($mybb->input['action'] == "do_addmod")
 	$options = array(
 		"limit" => "1"
 	);
-	$query = $db->simple_select("users", "uid", "username='".$db->escape_string($mybb->input['username'])."'", $options);
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".$db->escape_string($mybb->input['username'])."'", $options);
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{
@@ -257,7 +257,7 @@ if($mybb->input['action'] == "do_addmod")
 		$options = array(
 			"limit" => "1"
 		);
-		$query = $db->simple_select("moderators", "uid", "uid='".$user['uid']."' AND fid='".$fid."'", $options);
+		$query = $db->simple_select(TABLE_PREFIX."moderators", "uid", "uid='".$user['uid']."' AND fid='".$fid."'", $options);
 		$mod = $db->fetch_array($query);
 		if(!$mod['uid'])
 		{
@@ -303,7 +303,7 @@ if($mybb->input['action'] == "do_delete")
 	{
 		$fid = intval($mybb->input['fid']);
 		$db->delete_query(TABLE_PREFIX."forums", "fid='$fid'");
-		$query = $db->simple_select("forums", "*", "CONCAT(',', parentlist, ',') LIKE '%,$fid,%'");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "CONCAT(',', parentlist, ',') LIKE '%,$fid,%'");
 		while($f = $db->fetch_array($query))
 		{
 			$fids[$f['fid']] = $fid;
@@ -318,7 +318,7 @@ if($mybb->input['action'] == "do_delete")
 		 * it moves them back to the registered usergroup
 		 */
 
-		$query = $db->simple_select("moderators", "*", "fid='$fid'");
+		$query = $db->simple_select(TABLE_PREFIX."moderators", "*", "fid='$fid'");
 		while($mod = $db->fetch_array($query))
 		{
 			$moderators[$mod['uid']] = $mod['uid'];
@@ -326,7 +326,7 @@ if($mybb->input['action'] == "do_delete")
 		if(is_array($moderators))
 		{
 			$mod_list = implode(",", $moderators);
-			$query = $db->simple_select("moderators", "*", "fid != '$fid' AND uid IN ($mod_list)");
+			$query = $db->simple_select(TABLE_PREFIX."moderators", "*", "fid != '$fid' AND uid IN ($mod_list)");
 			while($mod = $db->fetch_array($query))
 			{
 				unset($moderators[$mod['uid']]);
@@ -365,11 +365,11 @@ if($mybb->input['action'] == "do_deletemod")
 	if($mybb->input['deletesubmit'])
 	{
 		$mid = intval($mybb->input['mid']);
-		$query = $db->simple_select("moderators m LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=m.uid", "m.*, u.usergroup", "m.mid='$mid'");
+		$query = $db->simple_select(TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=m.uid", "m.*, u.usergroup", "m.mid='$mid'");
 		$mod = $db->fetch_array($query);
 		$plugins->run_hooks("admin_forums_do_deletemod");
 		$db->delete_query(TABLE_PREFIX."moderators", "mid='$mid'");
-		$query = $db->simple_select("moderators", "*", "uid='$mod[uid]'");
+		$query = $db->simple_select(TABLE_PREFIX."moderators", "*", "uid='$mod[uid]'");
 		if($db->fetch_array($query))
 		{
 			$updatequery = array(
@@ -391,7 +391,7 @@ if($mybb->input['action'] == "do_edit")
 	$fid = intval($mybb->input['fid']);
 	$pid = intval($mybb->input['pid']);
 
-	$query = $db->simple_select("forums", "*", "fid='".$fid."'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='".$fid."'");
 	$forum = $db->fetch_array($query);
 
 	if($pid == $fid)
@@ -400,7 +400,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 	else
 	{
-		$query = $db->simple_select("forums", "*", "pid='".$fid."'");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='".$fid."'");
 		while($child = $db->fetch_array($query))
 		{
 			if($child['fid'] == $pid)
@@ -465,7 +465,7 @@ if($mybb->input['action'] == "do_edit")
 				);
 			$db->update_query(TABLE_PREFIX."forums", $sql_array, "fid='$fid'", 1);
 			// Rebuild the parentlist of all of the subforums of this forum
-			$query = $db->simple_select("forums", "fid", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
+			$query = $db->simple_select(TABLE_PREFIX."forums", "fid", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
 			while($childforum = $db->fetch_array($query))
 			{
 				$sql_array = array(
@@ -486,7 +486,7 @@ if($mybb->input['action'] == "do_editmod")
 	$username = $db->escape_string($mybb->input['username']);
 	$fid = intval($mybb->input['fid']);
 
-	$query = $db->simple_select("users", "uid", "username='$username'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='$username'");
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{
@@ -626,7 +626,7 @@ if($mybb->input['action'] == "addmod")
 if($mybb->input['action'] == "delete")
 {
 	$fid = intval($mybb->input['fid']);
-	$query = $db->simple_select("forums", "*", "fid='$fid'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
 	$forum = $db->fetch_array($query);
 	$plugins->run_hooks("admin_forums_delete");
 	cpheader();
@@ -671,7 +671,7 @@ if($mybb->input['action'] == "edit")
 		cpheader();
 	}
 	$fid = intval($mybb->input['fid']);
-	$query = $db->simple_select("forums", "*", "fid='$fid'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
 	$forum = $db->fetch_array($query);
 	$forum['description'] = $forum['description'];
 	$pid = $forum['pid'];
@@ -783,7 +783,7 @@ if($mybb->input['action'] == "editmod")
 	}
 	$mid = intval($mybb->input['mid']);
 	$fid = intval($mybb->input['fid']);
-	$query = $db->simple_select("moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid)", "m.*, u.username", "m.mid='$mid'");
+	$query = $db->simple_select(TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid)", "m.*, u.username", "m.mid='$mid'");
 	$moderator = $db->fetch_array($query);
 	$plugins->run_hooks("admin_forums_editmod");
 	startform("forums.php", "", "do_editmod");
@@ -828,7 +828,7 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 	$to = intval($mybb->input['to']);
 
 	// Find the source forum
-	$query = $db->simple_select("forums", '*', "fid='{$from}'");
+	$query = $db->simple_select(TABLE_PREFIX."forums", '*', "fid='{$from}'");
 	$from_forum = $db->fetch_array($query);
 	if(!$db->num_rows($query))
 	{
@@ -875,7 +875,7 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 	elseif($mybb->input['copyforumsettings'] == "yes")
 	{
 		// Copy settings to existing forum
-		$query = $db->simple_select("forums", '*', "fid='{$to}'");
+		$query = $db->simple_select(TABLE_PREFIX."forums", '*', "fid='{$to}'");
 		$to_forum = $db->fetch_array($query);
 		if(!$db->num_rows($query))
 		{
@@ -900,7 +900,7 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 			$groups[] = intval($gid);
 		}
 		$groups = implode(',', $groups);
-		$query = $db->simple_select("forumpermissions", '*', "fid='{$from}' AND gid IN ({$groups})");
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", '*', "fid='{$from}' AND gid IN ({$groups})");
 		$db->delete_query(TABLE_PREFIX."forumpermissions", "fid='{$to}' AND gid IN ({$groups})", 1);
 		while($permissions = $db->fetch_array($query))
 		{
@@ -969,10 +969,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	$fid = intval($mybb->input['fid']);
 	if($fid)
 	{
-		$query = $db->simple_select("forums f LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = f.lastposttid)", "f.*, t.subject AS lastpostsubject", "f.fid='$fid'");
+		$query = $db->simple_select(TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = f.lastposttid)", "f.*, t.subject AS lastpostsubject", "f.fid='$fid'");
 		$forum = $db->fetch_array($query);
 
-		$query = $db->simple_select("forumpermissions", "*", "fid='$fid'");
+		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "fid='$fid'");
 		while($fperm = $db->fetch_array($query))
 		{
 			$fperms[$fperm[gid]] = $fperm;
@@ -984,7 +984,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		$hopto[] = "<input type=\"button\" value=\"$lang->copy_forum_button\" onclick=\"hopto('forums.php?".SID."&action=copy&from=$fid');\" class=\"hoptobutton\">";
 		makehoptolinks($hopto);
 
-		$query = $db->simple_select("forums", "*", "pid='$fid'");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='$fid'");
 		$child = $db->fetch_array($query);
 		if($child['fid'])
 		{
@@ -1006,7 +1006,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			"order_by" => "title",
 			"order_dir" => "ASC"
 		);
-		$query = $db->simple_select("usergroups", "*", "", $options);
+		$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "", $options);
 		while($usergroup = $db->fetch_array($query))
 		{
 			if($fperms[$usergroup['gid']])
@@ -1018,7 +1018,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			else
 			{
 				$sql = build_parent_list($fid);
-				$cusquery = $db->simple_select("forumpermissions", "*", "$sql AND gid='$usergroup[gid]'");
+				$cusquery = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "$sql AND gid='$usergroup[gid]'");
 				$customperms = $db->fetch_array($cusquery);
 				if($customperms['gid'])
 				{
@@ -1045,7 +1045,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		$options = array(
 			"order_by" => "u.username"
 		);
-		$modquery = $db->simple_select("moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)", "m.mid, m.uid, m.fid, u.username", $parentlist, $options);
+		$modquery = $db->simple_select(TABLE_PREFIX."moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)", "m.mid, m.uid, m.fid, u.username", $parentlist, $options);
 		$nummods = $db->num_rows($modquery);
 		if(!$nummods)
 		{

@@ -85,7 +85,7 @@ if($mybb->input['action'] == "do_edit")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("icons", "*", "iid='$iid'");
+	$query = $db->simple_select(TABLE_PREFIX."icons", "*", "iid='$iid'");
 	$icon = $db->fetch_array($query);
 	$plugins->run_hooks("admin_icons_edit");
 	if(!$icon['iid'])
@@ -111,7 +111,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("icons", "*", "iid='$iid'");
+	$query = $db->simple_select(TABLE_PREFIX."icons", "*", "iid='$iid'");
 	$icon = $db->fetch_array($query);
 	$plugins->run_hooks("admin_icons_delete");
 	if(!$icon['iid'])
@@ -198,7 +198,7 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		cperror($lang->invalid_directory);
 	}
-	$query = $db->simple_select("icons");
+	$query = $db->simple_select(TABLE_PREFIX."icons");
 	while($icon = $db->fetch_array($query))
 	{
 		$aicons[$icon['path']] = 1;
@@ -317,7 +317,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	tableheader($lang->posticons, "", 5);
 	tablesubheader($lang->edit_delete, "", 5);
 
-	$query = $db->simple_select("icons", "COUNT(iid) AS icons");
+	$query = $db->simple_select(TABLE_PREFIX."icons", "COUNT(iid) AS icons");
 	$iconcount = $db->fetch_field($query, "icons");
 	$perpage = intval($mybb->input['perpage']);
 	$page = intval($mybb->input['page']);
@@ -342,7 +342,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		"limit_start" => $start,
 		"limit" => $perpage
 	);
-	$query = $db->simple_select("icons", "*", "", $options);
+	$query = $db->simple_select(TABLE_PREFIX."icons", "*", "", $options);
 	while($icon = $db->fetch_array($query))
 	{
 		if($listed == "0")

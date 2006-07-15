@@ -35,7 +35,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", 'tid, type, name, description', 'tid="'.intval($tool_id).'"');
+		$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, type, name, description', 'tid="'.intval($tool_id).'"');
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -60,7 +60,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", '*', 'tid="'.intval($tool_id).'"');
+		$query = $db->simple_select(TABLE_PREFIX."modtools", '*', 'tid="'.intval($tool_id).'"');
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -229,7 +229,7 @@ class CustomModeration extends Moderation
 		global $db, $mybb;
 
 		$tid = intval($tids[0]); // Take the first thread to get thread data from
-		$query = $db->simple_select("threads", 'fid', "tid='$tid'");
+		$query = $db->simple_select(TABLE_PREFIX."threads", 'fid', "tid='$tid'");
 		$thread = $db->fetch_array($query);
 
 		$this->update_fids[$thread['fid']] = 1;
@@ -248,7 +248,7 @@ class CustomModeration extends Moderation
 			{
 				$tid_list = implode(',', $tids);
 				$options = array('order_by' => 'dateline', 'order_dir' => 'DESC');
-				$query = $db->simple_select("threads", 'tid, subject', "tid IN ($tid_list)", $options); // Select threads from newest to oldest
+				$query = $db->simple_select(TABLE_PREFIX."threads", 'tid, subject', "tid IN ($tid_list)", $options); // Select threads from newest to oldest
 				$last_tid = 0;
 				while($tid = $db->fetch_array($query))
 				{
@@ -337,7 +337,7 @@ class CustomModeration extends Moderation
 			if(!empty($thread_options['addreply'])) // Add reply to thread
 			{
 				$tid_list = implode(',', $tids);
-				$query = $db->simple_select("threads", 'fid, subject, tid, firstpost', "tid IN ($tid_list)");
+				$query = $db->simple_select(TABLE_PREFIX."threads", 'fid, subject, tid, firstpost', "tid IN ($tid_list)");
 				require_once MYBB_ROOT."inc/datahandlers/post.php";
 				// Loop threads adding a reply to each one
 				while($thread = $db->fetch_array($query))

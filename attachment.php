@@ -28,11 +28,11 @@ $pid = intval($mybb->input['pid']);
 // Select attachment data from database
 if($aid)
 {
-	$query = $db->simple_select("attachments", "*", "aid='{$aid}'");
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "aid='{$aid}'");
 }
 else
 {
-	$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid='{$pid}'");
 }
 $attachment = $db->fetch_array($query);
 $pid = $attachment['pid'];

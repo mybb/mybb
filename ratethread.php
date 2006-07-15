@@ -14,7 +14,7 @@ require "./global.php";
 
 $lang->load("ratethread");
 
-$query = $db->simple_select("threads", "*", "tid='".intval($mybb->input['tid'])."'");
+$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."'");
 $thread = $db->fetch_array($query);
 if(!$thread['tid'])
 {
@@ -56,7 +56,7 @@ else
 {
 	$whereclause = "ipaddress='".$db->escape_string($ipaddress)."'";
 }
-$query = $db->simple_select("threadratings", "*", "$whereclause AND tid='".intval($mybb->input['tid'])."'");
+$query = $db->simple_select(TABLE_PREFIX."threadratings", "*", "$whereclause AND tid='".intval($mybb->input['tid'])."'");
 $ratecheck = $db->fetch_array($query);
 
 if($ratecheck['rid'])

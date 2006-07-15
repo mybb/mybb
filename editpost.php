@@ -27,7 +27,7 @@ if(!$mybb->user['uid'])
 // Get post info
 $pid = intval($mybb->input['pid']);
 
-$query = $db->simple_select("posts", "*", "pid='$pid'");
+$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid='$pid'");
 $post = $db->fetch_array($query);
 
 if(!$post['pid'])
@@ -174,7 +174,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 	if($mybb->input['delete'] == "yes")
 	{
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 		$firstcheck = $db->fetch_array($query);
 		if($firstcheck['pid'] == $pid)
 		{
@@ -217,7 +217,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				{
 					log_moderator_action($modlogdata, "Deleted Post");
 				}
-				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
+				$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
 				$next_post = $db->fetch_array($query);
 				if($next_post['pid']) 
 				{
@@ -342,7 +342,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	if($forumpermissions['canpostattachments'] != "no")
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		$query = $db->simple_select("attachments", "*", "posthash='{$posthash}' OR pid='{$pid}'");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "posthash='{$posthash}' OR pid='{$pid}'");
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{
@@ -408,7 +408,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$subject = $mybb->input['subject'];
 	}
 
-	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+	$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 	$firstcheck = $db->fetch_array($query);
 	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != "no" && $thread['poll'] < 1)
 	{
@@ -453,7 +453,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		");
 		$postinfo = $db->fetch_array($query);
 		
-		$query = $db->simple_select("attachments", "*", "pid='".intval($mybb->input['pid'])."'");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid='".intval($mybb->input['pid'])."'");
 		while($attachment = $db->fetch_array($query)) 
 		{
 			$attachcache[0][$attachment['aid']] = $attachment;
@@ -494,7 +494,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
 		}
-		$query = $db->simple_select("favorites", "*", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
+		$query = $db->simple_select(TABLE_PREFIX."favorites", "*", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
 		$subcheck = $db->fetch_array($query);
 		if($subcheck['tid']) 
 		{

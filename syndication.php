@@ -80,7 +80,7 @@ else
 
 // Find out which title to add to the feed.
 $title = $mybb->settings['bbname'];
-$query = $db->simple_select("forums f", "f.name, f.fid", "1=1 ".$forumlist);
+$query = $db->simple_select(TABLE_PREFIX."forums f", "f.name, f.fid", "1=1 ".$forumlist);
 $comma = " - ";
 while($forum = $db->fetch_array($query))
 {

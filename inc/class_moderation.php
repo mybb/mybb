@@ -119,7 +119,7 @@ class Moderation
 		global $db;
 
 		// Find the fids that have these redirects
-		$query = $db->simple_select("threads", "fid", "closed='moved|$tid'");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "fid", "closed='moved|$tid'");
 		while($forum = $db->fetch_array($query))
 		{
 			$fids[] = $forum['fid']; 
@@ -737,7 +737,7 @@ class Moderation
 
 		$tid_list = implode(",", $tids);
 		
-		$query = $db->simple_select("threads", "fid", "tid IN ($tid_list)");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "fid", "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
 			$update_forums[$thread['fid']] = $thread['fid'];
@@ -778,7 +778,7 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
 
 		// If this is the first post of the thread, also approve the thread
-		$query = $db->simple_select("posts", "tid", "({$where}) AND replyto='0'", array("limit" => 1));
+		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "({$where}) AND replyto='0'", array("limit" => 1));
 		while($post = $db->fetch_array($query))
 		{
 			$db->update_query(TABLE_PREFIX."threads", $approve, "tid='$post[tid]'");
@@ -844,7 +844,7 @@ class Moderation
 		$tid_list = implode(",", $tids);
 
 		// Get original subject
-		$query = $db->simple_select("threads", "subject, tid", "tid IN ($tid_list)");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "subject, tid", "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
 			// Update threads and first posts with new subject
@@ -889,7 +889,7 @@ class Moderation
 	{
 		global $db;
 		$pid_list = implode(',', $pids);
-		$query = $db->simple_select("posts", 'pid, visible', "pid IN ($pid_list)");
+		$query = $db->simple_select(TABLE_PREFIX."posts", 'pid, visible', "pid IN ($pid_list)");
 		while($post = $db->fetch_array($query))
 		{
 			if($post['visible'] == 1)
@@ -923,7 +923,7 @@ class Moderation
 	{
 		global $db;
 		$tid_list = implode(',', $tids);
-		$query = $db->simple_select("threads", 'tid, visible', "tid IN ($tid_list)");
+		$query = $db->simple_select(TABLE_PREFIX."threads", 'tid, visible', "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
 			if($thread['visible'] == 1)
@@ -956,7 +956,7 @@ class Moderation
 	{
 		global $db;
 		$tid_list = implode(',', $tids);
-		$query = $db->simple_select("threads", 'tid, closed', "tid IN ($tid_list)");
+		$query = $db->simple_select(TABLE_PREFIX."threads", 'tid, closed', "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
 			if($thread['closed'] == "yes")

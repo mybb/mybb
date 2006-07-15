@@ -32,7 +32,7 @@ if($mybb->input['action'] == "editdraft" && $pid)
 	$options = array(
 		"limit" => 1
 	);
-	$query = $db->simple_select("posts", "*", "pid=".$pid, $options);
+	$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid=".$pid, $options);
 	$post = $db->fetch_array($query);
 	if(!$post['pid'])
 	{
@@ -47,7 +47,7 @@ if($mybb->input['action'] == "editdraft" && $pid)
 $options = array(
 	"limit" => 1
 );
-$query = $db->simple_select("threads", "*", "tid='".$tid."'");
+$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".$tid."'");
 $thread = $db->fetch_array($query);
 $fid = $thread['fid'];
 
@@ -237,7 +237,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	if(!$mybb->input['savedraft'])
 	{
-		$query = $db->simple_select("posts p", "p.pid", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
+		$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
 		$duplicate_check = $db->fetch_field($query, "pid");
 		if($duplicate_check)
 		{
@@ -305,7 +305,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
-		$query = $db->simple_select("captcha", "*", "imagehash='$imagehash'");
+		$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash'");
 		$imgcheck = $db->fetch_array($query);
 		if(strtolower($imgcheck['imagestring']) != strtolower($imagestring))
 		{
@@ -603,7 +603,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
 		}
 		
-		$query = $db->simple_select("attachments", "*", $attachwhere);
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
 		while($attachment = $db->fetch_array($query)) 
 		{
 			$attachcache[0][$attachment['aid']] = $attachment;
@@ -643,7 +643,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$attachwhere = "posthash='".$db->escape_string($posthash)."'";
 		}
 		$attachments = '';
-		$query = $db->simple_select("attachments", "*", $attachwhere);
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachment['size'] = get_friendly_size($attachment['filesize']);
@@ -663,7 +663,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			}
 			$attachcount++;
 		}
-		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
 		if($usage['ausage'] > ($mybb->usergroup['attachquota']*1000) && $mybb->usergroup['attachquota'] != 0)
 		{
@@ -702,7 +702,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$imagehash = $db->escape_string($mybb->input['imagehash']);
 			$imagestring = $db->escape_string($mybb->input['imagestring']);
-			$query = $db->simple_select("captcha", "*", "imagehash='$imagehash' AND imagestring='$imagestring'");
+			$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash' AND imagestring='$imagestring'");
 			$imgcheck = $db->fetch_array($query);
 			if($imgcheck['dateline'] > 0)
 			{
@@ -738,7 +738,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$visibility = "visible='1'";
 		}
-		$query = $db->simple_select("posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
 		$numposts = $db->fetch_field($query, "post_count");
 		
 		if($numposts > $mybb->settings['postsperpage'])
@@ -748,7 +748,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");			
 		}
 		
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['postsperpage']));
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{
 			$pidin[] = $post['pid'];		
@@ -757,7 +757,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$pidin = implode(",", $pidin);
 		
 		// Fetch attachments
-		$query = $db->simple_select("attachments", "*", "pid IN ($pidin)");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid IN ($pidin)");
 		while($attachment = $db->fetch_array($query)) 
 		{
 			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
