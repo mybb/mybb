@@ -1601,7 +1601,7 @@ $headerinclude
 		<template name="forumbit_depth2_forum" version="100.07"><![CDATA[<tr>
 <td class="{$bgcolor}" align="center" valign="top"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" /></td>
 <td class="{$bgcolor}" valign="top">
-<strong><a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><br /><div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
+<strong><a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
 </td>
 <td class="{$bgcolor}" valign="top" align="center">{$threads}{$unapproved['unapproved_threads']}</td>
 <td class="{$bgcolor}" valign="top" align="center">{$posts}{$unapproved['unapproved_posts']}</td>
@@ -3969,18 +3969,18 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <!-- Begin AIM Remote -->
 <table align="center" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td align="center"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_man.gif" width=44 height=55 border=0 alt="Download AIM" /></a><img src="http://www.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width=73 height=55 border=0 alt="AIM Remote" /></td>
+<td align="center"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_man.gif" width="44" height="55" border="0" alt="Download AIM" /></a><img src="http://www.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width="73" height="55" border="0" alt="AIM Remote" /></td>
 </tr>
 <tr>
-<td align="center"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_im.gif" width=117 height=39 border=0 alt="Send me an Instant Message" /></a></td>
+<td align="center"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_im.gif" width="117" height="39" border="0" alt="Send me an Instant Message" /></a></td>
 </tr>
 <tr>
-<td align="center"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_bud.gif" width=117 height=39 border=0 alt="Add me to Your Buddy List" /></a></td>
+<td align="center"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_bud.gif" width="117" height="39" border="0" alt="Add me to Your Buddy List" /></a></td>
 </tr>
 <tr>
-<td align="center"><a href="http://www.aol.co.uk/aim/remote.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botadd.gif" width=117 height=23 border=0 alt="Add Remote to Your Page" /></a></td>
+<td align="center"><a href="http://www.aol.co.uk/aim/remote.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botadd.gif" width="117" height="23" border="0" alt="Add Remote to Your Page" /></a></td>
 </tr>
-<td align="center"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width=117 height=29 border=0 alt="Download AOL Instant Messenger" /></a></td>
+<td align="center"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width="117" height="29" border="0" alt="Download AOL Instant Messenger" /></a></td>
 </tr>
 </table>
 <!-- End AIM Remote -->

@@ -35,7 +35,7 @@ class PostDataHandler extends DataHandler
 	* @var string
 	*/
 	var $language_file = 'datahandler_post';
-	
+
 	/**
 	* The prefix for the language variables used in the data handler.
 	*
@@ -50,7 +50,7 @@ class PostDataHandler extends DataHandler
 	 * edit = Editing a thread or post
 	 */
 	var $action;
-	
+
 	/**
 	 * Array of data inserted in to a post.
 	 *
@@ -64,14 +64,14 @@ class PostDataHandler extends DataHandler
 	 * @var array
 	 */
 	var $post_update_data = array();
-	
+
 	/**
 	 * Post ID currently being manipulated by the datahandlers.
 	 *
 	 * @var int
 	 */
-	var $pid = 0;	
-	
+	var $pid = 0;
+
 	/**
 	 * Array of data inserted in to a thread.
 	 *
@@ -85,13 +85,13 @@ class PostDataHandler extends DataHandler
 	 * @var array
 	 */
 	var $thread_update_data = array();
-	
+
 	/**
 	 * Thread ID currently being manipulated by the datahandlers.
 	 *
 	 * @var int
 	 */
-	var $tid = 0;	
+	var $tid = 0;
 
 	/**
 	 * Verifies the author of a post and fetches the username if necessary.
@@ -141,7 +141,7 @@ class PostDataHandler extends DataHandler
 		$subject = &$post['subject'];
 
 		$subject = trim($subject);
-		
+
 		// Are we editing an existing thread or post?
 		if($this->method == "update" && $post['pid'])
 		{
@@ -213,7 +213,7 @@ class PostDataHandler extends DataHandler
 	function verify_message()
 	{
 		global $mybb;
-		
+
 		$post = &$this->data;
 
 		$post['message'] = trim($post['message']);
@@ -318,7 +318,7 @@ class PostDataHandler extends DataHandler
 			{
 				require_once MYBB_ROOT."inc/class_parser.php";
 				$parser = new postParser;
-				
+
 				// Parse the message.
 				$parser_options = array(
 					"allow_html" => $forum['allowhtml'],
@@ -601,7 +601,10 @@ class PostDataHandler extends DataHandler
 				$visible = 1;
 			}
 		}
-		
+
+		//
+		// TO BE REMOVED BEFORE 1.2 PUBLIC RELEASE
+		//
 		if($post['username'] == '')
 		{
 			echo "Something has gone horribly wrong. Report this as a bug and include the information below.<hr /><pre>";
@@ -610,7 +613,10 @@ class PostDataHandler extends DataHandler
 			echo "Good evening, and good night.";
 			exit;
 		}
-		
+		//
+		// END TO BE REMOVED
+		//
+
 		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
 		$draft_check = $db->fetch_field($query, "pid");
 
@@ -631,9 +637,9 @@ class PostDataHandler extends DataHandler
 				"visible" => $visible,
 				"posthash" => $db->escape_string($post['posthash'])
 			);
-	
+
 			$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
-				
+
 			$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='{$post['pid']}'");
 			$this->pid = $post['pid'];
 		}
@@ -682,7 +688,7 @@ class PostDataHandler extends DataHandler
 			$subject = $parser->parse_badwords($thread['subject']);
 			$excerpt = $parser->strip_mycode($post['message']);
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-			
+
 			// Fetch any users subscribed to this thread and queue up their subscription notices
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language
@@ -832,7 +838,7 @@ class PostDataHandler extends DataHandler
 		{
 			$this->verify_post_flooding();
 		}
-		
+
 		$plugins->run_hooks_by_ref("datahandler_post_validate_thread", $this);
 
 		// We are done validating, return.
@@ -894,14 +900,14 @@ class PostDataHandler extends DataHandler
 				$visible = 1;
 			}
 		}
-		
+
 		// Have a post ID but not a thread ID - fetch thread ID
 		if($thread['pid'] && !$thread['tid'])
 		{
 			$db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['pid']}");
 			$thread['tid'] = $db->fetch_field($query, "tid");
 		}
-		
+
 		if($thread['username'] == '')
 		{
 			echo "Something has gone horribly wrong. Report this as a bug and include the information below.<hr /><pre>";
@@ -909,11 +915,11 @@ class PostDataHandler extends DataHandler
 			echo "</pre></hr />";
 			echo "Good evening, and good night.";
 			exit;
-		}		
+		}
 
 		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
 		$draft_check = $db->fetch_field($query, "pid");
-		
+
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
 		if($draft_check)
 		{
@@ -988,7 +994,7 @@ class PostDataHandler extends DataHandler
 				"posthash" => $db->escape_string($thread['posthash'])
 			);
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread_post", $this);
-					
+
 			$db->insert_query(TABLE_PREFIX."posts", $this->post_insert_data);
 			$this->pid = $db->insert_id();
 
@@ -1228,7 +1234,7 @@ class PostDataHandler extends DataHandler
 		if($first_post)
 		{
 			$this->tid = $post['tid'];
-			
+
 			if(isset($post['subject']))
 			{
 				$this->thread_update_data['subject'] = $db->escape_string($post['subject']);
@@ -1241,7 +1247,7 @@ class PostDataHandler extends DataHandler
 			if(count($updatethread) > 0)
 			{
 				$plugins->run_hooks_by_ref("datahandler_post_update_thread", $this);
-				
+
 				$db->update_query(TABLE_PREFIX."threads", $this->thread_update_data, "tid='".intval($post['tid'])."'");
 			}
 		}
@@ -1249,7 +1255,7 @@ class PostDataHandler extends DataHandler
 		// Prepare array for post updating.
 
 		$this->pid = $post['pid'];
-		
+
 		if(isset($post['subject']))
 		{
 			$this->this->post_update_data['subject'] = $db->escape_string($post['subject']);
@@ -1283,9 +1289,9 @@ class PostDataHandler extends DataHandler
 			$this->post_update_data['edituid'] = intval($post['edit_uid']);
 			$this->post_update_data['edittime'] = time();
 		}
-		
+
 		$plugins->run_hooks_by_ref("datahandler_post_update", $this);
-		
+
 		$db->update_query(TABLE_PREFIX."posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
 
 		// Automatic subscription to the thread
