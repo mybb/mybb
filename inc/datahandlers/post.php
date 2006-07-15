@@ -973,7 +973,7 @@ class PostDataHandler extends DataHandler
 			$this->tid = $db->insert_id();
 
 			$this->post_insert_data = array(
-				"tid" => $tid,
+				"tid" => $this->tid,
 				"fid" => $thread['fid'],
 				"subject" => $db->escape_string($thread['subject']),
 				"icon" => intval($thread['icon']),
