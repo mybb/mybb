@@ -423,10 +423,12 @@ function build_postbit($post, $pmprevann=0)
 	{
 		$post['signature'] = "";
 	}
-
-	if($post['iconpath'])
+	
+	$icon_cache = $cache->read("posticons");
+	if($post['icon'] > 0 && $icon_cache[$post['icon']])
 	{
-		$post['icon'] = "<img src=\"".$post['iconpath']."\" alt=\"".$post['iconname']."\">&nbsp;";
+		$icon = $icon_cache[$post['icon']];
+		$post['icon'] = "<img src=\"{$icon['path']}"\" alt=\"{$icon['name']}\">&nbsp;";
 	}
 	else
 	{

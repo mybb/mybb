@@ -254,7 +254,7 @@ class Moderation
 			"visible" => 1,
 			);
 		$db->update_query(TABLE_PREFIX."threads", $approve, "tid IN ($tid_list)");
-		$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN ($tid_list) AND replyto='0'", 1);
+		$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN ($tid_list)", 1);
 		
 		// Update stats
 		$cache->updatestats();

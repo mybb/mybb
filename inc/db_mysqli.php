@@ -153,7 +153,7 @@ class databaseEngine
 	 */
 	function explain_query($string, $qtime)
 	{
-		if(preg_match("#^select#i", $string))
+		if(preg_match("#^\s*select#i", $string))
 		{
 			$query = mysqli_query($this->link, "EXPLAIN $string");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".

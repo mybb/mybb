@@ -1017,11 +1017,13 @@ if($mybb->input['action'] == "favorites")
 	}
 	$multipage = multipage($threadcount, $perpage, $page, "usercp.php?action=favorites");
 	$fpermissions = forum_permissions();
+	
+	$icon_cache = $cache->read("posticons");
+	
 	$query = $db->query("
-		SELECT f.*, t.*, i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username
+		SELECT f.*, t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."favorites f
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (f.tid=t.tid)
-		LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 		WHERE f.type='f' AND f.uid='".$mybb->user['uid']."'
 		ORDER BY t.lastpost DESC
@@ -1047,9 +1049,10 @@ if($mybb->input['action'] == "favorites")
 				$favorite['username'] = $favorite['threadusername'];
 			}
 			$favorite['subject'] = htmlspecialchars_uni($parser->parse_badwords($favorite['subject']));
-			if($favorite['iconpath'])
+			if($favorite['icon'] > 0 && $icon_cache[$favorite['icon']])
 			{
-				$icon = "<img src=\"$favorite[iconpath]\" alt=\"$favorite[iconname]\" />";
+				$icon = $icon_cache[$favorite['icon']];
+				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 			}
 			else
 			{
@@ -1118,10 +1121,9 @@ if($mybb->input['action'] == "subscriptions")
 	$multipage = multipage($threadcount, $perpage, $page, "usercp.php?action=subscriptions");
 	$fpermissions = forum_permissions();
 	$query = $db->query("
-		SELECT s.*, t.*, i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username
+		SELECT s.*, t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."favorites s
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
-		LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 		WHERE s.type='s' AND s.uid='".$mybb->user['uid']."'
 		ORDER BY t.lastpost DESC
@@ -1149,9 +1151,10 @@ if($mybb->input['action'] == "subscriptions")
 				$subscription['username'] = $subscription['threadusername'];
 			}
 			$subscription['subject'] = htmlspecialchars_uni($parser->parse_badwords($subscription['subject']));
-			if($subscription['iconpath'])
+			if($subscription['icon'] > 0 && $icon_cache[$subscription['icon']])
 			{
-				$icon = "<img src=\"$subscription[iconpath]\" alt=\"$subscription[iconname]\" />";
+				$icon = $icon_cache[$subscription['icon']];
+				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 			}
 			else
 			{

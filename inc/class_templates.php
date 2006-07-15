@@ -26,11 +26,11 @@ class templates
 	var $cache = array();
 
 	/**
-	 * The current template list.
+	 * Array of templates loaded that were not loaded via the cache
 	 *
-	 * @var string
+	 * @var array
 	 */
-	var $templatelist = "";
+	var $uncached_templates = array();
 
 	/**
 	 * Cache the templates.
@@ -39,22 +39,15 @@ class templates
 	 */
 	function cache($templates)
 	{
-		global $db, $extras, $theme;
+		global $db, $theme;
 		$sql = $sqladd = "";
 		$names = explode(",", $templates);
 		foreach($names as $key => $title)
 		{
-			$sql .= ",'".trim($title)."'";
-		}
-		if(is_array($extras))
-		{
-			foreach($extras as $val => $extra)
-			{
-				$sqladd .= " OR (title='cache_".trim($extra)."')";
-			}
+			$sql .= " ,'".trim($title)."'";
 		}
 
-		$query = $db->query("SELECT title,template FROM ".TABLE_PREFIX."templates WHERE title IN (''$sql) AND sid IN ('-2','-1','".$theme['templateset']."') $sqladd ORDER BY sid ASC");
+		$query = $db->query("SELECT title,template FROM ".TABLE_PREFIX."templates WHERE title IN (''$sql) AND sid IN ('-2','-1','".$theme['templateset']."') ORDER BY sid ASC");
 		while($template = $db->fetch_array($query))
 		{
 			$this->cache[$template['title']] = $template['template'];
@@ -83,6 +76,10 @@ class templates
 				LIMIT 0, 1
 			");
 			$gettemplate = $db->fetch_array($query);
+			if($mybb->debug)
+			{
+				$this->uncached_templates[$title] = $title;
+			}
 			$this->cache[$title] = $gettemplate['template'];
 		}
 		$template = $this->cache[$title];

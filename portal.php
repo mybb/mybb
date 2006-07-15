@@ -354,11 +354,13 @@ foreach($forum as $fid => $forumrow)
 {
     $forumpermissions[$fid] = forum_permissions($fid);
 }
+
+$icon_cache = $cache->read("posticons");
+
 $announcements = '';
 $query = $db->query("
-	SELECT t.*, i.name as iconname, i.path as iconpath, t.username AS threadusername, u.username, u.avatar
+	SELECT t.*, t.username AS threadusername, u.username, u.avatar
 	FROM ".TABLE_PREFIX."threads t
-	LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon)
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 	WHERE fid IN (".$mybb->settings['portal_announcementsfid'].") AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 	ORDER BY t.dateline DESC
@@ -374,9 +376,10 @@ while($announcement = $db->fetch_array($query))
 		$announcement['username'] = $announcement['threadusername'];
 	}
 	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
-	if($announcement['iconpath'])
+	if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
 	{
-		$icon = "<img src=\"$announcement[iconpath]\" alt=\"$announcement[iconname]\" />";
+		$icon = $icon_cache[$announcement['icon']];
+		$icon = "<img src=\"{$icon[path]}\" alt=\"{$icon[name]}\" />";
 	}
 	else
 	{

@@ -272,6 +272,7 @@ function buildcaches()
 	$cache->updateusertitles();
 	$cache->updatereportedposts();
 	$cache->updatemycode();
+	$cache->updateposticons();
 	$contents .= "done</p>";
 
 	$output->print_contents("$contents<p>Please press next to continue</p>");

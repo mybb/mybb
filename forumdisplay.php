@@ -490,10 +490,12 @@ if($announcements)
 	$shownormalsep = true;
 }
 
+$icon_cache = $cache->read("posticons");
+
 // Start Getting Threads
 $query = $db->query("
-	SELECT t.*, $ratingadd i.name AS iconname, i.path AS iconpath, t.username AS threadusername, u.username
-	FROM ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid = t.icon)
+	SELECT t.*, $ratingadd t.username AS threadusername, u.username
+	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 	WHERE t.fid='$fid' $visibleonly $datecutsql
 	ORDER BY t.sticky DESC, $sortfield $sortordernow
@@ -587,9 +589,11 @@ if(is_array($threadcache))
 		}
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
-		if($thread['iconpath'])
+		
+		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 		{
-			$icon = "<img src=\"{$thread['iconpath']}\" alt=\"{$thread['iconname']}\" />";
+			$icon = $icon_cache[$thread['icon']];
+			$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 		}
 		else
 		{
@@ -680,6 +684,7 @@ if(is_array($threadcache))
 			$modbit = '';
 		}
 
+		$moved = explode("|", $thread['closed']);
 
 		if($moved[0] == "moved")
 		{
@@ -760,8 +765,6 @@ if(is_array($threadcache))
 		}
 
 		$folder .= "folder";
-
-		$moved = explode("|", $thread['closed']);
 
 		$inline_edit_tid = $thread['tid'];
 

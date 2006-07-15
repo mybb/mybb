@@ -465,10 +465,9 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{	
 		// Figure out the poster's other information.
 		$query = $db->query("
-			SELECT u.*, f.*, i.path as iconpath, i.name as iconname
+			SELECT u.*, f.*
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='$icon')
 			WHERE u.uid='".$post['uid']."'
 			LIMIT 1
 		");

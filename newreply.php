@@ -567,10 +567,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$mybb->input['icon'] = intval($mybb->input['icon']);
 		$query = $db->query("
-			SELECT u.*, f.*, i.path as iconpath, i.name as iconname
+			SELECT u.*, f.*
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".intval($mybb->input['icon'])."')
 			WHERE u.uid='".$mybb->user['uid']."'
 		");
 		$post = $db->fetch_array($query);
@@ -585,7 +584,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$post['message'] = $previewmessage;
 		$post['subject'] = $subject;
-		$post['icon'] = $icon;
+		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $postoptions['disablesmilies'];
 		$post['dateline'] = time();
 		$post['includesig'] = $mybb->input['postoptions']['signature'];
@@ -749,7 +748,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");			
 		}
 		
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['perpage']));
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{
 			$pidin[] = $post['pid'];		

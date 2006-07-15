@@ -804,6 +804,7 @@ function install_done()
 	$cache->updateusertitles();
 	$cache->updatereportedposts();
 	$cache->updatemycode();
+	$cache->updateposticons();
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_success;

@@ -307,13 +307,14 @@ class UserDataHandler extends DataHandler
 			}
 
 			// Check if the day actually exists.
-			if($birthday['day'] > date("t", mktime(0, 0, 0, $birthday['month'], 1, $birthday['year'])))
+			$months = get_bdays($birthday['year']);
+			if($birthday['day'] > $months[$birthday['month'])
 			{
 				$this->set_error("invalid_birthday");
 				return false;
 			}
 		}
-		
+				
 		// Error if a year exists and the year is out of range
 		if($birthday['year'] != 0 && ($birthday['year'] < (date("Y")-100)) || $birthday['year'] > date("Y"))
 		{

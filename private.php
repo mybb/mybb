@@ -201,10 +201,9 @@ if($mybb->input['action'] == "send")
 	{
 		$options = $mybb->input['options'];
 		$query = $db->query("
-			SELECT u.username AS userusername, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.namestyle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.usereputationsystem
+			SELECT u.username AS userusername, u.*, f.*, g.title AS grouptitle, g.usertitle AS groupusertitle, g.namestyle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.usereputationsystem
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid='".intval($mybb->input['icon'])."')
 			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
 			WHERE u.uid='".$mybb->user[uid]."'
 		");
@@ -326,11 +325,10 @@ if($mybb->input['action'] == "read")
 	$pmid = intval($mybb->input['pmid']);
 
 	$query = $db->query("
-		SELECT pm.*, u.*, f.*, i.path as iconpath, i.name as iconname, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle
+		SELECT pm.*, u.*, f.*, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
 		LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-		LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon)
 		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
 		WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user[uid]."'
 	");
@@ -1019,12 +1017,14 @@ if(!$mybb->input['action'])
 	}
 	$multipage = multipage($pmscount['total'], $perpage, $page, "private.php?fid=$folder");
 	$messagelist = '';
+	
+	$icon_cache = $cache->read("posticons");
+	
 	$query = $db->query("
-		SELECT pm.*, fu.username AS fromusername, tu.username AS tousername, i.path as iconpath, i.name as iconname
+		SELECT pm.*, fu.username AS fromusername, tu.username AS tousername
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
 		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-		LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=pm.icon)
 		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user[uid]."'
 		ORDER BY pm.dateline DESC
 		LIMIT $start, $perpage
@@ -1088,9 +1088,10 @@ if(!$mybb->input['action'])
 			{
 				$denyreceipt = '';
 			}
-			if($message['iconpath'])
+			if($message['icon'] > 0 && $icon_cache[$message['icon']])
 			{
-				$icon = "<img src=\"$message[iconpath]\" alt=\"$message[iconname]\" />&nbsp;";
+				$icon = $icon_cache[$message['icon']];
+				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />&nbsp;";
 			}
 			else
 			{

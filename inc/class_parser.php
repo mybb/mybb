@@ -152,6 +152,8 @@ class postParser
 		
 		$message = my_wordwrap($message);
 		
+		$message = str_replace("  ", "&nbsp;&nbsp;", $message); 
+		
 		$message = $plugins->run_hooks("parse_message_end", $message);
 				
 		return $message;

@@ -479,11 +479,11 @@ function error_no_permission()
 	if($mybb->user['uid'])
 	{
 		$lang->error_nopermission_user_5 = sprintf($lang->error_nopermission_user_5, $mybb->user['username']);
-		eval("\$errorpage = \"error_nopermission_loggedin\";");
+		eval("\$errorpage = \"".$templates->get("error_nopermission_loggedin")."\";");
 	}
 	else
 	{
-		eval("\$errorpage = \"error_nopermission\";");
+		eval("\$errorpage = \"".$templates->get("error_nopermission")."\";");
 	}
 	error($errorpage);
 }
@@ -1997,7 +1997,7 @@ function reset_breadcrumb()
  */
 function debug_page()
 {
-	global $db, $querytime, $debug, $templatelist, $htmldoctype, $mybb, $maintimer, $globaltime, $ptimer, $parsetime;
+	global $db, $querytime, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime;
 
 	$totaltime = $maintimer->totaltime;
 	$phptime = $maintimer->format($maintimer->totaltime - $querytime);
@@ -2060,24 +2060,39 @@ function debug_page()
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">GZip Encoding Status:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"75%\" colspan=\"3\"><font face=\"Tahoma\" size=\"2\">$gzipen</font></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$gzipen</font></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">No. Templates Used:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".count($templates->cache)." (".intval(count(explode(",", $templatelist)))." Cached / ".intval(count($templates->uncached_templates))." Manually Loaded)</font></td>\n";	
 	echo "</tr>\n";
 	echo "</table>\n";
 	echo "<h2>Database Queries (".$db->query_count." Total) </h2>\n";
 	echo $db->explain;
 	echo "<h2>Template Statistics</h2>\n";
-	echo "<b>Templates loaded at startup:</b> $templatelist<br />\n";
-	$cached = count($templates->cache);
-	echo "<b>No of templates cached:</b> $cached<br />\n";
-	if($cached > 0)
+	
+	if(count($templates->cache) > 0)
 	{
-		echo "<b>Cached templates:</b> \n";
-		$comma = "";
-		foreach($templates->cache as $key => $val)
-		{
-			echo "$comma$key\n";
-			$comma = ", ";
-		}
+		echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
+		echo "<tr>\n";
+		echo "<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>Templates Used (Loaded for this Page) - ".count($templates->cache)." Total</strong></td>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td style=\"background: #fff;\">".implode(", ", array_keys($templates->cache))."</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+		echo "<br />\n";
+	}
+	
+	if(count($templates->uncached_templates > 0))
+	{
+		echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
+		echo "<tr>\n";
+		echo "<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>Templates Requiring Additional Calls (Not Cached at Startup) - ".count($templates->uncached_templates)." Total</strong></td>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td style=\"background: #fff;\">".implode(", ", $templates->uncached_templates)."</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+		echo "<br />\n";
 	}
 	echo "</body>";
 	echo "</html>";
@@ -2610,7 +2625,7 @@ function get_weekday($month, $day, $year)
 /**
  * Workaround for date limitation in PHP to establish the day of a birthday (Provided by meme)
  *
- * @param int The yar.
+ * @param int The year.
  * @return array The number of days in each month of that year
  */
 function get_bdays($in)

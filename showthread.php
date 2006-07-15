@@ -226,7 +226,7 @@ if($mybb->input['action'] == "newpost")
 		"order_by" => "dateline",
 		"order_dir" => "asc"
 	);
-	$query = $db->simple_select("posts", "pid", "tid=".$tid." AND dateline > '{$last_read}'");
+	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid." AND dateline > '{$lastread}'");
 	$newpost = $db->fetch_array($query);
 	if($newpost['pid'])
 	{
@@ -534,11 +534,10 @@ if($mybb->input['action'] == "thread")
 			$where = " ORDER BY dateline ASC LIMIT 0, 1";
 		}
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, i.path as iconpath, i.name as iconname, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
 			WHERE p.tid='$tid' $visible $where
 		");
@@ -565,10 +564,9 @@ if($mybb->input['action'] == "thread")
 
 		// Build the threaded post display tree.
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, i.path as iconpath, i.name as iconname
+			SELECT u.*, u.username AS userusername, p.*
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon)
 			WHERE p.tid='$tid'
 			$visible
 			ORDER BY p.dateline
@@ -682,11 +680,10 @@ if($mybb->input['action'] == "thread")
 		$pfirst = true;
 		$posts = '';
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, i.path as iconpath, i.name as iconname, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			LEFT JOIN ".TABLE_PREFIX."icons i ON (i.iid=p.icon)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
 			WHERE $pids
 			ORDER BY p.dateline
