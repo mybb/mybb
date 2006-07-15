@@ -63,7 +63,7 @@ class session
 		}
 
 		// Attempt to load the session from the database.
-		$query = $db->simple_select("sessions", "*", "sid='".$this->sid."' AND ip='".$this->ipaddress."'", 1);
+		$query = $db->simple_select("sessions", "*", "sid='".$this->sid."' AND ip='".$db->escape_string($this->ipaddress)."'", 1);
 		$session = $db->fetch_array($query);
 		if($session['sid'])
 		{
@@ -496,7 +496,7 @@ class session
 			$onlinedata['sid'] = md5(uniqid(microtime()));
 		}
 		$onlinedata['time'] = time();
-		$onlinedata['ip'] = $this->ipaddress;
+		$onlinedata['ip'] = $db->escape_string($this->ipaddress);
 		$onlinedata['location'] = $db->escape_string(get_current_location());
 		$onlinedata['useragent'] = $db->escape_string($this->useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);

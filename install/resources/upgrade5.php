@@ -239,12 +239,12 @@ function upgrade5_redoconfig()
  * Daatabase configuration
  */
 
-\$config['dbtype'] = \"{$config['dbtype']}\";
-\$config['hostname'] = \"{$config['hostname']}\";
-\$config['username'] = \"{$config['username']}}\";
-\$config['password'] = \"{$config['password']}\";
-\$config['database'] = \"{$config['database']}\";
-\$config['table_prefix'] = \"{$config['table_prefix']}\";
+\$config['dbtype'] = '{$config['dbtype']}';
+\$config['hostname'] = '{$config['hostname']}';
+\$config['username'] = '{$config['username']}}';
+\$config['password'] = '{$config['password']}';
+\$config['database'] = '{$config['database']}';
+\$config['table_prefix'] = '{$config['table_prefix']}';
 
 /**
  * Admin CP directory
@@ -254,7 +254,7 @@ function upgrade5_redoconfig()
  *  new directory.
  */
 
-\$config['admin_dir'] = \"{$config['admindir']}\";
+\$config['admin_dir'] = '{$config['admindir']}';
 
 /**
  * Hide all Admin CP links
@@ -276,7 +276,7 @@ function upgrade5_redoconfig()
  *  you can change the value below to 'files' from 'db'.
  */
 
-\$config['cache_store'] = \"{$config['cachestore']}\";
+\$config['cache_store'] = '{$config['cachestore']}';
 
 /**
  * Super Administrators
@@ -286,7 +286,7 @@ function upgrade5_redoconfig()
  *  cannot be altered either.
  */
 
-\$config['super_admins'] = \"{$uid}\";
+\$config['super_admins'] = '{$uid}';
 
 ?>";
 

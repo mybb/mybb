@@ -226,7 +226,7 @@ if($mybb->input['action'] == "newpost")
 		"order_by" => "dateline",
 		"order_dir" => "asc"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid." AND dateline > '{$lastread}'");
+	$query = $db->simple_select("posts", "pid", "tid=".$tid." AND dateline > '{$lastread}'");
 	$newpost = $db->fetch_array($query);
 	if($newpost['pid'])
 	{
@@ -680,7 +680,7 @@ if($mybb->input['action'] == "thread")
 		$pfirst = true;
 		$posts = '';
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*
+			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername 
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)

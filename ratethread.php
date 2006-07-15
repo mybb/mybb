@@ -54,7 +54,7 @@ if($mybb->user['uid'] != "0")
 }
 else
 {
-	$whereclause = "ipaddress='$ipaddress'";
+	$whereclause = "ipaddress='".$db->escape_string($ipaddress)."'";
 }
 $query = $db->simple_select("threadratings", "*", "$whereclause AND tid='".intval($mybb->input['tid'])."'");
 $ratecheck = $db->fetch_array($query);
@@ -82,7 +82,7 @@ else
 			'tid' => intval($mybb->input['tid']),
 			'uid' => $mybb->user['uid'],
 			'rating' => $mybb->input['rating'],
-			'ipaddress' => $ipaddress
+			'ipaddress' => $db->escape_string($ipaddress)
 		);
 		$db->insert_query(TABLE_PREFIX."threadratings", $updatearray);
 	}
@@ -91,7 +91,7 @@ else
 		$updatearray = array(
 			'tid' => intval($mybb->input['tid']),
 			'rating' => $mybb->input['rating'],
-			'ipaddress' => $ipaddress
+			'ipaddress' => $db->escape_string($ipaddress)
 		);
 		$db->insert_query(TABLE_PREFIX."threadratings", $updatearray);
 		$time = time();

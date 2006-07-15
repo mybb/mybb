@@ -331,7 +331,7 @@ if(is_array($bannedips))
 			// This address is banned, show an error and delete the session
 			if(strstr($ipaddress, $bannedip))
 			{
-				$db->delete_query(TABLE_PREFIX."sessions", "ip='{$ipaddress}' OR uid='{$mybb->user['uid']}'");
+				$db->delete_query(TABLE_PREFIX."sessions", "ip='".$db->escape_string($ipaddress)."' OR uid='{$mybb->user['uid']}'");
 				error($lang->error_banned);
 			}
 		}

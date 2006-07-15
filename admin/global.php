@@ -71,7 +71,7 @@ if($mybb->input['do'] == "login")
 			"sid" => md5(uniqid(microtime())),
 			"uid" => $user['uid'],
 			"loginkey" => $user['loginkey'],
-			"ip" => get_ip(),
+			"ip" => $db->escape_string(get_ip()),
 			"dateline" => time(),
 			"lastactive" => time()
 		);

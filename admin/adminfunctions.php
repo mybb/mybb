@@ -1174,10 +1174,10 @@ function logadmin()
 	$insertquery = array(
 		"uid" => $mybbadmin['uid'],
 		"dateline" => $now,
-		"scriptname" => $scriptname,
+		"scriptname" => $db->escape_string($scriptname),
 		"action" => $db->escape_string($mybb->input['action']),
 		"querystring" => $db->escape_string($querystring),
-		"ipaddress" => $ipaddress
+		"ipaddress" => $db->escape_string($ipaddress)
 	);
 
 	$db->insert_query(TABLE_PREFIX."adminlog", $insertquery);

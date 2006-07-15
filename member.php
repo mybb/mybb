@@ -63,7 +63,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 	{
 		$time = time();
 		$datecut = $time-(60*60*$mybb->settings['betweenregstime']);
-		$query = $db->simple_select("users", "*", "regip='$ipaddress' AND regdate > '$datecut'");
+		$query = $db->simple_select("users", "*", "regip='".$db->escape_string($ipaddress)."' AND regdate > '$datecut'");
 		$regcount = $db->num_rows($query);
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
 		{
@@ -950,7 +950,7 @@ else if($mybb->input['action'] == "logout")
 				"lastvisit" => $time,
 				);
 			$db->update_query(TABLE_PREFIX."users", $lastvisit, "uid='".$mybb->user['uid']."'");
-			$db->delete_query(TABLE_PREFIX."sessions", "uid='".$mybb->user['uid']."' OR ip='".$ipaddress."'");
+			$db->delete_query(TABLE_PREFIX."sessions", "sid='".$session->sid."'");
 
 			if(function_exists("loggedOut"))
 			{

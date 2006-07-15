@@ -375,12 +375,12 @@ function create_tables()
  * Daatabase configuration
  */
 
-\$config['dbtype'] = \"{$mybb->input['dbengine']}\";
-\$config['hostname'] = \"{$mybb->input['dbhost']}\";
-\$config['username'] = \"{$mybb->input['dbuser']}\";
-\$config['password'] = \"{$mybb->input['dbpass']}\";
-\$config['database'] = \"{$mybb->input['dbname']}\";
-\$config['table_prefix'] = \"{$mybb->input['tableprefix']}\";
+\$config['dbtype'] = '{$mybb->input['dbengine']}';
+\$config['hostname'] = '{$mybb->input['dbhost']}';
+\$config['username'] = '{$mybb->input['dbuser']}';
+\$config['password'] = '{$mybb->input['dbpass']}';
+\$config['database'] = '{$mybb->input['dbname']}';
+\$config['table_prefix'] = '{$mybb->input['tableprefix']}';
 
 /**
  * Admin CP directory
@@ -390,7 +390,7 @@ function create_tables()
  *  new directory.
  */
 
-\$config['admin_dir'] = \"admin\";
+\$config['admin_dir'] = 'admin';
 
 /**
  * Hide all Admin CP links
@@ -412,7 +412,7 @@ function create_tables()
  *  you can change the value below to 'files' from 'db'.
  */
 
-\$config['cache_store'] = \"db\";
+\$config['cache_store'] = 'db';
 
 /**
  * Super Administrators
@@ -422,7 +422,7 @@ function create_tables()
  *  cannot be altered either.
  */
 
-\$config['super_admins'] = \"1\";
+\$config['super_admins'] = '1';
  
 ?>";
 
@@ -752,7 +752,7 @@ function install_done()
 		'dst' => 'no',
 		'threadmode' => '',
 		'daysprune' => 0,
-		'regip' => $ipaddress,
+		'regip' => $db->escape_string($ipaddress),
 		'language' => '',
 		'showcodebuttons' => 1,
 		'tpp' => 0,
