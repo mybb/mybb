@@ -209,12 +209,11 @@ class databaseEngine
 				"<td style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Write Query</strong></td>\n".
 				"</tr>\n".
 				"<tr style=\"background-color: #fefefe;\">\n".
-				"<td><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"<td><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr>\n".
 				"<td bgcolor=\"#ffffff\">Query Time: ".$qtime."</td>\n".
 				"</tr>\n".
-				"</table>\n".
 				"</table>\n".
 				"<br />\n";
 		}

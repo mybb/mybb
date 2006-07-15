@@ -2022,57 +2022,65 @@ function debug_page()
 	{
 		$gzipen = "Disabled";
 	}
-	echo "<h1>MyBB Debug Information</h1>";
-	echo "<h2>Page Generation</h2>";
-	echo "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">";
-	echo "<tr>";
-	echo "<td bgcolor=\"#CCCCCC\" colspan=\"4\"><b><font size=\"2\" face=\"Tahoma\">Page Generation Statistics</font></b></td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Page Generation Time:</font></b></td>";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$totaltime seconds</font></b></td>";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">No. MySQL Queries:</font></b></td>";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$db->query_count</font></b></td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Proccessing Time:</font></b></td>";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$phptime seconds ($percentphp%)</font></b></td>";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">MySQL Processing Time:</font></b></td>";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$querytime seconds ($percentsql%)</font></b></td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Page Parsing Time:</font></b></td>";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$parsetime seconds</font></b></td>";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Global.php Processing Time:</font></b></td>";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$globaltime seconds</font></b></td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Version:</font></b></td>";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$phpversion</font></b></td>";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Server Load:</font></b></td>";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$serverload</font></b></td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">GZip Encoding Status:</font></b></td>";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"75%\" colspan=\"3\"><font face=\"Tahoma\" size=\"2\">$gzipen</font></b></td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "<h2>Database Queries (".$db->query_count." Total) </h2>";
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+	echo "<html lang=\"en\">";
+	echo "<head>";
+	echo "<title>MyBB Debug Information</title>";
+	echo "</head>";
+	echo "<body>";
+	echo "<h1>MyBB Debug Information</h1>\n";
+	echo "<h2>Page Generation</h2>\n";
+	echo "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
+	echo "<tr>\n";
+	echo "<td bgcolor=\"#CCCCCC\" colspan=\"4\"><b><span style=\"size:2;\">Page Generation Statistics</span></b></td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Page Generation Time:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$totaltime seconds</font></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">No. MySQL Queries:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$db->query_count</font></td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Proccessing Time:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$phptime seconds ($percentphp%)</font></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">MySQL Processing Time:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$querytime seconds ($percentsql%)</font></td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Page Parsing Time:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$parsetime seconds</font></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Global.php Processing Time:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$globaltime seconds</font></td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Version:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$phpversion</font></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Server Load:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$serverload</font></td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">GZip Encoding Status:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"75%\" colspan=\"3\"><font face=\"Tahoma\" size=\"2\">$gzipen</font></td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "<h2>Database Queries (".$db->query_count." Total) </h2>\n";
 	echo $db->explain;
-	echo "<h2>Template Statistics</h2>";
-	echo "<b>Templates loaded at startup:</b> $templatelist<br />";
+	echo "<h2>Template Statistics</h2>\n";
+	echo "<b>Templates loaded at startup:</b> $templatelist<br />\n";
 	$cached = count($templates->cache);
-	echo "<b>No of templates cached:</b> $cached<br />";
+	echo "<b>No of templates cached:</b> $cached<br />\n";
 	if($cached > 0)
 	{
-		echo "<b>Cached templates:</b> ";
+		echo "<b>Cached templates:</b> \n";
 		$comma = "";
 		foreach($templates->cache as $key => $val)
 		{
-			echo "$comma$key";
+			echo "$comma$key\n";
 			$comma = ", ";
 		}
 	}
+	echo "</body>";
+	echo "</html>";
 	exit;
 }
 
