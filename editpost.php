@@ -265,6 +265,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 	// Set up the post options from the input.
 	$post['options'] = array(
 		"signature" => $mybb->input['postoptions']['signature'],
+		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
 		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
 	);
 
@@ -284,27 +285,6 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 
 		// Help keep our attachments table clean.
 		$db->delete_query(TABLE_PREFIX."attachments", "filename='' OR filesize<1");
-
-		// Start Auto Subscription - performed outside the handler because this just involves
-		// changing the current user's subscription status for the thread.
-		if($mybb->input['postoptions']['emailnotify'] != "no")
-		{
-			$query = $db->simple_select("favorites", "uid", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
-			$subcheck = $db->fetch_array($query);
-			if(!$subcheck['uid'])
-			{
-				$subscriptionarray = array(
-					"uid" => $mybb->user['uid'],
-					"tid" => $tid,
-					"type" => "s"
-				);
-				$db->insert_query(TABLE_PREFIX."favorites", $subscriptionarray);
-			}
-		}
-		else
-		{
-			$db->delete_query(TABLE_PREFIX."favorites", "type='s' AND uid='{$mybb->user['uid']}' AND tid='{$tid}");
-		}
 
 		// Did the user choose to post a poll? Redirect them to the poll posting page.
 		if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])

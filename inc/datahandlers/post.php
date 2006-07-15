@@ -1287,7 +1287,7 @@ class PostDataHandler extends DataHandler
 		$plugins->run_hooks_by_ref("datahandler_post_update", $this);
 		
 		$db->update_query(TABLE_PREFIX."posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
-		
+
 		// Automatic subscription to the thread
 		if($post['options']['emailnotify'] == "yes" && $post['uid'] > 0)
 		{
