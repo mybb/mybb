@@ -48,6 +48,7 @@ if($mybb->input['action'] == "do_add")
 	}
 	$plugins->run_hooks("admin_icons_do_add");
 	$db->insert_query(TABLE_PREFIX."icons", $sqlarray);
+	$cache->updateposticons();
 	cpredirect("icons.php?".SID, $lang->icon_added);
 }
 
@@ -57,6 +58,7 @@ if($mybb->input['action'] == "do_delete")
 	{	
 		$plugins->run_hooks("admin_icons_do_delete");
 		$db->delete_query(TABLE_PREFIX."icons", "iid='$iid'");
+		$cache->updateposticons();	
 		cpredirect("icons.php?".SID, $lang->icon_deleted);
 	}
 	else
@@ -77,6 +79,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 	$plugins->run_hooks("admin_icons_do_edit");
 	$db->update_query(TABLE_PREFIX."icons", $sqlarray, "iid='$iid'");
+	$cache->updateposticons();	
 	cpredirect("icons.php?".SID, $lang->icon_updated);
 }
 
