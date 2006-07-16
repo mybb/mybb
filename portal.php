@@ -9,6 +9,9 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
+
 // set the path to your forums directory here (without trailing slash)
 $forumdir = "./";
 

@@ -9,6 +9,9 @@
  * $Id$
  */
 
+
+define("IN_MYBB", 1);
+
 $templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post";
 $templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 require "./global.php";

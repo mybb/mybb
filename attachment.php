@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
 require "./global.php";
 
 // Find the AID we're looking for

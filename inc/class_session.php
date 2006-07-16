@@ -194,9 +194,9 @@ class session
 		}
 
 		// Sort out the language and forum preferences.
-		if($mybb->user['language'] && $lang->language_exists($user['language']))
+		if($mybb->user['language'] && $lang->language_exists($mybb->user['language']))
 		{
-			$mybb->settings['bblanguage'] = $user['language'];
+			$mybb->settings['bblanguage'] = $mybb->user['language'];
 		}
 		if($mybb->user['dateformat'] != "0" || $mybb->user['dateformat'] != '')
 		{
@@ -339,12 +339,12 @@ class session
 		{
 			if(!isset($_COOKIE['mybb']['lastactive']))
 			{
-				$mybb->user['lastactive'] = time();
+				$mybb->user['lastactive'] = $time;
 				$_COOKIE['mybb']['lastactive'] = $mybb->user['lastactive'];
 			}
 			else
 			{
-				$mybb->user['lastactive'] = $_COOKIE['mybb']['lastactive'];
+				$mybb->user['lastactive'] = intval($_COOKIE['mybb']['lastactive']);
 			}
 			if($time - $_COOKIE['mybb']['lastactive'] > 900)
 			{
@@ -353,7 +353,7 @@ class session
 			}
 			else
 			{
-				$mybb->user['lastvisit'] = $_COOKIE['mybb']['lastactive'];
+				$mybb->user['lastvisit'] = intval($_COOKIE['mybb']['lastactive']);
 			}
 		}
 
@@ -417,7 +417,7 @@ class session
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
-		$db->delete_query(TABLE_PREFIX."sessions", "sid='bot".$spider."'", 1);
+		$db->delete_query(TABLE_PREFIX."sessions", "sid='bot=".$spider."'", 1);
 
 		// Update the online data.
 		if(!defined("NO_ONLINE"))

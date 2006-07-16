@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
 $templatelist = '';
 require "./global.php";
 

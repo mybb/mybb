@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
 define("NO_ONLINE", 1);
 
 require "./global.php";

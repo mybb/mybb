@@ -9,7 +9,9 @@
  * $Id$
  */
 
- $templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_iplookup,mostonline";
+define("IN_MYBB", 1);
+
+$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_iplookup,mostonline";
 require "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";

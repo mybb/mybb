@@ -19,6 +19,9 @@
  * less intense on the server.
  */
 
+
+define("IN_MYBB", 1);
+
 // We don't want visits here showing up on the Who's Online
 define("NO_ONLINE", 1);
 

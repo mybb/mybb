@@ -9,8 +9,7 @@
  * $Id$
  */
 
- // Do NOT load any plugins on this page
-define("NO_PLUGINS", 1);
+define("IN_MYBB", 1);
 
 require "./global.php";
 

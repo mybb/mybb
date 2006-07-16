@@ -9,7 +9,8 @@
  * $Id$
  */
 
-/* This file does all the misc operations of usercp.php */
+define("IN_MYBB", 1);
+
 require "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 

@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
 $templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,changeuserbox,attachment,posticons";
 
 require "./global.php";

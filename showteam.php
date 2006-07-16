@@ -8,6 +8,9 @@
  *
  * $Id$
  */
+
+define("IN_MYBB", 1);
+
 $templatelist = 'showteam,showteam_row,showteam_row_mod,postbit_email,postbit_pm';
 $templatelist .= ',showteam_usergroup_user,showteam_usergroup,showteam_moderators_mod';
 $templatelist .= ',showteam_moderators,showteam_leader_header,showteam_moderators_forum';

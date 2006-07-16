@@ -123,7 +123,7 @@ class MyBB {
 			$this->request_method = "get";
 		}
 		// If we've got register globals on, then kill them too
-		if (@ini_get("register_globals") || !@ini_get("gpc_order"))
+		if (@ini_get("register_globals") == 1)
 		{
 			$this->unset_globals($_POST);
 			$this->unset_globals($_GET);
@@ -164,7 +164,6 @@ class MyBB {
 		foreach($array as $key => $val)
 		{
 			$this->input[$key] = $val;
-			unset($GLOBALS[$key]);
 		}
 	}
 

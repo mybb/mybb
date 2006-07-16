@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
 $templatelist = "memberlist,memberlist_row";
 $templatelist .= ",postbit_www,postbit_email";
 require "./global.php";

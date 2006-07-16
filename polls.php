@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
 $templatelist = "poll_newpoll,redirect_pollposted,redirect_pollupdated,redirect_votethanks";
 require "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";

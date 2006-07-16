@@ -1244,7 +1244,7 @@ class PostDataHandler extends DataHandler
 			{
 				$this->thread_update_data['icon'] = intval($post['icon']);
 			}
-			if(count($updatethread) > 0)
+			if(count($thread_update_data) > 0)
 			{
 				$plugins->run_hooks_by_ref("datahandler_post_update_thread", $this);
 
@@ -1258,7 +1258,7 @@ class PostDataHandler extends DataHandler
 
 		if(isset($post['subject']))
 		{
-			$this->this->post_update_data['subject'] = $db->escape_string($post['subject']);
+			$this->post_update_data['subject'] = $db->escape_string($post['subject']);
 		}
 
 		if(isset($post['message']))

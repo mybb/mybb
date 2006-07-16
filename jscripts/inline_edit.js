@@ -5,7 +5,8 @@ inlineEditor.prototype = {
 	{
 		this.url = url;
 		this.elements = new Array();
-		this.currentIndex = -1;
+		this.currentElement = '';
+		
 		this.options = options;
 		if(!options.className)
 		{
@@ -23,8 +24,10 @@ inlineEditor.prototype = {
 		{
 			for(var i = 0; i < this.elements.length; i++)
 			{
-				this.elements[i].index = i;
-				this.makeEditable(this.elements[i]);
+				if(this.elements[i].id)
+				{
+					this.makeEditable(this.elements[i]);
+				}
 			}
 		}
 		return true;
@@ -45,16 +48,17 @@ inlineEditor.prototype = {
 	{
 		var element = Event.element(e);
 		Event.stop(e);
-		if(this.currentIndex != -1)
+		if(this.currentElement != '')
 		{
+			alert('not empty');
 			return false;
 		}
 		// Fix for konqueror which likes to set event element as the text not the link
-		if(typeof(element.index) == "undefined" && typeof(element.parentNode.index) != "undefined")
+		if(typeof(element.id) == "undefined" && typeof(element.parentNode.id) != "undefined")
 		{
-			element.index = element.parentNode.index;
+			element.id = element.parentNode.id;
 		}
-		this.currentIndex = element.index;
+		this.currentElement = element.id;
 		this.timeout = setTimeout(this.showTextbox.bind(this), 1200);
 		element.onmouseup = this.onMouseUp.bindAsEventListener(this);
 		return false;
@@ -71,7 +75,7 @@ inlineEditor.prototype = {
 	{
 		if($(id))
 		{
-			this.currentIndex = $(id).index;
+			this.currentElement = id;
 			this.showTextbox();
 		}
 		return false;
@@ -79,19 +83,18 @@ inlineEditor.prototype = {
 	
 	showTextbox: function()
 	{
-		this.element = this.elements[this.currentIndex];
-		if(typeof(this.element.parentNode) == "undefined" || typeof(this.element.index) == "undefined")
+		this.element = $(this.currentElement);
+		if(typeof(this.element.parentNode) == "undefined" || typeof(this.element.id) == "undefined")
 		{
 			return false;
 		}
-		this.currentIndex = this.element.index;
 		this.oldValue = this.element.innerHTML;
-		this.parentNode = this.element.parentNode;
-		if(!this.parentNode)
+		this.testNode = this.element.parentNode;
+		if(!this.testNode)
 		{
 			return false;
 		}
-		this.cache = this.parentNode.innerHTML;
+		this.cache = this.testNode.innerHTML;
 		
 		this.textbox = document.createElement("input");
 		this.textbox.style.width = "95%";
@@ -106,8 +109,8 @@ inlineEditor.prototype = {
 		this.textbox.value = MyBB.unHTMLchars(this.oldValue);
 		
 		Element.remove(this.element);
-		this.parentNode.innerHTML = '';
-		this.parentNode.appendChild(this.textbox);
+		this.testNode.innerHTML = '';
+		this.testNode.appendChild(this.textbox);
 		this.textbox.focus();
 		return true;
 	},
@@ -143,50 +146,41 @@ inlineEditor.prototype = {
 		var newValue = this.textbox.value;
 		if(typeof(newValue) != "undefined" && newValue != '' && MyBB.HTMLchars(newValue) != this.oldValue)
 		{
-			this.parentNode.innerHTML = this.cache;
-			this.element = DomLib.getElementsByClassName(this.parentNode, "*", this.className)[0];
+			this.testNode.innerHTML = this.cache;
+			this.element = $(this.currentElement);
 			this.element.innerHTML = newValue;
-			this.element.index = this.currentIndex;
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
-			this.elements[this.element.index] = this.element;
-			this.lastIndex = this.currentIndex;
+			this.lastElement = this.currentElement;
 			postData = "value="+encodeURIComponent(newValue)
 			if(this.spinnerImage)
 			{
 				this.showSpinner();
 			}
-			if(this.element.id)
+			idInfo = this.element.id.split("_");
+			if(idInfo[0] && idInfo[1])
 			{
-				idInfo = this.element.id.split("_");
-				if(idInfo[0] && idInfo[1])
-				{
-					postData = postData+"&"+idInfo[0]+"="+idInfo[1];
-				}
+				postData = postData+"&"+idInfo[0]+"="+idInfo[1];
 			}
 			new ajax(this.url, {method: 'post', postBody: postData, onComplete: this.onComplete.bind(this)});
 		}
 		else
 		{
 			Element.remove(this.textbox);
-			this.parentNode.innerHTML = this.cache;
- 			this.element = DomLib.getElementsByClassName(this.parentNode, "*", this.className)[0];
-			this.element.index = this.currentIndex;
-			this.elements[this.element.index] = this.element;
+			this.testNode.innerHTML = this.cache;
+ 			this.element = $(this.currentElement);
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 		}
-		this.currentIndex = -1;
+		this.currentElement = '';
 		return true;
 	},
 	
 	cancelEdit: function()
 	{
 		Element.remove(this.textbox);
-		this.parentNode.innerHTML = this.cache;
-		this.element = DomLib.getElementsByClassName(this.parentNode, "*", this.className)[0];
-		this.element.index = this.currentIndex;
-		this.elements[this.element.index] = this.element;
+		this.testNode.innerHTML = this.cache;
+		this.element = $(this.currentElement);
 		this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);		
-		this.currentIndex = -1;
+		this.currentCurrentElement = '';
 	},
 
 	onComplete: function(request)
@@ -227,7 +221,7 @@ inlineEditor.prototype = {
 			this.spinner.style.verticalAlign = "middle";
 			this.spinner.style.paddingRight = "3px";
 		}
-		this.parentNode.insertBefore(this.spinner, this.parentNode.firstChild);
+		this.testNode.insertBefore(this.spinner, this.testNode.firstChild);
 		return true;
 	},
 

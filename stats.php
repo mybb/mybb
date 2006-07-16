@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
 $templatelist = "stats,stats_thread";
 require "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";

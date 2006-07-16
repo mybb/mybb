@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
 require "./global.php";
 
 // Load language packs for this section

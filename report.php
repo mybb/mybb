@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
 $templatelist = "report,email_reportpost,emailsubject_reportpost,report_thanks";
 require "./global.php";
 

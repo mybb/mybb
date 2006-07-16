@@ -9,12 +9,6 @@
  * $Id$
  */
 
-// Disallow direct access to this file for security reasons
-if(strpos(strtolower($_SERVER['PHP_SELF']), "global.php") !== false)
-{
-	die("Direct initialization of this file is not allowed.");
-}
-
 // Load main MyBB core file which begins all of the magic
 require dirname(__FILE__)."/inc/init.php";
 
@@ -62,11 +56,7 @@ if(!isset($mybb->settings['bblanguage']))
 {
 	$mybb->settings['bblanguage'] = "english";
 }
-// User has a custom language set which exists - use it
-if(isset($mybb->user['language']) && $lang->language_exists($mybb->user['language']))
-{
-	$mybb->settings['bblanguage'] = $mybb->user['language'];
-}
+
 // Load language
 $lang->set_path(MYBB_ROOT."inc/languages");
 $lang->set_language($mybb->settings['bblanguage']);
