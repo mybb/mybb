@@ -799,6 +799,7 @@ var inlineId = {$tid};
 <td class="trow1"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9" /> <strong>{$lang->delete_q}</strong></td>
 <td class="trow1" width="100%">{$lang->delete_1}<br /><span class="smalltext">{$lang->delete_2}</span></td>
 <td class="trow1"><input type="submit" class="button" name="submit" value="{$lang->delete_now}" tabindex="10" /></td>
+</tr>
 </table>
 <input type="hidden" name="action" value="deletepost" />
 <input type="hidden" name="pid" value="{$pid}" />
@@ -2107,8 +2108,8 @@ $headerinclude
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->avatar_upload}</strong></td>
-<td class="trow1" width="60%">
 <form enctype="multipart/form-data" action="usercp.php" method="post">
+<td class="trow1" width="60%">
 <input type="file" name="avatarupload" size="25" />
 </td>
 </tr>
@@ -3279,7 +3280,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 
 	<table width="100%" align="center">
 		<tr>
-			<td><span class="smalltext"><a href="calendar.php?year={$prevyear}&amp;month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span>
+			<td><span class="smalltext"><a href="calendar.php?year={$prevyear}&amp;month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span></td>
 			<td align="right"><span class="smalltext"><a href="calendar.php?year={$nextyear}&amp;month={$nextmonth}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
 		</tr>
 	</table>
@@ -3590,11 +3591,13 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <br /><input type="submit" class="button" name="loginsubmit" value="{$lang->login}" /></form>]]></template>
 		<template name="portal_latestthreads_thread" version="100.07"><![CDATA[<tr>
 <td class="{$altbg}">
-<strong><a href="{$mybb->settings['bburl']}/showthread.php?tid={$thread['tid']}">{$thread['subject']}</a></strong><span class="smalltext"><br />
+<strong><a href="{$mybb->settings['bburl']}/showthread.php?tid={$thread['tid']}">{$thread['subject']}</a></strong>
+<span class="smalltext"><br />
 <em>{$lang->latest_threads_lastpost}</em> {$lastposterlink}<br />
 {$lastpostdate} {$lastposttime}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_replies} {$thread['replies']}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_views} {$thread['views']}
+</span>
 </td>
 </tr>]]></template>
 		<template name="search" version="100.07"><![CDATA[<html>
@@ -4504,7 +4507,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="trow1">
 <table border="0" cellpadding="{$theme['tablespace']}" width="100%"><tr>{$avatar}<td class="trow1">{$message}{$post['attachments']}</td></tr>
-<tr><td align="right" colspan="2" valign="bottom"><span class="smalltext"><a href="{$mybb->settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/printable.gif" border="0" /></a>&nbsp;<a href="{$mybb->settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/send.gif" border="0" /></a></span></td></tr>
+<tr><td align="right" colspan="2" valign="bottom"><span class="smalltext"><a href="{$mybb->settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/printable.gif" border="0" alt="" /></a>&nbsp;<a href="{$mybb->settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/send.gif" border="0" /></a></span></td></tr>
 </table>
 </td>
 </tr>
@@ -4517,16 +4520,16 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 <td class="trow1" align="center">
-<span class="smalltext"><br />
 <form method="post" action="{$mybb->settings['bburl']}/search.php">
 <input type="hidden" name="action" value="do_search" />
 <input type="hidden" name="postthread" value="1" />
 <input type="hidden" name="forums" value="all" />
 <input type="hidden" name="showresults" value="threads" />
 <input type="text" class="textbox" name="keywords" value="" />
-{$gobutton}<br />
+{$gobutton}
+</form><br />
+<span class="smalltext">
 (<a href="{$mybb->settings['bburl']}/search.php">{$lang->advanced_search}</a>)
-</form>
 </span>
 </td>
 </tr>
@@ -4601,7 +4604,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 +{$tdepth} {$lang->thread} {$thread['subject']} (<em>/showthread.php?tid={$tid}</em>)</td>
 </tr>
 <tr>
-<td><br /><hr size="1">{$postrows}</td>
+<td><br /><hr size="1" />{$postrows}</td>
 </tr>
 </table>
 </body>
@@ -4760,7 +4763,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				</td>
 			</tr>
 			<tr>
-				<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc" width="42%">{$lang->thread}</a> {$orderarrow['subject']}</strong></span></td>
+				<td class="tcat" align="center" colspan="3" width="42%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc">{$lang->thread}</a> {$orderarrow['subject']}</strong></span></td>
 				<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
 				<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=forum&amp;order=asc">{$lang->forum}</a> {$orderarrow['forum']}</strong></span></td>
 				<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
@@ -5024,7 +5027,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="member_profile_signature" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead"><strong>{$lang->users_signature}</td>
+<td class="thead"><strong>{$lang->users_signature}</strong></td>
 </tr>
 <tr>
 <td class="trow1">{$memprofile['signature']}</td>
@@ -5609,7 +5612,8 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 		<template name="printthread_post" version="100.07"><![CDATA[<strong>{$postrow['subject']}</strong> - <a href="member.php?action=profile&amp;uid={$postrow['uid']}"><strong>{$postrow['username']}</strong></a> -  <strong>{$postrow['date']}</strong> <strong>{$postrow['time']}</strong>
 <p>
 {$postrow['message']}
-<hr size="1">]]></template>
+</p>
+<hr size="1" />]]></template>
 		<template name="error_nopermission" version="100.07"><![CDATA[{$lang->error_nopermission_guest_1}
 <ol>
 <li>{$lang->error_nopermission_guest_2}</li>
@@ -6523,7 +6527,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 		<template name="reputation_addlink" version="100.07"><![CDATA[<div class="float_right" style="padding-bottom: 4px;"><a href="javascript:MyBB.reputation({$user['uid']});"><img src="{$theme['imglangdir']}/rateuser.gif" alt="{$lang->rate_user}" border="0" /></a></div>]]></template>
 		<template name="member_profile_reputation" version="100.07"><![CDATA[<tr>
 	<td class="trow1"><strong>{$lang->reputation}</strong></td>
-	<td class="trow1">$reputation [<a href="reputation.php?uid={$memprofile['uid']}">{$lang->reputation_details}</a>] $vote_link
+	<td class="trow1">$reputation [<a href="reputation.php?uid={$memprofile['uid']}">{$lang->reputation_details}</a>] {$vote_link}</td>
 </tr>]]></template>
 		<template name="reputation_no_votes" version="100.07"><![CDATA[<tr>
 	<td class="trow1" style="text-align: center;">{$lang->no_reputation_votes}</td>

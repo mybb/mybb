@@ -102,17 +102,17 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 }
 else
 {
-	if(is_moderator($fid, "caneditposts") != "yes") 
+	if(is_moderator($fid, "caneditposts") != "yes")
 	{
-		if($thread['closed'] == "yes") 
+		if($thread['closed'] == "yes")
 		{
 			redirect("showthread.php?tid=$tid", $lang->redirect_threadclosed);
 		}
-		if($forumpermissions['caneditposts'] == "no") 
+		if($forumpermissions['caneditposts'] == "no")
 		{
 			error_no_permission();
 		}
-		if($mybb->user['uid'] != $post['uid']) 
+		if($mybb->user['uid'] != $post['uid'])
 		{
 			error_no_permission();
 		}
@@ -149,7 +149,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 
 if($mybb->input['attachmentaid']) // Lets remove/approve/unapprove the attachment
 {
-	$mybb->input['attachmentaid'] = intval($mybb->input['attachmentaid']); 
+	$mybb->input['attachmentaid'] = intval($mybb->input['attachmentaid']);
 	if(isset($mybb->input['rem']))
 	{
 		remove_attachment($pid, $mybb->input['posthash'], $mybb->input['attachmentaid']);
@@ -221,11 +221,11 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				}
 				$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
 				$next_post = $db->fetch_array($query);
-				if($next_post['pid']) 
+				if($next_post['pid'])
 				{
 					$redir = "showthread.php?tid={$tid}&pid={$next_post['pid']}#pid{$next_post['pid']}";
-				} 
-				else 
+				}
+				else
 				{
 					$redir = "showthread.php?tid={$tid}";
 				}
@@ -247,7 +247,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 {
 
 	$plugins->run_hooks("editpost_do_editpost_start");
-	
+
 	// Set up posthandler.
 	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("update");
@@ -305,12 +305,12 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		redirect($url, $redirect);
 	}
 }
-	
+
 if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 {
 	$plugins->run_hooks("editpost_start");
 
-	if(!$mybb->input['previewpost']) 
+	if(!$mybb->input['previewpost'])
 	{
 		$icon = $post['icon'];
 	}
@@ -320,17 +320,17 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$posticons = get_post_icons();
 	}
 
-	if($mybb->user['uid'] != 0) 
+	if($mybb->user['uid'] != 0)
 	{
 		eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
-	} 
-	else 
+	}
+	else
 	{
 		eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 	}
 
 	// Setup a unique posthash for attachment management
-	if(!$mybb->input['posthash']) 
+	if(!$mybb->input['posthash'])
 	{
 	    mt_srand((double) microtime() * 1000000);
 	    $posthash = md5($post['pid'].$mybb->user['uid'].mt_rand());
@@ -429,22 +429,22 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 		if($postoptions['signature'] == "yes")
 		{
-			$postoptionschecked['signature'] = "checked";
+			$postoptionschecked['signature'] = "checked=\"checked\"";
 		}
 		if($postoptions['emailnotify'] == "yes")
 		{
-			$postoptionschecked['emailnotify'] = "checked";
+			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
 		}
 		if($postoptions['disablesmilies'] == "yes")
 		{
-			$postoptionschecked['disablesmilies'] = "checked";
+			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
 		}
 
 		$pid = intval($mybb->input['pid']);
 	}
-	
+
 	if($mybb->input['previewpost'])
-	{	
+	{
 		// Figure out the poster's other information.
 		$query = $db->query("
 			SELECT u.*, f.*
@@ -454,13 +454,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			LIMIT 1
 		");
 		$postinfo = $db->fetch_array($query);
-		
+
 		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid='".intval($mybb->input['pid'])."'");
-		while($attachment = $db->fetch_array($query)) 
+		while($attachment = $db->fetch_array($query))
 		{
 			$attachcache[0][$attachment['aid']] = $attachment;
-		}		
-		
+		}
+
 		// Set the values of the post info array.
 		$postinfo['username'] = $postinfo['username'];
 		$postinfo['userusername'] = $postinfo['username'];
@@ -481,11 +481,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 		if($post['includesig'] != "no")
 		{
-			$postoptionschecked['signature'] = "checked";
+			$postoptionschecked['signature'] = "checked=\"checked\"";
 		}
 		if($post['smilieoff'] == "yes")
 		{
-			$postoptionschecked['disablesmilies'] = "checked";
+			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
 		}
 		// Can we disable smilies or are they disabled already?
 		if($forum['allowsmilies'] != "no")
@@ -498,9 +498,9 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 		$query = $db->simple_select(TABLE_PREFIX."favorites", "*", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
 		$subcheck = $db->fetch_array($query);
-		if($subcheck['tid']) 
+		if($subcheck['tid'])
 		{
-			$postoptionschecked['emailnotify'] = "checked";
+			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
 		}
 	}
 
