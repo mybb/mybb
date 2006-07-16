@@ -9,6 +9,8 @@
  * $Id$
  */
 
+define("IN_MYBB", 1);
+
 // Lets pretend we're a level higher
 chdir('./../');
 
