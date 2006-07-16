@@ -29,7 +29,7 @@ class Moderation
 
 		$openthread = array(
 			"closed" => "yes",
-			);
+		);
 		$db->update_query(TABLE_PREFIX."threads", $openthread, "tid IN ($tid_list)");
 
 		return true;
@@ -54,7 +54,7 @@ class Moderation
 
 		$closethread = array(
 			"closed" => "no",
-			);
+		);
 		$db->update_query(TABLE_PREFIX."threads", $closethread, "tid IN ($tid_list)");
 
 		return true;
@@ -78,7 +78,7 @@ class Moderation
 
 		$stickthread = array(
 			"sticky" => 1,
-			);
+		);
 		$db->update_query(TABLE_PREFIX."threads", $stickthread, "tid IN ($tid_list)");
 
 		return true;
@@ -102,7 +102,7 @@ class Moderation
 
 		$unstickthread = array(
 			"sticky" => 0,
-			);
+		);
 		$db->update_query(TABLE_PREFIX."threads", $unstickthread, "tid IN ($tid_list)");
 
 		return true;
@@ -125,7 +125,7 @@ class Moderation
 			$fids[] = $forum['fid']; 
 		}
 		// Delete the redirects
-		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE closed='moved|$tid'");
+		$db->delete_query(TABLE_PREFIX."threads", "closed='moved|$tid'");
 		// Update the forum stats of the fids found above
 		if(is_array($fids))
 		{
@@ -193,19 +193,19 @@ class Moderation
 		if($pids)
 		{
 			$pids .= "0";
-			$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid IN ($pids)");
-			$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE pid IN ($pids)");
+			$db->delete_query(TABLE_PREFIX."posts", "pid IN ($pids)");
+			$db->delete_query(TABLE_PREFIX."attachments", "pid IN ($pids)");
 		}
 		// Get thread info
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='$tid'");
 		$thread = $db->fetch_array($query);
 
 		// Delete threads, redirects, favorites, polls, and poll votes
-		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE tid='$tid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."threads WHERE closed='moved|$tid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='$tid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."polls WHERE tid='$tid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."pollvotes WHERE pid='".$thread['poll']."'");
+		$db->delete_query(TABLE_PREFIX."threads", "tid='$tid'");
+		$db->delete_query(TABLE_PREFIX."threads", "closed='moved|$tid'");
+		$db->delete_query(TABLE_PREFIX."favorites", "tid='$tid'");
+		$db->delete_query(TABLE_PREFIX."polls", "tid='$tid'");
+		$db->delete_query(TABLE_PREFIX."pollvotes", "pid='".$thread['poll']."'");
 		$cache->updatestats();
 		update_forum_count($thread['fid']);
 		$plugins->run_hooks("delete_thread", $tid);
@@ -223,11 +223,11 @@ class Moderation
 	{
 		global $db;
 
-		$db->query("DELETE FROM ".TABLE_PREFIX."polls WHERE pid='$pid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."pollvotes WHERE pid='$pid'");
+		$db->delete_query(TABLE_PREFIX."polls", "pid='$pid'");
+		$db->delete_query(TABLE_PREFIX."pollvotes", "pid='$pid'");
 		$pollarray = array(
 			"poll" => '',
-			);
+		);
 		$db->update_query(TABLE_PREFIX."threads", $pollarray, "poll='$pid'");
 		
 		return true;
@@ -252,7 +252,7 @@ class Moderation
 
 		$approve = array(
 			"visible" => 1,
-			);
+		);
 		$db->update_query(TABLE_PREFIX."threads", $approve, "tid IN ($tid_list)");
 		$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN ($tid_list)", 1);
 		
@@ -282,7 +282,7 @@ class Moderation
 
 		$approve = array(
 			"visible" => 0,
-			);
+		);
 		$db->update_query(TABLE_PREFIX."threads", $approve, "tid IN ($tid_list)");
 		$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN ($tid_list) AND replyto='0'", 1);
 
@@ -317,7 +317,7 @@ class Moderation
 			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
 		}
 		// Delete the post
-		$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid='$pid'");
+		$db->delete_query(TABLE_PREFIX."posts", "pid='$pid'");
 		// Remove attachments
 		remove_attachments($pid);
 	
@@ -349,12 +349,7 @@ class Moderation
 		$pidin = implode(",", $pids);
 		$first = 1;
 		// Get the messages to be merged
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."posts
-			WHERE tid='$tid' AND pid IN($pidin)
-			ORDER BY dateline ASC
-		");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid='$tid' AND pid IN($pidin)", array('order_by' => 'dateline'));
 		$num_unapproved_posts = 0;
 		$message = '';
 		while($post = $db->fetch_array($query))
@@ -383,13 +378,13 @@ class Moderation
 		// Update the message
 		$mergepost = array(
 			"message" => $db->escape_string($message),
-			);
+		);
 		$db->update_query(TABLE_PREFIX."posts", $mergepost, "pid='$masterpid'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."posts WHERE pid IN($pidin) AND pid!='$masterpid'");
+		$db->delete_query(TABLE_PREFIX."posts", "pid IN($pidin) AND pid != '$masterpid'");
 		// Update pid for attachments
 		$mergepost2 = array(
 			"pid" => $masterpid,
-			);
+		);
 		$db->update_query(TABLE_PREFIX."posts", $mergepost2, "pid IN($pidin)");
 		$db->update_query(TABLE_PREFIX."attachments", $mergepost2, "pid IN($pidin)");
 
@@ -425,7 +420,7 @@ class Moderation
 				$db->delete_query(TABLE_PREFIX."threads", "closed='moved|$tid' AND fid='$moveto'");
 				$changefid = array(
 					"fid" => $new_fid,
-					);
+				);
 				$db->update_query(TABLE_PREFIX."threads", $changefid, "tid='$tid'");
 				$db->update_query(TABLE_PREFIX."posts", $changefid, "tid='$tid'");
 				$threadarray = array(
@@ -442,7 +437,7 @@ class Moderation
 					"closed" => "moved|$tid",
 					"sticky" => $thread['sticky'],
 					"visible" => $thread['visible'],
-					);
+				);
 				$db->insert_query(TABLE_PREFIX."threads", $threadarray);
 				if($redirect_expire)
 				{
@@ -467,11 +462,11 @@ class Moderation
 					"sticky" => $thread['sticky'],
 					"visible" => $thread['visible'],
 					"unapprovedposts" => $thread['unapprovedposts'],
-					);
+				);
 				$plugins->run_hooks("moderation_do_move_copy");
 				$db->insert_query(TABLE_PREFIX."threads", $threadarray);
 				$newtid = $db->insert_id();
-				$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE tid='$tid'");
+				$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid='$tid'");
 				$postsql = '';
 				while($post = $db->fetch_array($query))
 				{
@@ -495,7 +490,7 @@ class Moderation
 	
 				$sqlarray = array(
 					"fid" => $new_fid,
-					);
+				);
 				$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid='$tid'");
 				$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$tid'");
 				break;
@@ -562,13 +557,13 @@ class Moderation
 		if(!isset($mergethread['tid']) || $mergethread['tid'] != $mergetid)
 		{
 			$mergetid = intval($mergetid);
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($mergetid)."'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mergetid)."'");
 			$mergethread = $db->fetch_array($query);
 		}
 		if(!isset($thread['tid']) || $thread['tid'] != $tid)
 		{
 			$tid = intval($tid);
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($tid)."'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($tid)."'");
 			$thread = $db->fetch_array($query);
 		}
 		$pollsql = '';
@@ -577,17 +572,17 @@ class Moderation
 			$pollsql = ", poll='$mergethread[poll]'";
 			$sqlarray = array(
 				"tid" => $tid,
-				);
+			);
 			$db->update_query(TABLE_PREFIX."polls", $sqlarray, "tid='".intval($mergethread['tid'])."'");
 		}
 		else
 		{
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE poll='$mergethread[poll]' AND tid!='".intval($mergetid)."'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "poll='{$mergethread['poll']}' AND tid != '".intval($mergetid)."'");
 			$pollcheck = $db->fetch_array($query);
 			if(!$pollcheck['poll'])
 			{
-				$db->query("DELETE FROM ".TABLE_PREFIX."polls WHERE pid='$mergethread[poll]'");
-				$db->query("DELETE FROM ".TABLE_PREFIX."pollvotes WHERE pid='$mergethread[poll]'");
+				$db->delete_query(TABLE_PREFIX."polls", "pid='{$mergethread['poll']}'");
+				$db->delete_query(TABLE_PREFIX."pollvotes", "pid='{$mergethread['poll']}'");
 			}
 		}
 
@@ -596,16 +591,16 @@ class Moderation
 		$sqlarray = array(
 			"tid" => $tid,
 			"fid" => $thread['fid'],
-			);
+		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$mergetid'");
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='$subject' $pollsql WHERE tid='$tid'");
 		$sqlarray = array(
 			"closed" => "moved|$tid",
-			);
+		);
 		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "closed='moved|$mergetid'");
 		$sqlarray = array(
 			"tid" => $tid,
-			);
+		);
 		$db->update_query(TABLE_PREFIX."favorites", $sqlarray, "tid='$mergetid'");
 		update_first_post($tid);
 
@@ -637,7 +632,7 @@ class Moderation
 		if(!isset($thread['tid']) || $thread['tid'] != $tid)
 		{
 			$tid = intval($tid);
-			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."threads WHERE tid='".intval($tid)."'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($tid)."'");
 			$thread = $db->fetch_array($query);
 		}
 
@@ -663,15 +658,22 @@ class Moderation
 		$sqlarray = array(
 			"tid" => $newtid,
 			"fid" => $moveto,
-			);
+		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid IN ($pids_list)");
 
 		// adjust user post counts accordingly
-		$query = $db->query("SELECT usepostcounts FROM ".TABLE_PREFIX."forums WHERE fid='$thread[fid]'");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "usepostcounts", "fid='{$thread['fid']}'");
 		$oldusepcounts = $db->fetch_field($query, "usepostcounts");
-		$query = $db->query("SELECT usepostcounts FROM ".TABLE_PREFIX."forums WHERE fid='$moveto'");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "usepostcounts", "fid='$moveto'");
 		$newusepcounts = $db->fetch_field($query, "usepostcounts");
-		$query = $db->query("SELECT COUNT(p.pid) AS posts, u.uid FROM ".TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) WHERE tid='$tid' GROUP BY u.uid ORDER BY posts DESC");
+		$query = $db->query("
+			SELECT COUNT(p.pid) AS posts, u.uid 
+			FROM ".TABLE_PREFIX."posts p 
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) 
+			WHERE p.tid='$tid' 
+			GROUP BY u.uid 
+			ORDER BY posts DESC
+		");
 		while($posters = $db->fetch_array($query))
 		{
 			if($oldusepcounts == "yes" && $newusepcounts == "no")
@@ -685,25 +687,25 @@ class Moderation
 
 			if(!empty($pcount))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]'");
+				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
 			}
 		}
 
 		// Update the subject of the first post in the new thread
-		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$newtid' ORDER BY dateline ASC LIMIT 1");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid",  "tid='$newtid'", array('order_by' => 'dateline', 'limit' => 1));
 		$newthread = $db->fetch_array($query);
 		$sqlarray = array(
 			"subject" => $newsubject,
-			);
+		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$newthread[pid]'");
 
 		// Update the subject of the first post in the old thread
-		$query = $db->query("SELECT pid FROM ".TABLE_PREFIX."posts WHERE tid='$tid' ORDER BY dateline ASC LIMIT 1");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='$tid'", array('order_by' => 'dateline', 'limit' => 1));
 		$oldthread = $db->fetch_array($query);
 		$sqlarray = array(
 			"subject" => $db->escape_string($thread['subject']),
-			);
-		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$oldthread[pid]'");
+		);
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='{$oldthread['pid']}'");
 
 		update_first_post($tid);
 		update_first_post($newtid);
@@ -745,7 +747,7 @@ class Moderation
 
 		$sqlarray = array(
 			"fid" => $moveto,
-			);
+		);
 		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid IN ($tid_list)");
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid IN ($tid_list)");
 
@@ -781,7 +783,7 @@ class Moderation
 		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "({$where}) AND replyto='0'", array("limit" => 1));
 		while($post = $db->fetch_array($query))
 		{
-			$db->update_query(TABLE_PREFIX."threads", $approve, "tid='$post[tid]'");
+			$db->update_query(TABLE_PREFIX."threads", $approve, "tid='{$post['tid']}'");
 		}
 
 		update_thread_count($tid);
@@ -808,14 +810,14 @@ class Moderation
 		// Make visible
 		$unapprove = array(
 			"visible" => 0,
-			);
+		);
 		$db->update_query(TABLE_PREFIX."posts", $unapprove, $where);
 
 		// If this is the first post of the thread, also unapprove the thread
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."posts WHERE ($where) AND replyto='0' LIMIT 1");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "$where AND replyto='0'", array('limit' => 1));
 		while($post = $db->fetch_array($query))
 		{
-			$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='$post[tid]'");
+			$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='{$post['tid']}'");
 		}
 
 		update_thread_count($tid);
@@ -850,9 +852,9 @@ class Moderation
 			// Update threads and first posts with new subject
 			$new_subject = array(
 				"subject" => $db->escape_string(str_replace('{subject}', $thread['subject'], $format))
-				);
-			$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid='$thread[tid]'", 1);
-			$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid='$thread[tid]' AND replyto='0'", 1);
+			);
+			$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid='{$thread['tid']}'", 1);
+			$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'", 1);
 		}
 	
 		return true;
@@ -871,7 +873,7 @@ class Moderation
 
 		$update_thread = array(
 			"deletetime" => intval($deletetime)
-			);
+		);
 		$db->update_query(TABLE_PREFIX."threads", $update_thread, "tid='{$tid}'");
 
 		return true;

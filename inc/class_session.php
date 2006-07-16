@@ -33,7 +33,7 @@ class session
 		'turnitinbot' => 'Turnitin.com',
 		'msnbot' => 'MSN Search',
 		'yahoo' => 'Yahoo! Slurp'
-		);
+	);
 
 	/**
 	 * Initialize a session
