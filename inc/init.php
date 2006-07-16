@@ -94,7 +94,6 @@ require MYBB_ROOT."inc/datahandler.php";
 define("TABLE_PREFIX", $config['table_prefix']);
 $db->connect($config['hostname'], $config['username'], $config['password']);
 $db->select_db($config['database']);
-$db->set_prefix($config['table_prefix']);
 
 // Language initialisation
 require MYBB_ROOT."inc/class_language.php";
