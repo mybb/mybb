@@ -23,15 +23,28 @@ $lang->load("printthread");
 
 $plugins->run_hooks("printthread_start");
 
-$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."' AND visible='1'");
+$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."'  AND closed NOT LIKE 'moved|%'");
 $thread = $db->fetch_array($query);
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-if(!$thread['tid'])
+
+$fid = $thread['fid'];
+$tid = $thread['tid'];
+
+// Is the currently logged in user a moderator of this forum?
+if(is_moderator($fid) == "yes")
+{
+	$ismod = true;
+}
+else
+{
+	$ismod = false;
+}
+
+// Make sure we are looking at a real thread here.
+if(!$tid || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
 	error($lang->error_invalidthread);
 }
-$fid = $thread['fid'];
-$tid = $thread['tid'];
 
 // Get forum info
 $forum = get_forum($fid);
@@ -81,8 +94,8 @@ while($postrow = $db->fetch_array($query))
 	$postrow['date'] = mydate($mybb->settings['dateformat'], $postrow['dateline']);
 	$postrow['time'] = mydate($mybb->settings['timeformat'], $postrow['dateline']);
 	$parser_options = array(
-		"allow_html" => $forum['allow_html'],
-		"allow_mycode" => $forum['allow_mycode'],
+		"allow_html" => $forum['allowhtml'],
+		"allow_mycode" => $forum['allowmycode'],
 		"allow_smilies" => $forum['allowsmilies'],
 		"allow_imgcode" => $forum['allowimgcode'],
 		"me_username" => $postrow['username'],

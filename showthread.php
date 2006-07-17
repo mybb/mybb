@@ -31,7 +31,7 @@ if($mybb->input['pid'] && !$mybb->input['tid'])
 	$options = array(
 		"limit" => 1
 	);
-	$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid=".$mybb->input['pid'], $options);
+	$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid=".$mybb->input['pid'], $options);
 	$post = $db->fetch_array($query);
 	$mybb->input['tid'] = $post['tid'];
 }
@@ -189,12 +189,12 @@ if($mybb->input['action'] == "newpost")
 
 	// Get forum read date
 	$forumread = mygetarraycookie("forumread", $fid);
-	
+
 	// If last visit is greater than forum read, change forum read date
 	if($mybb->user['lastvisit'] > $forumread)
 	{
 		$forumread = $mybb->user['lastvisit'];
-	}	
+	}
 	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
 	{
 		$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
@@ -482,7 +482,7 @@ if($mybb->input['action'] == "thread")
 			$postoptionschecked['emailnotify'] = "checked";
 		}
 	    mt_srand ((double) microtime() * 1000000);
-	    $posthash = md5($mybb->user['uid'].mt_rand());		
+	    $posthash = md5($mybb->user['uid'].mt_rand());
 		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
 	}
 	else
@@ -683,7 +683,7 @@ if($mybb->input['action'] == "thread")
 		$pfirst = true;
 		$posts = '';
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername 
+			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
