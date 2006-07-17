@@ -66,7 +66,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 							$pwverified = 0;
 						}
 					}
-					if($forum['password'] == "" || $pwverified == 1)
+					if(empty($forum['password']) || $pwverified == 1)
 					{
 						$forumlistbits .= "<option value=\"$forum[fid]\">$depth $forum[name]</option>\n";
 					}
@@ -140,7 +140,7 @@ function get_unsearchable_forums($pid="0", $first=1)
 				$pwverified = 0;
 			}
 		}
-		
+
 		if($perms['canview'] == "no" || $perms['cansearch'] == "no" || $pwverified == 0)
 		{
 			if($unsearchableforums)
@@ -298,7 +298,7 @@ function perform_search_mysql($search)
 			for($i=0;$i<$count_matches;$i++)
 			{
 				$word = trim($matches[$i]);
-				if($word == "")
+				if(empty($word))
 				{
 					continue;
 				}

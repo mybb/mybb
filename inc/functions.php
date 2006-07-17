@@ -219,7 +219,7 @@ function mydate($format, $stamp="", $offset="", $ty=1)
 	global $mybb, $lang, $mybbadmin;
 
 	// If the stamp isn't set, use time()
-	if($stamp == "")
+	if(empty($stamp))
 	{
 		$stamp = time();
 	}
@@ -286,7 +286,7 @@ function mymail($to, $subject, $message, $from="", $charset="")
 {
 	global $db, $mybb, $lang;
 
-	if($charset == "")
+	if(empty($charset))
 	{
 		//$charset = "ISO-8859-1";
 		$charset = $lang->settings['charset'];
@@ -2064,7 +2064,7 @@ function debug_page()
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">GZip Encoding Status:</font></b></td>\n";
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$gzipen</font></td>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">No. Templates Used:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".count($templates->cache)." (".intval(count(explode(",", $templatelist)))." Cached / ".intval(count($templates->uncached_templates))." Manually Loaded)</font></td>\n";	
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".count($templates->cache)." (".intval(count(explode(",", $templatelist)))." Cached / ".intval(count($templates->uncached_templates))." Manually Loaded)</font></td>\n";
 	echo "</tr>\n";
 	if(function_exists("memory_get_usage"))
 	{
@@ -2074,14 +2074,14 @@ function debug_page()
 		echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Usage:</font></b></td>\n";
 		echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".get_friendly_size($memory_usage)." ({$memory_usage} bytes)</font></td>\n";
 		echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Limit:</font></b></td>\n";
-		echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_limit}</font></td>\n";	
+		echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_limit}</font></td>\n";
 		echo "</tr>\n";
 	}
 	echo "</table>\n";
 	echo "<h2>Database Queries (".$db->query_count." Total) </h2>\n";
 	echo $db->explain;
 	echo "<h2>Template Statistics</h2>\n";
-	
+
 	if(count($templates->cache) > 0)
 	{
 		echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
@@ -2094,7 +2094,7 @@ function debug_page()
 		echo "</table>\n";
 		echo "<br />\n";
 	}
-	
+
 	if(count($templates->uncached_templates > 0))
 	{
 		echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";

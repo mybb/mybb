@@ -45,7 +45,7 @@ function remove_attachment($pid, $posthash, $aid)
  *
  * @param int The post ID
  * @param string The posthash if available
- */ 
+ */
 function remove_attachments($pid, $posthash="")
 {
 	global $db, $mybb;
@@ -107,7 +107,7 @@ function upload_avatar()
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
-	
+
 	// Check we have a valid extension
 	$ext = get_extension(strtolower($avatar['name']));
 	if(!preg_match("#(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext)) {
@@ -176,7 +176,7 @@ function upload_avatar()
 function upload_attachment($attachment)
 {
 	global $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang;
-	
+
 	$posthash = $db->escape_string($mybb->input['posthash']);
 
 	if(isset($attachment['error']) && $attachment['error'] != 0)
@@ -312,9 +312,9 @@ function upload_attachment($attachment)
 	{
 		$attacharray['visible'] = 1;
 	}
-	
+
 	$db->insert_query(TABLE_PREFIX."attachments", $attacharray);
-	
+
 	$aid = $db->insert_id();
 	$ret['aid'] = $aid;
 	return $ret;
@@ -329,7 +329,7 @@ function upload_attachment($attachment)
  */
 function upload_file($file, $path, $filename="")
 {
-	if($file['name'] == "" || $file['name'] == "none" || $file['size'] < 1)
+	if(empty($file['name']) || $file['name'] == "none" || $file['size'] < 1)
 	{
 		$upload['error'] = 1;
 		return $upload;

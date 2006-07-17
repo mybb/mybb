@@ -24,7 +24,7 @@ switch($action)
 
 		// Build the navigation
 		add_breadcrumb($announcement['subject']);
-		archive_header($announcement['subject'], $announcement['subject'], $mybb->settings['bburl']."/announcement.php?aid={$id}");
+		archive_header($announcement['subject'], $announcement['subject'], $mybb->settings['bburl']."/announcements.php?aid={$id}");
 
 		// Format announcement contents.
 		$announcement['startdate'] = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $announcement['startdate']);
