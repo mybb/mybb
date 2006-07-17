@@ -231,9 +231,9 @@ function draw_string(&$im, $string)
 			$color = imagecolorallocate($im, $r, $g, $b);
 			
 			// Fetch the dimensions of the character being added
-			$dimensions = imageftbbox($font_size, $angle, $font, $string[$i], array());
+			$dimensions = imageftbbox($font_size, $rotation, $font, $string[$i], array());
 			$string_width = $dimensions[2] - $dimensions[0];
-			$string_height = $domensions[3] - $dimensions[5];
+			$string_height = $dimensions[3] - $dimensions[5];
 
 			// Calculate character offsets
 			//$pos_x = $pos_x + $string_width + ($string_width/4);
@@ -267,11 +267,11 @@ function draw_string(&$im, $string)
 			// Create a temporary image for this character
 			if(gd_version() >= 2)
 			{
-				$temp_im = imagecreate(15, 20);
+				$temp_im = imagecreatetruecolor(15, 20);
 			}
 			else
 			{
-				$temp_im = imagecreatetruecolor(15, 20);
+				$temp_im = imagecreate(15, 20);
 			}
 			$bg_color = imagecolorallocate($temp_im, 255, 255, 255);
 			imagefill($temp_im, 0, 0, $bg_color);
@@ -307,7 +307,7 @@ function gd_version()
 {
 	static $gd_version;
 	
-	if($gd_versiom)
+	if($gd_version)
 	{
 		return $gd_version;
 	}
