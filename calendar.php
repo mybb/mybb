@@ -349,6 +349,17 @@ if($mybb->input['action'] == "addevent")
 
 	$yearopts = '';
 
+	// Previous selections
+	$subject = $description = '';
+	if(isset($mybb->input['subject']))
+	{
+		$subject = htmlspecialchars_uni($mybb->input['subject']);
+	}
+	if(isset($mybb->input['description']))
+	{
+		$description = htmlspecialchars_uni($mybb->input['description']);
+	}
+
 	//Construct option list for years
 	for($i = mydate("Y"); $i < (mydate("Y") + 5); $i++)
 	{
@@ -378,7 +389,7 @@ if($mybb->input['action'] == "addevent")
 		}
 	}
 
-	if($mybb->input['type'] == "private")
+	if($mybb->input['type'] == 'private' || $mybb->input['private'] == 'yes')
 	{
 		$privatecheck = " checked=\"checked\"";
 		if($mybb->usergroup['canaddprivateevents'] == "no")

@@ -3037,11 +3037,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 <td width="20%" class="trow2"><strong>{$lang->event_name}</strong></td>
-<td class="trow2"><input type="text" class="textbox" size="50" name="subject" maxlength="120" /></td>
+<td class="trow2"><input type="text" class="textbox" size="50" name="subject" maxlength="120" value="{$subject}"/></td>
 </tr>
 <tr>
 <td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><p style="text-align: center;">{$smilieinserter}</td>
-<td class="trow1"><textarea name="description" id="message" rows="20" cols="70"></textarea>
+<td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{$description}</textarea>
 {$codebuttons}</td>
 </tr>
 <tr>

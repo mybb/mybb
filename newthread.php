@@ -352,7 +352,10 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		$plugins->run_hooks("newthread_do_newthread_end");
 		
 		// Hop to it! Send them to the next page.
-		$lang->redirect_newthread .= sprintf($lang->redirect_return_forum, $fid);
+		if(!$mybb->input['postpoll'])
+		{
+			$lang->redirect_newthread .= sprintf($lang->redirect_return_forum, $fid);
+		}
 		redirect($url, $lang->redirect_newthread);
 	}
 }

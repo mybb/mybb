@@ -530,19 +530,21 @@ if($mybb->input['action'] == "clearcookies")
 {
 	$plugins->run_hooks("misc_clearcookies");
 
+	$remove_cookies = array('mybb', 'mybbuser', 'mybb[password]', 'mybb[lastvisit]', 'mybb[lastactive]', 'collapsed', 'mybb[forumread]', 'mybb[threadsread]', 'mybbadmin');
+
 	if($mybb->settings['cookiedomain'])
 	{
-		@setcookie("mybb[uid]", '', time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
-		@setcookie("mybb[password]", '', time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
-		@setcookie("mybb[lastvisit]", '', time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
-		@setcookie("mybb[lastactive]", '', time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
+		foreach($remove_cookies as $name)
+		{
+			@setcookie($name, '', time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
+		}
 	}
 	else
 	{
-		@setcookie("mybb", '', time()-1, $mybb->settings['cookiepath']);
-		@setcookie("mybb[password]", '', time()-1, $mybb->settings['cookiepath']);
-		@setcookie("mybb[lastvisit]", '', time()-1, $mybb->settings['cookiepath']);
-		@setcookie("mybb[lastactive]", '', time()-1, $mybb->settings['cookiepath']);
+		foreach($remove_cookies as $name)
+		{
+			@setcookie($name, '', time()-1, $mybb->settings['cookiepath']);
+		}
 	}
 	redirect("index.php", $lang->redirect_cookiescleared);
 }
