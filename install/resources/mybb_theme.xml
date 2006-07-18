@@ -515,7 +515,7 @@ form {
 			<table width="100%" border="0">
 				<tr>
 					<td>
-						<table width="5%" cellspacing="0" cellpadding="2" border="0">
+						<table width="5%" cellspacing="0" cellpadding="2" style="white-space: nowrap; border: none">
 							<tr>
 								<td>
 								<img src="{$theme['imgdir']}/newfolder.gif" alt="{$lang->new_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->new_thread}</span><br />
@@ -796,7 +796,7 @@ var inlineId = {$tid};
 <td class="thead" colspan="3"><strong>{$lang->delete_post}</strong></td>
 </tr>
 <tr>
-<td class="trow1"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9" /> <strong>{$lang->delete_q}</strong></td>
+<td class="trow1" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9" /> <strong>{$lang->delete_q}</strong></td>
 <td class="trow1" width="100%">{$lang->delete_1}<br /><span class="smalltext">{$lang->delete_2}</span></td>
 <td class="trow1"><input type="submit" class="button" name="submit" value="{$lang->delete_now}" tabindex="10" /></td>
 </tr>
@@ -1338,7 +1338,7 @@ var inlineId = {$tid};
 <td align="center" class="trow2"><a href="member.php?action=profile&amp;uid={$subscription['author']}">{$subscription['username']}</a></td>
 <td align="center" class="trow1">{$subscription['replies']}</td>
 <td align="center" class="trow2">{$subscription['views']}</td>
-<td class="trow1">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} {$lastposterlink}</span></td>]]></template>
+<td class="trow1" style="white-space: nowrap">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} {$lastposterlink}</span></td>]]></template>
 		<template name="usercp_options_timezoneselect" version="100.07"><![CDATA[<select name="timezoneoffset">
 <option value="-12" {$timezoneselect['n120']}>{$lang->gmt} -12:00 {$lang->hours} ({$timein['n120']})</option>
 <option value="-11" {$timezoneselect['n110']}>{$lang->gmt} -11:00 {$lang->hours} ({$timein['n110']})</option>
@@ -1604,9 +1604,9 @@ $headerinclude
 <td class="{$bgcolor}" valign="top">
 <strong><a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
 </td>
-<td class="{$bgcolor}" valign="top" align="center">{$threads}{$unapproved['unapproved_threads']}</td>
-<td class="{$bgcolor}" valign="top" align="center">{$posts}{$unapproved['unapproved_posts']}</td>
-<td class="{$bgcolor}" valign="top" align="right">{$lastpost}</td>
+<td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$threads}{$unapproved['unapproved_threads']}</td>
+<td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
+<td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
 		<template name="forumbit_depth3" version="100.07"><![CDATA[{$comma}{$statusicon}<a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a>]]></template>
 		<template name="forumbit_depth3_statusicon" version="100.07"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" />]]></template>
@@ -2219,7 +2219,7 @@ $headerinclude
 </table>]]></template>
 		<template name="nav_sep" version="100.07"><![CDATA[ / ]]></template>
 		<template name="post_attachments_new" version="100.07"><![CDATA[<tr>
-<td colspan="3"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" /> <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="12" />
+<td colspan="3" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" /> <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="12" />
 </td>
 </tr>]]></template>
 		<template name="nav_sep_active" version="100.07"><![CDATA[ / ]]></template>
@@ -2612,9 +2612,9 @@ $reputation
 <td class="thead" colspan="3"><strong>{$lang->delete_poll}</strong></td>
 </tr>
 <tr>
-<td class="trow1"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9" /><strong>{$lang->delete_q}</strong></td>
+<td class="trow1" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9" /><strong>{$lang->delete_q}</strong></td>
 <td class="trow1" width="100%">{$lang->delete_note}<br /><span class="smalltext">{$lang->delete_note2}</span></td>
-<td class="trow1"><input type="submit" class="button" name="submit" value="{$lang->delete_poll}" tabindex="10" /></td>
+<td class="trow1" style="white-space: nowrap"><input type="submit" class="button" name="submit" value="{$lang->delete_poll}" tabindex="10" /></td>
 </table>
 <input type="hidden" name="action" value="do_deletepoll" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -2679,8 +2679,8 @@ $reputation
 <tr>
 <td class="tcat" width="35">&nbsp;</td>
 <td class="tcat" width="59%"><strong>{$lang->forumbit_forum}</strong></td>
-<td class="tcat" width="65" align="center"><strong>{$lang->forumbit_threads}</strong></td>
-<td class="tcat" width="65" align="center"><strong>{$lang->forumbit_posts}</strong></td>
+<td class="tcat" width="65" align="center" style="white-space: nowrap"><strong>{$lang->forumbit_threads}</strong></td>
+<td class="tcat" width="65" align="center" style="white-space: nowrap"><strong>{$lang->forumbit_posts}</strong></td>
 <td class="tcat" width="200" align="center"><strong>{$lang->forumbit_lastpost}</strong></td>
 </tr>
 {$sub_forums}
@@ -2917,11 +2917,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="misc_buddypopup_user_offline" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="100%"><span class="smalltext">{$profile_link}</span></td>
-<td class="trow1" align="right"><span class="smalltext">{$pmbuddy}<a href="misc.php?action=buddypopup&amp;removebuddy={$buddy['uid']}">{$lang->delete_buddy}</a></span></td>
+<td class="trow1" align="right" style="white-space: nowrap"><span class="smalltext">{$pmbuddy}<a href="misc.php?action=buddypopup&amp;removebuddy={$buddy['uid']}">{$lang->delete_buddy}</a></span></td>
 </tr>]]></template>
 		<template name="misc_buddypopup_user_online" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="100%"><span class="smalltext">{$profile_link}</span></td>
-<td class="trow1" align="right"><span class="smalltext">{$pmbuddy}<a href="misc.php?action=buddypopup&amp;removebuddy={$buddy['uid']}">{$lang->delete_buddy}</a></span></td>
+<td class="trow1" align="right" style="white-space: nowrap"><span class="smalltext">{$pmbuddy}<a href="misc.php?action=buddypopup&amp;removebuddy={$buddy['uid']}">{$lang->delete_buddy}</a></span></td>
 </tr>]]></template>
 		<template name="private_archive_txt" version="100.07"><![CDATA[{$lang->private_messages_for}
 ({$lang->exported_date})
@@ -3140,13 +3140,13 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 {$todayrows}
 <tr>
-<td align="center" colspan="2" class="trow1">{$onlinetoday}</td>
+<td align="center" colspan="2" class="trow1" style="white-space: nowrap">{$onlinetoday}</td>
 </tr>
 </table>
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumdisplay_thread_modbit" version="100.07"><![CDATA[<td class="{$bgcolor}" align="center"><input type="checkbox" class="checkbox" name="inlinemod_{$multitid}" id="inlinemod_{$multitid}" value="1" {$inlinecheck}  /></td>]]></template>
+		<template name="forumdisplay_thread_modbit" version="100.07"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$multitid}" id="inlinemod_{$multitid}" value="1" {$inlinecheck}  /></td>]]></template>
 		<template name="index_pms" version="100.07"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr><td class="thead" colspan="2"><a href="private.php"><strong>{$lang->private_messages}</strong></a></td></tr>
 <tr>
@@ -3194,9 +3194,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 <td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->datesent}</strong></span></td>
-<td class="tcat" align="center" width="1"><span class="smalltext"><input type="checkbox" class="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></span></td>
+<td class="tcat" align="center" style="white-space: nowrap"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
+<td class="tcat" align="center" style="white-space: nowrap"><span class="smalltext"><strong>{$lang->datesent}</strong></span></td>
+<td class="tcat" align="center" width="1" style="white-space: nowrap"><span class="smalltext"><input type="checkbox" class="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></span></td>
 </tr>
 {$unreadmessages}
 <tr>
@@ -3354,7 +3354,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td align="center" class="trow2" width="5%">{$icon}</td>
 <td class="trow1" width="35%"><a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$denyreceipt}</td>
 <td align="center" class="trow2">{$tofromusername}</td>
-<td class="trow1" align="right"><span class="smalltext">{$senddate} {$sendtime}</span></td>
+<td class="trow1" align="right" style="white-space: nowrap"><span class="smalltext">{$senddate} {$sendtime}</span></td>
 <td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="yes" /></td>
 </tr>]]></template>
 		<template name="private_nomessages" version="100.07"><![CDATA[<tr>
@@ -3473,9 +3473,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="tcat" align="center" width="10%" colspan="2">&nbsp;</td>
 <td class="tcat" align="center" width="35%"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
-<td class="tcat" align="center" width="30%"><span class="smalltext"><strong>{$sender}</strong></span></td>
-<td class="tcat" align="right"  width="20%"><span class="smalltext"><strong>{$lang->date_sent}</strong></span></td>
-<td class="tcat" align="center" width="5%"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="Check All" onClick="MyBB.checkAll(this.form)" /></span></td>
+<td class="tcat" align="center" width="30%" style="white-space: nowrap"><span class="smalltext"><strong>{$sender}</strong></span></td>
+<td class="tcat" align="right"  width="20%" style="white-space: nowrap"><span class="smalltext"><strong>{$lang->date_sent}</strong></span></td>
+<td class="tcat" align="center" width="5%" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="Check All" onClick="MyBB.checkAll(this.form)" /></span></td>
 </tr>
 {$messagelist}
 <tr>
@@ -3518,7 +3518,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td align="center" class="{$bgcolor}">-</td>
 <td align="center" class="{$bgcolor}">-</td>
 {$rating}
-<td class="{$bgcolor}">{$postdate} {$posttime}</td>
+<td class="{$bgcolor}" style="white-space: nowrap">{$postdate} {$posttime}</td>
 {$modann}
 </tr>
 ]]></template>
@@ -3533,7 +3533,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow_sep" colspan="{$colspan}">{$lang->normal_threads}</td>
 </tr>]]></template>
 		<template name="postbit" version="100.07"><![CDATA[<tr>
-<td class="{$altbg}" width="155" valign="top" align="center"><a name="pid{$post['pid']}"></a>
+<td class="{$altbg}" width="155" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}"></a>
 <strong><span class="largetext">{$post['profilelink']}</span></strong><br />
 <span class="smalltext">
 {$post['usertitle']}<br />
@@ -3568,7 +3568,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 </tr>
 <tr>
-<td class="{$altbg}" height="18" align="center"><span class="smalltext">{$post['postdate']} {$post['posttime']}</span></td>
+<td class="{$altbg}" height="18" style="white-space: nowrap; text-align: center;"><span class="smalltext">{$post['postdate']} {$post['posttime']}</span></td>
 <td class="{$altbg}" width="100%" valign="middle" height="18">
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr valign="bottom">
@@ -3809,9 +3809,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1" align="center" valign="top"><img src="{$theme['imgdir']}/{$folder}.gif" valign="top" /></td>
 <td class="trow1" valign="top">
 <strong><a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong><br /><span class="smalltext"><a href="usercp2.php?action=removesubscription&amp;type=forum&amp;fid={$forum['fid']}">{$lang->unsubscribe}</a> | <a href="newthread.php?fid={$forum['fid']}">{$lang->new_thread}</a></span></td>
-<td class="trow2" valign="top" align="center">{$posts}</td>
-<td class="trow1" valign="top" align="center">{$threads}</td>
-<td class="trow2" valign="top">{$lastpost}</td>
+<td class="trow2" valign="top" style="white-space: nowrap; text-align: center;">{$posts}</td>
+<td class="trow1" valign="top" style="white-space: nowrap; text-align: center;">{$threads}</td>
+<td class="trow2" valign="top" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
 		<template name="newthread_postpoll" version="100.07"><![CDATA[<tr>
 <td class="{$bgcolor}" valign="top">
@@ -3972,18 +3972,18 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <!-- Begin AIM Remote -->
 <table align="center" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td align="center"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_man.gif" width="44" height="55" border="0" alt="Download AIM" /></a><img src="http://www.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width="73" height="55" border="0" alt="AIM Remote" /></td>
+<td align="center" style="white-space: nowrap"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_man.gif" width="44" height="55" border="0" alt="Download AIM" /></a><img src="http://www.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width="73" height="55" border="0" alt="AIM Remote" /></td>
 </tr>
 <tr>
-<td align="center"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_im.gif" width="117" height="39" border="0" alt="Send me an Instant Message" /></a></td>
+<td align="center" style="white-space: nowrap"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_im.gif" width="117" height="39" border="0" alt="Send me an Instant Message" /></a></td>
 </tr>
 <tr>
-<td align="center"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_bud.gif" width="117" height="39" border="0" alt="Add me to Your Buddy List" /></a></td>
+<td align="center" style="white-space: nowrap"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_bud.gif" width="117" height="39" border="0" alt="Add me to Your Buddy List" /></a></td>
 </tr>
 <tr>
-<td align="center"><a href="http://www.aol.co.uk/aim/remote.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botadd.gif" width="117" height="23" border="0" alt="Add Remote to Your Page" /></a></td>
+<td align="center" style="white-space: nowrap"><a href="http://www.aol.co.uk/aim/remote.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botadd.gif" width="117" height="23" border="0" alt="Add Remote to Your Page" /></a></td>
 </tr>
-<td align="center"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width="117" height="29" border="0" alt="Download AOL Instant Messenger" /></a></td>
+<td align="center" style="white-space: nowrap"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width="117" height="29" border="0" alt="Download AOL Instant Messenger" /></a></td>
 </tr>
 </table>
 <!-- End AIM Remote -->
@@ -4045,7 +4045,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td align="center" class="trow1">-</td>
 <td align="center" class="trow1">-</td>
 {$rating}
-<td class="trow1">{$postdate} {$posttime}</td>
+<td class="trow1" style="white-space: nowrap">{$postdate} {$posttime}</td>
 {$modann}
 </tr>
 ]]></template>
@@ -4128,8 +4128,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="tcat" width="2%">&nbsp;</td>
 <td class="tcat" width="59%"><span class="smalltext"><strong>{$lang->forumbit_forum}</strong></span></td>
-<td class="tcat" width="7%" align="center"><span class="smalltext"><strong>{$lang->forumbit_threads}</strong></span></td>
-<td class="tcat" width="7%" align="center"><span class="smalltext"><strong>{$lang->forumbit_posts}</strong></span></td>
+<td class="tcat" width="7%" align="center" style="white-space: nowrap"><span class="smalltext"><strong>{$lang->forumbit_threads}</strong></span></td>
+<td class="tcat" width="7%" align="center" style="white-space: nowrap"><span class="smalltext"><strong>{$lang->forumbit_posts}</strong></span></td>
 <td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->forumbit_lastpost}</strong></span></td>
 </tr>
 {$forums}
@@ -4148,7 +4148,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a>{$unapproved_posts}</td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
 	{$rating}
-	<td class="{$bgcolor}">
+	<td class="{$bgcolor}" style="white-space: nowrap">
 		<span class="smalltext">{$lastpostdate} {$lastposttime}<br />
 		<a href="showthread.php?action=lastpost&amp;tid={$thread['tid']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
@@ -4164,13 +4164,13 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$post['signature']}]]></template>
 		<template name="post_attachments_attachment" version="100.07"><![CDATA[<tr>
 <td width="5%" align="center">{$attachment['icon']}</td>
-<td>{$attachment['filename']} ({$attachment['size']})</td>
-<td align="right">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
+<td style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
+<td style="white-space: nowrap; text-align: right;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
 </tr>]]></template>
 		<template name="post_attachments_attachment_unapproved" version="100.07"><![CDATA[<tr>
 <td width="5%" align="center">{$attachment['icon']}</td>
-<td><em>{$attachment['filename']} ({$attachment['size']})</em></td>
-<td align="right">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
+<td style="white-space: nowrap"><em>{$attachment['filename']} ({$attachment['size']})</em></td>
+<td style="white-space: nowrap; text-align: right;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
 </tr>]]></template>
 	<template name="post_attachments_attachment_mod_approve" version="100.07"><![CDATA[<input type="submit" class="button" name="approveattach" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
 	<template name="post_attachments_attachment_mod_unapprove" version="100.07"><![CDATA[<input type="submit" class="button" name="unapproveattach" value="{$lang->unapprove_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'unapprove');" />]]></template>
@@ -4740,7 +4740,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td class="{$bgcolor}">{$thread['forumlink']}</td>
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
-	<td class="{$bgcolor}"><span class="smalltext">{$lastpostdate} {$lastposttime}<br />
+	<td class="{$bgcolor}" style="white-space: nowrap"><span class="smalltext">{$lastpostdate} {$lastposttime}<br />
 <a href="showthread.php?action=lastpost&amp;tid={$thread['tid']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 </tr>]]></template>
@@ -4786,10 +4786,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td class="{$bgcolor}"><span class="smalltext">{$lang->post_thread} <a href="showthread.php?tid={$post['tid']}">{$post['thread_subject']}</a><br />{$lang->post_subject} <a href="showthread.php?tid={$post['tid']}&amp;pid={$post['pid']}#pid{$post['pid']}">{$post['subject']}</a></span><br />
 	<table width="100%"><tr><td><span class="smalltext"><em>{$prev}</em></span></td></tr></table></td>
 	<td align="center" class="{$bgcolor}">{$post['profilelink']}</td>
-	<td class="{$bgcolor}">{$post['forumlink']}</td>
+	<td class="{$bgcolor}" >{$post['forumlink']}</td>
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$post['tid']});">{$post['thread_replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$post['thread_views']}</td>
-	<td class="{$bgcolor}" align="center"><span class="smalltext">{$posted}</span></td>
+	<td class="{$bgcolor}" style="white-space: nowrap; text-align: center;"><span class="smalltext">{$posted}</span></td>
 </tr>]]></template>
 		<template name="reputation_add" version="100.07"><![CDATA[<html>
 <head>
@@ -6118,8 +6118,8 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <tr>
 <td class="thead" width="1"> </td>
 <td class="thead" valign="bottom"><span class="smalltext"><strong>{$lang->forum}</strong></span></td>
-<td class="thead" valign="bottom" align="center"><span class="smalltext"><strong>{$lang->posts}</strong></span></td>
-<td class="thead" valign="bottom" align="center"><span class="smalltext"><strong>{$lang->threads}</strong></span></td>
+<td class="thead" valign="bottom" style="white-space: nowrap; text-align: center;"><span class="smalltext"><strong>{$lang->posts}</strong></span></td>
+<td class="thead" valign="bottom" style="white-space: nowrap; text-align: center;"><span class="smalltext"><strong>{$lang->threads}</strong></span></td>
 <td class="thead" valign="bottom" align="center"><span class="smalltext"><strong>{$lang->lastpost}</strong></span></td>
 </tr>
 {$forums}
