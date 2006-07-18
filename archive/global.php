@@ -119,6 +119,8 @@ else
 	define(MYBB_LOCATION, "index.php");
 }
 
+$lang->set_path(MYBB_ROOT."inc/languages");
+
 // Initialise session
 $session = new session();
 $session->init();
@@ -128,8 +130,6 @@ if(!$mybb->settings['bblanguage'])
 	$mybb->settings['bblanguage'] = "english";
 }
 $lang->set_language($mybb->settings['bblanguage']);
-
-$mybb->settings['bbname'] = stripslashes($mybb->settings['bbname']);
 
 // Load global language phrases
 $lang->load("global");

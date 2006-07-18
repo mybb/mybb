@@ -39,7 +39,11 @@ inlineEditor.prototype = {
 		{
 			element.title = element.title+" ";
 		}
-		element.title = element.title+"(Click and hold to edit)";
+		if(!this.options.lang_click_edit)
+		{
+			this.options.lang_click_edit = "(Click and hold to edit)";
+		}
+		element.title = element.title+lang_click_edit;
 		element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 		return true;
 	},

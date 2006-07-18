@@ -261,6 +261,8 @@ $l['attach_quota'] = "You are currently using <strong>{1}</strong> of your alloc
 $l['view_attachments'] = "[View My Attachments]";
 $l['unlimited'] = "Unlimited";
 
+$l['click_hold_edit'] = "(Click and hold to edit)";
+
 $l['guest_count'] = "1 Guest";
 $l['guest_count_multiple'] = "{1} Guests";
 

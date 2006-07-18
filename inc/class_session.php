@@ -313,8 +313,8 @@ class session
 		}
 
 		// Deprecated...
-		$mybbuser = $mybb->user;
-		$mybbgroup = $mybb->usergroup;
+		$mybbuser = &$mybb->user;
+		$mybbgroup = &$mybb->usergroup;
 		return true;
 	}
 
@@ -367,9 +367,7 @@ class session
 		// Update last active cookie.
 		mysetcookie("mybb[lastactive]", $time);
 
-		//
 		// Gather a full permission set for this guest
-		//
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);

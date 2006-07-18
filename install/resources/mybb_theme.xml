@@ -5944,6 +5944,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </head>
 <body>
 {$header}
+{$event_errors}
 <form action="calendar.php" method="post" name="input">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -6505,7 +6506,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </script>]]></template>
 		<template name="forumdisplay_threadlist_inlineedit_js" version="100.07"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=120"></script>
 <script type="text/javascript">
-	new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif"});
+	new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif", lang_click_edit: "{$lang->click_hold_edit}"});
 </script>]]></template>
 		<template name="xmlhttp_inline_post_editor" version="100.07"><![CDATA[<br />
 		<div style="width: 90%; clear: both; margin: auto auto; padding-top: 2%" class="editor">

@@ -43,6 +43,8 @@ if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) 
 	define("NO_ONLINE", 1);
 }
 
+$lang->set_path(MYBB_ROOT."inc/languages");
+
 // Create session for this user
 require MYBB_ROOT."inc/class_session.php";
 $session = new session;
@@ -58,7 +60,6 @@ if(!isset($mybb->settings['bblanguage']))
 }
 
 // Load language
-$lang->set_path(MYBB_ROOT."inc/languages");
 $lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");

@@ -491,7 +491,33 @@ if($mybb->input['action'] == "editevent")
 	{
 		error_no_permission();
 	}
-	$eventdate = explode("-", $event['date']);
+	if($event_errors)
+	{
+		$event['subject'] = htmlspecialchars_uni($mybb->input['subject']);
+		$event['description'] = htmlspecialchars($mybb->input['description']);
+		
+		if($mybb->input['private'] == "yes")
+		{
+			$privatecheck = " checked=\"checked\"";
+		}
+		$eventdate = array(
+			0 => $mybb->input['day'],
+			1 => $mybb->input['month'],
+			2 => $mybb->input['year']
+		);
+	}
+	else
+	{
+		$event['subject'] = htmlspecialchars_uni($event['subject']);
+		$event['description'] = htmlspecialchars_uni($event['description']);
+
+		$privatecheck = '';
+		if($event['private'] == "yes")
+		{
+			$privatecheck = " checked=\"checked\"";
+		}
+		$eventdate = explode("-", $event['date']);
+	}
 	$msel[$eventdate[1]] = " selected=\"selected\"";
 	$yearopts = '';
 	for($i = ($eventdate[2] - 2); $i <= ($eventdate[2] + 2); $i++)
@@ -519,14 +545,6 @@ if($mybb->input['action'] == "editevent")
 		}
 	}
 
-	$event['subject'] = htmlspecialchars_uni($event['subject']);
-	$event['description'] = htmlspecialchars_uni($event['description']);
-
-	$privatecheck = '';
-	if($event['private'] == "yes")
-	{
-		$privatecheck = " checked=\"checked\"";
-	}
 	add_breadcrumb($lang->nav_editevent);
 
 	$plugins->run_hooks("calendar_editevent_end");
