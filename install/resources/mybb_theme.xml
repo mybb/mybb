@@ -2770,7 +2770,7 @@ $reputation
 </table>
 <br/>]]></template>
 		<template name="showteam_moderators_mod" version="100.07"><![CDATA[<tr>
-<td width="50%" class="trow1"><a href="member.php?action=profile&amp;uid={$uid}"><strong>{$user['username']}</strong></a></td>
+<td width="50%" class="trow1"><a href="member.php?action=profile&amp;uid={$user['uid']}"><strong>{$user['username']}</strong></a></td>
 <td width="30%" class="trow2"><span class="smalltext">{$forumslist}</span></td>
 <td width="10%" class="trow2">{$emailcode}</td>
 <td width="10%" class="trow1">{$pmcode}</td>

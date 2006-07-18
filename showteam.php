@@ -129,7 +129,7 @@ foreach($usergroups as $usergroup)
 		//If the current group is a moderator group
 		if($usergroup['gid'] == 6)
 		{
-			$forumlist = $user['forumlist'];
+			$forumlists = $user['forumlist'];
 			eval("\$modrows .= \"".$templates->get("showteam_moderators_mod")."\";");
 		}
 		else
