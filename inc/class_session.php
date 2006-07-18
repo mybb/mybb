@@ -313,8 +313,8 @@ class session
 		}
 
 		// Deprecated...
-		$mybbuser = &$mybb->user;
-		$mybbgroup = &$mybb->usergroup;
+		$mybbuser = $mybb->user;
+		$mybbgroup = $mybb->usergroup;
 		return true;
 	}
 
