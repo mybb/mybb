@@ -382,7 +382,7 @@ class UserDataHandler extends DataHandler
 		$options = array(
 			'order_by' => 'disporder'
 		);
-		$query = $db->simple_select(TABLE_PREFIX.'profilefields', 'type, fid, required', "editable='yes'", $options);
+		$query = $db->simple_select(TABLE_PREFIX.'profilefields', 'name, type, fid, required', "editable='yes'", $options);
 
 		// Then loop through the profile fields.
 		while($profilefield = $db->fetch_array($query))
@@ -395,21 +395,35 @@ class UserDataHandler extends DataHandler
 			// If the profile field is required, but not filled in, present error.
 			if(!$profile_fields[$field] && $profilefield['required'] == "yes" && !$proferror)
 			{
-				$this->set_error('missing_required_fields');
-				return false;
+				$this->set_error('missing_required_profile_field', array($profilefield['name']));
 			}
 
 			// Sort out multiselect/checkbox profile fields.
 			$options = '';
-			if($type == "multiselect" || $type == "checkbox" && is_array($profile_fields[$field]))
+			if(($type == "multiselect" || $type == "checkbox") && is_array($profile_fields[$field]))
 			{
+				$expoptions = explode("\n", $thing[1]);
+				$expoptions = array_map('trim', $expoptions);
 				foreach($profile_fields[$field] as $value)
 				{
+					if(!in_array($value, $expoptions))
+					{
+						$this->set_error('bad_profile_field_values', array($profilefield['name']));
+					}
 					if($options)
 					{
 						$options .= "\n";
 					}
 					$options .= $db->escape_string($value);
+				}
+			}
+			else if($type == "select" || $type == "radio")
+			{
+				$expoptions = explode("\n", $thing[1]);
+				$expoptions = array_map('trim', $expoptions);
+				if(!in_array($profile_fields[$field], $expoptions))
+				{
+					$this->set_error('bad_profile_field_values', array($profilefield['name']));
 				}
 			}
 			else

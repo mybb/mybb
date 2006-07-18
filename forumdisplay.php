@@ -799,11 +799,15 @@ if(is_array($threadcache))
 		$thread['views'] = mynumberformat($thread['views']);
 
 		// Threads and posts requiring moderation
-		if($thread['unapprovedposts'] && $ismod)
+		if($thread['visible'] == 0)
 		{
-			if($forum['unapprovedposts'] > 1)
+			--$thread['unapprovedposts'];
+		}
+		if($thread['unapprovedposts'] > 0 && $ismod)
+		{
+			if($thread['unapprovedposts'] > 1)
 			{
-				$unapproved_posts_count = sprintf($lang->thread_unapproved_posts_count, $forum['unapprovedthreads']);
+				$unapproved_posts_count = sprintf($lang->thread_unapproved_posts_count, $forum['unapprovedposts']);
 			}
 			else
 			{

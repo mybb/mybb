@@ -57,7 +57,7 @@ $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (16, 'At', 'images
 
 $inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (1, 'Location', 'Where in the world do you live?', 1, 'text', 0, 255, 'no', 'yes', 'no');";
 $inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (2, 'Bio', 'Enter a few short details about yourself, your life story etc.', 2, 'textarea', 0, 0, 'no', 'yes', 'no');";
-$inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (3, 'Sex', 'Please select your sex from the list below.', 0, 'select\nUndisclosed\r\nMale\r\nFemale\r\nOther', 0, 0, 'no', 'yes', 'no');";
+$inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (3, 'Sex', 'Please select your sex from the list below.', 0, 'select\nUndisclosed\nMale\nFemale\nOther', 0, 0, 'no', 'yes', 'no');";
 
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (1, 'Smile', ':)', 'images/smilies/smile.gif', 1, 'yes');";
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (2, 'Wink', ';)', 'images/smilies/wink.gif', 2, 'yes');";

@@ -43,7 +43,7 @@ inlineEditor.prototype = {
 		{
 			this.options.lang_click_edit = "(Click and hold to edit)";
 		}
-		element.title = element.title+lang_click_edit;
+		element.title = element.title+this.options.lang_click_edit;
 		element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 		return true;
 	},
@@ -54,7 +54,7 @@ inlineEditor.prototype = {
 		Event.stop(e);
 		if(this.currentElement != '')
 		{
-			alert('not empty');
+			//alert('not empty.. it is'+this.currentElement);
 			return false;
 		}
 		// Fix for konqueror which likes to set event element as the text not the link

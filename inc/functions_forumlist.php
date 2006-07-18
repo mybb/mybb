@@ -342,7 +342,7 @@ function get_forum_unapproved($forum)
 		// Forum has one or more unapproved threads, format language string accordingly
 		if($forum['unapprovedthreads'])
 		{
-			if($forum['unapprovedthread'] > 1)
+			if($forum['unapprovedthreads'] > 1)
 			{
 				$unapproved_threads_count = sprintf($lang->forum_unapproved_thread_count, $forum['unapprovedthreads']);
 			}

@@ -27,6 +27,6 @@ $l['userdata_invalid_birthday'] = 'The birthday you entered is invalid. Please e
 $l['userdata_invalid_referrer'] = 'The referrer you entered does not exist. Please enter an existing referrer or leave the field empty.';
 $l['userdata_invalid_language'] = 'The language you selected does not exist. Please select an existing language.';
 $l['userdata_missing_returndate'] = 'The Return Date you specified is missing one or more fields. Please make sure you have filled in the day, month, and year fields.';
-$l['userdata_missing_required_fields'] = 'You did not enter all required profile fields. Please fill in the required fields.';
-
+$l['userdata_missing_required_field'] = 'You did not enter an option for the "{1}" field. Please fill in or select a value for this field.';
+$l['userdata_bad_profile_field_values'] = 'You did not select a valid option for the "{1}" field. Please select a value from the presented choices.';
 ?>

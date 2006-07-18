@@ -35,7 +35,7 @@ if($thread_limit > 50)
 {
 	$thread_limit = 50;
 }
-else if(!$thrad_limit)
+else if(!$thread_limit)
 {
 	$thread_limit = 20;
 }
@@ -92,7 +92,7 @@ while($forum = $db->fetch_array($query))
 }
 
 // If syndicating all forums then cut the title back to "All Forums"
-if(!empty($forumlist))
+if(empty($forumlist))
 {
 	$title = $mybb->settings['bbname']." - ".$lang->all_forums;
 }
@@ -103,7 +103,7 @@ $query = $db->query("
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
 	LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
-	WHERE t.visible=1 ".$forumlist."
+	WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' ".$forumlist."
 	ORDER BY t.dateline DESC
 	LIMIT 0, ".$thread_limit
 );
@@ -125,7 +125,7 @@ while($thread = $db->fetch_array($query))
 {
 	$item = array(
 		"title" => $thread['subject'],
-		"link" => $settings['bburl']."/showthread.php?tid=".$thread['tid'],
+		"link" => $mybb->settings['bburl']."/showthread.php?tid=".$thread['tid'],
 		"description" => $parser->strip_mycode($thread['postmessage'], $parser_options),
 		"date" => $thread['dateline']
 	);

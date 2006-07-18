@@ -256,6 +256,11 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."threads", $approve, "tid IN ($tid_list)");
 		$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN ($tid_list)", 1);
 		
+		foreach($tids as $tid)
+		{
+			update_thread_count($tid);
+		}
+		
 		// Update stats
 		$cache->updatestats();
 		update_forum_count($fid);
@@ -286,6 +291,11 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."threads", $approve, "tid IN ($tid_list)");
 		$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN ($tid_list) AND replyto='0'", 1);
 
+		foreach($tids as $tid)
+		{
+			update_thread_count($tid);
+		}
+		
 		// Update stats
 		$cache->updatestats();
 		update_forum_count($fid);
@@ -431,6 +441,7 @@ class Moderation
 					"username" => $db->escape_string($thread['username']),
 					"dateline" => $thread['dateline'],
 					"lastpost" => $thread['lastpost'],
+					"lastposteruid" => $thread['lastposteruid'],
 					"lastposter" => $db->escape_string($thread['lastposter']),
 					"views" => 0,
 					"replies" => 0,
@@ -455,6 +466,7 @@ class Moderation
 					"username" => $db->escape_string($thread['username']),
 					"dateline" => $thread['dateline'],
 					"lastpost" => $thread['lastpost'],
+					"lastposteruid" => $thread['lastposteruid'],					
 					"lastposter" => $db->escape_string($thread['lastposter']),
 					"views" => $thread['views'],
 					"replies" => $thread['replies'],
