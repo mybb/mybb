@@ -421,7 +421,7 @@ class UserDataHandler extends DataHandler
 			{
 				$expoptions = explode("\n", $thing[1]);
 				$expoptions = array_map('trim', $expoptions);
-				if(!in_array($profile_fields[$field], $expoptions))
+				if(!in_array($profile_fields[$field], $expoptions) && $profile_fields[$field] != "")
 				{
 					$this->set_error('bad_profile_field_values', array($profilefield['name']));
 				}

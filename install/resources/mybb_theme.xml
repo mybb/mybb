@@ -3534,17 +3534,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>]]></template>
 		<template name="postbit" version="100.07"><![CDATA[<tr>
 <td class="{$altbg}" width="155" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}"></a>
-<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
-<span class="smalltext">
-{$post['usertitle']}<br />
-{$post['userstars']}
-{$post['groupimage']}<br />
-{$post['useravatar']}<br />
-{$lang->postbit_posts} {$post['postnum']}<br />
-{$lang->postbit_group} {$usergroup['title']}<br />
-{$lang->postbit_joined} {$post['userregdate']}<br />
-{$lang->postbit_status} {$post['onlinestatus']}{$post['replink']}<br />
-</span>
+{$post['user_details']}
 </td>
 <td class="{$altbg}" width="100%" valign="top">
 <table width="100%">
@@ -6614,5 +6604,23 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 	<template name="post_captcha_hidden" version="100.07"><![CDATA[<input type="hidden" name="imagehash" value="{$imagehash}" />
 	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
 	<template name="newreply_multiquote_external" version="100.07"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext" />{$multiquote_text} <a href="javascript:Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
+	<template name="postbit_author_user" version="100.07"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
+<span class="smalltext">
+	{$post['usertitle']}<br />
+	{$post['userstars']}
+	{$post['groupimage']}<br />
+	{$post['useravatar']}<br />
+	{$lang->postbit_posts} {$post['postnum']}<br />
+	{$lang->postbit_group} {$usergroup['title']}<br />
+	{$lang->postbit_joined} {$post['userregdate']}<br />
+	{$lang->postbit_status} {$post['onlinestatus']}{$post['replink']}<br />
+</span>]]></template>
+	<template name="postbit_author_guest" version="100.07"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
+<span class="smalltext">
+	{$post['usertitle']}<br />
+	{$post['userstars']}
+	{$post['groupimage']}<br />
+	{$post['useravatar']}<br />
+</span>]]></template>
 	</templates>
 </theme>

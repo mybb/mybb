@@ -279,6 +279,7 @@ function build_postbit($post, $pmprevann=0)
 			$post['userreputation'] = get_reputation($post['reputation'], $post['uid']);
 			eval("\$post['replink'] = \"".$templates->get("postbit_reputation")."\";");
 		}
+		eval("\$post['user_details'] = \"".$templates->get("postbit_author_user")."\";");
 	}
 	else
 	{ // Message was posted by a guest or an unknown user
@@ -304,6 +305,7 @@ function build_postbit($post, $pmprevann=0)
 		$post['button_find'] = '';
 		$post['onlinestatus'] = $lang->unknown;
 		$post['replink'] = '';
+		eval("\$post['user_details'] = \"".$templates->get("postbit_author_guest")."\";");
 	}
 	$post['button_edit'] = '';
 	$post['button_quickdelete'] = '';
