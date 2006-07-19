@@ -753,9 +753,6 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 	if(!is_array($forum_cache))
 	{
 		cache_forums();
-	}
-	if(!is_array($forum_cache))
-	{
 		return false;
 	}
 	if(!is_array($fpermcache))
@@ -942,11 +939,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 	{
 		if(!$fid)
 		{
-			$query = $db->query("
-				SELECT mid
-				FROM ".TABLE_PREFIX."moderators
-				WHERE uid='$uid'
-			");
+			$query = $db->simple_select(TABLE_PREFIX.'moderators', 'mid', "uid={$uid}", array('limit' => 1));
 			$modcheck = $db->fetch_array($query);
 			if($modcheck['mid'])
 			{

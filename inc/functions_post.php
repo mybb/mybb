@@ -16,7 +16,7 @@
  * @param int The type of post bit we're building (1 = preview, 2 = pm, 3 = announcement, else = post)
  * @return string The built post bit
  */
-function build_postbit($post, $pmprevann=0)
+function build_postbit($post, $post_type=0)
 {
 	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter;
 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
@@ -30,7 +30,7 @@ function build_postbit($post, $pmprevann=0)
 		$parser = new postParser;
 	}
 
-	if($post['visible'] == 0 && $pmprevann == 0)
+	if($post['visible'] == 0 && $post_type == 0)
 	{
 		$altbg = "trow_shaded";
 	}
@@ -43,7 +43,7 @@ function build_postbit($post, $pmprevann=0)
 		$altbg = "trow1";
 	}
 	$post['fid'] = $fid;
-	switch($pmprevann)
+	switch($post_type)
 	{
 		case "1": // Message preview
 			global $forum;
@@ -115,7 +115,7 @@ function build_postbit($post, $pmprevann=0)
 	$post['subject'] = $parser->parse_badwords($post['subject']);
 
 	// Pm's have been htmlspecialchars_uni()'ed already.
-	if($pmprevann != 2)
+	if($post_type != 2)
 	{
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
 	}
@@ -312,7 +312,7 @@ function build_postbit($post, $pmprevann=0)
 	$post['button_quote'] = '';
 	$post['button_quickquote'] = '';
 	$post['button_report'] = '';
-	if(!$pmprevann)
+	if(!$post_type)
 	{
 		if($post['edituid'] != "" && $post['edittime'] != "" && $post['editusername'] != "")
 		{
@@ -370,7 +370,7 @@ function build_postbit($post, $pmprevann=0)
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
-		if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['multiquote'] != "off" && $forum['open'] != "no" && !$pmprevann)
+		if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['multiquote'] != "off" && $forum['open'] != "no" && !$post_type)
 		{
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
@@ -425,7 +425,7 @@ function build_postbit($post, $pmprevann=0)
 	{
 		$post['signature'] = "";
 	}
-	
+
 	$icon_cache = $cache->read("posticons");
 	if($post['icon'] > 0 && $icon_cache[$post['icon']])
 	{
@@ -436,7 +436,7 @@ function build_postbit($post, $pmprevann=0)
 	{
 		$post['icon'] = "";
 	}
-	switch($pmprevann)
+	switch($post_type)
 	{
 		case 1: // Message preview
 			$plugins->run_hooks_by_ref("postbit_prev", $post);
