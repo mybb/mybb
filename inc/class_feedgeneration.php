@@ -92,11 +92,11 @@ class FeedGenerator
 		{
 			// Ouput an Atom 1.0 formatted feed.
 			case "atom1.0":
-				$this->channel['date'] = date("Y-m-d\TH:i:s\Z", $this->channel['date']);
+				$this->channel['date'] = date("Y-m-d\TH:i:s O", $this->channel['date']);
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 				$this->xml .= "<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
 				$this->xml .= "\t<title><![CDATA[".htmlspecialchars_uni($this->channel['title'])."]]></title>\n";
-				$this->xml .= "\t<id>".$this->channel['link']."/</id>\n";
+				$this->xml .= "\t<id>".$this->channel['link']."</id>\n";
 				$this->xml .= "\t<link rel=\"alternate\" type=\"text/html\" href=\"".$this->channel['link']."\"/>\n";
 				$this->xml .= "\t<modified>".$this->channel['date']."</modified>\n";
 				$this->xml .= "\t<generator uri=\"http://mybboard.com\">MyBB</generator>\n";
