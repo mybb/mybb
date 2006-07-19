@@ -711,7 +711,7 @@ if($mybb->input['action'] == "thread")
 			SELECT t.*, t.username AS threadusername, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') AS relevance
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-			WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND relevance>='{$mybb->settings['similarityrating']}
+			WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND relevance>='{$mybb->settings['similarityrating']}'
 			ORDER BY t.lastpost DESC
 			LIMIT 0, {$mybb->settings['similarlimit']}
 		");
