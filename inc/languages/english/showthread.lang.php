@@ -63,6 +63,7 @@ $l['rating_1'] = "1 ... Worst";
 $l['similar_threads'] = "Similar Threads";
 $l['thread'] = "Thread:";
 $l['replies'] = "Replies:";
+$l['views'] = "Views:";
 $l['lastpost'] = "Last Post";
 $l['messages_in_thread'] = "Messages In This Thread";
 $l['inline_delete_posts'] = "Delete Posts";
