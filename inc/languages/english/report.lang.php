@@ -14,4 +14,6 @@ $l['thank_you'] = "Thank You.";
 $l['post_reported'] = "The post has successfully been reported. You can now close this window.";
 $l['report_error'] = "Error";
 $l['no_reason'] = "You cannot report a post without specifying a reason for reporting it.";
+$l['go_back'] = "Back";
+$l['close_window'] = "Close Window";
 ?>

@@ -51,35 +51,29 @@ h1 a {
 	background: #F5F5F4;
 }
 
-.post .header .author {
-	float: left;
-	font-weight: bold;
-	width: auto;
-	padding: 4px;
-}
-
 .post .header .author a {
 	color: #000;
 	text-decoration: none;
 }
- 
+
 .post .header .dateline {
 	padding: 4px;
 	color: #777;
-	text-align: right;
+	float: right;
+	margin-top: -20px;
 }
 
 .post .message {
-	border-top: 1px solid #ccc;
 	background: #fff;
 	padding: 4px;
 }
-.threadlist {
+
+.listing {
 	border: 1px solid #ccc;
 	margin-bottom: 10px;
 }
 
-.threadlist .header {
+.header {
 	background: #F5F5F4;
 	font-weight: bold;
 	padding: 4px;
@@ -93,18 +87,16 @@ h1 a {
 .threadlist .threads .replycount {
 	color: #777;
 	font-size: 0.8em;
-} 
-
-.forumlist {
-	border: 1px solid #ccc;
-	margin-bottom: 10px;
 }
 
-.forumlist .header {
-	background: #F5F5F4;
-	font-weight: bold;
-	padding: 4px;
-	border-bottom: 1px solid #ccc;
+.header h2 {
+	font-size: 1.0em;
+	margin: 0;
+}
+
+h3 {
+	font-size: 1.0em;
+	margin: 5px 0 0 10px;
 }
 
 .forumlist .forums ul {

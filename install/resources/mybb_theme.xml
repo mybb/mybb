@@ -1454,8 +1454,11 @@ $headerinclude
 <br />
 <strong>$lang->thank_you</strong>
 <blockquote>$lang->post_reported</blockquote>
-<br />
-<br />
+<br /><br />
+<div style="text-align: center;">
+	<script type="text/javascript">
+	document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');</script>
+</div>
 </td>
 </tr>
 </table>
@@ -2790,8 +2793,12 @@ $reputation
 <br />
 <strong>{$lang->report_error}</strong>
 <blockquote>{$lang->no_reason}</blockquote>
-<br />
-<br />
+<br /><br />
+<div>
+	<script type="text/javascript">
+	document.write('[<a href="javascript:history.go(-1);">{$lang->go_back}</a>]');
+	document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');</script>
+</div>
 </td>
 </tr>
 </table>
