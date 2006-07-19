@@ -5763,8 +5763,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 		<span class="smalltext">{$lastpostdate} {$lastposttime}<br />
 		<a href="showthread.php?action=lastpost&amp;tid={$similar_thread['tid']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
-	</tr>			
-<tr>]]></template>
+	</tr>]]></template>
 		<template name="calendar_eventbit_public" version="100.07"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$mybb->settings['publiceventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
 		<template name="calendar_eventbit_private" version="100.07"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$mybb->settings['privateeventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
 		<template name="calendar_daybit_today" version="100.07"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
