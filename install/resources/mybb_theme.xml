@@ -2207,7 +2207,7 @@ $headerinclude
 		<template name="showthread_similarthreads" version="100.07"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" align="center" colspan="4">{$lang->similar_threads}</td>
+<td class="thead" align="center" colspan="6">{$lang->similar_threads}</td>
 </tr>
 <tr>
 <td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
@@ -5754,12 +5754,12 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </body>
 </html>]]></template>
 		<template name="showthread_similarthreads_bit" version="100.07"><![CDATA[<tr>
-	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
-	<td class="{$bgcolor}"><a href="showthread.php?tid={$similar_thread['tid']}">{$similar_thread['subject']}</a></td>
-	<td align="center" class="{$bgcolor}">{$similar_thread['profilelink']}</td>
-	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$similar_thread['tid']});">{$similar_thread['replies']}</a></td>
-	<td align="center" class="{$bgcolor}">{$similar_thread['views']}</td>
-	<td class="{$bgcolor}" style="white-space: nowrap">
+	<td align="center" class="{$trow}" width="2%">{$icon}</td>
+	<td class="{$trow}"><a href="showthread.php?tid={$similar_thread['tid']}">{$similar_thread['subject']}</a></td>
+	<td align="center" class="{$trow}">{$similar_thread['profilelink']}</td>
+	<td align="center" class="{$trow}"><a href="javascript:MyBB.whoPosted({$similar_thread['tid']});">{$similar_thread['replies']}</a></td>
+	<td align="center" class="{$trow}">{$similar_thread['views']}</td>
+	<td class="{$trow}" style="white-space: nowrap">
 		<span class="smalltext">{$lastpostdate} {$lastposttime}<br />
 		<a href="showthread.php?action=lastpost&amp;tid={$similar_thread['tid']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
