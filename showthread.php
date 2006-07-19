@@ -708,27 +708,58 @@ if($mybb->input['action'] == "thread")
 	if($mybb->settings['showsimilarthreads'] != "no")
 	{
 		$query = $db->query("
-			SELECT subject, tid, lastpost, username, replies,
-			MATCH (subject) AGAINST ('".$db->escape_string($thread['subject'])."') AS relevance
-			FROM ".TABLE_PREFIX."threads
-			WHERE fid='".$thread['fid']."'
-			AND tid <> '".$thread['tid']."'
-			AND visible='1'
-			ORDER BY dateline DESC
-			LIMIT 0, ".$mybb->settings['similarlimit']
-		);
+			SELECT t.*, t.username AS threadusername, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') AS relevance
+			FROM ".TABLE_PREFIX."threads t
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+			WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND relevance>='{$mybb->settings['similarityrating']}
+			ORDER BY t.lastpost DESC
+			LIMIT 0, {$mybb->settings['similarlimit']}
+		");
 		$count = 0;
 		$similarthreadbits = '';
-		while($similarthread = $db->fetch_array($query))
+		$icon_cache = $cache->read("posticons");
+		while($similar_thread = $db->fetch_array($query))
 		{
-			if($similarthread['relevance'] >= $mybb->settings['similarityrating'])
+			++$count;
+			$trow = alt_trow();
+			if($similar_thread['icon'] > 0 && $icon_cache[$similar_thread['icon']])
 			{
-				++$count;
-				$similarthreaddate = mydate($mybb->settings['dateformat'], $similarthread['lastpost']);
-				$similarthreadtime = mydate($mybb->settings['timeformat'], $similarthread['lastpost']);
-				$similarthread['subject'] = htmlspecialchars_uni($similarthread['subject']);
-				eval("\$similarthreadbits .= \"".$templates->get("showthread_similarthreads_bit")."\";");
+				$icon = $icon_cache[$similar_thread['icon']];
+				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 			}
+			else
+			{
+				$icon = "&nbsp;";
+			}				
+			if(!$similar_thread['username'])
+			{
+				$similar_thread['username'] = $similar_thread['threadusername'];
+				$similar_thread['profilelink'] = $similar_thread['threadusername'];
+			}
+			else
+			{
+				$similar_thread['profilelink'] = build_profile_link($similar_thread['username'], $similar_thread['uid']);
+			}
+			$similar_thread['subject'] = $parser->parse_badwords($similar_thread['subject']);
+			$similar_thread['subject'] = htmlspecialchars_uni($similar_thread['subject']);
+
+			$lastpostdate = mydate($mybb->settings['dateformat'], $similar_thread['lastpost']);
+			$lastposttime = mydate($mybb->settings['timeformat'], $similar_thread['lastpost']);
+			$lastposter = $similar_thread['lastposter'];
+			$lastposteruid = $similar_thread['lastposteruid'];
+
+			// Don't link to guest's profiles (they have no profile).
+			if($lastposteruid == 0)
+			{
+				$lastposterlink = $lastposter;
+			}
+			else
+			{
+				$lastposterlink = build_profile_link($lastposter, $lastposteruid);
+			}
+			$similar_thread['replies'] = mynumberformat($similar_thread['replies']);
+			$similar_thread['views'] = mynumberformat($similar_thread['views']);
+			eval("\$similarthreadbits .= \"".$templates->get("showthread_similarthreads_bit")."\";");
 		}
 		if($count)
 		{
