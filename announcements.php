@@ -1,5 +1,5 @@
 <?php
-/**
+/** 
  * MyBB 1.2
  * Copyright © 2006 MyBB Group, All Rights Reserved
  *
