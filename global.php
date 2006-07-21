@@ -43,8 +43,6 @@ if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) 
 	define("NO_ONLINE", 1);
 }
 
-$lang->set_path(MYBB_ROOT."inc/languages");
-
 // Create session for this user
 require MYBB_ROOT."inc/class_session.php";
 $session = new session;
@@ -268,7 +266,8 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 		{
 			$banlift = mydate($mybb->settings['dateformat'], $ban['lifted']) . ", " . mydate($mybb->settings['timeformat'], $ban['lifted']);
 		}
-		else {
+		else 
+		{
 			$banlift = $lang->banned_lifted_never;
 		}
 		$reason = htmlspecialchars_uni($ban['reason']);
@@ -416,7 +415,7 @@ if($_COOKIE['collapsed'])
 // Randomly expire threads
 if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 {
-	$db->delete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime<'".time()."'");
+	$db->delete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime < '".time()."'");
 }
 
 // Set the link to the archive.

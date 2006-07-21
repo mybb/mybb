@@ -14,7 +14,7 @@ define("IN_MYBB", 1);
 // Lets pretend we're a level higher
 chdir('./../');
 
-require "./inc/init.php";
+require dirname(dirname(__FILE__))."/inc/init.php";
 
 require MYBB_ROOT."inc/functions_archive.php";
 require_once MYBB_ROOT."inc/class_session.php";
@@ -119,10 +119,8 @@ else
 	define(MYBB_LOCATION, "index.php");
 }
 
-$lang->set_path(MYBB_ROOT."inc/languages");
-
 // Initialise session
-$session = new session();
+$session = new session;
 $session->init();
 
 if(!$mybb->settings['bblanguage'])

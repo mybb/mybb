@@ -32,7 +32,6 @@ if(!file_exists(MYBB_ADMIN_DIR.$style))
 {
 	$style = "./styles/Axiom/stylesheet.css";
 }
-$lang->set_path(MYBB_ROOT."inc/languages");
 $lang->set_language($settings['cplanguage'], "admin");
 
 // Load global language phrases

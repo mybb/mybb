@@ -36,7 +36,7 @@ if($mybb->usergroup['canview'] != "yes")
 $user = get_user($mybb->input['uid']);
 if(!$user['uid'])
 {
-	error("invalid_user");
+	error($lang->add_no_uid);
 }
 $user_permissions = user_permissions(intval($mybb->input['uid']));
 

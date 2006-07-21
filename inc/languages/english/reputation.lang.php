@@ -12,6 +12,7 @@ $l['reputation_disabled'] = "You cannot use the reputation system as it has been
 
 $l['reputation'] = "Reputation";
 $l['error'] = "Error";
+$l['add_no_uid'] = "You did not specify a user to give a reputation to.";
 $l['add_no_permission'] = "You do not have permission to give reputation votes to users.";
 $l['add_disabled'] = "You cannot add a reputation to users of this user group.";
 $l['add_yours'] = "You cannot add to your own reputation.";
