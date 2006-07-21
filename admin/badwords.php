@@ -40,7 +40,7 @@ if($mybb->input['action'] == "do_add")
 	$sqlarray = array(
 		"badword" => $db->escape_string($mybb->input['badword']),
 		"replacement" => $db->escape_string($mybb->input['replacement']),
-		);
+	);
 	$plugins->run_hooks("admin_badwords_do_add");
 	$db->insert_query(TABLE_PREFIX."badwords", $sqlarray);
 	$cache->updatebadwords();
@@ -53,7 +53,7 @@ if($mybb->input['action'] == "do_edit")
 		"bid" => intval($mybb->input['bid']),
 		"badword" => $db->escape_string($mybb->input['badword']),
 		"replacement" => $db->escape_string($mybb->input['replacement']),
-		);
+	);
 	$plugins->run_hooks("admin_badwords_do_edit");
 	$db->update_query(TABLE_PREFIX."badwords", $sqlarray, "bid='".$sqlarray['bid']."'");
 	$cache->updatebadwords();
@@ -110,9 +110,9 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	starttable();
 	tableheader($lang->badwords, "", 4);
 	echo "<tr>\n";
-	echo "<td class=\"subheader\" align=\"center\">$lang->badword_title</td>\n";
-	echo "<td class=\"subheader\" align=\"center\">$lang->replacement_title</td>\n";
-	echo "<td class=\"subheader\" align=\"center\" colspan=\"2\">$lang->options</td>\n";
+	echo "<td class=\"subheader\">$lang->badword_title</td>\n";
+	echo "<td class=\"subheader\">$lang->replacement_title</td>\n";
+	echo "<td class=\"subheader\" colspan=\"2\" align=\"center\">$lang->options</td>\n";
 	echo "</tr>\n";
 	$options = array(
 		"order_by" => "badword",
