@@ -592,7 +592,7 @@ class PostDataHandler extends DataHandler
 			$forum = get_forum($post['fid']);
 
 			// Decide on the visibility of this post.
-			if($forum['modposts'] == "yes" && $mybb->usergroup['cancp'] != "yes")
+			if($forum['modposts'] == "yes" && is_moderator($thread['fid'], "", $thread['uid']) != "yes")
 			{
 				$visible = 0;
 			}
@@ -891,7 +891,7 @@ class PostDataHandler extends DataHandler
 			$user_permisions = user_permissions($thread['uid']);
 
 			// Decide on the visibility of this post.
-			if($forum['modposts'] == "yes" && $user_permissions['cancp'] != "yes")
+			if($forum['modposts'] == "yes" && is_moderator($thread['fid'], "", $thread['uid']) != "yes")
 			{
 				$visible = 0;
 			}

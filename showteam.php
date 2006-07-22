@@ -40,17 +40,20 @@ if(empty($usergroups))
 }
 
 // Fetch specific forum moderator details
-$query = $db->query("
-	SELECT m.*, f.name
-	FROM ".TABLE_PREFIX."moderators m
-	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid)
-	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid)
-	ORDER BY u.username
-");
-while($moderator = $db->fetch_array($query))
+if($usergroups[6]['showforumteam'] == 'yes')
 {
-	$moderators[$moderator['uid']][] = $moderator;
-} 
+	$query = $db->query("
+		SELECT m.*, f.name
+		FROM ".TABLE_PREFIX."moderators m
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid)
+		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid)
+		ORDER BY u.username
+		");
+		while($moderator = $db->fetch_array($query))
+		{
+			$moderators[$moderator['uid']][] = $moderator;
+		} 
+}
 
 // Now query the users of those specific groups
 $groups_in = implode(",", array_keys($usergroups));

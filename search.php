@@ -205,7 +205,6 @@ if($mybb->input['action'] == "results")
 			}
 		}
 
-		// Fetch thread 'dots'
 		foreach($thread_cache as $thread)
 		{
 			$bgcolor = alt_trow();
@@ -230,6 +229,11 @@ if($mybb->input['action'] == "results")
 			{
 				$icon = "&nbsp;";
 			}
+			if($thread['poll'])
+			{
+				$prefix = $lang->poll_prefix;
+			}
+				
 			// Determine the folder
 			$folder = '';
 			$folder_label = '';

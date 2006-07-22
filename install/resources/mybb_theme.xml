@@ -3549,7 +3549,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr><td class="trow">{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']}</strong></span>
 <br />
 <div id="pid_{$post['pid']}">
+<p>
 {$post['message']}
+</p>
 </div>
 <br />
 <br />
@@ -4731,8 +4733,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="private_archive_csv_message" version="100.07"><![CDATA[{$senddate},{$foldername},{$message['subject']},{$message['tousername']},{$message['fromusername']},{$message['message']}]]></template>
 		<template name="search_results_threads_thread" version="100.07"><![CDATA[<tr>
-	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
-	<td align="center" class="{$bgcolor}" width="1">{$icon}</td>
+	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
+	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">{$gotounread}{$prefix} <a href="showthread.php?tid={$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</td>
 	<td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
 	<td class="{$bgcolor}">{$thread['forumlink']}</td>
@@ -4779,8 +4781,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		</body>
 		</html>]]></template>
 		<template name="search_results_posts_post" version="100.07"><![CDATA[<tr>
-	<td align="center" class="{$bgcolor}" width="1"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
-	<td align="center" class="{$bgcolor}" width="1">{$icon}</td>
+	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
+	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}"><span class="smalltext">{$lang->post_thread} <a href="showthread.php?tid={$post['tid']}">{$post['thread_subject']}</a><br />{$lang->post_subject} <a href="showthread.php?tid={$post['tid']}&amp;pid={$post['pid']}#pid{$post['pid']}">{$post['subject']}</a></span><br />
 	<table width="100%"><tr><td><span class="smalltext"><em>{$prev}</em></span></td></tr></table></td>
 	<td align="center" class="{$bgcolor}">{$post['profilelink']}</td>

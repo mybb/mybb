@@ -160,10 +160,6 @@ $l['alt_quote'] = "Insert quoted text";
 $l['alt_code'] = "Insert formatted code";
 $l['alt_php'] = "Insert formatted PHP code";
 
-$l['normal_mode'] = "Normal Mode";
-$l['advanced_mode'] = "Advanced Mode";
-$l['close_tags'] = "close tags";
-
 $l['b_prompt'] = "Please enter the text to be formatted in bold.";
 $l['i_prompt'] = "Please enter the text to be formatted in italics";
 $l['u_prompt'] = "Please enter the text to be underlined.";

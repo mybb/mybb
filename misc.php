@@ -42,6 +42,7 @@ if($mybb->input['action'] == "markread")
 		if($mybb->user['uid'] != 0)
 		{
 			$db->update_query(TABLE_PREFIX."users", array('lastvisit' => time()), "uid='".$mybb->user['uid']."'");
+			update_pm_count('', 2);
 		}
 		else
 		{

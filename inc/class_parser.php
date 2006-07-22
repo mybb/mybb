@@ -146,7 +146,6 @@ class postParser
 		{
 			$message = nl2br($message);
 			$message = str_replace("</div><br />", "</div>", $message);
-			$message = "<p>{$message}</p>";
 		}
 		// Always fix bad Javascript in the message.
 		$message = $this->fix_javascript($message);

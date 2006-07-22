@@ -32,7 +32,6 @@ autoComplete.prototype = {
 			this.minChars = 3;
 		}
 		this.popup = document.createElement("div");
-		this.popup.id = textbox+"_popup";
 		this.popup.style.position = "absolute";
 		this.popup.className = "autocomplete";
 		this.popup.style.display = "none";
@@ -58,14 +57,18 @@ autoComplete.prototype = {
 			case Event.KEY_UP:
 				if(this.currentIndex > 0)
 				{
+					this.scrollToItem(this.currentIndex-1);
 					this.highlightItem(this.currentIndex-1);
+					this.setTypeAhead(this.currentIndex);
 				}
 				Event.stop(e);
 				break;
 			case Event.KEY_DOWN:
 				if(this.currentIndex+1 < this.popup.childNodes.length)
 				{
+					this.scrollToItem(this.currentIndex+1);
 					this.highlightItem(this.currentIndex+1);
+					this.setTypeAhead(this.currentIndex);
 				}
 				Event.stop(e);
 				break;
@@ -174,19 +177,29 @@ autoComplete.prototype = {
 			Event.observe(item, "mouseover", this.itemOver.bindAsEventListener(this));
 			Event.observe(item, "click", this.itemClick.bindAsEventListener(this));
 		}
+		
+		// Clone to get offset height (not possible when display=none)
+	    var clone = this.popup.cloneNode(true);
+		document.body.appendChild(clone);
+		clone.style.top = "-1000px";
+		clone.style.display = "block";
+		offsetHeight = clone.offsetHeight
+		Element.remove(clone);
+		
 		var maxHeight = 100;
-		if(this.popup.offsetHeight > 0 && this.popup.offsetHeight < maxHeight)
+		if(offsetHeight > 0 && offsetHeight < maxHeight)
 		{
 			this.popup.style.overflow = "hidden";	
 		}
-		else if(MyBB.browser == "mozilla")
-		{
-			this.popup.style.maxHeight = maxHeight+"px";
-		}
-		else
+		else if(MyBB.browser == "ie")
 		{
 			this.popup.style.height = maxHeight+"px";
 			this.popup.style.overflowY = "auto";
+		}
+		else
+		{
+			this.popup.style.maxHeight = maxHeight+"px";
+			this.popup.style.overflow = "auto";
 		}
 		this.popup.style.width = this.textbox.offsetWidth-2+"px";
 		element = this.textbox;
@@ -212,6 +225,7 @@ autoComplete.prototype = {
 		this.popup.scrollTop = 0;		
 		Event.observe(document, "click", this.hidePopup.bindAsEventListener(this));
 		this.highlightItem(0);
+		this.setTypeAhead(0);	
 		this.popup.style.display = "";
 	},
 	
@@ -249,6 +263,7 @@ autoComplete.prototype = {
 			textBoxValue = selectedItem;
 		}
 		this.textbox.value = textBoxValue;
+		return textBoxValue;
 	},
 	
 	itemOver: function(event)
@@ -276,6 +291,55 @@ autoComplete.prototype = {
 		}
 		this.currentIndex = selectedItem;
 		this.popup.childNodes[this.currentIndex].className = "autocomplete_selected";
+	},
+	
+	scrollToItem: function(selectedItem)
+	{
+		newItem = this.popup.childNodes[selectedItem];
+		if(!newItem)
+		{
+			return false;
+		}
+		if(newItem.offsetTop+newItem.offsetHeight > this.popup.scrollTop+this.popup.offsetHeight)
+		{
+			this.popup.scrollTop = (newItem.offsetTop+newItem.offsetHeight) - this.popup.offsetHeight;
+		}
+		else if((newItem.offsetTop+newItem.offsetHeight) < this.popup.scrollTop)
+		{
+			this.popup.scrollTop = newItem.offsetTop;
+		}
+		else if(newItem.offsetTop < this.popup.scrollTop)
+		{
+			this.popup.scrollTop = newItem.offsetTop;
+		}
+		else if(newItem.offsetTop > (this.popup.scrollTop + this.popup.offsetHeight))
+		{
+			this.popup.scrollTop = (newItem.offsetTop+newItem.offsetHeight)-this.popup.offsetHeight;
+		}
+	},
+	
+	setTypeAhead: function(selectedItem)
+	{
+		selectedItem = this.popup.childNodes[selectedItem];
+		if(!selectedItem || (!this.textbox.setSelectionRange && !this.textbox.createTextRange))
+		{
+			return false;
+		}
+		currentValue = this.textbox.value;
+		newValue = this.updateValue(selectedItem);
+		selectStart = currentValue.length;
+		selectEnd = newValue.length;
+		if(this.textbox.setSelectionRange)
+		{
+			this.textbox.setSelectionRange(selectStart, selectEnd);
+		}
+		else if(this.textbox.createTextRange)
+		{
+			var range = this.textBox.createTextRange();
+			range.moveStart('character', selectStart);
+			range.moveEnd('character', selectEnd-newValue.length);
+			range.select();
+		}
 	},
 	
 	clearCache: function()

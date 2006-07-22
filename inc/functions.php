@@ -2712,6 +2712,7 @@ function update_first_post($tid)
  */
 function my_strlen($string)
 {
+	$string = preg_replace("#&\#(0-9]+);#", "-", $string);
 	if(function_exists("mb_strlen"))
 	{
 		$string_length = mb_strlen($string);

@@ -113,7 +113,7 @@ if($mybb->input['action'] == "get_users")
 
 	// Sanitize the input.
 	$mybb->input['query'] = rawurldecode($mybb->input['query']);
-	$mybb->input['query'] = str_replace(array("%", "_"), array("\%", "\_"), $mybb->input['query']);
+	$mybb->input['query'] = str_replace(array("%", "_"), array("\\%", "\\_"), $mybb->input['query']);
 	
 	// Query for any matching users.
 	$query_options = array(
@@ -190,7 +190,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 			xmlhttp_error($lang->thread_closed_edit_subjects);
 		}
 		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
-		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'])
+		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'] || $mybb->user['uid'] == 0)
 		{
 			xmlhttp_error($lang->no_permission_edit_subject);
 		}
@@ -287,7 +287,7 @@ else if($mybb->input['action'] == "edit_post")
 			xmlhttp_error($lang->thread_closed_edit_message);
 		}
 		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
-		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'])
+		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'] || $mybb->user['uid'] == 0)
 		{
 			xmlhttp_error($lang->no_permission_edit_post);
 		}

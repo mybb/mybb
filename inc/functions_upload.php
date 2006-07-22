@@ -304,7 +304,7 @@ function upload_attachment($attachment)
 			$attacharray['thumbnail'] = "SMALL";
 		}
 	}
-	if($forum['modattachments'] == "yes" && $mybb->usergroup['cancp'] != "yes")
+	if($forum['modattachments'] == "yes" && is_moderator($forum['fid'], "", $mybb->user['uid']) != "yes")
 	{
 		$attacharray['visible'] = 0;
 	}
