@@ -111,7 +111,7 @@ switch($action)
 		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$id}' AND visible='1'", array('limit_start' => $start, 'limit' => $perpage));
 		while($post = $db->fetch_array($query))
 		{
-			$pids[$post['pid']] = $pid;
+			$pids[$post['pid']] = $post['pid'];
 		}
 		
 		$pids = implode(",", $pids);
