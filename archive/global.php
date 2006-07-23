@@ -74,7 +74,7 @@ if($endpart != "index.php")
 			SELECT a.*, u.username
 			FROM ".TABLE_PREFIX."announcements a
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
-			WHERE a.aid='{$id}' AND startdate < '{$time'}  AND (enddate > '{$time}' OR enddate = 0)
+			WHERE a.aid='{$id}' AND startdate < '{$time}'  AND (enddate > '{$time}' OR enddate = 0)
 		");
 		$announcement = $db->fetch_array($query);
 		if(!$announcement['aid'])
