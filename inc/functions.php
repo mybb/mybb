@@ -23,12 +23,12 @@ $mybboard['vercode'] = "120";
  */
 function output_page($contents)
 {
-	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser, $mybbgroup;
+	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
 	$contents = parse_page($contents);
 	$totaltime = $maintimer->stop();
-	if($mybbgroup['cancp'] == "yes")
+	if($mybb->usergroup['cancp'] == "yes")
 	{
 		$phptime = $maintimer->format($maintimer->totaltime - $querytime);
 		$querytime = $maintimer->format($querytime);
@@ -173,7 +173,7 @@ function send_mail_queue($count=10)
  */
 function parse_page($contents)
 {
-	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $mybbgroup, $htmldoctype, $loadpmpopup, $archive_url;
+	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $htmldoctype, $loadpmpopup, $archive_url;
 
 	$contents = str_replace('<navigation>', build_breadcrumb(1), $contents);
 	$contents = str_replace('<archive_url>', $archive_url, $contents);
@@ -722,7 +722,7 @@ function usergroup_displaygroup($gid)
  */
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
-	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybbgroup, $mybbuser, $mybb, $usercache, $fpermissionscache;
+	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybbuser, $mybb, $usercache, $fpermissionscache;
 
 	if($uid == 0)
 	{
@@ -747,7 +747,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 			{
 				$gid .= ",".$mybb->user['additionalgroups'];
 			}
-			$groupperms = $mybbgroup;
+			$groupperms = $mybb->usergroup;
 		}
 	}
 	if(!is_array($forum_cache))
@@ -924,14 +924,14 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
  */
 function is_moderator($fid="0", $action="", $uid="0")
 {
-	global $mybb, $mybbuser, $db, $mybbgroup;
+	global $mybb, $mybbuser, $db;
 
 	if($uid == 0)
 	{
 		$uid = $mybb->user['uid'];
 	}
 
-	if($mybbgroup['issupermod'] == "yes")
+	if($mybb->usergroup['issupermod'] == "yes")
 	{
 		return "yes";
 	}
@@ -1352,12 +1352,12 @@ function delete_post($pid, $tid="")
  */
 function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $permissions="", $name="fid")
 {
-	global $db, $forum_cache, $fjumpcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang, $mybbgroup;
+	global $db, $forum_cache, $fjumpcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = intval($pid);
 	if($permissions)
 	{
-		$permissions = $mybbgroup;
+		$permissions = $mybb->usergroup;
 	}
 	if(!is_array($jumpfcache))
 	{
@@ -1815,13 +1815,13 @@ function get_attachment_icon($ext)
  */
 function get_unviewable_forums()
 {
-	global $db, $forum_cache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $unviewable, $templates, $mybbgroup, $forumpass;
+	global $db, $forum_cache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $unviewable, $templates, $forumpass;
 
 	$pid = intval($pid);
 
 	if(!$permissions)
 	{
-		$permissions = $mybbgroup;
+		$permissions = $mybb->usergroup;
 	}
 	if(!is_array($forum_cache))
 	{
@@ -1839,7 +1839,7 @@ function get_unviewable_forums()
 		}
 		else
 		{
-			$perms = $mybbgroup;
+			$perms = $mybb->usergroup;
 		}
 		$pwverified = 1;
 		if($forum['password'] != "")
