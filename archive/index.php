@@ -288,7 +288,7 @@ switch($action)
 					{
 						$lang_reply_text = $lang->archive_reply;
 					}					
-					echo "<li>{$prefix}<a href=\"{$archiveurl}/index.php/thread-{$sticky['tid']}.html\">{$sticky['subject']}</li></a>";
+					echo "<li>{$prefix}<a href=\"{$archiveurl}/index.php/thread-{$sticky['tid']}.html\">{$sticky['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$sticky['replies']} {$lang_reply_text})</span></li>";
 				}
 				echo "</ol>\n</div>\n";
