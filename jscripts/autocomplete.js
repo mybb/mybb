@@ -257,6 +257,7 @@ autoComplete.prototype = {
 	hidePopup: function()
 	{
 		this.popup.style.display = "none";
+		this.currentIndex = -1;
 	},
 	
 	updateValue: function(selectedItem)
