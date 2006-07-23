@@ -17,7 +17,14 @@ autoComplete.prototype = {
 		this.textbox.setAttribute("autocomplete", "off");
 		this.textbox.autocompletejs = this;
 		Event.observe(this.textbox, "keypress", this.onKeyPress.bindAsEventListener(this));
-		
+		if(this.textbox.form)
+		{
+			if(this.textbox.form.onsubmit)
+			{
+				this.oldOnSubmit = this.textbox.form.onsubmit;
+			}
+			this.textbox.form.onsubmit = function(e) { return this.onFormSubmit(); }.bind(this);
+		}
 		this.url = url;
 		
 		this.currentIndex = -1;
@@ -38,17 +45,28 @@ autoComplete.prototype = {
 		document.body.appendChild(this.popup);
 		
 		this.timeout = false;
+
+		this.textbox.popup = this;
 		
 		Event.observe(document, "unload", this.clearCache.bindAsEventListener(this));
 	},
 
+	onFormSubmit: function()
+	{
+		if(this.currentIndex != -1)
+		{
+			return false;
+		}
+		this.textbox.setAttribute("autocomplete", "on");
+		return true;
+	},
 	
 	onKeyPress: function(e)
 	{
 		if(this.timeout)
 		{
 			clearTimeout(this.timeout);
-		}
+		}	
 		switch(e.keyCode)
 		{
 			case Event.KEY_LEFT:
@@ -80,17 +98,21 @@ autoComplete.prototype = {
 					return false;
 				}
 			case Event.KEY_RETURN:
+				if(this.currentIndex != -1)
+				{
+					Event.stop(e);
+				}
 				if(this.popup.display != "none" && this.currentIndex > -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
 				}
-				Event.stop(e);
 				break;
 			case Event.KEY_ESC:
 				this.hidePopup();
 				break;
 			default:
+				this.currentKeyCode = e.keyCode;
 				setTimeout("$('"+this.textbox.id+"').autocompletejs.doRequest();", 500);
 				break;
 		}
@@ -224,15 +246,17 @@ autoComplete.prototype = {
 		
 		this.popup.scrollTop = 0;		
 		Event.observe(document, "click", this.hidePopup.bindAsEventListener(this));
-		this.highlightItem(0);
-		this.setTypeAhead(0);	
 		this.popup.style.display = "";
+		if(this.currentKeyCode != 8 && this.currentKeyCode != 46)
+		{
+			this.highlightItem(0);
+			this.setTypeAhead(0);	
+		}
 	},
 	
 	hidePopup: function()
 	{
 		this.popup.style.display = "none";
-		this.textbox.onkeypress = '';
 	},
 	
 	updateValue: function(selectedItem)
@@ -262,6 +286,7 @@ autoComplete.prototype = {
 		{
 			textBoxValue = selectedItem;
 		}
+		//alert('setting value to '+textBoxValue)
 		this.textbox.value = textBoxValue;
 		return textBoxValue;
 	},
@@ -335,7 +360,7 @@ autoComplete.prototype = {
 		}
 		else if(this.textbox.createTextRange)
 		{
-			var range = this.textBox.createTextRange();
+			var range = this.textbox.createTextRange();
 			range.moveStart('character', selectStart);
 			range.moveEnd('character', selectEnd-newValue.length);
 			range.select();

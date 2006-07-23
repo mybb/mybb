@@ -87,7 +87,18 @@ elseif($mybb->input['action'] == "rules")
 		{
 			$forum['rulestitle'] = sprintf($lang->forum_rules, $forum['name']);
 		}
-		$forum['rules'] = postify($forum['rules'], "yes", "yes", "yes", "yes");
+		
+		require_once MYBB_ROOT."/inc/class_parser.php";
+		
+		$parser_options = array(
+			"allow_html" => 'yes',
+			"allow_mycode" => 'yes',
+			"allow_smilies" => 'yes',
+			"allow_imgcode" => 'yes'
+		);
+
+		$forum['rules'] = $parser->parse_message($forum['rules'], $parser_options);	
+			
 		// Make navigation
 		build_forum_breadcrumb($mybb->input['fid']);
 		add_breadcrumb($forum['rulestitle']);

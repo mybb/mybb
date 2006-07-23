@@ -128,7 +128,7 @@ function archive_multipage($count, $perpage, $page, $url)
 			}
 			else
 			{
-				$mppage .= "<a href=\"$url-$i.html\">$i</a></strong> ";
+				$mppage .= "<a href=\"$url-$i.html\">$i</a> ";
 			}
 		}
 		$multipage = "<div class=\"multipage\"><strong>".$lang->archive_pages."</strong> $mppage</div>";

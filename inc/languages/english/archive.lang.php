@@ -14,4 +14,5 @@ $l['archive_note'] = "You're currently viewing a stripped down version of our co
 $l['archive_reference_urls'] = "Reference URL's";
 $l['archive_nopermission'] = "Sorry but you do not have permission to access this resource.";
 $l['error_nothreads'] = "There are currently no threads in this forum.";
+$l['archive_not_found'] = "<h1>404 Not Found</h1><p>The specified document was not found on this server.";
 ?>

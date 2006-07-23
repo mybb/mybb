@@ -1562,6 +1562,11 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
 		$ext = get_extension($mybb->input['avatarurl']);
 		list($width, $height, $type) = @getimagesize($mybb->input['avatarurl']);
+		
+		if(!$type)
+		{
+			error($lang->error_invalidavatarurl);
+		}
 
 		if($width && $height && $mybb->settings['maxavatardims'] != "")
 		{

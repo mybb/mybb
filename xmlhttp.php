@@ -112,7 +112,6 @@ if($mybb->input['action'] == "get_users")
 	header("Content-type: text/html; charset=utf-8");
 
 	// Sanitize the input.
-	$mybb->input['query'] = rawurldecode($mybb->input['query']);
 	$mybb->input['query'] = str_replace(array("%", "_"), array("\\%", "\\_"), $mybb->input['query']);
 	
 	// Query for any matching users.
@@ -136,9 +135,6 @@ if($mybb->input['action'] == "get_users")
 // This action provides editing of thread/post subjects from within their respective list pages.
 else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "post")
 {
-	// Sanitize the incoming subject.
-	$mybb->input['value'] = rawurldecode($mybb->input['value']);
-		
 	// Editing a post subject.
 	if($mybb->input['pid'])
 	{
@@ -312,8 +308,8 @@ else if($mybb->input['action'] == "edit_post")
 	}
 	else if($mybb->input['do'] == "update_post")
 	{
-		$message = rawurldecode($mybb->input['value']);
-		//$message = $mybb->input['value'];
+		//$message = rawurldecode($mybb->input['value']);
+		$message = $mybb->input['value'];
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("update");

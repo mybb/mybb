@@ -20,7 +20,36 @@ switch($action)
 {
 	// Display an announcement.
 	case "announcement":
+		// Fetch the forum this thread is in
+		if($announcement['fid'] != -1)
+		{
+			$forum = get_forum($announcement['fid']);
+			if(!$forum['fid'] || $forum['password'] != '')
+			{
+				archive_error($lang->error_invalidforum);
+			}
+
+			// Check if we have permission to view this thread
+			$forumpermissions = forum_permissions($forum['fid']);
+			if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] != 'yes')
+			{
+				archive_error_no_permission();
+			}
+		}
+		
 		$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
+		
+		$parser_options = array(
+			"allow_html" => $announcement['allowhtml'],
+			"allow_mycode" => $announcement['allowmycode'],
+			"allow_smilies" => $announcement['allowsmilies'],
+			"allow_imgcode" => $announcement['allowmycode'],
+			"me_username" => $announcement['username']
+		);
+
+		$announcement['message'] = $parser->parse_message($announcement['message'], $parser_options);
+
+		$profile_link = build_profile_link($announcement['username'], $announcement['uid']);
 
 		// Build the navigation
 		add_breadcrumb($announcement['subject']);
@@ -29,8 +58,7 @@ switch($action)
 		// Format announcement contents.
 		$announcement['startdate'] = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $announcement['startdate']);
 
-		// Show announcement contents.
-		echo "<div class=\"post\">\n<div class=\"header\">\n<h2>{$announcement['subject']}</h2>";
+		echo "<div class=\"post\">\n<div class=\"header\">\n<h2>{$announcement['subject']} - {$profile_link}</h2>";
 		echo "<div class=\"dateline\">{$announcement['startdate']}</div>\n</div>\n<div class=\"message\">{$announcement['message']}</div>\n</div>\n";
 
 		archive_footer();
@@ -77,9 +105,19 @@ switch($action)
 			$start = 0;
 			$page = 1;
 		}
+		
+		$pids = array();		
+		// Fetch list of post IDs to be shown
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$id}' AND visible='1'", array('limit_start' => $start, 'limit' => $perpage));
+		while($post = $db->fetch_array($query))
+		{
+			$pids[$post['pid']] = $pid;
+		}
+		
+		$pids = implode(",", $pids);
 
 		// Build attachments cache
-		$query = $db->simple_select(TABLE_PREFIX."attachments");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid IN ({$pids})");
 		while($attachment = $db->fetch_array($query))
 		{
 			$acache[$attachment['pid']][$attachment['aid']] = $attachment;
@@ -90,20 +128,24 @@ switch($action)
 			SELECT u.*, u.username AS userusername, p.*
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE p.tid='$id' AND visible='1'
+			WHERE p.pid IN ({$pids})
 			ORDER BY p.dateline
-			LIMIT $start, $perpage
 		");
 		while($post = $db->fetch_array($query))
 		{
 			$post['date'] = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $post['dateline'], "", 0);
+			if($post['userusername'])
+			{
+				$post['username'] = $post['userusername'];
+			}
+			
 			// Parse the message
 			$parser_options = array(
 				"allow_html" => $forum['allow_html'],
 				"allow_mycode" => $forum['allow_mycode'],
 				"allow_smilies" => $forum['allowsmilies'],
 				"allow_imgcode" => $forum['allowimgcode'],
-				"me_username" => $post['userusername']
+				"me_username" => $post['username']
 			);
 			if($post['smilieoff'] == "yes")
 			{
@@ -204,8 +246,9 @@ switch($action)
 		// Get the announcements if the forum is not a category.
 		if($forum['type'] == 'f')
 		{
+			$sql = build_parent_list($forum['fid'], "fid", "OR", $form['parentlist']);
 			$time = time();
-			$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "startdate < '{$time}' AND (enddate > '{$time}' OR enddate=0)");
+			$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "startdate < '{$time}' AND (enddate > '{$time}' OR enddate=0) AND ({$sql} OR fid='-1')");
 			if($db->num_rows($query) > 0)
 			{
 				echo "<div class=\"announcementlist\">\n";
@@ -237,7 +280,16 @@ switch($action)
 				echo "<ol>\n";
 				while($sticky = $db->fetch_array($query))
 				{
+					if($sticky['replies'] != 1)
+					{
+						$lang_reply_text = $lang->archive_replies;
+					}
+					else
+					{
+						$lang_reply_text = $lang->archive_reply;
+					}					
 					echo "<li>{$prefix}<a href=\"{$archiveurl}/index.php/thread-{$sticky['tid']}.html\">{$sticky['subject']}</li></a>";
+					echo "<span class=\"replycount\"> ({$sticky['replies']} {$lang_reply_text})</span></li>";
 				}
 				echo "</ol>\n</div>\n";
 			}
@@ -262,10 +314,6 @@ switch($action)
 				{
 					$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 					$prefix = "";
-					if($thread['sticky'] == 1)
-					{
-						$prefix = "<span class=\"threadprefix\">".$lang->archive_sticky."</span> ";
-					}
 					if($thread['replies'] != 1)
 					{
 						$lang_reply_text = $lang->archive_replies;
@@ -299,6 +347,7 @@ switch($action)
 		break;
 	default:
 		header("HTTP/1.0 404 Not Found");
+		echo $lang->archive_not_found;
 		exit;
 }
 

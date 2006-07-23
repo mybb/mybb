@@ -16,9 +16,11 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		$thumb['code'] = 3;
 		return $thumb;
 	}
-	list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($file);
+	list($imgwidth, $imgheight, $imgtype, $imgattr, $imgbits, $imgchan) = getimagesize($file);
 	if(($imgwidth > $maxwidth) || ($imgheight > $maxheight))
 	{
+		check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
+		
 		if($imgtype == 3)
 		{
 			if(@function_exists("imagecreatefrompng"))
@@ -96,6 +98,48 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	else
 	{
 		return array("code" => 4);
+	}
+}
+
+function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
+{
+	if(!function_exists("memory_get_usage"))
+	{
+		return false;
+	}
+
+	$memory_limit = @ini_get("memory_limit");
+	if(!$memory_limit || $memory_limit == -1)
+	{
+		return false;
+	}
+
+	$limit = preg_match("#^([0-9]+)\s?([kmg])b?$#i", trim(strtolower($memory_limit)), $matches);
+	$memory_limit = 0;
+	if($matches[1] && $matches[2])
+	{
+		switch($matches[2])
+		{
+			case "k":
+				$memory_limit = $matches[1] * 1024;
+				break;
+			case "m":
+				$memory_limit = $matches[1] * 1048576;
+				break;
+			case "g":
+				$memory_limit = $matches[1] * 1073741824;
+		}
+	}
+	$current_usage = memory_get_usage();
+	$free_memory = $memory_limit - $current_usage;
+	
+	$thumbnail_memory = round(($width * $height * $bitdepth * $channels / 8) * 5);
+	echo $thumbnail_memory."<br />";
+	$thumbnail_memory += 2097152;
+	
+	if($thumbnail_memory > $free_memory)
+	{
+		@ini_set("memory_limit", $memory_limit+$thumbnail_memory);
 	}
 }
 

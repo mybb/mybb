@@ -70,7 +70,12 @@ if($endpart != "index.php")
 	if($action == "announcement")
 	{
 		$time = time();
-		$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "aid='{$id}' AND startdate < '{$time}' AND (enddate > '{$time}' OR enddate = 0)");
+		$query = $db->query("
+			SELECT a.*, u.username
+			FROM ".TABLE_PREFIX."announcements a
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
+			WHERE a.aid='{$id}' AND startdate < '{$time'}  AND (enddate > '{$time}' OR enddate = 0)
+		");
 		$announcement = $db->fetch_array($query);
 		if(!$announcement['aid'])
 		{
@@ -134,15 +139,12 @@ $lang->load("global");
 $lang->load("messages");
 $lang->load("archive");
 
-// Get our visitors IP
-$ipaddress = get_ip();
-
 // Draw up the basic part of our naviagation
 $navbits[0]['name'] = $mybb->settings['bbname'];
 $navbits[0]['url'] = $mybb->settings['bburl']."/archive/index.php";
 
 // Check banned ip addresses
-$bannedips = explode(" ", $mybb->settings['ipban']);
+$bannedips = explode(" ", $mybb->settings['bannedips']);
 if(is_array($bannedips))
 {
 	foreach($bannedips as $key => $bannedip)
@@ -175,7 +177,7 @@ if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 	{
 		preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $regs);
 		$load = $regs[1];
-		if($mybb->user['cancp'] != "yes" && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
+		if($mybb->usergroup['cancp'] != "yes" && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
 		{
 			archive_error($lang->error_loadlimit);
 		}
