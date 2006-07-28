@@ -283,6 +283,8 @@ class postParser
 
 		// Parse quotes first
 		$message = $this->mycode_parse_quotes($message);
+		
+		$message = $this->mycode_auto_url($message);		
 
 		// Replace the rest
 		$message = preg_replace($this->mycode_cache['find'], $this->mycode_cache['replacement'], $message);
@@ -312,8 +314,6 @@ class postParser
 			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} \\2</span>", $message);
 			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
-
-		$message = $this->mycode_auto_url($message);
 
 		return $message;
 	}
@@ -504,7 +504,6 @@ class postParser
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
 		$str = str_replace('&amp;', '&', $str);
-		$str = str_replace('&quot;', "\"", $str);
 		$original = $str;
 		// See if open and close tags are provided.
 		$added_open_close = false;
@@ -614,6 +613,8 @@ class postParser
 	function mycode_parse_img($url, $dimensions=array())
 	{
 		$url = trim($url);
+		$url = str_replace("\n", "", $url);
+		$url = str_replace("\r", "", $url);
 		if($dimensions[0] > 0 && $dimensions[1] > 0)
 		{
 			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\{$dimensions[1]}\" border=\"0\" alt=\"\" />";
@@ -656,8 +657,8 @@ class postParser
 	function mycode_auto_url($message)
 	{
 		$message = " ".$message;
-		$message = preg_replace("#([\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#ie", "\"$1\".\$this->mycode_parse_url(\"$2://$3\")", $message);
-		$message = preg_replace("#([\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#ie", "\"$1\".\$this->mycode_parse_url(\"$2.$3\", \"$2.$3\")", $message);
+		$message = preg_replace("#([\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
+		$message = preg_replace("#([\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
 		$message = my_substr($message, 1);
 		return $message;
 	}
@@ -671,7 +672,7 @@ class postParser
 	function mycode_parse_list($message, $type="")
 	{
 		$message = str_replace('\"', '"', $message);
-		$message = preg_replace("#\[\*\]#", "</li><li> ", $message);
+		$message = preg_replace("#\[\*\]\s?#", "</li><li>", $message);
 		$message .= "</li>";
 
 		if($type)

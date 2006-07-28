@@ -58,5 +58,6 @@ $l['sort_username'] = "Sort by: Username";
 $l['last_updated'] = "Last updated {1}, {2}";
 $l['no_reputation_votes'] = "This user currently does not have any reputation votes with the specified criteria below.";
 $l['delete_reputation_confirm'] = "Are you sure you wish to delete this reputation vote?";
+$l['reputations_disabled_group'] = "The reputation system is disabled for users of this user group.";
 $l['rate_user'] = "Rate user";
 ?>

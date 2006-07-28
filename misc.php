@@ -42,6 +42,7 @@ if($mybb->input['action'] == "markread")
 		if($mybb->user['uid'] != 0)
 		{
 			$db->update_query(TABLE_PREFIX."users", array('lastvisit' => time()), "uid='".$mybb->user['uid']."'");
+			require_once MYBB_ROOT."/inc/functions_user.php";
 			update_pm_count('', 2);
 		}
 		else
@@ -573,7 +574,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	if(!is_array($forumcache))
 	{
 		// Get Forums
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "linkto = ''", array('order_by' => 'pid, disporder'));
+		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "linkto = '' AND active!='no'", array('order_by' => 'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;

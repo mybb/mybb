@@ -12,19 +12,24 @@ autoComplete.prototype = {
 		this.cache = new Array();
 	
 		this.lastValue = '';
-		
+		this.lastKeycode = 0;
 		this.textbox = $(textbox);
 		this.textbox.setAttribute("autocomplete", "off");
 		this.textbox.autocompletejs = this;
 		Event.observe(this.textbox, "keypress", this.onKeyPress.bindAsEventListener(this));
+		Event.observe(this.textbox, "keyup", this.onKeyUp.bindAsEventListener(this));
+		Event.observe(this.textbox, "keydown", this.onKeyDown.bindAsEventListener(this));
+		this.formSubmit = false;
 		if(this.textbox.form)
 		{
 			if(this.textbox.form.onsubmit)
 			{
 				this.oldOnSubmit = this.textbox.form.onsubmit;
 			}
-			this.textbox.form.onsubmit = function(e) { return this.onFormSubmit(); }.bind(this);
+			this.formSubmit = true;
+			this.textbox.form.onsubmit = this.onFormSubmit.bindAsEventListener(this);
 		}
+		this.textbox.onsubmit = this.onFormSubmit.bindAsEventListener(this);
 		this.url = url;
 		
 		this.currentIndex = -1;
@@ -38,6 +43,7 @@ autoComplete.prototype = {
 		{
 			this.minChars = 3;
 		}
+		this.menuOpen = false;
 		this.popup = document.createElement("div");
 		this.popup.style.position = "absolute";
 		this.popup.className = "autocomplete";
@@ -51,14 +57,31 @@ autoComplete.prototype = {
 		Event.observe(document, "unload", this.clearCache.bindAsEventListener(this));
 	},
 
-	onFormSubmit: function()
+	onFormSubmit: function(e)
 	{
-		if(this.currentIndex != -1)
+		if(this.lastKeycode == 13 && this.menuOpen == true)
 		{
+			setTimeout(function() { this.textbox.focus() }.bind(this), 10);
+			this.menuOpen = false;
+			this.hidePopup();
+			Event.stop(e);
 			return false;
 		}
-		this.textbox.setAttribute("autocomplete", "on");
-		return true;
+		else
+		{
+			return true;
+		}
+		//this.textbox.setAttribute("autocomplete", "on");
+	},
+	
+	onKeyDown: function(e)
+	{
+		this.lastKeycode = e.keyCode;
+	},
+	
+	onKeyUp: function(e)
+	{
+		this.lastKeycode = e.keyCode;
 	},
 	
 	onKeyPress: function(e)
@@ -95,27 +118,29 @@ autoComplete.prototype = {
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
+					this.currentIndex = -1;
 					return false;
 				}
+				break;
 			case Event.KEY_RETURN:
+				//Event.stop(e);
 				if(this.currentIndex != -1)
-				{
-					Event.stop(e);
-				}
-				if(this.popup.display != "none" && this.currentIndex > -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
+					this.currentIndex = -1;
 				}
+				//return false;
 				break;
 			case Event.KEY_ESC:
 				this.hidePopup();
 				break;
 			default:
 				this.currentKeyCode = e.keyCode;
-				setTimeout("$('"+this.textbox.id+"').autocompletejs.doRequest();", 500);
+				this.timeout = setTimeout("$('"+this.textbox.id+"').autocompletejs.doRequest();", 500);
 				break;
 		}
+		return true;
 	},
 	
 	buildURL: function()
@@ -141,8 +166,7 @@ autoComplete.prototype = {
 		this.lastValue = this.textbox.value;
 		cacheValue = this.textbox.length+this.textbox.value;
 		if(this.textbox.value.length >= this.minChars)
-		{
-						
+		{		
 			if(this.cache[cacheValue])
 			{
 				this.popup.innerHTML = this.cache[cacheValue];
@@ -155,7 +179,10 @@ autoComplete.prototype = {
 		}
 		else
 		{
-			this.hidePopup();
+			if(this.popup.style.display != "none")
+			{
+				this.hidePopup();
+			}
 		}
 	},
 	
@@ -166,7 +193,10 @@ autoComplete.prototype = {
 		{
 			if(request.responseText.charAt(0) != "<")
 			{
-				this.hidePopup();
+				if(this.popup.style.display != "none")
+				{
+					this.hidePopup();
+				}
 				return false;
 			}
 			cacheValue = this.textbox.length+this.textbox.value;
@@ -187,7 +217,10 @@ autoComplete.prototype = {
 		}
 		if(this.popup.childNodes.length < 1)
 		{
-			this.hidePopup();
+			if(this.popup.style.display != "none")
+			{
+				this.hidePopup();
+			}
 			return false;
 		}
 		for(var i=0;i<this.popup.childNodes.length;i++)
@@ -245,8 +278,9 @@ autoComplete.prototype = {
 		this.popup.style.top = offsetTop+this.textbox.offsetHeight+"px";
 		
 		this.popup.scrollTop = 0;		
-		Event.observe(document, "click", this.hidePopup.bindAsEventListener(this));
+		Event.observe(this.textbox, "blur", this.hidePopup.bindAsEventListener(this));
 		this.popup.style.display = "";
+		this.menuOpen = true;
 		if(this.currentKeyCode != 8 && this.currentKeyCode != 46)
 		{
 			this.highlightItem(0);
@@ -257,7 +291,6 @@ autoComplete.prototype = {
 	hidePopup: function()
 	{
 		this.popup.style.display = "none";
-		this.currentIndex = -1;
 	},
 	
 	updateValue: function(selectedItem)
@@ -287,7 +320,6 @@ autoComplete.prototype = {
 		{
 			textBoxValue = selectedItem;
 		}
-		//alert('setting value to '+textBoxValue)
 		this.textbox.value = textBoxValue;
 		return textBoxValue;
 	},
@@ -306,6 +338,7 @@ autoComplete.prototype = {
 		selectedItem = element.index;
 		this.updateValue(this.popup.childNodes[selectedItem]);
 		this.hidePopup();
+		this.currentIndex = -1;
 		this.textbox.focus();
 	},
 	
@@ -364,6 +397,22 @@ autoComplete.prototype = {
 			var range = this.textbox.createTextRange();
 			range.moveStart('character', selectStart);
 			range.moveEnd('character', selectEnd-newValue.length);
+			range.select();
+		}
+	},
+	
+	clearSelection: function()
+	{
+		selectEnd = this.textbox.value.length;
+		if(this.textbox.setSelectionRange)
+		{
+			this.textbox.setSelectionRange(selectEnd, selectEnd);
+		}
+		else if(window.createTextRange)
+		{
+			var range = this.textbox.createTextRange();
+			range.moveStart('character', selectEnd);
+			range.moveEnd('character', selectEnd);
 			range.select();
 		}
 	},

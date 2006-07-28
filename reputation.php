@@ -256,6 +256,11 @@ if($mybb->input['action'] == "delete")
 // Otherwise, show a listing of reputations for the given user.
 if(!$mybb->input['action'])
 {
+	if($user_permissions['usereputationsystem'] != "yes")
+	{
+		error($lang->reputations_disabled_group);
+	}
+
 	$lang->nav_profile = sprintf($lang->nav_profile, $user['username']);
 	$lang->reputation_report = sprintf($lang->reputation_report, $user['username']);
 	

@@ -139,9 +139,9 @@ var Thread = {
 		}
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 		
-		postData = "value="+encodeURIComponent(message);
+		postData = "value="+escape(message).replace(/\+/g, "%2B");
 		postData += "&pid="+pid;
-
+alert(postData);
 		new ajax('xmlhttp.php?action=edit_post&do=update_post', {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});		
 	},
 	

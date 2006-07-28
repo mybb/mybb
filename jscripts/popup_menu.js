@@ -47,11 +47,17 @@ PopupMenu.prototype = {
 		} while(element);
 		element = $(this.id);
 		this.menu.style.position = "absolute";
-		this.menu.style.zIndex = 10;
+		this.menu.style.zIndex = 100;
 		this.menu.style.top = (offsetTop+element.offsetHeight-1)+"px";
+		// Bad browser detection - yes, only choice - yes.
+		if(MyBB.browser == "opera" || MyBB.browser == "safari")
+		{
+			this.menu.style.top = (parseInt(this.menu.style.top)-2)+"px";
+		}
 		this.menu.style.left = offsetLeft+"px";
 		this.menu.style.visibility = 'hidden';
-		this.menu.style.display = '';
+		this.menu.style.width = '';
+		this.menu.style.display = 'inline';
 		if(this.menu.style.width)
 		{
 			menuWidth = parseInt(this.menu.style.width);

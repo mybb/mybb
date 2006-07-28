@@ -415,15 +415,8 @@ form {
 	padding: 0;
 }
 
-.popup_menu ul {
-	margin: 0px;
-	padding: 0px;
-	list-style: none;
-}
-
-.popup_menu li {
+.popup_menu .popup_item_container {
 	margin: 1px;
-	padding: 0;
 	text-align: left;
 }
 
@@ -2693,8 +2686,8 @@ $reputation
 <br />]]></template>
 		<template name="postbit_edit" version="100.07"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" border="0" alt="{$lang->postbit_edit}" title="{$lang->postbit_edit}" /></a>
 <script type="text/javascript">
-	document.write('<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none; width: 65px;"><ul><li><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}<\/a><\/li><li><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}<\/a><\/li><\/ul><\/div>');
-	new PopupMenu("edit_post_{$post['pid']}", {width:"owner"});
+	document.write('<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}<\/a><\/div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}<\/a><\/div><\/div>');
+	new PopupMenu("edit_post_{$post['pid']}");
 </script>]]></template>
 		<template name="postbit_email" version="100.07"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_email.gif" border="0" alt="{$lang->postbit_email}" title="{$lang->postbit_email}" /></a>]]></template>
 		<template name="postbit_find" version="100.07"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_find.gif" border="0" alt="{$lang->postbit_find}" title="{$lang->postbit_find}" /></a>]]></template>
