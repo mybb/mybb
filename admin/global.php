@@ -186,7 +186,7 @@ if($user['uid'])
 			"lastactive" => time(),
 			"ip" => $ipaddress
 		);
-		$db->update_query(TABLE_PREFIX."adminsessions", $updated_sessions, "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+		$db->update_query(TABLE_PREFIX."adminsessions", $updated_session, "sid='".$db->escape_string($mybb->input['adminsid'])."'");
 	}
 	define("SID", "adminsid={$admin_session['sid']}");
 }

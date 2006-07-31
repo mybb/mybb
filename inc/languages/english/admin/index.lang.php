@@ -6,7 +6,6 @@
  * $Id$
  */
 
-$l['admin_center'] = "MyBB Admin Center";
 $l['cp_home'] = "Control Panel Home";
 $l['view_forums'] = "View Your Forums";
 $l['logout_cp'] = "Logout, {1}";

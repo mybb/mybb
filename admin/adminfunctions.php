@@ -76,11 +76,12 @@ function cpheader($title="", $donav=1, $onload="")
 	{
 		$htmltag = str_replace("<html", "<html lang=\"".$lang->settings['htmllang']."\"", $htmltag);
 	}
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 	echo $htmltag;
 	echo "<head>\n";
 	echo "<title>$title</title>\n";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".$lang->settings['charset']."\">";
-	echo "<link rel=\"stylesheet\" href=\"$style\">\n";
+	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".$lang->settings['charset']."\" />";
+	echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"$style\" />\n";
 	echo "<script type=\"text/javascript\">\n";
 	echo "function hopto(url) {\n";
 	echo "window.location = url;\n";
@@ -1158,10 +1159,10 @@ function logadmin()
 	$sep = '';
 	foreach($qstring as $key => $value)
 	{
-		$vale = explode("=", $val, 2);
+		$vale = explode("=", $value, 2);
 		if(trim($vale[0]) != "" && trim($vale[1]) != "")
 		{
-			if($vale[0] != "action")
+			if($vale[0] != "action" && $vale[0] != "adminsid")
 			{
 				$querystring .= "$sep$vale[0] = $vale[1]";
 				$sep = " / ";
