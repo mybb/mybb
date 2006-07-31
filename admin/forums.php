@@ -915,7 +915,7 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 	$cache->updateforums();
 	$cache->updateforumpermissions();
 
-	cpredirect("forums.php?".SID, $lang->copy_successful);
+	cpredirect("forums.php?".SID."&amp;action=modify", $lang->copy_successful);
 }
 
 if($mybb->input['action'] == "copy") // Show the copy forum form
