@@ -456,7 +456,7 @@ if($mybb->input['action'] == "do_edit")
 			"defaultdatecut" => intval($mybb->input['defaultdatecut']),
 			"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 			"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
-			);
+		);
 		$plugins->run_hooks("admin_forums_do_edit");
 		$db->update_query(TABLE_PREFIX."forums", $sqlarray, "fid='$fid'", 1);
 		if($pid != $forum['pid'])
@@ -472,7 +472,7 @@ if($mybb->input['action'] == "do_edit")
 			{
 				$sql_array = array(
 					"parentlist" => makeparentlist($childforum['fid']),
-					);
+				);
 				$db->update_query(TABLE_PREFIX."forums", $sql_array, "fid='".$childforum['fid']."'", 1);
 			}
 		}
@@ -915,7 +915,7 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 	$cache->updateforums();
 	$cache->updateforumpermissions();
 
-	cpmessage($lang->copy_successful);
+	cpredirect("forums.php?".SID, $lang->copy_successful);
 }
 
 if($mybb->input['action'] == "copy") // Show the copy forum form
