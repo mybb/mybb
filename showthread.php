@@ -256,7 +256,7 @@ if($mybb->input['action'] == "thread")
 		$options = array(
 			"limit" => 1
 		);
-		$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid=".$thread['poll']);
+		$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='".$thread['poll']."'"€);
 		$poll = $db->fetch_array($query);
 		$poll['timeout'] = $poll['timeout']*60*60*24;
 		$expiretime = $poll['dateline'] + $poll['timeout'];
@@ -271,7 +271,7 @@ if($mybb->input['action'] == "thread")
 		// If the user is not a guest, check if he already voted.
 		if($mybb->user['uid'] != 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "uid=".$mybb->user['uid']." AND pid=".$poll['pid']);
+			$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "uid='".$mybb->user['uid']."'' AND pid='".$poll['pid']."'");
 			while($votecheck = $db->fetch_array($query))
 			{
 				$alreadyvoted = 1;

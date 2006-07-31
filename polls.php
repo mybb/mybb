@@ -624,7 +624,7 @@ if($mybb->input['action'] == "showresults")
 		{
 			$percent = number_format($votes / $poll['totvotes'] * 100, 2);
 		}
-		$imagewidth = round($percent/3) * 5);
+		$imagewidth = round($percent/3) * 5;
 		$comma = '';
 		$guest_comma = '';
 		$userlist = '';

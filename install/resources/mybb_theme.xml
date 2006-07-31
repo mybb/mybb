@@ -5781,11 +5781,11 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <td class="trow"><input type="text" class="textbox" name="options[{$i}]" value="{$option}" size="25" /></td>
 </tr>]]></template>
 		<template name="showthread_poll_option_multiple" version="100.07"><![CDATA[<tr>
-<td class="trow1" width="5%"><input type="checkbox" class="checkbox" name="option[{$number}]" value="yes" /></td>
+<td class="trow1" width="5%"><input type="checkbox" class="checkbox" name="option[{$number}]" id="option[{$number}]" value="yes" /></td>
 <td class="trow2" colspan="3">{$option}</td>
 </tr>]]></template>
 		<template name="showthread_poll_option" version="100.07"><![CDATA[<tr>
-<td class="trow1" width="5%"><input type="radio" class="radio" name="option" value="{$number}" /></td>
+<td class="trow1" width="5%"><input type="radio" class="radio" name="option" id="option" value="{$number}" /></td>
 <td class="trow1" colspan="3">{$option}</td>
 </tr>]]></template>
 		<template name="member_activate" version="100.07"><![CDATA[<html>
