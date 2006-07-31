@@ -237,7 +237,7 @@ function maketextareacode($title, $name, $value="", $rows="4", $columns="40")
 function makehiddencode($name, $value="")
 {
 	$value = htmlspecialchars_uni($value);
-	echo "<input type=\"hidden\" name=\"$name\" value=\"$value\">\n";
+	echo "<input type=\"hidden\" name=\"$name\" value=\"$value\" />\n";
 }
 function makeyesnocode($title, $name, $value="yes")
 {
@@ -390,7 +390,7 @@ function makedateselect($title, $name, $day, $month, $year)
 }
 function makebuttoncode($name, $value, $type="submit")
 {
-	return "<input type=\"$type\" class=\"submitbutton\" name=\"$name\" value=\"  $value  \">&nbsp;&nbsp;\n";
+	return "<input type=\"$type\" class=\"submitbutton\" name=\"$name\" value=\"  $value  \" />&nbsp;&nbsp;\n";
 }
 
 function makecssedit($css, $selector, $name, $description="", $showfonts=1, $showbackground=1, $showlinks=1, $showwidth=0)

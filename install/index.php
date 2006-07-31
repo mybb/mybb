@@ -263,12 +263,16 @@ function requirements_check()
 		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
 		$uploadsstatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
+		@fclose($uploadswritable);
 	}
 	else
 	{
 		$uploadsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
+		@fclose($uploadswritable);
+	  @chmod(dirname(dirname(__FILE__)).'/uploads', 0777);
+	  @chmod(dirname(dirname(__FILE__)).'/uploads/test.write', 0777);
+		@unlink(dirname(dirname(__FILE__)).'/uploads/test.write');
 	}
-	@fclose($uploadswritable);
 
 	// Check avatar directory is writable
 	$avatarswritable = @fopen('../uploads/avatars/test.write', 'w');
@@ -277,12 +281,16 @@ function requirements_check()
 		$errors[] =  sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
 		$avatarsstatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
+		@fclose($avatarswritable);
 	}
 	else
 	{
 		$avatarsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
-	}
-	@fclose($avatarswritable);
+		@fclose($avatarswritable);
+		@chmod(dirname(dirname(__FILE__)).'/uploads/avatars', 0777);
+	  @chmod(dirname(dirname(__FILE__)).'/uploads/avatars/test.write', 0777);
+		@unlink(dirname(dirname(__FILE__)).'/uploads/avatars/test.write');
+  }
 
 
 	// Output requirements page

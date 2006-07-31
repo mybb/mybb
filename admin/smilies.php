@@ -168,6 +168,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "do_addmultiple")
 {
+  $path = $mybb->input['path'];
 	if($mybb->input['page'])
 	{
 		$mybb->input['action'] = "addmultiple";
@@ -215,13 +216,14 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		$perpage = 15;
 	}
-	$dir = @opendir("../".$mybb->input['path']);
+	$path = $mybb->input['path'];
+	$dir = @opendir("../".$path);
 	if(!$dir)
 	{
 		cperror($lang->bad_directory);
 	}
 	$plugins->run_hooks("admin_smilies_addmultiple");
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."smilies");
+	$query = $db->simple_select(TABLE_PREFIX."smilies");
 	while($smilie = $db->fetch_array($query))
 	{
 		$asmilies[$smilie[image]] = 1;
@@ -250,15 +252,15 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		$pages = $newsmilies / $perpage;
 		$pages = ceil($pages);
-		for($i=1;$i<=$pages;$i++)
+		for($i = 1; $i <= $pages; $i++)
 		{
 			if($i == $page)
 			{
-				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\" disabled=\"disabled\"> ";
+				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\" disabled=\"disabled\" /> ";
 			}
 			else
 			{
-				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\"> ";
+				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\" /> ";
 			}
 		}
 		$start = ($page-1) *$perpage;
@@ -303,7 +305,7 @@ if($mybb->input['action'] == "addmultiple")
 		echo "<td class=\"subheader\" align=\"center\">$lang->text_to_replace</td>\n";
 		echo "<td class=\"subheader\" align=\"center\">$lang->add</td>\n";
 		echo "</tr>\n";
-		for($i=$start;$i<$end;$i++)
+		for($i = $start; $i < $end; $i++)
 		{
 			$file = $smilies[$i];
 			$ext = get_extension($smilies[$i]);
@@ -311,10 +313,10 @@ if($mybb->input['action'] == "addmultiple")
 			$name = ucfirst($find);
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><img src=\"../$path/$file\"><br /><small>$file</small></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"text\" name=\"smname[$file]\" value=\"$name\"></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"text\" name=\"smcode[$file]\" value=\":$find:\"></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"right\"><input type=\"checkbox\" name=\"smimport[$file]\" value=\"1\">\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><img src=\"../$path/$file\" alt=\":$find:\" /><br /><small>$file</small></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"text\" name=\"smname[$file]\" value=\"$name\" /></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"text\" name=\"smcode[$file]\" value=\":$find:\" /></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"right\"><input type=\"checkbox\" name=\"smimport[$file]\" value=\"1\" />\n";
 			echo "</tr>\n";
 		}
 	}
