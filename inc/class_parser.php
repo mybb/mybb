@@ -575,7 +575,7 @@ class postParser
 		if(!preg_match("#^[a-z0-9]+://#i", $url))
 		{
 			$url = "http://".$url;
-		}  
+		}
 		$fullurl = $url;
 
 		$url = str_replace('&amp;', '&', $url);
@@ -600,6 +600,7 @@ class postParser
 		}
 
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name);
+		$name = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $name); // Fix & but allow unicode		
 		$link = "<a href=\"$fullurl\" target=\"_blank\">$name</a>";
 		return $link;
 	}

@@ -4364,7 +4364,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <br />
 <div align="center">
 <input type="hidden" name="action" value="register" />
-<input type="submit" class="button" name="agree" value="{$lang->i_agree}">
+<input type="submit" class="button" name="agree" value="{$lang->i_agree}" />
 </div>
 </form>
 {$footer}

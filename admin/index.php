@@ -97,6 +97,16 @@ elseif($mybb->input['action'] == "home")
 	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs", "visible='0' AND pid>0");
 	$unapproved_attachs = $db->fetch_array($query);
 	
+	// Fetch the last time an update check was run
+	$update_check = $cache->read("update_check");
+	
+	// If last update check was greater than three weeks ago (21 days) show an alert
+	if($update_check['last_check'] <= time()-60*60*24*21)
+	{
+		$lang->last_update_check_three_weeks = sprintf($lang->last_update_check_three_weeks, "index.php?".SID."&action=vercheck");
+		makewarning($lang->last_update_check_three_weeks);
+	}
+	
 	$plugins->run_hooks("admin_index_home");
 
 	// Program Statistics table
@@ -183,6 +193,10 @@ elseif($mybb->input['action'] == "vercheck")
 	logadmin();
 
 	$current_version = rawurlencode($mybboard['vercode']);
+	
+	$updated_cache = array(
+		"last_check" => time()
+	);
 
 	require_once MYBB_ROOT."inc/class_xml.php";
 	$contents = @implode("", @file("http://mybboard.com/version_check.php"));
@@ -201,7 +215,12 @@ elseif($mybb->input['action'] == "vercheck")
 	{
 		$latest_version = "<span style=\"color: red\">".$latest_version."</font>";
 		$version_warn = 1;
+		$updated_cache = array(
+			"latest_version" => $latest_version
+		);
 	}
+	
+	$cache->update("update_check", $updated_cache);
 
 	$plugins->run_hooks("admin_index_vercheck");
 	

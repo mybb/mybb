@@ -305,7 +305,7 @@ if(!$mybb->input['action'])
 	}
 	
 	// Build navigation menu
-	add_breadcrumb($lang->nav_profile, "member.php?action=profile&uid={$user['uid']}");
+	add_breadcrumb($lang->nav_profile, "member.php?action=profile&amp;uid={$user['uid']}");
 	add_breadcrumb($lang->nav_reputation);
 	
 	// Check our specified conditionals for what type of reputations to show

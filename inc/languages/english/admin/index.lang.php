@@ -10,7 +10,8 @@ $l['cp_home'] = "Control Panel Home";
 $l['view_forums'] = "View Your Forums";
 $l['logout_cp'] = "Logout, {1}";
 
-$l['welcome'] = "Welcome to the myBulletinBoard Administration Control Panel";
+$l['last_update_check_three_weeks'] = "Your last <a href=\"{1}\">MyBB version check</a> was more than three weeks ago.";
+$l['welcome'] = "Welcome to the MyBB Administration Control Panel";
 $l['program_stats'] = "Program Statistics";
 $l['mybb_version'] = "MyBB version:";
 $l['php_version'] = "PHP version:";

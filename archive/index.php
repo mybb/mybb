@@ -288,7 +288,7 @@ switch($action)
 					{
 						$lang_reply_text = $lang->archive_reply;
 					}					
-					echo "<li>{$prefix}<a href=\"{$archiveurl}/index.php/thread-{$sticky['tid']}.html\">{$sticky['subject']}</a>";
+					echo "<li><a href=\"{$archiveurl}/index.php/thread-{$sticky['tid']}.html\">{$sticky['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$sticky['replies']} {$lang_reply_text})</span></li>";
 				}
 				echo "</ol>\n</div>\n";
@@ -313,7 +313,6 @@ switch($action)
 				while($thread = $db->fetch_array($query))
 				{
 					$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-					$prefix = "";
 					if($thread['replies'] != 1)
 					{
 						$lang_reply_text = $lang->archive_replies;
@@ -322,7 +321,7 @@ switch($action)
 					{
 						$lang_reply_text = $lang->archive_reply;
 					}
-					echo "<li>{$prefix}<a href=\"{$archiveurl}/index.php/thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
+					echo "<li><a href=\"{$archiveurl}/index.php/thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$thread['replies']} {$lang_reply_text})</span></li>";
 				}
 				echo "</ol>\n</div>\n";
