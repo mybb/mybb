@@ -813,6 +813,7 @@ function install_done()
 	$cache->updatereportedposts();
 	$cache->updatemycode();
 	$cache->updateposticons();
+	$cache->updateupdate_check();
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_success;

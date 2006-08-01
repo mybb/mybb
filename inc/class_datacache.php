@@ -417,5 +417,16 @@ class datacache
 		$mailqueue['locked'] = $lock_time;
 		$this->update("mailqueue", $mailqueue);
 	}
+	
+	/**
+	 * Update update_check cache (dummy function used by upgrade/install scripts)
+	 */
+	function updateupdate_check()
+	{
+		$update_cache = array(
+			"dateline" => time()
+		);
+		$this->update("update_check", $update_cache);
+	}
 }
 ?>

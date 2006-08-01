@@ -273,6 +273,7 @@ function buildcaches()
 	$cache->updatereportedposts();
 	$cache->updatemycode();
 	$cache->updateposticons();
+	$cache->updateupdate_check();
 	$contents .= "done</p>";
 
 	$output->print_contents("$contents<p>Please press next to continue</p>");
