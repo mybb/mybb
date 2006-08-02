@@ -637,6 +637,10 @@ if($mybb->input['action'] == "calendar_main")
 		{
 			$birthdays = '';
 		}
+		if(!$events[$i] && !$birthdays)
+		{
+			$events[$i] = "&nbsp;"
+		}
 		if((mydate("d") == $i) && (mydate("n") == $month) && (mydate("Y") == $year))
 		{
 			eval("\$daybits .= \"".$templates->get("calendar_daybit_today")."\";");

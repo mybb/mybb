@@ -1064,7 +1064,7 @@ elseif($mybb->input['action'] == "profile")
 		{
 			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
 		}
-		$avatar = "<img src=\"$memprofile[avatar]\" $avatar_width_height />";
+		$avatar = "<img src=\"$memprofile[avatar]\" alt=\"\" $avatar_width_height />";
 	}
 	else
 	{

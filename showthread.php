@@ -271,7 +271,7 @@ if($mybb->input['action'] == "thread")
 		// If the user is not a guest, check if he already voted.
 		if($mybb->user['uid'] != 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "uid='".$mybb->user['uid']."'' AND pid='".$poll['pid']."'");
+			$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
 			while($votecheck = $db->fetch_array($query))
 			{
 				$alreadyvoted = 1;

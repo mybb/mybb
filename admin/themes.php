@@ -210,8 +210,6 @@ if($mybb->input['action'] == "do_download")
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='".$themebits['templateset']."'");
 		while($template=$db->fetch_array($query))
 		{
-			$template['template'] = stripslashes($template['template']);
-			$template['template'] = str_replace("\n", "\n", $template['template']);
 			$xml .= "\t\t<template name=\"".$template['title']."\" version=\"".$template['version']."\"><![CDATA[".$template['template']."]]></template>\r\n";
 			$tempsdone[$template['title']] = 1;
 		}
@@ -222,8 +220,6 @@ if($mybb->input['action'] == "do_download")
 			{
 				if(!$tempsdone[$template[title]])
 				{
-					$template['template'] = stripslashes($template['template']);
-					$template['template'] =str_replace("\n", "\n", $template['template']);
 					$xml .= "\t\t<template name=\"".$template['title']."\" version=\"".$template['version']."\"><![CDATA[".$template['template']."]]></template>\r\n";
 				}
 			}
@@ -336,6 +332,11 @@ if($mybb->input['action'] == "do_import")
 	$css = kill_tags($theme['cssbits']);
 	$themebits = kill_tags($theme['themebits']);
 	$templates = $theme['templates']['template'];
+	// Theme only has one custom template
+	if(array_key_exists("attributes", $templates))
+	{
+		$templates = array($templates);
+	}
 
 	if($master == "yes")
 	{
@@ -352,7 +353,7 @@ if($mybb->input['action'] == "do_import")
 
 	$themebits['templateset'] = $templateset;
 
-	if($mybb->input['importtemps'] == "yes" && $templates)
+	if($mybb->input['importtemps'] == "yes" && is_array($templates))
 	{
 		foreach($templates as $template)
 		{
@@ -416,6 +417,7 @@ if($mybb->input['action'] == "edit") {
 	$master = $db->fetch_array($query);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
+	$tid = $theme['tid'];
 	$themebits = unserialize($theme['themebits']);
 	$css = build_css_array($theme['tid']);
 

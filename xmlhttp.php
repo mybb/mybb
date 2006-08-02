@@ -92,6 +92,8 @@ else
 	}
 }
 
+$charset = $lang->settings['charset'];
+
 $lang->load("global");
 $lang->load("xmlhttp");
 
@@ -109,7 +111,7 @@ if($mybb->input['action'] == "get_users")
 	}
 	
 	// Send our headers.
-	header("Content-type: text/html; charset=utf-8");
+	header("Content-type: text/html; charset={$charset}");
 
 	// Sanitize the input.
 	$mybb->input['query'] = str_replace(array("%", "_"), array("\\%", "\\_"), $mybb->input['query']);
@@ -240,7 +242,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	}
 
 	// Send our headers.
-	header("Content-type: text/html; charset=utf-8");
+	header("Content-type: text/html; charset={$charset}");
 	
 	// Spit the subject back to the browser.
 	echo $mybb->input['value'];
@@ -297,19 +299,25 @@ else if($mybb->input['action'] == "edit_post")
 	if($mybb->input['do'] == "get_post")
 	{
 		// Send our headers.
-		header("Content-type: text/html; charset=utf-8");
+		header("Content-type: text/html; charset={$charset}");
 		
 		$post['message'] = htmlspecialchars_uni($post['message']);
 		
 		// Send the contents of the post.
-		eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");		
-		echo $inline_editor;
+		eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");
+		echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">";
+		echo "<form>".$inline_editor."</form>";
 		exit;
 	}
 	else if($mybb->input['do'] == "update_post")
 	{
 		//$message = rawurldecode($mybb->input['value']);
-		$message = $mybb->input['value'];
+		$message = strval($_POST['value']);
+		$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $message);
+		//die(str_replace("&", "&amp;", $message));
+		$fp = fopen(MYBB_ROOT."/uploads/test.log", "a");
+		fwrite($fp, $message);
+		fclose($fp);
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("update");
@@ -365,7 +373,7 @@ else if($mybb->input['action'] == "edit_post")
 		get_post_attachments($post['pid'], $post);
 		
 		// Send our headers.
-		header("Content-type: text/plain; charset=utf-8");
+		header("Content-type: text/plain; charset={$charset}");
 		echo "<p>\n";
 		echo $post['message'];
 		echo "</p>\n";
@@ -428,7 +436,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	}
 	
 	// Send our headers.
-	header("Content-type: text/plain; charset=utf-8");
+	header("Content-type: text/plain; charset={$charset}");
 	echo $message;
 	exit;	
 }
@@ -440,12 +448,64 @@ else if($mybb->input['action'] == "get_multiquoted")
 function xmlhttp_error($message)
 {
 	// Send our headers.
-	header("Content-type: text/html; charset=utf-8");
+	header("Content-type: text/html; charset={$charset}");
 	
 	// Send the error message.
 	echo "<error>".$message."</error>";
 	
 	// Exit
 	exit;
+}
+
+/**
+ * Converts a decimal reference of a character to its UTF-8 equivilant
+ * (Code by Anne van Kesteren, http://annevankesteren.nl/2005/05/character-references)
+ *
+ * @param string Decimal value of a character reference
+ */
+function dec2utf8($src)
+{
+	$dest = '';
+	if($src < 0)
+	{
+  		return false;
+ 	}
+	elseif($src <= 0x007f)
+	{
+		$dest .= chr($src);
+	}
+	elseif($src <= 0x07ff)
+	{
+		$dest .= chr(0xc0 | ($src >> 6));
+		$dest .= chr(0x80 | ($src & 0x003f));
+	}
+	elseif($src == 0xFEFF)
+	{
+		// nop -- zap the BOM
+	}
+	elseif ($src >= 0xD800 && $src <= 0xDFFF)
+	{
+ 		// found a surrogate
+		return false;
+	}
+	elseif($src <= 0xffff)
+	{
+		$dest .= chr(0xe0 | ($src >> 12));
+		$dest .= chr(0x80 | (($src >> 6) & 0x003f));
+		$dest .= chr(0x80 | ($src & 0x003f));
+	}
+	elseif($src <= 0x10ffff)
+	{
+		$dest .= chr(0xf0 | ($src >> 18));
+		$dest .= chr(0x80 | (($src >> 12) & 0x3f));
+		$dest .= chr(0x80 | (($src >> 6) & 0x3f));
+		$dest .= chr(0x80 | ($src & 0x3f));
+	}
+	else
+	{ 
+		// out of range
+		return false;
+	}
+	return $dest;
 }
 ?>

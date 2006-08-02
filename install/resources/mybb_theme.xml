@@ -810,7 +810,7 @@ var inlineId = {$tid};
 </tr>
 {$posticons}
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->your_message}:</strong><br /><p align="center">{$smilieinserter}</p></td>
+<td class="trow2" valign="top"><strong>{$lang->your_message}:</strong><br /><div style="text-align: center;">{$smilieinserter}</div></td>
 <td class="trow2">
 <textarea name="message" id="message" rows="20" cols="70" tabindex="3">{$message}</textarea>
 {$codebuttons}
@@ -1393,7 +1393,7 @@ var inlineId = {$tid};
 </table>
 <table width="100%" align="center">
 <tr>
-<td class="trow"><input type="submit" class="button" value="{$lang->vote}" /></td>
+<td><input type="submit" class="button" value="{$lang->vote}" /></td>
 <td valign="top" align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a>{$edit_poll}]</span></td>
 </tr>
 <tr>
@@ -1678,7 +1678,7 @@ $headerinclude
 </tr>
 <tr>
 <td class="trow2" width="50%"><strong>{$lang->postnum}</strong></td>
-<td class="trow2" width="50%"><a href="search.php?action=finduser&uid={$mybb->user['uid']}">{$mybb->user['postnum']}</a> {$lang->posts_day}</td>
+<td class="trow2" width="50%"><a href="search.php?action=finduser&amp;uid={$mybb->user['uid']}">{$mybb->user['postnum']}</a> {$lang->posts_day}</td>
 </tr>
 <tr>
 <td class="trow1" width="50%"><strong>{$lang->email}</strong></td>
@@ -2104,8 +2104,8 @@ $headerinclude
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->avatar_upload}</strong></td>
-<form enctype="multipart/form-data" action="usercp.php" method="post">
 <td class="trow1" width="60%">
+<form enctype="multipart/form-data" action="usercp.php" method="post">
 <input type="file" name="avatarupload" size="25" />
 </td>
 </tr>
@@ -3041,7 +3041,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow2"><input type="text" class="textbox" size="50" name="subject" maxlength="120" value="{$subject}"/></td>
 </tr>
 <tr>
-<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><p style="text-align: center;">{$smilieinserter}</td>
+<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><div style="text-align: center;">{$smilieinserter}</div></td>
 <td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{$description}</textarea>
 {$codebuttons}</td>
 </tr>
@@ -3539,7 +3539,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 <td class="{$altbg}" width="100%" valign="top">
 <table width="100%">
-<tr><td class="trow">{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']}</strong></span>
+<tr><td>{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']}</strong></span>
 <br />
 <div id="pid_{$post['pid']}">
 <p>
@@ -4425,7 +4425,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$whosonline}
 {$latestthreads}
 </td>
-<td class="trow">&nbsp;</td>
+<td>&nbsp;</td>
 <td width="*" valign="top">
 {$announcements}
 </td>
@@ -4500,7 +4500,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="trow1">
 <table border="0" cellpadding="{$theme['tablespace']}" width="100%"><tr>{$avatar}<td class="trow1">{$message}{$post['attachments']}</td></tr>
-<tr><td align="right" colspan="2" valign="bottom"><span class="smalltext"><a href="{$mybb->settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/printable.gif" border="0" alt="" /></a>&nbsp;<a href="{$mybb->settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/send.gif" border="0" /></a></span></td></tr>
+<tr><td align="right" colspan="2" valign="bottom"><span class="smalltext"><a href="{$mybb->settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/printable.gif" border="0" alt="" /></a>&nbsp;<a href="{$mybb->settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/send.gif" border="0" alt="" /></a></span></td></tr>
 </table>
 </td>
 </tr>
@@ -5231,10 +5231,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]>
     </template>
 		<template name="polls_editpoll_option" version="100.07"><![CDATA[<tr>
-<td class="trow">{$lang->option} {$counter}:</td>
-<td class="trow"><input type="text" class="textbox" name="options[{$counter}]" value="{$option}" /></td>
-<td class="trow">{$lang->votes}</td>
-<td class="trow"><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}" /></td>
+<td>{$lang->option} {$counter}:</td>
+<td><input type="text" class="textbox" name="options[{$counter}]" value="{$option}" /></td>
+<td>{$lang->votes}</td>
+<td><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}" /></td>
 </tr>]]></template>
 		<template name="member_resetpassword" version="100.07"><![CDATA[<html>
 <head>
@@ -5777,8 +5777,8 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 <br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
 </td>]]></template>
 		<template name="polls_newpoll_option" version="100.07"><![CDATA[<tr>
-<td class="trow">{$lang->option} {$i}:</td>
-<td class="trow"><input type="text" class="textbox" name="options[{$i}]" value="{$option}" size="25" /></td>
+<td>{$lang->option} {$i}:</td>
+<td><input type="text" class="textbox" name="options[{$i}]" value="{$option}" size="25" /></td>
 </tr>]]></template>
 		<template name="showthread_poll_option_multiple" version="100.07"><![CDATA[<tr>
 <td class="trow1" width="5%"><input type="checkbox" class="checkbox" name="option[{$number}]" id="option[{$number}]" value="yes" /></td>
