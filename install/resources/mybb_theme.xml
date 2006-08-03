@@ -5603,9 +5603,11 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </html>]]></template>
 		<template name="forumdisplay_inlinemoderation_col" version="100.07"><![CDATA[<td class="tcat" align="center" width="1">&nbsp;</td>]]></template>
 		<template name="printthread_post" version="100.07"><![CDATA[<strong>{$postrow['subject']}</strong> - <a href="member.php?action=profile&amp;uid={$postrow['uid']}"><strong>{$postrow['username']}</strong></a> -  <strong>{$postrow['date']}</strong> <strong>{$postrow['time']}</strong>
-<p>
+<br />
+<br />
 {$postrow['message']}
-</p>
+<br />
+<br />
 <hr size="1" />]]></template>
 		<template name="error_nopermission" version="100.07"><![CDATA[{$lang->error_nopermission_guest_1}
 <ol>
