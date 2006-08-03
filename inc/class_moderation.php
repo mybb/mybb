@@ -603,8 +603,10 @@ class Moderation
 		$sqlarray = array(
 			"tid" => $tid,
 			"fid" => $thread['fid'],
+			"replyto" => $tid
 		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$mergetid'");
+		
 		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='$subject' $pollsql WHERE tid='$tid'");
 		$sqlarray = array(
 			"closed" => "moved|$tid",
@@ -670,6 +672,7 @@ class Moderation
 		$sqlarray = array(
 			"tid" => $newtid,
 			"fid" => $moveto,
+			"replyto" => $newtid
 		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid IN ($pids_list)");
 
@@ -708,6 +711,7 @@ class Moderation
 		$newthread = $db->fetch_array($query);
 		$sqlarray = array(
 			"subject" => $newsubject,
+			"replyto" => 0
 		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$newthread[pid]'");
 
@@ -716,6 +720,7 @@ class Moderation
 		$oldthread = $db->fetch_array($query);
 		$sqlarray = array(
 			"subject" => $db->escape_string($thread['subject']),
+			"replyto" => 0
 		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='{$oldthread['pid']}'");
 
@@ -783,6 +788,8 @@ class Moderation
 	{
 		global $db, $cache;
 
+		$thread = get_thread($tid);
+		
 		$where = "pid IN (".implode(",", $pids).")";
 
 		// Make visible
@@ -792,12 +799,10 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
 
 		// If this is the first post of the thread, also approve the thread
-		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "({$where}) AND replyto='0'", array("limit" => 1));
-		while($post = $db->fetch_array($query))
-		{
-			$db->update_query(TABLE_PREFIX."threads", $approve, "tid='{$post['tid']}'");
-		}
-
+		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['firstpost']'", array("limit" => 1));
+		$first_post = $db->fetch_array($query);
+		$db->update_query(TABLE_PREFIX."threads", $approve, "tid='{$first_post['tid']}'");
+	
 		update_thread_count($tid);
 		update_forum_count($fid);
 		$cache->updatestats();
@@ -816,6 +821,8 @@ class Moderation
 	function unapprove_posts($pids, $tid, $fid)
 	{
 		global $db, $cache;
+		
+		$thread = get_thread($tid);
 
 		$where = "pid IN (".implode(",", $pids).")";
 
@@ -825,12 +832,10 @@ class Moderation
 		);
 		$db->update_query(TABLE_PREFIX."posts", $unapprove, $where);
 
-		// If this is the first post of the thread, also unapprove the thread
-		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "$where AND replyto='0'", array('limit' => 1));
-		while($post = $db->fetch_array($query))
-		{
-			$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='{$post['tid']}'");
-		}
+		// If this is the first post of the thread, also approve the thread
+		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['firstpost']'", array("limit" => 1));
+		$first_post = $db->fetch_array($query);
+		$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='{$first_post['tid']}'");
 
 		update_thread_count($tid);
 		update_forum_count($fid);

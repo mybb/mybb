@@ -2699,6 +2699,11 @@ function update_first_post($tid)
 		LIMIT 0,1
 	");
 	$post = $db->fetch_array($query);
+	if($post['replyto'] != 0)
+	{
+		$replyto_update = array("replyto" => 0);
+		$db->update_query(TABLE_PREFIX."threads", $replyto_update, "pid='{$post['pid']}");
+	}
 	$firstpostup = array("firstpost" => $post['pid']);
 	$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='$tid'");
 }
