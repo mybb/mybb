@@ -51,7 +51,7 @@ $l['installed_langs'] = "Installed Language Packs";
 $l['lang_authors'] = "Below is a list of the language packs currently installed on your board, and the authors of those packs.";
 
 $l['vercheck_error'] = "There was a problem communicating with the version server.";
-$l['unable_fetch_announcements'] = "MyBB was unable to successfully fetch the latest announcements from the MyBB website."
+$l['unable_fetch_announcements'] = "MyBB was unable to successfully fetch the latest announcements from the MyBB website.";
 $l['vercheck'] = "Version Check";
 $l['vercheck_up2date'] = "Here you can tell if your MyBB is up-to-date.";
 $l['your_version'] = "Your Version:";
