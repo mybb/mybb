@@ -799,7 +799,7 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
 
 		// If this is the first post of the thread, also approve the thread
-		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['firstpost']'", array("limit" => 1));
+		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['firstpost']}'", array("limit" => 1));
 		$first_post = $db->fetch_array($query);
 		$db->update_query(TABLE_PREFIX."threads", $approve, "tid='{$first_post['tid']}'");
 	
@@ -833,7 +833,7 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."posts", $unapprove, $where);
 
 		// If this is the first post of the thread, also approve the thread
-		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['firstpost']'", array("limit" => 1));
+		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['firstpost']}'", array("limit" => 1));
 		$first_post = $db->fetch_array($query);
 		$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='{$first_post['tid']}'");
 
