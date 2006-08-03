@@ -39,7 +39,10 @@ class XMLParser {
 		$parser = xml_parser_create();
 		xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 0);
 		xml_parser_set_option($parser,XML_OPTION_CASE_FOLDING,0);
-		xml_parse_into_struct($parser, $this->data, $vals, $index);
+		if(!xml_parse_into_struct($parser, $this->data, $vals, $index))
+		{
+			return false;
+		};
 
 		$i = -1;
 		return $this->get_children($vals, $i);

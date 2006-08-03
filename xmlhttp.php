@@ -305,7 +305,7 @@ else if($mybb->input['action'] == "edit_post")
 		
 		// Send the contents of the post.
 		eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");
-		echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">";
+		echo "<?xml version=\"1.0\" encoding=\"{$charset}\"?".">";
 		echo "<form>".$inline_editor."</form>";
 		exit;
 	}
@@ -313,11 +313,21 @@ else if($mybb->input['action'] == "edit_post")
 	{
 		//$message = rawurldecode($mybb->input['value']);
 		$message = strval($_POST['value']);
-		$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $message);
+		if(strtolower($charset) == "utf-8")
+		{
+			$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $message);
+		}
+		else
+		{
+			$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $message);
+		}
 		//die(str_replace("&", "&amp;", $message));
-		$fp = fopen(MYBB_ROOT."/uploads/test.log", "a");
-		fwrite($fp, $message);
-		fclose($fp);
+		if($debug_this == 1)
+		{
+			$fp = fopen(MYBB_ROOT."/uploads/test.log", "a");
+			fwrite($fp, $message."\n\n\n");
+			fclose($fp);
+		}
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("update");

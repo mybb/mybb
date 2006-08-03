@@ -100,11 +100,18 @@ elseif($mybb->input['action'] == "home")
 	// Fetch the last time an update check was run
 	$update_check = $cache->read("update_check");
 	
-	// If last update check was greater than three weeks ago (21 days) show an alert
-	if($update_check['last_check'] <= time()-60*60*24*21)
+	// If last update check was greater than two weeks ago (14 days) show an alert
+	if($update_check['last_check'] <= time()-60*60*24*14)
 	{
 		$lang->last_update_check_three_weeks = sprintf($lang->last_update_check_three_weeks, "index.php?".SID."&action=vercheck");
 		makewarning($lang->last_update_check_three_weeks);
+	}
+	
+	// If the update check contains information about a newer version, show an alert
+	if($update_check['latest_version_code'] > $mybboard['vercode'])
+	{
+		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybboard['internalver']}", "<a href=\"http://www.mybboard.com/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
+		makewarning($lang->new_version_available);
 	}
 	
 	$plugins->run_hooks("admin_index_home");
@@ -216,7 +223,8 @@ elseif($mybb->input['action'] == "vercheck")
 		$latest_version = "<span style=\"color: red\">".$latest_version."</font>";
 		$version_warn = 1;
 		$updated_cache = array(
-			"latest_version" => $latest_version
+			"latest_version" => $latest_version,
+			"latest_version_code" => $latest_code
 		);
 	}
 	
@@ -224,7 +232,10 @@ elseif($mybb->input['action'] == "vercheck")
 
 	$plugins->run_hooks("admin_index_vercheck");
 	
-	$lann = @file("http://www.mybboard.com/latestann.php");
+	require_once MYBB_ROOT."/inc/class_feedparser.php";
+	$feed_parser = new FeedParser();
+	$feed_parser->parse_feed("http://www.mybboard.com/latest_news.php");
+	echo $feed_parser->error;
 	cpheader();
 	starttable();
 	tableheader($lang->vercheck);
@@ -239,18 +250,35 @@ elseif($mybb->input['action'] == "vercheck")
 	echo "<br />";
 	starttable();
 	tableheader($lang->latest_ann);
-	foreach($lann as $key => $val)
+	
+	if($feed_parser->error == '')
 	{
-		$dstore = explode("|\|", $val);
-		$subject = $dstore[0];
-		$item = $dstore[1];
-		$url = $dstore[2];
-		tablesubheader($subject);
-		if(my_strlen(trim($url)) > 0)
+		foreach($feed_parser->items as $item)
 		{
-			$item .= "<div align=\"right\"><a href=\"$url\">$lang->latest_ann_more</a></div>";
+			if($item['date_timestamp'])
+			{
+				$stamp = " (".mydate($mybb->settings['dateformat'], $item['date_timestamp']).", ".mydate($mybb->settings['timeformat'], $item['date_timestamp']).")";
+			}
+			else
+			{
+				$stamp = '';
+			}
+			if($item['content'])
+			{
+				$content = $item['content'];
+			}
+			else
+			{
+				$content = $item['description'];
+			}
+			tablesubheader("<a href=\"{$item['link']}\" target=\"_new\">{$item['title']}</a>{$stamp}");
+			$content .= "<div style=\"text-align: right;\"><a href=\"{$item['link']}\" target=\"_new\">{$lang->latest_ann_more}</a></div>";
+			makelabelcode($content);
 		}
-		makelabelcode("$item");
+	}
+	else
+	{
+		makelabelcode($lang->unable_fetch_announcements." <!-- error code: {$feed_parser->error} -->");
 	}
 	endtable();
 	cpfooter();
