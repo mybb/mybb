@@ -41,8 +41,11 @@ if(!is_array($groupscache))
 $fpermissioncache = $cache->read("forumpermissions");
 
 
-// Send page headers
-send_page_headers();
+// Send no cache headers
+header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
+header("Cache-Control: no-cache, must-revalidate");
+header("Pragma: no-cache");
 
 
 // Create the session
@@ -204,6 +207,16 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	{
 		$ismod = true;
 	}
+
+	$subject = $mybb->input['value'];
+	if(strtolower($charset) == "utf-8")
+	{
+		$subject = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $subject);
+	}
+	else
+	{
+		$subject = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $subject);
+	}	
 	
 	// Set up posthandler.
 	require_once MYBB_ROOT."inc/datahandlers/post.php";
@@ -214,7 +227,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	$updatepost = array(
 		"pid" => $post['pid'],
 		"tid" => $thread['tid'],
-		"subject" => $mybb->input['value'],
+		"subject" => $subject,
 		"edit_uid" => $mybb->user['uid']
 	);
 	$posthandler->set_data($updatepost);
@@ -488,15 +501,6 @@ function dec2utf8($src)
 	{
 		$dest .= chr(0xc0 | ($src >> 6));
 		$dest .= chr(0x80 | ($src & 0x003f));
-	}
-	elseif($src == 0xFEFF)
-	{
-		// nop -- zap the BOM
-	}
-	elseif ($src >= 0xD800 && $src <= 0xDFFF)
-	{
- 		// found a surrogate
-		return false;
 	}
 	elseif($src <= 0xffff)
 	{

@@ -799,10 +799,9 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
 
 		// If this is the first post of the thread, also approve the thread
-		// If this is the first post of the thread, also approve the thread
-		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['firstpost']}' AND visible='1'", array("limit" => 1));
+		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['firstpost']}' AND visible='1'");
 		$first_post = $db->fetch_array($query);
-		if($first_post['pid'])
+		if($first_post['tid'])
 		{
 			$db->update_query(TABLE_PREFIX."threads", $approve, "tid='{$first_post['tid']}'");
 		}
@@ -836,9 +835,9 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."posts", $unapprove, $where);
 
 		// If this is the first post of the thread, also approve the thread
-		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['firstpost']}' AND visible='0'", array("limit" => 1));
+		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['firstpost']}' AND visible='0'");
 		$first_post = $db->fetch_array($query);
-		if($first_post['pid'])
+		if($first_post['tid'])
 		{
 			$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='{$first_post['tid']}'");
 		}

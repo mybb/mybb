@@ -873,7 +873,7 @@ class UserDataHandler extends DataHandler
 		// Set up the update data.
 		if(isset($user['username']))
 		{
-			$this->user_update_dataa['username'] = $db->escape_string($user['username']);
+			$this->user_update_data['username'] = $db->escape_string($user['username']);
 		}
 		if(isset($user['saltedpw']))
 		{
