@@ -87,12 +87,6 @@ class postParser
 		// Get rid of cartridge returns for they are the workings of the devil
 		$message = str_replace("\r", "", $message);
 		
-		// If HTML is disallowed, clean the post of it.
-		if($options['allow_html'] != "yes")
-		{
-			$message = $this->parse_html($message);
-		}
-
 		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
 		{
@@ -104,7 +98,7 @@ class postParser
 		{
 			// First we split up the contents of code and php tags to ensure they're not parsed.
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
-			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
+			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "{{mybb-code}}\n", $message);
 		}
 
 		// If we can, parse smiliesa
@@ -119,6 +113,15 @@ class postParser
 			$message = $this->parse_mycode($message, $options);
 		}
 
+		if($options['allow_html'] != "yes")
+		{
+			$message = $this->parse_html($message);
+		}
+		// Strip out any script tags
+		else
+		{
+			$message = preg_replace("#<script(.*?)>(.*?)</script(.*?)>#i", "", $message);
+		}		
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
 
@@ -129,6 +132,9 @@ class postParser
 			{
 				foreach($code_matches as $text)
 				{
+					// Fix up HTML inside the code tags so it is clean
+					$text[2] = $this->parse_html($text[2]);
+					
 					if(strtolower($text[1]) == "code")
 					{
 						$code = $this->mycode_parse_code($text[2]);
@@ -137,7 +143,7 @@ class postParser
 					{
 						$code = $this->mycode_parse_php($text[2]);
 					}
-					$message = preg_replace("#<mybb-code>\n#", $code, $message, 1);
+					$message = preg_replace("#\{\{mybb-code\}\}\n#", $code, $message, 1);
 				}
 			}
 		}
