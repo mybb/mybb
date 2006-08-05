@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
@@ -10,7 +10,7 @@ $l['cp_home'] = "Control Panel Home";
 $l['view_forums'] = "View Your Forums";
 $l['logout_cp'] = "Logout, {1}";
 
-$l['last_update_check_three_weeks'] = "Your last <a href=\"{1}\">MyBB version check</a> was more than three weeks ago.";
+$l['last_update_check_three_weeks'] = "Your last <a href=\"{1}\">MyBB version check</a> was more than two weeks ago.";
 $l['new_version_available'] = "You are currently running {1} whilst the latest generally available release is {2}.";
 $l['welcome'] = "Welcome to the MyBB Administration Control Panel";
 $l['program_stats'] = "Program Statistics";
