@@ -25,12 +25,22 @@ $upgrade_detail = array(
 
 function upgrade5_dbchanges()
 {
-	global $db, $output;
+	global $db, $output, $mybb;
+	if(strtolower($mybb->input['okay']) != "i agree")
+	{
+		$output->print_header("Beta Upgrade Warning");
+		echo "<p>This is beta software. We cannot guarantee that everything is going to work as it should and things may go wrong with the upgrade process.</p>";
+		echo "<p>For this reason, we recommend that you do not upgrade your live copies of MyBB to this release, and you only attempt 'test' upgrades of your existing copies by making copies of them first. If you wish to upgrade your live board, ensure you have a backup of your files, theme and database first!</p>";
+		echo "<p>To acknowledge you have read this notice, we require you type 'I AGREE' in to the text box below and click next to begin the upgrade process.</p>";
+		echo "<p><input type=\"text\" name=\"okay\" value=\"\" /></p>";
+		echo "<p>Remember, we're only doing this for your own benefit - we don't want to break your live forums.</p>";
+		$output->print_footer("5_dbchanges");
+		exit;
+	}
 
 	$output->print_header("Performing Queries");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
-
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE avatartype avatartype varchar(10) NOT NULL;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD totalpms int(10) NOT NULL default '0' AFTER showcodebuttons;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD newpms int(10) NOT NULL default '0' AFTER totalpms;");
@@ -125,19 +135,19 @@ function upgrade5_dbchanges()
 	$bannedusernames = $db->fetch_field($query, 'sid');
 	$bannedusernames = explode(" ", $bannedusernames);
 	$bannedusernames = implode(",", $bannedusernames);
-	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$db->escape_string($bannedusernames)." WHERE name='bannedusernames'");
+	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedusernames)."' WHERE name='bannedusernames'");
 
 	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedemails'");
 	$bannedemails = $db->fetch_field($query, 'sid');
 	$bannedemails = explode(" ", $bannedemails);
 	$bannedemails = implode(",", $bannedemails);
-	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$db->escape_string($bannedemails)." WHERE name='bannedemails'");
+	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedemails)."' WHERE name='bannedemails'");
 
 	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedips'");
 	$bannedips = $db->fetch_field($query, 'sid');
 	$bannedips = explode(" ", $bannedips);
 	$bannedips = implode(",", $bannedips);
-	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=".$db->escape_string($bannedips)." WHERE name='bannedips'");
+	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedips)."' WHERE name='bannedips'");
 
 	$query = $db->query("DROP TABLE ".TABLE_PREFIX."reputation");
 
@@ -179,7 +189,7 @@ function upgrade5_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
 
-	$db->query("DROP ".TALE_PREFIX."regimages");
+	$db->query("DROP TABLE ".TABLE_PREFIX."regimages");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."captcha (
 	  imagehash varchar(32) NOT NULL default '',
 	  imagestring varchar(8) NOT NULL default '',
@@ -188,14 +198,25 @@ function upgrade5_dbchanges()
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL default '' AFTER action;");
 	
-	$db->query("CREATE TABLE mybb_adminsessions (
+	$db->query("CREATE TABLE ".TABLE_PREFIX."adminsessions (
 		sid varchar(32) NOT NULL default '',
 		uid int unsigned NOT NULL default '0',
 		loginkey varchar(50) NOT NULL default '',
 		ip varchar(40) NOT NULL default '',
 		dateline bigint(30) NOT NULL default '0',
 		lastactive bigint(30) NOT NULL default '0'
-	) TYPE=MyISAM;");	
+	) TYPE=MyISAM;");
+
+	$db->query("CREATE TABLE ".TABLE_PREFIX."modtools (
+	tid smallint unsigned NOT NULL auto_increment,
+	name varchar(200) NOT NULL,
+	description text NOT NULL,
+	forums text NOT NULL,
+	type char(1) NOT NULL default '',
+	postoptions text NOT NULL,
+	threadoptions text NOT NULL,
+	PRIMARY KEY (tid)
+) TYPE=MyISAM;");
 
 	echo "Done</p>";
 	echo "<p>Click next to continue with the upgrade process.</p>";
@@ -205,18 +226,11 @@ function upgrade5_dbchanges()
 
 function upgrade5_redoconfig()
 {
-	global $db, $output, $config;
+	global $db, $output, $config, $mybb;
 	$output->print_header("Rewriting config.php");
 	
-	$fh = @fopen(MYBB_ROOT."/inc/config.php", "w");
-	if(!$fh)
-	{
-		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p>";
-		$output->print_footer("5_redoconfig");
-		exit;
-	}
 	$uid = 0;
-	if($mybb->input['username'])
+	if($mybb->input['username'] != '' && !$mybb->input['uid'])
 	{
 		$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".$db->escape_string($mybb->input['username'])."'");
 		$uid = $db->fetch_field($query, "uid");
@@ -225,11 +239,24 @@ function upgrade5_redoconfig()
 			echo "<p><span style=\"color: red; font-weight: bold;\">The username you entered could not be found.</span><br />Please ensure you corectly enter a valid username.</p>";
 		}
 	}
+	else if($mybb->input['uid'])
+	{
+		$uid = $mybb->input['uid'];
+	}
+
 	if(!$uid)
 	{
 		echo "<p>Please enter your primary administrator username. The user ID of the username you enter here will be written in to the new configuration file which will prevent this account from being banned, edited or deleted.</p>";
 		echo "<p>Username:</p>";
 		echo "<p><input type=\"text\" name=\"username\" value=\"\" />";
+		$output->print_footer("5_redoconfig");
+		exit;
+	}
+
+	$fh = fopen(MYBB_ROOT."/inc/config.php", "w");
+	if(!$fh)
+	{
+		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p><input type=\"hidden\" name=\"uid\" value=\"{$uid}\" />";
 		$output->print_footer("5_redoconfig");
 		exit;
 	}
@@ -241,7 +268,7 @@ function upgrade5_redoconfig()
 
 \$config['dbtype'] = '{$config['dbtype']}';
 \$config['hostname'] = '{$config['hostname']}';
-\$config['username'] = '{$config['username']}}';
+\$config['username'] = '{$config['username']}';
 \$config['password'] = '{$config['password']}';
 \$config['database'] = '{$config['database']}';
 \$config['table_prefix'] = '{$config['table_prefix']}';
@@ -288,13 +315,13 @@ function upgrade5_redoconfig()
 
 \$config['super_admins'] = '{$uid}';
 
-?>";
+?".">";
 
-	fwrite($file, $configdata);
-	fclose($file);
-	echo "<p>The settings file has successfully been rewritten.</p>";
+	fwrite($fh, $configdata);
+	fclose($fh);
+	echo "<p>The configuration file has successfully been rewritten.</p>";
 	echo "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_footer("upgrade5_lasposts");
+	$output->print_footer("5_lastposts");
 
 }
 
@@ -306,8 +333,9 @@ function upgrade5_lastposts()
 	if(!$_POST['tpp'])
 	{
 		echo "<p>The next step in the upgrade process involves rebuilding the last post information for every thread in your forum. Below, please enter the number of threads to process per page.</p>";
-		$contents .= "<p><strong>Threads Per Page:</strong> <input type=\"text\" size=\"3\" value=\"200\" name=\"tpp\" /></p>";
-		$contents .= "<p>Once you're ready, press next to begin the rebuild process.</p>";
+		echo "<p><strong>Threads Per Page:</strong> <input type=\"text\" size=\"3\" value=\"200\" name=\"tpp\" /></p>";
+		echo "<p>Once you're ready, press next to begin the rebuild process.</p>";
+		$output->print_footer("5_lastposts");
 	}
 	else
 	{
@@ -323,17 +351,17 @@ function upgrade5_lastposts()
 			update_thread_count($thread['tid']);
 		}
 		echo "<p>Done</p>";
-		if($end >= $num_forums)
+		if($end >= $num_threads)
 		{
 			echo "<p>The rebuild process has completed successfully. Click next to continue with the upgrade.";
-			$output->print_footer("upgrade5_lastposts");
+			$output->print_footer("5_forumlastposts");
 		}
 		else
 		{
 			echo "<p>Click Next to continue with the build process.</p>";
 			echo "<input type=\"hidden\" name=\"tpp\" value=\"{$tpp}\" />";
 			echo "<input type=\"hidden\" name=\"start\" value=\"{$end}\" />";
-			$output->print_footer("upgrade5_forumlastposts");
+			$output->print_footer("5_lastposts");
 		}
 	}
 }
@@ -348,9 +376,9 @@ function upgrade5_forumlastposts()
 	{
 		update_forum_count($forum['fid']);
 	}
-	echo "<p>Done>";
+	echo "<p>Done";
 	echo "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_footer("upgrade5_indexes");
+	$output->print_footer("5_indexes");
 }
 
 function upgrade5_indexes()
@@ -372,7 +400,10 @@ function upgrade5_indexes()
 	}
 	if($db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
 	{
-		$db->create_fulltext_index(TABLE_PREFIX."posts", "message");
+		if(!$db->is_fulltext(TABLE_PREFIX."posts", "message"))
+		{
+			$db->create_fulltext_index(TABLE_PREFIX."posts", "message");
+		}
 		// Insert a temporary setting (will be overwritten by sync_settings)
 		$settingdata = array(
 			"name" => "searchtype",
@@ -383,7 +414,7 @@ function upgrade5_indexes()
 			"gid" => 0,
 			"value" => "fulltext"
 		);
-		$db->insert_query(TABLE_PREFIX."settings");
+		$db->insert_query(TABLE_PREFIX."settings", $settingdata);
 		write_settings();
 	}
 

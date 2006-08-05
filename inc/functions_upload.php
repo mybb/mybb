@@ -22,7 +22,7 @@ function remove_attachment($pid, $posthash, $aid)
 	global $db, $mybb;
 	$aid = intval($aid);
 	$posthash = $db->escape_string($posthash);
-	if($posthash != "" && !$pid)
+	if($posthash != "")
 	{
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE aid='$aid' AND posthash='$posthash'");
 		$attachment = $db->fetch_array($query);

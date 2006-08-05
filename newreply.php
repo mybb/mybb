@@ -157,10 +157,10 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 }
 
 // Remove an attachment.
-if($mybb->input['attachmentaid'])
+if($mybb->input['attachmentaid'] && $mybb->input['posthash'])
 {
 	require_once MYBB_ROOT."inc/functions_upload.php";
-	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['attachmentaid']);
+	remove_attachment(0, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	if(!$mybb->input['submit'])
 	{
 		$mybb->input['action'] = "newreply";
