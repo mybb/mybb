@@ -96,7 +96,7 @@ if($mybb->input['action'] == "do_add")
 		"title" => $db->escape_string($mybb->input['title']),
 		"template" => $db->escape_string($mybb->input['template']),
 		"sid" => intval($mybb->input['setid']),
-		"version" => $mybboard['vercode'],
+		"version" => $mybb->version_code,
 		"status" => "",
 		"dateline" => time()
 		);
@@ -180,7 +180,7 @@ if($mybb->input['action'] == "do_edit")
 		"title" => $db->escape_string($mybb->input['title']),
 		"template" => $db->escape_string($mybb->input['template']),
 		"sid" => intval($mybb->input['setid']),
-		"version" => $mybboard['vercode'],
+		"version" => $mybb->version_code,
 		"status" => "",
 		"dateline" => time()
 	);
@@ -259,7 +259,7 @@ if($mybb->input['action'] == "do_replace")
 								"title" => $db->escape_string($title),
 								"template" => $db->escape_string($newtemplate),
 								"sid" => 1,
-								"version" => $mybboard['vercode'],
+								"version" => $mybb->version_code,
 								"status" => '',
 								"dateline" => time()
 								);
@@ -625,7 +625,7 @@ if($mybb->input['action'] == "diff")
 if($mybb->input['action'] == "findupdated")
 {
 	// Finds templates that are old and have been updated by MyBB
-	$compare_version = $mybboard['vercode'];
+	$compare_version = $mybb->version_code;
 	$query = $db->query("SELECT COUNT(*) AS updated_count FROM ".TABLE_PREFIX."templates t INNER JOIN ".TABLE_PREFIX."templates m ON (m.title=t.title AND m.sid=-2 AND m.version>t.version) WHERE t.sid>0");
 	$count = $db->fetch_array($query);
 

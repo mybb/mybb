@@ -10,7 +10,23 @@
  */
 
 class MyBB {
+	/**
+	 * The friendly version number of MyBB we're running.
+	 *
+	 * @var string
+	 */
+	var $version = "1.2 Beta";
 	
+	/**
+	 * The version code of MyBB we're running.
+	 *
+	 * @var integer
+	 */
+	var $version_code = 120;
+	
+	/**
+	 *The 
+	 * 
 	/**
 	 * The current working directory.
 	 *

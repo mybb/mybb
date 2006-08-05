@@ -163,7 +163,7 @@ if($mybb->input['action'] == "do_download")
 		}
 	}
 	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n";
-	$xml .= "<theme name=\"".$theme['name']."\" version=\"".$mybboard['vercode']."\">\r\n";
+	$xml .= "<theme name=\"".$theme['name']."\" version=\"".$mybb->version_code."\">\r\n";
 	function xml_css_bits($css, $depth)
 	{
 		foreach($css as $name => $value)
@@ -323,9 +323,9 @@ if($mybb->input['action'] == "do_import")
 		cpmessage($lang->theme_exists);
 	}
 
-	if($mybboard['vercode'] != $version && $mybb->input['ignorecompat'] != "yes")
+	if($mybb->version_code != $version && $mybb->input['ignorecompat'] != "yes")
 	{
-		$lang->version_warning = sprintf($lang->version_warning, $mybboard['internalver']);
+		$lang->version_warning = sprintf($lang->version_warning, $mybb->version);
 		cperror($lang->version_warning);
 	}
 

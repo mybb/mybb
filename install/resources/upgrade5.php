@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: 1.0 / 1.1
+ * Upgrade Script: 1.0.x / 1.1.x
  */
 
 // Todo - rebuild parent lists of forums to ensure they're correct, update_forum_count for each forum

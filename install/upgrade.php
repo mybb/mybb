@@ -10,9 +10,6 @@
  */
 error_reporting(E_ALL & ~E_NOTICE);
 
-// The version number of MyBB we are installing
-$myver = "1.2";
-
 define("MYBB_ROOT", dirname(dirname(__FILE__)));
 
 require MYBB_ROOT."/inc/class_core.php";
@@ -110,7 +107,7 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		$output->print_contents("<p>Welcome to the upgrade wizard for MyBB $myver.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p><strong>We recommend that you also do a complete backup of your database before attempting to upgrade</strong> so if something goes wrong you can easily revert back to the previous version.</p></p><p>Once you're ready, please select your old version below and click next to continue.</p><p><select name=\"from\">$vers</select>");
+		$output->print_contents("<p>Welcome to the upgrade wizard for MyBB {$mybb->version}.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p><strong>We recommend that you also do a complete backup of your database before attempting to upgrade</strong> so if something goes wrong you can easily revert back to the previous version.</p></p><p>Once you're ready, please select your old version below and click next to continue.</p><p><select name=\"from\">$vers</select>");
 		$output->print_footer("doupgrade");
 	}
 	elseif($mybb->input['action'] == "doupgrade")
@@ -253,7 +250,7 @@ function buildsettings()
 }
 function buildcaches()
 {
-	global $db, $output, $myver, $cache;
+	global $db, $output, $cache;
 
 	$output->print_header("Data Cache Building");
 
@@ -282,7 +279,7 @@ function buildcaches()
 
 function upgradedone()
 {
-	global $db, $output, $myver;
+	global $db, $output, $mybb;
 	
 	$output->print_header("Upgrade Complete");
 	if(is_writable("./"))
@@ -299,7 +296,7 @@ function upgradedone()
 	{
 		$lock_note = "<p><b><font color=\"red\">Please remove this directory before exploring your upgraded MyBB.</font></b></p>";
 	}
-	$output->print_contents("<p>Congratulations, your copy of MyBB has successfully been updated to $myver.</p>$lock_note<p><strong>What's Next?</strong></p><ul><li>Please use the 'Find Updated Templates' tool in the Admin CP to find customised templates updated during this upgrade process. Edit them to contain the changes or revert them to originals.</li><li>Ensure that your board is still fully functional.</li></ul>");
+	$output->print_contents("<p>Congratulations, your copy of MyBB has successfully been updated to {$mybb->version}.</p>$lock_note<p><strong>What's Next?</strong></p><ul><li>Please use the 'Find Updated Templates' tool in the Admin CP to find customised templates updated during this upgrade process. Edit them to contain the changes or revert them to originals.</li><li>Ensure that your board is still fully functional.</li></ul>");
 	$output->print_footer();
 }
 

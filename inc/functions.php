@@ -9,13 +9,6 @@
  * $Id$
  */
 
-/* Do not change the following line if you wish to receive
-   technical support
-*/
-
-$mybboard['internalver'] = "1.2.0";
-$mybboard['vercode'] = "120";
-
 /**
  * Outputs a page directly to the browser, parsing anything which needs to be parsed.
  *

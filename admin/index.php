@@ -108,9 +108,9 @@ elseif($mybb->input['action'] == "home")
 	}
 	
 	// If the update check contains information about a newer version, show an alert
-	if($update_check['latest_version_code'] > $mybboard['vercode'])
+	if($update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybboard['internalver']}", "<a href=\"http://www.mybboard.com/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.com/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
 		makewarning($lang->new_version_available);
 	}
 	
@@ -121,7 +121,7 @@ elseif($mybb->input['action'] == "home")
 	tableheader($lang->welcome, "", 4);
 	tablesubheader($lang->program_stats, "", 4);
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>".$lang->mybb_version."</b></td><td valign=\"top\" class=\"altbg2\">$mybboard[internalver]</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>".$lang->mybb_version."</b></td><td valign=\"top\" class=\"altbg2\">{$mybb->version}</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->php_version</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"index.php?".SID."&action=phpinfo\">$phpversion</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -199,7 +199,7 @@ elseif($mybb->input['action'] == "vercheck")
 {
 	logadmin();
 
-	$current_version = rawurlencode($mybboard['vercode']);
+	$current_version = rawurlencode($mybb->version_code);
 	
 	$updated_cache = array(
 		"last_check" => time()
@@ -218,7 +218,7 @@ elseif($mybb->input['action'] == "vercheck")
 
 	$latest_code = $tree['mybb']['version_code']['value'];
 	$latest_version = $tree['mybb']['latest_version']['value']." (".$latest_code.")";
-	if($latest_code > $mybboard['vercode'])
+	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: red\">".$latest_version."</font>";
 		$version_warn = 1;
@@ -240,7 +240,7 @@ elseif($mybb->input['action'] == "vercheck")
 	starttable();
 	tableheader($lang->vercheck);
 	tablesubheader($lang->vercheck_up2date);
-	makelabelcode($lang->your_version, $mybboard['internalver']." (".$mybboard['vercode'].")");
+	makelabelcode($lang->your_version, $mybb->version." (".$mybb->version_code.")");
 	makelabelcode($lang->latest_version, $latest_version);
 	if($version_warn)
 	{

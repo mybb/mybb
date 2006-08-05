@@ -297,7 +297,7 @@ $copy_year = mydate("Y", time());
 // Are we showing version numbers in the footer?
 if($mybb->settings['showvernum'] == "on")
 {
-	$mybbversion = $mybboard['internalver'];
+	$mybbversion = $mybb->version;
 }
 else
 {

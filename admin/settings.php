@@ -169,7 +169,7 @@ if($mybb->input['action'] == "export")
 	}
 	$plugins->run_hooks("admin_settings_export");
 	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
-	$xml = "<settings version=\"".$mybboard['vercode']."\" exported=\"".time()."\">\n";
+	$xml = "<settings version=\"".$mybb->version_code."\" exported=\"".time()."\">\n";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups $gidwhere ORDER BY name ASC");
 	while($settinggroup = $db->fetch_array($query))
 	{

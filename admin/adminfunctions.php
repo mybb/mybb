@@ -817,7 +817,7 @@ function cpredirect($url, $message="")
 
 function cpfooter($showversion=1)
 {
-	global $mybboard, $db, $maintimer, $lang;
+	global $mybb, $db, $maintimer, $lang;
 	echo "<div align=\"center\"><br /><br />\n";
 	$totaltime = $maintimer->stop();
 	$lang->footer_stats = sprintf($lang->footer_stats, $totaltime, $db->query_count);
@@ -827,7 +827,7 @@ function cpfooter($showversion=1)
 	}
 	else
 	{
-		$mybbversion = $mybboard['internalver'];
+		$mybbversion = $mybb->version;
 	}
 	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">".$lang->footer_powered_by." <b><a href=\"http://www.mybboard.com\" target=\"_blank\">MyBB</a> $mybbversion</b><br />".$lang->footer_copyright." &copy; 2002-".mydate("Y")." <a href=\"http://www.mybboard.com\">MyBB Group</a><br />".$lang->footer_stats."</font></div>\n";
 	echo "</body>\n";

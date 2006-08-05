@@ -125,8 +125,12 @@ class datacache
 	 */
 	function updateversion()
 	{
-		global $db, $mybboard;
-		$this->update("version", $mybboard);
+		global $db, $mybb;
+		$version = array(
+			"version" => $mybb->version,
+			"version_code" => $mybb->version_code
+		);
+		$this->update("version", $version);
 	}
 
 	/**

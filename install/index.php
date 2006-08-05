@@ -10,9 +10,6 @@
  */
 error_reporting(E_ALL & ~E_NOTICE);
 
-// The version number of MyBB we are installing
-$myver = '1.2';
-
 require '../inc/class_core.php';
 $mybb = new MyBB;
 
@@ -119,9 +116,9 @@ else
 
 function intro()
 {
-	global $output, $myver, $lang;
+	global $output, $mybb, $lang;
 	$output->print_header($lang->welcome, 'welcome');
-	echo sprintf($lang->welcome_step, $myver);
+	echo sprintf($lang->welcome_step, $mybb->version);
 	$output->print_footer('license');
 }
 
@@ -180,7 +177,7 @@ function license_agreement()
 
 function requirements_check()
 {
-	global $output, $myver, $dboptions, $lang;
+	global $output, $mybb, $dboptions, $lang;
 
 	$output->print_header($lang->req_check, 'requirements');
 	echo $lang->req_step_top;
@@ -311,7 +308,7 @@ function requirements_check()
 
 function database_info()
 {
-	global $output, $myver, $dbinfo, $errors, $mybb, $dboptions, $lang;
+	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
 	$mybb->input['action'] = 'database_info';
 	$output->print_header($lang->db_config, 'dbconfig');
 
@@ -346,7 +343,7 @@ function database_info()
 
 function create_tables()
 {
-	global $output, $myver, $dbinfo, $errors, $mybb, $dboptions, $lang;
+	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
 
 	if(!file_exists("../inc/db_{$mybb->input['dbengine']}.php"))
 	{
@@ -472,7 +469,7 @@ function create_tables()
 
 function populate_tables()
 {
-	global $output, $myver, $lang;
+	global $output, $lang;
 
 	require '../inc/config.php';
 	$db = db_connection($config);
@@ -501,7 +498,7 @@ function populate_tables()
 
 function insert_templates()
 {
-	global $output, $myver, $cache, $db, $lang;
+	global $output, $cache, $db, $lang;
 
 	require '../inc/config.php';
 	$db = db_connection($config);
@@ -546,7 +543,7 @@ function insert_templates()
 
 function configure()
 {
-	global $output, $myver, $mybb, $errors, $lang;
+	global $output, $mybb, $errors, $lang;
 	$output->print_header($lang->board_config, 'config');
 
 	// If board configuration errors
@@ -597,7 +594,7 @@ function configure()
 
 function create_admin_user()
 {
-	global $output, $myver, $mybb, $errors, $db, $lang;
+	global $output, $mybb, $errors, $db, $lang;
 	// If no errors then check for errors from last step
 	if(!is_array($errors))
 	{
@@ -690,7 +687,7 @@ function create_admin_user()
 
 function install_done()
 {
-	global $output, $db, $myver, $mybb, $errors, $cache, $lang;
+	global $output, $db, $mybb, $errors, $cache, $lang;
 
 	if(empty($mybb->input['adminuser']))
 	{

@@ -142,11 +142,11 @@ function archive_multipage($count, $perpage, $page, $url)
  */
 function archive_footer()
 {
-	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $mybboard, $sent_header;
+	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $sent_header;
 	$totaltime = $maintimer->stop();
 	if($mybb->settings['showvernum'] == "on")
 	{
-		$mybbversion = $mybboard['internalver'];
+		$mybbversion = $mybb->version;
 	}
 	else
 	{
