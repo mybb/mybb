@@ -25,9 +25,6 @@ class MyBB {
 	var $version_code = 120;
 	
 	/**
-	 *The 
-	 * 
-	/**
 	 * The current working directory.
 	 *
 	 * @var string
