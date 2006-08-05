@@ -639,7 +639,7 @@ if($mybb->input['action'] == "calendar_main")
 		}
 		if(!$events[$i] && !$birthdays)
 		{
-			$events[$i] = "&nbsp;"
+			$events[$i] = "&nbsp;";
 		}
 		if((mydate("d") == $i) && (mydate("n") == $month) && (mydate("Y") == $year))
 		{
