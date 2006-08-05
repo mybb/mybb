@@ -101,6 +101,11 @@ class postParser
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "{{mybb-code}}\n", $message);
 		}
 
+		if($options['allow_html'] != "yes")
+		{
+			$message = $this->parse_html($message);
+		}
+		
 		// If we can, parse smiliesa
 		if($options['allow_smilies'] != "no")
 		{
@@ -113,14 +118,10 @@ class postParser
 			$message = $this->parse_mycode($message, $options);
 		}
 
-		if($options['allow_html'] != "yes")
+		// Strip out any script tags if HTML is enabled
+		if($options['allow_html'] == "yes")
 		{
-			$message = $this->parse_html($message);
-		}
-		// Strip out any script tags
-		else
-		{
-			$message = preg_replace("#<script(.*?)>(.*?)</script(.*?)>#i", "", $message);
+			$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "", $message);
 		}		
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
