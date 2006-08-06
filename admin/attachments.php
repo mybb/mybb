@@ -605,7 +605,7 @@ if($mybb->input['action'] == "stats")
 			$user['totalsize'] = get_friendly_size($user['totalsize']);
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../member.php?action=profile&amp;uid=".$user['uid']."\">".$user['username']."</a></td>\n";
-			echo "<td class=\"$bgcolor\"><a href=\"attachments.php?action=do_search&amp;username=".urlencode($user['username'])."\">".$user['totalsize']."</a></td>\n";
+			echo "<td class=\"$bgcolor\"><a href=\"attachments.php?".SID."&amp;action=do_search&amp;username=".urlencode($user['username'])."\">".$user['totalsize']."</a></td>\n";
 			echo "</tr>\n";
 		}
 		endtable();
