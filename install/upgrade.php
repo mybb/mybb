@@ -27,7 +27,7 @@ require MYBB_ROOT."/inc/db_".$config['dbtype'].".php";
 // Legacy for those boards trying to upgrade from an older version
 if(isset($config['admindir']))
 {
-	require MYBB_ROOT."/".$config['admindir']."/adminfunctions.php";	
+	require MYBB_ROOT."/".$config['admindir']."/adminfunctions.php";
 }
 // Current
 else if(isset($config['admin_dir']))
@@ -66,18 +66,18 @@ else
 {
 
 	$output->steps = array("Upgrade Process");
-	
+
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
 		$output->print_header("MyBB Upgrade Script");
 
-		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."upgrade_data");  
-		$db->query("CREATE TABLE ".TABLE_PREFIX."upgrade_data ( 
-			title varchar(30) NOT NULL,  
-			contents text NOT NULL,  
-			PRIMARY KEY(title)  
+		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."upgrade_data");
+		$db->query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
+			title varchar(30) NOT NULL,
+			contents text NOT NULL,
+			PRIMARY KEY(title)
 		);");
-		
+
 		$dh = opendir("./resources");
 		while(($file = readdir($dh)) !== false)
 		{
@@ -280,7 +280,7 @@ function buildcaches()
 function upgradedone()
 {
 	global $db, $output, $mybb;
-	
+
 	$output->print_header("Upgrade Complete");
 	if(is_writable("./"))
 	{
@@ -359,25 +359,24 @@ function load_module($module)
 	}
 }
 
-function get_upgrade_store($title)  
-{  
-	global $db;  
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."upgrade_data WHERE title='".$db->escape_string($title)."'");  
-	$data = $db->fetch_array($query);  
-	return unserialize($data['contents']);  
+function get_upgrade_store($title)
+{
+	global $db;
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."upgrade_data WHERE title='".$db->escape_string($title)."'");
+	$data = $db->fetch_array($query);
+	return unserialize($data['contents']);
 }
 
-function add_upgrade_store($title, $contents)  
-{  
-	global $db;  
-	$db->query("REPLACE INTO ".TABLE_PREFIX."upgrade_data (title,contents) VALUES ('".$db->escape_string($title)."', '".$db->escape_string(serialize($contents))."')");  
+function add_upgrade_store($title, $contents)
+{
+	global $db;
+	$db->query("REPLACE INTO ".TABLE_PREFIX."upgrade_data (title,contents) VALUES ('".$db->escape_string($title)."', '".$db->escape_string(serialize($contents))."')");
 }
 
 function sync_settings($redo=0)
 {
 	global $db;
 	$settingcount = $groupcount = 0;
-	echo $redo;
 	if($redo == 2)
 	{
 		$db->query("DROP TABLE ".TABLE_PREFIX."settinggroups");
@@ -390,7 +389,7 @@ function sync_settings($redo=0)
 		  isdefault char(3) NOT NULL default '',
 		  PRIMARY KEY  (gid)
 		) TYPE=MyISAM;");
-		
+
 		$db->query("DROP TABLE ".TABLE_PREFIX."settings");
 
 		$db->query("CREATE TABLE ".TABLE_PREFIX."settings (
@@ -472,7 +471,6 @@ function sync_settings($redo=0)
 	}
 	if($redo >= 1)
 	{
-		echo 'updating';
 		require MYBB_ROOT."/inc/settings.php";
 		foreach($settings as $key => $val)
 		{
@@ -481,7 +479,7 @@ function sync_settings($redo=0)
 	}
 	unset($settings);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings ORDER BY title ASC");
-	while($setting = $db->fetch_array($query)) 
+	while($setting = $db->fetch_array($query))
 	{
 		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
 		$settings .= "\$settings[".$setting['name']."] = \"".$setting['value']."\";\n";
