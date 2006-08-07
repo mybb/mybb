@@ -166,7 +166,7 @@ if($mybb->input['action'] == 'do_backup')
 		}
 		if($mybb->input['contents'] != 'structure')
 		{
-			$query = $db->simple_select(TABLE_PREFIX.$table, "*");
+			$query = $db->simple_select($table);
 			while($row = $db->fetch_array($query))
 			{
 				$insert = "INSERT INTO {$table} ($fields) VALUES (";

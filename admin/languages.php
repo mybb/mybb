@@ -97,7 +97,7 @@ if($mybb->input['action'] == "do_editset")
 
 // Sets the character set, blank uses the default.
 \$langinfo['charset'] = \"$newlanginfo[charset]\";".
-"?>";
+"?".">";
 
 	// Put it in!
 	if($file = fopen($file, "w"))
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 
 	// Make the contents of the new file
-	$newfile = "<?php\n";
+	$newfile = "<"."?php\n";
 	foreach($mybb->input['edit'] as $key => $phrase)
 	{
 		$phrase = str_replace("\\", "\\\\", $phrase);
@@ -224,7 +224,7 @@ if($mybb->input['action'] == "do_edit")
 			}
 		}
 	}
-	$newfile .= "?>";
+	$newfile .= "?".">";
 	$plugins->run_hooks("admin_languages_do_edit");
 	// Put it in!
 	if($file = fopen($editfile, "w"))
@@ -390,6 +390,8 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		// List files in specific language
+		
+		require MYBB_ROOT."inc/languages/".$editlang.".php";
 
 		// Get files in main folder
 		$filenames = array();
@@ -405,7 +407,7 @@ if($mybb->input['action'] == "edit")
 			closedir($handle);
 			sort($filenames);
 		}
-		if($lang->settings['admin'] != 0)
+		if($langinfo['admin'] != 0)
 		{		
 			// Get files in admin folder
 			$adminfilenames = array();
@@ -434,7 +436,7 @@ if($mybb->input['action'] == "edit")
 		$plugins->run_hooks("admin_languages_edit_list");
 		
 		$tablesubheaderarray = array('&nbsp;', $lang->main_folder);
-		if($lang->settings['admin'] != 0)
+		if($langinfo['admin'] != 0)
 		{
 			$tablesubheaderarray[] = $lang->admin_folder;
 		}
@@ -456,9 +458,16 @@ if($mybb->input['action'] == "edit")
 			{
 				$normal_link = makelinkcode($lang->edit_link, "languages.php?".SID."&action=edit&amp;lang=$editlang&amp;editwith=$editwith&amp;file=$filename");
 			}
-			if($lang->settings['admin'] != 0 && in_array($filename, $adminfilenames))
+			if(is_array($adminfilenames) && $langinfo['admin'] != 0)
 			{
-				$admin_link = "<td align=\"center\">".makelinkcode($lang->edit_link, "languages.php?".SID."&action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&inadmin=1")."</td>";
+			  if(in_array($filename, $adminfilenames))
+			  {
+           $admin_link = "<td align=\"center\">".makelinkcode($lang->edit_link, "languages.php?".SID."&action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&amp;inadmin=1")."</td>"; 
+        }
+        else
+        {
+          $admin_link = "<td align=\"center\">&nbsp;</td>";
+        }
 			}
 			echo "<tr class=\"{$bgcolor}\">
 	<td>{$filename}</td>
