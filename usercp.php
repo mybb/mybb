@@ -1396,7 +1396,7 @@ if($mybb->input['action'] == "avatar")
 	if($activegallery)
 	{
 		$gallery = str_replace("..", "", $mybb->input['gallery']);
-		$lang->avatars_in_gallery = sprintf($lang->avatars_in_gallery, $friendlyname);
+		$lang->avatars_in_gallery = sprintf($lang->avatars_in_gallery, $activegallery);
 		// Get a listing of avatars in this gallery
 		$avatardir = $mybb->settings['avatardir'];
 		if($gallery != "default")
