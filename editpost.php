@@ -147,19 +147,19 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 	}
 }
 
-if($mybb->input['attachmentaid']) // Lets remove/approve/unapprove the attachment
-{
+if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact'])) // Lets remove/approve/unapprove the attachment
+{ 
 	$mybb->input['attachmentaid'] = intval($mybb->input['attachmentaid']);
-	if(isset($mybb->input['rem']))
+	if($mybb->input['attachmentact'] == "remove")
 	{
 		remove_attachment($pid, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	}
-	elseif(isset($mybb->input['approveattach']))
+	elseif($mybb->input['attachmentact'] == "approve")
 	{
 		$update_sql = array("visible" => 1);
 		$db->update_query(TABLE_PREFIX."attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 	}
-	elseif(isset($mybb->input['unapproveattach']))
+	elseif($mybb->input['attachmentact'] == "unapprove")
 	{
 		$update_sql = array("visible" => 0);
 		$db->update_query(TABLE_PREFIX."attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
@@ -330,15 +330,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	// Setup a unique posthash for attachment management
-	if(!$mybb->input['posthash'])
-	{
-	    mt_srand((double) microtime() * 1000000);
-	    $posthash = md5($post['pid'].$mybb->user['uid'].mt_rand());
-	}
-	else
-	{
-		$posthash = $db->escape_string($mybb->input['posthash']);
-	}
+	$query = $db->simple_select(TABLE_PREFIX."posts", "posthash", "pid='{$pid}'");
+	$posthash = $db->fetch_field($query, "posthash");
 
 	$bgcolor = "trow2";
 	if($forumpermissions['canpostattachments'] != "no")

@@ -24,15 +24,15 @@ function remove_attachment($pid, $posthash, $aid)
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "")
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE aid='$aid' AND posthash='$posthash'");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "aid='$aid' AND posthash='$posthash'");
 		$attachment = $db->fetch_array($query);
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE aid='$aid' AND pid='$pid'");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "aid='$aid' AND pid='$pid'");
 		$attachment = $db->fetch_array($query);
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='".$attachment['aid']."'");
+	$db->delete_query(TABLE_PREFIX."attachments", "aid='".$attachment['aid']."'");
 	@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 	if($attachment['thumbnail'])
 	{
@@ -52,15 +52,15 @@ function remove_attachments($pid, $posthash="")
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "" && !$pid)
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE posthash='$posthash'");
+	  $query = $db->simple_select(TABLE_PREFIX."attachments", "*", "posthash='$posthash'");
 	}
 	else
 	{
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE pid='$pid'");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid='$pid'");
 	}
 	while($attachment = $db->fetch_array($query))
 	{
-		$db->query("DELETE FROM ".TABLE_PREFIX."attachments WHERE aid='".$attachment['aid']."'");
+		$db->delete_query(TABLE_PREFIX."attachments", "aid='".$attachment['aid']."'");
 		@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 		if($attachment['thumbnail'])
 		{
@@ -215,7 +215,7 @@ function upload_attachment($attachment)
 	}
 	$ext = get_extension($attachment['name']);
 	// Check if we have a valid extension
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachtypes WHERE extension='$ext'");
+	$query = $db->simple_select(TABLE_PREFIX."attachtypes", "*", "extension='$ext'");
 	$attachtype = $db->fetch_array($query);
 	if(!$attachtype['atid'])
 	{
@@ -232,7 +232,7 @@ function upload_attachment($attachment)
 	// Double check attachment space usage
 	if($mybb->usergroup['attachquota'] > 0)
 	{
-		$query = $db->query("SELECT SUM(filesize) AS ausage FROM ".TABLE_PREFIX."attachments WHERE uid='".$mybb->user['uid']."'");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "SELECT SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
 		$usage = $usage['ausage']+$attachment['size'];
 		if($usage > ($mybb->usergroup['attachquota']*1000))
@@ -244,7 +244,7 @@ function upload_attachment($attachment)
 	}
 
 	// Check if an attachment with this name is already in the post
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='$pid' AND pid!='0'))");
+	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='$pid' AND pid!='0'))");
 	$prevattach = $db->fetch_array($query);
 	if($prevattach['aid'])
 	{
@@ -287,7 +287,7 @@ function upload_attachment($attachment)
 		"filesize" => $file['size'],
 		"attachname" => $filename,
 		"downloads" => 0,
-		);
+	);
 
 	// Alls well that ends well? Lets generate a thumbnail (if image) and insert it all in to the database
 	if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
