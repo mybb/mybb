@@ -366,7 +366,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && (isset($my
 	$referrer = $db->fetch_array($query);
 	if($referrer['uid'])
 	{
-		mysetcookie("mybb[referrer]", $referrer['uid']);
+		mysetcookie("mybb[referrer]", $referrer['username']);
 	}
 }
 
