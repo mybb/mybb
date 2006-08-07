@@ -184,7 +184,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	if($mybb->user['uid'] == 0)
 	{
 		$username = htmlspecialchars_uni($mybb->input['username']);
-	
+
 		// Check if username exists.
 		if(username_exists($mybb->input['username']))
 		{
@@ -193,7 +193,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				error($lang->error_usernametaken);
 			}
-			
+
 			// If the user specified a password but it is wrong, throw back invalid password.
 			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 			if(!$mybb->user['uid'])
@@ -201,7 +201,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				error($lang->error_invalidpassword);
 			}
 			// Otherwise they've logged in successfully.
-			
+
 			$mybb->input['username'] = $username = $mybb->user['username'];
 			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
 		}
@@ -227,7 +227,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$username = $mybb->user['username'];
 		$uid = $mybb->user['uid'];
 	}
-	
+
 	// Attempt to see if this post is a duplicate or not
 	if($uid > 0)
 	{
@@ -246,7 +246,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			error($lang->error_post_already_submitted);
 		}
 	}
-	
+
 	// Set up posthandler.
 	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("insert");
@@ -265,11 +265,11 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		"posthash" => $mybb->input['posthash']
 	);
 
-	if($draft_pid)
+	if($mybb->input['pid'])
 	{
-		$post['pid'] = $draft_pid;
+		$post['pid'] = $mybb->input['pid'];
 	}
-	
+
 	// Are we saving a draft post?
 	if($mybb->input['savedraft'] && $mybb->user['uid'])
 	{
@@ -294,14 +294,14 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 	// Now let the post handler do all the hard work.
 	$valid_post = $posthandler->validate_post();
-	
+
 	$post_errors = array();
 	// Fetch friendly error messages if this is an invalid post
 	if(!$valid_post)
 	{
 		$post_errors = $posthandler->get_friendly_errors();
 	}
-	
+
 	// Check captcha image
 	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
 	{
@@ -351,7 +351,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$lang->redirect_newreply .= $lang->redirect_newreply_moderation;
 			$url = "showthread.php?tid=$tid";
 		}
-		
+
 		// Mark any quoted posts so they're no longer selected - attempts to maintain those which weren't selected
 		if($mybb->input['quoted_ids'] && $_COOKIE['multiquote'] && $mybb->settings['multiquote'] != "off")
 		{
@@ -422,7 +422,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$quoted_posts[$mybb->input['pid']] = $mybb->input['pid'];
 		}
-	
+
 		// Quoting more than one post - fetch them
 		if(count($quoted_posts) > 0)
 		{
@@ -489,7 +489,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					$multiquote_deselect = $lang->multiquote_external_deselect;
 					$multiquote_quote = $lang->multiquote_external_quote;
 				}
-				eval("\$multiquote_external = \"".$templates->get("newreply_multiquote_external")."\";");				
+				eval("\$multiquote_external = \"".$templates->get("newreply_multiquote_external")."\";");
 			}
 			if(count($quoted_ids) > 0)
 			{
@@ -605,9 +605,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
 		}
-		
+
 		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
-		while($attachment = $db->fetch_array($query)) 
+		while($attachment = $db->fetch_array($query))
 		{
 			$attachcache[0][$attachment['aid']] = $attachment;
 		}
@@ -631,7 +631,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$posthash = $mybb->input['posthash'];
 	}
-	
+
 	// Get a listing of the current attachments.
 	$bgcolor = "trow2";
 	if($forumpermissions['canpostattachments'] != "no")
@@ -695,7 +695,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton")."\";");
 	}
-	
+
 	// Show captcha image for guests if enabled
 	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
 	{
@@ -709,7 +709,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$imgcheck = $db->fetch_array($query);
 			if($imgcheck['dateline'] > 0)
 			{
-				eval("\$captcha = \"".$templates->get("post_captcha_hidden")."\";");			
+				eval("\$captcha = \"".$templates->get("post_captcha_hidden")."\";");
 				$correct = true;
 			}
 			else
@@ -718,7 +718,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			}
 		}
 		if(!$correct)
-		{	
+		{
 			$randomstr = random_str(5);
 			$imagehash = md5($randomstr);
 			$imagearray = array(
@@ -727,10 +727,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				"dateline" => time()
 				);
 			$db->insert_query(TABLE_PREFIX."captcha", $imagearray);
-			eval("\$captcha = \"".$templates->get("post_captcha")."\";");			
+			eval("\$captcha = \"".$templates->get("post_captcha")."\";");
 		}
 	}
-	
+
 	if($mybb->settings['threadreview'] != "off")
 	{
 		if(is_moderator($fid) == "yes")
@@ -743,28 +743,28 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
 		$numposts = $db->fetch_field($query, "post_count");
-		
+
 		if($numposts > $mybb->settings['postsperpage'])
 		{
 			$numposts = $mybb->settings['postsperpage'];
 			$lang->thread_review_more = sprintf($lang->thread_review_more, $mybb->settings['postsperpage'], $tid);
-			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");			
+			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
 		}
-		
+
 		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['postsperpage']));
 		while($post = $db->fetch_array($query))
 		{
-			$pidin[] = $post['pid'];		
+			$pidin[] = $post['pid'];
 		}
-		
+
 		$pidin = implode(",", $pidin);
-		
+
 		// Fetch attachments
 		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid IN ($pidin)");
-		while($attachment = $db->fetch_array($query)) 
+		while($attachment = $db->fetch_array($query))
 		{
 			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
-		}	
+		}
 		$query = $db->query("
 			SELECT p.*, u.username AS userusername
 			FROM ".TABLE_PREFIX."posts p
@@ -802,7 +802,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 			get_post_attachments($post['pid'], $post);
-			$reviewmessage = $post['message'];	
+			$reviewmessage = $post['message'];
 			eval("\$reviewbits .= \"".$templates->get("newreply_threadreview_post")."\";");
 			if($altbg == "trow1")
 			{

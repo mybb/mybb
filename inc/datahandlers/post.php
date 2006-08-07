@@ -617,17 +617,19 @@ class PostDataHandler extends DataHandler
 		// END TO BE REMOVED
 		//
 
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
-		$draft_check = $db->fetch_field($query, "pid");
+		$post['pid'] = intval($post['pid']);
+		$post['uid'] = intval($post['uid']);
+		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
+		$draft_check = $db->fetch_field($query, "tid");
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
 		if($draft_check)
 		{
 			// Update a post that is a draft
-			$this->post_insert_data = array(
+			$this->post_update_data = array(
 				"subject" => $db->escape_string($post['subject']),
 				"icon" => intval($post['icon']),
-				"uid" => intval($post['uid']),
+				"uid" => $post['uid'],
 				"username" => $db->escape_string($post['username']),
 				"dateline" => intval($post['dateline']),
 				"message" => $db->escape_string($post['message']),
@@ -640,7 +642,7 @@ class PostDataHandler extends DataHandler
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
 
-			$db->update_query(TABLE_PREFIX."posts", $updatedpost, "pid='{$post['pid']}'");
+			$db->update_query(TABLE_PREFIX."posts", $this->post_update_data, "pid='{$post['pid']}'");
 			$this->pid = $post['pid'];
 		}
 		else
@@ -652,7 +654,7 @@ class PostDataHandler extends DataHandler
 				"fid" => intval($post['fid']),
 				"subject" => $db->escape_string($post['subject']),
 				"icon" => intval($post['icon']),
-				"uid" => intval($post['uid']),
+				"uid" => $post['uid'],
 				"username" => $db->escape_string($post['username']),
 				"dateline" => $post['dateline'],
 				"message" => $db->escape_string($post['message']),

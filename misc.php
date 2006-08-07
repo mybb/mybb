@@ -76,7 +76,7 @@ elseif($mybb->input['action'] == "rules")
 
 		$forumpermissions = forum_permissions($forum['fid']);
 
-		if($forum['type'] != "f" || $forum['rules'] == '') 
+		if($forum['type'] != "f" || $forum['rules'] == '')
 		{
 			error($lang->error_invalidforum);
 		}
@@ -88,9 +88,9 @@ elseif($mybb->input['action'] == "rules")
 		{
 			$forum['rulestitle'] = sprintf($lang->forum_rules, $forum['name']);
 		}
-		
+
 		require_once MYBB_ROOT."/inc/class_parser.php";
-		
+		$parser = new postParser();
 		$parser_options = array(
 			"allow_html" => 'yes',
 			"allow_mycode" => 'yes',
@@ -98,8 +98,8 @@ elseif($mybb->input['action'] == "rules")
 			"allow_imgcode" => 'yes'
 		);
 
-		$forum['rules'] = $parser->parse_message($forum['rules'], $parser_options);	
-			
+		$forum['rules'] = $parser->parse_message($forum['rules'], $parser_options);
+
 		// Make navigation
 		build_forum_breadcrumb($mybb->input['fid']);
 		add_breadcrumb($forum['rulestitle']);
@@ -122,7 +122,7 @@ elseif($mybb->input['action'] == "help")
 
 	$query = $db->query("
 		SELECT h.*, s.enabled AS section
-		FROM ".TABLE_PREFIX."helpdocs h 
+		FROM ".TABLE_PREFIX."helpdocs h
 		LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid)
 		WHERE h.hid='".intval($mybb->input['hid'])."'
 	");
@@ -565,7 +565,7 @@ if($mybb->input['action'] == "clearcookies")
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
 	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $flist, $lang;
-	
+
 	$pid = intval($pid);
 	if(!$permissions)
 	{
