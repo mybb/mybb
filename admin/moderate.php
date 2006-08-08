@@ -172,11 +172,13 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 }
 if($mybb->input['action'] == "attachments")
 {
-	$options = array(
-		"order_by" => "p.dateline",
-		"order_dir" => "DESC"
-	);
-	$query = $db->simple_select(TABLE_PREFIX."attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)", "a.*, p.subject AS postsubject, p.pid AS postpid, p.tid, p.username AS postusername, p.uid AS postuid, t.subject AS threadsubject, f.name AS forumname, p.fid", "a.pid=p.pid AND t.tid=p.tid AND a.visible!='1'", $options);
+	$query = $db->query("
+		SELECT a.*, p.subject AS postsubject, p.pid AS postpid, p.tid, p.username AS postusername, p.uid AS postuid, t.subject AS threadsubject, f.name AS forumname, p.fid
+		FROM (".TABLE_PREFIX."attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t
+		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
+		WHERE a.pid=p.pid AND t.tid=p.tid AND a.visible!='1
+		ORDER BY p.dateline DESC
+	");
 	$count = $db->num_rows($query);
 	if(!$count)
 	{
@@ -229,11 +231,15 @@ if($mybb->input['action'] == "attachments")
 if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadsposts")
 {
 	$done = 0;
-	$options = array(
-		"order_by" => "t.lastpost",
-		"order_dir" => "DESC"
-	);
-	$query = $db->simple_select(TABLE_PREFIX."(".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)", "t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username", "t.visible=0 AND p.tid=t.tid", $options);
+
+	$query = $db->query("
+		SELECT t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username
+		FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p)
+		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
+		WHERE t.visible='0' AND p.tid=t.tid
+		ORDER BY t.lastpost DESC
+	");
 	$tcount = $db->num_rows($query);
 
 	if($tcount < 1 && $mybb->input['action'] != "threadsposts")
@@ -281,7 +287,15 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 		"order_by" => "p.dateline",
 		"order_dir" => "DESC"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."posts p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)", "p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, f.name AS forumname, u.username AS username", "p.visible=0", $options);
+	$query = $db->query("
+		SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, f.name AS forumname, u.username AS username
+		FROM  ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE p.visible='0'
+		ORDER BY p.dateline DESC
+	");
 	$count = $db->num_rows($query);
 	if(!$tcount && !$count && $mybb->input['action'] == "threadsposts")
 	{

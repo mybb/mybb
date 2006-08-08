@@ -78,6 +78,7 @@ if(!empty($forumlist))
 else
 {
 	$forumlist = $unviewable;
+	$all_forums = 1;
 }
 
 // Find out which title to add to the feed.
@@ -92,7 +93,7 @@ while($forum = $db->fetch_array($query))
 }
 
 // If syndicating all forums then cut the title back to "All Forums"
-if(empty($forumlist))
+if($all_forums)
 {
 	$title = $mybb->settings['bbname']." - ".$lang->all_forums;
 }

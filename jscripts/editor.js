@@ -12,6 +12,7 @@ messageEditor.prototype = {
 		this.fonts["Impact"] = "Impact";
 		this.fonts["Tahoma"] = "Tahoma";
 		this.fonts["Times New Roman"] = "Times New Roman";
+		this.fonts["Trebuchet MS"] = "Trebuchet MS";
 		this.fonts["Verdana"] = "Verdana";
 
 		// An array of font sizes to be shown.

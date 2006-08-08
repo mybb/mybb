@@ -64,6 +64,10 @@ function upgrade5_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."moderators ADD canmovetononmodforum char(3) NOT NULL default '' AFTER canmanagethreads;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD csscached bigint(30) NOT NULL default '0'");
 
+	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='yes' >= 1");
+	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='no' <= 1");
+	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET canrundbtools='yes' WHERE canrunmaint='yes'");
+	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET canrundbtools='no' WHERE canrunmaint='no'");
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET optionscode='select\r\ninstant=Instant Activation\r\nverify=Send Email Verification\r\nrandompass=Send Random Password\r\nadmin=Administrator Activation' WHERE name = 'regtype'");
 	$db->query("UPDATE ".TABLE_PREFIX."users SET totalpms='-1', newpms='-1', unreadpms='-1'");
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET name='maxmessagelength' WHERE name='messagelength'");
@@ -185,6 +189,10 @@ function upgrade5_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes CHANGE extension extension varchar(10) NOT NULL;");
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD deletetime int(10) unsigned NOT NULL default '0' AFTER attachmentcount");
+	
+	$db->query("ALTER TABLE ".TABLE_PREFIX."sessions ADD loginattempts tinyint(2) NOT NULL default '1'");
+  $db->query("ALTER TABLE ".TABLE_PREFIX."sessions ADD failedlogin bigint(30) NOT NULL default '0'");
+  
 
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
@@ -218,6 +226,10 @@ function upgrade5_dbchanges()
 	PRIMARY KEY (tid)
 ) TYPE=MyISAM;");
 
+	$db->query("ALTER ".TABLE_PREFIX."usergroups ADD disporder smallint unsigned NOT NULL AFTER image");
+	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canviewthreads=canview");
+	$db->query("UPDATE ".TABLE_PREFIX."forumpermissions SET canviewthreads=canview");
+	
 	echo "Done</p>";
 	echo "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

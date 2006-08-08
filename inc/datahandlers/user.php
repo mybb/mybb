@@ -425,6 +425,7 @@ class UserDataHandler extends DataHandler
 				{
 					$this->set_error('bad_profile_field_values', array($profilefield['name']));
 				}
+				$options = $db->escape_string($profile_fields[$field]);
 			}
 			else
 			{
