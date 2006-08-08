@@ -63,6 +63,7 @@ function upgrade5_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD allowedgroups text NOT NULL default '' AFTER extracss;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."moderators ADD canmovetononmodforum char(3) NOT NULL default '' AFTER canmanagethreads;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD csscached bigint(30) NOT NULL default '0'");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."sessions ADD loginattempts tinyint(2) NOT NULL default '1'");
 
 	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='yes' >= 1");
 	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='no' <= 1");
@@ -203,9 +204,9 @@ function upgrade5_dbchanges()
 	  imagestring varchar(8) NOT NULL default '',
 	  dateline bigint(30) NOT NULL default '0'
 	) TYPE=MyISAM;");
-	
+
 	$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL default '' AFTER action;");
-	
+
 	$db->query("CREATE TABLE ".TABLE_PREFIX."adminsessions (
 		sid varchar(32) NOT NULL default '',
 		uid int unsigned NOT NULL default '0',
@@ -240,7 +241,7 @@ function upgrade5_redoconfig()
 {
 	global $db, $output, $config, $mybb;
 	$output->print_header("Rewriting config.php");
-	
+
 	$uid = 0;
 	if($mybb->input['username'] != '' && !$mybb->input['uid'])
 	{
@@ -341,7 +342,7 @@ function upgrade5_lastposts()
 {
 	global $db, $output;
 	$output->print_header("Rebuilding Last Post Columns");
-	
+
 	if(!$_POST['tpp'])
 	{
 		echo "<p>The next step in the upgrade process involves rebuilding the last post information for every thread in your forum. Below, please enter the number of threads to process per page.</p>";
