@@ -23,17 +23,19 @@ if($mybb->input['action'] == "header")
 {
 	$plugins->run_hooks("admin_index_header");
 	
-	echo "<html ".($lang->settings['rtl'] ? "dir=\"rtl\"" : "")."lang=\"".($lang->settings['htmllang'])."\">\n";
-	echo "<head>";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".$lang->settings['charset']."\">";
-	echo "<link rel=\"stylesheet\" href=\"$style\">";
-	echo "</head>";
-	echo "<body id=\"logo\">";
-	echo "<h1><span class=\"hidden\">MyBB Admin CP</span></h1>";
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+	echo "<html ".($lang->settings['rtl'] ? "dir=\"rtl\" " : "")."lang=\"".($lang->settings['htmllang'])."\">\n";
+	echo "<head>\n";
+	echo "<title>$lang->mybb_admin</title>\n";
+	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".$lang->settings['charset']."\" />\n";
+	echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"$style\" />\n";
+	echo "</head>\n";
+	echo "<body id=\"logo\">\n";
+	echo "<h1><span class=\"hidden\">MyBB Admin CP</span></h1>\n";
 	$lang->logout_cp = sprintf($lang->logout_cp, $user['username']);
-	echo "<div id=\"header-links\"><a href=\"index.php?".SID."&amp;action=home\" target=\"body\">".$lang->cp_home."</a><a href=\"../index.php\" target=\"body\">".$lang->view_forums."</a><a href=\"index.php?".SID."&amp;action=logout\" target=\"_parent\">".$lang->logout_cp."</a></div>";
-	echo "</body>";
-	echo "</html>";
+	echo "<div id=\"header-links\">\n<a href=\"index.php?".SID."&amp;action=home\" target=\"body\">".$lang->cp_home."</a>\n<a href=\"../index.php\" target=\"body\">".$lang->view_forums."</a>\n<a href=\"index.php?".SID."&amp;action=logout\" target=\"_parent\">".$lang->logout_cp."</a>\n</div>\n";
+	echo "</body>\n";
+	echo "</html>\n";
 }
 elseif($mybb->input['action'] == "home")
 {
@@ -103,7 +105,7 @@ elseif($mybb->input['action'] == "home")
 	// If last update check was greater than two weeks ago (14 days) show an alert
 	if($update_check['last_check'] <= time()-60*60*24*14)
 	{
-		$lang->last_update_check_three_weeks = sprintf($lang->last_update_check_three_weeks, "index.php?".SID."&action=vercheck");
+		$lang->last_update_check_three_weeks = sprintf($lang->last_update_check_three_weeks, "index.php?".SID."&amp;action=vercheck");
 		makewarning($lang->last_update_check_three_weeks);
 	}
 	
@@ -122,45 +124,56 @@ elseif($mybb->input['action'] == "home")
 	tablesubheader($lang->program_stats, "", 4);
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>".$lang->mybb_version."</b></td><td valign=\"top\" class=\"altbg2\">{$mybb->version}</td>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->php_version</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"index.php?".SID."&action=phpinfo\">$phpversion</a></td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->php_version</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"index.php?".SID."&amp;action=phpinfo\">$phpversion</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->db_version</b></td><td valign=\"top\" class=\"altbg2\">{$db->title} $dbversion</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->server_load</b></td><td valign=\"top\" class=\"altbg2\">$serverload</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_users</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?".SID."&action=find\">$users[numusers]</a></td>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->users_awaiting_activation</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?".SID."&action=find&search[usergroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$awaitingusers[awaitingusers]</a></td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_users</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?".SID."&amp;action=find\">$users[numusers]</a></td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->users_awaiting_activation</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"users.php?".SID."&amp;action=find&amp;search[usergroups][]=5&amp;searchop[sortby]=regdate&amp;searchop[order]=desc\">$awaitingusers[awaitingusers]</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->new_users_today</b></td><td valign=\"top\" class=\"altbg2\">$newusers[newusers]</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->active_users_today</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"../online.php?action=today\">$activeusers[activeusers]</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_threads</b></td><td valign=\"top\" class=\"altbg2\">$threads[numthreads] (<a href=\"moderate.php?".SID."&action=threads\" title=\"$lang->unapproved_threads\">$unapproved_threads[numthreads]</a>)</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_threads</b></td><td valign=\"top\" class=\"altbg2\">$threads[numthreads] (<a href=\"moderate.php?".SID."&amp;action=threads\" title=\"$lang->unapproved_threads\">$unapproved_threads[numthreads]</a>)</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->threads_today</b></td><td valign=\"top\" class=\"altbg2\">$newthreads[newthreads]</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_posts</b></td><td valign=\"top\" class=\"altbg2\">$posts[numposts] (<a href=\"moderate.php?".SID."&action=posts\" title=\"$lang->unapproved_posts\">$unapproved_posts[numposts]</a>)</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_posts</b></td><td valign=\"top\" class=\"altbg2\">$posts[numposts] (<a href=\"moderate.php?".SID."&amp;action=posts\" title=\"$lang->unapproved_posts\">$unapproved_posts[numposts]</a>)</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->posts_today</b></td><td valign=\"top\" class=\"altbg2\"><a href=\"../search.php?action=getdaily\">$newposts[newposts]</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_attachments</b></td><td valign=\"top\" class=\"altbg2\">$attachs[numattachs] (<a href=\"moderate.php?".SID."&action=attachments\" title=\"$lang->unapproved_attachs\">$unapproved_attachs[numattachs]</a>)</td>\n";
+	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->total_attachments</b></td><td valign=\"top\" class=\"altbg2\">$attachs[numattachs] (<a href=\"moderate.php?".SID."&amp;action=attachments\" title=\"$lang->unapproved_attachs\">$unapproved_attachs[numattachs]</a>)</td>\n";
 	echo "<td valign=\"top\" class=\"altbg1\"><b>$lang->attachment_space</b></td><td valign=\"top\" class=\"altbg2\">$attachs[spaceused]</td>\n";
 	echo "</tr>\n";
 	endtable();
 
+
+  ob_start();
+  endform();
+  $endform = ob_get_contents();
+  ob_end_clean();
+  ob_start();
+  startform("users.php", "", "find");
+  $startform1 = ob_get_contents();
+  ob_end_clean();
+  ob_start();
+  startform("forums.php", "", "add");
+  $startform2 = ob_get_contents();
+  ob_end_clean();
+  
+  
 	// Quick admin options
 	starttable();
 	tableheader($lang->quick_options);
 	tablesubheader($lang->quick_user_finder);
-	startform("users.php", "", "find");
-	makeinputcode($lang->find_user_account, "search[username]", "", "", "&nbsp;".makebuttoncode("find", $lang->find_button)."&nbsp;".makebuttoncode("listall", $lang->list_all_users));
-	endform();
+	makeinputcode($lang->find_user_account, "search[username]", "", "", "&nbsp;".makebuttoncode("find", $lang->find_button)."&nbsp;".makebuttoncode("listall", $lang->list_all_users).$endform, "", 1, $startform1);
 	tablesubheader($lang->quick_forum_add);
-	startform("forums.php", "", "add");
-	makeinputcode($lang->new_forum_name, "fname", "", "", "&nbsp;".makebuttoncode("add", $lang->add_button));
-	endform();
+	makeinputcode($lang->new_forum_name, "fname", "", "", "&nbsp;".makebuttoncode("add", $lang->add_button).$endform, "", 1, $startform2);
 	endtable();
 
 	// MyBB Credits
@@ -244,7 +257,7 @@ elseif($mybb->input['action'] == "vercheck")
 	makelabelcode($lang->latest_version, $latest_version);
 	if($version_warn)
 	{
-		makelabelcode("<div align=\"center\"><b><font color=red>$lang->newer_ver</font></b></div>", "", 2);
+		makelabelcode("<div align=\"center\"><b><span style=\"color: red;\">$lang->newer_ver</span></b></div>", "", 2);
 	}
 	endtable();
 	echo "<br />";
@@ -271,8 +284,8 @@ elseif($mybb->input['action'] == "vercheck")
 			{
 				$content = $item['description'];
 			}
-			tablesubheader("<a href=\"{$item['link']}\" target=\"_new\">{$item['title']}</a>{$stamp}");
-			$content .= "<div style=\"text-align: right;\"><a href=\"{$item['link']}\" target=\"_new\">{$lang->latest_ann_more}</a></div>";
+			tablesubheader("<a href=\"{$item['link']}\" target=\"_blank\">{$item['title']}</a>{$stamp}");
+			$content .= "<div style=\"text-align: right;\"><a href=\"{$item['link']}\" target=\"_blank\">{$lang->latest_ann_more}</a></div>";
 			makelabelcode($content);
 		}
 	}
@@ -289,10 +302,14 @@ elseif ($mybb->input['action'] == "navigation")
 
 	$plugins->run_hooks("admin_index_navigation");
 ?>
-<html>
-<head>
-<base target="body">
-<link rel="stylesheet" href="<?php echo $style; ?>">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php
+echo "<html ".($lang->settings['rtl'] ? "dir=\"rtl\" " : "")."lang=\"".($lang->settings['htmllang'])."\">\n";
+echo "<head>\n";
+echo "<title>$lang->mybb_admin</title>\n";
+?>
+<base target="body" />
+<link type="text/css" rel="stylesheet" href="<?php echo $style; ?>" />
 </head>
 <body class="lnav">
 <?php
@@ -300,17 +317,17 @@ elseif ($mybb->input['action'] == "navigation")
 $menu[10] = array(
 	"title" => "",
 	"items" => array(
-		10 => array("title" => $lang->cp_home, "url" => "index.php?".SID."&action=home"),
+		10 => array("title" => $lang->cp_home, "url" => "index.php?".SID."&amp;action=home"),
 		20 => array("title" => $lang->cp_prefs, "url" => "adminoptions.php?".SID),
-		30 => array("title" => $lang->vercheck, "url" => "index.php?".SID."&action=vercheck"),
+		30 => array("title" => $lang->vercheck, "url" => "index.php?".SID."&amp;action=vercheck"),
 	)
 );
 
 $menu[20] = array(
 	"title" => $lang->nav_settings,
 	"items" => array(
-		10 => array("title" => $lang->nav_change, "url" => "settings.php?".SID."&action=change"),
-		20 => array("title" => $lang->nav_add_setting, "url" => "settings.php?".SID."&action=add"),
+		10 => array("title" => $lang->nav_change, "url" => "settings.php?".SID."&amp;action=change"),
+		20 => array("title" => $lang->nav_add_setting, "url" => "settings.php?".SID."&amp;action=add"),
 		30 => array("title" => $lang->nav_plugin_manager, "url" => "plugins.php?".SID)
 	)
 );
@@ -318,9 +335,9 @@ $menu[20] = array(
 $menu[30] = array(
 	"title" => $lang->nav_forums,
 	"items" => array(
-		10 => array("title" => $lang->nav_add_forum, "url" => "forums.php?".SID."&action=add"),
-		20 => array("title" => $lang->nav_manage_forums, "url" => "forums.php?".SID."&action=modify"),
-		30 => array("title" => $lang->nav_forum_announcements, "url" => "announcements.php?".SID."&action=modify"),
+		10 => array("title" => $lang->nav_add_forum, "url" => "forums.php?".SID."&amp;action=add"),
+		20 => array("title" => $lang->nav_manage_forums, "url" => "forums.php?".SID."&amp;action=modify"),
+		30 => array("title" => $lang->nav_forum_announcements, "url" => "announcements.php?".SID."&amp;action=modify"),
 		40 => array("title" => $lang->nav_forum_permissions, "url" => "forumpermissions.php?".SID)
 	)
 );
@@ -328,66 +345,66 @@ $menu[30] = array(
 $menu[40] = array(
 	"title" => $lang->nav_moderation_queue,
 	"items" => array(
-		10 => array("title" => $lang->nav_threads_and_posts, "url" => "moderate.php?".SID."&action=threadsposts"),
-		20 => array("title" => $lang->nav_threads_only, "url" => "moderate.php?".SID."&action=threads"),
-		30 => array("title" => $lang->nav_posts_only, "url" => "moderate.php?".SID."&action=posts"),
-		40 => array("title" => $lang->nav_attachments, "url" => "moderate.php?".SID."&action=attachments")
+		10 => array("title" => $lang->nav_threads_and_posts, "url" => "moderate.php?".SID."&amp;action=threadsposts"),
+		20 => array("title" => $lang->nav_threads_only, "url" => "moderate.php?".SID."&amp;action=threads"),
+		30 => array("title" => $lang->nav_posts_only, "url" => "moderate.php?".SID."&amp;action=posts"),
+		40 => array("title" => $lang->nav_attachments, "url" => "moderate.php?".SID."&amp;action=attachments")
 	)
 );
 
 $menu[50] = array(
 	"title" => $lang->nav_attachments,
 	"items" => array(
-		10 => array("title" => $lang->nav_search_attachments, "url" => "attachments.php?".SID."&action=search"),
-		20 => array("title" => $lang->nav_search_orphan_attachments, "url" => "attachments.php?".SID."&action=orphans"),
-		30 => array("title" => $lang->nav_attach_stats, "url" => "attachments.php?".SID."&action=stats"),
-		40 => array("title" => $lang->nav_add_type, "url" => "attachments.php?".SID."&action=add"),
-		50 => array("title" => $lang->nav_manage_attachment_types, "url" => "attachments.php?".SID."&action=modify"),
+		10 => array("title" => $lang->nav_search_attachments, "url" => "attachments.php?".SID."&amp;action=search"),
+		20 => array("title" => $lang->nav_search_orphan_attachments, "url" => "attachments.php?".SID."&amp;action=orphans"),
+		30 => array("title" => $lang->nav_attach_stats, "url" => "attachments.php?".SID."&amp;action=stats"),
+		40 => array("title" => $lang->nav_add_type, "url" => "attachments.php?".SID."&amp;action=add"),
+		50 => array("title" => $lang->nav_manage_attachment_types, "url" => "attachments.php?".SID."&amp;action=modify"),
 	)
 );
 
 $menu[60] = array(
 	"title" => $lang->nav_users_groups,
 	"items" => array(
-		10 => array("title" => $lang->nav_add_user, "url" => "users.php?".SID."&action=add"),
-		20 => array("title" => $lang->nav_search_users, "url" => "users.php?".SID."&action=search"),
-		30 => array("title" => $lang->nav_manage_groups, "url" => "usergroups.php?".SID."&action=modify"),
-		40 => array("title" => $lang->nav_usertitles, "url" => "usertitles.php?".SID."&action=modify"),
-		50 => array("title" => $lang->nav_merge_users, "url" => "users.php?".SID."&action=merge"),
-		60 => array("title" => $lang->nav_custom_fields, "url" => "profilefields.php?".SID."&action=modify"),
-		70 => array("title" => $lang->nav_mass_email, "url" => "users.php?".SID."&action=email"),
-		80 => array("title" => $lang->nav_banning, "url" => "users.php?".SID."&action=banned"),
-		90 => array("title" => $lang->nav_adminperms, "url" => "adminoptions.php?".SID."&action=adminpermissions")
+		10 => array("title" => $lang->nav_add_user, "url" => "users.php?".SID."&amp;action=add"),
+		20 => array("title" => $lang->nav_search_users, "url" => "users.php?".SID."&amp;action=search"),
+		30 => array("title" => $lang->nav_manage_groups, "url" => "usergroups.php?".SID."&amp;action=modify"),
+		40 => array("title" => $lang->nav_usertitles, "url" => "usertitles.php?".SID."&amp;action=modify"),
+		50 => array("title" => $lang->nav_merge_users, "url" => "users.php?".SID."&amp;action=merge"),
+		60 => array("title" => $lang->nav_custom_fields, "url" => "profilefields.php?".SID."&amp;action=modify"),
+		70 => array("title" => $lang->nav_mass_email, "url" => "users.php?".SID."&amp;action=email"),
+		80 => array("title" => $lang->nav_banning, "url" => "users.php?".SID."&amp;action=banned"),
+		90 => array("title" => $lang->nav_adminperms, "url" => "adminoptions.php?".SID."&amp;action=adminpermissions")
 	)
 );
 
 $menu[70] = array(
 	"title" => $lang->nav_message_filters,
 	"items" => array(
-		10 => array("title" => $lang->nav_smilie_manager, "url" => "smilies.php?".SID."&action=modify"),
-		20 => array("title" => $lang->nav_manage_badwords, "url" => "badwords.php?".SID."&action=modify"),
-		30 => array("title" => $lang->nav_custom_mycode, "url" => "mycode.php?".SID."&action=modify")
+		10 => array("title" => $lang->nav_smilie_manager, "url" => "smilies.php?".SID."&amp;action=modify"),
+		20 => array("title" => $lang->nav_manage_badwords, "url" => "badwords.php?".SID."&amp;action=modify"),
+		30 => array("title" => $lang->nav_custom_mycode, "url" => "mycode.php?".SID."&amp;action=modify")
 	)
 );
 
 $menu[80] = array(
 	"title" => $lang->nav_themes,
 	"items" => array(
-		10 => array("title" => $lang->nav_add, "url" => "themes.php?".SID."&action=add"),
-		20 => array("title" => $lang->nav_modify_delete, "url" => "themes.php?".SID."&action=modify"),
-		30 => array("title" => $lang->nav_import, "url" => "themes.php?".SID."&action=import"),
-		40 => array("title" => $lang->nav_download, "url" => "themes.php?".SID."&action=download")
+		10 => array("title" => $lang->nav_add, "url" => "themes.php?".SID."&amp;action=add"),
+		20 => array("title" => $lang->nav_modify_delete, "url" => "themes.php?".SID."&amp;action=modify"),
+		30 => array("title" => $lang->nav_import, "url" => "themes.php?".SID."&amp;action=import"),
+		40 => array("title" => $lang->nav_download, "url" => "themes.php?".SID."&amp;action=download")
 	)
 );
 
 $menu[90] = array(
 	"title" => $lang->nav_templates,
 	"items" => array(
-		10 => array("title" => $lang->nav_add, "url" => "templates.php?".SID."&action=add"),
-		20 => array("title" => $lang->nav_modify_delete, "url" => "templates.php?".SID."&action=modify"),
-		30 => array("title" => $lang->nav_search, "url" => "templates.php?".SID."&action=search"),
-		40 => array("title" => $lang->nav_addset, "url" => "templates.php?".SID."&action=addset"),
-		50 => array("title" => $lang->nav_find_updated, "url" => "templates.php?".SID."&action=findupdated")
+		10 => array("title" => $lang->nav_add, "url" => "templates.php?".SID."&amp;action=add"),
+		20 => array("title" => $lang->nav_modify_delete, "url" => "templates.php?".SID."&amp;action=modify"),
+		30 => array("title" => $lang->nav_search, "url" => "templates.php?".SID."&amp;action=search"),
+		40 => array("title" => $lang->nav_addset, "url" => "templates.php?".SID."&amp;action=addset"),
+		50 => array("title" => $lang->nav_find_updated, "url" => "templates.php?".SID."&amp;action=findupdated")
 	)
 );
 
@@ -401,8 +418,8 @@ $menu[100] = array(
 $menu[110] = array(
 	"title" => $lang->nav_mod_toolbox,
 	"items" => array(
-		10 => array("title" => $lang->nav_add_post_mod_tool, "url" => "moderation.php?".SID."&action=addposttool"),
-		20 => array("title" => $lang->nav_add_thread_mod_tool, "url" => "moderation.php?".SID."&action=addthreadtool"),
+		10 => array("title" => $lang->nav_add_post_mod_tool, "url" => "moderation.php?".SID."&amp;action=addposttool"),
+		20 => array("title" => $lang->nav_add_thread_mod_tool, "url" => "moderation.php?".SID."&amp;action=addthreadtool"),
 		30 => array("title" => $lang->nav_modify_delete, "url" => "moderation.php?".SID),
 	)
 );
@@ -410,8 +427,8 @@ $menu[110] = array(
 $menu[120] = array(
 	"title" => $lang->nav_posticons,
 	"items" => array(
-		10 => array("title" => $lang->nav_add, "url" => "icons.php?".SID."&action=add"),
-		20 => array("title" => $lang->nav_modify_delete, "url" => "icons.php?".SID."&action=modify")
+		10 => array("title" => $lang->nav_add, "url" => "icons.php?".SID."&amp;action=add"),
+		20 => array("title" => $lang->nav_modify_delete, "url" => "icons.php?".SID."&amp;action=modify")
 	)
 );
 
@@ -426,26 +443,26 @@ $menu[130] = array(
 $menu[140] = array(
 	"title" => $lang->nav_helpdocs,
 	"items" => array(
-		10 => array("title" => $lang->nav_add, "url" => "helpdocs.php?".SID."&action=add"),
-		20 => array("title" => $lang->nav_modify_delete, "url" => "helpdocs.php?".SID."&action=modify")
+		10 => array("title" => $lang->nav_add, "url" => "helpdocs.php?".SID."&amp;action=add"),
+		20 => array("title" => $lang->nav_modify_delete, "url" => "helpdocs.php?".SID."&amp;action=modify")
 	)
 );
 
 $menu[150] = array(
 	"title" => $lang->nav_maintenance,
 	"items" => array(
-		10 => array("title" => $lang->nav_cache_manager, "url" => "maintenance.php?".SID."&action=cache"),
-		20 => array("title" => $lang->nav_recount_rebuild, "url" => "maintenance.php?".SID."&action=rebuild"),
-		30 => array("title" => $lang->nav_view_phpinfo, "url" => "index.php?".SID."&action=phpinfo")
+		10 => array("title" => $lang->nav_cache_manager, "url" => "maintenance.php?".SID."&amp;action=cache"),
+		20 => array("title" => $lang->nav_recount_rebuild, "url" => "maintenance.php?".SID."&amp;action=rebuild"),
+		30 => array("title" => $lang->nav_view_phpinfo, "url" => "index.php?".SID."&amp;action=phpinfo")
 	)
 );
 
 $menu[160] = array(
 	"title" => $lang->nav_db_tools,
 	"items" => array(
-		10 => array("title" => $lang->nav_db_backup, "url" => "dbtools.php?".SID."&action=backup"),
-		20 => array("title" => $lang->nav_db_existing_backups, "url" => "dbtools.php?".SID."&action=existing"),
-		30 => array("title" => $lang->nav_db_optimize, "url" => "dbtools.php?".SID."&action=optimize"),
+		10 => array("title" => $lang->nav_db_backup, "url" => "dbtools.php?".SID."&amp;action=backup"),
+		20 => array("title" => $lang->nav_db_existing_backups, "url" => "dbtools.php?".SID."&amp;action=existing"),
+		30 => array("title" => $lang->nav_db_optimize, "url" => "dbtools.php?".SID."&amp;action=optimize"),
 
 	)
 );
@@ -484,31 +501,32 @@ else
 		}
 		else
 		{
-			$goto .= "&".SID;
+			$goto .= "&amp;".SID;
 		}
 		$goto = htmlspecialchars_uni($goto);
 	}
 	else
 	{
 		$goto = 'index.php?'.SID.'&amp;action=home';
-	}	
-	echo "<html>\n";
+	}
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+	echo "<html ".($lang->settings['rtl'] ? "dir=\"rtl\" " : "")."lang=\"".($lang->settings['htmllang'])."\">\n";
 	echo "<head>\n";
 	echo "<title>$lang->mybb_admin</title>\n";
 	echo "</head>\n";
 	echo "<frameset rows=\"78, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-	echo "<frame name=\"header\" noresize scrolling=\"no\" src=\"index.php?".SID."&amp;action=header\">\n";
+	echo "<frame name=\"header\" noresize scrolling=\"no\" src=\"index.php?".SID."&amp;action=header\" />\n";
 	if($lang->settings['rtl'])
 	{
 		echo "<frameset cols=\"*,200\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\">\n";
-		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&amp;action=navigation\">\n";
+		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\" />\n";
+		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&amp;action=navigation\" />\n";
 	}
 	else
 	{
 		echo "<frameset cols=\"200, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&amp;action=navigation\">\n";
-		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\">\n";
+		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&amp;action=navigation\" />\n";
+		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\" />\n";
 	}
 	echo "</frameset>\n";
 	echo "</frameset>\n";

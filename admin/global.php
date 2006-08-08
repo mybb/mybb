@@ -205,7 +205,7 @@ else
 
 	if(!empty($mybb->input['goto']))
 	{
-		$goto = htmlspecialchars_uni($_GET['goto']);
+		$goto = htmlspecialchars_uni($mybb->input['goto']);
 	}
 	elseif(strpos($_SERVER['PHP_SELF'], 'index.php') === false)
 	{
@@ -262,7 +262,7 @@ else
 	exit;
 }
 $navbits[0]['name'] = $mybb->settings['bbname']." ".$lang->control_panel;
-$navbits[0]['url'] = "index.php?".SID."&action=home";
+$navbits[0]['url'] = "index.php?".SID."&amp;action=home";
 
 if($rand == 2 || $rand == 5)
 {

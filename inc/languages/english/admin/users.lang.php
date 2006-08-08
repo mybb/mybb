@@ -133,7 +133,7 @@ $l['messages'] = "messages";
 $l['per_page'] = "Messages to send at once";
 $l['from'] = "From";
 $l['subject'] = "Subject";
-$l['message'] = "Message<br /><small>You may use {uid}, {username}, {email}, {bbname}, {bburl} in your message.";
+$l['message'] = "Message<br /><small>You may use {uid}, {username}, {email}, {bbname}, {bburl} in your message.</small>";
 $l['email_users'] = "Email Users Where...";
 $l['name_contains'] = "Username contains";
 $l['group_is'] = "User group is";
@@ -242,6 +242,7 @@ $l['html_email'] = "HTML Email";
 $l['send_pm'] = "Private Message";
 $l['send_method'] = "Delivery Method";
 $l['override_notice'] = "Override \"Allow Notices\" Preference";
+$l['next_page'] = "Next Page";
 
 $l['ip_addresses_user'] = "IP addresses for {1}";
 $l['post_ip'] = "Post IPs";

@@ -168,7 +168,7 @@ if($mybb->input['action'] == "export")
 		$settinglist[$setting['gid']][] = $setting;
 	}
 	$plugins->run_hooks("admin_settings_export");
-	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\n";
 	$xml = "<settings version=\"".$mybb->version_code."\" exported=\"".time()."\">\n";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups $gidwhere ORDER BY name ASC");
 	while($settinggroup = $db->fetch_array($query))
@@ -388,16 +388,16 @@ if($mybb->input['action'] == "modify")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
 	while($group = $db->fetch_array($query))
 	{
-		$settinglist .= "<li><strong>$group[title]</strong> ($lang->disp_order_list <input type=\"text\" name=\"dispordercats[$group[gid]]\" size=\"4\" value=\"$group[disporder]\"> ".
-			makelinkcode($lang->edit, "settings.php?".SID."&action=edit&gid=$group[gid]").
-			makelinkcode($lang->delete, "settings.php?".SID."&action=delete&gid=$group[gid]").
+		$settinglist .= "<li><strong>$group[title]</strong> ($lang->disp_order_list <input type=\"text\" name=\"dispordercats[$group[gid]]\" size=\"4\" value=\"$group[disporder]\" /> ".
+			makelinkcode($lang->edit, "settings.php?".SID."&amp;action=edit&amp;gid=$group[gid]").
+			makelinkcode($lang->delete, "settings.php?".SID."&amp;action=delete&amp;gid=$group[gid]").
 			"</li>\n<ul>\n";
 		$query2 = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE gid='$group[gid]' ORDER BY disporder");
 		while($setting = $db->fetch_array($query2))
 		{
-			$settinglist .= "<li>$setting[title] ($lang->disp_order <input type=\"text\" name=\"disporder[$setting[sid]]\" size=\"4\" value=\"$setting[disporder]\">)".
-				makelinkcode($lang->edit, "settings.php?".SID."&action=edit&sid=$setting[sid]").
-				makelinkcode($lang->delete, "settings.php?".SID."&action=delete&sid=$setting[sid]").
+			$settinglist .= "<li>$setting[title] ($lang->disp_order <input type=\"text\" name=\"disporder[$setting[sid]]\" size=\"4\" value=\"$setting[disporder]\" />)".
+				makelinkcode($lang->edit, "settings.php?".SID."&amp;action=edit&amp;sid=$setting[sid]").
+				makelinkcode($lang->delete, "settings.php?".SID."&amp;action=delete&amp;sid=$setting[sid]").
 				"</li>\n";
 		}
 		$settinglist .= "</ul>\n";
@@ -462,7 +462,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				if($type[0] == "text" || $type[0] == "")
 				{
 					$setting['value'] = htmlentities($setting['value']);
-					$settingcode = "<input type=\"text\" name=\"upsetting[$setting[sid]]\" value=\"$setting[value]\" size=\"25\">";
+					$settingcode = "<input type=\"text\" name=\"upsetting[$setting[sid]]\" value=\"$setting[value]\" size=\"25\" />";
 				}
 				else if($type[0] == "textarea")
 				{
@@ -481,7 +481,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 						$nochecked = "checked";
 						$yeschecked = "";
 					}
-					$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"yes\" $yeschecked> $lang->yes <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"no\" $nochecked> $lang->no";
+					$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"yes\" $yeschecked /> $lang->yes <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"no\" $nochecked /> $lang->no";
 				}
 				else if($type[0] == "onoff")
 				{
@@ -495,7 +495,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 						$offchecked = "checked";
 						$onchecked = "";
 					}
-					$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"on\" $onchecked> $lang->on <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"off\" $offchecked> $lang->off";
+					$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"on\" $onchecked /> $lang->on <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"off\" $offchecked /> $lang->off";
 				}
 				elseif($type[0] == "cpstyle")
 				{
@@ -598,7 +598,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 							{
 								$sel = "";
 							}
-							$options .= "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel>&nbsp;{$lang_string}<br />";
+							$options .= "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel />&nbsp;{$lang_string}<br />";
 						}
 						else if($type[0] == "checkbox")
 						{
@@ -610,7 +610,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 							{
 								$sel = "";
 							}
-							$options .= "<input type=\"checkbox\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel>&nbsp;{$lang_string}<br />";
+							$options .= "<input type=\"checkbox\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel />&nbsp;{$lang_string}<br />";
 						}
 					}
 					if($type[0] == "select")
@@ -643,9 +643,9 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 	}
 	else
 	{ // Generate a listing of all of the setting groups
-		$hopto[] = "<input type=\"button\" value=\"$lang->add_new_setting\" onclick=\"hopto('settings.php?".SID."&action=add');\" class=\"hoptobutton\">";
-		$hopto[] = "<input type=\"button\" value=\"$lang->manage_settings\" onclick=\"hopto('settings.php?".SID."&action=modify');\" class=\"hoptobutton\">";
-		$hopto[] = "<input type=\"button\" value=\"$lang->show_all_settings\" onclick=\"hopto('settings.php?".SID."&action=change&gid=-1');\" class=\"hoptobutton\">";
+		$hopto[] = "<input type=\"button\" value=\"$lang->add_new_setting\" onclick=\"hopto('settings.php?".SID."&amp;action=add');\" class=\"hoptobutton\" />";
+		$hopto[] = "<input type=\"button\" value=\"$lang->manage_settings\" onclick=\"hopto('settings.php?".SID."&amp;action=modify');\" class=\"hoptobutton\" />";
+		$hopto[] = "<input type=\"button\" value=\"$lang->show_all_settings\" onclick=\"hopto('settings.php?".SID."&amp;action=change&amp;gid=-1');\" class=\"hoptobutton\" />";
 		makehoptolinks($hopto);
 		starttable();
 		tableheader($lang->board_settings, "", "2");
@@ -676,11 +676,14 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				$group['description'] = $lang->$desc_lang;
 			}
 			
+			if($group['description'])
+			{
+        $group['description'] = "<small>\n".$group['description']."\n</small>\n";
+      }
+			
 			$bgcolor = getaltbg();
-			startform("settings.php");
-			makehiddencode("gid", $group['gid']);
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\" width=\"88%\"><strong><a href=\"settings.php?".SID."&action=change&gid=".$group['gid']."\">".$group['title']."</a></strong> (".$settings_count.")<br /><small>".$group['description']."</small>";
+			echo "<td class=\"$bgcolor\" width=\"88%\">\n<strong>\n<a href=\"settings.php?".SID."&amp;action=change&amp;gid=".$group['gid']."\">".$group['title']."</a>\n</strong>\n (".$settings_count.")\n<br />\n".$group['description'];
 			if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" || $group['isdefault'] != "yes")
 			{
 				$options['change'] = $lang->modify_settings;
@@ -692,10 +695,14 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 			{
 				$options['change'] = $lang->modify_settings;
 			}
-			echo "<td class=\"$bgcolor\" align=\"right\" nowrap=\"nowrap\">".makehopper("action", $options)."</td>\n";
+			echo "<td class=\"$bgcolor\" align=\"right\" nowrap=\"nowrap\">\n";
+      startform("settings.php");
+      makehiddencode("gid", $group['gid']);
+      echo makehopper("action", $options);
+      endform();
+      echo "</td>\n";
 			unset($options);
 			echo "</tr>\n";
-			endform();
 		}
 		endtable();
 	}

@@ -123,9 +123,13 @@ function startform($script, $name="", $action="", $autocomplete=1)
 	$acomplete = "";
 	if($autocomplete == 0)
 	{
-		$acomplete = "autocomplete=\"off\"";
+		$acomplete = " autocomplete=\"off\"";
 	}
-	echo "<form action=\"$script\" method=\"post\" name=\"$name\" enctype=\"multipart/form-data\" $acomplete>\n";
+	if($name != '')
+	{
+    $name = " name=\"$name\"";
+  }
+	echo "<form action=\"$script\" method=\"post\"$name enctype=\"multipart/form-data\"$acomplete>\n";
 	makehiddencode("adminsid", $admin_session['sid']);
 	if($action != "")
 	{
@@ -141,7 +145,16 @@ function starttable($width="100%", $border=1, $padding=6)
 function tableheader($title, $anchor="", $colspan=2)
 {
 	global $bgcolor;
-	echo "<tr>\n<td class=\"header\" align=\"center\" colspan=\"$colspan\"><a name=\"$anchor\">$title</a></td>\n</tr>\n";
+	
+	if($anchor)
+	{
+    $anchor = "<a name=\"$anchor\">$title</a>";
+  }
+  else
+  {
+    $anchor = $title;
+  }
+	echo "<tr>\n<td class=\"header\" align=\"center\" colspan=\"$colspan\">$anchor</td>\n</tr>\n";
 	$bgcolor = "altbg2";
 }
 function tablesubheader($titles, $anchor="", $colspan=2, $align="center")
@@ -193,21 +206,37 @@ function makelinkcode($text, $url, $newwin=0, $class="")
 	{
 		$target = "target=\"_blank\"";
 	}
-	return " <a href=\"$url\" $target><span class=\"$class\">[$text]</span></a>";
+	if($class)
+	{
+    $class = "<span class=\"$class\">[$text]</span>";
+  }
+  else
+  {
+    $class = "[$text]";
+  }
+	return " <a href=\"$url\" $target>$class</a>";
 }
-function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxlength="", $autocomplete=1)
+function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxlength="", $autocomplete=1, $extra2="")
 {
 	$bgcolor = getaltbg();
 	$value = htmlspecialchars_uni($value);
 	if($autocomplete != 1)
 	{
-		$ac = "autocomplete=\"off\"";
+		$ac = " autocomplete=\"off\"";
 	}
 	if($value != '')
 	{
-		$value = "value=\"{$value}\"";
+		$value = " value=\"{$value}\"";
 	}
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"text\" class=\"inputbox\" name=\"$name\" size=\"$size\" maxlength=\"$maxlength\" $ac $value />$extra</td>\n</tr>\n";
+	if($maxlength != '')
+	{
+    $maxlength = " maxlength=\"$maxlength\"";
+  }
+  if($size != '')
+  {
+    $size = " size=\"$size\"";
+  }
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\">\n$extra2<input type=\"text\" class=\"inputbox\" name=\"$name\"$size$maxlength$ac$value />\n$extra\n</td>\n</tr>\n";
 }
 function makeuploadcode($title, $name, $size="25", $extra="")
 {
@@ -234,10 +263,10 @@ function maketextareacode($title, $name, $value="", $rows="4", $columns="40")
 	$value = htmlspecialchars_uni($value);
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><textarea name=\"$name\" rows=\"$rows\" cols=\"$columns\">$value</textarea></td>\n</tr>\n";
 }
-function makehiddencode($name, $value="")
+function makehiddencode($name, $value="", $nameid="name")
 {
 	$value = htmlspecialchars_uni($value);
-	echo "<input type=\"hidden\" name=\"$name\" value=\"$value\" />\n";
+	echo "<input type=\"hidden\" $nameid=\"$name\" value=\"$value\" />\n";
 }
 function makeyesnocode($title, $name, $value="yes")
 {
@@ -388,9 +417,13 @@ function makedateselect($title, $name, $day, $month, $year)
 
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\">$dateselect</tr>\n";
 }
-function makebuttoncode($name, $value, $type="submit")
+function makebuttoncode($name, $value, $type="submit", $onclick="", $nameid="name")
 {
-	return "<input type=\"$type\" class=\"submitbutton\" name=\"$name\" value=\"  $value  \" />&nbsp;&nbsp;\n";
+  if($onclick != '')
+  {
+    $onclick = " onclick=\"$onclick\"";
+  }
+	return "<input type=\"$type\" class=\"submitbutton\" $nameid=\"$name\" value=\"  $value  \"$onclick />&nbsp;&nbsp;\n";
 }
 
 function makecssedit($css, $selector, $name, $description="", $showfonts=1, $showbackground=1, $showlinks=1, $showwidth=0)
@@ -709,14 +742,14 @@ function makecssinputedit($css)
 function endtable()
 {
 	echo "</table>\n";
-	echo "</td></tr></table>\n";
+	echo "</td>\n</tr>\n</table>\n";
 	echo "<br />\n";
 }
 function endform($submit="", $reset="")
 {
 	if($submit || $reset)
 	{
-		echo "<div align=\"center\"><div class=\"formbuttons\">\n";
+		echo "<div align=\"center\">\n<div class=\"formbuttons\">\n";
 	}
 	if($submit)
 	{
@@ -728,14 +761,14 @@ function endform($submit="", $reset="")
 	}
 	if($submit || $reset)
 	{
-		echo "</div></div>";
+		echo "</div>\n</div>";
 	}
 	echo "</form>\n";
 }
 
 function makewarning($text)
 {
-	echo "<p class=\"warning\">".$text."</p>\n";
+	echo "<p class=\"warning\">\n".$text."\n</p>\n";
 }
 
 function cperror($message="")
@@ -751,12 +784,12 @@ function cperror($message="")
 	// Are there multiple errors or is there just one?
 	if(is_array($message))
 	{
-		$error = '<ul>';
+		$error = "<ul>\n";
 		foreach($message as $item)
 		{
-			$error .= "<li>{$item}</li>";
+			$error .= "\t<li>{$item}</li>\n";
 		}
-		$error .= '</ul>';
+		$error .= "</ul>\n";
 	}
 	else
 	{
@@ -818,7 +851,7 @@ function cpredirect($url, $message="")
 function cpfooter($showversion=1)
 {
 	global $mybb, $db, $maintimer, $lang;
-	echo "<div align=\"center\"><br /><br />\n";
+	echo "<div align=\"center\">\n<br />\n<br />\n";
 	$totaltime = $maintimer->stop();
 	$lang->footer_stats = sprintf($lang->footer_stats, $totaltime, $db->query_count);
 	if(!$showversion)
@@ -829,7 +862,7 @@ function cpfooter($showversion=1)
 	{
 		$mybbversion = $mybb->version;
 	}
-	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">".$lang->footer_powered_by." <b><a href=\"http://www.mybboard.com\" target=\"_blank\">MyBB</a> $mybbversion</b><br />".$lang->footer_copyright." &copy; 2002-".mydate("Y")." <a href=\"http://www.mybboard.com\">MyBB Group</a><br />".$lang->footer_stats."</font></div>\n";
+	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">\n".$lang->footer_powered_by."\n<b>\n<a href=\"http://www.mybboard.com\" target=\"_blank\">MyBB</a> $mybbversion\n</b>\n<br />\n".$lang->footer_copyright." &copy; 2002-".mydate("Y")." <a href=\"http://www.mybboard.com\">MyBB Group</a>\n<br />\n".$lang->footer_stats."\n</font>\n</div>\n";
 	echo "</body>\n";
 	echo "</html>";
 }
@@ -850,30 +883,30 @@ function getaltbg()
 function startnav()
 {
 	echo "<table cellpadding=\"1\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"100%\" class=\"lnavbordercolor\">\n";
-	echo "<tr><td>\n";
-	echo "<table cellpadding=\"6\" cellspacing=\"0\" border=\"0\" width=\"100%\">";
+	echo "<tr>\n<td>\n";
+	echo "<table cellpadding=\"6\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n";
 }
 function makenavoption($name, $url)
 {
 	global $navoptions;
-	$navoptions .= "<li><a href=\"$url\">$name</a></li>\n";
+	$navoptions .= "<li>\n\t<a href=\"$url\">$name</a>\n</li>\n";
 }
 function makenavselect($name)
 {
 	global $navoptions, $navselects;
 	echo "<table cellpadding=\"1\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"100%\" class=\"lnavbordercolor\">\n";
-	echo "<tr><td>\n";
-	echo "<table cellpadding=\"6\" cellspacing=\"0\" border=\"0\" width=\"100%\">";
+	echo "<tr>\n<td>\n";
+	echo "<table cellpadding=\"6\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n";
 	if($name)
 	{
 		echo "<tr>\n<td class=\"lnavhead\" align=\"center\">$name</td>\n</tr>\n";
 	}
-	echo "<tr>\n<td class=\"lnavitem\" valign=\"top\">";
+	echo "<tr>\n<td class=\"lnavitem\" valign=\"top\">\n";
 	echo "<ul>\n";
 	echo $navoptions;
-	echo "</ul>\n</td></tr>\n";
+	echo "</ul>\n</td>\n";
 	echo "</table>\n";
-	echo "</td></tr></table>\n";
+	echo "</td>\n</tr>\n</table>\n";
 	echo "<br />\n";
 
 	$navoptions = "";
@@ -883,7 +916,7 @@ function makenavselect($name)
 function endnav()
 {
 	echo "</table>\n";
-	echo "</td></tr></table>\n";
+	echo "</td>\n</tr>\n</table>\n";
 	echo "<br />\n";
 }
 function makenavgroup($name="")
@@ -905,7 +938,7 @@ function makenavgroup($name="")
 	$navoptions = "";
 }
 
-function makehopper($name, $values)
+function makehopper($name, $values, $onchange="")
 {
 	if(!is_array($values))
 	{
@@ -915,7 +948,13 @@ function makehopper($name, $values)
 	{
 		$options .= "<option value=\"$action\">$title</option>\n";
 	}
-	return "<select name=\"$name\"  onchange=\"this.form.submit();\">$options</select>&nbsp;<input type=\"submit\" value=\"Go\">\n";
+	$buttononchange = "";
+	if($onchange)
+	{
+	  $buttononchange = " onclick=\"{$onchange} this.form.submit(); return false;\"";
+    $onchange .= " ";
+  }
+	return "<select name=\"$name\" onchange=\"{$onchange}this.form.submit();\">\n$options</select>\n&nbsp;\n<input type=\"submit\" value=\"Go\"$buttononchange />\n";
 }
 
 /**
@@ -1039,7 +1078,7 @@ function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra=""
 			{
 				$selected1 = ' checked="checked"';
 			}
-			$forumchecklist .= "<input type=\"checkbox\" name=\"{$name}[]\" value=\"-1\"$selected1 /> $extra <br /><br />";
+			$forumchecklist .= "<input type=\"checkbox\" name=\"{$name}[]\" value=\"-1\"$selected1 /> $extra <br /><br />\n";
 		}
 		$fid = 0;
 	}
@@ -1051,7 +1090,7 @@ function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra=""
 		{
 			$forumchecklist .= ' checked="checked"';
 		}
-		$forumchecklist .= " /> $startforum[name]<br />";
+		$forumchecklist .= " /> $startforum[name]<br />\n";
 		$depth .= "&nbsp;&nbsp;&nbsp;&nbsp;";
 	}
 
@@ -1195,15 +1234,23 @@ function buildacpnav()
 		{
 			if($navbits[$key+1])
 			{
-				if($navbits[$key+2]) { $sep = $navsep; } else { $sep = ""; }
+				if($navbits[$key+2]) 
+        { 
+          $sep = $navsep; 
+        } 
+        else 
+        { 
+          $sep = ""; 
+        }
 				$nav .= "<a href=\"$navbit[url]\">$navbit[name]</a>$sep";
 			}
 		}
 	}
 	$navsize = count($navbits);
 	$navbit = $navbits[$navsize-1];
-	if($nav) {
-		$activesep = "<br /><img src=\"../images//nav_bit.gif\" alt=\"---\" border=\"0\" />";
+	if($nav) 
+  {
+		$activesep = "<br /><img src=\"../images/nav_bit.gif\" alt=\"---\" border=\"0\" />";
 	}
 	$activebit = "<span class=\"active\">$navbit[name]</span>";
 	$donenav = "<div  align=\"center\"><div class=\"navigation\">\n$nav$activesep$activebit\n</div></div><br />";
@@ -1313,11 +1360,11 @@ function getElemRefs(id) {
 	starttable();
 	if($fid)
 	{
-		tableheader("Quick Forum Permissions for $forum[name]", "", "7");
+		tableheader(sprintf($lang->quickperms_forum, $forum['name']), "", "7");
 	}
 	else
 	{
-		tableheader("Quick Forum Permissions", "", "7");
+		tableheader($lang->quickperms, "", "7");
 	}
 	echo "<tr>\n";
 	echo "<td class=\"subheader\">".$lang->quickperms_group."</td>\n";
@@ -2077,7 +2124,7 @@ function rebuildsettings()
 		$settings .= "\$settings['".$setting['name']."'] = \"".$setting['value']."\";\n";
 		$mybb->settings[$setting['name']] = $setting['value'];
 	}
-	$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n?>";
+	$settings = "<"."?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n?".">";
 	$file = fopen(MYBB_ROOT."inc/settings.php", "w");
 	fwrite($file, $settings);
 	fclose($file);
@@ -2347,17 +2394,17 @@ function makeparentlist($fid, $navsep=",")
 	reset($pforumcache[$fid]);
 	foreach($pforumcache[$fid] as $key => $forum)
 	{
-		if($fid == $forum[fid])
+		if($fid == $forum['fid'])
 		{
-			if($pforumcache[$forum[pid]])
+			if($pforumcache[$forum['pid']])
 			{
-				$navigation = makeparentlist($forum[pid], $navsep) . $navigation;
+				$navigation = makeparentlist($forum['pid'], $navsep) . $navigation;
 			}
 			if($navigation)
 			{
 				$navigation .= $navsep;
 			}
-			$navigation .= "$forum[fid]";
+			$navigation .= $forum['fid'];
 		}
 	}
 	return $navigation;

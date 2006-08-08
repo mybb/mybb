@@ -162,7 +162,7 @@ if($mybb->input['action'] == "do_download")
 			}
 		}
 	}
-	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n";
+	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\r\n";
 	$xml .= "<theme name=\"".$theme['name']."\" version=\"".$mybb->version_code."\">\r\n";
 	function xml_css_bits($css, $depth)
 	{

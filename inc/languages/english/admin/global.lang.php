@@ -91,6 +91,8 @@ $l['quickperms_inheritdefault'] = "Inherit / Default";
 $l['quickperms_group'] = "User Group";
 $l['quickperms_upload'] = "Can Upload";
 $l['quickperms_all'] = "All";
+$l['quickperms_forum'] = "Quick Forum Permissions for {1}";
+$l['quickperms'] = "Quick Forum Permissions";
 
 $l['never'] = "Never";
 

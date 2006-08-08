@@ -185,7 +185,8 @@ function make_profile_field_input($required=0, $uid=0)
 				$code = "<select name=\"profile_fields[".$field."][]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
 			}
 		}
-		elseif($type == "select") {
+		elseif($type == "select") 
+    {
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
 			{
@@ -264,6 +265,7 @@ function make_profile_field_input($required=0, $uid=0)
 			$code = "<input type=\"text\" name=\"profile_fields[$field]\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
 		}
 		makelabelcode($profilefield[name], $code);
+		
 		$code = '';
 		$select = '';
 		$val = '';
@@ -611,7 +613,7 @@ if($mybb->input['action'] == "do_email")
 	}
 	if(!$searchop['page'])
 	{
-		$searchop['page'] = "0";
+		$searchop['page'] = "1";
 		$searchop['start'] = "0";
 	}
 	else
@@ -622,8 +624,9 @@ if($mybb->input['action'] == "do_email")
 	
 	$plugins->run_hooks("admin_users_do_email");
 
-	$query = $db->query("SELECT COUNT(*) AS results FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT $searchop[start], $searchop[perpage]");
+	$query = $db->query("SELECT COUNT(*) AS results FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid");
 	$num = $db->fetch_array($query);
+	$num['results'] -= $searchop['start'];
 	if(!$num['results'])
 	{
 		cpmessage($lang->error_no_users);
@@ -637,10 +640,9 @@ if($mybb->input['action'] == "do_email")
 		tablesubheader($lang->results_matching);
 		$bgcolor = getaltbg();
 		echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\">\n";
-//		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT $searchop[start], $searchop[perpage]");
 		@set_time_limit(0);
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid");
-		while($user = $db->fetch_array($query))
+		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT ".intval($searchop['start']).", ".intval($searchop['perpage']));
+    while($user = $db->fetch_array($query))
 		{
 			$sendmessage = $searchop['message'];
 			$sendmessage = str_replace("{uid}", $user['uid'], $sendmessage);
@@ -665,13 +667,13 @@ if($mybb->input['action'] == "do_email")
 					'dateline' => time(),
 					'status' => 0,
 					'receipt' => 'no'
-					);
+				);
 				$db->insert_query(TABLE_PREFIX."privatemessages", $insert_pm);
 				echo sprintf($lang->pm_sent, $user['username']);
 			}
 			elseif($user['email'] != '')
 			{
-				mymail($user['email'], $searchop['subject'], $sendmessage, $searchop[from]);
+				mymail($user['email'], $searchop['subject'], $sendmessage, $searchop['from']);
 				echo sprintf($lang->email_sent, $user['username']);
 			}
 			else
@@ -680,7 +682,7 @@ if($mybb->input['action'] == "do_email")
 			}
 			echo "<br />";
 		}
-		echo "'-'".$lang->done;
+		echo $lang->done;
 		echo "</td>\n</tr>\n";
 		endtable();
 		startform("users.php", '', "do_email");
@@ -710,7 +712,6 @@ if($mybb->input['action'] == "do_email")
 		{
 			endform($lang->next_page, '');
 		}
-
 		cpfooter();
 	}
 }
@@ -718,7 +719,7 @@ if($mybb->input['action'] == "do_do_merge")
 {
 	if(!$mybb->input['deletesubmit'])
 	{
-		cpredirect("users.php?".SID."&action=merge", $lang->users_not_merged);
+		cpredirect("users.php?".SID."&amp;lmaction=merge", $lang->users_not_merged);
 		exit;
 	}
 	$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['source'])."'");
