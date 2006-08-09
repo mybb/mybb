@@ -42,7 +42,7 @@ function getforums($pid="0")
 	
 	while($forum = $db->fetch_array($query))
 	{
-		$forumlist .= "\n<li><b>$forum[name]</b>".makelinkcode($lang->add_announcement, "announcements.php?".SID."&action=add&fid=$forum[fid]");
+		$forumlist .= "\n<li><b>$forum[name]</b>".makelinkcode($lang->add_announcement, "announcements.php?".SID."&amp;action=add&amp;fid=$forum[fid]");
 		$annquery = $db->simple_select(TABLE_PREFIX."announcements", "*", "fid = '{$forum['fid']}'");
 		$numannouncements = $db->num_rows($annquery);
 		if($numannouncements != "0")
@@ -52,8 +52,8 @@ function getforums($pid="0")
 			{
 				$announcement['subject'] = stripslashes($announcement['subject']);
 				$forumlist .= "<li>$announcement[subject]".
-				makelinkcode($lang->edit_announcement, "announcements.php?".SID."&action=edit&aid=$announcement[aid]").
-				makelinkcode($lang->delete_announcement, "announcements.php?".SID."&action=delete&aid=$announcement[aid]")."</li>\n";
+				makelinkcode($lang->edit_announcement, "announcements.php?".SID."&amp;action=edit&amp;aid=$announcement[aid]").
+				makelinkcode($lang->delete_announcement, "announcements.php?".SID."&amp;action=delete&amp;aid=$announcement[aid]")."</li>\n";
 			}
 			$forumlist .= "</ul>\n";
 		}
@@ -438,17 +438,17 @@ if($mybb->input['action'] == "edit")
 	
 	if($announcement['enddate'])
 	{
-		$endcheck = "checked=\"checked\"";
+		$endcheck = " checked=\"checked\"";
 		$endnever = "";
 	}
 	else
 	{
 		$endcheck = "";
-		$endnever = "checked=\"checked\"";
+		$endnever = " checked=\"checked\"";
 	}
 
 	makelabelcode($lang->start_date, "<select name=\"startdatehour\">\n$startdatehour</select>\n &nbsp; \n<select name=\"startdatemin\">\n$startdatemin</select>\n &nbsp; \n<select name=\"startdateampm\"><option value=\"am\" $samsel>AM</option><option value=\"pm\" $spmsel>PM</option></select>\n &nbsp; \n<select name=\"startdateday\">\n$startdateday</select>\n &nbsp; \n<select name=\"startdatemonth\">\n$startdatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"startdateyear\" value=\"$startdate[2]\" size=\"4\" maxlength=\"4\"> (GMT)\n");
-	makelabelcode($lang->end_date, "<input type=\"radio\" name=\"end\" value=\"selected\" $endcheck /> <select name=\"enddatehour\">\n$enddatehour</select>\n &nbsp; \n<select name=\"enddatemin\">\n$enddatemin</select>\n &nbsp; \n<select name=\"enddateampm\"><option value=\"am\" $eamsel>AM</option><option value=\"pm\" $epmsel>PM</option></select>\n &nbsp; \n<select name=\"enddateday\">\n$enddateday</select>\n &nbsp; \n<select name=\"enddatemonth\">\n$enddatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"enddateyear\" value=\"$enddate[2]\" size=\"4\" maxlength=\"4\"> (GMT)<br /><input type=\"radio\" name=\"end\" value=\"never\" $endnever /> $lang->never\n");
+	makelabelcode($lang->end_date, "<input type=\"radio\" name=\"end\" value=\"selected\"$endcheck /> <select name=\"enddatehour\">\n$enddatehour</select>\n &nbsp; \n<select name=\"enddatemin\">\n$enddatemin</select>\n &nbsp; \n<select name=\"enddateampm\"><option value=\"am\" $eamsel>AM</option><option value=\"pm\" $epmsel>PM</option></select>\n &nbsp; \n<select name=\"enddateday\">\n$enddateday</select>\n &nbsp; \n<select name=\"enddatemonth\">\n$enddatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"enddateyear\" value=\"$enddate[2]\" size=\"4\" maxlength=\"4\"> (GMT)<br /><input type=\"radio\" name=\"end\" value=\"never\"$endnever /> $lang->never\n");
 	maketextareacode($lang->announcement, "message", "$announcement[message]", "10", "50");
 	makeyesnocode($lang->allow_html, "allowhtml", "$announcement[allowhtml]");
 	makeyesnocode($lang->allow_mycode, "allowmycode", "$announcement[allowmycode]");
@@ -468,19 +468,23 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	starttable();
 	tableheader($lang->forum_announcements);
 	$forumlist = getforums();
-	$globallist = "\n<li><b>$lang->global_announcements</b>".makelinkcode($lang->add_announcement, "announcements.php?".SID."&action=add&fid=-1")."\n<ul>";
-	$query = $db->query("
-		SELECT * 
-		FROM ".TABLE_PREFIX."announcements 
-		WHERE fid = '-1'
-	");
-	while($globannouncement = $db->fetch_array($query))
+	$globallist = "\n<li><b>$lang->global_announcements</b>".makelinkcode($lang->add_announcement, "announcements.php?".SID."&amp;action=add&amp;fid=-1")."\n";
+	$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "fid = '-1'");
+	if($query)
+	{
+    $globalist .= "<ul>";
+  }  
+  while($globannouncement = $db->fetch_array($query))
 	{
 		$globallist .= "<li>$globannouncement[subject]".
-			makelinkcode($lang->edit_announcement, "announcements.php?".SID."&action=edit&aid=$globannouncement[aid]").
-			makelinkcode($lang->delete_announcement, "announcements.php?".SID."&action=delete&aid=$globannouncement[aid]")."</li>\n";
+		makelinkcode($lang->edit_announcement, "announcements.php?".SID."&amp;action=edit&amp;aid=$globannouncement[aid]").
+		makelinkcode($lang->delete_announcement, "announcements.php?".SID."&amp;action=delete&amp;aid=$globannouncement[aid]")."</li>\n";
 	}
-	$globallist .= "</ul>\n</li>";
+	if($query)
+	{
+    $globalist .= "</ul>";
+  } 
+	$globallist .= "\n</li>";
 	makelabelcode($lang->edit_delete_notice."<br /><ul>$globallist\n$forumlist</ul>", "");
 	endtable();
 	cpfooter();

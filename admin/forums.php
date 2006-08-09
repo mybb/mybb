@@ -98,13 +98,13 @@ function getforums($pid=0, $depth=1)
 						echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"><tr><td width=\"10\">&nbsp;</td><td class=\"subtext\">";
 					}
 					echo "<div style=\"float: right;\">";
-					echo "<input type=\"button\" value=\"$lang->add_child_forum\" onclick=\"hopto('forums.php?".SID."&action=add&pid=".$forum['fid']."');\" class=\"submitbutton\">";
-					echo "<input type=\"button\" value=\"$lang->getforums_details\" onclick=\"hopto('forums.php?".SID."&fid=".$forum['fid']."');\" class=\"submitbutton\">";
-					echo "<input type=\"button\" value=\"$lang->getforums_edit\" onclick=\"hopto('forums.php?".SID."&action=edit&fid=".$forum['fid']."');\" class=\"submitbutton\">";
-					echo "<input type=\"button\" value=\"$lang->permissions\" onclick=\"hopto('forumpermissions.php?".SID."&action=quickperms&fid=".$forum['fid']."');\" class=\"submitbutton\">";
-					echo "<input type=\"button\" value=\"$lang->getforums_delete\" onclick=\"hopto('forums.php?".SID."&action=delete&fid=".$forum['fid']."');\" class=\"submitbutton\">";
+					echo "<input type=\"button\" value=\"$lang->add_child_forum\" onclick=\"hopto('forums.php?".SID."&amp;action=add&amp;pid=".$forum['fid']."');\" class=\"submitbutton\" />";
+					echo "<input type=\"button\" value=\"$lang->getforums_details\" onclick=\"hopto('forums.php?".SID."&amp;fid=".$forum['fid']."');\" class=\"submitbutton\" />";
+					echo "<input type=\"button\" value=\"$lang->getforums_edit\" onclick=\"hopto('forums.php?".SID."&amp;action=edit&amp;fid=".$forum['fid']."');\" class=\"submitbutton\" />";
+					echo "<input type=\"button\" value=\"$lang->permissions\" onclick=\"hopto('forumpermissions.php?".SID."&amp;action=quickperms&amp;fid=".$forum['fid']."');\" class=\"submitbutton\" />";
+					echo "<input type=\"button\" value=\"$lang->getforums_delete\" onclick=\"hopto('forums.php?".SID."&amp;action=delete&amp;fid=".$forum['fid']."');\" class=\"submitbutton\" />";
 					echo "&nbsp;<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />";
-					echo "</div><div><a href=\"forums.php?".SID."&fid=".$forum['fid']."\">".$forum['name']."</a></div>";
+					echo "</div><div><a href=\"forums.php?".SID."&amp;fid=".$forum['fid']."\">".$forum['name']."</a></div>";
 					echo "</td>\n";
 					if($depth == 2)
 					{
@@ -142,19 +142,23 @@ function getforums($pid=0, $depth=1)
 						echo "<td class=\"$altbg\" width=\"10\">&nbsp;</td>\n";
 						echo "<td class=\"$altbg\">";
 					}
-					echo "<b><a href=\"forums.php?".SID."&fid=".$forum['fid']."\">".$forum['name']."</a></b><br /><span class=\"smalltext\">".$forum['description'];
+					if($forum['description'])
+					{
+            $forum['description'] = "<span class=\"smalltext\">".$forum['description']."</span>";
+          }
+					echo "<b><a href=\"forums.php?".SID."&amp;fid=".$forum['fid']."\">".$forum['name']."</a></b><br />";
 					if(is_array($iforumcache[$forum['fid']]) && $depth == 2)
 					{
 						$comma = "";
 						echo "<br /><br />Sub Forums: ";
 						getforums($forum['fid'], $depth+1);
 					}
-					echo "</span></td>\n";
+					echo "</td>\n";
 					echo "<td class=\"$altbg\" align=\"right\">";
-					echo "<input type=\"button\" value=\"$lang->getforums_details\" onclick=\"hopto('forums.php?".SID."&fid=".$forum['fid']."');\" class=\"submitbutton\">";
-					echo "<input type=\"button\" value=\"$lang->getforums_edit\" onclick=\"hopto('forums.php?".SID."&action=edit&fid=".$forum['fid']."');\" class=\"submitbutton\">";
-					echo "<input type=\"button\" value=\"$lang->permissions\" onclick=\"hopto('forumpermissions.php?".SID."&action=quickperms&fid=".$forum['fid']."');\" class=\"submitbutton\">";
-					echo "<input type=\"button\" value=\"$lang->getforums_delete\" onclick=\"hopto('forums.php?".SID."&action=delete&fid=".$forum['fid']."');\" class=\"submitbutton\">";
+					echo "<input type=\"button\" value=\"$lang->getforums_details\" onclick=\"hopto('forums.php?".SID."&amp;fid=".$forum['fid']."');\" class=\"submitbutton\" />";
+					echo "<input type=\"button\" value=\"$lang->getforums_edit\" onclick=\"hopto('forums.php?".SID."&amp;action=edit&amp;fid=".$forum['fid']."');\" class=\"submitbutton\" />";
+					echo "<input type=\"button\" value=\"$lang->permissions\" onclick=\"hopto('forumpermissions.php?".SID."&amp;action=quickperms&amp;fid=".$forum['fid']."');\" class=\"submitbutton\" />";
+					echo "<input type=\"button\" value=\"$lang->getforums_delete\" onclick=\"hopto('forums.php?".SID."&amp;action=delete&amp;fid=".$forum['fid']."');\" class=\"submitbutton\" />";
 					echo "&nbsp;<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />";
 					echo "</td>";
 					echo "</tr>\n";
@@ -165,7 +169,7 @@ function getforums($pid=0, $depth=1)
 				}
 				elseif($depth == 3)
 				{
-					echo "$comma <a href=\"forums.php?".SID."&fid=".$forum['fid']."\">".$forum['name']."</a>";
+					echo "$comma <a href=\"forums.php?".SID."&amp;fid=".$forum['fid']."\">".$forum['name']."</a>";
 					$comma = ", ";
 				}
 			}
@@ -225,7 +229,7 @@ if($mybb->input['action'] == "do_add")
 		"defaultdatecut" => intval($mybb->input['defaultdatecut']),
 		"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 		"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
-		);
+	);
 	$db->insert_query(TABLE_PREFIX."forums", $sqlarray);
 	$plugins->run_hooks("admin_forums_do_add");
 	$fid = $db->insert_id();
@@ -278,7 +282,7 @@ if($mybb->input['action'] == "do_addmod")
 				"canopenclosethreads" => $canopenclosethreads,
 				"canmanagethreads" => $canmanagethreads,
 				"canmovetononmodforum" => $canmovetononmodforum
-				);
+			);
 			$plugins->run_hooks("admin_forums_do_addmod");
 			$db->insert_query(TABLE_PREFIX."moderators", $newmod);
 			$updatequery = array(
@@ -464,7 +468,7 @@ if($mybb->input['action'] == "do_edit")
 			// Update the parentlist of this forum.
 			$sql_array = array(
 				"parentlist" => makeparentlist($fid),
-				);
+			);
 			$db->update_query(TABLE_PREFIX."forums", $sql_array, "fid='$fid'", 1);
 			// Rebuild the parentlist of all of the subforums of this forum
 			$query = $db->simple_select(TABLE_PREFIX."forums", "fid", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
@@ -501,7 +505,7 @@ if($mybb->input['action'] == "do_editmod")
 			"canopenclosethreads" => $db->escape_string($mybb->input['canopenclosethreads']),
 			"canmanagethreads" => $db->escape_string($mybb->input['canmanagethreads']),
 			"canmovetononmodforum" => $db->escape_string($mybb->input['canmovetononmodforum'])
-			);
+		);
 		$plugins->run_hooks("admin_forums_do_editmod");
 		$db->update_query(TABLE_PREFIX."moderators", $sqlarray, "mid='".intval($mybb->input['mid'])."'");
 		$cache->updatemoderators();
@@ -567,7 +571,7 @@ if($mybb->input['action'] == "add")
 		100 => $lang->datelimit_100days,
 		365 => $lang->datelimit_lastyear,
 		9999 => $lang->datelimit_beginning,
-		);
+  );
 	makeselectcode_array($lang->default_datecut, "defaultdatecut", $datecut_array, "", true, $lang->board_default);
 	$sortby_array = array(
 		"subject" => $lang->sort_by_subject,
@@ -577,12 +581,12 @@ if($mybb->input['action'] == "add")
 		"rating" => $lang->sort_by_rating,
 		"replies" => $lang->sort_by_replies,
 		"views" => $lang->sort_by_views,
-		);
+	);
 	makeselectcode_array($lang->default_sortby, "defaultsortby", $sortby_array, "", true, $lang->board_default);
 	$sortorder_array = array(
 		"asc" => $lang->sort_order_asc,
 		"desc" => $lang->sort_order_desc,
-		);
+	);
 	makeselectcode_array($lang->default_sortorder, "defaultsortorder", $sortorder_array, "", true, $lang->board_default);
 
 	tablesubheader($lang->misc_options);
@@ -691,7 +695,7 @@ if($mybb->input['action'] == "edit")
 	starttable();
 	$lang->edit_forum = sprintf($lang->edit_forum, $forum['name']);
 	tableheader($lang->edit_forum);
-	makeinputcode($lang->name, "name", $forum[name]);
+	makeinputcode($lang->name, "name", $forum['name']);
 	maketextareacode($lang->description, "description", $forum['description']);
 	makeinputcode($lang->forumlink, "linkto", $forum['linkto']);
 	makeinputcode($lang->disporder, "disporder", "$forum[disporder]", "4");
@@ -980,10 +984,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			$fperms[$fperm[gid]] = $fperm;
 		}
 
-		$hopto[] = "<input type=\"button\" value=\"$lang->add_child_forum\" onclick=\"hopto('forums.php?".SID."&action=add&pid=$fid');\" class=\"hoptobutton\">";
-		$hopto[] = "<input type=\"button\" value=\"$lang->edit_forum_settings\" onclick=\"hopto('forums.php?".SID."&action=edit&fid=$fid');\" class=\"hoptobutton\">";
-		$hopto[] = "<input type=\"button\" value=\"$lang->delete_forum2\" onclick=\"hopto('forums.php?".SID."&action=delete&fid=$fid');\" class=\"hoptobutton\">";
-		$hopto[] = "<input type=\"button\" value=\"$lang->copy_forum_button\" onclick=\"hopto('forums.php?".SID."&action=copy&from=$fid');\" class=\"hoptobutton\">";
+		$hopto[] = "<input type=\"button\" value=\"$lang->add_child_forum\" onclick=\"hopto('forums.php?".SID."&amp;action=add&amp;pid=$fid');\" class=\"hoptobutton\" />";
+		$hopto[] = "<input type=\"button\" value=\"$lang->edit_forum_settings\" onclick=\"hopto('forums.php?".SID."&amp;action=edit&amp;fid=$fid');\" class=\"hoptobutton\" />";
+		$hopto[] = "<input type=\"button\" value=\"$lang->delete_forum2\" onclick=\"hopto('forums.php?".SID."&amp;action=delete&amp;fid=$fid');\" class=\"hoptobutton\" />";
+		$hopto[] = "<input type=\"button\" value=\"$lang->copy_forum_button\" onclick=\"hopto('forums.php?".SID."&amp;action=copy&amp;from=$fid');\" class=\"hoptobutton\" />";
 		makehoptolinks($hopto);
 
 		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid='$fid'");
@@ -1003,7 +1007,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		echo "<td width=\"49%\" valign=\"top\">\n";
 		starttable("100%");
 		tableheader($lang->forum_permissions);
-		tablesubheader("<div align=\"right\"><input type=\"button\" value=\"$lang->quick_permissions\" onclick=\"hopto('forumpermissions.php?".SID."&action=quickperms&fid=$fid');\" class=\"submitbutton\"></div>");
+		tablesubheader("<div align=\"right\"><input type=\"button\" value=\"$lang->quick_permissions\" onclick=\"hopto('forumpermissions.php?".SID."&amp;action=quickperms&amp;fid=$fid');\" class=\"submitbutton\"></div>");
 		$options = array(
 			"order_by" => "title",
 			"order_dir" => "ASC"
@@ -1015,7 +1019,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			{
 				$highlight = "highlight1";
 				$editset = $lang->edit_permissions;
-				$link = "&fid=$fid&pid=".$fperms[$usergroup['gid']]['pid'];
+				$link = "&amp;fid=$fid&amp;pid=".$fperms[$usergroup['gid']]['pid'];
 			}
 			else
 			{
@@ -1031,9 +1035,9 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 					$highlight = "";
 				}
 				$editset = $lang->set_permissions;
-				$link = "&fid=$fid&gid=".$usergroup['gid'];
+				$link = "&amp;fid=$fid&amp;gid=".$usergroup['gid'];
 			}
-			makelabelcode("<span class=\"$highlight\">".$usergroup['title']."</span>", "<div align=\"right\"><input type=\"button\" value=\"$editset\" onclick=\"hopto('forumpermissions.php?".SID."&action=edit$link');\" class=\"submitbutton\"></div>");
+			makelabelcode("<span class=\"$highlight\">".$usergroup['title']."</span>", "<div align=\"right\"><input type=\"button\" value=\"$editset\" onclick=\"hopto('forumpermissions.php?".SID."&amp;action=edit$link');\" class=\"submitbutton\"></div>");
 		}
 		endtable();
 		echo "</td>\n";
@@ -1042,7 +1046,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		starttable("100%");
 		tableheader($lang->forum_moderators);
 		makelabelcode($lang->mods_colors_note, '', 2);
-		tablesubheader("<div align=\"right\"><input type=\"button\" value=\"$lang->add_mod\" onclick=\"hopto('forums.php?".SID."&action=addmod&fid=$fid');\" class=\"submitbutton\"></div>");
+		tablesubheader("<div align=\"right\"><input type=\"button\" value=\"$lang->add_mod\" onclick=\"hopto('forums.php?".SID."&amp;action=addmod&amp;fid=$fid');\" class=\"submitbutton\"></div>");
 		$parentlist = build_parent_list($fid, 'm.fid');
 		$options = array(
 			"order_by" => "u.username"
@@ -1057,9 +1061,9 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		{
 			if($mod['fid'] != $fid)
 			{
-				$mod['username'] = '<span class="highlight2">' . $mod['username'] . '</span>';
+				$mod['username'] = '<span class="highlight2">'.$mod['username'].'</span>';
 			}
-			makelabelcode($mod['username'], "<div align=\"right\"><input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('forums.php?".SID."&action=editmod&mid=".$mod['mid']."');\" class=\"submitbutton\"><input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('forums.php?".SID."&action=deletemod&fid=".$mod['fid']."&mid=".$mod['mid']."');\" class=\"submitbutton\"></div>");
+			makelabelcode($mod['username'], "<div align=\"right\"><input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('forums.php?".SID."&amp;action=editmod&amp;mid=".$mod['mid']."');\" class=\"submitbutton\"><input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('forums.php?".SID."&amp;action=deletemod&amp;fid=".$mod['fid']."&amp;mid=".$mod['mid']."');\" class=\"submitbutton\"></div>");
 		}
 		endtable();
 		echo "</td>\n";
@@ -1068,10 +1072,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	}
 	else
 	{
-		$hopto[] = "<input type=\"button\" value=\"$lang->create_new_forum\" onclick=\"hopto('forums.php?".SID."&action=add');\" class=\"hoptobutton\">";
-		$hopto[] = "<input type=\"button\" value=\"$lang->forum_announcements\" onclick=\"hopto('announcements.php?".SID."');\" class=\"hoptobutton\">";
-		$hopto[] = "<input type=\"button\" value=\"$lang->forum_permissions\" onclick=\"hopto('forumpermissions.php?".SID."');\" class=\"hoptobutton\">";
-		$hopto[] = "<input type=\"button\" value=\"$lang->copy_forum_button\" onclick=\"hopto('forums.php?".SID."&action=copy');\" class=\"hoptobutton\">";
+		$hopto[] = "<input type=\"button\" value=\"$lang->create_new_forum\" onclick=\"hopto('forums.php?".SID."&amp;action=add');\" class=\"hoptobutton\" />";
+		$hopto[] = "<input type=\"button\" value=\"$lang->forum_announcements\" onclick=\"hopto('announcements.php?".SID."');\" class=\"hoptobutton\" />";
+		$hopto[] = "<input type=\"button\" value=\"$lang->forum_permissions\" onclick=\"hopto('forumpermissions.php?".SID."');\" class=\"hoptobutton\" />";
+		$hopto[] = "<input type=\"button\" value=\"$lang->copy_forum_button\" onclick=\"hopto('forums.php?".SID."&amp;action=copy');\" class=\"hoptobutton\" />";
 		makehoptolinks($hopto);
 		startform("forums.php", "", "do_modify");
 		starttable();

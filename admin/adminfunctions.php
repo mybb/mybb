@@ -249,13 +249,13 @@ function makepasswordcode($title, $name, $value="", $size="25", $autocomplete=1)
 	$value = htmlspecialchars_uni($value);
 	if($autocomplete != 1)
 	{
-		$ac = "autocomplete=\"off\"";
+		$ac = " autocomplete=\"off\"";
 	}
 	if($value != '')
 	{
-		$value = "value=\"{$value}\"";
+		$value = " value=\"{$value}\"";
 	}
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"password\" class=\"inputbox\" name=\"$name\" size=\"$size\" $ac $value /></td>\n</tr>\n";
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><input type=\"password\" class=\"inputbox\" name=\"$name\" size=\"$size\"$ac$value /></td>\n</tr>\n";
 }
 function maketextareacode($title, $name, $value="", $rows="4", $columns="40")
 {
@@ -274,13 +274,13 @@ function makeyesnocode($title, $name, $value="yes")
 	$bgcolor = getaltbg();
 	if($value == "no")
 	{
-		$nocheck = "checked=\"checked\"";
+		$nocheck = " checked=\"checked\"";
 	}
 	else
 	{
-		$yescheck = "checked=\"checked\"";
+		$yescheck = " checked=\"checked\"";
 	}
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><label><input type=\"radio\" name=\"$name\" value=\"yes\" $yescheck />&nbsp;$lang->yes</label> &nbsp;&nbsp;<label><input type=\"radio\" name=\"$name\" value=\"no\" $nocheck />&nbsp;$lang->no</label></td>\n</tr>\n";
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><label><input type=\"radio\" name=\"$name\" value=\"yes\"$yescheck />&nbsp;$lang->yes</label> &nbsp;&nbsp;<label><input type=\"radio\" name=\"$name\" value=\"no\"$nocheck />&nbsp;$lang->no</label></td>\n</tr>\n";
 }
 function makeonoffcode($title, $name, $value="on")
 {
@@ -812,7 +812,6 @@ function cpmessage($message="")
 	{
 		$message = $lang->cp_message;
 	}
-	cpheader("", 0);
 	starttable("65%");
 	tableheader($lang->cp_message_header);
 	makelabelcode($message);
@@ -827,7 +826,6 @@ function cpredirect($url, $message="")
 	{
 		$message = $lang->redirect_msg;
 	}
-	cpheader("", 0);
 	starttable("65%");
 	tableheader($lang->cp_message_header);
 	makelabelcode($message);
@@ -1315,29 +1313,29 @@ function quickpermissions($fid="", $pid="")
 	echo "<script type=\"text/javascript\">\n";
 ?>
 function uncheckInheritPerm(id) {
-	chk = getElemRefs("inherit["+id+"]");
+	chk = getElemRefs("inherit:"+id);
 	chk.checked = false;
 	h = getElemRefs("inheritlbl_"+id);
 	h.className = "";
 }
 
 function checkInheritPerm(id) {
-	chk = getElemRefs("inherit["+id+"]");
+	chk = getElemRefs("inherit:"+id);
 	chk.checked = true;
 	h = getElemRefs("inheritlbl_"+id);
 	h.className = "highlight1";
 }
 
 function checkPermRow(id, master) {
-	chk = getElemRefs("canview["+id+"]");
+	chk = getElemRefs("canview:"+id);
 	chk.checked = master.checked;
-	chk = getElemRefs("canpostthreads["+id+"]");
+	chk = getElemRefs("canpostthreads:"+id);
 	chk.checked = master.checked;
-	chk = getElemRefs("canpostreplies["+id+"]");
+	chk = getElemRefs("canpostreplies:"+id);
 	chk.checked = master.checked;
-	chk = getElemRefs("canpostpolls["+id+"]");
+	chk = getElemRefs("canpostpolls:"+id);
 	chk.checked = master.checked;
-	chk = getElemRefs("canpostattachments["+id+"]");
+	chk = getElemRefs("canpostattachments:"+id);
 	chk.checked = master.checked;
 
 	uncheckInheritPerm(id);
@@ -1409,12 +1407,12 @@ function getElemRefs(id) {
 		}
 		else
 		{
-			$inheritcheck = "checked=\"checked\"";
+			$inheritcheck = " checked=\"checked\"";
 			$inheritclass = "highlight1";
 		}
 		if($perms['canview'] == "yes")
 		{
-			$canview = "checked=\"checked\"";
+			$canview = " checked=\"checked\"";
 		}
 		else
 		{
@@ -1422,7 +1420,7 @@ function getElemRefs(id) {
 		}
 		if($perms['canpostthreads'] == "yes")
 		{
-			$canpostthreads = "checked=\"checked\"";
+			$canpostthreads = " checked=\"checked\"";
 		}
 		else
 		{
@@ -1430,7 +1428,7 @@ function getElemRefs(id) {
 		}
 		if($perms['canpostreplys'] == "yes")
 		{
-			$canpostreplies = "checked=\"checked\"";
+			$canpostreplies = " checked=\"checked\"";
 		}
 		else
 		{
@@ -1438,7 +1436,7 @@ function getElemRefs(id) {
 		}
 		if($perms['canpostpolls'] == "yes")
 		{
-			$canpostpolls = "checked=\"checked\"";
+			$canpostpolls = " checked=\"checked\"";
 		}
 		else
 		{
@@ -1446,7 +1444,7 @@ function getElemRefs(id) {
 		}
 		if($perms['canpostattachments'] == "yes")
 		{
-			$canpostattachments = "checked=\"checked\"";
+			$canpostattachments = " checked=\"checked\"";
 		}
 		else
 		{
@@ -1454,20 +1452,20 @@ function getElemRefs(id) {
 		}
 		if($canview && $canpostthreads && $canpostreplies && $canpostpolls && $canpostattachments)
 		{
-			$allcheck = "checked=\"checked\"";
+			$allcheck = " checked=\"checked\"";
 		}
 		else
 		{
 			$allcheck = "";
 		}
 		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\"><strong>$usergroup[title]</strong><br /><small><input type=\"checkbox\" name=\"inherit[$usergroup[gid]]\" id=\"inherit[$usergroup[gid]]\" value=\"yes\" onclick=\"checkInheritPerm($usergroup[gid]);\" $inheritcheck> <span id=\"inheritlbl_$usergroup[gid]\" class=\"$inheritclass\">".$lang->quickperms_inheritdefault."</span></td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canview[$usergroup[gid]]\" id=\"canview[$usergroup[gid]]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\" $canview /></td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canpostthreads[$usergroup[gid]]\" id=\"canpostthreads[$usergroup[gid]]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\" $canpostthreads /></td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canpostreplies[$usergroup[gid]]\" id=\"canpostreplies[$usergroup[gid]]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\" $canpostreplies /></td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canpostpolls[$usergroup[gid]]\" id=\"canpostpolls[$usergroup[gid]]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\" $canpostpolls /></td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canpostattachments[$usergroup[gid]]\" id=\"canpostattachments[$usergroup[gid]]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\" $canpostattachments /></td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" onclick=\"checkPermRow($usergroup[gid], this);\" $allcheck></td>\n";
+		echo "<td class=\"$bgcolor\"><strong>$usergroup[title]</strong><br /><small><input type=\"checkbox\" name=\"inherit[$usergroup[gid]]\" id=\"inherit:$usergroup[gid]\" value=\"yes\" onclick=\"checkInheritPerm($usergroup[gid]);\"$inheritcheck /> <span id=\"inheritlbl_$usergroup[gid]\" class=\"$inheritclass\">".$lang->quickperms_inheritdefault."</span></small></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canview[$usergroup[gid]]\" id=\"canview:$usergroup[gid]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\"$canview /></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canpostthreads[$usergroup[gid]]\" id=\"canpostthreads:$usergroup[gid]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\"$canpostthreads /></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canpostreplies[$usergroup[gid]]\" id=\"canpostreplies:$usergroup[gid]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\"$canpostreplies /></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canpostpolls[$usergroup[gid]]\" id=\"canpostpolls:$usergroup[gid]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\"$canpostpolls /></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"canpostattachments[$usergroup[gid]]\" id=\"canpostattachments:$usergroup[gid]\" value=\"yes\" onclick=\"uncheckInheritPerm($usergroup[gid])\"$canpostattachments /></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" onclick=\"checkPermRow($usergroup[gid], this);\"$allcheck /></td>\n";
 		echo "</tr>\n";
 		unset($perms);
 	}

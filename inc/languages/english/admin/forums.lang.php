@@ -62,9 +62,9 @@ $l['access_perm_options'] = "Access and Permission Options";
 $l['forum_password'] = "Forum Password<br /><small>If you want to protect this forum you can enter a password here. Note, the user groups needs permission to access the forum as well.</small>";
 
 $l['posting_options'] = "Posting and Thread Listing Options";
-$l['act_as_forum'] = "Act As Forum?<br /><small>If no, will act as a category.";
-$l['forum_active'] = "Forum Is Active?<br /><small>If no, the forum will not be shown to any users and will 'not exist'";
-$l['forum_open'] = "Forum Is Open?<br /><small>If no, the forum will be closed from posting regardless of the users' permissions";
+$l['act_as_forum'] = "Act As Forum?<br /><small>If no, will act as a category.</small>";
+$l['forum_active'] = "Forum Is Active?<br /><small>If no, the forum will not be shown to any users and will 'not exist'</small>";
+$l['forum_open'] = "Forum Is Open?<br /><small>If no, the forum will be closed from posting regardless of the users' permissions</small>";
 
 $l['moderation_options'] = "Moderation Options";
 $l['moderate_posts'] = "Moderate New Posts";
@@ -72,9 +72,9 @@ $l['moderate_threads'] = "Moderate New Threads";
 $l['moderate_attachments'] = "Moderate New Attachments";
 
 $l['style_options'] = "Style Options";
-$l['style'] = "Style<br /><small>If blank, will use the default forum of the user or forums.";
+$l['style'] = "Style<br /><small>If blank, will use the default forum of the user or forums.</small>";
 $l['use_default'] = "Use Default";
-$l['override_style'] = "Override User's Selected Style<br /><small>Do you want to override the user's selected custom style with this style?";
+$l['override_style'] = "Override User's Selected Style<br /><small>Do you want to override the user's selected custom style with this style?</small>";
 
 $l['default_viewing_options'] = "Default Viewing Options";
 $l['default_datecut'] = "Default Date Cut";

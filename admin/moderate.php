@@ -67,7 +67,7 @@ if($mybb->input['action'] == "do_attachments")
 			$aids = implode(',', $approve_aids);
 			$sql_array = array(
 				"visible" => 1
-				);
+			);
 			$db->update_query(TABLE_PREFIX."attachments", $sql_array, "aid IN ({$aids})");
 		}
 	}
@@ -174,9 +174,9 @@ if($mybb->input['action'] == "attachments")
 {
 	$query = $db->query("
 		SELECT a.*, p.subject AS postsubject, p.pid AS postpid, p.tid, p.username AS postusername, p.uid AS postuid, t.subject AS threadsubject, f.name AS forumname, p.fid
-		FROM (".TABLE_PREFIX."attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t
+		FROM (".TABLE_PREFIX."attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
-		WHERE a.pid=p.pid AND t.tid=p.tid AND a.visible!='1
+		WHERE a.pid=p.pid AND t.tid=p.tid AND a.visible != '1'
 		ORDER BY p.dateline DESC
 	");
 	$count = $db->num_rows($query);
@@ -195,33 +195,33 @@ if($mybb->input['action'] == "attachments")
 		$done = 1;
 		if($attachment['filesize'] >= 1073741824)
 		{
-			$attachment['filesize'] = round(($attachment['filesize'] / 1073741824), 2) . " " . $lang->size_gb;
+			$attachment['filesize'] = round(($attachment['filesize'] / 1073741824), 2). " ".$lang->size_gb;
 		}
 		elseif($attachment['filesize'] >= 1048576)
 		{
-			$attachment['filesize'] = round(($attachment['filesize'] / 1048576), 2) . " " . $lang->size_mb;
+			$attachment['filesize'] = round(($attachment['filesize'] / 1048576), 2)." ".$lang->size_mb;
 		}
 		elseif($attachment['filesize'] >= 1024)
 		{
-			$attachment['filesize'] = round(($attachment['filesize'] / 1024), 2) . " " . $lang->size_kb;
+			$attachment['filesize'] = round(($attachment['filesize'] / 1024), 2)." ".$lang->size_kb;
 		}
 		else
 		{
-			$attachment['filesize'] = $attachment['filesize'] . " " . $lang->size_bytes;
+			$attachment['filesize'] = $attachment['filesize']." ".$lang->size_bytes;
 		}
 		if(empty($attachment['postsubject']))
 		{
 			$attachment['postsubject'] = $lang->no_subject;
 		}
-		makelabelcode($lang->attachment, "$attachment[filename] ($lang->size $attachment[filesize]) ".makelinkcode($lang->view, "../attachment.php?tid=$attachment[tid]&pid=$attachment[pid]", 1));
-		makelabelcode($lang->post, "<a href=\"../showthread.php?tid=$attachment[tid]&pid=$attachment[postpid]#pid$attachment[postpid]\" target=\"_blank\">$attachment[postsubject]</a>");
+		makelabelcode($lang->attachment, "$attachment[filename] ($lang->size $attachment[filesize]) ".makelinkcode($lang->view, "../attachment.php?tid=$attachment[tid]&amp;pid=$attachment[pid]", 1));
+		makelabelcode($lang->post, "<a href=\"../showthread.php?tid=$attachment[tid]&amp;pid=$attachment[postpid]#pid$attachment[postpid]\" target=\"_blank\">$attachment[postsubject]</a>");
 		makelabelcode($lang->thread, "<a href=\"../showthread.php?tid=$attachment[tid]\" target=\"_blank\">$attachment[threadsubject]</a>");
-		makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&uid=$attachment[postuid]\" target=\"_blank\">$attachment[postusername]</a>");
+		makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&amp;uid=$attachment[postuid]\" target=\"_blank\">$attachment[postusername]</a>");
 		makelabelcode($lang->forum, "<a href=\"../forumdisplay.php?fid=$attachment[fid]\" target=\"_blank\">$attachment[forumname]</a>");
 		makeyesnocode($lang->validate_attachment, "attachvalidate[$attachment[aid]]");
 		makeyesnocode($lang->delete_attachment, "attachdelete[$attachment[aid]]", "no");
 		makehiddencode("attachpid[$attachment[aid]]", "$attachment[postpid]");
-		echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\"></td>\n</tr>\n";
+		echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\" alt=\"\" /></td>\n</tr>\n";
 	}
 	endtable();
 	endform($lang->moderate_attachments, $lang->reset_button);
@@ -247,7 +247,7 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 		cpmessage($lang->no_threads);
 	}
 	$plugins->run_hooks("admin_moderate_threads");
-	if($tcount ||  $mybb->input['action'] == "threadsposts")
+	if($tcount || $mybb->input['action'] == "threadsposts")
 	{
 		cpheader();
 		startform("moderate.php", "" , "do_".$mybb->input['action']);
@@ -262,13 +262,13 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 		$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 		$done = 1;
 		makeinputcode($lang->thread_subject, "threadsubject[$thread[tid]]", "$thread[subject]");		
-		makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&uid=$thread[uid]\" target=\"_blank\">$thread[username]</a>");
+		makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&amp;uid=$thread[uid]\" target=\"_blank\">$thread[username]</a>");
 		makelabelcode($lang->forum, "<a href=\"../forumdisplay.php?fid=$thread[fid]\" target=\"_blank\">$thread[forumname]</a>");
 		maketextareacode($lang->message, "threadmessage[$thread[tid]]", $thread[postmessage], 5);
 		makeyesnocode($lang->validate_thread, "threadvalidate[$thread[tid]]");
 		makeyesnocode($lang->delete_thread, "threaddelete[$thread[tid]]", "no");
 		$donepid[$thread[postpid]] = 1;
-		echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\"></td>\n</tr>\n";
+		echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\" alt=\"\" /></td>\n</tr>\n";
 	}
 	if($tcount)
 	{
@@ -299,6 +299,7 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 	$count = $db->num_rows($query);
 	if(!$tcount && !$count && $mybb->input['action'] == "threadsposts")
 	{
+	  endform();
 		cpmessage($lang->no_threadsposts);
 	}
 
@@ -323,12 +324,12 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 			$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 			makeinputcode($lang->post_subject, "postsubject[$post[pid]]", "$post[subject]");	
 			makelabelcode($lang->thread, "<a href=\"../showthread.php?tid=$post[tid]\" target=\"_blank\">$post[threadsubject]</a>");	
-			makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&uid=$post[uid]\" target=\"_blank\">$post[username]</a>");
+			makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&amp;uid=$post[uid]\" target=\"_blank\">$post[username]</a>");
 			makelabelcode($lang->forum, "<a href=\"../forumdisplay.php?fid=$post[fid]\" target=\"_blank\">$post[forumname]</a>");
 			maketextareacode($lang->message, "postmessage[$post[pid]]", $post[message], 5);
 			makeyesnocode($lang->validate_post, "postvalidate[$post[pid]]");
 			makeyesnocode($lang->delete_post, "postdelete[$post[pid]]", "no");
-			echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\"></td>\n</tr>\n";
+			echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\" alt=\"\" /></td>\n</tr>\n";
 		}
 	}
 	endtable();

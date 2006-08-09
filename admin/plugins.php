@@ -136,16 +136,19 @@ if($mybb->input['action'] == "")
 			}
 
 			$bgcolor = getaltbg();
-			startform("plugins.php");
-			makehiddencode("plugin", $codename);
-			makehiddencode("action", "activate");
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\" width=\"50%\"><strong>".$plugininfo['name']."</strong><br /><small>".$plugininfo['description']."</small></td>\n";
 			echo "<td class=\"$bgcolor\" width=\"10%\" align=\"center\">".$plugininfo['version']."</td>\n";
 			echo "<td class=\"$bgcolor\" width=\"20%\" align=\"center\">".$plugininfo['author']."</td>\n";
-			echo "<td class=\"$bgcolor\" width=\"20%\" align=\"center\">".$pluginbuttons."</td>\n";
+			echo "<td class=\"$bgcolor\" width=\"20%\" align=\"center\">";
+			startform("plugins.php");
+			makehiddencode("plugin", $codename);
+			makehiddencode("action", "activate");
+      echo $pluginbuttons."\n";
+      endform();
+      echo "</td>\n";
 			echo "</tr>\n";
-			endform();
+			
 		}
 	}
 	else

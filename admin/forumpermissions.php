@@ -73,8 +73,8 @@ function build_permission_forumbits($pid=0)
 			foreach($main as $key => $forum)
 			{
 				$forum_list .= "\n<li>";
-				$forum_list .= "<div style=\"float:right\"><small>".makelinkcode($lang->copy_permissions_to, "forums.php?".SID."&action=copy&from=$forum[fid]&copyforumsettings=no&copygroups=all");
-				$forum_list .= makelinkcode($lang->copy_permissions_from, "forums.php?".SID."&action=copy&to=$forum[fid]&copyforumsettings=no&copygroups=all")."</small></div>";
+				$forum_list .= "<div style=\"float:right\"><small>".makelinkcode($lang->copy_permissions_to, "forums.php?".SID."&amp;action=copy&amp;from=$forum[fid]&amp;copyforumsettings=no&amp;copygroups=all");
+				$forum_list .= makelinkcode($lang->copy_permissions_from, "forums.php?".SID."&amp;action=copy&amp;to=$forum[fid]&amp;copyforumsettings=no&amp;copygroups=all")."</small></div>";
 				$forum_list .= "<b>$forum[name]</b>\n";
 				$forum_list .= "<ul>\n";
 				foreach($usergroups as $usergroup)
@@ -83,23 +83,23 @@ function build_permission_forumbits($pid=0)
 					if($forumpermissions[$forum['fid']][$usergroup['gid']])
 					{
 						$pid = $forumpermissions[$forum['fid']][$usergroup['gid']];
-						$forum_list .= "<li><font color=\"red\">$usergroup[title]</font> ";
-						$forum_list .= makelinkcode("<font color=\"red\">$lang->edit_perms</font>", "forumpermissions.php?".SID."&action=edit&pid=$pid&fid=$forum[fid]");
+						$forum_list .= "<li><span style=\"color: red\">$usergroup[title]</span> ";
+						$forum_list .= makelinkcode("<span style=\"color: red\">$lang->edit_perms</span>", "forumpermissions.php?".SID."&amp;action=edit&amp;pid=$pid&amp;fid=$forum[fid]");
 					}
 					// This forum is inheriting permissions from the parent forum
 					else if($cachedforumpermissions[$forum['fid']][$usergroup['gid']])
 					{
-						$forum_list .= "<li><font color=\"blue\">$usergroup[title]</font> ";
-						$forum_list .= makelinkcode("<font color=\"blue\">$lang->set_perms</font>", "forumpermissions.php?".SID."&action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
+						$forum_list .= "<li><span style=\"color: blue\">$usergroup[title]</span> ";
+						$forum_list .= makelinkcode("<span style=\"color: blue\">$lang->set_perms</span>", "forumpermissions.php?".SID."&amp;action=edit&amp;fid=$forum[fid]&amp;gid=$usergroup[gid]");
 					}
 					// Otherwise, this forum has no permissions set and is inheriting from usergroup
 					else
 					{
-						$forum_list .= "<li><font color=\"black\">$usergroup[title]</font> ";
-						$forum_list .= makelinkcode("<font color=\"black\">$lang->set_perms</font>", "forumpermissions.php?".SID."&action=edit&fid=$forum[fid]&gid=$usergroup[gid]");
+						$forum_list .= "<li><span style=\"color: black\">$usergroup[title]</span> ";
+						$forum_list .= makelinkcode("<span style=\"color: black\">$lang->set_perms</span>", "forumpermissions.php?".SID."&amp;action=edit&amp;fid=$forum[fid]&amp;gid=$usergroup[gid]");
 					}
 				}
-				$forum_list .= "</font></li>\n";
+				$forum_list .= "</li>\n";
 				$forum_list .= build_permission_forumbits($forum['fid']);
 				$forum_list .= "</ul>\n";
 				$forum_list .= "</li>\n";
@@ -224,7 +224,7 @@ if($mybb->input['action'] == "edit")
 
 	if($forumpermissions['pid'])
 	{
-		$usecustom = "checked=\"checked\"";
+		$usecustom = " checked=\"checked\"";
 		makehiddencode("pid", $pid);
 	}
 	else
@@ -234,11 +234,11 @@ if($mybb->input['action'] == "edit")
 		if(!$customperms['pid'])
 		{
 			$forumpermissions = usergroup_permissions($gid);
-			$useusergroup = "checked=\"checked\"";
+			$useusergroup = " checked=\"checked\"";
 		}
 		else
 		{
-			$useusergroup = "checked=\"checked\"";
+			$useusergroup = " checked=\"checked\"";
 			$forumpermissions = forum_permissions($fid, 0, $gid);
 		}
 	}
@@ -253,8 +253,8 @@ if($mybb->input['action'] == "edit")
 	starttable();
 	$lang->edit_permissions = sprintf($lang->edit_permissions, $usergroup['title'], $forum['name']);
 	tableheader($lang->edit_permissions);
-	makelabelcode("<label><input type=\"radio\" name=\"usecustom\" value=\"no\" $useusergroup> $lang->use_default_inherit</label>", "", 2);
-	makelabelcode("<label><input type=\"radio\" name=\"usecustom\" value=\"yes\" $usecustom> $lang->use_custom</label>", "", 2);
+	makelabelcode("<label><input type=\"radio\" name=\"usecustom\" value=\"no\"$useusergroup /> $lang->use_default_inherit</label>", "", 2);
+	makelabelcode("<label><input type=\"radio\" name=\"usecustom\" value=\"yes\"$usecustom /> $lang->use_custom</label>", "", 2);
 
 	tablesubheader($lang->perms_viewing);
 	makepermscode($lang->canview, "canview", $forumpermissions['canview']);

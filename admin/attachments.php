@@ -62,7 +62,7 @@ if($mybb->input['action'] == "do_add")
 			"extension" => $db->escape_string($mybb->input['extension']),
 			"maxsize" => $db->escape_string($mybb->input['maxsize']),
 			"icon" => $db->escape_string($mybb->input['icon']),
-			);
+		);
 		$plugins->run_hooks("admin_attachments_do_add");
 		$db->insert_query(TABLE_PREFIX."attachtypes", $sqlarray);
 		$cache->updateattachtypes();
@@ -101,7 +101,7 @@ if($mybb->input['action'] == "do_edit")
 			"extension" => $db->escape_string($mybb->input['extension']),
 			"maxsize" => $db->escape_string($mybb->input['maxsize']),
 			"icon" => $db->escape_string($mybb->input['icon']),
-			);
+		);
 		$plugins->run_hooks("admin_attachments_do_edit");
 		$db->update_query(TABLE_PREFIX."attachtypes", $sqlarray, "atid='".$sqlarray['atid']."'");
 		$cache->updateattachtypes();
@@ -270,8 +270,8 @@ if($mybb->input['action'] == "do_search")
 		echo "<tr>\n";
 		echo "<td class=\"$altbg\" align=\"center\"><input type=\"checkbox\" name=\"check[$result[aid]]\" value=\"$result[aid]\"></td>\n";
 		echo "<td class=\"$altbg\"><a href=\"../attachment.php?aid=$result[aid]\">$filename</a></td>\n";
-		echo "<td class=\"$altbg\"><a href=\"../member.php?action=profile&uid=$result[uid]\">$result[username]</a></td>\n";
-		echo "<td class=\"$altbg\"><a href=\"../forumdisplay.php?fid=$result[fid]\">$result[name]</a> &raquo; <a href=\"../showthread.php?tid=$result[tid]&pid=$result[pid]#pid$result[pid]\">$result[subject]</a></td>\n";
+		echo "<td class=\"$altbg\"><a href=\"../member.php?action=profile&amp;uid=$result[uid]\">$result[username]</a></td>\n";
+		echo "<td class=\"$altbg\"><a href=\"../forumdisplay.php?fid=$result[fid]\">$result[name]</a> &raquo; <a href=\"../showthread.php?tid=$result[tid]&amp;pid=$result[pid]#pid$result[pid]\">$result[subject]</a></td>\n";
 		echo "<td class=\"$altbg\">$result[filetype]</td>\n";
 		echo "<td class=\"$altbg\">$filesize</td>\n";
 		echo "<td class=\"$altbg\">$result[downloads]</td>\n";
@@ -349,7 +349,7 @@ if($mybb->input['action'] == "orphans")
 		$filesize = get_friendly_size(filesize(MYBB_ROOT.$mybb->settings['uploadspath']."/".$filename));
 
 		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"check[]\" value=\"$filename\"></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"checkbox\" name=\"check[]\" value=\"$filename\" /></td>\n";
 		echo "<td class=\"$bgcolor\">$filename</td>\n";
 		echo "<td class=\"$bgcolor\">$filesize</td>\n";
 		echo "</tr>\n";
@@ -435,12 +435,12 @@ if($mybb->input['action'] == "search")
 		'dateline' => $lang->sort_field_dateline,
 		'username' => $lang->sort_field_username,
 		'forumname' =>  $lang->sort_field_forumname
-		);
+	);
 	makeselectcode_array($lang->sort_field, 'sortfield', $sort_field_options, 'filename');
 	$sort_dir_options = array(
 		'asc' => $lang->sort_dir_asc,
 		'desc' => $lang->sort_dir_desc
-		);
+	);
 	makeselectcode_array($lang->sort_dir, 'sortdir', $sort_dir_options, 'asc');
 	endtable();
 	endform($lang->search, $lang->reset_button);
@@ -544,8 +544,8 @@ if($mybb->input['action'] == "stats")
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&amp;pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&amp;uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['downloads']."</a></td>\n";
 			echo "</tr>\n";
 		}
@@ -575,8 +575,8 @@ if($mybb->input['action'] == "stats")
 			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&amp;pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&amp;uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['filesize']."</a></td>\n";
 			echo "</tr>\n";
 		}
@@ -593,11 +593,11 @@ if($mybb->input['action'] == "stats")
 		$query = $db->query("
 			SELECT a.*, u.uid, u.username, SUM(a.filesize) as totalsize
 			FROM ".TABLE_PREFIX."attachments a  
-				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 			GROUP BY a.uid
 			ORDER BY totalsize DESC
 			LIMIT 0, 5
-			");
+		");
  
 		while($user = $db->fetch_array($query))
 		{
@@ -618,7 +618,7 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 	$plugins->run_hooks("admin_attachments_modify");
 	// list all attachment types so user can pick one to edit/delete
 	cpheader();
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_attach_type\" onclick=\"hopto('attachments.php?".SID."&action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_attach_type\" onclick=\"hopto('attachments.php?".SID."&action=add');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->attachment_types, "", "6");
@@ -652,8 +652,8 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 		echo "<td class=\"$bgcolor\" width=\"25%\"><b>.$type[extension]</b></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"25%\">$type[mimetype]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"25%\">$size</td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\" width=\"1\"><input type=\"submit\" name=\"edit\" value=\"$lang->type_edit\" class=\"submitbutton\"></td>";
-		echo "<td class=\"$bgcolor\" align=\"center\" width=\"1\"><input type=\"submit\" name=\"delete\" value=\"$lang->type_delete\" class=\"submitbutton\"></td>";
+		echo "<td class=\"$bgcolor\" align=\"center\" width=\"1\"><input type=\"submit\" name=\"edit\" value=\"$lang->type_edit\" class=\"submitbutton\" /></td>";
+		echo "<td class=\"$bgcolor\" align=\"center\" width=\"1\"><input type=\"submit\" name=\"delete\" value=\"$lang->type_delete\" class=\"submitbutton\" /></td>";
 		echo "</tr>\n";
 		endform();
 	}
