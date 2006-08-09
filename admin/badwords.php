@@ -105,7 +105,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	$plugins->run_hooks("admin_badwords_modify");
 	cpheader();
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_badword_filter\" onclick=\"hopto('badwords.php?".SID."&action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_badword_filter\" onclick=\"hopto('badwords.php?".SID."&amp;action=add');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->badwords, "", 4);
@@ -122,15 +122,22 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	while($badword = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
-		startform("badwords.php", "", "edit");
-		makehiddencode("bid", $badword['bid']);
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\" width=\"42%\">".$badword['badword']."</td>\n";
 		echo "<td class=\"$bgcolor\" width=\"42%\">".$badword['replacement']."</td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"submit\" name=\"edit\" value=\"$lang->edit\" class=\"submitbutton\"></td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"submit\" name=\"delete\" value=\"$lang->delete\" class=\"submitbutton\"></td>\n";
-		echo "</tr>\n";
-		endform();
+		echo "<td class=\"$bgcolor\" align=\"center\">";
+		startform("badwords.php", "", "edit");
+		makehiddencode("bid", $badword['bid']);
+    echo "<input type=\"submit\" name=\"edit\" value=\"$lang->edit\" class=\"submitbutton\" />";
+    endform();
+    echo "</td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\">";
+		startform("badwords.php", "", "edit");
+		makehiddencode("bid", $badword['bid']);
+    echo "<input type=\"submit\" name=\"delete\" value=\"$lang->delete\" class=\"submitbutton\" />";
+    endform();
+    echo "</td>\n";		
+    echo "</tr>\n";
 		$done = 1;
 	}
 	if(!$done)

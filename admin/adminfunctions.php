@@ -812,6 +812,7 @@ function cpmessage($message="")
 	{
 		$message = $lang->cp_message;
 	}
+	cpheader();
 	starttable("65%");
 	tableheader($lang->cp_message_header);
 	makelabelcode($message);
@@ -826,6 +827,7 @@ function cpredirect($url, $message="")
 	{
 		$message = $lang->redirect_msg;
 	}
+	cpheader();
 	starttable("65%");
 	tableheader($lang->cp_message_header);
 	makelabelcode($message);

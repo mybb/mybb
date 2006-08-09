@@ -66,7 +66,7 @@ if($mybb->input['action'] == "do_add")
 		"regex" => $db->escape_string($mybb->input['regex']),
 		"replacement" => $db->escape_string($mybb->input['replacement']),
 		"active" => $db->escape_string($mybb->input['active'])
-		);
+	);
 	$plugins->run_hooks("admin_mycode_do_add");
 	$db->insert_query(TABLE_PREFIX."mycode", $newmycode);
 
@@ -113,7 +113,7 @@ if($mybb->input['action'] == "do_edit")
 		"regex" => $db->escape_string($mybb->input['regex']),
 		"replacement" => $db->escape_string($mybb->input['replacement']),
 		"active" => $db->escape_string($mybb->input['active'])
-		);
+	);
 	
 	$plugins->run_hooks("admin_mycode_do_edit");
 
@@ -165,7 +165,7 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_mycode_modify");
 	cpheader();
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_mycode\" onclick=\"hopto('mycode.php?".SID."&action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_mycode\" onclick=\"hopto('mycode.php?".SID."&amp;action=add');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->custom_mycode, "", 4);
@@ -181,14 +181,21 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 	while($mycode = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
-		startform("mycode.php", "", "edit");
-		makehiddencode("cid", $mycode['cid']);
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\" width=\"42%\">".$mycode['title']."<br /><small>".$mycode['description']."</small></td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"submit\" name=\"edit\" value=\"$lang->edit\" class=\"submitbutton\"></td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"submit\" name=\"delete\" value=\"$lang->delete\" class=\"submitbutton\"></td>\n";
-		echo "</tr>\n";
-		endform();
+		echo "<td class=\"$bgcolor\" align=\"center\">";
+		startform("mycode.php", "", "edit");
+		makehiddencode("cid", $mycode['cid']);
+    echo "<input type=\"submit\" name=\"edit\" value=\"$lang->edit\" class=\"submitbutton\" />";
+    endform();
+    echo "</td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\">";
+		startform("mycode.php", "", "edit");
+		makehiddencode("cid", $mycode['cid']);
+    echo "<input type=\"submit\" name=\"delete\" value=\"$lang->delete\" class=\"submitbutton\" />";
+    endform();
+    echo "</td>\n";
+		echo "</tr>\n";		
 		$done = 1;
 	}
 	if(!$done)

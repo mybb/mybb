@@ -170,13 +170,13 @@ function make_profile_field_input($required=0, $uid=0)
 					$val = str_replace("\n", "\\n", $val);
 					if($val == $seloptions[$val])
 					{
-						$sel = "selected";
+						$sel = " selected";
 					}
 					else
 					{
 						$sel = '';
 					}
-					$select .= "<option value=\"$val\" $sel>$val</option>\n";
+					$select .= "<option value=\"$val\"$sel>$val</option>\n";
 				}
 				if(!$profilefield['length'])
 				{
@@ -196,13 +196,13 @@ function make_profile_field_input($required=0, $uid=0)
 					$val = str_replace("\n", "\\n", $val);
 					if($val == $userfields[$field])
 					{
-						$sel = "selected";
+						$sel = " selected";
 					}
 					else
 					{
 						$sel = '';
 					}
-					$select .= "<option value=\"$val\" $sel>$val</option>";
+					$select .= "<option value=\"$val\"$sel>$val</option>";
 				}
 				if(!$profilefield['length'])
 				{
@@ -220,13 +220,13 @@ function make_profile_field_input($required=0, $uid=0)
 				{
 					if($val == $userfields[$field])
 					{
-						$checked = "checked";
+						$checked = " checked";
 					}
 					else
 					{
 						$checked = '';
 					}
-					$code .= "<input type=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> $val<br />";
+					$code .= "<input type=\"radio\" name=\"profile_fields[$field]\" value=\"$val\"$checked /> $val<br />";
 				}
 			}
 		}
@@ -244,13 +244,13 @@ function make_profile_field_input($required=0, $uid=0)
 				{
 					if($val == $seloptions[$val])
 					{
-						$checked = "checked";
+						$checked = " checked";
 					}
 					else
 					{
 						$checked = '';
 					}
-					$code .= "<input type=\"checkbox\" name=\"profile_fields[".$field."][]\" value=\"$val\" $checked /> $val<br />";
+					$code .= "<input type=\"checkbox\" name=\"profile_fields[".$field."][]\" value=\"$val\"$checked /> $val<br />";
 				}
 			}
 		}
@@ -798,8 +798,8 @@ if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_users_add");
 	cpheader();
-	starttable();
 	startform("users.php", '', "do_add", 0);
+	starttable();
 	tableheader($lang->add_user);
 	tablesubheader($lang->required_info);
 	makeinputcode($lang->username, "userusername", '', 25, '', $mybb->settings['maxnamelength'], 0);
@@ -1839,9 +1839,9 @@ if($mybb->input['action'] == "manageban")
 		}
 
 		cpheader();
-		starttable();
 		startform("users.php", '', "do_manageban");
 		makehiddencode("uid", $mybb->input['uid']);
+		starttable();
 		tableheader($lang->edit_banning_options);
 	}
 	else
@@ -1855,10 +1855,10 @@ if($mybb->input['action'] == "manageban")
 		$user = $db->fetch_array($query);
 
 		cpheader();
-		starttable();
 		startform("users.php", '', "do_manageban");
+		starttable();		
 		tableheader($lang->ban_user);
-		$ban[bantime] = '1-0-0';
+		$ban['bantime'] = '1-0-0';
 		makeinputcode($lang->username, "username", $user['username']);
 	}
 	makeinputcode($lang->ban_reason, "banreason", $ban['reason']);
@@ -1866,19 +1866,19 @@ if($mybb->input['action'] == "manageban")
 	reset($bantimes);
 	foreach($bantimes as $time => $title)
 	{
-		$liftlist .= "<option value=\"$time\" ";
+		$liftlist .= "<option value=\"$time\"";
 		if($time == $ban[bantime])
 		{
-			$liftlist .= 'selected="selected"';
+			$liftlist .= ' selected="selected"';
 		}
 		$thatime = date("D, jS M Y @ g:ia", date2timestamp($time));
 		$liftlist .= ">$title ($thatime)</option>\n";
 	}
 	if($ban[bantime] == "perm" || $ban[bantime] == "---")
 	{
-		$permsel = 'selected="selected"';
+		$permsel = ' selected="selected"';
 	}
-	makelabelcode($lang->lift_ban_after, "<select name=\"liftafter\">\n$liftlist\n<option value=\"---\" $permsel>$lang->perm_ban</option>\n</select>\n");
+	makelabelcode($lang->lift_ban_after, "<select name=\"liftafter\">\n$liftlist\n<option value=\"---\"$permsel>$lang->perm_ban</option>\n</select>\n");
 	endtable();
 	if($uid)
 	{
@@ -1897,7 +1897,7 @@ if($mybb->input['action'] == "banned")
 	$query = $db->query("SELECT b.*, a.username AS adminuser, u.username FROM ".TABLE_PREFIX."banned b LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid) ORDER BY lifted ASC");
 	$numbans = $db->num_rows($query);
 	cpheader();
-	$hopto[] = "<input type=\"button\" value=\"$lang->ban_user\" onclick=\"hopto('users.php?".SID."&action=manageban');\" class=\"hoptobutton\" />";
+	$hopto[] = "<input type=\"button\" value=\"$lang->ban_user\" onclick=\"hopto('users.php?".SID."&amp;action=manageban');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 
 	starttable();
@@ -1920,7 +1920,7 @@ if($mybb->input['action'] == "banned")
 		while($user = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
-			if($user[lifted] == 'perm' || $user['lifted'] == '' || $user[bantime] == 'perm' || $user['bantime'] == '---')
+			if($user['lifted'] == 'perm' || $user['lifted'] == '' || $user['bantime'] == 'perm' || $user['bantime'] == '---')
 			{
 				$banlength = $lang->permanent;
 				$timeremaining = '-';
@@ -1935,13 +1935,13 @@ if($mybb->input['action'] == "banned")
 			$user['banreason'] = htmlspecialchars_uni($user['banreason']);
 			$bannedon = mydate($settings['dateformat'], $user['dateline']);
 			echo "<tr title='$user[reason]'>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"users.php?".SID."&action=edit&uid=$user[uid]\">$user[username]</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"users.php?".SID."&amp;action=edit&amp;uid=$user[uid]\">$user[username]</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$user[adminuser]</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$bannedon</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$banlength</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$liftedon</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$timeremaining</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".makelinkcode("edit", "users.php?".SID."&action=manageban&uid=$user[uid]")." ".makelinkcode("lift", "users.php?".SID."&action=liftban&uid=$user[uid]")."</td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".makelinkcode("edit", "users.php?".SID."&amp;action=manageban&amp;uid=$user[uid]")." ".makelinkcode("lift", "users.php?".SID."&amp;action=liftban&amp;uid=$user[uid]")."</td>\n";
 		}
 	}
 	endtable();
@@ -1968,19 +1968,19 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 		$last_user = $db->fetch_array($query);
 		$lang->last_edited = sprintf($lang->last_edited, $last_user['username']);
 		$last_user['username'] = urlencode($last_user['username']);
-		$last_edited = "<li><a href=\"users.php?".SID."&action=find&search[username]=$last_user[username]&searchop[sortby]=regdate&searchop[order]=desc\">".$lang->last_edited."</li>\n";
+		$last_edited = "<li><a href=\"users.php?".SID."&amp;action=find&amp;search[username]=$last_user[username]&amp;searchop[sortby]=regdate&amp;searchop[order]=desc\">".$lang->last_edited."</li>\n";
 	}
 
+  startform("users.php", '', "find");
 	starttable();
-	startform("users.php", '', "find");
 	tableheader($lang->user_management);
 	tablesubheader($lang->quick_search_listing);
 	makelabelcode("<ul>\n
 		$last_edited
-		<li><a href=\"users.php?".SID."&action=find\">$lang->list_all</a></li>\n
-		<li><a href=\"users.php?".SID."&action=find&searchop[sortby]=postnum&searchop[order]=desc\">$lang->list_top_posters</a></li>\n
-		<li><a href=\"users.php?".SID."&action=find&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_new_regs</a></li>\n
-		<li><a href=\"users.php?".SID."&action=find&search[usergroups][]=5&searchop[sortby]=regdate&searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n
+		<li><a href=\"users.php?".SID."&amp;action=find\">$lang->list_all</a></li>\n
+		<li><a href=\"users.php?".SID."&amp;action=find&amp;searchop[sortby]=postnum&amp;searchop[order]=desc\">$lang->list_top_posters</a></li>\n
+		<li><a href=\"users.php?".SID."&amp;action=find&amp;searchop[sortby]=regdate&amp;searchop[order]=desc\">$lang->list_new_regs</a></li>\n
+		<li><a href=\"users.php?".SID."&amp;action=find&amp;search[usergroups][]=5&amp;searchop[sortby]=regdate&amp;searchop[order]=desc\">$lang->list_awaiting_activation</a></li>\n
 		</ul>", '', 2);
 	tablesubheader($lang->search_users_where);
 	makeinputcode($lang->name_contains, "search[username]");
@@ -2094,11 +2094,11 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	echo "<option value=\"regdate\">$lang->select_reg_date</option>\n";
 	echo "<option value=\"lastvisit\">$lang->select_last_visit</option>\n";
 	echo "<option value=\"postnum\">$lang->select_posts</option>\n";
-	echo "</select>";
+	echo "</select>\n";
 	echo "<select name=\"searchop[order]\">\n";
 	echo "<option value=\"asc\">$lang->sort_asc</option>\n";
 	echo "<option value=\"desc\">$lang->sort_desc</option>\n";
-	echo "</td>\n</tr>\n";
+	echo "</select>\n</td>\n</tr>\n";
 	makeinputcode($lang->results_per_page, "searchop[perpage]", "30");
 
 	tablesubheader($lang->display_options);

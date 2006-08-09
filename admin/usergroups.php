@@ -152,7 +152,7 @@ if($mybb->input['action'] == "do_add")
 		"candisplaygroup" => $db->escape_string($mybb->input['candisplaygroup']),
 		"attachquota" => intval($mybb->input['attachquota']),
 		"cancustomtitle" => $db->escape_string($mybb->input['cancustomtitle'])
-		);
+	);
 	$plugins->run_hooks("admin_usergroups_do_add");
 	$db->insert_query(TABLE_PREFIX."usergroups", $grouparray);
 	$cache->updateusergroups();
@@ -190,7 +190,7 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 		"uid" => $user['uid'],
 		"canmanagemembers" => $db->escape_string($mybb->input['canmanagemembers']),
 		"canmanagerequests" => $db->escape_string($mybb->input['canmanagerequests']),
-		);
+	);
 	$plugins->run_hooks("admin_usergroups_do_editgroupleader");
 	if($mybb->input['action'] == "do_editgroupleader")
 	{
@@ -201,10 +201,10 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 	else
 	{
 		$db->insert_query(TABLE_PREFIX."groupleaders", $leaderarray);
-		$success_text= sprintf($lang->leader_added, $usergroup['title']);
+		$success_text = sprintf($lang->leader_added, $usergroup['title']);
 	}
 
-	cpredirect("usergroups.php?".SID."&action=groupleaders&gid=".$mybb->input['gid'], $success_text);
+	cpredirect("usergroups.php?".SID."&amp;action=groupleaders&amp;gid=".$mybb->input['gid'], $success_text);
 }
 
 if($mybb->input['action'] == "do_delete")
@@ -308,7 +308,7 @@ if($mybb->input['action'] == "do_edit")
 		"maxreputationsday" => intval($mybb->input['maxreputationsday']),
 		"attachquota" => $db->escape_string($mybb->input['attachquota']),
 		"cancustomtitle" => $db->escape_string($mybb->input['cancustomtitle'])
-		);
+	);
 	// Only update the candisplaygroup setting if not a core usergroup
 	if($usergroup['type'] != 1)
 	{
@@ -656,7 +656,7 @@ if($mybb->input['action'] == "joinrequests")
 <!--
 function radioAll(formName, value)
 {
-	for(var i=0;i<formName.elements.length;i++)
+	for(var i=0; i < formName.elements.length; i++)
 	{
 		var element = formName.elements[i];
 		if((element.name != "allbox") && (element.type == "radio")) {
@@ -728,15 +728,14 @@ function usergroup_hop(gid)
 {
 	usergroupaction = "usergroup_"+gid;
 	action = eval("document.usergroups.usergroup_"+gid+".options[document.usergroups.usergroup_"+gid+".selectedIndex].value");
-	window.location = "usergroups.php?<?php echo SID; ?>&action="+action+"&gid="+gid;
+	window.location = "usergroups.php?<?php echo SID; ?>&action="+action+"&amp;gid="+gid;
 }
 -->
 </script>
 <?php
-	//startform('', 'usergroups');
 	startform('usergroups.php', 'usergroups');
 
-	$hopto[] = "<input type=\"button\" value=\"$lang->create_new_group\" onclick=\"hopto('usergroups.php?".SID."&action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->create_new_group\" onclick=\"hopto('usergroups.php?".SID."&amp;action=add');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->default_groups, '', 4);
@@ -755,10 +754,14 @@ function usergroup_hop(gid)
 
 	while($usergroup = $db->fetch_array($query))
 	{
+	  if($usergroup['description'])
+	  {
+      $usergroup['description'] = "<small>".$usergroup['description']."</small>";
+    }
 		$bgcolor = getaltbg();
 		makehiddencode('gid', $usergroup['gid']);
 		echo "<tr class=\"{$bgcolor}\">\n";
-		echo "<td>{$usergroup['title']}<br /><small>{$usergroup['description']}</td>\n";
+		echo "<td>{$usergroup['title']}<br />{$usergroup['description']}</td>\n";
 		if(!$primaryusers[$usergroup['gid']])
 		{
 			$primaryusers[$usergroup['gid']] = 0;
@@ -774,7 +777,7 @@ function usergroup_hop(gid)
 		echo "<option value=\"listusers\">{$lang->list_users}</option>\n";
 		echo "<option value=\"listsecondaryusers\">{$lang->list_secondary_users}</option>\n";
 		echo "<option value=\"groupleaders\">{$lang->group_leaders}</option>\n";
-		echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\"></td>\n";
+		echo "</select>\n&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\" /></td>\n";
 		if($usergroup['showforumteam'] == 'yes')
 			{
 				echo "<td align=\"center\"><input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" /></td>\n";
@@ -830,7 +833,7 @@ function usergroup_hop(gid)
 			echo "<option value=\"listusers\">{$lang->list_users}</option>\n";
 			echo "<option value=\"listsecondaryusers\">{$lang->list_secondary_users}</option>\n";
 			echo "<option value=\"groupleaders\">{$lang->group_leaders}</option>\n";
-			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\"></td>\n";
+			echo "</select>\n&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\" /></td>\n";
 			if($usergroup['showforumteam'] == 'yes')
 			{
 				echo "<td align=\"center\"><input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" /></td>\n";
@@ -868,7 +871,6 @@ function usergroup_hop(gid)
 		while($usergroup = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
-			//startform('usergroups.php');
 			makehiddencode('gid', $usergroup['gid']);
 			echo "<tr class=\"{$bgcolor}\">\n";
 			echo "<td>{$usergroup['title']}</td>\n";
@@ -884,7 +886,7 @@ function usergroup_hop(gid)
 			$modrequests = '';
 			if($joinrequests[$usergroup['gid']] > 0)
 			{
-				$usergroup['joinrequests'] = "<a href=\"usergroups.php?".SID."&action=joinrequests&gid={$usergroup['gid']}\"><span class=\"highlight1\">".$joinrequests[$usergroup['gid']]."</span></a>";
+				$usergroup['joinrequests'] = "<a href=\"usergroups.php?".SID."&amp;=joinrequests&amp;gid={$usergroup['gid']}\"><span class=\"highlight1\">".$joinrequests[$usergroup['gid']]."</span></a>";
 				$modrequests = "<option value=\"joinrequests\">{$lang->moderate_join_requests}</option>\n";
 			}
 			echo "</td>\n";
@@ -897,7 +899,7 @@ function usergroup_hop(gid)
 			echo "<option value=\"listsecondaryusers\">{$lang->list_secondary_users}</option>\n";
 			echo "<option value=\"groupleaders\">{$lang->group_leaders}</option>\n";
 			echo "<option value=\"joinrequests\">{$lang->moderate_join_requests}</option>\n";
-			echo "</select>&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\"></td>\n";
+			echo "</select>\n&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\" /></td>\n";
 			if($usergroup['showforumteam'] == 'yes')
 			{
 				echo "<td align=\"center\"><input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" /></td>\n";
@@ -908,7 +910,6 @@ function usergroup_hop(gid)
 			}
 			echo "</tr>\n";
 		}
-		//endform();
 		endtable();
 	}
 	makehiddencode('action', 'disporder');

@@ -144,7 +144,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		cpheader();
 	}
-	$hopto[] = "<input type=\"button\" value=\"$lang->new_usertitle\" onclick=\"hopto('usertitles.php?".SID."&action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->new_usertitle\" onclick=\"hopto('usertitles.php?".SID."&amp;action=add');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 
 	starttable();
@@ -157,8 +157,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	while($title = $db->fetch_array($query))
 	{
 		$usertitles .= "\n<li><b>$title[title]</b> ($lang->minimum_posts $title[posts]) ".
-			makelinkcode($lang->edit, "usertitles.php?".SID."&action=edit&utid=$title[utid]").
-			makelinkcode($lang->delete, "usertitles.php?".SID."&action=delete&utid=$title[utid]")."\n";
+			makelinkcode($lang->edit, "usertitles.php?".SID."&amp;action=edit&amp;utid=$title[utid]").
+			makelinkcode($lang->delete, "usertitles.php?".SID."&amp;action=delete&amp;utid=$title[utid]")."\n";
 	}
 	makelabelcode("<ul>\n$usertitles\n</ul>", "");
 	endtable();

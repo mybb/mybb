@@ -58,7 +58,7 @@ if($mybb->input['action'] == "do_add")
 	$themearray = array(
 		"name" => $db->escape_string($mybb->input['name']),
 		"pid" => $mybb->input['pid'],
-		);
+	);
 	$plugins->run_hooks("admin_themes_do_add");
 	$db->insert_query(TABLE_PREFIX."themes", $themearray);
 	$tid = $db->insert_id();
@@ -107,7 +107,7 @@ if($mybb->input['action'] == "do_edit")
 		"name" => $db->escape_string($mybb->input['name']),
 		"pid" => $mybb->input['pid'],
 		"allowedgroups" => $allowedgroups,
-		);
+	);
 	$plugins->run_hooks("admin_themes_do_edit");
 	$db->update_query(TABLE_PREFIX."themes", $themearray, "tid='".intval($mybb->input['tid'])."'");
 
@@ -372,7 +372,7 @@ if($mybb->input['action'] == "do_import")
 	$themearray = array(
 		"name" => $db->escape_string($name),
 		"pid" => $mybb->input['pid'],
-		);
+	);
 
 	$db->insert_query(TABLE_PREFIX."themes", $themearray);
 	$tid = $db->insert_id();
@@ -412,7 +412,8 @@ if($mybb->input['action'] == "settings")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "edit") {
+if($mybb->input['action'] == "edit") 
+{
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='1'");
 	$master = $db->fetch_array($query);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
@@ -426,7 +427,7 @@ if($mybb->input['action'] == "edit") {
 	$options = array(
 		"order_by" => "title",
 		"order_dir" => "ASC"
-		);
+	);
 	$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title", "", $options);
 	$has_check = 0;
 	while($usergroup = $db->fetch_array($query))
@@ -434,7 +435,7 @@ if($mybb->input['action'] == "edit") {
 		$checked = '';
 		if(in_array($usergroup['gid'], $existing_groups))
 		{
-			$checked = "checked=\"checked\"";
+			$checked = " checked=\"checked\"";
 			$has_check = 1;
 		}
 		$usergroups[] = "<input type=\"checkbox\" name=\"allowedgroups[]\" value=\"$usergroup[gid]\"$checked /> $usergroup[title]";
@@ -442,7 +443,7 @@ if($mybb->input['action'] == "edit") {
 	$checked = '';
 	if(!$has_check && !in_array("none", $existing_groups))
 	{
-		$checked = "checked=\"checked\"";
+		$checked = " checked=\"checked\"";
 	}
 	$usergroups[] = "<input type=\"checkbox\" name=\"allowedgroups[]\" value=\"all\"$checked /> <strong>$lang->all_groups</strong>";
 	$usergroups = implode("<br />", $usergroups);
@@ -504,7 +505,8 @@ if($mybb->input['action'] == "edit") {
 
 	cpfooter();
 }
-if($mybb->input['action'] == "delete") {
+if($mybb->input['action'] == "delete") 
+{
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 	$plugins->run_hooks("admin_themes_delete");
@@ -587,24 +589,24 @@ function theme_hop(tid)
 		confirmReturn = confirm('<?php echo $lang->export_advanced_settings; ?>');
 		if(confirmReturn == false)
 		{
-			window.location = "themes.php?<?php echo SID; ?>&action=do_download&tid="+tid+"&customonly=yes&inctemps=yes&customtempsonly=yes";
+			window.location = "themes.php?<?php echo SID; ?>&amp;action=do_download&amp;tid="+tid+"&amp;customonly=yes&amp;inctemps=yes&amp;customtempsonly=yes";
 		}
 		else
 		{
-			window.location = "themes.php?<?php echo SID; ?>&action=download&tid="+tid;
+			window.location = "themes.php?<?php echo SID; ?>&amp;action=download&amp;tid="+tid;
 		}
 	}
 	else if(action != "")
 	{
-		window.location = "themes.php?<?php echo SID; ?>&action="+action+"&tid="+tid;
+		window.location = "themes.php?<?php echo SID; ?>&amp;action="+action+"&amp;tid="+tid;
 	}
 }
 -->
 </script>
 <?php
-	$hopto[] = "<input type=\"button\" value=\"$lang->new_theme\" onclick=\"hopto('themes.php?".SID."&action=add');\" class=\"hoptobutton\">";
-	$hopto[] = "<input type=\"button\" value=\"$lang->import_theme\" onclick=\"hopto('themes.php?".SID."&action=import');\" class=\"hoptobutton\">";
-	$hopto[] = "<input type=\"button\" value=\"$lang->download_theme\" onclick=\"hopto('themes.php?".SID."&action=download');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->new_theme\" onclick=\"hopto('themes.php?".SID."&amp;action=add');\" class=\"hoptobutton\" />";
+	$hopto[] = "<input type=\"button\" value=\"$lang->import_theme\" onclick=\"hopto('themes.php?".SID."&amp;action=import');\" class=\"hoptobutton\" />";
+	$hopto[] = "<input type=\"button\" value=\"$lang->download_theme\" onclick=\"hopto('themes.php?".SID."&amp;action=download');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 
 	startform("themes.php", "themes" , "do_modify");

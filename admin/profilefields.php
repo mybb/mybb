@@ -58,7 +58,7 @@ if($mybb->input['action'] == "do_add")
 		"required" => $db->escape_string($mybb->input['required']),
 		"editable" => $db->escape_string($mybb->input['editable']),
 		"hidden" => $db->escape_string($mybb->input['hidden']),
-		);
+	);
 	$plugins->run_hooks("admin_profilefields_do_ad");
 	$db->insert_query(TABLE_PREFIX."profilefields", $sqlarray);
 	$fid = $db->insert_id();
@@ -115,7 +115,7 @@ if($mybb->input['action'] == "do_edit")
 		"required" => $db->escape_string($mybb->input['required']),
 		"editable" => $db->escape_string($mybb->input['editable']),
 		"hidden" => $db->escape_string($mybb->input['hidden']),
-		);
+	);
 	$plugins->run_hooks("admin_profilefields_do_edit");
 	$db->update_query(TABLE_PREFIX."profilefields", $sqlarray, "fid='".intval($mybb->input['fid'])."'");
 	cpredirect("profilefields.php?".SID, $lang->field_updated);
@@ -204,7 +204,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		cpheader();
 	}
-	$hopto[] = "<input type=\"button\" value=\"$lang->create_profilefield\" onclick=\"hopto('profilefields.php?".SID."&action=add');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->create_profilefield\" onclick=\"hopto('profilefields.php?".SID."&amp;action=add');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 
 	starttable();
@@ -224,8 +224,6 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	while($profilefield = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
-		startform("profilefields.php");
-		makehiddencode("fid", $profilefield['fid']);
 		$profilefield['required'] = ($profilefield['required'] == "yes") ? $lang->yes : $lang->no;
 		$profilefield['editable'] = ($profilefield['editable'] == "yes") ? $lang->yes : $lang->no;
 		$profilefield['hidden'] = ($profilefield['hidden'] == "yes") ? $lang->yes : $lang->no;
@@ -235,9 +233,14 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		echo "<td class=\"$bgcolor\" align=\"center\">$profilefield[required]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\">$profilefield[editable]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\">$profilefield[hidden]</td>\n";
-		echo "<td class=\"$bgcolor\" align=\"right\"><select name=\"action\"><option value=\"edit\">$lang->edit_field</option><option value=\"delete\">$lang->delete_field</option></select>&nbsp;<input type=\"submit\" value=\"$lang->go\"></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"right\">";
+		startform("profilefields.php");
+		makehiddencode("fid", $profilefield['fid']);
+    echo "<select name=\"action\"><option value=\"edit\">$lang->edit_field</option><option value=\"delete\">$lang->delete_field</option></select>&nbsp;<input type=\"submit\" value=\"$lang->go\" />";
+    endform();
+    echo "</td>\n";
 		echo "</tr>\n";
-		endform();
+		
 	}
 	endtable();
 	cpfooter();

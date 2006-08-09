@@ -27,7 +27,7 @@ switch($mybb->input['action'])
 		break;
 	case "do_search":
 	case "orphans":
-		addacpnav($lang->nav_attachment_manager, "attachments.php?".SID."&action=search");
+		addacpnav($lang->nav_attachment_manager, "attachments.php?".SID."&amp;action=search");
 		addacpnav($lang->nav_attachment_results);
 		break;
 	case "add":
@@ -546,7 +546,7 @@ if($mybb->input['action'] == "stats")
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&amp;pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&amp;uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['downloads']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['downloads']."</td>\n";
 			echo "</tr>\n";
 		}
 		endtable();
@@ -558,7 +558,6 @@ if($mybb->input['action'] == "stats")
 		echo "<td class=\"subheader\" align=\"center\" width=\"40%\">$lang->post</td>\n";
 		echo "<td class=\"subheader\" align=\"center\" width=\"20%\">$lang->username</td>\n";
 		echo "<td class=\"subheader\" align=\"center\" width=\"10%\">$lang->filesize</td>\n";
-		echo "</tr>\n";
 		echo "</tr>\n";
 		
 		$options = array(
@@ -577,7 +576,7 @@ if($mybb->input['action'] == "stats")
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&amp;pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&amp;uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['filesize']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['filesize']."</td>\n";
 			echo "</tr>\n";
 		}
 		endtable();
@@ -618,7 +617,7 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 	$plugins->run_hooks("admin_attachments_modify");
 	// list all attachment types so user can pick one to edit/delete
 	cpheader();
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_attach_type\" onclick=\"hopto('attachments.php?".SID."&action=add');\" class=\"hoptobutton\" />";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_attach_type\" onclick=\"hopto('attachments.php?".SID."&amp;action=add');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->attachment_types, "", "6");
@@ -638,24 +637,32 @@ if($mybb->input['action'] == "modify" || !$mybb->input['action'])
 		$size = get_friendly_size($type['maxsize']*1024);
 		if($type['icon'])
 		{
-			$icon = "<img src=\"../$type[icon]\">";
+			$icon = "<img src=\"../$type[icon]\" alt=\"\" />";
 		}
 		else
 		{
 			$icon = "&nbsp;";
 		}
 		$bgcolor = getaltbg();
-		startform("attachments.php", "", "edit");
-		makehiddencode("atid", $type['atid']);
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"1\">$icon</td>";
 		echo "<td class=\"$bgcolor\" width=\"25%\"><b>.$type[extension]</b></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"25%\">$type[mimetype]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"25%\">$size</td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\" width=\"1\"><input type=\"submit\" name=\"edit\" value=\"$lang->type_edit\" class=\"submitbutton\" /></td>";
-		echo "<td class=\"$bgcolor\" align=\"center\" width=\"1\"><input type=\"submit\" name=\"delete\" value=\"$lang->type_delete\" class=\"submitbutton\" /></td>";
+		echo "<td class=\"$bgcolor\" align=\"center\" width=\"1\">";
+		startform("attachments.php", "", "edit");
+		makehiddencode("atid", $type['atid']);
+    echo "<input type=\"submit\" name=\"edit\" value=\"$lang->type_edit\" class=\"submitbutton\" />";
+    endform();
+    echo "</td>";
+		echo "<td class=\"$bgcolor\" align=\"center\" width=\"1\">";
+		startform("attachments.php", "", "edit");
+		makehiddencode("atid", $type['atid']);
+    echo "<input type=\"submit\" name=\"delete\" value=\"$lang->type_delete\" class=\"submitbutton\" />";
+    endform();
+    echo "</td>";
 		echo "</tr>\n";
-		endform();
+		
 	}
 	endtable();
 	cpfooter();

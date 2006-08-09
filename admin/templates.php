@@ -99,21 +99,21 @@ if($mybb->input['action'] == "do_add")
 		"version" => $mybb->version_code,
 		"status" => "",
 		"dateline" => time()
-		);
+	);
 	$plugins->run_hooks("admin_templates_do_add");
 	$db->insert_query(TABLE_PREFIX."templates", $newtemplate);
 	$tid = $db->insert_id();
 	if($mybb->input['group'])
 	{
-		$opengroup = "&group=".$mybb->input['group']."#".$mybb->input['group'];
+		$opengroup = "&amp;group=".$mybb->input['group']."#".$mybb->input['group'];
 	}
 	if($mybb->input['continue'] != "yes")
 	{
-		$editurl = "templates.php?".SID."&expand=".$mybb->input['setid'].$opengroup;
+		$editurl = "templates.php?".SID."&amp;expand=".$mybb->input['setid'].$opengroup;
 	}
 	else
 	{
-		$editurl = "templates.php?".SID."&action=edit&tid=".$tid."&continue=yes&group=".$mybb->input['group'];
+		$editurl = "templates.php?".SID."&amp;action=edit&amp;tid=".$tid."&amp;continue=yes&amp;group=".$mybb->input['group'];
 	}
 	cpredirect($editurl, $lang->template_added);
 }
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "do_addset")
 	$plugins->run_hooks("admin_templates_do_addset");
 	$db->insert_query(TABLE_PREFIX."templatesets", $newset);
 	$setid = $db->insert_id();
-	cpredirect("templates.php?".SID."&expand=$setid", $lang->set_added);
+	cpredirect("templates.php?".SID."&amp;expand=$setid", $lang->set_added);
 }
 	
 if($mybb->input['action'] == "do_delete")
@@ -136,9 +136,9 @@ if($mybb->input['action'] == "do_delete")
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 		if($mybb->input['group'])
 		{
-			$opengroup = "&group=".$mybb->input['group']."#".$mybb->input['group'];
+			$opengroup = "&amp;group=".$mybb->input['group']."#".$mybb->input['group'];
 		}
-		cpredirect("templates.php?".SID."&expand=".$mybb->input['expand'].$opengroup, $lang->template_deleted);
+		cpredirect("templates.php?".SID."&amp;expand=".$mybb->input['expand'].$opengroup, $lang->template_deleted);
 	}
 	else
 	{
@@ -153,7 +153,7 @@ if($mybb->input['action'] == "do_deleteset")
 		$plugins->run_hooks("admin_templates_do_deleteset");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
-		cpredirect("templates.php?".SID."&action=modify", $lang->set_deleted);
+		cpredirect("templates.php?".SID."&amp;action=modify", $lang->set_deleted);
 	}
 	else
 	{
@@ -188,15 +188,15 @@ if($mybb->input['action'] == "do_edit")
 	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
 	if($mybb->input['group'])
 	{
-		$opengroup = "&group=".$mybb->input['group']."#".$mybb->input['group'];
+		$opengroup = "&amp;group=".$mybb->input['group']."#".$mybb->input['group'];
 	}
 	if($mybb->input['continue'] != "yes")
 	{
-		$editurl = "templates.php?".SID."&expand=".$mybb->input['setid'].$opengroup;
+		$editurl = "templates.php?".SID."&amp;expand=".$mybb->input['setid'].$opengroup;
 	}
 	else
 	{
-		$editurl = "templates.php?".SID."&action=edit&tid=".$mybb->input['tid']."&continue=yes&group=".$mybb->input['group'];
+		$editurl = "templates.php?".SID."&amp;action=edit&amp;tid=".$mybb->input['tid']."&amp;continue=yes&amp;group=".$mybb->input['group'];
 	}
 	cpredirect($editurl, $lang->template_edited);
 }
@@ -262,11 +262,11 @@ if($mybb->input['action'] == "do_replace")
 								"version" => $mybb->version_code,
 								"status" => '',
 								"dateline" => time()
-								);
+							);
 							$db->insert_query(TABLE_PREFIX."templates", $new_template);
 							$new_tid = $db->insert_id();
 							$label = sprintf($lang->search_created_custom, $template['title']);
-							makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$new_tid));
+							makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&amp;action=edit&amp;tid=".$new_tid));
 						}
 						else
 						{
@@ -320,24 +320,24 @@ if($mybb->input['action'] == "do_search_names")
 		$query = $db->query("
 			SELECT t.tid, t.title, t.sid, s.title as settitle, t2.tid as customtid 
 			FROM ".TABLE_PREFIX."templates t 
-				LEFT JOIN ".TABLE_PREFIX."templatesets s ON (t.sid=s.sid)
-				LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t.title=t2.title AND t2.sid='1')  
+			LEFT JOIN ".TABLE_PREFIX."templatesets s ON (t.sid=s.sid)
+			LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t.title=t2.title AND t2.sid='1')  
 			WHERE t.title LIKE '%".$db->escape_string($mybb->input['title'])."%'
 			ORDER BY t.title ASC
-			");
+		");
 		while($template = $db->fetch_array($query))
 		{
-			$link = makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']);
+			$link = makelinkcode($lang->search_edit, "templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid']);
 			if($template['sid'] == -2)
 			{
 				$template['settitle'] = $lang->master_templates;
 				if(!$template['customtid'])
 				{
-					$link = makelinkcode($lang->search_change_original, "templates.php?".SID."&action=add&title=".$template['title']."&sid=1");
+					$link = makelinkcode($lang->search_change_original, "templates.php?".SID."&amp;action=add&amp;title=".$template['title']."&amp;sid=1");
 				}
 				else
 				{
-					$link = makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['customtid']);
+					$link = makelinkcode($lang->search_edit, "templates.php?".SID."&amp;action=edit&amp;tid=".$template['customtid']);
 				}
 			}
 			elseif($template['sid'] == -1)
@@ -393,7 +393,7 @@ if($mybb->input['action'] == "edit")
 		$master = $db->fetch_array($query);
 		if($master['tid'])
 		{
-			makelabelcode($lang->options, "<a href=\"templates.php?".SID."&action=edit&tid=".$master['tid']."\">".$lang->view_original."</a><br /><a href=\"templates.php?".SID."&action=diff&title=$template[title]&sid2=$template[sid]\">".$lang->diff_with_original."</a>");
+			makelabelcode($lang->options, "<a href=\"templates.php?".SID."&amp;action=edit&amp;tid=".$master['tid']."\">".$lang->view_original."</a><br /><a href=\"templates.php?".SID."&amp;action=diff&amp;title=$template[title]&amp;sid2=$template[sid]\">".$lang->diff_with_original."</a>");
 		}
 		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $template['sid'], "-1=Global - All Template Sets");
 	} 
@@ -491,7 +491,8 @@ if($mybb->input['action'] == "makeoriginals")
 	$query = $db->query("SELECT * FROM templates WHERE sid='".$mybb->input['setid']."'");
 	while($template = $db->fetch_array($query)) 
 	{
-		if($template[origtitle]) {
+		if($template[origtitle]) 
+    {
 			$updatedtemplate = array(
 				"template" => $db->escape_string($template['template'])
 			);
@@ -508,7 +509,7 @@ if($mybb->input['action'] == "makeoriginals")
 		}
 	}
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
-	cpredirect("templates.php?".SID."&expand=$setid", $lang->originals_made);
+	cpredirect("templates.php?".SID."&amp;expand=$setid", $lang->originals_made);
 }
 
 if($mybb->input['action'] == "add") 
@@ -659,11 +660,11 @@ if($mybb->input['action'] == "findupdated")
 		$altbg = getaltbg();
 		echo "<tr>";
 		echo "<td class=\"$altbg\" width=\"10\">&nbsp;</td>\n";
-		echo "<td class=\"$altbg\"><a href=\"templates.php?".SID."&action=edit&tid=".$template['tid']."\">".$template['title']."</a></td>";
+		echo "<td class=\"$altbg\"><a href=\"templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid']."\">".$template['title']."</a></td>";
 		echo "<td class=\"$altbg\" align=\"right\">";
-		echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?".SID."&action=edit&tid=".$template['tid']."');\" class=\"submitbutton\">";
-		echo "<input type=\"button\" value=\"$lang->revert\" onclick=\"hopto('templates.php?".SID."&action=revert&tid=".$template['tid']."');\" class=\"submitbutton\">";
-		echo "<input type=\"button\" value=\"$lang->diff\" onclick=\"hopto('templates.php?".SID."&action=diff&title=".$template['title']."&sid1=".$template['sid']."&sid2=-2');\" class=\"submitbutton\">";
+		echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid']."');\" class=\"submitbutton\" />";
+		echo "<input type=\"button\" value=\"$lang->revert\" onclick=\"hopto('templates.php?".SID."&amp;action=revert&amp;tid=".$template['tid']."');\" class=\"submitbutton\" />";
+		echo "<input type=\"button\" value=\"$lang->diff\" onclick=\"hopto('templates.php?".SID."&amp;action=diff&amp;title=".$template['title']."&amp;sid1=".$template['sid']."&amp;sid2=-2');\" class=\"submitbutton\" />";
 		echo "</td>";
 		echo "</tr>";
 	}
@@ -709,16 +710,16 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			echo "<tr>\n";
 			echo "<td class=\"subheader\">";
 			echo "<div style=\"float: right;\">";
-			echo "<input type=\"button\" value=\"$lang->add_template\" onclick=\"hopto('templates.php?".SID."&action=add&sid=".$templateset['sid']."');\" class=\"submitbutton\">";
+			echo "<input type=\"button\" value=\"$lang->add_template\" onclick=\"hopto('templates.php?".SID."&amp;action=add&amp;sid=".$templateset['sid']."');\" class=\"submitbutton\" />";
 			if($templateset['sid'] != "-2" && $templateset['sid'] != "-1")
 			{
-				echo "<input type=\"button\" value=\"$lang->edit_set\" onclick=\"hopto('templates.php?".SID."&action=editset&setid=".$templateset['sid']."');\" class=\"submitbutton\">";
+				echo "<input type=\"button\" value=\"$lang->edit_set\" onclick=\"hopto('templates.php?".SID."&amp;action=editset&amp;setid=".$templateset['sid']."');\" class=\"submitbutton\" />";
 				if(!$themes[$templateset['sid']])
 				{
-					echo "<input type=\"button\" value=\"$lang->delete_set\" onclick=\"hopto('templates.php?".SID."&action=deleteset&setid=".$templateset['sid']."');\" class=\"submitbutton\">";
+					echo "<input type=\"button\" value=\"$lang->delete_set\" onclick=\"hopto('templates.php?".SID."&amp;action=deleteset&amp;setid=".$templateset['sid']."');\" class=\"submitbutton\" />";
 				}
 			}
-			echo "<input type=\"button\" value=\"$lang->expand\" onclick=\"hopto('templates.php?".SID."&expand=".$templateset['sid']."');\" class=\"submitbutton\">";
+			echo "<input type=\"button\" value=\"$lang->expand\" onclick=\"hopto('templates.php?".SID."&amp;expand=".$templateset['sid']."');\" class=\"submitbutton\" />";
 			echo "</div><div>".$templateset['title']."</div></td>\n";
 			echo "</tr>\n";
 			if($themes[$templateset['sid']])
@@ -774,16 +775,16 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		echo "<tr>\n";
 		echo "<td class=\"subheader\" colspan=\"3\">";
 		echo "<div style=\"float: right;\">";
-		echo "<input type=\"button\" value=\"$lang->add_template\" onclick=\"hopto('templates.php?".SID."&action=add&sid=".$templateset['sid']."');\" class=\"submitbutton\">";
+		echo "<input type=\"button\" value=\"$lang->add_template\" onclick=\"hopto('templates.php?".SID."&amp;action=add&amp;sid=".$templateset['sid']."');\" class=\"submitbutton\" />";
 		if($templateset['sid'] != "-2" && $templateset['sid'] != "-1")
 		{
-			echo "<input type=\"button\" value=\"$lang->edit_set\" onclick=\"hopto('templates.php?".SID."&action=editset&setid=".$templateset['sid']."');\" class=\"submitbutton\">";
+			echo "<input type=\"button\" value=\"$lang->edit_set\" onclick=\"hopto('templates.php?".SID."&amp;action=editset&amp;setid=".$templateset['sid']."');\" class=\"submitbutton\" />";
 			if(!$themes[$expand])
 			{
-				echo "<input type=\"button\" value=\"$lang->delete_set\" onclick=\"hopto('templates.php?".SID."&action=deleteset&setid=".$templateset['sid']."');\" class=\"submitbutton\">";
+				echo "<input type=\"button\" value=\"$lang->delete_set\" onclick=\"hopto('templates.php?".SID."&amp;action=deleteset&amp;setid=".$templateset['sid']."');\" class=\"submitbutton\" />";
 			}
 		}
-		echo "<input type=\"button\" value=\"$lang->collapse\" onclick=\"hopto('templates.php?".SID."');\" class=\"submitbutton\">";
+		echo "<input type=\"button\" value=\"$lang->collapse\" onclick=\"hopto('templates.php?".SID."');\" class=\"submitbutton\" />";
 		echo "</div><div>".$templateset['title']."</div></td>\n";
 		echo "</tr>\n";
 		if($expand == -2 && md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7")
@@ -795,10 +796,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 				$altbg = getaltbg();
 				echo "<tr>";
 				echo "<td class=\"$altbg\" width=\"10\">&nbsp;</td>\n";
-				echo "<td class=\"$altbg\"><a href=\"templates.php?".SID."&action=edit&tid=".$template['tid']."\">".$template['title']."</a></td>";
+				echo "<td class=\"$altbg\"><a href=\"templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid']."\">".$template['title']."</a></td>";
 				echo "<td class=\"$altbg\" align=\"right\">";
-				echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?".SID."&action=edit&tid=".$template['tid']."');\" class=\"submitbutton\">";
-				echo "<input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('templates.php?".SID."&action=delete&tid=".$template['tid']."');\" class=\"submitbutton\">";
+				echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid']."');\" class=\"submitbutton\" />";
+				echo "<input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('templates.php?".SID."&amp;action=delete&amp;tid=".$template['tid']."');\" class=\"submitbutton\" />";
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -812,10 +813,10 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 				$altbg = getaltbg();
 				echo "<tr>";
 				echo "<td class=\"$altbg\" width=\"10\">&nbsp;</td>\n";
-				echo "<td class=\"$altbg\"><a href=\"templates.php?".SID."&action=edit&tid=".$template['tid']."\"><span class=\"highlight4\">".$template['title']."</span></a></td>";
+				echo "<td class=\"$altbg\"><a href=\"templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid']."\"><span class=\"highlight4\">".$template['title']."</span></a></td>";
 				echo "<td class=\"$altbg\" align=\"right\">";
-				echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?".SID."&action=edit&tid=".$template['tid']."');\" class=\"submitbutton\">";
-				echo "<input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('templates.php?".SID."&action=delete&tid=".$template['tid']."');\" class=\"submitbutton\">";
+				echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid']."');\" class=\"submitbutton\" />";
+				echo "<input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('templates.php?".SID."&amp;action=delete&amp;tid=".$template['tid']."');\" class=\"submitbutton\" />";
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -871,8 +872,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 						$groupname = $lang->parse($templategroups[$exploded[0]]['title']);
 						$altbg = getaltbg();
 						echo "<tr>\n";
-						echo "<td class=\"$altbg\" colspan=\"2\"><b><a href=\"templates.php?".SID."&expand=$expand&group=$gid#$gid\" name=\"$gid\">$groupname $lang->templates</a></b></td>\n";
-						echo "<td class=\"$altbg\" align=\"right\"><input type=\"button\" value=\"$lang->expand\" onclick=\"hopto('templates.php?".SID."&expand=$expand&group=$gid#$gid');\" class=\"submitbutton\"></td>\n";
+						echo "<td class=\"$altbg\" colspan=\"2\"><b><a href=\"templates.php?".SID."&amp;expand=$expand&amp;group=$gid#$gid\" name=\"$gid\">$groupname $lang->templates</a></b></td>\n";
+						echo "<td class=\"$altbg\" align=\"right\"><input type=\"button\" value=\"$lang->expand\" onclick=\"hopto('templates.php?".SID."&amp;expand=$expand&amp;group=$gid#$gid');\" class=\"submitbutton\" /></td>\n";
 						echo "</tr>\n";
 						$donegroup[$grouptype] = 1;
 					}
@@ -899,31 +900,31 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 				}
 				if(!$template['tid'])
 				{
-					echo "<a href=\"templates.php?".SID."&action=add&title=".$template['originaltitle']."&sid=".$set['sid'].$opengroup."\"><span class=\"highlight4\">".$template['originaltitle']."</span></a></td>\n";
+					echo "<a href=\"templates.php?".SID."&amp;action=add&amp;title=".$template['originaltitle']."&amp;sid=".$set['sid'].$opengroup."\"><span class=\"highlight4\">".$template['originaltitle']."</span></a></td>\n";
 					echo "<td class=\"$altbg\" align=\"right\">";
-					echo "<input type=\"button\" value=\"$lang->change_original\" onclick=\"hopto('templates.php?".SID."&action=add&title=".$template['originaltitle']."&sid=".$set['sid']."&group=$grouptype');\" class=\"submitbutton\">";
+					echo "<input type=\"button\" value=\"$lang->change_original\" onclick=\"hopto('templates.php?".SID."&amp;action=add&amp;title=".$template['originaltitle']."&amp;sid=".$set['sid']."&amp;group=$grouptype');\" class=\"submitbutton\" />";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
 				elseif($template['customtemplate'])
 				{
-						echo "<a href=\"templates.php?".SID."&action=edit&tid=".$template['tid'].$opengroup."\"><span class=\"highlight2\">".$template['title']."</span></a></td>";
+						echo "<a href=\"templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid'].$opengroup."\"><span class=\"highlight2\">".$template['title']."</span></a></td>";
 						echo "<td class=\"$altbg\" align=\"right\">";
-						echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?".SID."&action=edit&tid=".$template['tid']."&group=$grouptype');\" class=\"submitbutton\">";
-						echo "<input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('templates.php?".SID."&action=delete&tid=".$template['tid']."&expand=$expand&group=$grouptype');\" class=\"submitbutton\">";
+						echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid']."&amp;group=$grouptype');\" class=\"submitbutton\" />";
+						echo "<input type=\"button\" value=\"$lang->delete\" onclick=\"hopto('templates.php?".SID."&amp;action=delete&amp;tid=".$template['tid']."&amp;expand=$expand&amp;group=$grouptype');\" class=\"submitbutton\" />";
 						echo "</td>\n";
 						echo "</tr>\n";
 				}
 				else
 				{
-					echo "<a href=\"templates.php?".SID."&action=edit&tid=".$template['tid'].$opengroup."\"><span class=\"highlight3\">".$template['originaltitle']."</span></a></td>";
+					echo "<a href=\"templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid'].$opengroup."\"><span class=\"highlight3\">".$template['originaltitle']."</span></a></td>";
 					echo "<td class=\"$altbg\" align=\"right\">";
-					echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?".SID."&action=edit&tid=".$template['tid']."&group=$grouptype');\" class=\"submitbutton\">";
+					echo "<input type=\"button\" value=\"$lang->edit\" onclick=\"hopto('templates.php?".SID."&amp;action=edit&amp;tid=".$template['tid']."&amp;group=$grouptype');\" class=\"submitbutton\" />";
 					if($expand == 1)
 					{
-						echo "<input type=\"button\" value=\"$lang->diff\" onclick=\"hopto('templates.php?".SID."&action=diff&title=".$template['originaltitle']."&sid2=$expand');\" class=\"submitbutton\">";
+						echo "<input type=\"button\" value=\"$lang->diff\" onclick=\"hopto('templates.php?".SID."&amp;action=diff&amp;title=".$template['originaltitle']."&amp;sid2=$expand');\" class=\"submitbutton\" />";
 					}
-					echo "<input type=\"button\" value=\"$lang->revert_original\" onclick=\"hopto('templates.php?".SID."&action=revert&tid=".$template['tid']."&expand=$expand&group=$grouptype');\" class=\"submitbutton\">";
+					echo "<input type=\"button\" value=\"$lang->revert_original\" onclick=\"hopto('templates.php?".SID."&amp;action=revert&amp;tid=".$template['tid']."&amp;expand=$expand&amp;group=$grouptype');\" class=\"submitbutton\" />";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
