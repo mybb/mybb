@@ -173,7 +173,7 @@ switch($action)
 			echo "<div class=\"post\">\n<div class=\"header\">\n<div class=\"author\"><h2>{$post['username']}</h2></div>";
 			echo "<div class=\"dateline\">{$post['date']}</div>\n</div>\n<div class=\"message\">{$post['message']}</div>\n</div>\n";
 		}
-		archive_multipage($postcount, $perpage, $page, "thread-$id");
+		archive_multipage($postcount, $perpage, $page, "{$base_url}thread-$id");
 
 		archive_footer();
 		break;
@@ -330,7 +330,7 @@ switch($action)
 
 		echo "</div>\n";
 
-		archive_multipage($threadcount, $perpage, $page, "forum-$id");
+		archive_multipage($threadcount, $perpage, $page, "{$base_url}forum-$id");
 		archive_footer();
 		break;
 
@@ -358,7 +358,7 @@ switch($action)
 */
 function build_archive_forumbits($pid=0)
 {
-	global $db, $forumpermissions, $mybb, $lang, $archiveurl;
+	global $db, $forumpermissions, $mybb, $lang, $archiveurl, $base_url;
 
 	// Sort out the forum cache first.
 	static $fcache;
