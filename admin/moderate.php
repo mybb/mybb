@@ -96,12 +96,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 					$subject = $db->escape_string($mybb->input['threadsubject'][$tid]);
 					$message = $db->escape_string($mybb->input['threadmessage'][$tid]);
 					
-					//$sql_array = array(
-						//"visible" => 1,
-						//"subject" => $subject
-					//);
 					$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1', subject='{$subject}', unapprovedposts=unapprovedposts-1 WHERE tid = '".$tid."'");
-					//$db->update_query(TABLE_PREFIX."threads", $sql_array, "tid = '".$tid."'");
 					
 					$sql_array = array(
 						"message" => $message,
