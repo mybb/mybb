@@ -256,7 +256,7 @@ switch($action)
 				echo "<ol>\n";
 				while($announcement = $db->fetch_array($query))
 				{
-					echo "<li><a href=\"{$archiveurl}/index.php/announcement-{$announcement['aid']}.html\">{$announcement['subject']}</a></li>";
+					echo "<li><a href=\"{$base_url}announcement-{$announcement['aid']}.html\">{$announcement['subject']}</a></li>";
 				}
 				echo "</ol>\n</div>\n";
 			}
@@ -288,7 +288,7 @@ switch($action)
 					{
 						$lang_reply_text = $lang->archive_reply;
 					}					
-					echo "<li><a href=\"{$archiveurl}/index.php/thread-{$sticky['tid']}.html\">{$sticky['subject']}</a>";
+					echo "<li><a href=\"{$base_url}thread-{$sticky['tid']}.html\">{$sticky['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$sticky['replies']} {$lang_reply_text})</span></li>";
 				}
 				echo "</ol>\n</div>\n";
@@ -321,7 +321,7 @@ switch($action)
 					{
 						$lang_reply_text = $lang->archive_reply;
 					}
-					echo "<li><a href=\"{$archiveurl}/index.php/thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
+					echo "<li><a href=\"{$base_url}thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$thread['replies']} {$lang_reply_text})</span></li>";
 				}
 				echo "</ol>\n</div>\n";
@@ -389,11 +389,11 @@ function build_archive_forumbits($pid=0)
 					}
 					elseif($forum['type'] == "c")
 					{
-						$forums .= "<li><strong><a href=\"{$archiveurl}/index.php/forum-{$forum['fid']}.html\">{$forum['name']}</a></strong>";
+						$forums .= "<li><strong><a href=\"{$base_url}forum-{$forum['fid']}.html\">{$forum['name']}</a></strong>";
 					}
 					else
 					{
-						$forums .= "<li><a href=\"{$archiveurl}/index.php/forum-{$forum['fid']}.html\">{$forum['name']}</a>";
+						$forums .= "<li><a href=\"{$base_url}forum-{$forum['fid']}.html\">{$forum['name']}</a>";
 					}
 					if($fcache[$forum['fid']])
 					{

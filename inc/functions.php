@@ -1919,7 +1919,7 @@ function add_breadcrumb($name, $url="")
  */
 function build_forum_breadcrumb($fid, $archive=0)
 {
-	global $pforumcache, $db, $currentitem, $forum_cache, $navbits, $lang, $archiveurl;
+	global $pforumcache, $db, $currentitem, $forum_cache, $navbits, $lang, $base_url, $archiveurl;
 
 	if(!$pforumcache)
 	{
@@ -1949,7 +1949,7 @@ function build_forum_breadcrumb($fid, $archive=0)
 					// Set up link to forum in breadcrumb.
 					if($pforumcache[$fid][$forumnav['pid']]['type'] == 'f' || $pforumcache[$fid][$forumnav['pid']]['type'] == 'c')
 					{
-						$navbits[$navsize]['url'] = $archiveurl."/index.php/forum-".$forumnav['fid'].".html";
+						$navbits[$navsize]['url'] = "{$base_url}/forum-".$forumnav['fid'].".html";
 					}
 					else
 					{
@@ -1977,6 +1977,43 @@ function reset_breadcrumb()
 	$newnav[0]['url'] = $navbits[0]['url'];
 	unset($GLOBALS['navbits']);
 	$GLOBALS['navbits'] = $newnav;
+}
+
+/**
+ * Builds a URL to an archive mode page
+ *
+ * @param string The type of page (thread|announcement|forum)
+ * @param int The ID of the item
+ * @return string The URL
+ */
+function build_archive_link($type, $id="")
+{
+	global $mybb;
+	
+	// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings
+	if((preg_match("#win#i", PHP_OS) && stripos($_SERVER['SERVER_SOFTWARE'], "apache") == false) || stripos(SAPI_NAME, "cgi") !== false || defined("ARCHIVE_QUERY_STRINGS"))
+	{
+		$base_url = $mybb->settings['bburl']."/archive/index.php?";
+	}
+	else
+	{
+		$base_url = $mybb->settings['bburl']."/archive/index.php/";
+	}
+	switch($type)
+	{
+		case "thread":
+			$url = "{$base_url}thread-{$id}.html";
+			break;
+		case "announcement":
+			$url = "{$base_url}forum-{$id}.html";
+			break;
+		case "forum":
+			$url = "{$base_url}announcement-{$id}.html";
+			break;
+		default:
+			$url = $mybb->setings['bburl']."/archive/index.php";
+	}
+	return $url;
 }
 
 /**

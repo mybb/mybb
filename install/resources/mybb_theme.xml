@@ -5034,12 +5034,23 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </span></td>
 </tr>]]></template>
 		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
-<td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('misc.php?action=smilies&amp;popup=true','sminsert',240,280);">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
+<td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:clickableEditor.openGetMoreSmilies('clickableEditor');">{$lang->smilieinsert_getmore}</a>]</strong></td>
 </tr>]]></template>
 		<template name="misc_smilies_popup" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->smilies_listing}</title>
 {$headerinclude}
+<script type="text/javascript">
+	var editor = eval('opener.' + '{$editor}');
+	function insertSmilie(code)
+	{
+		if(editor)
+		{
+			editor.performInsert(code, "", true, false);
+		}
+	}
+</script>
+	
 </head>
 <body>
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -5055,7 +5066,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </body>
 </html>]]></template>
-		<template name="misc_smilies_popup_smilie" version="120"><![CDATA[<td class="{$class}" align="center"><a href="javascript:opener.addsmilie('{$smilie['find']}');"><img src="{$smilie['image']}" border="0" alt="{$smilie['find']}" /></a></td>
+		<template name="misc_smilies_popup_smilie" version="120"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" border="0" alt="{$smilie['find']}" onclick="insertSmilie('{$smilie['find']}');" /></a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="showteam" version="120"><![CDATA[<html>
 <head>

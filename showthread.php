@@ -62,7 +62,7 @@ if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['
 	error($lang->error_invalidthread);
 }
 
-$archive_url = $mybb->settings['bburl']."/archive/index.php/thread-{$tid}.html";
+$archive_url = build_archive_link("thread", $tid);
 
 // Build the navigation.
 build_forum_breadcrumb($fid);

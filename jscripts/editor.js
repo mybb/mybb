@@ -5,6 +5,12 @@ messageEditor.prototype = {
 
 	initialize: function(textarea, options)
 	{
+		// Sorry Konqueror, but due to a browser bug out of control with textarea values
+		// you do not get to use the fancy editor.
+		if(MyBB.browse == "konqueror")
+		{
+			return false;
+		}
 		// Defines an array of fonts to be shown in the font drop down.
 		this.fonts = new Array();
 		this.fonts["Arial"] = "Arial";
@@ -637,6 +643,12 @@ messageEditor.prototype = {
 				smilie.style.cursor = "pointer";
 			}
 		}
+	},
+	
+	openGetMoreSmilies: function(editor)
+	{
+		MyBB.popupWindow('misc.php?action=smilies&amp;popup=true&amp;editor='+editor, 'sminsert', 240, 280);
+		return false;
 	},
 
 	insertSmilie: function(e)

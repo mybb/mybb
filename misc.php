@@ -345,6 +345,7 @@ elseif($mybb->input['action'] == "smilies")
 	$smilies = '';
 	if($mybb->input['popup'])
 	{ // make small popup list of smilies
+		$editor = htmlspecialchars($mybb->input['editor']);
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";

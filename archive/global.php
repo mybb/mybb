@@ -9,6 +9,9 @@
  * $Id$
  */
 
+// If archive mode deos not work, uncomment the line below and try again
+// define("ARCHIVE_QUERY_STRINGS", 1);
+
 define("IN_MYBB", 1);
 
 // Lets pretend we're a level higher
@@ -39,17 +42,28 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 	exit;
 }
 
-if($_SERVER['REDIRECT_URL'])
+// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings
+if((preg_match("#win#i", PHP_OS) && stripos($_SERVER['SERVER_SOFTWARE'], "apache") == false) || stripos(SAPI_NAME, "cgi") !== false || defined("ARCHIVE_QUERY_STRINGS"))
 {
-	$url = $_SERVER['REDIRECT_URL'];
+	$url = $_SERVER['QUERY_STRING'];
+	$base_url = $mybb->settings['bburl']."/archive/index.php?";
 }
-elseif($_SERVER['PATH_INFO'])
-{
-	$url = $_SERVER['PATH_INFO'];
-}
+// Otherwise, we're using 100% friendly URLs
 else
 {
-	$url = $_SERVER['PHP_SELF'];
+	if($_SERVER['REDIRECT_URL'])
+	{
+		$url = $_SERVER['REDIRECT_URL'];
+	}
+	elseif($_SERVER['PATH_INFO'])
+	{
+		$url = $_SERVER['PATH_INFO'];
+	}
+	else
+	{
+		$url = $_SERVER['PHP_SELF'];
+	}
+	$base_url = $mybb->settings['bburl']."/archive/index.php/";
 }
 
 $endpart = my_substr(strrchr($url, "/"), 1);

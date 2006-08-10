@@ -51,7 +51,7 @@ if($fid > 0)
 }
 add_breadcrumb($lang->nav_announcements);
 
-$archive_url = $mybb->settings['bburl']."/archive/index.php/announcement-{$aid}.html";
+$archive_url = build_archive_link("announcement", $aid);
 
 // Permissions
 $forumpermissions = forum_permissions($forum['fid']);

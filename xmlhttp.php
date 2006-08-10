@@ -451,7 +451,8 @@ else if($mybb->input['action'] == "get_multiquoted")
 			$quoted_post['username'] = $quoted_post['userusername'];
 		}
 		// Clean up the message
-		$quoted_post['message'] = preg_replace('#^/me (.*)$#im', "* $quoted[username] \\1", $quoted_post['message']);
+		$quoted_post['message'] = preg_replace('#(^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} \\2</span>", $quoted_post['message']);
+		$quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $quoted_post['message']);
 		$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
 		
 		// Tack on to list of messages
