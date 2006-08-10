@@ -647,8 +647,7 @@ messageEditor.prototype = {
 	
 	openGetMoreSmilies: function(editor)
 	{
-		MyBB.popupWindow('misc.php?action=smilies&amp;popup=true&amp;editor='+editor, 'sminsert', 240, 280);
-		return false;
+		MyBB.popupWindow('misc.php?action=smilies&popup=true&editor='+editor, 'sminsert', 240, 280);
 	},
 
 	insertSmilie: function(e)

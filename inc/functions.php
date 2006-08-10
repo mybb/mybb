@@ -2005,10 +2005,10 @@ function build_archive_link($type, $id="")
 			$url = "{$base_url}thread-{$id}.html";
 			break;
 		case "announcement":
-			$url = "{$base_url}forum-{$id}.html";
+			$url = "{$base_url}announcement-{$id}.html";
 			break;
 		case "forum":
-			$url = "{$base_url}announcement-{$id}.html";
+			$url = "{$base_url}forum-{$id}.html";
 			break;
 		default:
 			$url = $mybb->setings['bburl']."/archive/index.php";
