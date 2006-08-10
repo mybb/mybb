@@ -115,7 +115,7 @@
 		for(var i=0;i<inputs.length;i++)
 		{
 			var element = inputs[i];
-			if((element.name != "allbox") && (element.type == "checkbox"))
+			if((element.name != "allbox") && (element.type == "checkbox") && (element.id.split("_")[0] == "inlinemod"))
 			{
 				element.checked = false;
 			}
