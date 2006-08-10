@@ -1973,8 +1973,7 @@ function make_theme_list($tid="0", $depth="")
 			echo "<option value=\"edit\" selected>- $lang->edit_theme_style</option>\n";
 			echo "<option value=\"\" style=\"font-weight: bold;\">$lang->other_options</option>\n";
 			echo "<option value=\"download\">- $lang->export_theme</option>\n";
-			echo "</select>&nbsp;<input type=\"button\" onclick=\"theme_hop($theme[tid]);\" value=\"$lang->go\"></td>\n";
-			echo "</td>\n";
+			echo "</select>&nbsp;<input type=\"button\" onclick=\"theme_hop($theme[tid]);\" value=\"$lang->go\" /></td>\n";
 			echo "</tr>\n";
 			if(is_array($tcache2[$theme['tid']]))
 			{

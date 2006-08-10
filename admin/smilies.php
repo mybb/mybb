@@ -195,11 +195,9 @@ if($mybb->input['action'] == "do_addmultiple")
 					"showclickable" => "yes"
 				);
 				$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
-				echo $find[$image]." - ".$name[$image]."<br />";
 			}
 		}
 		$cache->updatesmilies();
-		die;
 		cpredirect("smilies.php?".SID, $lang->all_sel_added);
 		$finishedinsert = 1;
 		$mybb->input['action'] = "add";

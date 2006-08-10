@@ -589,16 +589,16 @@ function theme_hop(tid)
 		confirmReturn = confirm('<?php echo $lang->export_advanced_settings; ?>');
 		if(confirmReturn == false)
 		{
-			window.location = "themes.php?<?php echo SID; ?>&amp;action=do_download&amp;tid="+tid+"&amp;customonly=yes&amp;inctemps=yes&amp;customtempsonly=yes";
+			window.location = "themes.php?<?php echo SID; ?>&action=do_download&tid="+tid+"&customonly=yes&inctemps=yes&customtempsonly=yes";
 		}
 		else
 		{
-			window.location = "themes.php?<?php echo SID; ?>&amp;action=download&amp;tid="+tid;
+			window.location = "themes.php?<?php echo SID; ?>&action=download&tid="+tid;
 		}
 	}
 	else if(action != "")
 	{
-		window.location = "themes.php?<?php echo SID; ?>&amp;action="+action+"&amp;tid="+tid;
+		window.location = "themes.php?<?php echo SID; ?>&action="+action+"&tid="+tid;
 	}
 }
 -->
