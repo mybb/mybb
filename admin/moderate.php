@@ -247,12 +247,12 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 		cpmessage($lang->no_threads);
 	}
 	$plugins->run_hooks("admin_moderate_threads");
-	if($tcount || $mybb->input['action'] == "threadsposts")
+	if($tcount >= 1 || $mybb->input['action'] == "threadsposts")
 	{
 		cpheader();
 		startform("moderate.php", "" , "do_".$mybb->input['action']);
 	}
-	if($tcount)
+	if($tcount >= 1)
 	{
 		starttable();
 		tableheader($lang->threads_awaiting);
@@ -264,13 +264,13 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 		makeinputcode($lang->thread_subject, "threadsubject[$thread[tid]]", "$thread[subject]");		
 		makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&amp;uid=$thread[uid]\" target=\"_blank\">$thread[username]</a>");
 		makelabelcode($lang->forum, "<a href=\"../forumdisplay.php?fid=$thread[fid]\" target=\"_blank\">$thread[forumname]</a>");
-		maketextareacode($lang->message, "threadmessage[$thread[tid]]", $thread[postmessage], 5);
+		maketextareacode($lang->message, "threadmessage[$thread[tid]]", $thread['postmessage'], 5);
 		makeyesnocode($lang->validate_thread, "threadvalidate[$thread[tid]]");
 		makeyesnocode($lang->delete_thread, "threaddelete[$thread[tid]]", "no");
-		$donepid[$thread[postpid]] = 1;
+		$donepid[$thread['postpid']] = 1;
 		echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\" alt=\"\" /></td>\n</tr>\n";
 	}
-	if($tcount)
+	if($tcount >= 1)
 	{
 		endtable();
 	}
@@ -308,13 +308,17 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 		cpmessage($lang->no_posts);
 	}
 	$plugins->run_hooks("admin_moderate_posts");
-	if($mybb->input['action'] != "threadsposts") 
+	if($count >= 1 && $mybb->input['action'] != "threadsposts") 
 	{
 		cpheader();
 		startform("moderate.php", "" , "do_posts");
 	}
-	starttable();
-	tableheader($lang->posts_awaiting);
+	
+	if($count >= 1)
+	{
+	  starttable();
+	  tableheader($lang->posts_awaiting);
+	}
 
 	while($post = $db->fetch_array($query))
 	{
@@ -330,9 +334,19 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 			makeyesnocode($lang->validate_post, "postvalidate[$post[pid]]");
 			makeyesnocode($lang->delete_post, "postdelete[$post[pid]]", "no");
 			echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\" alt=\"\" /></td>\n</tr>\n";
-		}
+		  ++$postscount;
+    }
 	}
-	endtable();
+	if($postscount < 1)
+	{
+    echo "<tr>\n";
+		echo "<td class=\"$bgcolor\" colspan=\"1\">".$lang->no_posts."</td>\n";
+		echo "</tr>\n";
+  }
+	if($count >= 1)
+	{
+	  endtable();
+	}
 	if($mybb->input['action'] != "threadsposts")
 	{
 		endform($lang->moderate_posts, $lang->reset_button);

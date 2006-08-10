@@ -108,4 +108,6 @@ $l['month_9'] = "September";
 $l['month_10'] = "October";
 $l['month_11'] = "November";
 $l['month_12'] = "December";
+
+$l['parentforum_none'] = "None";
 ?>

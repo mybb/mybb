@@ -62,8 +62,15 @@ $themebitlist = array("templateset", "imgdir", "logo", "tablespace", "borderwidt
 
 function cpheader($title="", $donav=1, $onload="")
 {
-	global $mybb, $style, $lang;
-	if(!$title)
+	global $mybb, $style, $lang, $cpheader;
+	
+	if($cpheader === true)
+	{
+    return true;
+  }
+	
+	$cpheader = true;
+  if(!$title)
 	{
 		$title = $mybb->settings['bbname']." - ".$lang->admin_center;
 	}
