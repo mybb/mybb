@@ -5034,7 +5034,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </span></td>
 </tr>]]></template>
 		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
-<td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('misc.php?action=smilies&amp;popup=true','sminsert',240,280);">{$lang->smilieinsert_getmore}</a>]</strong></td>
+<td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('misc.php?action=smilies&amp;popup=true','sminsert',240,280);">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
 		<template name="misc_smilies_popup" version="120"><![CDATA[<html>
 <head>
@@ -5050,7 +5050,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="4"><span class="smalltext">{$lang->click_to_add}</span></td>
 </tr>
 {$smilies}
-<tr>
 <td class="thead" colspan="4" align="center"><span class="smalltext">[<a href="javascript:window.close();">{$lang->close_window}</a>]</span></td>
 </tr>
 </table>

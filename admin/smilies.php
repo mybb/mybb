@@ -181,28 +181,26 @@ if($mybb->input['action'] == "do_addmultiple")
 	{
 		$plugins->run_hooks("admin_smilies_do_addmultiple");
 		reset($mybb->input['smimport']);
+    $find = $mybb->input['smcode'];
+		$name = $mybb->input['smname'];
 		foreach($mybb->input['smimport'] as $image => $insert)
 		{
 			if($insert)
 			{
-				$find = $smcode[$image];
-				$name = $smname[$image];
 				$imageurl = $path."/".$image;
 				$newsmilie = array(
-					"name" => $db->escape_string($name),
-					"find" => $db->escape_string($find),
+					"name" => $db->escape_string($name[$image]),
+					"find" => $db->escape_string($find[$image]),
 					"image" => $db->escape_string($imageurl),
 					"showclickable" => "yes"
 				);
 				$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
+				echo $find[$image]." - ".$name[$image]."<br />";
 			}
 		}
 		$cache->updatesmilies();
-		cpheader();
-		starttable();
-		makelabelcode($lang->all_sel_added);
-		endtable();
-		echo "<br />";
+		die;
+		cpredirect("smilies.php?".SID, $lang->all_sel_added);
 		$finishedinsert = 1;
 		$mybb->input['action'] = "add";
 	}
@@ -370,7 +368,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			echo "<tr>\n";
 		}
 		$smilie['image'] = str_replace("{theme:imgdir}", $theme['imgdir'], $smilie['image']);
-		if(strstr($smilie['image'], "p://") || substr($smilie['image'],0,1) == "/") {
+		if(strstr($smilie['image'], "p://") || substr($smilie['image'],0,1) == "/") 
+    {
 			$image = $smilie['image'];
 		}
 		else
@@ -381,8 +380,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		{
       $smilies['find'] = "<b>".stripslashes($smilie['find'])."</b>";
     }
-		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$smilie[name]<br /><br /><img src=\"$image\" alt=\"\" />\n&nbsp;&nbsp;{$smilies['find']}\n<br />\n<br />\n";
-		echo "<a href=\"smilies.php?".SID."&amp;action=edit&amp;sid=$smilie[sid]&amp;page=$page&amp;perpage=$perpage\">$lang->edit</a>\n <a href=\"smilies.php?".SID."&amp;action=delete&amp;sid=$smilie[sid]&amp;page=$page&amp;perpage=$perpage\">$lang->delete</a>\n";
+		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>{$smilie['name']}<br /><br /><img src=\"$image\" alt=\"\" />\n&nbsp;&nbsp;{$smilie['find']}\n<br />\n<br />\n";
+		echo "<a href=\"smilies.php?".SID."&amp;action=edit&amp;sid={$smilie['sid']}&amp;page=$page&amp;perpage=$perpage\">$lang->edit</a>\n <a href=\"smilies.php?".SID."&amp;action=delete&amp;sid={$smilie['sid']}&amp;page=$page&amp;perpage=$perpage\">$lang->delete</a>\n";
 		echo "</td>\n";
 		$listed++;
 		if($listed == 5)

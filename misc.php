@@ -356,7 +356,7 @@ elseif($mybb->input['action'] == "smilies")
 			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 			if($e == 2)
 			{
-				$smilies .= "</tr>";
+				$smilies .= "</tr><tr>";
 				$e = 1;
 				$class = alt_trow();
 			}
@@ -367,7 +367,7 @@ elseif($mybb->input['action'] == "smilies")
 		}
 		if($e == 2)
 		{
-			$smilies .= "<td colspan=\"2\" class=\"$class\">&nbsp;</td></tr>";
+			$smilies .= "<td colspan=\"2\" class=\"$class\">&nbsp;</td>";
 		}
 		eval("\$smiliespage = \"".$templates->get("misc_smilies_popup")."\";");
 		output_page($smiliespage);
