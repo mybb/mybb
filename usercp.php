@@ -79,7 +79,7 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		if($sig_length > $mybb->settings['siglength'])
 		{
 			$lang->sig_too_long = sprintf($lang->sig_too_long, $mybb->settings['siglength'], $sig_length-$mybb->settings['sig_length']);
-			$error = inline_error($lang->sig_too_long)
+			$error = inline_error($lang->sig_too_long);
 		}
 		$mybb->input['preview'] = 1;
 	}
@@ -1290,10 +1290,6 @@ if($mybb->input['action'] == "forumsubscriptions")
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_editsig_start");
-	if($mybb->settings['siglength'] != 0 && my_strlen($mybb->input['signature']) > $mybb->settings['siglength'])
-	{
-		error($lang->sig_too_long);
-	}
 	if($mybb->input['updateposts'] == "enable")
 	{
 		$update_signature = array(
