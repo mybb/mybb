@@ -184,7 +184,7 @@ messageEditor.prototype = {
 		this.insertStandardButton(elements, "list_bullet", "images/codebuttons/list_bullet.gif", "list", "", this.options.lang.title_bulletlist);
 		this.insertSeparator(elements);
 		this.insertStandardButton(elements, "img", "images/codebuttons/image.gif", "image", "", this.options.lang.title_image);
-		this.insertStandardButton(elements, "url", "images/codebuttons/link.gif", "url", "", this.options.lang.title_url);
+		this.insertStandardButton(elements, "url", "images/codebuttons/link.gif", "url", "", this.options.lang.title_hyperlink);
 		this.insertStandardButton(elements, "email", "images/codebuttons/email.gif", "email", "", this.options.lang.title_email);
 		this.insertSeparator(elements);
 		this.insertStandardButton(elements, "quote", "images/codebuttons/quote.gif", "quote", "", this.options.lang.title_quote);

@@ -458,8 +458,8 @@ class postParser
 		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#si",
 						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
 
-		$replace = array("<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote</div><div class=\"quote_body\">$2</div>\n",
-						 "<div class=\"quote_header\">$lang->quote</div><div class=\"quote_body\">$1</div>\n");
+		$replace = array("<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote\n</div><div class=\"quote_body\">$2</div>\n",
+						 "<div class=\"quote_header\">$lang->quote\n</div><div class=\"quote_body\">$1</div>\n");
 
 		while(preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
 		{
@@ -489,7 +489,7 @@ class postParser
 	{
 		global $lang;
 		$code = trim($code);
-		return "<div class=\"code_header\">".$lang->code."</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n";
+		return "<div class=\"code_header\">".$lang->code."\n</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n";
 	}
 
 	/**
@@ -567,7 +567,7 @@ class postParser
 		$code = preg_replace("#\s*$#", "", $code);
 
 		// Send back the code all nice and pretty
-		return "<div class=\"code_header\">$lang->php_code</div><div class=\"code_body\">".$code."</div>\n";
+		return "<div class=\"code_header\">$lang->php_code\n</div><div class=\"code_body\">".$code."</div>\n";
 	}
 
 	/**

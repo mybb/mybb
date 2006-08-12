@@ -49,8 +49,8 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		'allow_smilies' => $mybb->settings['sigsmilies'],
 		'allow_imgcode' => $mybb->settings['sigimgcode']
 	);
-	$imagecheck = $parser->parse_message($mybb->input['signature'], $parser_options);
-	if(($mybb->settings['sigimgcode'] == "no" && substr_count($imagecheck, "<img") > 0) || ($mybb->settings['sigimgcode'] == "yes" && substr_count($imagecheck, "<img") > $mybb->settings['maxsigimages']))
+	$parsed_sig = $parser->parse_message($mybb->input['signature'], $parser_options);
+	if(($mybb->settings['sigimgcode'] == "no" && substr_count($parsed_sig, "<img") > 0) || ($mybb->settings['sigimgcode'] == "yes" && substr_count($parsed_sig, "<img") > $mybb->settings['maxsigimages']))
 	{
 		if($mybb->settings['sigimgcode'] == "yes")
 		{
@@ -61,7 +61,26 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 			$imgsallowed = 0;
 		}
 		$lang->too_many_sig_images2 = sprintf($lang->too_many_sig_images2, $imgsallowed);
-		eval("\$maximageserror = \"".$templates->get("error_maxsigimages")."\";");
+		$error = inline_error($lang->too_many_sig_images." ".$lang->too_many_sig_images2);
+		$mybb->input['preview'] = 1;
+	}
+	elseif($mybb->settings['siglength'] > 0)
+	{
+		if($mybb->settings['sigcountmycode'] == "yes")
+		{
+			$parsed_sig = strip_mycode($mybb->input['signature']);
+		}
+		else
+		{
+			$parsed_sig = $mybb->input['signature'];
+		}
+		$parsed_sig = str_replace(array("\r", "\n"), "", $parsed_sig);
+		$sig_length = my_strlen($parsed_sig);
+		if($sig_length > $mybb->settings['siglength'])
+		{
+			$lang->sig_too_long = sprintf($lang->sig_too_long, $mybb->settings['siglength'], $sig_length-$mybb->settings['sig_length']);
+			$error = inline_error($lang->sig_too_long)
+		}
 		$mybb->input['preview'] = 1;
 	}
 	if($mybb->input['preview'])

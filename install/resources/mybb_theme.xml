@@ -5517,46 +5517,15 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_sig}</title>
 {$headerinclude}
-<script language="JavaScript" type="text/javascript">
-<!--
-function sigLimit() {
-var count_modifier = 0;
-var loops = 0;
-if('{$mybb->settings['sigcountmycode']}' == 'no'){
-var regexp = /(\[.+\].+\[\/.+\])/i;
-var sig_string = document.forms[0].signature.value;
-sig_string = sig_string.replace(/\n/g, "");
-if(regexp.test(sig_string)){
-do{
-var bbcode_string = regexp.exec(sig_string);
-bbcode_string = bbcode_string[1];
-start = bbcode_string.indexOf("]") + 1;
-end = (bbcode_string.length - bbcode_string.lastIndexOf("["));
-bbcode_string = bbcode_string.substring(start, bbcode_string.lastIndexOf("["));
-count_modifier += start + end;
-sig_string = bbcode_string;
-regexp = /(\[\/.+\].*\[.+\])/i;
-loops++;
-}while(loops< 7 && regexp.test(sig_string));
-}
-}
-sig_length = document.forms[0].signature.value.length - count_modifier;
-if (sig_length > {$mybb->settings['siglength']})
-document.forms[0].signature.value = document.forms[0].signature.value.substring(0, {$mybb->settings['siglength']});
-else
-document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length;
-}
-//-->
-</script>
 </head>
-<body onload="sigLimit()">
+<body>
 {$header}
 <form action="usercp.php" method="post">
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
-{$maximageserror}
+{$error}
 {$signature}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -5564,7 +5533,7 @@ document.forms[0].sigcounter.value = {$mybb->settings['siglength']} - sig_length
 </tr>
 <tr>
 <td class="trow1" valign="top" width="40%"><span class="smalltext">{$lang->edit_sig_note}<br /><br />{$lang->edit_sig_note2}</span></td>
-<td class="trow1" width="60%"><textarea rows="5" cols="55" name="signature" onkeyup="sigLimit()" onkeydown="sigLimit()">{$sig}</textarea><br /><input type="text" class="textbox" name="sigcounter" size="3" value="{$mybb->settings['siglength']}" disabled="disabled" /> <span class="smalltext">{$lang->characters_remaining}</span>
+<td class="trow1" width="60%"><textarea rows="5" cols="55" name="signature">{$sig}</textarea>
 <br /><br /><span class="smalltext">
 <label><input type="radio" class="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}</label><br />
 <label><input type="radio" class="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}</label><br />
