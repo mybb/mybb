@@ -1517,12 +1517,17 @@ function build_mycode_inserter()
 			"editor_enter_image"		
 		);
 		$editor_language = "var editor_language = {\n";
-		foreach($editor_lang_strings as $lang_string)
+		foreach($editor_lang_strings as $key => $lang_string)
 		{
 			// Strip initial editor_ off language string if it exists - ensure case sensitivity does not matter.
 			$js_lang_string = preg_replace("#^editor_#i", "", $lang_string);
 			$string = str_replace("\"", "\\\"", $lang->$lang_string);
-			$editor_language .= "\t{$js_lang_string}: \"{$string}\",\n";
+			$editor_language .= "\t{$js_lang_string}: \"{$string}\"";
+			if($editor_lang_strings[$key+1])
+			{
+				$editor_language .= ",";
+			}
+			$editor_language .= "\n";
 		}
 		$editor_language .= "};";
 		eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
