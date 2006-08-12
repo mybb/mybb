@@ -447,6 +447,10 @@ function inline_error($errors, $title="")
 	{
 		$title = $lang->please_correct_errors;
 	}
+	if(!is_array($errors))
+	{
+		$errors = array($errors);
+	}
 	foreach($errors as $error)
 	{
 		$errorlist .= "<li>".$error."</li>\n";

@@ -81,9 +81,8 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 			$lang->sig_too_long = sprintf($lang->sig_too_long, $mybb->settings['siglength'], $sig_length-$mybb->settings['sig_length']);
 			$error = inline_error($lang->sig_too_long);
 		}
-		$mybb->input['preview'] = 1;
 	}
-	if($mybb->input['preview'])
+	if($error || $mybb->input['preview'])
 	{
 		$mybb->input['action'] = "editsig";
 	}
@@ -1317,12 +1316,12 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 if($mybb->input['action'] == "editsig")
 {
 	$plugins->run_hooks("usercp_editsig_start");
-	if($mybb->input['preview'])
+	if($mybb->input['preview'] && !$error)
 	{
 		$sig = $mybb->input['signature'];
 		$template = "usercp_editsig_preview";
 	}
-	else
+	elseif(!$error)
 	{
 		$sig = $mybb->user['signature'];
 		$template = "usercp_editsig_current";
@@ -1372,7 +1371,7 @@ if($mybb->input['action'] == "editsig")
 	{
 		$sigimgcode = $lang->off;
 	}
-	$sig = htmlspecialchars($sig);
+	$sig = htmlspecialchars_uni($mybb->input['signature']);
 	$lang->edit_sig_note2 = sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 	eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
 	$plugins->run_hooks("usercp_endsig_end");
