@@ -221,7 +221,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				"uid" => $mybb->user['uid'],
 				"loginattempts" => 0
 			);
-			$db->update_query(TABLE_PREFIX."sessions", $updated_session, "sid='{$session->sid]}'");
+			$db->update_query(TABLE_PREFIX."sessions", $updated_session, "sid='{$session->sid}'");
 
 			// Set uid and username
 			$uid = $mybb->user['uid'];
