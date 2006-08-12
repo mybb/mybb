@@ -281,7 +281,6 @@ $l['change_display_group'] = "Change Display Group";
 $l['registration_date'] ="Registration Date:";
 $l['view_members'] = "View Members";
 $l['view_requests'] = "Join Requests";
-$l['sig_too_long'] = "Sorry, but your signature is too long. Please do not go over the signature limit.";
 $l['cannot_leave_group'] = "You cannot leave this group because it is not a publically joinable group.";
 $l['details'] = "Details";
 $l['redirect_ignoreupdated'] = "Thank you, your ignore list has successfully been updated.";

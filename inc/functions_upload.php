@@ -232,7 +232,7 @@ function upload_attachment($attachment)
 	// Double check attachment space usage
 	if($mybb->usergroup['attachquota'] > 0)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "SELECT SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
 		$usage = $usage['ausage']+$attachment['size'];
 		if($usage > ($mybb->usergroup['attachquota']*1000))

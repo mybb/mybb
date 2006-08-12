@@ -74,7 +74,7 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		{
 			$parsed_sig = $mybb->input['signature'];
 		}
-		$parsed_sig = str_replace(array("\r", "\n"), "", $parsed_sig);
+		$parsed_sig = preg_replace("#\s#", "", $parsed_sig);
 		$sig_length = my_strlen($parsed_sig);
 		if($sig_length > $mybb->settings['siglength'])
 		{

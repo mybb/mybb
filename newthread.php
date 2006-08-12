@@ -408,7 +408,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
 		}
-		if(mybb->input['postpoll'] == "yes")
+		if($mybb->input['postpoll'] == "yes")
 		{
 			$postpollchecked = "checked=\"checked\"";
 		}
