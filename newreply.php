@@ -193,17 +193,39 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				error($lang->error_usernametaken);
 			}
+			
+			//Checks to make sure the user can login; they haven't had too many tries at logging in.
+			//Is a fatal call if user has had too many tries
+			$logins = login_attempt_check();		
 
 			// If the user specified a password but it is wrong, throw back invalid password.
 			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 			if(!$mybb->user['uid'])
 			{
-				error($lang->error_invalidpassword);
+				mysetcookie('loginattempts', $logins + 1);
+				$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
+				if($mybb->settings['failedlogintext'] == "yes")
+				{
+					$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+				}				
+				error($lang->error_invalidpassword.$login_text);
 			}
 			// Otherwise they've logged in successfully.
 
 			$mybb->input['username'] = $username = $mybb->user['username'];
 			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
+			mysetcookie('loginattempts', 1);
+			
+			// Update the session to contain their user ID
+			$updated_session = array(
+				"uid" => $mybb->user['uid'],
+				"loginattempts" => 0
+			);
+			$db->update_query(TABLE_PREFIX."sessions", $updated_session "sid='{$session->sid]}'");
+
+			// Set uid and username
+			$uid = $mybb->user['uid'];
+			$username = $mybb->user['username'];
 		}
 		// This username does not exist.
 		else
@@ -309,7 +331,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
 		$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash'");
 		$imgcheck = $db->fetch_array($query);
-		if(strtolower($imgcheck['imagestring']) != strtolower($imagestring))
+		if(strtolower($imgcheck['imagestring']) != strtolower($imagestring) || !$imgcheck['imagehash'])
 		{
 			$post_errors[] = $lang->invalid_captcha;
 		}

@@ -53,6 +53,14 @@ messageEditor.prototype = {
 		
 		this.options = options;
 		
+		if(this.options)
+		{
+			if(!this.options.lang)
+			{
+				return false;
+			}
+		}
+		
 		// Only swap it over once the page has loaded (add event)
 		Event.observe(window, "load", this.showEditor.bindAsEventListener(this));
 	},
@@ -157,14 +165,14 @@ messageEditor.prototype = {
 		toolbar2.appendChild(formatting);
 
 		// Insert toolbar buttons.
-		this.insertStandardButton(formatting, "b", "images/codebuttons/bold.gif", "b", "", "Insert bold text.");
-		this.insertStandardButton(formatting, "i", "images/codebuttons/italic.gif", "i", "", "Insert italic text.");
-		this.insertStandardButton(formatting, "u", "images/codebuttons/underline.gif", "u", "", "Insert underlined text.");
+		this.insertStandardButton(formatting, "b", "images/codebuttons/bold.gif", "b", "", this.options.lang.title_bold);
+		this.insertStandardButton(formatting, "i", "images/codebuttons/italic.gif", "i", "", this.options.lang.title_italic);
+		this.insertStandardButton(formatting, "u", "images/codebuttons/underline.gif", "u", "", this.options.lang.title_underline);
 		this.insertSeparator(formatting);
-		this.insertStandardButton(formatting, "align_left", "images/codebuttons/align_left.gif", "align", "left", "Insert text aligned to the left.");
-		this.insertStandardButton(formatting, "align_center", "images/codebuttons/align_center.gif", "align", "center", "Insert text aligned in the center.");
-		this.insertStandardButton(formatting, "align_right", "images/codebuttons/align_right.gif", "align", "right", "Insert text aligned to the right.");
-		this.insertStandardButton(formatting, "align_justify", "images/codebuttons/align_justify.gif", "align", "justify", "Insert justified text.");
+		this.insertStandardButton(formatting, "align_left", "images/codebuttons/align_left.gif", "align", "left", this.options.lang.title_left);
+		this.insertStandardButton(formatting, "align_center", "images/codebuttons/align_center.gif", "align", "center", this.options.lang.title_center);
+		this.insertStandardButton(formatting, "align_right", "images/codebuttons/align_right.gif", "align", "right", this.options.lang.title_right);
+		this.insertStandardButton(formatting, "align_justify", "images/codebuttons/align_justify.gif", "align", "justify", this.options.lang.title_justify);
 
 		// Create insertable elements section of second toolbar.
 		elements = document.createElement("div");
@@ -172,16 +180,16 @@ messageEditor.prototype = {
 		elements.style.right = 0;
 
 		toolbar2.appendChild(elements);
-		this.insertStandardButton(elements, "list_num", "images/codebuttons/list_num.gif", "list", "1", "Insert a numbered list.");
-		this.insertStandardButton(elements, "list_bullet", "images/codebuttons/list_bullet.gif", "list", "", "Insert a bulleted list.");
+		this.insertStandardButton(elements, "list_num", "images/codebuttons/list_num.gif", "list", "1", this.options.lang.title_numlist);
+		this.insertStandardButton(elements, "list_bullet", "images/codebuttons/list_bullet.gif", "list", "", this.options.lang.title_bulletlist);
 		this.insertSeparator(elements);
-		this.insertStandardButton(elements, "img", "images/codebuttons/image.gif", "image", "", "Insert an image.");
-		this.insertStandardButton(elements, "url", "images/codebuttons/link.gif", "url", "", "Insert a hyperlink.");
-		this.insertStandardButton(elements, "email", "images/codebuttons/email.gif", "email", "", "Insert an email address.");
+		this.insertStandardButton(elements, "img", "images/codebuttons/image.gif", "image", "", this.options.lang.title_image);
+		this.insertStandardButton(elements, "url", "images/codebuttons/link.gif", "url", "", this.options.lang.title_url);
+		this.insertStandardButton(elements, "email", "images/codebuttons/email.gif", "email", "", this.options.lang.title_email);
 		this.insertSeparator(elements);
-		this.insertStandardButton(elements, "quote", "images/codebuttons/quote.gif", "quote", "", "Insert quote.");
-		this.insertStandardButton(elements, "code", "images/codebuttons/code.gif", "code", "", "Insert preformatted code.");
-		this.insertStandardButton(elements, "php", "images/codebuttons/php.gif", "php", "", "Insert PHP syntax highlighted code.");
+		this.insertStandardButton(elements, "quote", "images/codebuttons/quote.gif", "quote", "", this.options.lang.title_quote);
+		this.insertStandardButton(elements, "code", "images/codebuttons/code.gif", "code", "", this.options.lang.title_code);
+		this.insertStandardButton(elements, "php", "images/codebuttons/php.gif", "php", "", this.options.lang.title_php);
 
 		// Append the second toolbar to the editor
 		editor.appendChild(toolbar2);
@@ -331,7 +339,7 @@ messageEditor.prototype = {
 		list = "";
 		do
 		{
-			listItem = prompt("Enter a list item. Click cancel or leave blank to end the list.", "");
+			listItem = prompt(this.options.lang.enter_list_item, "");
 			if(listItem != "" && listItem != null)
 			{
 				list = list+"[*]"+listItem+"\n";
@@ -357,12 +365,12 @@ messageEditor.prototype = {
 	insertURL: function()
 	{
 		selectedText = this.getSelectedText($(this.textarea));
-		url = prompt("Please enter the URL of the website.", "http://");
+		url = prompt(this.options.lang.enter_url, "http://");
 		if(url)
 		{
 			if(!selectedText)
 			{
-				title = prompt("Optionally, you can enter a title for the URL.", "");
+				title = prompt(this.options.lang.enter_url_title, "");
 			}
 			else
 			{
@@ -382,12 +390,12 @@ messageEditor.prototype = {
 	insertEmail: function()
 	{
 		selectedText = this.getSelectedText($(this.textarea));
-		email = prompt("Please enter the email address you wish to insert.", "");
+		email = prompt(this.options.lang.enter_email, "");
 		if(email)
 		{
 			if(!selectedText)
 			{
-				title = prompt("Optionally, you can enter a title for the email address.", "");
+				title = prompt(this.options.lang.enter_email_title, "");
 			}
 			else
 			{
@@ -406,7 +414,7 @@ messageEditor.prototype = {
 
 	insertIMG: function()
 	{
-		image = prompt("Please enter the remote URL of the image.", "http://");
+		image = prompt(this.options.lang.enter_image, "http://");
 		if(image)
 		{
 			this.performInsert("[img]"+image+"[/img]", "", true);

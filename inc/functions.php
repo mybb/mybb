@@ -1489,6 +1489,38 @@ function build_mycode_inserter()
 
 	if($mybb->settings['bbcodeinserter'] != "off")
 	{
+		$editor_lang_strings = array(
+			"editor_title_bold",
+			"editor_title_italic",
+			"editor_title_underline",
+			"editor_title_left",
+			"editor_title_center",
+			"editor_title_right",
+			"editor_title_justify",
+			"editor_title_numlist",
+			"editor_title_bulletlist",
+			"editor_title_image",
+			"editor_title_hyperlink",
+			"editor_title_email",
+			"editor_title_quote",
+			"editor_title_code",
+			"editor_title_php",
+			"editor_enter_list_item",
+			"editor_enter_url",
+			"editor_enter_url_title",
+			"editor_enter_email",
+			"editor_enter_email_title",
+			"editor_enter_image"		
+		);
+		$editor_language = "var editor_language {\n";
+		foreach($editor_lang_strings as $lang_string)
+		{
+			// Strip initial editor_ off language string if it exists - ensure case sensitivity does not matter.
+			$js_lang_string = preg_replace("#^editor_#i", "", $lang_string);
+			$string = str_replace("\"", "\\\"", $string);
+			$editor_language .= "\t{$js_lang_string}: \"{$string}\",\n";
+		}
+		$editor_language .= "};";
 		eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
 	}
 	return $codeinsert;

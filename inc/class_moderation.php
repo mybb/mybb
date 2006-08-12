@@ -420,8 +420,9 @@ class Moderation
 
 		// Get thread info
 		$thread = get_thread($tid);
-		$newforum = get_forum($newfid);
+		$newforum = get_forum($new_fid);
 		$fid = $thread['fid'];
+		$forum = get_forum($fid);
 		switch($method)
 		{
 			case "redirect": // move (and leave redirect) thread
@@ -603,7 +604,7 @@ class Moderation
 		$sqlarray = array(
 			"tid" => $tid,
 			"fid" => $thread['fid'],
-			"replyto" => $tid
+			"replyto" => 0
 		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$mergetid'");
 		
@@ -672,7 +673,7 @@ class Moderation
 		$sqlarray = array(
 			"tid" => $newtid,
 			"fid" => $moveto,
-			"replyto" => $newtid
+			"replyto" => 0
 		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid IN ($pids_list)");
 

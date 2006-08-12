@@ -3364,7 +3364,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="private_send_buddyselect" version="120"><![CDATA[<br /><span class="smalltext">{$lang->select_buddy}<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>{$buddies}</select>]]></template>
 		<template name="codebuttons" version="120"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=120"></script>
 <script type="text/javascript">
-	var clickableEditor = new messageEditor("message");
+	{$editor_language}
+	var clickableEditor = new messageEditor("message", {lang: editor_language});
 	clickableEditor.bindSmilieInserter("clickable_smilies");
 </script>]]></template>
 		<template name="showthread_quickreply" version="120"><![CDATA[<br />
