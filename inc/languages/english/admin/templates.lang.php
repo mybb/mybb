@@ -48,7 +48,7 @@ $l['templates'] = "Templates";
 
 $l['template_management'] = "Template Management";
 $l['key'] = "Key";
-$l['edit_notice'] = "Templates in <font color=\"green\">this colour</font> have not been modified. To edit these templates click 'change original'.<br />Templates in <font color=\"blue\">this colour</font> have been modified. To edit these templates click 'edit'. To delete these templates, either click 'revert to original' or 'delete'.";
+$l['edit_notice'] = "Templates in <span style=\"color: green;\">this colour</span> have not been modified. To edit these templates click 'change original'.<br />Templates in <font color=\"blue\">this colour</font> have been modified. To edit these templates click 'edit'. To delete these templates, either click 'revert to original' or 'delete'.";
 $l['edit_notice2'] = "Please select a template or template set from the list below to edit or delete.";
 $l['master_templates'] = "MASTER Templates";
 $l['add_template'] = "Add Template";
