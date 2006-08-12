@@ -68,7 +68,7 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 	{
 		if($mybb->settings['sigcountmycode'] == "yes")
 		{
-			$parsed_sig = strip_mycode($mybb->input['signature']);
+			$parsed_sig = $parser->strip_mycode($mybb->input['signature']);
 		}
 		else
 		{
