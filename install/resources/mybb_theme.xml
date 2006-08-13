@@ -6490,11 +6490,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif", lang_click_edit: "{$lang->click_hold_edit}"});
 </script>]]></template>
 		<template name="xmlhttp_inline_post_editor" version="120"><![CDATA[<br />
-		<div style="width: 90%; clear: both; margin: auto auto; padding-top: 2%" class="editor">
-			<div align="center">
-				<textarea style="width: 96%;" rows="12" cols="80" id="quickedit_{$post['pid']}" />{$post['message']}</textarea>
+		<div style="clear: both;">
+			<div>
+				<textarea style="width: 99%; padding: 4px; margin: 0;" rows="12" cols="80" id="quickedit_{$post['pid']}" />{$post['message']}</textarea>
 			</div>
-			<div style="margin: auto auto; text-align: right; margin-top: 2px; margin-bottom: 4px; width: 96%;">
+			<div class="editor" style="width: 99%; padding: 4px; margin-top: 3px; text-align: right;">
 				<input type="button" class="button" onclick="Thread.quickEditSave({$post['pid']});" value="Save Changes" />
 				<input type="button" class="button" onclick="Thread.quickEditCancel({$post['pid']});" value="Cancel Edit" />
 			</div>
