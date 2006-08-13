@@ -226,9 +226,6 @@ Object.extend(Event, {
   }
 });
 
-/* prevent memory leaks in IE */
-Event.observe(window, 'unload', Event.unloadCache, false);
-
 //useful array functions
 /*
 Array.prototype.each = function(func){
@@ -240,3 +237,76 @@ function $c(array){
 	for (i=0;el=array[i];i++) nArray.push(el);
 	return nArray;
 }
+
+/* additions for IE5 compatibility */
+
+if(!Array.prototype.shift) {
+	Array.prototype.shift = function()
+	{
+		firstElement = this[0];
+		this.reverse();
+		this.length = Math.max(this.length-1,0);
+		this.reverse();
+		return firstElement;
+	}
+}
+
+if(!Array.prototype.unshift) {
+	Array.prototype.unshift = function()
+	{
+		this.reverse();
+		for(var i=arguments.length-1;i>=0;i--) {
+			this[this.length]=arguments[i]
+		}
+		this.reverse();
+		return this.length
+	}
+}
+if(!Array.prototype.push) {
+	Array.prototype.push = function()
+	{
+		for(var i=0;i<arguments.length;i++){
+			this[this.length]=arguments[i]
+		};
+		return this.length;
+	}
+}
+
+if(!Array.prototype.pop) {
+	Array.prototype.pop = function() { 
+	    lastElement = this[this.length-1];
+		this.length = Math.max(this.length-1,0);
+	    return lastElement;
+	}
+}
+
+if (!Function.prototype.apply) {
+	Function.prototype.apply = function(oScope, args) {
+		var sarg = [];
+		var rtrn, call;
+
+		if (!oScope) oScope = window;
+		if (!args) args = [];
+
+		for (var i = 0; i < args.length; i++) {
+			sarg[i] = "args["+i+"]";
+		}
+
+		call = "oScope.__applyTemp__(" + sarg.join(",") + ");";
+
+		oScope.__applyTemp__ = this;
+		rtrn = eval(call);
+		//delete oScope.__applyTemp__;
+		return rtrn;
+	}
+}
+
+if(!Function.prototype.call) {}
+	Function.prototype.call = function(obj, param) {
+		obj.base = this;
+		obj.base(param);  
+	}  
+}
+
+/* prevent memory leaks in IE */
+Event.observe(window, 'unload', Event.unloadCache, false);
