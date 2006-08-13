@@ -357,7 +357,7 @@ function upgrade5_lastposts()
 		$start = intval($_POST['start']);
 		$end = $start+$tpp;
 		echo "<p>Updating {$start} to {$end} of {$num_threads}...</p>";
-		$query = $db->simple_select(TABLE_PREFIX."threads", "tid, firstpost", "", array("order_by" => "tid", "order_dir" => "asc", "limit" => $tpp, "start" => $start));
+		$query = $db->simple_select(TABLE_PREFIX."threads", "tid, firstpost", "", array("order_by" => "tid", "order_dir" => "asc", "limit" => $tpp, "limit_start" => $start));
 		while($thread = $db->fetch_array($query))
 		{
 			update_thread_count($thread['tid']);
