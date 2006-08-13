@@ -301,7 +301,7 @@ if (!Function.prototype.apply) {
 	}
 }
 
-if(!Function.prototype.call) {}
+if(!Function.prototype.call) {
 	Function.prototype.call = function(obj, param) {
 		obj.base = this;
 		obj.base(param);  
