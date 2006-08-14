@@ -439,7 +439,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	// Are we loading all quoted posts or only those not in the current thread?
 	if(!$mybb->input['load_all'])
 	{
-		$from_tid = "p.tid != '".intval($mybb->input['tid'])." AND' ";
+		$from_tid = "p.tid != '".intval($mybb->input['tid'])."' AND ";
 	}
 	else
 	{
