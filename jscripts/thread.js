@@ -56,8 +56,73 @@ var Thread = {
 		{
 			element.src = element.src.replace("postbit_multiquote_on.gif", "postbit_multiquote.gif");
 		}
+		if($('quickreply_multiquote'))
+		{
+			if(new_post_ids.length > 0)
+			{
+				$('quickreply_multiquote').style.display = '';
+			}
+			else
+			{
+				$('quickreply_multiquote').style.display = 'none';
+			}
+		}
 		Cookie.set("multiquote", new_post_ids.join("|"));
 	},
+	
+	loadMultiQuoted: function()
+	{
+		tid = document.input.tid.value;
+		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
+		new ajax('xmlhttp.php?action=get_multiquoted&load_all=1&tid='+tid, {method: 'get', onComplete: function(request) {Thread.multiQuotedLoaded(request); }});		
+	},
+	
+	multiQuotedLoaded: function(request)
+	{
+		if(request.responseText.match(/<error>(.*)<\/error>/))
+		{
+			message = request.responseText.match(/<error>(.*)<\/error>/);
+			if(!message[1])
+			{
+				message[1] = "An unknown error occurred.";
+			}
+			alert('There was an error fetching the posts.\n\n'+message[1]);
+		}
+		else if(request.responseText)
+		{
+			if($('message').value)
+			{
+				$('message').value += "\n";
+			}
+			$('message').value += request.responseText;
+		}
+		$('quickreply_multiquote').style.display = 'none';
+		document.input.quoted_ids.value = 'all';
+		this.spinner.destroy();	
+		this.spinner = '';	
+	},
+	
+	clearMultiQuoted: function()
+	{
+		$('quickreply_multiquote').style.display = 'none';
+		var quoted = Cookie.get("multiquote");
+		if(quoted)
+		{
+			var post_ids = quoted.split("|");
+			for(var i=0; i < post_ids.length; i++)
+			{
+				if(post_ids[i] != '')
+				{
+					if($("multiquote_"+post_ids[i]))
+					{
+						element = $("multiquote_"+post_ids[i]);
+						element.src = element.src.replace("postbit_multiquote_on.gif", "postbit_multiquote.gif");
+					}
+				}
+			}
+		}
+		Cookie.unset('multiquote');
+	},	
 
 	deletePost: function(pid)
 	{

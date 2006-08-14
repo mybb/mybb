@@ -219,7 +219,7 @@ function mydate($format, $stamp="", $offset="", $ty=1)
 
 	if(!$offset)
 	{
-		if($mybb->user['timezone'])
+		if(array_key_exists("timezone", $mybb->user))
 		{
 			$offset = $mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];

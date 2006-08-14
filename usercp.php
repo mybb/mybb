@@ -1373,7 +1373,7 @@ if($mybb->input['action'] == "editsig")
 	{
 		$sigimgcode = $lang->off;
 	}
-	$sig = htmlspecialchars_uni($mybb->input['signature']);
+	$sig = htmlspecialchars_uni($sig);
 	$lang->edit_sig_note2 = sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 	eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
 	$plugins->run_hooks("usercp_endsig_end");

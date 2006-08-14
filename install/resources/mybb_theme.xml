@@ -3394,7 +3394,12 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" {$postoptionschecked['emailnotify']} />&nbsp;<strong>{$lang->email_notify}</strong></label><br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" />&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
 </td>
-<td class="trow1"><textarea name="message" rows="7" cols="70" tabindex="1"></textarea></td>
+<td class="trow1">
+	<div>
+		<textarea style="width: 99%; padding: 4px; margin: 0;" rows="12" cols="80" name="message" id="message" />
+	</div>
+	<script type="text/javascript">document.write('<div class="editor" style="width: 99%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote">{$lang->quickreply_multiquote_selected} <a href="javascript:Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}</a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}</a>.</div>');</script>
+</td>
 </tr>
 <tr>
 <td colspan="2" align="center" class="tfoot"><input type="submit" class="button" value="{$lang->post_reply}" tabindex="2" accesskey="s" /> <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="3" /></td>

@@ -404,7 +404,11 @@ function upgrade5_indexes()
 	$output->print_header("Indexing");
 	echo "<p>Checking and creating fulltext database indexes..</p>";
 
-	$db->drop_index(TABLE_PREFIX."threads", "subject");
+
+	if($db->is_fulltext(TABLE_PREFIX."threads", "subject"))
+	{
+		$db->drop_index(TABLE_PREFIX."threads", "subject");
+	}
 	if($db->is_fulltext(TABLE_PREFIX."threads", "subject_2"))
 	{
 		$db->drop_index(TABLE_PREFIX."threads", "subject_2");

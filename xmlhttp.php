@@ -435,13 +435,23 @@ else if($mybb->input['action'] == "get_multiquoted")
 		$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
 	}
 	$message = '';
+	
+	// Are we loading all quoted posts or only those not in the current thread?
+	if(!$mybb->input['load_all'])
+	{
+		$from_tid = p.tid != "'".intval($mybb->input['tid'])." AND'";
+	}
+	else
+	{
+		$from_tid = '';
+	}	
 	// Query for any posts in the list which are not within the specified thread
 	$query = $db->query("
 		SELECT p.subject, p.message, p.pid, p.tid, p.username, u.username AS userusername
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-		WHERE p.tid != '".intval($mybb->input['tid'])."' AND p.pid IN ($quoted_posts) {$unviewable_forums} AND p.visible='1'
+		WHERE {$from_tid} p.pid IN ($quoted_posts) {$unviewable_forums} AND p.visible='1'
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{
