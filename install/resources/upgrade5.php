@@ -50,8 +50,8 @@ function upgrade5_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD unapprovedposts INT(10) unsigned NOT NULL default '0' AFTER visible;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD unapprovedthreads INT(10) unsigned NOT NULL default '0' AFTER rules;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD unapprovedposts INT(10) unsigned NOT NULL default '0' AFTER rules;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultdaysprune smallint(4) unsigned NOT NULL default '0' AFTER unapprovedposts;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortby varchar(10) NOT NULL default '' AFTER daysprune;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultdatecut smallint(4) unsigned NOT NULL default '0' AFTER unapprovedposts;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortby varchar(10) NOT NULL default '' AFTER defaultdaysprune;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortorder varchar(4) NOT NULL default '' AFTER defaultsortby;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD lastposteruid int(10) unsigned NOT NULL default '0' AFTER lastposter;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD lastpostsubject varchar(120) NOT NULL default '' AFTER lastposttid");
@@ -226,7 +226,7 @@ function upgrade5_dbchanges()
 	PRIMARY KEY (tid)
 ) TYPE=MyISAM;");
 
-	$db->query("ALTER ".TABLE_PREFIX."usergroups ADD disporder smallint(6) NOT NULL default '0' AFTER image");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD disporder smallint(6) NOT NULL default '0' AFTER image");
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canviewthreads=canview");
 	$db->query("UPDATE ".TABLE_PREFIX."forumpermissions SET canviewthreads=canview");
 
@@ -265,7 +265,7 @@ function upgrade5_redoconfig()
 		exit;
 	}
 
-	$fh = fopen(MYBB_ROOT."/inc/config.php", "w");
+	$fh = @fopen(MYBB_ROOT."/inc/config.php", "w");
 	if(!$fh)
 	{
 		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p><input type=\"hidden\" name=\"uid\" value=\"{$uid}\" />";

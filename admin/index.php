@@ -106,7 +106,7 @@ elseif($mybb->input['action'] == "home")
 	if($update_check['last_check'] <= time()-60*60*24*14)
 	{
 		$lang->last_update_check_three_weeks = sprintf($lang->last_update_check_three_weeks, "index.php?".SID."&amp;action=vercheck");
-		makewarning($lang->last_update_check_three_weeks);
+		makewarning($lang->last_update_check_two_weeks);
 	}
 	
 	// If the update check contains information about a newer version, show an alert

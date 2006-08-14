@@ -40,6 +40,8 @@ $errors = '';
 
 usercp_menu();
 
+$plugins->run_hooks("usercp_start");
+
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
 	$parser_options = array(
@@ -2158,7 +2160,6 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 }
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("usercp_start");
 	// Get posts per day
 	$daysreg = (time() - $mybb->user['regdate']) / (24*3600);
 	$perday = $mybb->user['postnum'] / $daysreg;
