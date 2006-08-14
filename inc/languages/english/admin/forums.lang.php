@@ -21,6 +21,7 @@ $l['forum_announcements'] = "Forum Announcements";
 
 $l['forums'] = "Forums";
 $l['forums_in'] = "Forums In '{1}'";
+$l['sub_forums'] = "Sub Forums:";
 $l['add_child_forum'] = "Add Child Forum";
 $l['forum_moderators'] = "Forum Moderators";
 $l['edit_forum2'] = "Edit Forum";

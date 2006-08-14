@@ -107,7 +107,7 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		$output->print_contents("<p>Welcome to the upgrade wizard for MyBB {$mybb->version}.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p><strong>We recommend that you also do a complete backup of your database before attempting to upgrade</strong> so if something goes wrong you can easily revert back to the previous version.</p></p><p>Once you're ready, please select your old version below and click next to continue.</p><p><select name=\"from\">$vers</select>");
+		$output->print_contents("<p>Welcome to the upgrade wizard for MyBB {$mybb->version}.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p><strong>We recommend that you also do a complete backup of your database before attempting to upgrade</strong> so if something goes wrong you can easily revert back to the previous version.</p><p>Make sure you only click Next ONCE on each step of the upgrade process. Pages may take a while to load depending on the size of your forum.</p><p>Once you're ready, please select your old version below and click next to continue.</p><p><select name=\"from\">$vers</select>");
 		$output->print_footer("doupgrade");
 	}
 	elseif($mybb->input['action'] == "doupgrade")
@@ -213,7 +213,7 @@ function upgradethemes()
 	$css = kill_tags($theme['cssbits']);
 	$themebits = kill_tags($theme['themebits']);
 	$templates = $theme['templates']['template'];
-	$themebits['templateset'] = $templateset;
+	$themebits['templateset'] = 1;
 	$newcount = 0;
 	foreach($templates as $template)
 	{

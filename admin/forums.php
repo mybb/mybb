@@ -150,7 +150,7 @@ function getforums($pid=0, $depth=1)
 					if(is_array($iforumcache[$forum['fid']]) && $depth == 2)
 					{
 						$comma = "";
-						echo "<br /><br />Sub Forums: ";
+						echo "<br />{$lang->sub_forums} ";
 						getforums($forum['fid'], $depth+1);
 					}
 					echo "</td>\n";
