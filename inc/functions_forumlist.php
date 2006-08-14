@@ -24,7 +24,7 @@ function build_forumbits($pid=0, $depth=1)
 		foreach($parent as $forum)
 		{
 			$forums = $subforums = $sub_forums = '';
-			$lastpost_data ='';
+			$lastpost_data = '';
 			$counters = '';
 
 			// Get the permissions for this forum
@@ -212,7 +212,7 @@ function build_forumbits($pid=0, $depth=1)
 					// This forum has moderators
 					if(is_array($moderatorcache[$mfid]))
 					{
-						// Fetch each moderator from the ache and format it, appending it to the list
+						// Fetch each moderator from the cache and format it, appending it to the list
 						foreach($moderatorcache[$mfid] as $moderator)
 						{
 							$moderators .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$moderator['uid']}\">{$moderator['username']}</a>";
@@ -344,7 +344,7 @@ function get_forum_unapproved($forum)
 		{
 			if($forum['unapprovedthreads'] > 1)
 			{
-				$unapproved_threads_count = sprintf($lang->forum_unapproved_thread_count, $forum['unapprovedthreads']);
+				$unapproved_threads_count = sprintf($lang->forum_unapproved_threads_count, $forum['unapprovedthreads']);
 			}
 			else
 			{
