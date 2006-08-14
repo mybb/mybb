@@ -50,7 +50,7 @@ function upgrade5_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD unapprovedposts INT(10) unsigned NOT NULL default '0' AFTER visible;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD unapprovedthreads INT(10) unsigned NOT NULL default '0' AFTER rules;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD unapprovedposts INT(10) unsigned NOT NULL default '0' AFTER rules;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD daysprune smallint(4) unsigned NOT NULL default '0' AFTER unapprovedposts;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultdaysprune smallint(4) unsigned NOT NULL default '0' AFTER unapprovedposts;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortby varchar(10) NOT NULL default '' AFTER daysprune;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortorder varchar(4) NOT NULL default '' AFTER defaultsortby;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD lastposteruid int(10) unsigned NOT NULL default '0' AFTER lastposter;");
@@ -226,7 +226,7 @@ function upgrade5_dbchanges()
 	PRIMARY KEY (tid)
 ) TYPE=MyISAM;");
 
-	$db->query("ALTER ".TABLE_PREFIX."usergroups ADD disporder smallint unsigned NOT NULL AFTER image");
+	$db->query("ALTER ".TABLE_PREFIX."usergroups ADD disporder smallint(6) NOT NULL default '0' AFTER image");
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canviewthreads=canview");
 	$db->query("UPDATE ".TABLE_PREFIX."forumpermissions SET canviewthreads=canview");
 

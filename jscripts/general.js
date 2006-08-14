@@ -237,7 +237,7 @@ var MyBB = {
 
 	HTMLchars: function(text)
 	{
-		//text = text.replace(/&(?!#[0-9]+;)/g, "&amp;");		
+		text = text.replace(new RegExp("&(?!#[0-9]+;)", "g"), "&amp;");		
 		text = text.replace(/</g, "&lt;");
 		text = text.replace(/>/g, "&gt;");
 		text = text.replace(/"/g, "&quot;");
