@@ -36,6 +36,7 @@ $cssselectors = array(
 	"select" => "select",
 	"button" => "input.button",
 	"editor" => ".editor",
+	"editor_control_bar" => ".editor_control_bar",
 	"toolbar_normal" => ".toolbar_normal",
 	"toolbar_hover" => ".toolbar_hover",
 	"toolbar_clicked" => ".toolbar_clicked",
@@ -538,7 +539,7 @@ function makecsstoolbaredit($css)
 	global $lang;
 	starttable();
 	tableheader($lang->mycode_toolbar);
-	echo "<tr>\n<td class=\"subheader\" align=\"center\">".$lang->editor."</td><td class=\"subheader\" align=\"center\">".$lang->toolbar_normal."</td>\n</tr>\n";
+	echo "<tr>\n<td class=\"subheader\" align=\"center\">".$lang->editor."</td><td class=\"subheader\" align=\"center\">".$lang->editor_control_bar."</td>\n</tr>\n";
 	echo "<tr>\n";
 	echo "<td class=\"altbg1\" width=\"50%\">\n";
 	echo "<table width=\"100%\">\n";
@@ -548,24 +549,43 @@ function makecsstoolbaredit($css)
 	echo "</td>\n";
 	echo "<td class=\"altbg1\" width=\"50%\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_normal][background]\" value=\"".htmlspecialchars_uni($css['toolbar_normal']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_normal][border]\" value=\"".htmlspecialchars_uni($css['toolbar_normal']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[editor_control_bar][background]\" value=\"".htmlspecialchars_uni($css['editor_control_bar']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[editor_control_bar][border]\" value=\"".htmlspecialchars_uni($css['editor_control_bar']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-	echo "<tr>\n<td class=\"subheader\" align=\"center\">".$lang->toolbar_hovered."</td><td class=\"subheader\" align=\"center\">".$lang->toolbar_clicked."</td>\n</tr>\n";
 	echo "<tr>\n";
-	echo "<td class=\"altbg1\" width=\"50%\">\n";
+	echo "<td class=\"altbg1\" colspan=\"2\">\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_hover][background]\" value=\"".htmlspecialchars_uni($css['toolbar_hover']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_hover][border]\" value=\"".htmlspecialchars_uni($css['toolbar_hover']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n";
+	echo "<td>\n";	
+	echo "<fieldset>\n";
+	echo "<legend>".$lang->toolbar_normal."</legend>\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr><td>".$lang->background."</td><td><input type=\"text\" name=\"css[toolbar_normal][background]\" value=\"".htmlspecialchars_uni($css['toolbar_normal']['background'])."\" size=\"8\" class=\"inputbox\" /></td></tr>\n";
+	echo "<tr><td>".$lang->border."</td><td><input type=\"text\" name=\"css[toolbar_normal][border]\" value=\"".htmlspecialchars_uni($css['toolbar_normal']['border'])."\" size=\"8\" class=\"inputbox\" /></td></tr>\n";
 	echo "</table>\n";
+	echo "</fieldset>\n";
 	echo "</td>\n";
-	echo "<td class=\"altbg1\" width=\"50%\">\n";
+	echo "<td>\n";	
+	echo "<fieldset>\n";
+	echo "<legend>".$lang->toolbar_hovered."</legend>\n";
 	echo "<table width=\"100%\">\n";
-	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[toolbar_clicked][background]\" value=\"".htmlspecialchars_uni($css['toolbar_clicked']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
-	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[toolbar_clicked][border]\" value=\"".htmlspecialchars_uni($css['toolbar_clicked']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr><td>".$lang->background."</td><td><input type=\"text\" name=\"css[toolbar_hover][background]\" value=\"".htmlspecialchars_uni($css['toolbar_hover']['background'])."\" size=\"8\" class=\"inputbox\" /></td></tr>\n";
+	echo "<tr><td>".$lang->border."</td><td><input type=\"text\" name=\"css[toolbar_hover][border]\" value=\"".htmlspecialchars_uni($css['toolbar_hover']['border'])."\" size=\"8\" class=\"inputbox\" /></td></tr>\n";
 	echo "</table>\n";
+	echo "</fieldset>\n";
+	echo "</td>\n";
+	echo "<td>\n";	
+	echo "<fieldset>\n";
+	echo "<legend>".$lang->toolbar_clicked."</legend>\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr><td>".$lang->background."</td><td><input type=\"text\" name=\"css[toolbar_clicked][background]\" value=\"".htmlspecialchars_uni($css['toolbar_clicked']['background'])."\" size=\"8\" class=\"inputbox\" /></td></tr>\n";
+	echo "<tr><td>".$lang->border."</td><td><input type=\"text\" name=\"css[toolbar_clicked][border]\" value=\"".htmlspecialchars_uni($css['toolbar_clicked']['border'])."\" size=\"8\" class=\"inputbox\" /></td></tr>\n";
+	echo "</table>\n";
+	echo "</fieldset>\n";
+	echo "</td>\n";
+	echo "</tr>\n</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	endtable();

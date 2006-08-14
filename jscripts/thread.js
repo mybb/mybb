@@ -22,6 +22,10 @@ var Thread = {
 					}
 				}
 			}
+			if($('quickreply_multiquote'))
+			{
+				$('quickreply_multiquote').style.display = '';
+			}
 		}
 		return true;
 	},
@@ -99,7 +103,8 @@ var Thread = {
 		$('quickreply_multiquote').style.display = 'none';
 		document.input.quoted_ids.value = 'all';
 		this.spinner.destroy();	
-		this.spinner = '';	
+		this.spinner = '';
+		$('message').focus();	
 	},
 	
 	clearMultiQuoted: function()
