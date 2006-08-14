@@ -439,7 +439,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	// Are we loading all quoted posts or only those not in the current thread?
 	if(!$mybb->input['load_all'])
 	{
-		$from_tid = p.tid != "'".intval($mybb->input['tid'])." AND'";
+		$from_tid = "p.tid != '".intval($mybb->input['tid'])." AND' ";
 	}
 	else
 	{
@@ -451,7 +451,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-		WHERE {$from_tid} p.pid IN ($quoted_posts) {$unviewable_forums} AND p.visible='1'
+		WHERE {$from_tid}p.pid IN ($quoted_posts) {$unviewable_forums} AND p.visible='1'
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{
