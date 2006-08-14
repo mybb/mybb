@@ -520,6 +520,12 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 	}
 
+
+	if($mybb->input['quoted_ids'])
+	{
+		$quoted_ids = htmlspecialchars_uni($mybb->input['quoted_ids']);
+	}
+
 	if($mybb->input['previewpost'])
 	{
 		$previewmessage = $mybb->input['message'];
