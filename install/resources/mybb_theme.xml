@@ -3376,6 +3376,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <input type="hidden" name="action" value="do_newreply" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="posthash" value="{$posthash}" />
+<input type="hidden" name="quoted_ids" value="" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
@@ -3396,7 +3397,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 <td class="trow1">
 	<div>
-		<textarea style="width: 99%; padding: 4px; margin: 0;" rows="12" cols="80" name="message" id="message" />
+		<textarea style="width: 99%; padding: 4px; margin: 0;" rows="12" cols="80" name="message" id="message"></textarea>
 	</div>
 	<script type="text/javascript">document.write('<div class="editor" style="width: 99%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote">{$lang->quickreply_multiquote_selected} <a href="javascript:Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}</a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}</a>.</div>');</script>
 </td>
