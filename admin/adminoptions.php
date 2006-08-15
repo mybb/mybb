@@ -218,6 +218,7 @@ if($mybb->input['action'] == "updateperms")
 	makeyesnocode($lang->can_manage_languages, "newperms[caneditlangs]", $permissions['caneditlangs']);
 	makeyesnocode($lang->can_use_maint, "newperms[canrunmaint]", $permissions['canrunmaint']);
 	makeyesnocode($lang->can_use_dbbackup, "newperms[canrundbtools]", $permissions['canrundbtools']);
+	$plugins->run_hooks("admin_adminoptions_adminpermissions_yesnocodes");
 	endtable();
 	endform($lang->update_permissions, $lang->reset_button);
 
