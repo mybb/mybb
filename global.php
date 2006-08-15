@@ -139,7 +139,7 @@ if($theme['csscached'] > 0 && $mybb->settings['cssmedium'] == 'file')
 }
 else
 {
-	$theme['css_url'] = $settings['bburl']."/css.php?tid={$theme['tid']}";
+	$theme['css_url'] = $settings['bburl']."/css.php?theme={$theme['tid']}";
 }
 
 // If a language directory for the current language exists within the theme - we use it
