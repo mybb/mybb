@@ -580,7 +580,11 @@ ActivityIndicator.prototype = {
 		this.spinner.style.zIndex = 1000;
 		this.spinner.style.textAlign = "center";
 		this.spinner.style.verticalAlign = "middle";
-		this.spinner.innerHTML = "<br />"+image+"<br /><br /><strong>Loading. <br />Please Wait..</strong>";
+		if(!loading_text)
+		{
+			var loading_text = 'Loading. <br />Please Wait..';
+		}
+		this.spinner.innerHTML = "<br />"+image+"<br /><br /><strong>"+loading_text+"</strong>";
 		this.spinner.style.width = this.width + "px";
 		this.spinner.style.height = this.height + "px";
 		this.spinner.style.top = top + "px";

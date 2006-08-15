@@ -986,7 +986,7 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 	{
 		error($lang->error_bannedusername);
 	}
-	$query = $db->simple_select(TABLE_PREFIX."users", "username", "username LIKE '".$db->escape_string($mybb->input['username'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "username", "LOWER(username)='".strtolower($mybb->input['username'])."'");
 
 	if($db->fetch_array($query))
 	{

@@ -164,7 +164,7 @@ $l['editor_enter_url'] = "Please enter the URL of the website.";
 $l['editor_enter_url_title'] = "Optionally, you can also enter a title for the URL.";
 $l['editor_enter_email'] = "Please enter the email address you wish to insert.";
 $l['editor_enter_email_title'] = "Optionally, you may also enter a title for the email address.";
-$l['editor_enter_image'] = "Pleae enter the remote URL of the image you wish to insert.";
+$l['editor_enter_image'] = "Please enter the remote URL of the image you wish to insert.";
 
 $l['quote'] = "Quote:";
 $l['wrote'] = "Wrote:";
@@ -285,4 +285,5 @@ $l['error_loadlimit'] = "The maximum server load limit has been reached.  Please
 $l['error_boardclosed'] = "This bulletin board is currently closed. The Administrator has specified the reason as to why below.";
 $l['error_banned'] = "I'm sorry, but you are banned.  You may not post, read threads, or access the forum.  Please contact your forum administrator should you have any questions.";
 
+$['ajax_loading'] = "Loading. <br />Please Wait..";
 ?>

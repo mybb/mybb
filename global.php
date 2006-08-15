@@ -285,6 +285,8 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 	}	eval("\$bannedwarning = \"".$templates->get("global_bannedwarning")."\";");
 }
 
+$lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
+
 // Set up some of the default templates
 eval("\$headerinclude = \"".$templates->get("headerinclude")."\";");
 eval("\$gobutton = \"".$templates->get("gobutton")."\";");

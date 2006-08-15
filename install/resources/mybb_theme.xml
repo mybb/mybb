@@ -438,6 +438,10 @@ form {
 
 * html .popup_menu .popup_item {
 	width: 100%;
+}
+
+.autocomplete {
+	text-align: left;
 }]]></extracss>
 	</themebits>
 	<templates>
@@ -2204,6 +2208,7 @@ $headerinclude
 	 var newpm_prompt = "{$lang->newpm_prompt}";
 	 var deleteevent_confirm = "{$lang->deleteevent_confirm}";
 	 var removeattach_confirm = "{$lang->removeattach_confirm}";
+	 var loading_text = '{$lang->ajax_loading}';
 </script>
 {$newpmmsg}]]></template>
 		<template name="showthread_similarthreads" version="120"><![CDATA[<br />
@@ -3392,7 +3397,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </thead>
 <tbody style="{$collapsed['quickreply_e']}" id="quickreply_e">
 <tr>
-<td class="trow1" valign="top">
+<td class="trow1" valign="top" width="15%">
 <strong>{$lang->message}</strong><br />
 <span class="smalltext">{$lang->message_note}<br /><br />
 <label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />
@@ -3401,7 +3406,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 <td class="trow1">
 	<div>
-		<textarea style="width: 80%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message"></textarea>
+		<textarea style="width: 80%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
 	</div>
 	<script type="text/javascript">document.write('<div class="editor_control_bar" style="width: 80%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote"><span class="smalltext">{$lang->quickreply_multiquote_selected} <a href="javascript:Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}<\/a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}<\/a>.<\/span><\/div>');</script>
 </td>
@@ -6505,8 +6510,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				<textarea style="width: 99%; padding: 4px; margin: 0;" rows="12" cols="80" id="quickedit_{$post['pid']}" />{$post['message']}</textarea>
 			</div>
 			<div class="editor_control_bar" style="width: 99%; padding: 4px; margin-top: 3px; text-align: right;">
-				<input type="button" class="button" onclick="Thread.quickEditSave({$post['pid']});" value="Save Changes" />
-				<input type="button" class="button" onclick="Thread.quickEditCancel({$post['pid']});" value="Cancel Edit" />
+				<input type="button" class="button" onclick="Thread.quickEditSave({$post['pid']});" value="{$lang->save_changes}" />
+				<input type="button" class="button" onclick="Thread.quickEditCancel({$post['pid']});" value="{$lang->cancel_edit}" />
 			</div>
 			<br style="clear: both;" />
 		</div>]]></template>
