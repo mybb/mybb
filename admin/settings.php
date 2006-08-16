@@ -99,7 +99,7 @@ if($mybb->input['action'] == "do_add")
 			"value" => $db->escape_string($mybb->input['value']),
 			"disporder" => intval($mybb->input['disporder']),
 			"gid" => intval($mybb->input['gid'])
-			);
+		);
 		$plugins->run_hooks("admin_settings_do_add_setting");
 		$db->insert_query(TABLE_PREFIX."settings", $settingarray);
 		rebuildsettings();
@@ -118,7 +118,7 @@ if($mybb->input['action'] == "do_add")
 			"title" => $db->escape_string($mybb->input['title']),
 			"description" => $db->escape_string($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])
-			);
+		);
 		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7")
 		{
 			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
@@ -213,7 +213,7 @@ if($mybb->input['action'] == "do_edit")
 			"value" => $db->escape_string($mybb->input['value']),
 			"disporder" => intval($mybb->input['disporder']),
 			"gid" => intval($mybb->input['gid'])
-			);
+		);
 		$plugins->run_hooks("admin_settings_do_edit_setting");
 		$db->update_query(TABLE_PREFIX."settings", $settingarray, "sid='".intval($mybb->input['sid'])."'");
 		rebuildsettings();
@@ -226,7 +226,7 @@ if($mybb->input['action'] == "do_edit")
 			"title" => $db->escape_string($mybb->input['title']),
 			"description" => $db->escape_string($mybb->input['description']),
 			"disporder" => intval($mybb->input['disporder'])
-			);
+		);
 		if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7")
 		{
 			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
@@ -531,7 +531,9 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 						if($setting['value'] == $lname)
 						{
 							$sel = "selected";
-						} else {
+						} 
+            			else 
+            			{
 							$sel = "";
 						}
 						$options .= "<option value=\"$lname\" $sel>$language</option>";
@@ -546,7 +548,9 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 						if($setting['value'] == $lname)
 						{
 							$sel = "selected";
-						} else {
+						} 
+            			else 
+            			{
 							$sel = "";
 						}
 						$options .= "<option value=\"$lname\" $sel>$language</option>";
@@ -560,7 +564,8 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				}
 				else
 				{
-					for($i=0;$i<count($type);$i++)
+					$type_count = count($type);
+					for($i = 0; $i < $type_count; $i++)
 					{
 						$optionsexp = explode("=", $type[$i]);
 						$lang_string =  "setting_".$setting['name']."_".$optionsexp[0];
