@@ -22,7 +22,7 @@ $plugins->run_hooks("admin_index_start");
 if($mybb->input['action'] == "header")
 {
 	$plugins->run_hooks("admin_index_header");
-	
+
 	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 	echo "<html ".($lang->settings['rtl'] ? "dir=\"rtl\" " : "")."lang=\"".($lang->settings['htmllang'])."\">\n";
 	echo "<head>\n";
@@ -98,24 +98,24 @@ elseif($mybb->input['action'] == "home")
 	// Get the number of unapproved attachments
 	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs", "visible='0' AND pid>0");
 	$unapproved_attachs = $db->fetch_array($query);
-	
+
 	// Fetch the last time an update check was run
 	$update_check = $cache->read("update_check");
-	
+
 	// If last update check was greater than two weeks ago (14 days) show an alert
 	if($update_check['last_check'] <= time()-60*60*24*14)
 	{
-		$lang->last_update_check_three_weeks = sprintf($lang->last_update_check_three_weeks, "index.php?".SID."&amp;action=vercheck");
+		$lang->last_update_check_two_weeks = sprintf($lang->last_update_check_two_weeks, "index.php?".SID."&amp;action=vercheck");
 		makewarning($lang->last_update_check_two_weeks);
 	}
-	
+
 	// If the update check contains information about a newer version, show an alert
 	if($update_check['latest_version_code'] > $mybb->version_code)
 	{
 		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.com/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
 		makewarning($lang->new_version_available);
 	}
-	
+
 	$plugins->run_hooks("admin_index_home");
 
 	// Program Statistics table
@@ -165,8 +165,8 @@ elseif($mybb->input['action'] == "home")
   startform("forums.php", "", "add");
   $startform2 = ob_get_contents();
   ob_end_clean();
-  
-  
+
+
 	// Quick admin options
 	starttable();
 	tableheader($lang->quick_options);
@@ -208,12 +208,12 @@ elseif($mybb->input['action'] == "home")
 	endtable();
 	cpfooter();
 }
-elseif($mybb->input['action'] == "vercheck") 
+elseif($mybb->input['action'] == "vercheck")
 {
 	logadmin();
 
 	$current_version = rawurlencode($mybb->version_code);
-	
+
 	$updated_cache = array(
 		"last_check" => time()
 	);
@@ -240,11 +240,11 @@ elseif($mybb->input['action'] == "vercheck")
 			"latest_version_code" => $latest_code
 		);
 	}
-	
+
 	$cache->update("update_check", $updated_cache);
 
 	$plugins->run_hooks("admin_index_vercheck");
-	
+
 	require_once MYBB_ROOT."/inc/class_feedparser.php";
 	$feed_parser = new FeedParser();
 	$feed_parser->parse_feed("http://www.mybboard.com/latest_news.php");
@@ -263,7 +263,7 @@ elseif($mybb->input['action'] == "vercheck")
 	echo "<br />";
 	starttable();
 	tableheader($lang->latest_ann);
-	
+
 	if($feed_parser->error == '')
 	{
 		foreach($feed_parser->items as $item)
