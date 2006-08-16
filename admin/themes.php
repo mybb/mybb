@@ -332,10 +332,13 @@ if($mybb->input['action'] == "do_import")
 	$css = kill_tags($theme['cssbits']);
 	$themebits = kill_tags($theme['themebits']);
 	$templates = $theme['templates']['template'];
-	// Theme only has one custom template
-	if(array_key_exists("attributes", $templates))
+	if(is_array($templates))
 	{
-		$templates = array($templates);
+		// Theme only has one custom template
+		if(array_key_exists("attributes", $templates))
+		{
+			$templates = array($templates);
+		}
 	}
 
 	if($master == "yes")
@@ -412,7 +415,7 @@ if($mybb->input['action'] == "settings")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "edit") 
+if($mybb->input['action'] == "edit")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='1'");
 	$master = $db->fetch_array($query);
@@ -505,7 +508,7 @@ if($mybb->input['action'] == "edit")
 
 	cpfooter();
 }
-if($mybb->input['action'] == "delete") 
+if($mybb->input['action'] == "delete")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
