@@ -144,9 +144,9 @@ function getforums($pid=0, $depth=1)
 					}
 					if($forum['description'])
 					{
-            $forum['description'] = "<span class=\"smalltext\">".$forum['description']."</span>";
-          }
-					echo "<b><a href=\"forums.php?".SID."&amp;fid=".$forum['fid']."\">".$forum['name']."</a></b><br />";
+            			$forum['description'] = "<br /><span class=\"smalltext\">".$forum['description']."</span>";
+          			}
+					echo "<b><a href=\"forums.php?".SID."&amp;fid=".$forum['fid']."\">".$forum['name']."</a></b>{$forum['description']}";
 					if(is_array($iforumcache[$forum['fid']]) && $depth == 2)
 					{
 						$comma = "";
