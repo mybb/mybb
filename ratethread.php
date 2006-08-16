@@ -24,7 +24,7 @@ if(!$thread['tid'])
 }
 
 $forumpermissions = forum_permissions($thread['fid']);
-if($forumpermissions['canview'] == "no" || $forumpermissions['canratethreads'] == "no")
+if($forumpermissions['canview'] == "no" || $forumpermissions['canratethreads'] == "no" || $mybb->usergroup['canratethreads'] == "no")
 {
 	error_no_permission();
 }
@@ -52,7 +52,7 @@ $plugins->run_hooks("ratethread_start");
 
 if($mybb->user['uid'] != "0")
 {
-	$whereclause = "uid='".$mybb->user[uid]."'";
+	$whereclause = "uid='".$mybb->user['uid']."'";
 }
 else
 {
