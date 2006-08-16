@@ -840,8 +840,8 @@ show=Show to all Users]]></optionscode>
 			<description><![CDATA[Please select from the list how you want the theme and CSS data to be stored and retrieved.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[php
-<input type=\"radio\" name=\"upsetting[{$setting['sid']}]\" value=\"db\" ".($setting['value'] == 'db' || !is_writable(MYBB_ROOT."/css")?"checked=\"checked\"":"")." /> Stored in the Database<br />
-<input type=\"radio\" name=\"upsetting[{$setting['sid']}]\" value=\"file\" ".($setting['value'] == 'file' && is_writable(MYBB_ROOT."/css")?"checked=\"checked\"":"").(!is_writable(MYBB_ROOT."/css")?" disabled=\"disabled\"":"")." /> Stored in the file system (In the 'css' folder)".(!is_writable(MYBB_ROOT."/css")?"<br /><br />To cache CSS to the file system, the CSS folder must be made writable.":"")."]]></optionscode>
+<input type=\"radio\" name=\"upsetting[{$setting['sid']}]\" value=\"db\" ".($setting['value'] == 'db' || !is_writable(MYBB_ROOT."/css")?"checked=\"checked\"":"")." /> ".($lang->setting_cssmedium_db?$lang->setting_cssmedium_db:"Database")."<br />
+<input type=\"radio\" name=\"upsetting[{$setting['sid']}]\" value=\"file\" ".($setting['value'] == 'file' && is_writable(MYBB_ROOT."/css")?"checked=\"checked\"":"").(!is_writable(MYBB_ROOT."/css")?" disabled=\"disabled\"":"")." /> ".($lang->setting_cssmedium_file?$lang->setting_cssmedium_file:"Stored in the file system (In the 'css' folder)").(!is_writable(MYBB_ROOT."/css")?"<br /><br />".($lang->setting_cssmedium_file?$lang->setting_cssmedium_file:"To cache CSS to the file system, the CSS folder must be made writable."):"")."]]></optionscode>
 			<settingvalue><![CDATA[db]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
@@ -1159,7 +1159,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Please select the type of search system you wish to use. You can either chose between "Standard", or "Full Text" (depending on your database). Fulltext searching is more powerful than the standard MyBB searching and quicker too.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[php
-<select name=\"upsetting[{$setting['sid']}]\"><option value=\"standard\">Standard</option>".($db->supports_fulltext(TABLE_PREFIX."threads") && $db->supports_fulltext_boolean(TABLE_PREFIX."posts")?"<option value=\"fulltext\"".($setting['value']=="fulltext"?" selected=\"selected\"":"").">Full Text</option>":"")."</select>]]></optionscode>
+<select name=\"upsetting[{$setting['sid']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext(TABLE_PREFIX."threads") && $db->supports_fulltext_boolean(TABLE_PREFIX."posts")?"<option value=\"fulltext\"".($setting['value']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>]]></optionscode>
 			<settingvalue><![CDATA[standard]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>

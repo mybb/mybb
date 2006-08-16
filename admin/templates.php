@@ -109,11 +109,11 @@ if($mybb->input['action'] == "do_add")
 	}
 	if($mybb->input['continue'] != "yes")
 	{
-		$editurl = "templates.php?".SID."&amp;expand=".$mybb->input['setid'].$opengroup;
+		$editurl = "templates.php?".SID."&expand=".$mybb->input['setid'].$opengroup;
 	}
 	else
 	{
-		$editurl = "templates.php?".SID."&amp;action=edit&amp;tid=".$tid."&amp;continue=yes&amp;group=".$mybb->input['group'];
+		$editurl = "templates.php?".SID."&action=edit&tid=".$tid."&continue=yes&group=".$mybb->input['group'];
 	}
 	cpredirect($editurl, $lang->template_added);
 }
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "do_addset")
 	$plugins->run_hooks("admin_templates_do_addset");
 	$db->insert_query(TABLE_PREFIX."templatesets", $newset);
 	$setid = $db->insert_id();
-	cpredirect("templates.php?".SID."&amp;expand=$setid", $lang->set_added);
+	cpredirect("templates.php?".SID."&expand=$setid", $lang->set_added);
 }
 	
 if($mybb->input['action'] == "do_delete")
@@ -138,7 +138,7 @@ if($mybb->input['action'] == "do_delete")
 		{
 			$opengroup = "&amp;group=".$mybb->input['group']."#".$mybb->input['group'];
 		}
-		cpredirect("templates.php?".SID."&amp;expand=".$mybb->input['expand'].$opengroup, $lang->template_deleted);
+		cpredirect("templates.php?".SID."&expand=".$mybb->input['expand'].$opengroup, $lang->template_deleted);
 	}
 	else
 	{
@@ -153,7 +153,7 @@ if($mybb->input['action'] == "do_deleteset")
 		$plugins->run_hooks("admin_templates_do_deleteset");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
-		cpredirect("templates.php?".SID."&amp;action=modify", $lang->set_deleted);
+		cpredirect("templates.php?".SID."&action=modify", $lang->set_deleted);
 	}
 	else
 	{
@@ -192,11 +192,11 @@ if($mybb->input['action'] == "do_edit")
 	}
 	if($mybb->input['continue'] != "yes")
 	{
-		$editurl = "templates.php?".SID."&amp;expand=".$mybb->input['setid'].$opengroup;
+		$editurl = "templates.php?".SID."&expand=".$mybb->input['setid'].$opengroup;
 	}
 	else
 	{
-		$editurl = "templates.php?".SID."&amp;action=edit&amp;tid=".$mybb->input['tid']."&amp;continue=yes&amp;group=".$mybb->input['group'];
+		$editurl = "templates.php?".SID."&action=edit&tid=".$mybb->input['tid']."&continue=yes&group=".$mybb->input['group'];
 	}
 	cpredirect($editurl, $lang->template_edited);
 }
@@ -509,7 +509,7 @@ if($mybb->input['action'] == "makeoriginals")
 		}
 	}
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
-	cpredirect("templates.php?".SID."&amp;expand=$setid", $lang->originals_made);
+	cpredirect("templates.php?".SID."&expand=$setid", $lang->originals_made);
 }
 
 if($mybb->input['action'] == "add") 

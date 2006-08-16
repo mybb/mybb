@@ -134,7 +134,6 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 	$free_memory = $memory_limit - $current_usage;
 	
 	$thumbnail_memory = round(($width * $height * $bitdepth * $channels / 8) * 5);
-	echo $thumbnail_memory."<br />";
 	$thumbnail_memory += 2097152;
 	
 	if($thumbnail_memory > $free_memory)

@@ -204,7 +204,7 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 		$success_text = sprintf($lang->leader_added, $usergroup['title']);
 	}
 
-	cpredirect("usergroups.php?".SID."&amp;action=groupleaders&amp;gid=".$mybb->input['gid'], $success_text);
+	cpredirect("usergroups.php?".SID."&action=groupleaders&amp;gid=".$mybb->input['gid'], $success_text);
 }
 
 if($mybb->input['action'] == "do_delete")
@@ -728,14 +728,14 @@ function usergroup_hop(gid)
 {
 	usergroupaction = "usergroup_"+gid;
 	action = eval("document.usergroups.usergroup_"+gid+".options[document.usergroups.usergroup_"+gid+".selectedIndex].value");
-	window.location = "usergroups.php?<?php echo SID; ?>&action="+action+"&gid="+gid;
+	window.location = "usergroups.php?<?php echo SID; ?>&action="+action+"&amp;gid="+gid;
 }
 -->
 </script>
 <?php
 	startform('usergroups.php', 'usergroups');
 
-	$hopto[] = "<input type=\"button\" value=\"$lang->create_new_group\" onclick=\"hopto('usergroups.php?".SID."&action=add');\" class=\"hoptobutton\" />";
+	$hopto[] = "<input type=\"button\" value=\"$lang->create_new_group\" onclick=\"hopto('usergroups.php?".SID."&amp;action=add');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 	starttable();
 	tableheader($lang->default_groups, '', 4);
@@ -886,7 +886,7 @@ function usergroup_hop(gid)
 			$modrequests = '';
 			if($joinrequests[$usergroup['gid']] > 0)
 			{
-				$usergroup['joinrequests'] = "<a href=\"usergroups.php?".SID."&joinrequests&gid={$usergroup['gid']}\"><span class=\"highlight1\">".$joinrequests[$usergroup['gid']]."</span></a>";
+				$usergroup['joinrequests'] = "<a href=\"usergroups.php?".SID."&amp;=joinrequests&amp;gid={$usergroup['gid']}\"><span class=\"highlight1\">".$joinrequests[$usergroup['gid']]."</span></a>";
 				$modrequests = "<option value=\"joinrequests\">{$lang->moderate_join_requests}</option>\n";
 			}
 			echo "</td>\n";

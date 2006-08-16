@@ -719,7 +719,7 @@ if($mybb->input['action'] == "do_do_merge")
 {
 	if(!$mybb->input['deletesubmit'])
 	{
-		cpredirect("users.php?".SID."&amp;lmaction=merge", $lang->users_not_merged);
+		cpredirect("users.php?".SID."&lmaction=merge", $lang->users_not_merged);
 		exit;
 	}
 	$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['source'])."'");

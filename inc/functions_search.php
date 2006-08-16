@@ -97,24 +97,13 @@ function get_unsearchable_forums($pid="0", $first=1)
 {
 	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $unsearchableforums, $unsearchable, $templates, $forumpass;
 	$pid = intval($pid);
-	if(!$permissions)
-	{
-		$permissions = $mybb->usergroup;
-	}
 	if(!is_array($forumcache))
 	{
 		// Get Forums
-		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f WHERE active!='no' ORDER BY f.pid, f.disporder");
+		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f ORDER BY f.pid, f.disporder");
 		while($forum = $db->fetch_array($query))
 		{
-			if($pid != "0")
-			{
-				$forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
-			}
-			else
-			{
-				$forumcache[$forum['fid']] = $forum;
-			}
+			$forumcache[$forum['fid']] = $forum;
 		}
 	}
 	if(!is_array($permissioncache))
@@ -141,7 +130,7 @@ function get_unsearchable_forums($pid="0", $first=1)
 			}
 		}
 
-		if($perms['canview'] == "no" || $perms['cansearch'] == "no" || $pwverified == 0)
+		if($perms['canview'] != "yes" || $perms['cansearch'] != "yes" || $pwverified == 0 || $forum['active'] == "no")
 		{
 			if($unsearchableforums)
 			{
@@ -437,7 +426,7 @@ function perform_search_mysql($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -451,7 +440,7 @@ function perform_search_mysql($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 $post_datecut $forumin $post_usersql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
+			WHERE 1=1 $post_datecut $forumin $post_usersql $permsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -473,7 +462,7 @@ function perform_search_mysql($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 $subject_lookin
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -648,7 +637,7 @@ function perform_search_mysql_ft($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -662,7 +651,7 @@ function perform_search_mysql_ft($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 $post_datecut $forumin $post_usersql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
+			WHERE 1=1 $post_datecut $forumin $post_usersql $permsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -684,7 +673,7 @@ function perform_search_mysql_ft($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql AND t.visible>0 $subject_lookin
+			WHERE 1=1 $thread_datecut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
