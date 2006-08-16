@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-$templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,changeuserbox,attachment,posticons";
+$templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,changeuserbox,attachment,posticons,codebuttons,smilieinsert,post_attachments_attachment_postinsert,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_attachment_mod_unapprove,post_attachments_attachment,post_attachments_new,post_attachments,newthread_postpoll,editpost_disablesmilies";
 
 require "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -337,7 +337,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	if($forumpermissions['canpostattachments'] != "no")
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "posthash='{$posthash}' OR pid='{$pid}'");
+		if($mybb->input['posthash'])
+		{
+			$posthash = "posthash='{$posthash}' OR";
+		}
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "{$posthash} pid='{$pid}'");
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{

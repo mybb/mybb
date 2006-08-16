@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 $templatelist = "memberlist,memberlist_row";
-$templatelist .= ",postbit_www,postbit_email";
+$templatelist .= ",postbit_www,postbit_email,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 require "./global.php";
 
 // Load global language phrases
