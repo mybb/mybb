@@ -18,7 +18,7 @@ class installerOutput {
 
 	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
-		global $mybb;
+		global $mybb, $lang;
 		$this->doneheader = 1;
 
 		echo <<<END
@@ -92,7 +92,7 @@ END;
 			$this->print_header("Error", "", 0, 1);
 		}
 		echo "			<div class=\"error\">\n				";
-		echo "<h3>Error</h3>";
+		echo "<h3>".$lang->error."</h3>";
 		$this->print_contents($message);
 		echo "\n			</div>";
 		$this->print_footer();
@@ -104,7 +104,7 @@ END;
 		if($nextact && $this->openedform)
 		{
 			echo "\n			<input type=\"hidden\" name=\"action\" value=\"$nextact\" />";
-			echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"Next &raquo;\" /></div><br style=\"clear: both;\" />\n";
+			echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"".$lang->next." &raquo;\" /></div><br style=\"clear: both;\" />\n";
 			$formend = "</form>";
 		}
 		else

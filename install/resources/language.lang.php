@@ -6,6 +6,8 @@ $l['installed'] = 'Installed';
 $l['not_writable'] = 'Not Writable';
 $l['writable'] = 'Writable';
 $l['done'] = 'done';
+$l['next'] = 'Next';
+$l['error'] = 'Error';
 
 $l['welcome'] = 'Welcome';
 $l['license_agreement'] = 'License Agreement';
