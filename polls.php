@@ -509,7 +509,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		"closed" => $postoptions['closed'],
 		"multiple" => $postoptions['multiple'],
 		"public" => $postoptions['public']
-		);
+	);
 
 	$plugins->run_hooks("polls_do_editpoll_process");
 

@@ -2661,7 +2661,7 @@ $reputation
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</span></td>
-<td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}" />{$lang->days_after} {$polldate}</td>
+<td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}" /> {$lang->days_after} {$polldate}</td>
 </tr>
 </table>
 <br />
@@ -4344,7 +4344,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</span></td>
-<td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}" />{$lang->days}</td>
+<td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}" /> {$lang->days}</td>
 </tr>
 </table>
 <br />
@@ -5259,9 +5259,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]>
     </template>
 		<template name="polls_editpoll_option" version="120"><![CDATA[<tr>
-<td>{$lang->option} {$counter}:</td>
+<td>{$lang->option} {$counter}:&nbsp;</td>
 <td><input type="text" class="textbox" name="options[{$counter}]" value="{$option}" /></td>
-<td>{$lang->votes}</td>
+<td>{$lang->votes}&nbsp;</td>
 <td><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}" /></td>
 </tr>]]></template>
 		<template name="member_resetpassword" version="120"><![CDATA[<html>
@@ -5776,7 +5776,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
 </td>]]></template>
 		<template name="polls_newpoll_option" version="120"><![CDATA[<tr>
-<td>{$lang->option} {$i}:</td>
+<td>{$lang->option} {$i}:&nbsp;</td>
 <td><input type="text" class="textbox" name="options[{$i}]" value="{$option}" size="25" /></td>
 </tr>]]></template>
 		<template name="showthread_poll_option_multiple" version="120"><![CDATA[<tr>
