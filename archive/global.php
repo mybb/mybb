@@ -12,8 +12,6 @@
 // If archive mode deos not work, uncomment the line below and try again
 // define("ARCHIVE_QUERY_STRINGS", 1);
 
-define("IN_MYBB", 1);
-
 // Lets pretend we're a level higher
 chdir('./../');
 
