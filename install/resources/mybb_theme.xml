@@ -430,6 +430,7 @@ form {
 	display: block;
 	padding: 3px;
 	text-decoration: none;
+	white-space: nowrap;
 }
 
 .popup_menu a.popup_item:hover {

@@ -56,7 +56,7 @@ PopupMenu.prototype = {
 		}
 		this.menu.style.left = offsetLeft+"px";
 		this.menu.style.visibility = 'hidden';
-		this.menu.style.display = 'inline';
+		this.menu.style.display = '';
 		if(this.menu.style.width)
 		{
 			menuWidth = parseInt(this.menu.style.width);
