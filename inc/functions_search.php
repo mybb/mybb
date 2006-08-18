@@ -155,7 +155,7 @@ function clean_keywords($keywords)
 	$keywords = str_replace("%", "\\%", $keywords);
 	$keywords = preg_replace("#\*{2,}#s", "*", $keywords);
 	$keywords = str_replace("*", "%", $keywords);
-	$keywords = preg_replace("#([\[\]\|\.\,:\"'])#s", " ", $keywords);
+	$keywords = preg_replace("#([\[\]\|\.\,:'])#s", " ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
 	return trim($keywords);
 }
@@ -278,42 +278,79 @@ function perform_search_mysql($search)
 	if($keywords)
 	{
 		// Complex search
+		$keywords = " {$keywords} ";
 		if(preg_match("# and|or #", $keywords))
 		{
 			$subject_lookin = " AND (";
 			$message_lookin = " AND (";
-			$matches = preg_split("#\s{1,}(and|or)\s{1,}#", $keywords, -1, PREG_SPLIT_DELIM_CAPTURE);
-			$count_matches = count($matches);
-			for($i=0;$i<$count_matches;$i++)
+			
+			// Expand the string by double quotes
+			$keywords_exp = explode("\"", $keywords);
+			$inquote = false;
+
+			foreach($keywords_exp as $phrase)
 			{
-				$word = trim($matches[$i]);
-				if(empty($word))
+				// If we're not in a double quoted section
+				if(!$inquote)
 				{
-					continue;
-				}
-				if($i % 2 && ($word == "and" || $word == "or"))
-				{
-					$boolean = $word;
-				}
+					// Expand out based on search operators (and, or)
+					$matches = preg_split("#\s{1,}(and|or)\s{1,}#", $phrase, -1, PREG_SPLIT_DELIM_CAPTURE);
+					$count_matches = count($matches);
+					
+					for($i=0;$i<$count_matches;$i++)
+					{
+						$word = trim($matches[$i]);
+						if(empty($word))
+						{
+							continue;
+						}
+						// If this word is a search operator set the boolean
+						if($i % 2 && ($word == "and" || $word == "or"))
+						{
+							$boolean = $word;
+						}
+						// Otherwise check the length of the word as it is a normal search term
+						else
+						{
+							// Word is too short - show error message
+							if(my_strlen($word) < $mybb->settings['minsearchword'])
+							{
+								$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+								error($lang->error_minsearchlength);
+							}
+							// Add terms to search query
+							$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%".trim($word)."%'";
+							if($search['postthread'] == 1)
+							{
+								$message_lookin .= " $boolean LOWER(p.message) LIKE '%".trim($word)."%'";
+							}
+						}
+					}
+				}	
+				// In the middle of a quote (phrase)
 				else
 				{
-					if(my_strlen($word) < $mybb->settings['minsearchword'])
+					$phrase = str_replace(array("+", "-", "*"), "", trim($phrase));
+					if(my_strlen($phrase) < $mybb->settings['minsearchword'])
 					{
 						$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 						error($lang->error_minsearchlength);
 					}
-					$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%".$word."%'";
+					// Add phrase to search query
+					$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%".$phrase."%'";
 					if($search['postthread'] == 1)
 					{
-						$message_lookin .= " $boolean LOWER(p.message) LIKE '%".trim($word)."%'";
-					}
+						$message_lookin .= " $boolean LOWER(p.message) LIKE '%".trim($phrase)."%'";
+					}					
 				}
+				$inquote = !$inquote;
 			}
 			$subject_lookin .= ")";
 			$message_lookin .= ")";
 		}
 		else
 		{
+			$keywords = str_replace("\"", "", $keywords);
 			if(my_strlen($keywords) < $mybb->settings['minsearchword'])
 			{
 				$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
@@ -517,22 +554,52 @@ function perform_search_mysql_ft($search)
 		error($lang->error_nosearchterms);
 	}
 
-	if($mybb->settings['minsearchword'] < 4)
+	// Attempt to determine minimum word length from MySQL for fulltext searches
+	$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
+	$min_length = $db->fetch_field($query, 'Value');
+	if(is_numeric($min_length))
+	{
+		$mybb->settings['minsearchword'] = $min_length;
+	}
+	// Otherwise, could not fetch - default back to MySQL fulltext default setting
+	else
 	{
 		$mybb->settings['minsearchword'] = 4;
 	}
 
 	if($keywords)
 	{
-		$words = explode(" ", $keywords);
-		foreach($words as $word)
+		$keywords_exp = explode("\"", $keywords);
+		$inquote = false;
+		foreach($keywords_exp as $phrase)
 		{
-			$word = str_replace(array("+", "-", "*"), "", $word);
-			if(my_strlen($word) < $mybb->settings['minsearchword'])
+			if(!$inquote)
 			{
-				$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
-				error($lang->error_minsearchlength);
+				$split_words = preg_split("#\s{1,}#", $phrase, -1);
+				foreach($split_words as $word)
+				{
+					$word = str_replace(array("+", "-", "*"), "", $word);
+					if(!$word)
+					{
+						continue;
+					}
+					if(my_strlen($word) < $mybb->settings['minsearchword'])
+					{
+						$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+						error($lang->error_minsearchlength);
+					}
+				}
 			}
+			else
+			{
+				$phrase = str_replace(array("+", "-", "*"), "", $phrase);
+				if(my_strlen($phrase) < $mybb->settings['minsearchword'])
+				{
+					$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+					error($lang->error_minsearchlength);
+				}
+			}
+			$inquote = !$inquote;
 		}
 		$message_lookin = "AND MATCH(message) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
 		$subject_lookin = "AND MATCH(subject) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";

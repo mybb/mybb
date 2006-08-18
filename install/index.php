@@ -784,11 +784,6 @@ function install_done()
 	if($db->supports_fulltext_boolean(TABLE_PREFIX.'posts'))
 	{
 		$db->create_fulltext_index(TABLE_PREFIX.'posts', 'message');
-		$update_data = array(
-			'value' => 'fulltext'
-		);
-		$db->update_query(TABLE_PREFIX.'settings', $update_data, 'name=\'searchtype\'');
-		write_settings();
 	}
 
 	// Register a shutdown function which actually tests if this functionality is working

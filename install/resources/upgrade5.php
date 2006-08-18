@@ -424,18 +424,6 @@ function upgrade5_indexes()
 		{
 			$db->create_fulltext_index(TABLE_PREFIX."posts", "message");
 		}
-		// Insert a temporary setting (will be overwritten by sync_settings)
-		$settingdata = array(
-			"name" => "searchtype",
-			"title" => "Temporary setting",
-			"description" => "",
-			"optionscode" => "",
-			"disporder" => 0,
-			"gid" => 0,
-			"value" => "fulltext"
-		);
-		$db->insert_query(TABLE_PREFIX."settings", $settingdata);
-		write_settings();
 	}
 
 	// Register a shutdown function which actually tests if this functionality is working
