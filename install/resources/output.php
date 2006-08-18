@@ -87,6 +87,7 @@ END;
 
 	function print_error($message)
 	{
+		global $lang;
 		if(!$this->doneheader)
 		{
 			$this->print_header("Error", "", 0, 1);
@@ -101,6 +102,7 @@ END;
 
 	function print_footer($nextact="")
 	{
+		global $lang;
 		if($nextact && $this->openedform)
 		{
 			echo "\n			<input type=\"hidden\" name=\"action\" value=\"$nextact\" />";
