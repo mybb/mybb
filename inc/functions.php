@@ -1514,7 +1514,7 @@ function build_mycode_inserter()
 			"editor_enter_url_title",
 			"editor_enter_email",
 			"editor_enter_email_title",
-			"editor_enter_image"		
+			"editor_enter_image",	
 			"editor_size_xx_small",
 			"editor_size_x_small",
 			"editor_size_small",
