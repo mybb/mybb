@@ -37,7 +37,7 @@ END;
 		}
 		
 		echo <<<END
-\n		<div id="container">
+		<div id="container">
 		<div id="logo">
 			<h1><span class="invisible">MyBB</span></h1>
 		</div>
@@ -90,7 +90,7 @@ END;
 		global $lang;
 		if(!$this->doneheader)
 		{
-			$this->print_header("Error", "", 0, 1);
+			$this->print_header($lang->error, "", 0, 1);
 		}
 		echo "			<div class=\"error\">\n				";
 		echo "<h3>".$lang->error."</h3>";

@@ -1,5 +1,5 @@
 <?php
-
+/* INSTALL LANGUAGE VARIABLES */
 $l['none'] = 'None';
 $l['not_installed'] = 'Not Installed';
 $l['installed'] = 'Installed';
@@ -284,6 +284,22 @@ $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully
 $l['done_step_locked'] = '<p>Your installer has been locked. To unlock the installer please delete the \'lock\' file in this directory.</p><p>You may now proceed to your new copy of <a href="../index.php">MyBB</a> or its <a href="../admin/index.php">Admin Control Panel</a>.</p>';
 $l['done_step_dirdelete'] = '<p><strong><span style="colour:red">Please remove this directory before exploring your copy of MyBB.</span></strong></p>';
 $l['done_subscribe_mailing'] = '<div class="error"><p><strong>Make sure you\'re subscribed to the updates mailing list!</strong></p><p>Everytime we release a new version of MyBB, be it a new feature release or security update, we send out a message via our mailing list to alert you of the release.</p><p>This helps keep you up to date with new security releases and ensures you\'re running the latest and greatest version of MyBB!</p><p><a href="http://www.mybboard.com/mailinglist.php">Subscribe to the updates mailing list!</a></p>';
+
+/* UPGRADE LANGUAGE VARIABLES */
+$l['upgrade'] = "Upgrade Process";
+$l['upgrade_welcome'] = "<p>Welcome to the upgrade wizard for MyBB {1}.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p><strong>We recommend that you also do a complete backup of your database before attempting to upgrade</strong> so if something goes wrong you can easily revert back to the previous version.</p><p>Make sure you only click Next ONCE on each step of the upgrade process. Pages may take a while to load depending on the size of your forum.</p><p>Once you're ready, please select your old version below and click next to continue.</p>";
+$l['upgrade_templates_reverted'] = 'Templates Reverted';
+$l['upgrade_templates_reverted_success'] = "<p>All of the templates have successfully been reverted to the new ones contained in this release. Please press next to continue with the upgrade process.</p>";
+$l['upgrade_settings_sync'] = 'Settings Synchronisation';
+$l['upgrade_settings_sync_success'] = "<p>The board settings have been synchronised with the latest in MyBB.</p><p>{1} new settings inserted along with {2} new setting groups.</p><p>To finalise the upgrade, please click next below to continue.</p>";
+$l['upgrade_datacache_building'] = 'Data Cache Building';
+$l['upgrade_building_datacache'] = '<p>Building cache\'s...';
+$l['upgrade_continue'] = 'Please press next to continue';
+$l['upgrade_locked'] = "<p>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</p><p>You may now proceed to your upgraded copy of <a href=\"../index.php\">MyBB</a> or its <a href=\"../{1}/index.php\">Admin Control Panel</a>.</p>";
+$l['upgrade_removedir'] = 'Please remove this directory before exploring your upgraded MyBB.';
+$l['upgrade_congrats'] = "<p>Congratulations, your copy of MyBB has successfully been updated to {1}.</p>{2}<p><strong>What's Next?</strong></p><ul><li>Please use the 'Find Updated Templates' tool in the Admin CP to find customised templates updated during this upgrade process. Edit them to contain the changes or revert them to originals.</li><li>Ensure that your board is still fully functional.</li></ul>";
+$l['upgrade_template_reversion'] = "Template Reversion Warning";
+$l['upgrade_template_reversion_success'] = "<p>All necessary database modifications have successfully been made to upgrade your board.</p><p>This upgrade requires all templates to be reverted to the new ones contained in the package so please back up any custom templates you have made before clicking next.";
 
 /* Error messages */
 $l['locked'] = 'The installer is currently locked, please remove \'lock\' from the install directory to continue';

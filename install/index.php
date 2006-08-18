@@ -10,16 +10,19 @@
  */
 error_reporting(E_ALL & ~E_NOTICE);
 
-require '../inc/class_core.php';
+define("MYBB_ROOT", dirname(dirname(__FILE__)));
+define("INSTALL_ROOT", dirname(__FILE__));
+
+require MYBB_ROOT.'/inc/class_core.php';
 $mybb = new MyBB;
 
 // Include the files necessary for installation
-require '../inc/class_timers.php';
-require '../inc/functions.php';
-require '../admin/adminfunctions.php';
-require '../inc/class_xml.php';
-require '../inc/functions_user.php';
-require '../inc/class_language.php';
+require MYBB_ROOT.'/inc/class_timers.php';
+require MYBB_ROOT.'/inc/functions.php';
+require MYBB_ROOT.'/admin/adminfunctions.php';
+require MYBB_ROOT.'/inc/class_xml.php';
+require MYBB_ROOT.'/inc/functions_user.php';
+require MYBB_ROOT.'/inc/class_language.php';
 $lang = new MyLanguage();
 $lang->set_path('resources/');
 $lang->load('language');
@@ -31,7 +34,7 @@ $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 's
 $fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch');
 
 // Include the installation resources
-require './resources/output.php';
+require INSTALL_ROOT.'/resources/output.php';
 $output = new installerOutput;
 
 $dboptions = array();
@@ -226,7 +229,7 @@ function requirements_check()
 	}
 
 	// Check config file is writable
-	$configwritable = @fopen('../inc/config.php', 'w');
+	$configwritable = @fopen(MYBB_ROOT.'/inc/config.php', 'w');
 	if(!$configwritable)
 	{
 		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_configfile);
@@ -240,7 +243,7 @@ function requirements_check()
 	@fclose($configwritable);
 
 	// Check settings file is writable
-	$settingswritable = @fopen('../inc/settings.php', 'w');
+	$settingswritable = @fopen(MYBB_ROOT.'/inc/settings.php', 'w');
 	if(!$settingswritable)
 	{
 		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_settingsfile);
@@ -254,7 +257,7 @@ function requirements_check()
 	@fclose($settingswritable);
 
 	// Check upload directory is writable
-	$uploadswritable = @fopen('../uploads/test.write', 'w');
+	$uploadswritable = @fopen(MYBB_ROOT.'/uploads/test.write', 'w');
 	if(!$uploadswritable)
 	{
 		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
@@ -266,13 +269,13 @@ function requirements_check()
 	{
 		$uploadsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
 		@fclose($uploadswritable);
-	  @chmod(dirname(dirname(__FILE__)).'/uploads', 0777);
-	  @chmod(dirname(dirname(__FILE__)).'/uploads/test.write', 0777);
-		@unlink(dirname(dirname(__FILE__)).'/uploads/test.write');
+	  @chmod(MYBB_ROOT.'/uploads', 0777);
+	  @chmod(MYBB_ROOT.'/uploads/test.write', 0777);
+		@unlink(MYBB_ROOT.'/uploads/test.write');
 	}
 
 	// Check avatar directory is writable
-	$avatarswritable = @fopen('../uploads/avatars/test.write', 'w');
+	$avatarswritable = @fopen(MYBB_ROOT.'/uploads/avatars/test.write', 'w');
 	if(!$avatarswritable)
 	{
 		$errors[] =  sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
@@ -284,9 +287,9 @@ function requirements_check()
 	{
 		$avatarsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
 		@fclose($avatarswritable);
-		@chmod(dirname(dirname(__FILE__)).'/uploads/avatars', 0777);
-	  @chmod(dirname(dirname(__FILE__)).'/uploads/avatars/test.write', 0777);
-		@unlink(dirname(dirname(__FILE__)).'/uploads/avatars/test.write');
+		@chmod(MYBB_ROOT.'/uploads/avatars', 0777);
+	  @chmod(MYBB_ROOT.'/uploads/avatars/test.write', 0777);
+		@unlink(MYBB_ROOT.'/uploads/avatars/test.write');
   }
 
 
@@ -345,14 +348,14 @@ function create_tables()
 {
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
 
-	if(!file_exists("../inc/db_{$mybb->input['dbengine']}.php"))
+	if(!file_exists(MYBB_ROOT."/inc/db_{$mybb->input['dbengine']}.php"))
 	{
 		$errors[] = $lang->db_step_error_invalidengine;
 		database_info();
 	}
 
 	// Attempt to connect to the db
-	require "../inc/db_{$mybb->input['dbengine']}.php";
+	require MYBB_ROOT."/inc/db_{$mybb->input['dbengine']}.php";
 	$db = new databaseEngine;
  	$db->error_reporting = 0;
 
@@ -431,7 +434,7 @@ function create_tables()
  
 ?>";
 
-	$file = fopen('../inc/config.php', 'w');
+	$file = fopen(MYBB_ROOT.'/inc/config.php', 'w');
 	fwrite($file, $configdata);
 	fclose($file);
 
@@ -447,7 +450,7 @@ function create_tables()
 		$structure_file = 'mysql_db_tables.php';
 	}
 
-	require "./resources/{$structure_file}";
+	require INSTALL_ROOT."/resources/{$structure_file}";
 	foreach($tables as $val)
 	{
 		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $mybb->input['tableprefix'].'\\1\\2', $val);
@@ -471,7 +474,7 @@ function populate_tables()
 {
 	global $output, $lang;
 
-	require '../inc/config.php';
+	require MYBB_ROOT.'/inc/config.php';
 	$db = db_connection($config);
 
 	$output->print_header($lang->table_population, 'tablepopulate');
@@ -486,7 +489,7 @@ function populate_tables()
 		$population_file = 'mysql_db_inserts.php';
 	}
 
-	require "./resources/{$population_file}";
+	require INSTALL_ROOT."/resources/{$population_file}";
 	foreach($inserts as $val)
 	{
 		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $config['table_prefix'].'\\1\\2', $val);
@@ -500,10 +503,10 @@ function insert_templates()
 {
 	global $output, $cache, $db, $lang;
 
-	require '../inc/config.php';
+	require MYBB_ROOT.'/inc/config.php';
 	$db = db_connection($config);
 
-	require '../inc/class_datacache.php';
+	require MYBB_ROOT.'/inc/class_datacache.php';
 	$cache = new datacache;
 
 	$output->print_header($lang->theme_installation, 'theme');
@@ -517,7 +520,7 @@ function insert_templates()
 	$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('Default Templates');");
 	$templateset = $db->insert_id();
 
-	$contents = @file_get_contents('./resources/mybb_theme.xml');
+	$contents = @file_get_contents(INSTALL_ROOT.'/resources/mybb_theme.xml');
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
@@ -622,12 +625,12 @@ function create_admin_user()
 	}
 	else
 	{
-		require '../inc/config.php';
+		require MYBB_ROOT.'/inc/config.php';
 		$db = db_connection($config);
 
 		echo $lang->admin_step_setupsettings;
 
-		$settings = file_get_contents('./resources/settings.xml');
+		$settings = file_get_contents(INSTALL_ROOT.'/resources/settings.xml');
 		$parser = new XMLParser($settings);
 		$parser->collapse_dups = 0;
 		$tree = $parser->get_tree();
@@ -710,10 +713,10 @@ function install_done()
 		create_admin_user();
 	}
 
-	require '../inc/config.php';
+	require MYBB_ROOT.'/inc/config.php';
 	$db = db_connection($config);
 	
-	require '../inc/settings.php';
+	require MYBB_ROOT.'/inc/settings.php';
 	$mybb->settings = &$settings;
 
 	ob_start();
@@ -790,7 +793,7 @@ function install_done()
 	add_shutdown('test_shutdown_function');
 
 	echo $lang->done_step_cachebuilding;
-	require '../inc/class_datacache.php';
+	require MYBB_ROOT.'/inc/class_datacache.php';
 	$cache = new datacache;
 	$cache->updateversion();
 	$cache->updateattachtypes();
@@ -831,7 +834,7 @@ function install_done()
 
 function db_connection($config)
 {
-	require "../inc/db_{$config['dbtype']}.php";
+	require MYBB_ROOT."/inc/db_{$config['dbtype']}.php";
 	$db = new databaseEngine;
 	// Connect to Database
 	define('TABLE_PREFIX', $config['table_prefix']);

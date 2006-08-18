@@ -11,6 +11,7 @@
 error_reporting(E_ALL & ~E_NOTICE);
 
 define("MYBB_ROOT", dirname(dirname(__FILE__)));
+define("INSTALL_ROOT", dirname(__FILE__));
 
 require MYBB_ROOT."/inc/class_core.php";
 $mybb = new MyBB;
@@ -21,6 +22,10 @@ require MYBB_ROOT."/inc/functions.php";
 require MYBB_ROOT."/inc/class_xml.php";
 require MYBB_ROOT."/inc/config.php";
 require MYBB_ROOT."/inc/db_".$config['dbtype'].".php";
+require MYBB_ROOT.'/inc/class_language.php';
+$lang = new MyLanguage();
+$lang->set_path('resources/');
+$lang->load('language');
 
 // If there's a custom admin dir, use it.
 
@@ -47,11 +52,11 @@ $displaygroupfields = array("title", "description", "namestyle", "usertitle", "s
 $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
 
 // Include the installation resources
-require "./resources/output.php";
+require INSTALL_ROOT."/resources/output.php";
 $output = new installerOutput;
 $output->script = "upgrade.php";
 
-$db=new databaseEngine;
+$db = new databaseEngine;
 // Connect to Database
 define("TABLE_PREFIX", $config['table_prefix']);
 $db->connect($config['hostname'], $config['username'], $config['password']);
@@ -60,16 +65,16 @@ $db->select_db($config['database']);
 
 if(file_exists("lock"))
 {
-	$output->print_error("The installer is currently locked, please remove 'lock' from the install directory to continue");
+	$output->print_error($lang->locked);
 }
 else
 {
 
-	$output->steps = array("Upgrade Process");
+	$output->steps = array($lang->upgrade);
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
-		$output->print_header("MyBB Upgrade Script");
+		$output->print_header();
 
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."upgrade_data");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
@@ -78,7 +83,7 @@ else
 			PRIMARY KEY(title)
 		);");
 
-		$dh = opendir("./resources");
+		$dh = opendir(INSTALL_ROOT."/resources");
 		while(($file = readdir($dh)) !== false)
 		{
 			if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))
@@ -89,7 +94,7 @@ else
 		closedir($dh);
 		foreach($upgradescripts as $key => $file)
 		{
-			$upgradescript = file_get_contents("./resources/$file");
+			$upgradescript = file_get_contents(INSTALL_ROOT."/resources/$file");
 			preg_match("#Upgrade Script:(.*)#i", $upgradescript, $verinfo);
 			preg_match("#upgrade([0-9]+).php$#i", $file, $keynum);
 			if(trim($verinfo[1]))
@@ -107,7 +112,7 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		$output->print_contents("<p>Welcome to the upgrade wizard for MyBB {$mybb->version}.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p><strong>We recommend that you also do a complete backup of your database before attempting to upgrade</strong> so if something goes wrong you can easily revert back to the previous version.</p><p>Make sure you only click Next ONCE on each step of the upgrade process. Pages may take a while to load depending on the size of your forum.</p><p>Once you're ready, please select your old version below and click next to continue.</p><p><select name=\"from\">$vers</select>");
+		$output->print_contents(sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>");
 		$output->print_footer("doupgrade");
 	}
 	elseif($mybb->input['action'] == "doupgrade")
@@ -154,9 +159,9 @@ else
 
 function upgradethemes()
 {
-	global $output, $db, $system_upgrade_detail;
+	global $output, $db, $system_upgrade_detail, $lang;
 
-	$output->print_header("Templates Reverted");
+	$output->print_header($lang->upgrade_templates_reverted);
 
 	if($system_upgrade_detail['revert_all_templates'] > 0)
 	{
@@ -203,7 +208,7 @@ function upgradethemes()
 	}
 	$sid = -2;
 
-	$arr = @file("./resources/mybb_theme.xml");
+	$arr = @file(INSTALL_ROOT."/resources/mybb_theme.xml");
 	$contents = @implode("", $arr);
 
 	$parser = new XMLParser($contents);
@@ -234,28 +239,29 @@ function upgradethemes()
 		}
 	}
 	update_theme(1, 0, $themebits, $css, 0);
-	$output->print_contents("<p>All of the templates have successfully been reverted to the new ones contained in this release. Please press next to continue with the upgrade process.</p>");
+	$output->print_contents(sprintf($lang->upgrade_template_reverted_success, $synccount[1], $synccount[0]));
 	$output->print_footer("rebuildsettings");
 }
 
 function buildsettings()
 {
-	global $db, $output, $system_upgrade_detail;
+	global $db, $output, $system_upgrade_detail, $lang;
 
 	$synccount = sync_settings($system_upgrade_detail['revert_all_settings']);
 
-	$output->print_header("Settings Synchronisation");
-	$output->print_contents("<p>The board settings have been synchronised with the latest in MyBB.</p><p>".$synccount[1]." new settings inserted along with ".$synccount[0]." new setting groups.</p><p>To finalise the upgrade, please click next below to continue.</p>");
+	$output->print_header($lang->upgrade_settings_sync);
+	$output->print_contents($lang->upgrade_settings_sync_success);
 	$output->print_footer("buildcaches");
 }
+
 function buildcaches()
 {
-	global $db, $output, $cache;
+	global $db, $output, $cache, $lang;
 
-	$output->print_header("Data Cache Building");
+	$output->print_header($lang->upgrade_datacache_building);
 
-	$contents .= "<p>Building cache's...";
-	require "../inc/class_datacache.php";
+	$contents .= $lang->upgrade_building_datacache;
+	require MYBB_ROOT."/inc/class_datacache.php";
 	$cache = new datacache;
 	$cache->updateversion();
 	$cache->updateattachtypes();
@@ -271,15 +277,15 @@ function buildcaches()
 	$cache->updatemycode();
 	$cache->updateposticons();
 	$cache->updateupdate_check();
-	$contents .= "done</p>";
+	$contents .= $lang->done."</p>";
 
-	$output->print_contents("$contents<p>Please press next to continue</p>");
+	$output->print_contents("$contents<p>".$lang->upgrade_continue."</p>");
 	$output->print_footer("finished");
 }
 
 function upgradedone()
 {
-	global $db, $output, $mybb;
+	global $db, $output, $mybb, $lang;
 
 	$output->print_header("Upgrade Complete");
 	if(is_writable("./"))
@@ -289,25 +295,25 @@ function upgradedone()
 		@fclose($lock);
 		if($written)
 		{
-			$lock_note = "<p>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</p><p>You may now proceed to your upgraded copy of <a href=\"../index.php\">MyBB</a> or its <a href=\"../".$config['admin_dir']."/index.php\">Admin Control Panel</a>.</p>";
+			$lock_note = sprintf($lang->upgrade_locked, $config['admin_dir']);
 		}
 	}
 	if(!$written)
 	{
-		$lock_note = "<p><b><font color=\"red\">Please remove this directory before exploring your upgraded MyBB.</font></b></p>";
+		$lock_note = "<p><b><span style=\"color: red;\">".$lang->upgrade_removedir."</span></b></p>";
 	}
-	$output->print_contents("<p>Congratulations, your copy of MyBB has successfully been updated to {$mybb->version}.</p>$lock_note<p><strong>What's Next?</strong></p><ul><li>Please use the 'Find Updated Templates' tool in the Admin CP to find customised templates updated during this upgrade process. Edit them to contain the changes or revert them to originals.</li><li>Ensure that your board is still fully functional.</li></ul>");
+	$output->print_contents(sprintf($lang->upgrade_congrats, $mybb->version, $lock_note));
 	$output->print_footer();
 }
 
 function whatsnext()
 {
-	global $output, $db, $system_upgrade_detail;
+	global $output, $db, $system_upgrade_detail, $lang;
 
 	if($system_upgrade_detail['revert_all_templates'] > 0)
 	{
-		$output->print_header("Template Reversion Warning");
-		$output->print_contents("<p>All necessary database modifications have successfully been made to upgrade your board.</p><p>This upgrade requires all templates to be reverted to the new ones contained in the package so please back up any custom templates you have made before clicking next.");
+		$output->print_header($lang->upgrade_template_reversion);
+		$output->print_contents($lang->upgrade_template_reversion_success);
 		$output->print_footer("templates");
 	}
 	else
@@ -328,7 +334,7 @@ function next_function($from, $func="dbchanges")
 	else
 	{
 		$from = $from+1;
-		if(file_exists("./resources/upgrade".$from.".php"))
+		if(file_exists(INSTALL_ROOT."/resources/upgrade".$from.".php"))
 		{
 			$function = next_function($from);
 		}
@@ -344,7 +350,7 @@ function next_function($from, $func="dbchanges")
 function load_module($module)
 {
 	global $system_upgrade_detail, $currentscript;
-	require_once "./resources/".$module;
+	require_once INSTALL_ROOT."/resources/".$module;
 	if($currentscript != $module)
 	{
 		foreach($upgrade_detail as $key => $val)
@@ -417,7 +423,7 @@ function sync_settings($redo=0)
 			$settinggroups[$group['name']] = $group['gid'];
 		}
 	}
-	$settings_xml = file_get_contents("./resources/settings.xml");
+	$settings_xml = file_get_contents(INSTALL_ROOT."/resources/settings.xml");
 	$parser = new XMLParser($settings_xml);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
@@ -485,7 +491,7 @@ function sync_settings($redo=0)
 		$settings .= "\$settings[".$setting['name']."] = \"".$setting['value']."\";\n";
 	}
 	$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n?>";
-	$file = fopen("../inc/settings.php", "w");
+	$file = fopen(dirname($cwd)."/inc/settings.php", "w");
 	fwrite($file, $settings);
 	fclose($file);
 	return array($groupcount, $settingcount);
