@@ -397,6 +397,7 @@ if($mybb->input['action'] == "tracking")
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
 		WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user[uid]."'
+		ORDER BY pm.readtime DESC
 	");
 	while($readmessage = $db->fetch_array($query))
 	{
@@ -410,6 +411,7 @@ if($mybb->input['action'] == "tracking")
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
 		WHERE receipt='1' AND status='0' AND fromid='".$mybb->user[uid]."'
+		ORDER BY pm.dateline DESC
 	");
 	while($unreadmessage = $db->fetch_array($query))
 	{

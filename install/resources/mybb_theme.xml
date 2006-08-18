@@ -2203,12 +2203,13 @@ $headerinclude
 <script type="text/javascript" src="jscripts/popup_menu.js?ver=120"></script>
 <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" />
 <script language="Javascript" type="text/javascript">
-	 var cookieDomain = "{$mybb->settings['cookiedomain']}";
-	 var cookiePath = "{$mybb->settings['cookiepath']}";
-	 var newpm_prompt = "{$lang->newpm_prompt}";
-	 var deleteevent_confirm = "{$lang->deleteevent_confirm}";
-	 var removeattach_confirm = "{$lang->removeattach_confirm}";
-	 var loading_text = '{$lang->ajax_loading}';
+	var cookieDomain = "{$mybb->settings['cookiedomain']}";
+	var cookiePath = "{$mybb->settings['cookiepath']}";
+	var newpm_prompt = "{$lang->newpm_prompt}";
+	var deleteevent_confirm = "{$lang->deleteevent_confirm}";
+	var removeattach_confirm = "{$lang->removeattach_confirm}";
+	var loading_text = '{$lang->ajax_loading}';
+	var saving_changes = '{$lang->saving_changes}';
 </script>
 {$newpmmsg}]]></template>
 		<template name="showthread_similarthreads" version="120"><![CDATA[<br />
@@ -2704,7 +2705,9 @@ $reputation
 		<template name="postbit_find" version="120"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_find.gif" border="0" alt="{$lang->postbit_find}" title="{$lang->postbit_find}" /></a>]]></template>
 		<template name="postbit_pm" version="120"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_pm.gif" border="0" alt="{$lang->postbit_pm}" title="{$lang->postbit_pm}" /></a>]]></template>
 		<template name="postbit_profile" version="120"><![CDATA[<a href="member.php?action=profile&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_profile.gif" border="0" alt="{$lang->postbit_profile}" title="{$lang->postbit_profile}" /></a>]]></template>
-		<template name="postbit_quickdelete" version="120"><![CDATA[<a href="javascript:Thread.deletePost({$post['pid']});"><img src="{$theme['imglangdir']}/postbit_delete.gif" border="0" alt="{$lang->postbit_qdelete}" title="{$lang->postbit_qdelete}" /></a>]]></template>
+		<template name="postbit_quickdelete" version="120"><![CDATA[<script type="text/javascript">
+document.write('<a href="javascript:Thread.deletePost({$post['pid']});"><img src="{$theme['imglangdir']}\/postbit_delete.gif" border="0" alt="{$lang->postbit_qdelete}" title="{$lang->postbit_qdelete}" \/><\/a>');
+</script>]]></template>
 		<template name="postbit_quote" version="120"><![CDATA[<a href="newreply.php?tid={$tid}&amp;pid={$post['pid']}"><img src="{$theme['imglangdir']}/postbit_quote.gif" border="0" alt="{$lang->postbit_quote}" title="{$lang->postbit_quote}" /></a>]]></template>
 		<template name="postbit_report" version="120"><![CDATA[<a href="javascript:Thread.reportPost({$post['pid']});"><img src="{$theme['imglangdir']}/postbit_report.gif" border="0" alt="{$lang->postbit_report}" title="{$lang->postbit_report}" /></a>]]></template>
 		<template name="postbit_www" version="120"><![CDATA[<a href="{$post['website']}" target="_blank"><img src="{$theme['imglangdir']}/postbit_www.gif" border="0" alt="{$lang->postbit_website}" title="{$lang->postbit_website}" /></a>]]></template>

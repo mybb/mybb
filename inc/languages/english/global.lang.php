@@ -165,6 +165,30 @@ $l['editor_enter_url_title'] = "Optionally, you can also enter a title for the U
 $l['editor_enter_email'] = "Please enter the email address you wish to insert.";
 $l['editor_enter_email_title'] = "Optionally, you may also enter a title for the email address.";
 $l['editor_enter_image'] = "Please enter the remote URL of the image you wish to insert.";
+$l['editor_size_xx_small'] = "XX Small";
+$l['editor_size_x_small'] = "X Small";
+$l['editor_size_small'] = "Small";
+$l['editor_size_medium'] = "Medium";
+$l['editor_size_x_large'] = "X Large";
+$l['editor_size_xx_large'] = "XX Large";
+$l['editor_color_white'] = "White";
+$l['editor_color_black'] = "Black";
+$l['editor_color_red'] = "Red";
+$l['editor_color_yellow'] = "Yellow";
+$l['editor_color_pink'] = "Pink";
+$l['editor_color_green'] = "Green";
+$l['editor_color_orange'] = "Orange";
+$l['editor_color_purple'] = "Purple";
+$l['editor_color_blue'] = "Blue";
+$l['editor_color_beige'] = "Beige";
+$l['editor_color_brown'] = "Brown";
+$l['editor_color_teal'] = "Teal";
+$l['editor_color_navy'] = "Navy";
+$l['editor_color_maroon'] = "Maroon";
+$l['editor_color_limegreen'] = "Lime Green";
+$l['editor_font'] = "Font";
+$l['editor_size'] = "Text Size";
+$l['editor_color'] = "Text Color";
 
 $l['quote'] = "Quote:";
 $l['wrote'] = "Wrote:";
@@ -286,4 +310,5 @@ $l['error_boardclosed'] = "This bulletin board is currently closed. The Administ
 $l['error_banned'] = "I'm sorry, but you are banned.  You may not post, read threads, or access the forum.  Please contact your forum administrator should you have any questions.";
 
 $l['ajax_loading'] = "Loading. <br />Please Wait..";
+$l['saving_changes'] = "Saving changes..";
 ?>

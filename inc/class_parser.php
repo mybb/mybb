@@ -125,7 +125,7 @@ class postParser
 		}		
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
-
+		
 		if($options['allow_mycode'] != "no")
 		{
 			// Now that we're done, if we split up any code tags, parse them and glue it all back together
@@ -144,7 +144,7 @@ class postParser
 					{
 						$code = $this->mycode_parse_php($text[2]);
 					}
-					$message = preg_replace("#\{\{mybb-code\}\}\n#", $code, $message, 1);
+					$message = preg_replace("#\{\{mybb-code\}\}\n?#", $code, $message, 1);
 				}
 			}
 		}

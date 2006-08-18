@@ -1515,6 +1515,30 @@ function build_mycode_inserter()
 			"editor_enter_email",
 			"editor_enter_email_title",
 			"editor_enter_image"		
+			"editor_size_xx_small",
+			"editor_size_x_small",
+			"editor_size_small",
+			"editor_size_medium",
+			"editor_size_x_large",
+			"editor_size_xx_large",
+			"editor_color_white",
+			"editor_color_black",
+			"editor_color_red",
+			"editor_color_yellow",
+			"editor_color_pink",
+			"editor_color_green",
+			"editor_color_orange",
+			"editor_color_purple",
+			"editor_color_blue",
+			"editor_color_beige",
+			"editor_color_brown",
+			"editor_color_teal",
+			"editor_color_navy",
+			"editor_color_maroon",
+			"editor_color_limegreen",
+			"editor_font",
+			"editor_size",
+			"editor_color"
 		);
 		$editor_language = "var editor_language = {\n";
 		foreach($editor_lang_strings as $key => $lang_string)

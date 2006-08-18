@@ -221,7 +221,14 @@ inlineEditor.prototype = {
 		{
 			this.spinner = document.createElement("img");
 			this.spinner.src = this.spinnerImage;
-			this.spinner.alt = "Saving changes.."
+			if(saving_changes)
+			{
+				this.spinner.alt = saving_changes;
+			}
+			else
+			{
+				this.spinner.alt = "Saving changes..";
+			}
 			this.spinner.style.verticalAlign = "middle";
 			this.spinner.style.paddingRight = "3px";
 		}

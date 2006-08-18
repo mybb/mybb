@@ -539,7 +539,7 @@ ActivityIndicator.prototype = {
 		var image;
 		if(options && options.image)
 		{
-			image = "<img src=\""+options.image+"\" alt=\"Loading\" />";
+			image = "<img src=\""+options.image+"\" alt=\"\" />";
 		}
 		else
 		{

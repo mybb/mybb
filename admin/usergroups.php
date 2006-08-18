@@ -728,7 +728,7 @@ function usergroup_hop(gid)
 {
 	usergroupaction = "usergroup_"+gid;
 	action = eval("document.usergroups.usergroup_"+gid+".options[document.usergroups.usergroup_"+gid+".selectedIndex].value");
-	window.location = "usergroups.php?<?php echo SID; ?>&action="+action+"&amp;gid="+gid;
+	window.location = "usergroups.php?<?php echo SID; ?>&action="+action+"&gid="+gid;
 }
 -->
 </script>

@@ -208,7 +208,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		$ismod = true;
 	}
 
-	$subject = $mybb->input['value'];
+	$subject = utf8_encode($mybb->input['value']);
 	if(strtolower($charset) == "utf-8")
 	{
 		$subject = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $subject);
@@ -324,8 +324,8 @@ else if($mybb->input['action'] == "edit_post")
 	}
 	else if($mybb->input['do'] == "update_post")
 	{
-		//$message = rawurldecode($mybb->input['value']);
 		$message = strval($_POST['value']);
+		$message = utf8_encode($message);
 		if(strtolower($charset) == "utf-8")
 		{
 			$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $message);

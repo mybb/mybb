@@ -11,6 +11,17 @@ messageEditor.prototype = {
 		{
 			return false;
 		}
+
+		this.options = options;
+		
+		if(this.options)
+		{
+			if(!this.options.lang)
+			{
+				return false;
+			}
+		}
+		
 		// Defines an array of fonts to be shown in the font drop down.
 		this.fonts = new Array();
 		this.fonts["Arial"] = "Arial";
@@ -23,43 +34,34 @@ messageEditor.prototype = {
 
 		// An array of font sizes to be shown.
 		this.sizes = new Array();
-		this.sizes["xx-small"] = "XX Small";
-		this.sizes["x-small"] = "X Small";
-		this.sizes["small"] = "Small";
-		this.sizes["medium"] = "Medium";
-		this.sizes["x-large"] = "X Large";
-		this.sizes["xx-large"] = "XX Large";
+		this.sizes["xx-small"] = this.options.lang.size_xx_small;
+		this.sizes["x-small"] = this.options.lang.size_x_small;
+		this.sizes["small"] = this.options.lang.size_small;
+		this.sizes["medium"] = this.options.lang.size_medium
+		this.sizes["x-large"] = this.options.lang.size_x_large;
+		this.sizes["xx-large"] = this.options.lang.size_xx_large;
 
 		// An array of colours to be shown.
 		this.colors = new Array();
-		this.colors["white"] = "White";
-		this.colors["black"] = "Black";
-		this.colors["red"] = "Red";
-		this.colors["yellow"] = "Yellow";
-		this.colors["pink"] = "Pink";
-		this.colors["green"] = "Green";
-		this.colors["orange"] = "Orange";
-		this.colors["purple"] = "Purple";
-		this.colors["blue"] = "Blue";
-		this.colors["beige"] = "Beige";
-		this.colors["brown"] = "Brown";
-		this.colors["teal"] = "Teal";
-		this.colors["navy"] = "Navy";
-		this.colors["maroon"] = "Maroon";
-		this.colors["limegreen"] = "Lime Green";
-
+		this.colors["white"] = this.options.lang.color_white;
+		this.colors["black"] = this.options.lang.color_black;
+		this.colors["red"] = this.options.lang.color_red;
+		this.colors["yellow"] = this.options.lang.color_yellow;
+		this.colors["pink"] = this.options.lang.color_pink;
+		this.colors["green"] = this.options.lang.color_green;
+		this.colors["orange"] = this.options.lang.color_orange;
+		this.colors["purple"] = this.options.lang.color_purple;
+		this.colors["blue"] = this.options.lang.color_blue;
+		this.colors["beige"] = this.options.lang.color_beige;
+		this.colors["brown"] = this.options.lang.color_brown;
+		this.colors["teal"] = this.options.lang.color_teal;
+		this.colors["navy"] = this.options.lang.color_navy;
+		this.colors["maroon"] = this.options.lang.color_maroon;
+		this.colors["limegreen"] = this.options.lang.color_limegreen;
+	
 		// Here we get the ID of the textarea we're replacing and store it.
 		this.textarea = textarea;
 		
-		this.options = options;
-		
-		if(this.options)
-		{
-			if(!this.options.lang)
-			{
-				return false;
-			}
-		}
 		
 		// Only swap it over once the page has loaded (add event)
 		Event.observe(window, "load", this.showEditor.bindAsEventListener(this));
@@ -120,7 +122,7 @@ messageEditor.prototype = {
 		// Create the font drop down.
 		fontSelect = document.createElement("select");
 		fontSelect.style.margin = "2px";
-		fontSelect.options[fontSelect.options.length] = new Option("Font", "-");
+		fontSelect.options[fontSelect.options.length] = new Option(this.options.lang.font, "-");
 		for(font in this.fonts)
 		{
 			fontSelect.options[fontSelect.options.length] = new Option(this.fonts[font], font);
@@ -131,7 +133,7 @@ messageEditor.prototype = {
 		// Create the font size drop down.
 		sizeSelect = document.createElement("select");
 		sizeSelect.style.margin = "2px";
-		sizeSelect.options[sizeSelect.options.length] = new Option("Text Size", "-");
+		sizeSelect.options[sizeSelect.options.length] = new Option(this.options.lang.size, "-");
 		for(size in this.sizes)
 		{
 			sizeSelect.options[sizeSelect.options.length] = new Option(this.sizes[size], size);
@@ -142,7 +144,7 @@ messageEditor.prototype = {
 		// Create the colour drop down.
 		colorSelect = document.createElement("select");
 		colorSelect.style.margin = "2px";
-		colorSelect.options[colorSelect.options.length] = new Option("Text Color", "-");
+		colorSelect.options[colorSelect.options.length] = new Option(this.options.lang.color, "-");
 		for(color in this.colors)
 		{
 			colorSelect.options[colorSelect.options.length] = new Option(this.colors[color], color);

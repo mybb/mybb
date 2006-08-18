@@ -680,9 +680,14 @@ elseif($mybb->input['action'] == "finduserthreads")
 }
 elseif($mybb->input['action'] == "getnew")
 {
-
+	
 	$where_sql = "t.lastpost >= '".$mybb->user['lastvisit']."'";
 
+	if($mybb->input['fid'])
+	{
+		$where_sql = " AND t.fid='".intval($mybb->input['fid'])."'";
+	}
+	
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
 	{
@@ -725,6 +730,11 @@ elseif($mybb->input['action'] == "getdaily")
 
 	$where_sql = "t.lastpost >='".$datecut."'";
 
+	if($mybb->input['fid'])
+	{
+		$where_sql = " AND t.fid='".intval($mybb->input['fid'])."'";
+	}
+	
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
 	{
