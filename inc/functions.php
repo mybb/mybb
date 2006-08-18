@@ -217,7 +217,7 @@ function mydate($format, $stamp="", $offset="", $ty=1)
 		$stamp = time();
 	}
 
-	if(!$offset)
+	if(!$offset && $mybb->user != 0)
 	{
 		if(array_key_exists("timezone", $mybb->user))
 		{
