@@ -339,9 +339,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$attachcount = 0;
 		if($mybb->input['posthash'])
 		{
-			$posthash = "posthash='{$posthash}' OR";
+			$posthash = "posthash='{$posthash}' OR ";
 		}
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "{$posthash} pid='{$pid}'");
+		else
+		{
+			$posthash = "";
+		}
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "{$posthash}pid='{$pid}'");
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{
