@@ -436,10 +436,6 @@ form {
 	text-decoration: none;
 }
 
-* html .popup_menu .popup_item {
-	width: 100%;
-}
-
 .autocomplete {
 	text-align: left;
 }]]></extracss>
@@ -3400,7 +3396,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </thead>
 <tbody style="{$collapsed['quickreply_e']}" id="quickreply_e">
 <tr>
-<td class="trow1" valign="top" width="15%">
+<td class="trow1" valign="top" width="22%">
 <strong>{$lang->message}</strong><br />
 <span class="smalltext">{$lang->message_note}<br /><br />
 <label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />
@@ -3409,9 +3405,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 <td class="trow1">
 	<div>
-		<textarea style="width: 80%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
+		<textarea style="width: 90%; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
 	</div>
-	<script type="text/javascript">document.write('<div class="editor_control_bar" style="width: 80%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote"><span class="smalltext">{$lang->quickreply_multiquote_selected} <a href="javascript:Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}<\/a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}<\/a>.<\/span><\/div>');</script>
+	<script type="text/javascript">document.write('<div class="editor_control_bar" style="width: 90%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote"><span class="smalltext">{$lang->quickreply_multiquote_selected} <a href="javascript:Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}<\/a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}<\/a>.<\/span><\/div>');</script>
 </td>
 </tr>
 <tr>

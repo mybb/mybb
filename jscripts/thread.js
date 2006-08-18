@@ -100,6 +100,7 @@ var Thread = {
 			}
 			$('message').value += request.responseText;
 		}
+		Thread.clearMultiQuoted();
 		$('quickreply_multiquote').style.display = 'none';
 		document.input.quoted_ids.value = 'all';
 		this.spinner.destroy();	

@@ -56,7 +56,6 @@ PopupMenu.prototype = {
 		}
 		this.menu.style.left = offsetLeft+"px";
 		this.menu.style.visibility = 'hidden';
-		this.menu.style.width = '';
 		this.menu.style.display = 'inline';
 		if(this.menu.style.width)
 		{
