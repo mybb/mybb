@@ -155,7 +155,7 @@ function send_mail_queue($count=10)
 			// Delete the message from the queue
 			$db->delete_query(TABLE_PREFIX."mailqueue", "mid='{$email['mid']}'");
 
-			mymail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom']);
+			mymail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
 		}
 		// Update the mailqueue cache and remove the lock
 		$cache->updatemailqueue(time(), 0);
@@ -283,13 +283,12 @@ function mydate($format, $stamp="", $offset="", $ty=1)
  * @param string The from address of the email, if blank, the board name will be used.
  * @param string The chracter set being used to send this email.
  */
-function mymail($to, $subject, $message, $from="", $charset="")
+function mymail($to, $subject, $message, $from="", $charset="", $headers="")
 {
 	global $db, $mybb, $lang;
 
 	if(empty($charset))
 	{
-		//$charset = "ISO-8859-1";
 		$charset = $lang->settings['charset'];
 	}
 
@@ -305,7 +304,7 @@ function mymail($to, $subject, $message, $from="", $charset="")
 	{
 		$from = "\"".$mybb->settings['bbname']." Mailer\" <".$mybb->settings['adminemail'].">";
 	}
-	$headers = "From: {$from}\n";
+	$headers .= "From: {$from}\n";
 	$headers .= "Return-Path: {$mybb->settings['adminemail']}\n";
 	if($_SERVER['SERVER_NAME'])
 	{

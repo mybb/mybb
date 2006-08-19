@@ -655,13 +655,13 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				"imagehash" => $imagehash,
 				"imagestring" => $randomstr,
 				"dateline" => time()
-				);
+			);
 			$db->insert_query(TABLE_PREFIX."captcha", $imagearray);
 			eval("\$captcha = \"".$templates->get("post_captcha")."\";");			
 		}
 	}
 	
-	if($forumpermissions['canpostpolls'] != "no")
+	if($forumpermissions['canpostpolls'] != "no" && $mybb->usergroup['canpostpolls'] == "no")
 	{
 		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
