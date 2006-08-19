@@ -35,27 +35,6 @@ if(!defined('MYBB_ROOT'))
 	define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 }
 
-//
-// MYBB 1.2 DEVELOPMENT CODE - TO BE REMOVED BEFORE RELEASE
-//
-if(isset($_COOKIE['phpdebug']) || isset($_GET['phpdebug']))
-{
-	error_reporting(E_ALL | E_STRICT);
-
-	function my_devel_error_handler($errno, $errstr, $errfile, $errline)
-	{
-		if(strstr($errstr, "MyLanguage::") !== false || strstr($errstr, "public/private/protected") !== false)
-		{
-			return;
-		}
-		echo "Error: [$errno] $errstr (<b>$errfile</b> on line <b>$errline</b>)<br />\n";
-	}
-	set_error_handler("my_devel_error_handler");
-}
-//
-// END MYBB 1.2 DEVELOPMENT CODE
-//
-
 require MYBB_ROOT."inc/class_timers.php";
 $maintimer = new timer();
 

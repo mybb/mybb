@@ -133,7 +133,6 @@ if($mybb->input['action'] == "get_users")
 		// Send the result to the browser for this user.
 		echo "<div>\n";
 		echo "<span class=\"username\">{$user['username']}</span>\n";
-		//echo "<span class=\"uid\">".$user['uid']."</span>\n";
 		echo "</div>\n";
 	}
 }
@@ -207,7 +206,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	{
 		$ismod = true;
 	}
-
+	$subject = $mybb->input['value'];
 	if(strtolower($charset) == "utf-8")
 	{
 		$subject = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $subject);

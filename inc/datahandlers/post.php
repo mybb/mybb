@@ -602,21 +602,6 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		//
-		// TO BE REMOVED BEFORE 1.2 PUBLIC RELEASE
-		//
-		if($post['username'] == '')
-		{
-			echo "Something has gone horribly wrong. Report this as a bug and include the information below.<hr /><pre>";
-			print_r($this);
-			echo "</pre></hr />";
-			echo "Good evening, and good night.";
-			exit;
-		}
-		//
-		// END TO BE REMOVED
-		//
-
 		$post['pid'] = intval($post['pid']);
 		$post['uid'] = intval($post['uid']);
 		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");

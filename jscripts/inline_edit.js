@@ -155,7 +155,7 @@ inlineEditor.prototype = {
 			this.element.innerHTML = newValue;
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 			this.lastElement = this.currentElement;
-			postData = "value="+encodeURIComponent(newValue)
+			postData = "value="+encodeURIComponent(newValue);
 			if(this.spinnerImage)
 			{
 				this.showSpinner();
