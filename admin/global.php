@@ -33,7 +33,14 @@ if(!file_exists(MYBB_ADMIN_DIR.$style))
 	$style = "./styles/Axiom/stylesheet.css";
 }
 
-$lang->set_language($mybb->user['language'], "admin");
+if($mybb->user['language'])
+{
+	$lang->set_language($mybb->user['language'], "admin");
+}
+else
+{
+	$lang->set_language($settings['cplanguage'], "admin");
+}
 
 // Load global language phrases
 $lang->load("global");
