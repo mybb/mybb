@@ -108,7 +108,11 @@ function build_forumbits($pid=0, $depth=1)
 
 			// Fetch the number of unapproved threads and posts for this forum
 			$unapproved = get_forum_unapproved($forum);
-
+			
+			if($hideinfo == true)
+			{
+				unset($unapproved);
+			}
 			// If this is a forum and we've got subforums of it, load the subforums list template
 			if($depth == 2 && $sub_forums)
 			{
