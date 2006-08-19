@@ -272,7 +272,16 @@ function upgrade5_redoconfig()
 		$output->print_footer("5_redoconfig");
 		exit;
 	}
-
+	
+	if(!$config['admindir'])
+	{
+		$config['admindir'] = "admin";
+	}
+	
+	if(!$config['cachestore'])
+	{
+		$config['cachestore'] = "db";
+	}
 	$configdata = "<?php
 /**
  * Daatabase configuration

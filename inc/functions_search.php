@@ -312,6 +312,7 @@ function perform_search_mysql($search)
 						// Otherwise check the length of the word as it is a normal search term
 						else
 						{
+							$word = trim($word);
 							// Word is too short - show error message
 							if(my_strlen($word) < $mybb->settings['minsearchword'])
 							{
@@ -319,10 +320,10 @@ function perform_search_mysql($search)
 								error($lang->error_minsearchlength);
 							}
 							// Add terms to search query
-							$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%".trim($word)."%'";
+							$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%".$word."%'";
 							if($search['postthread'] == 1)
 							{
-								$message_lookin .= " $boolean LOWER(p.message) LIKE '%".trim($word)."%'";
+								$message_lookin .= " $boolean LOWER(p.message) LIKE '%".$word."%'";
 							}
 						}
 					}
@@ -340,7 +341,7 @@ function perform_search_mysql($search)
 					$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%".$phrase."%'";
 					if($search['postthread'] == 1)
 					{
-						$message_lookin .= " $boolean LOWER(p.message) LIKE '%".trim($phrase)."%'";
+						$message_lookin .= " $boolean LOWER(p.message) LIKE '%".$phrase."%'";
 					}					
 				}
 				$inquote = !$inquote;
@@ -350,16 +351,16 @@ function perform_search_mysql($search)
 		}
 		else
 		{
-			$keywords = str_replace("\"", "", $keywords);
+			$keywords = str_replace("\"", "", trim($keywords));
 			if(my_strlen($keywords) < $mybb->settings['minsearchword'])
 			{
 				$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 				error($lang->error_minsearchlength);
 			}
-			$subject_lookin = " AND LOWER(t.subject) LIKE '%".trim($keywords)."%'";
+			$subject_lookin = " AND LOWER(t.subject) LIKE '%".$keywords."%'";
 			if($search['postthread'] == 1)
 			{
-				$message_lookin = " AND LOWER(p.message) LIKE '%".trim($keywords)."%'";
+				$message_lookin = " AND LOWER(p.message) LIKE '%".$keywords."%'";
 			}
 		}
 	}

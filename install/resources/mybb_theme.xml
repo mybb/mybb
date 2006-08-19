@@ -3065,7 +3065,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <br />
 <input type="hidden" name="action" value="do_addevent" />
-<div align="center"><input type="submit" class="button" value="{$lang->add_event}" /></div>
+<div align="center"><input type="submit" class="button" value="{$lang->post_event}" /></div>
 </form>
 {$footer}
 </body>
@@ -6601,10 +6601,15 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="post_captcha" version="120"><![CDATA[<tr>
 <td class="trow2" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow2">
-	<table style="width: 300px;">
-			<tr><td><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span></td>
-		<td><input type="text" class="textbox" name="imagestring" value="" /><input type="hidden" name="imagehash" value="{$imagehash}" /></td></tr>
-	</table>
+<table style="width: 300px; padding: 4px;">
+	<tr>
+		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" /></td>
+		<td><span class="smalltext">{$lang->verification_note}</span></td>
+	</tr>
+	<tr>
+		<td><input type="text" class="textbox" name="imagestring" value="" /><input type="hidden" name="imagehash" value="{$imagehash}" /></td>
+	</tr>
+</table>
 </td>
 </tr>]]></template>
 	<template name="post_captcha_hidden" version="120"><![CDATA[<input type="hidden" name="imagehash" value="{$imagehash}" />

@@ -216,7 +216,7 @@ function mydate($format, $stamp="", $offset="", $ty=1)
 {
 	global $mybb, $lang, $mybbadmin, $plugins;
 
-	$plugins->run_hooks("mydate_start");
+	$plugins->run_hooks("mydate");
 
 	// If the stamp isn't set, use time()
 	if(empty($stamp))
@@ -270,7 +270,7 @@ function mydate($format, $stamp="", $offset="", $ty=1)
 			$date = $lang->yesterday;
 		}
 	}
-	$plugins->run_hooks("mydate_end");
+
 	return $date;
 }
 

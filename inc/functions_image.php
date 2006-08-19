@@ -17,7 +17,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		return $thumb;
 	}
 	list($imgwidth, $imgheight, $imgtype, $imgattr, $imgbits, $imgchan) = getimagesize($file);
-	if(($imgwidth > $maxwidth) || ($imgheight > $maxheight))
+	if(($imgwidth >= $maxwidth) || ($imgheight >= $maxheight))
 	{
 		check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
 		

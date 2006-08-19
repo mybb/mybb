@@ -90,7 +90,14 @@ if($mybb->input['action'] == "results")
 			}
 			break;
 		default:
-			$sortfield = "t.lastpost";
+			if($search['resulttype'] == "threads")
+			{
+				$sortfield = "t.lastpost";
+			}
+			else
+			{
+				$sortfield = "p.dateline";
+			}
 			break;
 	}
 	
