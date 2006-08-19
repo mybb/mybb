@@ -135,7 +135,9 @@ function run_shutdown()
  */
 function send_mail_queue($count=10)
 {
-	global $db, $cache;
+	global $db, $cache, $plugins;
+	
+	$plugins->run_hooks("send_mail_queue_start");
 
 	// Check to see if the mail queue has messages needing to be sent
 	$mailcache = $cache->read("mailqueue");
@@ -147,7 +149,9 @@ function send_mail_queue($count=10)
 		// Fetch emails for this page view - and send them
 		$query = $db->simple_select(TABLE_PREFIX."mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
 		while($email = $db->fetch_array($query))
-		{
+		{		
+			$plugins->run_hooks("send_mail_queue_mail");
+			
 			// Delete the message from the queue
 			$db->delete_query(TABLE_PREFIX."mailqueue", "mid='{$email['mid']}'");
 
@@ -156,6 +160,7 @@ function send_mail_queue($count=10)
 		// Update the mailqueue cache and remove the lock
 		$cache->updatemailqueue(time(), 0);
 	}
+	$plugins->run_hooks("send_mail_queue_end");
 }
 
 /**
@@ -209,7 +214,9 @@ function parse_page($contents)
  */
 function mydate($format, $stamp="", $offset="", $ty=1)
 {
-	global $mybb, $lang, $mybbadmin;
+	global $mybb, $lang, $mybbadmin, $plugins;
+
+	$plugins->run_hooks("mydate_start");
 
 	// If the stamp isn't set, use time()
 	if(empty($stamp))
@@ -217,9 +224,9 @@ function mydate($format, $stamp="", $offset="", $ty=1)
 		$stamp = time();
 	}
 
-	if(!$offset && $mybb->user != 0)
+	if(!$offset)
 	{
-		if(array_key_exists("timezone", $mybb->user))
+		if($mybb->user != 0 && array_key_exists("timezone", $mybb->user))
 		{
 			$offset = $mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
@@ -263,6 +270,7 @@ function mydate($format, $stamp="", $offset="", $ty=1)
 			$date = $lang->yesterday;
 		}
 	}
+	$plugins->run_hooks("mydate_end");
 	return $date;
 }
 
