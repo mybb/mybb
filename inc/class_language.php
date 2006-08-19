@@ -69,6 +69,7 @@ class MyLanguage
 	 */
 	function set_language($language="english", $area="user")
 	{
+		global $settings;
 		// Check if the language exists.
 		if(!$this->language_exists($language))
 		{
@@ -90,7 +91,21 @@ class MyLanguage
 		{
 			if(!is_dir($this->path."/".$language."/admin"))
 			{
-				die("This language does not contain an Administration set");
+				if(!is_dir($this->path."/".$settings['cplanguage']."/admin"))
+				{
+					if(!is_dir($this->path."/english/admin"))
+					{
+						die("Your forum does not conain an Administration set. Please reupload the english language administration pack.");
+					}
+					else
+					{
+						$language = "english";
+					}
+				}
+				else
+				{
+					$language = $settings['cplanguage'];
+				}
 			}
 			$this->language = $language."/admin";
 		}
