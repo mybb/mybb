@@ -807,7 +807,7 @@ if(is_array($threadcache))
 		{
 			if($thread['unapprovedposts'] > 1)
 			{
-				$unapproved_posts_count = sprintf($lang->thread_unapproved_posts_count, $forum['unapprovedposts']);
+				$unapproved_posts_count = sprintf($lang->thread_unapproved_posts_count, $thread['unapprovedposts']);
 			}
 			else
 			{
