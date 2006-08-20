@@ -895,15 +895,6 @@ class PostDataHandler extends DataHandler
 			$thread['tid'] = $db->fetch_field($query, "tid");
 		}
 
-		if($thread['username'] == '')
-		{
-			echo "Something has gone horribly wrong. Report this as a bug and include the information below.<hr /><pre>";
-			print_r($this);
-			echo "</pre></hr />";
-			echo "Good evening, and good night.";
-			exit;
-		}
-
 		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
 		$draft_check = $db->fetch_field($query, "pid");
 
