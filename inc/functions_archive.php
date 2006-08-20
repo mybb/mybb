@@ -165,6 +165,9 @@ function archive_footer()
 </div>
 <div id="footer">
 <?php echo $lang->powered_by; ?> <a href="http://www.mybboard.com">MyBB</a> <?php echo $mybbversion; ?><br /><?php echo $lang->copyright; ?> &copy; 2002-<?php echo date("Y"); ?> <a href="http://www.mybboard.com">MyBB Group</a>
+<!-- temporary code to be removed before release -->
+<!-- <?php echo "<br />Page Loaded in $totaltime with $db->query_count queries."; ?> -->
+<!-- end temporary code -->
 </div>
 </body>
 </html>

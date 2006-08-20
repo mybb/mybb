@@ -269,7 +269,6 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 	}
 	
-	$plugins->run_hooks("newreply_do_newreply_datahandler_start");
 	// Set up posthandler.
 	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("insert");

@@ -601,6 +601,21 @@ class PostDataHandler extends DataHandler
 				$visible = 1;
 			}
 		}
+		
+		//
+		// TO BE REMOVED BEFORE 1.2 PUBLIC RELEASE
+		//
+		if($post['username'] == '')
+		{
+			echo "Something has gone horribly wrong. Report this as a bug and include the information below.<hr /><pre>";
+			print_r($this);
+			echo "</pre></hr />";
+			echo "Good evening, and good night.";
+			exit;
+		}
+		//
+		// END TO BE REMOVED
+		//
 
 		$post['pid'] = intval($post['pid']);
 		$post['uid'] = intval($post['uid']);
@@ -894,6 +909,18 @@ class PostDataHandler extends DataHandler
 			$db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['pid']}");
 			$thread['tid'] = $db->fetch_field($query, "tid");
 		}
+		
+		// MYBB 1.2 DEV CODE - TO BE REMOVED BEFORE RELEASe
+		if($thread['username'] == '')
+		{
+			echo "Something has gone horribly wrong. Report this as a bug and include the information below.<hr /><pre>";
+			print_r($this);
+			echo "</pre></hr />";
+			echo "Good evening, and good night.";
+			exit;
+		}
+		// END MYBB 1.2 DEV CODE
+
 
 		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
 		$draft_check = $db->fetch_field($query, "pid");
