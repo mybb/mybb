@@ -1387,7 +1387,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 			foreach($main as $forum)
 			{
 				$perms = $permissioncache[$forum['fid']];
-				if($forum['fid'] != "0" && ($perms['canview'] != "no" || $mybb->settings['hideprivateforums'] == "no") && $forum['showinjump'] != "no")
+				if($forum['fid'] != "0" && ($perms['canview'] != "no" || $mybb->settings['hideprivateforums'] == "no") && $forum['linkto'] == '' && $forum['showinjump'] != "no")
 				{
 					$optionselected = "";
 					if($selitem == $forum['fid'])
