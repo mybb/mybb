@@ -980,7 +980,7 @@ class PostDataHandler extends DataHandler
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread", $this);
 
-			$db->insert_query(TABLE_PREFIX."threads",$this->thread_insert_data);
+			$db->insert_query(TABLE_PREFIX."threads", $this->thread_insert_data);
 			$this->tid = $db->insert_id();
 
 			$this->post_insert_data = array(

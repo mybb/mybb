@@ -1100,18 +1100,18 @@ if($mybb->input['action'] == "stats")
 	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS count", "referrer='$user[uid]'");
 	$referrals = $db->fetch_field($query, 'count');
 
-	$memregdate = mydate($settings['dateformat'], $user['regdate']);
-	$memlocaldate = gmdate($settings['dateformat'], time() + ($user['timezone'] * 3600));
-	$memlocaltime = gmdate($settings['timeformat'], time() + ($user['timezone'] * 3600));
-	$memlastvisitdate = mydate($settings['dateformat'], $user['lastvisit']);
-	$memlastvisittime = mydate($settings['timeformat'], $user['lastvisit']);
+	$memregdate = mydate($mybb->settings['dateformat'], $user['regdate']);
+	$memlocaldate = gmdate($mybb->settings['dateformat'], time() + ($user['timezone'] * 3600));
+	$memlocaltime = gmdate($mybb->settings['timeformat'], time() + ($user['timezone'] * 3600));
+	$memlastvisitdate = mydate($mybb->settings['dateformat'], $user['lastvisit']);
+	$memlastvisittime = mydate($mybb->settings['timeformat'], $user['lastvisit']);
 
 	if($user['birthday'])
 	{
 		$membday = explode('-', $user['birthday']);
 		if($membday[2])
 		{
-			$bdayformat = fixmktime($settings['dateformat'], $membday[2]);
+			$bdayformat = fixmktime($mybb->settings['dateformat'], $membday[2]);
 			$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
 			$membdayage = "(" . floor((time() - $membday) / 31557600) . " ".$lang->years_old .")";
 			$membday = gmdate($bdayformat, $membday);
@@ -1930,10 +1930,10 @@ if($mybb->input['action'] == "banned")
 			{
 				$banlength = $bantimes[$user['bantime']];
 				$timeremaining = getbanremaining($user['lifted']);
-				$liftedon = mydate($settings['dateformat'], $user['lifted']);
+				$liftedon = mydate($mybb->settings['dateformat'], $user['lifted']);
 			}
 			$user['banreason'] = htmlspecialchars_uni($user['banreason']);
-			$bannedon = mydate($settings['dateformat'], $user['dateline']);
+			$bannedon = mydate($mybb->settings['dateformat'], $user['dateline']);
 			echo "<tr title='$user[reason]'>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"users.php?".SID."&amp;action=edit&amp;uid=$user[uid]\">$user[username]</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$user[adminuser]</td>\n";

@@ -1186,7 +1186,7 @@ elseif($mybb->input['action'] == "profile")
 			if($membday[2] < 1970)
 			{
 				$w_day = get_weekday($membday[1], $membday[0], $membday[2]);
-				$membday = format_bdays($settings['dateformat'], $membday[1], $membday[0], $membday[2], $w_day);
+				$membday = format_bdays($mybb->settings['dateformat'], $membday[1], $membday[0], $membday[2], $w_day);
 			}
 			else
 			{
