@@ -4119,6 +4119,9 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="thead" colspan="2"><strong>{$thread['subject']} - {$lang->delete_thread}</strong></td>
 </tr>
+<tr>
+<td class="trow1" colspan="2" align="center">{$lang->confirm_delete_threads}</td>
+</tr>
 {$loginbox}
 </table>
 <br />
