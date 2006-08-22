@@ -136,7 +136,7 @@ function run_shutdown()
 function send_mail_queue($count=10)
 {
 	global $db, $cache, $plugins;
-	
+
 	$plugins->run_hooks("send_mail_queue_start");
 
 	// Check to see if the mail queue has messages needing to be sent
@@ -149,9 +149,9 @@ function send_mail_queue($count=10)
 		// Fetch emails for this page view - and send them
 		$query = $db->simple_select(TABLE_PREFIX."mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
 		while($email = $db->fetch_array($query))
-		{		
+		{
 			$plugins->run_hooks("send_mail_queue_mail");
-			
+
 			// Delete the message from the queue
 			$db->delete_query(TABLE_PREFIX."mailqueue", "mid='{$email['mid']}'");
 
@@ -1521,7 +1521,7 @@ function build_mycode_inserter()
 			"editor_enter_url_title",
 			"editor_enter_email",
 			"editor_enter_email_title",
-			"editor_enter_image",	
+			"editor_enter_image",
 			"editor_size_xx_small",
 			"editor_size_x_small",
 			"editor_size_small",
@@ -2061,9 +2061,9 @@ function reset_breadcrumb()
 function build_archive_link($type, $id="")
 {
 	global $mybb;
-	
+
 	// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings
-	if((preg_match("#win#i", PHP_OS) && stripos($_SERVER['SERVER_SOFTWARE'], "apache") == false) || stripos(SAPI_NAME, "cgi") !== false || defined("ARCHIVE_QUERY_STRINGS"))
+	if((preg_match("#win#i", PHP_OS) && is_numeric(stripos($_SERVER['SERVER_SOFTWARE'], "apache")) == false) || stripos(SAPI_NAME, "cgi") !== false || defined("ARCHIVE_QUERY_STRINGS"))
 	{
 		$base_url = $mybb->settings['bburl']."/archive/index.php?";
 	}
