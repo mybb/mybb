@@ -109,14 +109,14 @@ if($mybb->input['action'] == "view")
 	if($page != $pages)
 	{
 		$npage = $page+1;
-		$nextpage = "<input type=\"button\" value=\"$lang->nextpage\" onClick=\"hopto('modlogs.php?".SID."&action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$npage')\">&nbsp;";
-		$lastpage = "<input type=\"button\" value=\"$lang->lastpage\" onClick=\"hopto('modlogs.php?".SID."&action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$pages')\">&nbsp;";
+		$nextpage = "<input type=\"button\" value=\"$lang->nextpage\" onClick=\"hopto('modlogs.php?".SID."&amp;action=view&amp;perpage=$perpage&amp;frommod=$frommod&amp;orderby=$orderby&amp;page=$npage')\" />&nbsp;";
+		$lastpage = "<input type=\"button\" value=\"$lang->lastpage\" onClick=\"hopto('modlogs.php?".SID."&amp;action=view&amp;perpage=$perpage&amp;frommod=$frommod&amp;orderby=$orderby&amp;page=$pages')\" />&nbsp;";
 	}
 	if($page != 1)
 	{
 		$ppage = $page-1;
-		$prevpage = "<input type=\"button\" value=\"$lang->prevpage\" onClick=\"hopto('modlogs.php?".SID."&action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=$ppage')\">&nbsp;";
-		$firstpage = "<input type=\"button\" value=\"$lang->firstpage\" onClick=\"hopto('modlogs.php?".SID."&action=view&perpage=$perpage&frommod=$frommod&orderby=$orderby&page=1')\">&nbsp;";
+		$prevpage = "<input type=\"button\" value=\"$lang->prevpage\" onClick=\"hopto('modlogs.php?".SID."&amp;action=view&amp;perpage=$perpage&amp;frommod=$frommod&amp;orderby=$orderby&amp;page=$ppage')\" />&nbsp;";
+		$firstpage = "<input type=\"button\" value=\"$lang->firstpage\" onClick=\"hopto('modlogs.php?".SID."&amp;action=view&amp;perpage=$perpage&amp;frommod=$frommod&amp;orderby=$orderby&amp;page=1')\" />&nbsp;";
 	}
 	cpheader();
 	starttable();
@@ -141,7 +141,7 @@ if($mybb->input['action'] == "view")
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
 		$bgcolor = getaltbg();
 		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\"><a href=\"users.php?".SID."&action=edit&uid=$logitem[uid]\">$logitem[username]</a></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\"><a href=\"users.php?".SID."&amp;action=edit&amp;uid=$logitem[uid]\">$logitem[username]</a></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\">$logitem[dateline]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\">$logitem[action]</td>";
 		echo "<td class=\"$bgcolor\">";
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "view")
 		}
 		if($logitem['psubject'])
 		{
-			echo "<b>$lang->post</b> <a href=\"../showthread.php?tid=$logitem[tid]&pid=$logitem[pid]#pid$logitem[pid]\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+			echo "<b>$lang->post</b> <a href=\"../showthread.php?tid=$logitem[tid]&amp;pid=$logitem[pid]#pid$logitem[pid]\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 		echo "</td>";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\">$logitem[ipaddress]</td>";
@@ -189,7 +189,7 @@ if($mybb->input['action'] == "")
 	tableheader($lang->view_modlogs);
 	makeinputcode($lang->entries_per_page, "perpage", 20, 4);
 	makelabelcode($lang->entries_from_mod, "<select name=\"frommod\">\n<option value=\"\">$lang->all_mods</option>\n<option value=\"\">----------</option>\n$uoptions</select>");
-	makelabelcode($lang->order_by, "<select name=\"orderby\"><option value=\"datedesc\">$lang->order_date_desc</option>\n<option value=\"nameasc\">$lang->order_name_asc</option>");
+	makelabelcode($lang->order_by, "<select name=\"orderby\"><option value=\"datedesc\">$lang->order_date_desc</option>\n<option value=\"nameasc\">$lang->order_name_asc</option></select>");
 	endtable();
 	endform($lang->search_log, $lang->reset_button);
 	echo "<br />\n";

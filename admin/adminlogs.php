@@ -146,14 +146,14 @@ else if($mybb->input['action'] == "view")
 	if($page != $pages)
 	{
 		$npage = $page+1;
-		$nextpage = "<input type=\"button\" value=\"$lang->nextpage\" onClick=\"hopto('adminlogs.php?".SID."&action=view&perpage=$perpage&fromscript=$fromscript&fromadmin=$fromadmin&orderby=$orderby&page=$npage')\">&nbsp;";
-		$lastpage = "<input type=\"button\" value=\"$lang->lastpage\" onClick=\"hopto('adminlogs.php?".SID."&action=view&perpage=$perpage&fromscript=$fromscript&fromadmin=$fromadmin&orderby=$orderby&page=$pages')\">&nbsp;";
+		$nextpage = "<input type=\"button\" value=\"$lang->nextpage\" onClick=\"hopto('adminlogs.php?".SID."&amp;action=view&amp;perpage=$perpage&amp;fromscript=$fromscript&amp;fromadmin=$fromadmin&amp;orderby=$orderby&amp;page=$npage')\" />&nbsp;";
+		$lastpage = "<input type=\"button\" value=\"$lang->lastpage\" onClick=\"hopto('adminlogs.php?".SID."&amp;action=view&amp;perpage=$perpage&amp;fromscript=$fromscript&amp;fromadmin=$fromadmin&amp;orderby=$orderby&amp;page=$pages')\" />&nbsp;";
 	}
 	if($page != 1)
 	{
 		$ppage = $page-1;
-		$prevpage = "<input type=\"button\" value=\"$lang->prevpage\" onClick=\"hopto('adminlogs.php?".SID."&action=view&perpage=$perpage&fromscript=$fromscript&fromadmin=$fromadmin&orderby=$orderby&page=$ppage')\">&nbsp;";
-		$firstpage = "<input type=\"button\" value=\"$lang->firstpage\" onClick=\"hopto('adminlogs.php?".SID."&action=view&perpage=$perpage&fromscript=$fromscript&fromadmin=$fromadmin&orderby=$orderby&page=1')\">&nbsp;";
+		$prevpage = "<input type=\"button\" value=\"$lang->prevpage\" onClick=\"hopto('adminlogs.php?".SID."&amp;action=view&amp;perpage=$perpage&amp;fromscript=$fromscript&amp;fromadmin=$fromadmin&amp;orderby=$orderby&amp;page=$ppage')\" />&nbsp;";
+		$firstpage = "<input type=\"button\" value=\"$lang->firstpage\" onClick=\"hopto('adminlogs.php?".SID."&amp;action=view&amp;perpage=$perpage&amp;fromscript=$fromscript&amp;fromadmin=$fromadmin&amp;orderby=$orderby&amp;page=1')\" />&nbsp;";
 	}
 	
 	$lang->log_results_header = sprintf($lang->log_results_header, $page, $pages, $rescount);
@@ -182,7 +182,7 @@ else if($mybb->input['action'] == "view")
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
 		$bgcolor = getaltbg();
 		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"users.php?".SID."&action=edit&uid=$logitem[uid]\">$logitem[username]</a></td>\n";
+		echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"users.php?".SID."&amp;action=edit&amp;uid=$logitem[uid]\">$logitem[username]</a></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\">$logitem[dateline]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\">$logitem[scriptname]</td>";
 		echo "<td class=\"$bgcolor\" align=\"center\">$logitem[action]</td>";

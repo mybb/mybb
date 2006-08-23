@@ -196,7 +196,7 @@ if($mybb->input['action'] == "edit")
 			'approve' => $lang->approve,
 			'unapprove' => $lang->unapprove,
 			'toggle' => $lang->toggle
-			); 
+		); 
 		makeselectcode_array($lang->approve_unapprove_posts, 'approveposts', $approve_options, $post_options['approveposts']);
 		$split_thread_extras = "<br /><br /><small>$lang->split_additional_options<br />\n";
 		$close_checked = $stick_checked = $unapprove_checked = '';
@@ -238,14 +238,14 @@ if($mybb->input['action'] == "edit")
 		'approve' => $lang->approve,
 		'unapprove' => $lang->unapprove,
 		'toggle' => $lang->toggle
-		); 
+	); 
 	makeselectcode_array($lang->approve_unapprove_thread, 'approvethread', $approve_options, $thread_options['approvethread']);
 	$open_options = array(
 		'' => $lang->no_change,
 		'open' => $lang->open,
 		'close' => $lang->close,
 		'toggle' => $lang->toggle
-		); 
+	); 
 	makeselectcode_array($lang->open_close_thread, 'openthread', $open_options, $thread_options['openthread']);
 	makelabelcode($lang->move_thread, forumselect('movethread', $thread_options['movethread'], '', '', 0, $lang->do_not_move));
 	unset($forumselect);
@@ -308,7 +308,7 @@ if($mybb->input['action'] == "do_addposttool" || $mybb->input['action'] == "do_a
 		'newsubject' => $mybb->input['newsubject'],
 		'addreply' => $mybb->input['addreply'],
 		'replysubject' => $mybb->input['replysubject'],
-		);
+	);
 	$new_tool['threadoptions'] = $db->escape_string(serialize($thread_options));
 	$new_tool['name'] = $db->escape_string($mybb->input['name']);
 	$new_tool['description'] = $db->escape_string($mybb->input['description']);
@@ -370,7 +370,7 @@ if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthre
 			'approve' => $lang->approve,
 			'unapprove' => $lang->unapprove,
 			'toggle' => $lang->toggle
-			); 
+		); 
 		makeselectcode_array($lang->approve_unapprove_posts, 'approveposts', $approve_options);
 		$split_thread_extras = "<br /><br /><small>$lang->split_additional_options<br />\n";
 		$split_thread_extras .= "<label><input type=\"checkbox\" name=\"splitpostsclose\" value=\"close\" /> $lang->close</label> <br />\n";
@@ -398,14 +398,14 @@ if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthre
 		'approve' => $lang->approve,
 		'unapprove' => $lang->unapprove,
 		'toggle' => $lang->toggle
-		); 
+	); 
 	makeselectcode_array($lang->approve_unapprove_thread, 'approvethread', $approve_options);
 	$open_options = array(
 		'' => $lang->no_change,
 		'open' => $lang->open,
 		'close' => $lang->close,
 		'toggle' => $lang->toggle
-		); 
+	); 
 	makeselectcode_array($lang->open_close_thread, 'openthread', $open_options);
 	makelabelcode($lang->move_thread, forumselect('movethread', '', '', '', 0, $lang->do_not_move));
 	unset($forumselect);
@@ -428,7 +428,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 		cpheader();
 	}
 
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_thread_action\" onclick=\"hopto('moderation.php?".SID."&action=addthreadtool');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_thread_action\" onclick=\"hopto('moderation.php?".SID."&amp;action=addthreadtool');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 
 	// Thread tools
@@ -441,8 +441,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 	while($tool = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
-		$options = makelinkcode($lang->edit_tool, "moderation.php?".SID."&action=edit&tid=$tool[tid]");
-		$options .= makelinkcode($lang->delete_tool, "moderation.php?".SID."&action=delete&tid=$tool[tid]");
+		$options = makelinkcode($lang->edit_tool, "moderation.php?".SID."&amp;action=edit&amp;tid={$tool['tid']}");
+		$options .= makelinkcode($lang->delete_tool, "moderation.php?".SID."&amp;action=delete&amp;tid={$tool['tid']}");
 		$name = htmlspecialchars_uni($tool['name']);
 		if(!empty($tool['description']))
 		{
@@ -462,7 +462,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 
 	// Inline Post Tools
 	unset($hopto);
-	$hopto[] = "<input type=\"button\" value=\"$lang->add_post_action\" onclick=\"hopto('moderation.php?".SID."&action=addposttool');\" class=\"hoptobutton\">";
+	$hopto[] = "<input type=\"button\" value=\"$lang->add_post_action\" onclick=\"hopto('moderation.php?".SID."&amp;action=addposttool');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 
 	starttable();
@@ -474,8 +474,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == '')
 	while($tool = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
-		$options = makelinkcode($lang->edit_tool, "moderation.php?".SID."&action=edit&tid=$tool[tid]");
-		$options .= makelinkcode($lang->delete_tool, "moderation.php?".SID."&action=delete&tid=$tool[tid]");
+		$options = makelinkcode($lang->edit_tool, "moderation.php?".SID."&amp;action=edit&amp;tid={$tool['tid']}");
+		$options .= makelinkcode($lang->delete_tool, "moderation.php?".SID."&amp;action=delete&amp;tid={$tool['tid']}");
 		$name = htmlspecialchars_uni($tool['name']);
 		if(!empty($tool['description']))
 		{

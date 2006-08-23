@@ -161,6 +161,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "do_addmultiple")
 {
 	$plugins->run_hooks("admin_icons_do_addmultiple");
+	$path = $mybb->input['path'];
 	if($mybb->input['page'])
 	{
 		$mybb->input['action'] = "addmultiple";
@@ -191,11 +192,12 @@ if($mybb->input['action'] == "addmultiple")
 {
 	$plugins->run_hooks("admin_icons_addmultiple");
 	$perpage = intval($mybb->input['perpage']);
+	$path = $mybb->input['path'];
 	if(!$perpage)
 	{
 		$perpage = 15;
 	}
-	$dir = @opendir("../".$mybb->input['path']);
+	$dir = @opendir("../".$path);
 	if(!$dir)
 	{
 		cperror($lang->invalid_directory);
@@ -212,7 +214,8 @@ if($mybb->input['action'] == "addmultiple")
 			$ext = get_extension($file);
 			if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
 			{
-				if(!isset($aicons[$mybb->input['path'].'/'.$file])) {
+				if(!isset($aicons[$mybb->input['path'].'/'.$file])) 
+				{
 					$icons[] = $file;
 				}
 			}
@@ -232,18 +235,18 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		$pages = $newicons / $perpage;
 		$pages = ceil($pages);
-		for($i=1;$i<=$pages;$i++)
+		for($i = 1; $i <= $pages; $i++)
 		{
 			if($i == $page)
 			{
-				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\" disabled=\"disabled\"> ";
+				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\" disabled=\"disabled\" /> ";
 			}
 			else
 			{
-				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\"> ";
+				$pagelist .= " <input type=\"submit\" name=\"page\" value=\"$i\" /> ";
 			}
 		}
-		$start = ($page-1) *$perpage;
+		$start = ($page-1) * $perpage;
 	}
 	else
 	{
@@ -293,9 +296,9 @@ if($mybb->input['action'] == "addmultiple")
 			$name = ucfirst($find);
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><img src=\"../$path/$file\"><br /><small>$file</small></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"text\" name=\"piname[$file]\" value=\"$name\"></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"right\"><input type=\"checkbox\" name=\"piimport[$file]\" value=\"1\">\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><img src=\"../$path/$file\" alt=\"\" /><br /><small>$file</small></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"text\" name=\"piname[$file]\" value=\"$name\" /></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"right\"><input type=\"checkbox\" name=\"piimport[$file]\" value=\"1\" />\n";
 			echo "</tr>\n";
 		}
 	}

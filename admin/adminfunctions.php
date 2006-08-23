@@ -61,17 +61,17 @@ $cssselectors = array(
 $themebitlist = array("templateset", "imgdir", "logo", "tablespace", "borderwidth", "extracss");
 
 
-function cpheader($title="", $donav=1, $onload="")
+function cpheader($title="", $donav=1, $onload="", $extraheaders="")
 {
 	global $mybb, $style, $lang, $cpheader;
 
 	if($cpheader === true)
 	{
-    return true;
-  }
+    	return true;
+  	}
 
 	$cpheader = true;
-  if(!$title)
+  	if(!$title)
 	{
 		$title = $mybb->settings['bbname']." - ".$lang->admin_center;
 	}
@@ -84,17 +84,18 @@ function cpheader($title="", $donav=1, $onload="")
 	{
 		$htmltag = str_replace("<html", "<html lang=\"".$lang->settings['htmllang']."\"", $htmltag);
 	}
-	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 	echo $htmltag;
 	echo "<head>\n";
 	echo "<title>$title</title>\n";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".$lang->settings['charset']."\" />";
+	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".$lang->settings['charset']."\" />\n";
 	echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"$style\" />\n";
 	echo "<script type=\"text/javascript\">\n";
 	echo "function hopto(url) {\n";
 	echo "window.location = url;\n";
 	echo "}\n";
-	echo "</script>";
+	echo "</script>\n";
+	echo $extraheaders;
 	echo "</head>\n";
 	if($onload)
 	{

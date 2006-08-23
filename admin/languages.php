@@ -257,7 +257,7 @@ if($mybb->input['action'] == "edit")
 		cperror($lang->invalid_set);
 	}
 
-	addacpnav($languages[$editlang], "languages.php?".SID."&action=edit&amp;lang=$editlang&amp;editwith=$editwith");
+	addacpnav($languages[$editlang], "languages.php?".SID."&amp;action=edit&amp;lang=$editlang&amp;editwith=$editwith");
 
 	if(isset($mybb->input['file']))
 	{
@@ -335,7 +335,7 @@ if($mybb->input['action'] == "edit")
 				{
 					tablesubheader($key, "", 1);
 					echo "<tr>\n";
-					echo "<td class=\"altbg1\"><strong>".$languages[$editwith]."</strong><br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" disabled=\"disabled\" name=\"\">".htmlspecialchars($withvars[$key])."</textarea></td>\n";
+					echo "<td class=\"altbg1\"><strong>".$languages[$editwith]."</strong><br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" disabled=\"disabled\">".htmlspecialchars($withvars[$key])."</textarea></td>\n";
 					echo "</tr>";
 					echo "<tr>\n";
 					echo "<td class=\"altbg1\"><strong>".$languages[$editlang]."</strong><br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" name=\"edit[$key]\">".htmlspecialchars($value)."</textarea></td>\n";
@@ -456,13 +456,13 @@ if($mybb->input['action'] == "edit")
 			$admin_link = '';
 			if(in_array($filename, $filenames))
 			{
-				$normal_link = makelinkcode($lang->edit_link, "languages.php?".SID."&action=edit&amp;lang=$editlang&amp;editwith=$editwith&amp;file=$filename");
+				$normal_link = makelinkcode($lang->edit_link, "languages.php?".SID."&amp;action=edit&amp;lang=$editlang&amp;editwith=$editwith&amp;file=$filename");
 			}
 			if(is_array($adminfilenames) && $langinfo['admin'] != 0)
 			{
 			  if(in_array($filename, $adminfilenames))
 			  {
-           $admin_link = "<td align=\"center\">".makelinkcode($lang->edit_link, "languages.php?".SID."&action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&amp;inadmin=1")."</td>"; 
+           $admin_link = "<td align=\"center\">".makelinkcode($lang->edit_link, "languages.php?".SID."&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&amp;inadmin=1")."</td>"; 
         }
         else
         {
@@ -539,7 +539,7 @@ if(empty($mybb->input['action']))
 		echo "<td class=\"$bgcolor\" valign=\"top\"><strong>$langinfo[name]</strong><br /><span class=\"smalltext\">$author</span></td>\n";
 		echo "<td class=\"$bgcolor\" valign=\"top\">$langselect</td>\n";
 		echo "<td class=\"$bgcolor\" valign=\"top\">$options</td>\n";
-		echo "<tr>\n";
+		echo "</tr>\n";
 
 		unset($langinfo);
 	}

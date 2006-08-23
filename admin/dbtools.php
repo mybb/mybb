@@ -329,7 +329,7 @@ if($mybb->input['action'] == 'existing')
 				$time = "-";
 			}
 			$type = $backup['type'];
-			$delete_link = "<a href=\"dbtools.php?".SID."&action=delete&backup=".$filename."\">[ ".$lang->delete." ]</a>";
+			$delete_link = "<a href=\"dbtools.php?".SID."&amp;action=delete&amp;backup=".$filename."\">[ ".$lang->delete." ]</a>";
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"dbtools.php?".SID."&amp;action=dlbackup&amp;file=".$filename."\">".$filename."</a></td>\n";
