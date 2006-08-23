@@ -64,12 +64,12 @@ $themebitlist = array("templateset", "imgdir", "logo", "tablespace", "borderwidt
 function cpheader($title="", $donav=1, $onload="")
 {
 	global $mybb, $style, $lang, $cpheader;
-	
+
 	if($cpheader === true)
 	{
     return true;
   }
-	
+
 	$cpheader = true;
   if(!$title)
 	{
@@ -153,7 +153,7 @@ function starttable($width="100%", $border=1, $padding=6)
 function tableheader($title, $anchor="", $colspan=2)
 {
 	global $bgcolor;
-	
+
 	if($anchor)
 	{
     $anchor = "<a name=\"$anchor\">$title</a>";
@@ -558,7 +558,7 @@ function makecsstoolbaredit($css)
 	echo "<td class=\"altbg1\" colspan=\"2\">\n";
 	echo "<table width=\"100%\">\n";
 	echo "<tr>\n";
-	echo "<td>\n";	
+	echo "<td>\n";
 	echo "<fieldset>\n";
 	echo "<legend>".$lang->toolbar_normal."</legend>\n";
 	echo "<table width=\"100%\">\n";
@@ -567,7 +567,7 @@ function makecsstoolbaredit($css)
 	echo "</table>\n";
 	echo "</fieldset>\n";
 	echo "</td>\n";
-	echo "<td>\n";	
+	echo "<td>\n";
 	echo "<fieldset>\n";
 	echo "<legend>".$lang->toolbar_hovered."</legend>\n";
 	echo "<table width=\"100%\">\n";
@@ -576,7 +576,7 @@ function makecsstoolbaredit($css)
 	echo "</table>\n";
 	echo "</fieldset>\n";
 	echo "</td>\n";
-	echo "<td>\n";	
+	echo "<td>\n";
 	echo "<fieldset>\n";
 	echo "<legend>".$lang->toolbar_clicked."</legend>\n";
 	echo "<table width=\"100%\">\n";
@@ -1261,13 +1261,13 @@ function buildacpnav()
 		{
 			if($navbits[$key+1])
 			{
-				if($navbits[$key+2]) 
-        { 
-          $sep = $navsep; 
-        } 
-        else 
-        { 
-          $sep = ""; 
+				if($navbits[$key+2])
+        {
+          $sep = $navsep;
+        }
+        else
+        {
+          $sep = "";
         }
 				$nav .= "<a href=\"$navbit[url]\">$navbit[name]</a>$sep";
 			}
@@ -1275,7 +1275,7 @@ function buildacpnav()
 	}
 	$navsize = count($navbits);
 	$navbit = $navbits[$navsize-1];
-	if($nav) 
+	if($nav)
   {
 		$activesep = "<br /><img src=\"../images/nav_bit.gif\" alt=\"---\" border=\"0\" />";
 	}
@@ -1681,7 +1681,7 @@ function build_theme_bit_array($tid, $themebit, $addinherited=1)
 
 function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 {
-	global $db, $themebitlist, $cssselectors, $revert_css, $revert_themebits;
+	global $db, $mybb, $themebitlist, $cssselectors, $revert_themebits;
 	if(!$css || !$themebits || $isnew)
 	{
 		$query = $db->simple_select(TABLE_PREFIX."themes", "*", "tid='$pid'");
@@ -1724,7 +1724,7 @@ function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 			{
 				unset($cssbits[$selector]);
 			}
-			if($revert_css[$selector])
+			if($mybb->input['revert_css'][$selector])
 			{
 				$css[$selector] = $parentbit;
 				unset($cssbits[$selector]);
@@ -1760,7 +1760,7 @@ function get_parent_theme_bits($pid)
 
 function build_css($array, $name="")
 {
-	global $cssselectors, $revert_css;
+	global $cssselectors;
 	if(!is_array($array))
 	{
 		return;
