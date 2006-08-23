@@ -29,7 +29,7 @@ a:hover {
 /* Logo */
 
 #logo h1 {
-	background: #fff url(images/logo.gif) no-repeat top left;
+	background: #fff url('images/logo.gif') no-repeat top left;
 	height: 82px;
 	margin: 0 0 2px 0;
 	padding: 3px;
@@ -39,7 +39,7 @@ a:hover {
 
 #header {
 	clear: both;
-	background: #016DB1 url(images/thead_bg.gif) repeat-x top left;
+	background: #016DB1 url('images/thead_bg.gif') repeat-x top left;
 	color: #fff;
 	padding: 5px;
 	font-weight: bold;
@@ -194,7 +194,7 @@ h3 {
 }
 
 .border_wrapper div.title {
-	background: #016DB1 url(images/thead_bg.gif) repeat-x top left;
+	background: #016DB1 url('images/thead_bg.gif') repeat-x top left;
 	color: #fff;
 	padding: 6px 4px;
 	font-size: 100%;
@@ -272,7 +272,7 @@ input.text_input:focus {
 input.submit_button {
 	border: 3px double #0F5C8E;
 	padding: 3px;
-	background: #fff url(images/submit_bg.gif) repeat-x top;
+	background: #fff url('images/submit_bg.gif') repeat-x top;
 	color: #0F5C8E;
 	font-weight: bold;
 	margin-top: 4px;
