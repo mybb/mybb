@@ -6,6 +6,9 @@
 			<color><![CDATA[#000]]></color>
 			<font-family><![CDATA[Verdana]]></font-family>
 			<font-size><![CDATA[13px]]></font-size>
+			<font-style><![CDATA[]]></font-style>
+			<font-weight><![CDATA[]]></font-weight>
+			<extra><![CDATA[text-align: center; /* IE 5 fix */]]></extra>
 			<a_link>
 				<color><![CDATA[#026CB1]]></color>
 				<text-decoration><![CDATA[none]]></text-decoration>
@@ -18,7 +21,6 @@
 				<color><![CDATA[#000]]></color>
 				<text-decoration><![CDATA[underline]]></text-decoration>
 			</a_hover>
-			<extra><![CDATA[text-align: center; /* IE 5 fix */]]></extra>
 		</body>
 		<container>
 			<width><![CDATA[95%]]></width>
@@ -5071,7 +5073,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		}
 	}
 </script>
-	
+
 </head>
 <body>
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
