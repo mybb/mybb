@@ -2341,7 +2341,7 @@ $reputation
 ]]></template>
 		<template name="header_welcomeblock_guest" version="120"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
 		{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)]]></template>
-		<template name="header" version="120"><![CDATA[	<a name="top"></a>
+		<template name="header" version="120"><![CDATA[	<a name="top" id="top"></a>
 	<div id="container">
 		<div id="header">
 			<div class="logo"><a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" border="0" /></a></div>
@@ -3552,7 +3552,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow_sep" colspan="{$colspan}">{$lang->normal_threads}</td>
 </tr>]]></template>
 		<template name="postbit" version="120"><![CDATA[<tr>
-<td class="{$altbg}" width="155" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}"></a>
+<td class="{$altbg}" width="155" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 {$post['user_details']}
 </td>
 <td class="{$altbg}" width="100%" valign="top">
@@ -5632,7 +5632,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2"><input type="password" class="textbox" name="password" /></td>
 </tr>
 <tr>
-<td class="trow2" colspan="2"><span class="smalltext" style="float:right; padding-top:3px;"><a href="member.php?action=register">{$lang->need_reg}</a> | <a href="member.php?action=lostpw">{$lang->forgot_password}</a>&nbsp;</span>&nbsp;<input type="submit" class="button" value="{$lang->login}"></td>
+<td class="trow2" colspan="2"><span class="smalltext" style="float:right; padding-top:3px;"><a href="member.php?action=register">{$lang->need_reg}</a> | <a href="member.php?action=lostpw">{$lang->forgot_password}</a>&nbsp;</span>&nbsp;<input type="submit" class="button" value="{$lang->login}" /></td>
 </tr>
 </table>
 </form>
