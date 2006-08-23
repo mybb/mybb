@@ -264,7 +264,7 @@ $l['latest_threads'] = "Latest Threads";
 $l['folder_inbox'] = "Inbox";
 $l['folder_sent_items'] = "Sent Items";
 $l['folder_drafts'] = "Drafts";
-$l['folder_trash'] = "Trash";
+$l['folder_trash'] = "Trash Can";
 $l['folder_untitled'] = "Untitled Folder";
 
 $l['standard_mod_tools'] = "Standard Tools";
