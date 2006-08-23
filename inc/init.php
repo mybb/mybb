@@ -106,7 +106,27 @@ $lang->set_path(MYBB_ROOT."inc/languages");
 $cache->cache();
 
 // Load Settings
-require MYBB_ROOT."inc/settings.php";
+if(file_exists(MYBB_ROOT."inc/settings.php"))
+{
+	require MYBB_ROOT."inc/settings.php";
+}
+else
+{
+	$options = array(
+		"order_by" => "title",
+		"order_dir" => "ASC"
+	);
+	$query = $db->simple_select(TABLE_PREFIX."settings", "value, name", "", $options);
+	while($setting = $db->fetch_array($query))
+	{
+		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
+		$settings[$setting['name']] = $setting['value'];
+	}
+	if(function_exists('rebuildsettings'))
+	{
+		rebuildsettings();
+	}
+}
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;
 $mybb->settings = $settings;
 
