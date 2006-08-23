@@ -410,7 +410,7 @@ if($mybb->input['action'] == 'optimize')
 	echo "<tr>\n";
 	echo "<td class=\"$bgcolor\" valign=\"top\">".$lang->table_selection_desc."<br /><br /><a href=\"javascript:changeSelection('select', 0);\">".$lang->select_all."</a><br /><a href=\"javascript:changeSelection('deselect', 0);\">".$lang->deselect_all."</a><br /><a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">".$lang->select_forum_tables."</a></td>\n";
 	echo "<td class=\"$bgcolor\">\n";
-	echo "<select id=\"table_select\" name=\"tables[]\" size=\"30\" multiple=\"multiple\">\n";
+	echo "<select id=\"table_select\" name=\"tables[]\" size=\"20\" multiple=\"multiple\">\n";
 	$table_list = $db->list_tables($config['database']);
 	foreach($table_list as $id => $table_name)
 	{
