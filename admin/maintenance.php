@@ -97,22 +97,29 @@ if($mybb->input['action'] == "cache")
 	{
 		$size = get_friendly_size(my_strlen($cacheitem['cache']));
 		$bgcolor = getaltbg();
-		startform("maintenance.php", "", "do_cache");
-		makehiddencode("cacheitem", $cacheitem['title']);
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\" width=\"50%\">$cacheitem[title]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"15%\">$size</td>\n";
-		echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"submit\" name=\"view\" value=\"$lang->view_contents\" class=\"submitbutton\"></td>";
+		echo "<td class=\"$bgcolor\" align=\"center\">";
+		startform("maintenance.php", "", "do_cache");
+		makehiddencode("cacheitem", $cacheitem['title']);
+		echo "<input type=\"submit\" name=\"view\" value=\"$lang->view_contents\" class=\"submitbutton\" />";
+		endform();
+		echo "</td>";
 		if(method_exists($cache, "update".$cacheitem['title']))
 		{
-			echo "<td class=\"$bgcolor\" align=\"center\"><input type=\"submit\" name=\"refresh\" value=\"$lang->refresh_cache\" class=\"submitbutton\"></td>";
+			echo "<td class=\"$bgcolor\" align=\"center\">";
+			startform("maintenance.php", "", "do_cache");
+			makehiddencode("cacheitem", $cacheitem['title']);
+			echo "<input type=\"submit\" name=\"refresh\" value=\"$lang->refresh_cache\" class=\"submitbutton\" />";
+			endform();
+			echo "</td>";
 		}
 		else
 		{
 			echo "<td class=\"$bgcolor\">&nbsp;</td>";
-		}
-		echo "</tr>\n";
-		endform();
+		}		
+		echo "</tr>\n";		
 	}
 	endtable();
 	cpfooter();

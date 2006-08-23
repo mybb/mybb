@@ -359,8 +359,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		{
 			$image = "../$icon[path]";
 		}
-		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$icon[name]<br /><br /><img src=\"$image\"><br /><br />";
-		echo "<a href=\"icons.php?".SID."&action=edit&iid=$icon[iid]&page=$page&perpage=$perpage\">$lang->edit</a> <a href=\"icons.php?".SID."&action=delete&iid=$icon[iid]&page=$page&perpage=$perpage\">$lang->delete</a>";
+		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>$icon[name]<br /><br /><img src=\"$image\" alt=\"\" /><br /><br />";
+		echo "<a href=\"icons.php?".SID."&amp;action=edit&amp;iid=".$icon['iid']."&amp;page=$page&amp;perpage=$perpage\">$lang->edit</a> <a href=\"icons.php?".SID."&amp;action=delete&amp;iid=$icon[iid]&amp;page=$page&amp;perpage=$perpage\">$lang->delete</a>";
 		echo "</td>";
 		$listed++;
 		if($listed == 5)
@@ -397,12 +397,12 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		if($page > 1)
 		{
 			$prev = $page - 1;
-			$prevpage = "<a href=\"icons.php?".SID."&page=$prev&perpage=$perpage\">$lang->prevpage</a>";
+			$prevpage = "<a href=\"icons.php?".SID."&amp;page=$prev&amp;perpage=$perpage\">$lang->prevpage</a>";
 		}
 		if($page < $pages)
 		{
 			$next = $page + 1;
-			$nextpage = "<a href=\"icons.php?".SID."&page=$next&perpage=$perpage\">$lang->nextpage</a>";
+			$nextpage = "<a href=\"icons.php?".SID."&amp;page=$next&amp;perpage=$perpage\">$lang->nextpage</a>";
 		}
 		for($i = 1; $i <= $pages; $i++)
 		{
@@ -412,7 +412,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			}
 			else
 			{
-				$pagelist .= "<a href=\"icons.php?".SID."&page=$i&perpage=$perpage\">$i</a> ";
+				$pagelist .= "<a href=\"icons.php?".SID."&amp;page=$i&amp;perpage=$perpage\">$i</a> ";
 			}
 		}
 	}
@@ -420,7 +420,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		echo "<tr><td class=\"altbg1\" colspan=\"5\">$prevpage $pagelist $nextpage</td></tr>";
 	}
-	echo "<form action=\"icons.php?".SID."&page=$page\" method=\"post\"><tr><td class=\"altbg2\" colspan=\"5\">$lang->icons_per_page <input type=\"text\" name=\"perpage\" value=\"$perpage\"> <input type=\"submit\" name=\"submit\" value=\"Go\"></td></tr></form>";
+	echo "<tr><td class=\"altbg2\" colspan=\"5\"><form action=\"icons.php?".SID."&amp;page=$page\" method=\"post\">$lang->icons_per_page <input type=\"text\" name=\"perpage\" value=\"$perpage\" /> <input type=\"submit\" name=\"submit\" value=\"Go\" /></form></td></tr>";
 	endtable();
 	cpfooter();
 }
