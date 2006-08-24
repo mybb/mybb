@@ -349,7 +349,7 @@ class databaseEngine
 	{
 		$query = $this->query("
 			SHOW TABLES 
-			FROM $database
+			FROM `$database`
 		");
 		while(list($table) = mysql_fetch_array($query))
 		{

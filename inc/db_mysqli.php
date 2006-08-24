@@ -337,7 +337,7 @@ class databaseEngine
 	 */
 	function list_tables($database)
 	{
-		$query = $this->query("SHOW TABLES FROM $database");
+		$query = $this->query("SHOW TABLES FROM `$database`");
 		while(list($table) = mysqli_fetch_array($query))
 		{
 			$tables[] = $table;
