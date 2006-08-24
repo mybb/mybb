@@ -175,7 +175,7 @@ function clean_keywords_ft($keywords)
 	$keywords = strtolower($keywords);
 	$keywords = str_replace("%", "\\%", $keywords);
 	$keywords = preg_replace("#\*{2,}#s", "*", $keywords);
-	$keywords = preg_replace("#([\[\]\|\.\,:'])#s", " ", $keywords);
+	$keywords = preg_replace("#([\[\]\|\.\,:])#s", " ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
 
 	if(strpos($keywords, "\"") !== false)

@@ -3201,7 +3201,7 @@ function login_attempt_check($fatal = true)
 		//If so, then we need to work out if they can try to login again
 		//Some maths to work out how long they have left and display it to them
 		$now = time();
-		$secondsleft = ($mybb->settings['failedlogintime'] * 3600 + (empty($_COOKIE['failedlogin']) ? $now : $_COOKIE['failedlogin'])) - $now;
+		$secondsleft = ($mybb->settings['failedlogintime'] * 60 + (empty($_COOKIE['failedlogin']) ? $now : $_COOKIE['failedlogin'])) - $now;
 		$hoursleft = floor($secondsleft / 3600);
 		$minsleft = floor(($secondsleft / 60) % 60);
 		$secsleft = floor($secondsleft % 60);
@@ -3216,7 +3216,7 @@ function login_attempt_check($fatal = true)
 			return false;
 		}
 		//Work out if the user has waited long enough before letting them login again
-		if($_COOKIE['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 3600)
+		if($_COOKIE['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 60)
 		{
 			mysetcookie('loginattempts', 1);
 			myunsetcookie('failedlogin');

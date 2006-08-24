@@ -1032,10 +1032,10 @@ admin=Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="failedlogintime">
 			<title>Time between failed logins</title>
-			<description><![CDATA[The amount of time (in hours) before someone can try to login again, after they have failed to login the first time. Used if value above is not 0.]]></description>
+			<description><![CDATA[The amount of time (in minutes) before someone can try to login again, after they have failed to login the first time. Used if value above is not 0.]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[24]]></settingvalue>
+			<settingvalue><![CDATA[15]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="failedlogintext">

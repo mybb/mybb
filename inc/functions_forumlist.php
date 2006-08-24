@@ -165,7 +165,7 @@ function build_forumbits($pid=0, $depth=1)
 			if($forum['type'] == "f" && $forum['linkto'] == '')
 			{
 				// No posts have been made in this forum - show never text
-				if($forum['lastpost'] == 0 || $forum['lastposter'] == '' && $hideinfo != true)
+				if(($lastpost_data['lastpost'] == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
 				{
 					$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
 				}
