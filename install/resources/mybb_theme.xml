@@ -1389,8 +1389,8 @@ var inlineId = {$tid};
 </tr>]]></template>
 		<template name="header_welcomeblock_member_admin" version="120"><![CDATA[ &mdash; <a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php">{$lang->welcome_admin}</a>]]></template>
 		<template name="forumdisplay_newthread" version="120"><![CDATA[<a href="newthread.php?fid={$fid}"><img src="{$theme['imglangdir']}/newthread.gif" border="0" alt="{$lang->post_thread}" /></a>]]></template>
-		<template name="showthread_threaded_bitactive" version="120"><![CDATA[<div style="margin-left: {{$indentsize}}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate} {$posttime}</span></div>]]></template>
-		<template name="showthread_threaded_bit" version="120"><![CDATA[<div style="margin-left: {{$indentsize}}px;"><a href="showthread.php?tid={$tid}&amp;pid={$post['pid']}&amp;mode=threaded">{$post['subject']}</a> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}, {$posttime}</span></div>]]></template>
+		<template name="showthread_threaded_bitactive" version="120"><![CDATA[<div style="margin-left: {$indentsize}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate} {$posttime}</span></div>]]></template>
+		<template name="showthread_threaded_bit" version="120"><![CDATA[<div style="margin-left: {$indentsize}px;"><a href="showthread.php?tid={$tid}&amp;pid={$post['pid']}&amp;mode=threaded">{$post['subject']}</a> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}, {$posttime}</span></div>]]></template>
 		<template name="showthread_poll" version="120"><![CDATA[<form action="polls.php" method="get">
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="{$poll['pid']}" />
@@ -2281,7 +2281,7 @@ $headerinclude
 <td class="trow2"><strong>{$lang->timeonline}</strong></td>
 <td class="trow2">{$timeonline}</td>
 </tr>
-$reputation
+{$reputation}
 </table>
 <br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -5057,7 +5057,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </span></td>
 </tr>]]></template>
 		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
-<td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:clickableEditor.openGetMoreSmilies('clickableEditor');">{$lang->smilieinsert_getmore}</a>]</strong></td>
+<td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:clickableEditor.openGetMoreSmilies('clickableEditor');">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
 		<template name="misc_smilies_popup" version="120"><![CDATA[<html>
 <head>

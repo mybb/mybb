@@ -333,6 +333,16 @@ if($mybb->input['action'] == "edit")
 				// Make each editing row
 				foreach($editvars as $key => $value)
 				{
+					if(strtolower($langinfo['charset']) == "utf-8")
+					{
+						$withvars[$key] = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $withvars[$key]);
+						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $value);
+					}
+					else
+					{
+						$withvars[$key] = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $withvars[$key]);
+						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $value);
+					}	
 					tablesubheader($key, "", 1);
 					echo "<tr>\n";
 					echo "<td class=\"altbg1\"><strong>".$languages[$editwith]."</strong><br /><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" disabled=\"disabled\">".htmlspecialchars($withvars[$key])."</textarea></td>\n";
@@ -357,6 +367,14 @@ if($mybb->input['action'] == "edit")
 				// Make each editing row
 				foreach($editvars as $key => $value)
 				{
+					if(strtolower($langinfo['charset']) == "utf-8")
+					{
+						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $value);
+					}
+					else
+					{
+						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $value);
+					}
 					tablesubheader($key, "", 1);
 					echo "<tr>\n";
 					echo "<td class=\"altbg1\"><textarea style=\"width: 98%; padding: 4px;\" rows=\"2\" name=\"edit[$key]\">".htmlspecialchars($value)."</textarea></td>\n";

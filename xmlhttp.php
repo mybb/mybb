@@ -488,46 +488,4 @@ function xmlhttp_error($message)
 	exit;
 }
 
-/**
- * Converts a decimal reference of a character to its UTF-8 equivilant
- * (Code by Anne van Kesteren, http://annevankesteren.nl/2005/05/character-references)
- *
- * @param string Decimal value of a character reference
- */
-function dec2utf8($src)
-{
-	$dest = '';
-	if($src < 0)
-	{
-  		return false;
- 	}
-	elseif($src <= 0x007f)
-	{
-		$dest .= chr($src);
-	}
-	elseif($src <= 0x07ff)
-	{
-		$dest .= chr(0xc0 | ($src >> 6));
-		$dest .= chr(0x80 | ($src & 0x003f));
-	}
-	elseif($src <= 0xffff)
-	{
-		$dest .= chr(0xe0 | ($src >> 12));
-		$dest .= chr(0x80 | (($src >> 6) & 0x003f));
-		$dest .= chr(0x80 | ($src & 0x003f));
-	}
-	elseif($src <= 0x10ffff)
-	{
-		$dest .= chr(0xf0 | ($src >> 18));
-		$dest .= chr(0x80 | (($src >> 12) & 0x3f));
-		$dest .= chr(0x80 | (($src >> 6) & 0x3f));
-		$dest .= chr(0x80 | ($src & 0x3f));
-	}
-	else
-	{ 
-		// out of range
-		return false;
-	}
-	return $dest;
-}
 ?>
