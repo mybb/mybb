@@ -2202,6 +2202,7 @@ $headerinclude
 <script type="text/javascript" src="jscripts/popup_menu.js?ver=120"></script>
 <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" />
 <script language="Javascript" type="text/javascript">
+<!--
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";
 	var newpm_prompt = "{$lang->newpm_prompt}";
@@ -2209,6 +2210,7 @@ $headerinclude
 	var removeattach_confirm = "{$lang->removeattach_confirm}";
 	var loading_text = '{$lang->ajax_loading}';
 	var saving_changes = '{$lang->saving_changes}';
+// -->
 </script>
 {$newpmmsg}]]></template>
 		<template name="showthread_similarthreads" version="120"><![CDATA[<br />
@@ -3873,7 +3875,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="{$trow}"><a href="showthread.php?tid={$report['tid']}" target="_blank">{$report['threadsubject']}</a></td>
 <td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['uid']}" target="_blank">{$report['username']}</a></td>
 <td class="{$trow}">{$report['reason']}</td>
-<td class="{$trow}" align="center">{$reportdate}, {$reporttime}</td>
+<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</small></td>
 </tr>]]></template>
 	<template name="moderation_reports_multipage" version="120"><![CDATA[<tr>
 <td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
@@ -3885,12 +3887,12 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </head>
 <body>
 {$header}
+<p>{$lang->unread_reports_key}</p>
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" align="center" colspan="7"><strong>{$lang->all_reported_posts}</strong></td>
+<td class="thead" align="center" colspan="6"><strong>{$lang->all_reported_posts}</strong></td>
 </tr>
 <tr>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->read}</strong></span></td>
 <td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
 <td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->poster}</strong></span></td>
 <td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
@@ -3898,26 +3900,24 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
 <td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
 </tr>
-{$allreports}
 {$allreportspages}
 </table>
 {$footer}
 </body>
 </html>]]></template>
 	<template name="moderation_reports_allreport" version="120"><![CDATA[<tr>
-<td class="{$trow}" align="center">{$report['read']}</td>
 <td class="{$trow}" align="center"><a href="showthread.php?pid={$report['pid']}&amp;tid={$report['tid']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></td>
 <td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['postuid']}" target="_blank">{$report['postusername']}</a></td>
 <td class="{$trow}"><a href="showthread.php?tid={$report['tid']}" target="_blank">{$report['threadsubject']}</a></td>
 <td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['uid']}" target="_blank">{$report['username']}</a></td>
 <td class="{$trow}">{$report['reason']}</td>
-<td class="{$trow}" align="center">{$reportdate}, {$reporttime}</td>
+<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</span></td>
 </tr>]]></template>
 	<template name="moderation_allreports_multipage" version="120"><![CDATA[<tr>
 <td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
 </tr>]]></template>
 	<template name="moderation_reports_allnoreports" version="120"><![CDATA[<tr>
-<td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
+<td class="trow1" align="center" colspan="6">{$lang->no_reports}</td>
 </tr>]]></template>
 		<template name="moderation_reports_noreports" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="6">{$lang->no_reports}</td>

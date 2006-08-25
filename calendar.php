@@ -107,9 +107,9 @@ else
 
 // Make sure there's no leading zeros
 $stamp = mktime(0, 0, 0, $month, $day, $year);
-$day = mydate("j", $stamp);
-$month = mydate("n", $stamp);
-$year = mydate("Y", $stamp);
+$day = mydate("j", $stamp, '0');
+$month = mydate("n", $stamp, '0');
+$year = mydate("Y", $stamp, '0');
 
 $monthnames = array(
 	"offset",
@@ -141,14 +141,6 @@ if(!in_array($mybb->input['action'], $accepted_actions))
 {
 	$mybb->input['action'] = "calendar_main";
 }
-
-// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
-if($mybb->settings['bbcodeinserter'] != "off" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
-{
-	$codebuttons = build_mycode_inserter();
-	$smilieinserter = build_clickable_smilies();
-}
-
 
 // View a specific event.
 if($mybb->input['action'] == "event")
@@ -291,7 +283,7 @@ if($mybb->input['action'] == "dayview")
 	if($birthdays)
 	{
 		$eventdate = gmmktime(0, 0, 0, $month, $day, $year);
-		$bdaydate = mydate($mybb->settings['dateformat'], $eventdate, "", 0);
+		$bdaydate = mydate($mybb->settings['dateformat'], $eventdate, 0, 0);
 		$lang->birthdays_on_day = sprintf($lang->birthdays_on_day, $bdaydate);
 		eval("\$bdaylist = \"".$templates->get("calendar_dayview_birthdays")."\";");
 	}
@@ -346,6 +338,14 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 if($mybb->input['action'] == "addevent")
 {
 	$plugins->run_hooks("calendar_addevent_start");
+
+
+	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
+	if($mybb->settings['bbcodeinserter'] != "off" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
+	{
+		$codebuttons = build_mycode_inserter();
+		$smilieinserter = build_clickable_smilies();
+	}
 
 	$yearopts = '';
 
@@ -477,6 +477,14 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 if($mybb->input['action'] == "editevent")
 {
 	$plugins->run_hooks("calendar_editevent_start");
+
+
+	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
+	if($mybb->settings['bbcodeinserter'] != "off" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
+	{
+		$codebuttons = build_mycode_inserter();
+		$smilieinserter = build_clickable_smilies();
+	}
 
 	$eid = intval($mybb->input['eid']);
 

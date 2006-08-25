@@ -79,6 +79,7 @@ $l['report_reason'] = "Reason:";
 $l['report_time'] = "Reported:";
 $l['mark_read'] = "Mark Selected as Read";
 $l['no_reports'] = "There are currently no unread reported posts.";
+$l['unread_reports_key'] = "<strong>Note:</strong><br />Unread reports are highlighted.";
 $l['resolve_fail'] = "N/A (Unable to resolve)";
 
 $l['opened'] = "Opened";

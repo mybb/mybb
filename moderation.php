@@ -1451,16 +1451,15 @@ switch($mybb->input['action'])
 		");
 		while($report = $db->fetch_array($query))
 		{
-			$trow = alt_trow();
 			$reportdate = mydate($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = mydate($mybb->settings['timeformat'], $report['dateline']);
 			if($report['reportstatus'] == 0)
 			{
-				$report['read'] = $lang->no;
+				$trow = "trow_shaded";
 			}
 			else
 			{
-				$report['read'] = $lang->yes;
+				$trow = alt_trow();
 			}
 			eval("\$allreports .= \"".$templates->get("moderation_reports_allreport")."\";");
 			
