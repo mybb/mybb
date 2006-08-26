@@ -136,8 +136,8 @@ function startform($script, $name="", $action="", $autocomplete=1)
 	}
 	if($name != '')
 	{
-    $name = " name=\"$name\"";
-  }
+    	$name = " name=\"$name\"";
+  	}
 	echo "<form action=\"$script\" method=\"post\"$name enctype=\"multipart/form-data\"$acomplete>\n";
 	makehiddencode("adminsid", $admin_session['sid']);
 	if($action != "")
@@ -157,12 +157,12 @@ function tableheader($title, $anchor="", $colspan=2)
 
 	if($anchor)
 	{
-    $anchor = "<a name=\"$anchor\">$title</a>";
-  }
-  else
-  {
-    $anchor = $title;
-  }
+    	$anchor = "<a name=\"$anchor\">$title</a>";
+ 	}
+  	else
+  	{
+    	$anchor = $title;
+  	}
 	echo "<tr>\n<td class=\"header\" align=\"center\" colspan=\"$colspan\">$anchor</td>\n</tr>\n";
 	$bgcolor = "altbg2";
 }
@@ -217,12 +217,12 @@ function makelinkcode($text, $url, $newwin=0, $class="")
 	}
 	if($class)
 	{
-    $class = "<span class=\"$class\">[$text]</span>";
-  }
-  else
-  {
-    $class = "[$text]";
-  }
+    	$class = "<span class=\"$class\">[$text]</span>";
+  	}
+  	else
+  	{
+    	$class = "[$text]";
+  	}
 	return " <a href=\"$url\" $target>$class</a>";
 }
 function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxlength="", $autocomplete=1, $extra2="")
@@ -239,12 +239,12 @@ function makeinputcode($title, $name, $value="", $size="25", $extra="", $maxleng
 	}
 	if($maxlength != '')
 	{
-    $maxlength = " maxlength=\"$maxlength\"";
-  }
-  if($size != '')
-  {
-    $size = " size=\"$size\"";
-  }
+    	$maxlength = " maxlength=\"$maxlength\"";
+  	}
+  	if($size != '')
+  	{
+    	$size = " size=\"$size\"";
+  	}
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\">\n$extra2<input type=\"text\" class=\"inputbox\" name=\"$name\"$size$maxlength$ac$value />\n$extra\n</td>\n</tr>\n";
 }
 function makeuploadcode($title, $name, $size="25", $extra="")
