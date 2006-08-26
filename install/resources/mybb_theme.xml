@@ -4,7 +4,7 @@
 		<body>
 			<background><![CDATA[#efefef]]></background>
 			<color><![CDATA[#000]]></color>
-			<font-family><![CDATA[Lucida Sans Unicode, Lucida Grande, Verdana, Sans-Serif]]></font-family>
+			<font-family><![CDATA[Verdana]]></font-family>
 			<font-size><![CDATA[13px]]></font-size>
 			<font-style><![CDATA[]]></font-style>
 			<font-weight><![CDATA[]]></font-weight>
@@ -64,7 +64,7 @@ padding: 8px;]]></extra>
 		</panel>
 		<table>
 			<color><![CDATA[#000000]]></color>
-			<font-family><![CDATA[Lucida Sans Unicode, Lucida Grande, Verdana, Sans-Serif]]></font-family>
+			<font-family><![CDATA[Verdana]]></font-family>
 			<font-size><![CDATA[13px]]></font-size>
 		</table>
 		<tborder>
@@ -142,7 +142,7 @@ padding: 6px;]]></extra>
 		</bottommenu>
 		<navigation>
 			<color><![CDATA[#000000]]></color>
-			<font-family><![CDATA[Lucida Sans Unicode, Lucida Grande, Verdana, Sans-Serif]]></font-family>
+			<font-family><![CDATA[]]></font-family>
 			<font-size><![CDATA[13px]]></font-size>
 			<font-weight><![CDATA[bold]]></font-weight>
 			<a_link>
@@ -157,16 +157,16 @@ padding: 6px;]]></extra>
 		</navigation>
 		<navigation_active>
 			<color><![CDATA[#000000]]></color>
-			<font-family><![CDATA[Lucida Sans Unicode, Lucida Grande, Verdana, Sans-Serif]]></font-family>
+			<font-family><![CDATA[]]></font-family>
 			<font-size><![CDATA[small]]></font-size>
 			<font-weight><![CDATA[bold]]></font-weight>
 		</navigation_active>
 		<smalltext>
-			<font-family><![CDATA[Lucida Sans Unicode, Lucida Grande, Verdana, Sans-Serif]]></font-family>
+			<font-family><![CDATA[]]></font-family>
 			<font-size><![CDATA[11px]]></font-size>
 		</smalltext>
 		<largetext>
-			<font-family><![CDATA[Lucida Sans Unicode, Lucida Grande, Verdana, Sans-Serif]]></font-family>
+			<font-family><![CDATA[]]></font-family>
 			<font-size><![CDATA[16px]]></font-size>
 			<font-weight><![CDATA[bold]]></font-weight>
 		</largetext>
@@ -182,7 +182,6 @@ padding: 6px;]]></extra>
 			<border><![CDATA[1px solid #0f5c8e]]></border>
 			<extra><![CDATA[padding: 2px;
 line-height: 1.4;
-font-family: Lucida Sans Unicode, Lucida Grande, Verdana, Sans-Serif;
 font-size: 13px;]]></extra>
 		</textarea>
 		<radio>
@@ -402,7 +401,6 @@ hr {
 
 .usercpnav li {
 	padding: 1px;
-	font-family: Lucida Sans Unicode, Lucida Grande, Verdana, Sans-Serif;
 	font-size:11px
 }
 
@@ -4608,7 +4606,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <title>{$thread['subject']} - {$lang->printable_version}</title>
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <style type="text/css">
-body { font-family: Lucida Sans Unicode, Lucida Grande, Verdana, Sans-Serif; font-size: 13px; }
+body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 .largetext { font-family: Verdana, Arial, sans-serif; font-size: medium; font-weight: bold; }
 </style>
 </head>
