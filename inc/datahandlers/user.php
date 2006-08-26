@@ -620,7 +620,7 @@ class UserDataHandler extends DataHandler
 			$user['away']['reason'] = '';
 			return true;
 		}
-		else
+		else if($user['away']['returndate'])
 		{
 			list($returnday, $returnmonth, $returnyear) = explode('-', $user['away']['returndate']);
 			if(!$returnday || !$returnmonth || !$returnyear)

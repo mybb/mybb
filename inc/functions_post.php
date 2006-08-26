@@ -448,8 +448,8 @@ function build_postbit($post, $post_type=0)
 			$plugins->run_hooks_by_ref("postbit_announcement", $post);
 			break;
 		default: // Regular post
-			eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
 			$plugins->run_hooks_by_ref("postbit", $post);
+			eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
 			break;
 	}
 	eval("\$postbit = \"".$templates->get("postbit")."\";");

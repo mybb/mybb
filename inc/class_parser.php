@@ -366,7 +366,7 @@ class postParser
 				{
 					$find = $this->parse_html($find);
 				}
-				$message = str_replace($find, $replace, $message);
+				$message = preg_replace("#(?<!&amp|&quot|&gt|&lt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4}|&\#[0-9]{5})".preg_quote($find, "#")."#s", $replace, $message);
 			}
 		}
 		return $message;

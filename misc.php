@@ -177,7 +177,6 @@ elseif($mybb->input['action'] == "help")
 			}
 			if(is_array($helpdocs[$section['sid']]))
 			{
-				$altbg = "trow1";
 				$helpbits = '';
 				// Expand (or Collapse) forums
 				if($mybb->input['action'] == "expand")
@@ -203,8 +202,8 @@ elseif($mybb->input['action'] == "help")
 								$helpdoc['name'] = $lang->$langnamevar;
 								$helpdoc['description'] = $lang->$langdescvar;
 							}
-							eval("\$helpbits .= \"".$templates->get("misc_help_section_bit")."\";");
 							$altbg = alt_trow();
+							eval("\$helpbits .= \"".$templates->get("misc_help_section_bit")."\";");
 						}
 					}
 					$expdisplay = '';
