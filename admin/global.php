@@ -20,7 +20,7 @@ if(!isset($config['admin_dir']))
 	$config['admin_dir'] = "admin";
 }
 
-requiredirname(dirname(__FILE__))."/inc/init.php";
+require dirname(dirname(__FILE__))."/inc/init.php";
 
 define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
 
