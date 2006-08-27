@@ -6004,7 +6004,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="postbit_offline" version="120"><![CDATA[<font color="#C7C7C7"><strong>{$lang->postbit_status_offline}</strong></font>]]></template>
-		<template name="postbit_editedby" version="120"><![CDATA[<div class="smalltext">{$post['editnote']} <a href="member.php?action=profile&amp;uid={$post['edituid']}">{$post['editusername']}</a>.</div>
+		<template name="postbit_editedby" version="120"><![CDATA[<p class="smalltext">{$post['editnote']} <a href="member.php?action=profile&amp;uid={$post['edituid']}">{$post['editusername']}</a>.</p>
 
 ]]></template>
 		<template name="member_register_requiredfields" version="120"><![CDATA[<fieldset class="trow2">
