@@ -193,7 +193,7 @@ elseif($mybb->input['action'] == "home")
 	asort($languages);
 	foreach($languages as $key => $langname)
 	{
-		require_once MYBB_ROOT."inc/languages/".$key.".php";
+		require MYBB_ROOT."inc/languages/".$key.".php";
 		if(!empty($langinfo['website']))
 		{
 			$author = "<a href=\"$langinfo[website]\">$langinfo[author]</a>";
@@ -218,7 +218,7 @@ elseif($mybb->input['action'] == "vercheck")
 		"last_check" => time()
 	);
 
-	require_once MYBB_ROOT."inc/class_xml.php";
+	require MYBB_ROOT."inc/class_xml.php";
 	$contents = @implode("", @file("http://mybboard.com/version_check.php"));
 	if(!$contents)
 	{
@@ -245,7 +245,7 @@ elseif($mybb->input['action'] == "vercheck")
 
 	$plugins->run_hooks("admin_index_vercheck");
 
-	require_once MYBB_ROOT."/inc/class_feedparser.php";
+	require MYBB_ROOT."/inc/class_feedparser.php";
 	$feed_parser = new FeedParser();
 	$feed_parser->parse_feed("http://www.mybboard.com/latest_news.php");
 	echo $feed_parser->error;

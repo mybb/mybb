@@ -13,16 +13,16 @@ error_reporting(E_ALL & ~E_NOTICE);
 define("MYBB_ROOT", dirname(dirname(__FILE__)));
 define("INSTALL_ROOT", dirname(__FILE__));
 
-require_once MYBB_ROOT."/inc/class_core.php";
+require MYBB_ROOT."/inc/class_core.php";
 $mybb = new MyBB;
 
 // Include the files necessary for installation
-require_once MYBB_ROOT."/inc/class_timers.php";
-require_once MYBB_ROOT."/inc/functions.php";
-require_once MYBB_ROOT."/inc/class_xml.php";
-require_once MYBB_ROOT."/inc/config.php";
-require_once MYBB_ROOT."/inc/db_".$config['dbtype'].".php";
-require_once MYBB_ROOT.'/inc/class_language.php';
+require MYBB_ROOT."/inc/class_timers.php";
+require MYBB_ROOT."/inc/functions.php";
+require MYBB_ROOT."/inc/class_xml.php";
+require MYBB_ROOT."/inc/config.php";
+require MYBB_ROOT."/inc/db_".$config['dbtype'].".php";
+require MYBB_ROOT.'/inc/class_language.php';
 $lang = new MyLanguage();
 $lang->set_path('resources/');
 $lang->load('language');
@@ -32,17 +32,17 @@ $lang->load('language');
 // Legacy for those boards trying to upgrade from an older version
 if(isset($config['admindir']))
 {
-	require_once MYBB_ROOT."/".$config['admindir']."/adminfunctions.php";
+	require MYBB_ROOT."/".$config['admindir']."/adminfunctions.php";
 }
 // Current
 else if(isset($config['admin_dir']))
 {
-	require_once MYBB_ROOT."/".$config['admin_dir']."/adminfunctions.php";
+	require MYBB_ROOT."/".$config['admin_dir']."/adminfunctions.php";
 }
 // No custom set
 else
 {
-	require_once MYBB_ROOT."/admin/adminfunctions.php";
+	require MYBB_ROOT."/admin/adminfunctions.php";
 }
 
 // Include the necessary contants for installation
@@ -52,7 +52,7 @@ $displaygroupfields = array("title", "description", "namestyle", "usertitle", "s
 $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
 
 // Include the installation resources
-require_once INSTALL_ROOT."/resources/output.php";
+require INSTALL_ROOT."/resources/output.php";
 $output = new installerOutput;
 $output->script = "upgrade.php";
 
@@ -261,7 +261,7 @@ function buildcaches()
 	$output->print_header($lang->upgrade_datacache_building);
 
 	$contents .= $lang->upgrade_building_datacache;
-	require_once MYBB_ROOT."/inc/class_datacache.php";
+	require MYBB_ROOT."/inc/class_datacache.php";
 	$cache = new datacache;
 	$cache->updateversion();
 	$cache->updateattachtypes();
@@ -350,7 +350,7 @@ function next_function($from, $func="dbchanges")
 function load_module($module)
 {
 	global $system_upgrade_detail, $currentscript;
-	require_once INSTALL_ROOT."/resources/".$module;
+	require INSTALL_ROOT."/resources/".$module;
 	if($currentscript != $module)
 	{
 		foreach($upgrade_detail as $key => $val)
@@ -477,7 +477,7 @@ function sync_settings($redo=0)
 	}
 	if($redo >= 1)
 	{
-		require_once MYBB_ROOT."/inc/settings.php";
+		require MYBB_ROOT."/inc/settings.php";
 		foreach($settings as $key => $val)
 		{
 			$db->update_query(TABLE_PREFIX."settings", array('value' => $db->escape_string($val)), "name='$key'");

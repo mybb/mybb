@@ -58,7 +58,7 @@ if($mybb->input['action'] == "activate")
 		cperror($lang->plugin_not_found);
 	}
 
-	require_once MYBB_ROOT."inc/plugins/$file";
+	require MYBB_ROOT."inc/plugins/$file";
 
 	//
 	// If this plugin has an activate/deactivate function then run it
@@ -110,7 +110,7 @@ if($mybb->input['action'] == "")
 	{
 		foreach($plugins_list as $plugin_file)
 		{
-			require_once MYBB_ROOT."inc/plugins/".$plugin_file;
+			require MYBB_ROOT."inc/plugins/".$plugin_file;
 			$codename = str_replace(".php", "", $plugin_file);
 			$infofunc = $codename."_info";
 			if(!function_exists($infofunc))

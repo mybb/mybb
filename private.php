@@ -16,9 +16,9 @@ $templatelist .= ",private_folders,private_folders_folder,private_folders_folder
 $templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav_messenger,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,private_messagebit";
 
 require_once "./global.php";
-require_once MYBB_ROOT."inc/functions_post.php";
-require_once MYBB_ROOT."inc/functions_user.php";
-require_once MYBB_ROOT."inc/class_parser.php";
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/functions_user.php";
+require MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases
@@ -131,7 +131,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		error($lang->error_pm_already_submitted);
 	}
 
-	require_once MYBB_ROOT."inc/datahandlers/pm.php";
+	require MYBB_ROOT."inc/datahandlers/pm.php";
 	$pmhandler = new PMDataHandler();
 
 	$pm = array(

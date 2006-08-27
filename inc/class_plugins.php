@@ -33,7 +33,7 @@ class pluginSystem
 			{
 				if($plugin != "" && file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
 				{
-					require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
+					require MYBB_ROOT."inc/plugins/".$plugin.".php";
 				}
 			}
 		}
@@ -87,7 +87,7 @@ class pluginSystem
 				{
 					if($hook['file'])
 					{
-						require_once $hook['file'];
+						require $hook['file'];
 					}
 					$oldreturnargs = $returnargs;
 					$returnargs = call_user_func_array($hook['function'], array(&$arguments));
@@ -124,7 +124,7 @@ class pluginSystem
 				{
 					if($hook['file'])
 					{
-						require_once $hook['file'];
+						require $hook['file'];
 					}
 					call_user_func_array($hook['function'], array(&$arguments));
 				}

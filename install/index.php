@@ -13,16 +13,16 @@ error_reporting(E_ALL & ~E_NOTICE);
 define("MYBB_ROOT", dirname(dirname(__FILE__)));
 define("INSTALL_ROOT", dirname(__FILE__));
 
-require_once MYBB_ROOT.'/inc/class_core.php';
+require MYBB_ROOT.'/inc/class_core.php';
 $mybb = new MyBB;
 
 // Include the files necessary for installation
-require_once MYBB_ROOT.'/inc/class_timers.php';
-require_once MYBB_ROOT.'/inc/functions.php';
-require_once MYBB_ROOT.'/admin/adminfunctions.php';
-require_once MYBB_ROOT.'/inc/class_xml.php';
-require_once MYBB_ROOT.'/inc/functions_user.php';
-require_once MYBB_ROOT.'/inc/class_language.php';
+require MYBB_ROOT.'/inc/class_timers.php';
+require MYBB_ROOT.'/inc/functions.php';
+require MYBB_ROOT.'/admin/adminfunctions.php';
+require MYBB_ROOT.'/inc/class_xml.php';
+require MYBB_ROOT.'/inc/functions_user.php';
+require MYBB_ROOT.'/inc/class_language.php';
 $lang = new MyLanguage();
 $lang->set_path('resources/');
 $lang->load('language');
@@ -34,7 +34,7 @@ $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 's
 $fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch');
 
 // Include the installation resources
-require_once INSTALL_ROOT.'/resources/output.php';
+require INSTALL_ROOT.'/resources/output.php';
 $output = new installerOutput;
 
 $dboptions = array();
@@ -355,7 +355,7 @@ function create_tables()
 	}
 
 	// Attempt to connect to the db
-	require_once MYBB_ROOT."/inc/db_{$mybb->input['dbengine']}.php";
+	require MYBB_ROOT."/inc/db_{$mybb->input['dbengine']}.php";
 	$db = new databaseEngine;
  	$db->error_reporting = 0;
 
@@ -450,7 +450,7 @@ function create_tables()
 		$structure_file = 'mysql_db_tables.php';
 	}
 
-	require_once INSTALL_ROOT."/resources/{$structure_file}";
+	require INSTALL_ROOT."/resources/{$structure_file}";
 	foreach($tables as $val)
 	{
 		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $mybb->input['tableprefix'].'\\1\\2', $val);
@@ -474,7 +474,7 @@ function populate_tables()
 {
 	global $output, $lang;
 
-	require_once MYBB_ROOT.'/inc/config.php';
+	require MYBB_ROOT.'/inc/config.php';
 	$db = db_connection($config);
 
 	$output->print_header($lang->table_population, 'tablepopulate');
@@ -489,7 +489,7 @@ function populate_tables()
 		$population_file = 'mysql_db_inserts.php';
 	}
 
-	require_once INSTALL_ROOT."/resources/{$population_file}";
+	require INSTALL_ROOT."/resources/{$population_file}";
 	foreach($inserts as $val)
 	{
 		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $config['table_prefix'].'\\1\\2', $val);
@@ -503,10 +503,10 @@ function insert_templates()
 {
 	global $output, $cache, $db, $lang;
 
-	require_once MYBB_ROOT.'/inc/config.php';
+	require MYBB_ROOT.'/inc/config.php';
 	$db = db_connection($config);
 
-	require_once MYBB_ROOT.'/inc/class_datacache.php';
+	require MYBB_ROOT.'/inc/class_datacache.php';
 	$cache = new datacache;
 
 	$output->print_header($lang->theme_installation, 'theme');
@@ -625,7 +625,7 @@ function create_admin_user()
 	}
 	else
 	{
-		require_once MYBB_ROOT.'/inc/config.php';
+		require MYBB_ROOT.'/inc/config.php';
 		$db = db_connection($config);
 
 		echo $lang->admin_step_setupsettings;
@@ -713,10 +713,10 @@ function install_done()
 		create_admin_user();
 	}
 
-	require_once MYBB_ROOT.'/inc/config.php';
+	require MYBB_ROOT.'/inc/config.php';
 	$db = db_connection($config);
 	
-	require_once MYBB_ROOT.'/inc/settings.php';
+	require MYBB_ROOT.'/inc/settings.php';
 	$mybb->settings = &$settings;
 
 	ob_start();
@@ -793,7 +793,7 @@ function install_done()
 	add_shutdown('test_shutdown_function');
 
 	echo $lang->done_step_cachebuilding;
-	require_once MYBB_ROOT.'/inc/class_datacache.php';
+	require MYBB_ROOT.'/inc/class_datacache.php';
 	$cache = new datacache;
 	$cache->updateversion();
 	$cache->updateattachtypes();
@@ -834,7 +834,7 @@ function install_done()
 
 function db_connection($config)
 {
-	require_once MYBB_ROOT."/inc/db_{$config['dbtype']}.php";
+	require MYBB_ROOT."/inc/db_{$config['dbtype']}.php";
 	$db = new databaseEngine;
 	// Connect to Database
 	define('TABLE_PREFIX', $config['table_prefix']);

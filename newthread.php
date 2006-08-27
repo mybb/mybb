@@ -15,8 +15,8 @@ $templatelist = "newthread,previewpost,error_invalidforum,redirect_newthread,log
 $templatelist .= "posticons,newthread_disablesmilies,newreply_modoptions,post_attachments_new,post_attachments,post_savedraftbutton";
 
 require_once "./global.php";
-require_once MYBB_ROOT."inc/functions_post.php";
-require_once MYBB_ROOT."inc/functions_user.php";
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/functions_user.php";
 
 // Load global language phrases
 $lang->load("newthread");
@@ -123,7 +123,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
 	{
-		require_once MYBB_ROOT."inc/functions_upload.php";
+		require MYBB_ROOT."inc/functions_upload.php";
 		$attachedfile = upload_attachment($_FILES['attachment']);
 	}
 	
@@ -144,7 +144,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 // Are we removing an attachment from the thread?
 if($mybb->input['attachmentaid'])
 {
-	require_once MYBB_ROOT."inc/functions_upload.php";
+	require MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment(0, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	if(!$mybb->input['submit'])
 	{
@@ -249,7 +249,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 	
 	// Set up posthandler.
-	require_once MYBB_ROOT."inc/datahandlers/post.php";
+	require MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("insert");
 	$posthandler->action = "thread";
 

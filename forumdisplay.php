@@ -18,9 +18,9 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
 $templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col";
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery";
 require_once "./global.php";
-require_once MYBB_ROOT."inc/functions_post.php";
-require_once MYBB_ROOT."inc/functions_forumlist.php";
-require_once MYBB_ROOT."inc/class_parser.php";
+require MYBB_ROOT."inc/functions_post.php";
+require MYBB_ROOT."inc/functions_forumlist.php";
+require MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases

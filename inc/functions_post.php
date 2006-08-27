@@ -26,7 +26,7 @@ function build_postbit($post, $post_type=0)
 	// Set up the message parser if it doesn't already exist.
 	if(!$parser)
 	{
-		require_once MYBB_ROOT."inc/class_parser.php";
+		require MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
 	}
 

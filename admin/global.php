@@ -20,12 +20,12 @@ if(!isset($config['admin_dir']))
 	$config['admin_dir'] = "admin";
 }
 
-require_once dirname(dirname(__FILE__))."/inc/init.php";
+requiredirname(dirname(__FILE__))."/inc/init.php";
 
 define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
 
-require_once MYBB_ADMIN_DIR."adminfunctions.php";
-require_once MYBB_ROOT."inc/functions_user.php";
+require MYBB_ADMIN_DIR."adminfunctions.php";
+require MYBB_ROOT."inc/functions_user.php";
 
 $style = "styles/".$mybb->settings['cpstyle']."/stylesheet.css";
 if(!file_exists(MYBB_ADMIN_DIR.$style))

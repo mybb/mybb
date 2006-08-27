@@ -70,7 +70,7 @@ if($mybb->input['action'] == "do_editset")
 	}
 
 	// Get contents of existing file
-	require_once $file;
+	require $file;
 
 	// Make the contents of the new file
 	$newfile = "<?php
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "editset")
 	addacpnav($lang->nav_editing_set);
 
 	// Get language info
-	require_once $file;
+	require $file;
 
 	$plugins->run_hooks("admin_languages_editset");
 
@@ -284,7 +284,7 @@ if($mybb->input['action'] == "edit")
 		addacpnav(sprintf($lang->nav_editing_file, $file));
 
 		// Get file being edited in an array
-		require_once $editfile;
+		require $editfile;
 		if(count($l) > 0)
 		{
 			$editvars = $l;
@@ -299,7 +299,7 @@ if($mybb->input['action'] == "edit")
 		// Get edit with file in an array
 		if($editwithfile)
 		{
-			require_once $editwithfile;
+			require $editwithfile;
 			$withvars = $l;
 			unset($l);
 		}
@@ -409,7 +409,7 @@ if($mybb->input['action'] == "edit")
 	{
 		// List files in specific language
 		
-		require_once MYBB_ROOT."inc/languages/".$editlang.".php";
+		require MYBB_ROOT."inc/languages/".$editlang.".php";
 
 		// Get files in main folder
 		$filenames = array();
@@ -478,14 +478,14 @@ if($mybb->input['action'] == "edit")
 			}
 			if(is_array($adminfilenames) && $langinfo['admin'] != 0)
 			{
-			  if(in_array($filename, $adminfilenames))
-			  {
-           $admin_link = "<td align=\"center\">".makelinkcode($lang->edit_link, "languages.php?".SID."&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&amp;inadmin=1")."</td>"; 
-        }
-        else
-        {
-          $admin_link = "<td align=\"center\">&nbsp;</td>";
-        }
+			  	if(in_array($filename, $adminfilenames))
+			  	{
+					$admin_link = "<td align=\"center\">".makelinkcode($lang->edit_link, "languages.php?".SID."&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&amp;inadmin=1")."</td>"; 
+        		}
+        		else
+        		{
+          			$admin_link = "<td align=\"center\">&nbsp;</td>";
+       			}
 			}
 			echo "<tr class=\"{$bgcolor}\">
 	<td>{$filename}</td>
@@ -521,7 +521,7 @@ if(empty($mybb->input['action']))
 	foreach($languages as $key => $langname)
 	{
 		$bgcolor = getaltbg();
-		require_once MYBB_ROOT."inc/languages/".$key.".php";
+		require MYBB_ROOT."inc/languages/".$key.".php";
 
 		if(!empty($langinfo['website']))
 		{

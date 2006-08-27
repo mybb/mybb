@@ -292,7 +292,7 @@ function upload_attachment($attachment)
 	// Alls well that ends well? Lets generate a thumbnail (if image) and insert it all in to the database
 	if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 	{
-		require_once MYBB_ROOT."inc/functions_image.php";
+		require MYBB_ROOT."inc/functions_image.php";
 		$thumbname = str_replace(".attach", "_thumb.$ext", $filename);
 		$thumbnail = generate_thumbnail($mybb->settings['uploadspath']."/".$filename, $mybb->settings['uploadspath'], $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 		if($thumbnail['filename'])

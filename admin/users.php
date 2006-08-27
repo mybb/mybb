@@ -320,7 +320,7 @@ if($mybb->input['action'] == "do_add")
 	}
 
 	// Set up user handler.
-	require_once MYBB_ROOT."inc/datahandlers/user.php";
+	require MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler('insert');
 
 	// Set the data for the new user.
@@ -434,7 +434,7 @@ if($mybb->input['action'] == "do_edit")
 	}
 
 	// Set up user handler.
-	require_once MYBB_ROOT."inc/datahandlers/user.php";
+	require MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler('update');
 
 	// Set the data for the new user.
