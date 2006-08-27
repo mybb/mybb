@@ -15,9 +15,9 @@ $templatelist = "newreply,previewpost,error_invalidforum,error_invalidthread,red
 $templatelist .= ",smilieinsert,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies";
 
 require_once "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_user.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 // Load global language phrases
 $lang->load("newreply");
@@ -142,7 +142,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 	// If there's an attachment, check it and upload it.
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
 	{
-		require MYBB_ROOT."inc/functions_upload.php";
+		require_once MYBB_ROOT."inc/functions_upload.php";
 		$attachedfile = upload_attachment($_FILES['attachment']);
 	}
 	if($attachedfile['error'])
@@ -159,7 +159,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 // Remove an attachment.
 if($mybb->input['attachmentaid'] && $mybb->input['posthash'])
 {
-	require MYBB_ROOT."inc/functions_upload.php";
+	require_once MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment(0, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	if(!$mybb->input['submit'])
 	{
@@ -270,7 +270,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	
 	// Set up posthandler.
-	require MYBB_ROOT."inc/datahandlers/post.php";
+	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("insert");
 
 	// Set the post data that came from the input to the $post array.
@@ -753,7 +753,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				"imagehash" => $imagehash,
 				"imagestring" => $randomstr,
 				"dateline" => time()
-				);
+			);
 			$db->insert_query(TABLE_PREFIX."captcha", $imagearray);
 			eval("\$captcha = \"".$templates->get("post_captcha")."\";");
 		}
