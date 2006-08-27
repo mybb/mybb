@@ -15,7 +15,7 @@ $templatelist = "redirect_markallread,redirect_markforumread";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm";
 $templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help";
 require_once "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_post.php";
 
 // Load global language phrases
 $lang->load("misc");
@@ -42,7 +42,7 @@ if($mybb->input['action'] == "markread")
 		if($mybb->user['uid'] != 0)
 		{
 			$db->update_query(TABLE_PREFIX."users", array('lastvisit' => time()), "uid='".$mybb->user['uid']."'");
-			require MYBB_ROOT."/inc/functions_user.php";
+			require_once MYBB_ROOT."/inc/functions_user.php";
 			update_pm_count('', 2);
 		}
 		else
@@ -89,7 +89,7 @@ elseif($mybb->input['action'] == "rules")
 			$forum['rulestitle'] = sprintf($lang->forum_rules, $forum['name']);
 		}
 
-		require MYBB_ROOT."/inc/class_parser.php";
+		require_once MYBB_ROOT."/inc/class_parser.php";
 		$parser = new postParser();
 		$parser_options = array(
 			"allow_html" => 'yes',

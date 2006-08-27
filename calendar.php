@@ -14,8 +14,8 @@ define("IN_MYBB", 1);
 $templatelist = "calendar,calendar_eventbit_public,calendar_eventbit_private,calendar_addpublicevent,calendar_addprivateevent,calendar_addevent,calendar_event,calendar_daybit,calendar_daybit_today";
 require_once "./global.php";
 
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 $event_parser_options = array(
@@ -301,8 +301,8 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 	$plugins->run_hooks("calendar_do_addevent_start");
 
 	// Set up eventhandler.
-	require MYBB_ROOT."inc/datahandler.php";
-	require MYBB_ROOT."inc/datahandlers/event.php";
+	require_once MYBB_ROOT."inc/datahandler.php";
+	require_once MYBB_ROOT."inc/datahandlers/event.php";
 	$eventhandler = new EventDataHandler("insert");
 
 	// Prepare an array for the eventhandler.
@@ -440,7 +440,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	else
 	{
 		// Set up eventhandler.
-		require MYBB_ROOT."inc/datahandlers/event.php";
+		require_once MYBB_ROOT."inc/datahandlers/event.php";
 		$eventhandler = new EventDataHandler("update");
 
 		// Prepare an array for the eventhandler.

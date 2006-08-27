@@ -154,7 +154,7 @@ class session
 				$update += 4;
 			}
 
-			require MYBB_ROOT."inc/functions_user.php";
+			require_once MYBB_ROOT."inc/functions_user.php";
 			$pmcount = update_pm_count('', $update);
 			if(is_array($pmcount))
 			{
@@ -183,7 +183,7 @@ class session
 		{
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='".$mybb->user['lastactive']."', lastactive='$time' $popupadd WHERE uid='".$mybb->user['uid']."'");
 			$mybb->user['lastvisit'] = $mybb->user['lastactive'];
-			require MYBB_ROOT."inc/functions_user.php";
+			require_once MYBB_ROOT."inc/functions_user.php";
 			update_pm_count('', 2);
 		}
 		else

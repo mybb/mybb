@@ -16,9 +16,9 @@ $templatelist = "member_register,error_nousername,error_nopassword,error_passwor
 $templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword";
 require_once "./global.php";
 
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_user.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases
@@ -95,7 +95,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	}
 
 	// Set up user handler.
-	require MYBB_ROOT."inc/datahandlers/user.php";
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("insert");
 
 	// Set the data for the new user.

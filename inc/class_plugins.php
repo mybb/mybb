@@ -33,7 +33,7 @@ class pluginSystem
 			{
 				if($plugin != "" && file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
 				{
-					require MYBB_ROOT."inc/plugins/".$plugin.".php";
+					require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
 				}
 			}
 		}

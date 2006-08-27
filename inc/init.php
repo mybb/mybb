@@ -57,14 +57,14 @@ if(isset($_COOKIE['phpdebug']) || isset($_GET['phpdebug']))
 //
 
 
-require MYBB_ROOT."inc/class_timers.php";
+require_once MYBB_ROOT."inc/class_timers.php";
 $maintimer = new timer();
 
-require MYBB_ROOT."inc/class_core.php";
+require_once MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
 
 // Include the required core files
-require MYBB_ROOT."inc/config.php";
+require_once MYBB_ROOT."inc/config.php";
 if(!isset($config['dbtype']))
 {
 	$mybb->trigger_generic_error("board_not_installed");
@@ -75,22 +75,22 @@ if(!isset($config['admin_dir']))
 }
 $mybb->config = $config;
 
-require MYBB_ROOT."inc/db_".$config['dbtype'].".php";
+require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine;
 
-require MYBB_ROOT."inc/functions.php";
+require_once MYBB_ROOT."inc/functions.php";
 
-require MYBB_ROOT."inc/class_templates.php";
+require_once MYBB_ROOT."inc/class_templates.php";
 $templates = new templates;
 
-require MYBB_ROOT."inc/class_datacache.php";
+require_once MYBB_ROOT."inc/class_datacache.php";
 $cache = new datacache;
 
-require MYBB_ROOT."inc/class_plugins.php";
+require_once MYBB_ROOT."inc/class_plugins.php";
 $plugins = new pluginSystem;
 
 // Include our base data handler class
-require MYBB_ROOT."inc/datahandler.php";
+require_once MYBB_ROOT."inc/datahandler.php";
 
 // Connect to Database
 define("TABLE_PREFIX", $config['table_prefix']);
@@ -98,7 +98,7 @@ $db->connect($config['hostname'], $config['username'], $config['password']);
 $db->select_db($config['database']);
 
 // Language initialisation
-require MYBB_ROOT."inc/class_language.php";
+require_once MYBB_ROOT."inc/class_language.php";
 $lang = new MyLanguage;
 $lang->set_path(MYBB_ROOT."inc/languages");
 
@@ -108,7 +108,7 @@ $cache->cache();
 // Load Settings
 if(file_exists(MYBB_ROOT."inc/settings.php"))
 {
-	require MYBB_ROOT."inc/settings.php";
+	require_once MYBB_ROOT."inc/settings.php";
 }
 else
 {

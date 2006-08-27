@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 
 $templatelist = "announcement";
 require_once "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_post.php";
 
 // Load global language phrases
 $lang->load("announcements");

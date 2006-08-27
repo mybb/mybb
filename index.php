@@ -16,9 +16,9 @@ $templatelist .= ",index_birthdays_birthday,index_birthdays,index_pms,index_logi
 
 require_once "./global.php";
 
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_forumlist.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_forumlist.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 $plugins->run_hooks("index_start");

@@ -49,7 +49,7 @@ header("Pragma: no-cache");
 
 
 // Create the session
-require MYBB_ROOT."inc/class_session.php";
+require_once MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
 
@@ -217,7 +217,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	}	
 	
 	// Set up posthandler.
-	require MYBB_ROOT."inc/datahandlers/post.php";
+	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("update");
 	$posthandler->action = "post";
 
@@ -339,7 +339,7 @@ else if($mybb->input['action'] == "edit_post")
 			fclose($fp);
 		}
 		// Set up posthandler.
-		require MYBB_ROOT."inc/datahandlers/post.php";
+		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("update");
 		$posthandler->action = "post";
 
@@ -364,7 +364,7 @@ else if($mybb->input['action'] == "edit_post")
 			$posthandler->update_post();
 		}
 
-		require MYBB_ROOT."inc/class_parser.php";
+		require_once MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
 		
 		$parser_options = array(
@@ -388,7 +388,7 @@ else if($mybb->input['action'] == "edit_post")
 			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
 		}
 		
-		require MYBB_ROOT."/inc/functions_post.php";
+		require_once MYBB_ROOT."/inc/functions_post.php";
 		
 		get_post_attachments($post['pid'], $post);
 		

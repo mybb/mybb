@@ -14,7 +14,7 @@ define("IN_MYBB", 1);
 $templatelist = '';
 require_once "./global.php";
 
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Load global language phrases

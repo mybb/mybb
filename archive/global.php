@@ -17,9 +17,9 @@ chdir('./../');
 
 require dirname(dirname(__FILE__))."/inc/init.php";
 
-require MYBB_ROOT."inc/functions_archive.php";
-require MYBB_ROOT."inc/class_session.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_archive.php";
+require_once MYBB_ROOT."inc/class_session.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 $groupscache = $cache->read("usergroups");

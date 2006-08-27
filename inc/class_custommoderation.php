@@ -180,7 +180,7 @@ class CustomModeration extends Moderation
 				}
 				if(!empty($post_options['splitpostsaddreply'])) // Add reply to new thread
 				{
-					require MYBB_ROOT."inc/datahandlers/post.php";
+					require_once MYBB_ROOT."inc/datahandlers/post.php";
 					$posthandler = new PostDataHandler("insert");
 
 					if(empty($post_options['splitpostsreplysubject']))
@@ -338,7 +338,7 @@ class CustomModeration extends Moderation
 			{
 				$tid_list = implode(',', $tids);
 				$query = $db->simple_select(TABLE_PREFIX."threads", 'fid, subject, tid, firstpost', "tid IN ($tid_list)");
-				require MYBB_ROOT."inc/datahandlers/post.php";
+				require_once MYBB_ROOT."inc/datahandlers/post.php";
 				// Loop threads adding a reply to each one
 				while($thread = $db->fetch_array($query))
 				{

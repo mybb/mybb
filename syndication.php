@@ -19,11 +19,11 @@ require_once "./global.php";
 $lang->load("syndication");
 
 // Load syndication class.
-require MYBB_ROOT."inc/class_feedgeneration.php";
+require_once MYBB_ROOT."inc/class_feedgeneration.php";
 $feedgenerator = new FeedGenerator();
 
 // Load the post parser
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 $parser_options = array(
 	'allow_html' => "yes"

@@ -44,7 +44,7 @@ if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) 
 }
 
 // Create session for this user
-require MYBB_ROOT."inc/class_session.php";
+require_once MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
 

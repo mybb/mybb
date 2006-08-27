@@ -12,11 +12,11 @@
 define("IN_MYBB", 1);
 
 require_once "./global.php";
-require MYBB_ROOT."inc/functions_post.php";
-require MYBB_ROOT."inc/functions_upload.php";
-require MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_upload.php";
+require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
-require MYBB_ROOT."inc/class_moderation.php";
+require_once MYBB_ROOT."inc/class_moderation.php";
 $moderation = new Moderation;
 
 // Load global language phrases
@@ -1475,7 +1475,7 @@ switch($mybb->input['action'])
 		output_page($allreportedposts);
 		break;
 	default:
-		require MYBB_ROOT."inc/class_custommoderation.php";
+		require_once MYBB_ROOT."inc/class_custommoderation.php";
 		$custommod = new CustomModeration;
 		$tool = $custommod->tool_info(intval($mybb->input['action']));
 		if($tool !== false)

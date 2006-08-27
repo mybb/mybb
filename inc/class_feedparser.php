@@ -41,7 +41,7 @@ class FeedParser
 	function parse_feed($feed)
 	{
 		// Include the XML parser
-		require MYBB_ROOT."inc/class_xml.php";
+		require_once MYBB_ROOT."inc/class_xml.php";
 
 		// Load the feed we want to parse
 		$contents = @implode("", @file($feed));

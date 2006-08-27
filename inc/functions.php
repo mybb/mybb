@@ -1319,7 +1319,7 @@ function delete_thread($tid)
 	global $moderation;
 	if(!is_object($moderation))
 	{
-		require MYBB_ROOT."inc/class_moderation.php";
+		require_once MYBB_ROOT."inc/class_moderation.php";
 		$moderation = new Moderation;
 	}
 	return $moderation->delete_thread($tid);
@@ -1335,7 +1335,7 @@ function delete_post($pid, $tid="")
 	global $moderation;
 	if(!is_object($moderation))
 	{
-		require MYBB_ROOT."inc/class_moderation.php";
+		require_once MYBB_ROOT."inc/class_moderation.php";
 		$moderation = new Moderation;
 	}
 	return $moderation->delete_post($pid);

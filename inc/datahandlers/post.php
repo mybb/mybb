@@ -316,7 +316,7 @@ class PostDataHandler extends DataHandler
 		{
 			if($post['options']['disablesmilies'] == "yes")
 			{
-				require MYBB_ROOT."inc/class_parser.php";
+				require_once MYBB_ROOT."inc/class_parser.php";
 				$parser = new postParser;
 
 				// Parse the message.
@@ -684,7 +684,7 @@ class PostDataHandler extends DataHandler
 		if($visible == 1)
 		{
 			$thread = get_thread($post['tid']);
-			require MYBB_ROOT.'inc/class_parser.php';
+			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new Postparser();
 
 			$subject = $parser->parse_badwords($thread['subject']);
