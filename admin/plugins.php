@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-require_once "./global.php"
+require_once "./global.php";
 
 // Load language packs for this section
 $lang->load("plugins");

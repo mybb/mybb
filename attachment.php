@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-require_once "./global.php"
+require_once "./global.php";
 
 // Find the AID we're looking for
 if($mybb->input['thumbnail'])

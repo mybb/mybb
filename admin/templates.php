@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-require_once "./global.php"
+require_once "./global.php";
 
 // Just a little fix here
 $db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title=''");

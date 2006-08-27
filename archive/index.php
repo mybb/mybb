@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-require_once "./global.php"
+require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 // Load global language phrases
 $lang->load("index");

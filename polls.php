@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 $templatelist = "poll_newpoll,redirect_pollposted,redirect_pollupdated,redirect_votethanks";
-require_once "./global.php"
+require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;

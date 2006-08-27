@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 $templatelist = '';
-require_once "./global.php"
+require_once "./global.php";
 
 $lang->load("ratethread");
 

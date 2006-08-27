@@ -14,7 +14,7 @@ define("IN_MYBB", 1);
 $nosession['avatar'] = 1;
 $templatelist = "member_register,error_nousername,error_nopassword,error_passwordmismatch,error_invalidemail,error_usernametaken,error_emailmismatch,error_noemail,redirect_registered";
 $templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword";
-require_once "./global.php"
+require_once "./global.php";
 
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -1267,7 +1267,7 @@ elseif($mybb->input['action'] == "profile")
 
 
 	// Fetch the reputation for this user
-	if($memperms['usereputationsystem'] == "yes")
+	if($memperms['usereputationsystem'] == "yes" && $mybb->settings['enablereputation'] == "yes")
 	{
 		$reputation = get_reputation($memprofile['reputation']);
 
