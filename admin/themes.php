@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 require_once "./global.php";
-require $1MYBB_ROOT."inc/class_xml.php";
+require MYBB_ROOT."inc/class_xml.php";
 
 
 // Get language packs for this section
