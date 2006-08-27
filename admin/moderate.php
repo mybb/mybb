@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-require "./global.php";
+require_once "./global.php"
 require_once MYBB_ROOT."inc/functions_upload.php";
 
 // Load language packs for this section

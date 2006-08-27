@@ -26,7 +26,7 @@ define("IN_MYBB", 1);
 define("NO_ONLINE", 1);
 
 // Load MyBB core files
-require "./inc/init.php";
+require_once "./inc/init.php";
 
 $shutdown_queries = array();
 
@@ -49,7 +49,7 @@ header("Pragma: no-cache");
 
 
 // Create the session
-require MYBB_ROOT."inc/class_session.php";
+require_once MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
 

@@ -10,7 +10,7 @@
  */
 
 // Load main MyBB core file which begins all of the magic
-require dirname(__FILE__)."/inc/init.php";
+require_once dirname(__FILE__)."/inc/init.php";
 
 $shutdown_queries = array();
 
@@ -44,7 +44,7 @@ if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) 
 }
 
 // Create session for this user
-require MYBB_ROOT."inc/class_session.php";
+require_once MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
 

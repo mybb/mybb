@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 
 define("NO_ONLINE", 1);
 
-require "./global.php";
+require_once "./global.php"
 
 // Load global language phrases
 $lang->load("syndication");

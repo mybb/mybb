@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 $templatelist = '';
-require "./global.php";
+require_once "./global.php"
 
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;

@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 $templatelist = "report,email_reportpost,emailsubject_reportpost,report_thanks";
-require "./global.php";
+require_once "./global.php"
 
 // Load global language phrases
 $lang->load("report");

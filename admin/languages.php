@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-require "./global.php";
+require_once "./global.php"
 
 // Load language packs for this section
 global $lang;
@@ -70,7 +70,7 @@ if($mybb->input['action'] == "do_editset")
 	}
 
 	// Get contents of existing file
-	require $file;
+	require_once $file;
 
 	// Make the contents of the new file
 	$newfile = "<?php
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "editset")
 	addacpnav($lang->nav_editing_set);
 
 	// Get language info
-	require $file;
+	require_once $file;
 
 	$plugins->run_hooks("admin_languages_editset");
 
@@ -284,7 +284,7 @@ if($mybb->input['action'] == "edit")
 		addacpnav(sprintf($lang->nav_editing_file, $file));
 
 		// Get file being edited in an array
-		require $editfile;
+		require_once $editfile;
 		if(count($l) > 0)
 		{
 			$editvars = $l;
@@ -299,7 +299,7 @@ if($mybb->input['action'] == "edit")
 		// Get edit with file in an array
 		if($editwithfile)
 		{
-			require $editwithfile;
+			require_once $editwithfile;
 			$withvars = $l;
 			unset($l);
 		}
@@ -409,7 +409,7 @@ if($mybb->input['action'] == "edit")
 	{
 		// List files in specific language
 		
-		require MYBB_ROOT."inc/languages/".$editlang.".php";
+		require_once MYBB_ROOT."inc/languages/".$editlang.".php";
 
 		// Get files in main folder
 		$filenames = array();
@@ -521,7 +521,7 @@ if(empty($mybb->input['action']))
 	foreach($languages as $key => $langname)
 	{
 		$bgcolor = getaltbg();
-		require MYBB_ROOT."inc/languages/".$key.".php";
+		require_once MYBB_ROOT."inc/languages/".$key.".php";
 
 		if(!empty($langinfo['website']))
 		{

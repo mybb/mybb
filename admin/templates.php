@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-require "./global.php";
+require_once "./global.php"
 
 // Just a little fix here
 $db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title=''");
@@ -605,7 +605,7 @@ if($mybb->input['action'] == "diff")
 	$template2['template'] = explode("\n", htmlspecialchars($template2['template']));
 
 	$plugins->run_hooks("admin_templates_diff");
-	require MYBB_ROOT."inc/class_diff.php";
+	require_once MYBB_ROOT."inc/class_diff.php";
 
 	$diff = &new Text_Diff($template1['template'], $template2['template']);
 	$renderer = &new Text_Diff_Renderer_inline();

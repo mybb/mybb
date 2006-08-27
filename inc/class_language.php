@@ -83,7 +83,7 @@ class MyLanguage
 		}
 
 		$this->language = $language;
-		require $this->path."/".$language.".php";
+		require_once $this->path."/".$language.".php";
 		$this->settings = $langinfo;
 
 		// Load the admin language files as well, if needed.
@@ -165,7 +165,7 @@ class MyLanguage
 			if($lang != "." && $lang != ".." && $ext == "php")
 			{
 				$lname = str_replace(".".$ext, "", $lang);
-				require $this->path."/".$lang;
+				require_once $this->path."/".$lang;
 				if(!$admin || ($admin && $langinfo['admin']))
 				{
 					$languages[$lname] = $langinfo['name'];

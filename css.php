@@ -14,7 +14,7 @@ define("IN_MYBB", 1);
 
 define("NO_ONLINE", 1);
 
-require "./inc/init.php";
+require_once "./inc/init.php";
 
 $theme = intval($mybb->input['theme']);
 
