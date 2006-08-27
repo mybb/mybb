@@ -3571,14 +3571,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$post['message']}
 </p>
 </div>
-<br />
-<br />
 {$post['attachments']}
 {$post['signature']}
 <div style="text-align: right; vertical-align: bottom;">
-<div id="pid_editmsg_{$post['pid']}">
 {$post['editedmsg']}
-</div>
 {$post['iplogged']}
 </div>
 </td></tr>
@@ -5142,7 +5138,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<a href="{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bpostip%5D%3D{$post['ipaddress']}">{$lang->search_postip_users}</a>
 </td>
 </tr>]]></template>
-		<template name="postbit_iplogged_hiden" version="120"><![CDATA[<br /><span class="smalltext">{$lang->postbit_ipaddress} <a href="moderation.php?action=getip&amp;pid={$post['pid']}">{$lang->postbit_ipaddress_logged}</a></span>]]></template>
+		<template name="postbit_iplogged_hiden" version="120"><![CDATA[<div class="smalltext">{$lang->postbit_ipaddress} <a href="moderation.php?action=getip&amp;pid={$post['pid']}">{$lang->postbit_ipaddress_logged}</a></div>]]></template>
 		<template name="usercp_options_tppselect" version="120"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->tpp}</span></td>
 </tr>
@@ -5155,7 +5151,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>]]></template>
 		<template name="index_logoutlink" version="120"><![CDATA[<a href="member.php?action=logout&amp;uid={$mybb->user['uid']}">{$lang->index_logout}</a> | ]]></template>
-		<template name="postbit_iplogged_show" version="120"><![CDATA[<br /><span class="smalltext">{$lang->postbit_ipaddress} {$post['ipaddress']}</span>]]></template>
+		<template name="postbit_iplogged_show" version="120"><![CDATA[<div class="smalltext">{$lang->postbit_ipaddress} {$post['ipaddress']}</div>]]></template>
 		<template name="calendar_dayview" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->day_view}</title>
@@ -6008,7 +6004,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="postbit_offline" version="120"><![CDATA[<font color="#C7C7C7"><strong>{$lang->postbit_status_offline}</strong></font>]]></template>
-		<template name="postbit_editedby" version="120"><![CDATA[<p align="right"><span class="smalltext">{$post['editnote']} <a href="member.php?action=profile&amp;uid={$post['edituid']}">{$post['editusername']}</a>.</span></p>
+		<template name="postbit_editedby" version="120"><![CDATA[<div class="smalltext">{$post['editnote']} <a href="member.php?action=profile&amp;uid={$post['edituid']}">{$post['editusername']}</a>.</div>
 
 ]]></template>
 		<template name="member_register_requiredfields" version="120"><![CDATA[<fieldset class="trow2">

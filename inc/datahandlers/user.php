@@ -1026,8 +1026,8 @@ class UserDataHandler extends DataHandler
 
 			$db->update_query(TABLE_PREFIX."posts", $username_update, "uid='{$user['uid']}'");
 			$db->update_query(TABLE_PREFIX."threads", $username_update, "uid='{$user['uid']}'");
-			$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposter='".$db->escape_string($this->user_update_data['username'])."'");
-			$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposter='".$db->escape_string($this->user_update_data['username'])."'");
+			$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposteruid='{$user['uid']}'");
+			$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposteruid='{$user['uid']}'");
 		}
 
 	}
