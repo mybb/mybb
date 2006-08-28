@@ -1925,12 +1925,20 @@ function get_unviewable_forums()
 	return $unviewableforums;
 }
 
+/**
+* Fixes mktime() for dates earlier than 1970
+*
+* @param string The date format to use
+* @param int The year of the date
+* @return string The correct date format
+*/
 function fixmktime($format, $year)
 {
 	// Our little work around for the date < 1970 thing.
 	// -2 idea provided by Matt Light (http://www.mephex.com)
 	$format = str_replace("Y", $year, $format);
 	$format = str_replace("y", my_substr($year, -2), $format);
+
 	return $format;
 }
 
@@ -3185,27 +3193,27 @@ function login_attempt_check($fatal = true)
 	{
 		return 1;
 	}
-	//Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
+	// Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
 
-	//Use cookie if possible, otherwise use session
-	//Session stops user clearing cookies to bypass the login
-	//Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
+	// Use cookie if possible, otherwise use session
+	// Session stops user clearing cookies to bypass the login
+	// Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
 	$cookielogins = intval($_COOKIE['loginattempts']);
 	$cookietime = $_COOKIE['failedlogin'];
 	$loginattempts = empty($cookielogins) ? $session->logins : ($cookielogins < $session->logins ? $session->logins : $cookielogins);
 	$failedlogin = empty($cookietime) ? $session->failedlogin : ($cookietime < $session->failedlogin ? $session->failedlogin : $cookietime);
 
-	//Work out if the user has had more than the allowed number of login attempts
+	// Work out if the user has had more than the allowed number of login attempts
 	if($loginattempts > $mybb->settings['failedlogincount'])
 	{
-		//If so, then we need to work out if they can try to login again
-		//Some maths to work out how long they have left and display it to them
+		// If so, then we need to work out if they can try to login again
+		// Some maths to work out how long they have left and display it to them
 		$now = time();
 		$secondsleft = ($mybb->settings['failedlogintime'] * 60 + (empty($_COOKIE['failedlogin']) ? $now : $_COOKIE['failedlogin'])) - $now;
 		$hoursleft = floor($secondsleft / 3600);
 		$minsleft = floor(($secondsleft / 60) % 60);
 		$secsleft = floor($secondsleft % 60);
-		//This value will be empty the first time the user doesn't login in, set it
+		// This value will be empty the first time the user doesn't login in, set it
 		if(empty($failedlogin))
 		{
 			mysetcookie('failedlogin', $now);
@@ -3215,7 +3223,7 @@ function login_attempt_check($fatal = true)
 			}
 			return false;
 		}
-		//Work out if the user has waited long enough before letting them login again
+		// Work out if the user has waited long enough before letting them login again
 		if($_COOKIE['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 60)
 		{
 			mysetcookie('loginattempts', 1);
@@ -3223,7 +3231,7 @@ function login_attempt_check($fatal = true)
 			$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts = 1 WHERE sid = '{$session->sid}'");
 			return 1;
 		}
-		//Not waited long enough
+		// Not waited long enough
 		else
 		{
 			if($fatal)
@@ -3233,7 +3241,7 @@ function login_attempt_check($fatal = true)
 			return false;
 		}
 	}
-	//User can attempt another login
+	// User can attempt another login
 	return $loginattempts;
 }
 
@@ -3326,7 +3334,7 @@ function dec2utf8($src)
 		$dest .= chr(0x80 | ($src & 0x3f));
 	}
 	else
-	{ 
+	{
 		// out of range
 		return false;
 	}
