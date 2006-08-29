@@ -31,7 +31,7 @@ if($mybb->input['action'] == "markread")
 		{
 			error($lang->error_invalidforum);
 		}
-		mysetarraycookie("forumread", $mybb->input['fid'], time());
+		my_set_array_cookie("forumread", $mybb->input['fid'], time());
 
 		$plugins->run_hooks("misc_markread_forum");
 
@@ -47,7 +47,7 @@ if($mybb->input['action'] == "markread")
 		}
 		else
 		{
-			mysetcookie("mybb[lastvisit]", time());
+			my_setcookie("mybb[lastvisit]", time());
 		}
 
 		$plugins->run_hooks("misc_markread_end");
@@ -61,7 +61,7 @@ elseif($mybb->input['action'] == "clearpass")
 
 	if($mybb->input['fid'])
 	{
-		mysetcookie("forumpass[".intval($mybb->input['fid'])."]", '');
+		my_setcookie("forumpass[".intval($mybb->input['fid'])."]", '');
 		redirect("index.php", $lang->redirect_forumpasscleared);
 	}
 }
@@ -181,12 +181,12 @@ elseif($mybb->input['action'] == "help")
 				// Expand (or Collapse) forums
 				if($mybb->input['action'] == "expand")
 				{
-					mysetcookie("fcollapse[$section[sid]]", '');
+					my_setcookie("fcollapse[$section[sid]]", '');
 					$scollapse[$section['sid']] = '';
 				}
 				elseif($mybb->input['action'] == "collapse")
 				{
-					mysetcookie("fcollapse[$section[sid]]", "y");
+					my_setcookie("fcollapse[$section[sid]]", "y");
 					$scollapse[$section['sid']] = "y";
 				}
 				foreach($helpdocs[$section['sid']] as $key => $bit)

@@ -188,7 +188,7 @@ if($mybb->input['action'] == "newpost")
 	$thread_read = $db->fetch_field($query, "dateline");
 
 	// Get forum read date
-	$forumread = mygetarraycookie("forumread", $fid);
+	$forumread = my_get_array_cookie("forumread", $fid);
 
 	// If last visit is greater than forum read, change forum read date
 	if($mybb->user['lastvisit'] > $forumread)
@@ -212,7 +212,7 @@ if($mybb->input['action'] == "newpost")
 	}
 	if(!$lastread)
 	{
-		$readcookie = $threadread = mygetarraycookie("threadread", $thread['tid']);
+		$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
 		if($readcookie > $forumread)
 		{
 			$lastread = $readcookie;
@@ -416,7 +416,7 @@ if($mybb->input['action'] == "thread")
 	else
 	{
 		// For guests, store the information in a cookie.
-		mysetarraycookie("threadread", $tid, time());
+		my_set_array_cookie("threadread", $tid, time());
 	}
 
 	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
@@ -757,8 +757,8 @@ if($mybb->input['action'] == "thread")
 			{
 				$lastposterlink = build_profile_link($lastposter, $lastposteruid);
 			}
-			$similar_thread['replies'] = mynumberformat($similar_thread['replies']);
-			$similar_thread['views'] = mynumberformat($similar_thread['views']);
+			$similar_thread['replies'] = my_number_format($similar_thread['replies']);
+			$similar_thread['views'] = my_number_format($similar_thread['views']);
 			eval("\$similarthreadbits .= \"".$templates->get("showthread_similarthreads_bit")."\";");
 		}
 		if($count)

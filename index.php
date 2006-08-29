@@ -146,7 +146,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 	{
 		$guestbit = $lang->online_guest_singular;
 	}
-	$lang->online_note = sprintf($lang->online_note, mynumberformat($onlinecount), $onlinebit, $mybb->settings['wolcutoffmins'], mynumberformat($membercount), $memberbit, mynumberformat($anoncount), $anonbit, mynumberformat($guestcount), $guestbit);
+	$lang->online_note = sprintf($lang->online_note, my_number_format($onlinecount), $onlinebit, $mybb->settings['wolcutoffmins'], my_number_format($membercount), $memberbit, my_number_format($anoncount), $anonbit, my_number_format($guestcount), $guestbit);
 	eval("\$whosonline = \"".$templates->get("index_whosonline")."\";");
 }
 
@@ -203,8 +203,8 @@ if($mybb->settings['showindexstats'] != "no")
 	}
 
 	// Format the stats language.
-	$lang->stats_posts_threads = sprintf($lang->stats_posts_threads, mynumberformat($stats['numposts']), mynumberformat($stats['numthreads']));
-	$lang->stats_numusers = sprintf($lang->stats_numusers, mynumberformat($stats['numusers']));
+	$lang->stats_posts_threads = sprintf($lang->stats_posts_threads, my_number_format($stats['numposts']), my_number_format($stats['numthreads']));
+	$lang->stats_numusers = sprintf($lang->stats_numusers, my_number_format($stats['numusers']));
 	$lang->stats_newestuser = sprintf($lang->stats_newestuser, $newestmember);
 	
 	// Find out what the highest users online count is.
@@ -221,7 +221,7 @@ if($mybb->settings['showindexstats'] != "no")
 	$recordtime = mydate($mybb->settings['timeformat'], $mostonline['time']);
 
 	// Then format that language string.
-	$lang->stats_mostonline = sprintf($lang->stats_mostonline, mynumberformat($recordcount), $recorddate, $recordtime);
+	$lang->stats_mostonline = sprintf($lang->stats_mostonline, my_number_format($recordcount), $recorddate, $recordtime);
 
 	eval("\$forumstats = \"".$templates->get("index_stats")."\";");
 }

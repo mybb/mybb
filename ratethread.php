@@ -97,7 +97,7 @@ else
 		);
 		$db->insert_query(TABLE_PREFIX."threadratings", $updatearray);
 		$time = time();
-		mysetcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
+		my_setcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
 	}
 }
 $plugins->run_hooks("ratethread_end");

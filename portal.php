@@ -49,7 +49,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	if(!username_exists($mybb->input['username']))
 	{
-		mysetcookie('loginattempts', $logins + 1);
+		my_setcookie('loginattempts', $logins + 1);
 		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == "yes")
 		{
@@ -60,7 +60,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if(!$user['uid'])
 	{
-		mysetcookie('loginattempts', $logins + 1);
+		my_setcookie('loginattempts', $logins + 1);
 		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == "yes")
 		{
@@ -69,7 +69,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		error($lang->error_invalidpassword.$login_text);
 	}
 
-	mysetcookie('loginattempts', 1);
+	my_setcookie('loginattempts', 1);
 	$db->delete_query(TABLE_PREFIX."sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
@@ -80,8 +80,8 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	// Temporarily set the cookie remember option for the login cookies
 	$mybb->user['remember'] = $user['remember'];
 
-	mysetcookie("mybbuser", $user['uid']."_".$user['loginkey']);
-	mysetcookie("sid", $session->sid, -1);
+	my_setcookie("mybbuser", $user['uid']."_".$user['loginkey']);
+	my_setcookie("sid", $session->sid, -1);
 
 	if(function_exists("loggedIn"))
 	{

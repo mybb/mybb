@@ -611,7 +611,7 @@ if($mybb->input['action'] == "empty")
 		$foldername = get_pm_folder_name($fid, $folderinfo[1]);
 		$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid' AND uid='".$mybb->user['uid']."'");
 		$thing = $db->fetch_array($query);
-		$foldercount = mynumberformat($thing['pmsinfolder']);
+		$foldercount = my_number_format($thing['pmsinfolder']);
 		eval("\$folderlist .= \"".$templates->get("private_empty_folder")."\";");
 	}
 	eval("\$folders = \"".$templates->get("private_empty")."\";");

@@ -844,7 +844,7 @@ function check_forum_password($fid, $password="")
 		{
 			if($password == $mybb->input['pwverify'])
 			{
-				mysetcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']));
+				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']));
 				$showform = 0;
 			}
 			else
@@ -1024,7 +1024,7 @@ function get_post_icons()
  * @param string The cookie value.
  * @param int The timestamp of the expiry date.
  */
-function mysetcookie($name, $value="", $expires="")
+function my_setcookie($name, $value="", $expires="")
 {
 	global $mybb;
 
@@ -1062,7 +1062,7 @@ function mysetcookie($name, $value="", $expires="")
  *
  * @param string The cookie identifier.
  */
-function myunsetcookie($name)
+function my_unsetcookie($name)
 {
 	global $mybb;
 
@@ -1089,7 +1089,7 @@ function myunsetcookie($name)
  * @param int The cookie content id.
  * @return array|boolean The cookie id's content array or false when non-existent.
  */
-function mygetarraycookie($name, $id)
+function my_get_array_cookie($name, $id)
 {
 	if(!isset($_COOKIE['mybb'][$name]))
 	{
@@ -1113,13 +1113,13 @@ function mygetarraycookie($name, $id)
  * @param int The cookie content id.
  * @param string The value to set the cookie to.
  */
-function mysetarraycookie($name, $id, $value)
+function my_set_array_cookie($name, $id, $value)
 {
 	$cookie = $_COOKIE['mybb'];
 	$newcookie = unserialize($cookie[$name]);
 	$newcookie[$id] = $value;
 	$newcookie = addslashes(serialize($newcookie));
-	mysetcookie("mybb[$name]", $newcookie);
+	my_setcookie("mybb[$name]", $newcookie);
 }
 
 /**
@@ -2661,7 +2661,7 @@ function htmlspecialchars_uni($message)
  * @param int The number to format.
  * @return int The formatted number.
  */
-function mynumberformat($number)
+function my_number_format($number)
 {
 	global $mybb;
 	if($number == "-")
@@ -3216,7 +3216,7 @@ function login_attempt_check($fatal = true)
 		// This value will be empty the first time the user doesn't login in, set it
 		if(empty($failedlogin))
 		{
-			mysetcookie('failedlogin', $now);
+			my_setcookie('failedlogin', $now);
 			if($fatal)
 			{
 				error(sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
@@ -3226,8 +3226,8 @@ function login_attempt_check($fatal = true)
 		// Work out if the user has waited long enough before letting them login again
 		if($_COOKIE['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 60)
 		{
-			mysetcookie('loginattempts', 1);
-			myunsetcookie('failedlogin');
+			my_setcookie('loginattempts', 1);
+			my_unsetcookie('failedlogin');
 			$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts = 1 WHERE sid = '{$session->sid}'");
 			return 1;
 		}

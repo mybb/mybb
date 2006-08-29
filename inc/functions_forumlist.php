@@ -201,8 +201,8 @@ function build_forumbits($pid=0, $depth=1)
 			// Otherwise, format thread and post counts
 			else
 			{
-				$posts = mynumberformat($forum['posts']);
-				$threads = mynumberformat($forum['threads']);
+				$posts = my_number_format($forum['posts']);
+				$threads = my_number_format($forum['threads']);
 			}
 
 			// Moderator column is not off
@@ -293,7 +293,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 	else
 	{
 		// Fetch the last read date for this forum
-		$forumread = mygetarraycookie("forumread", $forum['fid']);
+		$forumread = my_get_array_cookie("forumread", $forum['fid']);
 
 		// If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post
 		if($lastpost['lastpost'] > $mybb->user['lastvisit'] && $lastpost['lastpost'] > $forumread && $lastpost['lastpost'] != 0)
@@ -341,7 +341,7 @@ function get_forum_unapproved($forum)
 			{
 				$unapproved_posts_count = sprintf($lang->forum_unapproved_post_count, 1);
 			}
-			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".mynumberformat($forum['unapprovedposts']).")</span>";
+			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".my_number_format($forum['unapprovedposts']).")</span>";
 		}
 		// Forum has one or more unapproved threads, format language string accordingly
 		if($forum['unapprovedthreads'])
@@ -354,7 +354,7 @@ function get_forum_unapproved($forum)
 			{
 				$unapproved_threads_count = sprintf($lang->forum_unapproved_thread_count, 1);
 			}
-			$unapproved_threads = " <span title=\"{$unapproved_threads_count}\">(".mynumberformat($forum['unapprovedthreads']).")</span>";
+			$unapproved_threads = " <span title=\"{$unapproved_threads_count}\">(".my_number_format($forum['unapprovedthreads']).")</span>";
 		}
 	}
 	return array(

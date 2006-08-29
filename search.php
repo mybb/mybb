@@ -272,7 +272,7 @@ if($mybb->input['action'] == "results")
 			$lastread = $thread['lastread'];
 			if(!$lastread)
 			{
-				$readcookie = $threadread = mygetarraycookie("threadread", $thread['tid']);
+				$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
 				if($readcookie > $forumread)
 				{
 					$lastread = $readcookie;
@@ -356,8 +356,8 @@ if($mybb->input['action'] == "results")
 				$lastposterlink = build_profile_link($lastposter, $lastposteruid);
 			}
 
-			$thread['replies'] = mynumberformat($thread['replies']);
-			$thread['views'] = mynumberformat($thread['views']);
+			$thread['replies'] = my_number_format($thread['replies']);
+			$thread['views'] = my_number_format($thread['views']);
 
 			if($forumcache[$thread['fid']])
 			{
@@ -501,7 +501,7 @@ if($mybb->input['action'] == "results")
 			}
 			if(!$lastread)
 			{
-				$readcookie = $threadread = mygetarraycookie("threadread", $oist['tid']);
+				$readcookie = $threadread = my_get_array_cookie("threadread", $oist['tid']);
 				if($readcookie > $forumread)
 				{
 					$lastread = $readcookie;
@@ -540,8 +540,8 @@ if($mybb->input['action'] == "results")
 			}
 			$folder .= "folder";
 
-			$post['thread_replies'] = mynumberformat($post['thread_replies']);
-			$post['thread_views'] = mynumberformat($post['thread_views']);
+			$post['thread_replies'] = my_number_format($post['thread_replies']);
+			$post['thread_views'] = my_number_format($post['thread_views']);
 
 			if($forumcache[$post['fid']])
 			{

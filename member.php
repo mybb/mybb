@@ -210,7 +210,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if($mybb->settings['regtype'] != "randompass")
 		{
 			// Log them in
-			mysetcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey']);
+			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey']);
 		}
 
 		if($mybb->settings['regtype'] == "verify")
@@ -881,7 +881,7 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	if(!username_exists($mybb->input['username']))
 	{
-		mysetcookie('loginattempts', $logins + 1);
+		my_setcookie('loginattempts', $logins + 1);
 		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == "yes")
 		{
@@ -892,7 +892,7 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if(!$user['uid'])
 	{
-		mysetcookie('loginattempts', $logins + 1);
+		my_setcookie('loginattempts', $logins + 1);
 		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == "yes")
 		{
@@ -901,7 +901,7 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		error($lang->error_invalidpassword.$login_text);
 	}
 
-	mysetcookie('loginattempts', 1);
+	my_setcookie('loginattempts', 1);
 	$db->delete_query(TABLE_PREFIX."sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
@@ -912,8 +912,8 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	// Temporarily set the cookie remember option for the login cookies
 	$mybb->user['remember'] = $user['remember'];
 
-	mysetcookie("mybbuser", $user['uid']."_".$user['loginkey']);
-	mysetcookie("sid", $session->sid, -1);
+	my_setcookie("mybbuser", $user['uid']."_".$user['loginkey']);
+	my_setcookie("sid", $session->sid, -1);
 
 	if(function_exists("loggedIn"))
 	{
@@ -942,8 +942,8 @@ else if($mybb->input['action'] == "logout")
 	}
 	if($mybb->input['uid'] == $mybb->user['uid'])
 	{
-		myunsetcookie("mybbuser");
-		mysetcookie("sid", 0, -1);
+		my_unsetcookie("mybbuser");
+		my_setcookie("sid", 0, -1);
 		if($mybb->user['uid'])
 		{
 			$time = time();
@@ -1334,8 +1334,8 @@ elseif($mybb->input['action'] == "profile")
 	{
 		eval("\$profilefields = \"".$templates->get("member_profile_customfields")."\";");
 	}
-	$memprofile['postnum'] = mynumberformat($memprofile['postnum']);
-	$lang->ppd_percent_total = sprintf($lang->ppd_percent_total, mynumberformat($ppd), $percent);
+	$memprofile['postnum'] = my_number_format($memprofile['postnum']);
+	$lang->ppd_percent_total = sprintf($lang->ppd_percent_total, my_number_format($ppd), $percent);
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
 	if($memprofile['timeonline'] > 0)
 	{

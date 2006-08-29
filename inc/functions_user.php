@@ -458,7 +458,7 @@ function usercp_menu_misc()
 
 	$query = $db->query("SELECT COUNT(*) AS draftcount FROM ".TABLE_PREFIX."posts WHERE visible='-2' AND uid='".$mybb->user['uid']."'");
 	$count = $db->fetch_array($query);
-	$draftcount = "(".mynumberformat($count['draftcount']).")";
+	$draftcount = "(".my_number_format($count['draftcount']).")";
 	if($count['draftcount'] > 0)
 	{
 		$draftstart = "<strong>";

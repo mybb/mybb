@@ -1551,7 +1551,7 @@ function getids($id, $type)
 
 function clearinline($id, $type)
 {
-	myunsetcookie("inlinemod_".$type.$id);
+	my_unsetcookie("inlinemod_".$type.$id);
 }
 
 function extendinline($id, $type)

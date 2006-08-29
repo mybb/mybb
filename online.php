@@ -293,7 +293,7 @@ else
 	{
 		$guestbit = $lang->online_guest_singular;
 	}
-	$lang->online_count = sprintf($lang->online_count, mynumberformat($usercount), $userbit, $mybb->settings['wolcutoffmins'], mynumberformat($membercount), $memberbit, mynumberformat($anoncount), $anonbit, mynumberformat($guestcount), $guestbit);
+	$lang->online_count = sprintf($lang->online_count, my_number_format($usercount), $userbit, $mybb->settings['wolcutoffmins'], my_number_format($membercount), $memberbit, my_number_format($anoncount), $anonbit, my_number_format($guestcount), $guestbit);
 	$plugins->run_hooks("online_end");
 
 	eval("\$online = \"".$templates->get("online")."\";");

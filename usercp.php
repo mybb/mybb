@@ -608,15 +608,15 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		{
 			$mybb->user['remember'] = $mybb->input['remember'];
 			// Unset the old one
-			myunsetcookie("mybbuser");
+			my_unsetcookie("mybbuser");
 			// Set the new one
 			if($mybb->input['remember'] == "yes")
 			{
-				mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
+				my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
 			}
 			else
 			{
-				mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], -1);
+				my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], -1);
 			}
 		}
 
@@ -962,7 +962,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 	$plugins->run_hooks("usercp_do_password_process");
 	$logindetails = update_password($mybb->user['uid'], md5($mybb->input['password']), $mybb->user['salt']);
 
-	mysetcookie("mybbuser", $mybb->user['uid']."_".$logindetails['loginkey']);
+	my_setcookie("mybbuser", $mybb->user['uid']."_".$logindetails['loginkey']);
 	$plugins->run_hooks("usercp_do_password_end");
 	redirect("usercp.php", $lang->redirect_passwordupdated);
 }
@@ -1086,7 +1086,7 @@ if($mybb->input['action'] == "favorites")
 			}
 			if($favorite['lastpost'] > $mybb->user['lastvisit'])
 			{
-				$threadread = mygetarraycookie("threadread", $favorite['tid']);
+				$threadread = my_get_array_cookie("threadread", $favorite['tid']);
 				if($threadread < $favorite['lastpost'])
 				{
 					$folder = "new";
@@ -1101,8 +1101,8 @@ if($mybb->input['action'] == "favorites")
 				$folder .= "lock";
 			}
 			$folder .= "folder";
-			$favorite['replies'] = mynumberformat($favorite['replies']);
-			$favorite['views'] = mynumberformat($favorite['views']);
+			$favorite['replies'] = my_number_format($favorite['replies']);
+			$favorite['views'] = my_number_format($favorite['views']);
 			eval("\$threads .= \"".$templates->get("usercp_favorites_thread")."\";");
 			$folder = "";
 		}
@@ -1188,7 +1188,7 @@ if($mybb->input['action'] == "subscriptions")
 			}
 			if($subscription['lastpost'] > $mybb->user['lastvisit'])
 			{
-				$threadread = mygetarraycookie("threadread", $subscription['tid']);
+				$threadread = my_get_array_cookie("threadread", $subscription['tid']);
 				if($threadread < $subcription['lastpost'])
 				{
 					$folder = "new";
@@ -1203,8 +1203,8 @@ if($mybb->input['action'] == "subscriptions")
 				$folder .= "lock";
 			}
 			$folder .= "folder";
-			$subscription['replies'] = mynumberformat($subscription['replies']);
-			$subscription['views'] = mynumberformat($subscription['views']);
+			$subscription['replies'] = my_number_format($subscription['replies']);
+			$subscription['views'] = my_number_format($subscription['views']);
 			eval("\$threads .= \"".$templates->get("usercp_subscriptions_thread")."\";");
 			$folder = "";
 		}
@@ -1271,8 +1271,8 @@ if($mybb->input['action'] == "forumsubscriptions")
 				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost")."\";");
 			}
 		}
-		$posts = mynumberformat($forum['posts']);
-		$threads = mynumberformat($forum['threads']);
+		$posts = my_number_format($forum['posts']);
+		$threads = my_number_format($forum['threads']);
 		if($mybb->settings['showdescriptions'] == "no")
 		{
 			$forum['description'] = "";
@@ -2181,7 +2181,7 @@ if(!$mybb->input['action'])
 		$percent = round($percent, 2);
 	}
 		
-	$lang->posts_day = sprintf($lang->posts_day, mynumberformat($perday), $percent);
+	$lang->posts_day = sprintf($lang->posts_day, my_number_format($perday), $percent);
 	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
 
 	$colspan = 2;
@@ -2218,7 +2218,7 @@ if(!$mybb->input['action'])
 	$username = build_profile_link($username, $mybb->user['uid']);
 
 	// Format post numbers
-	$mybbuser['postnum'] = mynumberformat($mybb->user['postnum']);
+	$mybbuser['postnum'] = my_number_format($mybb->user['postnum']);
 
 	eval("\$usercp = \"".$templates->get("usercp")."\";");
 	$plugins->run_hooks("usercp_end");

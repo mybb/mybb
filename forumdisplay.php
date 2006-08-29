@@ -552,7 +552,7 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 	}
 }
 
-$forumread = mygetarraycookie("forumread", $fid);
+$forumread = my_get_array_cookie("forumread", $fid);
 if($mybb->user['lastvisit'] > $forumread)
 {
 	$forumread = $mybb->user['lastvisit'];
@@ -726,7 +726,7 @@ if(is_array($threadcache))
 		}
 		if(!$lastread)
 		{
-			$readcookie = $threadread = mygetarraycookie("threadread", $thread['tid']);
+			$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
 			if($readcookie > $forumread)
 			{
 				$lastread = $readcookie;
@@ -795,8 +795,8 @@ if(is_array($threadcache))
 		{
 			$lastposterlink = build_profile_link($lastposter, $lastposteruid);
 		}
-		$thread['replies'] = mynumberformat($thread['replies']);
-		$thread['views'] = mynumberformat($thread['views']);
+		$thread['replies'] = my_number_format($thread['replies']);
+		$thread['views'] = my_number_format($thread['views']);
 
 		// Threads and posts requiring moderation
 		if($thread['visible'] == 0)
@@ -813,7 +813,7 @@ if(is_array($threadcache))
 			{
 				$unapproved_posts_count = sprintf($lang->thread_unapproved_post_count, 1);
 			}
-			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".mynumberformat($thread['unapprovedposts']).")</span>";
+			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".my_number_format($thread['unapprovedposts']).")</span>";
 		}
 		else
 		{
@@ -844,7 +844,7 @@ if(is_array($threadcache))
 	// Set the forum read cookie if all posts are read.
 	if($unreadpost == 0 && ($page == 1 || !$page)) // Cheap modification
 	{
-		mysetarraycookie("forumread", $fid, time());
+		my_set_array_cookie("forumread", $fid, time());
 	}
 
 	$customthreadtools = '';

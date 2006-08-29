@@ -773,7 +773,7 @@ function install_done()
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('{$uid}','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
 
 	// Automatic Login
-	mysetcookie('mybbuser', $uid.'_'.$loginkey);
+	my_setcookie('mybbuser', $uid.'_'.$loginkey);
 	ob_end_flush();
 
 	echo $lang->done . '</p>';

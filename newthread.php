@@ -181,7 +181,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 			if(!$mybb->user['uid'])
 			{
-				mysetcookie('loginattempts', $logins + 1);
+				my_setcookie('loginattempts', $logins + 1);
 				$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 				if($mybb->settings['failedlogintext'] == "yes")
 				{
@@ -192,8 +192,8 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			// Otherwise they've logged in successfully.
 
 			$mybb->input['username'] = $username = $mybb->user['username'];
-			mysetcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
-			mysetcookie('loginattempts', 1);
+			my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
+			my_setcookie('loginattempts', 1);
 			
 			// Update the session to contain their user ID
 			$updated_session = array(
