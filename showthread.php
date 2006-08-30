@@ -743,8 +743,8 @@ if($mybb->input['action'] == "thread")
 			$similar_thread['subject'] = $parser->parse_badwords($similar_thread['subject']);
 			$similar_thread['subject'] = htmlspecialchars_uni($similar_thread['subject']);
 
-			$lastpostdate = mydate($mybb->settings['dateformat'], $similar_thread['lastpost']);
-			$lastposttime = mydate($mybb->settings['timeformat'], $similar_thread['lastpost']);
+			$lastpostdate = my_date($mybb->settings['dateformat'], $similar_thread['lastpost']);
+			$lastposttime = my_date($mybb->settings['timeformat'], $similar_thread['lastpost']);
 			$lastposter = $similar_thread['lastposter'];
 			$lastposteruid = $similar_thread['lastposteruid'];
 
@@ -826,8 +826,8 @@ function buildtree($replyto="0", $indent="0")
 	{
 		foreach($tree[$replyto] as $key => $post)
 		{
-			$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = mydate($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
+			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
 			if(!$post['subject'])
 			{

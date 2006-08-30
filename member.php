@@ -306,7 +306,7 @@ if($mybb->input['action'] == "register")
 			$selzone = $selzoneway.$selzonetime;
 			$timezoneselect[$selzone] = "selected=\"selected\"";
 		}
-		$timenow = mydate($mybb->settings['timeformat'], time(), "-");
+		$timenow = my_date($mybb->settings['timeformat'], time(), "-");
 		$lang->time_offset_desc = sprintf($lang->time_offset_desc, $timenow);
 		for($i = -12; $i <= 12; $i++)
 		{
@@ -318,19 +318,19 @@ if($mybb->input['action'] == "register")
 			{
 				$i2 = $i;
 			}
-			$temptime = mydate($mybb->settings['timeformat'], time(), $i2);
+			$temptime = my_date($mybb->settings['timeformat'], time(), $i2);
 			$zone = $i*10;
 			$zone = str_replace("-", "n", $zone);
 			$timein[$zone] = $temptime;
 		}
 		// Sad code for all the weird timezones
-		$timein['n35'] = mydate($mybb->settings['timeformat'], time(), -3.5);
-		$timein['35'] = mydate($mybb->settings['timeformat'], time(), 3.5);
-		$timein['45'] = mydate($mybb->settings['timeformat'], time(), 4.5);
-		$timein['55'] = mydate($mybb->settings['timeformat'], time(), 5.5);
-		$timein['575'] = mydate($mybb->settings['timeformat'], time(), 5.75);
-		$timein['95'] = mydate($mybb->settings['timeformat'], time(), 9.5);
-		$timein['105'] = mydate($mybb->settings['timeformat'], time(), 10.5);
+		$timein['n35'] = my_date($mybb->settings['timeformat'], time(), -3.5);
+		$timein['35'] = my_date($mybb->settings['timeformat'], time(), 3.5);
+		$timein['45'] = my_date($mybb->settings['timeformat'], time(), 4.5);
+		$timein['55'] = my_date($mybb->settings['timeformat'], time(), 5.5);
+		$timein['575'] = my_date($mybb->settings['timeformat'], time(), 5.75);
+		$timein['95'] = my_date($mybb->settings['timeformat'], time(), 9.5);
+		$timein['105'] = my_date($mybb->settings['timeformat'], time(), 10.5);
 		$mybb->user['timezone'] = $tempzone;
 
 		eval("\$tzselect = \"".$templates->get("usercp_options_timezoneselect")."\";");
@@ -1137,7 +1137,7 @@ elseif($mybb->input['action'] == "profile")
 	if($memprofile['away'] == "yes" && $mybb->settings['allowaway'] != "no")
 	{
 		$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
-		$awaydate = mydate($mybb->settings['dateformat'], $memprofile['awaydate']);
+		$awaydate = my_date($mybb->settings['dateformat'], $memprofile['awaydate']);
 		$memprofile['awayreason'] = htmlspecialchars_uni($memprofile['awayreason']);
 		if($memprofile['returndate'] == '')
 		{
@@ -1147,7 +1147,7 @@ elseif($mybb->input['action'] == "profile")
 		{
 			$returnhome = explode("-", $memprofile['returndate']);
 			$returnmkdate = mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
-			$returndate = mydate($mybb->settings['dateformat'], $returnmkdate);
+			$returndate = my_date($mybb->settings['dateformat'], $returnmkdate);
 		}
 		eval("\$awaybit = \"".$templates->get("member_profile_away")."\";");
 	}
@@ -1159,7 +1159,7 @@ elseif($mybb->input['action'] == "profile")
 			$memprofile['timezone'] = "+$memprofile[timezone]";
 		}
 	}
-	$memregdate = mydate($mybb->settings['dateformat'], $memprofile['regdate']);
+	$memregdate = my_date($mybb->settings['dateformat'], $memprofile['regdate']);
 	$memlocaldate = gmdate($mybb->settings['dateformat'], time() + ($memprofile['timezone'] * 3600));
 	$memlocaltime = gmdate($mybb->settings['timeformat'], time() + ($memprofile['timezone'] * 3600));
 
@@ -1167,9 +1167,9 @@ elseif($mybb->input['action'] == "profile")
 
 	if($memprofile['lastactive'])
 	{
-		$memlastvisitdate = mydate($mybb->settings['dateformat'], $memprofile['lastactive']);
+		$memlastvisitdate = my_date($mybb->settings['dateformat'], $memprofile['lastactive']);
 		$memlastvisitsep = ', ';
-		$memlastvisittime = mydate($mybb->settings['timeformat'], $memprofile['lastactive']);
+		$memlastvisittime = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
 	}
 	else
 	{

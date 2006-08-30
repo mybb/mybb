@@ -149,7 +149,7 @@ while($users = $db->fetch_array($query))
 	{
 		eval("\$useremail = \"".$templates->get("postbit_email")."\";");
 	}
-	$users['regdate'] = mydate($mybb->settings['dateformat'], $users['regdate']);
+	$users['regdate'] = my_date($mybb->settings['dateformat'], $users['regdate']);
 	$users['username'] = format_name($users['username'], $users['usergroup'], $users['displaygroup']);
 	eval("\$member .= \"".$templates->get("memberlist_row")."\";");
 }

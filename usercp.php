@@ -161,7 +161,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		if($mybb->input['awayday'] && $mybb->input['awaymonth'] && $mybb->input['awayyear'])
 		{
 			$returntimestamp = gmmktime(0, 0, 0, $mybb->input['awaymonth'], $mybb->input['awayday'], $mybb->input['awayyear']);
-			$awaytimestamp = gmmktime(0, 0, 0, mydate('n', $awaydate), mydate('j', $awaydate), mydate('Y', $awaydate));
+			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
 			if ($returntimestamp < $awaytimestamp) 
 			{
 				error($lang->error_usercp_return_date_past);
@@ -318,7 +318,7 @@ if($mybb->input['action'] == "profile")
 			
 			if($mybb->user['away'] == "yes")
 			{
-				$awaydate = mydate($mybb->settings['dateformat'], $mybb->user['awaydate']);
+				$awaydate = my_date($mybb->settings['dateformat'], $mybb->user['awaydate']);
 				$awaycheck['yes'] = "checked";
 				$awaynotice = sprintf($lang->away_notice_away, $awaydate);
 			}
@@ -791,7 +791,7 @@ if($mybb->input['action'] == "options")
 	// maybe in version 5
 	$tempzone = $user['timezone'];
 	$user['timezone'] = "";
-	$timenow = mydate($mybb->settings['timeformat'], time(), "-");
+	$timenow = my_date($mybb->settings['timeformat'], time(), "-");
 	for($i = -12; $i <= 12; $i++) 
 	{
 		if($i == 0)
@@ -802,19 +802,19 @@ if($mybb->input['action'] == "options")
 		{
 			$i2 = $i;
 		}
-		$temptime = mydate($mybb->settings['timeformat'], time(), $i2);
+		$temptime = my_date($mybb->settings['timeformat'], time(), $i2);
 		$zone = $i*10;
 		$zone = str_replace("-", "n", $zone);
 		$timein[$zone] = $temptime;
 	}
 	// Sad code for all the weird timezones
-	$timein[n35] = mydate($mybb->settings['timeformat'], time(), -3.5);
-	$timein[35] = mydate($mybb->settings['timeformat'], time(), 3.5);
-	$timein[45] = mydate($mybb->settings['timeformat'], time(), 4.5);
-	$timein[55] = mydate($mybb->settings['timeformat'], time(), 5.5);
-	$timein[575] = mydate($mybb->settings['timeformat'], time(), 5.75);
-	$timein[95] = mydate($mybb->settings['timeformat'], time(), 9.5);
-	$timein[105] = mydate($mybb->settings['timeformat'], time(), 10.5);
+	$timein[n35] = my_date($mybb->settings['timeformat'], time(), -3.5);
+	$timein[35] = my_date($mybb->settings['timeformat'], time(), 3.5);
+	$timein[45] = my_date($mybb->settings['timeformat'], time(), 4.5);
+	$timein[55] = my_date($mybb->settings['timeformat'], time(), 5.5);
+	$timein[575] = my_date($mybb->settings['timeformat'], time(), 5.75);
+	$timein[95] = my_date($mybb->settings['timeformat'], time(), 9.5);
+	$timein[105] = my_date($mybb->settings['timeformat'], time(), 10.5);
 	$mybb->user['timezone'] = $tempzone;
 	eval("\$tzselect = \"".$templates->get("usercp_options_timezoneselect")."\";");
 
@@ -1055,8 +1055,8 @@ if($mybb->input['action'] == "favorites")
 		$forumpermissions = $fpermissions[$favorite['fid']];
 		if($forumpermissions['canview'] != "no" || $forumpermissions['canviewthreads'] != "no")
 		{
-			$lastpostdate = mydate($mybb->settings['dateformat'], $favorite['lastpost']);
-			$lastposttime = mydate($mybb->settings['timeformat'], $favorite['lastpost']);
+			$lastpostdate = my_date($mybb->settings['dateformat'], $favorite['lastpost']);
+			$lastposttime = my_date($mybb->settings['timeformat'], $favorite['lastpost']);
 			if($favorite['lastposteruid'] == 0)
 			{
 				$lastposterlink = $favorite['lastposter'];
@@ -1156,8 +1156,8 @@ if($mybb->input['action'] == "subscriptions")
 		$forumpermissions = $fpermissions[$subscription['fid']];
 		if($forumpermissions['canview'] != "no" || $forumpermissions['canviewthreads'] != "no")
 		{
-			$lastpostdate = mydate($mybb->settings['dateformat'], $subscription['lastpost']);
-			$lastposttime = mydate($mybb->settings['timeformat'], $subscription['lastpost']);
+			$lastpostdate = my_date($mybb->settings['dateformat'], $subscription['lastpost']);
+			$lastposttime = my_date($mybb->settings['timeformat'], $subscription['lastpost']);
 			// Don't link to guest's profiles (they have no profile).
 			if($subscription['lastposteruid'] == 0)
 			{
@@ -1258,8 +1258,8 @@ if($mybb->input['action'] == "forumsubscriptions")
 			}
 			else
 			{
-				$lastpost_date = mydate($mybb->settings['dateformat'], $forum['lastpost']);
-				$lastpost_time = mydate($mybb->settings['timeformat'], $forum['lastpost']);
+				$lastpost_date = my_date($mybb->settings['dateformat'], $forum['lastpost']);
+				$lastpost_time = my_date($mybb->settings['timeformat'], $forum['lastpost']);
 				$lastposttid = $forum['lastposttid'];
 				$lastposter = $forum['lastposter'];
 				$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
@@ -1741,8 +1741,8 @@ if($mybb->input['action'] == "drafts")
 			$type = "thread";
 		}
 		$draft['subject'] = htmlspecialchars_uni($draft['subject']);
-		$savedate = mydate($mybb->settings['dateformat'], $draft['dateline']);
-		$savetime = mydate($mybb->settings['timeformat'], $draft['dateline']);
+		$savedate = my_date($mybb->settings['dateformat'], $draft['dateline']);
+		$savetime = my_date($mybb->settings['timeformat'], $draft['dateline']);
 		eval("\$drafts .= \"".$templates->get("usercp_drafts_draft")."\";");
 	}
 	if(!$drafts)
@@ -2045,8 +2045,8 @@ if($mybb->input['action'] == "usergroups")
 		}
 		if($appliedjoin[$usergroup['gid']])
 		{
-			$applydate = mydate($mybb->settings['dateformat'], $appliedjoin[$usergroup['gid']]);
-			$applytime = mydate($mybb->settings['timeformat'], $appliedjoin[$usergroup['gid']]);
+			$applydate = my_date($mybb->settings['dateformat'], $appliedjoin[$usergroup['gid']]);
+			$applytime = my_date($mybb->settings['timeformat'], $appliedjoin[$usergroup['gid']]);
 			$joinlink = sprintf($lang->join_group_applied, $applydate, $applytime);
 		}
 		else
@@ -2100,8 +2100,8 @@ if($mybb->input['action'] == "attachments")
 			$size = get_friendly_size($attachment['filesize']);
 			$icon = get_attachment_icon(get_extension($attachment['filename']));
 			$sizedownloads = sprintf($lang->attachment_size_downloads, $size, $attachment['downloads']);
-			$attachdate = mydate($mybb->settings['dateformat'], $attachment['dateline']);
-			$attachtime = mydate($mybb->settings['timeformat'], $attachment['dateline']);
+			$attachdate = my_date($mybb->settings['dateformat'], $attachment['dateline']);
+			$attachtime = my_date($mybb->settings['timeformat'], $attachment['dateline']);
 			$altbg = alt_trow();
 			eval("\$attachments .= \"".$templates->get("usercp_attachments_attachment")."\";");
 			// Add to bandwidth total
@@ -2199,7 +2199,7 @@ if(!$mybb->input['action'])
 	{
 		$avatar = '';
 	}
-	$regdate = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $mybb->user['regdate']);
+	$regdate = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $mybb->user['regdate']);
 
 	if($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin")
 	{

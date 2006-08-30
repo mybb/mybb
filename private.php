@@ -283,8 +283,8 @@ if($mybb->input['action'] == "send")
 		else
 		{
 			$subject = preg_replace("#(FW|RE):( *)#is", "", $subject);
-			$postdate = mydate($mybb->settings['dateformat'], $pm['dateline']);
-			$posttime = mydate($mybb->settings['timeformat'], $pm['dateline']);
+			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
+			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
 			$message = "[quote=$pm[quotename]]\n$message\n[/quote]";
 			$quoted['message'] = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $quoted['message']);
 
@@ -402,8 +402,8 @@ if($mybb->input['action'] == "tracking")
 	while($readmessage = $db->fetch_array($query))
 	{
 		$readmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($readmessage['subject']));
-		$readdate = mydate($mybb->settings['dateformat'], $readmessage['readtime']);
-		$readtime = mydate($mybb->settings['timeformat'], $readmessage['readtime']);
+		$readdate = my_date($mybb->settings['dateformat'], $readmessage['readtime']);
+		$readtime = my_date($mybb->settings['timeformat'], $readmessage['readtime']);
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
 	}
 	$query = $db->query("
@@ -416,8 +416,8 @@ if($mybb->input['action'] == "tracking")
 	while($unreadmessage = $db->fetch_array($query))
 	{
 		$unreadmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($unreadmessage['subject']));
-		$senddate = mydate($mybb->settings['dateformat'], $unreadmessage['dateline']);
-		$sendtime = mydate($mybb->settings['timeformat'], $unreadmessage['dateline']);
+		$senddate = my_date($mybb->settings['dateformat'], $unreadmessage['dateline']);
+		$sendtime = my_date($mybb->settings['timeformat'], $unreadmessage['dateline']);
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
 	}
 	eval("\$tracking = \"".$templates->get("private_tracking")."\";");
@@ -757,8 +757,8 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_do_export_start");
 	$lang->private_messages_for = sprintf($lang->private_messages_for, $mybb->user['username']);
-	$exdate = mydate($mybb->settings['dateformat'], time(), 0, 0);
-	$extime = mydate($mybb->settings['timeformat'], time(), 0, 0);
+	$exdate = my_date($mybb->settings['dateformat'], time(), 0, 0);
+	$extime = my_date($mybb->settings['timeformat'], time(), 0, 0);
 	$lang->exported_date = sprintf($lang->exported_date, $exdate, $extime);
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	if($mybb->input['pmid'])
@@ -875,8 +875,8 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		$message['subject'] = $parser->parse_badwords($message['subject']);
 		if($message['folder'] != "3")
 		{
-			$senddate = mydate($mybb->settings['dateformat'], $message['dateline'], 0, 0);
-			$sendtime = mydate($mybb->settings['timeformat'], $message['dateline'], 0, 0);
+			$senddate = my_date($mybb->settings['dateformat'], $message['dateline'], 0, 0);
+			$sendtime = my_date($mybb->settings['timeformat'], $message['dateline'], 0, 0);
 			$senddate .= " $lang->at $sendtime";
 		}
 		else
@@ -1104,8 +1104,8 @@ if(!$mybb->input['action'])
 			$message['subject'] = htmlspecialchars_uni($parser->parse_badwords($message['subject']));
 			if($message['folder'] != "3")
 			{
-				$sendpmdate = mydate($mybb->settings['dateformat'], $message['dateline']);
-				$sendpmtime = mydate($mybb->settings['timeformat'], $message['dateline']);
+				$sendpmdate = my_date($mybb->settings['dateformat'], $message['dateline']);
+				$sendpmtime = my_date($mybb->settings['timeformat'], $message['dateline']);
 				$senddate = $sendpmdate.", ".$sendpmtime;
 			}
 			else

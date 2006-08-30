@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 
 $templatelist = "printthread,printthread_post";
 
-require "./global.php";
+require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
@@ -91,8 +91,8 @@ while($postrow = $db->fetch_array($query))
 		$postrow['username'] = $postrow['userusername'];
 	}
 	$postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
-	$postrow['date'] = mydate($mybb->settings['dateformat'], $postrow['dateline']);
-	$postrow['time'] = mydate($mybb->settings['timeformat'], $postrow['dateline']);
+	$postrow['date'] = my_date($mybb->settings['dateformat'], $postrow['dateline']);
+	$postrow['time'] = my_date($mybb->settings['timeformat'], $postrow['dateline']);
 	$parser_options = array(
 		"allow_html" => $forum['allowhtml'],
 		"allow_mycode" => $forum['allowmycode'],

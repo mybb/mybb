@@ -270,7 +270,7 @@ elseif($mybb->input['action'] == "vercheck")
 		{
 			if($item['date_timestamp'])
 			{
-				$stamp = " (".mydate($mybb->settings['dateformat'], $item['date_timestamp']).", ".mydate($mybb->settings['timeformat'], $item['date_timestamp']).")";
+				$stamp = " (".my_date($mybb->settings['dateformat'], $item['date_timestamp']).", ".my_date($mybb->settings['timeformat'], $item['date_timestamp']).")";
 			}
 			else
 			{

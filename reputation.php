@@ -480,8 +480,8 @@ if(!$mybb->input['action'])
 		$reputation_vote['user_reputation'] = get_reputation($reputation_vote['user_reputation'], $reputation_vote['adduid']);
 
 		// Format the date this reputation was last modified
-		$last_updated_date = mydate($mybb->settings['dateformat'], $reputation_vote['dateline']);
-		$last_updated_time = mydate($mybb->settings['timeformat'], $reputation_vote['dateline']);
+		$last_updated_date = my_date($mybb->settings['dateformat'], $reputation_vote['dateline']);
+		$last_updated_time = my_date($mybb->settings['timeformat'], $reputation_vote['dateline']);
 		$last_updated = sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
 
 		// Does the current user have permission to delete this reputation? Show delete link

@@ -267,8 +267,8 @@ if($mybb->settings['portal_showwol'] != "no")
 		$cache->update("mostonline", $mostonline);
 	}
 	$recordcount = $mostonline['numusers'];
-	$recorddate = mydate($mybb->settings['dateformat'], $mostonline['time']);
-	$recordtime = mydate($mybb->settings['timeformat'], $mostonline['time']);
+	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);
+	$recordtime = my_date($mybb->settings['timeformat'], $mostonline['time']);
 
 	$lang->online_users = sprintf($lang->online_users, $onlinecount);
 	$lang->online_counts = sprintf($lang->online_counts, $membercount, $guestcount);
@@ -290,8 +290,8 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 	);
 	while($thread = $db->fetch_array($query))
 	{
-		$lastpostdate = mydate($mybb->settings['dateformat'], $thread['lastpost']);
-		$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
+		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
+		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 		// Don't link to guest's profiles (they have no profile).
 		if($thread['lastposteruid'] == 0)
 		{
@@ -401,8 +401,8 @@ while($announcement = $db->fetch_array($query))
 	{
 		$avatar = '';
 	}
-	$anndate = mydate($mybb->settings['dateformat'], $announcement['dateline']);
-	$anntime = mydate($mybb->settings['timeformat'], $announcement['dateline']);
+	$anndate = my_date($mybb->settings['dateformat'], $announcement['dateline']);
+	$anntime = my_date($mybb->settings['timeformat'], $announcement['dateline']);
 
 	if($announcement['replies'])
 	{

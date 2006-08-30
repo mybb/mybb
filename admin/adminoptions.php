@@ -259,7 +259,7 @@ if($mybb->input['action'] == "adminpermissions")
 	");
 	while($admin = $db->fetch_array($query))
 	{
-		$la = mydate($mybb->settings['dateformat'].",".$mybb->settings['timeformat'], $admin['lastactive']);
+		$la = my_date($mybb->settings['dateformat'].",".$mybb->settings['timeformat'], $admin['lastactive']);
 		$bgcolor = getaltbg();
 		$usergroup_list = array();
 		// Build a list of group memberships that have access to the admin CP

@@ -212,11 +212,11 @@ function parse_page($contents)
  * @param int Whether or not to use today/yesterday formatting.
  * @return string The formatted timestamp.
  */
-function mydate($format, $stamp="", $offset="", $ty=1)
+function my_date($format, $stamp="", $offset="", $ty=1)
 {
 	global $mybb, $lang, $mybbadmin, $plugins;
 
-	$plugins->run_hooks("mydate");
+	$plugins->run_hooks("my_date");
 
 	// If the stamp isn't set, use time()
 	if(empty($stamp))
@@ -432,7 +432,7 @@ function error($error="", $title="")
 	{
 		$title = $mybb->settings['bbname'];
 	}
-	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
+	$timenow = my_date($mybb->settings['dateformat'], time()) . " " . my_date($mybb->settings['timeformat'], time());
 	reset_breadcrumb();
 	add_breadcrumb($lang->error);
 	eval("\$errorpage = \"".$templates->get("error")."\";");
@@ -509,7 +509,7 @@ function redirect($url, $message="", $title="")
 	{
 		$message = $lang->redirect;
 	}
-	$timenow = mydate($mybb->settings['dateformat'], time()) . " " . mydate($mybb->settings['timeformat'], time());
+	$timenow = my_date($mybb->settings['dateformat'], time()) . " " . my_date($mybb->settings['timeformat'], time());
 	$plugins->run_hooks("redirect");
 	if(!$title)
 	{
@@ -847,7 +847,7 @@ function check_forum_password($fid, $password="")
 		{
 			if($password == $mybb->input['pwverify'])
 			{
-				mysetcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']));
+				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']));
 				$showform = 0;
 			}
 			else
@@ -1027,7 +1027,7 @@ function get_post_icons()
  * @param string The cookie value.
  * @param int The timestamp of the expiry date.
  */
-function mysetcookie($name, $value="", $expires="")
+function my_setcookie($name, $value="", $expires="")
 {
 	global $mybb;
 
@@ -1065,7 +1065,7 @@ function mysetcookie($name, $value="", $expires="")
  *
  * @param string The cookie identifier.
  */
-function myunsetcookie($name)
+function my_unsetcookie($name)
 {
 	global $mybb;
 
@@ -1092,7 +1092,7 @@ function myunsetcookie($name)
  * @param int The cookie content id.
  * @return array|boolean The cookie id's content array or false when non-existent.
  */
-function mygetarraycookie($name, $id)
+function my_get_array_cookie($name, $id)
 {
 	if(!isset($_COOKIE['mybb'][$name]))
 	{
@@ -1116,13 +1116,13 @@ function mygetarraycookie($name, $id)
  * @param int The cookie content id.
  * @param string The value to set the cookie to.
  */
-function mysetarraycookie($name, $id, $value)
+function my_set_array_cookie($name, $id, $value)
 {
 	$cookie = $_COOKIE['mybb'];
 	$newcookie = unserialize($cookie[$name]);
 	$newcookie[$id] = $value;
 	$newcookie = addslashes(serialize($newcookie));
-	mysetcookie("mybb[$name]", $newcookie);
+	my_setcookie("mybb[$name]", $newcookie);
 }
 
 /**
@@ -1927,7 +1927,13 @@ function get_unviewable_forums()
 	}
 	return $unviewableforums;
 }
-
+/** 
+ * Fixes mktime() for dates earlier than 1970 
+ * 
+ * @param string The date format to use 
+ * @param int The year of the date 
+ * @return string The correct date format 
+ */
 function fixmktime($format, $year)
 {
 	// Our little work around for the date < 1970 thing.
@@ -2909,7 +2915,7 @@ function get_event_date($event)
 {
 	$event_date = explode("-", $event['date']);
 	$event_date = mktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
-	$event_date = mydate($mybb->settings['dateformat'], $event_date);
+	$event_date = my_date($mybb->settings['dateformat'], $event_date);
 
 	return $event_date;
 }
@@ -3180,21 +3186,21 @@ function login_attempt_check($fatal = true)
 	{
 		return 1;
 	}
-	//Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
+	// Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
 
-	//Use cookie if possible, otherwise use session
-	//Session stops user clearing cookies to bypass the login
-	//Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
+	// Use cookie if possible, otherwise use session
+	// Session stops user clearing cookies to bypass the login
+	// Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
 	$cookielogins = intval($_COOKIE['loginattempts']);
 	$cookietime = $_COOKIE['failedlogin'];
 	$loginattempts = empty($cookielogins) ? $session->logins : ($cookielogins < $session->logins ? $session->logins : $cookielogins);
 	$failedlogin = empty($cookietime) ? $session->failedlogin : ($cookietime < $session->failedlogin ? $session->failedlogin : $cookietime);
 
-	//Work out if the user has had more than the allowed number of login attempts
+	// Work out if the user has had more than the allowed number of login attempts
 	if($loginattempts > $mybb->settings['failedlogincount'])
 	{
-		//If so, then we need to work out if they can try to login again
-		//Some maths to work out how long they have left and display it to them
+		// If so, then we need to work out if they can try to login again
+		// Some maths to work out how long they have left and display it to them
 		$now = time();
 		$secondsleft = ($mybb->settings['failedlogintime'] * 60 + (empty($_COOKIE['failedlogin']) ? $now : $_COOKIE['failedlogin'])) - $now;
 		$hoursleft = floor($secondsleft / 3600);
@@ -3203,22 +3209,22 @@ function login_attempt_check($fatal = true)
 		//This value will be empty the first time the user doesn't login in, set it
 		if(empty($failedlogin))
 		{
-			mysetcookie('failedlogin', $now);
+			my_setcookie('failedlogin', $now);
 			if($fatal)
 			{
 				error(sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
 			}
 			return false;
 		}
-		//Work out if the user has waited long enough before letting them login again
+		// Work out if the user has waited long enough before letting them login again
 		if($_COOKIE['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 60)
 		{
-			mysetcookie('loginattempts', 1);
-			myunsetcookie('failedlogin');
+			my_setcookie('loginattempts', 1);
+			my_unsetcookie('failedlogin');
 			$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts = 1 WHERE sid = '{$session->sid}'");
 			return 1;
 		}
-		//Not waited long enough
+		// Not waited long enough
 		else
 		{
 			if($fatal)
@@ -3228,7 +3234,7 @@ function login_attempt_check($fatal = true)
 			return false;
 		}
 	}
-	//User can attempt another login
+	// User can attempt another login
 	return $loginattempts;
 }
 

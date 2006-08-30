@@ -322,7 +322,7 @@ if($mybb->input['action'] == 'existing')
 			$filename = $backup['file'];
 			if($backup['time'])
 			{
-				$time = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $backup['time']);
+				$time = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $backup['time']);
 			}
 			else
 			{

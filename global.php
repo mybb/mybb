@@ -10,7 +10,7 @@
  */
 
 // Load main MyBB core file which begins all of the magic
-require dirname(__FILE__)."/inc/init.php";
+require_once dirname(__FILE__)."/inc/init.php";
 
 $shutdown_queries = array();
 
@@ -44,7 +44,7 @@ if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) 
 }
 
 // Create session for this user
-require MYBB_ROOT."inc/class_session.php";
+require_once MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
 
@@ -171,14 +171,14 @@ $templatelist .= ",nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
-$datenow = mydate($mybb->settings['dateformat'], time(), '', false);
-$timenow = mydate($mybb->settings['timeformat'], time());
+$datenow = my_date($mybb->settings['dateformat'], time(), '', false);
+$timenow = my_date($mybb->settings['timeformat'], time());
 $lang->welcome_current_time = sprintf($lang->welcome_current_time, $datenow.', '.$timenow);
 
 // Format the last visit date of this user appropriately
 if(isset($mybb->user['lastvisit']))
 {
-	$lastvisit = mydate($mybb->settings['dateformat'], $mybb->user['lastvisit']) . ', ' . mydate($mybb->settings['timeformat'], $mybb->user['lastvisit']);
+	$lastvisit = my_date($mybb->settings['dateformat'], $mybb->user['lastvisit']) . ', ' . my_date($mybb->settings['timeformat'], $mybb->user['lastvisit']);
 }
 
 // Otherwise, they've never visited before
@@ -263,7 +263,7 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 		// Format their ban lift date and reason appropriately
 		if($ban['lifted'] > 0)
 		{
-			$banlift = mydate($mybb->settings['dateformat'], $ban['lifted']) . ", " . mydate($mybb->settings['timeformat'], $ban['lifted']);
+			$banlift = my_date($mybb->settings['dateformat'], $ban['lifted']) . ", " . my_date($mybb->settings['timeformat'], $ban['lifted']);
 		}
 		else 
 		{
@@ -293,7 +293,7 @@ eval("\$gobutton = \"".$templates->get("gobutton")."\";");
 eval("\$htmldoctype = \"".$templates->get("htmldoctype", 1, 0)."\";");
 eval("\$header = \"".$templates->get("header")."\";");
 
-$copy_year = mydate("Y", time());
+$copy_year = my_date("Y", time());
 
 // Are we showing version numbers in the footer?
 if($mybb->settings['showvernum'] == "on")
@@ -367,7 +367,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && (isset($my
 	$referrer = $db->fetch_array($query);
 	if($referrer['uid'])
 	{
-		mysetcookie("mybb[referrer]", $referrer['username']);
+		my_setcookie("mybb[referrer]", $referrer['username']);
 	}
 }
 

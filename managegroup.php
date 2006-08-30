@@ -115,7 +115,7 @@ elseif($mybb->input['action'] == "joinrequests")
 	{
 		$user['reason'] = htmlspecialchars_uni($user['reason']);
 		$altbg = alt_trow();
-		$regdate = mydate($mybb->settings['dateformat'], $user['regdate']);
+		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
 		eval("\$users .= \"".$templates->get("managegroup_joinrequests_request")."\";");
 	}
 	if(!$users)
@@ -207,7 +207,7 @@ else
 	while($user = $db->fetch_array($query))
 	{
 		$altbg = alt_trow();
-		$regdate = mydate($mybb->settings['dateformat'], $user['regdate']);
+		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
 		$post = $user;
 		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes" && strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{

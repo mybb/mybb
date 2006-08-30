@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 $templatelist = '';
-require "./global.php";
+require_once "./global.php";
 
 $lang->load("ratethread");
 
@@ -97,7 +97,7 @@ else
 		);
 		$db->insert_query(TABLE_PREFIX."threadratings", $updatearray);
 		$time = time();
-		mysetcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
+		my_setcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
 	}
 }
 $plugins->run_hooks("ratethread_end");

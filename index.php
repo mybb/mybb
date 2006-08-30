@@ -157,8 +157,8 @@ if($mybb->settings['showbirthdays'] != "no")
 	// First, see what day this is.
 	$bdaycount = 0;
 	$bdaytime = time();
-	$bdaydate = mydate("j-n", $bdaytime, '', 0);
-	$year = mydate("Y", $bdaytime, '', 0);
+	$bdaydate = my_date("j-n", $bdaytime, '', 0);
+	$year = my_date("Y", $bdaytime, '', 0);
 
 	// Select all users who have their birthday today.
 	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, birthday", "birthday LIKE '$bdaydate-%'");
@@ -217,8 +217,8 @@ if($mybb->settings['showindexstats'] != "no")
 		$cache->update("mostonline", $mostonline);
 	}
 	$recordcount = $mostonline['numusers'];
-	$recorddate = mydate($mybb->settings['dateformat'], $mostonline['time']);
-	$recordtime = mydate($mybb->settings['timeformat'], $mostonline['time']);
+	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);
+	$recordtime = my_date($mybb->settings['timeformat'], $mostonline['time']);
 
 	// Then format that language string.
 	$lang->stats_mostonline = sprintf($lang->stats_mostonline, my_number_format($recordcount), $recorddate, $recordtime);

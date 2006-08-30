@@ -172,8 +172,8 @@ function build_forumbits($pid=0, $depth=1)
 				elseif($hideinfo != 1)
 				{
 					// Format lastpost date and time
-					$lastpost_date = mydate($mybb->settings['dateformat'], $lastpost_data['lastpost']);
-					$lastpost_time = mydate($mybb->settings['timeformat'], $lastpost_data['lastpost']);
+					$lastpost_date = my_date($mybb->settings['dateformat'], $lastpost_data['lastpost']);
+					$lastpost_time = my_date($mybb->settings['timeformat'], $lastpost_data['lastpost']);
 
 					// Set up the last poster, last post thread id, last post subject and format appropriately
 					$lastpost_profilelink = build_profile_link($lastpost_data['lastposter'], $lastpost_data['lastposteruid']);
@@ -293,7 +293,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 	else
 	{
 		// Fetch the last read date for this forum
-		$forumread = mygetarraycookie("forumread", $forum['fid']);
+		$forumread = my_get_array_cookie("forumread", $forum['fid']);
 
 		// If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post
 		if($lastpost['lastpost'] > $mybb->user['lastvisit'] && $lastpost['lastpost'] > $forumread && $lastpost['lastpost'] != 0)

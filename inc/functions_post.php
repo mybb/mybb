@@ -107,9 +107,9 @@ function build_postbit($post, $post_type=0)
 	}
 	$postcounter++;
 
-	// Format the post date and time using mydate
-	$post['postdate'] = mydate($mybb->settings['dateformat'], $post['dateline']);
-	$post['posttime'] = mydate($mybb->settings['timeformat'], $post['dateline']);
+	// Format the post date and time using my_date
+	$post['postdate'] = my_date($mybb->settings['dateformat'], $post['dateline']);
+	$post['posttime'] = my_date($mybb->settings['timeformat'], $post['dateline']);
 
 	// Dont want any little 'nasties' in the subject
 	$post['subject'] = $parser->parse_badwords($post['subject']);
@@ -271,7 +271,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['button_email'] = "";
 		}
-		$post['userregdate'] = mydate($mybb->settings['regdateformat'], $post['regdate']);
+		$post['userregdate'] = my_date($mybb->settings['regdateformat'], $post['regdate']);
 
 		// Work out the reputation this user has
 		if($usergroup['usereputationsystem'] != "no" && $mybb->settings['enablereputation'] == "yes")
@@ -316,8 +316,8 @@ function build_postbit($post, $post_type=0)
 	{
 		if($post['edituid'] != "" && $post['edittime'] != "" && $post['editusername'] != "")
 		{
-			$post['editdate'] = mydate($mybb->settings['dateformat'], $post['edittime']);
-			$post['edittime'] = mydate($mybb->settings['timeformat'], $post['edittime']);
+			$post['editdate'] = my_date($mybb->settings['dateformat'], $post['edittime']);
+			$post['edittime'] = my_date($mybb->settings['timeformat'], $post['edittime']);
 			$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}

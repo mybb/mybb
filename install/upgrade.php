@@ -52,7 +52,7 @@ $displaygroupfields = array("title", "description", "namestyle", "usertitle", "s
 $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
 
 // Include the installation resources
-require INSTALL_ROOT."/resources/output.php";
+require_once INSTALL_ROOT."/resources/output.php";
 $output = new installerOutput;
 $output->script = "upgrade.php";
 
@@ -350,7 +350,7 @@ function next_function($from, $func="dbchanges")
 function load_module($module)
 {
 	global $system_upgrade_detail, $currentscript;
-	require INSTALL_ROOT."/resources/".$module;
+	require_once INSTALL_ROOT."/resources/".$module;
 	if($currentscript != $module)
 	{
 		foreach($upgrade_detail as $key => $val)

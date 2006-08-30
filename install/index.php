@@ -34,7 +34,7 @@ $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 's
 $fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch');
 
 // Include the installation resources
-require INSTALL_ROOT.'/resources/output.php';
+require_once INSTALL_ROOT.'/resources/output.php';
 $output = new installerOutput;
 
 $dboptions = array();
@@ -450,7 +450,7 @@ function create_tables()
 		$structure_file = 'mysql_db_tables.php';
 	}
 
-	require INSTALL_ROOT."/resources/{$structure_file}";
+	require_once INSTALL_ROOT."/resources/{$structure_file}";
 	foreach($tables as $val)
 	{
 		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $mybb->input['tableprefix'].'\\1\\2', $val);
@@ -489,7 +489,7 @@ function populate_tables()
 		$population_file = 'mysql_db_inserts.php';
 	}
 
-	require INSTALL_ROOT."/resources/{$population_file}";
+	require_once INSTALL_ROOT."/resources/{$population_file}";
 	foreach($inserts as $val)
 	{
 		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $config['table_prefix'].'\\1\\2', $val);

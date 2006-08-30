@@ -1102,11 +1102,11 @@ if($mybb->input['action'] == "stats")
 	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS count", "referrer='$user[uid]'");
 	$referrals = $db->fetch_field($query, 'count');
 
-	$memregdate = mydate($mybb->settings['dateformat'], $user['regdate']);
+	$memregdate = my_date($mybb->settings['dateformat'], $user['regdate']);
 	$memlocaldate = gmdate($mybb->settings['dateformat'], time() + ($user['timezone'] * 3600));
 	$memlocaltime = gmdate($mybb->settings['timeformat'], time() + ($user['timezone'] * 3600));
-	$memlastvisitdate = mydate($mybb->settings['dateformat'], $user['lastvisit']);
-	$memlastvisittime = mydate($mybb->settings['timeformat'], $user['lastvisit']);
+	$memlastvisitdate = my_date($mybb->settings['dateformat'], $user['lastvisit']);
+	$memlastvisittime = my_date($mybb->settings['timeformat'], $user['lastvisit']);
 
 	if($user['birthday'])
 	{
@@ -1932,10 +1932,10 @@ if($mybb->input['action'] == "banned")
 			{
 				$banlength = $bantimes[$user['bantime']];
 				$timeremaining = getbanremaining($user['lifted']);
-				$liftedon = mydate($mybb->settings['dateformat'], $user['lifted']);
+				$liftedon = my_date($mybb->settings['dateformat'], $user['lifted']);
 			}
 			$user['banreason'] = htmlspecialchars_uni($user['banreason']);
-			$bannedon = mydate($mybb->settings['dateformat'], $user['dateline']);
+			$bannedon = my_date($mybb->settings['dateformat'], $user['dateline']);
 			echo "<tr title='$user[reason]'>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"users.php?".SID."&amp;action=edit&amp;uid=$user[uid]\">$user[username]</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">$user[adminuser]</td>\n";

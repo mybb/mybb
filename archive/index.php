@@ -56,7 +56,7 @@ switch($action)
 		archive_header($announcement['subject'], $announcement['subject'], $mybb->settings['bburl']."/announcements.php?aid={$id}");
 
 		// Format announcement contents.
-		$announcement['startdate'] = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $announcement['startdate']);
+		$announcement['startdate'] = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $announcement['startdate']);
 
 		echo "<div class=\"post\">\n<div class=\"header\">\n<h2>{$announcement['subject']} - {$profile_link}</h2>";
 		echo "<div class=\"dateline\">{$announcement['startdate']}</div>\n</div>\n<div class=\"message\">{$announcement['message']}</div>\n</div>\n";
@@ -133,7 +133,7 @@ switch($action)
 		");
 		while($post = $db->fetch_array($query))
 		{
-			$post['date'] = mydate($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $post['dateline'], "", 0);
+			$post['date'] = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $post['dateline'], "", 0);
 			if($post['userusername'])
 			{
 				$post['username'] = $post['userusername'];

@@ -341,8 +341,8 @@ if($mybb->input['action'] == "results")
 				$morelink = '';
 				$thread['multipage'] = '';
 			}
-			$lastpostdate = mydate($mybb->settings['dateformat'], $thread['lastpost']);
-			$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
+			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
+			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 			$lastposter = $thread['lastposter'];
 			$lastposteruid = $thread['lastposteruid'];
 
@@ -572,7 +572,7 @@ if($mybb->input['action'] == "results")
 			{
 				$prev = htmlspecialchars_uni($post['message']);
 			}
-			$posted = mydate($mybb->settings['dateformat'], $post['dateline']).", ".mydate($mybb->settings['timeformat'], $post['dateline']);
+			$posted = my_date($mybb->settings['dateformat'], $post['dateline']).", ".my_date($mybb->settings['timeformat'], $post['dateline']);
 
 			$plugins->run_hooks("search_results_post");
 			eval("\$results .= \"".$templates->get("search_results_posts_post")."\";");

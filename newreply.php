@@ -809,8 +809,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post['username'] = $post['userusername'];
 			}
-			$reviewpostdate = mydate($mybb->settings['dateformat'], $post['dateline']);
-			$reviewposttime = mydate($mybb->settings['timeformat'], $post['dateline']);
+			$reviewpostdate = my_date($mybb->settings['dateformat'], $post['dateline']);
+			$reviewposttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],

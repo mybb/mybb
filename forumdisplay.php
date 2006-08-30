@@ -463,7 +463,7 @@ while($announcement = $db->fetch_array($query))
 	}
 	$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
-	$postdate = mydate($mybb->settings['dateformat'], $announcement['startdate']);
+	$postdate = my_date($mybb->settings['dateformat'], $announcement['startdate']);
 	if($foruminfo['allowtratings'] != "no")
 	{
 		$thread['rating'] = "pixel.gif";
@@ -781,8 +781,8 @@ if(is_array($threadcache))
 		}
 		$load_inline_edit_js = 1;
 
-		$lastpostdate = mydate($mybb->settings['dateformat'], $thread['lastpost']);
-		$lastposttime = mydate($mybb->settings['timeformat'], $thread['lastpost']);
+		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
+		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 		$lastposter = $thread['lastposter'];
 		$lastposteruid = $thread['lastposteruid'];
 

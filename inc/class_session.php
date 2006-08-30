@@ -105,7 +105,7 @@ class session
 		}
 
 		// As a token of our appreciation for getting this far, give the user a cookie
-		mysetcookie("sid", $this->sid, -1);
+		my_setcookie("sid", $this->sid, -1);
 	}
 
 	/**
@@ -344,7 +344,7 @@ class session
 			}
 			if($time - $_COOKIE['mybb']['lastactive'] > 900)
 			{
-				mysetcookie("mybb[lastvisit]", $mybb->user['lastactive']);
+				my_setcookie("mybb[lastvisit]", $mybb->user['lastactive']);
 				$mybb->user['lastvisit'] = $mybb->user['lastactive'];
 			}
 			else
@@ -356,12 +356,12 @@ class session
 		// No last visit cookie, create one.
 		else
 		{
-			mysetcookie("mybb[lastvisit]", $time);
+			my_setcookie("mybb[lastvisit]", $time);
 			$mybb->user['lastvisit'] = $time;
 		}
 
 		// Update last active cookie.
-		mysetcookie("mybb[lastactive]", $time);
+		my_setcookie("mybb[lastactive]", $time);
 
 		// Gather a full permission set for this guest
 		$mybb->usergroup = usergroup_permissions($mybbgroups);

@@ -283,7 +283,7 @@ if($mybb->input['action'] == "editpoll")
 	{
 		error_no_permission();
 	}
-	$polldate = mydate($mybb->settings['dateformat'], $poll['dateline']);
+	$polldate = my_date($mybb->settings['dateformat'], $poll['dateline']);
 	if(!$mybb->input['preview'] && !$mybb->input['updateoptions'])
 	{
 		if($poll['closed'] == 'yes')

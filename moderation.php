@@ -322,8 +322,8 @@ switch($mybb->input['action'])
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
 		{
-			$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = mydate($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
+			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
@@ -409,8 +409,8 @@ switch($mybb->input['action'])
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
 		{
-			$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = mydate($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
+			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
@@ -552,7 +552,7 @@ switch($mybb->input['action'])
 		");
 		while($modaction = $db->fetch_array($query))
 		{
-			$modaction['dateline'] = mydate("jS M Y, G:i", $modaction['dateline']);
+			$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
 			$info = '';
 			if($modaction['tsubject'])
 			{
@@ -719,8 +719,8 @@ switch($mybb->input['action'])
 		$posts = '';
 		while($post = $db->fetch_array($query))
 		{
-			$postdate = mydate($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = mydate($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
+			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
@@ -1359,8 +1359,8 @@ switch($mybb->input['action'])
 		while($report = $db->fetch_array($query))
 		{
 			$trow = alt_trow();
-			$reportdate = mydate($mybb->settings['dateformat'], $report['dateline']);
-			$reporttime = mydate($mybb->settings['timeformat'], $report['dateline']);
+			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
+			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
 			eval("\$reports .= \"".$templates->get("moderation_reports_report")."\";");
 		}
 		if(!$reports)
@@ -1451,8 +1451,8 @@ switch($mybb->input['action'])
 		");
 		while($report = $db->fetch_array($query))
 		{
-			$reportdate = mydate($mybb->settings['dateformat'], $report['dateline']);
-			$reporttime = mydate($mybb->settings['timeformat'], $report['dateline']);
+			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
+			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
 			if($report['reportstatus'] == 0)
 			{
 				$trow = "trow_shaded";

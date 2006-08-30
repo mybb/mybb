@@ -66,7 +66,7 @@ if($mybb->input['action'] == "today")
 			}
 			$username = $online['username'];
 			$username = format_name($username, $online['usergroup'], $online['displaygroup']);
-			$onlinetime = mydate($mybb->settings['timeformat'], $online['lastactive']);
+			$onlinetime = my_date($mybb->settings['timeformat'], $online['lastactive']);
 			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
 		}
 		$todaycount++;
@@ -255,8 +255,8 @@ else
 	$usercount = $membercount + $guestcount;
 	$mostonline = $cache->read("mostonline");
 	$recordcount = $mostonline['numusers'];
-	$recorddate = mydate($mybb->settings['dateformat'], $mostonline['time']);
-	$recordtime = mydate($mybb->settings['timeformat'], $mostonline['time']);
+	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);
+	$recordtime = my_date($mybb->settings['timeformat'], $mostonline['time']);
 	if($mybb->settings['refreshwol'] != "no")
 	{
 		$refresh = "<meta http-equiv=\"refresh\" content=\"60;URL=online.php$refresh_string\" />";
@@ -616,7 +616,7 @@ function show($user)
 	{
 		$onlinename = format_name($lang->guest, 1);
 	}
-	$onlinetime = mydate($mybb->settings['timeformat'], $user['time']);
+	$onlinetime = my_date($mybb->settings['timeformat'], $user['time']);
 	if($mybb->usergroup['canviewonlineips'] == "yes")
 	{
 		eval("\$userip = \"".$templates->get("online_row_ip")."\";");
