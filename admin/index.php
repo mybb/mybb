@@ -495,6 +495,7 @@ else
 		// Strip session ID from goto
 		$goto = preg_replace("#adminsid=[a-zA-Z0-9]{32}#i", "", $mybb->input['goto']);
 		$parsed_url = parse_url($goto);
+		$goto = htmlspecialchars_uni($goto);
 		if(!$parsed_url['query'])
 		{
 			$goto .= "?".SID;
@@ -503,7 +504,6 @@ else
 		{
 			$goto .= "&amp;".SID;
 		}
-		$goto = htmlspecialchars_uni($goto);
 	}
 	else
 	{

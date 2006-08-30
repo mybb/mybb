@@ -78,7 +78,7 @@ else
 		$month = my_date("n");
 	}
 	// Find the number of days in that month
-	$time = mktime(0, 0, 0, $month, 1, $year);
+	$time = gmmktime(0, 0, 0, $month, 1, $year);
 	$days = my_date("t", $time);
 	// Now the specific day
 	if(isset($mybb->input['day']) && $mybb->input['day'] >= 1 && $mybb->input['day'] <= $days)
@@ -106,7 +106,7 @@ else
 }
 
 // Make sure there's no leading zeros
-$stamp = mktime(0, 0, 0, $month, $day, $year);
+$stamp = gmmktime(0, 0, 0, $month, $day, $year);
 $day = my_date("j", $stamp, '0');
 $month = my_date("n", $stamp, '0');
 $year = my_date("Y", $stamp, '0');
@@ -271,8 +271,8 @@ if($mybb->input['action'] == "dayview")
 			$eventposter = $lang_guest;
 		}
 		$eventdate = explode("-", $event['date']);
-		$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
-		$eventdate = my_date($mybb->settings['dateformat'], $eventdate, $eventdate, "", 0);
+		$eventdate = gmmktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
+		$eventdate = my_date($mybb->settings['dateformat'], $eventdate, "", 0);
 		eval("\$events .= \"".$templates->get("calendar_dayview_event")."\";");
 	}
 	if(!$events)
@@ -690,12 +690,12 @@ if($mybb->input['action'] == "calendar_main")
 		$daybits .= "</tr>\n";
 	}
 
-	$prev = mktime(0, 0, 0, my_date("n", $time) - 1, 1, $year);
-	$next = mktime(0, 0, 0, my_date("n", $time) + 1, 1, $year);
-	$prevyear = my_date("Y", $prev);
-	$prevmonth = my_date("n", $prev);
-	$nextyear = my_date("Y", $next);
-	$nextmonth = my_date("n", $next);
+	$prev = gmmktime(0, 0, 0, my_date("n", $time) - 1, 1, $year);
+	$next = gmmktime(0, 0, 0, my_date("n", $time) + 1, 1, $year);
+	$prevyear = my_date("Y", $prev, "0");
+	$prevmonth = my_date("n", $prev, "0");
+	$nextyear = my_date("Y", $next, "0");
+	$nextmonth = my_date("n", $next, "0");
 
 	$yearsel = '';
 	for($i = my_date("Y"); $i < (my_date("Y") + 5); $i++)
