@@ -228,7 +228,8 @@ autoComplete.prototype = {
 			var item = this.popup.childNodes[i];
 			item.index = i;
 			item.style.padding = "2px";
-			item.style.height = "1em";
+			item.style.clear = "both";
+			//item.style.height = "1em";
 			Event.observe(item, "mouseover", this.itemOver.bindAsEventListener(this));
 			Event.observe(item, "click", this.itemClick.bindAsEventListener(this));
 		}
@@ -279,8 +280,11 @@ autoComplete.prototype = {
 		
 		this.popup.scrollTop = 0;		
 		Event.observe(this.textbox, "blur", this.hidePopup.bindAsEventListener(this));
+		Event.observe(this.popup, "mouseover", this.popupOver.bindAsEventListener(this));
+		Event.observe(this.popup, "mouseout", this.popupOut.bindAsEventListener(this));
 		this.popup.style.display = "";
 		this.menuOpen = true;
+		this.overPopup = 0;
 		if(this.currentKeyCode != 8 && this.currentKeyCode != 46)
 		{
 			this.highlightItem(0);
@@ -291,6 +295,25 @@ autoComplete.prototype = {
 	hidePopup: function()
 	{
 		this.popup.style.display = "none";
+		Event.stopObserving(this.textbox, "blur", this.hidePopup.bindAsEventListener(this));
+		Event.stopObserving(this.popup, "mouseover", this.popupOver.bindAsEventListener(this));
+		Event.stopObserving(this.popup, "mouseout", this.popupOut.bindAsEventListener(this));
+		if(this.overPopup == 1 && this.currentIndex > -1)
+		{
+			this.updateValue(this.popup.childNodes[this.currentIndex]);
+			this.currentIndex = -1;
+			this.textbox.focus();
+		}
+	},
+	
+	popupOver: function()
+	{
+		this.overPopup = 1;
+	},
+	
+	popupOut: function()
+	{
+		this.overPopup = 1;
 	},
 	
 	updateValue: function(selectedItem)
@@ -334,8 +357,10 @@ autoComplete.prototype = {
 	
 	itemClick: function(event)
 	{
+		$('message').value += "item click - ";
 		var element = Event.findElement(event, 'DIV');
 		selectedItem = element.index;
+			$('message').value += element.index+"\n\n";
 		this.updateValue(this.popup.childNodes[selectedItem]);
 		this.hidePopup();
 		this.currentIndex = -1;
