@@ -155,7 +155,7 @@ function send_mail_queue($count=10)
 			// Delete the message from the queue
 			$db->delete_query(TABLE_PREFIX."mailqueue", "mid='{$email['mid']}'");
 
-			mymail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
+			my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
 		}
 		// Update the mailqueue cache and remove the lock
 		$cache->updatemailqueue(time(), 0);
@@ -283,7 +283,7 @@ function my_date($format, $stamp="", $offset="", $ty=1)
  * @param string The from address of the email, if blank, the board name will be used.
  * @param string The chracter set being used to send this email.
  */
-function mymail($to, $subject, $message, $from="", $charset="", $headers="")
+function my_mail($to, $subject, $message, $from="", $charset="", $headers="")
 {
 	global $db, $mybb, $lang;
 
@@ -1934,7 +1934,7 @@ function get_unviewable_forums()
  * @param int The year of the date 
  * @return string The correct date format 
  */
-function fixmktime($format, $year)
+function fix_mktime($format, $year)
 {
 	// Our little work around for the date < 1970 thing.
 	// -2 idea provided by Matt Light (http://www.mephex.com)
@@ -2654,7 +2654,7 @@ function htmlspecialchars_uni($message)
  * @param int The number to format.
  * @return int The formatted number.
  */
-function mynumberformat($number)
+function my_number_format($number)
 {
 	global $mybb;
 	if($number == "-")
@@ -3297,7 +3297,7 @@ function rebuildsettings()
  *
  * @param string Decimal value of a character reference
  */
-function dec2utf8($src)
+function dec_to_utf8($src)
 {
 	$dest = '';
 	if($src < 0)

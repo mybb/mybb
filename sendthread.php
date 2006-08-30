@@ -90,7 +90,7 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 	{
 		$from = $mybb->user['username'] . " <" . $mybb->user['email'] . ">";
 	}
-	mymail($mybb->input['sendto'], $mybb->input['subject'], $mybb->input['message'], $from);
+	my_mail($mybb->input['sendto'], $mybb->input['subject'], $mybb->input['message'], $from);
 	$plugins->run_hooks("sendthread_do_sendtofriend_end");
 	redirect("showthread.php?tid=$tid", $lang->redirect_emailsent);
 }

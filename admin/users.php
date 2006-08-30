@@ -402,7 +402,7 @@ if($mybb->input['action'] == "do_add")
 		$db->insert_query(TABLE_PREFIX."awaitingactivation", $activationarray);
 		$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
 		$emailmessage = sprintf($lang->email_activateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-		mymail($email, $emailsubject, $emailmessage);
+		my_mail($email, $emailsubject, $emailmessage);
 	}
 	$cache->updatestats();
 	cpredirect("users.php?".SID."&lastuid={$user_info['uid']}", $lang->user_added);
@@ -675,7 +675,7 @@ if($mybb->input['action'] == "do_email")
 			}
 			elseif($user['email'] != '')
 			{
-				mymail($user['email'], $searchop['subject'], $sendmessage, $searchop['from']);
+				my_mail($user['email'], $searchop['subject'], $sendmessage, $searchop['from']);
 				echo sprintf($lang->email_sent, $user['username']);
 			}
 			else
@@ -1113,7 +1113,7 @@ if($mybb->input['action'] == "stats")
 		$membday = explode('-', $user['birthday']);
 		if($membday[2])
 		{
-			$bdayformat = fixmktime($mybb->settings['dateformat'], $membday[2]);
+			$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
 			$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
 			$membdayage = "(" . floor((time() - $membday) / 31557600) . " ".$lang->years_old .")";
 			$membday = gmdate($bdayformat, $membday);

@@ -103,7 +103,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			}
 			else
 			{
-				mymail($mod['email'], $emailsubject, $emailmessage);
+				my_mail($mod['email'], $emailsubject, $emailmessage);
 			}
 		}
 	}

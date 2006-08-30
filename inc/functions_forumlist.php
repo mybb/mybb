@@ -201,8 +201,8 @@ function build_forumbits($pid=0, $depth=1)
 			// Otherwise, format thread and post counts
 			else
 			{
-				$posts = mynumberformat($forum['posts']);
-				$threads = mynumberformat($forum['threads']);
+				$posts = my_number_format($forum['posts']);
+				$threads = my_number_format($forum['threads']);
 			}
 
 			// Moderator column is not off
@@ -341,7 +341,7 @@ function get_forum_unapproved($forum)
 			{
 				$unapproved_posts_count = sprintf($lang->forum_unapproved_post_count, 1);
 			}
-			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".mynumberformat($forum['unapprovedposts']).")</span>";
+			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".my_number_format($forum['unapprovedposts']).")</span>";
 		}
 		// Forum has one or more unapproved threads, format language string accordingly
 		if($forum['unapprovedthreads'])
@@ -354,7 +354,7 @@ function get_forum_unapproved($forum)
 			{
 				$unapproved_threads_count = sprintf($lang->forum_unapproved_thread_count, 1);
 			}
-			$unapproved_threads = " <span title=\"{$unapproved_threads_count}\">(".mynumberformat($forum['unapprovedthreads']).")</span>";
+			$unapproved_threads = " <span title=\"{$unapproved_threads_count}\">(".my_number_format($forum['unapprovedthreads']).")</span>";
 		}
 	}
 	return array(

@@ -214,7 +214,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['userstars'] .= "<br />";
 		}
-		$post['postnum'] = mynumberformat($post['postnum']);
+		$post['postnum'] = my_number_format($post['postnum']);
 
 		// Determine the status to show for the user (Online/Offline/Away)
 		$timecut = time() - $mybb->settings['wolcutoff'];

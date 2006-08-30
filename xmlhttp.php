@@ -209,7 +209,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	$subject = $mybb->input['value'];
 	if(strtolower($charset) == "utf-8")
 	{
-		$subject = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $subject);
+		$subject = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $subject);
 	}
 	else
 	{
@@ -325,7 +325,7 @@ else if($mybb->input['action'] == "edit_post")
 		$message = strval($_POST['value']);
 		if(strtolower($charset) == "utf-8")
 		{
-			$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $message);
+			$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $message);
 		}
 		else
 		{

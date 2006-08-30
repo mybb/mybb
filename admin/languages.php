@@ -335,12 +335,12 @@ if($mybb->input['action'] == "edit")
 				{
 					if(strtolower($langinfo['charset']) == "utf-8")
 					{
-						$withvars[$key] = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $withvars[$key]);
-						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $value);
+						$withvars[$key] = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $withvars[$key]);
+						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $value);
 					}
 					else
 					{
-						$withvars[$key] = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $withvars[$key]);
+						$withvars[$key] = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $withvars[$key]);
 						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $value);
 					}	
 					tablesubheader($key, "", 1);
@@ -369,7 +369,7 @@ if($mybb->input['action'] == "edit")
 				{
 					if(strtolower($langinfo['charset']) == "utf-8")
 					{
-						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec2utf8(hexdec('$1'));", $value);
+						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $value);
 					}
 					else
 					{

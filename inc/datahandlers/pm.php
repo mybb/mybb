@@ -217,7 +217,7 @@ class PMDataHandler extends DataHandler
 			}
 			$emailmessage = sprintf($emailmessage, $touser['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 			$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
-			mymail($touser['email'], $emailsubject, $emailmessage);
+			my_mail($touser['email'], $emailsubject, $emailmessage);
 
 			$this->set_error("recipient_reached_quota");
 			return false;
@@ -367,7 +367,7 @@ class PMDataHandler extends DataHandler
 			}
 			$emailmessage = sprintf($emailmessage, $pm['recipient']['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 			$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
-			mymail($pm['recipient']['email'], $emailsubject, $emailmessage);
+			my_mail($pm['recipient']['email'], $emailsubject, $emailmessage);
 		}
 		
 		// Check if we're updating a draft or not.
