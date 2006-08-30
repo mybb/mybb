@@ -137,7 +137,7 @@ function make_profile_field_input($required=0, $uid=0)
 		$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='$uid'");
 		$userfields = $db->fetch_array($query);
 	}
-	
+
 	if($required == 1)
 	{
 		$required = 'yes';
@@ -185,7 +185,7 @@ function make_profile_field_input($required=0, $uid=0)
 				$code = "<select name=\"profile_fields[".$field."][]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
 			}
 		}
-		elseif($type == "select") 
+		elseif($type == "select")
     {
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
@@ -265,7 +265,7 @@ function make_profile_field_input($required=0, $uid=0)
 			$code = "<input type=\"text\" name=\"profile_fields[$field]\" length=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
 		}
 		makelabelcode($profilefield[name], $code);
-		
+
 		$code = '';
 		$select = '';
 		$val = '';
@@ -273,7 +273,7 @@ function make_profile_field_input($required=0, $uid=0)
 		$expoptions = '';
 		$useropts = '';
 		$seloptions = '';
-	}	
+	}
 }
 $bantimes["1-0-0"] = "1 $lang->day";
 $bantimes["2-0-0"] = "2 $lang->days";
@@ -367,7 +367,7 @@ if($mybb->input['action'] == "do_add")
 	);
 
 	$plugins->run_hooks("admin_users_do_add");
-	
+
 	// Set the data of the user in the datahandler.
 	$userhandler->set_data($user);
 	$errors = '';
@@ -415,7 +415,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		cperror($lang->cannot_perform_action_super_admin);
 	}
-	
+
 	// Determine the usergroup stuff
 	if(is_array($mybb->input['additionalgroups']))
 	{
@@ -462,7 +462,7 @@ if($mybb->input['action'] == "do_edit")
 		"style" => $mybb->input['style'],
 		"signature" => $mybb->input['signature']
 	);
-	
+
 	if($mybb->input['userpassword'])
 	{
 		$user['password'] = $mybb->input['userpassword'];
@@ -487,7 +487,7 @@ if($mybb->input['action'] == "do_edit")
 	);
 
 	$plugins->run_hooks("admin_users_do_edit");
-	
+
 	// Set the data of the user in the datahandler.
 	$userhandler->set_data($user);
 	$errors = '';
@@ -521,7 +521,7 @@ if($mybb->input['action'] == "do_delete")
 		{
 			cperror($lang->cannot_perform_action_super_admin);
 		}
-		
+
 		$plugins->run_hooks("admin_users_do_delete");
 		$db->query("UPDATE ".TABLE_PREFIX."posts SET uid='0' WHERE uid='".intval($mybb->input['uid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
@@ -555,7 +555,7 @@ if($mybb->input['action'] == "do_email")
 	}
 	if(is_array($search['usergroups']))
 	{
-		$conditions .= "AND (1=0";
+		$conditions .= " AND (1=0";
 		foreach($search['usergroups'] as $group)
 		{
 			$conditions .= " OR (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
@@ -623,7 +623,7 @@ if($mybb->input['action'] == "do_email")
 		$searchop['start'] = ($searchop['page']-1) * $searchop['perpage'];
 	}
 	$searchop['page']++;
-	
+
 	$plugins->run_hooks("admin_users_do_email");
 
 	$query = $db->query("SELECT COUNT(*) AS results FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid");
@@ -855,7 +855,7 @@ if($mybb->input['action'] == "edit")
 	{
 		cperror($lang->cannot_perform_action_super_admin);
 	}
-		
+
 	$plugins->run_hooks("admin_users_edit");
 	$uid = intval($mybb->input['uid']);
 	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='$uid'");
@@ -937,7 +937,7 @@ if($mybb->input['action'] == "delete")
 	{
 		cperror($lang->cannot_perform_action_super_admin);
 	}
-		
+
 	$uid = intval($mybb->input['uid']);
 	$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='$uid'");
 	$user = $db->fetch_array($query);
@@ -1163,7 +1163,7 @@ if($mybb->input['action'] == "pmstats")
 	$unreadpmscount = $db->fetch_array($query);
 
 	$plugins->run_hooks("admin_users_pmstats");
-	
+
 	cpheader();
 	starttable();
 	tableheader($lang->pm_stats);
@@ -1269,7 +1269,7 @@ if($mybb->input['action'] == "find")
 		$search['username'] = $db->escape_string($search['username']);
 		$conditions .= " AND username LIKE '%$search[username]%'";
 	}
-    if($search['usergroup']) 
+    if($search['usergroup'])
     {
 		// Searching for primary usergroup users
         $search['usergroup'] = intval($search['usergroup']);
@@ -1403,7 +1403,7 @@ if($mybb->input['action'] == "find")
 		$searchop['start'] = ($searchop['page']-1) * $searchop['perpage'];
 	}
 	$searchop['page'];
-	
+
 	$plugins->run_hooks("admin_users_find");
 
 	$countquery = "SELECT * FROM ".TABLE_PREFIX."users LEFT JOIN ".TABLE_PREFIX."userfields ON (ufid=uid) WHERE $conditions";
@@ -1628,7 +1628,7 @@ if($mybb->input['action'] == "find")
 		}
 		endtable();
 
-		// Generate hiddens for form for next/prev pages	
+		// Generate hiddens for form for next/prev pages
 		if(is_array($search))
 		{
 			foreach($search as $key => $val)
@@ -1754,12 +1754,12 @@ if($mybb->input['action'] == "do_manageban")
 		$bancheck = $db->fetch_array($query);
 		$uid = $user['uid'];
 	}
-	
+
 	if(is_super_admin($user['uid']) && $mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid']))
 	{
 		cperror($lang->cannot_perform_action_super_admin);
 	}
-		
+
 	if($mybb->input['liftafter'] == '---')
 	{ // permanent ban
 		$liftdate = "perm";
@@ -1852,13 +1852,13 @@ if($mybb->input['action'] == "manageban")
 		{
 			cperror($lang->cannot_perform_action_super_admin);
 		}
-		
+
 		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['auid'])."'");
 		$user = $db->fetch_array($query);
 
 		cpheader();
 		startform("users.php", '', "do_manageban");
-		starttable();		
+		starttable();
 		tableheader($lang->ban_user);
 		$ban['bantime'] = '1-0-0';
 		makeinputcode($lang->username, "username", $user['username']);
@@ -2065,7 +2065,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 			elseif($type == "checkbox")
 			{
 				$expoptions = explode("\n", $options);
-				if(is_array($expoptions)) 
+				if(is_array($expoptions))
 				{
 					foreach($expoptions as $key => $val)
 					{
