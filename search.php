@@ -612,7 +612,7 @@ elseif($mybb->input['action'] == "findguest")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
-		"ipaddress" => $db->escape_string($ipaddress),
+		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
 		"searchtype" => "titles",
@@ -643,7 +643,7 @@ elseif($mybb->input['action'] == "finduser")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
-		"ipaddress" => $db->escape_string($ipaddress),
+		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
 		"searchtype" => "titles",
@@ -674,7 +674,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
-		"ipaddress" => $db->escape_string($ipaddress),
+		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
 		"searchtype" => "titles",
@@ -711,7 +711,7 @@ elseif($mybb->input['action'] == "getnew")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
-		"ipaddress" => $db->escape_string($ipaddress),
+		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
 		"searchtype" => "titles",
@@ -759,7 +759,7 @@ elseif($mybb->input['action'] == "getdaily")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => time(),
-		"ipaddress" => $db->escape_string($ipaddress),
+		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
 		"searchtype" => "titles",
@@ -785,7 +785,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$conditions = "uid='0' AND ipaddress='".$db->escape_string($ipaddress)."'";
+			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
 		}
 		$timecut = time()-$mybb->settings['searchfloodtime'];
 		$query = $db->simple_select(TABLE_PREFIX."searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
@@ -819,7 +819,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 
 	if($config['dbtype'] == "mysql" || $config['dbtype'] == "mysqli")
 	{
-		if($settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean(TABLE_PREFIX."posts") && $db->is_fulltext(TABLE_PREFIX."posts"))
+		if($mybb->settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean(TABLE_PREFIX."posts") && $db->is_fulltext(TABLE_PREFIX."posts"))
 		{
 			$search_results = perform_search_mysql_ft($search_data);
 		}
@@ -837,7 +837,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => $now,
-		"ipaddress" => $db->escape_string($ipaddress),
+		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => $search_results['threads'],
 		"posts" => $search_results['posts'],
 		"searchtype" => $search_results['searchtype'],

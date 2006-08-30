@@ -181,6 +181,7 @@ padding: 6px;]]></extra>
 			<color><![CDATA[#000000]]></color>
 			<border><![CDATA[1px solid #0f5c8e]]></border>
 			<extra><![CDATA[padding: 2px;
+font-family: Verdana;
 line-height: 1.4;
 font-size: 13px;]]></extra>
 		</textarea>
@@ -782,7 +783,7 @@ var inlineId = {$tid};
 </table>]]></template>
 		<template name="forumbit_depth2_forum_lastpost" version="120"><![CDATA[<span class="smalltext">
 <a href="showthread.php?tid={$lastposttid}&amp;action=lastpost" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
-<br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} $lastpost_profilelink</span>
+<br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} {$lastpost_profilelink}</span>
 ]]></template>
 		<template name="editpost" version="120"><![CDATA[<html>
 <head>
@@ -1447,18 +1448,18 @@ var inlineId = {$fid};
 <br />]]></template>
 		<template name="report_thanks"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - $lang->report_post</title>
-$headerinclude
+<title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
+{$headerinclude}
 </head>
 <body>
 <br />
-<table border="0" cellspacing="$theme[borderwidth]" cellpadding="$theme[tablespace]" class="tborder">
+<table border="0" cellspacing="{$theme[borderwidth]}" cellpadding="{$theme[tablespace]}" class="tborder">
 <tr>
 <td class="trow1" align="center">
 <br />
 <br />
-<strong>$lang->thank_you</strong>
-<blockquote>$lang->post_reported</blockquote>
+<strong>{$lang->thank_you}</strong>
+<blockquote>{$lang->post_reported}</blockquote>
 <br /><br />
 <div style="text-align: center;">
 	<script type="text/javascript">
@@ -2842,7 +2843,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 				<span class="smalltext">
 					({$usertitle})<br />
 					<br />
-					<strong>$lang->total_reputation:</strong> {$user['reputation']}<br />
+					<strong>{$lang->total_reputation}:</strong> {$user['reputation']}<br />
 					<strong class="reputation_positive">{$lang->positive_count}:</strong> {$positive_count}<br />
 					<strong class="reputation_neutral">{$lang->neutral_count}:</strong> {$neutral_count}<br />
 					<strong class="reputation_negative">{$lang->negative_count}:</strong> {$negative_count}
@@ -2898,7 +2899,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 			<option value="dateline" {$sort_selected['last_updated']}>{$lang->sort_updated}</option>
 			<option value="username" {$sort_selected['username']}>{$lang->sort_username}</option>
 		</select>
-		$gobutton
+		{$gobutton}
 	</form>
 	</td>
 </tr>
@@ -6522,14 +6523,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		</div>]]></template>
 		<template name="reputation_vote" version="120"><![CDATA[<tr>
 	<td class="trow1 {$status_class}">
-		{$reputation_vote['username']} <span class="smalltext">({$reputation_vote['user_reputation']}) - $last_updated $delete_link<br /><br /></span>
+		{$reputation_vote['username']} <span class="smalltext">({$reputation_vote['user_reputation']}) - {$last_updated} {$delete_link}<br /><br /></span>
 		<strong class="{$vote_type_class}">{$vote_type}:</strong> {$reputation_vote['comments']}
 	</td>
 </tr>]]></template>
 		<template name="reputation_addlink" version="120"><![CDATA[<div class="float_right" style="padding-bottom: 4px;"><a href="javascript:MyBB.reputation({$user['uid']});"><img src="{$theme['imglangdir']}/rateuser.gif" alt="{$lang->rate_user}" /></a></div>]]></template>
 		<template name="member_profile_reputation" version="120"><![CDATA[<tr>
 	<td class="trow1"><strong>{$lang->reputation}</strong></td>
-	<td class="trow1">$reputation [<a href="reputation.php?uid={$memprofile['uid']}">{$lang->reputation_details}</a>] {$vote_link}</td>
+	<td class="trow1">{$reputation} [<a href="reputation.php?uid={$memprofile['uid']}">{$lang->reputation_details}</a>] {$vote_link}</td>
 </tr>]]></template>
 		<template name="reputation_no_votes" version="120"><![CDATA[<tr>
 	<td class="trow1" style="text-align: center;">{$lang->no_reputation_votes}</td>

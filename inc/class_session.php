@@ -40,10 +40,10 @@ class session
 	 */
 	function init()
 	{
-		global $ipaddress, $db, $mybb, $noonline;
+		global $db, $mybb;
 
 		// Get our visitor's IP.
-		$this->ipaddress = $ipaddress = get_ip();
+		$this->ipaddress = get_ip();
 
 		// Find out the user agent.
 		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
@@ -105,7 +105,7 @@ class session
 		}
 
 		// As a token of our appreciation for getting this far, give the user a cookie
-		my_setcookie("sid", $this->sid, -1);
+		mysetcookie("sid", $this->sid, -1);
 	}
 
 	/**
@@ -116,7 +116,7 @@ class session
 	 */
 	function load_user($uid, $password='')
 	{
-		global $mybbuser, $mybb, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $time, $lang, $mybbgroups, $loadpmpopup, $session;
+		global $mybb, $db, $time, $lang, $mybbgroups, $loadpmpopup, $session;
 
 		$uid = intval($uid);
 		$query = $db->query("
@@ -311,10 +311,6 @@ class session
 				$this->create_session($mybb->user['uid']);
 			}
 		}
-
-		// Deprecated...
-		$mybbuser = $mybb->user;
-		$mybbgroup = $mybb->usergroup;
 		return true;
 	}
 
@@ -324,7 +320,7 @@ class session
 	 */
 	function load_guest()
 	{
-		global $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $lang;
+		global $mybb, $time, $db, $lang;
 
 		// Set up some defaults
 		$time = time();
@@ -348,7 +344,7 @@ class session
 			}
 			if($time - $_COOKIE['mybb']['lastactive'] > 900)
 			{
-				my_setcookie("mybb[lastvisit]", $mybb->user['lastactive']);
+				mysetcookie("mybb[lastvisit]", $mybb->user['lastactive']);
 				$mybb->user['lastvisit'] = $mybb->user['lastactive'];
 			}
 			else
@@ -360,12 +356,12 @@ class session
 		// No last visit cookie, create one.
 		else
 		{
-			my_setcookie("mybb[lastvisit]", $time);
+			mysetcookie("mybb[lastvisit]", $time);
 			$mybb->user['lastvisit'] = $time;
 		}
 
 		// Update last active cookie.
-		my_setcookie("mybb[lastactive]", $time);
+		mysetcookie("mybb[lastactive]", $time);
 
 		// Gather a full permission set for this guest
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
@@ -384,10 +380,6 @@ class session
 				$this->create_session();
 			}
 		}
-
-		// Deprecated... 
-		$mybbuser = $mybb->user;
-		$mybbgroup = $mybb->usergroup;
 	}
 
 	/**
@@ -397,12 +389,11 @@ class session
 	 */
 	function load_spider($spider)
 	{
-		global $mybbuser, $mybb, $time, $settings, $mybbgroup, $db, $noonline, $ipaddress, $useragent, $bots, $lang;
+		global $mybb, $time, $db, $lang;
 
 		// Set up some defaults
 		$time = time();
 		$this->is_spider = true;
-		$spidername = $bots[$spider];
 		$mybb->user['usergroup'] = $this->botgroup;
 		$mybb->user['username'] = '';
 		$mybb->user['username'] = '';
@@ -424,9 +415,6 @@ class session
 			$this->create_session();
 		}
 
-		// Deprecated...
-		$mybbuser = $mybb->user;
-		$mybbgroup = $mybb->usergroup;
 	}
 
 	/**

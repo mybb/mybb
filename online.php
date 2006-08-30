@@ -302,7 +302,7 @@ else
 
 function show($user)
 {
-	global $threads, $forums, $forums_linkto, $posts, $events, $members, $settings, $theme, $mybb, $mybbuser, $onlinerows, $templates, $lang, $session;
+	global $threads, $forums, $forums_linkto, $posts, $events, $members, $theme, $mybb, $onlinerows, $templates, $lang, $session;
 
 	switch($user['activity'])
 	{
@@ -630,7 +630,7 @@ function show($user)
 
 function what($user)
 {
-	global $mybb, $mybbuser, $settings, $theme, $fidsql, $tidsql, $pidsql, $eidsql, $uidsql;
+	global $mybb, $theme, $fidsql, $tidsql, $pidsql, $eidsql, $uidsql;
 	$splitloc = explode(".php", $user['location']);
 	if($splitloc[0] == $user['location'])
 	{

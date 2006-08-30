@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-require_once "./global.php";
+require "./global.php";
 
 // Find the AID we're looking for
 if($mybb->input['thumbnail'])
@@ -102,14 +102,14 @@ if($mybb->input['thumbnail'])
 	}
 	header("Content-disposition: filename=$attachment[filename]");
 	header("Content-type: ".$type);
-	$thumb = $settings['uploadspath']."/".$attachment['thumbnail'];
+	$thumb = $mybb->settings['uploadspath']."/".$attachment['thumbnail'];
 	header("Content-length: ".@filesize($thumb));
 	echo file_get_contents($thumb);
 }
 else
 {
 	$ext = get_extension($attachment['filename']);
-	if($ext == "txt" || $ext == "htm" || $ext == "html")
+	if($ext == "txt" || $ext == "htm" || $ext == "html" || $ext == "pdf")
 	{
 		header("Content-disposition: attachment; filename=$attachment[filename]");
 	}
@@ -119,6 +119,6 @@ else
 	}	
 	header("Content-type: $attachment[filetype]");
 	header("Content-length: $attachment[filesize]");
-	echo file_get_contents($settings['uploadspath']."/".$attachment['attachname']);
+	echo file_get_contents($mybb->settings['uploadspath']."/".$attachment['attachname']);
 }
 ?>

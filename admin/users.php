@@ -400,8 +400,8 @@ if($mybb->input['action'] == "do_add")
 			"type" => 'r'
 		);
 		$db->insert_query(TABLE_PREFIX."awaitingactivation", $activationarray);
-		$emailsubject = sprintf($lang->emailsubject_activateaccount, $settings['bbname']);
-		$emailmessage = sprintf($lang->email_activateaccount, $username, $settings['bbname'], $settings['bburl'], $uid, $activationcode);
+		$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+		$emailmessage = sprintf($lang->email_activateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
 		mymail($email, $emailsubject, $emailmessage);
 	}
 	$cache->updatestats();
@@ -555,10 +555,12 @@ if($mybb->input['action'] == "do_email")
 	}
 	if(is_array($search['usergroups']))
 	{
+		$conditions .= "AND (1=0";
 		foreach($search['usergroups'] as $group)
 		{
-			$conditions .= " AND (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
+			$conditions .= " OR (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
 		}
+		$conditions .= ")";
 	}
 
 	if($search['email'])
@@ -648,8 +650,8 @@ if($mybb->input['action'] == "do_email")
 			$sendmessage = str_replace("{uid}", $user['uid'], $sendmessage);
 			$sendmessage = str_replace("{username}", $user['username'], $sendmessage);
 			$sendmessage = str_replace("{email}", $user['email'], $sendmessage);
-			$sendmessage = str_replace("{bbname}", $settings['bbname'], $sendmessage);
-			$sendmessage = str_replace("{bburl}", $settings['bburl'], $sendmessage);
+			$sendmessage = str_replace("{bbname}", $mybb->settings['bbname'], $sendmessage);
+			$sendmessage = str_replace("{bburl}", $mybb->settings['bburl'], $sendmessage);
 
 			if($searchop['type'] == "html" && $user['email'] != '')
 			{
@@ -1195,7 +1197,7 @@ if($mybb->input['action'] == "email")
 	tableheader($lang->mass_email_users);
 	tablesubheader($lang->email_options);
 	makeinputcode($lang->per_page, "searchop[perpage]", "500", "10");
-	makeinputcode($lang->from, "searchop[from]", $settings['adminemail']);
+	makeinputcode($lang->from, "searchop[from]", $mybb->settings['adminemail']);
 	makeinputcode($lang->subject, "searchop[subject]");
 	maketextareacode($lang->message, "searchop[message]", '', 10, 50);
 	$typeoptions = "<input type=\"radio\" name=\"searchop[type]\" value=\"email\" checked=\"checked\" /> $lang->normal_email<br />\n";

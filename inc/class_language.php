@@ -69,7 +69,7 @@ class MyLanguage
 	 */
 	function set_language($language="english", $area="user")
 	{
-		global $settings;
+		global $mybb;
 		// Check if the language exists.
 		if(!$this->language_exists($language))
 		{
@@ -91,7 +91,7 @@ class MyLanguage
 		{
 			if(!is_dir($this->path."/".$language."/admin"))
 			{
-				if(!is_dir($this->path."/".$settings['cplanguage']."/admin"))
+				if(!is_dir($this->path."/".$mybb->settings['cplanguage']."/admin"))
 				{
 					if(!is_dir($this->path."/english/admin"))
 					{
@@ -104,7 +104,7 @@ class MyLanguage
 				}
 				else
 				{
-					$language = $settings['cplanguage'];
+					$language = $mybb->settings['cplanguage'];
 				}
 			}
 			$this->language = $language."/admin";
@@ -131,7 +131,7 @@ class MyLanguage
 		}
 		if(file_exists($lfile))
 		{
-			require $lfile;
+			require_once $lfile;
 		}
 		else
 		{

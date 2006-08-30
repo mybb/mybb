@@ -630,7 +630,7 @@ class databaseEngine
 	{
 		if(function_exists("mysql_real_escape_string"))
 		{
-			$string = mysql_real_escape_string($string, $this->link);
+			$string = mysql_real_escape_string($string);
 		}
 		else
 		{

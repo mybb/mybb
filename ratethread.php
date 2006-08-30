@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 $templatelist = '';
-require_once "./global.php";
+require "./global.php";
 
 $lang->load("ratethread");
 
@@ -56,7 +56,7 @@ if($mybb->user['uid'] != "0")
 }
 else
 {
-	$whereclause = "ipaddress='".$db->escape_string($ipaddress)."'";
+	$whereclause = "ipaddress='".$db->escape_string($session->ipaddress)."'";
 }
 $query = $db->simple_select(TABLE_PREFIX."threadratings", "*", "$whereclause AND tid='".intval($mybb->input['tid'])."'");
 $ratecheck = $db->fetch_array($query);
@@ -84,7 +84,7 @@ else
 			'tid' => intval($mybb->input['tid']),
 			'uid' => $mybb->user['uid'],
 			'rating' => $mybb->input['rating'],
-			'ipaddress' => $db->escape_string($ipaddress)
+			'ipaddress' => $db->escape_string($session->ipaddress)
 		);
 		$db->insert_query(TABLE_PREFIX."threadratings", $updatearray);
 	}
@@ -93,11 +93,11 @@ else
 		$updatearray = array(
 			'tid' => intval($mybb->input['tid']),
 			'rating' => $mybb->input['rating'],
-			'ipaddress' => $db->escape_string($ipaddress)
+			'ipaddress' => $db->escape_string($session->ipaddress)
 		);
 		$db->insert_query(TABLE_PREFIX."threadratings", $updatearray);
 		$time = time();
-		my_setcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
+		mysetcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
 	}
 }
 $plugins->run_hooks("ratethread_end");

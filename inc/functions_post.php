@@ -18,7 +18,7 @@
  */
 function build_postbit($post, $post_type=0)
 {
-	global $db, $altbg, $theme, $settings, $mybb, $mybbuser, $postcounter;
+	global $db, $altbg, $theme, $mybb, $postcounter;
 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
 	global $plugins, $parser, $cache;
@@ -214,7 +214,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['userstars'] .= "<br />";
 		}
-		$post['postnum'] = my_number_format($post['postnum']);
+		$post['postnum'] = mynumberformat($post['postnum']);
 
 		// Determine the status to show for the user (Online/Offline/Away)
 		$timecut = time() - $mybb->settings['wolcutoff'];

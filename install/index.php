@@ -760,7 +760,7 @@ function install_done()
 		'dst' => 'no',
 		'threadmode' => '',
 		'daysprune' => 0,
-		'regip' => $db->escape_string($ipaddress),
+		'regip' => $db->escape_string(get_ip()),
 		'language' => '',
 		'showcodebuttons' => 1,
 		'tpp' => 0,

@@ -17,6 +17,11 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		return $thumb;
 	}
 	list($imgwidth, $imgheight, $imgtype, $imgattr, $imgbits, $imgchan) = getimagesize($file);
+	if($imgwidth == 0 || $imgheight == 0)
+	{
+		$thumb['code'] = 3;
+		return $thumb;
+	}		
 	if(($imgwidth >= $maxwidth) || ($imgheight >= $maxheight))
 	{
 		check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
@@ -52,7 +57,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			$thumb['code'] = 3;
 			return $thumb;
 		}
-		$scale = scaleImage($imgwidth, $imgheight, $maxwidth, $maxheight);
+		$scale = scale_image($imgwidth, $imgheight, $maxwidth, $maxheight);
 		$thumbwidth = $scale['width'];
 		$thumbheight = $scale['height'];
 		$thumbim = @imagecreatetruecolor($thumbwidth, $thumbheight);
@@ -142,7 +147,7 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 	}
 }
 
-function scaleImage($width, $height, $maxwidth, $maxheight)
+function scale_image($width, $height, $maxwidth, $maxheight)
 {
 	$newwidth = $width;
 	$newheight = $height;

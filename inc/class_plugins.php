@@ -87,7 +87,7 @@ class pluginSystem
 				{
 					if($hook['file'])
 					{
-						require $hook['file'];
+						require_once $hook['file'];
 					}
 					$oldreturnargs = $returnargs;
 					$returnargs = call_user_func_array($hook['function'], array(&$arguments));
@@ -124,7 +124,7 @@ class pluginSystem
 				{
 					if($hook['file'])
 					{
-						require $hook['file'];
+						require_once $hook['file'];
 					}
 					call_user_func_array($hook['function'], array(&$arguments));
 				}

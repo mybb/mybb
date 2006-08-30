@@ -20,7 +20,7 @@
  */
 function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth="")
 {
-	global $db, $pforumcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $lang, $forumpass;
+	global $db, $pforumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $lang, $forumpass;
 	$pid = intval($pid);
 
 	if(!is_array($pforumcache))
@@ -95,7 +95,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
  */
 function get_unsearchable_forums($pid="0", $first=1)
 {
-	global $db, $forumcache, $permissioncache, $settings, $mybb, $mybbuser, $unsearchableforums, $unsearchable, $templates, $forumpass;
+	global $db, $forumcache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
 	$pid = intval($pid);
 	if(!is_array($forumcache))
 	{

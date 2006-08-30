@@ -65,7 +65,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 	{
 		$time = time();
 		$datecut = $time-(60*60*$mybb->settings['betweenregstime']);
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "regip='".$db->escape_string($ipaddress)."' AND regdate > '$datecut'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "*", "regip='".$db->escape_string($session->ipaddress)."' AND regdate > '$datecut'");
 		$regcount = $db->num_rows($query);
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
 		{

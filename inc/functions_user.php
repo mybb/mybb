@@ -439,7 +439,7 @@ function usercp_menu_messenger()
  */
 function usercp_menu_profile()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $mybbuser;
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
 
 	if($mybb->usergroup['canchangename'] != "no")
 	{
@@ -454,11 +454,11 @@ function usercp_menu_profile()
  */
 function usercp_menu_misc()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $mybbuser;
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
 
 	$query = $db->query("SELECT COUNT(*) AS draftcount FROM ".TABLE_PREFIX."posts WHERE visible='-2' AND uid='".$mybb->user['uid']."'");
 	$count = $db->fetch_array($query);
-	$draftcount = "(".my_number_format($count['draftcount']).")";
+	$draftcount = "(".mynumberformat($count['draftcount']).")";
 	if($count['draftcount'] > 0)
 	{
 		$draftstart = "<strong>";

@@ -1237,7 +1237,6 @@ function logadmin()
 		}
 	}
 	$now = time();
-	$ipaddress = get_ip();
 
 	$insertquery = array(
 		"uid" => $mybbadmin['uid'],
@@ -1245,7 +1244,7 @@ function logadmin()
 		"scriptname" => $db->escape_string($scriptname),
 		"action" => $db->escape_string($mybb->input['action']),
 		"querystring" => $db->escape_string($querystring),
-		"ipaddress" => $db->escape_string($ipaddress)
+		"ipaddress" => $db->escape_string(get_ip())
 	);
 
 	$db->insert_query(TABLE_PREFIX."adminlog", $insertquery);

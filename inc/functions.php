@@ -16,7 +16,7 @@
  */
 function output_page($contents)
 {
-	global $db, $lang, $settings, $theme, $plugins, $mybb, $mybbuser;
+	global $db, $lang, $theme, $plugins, $mybb;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
 	$contents = parse_page($contents);
@@ -171,7 +171,7 @@ function send_mail_queue($count=10)
  */
 function parse_page($contents)
 {
-	global $db, $lang, $settings, $theme, $mybb, $mybbuser, $htmldoctype, $loadpmpopup, $archive_url;
+	global $db, $lang, $theme, $mybb, $htmldoctype, $loadpmpopup, $archive_url;
 
 	$contents = str_replace('<navigation>', build_breadcrumb(1), $contents);
 	$contents = str_replace('<archive_url>', $archive_url, $contents);
@@ -422,7 +422,7 @@ function cache_forums()
  */
 function error($error="", $title="")
 {
-	global $header, $footer, $css, $toplinks, $settings, $theme, $headerinclude, $db, $templates, $lang, $mybb;
+	global $header, $footer, $theme, $headerinclude, $db, $templates, $lang, $mybb;
 
 	if(!$error)
 	{
@@ -449,7 +449,7 @@ function error($error="", $title="")
  */
 function inline_error($errors, $title="")
 {
-	global $theme, $mybb, $db, $lang, $templates, $settings;
+	global $theme, $mybb, $db, $lang, $templates;
 	if(!$title)
 	{
 		$title = $lang->please_correct_errors;
@@ -471,7 +471,7 @@ function inline_error($errors, $title="")
  */
 function error_no_permission()
 {
-	global $mybb, $mybbuser, $theme, $templates, $ipaddress, $db, $lang, $plugins, $session;
+	global $mybb, $theme, $templates, $db, $lang, $plugins, $session;
 
 	$time = time();
 	$plugins->run_hooks("no_permission");
@@ -482,6 +482,7 @@ function error_no_permission()
 	);
 	$db->update_query(TABLE_PREFIX."sessions", $noperm_array, "sid='".$session->sid."'");
 	$url = $_SERVER['REQUEST_URI'];
+	$url = str_replace("&", "&amp;", $url); 
 	if($mybb->user['uid'])
 	{
 		$lang->error_nopermission_user_5 = sprintf($lang->error_nopermission_user_5, $mybb->user['username']);
@@ -502,7 +503,7 @@ function error_no_permission()
  */
 function redirect($url, $message="", $title="")
 {
-	global $header, $footer, $css, $toplinks, $settings, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
+	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 
 	if(!$message)
 	{
@@ -516,6 +517,8 @@ function redirect($url, $message="", $title="")
 	}
 	if($mybb->settings['redirects'] == "on" && $mybb->user['showredirect'] != "no")
 	{
+		$url = str_replace("&amp;", "&");
+		$url = str_replace("&", "&amp");
 		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
 		output_page($redirectpage);
 	}
@@ -540,7 +543,7 @@ function redirect($url, $message="", $title="")
  */
 function multipage($count, $perpage, $page, $url)
 {
-	global $settings, $theme, $templates, $lang, $mybb;
+	global $theme, $templates, $lang, $mybb;
 
 	if($count > $perpage)
 	{
@@ -726,7 +729,7 @@ function usergroup_displaygroup($gid)
  */
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
-	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybbuser, $mybb, $usercache, $fpermissionscache;
+	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybb, $usercache, $fpermissionscache;
 
 	if($uid == 0)
 	{
@@ -835,7 +838,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
  */
 function check_forum_password($fid, $password="")
 {
-	global $mybb, $mybbuser, $toplinks, $header, $settings, $footer, $css, $headerinclude, $theme, $breadcrumb, $templates, $lang;
+	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang;
 	$showform = 1;
 
 	if($password)
@@ -844,7 +847,7 @@ function check_forum_password($fid, $password="")
 		{
 			if($password == $mybb->input['pwverify'])
 			{
-				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']));
+				mysetcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']));
 				$showform = 0;
 			}
 			else
@@ -887,7 +890,7 @@ function check_forum_password($fid, $password="")
  */
 function get_moderator_permissions($fid, $uid="0", $parentslist="")
 {
-	global $mybb, $mybbuser, $db;
+	global $mybb, $db;
 	static $modpermscache;
 
 	if($uid < 1)
@@ -927,7 +930,7 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
  */
 function is_moderator($fid="0", $action="", $uid="0")
 {
-	global $mybb, $mybbuser, $db;
+	global $mybb, $db;
 
 	if($uid == 0)
 	{
@@ -982,7 +985,7 @@ function is_moderator($fid="0", $action="", $uid="0")
  */
 function get_post_icons()
 {
-	global $mybb, $db, $icon, $settings, $theme, $templates, $lang;
+	global $mybb, $db, $icon, $theme, $templates, $lang;
 
 	$listed = 0;
 	if($mybb->input['icon'])
@@ -1024,7 +1027,7 @@ function get_post_icons()
  * @param string The cookie value.
  * @param int The timestamp of the expiry date.
  */
-function my_setcookie($name, $value="", $expires="")
+function mysetcookie($name, $value="", $expires="")
 {
 	global $mybb;
 
@@ -1062,7 +1065,7 @@ function my_setcookie($name, $value="", $expires="")
  *
  * @param string The cookie identifier.
  */
-function my_unsetcookie($name)
+function myunsetcookie($name)
 {
 	global $mybb;
 
@@ -1089,7 +1092,7 @@ function my_unsetcookie($name)
  * @param int The cookie content id.
  * @return array|boolean The cookie id's content array or false when non-existent.
  */
-function my_get_array_cookie($name, $id)
+function mygetarraycookie($name, $id)
 {
 	if(!isset($_COOKIE['mybb'][$name]))
 	{
@@ -1113,13 +1116,13 @@ function my_get_array_cookie($name, $id)
  * @param int The cookie content id.
  * @param string The value to set the cookie to.
  */
-function my_set_array_cookie($name, $id, $value)
+function mysetarraycookie($name, $id, $value)
 {
 	$cookie = $_COOKIE['mybb'];
 	$newcookie = unserialize($cookie[$name]);
 	$newcookie[$id] = $value;
 	$newcookie = addslashes(serialize($newcookie));
-	my_setcookie("mybb[$name]", $newcookie);
+	mysetcookie("mybb[$name]", $newcookie);
 }
 
 /**
@@ -1355,7 +1358,7 @@ function delete_post($pid, $tid="")
  */
 function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $permissions="", $name="fid")
 {
-	global $db, $forum_cache, $fjumpcache, $permissioncache, $settings, $mybb, $mybbuser, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
+	global $db, $forum_cache, $fjumpcache, $permissioncache, $mybb, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = intval($pid);
 	if($permissions)
@@ -1496,7 +1499,7 @@ function format_name($username, $usergroup, $displaygroup="")
  */
 function build_mycode_inserter()
 {
-	global $db, $mybb, $settings, $theme, $templates, $lang;
+	global $db, $mybb, $theme, $templates, $lang;
 
 	if($mybb->settings['bbcodeinserter'] != "off")
 	{
@@ -1573,7 +1576,7 @@ function build_mycode_inserter()
  */
 function build_clickable_smilies()
 {
-	global $db, $smiliecache, $settings, $theme, $templates, $lang, $mybb;
+	global $db, $smiliecache, $theme, $templates, $lang, $mybb;
 
 	if($mybb->settings['smilieinserter'] != "off" && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 	{
@@ -1701,7 +1704,7 @@ function gzip_encode($contents, $level=1)
  */
 function log_moderator_action($data, $action="")
 {
-	global $mybb, $mybbuser, $db, $session;
+	global $mybb, $db, $session;
 
 	/* If the fid or tid is not set, set it at 0 so MySQL doesn't choke on it. */
 	if($data['fid'] == '')
@@ -1879,7 +1882,7 @@ function get_attachment_icon($ext)
  */
 function get_unviewable_forums()
 {
-	global $db, $forum_cache, $permissioncache, $settings, $mybb, $mybbuser, $unviewableforums, $unviewable, $templates, $forumpass;
+	global $db, $forum_cache, $permissioncache, $mybb, $unviewableforums, $unviewable, $templates, $forumpass;
 
 	$pid = intval($pid);
 
@@ -1908,7 +1911,7 @@ function get_unviewable_forums()
 		$pwverified = 1;
 		if($forum['password'] != "")
 		{
-			if($_COOKIE['forumpass'][$forum['fid']] != md5($mybbuser['uid'].$forum['password']))
+			if($_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 			{
 				$pwverified = 0;
 			}
@@ -1925,20 +1928,12 @@ function get_unviewable_forums()
 	return $unviewableforums;
 }
 
-/**
-* Fixes mktime() for dates earlier than 1970
-*
-* @param string The date format to use
-* @param int The year of the date
-* @return string The correct date format
-*/
 function fixmktime($format, $year)
 {
 	// Our little work around for the date < 1970 thing.
 	// -2 idea provided by Matt Light (http://www.mephex.com)
 	$format = str_replace("Y", $year, $format);
 	$format = str_replace("y", my_substr($year, -2), $format);
-
 	return $format;
 }
 
@@ -1949,7 +1944,7 @@ function fixmktime($format, $year)
  */
 function build_breadcrumb()
 {
-	global $nav, $navbits, $templates, $settings, $theme, $lang;
+	global $nav, $navbits, $templates, $theme, $lang;
 
 	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
 
@@ -2110,14 +2105,6 @@ function debug_page()
 	$percentsql = number_format((($querytime/$maintimer->totaltime)*100), 2);
 	$phpversion = phpversion();
 	$serverload = get_server_load();
-	if(strstr(getenv("REQUEST_URI"), "?"))
-	{
-		$debuglink = getenv("REQUEST_URI") . "&debug=1";
-	}
-	else
-	{
-		$debuglink = getenv("REQUEST_URI") . "?debug=1";
-	}
 	if($mybb->settings['gzipoutput'] != "no")
 	{
 		$gzipen = "Enabled";
@@ -2661,7 +2648,7 @@ function htmlspecialchars_uni($message)
  * @param int The number to format.
  * @return int The formatted number.
  */
-function my_number_format($number)
+function mynumberformat($number)
 {
 	global $mybb;
 	if($number == "-")
@@ -3193,45 +3180,45 @@ function login_attempt_check($fatal = true)
 	{
 		return 1;
 	}
-	// Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
+	//Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
 
-	// Use cookie if possible, otherwise use session
-	// Session stops user clearing cookies to bypass the login
-	// Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
+	//Use cookie if possible, otherwise use session
+	//Session stops user clearing cookies to bypass the login
+	//Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
 	$cookielogins = intval($_COOKIE['loginattempts']);
 	$cookietime = $_COOKIE['failedlogin'];
 	$loginattempts = empty($cookielogins) ? $session->logins : ($cookielogins < $session->logins ? $session->logins : $cookielogins);
 	$failedlogin = empty($cookietime) ? $session->failedlogin : ($cookietime < $session->failedlogin ? $session->failedlogin : $cookietime);
 
-	// Work out if the user has had more than the allowed number of login attempts
+	//Work out if the user has had more than the allowed number of login attempts
 	if($loginattempts > $mybb->settings['failedlogincount'])
 	{
-		// If so, then we need to work out if they can try to login again
-		// Some maths to work out how long they have left and display it to them
+		//If so, then we need to work out if they can try to login again
+		//Some maths to work out how long they have left and display it to them
 		$now = time();
 		$secondsleft = ($mybb->settings['failedlogintime'] * 60 + (empty($_COOKIE['failedlogin']) ? $now : $_COOKIE['failedlogin'])) - $now;
 		$hoursleft = floor($secondsleft / 3600);
 		$minsleft = floor(($secondsleft / 60) % 60);
 		$secsleft = floor($secondsleft % 60);
-		// This value will be empty the first time the user doesn't login in, set it
+		//This value will be empty the first time the user doesn't login in, set it
 		if(empty($failedlogin))
 		{
-			my_setcookie('failedlogin', $now);
+			mysetcookie('failedlogin', $now);
 			if($fatal)
 			{
 				error(sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
 			}
 			return false;
 		}
-		// Work out if the user has waited long enough before letting them login again
+		//Work out if the user has waited long enough before letting them login again
 		if($_COOKIE['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 60)
 		{
-			my_setcookie('loginattempts', 1);
-			my_unsetcookie('failedlogin');
+			mysetcookie('loginattempts', 1);
+			myunsetcookie('failedlogin');
 			$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts = 1 WHERE sid = '{$session->sid}'");
 			return 1;
 		}
-		// Not waited long enough
+		//Not waited long enough
 		else
 		{
 			if($fatal)
@@ -3241,7 +3228,7 @@ function login_attempt_check($fatal = true)
 			return false;
 		}
 	}
-	// User can attempt another login
+	//User can attempt another login
 	return $loginattempts;
 }
 
@@ -3334,7 +3321,7 @@ function dec2utf8($src)
 		$dest .= chr(0x80 | ($src & 0x3f));
 	}
 	else
-	{
+	{ 
 		// out of range
 		return false;
 	}

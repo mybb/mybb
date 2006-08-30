@@ -144,6 +144,33 @@ function upload_avatar()
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
+	
+	// Check a list of known MIME types to establish what kind of avatar we're uploading
+	switch(strtolower($avatar['type']))
+	{
+		case "image/gif":
+			$img_type =  1;
+			break;
+		case "image/jpeg":
+		case "image/x-jpeg":
+		case "image/pjpeg":
+			$img_type = 2;
+			break;
+		case "image/png":
+		case "image/x-png":
+			$img_type = 3;
+			break;
+		default:
+			$img_type = 0;
+	}
+	
+	// Check if the uploaded file type matches the correct image type (returned by getimagesize)
+	if($img_dimensions[2] != $img_type || $img_type == 0)
+	{
+		$ret['error'] = $lang->error_uploadfailed;
+		return $ret;		
+	}
+	
 
 	// If we've got this far check dimensions
 	if($mybb->settings['maxavatardims'] != "")
@@ -283,15 +310,42 @@ function upload_attachment($attachment)
 		"posthash" => $posthash,
 		"uid" => $mybb->user['uid'],
 		"filename" => $db->escape_string($file['original_filename']),
-		"filetype" => $file['type'],
-		"filesize" => $file['size'],
+		"filetype" => $db->escape_string($file['type']),
+		"filesize" => intval($file['size']),
 		"attachname" => $filename,
 		"downloads" => 0,
 	);
 
-	// Alls well that ends well? Lets generate a thumbnail (if image) and insert it all in to the database
+	// If we're uploading an image, check the MIME type compared to the image type and attempt to generate a thumbnail
 	if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 	{
+		// Check a list of known MIME types to establish what kind of image we're uploading
+		switch(strtolower($file['type']))
+		{
+			case "image/gif":
+				$img_type =  1;
+				break;
+			case "image/jpeg":
+			case "image/x-jpeg":
+			case "image/pjpeg":
+				$img_type = 2;
+				break;
+			case "image/png":
+			case "image/x-png":
+				$img_type = 3;
+				break;
+			default:
+				$img_type = 0;
+		}
+
+		// Check if the uploaded file type matches the correct image type (returned by getimagesize)
+		$img_dimensions = @getimagesize($mybb->settings['uploadspath']."/".$filename);
+		if($img_dimensions[2] != $img_type)
+		{
+			@unlink($mybb->settings['uploadspath']."/".$filename);
+			$ret['error'] = $lang->error_uploadfailed;
+			return $ret;		
+		}		
 		require_once MYBB_ROOT."inc/functions_image.php";
 		$thumbname = str_replace(".attach", "_thumb.$ext", $filename);
 		$thumbnail = generate_thumbnail($mybb->settings['uploadspath']."/".$filename, $mybb->settings['uploadspath'], $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);

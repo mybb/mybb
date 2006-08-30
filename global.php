@@ -44,7 +44,7 @@ if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) 
 }
 
 // Create session for this user
-require_once MYBB_ROOT."inc/class_session.php";
+require MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
 
@@ -135,11 +135,11 @@ $theme = @array_merge($theme, unserialize($theme['themebits']));
 // Loading CSS from a file or from the server?
 if($theme['csscached'] > 0 && $mybb->settings['cssmedium'] == 'file')
 {
-	$theme['css_url'] = $settings['bburl']."/css/theme_{$theme['tid']}.css";
+	$theme['css_url'] = $mybb->settings['bburl']."/css/theme_{$theme['tid']}.css";
 }
 else
 {
-	$theme['css_url'] = $settings['bburl']."/css.php?theme={$theme['tid']}";
+	$theme['css_url'] = $mybb->settings['bburl']."/css.php?theme={$theme['tid']}";
 }
 
 // If a language directory for the current language exists within the theme - we use it
@@ -209,7 +209,7 @@ if($mybb->user['uid'] != 0)
 	$lang->welcome_back = sprintf($lang->welcome_back, $mybb->user['username'], $lastvisit);
 
 	// Tell the user their PM usage
-	$lang->welcome_pms_usage = sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_new']), my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
+	$lang->welcome_pms_usage = sprintf($lang->welcome_pms_usage, mynumberformat($mybb->user['pms_new']), mynumberformat($mybb->user['pms_unread']), mynumberformat($mybb->user['pms_total']));
 	eval("\$welcomeblock = \"".$templates->get("header_welcomeblock_member")."\";");
 }
 // Otherwise, we have a guest
@@ -320,9 +320,9 @@ if(is_array($bannedips))
 		if($bannedip != '')
 		{
 			// This address is banned, show an error and delete the session
-			if(strstr($ipaddress, $bannedip))
+			if(strstr($session->ipaddress, $bannedip))
 			{
-				$db->delete_query(TABLE_PREFIX."sessions", "ip='".$db->escape_string($ipaddress)."' OR uid='{$mybb->user['uid']}'");
+				$db->delete_query(TABLE_PREFIX."sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
 				error($lang->error_banned);
 			}
 		}
@@ -367,7 +367,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && (isset($my
 	$referrer = $db->fetch_array($query);
 	if($referrer['uid'])
 	{
-		my_setcookie("mybb[referrer]", $referrer['username']);
+		mysetcookie("mybb[referrer]", $referrer['username']);
 	}
 }
 

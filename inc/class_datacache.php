@@ -56,7 +56,7 @@ class datacache
 	 */
 	function read($name, $hard=false)
 	{
-		global $db, $test, $mybb;
+		global $db, $mybb;
 		if($mybb->config['cache_store'] == "files")
 		{
 			if($hard)

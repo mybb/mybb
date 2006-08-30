@@ -201,11 +201,11 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 
 	$user = array(
 		"uid" => $mybb->user['uid'],
-		"website" => $db->escape_string(htmlspecialchars($mybb->input['website'])),
-		"icq" => intval($mybb->input['icq']),
-		"aim" => $db->escape_string(htmlspecialchars($mybb->input['aim'])),
-		"yahoo" => $db->escape_string(htmlspecialchars($mybb->input['yahoo'])),
-		"msn" => $db->escape_string(htmlspecialchars($mybb->input['msn'])),
+		"website" => $mybb->input['website'],
+		"icq" => intval($mybb->input['icq'],
+		"aim" => $mybb->input['aim'],
+		"yahoo" => $mybb->input['yahoo'],
+		"msn" => $mybb->input['msn'],
 		"birthday" => $bday,
 		"away" => $away,
 		"profile_fields" => $mybb->input['profile_fields']
@@ -1611,7 +1611,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 if($mybb->input['action'] == "notepad")
 {
 	$plugins->run_hooks("usercp_notepad_start");
-	$mybbuser['notepad'] = htmlspecialchars_uni($mybbuser['notepad']);
+	$mybb->user['notepad'] = htmlspecialchars_uni($mybb->user['notepad']);
 	eval("\$notepad = \"".$templates->get("usercp_notepad")."\";");
 	$plugins->run_hooks("usercp_notepad_end");
 	output_page($notepad);
@@ -2209,7 +2209,7 @@ if(!$mybb->input['action'])
 	$reputations = '';
 	if($mybb->usergroup['usereputationsystem'] == 'yes')
 	{
-		$reputation_link = get_reputation($mybb->user['reputation'], $mybb->user['uid']);
+		$reputation_link = get_reputation($mybb->user['reputation']);
 		eval("\$reputation = \"".$templates->get("usercp_reputation")."\";");
 	}
 
@@ -2218,7 +2218,7 @@ if(!$mybb->input['action'])
 	$username = build_profile_link($username, $mybb->user['uid']);
 
 	// Format post numbers
-	$mybbuser['postnum'] = my_number_format($mybb->user['postnum']);
+	$mybb->user['postnum'] = my_number_format($mybb->user['postnum']);
 
 	eval("\$usercp = \"".$templates->get("usercp")."\";");
 	$plugins->run_hooks("usercp_end");

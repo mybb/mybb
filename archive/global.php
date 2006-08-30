@@ -164,7 +164,7 @@ if(is_array($bannedips))
 		$bannedip = trim($bannedip);
 		if($bannedip != "")
 		{
-			if(strstr("$ipaddress", $bannedip))
+			if(strstr($session->ipaddress, $bannedip))
 			{
 				archive_error($lang->error_banned);
 			}

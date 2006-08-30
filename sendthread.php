@@ -70,7 +70,7 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 	{
 		error($lang->error_incompletefields);
 	}
-	elseif(!strstr($mybb->input['message'], "$settings[bburl]/showthread.php?tid=$tid"))
+	elseif(!strstr($mybb->input['message'], "{$mybb->settings['bburl']}/showthread.php?tid=$tid"))
 	{
 		error($lang->error_nothreadurl);
 	}
