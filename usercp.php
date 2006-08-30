@@ -744,7 +744,7 @@ if($mybb->input['action'] == "options")
 	if($user['dst'] == "yes")
 	{
 		$dstcheck = "checked=\"checked\"";
-		$mybb->user['timezone']--;
+		--$mybb->user['timezone'];
 	}
 	else
 	{

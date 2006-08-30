@@ -2,7 +2,7 @@
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -143,7 +143,7 @@ $l['date_format'] = "Date Format:";
 $l['date_format_desc'] = "The format that dates will be shown in.";
 $l['time_format'] = "Time Format:";
 $l['time_format_desc'] = "The format that times will be shown in.";
-$l['time_offset'] = "Time Zone:";
+$l['time_offset'] = "Time Zone (<acronym title=\"Daylight Savings Time\">DST</acronym> correction excluded):";
 $l['time_offset_desc'] = "Please select your timezone from the list. GMT time now is {1}.";
 $l['gmt'] = "GMT";
 $l['dst'] = "Enable Daylight Savings Time correction.";
