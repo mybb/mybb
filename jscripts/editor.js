@@ -314,6 +314,10 @@ messageEditor.prototype = {
 			return false;
 		}
 		this.insertMyCode("font", element.options[element.selectedIndex].value);
+		if(this.getSelectedText($(this.textarea)))
+		{
+			element.selectedIndex = 0;
+		}
 	},
 
 	changeSize: function(e)
@@ -324,6 +328,10 @@ messageEditor.prototype = {
 			return false;
 		}
 		this.insertMyCode("size", element.options[element.selectedIndex].value);
+		if(this.getSelectedText($(this.textarea)))
+		{
+			element.selectedIndex = 0;
+		}
 	},
 
 	changeColor: function(e)
@@ -334,6 +342,10 @@ messageEditor.prototype = {
 			return false;
 		}
 		this.insertMyCode("color", element.options[element.selectedIndex].value);
+		if(this.getSelectedText($(this.textarea)))
+		{
+			element.selectedIndex = 0;
+		}
 	},
 
 	insertList: function(type)
@@ -496,7 +508,7 @@ messageEditor.prototype = {
 					{
 						MyBB.arrayPush(this.openTags, full_tag);
 					}
-					else
+					else if($(full_tag))
 					{
 						DomLib.removeClass($(full_tag), "toolbar_clicked");
 					}
@@ -556,10 +568,12 @@ messageEditor.prototype = {
 			{
 				if(close_tag != "" && range.text.length > 0)
 				{
+					var keep_selected = true;
 					range.text = open_tag+range.text+close_tag;
 				}
 				else
 				{
+					var keep_selected = false;
 					if(is_single)
 					{
 						is_closed = false;
@@ -577,6 +591,7 @@ messageEditor.prototype = {
 		{
 			var select_start = textarea.selectionStart;
 			var select_end = textarea.selectionEnd;
+			var scroll_top = textarea.scrollTop;
 			if(select_end <= 2)
 			{
 				select_end = textarea.textLength;
@@ -586,10 +601,12 @@ messageEditor.prototype = {
 			var end = textarea.value.substring(select_end, textarea.textLength);
 			if(select_end - select_start > 0 && ignore_selection != true && close_tag != "")
 			{
+				var keep_selected = true;
 				middle = open_tag+middle+close_tag;
 			}
 			else
 			{
+				var keep_selected = false;
 				if(is_single)
 				{
 					is_closed = false;
@@ -597,6 +614,17 @@ messageEditor.prototype = {
 				middle = open_tag;
 			}
 			textarea.value = start+middle+end;
+			if(keep_selected == true && ignore_selection != true)
+			{
+				textarea.selectionStart = select_start;
+				textarea.selectionEnd = select_start + middle.length;
+			}
+			else if(ignore_selection != true)
+			{
+				textarea.selectionStart = select_start + middle.length;
+				textarea.selectionEnd = textarea.selectionStart;
+			}
+			textarea.scrollTop = scroll_top;
 		}
 		else
 		{
