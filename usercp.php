@@ -162,7 +162,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		{
 			$returntimestamp = gmmktime(0, 0, 0, $mybb->input['awaymonth'], $mybb->input['awayday'], $mybb->input['awayyear']);
 			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
-			if ($returntimestamp < $awaytimestamp) 
+			if ($returntimestamp < $awaytimestamp)
 			{
 				error($lang->error_usercp_return_date_past);
 			}
@@ -202,7 +202,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	$user = array(
 		"uid" => $mybb->user['uid'],
 		"website" => $mybb->input['website'],
-		"icq" => intval($mybb->input['icq'],
+		"icq" => intval($mybb->input['icq']),
 		"aim" => $mybb->input['aim'],
 		"yahoo" => $mybb->input['yahoo'],
 		"msn" => $mybb->input['msn'],
@@ -315,7 +315,7 @@ if($mybb->input['action'] == "profile")
 		}
 		else
 		{
-			
+
 			if($mybb->user['away'] == "yes")
 			{
 				$awaydate = my_date($mybb->settings['dateformat'], $mybb->user['awaydate']);
@@ -377,20 +377,20 @@ if($mybb->input['action'] == "profile")
 				$useropts = explode("\n", $userfield);
 			}
 			if(is_array($useropts))
-			{		
+			{
 				foreach($useropts as $key => $val)
 				{
 					$seloptions[$val] = $val;
 				}
 			}
 			$expoptions = explode("\n", $options);
-			if(is_array($expoptions)) 
+			if(is_array($expoptions))
 			{
 				foreach($expoptions as $key => $val)
 				{
 					$val = trim($val);
 					$val = str_replace("\n", "\\n", $val);
-					
+
 					$sel = "";
 					if($val == $seloptions[$val])
 					{
@@ -462,7 +462,7 @@ if($mybb->input['action'] == "profile")
 				}
 			}
 			$expoptions = explode("\n", $options);
-			if(is_array($expoptions)) 
+			if(is_array($expoptions))
 			{
 				foreach($expoptions as $key => $val)
 				{
@@ -792,7 +792,7 @@ if($mybb->input['action'] == "options")
 	$tempzone = $user['timezone'];
 	$user['timezone'] = "";
 	$timenow = my_date($mybb->settings['timeformat'], time(), "-");
-	for($i = -12; $i <= 12; $i++) 
+	for($i = -12; $i <= 12; $i++)
 	{
 		if($i == 0)
 		{
@@ -881,7 +881,7 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 	if($mybb->settings['emailkeep'] != "yes")
 	{
 		$bannedemails = explode(" ", $mybb->settings['emailban']);
-		if(is_array($bannedemails)) 
+		if(is_array($bannedemails))
 		{
 			foreach($bannedemails as $key => $bannedemail)
 			{
@@ -1039,9 +1039,9 @@ if($mybb->input['action'] == "favorites")
 	}
 	$multipage = multipage($threadcount, $perpage, $page, "usercp.php?action=favorites");
 	$fpermissions = forum_permissions();
-	
+
 	$icon_cache = $cache->read("posticons");
-	
+
 	$query = $db->query("
 		SELECT f.*, t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."favorites f
@@ -1578,7 +1578,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
 		$ext = get_extension($mybb->input['avatarurl']);
 		list($width, $height, $type) = @getimagesize($mybb->input['avatarurl']);
-		
+
 		if(!$type)
 		{
 			error($lang->error_invalidavatarurl);
@@ -1649,7 +1649,7 @@ if($mybb->input['action'] == "editlists")
 	$ignoresql = '';
 	$ignorelist = '';
 	$ignorearray = explode(",", $mybb->user['ignorelist']);
-	if(is_array($ignorearray)) 
+	if(is_array($ignorearray))
 	{
 		foreach($ignorearray as $key => $ignoreid)
 		{
@@ -2180,7 +2180,7 @@ if(!$mybb->input['action'])
 		$percent = $mybb->user['postnum']*100/$posts;
 		$percent = round($percent, 2);
 	}
-		
+
 	$lang->posts_day = sprintf($lang->posts_day, my_number_format($perday), $percent);
 	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
 
