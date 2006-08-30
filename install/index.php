@@ -182,6 +182,7 @@ function requirements_check()
 {
 	global $output, $mybb, $dboptions, $lang;
 
+	$mybb->input['action'] = "requirements_check";
 	$output->print_header($lang->req_check, 'requirements');
 	echo $lang->req_step_top;
 	$errors = array();
@@ -598,6 +599,7 @@ function configure()
 function create_admin_user()
 {
 	global $output, $mybb, $errors, $db, $lang;
+	$mybb->input['action'] = "adminuser";
 	// If no errors then check for errors from last step
 	if(!is_array($errors))
 	{

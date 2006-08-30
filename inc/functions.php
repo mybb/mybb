@@ -517,8 +517,8 @@ function redirect($url, $message="", $title="")
 	}
 	if($mybb->settings['redirects'] == "on" && $mybb->user['showredirect'] != "no")
 	{
-		$url = str_replace("&amp;", "&");
-		$url = str_replace("&", "&amp");
+		$url = str_replace("&amp;", "&", $url);
+		$url = str_replace("&", "&amp", $url);
 		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
 		output_page($redirectpage);
 	}
