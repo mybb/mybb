@@ -70,7 +70,7 @@ if($mybb->input['do'] == "login")
 		$user = $db->fetch_array($query);
 	}
 	$failcheck = 1;
-	
+
 	if($user['uid'])
 	{
 		// Create a new admin session for this user
@@ -103,7 +103,7 @@ else
 	{
 		$query = $db->simple_select(TABLE_PREFIX."adminsessions", "*", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
 		$admin_session = $db->fetch_array($query);
-		
+
 		// No matching admin session found - show message on login screen
 		if(!$admin_session['sid'])
 		{
@@ -153,7 +153,7 @@ else
 					{
 						$lang->invalid_admin = $lang->invalid_admin_ip;
 						unset($user);
-					}	
+					}
 				}
 			}
 		}
@@ -186,7 +186,7 @@ if($user['uid'])
 	{
 		$style = "./styles/{$adminoptions['cpstyle']}/stylesheet.css";
 	}
-	
+
 	// Update the session information in the DB
 	if($admin_session['sid'])
 	{
@@ -221,6 +221,7 @@ else
 		if(!empty($_SERVER['QUERY_STRING']))
 		{
 			$goto .= '?'.$_SERVER['QUERY_STRING'];
+			$goto = preg_replace('#(&?|&amp;?|\??)adminsid=([a-zA-Z0-9]{1,32})#i', '', $goto);
 		}
 	}
 	else

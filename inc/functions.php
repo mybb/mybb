@@ -482,7 +482,7 @@ function error_no_permission()
 	);
 	$db->update_query(TABLE_PREFIX."sessions", $noperm_array, "sid='".$session->sid."'");
 	$url = $_SERVER['REQUEST_URI'];
-	$url = str_replace("&", "&amp;", $url); 
+	$url = str_replace("&", "&amp;", $url);
 	if($mybb->user['uid'])
 	{
 		$lang->error_nopermission_user_5 = sprintf($lang->error_nopermission_user_5, $mybb->user['username']);
@@ -518,7 +518,7 @@ function redirect($url, $message="", $title="")
 	if($mybb->settings['redirects'] == "on" && $mybb->user['showredirect'] != "no")
 	{
 		$url = str_replace("&amp;", "&", $url);
-		$url = str_replace("&", "&amp", $url);
+		$url = str_replace("&", "&amp;", $url);
 		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
 		output_page($redirectpage);
 	}
@@ -1927,12 +1927,12 @@ function get_unviewable_forums()
 	}
 	return $unviewableforums;
 }
-/** 
- * Fixes mktime() for dates earlier than 1970 
- * 
- * @param string The date format to use 
- * @param int The year of the date 
- * @return string The correct date format 
+/**
+ * Fixes mktime() for dates earlier than 1970
+ *
+ * @param string The date format to use
+ * @param int The year of the date
+ * @return string The correct date format
  */
 function fix_mktime($format, $year)
 {
@@ -3327,7 +3327,7 @@ function dec_to_utf8($src)
 		$dest .= chr(0x80 | ($src & 0x3f));
 	}
 	else
-	{ 
+	{
 		// out of range
 		return false;
 	}
