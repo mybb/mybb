@@ -207,7 +207,7 @@ if($mybb->input['action'] == "send")
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
-			WHERE u.uid='".$mybb->user[uid]."'
+			WHERE u.uid='".$mybb->user['uid']."'
 		");
 		$post = $db->fetch_array($query);
 		$post['userusername'] = $mybb->user['username'];
@@ -257,7 +257,7 @@ if($mybb->input['action'] == "send")
 			SELECT pm.*, u.username AS quotename
 			FROM ".TABLE_PREFIX."privatemessages pm
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
-			WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user[uid]."'
+			WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user['uid']."'
 		");
 		$pm = $db->fetch_array($query);
 		$message = $pm['message'];
@@ -332,7 +332,7 @@ if($mybb->input['action'] == "read")
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
 		LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
-		WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user[uid]."'
+		WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user['uid']."'
 	");
 	$pm = $db->fetch_array($query);
 	if($pm['folder'] == 3)
@@ -396,7 +396,7 @@ if($mybb->input['action'] == "tracking")
 		SELECT pm.*, u.username as tousername
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-		WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user[uid]."'
+		WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user['uid']."'
 		ORDER BY pm.readtime DESC
 	");
 	while($readmessage = $db->fetch_array($query))
@@ -410,7 +410,7 @@ if($mybb->input['action'] == "tracking")
 		SELECT pm.*, u.username AS tousername
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-		WHERE receipt='1' AND status='0' AND fromid='".$mybb->user[uid]."'
+		WHERE receipt='1' AND status='0' AND fromid='".$mybb->user['uid']."'
 		ORDER BY pm.dateline DESC
 	");
 	while($unreadmessage = $db->fetch_array($query))
@@ -763,7 +763,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	if($mybb->input['pmid'])
 	{
-		$wsql = "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user[uid]."'";
+		$wsql = "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."'";
 	}
 	else
 	{
@@ -845,7 +845,14 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			if($message['toid'])
 			{
 				$tofromuid = $message['toid'];
-				$tofromusername = build_profile_link($message['tousername'], $tofromuid);
+				if($mybb->input['exporttype'] == "txt")
+				{
+					$tofromusername = $message['tousername'];
+				}
+				else
+				{
+					$tofromusername = build_profile_link($message['tousername'], $tofromuid);
+				}
 			}
 			else
 			{
@@ -856,7 +863,14 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		else
 		{
 			$tofromuid = $message['fromid'];
-			$tofromusername = build_profile_link($message['fromusername'], $tofromuid);
+			if($mybb->input['exporttype'] == "txt")
+			{
+				$tofromusername = $message['fromusername'];
+			}
+			else
+			{
+				$tofromusername = build_profile_link($message['fromusername'], $tofromuid);
+			}
 			if($tofromuid == -2)
 			{
 				$tofromusername = "MyBB Engine";
@@ -1029,7 +1043,7 @@ if(!$mybb->input['action'])
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
 		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user[uid]."'
+		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'
 		ORDER BY pm.dateline DESC
 		LIMIT $start, $perpage
 	");

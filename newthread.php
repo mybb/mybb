@@ -448,67 +448,111 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// If we're preving a post then generate the preview.
 	if($mybb->input['previewpost'])
 	{
-		if(!$mybb->input['username'])
+		// Set up posthandler.
+		require_once MYBB_ROOT."inc/datahandlers/post.php";
+		$posthandler = new PostDataHandler("insert");
+		$posthandler->action = "thread";
+	
+		// Set the thread data that came from the input to the $thread array.
+		$new_thread = array(
+			"fid" => $forum['fid'],
+			"subject" => $mybb->input['subject'],
+			"icon" => $mybb->input['icon'],
+			"uid" => $uid,
+			"username" => $username,
+			"message" => $mybb->input['message'],
+			"ipaddress" => get_ip(),
+			"posthash" => $mybb->input['posthash']
+		);
+		
+		if($pid != '')
 		{
-			$mybb->input['username'] = $lang->guest;
+			$new_thread['pid'] = $pid;
 		}
-		if($mybb->input['username'] && !$mybb->user['uid'])
+		
+		$posthandler->set_data($new_thread);
+
+		// Now let the post handler do all the hard work.
+		$valid_thread = $posthandler->verify_message();
+		$valid_subject = $posthandler->verify_subject();
+	
+		$post_errors = array();
+		// Fetch friendly error messages if this is an invalid post
+		if(!$valid_thread || !$valid_subject)
 		{
-			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+			$post_errors = $posthandler->get_friendly_errors();
 		}
-		$query = $db->query("
-			SELECT u.*, f.*
-			FROM ".TABLE_PREFIX."users u
-			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			WHERE u.uid='".$mybb->user[uid]."'
-		");
-		$post = $db->fetch_array($query);
-		if(!$mybb->user['uid'] || !$post['username'])
+		
+		// One or more erors returned, fetch error list and throw to newreply page
+		if(count($post_errors) > 0)
 		{
-			$post['username'] = htmlspecialchars_uni($mybb->input['username']);
+			$thread_errors = inline_error($post_errors);
 		}
 		else
-		{
-			$post['userusername'] = $mybb->user['username'];
-			$post['username'] = $mybb->user['username'];
+		{		
+			if(!$mybb->input['username'])
+			{
+				$mybb->input['username'] = $lang->guest;
+			}
+			if($mybb->input['username'] && !$mybb->user['uid'])
+			{
+				$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+			}
+			$query = $db->query("
+				SELECT u.*, f.*
+				FROM ".TABLE_PREFIX."users u
+				LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+				WHERE u.uid='".$mybb->user['uid']."'
+			");
+			$post = $db->fetch_array($query);
+			if(!$mybb->user['uid'] || !$post['username'])
+			{
+				$post['username'] = htmlspecialchars_uni($mybb->input['username']);
+			}
+			else
+			{
+				$post['userusername'] = $mybb->user['username'];
+				$post['username'] = $mybb->user['username'];
+			}
+			$previewmessage = $mybb->input['message'];
+			$post['message'] = $previewmessage;
+			$post['subject'] = $mybb->input['subject'];
+			$post['icon'] = $mybb->input['icon'];
+			$post['smilieoff'] = $postoptions['disablesmilies'];
+			$post['dateline'] = time();
+			$post['includesig'] = $mybb->input['postoptions']['signature'];
+			if($post['includesig'] != "yes")
+			{
+				$post['includesig'] = "no";
+			}
+	
+	
+			// Fetch attachments assigned to this post
+			if($mybb->input['pid'])
+			{
+				$attachwhere = "pid='".intval($mybb->input['pid'])."'";
+			}
+			else
+			{
+				$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
+			}
+	
+			$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
+			while($attachment = $db->fetch_array($query)) 
+			{
+				$attachcache[0][$attachment['aid']] = $attachment;
+			}
+	
+			$postbit = build_postbit($post, 1);
+			eval("\$preview = \"".$templates->get("previewpost")."\";");
 		}
-		$previewmessage = $mybb->input['message'];
-		$post['message'] = $previewmessage;
-		$post['subject'] = $mybb->input['subject'];
-		$post['icon'] = $mybb->input['icon'];
-		$post['smilieoff'] = $postoptions['disablesmilies'];
-		$post['dateline'] = time();
-		$post['includesig'] = $mybb->input['postoptions']['signature'];
-		if($post['includesig'] != "yes")
-		{
-			$post['includesig'] = "no";
-		}
-
-
-		// Fetch attachments assigned to this post
-		if($mybb->input['pid'])
-		{
-			$attachwhere = "pid='".intval($mybb->input['pid'])."'";
-		}
-		else
-		{
-			$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
-		}
-
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
-		while($attachment = $db->fetch_array($query)) 
-		{
-			$attachcache[0][$attachment['aid']] = $attachment;
-		}
-
-		$postbit = build_postbit($post, 1);
-		eval("\$preview = \"".$templates->get("previewpost")."\";");
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
 	
 	// Removing an attachment or adding a new one, or showting thread errors.
-	else if($mybb->input['attachmentaid'] || $mybb->input['newattachment'] || $thread_errors) {
+	else if($mybb->input['attachmentaid'] || $mybb->input['newattachment'] || $thread_errors) 
+	{
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}

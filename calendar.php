@@ -247,7 +247,7 @@ if($mybb->input['action'] == "dayview")
 		FROM ".TABLE_PREFIX."events e
 		LEFT JOIN ".TABLE_PREFIX."users u ON (e.author=u.uid)
 		WHERE date LIKE '$day-$month-$year'
-		AND ((author='".$mybb->user[uid]."'
+		AND ((author='".$mybb->user['uid']."'
 		AND private='yes') OR (private!='yes'))
 	");
 	while($event = $db->fetch_array($query))

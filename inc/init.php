@@ -67,7 +67,7 @@ $mybb = new MyBB;
 require_once MYBB_ROOT."inc/config.php";
 if(!isset($config['dbtype']))
 {
-	$mybb->trigger_generic_error("board_not_installed", true);
+	//$mybb->trigger_generic_error("board_not_installed", true);
 }
 if(!isset($config['admin_dir']))
 {
@@ -115,7 +115,8 @@ if(file_exists(MYBB_ROOT."inc/settings.php"))
 {
 	require_once MYBB_ROOT."inc/settings.php";
 }
-else
+
+if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 {
 	$options = array(
 		"order_by" => "title",

@@ -4746,7 +4746,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2">{$message['message']}</td>
 </tr>
 <tr>
-<td class="tcat" height="3"><img src="pixel.gif" height="3" width="1" /></td>
+<td class="tcat" height="3"><img src="pixel.gif" height="3" width="1" alt="" /></td>
 </tr>]]></template>
 		<template name="private_archive_csv_message" version="120"><![CDATA[{$senddate},{$foldername},{$message['subject']},{$message['tousername']},{$message['fromusername']},{$message['message']}]]></template>
 		<template name="search_results_threads_thread" version="120"><![CDATA[<tr>
