@@ -67,13 +67,18 @@ $mybb = new MyBB;
 require_once MYBB_ROOT."inc/config.php";
 if(!isset($config['dbtype']))
 {
-	$mybb->trigger_generic_error("board_not_installed");
+	$mybb->trigger_generic_error("board_not_installed", true);
 }
 if(!isset($config['admin_dir']))
 {
 	$config['admin_dir'] = "admin";
 }
 $mybb->config = $config;
+
+if(!function_exists($config['dbtype']."_connect"))
+{
+	$config['dbtype'] = "mysql";
+}
 
 require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine;
