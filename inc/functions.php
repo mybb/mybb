@@ -2072,7 +2072,7 @@ function build_archive_link($type, $id="")
 	global $mybb;
 
 	// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings
-	if((preg_match("#win#i", PHP_OS) && is_numeric(stripos($_SERVER['SERVER_SOFTWARE'], "apache")) == false) || stripos(SAPI_NAME, "cgi") !== false || defined("ARCHIVE_QUERY_STRINGS"))
+	if((preg_match("#win#i", PHP_OS) && is_numeric(stripos($_SERVER['SERVER_SOFTWARE'], "apache")) == false) || is_numeric(stripos(SAPI_NAME, "cgi")) !== false || defined("ARCHIVE_QUERY_STRINGS"))
 	{
 		$base_url = $mybb->settings['bburl']."/archive/index.php?";
 	}
