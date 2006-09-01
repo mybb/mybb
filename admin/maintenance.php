@@ -129,7 +129,7 @@ if($mybb->input['action'] == "do_rebuildstats")
 {
 	$plugins->run_hooks("admin_maintenance_do_rebuildstats");
 	$cache->updatestats();
-	cpmessage($lang->stats_rebuilt);
+	cpredirect("maintenance.php?".SID."&action=rebuild", $lang->stats_rebuilt);
 }
 
 if($mybb->input['action'] == "do_rebuildforums")
@@ -162,7 +162,7 @@ if($mybb->input['action'] == "do_rebuildforums")
 
 	if($end >= $num_forums)
 	{
-		cpmessage($lang->forums_rebuilt);
+		cpredirect("maintenance.php?".SID."&action=rebuild", $lang->forums_rebuilt);
 	}
 	else
 	{
@@ -208,7 +208,7 @@ if($mybb->input['action'] == "do_rebuildthreads")
 
 	if($end >= $num_threads)
 	{
-		cpmessage($lang->threads_rebuilt);
+		cpredirect("maintenance.php?".SID."&action=rebuild", $lang->threads_rebuilt);
 	}
 	else
 	{
@@ -249,14 +249,14 @@ if($mybb->input['action'] == "do_recountpostcounts")
 	$query = $db->simple_select(TABLE_PREFIX."users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
 	while($user = $db->fetch_array($query))
 	{
-		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS post_count", "uid='{$user['uid']}' AND visible>0");
-		$num_posts = $db->fetch_field($query, "post_count");
+		$query2 = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS post_count", "uid='{$user['uid']}' AND visible>0");
+		$num_posts = $db->fetch_field($query2, "post_count");
 		$db->update_query(TABLE_PREFIX."users", array("postnum" => intval($num_posts)), "uid='{$user['uid']}'");
 	}
 
 	if($end >= $num_users)
 	{
-		cpmessage($lang->user_post_counts_rebuilt);
+		cpredirect("maintenance.php?".SID."&action=rebuild", $lang->user_post_counts_rebuilt);
 	}
 	else
 	{
@@ -314,7 +314,7 @@ if($mybb->input['action'] == "do_rebuildthumbnails")
 
 	if($end >= $num_attachments)
 	{
-		cpmessage($lang->thumbnails_rebuilt);
+		cpredirect("maintenance.php?".SID."&action=rebuild", $lang->thumbnails_rebuilt);
 	}
 	else
 	{

@@ -361,7 +361,7 @@ function show($user)
 			{
 				if($forums_linkto[$user['fid']])
 				{
-					$locationname = sprintf($lang->forum_redirect, $user['fid'], $forums[$user['fid']]);
+					$locationname = sprintf($lang->forum_redirect_to, $user['fid'], $forums[$user['fid']]);
 				}
 				else
 				{
@@ -468,7 +468,7 @@ function show($user)
 		case "newthread":
 			if($forums[$user['fid']])
 			{
-				$locationname = sprintf($lang->posting_thread, $user['fid'], $forums[$user['fid']]);
+				$locationname = sprintf($lang->posting_thread2, $user['fid'], $forums[$user['fid']]);
 			}
 			else
 			{

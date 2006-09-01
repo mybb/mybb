@@ -275,6 +275,15 @@ else
 	$ismod = false;
 }
 
+if(is_moderator($fid, "caneditposts") || $fpermissions['caneditposts'] == "yes")
+{
+	$can_edit_titles = 1;
+}
+else
+{
+	$can_edit_titles = 0;
+}
+
 unset($rating);
 
 // Pick out some sorting options.
@@ -771,7 +780,7 @@ if(is_array($threadcache))
 		$inline_edit_tid = $thread['tid'];
 
 		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
-		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes" && $mybb->user['uid'] != 0) || $ismod == true)
+		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes" && $mybb->user['uid'] != 0 && $can_edit_titles == 1) || $ismod == true)
 		{
 			$inline_edit_class = "subject_editable";
 		}

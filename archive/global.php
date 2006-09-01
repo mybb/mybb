@@ -112,7 +112,7 @@ if($endpart != "index.php")
 			$action = "404";
 		}
 	}
-	else
+	else if($action != '')
 	{
 		$action = "404";
 	}

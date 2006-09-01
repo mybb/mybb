@@ -111,7 +111,7 @@ class PostDataHandler extends DataHandler
 			return false;
 		}
 		// If we have a user id but no username then fetch the username.
-		else if($post['uid'] > 0 && !$post['username'])
+		else if($post['uid'] > 0 && $post['username'] == '')
 		{
 			$user = get_user($post['uid']);
 			$post['username'] = $user['username'];
@@ -601,21 +601,6 @@ class PostDataHandler extends DataHandler
 				$visible = 1;
 			}
 		}
-		
-		//
-		// TO BE REMOVED BEFORE 1.2 PUBLIC RELEASE
-		//
-		if($post['username'] == '')
-		{
-			echo "Something has gone horribly wrong. Report this as a bug and include the information below.<hr /><pre>";
-			print_r($this);
-			echo "</pre></hr />";
-			echo "Good evening, and good night.";
-			exit;
-		}
-		//
-		// END TO BE REMOVED
-		//
 
 		$post['pid'] = intval($post['pid']);
 		$post['uid'] = intval($post['uid']);

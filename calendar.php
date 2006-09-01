@@ -105,12 +105,6 @@ else
 	}
 }
 
-// Make sure there's no leading zeros
-$stamp = gmmktime(0, 0, 0, $month, $day, $year);
-$day = my_date("j", $stamp, '0');
-$month = my_date("n", $stamp, '0');
-$year = my_date("Y", $stamp, '0');
-
 $monthnames = array(
 	"offset",
 	$lang->alt_month_1,
@@ -689,13 +683,28 @@ if($mybb->input['action'] == "calendar_main")
 		$daybits .= "<td width=\"$ewidth%\" colspan=\"$eblanks\" height=\"90\" class=\"trow2\" valign=\"top\">&nbsp;</td>\n";
 		$daybits .= "</tr>\n";
 	}
+	
+	if($month == 12)
+	{
+		$nextmonth = 1;
+		$nextyear = $year+1;
+	}
+	else
+	{
+		$nextmonth = $month+1;
+		$nextyear = $year;
+	}
+	if($month == 1)
+	{
+		$prevmonth = 12;
+		$prevyear = $year-1;
+	}
+	else
+	{
+		$prevmonth = $month-1;
+		$prevyear = $year;
+	}
 
-	$prev = gmmktime(0, 0, 0, my_date("n", $time) - 1, 1, $year);
-	$next = gmmktime(0, 0, 0, my_date("n", $time) + 1, 1, $year);
-	$prevyear = my_date("Y", $prev, "0");
-	$prevmonth = my_date("n", $prev, "0");
-	$nextyear = my_date("Y", $next, "0");
-	$nextmonth = my_date("n", $next, "0");
 
 	$yearsel = '';
 	for($i = my_date("Y"); $i < (my_date("Y") + 5); $i++)

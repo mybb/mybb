@@ -1015,7 +1015,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Let's make sure the user's name gets changed everywhere in the db if it changed.
-		if($this->user_update_data['username'] != $old_user['username'])
+		if($this->user_update_data['username'] != $old_user['username'] && $this->user_update_data['username'] != '')
 		{
 			$username_update = array(
 				"username" => $db->escape_string($this->user_update_data['username'])

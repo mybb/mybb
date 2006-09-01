@@ -1265,13 +1265,14 @@ function update_thread_count($tid)
 	{
 		$lastpost['username'] = $lastpost['postusername'];
 	}
-
-	if(!$lastpost['postusername'] || !$lastpost['dateline'])
+	
+	if(!$lastpost['dateline'])
 	{
 		$lastpost['username'] = $firstpost['username'];
 		$lastpost['uid'] = $firstpost['uid'];
 		$lastpost['dateline'] = $firstpost['dateline'];
-	}
+	}	
+
 	$lastpost['username'] = $db->escape_string($lastpost['username']);
 	$firstpost['username'] = $db->escape_string($firstpost['username']);
 	// Unapproved posts
