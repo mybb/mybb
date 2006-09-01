@@ -67,7 +67,7 @@ $mybb = new MyBB;
 require_once MYBB_ROOT."inc/config.php";
 if(!isset($config['dbtype']))
 {
-	//$mybb->trigger_generic_error("board_not_installed", true);
+	$mybb->trigger_generic_error("board_not_installed", true);
 }
 if(!isset($config['admin_dir']))
 {
