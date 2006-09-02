@@ -250,7 +250,7 @@ function buildsettings()
 	$synccount = sync_settings($system_upgrade_detail['revert_all_settings']);
 
 	$output->print_header($lang->upgrade_settings_sync);
-	$output->print_contents($lang->upgrade_settings_sync_success);
+	$output->print_contents(sprintf($lang->upgrade_settings_sync_success, $synccount[1], $synccount[0]);
 	$output->print_footer("buildcaches");
 }
 
@@ -285,7 +285,7 @@ function buildcaches()
 
 function upgradedone()
 {
-	global $db, $output, $mybb, $lang;
+	global $db, $output, $mybb, $lang, $config;
 
 	$output->print_header("Upgrade Complete");
 	if(is_writable("./"))
