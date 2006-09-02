@@ -5604,7 +5604,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumdisplay_inlinemoderation_col" version="120"><![CDATA[<td class="tcat" align="center" width="1">&nbsp;</td>]]></template>
+		<template name="forumdisplay_inlinemoderation_col" version="120"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this)" /></td>]]></template>
 		<template name="printthread_post" version="120"><![CDATA[<strong>{$postrow['subject']}</strong> - <a href="member.php?action=profile&amp;uid={$postrow['uid']}"><strong>{$postrow['username']}</strong></a> -  <strong>{$postrow['date']}</strong> <strong>{$postrow['time']}</strong>
 <br />
 <br />
