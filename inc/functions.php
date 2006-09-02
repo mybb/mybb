@@ -226,7 +226,7 @@ function my_date($format, $stamp="", $offset="", $ty=1)
 
 	if(!$offset && $offset != '0')
 	{
-		if($mybb->user != 0 && array_key_exists("timezone", $mybb->user))
+		if($mybb->user['uid'] != 0 && array_key_exists("timezone", $mybb->user))
 		{
 			$offset = $mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];

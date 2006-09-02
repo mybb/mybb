@@ -121,7 +121,10 @@ class postParser
 		// Strip out any script tags if HTML is enabled
 		if($options['allow_html'] == "yes")
 		{
-			$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
+			while(preg_match("#<script(.*)>(.*)</script(.*)>#is", $message))
+			{
+				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
+			}
 			$message = preg_replace("#<base(.*)>#is", "&lt;base$1&gt", $message);
 		}		
 		// Run plugin hooks

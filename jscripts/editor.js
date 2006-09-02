@@ -118,6 +118,12 @@ messageEditor.prototype = {
 		// Create the first toolbar
 		toolBar = document.createElement("div");
 		toolBar.style.height = "26px";
+		toolBar.style.position = "relative";
+		
+		// Create text font/color/size toolbar
+		textFormatting = document.createElement("div");
+		textFormatting.style.position = "absolute";
+		toolBar.appendChild(textFormatting);
 
 		// Create the font drop down.
 		fontSelect = document.createElement("select");
@@ -128,7 +134,7 @@ messageEditor.prototype = {
 			fontSelect.options[fontSelect.options.length] = new Option(this.fonts[font], font);
 		}
 		Event.observe(fontSelect, "change", this.changeFont.bindAsEventListener(this));
-		toolBar.appendChild(fontSelect);
+		textFormatting.appendChild(fontSelect);
 
 		// Create the font size drop down.
 		sizeSelect = document.createElement("select");
@@ -139,7 +145,7 @@ messageEditor.prototype = {
 			sizeSelect.options[sizeSelect.options.length] = new Option(this.sizes[size], size);
 		}
 		Event.observe(sizeSelect, "change", this.changeSize.bindAsEventListener(this));
-		toolBar.appendChild(sizeSelect);
+		textFormatting.appendChild(sizeSelect);
 
 		// Create the colour drop down.
 		colorSelect = document.createElement("select");
@@ -152,7 +158,27 @@ messageEditor.prototype = {
 			colorSelect.options[colorSelect.options.length-1].style.color = color;
 		}
 		Event.observe(colorSelect, "change", this.changeColor.bindAsEventListener(this));
-		toolBar.appendChild(colorSelect);
+		textFormatting.appendChild(colorSelect);
+		
+		// Create close tags button
+		closeBar = document.createElement("div");
+		closeBar.style.position = "absolute";
+		closeBar.style.right = 0;
+		var closeButton = document.createElement("img");
+		closeButton.id = "close_tags";
+		closeButton.src = "images/codebuttons/close_tags.gif";
+		closeButton.title = "";
+		closeButton.className = "toolbar_normal";
+		closeButton.height = 22;
+		closeButton.width = 80;
+		closeButton.style.margin = "2px";
+		closeButton.style.visibility = 'hidden';
+		Event.observe(closeButton, "mouseover", this.toolbarItemHover.bindAsEventListener(this));
+		Event.observe(closeButton, "mouseout", this.toolbarItemOut.bindAsEventListener(this));
+		Event.observe(closeButton, "click", this.toolbarItemClick.bindAsEventListener(this));
+		closeBar.appendChild(closeButton);
+		toolBar.appendChild(closeBar);
+	
 		// Append first toolbar to the editor
 		editor.appendChild(toolBar);
 
@@ -266,21 +292,24 @@ messageEditor.prototype = {
 	toolbarItemOut: function(e)
 	{
 		element = MyBB.eventElement(e);
-		if(!element || !element.insertText)
+		if(!element)
 		{
 			return false;
 		}
-		if(element.insertExtra)
+		if(element.insertText)
 		{
-			insertCode = element.insertText+"_"+element.insertExtra;
-		}
-		else
-		{
-			insertCode = element.insertText;
-		}
-		if(MyBB.inArray(insertCode, this.openTags))
-		{
-			DomLib.addClass(element, "toolbar_clicked");
+			if(element.insertExtra)
+			{
+				insertCode = element.insertText+"_"+element.insertExtra;
+			}
+			else
+			{
+				insertCode = element.insertText;
+			}
+			if(MyBB.inArray(insertCode, this.openTags))
+			{
+				DomLib.addClass(element, "toolbar_clicked");
+			}
 		}
 		DomLib.removeClass(element, "toolbar_hover");
 	},
@@ -303,7 +332,14 @@ messageEditor.prototype = {
 		{
 			return false;
 		}
-		this.insertMyCode(element.insertText, element.insertExtra);
+		if(element.id == "close_tags")
+		{
+			this.closeTags();
+		}
+		else
+		{
+			this.insertMyCode(element.insertText, element.insertExtra);
+		}
 	},
 
 	changeFont: function(e)
@@ -507,6 +543,7 @@ messageEditor.prototype = {
 					if(!this.performInsert(start_tag, end_tag, true))
 					{
 						MyBB.arrayPush(this.openTags, full_tag);
+						$('close_tags').style.visibility = '';
 					}
 					else if($(full_tag))
 					{
@@ -654,6 +691,7 @@ messageEditor.prototype = {
 			}
 		}
 		$(this.textarea).focus();
+		$('close_tags').style.visibility = 'hidden';
 		this.openTags = new Array();
 	},
 
