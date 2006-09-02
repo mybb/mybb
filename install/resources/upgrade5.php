@@ -13,7 +13,6 @@
  * Upgrade Script: 1.0.x / 1.1.x
  */
 
-// Todo - rebuild parent lists of forums to ensure they're correct, update_forum_count for each forum
 
 $upgrade_detail = array(
 	"revert_all_templates" => 1,
@@ -26,17 +25,6 @@ $upgrade_detail = array(
 function upgrade5_dbchanges()
 {
 	global $db, $output, $mybb;
-	if(strtolower($mybb->input['okay']) != "i agree")
-	{
-		$output->print_header("Beta Upgrade Warning");
-		echo "<p>This is beta software. We cannot guarantee that everything is going to work as it should and things may go wrong with the upgrade process.</p>";
-		echo "<p>For this reason, we recommend that you do not upgrade your live copies of MyBB to this release, and you only attempt 'test' upgrades of your existing copies by making copies of them first. If you wish to upgrade your live board, ensure you have a backup of your files, theme and database first!</p>";
-		echo "<p>To acknowledge you have read this notice, we require you type 'I AGREE' in to the text box below and click next to begin the upgrade process.</p>";
-		echo "<p><input type=\"text\" name=\"okay\" value=\"\" /></p>";
-		echo "<p>Remember, we're only doing this for your own benefit - we don't want to break your live forums.</p>";
-		$output->print_footer("5_dbchanges");
-		exit;
-	}
 
 	$output->print_header("Performing Queries");
 
