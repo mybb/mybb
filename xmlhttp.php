@@ -207,13 +207,20 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		$ismod = true;
 	}
 	$subject = $mybb->input['value'];
-	if(strtolower($charset) == "utf-8")
+	if(strtolower($charset) != "utf-8")
 	{
-		$subject = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $subject);
-	}
-	else
-	{
-		$subject = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $subject);
+		if(function_exists("iconv"))
+		{
+			$subject = iconv("UTF-8", $charset, $subject);
+		}
+		else if(function_exists("mb_convert_encoding"))
+		{
+			$subject = mb_convert_encoding($subject, $charset, "UTF-8");
+		}
+		else if(strtolower($charset) == "iso-8859-1")
+		{
+			$subject = utf8_decode($subject);
+		}
 	}	
 	
 	// Set up posthandler.
@@ -323,15 +330,6 @@ else if($mybb->input['action'] == "edit_post")
 	else if($mybb->input['do'] == "update_post")
 	{
 		$message = strval($_POST['value']);
-		/*
-		if(strtolower($charset) == "utf-8")
-		{
-			$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $message);
-		}
-		else
-		{
-			$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $message);
-		} */
 		if(strtolower($charset) != "utf-8")
 		{
 			if(function_exists("iconv"))
