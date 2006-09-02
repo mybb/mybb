@@ -216,8 +216,6 @@ function my_date($format, $stamp="", $offset="", $ty=1)
 {
 	global $mybb, $lang, $mybbadmin, $plugins;
 
-	$plugins->run_hooks("my_date");
-
 	// If the stamp isn't set, use time()
 	if(empty($stamp))
 	{
@@ -270,6 +268,8 @@ function my_date($format, $stamp="", $offset="", $ty=1)
 			$date = $lang->yesterday;
 		}
 	}
+	
+	$plugins->run_hooks("my_date");
 
 	return $date;
 }
@@ -1029,7 +1029,12 @@ function get_post_icons()
  */
 function my_setcookie($name, $value="", $expires="")
 {
-	global $mybb;
+	global $mybb, $sent_header;
+	
+	if($sent_header)
+	{
+		return false;
+	}
 
 	if(!$mybb->settings['cookiepath'])
 	{
@@ -1067,7 +1072,12 @@ function my_setcookie($name, $value="", $expires="")
  */
 function my_unsetcookie($name)
 {
-	global $mybb;
+	global $mybb, $sent_header;
+	
+	if($sent_header)
+	{
+		return false;
+	}
 
 	$expires = time()-3600;
 	if(!$mybb->settings['cookiepath'])
