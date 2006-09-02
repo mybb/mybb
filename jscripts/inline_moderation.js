@@ -42,15 +42,19 @@
 		if(inlineCookie)
 		{
 			goButton = $("inline_go");
-			if(inlineModeration.inlineCount < 0)
+			if(inlineCookie)
 			{
-				inlineModeration.inlineCount = 0;
+				var inlineCount = 0;
+				for(i=0;i<inlineIds.length;i++)
+				{
+					if(inlineIds[i] != '')
+					{
+						inlineCount++;
+					}
+				}
+				inlineModeration.inlineCount = inlineCount;
 			}
-			else
-			{
-				inlineModeration.inlineCount = inlineIds.length-2;
-			}
-			goButton.value = go_text+" ("+(inlineIds.length-2)+")";
+			goButton.value = go_text+" ("+(inlineModeration.inlineCount)+")";
 		}	
 		return true;
 	},

@@ -129,51 +129,37 @@ function license_agreement()
 {
 	global $output, $lang;
 	$output->print_header($lang->license_agreement, 'license');
-	$license = '
-			<h3>IMPORTANT- READ CAREFULLY:</h3>
+	$license = '<h3>Important - Read Carefully</h3>
+<p>This MyBB End-User License Agreement ("EULA") is a legal agreement between you (either an individual or a single entity) and the MyBB Group for the MyBB product, which includes computer software and may include associated media, printed materials, and "online" or electronic documentation. By installing, copying, or otherwise using the MyBB product, you agree to be bound by the terms of this EULA. If you do not agree to the terms of this EULA, do not install or use the MyBB product and destroy any copies of the application.</p>
+<p>The MyBB Group may alter or modify this license agreement without notification and any changes made to the EULA will affect all past and current copies of MyBB</p>
 
-	This MyBB End-User License Agreement ("EULA") is a legal agreement between you (either an individual or a single entity) and the MyBB Group for the MyBB product identified above, which includes computer software and may include associated media, printed materials, and "online" or electronic documentation ("MyBB"). By installing, copying, or otherwise using the MyBB PRODUCT, you agree to be bound by the terms of this EULA. If you do not agree to the terms of this EULA, do not install or use the MyBB Product.<br />
-	<br />
-	<h3>This EULA grants you the following rights:</h3>
-	<ul>
-	<li><strong>Installation and Use</strong><br />
-	You may install and use an unlimited amount of copies of MyBB on your domain(s) or website(s).
-	</li>
-	<li><strong>Reproduction and Distribution</strong><br />
-	You may not reproduce or distribute the MyBB SOFTWARE for any reason with out express written consent from the MyBB Group.
-	</li>
-	</ul>
-	<h3>DESCRIPTION OF OTHER RIGHTS AND LIMITATIONS.</h3>
+<h4>MyBB is FREE software</h4>
+<p>MyBB is distributed as "FREE" software granting you the right to download MyBB for FREE and installing a working physical copy at no extra charge.</p>
+<p>You may charge a fee for the physical act of transferring a copy.</p>
 
-	<ul>
-	<li><strong>Limitations on Reverse Engineering, Decompilation, and Disassembly</strong><br />
-	You may not Reverse Engineer, Decompile, or Disassemble the MyBB SOFTWARE. You may add modifications ("HACKS") to the software that MyBB personally releases.</li>
-	<li><strong>Separation of Components</strong><br />
-	The MyBB SOFTWARE is licensed as a single product. Its component parts may not be separated for use on more than one computer.
-	</li>
-	<li><strong>Termination</strong><br />
-	Without prejudice to any other rights, MyBB may terminate this EULA if you fail to comply with the terms and conditions of this EULA. In such event, you must destroy all copies of the MyBB SOFTWARE and all of its component parts. MyBB and the MyBB Group also reserve the right to revoke any license or copy of MyBB for any reasons they specify.
-	</li>
-	</ul>
-	<h3>COPYRIGHT</h3>
-	All title and copyrights in and to the MyBB SOFTWARE(including but not limited to any images, photographs, animations, video, audio, music, text, and "applets" incorporated into the MyBB SOFTWARE), the accompanying materials, and any copies of the MyBB SOFTWARE are owned by the MyBB Group. The MyBB SOFTWARE is protected by copyright laws and international treaty provisions. Therefore, you must treat the MyBB SOFTWARE like any other copyrighted material.
-	<br /><br />
-	At all times, the MyBB "Powered by" and copyright lines must be present and clearly in the footer of your board. You may not alter or change the "Powered by" and copyright lines in any way without express permission from the MyBB Group.
-	<h3>U.S. GOVERNMENT RESTRICTED RIGHTS</h3>
-	The MyBB  SOFTWARE and documentation are provided with RESTRICTED RIGHTS. Use, duplication, or disclosure by the Government is subject to restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and Computer Software clause at DFARS 252.227-7013 or subparagraphs (c)(1) and (2) of the Commercial Computer Software-Restricted Rights at 48 CFR 52.227-19, as applicable. Manufacturer is MyBB @ www.mybboard.com (www [dot] mybboard [dot] com)
+<h4>Reproduction and Distribution</h4>
+<p>You may produce re-distributable copies of MyBB as long as the following terms are met:</p>
+<ul>
+	<li>You may not remove, alter or otherwise attempt to hide the MyBB copyright notice in any of the files within the original MyBB package.</li>
+	<li>Any additional files you add must not bare the copyright of the MyBB Group.</li>
+	<li>You agree that no support will be given to those who use the distributed modified copies.</li>
+	<li>The modified and re-distributed copies of MyBB must also be distributed with this exact license and licensed as FREE software. You may not charge for the software or distribution of the software.</li>
+</ul>
 
-	<h3>MISCELLANEOUS</h3>
-	<ul>
-	<li>If you acquired this product in the United States, this EULA is governed by the laws of the State of Washington.<br /></li>
-	<li>If you acquired this product in Canada, this EULA is governed by the laws of the Province of Ontario, Canada. Each of the parties hereto irrevocably attorns to the jurisdiction of the courts of the Province of Ontario and further agrees to commence any litigation which may arise hereunder in the courts located in the Judicial District of York, Province of Ontario. <br /></li>
-	<li>If this product was acquired outside the United States or Canada, then local laws apply.<br /></li>
-	<li>Should you have any questions concerning this EULA, or if you desire to contact MyBB for any reason, please contact the MyBB Group at www.mybboard.com.<br /></li>
-	<li>NO WARRANTIES. MyBB expressly disclaims any warranty for the MyBB SOFTWARE. The MyBB SOFTWARE and any related documentation is provided "as is" without warranty of any kind, either express or implied, including, without limitation, the implied warranties or merchantability, fitness for a particular purpose, or noninfringement. The entire risk arising out of use or performance of the MyBB SOFTWARE remains with you. <br /></li>
-	<li>NO LIABILITY FOR DAMAGES. In no event shall MyBB or its suppliers be liable for any damages whatsoever (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or any other pecuniary loss) arising out of the use of or inability to use this MyBB product, even if the MyBB Group has been advised of the possibility of such damages. Because some states/jurisdictions do not allow the exclusion or limitation of liability for consequential or incidental damages, the above limitation may not apply to you.</li>
+<h4>Separation of Components</h4>
+<p>The MyBB software is licensed as a single product. Components, parts or any code may not be separated from the original MyBB package for either personal use or inclusion in other applications.</p>
 
-	<li>MyBB reserves the right to make modifications to this License Grant at any given time and will apply to all current and existing copies of the MyBB Software.</li>
-	</ul>
-	';
+<h4>Termination</h4>
+<p>Without prejudice to any other rights, the MyBB Group may terminate this EULA if you fail to comply with the terms and conditions of this EULA. In such event, you must destroy all copies of the MyBB software and all of its component parts. The MyBB Group also reserve the right to revoke redistribution rights of MyBB from any corporation or entity for any specified reason.</p>
+
+<h4>Copyright</h4>
+<p>All title and copyrights in and to the MyBB software (including but not limited to any images, text, javascript and code incorporated in to the MyBB software), the accompanying materials and any copies of the MyBB software are owned by the MyBB Group.</p>
+<p>MyBB is protected by copyright laws and international treaty provisions. Therefore, you must treat MyBB like any other copyrighted material.</p>
+<p>The MyBB Group has several copyright notices and "powered by" lines embedded within the product. You must not remove, alter or hinder the visibility of any of these statements (including but not limited to the copyright notice at the top of files and the copyright/powered by lines found in publicly visible "templates").</p>
+
+<h4>Product Warranty and Liability for Damages</h4>
+<p>The MyBB Group expressly disclaims any warranty for MyBB. The MyBB software and any related documentation is provided "as is" without warranty of any kind, either express or implied, including, without limitation, the implied warranties or merchant-ability, fitness for a particular purpose, or non-infringement. The entire risk arising out of use or performance of MyBB remains with you.</p>
+<p>In no event shall the MyBB Group be liable for any damages whatsoever (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or any other pecuniary loss) arising out of the use of or inability to use this product, even if the MyBB Group has been advised of the possibility of such damages. Because some states/jurisdictions do not allow the exclusion or limitation of liability for consequential or incidental damages, the above limitation may not apply to you.</p>';
 	echo sprintf($lang->license_step, $license);
 	$output->print_footer('requirements_check');
 }

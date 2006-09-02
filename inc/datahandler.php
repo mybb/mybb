@@ -129,28 +129,11 @@ class DataHandler
 		foreach($this->errors as $error)
 		{
 			$lang_string = $this->language_prefix.'_'.$error['error_code'];
-			
-			//
-			// MYBB 1.2 DEV CODE
-			//
-			if(!$lang->$lang_string) {
-				if(is_array($error['data']))
-				{
-					$arg_info = " (Arguments - ".count($error['data']);
-					foreach($error['data'] as $i => $argument)
-					{
-						$arg_info .= " / {$i}={$argument}";
-					}
-					$arg_info .= ")";
-				}
-				$errors[] = "Missing lang string: ".$this->language_prefix.'_'.$error['error_code'].$arg_info;
-				$arg_info = '';
+			if(!$lang->$lang_string)
+			{
+				$errors[] = $error['error_code'];
 				continue;
 			}
-			//
-			// END MYBB 1.2 DEV CODE
-			//
-
 
 			if(is_array($error['data']))
 			{

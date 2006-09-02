@@ -692,7 +692,7 @@ elseif($mybb->input['action'] == "getnew")
 
 	if($mybb->input['fid'])
 	{
-		$where_sql = " AND t.fid='".intval($mybb->input['fid'])."'";
+		$where_sql .= " AND t.fid='".intval($mybb->input['fid'])."'";
 	}
 	
 	$unsearchforums = get_unsearchable_forums();
@@ -739,7 +739,7 @@ elseif($mybb->input['action'] == "getdaily")
 
 	if($mybb->input['fid'])
 	{
-		$where_sql = " AND t.fid='".intval($mybb->input['fid'])."'";
+		$where_sql .= " AND t.fid='".intval($mybb->input['fid'])."'";
 	}
 	
 	$unsearchforums = get_unsearchable_forums();

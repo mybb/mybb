@@ -587,6 +587,7 @@ class postParser
 		$fullurl = $url;
 
 		$url = str_replace('&amp;', '&', $url);
+		$name = str_replace('&amp;', '&', $name);
 
 		if(!preg_match("#[a-z0-9]+://#i", $fullurl))
 		{

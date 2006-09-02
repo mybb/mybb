@@ -41,10 +41,11 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 }
 
 // If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings
-if((preg_match("#win#i", PHP_OS) && is_numeric(stripos($_SERVER['SERVER_SOFTWARE'], "apache")) == false) || is_numeric(stripos(SAPI_NAME, "cgi")) !== false || defined("ARCHIVE_QUERY_STRINGS"))
+if((preg_match("#win#i", PHP_OS) && stripos($_SERVER['SERVER_SOFTWARE'], "apache") == false) || stripos(SAPI_NAME, "cgi") !== false || defined("ARCHIVE_QUERY_STRINGS"))
 {
 	$url = $_SERVER['QUERY_STRING'];
 	$base_url = $mybb->settings['bburl']."/archive/index.php?";
+	$endpart = $url;
 }
 // Otherwise, we're using 100% friendly URLs
 else
@@ -62,9 +63,9 @@ else
 		$url = $_SERVER['PHP_SELF'];
 	}
 	$base_url = $mybb->settings['bburl']."/archive/index.php/";
+	$endpart = my_substr(strrchr($url, "/"), 1);
 }
 
-$endpart = my_substr(strrchr($url, "/"), 1);
 $action = "index";
 
 // This seems to work the same as the block below except without the css bugs O_o
@@ -74,7 +75,10 @@ if($endpart != "index.php")
 {
 	$endpart = str_replace(".html", "", $endpart);
 	$todo = explode("-", $endpart, 3);
-	$action = $todo[0];
+	if($todo[0])
+	{
+		$action = $todo[0];
+	}
 	$page = $todo[2];
 	$id = intval($todo[1]);
 
@@ -112,7 +116,7 @@ if($endpart != "index.php")
 			$action = "404";
 		}
 	}
-	else if($action != '')
+	else if($action != 'index')
 	{
 		$action = "404";
 	}

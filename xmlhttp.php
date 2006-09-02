@@ -323,6 +323,7 @@ else if($mybb->input['action'] == "edit_post")
 	else if($mybb->input['do'] == "update_post")
 	{
 		$message = strval($_POST['value']);
+		/*
 		if(strtolower($charset) == "utf-8")
 		{
 			$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $message);
@@ -330,6 +331,21 @@ else if($mybb->input['action'] == "edit_post")
 		else
 		{
 			$message = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $message);
+		} */
+		if(strtolower($charset) != "utf-8")
+		{
+			if(function_exists("iconv"))
+			{
+				$message = iconv("UTF-8", $charset, $message);
+			}
+			else if(function_exists("mb_convert_encoding"))
+			{
+				$message = mb_convert_encoding($message, $charset, "UTF-8");
+			}
+			else if(strtolower($charset) == "iso-8859-1")
+			{
+				$message = utf8_decode($message);
+			}
 		}
 		//die(str_replace("&", "&amp;", $message));
 		if($debug_this == 1)
