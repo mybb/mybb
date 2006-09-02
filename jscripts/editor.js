@@ -167,7 +167,7 @@ messageEditor.prototype = {
 		var closeButton = document.createElement("img");
 		closeButton.id = "close_tags";
 		closeButton.src = "images/codebuttons/close_tags.gif";
-		closeButton.title = "";
+		closeButton.title = this.options.lang.title_close_tags;
 		closeButton.className = "toolbar_normal";
 		closeButton.height = 22;
 		closeButton.width = 80;
@@ -684,9 +684,9 @@ messageEditor.prototype = {
 				tag = MyBB.arrayPop(this.openTags);
 				exploded_tag = tag.split("_");
 				this.performInsert("[/"+exploded_tag[0]+"]", "", false);
-				if($(tag))
+				if($(exploded_tag[0]))
 				{
-					DomLib.removeClass($(tag), "toolbar_clicked");
+					$(exploded_tag[0]).className = "toolbar_normal";
 				}
 			}
 		}

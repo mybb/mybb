@@ -124,6 +124,7 @@ $l['editor_title_email'] = "Insert email address";
 $l['editor_title_quote'] = "Insert quoted text";
 $l['editor_title_code'] = "Insert formatted code";
 $l['editor_title_php'] = "Insert formatted PHP code";
+$l['editor_title_close_tags'] = "Close any open MyCode tags that you currently have open";
 $l['editor_enter_list_item'] = "Enter a list item. Click cancel or leave blank to end the list.";
 $l['editor_enter_url'] = "Please enter the URL of the website.";
 $l['editor_enter_url_title'] = "Optionally, you can also enter a title for the URL.";

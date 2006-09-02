@@ -1520,6 +1520,7 @@ function build_mycode_inserter()
 			"editor_title_quote",
 			"editor_title_code",
 			"editor_title_php",
+			"editor_title_close_tags",
 			"editor_enter_list_item",
 			"editor_enter_url",
 			"editor_enter_url_title",
