@@ -186,12 +186,12 @@ line-height: 1.4;
 font-size: 13px;]]></extra>
 		</textarea>
 		<radio>
-			<background><![CDATA[transparent]]></background>
-			<border><![CDATA[none]]></border>
+			<background><![CDATA[]]></background>
+			<border><![CDATA[]]></border>
 		</radio>
 		<checkbox>
-			<background><![CDATA[transparent]]></background>
-			<border><![CDATA[none]]></border>
+			<background><![CDATA[]]></background>
+			<border><![CDATA[]]></border>
 		</checkbox>
 		<select>
 			<background><![CDATA[#ffffff]]></background>
