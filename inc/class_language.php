@@ -75,6 +75,8 @@ class MyLanguage
 		{
 			die("Language $language ($this->path/$language) is not installed");
 		}
+		
+		$language = trim($language);
 
 		// Default language is English.
 		if($language == "")

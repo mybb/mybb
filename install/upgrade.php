@@ -198,6 +198,7 @@ function upgradethemes()
 		$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,def) VALUES ('MyBB Default','1','1')");
 		$sid = $db->insert_id();
 		$db->query("UPDATE ".TABLE_PREFIX."users SET style='$sid'");
+		$db->query("UPDATE ".TABLE_PREFIX."forums SET style='0'");
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templatesets;");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."templatesets (
 		  sid smallint unsigned NOT NULL auto_increment,

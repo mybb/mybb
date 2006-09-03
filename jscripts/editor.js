@@ -11,7 +11,6 @@ messageEditor.prototype = {
 		{
 			return false;
 		}
-
 		this.options = options;
 		
 		if(this.options)
@@ -19,6 +18,10 @@ messageEditor.prototype = {
 			if(!this.options.lang)
 			{
 				return false;
+			}
+			if(!this.options.rtl)
+			{
+				this.options.trl = 0;
 			}
 		}
 		
@@ -123,6 +126,14 @@ messageEditor.prototype = {
 		// Create text font/color/size toolbar
 		textFormatting = document.createElement("div");
 		textFormatting.style.position = "absolute";
+		if(this.options.rtl == 1)
+		{
+			textFormatting.style.right = 0;
+		}
+		else
+		{
+			textFormatting.style.left = 0;
+		}
 		toolBar.appendChild(textFormatting);
 
 		// Create the font drop down.
@@ -163,11 +174,18 @@ messageEditor.prototype = {
 		// Create close tags button
 		closeBar = document.createElement("div");
 		closeBar.style.position = "absolute";
-		closeBar.style.right = 0;
+		if(this.options.rtl == 1)
+		{
+			closeBar.style.left = 0;
+		}
+		else
+		{
+			closeBar.style.right = 0;
+		}
 		var closeButton = document.createElement("img");
 		closeButton.id = "close_tags";
 		closeButton.src = "images/codebuttons/close_tags.gif";
-		closeButton.title = this.options.lang.title_close_tags;
+		closeButton.title = "";
 		closeButton.className = "toolbar_normal";
 		closeButton.height = 22;
 		closeButton.width = 80;
@@ -190,6 +208,14 @@ messageEditor.prototype = {
 		// Create formatting section of second toolbar.
 		formatting = document.createElement("div");
 		formatting.style.position = "absolute";
+		if(this.options.rtl == 1)
+		{
+			formatting.style.right = 0;
+		}
+		else
+		{
+			formatting.style.left = 0;
+		}
 		toolbar2.appendChild(formatting);
 
 		// Insert toolbar buttons.
@@ -205,7 +231,14 @@ messageEditor.prototype = {
 		// Create insertable elements section of second toolbar.
 		elements = document.createElement("div");
 		elements.style.position = "absolute";
-		elements.style.right = 0;
+		if(this.options.rtl == 1)
+		{
+			elements.style.left = 0;
+		}
+		else
+		{
+			elements.style.right = 0;
+		}
 
 		toolbar2.appendChild(elements);
 		this.insertStandardButton(elements, "list_num", "images/codebuttons/list_num.gif", "list", "1", this.options.lang.title_numlist);
@@ -684,9 +717,9 @@ messageEditor.prototype = {
 				tag = MyBB.arrayPop(this.openTags);
 				exploded_tag = tag.split("_");
 				this.performInsert("[/"+exploded_tag[0]+"]", "", false);
-				if($(exploded_tag[0]))
+				if($(tag))
 				{
-					$(exploded_tag[0]).className = "toolbar_normal";
+					DomLib.removeClass($(tag), "toolbar_clicked");
 				}
 			}
 		}

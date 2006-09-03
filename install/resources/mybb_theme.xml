@@ -3384,7 +3384,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="codebuttons" version="120"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=120"></script>
 <script type="text/javascript">
 	{$editor_language}
-	var clickableEditor = new messageEditor("message", {lang: editor_language});
+	var clickableEditor = new messageEditor("message", {lang: editor_language, rtl: {$lang->settings['rtl']}});
 	clickableEditor.bindSmilieInserter("clickable_smilies");
 </script>]]></template>
 		<template name="showthread_quickreply" version="120"><![CDATA[<br />

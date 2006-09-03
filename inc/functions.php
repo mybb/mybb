@@ -292,13 +292,6 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="")
 		$charset = $lang->settings['charset'];
 	}
 
-	if(function_exists('mb_language') && function_exists('mb_encode_mimeheader'))
-	{
-		mb_language($lang->settings['htmllang']);
-  		$subject = str_replace('ISO-8859-1', $charset, mb_encode_mimeheader($subject));
- 		$from = str_replace('ISO-8859-1', $charset, mb_encode_mimeheader($from));
-	}
-
 	// Build mail headers
 	if(my_strlen(trim($from)) == 0)
 	{

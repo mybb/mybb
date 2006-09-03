@@ -81,6 +81,7 @@ if(!isset($mybb->input['mode']))
 
 // Select the board theme to use.
 $loadstyle = '';
+$load_from_forum = 0;
 $style = array();
 
 // This user has a custom theme set in their profile
@@ -94,6 +95,7 @@ if(isset($mybb->input['pid']))
 {
 	$query = $db->simple_select(TABLE_PREFIX."forums f, ".TABLE_PREFIX."posts p", "f.style, f.overridestyle", "f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'");
 	$style = $db->fetch_array($query);
+	$load_from_forum = 1;
 }
 
 // We have a thread id and a forum id, we can easily fetch the theme for this forum
@@ -101,6 +103,7 @@ else if(isset($mybb->input['tid']))
 {
 	$query = $db->simple_select(TABLE_PREFIX."forums f, ".TABLE_PREFIX."threads t", "f.style, f.overridestyle", "f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'");
 	$style = $db->fetch_array($query);
+	$load_from_forum = 1;
 }
 
 // We have a forum id - simply load the theme from it
@@ -108,6 +111,7 @@ else if(isset($mybb->input['fid']))
 {
 	$query = $db->simple_select(TABLE_PREFIX."forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'");
 	$style = $db->fetch_array($query);
+	$load_from_forum = 1;
 }
 
 // From all of the above, a theme was found
@@ -129,6 +133,24 @@ if(empty($loadstyle))
 // Fetch the theme to load from the database
 $query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits, csscached", $loadstyle);
 $theme = $db->fetch_array($query);
+
+// No theme was found - we attempt to load the master or any other theme
+if(!$theme['tid'])
+{
+	// Missing theme was from a forum, run a query to set any forums using the theme to the default
+	if($load_from_forum == 1)
+	{
+		$db->update_query(TABLE_PREFIX."forums", array("style" => 0), "style='{$style['style']}'");
+	}
+	// Missing theme was from a user, run a query to set any users using the theme to the default
+	else if($load_from_user == 1)
+	{
+		$db->update_query(TABLE_PREFIX."users", array("style" => 0), "style='{$style['style']}'");
+	}
+	// Attempt to load the master or any other theme if the master is not available
+	$query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits, csscached", "", array("order_by" => "tid", "limit" => 1));
+	$theme = $db->fetch_array($query);
+}
 
 $theme = @array_merge($theme, unserialize($theme['themebits']));
 

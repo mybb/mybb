@@ -725,7 +725,7 @@ function install_done()
 		'usergroup' => 4,
 		'regdate' => $now,
 		'lastactive' => $now,
-		'lastvisit' => intval($now),
+		'lastvisit' => $now,
 		'website' => '',
 		'icq' => '',
 		'aim' => '',

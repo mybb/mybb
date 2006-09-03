@@ -24,7 +24,7 @@ add_breadcrumb($lang->nav_stats);
 
 $stats = $cache->read("stats");
 
-if($stats['numthreads'] < 1 || $stats['numposts'] < 1)
+if($stats['numthreads'] < 1 || $stats['numusers'] < 1)
 {
 	error($lang->not_enough_info_stats);
 }
