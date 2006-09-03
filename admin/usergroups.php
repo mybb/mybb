@@ -110,6 +110,7 @@ if($mybb->input['action'] == "do_add")
 		"stars" => intval($mybb->input['ustars']),
 		"starimage" => $db->escape_string($mybb->input['starimage']),
 		"image" => $db->escape_string($mybb->input['image']),
+		"disporder" => 0,
 		"isbannedgroup" => $db->escape_string($mybb->input['isbannedgroup']),
 		"canview" => $db->escape_string($mybb->input['canview']),
 		"canviewthreads" => $db->escape_string($mybb->input['canviewthreads']),
