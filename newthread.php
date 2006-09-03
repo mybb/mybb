@@ -705,7 +705,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 	}
 	
-	if($forumpermissions['canpostpolls'] != "no" && $mybb->usergroup['canpostpolls'] == "no")
+	if($forumpermissions['canpostpolls'] != "no")
 	{
 		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
