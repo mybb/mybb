@@ -394,6 +394,7 @@ function show($user)
 		case "member_register":
 			$locationname = $lang->registering;
 			break;
+		case "member":
 		case "member_login":
 			$locationname = $lang->logging_in;
 			break;

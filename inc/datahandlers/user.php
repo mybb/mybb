@@ -786,7 +786,7 @@ class UserDataHandler extends DataHandler
 			"usergroup" => intval($user['usergroup']),
 			"additionalgroups" => $db->escape_string($user['additionalgroups']),
 			"displaygroup" => intval($user['displaygroup']),
-			"usertitle" => $db->escape_string($user['usertitle']),
+			"usertitle" => $db->escape_string(htmlspecialchars_uni($user['usertitle'])),
 			"regdate" => intval($user['regdate']),
 			"lastactive" => intval($user['lastactive']),
 			"lastvisit" => intval($user['lastvisit']),
@@ -909,7 +909,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['usertitle']))
 		{
-			$this->user_update_data['usertitle'] = $db->escape_string($user['usertitle']);
+			$this->user_update_data['usertitle'] = $db->escape_string(htmlspecialchars_uni($user['usertitle']));
 		}
 		if(isset($user['regdate']))
 		{
