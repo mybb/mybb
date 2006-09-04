@@ -879,6 +879,7 @@ function cpredirect($url, $message="")
 function cpfooter($showversion=1)
 {
 	global $mybb, $db, $maintimer, $lang;
+
 	echo "<div align=\"center\">\n<br />\n<br />\n";
 	$totaltime = $maintimer->stop();
 	$lang->footer_stats = sprintf($lang->footer_stats, $totaltime, $db->query_count);
@@ -1102,7 +1103,7 @@ function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra=""
 		if($extra)
 		{
 			$selected1 = '';
-			if($selected == -1)
+			if(in_array(-1, $selected))
 			{
 				$selected1 = ' checked="checked"';
 			}
@@ -1114,7 +1115,7 @@ function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra=""
 	{
 		$startforum = $cforumcache['fid'][$fid];
 		$forumchecklist .= "$depth<input type=\"checkbox\" name=\"{$name}[]\" value=\"$startforum[fid]\"";
-		if($selected == $startforum['fid'] || (is_array($selected) && in_array($forum['fid'], $selected)))
+		if(in_array($startforum['fid'], $selected) || (is_array($selected) && in_array($forum['fid'], $selected)))
 		{
 			$forumchecklist .= ' checked="checked"';
 		}

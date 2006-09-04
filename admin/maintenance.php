@@ -175,9 +175,8 @@ if($mybb->input['action'] == "do_rebuildforums")
 		makehiddencode('perpage', $per_page);
 		endtable();
 		endform($lang->proceed);
+		cpfooter();
 	}
-
-	cpfooter();
 }
 
 if($mybb->input['action'] == "do_rebuildthreads")
@@ -221,9 +220,8 @@ if($mybb->input['action'] == "do_rebuildthreads")
 		makehiddencode('perpage', $per_page);
 		endtable();
 		endform($lang->proceed);
+		cpfooter();
 	}
-
-	cpfooter();
 }
 
 if($mybb->input['action'] == "do_recountpostcounts")
@@ -269,9 +267,8 @@ if($mybb->input['action'] == "do_recountpostcounts")
 		makehiddencode('perpage', $per_page);
 		endtable();
 		endform($lang->proceed);
+		cpfooter();
 	}
-
-	cpfooter();
 }
 
 if($mybb->input['action'] == "do_rebuildthumbnails")
@@ -294,7 +291,7 @@ if($mybb->input['action'] == "do_rebuildthumbnails")
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
-	require_once "../inc/functions_image.php";
+	require_once MYBB_ROOT."/inc/functions_image.php";
 	
 	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", '', array('order_by' => 'aid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
 	while($attachment = $db->fetch_array($query))
@@ -327,9 +324,8 @@ if($mybb->input['action'] == "do_rebuildthumbnails")
 		makehiddencode('perpage', $per_page);
 		endtable();
 		endform($lang->proceed);
+		cpfooter();
 	}
-
-	cpfooter();
 }
 
 if($mybb->input['action'] == "rebuild")
@@ -379,5 +375,6 @@ if($mybb->input['action'] == "rebuild")
 	makehiddencode('page', 1);
 	endtable();
 	endform($lang->proceed);
+	cpfooter();
 }
 ?>

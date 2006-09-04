@@ -39,7 +39,7 @@ $plugins->run_hooks("admin_profilefields_start");
 if($mybb->input['action'] == "do_add")
 {
 	$type = $mybb->input['type'];
-	$options = preg_replace("#(\r\n|\r|\n)#s", "\n", $mybb->input['options']);
+	$options = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['options']));
 	if($type != "text" && $type != "textarea")
 	{
 		$thing = "$type\n$options";
@@ -96,7 +96,7 @@ if($mybb->input['action'] == "do_delete")
 if($mybb->input['action'] == "do_edit")
 {
 	$type = $mybb->input['type'];
-	$options = preg_replace("#(\r\n|\r|\n)#s", "\n", $mybb->input['options']);
+	$options = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['options']));
 	if($type != "text" && $type != "textarea")
 	{
 		$thing = "$type\n$options";
@@ -172,7 +172,7 @@ if($mybb->input['action'] == "edit")
 	$profilefield['type'] = stripslashes($profilefield['type']);
 
 	$type = explode("\n", $profilefield['type'], "2");
-	$typesel[$type[0]] = "selected";
+	$typesel[$type[0]] = " selected";
 	$options = $type[1];
 
 	$plugins->run_hooks("admin_profilefields_edit");
@@ -188,7 +188,7 @@ if($mybb->input['action'] == "edit")
 	makeinputcode($lang->field_max_length, "maxlength", $profilefield['maxlength']);
 	makeinputcode($lang->field_length, "length", $profilefield['length']);
 	makeinputcode($lang->field_disporder, "disporder", $profilefield['disporder'], 4);
-	makelabelcode($lang->field_type, "<select name=\"type\"><option value=\"text\" $typesel[text]>$lang->field_type_textbox</option><option value=\"textarea\" $typesel[textarea]>$lang->field_type_textarea</option><option value=\"select\" $typesel[select]>$lang->field_type_select</option><option value=\"multiselect\" $typesel[multiselect]>$lang->field_type_multiselect</option><option value=\"radio\" $typesel[radio]>$lang->field_type_radio</option><option value=\"checkbox\" $typesel[checkbox]>$lang->field_type_checkbox</option></select>");
+	makelabelcode($lang->field_type, "<select name=\"type\"><option value=\"text\"{$typesel['text']}>$lang->field_type_textbox</option><option value=\"textarea\"{$typesel['textarea']}>$lang->field_type_textarea</option><option value=\"select\"{$typesel['select']}>$lang->field_type_select</option><option value=\"multiselect\"{$typesel['multiselect']}>$lang->field_type_multiselect</option><option value=\"radio\"{$typesel['radio']}>$lang->field_type_radio</option><option value=\"checkbox\"{$typesel['checkbox']}>$lang->field_type_checkbox</option></select>");
 	maketextareacode($lang->field_options, "options", $options, 6, 50);
 	makeyesnocode($lang->field_required, "required", $profilefield['required']);
 	makeyesnocode($lang->field_editable, "editable", $profilefield['editable']);
@@ -236,9 +236,9 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		echo "<td class=\"$bgcolor\" align=\"right\">";
 		startform("profilefields.php");
 		makehiddencode("fid", $profilefield['fid']);
-    echo "<select name=\"action\"><option value=\"edit\">$lang->edit_field</option><option value=\"delete\">$lang->delete_field</option></select>&nbsp;<input type=\"submit\" value=\"$lang->go\" />";
-    endform();
-    echo "</td>\n";
+    	echo "<select name=\"action\"><option value=\"edit\">$lang->edit_field</option><option value=\"delete\">$lang->delete_field</option></select>&nbsp;<input type=\"submit\" value=\"$lang->go\" />";
+    	endform();
+    	echo "</td>\n";
 		echo "</tr>\n";
 		
 	}

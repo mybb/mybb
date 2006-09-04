@@ -60,6 +60,20 @@ if($mybb->input['action'] == "do_change")
 	$plugins->run_hooks("admin_settings_do_change");
 	if(is_array($mybb->input['upsetting']))
 	{
+		// Check to see if we changing CSS Mediums
+		if(isset($mybb->input['upsetting']['96']) && $mybb->input['upsetting']['96'] == "file")
+		{
+			$query = $db->simple_select(TABLE_PREFIX."settings", "value", "sid='96'");
+			if($db->fetch_field($query, "value") == "db")
+			{
+				$mybb->settings['cssmedium'] = 'file';
+				$query = $db->simple_select(TABLE_PREFIX."themes", "tid", "csscached='0'");
+				while($theme = $db->fetch_array($query))
+				{
+					update_css_file($theme['tid']);
+				}
+			}
+		}
 		foreach($mybb->input['upsetting'] as $key => $val)
 		{
 			$val = $db->escape_string($val);
@@ -67,6 +81,7 @@ if($mybb->input['action'] == "do_change")
 			$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$val' WHERE sid='$key'");
 		}
 	}
+	
 	rebuildsettings();
 	// Check if we need to create our fulltext index after changing the search mode
 	if($mybb->settings['searchtype'] == "fulltext")
@@ -251,11 +266,11 @@ if($mybb->input['action'] == "edit")
 		makehiddencode("sid", $mybb->input['sid']);
 		starttable();
 		tableheader($lang->modify_setting);
-		makeinputcode($lang->setting_title, "title", $setting[title]);
-		maketextareacode($lang->description, "description", $setting[description]);
-		makeinputcode($lang->setting_name, "name", $setting[name]);
-		maketextareacode($lang->setting_type, "type", $setting[optionscode], 6, 50);
-		makeinputcode($lang->value, "value", $setting[value]);
+		makeinputcode($lang->setting_title, "title", $setting['title']);
+		maketextareacode($lang->description, "description", $setting['description']);
+		makeinputcode($lang->setting_name, "name", $setting['name']);
+		maketextareacode($lang->setting_type, "type", $setting['optionscode'], 6, 50);
+		makeinputcode($lang->value, "value", $setting['value']);
 		makeinputcode($lang->disp_order, "disporder", $setting['disporder'], 4);
 		makeselectcode($lang->group, "gid", "settinggroups", "gid", "name", $setting['gid']);
 		endtable();
@@ -461,7 +476,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				$type[0] = trim($type[0]);
 				if($type[0] == "text" || $type[0] == "")
 				{
-					$setting['value'] = htmlentities($setting['value']);
+					$setting['value'] = htmlspecialchars_uni($setting['value']);
 					$settingcode = "<input type=\"text\" name=\"upsetting[$setting[sid]]\" value=\"$setting[value]\" size=\"25\" />";
 				}
 				else if($type[0] == "textarea")

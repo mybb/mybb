@@ -136,8 +136,8 @@ function upgrade5_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD csscached bigint(30) NOT NULL default '0'");
 	}
 	
-	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='yes' >= 1");
-	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='no' <= 1");
+	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='yes' WHERE canrunmaint='yes'");
+	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='no' WHERE canrunmaint='no'");
 	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET canrundbtools='yes' WHERE canrunmaint='yes'");
 	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET canrundbtools='no' WHERE canrunmaint='no'");
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET optionscode='select\r\ninstant=Instant Activation\r\nverify=Send Email Verification\r\nrandompass=Send Random Password\r\nadmin=Administrator Activation' WHERE name = 'regtype'");

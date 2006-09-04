@@ -128,6 +128,5 @@ $l['redirect_pmsdeleted'] = "The selected private messages have been deleted.<br
 $l['redirect_pmsent'] = "Thank you, your private message has successfully been sent.<br />You will now be returned to your private message inbox.";
 $l['redirect_pmfoldersupdated'] = "Thank you, your private messaging folders have successfully been updated.<br />You will now be returned to your private message Inbox.";
 $l['redirect_pmfoldersemptied'] = "The selected private messaging folders have successfully been emptied.<br />You will now be taken back to your Private Messaging Inbox.";
-$l['redirect_pmsdeleted'] = "The selected private messages have been deleted successfully.";
 
 ?>

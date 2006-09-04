@@ -1,14 +1,6 @@
 <?php
-/**
- * MyBB 1.2 English Language Pack
- * Copyright © 2006 MyBB Group, All Rights Reserved
- * 
- * $Id$
- */
-
-$l['nav_admin_logs'] = "Administrator Logs";
+$l['nav_admin_logs'] = "Administrator Logs äö";
 $l['nav_search_results'] = "Search Results";
-
 $l['view_admin_logs'] = "View Administrator Access Logs";
 $l['entries_pp'] = "Entries Per Page";
 $l['entries_script'] = "Entries From Which Script";
@@ -24,16 +16,13 @@ $l['prune_admin_logs'] = "Prune Administrator Logs";
 $l['entries_older'] = "Entries Older than (Days)";
 $l['prune_log'] = "Prune Log";
 $l['view_log'] = "View Logs";
-
 $l['log_pruned'] = "The administrator log has been pruned with the settings you specified.";
 $l['no_results'] = "Sorry, there were no results found with the criteria you selected.";
 $l['log_results_header'] = "Administrator Log Viewer (page %s of %s | %s results in total)";
-
 $l['username'] = "Username";
 $l['date'] = "Date";
 $l['scriptname'] = "Script Name";
 $l['action'] = "Action";
 $l['queryinfo'] = "Query Information";
 $l['ipaddress'] = "IP Address";
-
 ?>
