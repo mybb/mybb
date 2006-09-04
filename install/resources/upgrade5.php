@@ -29,29 +29,113 @@ function upgrade5_dbchanges()
 	$output->print_header("Performing Queries");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
+	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE avatartype avatartype varchar(10) NOT NULL;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD totalpms int(10) NOT NULL default '0' AFTER showcodebuttons;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD newpms int(10) NOT NULL default '0' AFTER totalpms;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD unreadpms int(10) NOT NULL default '0' AFTER newpms;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD showredirect char(3) NOT NULL default '' AFTER showquickreply;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD avatardimensions varchar(10) NOT NULL default '' AFTER avatar;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD unapprovedposts INT(10) unsigned NOT NULL default '0' AFTER visible;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD unapprovedthreads INT(10) unsigned NOT NULL default '0' AFTER rules;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD unapprovedposts INT(10) unsigned NOT NULL default '0' AFTER rules;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultdatecut smallint(4) unsigned NOT NULL default '0' AFTER unapprovedposts;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortby varchar(10) NOT NULL default '' AFTER defaultdatecut;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortorder varchar(4) NOT NULL default '' AFTER defaultsortby;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD lastposteruid int(10) unsigned NOT NULL default '0' AFTER lastposter;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD lastpostsubject varchar(120) NOT NULL default '' AFTER lastposttid");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD lastposteruid int unsigned NOT NULL default '0' AFTER lastposter");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."groupleaders ADD canmanagemembers char(3) NOT NULL default '' AFTER uid;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."groupleaders ADD canmanagerequests char(3) NOT NULL default '' AFTER canmanagemembers;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD caneditlangs char(3) NOT NULL default '' AFTER canedithelp;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD canrundbtools char(3) NOT NULL default ''");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD allowedgroups text NOT NULL default '' AFTER extracss;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."moderators ADD canmovetononmodforum char(3) NOT NULL default '' AFTER canmanagethreads;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD csscached bigint(30) NOT NULL default '0'");
-
+	if(!$db->field_exists('totalpms', TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD totalpms int(10) NOT NULL default '0' AFTER showcodebuttons;");
+	}
+	
+	if(!$db->field_exists('newpms', TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD newpms int(10) NOT NULL default '0' AFTER totalpms;");
+	}
+	
+	if(!$db->field_exists('unreadpms', TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD unreadpms int(10) NOT NULL default '0' AFTER newpms;");
+	}
+	
+	if(!$db->field_exists('showredirect', TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD showredirect char(3) NOT NULL default '' AFTER showquickreply;");
+	}
+	
+	if(!$db->field_exists('avatardimensions', TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD avatardimensions varchar(10) NOT NULL default '' AFTER avatar;");
+	}
+	
+	if(!$db->field_exists('unapprovedposts', TABLE_PREFIX."threads"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD unapprovedposts INT(10) unsigned NOT NULL default '0' AFTER visible;");
+	}
+	
+	if(!$db->field_exists('unapprovedthreads', TABLE_PREFIX."forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD unapprovedthreads INT(10) unsigned NOT NULL default '0' AFTER rules;");
+	}
+	
+	if(!$db->field_exists('unapprovedposts', TABLE_PREFIX."forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD unapprovedposts INT(10) unsigned NOT NULL default '0' AFTER rules;");
+	}
+	
+	if(!$db->field_exists('defaultdatecut', TABLE_PREFIX."forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultdatecut smallint(4) unsigned NOT NULL default '0' AFTER unapprovedposts;");
+	}
+	
+	if(!$db->field_exists('defaultsortby', TABLE_PREFIX."forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortby varchar(10) NOT NULL default '' AFTER defaultdatecut;");
+	}
+	
+	if(!$db->field_exists('defaultsortorder', TABLE_PREFIX."forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortorder varchar(4) NOT NULL default '' AFTER defaultsortby;");
+	}
+	
+	if(!$db->field_exists('lastposteruid', TABLE_PREFIX."forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD lastposteruid int(10) unsigned NOT NULL default '0' AFTER lastposter;");
+	}
+	
+	if(!$db->field_exists('lastpostsubject', TABLE_PREFIX."forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD lastpostsubject varchar(120) NOT NULL default '' AFTER lastposttid");
+	}
+	
+	if(!$db->field_exists('lastposteruid', TABLE_PREFIX."threads"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD lastposteruid int unsigned NOT NULL default '0' AFTER lastposter");
+	}
+	
+	if(!$db->field_exists('canmanagemembers', TABLE_PREFIX."groupleaders"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."groupleaders ADD canmanagemembers char(3) NOT NULL default '' AFTER uid;");
+	}
+	
+	if(!$db->field_exists('canmanagerequests', TABLE_PREFIX."groupleaders"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."groupleaders ADD canmanagerequests char(3) NOT NULL default '' AFTER canmanagemembers;");
+	}
+	
+	if(!$db->field_exists('caneditlangs', TABLE_PREFIX."adminoptions"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD caneditlangs char(3) NOT NULL default '' AFTER canedithelp;");
+	}
+	
+	if(!$db->field_exists('canrundbtools', TABLE_PREFIX."adminoptions"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD canrundbtools char(3) NOT NULL default ''");
+	}
+	
+	if(!$db->field_exists('allowedgroups', TABLE_PREFIX."themes"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD allowedgroups text NOT NULL default '' AFTER extracss;");
+	}
+	
+	if(!$db->field_exists('canmovetononmodforum', TABLE_PREFIX."moderators"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."moderators ADD canmovetononmodforum char(3) NOT NULL default '' AFTER canmanagethreads;");
+	}
+	
+	if(!$db->field_exists('csscached', TABLE_PREFIX."themes"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD csscached bigint(30) NOT NULL default '0'");
+	}
+	
 	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='yes' >= 1");
 	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET caneditlangs='no' <= 1");
 	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET canrundbtools='yes' WHERE canrunmaint='yes'");
@@ -141,7 +225,7 @@ function upgrade5_dbchanges()
 	$bannedips = implode(",", $bannedips);
 	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedips)."' WHERE name='bannedips'");
 
-	$query = $db->query("DROP TABLE ".TABLE_PREFIX."reputation");
+	$query = $db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."reputation");
 
 	$query = $db->query("CREATE TABLE ".TABLE_PREFIX."reputation (
 	  rid int unsigned NOT NULL auto_increment,
@@ -153,6 +237,7 @@ function upgrade5_dbchanges()
       PRIMARY KEY(rid)
 	) TYPE=MyISAM;");
 
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mailqueue");
 	$query = $db->query("CREATE TABLE ".TABLE_PREFIX."mailqueue (
 		mid int unsigned NOT NULL auto_increment,
 		mailto varchar(200) NOT NULL,
@@ -168,32 +253,61 @@ function upgrade5_dbchanges()
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='1'");
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='2' WHERE cancp='yes'");
 
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP rating;");
-
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD attachmentcount int(10) unsigned NOT NULL default '0'");
-
-	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD posthash varchar(32) NOT NULL default '' AFTER visible");
-
+	if($db->field_exists('rating', TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP rating;");
+	}
+	
+	if(!$db->field_exists('attachmentcount', TABLE_PREFIX."threads"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD attachmentcount int(10) unsigned NOT NULL default '0'");
+	}
+	
+	if(!$db->field_exists('posthash', TABLE_PREFIX."posts"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD posthash varchar(32) NOT NULL default '' AFTER visible");
+	}
+	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes CHANGE extension extension varchar(10) NOT NULL;");
-
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD deletetime int(10) unsigned NOT NULL default '0' AFTER attachmentcount");
-
-	$db->query("ALTER TABLE ".TABLE_PREFIX."sessions ADD loginattempts tinyint(2) NOT NULL default '1'");
-  $db->query("ALTER TABLE ".TABLE_PREFIX."sessions ADD failedlogin bigint(30) NOT NULL default '0'");
-
-
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
-
-	$db->query("DROP TABLE ".TABLE_PREFIX."regimages");
+	
+	if(!$db->field_exists('deletetime', TABLE_PREFIX."threads"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD deletetime int(10) unsigned NOT NULL default '0' AFTER attachmentcount");
+	}
+	
+	if(!$db->field_exists('loginattempts', TABLE_PREFIX."sessions"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."sessions ADD loginattempts tinyint(2) NOT NULL default '1'");
+	}
+	
+	if(!$db->field_exists('failedlogin', TABLE_PREFIX."sessions"))
+	{
+  		$db->query("ALTER TABLE ".TABLE_PREFIX."sessions ADD failedlogin bigint(30) NOT NULL default '0'");
+	}
+	
+	if(!$db->field_exists('canviewthreads', TABLE_PREFIX."usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
+	}
+	
+	if(!$db->field_exists('canviewthreads', TABLE_PREFIX."forumpermissions"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
+	}
+	
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."captcha");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."captcha (
 	  imagehash varchar(32) NOT NULL default '',
 	  imagestring varchar(8) NOT NULL default '',
 	  dateline bigint(30) NOT NULL default '0'
 	) TYPE=MyISAM;");
 
-	$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL default '' AFTER action;");
-
+	if(!$db->field_exists('data', TABLE_PREFIX."moderatorlog"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL default '' AFTER action;");
+	}
+	
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."adminsessions");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."adminsessions (
 		sid varchar(32) NOT NULL default '',
 		uid int unsigned NOT NULL default '0',
@@ -203,6 +317,7 @@ function upgrade5_dbchanges()
 		lastactive bigint(30) NOT NULL default '0'
 	) TYPE=MyISAM;");
 
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."modtools");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."modtools (
 	tid smallint unsigned NOT NULL auto_increment,
 	name varchar(200) NOT NULL,
@@ -214,7 +329,11 @@ function upgrade5_dbchanges()
 	PRIMARY KEY (tid)
 ) TYPE=MyISAM;");
 
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD disporder smallint(6) NOT NULL default '0' AFTER image");
+	if(!$db->field_exists('disporder', TABLE_PREFIX."usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD disporder smallint(6) NOT NULL default '0' AFTER image");
+	}
+	
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canviewthreads=canview");
 	$db->query("UPDATE ".TABLE_PREFIX."forumpermissions SET canviewthreads=canview");
 
@@ -353,6 +472,10 @@ function upgrade5_lastposts()
 		$tpp = intval($_POST['tpp']);
 		$start = intval($_POST['start']);
 		$end = $start+$tpp;
+		if($end > $num_threads)
+		{
+			$end = $num_threads;
+		}
 		echo "<p>Updating {$start} to {$end} of {$num_threads}...</p>";
 		$query = $db->simple_select(TABLE_PREFIX."threads", "tid, firstpost", "", array("order_by" => "tid", "order_dir" => "asc", "limit" => $tpp, "limit_start" => $start));
 		while($thread = $db->fetch_array($query))
