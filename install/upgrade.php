@@ -240,7 +240,7 @@ function upgradethemes()
 		}
 	}
 	update_theme(1, 0, $themebits, $css, 0);
-	$output->print_contents(sprintf($lang->upgrade_template_reverted_success, $synccount[1], $synccount[0]));
+	$output->print_contents($lang->upgrade_templates_reverted_success);
 	$output->print_footer("rebuildsettings");
 }
 

@@ -148,10 +148,11 @@ function send_mail_queue($count=10)
 
 		// Fetch emails for this page view - and send them
 		$query = $db->simple_select(TABLE_PREFIX."mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
+		
+		$plugins->run_hooks_by_ref("send_mail_queue_mail", $query);
+		
 		while($email = $db->fetch_array($query))
 		{
-			$plugins->run_hooks("send_mail_queue_mail");
-
 			// Delete the message from the queue
 			$db->delete_query(TABLE_PREFIX."mailqueue", "mid='{$email['mid']}'");
 
@@ -269,7 +270,7 @@ function my_date($format, $stamp="", $offset="", $ty=1)
 		}
 	}
 	
-	$plugins->run_hooks("my_date");
+	$plugins->run_hooks_by_ref("my_date", $date);
 
 	return $date;
 }
