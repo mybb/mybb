@@ -278,6 +278,7 @@ if($mybb->input['action'] == "add")
 	makeyesnocode($lang->allow_mycode, "allowmycode", "yes");
 	makeyesnocode($lang->allow_smilies, "allowsmilies", "yes");
 	makelabelcode($lang->parent_forum, forumselect("fid", $fid, "", "", "0", $lang->global_to_all));
+	$plugins->run_hooks("admin_announcements_add_form");
 	endtable();
 	endform($lang->add_announcement2, $lang->reset_button);
 	cpfooter();
@@ -455,6 +456,7 @@ if($mybb->input['action'] == "edit")
 	makeyesnocode($lang->allow_smilies, "allowsmilies", "$announcement[allowsmilies]");
 	makelabelcode($lang->parent_forum, forumselect("fid", $announcement['fid'], "", "", "0", $lang->global_to_all));
 	endtable();
+	$plugins->run_hooks("admin_announcements_edit_form");
 	endform($lang->update_announcement, $lang->reset_button);
 	cpfooter();
 }

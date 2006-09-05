@@ -41,6 +41,10 @@ if($mybb->input['by'] != "regdate" && $mybb->input['by'] != "postnum" && $mybb->
 	else
 	{
 		$mybb->input['by'] = $mybb->settings['default_memberlist_sortby'];
+		if(!$mybb->input['by'])
+		{
+			$mybb->input['by'] = "regdate";
+		}
 	}
 }
 

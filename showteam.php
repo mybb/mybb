@@ -40,7 +40,7 @@ if(empty($usergroups))
 }
 
 // Fetch specific forum moderator details
-if($usergroups[6]['showforumteam'] == 'yes')
+if($usergroups[6]['gid'])
 {
 	$query = $db->query("
 		SELECT m.*, f.name

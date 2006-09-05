@@ -33,8 +33,9 @@ ajax.prototype = {
 	},
 
 	getTransport: function() {
-		if (window.ActiveXObject) return new ActiveXObject('Microsoft.XMLHTTP');
-		else if (window.XMLHttpRequest) return new XMLHttpRequest();
-		else return false;
+		if(window.XMLHttpRequest) {	return new XMLHttpRequest(); }
+		else if(window.ActiveXObject) {
+			try { req = new ActiveXObject('Msxml2.XMLHTTP.4.0'); } catch(e) { try {	req = new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {req = false; }} return req; }
+		else {	return false; }
 	}
 };

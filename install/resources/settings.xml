@@ -470,7 +470,7 @@ email=Sent via Email]]></optionscode>
 			<description><![CDATA[Select the field that you want members to be sorted by default.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[select
-regdate=Registration
+regdate=Registration Date
 postnum=Post Count
 username=Username]]></optionscode>
 			<settingvalue><![CDATA[regdate]]></settingvalue>

@@ -67,6 +67,8 @@ if($mybb->input['action'] == 'do_backup')
 		cperror($lang->error_no_tables_selected);
 	}
 	
+	@set_time_limit(0);
+	
 	if($mybb->input['write'] == 'disk')
 	{
 		$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].time().random_str()), 0, 10);

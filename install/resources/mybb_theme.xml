@@ -2692,9 +2692,9 @@ var inlineId = {$fid};
 <tbody style="{$expdisplay}" id="cat_{$forum['fid']}_e">
 <tr>
 <td class="tcat" width="35">&nbsp;</td>
-<td class="tcat" width="59%"><strong>{$lang->forumbit_forum}</strong></td>
-<td class="tcat" width="65" align="center" style="white-space: nowrap"><strong>{$lang->forumbit_threads}</strong></td>
-<td class="tcat" width="65" align="center" style="white-space: nowrap"><strong>{$lang->forumbit_posts}</strong></td>
+<td class="tcat"><strong>{$lang->forumbit_forum}</strong></td>
+<td class="tcat" width="85" align="center" style="white-space: nowrap"><strong>{$lang->forumbit_threads}</strong></td>
+<td class="tcat" width="85" align="center" style="white-space: nowrap"><strong>{$lang->forumbit_posts}</strong></td>
 <td class="tcat" width="200" align="center"><strong>{$lang->forumbit_lastpost}</strong></td>
 </tr>
 {$sub_forums}
@@ -3560,10 +3560,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow_sep" colspan="{$colspan}">{$lang->normal_threads}</td>
 </tr>]]></template>
 		<template name="postbit" version="120"><![CDATA[<tr>
-<td class="{$altbg}" width="155" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
+<td class="{$altbg}" width="15%" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 {$post['user_details']}
 </td>
-<td class="{$altbg}" width="100%" valign="top">
+<td class="{$altbg}" width="85%" valign="top">
 <table width="100%">
 <tr><td>{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']}</strong></span>
 <br />

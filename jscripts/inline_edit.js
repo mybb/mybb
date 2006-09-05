@@ -54,7 +54,6 @@ inlineEditor.prototype = {
 		Event.stop(e);
 		if(this.currentElement != '')
 		{
-			//alert('not empty.. it is'+this.currentElement);
 			return false;
 		}
 		// Fix for konqueror which likes to set event element as the text not the link
