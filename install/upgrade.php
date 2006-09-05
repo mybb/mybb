@@ -402,7 +402,7 @@ function sync_settings($redo=0)
 	$settingcount = $groupcount = 0;
 	if($redo == 2)
 	{
-		$db->query("DROP TABLE ".TABLE_PREFIX."settinggroups");
+		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."settinggroups");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."settinggroups (
 		  gid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
@@ -413,7 +413,7 @@ function sync_settings($redo=0)
 		  PRIMARY KEY  (gid)
 		) TYPE=MyISAM;");
 
-		$db->query("DROP TABLE ".TABLE_PREFIX."settings");
+		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."settings");
 
 		$db->query("CREATE TABLE ".TABLE_PREFIX."settings (
 		  sid smallint(6) NOT NULL auto_increment,

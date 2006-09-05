@@ -103,27 +103,40 @@ function upgrade3_convertattachments()
 		$lower = 1;
 	}
 
-	require_once "../inc/settings.php";
+	require_once MYBB_ROOT."/inc/settings.php";
 
 	$query = $db->query("SELECT COUNT(aid) AS attachcount FROM ".TABLE_PREFIX."attachments");
 	$cnt = $db->fetch_array($query);
 
 	$contents .= "<p>Converting attachments $lower to $upper (".$cnt['attachcount']." Total)</p>";
 	echo "<p>Converting attachments $lower to $upper (".$cnt['attachcount']." Total)</p>";
-	if(!$db->field_exists("donecon", TABLE_PREFIX."attachments"))
+	
+	if(!$db->field_exists("uid", TABLE_PREFIX."attachments"))
 	{
 		// Add uid column
 		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments ADD uid smallint(6) NOT NULL AFTER posthash;");
+	}
 
+	if($db->field_exists("thumbnail", TABLE_PREFIX."attachments"))
+	{
 		// Drop thumbnail column
 		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP thumbnail");
+	}
 
+	if(!$db->field_exists("thumbnail", TABLE_PREFIX."attachments"))
+	{
 		// Readd thumbnail column
 		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments ADD thumbnail varchar(120) NOT NULL;");
+	}
 
+	if(!$db->field_exists("attachname", TABLE_PREFIX."attachments"))
+	{
 		// Add attachname column
 		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments ADD attachname varchar(120) NOT NULL AFTER filesize;");
-
+	}
+	
+	if(!$db->field_exists("donecon", TABLE_PREFIX."attachments"))
+	{
 		// Add temporary column
 		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments ADD donecon smallint(1) NOT NULL;");
 	}
@@ -143,7 +156,7 @@ function upgrade3_convertattachments()
 		unset($attachment['filedata']);
 		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 		{
-			require_once "../inc/functions_image.php";
+			require_once MYBB_ROOT."/inc/functions_image.php";
 			$thumbname = str_replace(".attach", "_thumb.$ext", $filename);
 			$thumbnail = generate_thumbnail("../uploads/".$filename, "../uploads", $thumbname, $settings['attachthumbh'], $settings['attachthumbw']);
 			if($thumbnail['code'] == 4)
@@ -166,9 +179,18 @@ function upgrade3_convertattachments()
 	}
 	else
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP donecon");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP filedata");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP thumbnailsm");
+		if($db->field_exists("donecon", TABLE_PREFIX."attachments"))
+		{
+			$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP donecon");
+		}
+		if($db->field_exists("filedata", TABLE_PREFIX."attachments"))
+		{
+			$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP filedata");
+		}
+		if($db->field_exists("thumbnailsm", TABLE_PREFIX."attachments"))
+		{
+			$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP thumbnailsm");
+		}
 		$nextact = "3_convertavatars";
 		$contents .= "<p>Done</p><p>All attachments have been moved to the file system. The next step is converting avatars to the file system.</p>";
 		$contents .= "<p>If you wish to change the number of uploaded avatars to process per page then you can do so below.</p>";
@@ -207,7 +229,7 @@ function upgrade3_convertavatars()
 		$lower = 1;
 	}
 
-	require_once "../inc/settings.php";
+	require_once MYBB_ROOT."/inc/settings.php";
 
 	$query = $db->query("SELECT COUNT(uid) AS avatarcount FROM ".TABLE_PREFIX."avatars");
 	$cnt = $db->fetch_array($query);
@@ -218,6 +240,9 @@ function upgrade3_convertavatars()
 	if(!$db->field_exists("donecon", TABLE_PREFIX."avatars"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."avatars ADD donecon smallint(1) NOT NULL;");
+	}
+	if($db->field_exists("avatartype", TABLE_PREFIX."attachments"))
+	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD avatartype varchar(10) NOT NULL AFTER avatar;");
 	}
 
@@ -265,7 +290,10 @@ function upgrade3_convertavatars()
 	}
 	else
 	{
-		$db->query("DROP TABLE ".TABLE_PREFIX."avatars");
+		if($db->table_exists(TABLE_PREFIX."attachments"))
+		{
+			$db->query("DROP TABLE ".TABLE_PREFIX."avatars");
+		}
 		$nextact = "3_dbchanges2";
 		$contents .= "<p>Done</p><p>All avatars have been moved to the file system. The next step is performing the necessary database modifications for MyBB Gold.</p>";
 	}
@@ -281,32 +309,71 @@ function upgrade3_dbchanges2()
 
 	$contents = "<p>Performing necessary database changes.</p>";
 
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD additionalgroups varchar(200) NOT NULL default '' AFTER usergroup;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD displaygroup smallint(6) NOT NULL default'0' AFTER additionalgroups;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD candisplaygroup varchar(3) NOT NULL;");
-
-	$db->query("ALTER TABLE ".TABLE_PREFIX."banned ADD reason varchar(200) NOT NULL");
-
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD rulestype smallint(1) NOT NULL;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD rulestitle varchar(200) NOT NULL;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD rules text NOT NULL;");
-
-	$db->query("ALTER TABLE ".TABLE_PREFIX."helpdocs ADD usetranslation CHAR( 3 ) NOT NULL AFTER document;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."helpdocs ADD enabled CHAR( 3 ) NOT NULL AFTER usetranslation;");
-	/*
-
-	This will break the upgrade for users who have customised help documents
+	if(!$db->field_exists("additionalgroups", TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD additionalgroups varchar(200) NOT NULL default '' AFTER usergroup;");
+	}
+	if(!$db->field_exists("displaygroup", TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD displaygroup smallint(6) NOT NULL default'0' AFTER additionalgroups;");
+	}
+	if(!$db->field_exists("candisplaygroup", TABLE_PREFIX."usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD candisplaygroup varchar(3) NOT NULL;");
+	}
+	if(!$db->field_exists("reason", TABLE_PREFIX."banned"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."banned ADD reason varchar(200) NOT NULL");
+	}
+	if(!$db->field_exists("rulestype", TABLE_PREFIX."forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD rulestype smallint(1) NOT NULL;");
+	}
+	if(!$db->field_exists("rulestitle", TABLE_PREFIX."forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD rulestitle varchar(200) NOT NULL;");
+	}
+	if(!$db->field_exists("rules", TABLE_PREFIX."forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD rules text NOT NULL;");
+	}
+	if(!$db->field_exists("usetranslation", TABLE_PREFIX."helpdocs"))
+	{	
+		$db->query("ALTER TABLE ".TABLE_PREFIX."helpdocs ADD usetranslation CHAR( 3 ) NOT NULL AFTER document;");
+	}
+	if(!$db->field_exists("enabled", TABLE_PREFIX."helpdocs"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."helpdocs ADD enabled CHAR( 3 ) NOT NULL AFTER usetranslation;");
+	}
+		/*
 	
-	$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET hid='6' WHERE hid='7'");
-	$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET hid='7' WHERE hid='8'");*/
-	
-	$db->query("ALTER TABLE ".TABLE_PREFIX."helpsections ADD usetranslation CHAR( 3 ) NOT NULL AFTER description;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."helpsections ADD enabled CHAR( 3 ) NOT NULL AFTER usetranslation;");
-	
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD firstpost int unsigned NOT NULL default '0' AFTER dateline;");
+		This will break the upgrade for users who have customised help documents
+		
+		$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET hid='6' WHERE hid='7'");
+		$db->query("UPDATE ".TABLE_PREFIX."helpdocs SET hid='7' WHERE hid='8'");*/
 
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD attachquota bigint(30) NOT NULL default '0';");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD cancustomtitle varchar(3) NOT NULL;");
+	if(!$db->field_exists("usetranslation", TABLE_PREFIX."helpsections"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."helpsections ADD usetranslation CHAR( 3 ) NOT NULL AFTER description;");
+	}
+	if(!$db->field_exists("enabled", TABLE_PREFIX."helpsections"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."helpsections ADD enabled CHAR( 3 ) NOT NULL AFTER usetranslation;");
+	}
+	if(!$db->field_exists("firstpost", TABLE_PREFIX."threads"))
+	{		
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD firstpost int unsigned NOT NULL default '0' AFTER dateline;");
+	}
+	if(!$db->field_exists("attachquota", TABLE_PREFIX."usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD attachquota bigint(30) NOT NULL default '0';");
+	}
+	if(!$db->field_exists("cancustomtitle", TABLE_PREFIX."usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD cancustomtitle varchar(3) NOT NULL;");
+	}
+	
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."groupleaders;");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."groupleaders (
 	 lid smallint(6) NOT NULL auto_increment,
 	 gid smallint(6) NOT NULL,
@@ -314,6 +381,7 @@ function upgrade3_dbchanges2()
 	 PRIMARY KEY(lid)
 	);");
 
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."joinrequests;");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."joinrequests (
 	 rid smallint(6) NOT NULL auto_increment,
 	 uid smallint(6) NOT NULL,
@@ -323,7 +391,7 @@ function upgrade3_dbchanges2()
 	 PRIMARY KEY(rid)
 	);");
 
-	$db->query("DROP TABLE ".TABLE_PREFIX."online;");
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."online;");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."sessions (
 	  sid varchar(32) NOT NULL default '',
 	  uid int unsigned NOT NULL default '0',
@@ -340,16 +408,27 @@ function upgrade3_dbchanges2()
 	  KEY location2 (location2)
 	);");
 
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD salt varchar(10) NOT NULL AFTER password;");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD loginkey varchar(50) NOT NULL AFTER salt;");
+	}
+	if(!$db->field_exists("salt", TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD salt varchar(10) NOT NULL AFTER password;");
+	}
+	if(!$db->field_exists("loginkey", TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD loginkey varchar(50) NOT NULL AFTER salt;");
+	}
 
 	if($db->field_exists("pmnotify", TABLE_PREFIX."users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP pmnotify;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD pmnotify varchar(3) NOT NULL AFTER pmpopup;");
+	}	
 
-	$db->query("DROP TABLE ".TABLE_PREFIX."settinggroups");
+	if(!$db->field_exists("pmnotify", TABLE_PREFIX."users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD pmnotify varchar(3) NOT NULL AFTER pmpopup;");
+	}
+
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."settinggroups");
 
 	$db->query("CREATE TABLE ".TABLE_PREFIX."settinggroups (
 	  gid smallint(6) NOT NULL auto_increment,
@@ -360,7 +439,7 @@ function upgrade3_dbchanges2()
 	  PRIMARY KEY  (gid)
 	) TYPE=MyISAM;");
 
-	$db->query("DROP TABLE ".TABLE_PREFIX."settings");
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."settings");
 
 	$db->query("CREATE TABLE ".TABLE_PREFIX."settings (
 	  sid smallint(6) NOT NULL auto_increment,
@@ -374,6 +453,7 @@ function upgrade3_dbchanges2()
 	  PRIMARY KEY  (sid)
 		) TYPE=MyISAM;");
 
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."datacache;");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."datacache (
 	  title varchar(30) NOT NULL default '',
 	  cache mediumtext NOT NULL,
