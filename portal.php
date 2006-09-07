@@ -382,7 +382,7 @@ while($announcement = $db->fetch_array($query))
 	if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
 	{
 		$icon = $icon_cache[$announcement['icon']];
-		$icon = "<img src=\"{$icon[path]}\" alt=\"{$icon[name]}\" />";
+		$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 	}
 	else
 	{

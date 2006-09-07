@@ -100,7 +100,7 @@ if($mybb->input['action'] == "lastpost")
 		$query = $db->query("
 			SELECT p.pid
 			FROM ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t
-			WHERE t.fid='".$thread[fid]."' AND t.closed NOT LIKE 'moved|%' AND p.tid=t.tid
+			WHERE t.fid='".$thread['fid']."' AND t.closed NOT LIKE 'moved|%' AND p.tid=t.tid
 			ORDER BY p.dateline DESC
 			LIMIT 0, 1
 		");

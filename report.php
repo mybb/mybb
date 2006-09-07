@@ -67,7 +67,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 		$query = $db->query("
 			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
 			FROM ".TABLE_PREFIX."moderators m, ".TABLE_PREFIX."users u
-			WHERE u.uid=m.uid AND m.fid IN (".$forum[parentlist].")
+			WHERE u.uid=m.uid AND m.fid IN (".$forum['parentlist'].")
 		");
 		$nummods = $db->num_rows($query);
 		if(!$nummods)
