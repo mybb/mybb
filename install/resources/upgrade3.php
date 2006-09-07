@@ -241,7 +241,7 @@ function upgrade3_convertavatars()
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."avatars ADD donecon smallint(1) NOT NULL;");
 	}
-	if($db->field_exists("avatartype", TABLE_PREFIX."attachments"))
+	if(!$db->field_exists("avatartype", TABLE_PREFIX."attachments"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD avatartype varchar(10) NOT NULL AFTER avatar;");
 	}
@@ -408,11 +408,11 @@ function upgrade3_dbchanges2()
 	  KEY location2 (location2)
 	);");
 
-	}
 	if(!$db->field_exists("salt", TABLE_PREFIX."users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD salt varchar(10) NOT NULL AFTER password;");
 	}
+	
 	if(!$db->field_exists("loginkey", TABLE_PREFIX."users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD loginkey varchar(50) NOT NULL AFTER salt;");

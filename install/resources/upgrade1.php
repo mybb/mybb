@@ -145,6 +145,10 @@ function upgrade1_dbchanges()
 	{
 		$db->query("ALTER TABLE themes ADD linkhover varchar(15) NOT NULL AFTER link;");
 	}
+	if(!$db->field_exists('extracss', "themes"))
+	{
+		$db->query("ALTER TABLE themes ADD extracss varchar(10) NOT NULL AFTER linkhover;");
+	}
 
 	$db->query("UPDATE themes SET linkhover='#000000'");
 
