@@ -551,7 +551,8 @@ class Text_Diff_Engine_native {
 				foreach($matches as $junk => $y)
 				{
                     if ($y > $this->seq[$k - 1]) 
-					{
+					{						
+						assert_options(ASSERT_WARNING, 0);
                         assert($y < $this->seq[$k]);
                         /* Optimization: this is a common case: next match is
                          * just replacing previous match. */
