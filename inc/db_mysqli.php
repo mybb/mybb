@@ -278,7 +278,10 @@ class databaseEngine
 	 */
 	function errno()
 	{
-		//return mysqli_errno($this->link);
+		if(version_compare(phpversion(), "5", ">="))
+		{
+			return mysqli_errno($this->link);
+		}
 	}
 
 	/**
@@ -288,7 +291,14 @@ class databaseEngine
 	 */
 	function error()
 	{
-		return mysqli_error($this->link);
+		if (!$this->link) 
+		{
+            return mysqli_connect_error();
+        } 
+		else 
+		{
+            return mysqli_error($this->link);
+        } 
 	}
 
 	/**

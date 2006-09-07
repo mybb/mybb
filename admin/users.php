@@ -1524,9 +1524,6 @@ if($mybb->input['action'] == "find")
 				$options['activate'] = $lang->activate;
 			}
 			$bgcolor = getaltbg();
-			startform("users.php");
-			makehiddencode("uid", $user['uid']);
-			makehiddencode("auid", $user['uid']);
 			echo "<tr>\n";
 			if($searchdisp['uid'] == 'yes')
 			{
@@ -1560,7 +1557,7 @@ if($mybb->input['action'] == "find")
 			}
 			if($searchdisp['email'] == 'yes')
 			{
-				echo "<td class=\"$bgcolor\"><a href=\"mailto:$user[email]\">$user[email]</td>\n";
+				echo "<td class=\"$bgcolor\"><a href=\"mailto:$user[email]\">$user[email]</a></td>\n";
 			}
 			if($searchdisp['website'] == 'yes')
 			{
@@ -1578,7 +1575,8 @@ if($mybb->input['action'] == "find")
 			{
 				echo "<td class=\"$bgcolor\">$user[yahoo]</td>\n";
 			}
-			if($searchdisp['msn'] == 'yes') {
+			if($searchdisp['msn'] == 'yes') 
+			{
 				echo "<td class=\"$bgcolor\">$user[msn]</td>\n";
 			}
 			if($searchdisp['signature'] == 'yes')
@@ -1609,7 +1607,7 @@ if($mybb->input['action'] == "find")
 			}
 			if($searchdisp['postnum'] == 'yes')
 			{
-				echo "<td class=\"$bgcolor\"><a href=\"../search.php?action=finduser&uid=$user[uid]\">$user[postnum]</a></td>\n";
+				echo "<td class=\"$bgcolor\"><a href=\"../search.php?action=finduser&amp;uid=$user[uid]\">$user[postnum]</a></td>\n";
 			}
 			if($searchdisp['birthday'] == 'yes')
 			{
@@ -1621,10 +1619,15 @@ if($mybb->input['action'] == "find")
 			}
 			if($searchdisp['ops'] == 'yes')
 			{
-				echo "<td class=\"$bgcolor\" align=\"right\">".makehopper("action", $options)."</td>\n";
+				echo "<td class=\"$bgcolor\" align=\"right\">";
+				startform("users.php");
+				makehiddencode("uid", $user['uid']);
+				makehiddencode("auid", $user['uid']);
+				makehopper("action", $options);
+				endform();
+				echo"</td>\n";
 			}
 			echo "</tr>\n";
-			endform();
 		}
 		endtable();
 
@@ -1713,7 +1716,6 @@ if($mybb->input['action'] == "find")
 			echo '</div>';
 		}
 		echo $first_page_button.$prev_page_button.$next_page_button.$last_page_button;
-		echo '</div>';
 		cpfooter();
 	}
 }

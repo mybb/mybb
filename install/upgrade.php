@@ -74,12 +74,15 @@ else
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
-		require_once MYBB_ROOT."/inc/class_datacache.php";
-		$cache = new datacache;
-		$plugins = $cache->read('plugins', true);
-		if(!empty($plugins['active']))
+		if($db->table_exists(TABLE_PREFIX."datacache"))
 		{
-			$lang->upgrade_welcome = "<div class=\"error\"><b><span style=\"color: red\">Warning:</span></b> <h3>There are still ".count($plugins['active'])." plugin(s) active. Please deactivate all plugins before continuing. Failure to do so may result in errors on your forum!</h3></div> <br />".$lang->upgrade_welcome;
+			require_once MYBB_ROOT."/inc/class_datacache.php";
+			$cache = new datacache;
+			$plugins = $cache->read('plugins', true);
+			if(!empty($plugins['active']))
+			{
+				$lang->upgrade_welcome = "<div class=\"error\"><b><span style=\"color: red\">Warning:</span></b> <h3>There are still ".count($plugins['active'])." plugin(s) active. Please deactivate all plugins before continuing. Failure to do so may result in errors on your forum!</h3></div> <br />".$lang->upgrade_welcome;
+			}
 		}
 
 		$output->print_header();

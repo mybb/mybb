@@ -754,6 +754,10 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 	if(!is_array($forum_cache))
 	{
 		$forum_cache = cache_forums();
+		if(!$forum_cache)
+		{
+			return false;
+		}
 	}
 	if(!is_array($fpermcache))
 	{
