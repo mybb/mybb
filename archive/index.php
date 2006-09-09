@@ -141,10 +141,10 @@ switch($action)
 			
 			// Parse the message
 			$parser_options = array(
-				"allow_html" => $forum['allow_html'],
-				"allow_mycode" => $forum['allow_mycode'],
-				"allow_smilies" => $forum['allowsmilies'],
-				"allow_imgcode" => $forum['allowimgcode'],
+				"allow_html" => $forumpermissions['allow_html'],
+				"allow_mycode" => $forumpermissions['allow_mycode'],
+				"allow_smilies" => $forumpermissions['allowsmilies'],
+				"allow_imgcode" => $forumpermissions['allowimgcode'],
 				"me_username" => $post['username']
 			);
 			if($post['smilieoff'] == "yes")
@@ -159,7 +159,7 @@ switch($action)
 			{
 				foreach($acache[$post['pid']] as $aid => $attachment)
 				{
-					$post['message'] = str_replace("[attachment=$attachment[aid]]", "[<a href=\"".$mybb->settings['bburl']."/attachment.php?aid=$attachment[aid]\">attachment=$attachment[aid]</a>]", $post['message']);
+					$post['message'] = str_replace("[attachment={$attachment['aid']}]", "[<a href=\"".$mybb->settings['bburl']."/attachment.php?aid={$attachment['aid']}\">attachment={$attachment['aid']}</a>]", $post['message']);
 				}
 			}
 
@@ -246,7 +246,7 @@ switch($action)
 		// Get the announcements if the forum is not a category.
 		if($forum['type'] == 'f')
 		{
-			$sql = build_parent_list($forum['fid'], "fid", "OR", $form['parentlist']);
+			$sql = build_parent_list($forum['fid'], "fid", "OR", $forum['parentlist']);
 			$time = time();
 			$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "startdate < '{$time}' AND (enddate > '{$time}' OR enddate=0) AND ({$sql} OR fid='-1')");
 			if($db->num_rows($query) > 0)

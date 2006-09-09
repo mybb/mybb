@@ -329,7 +329,7 @@ class UserDataHandler extends DataHandler
 
 			// Check if the day actually exists.
 			$months = get_bdays($birthday['year']);
-			if($birthday['day'] > $months[$birthday['month']])
+			if($birthday['day'] > $months[$birthday['month']-1])
 			{
 				$this->set_error("invalid_birthday");
 				return false;
@@ -338,7 +338,7 @@ class UserDataHandler extends DataHandler
 				
 		// Error if a year exists and the year is out of range
 		if($birthday['year'] != 0 && ($birthday['year'] < (date("Y")-100)) || $birthday['year'] > date("Y"))
-		{
+		{ 
 			$this->set_error("invalid_birthday");
 			return false;
 		}
@@ -390,7 +390,7 @@ class UserDataHandler extends DataHandler
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 			$thing = explode("\n", $profilefield['type'], "2");
 			$type = trim($thing[0]);
-			$field = "fid$profilefield[fid]";
+			$field = "fid{$profilefield['fid']}";
 
 			// If the profile field is required, but not filled in, present error.
 			if(!$profile_fields[$field] && $profilefield['required'] == "yes" && !$proferror)

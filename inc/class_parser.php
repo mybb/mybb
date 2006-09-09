@@ -86,7 +86,7 @@ class postParser
 
 		// Get rid of cartridge returns for they are the workings of the devil
 		$message = str_replace("\r", "", $message);
-		
+		$message = str_replace(" ?", "", $message);
 		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
 		{
@@ -341,9 +341,12 @@ class postParser
 		$this->smilies_cache = array();
 
 		$smilies = $cache->read("smilies");
-		foreach($smilies as $sid => $smilie)
+		if(is_array($smilies))
 		{
-			$this->smilies_cache[$smilie['find']] = "<img src=\"{$this->base_url}{$smilie['image']}\" style=\"vertical-align: middle;\" border=\"0\" alt=\"{$smilie['name']}\" title=\"{$smilie['name']}\" />";
+			foreach($smilies as $sid => $smilie)
+			{
+				$this->smilies_cache[$smilie['find']] = "<img src=\"{$this->base_url}{$smilie['image']}\" style=\"vertical-align: middle;\" border=\"0\" alt=\"{$smilie['name']}\" title=\"{$smilie['name']}\" />";
+			}
 		}
 	}
 
