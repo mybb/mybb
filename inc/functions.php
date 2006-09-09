@@ -2040,7 +2040,7 @@ function build_forum_breadcrumb($fid, $archive=0)
 					// Set up link to forum in breadcrumb.
 					if($pforumcache[$fid][$forumnav['pid']]['type'] == 'f' || $pforumcache[$fid][$forumnav['pid']]['type'] == 'c')
 					{
-						$navbits[$navsize]['url'] = "{$base_url}/forum-".$forumnav['fid'].".html";
+						$navbits[$navsize]['url'] = "{$base_url}forum-".$forumnav['fid'].".html";
 					}
 					else
 					{
@@ -2595,7 +2595,10 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 	if(is_array($tcache[$tid]))
 	{
 		// Figure out what groups this user is in
-		$in_groups = explode(",", $mybb->user['additionalgroups']);
+		if($mybb->user['additionalgroups'])
+		{
+			$in_groups = explode(",", $mybb->user['additionalgroups']);
+		}
 		$in_groups[] = $mybb->user['usergroup'];
 
 		foreach($tcache[$tid] as $theme)
@@ -2603,7 +2606,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 			$sel = "";
 			// Make theme allowed groups into array
 			$is_allowed = false;
-			if($theme['allowedgroups'] != "all")
+			if($theme['allowedgroups'] != "all" && $theme['allowedgroups'] != "")
 			{
 				$allowed_groups = explode(",", $theme['allowedgroups']);
 				// See if groups user is in is allowed
@@ -2616,16 +2619,17 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 					}
 				}
 			}
+			
 			// Show theme if allowed, or if override is on
 			if($is_allowed || $theme['allowedgroups'] == "all" || $usergroup_override == 1)
 			{
 				if($theme['tid'] == $selected)
 				{
-					$sel = "selected=\"selected\"";
+					$sel = " selected=\"selected\"";
 				}
 				if($theme['pid'] != 0)
 				{
-					$themeselect .= "<option value=\"".$theme['tid']."\" $sel>".$depth.$theme['name']."</option>";
+					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.$theme['name']."</option>";
 					$depthit = $depth."--";
 				}
 				if(is_array($tcache[$theme['tid']]))
