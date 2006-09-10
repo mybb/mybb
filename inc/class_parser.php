@@ -125,8 +125,8 @@ class postParser
 			{
 				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
 			}
-			$message = preg_replace("#<base(.*)>#is", "&lt;base$1&gt", $message);
-			$message = preg_replace("#<meta(.*)>#is", "&lt;meta$1&gt", $message);
+			$message = preg_replace("#<base(.*)>#is", "&lt;base$1&gt;", $message);
+			$message = preg_replace("#<meta(.*)>#is", "&lt;meta$1&gt;", $message);
 		}		
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
@@ -447,7 +447,7 @@ class postParser
 			"#(o)(nselect)#i",
 			"#(o)(nunload)#i",
 			"#(o)(nkeypress)#i"
-			);
+		);
 		$message = preg_replace($js_array, "$1<strong></strong>$2", $message);
 		return $message;
 	}
@@ -566,7 +566,7 @@ class postParser
 
 		if($added_open_close == true)
 		{
-			$code = preg_replace("#<code><span style=\"color: \#([A-Z09]{6})\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #$1\">", $code);
+			$code = preg_replace("#<code><span style=\"color: \#([A-Z0-9]{6})\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #$1\">", $code);
 			$code = str_replace("?&gt;</span></code>", "</span></code>", $code);
 		}
 

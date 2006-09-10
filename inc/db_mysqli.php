@@ -387,7 +387,6 @@ class databaseEngine
 	 */
 	function field_exists($field, $table)
 	{
-		global $db;
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
 		$query = $this->query("SHOW COLUMNS FROM $table LIKE '$field'");

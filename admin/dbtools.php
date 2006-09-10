@@ -131,7 +131,7 @@ if($mybb->input['action'] == 'do_backup')
 				$comma = '';
 				foreach($field_list as $field)
 				{
-					if(!isset($row[$field]))
+					if(!isset($row[$field]) || trim($row[$field]) == "")
 					{
 						$insert .= $comma.'NULL';
 					}

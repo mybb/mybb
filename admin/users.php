@@ -644,7 +644,7 @@ if($mybb->input['action'] == "do_email")
 		echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\">\n";
 		@set_time_limit(0);
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid LIMIT ".intval($searchop['start']).", ".intval($searchop['perpage']));
-    while($user = $db->fetch_array($query))
+    	while($user = $db->fetch_array($query))
 		{
 			$sendmessage = $searchop['message'];
 			$sendmessage = str_replace("{uid}", $user['uid'], $sendmessage);
@@ -867,7 +867,7 @@ if($mybb->input['action'] == "edit")
 
 	cpheader();
 	starttable();
-	makelabelcode("<ul>\n<li><a href=\"users.php?".SID."&action=delete&uid=$uid\">$lang->delete_account</a></li>\n<li><a href=\"users.php?".SID."&action=misc&uid=$uid\">$lang->view_user_stats</a></li>\n</ul>");
+	makelabelcode("<ul>\n<li><a href=\"users.php?".SID."&amp;action=delete&amp;uid=$uid\">$lang->delete_account</a></li>\n<li><a href=\"users.php?".SID."&amp;action=misc&amp;uid=$uid\">$lang->view_user_stats</a></li>\n</ul>");
 	endtable();
 
 	starttable();

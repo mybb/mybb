@@ -499,6 +499,7 @@ function redirect($url, $message="", $title="")
 {
 	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 
+	$loadpmpopup = false;
 	if(!$message)
 	{
 		$message = $lang->redirect;
@@ -824,7 +825,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 					continue;
 				}
 				$permission = $forumpermissions[$perm];
-				if((is_nuermic($access) && $access > $permission) || ($access == "yes" && $permission == "no") || !$permission)
+				if((is_numeric($access) && $access > $permission) || ($access == "yes" && $permission == "no") || !$permission)
 				{
 					$forumpermissions[$perm] = $access;
 				}
@@ -2592,14 +2593,15 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		$query = $db->query("
 			SELECT name, pid, tid, allowedgroups
 			FROM ".TABLE_PREFIX."themes
+			WHERE pid != 0
 			ORDER BY pid, name
 		");
 		while($theme = $db->fetch_array($query))
 		{
-			$tcache[$theme['pid']][$theme['tid']] = $theme;
+			$tcache[] = $theme;
 		}
 	}
-	if(is_array($tcache[$tid]))
+	if(is_array($tcache))
 	{
 		// Figure out what groups this user is in
 		if($mybb->user['additionalgroups'])
@@ -2608,7 +2610,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 		$in_groups[] = $mybb->user['usergroup'];
 
-		foreach($tcache[$tid] as $theme)
+		foreach($tcache as $theme)
 		{
 			$sel = "";
 			// Make theme allowed groups into array

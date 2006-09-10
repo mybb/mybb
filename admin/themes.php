@@ -375,6 +375,7 @@ if($mybb->input['action'] == "do_import")
 	$themearray = array(
 		"name" => $db->escape_string($name),
 		"pid" => $mybb->input['pid'],
+		"allowedgroups" => 'all',
 	);
 
 	$db->insert_query(TABLE_PREFIX."themes", $themearray);
