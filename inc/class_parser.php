@@ -86,7 +86,8 @@ class postParser
 
 		// Get rid of cartridge returns for they are the workings of the devil
 		$message = str_replace("\r", "", $message);
-		$message = str_replace(" ?", "", $message);
+		// This needs to be changed so it strips out the rtl override bug
+		//$message = str_replace("", "", $message);
 		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
 		{
