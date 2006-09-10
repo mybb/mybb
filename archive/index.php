@@ -141,10 +141,10 @@ switch($action)
 			
 			// Parse the message
 			$parser_options = array(
-				"allow_html" => $forumpermissions['allow_html'],
-				"allow_mycode" => $forumpermissions['allow_mycode'],
-				"allow_smilies" => $forumpermissions['allowsmilies'],
-				"allow_imgcode" => $forumpermissions['allowimgcode'],
+				"allow_html" => $forum['allowhtml'],
+				"allow_mycode" => $forum['allowmycode'],
+				"allow_smilies" => $forum['allowsmilies'],
+				"allow_imgcode" => $forum['allowimgcode'],
 				"me_username" => $post['username']
 			);
 			if($post['smilieoff'] == "yes")

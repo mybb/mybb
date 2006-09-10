@@ -149,8 +149,8 @@ function upgrade5_dbchanges()
 		    cid int unsigned NOT NULL auto_increment,
 		    title varchar(100) NOT NULL default '',
 		    description text NOT NULL default '',
-		    regex varchar(255) NOT NULL default '',
-		    replacement varchar(255) NOT NULL default '',
+		    regex text NOT NULL default '',
+		    replacement text NOT NULL default '',
 		    active char(3) NOT NULL default '',
 			PRIMARY KEY(cid)
 		) TYPE=MyISAM;");
