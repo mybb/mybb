@@ -73,9 +73,11 @@ if($mybb->input['do'] == "login")
 
 	if($user['uid'])
 	{
+		$sid = md5(uniqid(microtime()));
+		
 		// Create a new admin session for this user
 		$admin_session = array(
-			"sid" => md5(uniqid(microtime())),
+			"sid" => $sid,
 			"uid" => $user['uid'],
 			"loginkey" => $user['loginkey'],
 			"ip" => $db->escape_string(get_ip()),
@@ -83,6 +85,12 @@ if($mybb->input['do'] == "login")
 			"lastactive" => time()
 		);
 		$db->insert_query(TABLE_PREFIX."adminsessions", $admin_session);
+		$url = "index.php?adminsid=$sid";
+		if($mybb->input['goto'])
+		{
+			$url .= "&goto=".urlencode($mybb->input['goto']);
+		}
+		header("Location: $url");		
 	}
 }
 else if($mybb->input['action'] == "logout")

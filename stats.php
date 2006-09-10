@@ -38,7 +38,10 @@ $postspermember = my_number_format(round(($stats['numposts'] / $stats['numusers'
 $query = $db->simple_select(TABLE_PREFIX."users", "regdate", "", array('order_by' => 'regdate', 'limit' => 1));
 $result = $db->fetch_array($query);
 $days = (time() - $result['regdate']) / 86400;
-
+if($days < 1)
+{
+	$days = 1;
+}
 // Get "per day" things
 $postsperday = my_number_format(round(($stats['numposts'] / $days), 2));
 $threadsperday = my_number_format(round(($stats['numthreads'] / $days), 2));

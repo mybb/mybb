@@ -107,30 +107,7 @@ if($mybb->input['action'] == 'do_backup')
 	
 	$time = date('dS F Y \a\t H:i', time());
 	$header = "-- MyBB Database Backup\n-- Generated: ".$time."\n---------------------------------------\n\n";
-	
-	if($mybb->input['write'] == 'disk')
-	{
-		if($mybb->input['type'] == 'gzip')
-		{
-			gzwrite($fp, $header, strlen($header));
-		}
-		else
-		{
-			fputs($fp, $header, strlen($header));
-		}	
-	}
-	else
-	{
-		if($mybb->input['type'] == 'gzip')
-		{
-			echo gzencode($header);
-		}
-		else
-		{
-			echo $header;
-		}
-	}
-	
+	$contents = $header;
 	foreach($mybb->input['tables'] as $table)
 	{
 		$field_list = array();
@@ -143,28 +120,7 @@ if($mybb->input['action'] == 'do_backup')
 		if($mybb->input['contents'] != 'data')
 		{
 			$structure = $db->show_create_table($table)."\n";
-			if($mybb->input['write'] == 'disk')
-			{
-				if($type == 'gzip')
-				{
-					gzwrite($fp, $structure, strlen($structure));
-				}
-				else
-				{
-					fputs($fp, $structure, strlen($structure));
-				}	
-			}
-			else
-			{
-				if($mybb->input['type'] == 'gzip')
-				{
-					echo gzencode($structure);
-				}
-				else
-				{
-					echo $structure;
-				}
-			}
+			$contents .= $structure;
 		}
 		if($mybb->input['contents'] != 'structure')
 		{
@@ -186,28 +142,7 @@ if($mybb->input['action'] == 'do_backup')
 					$comma = ',';
 				}
 				$insert .= ")\n";
-				if($mybb->input['write'] == 'disk')
-				{
-					if($type == 'gzip')
-					{
-						gzwrite($fp, $insert, strlen($insert));
-					}
-					else
-					{
-						fputs($fp, $insert, strlen($insert));
-					}	
-				}
-				else
-				{
-					if($mybb->input['type'] == 'gzip')
-					{
-						echo gzencode($insert);
-					}
-					else
-					{
-						echo $insert;
-					}
-				}
+				$contents .= $insert;
 			}
 		}
 	}
@@ -216,10 +151,12 @@ if($mybb->input['action'] == 'do_backup')
 	{
 		if($mybb->input['type'] == 'gzip')
 		{
+			gzwrite($fp, $contents);
 			gzclose($fp);
 		}
 		else
 		{
+			fwrite($fp, $contents);
 			fclose($fp);
 		}
 		
@@ -235,6 +172,17 @@ if($mybb->input['action'] == 'do_backup')
 		$file_from_admindir = 'dbtools.php?'.SID.'&amp;action=dlbackup&amp;file='.basename($file).$ext;
 		$lang->backup_complete = sprintf($lang->backup_complete, $file.$ext, $file_from_admindir);
 		cpmessage($lang->backup_complete);
+	}
+	else
+	{
+		if($mybb->input['type'] == "gzip")
+		{
+			echo gzencode($contents);
+		}
+		else
+		{
+			echo $contents;
+		}
 	}
 }
 

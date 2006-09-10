@@ -805,22 +805,28 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if($gid && $groupscache[$gid])
 		{
-			$p = is_array($fpermcache[$fid][$gid]) ? $fpermcache[$fid][$gid] : $groupperms;
-			if($p == NULL)
+			if(!is_array($fpermcache[$fid][$gid]))
 			{
-				foreach($forumpermissions as $k => $v)
-				{
-					$forumpermissions[$k] = 'yes';        // no inherited group, assume one has access
-				}
+				$p = $groupperms;
 			}
 			else
 			{
-				foreach($p as $perm => $access)
+				$p = $fpermcache[$fid][$gid];
+			}
+			if(!is_array($p))
+			{
+				continue;
+			}
+			foreach($p as $perm => $access)
+			{
+				if($perm == "fid" || $perm == "gid" || $perm == "pid")
 				{
-					if(isset($forumpermissions[$perm]) && $access == 'yes')
-					{
-						$forumpermissions[$perm] = $access;
-					}
+					continue;
+				}
+				$permission = $forumpermissions[$perm];
+				if((is_nuermic($access) && $access > $permission) || ($access == "yes" && $permission == "no") || !$permission)
+				{
+					$forumpermissions[$perm] = $access;
 				}
 			}
 		}
@@ -1028,7 +1034,6 @@ function get_post_icons()
 function my_setcookie($name, $value="", $expires="")
 {
 	global $mybb, $sent_header;
-	
 	if($sent_header)
 	{
 		return false;
@@ -1053,6 +1058,8 @@ function my_setcookie($name, $value="", $expires="")
 			$expires = time() + (60*60*24*365); // Make the cookie expire in a years time
 		}
 	}
+	$mybb->settings['cookiepath'] = str_replace(array("\n","\r"), "", $mybb->settings['cookiepath']);
+	$mybb->settings['cookiedomain'] = str_replace(array("\n","\r"), "", $mybb->settings['cookiedomain']);
 	if($mybb->settings['cookiedomain'])
 	{
 		setcookie($name, $value, $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);

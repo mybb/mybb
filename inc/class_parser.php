@@ -566,7 +566,7 @@ class postParser
 
 		if($added_open_close == true)
 		{
-			$code = preg_replace("#<code><span style=\"color: \#0000BB\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #0000BB\">", $code);
+			$code = preg_replace("#<code><span style=\"color: \#([A-Z09]{6})\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #$1\">", $code);
 			$code = str_replace("?&gt;</span></code>", "</span></code>", $code);
 		}
 
@@ -634,7 +634,7 @@ class postParser
 		$url = str_replace("\r", "", $url);
 		if($dimensions[0] > 0 && $dimensions[1] > 0)
 		{
-			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\{$dimensions[1]}\" border=\"0\" alt=\"\" />";
+			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"\" />";
 		}
 		else
 		{

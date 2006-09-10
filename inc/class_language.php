@@ -70,12 +70,6 @@ class MyLanguage
 	function set_language($language="english", $area="user")
 	{
 		global $mybb;
-		// Check if the language exists.
-		if(!$this->language_exists($language))
-		{
-			die("Language $language ($this->path/$language) is not installed");
-		}
-		
 		$language = trim($language);
 
 		// Default language is English.
@@ -83,7 +77,13 @@ class MyLanguage
 		{
 			$language = "english";
 		}
-
+		
+		// Check if the language exists.
+		if(!$this->language_exists($language))
+		{
+			die("Language $language ($this->path/$language) is not installed");
+		}
+		
 		$this->language = $language;
 		require $this->path."/".$language.".php";
 		$this->settings = $langinfo;

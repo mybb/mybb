@@ -1,5 +1,5 @@
 <?php
-$l['nav_admin_logs'] = "Administrator Logs äö";
+$l['nav_admin_logs'] = "Administrator Logs";
 $l['nav_search_results'] = "Search Results";
 $l['view_admin_logs'] = "View Administrator Access Logs";
 $l['entries_pp'] = "Entries Per Page";
