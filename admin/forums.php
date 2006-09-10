@@ -346,7 +346,7 @@ if($mybb->input['action'] == "do_delete")
 				$updatequery = array(
 					"usergroup" => "2"
 				);
-				$db->update_query(TABLE_PREFIX."usergroups", $updatequery, "uid IN ($mod_list) AND usergroup='6'");
+				$db->update_query(TABLE_PREFIX."users", $updatequery, "uid IN ($mod_list) AND usergroup='6'");
 			}
 		}
 		$db->delete_query(TABLE_PREFIX."forums", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");

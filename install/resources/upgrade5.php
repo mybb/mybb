@@ -337,8 +337,8 @@ function upgrade5_dbchanges()
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canviewthreads=canview");
 	$db->query("UPDATE ".TABLE_PREFIX."forumpermissions SET canviewthreads=canview");
 
-	echo "Done</p>";
-	echo "<p>Click next to continue with the upgrade process.</p>";
+	$contents .= "Done</p>";
+	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("5_redoconfig");
 }
