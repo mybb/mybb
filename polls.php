@@ -59,7 +59,7 @@ if($mybb->input['action'] == "newpoll")
 	}
 	// Make navigation
 	build_forum_breadcrumb($fid);
-	add_breadcrumb($thread['subject'], "showthread.php?tid=$thread[tid]");
+	add_breadcrumb(htmlspecialchars_uni($thread['subject']), "showthread.php?tid={$thread['tid']}");
 	add_breadcrumb($lang->nav_postpoll);
 
 	// No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
@@ -265,7 +265,7 @@ if($mybb->input['action'] == "editpoll")
 
 	// Make navigation
 	build_forum_breadcrumb($fid);
-	add_breadcrumb($thread['subject'], "showthread.php?tid=$tid");
+	add_breadcrumb(htmlspecialchars_uni($thread['subject']), "showthread.php?tid=$tid");
 	add_breadcrumb($lang->nav_editpoll);
 
 
@@ -554,7 +554,7 @@ if($mybb->input['action'] == "showresults")
 
 	// Make navigation
 	build_forum_breadcrumb($fid);
-	add_breadcrumb($thread['subject'], "showthread.php?tid=$thread[tid]");
+	add_breadcrumb(htmlspecialchars_uni($thread['subject']), "showthread.php?tid={$thread['tid']}");
 	add_breadcrumb($lang->nav_pollresults);
 
 	$voters = array();
@@ -564,7 +564,7 @@ if($mybb->input['action'] == "showresults")
 		SELECT v.*, u.username 
 		FROM ".TABLE_PREFIX."pollvotes v 
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=v.uid) 
-		WHERE v.pid='$poll[pid]' 
+		WHERE v.pid='{$poll['pid']}' 
 		ORDER BY u.username
 	");
 	while($voter = $db->fetch_array($query))
@@ -718,7 +718,7 @@ if($mybb->input['action'] == "vote")
 	elseif(!$mybb->user['uid'])
 	{
 		// Give a cookie to guests to inhibit revotes
-		my_setcookie("pollvotes[$poll[pid]]", '1', 'yes');
+		my_setcookie("pollvotes[{$poll['pid']}]", '1', 'yes');
 	}
 	$votesql = '';
 	$now = time();

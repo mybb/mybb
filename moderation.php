@@ -70,7 +70,7 @@ if($fid)
 
 if($tid)
 {
-	add_breadcrumb($parser->parse_badwords($thread['subject']), "showthread.php?tid=$thread[tid]");
+	add_breadcrumb(htmlspecialchars_uni($parser->parse_badwords($thread['subject'])), "showthread.php?tid={$thread['tid']}");
 	$modlogdata['tid'] = $tid;
 }
 
@@ -179,6 +179,8 @@ switch($mybb->input['action'])
 				error_no_permission();
 			}
 		}
+		
+		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
 		$plugins->run_hooks("moderation_deletethread");
 
