@@ -12,6 +12,7 @@ $l['nav_edit_mycode'] = "Edit MyCode";
 $l['nav_delete_mycode'] = "Delete MyCode";
 
 $l['add_mycode'] = "Add MyCode";
+$l['edit_mycode'] = "Edit MyCode";
 $l['regex_label'] = "Regex";
 $l['replacement_label'] = "Replacement";
 
