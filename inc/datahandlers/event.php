@@ -21,14 +21,14 @@ class EventDataHandler extends DataHandler
 	 * @var string
 	 */
 	var $language_file = 'datahandler_event';
-	
+
 	/**
 	 * The prefix for the language variables used in the data handler.
 	 *
 	 * @var string
 	 */
 	var $language_prefix = 'eventdata';
-	
+
 	/**
 	 * Array of data inserted in to an event.
 	 *
@@ -42,12 +42,12 @@ class EventDataHandler extends DataHandler
 	 * @var array
 	 */
 	var $event_update_data = array();
-	
+
 	/**
 	 * Event ID currently being manipulated by the datahandlers.
 	 */
 	var $eid = 0;
-	
+
 	/**
 	 * Verifies if an event name is valid or not and attempts to fix it
 	 *
@@ -92,26 +92,147 @@ class EventDataHandler extends DataHandler
 		$event = &$this->data;
 
 		// Check if the date is complete.
-		if(!$event['day'] || !$event['month'] || !$event['year'])
+		if(!$event['start_day'] || !$event['start_month'] || !$event['start_year'])
 		{
 			$this->set_error("invalid_date");
-			return false;
+			//return false;
 		}
-		
+
 		// Calendar events can only be within the next 5 years
-		if($event['year'] > date("Y") + 5)
+		if($event['start_year'] > date("Y") + 5)
 		{
 			$this->set_error("invalid_year");
-			return false;
+			//return false;
+		}
+
+		//Check to see if the month is within 1 and 12
+		if($event['start_month'] > 12 || $event['start_month'] < 1)
+		{
+			$this->set_error("invalid_month");
+			//return false;
 		}
 
 		// Check if the day actually exists.
-		if($event['day'] > date("t", mktime(0, 0, 0, $event['month'], 1, $event['year'])))
+		if($event['start_day'] > date("t", mktime(0, 0, 0, $event['start_month'], 1, $event['start_year'])))
 		{
 			$this->set_error("invalid_day");
+			//return false;
+		}
+
+		//Sort out the start/end time if you user selected it
+		if($event['start_time_hours'] !== '' || $event['start_time_mins'] !== '' || $event['end_time_hours'] !== '' || $event['end_time_mins'] !== '')
+		{
+			if($event['start_time_hours'] === '' || $event['start_time_mins'] === '' || $event['end_time_hours'] === '' || $event['end_time_mins'] === '')
+			{
+				$this->set_error("invalid_time");
+			}
+
+			if($event['start_time_hours'] > 23 || $event['start_time_hours'] < 0 || $event['start_time_mins'] > 59 || $event['start_time_mins'] < 0)
+			{
+				$this->set_error("invalid_start_time");
+			}
+			if($event['end_time_hours'] > 23 || $event['end_time_hours'] < 0 || $event['end_time_mins'] > 59 || $event['end_time_mins'] < 0)
+			{
+				$this->set_error("invalid_end_time");
+			}
+
+			if($event['start_time_hours'] > $event['end_time_hours'])
+			{
+				$this->set_error("invalid_time_past");
+			}
+			elseif($event['start_time_hours'] == $event['end_time_hours'])
+			{
+				if($event['start_time_mins'] >= $event['end_time_mins'])
+				{
+					$this->set_error("invalid_time_past");
+				}
+			}
+		}//End checking of start/end time
+
+		// Check if the the user has entered an end date (recurring event)
+		//If user has selected one of the options that signify it's a recurring event
+		if(!empty($event['end_day']) || !empty($event['end_month']) || !empty($event['end_year']))
+		{
+			//User selected some data, but they might not have selected all of the things needed
+			if(empty($event['end_day']) || empty($event['end_month']) || empty($event['end_year']))
+			{
+				$this->set_error("invalid_end_date");
+				//return false;
+			}
+
+			if($event['end_year'] > date("Y") + 5)
+			{
+				$this->set_error("invalid_end_year");
+				//return false;
+			}
+
+			if($event['end_month'] > 12 || $event['start_month'] < 1)
+			{
+				$this->set_error("invalid_end_month");
+				//return false;
+			}
+
+			if($event['end_day'] > date("t", mktime(0, 0, 0, $event['end_month'], 1, $event['end_year'])))
+			{
+				$this->set_error("invalid_end_day");
+				//return false;
+			}
+
+			//Make sure the user has selected a day that this event will occur on
+			if(is_array($event['repeat_days']))
+			{
+				$days_ok = false;
+				foreach($event['repeat_days'] as $key=>$value)
+				{
+					if($key > 0 && $key < 8 && $value == 1)
+					{
+						$days_ok = true;
+					}
+				}
+				if(!$days_ok)
+				{
+					$this->set_error("invalid_repeat_day");
+					//return false;
+				}
+			}
+			else
+			{
+				$this->set_error("invalid_repeat_day");
+			}
+
+
+			if($event['start_year'] > $event['end_year'])
+			{
+				$this->set_error("invalid_recurring_date");
+			}
+			elseif($event['start_year'] == $event['end_year'])
+			{
+				if($event['start_month'] > $event['end_month'])
+				{
+					$this->set_error("invalid_recurring_date");
+				}
+				elseif($event['start_month'] == $event['end_month'])
+				{
+					if($event['start_day'] >= $event['end_day'])
+					{
+						$this->set_error("invalid_recurring_date");
+					}
+				}
+			}
+		}//End checking of end date if recurring
+		else
+		{
+			$event['end_day'] = '';
+			$event['end_month'] = '';
+			$event['end_year'] = '';
+			$event['repeat_days'] = '';
+		}
+
+		if(count($this->get_errors()) > 0)
+		{
 			return false;
 		}
-		$event['date'] = intval($event['day'])."-".intval($event['month'])."-".intval($event['year']);
+
 		return true;
 	}
 
@@ -175,11 +296,11 @@ class EventDataHandler extends DataHandler
 			$this->verify_description();
 		}
 
-		if($this->method == "insert" || array_key_exists('day', $event))
+		if($this->method == "insert" || array_key_exists('start_day', $event))
 		{
 			$this->verify_date();
 		}
-	
+
 		if($this->method == "insert" || array_key_exists('private', $event))
 		{
 			$this->verify_scope();
@@ -224,8 +345,19 @@ class EventDataHandler extends DataHandler
 		$this->event_insert_data = array(
 			'subject' => $db->escape_string($event['subject']),
 			'author' => intval($event['uid']),
-			'date' => $event['date'],
+			//'date' => $event['date'],
+			'start_day' => $event['start_day'],
+			'start_month' => $event['start_month'],
+			'start_year' => $event['start_year'],
+			'end_day' => $event['end_day'],
+			'end_month' => $event['end_month'],
+			'end_year' => $event['end_year'],
+			'start_time_hours' => $event['start_time_hours'],
+			'start_time_mins' => $event['start_time_mins'],
+			'end_time_hours' => $event['end_time_hours'],
+			'end_time_mins' => $event['end_time_mins'],
 			'description' => $db->escape_string($event['description']),
+			'repeat_days' => $db->escape_string(@implode(',', array_keys($event['repeat_days']))),
 			'private' => $event['private']
 		);
 
@@ -261,7 +393,7 @@ class EventDataHandler extends DataHandler
 		}
 
 		$event = &$this->data;
-		
+
 		$this->eid = $event['eid'];
 
 		if($this->method == "insert" || isset($event['subject']))
@@ -274,9 +406,27 @@ class EventDataHandler extends DataHandler
 			$this->event_update_data['description'] = $db->escape_string($event['description']);
 		}
 
-		if($this->method == "insert" || isset($event['date']))
+		if($this->method == "insert" || isset($event['start_day']))
 		{
-			$this->event_update_data['date'] = $db->escape_string($event['date']);
+			$this->event_update_data['start_day'] = intval($event['start_day']);
+			$this->event_update_data['start_month'] = intval($event['start_month']);
+			$this->event_update_data['start_year'] = intval($event['start_year']);
+		}
+
+		if($this->method == "insert" || isset($event['end_month']))
+		{
+			$this->event_update_data['end_day'] = intval($event['end_day']);
+			$this->event_update_data['end_month'] = intval($event['end_month']);
+			$this->event_update_data['end_year'] = intval($event['end_year']);
+			$this->event_update_data['repeat_days'] = @implode(',', array_keys($event['repeat_days']));
+		}
+
+		if($this->method == "insert" || isset($event['start_time_hours']))
+		{
+			$this->event_update_data['start_time_hours'] = $db->escape_string($event['start_time_hours']);
+			$this->event_update_data['start_time_mins'] = $db->escape_string($event['start_time_mins']);
+			$this->event_update_data['end_time_hours'] = $db->escape_string($event['end_time_hours']);
+			$this->event_update_data['end_time_mins'] = $db->escape_string($event['end_time_mins']);
 		}
 
 		if($this->method == "insert" || isset($event['private']))

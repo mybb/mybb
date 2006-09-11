@@ -2,7 +2,7 @@
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -39,9 +39,21 @@ $l['birthdays_on_day'] = "Birthdays on {1}";
 
 $l['add_event'] = "Add Event";
 $l['event_date'] = "Event Date:";
+$l['event_recurring_start_date'] = "Start Date:";
+$l['event_recurring_end_date'] = "End Date:";
+$l['event_recurring_repeat_days'] = "Event Repeats On:";
+$l['event_start_time'] = "Start Time:";
+$l['event_end_time'] = "Finish Time:";
+$l['event_start_time_recurring'] = "Start Time (every day):";
+$l['event_end_time_recurring'] = "Finish Time (every day):";
+$l['event_duration'] = "Event Duration:";
 $l['event_name'] = "Event Name:";
 $l['event_details'] = "Event Details:";
 $l['event_options'] = "Options:";
+$l['event_edit_make_recurring'] = "<a href=\"calendar.php?action=editevent&amp;eid={1}&amp;recurring=yes\">(Make a recurring event)</a>";
+$l['event_edit_make_normal'] = "<a href=\"calendar.php?action=editevent&amp;eid={1}&amp;recurring=no\">(Make a single day event)</a>";
+$l['event_add_make_recurring'] = "<a href=\"calendar.php?action=addevent&amp;recurring=yes\">(Make a recurring event)</a>";
+$l['event_add_make_normal'] = "<a href=\"calendar.php?action=addevent&amp;recurring=no\">(Make a single day event)</a>";
 $l['private_option'] = "<b>Private</b> Only you will be able to view this event. (Registered Users Only).";
 $l['delete_option'] = "<b>Delete:</b> Delete this event.";
 $l['post_event'] = "Post Event";

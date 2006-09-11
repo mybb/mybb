@@ -2754,10 +2754,8 @@ document.write('<a href="javascript:Thread.deletePost({$post['pid']});"><img src
 <td class="thead" colspan="2">
 <strong>{$event['subject']}</strong></td>
 </tr>
-<tr>
-<td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td width="70%" class="trow1">{$eventdate}</td>
-</tr>
+{$event_dates}
+{$event_times}
 <tr>
 <td width="30%" class="trow2"><strong>{$lang->event_author}</strong></td>
 <td width="70%" class="trow2">{$eventposter}</td>
@@ -2772,6 +2770,10 @@ document.write('<a href="javascript:Thread.deletePost({$post['pid']});"><img src
 {$footer}
 </body>
 </html>]]></template>
+		<template name="calendar_eventbit_dates" version="120"><![CDATA[<tr>
+<td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
+<td width="70%" class="trow1">{$eventdate}</td>
+</tr>]]></template>
 		<template name="showteam_moderators" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="4"><strong>{$lang->moderators}</strong></td>
@@ -3028,33 +3030,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->add_event}</strong></td>
 </tr>
-<tr>
-<td width="20%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td class="trow1">
-<select name="month">
-<option value="1"{$msel['1']}>{$lang->month_1}</option>
-<option value="2"{$msel['2']}>{$lang->month_2}</option>
-<option value="3"{$msel['3']}>{$lang->month_3}</option>
-<option value="4"{$msel['4']}>{$lang->month_4}</option>
-<option value="5"{$msel['5']}>{$lang->month_5}</option>
-<option value="6"{$msel['6']}>{$lang->month_6}</option>
-<option value="7"{$msel['7']}>{$lang->month_7}</option>
-<option value="8"{$msel['8']}>{$lang->month_8}</option>
-<option value="9"{$msel['9']}>{$lang->month_9}</option>
-<option value="10"{$msel['10']}>{$lang->month_10}</option>
-<option value="11"{$msel['11']}>{$lang->month_11}</option>
-<option value="12"{$msel['12']}>{$lang->month_12}</option>
-</select>
-&nbsp;
-<select name="day">
-{$dayopts}
-</select>
-&nbsp;
-<select name="year">
-{$yearopts}
-</select>
-</td>
-</tr>
+{$event_dates}
 <tr>
 <td width="20%" class="trow2"><strong>{$lang->event_name}</strong></td>
 <td class="trow2"><input type="text" class="textbox" size="50" name="subject" maxlength="120" value="{$subject}"/></td>
@@ -3073,11 +3049,123 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <br />
 <input type="hidden" name="action" value="do_addevent" />
+<input type="hidden" name="recurring" value="{$mybb->input['recurring']}" />
 <div align="center"><input type="submit" class="button" value="{$lang->post_event}" /></div>
 </form>
 {$footer}
 </body>
 </html>]]></template>
+	<template name="calendar_addevent_normal" version="120"><![CDATA[<tr>
+<td width="20%" class="trow1"><strong>{$lang->event_date}</strong></td>
+<td class="trow1">
+<select name="month">
+<option value="1"{$month_start['1']}>{$lang->month_1}</option>
+<option value="2"{$month_start['2']}>{$lang->month_2}</option>
+<option value="3"{$month_start['3']}>{$lang->month_3}</option>
+<option value="4"{$month_start['4']}>{$lang->month_4}</option>
+<option value="5"{$month_start['5']}>{$lang->month_5}</option>
+<option value="6"{$month_start['6']}>{$lang->month_6}</option>
+<option value="7"{$month_start['7']}>{$lang->month_7}</option>
+<option value="8"{$month_start['8']}>{$lang->month_8}</option>
+<option value="9"{$month_start['9']}>{$lang->month_9}</option>
+<option value="10"{$month_start['10']}>{$lang->month_10}</option>
+<option value="11"{$month_start['11']}>{$lang->month_11}</option>
+<option value="12"{$month_start['12']}>{$lang->month_12}</option>
+</select>
+&nbsp;
+<select name="day">
+{$start_dayopts}
+</select>
+&nbsp;
+<select name="year">
+{$start_yearopts}
+</select>
+{$lang->event_add_make_recurring}
+</td>
+</tr>
+<tr>
+<td width="20%" class="trow2"><strong>{$lang->event_start_time}</strong></td>
+<td class="trow2"><select name="start_time_hours">{$start_time_hours}</select> : <select name="start_time_mins">{$start_time_mins}</select></td>
+</tr>
+<tr>
+<td width="20%" class="trow2"><strong>{$lang->event_end_time}</strong></td>
+<td class="trow2"><select name="end_time_hours">{$end_time_hours}</select> : <select name="end_time_mins">{$end_time_mins}</select></td>
+</tr>]]></template>
+		<template name="calendar_addevent_recurring" version="120"><![CDATA[<tr>
+<td width="20%" class="trow1"><strong>{$lang->event_recurring_start_date}</strong></td>
+<td class="trow1">
+<select name="month">
+<option value="1"{$month_start['1']}>{$lang->month_1}</option>
+<option value="2"{$month_start['2']}>{$lang->month_2}</option>
+<option value="3"{$month_start['3']}>{$lang->month_3}</option>
+<option value="4"{$month_start['4']}>{$lang->month_4}</option>
+<option value="5"{$month_start['5']}>{$lang->month_5}</option>
+<option value="6"{$month_start['6']}>{$lang->month_6}</option>
+<option value="7"{$month_start['7']}>{$lang->month_7}</option>
+<option value="8"{$month_start['8']}>{$lang->month_8}</option>
+<option value="9"{$month_start['9']}>{$lang->month_9}</option>
+<option value="10"{$month_start['10']}>{$lang->month_10}</option>
+<option value="11"{$month_start['11']}>{$lang->month_11}</option>
+<option value="12"{$month_start['12']}>{$lang->month_12}</option>
+</select>
+&nbsp;
+<select name="day">
+{$start_dayopts}
+</select>
+&nbsp;
+<select name="year">
+{$start_yearopts}
+</select>
+{$lang->event_add_make_normal}
+</td>
+</tr>
+<tr>
+<td class="trow1" valign="top"><strong>{$lang->event_recurring_end_date}</strong></td>
+<td class="trow1">
+<select name="end_month">
+<option value="1"{$month_end['1']}>{$lang->month_1}</option>
+<option value="2"{$month_end['2']}>{$lang->month_2}</option>
+<option value="3"{$month_end['3']}>{$lang->month_3}</option>
+<option value="4"{$month_end['4']}>{$lang->month_4}</option>
+<option value="5"{$month_end['5']}>{$lang->month_5}</option>
+<option value="6"{$month_end['6']}>{$lang->month_6}</option>
+<option value="7"{$month_end['7']}>{$lang->month_7}</option>
+<option value="8"{$month_end['8']}>{$lang->month_8}</option>
+<option value="9"{$month_end['9']}>{$lang->month_9}</option>
+<option value="10"{$month_end['10']}>{$lang->month_10}</option>
+<option value="11"{$month_end['11']}>{$lang->month_11}</option>
+<option value="12"{$month_end['12']}>{$lang->month_12}</option>
+</select>
+&nbsp;
+<select name="end_day">
+{$end_dayopts}
+</select>
+&nbsp;
+<select name="end_year">
+{$end_yearopts}
+</select>
+</td>
+</tr>
+<tr>
+<td class="trow1" valign="top"><strong>{$lang->event_recurring_repeat_days}</strong></td>
+<td class="trow1">
+<label><input type="checkbox" name="repeat_days[0]" value="1" {$day_repeat[0]} />{$lang->sunday}</label>
+<br/><label><input type="checkbox" name="repeat_days[1]" value="1" {$day_repeat[1]} />{$lang->monday}</label>
+<br/><label><input type="checkbox" name="repeat_days[2]" value="1" {$day_repeat[2]} />{$lang->tuesday}</label>
+<br/><label><input type="checkbox" name="repeat_days[3]" value="1" {$day_repeat[3]} />{$lang->wednesday}</label>
+<br/><label><input type="checkbox"name="repeat_days[4]" value="1"  {$day_repeat[4]} />{$lang->thursday}</label>
+<br/><label><input type="checkbox" name="repeat_days[5]" value="1" {$day_repeat[5]} />{$lang->friday}</label>
+<br/><label><input type="checkbox" name="repeat_days[6]" value="1" {$day_repeat[6]} />{$lang->saturday}</label>
+</td>
+</tr>
+<tr>
+<td class="trow2"><strong>{$lang->event_start_time_recurring}</strong></td>
+<td class="trow2"><select name="start_time_hours">{$start_time_hours}</select> : <select name="start_time_mins">{$start_time_mins}</select></td>
+</tr>
+<tr>
+<td class="trow2"><strong>{$lang->event_end_time_recurring}</strong></td>
+<td class="trow2"><select name="end_time_hours">{$end_time_hours}</select> : <select name="end_time_mins">{$end_time_mins}</select></td>
+</tr>]]></template>
 		<template name="private_folders_folder" version="120"><![CDATA[<tr>
 <td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30" /></td>
 </tr>]]></template>
@@ -3130,10 +3218,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <tr>
 <td class="thead" colspan="2"><strong>{$event['subject']}</strong></td>
 </tr>
-<tr>
-<td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td width="70%" class="trow1">{$eventdate}</td>
-</tr>
+{$event_dates}
+{$event_times}
 <tr>
 <td width="30%" class="trow2"><strong>{$lang->event_author}</strong></td>
 <td width="70%" class="trow2">{$eventposter}</td>
@@ -3146,6 +3232,26 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 </table>
 <br />]]></template>
+		<template name="calendar_dayview_event_normal" version="120"><![CDATA[<tr>
+<td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
+<td width="70%" class="trow1">{$eventdate}</td>
+</tr>]]></template>
+		<template name="calendar_dayview_event_recurring" version="120"><![CDATA[<tr>
+<td width="30%" class="trow1"><strong>{$lang->event_recurring_start_date}</strong></td>
+<td width="70%" class="trow1">{$eventdate}</td>
+</tr>
+<tr>
+<td width="30%" class="trow1"><strong>{$lang->event_recurring_end_date}</strong></td>
+<td width="70%" class="trow1">{$eventdate_end}</td>
+</tr>
+<tr>
+<td width="30%" class="trow1"><strong>{$lang->event_recurring_repeat_days}</strong></td>
+<td width="70%" class="trow1">{$repeat_days}</td>
+</tr>]]></template>
+		<template name="calendar_dayview_event_times" version="120"><![CDATA[<tr>
+<td width="30%" class="trow2"><strong>{$lang->event_duration}</strong></td>
+<td width="70%" class="trow2">{$event['start_time_hours']}:{$event['start_time_mins']} - {$event['end_time_hours']}:{$event['end_time_mins']}</td>
+</tr>]]></template>
 		<template name="online_today" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->online_today}</title>
@@ -5952,33 +6058,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->edit_event}</strong></td>
 </tr>
-<tr>
-<td width="20%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td class="trow1">
-<select name="month">
-<option value="1"{$msel['1']}>{$lang->month_1}</option>
-<option value="2"{$msel['2']}>{$lang->month_2}</option>
-<option value="3"{$msel['3']}>{$lang->month_3}</option>
-<option value="4"{$msel['4']}>{$lang->month_4}</option>
-<option value="5"{$msel['5']}>{$lang->month_5}</option>
-<option value="6"{$msel['6']}>{$lang->month_6}</option>
-<option value="7"{$msel['7']}>{$lang->month_7}</option>
-<option value="8"{$msel['8']}>{$lang->month_8}</option>
-<option value="9"{$msel['9']}>{$lang->month_9}</option>
-<option value="10"{$msel['10']}>{$lang->month_10}</option>
-<option value="11"{$msel['11']}>{$lang->month_11}</option>
-<option value="12"{$msel['12']}>{$lang->month_12}</option>
-</select>
-&nbsp;
-<select name="day">
-{$dayopts}
-</select>
-&nbsp;
-<select name="year">
-{$yearopts}
-</select>
-</td>
-</tr>
+{$event_dates}
 <tr>
 <td width="20%" class="trow2"><strong>{$lang->event_name}</strong></td>
 <td  class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$event['subject']}" /></td>
@@ -6004,6 +6084,136 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
+		<template name="calendar_eventbit_dates" version="120"><![CDATA[<tr>
+<td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
+<td width="70%" class="trow1">{$eventdate}</td>
+</tr>]]></template>
+		<template name="calendar_eventbit_dates_recurring" version="120"><![CDATA[<tr>
+<td width="30%" class="trow1"><strong>{$lang->event_recurring_start_date}</strong></td>
+<td width="70%" class="trow1">{$eventdate}</td>
+</tr><tr>
+<td width="30%" class="trow1"><strong>{$lang->event_recurring_end_date}</strong></td>
+<td width="70%" class="trow1">{$eventdate_end}</td>
+</tr>
+<tr>
+<td width="30%" class="trow2"><strong>{$lang->event_recurring_repeat_days}</strong></td>
+<td width="70%" class="trow2">{$repeat_days}</td>
+</tr>]]></template>
+		<template name="calendar_eventbit_times" version="120"><![CDATA[<tr>
+<td width="30%" class="trow2"><strong>{$lang->event_duration}</strong></td>
+<td width="70%" class="trow2">{$event['start_time_hours']}:{$event['start_time_mins']} - {$event['end_time_hours']}:{$event['end_time_mins']}</td>
+</tr>]]></template>
+		<template name="calendar_editevent_normal" version="120"><![CDATA[<tr>
+<td width="20%" class="trow1"><strong>{$lang->event_date}</strong></td>
+<td class="trow1">
+<select name="month">
+<option value="1"{$month_start['1']}>{$lang->month_1}</option>
+<option value="2"{$month_start['2']}>{$lang->month_2}</option>
+<option value="3"{$month_start['3']}>{$lang->month_3}</option>
+<option value="4"{$month_start['4']}>{$lang->month_4}</option>
+<option value="5"{$month_start['5']}>{$lang->month_5}</option>
+<option value="6"{$month_start['6']}>{$lang->month_6}</option>
+<option value="7"{$month_start['7']}>{$lang->month_7}</option>
+<option value="8"{$month_start['8']}>{$lang->month_8}</option>
+<option value="9"{$month_start['9']}>{$lang->month_9}</option>
+<option value="10"{$month_start['10']}>{$lang->month_10}</option>
+<option value="11"{$month_start['11']}>{$lang->month_11}</option>
+<option value="12"{$month_start['12']}>{$lang->month_12}</option>
+</select>
+&nbsp;
+<select name="day">
+{$start_dayopts}
+</select>
+&nbsp;
+<select name="year">
+{$start_yearopts}
+</select>
+{$lang->event_edit_make_recurring}
+</td>
+</tr>
+<tr>
+<td width="20%" class="trow2"><strong>{$lang->event_start_time}</strong></td>
+<td class="trow2"><select name="start_time_hours">{$start_time_hours}</select> : <select name="start_time_mins">{$start_time_mins}</select></td>
+</tr>
+<tr>
+<td width="20%" class="trow2"><strong>{$lang->event_end_time}</strong></td>
+<td class="trow2"><select name="end_time_hours">{$end_time_hours}</select> : <select name="end_time_mins">{$end_time_mins}</select></td>
+</tr>]]></template>
+		<template name="calendar_editevent_recurring" version="120"><![CDATA[<tr>
+<td width="20%" class="trow1"><strong>{$lang->event_recurring_start_date}</strong></td>
+<td class="trow1">
+<select name="month">
+<option value="1"{$month_start['1']}>{$lang->month_1}</option>
+<option value="2"{$month_start['2']}>{$lang->month_2}</option>
+<option value="3"{$month_start['3']}>{$lang->month_3}</option>
+<option value="4"{$month_start['4']}>{$lang->month_4}</option>
+<option value="5"{$month_start['5']}>{$lang->month_5}</option>
+<option value="6"{$month_start['6']}>{$lang->month_6}</option>
+<option value="7"{$month_start['7']}>{$lang->month_7}</option>
+<option value="8"{$month_start['8']}>{$lang->month_8}</option>
+<option value="9"{$month_start['9']}>{$lang->month_9}</option>
+<option value="10"{$month_start['10']}>{$lang->month_10}</option>
+<option value="11"{$month_start['11']}>{$lang->month_11}</option>
+<option value="12"{$month_start['12']}>{$lang->month_12}</option>
+</select>
+&nbsp;
+<select name="day">
+{$start_dayopts}
+</select>
+&nbsp;
+<select name="year">
+{$start_yearopts}
+</select>
+{$lang->event_edit_make_normal}
+</td>
+</tr>
+<tr>
+<td class="trow1" valign="top"><strong>{$lang->event_recurring_end_date}</strong></td>
+<td class="trow1">
+<select name="end_month">
+<option value="1"{$month_end['1']}>{$lang->month_1}</option>
+<option value="2"{$month_end['2']}>{$lang->month_2}</option>
+<option value="3"{$month_end['3']}>{$lang->month_3}</option>
+<option value="4"{$month_end['4']}>{$lang->month_4}</option>
+<option value="5"{$month_end['5']}>{$lang->month_5}</option>
+<option value="6"{$month_end['6']}>{$lang->month_6}</option>
+<option value="7"{$month_end['7']}>{$lang->month_7}</option>
+<option value="8"{$month_end['8']}>{$lang->month_8}</option>
+<option value="9"{$month_end['9']}>{$lang->month_9}</option>
+<option value="10"{$month_end['10']}>{$lang->month_10}</option>
+<option value="11"{$month_end['11']}>{$lang->month_11}</option>
+<option value="12"{$month_end['12']}>{$lang->month_12}</option>
+</select>
+&nbsp;
+<select name="end_day">
+{$end_dayopts}
+</select>
+&nbsp;
+<select name="end_year">
+{$end_yearopts}
+</select>
+</td>
+</tr>
+<tr>
+<td class="trow1" valign="top"><strong>{$lang->event_recurring_repeat_days}</strong></td>
+<td class="trow1">
+<label><input type="checkbox" name="repeat_days[0]" value="1" {$day_repeat[0]} />{$lang->sunday}</label>
+<br/><label><input type="checkbox" name="repeat_days[1]" value="1" {$day_repeat[1]} />{$lang->monday}</label>
+<br/><label><input type="checkbox" name="repeat_days[2]" value="1" {$day_repeat[2]} />{$lang->tuesday}</label>
+<br/><label><input type="checkbox" name="repeat_days[3]" value="1" {$day_repeat[3]} />{$lang->wednesday}</label>
+<br/><label><input type="checkbox"name="repeat_days[4]" value="1"  {$day_repeat[4]} />{$lang->thursday}</label>
+<br/><label><input type="checkbox" name="repeat_days[5]" value="1" {$day_repeat[5]} />{$lang->friday}</label>
+<br/><label><input type="checkbox" name="repeat_days[6]" value="1" {$day_repeat[6]} />{$lang->saturday}</label>
+</td>
+</tr>
+<tr>
+<td class="trow2"><strong>{$lang->event_start_time_recurring}</strong></td>
+<td class="trow2"><select name="start_time_hours">{$start_time_hours}</select> : <select name="start_time_mins">{$start_time_mins}</select></td>
+</tr>
+<tr>
+<td class="trow2"><strong>{$lang->event_end_time_recurring}</strong></td>
+<td class="trow2"><select name="end_time_hours">{$end_time_hours}</select> : <select name="end_time_mins">{$end_time_mins}</select></td>
+</tr>]]></template>
 		<template name="postbit_offline" version="120"><![CDATA[<font color="#C7C7C7"><strong>{$lang->postbit_status_offline}</strong></font>]]></template>
 		<template name="postbit_editedby" version="120"><![CDATA[<p class="smalltext">{$post['editnote']} <a href="member.php?action=profile&amp;uid={$post['edituid']}">{$post['editusername']}</a>.</p>
 
