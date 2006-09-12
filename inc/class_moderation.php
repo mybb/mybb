@@ -334,8 +334,8 @@ class Moderation
 		// Update unapproved post count
 		if($post['visible'] == 0)
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-1 WHERE fid='$post[fid]'");
-			$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1 WHERE tid='$post[tid]'");
+			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-1 WHERE fid='{$post['fid']}'");
+			$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1 WHERE tid='{$post['tid']}'");
 		}
 		$plugins->run_hooks("delete_post", $post['tid']);
 		$cache->updatestats();
@@ -374,11 +374,11 @@ class Moderation
 			{ // these are the selected posts
 				if($sep == "new_line")
 				{
-					$message .= "\n\n $post[message]";
+					$message .= "\n\n {$post['message']}";
 				}
 				else
 				{
-					$message .= "[hr]$post[message]";
+					$message .= "[hr]{$post['message']}";
 				}
 			}
 		}
@@ -488,7 +488,7 @@ class Moderation
 						$postssql .= ", ";
 					}
 					$post['message'] = $db->escape_string($post['message']);
-					$postssql .= "('$newtid','$new_fid','$post[subject]','$post[icon]','$post[uid]','$post[username]','$post[dateline]','$post[message]','$post[ipaddress]','$post[includesig]','$post[smilieoff]','$post[edituid]','$post[edittime]','$post[visible]')";
+					$postssql .= "('$newtid','$new_fid','{$post['subject']}','{$post['icon']}','{$post['uid']}','{$post['username']}','{$post['dateline']}','{$post['message']}','{$post['ipaddress']}','{$post['includesig']}','{$post['smilieoff']}','{$post['edituid']}','{$post['edittime']}','{$post['visible']}')";
 				}
 				$db->query("INSERT INTO ".TABLE_PREFIX."posts (tid,fid,subject,icon,uid,username,dateline,message,ipaddress,includesig,smilieoff,edituid,edittime,visible) VALUES $postssql");
 	
@@ -522,19 +522,19 @@ class Moderation
 		{
 			if($method == "copy" && $newforum['usepostcounts'] != "no")
 			{
-				$pcount = "+$posters[posts]";
+				$pcount = "+{$posters['posts']}";
 			}
 			elseif($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no"))
 			{
-				$pcount = "+$posters[posts]";
+				$pcount = "+{$posters['posts']}";
 			}
 			elseif($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no"))
 			{
-				$pcount = "-$posters[posts]";
+				$pcount = "-{$posters['posts']}";
 			}
 			if(!empty($pcount))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='$posters[uid]'");
+				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
 			}
 		}
 
@@ -582,7 +582,7 @@ class Moderation
 		$pollsql = '';
 		if($mergethread['poll'])
 		{
-			$pollsql = ", poll='$mergethread[poll]'";
+			$pollsql = ", poll='{$mergethread['poll']}'";
 			$sqlarray = array(
 				"tid" => $tid,
 			);
@@ -686,7 +686,7 @@ class Moderation
 			SELECT COUNT(p.pid) AS posts, u.uid 
 			FROM ".TABLE_PREFIX."posts p 
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) 
-			WHERE p.tid='$tid' 
+			WHERE p.tid='$newtid' 
 			GROUP BY u.uid 
 			ORDER BY posts DESC
 		");
@@ -694,11 +694,11 @@ class Moderation
 		{
 			if($oldusepcounts == "yes" && $newusepcounts == "no")
 			{
-				$pcount = "-$posters[posts]";
+				$pcount = "-{$posters['posts']}";
 			}
 			elseif($oldusepcounts == "no" && $newusepcounts == "yes")
 			{
-				$pcount = "+$posters[posts]";
+				$pcount = "+{$posters['posts']}";
 			}
 
 			if(!empty($pcount))
@@ -714,7 +714,7 @@ class Moderation
 			"subject" => $newsubject,
 			"replyto" => 0
 		);
-		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='$newthread[pid]'");
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='{$newthread['pid']}'");
 
 		// Update the subject of the first post in the old thread
 		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='$tid'", array('order_by' => 'dateline', 'limit' => 1));

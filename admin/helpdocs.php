@@ -84,7 +84,7 @@ if($mybb->input['action'] == "do_delete")
 			$plugins->run_hooks("admin_helpdocs_do_delete_section");
 			$sid = intval($mybb->input['sid']);
 			$db->delete_query(TABLE_PREFIX."helpsections", "sid='".$sid."'");
-			$db->delete_query(TABLE_PREFIX."helpdocs", "WHERE sid='".$sid."' AND hid>'7'");
+			$db->delete_query(TABLE_PREFIX."helpdocs", "sid='".$sid."' AND hid>'7'");
 			// Move back any defaults left without a category
 			$query = $db->simple_select(TABLE_PREFIX."helpdocs", "*", "sid='".$sid."'");
 			while($doc = $db->fetch_array($query))

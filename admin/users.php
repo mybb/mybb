@@ -1623,7 +1623,7 @@ if($mybb->input['action'] == "find")
 				startform("users.php");
 				makehiddencode("uid", $user['uid']);
 				makehiddencode("auid", $user['uid']);
-				makehopper("action", $options);
+				echo makehopper("action", $options);
 				endform();
 				echo"</td>\n";
 			}
