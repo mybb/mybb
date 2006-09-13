@@ -15,7 +15,8 @@ $tables[] = "CREATE TABLE mybb_adminlog (
   scriptname varchar(50) NOT NULL default '',
   action varchar(50) NOT NULL default '',
   querystring varchar(150) NOT NULL default '',
-  ipaddress varchar(50) NOT NULL default ''
+  ipaddress varchar(50) NOT NULL default '',
+  KEY script (scriptname, action)
 ) TYPE=MyISAM;";
 
 
@@ -67,6 +68,7 @@ $tables[] = "CREATE TABLE mybb_announcements (
   allowhtml char(3) NOT NULL default '',
   allowmycode char(3) NOT NULL default '',
   allowsmilies char(3) NOT NULL default '',
+  KEY fid (fid),
   PRIMARY KEY  (aid)
 ) TYPE=MyISAM;";
 
@@ -82,6 +84,10 @@ $tables[] = "CREATE TABLE mybb_attachments (
   downloads int unsigned NOT NULL default '0',
   visible int(1) NOT NULL default '0',
   thumbnail varchar(120) NOT NULL default '',
+  KEY posthash (posthash),
+  KEY pid (pid),
+  KEY uid (uid),
+  KEY visible(visible),
   PRIMARY KEY  (aid)
 ) TYPE=MyISAM;";
 
@@ -122,13 +128,17 @@ $tables[] = "CREATE TABLE mybb_banned (
   dateline bigint(30) NOT NULL default '0',
   bantime varchar(50) NOT NULL default '',
   lifted bigint(30) NOT NULL default '0',
-  reason varchar(255) NOT NULL default ''
+  reason varchar(255) NOT NULL default '',
+  KEY uid (uid),
+  KEY dateline (dateline)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_captcha (
   imagehash varchar(32) NOT NULL default '',
   imagestring varchar(8) NOT NULL default '',
-  dateline bigint(30) NOT NULL default '0'
+  dateline bigint(30) NOT NULL default '0',
+  KEY imagehash (imagehash),
+  KEY dateline (dateline)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_datacache (
@@ -154,6 +164,7 @@ $tables[] = "CREATE TABLE mybb_events (
   end_time_mins varchar(2) NOT NULL,
   description text NOT NULL default '',
   private char(3) NOT NULL default '',
+  KEY private (private),
   PRIMARY KEY  (eid)
 ) TYPE=MyISAM;";
 
@@ -162,6 +173,8 @@ $tables[] = "CREATE TABLE mybb_favorites (
   uid int unsigned NOT NULL default '0',
   tid int unsigned NOT NULL default '0',
   type char(1) NOT NULL default '',
+  KEY uid (uid),
+  KEY tid (tid,type),
   PRIMARY KEY  (fid)
 ) TYPE=MyISAM;";
 
@@ -305,8 +318,9 @@ $tables[] = "CREATE TABLE mybb_moderatorlog (
   pid int unsigned NOT NULL default '0',
   action text NOT NULL default '',
   data text NOT NULL default '',
-  ipaddress varchar(50) NOT NULL default ''
-) TYPE=MyISAM;";
+  ipaddress varchar(50) NOT NULL default '',
+  KEY tid (tid),
+  TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_moderators (
   mid smallint unsigned NOT NULL auto_increment,
@@ -318,6 +332,7 @@ $tables[] = "CREATE TABLE mybb_moderators (
   canopenclosethreads char(3) NOT NULL default '',
   canmanagethreads char(3) NOT NULL default '',
   canmovetononmodforum char(3) NOT NULL default '',
+  KEY uid (uid, fid),
   PRIMARY KEY  (mid)
 ) TYPE=MyISAM;";
 
@@ -364,6 +379,7 @@ $tables[] = "CREATE TABLE mybb_pollvotes (
   uid int unsigned NOT NULL default '0',
   voteoption smallint unsigned NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
+  KEY pid (pid, uid),
   PRIMARY KEY  (vid)
 ) TYPE=MyISAM;";
 
@@ -385,6 +401,9 @@ $tables[] = "CREATE TABLE mybb_posts (
   edittime int(10) NOT NULL default '0',
   visible int(1) NOT NULL default '0',
   posthash varchar(32) NOT NULL default '',
+  KEY tid (tid, uid),
+  KEY uid (uid),
+  KEY dateline (dateline),
   PRIMARY KEY  (pid)
 ) TYPE=MyISAM;";
 
@@ -404,6 +423,8 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
   smilieoff char(3) NOT NULL default '',
   receipt int(1) NOT NULL default '0',
   readtime bigint(30) NOT NULL default '0',
+  KEY pmid (pmid),
+  KEY uid (uid, folder),
   PRIMARY KEY  (pmid)
 ) TYPE=MyISAM;";
 
@@ -432,6 +453,8 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
   reportstatus int(1) NOT NULL default '0',
   reason varchar(250) NOT NULL default '',
   dateline bigint(30) NOT NULL default '0',
+  KEY fid (fid),
+  KEY dateline (dateline),
   PRIMARY KEY  (rid)
 ) TYPE=MyISAM;";
 
@@ -442,6 +465,8 @@ $tables[] = "CREATE TABLE mybb_reputation (
   reputation bigint(30) NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
   comments text NOT NULL,
+  KEY uid (uid),
+  KEY dateline (dateline),
   PRIMARY KEY(rid)
 ) TYPE=MyISAM;";
 
@@ -555,6 +580,7 @@ $tables[] = "CREATE TABLE mybb_threadratings (
   uid int unsigned NOT NULL default '0',
   rating smallint unsigned NOT NULL default '0',
   ipaddress varchar(30) NOT NULL default '',
+  KEY tid (tid, uid),
   PRIMARY KEY  (rid)
 ) TYPE=MyISAM;";
 
@@ -583,6 +609,11 @@ $tables[] = "CREATE TABLE mybb_threads (
   unapprovedposts int(10) unsigned NOT NULL default '0',
   attachmentcount int(10) unsigned NOT NULL default '0',
   deletetime int(10) unsigned NOT NULL default '0',
+  KEY fid (fid, visible, sticky),
+  KEY dateline (dateline),
+  KEY lastpost (lastpost, fid),
+  KEY firstpost (firstpost),
+  KEY uid (uid),
   PRIMARY KEY  (tid)
 ) TYPE=MyISAM;";
 
@@ -590,6 +621,7 @@ $tables[] = "CREATE TABLE mybb_threadsread (
   tid int unsigned NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
   dateline int(10) NOT NULL default '0',
+  KEY dateline (dateline),
   UNIQUE KEY tiduid (tid,uid)
 ) TYPE=MyISAM;";
 
@@ -723,6 +755,9 @@ $tables[] = "CREATE TABLE mybb_users (
   totalpms int(10) NOT NULL default '0',
   newpms int(10) NOT NULL default '0',
   unreadpms int(10) NOT NULL default '0',
+  KEY username (username),
+  KEY usergroup (usergroup),
+  KEY birthday (birthday),
   PRIMARY KEY  (uid)
 ) TYPE=MyISAM;";
 
