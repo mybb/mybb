@@ -50,7 +50,7 @@ function username_exists($username)
 function validate_password_from_username($username, $password)
 {
 	global $db;
-	$query = $db->query("SELECT uid,username,password,salt,loginkey FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($username)."' LIMIT 1");
+	$query = $db->query("SELECT uid,username,password,salt,loginkey,remember FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($username)."' LIMIT 1");
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
 	{

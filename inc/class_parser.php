@@ -144,7 +144,6 @@ class postParser
 					
 					if(strtolower($text[1]) == "code")
 					{
-						$text[2] = str_replace('$', '\$', $text[2]);
 						$code = $this->mycode_parse_code($text[2]);
 					}
 					elseif(strtolower($text[1]) == "php")
