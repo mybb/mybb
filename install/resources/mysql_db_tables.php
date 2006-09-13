@@ -16,7 +16,7 @@ $tables[] = "CREATE TABLE mybb_adminlog (
   action varchar(50) NOT NULL default '',
   querystring varchar(150) NOT NULL default '',
   ipaddress varchar(50) NOT NULL default '',
-  KEY script (scriptname, action)
+  KEY scriptname (scriptname, action)
 ) TYPE=MyISAM;";
 
 
@@ -85,9 +85,8 @@ $tables[] = "CREATE TABLE mybb_attachments (
   visible int(1) NOT NULL default '0',
   thumbnail varchar(120) NOT NULL default '',
   KEY posthash (posthash),
-  KEY pid (pid),
+  KEY pid (pid, visible),
   KEY uid (uid),
-  KEY visible(visible),
   PRIMARY KEY  (aid)
 ) TYPE=MyISAM;";
 
@@ -498,7 +497,9 @@ $tables[] = "CREATE TABLE mybb_sessions (
   failedlogin bigint(30) NOT NULL default '0',
   PRIMARY KEY(sid),
   KEY location1 (location1),
-  KEY location2 (location2)
+  KEY location2 (location2),
+  KEY dateline (dateline),
+  KEY uid (uid)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_settinggroups (
