@@ -492,6 +492,8 @@ else if($mybb->input['action'] == "get_multiquoted")
  */
 function xmlhttp_error($message)
 {
+	global $charset;
+	
 	// Send our headers.
 	header("Content-type: text/html; charset={$charset}");
 	

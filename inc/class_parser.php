@@ -86,14 +86,34 @@ class postParser
 
 		// Get rid of cartridge returns for they are the workings of the devil
 		$message = str_replace("\r", "", $message);
-		// This needs to be changed so it strips out the rtl override bug
-		//$message = str_replace("", "", $message);
+		
 		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
 		{
 			$message = $this->parse_badwords($message);
 		}
 
+		if($options['allow_html'] != "yes")
+		{
+			$message = $this->parse_html($message);
+		}
+		else
+		{		
+			// Strip out any script tags if HTML is enabled
+			if($options['allow_html'] == "yes")
+			{
+				while(preg_match("#<script(.*)>(.*)</script(.*)>#is", $message))
+				{
+					$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
+				}
+				$message = preg_replace("#<base(.*)>#is", "&lt;base$1&gt;", $message);
+				$message = preg_replace("#<meta(.*)>#is", "&lt;meta$1&gt;", $message);
+			}
+		}
+		
+		// Always fix bad Javascript in the message.
+		$message = $this->fix_javascript($message);
+				
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
 		if($options['allow_mycode'] != "no")
 		{
@@ -102,11 +122,6 @@ class postParser
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "{{mybb-code}}\n", $message);
 		}
 
-		if($options['allow_html'] != "yes")
-		{
-			$message = $this->parse_html($message);
-		}
-		
 		// If we can, parse smiliesa
 		if($options['allow_smilies'] != "no")
 		{
@@ -119,16 +134,6 @@ class postParser
 			$message = $this->parse_mycode($message, $options);
 		}
 
-		// Strip out any script tags if HTML is enabled
-		if($options['allow_html'] == "yes")
-		{
-			while(preg_match("#<script(.*)>(.*)</script(.*)>#is", $message))
-			{
-				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
-			}
-			$message = preg_replace("#<base(.*)>#is", "&lt;base$1&gt;", $message);
-			$message = preg_replace("#<meta(.*)>#is", "&lt;meta$1&gt;", $message);
-		}		
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
 		
@@ -140,7 +145,10 @@ class postParser
 				foreach($code_matches as $text)
 				{
 					// Fix up HTML inside the code tags so it is clean
-					$text[2] = $this->parse_html($text[2]);
+					if($options['allow_html'] != "no")
+					{
+						$text[2] = $this->parse_html($text[2]);
+					}
 					
 					if(strtolower($text[1]) == "code")
 					{
@@ -160,9 +168,7 @@ class postParser
 			$message = nl2br($message);
 			$message = str_replace("</div><br />", "</div>", $message);
 		}
-		// Always fix bad Javascript in the message.
-		$message = $this->fix_javascript($message);
-		
+	
 		$message = my_wordwrap($message);
 		
 		$message = str_replace("  ", "&nbsp;&nbsp;", $message); 
