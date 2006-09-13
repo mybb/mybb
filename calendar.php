@@ -1006,7 +1006,7 @@ if($mybb->input['action'] == "calendar_main")
 	$plugins->run_hooks("calendar_start");
 
 	$time = gmmktime(0, 0, 0, $month, 1, $year);
-	$days = my_date("t", $time);
+	$days = date("t", $time);
 	$bdays = array();
 
 	// Load Birthdays
@@ -1113,7 +1113,7 @@ if($mybb->input['action'] == "calendar_main")
 	}
 	$daybits = "<tr>\n";
 	$count = 0;
-	$sblanks = my_date("w", $time);
+	$sblanks = date("w", $time);
 	// Blank space before first day
 	if($sblanks)
 	{
