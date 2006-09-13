@@ -71,7 +71,7 @@ if($mybb->input['action'] == "do_attachments")
 			$db->update_query(TABLE_PREFIX."attachments", $sql_array, "aid IN ({$aids})");
 		}
 	}
-	cpmessage($lang->attachments_moderated);
+	cpredirect("moderate.php?".SID."&action=attachments", $lang->attachments_moderated);
 }
 
 if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts" || $mybb->input['action'] == "do_threadsposts")
@@ -164,7 +164,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 			update_forum_count($fid);
 		}
 	}
-	cpmessage($lang->threadsposts_moderated);
+	cpredirect("moderate.php?".SID."&action=".str_replace('do_', '', $mybb->input['action']), $lang->threadsposts_moderated);
 }
 if($mybb->input['action'] == "attachments")
 {
@@ -295,7 +295,7 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 	$count = $db->num_rows($query);
 	if(!$tcount && !$count && $mybb->input['action'] == "threadsposts")
 	{
-	  endform();
+	  	endform();
 		cpmessage($lang->no_threadsposts);
 	}
 
@@ -319,7 +319,8 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 	while($post = $db->fetch_array($query))
 	{
 		if(!$donepid[$post['pid']])
-		{ // so we dont show new threads main post again
+		{ 
+			// so we dont show new threads main post again
 			$done = 1;
 			$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 			makeinputcode($lang->post_subject, "postsubject[$post[pid]]", "$post[subject]");	
@@ -330,15 +331,15 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 			makeyesnocode($lang->validate_post, "postvalidate[$post[pid]]");
 			makeyesnocode($lang->delete_post, "postdelete[$post[pid]]", "no");
 			echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\" alt=\"\" /></td>\n</tr>\n";
-		  ++$postscount;
-    }
+		  	++$postscount;
+		}
 	}
 	if($postscount < 1)
 	{
-    echo "<tr>\n";
+    	echo "<tr>\n";
 		echo "<td class=\"$bgcolor\" colspan=\"1\">".$lang->no_posts."</td>\n";
 		echo "</tr>\n";
-  }
+  	}
 	if($count >= 1)
 	{
 	  endtable();

@@ -1774,6 +1774,11 @@ function log_moderator_action($data, $action="")
 function get_reputation($reputation, $uid=0)
 {
 	global $theme;
+	
+	if($uid == 0)
+	{
+		$reputation = 0;
+	}
 
 	if($uid != 0)
 	{

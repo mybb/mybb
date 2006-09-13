@@ -236,7 +236,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "delete")
 {
 	// Only administrators as well as users who gave a specifc vote can delete one.
-	if($mybb->usergroup['cancp'] != "yes" && $existing_reputation['adduid'] != $mybb->user['uid'])
+	if($mybb->usergroup['cancp'] != "yes" || $existing_reputation['adduid'] != $mybb->user['uid'])
 	{
 		error_no_permission();
 	}
@@ -485,7 +485,7 @@ if(!$mybb->input['action'])
 		$last_updated = sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
 
 		// Does the current user have permission to delete this reputation? Show delete link
-		if($mybb->usergroup['cancp'] == "yes" || ($mybb->usergroup['cangivereputations'] == "yes" && $reputation['adduid'] == $mybb->user['uid']))
+		if($mybb->usergroup['cancp'] == "yes" || ($mybb->usergroup['cangivereputations'] == "yes" && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
 		{
 			$delete_link = "[<a href=\"reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}\" onclick=\"MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;\">{$lang->delete_vote}</a>]";
 		}
