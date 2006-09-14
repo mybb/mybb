@@ -80,8 +80,8 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	// Temporarily set the cookie remember option for the login cookies
 	$mybb->user['remember'] = $user['remember'];
 
-	my_setcookie("mybbuser", $user['uid']."_".$user['loginkey']);
-	my_setcookie("sid", $session->sid, -1);
+	my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
+	my_setcookie("sid", $session->sid, -1, true);
 
 	if(function_exists("loggedIn"))
 	{

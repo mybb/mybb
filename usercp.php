@@ -612,11 +612,11 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 			// Set the new one
 			if($mybb->input['remember'] == "yes")
 			{
-				my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
+				my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], null, true);
 			}
 			else
 			{
-				my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], -1);
+				my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], -1, true);
 			}
 		}
 

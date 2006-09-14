@@ -105,7 +105,7 @@ class session
 		}
 
 		// As a token of our appreciation for getting this far, give the user a cookie
-		my_setcookie("sid", $this->sid, -1);
+		my_setcookie("sid", $this->sid, -1, true);
 	}
 
 	/**

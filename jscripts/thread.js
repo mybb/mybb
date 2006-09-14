@@ -181,22 +181,23 @@ var Thread = {
 				message[1] = "An unknown error occurred.";
 			}
 			alert('There was an error performing the update.\n\n'+message[1]);
+			Thread.qeCache[pid] = "";
 		}
 		else if(request.responseText)
 		{
 			$("pid_"+pid).innerHTML = request.responseText;
+			element = $("quickedit_"+pid);
+			element.focus();
+			offsetTop = -60;
+			do
+			{
+				offsetTop += element.offsetTop || 0;
+				element = element.offsetParent;
+			}
+			while(element);
+
+			scrollTo(0, offsetTop);
 		}
-		element = $("quickedit_"+pid);
-		element.focus();
-		offsetTop = -60;
-		do
-		{
-			offsetTop += element.offsetTop || 0;
-			element = element.offsetParent;
-		} while(element);
-		
-		scrollTo(0, offsetTop);
-		
 		this.spinner.destroy();	
 		this.spinner = '';	
 	},

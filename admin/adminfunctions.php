@@ -2363,6 +2363,7 @@ function make_usergroup_checkbox_code($name, $checked_groups='', $where='')
 function is_super_admin($uid)
 {
 	global $config;
+	$config['super_admins'] = str_replace(" ", "", $config['super_admins']);
 	if(strpos(",{$config['super_admins']},", ",{$uid},") === false)
 	{
 		return false;

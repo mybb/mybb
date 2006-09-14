@@ -61,7 +61,7 @@ elseif($mybb->input['action'] == "clearpass")
 
 	if($mybb->input['fid'])
 	{
-		my_setcookie("forumpass[".intval($mybb->input['fid'])."]", '');
+		my_unsetcookie("forumpass[".intval($mybb->input['fid'])."]");
 		redirect("index.php", $lang->redirect_forumpasscleared);
 	}
 }

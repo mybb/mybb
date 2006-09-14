@@ -192,7 +192,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			// Otherwise they've logged in successfully.
 
 			$mybb->input['username'] = $username = $mybb->user['username'];
-			my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey']);
+			my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], null, true);
 			my_setcookie('loginattempts', 1);
 			
 			// Update the session to contain their user ID

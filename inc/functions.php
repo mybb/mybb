@@ -852,7 +852,7 @@ function check_forum_password($fid, $password="")
 		{
 			if($password == $mybb->input['pwverify'])
 			{
-				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']));
+				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']), null, true);
 				$showform = 0;
 			}
 			else
@@ -1031,8 +1031,9 @@ function get_post_icons()
  * @param string The cookie identifier.
  * @param string The cookie value.
  * @param int The timestamp of the expiry date.
+ * @param boolean True if setting a HttpOnly cookie (supported by IE, Opera 9, Konqueror)
  */
-function my_setcookie($name, $value="", $expires="")
+function my_setcookie($name, $value="", $expires="", $httponly=false)
 {
 	global $mybb, $sent_header;
 	if($sent_header)
@@ -1048,7 +1049,7 @@ function my_setcookie($name, $value="", $expires="")
 	{
 		$expires = 0;
 	}
-	else
+	else if($expires == "" || $expires == null)
 	{
 		if($mybb->user['remember'] == "no")
 		{
@@ -1059,15 +1060,26 @@ function my_setcookie($name, $value="", $expires="")
 			$expires = time() + (60*60*24*365); // Make the cookie expire in a years time
 		}
 	}
+	else
+	{
+		$expires = time() + intval($expires);
+	}
+	
 	$mybb->settings['cookiepath'] = str_replace(array("\n","\r"), "", $mybb->settings['cookiepath']);
 	$mybb->settings['cookiedomain'] = str_replace(array("\n","\r"), "", $mybb->settings['cookiedomain']);
-	if($mybb->settings['cookiedomain'])
+
+	if(PHP_VERSION >= 5.2)
 	{
-		setcookie($name, $value, $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
+		setcookie($name, $value, $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain'], null, $httponly);
 	}
 	else
 	{
-		setcookie($name, $value, $expires, $mybb->settings['cookiepath']);
+		// Versions of PHP prior to 5.2 do not support HttpOnly cookies so if we're using one, tack it on to the end of the domain
+		if($httponly == true)
+		{
+			$mybb->settings['cookiedomain'] .= "; HttpOnly";
+		}
+		setcookie($name, $value, $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);			
 	}
 }
 

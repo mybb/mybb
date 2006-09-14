@@ -210,7 +210,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if($mybb->settings['regtype'] != "randompass")
 		{
 			// Log them in
-			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey']);
+			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true);
 		}
 
 		if($mybb->settings['regtype'] == "verify")
@@ -912,8 +912,8 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	// Temporarily set the cookie remember option for the login cookies
 	$mybb->user['remember'] = $user['remember'];
 
-	my_setcookie("mybbuser", $user['uid']."_".$user['loginkey']);
-	my_setcookie("sid", $session->sid, -1);
+	my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
+	my_setcookie("sid", $session->sid, -1, true);
 
 	if(function_exists("loggedIn"))
 	{
@@ -943,7 +943,7 @@ else if($mybb->input['action'] == "logout")
 	if($mybb->input['uid'] == $mybb->user['uid'])
 	{
 		my_unsetcookie("mybbuser");
-		my_setcookie("sid", 0, -1);
+		my_unsetcookie("sid");
 		if($mybb->user['uid'])
 		{
 			$time = time();
