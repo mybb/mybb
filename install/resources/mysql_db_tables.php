@@ -318,8 +318,8 @@ $tables[] = "CREATE TABLE mybb_moderatorlog (
   action text NOT NULL default '',
   data text NOT NULL default '',
   ipaddress varchar(50) NOT NULL default '',
-  KEY tid (tid),
-  TYPE=MyISAM;";
+  KEY tid (tid)
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_moderators (
   mid smallint unsigned NOT NULL auto_increment,
@@ -498,7 +498,7 @@ $tables[] = "CREATE TABLE mybb_sessions (
   PRIMARY KEY(sid),
   KEY location1 (location1),
   KEY location2 (location2),
-  KEY dateline (dateline),
+  KEY time (time),
   KEY uid (uid)
 ) TYPE=MyISAM;";
 
