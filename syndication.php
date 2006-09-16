@@ -10,7 +10,7 @@
  */
 
 define("IN_MYBB", 1);
-
+define("IGNORE_CLEAN_VARS", "fid");
 define("NO_ONLINE", 1);
 
 require_once "./global.php";

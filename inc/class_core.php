@@ -88,7 +88,7 @@ class MyBB {
 	var $request_method = "";
 
 	/**
-	 * Variables that need to be clean.
+	 * Variables that need to be cleaned.
 	 *
 	 * @var array
 	 */
@@ -96,6 +96,12 @@ class MyBB {
 		"int" => array("tid", "pid", "uid", "eid", "pmid", "fid", "aid")
 	);
 
+	/** 
+	 * Variables that are to be ignored from cleansing proccess 
+	 * 
+	 * @var array 
+	 */ 
+	var $ignore_clean_variables = array();
 	
 	/**
 	 * Using built in shutdown functionality provided by register_shutdown_function for < PHP 5?
@@ -110,6 +116,17 @@ class MyBB {
 	function MyBB()
 	{
 		// Set up MyBB
+		if(defined("IGNORE_CLEAN_VARS")
+		{
+			if(!is_array(IGNORE_CLEAN_VARS)
+			{
+				$this->ignore_clean_variables = array(IGNORE_CLEAN_VARS);
+			}
+			else
+			{
+				$this->ignore_clean_variables = IGNORE_CLEAN_VARS;
+			}
+		}
 
 		// Determine Magic Quotes Status
 		if(get_magic_quotes_gpc())
@@ -228,6 +245,11 @@ class MyBB {
 		{
 			foreach($variables as $var)
 			{
+				// If this variable is in the ignored array, skip and move to next
+				if(in_array($var, $this->ignore_clean_variables))
+				{
+					continue;
+				}
 				if($type == "int" && isset($this->input[$var]) && $this->input[$var] != "lastposter")
 				{
 					$this->input[$var] = intval($this->input[$var]);

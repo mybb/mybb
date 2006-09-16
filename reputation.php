@@ -236,7 +236,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "delete")
 {
 	// Only administrators as well as users who gave a specifc vote can delete one.
-	if($mybb->usergroup['cancp'] != "yes" || $existing_reputation['adduid'] != $mybb->user['uid'])
+	if($mybb->usergroup['cancp'] != "yes" && $existing_reputation['adduid'] != $mybb->user['uid'])
 	{
 		error_no_permission();
 	}
