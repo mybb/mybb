@@ -1115,7 +1115,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[The maximum dimensions that an avatar can be, in the format of width<b>x</b>height. If this is left blank then there will be no dimension restriction.]]></description>
 			<disporder>21</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[10x10]]></settingvalue>
+			<settingvalue><![CDATA[100x100]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="avatarsize">

@@ -116,9 +116,9 @@ class MyBB {
 	function MyBB()
 	{
 		// Set up MyBB
-		if(defined("IGNORE_CLEAN_VARS")
+		if(defined("IGNORE_CLEAN_VARS"))
 		{
-			if(!is_array(IGNORE_CLEAN_VARS)
+			if(!is_array(IGNORE_CLEAN_VARS))
 			{
 				$this->ignore_clean_variables = array(IGNORE_CLEAN_VARS);
 			}

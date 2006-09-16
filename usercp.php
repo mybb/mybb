@@ -866,78 +866,84 @@ if($mybb->input['action'] == "options")
 
 if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 {
+	$errors = array();
+
 	$plugins->run_hooks("usercp_do_email_start");
-	$user = validate_password_from_uid($mybb->user['uid'], $mybb->input['password']);
-	if(!$user['uid'])
+	if(validate_password_from_uid($mybb->user['uid'], $mybb->input['password']) == false)
 	{
-		error($lang->error_invalidpassword);
-	}
-	if($mybb->input['email'] != $mybb->input['email2'])
-	{
-		error($lang->error_emailmismatch);
-	}
-
-	//Email Banning Code
-	if($mybb->settings['emailkeep'] != "yes")
-	{
-		$bannedemails = explode(" ", $mybb->settings['emailban']);
-		if(is_array($bannedemails))
-		{
-			foreach($bannedemails as $key => $bannedemail)
-			{
-				$bannedemail = trim($bannedemail);
-				if($bannedemail != "")
-				{
-					if(strstr($mybb->input['email'], $bannedemail) != "")
-					{
-						error($lang->error_bannedemail);
-					}
-				}
-			}
-		}
-	}
-	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['email']))
-	{
-		error($lang->error_invalidemail);
-	}
-	if(function_exists("emailChanged"))
-	{
-		emailChanged($mybb->user['uid'], $mybb->input['email']);
-	}
-
-	if($mybb->user['usergroup'] != "5")
-	{
-		$activationcode = random_str();
-		$now = time();
-		$db->delete_query(TABLE_PREFIX."awaitingactivation", "uid='".$mybb->user['uid']."'");
-		$newactivation = array(
-			"uid" => $mybb->user['uid'],
-			"dateline" => time(),
-			"code" => $activationcode,
-			"type" => "e",
-			"oldgroup" => $mybb->user['usergroup'],
-			"misc" => $db->escape_string($mybb->input['email'])
-		);
-		$db->insert_query(TABLE_PREFIX."awaitingactivation", $newactivation);
-
-		$username = $mybb->user['username'];
-		$uid = $mybb->user['uid'];
-		$lang->emailsubject_changeemail = sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
-		$lang->email_changeemail = sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->input['email'], $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
-		my_mail($mybb->input['email'], $lang->emailsubject_changeemail, $lang->email_changeemail);
-		$plugins->run_hooks("usercp_do_email_verify");
-		error($lang->redirect_changeemail_activation);
+		$errors[] = $lang->error_invalidpassword;
 	}
 	else
 	{
-		$db->update_query(TABLE_PREFIX."users", array('email' => $db->escape_string($mybb->input['email'])), "uid='".$mybb->user['uid']."'");
-		$plugins->run_hooks("usercp_do_email_changed");
-		redirect("usercp.php", $lang->redirect_emailupdated);
+		// Set up user handler.
+		require_once "inc/datahandlers/user.php";
+		$userhandler = new UserDataHandler("update");
+
+		$user = array(
+			"uid" => $mybb->user['uid'],
+			"email" => $mybb->input['email'],
+			"email2" => $mybb->input['email2']
+		);
+
+		$userhandler->set_data($user);
+
+		if(!$userhandler->validate_user())
+		{
+			$errors = $userhandler->get_friendly_errors();
+		}
+		else
+		{
+			if($mybb->user['usergroup'] != "5")
+			{
+				$activationcode = random_str();
+				$now = time();
+				$db->delete_query(TABLE_PREFIX."awaitingactivation", "uid='".$mybb->user['uid']."'");
+				$newactivation = array(
+					"uid" => $mybb->user['uid'],
+					"dateline" => time(),
+					"code" => $activationcode,
+					"type" => "e",
+					"oldgroup" => $mybb->user['usergroup'],
+					"misc" => $db->escape_string($mybb->input['email'])
+				);
+				$db->insert_query(TABLE_PREFIX."awaitingactivation", $newactivation);
+		
+				$username = $mybb->user['username'];
+				$uid = $mybb->user['uid'];
+				$lang->emailsubject_changeemail = sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
+				$lang->email_changeemail = sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->input['email'], $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
+				my_mail($mybb->input['email'], $lang->emailsubject_changeemail, $lang->email_changeemail);
+				$plugins->run_hooks("usercp_do_email_verify");
+				error($lang->redirect_changeemail_activation);
+			}
+			else
+			{
+				$userhandler->update_user();
+				$plugins->run_hooks("usercp_do_email_changed");
+				redirect("usercp.php", $lang->redirect_emailupdated);
+			}
+		}
+	}
+	if(count($errors) > 0)
+	{
+			$mybb->input['action'] = "email";
+			$errors = inline_error($errors);
 	}
 }
 
 if($mybb->input['action'] == "email")
 {
+	// Coming back to this page after one or more errors were experienced, show fields the user previously entered (with the exception of the password)
+	if($errors)
+	{
+		$email = htmlspecialchars_uni($mybb->input['email']);
+		$email2 = htmlspecialchars_uni($mybb->input['email2']);
+	}
+	else
+	{
+		$email = $email2 = '';
+	}
+
 	$plugins->run_hooks("usercp_email_start");
 	eval("\$changemail = \"".$templates->get("usercp_email")."\";");
 	$plugins->run_hooks("usercp_email_end");
@@ -946,25 +952,44 @@ if($mybb->input['action'] == "email")
 
 if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 {
+	$errors = array();
+
 	$plugins->run_hooks("usercp_do_password_start");
 	if(validate_password_from_uid($mybb->user['uid'], $mybb->input['oldpassword']) == false)
 	{
-		error($lang->error_invalidpassword);
+		$errors[] = $lang->error_invalidpassword;
 	}
-	if($mybb->input['password'] == "")
+	else
 	{
-		error($lang->error_invalidnewpassword);
-	}
-	if($mybb->input['password'] != $mybb->input['password2'])
-	{
-		error($lang->error_passwordmismatch);
-	}
-	$plugins->run_hooks("usercp_do_password_process");
-	$logindetails = update_password($mybb->user['uid'], md5($mybb->input['password']), $mybb->user['salt']);
+		// Set up user handler.
+		require_once "inc/datahandlers/user.php";
+		$userhandler = new UserDataHandler("update");
 
-	my_setcookie("mybbuser", $mybb->user['uid']."_".$logindetails['loginkey']);
-	$plugins->run_hooks("usercp_do_password_end");
-	redirect("usercp.php", $lang->redirect_passwordupdated);
+		$user = array(
+			"uid" => $mybb->user['uid'],
+			"password" => $mybb->input['password'],
+			"password2" => $mybb->input['password2']
+		);
+
+		$userhandler->set_data($user);
+
+		if(!$userhandler->validate_user())
+		{
+			$errors = $userhandler->get_friendly_errors();
+		}
+		else
+		{
+			$userhandler->update_user();
+			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey']);
+			$plugins->run_hooks("usercp_do_password_end");
+			redirect("usercp.php", $lang->redirect_passwordupdated);
+		}
+	}
+	if(count($errors) > 0)
+	{
+			$mybb->input['action'] = "password";
+			$errors = inline_error($errors);
+	}
 }
 
 if($mybb->input['action'] == "password")
@@ -982,22 +1007,41 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 	{
 		error_no_permission();
 	}
-	if(!trim($mybb->input['username']) || eregi("<|>|&", $mybb->input['username']))
-	{
-		error($lang->error_bannedusername);
-	}
-	$query = $db->simple_select(TABLE_PREFIX."users", "username", "LOWER(username)='".strtolower($mybb->input['username'])."'");
 
-	if($db->fetch_array($query))
+	if(validate_password_from_uid($mybb->user['uid'], $mybb->input['password']) == false)
 	{
-		error($lang->error_usernametaken);
+		$errors[] = $lang->error_invalidpassword;
 	}
-	$plugins->run_hooks("usercp_do_changename_process");
-	$db->update_query(TABLE_PREFIX."users", array('username' => $db->escape_string($mybb->input['username'])), "uid='".$mybb->user['uid']."'");
-	$db->update_query(TABLE_PREFIX."forums", array('lastposter' => $db->escape_string($mybb->input['username'])), "lastposter='".$mybb->user['username']."'");
-	$db->update_query(TABLE_PREFIX."threads", array('lastposter' => $db->escape_string($mybb->input['username'])), "lastposter='".$mybb->user['username']."'");
-	$plugins->run_hooks("usercp_do_changename_end");
-	redirect("usercp.php", $lang->redirect_namechanged);
+	else
+	{
+		// Set up user handler.
+		require_once "inc/datahandlers/user.php";
+		$userhandler = new UserDataHandler("update");
+
+		$user = array(
+			"uid" => $mybb->user['uid'],
+			"username" => $mybb->input['username']
+		);
+
+		$userhandler->set_data($user);
+
+		if(!$userhandler->validate_user())
+		{
+			$errors = $userhandler->get_friendly_errors();
+		}
+		else
+		{
+			$userhandler->update_user();
+			$plugins->run_hooks("usercp_do_changename_end");
+			redirect("usercp.php", $lang->redirect_namechanged);
+
+		}
+	}
+	if(count($errors) > 0)
+	{
+		$errors = inline_error($errors);
+		$mybb->input['action'] = "changename";
+	}
 }
 
 if($mybb->input['action'] == "changename")
@@ -1328,7 +1372,12 @@ if($mybb->input['action'] == "editsig")
 		$sig = $mybb->user['signature'];
 		$template = "usercp_editsig_current";
 	}
-	if($sig)
+	else if($error)
+	{
+		$sig = $mybb->input['signature'];
+	}
+
+	if($sig && $template)
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
@@ -1378,6 +1427,118 @@ if($mybb->input['action'] == "editsig")
 	eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
 	$plugins->run_hooks("usercp_endsig_end");
 	output_page($editsig);
+}
+
+if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
+{
+	$plugins->run_hooks("usercp_do_avatar_start");
+	require_once MYBB_ROOT."inc/functions_upload.php";
+	if($mybb->input['remove']) // remove avatar
+	{
+		$updated_avatar = array(
+			"avatar" => "",
+			"avatardimensions" => "",
+			"avatartype" => ""
+		);
+		$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
+		remove_avatars($mybb->user['uid']);
+	}
+	elseif($mybb->input['gallery']) // Gallery avatar
+	{
+		if($mybb->input['gallery'] == "default")
+		{
+			$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['avatar']);
+		}
+		else
+		{
+			$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['gallery']."/".$mybb->input['avatar']);
+		}
+		if(file_exists($avatarpath))
+		{
+			$updated_avatar = array(
+				"avatar" => $avatarpath,
+				"avatardimensions" => "",
+				"avatartype" => "gallery"
+			);
+			$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
+		}
+		remove_avatars($mybb->user['uid']);
+	}
+	elseif($_FILES['avatarupload']['name']) // upload avatar
+	{
+		if($mybb->usergroup['canuploadavatars'] == "no")
+		{
+			error_no_permission();
+		}
+		$avatar = upload_avatar();
+		if($avatar['error'])
+		{
+			$avatar_error = $avatar['error'];
+		}
+		else
+		{
+			if($avatar['width'] > 0 && $avatar['height'] > 0)
+			{
+				$avatar_dimensions = $avatar['width']."|".$avatar['height'];
+			}
+			$updated_avatar = array(
+				"avatar" => $avatar['avatar'],
+				"avatardimensions" => $avatar_dimensions,
+				"avatartype" => "upload"
+			);
+			$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
+		}
+	}
+	else // remote avatar
+	{
+		$mybb->input['avatarurl'] = preg_replace("#script:#i", "", $mybb->input['avatarurl']);
+		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
+		$ext = get_extension($mybb->input['avatarurl']);
+		list($width, $height, $type) = @getimagesize($mybb->input['avatarurl']);
+
+		if(!$type)
+		{
+			$avatar_error = $lang->error_invalidavatarurl;
+		}
+
+		if(!$avatar_error)
+		{
+			if($width && $height && $mybb->settings['maxavatardims'] != "")
+			{
+				list($maxwidth, $maxheight) = explode("x", $mybb->settings['maxavatardims']);
+				if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
+				{
+					$lang->error_avatartoobig = sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
+					$avatar_error = $lang->error_avatartoobig;
+				}
+			}
+		}
+		
+		if(!$avatar_error)
+		{
+			if($width > 0 && $height > 0)
+			{
+				$avatar_dimensions = intval($width)."|".intval($height);
+			}
+			$updated_avatar = array(
+				"avatar" => $db->escape_string($mybb->input['avatarurl']),
+				"avatardimensions" => $avatar_dimensions,
+				"avatartype" => "remote"
+			);
+			$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
+			remove_avatars($mybb->user['uid']);
+		}
+	}
+	if(empty($avatar_error))
+	{
+		$plugins->run_hooks("usercp_do_avatar_end");
+		redirect("usercp.php", $lang->redirect_avatarupdated);
+	}
+	else
+	{
+		$mybb->input['action'] = "avatar";
+		$avatar_error = inline_error($avatar_error);
+	}
 }
 
 if($mybb->input['action'] == "avatar")
@@ -1514,99 +1675,6 @@ if($mybb->input['action'] == "avatar")
 		$plugins->run_hooks("usercp_avatar_end");
 		output_page($avatar);
 	}
-}
-if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
-{
-	$plugins->run_hooks("usercp_do_avatar_start");
-	require_once MYBB_ROOT."inc/functions_upload.php";
-	if($mybb->input['remove']) // remove avatar
-	{
-		$updated_avatar = array(
-			"avatar" => "",
-			"avatardimensions" => "",
-			"avatartype" => ""
-		);
-		$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
-		remove_avatars($mybb->user['uid']);
-	}
-	elseif($mybb->input['gallery']) // Gallery avatar
-	{
-		if($mybb->input['gallery'] == "default")
-		{
-			$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['avatar']);
-		}
-		else
-		{
-			$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['gallery']."/".$mybb->input['avatar']);
-		}
-		if(file_exists($avatarpath))
-		{
-			$updated_avatar = array(
-				"avatar" => $avatarpath,
-				"avatardimensions" => "",
-				"avatartype" => "gallery"
-			);
-			$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
-		}
-		remove_avatars($mybb->user['uid']);
-	}
-	elseif($_FILES['avatarupload']['name']) // upload avatar
-	{
-		if($mybb->usergroup['canuploadavatars'] == "no")
-		{
-			error_no_permission();
-		}
-		$avatar = upload_avatar();
-		if($avatar['error'])
-		{
-			error($avatar['error']);
-		}
-		if($avatar['width'] > 0 && $avatar['height'] > 0)
-		{
-			$avatar_dimensions = $avatar['width']."|".$avatar['height'];
-		}
-		$updated_avatar = array(
-			"avatar" => $avatar['avatar'],
-			"avatardimensions" => $avatar_dimensions,
-			"avatartype" => "upload"
-		);
-		$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
-	}
-	else // remote avatar
-	{
-		$mybb->input['avatarurl'] = preg_replace("#script:#i", "", $mybb->input['avatarurl']);
-		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
-		$ext = get_extension($mybb->input['avatarurl']);
-		list($width, $height, $type) = @getimagesize($mybb->input['avatarurl']);
-
-		if(!$type)
-		{
-			error($lang->error_invalidavatarurl);
-		}
-
-		if($width && $height && $mybb->settings['maxavatardims'] != "")
-		{
-			list($maxwidth, $maxheight) = explode("x", $mybb->settings['maxavatardims']);
-			if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
-			{
-				$lang->error_avatartoobig = sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
-				error($lang->error_avatartoobig);
-			}
-		}
-		if($width > 0 && $height > 0)
-		{
-			$avatar_dimensions = intval($width)."|".intval($height);
-		}
-		$updated_avatar = array(
-			"avatar" => $db->escape_string($mybb->input['avatarurl']),
-			"avatardimensions" => $avatar_dimensions,
-			"avatartype" => "remote"
-		);
-		$db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'");
-		remove_avatars($mybb->user['uid']);
-	}
-	$plugins->run_hooks("usercp_do_avatar_end");
-	redirect("usercp.php", $lang->redirect_avatarupdated);
 }
 if($mybb->input['action'] == "notepad")
 {

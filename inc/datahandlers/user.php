@@ -163,7 +163,10 @@ class UserDataHandler extends DataHandler
 		$user['md5password'] = md5($user['password']);
 
 		// Generate our salt
-		$user['salt'] = generate_salt();
+		if(!$user['salt'])
+		{
+			$user['salt'] = generate_salt();
+		}
 
 		// Combine the password and salt
 		$user['saltedpw'] = salt_password($user['md5password'], $user['salt']);
