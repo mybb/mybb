@@ -411,7 +411,7 @@ function show($user)
 			$locationname = $lang->resending_account_activation;
 			break;
 		case "member_lostpw":
-			$locationname = $lang->retrieving_lost_pw;
+			$locationname = $lang->member_lostpw;
 			break;
 		// memberlist.php functions
 		case "memberlist":

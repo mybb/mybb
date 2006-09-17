@@ -459,146 +459,76 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 	
 		startform("settings.php", "", "do_change");
 		
-		foreach($setting_groups as $groupinfo)
+		if(is_array($setting_list[$groupinfo['gid']]))
 		{
-			starttable();
-			$title_lang = "setting_group_".$groupinfo['name'];
-			if($lang->$title_lang)
+			foreach($setting_groups as $groupinfo)
 			{
-				$groupinfo['title'] = $lang->$title_lang;
-			}
-			tableheader($groupinfo['title'], "", 2);
-			
-			foreach($setting_list[$groupinfo['gid']] as $setting)
-			{
-				$options = "";
-				$type = explode("\n", $setting['optionscode']);
-				$type[0] = trim($type[0]);
-				if($type[0] == "text" || $type[0] == "")
+				starttable();
+				$title_lang = "setting_group_".$groupinfo['name'];
+				if($lang->$title_lang)
 				{
-					$setting['value'] = htmlspecialchars_uni($setting['value']);
-					$settingcode = "<input type=\"text\" name=\"upsetting[$setting[sid]]\" value=\"$setting[value]\" size=\"25\" />";
+					$groupinfo['title'] = $lang->$title_lang;
 				}
-				else if($type[0] == "textarea")
+				tableheader($groupinfo['title'], "", 2);
+				
+				foreach($setting_list[$groupinfo['gid']] as $setting)
 				{
-					$setting['value'] = htmlspecialchars_uni($setting['value']);
-					$settingcode = "<textarea name=\"upsetting[$setting[sid]]\" rows=\"6\" cols=\"50\">$setting[value]</textarea>";
-				}
-				else if($type[0] == "yesno")
-				{
-					if($setting['value'] == "yes")
+					$options = "";
+					$type = explode("\n", $setting['optionscode']);
+					$type[0] = trim($type[0]);
+					if($type[0] == "text" || $type[0] == "")
 					{
-						$yeschecked = "checked";
-						$nochecked = "";
+						$setting['value'] = htmlspecialchars_uni($setting['value']);
+						$settingcode = "<input type=\"text\" name=\"upsetting[$setting[sid]]\" value=\"$setting[value]\" size=\"25\" />";
 					}
-					else
+					else if($type[0] == "textarea")
 					{
-						$nochecked = "checked";
-						$yeschecked = "";
+						$setting['value'] = htmlspecialchars_uni($setting['value']);
+						$settingcode = "<textarea name=\"upsetting[$setting[sid]]\" rows=\"6\" cols=\"50\">$setting[value]</textarea>";
 					}
-					$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"yes\" $yeschecked /> $lang->yes <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"no\" $nochecked /> $lang->no";
-				}
-				else if($type[0] == "onoff")
-				{
-					if($setting['value'] == "on")
+					else if($type[0] == "yesno")
 					{
-						$onchecked = "checked";
-						$offchecked = "";
-					}
-					else
-					{
-						$offchecked = "checked";
-						$onchecked = "";
-					}
-					$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"on\" $onchecked /> $lang->on <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"off\" $offchecked /> $lang->off";
-				}
-				elseif($type[0] == "cpstyle")
-				{
-					$dir = @opendir(MYBB_ADMIN_DIR."/styles");
-					while($folder = readdir($dir))
-					{
-						if($file != "." && $file != ".." && @file_exists(MYBB_ADMIN_DIR."/styles/$folder/stylesheet.css"))
+						if($setting['value'] == "yes")
 						{
-							$folders[$folder] = $folder;
-						}
-					}
-					closedir($dir);
-					ksort($folders);
-					foreach($folders as $key => $val)
-					{
-						if($val == $setting['value'])
-						{
-							$sel = "selected";
+							$yeschecked = "checked";
+							$nochecked = "";
 						}
 						else
 						{
-							$sel = "";
+							$nochecked = "checked";
+							$yeschecked = "";
 						}
-						$options .= "<option value=\"$val\" $sel>$val</option>";
+						$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"yes\" $yeschecked /> $lang->yes <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"no\" $nochecked /> $lang->no";
 					}
-					$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
-				}
-				elseif($type[0] == "language")
-				{
-					$languages = $lang->get_languages();
-					foreach($languages as $lname => $language)
+					else if($type[0] == "onoff")
 					{
-						if($setting['value'] == $lname)
+						if($setting['value'] == "on")
 						{
-							$sel = "selected";
-						} 
-            			else 
-            			{
-							$sel = "";
-						}
-						$options .= "<option value=\"$lname\" $sel>$language</option>";
-					}
-					$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
-				}
-				elseif($type[0] == "adminlanguage")
-				{
-					$languages = $lang->get_languages(1);
-					foreach($languages as $lname => $language)
-					{
-						if($setting['value'] == $lname)
-						{
-							$sel = "selected";
-						} 
-            			else 
-            			{
-							$sel = "";
-						}
-						$options .= "<option value=\"$lname\" $sel>$language</option>";
-					}
-					$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
-				}
-				elseif($type[0] == "php")
-				{
-					$setting['optionscode'] = my_substr($setting['optionscode'], 3);
-					eval("\$settingcode = \"".$setting['optionscode']."\";");
-				}
-				else
-				{
-					$type_count = count($type);
-					for($i = 0; $i < $type_count; $i++)
-					{
-						$optionsexp = explode("=", $type[$i]);
-						$lang_string =  "setting_".$setting['name']."_".$optionsexp[0];
-						if($lang->$lang_string)
-						{
-							$lang_string = $lang->$lang_string;
+							$onchecked = "checked";
+							$offchecked = "";
 						}
 						else
 						{
-							$lang_string = $optionsexp[1];
+							$offchecked = "checked";
+							$onchecked = "";
 						}
-						if(!$optionsexp[1])
+						$settingcode = "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"on\" $onchecked /> $lang->on <input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"off\" $offchecked /> $lang->off";
+					}
+					elseif($type[0] == "cpstyle")
+					{
+						$dir = @opendir(MYBB_ADMIN_DIR."/styles");
+						while($folder = readdir($dir))
 						{
-							continue;
+							if($file != "." && $file != ".." && @file_exists(MYBB_ADMIN_DIR."/styles/$folder/stylesheet.css"))
+							{
+								$folders[$folder] = $folder;
+							}
 						}
-						if($type[0] == "select")
+						closedir($dir);
+						ksort($folders);
+						foreach($folders as $key => $val)
 						{
-							if($setting[value] == $optionsexp[0])
+							if($val == $setting['value'])
 							{
 								$sel = "selected";
 							}
@@ -606,58 +536,131 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 							{
 								$sel = "";
 							}
-							$options .= "<option value=\"$optionsexp[0]\" $sel>{$lang_string}</option>";
+							$options .= "<option value=\"$val\" $sel>$val</option>";
 						}
-						else if($type[0] == "radio")
-						{
-							if($setting[value] == $optionsexp[0])
-							{
-								$sel = "checked";
-							}
-							else
-							{
-								$sel = "";
-							}
-							$options .= "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel />&nbsp;{$lang_string}<br />";
-						}
-						else if($type[0] == "checkbox")
-						{
-							if($setting[value] == $optionsexp[0])
-							{
-								$sel = "checked";
-							}
-							else
-							{
-								$sel = "";
-							}
-							$options .= "<input type=\"checkbox\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel />&nbsp;{$lang_string}<br />";
-						}
+						$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
 					}
-					if($type[0] == "select")
+					elseif($type[0] == "language")
 					{
-						$settingcode = "<select name=\"upsetting[$setting[sid]]\">$options</select>";
+						$languages = $lang->get_languages();
+						foreach($languages as $lname => $language)
+						{
+							if($setting['value'] == $lname)
+							{
+								$sel = "selected";
+							} 
+							else 
+							{
+								$sel = "";
+							}
+							$options .= "<option value=\"$lname\" $sel>$language</option>";
+						}
+						$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
+					}
+					elseif($type[0] == "adminlanguage")
+					{
+						$languages = $lang->get_languages(1);
+						foreach($languages as $lname => $language)
+						{
+							if($setting['value'] == $lname)
+							{
+								$sel = "selected";
+							} 
+							else 
+							{
+								$sel = "";
+							}
+							$options .= "<option value=\"$lname\" $sel>$language</option>";
+						}
+						$settingcode = "<select name=\"upsetting[$setting[sid]]\" size=\"4\">$options</select>";
+					}
+					elseif($type[0] == "php")
+					{
+						$setting['optionscode'] = my_substr($setting['optionscode'], 3);
+						eval("\$settingcode = \"".$setting['optionscode']."\";");
 					}
 					else
 					{
-						$settingcode = "$options";
+						$type_count = count($type);
+						for($i = 0; $i < $type_count; $i++)
+						{
+							$optionsexp = explode("=", $type[$i]);
+							$lang_string =  "setting_".$setting['name']."_".$optionsexp[0];
+							if($lang->$lang_string)
+							{
+								$lang_string = $lang->$lang_string;
+							}
+							else
+							{
+								$lang_string = $optionsexp[1];
+							}
+							if(!$optionsexp[1])
+							{
+								continue;
+							}
+							if($type[0] == "select")
+							{
+								if($setting[value] == $optionsexp[0])
+								{
+									$sel = "selected";
+								}
+								else
+								{
+									$sel = "";
+								}
+								$options .= "<option value=\"$optionsexp[0]\" $sel>{$lang_string}</option>";
+							}
+							else if($type[0] == "radio")
+							{
+								if($setting[value] == $optionsexp[0])
+								{
+									$sel = "checked";
+								}
+								else
+								{
+									$sel = "";
+								}
+								$options .= "<input type=\"radio\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel />&nbsp;{$lang_string}<br />";
+							}
+							else if($type[0] == "checkbox")
+							{
+								if($setting[value] == $optionsexp[0])
+								{
+									$sel = "checked";
+								}
+								else
+								{
+									$sel = "";
+								}
+								$options .= "<input type=\"checkbox\" name=\"upsetting[$setting[sid]]\" value=\"$optionsexp[0]\" $sel />&nbsp;{$lang_string}<br />";
+							}
+						}
+						if($type[0] == "select")
+						{
+							$settingcode = "<select name=\"upsetting[$setting[sid]]\">$options</select>";
+						}
+						else
+						{
+							$settingcode = "$options";
+						}
 					}
+					// Check if a custom language string exists for this setting title and description
+					$title_lang = "setting_".$setting['name'];
+					$desc_lang = $title_lang."_desc";
+					if($lang->$title_lang)
+					{
+						$setting['title'] = $lang->$title_lang;
+					}
+					if($lang->$desc_lang)
+					{
+						$setting['description'] = $lang->$desc_lang;
+					}
+					tablesubheader("<span title=\"{$setting['name']}\">{$setting['title']}</span>", "", 2, "left");
+					makelabelcode("<small>{$setting['description']}</small>", $settingcode);
+					$settingcode = "";
 				}
-				// Check if a custom language string exists for this setting title and description
-				$title_lang = "setting_".$setting['name'];
-				$desc_lang = $title_lang."_desc";
-				if($lang->$title_lang)
-				{
-					$setting['title'] = $lang->$title_lang;
-				}
-				if($lang->$desc_lang)
-				{
-					$setting['description'] = $lang->$desc_lang;
-				}
-				tablesubheader("<span title=\"{$setting['name']}\">{$setting['title']}</span>", "", 2, "left");
-				makelabelcode("<small>{$setting['description']}</small>", $settingcode);
-				$settingcode = "";
+				endtable();
 			}
-			endtable();
 		}
 		endform($lang->submit_changes, $lang->reset_button);
 	}
@@ -698,8 +701,8 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 			
 			if($group['description'])
 			{
-        $group['description'] = "<small>\n".$group['description']."\n</small>\n";
-      }
+        		$group['description'] = "<small>\n".$group['description']."\n</small>\n";
+      		}
 			
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
@@ -716,11 +719,11 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 				$options['change'] = $lang->modify_settings;
 			}
 			echo "<td class=\"$bgcolor\" align=\"right\" nowrap=\"nowrap\">\n";
-      startform("settings.php");
-      makehiddencode("gid", $group['gid']);
-      echo makehopper("action", $options);
-      endform();
-      echo "</td>\n";
+			startform("settings.php");
+			makehiddencode("gid", $group['gid']);
+			echo makehopper("action", $options);
+			endform();
+			echo "</td>\n";
 			unset($options);
 			echo "</tr>\n";
 		}

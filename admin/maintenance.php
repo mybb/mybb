@@ -243,8 +243,24 @@ if($mybb->input['action'] == "do_recountpostcounts")
 	$per_page = intval($mybb->input['perpage']);
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
-
+	
+	$query = $db->simple_select(TABLE_PREFIX."forums", "fid", "usepostcounts = 'no'");
+	while($forum = $db->fetch_array($query))
+	{
+		$fids[] = $forum['fid'];
+	}
+	$fids = implode(',', $fids);
+	if($fids)
+	{
+		$fids = " AND FID NOT IN($fids)";
+	}
+	else
+	{
+		$fids = "";
+	}
+	
 	$query = $db->simple_select(TABLE_PREFIX."users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	
 	while($user = $db->fetch_array($query))
 	{
 		$query2 = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS post_count", "uid='{$user['uid']}' AND visible>0");

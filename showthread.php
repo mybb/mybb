@@ -567,25 +567,25 @@ if($mybb->input['action'] == "thread")
 
 		// Build the threaded post display tree.
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE p.tid='$tid'
-			$visible
-			ORDER BY p.dateline
-		");
-		while($post = $db->fetch_array($query))
-		{
-			if(!$postsdone[$post['pid']])
-			{
-				$tree[$post['replyto']][$post['pid']] = $post;
-				if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
-				{
-					$isfirst = 0;
-				}
-				$postsdone[$post['pid']] = 1;
-			}
-		}
+            SELECT u.username, u.username AS userusername, p.pid, p.replyto, p.subject, p.dateline
+            FROM ".TABLE_PREFIX."posts p
+            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+            WHERE p.tid='$tid' 
+            $visible
+            ORDER BY p.dateline
+        ");
+        while($post = $db->fetch_array($query))
+        {
+            if(!$postsdone[$post['pid']])
+            {
+                if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
+                {
+                    $isfirst = 0;
+                }
+                $tree[$post['replyto']][$post['pid']] = $post;
+                $postsdone[$post['pid']] = 1;
+            }
+        } 
 		$threadedbits = buildtree();
 		$posts = build_postbit($showpost);
 		eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");

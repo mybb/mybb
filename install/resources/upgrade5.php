@@ -467,7 +467,7 @@ function upgrade5_lastposts()
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) as num_threads");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) as num_threads", "t.closed NOT LIKE 'moved|%'");
 		$num_threads = $db->fetch_field($query, 'num_threads');
 		$tpp = intval($_POST['tpp']);
 		$start = intval($_POST['start']);
@@ -477,7 +477,7 @@ function upgrade5_lastposts()
 			$end = $num_threads;
 		}
 		echo "<p>Updating {$start} to {$end} of {$num_threads}...</p>";
-		$query = $db->simple_select(TABLE_PREFIX."threads", "tid, firstpost", "", array("order_by" => "tid", "order_dir" => "asc", "limit" => $tpp, "limit_start" => $start));
+		$query = $db->simple_select(TABLE_PREFIX."threads", "tid, firstpost", "t.closed NOT LIKE 'moved|%'", array("order_by" => "tid", "order_dir" => "asc", "limit" => $tpp, "limit_start" => $start));
 		while($thread = $db->fetch_array($query))
 		{
 			update_thread_count($thread['tid']);

@@ -380,6 +380,7 @@ class Moderation
 				{
 					$message .= "[hr]{$post['message']}";
 				}
+				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$post['uid']}'");
 			}
 		}
 		
