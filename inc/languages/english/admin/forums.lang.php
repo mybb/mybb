@@ -73,7 +73,7 @@ $l['moderate_threads'] = "Moderate New Threads";
 $l['moderate_attachments'] = "Moderate New Attachments";
 
 $l['style_options'] = "Style Options";
-$l['style'] = "Style<br /><small>If blank, will use the default forum of the user or forums.</small>";
+$l['style'] = "Style<br /><small>If blank, will use the default style of the user or forums.</small>";
 $l['use_default'] = "Use Default";
 $l['override_style'] = "Override User's Selected Style<br /><small>Do you want to override the user's selected custom style with this style?</small>";
 
