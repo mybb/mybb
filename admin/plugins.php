@@ -35,6 +35,7 @@ $active_plugins = $plugins_cache['active'];
 if($mybb->input['action'] == "activate")
 {
 	$codename = $mybb->input['plugin'];
+	$codename = str_replace(array(".", "/", "\\"), "", $codename);
 	$file = basename($codename.".php");
 	if($mybb->input['activate'])
 	{
