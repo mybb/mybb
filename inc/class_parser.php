@@ -624,8 +624,7 @@ class postParser
 			}
 		}
 
-		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name);
-		$name = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $name); // Fix & but allow unicode		
+		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode		
 		$link = "<a href=\"$fullurl\" target=\"_blank\">$name</a>";
 		return $link;
 	}
