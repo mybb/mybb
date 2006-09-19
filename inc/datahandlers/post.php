@@ -536,7 +536,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(is_moderator($post['fid'], "", $post['uid']) == "yes" && $post['modoptions'])
+			if(is_moderator($post['fid'], "", $post['uid']) == "yes")
 			{
 				// Fetch the thread
 				$thread = get_thread($post['tid']);
@@ -582,7 +582,7 @@ class PostDataHandler extends DataHandler
 				{
 					$db->query("
 						UPDATE ".TABLE_PREFIX."threads
-						SET $newclosed$sep$newstick
+						SET {$newclosed}{$sep}{$newstick}
 						WHERE tid='{$thread['tid']}'
 					");
 				}
