@@ -167,6 +167,7 @@ class postParser
 		{
 			$message = nl2br($message);
 			$message = str_replace("</div><br />", "</div>", $message);
+			$message = preg_replace("#<(/?)p>\s*(<br />?)#", "<$1p>", $message);
 		}
 	
 		$message = my_wordwrap($message);
@@ -473,8 +474,8 @@ class postParser
 		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#si",
 						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
 
-		$replace = array("<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote\n</div><div class=\"quote_body\">$2</div>\n",
-						 "<div class=\"quote_header\">$lang->quote\n</div><div class=\"quote_body\">$1</div>\n");
+		$replace = array("</p>\n<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote\n</div><div class=\"quote_body\">$2</div>\n<p>\n",
+						 "</p>\n<div class=\"quote_header\">$lang->quote\n</div><div class=\"quote_body\">$1</div>\n<p>\n");
 
 		while(preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
 		{
@@ -505,7 +506,7 @@ class postParser
 		global $lang;
 		$code = trim($code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
-		return "<div class=\"code_header\">".$lang->code."\n</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n";
+		return "</p>\n<div class=\"code_header\">".$lang->code."\n</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n<p>\n";
 	}
 
 	/**
@@ -578,13 +579,14 @@ class postParser
 			$code = str_replace("?&gt;</span></code>", "</span></code>", $code);
 		}
 
+		$code = preg_replace("#<span style=\"color: \#([A-Z0-9]{6})\"></span>#", "", $code);
 		$code = str_replace("<code>", "<div dir=\"ltr\"><code>", $code);
 		$code = str_replace("</code>", "</code></div>", $code);
 		$code = preg_replace("# *$#", "", $code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 
 		// Send back the code all nice and pretty
-		return "<div class=\"code_header\">$lang->php_code\n</div><div class=\"code_body\">".$code."</div>\n";
+		return "</p>\n<div class=\"code_header\">$lang->php_code\n</div><div class=\"code_body\">".$code."</div>\n<p>\n";
 	}
 
 	/**
@@ -702,11 +704,11 @@ class postParser
 
 		if($type)
 		{
-			$list = "<ol type=\"$type\">$message</ol>";
+			$list = "</p>\n<ol type=\"$type\">$message</ol>\n<p>";
 		}
 		else
 		{
-			$list = "<ul>$message</ul>";
+			$list = "</p>\n<ul>$message</ul>\n</p>";
 		}
 		$list = preg_replace("#<(ol type=\"$type\"|ul)>\s*</li>#", "<$1>", $list);
 		return $list;

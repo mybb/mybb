@@ -194,6 +194,8 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_email()
 	{
+		global $mybb;
+
 		$user = &$this->data;
 
 		// Check if an email address has actually been entered.

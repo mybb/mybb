@@ -95,22 +95,22 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
  */
 function get_unsearchable_forums($pid="0", $first=1)
 {
-	global $db, $forumcache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
+	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
 	$pid = intval($pid);
-	if(!is_array($forumcache))
+	if(!is_array($forum_cache))
 	{
 		// Get Forums
 		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f ORDER BY f.pid, f.disporder");
 		while($forum = $db->fetch_array($query))
 		{
-			$forumcache[$forum['fid']] = $forum;
+			$forum_cache[$forum['fid']] = $forum;
 		}
 	}
 	if(!is_array($permissioncache))
 	{
 		$permissioncache = forum_permissions();
 	}
-	foreach($forumcache as $fid => $forum)
+	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
 		{
@@ -127,6 +127,18 @@ function get_unsearchable_forums($pid="0", $first=1)
 			if($_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 			{
 				$pwverified = 0;
+			}
+		}
+
+		$parents = explode(",", $forum['parentlist']);
+		if(is_array($parents))
+		{
+			foreach($parents as $parent)
+			{
+				if($forum_cache[$parent]['active'] == "no")
+				{
+					$forum['active'] = "no";
+				}
 			}
 		}
 
@@ -647,8 +659,8 @@ function perform_search_mysql_ft($search)
 		}
 		$datelimit = $now-(86400 * $search['postdate']);
 		$datecut .= "'$datelimit'";
-		$post_datecut = "p.dateline $datecut";
-		$thread_datecut = "t.dateline $datecut";
+		$post_datecut = " AND p.dateline $datecut";
+		$thread_datecut = " AND t.dateline $datecut";
 	}
 
 	$forumin = "";

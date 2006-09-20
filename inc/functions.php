@@ -513,7 +513,7 @@ function redirect($url, $message="", $title="")
 	if($mybb->settings['redirects'] == "on" && $mybb->user['showredirect'] != "no")
 	{
 		$url = str_replace("&amp;", "&", $url);
-		$url = str_replace("&", "&amp;", $url);
+		$url = htmlspecialchars($url);
 		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
 		output_page($redirectpage);
 	}
@@ -2023,7 +2023,7 @@ function add_breadcrumb($name, $url="")
 	global $navbits;
 
 	$navsize = count($navbits);
-	$navbits[$navsize]['name'] = $name;
+	$navbits[$navsize]['name'] = htmlspecialchars_uni($name);
 	$navbits[$navsize]['url'] = $url;
 }
 
