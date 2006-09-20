@@ -75,6 +75,13 @@ class databaseEngine
 	var $table_type = "myisam";
 
 	/**
+	 * The table prefix used for simple select, update, insert and delete queries
+	 *
+	 * @var string
+	 */
+	var $table_prefix;
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param string The database hostname.
@@ -365,7 +372,7 @@ class databaseEngine
 	{
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
-		$query = $this->query("SHOW TABLES LIKE '".TABLE_PREFIX."$table'");
+		$query = $this->query("SHOW TABLES LIKE '{$this->table_prefix}$table'");
 		$exists = $this->num_rows($query);
 		$this->error_reporting = $err;
 		if($exists > 0)
@@ -389,7 +396,7 @@ class databaseEngine
 	{
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
-		$query = $this->query("SHOW COLUMNS FROM ".TABLE_PREFIX."$table LIKE '$field'");
+		$query = $this->query("SHOW COLUMNS FROM {$this->table_prefix}$table LIKE '$field'");
 		$exists = $this->num_rows($query);
 		$this->error_reporting = $err;
 		if($exists > 0)
@@ -511,7 +518,7 @@ class databaseEngine
 		{
 			$query .= " LIMIT $limit";
 		}
-		return $this->query("UPDATE ".TABLE_PREFIX."$table SET $query");
+		return $this->query("UPDATE {$this->table_prefix}$table SET $query");
 	}
 
 	/**
@@ -533,7 +540,7 @@ class databaseEngine
 		{
 			$query .= " LIMIT $limit";
 		}
-		return $this->query("DELETE FROM ".TABLE_PREFIX."$table $query");
+		return $this->query("DELETE FROM {$this->table_prefix}$table $query");
 	}
 
 	/**
@@ -656,7 +663,7 @@ class databaseEngine
 	function supports_fulltext($table)
 	{
 		$version = $this->get_version();
-		$query = $this->query("SHOW TABLE STATUS LIKE '".TABLE_PREFIX."$table'");
+		$query = $this->query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
 		$status = $this->fetch_array($query);
 		$table_type = my_strtoupper($status['Engine']);
 		if($version >= '3.23.23' && $table_type == 'MYISAM')
@@ -692,7 +699,7 @@ class databaseEngine
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
-		$this->query("ALTER TABLE ".TABLE_PREFIX."$table ADD FULLTEXT $name ($column)");
+		$this->query("ALTER TABLE {$this->table_prefix}$table ADD FULLTEXT $name ($column)");
 	}
 
 	/**
@@ -703,7 +710,17 @@ class databaseEngine
 	 */
 	function drop_index($table, $name)
 	{
-		$this->query("ALTER TABLE ".TABLE_PREFIX."$table DROP INDEX $name");
+		$this->query("ALTER TABLE {$this->table_prefix}$table DROP INDEX $name");
+	}
+
+	/**
+	 * Sets the table prefix used by the simple select, insert, update and delete functions
+	 *
+	 * @param string The new table prefix
+	 */
+	function set_table_prefix($prefix)
+	{
+		$this->table_prefix = $prefix;
 	}
 }
 ?>

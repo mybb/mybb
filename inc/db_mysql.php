@@ -75,6 +75,13 @@ class databaseEngine
 	var $table_type = "myisam";
 
 	/**
+	 * The table prefix used for simple select, update, insert and delete queries
+	 *
+	 * @var string
+	 */
+	var $table_prefix;
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param string The database hostname.
@@ -370,7 +377,7 @@ class databaseEngine
 		$this->error_reporting = 0;
 		$query = $this->query("
 			SHOW TABLES 
-			LIKE '".TABLE_PREFIX."$table'
+			LIKE '{$this->table_prefix}$table'
 		");
 		$exists = $this->num_rows($query);
 		$this->error_reporting = $err;
@@ -397,7 +404,7 @@ class databaseEngine
 		$this->error_reporting = 0;
 		$query = $this->query("
 			SHOW COLUMNS 
-			FROM ".TABLE_PREFIX."$table 
+			FROM {$this->table_prefix}$table 
 			LIKE '$field'
 		");
 		$exists = $this->num_rows($query);
@@ -525,7 +532,7 @@ class databaseEngine
 			$query .= " LIMIT $limit";
 		}
 		return $this->query("
-			UPDATE ".TABLE_PREFIX."$table 
+			UPDATE {$this->table_prefix}$table 
 			SET $query
 		");
 	}
@@ -551,7 +558,7 @@ class databaseEngine
 		}
 		return $this->query("
 			DELETE 
-			FROM ".TABLE_PREFIX."$table 
+			FROM {$this->table_prefix}$table 
 			$query
 		");
 	}
@@ -683,7 +690,7 @@ class databaseEngine
 	function supports_fulltext($table)
 	{
 		$version = $this->get_version();
-		$query = $this->query("SHOW TABLE STATUS LIKE '".TABLE_PREFIX."$table'");
+		$query = $this->query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
 		$status = $this->fetch_array($query);
 		if($status['Engine'])
 		{
@@ -727,7 +734,7 @@ class databaseEngine
 	function create_fulltext_index($table, $column, $name="")
 	{
 		$this->query("
-			ALTER TABLE ".TABLE_PREFIX."$table 
+			ALTER TABLE {$this->table_prefix}$table 
 			ADD FULLTEXT $name ($column)
 		");
 	}
@@ -741,9 +748,19 @@ class databaseEngine
 	function drop_index($table, $name)
 	{
 		$this->query("
-			ALTER TABLE ".TABLE_PREFIX."$table 
+			ALTER TABLE {$this->table_prefix}$table 
 			DROP INDEX $name
 		");
+	}
+	
+	/**
+	 * Sets the table prefix used by the simple select, insert, update and delete functions
+	 *
+	 * @param string The new table prefix
+	 */
+	function set_table_prefix($prefix)
+	{
+		$this->table_prefix = $prefix;
 	}
 }
 ?>

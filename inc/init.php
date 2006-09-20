@@ -79,6 +79,7 @@ require_once MYBB_ROOT."inc/datahandler.php";
 define("TABLE_PREFIX", $config['table_prefix']);
 $db->connect($config['hostname'], $config['username'], $config['password']);
 $db->select_db($config['database']);
+$db->set_table_prefix(TABLE_PREFIX);
 
 // Language initialisation
 require_once MYBB_ROOT."inc/class_language.php";
