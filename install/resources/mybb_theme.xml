@@ -6756,7 +6756,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="reputation_vote" version="120"><![CDATA[<tr>
 	<td class="trow1 {$status_class}">
 		{$reputation_vote['username']} <span class="smalltext">({$reputation_vote['user_reputation']}) - {$last_updated} {$delete_link}<br /><br /></span>
-		<strong class="{$vote_type_class}">{$vote_type}:</strong> {$reputation_vote['comments']}
+		<strong class="{$vote_type_class}">{$vote_type} {$vote_reputation}:</strong> {$reputation_vote['comments']}
 	</td>
 </tr>]]></template>
 		<template name="reputation_addlink" version="120"><![CDATA[<div class="float_right" style="padding-bottom: 4px;"><a href="javascript:MyBB.reputation({$user['uid']});"><img src="{$theme['imglangdir']}/rateuser.gif" alt="{$lang->rate_user}" /></a></div>]]></template>

@@ -455,6 +455,15 @@ if(!$mybb->input['action'])
 		$reputation_vote['username'] = format_name($reputation_vote['username'], $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
 		$reputation_vote['username'] = build_profile_link($reputation_vote['username'], $reputation_vote['uid']);
 
+		if($reptuation_vote['reputation'] != 0)
+		{
+			if(substr($reputation_vote['reputation'], 0, 1 != "-"))
+			{
+				$vote_reputation = "+{$reputation_vote['reputation']}";
+			}
+		}
+		$vote_reputation = "({$vote_reputation})";
+
 		// This is a negative reputation
 		if($reputation_vote['reputation'] < 0)
 		{
