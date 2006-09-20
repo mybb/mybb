@@ -24,7 +24,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 	global $db;
 	if($autocreate != 0)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."templates", "*", "title='$title' AND sid='-2'");
+		$query = $db->simple_select("templates", "*", "title='$title' AND sid='-2'");
 		$master = $db->fetch_array($query);
 		$oldmaster = $master['template'];
 		$master['template'] = preg_replace($find, $replace, $master['template']);
@@ -58,7 +58,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 				"template" => $master['template'],
 				"sid" => $template['sid']
 			);
-			$db->insert_query(TABLE_PREFIX."templates", $newtemp);
+			$db->insert_query("templates", $newtemp);
 		}
 	}
 	if(is_array($update))
@@ -66,7 +66,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 		foreach($update as $template)
 		{
 			$updatetemp = array("template" => $db->escape_string($template['template']));
-			$db->update_query(TABLE_PREFIX."templates", $updatetemp, "tid='".$template['tid']."'");
+			$db->update_query("templates", $updatetemp, "tid='".$template['tid']."'");
 		}
 	}
 	return true;

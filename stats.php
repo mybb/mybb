@@ -35,7 +35,7 @@ $repliesperthread = my_number_format(round((($stats['numposts'] - $stats['numthr
 $postspermember = my_number_format(round(($stats['numposts'] / $stats['numusers']), 2));
 
 // Get number of days since board start (might need improvement)
-$query = $db->simple_select(TABLE_PREFIX."users", "regdate", "", array('order_by' => 'regdate', 'limit' => 1));
+$query = $db->simple_select("users", "regdate", "", array('order_by' => 'regdate', 'limit' => 1));
 $result = $db->fetch_array($query);
 $days = (time() - $result['regdate']) / 86400;
 if($days < 1)
@@ -56,7 +56,7 @@ if($unviewableforums)
 }
 
 // Most replied-to threads
-$query = $db->simple_select(TABLE_PREFIX."threads", "tid, subject, replies", $fidnot, array('order_by' => 'replies', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
+$query = $db->simple_select("threads", "tid, subject, replies", $fidnot, array('order_by' => 'replies', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
 while($thread = $db->fetch_array($query))
 {
 	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
@@ -66,7 +66,7 @@ while($thread = $db->fetch_array($query))
 }
 
 // Most viewed threads
-$query = $db->simple_select(TABLE_PREFIX."threads", "tid, subject, views", $fidnot, array('order_by' => 'views', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
+$query = $db->simple_select("threads", "tid, subject, views", $fidnot, array('order_by' => 'views', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
 while($thread = $db->fetch_array($query))
 {
 	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
@@ -80,7 +80,7 @@ if(!empty($fidnot))
 {
 	$fidnot .= " AND";
 }
-$query = $db->simple_select(TABLE_PREFIX."forums", "fid, name, threads, posts", "$fidnot type='f'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
+$query = $db->simple_select("forums", "fid, name, threads, posts", "$fidnot type='f'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
 $forum = $db->fetch_array($query);
 if(!$forum['posts'])
 {
@@ -90,7 +90,7 @@ if(!$forum['posts'])
 }
 else
 {
-	$topforum = "<a href=\"forumdisplay.php?fid=$forum[fid]\">$forum[name]</a>";
+	$topforum = "<a href=\"forumdisplay.php?fid={$forum['fid']}\">{$forum['name']}</a>";
 	$topforumposts = $forum['posts'];
 	$topforumthreads = $forum['threads'];
 }
@@ -125,7 +125,7 @@ else
 }
 
 // What percent of members have posted?
-$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS count", "postnum > 0");
+$query = $db->simple_select("users", "COUNT(*) AS count", "postnum > 0");
 $posters = $db->fetch_field($query, "count");
 $havepostedpercent = my_number_format(round((($posters / $stats['numusers']) * 100), 2)) . "%";
 

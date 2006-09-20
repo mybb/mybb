@@ -317,7 +317,7 @@ function makeselectcode($title, $name, $table, $tableid, $optiondisp, $selected=
 		);
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."$table", "$tableid, $optiondisp", $condition, $options);
+	$query = $db->simple_select("$table", "$tableid, $optiondisp", $condition, $options);
 	if($blank && !$selected)
 	{
 		echo "<option value=\"\" selected> </option>";
@@ -390,7 +390,7 @@ function makedateselect($title, $name, $day, $month, $year)
 	$mname = $name."[month]";
 	$yname = $name."[year]";
 
-	for($i = 1; $i <= 31; $i++)
+	for($i = 1; $i <= 31; ++$i)
 	{
 		if($day == $i)
 		{
@@ -721,7 +721,7 @@ function makecssinputedit($css)
 		}
 		else
 		{
-			$c++;
+			++$c;
 		}
 		$langvar = "form_elements_".$element;
 		$name = $lang->$langvar;
@@ -981,8 +981,8 @@ function makehopper($name, $values, $onchange="")
 	if($onchange)
 	{
 	  $buttononchange = " onclick=\"{$onchange} this.form.submit(); return false;\"";
-    $onchange .= " ";
-  }
+      $onchange .= " ";
+  	}
 	return "<select name=\"$name\" onchange=\"{$onchange}this.form.submit();\">\n$options</select>\n&nbsp;\n<input type=\"submit\" value=\"Go\"$buttononchange />\n";
 }
 
@@ -1007,7 +1007,7 @@ function forumselect($name, $selected="",$fid="0",$depth="", $shownone="1", $ext
 		$options = array(
 			'order_by' => 'disporder'
 		);
-		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "", $options);
+		$query = $db->simple_select("forums", "name, fid, pid", "", $options);
 		while($forum = $db->fetch_array($query))
 		{
 			$cforumcache['pid'][$forum['pid']][$forum['fid']] = $forum;
@@ -1090,7 +1090,7 @@ function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra=""
 		$options = array(
 			'order_by' => 'disporder'
 		);
-		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "", $options);
+		$query = $db->simple_select("forums", "name, fid, pid", "", $options);
 		while($forum = $db->fetch_array($query))
 		{
 			$cforumcache['pid'][$forum['pid']][$forum['fid']] = $forum;
@@ -1103,6 +1103,10 @@ function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra=""
 		if($extra)
 		{
 			$selected1 = '';
+			if(!is_array($selected))
+			{
+				$selected = array($selected);
+			}
 			if(in_array(-1, $selected))
 			{
 				$selected1 = ' checked="checked"';
@@ -1173,7 +1177,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 		);
 
 		// A group only
-		$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "(uid='$gid' OR uid='0') AND permsset != ''", $options);
+		$query = $db->simple_select("adminoptions", "*", "(uid='$gid' OR uid='0') AND permsset != ''", $options);
 		$perms = $db->fetch_array($query);
 		return $perms;
 	}
@@ -1184,7 +1188,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 			"order_dir" => "DESC"
 		);
 		// A user and/or group
-		$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "(uid='$uid' OR uid='0' OR uid='$gid') AND permsset != ''", $options);
+		$query = $db->simple_select("adminoptions", "*", "(uid='$uid' OR uid='0' OR uid='$gid') AND permsset != ''", $options);
 
 		while($perm = $db->fetch_array($query))
 		{
@@ -1248,7 +1252,7 @@ function logadmin()
 		"ipaddress" => $db->escape_string(get_ip())
 	);
 
-	$db->insert_query(TABLE_PREFIX."adminlog", $insertquery);
+	$db->insert_query("adminlog", $insertquery);
 }
 
 function buildacpnav()
@@ -1332,9 +1336,9 @@ function quickpermissions($fid="", $pid="")
 	global $db, $cache, $lang;
 	if($fid)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
+		$query = $db->simple_select("forums", "*", "fid='$fid'");
 		$forum = $db->fetch_array($query);
-		$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "*", "fid='$fid'");
+		$query = $db->simple_select("forumpermissions", "*", "fid='$fid'");
 		while($fperm = $db->fetch_array($query))
 		{
 			$fperms[$fperm[gid]] = $fperm;
@@ -1410,7 +1414,7 @@ function getElemRefs(id) {
 		"order_by" => "title"
 	);
 
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "", $options);
+	$query = $db->simple_select("usergroups", "*", "", $options);
 	while($usergroup = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
@@ -1506,12 +1510,12 @@ function savequickperms($fid)
 {
 	global $db, $inherit, $canview, $canpostthreads, $canpostreplies, $canpostpolls, $canpostattachments, $cache;
 
-	$query = $db->simple_select(TABLE_PREFIX."usergroups");
+	$query = $db->simple_select("usergroups");
 
 	while($usergroup = $db->fetch_array($query))
 	{
 		// Delete existing permissions
-		$db->delete_query(TABLE_PREFIX."forumpermissions", "fid='$fid' AND gid='$usergroup[gid]'");
+		$db->delete_query("forumpermissions", "fid='$fid' AND gid='$usergroup[gid]'");
 
 		// Only insert the new ones if we're using custom permissions
 		if($inherit[$usergroup['gid']] != "yes")
@@ -1583,7 +1587,7 @@ function savequickperms($fid)
 				"canvotepolls" => $pview,
 				"cansearch" => $pview
 			);
-			$db->insert_query(TABLE_PREFIX."forumpermissions", $insertquery);
+			$db->insert_query("forumpermissions", $insertquery);
 		}
 	}
 	$cache->updateforumpermissions();
@@ -1685,7 +1689,7 @@ function make_theme($themebits="", $css="", $pid=0, $isnew=0)
 	global $db, $mybb, $themebitlist, $cssselectors, $revert_themebits;
 	if(!$css || !$themebits || $isnew)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."themes", "*", "tid='$pid'");
+		$query = $db->simple_select("themes", "*", "tid='$pid'");
 		$parent = $db->fetch_array($query);
 		if(!$themebits || $isnew)
 		{
@@ -1749,7 +1753,7 @@ function get_parent_theme_bits($pid)
 {
 	global $db, $themebits;
 
-	$query = $db->simple_select(TABLE_PREFIX."themes", "themebits", "tid='$pid'");
+	$query = $db->simple_select("themes", "themebits", "tid='$pid'");
 	$parent = $db->fetch_array($query);
 	$bits = unserialize($parent['themebits']);
 	foreach($themebits as $themebit)
@@ -1867,7 +1871,7 @@ function makethemebitedit($title, $name)
 			"order_dir" => "ASC"
 		);
 
-		$query = $db->simple_select(TABLE_PREFIX."templatesets", "*", "", $options);
+		$query = $db->simple_select("templatesets", "*", "", $options);
 
 		while($templateset = $db->fetch_array($query))
 		{
@@ -1918,7 +1922,7 @@ function cache_themes()
 		"order_by" => "pid, name"
 	);
 
-	$query = $db->simple_select(TABLE_PREFIX."themes", "*", "", $options);
+	$query = $db->simple_select("themes", "*", "", $options);
 
 	while($theme = $db->fetch_array($query))
 	{
@@ -2096,7 +2100,7 @@ function update_theme($tid, $pid="", $themebits="", $css="", $child=0, $isnew=0)
 	$theme['themebits'] = $db->escape_string(serialize($theme['themebits']));
 	$theme['cssbits'] = $db->escape_string(serialize($theme['cssbits']));
 	$theme['extracss'] = $db->escape_string($theme['extracss']);
-	$db->update_query(TABLE_PREFIX."themes", $theme, "tid='$tid'");
+	$db->update_query("themes", $theme, "tid='$tid'");
 
 	// Cache the CSS if we're supposed to
 	update_css_file($tid);
@@ -2153,7 +2157,7 @@ function build_date_dropdown($id, $options=array())
 	{
 		$dropdown .= "<option value=\"0\"></option>\n";
 	}
-	for($d = 1; $d <= 31; $d++)
+	for($d = 1; $d <= 31; ++$d)
 	{
 		if($d == $options['selected_day'])
 		{
@@ -2172,7 +2176,7 @@ function build_date_dropdown($id, $options=array())
 	{
 		$dropdown .= "<option value=\"0\"></option>\n";
 	}
-	for($m = 1; $m <= 12; $m++)
+	for($m = 1; $m <= 12; ++$m)
 	{
 		$month_lang = 'month_'.$m;
 		$month = $lang->$month_lang;
@@ -2195,14 +2199,14 @@ function build_date_dropdown($id, $options=array())
 	// Is there a specified limit for showing the years?
 	if(array_key_exists('years_back', $options) && array_key_exists('years_ahead', $options))
 	{
-		for($y = $this_year-$options['years_back']; $y <= ($this_year+$options['years_ahead']); $y++)
+		for($y = $this_year-$options['years_back']; $y <= ($this_year+$options['years_ahead']); ++$y)
 	    {
 	        $years[$y] = $y;
 		}
 	}
 	else
 	{
-		for($y = $this_year-5; $y <= ($this_year+5); $y++)
+		for($y = $this_year-5; $y <= ($this_year+5); ++$y)
 	    {
 	        $years[$y] = $y;
 		}
@@ -2237,7 +2241,7 @@ function build_date_dropdown($id, $options=array())
 		{
 			$dropdown .= "<option value=\"0\"></option>\n";
 		}
-		for($h = 0; $h <= 23; $h++)
+		for($h = 0; $h <= 23; ++$h)
 		{
 			if($h == $options['selected_hour'])
 			{
@@ -2256,7 +2260,7 @@ function build_date_dropdown($id, $options=array())
 		{
 			$dropdown .= "<option value=\"0\"></option>\n";
 		}
-		for($min = 0; $min <= 59; $min++)
+		for($min = 0; $min <= 59; ++$min)
 		{
 			if($min == $options['selected_minute'])
 			{
@@ -2282,7 +2286,7 @@ function update_css_file($tid)
 	//If the CSS storage medium is in a file, then create a new css file
 	if($mybb->settings['cssmedium'] == 'file')
 	{
-		$query = $db->simple_select(TABLE_PREFIX.'themes', 'tid,name,css', "tid='".intval($tid)."'");
+		$query = $db->simple_select('themes', 'tid,name,css', "tid='".intval($tid)."'");
 		$theme = $db->fetch_array($query);
 
 		$theme['css'] = "/**\n * CSS for theme \"{$theme['name']}\" (tid {$theme['tid']})\n * Cached:".my_date("r")."\n *\n * DO NOT EDIT THIS FILE\n *\n */\n\n".$theme['css'];
@@ -2297,7 +2301,7 @@ function update_css_file($tid)
 			$update_theme = array(
 				"csscached" => time()
 			);
-			$db->update_query(TABLE_PREFIX."themes", $update_theme, "tid='{$theme['tid']}'");
+			$db->update_query("themes", $update_theme, "tid='{$theme['tid']}'");
 			return true;
 		}
 	}
@@ -2305,7 +2309,7 @@ function update_css_file($tid)
 	$update_theme = array(
 		"csscached" => 0
 	);
-	$db->update_query(TABLE_PREFIX."themes", $update_theme, "tid='{$theme['tid']}'");
+	$db->update_query("themes", $update_theme, "tid='{$theme['tid']}'");
 	return false;
 }
 
@@ -2340,7 +2344,7 @@ function make_usergroup_checkbox_code($name, $checked_groups='', $where='')
 		'order_by' => 'title',
 		'order_dir' => 'ASC'
 		);
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title", $where, $options);
+	$query = $db->simple_select("usergroups", "gid, title", $where, $options);
 	while($usergroup = $db->fetch_array($query))
 	{
 		$checked = '';
@@ -2389,7 +2393,7 @@ function makeparentlist($fid, $navsep=",")
 		$options = array(
 			"order_by" => "disporder, pid"
 		);
-		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "", $options);
+		$query = $db->simple_select("forums", "name, fid, pid", "", $options);
 		while($forum = $db->fetch_array($query))
 		{
 			$pforumcache[$forum[fid]][$forum[pid]] = $forum;

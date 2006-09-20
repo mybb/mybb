@@ -73,6 +73,7 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 function archive_navigation()
 {
 	global $navbits, $mybb, $lang;
+
 	$navsep = " &gt; ";
 	if(is_array($navbits))
 	{
@@ -120,7 +121,7 @@ function archive_multipage($count, $perpage, $page, $url)
 		$pages = $count / $perpage;
 		$pages = ceil($pages);
 
-		for($i=1;$i<=$pages;$i++)
+		for($i = 1; $i <= $pages; ++$i)
 		{
 			if($i == $page)
 			{

@@ -1159,7 +1159,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Please select the type of search system you wish to use. You can either chose between "Standard", or "Full Text" (depending on your database). Fulltext searching is more powerful than the standard MyBB searching and quicker too.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[php
-<select name=\"upsetting[{$setting['sid']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext(TABLE_PREFIX."threads") && $db->supports_fulltext_boolean(TABLE_PREFIX."posts")?"<option value=\"fulltext\"".($setting['value']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>]]></optionscode>
+<select name=\"upsetting[{$setting['sid']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting['value']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>]]></optionscode>
 			<settingvalue><![CDATA[standard]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>

@@ -333,7 +333,7 @@ if($mybb->input['action'] == "edit")
 				// Make each editing row
 				foreach($editvars as $key => $value)
 				{
-					if(strtolower($langinfo['charset']) == "utf-8")
+					if(my_strtolower($langinfo['charset']) == "utf-8")
 					{
 						$withvars[$key] = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $withvars[$key]);
 						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $value);
@@ -367,7 +367,7 @@ if($mybb->input['action'] == "edit")
 				// Make each editing row
 				foreach($editvars as $key => $value)
 				{
-					if(strtolower($langinfo['charset']) == "utf-8")
+					if(my_strtolower($langinfo['charset']) == "utf-8")
 					{
 						$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $value);
 					}
@@ -386,7 +386,7 @@ if($mybb->input['action'] == "edit")
 		{
 			tablesubheader($lang->new_variables, "", 3);
 			// Make rows for creating new variables
-			for($i = 0; $i < 5; $i++)
+			for($i = 0; $i < 5; ++$i)
 			{
 				$bgcolor = getaltbg();
 				echo "<tr>\n";

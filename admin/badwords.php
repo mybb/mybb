@@ -42,7 +42,7 @@ if($mybb->input['action'] == "do_add")
 		"replacement" => $db->escape_string($mybb->input['replacement']),
 	);
 	$plugins->run_hooks("admin_badwords_do_add");
-	$db->insert_query(TABLE_PREFIX."badwords", $sqlarray);
+	$db->insert_query("badwords", $sqlarray);
 	$cache->updatebadwords();
 	cpredirect("badwords.php?".SID, $lang->badword_added);
 }
@@ -55,7 +55,7 @@ if($mybb->input['action'] == "do_edit")
 		"replacement" => $db->escape_string($mybb->input['replacement']),
 	);
 	$plugins->run_hooks("admin_badwords_do_edit");
-	$db->update_query(TABLE_PREFIX."badwords", $sqlarray, "bid='".$sqlarray['bid']."'");
+	$db->update_query("badwords", $sqlarray, "bid='".$sqlarray['bid']."'");
 	$cache->updatebadwords();
 	cpredirect("badwords.php?".SID, $lang->badword_edited);
 }
@@ -66,12 +66,12 @@ if($mybb->input['action'] == "edit")
 	if($mybb->input['delete'])
 	{
 		$plugins->run_hooks("admin_badwords_delete");
-		$db->delete_query(TABLE_PREFIX."badwords", "bid='$bid'");
+		$db->delete_query("badwords", "bid='$bid'");
 		cpredirect("badwords.php?".SID, $lang->badword_deleted);
 		$cache->updatebadwords();
 		exit;
 	}
-	$query = $db->simple_select(TABLE_PREFIX."badwords", "*", "bid='$bid'");
+	$query = $db->simple_select("badwords", "*", "bid='$bid'");
 	$badword = $db->fetch_array($query);
 	$plugins->run_hooks("admin_badwords_edit");
 	cpheader();
@@ -118,7 +118,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		"order_by" => "badword",
 		"order_dir" => "ASC"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."badwords", "*", "", $options);
+	$query = $db->simple_select("badwords", "*", "", $options);
 	while($badword = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();

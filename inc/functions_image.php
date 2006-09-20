@@ -119,7 +119,7 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 		return false;
 	}
 
-	$limit = preg_match("#^([0-9]+)\s?([kmg])b?$#i", trim(strtolower($memory_limit)), $matches);
+	$limit = preg_match("#^([0-9]+)\s?([kmg])b?$#i", trim(my_strtolower($memory_limit)), $matches);
 	$memory_limit = 0;
 	if($matches[1] && $matches[2])
 	{

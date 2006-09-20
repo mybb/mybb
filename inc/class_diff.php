@@ -254,7 +254,7 @@ class Text_MappedDiff extends Text_Diff {
         parent::Text_Diff($mapped_from_lines, $mapped_to_lines);
 
         $xi = $yi = 0;
-        for ($i = 0; $i < count($this->_edits); $i++) 
+        for ($i = 0; $i < count($this->_edits); ++$i) 
 		{
             $orig = &$this->_edits[$i]->orig;
             if (is_array($orig)) 
@@ -365,7 +365,7 @@ class Text_Diff_Engine_native {
         unset($this->lcs);
 
         // Skip leading common lines.
-        for ($skip = 0; $skip < $n_from && $skip < $n_to; $skip++) 
+        for ($skip = 0; $skip < $n_from && $skip < $n_to; ++$skip) 
 		{
             if ($from_lines[$skip] != $to_lines[$skip]) 
 			{
@@ -376,7 +376,7 @@ class Text_Diff_Engine_native {
 
         // Skip trailing common lines.
         $xi = $n_from; $yi = $n_to;
-        for ($endskip = 0; --$xi > $skip && --$yi > $skip; $endskip++)
+        for ($endskip = 0; --$xi > $skip && --$yi > $skip; ++$endskip)
 		{
             if ($from_lines[$xi] != $to_lines[$yi]) 
 			{
@@ -386,11 +386,11 @@ class Text_Diff_Engine_native {
         }
 
         // Ignore lines which do not exist in both files.
-        for ($xi = $skip; $xi < $n_from - $endskip; $xi++) 
+        for ($xi = $skip; $xi < $n_from - $endskip; ++$xi) 
 		{
             $xhash[$from_lines[$xi]] = 1;
         }
-        for ($yi = $skip; $yi < $n_to - $endskip; $yi++) 
+        for ($yi = $skip; $yi < $n_to - $endskip; ++$yi) 
 		{
             $line = $to_lines[$yi];
             if (($this->ychanged[$yi] = empty($xhash[$line]))) 
@@ -401,7 +401,7 @@ class Text_Diff_Engine_native {
             $this->yv[] = $line;
             $this->yind[] = $yi;
         }
-        for ($xi = $skip; $xi < $n_from - $endskip; $xi++) 
+        for ($xi = $skip; $xi < $n_from - $endskip; ++$xi) 
 		{
             $line = $from_lines[$xi];
             if (($this->xchanged[$xi] = empty($yhash[$line]))) 
@@ -431,7 +431,7 @@ class Text_Diff_Engine_native {
             $copy = array();
             while ($xi < $n_from && $yi < $n_to && !$this->xchanged[$xi] && !$this->ychanged[$yi]) 
 			{
-                $copy[] = $from_lines[$xi++];
+                $copy[] = $from_lines[++$xi];
                 ++$yi;
             }
             if ($copy) 
@@ -443,13 +443,13 @@ class Text_Diff_Engine_native {
             $delete = array();
             while ($xi < $n_from && $this->xchanged[$xi]) 
 			{
-                $delete[] = $from_lines[$xi++];
+                $delete[] = $from_lines[++$xi];
             }
 
             $add = array();
             while ($yi < $n_to && $this->ychanged[$yi]) 
 			{
-                $add[] = $to_lines[$yi++];
+                $add[] = $to_lines[++$yi];
             }
 
             if ($delete && $add) 
@@ -519,18 +519,18 @@ class Text_Diff_Engine_native {
 
         $numer = $xlim - $xoff + $nchunks - 1;
         $x = $xoff;
-        for ($chunk = 0; $chunk < $nchunks; $chunk++) 
+        for ($chunk = 0; $chunk < $nchunks; ++$chunk) 
 		{
             if ($chunk > 0) 
 			{
-                for ($i = 0; $i <= $this->lcs; $i++) 
+                for ($i = 0; $i <= $this->lcs; ++$i) 
 				{
                     $ymids[$i][$chunk - 1] = $this->seq[$i];
                 }
             }
 
             $x1 = $xoff + (int)(($numer + ($xlim-$xoff)*$chunk) / $nchunks);
-            for (; $x < $x1; $x++) 
+            for (; $x < $x1; ++$x) 
 			{
                 $line = $flip ? $this->yv[$x] : $this->xv[$x];
                 if (empty($ymatches[$line])) 
@@ -572,7 +572,7 @@ class Text_Diff_Engine_native {
 
         $seps[] = $flip ? array($yoff, $xoff) : array($xoff, $yoff);
         $ymid = $ymids[$this->lcs];
-        for ($n = 0; $n < $nchunks - 1; $n++) 
+        for ($n = 0; $n < $nchunks - 1; ++$n) 
 		{
             $x1 = $xoff + (int)(($numer + ($xlim - $xoff) * $n) / $nchunks);
             $y1 = $ymid[$n] + 1;
@@ -662,11 +662,11 @@ class Text_Diff_Engine_native {
              * changed. */
             while ($yoff < $ylim) 
 			{
-                $this->ychanged[$this->yind[$yoff++]] = 1;
+                $this->ychanged[$this->yind[++$yoff]] = 1;
             }
             while ($xoff < $xlim) 
 			{
-                $this->xchanged[$this->xind[$xoff++]] = 1;
+                $this->xchanged[$this->xind[++$xoff]] = 1;
             }
         }
 		else 
@@ -718,16 +718,16 @@ class Text_Diff_Engine_native {
              * $other_changed[$j] == false. */
             while ($j < $other_len && $other_changed[$j]) 
 			{
-                $j++;
+                ++$j;
             }
 
             while ($i < $len && ! $changed[$i]) 
 			{
                 assert('$j < $other_len && ! $other_changed[$j]');
-                $i++; $j++;
+                ++$i; ++$j;
                 while ($j < $other_len && $other_changed[$j]) 
 				{
-                    $j++;
+                    ++$j;
                 }
             }
 
@@ -781,21 +781,21 @@ class Text_Diff_Engine_native {
                  * forward as far as possible. */
                 while ($i < $len && $lines[$start] == $lines[$i]) 
 				{
-                    $changed[$start++] = false;
-                    $changed[$i++] = 1;
+                    $changed[++$start] = false;
+                    $changed[++$i] = 1;
                     while ($i < $len && $changed[$i]) 
 					{
-                        $i++;
+                        ++$i;
                     }
 
                     assert('$j < $other_len && ! $other_changed[$j]');
-                    $j++;
+                    ++$j;
                     if ($j < $other_len && $other_changed[$j]) 
 					{
                         $corresponding = $i;
                         while ($j < $other_len && $other_changed[$j]) 
 						{
-                            $j++;
+                            ++$j;
                         }
                     }
                 }
@@ -1068,7 +1068,7 @@ class Text_Diff_Renderer {
 
         foreach ($edits as $edit) 
 		{
-            switch (strtolower(get_class($edit))) 
+            switch (my_strtolower(get_class($edit))) 
 			{
             	case 'text_diff_op_copy':
                 	$output .= $this->_context($edit->orig);

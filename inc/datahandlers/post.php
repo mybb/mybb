@@ -147,7 +147,7 @@ class PostDataHandler extends DataHandler
 		{
 			if(!$post['tid'])
 			{
-				$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='".intval($post['pid'])."'");
+				$query = $db->simple_select("posts", "tid", "pid='".intval($post['pid'])."'");
 				$post['tid'] = $db->fetch_field($query, "tid");
 			}
 			// Here we determine if we're editing the first post of a thread or not.
@@ -157,7 +157,7 @@ class PostDataHandler extends DataHandler
 				"order_by" => "dateline",
 				"order_dir" => "asc"
 			);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='".$post['tid']."'", $options);
+			$query = $db->simple_select("posts", "pid", "tid='".$post['tid']."'", $options);
 			$first_check = $db->fetch_array($query);
 			if($first_check['pid'] == $post['pid'])
 			{
@@ -355,7 +355,7 @@ class PostDataHandler extends DataHandler
 		// Check if the post being replied to actually exists in this thread.
 		if($post['replyto'])
 		{
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$post['replyto']}'");
+			$query = $db->simple_select("posts", "pid", "pid='{$post['replyto']}'");
 			$valid_post = $db->fetch_array($query);
 			if(!$valid_post['pid'])
 			{
@@ -376,7 +376,7 @@ class PostDataHandler extends DataHandler
 				"order_by" => "dateline",
 				"order_dir" => "asc"
 			);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$post['tid']}'", $options);
+			$query = $db->simple_select("posts", "pid", "tid='{$post['tid']}'", $options);
 			$reply_to = $db->fetch_array($query);
 			$post['replyto'] = $reply_to['pid'];
 		}
@@ -522,7 +522,7 @@ class PostDataHandler extends DataHandler
 			// Automatic subscription to the thread
 			if($post['options']['emailnotify'] != "no" && $post['uid'] > 0)
 			{
-				$query = $db->simple_select(TABLE_PREFIX."favorites", "fid", "tid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."' AND type='s'", array("limit" => 1));
+				$query = $db->simple_select("favorites", "fid", "tid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."' AND type='s'", array("limit" => 1));
 				$already_subscribed = $db->fetch_field($query, "fid");
 				if(!$already_subscribed)
 				{
@@ -531,7 +531,7 @@ class PostDataHandler extends DataHandler
 						"tid" => intval($post['tid']),
 						"type" => "s"
 					);
-					$db->insert_query(TABLE_PREFIX."favorites", $favoriteadd);
+					$db->insert_query("favorites", $favoriteadd);
 				}
 			}
 
@@ -604,7 +604,7 @@ class PostDataHandler extends DataHandler
 
 		$post['pid'] = intval($post['pid']);
 		$post['uid'] = intval($post['uid']);
-		$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
+		$query = $db->simple_select("posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
 		$draft_check = $db->fetch_field($query, "tid");
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
@@ -627,7 +627,7 @@ class PostDataHandler extends DataHandler
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
 
-			$db->update_query(TABLE_PREFIX."posts", $this->post_update_data, "pid='{$post['pid']}'");
+			$db->update_query("posts", $this->post_update_data, "pid='{$post['pid']}'");
 			$this->pid = $post['pid'];
 		}
 		else
@@ -652,7 +652,7 @@ class PostDataHandler extends DataHandler
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
 
-			$db->insert_query(TABLE_PREFIX."posts", $this->post_insert_data);
+			$db->insert_query("posts", $this->post_insert_data);
 			$this->pid = $db->insert_id();
 		}
 
@@ -663,7 +663,7 @@ class PostDataHandler extends DataHandler
 			$attachmentassign = array(
 				"pid" => $this->pid
 			);
-			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='{$post['posthash']}'");
+			$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
 		}
 
 		if($visible == 1)
@@ -733,7 +733,7 @@ class PostDataHandler extends DataHandler
 					"subject" => $db->escape_string($emailsubject),
 					"message" => $db->escape_string($emailmessage)
 				);
-				$db->insert_query(TABLE_PREFIX."mailqueue", $new_email);
+				$db->insert_query("mailqueue", $new_email);
 				unset($userlang);
 				$queued_email = 1;
 			}
@@ -891,11 +891,11 @@ class PostDataHandler extends DataHandler
 		// Have a post ID but not a thread ID - fetch thread ID
 		if($thread['pid'] && !$thread['tid'])
 		{
-			$db->simple_select(TABLE_PREFIX."posts", "tid", "pid='{$thread['pid']}");
+			$db->simple_select("posts", "tid", "pid='{$thread['pid']}");
 			$thread['tid'] = $db->fetch_field($query, "tid");
 		}
 
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
+		$query = $db->simple_select("posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
 		$draft_check = $db->fetch_field($query, "pid");
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
@@ -913,7 +913,7 @@ class PostDataHandler extends DataHandler
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread", $this);
 
-			$db->update_query(TABLE_PREFIX."threads", $this->thread_insert_data, "tid='{$thread['tid']}'");
+			$db->update_query("threads", $this->thread_insert_data, "tid='{$thread['tid']}'");
 
 			$this->post_insert_data = array(
 				"subject" => $db->escape_string($thread['subject']),
@@ -929,7 +929,7 @@ class PostDataHandler extends DataHandler
 			);
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread_post", $this);
 
-			$db->update_query(TABLE_PREFIX."posts", $this->post_insert_data, "pid='{$thread['pid']}'");
+			$db->update_query("posts", $this->post_insert_data, "pid='{$thread['pid']}'");
 			$this->tid = $thread['tid'];
 			$this->pid = $thread['pid'];
 		}
@@ -953,7 +953,7 @@ class PostDataHandler extends DataHandler
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread", $this);
 
-			$db->insert_query(TABLE_PREFIX."threads", $this->thread_insert_data);
+			$db->insert_query("threads", $this->thread_insert_data);
 			$this->tid = $db->insert_id();
 
 			$this->post_insert_data = array(
@@ -973,12 +973,12 @@ class PostDataHandler extends DataHandler
 			);
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread_post", $this);
 
-			$db->insert_query(TABLE_PREFIX."posts", $this->post_insert_data);
+			$db->insert_query("posts", $this->post_insert_data);
 			$this->pid = $db->insert_id();
 
 			// Now that we have the post id for this first post, update the threads table.
 			$firstpostup = array("firstpost" => $pid);
-			$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='{$tid}'");
+			$db->update_query("threads", $firstpostup, "tid='{$tid}'");
 		}
 
 		// If we're not saving a draft there are some things we need to check now
@@ -993,7 +993,7 @@ class PostDataHandler extends DataHandler
 					"tid" => intval($this->tid),
 					"type" => "s"
 				);
-				$db->insert_query(TABLE_PREFIX."favorites", $favoriteadd);
+				$db->insert_query("favorites", $favoriteadd);
 			}
 
 			// Perform any selected moderation tools.
@@ -1114,7 +1114,7 @@ class PostDataHandler extends DataHandler
 					"subject" => $db->escape_string($emailsubject),
 					"message" => $db->escape_string($emailmessage)
 				);
-				$db->insert_query(TABLE_PREFIX."mailqueue", $new_email);
+				$db->insert_query("mailqueue", $new_email);
 				unset($userlang);
 				$queued_email = 1;
 			}
@@ -1131,7 +1131,7 @@ class PostDataHandler extends DataHandler
 					'tid' => $this->tid,
 					'type' => 's'
 				);
-				$db->insert_query(TABLE_PREFIX.'favorites', $insert_favorite);
+				$db->insert_query('favorites', $insert_favorite);
 			}
 		}
 
@@ -1142,7 +1142,7 @@ class PostDataHandler extends DataHandler
 			$attachmentassign = array(
 				"pid" => $this->pid
 			);
-			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
+			$db->update_query("attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
 		}
 
 		// Thread is public - update the forum counts.
@@ -1186,7 +1186,7 @@ class PostDataHandler extends DataHandler
 		// If we don't have a tid then we need to fetch it along with the forum id.
 		if(!$post['tid'] || !$post['fid'])
 		{
-			$query = $db->simple_select(TABLE_PREFIX."posts", "tid,fid", "pid='".intval($post['pid'])."'");
+			$query = $db->simple_select("posts", "tid,fid", "pid='".intval($post['pid'])."'");
 			$tid_fetch = $db->fetch_array($query);
 			$post['tid'] = $tid_fetch['tid'];
 			$post['fid'] = $tid_fetch['fid'];
@@ -1198,7 +1198,7 @@ class PostDataHandler extends DataHandler
 			"limit_start" => 0,
 			"limit" => 1
 		);
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='".intval($post['tid'])."'", $options);
+		$query = $db->simple_select("posts", "pid", "tid='".intval($post['tid'])."'", $options);
 		$first_post_check = $db->fetch_array($query);
 		if($first_post_check['pid'] == $post['pid'])
 		{
@@ -1226,7 +1226,7 @@ class PostDataHandler extends DataHandler
 			{
 				$plugins->run_hooks_by_ref("datahandler_post_update_thread", $this);
 
-				$db->update_query(TABLE_PREFIX."threads", $this->thread_update_data, "tid='".intval($post['tid'])."'");
+				$db->update_query("threads", $this->thread_update_data, "tid='".intval($post['tid'])."'");
 			}
 		}
 
@@ -1270,12 +1270,12 @@ class PostDataHandler extends DataHandler
 
 		$plugins->run_hooks_by_ref("datahandler_post_update", $this);
 
-		$db->update_query(TABLE_PREFIX."posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
+		$db->update_query("posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
 
 		// Automatic subscription to the thread
 		if($post['options']['emailnotify'] == "yes" && $post['uid'] > 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."favorites", "fid", "uid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."' AND type='s'", array("limit" => 1));
+			$query = $db->simple_select("favorites", "fid", "uid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."' AND type='s'", array("limit" => 1));
 			$already_subscribed = $db->fetch_field($query, "fid");
 			if(!$already_subscribed)
 			{
@@ -1284,12 +1284,12 @@ class PostDataHandler extends DataHandler
 					"tid" => intval($post['tid']),
 					"type" => "s"
 				);
-				$db->insert_query(TABLE_PREFIX."favorites", $favoriteadd);
+				$db->insert_query("favorites", $favoriteadd);
 			}
 		}
 		else
 		{
-			$db->delete_query(TABLE_PREFIX."favorites", "type='s' AND uid='{$post['uid']}' AND tid='{$post['tid']}'");
+			$db->delete_query("favorites", "type='s' AND uid='{$post['uid']}' AND tid='{$post['tid']}'");
 		}
 		update_thread_attachment_count($post['tid']);
 

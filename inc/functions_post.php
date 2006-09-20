@@ -206,7 +206,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['starimage'] = $usergroup['starimage'];
 		}
-		for($i = 0; $i < $post['stars']; $i++)
+		for($i = 0; $i < $post['stars']; ++$i)
 		{
 			$post['userstars'] .= "<img src=\"".$post['starimage']."\" border=\"0\" alt=\"*\" />";
 		}
@@ -516,7 +516,7 @@ function get_post_attachments($id, &$post)
 							$thumblist .= "<br />";
 							$tcount = 0;
 						}
-						$tcount++;
+						++$tcount;
 					}
 					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes")
 					{

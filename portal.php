@@ -70,12 +70,12 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	}
 
 	my_setcookie('loginattempts', 1);
-	$db->delete_query(TABLE_PREFIX."sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
+	$db->delete_query("sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
 		"loginattempts" => 1,
 		);
-	$db->update_query(TABLE_PREFIX."sessions", $newsession, "sid='".$session->sid."'");
+	$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
 
 	// Temporarily set the cookie remember option for the login cookies
 	$mybb->user['remember'] = $user['remember'];
@@ -109,7 +109,7 @@ if($mybb->settings['portal_showwelcome'] != "no")
 	{
 		if($mybb->user['receivepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->settings['portal_showpms'] != "no" && $mybb->settings['enablepms'] != "no")
 		{
-			$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
+			$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
 			$messages = $db->fetch_array($query);
 			if(!$messages['pms_new'])
 			{
@@ -124,13 +124,13 @@ if($mybb->settings['portal_showwelcome'] != "no")
 			eval("\$pms = \"".$templates->get("portal_pms")."\";");
 		}
 		// get number of new posts, threads, announcements
-		$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS newposts", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
+		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
 		{ // if there aren't any new posts, there is no point in wasting two more queries
-			$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS newthreads", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
+			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 			$newthreads = $db->fetch_field($query, "newthreads");
-			$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS newann", "dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere");
+			$query = $db->simple_select("threads", "COUNT(tid) AS newann", "dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$mybb->settings['portal_announcementsfid'].") $unviewwhere");
 			$newann = $db->fetch_field($query, "newann");
 			if(!$newthreads)
 			{
@@ -230,7 +230,7 @@ if($mybb->settings['portal_showwol'] != "no")
 	{
 		if($user['uid'] == "0")
 		{
-			$guestcount++;
+			++$guestcount;
 		}
 		else
 		{
@@ -324,7 +324,7 @@ foreach($mybb->settings['portal_announcementsfid'] as $fid)
 }
 $mybb->settings['portal_announcementsfid'] = implode(',', $fid_array);
 // And get them!
-$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid IN (".$mybb->settings['portal_announcementsfid'].")");
+$query = $db->simple_select("forums", "*", "fid IN (".$mybb->settings['portal_announcementsfid'].")");
 while($forumrow = $db->fetch_array($query))
 {
     $forum[$forumrow['fid']] = $forumrow;
@@ -342,7 +342,7 @@ $query = $db->query("
 );
 while($getid = $db->fetch_array($query))
 {
-	$pids .= ",'$getid[pid]'";
+	$pids .= ",'{$getid['pid']}'";
 	$posts[$getid['tid']] = $getid;
 }
 $pids = "pid IN(0$pids)";
@@ -395,7 +395,7 @@ while($announcement = $db->fetch_array($query))
 		{
 			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
 		}		
-		$avatar = "<td class=\"trow1\" width=\"1\" align=\"center\" valign=\"top\"><img src=\"$announcement[avatar]\" alt=\"0\" {$avatar_width_height} /></td>";
+		$avatar = "<td class=\"trow1\" width=\"1\" align=\"center\" valign=\"top\"><img src=\"{$announcement['avatar']}\" alt=\"0\" {$avatar_width_height} /></td>";
 	}
 	else
 	{
@@ -462,7 +462,7 @@ while($announcement = $db->fetch_array($query))
 							$thumblist .= "<br />";
 							$tcount = 0;
 						}
-						$tcount++;
+						++$tcount;
 					}
 					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == "yes")
 					{
@@ -497,8 +497,8 @@ while($announcement = $db->fetch_array($query))
 	$plugins->run_hooks("portal_announcement");
 
 	$parser_options = array(
-		"allow_html" => $forum[$announcement['fid']]['allow_html'],
-		"allow_mycode" => $forum[$announcement['fid']]['allow_mycode'],
+		"allow_html" => $forum[$announcement['fid']]['allowhtml'],
+		"allow_mycode" => $forum[$announcement['fid']]['allowmycode'],
 		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
 		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode']
 	);

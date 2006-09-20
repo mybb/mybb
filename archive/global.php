@@ -100,7 +100,7 @@ if($endpart != "index.php")
 	}
 	elseif($action == "thread")
 	{
-		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='{$id}' AND visible='1' AND closed NOT LIKE 'moved|%'");
+		$query = $db->simple_select("threads", "*", "tid='{$id}' AND visible='1' AND closed NOT LIKE 'moved|%'");
 		$thread = $db->fetch_array($query);
 		if(!$thread['tid'])
 		{
@@ -109,7 +109,7 @@ if($endpart != "index.php")
 	}
 	elseif($action == "forum")
 	{
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='{$id}' AND active!='no' AND password=''");
+		$query = $db->simple_select("forums", "*", "fid='{$id}' AND active!='no' AND password=''");
 		$forum = $db->fetch_array($query);
 		if(!$forum['fid'])
 		{
@@ -187,7 +187,7 @@ if($mybb->settings['boardclosed'] == "yes")
 }
 
 // Load Limiting
-if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
+if(my_strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 {
 	if($uptime = @exec('uptime'))
 	{

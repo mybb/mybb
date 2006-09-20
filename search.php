@@ -44,7 +44,7 @@ $now = time();
 if($mybb->input['action'] == "results")
 {
 	$sid = $db->escape_string($mybb->input['sid']);
-	$query = $db->simple_select(TABLE_PREFIX."searchlog", "*", "sid='$sid'");
+	$query = $db->simple_select("searchlog", "*", "sid='$sid'");
 	$search = $db->fetch_array($query);
 
 	if(!$search['sid'])
@@ -55,7 +55,7 @@ if($mybb->input['action'] == "results")
 	$plugins->run_hooks("search_results_start");
 
 	// Decide on our sorting fields and sorting order.
-	$order = strtolower($mybb->input['order']);
+	$order = my_strtolower($mybb->input['order']);
 	$sortby = $mybb->input['sortby'];
 
 	switch($sortby)
@@ -138,7 +138,7 @@ if($mybb->input['action'] == "results")
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select(TABLE_PREFIX."threads t", "t.tid", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
+			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -160,7 +160,7 @@ if($mybb->input['action'] == "results")
 		else
 		{
 			$where_conditions = "t.tid IN (".$search['threads'].")";
-			$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
+			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])
@@ -195,7 +195,7 @@ if($mybb->input['action'] == "results")
 		// Fetch dot icons if enabled
 		if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $thread_cache)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
+			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
 			while($post = $db->fetch_array($query))
 			{
 				$thread_cache[$post['tid']]['dot_icon'] = 1;
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "results")
 		// Fetch the read threads.
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."threadsread", "tid,dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
+			$query = $db->simple_select("threadsread", "tid,dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
 			while($readthread = $db->fetch_array($query))
 			{
 				$thread_cache[$readthread['tid']]['lastread'] = $readthread['dateline'];
@@ -430,7 +430,7 @@ if($mybb->input['action'] == "results")
 		// Read threads
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."threadsread", "tid, dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$tids.")");
+			$query = $db->simple_select("threadsread", "tid, dateline", "uid='".$mybb->user['uid']."' AND tid IN(".$tids.")");
 			while($readthread = $db->fetch_array($query))
 			{
 				$readthreads[$readthread['tid']] = $readthread['dateline'];
@@ -581,7 +581,7 @@ if($mybb->input['action'] == "results")
 		{
 			error($lang->error_nosearchresults);
 		}
-		$multipage = multipage($postcount, $perpage, $page, "search.php?action=results&sid=$sid&sortby=$sortby&order=$order&uid=".$mybb->input['uid']);
+		$multipage = multipage($postcount, $perpage, $page, "search.php?action=results&amp;sid=$sid&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->input['uid']);
 		if($upper > $postcount)
 		{
 			$upper = $postcount;
@@ -620,7 +620,7 @@ elseif($mybb->input['action'] == "findguest")
 		"querycache" => $db->escape_string($where_sql),
 	);
 	$plugins->run_hooks("search_do_search_process");
-	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+	$db->insert_query("searchlog", $searcharray);
 	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "finduser")
@@ -651,7 +651,7 @@ elseif($mybb->input['action'] == "finduser")
 		"querycache" => $db->escape_string($where_sql),
 	);
 	$plugins->run_hooks("search_do_search_process");
-	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+	$db->insert_query("searchlog", $searcharray);
 	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "finduserthreads")
@@ -682,7 +682,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 		"querycache" => $db->escape_string($where_sql),
 	);
 	$plugins->run_hooks("search_do_search_process");
-	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+	$db->insert_query("searchlog", $searcharray);
 	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "getnew")
@@ -720,7 +720,7 @@ elseif($mybb->input['action'] == "getnew")
 	);
 
 	$plugins->run_hooks("search_do_search_process");
-	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+	$db->insert_query("searchlog", $searcharray);
 	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "getdaily")
@@ -768,7 +768,7 @@ elseif($mybb->input['action'] == "getdaily")
 	);
 
 	$plugins->run_hooks("search_do_search_process");
-	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+	$db->insert_query("searchlog", $searcharray);
 	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
@@ -788,7 +788,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
 		}
 		$timecut = time()-$mybb->settings['searchfloodtime'];
-		$query = $db->simple_select(TABLE_PREFIX."searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
 		if($last_search['sid'])
@@ -819,7 +819,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 
 	if($config['dbtype'] == "mysql" || $config['dbtype'] == "mysqli")
 	{
-		if($mybb->settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean(TABLE_PREFIX."posts") && $db->is_fulltext(TABLE_PREFIX."posts"))
+		if($mybb->settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->is_fulltext("posts"))
 		{
 			$search_results = perform_search_mysql_ft($search_data);
 		}
@@ -846,9 +846,9 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 	);
 	$plugins->run_hooks("search_do_search_process");
 
-	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
+	$db->insert_query("searchlog", $searcharray);
 
-	if(strtolower($mybb->input['sortordr']) == "asc" || strtolower($mybb->input['sortordr'] == "desc"))
+	if(my_strtolower($mybb->input['sortordr']) == "asc" || my_strtolower($mybb->input['sortordr'] == "desc"))
 	{
 		$sortorder = $mybb->input['sortordr'];
 	}

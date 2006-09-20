@@ -69,7 +69,7 @@ if($mybb->input['action'] == "today")
 			$onlinetime = my_date($mybb->settings['timeformat'], $online['lastactive']);
 			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
 		}
-		$todaycount++;
+		++$todaycount;
 	}
 	if($todaycount == 1)
 	{
@@ -148,7 +148,7 @@ else
 	while($user = $db->fetch_array($query))
 	{
 		$plugins->run_hooks("online_user");
-		$botkey = strtolower(str_replace("bot=", '', $user['sid']));
+		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
 		if($user['uid'] > 0)
 		{
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
@@ -157,7 +157,7 @@ else
 				$users[$user['uid']] = what($user);
 				if($user['invisible'] == "yes")
 				{
-					$anoncount++;
+					++$anoncount;
 				}
 				$membercount++;
 			}
@@ -166,12 +166,12 @@ else
 		{
 			$user['bot'] = $session->bots[$botkey];
 			$guests[] = what($user);
-			$botcount++;
+			++$botcount;
 		}
 		else
 		{
 			$guests[] = what($user);
-			$guestcount++;
+			++$guestcount;
 		}
 	}
 
@@ -183,7 +183,7 @@ else
 	}
 	if($uidsql)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "uid,username", "uid IN (0$uidsql)");
+		$query = $db->simple_select("users", "uid,username", "uid IN (0$uidsql)");
 		while($user = $db->fetch_array($query))
 		{
 			$members[$user['uid']] = $user['username'];
@@ -191,34 +191,34 @@ else
 	}
 	if($aidsql)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "aid,pid", "aid IN (0$aidsql)");
+		$query = $db->simple_select("attachments", "aid,pid", "aid IN (0$aidsql)");
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachments[$attachment['aid']] = $attachment['pid'];
-			$pidsql .= ",$attachment[pid]";
+			$pidsql .= ",{$attachment['pid']}";
 		}
 	}
 	if($pidsql)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid,tid", "pid IN (0$pidsql) $fidnot");
+		$query = $db->simple_select("posts", "pid,tid", "pid IN (0$pidsql) $fidnot");
 		while($post = $db->fetch_array($query))
 		{
 			$posts[$post['pid']] = $post['tid'];
-			$tidsql .= ",$post[tid]";
+			$tidsql .= ",{$post['tid']}";
 		}
 	}
 	if($tidsql)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."threads", "fid,tid,subject", "tid IN(0$tidsql) $fidnot");
+		$query = $db->simple_select("threads", "fid,tid,subject", "tid IN(0$tidsql) $fidnot");
 		while($thread = $db->fetch_array($query))
 		{
 			$threads[$thread['tid']] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-			$fidsql .= ",$thread[fid]";
+			$fidsql .= ",{$thread['fid']}";
 		}
 	}
 	if($fidsql)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."forums", "fid,name,linkto", "fid IN (0$fidsql) $fidnot");
+		$query = $db->simple_select("forums", "fid,name,linkto", "fid IN (0$fidsql) $fidnot");
 		while($forum = $db->fetch_array($query))
 		{
 			$forums[$forum['fid']] = $forum['name'];
@@ -227,7 +227,7 @@ else
 	}
 	if($eidsql)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."events", "eid,subject", "eid IN (0$eidsql)");
+		$query = $db->simple_select("events", "eid,subject", "eid IN (0$eidsql)");
 		while($event = $db->fetch_array($query))
 		{
 			$events[$event['eid']] = htmlspecialchars_uni($parser->parse_badwords($event['subject']));
@@ -644,7 +644,7 @@ function what($user)
 	if($splitloc[1])
 	{
 		$temp = explode("&", my_substr($splitloc[1], 1));
-		for ($i = 0; $i < count($temp); $i++)
+		for ($i = 0; $i < count($temp); ++$i)
 		{
 			$temp2 = explode("=", $temp[$i], 2);
 			$parameters[$temp2[0]] = $temp2[1];
@@ -656,7 +656,7 @@ function what($user)
 		case "announcements":
 			if(is_numeric($parameters['fid']))
 			{
-				$fidsql .= ",$parameters[fid]";
+				$fidsql .= ",{$parameters['fid']}";
 			}
 			$user['activity'] = "announcements";
 			$user['fid'] = $parameters['fid'];
@@ -664,7 +664,7 @@ function what($user)
 		case "attachment":
 			if(is_numeric($parameters['aid']))
 			{
-				$aidsql .= ",$parameters[aid]";
+				$aidsql .= ",{$parameters['aid']}";
 			}
 			$user['activity'] = "attachment";
 			$user['aid'] = $parameters['aid'];
@@ -674,7 +674,7 @@ function what($user)
 			{
 				if(is_numeric($parameters['eid']))
 				{
-					$eidsql .= ",$parameters[eid]";
+					$eidsql .= ",{$parameters['eid']}";
 				}
 				$user['activity'] = "calendar_event";
 				$user['eid'] = $parameters['eid'];
@@ -698,7 +698,7 @@ function what($user)
 		case "forumdisplay":
 			if(is_numeric($parameters['fid']))
 			{
-				$fidsql .= ",$parameters[fid]";
+				$fidsql .= ",{$parameters['fid']}";
 			}
 			$user['activity'] = "forumdisplay";
 			$user['fid'] = $parameters['fid'];
@@ -729,7 +729,7 @@ function what($user)
 				$user['activity'] = "member_profile";
 				if(is_numeric($parameters['uid']))
 				{
-					$uidsql .= ",$parameters[uid]";
+					$uidsql .= ",{$parameters['uid']}";
 				}
 				$user['uuid'] = $parameters['uid'];
 			}
@@ -763,7 +763,7 @@ function what($user)
 			{
 				if(is_numeric($parameters['tid']))
 				{
-					$tidsql .= ",$parameters[tid]";
+					$tidsql .= ",{$parameters['tid']}";
 				}
 				$user['activity'] = "misc_whoposted";
 				$user['tid'] = $parameters['tid'];
@@ -784,7 +784,7 @@ function what($user)
 		case "newreply":
 			if(is_numeric($parameters['pid']))
 			{
-				$pidsql .= ",$parameters[pid]";
+				$pidsql .= ",{$parameters['pid']}";
 				$user['activity'] = "newreply";
 				$user['pid'] = $parameters['pid'];
 			}
@@ -792,7 +792,7 @@ function what($user)
 			{
 				if(is_numeric($parameters['tid']))
 				{
-					$tidsql .= ",$parameters[tid]";
+					$tidsql .= ",{$parameters['tid']}";
 				}
 				$user['activity'] = "newreply";
 				$user['tid'] = $parameters['tid'];
@@ -801,7 +801,7 @@ function what($user)
 		case "newthread":
 			if(is_numeric($parameters['fid']))
 			{
-				$fidsql .= ",$parameters[fid]";
+				$fidsql .= ",{$parameters['fid']}";
 			}
 			$user['activity'] = "newthread";
 			$user['fid'] = $parameters['fid'];
@@ -834,7 +834,7 @@ function what($user)
 		case "printthread":
 			if(is_numeric($parameters['tid']))
 			{
-				$tidsql .= ",$parameters[tid]";
+				$tidsql .= ",{$parameters['tid']}";
 			}
 			$user['activity'] = "printthread";
 			$user['tid'] = $parameters['tid'];
@@ -871,7 +871,7 @@ function what($user)
 		case "sendthread":
 			if(is_numeric($parameters['tid']))
 			{
-				$tidsql .= ",$parameters[tid]";
+				$tidsql .= ",{$parameters['tid']}";
 			}
 			$user['activity'] = "sendthread";
 			$user['tid'] = $parameters['tid'];
@@ -881,7 +881,7 @@ function what($user)
 		case "showthread":
 			if(is_numeric($parameters['pid']) && $parameters['action'] == "showpost")
 			{
-				$pidsql .= ",$parameters[pid]";
+				$pidsql .= ",{$parameters['pid']}";
 				$user['activity'] = "showpost";
 				$user['pid'] = $parameters['pid'];
 			}
@@ -893,7 +893,7 @@ function what($user)
 				}
 				if(is_numeric($parameters['tid']))
 				{
-					$tidsql .= ",$parameters[tid]";
+					$tidsql .= ",{$parameters['tid']}";
 				}
 				$user['activity'] = "showthread";
 				$user['tid'] = $parameters['tid'];

@@ -552,30 +552,37 @@ function configure()
 	}
 	else
 	{
-		// Attempt auto-detection
-		if($_SERVER['HTTP_HOST'])
-		{
-			$hostname = 'http://'.$_SERVER['HTTP_HOST'];
-		}
-		elseif($_SERVER['SERVER_NAME'])
-		{
-			$hostname = 'http://'.$_SERVER['SERVER_NAME'];
-		}
-		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
-		{
-			$hostname .= ':'.$_SERVER['SERVER_PORT'];
-		}
-		$currentscript = $hostname.get_current_location();
-		if($currentscript)
-		{
-			$bburl = my_substr($currentscript, 0, strpos($currentscript, '/install/'));
-		}
 		$bbname = 'Forums';
 		$cookiedomain = '';
 		$cookiepath = '/';
 		$websiteurl = $hostname.'/';
 		$websitename = 'Your Website';
 		$contactemail = '';
+		// Attempt auto-detection
+		if($_SERVER['HTTP_HOST'])
+		{
+			$hostname = 'http://'.$_SERVER['HTTP_HOST'];
+			$cookiedomain = '.'.$_SERVER['HTTP_HOST'];
+		}
+		elseif($_SERVER['SERVER_NAME'])
+		{
+			$hostname = 'http://'.$_SERVER['SERVER_NAME'];
+			$cookiedomain = '.'.$_SERVER['SERVER_NAME'];
+		}
+		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
+		{
+			$hostname .= ':'.$_SERVER['SERVER_PORT'];
+		}
+		$currentlocation = get_current_location();
+		if($currentlocation)
+		{
+			$cookiepath = my_substr($currentlocation, 0, strpos($currentlocation, '/install/')).'/';
+		}
+		$currentscript = $hostname.get_current_location();
+		if($currentscript)
+		{
+			$bburl = my_substr($currentscript, 0, strpos($currentscript, '/install/'));
+		}
 	}
 
 	echo sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
@@ -633,9 +640,9 @@ function create_admin_user()
 				'disporder' => intval($settinggroup['attributes']['disporder']),
 				'isdefault' => $settinggroup['attributes']['isdefault'],
 			);
-			$db->insert_query(TABLE_PREFIX.'settinggroups', $groupdata);
+			$db->insert_query('settinggroups', $groupdata);
 			$gid = $db->insert_id();
-			$groupcount++;
+			++$groupcount;
 			foreach($settinggroup['setting'] as $setting)
 			{
 				$settingdata = array(
@@ -648,7 +655,7 @@ function create_admin_user()
 					'gid' => $gid
 				);
 
-				$db->insert_query(TABLE_PREFIX.'settings', $settingdata);
+				$db->insert_query('settings', $settingdata);
 				$settingcount++;
 			}
 		}
@@ -755,7 +762,7 @@ function install_done()
 		'ppp' => 0,
 		'referrer' => 0,
 	);
-	$db->insert_query(TABLE_PREFIX.'users', $newuser);
+	$db->insert_query('users', $newuser);
 	$uid = $db->insert_id();
 
 	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('{$uid}','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
@@ -768,13 +775,13 @@ function install_done()
 
 
 	// Make fulltext columns if supported
-	if($db->supports_fulltext(TABLE_PREFIX.'threads'))
+	if($db->supports_fulltext('threads'))
 	{
-		$db->create_fulltext_index(TABLE_PREFIX.'threads', 'subject');
+		$db->create_fulltext_index('threads', 'subject');
 	}
-	if($db->supports_fulltext_boolean(TABLE_PREFIX.'posts'))
+	if($db->supports_fulltext_boolean('posts'))
 	{
-		$db->create_fulltext_index(TABLE_PREFIX.'posts', 'message');
+		$db->create_fulltext_index('posts', 'message');
 	}
 
 	// Register a shutdown function which actually tests if this functionality is working

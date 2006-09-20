@@ -38,12 +38,12 @@ function getforums($pid="0")
 {
 	global $db, $forumlist, $lang;
 	
-	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "pid = '$pid'", array('order_by' => 'disporder'));
+	$query = $db->simple_select("forums", "*", "pid = '$pid'", array('order_by' => 'disporder'));
 	
 	while($forum = $db->fetch_array($query))
 	{
 		$forumlist .= "\n<li><b>$forum[name]</b>".makelinkcode($lang->add_announcement, "announcements.php?".SID."&amp;action=add&amp;fid=$forum[fid]");
-		$annquery = $db->simple_select(TABLE_PREFIX."announcements", "*", "fid = '{$forum['fid']}'");
+		$annquery = $db->simple_select("announcements", "*", "fid = '{$forum['fid']}'");
 		$numannouncements = $db->num_rows($annquery);
 		if($numannouncements != "0")
 		{
@@ -111,7 +111,7 @@ if($mybb->input['action'] == "do_add")
 		"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
 	);
 	$plugins->run_hooks("admin_announcements_do_add");
-	$db->insert_query(TABLE_PREFIX."announcements", $sqlarray);
+	$db->insert_query("announcements", $sqlarray);
 	cpredirect("announcements.php?".SID, $lang->announcement_added);
 }
 if($mybb->input['action'] == "do_delete")
@@ -119,7 +119,7 @@ if($mybb->input['action'] == "do_delete")
 	if($mybb->input['deletesubmit'])
 	{
 		$plugins->run_hooks("admin_announcements_do_delete");
-		$db->delete_query(TABLE_PREFIX."announcements", "aid = '$aid'");
+		$db->delete_query("announcements", "aid = '$aid'");
 		cpredirect("announcements.php?".SID, $lang->announcement_deleted);
 	}
 	else
@@ -174,7 +174,7 @@ if($mybb->input['action'] == "do_edit")
 		"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
 	);
 	$plugins->run_hooks("admin_announcements_do_edit");
-	$db->update_query(TABLE_PREFIX."announcements", $sqlarray, "aid='$aid'");
+	$db->update_query("announcements", $sqlarray, "aid='$aid'");
 	cpredirect("announcements.php?".SID, $lang->announcement_edited);
 }
 if($mybb->input['action'] == "add") 
@@ -186,7 +186,7 @@ if($mybb->input['action'] == "add")
 	tableheader($lang->add_announcement2);
 	makeinputcode($lang->subject, "subject");
 	$hourmin = explode("-", gmdate("g-i-a", time()));
-	for($h = 1; $h <= 12; $h++)
+	for($h = 1; $h <= 12; ++$h)
 	{
 		if($hourmin[0] == $h)
 		{
@@ -207,7 +207,7 @@ if($mybb->input['action'] == "add")
 	{
 		$pmsel = "selected";
 	}
-	for($m = 0; $m <= 59; $m++)
+	for($m = 0; $m <= 59; ++$m)
 	{
 		if(!$m)
 		{ // 00
@@ -229,7 +229,7 @@ if($mybb->input['action'] == "add")
 		}
 	}
 	$day = gmdate("j", time());
-	for($i = 1; $i <= 31; $i++)
+	for($i = 1; $i <= 31; ++$i)
 	{
 		if($day == $i)
 		{
@@ -286,7 +286,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_announcements_delete");
-	$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "aid = '".intval($mybb->input['aid'])."'");
+	$query = $db->simple_select("announcements", "*", "aid = '".intval($mybb->input['aid'])."'");
 	$announcement = $db->fetch_array($query);
 	cpheader();
 	startform("announcements.php", "", "do_delete");
@@ -306,7 +306,7 @@ if($mybb->input['action'] == "delete")
 }
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "aid = '$aid'");
+	$query = $db->simple_select("announcements", "*", "aid = '$aid'");
 	$announcement = $db->fetch_array($query);
 
 	$plugins->run_hooks("admin_announcements_edit");
@@ -328,7 +328,7 @@ if($mybb->input['action'] == "edit")
 	$startdate = explode("-", gmdate("j-m-Y-g-i-a", $announcement['startdate']));
 	$enddate = explode("-", gmdate("j-m-Y-g-i-a", $announcement['enddate']));
 
-	for($h = 1; $h <= 12; $h++)
+	for($h = 1; $h <= 12; ++$h)
 	{
 		if($startdate[3] == $h)
 		{
@@ -363,7 +363,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$epmsel = "selected";
 	}
-	for($m = 0; $m <= 59; $m++)
+	for($m = 0; $m <= 59; ++$m)
 	{
 		if(!$m)
 		{ // 00
@@ -391,7 +391,7 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	for($i = 1; $i <= 31; $i++)
+	for($i = 1; $i <= 31; ++$i)
 	{
 		if($startdate[0] == $i)
 		{
@@ -471,7 +471,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	tableheader($lang->forum_announcements);
 	$forumlist = getforums();
 	$globallist = "\n<li><b>$lang->global_announcements</b>".makelinkcode($lang->add_announcement, "announcements.php?".SID."&amp;action=add&amp;fid=-1")."\n";
-	$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "fid = '-1'");
+	$query = $db->simple_select("announcements", "*", "fid = '-1'");
 	if($query)
 	{
     $globalist .= "<ul>";

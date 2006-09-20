@@ -60,7 +60,7 @@ if($mybb->input['action'] == "do_attachments")
 		if(count($delete_aids) > 1)
 		{
 			$aids = implode(',', $delete_aids);
-			$db->delete_query(TABLE_PREFIX."attachments", "aid IN ({$aids})");
+			$db->delete_query("attachments", "aid IN ({$aids})");
 		}
 		if(count($approve_aids) > 1)
 		{
@@ -68,7 +68,7 @@ if($mybb->input['action'] == "do_attachments")
 			$sql_array = array(
 				"visible" => 1
 			);
-			$db->update_query(TABLE_PREFIX."attachments", $sql_array, "aid IN ({$aids})");
+			$db->update_query("attachments", $sql_array, "aid IN ({$aids})");
 		}
 	}
 	cpredirect("moderate.php?".SID."&action=attachments", $lang->attachments_moderated);
@@ -82,7 +82,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 		foreach($mybb->input['threadvalidate'] as $tid => $val)
 		{
 			$tid = intval($tid);
-			$query = $db->simple_select(TABLE_PREFIX."threads", "subject, fid", "tid='$tid'");
+			$query = $db->simple_select("threads", "subject, fid", "tid='$tid'");
 			$thread = $db->fetch_array($query);
 			if($mybb->input['threaddelete'][$tid] == "yes")
 			{
@@ -103,7 +103,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 						"subject" => $subject,
 						"visible" => 1
 					);
-					$db->update_query(TABLE_PREFIX."posts", $sql_array, "tid = '".$tid."'");
+					$db->update_query("posts", $sql_array, "tid = '".$tid."'");
 					$update_forum_count[$thread['fid']] = 1;
 
 					// Update unapproved thread count
@@ -118,9 +118,9 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 		foreach($mybb->input['postvalidate'] as $pid => $val)
 		{
 			$pid = intval($pid);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='$pid'");
+			$query = $db->simple_select("posts", "tid", "pid='$pid'");
 			$post = $db->fetch_array($query);
-			$query = $db->simple_select(TABLE_PREFIX."threads", "fid", "tid='$post[tid]'");
+			$query = $db->simple_select("threads", "fid", "tid='$post[tid]'");
 			$thread = $db->fetch_array($query);
 			if($mybb->input['postdelete'][$pid] == "yes")
 			{
@@ -140,7 +140,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 						"message" => $message,
 						"subject" => $subject
 					);
-					$db->update_query(TABLE_PREFIX."posts", $sql_array, "pid = '".$pid."'");
+					$db->update_query("posts", $sql_array, "pid = '".$pid."'");
 					$update_thread_count[$post['tid']] = 1;
 					$update_forum_count[$thread['fid']] = 1;
 

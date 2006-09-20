@@ -26,7 +26,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $mybb-
 {
 	$thread = get_thread($mybb->input['tid']);
 	
-	$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid='".intval($mybb->input['tid'])."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
+	$query = $db->simple_select("posts", "*", "tid='".intval($mybb->input['tid'])."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
 	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2)
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 				"uid" => $mybb->user['uid'],
 				"loginattempts" => 0
 			);
-			$db->update_query(TABLE_PREFIX."sessions", $updated_session, "sid='{$session->sid}'");
+			$db->update_query("sessions", $updated_session, "sid='{$session->sid}'");
 			
 			// Set uid and username
 			$uid = $mybb->user['uid'];
@@ -240,7 +240,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 	if(!$mybb->input['savedraft'] && !$pid)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
+		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
 		$duplicate_check = $db->fetch_field($query, "pid");
 		if($duplicate_check)
 		{
@@ -314,15 +314,15 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
-		$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash'"); 
+		$query = $db->simple_select("captcha", "*", "imagehash='$imagehash'"); 
 		$imgcheck = $db->fetch_array($query);
-		if(strtolower($imgcheck['imagestring']) != strtolower($imagestring) || !$imgcheck['imagehash'])
+		if(my_strtolower($imgcheck['imagestring']) != my_strtolower($imagestring) || !$imgcheck['imagehash'])
 		{
 			$post_errors[] = $lang->invalid_captcha;
 		}
 		else
 		{
-			$db->delete_query(TABLE_PREFIX."captcha", "imagehash='$imagehash'");
+			$db->delete_query("captcha", "imagehash='$imagehash'");
 			$hide_captcha = true;
 		}
 	}
@@ -537,7 +537,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
 			}
 	
-			$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
+			$query = $db->simple_select("attachments", "*", $attachwhere);
 			while($attachment = $db->fetch_array($query)) 
 			{
 				$attachcache[0][$attachment['aid']] = $attachment;
@@ -619,7 +619,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$attachwhere = "posthash='".$db->escape_string($posthash)."'";
 		}
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $attachwhere);
+		$query = $db->simple_select("attachments", "*", $attachwhere);
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{
@@ -640,7 +640,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			}
 			$attachcount++;
 		}
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
 		if($usage['ausage'] > ($mybb->usergroup['attachquota']*1000) && $mybb->usergroup['attachquota'] != 0)
 		{
@@ -679,7 +679,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$imagehash = $db->escape_string($mybb->input['imagehash']);
 			$imagestring = $db->escape_string($mybb->input['imagestring']);
-			$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash' AND imagestring='$imagestring'");
+			$query = $db->simple_select("captcha", "*", "imagehash='$imagehash' AND imagestring='$imagestring'");
 			$imgcheck = $db->fetch_array($query);
 			if($imgcheck['dateline'] > 0)
 			{
@@ -688,7 +688,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			}
 			else
 			{
-				$db->delete_query(TABLE_PREFIX."captcha", "imagehash='$imagehash'");
+				$db->delete_query("captcha", "imagehash='$imagehash'");
 			}
 		}
 		if(!$correct)
@@ -700,7 +700,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				"imagestring" => $randomstr,
 				"dateline" => time()
 			);
-			$db->insert_query(TABLE_PREFIX."captcha", $imagearray);
+			$db->insert_query("captcha", $imagearray);
 			eval("\$captcha = \"".$templates->get("post_captcha")."\";");			
 		}
 	}

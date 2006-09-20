@@ -101,7 +101,7 @@ if($mybb->input['action'] == "do_add")
 		"dateline" => time()
 	);
 	$plugins->run_hooks("admin_templates_do_add");
-	$db->insert_query(TABLE_PREFIX."templates", $newtemplate);
+	$db->insert_query("templates", $newtemplate);
 	$tid = $db->insert_id();
 	if($mybb->input['group'])
 	{
@@ -123,7 +123,7 @@ if($mybb->input['action'] == "do_addset")
 		"title" => $db->escape_string($mybb->input['title'])
 		);
 	$plugins->run_hooks("admin_templates_do_addset");
-	$db->insert_query(TABLE_PREFIX."templatesets", $newset);
+	$db->insert_query("templatesets", $newset);
 	$setid = $db->insert_id();
 	cpredirect("templates.php?".SID."&expand=$setid", $lang->set_added);
 }
@@ -185,7 +185,7 @@ if($mybb->input['action'] == "do_edit")
 		"dateline" => time()
 	);
 	$plugins->run_hooks("admin_templates_do_edit");
-	$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
+	$db->update_query("templates", $updatedtemplate, "tid='".$mybb->input['tid']."'");
 	if($mybb->input['group'])
 	{
 		$opengroup = "&amp;group=".$mybb->input['group']."#".$mybb->input['group'];
@@ -263,7 +263,7 @@ if($mybb->input['action'] == "do_replace")
 								"status" => '',
 								"dateline" => time()
 							);
-							$db->insert_query(TABLE_PREFIX."templates", $new_template);
+							$db->insert_query("templates", $new_template);
 							$new_tid = $db->insert_id();
 							$label = sprintf($lang->search_created_custom, $template['title']);
 							makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&amp;action=edit&amp;tid=".$new_tid));
@@ -275,7 +275,7 @@ if($mybb->input['action'] == "do_replace")
 							$updatedtemplate = array(
 								"template" => $db->escape_string($newtemplate)
 								);
-							$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$template['tid']."'");
+							$db->update_query("templates", $updatedtemplate, "tid='".$template['tid']."'");
 							$label = sprintf($lang->search_updated, $template['title']);
 							makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
 						}
@@ -496,7 +496,7 @@ if($mybb->input['action'] == "makeoriginals")
 			$updatedtemplate = array(
 				"template" => $db->escape_string($template['template'])
 			);
-			$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "title='".$template['title']."' AND sid='-2'");
+			$db->update_query("templates", $updatedtemplate, "title='".$template['title']."' AND sid='-2'");
 		} 
 		else 
 		{
@@ -505,7 +505,7 @@ if($mybb->input['action'] == "makeoriginals")
 				"title" => $db->escape_string($template['title']),
 				"template" => $db->escape_string($template['template'])
 			);
-			$db->insert_query(TABLE_PREFIX."templates", $newtemplate);
+			$db->insert_query("templates", $newtemplate);
 		}
 	}
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");

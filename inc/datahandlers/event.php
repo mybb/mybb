@@ -363,7 +363,7 @@ class EventDataHandler extends DataHandler
 
 		$plugins->run_hooks_by_ref("datahandler_event_insert", $this);
 
-		$db->insert_query(TABLE_PREFIX."events", $this->event_insert_data);
+		$db->insert_query("events", $this->event_insert_data);
 		$this->eid = $db->insert_id();
 
 		// Return the event's eid and whether or not it is private.
@@ -441,7 +441,7 @@ class EventDataHandler extends DataHandler
 
 		$plugins->run_hooks_by_ref("datahandler_event_update", $this);
 
-		$db->update_query(TABLE_PREFIX."events", $this->event_update_data, "eid='".intval($event['eid'])."'");
+		$db->update_query("events", $this->event_update_data, "eid='".intval($event['eid'])."'");
 
 		// Return the event's eid and whether or not it is private.
 		return array(

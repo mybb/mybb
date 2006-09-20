@@ -185,7 +185,7 @@ class FeedParser
 		$new_array = array();
 		foreach($array as $key => $value)
 		{
-			$new_key = strtolower($key);
+			$new_key = my_strtolower($key);
 			if(is_array($value))
 			{
 				$new_array[$new_key] = $this->keys_to_lowercase($value);

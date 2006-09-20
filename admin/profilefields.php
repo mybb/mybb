@@ -60,7 +60,7 @@ if($mybb->input['action'] == "do_add")
 		"hidden" => $db->escape_string($mybb->input['hidden']),
 	);
 	$plugins->run_hooks("admin_profilefields_do_ad");
-	$db->insert_query(TABLE_PREFIX."profilefields", $sqlarray);
+	$db->insert_query("profilefields", $sqlarray);
 	$fid = $db->insert_id();
 	$fieldname = "fid$fid";
 	$db->query("
@@ -68,7 +68,7 @@ if($mybb->input['action'] == "do_add")
 		TABLE ".TABLE_PREFIX."userfields 
 		ADD $fieldname TEXT
 	");
-	$db->optimize_table(TABLE_PREFIX."userfields");
+	$db->optimize_table("userfields");
 	cpredirect("profilefields.php?".SID, $lang->field_added);
 }
 if($mybb->input['action'] == "do_delete")
@@ -77,14 +77,14 @@ if($mybb->input['action'] == "do_delete")
 	{	
 		$fid = intval($mybb->input['fid']);
 		$plugins->run_hooks("admin_profilefields_do_delete");
-		$db->delete_query(TABLE_PREFIX."profilefields", "fid='$fid'");
+		$db->delete_query("profilefields", "fid='$fid'");
 		$fieldname = "fid$fid";
 		$db->query("
 			ALTER 
 			TABLE ".TABLE_PREFIX."userfields 
 			DROP $fieldname
 		");
-		$db->optimize_table(TABLE_PREFIX."userfields");
+		$db->optimize_table("userfields");
 		cpredirect("profilefields.php?".SID, $lang->field_deleted);
 	}
 	else
@@ -117,7 +117,7 @@ if($mybb->input['action'] == "do_edit")
 		"hidden" => $db->escape_string($mybb->input['hidden']),
 	);
 	$plugins->run_hooks("admin_profilefields_do_edit");
-	$db->update_query(TABLE_PREFIX."profilefields", $sqlarray, "fid='".intval($mybb->input['fid'])."'");
+	$db->update_query("profilefields", $sqlarray, "fid='".intval($mybb->input['fid'])."'");
 	cpredirect("profilefields.php?".SID, $lang->field_updated);
 }
 if($mybb->input['action'] == "add")
@@ -144,7 +144,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "delete")
 {
 	$fid = intval($mybb->input['fid']);
-	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "fid='$fid'");
+	$query = $db->simple_select("profilefields", "*", "fid='$fid'");
 	$profilefield = $db->fetch_array($query);
 	$plugins->run_hooks("admin_profilefields_delete");
 	cpheader();
@@ -164,7 +164,7 @@ if($mybb->input['action'] == "delete")
 if($mybb->input['action'] == "edit")
 {
 	$fid = intval($mybb->input['fid']);
-	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "fid='$fid'");
+	$query = $db->simple_select("profilefields", "*", "fid='$fid'");
 	$profilefield = $db->fetch_array($query);
 
 	$profilefield['name'] = stripslashes($profilefield['name']);
@@ -220,7 +220,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	$options = array(
 		"order_by" => "disporder"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "", $options);
+	$query = $db->simple_select("profilefields", "*", "", $options);
 	while($profilefield = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();

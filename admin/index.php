@@ -50,53 +50,53 @@ elseif($mybb->input['action'] == "home")
 		$serverload = $lang->unknown;
 	}
 	// Get the number of users
-	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS numusers");
+	$query = $db->simple_select("users", "COUNT(*) AS numusers");
 	$users = $db->fetch_array($query);
 
 	// Get the number of users awaiting validation
-	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS awaitingusers", "usergroup='5'");
+	$query = $db->simple_select("users", "COUNT(*) AS awaitingusers", "usergroup='5'");
 	$awaitingusers = $db->fetch_array($query);
 
 	// Get the number of new users for today
 	$timecut = time() - 86400;
-	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS newusers", "regdate>'$timecut'");
+	$query = $db->simple_select("users", "COUNT(*) AS newusers", "regdate>'$timecut'");
 	$newusers = $db->fetch_array($query);
 
 	// Get the number of active users today
-	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS activeusers", "lastvisit>'$timecut'");
+	$query = $db->simple_select("users", "COUNT(*) AS activeusers", "lastvisit>'$timecut'");
 	$activeusers = $db->fetch_array($query);
 
 	// Get the number of threads
-	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS numthreads", "visible='1' AND closed NOT LIKE 'moved|%'");
+	$query = $db->simple_select("threads", "COUNT(*) AS numthreads", "visible='1' AND closed NOT LIKE 'moved|%'");
 	$threads = $db->fetch_array($query);
 
 	// Get the number of unapproved threads
-	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS numthreads", "visible='0' AND closed NOT LIKE 'moved|%'");
+	$query = $db->simple_select("threads", "COUNT(*) AS numthreads", "visible='0' AND closed NOT LIKE 'moved|%'");
 	$unapproved_threads = $db->fetch_array($query);
 
 	// Get the number of new threads for today
-	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) AS newthreads", "dateline>'$timecut' AND visible='1' AND closed NOT LIKE 'moved|%'");
+	$query = $db->simple_select("threads", "COUNT(*) AS newthreads", "dateline>'$timecut' AND visible='1' AND closed NOT LIKE 'moved|%'");
 	$newthreads = $db->fetch_array($query);
 
 	// Get the number of posts
-	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS numposts", "visible='1'");
+	$query = $db->simple_select("posts", "COUNT(*) AS numposts", "visible='1'");
 	$posts = $db->fetch_array($query);
 
 	// Get the number of unapproved posts
-	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS numposts", "visible='0'");
+	$query = $db->simple_select("posts", "COUNT(*) AS numposts", "visible='0'");
 	$unapproved_posts = $db->fetch_array($query);
 
 	// Get the number of new posts for today
-	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS newposts", "dateline>'$timecut' AND visible='1'");
+	$query = $db->simple_select("posts", "COUNT(*) AS newposts", "dateline>'$timecut' AND visible='1'");
 	$newposts = $db->fetch_array($query);
 
 	// Get the number and total file size of attachments
-	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused", "visible='1' AND pid>0");
+	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused", "visible='1' AND pid>0");
 	$attachs = $db->fetch_array($query);
 	$attachs['spaceused'] = get_friendly_size($attachs['spaceused']);
 
 	// Get the number of unapproved attachments
-	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(*) AS numattachs", "visible='0' AND pid>0");
+	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs", "visible='0' AND pid>0");
 	$unapproved_attachs = $db->fetch_array($query);
 
 	// Fetch the last time an update check was run

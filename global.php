@@ -47,6 +47,7 @@ if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) 
 require_once MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
+$mybb->session = &$session;
 
 // Run global_start plugin hook now that the basics are set up
 $plugins->run_hooks("global_start");
@@ -93,7 +94,7 @@ if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 // If we're accessing a post, fetch the forum theme for it and if we're overriding it
 if(isset($mybb->input['pid']))
 {
-	$query = $db->simple_select(TABLE_PREFIX."forums f, ".TABLE_PREFIX."posts p", "f.style, f.overridestyle", "f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'");
+	$query = $db->simple_select("forums f, ".TABLE_PREFIX."posts p", "f.style, f.overridestyle", "f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'");
 	$style = $db->fetch_array($query);
 	$load_from_forum = 1;
 }
@@ -101,7 +102,7 @@ if(isset($mybb->input['pid']))
 // We have a thread id and a forum id, we can easily fetch the theme for this forum
 else if(isset($mybb->input['tid']))
 {
-	$query = $db->simple_select(TABLE_PREFIX."forums f, ".TABLE_PREFIX."threads t", "f.style, f.overridestyle", "f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select("forums f, ".TABLE_PREFIX."threads t", "f.style, f.overridestyle", "f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'");
 	$style = $db->fetch_array($query);
 	$load_from_forum = 1;
 }
@@ -109,7 +110,7 @@ else if(isset($mybb->input['tid']))
 // We have a forum id - simply load the theme from it
 else if(isset($mybb->input['fid']))
 {
-	$query = $db->simple_select(TABLE_PREFIX."forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'");
+	$query = $db->simple_select("forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'");
 	$style = $db->fetch_array($query);
 	$load_from_forum = 1;
 }
@@ -131,7 +132,7 @@ if(empty($loadstyle))
 }
 
 // Fetch the theme to load from the database
-$query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits, csscached", $loadstyle);
+$query = $db->simple_select("themes", "name, tid, themebits, csscached", $loadstyle);
 $theme = $db->fetch_array($query);
 
 // No theme was found - we attempt to load the master or any other theme
@@ -140,15 +141,15 @@ if(!$theme['tid'])
 	// Missing theme was from a forum, run a query to set any forums using the theme to the default
 	if($load_from_forum == 1)
 	{
-		$db->update_query(TABLE_PREFIX."forums", array("style" => 0), "style='{$style['style']}'");
+		$db->update_query("forums", array("style" => 0), "style='{$style['style']}'");
 	}
 	// Missing theme was from a user, run a query to set any users using the theme to the default
 	else if($load_from_user == 1)
 	{
-		$db->update_query(TABLE_PREFIX."users", array("style" => 0), "style='{$style['style']}'");
+		$db->update_query("users", array("style" => 0), "style='{$style['style']}'");
 	}
 	// Attempt to load the master or any other theme if the master is not available
-	$query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits, csscached", "", array("order_by" => "tid", "limit" => 1));
+	$query = $db->simple_select("themes", "name, tid, themebits, csscached", "", array("order_by" => "tid", "limit" => 1));
 	$theme = $db->fetch_array($query);
 }
 
@@ -278,7 +279,7 @@ $bannedwarning = '';
 if($mybb->usergroup['isbannedgroup'] == "yes")
 {
 	// Fetch details on their ban
-	$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='{$mybb->user['uid']}'");
+	$query = $db->simple_select("banned", "*", "uid='{$mybb->user['uid']}'");
 	$ban = $db->fetch_array($query);
 	if($ban['uid'])
 	{
@@ -344,7 +345,7 @@ if(is_array($bannedips))
 			// This address is banned, show an error and delete the session
 			if(strstr($session->ipaddress, $bannedip))
 			{
-				$db->delete_query(TABLE_PREFIX."sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
+				$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
 				error($lang->error_banned);
 			}
 		}
@@ -360,7 +361,7 @@ if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] != "yes"
 }
 
 // Load Limiting
-if(strtolower(substr(PHP_OS, 0, 3)) !== 'win')
+if(my_strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 {
 	if($uptime = @exec('uptime'))
 	{
@@ -385,7 +386,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && (isset($my
 	{
 		$condition = "uid='".intval($mybb->input['referrer'])."'";
 	}
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid", $condition);
+	$query = $db->simple_select("users", "uid", $condition);
 	$referrer = $db->fetch_array($query);
 	if($referrer['uid'])
 	{
@@ -409,7 +410,7 @@ $allowable_actions = array(
 		"resetpassword"
 	),
 );
-if($mybb->usergroup['canview'] != "yes" && !(strtolower(basename($_SERVER['PHP_SELF'])) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && strtolower(basename($_SERVER['PHP_SELF'])) != "captcha.php")
+if($mybb->usergroup['canview'] != "yes" && !(my_strtolower(basename($_SERVER['PHP_SELF'])) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && my_strtolower(basename($_SERVER['PHP_SELF'])) != "captcha.php")
 {
 	error_no_permission();
 }
@@ -438,7 +439,7 @@ if($_COOKIE['collapsed'])
 // Randomly expire threads
 if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 {
-	$db->delete_query(TABLE_PREFIX."threads", "deletetime != '0' AND deletetime < '".time()."'");
+	$db->delete_query("threads", "deletetime != '0' AND deletetime < '".time()."'");
 }
 
 // Set the link to the archive.

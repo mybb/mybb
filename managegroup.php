@@ -32,7 +32,7 @@ if($mybb->input['action'] == "joinrequests")
 }
 
 // Check that this user is actually a leader of this group
-$query = $db->simple_select(TABLE_PREFIX."groupleaders", "*", "uid='{$mybb->user['uid']}' AND gid='{$gid}'");
+$query = $db->simple_select("groupleaders", "*", "uid='{$mybb->user['uid']}' AND gid='{$gid}'");
 $groupleader = $db->fetch_array($query);
 if(!$groupleader['uid'])
 {
@@ -45,7 +45,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	{
 		error_no_permission();
 	}
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->input['username'])."'", array("limit" => 1));
+	$query = $db->simple_select("users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->input['username'])."'", array("limit" => 1));
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{
@@ -92,7 +92,7 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 	if(is_array($uidin))
 	{
 		$uids = implode(",", $uidin);
-		$db->delete_query(TABLE_PREFIX."joinrequests", "uid IN ({$uids})");
+		$db->delete_query("joinrequests", "uid IN ({$uids})");
 	}
 
 	$plugins->run_hooks("managegroup_do_joinrequests_end");
@@ -158,7 +158,7 @@ else
 	$lang->add_member = sprintf($lang->add_member, $usergroup['title']);
 	if($usergroup['type'] == 4)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."joinrequests", "COUNT(*) AS req", "gid='".$mybb->input['gid']."'");
+		$query = $db->simple_select("joinrequests", "COUNT(*) AS req", "gid='".$mybb->input['gid']."'");
 		$numrequests = $db->fetch_array($query);
 		if($numrequests['req'])
 		{
@@ -221,7 +221,7 @@ else
 		{
 			$email = '';
 		}
-		$query1 = $db->simple_select(TABLE_PREFIX."groupleaders", "uid", "uid='{$user['uid']}' AND gid='{$gid}'");
+		$query1 = $db->simple_select("groupleaders", "uid", "uid='{$user['uid']}' AND gid='{$gid}'");
 		$isleader = $db->fetch_array($query1);
 		$user['username'] = format_name($user['username'], $user['usergroup']);
 		if($isleader['uid'])

@@ -124,7 +124,7 @@ $l['admin_options'] = "Admin Options";
 $l['admin_edit_in_acp'] = "Edit this user in Admin CP";
 $l['admin_ban_in_acp'] = "Ban this user in Admin CP";
 $l['reputation'] = "Reputation:";
-$l['reputation_vote'] = "Vote";
+$l['reputation_vote'] = "Rate";
 $l['reputation_details'] = "Details";
 
 $l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";

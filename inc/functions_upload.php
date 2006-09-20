@@ -24,15 +24,15 @@ function remove_attachment($pid, $posthash, $aid)
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "")
 	{
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "aid='$aid' AND posthash='$posthash'");
+		$query = $db->simple_select("attachments", "*", "aid='$aid' AND posthash='$posthash'");
 		$attachment = $db->fetch_array($query);
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "aid='$aid' AND pid='$pid'");
+		$query = $db->simple_select("attachments", "*", "aid='$aid' AND pid='$pid'");
 		$attachment = $db->fetch_array($query);
 	}
-	$db->delete_query(TABLE_PREFIX."attachments", "aid='".$attachment['aid']."'");
+	$db->delete_query("attachments", "aid='".$attachment['aid']."'");
 	@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 	if($attachment['thumbnail'])
 	{
@@ -52,15 +52,15 @@ function remove_attachments($pid, $posthash="")
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "" && !$pid)
 	{
-	  $query = $db->simple_select(TABLE_PREFIX."attachments", "*", "posthash='$posthash'");
+	  $query = $db->simple_select("attachments", "*", "posthash='$posthash'");
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid='$pid'");
+		$query = $db->simple_select("attachments", "*", "pid='$pid'");
 	}
 	while($attachment = $db->fetch_array($query))
 	{
-		$db->delete_query(TABLE_PREFIX."attachments", "aid='".$attachment['aid']."'");
+		$db->delete_query("attachments", "aid='".$attachment['aid']."'");
 		@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 		if($attachment['thumbnail'])
 		{
@@ -109,7 +109,7 @@ function upload_avatar()
 	}
 
 	// Check we have a valid extension
-	$ext = get_extension(strtolower($avatar['name']));
+	$ext = get_extension(my_strtolower($avatar['name']));
 	if(!preg_match("#(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext)) {
 		$ret['error'] = $lang->error_avatartype;
 		return $ret;
@@ -146,7 +146,7 @@ function upload_avatar()
 	}
 	
 	// Check a list of known MIME types to establish what kind of avatar we're uploading
-	switch(strtolower($avatar['type']))
+	switch(my_strtolower($avatar['type']))
 	{
 		case "image/gif":
 			$img_type =  1;
@@ -242,7 +242,7 @@ function upload_attachment($attachment)
 	}
 	$ext = get_extension($attachment['name']);
 	// Check if we have a valid extension
-	$query = $db->simple_select(TABLE_PREFIX."attachtypes", "*", "extension='$ext'");
+	$query = $db->simple_select("attachtypes", "*", "extension='$ext'");
 	$attachtype = $db->fetch_array($query);
 	if(!$attachtype['atid'])
 	{
@@ -259,7 +259,7 @@ function upload_attachment($attachment)
 	// Double check attachment space usage
 	if($mybb->usergroup['attachquota'] > 0)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
 		$usage = $usage['ausage']+$attachment['size'];
 		if($usage > ($mybb->usergroup['attachquota']*1000))
@@ -271,7 +271,7 @@ function upload_attachment($attachment)
 	}
 
 	// Check if an attachment with this name is already in the post
-	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='$pid' AND pid!='0'))");
+	$query = $db->simple_select("attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='$pid' AND pid!='0'))");
 	$prevattach = $db->fetch_array($query);
 	if($prevattach['aid'])
 	{
@@ -320,7 +320,7 @@ function upload_attachment($attachment)
 	if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 	{
 		// Check a list of known MIME types to establish what kind of image we're uploading
-		switch(strtolower($file['type']))
+		switch(my_strtolower($file['type']))
 		{
 			case "image/gif":
 				$img_type =  1;
@@ -367,7 +367,7 @@ function upload_attachment($attachment)
 		$attacharray['visible'] = 1;
 	}
 
-	$db->insert_query(TABLE_PREFIX."attachments", $attacharray);
+	$db->insert_query("attachments", $attacharray);
 
 	$aid = $db->insert_id();
 	$ret['aid'] = $aid;

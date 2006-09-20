@@ -91,7 +91,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 			"salt" => $user['salt'],
 			"password" => $user['password']
 		);
-		$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$user['uid'], 1);
+		$db->update_query("users", $sql_array, "uid = ".$user['uid'], 1);
 	}
 
 	if(!$user['loginkey'])
@@ -100,7 +100,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 		$sql_array = array(
 			"loginkey" => $user['loginkey']
 		);
-		$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$user['uid'], 1);
+		$db->update_query("users", $sql_array, "uid = ".$user['uid'], 1);
 	}
 	if(salt_password(md5($password), $user['salt']) == $user['password'])
 	{
@@ -159,7 +159,7 @@ function update_password($uid, $password, $salt="")
 	//
 	$newpassword['password'] = $saltedpw;
 	$newpassword['loginkey'] = $loginkey;
-	$db->update_query(TABLE_PREFIX."users", $newpassword, "uid='$uid'", 1);
+	$db->update_query("users", $newpassword, "uid='$uid'", 1);
 
 	$plugins->run_hooks("password_changed");
 
@@ -211,7 +211,7 @@ function update_salt($uid)
 	$sql_array = array(
 		"salt" => $salt
 	);
-	$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$uid, 1);
+	$db->update_query("users", $sql_array, "uid = ".$uid, 1);
 	return $salt;
 }
 
@@ -228,7 +228,7 @@ function update_loginkey($uid)
 	$sql_array = array(
 		"loginkey" => $loginkey
 	);
-	$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$uid, 1);
+	$db->update_query("users", $sql_array, "uid = ".$uid, 1);
 	return $loginkey;
 
 }
@@ -554,7 +554,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 	}
 	if(is_array($pmcount))
 	{
-		$db->update_query(TABLE_PREFIX."users", $pmcount, "uid='".intval($uid)."'");
+		$db->update_query("users", $pmcount, "uid='".intval($uid)."'");
 	}
 	return $pmcount;
 }

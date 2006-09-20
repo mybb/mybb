@@ -38,7 +38,7 @@ if($mybb->input['action'] == "do_updateprefs")
 	$options = array(
 		"limit" => "1"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'", $options);
+	$query = $db->simple_select("adminoptions", "*", "uid='$user[uid]'", $options);
 	$adminoptions = $db->fetch_array($query);
 	$sqlarray = array(
 		"notes" => $db->escape_string($mybb->input['notes']),
@@ -47,11 +47,11 @@ if($mybb->input['action'] == "do_updateprefs")
 	$plugins->run_hooks("admin_adminoptions_do_updateprefs");
 	if(isset($adminoptions['uid']))
 	{
-		$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='".$user['uid']."'");
+		$db->update_query("adminoptions", $sqlarray, "uid='".$user['uid']."'");
 	}
 	else
 	{
-		$db->insert_query(TABLE_PREFIX."adminoptions", $sqlarray);
+		$db->insert_query("adminoptions", $sqlarray);
 	}
 	cpredirect("adminoptions.php?".SID, $lang->prefs_updated);
 }
@@ -70,7 +70,7 @@ if($mybb->input['action'] == "revokeperms")
 		"permsset" => 0
 		);
 	$plugins->run_hooks("admin_adminoptions_revokeperms");
-	$db->update_query(TABLE_PREFIX."adminoptions", $newperms, "uid='$uid'");
+	$db->update_query("adminoptions", $newperms, "uid='$uid'");
 
 	if($uid < 0)
 	{
@@ -96,7 +96,7 @@ if($mybb->input['action'] == "do_updateperms")
 	$options = array(
 		"limit" => "1"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "permsset", "uid='$uid'", $options);
+	$query = $db->simple_select("adminoptions", "permsset", "uid='$uid'", $options);
 	$adminoptions = $db->fetch_array($query);
 
 	// If no custom permissions are set for this admin, create a blank custom set first.
@@ -105,7 +105,7 @@ if($mybb->input['action'] == "do_updateperms")
 		$options_update = array(
 			"uid" => $uid
 		);
-		$db->insert_query(TABLE_PREFIX."adminoptions", $options_update);
+		$db->insert_query("adminoptions", $options_update);
 	}
 
 	// Update the admin to the new permissions.
@@ -134,7 +134,7 @@ if($mybb->input['action'] == "do_updateperms")
 		
 	$plugins->run_hooks("admin_adminoptions_do_updateperms");
 	
-	$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='$uid'");
+	$db->update_query("adminoptions", $sqlarray, "uid='$uid'");
 
 	// Redirect based on what the user did.
 	if($uid == 0)
@@ -180,7 +180,7 @@ if($mybb->input['action'] == "updateperms")
 	elseif($uid < 0)
 	{
 		$gid = abs($uid);
-		$query = $db->simple_select(TABLE_PREFIX."usergroups", "title", "gid='$gid'");
+		$query = $db->simple_select("usergroups", "title", "gid='$gid'");
 		$group = $db->fetch_array($query);
 		$tsub = sprintf($lang->edit_admin_group_perms, $group['title']);
 		$permissions = getadminpermissions("", $gid);
@@ -190,7 +190,7 @@ if($mybb->input['action'] == "updateperms")
 	else
 	{
 		$tsub = $lang->edit_default_perms;
-		$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='0'");
+		$query = $db->simple_select("adminoptions", "*", "uid='0'");
 		$permissions = $db->fetch_array($query);
 		addacpnav($lang->nav_edit_def_permissions);
 	}
@@ -231,7 +231,7 @@ if($mybb->input['action'] == "adminpermissions")
 	
 	$usergroups = array();
 
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "cancp='yes'");
+	$query = $db->simple_select("usergroups", "*", "cancp='yes'");
 	while($usergroup = $db->fetch_array($query))
 	{
 		$usergroups[$usergroup['gid']] = $usergroup;
@@ -341,7 +341,7 @@ if($mybb->input['action'] == "adminpermissions")
 if($mybb->input['action'] == "updateprefs" || $mybb->input['action'] == "")
 {
 	
-	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'");
+	$query = $db->simple_select("adminoptions", "*", "uid='$user[uid]'");
 	$adminoptions = $db->fetch_array($query);
 
 	$plugins->run_hooks("admin_adminoptions_updateprefs");

@@ -60,7 +60,7 @@ if($mybb->input['action'] == "do_add")
 		"pid" => $mybb->input['pid'],
 	);
 	$plugins->run_hooks("admin_themes_do_add");
-	$db->insert_query(TABLE_PREFIX."themes", $themearray);
+	$db->insert_query("themes", $themearray);
 	$tid = $db->insert_id();
 	update_theme($tid, $mybb->input['pid'], "", "", 0, 1);
 	cpredirect("themes.php?".SID, $lang->theme_added);
@@ -109,7 +109,7 @@ if($mybb->input['action'] == "do_edit")
 		"allowedgroups" => $allowedgroups,
 	);
 	$plugins->run_hooks("admin_themes_do_edit");
-	$db->update_query(TABLE_PREFIX."themes", $themearray, "tid='".intval($mybb->input['tid'])."'");
+	$db->update_query("themes", $themearray, "tid='".intval($mybb->input['tid'])."'");
 
 	cpredirect("themes.php?".SID, $lang->theme_updated."<br />$themelist");
 }
@@ -316,7 +316,7 @@ if($mybb->input['action'] == "do_import")
 	}
 	$version = $theme['attributes']['version'];
 
-	$query = $db->simple_select(TABLE_PREFIX."themes", "tid", "name='".$db->escape_string($name)."'", array("limit" => 1));
+	$query = $db->simple_select("themes", "tid", "name='".$db->escape_string($name)."'", array("limit" => 1));
 	$existingtheme = $db->fetch_array($query);
 	if($existingtheme['tid'])
 	{
@@ -378,7 +378,7 @@ if($mybb->input['action'] == "do_import")
 		"allowedgroups" => 'all',
 	);
 
-	$db->insert_query(TABLE_PREFIX."themes", $themearray);
+	$db->insert_query("themes", $themearray);
 	$tid = $db->insert_id();
 	update_theme($tid, $mybb->input['pid'], $themebits, $css, 0);
 	$lang->theme_imported = sprintf($lang->theme_imported, $name);
@@ -432,7 +432,7 @@ if($mybb->input['action'] == "edit")
 		"order_by" => "title",
 		"order_dir" => "ASC"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title", "", $options);
+	$query = $db->simple_select("usergroups", "gid, title", "", $options);
 	$has_check = 0;
 	while($usergroup = $db->fetch_array($query))
 	{

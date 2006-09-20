@@ -26,7 +26,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 	if(!is_array($pforumcache))
 	{
 		// Get Forums
-		$query = $db->simple_select(TABLE_PREFIX."forums f", "f.*", "linkto='' AND active!='no'", array('order_by' => "f.pid, f.disporder"));
+		$query = $db->simple_select("forums f", "f.*", "linkto='' AND active!='no'", array('order_by' => "f.pid, f.disporder"));
 		while($forum = $db->fetch_array($query))
 		{
 			$pforumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -68,7 +68,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 					}
 					if(empty($forum['password']) || $pwverified == 1)
 					{
-						$forumlistbits .= "<option value=\"$forum[fid]\">$depth $forum[name]</option>\n";
+						$forumlistbits .= "<option value=\"{$forum['fid']}\">$depth {$forum['name']}</option>\n";
 					}
 					if($pforumcache[$forum['fid']])
 					{
@@ -148,7 +148,7 @@ function get_unsearchable_forums($pid="0", $first=1)
 			{
 				$unsearchableforums .= ",";
 			}
-			$unsearchableforums .= "'$forum[fid]'";
+			$unsearchableforums .= "'{$forum['fid']}'";
 		}
 	}
 	$unsearchable = $unsearchableforums;
@@ -163,7 +163,7 @@ function get_unsearchable_forums($pid="0", $first=1)
  */
 function clean_keywords($keywords)
 {
-	$keywords = strtolower($keywords);
+	$keywords = my_strtolower($keywords);
 	$keywords = str_replace("%", "\\%", $keywords);
 	$keywords = preg_replace("#\*{2,}#s", "*", $keywords);
 	$keywords = str_replace("*", "%", $keywords);
@@ -184,7 +184,7 @@ function clean_keywords_ft($keywords)
 	{
 		return false;
 	}
-	$keywords = strtolower($keywords);
+	$keywords = my_strtolower($keywords);
 	$keywords = str_replace("%", "\\%", $keywords);
 	$keywords = preg_replace("#\*{2,}#s", "*", $keywords);
 	$keywords = preg_replace("#([\[\]\|\.\,:])#s", " ", $keywords);
@@ -309,7 +309,7 @@ function perform_search_mysql($search)
 					$matches = preg_split("#\s{1,}(and|or)\s{1,}#", $phrase, -1, PREG_SPLIT_DELIM_CAPTURE);
 					$count_matches = count($matches);
 					
-					for($i=0;$i<$count_matches;$i++)
+					for($i=0;$i<$count_matches;++$i)
 					{
 						$word = trim($matches[$i]);
 						if(empty($word))
@@ -387,7 +387,7 @@ function perform_search_mysql($search)
 		}
 		else
 		{
-			$search['author'] = strtolower($search['author']);
+			$search['author'] = my_strtolower($search['author']);
 			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
 		}
 		while($user = $db->fetch_array($query))
@@ -628,7 +628,7 @@ function perform_search_mysql_ft($search)
 		}
 		else
 		{
-			$search['author'] = strtolower($search['author']);
+			$search['author'] = my_strtolower($search['author']);
 			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
 		}
 		while($user = $db->fetch_array($query))

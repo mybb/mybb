@@ -108,7 +108,7 @@ switch($action)
 		
 		$pids = array();		
 		// Fetch list of post IDs to be shown
-		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='{$id}' AND visible='1'", array('limit_start' => $start, 'limit' => $perpage));
+		$query = $db->simple_select("posts", "pid", "tid='{$id}' AND visible='1'", array('limit_start' => $start, 'limit' => $perpage));
 		while($post = $db->fetch_array($query))
 		{
 			$pids[$post['pid']] = $post['pid'];
@@ -117,7 +117,7 @@ switch($action)
 		$pids = implode(",", $pids);
 
 		// Build attachments cache
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid IN ({$pids})");
+		$query = $db->simple_select("attachments", "*", "pid IN ({$pids})");
 		while($attachment = $db->fetch_array($query))
 		{
 			$acache[$attachment['pid']][$attachment['aid']] = $attachment;
@@ -188,7 +188,7 @@ switch($action)
 		}
 
 		// Paginate this forum
-		$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS threads", "fid='{$id}' AND visible='1'");
+		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid='{$id}' AND visible='1'");
 		$threadcount = $db->fetch_field($query, "threads");
 
 		// Build the navigation
@@ -231,7 +231,7 @@ switch($action)
 		}
 
 		// Show subforums.
-		$query = $db->simple_select(TABLE_PREFIX."forums", "COUNT(fid) AS subforums", "pid='{$id}' AND status='1'");
+		$query = $db->simple_select("forums", "COUNT(fid) AS subforums", "pid='{$id}' AND status='1'");
 		$subforumcount = $db->fetch_field($query, "subforums");
 		if($subforumcount > 0)
 		{
@@ -248,7 +248,7 @@ switch($action)
 		{
 			$sql = build_parent_list($forum['fid'], "fid", "OR", $forum['parentlist']);
 			$time = time();
-			$query = $db->simple_select(TABLE_PREFIX."announcements", "*", "startdate < '{$time}' AND (enddate > '{$time}' OR enddate=0) AND ({$sql} OR fid='-1')");
+			$query = $db->simple_select("announcements", "*", "startdate < '{$time}' AND (enddate > '{$time}' OR enddate=0) AND ({$sql} OR fid='-1')");
 			if($db->num_rows($query) > 0)
 			{
 				echo "<div class=\"announcementlist\">\n";
@@ -272,7 +272,7 @@ switch($action)
 				'limit_start' => $start,
 				'limit' => $perpage
 			);
-			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='{$id}' AND visible='1' AND sticky='1' AND closed NOT LIKE 'moved|%'", $options);
+			$query = $db->simple_select("threads", "*", "fid='{$id}' AND visible='1' AND sticky='1' AND closed NOT LIKE 'moved|%'", $options);
 			if($db->num_rows($query) > 0)
 			{
 				echo "<div class=\"threadlist\">\n";
@@ -304,7 +304,7 @@ switch($action)
 				'limit_start' => $start,
 				'limit' => $perpage
 			);
-			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid='{$id}' AND visible='1' AND sticky='0' AND closed NOT LIKE 'moved|%'", $options);
+			$query = $db->simple_select("threads", "*", "fid='{$id}' AND visible='1' AND sticky='0' AND closed NOT LIKE 'moved|%'", $options);
 			if($db->num_rows($query) > 0)
 			{
 				echo "<div class=\"threadlist\">\n";
@@ -365,7 +365,7 @@ function build_archive_forumbits($pid=0)
 	if(!is_array($fcache))
 	{
 		// Fetch forums
-		$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active!='no' AND password=''", array('order_by' =>'pid, disporder'));
+		$query = $db->simple_select("forums", "*", "active!='no' AND password=''", array('order_by' =>'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;

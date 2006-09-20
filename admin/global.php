@@ -66,7 +66,7 @@ if($mybb->input['do'] == "login")
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if($user['uid'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".$user['uid']."'");
+		$query = $db->simple_select("users", "*", "uid='".$user['uid']."'");
 		$user = $db->fetch_array($query);
 	}
 	$failcheck = 1;
@@ -84,7 +84,7 @@ if($mybb->input['do'] == "login")
 			"dateline" => time(),
 			"lastactive" => time()
 		);
-		$db->insert_query(TABLE_PREFIX."adminsessions", $admin_session);
+		$db->insert_query("adminsessions", $admin_session);
 		$url = "index.php?adminsid=$sid";
 		if($mybb->input['goto'])
 		{
@@ -97,7 +97,7 @@ else if($mybb->input['action'] == "logout")
 {
 	$lang->invalid_admin = $lang->logged_out_admin;
 	// Delete session from the database
-	$db->delete_query(TABLE_PREFIX."adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+	$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
 }
 else
 {
@@ -109,7 +109,7 @@ else
 	// Otherwise, check admin session
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."adminsessions", "*", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+		$query = $db->simple_select("adminsessions", "*", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
 		$admin_session = $db->fetch_array($query);
 
 		// No matching admin session found - show message on login screen
@@ -120,7 +120,7 @@ else
 		else
 		{
 			// Fetch the user from the admin session
-			$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='{$admin_session['uid']}'");
+			$query = $db->simple_select("users", "*", "uid='{$admin_session['uid']}'");
 			$user = $db->fetch_array($query);
 
 			// Login key has changed - force logout
@@ -134,7 +134,7 @@ else
 				if($admin_session['lastactive'] < time()-7200)
 				{
 					$lang->invalid_admin = $lang->admin_session_expired;
-					$db->delete_query(TABLE_PREFIX."adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+					$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
 					unset($user);
 				}
 				// If IP matching is set - check IP address against the session IP
@@ -144,7 +144,7 @@ else
 					$exploded_admin_ip = explode(".", $admin_session['ip']);
 					$matches = 0;
 					$valid_ip = false;
-					for($i = 0; $i < ADMIN_IP_SEGMENTS; $i++)
+					for($i = 0; $i < ADMIN_IP_SEGMENTS; ++$i)
 					{
 						if($exploded_ip[$i] == $exploded_admin_ip[$i])
 						{
@@ -186,9 +186,9 @@ if($admingroup['cancp'] != "yes" || !$user['uid'])
 if($user['uid'])
 {
 	$mybbadmin = $mybb->user = $user;
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='{$user['usergroup']}'");
+	$query = $db->simple_select("usergroups", "*", "gid='{$user['usergroup']}'");
 	$mybb->usergroup = $db->fetch_array($query);
-	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='{$user['uid']}'");
+	$query = $db->simple_select("adminoptions", "*", "uid='{$user['uid']}'");
 	$adminoptions = $db->fetch_array($query);
 	if($adminoptions['cpstyle'] && file_exists(MYBB_ADMIN_DIR."styles/{$adminoptions['cpstyle']}/stylesheet.css"))
 	{
@@ -202,7 +202,7 @@ if($user['uid'])
 			"lastactive" => time(),
 			"ip" => $ipaddress
 		);
-		$db->update_query(TABLE_PREFIX."adminsessions", $updated_session, "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+		$db->update_query("adminsessions", $updated_session, "sid='".$db->escape_string($mybb->input['adminsid'])."'");
 	}
 	define("SID", "adminsid={$admin_session['sid']}");
 }
@@ -284,7 +284,7 @@ $navbits[0]['url'] = "index.php?".SID."&amp;action=home";
 if($rand == 2 || $rand == 5)
 {
 	$stamp = time()-604800;
-	$db->delete_query(TABLE_PREFIX."adminsessions", "lastactive<'$stamp'");
+	$db->delete_query("adminsessions", "lastactive<'$stamp'");
 }
 
 $plugins->run_hooks("admin_global_end");

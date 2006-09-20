@@ -98,8 +98,8 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 					"status" => 0,
 					"readtime" => 0
 					);
-				$db->insert_query(TABLE_PREFIX."privatemessages", $reportpm);
-				$db->update_query(TABLE_PREFIX."users", array('pmpopup' => 'new'), "uid='{$mod['uid']}'");
+				$db->insert_query("privatemessages", $reportpm);
+				$db->update_query("users", array('pmpopup' => 'new'), "uid='{$mod['uid']}'");
 			}
 			else
 			{
@@ -118,7 +118,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			"reportstatus" => 0,
 			"reason" => $db->escape_string(htmlspecialchars_uni($mybb->input['reason']))
 			);
-		$db->insert_query(TABLE_PREFIX."reportedposts", $reportedpost);
+		$db->insert_query("reportedposts", $reportedpost);
 		$cache->updatereportedposts();
 	}
 	eval("\$report = \"".$templates->get("report_thanks")."\";");

@@ -35,6 +35,8 @@ if(!defined('MYBB_ROOT'))
 	define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 }
 
+require_once MYBB_ROOT."inc/functions.php";
+
 require_once MYBB_ROOT."inc/class_timers.php";
 $maintimer = new timer();
 
@@ -60,8 +62,6 @@ if(!function_exists($config['dbtype']."_connect"))
 
 require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine;
-
-require_once MYBB_ROOT."inc/functions.php";
 
 require_once MYBB_ROOT."inc/class_templates.php";
 $templates = new templates;
@@ -100,7 +100,7 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 		"order_by" => "title",
 		"order_dir" => "ASC"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."settings", "value, name", "", $options);
+	$query = $db->simple_select("settings", "value, name", "", $options);
 	while($setting = $db->fetch_array($query))
 	{
 		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
@@ -112,8 +112,9 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 	}
 }
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;
-$mybb->settings = $settings;
-
+$mybb->settings = &$settings;
+$mybb->config = &$config;
+$mybb->cache = &$cache;
 
 // Load plugins
 if(!defined("NO_PLUGINS"))

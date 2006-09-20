@@ -31,107 +31,107 @@ function upgrade5_dbchanges()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE avatartype avatartype varchar(10) NOT NULL;");
-	if(!$db->field_exists('totalpms', TABLE_PREFIX."users"))
+	if(!$db->field_exists('totalpms', "users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD totalpms int(10) NOT NULL default '0' AFTER showcodebuttons;");
 	}
 	
-	if(!$db->field_exists('newpms', TABLE_PREFIX."users"))
+	if(!$db->field_exists('newpms', "users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD newpms int(10) NOT NULL default '0' AFTER totalpms;");
 	}
 	
-	if(!$db->field_exists('unreadpms', TABLE_PREFIX."users"))
+	if(!$db->field_exists('unreadpms', "users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD unreadpms int(10) NOT NULL default '0' AFTER newpms;");
 	}
 	
-	if(!$db->field_exists('showredirect', TABLE_PREFIX."users"))
+	if(!$db->field_exists('showredirect', "users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD showredirect char(3) NOT NULL default '' AFTER showquickreply;");
 	}
 	
-	if(!$db->field_exists('avatardimensions', TABLE_PREFIX."users"))
+	if(!$db->field_exists('avatardimensions', "users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD avatardimensions varchar(10) NOT NULL default '' AFTER avatar;");
 	}
 	
-	if(!$db->field_exists('unapprovedposts', TABLE_PREFIX."threads"))
+	if(!$db->field_exists('unapprovedposts', "threads"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD unapprovedposts INT(10) unsigned NOT NULL default '0' AFTER visible;");
 	}
 	
-	if(!$db->field_exists('unapprovedthreads', TABLE_PREFIX."forums"))
+	if(!$db->field_exists('unapprovedthreads', "forums"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD unapprovedthreads INT(10) unsigned NOT NULL default '0' AFTER rules;");
 	}
 	
-	if(!$db->field_exists('unapprovedposts', TABLE_PREFIX."forums"))
+	if(!$db->field_exists('unapprovedposts', "forums"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD unapprovedposts INT(10) unsigned NOT NULL default '0' AFTER rules;");
 	}
 	
-	if(!$db->field_exists('defaultdatecut', TABLE_PREFIX."forums"))
+	if(!$db->field_exists('defaultdatecut', "forums"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultdatecut smallint(4) unsigned NOT NULL default '0' AFTER unapprovedposts;");
 	}
 	
-	if(!$db->field_exists('defaultsortby', TABLE_PREFIX."forums"))
+	if(!$db->field_exists('defaultsortby', "forums"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortby varchar(10) NOT NULL default '' AFTER defaultdatecut;");
 	}
 	
-	if(!$db->field_exists('defaultsortorder', TABLE_PREFIX."forums"))
+	if(!$db->field_exists('defaultsortorder', "forums"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD defaultsortorder varchar(4) NOT NULL default '' AFTER defaultsortby;");
 	}
 	
-	if(!$db->field_exists('lastposteruid', TABLE_PREFIX."forums"))
+	if(!$db->field_exists('lastposteruid', "forums"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD lastposteruid int(10) unsigned NOT NULL default '0' AFTER lastposter;");
 	}
 	
-	if(!$db->field_exists('lastpostsubject', TABLE_PREFIX."forums"))
+	if(!$db->field_exists('lastpostsubject', "forums"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD lastpostsubject varchar(120) NOT NULL default '' AFTER lastposttid");
 	}
 	
-	if(!$db->field_exists('lastposteruid', TABLE_PREFIX."threads"))
+	if(!$db->field_exists('lastposteruid', "threads"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD lastposteruid int unsigned NOT NULL default '0' AFTER lastposter");
 	}
 	
-	if(!$db->field_exists('canmanagemembers', TABLE_PREFIX."groupleaders"))
+	if(!$db->field_exists('canmanagemembers', "groupleaders"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."groupleaders ADD canmanagemembers char(3) NOT NULL default '' AFTER uid;");
 	}
 	
-	if(!$db->field_exists('canmanagerequests', TABLE_PREFIX."groupleaders"))
+	if(!$db->field_exists('canmanagerequests', "groupleaders"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."groupleaders ADD canmanagerequests char(3) NOT NULL default '' AFTER canmanagemembers;");
 	}
 	
-	if(!$db->field_exists('caneditlangs', TABLE_PREFIX."adminoptions"))
+	if(!$db->field_exists('caneditlangs', "adminoptions"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD caneditlangs char(3) NOT NULL default '' AFTER canedithelp;");
 	}
 	
-	if(!$db->field_exists('canrundbtools', TABLE_PREFIX."adminoptions"))
+	if(!$db->field_exists('canrundbtools', "adminoptions"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD canrundbtools char(3) NOT NULL default ''");
 	}
 	
-	if(!$db->field_exists('allowedgroups', TABLE_PREFIX."themes"))
+	if(!$db->field_exists('allowedgroups', "themes"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD allowedgroups text NOT NULL default '' AFTER extracss;");
 	}
 	
-	if(!$db->field_exists('canmovetononmodforum', TABLE_PREFIX."moderators"))
+	if(!$db->field_exists('canmovetononmodforum', "moderators"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."moderators ADD canmovetononmodforum char(3) NOT NULL default '' AFTER canmanagethreads;");
 	}
 	
-	if(!$db->field_exists('csscached', TABLE_PREFIX."themes"))
+	if(!$db->field_exists('csscached', "themes"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD csscached bigint(30) NOT NULL default '0'");
 	}
@@ -253,44 +253,44 @@ function upgrade5_dbchanges()
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='1'");
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='2' WHERE cancp='yes'");
 
-	if($db->field_exists('rating', TABLE_PREFIX."users"))
+	if($db->field_exists('rating', "users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP rating;");
 	}
 	
-	if(!$db->field_exists('attachmentcount', TABLE_PREFIX."threads"))
+	if(!$db->field_exists('attachmentcount', "threads"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD attachmentcount int(10) unsigned NOT NULL default '0'");
 	}
 	
-	if(!$db->field_exists('posthash', TABLE_PREFIX."posts"))
+	if(!$db->field_exists('posthash', "posts"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD posthash varchar(32) NOT NULL default '' AFTER visible");
 	}
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes CHANGE extension extension varchar(10) NOT NULL;");
 	
-	if(!$db->field_exists('deletetime', TABLE_PREFIX."threads"))
+	if(!$db->field_exists('deletetime', "threads"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD deletetime int(10) unsigned NOT NULL default '0' AFTER attachmentcount");
 	}
 	
-	if(!$db->field_exists('loginattempts', TABLE_PREFIX."sessions"))
+	if(!$db->field_exists('loginattempts', "sessions"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."sessions ADD loginattempts tinyint(2) NOT NULL default '1'");
 	}
 	
-	if(!$db->field_exists('failedlogin', TABLE_PREFIX."sessions"))
+	if(!$db->field_exists('failedlogin', "sessions"))
 	{
   		$db->query("ALTER TABLE ".TABLE_PREFIX."sessions ADD failedlogin bigint(30) NOT NULL default '0'");
 	}
 	
-	if(!$db->field_exists('canviewthreads', TABLE_PREFIX."usergroups"))
+	if(!$db->field_exists('canviewthreads', "usergroups"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
 	}
 	
-	if(!$db->field_exists('canviewthreads', TABLE_PREFIX."forumpermissions"))
+	if(!$db->field_exists('canviewthreads', "forumpermissions"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
 	}
@@ -302,7 +302,7 @@ function upgrade5_dbchanges()
 	  dateline bigint(30) NOT NULL default '0'
 	) TYPE=MyISAM;");
 
-	if(!$db->field_exists('data', TABLE_PREFIX."moderatorlog"))
+	if(!$db->field_exists('data', "moderatorlog"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL default '' AFTER action;");
 	}
@@ -329,7 +329,7 @@ function upgrade5_dbchanges()
 	PRIMARY KEY (tid)
 ) TYPE=MyISAM;");
 
-	if(!$db->field_exists('disporder', TABLE_PREFIX."usergroups"))
+	if(!$db->field_exists('disporder', "usergroups"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD disporder smallint(6) NOT NULL default '0' AFTER image");
 	}
@@ -351,7 +351,7 @@ function upgrade5_redoconfig()
 	$uid = 0;
 	if($mybb->input['username'] != '' && !$mybb->input['uid'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->simple_select("users", "uid", "username='".$db->escape_string($mybb->input['username'])."'");
 		$uid = $db->fetch_field($query, "uid");
 		if(!$uid)
 		{
@@ -467,7 +467,7 @@ function upgrade5_lastposts()
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) as num_threads", "t.closed NOT LIKE 'moved|%'");
+		$query = $db->simple_select("threads", "COUNT(*) as num_threads", "t.closed NOT LIKE 'moved|%'");
 		$num_threads = $db->fetch_field($query, 'num_threads');
 		$tpp = intval($_POST['tpp']);
 		$start = intval($_POST['start']);
@@ -477,7 +477,9 @@ function upgrade5_lastposts()
 			$end = $num_threads;
 		}
 		echo "<p>Updating {$start} to {$end} of {$num_threads}...</p>";
-		$query = $db->simple_select(TABLE_PREFIX."threads", "tid, firstpost", "t.closed NOT LIKE 'moved|%'", array("order_by" => "tid", "order_dir" => "asc", "limit" => $tpp, "limit_start" => $start));
+
+		$query = $db->simple_select("threads", "tid, firstpost", "t.closed NOT LIKE 'moved|%'", array("order_by" => "tid", "order_dir" => "asc", "limit" => $tpp, "limit_start" => $start));
+
 		while($thread = $db->fetch_array($query))
 		{
 			update_thread_count($thread['tid']);
@@ -507,7 +509,7 @@ function upgrade5_forumlastposts()
 	global $db, $output;
 	$output->print_header("Rebuilding Forum Last Posts");
 	echo "<p>Rebuilding last post information for forums..</p>";
-	$query = $db->simple_select(TABLE_PREFIX."forums", "fid");
+	$query = $db->simple_select("forums", "fid");
 	while($forum = $db->fetch_array($query))
 	{
 		update_forum_count($forum['fid']);
@@ -525,24 +527,24 @@ function upgrade5_indexes()
 	echo "<p>Checking and creating fulltext database indexes..</p>";
 
 
-	if($db->is_fulltext(TABLE_PREFIX."threads", "subject"))
+	if($db->is_fulltext("threads", "subject"))
 	{
-		$db->drop_index(TABLE_PREFIX."threads", "subject");
+		$db->drop_index("threads", "subject");
 	}
-	if($db->is_fulltext(TABLE_PREFIX."threads", "subject_2"))
+	if($db->is_fulltext("threads", "subject_2"))
 	{
-		$db->drop_index(TABLE_PREFIX."threads", "subject_2");
+		$db->drop_index("threads", "subject_2");
 	}
 
-	if($db->supports_fulltext(TABLE_PREFIX."threads"))
+	if($db->supports_fulltext("threads"))
 	{
-		$db->create_fulltext_index(TABLE_PREFIX."threads", "subject");
+		$db->create_fulltext_index("threads", "subject");
 	}
-	if($db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
+	if($db->supports_fulltext_boolean("posts"))
 	{
-		if(!$db->is_fulltext(TABLE_PREFIX."posts", "message"))
+		if(!$db->is_fulltext("posts", "message"))
 		{
-			$db->create_fulltext_index(TABLE_PREFIX."posts", "message");
+			$db->create_fulltext_index("posts", "message");
 		}
 	}
 

@@ -65,7 +65,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 	{
 		$time = time();
 		$datecut = $time-(60*60*$mybb->settings['betweenregstime']);
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "regip='".$db->escape_string($session->ipaddress)."' AND regdate > '$datecut'");
+		$query = $db->simple_select("users", "*", "regip='".$db->escape_string($session->ipaddress)."' AND regdate > '$datecut'");
 		$regcount = $db->num_rows($query);
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
 		{
@@ -143,13 +143,13 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
-		$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='$imagehash' AND imagestring='$imagestring'");
+		$query = $db->simple_select("captcha", "*", "imagehash='$imagehash' AND imagestring='$imagestring'");
 		$imgcheck = $db->fetch_array($query);
 		if(!$imgcheck['dateline'])
 		{
 			$errors[]  = $lang->error_regimageinvalid;
 		}
-		$db->delete_query(TABLE_PREFIX."captcha", "imagehash='$imagehash'");
+		$db->delete_query("captcha", "imagehash='$imagehash'");
 	}
 
 	if(is_array($errors))
@@ -223,7 +223,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				"code" => $activationcode,
 				"type" => "r"
 			);
-			$db->insert_query(TABLE_PREFIX."awaitingactivation", $activationarray);
+			$db->insert_query("awaitingactivation", $activationarray);
 			$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
@@ -276,7 +276,7 @@ if($mybb->input['action'] == "register")
 		$plugins->run_hooks("member_register_start");
 
 		$bdaysel = '';
-		for($i = 1; $i <= 31; $i++)
+		for($i = 1; $i <= 31; ++$i)
 		{
 			$bdaysel .= "<option value=\"$i\">$i</option>\n";
 		}
@@ -308,7 +308,7 @@ if($mybb->input['action'] == "register")
 		}
 		$timenow = my_date($mybb->settings['timeformat'], time(), "-");
 		$lang->time_offset_desc = sprintf($lang->time_offset_desc, $timenow);
-		for($i = -12; $i <= 12; $i++)
+		for($i = -12; $i <= 12; ++$i)
 		{
 			if($i == 0)
 			{
@@ -369,19 +369,19 @@ if($mybb->input['action'] == "register")
 		{
 			if($_COOKIE['mybb']['referrer'])
 			{
-				$query = $db->simple_select(TABLE_PREFIX."users", "uid,username", "uid='".$db->escape_string($_COOKIE['mybb']['referrer'])."'");
+				$query = $db->simple_select("users", "uid,username", "uid='".$db->escape_string($_COOKIE['mybb']['referrer'])."'");
 				$ref = $db->fetch_array($query);
 				$referrername = $ref['username'];
 			}
 			elseif($referrer)
 			{
-				$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='".intval($referrer['uid'])."'");
+				$query = $db->simple_select("users", "username", "uid='".intval($referrer['uid'])."'");
 				$ref = $db->fetch_array($query);
 				$referrername = $ref['username'];
 			}
 			elseif($referrername)
 			{
-				$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".$db->escape_string($referrername)."'");
+				$query = $db->simple_select("users", "uid", "username='".$db->escape_string($referrername)."'");
 				$ref = $db->fetch_array($query);
 				if(!$ref['uid'])
 				{
@@ -404,7 +404,7 @@ if($mybb->input['action'] == "register")
 		}
 		// Custom profile fields baby!
 		$altbg = "trow1";
-		$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "editable='yes'", array('order_by' => 'disporder'));
+		$query = $db->simple_select("profilefields", "*", "editable='yes'", array('order_by' => 'disporder'));
 		while($profilefield = $db->fetch_array($query))
 		{
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -457,7 +457,7 @@ if($mybb->input['action'] == "register")
 					{
 						$profilefield['length'] = 3;
 					}
-					$code = "<select name=\"profile_fields[$field][]\" size=\"$profilefield[length]\" multiple=\"multiple\">$select</select>";
+					$code = "<select name=\"profile_fields[$field][]\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
 				}
 			}
 			elseif($type == "select")
@@ -480,7 +480,7 @@ if($mybb->input['action'] == "register")
 					{
 						$profilefield['length'] = 1;
 					}
-					$code = "<select name=\"profile_fields[$field]\" size=\"$profilefield[length]\">$select</select>";
+					$code = "<select name=\"profile_fields[$field]\" size=\"{$profilefield['length']}\">$select</select>";
 				}
 			}
 			elseif($type == "radio")
@@ -538,7 +538,7 @@ if($mybb->input['action'] == "register")
 			else
 			{
 				$value = htmlspecialchars_uni($userfield);
-				$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"$profilefield[length]\" maxlength=\"$profilefield[maxlength]\" value=\"$value\" />";
+				$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\" maxlength=\"{$profilefield['maxlength']}\" value=\"$value\" />";
 			}
 			if($profilefield['required'] == "yes")
 			{
@@ -581,7 +581,7 @@ if($mybb->input['action'] == "register")
 				"imagestring" => $randomstr,
 				"dateline" => time()
 				);
-			$db->insert_query(TABLE_PREFIX."captcha", $regimagearray);
+			$db->insert_query("captcha", $regimagearray);
 			eval("\$regimage = \"".$templates->get("member_register_regimage")."\";");
 		}
 		if($mybb->settings['regtype'] != "randompass")
@@ -615,7 +615,7 @@ elseif($mybb->input['action'] == "activate")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->simple_select("users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
 		$user = $db->fetch_array($query);
 		if(!$user['username'])
 		{
@@ -625,13 +625,13 @@ elseif($mybb->input['action'] == "activate")
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 	}
 	if($mybb->input['code'] && $user['uid'])
 	{
 		$mybb->settings['awaitingusergroup'] = "5";
-		$query = $db->simple_select(TABLE_PREFIX."awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e')");
+		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e')");
 		$activation = $db->fetch_array($query);
 		if(!$activation['uid'])
 		{
@@ -641,20 +641,20 @@ elseif($mybb->input['action'] == "activate")
 		{
 			error($lang->error_badactivationcode);
 		}
-		$db->delete_query(TABLE_PREFIX."awaitingactivation", "uid='".$user['uid']."' AND (type='r' OR type='e')");
+		$db->delete_query("awaitingactivation", "uid='".$user['uid']."' AND (type='r' OR type='e')");
 		if($user['usergroup'] == 5 && $activation['type'] != "e")
 		{
 			$newgroup = array(
 				"usergroup" => 2,
 				);
-			$db->update_query(TABLE_PREFIX."users", $newgroup, "uid='".$user['uid']."'");
+			$db->update_query("users", $newgroup, "uid='".$user['uid']."'");
 		}
 		if($activation['type'] == "e")
 		{
 			$newemail = array(
 				"email" => $db->escape_string($activation['misc']),
 				);
-			$db->update_query(TABLE_PREFIX."users", $newemail, "uid='".$user['uid']."'");
+			$db->update_query("users", $newemail, "uid='".$user['uid']."'");
 			if(function_exists("emailChanged"))
 			{
 				emailChanged($mybb->user['uid'], $email);
@@ -733,7 +733,7 @@ elseif($mybb->input['action'] == "do_resendactivation" && $mybb->request_method 
 						"code" => $user['code'],
 						"type" => "r"
 					);
-					$db->insert_query(TABLE_PREFIX."awaitingactivation", $awaitingarray);
+					$db->insert_query("awaitingactivation", $awaitingarray);
 				}
 				$username = $user['username'];
 				$email = $user['email'];
@@ -760,7 +760,7 @@ elseif($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 	$plugins->run_hooks("member_do_lostpw_start");
 
 	$email = $db->escape_string($email);
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "email='".$db->escape_string($mybb->input['email'])."'");
+	$query = $db->simple_select("users", "*", "email='".$db->escape_string($mybb->input['email'])."'");
 	$numusers = $db->num_rows($query);
 	if($numusers < 1)
 	{
@@ -770,7 +770,7 @@ elseif($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 	{
 		while($user = $db->fetch_array($query))
 		{
-			$db->delete_query(TABLE_PREFIX."awaitingactivation", "uid='{$user['uid']}' AND type='p'");
+			$db->delete_query("awaitingactivation", "uid='{$user['uid']}' AND type='p'");
 			$user['activationcode'] = random_str();
 			$now = time();
 			$uid = $user['uid'];
@@ -780,7 +780,7 @@ elseif($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 				"code" => $user['activationcode'],
 				"type" => "p"
 			);
-			$db->insert_query(TABLE_PREFIX."awaitingactivation", $awaitingarray);
+			$db->insert_query("awaitingactivation", $awaitingarray);
 			$username = $user['username'];
 			$email = $user['email'];
 			$activationcode = $user['activationcode'];
@@ -799,7 +799,7 @@ elseif($mybb->input['action'] == "resetpassword")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->simple_select("users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
@@ -808,19 +808,19 @@ elseif($mybb->input['action'] == "resetpassword")
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 	}
 	if($mybb->input['code'] && $user['uid'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."awaitingactivation", "*", "uid='".$user['uid']."' AND type='p'");
+		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='p'");
 		$activation = $db->fetch_array($query);
 		$now = time();
 		if($activation['code'] != $mybb->input['code'])
 		{
 			error($lang->error_badlostpwcode);
 		}
-		$db->delete_query(TABLE_PREFIX."awaitingactivation", "uid='".$user['uid']."' AND type='p'");
+		$db->delete_query("awaitingactivation", "uid='".$user['uid']."' AND type='p'");
 		$username = $user['username'];
 
 		//
@@ -902,12 +902,12 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	}
 
 	my_setcookie('loginattempts', 1);
-	$db->delete_query(TABLE_PREFIX."sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
+	$db->delete_query("sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
 		"loginattempts" => 1,
 		);
-	$db->update_query(TABLE_PREFIX."sessions", $newsession, "sid='".$session->sid."'");
+	$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
 
 	// Temporarily set the cookie remember option for the login cookies
 	$mybb->user['remember'] = $user['remember'];
@@ -951,8 +951,8 @@ else if($mybb->input['action'] == "logout")
 				"lastactive" => $time-900,
 				"lastvisit" => $time,
 				);
-			$db->update_query(TABLE_PREFIX."users", $lastvisit, "uid='".$mybb->user['uid']."'");
-			$db->delete_query(TABLE_PREFIX."sessions", "sid='".$session->sid."'");
+			$db->update_query("users", $lastvisit, "uid='".$mybb->user['uid']."'");
+			$db->delete_query("sessions", "sid='".$session->sid."'");
 
 			if(function_exists("loggedOut"))
 			{
@@ -981,14 +981,14 @@ elseif($mybb->input['action'] == "profile")
 	{
 		if($mybb->input['tid'])
 		{
-			$query = $db->simple_select(TABLE_PREFIX."posts", "uid", "tid='".intval($mybb->input['tid'])."'	AND visible = 1", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => '1'));
+			$query = $db->simple_select("posts", "uid", "tid='".intval($mybb->input['tid'])."'	AND visible = 1", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => '1'));
 			$post = $db->fetch_array($query);
 			$uid = $post['uid'];
 		}
 		elseif($mybb->input['fid'])
 		{
 			$flist = '';
-			$query = $db->simple_select(TABLE_PREFIX."forums", "fid", "INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0");
+			$query = $db->simple_select("forums", "fid", "INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0");
 			while($forum = $db->fetch_array($query))
 			{
 				if($forum['fid'] == $mybb->input['fid'])
@@ -997,10 +997,10 @@ elseif($mybb->input['action'] == "profile")
 				}
 				$flist .= ",".$forum['fid'];
 			}
-			$query = $db->simple_select(TABLE_PREFIX."threads", "tid", "fid IN (0$flist) AND visible = 1", array('order_by' => 'lastpost', 'order_dir' => 'DESC', 'limit' => '1'));
+			$query = $db->simple_select("threads", "tid", "fid IN (0$flist) AND visible = 1", array('order_by' => 'lastpost', 'order_dir' => 'DESC', 'limit' => '1'));
 			$thread = $db->fetch_array($query);
 			$tid = $thread['tid'];
-			$query = $db->simple_select(TABLE_PREFIX."posts", "uid", "tid='$tid' AND visible = 1", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => '1'));
+			$query = $db->simple_select("posts", "uid", "tid='$tid' AND visible = 1", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => '1'));
 			$post = $db->fetch_array($query);
 			$uid = $post['uid'];
 		}
@@ -1017,7 +1017,7 @@ elseif($mybb->input['action'] == "profile")
 		}
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='$uid'");
+	$query = $db->simple_select("users", "*", "uid='$uid'");
 	$memprofile = $db->fetch_array($query);
 
 	if(!$memprofile['uid'])
@@ -1064,7 +1064,7 @@ elseif($mybb->input['action'] == "profile")
 		{
 			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
 		}
-		$avatar = "<img src=\"$memprofile[avatar]\" alt=\"\" $avatar_width_height />";
+		$avatar = "<img src=\"{$memprofile['avatar']}\" alt=\"\" $avatar_width_height />";
 	}
 	else
 	{
@@ -1083,7 +1083,7 @@ elseif($mybb->input['action'] == "profile")
 	if($memprofile['website'])
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$website = "<a href=\"$memprofile[website]\" target=\"_blank\">$memprofile[website]</a>";
+		$website = "<a href=\"{$memprofile['website']}\" target=\"_blank\">{$memprofile['website']}</a>";
 	}
 	else
 	{
@@ -1110,7 +1110,7 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$ppd = $memprofile['postnum'];
 	}
-	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS posts", "visible > 0");
+	$query = $db->simple_select("posts", "COUNT(pid) AS posts", "visible > 0");
 	$posts = $db->fetch_field($query, "posts");
 	if($posts == 0)
 	{
@@ -1122,7 +1122,7 @@ elseif($mybb->input['action'] == "profile")
 		$percent = round($percent, 2);
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS referrals", "referrer='{$memprofile['uid']}'");
+	$query = $db->simple_select("users", "COUNT(*) AS referrals", "referrer='{$memprofile['uid']}'");
 	$referrals = $db->fetch_field($query, "referrals");
 
 	if(!empty($memprofile['icq']))
@@ -1156,7 +1156,7 @@ elseif($mybb->input['action'] == "profile")
 		$memprofile['timezone']++;
 		if(my_substr($memprofile['timezone'], 0, 1) != "-")
 		{
-			$memprofile['timezone'] = "+$memprofile[timezone]";
+			$memprofile['timezone'] = "+{$memprofile['timezone']}";
 		}
 	}
 	$memregdate = my_date($mybb->settings['dateformat'], $memprofile['regdate']);
@@ -1224,7 +1224,7 @@ elseif($mybb->input['action'] == "profile")
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
+		$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
 		while($title = $db->fetch_array($query))
 		{
 			if($memprofile['postnum'] >= $title['posts'])
@@ -1260,7 +1260,7 @@ elseif($mybb->input['action'] == "profile")
 		$starimage = $displaygroup['starimage'];
 	}
 	$userstars = '';
-	for($i = 0; $i < $stars; $i++)
+	for($i = 0; $i < $stars; ++$i)
 	{
 		$userstars .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
 	}
@@ -1280,7 +1280,7 @@ elseif($mybb->input['action'] == "profile")
 		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='$uid'");
+	$query = $db->simple_select("userfields", "*", "ufid='$uid'");
 	$userfields = $db->fetch_array($query);
 	$customfields = '';
 	$bgcolor = trow1;
@@ -1293,13 +1293,13 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$field_hidden = "hidden='no'";
 	}
-	$query = $db->simple_select(TABLE_PREFIX."profilefields", "*", "{$field_hidden}", array('order_by' => 'disporder'));
+	$query = $db->simple_select("profilefields", "*", "{$field_hidden}", array('order_by' => 'disporder'));
 	while($customfield = $db->fetch_array($query))
 	{
 		$thing = explode("\n", $customfield['type'], "2");
 		$type = trim($thing[0]);
 
-		$field = "fid$customfield[fid]";
+		$field = "fid{$customfield['fid']}";
 		$useropts = explode("\n", $userfields[$field]);
 		$customfieldval = $comma = '';
 		if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
@@ -1370,7 +1370,7 @@ elseif($mybb->input['action'] == "emailuser")
 	}
 	if($mybb->input['uid'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "username, hideemail", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("users", "username, hideemail", "uid='".intval($mybb->input['uid'])."'");
 		$emailto = $db->fetch_array($query);
 		if(!$emailto['username'])
 		{
@@ -1399,7 +1399,7 @@ elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "pos
 	{
 		error_no_permission();
 	}
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, email, hideemail", "username='".$db->escape_string($mybb->input['touser'])."'");
+	$query = $db->simple_select("users", "uid, username, email, hideemail", "username='".$db->escape_string($mybb->input['touser'])."'");
 	$emailto = $db->fetch_array($query);
 	if(!$emailto['username'])
 	{
@@ -1433,6 +1433,6 @@ elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "pos
 
 	$plugins->run_hooks("member_do_emailuser_end");
 
-	redirect("member.php?action=profile&uid=$emailto[uid]", $lang->redirect_emailsent);
+	redirect("member.php?action=profile&uid={$emailto['uid']}", $lang->redirect_emailsent);
 }
 ?>

@@ -65,7 +65,7 @@ if($mybb->input['action'] == "disporder")
 			$sql_array = array(
 				'disporder' => $order,
 			);
-			$db->update_query(TABLE_PREFIX.'usergroups', $sql_array, "gid = '{$gid}'");
+			$db->update_query('usergroups', $sql_array, "gid = '{$gid}'");
 		}
 	}
 	$mybb->input['action'] = 'modify';
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "do_add")
 		"cancustomtitle" => $db->escape_string($mybb->input['cancustomtitle'])
 	);
 	$plugins->run_hooks("admin_usergroups_do_add");
-	$db->insert_query(TABLE_PREFIX."usergroups", $grouparray);
+	$db->insert_query("usergroups", $grouparray);
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();
 	cpredirect("usergroups.php?".SID, $lang->group_added.$namenote);
@@ -196,12 +196,12 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 	if($mybb->input['action'] == "do_editgroupleader")
 	{
 		$lid = intval($mybb->input['lid']);
-		$db->update_query(TABLE_PREFIX."groupleaders", $leaderarray, "lid='$lid'");
+		$db->update_query("groupleaders", $leaderarray, "lid='$lid'");
 		$success_text= $lang->leader_edited;
 	}
 	else
 	{
-		$db->insert_query(TABLE_PREFIX."groupleaders", $leaderarray);
+		$db->insert_query("groupleaders", $leaderarray);
 		$success_text = sprintf($lang->leader_added, $usergroup['title']);
 	}
 
@@ -315,8 +315,8 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$grouparray['candisplaygroup'] = $db->escape_string($mybb->input['candisplaygroup']);
 	}
-	$plugins->run_hooks("admin_usergroups_do_delete");
-	$db->update_query(TABLE_PREFIX."usergroups", $grouparray, "gid='".$mybb->input['gid']."'");
+	$plugins->run_hooks("admin_usergroups_do_edit");
+	$db->update_query("usergroups", $grouparray, "gid='".$mybb->input['gid']."'");
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();
 	cpredirect("usergroups.php?".SID, $lang->group_updated.$namenote);
@@ -751,7 +751,7 @@ function usergroup_hop(gid)
 		'order_by' => 'disporder',
 		'order_dir' => 'ASC',
 	);
-	$query = $db->simple_select(TABLE_PREFIX.'usergroups', '*', "type='1'", $sql_options);
+	$query = $db->simple_select('usergroups', '*', "type='1'", $sql_options);
 
 	while($usergroup = $db->fetch_array($query))
 	{
@@ -797,7 +797,7 @@ function usergroup_hop(gid)
 		'order_by' => 'disporder',
 		'order_dir' => 'ASC',
 	);
-	$query = $db->simple_select(TABLE_PREFIX.'usergroups', '*', "type='2'", $sql_options);
+	$query = $db->simple_select('usergroups', '*', "type='2'", $sql_options);
 	$count = $db->num_rows($query);
 	if($count > 0)
 	{
@@ -856,7 +856,7 @@ function usergroup_hop(gid)
 		'order_by' => 'disporder',
 		'order_dir' => 'ASC',
 	);
-	$query = $db->simple_select(TABLE_PREFIX.'usergroups', '*', "type='3' OR type='4'", $sql_options);
+	$query = $db->simple_select('usergroups', '*', "type='3' OR type='4'", $sql_options);
 	$count = $db->num_rows($query);
 	if($count > 0)
 	{

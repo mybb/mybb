@@ -31,7 +31,7 @@ if($mybb->input['pid'] && !$mybb->input['tid'])
 	$options = array(
 		"limit" => 1
 	);
-	$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid=".$mybb->input['pid'], $options);
+	$query = $db->simple_select("posts", "tid", "pid=".$mybb->input['pid'], $options);
 	$post = $db->fetch_array($query);
 	$mybb->input['tid'] = $post['tid'];
 }
@@ -40,7 +40,7 @@ if($mybb->input['pid'] && !$mybb->input['tid'])
 $options = array(
 	"limit" => 1
 );
-$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".$mybb->input['tid']."' AND closed NOT LIKE 'moved|%'");
+$query = $db->simple_select("threads", "*", "tid='".$mybb->input['tid']."' AND closed NOT LIKE 'moved|%'");
 $thread = $db->fetch_array($query);
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 $tid = $thread['tid'];
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "lastpost")
 			'limit_start' => 0,
 			'limit' => 1
 		);
-		$query = $db->simple_select(TABLE_PREFIX.'posts', 'pid', "tid={$tid}", $options);
+		$query = $db->simple_select('posts', 'pid', "tid={$tid}", $options);
 		$pid = $db->fetch_field($query, "pid");
 	}
 	header("Location:showthread.php?tid={$tid}&pid={$pid}#pid{$pid}");
@@ -129,7 +129,7 @@ if($mybb->input['action'] == "nextnewest")
 		"limit" => 1,
 		"order_by" => "lastpost"
 	);
-	$query = $db->simple_select(TABLE_PREFIX.'threads', '*', "fid={$thread['fid']} AND lastpost > {$thread['lastpost']} AND visible=1 AND closed NOT LIKE 'moved|%'", $options);
+	$query = $db->simple_select('threads', '*', "fid={$thread['fid']} AND lastpost > {$thread['lastpost']} AND visible=1 AND closed NOT LIKE 'moved|%'", $options);
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next newest posts?
@@ -143,7 +143,7 @@ if($mybb->input['action'] == "nextnewest")
 		"order_by" => "dateline",
 		"order_dir" => "desc"
 	);
-	$query = $db->simple_select(TABLE_PREFIX.'posts', 'pid', "tid={$nextthread['tid']}");
+	$query = $db->simple_select('posts', 'pid', "tid={$nextthread['tid']}");
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
@@ -159,7 +159,7 @@ if($mybb->input['action'] == "nextoldest")
 		"order_by" => "lastpost",
 		"order_dir" => "desc"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "fid=".$thread['fid']." AND lastpost < ".$thread['lastpost']." AND visible=1 AND closed NOT LIKE 'moved|%'", $options);
+	$query = $db->simple_select("threads", "*", "fid=".$thread['fid']." AND lastpost < ".$thread['lastpost']." AND visible=1 AND closed NOT LIKE 'moved|%'", $options);
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next oldest posts?
@@ -173,18 +173,18 @@ if($mybb->input['action'] == "nextoldest")
 		"order_by" => "dateline",
 		"order_dir" => "desc"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$nextthread['tid']);
+	$query = $db->simple_select("posts", "pid", "tid=".$nextthread['tid']);
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
-	header("Location:showthread.php?tid=$nextthread[tid]&pid=$pid#pid$pid");
+	header("Location:showthread.php?tid={$nextthread['tid']}&pid=$pid#pid$pid");
 }
 
 // Jump to the unread posts.
 if($mybb->input['action'] == "newpost")
 {
 	// First, figure out what time the thread or forum were last read
-	$query = $db->simple_select(TABLE_PREFIX."threadsread", "dateline", "uid='{$mybb->user['uid']}' AND tid='{$thread['tid']}'");
+	$query = $db->simple_select("threadsread", "dateline", "uid='{$mybb->user['uid']}' AND tid='{$thread['tid']}'");
 	$thread_read = $db->fetch_field($query, "dateline");
 
 	// Get forum read date
@@ -229,7 +229,7 @@ if($mybb->input['action'] == "newpost")
 		"order_by" => "dateline",
 		"order_dir" => "asc"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid." AND dateline > '{$lastread}'");
+	$query = $db->simple_select("posts", "pid", "tid=".$tid." AND dateline > '{$lastread}'");
 	$newpost = $db->fetch_array($query);
 	if($newpost['pid'])
 	{
@@ -256,7 +256,7 @@ if($mybb->input['action'] == "thread")
 		$options = array(
 			"limit" => 1
 		);
-		$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='".$thread['poll']."'");
+		$query = $db->simple_select("polls", "*", "pid='".$thread['poll']."'");
 		$poll = $db->fetch_array($query);
 		$poll['timeout'] = $poll['timeout']*60*60*24;
 		$expiretime = $poll['dateline'] + $poll['timeout'];
@@ -271,7 +271,7 @@ if($mybb->input['action'] == "thread")
 		// If the user is not a guest, check if he already voted.
 		if($mybb->user['uid'] != 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
+			$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
 			while($votecheck = $db->fetch_array($query))
 			{
 				$alreadyvoted = 1;
@@ -290,7 +290,7 @@ if($mybb->input['action'] == "thread")
 		$poll['question'] = htmlspecialchars_uni($poll['question']);
 		$polloptions = '';
 
-		for($i = 1; $i <= $poll['numoptions']; $i++)
+		for($i = 1; $i <= $poll['numoptions']; ++$i)
 		{
 			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 		}
@@ -555,11 +555,11 @@ if($mybb->input['action'] == "thread")
 		// Is there actually a pid to display?
 		if(!$showpost['pid'])
 		{
-			error($lang->invalidpost);
+			error($lang->error_invalidpost);
 		}
 
 		// Get the attachments for this post.
-		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid=".$mybb->input['pid']);
+		$query = $db->simple_select("attachments", "*", "pid=".$mybb->input['pid']);
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
@@ -585,7 +585,7 @@ if($mybb->input['action'] == "thread")
                 $tree[$post['replyto']][$post['pid']] = $post;
                 $postsdone[$post['pid']] = 1;
             }
-        } 
+        }
 		$threadedbits = buildtree();
 		$posts = build_postbit($showpost);
 		eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
@@ -620,7 +620,7 @@ if($mybb->input['action'] == "thread")
 		// Recount replies if user is a moderator to take into account unapproved posts.
 		if($ismod)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
+			$query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
 			$thread['replies'] = $db->fetch_field($query, 'replies')-1;
 		}
 		$postcount = intval($thread['replies'])+1;
@@ -657,17 +657,17 @@ if($mybb->input['action'] == "thread")
 		// Lets get the pids of the posts on this page.
 		$pids = "";
 		$comma = '';
-		$query = $db->simple_select(TABLE_PREFIX."posts p", "p.pid", "p.tid='$tid' $visible", array('order_by' => 'p.dateline', 'limit_start' => $start, 'limit' => $perpage));
+		$query = $db->simple_select("posts p", "p.pid", "p.tid='$tid' $visible", array('order_by' => 'p.dateline', 'limit_start' => $start, 'limit' => $perpage));
 		while($getid = $db->fetch_array($query))
 		{
-			$pids .= "$comma'$getid[pid]'";
+			$pids .= "$comma'{$getid['pid']}'";
 			$comma = ",";
 		}
 		if($pids)
 		{
 			$pids = "pid IN($pids)";
 			// Now lets fetch all of the attachments for these posts.
-			$query = $db->simple_select(TABLE_PREFIX."attachments", "*", $pids);
+			$query = $db->simple_select("attachments", "*", $pids);
 			while($attachment = $db->fetch_array($query))
 			{
 				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
@@ -771,7 +771,7 @@ if($mybb->input['action'] == "thread")
 	if($ismod)
 	{
 		$customthreadtools = $customposttools = '';
-		$query = $db->simple_select(TABLE_PREFIX."modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%'");
+		$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%'");
 		while($tool = $db->fetch_array($query))
 		{
 			if($tool['type'] == 'p')

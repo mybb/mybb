@@ -30,7 +30,7 @@ if($mybb->input['imagehash'] == "test")
 }
 else
 {
-	$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='".$db->escape_string($mybb->input['imagehash'])."'", array("limit" => 1));
+	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string($mybb->input['imagehash'])."'", array("limit" => 1));
 	$regimage = $db->fetch_array($query);
 	$imagestring = $regimage['imagestring'];
 }
@@ -147,7 +147,7 @@ function draw_circles(&$im)
 	global $img_width, $img_height;
 	
 	$circles = $img_width*$img_height / 100;
-	for($i = 0; $i <= $circles; $i++)
+	for($i = 0; $i <= $circles; ++$i)
 	{
 		$color = imagecolorallocate($im, rand(180, 255), rand(180, 255), rand(180, 255));
 		$pos_x = rand(1, $img_width);
@@ -168,7 +168,7 @@ function draw_dots(&$im)
 	global $img_width, $img_height;
 	
 	$dot_count = $img_width*$img_height/5;
-	for($i = 0; $i <= $dot_count; $i++)
+	for($i = 0; $i <= $dot_count; ++$i)
 	{
 		$color = imagecolorallocate($im, rand(200, 255), rand(200, 255), rand(200, 255));
 		imagesetpixel($im, rand(0, $img_width), rand(0, $img_height), $color);
@@ -185,7 +185,7 @@ function draw_squares(&$im)
 	global $img_width, $img_height;
 	
 	$square_count = 30;
-	for($i = 0; $i <= $square_count; $i++)
+	for($i = 0; $i <= $square_count; ++$i)
 	{
 		$color = imagecolorallocate($im, rand(150, 255), rand(150, 255), rand(150, 255));
 		$pos_x = rand(1, $img_width);
@@ -209,7 +209,7 @@ function draw_string(&$im, $string)
 	
 	$spacing = $img_width / my_strlen($string);
 	$string_length = my_strlen($string);
-	for($i = 0; $i < $string_length; $i++)
+	for($i = 0; $i < $string_length; ++$i)
 	{
 		// Using TTF fonts
 		if($use_ttf)

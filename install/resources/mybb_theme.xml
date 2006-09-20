@@ -3613,7 +3613,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 {$messagelist}
 <tr>
-<td class="tfoot" align="right" colspan="6"><input type="submit" class="button" name="moveto" value="{$lang->move_to}" /> {$folderoplist} {$lang->or} <input type="submit" class="button" name="delete" value="{$lang->delete}" /> {$lang->selected_messages}</td>
+<td class="tfoot" align="right" colspan="6">
+<input type="submit" class="button" name="moveto" value="{$lang->move_to}" /> {$folderoplist} {$lang->or} 
+<input type="submit" class="button" name="delete" value="{$lang->delete}" /> {$lang->selected_messages}
+</td>
 </tr>
 </table>
 <br />
@@ -3623,7 +3626,13 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
 <tr>
 <td class="trow1">{$multipage}</td>
-<td class="trow1" align="right"><span class="smalltext"><strong>{$lang->jump_folder} {$folderjump} <input type="submit" class="button" name="hop" value="{$lang->go}" /></strong></span></td>
+<td class="trow1" align="right">
+<span class="smalltext">
+<strong>{$lang->jump_folder} ($folderjump} 
+<input type="submit" class="button" name="hop" value="{$lang->go}" />
+</strong>
+</span>
+</td>
 </tr>
 </table>
 </td>
@@ -4015,8 +4024,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 	<template name="moderation_reports_allreport" version="120"><![CDATA[<tr>
 <td class="{$trow}" align="center"><a href="showthread.php?pid={$report['pid']}&amp;tid={$report['tid']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></td>
-<td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['postuid']}" target="_blank">{$report['postusername']}</a></td>
-<td class="{$trow}"><a href="showthread.php?tid={$report['tid']}" target="_blank">{$report['threadsubject']}</a></td>
+<td class="{$trow}" align="center">{$report['postusername']}</td>
+<td class="{$trow}">{$report['threadsubject']}</td>
 <td class="{$trow}" align="center"><a href="member.php?action=profile&amp;uid={$report['uid']}" target="_blank">{$report['username']}</a></td>
 <td class="{$trow}">{$report['reason']}</td>
 <td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</span></td>

@@ -93,15 +93,15 @@ if($mybb->input['action'] == 'do_backup')
 		if($mybb->input['type'] == 'gzip')
 		{
 			// Send headers for gzip file (do ob_start too)
-			header('Content-Encoding: x-gzip');
-			header('Content-Type: application/x-gzip');
-			header('Content-Disposition: attachment; filename="'.$file.'.gz"');
+			//header('Content-Encoding: x-gzip');
+			//header('Content-Type: application/x-gzip');
+			//header('Content-Disposition: attachment; filename="'.$file.'.gz"');
 		}
 		else
 		{
 			// Send standard headers for .sql
-			header('Content-Type: text/x-sql');
-			header('Content-Disposition: attachment; filename="'.$file.'.sql"');
+			//header('Content-Type: text/x-sql');
+			//header('Content-Disposition: attachment; filename="'.$file.'.sql"');
 		}
 	}
 	
@@ -117,6 +117,7 @@ if($mybb->input['action'] == 'do_backup')
 			$field_list[] = $row['Field'];
 		}
 		$fields = implode(",", $field_list);
+		$table = str_replace(TABLE_PREFIX, '', $table);
 		if($mybb->input['contents'] != 'data')
 		{
 			$structure = $db->show_create_table($table)."\n";
@@ -175,9 +176,17 @@ if($mybb->input['action'] == 'do_backup')
 	}
 	else
 	{
-		if($mybb->input['type'] == "gzip")
+		if($mybb->input['type'] == 'gzip')
 		{
-			echo gzencode($contents);
+			if(phpversion >= '4.2')
+			{
+
+				echo htmlspecialchars(gzencode($contents, 9));
+			}
+			else
+			{
+				echo gzencode($contents);
+			}
 		}
 		else
 		{
@@ -284,7 +293,7 @@ if($mybb->input['action'] == 'existing')
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"dbtools.php?".SID."&amp;action=dlbackup&amp;file=".$filename."\">".$filename."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".get_friendly_size(filesize(MYBB_ADMIN_DIR.'backups/'.$filename))."</td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\">".strtoupper($type)."</td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".my_strtoupper($type)."</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">{$time}</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$delete_link."</td>\n";
 			echo "</tr>\n";

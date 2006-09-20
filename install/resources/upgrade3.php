@@ -145,7 +145,7 @@ function upgrade3_convertattachments()
 	while($attachment = $db->fetch_array($query))
 	{
 		$filename = "post_".$attachment['puid']."_".$attachment['dateline'].$attachment['aid'].".attach";
-		$ext = strtolower(my_substr(strrchr($attachment['filename'], "."), 1));
+		$ext = my_strtolower(my_substr(strrchr($attachment['filename'], "."), 1));
 		$fp = fopen("../uploads/".$filename, "wb");
 		if(!$fp)
 		{
@@ -290,7 +290,7 @@ function upgrade3_convertavatars()
 	}
 	else
 	{
-		if($db->table_exists(TABLE_PREFIX."attachments"))
+		if($db->table_exists("attachments"))
 		{
 			$db->query("DROP TABLE ".TABLE_PREFIX."avatars");
 		}

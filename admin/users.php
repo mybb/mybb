@@ -121,7 +121,7 @@ function checkbanned()
 {
 	global $db;
 	$time = time();
-	$query = $db->simple_select(TABLE_PREFIX."banned", "*", "lifted<='{$time}' AND lifted!='perm'");
+	$query = $db->simple_select("banned", "*", "lifted<='{$time}' AND lifted!='perm'");
 	while($banned = $db->fetch_array($query))
 	{
 		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='{$banned['oldgroup']}' WHERE uid='{$banned['uid']}'");
@@ -134,7 +134,7 @@ function make_profile_field_input($required=0, $uid=0)
 	global $db, $mybb, $lang;
 	if($uid != 0)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='$uid'");
+		$query = $db->simple_select("userfields", "*", "ufid='$uid'");
 		$userfields = $db->fetch_array($query);
 	}
 
@@ -186,7 +186,7 @@ function make_profile_field_input($required=0, $uid=0)
 			}
 		}
 		elseif($type == "select")
-    {
+    	{
 			$expoptions = explode("\n", $options);
 			if(is_array($expoptions))
 			{
@@ -399,7 +399,7 @@ if($mybb->input['action'] == "do_add")
 			"code" => $activationcode,
 			"type" => 'r'
 		);
-		$db->insert_query(TABLE_PREFIX."awaitingactivation", $activationarray);
+		$db->insert_query("awaitingactivation", $activationarray);
 		$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
 		$emailmessage = sprintf($lang->email_activateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
 		my_mail($email, $emailsubject, $emailmessage);
@@ -551,7 +551,7 @@ if($mybb->input['action'] == "do_email")
 
 	if($search['username'])
 	{
-		$conditions .= " AND username LIKE '%".$db->escape_string($search[username])."%'";
+		$conditions .= " AND username LIKE '%".$db->escape_string($search['username'])."%'";
 	}
 	if(is_array($search['usergroups']))
 	{
@@ -670,7 +670,7 @@ if($mybb->input['action'] == "do_email")
 					'status' => 0,
 					'receipt' => 'no'
 				);
-				$db->insert_query(TABLE_PREFIX."privatemessages", $insert_pm);
+				$db->insert_query("privatemessages", $insert_pm);
 				echo sprintf($lang->pm_sent, $user['username']);
 			}
 			elseif($user['email'] != '')
@@ -724,14 +724,14 @@ if($mybb->input['action'] == "do_do_merge")
 		cpredirect("users.php?".SID."&lmaction=merge", $lang->users_not_merged);
 		exit;
 	}
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['source'])."'");
+	$query = $db->simple_select("users", "*", "username='".$db->escape_string($mybb->input['source'])."'");
 	$sourceuser = $db->fetch_array($query);
 	if(!$sourceuser['uid'])
 	{
 		cperror($lang->error_invalid_source);
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['destination'])."'");
+	$query = $db->simple_select("users", "*", "username='".$db->escape_string($mybb->input['destination'])."'");
 	$destuser = $db->fetch_array($query);
 	if(!$destuser['uid'])
 	{
@@ -766,14 +766,14 @@ if($mybb->input['action'] == "do_do_merge")
 }
 if($mybb->input['action'] == "do_merge")
 {
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username", "username='".$db->escape_string($mybb->input['source'])."'");
+	$query = $db->simple_select("users", "uid, username", "username='".$db->escape_string($mybb->input['source'])."'");
 	$sourceuser = $db->fetch_array($query);
 	if(!$sourceuser['uid'])
 	{
 		cperror($lang->error_invalid_source);
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username", "username='".$db->escape_string($mybb->input['destination'])."'");
+	$query = $db->simple_select("users", "uid, username", "username='".$db->escape_string($mybb->input['destination'])."'");
 	$destuser = $db->fetch_array($query);
 	if(!$destuser['uid'])
 	{
@@ -858,7 +858,7 @@ if($mybb->input['action'] == "edit")
 
 	$plugins->run_hooks("admin_users_edit");
 	$uid = intval($mybb->input['uid']);
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='$uid'");
+	$query = $db->simple_select("users", "*", "uid='$uid'");
 	$user = $db->fetch_array($query);
 
 	$additionalgroups = explode(",", $user['additionalgroups']);
@@ -939,7 +939,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	$uid = intval($mybb->input['uid']);
-	$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='$uid'");
+	$query = $db->simple_select("users", "username", "uid='$uid'");
 	$user = $db->fetch_array($query);
 	$plugins->run_hooks("admin_users_delete");
 	$lang->delete_user = sprintf($lang->delete_user, $user['username']);
@@ -963,7 +963,7 @@ if($mybb->input['action'] == "showreferrers")
 	$uid = intval($mybb->input['uid']);
 	if($uid)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='$uid'");
+		$query = $db->simple_select("users", "username", "uid='$uid'");
 		$user = $db->fetch_array($query);
 		$plugins->run_hooks("admin_users_showreferrers");
 		$lang->members_referred_by = sprintf($lang->members_referred_by, $user['username']);
@@ -1000,7 +1000,7 @@ if($mybb->input['action'] == "findips")
 	$plugins->run_hooks("admin_users_findips");
 	cpheader();
 	$uid = intval($mybb->input['uid']);
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid,username,regip", "uid='$uid'");
+	$query = $db->simple_select("users", "uid,username,regip", "uid='$uid'");
 	$user = $db->fetch_array($query);
 	if (!$user['uid'])
 	{
@@ -1076,7 +1076,7 @@ if($mybb->input['action'] == "merge")
 if($mybb->input['action'] == "stats")
 {
 	$uid = intval($mybb->input['uid']);
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='$uid'");
+	$query = $db->simple_select("users", "*", "uid='$uid'");
 	$user = $db->fetch_array($query);
 	$lang->general_user_stats = sprintf($lang->general_user_stats, $user['username']);
 
@@ -1087,7 +1087,7 @@ if($mybb->input['action'] == "stats")
 	{
 		$ppd = $user['postnum'];
 	}
-	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS count");
+	$query = $db->simple_select("posts", "COUNT(pid) AS count");
 	$posts = $db->fetch_field($query, 'count');
 	if($posts == 0)
 	{
@@ -1099,7 +1099,7 @@ if($mybb->input['action'] == "stats")
 		$percent = round($percent, 2).'%';
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) AS count", "referrer='$user[uid]'");
+	$query = $db->simple_select("users", "COUNT(*) AS count", "referrer='$user[uid]'");
 	$referrals = $db->fetch_field($query, 'count');
 
 	$memregdate = my_date($mybb->settings['dateformat'], $user['regdate']);
@@ -1153,13 +1153,13 @@ if($mybb->input['action'] == "pmstats")
 	$lang->pm_stats = sprintf($lang->pm_stats, $user['username']);
 	$lang->custom_pm_folders = sprintf($lang->custom_pm_folders, $user['username']);
 
-	$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS total", "uid='$uid'");
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='$uid'");
 	$pmscount = $db->fetch_array($query);
 
-	$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS newpms", "uid='$uid' AND dateline>$user[lastvisit] AND folder='1'");
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS newpms", "uid='$uid' AND dateline>$user[lastvisit] AND folder='1'");
 	$newpmscount = $db->fetch_array($query);
 
-	$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS unreadpms", "uid='$uid' AND status='0' AND folder='1'");
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS unreadpms", "uid='$uid' AND status='0' AND folder='1'");
 	$unreadpmscount = $db->fetch_array($query);
 
 	$plugins->run_hooks("admin_users_pmstats");
@@ -1210,7 +1210,7 @@ if($mybb->input['action'] == "email")
 		'order_by' => 'title',
 		'order_dir' => 'ASC',
 		);
-	$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", '', $options);
+	$query = $db->simple_select("usergroups", "*", '', $options);
 	while($usergroup = $db->fetch_array($query))
 	{
 		$groups[] = "<input type=\"checkbox\" name=\"search[usergroups][]\" value=\"$usergroup[gid]\" /> $usergroup[title]";
@@ -1248,7 +1248,7 @@ if($mybb->input['action'] == "find")
 		{
 			if($disp == 'yes')
 			{
-				$yescount++;
+				++$yescount;
 			}
 		}
 	}
@@ -1361,7 +1361,7 @@ if($mybb->input['action'] == "find")
 	{
 		foreach($search['profilefields'] as $fid => $value)
 		{
-			if($value == '')
+			if(empty($value))
 			{
 				continue;
 			}
@@ -1423,7 +1423,7 @@ if($mybb->input['action'] == "find")
 	}
 	else
 	{
-		$query2 = $db->simple_select(TABLE_PREFIX."usergroups");
+		$query2 = $db->simple_select("usergroups");
 		while($usergroup = $db->fetch_array($query2))
 		{
 			$usergroups[$usergroup['gid']] = $usergroup;
@@ -1730,10 +1730,10 @@ if($mybb->input['action'] == "do_manageban")
 	$plugins->run_hooks("admin_users_do_manageban");
 	if($mybb->input['uid'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("banned", "*", "uid='".intval($mybb->input['uid'])."'");
 		$ban = $db->fetch_array($query);
 
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 
 		if(!$ban['uid'])
@@ -1745,14 +1745,14 @@ if($mybb->input['action'] == "do_manageban")
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->simple_select("users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
 		$user = $db->fetch_array($query);
 
 		if(!$user['uid'])
 		{
 			cperror($lang->error_not_found);
 		}
-		$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='$user[uid]'");
+		$query = $db->simple_select("banned", "*", "uid='$user[uid]'");
 		$bancheck = $db->fetch_array($query);
 		$uid = $user['uid'];
 	}
@@ -1777,7 +1777,7 @@ if($mybb->input['action'] == "do_manageban")
 	$groupupdate = array(
 		"usergroup" => intval($mybb->input['usergroup'])
 		);
-	$db->update_query(TABLE_PREFIX."users", $groupupdate, "uid='".$user['uid']."'");
+	$db->update_query("users", $groupupdate, "uid='".$user['uid']."'");
 	if($bancheck['uid'])
 	{
 		$banneduser = array(
@@ -1789,7 +1789,7 @@ if($mybb->input['action'] == "do_manageban")
 			"reason" => $db->escape_string($mybb->input['banreason'])
 			);
 
-		$db->update_query(TABLE_PREFIX."banned", $banneduser, "uid='".$user['uid']."'");
+		$db->update_query("banned", $banneduser, "uid='".$user['uid']."'");
 		cpredirect("users.php?".SID."&action=banned", $lang->ban_updated);
 	}
 	else
@@ -1804,15 +1804,15 @@ if($mybb->input['action'] == "do_manageban")
 			"lifted" => $liftdate,
 			"reason" => $db->escape_string($mybb->input['banreason'])
 			);
-		$db->insert_query(TABLE_PREFIX."banned", $banneduser);
+		$db->insert_query("banned", $banneduser);
 		cpredirect("users.php?".SID."&action=banned", $lang->ban_added);
 	}
 }
 if($mybb->input['action'] == "liftban")
 {
-	$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='".intval($mybb->input['uid'])."'");
+	$query = $db->simple_select("banned", "*", "uid='".intval($mybb->input['uid'])."'");
 	$ban = $db->fetch_array($query);
-	$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['uid'])."'");
+	$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 	$plugins->run_hooks("admin_users_liftban");
 	$lang->ban_lifted = sprintf($lang->ban_lifted, $user['username']);
@@ -1821,8 +1821,8 @@ if($mybb->input['action'] == "liftban")
 		cperror($lang->error_not_banned);
 	}
 	$groupupdate = array('usergroup' => $ban['oldgroup']);
-	$db->update_query(TABLE_PREFIX."users", $groupupdate, "uid='".intval($mybb->input['uid'])."'");
-	$db->delete_query(TABLE_PREFIX."banned", "uid='".intval($mybb->input['uid'])."'");
+	$db->update_query("users", $groupupdate, "uid='".intval($mybb->input['uid'])."'");
+	$db->delete_query("banned", "uid='".intval($mybb->input['uid'])."'");
 	cpredirect("users.php?".SID."&action=banned", $lang->ban_lifted);
 }
 if($mybb->input['action'] == "manageban")
@@ -1830,10 +1830,10 @@ if($mybb->input['action'] == "manageban")
 	$plugins->run_hooks("admin_users_manageban");
 	if($mybb->input['uid'] && !$mybb->input['auid'])
 	{ // editing a ban
-		$query = $db->simple_select(TABLE_PREFIX."banned", "*", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("banned", "*", "uid='".intval($mybb->input['uid'])."'");
 		$ban = $db->fetch_array($query);
 
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
 		$lang->edit_banning_options = sprintf($lang->edit_banning_options, $user['username']);
 
@@ -1855,7 +1855,7 @@ if($mybb->input['action'] == "manageban")
 			cperror($lang->cannot_perform_action_super_admin);
 		}
 
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "uid='".intval($mybb->input['auid'])."'");
+		$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['auid'])."'");
 		$user = $db->fetch_array($query);
 
 		cpheader();
@@ -1968,7 +1968,7 @@ if ($mybb->input['action'] == "search" || !$mybb->input['action'])
 	if(isset($mybb->input['lastuid']))
 	{
 		$last_uid = intval($mybb->input['lastuid']);
-		$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='$last_uid'");
+		$query = $db->simple_select("users", "username", "uid='$last_uid'");
 		$last_user = $db->fetch_array($query);
 		$lang->last_edited = sprintf($lang->last_edited, $last_user['username']);
 		$last_user['username'] = urlencode($last_user['username']);

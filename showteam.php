@@ -28,7 +28,7 @@ $moderators = array();
 $users = array();
 
 // Fetch the list of groups which are to be shown on the page
-$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, title, usertitle", "showforumteam='yes'", array('order_by' => 'disporder'));
+$query = $db->simple_select("usergroups", "gid, title, usertitle", "showforumteam='yes'", array('order_by' => 'disporder'));
 while($usergroup = $db->fetch_array($query))
 {
 	$usergroups[$usergroup['gid']] = $usergroup;
@@ -68,7 +68,7 @@ if(!$users_in)
 }
 $forum_permissions = forum_permissions();
 
-$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
+$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
 while($user = $db->fetch_array($query))
 {
 	// If this user is a moderator

@@ -63,11 +63,11 @@ if($mybb->input['action'] == "do_change")
 		// Check to see if we changing CSS Mediums
 		if(isset($mybb->input['upsetting']['96']) && $mybb->input['upsetting']['96'] == "file")
 		{
-			$query = $db->simple_select(TABLE_PREFIX."settings", "value", "sid='96'");
+			$query = $db->simple_select("settings", "value", "sid='96'");
 			if($db->fetch_field($query, "value") == "db")
 			{
 				$mybb->settings['cssmedium'] = 'file';
-				$query = $db->simple_select(TABLE_PREFIX."themes", "tid", "csscached='0'");
+				$query = $db->simple_select("themes", "tid", "csscached='0'");
 				while($theme = $db->fetch_array($query))
 				{
 					update_css_file($theme['tid']);
@@ -86,13 +86,13 @@ if($mybb->input['action'] == "do_change")
 	// Check if we need to create our fulltext index after changing the search mode
 	if($mybb->settings['searchtype'] == "fulltext")
 	{
-		if(!$db->is_fulltext(TABLE_PREFIX."posts") && $db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
+		if(!$db->is_fulltext("posts") && $db->supports_fulltext_boolean("posts"))
 		{
-			$db->create_fulltext_index(TABLE_PREFIX."posts", "message");
+			$db->create_fulltext_index("posts", "message");
 		}
-		if(!$db->is_fulltext(TABLE_PREFIX."posts") && $db->supports_fulltext(TABLE_PREFIX."threads"))
+		if(!$db->is_fulltext("posts") && $db->supports_fulltext("threads"))
 		{
-			$db->create_fulltext_index(TABLE_PREFIX."threads", "subject");
+			$db->create_fulltext_index("threads", "subject");
 		}
 	}
 	cpredirect("settings.php?".SID, $lang->settings_updated);
@@ -116,7 +116,7 @@ if($mybb->input['action'] == "do_add")
 			"gid" => intval($mybb->input['gid'])
 		);
 		$plugins->run_hooks("admin_settings_do_add_setting");
-		$db->insert_query(TABLE_PREFIX."settings", $settingarray);
+		$db->insert_query("settings", $settingarray);
 		rebuildsettings();
 		cpredirect("settings.php?".SID, $lang->setting_added);
 	}
@@ -139,7 +139,7 @@ if($mybb->input['action'] == "do_add")
 			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
 		}
 		$plugins->run_hooks("admin_settings_do_add_group");
-		$db->insert_query(TABLE_PREFIX."settinggroups", $settinggrouparray);
+		$db->insert_query("settinggroups", $settinggrouparray);
 		rebuildsettings();
 		cpredirect("settings.php?".SID, $lang->group_added);
 	}
@@ -230,7 +230,7 @@ if($mybb->input['action'] == "do_edit")
 			"gid" => intval($mybb->input['gid'])
 		);
 		$plugins->run_hooks("admin_settings_do_edit_setting");
-		$db->update_query(TABLE_PREFIX."settings", $settingarray, "sid='".intval($mybb->input['sid'])."'");
+		$db->update_query("settings", $settingarray, "sid='".intval($mybb->input['sid'])."'");
 		rebuildsettings();
 		cpredirect("settings.php?".SID, $lang->setting_edited);
 	}
@@ -247,7 +247,7 @@ if($mybb->input['action'] == "do_edit")
 			$settinggrouparray['isdefault'] = $mybb->input['isdefault'];
 		}
 		$plugins->run_hooks("admin_setings_do_edit_group");
-		$db->update_query(TABLE_PREFIX."settinggroups", $settinggrouparray, "gid='".intval($mybb->input['gid'])."'");
+		$db->update_query("settinggroups", $settinggrouparray, "gid='".intval($mybb->input['gid'])."'");
 		rebuildsettings();
 		cpredirect("settings.php?".SID, $lang->group_edited);
 	}
@@ -582,7 +582,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 					else
 					{
 						$type_count = count($type);
-						for($i = 0; $i < $type_count; $i++)
+						for($i = 0; $i < $type_count; ++$i)
 						{
 							$optionsexp = explode("=", $type[$i]);
 							$lang_string =  "setting_".$setting['name']."_".$optionsexp[0];

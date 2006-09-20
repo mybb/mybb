@@ -14,11 +14,12 @@
  *
  * @param string The contents of the page.
  */
+ 
 function output_page($contents)
 {
 	global $db, $lang, $theme, $plugins, $mybb;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
-
+	
 	$contents = parse_page($contents);
 	$totaltime = $maintimer->stop();
 	if($mybb->usergroup['cancp'] == "yes")
@@ -79,7 +80,7 @@ function output_page($contents)
 	$plugins->run_hooks("post_output_page");
 
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
-	if($mybb->settings['useshutdownfunc'] == "no" && $mybb->use_shutdown == true)
+	if(($mybb->settings['useshutdownfunc'] == "no" || phpversion() >= '5.0.5') && $mybb->use_shutdown != true)
 	{
 		run_shutdown();
 	}
@@ -106,25 +107,31 @@ function add_shutdown($name)
  */
 function run_shutdown()
 {
-	global $db, $cache, $shutdown_functions;
+	global $db, $cache, $shutdown_functions, $done_shutdown;
 
-	// We have some shutdown queries needing to be run
-	if(is_array($db->shutdown_queries))
+	// Run shutdown function if the shutdown functionality hasn't been already run, run any shutdown related items now.
+	if($done_shutdown != true)
 	{
-		// Loop through and run them all
-		foreach($db->shutdown_queries as $query)
+		// We have some shutdown queries needing to be run
+		if(is_array($db->shutdown_queries))
 		{
-			$db->query($query);
+			// Loop through and run them all
+			foreach($db->shutdown_queries as $query)
+			{
+				$db->query($query);
+			}
 		}
-	}
-
-	// Run any shutdown functions if we have them
-	if(is_array($shutdown_functions))
-	{
-		foreach($shutdown_functions as $function)
+	
+		// Run any shutdown functions if we have them
+		if(is_array($shutdown_functions))
 		{
-			$function();
+			foreach($shutdown_functions as $function)
+			{
+				$function();
+			}
 		}
+		// We've already ran - make sure we're not run more than once
+		$done_shutdown = true;
 	}
 }
 
@@ -147,14 +154,14 @@ function send_mail_queue($count=10)
 		$cache->updatemailqueue(0, time());
 
 		// Fetch emails for this page view - and send them
-		$query = $db->simple_select(TABLE_PREFIX."mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
+		$query = $db->simple_select("mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
 		
 		$plugins->run_hooks_by_ref("send_mail_queue_mail", $query);
 		
 		while($email = $db->fetch_array($query))
 		{
 			// Delete the message from the queue
-			$db->delete_query(TABLE_PREFIX."mailqueue", "mid='{$email['mid']}'");
+			$db->delete_query("mailqueue", "mid='{$email['mid']}'");
 
 			my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
 		}
@@ -243,7 +250,7 @@ function my_date($format, $stamp="", $offset="", $ty=1)
 		// If DST correction is enabled, add an additional hour to the timezone.
 		if($dstcorrection == "yes")
 		{
-			$offset++;
+			++$offset;
 			if(my_substr($offset, 0, 1) != "-")
 			{
 				$offset = "+".$offset;
@@ -474,7 +481,7 @@ function error_no_permission()
 		"location1" => 0,
 		"location2" => 0
 	);
-	$db->update_query(TABLE_PREFIX."sessions", $noperm_array, "sid='".$session->sid."'");
+	$db->update_query("sessions", $noperm_array, "sid='".$session->sid."'");
 	$url = $_SERVER['REQUEST_URI'];
 	$url = str_replace("&", "&amp;", $url);
 	if($mybb->user['uid'])
@@ -576,7 +583,7 @@ function multipage($count, $perpage, $page, $url)
 		{
 			$to = $page+4;
 		}
-		for($i = $from; $i <= $to; $i++)
+		for($i = $from; $i <= $to; ++$i)
 		{
 			$plate = "multipage_page".(($i==$page) ? "_current":"");
 			eval("\$mppage .= \"".$templates->get($plate)."\";");
@@ -950,7 +957,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 	{
 		if(!$fid)
 		{
-			$query = $db->simple_select(TABLE_PREFIX.'moderators', 'mid', "uid={$uid}", array('limit' => 1));
+			$query = $db->simple_select('moderators', 'mid', "uid={$uid}", array('limit' => 1));
 			$modcheck = $db->fetch_array($query);
 			if($modcheck['mid'])
 			{
@@ -1014,7 +1021,7 @@ function get_post_icons()
 		{
 			$iconlist .= "<input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" />";
 		}
-		$listed++;
+		++$listed;
 		if($listed == 9)
 		{
 			$iconlist .= "<br />";
@@ -1036,7 +1043,7 @@ function get_post_icons()
 function my_setcookie($name, $value="", $expires="", $httponly=false)
 {
 	global $mybb, $sent_header;
-	if($sent_header)
+	if($sent_header || headers_sent())
 	{
 		return false;
 	}
@@ -1161,7 +1168,7 @@ function my_set_array_cookie($name, $id, $value)
 function get_server_load()
 {
 	global $lang;
-	if(strtolower(substr(PHP_OS, 0, 3)) === 'win')
+	if(my_strtolower(substr(PHP_OS, 0, 3)) === 'win')
 	{
 		return $lang->unknown;
 	}
@@ -1245,7 +1252,7 @@ function update_forum_count($fid)
 		"lastpostsubject" => $db->escape_string($lastpost['subject'])
 	);
 
-	$db->update_query(TABLE_PREFIX."forums", $update_count, "fid='{$fid}'");
+	$db->update_query("forums", $update_count, "fid='{$fid}'");
 }
 
 /**
@@ -1468,7 +1475,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
  */
 function get_extension($file)
 {
-	return strtolower(my_substr(strrchr($file, "."), 1));
+	return my_strtolower(my_substr(strrchr($file, "."), 1));
 }
 
 /**
@@ -1481,7 +1488,7 @@ function random_str($length="8")
 {
 	$set = array("a","A","b","B","c","C","d","D","e","E","f","F","g","G","h","H","i","I","j","J","k","K","l","L","m","M","n","N","o","O","p","P","q","Q","r","R","s","S","t","T","u","U","v","V","w","W","x","X","y","Y","z","Z","1","2","3","4","5","6","7","8","9");
 	$str;
-	for($i = 1; $i <= $length; $i++)
+	for($i = 1; $i <= $length; ++$i)
 	{
 		$ch = rand(0, count($set)-1);
 		$str .= $set[$ch];
@@ -1652,8 +1659,8 @@ function build_clickable_smilies()
 					}
 					$find = $db->escape_string(htmlspecialchars($find));
 					$smilies .= "<td><img src=\"{$image}\" border=\"0\" class=\"smilie\" alt=\"{$find}\" /></td>\n";
-					$i++;
-					$counter++;
+					++$i;
+					++$counter;
 					if($counter == $mybb->settings['smilieinsertercols'])
 					{
 						$counter = 0;
@@ -1773,7 +1780,7 @@ function log_moderator_action($data, $action="")
 		"data" => $db->escape_string($data),
 		"ipaddress" => $session->ipaddress
 	);
-	$db->insert_query(TABLE_PREFIX."moderatorlog", $sql_array);
+	$db->insert_query("moderatorlog", $sql_array);
 }
 
 /**
@@ -1786,11 +1793,6 @@ function log_moderator_action($data, $action="")
 function get_reputation($reputation, $uid=0)
 {
 	global $theme;
-	
-	if($uid == 0)
-	{
-		$reputation = 0;
-	}
 
 	if($uid != 0)
 	{
@@ -1899,7 +1901,7 @@ function get_attachment_icon($ext)
 	{
 		$attachtypes = $cache->read("attachtypes");
 	}
-	$ext = strtolower($ext);
+	$ext = my_strtolower($ext);
 	if($attachtypes[$ext]['icon'])
 	{
 		return "<img src=\"".$attachtypes[$ext]['icon']."\" border=\"0\" alt=\".$ext File\" />";
@@ -2275,28 +2277,28 @@ function mark_reports($id, $type="post")
 			{
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "pid IN($rids) AND reportstatus='0'");
+				$db->update_query("reportedposts", array('reportstatus' => 1), "pid IN($rids) AND reportstatus='0'");
 			}
 			break;
 		case "post":
-			$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "pid='$id' AND reportstatus='0'");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "pid='$id' AND reportstatus='0'");
 			break;
 		case "threads":
 			if(is_array($id))
 			{
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "tid IN($rids) AND reportstatus='0'");
+				$db->update_query("reportedposts", array('reportstatus' => 1), "tid IN($rids) AND reportstatus='0'");
 			}
 			break;
 		case "thread":
-			$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "tid='$id' AND reportstatus='0'");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "tid='$id' AND reportstatus='0'");
 			break;
 		case "forum":
-			$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "fid='$id' AND reportstatus='0'");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "fid='$id' AND reportstatus='0'");
 			break;
 		case "all":
-			$db->update_query(TABLE_PREFIX."reportedposts", array('reportstatus' => 1), "reportstatus='0'");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "reportstatus='0'");
 			break;
 	}
 	$plugins->run_hooks("mark_reports");
@@ -2845,10 +2847,10 @@ function update_first_post($tid)
 	if($post['replyto'] != 0)
 	{
 		$replyto_update = array("replyto" => 0);
-		$db->update_query(TABLE_PREFIX."threads", $replyto_update, "pid='{$post['pid']}");
+		$db->update_query("threads", $replyto_update, "pid='{$post['pid']}");
 	}
 	$firstpostup = array("firstpost" => $post['pid']);
-	$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='$tid'");
+	$db->update_query("threads", $firstpostup, "tid='$tid'");
 }
 
 /**
@@ -2907,6 +2909,49 @@ function my_substr($string, $start, $length="")
 
 	return $cut_string;
 }
+
+/**
+ * lowers the case of a string, mb strings accounted for
+ *
+ * @param string The string to lower.
+ * @return int The lowered string.
+ */
+function my_strtolower($string)
+{
+	if(function_exists("mb_strtolower"))
+	{
+		$string = mb_strtolower($string);
+
+	}
+	else
+	{
+		$string = strtolower($string);
+	}
+
+	return $string;
+}
+
+/**
+ * ups the case of a string, mb strings accounted for
+ *
+ * @param string The string to up.
+ * @return int The uped string.
+ */
+function my_strtoupper($string)
+{
+	if(function_exists("mb_strtoupper"))
+	{
+		$string = mb_strtoupper($string);
+
+	}
+	else
+	{
+		$string = strtoupper($string);
+	}
+
+	return $string;
+}
+
 
 /**
  * Returns any html entities to their original character
@@ -3130,7 +3175,7 @@ function get_thread($tid)
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($tid)."'");
+		$query = $db->simple_select("threads", "*", "tid='".intval($tid)."'");
 		$thread = $db->fetch_array($query);
 
 		if($thread)
@@ -3163,7 +3208,7 @@ function get_post($pid)
 	}
 	else
 	{
-		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "pid='".intval($pid)."'");
+		$query = $db->simple_select("posts", "*", "pid='".intval($pid)."'");
 		$post = $db->fetch_array($query);
 
 		if($post)
@@ -3316,7 +3361,7 @@ function rebuildsettings()
 		"order_by" => "title",
 		"order_dir" => "ASC"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."settings", "value, name", "", $options);
+	$query = $db->simple_select("settings", "value, name", "", $options);
 
 	while($setting = $db->fetch_array($query))
 	{
@@ -3384,7 +3429,7 @@ if(!function_exists("stripos"))
 {
 	function stripos($haystack, $needle, $offset=0)
 	{
-		return strpos(strtoupper($haystack), strtoupper($needle), $offset);
+		return strpos(my_strtoupper($haystack), my_strtoupper($needle), $offset);
 	}
 }
 
@@ -3405,4 +3450,19 @@ if(!function_exists("file_get_contents"))
 		return false;
 	}
 }
+
+if(!function_exists('html_entity_decode'))
+{
+	function html_entity_decode($string)
+	{
+	   // replace numeric entities
+	   $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
+	   $string = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $string);
+	   // replace literal entities
+	   $trans_tbl = get_html_translation_table(HTML_ENTITIES);
+	   $trans_tbl = array_flip($trans_tbl);
+	   return strtr($string, $trans_tbl);
+	}
+}
+
 ?>

@@ -30,11 +30,11 @@ $pid = intval($mybb->input['pid']);
 // Select attachment data from database
 if($aid)
 {
-	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "aid='{$aid}'");
+	$query = $db->simple_select("attachments", "*", "aid='{$aid}'");
 }
 else
 {
-	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid='{$pid}'");
+	$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
 }
 $attachment = $db->fetch_array($query);
 $pid = $attachment['pid'];
@@ -71,7 +71,7 @@ if(!$mybb->input['thumbnail']) // Only increment the download count if this is n
 	$attachupdate = array(
 		"downloads" => $attachment['downloads']+1,
 	);
-	$db->update_query(TABLE_PREFIX."attachments", $attachupdate, "aid='{$attachment['aid']}'");
+	$db->update_query("attachments", $attachupdate, "aid='{$attachment['aid']}'");
 }
 $attachment['filename'] = rawurlencode($attachment['filename']);
 

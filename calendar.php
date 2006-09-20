@@ -48,7 +48,7 @@ if($mybb->input['action'] == "event")
 	$options = array(
 		"limit" => 1
 	);
-	$query = $db->simple_select(TABLE_PREFIX."events", "*", "eid=".$eid, $options);
+	$query = $db->simple_select("events", "*", "eid=".$eid, $options);
 	$event = $db->fetch_array($query);
 	if($event == FALSE)
 	{
@@ -241,15 +241,15 @@ if($mybb->input['action'] == "event")
 
 	if(($event['author'] == $mybb->user['uid'] && $mybb->user['uid'] != 0) || $mybb->usergroup['cancp'] == "yes")
 	{
-		$editbutton = "<a href=\"calendar.php?action=editevent&amp;eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
-		$deletebutton = "<a href=\"javascript:MyBB.deleteEvent($event[eid]);\"><img src=\"$theme[imglangdir]/postbit_delete.gif\" border=\"0\" alt=\"$lang->alt_delete\" /></a>";
+		$editbutton = "<a href=\"calendar.php?action=editevent&amp;eid={$event['eid']}\"><img src=\"{$theme['imglangdir']}/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
+		$deletebutton = "<a href=\"javascript:MyBB.deleteEvent({$event['eid']});\"><img src=\"{$theme['imglangdir']}/postbit_delete.gif\" border=\"0\" alt=\"$lang->alt_delete\" /></a>";
 	}
 	$event['subject'] = $parser->parse_badwords($event['subject']);
 	$event['subject'] = htmlspecialchars_uni($event['subject']);
 	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 	if($event['username'])
 	{
-		$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">".format_name($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
+		$eventposter = "<a href=\"member.php?action=profile&amp;uid={$event['author']}\">".format_name($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
 	}
 	else
 	{
@@ -312,7 +312,7 @@ if($mybb->input['action'] == "dayview")
 		$bday_where = "birthday LIKE '$day-$month-%' OR birthday LIKE '$day-$month'";
 		$feb_fix = 0;
 	}
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
+	$query = $db->simple_select("users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
 
 	$alterbg = $theme['trow1'];
 	$comma = '';
@@ -371,15 +371,15 @@ if($mybb->input['action'] == "dayview")
 
 		if(($event['author'] == $mybb->user['uid'] && $mybb->user['uid'] != 0) || $mybb->usergroup['cancp'] == "yes")
 		{
-			$editbutton = "<a href=\"calendar.php?action=editevent&amp;eid=$event[eid]\"><img src=\"$theme[imglangdir]/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
-			$deletebutton = "<a href=\"javascript:MyBB.deleteEvent($event[eid]);\"><img src=\"$theme[imglangdir]/postbit_delete.gif\" border=\"0\" alt=\"$lang->alt_delete\" /></a>";
+			$editbutton = "<a href=\"calendar.php?action=editevent&amp;eid={$event['eid']}\"><img src=\"{$theme['imglangdir']}/postbit_edit.gif\" border=\"0\" alt=\"$lang->alt_edit\" /></a>";
+			$deletebutton = "<a href=\"javascript:MyBB.deleteEvent({$event['eid']});\"><img src=\"{$theme['imglangdir']}/postbit_delete.gif\" border=\"0\" alt=\"$lang->alt_delete\" /></a>";
 		}
 		$event['subject'] = $parser->parse_badwords($event['subject']);
 		$event['subject'] = htmlspecialchars_uni($event['subject']);
 		$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 		if($event['username'])
 		{
-			$eventposter = "<a href=\"member.php?action=profile&amp;uid=$event[author]\">" . format_name($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
+			$eventposter = "<a href=\"member.php?action=profile&amp;uid={$event['author']}\">" . format_name($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
 		}
 		else
 		{
@@ -418,7 +418,7 @@ if($mybb->input['action'] == "dayview")
 			foreach($repeats as $repeat_day)
 			{
 				//Find out the first day of the month this particular day falls on
-				for($starts_on = 1; $starts_on <= 7; $starts_on++)
+				for($starts_on = 1; $starts_on <= 7; ++$starts_on)
 				{
 					if(date('w', gmmktime(0, 0, 0, $this_month, $starts_on, $this_year)) == $repeat_day)
 					{
@@ -427,7 +427,7 @@ if($mybb->input['action'] == "dayview")
 				}
 
 				//Approx 4 weeks in the month
-				for($week_no = 0; $week_no < 4; $week_no++)
+				for($week_no = 0; $week_no < 4; ++$week_no)
 				{
 					$cur_date = $starts_on + (7 * $week_no);
 					if(mktime(0, 0, 0, $this_month, $cur_date, $this_year))
@@ -551,7 +551,7 @@ if($mybb->input['action'] == "addevent")
 	$month_start[$month] = " selected=\"selected\"";
 
 	//Construct option list for years
-	for($i = my_date('Y'); $i < (my_date('Y') + 5); $i++)
+	for($i = my_date('Y'); $i < (my_date('Y') + 5); ++$i)
 	{
 		if($i == $year)
 		{
@@ -564,7 +564,7 @@ if($mybb->input['action'] == "addevent")
 	}
 
 	//Construct option list for days
-	for($i = 1; $i <= 31; $i++)
+	for($i = 1; $i <= 31; ++$i)
 	{
 		if($i == $day)
 		{
@@ -578,7 +578,7 @@ if($mybb->input['action'] == "addevent")
 
 	//Make hour dropdown menu
 	$start_time_hours = "<option value=\"\">---</option>\n";
-	for($i = 0; $i <= 23; $i++)
+	for($i = 0; $i <= 23; ++$i)
 	{
 		//Pad the hours with leading 0s
 		$j = str_pad($i, 2, '0', STR_PAD_LEFT);
@@ -592,7 +592,7 @@ if($mybb->input['action'] == "addevent")
 		}
 	}
 	$end_time_hours = "<option value=\"\">---</option>\n";
-	for($i = 0; $i <= 23; $i++)
+	for($i = 0; $i <= 23; ++$i)
 	{
 		//Pad the hours with leading 0s
 		$j = str_pad($i, 2, '0', STR_PAD_LEFT);
@@ -651,7 +651,7 @@ if($mybb->input['action'] == "addevent")
 			}
 		}
 		//Construct option list for years
-		for($i = my_date('Y'); $i < (my_date('Y') + 5); $i++)
+		for($i = my_date('Y'); $i < (my_date('Y') + 5); ++$i)
 		{
 			if($i == $end_year || (empty($end_year) && $i == $year))
 			{
@@ -673,7 +673,7 @@ if($mybb->input['action'] == "addevent")
 		}
 
 		//Construct option list for days
-		for($i = 1; $i <= 31; $i++)
+		for($i = 1; $i <= 31; ++$i)
 		{
 			if($i == $end_day || ($i == $day + 1))
 			{
@@ -719,7 +719,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("calendar_do_editevent_start");
 
-	$query = $db->simple_select(TABLE_PREFIX."events", "*", "eid='{$eid}'");
+	$query = $db->simple_select("events", "*", "eid='{$eid}'");
 	$event = $db->fetch_array($query);
 
 	if(!is_numeric($event['author']))
@@ -734,7 +734,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	// Are we going to delete this event or just edit it?
 	if($mybb->input['delete'] == "yes")
 	{
-		$db->delete_query(TABLE_PREFIX."events", "eid='{$event['eid']}'");
+		$db->delete_query("events", "eid='{$event['eid']}'");
 
 		// Redirect back to the main calendar view.
 		redirect("calendar.php", $lang->redirect_eventdeleted);
@@ -798,7 +798,7 @@ if($mybb->input['action'] == "editevent")
 
 	$eid = intval($mybb->input['eid']);
 
-	$query = $db->simple_select(TABLE_PREFIX."events", "*", "eid='{$eid}'");
+	$query = $db->simple_select("events", "*", "eid='{$eid}'");
 	$event = $db->fetch_array($query);
 
 	if(!$event['eid'])
@@ -844,7 +844,7 @@ if($mybb->input['action'] == "editevent")
 	}
 	$month_start[$event['start_month']] = " selected=\"selected\"";
 	$start_yearopts = '';
-	for($i = ($event['start_year'] - 2); $i <= ($event['start_year'] + 2); $i++)
+	for($i = ($event['start_year'] - 2); $i <= ($event['start_year'] + 2); ++$i)
 	{
 		if($i == $event['start_year'])
 		{
@@ -857,7 +857,7 @@ if($mybb->input['action'] == "editevent")
 	}
 
 	$start_dayopts = '';
-	for($i = 1; $i <= 31; $i++)
+	for($i = 1; $i <= 31; ++$i)
 	{
 		if($i == $event['start_day'])
 		{
@@ -871,7 +871,7 @@ if($mybb->input['action'] == "editevent")
 
 	//Make hour dropdown menu
 	$start_time_hours = "<option value=\"\">---</option>\n";
-	for($i = 0; $i <= 23; $i++)
+	for($i = 0; $i <= 23; ++$i)
 	{
 		//Pad the hours with leading 0s
 		$j = str_pad($i, 2, '0', STR_PAD_LEFT);
@@ -885,7 +885,7 @@ if($mybb->input['action'] == "editevent")
 		}
 	}
 	$end_time_hours = "<option value=\"\">---</option>\n";
-	for($i = 0; $i <= 23; $i++)
+	for($i = 0; $i <= 23; ++$i)
 	{
 		//Pad the hours with leading 0s
 		$j = str_pad($i, 2, '0', STR_PAD_LEFT);
@@ -950,7 +950,7 @@ if($mybb->input['action'] == "editevent")
 			}
 		}
 		//Construct option list for years
-		for($i = my_date('Y'); $i < (my_date('Y') + 5); $i++)
+		for($i = my_date('Y'); $i < (my_date('Y') + 5); ++$i)
 		{
 			if($i == $event['end_year'] || $i == $event['start_year'])
 			{
@@ -972,7 +972,7 @@ if($mybb->input['action'] == "editevent")
 		}
 
 		//Construct option list for days
-		for($i = 1; $i <= 31; $i++)
+		for($i = 1; $i <= 31; ++$i)
 		{
 			if($i == $event['end_day'] || ($i == $event['start_day'] + 1))
 			{
@@ -1022,7 +1022,7 @@ if($mybb->input['action'] == "calendar_main")
 		$feb_fix = 0;
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
+	$query = $db->simple_select("users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
 	while($user = $db->fetch_array($query))
 	{
 		$bday = explode("-", $user['birthday']);
@@ -1047,7 +1047,7 @@ if($mybb->input['action'] == "calendar_main")
 				AND ( ( end_year > '{$this_year}' ) OR ( end_year = '{$this_year}' AND end_month >= '{$this_month}' ) )
 		)
 	";
-	$query = $db->simple_select(TABLE_PREFIX."events", "*", "{$where} AND ((author='{$mybb->user['uid']}' AND private='yes') OR (private!='yes'))");
+	$query = $db->simple_select("events", "*", "{$where} AND ((author='{$mybb->user['uid']}' AND private='yes') OR (private!='yes'))");
 	while($event = $db->fetch_array($query))
 	{
 		$event['subject'] = htmlspecialchars_uni($event['subject']);
@@ -1078,7 +1078,7 @@ if($mybb->input['action'] == "calendar_main")
 			foreach($repeats as $repeat_day)
 			{
 				//Find out the first day of the month this particular day falls on
-				for($starts_on = 1; $starts_on <= 7; $starts_on++)
+				for($starts_on = 1; $starts_on <= 7; ++$starts_on)
 				{
 					if(date('w', gmmktime(0, 0, 0, $this_month, $starts_on, $this_year)) == $repeat_day)
 					{
@@ -1087,7 +1087,7 @@ if($mybb->input['action'] == "calendar_main")
 				}
 
 				//Approx 4 weeks in the month
-				for($week_no = 0; $week_no < 4; $week_no++)
+				for($week_no = 0; $week_no < 4; ++$week_no)
 				{
 					$cur_date = $starts_on + (7 * $week_no);
 					if(gmmktime(0, 0, 0, $this_month, $cur_date, $this_year))
@@ -1121,7 +1121,7 @@ if($mybb->input['action'] == "calendar_main")
 		$daybits .= "<td width=\"$swidth%\" colspan=\"$sblanks\" height=\"90\" class=\"trow2\">&nbsp;</td>\n";
 		$count += $sblanks;
 	}
-	for($i = 1; $i <= $days; $i++)
+	for($i = 1; $i <= $days; ++$i)
 	{
 		if(isset($bdays[$i]))
 		{
@@ -1150,7 +1150,7 @@ if($mybb->input['action'] == "calendar_main")
 		{
 			eval("\$daybits .= \"".$templates->get("calendar_daybit")."\";");
 		}
-		$count++;
+		++$count;
 
 		if($count == 7)
 		{
@@ -1206,7 +1206,7 @@ if($mybb->input['action'] == "calendar_main")
 
 
 	$yearsel = '';
-	for($i = my_date("Y"); $i < (my_date("Y") + 5); $i++)
+	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
 	{
 		$yearsel .= "<option value=\"$i\">$i</option>\n";
 	}

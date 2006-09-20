@@ -23,11 +23,7 @@ $aid = intval($mybb->input['aid']);
 $plugins->run_hooks("announcements_start");
 
 // Get announcement fid
-$query = $db->select_query(array(
-	'select' => "fid",
-	'table' => TABLE_PREFIX."announcements",
-	'where' => "aid='$aid'"
-));
+$query = $db->simple_select("announcements", "fid", "aid='$aid'");
 $announcement = $db->fetch_array($query);
 
 if(!$announcement)

@@ -73,7 +73,7 @@ $forumpermissions = forum_permissions();
 $fpermissions = $forumpermissions[$fid];
 
 // Get the forums we will need to show.
-$query = $db->simple_select(TABLE_PREFIX."forums", "*", "active != 'no'", array('order_by' => 'pid, disporder'));
+$query = $db->simple_select("forums", "*", "active != 'no'", array('order_by' => 'pid, disporder'));
 // Build a forum cache.
 while($forum = $db->fetch_array($query))
 {
@@ -123,7 +123,7 @@ if($fpermissions['canview'] != "yes")
 }
 if($foruminfo['linkto'])
 {
-	header("Location: $foruminfo[linkto]");
+	header("Location: {$foruminfo['linkto']}");
 	exit;
 }
 // Password protected forums
@@ -331,7 +331,7 @@ if(!isset($mybb->input['order']) && !empty($foruminfo['defaultsortorder']))
 {
 	$mybb->input['order'] = $foruminfo['defaultsortorder'];
 }
-switch(strtolower($mybb->input['order']))
+switch(my_strtolower($mybb->input['order']))
 {
 	case "asc":
 		$sortordernow = "ASC";
@@ -393,7 +393,7 @@ else
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 // How many pages are there?
-$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS threads", "t.fid = '$fid' $visibleonly $datecutsql");
+$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.fid = '$fid' $visibleonly $datecutsql");
 $threadcount = $db->fetch_field($query, "threads");
 
 $perpage = $mybb->settings['threadsperpage'];
@@ -536,7 +536,7 @@ if($tids)
 // Check participation by the current user in any of these threads - for 'dot' folder icons
 if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 {
-	$query = $db->simple_select(TABLE_PREFIX."posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
+	$query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
 	while($post = $db->fetch_array($query))
 	{
 		if($moved_threads[$post['tid']])
@@ -550,7 +550,7 @@ if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 // Read threads
 if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 {
-	$query = $db->simple_select(TABLE_PREFIX."threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
+	$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
 	while($readthread = $db->fetch_array($query))
 	{
 		if($moved_threads[$readthread['tid']])
@@ -678,7 +678,7 @@ if(is_array($threadcache))
 
 		if($ismod)
 		{
-			if(strstr($_COOKIE[$inlinecookie], "|$thread[tid]|"))
+			if(strstr($_COOKIE[$inlinecookie], "|{$thread['tid']}|"))
 			{
 				$inlinecheck = "checked=\"checked\"";
 				++$inlinecount;
@@ -859,7 +859,7 @@ if(is_array($threadcache))
 	$customthreadtools = '';
 	if($ismod)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%') AND type = 't'");
+		$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%') AND type = 't'");
 		while($tool = $db->fetch_array($query))
 		{
 			eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
@@ -895,7 +895,7 @@ else
 {
 	$rssdiscovery = '';
 	$threadslist = '';
-	if($forums == '')
+	if(empty($forums))
 	{
 		error($lang->error_containsnoforums);
 	}

@@ -23,7 +23,7 @@ $lang->load("printthread");
 
 $plugins->run_hooks("printthread_start");
 
-$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."'  AND closed NOT LIKE 'moved|%'");
+$query = $db->simple_select("threads", "*", "tid='".intval($mybb->input['tid'])."'  AND closed NOT LIKE 'moved|%'");
 $thread = $db->fetch_array($query);
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
@@ -58,7 +58,7 @@ $breadcrumb = makeprintablenav();
 $parentsexp = explode(",", $forum['parentlist']);
 $numparents = count($parentsexp);
 $tdepth = "-";
-for($i = 0; $i < $numparents; $i++)
+for($i = 0; $i < $numparents; ++$i)
 {
 	$tdepth .= "-";
 }
@@ -122,7 +122,7 @@ function makeprintablenav($pid="0", $depth="--")
 	if(!is_array($pforumcache))
 	{
 		$parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);
-		$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid, pid", "$parlist", array('order_by' => 'pid, disporder'));
+		$query = $db->simple_select("forums", "name, fid, pid", "$parlist", array('order_by' => 'pid, disporder'));
 		while($forumnav = $db->fetch_array($query))
 		{
 			$pforumcache[$forumnav['pid']][$forumnav['fid']] = $forumnav;
@@ -133,7 +133,7 @@ function makeprintablenav($pid="0", $depth="--")
 	{
 		foreach($pforumcache[$pid] as $key => $forumnav)
 		{
-			$forums .= "+".$depth." $lang->forum $forumnav[name] (<i>".$mybb->settings['bburl']."/forumdisplay.php?fid=$forumnav[fid]</i>)<br />\n";
+			$forums .= "+".$depth." $lang->forum {$forumnav['name']} (<i>".$mybb->settings['bburl']."/forumdisplay.php?fid={$forumnav['fid']}</i>)<br />\n";
 			if($pforumcache[$forumnav['fid']])
 			{
 				$newdepth = $depth."-";

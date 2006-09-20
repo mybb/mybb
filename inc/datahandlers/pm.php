@@ -143,7 +143,7 @@ class PMDataHandler extends DataHandler
 		// No user ID is specified, we need to query for it based on the username.
 		if(!isset($pm['toid']))
 		{
-			$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".$db->escape_string($pm['username'])."'", array("limit" => 1));
+			$query = $db->simple_select("users", "uid", "username='".$db->escape_string($pm['username'])."'", array("limit" => 1));
 			$user = $db->fetch_array($query);
 			$pm['toid'] = $user['uid'];
 		}
@@ -371,7 +371,7 @@ class PMDataHandler extends DataHandler
 		}
 		
 		// Check if we're updating a draft or not.
-		$query = $db->simple_select(TABLE_PREFIX."privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
+		$query = $db->simple_select("privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
 		$draftcheck = $db->fetch_array($query);
 
 		// This PM was previously a draft - update it
@@ -401,7 +401,7 @@ class PMDataHandler extends DataHandler
 				$updateddraft['uid'] = $pm['recipient']['uid'];
 			}
 			$plugins->run_hooks_by_ref("datahandler_pm_insert_updatedraft", $this);
-			$db->update_query(TABLE_PREFIX."privatemessages", $this->pm_insert_data, "pmid='{$pm['pmid']}' AND uid='{$pm['sender']['uid']}'");
+			$db->update_query("privatemessages", $this->pm_insert_data, "pmid='{$pm['pmid']}' AND uid='{$pm['sender']['uid']}'");
 		}
 		else
 		{
@@ -426,7 +426,7 @@ class PMDataHandler extends DataHandler
 				$newpm['uid'] = $pm['sender']['uid'];
 			}
 			$plugins->run_hooks_by_ref("datahandler_pm_insert", $this);
-			$db->insert_query(TABLE_PREFIX."privatemessages", $this->pm_insert_data);
+			$db->insert_query("privatemessages", $this->pm_insert_data);
 
 			$this->pmid = $db->insert_id();
 
@@ -442,14 +442,14 @@ class PMDataHandler extends DataHandler
 				$sql_array = array(
 					'status' => 3
 				);
-				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
+				$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}
 			elseif($pm['do'] == "forward")
 			{
 				$sql_array = array(
 					'status' => 4
 				);
-				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
+				$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}
 		}
 
@@ -471,7 +471,7 @@ class PMDataHandler extends DataHandler
 				'receipt' => 0
 			);
 			$plugins->run_hooks_by_ref("datahandler_pm_insert_savedcopy", $this);
-			$db->insert_query(TABLE_PREFIX."privatemessages", $this->pm_insert_data);
+			$db->insert_query("privatemessages", $this->pm_insert_data);
 
 			// Because the sender saved a copy, update their total pm count
 			update_pm_count($pm['sender']['uid'], 1);
@@ -484,7 +484,7 @@ class PMDataHandler extends DataHandler
 			$sql_array = array(
 				"pmpopup" => "new"
 			);
-			$db->update_query(TABLE_PREFIX."users", $sql_array, "uid={$pm['recipient']['uid']}");
+			$db->update_query("users", $sql_array, "uid={$pm['recipient']['uid']}");
 		}
 
 

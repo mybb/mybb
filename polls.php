@@ -48,7 +48,7 @@ if($mybb->input['action'] == "newpoll")
 
 	$plugins->run_hooks("polls_newpoll_start");
 
-	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select("threads", "*", "tid='".intval($mybb->input['tid'])."'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
@@ -105,7 +105,7 @@ if($mybb->input['action'] == "newpoll")
 
 	$options = $mybb->input['options'];
 	$optionbits = '';
-	for($i = 1; $i <= $polloptions; $i++)
+	for($i = 1; $i <= $polloptions; ++$i)
 	{
 		$option = $options[$i];
 		$option = htmlspecialchars_uni($option);
@@ -131,7 +131,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("polls_do_newpoll_start");
 
-	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select("threads", "*", "tid='".intval($mybb->input['tid'])."'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
@@ -174,7 +174,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 	$optioncount = "0";
 	$options = $mybb->input['options'];
-	for($i = 1; $i <= $polloptions; $i++)
+	for($i = 1; $i <= $polloptions; ++$i)
 	{
 		if(trim($options[$i]) != "")
 		{
@@ -196,7 +196,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 	$optionslist = '';
 	$voteslist = '';
-	for($i = 1; $i <= $optioncount; $i++)
+	for($i = 1; $i <= $optioncount; ++$i)
 	{
 		if(trim($options[$i]) != '')
 		{
@@ -233,10 +233,10 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("polls_do_newpoll_process");
 
-	$db->insert_query(TABLE_PREFIX."polls", $newpoll);
+	$db->insert_query("polls", $newpoll);
 	$pid = $db->insert_id();
 
-	$db->update_query(TABLE_PREFIX."threads", array('poll' => $pid), "tid='".$thread['tid']."'");
+	$db->update_query("threads", array('poll' => $pid), "tid='".$thread['tid']."'");
 
 	$plugins->run_hooks("polls_do_newpoll_end");
 
@@ -255,10 +255,10 @@ if($mybb->input['action'] == "editpoll")
 
 	$plugins->run_hooks("polls_editpoll_start");
 
-	$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='$pid'");
+	$query = $db->simple_select("polls", "*", "pid='$pid'");
 	$poll = $db->fetch_array($query);
 
-	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "poll='$pid'");
+	$query = $db->simple_select("threads", "*", "poll='$pid'");
 	$thread = $db->fetch_array($query);
 	$tid = $thread['tid'];
 	$fid = $thread['fid'];
@@ -271,7 +271,7 @@ if($mybb->input['action'] == "editpoll")
 
 	$forumpermissions = forum_permissions($fid);
 
-	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='$fid'");
+	$query = $db->simple_select("forums", "*", "fid='$fid'");
 	$forum = $db->fetch_array($query);
 
 
@@ -303,14 +303,14 @@ if($mybb->input['action'] == "editpoll")
 		$votesarray = explode("||~|~||", $poll['votes']);
 
 
-		for($i = 1; $i <= $poll['numoptions']; $i++)
+		for($i = 1; $i <= $poll['numoptions']; ++$i)
 		{
 			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 		}
 		$question = htmlspecialchars_uni($poll['question']);
 		$numoptions = $poll['numoptions'];
 		$optionbits = "";
-		for($i = 0; $i < $numoptions; $i++)
+		for($i = 0; $i < $numoptions; ++$i)
 		{
 			$counter = $i + 1;
 			$option = $optionsarray[$i];
@@ -366,7 +366,7 @@ if($mybb->input['action'] == "editpoll")
 		$options = $mybb->input['options'];
 		$votes = $mybb->input['votes'];
 		$optionbits = '';
-		for($i = 1; $i <= $numoptions; $i++)
+		for($i = 1; $i <= $numoptions; ++$i)
 		{
 			$counter = $i;
 			$option = $options[$i];
@@ -399,15 +399,15 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("polls_do_editpoll_start");
 
-	$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='".intval($mybb->input['pid'])."'");
+	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 
-	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "poll='".intval($mybb->input['pid'])."'");
+	$query = $db->simple_select("threads", "*", "poll='".intval($mybb->input['pid'])."'");
 	$thread = $db->fetch_array($query);
 
 	$forumpermissions = forum_permissions($thread['fid']);
 
-	$query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid='".$thread['fid']."'");
+	$query = $db->simple_select("forums", "*", "fid='".$thread['fid']."'");
 	$forum = $db->fetch_array($query);
 
 	if($thread['visible'] == "no" || !$thread['tid'])
@@ -448,7 +448,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$optioncount = "0";
 	$options = $mybb->input['options'];
 
-	for($i = 1; $i <= $numoptions; $i++)
+	for($i = 1; $i <= $numoptions; ++$i)
 	{
 		if(trim($options[$i]) != '')
 		{
@@ -473,7 +473,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$voteslist = '';
 	$numvotes = '';
 	$votes = $mybb->input['votes'];
-	for($i = 1; $i <= $optioncount; $i++)
+	for($i = 1; $i <= $optioncount; ++$i)
 	{
 		if(trim($options[$i]) != '')
 		{
@@ -513,7 +513,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("polls_do_editpoll_process");
 
-	$db->update_query(TABLE_PREFIX."polls", $updatedpoll, "pid='".intval($mybb->input['pid'])."'");
+	$db->update_query("polls", $updatedpoll, "pid='".intval($mybb->input['pid'])."'");
 
 	$plugins->run_hooks("polls_do_editpoll_end");
 
@@ -521,10 +521,10 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 }
 if($mybb->input['action'] == "showresults")
 {
-	$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='".intval($mybb->input['pid'])."'");
+	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 	$tid = $poll['tid'];
-	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='$tid'");
+	$query = $db->simple_select("threads", "*", "tid='$tid'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 
@@ -588,12 +588,12 @@ if($mybb->input['action'] == "showresults")
 	}
 	$optionsarray = explode("||~|~||", $poll['options']);
 	$votesarray = explode("||~|~||", $poll['votes']);
-	for($i = 1; $i <= $poll['numoptions']; $i++)
+	for($i = 1; $i <= $poll['numoptions']; ++$i)
 	{
 		$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 	}
 	$polloptions = '';
-	for($i = 1; $i <= $poll['numoptions']; $i++)
+	for($i = 1; $i <= $poll['numoptions']; ++$i)
 	{
 		$parser_options = array(
 			"allow_html" => $forum['allowhtml'],
@@ -670,7 +670,7 @@ if($mybb->input['action'] == "showresults")
 }
 if($mybb->input['action'] == "vote")
 {
-	$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='".intval($mybb->input['pid'])."'");
+	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 	$poll['timeout'] = $poll['timeout']*60*60*24;
 
@@ -681,7 +681,7 @@ if($mybb->input['action'] == "vote")
 		error($lang->error_invalidpoll);
 	}
 
-	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "poll='".$poll['pid']."'");
+	$query = $db->simple_select("threads", "*", "poll='".$poll['pid']."'");
 	$thread = $db->fetch_array($query);
 
 	if(!$thread['tid'])
@@ -708,7 +708,7 @@ if($mybb->input['action'] == "vote")
 	// Check if the user has voted before...
 	if($mybb->user['uid'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
+		$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
 		$votecheck = $db->fetch_array($query);
 	}
 	if($votecheck['vid'] || $_COOKIE['pollvotes'][$poll['pid']])
@@ -758,7 +758,7 @@ if($mybb->input['action'] == "vote")
 		VALUES $votesql
 	");
 	$voteslist = '';
-	for($i = 1; $i <= $poll['numoptions']; $i++)
+	for($i = 1; $i <= $poll['numoptions']; ++$i)
 	{
 		if($i > 1)
 		{
@@ -773,7 +773,7 @@ if($mybb->input['action'] == "vote")
 
 	$plugins->run_hooks("polls_vote_process");
 
-	$db->update_query(TABLE_PREFIX."polls", $updatedpoll, "pid='".$poll['pid']."'");
+	$db->update_query("polls", $updatedpoll, "pid='".$poll['pid']."'");
 
 	$plugins->run_hooks("polls_vote_end");
 

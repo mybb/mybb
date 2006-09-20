@@ -50,7 +50,7 @@ if($mybb->input['action'] == "do_add")
 		"showclickable" => $db->escape_string($mybb->input['showclickable'])
 	);
 	$plugins->run_hooks("admin_smilies_do_add");
-	$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
+	$db->insert_query("smilies", $newsmilie);
 	$cache->updatesmilies();
 	cpredirect("smilies.php?".SID, $lang->smilie_added);
 }
@@ -84,7 +84,7 @@ if($mybb->input['action'] == "do_edit")
 		"showclickable" => $db->escape_string($mybb->input['showclickable'])
 	);
 	$plugins->run_hooks("admin_smilies_do_edit");
-	$db->update_query(TABLE_PREFIX."smilies", $smilie, "sid='".intval($mybb->input['sid'])."'");
+	$db->update_query("smilies", $smilie, "sid='".intval($mybb->input['sid'])."'");
 	$cache->updatesmilies();
 	cpredirect("smilies.php?".SID, $lang->smilie_updated);
 }
@@ -194,7 +194,7 @@ if($mybb->input['action'] == "do_addmultiple")
 					"image" => $db->escape_string($imageurl),
 					"showclickable" => "yes"
 				);
-				$db->insert_query(TABLE_PREFIX."smilies", $newsmilie);
+				$db->insert_query("smilies", $newsmilie);
 			}
 		}
 		$cache->updatesmilies();
@@ -219,7 +219,7 @@ if($mybb->input['action'] == "addmultiple")
 		cperror($lang->bad_directory);
 	}
 	$plugins->run_hooks("admin_smilies_addmultiple");
-	$query = $db->simple_select(TABLE_PREFIX."smilies");
+	$query = $db->simple_select("smilies");
 	while($smilie = $db->fetch_array($query))
 	{
 		$asmilies[$smilie[image]] = 1;
@@ -248,7 +248,7 @@ if($mybb->input['action'] == "addmultiple")
 	{
 		$pages = $newsmilies / $perpage;
 		$pages = ceil($pages);
-		for($i = 1; $i <= $pages; $i++)
+		for($i = 1; $i <= $pages; ++$i)
 		{
 			if($i == $page)
 			{
@@ -301,7 +301,7 @@ if($mybb->input['action'] == "addmultiple")
 		echo "<td class=\"subheader\" align=\"center\">$lang->text_to_replace</td>\n";
 		echo "<td class=\"subheader\" align=\"center\">$lang->add</td>\n";
 		echo "</tr>\n";
-		for($i = $start; $i < $end; $i++)
+		for($i = $start; $i < $end; ++$i)
 		{
 			$file = $smilies[$i];
 			$ext = get_extension($smilies[$i]);
@@ -381,7 +381,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		echo "<td class=\"$altbg\" align=\"center\" valign=\"bottom\" nowrap>{$smilie['name']}<br /><br /><img src=\"$image\" alt=\"\" />\n&nbsp;&nbsp;{$smilie['find']}\n<br />\n<br />\n";
 		echo "<a href=\"smilies.php?".SID."&amp;action=edit&amp;sid={$smilie['sid']}&amp;page=$page&amp;perpage=$perpage\">$lang->edit</a>\n <a href=\"smilies.php?".SID."&amp;action=delete&amp;sid={$smilie['sid']}&amp;page=$page&amp;perpage=$perpage\">$lang->delete</a>\n";
 		echo "</td>\n";
-		$listed++;
+		++$listed;
 		if($listed == 5)
 		{
 			echo "</tr>\n";
@@ -402,7 +402,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		while($listed != "0")
 		{
 			echo "<td class=\"$altbg\">&nbsp;</td>\n";
-			$listed++;
+			++$listed;
 			if($listed == "5")
 			{
 				$listed = 0;
@@ -424,7 +424,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			$next = $page + 1;
 			$nextpage = "<a href=\"smilies.php?".SID."&amp;page=$next&amp;perpage=$perpage\">$lang->nextpage</a>\n";
 		}
-		for($i = 1; $i <= $pages; $i++)
+		for($i = 1; $i <= $pages; ++$i)
 		{
 			if($i == $page)
 			{

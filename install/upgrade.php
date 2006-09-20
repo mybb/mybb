@@ -74,7 +74,7 @@ else
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
-		if($db->table_exists(TABLE_PREFIX."datacache"))
+		if($db->table_exists("datacache"))
 		{
 			require_once MYBB_ROOT."/inc/class_datacache.php";
 			$cache = new datacache;
@@ -247,7 +247,7 @@ function upgradethemes()
 		else
 		{
 			$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$sid','$templateversion','','$time')");
-			$newcount++;
+			++$newcount;
 		}
 	}
 	update_theme(1, 0, $themebits, $css, 0);
@@ -459,14 +459,14 @@ function sync_settings($redo=0)
 		);
 		if(!$settinggroups[$settinggroup['attributes']['key']] || $redo == 2)
 		{
-			$db->insert_query(TABLE_PREFIX."settinggroups", $groupdata);
+			$db->insert_query("settinggroups", $groupdata);
 			$gid = $db->insert_id();
-			$groupcount++;
+			++$groupcount;
 		}
 		else
 		{
 			$gid = $settinggroups[$settinggroup['attributes']['name']];
-			$db->insert_query(TABLE_PREFIX."settinggroups", $groupdata, "gid='{$gid}");
+			$db->insert_query("settinggroups", $groupdata, "gid='{$gid}");
 		}
 		if(!$gid)
 		{
@@ -485,13 +485,13 @@ function sync_settings($redo=0)
 			if(!$settings[$setting['attributes']['name']] || $redo == 2)
 			{
 				$settingdata['value'] = $db->escape_string($setting['settingvalue'][0]['value']);
-				$db->insert_query(TABLE_PREFIX."settings", $settingdata);
+				$db->insert_query("settings", $settingdata);
 				$settingcount++;
 			}
 			else
 			{
 				$name = $db->escape_string($setting['attributes']['name']);
-				$db->update_query(TABLE_PREFIX."settings", $settingdata, "name='{$name}'");
+				$db->update_query("settings", $settingdata, "name='{$name}'");
 			}
 		}
 	}
@@ -500,11 +500,11 @@ function sync_settings($redo=0)
 		require MYBB_ROOT."/inc/settings.php";
 		foreach($settings as $key => $val)
 		{
-			$db->update_query(TABLE_PREFIX."settings", array('value' => $db->escape_string($val)), "name='$key'");
+			$db->update_query("settings", array('value' => $db->escape_string($val)), "name='$key'");
 		}
 	}
 	unset($settings);
-	$query = $db->simple_select(TABLE_PREFIX."settings", "*", "", array('order_by' => 'title'));
+	$query = $db->simple_select("settings", "*", "", array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{
 		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);

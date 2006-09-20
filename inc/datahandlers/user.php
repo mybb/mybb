@@ -109,7 +109,7 @@ class UserDataHandler extends DataHandler
 
 		$username = &$this->data['username'];
 
-		$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) AS count", "username='".$db->escape_string($username)."'");
+		$query = $db->simple_select("users", "COUNT(uid) AS count", "username='".$db->escape_string($username)."'");
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
 		{
@@ -163,10 +163,7 @@ class UserDataHandler extends DataHandler
 		$user['md5password'] = md5($user['password']);
 
 		// Generate our salt
-		if(!$user['salt'])
-		{
-			$user['salt'] = generate_salt();
-		}
+		$user['salt'] = generate_salt();
 
 		// Combine the password and salt
 		$user['saltedpw'] = salt_password($user['md5password'], $user['salt']);
@@ -218,7 +215,7 @@ class UserDataHandler extends DataHandler
 		{
 			foreach($bannedemails as $bannedemail)
 			{
-				$bannedemail = strtolower(trim($bannedemail));
+				$bannedemail = my_strtolower(trim($bannedemail));
 				if($bannedemail != '')
 				{
 					if(strstr($user['email'], $bannedemail) != '')
@@ -247,7 +244,7 @@ class UserDataHandler extends DataHandler
 	{
 		$website = &$this->data['website'];
 
-		if($website == '' || $website == 'http://')
+		if(empty($website) || $website == 'http://')
 		{
 			$website = '';
 			return true;
@@ -387,7 +384,7 @@ class UserDataHandler extends DataHandler
 		$options = array(
 			'order_by' => 'disporder'
 		);
-		$query = $db->simple_select(TABLE_PREFIX.'profilefields', 'name, type, fid, required', "editable='yes'", $options);
+		$query = $db->simple_select('profilefields', 'name, type, fid, required', "editable='yes'", $options);
 
 		// Then loop through the profile fields.
 		while($profilefield = $db->fetch_array($query))
@@ -459,7 +456,7 @@ class UserDataHandler extends DataHandler
 			$options = array(
 				'limit' => 1
 			);
-			$query = $db->simple_select(TABLE_PREFIX.'users', 'uid', "username='".$db->escape_string($user['referrer'])."'", $options);
+			$query = $db->simple_select('users', 'uid', "username='".$db->escape_string($user['referrer'])."'", $options);
 			$referrer = $db->fetch_array($query);
 			if(!$referrer['uid'])
 			{
@@ -836,11 +833,11 @@ class UserDataHandler extends DataHandler
 		
 		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);
 		
-		$db->insert_query(TABLE_PREFIX."users", $this->user_insert_data);
+		$db->insert_query("users", $this->user_insert_data);
 		$this->uid = $db->insert_id();
 
 		$user['user_fields']['ufid'] = $this->uid;
-		$db->insert_query(TABLE_PREFIX."userfields", $user['user_fields']);
+		$db->insert_query("userfields", $user['user_fields']);
 
 		// Update forum stats
 		$cache->updatestats();
@@ -1005,18 +1002,18 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks_by_ref("datahandler_user_update", $this);
 
 		// Actual updating happens here.
-		$db->update_query(TABLE_PREFIX."users", $this->user_update_data, "uid='{$user['uid']}'");
+		$db->update_query("users", $this->user_update_data, "uid='{$user['uid']}'");
 
 		// Maybe some userfields need to be updated?
 		if(is_array($user['user_fields']))
 		{
-			$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='{$user['uid']}'");
+			$query = $db->simple_select("userfields", "*", "ufid='{$user['uid']}'");
 			$fields = $db->fetch_array($query);
 			if(!$fields['ufid'])
 			{
-				$db->insert_query(TABLE_PREFIX."userfields", array('ufid' => $user['uid']));
+				$db->insert_query("userfields", array('ufid' => $user['uid']));
 			}
-			$db->update_query(TABLE_PREFIX."userfields", $user['user_fields'], "ufid='{$user['uid']}'");
+			$db->update_query("userfields", $user['user_fields'], "ufid='{$user['uid']}'");
 		}
 
 		// Let's make sure the user's name gets changed everywhere in the db if it changed.
@@ -1029,10 +1026,10 @@ class UserDataHandler extends DataHandler
 				"lastposter" => $db->escape_string($this->user_update_data['username'])
 			);
 
-			$db->update_query(TABLE_PREFIX."posts", $username_update, "uid='{$user['uid']}'");
-			$db->update_query(TABLE_PREFIX."threads", $username_update, "uid='{$user['uid']}'");
-			$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposteruid='{$user['uid']}'");
-			$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposteruid='{$user['uid']}'");
+			$db->update_query("posts", $username_update, "uid='{$user['uid']}'");
+			$db->update_query("threads", $username_update, "uid='{$user['uid']}'");
+			$db->update_query("threads", $lastposter_update, "lastposteruid='{$user['uid']}'");
+			$db->update_query("forums", $lastposter_update, "lastposteruid='{$user['uid']}'");
 		}
 
 	}

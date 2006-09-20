@@ -370,7 +370,7 @@ class databaseEngine
 		$this->error_reporting = 0;
 		$query = $this->query("
 			SHOW TABLES 
-			LIKE '$table'
+			LIKE '".TABLE_PREFIX."$table'
 		");
 		$exists = $this->num_rows($query);
 		$this->error_reporting = $err;
@@ -397,7 +397,7 @@ class databaseEngine
 		$this->error_reporting = 0;
 		$query = $this->query("
 			SHOW COLUMNS 
-			FROM $table 
+			FROM ".TABLE_PREFIX."$table 
 			LIKE '$field'
 		");
 		$exists = $this->num_rows($query);
@@ -440,7 +440,7 @@ class databaseEngine
 	
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
-		$query = "SELECT ".$fields." FROM ".$table;
+		$query = "SELECT ".$fields." FROM ".TABLE_PREFIX.$table;
 		if($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
@@ -450,7 +450,7 @@ class databaseEngine
 			$query .= " ORDER BY ".$options['order_by'];
 			if(isset($options['order_dir']))
 			{
-				$query .= " ".strtoupper($options['order_dir']);
+				$query .= " ".my_strtoupper($options['order_dir']);
 			}
 		}
 		if(isset($options['limit_start']) && isset($options['limit']))
@@ -464,69 +464,6 @@ class databaseEngine
 		return $this->query($query);
 	}
 	
-	/**
-	 * Performs a select query
-	 *
-	 * @param array Array of query information
-	 * @return resource The query data.
-	 */
-	function select_query($data)
-	{
-		$select = array($data['select']);
-		$join_sql = '';
-		if(is_array($data['joins']))
-		{
-			foreach($data['joins'] as $join)
-			{
-				if($join['select'])
-				{
-					$select[] = $join['select'];
-				}
-				if($join['type'] == "left")
-				{
-					$join_sql .= "LEFT JOIN {$join['table']} ";
-					if($join['where'])
-					{
-						$join_sql .= "ON ({$join['where']}) ";
-					}
-				}
-				else if($join['type'] == "inner")
-				{
-					$join_sql .= "INNER JOIN {$join['table']} ";
-					if($join['where'])
-					{
-						$join_sql .= "ON ({$join['where']}) ";
-					}
-				}
-			}
-		}
-		$select = implode(", ", $select);
-		$rows = "";
-		if($data['rows'] != "")
-		{
-			$rows = "({$data['rows']})";
-		}
-		$query = "SELECT {$select} FROM {$data['table']} $rows {$join_sql}";
-		if($data['where'])
-		{
-			$query .= " WHERE {$data['where']}";
-		}
-		if($data['order'])
-		{
-			$query .= " ORDER BY {$data['order']}";
-		}
-		if(is_array($data['limit']))
-		{
-			$query .= " LIMIT {$data['limit'][0]}";
-			if($data['limit'][1])
-			{
-				$query .= ", {$data['limit'][1]}";
-			}
-		}
-		return $this->query($query);
-	}
-
-
 	/**
 	 * Build an insert query from an array.
 	 *
@@ -552,7 +489,7 @@ class databaseEngine
 		}
 		return $this->query("
 			INSERT 
-			INTO ".$table." (".$query1.") 
+			INTO ".TABLE_PREFIX.$table." (".$query1.") 
 			VALUES (".$query2.")
 		");
 	}
@@ -588,7 +525,7 @@ class databaseEngine
 			$query .= " LIMIT $limit";
 		}
 		return $this->query("
-			UPDATE $table 
+			UPDATE ".TABLE_PREFIX."$table 
 			SET $query
 		");
 	}
@@ -614,7 +551,7 @@ class databaseEngine
 		}
 		return $this->query("
 			DELETE 
-			FROM $table 
+			FROM ".TABLE_PREFIX."$table 
 			$query
 		");
 	}
@@ -666,7 +603,7 @@ class databaseEngine
 	 */
 	function optimize_table($table)
 	{
-		$this->query("OPTIMIZE TABLE ".$table."");
+		$this->query("OPTIMIZE TABLE ".TABLE_PREFIX.$table."");
 	}
 	
 	/**
@@ -676,7 +613,7 @@ class databaseEngine
 	 */
 	function analyze_table($table)
 	{
-		$this->query("ANALYZE TABLE ".$table."");
+		$this->query("ANALYZE TABLE ".TABLE_PREFIX.$table."");
 	}
 
 	/**
@@ -687,7 +624,7 @@ class databaseEngine
 	 */
 	function show_create_table($table)
 	{
-		$query = $this->query("SHOW CREATE TABLE ".$table."");
+		$query = $this->query("SHOW CREATE TABLE ".TABLE_PREFIX.$table."");
 		$structure = $this->fetch_array($query);
 		return $structure['Create Table'];
 	}
@@ -700,7 +637,7 @@ class databaseEngine
 	 */
 	function show_fields_from($table)
 	{
-		$query = $this->query("SHOW FIELDS FROM ".$table."");
+		$query = $this->query("SHOW FIELDS FROM ".TABLE_PREFIX.$table."");
 		while($field = $this->fetch_array($query))
 		{
 			$field_info[] = $field;
@@ -746,15 +683,15 @@ class databaseEngine
 	function supports_fulltext($table)
 	{
 		$version = $this->get_version();
-		$query = $this->query("SHOW TABLE STATUS LIKE '$table'");
+		$query = $this->query("SHOW TABLE STATUS LIKE '".TABLE_PREFIX."$table'");
 		$status = $this->fetch_array($query);
 		if($status['Engine'])
 		{
-			$table_type = strtoupper($status['Engine']);
+			$table_type = my_strtoupper($status['Engine']);
 		}
 		else
 		{
-			$table_type = strtoupper($status['Type']);
+			$table_type = my_strtoupper($status['Type']);
 		}
 		if($version >= '3.23.23' && $table_type == 'MYISAM')
 		{
@@ -790,7 +727,7 @@ class databaseEngine
 	function create_fulltext_index($table, $column, $name="")
 	{
 		$this->query("
-			ALTER TABLE $table 
+			ALTER TABLE ".TABLE_PREFIX."$table 
 			ADD FULLTEXT $name ($column)
 		");
 	}
@@ -804,7 +741,7 @@ class databaseEngine
 	function drop_index($table, $name)
 	{
 		$this->query("
-			ALTER TABLE $table 
+			ALTER TABLE ".TABLE_PREFIX."$table 
 			DROP INDEX $name
 		");
 	}

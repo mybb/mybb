@@ -60,7 +60,7 @@ if($mybb->input['action'] == "do_prune")
 		$thequery .= "uid='$fromadmin'";
 	}
 
-	$db->delete_query(TABLE_PREFIX."adminlog", $thequery);
+	$db->delete_query("adminlog", $thequery);
 	$plugins->run_hooks("admin_adminlogs_do_prune");
 	cpredirect("adminlogs.php?".SID, $lang->log_pruned);
 }

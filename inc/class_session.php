@@ -63,7 +63,7 @@ class session
 		}
 
 		// Attempt to load the session from the database.
-		$query = $db->simple_select(TABLE_PREFIX."sessions", "*", "sid='".$this->sid."' AND ip='".$db->escape_string($this->ipaddress)."'", 1);
+		$query = $db->simple_select("sessions", "*", "sid='".$this->sid."' AND ip='".$db->escape_string($this->ipaddress)."'", 1);
 		$session = $db->fetch_array($query);
 		if($session['sid'])
 		{
@@ -91,10 +91,10 @@ class session
 		if(!isset($mybb->user['uid']))
 		{
 			// Detect if this guest is a search engine spider.
-			$spiders = strtolower(implode("|", array_keys($this->bots)));
+			$spiders = my_strtolower(implode("|", array_keys($this->bots)));
 			if(preg_match("#(".$spiders.")#i", $this->useragent, $match))
 			{
-				$this->load_spider(strtolower($match[0]));
+				$this->load_spider(my_strtolower($match[0]));
 			}
 
 			// Just a plain old guest.
@@ -279,7 +279,7 @@ class session
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user['uid']."'");
 			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
 			// we better do this..otherwise they have dodgy permissions
-			$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='".$mybb->user['banoldgroup']."'", array('limit' => 1)); 
+			$query = $db->simple_select("usergroups", "*", "gid='".$mybb->user['banoldgroup']."'", array('limit' => 1)); 
 			$group = $db->fetch_array($query);
 			$mybb->user['usergroup'] = $group['usergroup'];
 		}
@@ -406,7 +406,7 @@ class session
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
-		$db->delete_query(TABLE_PREFIX."sessions", "sid='bot=".$spider."'", 1);
+		$db->delete_query("sessions", "sid='bot=".$spider."'", 1);
 
 		// Update the online data.
 		if(!defined("NO_ONLINE"))
@@ -445,7 +445,7 @@ class session
 		$onlinedata['nopermission'] = 0;
 		$sid = $db->escape_string($sid);
 
-		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
+		$db->update_query("sessions", $onlinedata, "sid='".$sid."'");
 	}
 
 	/**
@@ -461,13 +461,13 @@ class session
 		// If there is a proper uid, delete by uid.
 		if($uid > 0)
 		{
-			$db->delete_query(TABLE_PREFIX."sessions", "uid=".$uid);
+			$db->delete_query("sessions", "uid=".$uid);
 			$onlinedata['uid'] = $uid;
 		}
 		// Else delete by ip.
 		else
 		{
-			$db->delete_query(TABLE_PREFIX."sessions", "ip='".$this->ipaddress."'");
+			$db->delete_query("sessions", "ip='".$this->ipaddress."'");
 			$onlinedata['uid'] = 0;
 		}
 
@@ -488,7 +488,7 @@ class session
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
 		$onlinedata['nopermission'] = 0;
-		$db->insert_query(TABLE_PREFIX."sessions", $onlinedata);
+		$db->insert_query("sessions", $onlinedata);
 		$this->sid = $onlinedata['sid'];
 		$this->uid = $onlinedata['uid'];
 	}

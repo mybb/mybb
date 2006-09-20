@@ -88,20 +88,20 @@ class MyBB {
 	var $request_method = "";
 
 	/**
-	 * Variables that need to be cleaned.
+	 * Variables that need to be clean.
 	 *
 	 * @var array
 	 */
 	var $clean_variables = array(
 		"int" => array("tid", "pid", "uid", "eid", "pmid", "fid", "aid")
 	);
-
-	/** 
-	 * Variables that are to be ignored from cleansing proccess 
-	 * 
-	 * @var array 
-	 */ 
-	var $ignore_clean_variables = array();
+	
+	/**
+	 * Variables that are to be ignored from cleansing proccess
+	 *
+	 * @var array
+	 */
+	 var $ignore_clean_variables = array();
 	
 	/**
 	 * Using built in shutdown functionality provided by register_shutdown_function for < PHP 5?
@@ -116,16 +116,10 @@ class MyBB {
 	function MyBB()
 	{
 		// Set up MyBB
-		if(defined("IGNORE_CLEAN_VARS"))
+		
+		if(defined("IGNORE_CLEAN_VARS") && IGNORE_CLEAN_VARS != "")
 		{
-			if(!is_array(IGNORE_CLEAN_VARS))
-			{
-				$this->ignore_clean_variables = array(IGNORE_CLEAN_VARS);
-			}
-			else
-			{
-				$this->ignore_clean_variables = IGNORE_CLEAN_VARS;
-			}
+			$this->ignore_clean_variables = array("int" => array(IGNORE_CLEAN_VARS));
 		}
 
 		// Determine Magic Quotes Status
@@ -165,7 +159,7 @@ class MyBB {
 			$this->debug = 1;
 		}
 		$this->clean_input();
-		
+
 		// Old version of PHP, need to register_shutdown_function
 		if(phpversion() < '5.0.5')
 		{
@@ -245,14 +239,19 @@ class MyBB {
 		{
 			foreach($variables as $var)
 			{
-				// If this variable is in the ignored array, skip and move to next
-				if(in_array($var, $this->ignore_clean_variables))
-				{
-					continue;
-				}
 				if($type == "int" && isset($this->input[$var]) && $this->input[$var] != "lastposter")
 				{
-					$this->input[$var] = intval($this->input[$var]);
+					if(is_array($this->ignore_clean_variables[$type]))
+					{
+						if(!in_array($var, $this->ignore_clean_variables[$type]))
+						{						
+							$this->input[$var] = intval($this->input[$var]);
+						}
+					}
+					else
+					{
+						$this->input[$var] = intval($this->input[$var]);
+					}
 				}
 			}
 		}
