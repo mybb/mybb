@@ -522,13 +522,13 @@ class UserDataHandler extends DataHandler
 			$options['tpp'] = intval($options['tpp']);
 		}
 		// Verify the "posts per page" option.
-		if($this->method == "insert" || (array_key_exists('ppp', $options) && $mybb->settings['usepppoptions']))
+		if($this->method == "insert" || (array_key_exists('ppp', $options) && $mybb->settings['userpppoptions']))
 		{
 			$explodedppp = explode(",", $mybb->settings['userpppoptions']);
 			if(is_array($explodedppp))
 			{
 				@asort($explodedppp);
-				$biggest = $explodedtpp[count($explodedppp)-1];
+				$biggest = $explodedppp[count($explodedppp)-1];
 				// Is the selected option greater than the allowed options?
 				if($options['ppp'] > $biggest)
 				{
