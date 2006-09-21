@@ -322,6 +322,14 @@
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="showforumviewing">
+			<title>Show x viewing forum</title>
+			<description><![CDATA[Displayes the currently active users viewing each forum.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[no]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="general" title="General Configuration" description="This section contains various settings such as your board name and url, as well as your website name and url." disporder="2" isdefault="yes">
 		<setting name="bbname">

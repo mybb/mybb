@@ -10,7 +10,6 @@ $l['boardstats'] = "Board Statistics";
 $l['new_posts'] = "Forum Contains New Posts";
 $l['no_new_posts'] = "Forum Contains No New Posts";
 $l['forum_locked'] = "Forum is Locked";
-$l['lastpost_never'] = "Never";
 $l['forum_unapproved_posts_count'] = "There are currently {1} unapproved posts in this forum.";
 $l['forum_unapproved_post_count'] = "There is currently 1 unapproved post in this forum.";
 $l['forum_unapproved_threads_count'] = "There is currently {1} unapproved threads in this forum.";

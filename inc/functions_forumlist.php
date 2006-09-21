@@ -8,9 +8,7 @@
 */
 function build_forumbits($pid=0, $depth=1)
 {
-	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser;
-
-	$forum_listing = '';
+	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser, $forum_viewers, $forum_listing = '';
 
 	// If no forums exist with this parent, do nothing
 	if(!is_array($fcache[$pid]))
@@ -55,7 +53,7 @@ function build_forumbits($pid=0, $depth=1)
 				"lastposttid" => $forum['lastposttid'],
 				"lastposteruid" => $forum['lastposteruid']
 			);
-
+			
 			// Fetch subforums of this forum
 			if(isset($fcache[$forum['fid']]))
 			{
@@ -66,6 +64,7 @@ function build_forumbits($pid=0, $depth=1)
 				$forum['posts'] += $forum_info['counters']['posts'];
 				$forum['unapprovedthreads'] += $forum_info['counters']['unapprovedthreads'];
 				$forum['unapprovedposts'] += $forum_info['counters']['unapprovedposts'];
+				$forum['viewers'] +- $forum_info['counters']['viewing'];
 
 				// If the child forums' lastpost is greater than the one for this forum, set it as the child forums greatest.
 				if($forum_info['lastpost']['lastpost'] > $lastpost_data['lastpost'])
@@ -88,6 +87,11 @@ function build_forumbits($pid=0, $depth=1)
 				$parent_lastpost = $lastpost_data;
 			}
 
+			if(is_array($forum_viewers) && $forum_viewers[$forum['fid']] > 0)
+			{
+				$forum['viewers'] = $forum_viewers[$forum['fid']];
+			}
+
 			// Increment the counters for the parent forum (returned later)
 			if($hideinfo != true)
 			{
@@ -95,6 +99,7 @@ function build_forumbits($pid=0, $depth=1)
 				$parent_counters['posts'] += $forum['posts'];
 				$parent_counters['unapprovedposts'] += $forum['unapprovedposts'];
 				$parent_counters['unapprovedthreads'] += $forum['unapprovedthreads'];
+				$parent_counters['viewers'] += $forum['viewers'];
 			}
 
 			// Done with our math, lets talk about displaying - only display forums which are under a certain depth
@@ -181,7 +186,7 @@ function build_forumbits($pid=0, $depth=1)
 					$lastpost_subject = $full_lastpost_subject = $parser->parse_badwords($lastpost_data['lastpostsubject']);
 					if(my_strlen($lastpost_subject) > 25)
 					{
-						$lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
+						$lastpost_subject = my_substr($lastpost_subject, 0, 25)."...";
 					}
 					$lastpost_subject = htmlspecialchars_uni($lastpost_subject);
 					$full_lastpost_subject = htmlspecialchars_uni($full_lastpost_subject);
@@ -190,6 +195,13 @@ function build_forumbits($pid=0, $depth=1)
 					eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
 
 				}
+				
+				$forum_viewers_text = '';
+				if($mybb->settings['showforumviewing'] != "no" && $forum['viewers'] > 0)
+				{
+					$forum_viewers_text = " ({$forum['viewers']} {$lang->viewing})";
+				}
+				
 			}
 			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost and counters to "-"
 			if($forum['linkto'] != '' || $hideinfo == true)

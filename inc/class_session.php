@@ -509,8 +509,10 @@ class session
 		}
 		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['tid']) > 0)
 		{
-			$array[1] = '';
+			global $db;
 			$array[2] = intval($mybb->input['tid']);
+			$query = $db->simple_select("threads", "fid", "tid='".$array[2]."'");
+			$array[1] = $db->fetch_field($query, "fid");
 		}
 		return $array;
 	}

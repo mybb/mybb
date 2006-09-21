@@ -47,12 +47,14 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
 	$comma = '';
 	$query = $db->query("
-		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
+		SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
 		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
 		WHERE s.time>'$timesearch'
 		ORDER BY u.username ASC, s.time DESC
 	");
+
+	$forum_viewers = array();
 	$membercount = 0;
 	$onlinemembers = '';
 	$guestcount = 0;
@@ -110,6 +112,12 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 			// The user is a guest.
 			++$guestcount;
 		}
+
+		if($user['location1'])
+		{
+			$forum_viewers[$user['location1']]++;
+		}
+
 	}
 
 	// Build the who's online bit on the index page.

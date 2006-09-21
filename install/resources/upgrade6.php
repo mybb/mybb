@@ -32,7 +32,7 @@ function upgrade6_dbchanges()
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE regex regex text NOT NULL default ''");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE replacement replacement text NOT NULL default ''");
-	$db->query("ALTER TABLE `".TABLE_PREFIX."privatemessages` ADD INDEX ( `uid` )");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
 
 	echo "Done</p>";
 	echo "<p>Click next to continue with the upgrade process.</p>";

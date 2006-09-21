@@ -49,6 +49,7 @@ $l['new_posts'] = "Forum Contains New Posts";
 $l['no_new_posts'] = "Forum Contains No New Posts";
 $l['forum_locked'] = "Forum is Locked";
 $l['lastpost_never'] = "Never";
+$l['viewing'] = "Viewing";
 $l['by'] = "by";
 $l['more_subforums'] = "and {1} more.";
 
