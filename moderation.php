@@ -242,7 +242,7 @@ switch($mybb->input['action'])
 	case "do_deletepoll":
 		if(!$mybb->input['delete'])
 		{
-			redirect("showthread.php?tid=$tid", $lang->redirect_pollnotdeleted);
+			error($lang->redirect_pollnotdeleted);
 		}
 		if(is_moderator($fid, "candeleteposts") != "yes")
 		{

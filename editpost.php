@@ -88,7 +88,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 	{
 		if($thread['closed'] == "yes")
 		{
-			redirect("showthread.php?tid=$tid", $lang->redirect_threadclosed);
+			error($lang->redirect_threadclosed);
 		}
 		if($forumpermissions['candeleteposts'] == "no")
 		{
@@ -106,7 +106,7 @@ else
 	{
 		if($thread['closed'] == "yes")
 		{
-			redirect("showthread.php?tid=$tid", $lang->redirect_threadclosed);
+			error($lang->redirect_threadclosed);
 		}
 		if($forumpermissions['caneditposts'] == "no")
 		{
@@ -239,7 +239,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 	}
 	else
 	{
-		redirect("showthread.php?tid={$tid}", $lang->redirect_nodelete);
+		error($lang->redirect_nodelete);
 	}
 }
 

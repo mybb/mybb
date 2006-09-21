@@ -121,7 +121,7 @@ if(is_moderator($fid, "caneditposts") != "yes")
 {
 	if($thread['closed'] == "yes")
 	{
-		redirect("showthread.php?tid=$tid", $lang->redirect_threadclosed);
+		error($lang->redirect_threadclosed);
 	}
 }
 
