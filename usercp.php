@@ -846,7 +846,7 @@ if($mybb->input['action'] == "options")
 		$pppoptions = '';
 		if(is_array($explodedppp))
 		{
-			foreach($explodedtpp as $key => $val)
+			foreach($explodedppp as $key => $val)
 			{
 				$val = trim($val);
 				$selected = "";
