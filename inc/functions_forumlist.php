@@ -8,7 +8,9 @@
 */
 function build_forumbits($pid=0, $depth=1)
 {
-	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser, $forum_viewers, $forum_listing = '';
+	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser, $forum_viewers;
+	
+	$forum_listing = '';
 
 	// If no forums exist with this parent, do nothing
 	if(!is_array($fcache[$pid]))
