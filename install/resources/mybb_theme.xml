@@ -1611,13 +1611,13 @@ var inlineId = {$fid};
 		<template name="forumbit_depth2_forum" version="120"><![CDATA[<tr>
 <td class="{$bgcolor}" align="center" valign="top"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" /></td>
 <td class="{$bgcolor}" valign="top">
-<strong><a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong>{$forum_viewers}<div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
+<strong><a href="forumdisplay.php?fid={$forum['fid']}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
 </td>
 <td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$threads}{$unapproved['unapproved_threads']}</td>
 <td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
 <td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
-		<template name="forumbit_depth3" version="120"><![CDATA[{$comma}{$statusicon}<a href="forumdisplay.php?fid={$forum['fid']}" alt="{$forum_viewers}">{$forum['name']}</a>]]></template>
+		<template name="forumbit_depth3" version="120"><![CDATA[{$comma}{$statusicon}<a href="forumdisplay.php?fid={$forum['fid']}" alt="{$forum_viewers_text}">{$forum['name']}</a>]]></template>
 		<template name="forumbit_depth3_statusicon" version="120"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" />]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
 		<template name="private_empty" version="120"><![CDATA[<html>
@@ -2238,6 +2238,7 @@ var inlineId = {$fid};
 </td>
 </tr>]]></template>
 		<template name="nav_sep_active" version="120"><![CDATA[ / ]]></template>
+		<template name="member_profile_activebit" version="120"><![CDATA[<strong>{$lang->location}</strong>: {$location['locationname']}<br />]]></template>
 		<template name="member_profile" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
@@ -2258,6 +2259,8 @@ var inlineId = {$fid};
 <strong>{$lang->registration_date}</strong> {$memregdate}<br />
 <strong>{$lang->birthday}</strong> {$membday} {$membdayage}<br />
 <strong>{$lang->local_time}</strong> {$localtime}<br />
+<strong>{$lang->postbit_status}</strong> {$postbit_status}<br />
+{$location}
 </span>
 </td><td width="25%" align="right" valign="middle">{$avatar}</td></tr></table>
 </td>

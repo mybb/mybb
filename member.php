@@ -1264,7 +1264,26 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$userstars .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
 	}
-
+	
+	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
+	$query = $db->simple_select("sessions", "location", "uid='$uid' AND time>'$timesearch'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
+	
+	if($db->num_rows($query) == 0)
+	{
+		$postbit_status = $lang->postbit_status_offline;
+		$location = '';
+	}
+	else
+	{	
+		$postbit_status = $lang->postbit_status_online;
+		$lang->load("online");
+		require_once MYBB_ROOT."inc/functions_online.php";
+		
+		$memprofile['location'] = $db->fetch_field($query, 'location');
+	
+		$location = show(what($memprofile), true);
+		eval("\$location = \"".$templates->get("member_profile_activebit")."\";");
+	}
 
 	// Fetch the reputation for this user
 	if($memperms['usereputationsystem'] == "yes" && $mybb->settings['enablereputation'] == "yes")
