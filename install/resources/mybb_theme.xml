@@ -2238,7 +2238,8 @@ var inlineId = {$fid};
 </td>
 </tr>]]></template>
 		<template name="nav_sep_active" version="120"><![CDATA[ / ]]></template>
-		<template name="member_profile_activebit" version="120"><![CDATA[<strong>{$lang->location}</strong>: {$location['locationname']}<br />]]></template>
+		<template name="member_profile_online" version="120"><![CDATA[<a href="online.php"><font color="#15A018"><strong>{$lang->postbit_status_online}</strong></font></a> ({$location} @ {$location_time}]]></template>
+		<template name="member_profile_offline" version="120"><![CDATA[<font color="#C7C7C7"><strong>{$lang->postbit_status_offline}</strong></font>]]></template>
 		<template name="member_profile" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
@@ -2259,8 +2260,7 @@ var inlineId = {$fid};
 <strong>{$lang->registration_date}</strong> {$memregdate}<br />
 <strong>{$lang->birthday}</strong> {$membday} {$membdayage}<br />
 <strong>{$lang->local_time}</strong> {$localtime}<br />
-<strong>{$lang->postbit_status}</strong> {$postbit_status}<br />
-{$location}
+<strong>{$lang->postbit_status}</strong> {$online_status}
 </span>
 </td><td width="25%" align="right" valign="middle">{$avatar}</td></tr></table>
 </td>
@@ -4531,7 +4531,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="tcat" align="center"><a href="online.php?sortby=time"><span class="smalltext"><strong>{$lang->time}</strong></span></a></td>
 <td class="tcat" align="center" width="50%"><a href="online.php?sortby=location"><span class="smalltext"><strong>{$lang->location}</strong></span></a></td>
 </tr>
-{$onlinerows}
+{$online_rows}
 <tr>
 <td class="tfoot" colspan="3" align="right"><span class="smalltext"><strong><a href="online.php?action=today">{$lang->online_today}</a> | <a href="online.php">{$lang->refresh_page}</a></strong></span></td>
 </tr>
@@ -6065,9 +6065,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>]]></template>
 		<template name="online_row" version="120"><![CDATA[<tr>
-<td class="trow1">{$onlinename}{$userip}</td>
-<td align="center" class="trow2">{$onlinetime}</td>
-<td class="trow1" width="50%">{$locationname}</td>
+<td class="trow1">{$online_name}{$user_ip}</td>
+<td align="center" class="trow2">{$online_time}</td>
+<td class="trow1" width="50%">{$location}</td>
 </tr>]]></template>
 		<template name="online_row_ip" version="120"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="online.php?action=iplookup&amp;ip={$user['ip']}">{$lang->lookup}</a></span>]]></template>
 		<template name="calendar_editevent" version="120"><![CDATA[<html>

@@ -6,369 +6,38 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id:
+ * $Id$
  */
 
-function show($user, $return=false)
+$uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $eid_list = array();
+
+/**
+ * Fetch a users activity and any corresponding details from their location.
+ *
+ * @param string The location (URL) of the user.
+ * @return array Array of location and activity information
+ */
+function fetch_wol_activity($location)
 {
-	global $threads, $forums, $forums_linkto, $posts, $events, $members, $theme, $mybb, $onlinerows, $templates, $lang, $session;
+	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list;
 
-	switch($user['activity'])
-	{
-		// announcement.php functions
-		case "announcements":
-			if($forums[$user['fid']])
-			{
-				$locationname = sprintf($lang->viewing_announcements, $user['fid'], $forums[$user['fid']]);
-			}
-			else
-			{
-				$locationname = $lang->viewing_announcements2;
-			}
-			break;
-		// attachment.php actions
-		case "attachment":
-			$aid = $posts[$user['aid']];
-			$pid = $attachments[$aid];
-			$tid = $posts[$pid];
-			if($threads[$tid])
-			{
-				$locationname = sprintf($lang->viewing_attachment2, $tid, $threads[$tid]);
-			}
-			else
-			{
-				$locationname = $lang->viewing_attachment;
-			}
-			break;
-		// calendar.php functions
-		case "calendar":
-			$locationname = $lang->viewing_calendar;
-			break;
-		case "calendar_event":
-			if($events[$user['eid']])
-			{
-				$locationname = sprintf($lang->viewing_event2, $user['eid'], $events[$user['eid']]);
-			}
-			else
-			{
-				$locationname = $lang->viewing_event;
-			}
-			break;
-		case "calendar_addevent":
-			$locationname = $lang->adding_event;
-			break;
-		case "calendar_editevent":
-			$locationname = $lang->editing_event;
-			break;
-		// editpost.php functions
-		case "editpost":
-			$locationname = $lang->editing_post;
-			break;
-		// forumdisplay.php functions
-		case "forumdisplay":
-			if($forums[$user['fid']])
-			{
-				if($forums_linkto[$user['fid']])
-				{
-					$locationname = sprintf($lang->forum_redirect_to, $user['fid'], $forums[$user['fid']]);
-				}
-				else
-				{
-					$locationname = sprintf($lang->viewing_forum2, $user['fid'], $forums[$user['fid']]);
-				}
-			}
-			else
-			{
-				$locationname = $lang->viewing_forum;
-			}
-			break;
-		// index.php functions
-		case "index":
-			$locationname = sprintf($lang->viewing_index, $mybb->settings['bbname']);
-			break;
-		// member.php functions
-		case "member_activate":
-			$locationname = $lang->activating_account;
-			break;
-		case "member_profile":
-			if($members[$user['uuid']])
-			{
-				$locationname = sprintf($lang->viewing_profile2, $user['uuid'], $members[$user['uuid']]);
-			}
-			else
-			{
-				$locationname = $lang->viewing_profile;
-			}
-			break;
-		case "member_register":
-			$locationname = $lang->registering;
-			break;
-		case "member":
-		case "member_login":
-			$locationname = $lang->logging_in;
-			break;
-		case "member_logout":
-			$locationname = $lang->logging_out;
-			break;
-		case "member_emailuser":
-			$locationname = $lang->emailing_user;
-			break;
-		case "member_rate":
-			$locationname = $lang->rating_user;
-			break;
-		case "member_resendactivation":
-			$locationname = $lang->resending_account_activation;
-			break;
-		case "member_lostpw":
-			$locationname = $lang->member_lostpw;
-			break;
-		// memberlist.php functions
-		case "memberlist":
-			$locationname = $lang->viewing_memberlist;
-			break;
-		// misc.php functions
-		case "misc_whoposted":
-			if($threads[$user['tid']])
-			{
-				$locationname = sprintf($lang->viewing_whoposted2, $user['tid'], $threads[$user['tid']]);
-			}
-			else
-			{
-				$locationname = $lang->viewing_whoposted;
-			}
-			break;
-		case "misc_markread":
-			$locationname = $lang->marking_read;
-			break;
-		case "misc_help":
-			$locationname = $lang->viewing_helpdocs;
-			break;
-		case "misc_buddypopup":
-			$locationname = $lang->viewing_buddylist;
-			break;
-		case "misc_smilies":
-			$locationname = $lang->viewing_smilies;
-			break;
-		case "misc_syndication":
-			$locationname = $lang->viewing_syndication;
-			break;
-		case "misc_imcenter":
-			$locationname = $lang->viewing_imcenter;
-			break;
-		// moderation.php functions
-		case "moderation":
-			$locationname = $lang->using_modtools;
-			break;
-		// newreply.php functions
-		case "newreply":
-			if($user['pid'])
-			{
-				$user['tid'] = $posts[$user['pid']];
-			}
-			if($threads[$user['tid']])
-			{
-				$locationname = sprintf($lang->replying_thread2, $user['tid'], $threads[$user['tid']]);
-			}
-			else
-			{
-				$locationname = $lang->replying_thread;
-			}
-			break;
-		// newthread.php functions
-		case "newthread":
-			if($forums[$user['fid']])
-			{
-				$locationname = sprintf($lang->posting_thread2, $user['fid'], $forums[$user['fid']]);
-			}
-			else
-			{
-				$locationname = $lang->posting_thread;
-			}
-			break;
-		// online.php functions
-		case "wol":
-			$locationname = $lang->viewing_wol;
-			break;
-		case "woltoday":
-			$locationname = $lang->viewing_woltoday;
-			break;
-		// polls.php functions
-		case "newpoll":
-			$locationname = $lang->creating_poll;
-			break;
-		case "editpoll":
-			$locationname = $lang->editing_poll;
-			break;
-		case "showresults":
-			$locationname = $lang->viewing_pollresults;
-			break;
-		case "vote":
-			$locationname = $lang->voting_poll;
-			break;
-		// postings.php functions
-		case "postings":
-			$locationname = $lang->using_modtools;
-			break;
-		// private.php functions
-		case "private_send":
-			$locationname = $lang->sending_pm;
-			break;
-		case "private_read":
-			$locationname = $lang->reading_pm;
-			break;
-		case "private_folders":
-			$locationname = $lang->editing_pmfolders;
-			break;
-		case "private":
-			$locationname = $lang->using_pmsystem;
-			break;
-		/* Ratethread functions */
-		case "ratethread":
-			$locationname = $lang->rating_thread;
-			break;
-		// report.php functions
-		case "report":
-			$locationname = $lang->reporting_post;
-			break;
-		// reputation.php functions
-		case "reputation":
-			$locationname = $lang->giving_reputation;
-			break;
-		// search.php functions
-		case "search":
-			$locationname = sprintf($lang->searching_forum, $mybb->settings['bbname']);
-			break;
-		// showthread.php functions
-		case "showthread":
-			if($threads[$user['tid']])
-			{
-				$pagenote = '';
-				$locationname = sprintf($lang->reading_thread2, $user['tid'], $threads[$user['tid']], $pagenote);
-			}
-			else
-			{
-				$locationname = $lang->reading_thread;
-			}
-			break;
-		// showteam.php functions
-		case "showteam":
-			$locationname = $lang->viewing_team;
-			break;
-		// stats.php functions
-		case "stats":
-			$locationname = $lang->viewing_stats;
-			break;
-		// usercp.php functions
-		case "usercp_profile":
-			$locationname = $lang->updating_profile;
-			break;
-		case "usercp_options":
-			$locationname = $lang->updating_options;
-			break;
-		case "usercp_editsig":
-			$locationname = $lang->editing_signature;
-			break;
-		case "usercp_avatar":
-			$locationname = $lang->changing_avatar;
-			break;
-		case "usercp_subscriptions":
-			$locationname = $lang->viewing_subscriptions;
-			break;
-		case "usercp_favorites":
-			$locationname = $lang->viewing_favorites;
-			break;
-		case "usercp_notepad":
-			$locationname = $lang->editing_pad;
-			break;
-		case "usercp":
-			$locationname = $lang->user_cp;
-			break;
-		case "usercp2_favorites":
-			$locationname = $lang->managing_favorites;
-			break;
-		case "usercp2_subscriptions":
-			$locationname = $lang->managing_subscriptions;
-			break;
-		case "portal":
-			$locationname = $lang->viewing_portal;
-			break;
-	}
-	if($user['nopermission'] == 1)
-	{
-		$locationname = $lang->viewing_noperms;
-	}
-	if(!$locationname)
-	{
-		$locationname = sprintf($lang->unknown_location, $user['location']);
-	}
+	$user_activity = array();
 
-	if($user['uid'] > 0)
-	{
-		if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
-		{
-			if($user['invisible'] == "yes")
-			{
-				$invisiblemark = "*";
-			}
-			else
-			{
-				$invisiblemark = '';
-			}
-			$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-			$onlinename = build_profile_link($user['username'], $user['uid']).$invisiblemark;
-		}
-	}
-	elseif($user['bot'])
-	{
-		$onlinename = format_name($user['bot'], $session->botgroup);
-	}
-	else
-	{
-		$onlinename = format_name($lang->guest, 1);
-	}
-	$onlinetime = my_date($mybb->settings['timeformat'], $user['time']);
-	if($mybb->usergroup['canviewonlineips'] == "yes")
-	{
-		eval("\$userip = \"".$templates->get("online_row_ip")."\";");
-	}
-	else
-	{
-		$user['ip'] = '';
-	}
-	if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
-	{
-		eval("\$onlinerows .= \"".$templates->get("online_row")."\";");
-	}
-	if($return != false)
-	{
-		return array(
-			"onlinename" => $onlinename,
-			"userip" => $user['ip'],
-			"onlinetime" => $onlinetime,
-			"locationname" => $locationname
-		);
-	}
-}
-
-
-function what($user)
-{
-	global $mybb, $theme, $fidsql, $tidsql, $pidsql, $eidsql, $uidsql;
-	$splitloc = explode(".php", $user['location']);
-	if($splitloc[0] == $user['location'])
+	$split_loc = explode(".php", $location);
+	if($split_loc[0] == $user['location'])
 	{
 		$filename = '';
 	}
 	else
 	{
-		$filename = my_substr($splitloc[0], -strpos(strrev($splitloc[0]), "/"));
+		$filename = my_substr($split_loc[0], -strpos(strrev($split_loc[0]), "/"));
 	}
-	if($splitloc[1])
+	if($split_loc[1])
 	{
-		$temp = explode("&", my_substr($splitloc[1], 1));
-		for ($i = 0; $i < count($temp); ++$i)
+		$temp = explode("&", my_substr($split_loc[1], 1));
+		foreach($temp as $param)
 		{
-			$temp2 = explode("=", $temp[$i], 2);
+			$temp2 = explode("=", $param, 2);
 			$parameters[$temp2[0]] = $temp2[1];
 		}
 	}
@@ -378,106 +47,106 @@ function what($user)
 		case "announcements":
 			if(is_numeric($parameters['fid']))
 			{
-				$fidsql .= ",{$parameters['fid']}";
+				$fid_list[] = $parameters['fid'];
 			}
-			$user['activity'] = "announcements";
-			$user['fid'] = $parameters['fid'];
+			$user_activity['activity'] = "announcements";
+			$user_activity['fid'] = $parameters['fid'];
 			break;
 		case "attachment":
 			if(is_numeric($parameters['aid']))
 			{
-				$aidsql .= ",{$parameters['aid']}";
+				$aid_list[] = $parameters['aid'];
 			}
-			$user['activity'] = "attachment";
-			$user['aid'] = $parameters['aid'];
+			$user_activity['activity'] = "attachment";
+			$user_activity['aid'] = $parameters['aid'];
 			break;
 		case "calendar":
 			if($parameters['action'] == "event")
 			{
 				if(is_numeric($parameters['eid']))
 				{
-					$eidsql .= ",{$parameters['eid']}";
+					$eid_list[] = $parameters['eid'];
 				}
-				$user['activity'] = "calendar_event";
-				$user['eid'] = $parameters['eid'];
+				$user_activity['activity'] = "calendar_event";
+				$user_activity['eid'] = $parameters['eid'];
 			}
 			elseif($parameters['action'] == "addevent" || $parameters['action'] == "do_addevent")
 			{
-				$user['activity'] = "calendar_addevent";
+				$user_activity['activity'] = "calendar_addevent";
 			}
 			elseif($parameters['action'] == "editevent" || $parameters['action'] == "do_editevent")
 			{
-				$user['activity'] = "calendar_editevent";
+				$user_activity['activity'] = "calendar_editevent";
 			}
 			else
 			{
-				$user['activity'] = "calendar";
+				$user_activity['activity'] = "calendar";
 			}
 			break;
 		case "editpost":
-			$user['activity'] = "editpost";
+			$user_activity['activity'] = "editpost";
 			break;
 		case "forumdisplay":
 			if(is_numeric($parameters['fid']))
 			{
-				$fidsql .= ",{$parameters['fid']}";
+				$fid_list[] = $parameters['fid'];
 			}
-			$user['activity'] = "forumdisplay";
-			$user['fid'] = $parameters['fid'];
+			$user_activity['activity'] = "forumdisplay";
+			$user_activity['fid'] = $parameters['fid'];
 			break;
 		case "index":
 		case '':
-			$user['activity'] = "index";
+			$user_activity['activity'] = "index";
 			break;
 		case "member":
 			if($parameters['action'] == "activate")
 			{
-				$user['activity'] = "member_activate";
+				$user_activity['activity'] = "member_activate";
 			}
 			elseif($parameters['action'] == "register" || $parameters['action'] == "do_register")
 			{
-				$user['activity'] = "member_register";
+				$user_activity['activity'] = "member_register";
 			}
 			elseif($parameters['action'] == "login" || $parameters['action'] == "do_login")
 			{
-				$user['activity'] = "member_login";
+				$user_activity['activity'] = "member_login";
 			}
 			elseif($parameters['action'] == "logout")
 			{
-				$user['activity'] = "member_logout";
+				$user_activity['activity'] = "member_logout";
 			}
 			elseif($parameters['action'] == "profile")
 			{
-				$user['activity'] = "member_profile";
+				$user_activity['activity'] = "member_profile";
 				if(is_numeric($parameters['uid']))
 				{
-					$uidsql .= ",{$parameters['uid']}";
+					$uid_list[] = $parameters['uid'];
 				}
-				$user['uuid'] = $parameters['uid'];
+				$user_activity['uid'] = $parameters['uid'];
 			}
 			elseif($parameters['action'] == "emailuser" || $parameters['action'] == "do_emailuser")
 			{
-				$user['activity'] = "member_emailuser";
+				$user_activity['activity'] = "member_emailuser";
 			}
 			elseif($parameters['action'] == "rate" || $parameters['action'] == "do_rate")
 			{
-				$user['activity'] = "member_rate";
+				$user_activity['activity'] = "member_rate";
 			}
 			elseif($parameters['action'] == "resendactivation" || $parameters['action'] == "do_resendactivation")
 			{
-				$user['activity'] = "member_resendactivation";
+				$user_activity['activity'] = "member_resendactivation";
 			}
 			elseif($parameters['action'] == "lostpw" || $parameters['action'] == "do_lostpw" || $parameters['action'] == "resetpassword")
 			{
-				$user['activity'] = "member_lostpw";
+				$user_activity['activity'] = "member_lostpw";
 			}
 			else
 			{
-				$user['activity'] = "member";
+				$user_activity['activity'] = "member";
 			}
 			break;
 		case "memberlist":
-			$user['activity'] = "memberlist";
+			$user_activity['activity'] = "memberlist";
 			break;
 		case "misc":
 			$accepted_parameters = array("markread", "help", "buddypopup", "smilies", "syndication", "imcenter");
@@ -485,208 +154,653 @@ function what($user)
 			{
 				if(is_numeric($parameters['tid']))
 				{
-					$tidsql .= ",{$parameters['tid']}";
+					$tid_list[] = $parameters['tid'];
 				}
-				$user['activity'] = "misc_whoposted";
-				$user['tid'] = $parameters['tid'];
+				$user_activity['activity'] = "misc_whoposted";
+				$user_activity['tid'] = $parameters['tid'];
 			}
 			
 			elseif(in_array($parameters['action'], $accepted_parameters))
 			{
-				$user['activity'] = "misc_".$parameters['action'];
+				$user_activity['activity'] = "misc_".$parameters['action'];
 			}
 			else
 			{
-				$user['activity'] = "misc";
+				$user_activity['activity'] = "misc";
 			}
 			break;
 		case "moderation":
-			$user['activity'] = "moderation";
+			$user_activity['activity'] = "moderation";
 			break;
 		case "newreply":
 			if(is_numeric($parameters['pid']))
 			{
-				$pidsql .= ",{$parameters['pid']}";
-				$user['activity'] = "newreply";
-				$user['pid'] = $parameters['pid'];
+				$pid_list[] = $parameters['pid'];
+				$user_activity['activity'] = "newreply";
+				$user_activity['pid'] = $parameters['pid'];
 			}
 			else
 			{
 				if(is_numeric($parameters['tid']))
 				{
-					$tidsql .= ",{$parameters['tid']}";
+					$tid_list[] = $parameters['tid'];
 				}
-				$user['activity'] = "newreply";
-				$user['tid'] = $parameters['tid'];
+				$user_activity['activity'] = "newreply";
+				$user_activity['tid'] = $parameters['tid'];
 			}
 			break;
 		case "newthread":
 			if(is_numeric($parameters['fid']))
 			{
-				$fidsql .= ",{$parameters['fid']}";
+				$fid_list[] = $parameters['fid'];
 			}
-			$user['activity'] = "newthread";
-			$user['fid'] = $parameters['fid'];
+			$user_activity['activity'] = "newthread";
+			$user_activity['fid'] = $parameters['fid'];
 			break;
 		case "online":
 			if($parameters['action'] == "today")
 			{
-				$user['activity'] = "woltoday";
+				$user_activity['activity'] = "woltoday";
 			}
 			else
 			{
-				$user['activity'] = "wol";
+				$user_activity['activity'] = "wol";
 			}
 			break;
 		case "polls":
 			// Make the "do" parts the same as the other one.
 			if($parameters['action'] == "do_newpoll")
 			{
-				$user['activity'] = "newpoll";
+				$user_activity['activity'] = "newpoll";
 			}
 			elseif($parameters['action'] == "do_editpoll")
 			{
-				$user['activity'] = "editpoll";
+				$user_activity['activity'] = "editpoll";
 			}
 			else
 			{
-				$user['activity'] = $parameters['action'];
+				$user_activity['activity'] = $parameters['action'];
 			}
 			break;
 		case "printthread":
 			if(is_numeric($parameters['tid']))
 			{
-				$tidsql .= ",{$parameters['tid']}";
+				$tid_list[] = $parameters['tid'];
 			}
-			$user['activity'] = "printthread";
-			$user['tid'] = $parameters['tid'];
+			$user_activity['activity'] = "printthread";
+			$user_activity['tid'] = $parameters['tid'];
 		case "private":
 			if($parameters['action'] == "send" || $parameters['action'] == "do_send")
 			{
-				$user['activity'] = "private_send";
+				$user_activity['activity'] = "private_send";
 			}
 			elseif($parameters['action'] == "show")
 			{
-				$user['activity'] = "private_read";
+				$user_activity['activity'] = "private_read";
 			}
 			elseif($parameters['action'] == "folders" || $parameters['action'] == "do_folders")
 			{
-				$user['activity'] = "private_folders";
+				$user_activity['activity'] = "private_folders";
 			}
 			else
 			{
-				$user['activity'] = "private";
+				$user_activity['activity'] = "private";
 			}
 			break;
 		case "ratethread":
-			$user['activity'] = "ratethread";
+			$user_activity['activity'] = "ratethread";
 			break;
 		case "report":
-			$user['activity'] = "report";
+			$user_activity['activity'] = "report";
 			break;
 		case "reputation":
-			$user['activity'] = "reputation";
+			$user_activity['activity'] = "reputation";
 			break;
 		case "search":
-			$user['activity'] = "search";
+			$user_activity['activity'] = "search";
 			break;
 		case "sendthread":
 			if(is_numeric($parameters['tid']))
 			{
-				$tidsql .= ",{$parameters['tid']}";
+				$tid_list[] = $parameters['tid'];
 			}
-			$user['activity'] = "sendthread";
-			$user['tid'] = $parameters['tid'];
+			$user_activity['activity'] = "sendthread";
+			$user_activity['tid'] = $parameters['tid'];
 		case "showteam":
-			$user['activity'] = "showteam";
+			$user_activity['activity'] = "showteam";
 			break;
 		case "showthread":
 			if(is_numeric($parameters['pid']) && $parameters['action'] == "showpost")
 			{
-				$pidsql .= ",{$parameters['pid']}";
-				$user['activity'] = "showpost";
-				$user['pid'] = $parameters['pid'];
+				$pid_list[] = $parameters['pid'];
+				$user_activity['activity'] = "showpost";
+				$user_activity['pid'] = $parameters['pid'];
 			}
 			else
 			{
 				if($parameters['page'])
 				{
-					$user['page'] = $parameters['page'];
+					$user_activity['page'] = $parameters['page'];
 				}
 				if(is_numeric($parameters['tid']))
 				{
-					$tidsql .= ",{$parameters['tid']}";
+					$tid_list[] = $parameters['tid'];
 				}
-				$user['activity'] = "showthread";
-				$user['tid'] = $parameters['tid'];
+				$user_activity['activity'] = "showthread";
+				$user_activity['tid'] = $parameters['tid'];
 			}
 			break;
 		case "stats":
-			$user['activity'] = "stats";
+			$user_activity['activity'] = "stats";
 			break;
 		case "usercp":
 			if($parameters['action'] == "profile" || $parameters['action'] == "do_profile")
 			{
-				$user['activity'] = "usercp_profile";
+				$user_activity['activity'] = "usercp_profile";
 			}
 			elseif($parameters['action'] == "options" || $parameters['action'] == "do_options")
 			{
-				$user['activity'] = "usercp_options";
+				$user_activity['activity'] = "usercp_options";
 			}
 			elseif($parameters['action'] == "password" || $parameters['action'] == "do_password")
 			{
-				$user['activity'] = "usercp_password";
+				$user_activity['activity'] = "usercp_password";
 			}
 			elseif($parameters['action'] == "editsig" || $parameters['action'] == "do_editsig")
 			{
-				$user['activity'] = "usercp_editsig";
+				$user_activity['activity'] = "usercp_editsig";
 			}
 			elseif($parameters['action'] == "avatar" || $parameters['action'] == "do_avatar")
 			{
-				$user['activity'] = "usercp_avatar";
+				$user_activity['activity'] = "usercp_avatar";
 			}
 			elseif($parameters['action'] == "editlists" || $parameters['action'] == "do_editlists")
 			{
-				$user['activity'] = "usercp_editlists";
+				$user_activity['activity'] = "usercp_editlists";
 			}
 			elseif($parameters['action'] == "favorites")
 			{
-				$user['activity'] = "usercp_favorites";
+				$user_activity['activity'] = "usercp_favorites";
 			}
 			elseif($parameters['action'] == "subscriptions")
 			{
-				$user['activity'] = "usercp_subscriptions";
+				$user_activity['activity'] = "usercp_subscriptions";
 			}
 			elseif($parameters['action'] == "notepad" || $parameters['action'] == "do_notepad")
 			{
-				$user['activity'] = "usercp_notepad";
+				$user_activity['activity'] = "usercp_notepad";
 			}
 			else
 			{
-				$user['activity'] = "usercp";
+				$user_activity['activity'] = "usercp";
 			}
 			break;
 		case "usercp2":
 			if($parameters['action'] == "addfavorite" || $parameters['action'] == "removefavorite" || $parameters['action'] == "removefavorites")
 			{
-				$user['activity'] = "usercp2_favorites";
+				$user_activity['activity'] = "usercp2_favorites";
 			}
 			elseif($parameters['action'] == "addsubscription" || $parameters['action'] == "removesubscription" || $parameters['action'] == "removesubscription")
 			{
-				$user['activity'] = "usercp2_subscriptions";
+				$user_activity['activity'] = "usercp2_subscriptions";
 			}
 			break;
 		case "portal":
-			$user['activity'] = "portal";
+			$user_activity['activity'] = "portal";
 			break;
 		case "nopermission":
-			$user['activity'] = "nopermission";
+			$user_activity['activity'] = "nopermission";
 			break;
 		default:
-			$user['activity'] = "unknown";
+			$user_activity['activity'] = "unknown";
 			break;
 	}
-	return $user;
+	return $user_activity;
 }
 
+/**
+ * Builds a friendly named Who's Online location from an "activity" and array of user data. Assumes fetch_wol_activity has already been called.
+ *
+ * @param array Array containing activity and essential IDs.
+ * @return string Location name for the activity being performed.
+ */
+function build_friendly_wol_location($user_activity, $return=false)
+{
+	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list;
+	static $threads, $forums, $forums_linkto, $posts, $events, $users;
+	//global $threads, $forums, $forums_linkto, $posts, $events, $members, $theme, $mybb, $onlinerows, $templates, $lang, $session;
+
+	// Fetch forum permissions for this user
+	$unviewableforums = get_unviewable_forums();
+	if($unviewableforums)
+	{
+		$fidnot = " AND fid NOT IN ($unviewableforums)";
+	}
+
+	// Fetch any users
+	if(!is_array($users) && count($uid_list) > 0)
+	{
+		$uid_sql = implode(",", $uid_list);
+		$query = $db->simple_select("users", "uid,username", "uid IN ($uid_sql)");
+		while($user = $db->fetch_array($query))
+		{
+			$users[$user['uid']] = $user['username'];
+		}
+	}
+
+	// Fetch any attachments
+	if(!is_array($attachments) && count($aid_list) > 0)
+	{
+		$aid_sql = implode(",", $aid_list);
+		$query = $db->simple_select("attachments", "aid,pid", "aid IN ($aid_sql)");
+		while($attachment = $db->fetch_array($query))
+		{
+			$attachments[$attachment['aid']] = $attachment['pid'];
+			$pid_list[] = $attachment['pid'];
+		}
+	}
+
+	// Fetch any posts
+	if(!is_array($posts) && count($pid_list) > 0)
+	{
+		$pid_sql = implode(",", $pid_list);
+		$query = $db->simple_select("posts", "pid,tid", "pid IN ($pid_sql) $fidnot");
+		while($post = $db->fetch_array($query))
+		{
+			$posts[$post['pid']] = $post['tid'];
+			$tid_list[] = $post['tid'];
+		}
+	}
+
+	// Fetch any threads
+	if(!is_array($threads) && count($tid_list) > 0)
+	{
+		$tid_sql = implode(",", $tid_list);
+		$query = $db->simple_select("threads", "fid,tid,subject", "tid IN($tid_sql) $fidnot");
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[$thread['tid']] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+			$fid_list[] = $thread['fid'];
+		}
+	}
+
+	// Fetch any forums
+	if(!is_array($forums) && count($fid_list) > 0)
+	{
+		$fid_sql = implode(",", $fid_list);
+		$query = $db->simple_select("forums", "fid,name,linkto", "fid IN ($fid_sql) $fidnot");
+		while($forum = $db->fetch_array($query))
+		{
+			$forums[$forum['fid']] = $forum['name'];
+			$forums_linkto[$forum['fid']] = $forum['linkto'];
+		}
+	}
+
+	// And finaly any events
+	if(!is_array($events) && count($eid_list) > 0)
+	{
+		$eid_sql = implode(",", $eid_list);
+		$query = $db->simple_select("events", "eid,subject", "eid IN ($eid_sql)");
+		while($event = $db->fetch_array($query))
+		{
+			$events[$event['eid']] = htmlspecialchars_uni($parser->parse_badwords($event['subject']));
+		}
+	}
+
+	// Now we've got everything we need we can put a name to the location
+	switch($user_activity['activity'])
+	{
+		// announcement.php functions
+		case "announcements":
+			if($forums[$user_activity['fid']])
+			{
+				$location_name = sprintf($lang->viewing_announcements, $user_activity['fid'], $forums[$user_activity['fid']]);
+			}
+			else
+			{
+				$location_name = $lang->viewing_announcements2;
+			}
+			break;
+		// attachment.php actions
+		case "attachment":
+			$aid = $posts[$user_activity['aid']];
+			$pid = $attachments[$aid];
+			$tid = $posts[$pid];
+			if($threads[$tid])
+			{
+				$location_name = sprintf($lang->viewing_attachment2, $tid, $threads[$tid]);
+			}
+			else
+			{
+				$location_name = $lang->viewing_attachment;
+			}
+			break;
+		// calendar.php functions
+		case "calendar":
+			$location_name = $lang->viewing_calendar;
+			break;
+		case "calendar_event":
+			if($events[$user_activity['eid']])
+			{
+				$location_name = sprintf($lang->viewing_event2, $user_activity['eid'], $events[$user_activity['eid']]);
+			}
+			else
+			{
+				$location_name = $lang->viewing_event;
+			}
+			break;
+		case "calendar_addevent":
+			$location_name = $lang->adding_event;
+			break;
+		case "calendar_editevent":
+			$location_name = $lang->editing_event;
+			break;
+		// editpost.php functions
+		case "editpost":
+			$location_name = $lang->editing_post;
+			break;
+		// forumdisplay.php functions
+		case "forumdisplay":
+			if($forums[$user_activity['fid']])
+			{
+				if($forums_linkto[$user_activity['fid']])
+				{
+					$location_name = sprintf($lang->forum_redirect_to, $user_activity['fid'], $forums[$user_activity['fid']]);
+				}
+				else
+				{
+					$location_name = sprintf($lang->viewing_forum2, $user_activity['fid'], $forums[$user_activity['fid']]);
+				}
+			}
+			else
+			{
+				$location_name = $lang->viewing_forum;
+			}
+			break;
+		// index.php functions
+		case "index":
+			$location_name = sprintf($lang->viewing_index, $mybb->settings['bbname']);
+			break;
+		// member.php functions
+		case "member_activate":
+			$location_name = $lang->activating_account;
+			break;
+		case "member_profile":
+			if($users[$user_activity['uid']])
+			{
+				$location_name = sprintf($lang->viewing_profile2, $user_activity['uid'], $users[$user_activity['uid']]);
+			}
+			else
+			{
+				$location_name = $lang->viewing_profile;
+			}
+			break;
+		case "member_register":
+			$location_name = $lang->registering;
+			break;
+		case "member":
+		case "member_login":
+			$location_name = $lang->logging_in;
+			break;
+		case "member_logout":
+			$location_name = $lang->logging_out;
+			break;
+		case "member_emailuser":
+			$location_name = $lang->emailing_user;
+			break;
+		case "member_rate":
+			$location_name = $lang->rating_user;
+			break;
+		case "member_resendactivation":
+			$location_name = $lang->resending_account_activation;
+			break;
+		case "member_lostpw":
+			$location_name = $lang->member_lostpw;
+			break;
+		// memberlist.php functions
+		case "memberlist":
+			$location_name = $lang->viewing_memberlist;
+			break;
+		// misc.php functions
+		case "misc_whoposted":
+			if($threads[$user_activity['tid']])
+			{
+				$location_name = sprintf($lang->viewing_whoposted2, $user_activity['tid'], $threads[$user_activity['tid']]);
+			}
+			else
+			{
+				$location_name = $lang->viewing_whoposted;
+			}
+			break;
+		case "misc_markread":
+			$location_name = $lang->marking_read;
+			break;
+		case "misc_help":
+			$location_name = $lang->viewing_helpdocs;
+			break;
+		case "misc_buddypopup":
+			$location_name = $lang->viewing_buddylist;
+			break;
+		case "misc_smilies":
+			$location_name = $lang->viewing_smilies;
+			break;
+		case "misc_syndication":
+			$location_name = $lang->viewing_syndication;
+			break;
+		case "misc_imcenter":
+			$location_name = $lang->viewing_imcenter;
+			break;
+		// moderation.php functions
+		case "moderation":
+			$location_name = $lang->using_modtools;
+			break;
+		// newreply.php functions
+		case "newreply":
+			if($user_activity['pid'])
+			{
+				$user_activity['tid'] = $posts[$user_activity['pid']];
+			}
+			if($threads[$user_activity['tid']])
+			{
+				$location_name = sprintf($lang->replying_thread2, $user_activity['tid'], $threads[$user_activity['tid']]);
+			}
+			else
+			{
+				$location_name = $lang->replying_thread;
+			}
+			break;
+		// newthread.php functions
+		case "newthread":
+			if($forums[$user_activity['fid']])
+			{
+				$location_name = sprintf($lang->posting_thread2, $user_activity['fid'], $forums[$user_activity['fid']]);
+			}
+			else
+			{
+				$location_name = $lang->posting_thread;
+			}
+			break;
+		// online.php functions
+		case "wol":
+			$location_name = $lang->viewing_wol;
+			break;
+		case "woltoday":
+			$location_name = $lang->viewing_woltoday;
+			break;
+		// polls.php functions
+		case "newpoll":
+			$location_name = $lang->creating_poll;
+			break;
+		case "editpoll":
+			$location_name = $lang->editing_poll;
+			break;
+		case "showresults":
+			$location_name = $lang->viewing_pollresults;
+			break;
+		case "vote":
+			$location_name = $lang->voting_poll;
+			break;
+		// postings.php functions
+		case "postings":
+			$location_name = $lang->using_modtools;
+			break;
+		// private.php functions
+		case "private_send":
+			$location_name = $lang->sending_pm;
+			break;
+		case "private_read":
+			$location_name = $lang->reading_pm;
+			break;
+		case "private_folders":
+			$location_name = $lang->editing_pmfolders;
+			break;
+		case "private":
+			$location_name = $lang->using_pmsystem;
+			break;
+		/* Ratethread functions */
+		case "ratethread":
+			$location_name = $lang->rating_thread;
+			break;
+		// report.php functions
+		case "report":
+			$location_name = $lang->reporting_post;
+			break;
+		// reputation.php functions
+		case "reputation":
+			$location_name = $lang->giving_reputation;
+			break;
+		// search.php functions
+		case "search":
+			$location_name = sprintf($lang->searching_forum, $mybb->settings['bbname']);
+			break;
+		// showthread.php functions
+		case "showthread":
+			if($threads[$user_activity['tid']])
+			{
+				$pagenote = '';
+				$location_name = sprintf($lang->reading_thread2, $user_activity['tid'], $threads[$user_activity['tid']], $pagenote);
+			}
+			else
+			{
+				$location_name = $lang->reading_thread;
+			}
+			break;
+		// showteam.php functions
+		case "showteam":
+			$location_name = $lang->viewing_team;
+			break;
+		// stats.php functions
+		case "stats":
+			$location_name = $lang->viewing_stats;
+			break;
+		// usercp.php functions
+		case "usercp_profile":
+			$location_name = $lang->updating_profile;
+			break;
+		case "usercp_options":
+			$location_name = $lang->updating_options;
+			break;
+		case "usercp_editsig":
+			$location_name = $lang->editing_signature;
+			break;
+		case "usercp_avatar":
+			$location_name = $lang->changing_avatar;
+			break;
+		case "usercp_subscriptions":
+			$location_name = $lang->viewing_subscriptions;
+			break;
+		case "usercp_favorites":
+			$location_name = $lang->viewing_favorites;
+			break;
+		case "usercp_notepad":
+			$location_name = $lang->editing_pad;
+			break;
+		case "usercp":
+			$location_name = $lang->user_cp;
+			break;
+		case "usercp2_favorites":
+			$location_name = $lang->managing_favorites;
+			break;
+		case "usercp2_subscriptions":
+			$location_name = $lang->managing_subscriptions;
+			break;
+		case "portal":
+			$location_name = $lang->viewing_portal;
+			break;
+	}
+	if($user_activity['nopermission'] == 1)
+	{
+		$location_name = $lang->viewing_noperms;
+	}
+	if(!$location_name)
+	{
+		$location_name = sprintf($lang->unknown_location, $user_activity['location']);
+	}
+
+	return $location_name;
+}
+
+/**
+ * Build a Who's Online row for a specific user
+ *
+ * @param array Array of user information including activity information
+ * @return string Formatted online row
+ */
+function build_wol_row($user)
+{
+	global $mybb, $lang, $templates, $themes, $session;
+
+	// We have a registered user
+	if($user['uid'] > 0)
+	{
+		// Only those with "canviewwolinvis" permissions can view invisible users
+		if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
+		{
+			// Append an invisible mark if the user is invisible
+			if($user['invisible'] == "yes")
+			{
+				$invisible_mark = "*";
+			}
+			else
+			{
+				$invisible_mark = '';
+			}
+
+			$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+			$online_name = build_profile_link($user['username'], $user['uid']).$invisible_mark;
+		}
+	}
+	// We have a bot
+	elseif($user['bot'])
+	{
+		$online_name = format_name($user['bot'], $session->botgroup);
+	}
+	// Otherwise we've got a plain old guest
+	else
+	{
+		$online_name = format_name($lang->guest, 1);
+	}
+
+	$online_time = my_date($mybb->settings['timeformat'], $user['time']);
+
+	// Fetch the location name for this users activity
+	$location = build_friendly_wol_location($user['activity']);
+
+	// Can view IPs, then fetch the IP template
+	if($mybb->usergroup['canviewonlineips'] == "yes")
+	{
+		eval("\$user_ip = \"".$templates->get("online_row_ip")."\";");
+	}
+	else
+	{
+		$user['ip'] = '';
+	}
+
+	// And finally if we have permission to view this user, return the completed online row
+	if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
+	{
+		eval("\$online_row = \"".$templates->get("online_row")."\";");
+	}
+	return $online_row;
+}
 ?>

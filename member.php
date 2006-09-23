@@ -1266,23 +1266,26 @@ elseif($mybb->input['action'] == "profile")
 	}
 	
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
-	$query = $db->simple_select("sessions", "location", "uid='$uid' AND time>'$timesearch'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
-	
-	if($db->num_rows($query) == 0)
+	// User is currently online and this user has permissions to view the user on the WOL
+	if($memprofile['lastactive'] > $timesearch && ($memprofile['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $memprofile['uid'] == $mybb->user['uid']))
 	{
-		$postbit_status = $lang->postbit_status_offline;
-		$location = '';
-	}
-	else
-	{	
-		$postbit_status = $lang->postbit_status_online;
+		// Fetch location
+		$query = $db->simple_select("sessions", "location", "uid='$uid'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
+		$location = $db->fetch_field($query, "location");
+
+		// Fetch their current location
 		$lang->load("online");
 		require_once MYBB_ROOT."inc/functions_online.php";
-		
-		$memprofile['location'] = $db->fetch_field($query, 'location');
-	
-		$location = show(what($memprofile), true);
-		eval("\$location = \"".$templates->get("member_profile_activebit")."\";");
+		$activity = fetch_wol_activity($location);
+		$location = build_friendly_wol_location($activity);
+		$location_time = mydate($mybb->settings['timeformat'], $memprofile['lastactive']);
+
+		eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
+	}
+	// User is offline
+	else
+	{
+		eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 	}
 
 	// Fetch the reputation for this user

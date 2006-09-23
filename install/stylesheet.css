@@ -83,14 +83,13 @@ a:hover {
 /* Content Area */
 
 #content {
-	border-left: 1px solid #ccc;
 	margin-left: 170px;
-	width: 580px;
+	width: 570px;
 	padding: 10px 10px 10px 19px;
 }
 
 * html #content {
-	width: 567px;
+	width: 560px;
 }
 
 /* Heading Styles */

@@ -113,13 +113,7 @@ else
 {
 	$plugins->run_hooks("online_start");
 
-	$aidsql = '';
-	$pidsql = '';
-	$uidsql = '';
-	$tidsql = '';
-	$fidsql = '';
-	$eidsql = '';
-	$onlinerows = '';
+	// Custom sorting options
 	if($mybb->input['sortby'] == "username")
 	{
 		$sql = "u.username ASC, s.time DESC";
@@ -130,12 +124,16 @@ else
 		$sql = "s.location, s.time DESC";
 		$refresh_string = "?sortby=location";
 	}
+	// Otherwise sort by last refresh
 	else
 	{
 		$sql = "s.time DESC";
 		$refresh_string = '';
 	}
+
 	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
+
+	// Query for active sessions
 	$query = $db->query("
 		SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
@@ -143,158 +141,115 @@ else
 		WHERE s.time>'$timesearch'
 		ORDER BY $sql
 	");
-	$membercount = 0;
-	$guestcount = 0;
-	$anoncount = 0;
+
+	$user_count = 0;
+	$guest_count = 0;
+	$invisible_count = 0;
 	while($user = $db->fetch_array($query))
 	{
 		$plugins->run_hooks("online_user");
+
+		// Fetch the WOL activity
+		$user['activity'] = fetch_wol_activity($user['location']);
+
 		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
+
+		// Have a registered user
 		if($user['uid'] > 0)
 		{
-			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
+			if($users[$user['uid']]['time'] < $user['time'] || !$users[$user['uid']])
 			{
-				$doneusers[$user['uid']] = $user['time'];
-				$users[$user['uid']] = what($user);
 				if($user['invisible'] == "yes")
 				{
-					++$anoncount;
+					++$invisible_count;
 				}
-				$membercount++;
+				++$user_count;
+				$users[$user['uid']] = $user;
 			}
 		}
-		elseif(strstr($user['sid'], "bot=") !== false && $session->bots[$botkey])
+		// Otherwise this session is a bot
+		else if(strstr($user['sid'], "bot=") !== false && $session->bots[$botkey])
 		{
 			$user['bot'] = $session->bots[$botkey];
-			$guests[] = what($user);
+			$guests[] = $user;
 			++$botcount;
 		}
+		// Or a guest
 		else
 		{
-			$guests[] = what($user);
-			++$guestcount;
+			$guests[] = $user;
+			++$guest_count;
 		}
 	}
 
-	// Get forum permissions
-	$unviewableforums = get_unviewable_forums();
-	if($unviewableforums)
-	{
-		$fidnot = " AND fid NOT IN ($unviewableforums)";
-	}
-	if($uidsql)
-	{
-		$query = $db->simple_select("users", "uid,username", "uid IN (0$uidsql)");
-		while($user = $db->fetch_array($query))
-		{
-			$members[$user['uid']] = $user['username'];
-		}
-	}
-	if($aidsql)
-	{
-		$query = $db->simple_select("attachments", "aid,pid", "aid IN (0$aidsql)");
-		while($attachment = $db->fetch_array($query))
-		{
-			$attachments[$attachment['aid']] = $attachment['pid'];
-			$pidsql .= ",{$attachment['pid']}";
-		}
-	}
-	if($pidsql)
-	{
-		$query = $db->simple_select("posts", "pid,tid", "pid IN (0$pidsql) $fidnot");
-		while($post = $db->fetch_array($query))
-		{
-			$posts[$post['pid']] = $post['tid'];
-			$tidsql .= ",{$post['tid']}";
-		}
-	}
-	if($tidsql)
-	{
-		$query = $db->simple_select("threads", "fid,tid,subject", "tid IN(0$tidsql) $fidnot");
-		while($thread = $db->fetch_array($query))
-		{
-			$threads[$thread['tid']] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-			$fidsql .= ",{$thread['fid']}";
-		}
-	}
-	if($fidsql)
-	{
-		$query = $db->simple_select("forums", "fid,name,linkto", "fid IN (0$fidsql) $fidnot");
-		while($forum = $db->fetch_array($query))
-		{
-			$forums[$forum['fid']] = $forum['name'];
-			$forums_linkto[$forum['fid']] = $forum['linkto'];
-		}
-	}
-	if($eidsql)
-	{
-		$query = $db->simple_select("events", "eid,subject", "eid IN (0$eidsql)");
-		while($event = $db->fetch_array($query))
-		{
-			$events[$event['eid']] = htmlspecialchars_uni($parser->parse_badwords($event['subject']));
-		}
-	}
-
+	// Now we build the actual online rows - we do this separately because we need to query all of the specific activity and location information
+	$online_rows = '';
 	if(is_array($users))
 	{
 		reset($users);
-		foreach($users as $key => $val)
+		foreach($users as $user)
 		{
-			$users[$key] = show($val);
+			$online_rows .= build_wol_row($user);
 		}
-		reset($users);
 	}
 	if(is_array($guests))
 	{
 		reset($guests);
-		foreach($guests as $key => $val)
+		foreach($guests as $user)
 		{
-			$guests[$key] = show($val);
+			$online_rows .= build_wol_row($user);
 		}
-		reset($guests);
 	}
-	$usercount = $membercount + $guestcount;
-	$mostonline = $cache->read("mostonline");
-	$recordcount = $mostonline['numusers'];
-	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);
-	$recordtime = my_date($mybb->settings['timeformat'], $mostonline['time']);
+
+	$online_count = $user_count + $guest_count;
+
+	// Fetch the most online information
+	$most_online = $cache->read("mostonline");
+	$record_count = $most_online['numusers'];
+	$record_date = my_date($mybb->settings['dateformat'], $most_online['time']);
+	$record_time = my_date($mybb->settings['timeformat'], $most_online['time']);
+
+	// Set automatic refreshing if enabled
 	if($mybb->settings['refreshwol'] != "no")
 	{
 		$refresh = "<meta http-equiv=\"refresh\" content=\"60;URL=online.php$refresh_string\" />";
 	}
-	if($usercount != 1)
+
+	// Fetch language strings depending on counts being plural or singular
+	if($online_count != 1)
 	{
-		$userbit = $lang->online_online_plural;
+		$total_bit = $lang->online_online_plural;
 	}
 	else
 	{
-		$userbit = $lang->online_online_singular;
+		$total_bit = $lang->online_online_singular;
 	}
-	if($membercount != 1)
+	if($user_count != 1)
 	{
-		$memberbit = $lang->online_member_plural;
+		$user_bit = $lang->online_member_plural;
 	}
 	else
 	{
-		$memberbit = $lang->online_member_singular;
+		$user_bit = $lang->online_member_singular;
 	}
-	if($anoncount != 1)
+	if($invisible_count != 1)
 	{
-		$anonbit = $lang->online_anon_plural;
+		$invisible_bit = $lang->online_anon_plural;
 	}
 	else
 	{
-		$anonbit = $lang->online_anon_singular;
+		$invisible_bit = $lang->online_anon_singular;
 	}
-	if($guestcount != 1)
+	if($guest_count != 1)
 	{
-		$guestbit = $lang->online_guest_plural;
+		$guest_bit = $lang->online_guest_plural;
 	}
 	else
 	{
-		$guestbit = $lang->online_guest_singular;
+		$guest_bit = $lang->online_guest_singular;
 	}
-	$lang->online_count = sprintf($lang->online_count, my_number_format($usercount), $userbit, $mybb->settings['wolcutoffmins'], my_number_format($membercount), $memberbit, my_number_format($anoncount), $anonbit, my_number_format($guestcount), $guestbit);
+	$lang->online_count = sprintf($lang->online_count, my_number_format($online_count), $total_bit, $mybb->settings['wolcutoffmins'], my_number_format($user_count), $user_bit, my_number_format($invisible_count), $invisible_bit, my_number_format($guest_count), $guest_bit);
+
 	$plugins->run_hooks("online_end");
 
 	eval("\$online = \"".$templates->get("online")."\";");

@@ -835,6 +835,7 @@ function db_connection($config)
 	define('TABLE_PREFIX', $config['table_prefix']);
 	$db->connect($config['hostname'], $config['username'], $config['password']);
 	$db->select_db($config['database']);
+	$db->set_table_prefix(TABLE_PREFIX);
 	return $db;
 }
 
