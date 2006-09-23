@@ -16,7 +16,7 @@ $l['viewing_attachment'] = "Viewing Attachment";
 $l['viewing_attachment2'] = "Viewing Attachment in Thread <a href=\"showthread.php?tid={1}\">{2}</a>";
 $l['viewing_calendar'] = "Viewing <a href=\"calendar.php\">Calendar</a>";
 $l['viewing_event'] = "Viewing Event";
-$l['viewing_event2'] = "Viewing Event <a href=\"calendar.php?action=event&eid={1}\">{2}</a>";
+$l['viewing_event2'] = "Viewing Event <a href=\"calendar.php?action=event&amp;eid={1}\">{2}</a>";
 $l['adding_event'] = "<a href=\"calendar.php?action=addevent\">Adding Event</a>";
 $l['editing_event'] = "Editing Event";
 $l['editing_post'] = "Editing Post";
@@ -26,7 +26,7 @@ $l['forum_redirect_to'] = "Being Redirected To <a href=\"forumdisplay.php?fid={1
 $l['viewing_index'] = "{1} <a href=\"index.php\">Main Index</a>";
 $l['activating_account'] = "Activating Account";
 $l['viewing_profile'] = "Viewing Profile";
-$l['viewing_profile2'] = "Viewing Profile of <a href=\"member.php?action=profile&uid={1}\">{2}</a>";
+$l['viewing_profile2'] = "Viewing Profile of <a href=\"member.php?action=profile&amp;uid={1}\">{2}</a>";
 $l['registering'] = "<a href=\"member.php?action=register\">Registering</a>";
 $l['logging_in'] = "<a href=\"member.php?action=login\">Logging In</a>";
 $l['logging_out'] = "<a href=\"member.php?action=logout\">Logging Out</a>";

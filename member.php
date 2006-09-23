@@ -1278,7 +1278,7 @@ elseif($mybb->input['action'] == "profile")
 		require_once MYBB_ROOT."inc/functions_online.php";
 		$activity = fetch_wol_activity($location);
 		$location = build_friendly_wol_location($activity);
-		$location_time = mydate($mybb->settings['timeformat'], $memprofile['lastactive']);
+		$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
 
 		eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
 	}

@@ -2238,7 +2238,7 @@ var inlineId = {$fid};
 </td>
 </tr>]]></template>
 		<template name="nav_sep_active" version="120"><![CDATA[ / ]]></template>
-		<template name="member_profile_online" version="120"><![CDATA[<a href="online.php"><font color="#15A018"><strong>{$lang->postbit_status_online}</strong></font></a> ({$location} @ {$location_time}]]></template>
+		<template name="member_profile_online" version="120"><![CDATA[<a href="online.php"><font color="#15A018"><strong>{$lang->postbit_status_online}</strong></font></a> ({$location} @ {$location_time})]]></template>
 		<template name="member_profile_offline" version="120"><![CDATA[<font color="#C7C7C7"><strong>{$lang->postbit_status_offline}</strong></font>]]></template>
 		<template name="member_profile" version="120"><![CDATA[<html>
 <head>

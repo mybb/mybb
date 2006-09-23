@@ -19,7 +19,7 @@ $uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $eid_list = array();
  */
 function fetch_wol_activity($location)
 {
-	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list;
+	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins;
 
 	$user_activity = array();
 
@@ -355,6 +355,9 @@ function fetch_wol_activity($location)
 			$user_activity['activity'] = "unknown";
 			break;
 	}
+	
+	$plugins->run_hooks_by_ref("fetch_wol_activity_end", $user_activity);
+	
 	return $user_activity;
 }
 
@@ -366,9 +369,8 @@ function fetch_wol_activity($location)
  */
 function build_friendly_wol_location($user_activity, $return=false)
 {
-	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list;
+	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins;
 	static $threads, $forums, $forums_linkto, $posts, $events, $users;
-	//global $threads, $forums, $forums_linkto, $posts, $events, $members, $theme, $mybb, $onlinerows, $templates, $lang, $session;
 
 	// Fetch forum permissions for this user
 	$unviewableforums = get_unviewable_forums();
@@ -728,6 +730,9 @@ function build_friendly_wol_location($user_activity, $return=false)
 			$location_name = $lang->viewing_portal;
 			break;
 	}
+	
+	$plugins->run_hooks_by_ref("build_friendly_wol_location_end", $filename);
+	
 	if($user_activity['nopermission'] == 1)
 	{
 		$location_name = $lang->viewing_noperms;
