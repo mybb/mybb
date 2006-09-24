@@ -452,7 +452,7 @@ switch($mybb->input['action'])
 
 		foreach($mergepost as $pid => $yes)
 		{
-			$plist[] = $pid;
+			$plist[] = intval($pid);
 		}
 		$moderation->merge_posts($plist, $tid, $mybb->input['sep']);
 
@@ -803,10 +803,7 @@ switch($mybb->input['action'])
 		add_breadcrumb($lang->nav_multi_deletethreads);
 		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
-			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
-			{
-				error_no_permission();
-			}
+			error_no_permission();
 		}
 		$threads = getids($fid, "forum");
 		if(count($threads) < 1)
@@ -823,10 +820,7 @@ switch($mybb->input['action'])
 	case "do_multideletethreads":
 		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
-			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
-			{
-				error_no_permission();
-			}
+			error_no_permission();
 		}
 		$threadlist = explode("|", $mybb->input['threads']);
 		foreach($threadlist as $tid)
