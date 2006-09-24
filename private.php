@@ -140,6 +140,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		"icon" => $mybb->input['icon'],
 		"fromid" => $mybb->user['uid'],
 		"username" => $mybb->input['to'],
+		"bccusername" => $mybb->input['bccto'],
 		"do" => $mybb->input['do'],
 		"pmid" => $mybb->input['pmid']
 	);
@@ -302,19 +303,84 @@ if($mybb->input['action'] == "send")
 			}
 			elseif($mybb->input['do'] == "reply")
 			{
+				$pm_toids = split(',', $pm['toid']);
+				foreach($pm_toids as $key => $pm_toid)
+				{
+					if($pm_toid != $mybb->user['uid'])
+					{
+						$extrausers .= " OR uid='$pm_toid'";
+					}
+				}
 				$subject = "Re: $subject";
 				$uid = $pm['fromid'];
-				$query = $db->simple_select("users", "username", "uid='".$uid."'");
-				$user = $db->fetch_array($query);
-				$to = $user['username'];
+				$query = $db->simple_select("users", "username", "uid='".$uid."'$extrausers");
+				$rows = $db->num_rows($query);
+				if($rows > 1)
+				{
+					while($user = $db->fetch_array($query))
+					{
+						++$tousernamecount;
+						if($rows == $tousernamecount)
+						{
+							$to .= $user['username'];
+						}
+						else
+						{
+							$to .= $user['username'].'; ';
+						}
+					}
+					$to = trim($to);
+				}
+				else
+				{
+					$user = $db->fetch_array($query);
+					$to = $user['username'];
+				}
 			}
 		}
 	}
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
-		$query = $db->simple_select("users", "username", "uid='".intval($mybb->input['uid'])."'");
-		$user = $db->fetch_array($query);
-		$to = $user['username'];
+		$pm_toids = split(',', $mybb->input['uid']);
+		$pm_toids_count = count($pm_toids);
+		foreach($pm_toids as $key => $pm_toid)
+		{
+			$pm_toid = intval($pm_toid);
+			if($pm_toid != $mybb->user['uid'])
+			{
+				if(pm_toids_count == 1)
+				{
+					$extrausers = "uid='$pm_toid'";
+				}
+				else
+				{
+					$extrausers .= " OR uid='$pm_toid'";
+				}
+			}
+		}
+		$query = $db->simple_select("users", "username", $extrausers);
+		$rows = $db->num_rows($query);
+		if($rows > 1)
+		{
+			while($user = $db->fetch_array($query))
+			{
+				++$tousernamecount;
+				if($rows == $tousernamecount)
+				{
+					$to .= $user['username'];
+				}
+				else
+				{
+					$to .= $user['username'].'; ';
+				}
+			}
+			$to = trim($to);
+		}
+		else
+		{
+			$user = $db->fetch_array($query);
+			$to = $user['username'];
+		}
 	}
 
 	// Load the auto complete javascript if it is enabled.
@@ -1054,10 +1120,9 @@ if(!$mybb->input['action'])
 	$icon_cache = $cache->read("posticons");
 	
 	$query = $db->query("
-		SELECT pm.*, fu.username AS fromusername, tu.username AS tousername
+		SELECT pm.*, fu.username AS fromusername
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
-		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
 		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'
 		ORDER BY pm.dateline DESC
 		LIMIT $start, $perpage
@@ -1066,6 +1131,17 @@ if(!$mybb->input['action'])
 	{
 		while($message = $db->fetch_array($query))
 		{
+			$sent_users = split(',', $message['toid']);
+			foreach($sent_users as $key => $id)
+			{
+				if($id == $mybb->user['uid'])
+				{
+					$query2 = $db->simple_select("users", "username", "uid='$id'");
+					$message['tousername'] = $db->fetch_field($query, 'username');
+				}
+				$toids .= " OR toid='$id'";
+			}
+			
 			$msgalt = '';
 			// Determine Folder Icon
 			if($message['status'] == 0)

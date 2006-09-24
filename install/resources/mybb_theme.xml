@@ -2579,26 +2579,30 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_to}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="to" id="to" size="40" maxlength="{$mybb->settings['maxnamelength']}" value="{$to}" tabindex="1" /></td>
+<td class="trow1"><input type="text" class="textbox" name="to" id="to" size="40" value="{$to}" tabindex="1" /></td>
 </tr>
 <tr>
-<td class="trow2"><strong>{$lang->compose_subject}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="2" /></td>
+<td class="trow2" valign="top"><strong>{$lang->bcc_compose_to}</strong></td>
+<td class="trow2"><input type="text" class="textbox" name="bccto" id="bccto" size="40" value="{$bccto}" tabindex="2" /></td>
+</tr>
+<tr>
+<td class="trow1"><strong>{$lang->compose_subject}</strong></td>
+<td class="trow1"><input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{$subject}" tabindex="3" /></td>
 </tr>
 {$posticons}
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->compose_message}</strong><br/><br/><div style="margin:auto">{$smilieinserter}</div></td>
 <td class="trow2">
-<textarea name="message" id="message" rows="20" cols="60" tabindex="3">{$message}</textarea>
+<textarea name="message" id="message" rows="20" cols="60" tabindex="4">{$message}</textarea>
 {$codebuttons}
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="options[signature]" value="yes" tabindex="8" {$optionschecked['signature']} />{$lang->options_sig}</label><br />
-<label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="yes" tabindex="9" {$optionschecked['disablesmilies']} />{$lang->options_disable_smilies}</label><br />
-<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="yes" tabindex="10" {$optionschecked['savecopy']} />{$lang->options_save_copy}</label><br />
-<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="yes" tabindex="11" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[signature]" value="yes" tabindex="5" {$optionschecked['signature']} />{$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="yes" tabindex="6" {$optionschecked['disablesmilies']} />{$lang->options_disable_smilies}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="yes" tabindex="7" {$optionschecked['savecopy']} />{$lang->options_save_copy}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="yes" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />
 </span></td>
 </tr>
 </table>
@@ -2606,7 +2610,11 @@ var inlineId = {$fid};
 <input type="hidden" name="action" value="do_send" />
 <input type="hidden" name="pmid" value="{$pmid}" />
 <input type="hidden" name="do" value="{$do}" />
-<div style="text-align:center"><input type="submit" class="button" name="submit" value="{$lang->send_message}" tabindex="4" accesskey="s" />  <input type="submit" class="button" name="saveasdraft" value="{$lang->save_draft}" tabindex="5" />  <input type="submit" class="button" name="preview" value="{$lang->preview}" tabindex="6" /></div>
+<div style="text-align: center;">
+<input type="submit" class="button" name="submit" value="{$lang->send_message}" tabindex="9" accesskey="s" />
+<input type="submit" class="button" name="saveasdraft" value="{$lang->save_draft}" tabindex="10" /> 
+<input type="submit" class="button" name="preview" value="{$lang->preview}" tabindex="11" />
+</div>
 </td>
 </tr>
 </table>
