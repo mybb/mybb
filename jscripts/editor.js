@@ -65,7 +65,6 @@ messageEditor.prototype = {
 		// Here we get the ID of the textarea we're replacing and store it.
 		this.textarea = textarea;
 		
-		
 		// Only swap it over once the page has loaded (add event)
 		Event.observe(window, "load", this.showEditor.bindAsEventListener(this));
 	},
@@ -74,6 +73,9 @@ messageEditor.prototype = {
 	{
 		// Assign the old textarea to a variable for later use.
 		oldTextarea = $(this.textarea);
+
+		// Now this.textarea becomes the new textarea ID
+		this.textarea += "_new";
 
 		// Begin the creation of our new editor.
 
@@ -208,6 +210,8 @@ messageEditor.prototype = {
 		// Create formatting section of second toolbar.
 		formatting = document.createElement("div");
 		formatting.style.position = "absolute";
+		formatting.style.width = "100%";
+		formatting.style.whiteSpace = "nowrap";
 		if(this.options.rtl == 1)
 		{
 			formatting.style.right = 0;
@@ -257,24 +261,18 @@ messageEditor.prototype = {
 
 		// Create our new text area
 		areaContainer = document.createElement("div");
+		areaContainer.style.clear = "both";
 
 		// Set the width/height of the area
-		if(MyBB.browser == "mozilla")
-		{
-			subtract = subtract2 = parseInt(editor.style.padding)*2;
-		}
-		else
-		{
-			subtract = subtract2 = 0;
-		}
+		subtract = subtract2 = parseInt(editor.style.padding)*2;
 		areaContainer.style.height = parseInt(editor.style.height)-parseInt(toolBar.style.height)-parseInt(toolbar2.style.height)-subtract+"px";
 		areaContainer.style.width = (parseInt(editor.style.width)-subtract2)+"px";
 		// Create text area
 		textInput = document.createElement("textarea");
 		textInput.id = this.textarea;
-		textInput.name = oldTextarea.name;
-		textInput.style.height = areaContainer.style.height;
-		textInput.style.width = areaContainer.style.width;
+		textInput.name = oldTextarea.name+"_new";
+		textInput.style.height = parseInt(areaContainer.style.height)+"px";
+		textInput.style.width = parseInt(areaContainer.style.width)+"px";
 		if(oldTextarea.value != '')
 		{
 			textInput.value = oldTextarea.value;
@@ -289,9 +287,21 @@ messageEditor.prototype = {
 		{
 			Event.observe(oldTextarea.form, "submit", this.closeTags.bindAsEventListener(this));
 		}
-		// Replace the old with the new
-		oldTextarea.parentNode.replaceChild(editor, oldTextarea);
+		// Hide the old editor
+		oldTextarea.style.display = "none";
+		this.oldTextarea = oldTextarea;
+
+		// Append the new editor
+		oldTextarea.parentNode.appendChild(editor);
+
+		Event.observe(textInput, "keyup", this.updateOldArea.bindAsEventListener(this));
 	},
+	
+	updateOldArea: function(e)
+	{
+		this.oldTextarea.value = $(this.textarea).value;
+	},
+
 
 	insertStandardButton: function(into, id, src, insertText, insertExtra, alt)
 	{
@@ -704,6 +714,7 @@ messageEditor.prototype = {
 				is_closed = false;
 			}
 		}
+		this.updateOldArea();
 		textarea.focus();
 		return is_closed;
 	},
