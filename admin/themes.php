@@ -349,7 +349,7 @@ if($mybb->input['action'] == "do_import")
 	}
 	else
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."templatesets VALUES ('', '$name Templates')");
+		$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('$name Templates')");
 		$templateset = $db->insert_id();
 		$tid = "";
 	}
