@@ -43,6 +43,10 @@ autoComplete.prototype = {
 		{
 			this.minChars = 3;
 		}
+		if(options.delimChar)
+		{
+			this.delimChar = options.delimChar;
+		}
 		this.menuOpen = false;
 		this.popup = document.createElement("div");
 		this.popup.style.position = "absolute";
@@ -96,16 +100,24 @@ autoComplete.prototype = {
 			case Event.KEY_RIGHT:
 				break;
 			case Event.KEY_UP:
-				if(this.currentIndex > 0)
+				if(this.popup.display != "none")
 				{
-					this.scrollToItem(this.currentIndex-1);
-					this.highlightItem(this.currentIndex-1);
-					this.setTypeAhead(this.currentIndex);
+					if(this.currentIndex > 0)
+					{
+						this.scrollToItem(this.currentIndex-1);
+						this.highlightItem(this.currentIndex-1);
+						this.setTypeAhead(this.currentIndex);
+					}
+					else if(this.currentIndex == 0)
+					{
+						this.textbox.value = this.lastValue;
+						this.hidePopup();
+					}
 				}
 				Event.stop(e);
 				break;
 			case Event.KEY_DOWN:
-				if(this.currentIndex+1 < this.popup.childNodes.length)
+				if(this.currentIndex+1 < this.popup.childNodes.length && this.popup.display != "none")
 				{
 					this.scrollToItem(this.currentIndex+1);
 					this.highlightItem(this.currentIndex+1);
@@ -119,6 +131,10 @@ autoComplete.prototype = {
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
 					this.currentIndex = -1;
+					if(this.delimChar)
+					{
+						Event.stop(e);
+					}
 					return false;
 				}
 				break;
@@ -143,7 +159,7 @@ autoComplete.prototype = {
 		return true;
 	},
 	
-	buildURL: function()
+	buildURL: function(value)
 	{
 		if(!this.urlParam)
 		{
@@ -154,7 +170,7 @@ autoComplete.prototype = {
 		{
 			separator = "&";
 		}
-		return this.url+separator+this.urlParam+"="+encodeURIComponent(this.textbox.value);		
+		return this.url+separator+this.urlParam+"="+encodeURIComponent(value);		
 	},
 	
 	doRequest: function()
@@ -164,9 +180,24 @@ autoComplete.prototype = {
 			return false;
 		}
 		this.lastValue = this.textbox.value;
+		this.previousComplete = '';
+		value = this.textbox.value;
 		cacheValue = this.textbox.length+this.textbox.value;
-		if(this.textbox.value.length >= this.minChars)
-		{		
+		if(this.delimChar)
+		{
+			delimIndex = value.lastIndexOf(this.delimChar);
+			if(delimIndex >= -1)
+			{
+				if(value.charAt(delimIndex+1) == " ")
+				{
+					delimIndex += 1;
+				}
+				this.previousComplete = value.substr(0, delimIndex+1);
+				value = value.substr(delimIndex+1);
+			}
+		}
+		if(value.length >= this.minChars)
+		{	
 			if(this.cache[cacheValue])
 			{
 				this.popup.innerHTML = this.cache[cacheValue];
@@ -174,7 +205,7 @@ autoComplete.prototype = {
 			}
 			else
 			{
-				new ajax(this.buildURL(), {method: 'get', onComplete: this.onComplete.bindAsEventListener(this)});
+				new ajax(this.buildURL(value), {method: 'get', onComplete: this.onComplete.bindAsEventListener(this)});
 			}
 		}
 		else
@@ -227,7 +258,7 @@ autoComplete.prototype = {
 		{
 			var item = this.popup.childNodes[i];
 			item.index = i;
-			item.style.padding = "2px";
+			item.style.padding = "1px";
 			item.style.clear = "both";
 			//item.style.height = "1em";
 			Event.observe(item, "mouseover", this.itemOver.bindAsEventListener(this));
@@ -288,7 +319,7 @@ autoComplete.prototype = {
 		if(this.currentKeyCode != 8 && this.currentKeyCode != 46)
 		{
 			this.highlightItem(0);
-			this.setTypeAhead(0);	
+			this.setTypeAhead(0, 1);	
 		}
 	},
 	
@@ -343,7 +374,19 @@ autoComplete.prototype = {
 		{
 			textBoxValue = selectedItem;
 		}
-		this.textbox.value = textBoxValue;
+		this.textbox.value = "";
+		if(this.delimChar)
+		{
+			if(this.previousComplete)
+			{
+				this.textbox.value = this.previousComplete;
+			}
+			this.textbox.value += textBoxValue+this.delimChar+" ";
+		}
+		else
+		{
+			this.textbox.value = textBoxValue;
+		}
 		return textBoxValue;
 	},
 	
@@ -357,14 +400,12 @@ autoComplete.prototype = {
 	
 	itemClick: function(event)
 	{
-		$('message').value += "item click - ";
 		var element = Event.findElement(event, 'DIV');
 		selectedItem = element.index;
-			$('message').value += element.index+"\n\n";
 		this.updateValue(this.popup.childNodes[selectedItem]);
 		this.hidePopup();
 		this.currentIndex = -1;
-		this.textbox.focus();
+		this.clearSelection();
 	},
 	
 	highlightItem: function(selectedItem)
@@ -402,17 +443,23 @@ autoComplete.prototype = {
 		}
 	},
 	
-	setTypeAhead: function(selectedItem)
+	setTypeAhead: function(selectedItem, selectChanges)
 	{
 		selectedItem = this.popup.childNodes[selectedItem];
 		if(!selectedItem || (!this.textbox.setSelectionRange && !this.textbox.createTextRange))
 		{
 			return false;
 		}
-		currentValue = this.textbox.value;
+		if(selectChanges)
+		{
+			selectStart = this.textbox.value.length;
+		}
 		newValue = this.updateValue(selectedItem);
-		selectStart = currentValue.length;
-		selectEnd = newValue.length;
+		selectEnd = this.textbox.value.length;
+		if(!selectChanges)
+		{
+			selectStart = selectEnd;
+		}
 		if(this.textbox.setSelectionRange)
 		{
 			this.textbox.setSelectionRange(selectStart, selectEnd);
