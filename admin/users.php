@@ -551,7 +551,7 @@ if($mybb->input['action'] == "do_email")
 
 	if($search['username'])
 	{
-		$conditions .= " AND username LIKE '%".$db->escape_string($search[username])."%'";
+		$conditions .= " AND username LIKE '%".$db->escape_string($search['username'])."%'";
 	}
 	if(is_array($search['usergroups']))
 	{

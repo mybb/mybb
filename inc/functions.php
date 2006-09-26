@@ -795,30 +795,15 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		return $groupperms;
 	}
-	// The fix here for better working inheritance was provided by tinywizard - http://windizupdate.com/
-	// Many thanks.
-	foreach($fpermfields as $perm)
-	{
-		$forumpermissions[$perm] = "no";
-	}
-
 	foreach($groups as $gid)
 	{
 		if($gid && $groupscache[$gid])
 		{
 			if(!is_array($fpermcache[$fid][$gid]))
 			{
-				$p = $groupperms;
-			}
-			else
-			{
-				$p = $fpermcache[$fid][$gid];
-			}
-			if(!is_array($p))
-			{
 				continue;
 			}
-			foreach($p as $perm => $access)
+			foreach($fpermcache[$fid][$gid] as $perm => $access)
 			{
 				if($perm == "fid" || $perm == "gid" || $perm == "pid")
 				{
@@ -831,6 +816,10 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 				}
 			}
 		}
+	}
+	if(!isset($forumpermissions))
+	{
+		$forumpermissions = $groupperms;
 	}
 	return $forumpermissions;
 }
