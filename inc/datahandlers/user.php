@@ -499,7 +499,7 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showredirect', 'yes');
 
 		$options['showcodebuttons'] = intval($options['showcodebuttons']);
-		if($this->method == "insert" || (array_key_exists('showcodebuttons', $options) && $options['showcodebuttons'] != 0))
+		if($this->method == "insert" || (array_key_exists('showcodebuttons', $options) && $options['showcodebuttons'] != '0'))
 		{
 			$options['showcodebuttons'] = 1;
 		}
