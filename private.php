@@ -217,6 +217,14 @@ if($mybb->input['action'] == "send")
 		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $options['disablesmilies'];
 		$post['dateline'] = time();
+		if(!$options['signature']) 
+ 	    { 
+ 	    	$post['includesig'] = 'no'; 
+ 		} 
+ 		else 
+ 		{ 
+ 			$post['includesig'] = 'yes'; 
+ 		} 
 		if(!$options['signature'])
 		{
 			$post['includesig'] = 'no';
