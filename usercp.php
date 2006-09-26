@@ -572,8 +572,8 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"remember" => $mybb->input['remember'],
 		"receivepms" => $mybb->input['receivepms'],
 		"pmpopup" => $mybb->input['pmpopup'],
-		"daysprune" => intval($mybb->input['daysprune']),
-		"showcodebuttons" => intval($mybb->input['showcodebuttons']),
+		"daysprune" => $mybb->input['daysprune'],
+		"showcodebuttons" => $mybb->input['showcodebuttons'],
 		"pmnotify" => $mybb->input['pmnotify'],
 		"showredirect" => $mybb->input['showredirect']
 	);

@@ -495,6 +495,7 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showquickreply', 'yes');
 		$this->verify_yesno_option($options, 'showredirect', 'yes');
 
+		$options['showcodebuttons'] = intval($mybb->input['showcodebuttons']);
 		if($this->method == "insert" || (array_key_exists('showcodebuttons', $options) && $options['showcodebuttons'] != '0'))
 		{
 			$options['showcodebuttons'] = 1;
