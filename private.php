@@ -118,6 +118,9 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_send_do_send");
 
+	//
+	// REVISE
+	//
 	// Attempt to see if this PM is a duplicate or not
 	$time_cutoff = time() - (5 * 60 * 60);
 	$query = $db->query("
@@ -139,11 +142,18 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		"message" => $mybb->input['message'],
 		"icon" => $mybb->input['icon'],
 		"fromid" => $mybb->user['uid'],
-		"username" => $mybb->input['to'],
-		"bccusername" => $mybb->input['bccto'],
 		"do" => $mybb->input['do'],
 		"pmid" => $mybb->input['pmid']
 	);
+
+	// Split up any recipients we have
+	$pm['to'] = explode(",", $mybb->input['to']);
+	$pm['to'] = array_map("trim", $pm['to']);
+	if(!empty($mybb->input['bcc']))
+	{
+		$pm['bcc'] = explode(",", $mybb->input['bcc']);
+		$pm['bcc'] = array_map("trim", $pm['bcc']);
+	}
 
 	$pm['options'] = array(
 		"signature" => $mybb->input['options']['signature'],
@@ -314,73 +324,22 @@ if($mybb->input['action'] == "send")
 				$subject = "Re: $subject";
 				$uid = $pm['fromid'];
 				$query = $db->simple_select("users", "username", "uid='".$uid."'$extrausers");
-				$rows = $db->num_rows($query);
-				if($rows > 1)
-				{
-					while($user = $db->fetch_array($query))
-					{
-						++$tousernamecount;
-						if($rows == $tousernamecount)
-						{
-							$to .= $user['username'];
-						}
-						else
-						{
-							$to .= $user['username'].'; ';
-						}
-					}
-					$to = trim($to);
-				}
-				else
-				{
-					$user = $db->fetch_array($query);
-					$to = $user['username'];
-				}
+				$user = $db->fetch_array($query);
+				$to = $user['username'];
 			}
 		}
 	}
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
-		$pm_toids = split(',', $mybb->input['uid']);
-		$pm_toids_count = count($pm_toids);
-		foreach($pm_toids as $key => $pm_toid)
-		{
-			$pm_toid = intval($pm_toid);
-			if($pm_toid != $mybb->user['uid'])
-			{
-				if(pm_toids_count == 1)
-				{
-					$extrausers = "uid='$pm_toid'";
-				}
-				else
-				{
-					$extrausers .= " OR uid='$pm_toid'";
-				}
-			}
-		}
-		$query = $db->simple_select("users", "username", $extrausers);
-		$rows = $db->num_rows($query);
-		if($rows > 1)
-		{
-			while($user = $db->fetch_array($query))
-			{
-				++$tousernamecount;
-				if($rows == $tousernamecount)
-				{
-					$to .= $user['username'];
-				}
-				else
-				{
-					$to .= $user['username'].'; ';
-				}
-			}
-			$to = trim($to);
-		}
-		else
-		{
-			$user = $db->fetch_array($query);
-			$to = $user['username'];
-		}
+		$query = $db->simple_select("users", "username", "uid='".$db->escape_string($mybb->input['uid'])."'");
+		$user = $db->fetch_field($query, "username");
+		$to = $user['username'];
+	}
+	
+	$max_recipients = '';
+	if($mybb->usergroup['maxpmrecipients'] > 0)
+	{
+		$max_recipients = sprintf($lang->max_recipients, $mybb->usergroup['maxpmrecipients']);
 	}
 
 	// Load the auto complete javascript if it is enabled.
@@ -453,6 +412,58 @@ if($mybb->input['action'] == "read")
 	{
 		$pm['username'] = "MyBB Engine";
 	}
+
+	// Fetch the recipients for this message
+	$pm['recipients'] = @unserialize($pm['recipients']);
+	
+	if(is_array($pm['recipients']['to']))
+	{
+		$uid_sql = implode(",", $pm['recipients']['to']);
+	}
+	else
+	{
+		$uid_sql = $pm['toid'];
+	}
+	
+	$show_bcc = 0;
+	// If we have any BCC recipients and this user is an Administrator, add them on to the query
+	if(count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == "yes")
+	{
+		$show_bcc = 1;
+		$uid_sql .= ",".implode(",", $pm['recipients']['bcc']);
+	}
+
+	// Fetch recipient names from the database
+	$bcc_recipients = $to_recipients = array();
+	$query = $db->simple_select("users", "uid, username", "uid IN ({$uid_sql})");
+	while($recipient = $db->fetch_array($query))
+	{
+		// User is a BCC recipient
+		if($show_bcc && in_array($recipient['uid'], $pm['recipients']['bcc']))
+		{
+			$bcc_recipients[] = build_profile_link($recipient['username'], $recipient['uid']);
+		}
+		// User is a normal recipient
+		else if(in_array($recipient['uid'], $pm['recipients']['to']))
+		{
+			$to_recipients[] = build_profile_link($recipient['username'], $recipient['uid']);
+		}
+	}
+
+	if(count($bcc_recipients) > 0)
+	{
+		$bcc_recipients = implode(", ", $bcc_recipients);
+		eval("\$bcc = \"".$templates->get("private_read_bcc")."\";");
+	}
+	if(count($to_recipients) > 0)
+	{
+		$to_recipients = implode(", ", $to_recipients);
+	}
+	
+	$from_link = build_profile_link($pm['username'], $pm['fromid']);
+	
+	$sent_date = my_date($mybb->settings['dateformat'], $pm['dateline']);
+	$sent_time = my_date($mybb->settings['timeformat'], $pm['dateline']);
 
 	add_breadcrumb($pm['subject']);
 	$message = build_postbit($pm, "2");
@@ -1131,17 +1142,6 @@ if(!$mybb->input['action'])
 	{
 		while($message = $db->fetch_array($query))
 		{
-			$sent_users = split(',', $message['toid']);
-			foreach($sent_users as $key => $id)
-			{
-				if($id == $mybb->user['uid'])
-				{
-					$query2 = $db->simple_select("users", "username", "uid='$id'");
-					$message['tousername'] = $db->fetch_field($query, 'username');
-				}
-				$toids .= " OR toid='$id'";
-			}
-			
 			$msgalt = '';
 			// Determine Folder Icon
 			if($message['status'] == 0)
@@ -1170,7 +1170,12 @@ if(!$mybb->input['action'])
 			}
 			if($folder == 2 || $folder == 3)
 			{ // Sent Items or Drafts Folder Check
-				if($message['toid'])
+				$recipients = unserialize($message['recipients']);
+				if(count($recipients['to']) > 1)
+				{
+					$tofromusername = $lang->multiple_users;
+				}
+				else if($message['toid'])
 				{
 					$tofromusername = $message['tousername'];
 					$tofromuid = $message['toid'];
@@ -1188,6 +1193,10 @@ if(!$mybb->input['action'])
 				{
 					$tofromusername = 'MyBB Engine';
 				}
+			}
+			if($tofromuid != 0)
+			{
+				$tofromusername = build_profile_link($tofromusername, $tofromuid);
 			}
 			if($mybb->usergroup['cantrackpms'] == 'yes' && $mybb->usergroup['candenypmreceipts'] == 'yes' && $message['receipt'] == '1' && $message['folder'] != '3' && $message['folder'] != 2)
 			{

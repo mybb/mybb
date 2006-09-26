@@ -130,139 +130,7 @@ class PMDataHandler extends DataHandler
 	}
 	
 	/**
-	 * Verifies if a BCC recipient for the private message is valid.
-	 *
-	 * @return boolean True when valid, false when invalid.
-	 */
-	function verify_bcc_recipient()
-	{
-		global $db, $mybb, $lang;
-		
-		$pm = &$this->data;
-		
-		if((!isset($pm['bcctoid']) || trim($pm['bcctoid']) == "") && (!isset($pm['bccusername']) || trim($pm['bccusername']) == ""))
-		{
-			return true;
-		}				
-		
-		// No user ID(s) is specified, we need to query for it based on the username.
-		if(!isset($pm['bcctoid']))
-		{
-			$pm['bccusername'] = explode(';', $pm['bccusername']);
-			foreach($pm['bccusername'] as $key => $username)
-			{
-				$username = trim($username);
-				if(strlen($username) >= $mybb->settings['maxnamelength'])
-				{
-					$this->set_error("invalid_recipient");
-					return false;
-				}
-				
-				$query = $db->simple_select("users", "uid", "username='".$db->escape_string($username)."'", array("limit" => 1));
-				$user = $db->fetch_array($query);
-				$pm['bcctoid'][] = $user['uid'];
-			}
-		}
-		else
-		{
-			$pm['bcctoid'] = explode(',', $pm['bcctoid']);
-		}
-		
-		foreach($pm['bcctoid'] as $key => $pm_toid)
-		{	
-			$pm_toid = intval($pm_toid);
-	
-			// Cache the to user information.
-			$touser = get_user($pm_toid);
-	
-			// Check if we have a valid recipient or not.
-			if(!$touser['uid'] && !$pm['saveasdraft'])
-			{
-				$this->set_error("invalid_recipient");
-				return false;
-			}
-	
-			// Collect group permissions for the sender and recipient.
-			$recipient_permissions = user_permissions($touser['uid']);
-			$sender_permissions = user_permissions($pm['fromid']);
-	
-			// See if the sender is on the recipients ignore list and that either
-			// - admin_override is set or
-			// - sender is an administrator
-	
-			if($this->admin_override != true && $sender_permissions['cancp'] != "yes")
-			{
-				$ignorelist = explode(",", $touser['ignorelist']);
-				foreach($ignorelist as $uid)
-				{
-					if($uid == $pm['fromid'])
-					{
-						$this->set_error("recipient_is_ignoring");
-						return false;
-					}
-				}
-			}
-	
-			// Can the recipient actually receive private messages based on their permissions or user setting?
-			if($touser['receivepms'] == "no" || $recipient_permissions['canusepms'] == "no" && !$pm['saveasdraft'])
-			{
-				$this->set_error("recipient_pms_disabled");
-				return false;
-			}
-	
-			// Check to see if the user has reached their private message quota - if they have, email them.
-			if($recipient_permissions['pmquota'] != "0" && $touser['pms_total'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != "yes" && $sender_permissions['cancp'] != "yes" && !$pm['saveasdraft'] && !$this->admin_override)
-			{
-				if(trim($touser['language']) != '' && $lang->language_exists($touser['language']))
-				{
-					$uselang = trim($touser['language']);
-				}
-				elseif($mybb->settings['bblanguage'])
-				{
-					$uselang = $mybb->settings['bblanguage'];
-				}
-				else
-				{
-					$uselang = "english";
-				}
-				if($uselang == $mybb->settings['bblanguage'] || !$uselang)
-				{
-					$emailsubject = $lang->emailsubject_reachedpmquota;
-					$emailmessage = $lang->email_reachedpmquota;
-				}
-				else
-				{
-					$userlang = new MyLanguage;
-					$userlang->set_path(MYBB_ROOT."inc/languages");
-					$userlang->set_language($uselang);
-					$userlang->load("messages");
-					$emailsubject = $userlang->emailsubject_reachedpmquota;
-					$emailmessage = $userlang->email_reachedpmquota;
-				}
-				$emailmessage = sprintf($emailmessage, $touser['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-				$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
-				my_mail($touser['email'], $emailsubject, $emailmessage);
-	
-				$this->set_error("recipient_reached_quota");
-				return false;
-			}
-	
-			// Everything looks good, assign some specifics about the recipient
-			$pm['bccrecipient'][] = array(
-				"uid" => $touser['uid'],
-				"username" => $touser['username'],
-				"email" => $touser['email'],
-				"lastactive" => $touser['lastactive'],
-				"pmpopup" => $touser['pmpopup'],
-				"pmnotify" => $touser['pmnotify'],
-				"language" => $touser['language']
-			);
-		}
-		return true;
-	}
-
-	/**
-	 * Verifies if a recipient for the private message is valid.
+	 * Verifies if an array of recipients for a private message are valid
 	 *
 	 * @return boolean True when valid, false when invalid.
 	 */
@@ -272,79 +140,125 @@ class PMDataHandler extends DataHandler
 
 		$pm = &$this->data;
 		
-		// No user ID(s) is specified, we need to query for it based on the username.
-		if(!isset($pm['toid']))
+		$invalid_recipients = array();
+		// We have our recipient usernames but need to fetch user IDs
+		if(array_key_exists("to", $pm))
 		{
-			$pm['username'] = explode(';', $pm['username']);
-			foreach($pm['username'] as $key => $username)
+			if(count($pm['to']) <= 0)
 			{
-				$username = trim($username);
-				if(strlen($username) >= $mybb->settings['maxnamelength'])
-				{
-					$this->set_error("invalid_recipient");
-					return false;
-				}
-				
-				$query = $db->simple_select("users", "uid", "username='".$db->escape_string($username)."'", array("limit" => 1));
-				$user = $db->fetch_array($query);
-				$pm['toid'][] = $user['uid'];
-			}
-		}
-		else
-		{
-			$pm['toid'] = explode(',', $pm['toid']);
-		}
-
-		$pm['toid'] = array_unique($pm['toid']);
-		
-		foreach($pm['toid'] as $key => $pm_toid)
-		{	
-			$pm_toids[] = $pm_toid = intval($pm_toid);
-	
-			// Cache the to user information.
-			$touser = get_user($pm_toid);
-	
-			// Check if we have a valid recipient or not.
-			if(!$touser['uid'] && !$pm['saveasdraft'])
-			{
-				$this->set_error("invalid_recipient");
+				$this->set_error("no_recipients");
 				return false;
 			}
-	
-			// Collect group permissions for the sender and recipient.
-			$recipient_permissions = user_permissions($touser['uid']);
-			$sender_permissions = user_permissions($pm['fromid']);
+			
+			foreach(array("to", "bcc") as $recipient_type)
+			{
+				if(!is_array($pm[$recipient_type]))
+				{
+					$pm[$recipient_type] = array($pm[$recipient_type]);
+				}
+				foreach($pm[$recipient_type] as $username)
+				{
+					$username = trim($username);
+					if(!$username) { continue; }
+					// Check that this recipient actually exists
+					$query = $db->simple_select("users", "*", "username='".$db->escape_string($username)."'");
+					$user = $db->fetch_array($query);
+					if($recipient_type == "bcc")
+					{
+						$user['bcc'] = 1;
+					}
+					if($user['uid'])
+					{
+						$recipients[] = $user;
+					}
+					else
+					{
+						$invalid_recipients[] = $username;
+					}
+				}
+			}
+		}
+		// We have recipient IDs
+		else
+		{
+			foreach(array("toid", "bccid") as $recipient_type)
+			{
+				if(count($pm['toid']) <= 0)
+				{
+					$this->set_error("no_recipients");
+					return false;
+				}				
+				foreach($pm[$recipient_type] as $uid)
+				{
+					// Check that this recipient actually exists
+					$query = $db->simple_select("users", "*", "username='".intval($uid)."'");
+					$user = $db->fetch_array($query);
+					if($recipient_type == "bcc")
+					{
+						$user['bcc'] = 1;
+					}
+					if($user['uid'])
+					{
+						$recipients[] = $user;
+					}
+					else
+					{
+						$invalid_recipients[] = $uid;
+					}
+				}
+			}
+		}
+
+		// If we have one or more invalid recipients and we're not saving a draft, error
+		if(count($invalid_recipients) > 0)
+		{
+			$invalid_recipients = implode(", ", $invalid_recipients);
+			$this->set_error("invalid_recipients", array($invalid_recipients));
+			return false;
+		}
+		
+		$sender_permissions = user_permissions($pm['fromid']);
+		
+		// Are we trying to send this message to more users than the permissions allow?
+		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'])
+		{
+			$this->set_error("too_many_recipients", array($sender_permissions['maxpmrecipients']));
+		}
+
+		// Now we're done with that we loop through each recipient
+		foreach($recipients as $user)
+		{
+			// Collect group permissions for this recipient.
+			$recipient_permissions = user_permissions($user['uid']);
 	
 			// See if the sender is on the recipients ignore list and that either
 			// - admin_override is set or
 			// - sender is an administrator
-	
 			if($this->admin_override != true && $sender_permissions['cancp'] != "yes")
 			{
-				$ignorelist = explode(",", $touser['ignorelist']);
+				$ignorelist = explode(",", $user['ignorelist']);
 				foreach($ignorelist as $uid)
 				{
 					if($uid == $pm['fromid'])
 					{
-						$this->set_error("recipient_is_ignoring");
-						return false;
+						$this->set_error("recipient_is_ignoring", array($user['username']));
 					}
 				}
 			}
 	
 			// Can the recipient actually receive private messages based on their permissions or user setting?
-			if($touser['receivepms'] == "no" || $recipient_permissions['canusepms'] == "no" && !$pm['saveasdraft'])
+			if($user['receivepms'] == "no" || $recipient_permissions['canusepms'] == "no" && !$pm['saveasdraft'])
 			{
-				$this->set_error("recipient_pms_disabled");
+				$this->set_error("recipient_pms_disabled", array($user['username']));
 				return false;
 			}
 	
 			// Check to see if the user has reached their private message quota - if they have, email them.
-			if($recipient_permissions['pmquota'] != "0" && $touser['pms_total'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != "yes" && $sender_permissions['cancp'] != "yes" && !$pm['saveasdraft'] && !$this->admin_override)
+			if($recipient_permissions['pmquota'] != "0" && $recipient['pms_total'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != "yes" && $sender_permissions['cancp'] != "yes" && !$pm['saveasdraft'] && !$this->admin_override)
 			{
-				if(trim($touser['language']) != '' && $lang->language_exists($touser['language']))
+				if(trim($user['language']) != '' && $lang->language_exists($user['language']))
 				{
-					$uselang = trim($touser['language']);
+					$uselang = trim($user['language']);
 				}
 				elseif($mybb->settings['bblanguage'])
 				{
@@ -368,28 +282,30 @@ class PMDataHandler extends DataHandler
 					$emailsubject = $userlang->emailsubject_reachedpmquota;
 					$emailmessage = $userlang->email_reachedpmquota;
 				}
-				$emailmessage = sprintf($emailmessage, $touser['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+				$emailmessage = sprintf($emailmessage, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 				$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
-				my_mail($touser['email'], $emailsubject, $emailmessage);
+				my_mail($user['email'], $emailsubject, $emailmessage);
 	
-				$this->set_error("recipient_reached_quota");
-				return false;
+				$this->set_error("recipient_reached_quota", array($user['username']));
 			}
 	
 			// Everything looks good, assign some specifics about the recipient
-			$pm['recipient'][] = array(
-				"uid" => $touser['uid'],
-				"username" => $touser['username'],
-				"email" => $touser['email'],
-				"lastactive" => $touser['lastactive'],
-				"pmpopup" => $touser['pmpopup'],
-				"pmnotify" => $touser['pmnotify'],
-				"language" => $touser['language']
+			$pm['recipients'][$user['uid']] = array(
+				"uid" => $user['uid'],
+				"username" => $user['username'],
+				"email" => $user['email'],
+				"lastactive" => $user['lastactive'],
+				"pmpopup" => $user['pmpopup'],
+				"pmnotify" => $user['pmnotify'],
+				"language" => $user['language']
 			);
+			
+			// If this recipient is defined as a BCC recipient, save it
+			if($user['bcc'] == 1)
+			{
+				$pm['recipients'][$user['uid']]['bcc'] = 1;
+			}
 		}
-		
-		$pm['recipients'] = implode(',', $pm_toids);
-		
 		return true;
 	}
 
@@ -434,8 +350,6 @@ class PMDataHandler extends DataHandler
 		$this->verify_sender();
 
 		$this->verify_recipient();
-		
-		$this->verify_bcc_recipient();
 		
 		$this->verify_message();
 
@@ -486,24 +400,78 @@ class PMDataHandler extends DataHandler
 
 		// Assign data to common variable
 		$pm = &$this->data;
-		
-		foreach($pm['recipient'] as $key => $pm_recipient)
-		{
-			$pm['pmid'] = intval($pm['pmid']);
+
+		$pm['pmid'] = intval($pm['pmid']);
 			
-			if(!$pm['icon'] || $pm['icon'] < 0)
+		if(!$pm['icon'] || $pm['icon'] < 0)
+		{
+			$pm['icon'] = 0;
+		}
+
+		// Build recipient list
+		foreach($pm['recipients'] as $recipient)
+		{
+			if($recipient['bcc'])
 			{
-				$pm['icon'] = 0;
+				$recipient_list['bcc'][] = $recipient['uid'];
 			}
-	
-			// Send email notification of new PM if it is enabled for the recipient
-			$query = $db->simple_select("privatemessages", "dateline", "uid='".$pm_recipient['uid']."' AND folder='1'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
-			$lastpm = $db->fetch_array($query);
-			if($pm_recipient['pmnotify'] == "yes" && $pm_recipient['lastactive'] > $lastpm['dateline'] && !$mybb->input['saveasdraft'])
+			else
 			{
-				if($pm_recipient['language'] != "" && $lang->language_exists($touser['language']))
+				$recipient_list['to'][] = $recipient['uid'];
+			}
+		}
+		$recipient_list = serialize($recipient_list);
+
+		$this->pm_insert_data = array(
+			'fromid' => $pm['sender']['uid'],
+			'folder' => $pm['folder'],
+			'subject' => $db->escape_string($pm['subject']),
+			'icon' => intval($pm['icon']),
+			'message' => $db->escape_string($pm['message']),
+			'dateline' => time(),
+			'status' => 0,
+			'includesig' => $pm['options']['signature'],
+			'smilieoff' => $pm['options']['disablesmilies'],
+			'receipt' => intval($pm['options']['readreceipt']),
+			'readtime' => 0,
+			'recipients' => $db->escape_string($recipient_list)
+		);
+		
+		// Check if we're updating a draft or not.
+		$query = $db->simple_select("privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
+		$draftcheck = $db->fetch_array($query);
+
+		// This PM was previously a draft
+		if($draftcheck['pmid'])
+		{
+			// Delete the old draft as we no longer need it
+			$db->delete_query("privatemessages", "pmid='{$draftcheck['pmid']}'");
+		}
+
+		// Saving this message as a draft
+		if($pm['saveasdraft'])
+		{
+			$this->pm_insert_data['uid'] = $pm['sender']['uid'];
+			$plugins->run_hooks_by_ref("datahandler_pm_insert_updatedraft", $this);
+			$db->insert_query("privatemessages", $this->pm_insert_data);
+
+			// If this is a draft, end it here - below deals with complete messages
+			return array(
+				"draftsaved" => 1
+			);
+		}
+		
+		// Save a copy of the PM for each of our recipients
+		foreach($pm['recipients'] as $recipient)
+		{
+			// Send email notification of new PM if it is enabled for the recipient
+			$query = $db->simple_select("privatemessages", "dateline", "uid='".$recipient['uid']."' AND folder='1'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
+			$lastpm = $db->fetch_array($query);
+			if($recipient['pmnotify'] == "yes" && $recipient['lastactive'] > $lastpm['dateline'])
+			{
+				if($recipient['language'] != "" && $lang->language_exists($recipient['language']))
 				{
-					$uselang = $touser['language'];
+					$uselang = $recipient['language'];
 				}
 				elseif($mybb->settings['bblanguage'])
 				{
@@ -527,308 +495,70 @@ class PMDataHandler extends DataHandler
 					$emailsubject = $userlang->emailsubject_newpm;
 					$emailmessage = $userlang->email_newpm;
 				}
-				$emailmessage = sprintf($emailmessage, $pm_recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+				$emailmessage = sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 				$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
-				my_mail($pm_recipient['email'], $emailsubject, $emailmessage);
+				my_mail($recipient['email'], $emailsubject, $emailmessage);
 			}
-			
-			// Check if we're updating a draft or not.
-			$query = $db->simple_select("privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
-			$draftcheck = $db->fetch_array($query);
+
+			$this->pm_insert_data['uid'] = $recipient['uid'];
+			$this->pm_insert_data['toid'] = $recipient['uid'];
+
+			$plugins->run_hooks_by_ref("datahandler_pm_insert", $this);
+			$db->insert_query("privatemessages", $this->pm_insert_data);
 	
-			// This PM was previously a draft - update it
-			if($draftcheck['pmid'])
-			{
-				$this->pm_insert_data = array(
-					'toid' => $pm['recipients'],
-					'fromid' => $pm['sender']['uid'],
-					'folder' => $pm['folder'],
-					'subject' => $db->escape_string($pm['subject']),
-					'icon' => intval($pm['icon']),
-					'message' => $db->escape_string($pm['message']),
-					'dateline' => time(),
-					'status' => 0,
-					'includesig' => $pm['options']['signature'],
-					'smilieoff' => $pm['options']['disablesmilies'],
-					'receipt' => intval($pm['options']['readreceipt']),
-					'readtime' => 0
-				);
+			$this->pmid = $db->insert_id();
 	
-				if($pm['saveasdraft'])
-				{
-					$updateddraft['uid'] = $pm['sender']['uid'];
-				}
-				else
-				{
-					$updateddraft['uid'] = $pm['recipient']['uid'];
-				}
-				$plugins->run_hooks_by_ref("datahandler_pm_insert_updatedraft", $this);
-				$db->update_query("privatemessages", $this->pm_insert_data, "pmid='{$pm['pmid']}' AND uid='{$pm['sender']['uid']}'");
-			}
-			else
-			{
-				$this->pm_insert_data = array(
-					'uid' => $pm['sender']['uid'],
-					'toid' => $pm['recipients'],
-					'fromid' => $pm['sender']['uid'],
-					'folder' => $pm['folder'],
-					'subject' => $db->escape_string($pm['subject']),
-					'icon' => intval($pm['icon']),
-					'message' => $db->escape_string($pm['message']),
-					'dateline' => time(),
-					'status' => 0,
-					'includesig' => $pm['options']['signature'],
-					'smilieoff' => $pm['options']['disablesmilies'],
-					'receipt' => intval($pm['options']['readreceipt']),
-					'readtime' => 0
-				);
-	
-				if($pm['saveasdraft'])
-				{
-					$newpm['uid'] = $pm['sender']['uid'];
-				}
-				$plugins->run_hooks_by_ref("datahandler_pm_insert", $this);
-				$db->insert_query("privatemessages", $this->pm_insert_data);
-	
-				$this->pmid = $db->insert_id();
-	
-				// Update private message count (total, new and unread) for recipient
-				update_pm_count($pm_recipient['uid'], 7, $pm_recipient['lastactive']);
-			}
-	
-			// Are we replying or forwarding an existing PM?
-			if($pm['pmid'] && !$pm['saveasdraft'])
-			{
-				if($pm['do'] == "reply")
-				{
-					$sql_array = array(
-						'status' => 3
-					);
-					$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
-				}
-				elseif($pm['do'] == "forward")
-				{
-					$sql_array = array(
-						'status' => 4
-					);
-					$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
-				}
-			}
-	
-			// If we're saving a copy
-			if($pm['options']['savecopy'] != "no" && !$pm['saveasdraft'])
-			{
-				$this->pm_insert_data = array(
-					'uid' => $pm['sender']['uid'],
-					'toid' => $pm['recipients'],
-					'fromid' => $pm['sender']['uid'],
-					'folder' => 2,
-					'subject' => $db->escape_string($pm['subject']),
-					'icon' => intval($pm['icon']),
-					'message' => $db->escape_string($pm['message']),
-					'dateline' => time(),
-					'status' => 1,
-					'includesig' => $pm['options']['signature'],
-					'smilieoff' => $pm['options']['disablesmilies'],
-					'receipt' => 0
-				);
-				$plugins->run_hooks_by_ref("datahandler_pm_insert_savedcopy", $this);
-				$db->insert_query("privatemessages", $this->pm_insert_data);
-	
-				// Because the sender saved a copy, update their total pm count
-				update_pm_count($pm['sender']['uid'], 1);
-			}
-	
+			// Update private message count (total, new and unread) for recipient
+			update_pm_count($recipient['uid'], 7, $recipient['lastactive']);
+		
 			// If the recipient has pm popup functionality enabled, update it to show the popup.
-	
-			if($pm_recipient['pmpopup'] != "no" && !$pm['saveasdraft'])
+			if($recipient['pmpopup'] != "no")
 			{
 				$sql_array = array(
 					"pmpopup" => "new"
 				);
-				$db->update_query("users", $sql_array, "uid={$pm_recipient['uid']}");
+				$db->update_query("users", $sql_array, "uid={$recipient['uid']}");
 			}
 		}
 		
-		if(isset($pm['bccrecipient']) && is_array($pm['bccrecipient']))
-		{		
-			foreach($pm['bccrecipient'] as $key => $pm_recipient)
+		// Are we replying or forwarding an existing PM?
+		if($pm['pmid'])
+		{
+			if($pm['do'] == "reply")
 			{
-				$pm['pmid'] = intval($pm['pmid']);
-				
-				if(!$pm['icon'] || $pm['icon'] < 0)
-				{
-					$pm['icon'] = 0;
-				}
-		
-				// Send email notification of new PM if it is enabled for the recipient
-				$query = $db->simple_select("privatemessages", "dateline", "uid='".$pm_recipient['uid']."' AND folder='1'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
-				$lastpm = $db->fetch_array($query);
-				if($pm_recipient['pmnotify'] == "yes" && $pm_recipient['lastactive'] > $lastpm['dateline'] && !$mybb->input['saveasdraft'])
-				{
-					if($pm_recipient['language'] != "" && $lang->language_exists($touser['language']))
-					{
-						$uselang = $touser['language'];
-					}
-					elseif($mybb->settings['bblanguage'])
-					{
-						$uselang = $mybb->settings['bblanguage'];
-					}
-					else
-					{
-						$uselang = "english";
-					}
-					if($uselang == $mybb->settings['bblanguage'])
-					{
-						$emailsubject = $lang->emailsubject_newpm;
-						$emailmessage = $lang->email_newpm;
-					}
-					else
-					{
-						$userlang = new MyLanguage;
-						$userlang->set_path("./inc/languages");
-						$userlang->set_language($uselang);
-						$userlang->load("messages");
-						$emailsubject = $userlang->emailsubject_newpm;
-						$emailmessage = $userlang->email_newpm;
-					}
-					$emailmessage = sprintf($emailmessage, $pm_recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-					$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
-					my_mail($pm_recipient['email'], $emailsubject, $emailmessage);
-				}
-				
-				// Check if we're updating a draft or not.
-				$query = $db->simple_select("privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
-				$draftcheck = $db->fetch_array($query);
-		
-				// This PM was previously a draft - update it
-				if($draftcheck['pmid'])
-				{
-					$this->pm_insert_data = array(
-						'toid' => $pm_recipient['uid'],
-						'fromid' => $pm['sender']['uid'],
-						'folder' => $pm['folder'],
-						'subject' => $db->escape_string($pm['subject']),
-						'icon' => intval($pm['icon']),
-						'message' => $db->escape_string($pm['message']),
-						'dateline' => time(),
-						'status' => 0,
-						'includesig' => $pm['options']['signature'],
-						'smilieoff' => $pm['options']['disablesmilies'],
-						'receipt' => intval($pm['options']['readreceipt']),
-						'readtime' => 0
-					);
-		
-					if($pm['saveasdraft'])
-					{
-						$updateddraft['uid'] = $pm['sender']['uid'];
-					}
-					else
-					{
-						$updateddraft['uid'] = $pm['recipient']['uid'];
-					}
-					$plugins->run_hooks_by_ref("datahandler_pm_insert_updatedraft", $this);
-					$db->update_query("privatemessages", $this->pm_insert_data, "pmid='{$pm['pmid']}' AND uid='{$pm['sender']['uid']}'");
-				}
-				else
-				{
-					$this->pm_insert_data = array(
-						'uid' => $pm_recipient['uid'],
-						'toid' => $pm_recipient['uid'],
-						'fromid' => $pm['sender']['uid'],
-						'folder' => $pm['folder'],
-						'subject' => $db->escape_string($pm['subject']),
-						'icon' => intval($pm['icon']),
-						'message' => $db->escape_string($pm['message']),
-						'dateline' => time(),
-						'status' => 0,
-						'includesig' => $pm['options']['signature'],
-						'smilieoff' => $pm['options']['disablesmilies'],
-						'receipt' => intval($pm['options']['readreceipt']),
-						'readtime' => 0
-					);
-		
-					if($pm['saveasdraft'])
-					{
-						$newpm['uid'] = $pm['sender']['uid'];
-					}
-					$plugins->run_hooks_by_ref("datahandler_pm_insert", $this);
-					$db->insert_query("privatemessages", $this->pm_insert_data);
-		
-					$this->pmid = $db->insert_id();
-		
-					// Update private message count (total, new and unread) for recipient
-					update_pm_count($pm_recipient['uid'], 7, $pm_recipient['lastactive']);
-				}
-		
-				// Are we replying or forwarding an existing PM?
-				if($pm['pmid'] && !$pm['saveasdraft'])
-				{
-					if($pm['do'] == "reply")
-					{
-						$sql_array = array(
-							'status' => 3
-						);
-						$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
-					}
-					elseif($pm['do'] == "forward")
-					{
-						$sql_array = array(
-							'status' => 4
-						);
-						$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
-					}
-				}
-		
-				// If we're saving a copy
-				if($pm['options']['savecopy'] != "no" && !$pm['saveasdraft'])
-				{
-					$this->pm_insert_data = array(
-						'uid' => $pm['sender']['uid'],
-						'toid' => $pm_recipient['uid'],
-						'fromid' => $pm['sender']['uid'],
-						'folder' => 2,
-						'subject' => $db->escape_string($pm['subject']),
-						'icon' => intval($pm['icon']),
-						'message' => $db->escape_string($pm['message']),
-						'dateline' => time(),
-						'status' => 1,
-						'includesig' => $pm['options']['signature'],
-						'smilieoff' => $pm['options']['disablesmilies'],
-						'receipt' => 0
-					);
-					$plugins->run_hooks_by_ref("datahandler_pm_insert_savedcopy", $this);
-					$db->insert_query("privatemessages", $this->pm_insert_data);
-		
-					// Because the sender saved a copy, update their total pm count
-					update_pm_count($pm['sender']['uid'], 1);
-				}
-		
-				// If the recipient has pm popup functionality enabled, update it to show the popup.
-		
-				if($pm_recipient['pmpopup'] != "no" && !$pm['saveasdraft'])
-				{
-					$sql_array = array(
-						"pmpopup" => "new"
-					);
-					$db->update_query("users", $sql_array, "uid={$pm_recipient['uid']}");
-				}
+				$sql_array = array(
+					'status' => 3
+				);
+				$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}
+			elseif($pm['do'] == "forward")
+			{
+				$sql_array = array(
+					'status' => 4
+				);
+				$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
+			}
+		}
+	
+		// If we're saving a copy
+		if($pm['options']['savecopy'] != "no")
+		{
+			$this->pm_insert_data['toid'] = "0";
+			$this->pm_insert_data['uid'] = $pm['sender']['uid'];
+			$this->pm_insert_data['folder'] = 2;
+			$this->pm_insert_data['receipt'] = 0;
+		
+			$plugins->run_hooks_by_ref("datahandler_pm_insert_savedcopy", $this);
+			$db->insert_query("privatemessages", $this->pm_insert_data);
+	
+			// Because the sender saved a copy, update their total pm count
+			update_pm_count($pm['sender']['uid'], 1);
 		}
 
 		// Return back with appropriate data
-		if($pm['saveasdraft'])
-		{
-			return array(
-				"draftsaved" => 1
-			);
-		}
-		else
-		{
-			return array(
-				"messagesent" => 1
-			);
-		}
+		return array(
+			"messagesent" => 1
+		);
 	}
 }
 ?>

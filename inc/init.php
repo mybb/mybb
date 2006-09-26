@@ -127,7 +127,7 @@ if(!defined("NO_PLUGINS"))
 add_shutdown('send_mail_queue');
 
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
+$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 
 // These are fields in the usergroups table that are also forum permission specific.

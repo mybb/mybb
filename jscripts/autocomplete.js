@@ -139,7 +139,7 @@ autoComplete.prototype = {
 				}
 				break;
 			case Event.KEY_RETURN:
-				//Event.stop(e);
+				Event.stop(e);
 				if(this.currentIndex != -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);

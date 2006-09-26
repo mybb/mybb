@@ -2578,12 +2578,14 @@ var inlineId = {$fid};
 <td class="thead" colspan="2"><strong>{$lang->compose_pm}</strong></td>
 </tr>
 <tr>
-<td class="trow1" valign="top"><strong>{$lang->compose_to}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="to" id="to" size="40" value="{$to}" tabindex="1" /></td>
+<td class="trow1" valign="top" width="200"><strong>{$lang->compose_to}</strong>
+	<script type="text/javascript">document.write('(<a href="#" onclick="showBcc(); return false;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}</a>)');</script>
+	<br /><span class="smalltext">{$lang->separate_names}</span></td>
+<td class="trow1" valign="top"><textarea name="to" id="to" rows="1" cols="38" value="{$to}" tabindex="1"></textarea>{$max_recipients}</td>
 </tr>
-<tr>
-<td class="trow2" valign="top"><strong>{$lang->bcc_compose_to}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="bccto" id="bccto" size="40" value="{$bccto}" tabindex="2" /></td>
+<tr id="bcc_area">
+<td class="trow2" valign="top"><strong>{$lang->compose_bcc}</strong></td>
+<td class="trow2"><textarea name="bcc" id="bcc" rows="1" cols="38" value="{$bcc}" tabindex="1"></textarea></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->compose_subject}</strong></td>
@@ -2620,6 +2622,24 @@ var inlineId = {$fid};
 </table>
 </form>
 {$footer}
+<script type="text/javascript">
+if($('bcc_area'))
+{
+	$('bcc_area').style.display = 'none';
+}
+
+function showBcc()
+{
+	if($('bcc_area').style.display == 'none')
+	{
+		$('bcc_area').style.display = '';
+	}
+	else
+	{
+		$('bcc_area').style.display = 'none';
+	}
+}
+</script>
 {$autocompletejs}
 </body>
 </html>]]></template>
@@ -5717,6 +5737,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="private_messagebit_denyreceipt" version="120"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=yes">{$lang->deny_receipt}</a></span>]]></template>
+		<template name="private_read_bcc" version="120"><![CDATA[<tr>
+	<td class="trow1"><strong>BCC</strong></td>
+	<td class="trow1">{$bcc_recipients}</td>
+</tr>]]></template>
 		<template name="private_read" version="120"><![CDATA[<html>
 <head>
 <title>{$lang->viewing_pm} {$pm['subject']}</title>
@@ -5730,11 +5754,34 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>{$pm['subject']}</strong></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
+<td class="thead" colspan="2"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>{$pm['subject']}</strong></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
+</tr>
+<tr>
+	<td class="tcat" colspan="2"><strong>{$lang->details}</strong></td>
+</tr>
+<tr>
+	<td class="trow1"><strong>{$lang->subject}</strong></td>
+	<td class="trow1">{$pm['subject']}</td>
+</tr>
+<tr>
+	<td class="trow2"><strong>{$lang->from}</strong></td>
+	<td class="trow2">{$from_link}</td>
+</tr>
+<tr>
+	<td class="trow1"><strong>{$lang->sent}</strong></td>
+	<td class="trow1">{$sent_date}, {$sent_time}</td>
+</tr>
+<tr>
+	<td class="trow2"><strong>{$lang->to}</strong></td>
+	<td class="trow2">{$to_recipients}</td>
+</tr>
+{$bcc}
+<tr>
+	<td class="tcat" colspan="2"><strong>{$lang->message}</strong></td>
 </tr>
 {$message}
 <tr>
-<td class="tfoot" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="tfoot"><strong>{$pm['subject']}</strong></td><td class="tfoot" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
+<td class="tfoot" colspan="2"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="tfoot"><strong>{$pm['subject']}</strong></td><td class="tfoot" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
 </tr>
 </table>
 </td>
@@ -6747,7 +6794,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="postbit_multiquote" version="120"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.multiQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_multiquote.gif\" alt=\"{$lang->postbit_multiquote}\" title=\"{$lang->postbit_multiquote}\" id=\"multiquote_{$post['pid']}\" /><\/a>");</script>]]></template>
 		<template name="private_send_autocomplete" version="120"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
 <script type="text/javascript">
-	new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username"});
+	new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
+	if($('bcc'))
+	{
+		new autoComplete("bcc", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});	
+	}
 </script>]]></template>
 		<template name="forumdisplay_threadlist_inlineedit_js" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=120"></script>
 <script type="text/javascript">

@@ -131,6 +131,7 @@ if($mybb->input['action'] == "do_add")
 		"cantrackpms" => $db->escape_string($mybb->input['cantrackpms']),
 		"candenypmreceipts" => $db->escape_string($mybb->input['candenypmreceipts']),
 		"pmquota" => intval($mybb->input['pmquota']),
+		"maxpmrecipients", intval($mybb->input['maxpmrecipients']),
 		"cansendemail" => $db->escape_string($mybb->input['cansendemail']),
 		"canviewmemberlist" => $db->escape_string($mybb->input['canviewmemberlist']),
 		"canviewcalendar" => $db->escape_string($mybb->input['canviewcalendar']),
@@ -288,6 +289,7 @@ if($mybb->input['action'] == "do_edit")
 		"cantrackpms" => $db->escape_string($mybb->input['cantrackpms']),
 		"candenypmreceipts" => $db->escape_string($mybb->input['candenypmreceipts']),
 		"pmquota" => intval($mybb->input['pmquota']),
+		"maxpmrecipients" => intval($mybb->input['maxpmrecipients']),
 		"cansendemail" => $db->escape_string($mybb->input['cansendemail']),
 		"canviewmemberlist" => $db->escape_string($mybb->input['canviewmemberlist']),
 		"canviewcalendar" => $db->escape_string($mybb->input['canviewcalendar']),
@@ -384,7 +386,8 @@ if($mybb->input['action'] == "add")
 	makeyesnocode($lang->can_send_pms, "cansendpms", "yes");
 	makeyesnocode($lang->can_track_pms, "cantrackpms", "yes");
 	makeyesnocode($lang->can_deny_pms, "candenypmreceipts", "yes");
-	makeinputcode($lang->pm_quota, "stars", "50", 4);
+	makeinputcode($lang->pm_quota, "pmquota", "50", 4);
+	makeinputcode($lang->max_pm_recipients, "maxpmrecipients", 5, 4);
 
 	tablesubheader($lang->perms_calendar);
 	makeyesnocode($lang->can_view_calendar, "canviewcalendar", "yes");
@@ -522,6 +525,7 @@ if($mybb->input['action'] == "edit")
 	makeyesnocode($lang->can_track_pms, "cantrackpms", $usergroup['cantrackpms']);
 	makeyesnocode($lang->can_deny_pms, "candenypmreceipts", $usergroup['candenypmreceipts']);
 	makeinputcode($lang->pm_quota, "pmquota", $usergroup['pmquota'], 4);
+	makeinputcode($lang->max_pm_recipients, "maxpmrecipients", $usergroup['maxpmrecipients'], 4);
 
 	tablesubheader($lang->perms_calendar);
 	makeyesnocode($lang->can_view_calendar, "canviewcalendar", $usergroup['canviewcalendar']);

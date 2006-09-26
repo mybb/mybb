@@ -82,6 +82,7 @@ $l['can_send_pms'] = "Can Send PMs";
 $l['can_track_pms'] = "Can Track PMs";
 $l['can_deny_pms'] = "Can Deny PM Receipts";
 $l['pm_quota'] = "PM Quota<br /><small>Here you can set the maximum number of stored pms for this group. If empty users can store unlimited pms.</small>";
+$l['max_pm_recipients'] = "Maximum Recipients per Message<br /><small>Here you can set the number of recipients a user can send a message to at one time.";
 $l['can_view_calendar'] = "Can View Calendar";
 $l['can_add_public'] = "Can Add Public Events";
 $l['can_add_private'] = "Can Add Private Events";

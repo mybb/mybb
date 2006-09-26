@@ -9,10 +9,12 @@
 $l['pmdata_too_long_subject'] = 'The subject of your private message is too long. Please enter a shorter subject.';
 $l['pmdata_code_no_subject'] = '[no subject]';
 $l['pmdata_missing_message'] = 'You did not enter a message to be sent. Please enter a message.';
-$l['pmdata_invalid_recipient'] = 'The person you are trying to send a private message to does not exist. Please enter an existing recipient.';
-$l['pmdata_recipient_is_ignoring'] = 'The person you are trying to send a private message to is ignoring you, so your message could not be sent.';
-$l['pmdata_recipient_pms_disabled'] = 'The person you are trying to send a private message to has disabled private messages, so your message could not be sent.';
-$l['pmdata_recipient_reached_quota'] = 'The person you are trying to send a private message to has reached his/her private message quota, so your message could not be sent.';
+$l['pmdata_invalid_recipients'] = "One or more of the recipients you specified are not registered usernames. Invalid recipients: {1}";
+$l['pmdata_no_recipients'] = "You did not enter any recipients to send this message to. You must enter at least one username in the 'to' field.";
+$l['pmdata_too_many_recipients'] = "You are only allowed to send messages to {1} users at a time.";
+$l['pmdata_recipient_is_ignoring'] = "You cannot send messages to {1} because you're on their ignore list.";
+$l['pmdata_recipient_pms_disabled'] = '{1} has private messaging disabled. You cannot send private messages to this user.';
+$l['pmdata_recipient_reached_quota'] = '{1} has reached their private message quota so your message could not be sent.';
 
 
 ?>
