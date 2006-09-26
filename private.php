@@ -341,6 +341,12 @@ if($mybb->input['action'] == "send")
 	{
 		$max_recipients = sprintf($lang->max_recipients, $mybb->usergroup['maxpmrecipients']);
 	}
+	
+	if($send_errors)
+	{
+		$to = htmlspecialchars_uni($mybb->input['to']);
+		$bcc = htmlspecialchars_uni($mybb->input['bcc']);
+	}
 
 	// Load the auto complete javascript if it is enabled.
 	eval("\$autocompletejs = \"".$templates->get("private_send_autocomplete")."\";");
@@ -973,7 +979,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		{
 			$message['fromusername'] = "MyBB Engine";
 		}
-		if(!$message['toid'])
+		if(!$message['toid'] && $message['folder'] == 3)
 		{
 			$message['tousername'] = $lang->not_sent;
 		}

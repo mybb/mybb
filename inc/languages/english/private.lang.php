@@ -116,6 +116,7 @@ $l['at'] = "at";
 $l['nomessages'] = "There are no private messages in this folder.";
 $l['details'] = "Details";
 $l['message'] = "Message";
+$l['multiple_recpients'] = "<em>Multiple recipients</em>";
 
 $l['error_nopmsarchive'] = "Sorry, but there are no private messages matching the criteria you specified.";
 $l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";

@@ -2581,11 +2581,11 @@ var inlineId = {$fid};
 <td class="trow1" valign="top" width="200"><strong>{$lang->compose_to}</strong>
 	<script type="text/javascript">document.write('(<a href="#" onclick="showBcc(); return false;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}</a>)');</script>
 	<br /><span class="smalltext">{$lang->separate_names}</span></td>
-<td class="trow1" valign="top"><textarea name="to" id="to" rows="1" cols="38" value="{$to}" tabindex="1"></textarea>{$max_recipients}</td>
+<td class="trow1" valign="top"><textarea name="to" id="to" rows="1" cols="38" tabindex="1">{$to}</textarea>{$max_recipients}</td>
 </tr>
 <tr id="bcc_area">
 <td class="trow2" valign="top"><strong>{$lang->compose_bcc}</strong></td>
-<td class="trow2"><textarea name="bcc" id="bcc" rows="1" cols="38" value="{$bcc}" tabindex="1"></textarea></td>
+<td class="trow2"><textarea name="bcc" id="bcc" rows="1" cols="38" tabindex="1">{$bcc}</textarea></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->compose_subject}</strong></td>
