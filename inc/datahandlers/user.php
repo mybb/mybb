@@ -57,6 +57,8 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_username()
 	{
+		global $mybb;
+		
 		$username = &$this->data['username'];
 		require_once MYBB_ROOT.'inc/functions_user.php';
 
@@ -493,7 +495,7 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showquickreply', 'yes');
 		$this->verify_yesno_option($options, 'showredirect', 'yes');
 
-		if($this->method == "insert" || (array_key_exists('showcodebuttons', $options) && $options['showcodebuttons'] != 0))
+		if($this->method == "insert" || (array_key_exists('showcodebuttons', $options) && $options['showcodebuttons'] != '0'))
 		{
 			$options['showcodebuttons'] = 1;
 		}
@@ -1020,10 +1022,10 @@ class UserDataHandler extends DataHandler
 		if($this->user_update_data['username'] != $old_user['username'] && $this->user_update_data['username'] != '')
 		{
 			$username_update = array(
-				"username" => $db->escape_string($this->user_update_data['username'])
+				"username" => $this->user_update_data['username']
 			);
 			$lastposter_update = array(
-				"lastposter" => $db->escape_string($this->user_update_data['username'])
+				"lastposter" => $this->user_update_data['username']
 			);
 
 			$db->update_query("posts", $username_update, "uid='{$user['uid']}'");

@@ -35,6 +35,9 @@ global $theme, $templates;
 // Load global language phrases
 $lang->load("portal");
 
+// Fetch the current URL 
+$portal_url = get_current_location();
+
 add_breadcrumb($lang->nav_portal, "portal.php");
 
 // This allows users to login if the portal is stored offsite or in a different directory

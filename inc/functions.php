@@ -109,30 +109,30 @@ function run_shutdown()
 {
 	global $db, $cache, $shutdown_functions, $done_shutdown;
 
-	// Run shutdown function if the shutdown functionality hasn't been already run, run any shutdown related items now.
-	if($done_shutdown != true)
+	if($done_shutdown == true)
 	{
-		// We have some shutdown queries needing to be run
-		if(is_array($db->shutdown_queries))
-		{
-			// Loop through and run them all
-			foreach($db->shutdown_queries as $query)
-			{
-				$db->query($query);
-			}
-		}
-	
-		// Run any shutdown functions if we have them
-		if(is_array($shutdown_functions))
-		{
-			foreach($shutdown_functions as $function)
-			{
-				$function();
-			}
-		}
-		// We've already ran - make sure we're not run more than once
-		$done_shutdown = true;
+		return;
 	}
+
+	// We have some shutdown queries needing to be run
+	if(is_array($db->shutdown_queries))
+	{
+		// Loop through and run them all
+		foreach($db->shutdown_queries as $query)
+		{
+			$db->query($query);
+		}
+	}
+
+	// Run any shutdown functions if we have them
+	if(is_array($shutdown_functions))
+	{
+		foreach($shutdown_functions as $function)
+		{
+			$function();
+		}
+	}
+	$done_shutdown = true;
 }
 
 /**
@@ -802,30 +802,15 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		return $groupperms;
 	}
-	// The fix here for better working inheritance was provided by tinywizard - http://windizupdate.com/
-	// Many thanks.
-	foreach($fpermfields as $perm)
-	{
-		$forumpermissions[$perm] = "no";
-	}
-
 	foreach($groups as $gid)
 	{
 		if($gid && $groupscache[$gid])
 		{
 			if(!is_array($fpermcache[$fid][$gid]))
 			{
-				$p = $groupperms;
-			}
-			else
-			{
-				$p = $fpermcache[$fid][$gid];
-			}
-			if(!is_array($p))
-			{
 				continue;
 			}
-			foreach($p as $perm => $access)
+			foreach($fpermcache[$fid][$gid] as $perm => $access)
 			{
 				if($perm == "fid" || $perm == "gid" || $perm == "pid")
 				{
@@ -838,6 +823,10 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 				}
 			}
 		}
+	}
+	if(!isset($forumpermissions))
+	{
+		$forumpermissions = $groupperms;
 	}
 	return $forumpermissions;
 }

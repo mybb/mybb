@@ -117,9 +117,16 @@ class MyBB {
 	{
 		// Set up MyBB
 		
-		if(defined("IGNORE_CLEAN_VARS") && IGNORE_CLEAN_VARS != "")
-		{
-			$this->ignore_clean_variables = array("int" => array(IGNORE_CLEAN_VARS));
+		if(defined("IGNORE_CLEAN_VARS")) 
+		{ 
+			if(!is_array(IGNORE_CLEAN_VARS)) 
+			{ 
+				$this->ignore_clean_variables = array(IGNORE_CLEAN_VARS); 
+			} 
+			else 
+			{ 
+				$this->ignore_clean_variables = IGNORE_CLEAN_VARS; 
+			}
 		}
 
 		// Determine Magic Quotes Status
@@ -226,6 +233,8 @@ class MyBB {
 		foreach(array_keys($array) as $key)
 		{
 			unset($GLOBALS[$key]);
+			global $$key;
+			unset($$key);
 		}
 	}
 
@@ -239,19 +248,15 @@ class MyBB {
 		{
 			foreach($variables as $var)
 			{
+				// If this variable is in the ignored array, skip and move to next 
+				if(in_array($var, $this->ignore_clean_variables)) 
+				{ 
+					continue; 
+				}
+				
 				if($type == "int" && isset($this->input[$var]) && $this->input[$var] != "lastposter")
 				{
-					if(is_array($this->ignore_clean_variables[$type]))
-					{
-						if(!in_array($var, $this->ignore_clean_variables[$type]))
-						{						
-							$this->input[$var] = intval($this->input[$var]);
-						}
-					}
-					else
-					{
-						$this->input[$var] = intval($this->input[$var]);
-					}
+					$this->input[$var] = intval($this->input[$var]);
 				}
 			}
 		}
