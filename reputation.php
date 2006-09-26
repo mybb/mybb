@@ -477,6 +477,10 @@ if(!$mybb->input['action'])
 			$vote_type = $lang->positive;
 		}
 		// Get the reputation for the user who posted this comment
+		if($reputation_vote['adduid'] == 0)
+		{
+			$reputation_vote['user_reputation'] = 0; 
+		}
 		$reputation_vote['user_reputation'] = get_reputation($reputation_vote['user_reputation'], $reputation_vote['adduid']);
 
 		// Format the date this reputation was last modified

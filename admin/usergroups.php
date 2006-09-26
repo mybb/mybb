@@ -315,7 +315,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$grouparray['candisplaygroup'] = $db->escape_string($mybb->input['candisplaygroup']);
 	}
-	$plugins->run_hooks("admin_usergroups_do_delete");
+	$plugins->run_hooks("admin_usergroups_do_edit");
 	$db->update_query(TABLE_PREFIX."usergroups", $grouparray, "gid='".$mybb->input['gid']."'");
 	$cache->updateusergroups();
 	$cache->updateforumpermissions();

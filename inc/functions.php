@@ -79,7 +79,7 @@ function output_page($contents)
 	$plugins->run_hooks("post_output_page");
 
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
-	if($mybb->settings['useshutdownfunc'] == "no" && $mybb->use_shutdown == true)
+	if(($mybb->settings['useshutdownfunc'] == "no" || phpversion() >= '5.0.5') && $mybb->use_shutdown != true) 
 	{
 		run_shutdown();
 	}
@@ -106,7 +106,12 @@ function add_shutdown($name)
  */
 function run_shutdown()
 {
-	global $db, $cache, $shutdown_functions;
+	global $db, $cache, $shutdown_functions, $done_shutdown;
+	
+	if($done_shutdown == true)
+	{
+		return;
+	}
 
 	// We have some shutdown queries needing to be run
 	if(is_array($db->shutdown_queries))
@@ -126,6 +131,7 @@ function run_shutdown()
 			$function();
 		}
 	}
+	$done_shutdown = true;
 }
 
 /**
@@ -1025,7 +1031,7 @@ function get_post_icons()
 function my_setcookie($name, $value="", $expires="", $httponly=false)
 {
 	global $mybb, $sent_header;
-	if($sent_header)
+	if($sent_header || headers_sent())
 	{
 		return false;
 	}
@@ -1776,11 +1782,6 @@ function get_reputation($reputation, $uid=0)
 {
 	global $theme;
 	
-	if($uid == 0)
-	{
-		$reputation = 0;
-	}
-
 	if($uid != 0)
 	{
 		$display_reputation = "<a href=\"reputation.php?uid={$uid}\">";

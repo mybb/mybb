@@ -555,7 +555,7 @@ if($mybb->input['action'] == "thread")
 		// Is there actually a pid to display?
 		if(!$showpost['pid'])
 		{
-			error($lang->invalidpost);
+			error($lang->error_invalidpost);
 		}
 
 		// Get the attachments for this post.

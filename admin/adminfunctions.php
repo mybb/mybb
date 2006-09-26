@@ -1103,6 +1103,10 @@ function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra=""
 		if($extra)
 		{
 			$selected1 = '';
+			if(!is_array($selected)) 
+ 			{ 
+				$selected = array($selected); 
+			}			
 			if(in_array(-1, $selected))
 			{
 				$selected1 = ' checked="checked"';
