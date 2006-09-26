@@ -2012,7 +2012,7 @@ function add_breadcrumb($name, $url="")
 	global $navbits;
 
 	$navsize = count($navbits);
-	$navbits[$navsize]['name'] = htmlspecialchars_uni($name);
+	$navbits[$navsize]['name'] = $name;
 	$navbits[$navsize]['url'] = $url;
 }
 

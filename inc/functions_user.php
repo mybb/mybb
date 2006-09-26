@@ -541,7 +541,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 	// Update number of new messages.
 	if($count_to_update & 2)
 	{
-		$query = $db->query("SELECT COUNT(pmid) AS pms_new FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$uid."' AND dateline>'".$mybb->user['lastvisit']."' AND folder=1");
+		$query = $db->query("SELECT COUNT(pmid) AS pms_new FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$uid."' AND dateline>'".$lastvisit."' AND folder=1");
 		$new = $db->fetch_array($query);
 		$pmcount['newpms'] = $new['pms_new'];
 	}
