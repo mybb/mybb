@@ -32,6 +32,9 @@ $parser = new postParser;
 
 global $theme, $templates;
 
+// Fetch the current URL
+$portal_url = get_current_location();
+
 // Load global language phrases
 $lang->load("portal");
 

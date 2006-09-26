@@ -232,6 +232,8 @@ class MyBB {
 		foreach(array_keys($array) as $key)
 		{
 			unset($GLOBALS[$key]);
+			global $$key;
+			unset($$key);
 		}
 	}
 

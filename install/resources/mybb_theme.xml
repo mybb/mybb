@@ -3609,7 +3609,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="forumdisplay_threadlist_clearpass" version="120"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}">{$lang->clear_stored_password}</a>]]></template>
 		<template name="portal_welcome_guesttext" version="120"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}<br />
 <br />
-<form method="post" action="{$PHP_SELF}"><input type="hidden" name="action" value="do_login" />
+<form method="post" action="{$portal_url}"><input type="hidden" name="action" value="do_login" />
 {$lang->username}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
 {$lang->password}<br />&nbsp;&nbsp;<input type="password" class="textbox" name="password" value="" /><br />
 <br /><input type="submit" class="button" name="loginsubmit" value="{$lang->login}" /></form>]]></template>

@@ -10,6 +10,7 @@
  */
 
 /* Redirect traffic using old URI to new URI. */
+$_SERVER['QUERY_STRING'] = str_replace(array("\n", "\r"), "", $_SERVER['QUERY_STRING']);
 header("Location: syndication.php?".$_SERVER['QUERY_STRING']);
 
 ?>
