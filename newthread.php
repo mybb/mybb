@@ -154,6 +154,20 @@ if($mybb->input['attachmentaid'])
 
 $thread_errors = "";
 $hide_captcha = false;
+
+// Check the maximum posts per day for this user
+if($mybb->settings['maxposts'] > 0 && $mybb->usergroup['cancp'] != "yes")
+{
+	$daycut = time()-60*60*24;
+	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(*) AS posts_today", "uid='{$mybb->user['uid']}' AND visible='1' AND dateline>{$daycut}");
+	$post_count = $db->fetch_field($query, "posts_today");
+	if($post_count >= $mybb->settings['maxposts'])
+	{
+		$lang->error_maxposts = sprintf($lang->error_maxposts, $mybb->settings['maxposts']);
+		error($lang->error_maxposts);
+	}
+}
+
 // Performing the posting of a new thread.
 if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 {

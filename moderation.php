@@ -68,9 +68,11 @@ if($fid)
 	build_forum_breadcrumb($fid);
 }
 
+$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+
 if($tid)
 {
-	add_breadcrumb(htmlspecialchars_uni($parser->parse_badwords($thread['subject'])), "showthread.php?tid={$thread['tid']}");
+	add_breadcrumb($thread['subject'], "showthread.php?tid={$thread['tid']}");
 	$modlogdata['tid'] = $tid;
 }
 
