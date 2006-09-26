@@ -150,6 +150,7 @@ $tables[] = "CREATE TABLE mybb_events (
   eid int unsigned NOT NULL auto_increment,
   subject varchar(120) NOT NULL default '',
   author int unsigned NOT NULL default '0',
+  date varchar(50) NOT NULL default '',
   description text NOT NULL default '',
   private char(3) NOT NULL default '',
   KEY private (private),

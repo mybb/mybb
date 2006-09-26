@@ -131,7 +131,7 @@ function run_shutdown()
 			$function();
 		}
 	}
-	$done_shutdown = true;
+	$done_shutdown = true;
 }
 
 /**
