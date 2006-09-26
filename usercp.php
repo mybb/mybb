@@ -573,7 +573,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"receivepms" => $mybb->input['receivepms'],
 		"pmpopup" => $mybb->input['pmpopup'],
 		"daysprune" => intval($mybb->input['daysprune']),
-		"showcodebuttons" => $mybb->input['showcodebuttons'],
+		"showcodebuttons" => intval($mybb->input['showcodebuttons']),
 		"pmnotify" => $mybb->input['pmnotify'],
 		"showredirect" => $mybb->input['showredirect']
 	);
