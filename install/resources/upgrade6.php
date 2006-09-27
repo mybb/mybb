@@ -36,9 +36,9 @@ function upgrade6_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD recipients text NOT NULL default '' AFTER fromid;");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxpmrecipients int(4) NOT NULL default '5' AFTER pmquota");
 
-	echo "Done</p>";
-	echo "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents();
+	$contents = "Done</p>";
+	$contents .= "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
 	$output->print_footer("6_done");
 }
 

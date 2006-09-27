@@ -201,7 +201,7 @@ function build_forumbits($pid=0, $depth=1)
 				$forum_viewers_text = '';
 				if($mybb->settings['showforumviewing'] != "no" && $forum['viewers'] > 0)
 				{
-					$forum_viewers_text = " ({$forum['viewers']} {$lang->viewing})";
+					$forum_viewers_text = sprintf($lang->viewing, $forum['viewers']);
 				}
 				
 			}

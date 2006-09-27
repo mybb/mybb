@@ -1101,13 +1101,6 @@ if(!$mybb->input['action'])
 	}
 	$doneunread = 0;
 	$doneread = 0;
-	// get total messages
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
-	$pmscount = $db->fetch_array($query);
-	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != "yes")
-	{
-		eval("\$limitwarning = \"".$templates->get("private_limitwarning")."\";");
-	}
 
 	// Do Multi Pages
 	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
@@ -1246,7 +1239,7 @@ if(!$mybb->input['action'])
 		eval("\$messagelist .= \"".$templates->get("private_nomessages")."\";");
 	}
 
-	if($mybb->usergroup['pmquota'] != '0')
+	if($mybb->usergroup['pmquota'] != '0' && $mybb->usergroup['cancp'] != "yes")
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
 		$pmscount = $db->fetch_array($query);
@@ -1257,7 +1250,7 @@ if(!$mybb->input['action'])
 			$belowhalf = round($spaceused, 0)."%";
 			if(intval($belowhalf) > 100)
 			{
-				$belowhalf = "100%+";
+				$belowhalf = "100%";
 			}
 		}
 		else
@@ -1265,11 +1258,17 @@ if(!$mybb->input['action'])
 			$overhalf = round($spaceused, 0)."%";
 			if(intval($overhalf) > 100)
 			{
-				$overhalf = "100%+";
+				$overhalf = "100%";
 			}
 		}
 		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
 	}
+	
+	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != "yes")
+	{
+		eval("\$limitwarning = \"".$templates->get("private_limitwarning")."\";");
+	}
+	
 	eval("\$folder = \"".$templates->get("private")."\";");
 	$plugins->run_hooks("private_end");
 	output_page($folder);
