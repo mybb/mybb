@@ -764,7 +764,6 @@ function usergroup_hop(gid)
       $usergroup['description'] = "<small>".$usergroup['description']."</small>";
     }
 		$bgcolor = getaltbg();
-		makehiddencode('gid', $usergroup['gid']);
 		echo "<tr class=\"{$bgcolor}\">\n";
 		echo "<td>{$usergroup['title']}<br />{$usergroup['description']}</td>\n";
 		if(!$primaryusers[$usergroup['gid']])
@@ -818,7 +817,6 @@ function usergroup_hop(gid)
 		{
 			$bgcolor = getaltbg();
 			//startform('usergroups.php');
-			makehiddencode('gid', $usergroup['gid']);
 			echo "<tr class=\"{$bgcolor}\">\n";
 			echo "<td>{$usergroup['title']}</td>\n";
 			if(!$primaryusers[$usergroup['gid']])
@@ -876,7 +874,6 @@ function usergroup_hop(gid)
 		while($usergroup = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
-			makehiddencode('gid', $usergroup['gid']);
 			echo "<tr class=\"{$bgcolor}\">\n";
 			echo "<td>{$usergroup['title']}</td>\n";
 			if(!$primaryusers[$usergroup['gid']])

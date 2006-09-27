@@ -171,9 +171,9 @@ if($mybb->input['action'] == "do_rebuildforums")
 		starttable();
 		tableheader($lang->rebuild_forum_counters);
 		makelabelcode($lang->click_next_continue, '', 2);
+		endtable();
 		makehiddencode('page', ++$page);
 		makehiddencode('perpage', $per_page);
-		endtable();
 		endform($lang->proceed);
 		cpfooter();
 	}
@@ -216,9 +216,9 @@ if($mybb->input['action'] == "do_rebuildthreads")
 		starttable();
 		tableheader($lang->rebuild_thread_counters);
 		makelabelcode($lang->click_next_continue, '', 2);
+		endtable();
 		makehiddencode('page', ++$page);
 		makehiddencode('perpage', $per_page);
-		endtable();
 		endform($lang->proceed);
 		cpfooter();
 	}
@@ -279,9 +279,9 @@ if($mybb->input['action'] == "do_recountpostcounts")
 		starttable();
 		tableheader($lang->recount_user_post_counts);
 		makelabelcode($lang->click_next_continue, '', 2);
+		endtable();
 		makehiddencode('page', ++$page);
 		makehiddencode('perpage', $per_page);
-		endtable();
 		endform($lang->proceed);
 		cpfooter();
 	}
@@ -336,10 +336,10 @@ if($mybb->input['action'] == "do_rebuildthumbnails")
 		starttable();
 		tableheader($lang->rebuild_thumbnails);	
 		makelabelcode($lang->click_next_continue, '', 2);
-		makehiddencode('page', ++$page);
-		makehiddencode('perpage', $per_page);
 		endtable();
 		endform($lang->proceed);
+		makehiddencode('page', ++$page);
+		makehiddencode('perpage', $per_page);
 		cpfooter();
 	}
 }
@@ -362,8 +362,8 @@ if($mybb->input['action'] == "rebuild")
 	tableheader($lang->rebuild_forum_counters);
 	makelabelcode("<div align=\"center\">{$lang->rebuild_forum_counters_note}</div>", '', 2);
 	makeinputcode($lang->forums_per_page, 'perpage', 50);
-	makehiddencode('page', 1);
 	endtable();
+	makehiddencode('page', 1);
 	endform($lang->proceed);
 	echo "<br /><br />";
 	
@@ -372,8 +372,8 @@ if($mybb->input['action'] == "rebuild")
 	tableheader($lang->rebuild_thread_counters);
 	makelabelcode("<div align=\"center\">{$lang->rebuild_thread_counters_note}</div>", '', 2);
 	makeinputcode($lang->threads_per_page, 'perpage', 500);
-	makehiddencode('page', 1);
 	endtable();
+	makehiddencode('page', 1);
 	endform($lang->proceed);
 	echo "<br /><br />";
 	
@@ -382,8 +382,8 @@ if($mybb->input['action'] == "rebuild")
 	tableheader($lang->recount_user_post_counts);
 	makelabelcode("<div align=\"center\">{$lang->recount_user_post_counts_note}</div>", '', 2);
 	makeinputcode($lang->users_per_page, 'perpage', 500);
-	makehiddencode('page', 1);
 	endtable();
+	makehiddencode('page', 1);
 	endform($lang->proceed);
 	echo "<br /><br />";
 	
@@ -392,9 +392,9 @@ if($mybb->input['action'] == "rebuild")
 	tableheader($lang->rebuild_thumbnails);
 	makelabelcode("<div align=\"center\">{$lang->rebuild_thumbnails_note}</div>", '', 2);
 	makeinputcode($lang->thumbnails_per_page, 'perpage', 20);
-	makehiddencode('page', 1);
 	endtable();
 	endform($lang->proceed);
+	makehiddencode('page', 1);
 	echo "<br />";
 	cpfooter();
 }

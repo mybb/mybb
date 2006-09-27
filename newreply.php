@@ -499,8 +499,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					{
 						$quoted_post['username'] = $quoted_post['userusername'];
 					}
-					$quoted_post['message'] = preg_replace('#(^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} \\2</span>", $quoted_post['message']);
-					$quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $quoted_post['message']);
+					$quoted_post['message'] = preg_replace('#(^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} \\2", $quoted_post['message']);
+					$quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}", $quoted_post['message']);
 					$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
 					$message .= "[quote={$quoted_post['username']}]\n{$quoted_post['message']}\n[/quote]\n\n";
 					$quoted_ids[] = $quoted_post['pid'];

@@ -11,6 +11,7 @@ $l['redirect_return_forum'] = "<br /><br />Alternatively, <a href=\"forumdisplay
 $l['redirect_emailsent'] = "Your e-mail message has been sent successfully.";
 $l['redirect_loggedin'] = "You have successfully been logged in.<br />You will now be taken back to where you came from.";
 
+$l['error_incompletefields'] = "It appears you have left one or more required fields blank. Please go back and enter the required fields."; 
 $l['error_alreadyuploaded'] = "It appears you have already uploaded the same file (judged by filename and size) into this post. Please choose a different file to attach.";
 $l['error_nomessage'] = "Sorry, we cannot proceed because you did not enter a valid message. Please go back and do so.";
 $l['error_invalidemail'] = "You did not enter a valid email address.";
