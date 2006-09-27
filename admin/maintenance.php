@@ -361,8 +361,8 @@ if($mybb->input['action'] == "rebuild")
 	tableheader($lang->rebuild_forum_counters);
 	makelabelcode("<div align=\"center\">{$lang->rebuild_forum_counters_note}</div>", '', 2);
 	makeinputcode($lang->forums_per_page, 'perpage', 50);
-	makehiddencode('page', 1);
 	endtable();
+	makehiddencode('page', 1);
 	endform($lang->proceed);
 	
 	startform("maintenance.php", "" , "do_rebuildthreads");
@@ -370,8 +370,8 @@ if($mybb->input['action'] == "rebuild")
 	tableheader($lang->rebuild_thread_counters);
 	makelabelcode("<div align=\"center\">{$lang->rebuild_thread_counters_note}</div>", '', 2);
 	makeinputcode($lang->threads_per_page, 'perpage', 500);
-	makehiddencode('page', 1);
 	endtable();
+	makehiddencode('page', 1);
 	endform($lang->proceed);
 	
 	startform("maintenance.php", "" , "do_recountpostcounts");
@@ -379,8 +379,8 @@ if($mybb->input['action'] == "rebuild")
 	tableheader($lang->recount_user_post_counts);
 	makelabelcode("<div align=\"center\">{$lang->recount_user_post_counts_note}</div>", '', 2);
 	makeinputcode($lang->users_per_page, 'perpage', 500);
-	makehiddencode('page', 1);
 	endtable();
+	makehiddencode('page', 1);
 	endform($lang->proceed);
 	
 	startform("maintenance.php", "" , "do_rebuildthumbnails");
@@ -388,8 +388,8 @@ if($mybb->input['action'] == "rebuild")
 	tableheader($lang->rebuild_thumbnails);
 	makelabelcode("<div align=\"center\">{$lang->rebuild_thumbnails_note}</div>", '', 2);
 	makeinputcode($lang->thumbnails_per_page, 'perpage', 20);
-	makehiddencode('page', 1);
 	endtable();
+	makehiddencode('page', 1);
 	endform($lang->proceed);
 	cpfooter();
 }
