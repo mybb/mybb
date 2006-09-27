@@ -418,8 +418,8 @@ function perform_search_mysql($search)
 		}
 		$datelimit = $now-(86400 * $search['postdate']);
 		$datecut .= "'$datelimit'";
-		$post_datecut = "p.dateline $datecut";
-		$thread_datecut = "t.dateline $datecut";
+		$post_datecut = " AND p.dateline $datecut";
+		$thread_datecut = " AND t.dateline $datecut";
 	}
 
 	$forumin = "";
