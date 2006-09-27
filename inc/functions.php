@@ -1065,7 +1065,14 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 
 	if(PHP_VERSION >= 5.2)
 	{
-		setcookie($name, $value, $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain'], null, $httponly);
+		if($mybb->settings['cookiedomain'])
+		{
+			setcookie($name, $value, $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain'], null, $httponly);
+		}
+		else
+		{
+			setcookie($name, $value, $expires, $mybb->settings['cookiepath'], false, null, $httponly);
+		}
 	}
 	else
 	{
