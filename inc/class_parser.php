@@ -75,7 +75,7 @@ class postParser
 
 		if($this->base_url != "")
 		{
-			if(my_substr($this->base_url, my_strlen($this->base_url) -1) != "/")
+			if(substr($this->base_url, strlen($this->base_url) -1) != "/")
 			{
 				$this->base_url = $this->base_url."/";
 			}
@@ -152,11 +152,11 @@ class postParser
 						$text[2] = $this->parse_html($text[2]);
 					}
 					
-					if(my_strtolower($text[1]) == "code")
+					if(strtolower($text[1]) == "code")
 					{
 						$code = $this->mycode_parse_code($text[2]);
 					}
-					elseif(my_strtolower($text[1]) == "php")
+					elseif(strtolower($text[1]) == "php")
 					{
 						$code = $this->mycode_parse_php($text[2]);
 					}
@@ -622,9 +622,9 @@ class postParser
 		$fullurl = stripslashes($fullurl);
 		if($name == $url && $this->options['shorten_urls'] != "no")
 		{
-			if(my_strlen($url) > 55)
+			if(strlen($url) > 55)
 			{
-				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
+				$name = substr($url, 0, 40)."...".substr($url, -10);
 			}
 		}
 
