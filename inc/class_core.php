@@ -22,7 +22,7 @@ class MyBB {
 	 *
 	 * @var integer
 	 */
-	var $version_code = 120;
+	var $version_code = 121;
 	
 	/**
 	 * The current working directory.

@@ -1,4 +1,4 @@
-<settings version="120" exported="1129013345">
+<settings version="121" exported="1129013345">
 	<settinggroup name="banning" title="Banning Options" description="" disporder="15" isdefault="yes">
 		<setting name="bannedusernames">
 			<title>Banned Usernames</title>

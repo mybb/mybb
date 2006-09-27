@@ -86,6 +86,8 @@ class postParser
 
 		// Get rid of cartridge returns for they are the workings of the devil
 		$message = str_replace("\r", "", $message);
+		$message = $this->strip_rtl($message);
+		
 		
 		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
@@ -111,9 +113,6 @@ class postParser
 			}
 		}
 		
-		// Always fix bad Javascript in the message.
-		$message = $this->fix_javascript($message);
-				
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
 		if($options['allow_mycode'] != "no")
 		{
@@ -121,6 +120,9 @@ class postParser
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "{{mybb-code}}\n", $message);
 		}
+
+		// Always fix bad Javascript in the message.
+		$message = $this->fix_javascript($message);
 
 		// If we can, parse smiliesa
 		if($options['allow_smilies'] != "no")
@@ -150,11 +152,11 @@ class postParser
 						$text[2] = $this->parse_html($text[2]);
 					}
 					
-					if(strtolower($text[1]) == "code")
+					if(my_strtolower($text[1]) == "code")
 					{
 						$code = $this->mycode_parse_code($text[2]);
 					}
-					elseif(strtolower($text[1]) == "php")
+					elseif(my_strtolower($text[1]) == "php")
 					{
 						$code = $this->mycode_parse_php($text[2]);
 					}
@@ -732,6 +734,21 @@ class postParser
 		}
 		return $message;
 	}
+	
+	/**
+	 * Strip RTL Unicude
+	 *
+	 */
+	 function strip_rtl($message)
+	 {
+	 	//$message = htmlentities($message);
+		//$message = preg_replace('/[^\x09\x0A\x0D\x20-\x7F]/e', '"&#".ord($0).";"', $message);
+		//$message = str_replace('&#226;&#128;&#174;', '', $message);
+		//$message = str_replace('&#8238;', '', $message);
+		//$message = str_replace('&#x202E', '', $message);
+		//$message = html_entity_decode($message);
+		return $message;
+	 }
 
 	/**
 	 * Strips MyCode.
