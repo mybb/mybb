@@ -116,6 +116,15 @@ class MyBB {
 	function MyBB()
 	{
 		// Set up MyBB
+		$protected = array("_GET", "_POST", "_SERVER", "_COOKIE", "_FILES", "_SERVER", "_ENV", "GLOBALS");
+		foreach($protected as $var)
+		{
+			if($_REQUEST[$var] || $_FILES[$var] || $_COOKIE[$var])
+			{
+				die("Hacking attempt");
+			}
+		}
+		
 		if(defined("IGNORE_CLEAN_VARS"))
 		{
 			if(!is_array(IGNORE_CLEAN_VARS))
