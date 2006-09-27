@@ -541,7 +541,7 @@ class UserDataHandler extends DataHandler
 			$options['ppp'] = intval($options['ppp']);
 		}
 		// Is our selected "days prune" option valid or not?
-		if($this->method == "insert" || isset($options['daysprune']))
+		if($this->method == "insert" || array_key_exists('daysprune', $options))
 		{
 			$options['daysprune'] = intval($options['daysprune']);
 			if($options['daysprune'] < 0)

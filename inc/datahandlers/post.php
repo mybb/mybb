@@ -757,7 +757,7 @@ class PostDataHandler extends DataHandler
 			update_forum_count($post['fid']);
 		}
 
-		if($visible != 2)
+		if($visible != -2)
 		{
 			$now = time();
 			if($forum['usepostcounts'] != "no")
