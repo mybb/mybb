@@ -283,9 +283,18 @@ class session
 			$group = $db->fetch_array($query);
 			$mybb->user['usergroup'] = $group['usergroup'];
 		}
+		elseif($mybb->user['bandate'] && (!$mybb->user['banlifted'] || $mybb->user['banlifted'] && $mybb->user['banlifted'] > $time))
+        {
+            $mybbgroups = $mybb->user['usergroup'];
+        }
+        else
+        {
+			// Gather a full permission set for this user and the groups they are in.
+            $mybbgroups = $mybb->user['usergroup'].",".$mybb->user['additionalgroups'];
+        }
 
-		// Gather a full permission set for this user and the groups they are in.
-		$mybbgroups = $mybb->user['usergroup'].",".$mybb->user['additionalgroups'];
+		
+		
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		if(!$mybb->user['displaygroup'])
 		{

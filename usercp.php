@@ -32,7 +32,7 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canusercp'] == "no")
 
 if(!$mybb->user['pmfolders'])
 {
-	$mybb->user['pmfolders'] = "1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can";
+	$mybb->user['pmfolders'] = "1**".$lang->folder_inbox."$%%$2**".$lang->folder_sent_items."$%%$3**".$lang->folder_drafts."$%%$4**".$lang->folder_trash;
 	$db->update_query("users", array('pmfolders' => $mybb->user['pmfolders']), "uid='".$mybb->user['uid']."'");
 }
 
@@ -353,6 +353,7 @@ if($mybb->input['action'] == "profile")
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+		$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = $thing[0];
 		$options = $thing[1];

@@ -458,14 +458,19 @@ else if($mybb->input['action'] == "get_multiquoted")
 	}	
 	// Query for any posts in the list which are not within the specified thread
 	$query = $db->query("
-		SELECT p.subject, p.message, p.pid, p.tid, p.username, u.username AS userusername
+		SELECT p.subject, p.message, p.pid, p.tid, p.username, t.fid, p.visible, u.username AS userusername
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-		WHERE {$from_tid}p.pid IN ($quoted_posts) {$unviewable_forums} AND p.visible='1'
+		WHERE {$from_tid}p.pid IN ($quoted_posts) {$unviewable_forums}
 	");
 	while($quoted_post = $db->fetch_array($query))
-	{
+	{	
+		if(!is_moderator($quoted_post['fid']) && $quoted_post['visible'] == 0)
+		{
+			continue;
+		}
+		
 		// Swap username over if we have a registered user
 		if($quoted_post['userusername'])
 		{

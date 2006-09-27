@@ -2984,7 +2984,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="postbit_avatar" version="120"><![CDATA[<img src="{$post['avatar']}" alt="" {$avatar_width_height} />]]></template>
 		<template name="usercp_profile_customfield" version="120"><![CDATA[<tr>
 <td><span class="smalltext">
-{$profilefield['name']}:</span></td>
+<a title="{$profilefield['description']}">{$profilefield['name']}</a>:</span></td>
 </tr>
 <tr>
 <td>{$code}</td>
