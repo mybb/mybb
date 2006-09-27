@@ -647,7 +647,7 @@ form {
 		<template name="showthread_moderationoptions_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="showthread_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="showthread_inlinemoderation" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
+		<template name="showthread_inlinemoderation" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=121"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="modtype" value="inlinepost" />
@@ -677,7 +677,7 @@ var inlineId = {$tid};
 <script type="text/javascript">
 		 var quickdelete_confirm = "{$lang->quickdelete_confirm}";
 </script>
-<script type="text/javascript" src="jscripts/thread.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/thread.js?ver=121"></script>
 </head>
 <body>
 {$header}
@@ -789,7 +789,7 @@ var inlineId = {$tid};
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=121"></script>
 </head>
 <body>
 {$header}
@@ -856,7 +856,7 @@ var inlineId = {$tid};
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=121"></script>
 </head>
 <body>
 {$header}
@@ -962,7 +962,7 @@ var inlineId = {$tid};
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=121"></script>
 </head>
 <body>
 {$header}
@@ -1416,7 +1416,7 @@ var inlineId = {$tid};
 </form>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
+		<template name="forumdisplay_inlinemoderation" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=121"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="modtype" value="inlinethread" />
@@ -2200,10 +2200,10 @@ var inlineId = {$fid};
 		<template name="headerinclude" version="120"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
-<script type="text/javascript" src="jscripts/prototype.lite.js?ver=120"></script>
-<script type="text/javascript" src="jscripts/moo.ajax.js?ver=120"></script>
-<script type="text/javascript" src="jscripts/general.js?ver=120"></script>
-<script type="text/javascript" src="jscripts/popup_menu.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/prototype.lite.js?ver=121"></script>
+<script type="text/javascript" src="jscripts/moo.ajax.js?ver=121"></script>
+<script type="text/javascript" src="jscripts/general.js?ver=121"></script>
+<script type="text/javascript" src="jscripts/popup_menu.js?ver=121"></script>
 <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" />
 <script language="Javascript" type="text/javascript">
 <!--
@@ -3381,7 +3381,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td colspan="6" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
 		<template name="private_send_buddyselect" version="120"><![CDATA[<br /><span class="smalltext">{$lang->select_buddy}<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>{$buddies}</select>]]></template>
-		<template name="codebuttons" version="120"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=120"></script>
+		<template name="codebuttons" version="120"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=121"></script>
 <script type="text/javascript">
 	{$editor_language}
 	var clickableEditor = new messageEditor("message", {lang: editor_language, rtl: {$lang->settings['rtl']}});
@@ -6502,11 +6502,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br />]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="postbit_multiquote" version="120"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.multiQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_multiquote.gif\" alt=\"{$lang->postbit_multiquote}\" title=\"{$lang->postbit_multiquote}\" id=\"multiquote_{$post['pid']}\" /><\/a>");</script>]]></template>
-		<template name="private_send_autocomplete" version="120"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+		<template name="private_send_autocomplete" version="120"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=121"></script>
 <script type="text/javascript">
 	new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username"});
 </script>]]></template>
-		<template name="forumdisplay_threadlist_inlineedit_js" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=120"></script>
+		<template name="forumdisplay_threadlist_inlineedit_js" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=121"></script>
 <script type="text/javascript">
 	new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif", lang_click_edit: "{$lang->click_hold_edit}"});
 </script>]]></template>
