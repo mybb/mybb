@@ -1255,10 +1255,18 @@ if(!$mybb->input['action'])
 		if($spaceused <= "50")
 		{
 			$belowhalf = round($spaceused, 0)."%";
+			if(intval($belowhalf) > 100)
+			{
+				$belowhalf = "100%+";
+			}
 		}
 		else
 		{
 			$overhalf = round($spaceused, 0)."%";
+			if(intval($overhalf) > 100)
+			{
+				$overhalf = "100%+";
+			}
 		}
 		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
 	}

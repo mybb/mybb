@@ -3659,7 +3659,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1">{$multipage}</td>
 <td class="trow1" align="right">
 <span class="smalltext">
-<strong>{$lang->jump_folder} ($folderjump} 
+<strong>{$lang->jump_folder} {$folderjump} 
 <input type="submit" class="button" name="hop" value="{$lang->go}" />
 </strong>
 </span>
