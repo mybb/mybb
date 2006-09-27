@@ -394,11 +394,11 @@ class PMDataHandler extends DataHandler
 
 			if($pm['saveasdraft'])
 			{
-				$updateddraft['uid'] = $pm['sender']['uid'];
+				$this->pm_insert_data['uid'] = $pm['sender']['uid'];
 			}
 			else
 			{
-				$updateddraft['uid'] = $pm['recipient']['uid'];
+				$this->pm_insert_data['uid'] = $pm['recipient']['uid'];
 			}
 			$plugins->run_hooks_by_ref("datahandler_pm_insert_updatedraft", $this);
 			$db->update_query(TABLE_PREFIX."privatemessages", $this->pm_insert_data, "pmid='{$pm['pmid']}' AND uid='{$pm['sender']['uid']}'");
@@ -423,7 +423,7 @@ class PMDataHandler extends DataHandler
 
 			if($pm['saveasdraft'])
 			{
-				$newpm['uid'] = $pm['sender']['uid'];
+				$this->pm_insert_data['uid'] = $pm['sender']['uid'];
 			}
 			$plugins->run_hooks_by_ref("datahandler_pm_insert", $this);
 			$db->insert_query(TABLE_PREFIX."privatemessages", $this->pm_insert_data);
