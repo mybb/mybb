@@ -33,9 +33,9 @@ function upgrade6_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE regex regex text NOT NULL default ''");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE replacement replacement text NOT NULL default ''");
 
-	echo "Done</p>";
-	echo "<p>Click next to continue with the upgrade process.</p>";
-	$output->print_contents();
+	$contents = "Done</p>";
+	$contents .= "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
 	$output->print_footer("6_done");
 }
 
