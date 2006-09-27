@@ -81,7 +81,7 @@ else
 			$plugins = $cache->read('plugins', true);
 			if(!empty($plugins['active']))
 			{
-				$lang->upgrade_welcome = "<div class=\"error\"><b><span style=\"color: red\">Warning:</span></b> <h3>There are still ".count($plugins['active'])." plugin(s) active. Please deactivate all plugins before continuing. Failure to do so may result in errors on your forum!</h3></div> <br />".$lang->upgrade_welcome;
+				$lang->upgrade_welcome = "<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure.</p></div> <br />".$lang->upgrade_welcome;
 			}
 		}
 
@@ -457,7 +457,7 @@ function sync_settings($redo=0)
 			"disporder" => intval($settinggroup['attributes']['disporder']),
 			"isdefault" => $settinggroup['attributes']['isdefault']
 		);
-		if(!$settinggroups[$settinggroup['attributes']['key']] || $redo == 2)
+		if(!$settinggroups[$settinggroup['attributes']['name']] || $redo == 2)
 		{
 			$db->insert_query(TABLE_PREFIX."settinggroups", $groupdata);
 			$gid = $db->insert_id();
@@ -466,7 +466,7 @@ function sync_settings($redo=0)
 		else
 		{
 			$gid = $settinggroups[$settinggroup['attributes']['name']];
-			$db->insert_query(TABLE_PREFIX."settinggroups", $groupdata, "gid='{$gid}");
+			$db->update_query(TABLE_PREFIX."settinggroups", $groupdata, "gid='{$gid}'");
 		}
 		if(!$gid)
 		{
