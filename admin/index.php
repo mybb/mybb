@@ -153,18 +153,18 @@ elseif($mybb->input['action'] == "home")
 	endtable();
 
 
-  ob_start();
-  endform();
-  $endform = ob_get_contents();
-  ob_end_clean();
-  ob_start();
-  startform("users.php", "", "find");
-  $startform1 = ob_get_contents();
-  ob_end_clean();
-  ob_start();
-  startform("forums.php", "", "add");
-  $startform2 = ob_get_contents();
-  ob_end_clean();
+	ob_start();
+	endform();
+	$endform = ob_get_contents();
+	ob_end_clean();
+	ob_start();
+	startform("users.php", "", "find");
+	$startform1 = ob_get_contents();
+	ob_end_clean();
+	ob_start();
+	startform("forums.php", "", "add");
+	$startform2 = ob_get_contents();
+	ob_end_clean();
 
 
 	// Quick admin options
