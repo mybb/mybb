@@ -5714,18 +5714,22 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="thead" colspan="2"><strong>{$lang->edit_sig}</strong></td>
 </tr>
 <tr>
-<td class="trow1" valign="top" width="40%"><span class="smalltext">{$lang->edit_sig_note}</span><br /><br />
-<div style="margin:auto">{$smilieinserter}</div>
-<br /><span class="smalltext">{$lang->edit_sig_note2}</span></td>
-<td class="trow1" width="60%">
+<td class="trow1" valign="top" width="20%"><span class="smalltext">{$lang->edit_sig_note}</span><br /><br />
+<div style="margin:auto">{$smilieinserter}</div></td>
+<td class="trow1" width="80%">
 <textarea rows="15" cols="70" id="signature" name="signature">{$sig}</textarea>
 {$codebuttons}
-<br /><span class="smalltext">
+</td>
+</tr>
+<tr>
+<td class="trow2">
+<span class="smalltext">{$lang->edit_sig_note2}</span>
+</td>
+<td class="trow2">
+<span class="smalltext">
 <label><input type="radio" class="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}</label><br />
 <label><input type="radio" class="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}</label><br />
 <label><input type="radio" class="radio" name="updateposts" value="no" checked="checked" />&nbsp;{$lang->leave_sig_settings}</label></span>
-</td>
-</tr>
 </table>
 <br />
 <div align="center">
@@ -5758,7 +5762,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="2"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>{$pm['subject']}</strong></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
+<td class="thead" colspan="2">
+<span style="float: right;">
+	<a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a>
+</span>
+<strong>{$pm['subject']}</strong>
+</td>
 </tr>
 <tr>
 	<td class="tcat" colspan="2"><strong>{$lang->details}</strong></td>
@@ -5785,9 +5794,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 {$message}
 <tr>
-<td class="tfoot" colspan="2"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="tfoot"><strong>{$pm['subject']}</strong></td><td class="tfoot" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
-</tr>
-</table>
+<td class="tfoot" colspan="2"><span style="float: right;"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></span><strong>{$pm['subject']}</strong>
 </td>
 </tr>
 </table>
