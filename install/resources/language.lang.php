@@ -8,6 +8,7 @@ $l['writable'] = 'Writable';
 $l['done'] = 'done';
 $l['next'] = 'Next';
 $l['error'] = 'Error';
+$l['multi_byte'] = 'Multi-Byte';
 
 $l['welcome'] = 'Welcome';
 $l['license_agreement'] = 'License Agreement';
@@ -62,24 +63,28 @@ $l['req_step_reqtable'] = '<div class="border_wrapper">
 			<td class="first">Supported DB Extensions:</td>
 			<td class="last alt_col">{2}</td>
 		<tr>
-			<td class="first">PHP XML Extensions:</td>
+		<tr class="alt_row">
+			<td class="first">Supported Translation Extensions:</td>
 			<td class="last alt_col">{3}</td>
+		<tr>
+			<td class="first">PHP XML Extensions:</td>
+			<td class="last alt_col">{4}</td>
 		</tr>
 		<tr class="alt_row">
 			<td class="first">Configuration File Writable:</td>
-			<td class="last alt_col">{4}</td>
+			<td class="last alt_col">{5}</td>
 		</tr>
 		<tr>
 			<td class="first">Settings File Writable:</td>
-			<td class="last alt_col">{5}</td>
+			<td class="last alt_col">{6}</td>
 		</tr>
 		<tr class="alt_row">
 			<td class="first">File Uploads Directory Writable:</td>
-			<td class="last alt_col">{6}</td>
+			<td class="last alt_col">{7}</td>
 		</tr>
 		<tr class="last">
 			<td class="first">Avatar Uploads Directory Writable:</td>
-			<td class="last alt_col">{7}</td>
+			<td class="last alt_col">{8}</td>
 		</tr>
 		</tbody>
 		</table>

@@ -185,6 +185,26 @@ function requirements_check()
 	{
 		$phpversion = sprintf($lang->req_step_span_pass, $phpversion);
 	}
+	
+	if(function_exists('mb_detect_encoding'))
+	{
+		$mboptions[] = $lang->multi_byte;
+	}
+	
+	if(function_exists('iconv'))
+	{
+		$mboptions[] = 'iconv';
+	}
+	
+	// Check Multibyte extensions
+	if(count($mboptions) < 1)
+	{
+		$mbstatus = sprintf($lang->req_step_span_fail, $lang->none);
+	}
+	else
+	{
+		$mbstatus = implode(', ', $mboptions);
+	}
 
 	// Check database engines
 	if(count($dboptions) < 1)
@@ -255,8 +275,8 @@ function requirements_check()
 	{
 		$uploadsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
 		@fclose($uploadswritable);
-	  @chmod(MYBB_ROOT.'/uploads', 0777);
-	  @chmod(MYBB_ROOT.'/uploads/test.write', 0777);
+	  	@chmod(MYBB_ROOT.'/uploads', 0777);
+	  	@chmod(MYBB_ROOT.'/uploads/test.write', 0777);
 		@unlink(MYBB_ROOT.'/uploads/test.write');
 	}
 
@@ -274,13 +294,13 @@ function requirements_check()
 		$avatarsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
 		@fclose($avatarswritable);
 		@chmod(MYBB_ROOT.'/uploads/avatars', 0777);
-	  @chmod(MYBB_ROOT.'/uploads/avatars/test.write', 0777);
+	  	@chmod(MYBB_ROOT.'/uploads/avatars/test.write', 0777);
 		@unlink(MYBB_ROOT.'/uploads/avatars/test.write');
   }
 
 
 	// Output requirements page
-	echo sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $xmlstatus, $configstatus, $settingsstatus, $uploadsstatus, $avatarsstatus);
+	echo sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $uploadsstatus, $avatarsstatus);
 
 	if($showerror == 1)
 	{
