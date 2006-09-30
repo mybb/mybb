@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2006 MyBB Group, All Rights Reserved
+ * Copyright ï¿½ 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -788,7 +788,7 @@ function install_done()
 	
 	$insert_array = array(
 		'uid' => $uid,
-		'permset' => 1,
+		'permsset' => 1,
 		'caneditsettings' => 'yes',
 		'caneditann' => 'yes',
 		'caneditforums' => 'yes',
