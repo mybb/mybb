@@ -78,11 +78,11 @@ $group = $mybb->input['group'];
 checkadminpermissions("canedittemps");
 logadmin();
 
-if($mybb->input['action'] == "do_add") 
+if($mybb->input['action'] == "do_add")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='".intval($mybb->input['setid'])."' AND title='".$db->escape_string($mybb->input['title'])."'");
 	$temp = $db->fetch_array($query);
-	if($temp['tid']) 
+	if($temp['tid'])
 	{
 		cperror($lang->name_exists);
 	}
@@ -117,7 +117,7 @@ if($mybb->input['action'] == "do_add")
 	}
 	cpredirect($editurl, $lang->template_added);
 }
-if($mybb->input['action'] == "do_addset") 
+if($mybb->input['action'] == "do_addset")
 {
 	$newset = array(
 		"title" => $db->escape_string($mybb->input['title'])
@@ -127,11 +127,11 @@ if($mybb->input['action'] == "do_addset")
 	$setid = $db->insert_id();
 	cpredirect("templates.php?".SID."&expand=$setid", $lang->set_added);
 }
-	
+
 if($mybb->input['action'] == "do_delete")
 {
 	if($mybb->input['deletesubmit'])
-	{	
+	{
 		$plugins->run_hooks("admin_templates_do_delete");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 		if($mybb->input['group'])
@@ -149,7 +149,7 @@ if($mybb->input['action'] == "do_delete")
 if($mybb->input['action'] == "do_deleteset")
 {
 	if($mybb->input['deletesubmit'])
-	{	
+	{
 		$plugins->run_hooks("admin_templates_do_deleteset");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
@@ -224,74 +224,81 @@ if($mybb->input['action'] == "do_replace")
 		$plugins->run_hooks("admin_templates_do_replace");
 		// Select all templates with that search term
 		$query = $db->query("SELECT tid, title, template, sid FROM ".TABLE_PREFIX."templates WHERE template LIKE '%".$db->escape_string($mybb->input['find'])."%' ORDER BY sid,title ASC");
-		while($template = $db->fetch_array($query))
+		if($db->num_rows($query) == 0)
 		{
-			if($template['sid'] == 1)
-			{
-				$template_list[-2][$template['title']] = $template;
-			}
-			else
-			{
-				$template_list[$template['sid']][$template['title']] = $template;
-			}
+			makelabelcode(sprintf($lang->search_noresults, $mybb->input['find']));
 		}
-
-		// Loop templates we found
-		foreach($template_list as $sid => $templates)
+		else
 		{
-			// Show group header
-			$search_header = sprintf($lang->search_header, $mybb->input['find'], $template_groups[$sid]);
-			tablesubheader($search_header);
-
-			foreach($templates as $title => $template)
+			while($template = $db->fetch_array($query))
 			{
-				// Do replacement
-				$newtemplate = str_replace($mybb->input['find'], $mybb->input['replace'], $template['template']);
-				if($newtemplate != $template['template'])
+				if($template['sid'] == 1)
 				{
-					// If the template is different, that means the search term has been found. 
-					if($mybb->input['replace'] != "")
+					$template_list[-2][$template['title']] = $template;
+				}
+				else
+				{
+					$template_list[$template['sid']][$template['title']] = $template;
+				}
+			}
+
+			// Loop templates we found
+			foreach($template_list as $sid => $templates)
+			{
+				// Show group header
+				$search_header = sprintf($lang->search_header, $mybb->input['find'], $template_groups[$sid]);
+				tablesubheader($search_header);
+
+				foreach($templates as $title => $template)
+				{
+					// Do replacement
+					$newtemplate = str_replace($mybb->input['find'], $mybb->input['replace'], $template['template']);
+					if($newtemplate != $template['template'])
 					{
-						if($template['sid'] == -2)
+						// If the template is different, that means the search term has been found.
+						if($mybb->input['replace'] != "")
 						{
-							// The template is a master template.  We have to make a new custom template.
-							$new_template = array(
-								"title" => $db->escape_string($title),
-								"template" => $db->escape_string($newtemplate),
-								"sid" => 1,
-								"version" => $mybb->version_code,
-								"status" => '',
-								"dateline" => time()
-							);
-							$db->insert_query("templates", $new_template);
-							$new_tid = $db->insert_id();
-							$label = sprintf($lang->search_created_custom, $template['title']);
-							makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&amp;action=edit&amp;tid=".$new_tid));
-						}
-						else
-						{
-							// The template is a custom template.  Replace as normal.
-							// Update the template if there is a replacement term
-							$updatedtemplate = array(
-								"template" => $db->escape_string($newtemplate)
+							if($template['sid'] == -2)
+							{
+								// The template is a master template.  We have to make a new custom template.
+								$new_template = array(
+									"title" => $db->escape_string($title),
+									"template" => $db->escape_string($newtemplate),
+									"sid" => 1,
+									"version" => $mybb->version_code,
+									"status" => '',
+									"dateline" => time()
 								);
-							$db->update_query("templates", $updatedtemplate, "tid='".$template['tid']."'");
-							$label = sprintf($lang->search_updated, $template['title']);
-							makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
-						}
-					}
-					else
-					{
-						// Just show that the term was found
-						if($template['sid'] == -2)
-						{
-							$label = sprintf($lang->search_found, $template['title']);
-							makelabelcode($label, makelinkcode($lang->search_change_original, "templates.php?".SID."&action=add&title=".$template['title']."&sid=1"));
+								$db->insert_query("templates", $new_template);
+								$new_tid = $db->insert_id();
+								$label = sprintf($lang->search_created_custom, $template['title']);
+								makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&amp;action=edit&amp;tid=".$new_tid));
+							}
+							else
+							{
+								// The template is a custom template.  Replace as normal.
+								// Update the template if there is a replacement term
+								$updatedtemplate = array(
+									"template" => $db->escape_string($newtemplate)
+									);
+								$db->update_query("templates", $updatedtemplate, "tid='".$template['tid']."'");
+								$label = sprintf($lang->search_updated, $template['title']);
+								makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
+							}
 						}
 						else
 						{
-							$label = sprintf($lang->search_found, $template['title']);
-							makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
+							// Just show that the term was found
+							if($template['sid'] == -2)
+							{
+								$label = sprintf($lang->search_found, $template['title']);
+								makelabelcode($label, makelinkcode($lang->search_change_original, "templates.php?".SID."&action=add&title=".$template['title']."&sid=1"));
+							}
+							else
+							{
+								$label = sprintf($lang->search_found, $template['title']);
+								makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
+							}
 						}
 					}
 				}
@@ -318,10 +325,10 @@ if($mybb->input['action'] == "do_search_names")
 		tablesubheader($lang->search_names_header);
 		// Query for templates
 		$query = $db->query("
-			SELECT t.tid, t.title, t.sid, s.title as settitle, t2.tid as customtid 
-			FROM ".TABLE_PREFIX."templates t 
+			SELECT t.tid, t.title, t.sid, s.title as settitle, t2.tid as customtid
+			FROM ".TABLE_PREFIX."templates t
 			LEFT JOIN ".TABLE_PREFIX."templatesets s ON (t.sid=s.sid)
-			LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t.title=t2.title AND t2.sid='1')  
+			LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t.title=t2.title AND t2.sid='1')
 			WHERE t.title LIKE '%".$db->escape_string($mybb->input['title'])."%'
 			ORDER BY t.title ASC
 		");
@@ -344,13 +351,13 @@ if($mybb->input['action'] == "do_search_names")
 			{
 				$template['settitle'] = $lang->global_templates;
 			}
-			makelabelcode("<strong>{$template['title']}</strong><br />{$template['settitle']}", $link); 
+			makelabelcode("<strong>{$template['title']}</strong><br />{$template['settitle']}", $link);
 		}
 		endtable();
 		cpfooter();
 	}
 }
-if($mybb->input['action'] == "edit") 
+if($mybb->input['action'] == "edit")
 {
 	if(isset($mybb->input['title']))
 	{
@@ -364,30 +371,30 @@ if($mybb->input['action'] == "edit")
 	}
 	$plugins->run_hooks("admin_templates_edit");
 	cpheader();
-	if($template['sid'] != "-2") 
+	if($template['sid'] != "-2")
 	{
 		startform("templates.php", "" , "do_edit");
 		makehiddencode("tid", $mybb->input['tid']);
 		starttable();
 		tableheader($lang->modify_template);
 		makeinputcode($lang->title, "title", $template[title]);
-	} 
-	elseif(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template['sid'] == -2) 
+	}
+	elseif(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template['sid'] == -2)
 	{
 		startform("templates.php", "" , "do_edit");
 		makehiddencode("tid", $mybb->input['tid']);
 		starttable();
 		tableheader($lang->modify_master_template);
 		makeinputcode($lang->title, "title", $template['title']);
-	} 
-	else 
+	}
+	else
 	{
 		starttable();
 		tableheader($lang->view_template);
 		makelabelcode($lang->title, $template[title]);
 	}
 	maketextareacode($lang->template, "template", $template['template'], "25", "80");
-	if($template['sid'] != "-2") 
+	if($template['sid'] != "-2")
 	{
 		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($template['title'])."' AND sid='-2';");
 		$master = $db->fetch_array($query);
@@ -396,8 +403,8 @@ if($mybb->input['action'] == "edit")
 			makelabelcode($lang->options, "<a href=\"templates.php?".SID."&amp;action=edit&amp;tid=".$master['tid']."\">".$lang->view_original."</a><br /><a href=\"templates.php?".SID."&amp;action=diff&amp;title=$template[title]&amp;sid2=$template[sid]\">".$lang->diff_with_original."</a>");
 		}
 		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $template['sid'], "-1=Global - All Template Sets");
-	} 
-	else 
+	}
+	else
 	{
 		makehiddencode("setid", $template['sid']);
 	}
@@ -409,19 +416,19 @@ if($mybb->input['action'] == "edit")
 	{
 		$continue = "no";
 	}
-	if(($template['sid'] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template['sid'] == -2)) 
+	if(($template['sid'] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template['sid'] == -2))
 	{
 		makeyesnocode($lang->continue_editing, "continue", $continue);
 	}
 	endtable();
 	makehiddencode("group", $mybb->input['group']);
-	if(($template['sid'] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template['sid'] == -2)) 
+	if(($template['sid'] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template['sid'] == -2))
 	{
 		endform($lang->update_template, $lang->reset_button);
 	}
 	cpfooter();
 }
-if($mybb->input['action'] == "editset") 
+if($mybb->input['action'] == "editset")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 	$set = $db->fetch_array($query);
@@ -437,7 +444,7 @@ if($mybb->input['action'] == "editset")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert") 
+if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 	$template = $db->fetch_array($query);
@@ -465,7 +472,7 @@ if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "deleteset") 
+if($mybb->input['action'] == "deleteset")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
 	$templateset = $db->fetch_array($query);
@@ -482,23 +489,23 @@ if($mybb->input['action'] == "deleteset")
 	endform();
 	cpfooter();
 }
-if($mybb->input['action'] == "makeoriginals") 
+if($mybb->input['action'] == "makeoriginals")
 {
 	$plugins->run_hooks("admin_templates_makeoriginals");
 	$query = $db->query("SELECT t1.*, t2.title AS origtitle FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t1.title=t2.title AND t2.sid='-2') WHERE t1.sid='".$mybb->input['setid']."'");
 	$query2 = $db->query("SELECT t1.* FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t1.title=t2.title AND t2.sid='-2') WHERE t1.sid='$set[sid]' AND ISNULL(t2.template) ORDER BY t1.title ASC");
 
 	$query = $db->query("SELECT * FROM templates WHERE sid='".$mybb->input['setid']."'");
-	while($template = $db->fetch_array($query)) 
+	while($template = $db->fetch_array($query))
 	{
-		if($template[origtitle]) 
+		if($template[origtitle])
     {
 			$updatedtemplate = array(
 				"template" => $db->escape_string($template['template'])
 			);
 			$db->update_query("templates", $updatedtemplate, "title='".$template['title']."' AND sid='-2'");
-		} 
-		else 
+		}
+		else
 		{
 			$newtemplate = array(
 				"sid" => -2,
@@ -512,7 +519,7 @@ if($mybb->input['action'] == "makeoriginals")
 	cpredirect("templates.php?".SID."&expand=$setid", $lang->originals_made);
 }
 
-if($mybb->input['action'] == "add") 
+if($mybb->input['action'] == "add")
 {
 	if($mybb->input['title'])
 	{
@@ -523,21 +530,21 @@ if($mybb->input['action'] == "add")
 	cpheader();
 	startform("templates.php", "" , "do_add");
 	starttable();
-	if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") 
+	if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7")
 	{
 		tableheader($lang->add_master_template);
-	} 
-	else 
+	}
+	else
 	{
 		tableheader($lang->add_template);
 	}
 	makeinputcode($lang->title, "title", $template[title]);
 	maketextareacode($lang->template, "template", $template[template], "25", "80");
-	if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7") 
+	if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7")
 	{
 		makehiddencode("setid", -2);
-	} 
-	else 
+	}
+	else
 	{
 		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $mybb->input['sid'], "-1=".$lang->global_sel);
 	}
@@ -547,7 +554,7 @@ if($mybb->input['action'] == "add")
 	endform($lang->add_template, $lang->reset_button);
 	cpfooter();
 }
-if($mybb->input['action'] == "addset") 
+if($mybb->input['action'] == "addset")
 {
 	$plugins->run_hooks("admin_templates_addset");
 	cpheader();
@@ -595,7 +602,7 @@ if($mybb->input['action'] == "diff")
 
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE title='".$db->escape_string($mybb->input['title'])."' AND sid='".$mybb->input['sid2']."'");
 	$template2 = $db->fetch_array($query);
-	
+
 	if($template1['template'] == $template2['template'])
 	{
 		cpmessage($lang->templates_the_same);
@@ -672,10 +679,10 @@ if($mybb->input['action'] == "findupdated")
 	cpfooter();
 }
 
-if($mybb->input['action'] == "modify" || $mybb->input['action'] == "") 
+if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 {
 	$plugins->run_hooks("admin_templates_modify");
-	if(!$noheader) 
+	if(!$noheader)
 	{
 		cpheader();
 	}
@@ -702,7 +709,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		{
 			$templatesets[$templateset['sid']] = $templateset;
 		}
-	
+
 		starttable();
 		tableheader($lang->template_management, "", 1);
 		foreach($templatesets as $templateset)
@@ -843,7 +850,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 
 			// Query for original templates
 			$query3 = $db->query("SELECT t1.title AS originaltitle, t1.tid AS originaltid, t2.tid FROM ".TABLE_PREFIX."templates t1 LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t2.title=t1.title AND t2.sid='".$set['sid']."') WHERE t1.sid='-2' ORDER BY t1.title ASC");
-			while($template = $db->fetch_array($query3)) 
+			while($template = $db->fetch_array($query3))
 			{
 				$templatelist[$template['originaltitle']] = $template;
 			}

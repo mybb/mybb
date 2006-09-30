@@ -2,7 +2,7 @@
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -84,7 +84,7 @@ $l['update_set'] = "Update Template Set";
 $l['add_set'] = "Add Template Set";
 
 $l['search_replace'] = "Search and Replace";
-$l['search_label'] = "This tool will allow you to search for templates that contain certain text, and optionally replace it with another text automatically."; 
+$l['search_label'] = "This tool will allow you to search for templates that contain certain text, and optionally replace it with another text automatically.";
 $l['search_for'] = "Search For";
 $l['replace_with'] = "Replace With<br />(Optional)";
 $l['find_replace'] = "Find and Replace";
@@ -97,6 +97,7 @@ $l['search_found'] = "Found in {1}";
 $l['search_created_custom'] = "Created custom template for {1}";
 $l['search_edit'] = "edit";
 $l['search_change_original'] = "change original";
+$l['search_noresults'] = 'No templates were found containing the string \'<strong>{1}</strong>\'';
 
 $l['search_names'] = "Search Template Names";
 $l['find_names'] = "Find Templates";
