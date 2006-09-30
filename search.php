@@ -814,7 +814,9 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		"matchusername" => $mybb->input['matchusername'],
 		"postdate" => $mybb->input['postdate'],
 		"pddir" => $mybb->input['pddir'],
-		"forums" => $mybb->input['forums']
+		"forums" => $mybb->input['forums'],
+		"findthreadst" => $mybb->input['findthreadst'],
+		"numreplies" => $mybb->input['numreplies']
 	);
 
 	if($config['dbtype'] == "mysql" || $config['dbtype'] == "mysqli")
