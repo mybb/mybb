@@ -444,6 +444,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 		else
 		{
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
+			$groupinfo = "all";
 		}
 		while($group = $db->fetch_array($query))
 		{
@@ -459,7 +460,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 	
 		startform("settings.php", "", "do_change");
 		
-		if(is_array($setting_list[$groupinfo['gid']]))
+		if(is_array($setting_list[$groupinfo['gid']]) || ($groupinfo == "all" && is_array($setting_list)))
 		{
 			foreach($setting_groups as $groupinfo)
 			{

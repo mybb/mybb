@@ -508,9 +508,11 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 {
 	global $db, $mybb;
 	static $pm_lastvisit_cache;
-
+	
+	$uid = intval($uid);
+	
 	// If no user id, assume that we mean the current logged in user.
-	if(intval($uid) == 0)
+	if($uid == 0)
 	{
 		$uid = $mybb->user['uid'];
 	}
@@ -525,7 +527,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 	{
 		if(!$pm_lastvisit_cache[$uid])
 		{
-			$query = $db->query("SELECT lastvisit FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."'");
+			$query = $db->query("SELECT lastvisit FROM ".TABLE_PREFIX."users WHERE uid='".$uid."'");
 			$user = $db->fetch_array($query);
 			$pm_lastvisit_cache[$uid] = $user['lastvisit'];
 		}
@@ -554,7 +556,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 	}
 	if(is_array($pmcount))
 	{
-		$db->update_query(TABLE_PREFIX."users", $pmcount, "uid='".intval($uid)."'");
+		$db->update_query(TABLE_PREFIX."users", $pmcount, "uid='".$uid."'");
 	}
 	return $pmcount;
 }

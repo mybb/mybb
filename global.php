@@ -38,7 +38,7 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 }
 
 // Do not use session system for defined pages
-if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || isset($mybb->input['thumbnail']))
+if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || (isset($mybb->input['thumbnail']) && strstr($_SERVER["PHP_SELF"], 'attachment.php')))
 {
 	define("NO_ONLINE", 1);
 }
