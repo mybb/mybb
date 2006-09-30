@@ -510,8 +510,8 @@ function insert_templates()
 	$db->insert_query("themes", $insert_array);
 	
 	$insert_array = array(
-		'name' => 'MyBB Master Style',
-		'pid' => 0,
+		'name' => 'MyBB Default',
+		'pid' => 1,
 		'def' => 1
 	);
 	$db->insert_query("themes", $insert_array);
