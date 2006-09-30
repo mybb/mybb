@@ -743,7 +743,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 		{
 			if($usercache[$uid])
 			{
-				$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
+				$query = $db->simple_select("users", "*", "uid='$uid'");
 				$usercache[$uid] = $db->fetch_array($query);
 			}
 			$gid = $usercache[$uid]['usergroup'].",".$usercache[$uid]['additionalgroups'];
@@ -1522,7 +1522,7 @@ function format_name($username, $usergroup, $displaygroup="")
  *
  * @return string The MyCode inserter
  */
-function build_mycode_inserter()
+function build_mycode_inserter($bind="message")
 {
 	global $db, $mybb, $theme, $templates, $lang;
 
@@ -3295,7 +3295,10 @@ function login_attempt_check($fatal = true)
 		{
 			my_setcookie('loginattempts', 1);
 			my_unsetcookie('failedlogin');
-			$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts = 1 WHERE sid = '{$session->sid}'");
+			$update_array = array(
+				'loginattempts' => 1
+			);
+			$db->update_query("sessions", $update_array, "sid = '{$session->sid}'");
 			return 1;
 		}
 		// Not waited long enough

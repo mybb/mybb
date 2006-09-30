@@ -69,7 +69,7 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] =
 // Check if this forum is password protected and if we've got the right password to access it.
 check_forum_password($fid, $forum['password']);
 
-// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
+// If MyCode is on for this forum and the MyCode editor is enabled in the Admin CP, draw the code buttons and smilie inserter.
 if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
 	$codebuttons = build_mycode_inserter();
@@ -320,8 +320,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	if(!$valid_thread)
 	{
 		$post_errors = $posthandler->get_friendly_errors();
-	}
-	
+	}	
 	
 	// Check captcha image
 	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
@@ -574,7 +573,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// Setup a unique posthash for attachment management
 	if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
 	{
-	    mt_srand ((double) microtime() * 1000000);
+	    mt_srand((double) microtime() * 1000000);
 	    $posthash = md5($mybb->user['uid'].mt_rand());
 	}
 	else

@@ -9,8 +9,9 @@
 function user_exists($uid)
 {
 	global $db;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."' LIMIT 1");
-	if($db->fetch_array($query))
+	
+	$query = $db->simple_select("users", "COUNT(*) as user", "uid='".intval($uid)."'", array('limit' => 1));
+	if($db->fetch_field($query, 'user') == 1)
 	{
 		return true;
 	}
@@ -29,8 +30,8 @@ function user_exists($uid)
 function username_exists($username)
 {
 	global $db;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($username)."' LIMIT 1");
-	if($db->fetch_array($query))
+	$query = $db->simple_select("users", "COUNT(*) as user", "username='".$db->escape_string($username)."'", array('limit' => 1));
+	if($db->fetch_field($query, 'user') == 1)
 	{
 		return true;
 	}
@@ -50,7 +51,8 @@ function username_exists($username)
 function validate_password_from_username($username, $password)
 {
 	global $db;
-	$query = $db->query("SELECT uid,username,password,salt,loginkey,remember FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($username)."' LIMIT 1");
+	
+	$query = $db->simple_select("users", "uid,username,password,salt,loginkey,remember", "username='".$db->escape_string($username)."'", array('limit' => 1));
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
 	{
@@ -79,7 +81,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 	}
 	if(!$user['password'])
 	{
-		$query = $db->query("SELECT uid,username,password,salt,loginkey FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."' LIMIT 1");
+		$query = $db->simple_select("users", "uid,username,password,salt,loginkey", "uid='".intval($uid)."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 	}
 	if(!$user['salt'])
@@ -91,7 +93,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 			"salt" => $user['salt'],
 			"password" => $user['password']
 		);
-		$db->update_query("users", $sql_array, "uid = ".$user['uid'], 1);
+		$db->update_query("users", $sql_array, "uid='".$user['uid']."'", 1);
 	}
 
 	if(!$user['loginkey'])
@@ -131,7 +133,7 @@ function update_password($uid, $password, $salt="")
 	//
 	if(!$salt)
 	{
-		$query = $db->query("SELECT salt FROM ".TABLE_PREFIX."users WHERE uid='$uid' LIMIT 1");
+		$query = $db->simple_select("users", "salt", "uid='$uid'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 		if($user['salt'])
 		{
@@ -252,11 +254,16 @@ function add_favorite_thread($tid, $uid="")
 	{
 		return;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".intval($tid)."' AND type='f' AND uid='".intval($uid)."' LIMIT 1");
+	$query = $db->simple_select("favorites", "*", "tid='".intval($tid)."' AND type='f' AND uid='".intval($uid)."'", array('limit' => 1));
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".intval($uid)."','".intval($tid)."','f')");
+		$insert_query = array(
+			'uid' => intval($uid),
+			'tid' => intval($tid),
+			'type' => 'f'
+		);
+		$db->insert_query("favorites", $insert_query);
 	}
 	return true;
 }
@@ -280,7 +287,7 @@ function remove_favorite_thread($tid, $uid="")
 	{
 		return;
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='".intval($tid)."' AND type='f' AND uid='".intval($uid)."'");
+	$db->delete_query("favorites", "tid='".intval($tid)."' AND type='f' AND uid='".intval($uid)."'");
 	return true;
 }
 
@@ -303,11 +310,16 @@ function add_subscribed_thread($tid, $uid="")
 	{
 		return;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."favorites WHERE tid='".intval($tid)."' AND type='s' AND uid='".intval($uid)."' LIMIT 1");
+	$query = $db->simple_select("favorites", "*", "tid='".intval($tid)."' AND type='s' AND uid='".intval($uid)."'", array('limit' => 1));
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."favorites (uid,tid,type) VALUES ('".intval($uid)."','".intval($tid)."','s')");
+		$insert_array = array(
+			'uid' => intval($uid),
+			'tid' => intval($tid),
+			'type' => 's'
+		);
+		$db->insert_query("favorites", $insert_array);
 	}
 	return true;
 }
@@ -331,7 +343,7 @@ function remove_subscribed_thread($tid, $uid="")
 	{
 		return;
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE tid='".$tid."' AND type='s' AND uid='".$uid."'");
+	$db->delete_query("favorites", "tid='".$tid."' AND type='s' AND uid='".$uid."'");
 	return true;
 }
 
@@ -354,11 +366,19 @@ function add_subscribed_forum($fid, $uid="")
 	{
 		return;
 	}
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".$fid."' AND uid='".$uid."' LIMIT 1");
+	
+	$fid = intval($fid);
+	$uid = intval($uid);
+	
+	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='".$uid."'", array('limit' => 1));
 	$fsubscription = $db->fetch_array($query);
 	if(!$fsubscription['fid'])
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."forumsubscriptions (fid,uid) VALUES ('".$fid."','".$uid."')");
+		$insert_array = array(
+			'fid' => $fid,
+			'uid' => $uid
+		);
+		$db->insert_query("forumsubscriptions", $insert_array);
 	}
 	return true;
 }
@@ -382,7 +402,7 @@ function remove_subscribed_forum($fid, $uid="")
 	{
 		return;
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE fid='".$fid."' AND uid='".$uid."'");
+	$db->delete_query("forumsubscriptions", "fid='".$fid."' AND uid='".$uid."'");
 	return true;
 }
 
@@ -456,7 +476,7 @@ function usercp_menu_misc()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
 
-	$query = $db->query("SELECT COUNT(*) AS draftcount FROM ".TABLE_PREFIX."posts WHERE visible='-2' AND uid='".$mybb->user['uid']."'");
+	$query = $db->simple_select("posts", "COUNT(*) AS draftcount", "visible='-2' AND uid='".$mybb->user['uid']."'");
 	$count = $db->fetch_array($query);
 	$draftcount = "(".my_number_format($count['draftcount']).")";
 	if($count['draftcount'] > 0)
@@ -482,7 +502,7 @@ function get_usertitle($uid="")
 	}
 	else
 	{
-		$query = $db->query("SELECT usertitle,postnum FROM ".TABLE_PREFIX."users WHERE uid='$uid' LIMIT 1");
+		$query = $db->simple_select("users", "usertitle,postnum", "uid='$uid'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 	}
 	if($user['usertitle'])
@@ -491,7 +511,7 @@ function get_usertitle($uid="")
 	}
 	else
 	{
-		$query = $db->query("SELECT title FROM ".TABLE_PREFIX."usertitles WHERE posts<='".$user['postnum']."' ORDER BY posts DESC");
+		$query = $db->simple_select("usertitles", "title", "posts<='".$user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'desc'));
 		$usertitle = $db->fetch_array($query);
 		return $usertitle['title'];
 	}
@@ -525,7 +545,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 	{
 		if(!$pm_lastvisit_cache[$uid])
 		{
-			$query = $db->query("SELECT lastvisit FROM ".TABLE_PREFIX."users WHERE uid='".intval($uid)."'");
+			$query = $db->simple_select("users", "lastvisit", "users", "uid='".intval($uid)."'");
 			$user = $db->fetch_array($query);
 			$pm_lastvisit_cache[$uid] = $user['lastvisit'];
 		}
@@ -534,21 +554,21 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 	// Update total number of messages.
 	if($count_to_update & 1)
 	{
-		$query = $db->query("SELECT COUNT(pmid) AS pms_total FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$uid."'");
+		$query = $db->simple_select("privatemessages", "COUNT(pmid) AS pms_total", "uid='".$uid."'");
 		$total = $db->fetch_array($query);
 		$pmcount['totalpms'] = $total['pms_total'];
 	}
 	// Update number of new messages.
 	if($count_to_update & 2)
 	{
-		$query = $db->query("SELECT COUNT(pmid) AS pms_new FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$uid."' AND dateline>'".$mybb->user['lastvisit']."' AND folder=1");
+		$query = $db->simple_select("privatemessages", "COUNT(pmid) AS pms_new", "uid='".$uid."' AND dateline>'".$mybb->user['lastvisit']."' AND folder='1'");
 		$new = $db->fetch_array($query);
 		$pmcount['newpms'] = $new['pms_new'];
 	}
 	// Update number of unread messages.
 	if($count_to_update & 4)
 	{
-		$query = $db->query("SELECT COUNT(pmid) AS pms_unread FROM ".TABLE_PREFIX."privatemessages WHERE uid='".$uid."' AND status=0 AND folder='1'");
+		$query = $db->simple_select("privatemessages", "COUNT(pmid) AS pms_unread", "uid='".$uid."' AND status='0' AND folder='1'");
 		$unread = $db->fetch_array($query);
 		$pmcount['unreadpms'] = $unread['pms_unread'];
 	}

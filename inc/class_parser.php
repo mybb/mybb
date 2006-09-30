@@ -85,9 +85,7 @@ class postParser
 		$this->options = $options;
 
 		// Get rid of cartridge returns for they are the workings of the devil
-		$message = str_replace("\r", "", $message);
-		$message = $this->strip_rtl($message);
-		
+		$message = str_replace("\r", "", $message);		
 		
 		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
@@ -475,6 +473,7 @@ class postParser
 		// Assign pattern and replace values.
 		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#si",
 						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
+						 
 
 		$replace = array("</p>\n<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote\n</div><div class=\"quote_body\">$2</div>\n<p>\n",
 						 "</p>\n<div class=\"quote_header\">$lang->quote\n</div><div class=\"quote_body\">$1</div>\n<p>\n");
@@ -734,21 +733,6 @@ class postParser
 		}
 		return $message;
 	}
-	
-	/**
-	 * Strip RTL Unicude
-	 *
-	 */
-	 function strip_rtl($message)
-	 {
-	 	//$message = htmlentities($message);
-		//$message = preg_replace('/[^\x09\x0A\x0D\x20-\x7F]/e', '"&#".ord($0).";"', $message);
-		//$message = str_replace('&#226;&#128;&#174;', '', $message);
-		//$message = str_replace('&#8238;', '', $message);
-		//$message = str_replace('&#x202E', '', $message);
-		//$message = html_entity_decode($message);
-		return $message;
-	 }
 
 	/**
 	 * Strips MyCode.

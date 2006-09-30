@@ -39,9 +39,6 @@ $output = new installerOutput;
 
 $dboptions = array();
 
-// Get the current working directory
-$cwd = getcwd();
-
 if(function_exists('mysqli_connect'))
 {
 	$dboptions['mysqli'] = array(
@@ -120,6 +117,7 @@ else
 function intro()
 {
 	global $output, $mybb, $lang;
+	
 	$output->print_header($lang->welcome, 'welcome');
 	echo sprintf($lang->welcome_step, $mybb->version);
 	$output->print_footer('license');
@@ -128,6 +126,7 @@ function intro()
 function license_agreement()
 {
 	global $output, $lang;
+	
 	$output->print_header($lang->license_agreement, 'license');
 	$license = '<h3>Important - Read Carefully</h3>
 <p>This MyBB End-User License Agreement ("EULA") is a legal agreement between you (either an individual or a single entity) and the MyBB Group for the MyBB product, which includes computer software and may include associated media, printed materials, and "online" or electronic documentation. By installing, copying, or otherwise using the MyBB product, you agree to be bound by the terms of this EULA. If you do not agree to the terms of this EULA, do not install or use the MyBB product and destroy any copies of the application.</p>
@@ -299,6 +298,7 @@ function requirements_check()
 function database_info()
 {
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
+	
 	$mybb->input['action'] = 'database_info';
 	$output->print_header($lang->db_config, 'dbconfig');
 
@@ -500,11 +500,26 @@ function insert_templates()
 
 	echo $lang->theme_step_importing;
 
-	$db->query("DELETE FROM ".TABLE_PREFIX."themes");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates");
-	$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,css,cssbits,themebits,extracss) VALUES ('MyBB Master Style','0','','','','')");
-	$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,def,css,cssbits,themebits,extracss) VALUES ('MyBB Default','1','1','','','','')");
-	$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('Default Templates');");
+	$db->delete_query("themes");
+	$db->delete_query("templates");
+	
+	$insert_array = array(
+		'name' => 'MyBB Master Style',
+		'pid' => 0
+	);
+	$db->insert_query("themes", $insert_array);
+	
+	$insert_array = array(
+		'name' => 'MyBB Master Style',
+		'pid' => 0,
+		'def' => 1
+	);
+	$db->insert_query("themes", $insert_array);
+	
+	$insert_array = array(
+		'title' => 'Default Templates'
+	);
+	$db->insert_query("templatesets", $insert_array);
 	$templateset = $db->insert_id();
 
 	$contents = @file_get_contents(INSTALL_ROOT.'/resources/mybb_theme.xml');
@@ -519,11 +534,15 @@ function insert_templates()
 	$sid = -2;
 	foreach($templates as $template)
 	{
-		$templatename = $template['attributes']['name'];
-		$templatevalue = $db->escape_string($template['value']);
-		$templateversion = $template['attributes']['version'];
-		$time = time();
-		$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('{$templatename}','{$templatevalue}','{$sid}','{$templateversion}','','{$time}')");
+		$insert_array = array(
+			'title' => $template['attributes']['name'],
+			'template' => $db->escape_string($template['value']),
+			'sid' => $sid,
+			'version' => $template['attributes']['version'],
+			'dateline' => time()
+		);
+			
+		$db->insert_query("templates", $insert_array);
 	}
 	update_theme(1, 0, $themebits, $css, 0);
 
@@ -534,6 +553,7 @@ function insert_templates()
 function configure()
 {
 	global $output, $mybb, $errors, $lang;
+	
 	$output->print_header($lang->board_config, 'config');
 
 	// If board configuration errors
@@ -592,6 +612,7 @@ function configure()
 function create_admin_user()
 {
 	global $output, $mybb, $errors, $db, $lang;
+	
 	$mybb->input['action'] = "adminuser";
 	// If no errors then check for errors from last step
 	if(!is_array($errors))
@@ -666,14 +687,14 @@ function create_admin_user()
 			$mybb->input['bburl'] = my_substr($mybb->input['bburl'], 0, -1);
 		}
 
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['bbname'])."' WHERE name='bbname'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['bburl'])."' WHERE name='bburl'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['websitename'])."' WHERE name='homename'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['websiteurl'])."' WHERE name='homeurl'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['cookiedomain'])."' WHERE name='cookiedomain'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['cookiepath'])."' WHERE name='cookiepath'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($mybb->input['contactemail'])."' WHERE name='adminemail'");
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET value='mailto:".$db->escape_string($mybb->input['contactemail'])."' WHERE name='contactlink'");
+		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['bbname'])), "name='bbname'");
+		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['bburl'])), "name='bburl'");
+		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['websitename'])), "name='homename'");
+		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['websiteurl'])), "name='homeurl'");
+		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['cookiedomain'])), "name='cookiedomain'");
+		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['cookiepath'])), "name='cookiepath'");
+		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['contactemail'])), "name='adminemail'");
+		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['contactemail'])), "name='contactlink'");
 
 		write_settings();
 		echo $lang->admin_step_createadmin;
@@ -764,8 +785,30 @@ function install_done()
 	);
 	$db->insert_query('users', $newuser);
 	$uid = $db->insert_id();
-
-	$db->query("INSERT INTO ".TABLE_PREFIX."adminoptions VALUES ('{$uid}','','','1','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes','yes')");
+	
+	$insert_array = array(
+		'uid' => $uid,
+		'permset' => 1,
+		'caneditsettings' => 'yes',
+		'caneditann' => 'yes',
+		'caneditforums' => 'yes',
+		'canmodposts' => 'yes',
+		'caneditsmilies' => 'yes',
+		'caneditpicons' => 'yes',
+		'caneditthemes' => 'yes',
+		'canedittemps' => 'yes',
+		'caneditusers' => 'yes',
+		'caneditpfields' => 'yes',
+		'caneditugroups' => 'yes',
+		'caneditaperms' => 'yes',
+		'caneditutitles' => 'yes',
+		'caneditattach' => 'yes',
+		'canedithelp' => 'yes',
+		'caneditlangs' => 'yes',
+		'canrunmaint' => 'yes',
+		'canrundbtools' => 'yes'
+	);
+	$db->insert_query("adminoptions", $insert_array);
 
 	// Automatic Login
 	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, true);
@@ -831,6 +874,7 @@ function db_connection($config)
 {
 	require_once MYBB_ROOT."/inc/db_{$config['dbtype']}.php";
 	$db = new databaseEngine;
+	
 	// Connect to Database
 	define('TABLE_PREFIX', $config['table_prefix']);
 	$db->connect($config['hostname'], $config['username'], $config['password']);
@@ -852,8 +896,9 @@ function error_list($array)
 
 function write_settings()
 {
-	global $db, $cwd;
-	$query = $db->query('SELECT * FROM '.TABLE_PREFIX.'settings ORDER BY title ASC');
+	global $db;
+	
+	$query = $db->simple_select("settings", "*", "", array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{
 		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
@@ -862,7 +907,7 @@ function write_settings()
 	if(!empty($settings))
 	{
 		$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n{$settings}\n?>";
-		$file = fopen(dirname($cwd)."/inc/settings.php", "w");
+		$file = fopen(MYBB_ROOT."/inc/settings.php", "w");
 		fwrite($file, $settings);
 		fclose($file);
 	}
@@ -871,7 +916,8 @@ function write_settings()
 function test_shutdown_function()
 {
 	global $db;
-	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='yes' WHERE name='useshutdownfunc'");
+	
+	$db->update_query("settings", array('value' => 'yes'), "name='useshutdownfunc'");
 	write_settings();
 }
 ?>

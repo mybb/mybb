@@ -143,7 +143,7 @@ function build_postbit($post, $post_type=0)
 	if(!is_array($titlescache))
 	{
 		// Get user titles (i guess we should improve this, maybe in version3.
-		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usertitles ORDER BY posts DESC");
+		$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
 		while($usertitle = $db->fetch_array($query))
 		{
 			$titlescache[$usertitle['posts']] = $usertitle;

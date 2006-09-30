@@ -809,7 +809,7 @@ if($mybb->input['action'] == "options")
 		$timein[$zone] = $temptime;
 	}
 	// Sad code for all the weird timezones
-	$timein[n35] = my_date($mybb->settings['timeformat'], time(), -3.5);
+	$timein['n35'] = my_date($mybb->settings['timeformat'], time(), -3.5);
 	$timein[35] = my_date($mybb->settings['timeformat'], time(), 3.5);
 	$timein[45] = my_date($mybb->settings['timeformat'], time(), 4.5);
 	$timein[55] = my_date($mybb->settings['timeformat'], time(), 5.5);
@@ -1394,6 +1394,7 @@ if($mybb->input['action'] == "editsig")
 	if($mybb->settings['sigsmilies'] == "yes")
 	{
 		$sigsmilies = $lang->on;
+		$smilieinserter = build_clickable_smilies();
 	}
 	else
 	{
@@ -1425,6 +1426,8 @@ if($mybb->input['action'] == "editsig")
 	}
 	$sig = htmlspecialchars_uni($sig);
 	$lang->edit_sig_note2 = sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
+	
+	$codebuttons = build_mycode_inserter("signature");
 	eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
 	$plugins->run_hooks("usercp_endsig_end");
 	output_page($editsig);

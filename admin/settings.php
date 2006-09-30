@@ -33,7 +33,13 @@ switch($mybb->input['action'])
 	case "change":
 		if($mybb->input['gid'] && $mybb->input['gid'] != -1)
 		{
-			$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) WHERE g.gid='".intval($mybb->input['gid'])."' GROUP BY s.gid");
+			$query = $db->query("
+				SELECT g.*, COUNT(s.sid) AS settingcount 
+				FROM ".TABLE_PREFIX."settinggroups g 
+				LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) 
+				WHERE g.gid='".intval($mybb->input['gid'])."' 
+				GROUP BY s.gid
+			");
 			$groupinfo = $db->fetch_array($query);
 			
 			$title_lang = "setting_group_".$groupinfo['name'];
@@ -444,6 +450,8 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 		else
 		{
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
+			$groupinfo = "all";
+			
 		}
 		while($group = $db->fetch_array($query))
 		{
@@ -459,7 +467,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 	
 		startform("settings.php", "", "do_change");
 		
-		if(is_array($setting_list[$groupinfo['gid']]))
+		if(is_array($setting_list[$groupinfo['gid']]) || ($groupinfo == "all" && is_array($setting_list)))
 		{
 			foreach($setting_groups as $groupinfo)
 			{
@@ -600,7 +608,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 							}
 							if($type[0] == "select")
 							{
-								if($setting[value] == $optionsexp[0])
+								if($setting['value'] == $optionsexp[0])
 								{
 									$sel = "selected";
 								}
@@ -612,7 +620,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 							}
 							else if($type[0] == "radio")
 							{
-								if($setting[value] == $optionsexp[0])
+								if($setting['value'] == $optionsexp[0])
 								{
 									$sel = "checked";
 								}
@@ -624,7 +632,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 							}
 							else if($type[0] == "checkbox")
 							{
-								if($setting[value] == $optionsexp[0])
+								if($setting['value'] == $optionsexp[0])
 								{
 									$sel = "checked";
 								}

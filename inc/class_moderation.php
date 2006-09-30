@@ -584,7 +584,7 @@ class Moderation
 		$pollsql = '';
 		if($mergethread['poll'])
 		{
-			$pollsql = ", poll='{$mergethread['poll']}'";
+			$pollsql['poll'] = $mergethread['poll'];
 			$sqlarray = array(
 				"tid" => $tid,
 			);
@@ -610,7 +610,8 @@ class Moderation
 		);
 		$db->update_query("posts", $sqlarray, "tid='$mergetid'");
 		
-		$db->query("UPDATE ".TABLE_PREFIX."threads SET subject='$subject' $pollsql WHERE tid='$tid'");
+		$pollsql['subject'] = $subject;
+		$db->update_query("threads", $pollsql, "tid='$tid'");
 		$sqlarray = array(
 			"closed" => "moved|$tid",
 		);

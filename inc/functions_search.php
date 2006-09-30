@@ -96,11 +96,13 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 function get_unsearchable_forums($pid="0", $first=1)
 {
 	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
+	
 	$pid = intval($pid);
+	
 	if(!is_array($forum_cache))
 	{
 		// Get Forums
-		$query = $db->query("SELECT f.* FROM ".TABLE_PREFIX."forums f ORDER BY f.pid, f.disporder");
+		$query = $db->simple_select("forums", "*", "", array('order_by' => 'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$forum_cache[$forum['fid']] = $forum;
@@ -383,12 +385,12 @@ function perform_search_mysql($search)
 		$userids = array();
 		if($search['matchusername'])
 		{
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($search['author'])."'");
+			$query = $db->simple_select("users", "uid", "username='".$db->escape_string($search['author'])."'");
 		}
 		else
 		{
 			$search['author'] = my_strtolower($search['author']);
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
+			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
 		}
 		while($user = $db->fetch_array($query))
 		{
@@ -435,7 +437,12 @@ function perform_search_mysql($search)
 			if(!$searchin[$forum])
 			{
 				$forum = intval($forum);
-				$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
+				$query = $db->query("
+					SELECT f.fid 
+					FROM ".TABLE_PREFIX."forums f 
+					LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user['usergroup']."')
+					WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')
+				");
 				if($db->num_rows($query) == 1)
 				{
 					$forumin .= " AND t.fid='$forum' ";
@@ -624,12 +631,12 @@ function perform_search_mysql_ft($search)
 		$userids = array();
 		if($search['matchusername'])
 		{
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE username='".$db->escape_string($search['author'])."'");
+			$query = $db->simple_select("users", "uid", "username='".$db->escape_string($search['author'])."'");
 		}
 		else
 		{
 			$search['author'] = my_strtolower($search['author']);
-			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
+			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
 		}
 		while($user = $db->fetch_array($query))
 		{
@@ -676,7 +683,12 @@ function perform_search_mysql_ft($search)
 			$forum = intval($forum);
 			if(!$searchin[$forum])
 			{
-				$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
+				$query = $db->query("
+					SELECT f.fid 
+					FROM ".TABLE_PREFIX."forums f 
+					LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user['usergroup']."') 
+					WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')
+				");
 				if($db->num_rows($query) == 1)
 				{
 					$forumin .= " AND t.fid='$forum' ";

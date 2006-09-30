@@ -350,7 +350,7 @@ while($getid = $db->fetch_array($query))
 }
 $pids = "pid IN(0$pids)";
 // Now lets fetch all of the attachments for these posts
-$query = $db->query("SELECT * FROM ".TABLE_PREFIX."attachments WHERE $pids");
+$query = $db->simple_select("attachments", "*", $pids);
 while($attachment = $db->fetch_array($query))
 {
 	$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;

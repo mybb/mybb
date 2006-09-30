@@ -205,18 +205,32 @@ function upgradethemes()
 		  csscached bigint(30) NOT NULL default '0',
 		  PRIMARY KEY  (tid)
 		) TYPE=MyISAM;");
-		$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid) VALUES ('MyBB Master Style','0')");
-		$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,def) VALUES ('MyBB Default','1','1')");
+		
+		$insert_array = array(
+			'name' => 'MyBB Master Style',
+			'pid' => 0
+		);
+		$db->insert_query("themes", $insert_array);
+		
+		$insert_array = array(
+			'name' => 'MyBB Default',
+			'pid' => 1,
+			'def' => 1
+		);
+		$db->insert_query("themes", $insert_array);
 		$sid = $db->insert_id();
-		$db->query("UPDATE ".TABLE_PREFIX."users SET style='$sid'");
-		$db->query("UPDATE ".TABLE_PREFIX."forums SET style='0'");
+		
+		$db->update_query("users", array('style' => $sid));
+		$db->update_query("forums", array('style' => 0));
+		
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templatesets;");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."templatesets (
 		  sid smallint unsigned NOT NULL auto_increment,
 		  title varchar(120) NOT NULL default '',
 		  PRIMARY KEY  (sid)
 		) TYPE=MyISAM;");
-		$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('Default Templates')");
+		
+		$db->insert_query("templatesets", array('title' => 'Default Templates'));
 	}
 	$sid = -2;
 
@@ -238,15 +252,28 @@ function upgradethemes()
 		$templateversion = $template['attributes']['version'];
 		$templatevalue = $db->escape_string($template['value']);
 		$time = time();
-		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."templates WHERE sid='-2' AND title='$templatename'");
+		$query = $db->simple_select("templates", "tid", "sid='-2' AND title='$templatename'");
 		$oldtemp = $db->fetch_array($query);
 		if($oldtemp['tid'])
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."templates SET template='$templatevalue', version='$templateversion', dateline='$time' WHERE title='$templatename' AND sid='-2'");
+			$update_array = array(
+				'template' => $templatevalue,
+				'version' => templateversion,
+				'dateline' => $time
+			);
+			$db->update_query("templates", $update_array, "title='$templatename' AND sid='-2'");
 		}
 		else
 		{
-			$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$sid','$templateversion','','$time')");
+			$insert_array = array(
+				'title' => $templatename,
+				'template' => $templatevalue,
+				'sid' => $sid,
+				'version' => $templateversion,
+				'dateline' => $time
+			);			
+			
+			$db->insert_query("templates", $insert_array);
 			++$newcount;
 		}
 	}
@@ -387,7 +414,8 @@ function load_module($module)
 function get_upgrade_store($title)
 {
 	global $db;
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."upgrade_data WHERE title='".$db->escape_string($title)."'");
+	
+	$query = $db->simple_select("upgrade_data", "*", "title='".$db->escape_string($title)."'");
 	$data = $db->fetch_array($query);
 	return unserialize($data['contents']);
 }
@@ -395,6 +423,7 @@ function get_upgrade_store($title)
 function add_upgrade_store($title, $contents)
 {
 	global $db;
+	
 	$db->query("REPLACE INTO ".TABLE_PREFIX."upgrade_data (title,contents) VALUES ('".$db->escape_string($title)."', '".$db->escape_string(serialize($contents))."')");
 }
 
@@ -432,12 +461,13 @@ function sync_settings($redo=0)
 	}
 	else
 	{
-		$query = $db->query("SELECT name FROM ".TABLE_PREFIX."settings");
+		$query = $db->simple_select("settings", "name");
 		while($setting = $db->fetch_array($query))
 		{
 			$settings[$setting['name']] = 1;
 		}
-		$query = $db->query("SELECT name,title,gid FROM ".TABLE_PREFIX."settinggroups");
+		
+		$query = $db->simple_select("settinggroups", "name,title,gid");
 		while($group = $db->fetch_array($query))
 		{
 			$settinggroups[$group['name']] = $group['gid'];

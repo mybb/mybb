@@ -3522,7 +3522,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="codebuttons" version="120"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=120"></script>
 <script type="text/javascript">
 	{$editor_language}
-	var clickableEditor = new messageEditor("message", {lang: editor_language, rtl: {$lang->settings['rtl']}});
+	var clickableEditor = new messageEditor("{$bind}", {lang: editor_language, rtl: {$lang->settings['rtl']}});
 	clickableEditor.bindSmilieInserter("clickable_smilies");
 </script>]]></template>
 		<template name="showthread_quickreply" version="120"><![CDATA[<br />
@@ -5714,9 +5714,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="thead" colspan="2"><strong>{$lang->edit_sig}</strong></td>
 </tr>
 <tr>
-<td class="trow1" valign="top" width="40%"><span class="smalltext">{$lang->edit_sig_note}<br /><br />{$lang->edit_sig_note2}</span></td>
-<td class="trow1" width="60%"><textarea rows="5" cols="55" name="signature">{$sig}</textarea>
-<br /><br /><span class="smalltext">
+<td class="trow1" valign="top" width="40%"><span class="smalltext">{$lang->edit_sig_note}</span><br /><br />
+<div style="margin:auto">{$smilieinserter}</div>
+<br /><span class="smalltext">{$lang->edit_sig_note2}</span></td>
+<td class="trow1" width="60%">
+<textarea rows="15" cols="70" id="signature" name="signature">{$sig}</textarea>
+{$codebuttons}
+<br /><span class="smalltext">
 <label><input type="radio" class="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}</label><br />
 <label><input type="radio" class="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}</label><br />
 <label><input type="radio" class="radio" name="updateposts" value="no" checked="checked" />&nbsp;{$lang->leave_sig_settings}</label></span>
