@@ -421,6 +421,19 @@ function perform_search_mysql($search)
 		$post_datecut = " AND p.dateline $datecut";
 		$thread_datecut = " AND t.dateline $datecut";
 	}
+	
+	$thread_replycut = "";
+	if($search['numreplies'] != "" && $search['findthreadst'])
+	{
+		if(intval($search['findthreadst']) == 1)
+		{
+			$thread_replycut = " AND t.replies >= '".intval($search['numreplies'])."'";
+		}
+		else
+		{
+			$thread_replycut = " AND t.replies <= '".intval($search['numreplies'])."'";
+		}
+	}
 
 	$forumin = "";
 	$fidlist = array();
@@ -476,7 +489,7 @@ function perform_search_mysql($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
+			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -490,7 +503,7 @@ function perform_search_mysql($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 $post_datecut $forumin $post_usersql $permsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
+			WHERE 1=1 $post_datecut $thread_replycut $forumin $post_usersql $permsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -512,7 +525,7 @@ function perform_search_mysql($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
+			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -662,6 +675,19 @@ function perform_search_mysql_ft($search)
 		$post_datecut = " AND p.dateline $datecut";
 		$thread_datecut = " AND t.dateline $datecut";
 	}
+	
+	$thread_replycut = "";
+	if($search['numreplies'] != "" && $search['findthreadst'])
+	{
+		if(intval($search['findthreadst']) == 1)
+		{
+			$thread_replycut = " AND t.replies >= '".intval($search['numreplies'])."'";
+		}
+		else
+		{
+			$thread_replycut = " AND t.replies <= '".intval($search['numreplies'])."'";
+		}
+	}
 
 	$forumin = "";
 	$fidlist = array();
@@ -717,7 +743,7 @@ function perform_search_mysql_ft($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
+			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -731,7 +757,7 @@ function perform_search_mysql_ft($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 $post_datecut $forumin $post_usersql $permsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
+			WHERE 1=1 $post_datecut $thread_replycut $forumin $post_usersql $permsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -753,7 +779,7 @@ function perform_search_mysql_ft($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
+			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
 		");
 		while($thread = $db->fetch_array($query))
 		{
