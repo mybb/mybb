@@ -3687,8 +3687,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="forumdisplay_announcements_announcement" version="120"><![CDATA[<tr>
 <td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}" alt=""/></td>
 <td align="center" class="{$bgcolor}">&nbsp;</td>
-<td class="{$bgcolor}"><a href="announcements.php?aid={$announcement['aid']}">{$announcement['subject']}</a></td>
-<td align="center" class="{$bgcolor}"><a href="member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a></td>
+<td class="{$bgcolor}">
+	<a href="announcements.php?aid={$announcement['aid']}">{$announcement['subject']}</a>
+	<div class="author smalltext"><a href="member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a></div>
+</td>
+<td align="center" class="{$bgcolor}"></td>
 <td align="center" class="{$bgcolor}">-</td>
 <td align="center" class="{$bgcolor}">-</td>
 {$rating}
@@ -4306,9 +4309,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
 		{$attachment_count}
-		<div><span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span></div>
+		<div>
+			<span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span>
+			<div class="author smalltext">{$thread['profilelink']}</div>
+		</div>
 	</td>
-	<td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a>{$unapproved_posts}</td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
 	{$rating}

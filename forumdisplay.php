@@ -430,13 +430,13 @@ if($foruminfo['allowtratings'] != "no")
 	$lpbackground = "trow2";
 	eval("\$ratingcol = \"".$templates->get("forumdisplay_threadlist_rating")."\";");
 	eval("\$ratingsort = \"".$templates->get("forumdisplay_threadlist_sortrating")."\";");
-	$colspan = "8";
+	$colspan = "7";
 }
 else
 {
 	$ratingadd = '';
 	$lpbackground = "trow1";
-	$colspan = "7";
+	$colspan = "6";
 }
 
 if($ismod)
