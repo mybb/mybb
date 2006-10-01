@@ -1064,19 +1064,25 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 	$mybb->settings['cookiepath'] = str_replace(array("\n","\r"), "", $mybb->settings['cookiepath']);
 	$mybb->settings['cookiedomain'] = str_replace(array("\n","\r"), "", $mybb->settings['cookiedomain']);
 
-	if(PHP_VERSION >= 5.2)
+	// Versions of PHP prior to 5.2 do not support HttpOnly cookies and IE is buggy when specifying a blank domain so set the cookie manually
+	$cookie = "Set-Cookie: {$name}=".urlencode($value);
+	if($expires > 0)
 	{
-		setcookie($name, $value, $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain'], null, $httponly);
+		$cookie .= "; expires=".gmdate('D, d-M-Y H:i:s \\G\\M\\T', $expires);
 	}
-	else
+	if(!empty($mybb->settings['cookiepath']))
 	{
-		// Versions of PHP prior to 5.2 do not support HttpOnly cookies so if we're using one, tack it on to the end of the domain
-		if($httponly == true)
-		{
-			$mybb->settings['cookiedomain'] .= "; HttpOnly";
-		}
-		setcookie($name, $value, $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);			
+		$cookie .= "; path={$mybb->settings['cookiepath']}";
 	}
+	if(!empty($mybb->settings['cookiedomain']))
+	{
+		$cookie .= "; domain={$mybb->settings['cookiedomain']}";
+	}
+	if($httponly == true)
+	{
+		$cookie .= "; HttpOnly";
+	}
+	header($cookie, false);
 }
 
 /**
@@ -1094,19 +1100,8 @@ function my_unsetcookie($name)
 	}
 
 	$expires = time()-3600;
-	if(!$mybb->settings['cookiepath'])
-	{
-		$mybb->settings['cookiepath'] = "/";
-	}
 
-	if($mybb->settings['cookiedomain'])
-	{
-		@setcookie($name, "", $expires, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
-	}
-	else
-	{
-		@setcookie($name, "", $expires, $mybb->settings['cookiepath']);
-	}
+	my_setcookie($name, "", $expires);
 }
 
 /**

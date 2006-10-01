@@ -5746,7 +5746,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="private_messagebit_denyreceipt" version="120"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=yes">{$lang->deny_receipt}</a></span>]]></template>
 		<template name="private_read_bcc" version="120"><![CDATA[<tr>
-	<td class="trow1"><strong>BCC</strong></td>
+	<td class="trow1"><strong>{$lang->bcc}</strong></td>
 	<td class="trow1">{$bcc_recipients}</td>
 </tr>]]></template>
 		<template name="private_read" version="120"><![CDATA[<html>
