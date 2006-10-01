@@ -3694,7 +3694,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	<a href="announcements.php?aid={$announcement['aid']}" class="{$new_class}">{$announcement['subject']}</a>
 	<div class="author smalltext"><a href="member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a></div>
 </td>
-<td align="center" class="{$bgcolor}"></td>
 <td align="center" class="{$bgcolor}">-</td>
 <td align="center" class="{$bgcolor}">-</td>
 {$rating}
