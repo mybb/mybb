@@ -28,7 +28,7 @@ class UserDataHandler extends DataHandler
 	* @var string
 	*/
 	var $language_prefix = 'userdata';
-	
+
 	/**
 	 * Array of data inserted in to a user.
 	 *
@@ -42,13 +42,13 @@ class UserDataHandler extends DataHandler
 	 * @var array
 	 */
 	var $user_update_data = array();
-	
+
 	/**
 	 * User ID currently being manipulated by the datahandlers.
 	 *
 	 * @var int
 	 */
-	var $uid = 0;	
+	var $uid = 0;
 
 	/**
 	 * Verifies if a username is valid or invalid.
@@ -58,7 +58,7 @@ class UserDataHandler extends DataHandler
 	function verify_username()
 	{
 		global $mybb;
-		
+
 		$username = &$this->data['username'];
 		require_once MYBB_ROOT.'inc/functions_user.php';
 
@@ -324,7 +324,7 @@ class UserDataHandler extends DataHandler
 
 		// Error if a day and month exists, and the birthday day and range is not in range
 		if($birthday['day'] && $birthday['month'])
-		{ 
+		{
 			if($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12 || ($birthday['month'] == 2 && $birthday['day'] > 29))
 			{
 				$this->set_error("invalid_birthday");
@@ -339,14 +339,14 @@ class UserDataHandler extends DataHandler
 				return false;
 			}
 		}
-				
+
 		// Error if a year exists and the year is out of range
 		if($birthday['year'] != 0 && ($birthday['year'] < (date("Y")-100)) || $birthday['year'] > date("Y"))
-		{ 
+		{
 			$this->set_error("invalid_birthday");
 			return false;
 		}
-		
+
 		// Make the user's birthday field
 		if($birthday['year'] != 0)
 		{
@@ -672,7 +672,7 @@ class UserDataHandler extends DataHandler
 			$old_user = get_user($user['uid']);
 		}
 
-		if($this->method == "insert" || array_key_exists('usernane', $user))
+		if($this->method == "insert" || array_key_exists('username', $user))
 		{
 			// If the username is the same - no need to verify
 			if(!$old_user['username'] || $user['username'] != $old_user['username'])
@@ -745,9 +745,9 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_language();
 		}
-		
+
 		$plugins->run_hooks_by_ref("datahandler_user_validate", $this);
-		
+
 		// We are done validating, return.
 		$this->set_validated(true);
 		if(count($this->get_errors()) > 0)
@@ -833,9 +833,9 @@ class UserDataHandler extends DataHandler
 			"notepad" => $db->escape_string($user['notepad']),
 			"referrer" => intval($user['referrer_uid'])
 		);
-		
+
 		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);
-		
+
 		$db->insert_query("users", $this->user_insert_data);
 		$this->uid = $db->insert_id();
 
