@@ -675,7 +675,7 @@ class UserDataHandler extends DataHandler
 			$old_user = get_user($user['uid']);
 		}
 
-		if($this->method == "insert" || array_key_exists('usernane', $user))
+		if($this->method == "insert" || array_key_exists('username', $user))
 		{
 			// If the username is the same - no need to verify
 			if(!$old_user['username'] || $user['username'] != $old_user['username'])
