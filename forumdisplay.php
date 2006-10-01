@@ -464,10 +464,12 @@ while($announcement = $db->fetch_array($query))
 {
 	if($announcement['startdate'] > $mybb->user['lastvisit'])
 	{
+		$new_class = "subject_new";
 		$folder = "newfolder.gif";
 	}
 	else
 	{
+		$new_class = "";
 		$folder = "folder.gif";
 	}
 	$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
@@ -750,12 +752,14 @@ if(is_array($threadcache))
 		{
 			$folder .= "new";
 			$folder_label .= $lang->icon_new;
+			$new_class = "subject_new";
 			eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
 			$unreadpost = 1;
 		}
 		else
 		{
 			$folder_label .= $lang->icon_no_new;
+			$new_class = "";
 		}
 
 		if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews'])

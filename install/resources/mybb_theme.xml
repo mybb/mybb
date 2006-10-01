@@ -445,6 +445,10 @@ form {
 
 .autocomplete {
 	text-align: left;
+}
+
+.subject_new {
+	font-weight: bold;
 }]]></extracss>
 	</themebits>
 	<templates>
@@ -465,8 +469,7 @@ form {
 	</tr>
 	<tr>
 		<td class="tcat" align="center" colspan="2">&nbsp;</td>
-		<td class="tcat" align="center" width="40%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc">{$lang->thread}</a> {$orderarrow['subject']}</strong></span></td>
-		<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
+		<td class="tcat" align="center" width="40%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc">{$lang->thread}</a> {$orderarrow['subject']} / <a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
 		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
 		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a> {$orderarrow['views']}</strong></span></td>
 		{$ratingcol}
@@ -3688,7 +3691,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}" alt=""/></td>
 <td align="center" class="{$bgcolor}">&nbsp;</td>
 <td class="{$bgcolor}">
-	<a href="announcements.php?aid={$announcement['aid']}">{$announcement['subject']}</a>
+	<a href="announcements.php?aid={$announcement['aid']}" class="{$new_class}">{$announcement['subject']}</a>
 	<div class="author smalltext"><a href="member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a></div>
 </td>
 <td align="center" class="{$bgcolor}"></td>
@@ -4310,7 +4313,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	<td class="{$bgcolor}">
 		{$attachment_count}
 		<div>
-			<span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span>
+			<span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}{$new_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span>
 			<div class="author smalltext">{$thread['profilelink']}</div>
 		</div>
 	</td>
