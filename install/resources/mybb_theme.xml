@@ -4313,7 +4313,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	<td class="{$bgcolor}">
 		{$attachment_count}
 		<div>
-			<span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class}{$new_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span>
+			<span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}" class="{$inline_edit_class} {$new_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span>
 			<div class="author smalltext">{$thread['profilelink']}</div>
 		</div>
 	</td>
