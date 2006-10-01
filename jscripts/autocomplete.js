@@ -8,28 +8,11 @@ autoComplete.prototype = {
 		{
 			return false;
 		}
-		
 		this.cache = new Array();
-	
 		this.lastValue = '';
 		this.lastKeycode = 0;
 		this.textbox = $(textbox);
-		this.textbox.setAttribute("autocomplete", "off");
-		this.textbox.autocompletejs = this;
-		Event.observe(this.textbox, "keypress", this.onKeyPress.bindAsEventListener(this));
-		Event.observe(this.textbox, "keyup", this.onKeyUp.bindAsEventListener(this));
-		Event.observe(this.textbox, "keydown", this.onKeyDown.bindAsEventListener(this));
 		this.formSubmit = false;
-		if(this.textbox.form)
-		{
-			if(this.textbox.form.onsubmit)
-			{
-				this.oldOnSubmit = this.textbox.form.onsubmit;
-			}
-			this.formSubmit = true;
-			this.textbox.form.onsubmit = this.onFormSubmit.bindAsEventListener(this);
-		}
-		this.textbox.onsubmit = this.onFormSubmit.bindAsEventListener(this);
 		this.url = url;
 		
 		this.currentIndex = -1;
@@ -44,13 +27,33 @@ autoComplete.prototype = {
 			this.minChars = 3;
 		}
 		this.menuOpen = false;
+		this.timeout = false;
+
+		Event.observe(window, "load", this.init.bindAsEventListener(this));
+	},
+
+	init: function()
+	{
+		this.textbox.setAttribute("autocomplete", "off");
+		this.textbox.autocompletejs = this;
+		Event.observe(this.textbox, "keypress", this.onKeyPress.bindAsEventListener(this));
+		Event.observe(this.textbox, "keyup", this.onKeyUp.bindAsEventListener(this));
+		Event.observe(this.textbox, "keydown", this.onKeyDown.bindAsEventListener(this));
+		if(this.textbox.form)
+		{
+			if(this.textbox.form.onsubmit)
+			{
+				this.oldOnSubmit = this.textbox.form.onsubmit;
+			}
+			this.formSubmit = true;
+			this.textbox.form.onsubmit = this.onFormSubmit.bindAsEventListener(this);
+		}
+		this.textbox.onsubmit = this.onFormSubmit.bindAsEventListener(this);
 		this.popup = document.createElement("div");
 		this.popup.style.position = "absolute";
 		this.popup.className = "autocomplete";
 		this.popup.style.display = "none";
 		document.body.appendChild(this.popup);
-		
-		this.timeout = false;
 
 		this.textbox.popup = this;
 		
