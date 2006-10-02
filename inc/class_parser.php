@@ -86,8 +86,6 @@ class postParser
 
 		// Get rid of cartridge returns for they are the workings of the devil
 		$message = str_replace("\r", "", $message);
-		$message = $this->strip_rtl($message);
-		
 		
 		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
@@ -306,7 +304,9 @@ class postParser
 		// Parse quotes first
 		$message = $this->mycode_parse_quotes($message);
 		
-		$message = $this->mycode_auto_url($message);		
+		$message = $this->mycode_auto_url($message);
+		
+		$message = str_replace('$', '&#36;', $message);		
 
 		// Replace the rest
 		$message = preg_replace($this->mycode_cache['find'], $this->mycode_cache['replacement'], $message);
@@ -734,21 +734,6 @@ class postParser
 		}
 		return $message;
 	}
-	
-	/**
-	 * Strip RTL Unicude
-	 *
-	 */
-	 function strip_rtl($message)
-	 {
-	 	//$message = htmlentities($message);
-		//$message = preg_replace('/[^\x09\x0A\x0D\x20-\x7F]/e', '"&#".ord($0).";"', $message);
-		//$message = str_replace('&#226;&#128;&#174;', '', $message);
-		//$message = str_replace('&#8238;', '', $message);
-		//$message = str_replace('&#x202E', '', $message);
-		//$message = html_entity_decode($message);
-		return $message;
-	 }
 
 	/**
 	 * Strips MyCode.
