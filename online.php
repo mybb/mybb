@@ -209,11 +209,14 @@ else
 	}
 	if($tidsql)
 	{
-		$query = $db->simple_select(TABLE_PREFIX."threads", "fid,tid,subject", "tid IN(0$tidsql) $fidnot");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "fid,tid,subject,visible", "tid IN(0$tidsql) $fidnot");
 		while($thread = $db->fetch_array($query))
 		{
-			$threads[$thread['tid']] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-			$fidsql .= ",$thread[fid]";
+			if(is_moderator($thread['fid']) != "no" || $thread['visible'] != '0')
+			{
+				$threads[$thread['tid']] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+				$fidsql .= ",$thread[fid]";
+			}
 		}
 	}
 	if($fidsql)
