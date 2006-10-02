@@ -306,6 +306,8 @@ class postParser
 		
 		$message = $this->mycode_auto_url($message);		
 
+		$message = str_replace('$', '&#36;', $message);
+		
 		// Replace the rest
 		$message = preg_replace($this->mycode_cache['find'], $this->mycode_cache['replacement'], $message);
 
