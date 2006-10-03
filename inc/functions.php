@@ -2583,7 +2583,6 @@ function get_current_location()
 function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=0)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb;
-
 	if($tid == 0)
 	{
 		$themeselect = "<select name=\"$name\">";
@@ -2600,7 +2599,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		");
 		while($theme = $db->fetch_array($query))
 		{
-			$tcache[] = $theme;
+			$tcache[$theme['pid']][] = $theme;
 		}
 	}
 	if(is_array($tcache))
@@ -2612,40 +2611,42 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 		$in_groups[] = $mybb->user['usergroup'];
 
-		foreach($tcache as $theme)
+		foreach($tcache as $misc)
 		{
-			$sel = "";
-			// Make theme allowed groups into array
-			$is_allowed = false;
-			if($theme['allowedgroups'] != "all" && $theme['allowedgroups'] != "")
+			foreach($misc as $theme)
 			{
-				$allowed_groups = explode(",", $theme['allowedgroups']);
-				// See if groups user is in is allowed
-				foreach($allowed_groups as $agid)
+				$sel = "";
+				// Make theme allowed groups into array
+				$is_allowed = false;
+				if($theme['allowedgroups'] != "all" && $theme['allowedgroups'] != "")
 				{
-					if(in_array($agid, $in_groups))
+					$allowed_groups = explode(",", $theme['allowedgroups']);
+					// See if groups user is in is allowed
+					foreach($allowed_groups as $agid)
 					{
-						$is_allowed = true;
-						break;
+						if(in_array($agid, $in_groups))
+						{
+							$is_allowed = true;
+							break;
+						}
 					}
 				}
-			}
-			
-			// Show theme if allowed, or if override is on
-			if($is_allowed || $theme['allowedgroups'] == "all" || $usergroup_override == 1)
-			{
-				if($theme['tid'] == $selected)
+				// Show theme if allowed, or if override is on
+				if($is_allowed || $theme['allowedgroups'] == "all" || $usergroup_override == 1)
 				{
-					$sel = " selected=\"selected\"";
-				}
-				if($theme['pid'] != 0)
-				{
-					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.$theme['name']."</option>";
-					$depthit = $depth."--";
-				}
-				if(is_array($tcache[$theme['tid']]))
-				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override);
+					if($theme['tid'] == $selected)
+					{
+						$sel = " selected=\"selected\"";
+					}
+					if($theme['pid'] != 0)
+					{
+						$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.$theme['name']."</option>";
+						$depthit = $depth."--";
+					}
+					if(array_key_exists($theme['tid'], $tcache))
+					{
+						build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override);
+					}
 				}
 			}
 		}
