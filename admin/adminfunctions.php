@@ -971,7 +971,7 @@ function makehopper($name, $values, $onchange="")
 {
 	if(!is_array($values))
 	{
-		$values[] = $values;
+		$values = array($values);
 	}
 	foreach($values as $action => $title)
 	{
@@ -980,9 +980,9 @@ function makehopper($name, $values, $onchange="")
 	$buttononchange = "";
 	if($onchange)
 	{
-	  $buttononchange = " onclick=\"{$onchange} this.form.submit(); return false;\"";
-    $onchange .= " ";
-  }
+	  	$buttononchange = " onclick=\"{$onchange} this.form.submit(); return false;\"";
+    	$onchange .= " ";
+  	}
 	return "<select name=\"$name\" onchange=\"{$onchange}this.form.submit();\">\n$options</select>\n&nbsp;\n<input type=\"submit\" value=\"Go\"$buttononchange />\n";
 }
 
