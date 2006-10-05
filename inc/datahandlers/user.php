@@ -448,7 +448,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_referrer()
 	{
-		global $db;
+		global $db, $mybb;
 
 		$user = &$this->data;
 
