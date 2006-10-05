@@ -64,17 +64,11 @@ class templates
 	 */
 	function get($title, $eslashes=1, $htmlcomments=1)
 	{
-		global $db, $theme, $PHP_SELF, $mybb;
+		global $db, $theme, $mybb;
 		if(!isset($this->cache[$title]))
 		{
-			$query = $db->query("
-				SELECT template
-				FROM ".TABLE_PREFIX."templates
-				WHERE title='$title'
-				AND sid IN ('-2','-1','".$theme['templateset']."')
-				ORDER BY sid DESC
-				LIMIT 0, 1
-			");
+			$query = $db->simple_select("templates", "template", "title='$title' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
+
 			$gettemplate = $db->fetch_array($query);
 			if($mybb->debug)
 			{
@@ -89,7 +83,7 @@ class templates
 		}
 		if($eslashes)
 		{
-			$template = str_replace("\\'", "'", $db->escape_string($template));
+			$template = str_replace("\\'", "'", addslashes($template));
 		}
 		return $template;
 	}

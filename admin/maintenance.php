@@ -249,7 +249,10 @@ if($mybb->input['action'] == "do_recountpostcounts")
 	{
 		$fids[] = $forum['fid'];
 	}
-	$fids = implode(',', $fids);
+	if(is_array($fids))
+    {
+        $fids = implode(',', $fids);
+    }
 	if($fids)
 	{
 		$fids = " AND FID NOT IN($fids)";

@@ -296,7 +296,7 @@ function requirements_check()
 		@chmod(MYBB_ROOT.'/uploads/avatars', 0777);
 	  	@chmod(MYBB_ROOT.'/uploads/avatars/test.write', 0777);
 		@unlink(MYBB_ROOT.'/uploads/avatars/test.write');
-  }
+  	}
 
 
 	// Output requirements page
@@ -447,10 +447,10 @@ function create_tables()
 
 	$output->print_header($lang->table_creation, 'createtables');
 	echo sprintf($lang->tablecreate_step_connected, $dboptions[$mybb->input['dbengine']]['title'], $db->get_version());
-
-	if($dboptions[$config['dbtype']]['structure_file'])
+	
+	if($dboptions[$mybb->input['dbengine']]['structure_file'])
 	{
-		$structure_file = $dboptions[$config['dbtype']]['structure_file'];
+		$structure_file = $dboptions[$mybb->input['dbengine']]['structure_file'];
 	}
 	else
 	{
@@ -464,7 +464,10 @@ function create_tables()
 		preg_match('#CREATE TABLE (\S+) \(#i', $val, $match);
 		if($match[1])
 		{
-			$db->query('DROP TABLE IF EXISTS '.$match[1]);
+			if($db->table_exists($match[1]))
+			{
+				$db->query('DROP TABLE '.$match[1]);
+			}
 			echo sprintf($lang->tablecreate_step_created, $match[1]);
 		}
 		$db->query($val);
@@ -918,7 +921,7 @@ function write_settings()
 {
 	global $db;
 	
-	$query = $db->simple_select("settings", "*", "", array('order_by' => 'title'));
+	$query = $db->simple_select('settings', '*', '', array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{
 		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);

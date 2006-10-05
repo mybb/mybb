@@ -971,7 +971,7 @@ function makehopper($name, $values, $onchange="")
 {
 	if(!is_array($values))
 	{
-		$values[] = $values;
+		$values = array($values);
 	}
 	foreach($values as $action => $title)
 	{

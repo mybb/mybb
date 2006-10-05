@@ -55,7 +55,7 @@ if(!isset($config['admin_dir']))
 }
 $mybb->config = $config;
 
-if(!function_exists($config['dbtype']."_connect"))
+if(!function_exists($config['dbtype']."_connect") && !function_exists($config['dbtype']."_open"))
 {
 	$config['dbtype'] = "mysql";
 }
