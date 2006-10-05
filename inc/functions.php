@@ -14,12 +14,12 @@
  *
  * @param string The contents of the page.
  */
- 
+
 function output_page($contents)
 {
 	global $db, $lang, $theme, $plugins, $mybb;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
-	
+
 	$contents = parse_page($contents);
 	$totaltime = $maintimer->stop();
 	if($mybb->usergroup['cancp'] == "yes")
@@ -155,9 +155,9 @@ function send_mail_queue($count=10)
 
 		// Fetch emails for this page view - and send them
 		$query = $db->simple_select("mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
-		
+
 		$plugins->run_hooks_by_ref("send_mail_queue_mail", $query);
-		
+
 		while($email = $db->fetch_array($query))
 		{
 			// Delete the message from the queue
@@ -276,7 +276,7 @@ function my_date($format, $stamp="", $offset="", $ty=1)
 			$date = $lang->yesterday;
 		}
 	}
-	
+
 	$plugins->run_hooks_by_ref("my_date", $date);
 
 	return $date;
@@ -1060,7 +1060,7 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 	{
 		$expires = time() + intval($expires);
 	}
-	
+
 	$mybb->settings['cookiepath'] = str_replace(array("\n","\r"), "", $mybb->settings['cookiepath']);
 	$mybb->settings['cookiedomain'] = str_replace(array("\n","\r"), "", $mybb->settings['cookiedomain']);
 
@@ -1068,7 +1068,7 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 	$cookie = "Set-Cookie: {$name}=".urlencode($value);
 	if($expires > 0)
 	{
-		$cookie .= "; expires=".gmdate('D, d-M-Y H:i:s \\G\\M\\T', $expires);
+		$cookie .= "; expires=".@gmdate('D, d-M-Y H:i:s \\G\\M\\T', $expires);
 	}
 	if(!empty($mybb->settings['cookiepath']))
 	{
@@ -1093,13 +1093,13 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 function my_unsetcookie($name)
 {
 	global $mybb, $sent_header;
-	
+
 	if($sent_header)
 	{
 		return false;
 	}
 
-	$expires = time()-3600;
+	$expires = -3600;
 
 	my_setcookie($name, "", $expires);
 }
@@ -1284,13 +1284,13 @@ function update_thread_count($tid)
 	{
 		$lastpost['username'] = $lastpost['postusername'];
 	}
-	
+
 	if(!$lastpost['dateline'])
 	{
 		$lastpost['username'] = $firstpost['username'];
 		$lastpost['uid'] = $firstpost['uid'];
 		$lastpost['dateline'] = $firstpost['dateline'];
-	}	
+	}
 
 	$lastpost['username'] = $db->escape_string($lastpost['username']);
 	$firstpost['username'] = $db->escape_string($firstpost['username']);
