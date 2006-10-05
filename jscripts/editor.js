@@ -141,6 +141,7 @@ messageEditor.prototype = {
 		// Create the font drop down.
 		fontSelect = document.createElement("select");
 		fontSelect.style.margin = "2px";
+		fontSelect.id = "font";
 		fontSelect.options[fontSelect.options.length] = new Option(this.options.lang.font, "-");
 		for(font in this.fonts)
 		{
@@ -152,6 +153,7 @@ messageEditor.prototype = {
 		// Create the font size drop down.
 		sizeSelect = document.createElement("select");
 		sizeSelect.style.margin = "2px";
+		sizeSelect.id = "size";
 		sizeSelect.options[sizeSelect.options.length] = new Option(this.options.lang.size, "-");
 		for(size in this.sizes)
 		{
@@ -163,6 +165,7 @@ messageEditor.prototype = {
 		// Create the colour drop down.
 		colorSelect = document.createElement("select");
 		colorSelect.style.margin = "2px";
+		colorSelect.id = "color";
 		colorSelect.options[colorSelect.options.length] = new Option(this.options.lang.color, "-");
 		for(color in this.colors)
 		{
@@ -728,9 +731,17 @@ messageEditor.prototype = {
 				tag = MyBB.arrayPop(this.openTags);
 				exploded_tag = tag.split("_");
 				this.performInsert("[/"+exploded_tag[0]+"]", "", false);
-				if($(tag))
+				if($(exploded_tag[0]))
 				{
-					DomLib.removeClass($(tag), "toolbar_clicked");
+					tag = $(exploded_tag[0]);
+					if(tag.type == "select-one")
+					{
+						tag.selectedIndex = 0;
+					}
+					else
+					{
+						DomLib.removeClass($(tag), "toolbar_clicked");
+					}
 				}
 			}
 		}

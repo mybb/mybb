@@ -526,3 +526,4 @@ class session
 		return $array;
 	}
 }
+?>
