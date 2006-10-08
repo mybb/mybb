@@ -324,7 +324,7 @@
 		</setting>
 		<setting name="showforumviewing">
 			<title>Show x viewing forum</title>
-			<description><![CDATA[Displayes the currently active users viewing each forum.]]></description>
+			<description><![CDATA[Displays the currently active users viewing each forum.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[no]]></settingvalue>

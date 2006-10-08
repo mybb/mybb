@@ -1620,7 +1620,7 @@ var inlineId = {$fid};
 <td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
 <td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
-		<template name="forumbit_depth3" version="120"><![CDATA[{$comma}{$statusicon}<a href="forumdisplay.php?fid={$forum['fid']}" alt="{$forum_viewers_text}">{$forum['name']}</a>]]></template>
+		<template name="forumbit_depth3" version="120"><![CDATA[{$comma}{$statusicon}<a href="forumdisplay.php?fid={$forum['fid']}" title="{$forum_viewers_text}">{$forum['name']}</a>]]></template>
 		<template name="forumbit_depth3_statusicon" version="120"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" />]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
 		<template name="private_empty" version="120"><![CDATA[<html>
@@ -2987,7 +2987,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="postbit_avatar" version="120"><![CDATA[<img src="{$post['avatar']}" alt="" {$avatar_width_height} />]]></template>
 		<template name="usercp_profile_customfield" version="120"><![CDATA[<tr>
 <td><span class="smalltext">
-<a title="{$profilefield['description']}">{$profilefield['name']}</a>:</span></td>
+<a title="{$profilefield['description']}" style="text-decoration: none;">{$profilefield['name']}</a>:</span></td>
 </tr>
 <tr>
 <td>{$code}</td>
@@ -3774,7 +3774,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </head>
 <body>
 {$header}
-<form method="post" action="search.php"><input type="hidden" name="action" value="do_search" />
+<form method="post" action="search.php">
+<input type="hidden" name="action" value="do_search" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$mybb->settings['bbname']} - {$lang->search}</strong></td>
@@ -3795,7 +3796,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td>
 <td class="trow1">
 <table><tr>
-<td class="trow1"><input type="text" class="textbox" name="author" size="35" maxlength="{$mybb->settings['maxnamelength']}" /><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked="checked" />&nbsp; {$lang->match_username}</span></td>
+<td class="trow1"><input type="text" class="textbox" id="author" name="author" size="35" maxlength="{$mybb->settings['maxnamelength']}" /><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked="checked" />&nbsp; {$lang->match_username}</span></td>
 <td class="trow1">&nbsp;</td>
 </tr></table>
 </td>
@@ -3846,6 +3847,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
+<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+<script type="text/javascript">
+	new autoComplete("author", "xmlhttp.php?action=get_users", {valueSpan: "username"});
+</script>
 </body>
 </html>
 ]]></template>
