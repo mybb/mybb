@@ -8,10 +8,11 @@ autoComplete.prototype = {
 		{
 			return false;
 		}
-		
+    		
 		this.cache = new Array();
 		this.lastValue = '';
 		this.lastKeycode = 0;
+		this.textbox = $(textbox);
 		this.formSubmit = false;
 		this.url = url;
 		
@@ -36,9 +37,8 @@ autoComplete.prototype = {
 		Event.observe(window, "load", this.init.bindAsEventListener(this));
 	},
 
-	init()
+	init: function()
 	{
-		this.textbox = $(textbox);
 		this.textbox.setAttribute("autocomplete", "off");
 		this.textbox.autocompletejs = this;
 		Event.observe(this.textbox, "keypress", this.onKeyPress.bindAsEventListener(this));
