@@ -832,13 +832,13 @@ class Moderation
 
 		$where = "pid IN (".implode(",", $pids).")";
 
-		// Make visible
+		// Make invisible
 		$unapprove = array(
 			"visible" => 0,
 		);
 		$db->update_query("posts", $unapprove, $where);
 
-		// If this is the first post of the thread, also approve the thread
+		// If this is the first post of the thread, also unapprove the thread
 		$query = $db->simple_select("posts", "tid", "pid='{$thread['firstpost']}' AND visible='0'");
 		$first_post = $db->fetch_array($query);
 		if($first_post['tid'])

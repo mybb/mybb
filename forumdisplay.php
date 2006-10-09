@@ -258,7 +258,7 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 $bgcolor = "trow1";
 
 // Set here to fetch only approved topics (and then below for a moderator we change this).
-$visibleonly = "AND t.visible='1'";
+$visibleonly = "AND visible='1'";
 
 // Check if the active user is a moderator and get the inline moderation tools.
 if(is_moderator($fid) == "yes")
@@ -267,7 +267,7 @@ if(is_moderator($fid) == "yes")
 	$ismod = true;
 	$inlinecount = "0";
 	$inlinecookie = "inlinemod_forum".$fid;
-	$visibleonly = " AND (t.visible='1' OR t.visible='0')";
+	$visibleonly = " AND (visible='1' OR visible='0')";
 }
 else
 {
@@ -319,7 +319,7 @@ $datecutsel[$datecut] = "selected=\"selected\"";
 if($datecut != 9999)
 {
 	$checkdate = time() - ($datecut * 86400);
-	$datecutsql = "AND t.lastpost >= '$checkdate'";
+	$datecutsql = "AND lastpost >= '$checkdate'";
 }
 else
 {
@@ -355,26 +355,26 @@ if(!isset($mybb->input['sortby']) && !empty($foruminfo['defaultsortby']))
 switch($mybb->input['sortby'])
 {
 	case "subject":
-		$sortfield = "t.subject";
+		$sortfield = "subject";
 		break;
 	case "replies":
-		$sortfield = "t.replies";
+		$sortfield = "replies";
 		break;
 	case "views":
-		$sortfield = "t.views";
+		$sortfield = "views";
 		break;
 	case "starter":
-		$sortfield = "t.username";
+		$sortfield = "username";
 		break;
 	case "rating":
 		$sortfield = "averagerating";
 		break;
 	case "started":
-		$sortfield = "t.dateline";
+		$sortfield = "dateline";
 		break;
 	default:
 		$mybb->input['sortby'] = "lastpost";
-		$sortfield = "t.lastpost";
+		$sortfield = "lastpost";
 		break;
 }
 
@@ -393,7 +393,7 @@ else
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 // How many pages are there?
-$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.fid = '$fid' $visibleonly $datecutsql");
+$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $datecutsql");
 $threadcount = $db->fetch_field($query, "threads");
 
 $perpage = $mybb->settings['threadsperpage'];
@@ -456,7 +456,7 @@ $time = time();
 $query = $db->query("
 	SELECT a.*, u.username
 	FROM ".TABLE_PREFIX."announcements a
-	LEFT JOIN ".TABLE_PREFIX."users u ON u.uid=a.uid
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 	WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND ($sql OR fid='-1')
 	ORDER BY a.startdate DESC $limit
 ");

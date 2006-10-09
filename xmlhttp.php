@@ -18,8 +18,7 @@
  * This is done to make response times when using XML HTTP Requests faster and
  * less intense on the server.
  */
-
-
+ 
 define("IN_MYBB", 1);
 
 // We don't want visits here showing up on the Who's Online

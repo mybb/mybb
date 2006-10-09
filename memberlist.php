@@ -48,7 +48,7 @@ if($mybb->input['by'] != "regdate" && $mybb->input['by'] != "postnum" && $mybb->
 	}
 }
 
-if($mybb->input['order'] != "DESC" && $mybb->input['order'] != "ASC")
+if(strtoupper($mybb->input['order']) != "DESC" && strtoupper($mybb->input['order']) != "ASC")
 {
 	// top posters first
 	if($mybb->input['by'] == "postnum")
@@ -97,7 +97,7 @@ else
 {
 	$regdatesel = " selected=\"selected\"";
 }
-if($mybb->input['order'] == "DESC")
+if(strtoupper($mybb->input['order']) == "DESC")
 {
 	$descsel = " selected=\"selected\"";
 }

@@ -170,7 +170,7 @@ function build_postbit($post, $post_type=0)
 	{ // This post was made by a registered user
 
 		$post['username'] = $post['userusername'];
-		$post['profilelink'] = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\">".format_name($post['username'], $post['usergroup'], $post['displaygroup'])."</a>";
+		$post['profilelink'] = build_profile_link(format_name($post['username'], $post['usergroup'], $post['displaygroup']), $post['uid']);
 		if(trim($post['usertitle']) != "")
 		{
 			$hascustomtitle = 1;

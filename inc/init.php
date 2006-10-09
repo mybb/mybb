@@ -55,10 +55,32 @@ if(!isset($config['admin_dir']))
 }
 $mybb->config = $config;
 
-if(!function_exists($config['dbtype']."_connect") && !function_exists($config['dbtype']."_open"))
+// This stuff is killing me for the moment. We need a better way of checking :S
+/*
+if($config['dbtype'] == 'pgsql')
+{
+	if(!extension_loaded('pgsql')) 
+	{
+   		if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') 
+		{
+       		@dl('php_pgsql.dll');
+   		} 
+		else 
+		{
+       		@dl('pgsql.so');
+   		}
+	}
+	
+	if(!function_exists('pg_connect'))
+	{
+		$config['dbtype'] = "mysql";
+	}
+}
+elseif(!function_exists($config['dbtype']."_connect") && !function_exists($config['dbtype']."_open"))
 {
 	$config['dbtype'] = "mysql";
 }
+*/
 
 require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine;
@@ -112,7 +134,12 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 		rebuildsettings();
 	}
 }
+
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;
+
+require_once MYBB_ROOT."inc/function_error.php";
+set_error_handler('error_handler');
+
 $mybb->settings = &$settings;
 $mybb->config = &$config;
 $mybb->cache = &$cache;
@@ -158,4 +185,5 @@ define('FORUM_URL_PAGED', "forumdisplay.php?fid={fid}&page={page}");
 define('THREAD_URL', "showthread.php?tid={tid}");
 define('THREAD_URL_PAGED', "showthread.php?tid={tid}&page={page}");
 define('INDEX_URL', "index.php");
+
 ?>

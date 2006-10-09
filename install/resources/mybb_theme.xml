@@ -3597,7 +3597,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </select> {$lang->sort_in} <select name="order">
 <option value="ASC"{$ascsel}>{$lang->sort_asc}</option>
 <option value="DESC"{$descsel}>{$lang->sort_desc}</option>
-</select> {$lang->order} {$lang->search_for} <input type="text" class="textbox" name="usersearch" value="{$usersearch}" size="20" /> {$gobutton}
+</select> {$lang->order} {$lang->search_for} <input type="text" class="textbox" id="usersearch" name="usersearch" value="{$usersearch}" size="20" /> {$gobutton}
 </form>
 </td>
 </tr>
@@ -3607,6 +3607,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td align="right">{$multipage}</td>
 </tr></table>
 {$footer}
+<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+<script type="text/javascript">
+	new autoComplete("usersearch", "xmlhttp.php?action=get_users", {valueSpan: "username"});
+</script>
 </body>
 </html>]]></template>
 		<template name="private" version="120"><![CDATA[<html>

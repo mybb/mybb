@@ -1188,4 +1188,44 @@ admin=Administrator Activation]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
+	<settinggroup name="errorhandling" title="Error Handling" description="These settings allow you to specify how to handle a PHP or MySQL error" disporder="15" isdefault="yes">
+		<setting name="useerrorhandling">
+			<title>Use Error Handling</title>
+			<description><![CDATA[If you do not wish to use the integrated error handling for MyBB, you may turn this option off. However, it is reccommended that it stay on]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[onoff]]></optionscode>
+			<settingvalue><![CDATA[on]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="errorlogmedium">
+			<title>Error Logging Medium</title>
+			<description><![CDATA[The location of the log to send errors to, if specified.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[php
+<select name=\"upsetting[{$setting['sid']}]\">
+<option value=\"0\" ".($setting['value'] == 0?"selected=\"selected\"":"").">Log errors</option>
+<option value=\"1\" ".($setting['value'] == 1?"selected=\"selected\"":"").">Email errors</option>
+<option value=\"2\" ".($setting['value'] == 2?"selected=\"selected\"":"").">Log and email errors</option>
+</select>]]></optionscode>
+			<settingvalue><![CDATA[+0]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="errorhandlingemail">
+			<title>Error Handling E-mail Address</title>
+			<description><![CDATA[The E-mail address to send errors to, if specified.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="errorloglocation">
+			<title>Error Logging Location</title>
+			<description><![CDATA[The location of the log to send errors to, if specified.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[php 
+<input type=\"text\" name=\"upsetting[{$setting['sid']}]\" value=\"/error.log\" />]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+	</settinggroup>
 </settings>

@@ -288,11 +288,11 @@ elseif($mybb->input['action'] == "buddypopup")
 			}
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == "no" || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
-				eval("\{$buddys['online']} .= \"".$templates->get("misc_buddypopup_user_online")."\";");
+				eval("\$buddys['online'] .= \"".$templates->get("misc_buddypopup_user_online")."\";");
 			}
 			else
 			{
-				eval("\{$buddys['offline']} .= \"".$templates->get("misc_buddypopup_user_offline")."\";");
+				eval("\$buddys['offline'] .= \"".$templates->get("misc_buddypopup_user_offline")."\";");
 			}
 		}
 	}

@@ -313,7 +313,7 @@ if($mybb->input['action'] == "send")
 			}
 			elseif($mybb->input['do'] == "reply")
 			{
-				$pm_toids = split(',', $pm['toid']);
+				$pm_toids = explode(',', $pm['toid']);
 				foreach($pm_toids as $key => $pm_toid)
 				{
 					if($pm_toid != $mybb->user['uid'])
@@ -329,11 +329,24 @@ if($mybb->input['action'] == "send")
 			}
 		}
 	}
+	
+	if($mybb->input['uids'])
+	{
+		$mybb->input['uid'] = $mybb->input['uids'];
+	}
+	
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
-		$query = $db->simple_select("users", "username", "uid='".$db->escape_string($mybb->input['uid'])."'");
-		$user = $db->fetch_field($query, "username");
-		$to = $user['username'];
+		$userids = explode(',', $mybb->input['uid']);
+		$to = '';
+		foreach($userids as $key => $userid)
+		{
+			$query = $db->simple_select("users", "username", "uid='".$db->escape_string($userid)."'");
+			if($db->num_rows($query) == 1)
+			{
+				$to .= $db->fetch_field($query, "username").', ';
+			}
+		}
 	}
 	
 	$max_recipients = '';
