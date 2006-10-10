@@ -137,9 +137,6 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;
 
-require_once MYBB_ROOT."inc/function_error.php";
-set_error_handler('error_handler');
-
 $mybb->settings = &$settings;
 $mybb->config = &$config;
 $mybb->cache = &$cache;

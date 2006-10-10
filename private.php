@@ -313,14 +313,6 @@ if($mybb->input['action'] == "send")
 			}
 			elseif($mybb->input['do'] == "reply")
 			{
-				$pm_toids = explode(',', $pm['toid']);
-				foreach($pm_toids as $key => $pm_toid)
-				{
-					if($pm_toid != $mybb->user['uid'])
-					{
-						$extrausers .= " OR uid='$pm_toid'";
-					}
-				}
 				$subject = "Re: $subject";
 				$uid = $pm['fromid'];
 				$query = $db->simple_select("users", "username", "uid='".$uid."'$extrausers");
@@ -329,24 +321,11 @@ if($mybb->input['action'] == "send")
 			}
 		}
 	}
-	
-	if($mybb->input['uids'])
-	{
-		$mybb->input['uid'] = $mybb->input['uids'];
-	}
-	
+
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
-		$userids = explode(',', $mybb->input['uid']);
-		$to = '';
-		foreach($userids as $key => $userid)
-		{
-			$query = $db->simple_select("users", "username", "uid='".$db->escape_string($userid)."'");
-			if($db->num_rows($query) == 1)
-			{
-				$to .= $db->fetch_field($query, "username").', ';
-			}
-		}
+		$query = $db->simple_select("users", "username", "uid='".$db->escape_string($mybb->input['uid'])."'");
+		$to = $db->fetch_field($query, "username").', ';
 	}
 	
 	$max_recipients = '';
