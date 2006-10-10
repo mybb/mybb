@@ -124,7 +124,7 @@ function checkbanned()
 	$query = $db->simple_select("banned", "*", "lifted<='{$time}' AND lifted!='perm'");
 	while($banned = $db->fetch_array($query))
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='{$banned['oldgroup']}' WHERE uid='{$banned['uid']}'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='{$banned['oldgroup']}', additionalgroups='{$banned['oldadditionalgroups']}', displaygroup='{$banned['olddisplaygroup']}' WHERE uid='{$banned['uid']}'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='{$banned['uid']}'");
 	}
 }
@@ -923,7 +923,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$user['style'] = 0;
 	}
-	makeselectcode($lang->style, "stylesel", "themes", "tid", "name", $user['style'], $lang->use_default, '', "tid>1");
+	makeselectcode($lang->style, "style", "themes", "tid", "name", $user['style'], $lang->use_default, '', "tid>1"); 
 	maketextareacode($lang->signature, "signature", $user['signature'], 6, 50);
 	if(!$user['regip']) { $user['regip'] = "&nbsp;"; }
 	makelabelcode($lang->reg_ip, $user['regip']);
@@ -1776,7 +1776,7 @@ if($mybb->input['action'] == "do_manageban")
 	$now = time();
 	$groupupdate = array(
 		"usergroup" => intval($mybb->input['usergroup'])
-		);
+	);
 	$db->update_query("users", $groupupdate, "uid='".$user['uid']."'");
 	if($bancheck['uid'])
 	{
@@ -1787,7 +1787,7 @@ if($mybb->input['action'] == "do_manageban")
 			"bantime" => $db->escape_string($mybb->input['liftafter']),
 			"lifted" => $liftdate,
 			"reason" => $db->escape_string($mybb->input['banreason'])
-			);
+		);
 
 		$db->update_query("banned", $banneduser, "uid='".$user['uid']."'");
 		cpredirect("users.php?".SID."&action=banned", $lang->ban_updated);
@@ -1803,7 +1803,7 @@ if($mybb->input['action'] == "do_manageban")
 			"bantime" => $db->escape_string($mybb->input['liftafter']),
 			"lifted" => $liftdate,
 			"reason" => $db->escape_string($mybb->input['banreason'])
-			);
+		);
 		$db->insert_query("banned", $banneduser);
 		cpredirect("users.php?".SID."&action=banned", $lang->ban_added);
 	}
@@ -1820,7 +1820,11 @@ if($mybb->input['action'] == "liftban")
 	{
 		cperror($lang->error_not_banned);
 	}
-	$groupupdate = array('usergroup' => $ban['oldgroup']);
+	$groupupdate = array(
+		'usergroup' => $ban['oldgroup'],
+		'additionalgroups' => $ban['oldadditionalgroups'],
+		'displaygroup' => $ban['olddisplaygroup']
+	);
 	$db->update_query("users", $groupupdate, "uid='".intval($mybb->input['uid'])."'");
 	$db->delete_query("banned", "uid='".intval($mybb->input['uid'])."'");
 	cpredirect("users.php?".SID."&action=banned", $lang->ban_lifted);
@@ -1952,7 +1956,7 @@ if($mybb->input['action'] == "banned")
 	cpfooter();
 }
 
-if ($mybb->input['action'] == "search" || !$mybb->input['action'])
+if($mybb->input['action'] == "search" || !$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_users_search");
 	if(!$noheader)

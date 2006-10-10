@@ -123,6 +123,8 @@ $tables[] = "CREATE TABLE mybb_banned (
   uid int unsigned NOT NULL default '0',
   gid int unsigned NOT NULL default '0',
   oldgroup int unsigned NOT NULL default '0',
+  oldadditionalgroups text NOT NULL default '',
+  olddisplaygroup int NOT NULL default '0',
   admin int unsigned NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
   bantime varchar(50) NOT NULL default '',
