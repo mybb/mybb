@@ -13,6 +13,9 @@ define("IN_MYBB", 1);
 
 require_once "./global.php";
 
+// Hey, don't blame me - it works
+$db->query("SET SQL_BIG_SELECTS=1");
+
 // Just a little fix here
 $db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title=''");
 
