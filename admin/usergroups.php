@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2006 MyBB Group, All Rights Reserved
+ * Copyright ï¿½ 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -131,7 +131,7 @@ if($mybb->input['action'] == "do_add")
 		"cantrackpms" => $db->escape_string($mybb->input['cantrackpms']),
 		"candenypmreceipts" => $db->escape_string($mybb->input['candenypmreceipts']),
 		"pmquota" => intval($mybb->input['pmquota']),
-		"maxpmrecipients", intval($mybb->input['maxpmrecipients']),
+		"maxpmrecipients" => intval($mybb->input['maxpmrecipients']),
 		"cansendemail" => $db->escape_string($mybb->input['cansendemail']),
 		"canviewmemberlist" => $db->escape_string($mybb->input['canviewmemberlist']),
 		"canviewcalendar" => $db->escape_string($mybb->input['canviewcalendar']),
