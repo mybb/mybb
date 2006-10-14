@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2006 MyBB Group, All Rights Reserved
+ * Copyright ï¿½ 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -71,7 +71,8 @@ class PMDataHandler extends DataHandler
 		// No subject, apply the default [no subject]
 		if(!$subject)
 		{
-			$subject = "[no subject]";
+			$this->set_error("missing_subject");
+			return false;
 		}
 		return true;
 	}
