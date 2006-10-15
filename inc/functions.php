@@ -17,7 +17,7 @@
 
 function output_page($contents)
 {
-	global $db, $lang, $theme, $plugins, $mybb, $error_handler;
+	global $db, $lang, $theme, $plugins, $mybb;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
 	$contents = parse_page($contents);

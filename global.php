@@ -91,7 +91,21 @@ if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 	$loadstyle = "tid='".$mybb->user['style']."'";
 }
 
-if(stripos('forumdisplay.php', $_SERVER['SCRIPT_NAME']) !== false)
+
+$valid = array(
+	"showthread.php", 
+	"forumdisplay.php",
+	"newthread.php",
+	"newreply.php",
+	"ratethread",
+	"editpost.php",
+	"polls.php",
+	"sendthread.php",
+	"printthread.php",
+	"moderation.php"	
+);
+
+if(in_array(strtolower($_SERVER['php_self']), $valid))
 {
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
 	if(isset($mybb->input['pid']))
