@@ -91,28 +91,31 @@ if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 	$loadstyle = "tid='".$mybb->user['style']."'";
 }
 
-// If we're accessing a post, fetch the forum theme for it and if we're overriding it
-if(isset($mybb->input['pid']))
+if(stripos('forumdisplay.php', $_SERVER['SCRIPT_NAME']) !== false)
 {
-	$query = $db->simple_select("forums f, ".TABLE_PREFIX."posts p", "f.style, f.overridestyle", "f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'");
-	$style = $db->fetch_array($query);
-	$load_from_forum = 1;
-}
-
-// We have a thread id and a forum id, we can easily fetch the theme for this forum
-else if(isset($mybb->input['tid']))
-{
-	$query = $db->simple_select("forums f, ".TABLE_PREFIX."threads t", "f.style, f.overridestyle", "f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'");
-	$style = $db->fetch_array($query);
-	$load_from_forum = 1;
-}
-
-// We have a forum id - simply load the theme from it
-else if(isset($mybb->input['fid']))
-{
-	$query = $db->simple_select("forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'");
-	$style = $db->fetch_array($query);
-	$load_from_forum = 1;
+	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
+	if(isset($mybb->input['pid']))
+	{
+		$query = $db->simple_select("forums f, ".TABLE_PREFIX."posts p", "f.style, f.overridestyle", "f.fid=p.fid AND p.pid='".intval($mybb->input['pid'])."'");
+		$style = $db->fetch_array($query);
+		$load_from_forum = 1;
+	}
+	
+	// We have a thread id and a forum id, we can easily fetch the theme for this forum
+	else if(isset($mybb->input['tid']))
+	{
+		$query = $db->simple_select("forums f, ".TABLE_PREFIX."threads t", "f.style, f.overridestyle", "f.fid=t.fid AND t.tid='".intval($mybb->input['tid'])."'");
+		$style = $db->fetch_array($query);
+		$load_from_forum = 1;
+	}
+	
+	// We have a forum id - simply load the theme from it
+	else if(isset($mybb->input['fid']))
+	{
+		$query = $db->simple_select("forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'");
+		$style = $db->fetch_array($query);
+		$load_from_forum = 1;
+	}
 }
 
 // From all of the above, a theme was found

@@ -17,7 +17,7 @@
 
 function output_page($contents)
 {
-	global $db, $lang, $theme, $plugins, $mybb;
+	global $db, $lang, $theme, $plugins, $mybb, $error_handler;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
 	$contents = parse_page($contents);
@@ -61,6 +61,7 @@ function output_page($contents)
 			debug_page();
 		}
 	}
+	
 	$contents = str_replace("<debugstuff>", "", $contents);
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
@@ -90,15 +91,19 @@ function output_page($contents)
  * Adds a function to the list of functions to run on shutdown.
  *
  * @param string The name of the function.
+ * @return boolean True if function exists, otherwise false.
  */
 function add_shutdown($name)
 {
 	global $shutdown_functions;
-
+	
 	if(function_exists($name))
 	{
 		$shutdown_functions[$name] = $name;
+		return true;
 	}
+	
+	return false;
 }
 
 /**
@@ -179,7 +184,7 @@ function send_mail_queue($count=10)
  */
 function parse_page($contents)
 {
-	global $db, $lang, $theme, $mybb, $htmldoctype, $loadpmpopup, $archive_url;
+	global $db, $lang, $theme, $mybb, $htmldoctype, $loadpmpopup, $archive_url, $error_handler;
 
 	$contents = str_replace('<navigation>', build_breadcrumb(1), $contents);
 	$contents = str_replace('<archive_url>', $archive_url, $contents);
@@ -199,6 +204,11 @@ function parse_page($contents)
 	if($lang->settings['htmllang'])
 	{
 		$contents = str_replace("<html", "<html lang=\"".$lang->settings['htmllang']."\"", $contents);
+	}
+	
+	if($error_handler->warnings)
+	{
+		$contents = str_replace("<body>", "<body>\n".$error_handler->show_warnings(), $contents);
 	}
 
 	if($loadpmpopup)

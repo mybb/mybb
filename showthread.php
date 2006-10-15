@@ -678,6 +678,12 @@ if($mybb->input['action'] == "thread")
 			// If there are no pid's the thread is probably awaiting approval.
 			error($lang->error_invalidthread);
 		}
+		
+		// If we have terms to highlight, fetch them.
+		if(!empty($mybb->input['highlight']))
+		{	
+			$highlight = explode(' ', htmlspecialchars(urldecode($mybb->input['highlight'])));			
+		}
 
 		// Get the actual posts from the database here.
 		$pfirst = true;

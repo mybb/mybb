@@ -88,4 +88,7 @@ $l['month_11'] = "November";
 $l['month_12'] = "December";
 
 $l['parentforum_none'] = "None";
+
+$l['unknown_user_trigger'] = "An unknown error has been triggered.";
+$l['warnings'] = "The following warnings occured:";
 ?>

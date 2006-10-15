@@ -137,6 +137,11 @@ if($mybb->input['previewpost'])
 	$mybb->input['action'] = "newreply";
 }
 
+if((empty($_POST) && empty($_FILES)) && $mybb->input['proccessed'] == '1')
+{
+	error($lang->error_cannot_upload_php_post);
+}
+
 if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newreply" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
 	// If there's an attachment, check it and upload it.

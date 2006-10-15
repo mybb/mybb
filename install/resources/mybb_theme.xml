@@ -814,7 +814,7 @@ var inlineId = {$tid};
 <input type="hidden" name="pid" value="{$pid}" />
 </form>
 <br />
-<form action="editpost.php" method="post" enctype="multipart/form-data" name="input">
+<form action="editpost.php?pid={$pid}&amp;proccessed=1" method="post" enctype="multipart/form-data" name="input">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->edit_post}</strong></td>
@@ -867,7 +867,7 @@ var inlineId = {$tid};
 {$maximageserror}
 {$attacherror}
 {$reply_errors}
-<form action="newreply.php" method="post" enctype="multipart/form-data" name="input">
+<form action="newreply.php?tid={$tid}&amp;proccessed=1" method="post" enctype="multipart/form-data" name="input">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->post_new_reply}</strong></td>
@@ -972,7 +972,7 @@ var inlineId = {$tid};
 {$preview}
 {$thread_errors}
 {$attacherror}
-<form action="newthread.php" method="post" enctype="multipart/form-data" name="input">
+<form action="newthread.php?fid={$fid}&amp;proccessed=1" method="post" enctype="multipart/form-data" name="input">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->post_new_thread}</strong></td>
@@ -6960,5 +6960,15 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	{$post['groupimage']}<br />
 	{$post['useravatar']}<br />
 </span>]]></template>
+	<template name="warnings" version="120"><![CDATA[<table border="0" cellspacing="1" cellpadding="4" align="center" class="tborder">
+<tr>
+<td class="tcat">
+<strong>{$lang->warnings}</strong>
+</td>
+</tr>
+<tr>
+<td class="trow1"><span class="smalltext">{$this->warnings}</span><br /></td>
+</tr>
+</table><br /><br />]]></template>
 	</templates>
 </theme>

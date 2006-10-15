@@ -298,7 +298,7 @@ class databaseEngine
 	 */
 	function error()
 	{
-		if (!$this->link) 
+		if(!$this->link) 
 		{
             return mysqli_connect_error();
         } 
@@ -315,15 +315,13 @@ class databaseEngine
 	 */
 	function dberror($string="")
 	{
-		if($this->error_reporting)
-		{
-			echo "MySQLi error: ".$this->errno();
-			echo "<br />".$this->error();
-			echo "<br />Query: $string";
-			exit;
+		if($this->error_reporting) 		
+		{		
+			global $error_handler;
+		
+			$error_handler->error(MYBB_SQL, $this->errno()."|{$string}"); 		
 		}
 	}
-
 
 	/**
 	 * Returns the number of affected rows in a query.

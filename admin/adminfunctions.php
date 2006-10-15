@@ -63,7 +63,7 @@ $themebitlist = array("templateset", "imgdir", "logo", "tablespace", "borderwidt
 
 function cpheader($title="", $donav=1, $onload="", $extraheaders="")
 {
-	global $mybb, $style, $lang, $cpheader;
+	global $mybb, $style, $lang, $cpheader, $error_handler;
 
 	if($cpheader === true)
 	{
@@ -108,8 +108,29 @@ function cpheader($title="", $donav=1, $onload="", $extraheaders="")
 	if($donav != 0)
 	{
 		echo buildacpnav();
+	}	
+	else
+	{
+		echo $error_handler->show_warnings();
 	}
 }
+
+function makeacpphpwarning($warnings)
+{
+	global $lang;
+	
+	return '<table border="0" cellspacing="1" cellpadding="4" align="center" class="bordercolor">
+<tr>
+<td class="header">
+<strong>'.$lang->warnings.'</strong>
+</td>
+</tr>
+<tr>
+<td class="altbg1">'.$warnings.'<br /></td>
+</tr>
+</table><br /><br />';
+}
+
 function makehoptolinks($links)
 {
 	echo "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"100%\">\n";
@@ -1257,7 +1278,7 @@ function logadmin()
 
 function buildacpnav()
 {
-	global $nav, $navbits;
+	global $nav, $navbits, $error_handler;
 	$navsep = " &raquo; ";
 	if(is_array($navbits))
 	{
@@ -1281,11 +1302,14 @@ function buildacpnav()
 	$navsize = count($navbits);
 	$navbit = $navbits[$navsize-1];
 	if($nav)
-  {
+  	{
 		$activesep = "<br /><img src=\"../images/nav_bit.gif\" alt=\"---\" border=\"0\" />";
 	}
 	$activebit = "<span class=\"active\">$navbit[name]</span>";
 	$donenav = "<div  align=\"center\"><div class=\"navigation\">\n$nav$activesep$activebit\n</div></div><br />";
+	
+	echo $error_handler->show_warnings();
+	
 	return $donenav;
 }
 

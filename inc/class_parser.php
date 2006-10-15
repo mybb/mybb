@@ -458,7 +458,27 @@ class postParser
 			"#(o)(nunload)#i",
 			"#(o)(nkeypress)#i"
 		);
-		$message = preg_replace($js_array, "$1<strong></strong>$2", $message);
+		
+		$replace_array = array(
+			"&#106;$2",
+			"&#97;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2",
+			"&#111;$2"
+		);
+		$message = preg_replace($js_array, $replace_array, $message);
 		return $message;
 	}
 

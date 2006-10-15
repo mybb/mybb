@@ -315,12 +315,11 @@ class databaseEngine
 	 */
 	function dberror($string="")
 	{
-		if($this->error_reporting)
-		{
-			echo "MySQL error: " . mysql_errno($this->link);
-			echo "<br />" . mysql_error($this->link);
-			echo "<br />Query: $string";
-			exit;
+		if($this->error_reporting) 		
+		{		
+			global $error_handler;
+		
+			$error_handler->error(MYBB_SQL, $this->errno($this->link)."|{$string}"); 		
 		}
 	}
 

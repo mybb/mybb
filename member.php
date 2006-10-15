@@ -580,7 +580,7 @@ if($mybb->input['action'] == "register")
 				"imagehash" => $imagehash,
 				"imagestring" => $randomstr,
 				"dateline" => time()
-				);
+			);
 			$db->insert_query("captcha", $regimagearray);
 			eval("\$regimage = \"".$templates->get("member_register_regimage")."\";");
 		}

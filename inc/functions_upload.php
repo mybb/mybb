@@ -100,7 +100,8 @@ function remove_avatars($uid, $exclude="")
  */
 function upload_avatar()
 {
-	global $db, $mybb, $lang, $_FILES;
+	global $db, $mybb, $lang;
+	
 	$avatar = $_FILES['avatarupload'];
 	if(!is_uploaded_file($avatar['tmp_name']))
 	{
@@ -204,7 +205,7 @@ function upload_avatar()
 function upload_attachment($attachment)
 {
 	global $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang;
-
+	
 	$posthash = $db->escape_string($mybb->input['posthash']);
 
 	if(isset($attachment['error']) && $attachment['error'] != 0)

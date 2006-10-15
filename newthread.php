@@ -117,6 +117,11 @@ if($mybb->input['previewpost'])
 	$mybb->input['action'] = "newthread";
 }
 
+if((empty($_POST) && empty($_FILES)) && $mybb->input['proccessed'] == '1')
+{
+	error($lang->error_cannot_upload_php_post);
+}
+
 // Handle attachments if we've got any.
 if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newthread" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
