@@ -867,6 +867,54 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
 			<helpkey></helpkey>
+		</setting>
+		<setting name="useerrorhandling">
+			<title>Use Error Handling</title>
+			<description><![CDATA[If you do not wish to use the integrated error handling for MyBB, you may turn this option off. However, it is reccommended that it stay on]]></description>
+			<disporder>12</disporder>
+			<optionscode><![CDATA[onoff]]></optionscode>
+			<settingvalue><![CDATA[on]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="errorlogmedium">
+			<title>Error Logging Medium</title>
+			<description><![CDATA[The type of the error handling to use.]]></description>
+			<disporder>13</disporder>
+			<optionscode><![CDATA[select
+log=Log errors
+email=Email errors
+both=Log and email errors
+]]></optionscode>
+			<settingvalue><![CDATA[log]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="errortypemedium">
+			<title>Error Type Medium</title>
+			<description><![CDATA[The type of errors to show.]]></description>
+			<disporder>14</disporder>
+			<optionscode><![CDATA[select
+warning=Warnings
+error=Errors
+both=Warnings and Errors
+]]></optionscode>
+			<settingvalue><![CDATA[both]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="errorhandlingemail">
+			<title>Error Handling E-mail Address</title>
+			<description><![CDATA[The E-mail address to send errors to, if specified.]]></description>
+			<disporder>15</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="errorloglocation">
+			<title>Error Logging Location</title>
+			<description><![CDATA[The location of the log to send errors to, if specified.]]></description>
+			<disporder>16</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[./error.log]]></settingvalue>
+			<helpkey></helpkey>
 		</setting>		
 	</settinggroup>
 	<settinggroup name="showteam" title="Show Forum Team Options" description="This section allows you to manage settings that affect the Forum Team Page (showteam.php)." disporder="10" isdefault="yes">
