@@ -84,7 +84,20 @@ $loadstyle = '';
 $load_from_forum = 0;
 $style = array();
 
-if(stripos('forumdisplay.php', $_SERVER['SCRIPT_NAME']) !== false)
+$valid = array(
+	"showthread.php", 
+	"forumdisplay.php",
+	"newthread.php",
+	"newreply.php",
+	"ratethread",
+	"editpost.php",
+	"polls.php",
+	"sendthread.php",
+	"printthread.php",
+	"moderation.php"	
+);
+
+if(in_array(strtolower($_SERVER['php_self']), $valid))
 {
 	// This user has a custom theme set in their profile
 	if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
