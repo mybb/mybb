@@ -45,6 +45,7 @@ class errorHandler {
 	var $ignore_types = array(
 		E_NOTICE,
 		E_USER_NOTICE,
+		E_STRICT
 	);
 	
 	/**
@@ -69,7 +70,6 @@ class errorHandler {
 		{
 			set_error_handler(array(&$this, "error"));
 		}
-
 	}
  	
 	/**
@@ -83,85 +83,40 @@ class errorHandler {
 	 */			
 	function error($type, $message, $file=null, $line=0)
 	{
+		global $mybb;
+
 		if(in_array($type, $this->ignore_types))
 		{
 			return;
 		}
 		
-		global $mybb;
-		
-		// set of errors for which a var trace will be saved
-		$user_errors = array(E_USER_ERROR, E_USER_WARNING);
-		
-		$err = "<errorentry>\n";
-		$err .= "\t<datetime>".time()."</datetime>\n";
-		$err .= "\t<errornum>".$type."</errornum>\n";
-		$err .= "\t<errortype>".$this->error_types[$type]."</errortype>\n";
-		$err .= "\t<errormsg>".$message."</errormsg>\n";
-		$err .= "\t<scriptname>".$file."</scriptname>\n";
-		$err .= "\t<scriptlinenum>".$line."</scriptlinenum>\n";
-	
-		if(in_array($type, $user_errors) && function_exists('wddx_serialize_value')) 
-		{
-			$err .= "\t<vartrace>".wddx_serialize_value($vars, "Variables")."</vartrace>\n";
-		}
-		$err .= "</errorentry>\n\n";
-	  
 		if($mybb->settings['errortypemedium'] == "both" || strstr(strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']))
-		{	
-			// save to the error log, and e-mail me if there is a critical error
-			if($mybb->settings['errorlogmedium'] == 'both')
+		{
+			// Saving error to log file
+			if($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
 			{
-				if(trim($mybb->settings['errorloglocation']) != "")
-				{
-					error_log($err, 3, $mybb->settings['errorloglocation']);
-				}
-				else
-				{
-					error_log($err, 0);
-				}
-				
-				if(trim($mybb->settings['errorhandlingemail']) != "")
-				{
-					@my_mail($mybb->settings['errorhandlingemail'], 'Your forum had a error', $err, $mybb->settings['adminemail']);
-				}
+				$this->log_error($type, $message, $file, $line);
 			}
-			elseif($mybb->settings['errorlogmedium'] == 'mail')
+
+			// Are we emailing the Admin a copy?
+			if($mybb->settings['errorlogmedium'] == "mail" || $mybb->settings['errorlogmedium'] == "both")
 			{
-				if(trim($mybb->settings['errorhandlingemail']) != "")
-				{
-					@my_mail($mybb->settings['errorhandlingemail'], 'Your forum had a error', $err, $mybb->settings['adminemail']);
-				}
+				$this->email_error($type, $message, $file, $line);
 			}
-			else if($mybb->Settings['errorlogmedium'] == 'log')
-			{
-				if(trim($mybb->settings['errorloglocation']) != "")
-				{
-					error_log($err, 3, $mybb->settings['errorloglocation']);
-				}
-				else
-				{
-					error_log($err, 0);
-				}
-			}
-	
+
 			if($type == MYBB_SQL) 
 			{
-				if($this->warnings)
+				echo "MyBB has experienced an internal SQL error and cannot continue.<br />\n";
+				if($mybb->usergroup['cancp'] == "yes")
 				{
-					echo $this->show_warnings()."<br /><br />";
+					echo "SQL Error: {$message['error_no']} - {$message['error']}<br />Query: {$message['query']}";
 				}
-				echo "MyBB has experienced an internal SQL error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.com\">MyBB Website</a>. If you are the administrator, please check your error logs for further details.<br />";
 				exit(1);
 			}
 			else
 			{	
 				if(!strstr(strtolower($this->error_types[$type]), 'warning'))
 				{
-					if($this->warnings)
-					{
-						echo $this->show_warnings()."<br /><br />";
-					}
 					echo "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.com\">MyBB Website</a>. If you are the administrator, please check your error logs for further details.<br /><br />\n\n";
 					echo "<b>{$this->error_types[$type]}</b> [$type] $message<br />\n";
 					echo "  Fatal error in line $line of file $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
@@ -193,6 +148,7 @@ class errorHandler {
 			{
 				$lang->warnings = "The following warnings occured:";
 			}
+			
 			if(defined("IN_ADMINCP"))
 			{
 				$warning = makeacpphpwarning($this->warnings);
@@ -230,5 +186,67 @@ class errorHandler {
 			trigger_error($message, $type);		
 		}
 	}
+
+	/**
+	 * Logs the error in the specified error log file.
+	 *
+	 * @param string Warning type
+	 * @param string Warning message
+	 * @param string Warning file
+	 * @param integer Warning line
+	 */
+	function log_error($type, $message, $file, $line)
+	{
+		global $mybb;
+
+		if($type == MYBB_SQL) 
+		{
+			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
+		}
+		$error_data = "<error>\n";
+		$error_data .= "\t<dateline>".time()."</dateline>\n";
+		$error_data .= "\t<script>".$file."</script>\n";
+		$error_data .= "\t<line>".$line."</line>\n";
+		$error_data .= "\t<type>".$type."</type>\n";
+		$error_data .= "\t<friendly_type>".$this->error_types[$type]."</friendly_type>\n";
+		$error_data .= "\t<message>".$message."</message>\n";
+		$error_data .= "</error>\n\n";
+
+		if(trim($mybb->settings['errorloglogaction']) != "")
+		{
+			error_log($error_data, 3, $mybb->settings['errorloglocation']);
+		}
+		else
+		{
+			error_log($error_data, 0);
+		}
+	}
+
+	/**
+	 * Emails the error in the specified error log file.
+	 *
+	 * @param string Warning type
+	 * @param string Warning message
+	 * @param string Warning file
+	 * @param integer Warning line
+	 */
+	function email_error($type, $message, $file, $line)
+	{
+		global $mybb;
+
+		if(!$mybb->settings['adminemail'])
+		{
+			return false;
+		}
+
+		if($type == MYBB_SQL) 
+		{
+			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
+		}
+		
+		$message = "Your copy of MyBB running on {$mybb->settings['bbname']} ({$mybb->settings['bburl']}) has experienced an error. Details of the error include:\n---\nType: $type\nFile: $file (Line no. $line)\nMessage\n$message";
+		@my_mail($mybb->settings['adminemail'], "MyBB error on {$mybb->settings['bbname']}", $err, $mybb->settings['adminemail']);
+	}
+
 }
 ?>
