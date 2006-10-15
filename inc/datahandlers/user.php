@@ -498,11 +498,19 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showquickreply', 'yes');
 		$this->verify_yesno_option($options, 'showredirect', 'yes');
 
-		$options['showcodebuttons'] = intval($options['showcodebuttons']);
-		if($this->method == "insert" || (array_key_exists('showcodebuttons', $options) && $options['showcodebuttons'] != '0'))
-		{
-			$options['showcodebuttons'] = 1;
-		}
+		if(isset($options['showcodebuttons']))
+        {
+            $options['showcodebuttons'] = intval($options['showcodebuttons']);
+            if($options['showcodebuttons'] != 0)
+            {
+                $options['showcodebuttons'] = 1;
+            }
+        }
+        else if($this->method == "insert")
+        {
+            $options['showcodebuttons'] = 1;
+        }
+		
 		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "threaded"))
 		{
 			$options['threadmode'] = 'linear';
