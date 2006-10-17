@@ -136,6 +136,12 @@ if($mybb->input['action'] == "default")
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='1' WHERE tid='".intval($mybb->input['tid'])."'");
 	cpredirect("themes.php?".SID, $lang->default_updated);
 }
+if($mybb->input['action'] == "force")
+{
+	$plugins->run_hooks("admin_themes_force");
+	$db->query("UPDATE ".TABLE_PREFIX."users SET style='".intval($mybb->input['tid'])."'");
+	cpredirect("themes.php?".SID, $lang->theme_forced);
+}
 if($mybb->input['action'] == "do_download")
 {
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
