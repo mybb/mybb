@@ -97,7 +97,7 @@ $valid = array(
 	"forumdisplay.php",
 	"newthread.php",
 	"newreply.php",
-	"ratethread",
+	"ratethread.php",
 	"editpost.php",
 	"polls.php",
 	"sendthread.php",
@@ -105,7 +105,7 @@ $valid = array(
 	"moderation.php"	
 );
 
-if(in_array(strtolower($_SERVER['php_self']), $valid))
+if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 {
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
 	if(isset($mybb->input['pid']))
