@@ -612,6 +612,10 @@ function configure()
 			$hostname = 'http://'.$_SERVER['SERVER_NAME'];
 			$cookiedomain = '.'.$_SERVER['SERVER_NAME'];
 		}
+		if($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['SERVER_NAME'] == 'localhost')
+		{
+			$cookiedomain = '';
+		}
 		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
 		{
 			$hostname .= ':'.$_SERVER['SERVER_PORT'];
