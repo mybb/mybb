@@ -481,7 +481,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 		$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
 		
 		// Tack on to list of messages
-		$message .= "[quote={$quoted_post['username']}]\n{$quoted_post['message']}\n[/quote]\n\n";
+		$message .= "[quote={$quoted_post['username']}][linkback={$quoted_post['pid']}]\n{$quoted_post['message']}\n[/quote]\n\n";
 	}
 	
 	// Send our headers.

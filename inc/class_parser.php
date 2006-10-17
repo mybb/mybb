@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2006 MyBB Group, All Rights Reserved
+ * Copyright ï¿½ 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -200,7 +200,7 @@ class postParser
 	 */
 	function cache_mycode()
 	{
-		global $cache;
+		global $cache, $lang;
 		$this->mycode_cache = array();
 
 		$standard_mycode['b']['regex'] = "#\[b\](.*?)\[/b\]#si";
@@ -259,6 +259,9 @@ class postParser
 
 		$standard_mycode['hr']['regex'] = "#\[hr\]#si";
 		$standard_mycode['hr']['replacement'] = "<hr />";
+		
+		$standard_mycode['linkback']['regex'] = "#\[linkback=([0-9]*)\]#si";
+		$standard_mycode['linkback']['replacement'] = "<a href=\"showthread.php?pid=$1#pid$1\">[{$lang->linkback}]</a>";
 
 		$custom_mycode = $cache->read("mycode");
 

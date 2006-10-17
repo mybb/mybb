@@ -161,6 +161,7 @@ $l['quote'] = "Quote:";
 $l['wrote'] = "Wrote:";
 $l['code'] = "Code:";
 $l['php_code'] = "PHP Code:";
+$l['linkback'] = "Original Post";
 
 $l['at'] = "at";
 $l['na'] = "N/A";
