@@ -416,6 +416,22 @@ while($announcement = $db->fetch_array($query))
 		eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments_no")."\";");
 		$lastcomment = '';
 	}
+	
+	$plugins->run_hooks("portal_announcement");
+
+	$parser_options = array(
+		"allow_html" => $forum[$announcement['fid']]['allow_html'],
+		"allow_mycode" => $forum[$announcement['fid']]['allow_mycode'],
+		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
+		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode']
+	);
+	if($announcement['smilieoff'] == "yes")
+	{
+		$parser_options['allow_smilies'] = "no";
+	}
+
+	$message = $parser->parse_message($announcement['message'], $parser_options);
+	
 	if(is_array($attachcache[$announcement['pid']]))
 	{ // This post has 1 or more attachments
 		$validationcount = 0;
@@ -437,7 +453,7 @@ while($announcement = $db->fetch_array($query))
 				}
 				$attachment['icon'] = get_attachment_icon($ext);
 				// Support for [attachment=id] code
-				if(stripos($announcement['message'], "[attachment=".$attachment['aid']."]") !== false)
+				if(stripos($message, "[attachment=".$attachment['aid']."]") !== false)
 				{
 					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
 					{ // We have a thumbnail to show (and its not the "SMALL" enough image
@@ -453,7 +469,7 @@ while($announcement = $db->fetch_array($query))
 						// Show standard link to attachment
 						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
-					$announcement['message'] = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $announcement['message']);
+					$message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $message);
 				}
 				else
 				{
@@ -496,21 +512,6 @@ while($announcement = $db->fetch_array($query))
 			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
 		}
 	}
-
-	$plugins->run_hooks("portal_announcement");
-
-	$parser_options = array(
-		"allow_html" => $forum[$announcement['fid']]['allow_html'],
-		"allow_mycode" => $forum[$announcement['fid']]['allow_mycode'],
-		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
-		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode']
-	);
-	if($announcement['smilieoff'] == "yes")
-	{
-		$parser_options['allow_smilies'] = "no";
-	}
-
-	$message = $parser->parse_message($announcement['message'], $parser_options);
 
 	eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
 	unset($post);
