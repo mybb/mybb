@@ -900,14 +900,6 @@ both=Warnings and Errors
 			<settingvalue><![CDATA[both]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="errorhandlingemail">
-			<title>Error Handling E-mail Address</title>
-			<description><![CDATA[The E-mail address to send errors to, if specified.]]></description>
-			<disporder>15</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="errorloglocation">
 			<title>Error Logging Location</title>
 			<description><![CDATA[The location of the log to send errors to, if specified.]]></description>

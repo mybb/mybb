@@ -481,8 +481,9 @@ if($mybb->input['action'] == "thread")
 		{
 			$postoptionschecked['emailnotify'] = "checked";
 		}
-	    mt_srand ((double) microtime() * 1000000);
+	    mt_srand((double) microtime() * 1000000);
 	    $posthash = md5($mybb->user['uid'].mt_rand());
+		
 		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
 	}
 	else
@@ -520,6 +521,14 @@ if($mybb->input['action'] == "thread")
 	else
 	{
 		$visible = "AND p.visible='1'";
+	}
+	
+	// If we have terms to highlight, fetch them.
+	if(!empty($mybb->input['highlight']))
+	{
+		$highlight_replace = explode(' ', htmlspecialchars_uni($mybb->input['highlight']));
+		$highlight = $highlight_replace;
+		array_walk($highlight_replace, 'apply_highlight');
 	}
 
 	// Threaded or lineair display?
@@ -586,7 +595,14 @@ if($mybb->input['action'] == "thread")
                 $postsdone[$post['pid']] = 1;
             }
         }
-		$threadedbits = buildtree();
+		
+		if($highlight && $highlight_replace)
+		{
+			$showpost['highlight'] = $highlight;
+			$showpost['highlight_replace'] = $highlight_replace;
+		}
+		
+		$threadedbits = buildtree();		
 		$posts = build_postbit($showpost);
 		eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
 		$plugins->run_hooks("showthread_threaded");
@@ -696,6 +712,11 @@ if($mybb->input['action'] == "thread")
 			if($pfirst && $thread['visible'] == 0)
 			{
 				$post['visible'] = 0;
+			}
+			if($highlight && $highlight_replace)
+			{
+				$post['highlight'] = $highlight;
+				$post['highlight_replace'] = $highlight_replace;
 			}
 			$posts .= build_postbit($post);
 			$post = '';

@@ -258,7 +258,7 @@ class MyBB {
 			{
 				// If this variable is in the ignored array, skip and move to next 
 				if(in_array($var, $this->ignore_clean_variables)) 
-				{ 
+				{
 					continue; 
 				}
 				

@@ -558,15 +558,8 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 		$total = $db->fetch_array($query);
 		$pmcount['totalpms'] = $total['pms_total'];
 	}
-	// Update number of new messages.
-	if($count_to_update & 2)
-	{
-		$query = $db->simple_select("privatemessages", "COUNT(pmid) AS pms_new", "uid='".$uid."' AND dateline>'".$mybb->user['lastvisit']."' AND folder='1'");
-		$new = $db->fetch_array($query);
-		$pmcount['newpms'] = $new['pms_new'];
-	}
 	// Update number of unread messages.
-	if($count_to_update & 4)
+	if($count_to_update & 2)
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(pmid) AS pms_unread", "uid='".$uid."' AND status='0' AND folder='1'");
 		$unread = $db->fetch_array($query);

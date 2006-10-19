@@ -2578,6 +2578,7 @@ function get_current_location()
 			$location .= "?".implode("&", $addloc);
 		}
 	}
+	
 	return $location;
 }
 
@@ -2594,6 +2595,7 @@ function get_current_location()
 function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=0)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb;
+	
 	if($tid == 0)
 	{
 		$themeselect = "<select name=\"$name\">";
@@ -2662,10 +2664,12 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 			}
 		}
 	}
+	
 	if(!$tid)
 	{
 		$themeselect .= "</select>";
 	}
+	
 	return $themeselect;
 }
 
@@ -2682,6 +2686,7 @@ function htmlspecialchars_uni($message)
 	$message = str_replace(">","&gt;",$message);
 	$message = str_replace("\"","&quot;",$message);
 	$message = str_replace("  ", "&nbsp;&nbsp;", $message);
+	
 	return $message;
 }
 
@@ -2694,6 +2699,7 @@ function htmlspecialchars_uni($message)
 function my_number_format($number)
 {
 	global $mybb;
+	
 	if($number == "-")
 	{
 		return $number;
@@ -3372,6 +3378,50 @@ function rebuildsettings()
 	@fwrite($file, $settings);
 	@fclose($file);
 	$GLOBALS['settings'] = &$mybb->settings;
+}
+
+function apply_highlight(&$item, $key)
+{
+	global $highlight_count;
+	
+	$item = htmlspecialchars_uni($item);
+
+	if(!$highlight_count)
+	{
+		$highlight_count = 0;
+	}
+	
+	if($highlight_count >= 7)
+	{
+		$highlight_count = 0;
+	}
+	
+	$highlight_colors = array(
+		'225, 225, 102',
+		'255, 0, 0',
+		'0, 255, 0',
+		'0, 0, 255',
+		'255, 255, 0',
+		'0, 255, 255',
+		'255, 0, 255',
+		'192, 192, 192'
+	);
+	
+	if(my_strlen($item) > 1)
+	{
+		if(stristr("<b style=\"color: black; background-color: rgb(".$highlight_colors[$highlight_count].");\"></b>", $item))
+		{
+			unset($item);
+		}
+		$item = "<b style=\"color: black; background-color: rgb(".$highlight_colors[$highlight_count].");\">$item</b>";
+		++$highlight_count;
+	}
+	else
+	{
+		unset($item);
+	}
+	
+	
 }
 
 /**

@@ -121,6 +121,12 @@ if($mybb->input['action'] == "results")
 	$end = $start + $perpage;
 	$lower = $start+1;
 	$upper = $end;
+	
+	// Work out if we have terms to highlight
+	if($search['keywords'])
+	{
+		$highlight = "&amp;highlight=".urlencode($search['keywords']);
+	}
 
 	$sorturl = "search.php?action=results&amp;sid={$sid}";
 
@@ -845,6 +851,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		"searchtype" => $search_results['searchtype'],
 		"resulttype" => $resulttype,
 		"querycache" => $search_results['querycache'],
+		"keywords" => $db->escape_string($mybb->input['keywords']),
 	);
 	$plugins->run_hooks("search_do_search_process");
 

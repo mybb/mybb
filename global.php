@@ -249,7 +249,7 @@ if($mybb->user['uid'] != 0)
 	$lang->welcome_back = sprintf($lang->welcome_back, $mybb->user['username'], $lastvisit);
 
 	// Tell the user their PM usage
-	$lang->welcome_pms_usage = sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_new']), my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
+	$lang->welcome_pms_usage = sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
 	eval("\$welcomeblock = \"".$templates->get("header_welcomeblock_member")."\";");
 }
 // Otherwise, we have a guest
@@ -467,4 +467,5 @@ $archive_url = $mybb->settings['bburl']."/archive/index.php";
 $plugins->run_hooks("global_end");
 
 $globaltime = $maintimer->gettime();
+
 ?>

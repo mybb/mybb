@@ -52,7 +52,7 @@ function remove_attachments($pid, $posthash="")
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "" && !$pid)
 	{
-	  $query = $db->simple_select("attachments", "*", "posthash='$posthash'");
+	  	$query = $db->simple_select("attachments", "*", "posthash='$posthash'");
 	}
 	else
 	{
@@ -61,6 +61,7 @@ function remove_attachments($pid, $posthash="")
 	while($attachment = $db->fetch_array($query))
 	{
 		$db->delete_query("attachments", "aid='".$attachment['aid']."'");
+		
 		@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 		if($attachment['thumbnail'])
 		{
@@ -111,7 +112,8 @@ function upload_avatar()
 
 	// Check we have a valid extension
 	$ext = get_extension(my_strtolower($avatar['name']));
-	if(!preg_match("#(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext)) {
+	if(!preg_match("#(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext)) 
+	{
 		$ret['error'] = $lang->error_avatartype;
 		return $ret;
 	}
@@ -237,11 +239,13 @@ function upload_attachment($attachment)
 		}
 		return $ret;
 	}
+	
 	if(!is_uploaded_file($attachment['tmp_name']) || empty($attachment['tmp_name']))
 	{
 		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_php4;
 		return $ret;
 	}
+	
 	$ext = get_extension($attachment['name']);
 	// Check if we have a valid extension
 	$query = $db->simple_select("attachtypes", "*", "extension='$ext'");
@@ -251,6 +255,7 @@ function upload_attachment($attachment)
 		$ret['error'] = $lang->error_attachtype;
 		return $ret;
 	}
+	
 	// Check the size
 	if($attachment['size'] > $attachtype['maxsize']*1024 && $attachtype['maxsize'] != "")
 	{
@@ -352,6 +357,7 @@ function upload_attachment($attachment)
 		require_once MYBB_ROOT."inc/functions_image.php";
 		$thumbname = str_replace(".attach", "_thumb.$ext", $filename);
 		$thumbnail = generate_thumbnail($mybb->settings['uploadspath']."/".$filename, $mybb->settings['uploadspath'], $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
+		
 		if($thumbnail['filename'])
 		{
 			$attacharray['thumbnail'] = $thumbnail['filename'];
@@ -396,9 +402,11 @@ function upload_file($file, $path, $filename="")
 	{
 		$filename = $file['name'];
 	}
+	
 	$upload['original_filename'] = preg_replace("#/$#", "", $file['name']); // Make the filename safe
 	$filename = preg_replace("#/$#", "", $filename); // Make the filename safe
 	$moved = @move_uploaded_file($file['tmp_name'], $path."/".$filename);
+	
 	if(!$moved)
 	{
 		$upload['error'] = 2;

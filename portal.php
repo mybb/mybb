@@ -45,8 +45,8 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("portal_do_login_start");
 
-	//Checks to make sure the user can login; they haven't had too many tries at logging in.
-	//Is a fatal call if user has had too many tries
+	// Checks to make sure the user can login; they haven't had too many tries at logging in.
+	// Is a fatal call if user has had too many tries
 	$logins = login_attempt_check();
 	$login_text = '';
 
@@ -77,7 +77,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	$newsession = array(
 		"uid" => $user['uid'],
 		"loginattempts" => 1,
-		);
+	);
 	$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
 
 	// Temporarily set the cookie remember option for the login cookies
@@ -126,7 +126,8 @@ if($mybb->settings['portal_showwelcome'] != "no")
 			$lang->pms_received_new = sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_new']);
 			eval("\$pms = \"".$templates->get("portal_pms")."\";");
 		}
-		// get number of new posts, threads, announcements
+		
+		// Get number of new posts, threads, announcements
 		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
@@ -209,11 +210,13 @@ if($mybb->settings['portal_showstats'] != "no")
 	}
 	eval("\$stats = \"".$templates->get("portal_stats")."\";");
 }
+
 // Search box
 if($mybb->settings['portal_showsearch'] != "no")
 {
 	eval("\$search = \"".$templates->get("portal_search")."\";");
 }
+
 // Get the online users
 if($mybb->settings['portal_showwol'] != "no")
 {
@@ -313,7 +316,8 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 		$altbg = alt_trow();
 	}
 	if($threadlist)
-	{ // show the table only if there are threads
+	{ 
+		// Show the table only if there are threads
 		eval("\$latestthreads = \"".$templates->get("portal_latestthreads")."\";");
 	}
 }
@@ -416,6 +420,22 @@ while($announcement = $db->fetch_array($query))
 		eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments_no")."\";");
 		$lastcomment = '';
 	}
+	
+	$plugins->run_hooks("portal_announcement");
+
+	$parser_options = array(
+		"allow_html" => $forum[$announcement['fid']]['allowhtml'],
+		"allow_mycode" => $forum[$announcement['fid']]['allowmycode'],
+		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
+		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode']
+	);
+	if($announcement['smilieoff'] == "yes")
+	{
+		$parser_options['allow_smilies'] = "no";
+	}
+
+	$message = $parser->parse_message($announcement['message'], $parser_options);
+	
 	if(is_array($attachcache[$announcement['pid']]))
 	{ // This post has 1 or more attachments
 		$validationcount = 0;
@@ -437,7 +457,7 @@ while($announcement = $db->fetch_array($query))
 				}
 				$attachment['icon'] = get_attachment_icon($ext);
 				// Support for [attachment=id] code
-				if(stripos($announcement['message'], "[attachment=".$attachment['aid']."]") !== false)
+				if(stripos($message, "[attachment=".$attachment['aid']."]") !== false)
 				{
 					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
 					{ // We have a thumbnail to show (and its not the "SMALL" enough image
@@ -453,7 +473,7 @@ while($announcement = $db->fetch_array($query))
 						// Show standard link to attachment
 						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
-					$announcement['message'] = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $announcement['message']);
+					$message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $message);
 				}
 				else
 				{
@@ -496,21 +516,6 @@ while($announcement = $db->fetch_array($query))
 			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
 		}
 	}
-
-	$plugins->run_hooks("portal_announcement");
-
-	$parser_options = array(
-		"allow_html" => $forum[$announcement['fid']]['allowhtml'],
-		"allow_mycode" => $forum[$announcement['fid']]['allowmycode'],
-		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
-		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode']
-	);
-	if($announcement['smilieoff'] == "yes")
-	{
-		$parser_options['allow_smilies'] = "no";
-	}
-
-	$message = $parser->parse_message($announcement['message'], $parser_options);
 
 	eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
 	unset($post);

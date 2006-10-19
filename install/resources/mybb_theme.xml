@@ -3529,7 +3529,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	clickableEditor.bindSmilieInserter("clickable_smilies");
 </script>]]></template>
 		<template name="showthread_quickreply" version="120"><![CDATA[<br />
-<form method="post" action="newreply.php" name="input">
+<form method="post" action="newreply.php?tid={$tid}&amp;proccessed=1" name="input">
 <input type="hidden" name="subject" value="RE: {$thread['subject']}" />
 <input type="hidden" name="action" value="do_newreply" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -4917,7 +4917,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="search_results_threads_thread" version="120"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
-	<td class="{$bgcolor}">{$gotounread}{$prefix} <a href="showthread.php?tid={$thread['tid']}">{$thread['subject']}</a>{$thread['multipage']}</td>
+	<td class="{$bgcolor}">{$gotounread}{$prefix} <a href="showthread.php?tid={$thread['tid']}{$highlight}">{$thread['subject']}</a>{$thread['multipage']}</td>
 	<td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
 	<td class="{$bgcolor}">{$thread['forumlink']}</td>
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a></td>
@@ -4965,7 +4965,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="search_results_posts_post" version="120"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
-	<td class="{$bgcolor}"><span class="smalltext">{$lang->post_thread} <a href="showthread.php?tid={$post['tid']}">{$post['thread_subject']}</a><br />{$lang->post_subject} <a href="showthread.php?tid={$post['tid']}&amp;pid={$post['pid']}#pid{$post['pid']}">{$post['subject']}</a></span><br />
+	<td class="{$bgcolor}"><span class="smalltext">{$lang->post_thread} <a href="showthread.php?tid={$post['tid']}{$highlight}">{$post['thread_subject']}</a><br />{$lang->post_subject} <a href="showthread.php?tid={$post['tid']}{$highlight}&amp;pid={$post['pid']}#pid{$post['pid']}">{$post['subject']}</a></span><br />
 	<table width="100%"><tr><td><span class="smalltext"><em>{$prev}</em></span></td></tr></table></td>
 	<td align="center" class="{$bgcolor}">{$post['profilelink']}</td>
 	<td class="{$bgcolor}" >{$post['forumlink']}</td>

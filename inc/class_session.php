@@ -138,20 +138,16 @@ class session
 		$this->uid = $mybb->user['uid'];
 
 		// Sort out the private message count for this user.
-		if(($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1 || $mybb->user['newpms'] == -1) && $mybb->settings['enablepms'] != "no") // Forced recount
+		if(($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1) && $mybb->settings['enablepms'] != "no") // Forced recount
 		{
 			$update = 0;
 			if($mybb->user['totalpms'] == -1)
 			{
 				$update += 1;
 			}
-			if($mybb->user['newpms'] == -1)
-			{
-				$update += 2;
-			}
 			if($mybb->user['unreadpms'] == -1)
 			{
-				$update += 4;
+				$update += 2;
 			}
 
 			require_once MYBB_ROOT."inc/functions_user.php";
@@ -162,7 +158,6 @@ class session
 			}
 		}
 		$mybb->user['pms_total'] = $mybb->user['totalpms'];
-		$mybb->user['pms_new'] = $mybb->user['newpms'];
 		$mybb->user['pms_unread'] = $mybb->user['unreadpms'];
 
 		// Check if this user has a new private message.

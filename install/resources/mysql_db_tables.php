@@ -482,6 +482,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
   searchtype varchar(10) NOT NULL default '',
   resulttype varchar(10) NOT NULL default '',
   querycache text NOT NULL default '',
+  keywords text NOT NULL default '',
   PRIMARY KEY  (sid)
 ) TYPE=MyISAM;";
 
@@ -758,7 +759,6 @@ $tables[] = "CREATE TABLE mybb_users (
   timeonline bigint(30) NOT NULL default '0',
   showcodebuttons int(1) NOT NULL default '1',
   totalpms int(10) NOT NULL default '0',
-  newpms int(10) NOT NULL default '0',
   unreadpms int(10) NOT NULL default '0',
   KEY username (username),
   KEY usergroup (usergroup),
