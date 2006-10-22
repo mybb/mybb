@@ -108,6 +108,7 @@ class postParser
 				}
 				$message = preg_replace("#<base(.*)>#is", "&lt;base$1&gt;", $message);
 				$message = preg_replace("#<meta(.*)>#is", "&lt;meta$1&gt;", $message);
+				$message = str_replace(array('<?php', '<!--', '-->', '?>'), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;'), $message);
 			}
 		}
 		
@@ -443,45 +444,25 @@ class postParser
 	function fix_javascript($message)
 	{
 		$js_array = array(
-			"#(j)(avascript)#i",
-			"#(a)(lert)#i",
-			"#(o)(nmouseover)#i",
-			"#(o)(nmouseout)#i",
-			"#(o)(nmousedown)#i",
-			"#(o)(nmousemove)#i",
-			"#(o)(nmouseup)#i",
-			"#(o)(nclick)#i",
-			"#(o)(ndblclick)#i",
-			"#(o)(nload)#i",
-			"#(o)(nsubmit)#i",
-			"#(o)(nblur)#i",
-			"#(o)(nchange)#i",
-			"#(o)(nfocus)#i",
-			"#(o)(nselect)#i",
-			"#(o)(nunload)#i",
-			"#(o)(nkeypress)#i"
+			"#(j)(avascript\:)#i",
+			"#(o)(nmouseover\s?=)#i",
+			"#(o)(nmouseout\s?=)#i",
+			"#(o)(nmousedown\s?=)#i",
+			"#(o)(nmousemove\s?=)#i",
+			"#(o)(nmouseup\s?=)#i",
+			"#(o)(nclick\s?=)#i",
+			"#(o)(ndblclick\s?=)#i",
+			"#(o)(nload\s?=)#i",
+			"#(o)(nsubmit\s?=)#i",
+			"#(o)(nblur\s?=)#i",
+			"#(o)(nchange\s?=)#i",
+			"#(o)(nfocus\s?=)#i",
+			"#(o)(nselect\s?=)#i",
+			"#(o)(nunload\s?=)#i",
+			"#(o)(nkeypress\s?=)#i"
 		);
-		
-		$replace_array = array(
-			"&#106;$2",
-			"&#97;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2",
-			"&#111;$2"
-		);
-		$message = preg_replace($js_array, $replace_array, $message);
+		$message = preg_replace($js_array, "$1<strong></strong>$2", $message);
+
 		return $message;
 	}
 

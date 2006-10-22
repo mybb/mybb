@@ -103,7 +103,7 @@ class errorHandler {
 			{
 				$this->email_error($type, $message, $file, $line);
 			}
-
+			
 			if($type == MYBB_SQL) 
 			{
 				echo "MyBB has experienced an internal SQL error and cannot continue.<br />\n";

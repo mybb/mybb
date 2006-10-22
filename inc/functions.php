@@ -3513,4 +3513,12 @@ if(!function_exists('html_entity_decode'))
 	}
 }
 
+if(!function_exists('htmlspecialchars_decode'))
+{
+   function htmlspecialchars_decode($text)
+   {
+       return strtr($text, array_flip(get_html_translation_table(HTML_SPECIALCHARS)));
+   }
+}
+
 ?>
