@@ -359,7 +359,7 @@ class UserDataHandler extends DataHandler
 		elseif($birthday['day'] && $birthday['month'])
 		{
 			// If only a day and month are specified, put together a d-m string
-			$user['bday'] = $birthday['day']."-".$birthday['month'];
+			$user['bday'] = $birthday['day']."-".$birthday['month']."-";
 		}
 		else
 		{
