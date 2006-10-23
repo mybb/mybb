@@ -58,7 +58,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
-		error($lang->error_invalidusername.$login_text);
+		error($lang->error_invalidpworusername.$login_text);
 	}
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if(!$user['uid'])

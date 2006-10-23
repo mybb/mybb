@@ -615,11 +615,11 @@ elseif($mybb->input['action'] == "activate")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select("users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->simple_select("users", "*", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 		if(!$user['username'])
 		{
-			error($lang->error_invalidusername);
+			error($lang->error_invalidpworusername);
 		}
 		$uid = $user['uid'];
 	}
@@ -803,7 +803,7 @@ elseif($mybb->input['action'] == "resetpassword")
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
-			error($lang->error_invalidusername);
+			error($lang->error_invalidpworusername);
 		}
 	}
 	else
@@ -887,7 +887,7 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
-		error($lang->error_invalidusername.$login_text);
+		error($lang->error_invalidpworusername.$login_text);
 	}
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if(!$user['uid'])

@@ -148,7 +148,7 @@ $l['error_badlostpwcode'] = "You seem to have entered an invalid password reset 
 $l['error_badactivationcode'] = "You have entered an invalid account activation code. To resend all activation emails to the email address on file, please click <a href=\"member.php?action=resendactivation\">here</a>.";
 $l['error_alreadyactivated'] = "It appears your account is already activated or does not require email verification.";
 $l['error_nothreadurl'] = "Your message does not contain the URL of the thread. Please use the \"send to friend\" feature for it's intended purpose.";
-$l['error_invalidusername'] = "You have entered an invalid username. Usernames can only contain alphanumeric characters.";
+$l['error_invalidpworusername'] = "You have entered an invalid username or password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_bannedusername'] = "You have entered a username that is banned from registration.  Please choose another username.";
 $l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malacious Javascript was attempting to log you out automatically.  If you intended to logout, please click the Logout button at the top menu.";
 $l['error_regimageinvalid'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";

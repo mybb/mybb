@@ -235,6 +235,10 @@ if($mybb->input['action'] == "add")
 // Delete a specific reputation from a user.
 if($mybb->input['action'] == "delete")
 {
+	// Fetch the existing reputation for this user given by our current user if there is one.
+	$query = $db->simple_select("reputation", "*", "rid='".intval($mybb->input['rid'])."'");
+	$existing_reputation = $db->fetch_array($query);
+	
 	// Only administrators as well as users who gave a specifc vote can delete one.
 	if($mybb->usergroup['cancp'] != "yes" || $existing_reputation['adduid'] != $mybb->user['uid'])
 	{
