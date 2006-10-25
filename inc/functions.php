@@ -812,7 +812,15 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if($gid && $groupscache[$gid])
 		{
-			$p = is_array($fpermcache[$fid][$gid]) ? $fpermcache[$fid][$gid] : $groupperms;
+			if(is_array($fpermcache[$fid][$gid]))
+			{
+				$p = $fpermcache[$fid][$gid];
+			}
+			else
+			{
+				$p = $groupperms;
+			}
+			
 			if($p == NULL)
 			{
 				foreach($forumpermissions as $k => $v)
