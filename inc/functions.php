@@ -808,6 +808,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 function fetch_forum_permissions($fid, $gid, $groupperms)
 {
 	global $groupscache, $forum_cache, $fpermcache, $mybb, $fpermfields;
+	
 	$groups = explode(",", $gid);
 	if(!$fpermcache[$fid]) // This forum has no custom or inherited permisssions so lets just return the group permissions
 	{
@@ -824,7 +825,15 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if($gid && $groupscache[$gid])
 		{
-			$p = is_array($fpermcache[$fid][$gid]) ? $fpermcache[$fid][$gid] : $groupperms;
+			if(is_array($fpermcache[$fid][$gid]))
+			{
+				$p = $fpermcache[$fid][$gid];
+			}
+			else
+			{
+				$p = $groupperms;
+			}
+			
 			if($p == NULL)
 			{
 				foreach($forumpermissions as $k => $v)

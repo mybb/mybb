@@ -52,7 +52,7 @@ else
 }
 
 // Get the forums the user is not allowed to see.
-$permissions = forums_permissions();
+$permissions = forum_permissions();
 $inactiveforums = get_inactive_forums();
 
 // If there are any, add SQL to exclude them.
@@ -94,7 +94,7 @@ else
 
 // Find out which title to add to the feed.
 $title = $mybb->settings['bbname'];
-$query = $db->simple_select(TABLE_PREFIX."forums f", "f.name, f.fid", "1=1 ".$forumlist);
+$query = $db->simple_select("forums f", "f.name, f.fid", "1=1 ".$forumlist);
 $comma = " - ";
 while($forum = $db->fetch_array($query))
 {
@@ -141,8 +141,10 @@ while($thread = $db->fetch_array($query))
 		"description" => $parser->strip_mycode($thread['postmessage'], $parser_options),
 		"date" => $thread['dateline']
 	);
-	if($forumcache[$thread['fid']]
-	$feedgenerator->add_item($item);
+	if($forumcache[$thread['fid']])
+	{
+		$feedgenerator->add_item($item);
+	}
 }
 
 // Then output the feed XML.
