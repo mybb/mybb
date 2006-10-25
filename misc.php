@@ -352,7 +352,7 @@ elseif($mybb->input['action'] == "smilies")
 		while($smilie = $db->fetch_array($query))
 		{
 			$smiliefind = $smilie['find'];
-			$smilie['find'] = $db->escape_string($smilie['find']);
+			$smilie['find'] = addslashes($smilie['find']);
 			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 			if($e == 2)
 			{

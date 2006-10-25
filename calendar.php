@@ -178,7 +178,7 @@ if($mybb->input['action'] == "event")
 	}
 	$eventdate = explode("-", $event['date']);
 	$eventdate = gmmktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
-	$eventdate = my_date($mybb->settings['dateformat'], $eventdate, "", 0);
+	$eventdate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
 
 	add_breadcrumb($lang->nav_viewevent);
 
@@ -267,7 +267,7 @@ if($mybb->input['action'] == "dayview")
 		}
 		$eventdate = explode("-", $event['date']);
 		$eventdate = gmmktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
-		$eventdate = my_date($mybb->settings['dateformat'], $eventdate, "", 0);
+		$eventdate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
 		eval("\$events .= \"".$templates->get("calendar_dayview_event")."\";");
 	}
 	if(!$events)
