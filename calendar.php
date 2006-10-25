@@ -257,7 +257,7 @@ if($mybb->input['action'] == "event")
 	}
 
 	$eventdate = gmmktime(0, 0, 0, $event['start_month'], $event['start_day'], $event['start_year']);
-	$eventdate = my_date($mybb->settings['dateformat'], $eventdate, "", 0);
+	$eventdate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
 	if(empty($event['repeat_days']))
 	{
 		eval("\$event_dates = \"".$templates->get("calendar_eventbit_dates")."\";");
@@ -268,7 +268,7 @@ if($mybb->input['action'] == "event")
 		$repeat_days = $comma = '';
 
 		$eventdate_end = mktime(0, 0, 0, $event['end_month'], $event['end_day'], $event['end_year']);
-		$eventdate_end = my_date($mybb->settings['dateformat'], $eventdate_end, "", 0);
+		$eventdate_end = my_date($mybb->settings['dateformat'], $eventdate_end, 0, 0);
 
 		$event_days = explode(',', $event['repeat_days']);
 		$day_names = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
@@ -387,7 +387,7 @@ if($mybb->input['action'] == "dayview")
 		}
 
 		$eventdate = gmmktime(0, 0, 0, $event['start_month'], $event['start_day'], $event['start_year']);
-		$eventdate = my_date($mybb->settings['dateformat'], $eventdate, "", 0);
+		$eventdate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
 		if($event['start_time_hours'] !== '' && $event['start_time_mins'] !== '' && $event['end_time_hours'] !== '' && $event['end_time_mins'] !== '')
 		{
 			eval("\$event_times = \"".$templates->get("calendar_dayview_event_times")."\";");
@@ -404,7 +404,7 @@ if($mybb->input['action'] == "dayview")
 			$comma = $repeat_days = '';
 
 			$eventdate_end = gmmktime(0, 0, 0, $event['end_month'], $event['end_day'], $event['end_year']);
-			$eventdate_end = my_date($mybb->settings['dateformat'], $eventdate_end, "", 0);
+			$eventdate_end = my_date($mybb->settings['dateformat'], $eventdate_end, 0, 0);
 
 			$repeats = explode(',', $event['repeat_days']);
 			//Get the textual list of days

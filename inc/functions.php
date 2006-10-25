@@ -539,6 +539,7 @@ function redirect($url, $message="", $title="")
 		$url = str_replace("#", "&#", $url);
 		$url = str_replace("&amp;", "&", $url);
 		$url = str_replace(array("\n","\r",";"), "", $url);
+		run_shutdown();
 		header("Location: $url");
 	}
 	exit;
@@ -812,31 +813,36 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		return $groupperms;
 	}
+	// The fix here for better working inheritance was provided by tinywizard - http://windizupdate.com/
+	// Many thanks.
+	foreach($fpermfields as $perm)
+	{
+		$forumpermissions[$perm] = "no";
+	}
+
 	foreach($groups as $gid)
 	{
 		if($gid && $groupscache[$gid])
 		{
-			if(!is_array($fpermcache[$fid][$gid]))
+			$p = is_array($fpermcache[$fid][$gid]) ? $fpermcache[$fid][$gid] : $groupperms;
+			if($p == NULL)
 			{
-				continue;
-			}
-			foreach($fpermcache[$fid][$gid] as $perm => $access)
-			{
-				if($perm == "fid" || $perm == "gid" || $perm == "pid")
+				foreach($forumpermissions as $k => $v)
 				{
-					continue;
+					$forumpermissions[$k] = 'yes';        // no inherited group, assume one has access
 				}
-				$permission = $forumpermissions[$perm];
-				if((is_numeric($access) && $access > $permission) || ($access == "yes" && $permission == "no") || !$permission)
+			}
+			else
+			{
+				foreach($p as $perm => $access)
 				{
-					$forumpermissions[$perm] = $access;
+					if(isset($forumpermissions[$perm]) && $access == 'yes')
+					{
+						$forumpermissions[$perm] = $access;
+					}
 				}
 			}
 		}
-	}
-	if(!isset($forumpermissions))
-	{
-		$forumpermissions = $groupperms;
 	}
 	return $forumpermissions;
 }
