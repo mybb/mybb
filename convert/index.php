@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2006 MyBB Group, All Rights Reserved
+ * Copyright ï¿½ 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -17,7 +17,8 @@ error_reporting(E_ALL & ~E_NOTICE);
 define("MYBB_ROOT", dirname(dirname(__FILE__)));
 define("CONVERT_ROOT", dirname(__FILE__));
 
-if(!file_exists(MYBB_ROOT."/inc/config.php"))
+require_once MYBB_ROOT."/inc/config.php";
+if(!isset($config['dbtype']))
 {
 	die('MyBB needs to be installed before you can convert.');
 }
@@ -34,7 +35,6 @@ $cache = new datacache;
 	
 require_once MYBB_ROOT."/inc/functions.php";
 require_once MYBB_ROOT."/inc/class_xml.php";
-require_once MYBB_ROOT."/inc/config.php";
 require_once MYBB_ROOT."/inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine();
 
@@ -57,11 +57,7 @@ $groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
 
-// Check if MyBB is installed
-if(!$db->connect($config['hostname'], $config['username'], $config['password']))
-{
-	die('MyBB Ain\'t Installed fool!!!');
-}
+$db->connect($config['hostname'], $config['username'], $config['password']);
 $db->select_db($config['database']);
 $db->set_table_prefix($config['table_prefix']);
 define('TABLE_PREFIX', $config['table_prefix']);
