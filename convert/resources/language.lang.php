@@ -16,8 +16,8 @@ $l['db_config'] = 'Database Config';
 $l['data_conversion'] = 'Conversion';
 $l['finish_setup'] = 'Finish Setup';
 
-$l['welcome_step'] = '<p>Welcome to the conversion wizard for MyBB {1}. This wizard will convert and configure a copy of MyBB on your server from another bulliten board software.</p>
-<p>Now that you\'ve uploaded the MyBB conversion files you will need to select which bulliten board software you are trying to convert from at the bottom of the page. Below is an outline of what is going to be completed during installation.</p>
+$l['welcome_step'] = '<p>Welcome to the conversion wizard for MyBB {1}. This wizard will convert and configure a copy of MyBB on your server from another bulletin board software.</p>
+<p>Now that you\'ve uploaded the MyBB conversion files you will need to select which bulletin board software you are trying to convert from at the bottom of the page. Below is an outline of what is going to be completed during installation.</p>
 <ul>
 	<li>Database Configuration</li>
 	<li>License Agreement</li>
@@ -82,8 +82,8 @@ $l['db_step_error_invalidengine'] = 'You have selected an invalid database engin
 $l['db_step_error_noconnect'] = 'Could not connect to the database server at \'{1}\' with the supplied username and password. Are you sure the hostname and user details are correct?';
 $l['db_step_error_nodbname'] = 'Could not select the database \'{1}\'. Are you sure it exists and the specified username and password have access to it?';
 
-$l['data_step_converting'] = '<p>Converting the data from your previous bulliten board forum...</p>';
-$l['data_step_imported'] = '<p>The data from your previous bulliten board forum has een successfully inserted. Click Next to procceed.</p>';
+$l['data_step_converting'] = '<p>Converting the data from your previous bulletin board forum...</p>';
+$l['data_step_imported'] = '<p>The data from your previous bulletin board forum has een successfully inserted. Click Next to procceed.</p>';
 
 $l['admin_step_createadmin'] ='<p>You need to select your Super Administrator accounts before you can login and manage your copy of MyBB..</p>';
 $l['admin_step_admintable'] = '<div class="border_wrapper">

@@ -1,5 +1,5 @@
 <?php
-// Board Name: SMF
+// Board Name: SMF 1.0.8
 
 class convert_smf {
 	var $bbname = "SMF";
@@ -8,12 +8,12 @@ class convert_smf {
 									  "dependancies" => ""),
 						 "1" => array("name" => "Import SMF Threads",
 						 			  "function" => "import_threads",
-									  "dependances" => ""),				
+									  "dependancies" => ""),				
 						);
 
 	function import_users()
 	{
-		global $mybb, $output, $session, $db;
+		global $mybb, $output, $session, $db, $olddb;
 		
 		$mybb->input['perusers'] = intval($mybb->input['perusers']);
 		
@@ -115,7 +115,7 @@ class convert_smf {
 			}
 		}
 	}
-	
+
 	function import_threads()
 	{
 		global $mybb, $output, $session, $db;
@@ -255,6 +255,7 @@ class convert_smf {
 		return $db->fetch_field($query, "posterTime");
 	}
 	
+
 	function get_group_id($user, $row)
 	{
 		global $db;
