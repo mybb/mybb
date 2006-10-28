@@ -27,6 +27,11 @@ class Converter
 	var $import_fids;
 	
 	/**
+	 * Cache for the new TIDs
+	 */
+	var $import_tids;
+	
+	/**
 	 * Class constructor
 	 */
     function Converter()
@@ -102,6 +107,24 @@ class Converter
 		$fid = $db->insert_id();
 		
 		return $fid;
+	}
+
+	/**
+	 * Insert post into database
+	 */
+	function insert_post($post)
+	{
+		global $db;
+	
+		foreach($post as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+		
+		$query = $db->insert_query("posts", $insertarray);
+		$pid = $db->insert_id();
+		
+		return $pid;
 	}
 	
 	/**
@@ -188,6 +211,24 @@ class Converter
 			$threads[$thread['importtid']] = $thread['tid'];
 		}
 		return $threads;
+	}
+	
+	/**
+	 * Get the MyBB TID of an old TID.
+	 * @param int Thread ID used before import
+	 * @return int Thread ID in MyBB
+	 */
+	function get_import_tid($old_tid)
+	{
+		if(!is_array($this->import_tids))
+		{
+			$tid_array = $this->get_import_threads();
+		}
+		else
+		{
+			$tid_array = $this->import_tids;
+		}
+		return $tid_array[$old_tid];
 	}
 	
 	/**

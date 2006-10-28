@@ -493,7 +493,7 @@ function install_done()
 		echo $lang->done_step_dirdelete;
 	}
 	echo $lang->done_subscribe_mailing;
-	$output->print_footer('');
+	$output->print_footer();
 }
 
 ?>

@@ -204,7 +204,7 @@ END;
 	function print_footer($nextact="", $name="", $do_session=0)
 	{
 		global $lang;
-		if(isset($nextact) && $this->openedform)
+		if($nextact !== "" && $this->openedform)
 		{
 			if(!$name)
 			{

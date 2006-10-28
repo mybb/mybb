@@ -14,7 +14,10 @@ class Convert_smf extends Converter {
 									  "dependancies" => ""),
 						 3 => array("name" => "Import SMF Threads",
 						 			  "function" => "import_threads",
-									  "dependancies" => ""),				
+									  "dependancies" => ""),
+						 4 => array("name" => "Import SMF Posts",
+						 			  "function" => "import_posts",
+									  "dependancies" => ""),	
 						);
 
 	function import_users()
@@ -386,7 +389,102 @@ class Convert_smf extends Converter {
 				$session['start_threads'] = $session['start_threads'] + $session['threads_per_screen'];
 				$output->print_footer($module_id, 'module', 1);
 			}
-		}			
+		}
+	}
+	function import_posts()
+	{
+		global $mybb, $output, $session, $db;
+		$module_id = 4;
+
+		// Get number of posts per screen from form
+		if(isset($mybb->input['posts_per_screen']))
+		{
+			$session['posts_per_screen'] = intval($mybb->input['posts_per_screen']);
+		}
+		
+		if(empty($session['posts_per_screen']))
+		{
+			$session['start_posts'] = 0;
+			echo "<p>Please select how many posts to import at a time:</p>
+<p><input type=\"text\" name=\"posts_per_screen\" value=\"\" /></p>";
+			$output->print_footer($module_id, 'module', 1);
+		}
+		else
+		{	
+			// Get number of posts
+			if(!isset($session['total_posts']))
+			{
+				$query = $this->olddb->simple_select("messages", "COUNT(*) as count");
+				$session['total_posts'] = $this->olddb->fetch_field($query, 'count');				
+			}
+			
+			$query = $this->olddb->simple_select("messages", "*", "", array('limit_start' => $session['start_threads'], 'limit' => $session['threads_per_screen']));
+
+			while($post = $this->olddb->fetch_array($query))
+			{
+				echo "Inserting post #{$post['ID_MSG']}... ";
+				
+				$insert_post['importpid'] = $post['ID_MSG'];
+				$insert_post['tid'] = $this->get_import_tid($post['ID_TOPIC']);
+				
+				// Find if this is the first post in thread
+				$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
+				$first_post = $db->fetch_field($query1, "firstpost");
+				
+				// Make the replyto the first post of thread unless it is the first post
+				if($first_post == $post['ID_MSG'])
+				{
+					$insert_post['replyto'] = 0;
+				}
+				else
+				{
+					$insert_post['replyto'] = $first_post;
+				}
+
+				$insert_post['fid'] = $this->get_import_fid($post['ID_BOARD']);
+				$insert_post['subject'] = $post['subject'];
+				$insert_post['icon'] = 0;
+				$insert_post['uid'] = $post['ID_MEMBER'];
+				$insert_post['username'] = $post['posterName'];
+				$insert_post['dateline'] = $post['posterTime'];
+				$insert_post['message'] = $post['body'];
+				$insert_post['ipaddress'] = $post['posterIP'];
+				$insert_post['includesig'] = 'yes';
+				if($post['smileysEnabled'] == '1')
+				{
+					$insert_post['smilieoff'] = 'no';					
+				}
+				else
+				{
+					$insert_post['smilieoff'] = 'yes';
+				}
+				
+				// Get edit name
+				if(!empty($post['modifiedName']))
+				{
+					$query1 = $db->simple_select("users", "uid", "username='{$post['modifiedName']}'", array('limit' => 1));
+					$insert_post['edituid'] = $db->fetch_field($query1, "uid");
+				}
+				else
+				{
+					$insert_post['edituid'] = 0;
+				}
+				
+				$insert_post['edittime'] = $post['modifiedTime'];
+				$insert_post['visible'] = 1;
+				$insert_post['posthash'] = '';
+
+				$this->insert_post($insert_post);
+				echo "done.<br />\n";			
+			}
+			
+			// If there are more posts to do, continue, or else, move onto next module
+			if($session['total_posts'] > $session['start_posts'] + $session['posts_per_screen'])
+			{
+				$session['start_posts'] = $session['start_posts'] + $session['posts_per_screen'];
+				$output->print_footer($module_id, 'module', 1);
+			}
+		}
 	}
 	
 	/**
