@@ -34,7 +34,8 @@ class errorHandler {
 		E_STRICT             => 'Runtime Notice',
 		E_RECOVERABLE_ERRROR => 'Catchable Fatal Error',
 		MYBB_SQL 			 => 'MyBB SQL Error', 
-		MYBB_TEMPALTE		 => 'MyBB Template Error'
+		MYBB_TEMPALTE		 => 'MyBB Template Error',
+		MYBB_GENERAL		 => 'MyBB Error',
 	);
 	
 	/**
@@ -113,16 +114,10 @@ class errorHandler {
 				if(!strstr(strtolower($this->error_types[$type]), 'warning'))
 				{
 					$this->output_error($type, $message, $file, $line);
-					echo "<img src=\"{$SERVER['PHP_SELF']}?action=mybb_logo\" />";
-					echo "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.com\">MyBB Website</a>. If you are the administrator, please check your error logs for further details.<br /><br />\n\n";
-					echo "<b>{$this->error_types[$type]}</b> [$type] $message<br />\n";
-					echo "  Fatal error in line $line of file $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
-					echo "Aborting...";
-					exit(1);
 				}
 				else
 				{
-					$this->warnings .= "<b>{$this->error_types[$type]}</b> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
+					$this->warnings .= "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
 				}
 			}
 		}
@@ -160,12 +155,12 @@ class errorHandler {
 	}
 	
 	/**
-	 * Trigers a user created error Example: $error_handler->trigger("Some Warning", E_USER_WARNING);
+	 * Trigers a user created error Example: $error_handler->trigger("Some Warning", E_USER_ERROR);
 	 *
 	 * @param string Warning message
 	 * @param string Warning type
 	 */
-	function trigger($message="", $type='E_USER_WARNING')
+	function trigger($message="", $type='E_USER_ERROR')
 	{
 		global $lang;
 		
@@ -174,7 +169,7 @@ class errorHandler {
 			$message = $lang->unknown_user_trigger;
 		}
 		
-		if($type == MYBB_SQL)
+		if($type == MYBB_SQL || $type == MYBB_TEMPLATE || $type == MYBB_GENERAL)
 		{
 			$this->error($type, $message);
 		}
@@ -266,7 +261,7 @@ class errorHandler {
 			$error_message = "<p>MyBB has experienced an internal error and cannot continue.</p>";
 			$error_message .= "<dl>\n";
 			$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
-			$error_message .= "<dt>Error Message:</dt>\n<dd>{message}</dd>\n";
+			$error_message .= "<dt>Error Message:</dt>\n<dd>{$message}</dd>\n";
 			if($file)
 			{
 				$error_message .= "<dt>Location:</dt><dd>File: {$file}<br />Line: {$line}</dd>\n";

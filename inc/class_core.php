@@ -297,6 +297,7 @@ class MyBB {
 	 */
 	function trigger_generic_error($code, $halt=true)
 	{
+		global $error_handler;
 		switch($code)
 		{
 			case "cache_no_write":
@@ -311,11 +312,7 @@ class MyBB {
 			default:
 				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.com\">MyBB Website</a>";
 		}
-		include MYBB_ROOT."inc/generic_error.php";
-		if($halt)
-		{
-			exit;
-		}
+		$error_handler->trigger($message, MYBB_GENERAL);
 	}
 	
 	function __destruct()
