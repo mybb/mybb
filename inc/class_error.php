@@ -224,8 +224,6 @@ class errorHandler {
 	 */
 	function email_error($type, $message, $file, $line)
 	{
-		global $mybb;
-
 		if(!$mybb->settings['adminemail'])
 		{
 			return false;
@@ -243,6 +241,12 @@ class errorHandler {
 	function output_error($type, $message, $file, $line)
 	{
 		global $mybb;
+
+		if(!$mybb->settings['bbname'])
+		{
+			$mybb->settings['bbname'] = "MyBB";
+		}
+
 		if($type == MYBB_SQL)
 		{
 			$title = "MyBB SQL Error";
