@@ -49,7 +49,7 @@ $error_handler = new errorHandler();
 require_once CONVERT_ROOT."/resources/functions.php";
 require_once CONVERT_ROOT.'/resources/output.php';
 $output = new converterOutput;
-require_once CONVERT_ROOT.'/resources/converter.class.php';
+require_once CONVERT_ROOT.'/resources/class_converter.php';
 
 // Include the necessary constants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
