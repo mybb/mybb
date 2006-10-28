@@ -12,12 +12,42 @@
 class Converter
 {
 	/**
+	 * The database being converted
+	 */
+	var $olddb;
+	
+	/**
+	 * Cache for the new UIDs
+	 */
+	var $import_uids;
+	
+	/**
+	 * Cache for the new FIDs
+	 */
+	var $import_fids;
+	
+	/**
 	 * Class constructor
 	 */
     function Converter()
     {
     	// do nothing
     }
+    
+    /**
+	 * Make a database connection
+	 * @param array Database configuration
+	 */
+	function connect($config)
+	{
+		require_once MYBB_ROOT."/inc/db_{$config['dbtype']}.php";
+		$this->olddb = new databaseEngine;
+		
+		// Connect to Database
+		$this->olddb->connect($config['hostname'], $config['username'], $config['password']);
+		$this->olddb->select_db($config['database']);
+		$this->olddb->set_table_prefix($config['table_prefix']);
+	}
     
 	
 	/**
@@ -57,6 +87,24 @@ class Converter
 	}
 	
 	/**
+	 * Insert forum into database
+	 */
+	function insert_forum($forum)
+	{
+		global $db;
+	
+		foreach($forum as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+		
+		$query = $db->insert_query("forums", $insertarray);
+		$fid = $db->insert_id();
+		
+		return $fid;
+	}
+	
+	/**
 	 * Get an array of imported users
 	 * @return array
 	 */
@@ -69,7 +117,26 @@ class Converter
 		{
 			$users[$user['importuid']] = $user['uid'];
 		}
+		$this->import_uids = $users;
 		return $users;
+	}
+	
+	/**
+	 * Get the MyBB UID of an old UID.
+	 * @param int User ID used before import
+	 * @return int User ID in MyBB
+	 */
+	function get_import_uid($old_uid)
+	{
+		if(!is_array($this->import_uids))
+		{
+			$uid_array = $this->get_import_users();
+		}
+		else
+		{
+			$uid_array = $this->import_uids;
+		}
+		return $uid_array[$old_uid];
 	}
 	
 	/**
@@ -85,7 +152,26 @@ class Converter
 		{
 			$forums[$forum['importfid']] = $forum['fid'];
 		}
+		$this->import_fids = $forums;
 		return $forums;
+	}
+	
+	/**
+	 * Get the MyBB FID of an old FID.
+	 * @param int Forum ID used before import
+	 * @return int Forum ID in MyBB
+	 */
+	function get_import_fid($old_fid)
+	{
+		if(!is_array($this->import_fids))
+		{
+			$fid_array = $this->get_import_forums();
+		}
+		else
+		{
+			$fid_array = $this->import_fids;
+		}
+		return $fid_array[$old_fid];
 	}
 	
 	/**
