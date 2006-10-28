@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2006 MyBB Group, All Rights Reserved
+ * Copyright ï¿½ 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -391,7 +391,7 @@ function upgrade5_redoconfig()
 	}
 	$configdata = "<?php
 /**
- * Daatabase configuration
+ * Database configuration
  */
 
 \$config['dbtype'] = '{$config['dbtype']}';
