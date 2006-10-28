@@ -115,13 +115,14 @@ foreach($usergroups as $usergroup)
 	foreach($usergroup['user_list'] as $user)
 	{
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-		// for the postbit templates
+		// For the postbit templates
 		$post['uid'] = $user['uid'];
 		$emailcode = $pmcode = '';
 		if($user['hideemail'] != 'yes')
 		{
 			eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
 		}
+		
 		if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no' && strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
@@ -129,7 +130,7 @@ foreach($usergroups as $usergroup)
 		
 		$bgcolor = alt_trow();
 
-		//If the current group is a moderator group
+		// If the current group is a moderator group
 		if($usergroup['gid'] == 6)
 		{
 			$forumslist = $user['forumlist'];

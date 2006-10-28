@@ -131,6 +131,7 @@ class EventDataHandler extends DataHandler
 			{
 				$this->set_error("invalid_start_time");
 			}
+			
 			if($event['end_time_hours'] > 23 || $event['end_time_hours'] < 0 || $event['end_time_mins'] > 59 || $event['end_time_mins'] < 0)
 			{
 				$this->set_error("invalid_end_time");
@@ -147,13 +148,13 @@ class EventDataHandler extends DataHandler
 					$this->set_error("invalid_time_past");
 				}
 			}
-		}//End checking of start/end time
+		} // End checking of start/end time
 
 		// Check if the the user has entered an end date (recurring event)
-		//If user has selected one of the options that signify it's a recurring event
+		// If user has selected one of the options that signify it's a recurring event
 		if(!empty($event['end_day']) || !empty($event['end_month']) || !empty($event['end_year']))
 		{
-			//User selected some data, but they might not have selected all of the things needed
+			// User selected some data, but they might not have selected all of the things needed
 			if(empty($event['end_day']) || empty($event['end_month']) || empty($event['end_year']))
 			{
 				$this->set_error("invalid_end_date");
@@ -178,7 +179,7 @@ class EventDataHandler extends DataHandler
 				//return false;
 			}
 
-			//Make sure the user has selected a day that this event will occur on
+			// Make sure the user has selected a day that this event will occur on
 			if(is_array($event['repeat_days']))
 			{
 				$days_ok = false;
@@ -219,7 +220,7 @@ class EventDataHandler extends DataHandler
 					}
 				}
 			}
-		}//End checking of end date if recurring
+		} // End checking of end date if recurring
 		else
 		{
 			$event['end_day'] = '';
@@ -305,6 +306,7 @@ class EventDataHandler extends DataHandler
 		{
 			$this->verify_scope();
 		}
+		
 		$plugins->run_hooks_by_ref("datahandler_event_validate", $this);
 
 		// We are done validating, return.
@@ -334,6 +336,7 @@ class EventDataHandler extends DataHandler
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
+		
 		if(count($this->get_errors()) > 0)
 		{
 			die("The event is not valid.");
@@ -387,6 +390,7 @@ class EventDataHandler extends DataHandler
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
+		
 		if(count($this->get_errors()) > 0)
 		{
 			die("The event is not valid.");

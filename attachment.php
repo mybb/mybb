@@ -100,6 +100,7 @@ if($mybb->input['thumbnail'])
 			$type = "image/unknown";
 			break;
 	}
+	
 	header("Content-disposition: filename={$attachment['filename']}");
 	header("Content-type: ".$type);
 	$thumb = $mybb->settings['uploadspath']."/".$attachment['thumbnail'];
@@ -109,6 +110,7 @@ if($mybb->input['thumbnail'])
 else
 {
 	$ext = get_extension($attachment['filename']);
+	
 	if($ext == "txt" || $ext == "htm" || $ext == "html" || $ext == "pdf")
 	{
 		header("Content-disposition: attachment; filename={$attachment['filename']}");
@@ -117,6 +119,7 @@ else
 	{
 		header("Content-disposition: inline; filename={$attachment['filename']}");
 	}	
+	
 	header("Content-type: {$attachment['filetype']}");
 	header("Content-length: {$attachment['filesize']}");
 	echo file_get_contents($mybb->settings['uploadspath']."/".$attachment['attachname']);

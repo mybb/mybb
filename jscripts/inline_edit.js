@@ -13,6 +13,7 @@ inlineEditor.prototype = {
 			alert('You need to specify either a className in the options.');
 			return false;
 		}
+		
 		this.className = options.className;
 		if(options.spinnerImage)
 		{
@@ -22,7 +23,7 @@ inlineEditor.prototype = {
 		this.elements = DomLib.getElementsByClassName(document, "*", options.className);
 		if(this.elements)
 		{
-			for(var i = 0; i < this.elements.length; i++)
+			for(var i = 0; i < this.elements.length; ++i)
 			{
 				if(this.elements[i].id)
 				{
@@ -147,6 +148,7 @@ inlineEditor.prototype = {
 	{
 		Event.stopObserving(this.textbox, "blur", this.onBlur.bindAsEventListener(this));
 		var newValue = this.textbox.value;
+		
 		if(typeof(newValue) != "undefined" && newValue != '' && MyBB.HTMLchars(newValue) != this.oldValue)
 		{
 			this.testNode.innerHTML = this.cache;
@@ -155,10 +157,12 @@ inlineEditor.prototype = {
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 			this.lastElement = this.currentElement;
 			postData = "value="+encodeURIComponent(newValue);
+			
 			if(this.spinnerImage)
 			{
 				this.showSpinner();
 			}
+			
 			idInfo = this.element.id.split("_");
 			if(idInfo[0] && idInfo[1])
 			{
@@ -192,6 +196,7 @@ inlineEditor.prototype = {
 		{
 			message = request.responseText.match(/<error>(.*)<\/error>/);
 			this.element.innerHTML = this.oldValue;
+			
 			if(!message[1])
 			{
 				message[1] = "An unknown error occurred.";
@@ -202,6 +207,7 @@ inlineEditor.prototype = {
 		{
 			this.element.innerHTML = MyBB.HTMLchars(request.responseText);
 		}
+		
 		if(this.spinnerImage)
 		{
 			this.hideSpinner();
@@ -216,10 +222,12 @@ inlineEditor.prototype = {
 		{
 			return false;
 		}
+		
 		if(!this.spinner)
 		{
 			this.spinner = document.createElement("img");
 			this.spinner.src = this.spinnerImage;
+			
 			if(saving_changes)
 			{
 				this.spinner.alt = saving_changes;
@@ -228,6 +236,7 @@ inlineEditor.prototype = {
 			{
 				this.spinner.alt = "Saving changes..";
 			}
+			
 			this.spinner.style.verticalAlign = "middle";
 			this.spinner.style.paddingRight = "3px";
 		}
@@ -241,6 +250,7 @@ inlineEditor.prototype = {
 		{
 			return false;
 		}
+		
 		Element.remove(this.spinner);
 		return true;
 	}

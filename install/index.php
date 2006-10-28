@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright � 2006 MyBB Group, All Rights Reserved
+ * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -56,6 +56,34 @@ if(function_exists('mysql_connect'))
 		'population_file' => 'mysql_db_inserts.php'
 	);
 }
+
+if(function_exists('sqlite_open'))
+{
+	$dboptions['sqlite'] = array(
+		'title' => 'SQLite',
+		'structure_file' => 'sqlite_db_tables.php',
+		'population_file' => 'mysql_db_inserts.php'
+	);
+}
+
+if(function_exists('odbc_connect'))
+{
+	$dboptions['odbc'] = array(
+		'title' => 'ODBC',
+		'structure_file' => 'mysql_db_tables.php',
+		'population_file' => 'mysql_db_inserts.php'
+	);
+}
+
+if(function_exists('pg_connect'))
+{
+	$dboptions['pgsql'] = array(
+		'title' => 'PgSQL',
+		'structure_file' => 'mysql_db_tables.php',
+		'population_file' => 'mysql_db_inserts.php'
+	);
+}
+
 
 if(file_exists('lock'))
 {
@@ -612,23 +640,34 @@ function configure()
 			$hostname = 'http://'.$_SERVER['SERVER_NAME'];
 			$cookiedomain = '.'.$_SERVER['SERVER_NAME'];
 		}
+		
 		if($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['SERVER_NAME'] == 'localhost')
 		{
 			$cookiedomain = '';
 		}
+		
 		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
 		{
 			$hostname .= ':'.$_SERVER['SERVER_PORT'];
 		}
+		
 		$currentlocation = get_current_location();
+		
 		if($currentlocation)
 		{
 			$cookiepath = my_substr($currentlocation, 0, strpos($currentlocation, '/install/')).'/';
 		}
+		
 		$currentscript = $hostname.get_current_location();
+		
 		if($currentscript)
 		{
 			$bburl = my_substr($currentscript, 0, strpos($currentscript, '/install/'));
+		}
+		
+		if($_SERVER['SERVER_ADMIN'])
+		{
+			$contactemail = $_SERVER['SERVER_ADMIN'];
 		}
 	}
 

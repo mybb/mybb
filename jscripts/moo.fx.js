@@ -7,60 +7,76 @@ v 1.2.1
 */
 
 var fx = new Object();
-//base
+// Base
 fx.Base = function(){};
 fx.Base.prototype = {
-	setOptions: function(options) {
-	this.options = {
-		duration: 500,
-		onComplete: '',
-		transition: fx.sinoidal
-	}
-	Object.extend(this.options, options || {});
+	
+	setOptions: function(options) 
+	{
+		this.options = {
+			duration: 500,
+			onComplete: '',
+			transition: fx.sinoidal
+		}
+		Object.extend(this.options, options || {});
 	},
-
-	go: function() {
+	
+	go: function() 
+	{
 		this.startTime = (new Date).getTime();
 		this.timer = setInterval (this.step.bind(this), 13);
 	},
-
-	step: function() {
+	
+	step: function() 
+	{
 		var time  = (new Date).getTime();
-		if (time >= this.options.duration+this.startTime) {
+		if (time >= this.options.duration+this.startTime) 
+		{
 			this.now = this.to;
 			clearInterval (this.timer);
 			this.timer = null;
-			if (this.options.onComplete) setTimeout(this.options.onComplete.bind(this), 10);
+			if (this.options.onComplete)
+			{
+					setTimeout(this.options.onComplete.bind(this), 10);
+			}
 		}
-		else {
+		else
+		{
 			var Tpos = (time - this.startTime) / (this.options.duration);
 			this.now = this.options.transition(Tpos) * (this.to-this.from) + this.from;
 		}
 		this.increase();
 	},
-
-	custom: function(from, to) {
-		if (this.timer != null) return;
+	
+	custom: function(from, to) 
+	{
+		if (this.timer != null)
+		{
+			return;
+		}
 		this.from = from;
 		this.to = to;
 		this.go();
 	},
 
-	hide: function() {
+	hide: function() 
+	{
 		this.now = 0;
 		this.increase();
 	},
 
-	clearTimer: function() {
+	clearTimer: function() 
+	{
 		clearInterval(this.timer);
 		this.timer = null;
 	}
 }
 
-//stretchers
+// Stretchers
 fx.Layout = Class.create();
 fx.Layout.prototype = Object.extend(new fx.Base(), {
-	initialize: function(el, options) {
+	initialize: function(el, options) 
+	{
 		this.el = $(el);
 		this.el.style.overflow = "hidden";
 		this.el.iniWidth = this.el.offsetWidth;
@@ -71,67 +87,112 @@ fx.Layout.prototype = Object.extend(new fx.Base(), {
 
 fx.Height = Class.create();
 Object.extend(Object.extend(fx.Height.prototype, fx.Layout.prototype), {	
-	increase: function() {
+	increase: function() 
+	{
 		this.el.style.height = this.now + "px";
 	},
 
-	toggle: function() {
-		if (this.el.offsetHeight > 0) this.custom(this.el.offsetHeight, 0);
-		else this.custom(0, this.el.scrollHeight);
-	}
+	toggle: function() 
+	{
+		if (this.el.offsetHeight > 0) 
+		{
+			this.custom(this.el.offsetHeight, 0);
+		}
+		else 
+		{
+			this.custom(0, this.el.scrollHeight);
+		}
+	}	
 });
 
 fx.Width = Class.create();
 Object.extend(Object.extend(fx.Width.prototype, fx.Layout.prototype), {	
-	increase: function() {
+	increase: function() 
+	{
 		this.el.style.width = this.now + "px";
 	},
 
-	toggle: function(){
-		if (this.el.offsetWidth > 0) this.custom(this.el.offsetWidth, 0);
-		else this.custom(0, this.el.iniWidth);
+	toggle: function()
+	{
+		if (this.el.offsetWidth > 0) 
+		{
+			this.custom(this.el.offsetWidth, 0);
+		}
+		else 
+		{
+			this.custom(0, this.el.iniWidth);
+		}
 	}
 });
 
-//fader
+// Fader
 fx.Opacity = Class.create();
 fx.Opacity.prototype = Object.extend(new fx.Base(), {
-	initialize: function(el, options) {
+	initialize: function(el, options) 
+	{
 		this.el = $(el);
 		this.now = 1;
 		this.increase();
 		this.setOptions(options);
 	},
 
-	increase: function() {
-		if (this.now == 1 && (/Firefox/.test(navigator.userAgent))) this.now = 0.9999;
+	increase: function() 
+	{
+		if (this.now == 1 && (/Firefox/.test(navigator.userAgent))) 
+		{
+			this.now = 0.9999;
+		}
 		this.setOpacity(this.now);
 	},
 	
-	setOpacity: function(opacity) {
-		if (window.ActiveXObject) this.el.style.filter = "alpha(opacity=" + opacity*100 + ")";
+	setOpacity: function(opacity) 
+	{
+		if (window.ActiveXObject) 
+		{
+			this.el.style.filter = "alpha(opacity=" + opacity*100 + ")";
+		}
 		this.el.style.opacity = opacity;
-		if (opacity == 0) this.el.style.visibility = "hidden";
-		else this.el.style.visibility = "visible";
+		
+		if (opacity == 0) 
+		{
+			this.el.style.visibility = "hidden";
+		}
+		else 
+		{
+			this.el.style.visibility = "visible";
+		}
 	},
 
-	toggle: function() {
-		if (this.now > 0) this.custom(1, 0);
-		else this.custom(0, 1);
+	toggle: function() 
+	{
+		if (this.now > 0) 
+		{
+			this.custom(1, 0);
+		}
+		else 
+		{
+			this.custom(0, 1);
+		}
 	}
 });
 
-//transitions
-fx.sinoidal = function(pos){
+// Transitions
+fx.sinoidal = function(pos)
+{
 	return ((-Math.cos(pos*Math.PI)/2) + 0.5);
-	//this transition is from script.aculo.us
+	// This transition is from script.aculo.us
 }
-fx.linear = function(pos){
+
+fx.linear = function(pos)
+{
 	return pos;
 }
-fx.cubic = function(pos){
+
+fx.cubic = function(pos)
+{
 	return Math.pow(pos, 3);
 }
-fx.circ = function(pos){
+fx.circ = function(pos)
+{
 	return Math.sqrt(pos);
 }

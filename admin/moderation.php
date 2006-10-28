@@ -100,7 +100,7 @@ if($mybb->input['action'] == "do_edit")
 			'splitpostsnewsubject' => $mybb->input['splitpostsnewsubject'],
 			'splitpostsaddreply' => $mybb->input['splitpostsaddreply'],
 			'splitpostsreplysubject' => $mybb->input['splitpostsreplysubject'],
-			);
+		);
 
 		$update_tool['postoptions'] = $db->escape_string(serialize($post_options));
 	}

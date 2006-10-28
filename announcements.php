@@ -70,10 +70,12 @@ $query = $db->query("
 	WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND a.aid='$aid'
 ");
 $announcementarray = $db->fetch_array($query);
+
 if(!$announcementarray)
 {
 	error($lang->error_invalidannouncement);
 }
+
 $announcementarray['dateline'] = $announcementarray['startdate'];
 $announcementarray['userusername'] = $announcementarray['username'];
 $announcement = build_postbit($announcementarray, 3);

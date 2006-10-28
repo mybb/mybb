@@ -116,6 +116,7 @@ if($mybb->input['action'] == 'do_backup')
 		{
 			$field_list[] = $row['Field'];
 		}
+		
 		$fields = implode(",", $field_list);
 		$table = str_replace(TABLE_PREFIX, '', $table);
 		if($mybb->input['contents'] != 'data')
@@ -123,6 +124,7 @@ if($mybb->input['action'] == 'do_backup')
 			$structure = $db->show_create_table($table)."\n";
 			$contents .= $structure;
 		}
+		
 		if($mybb->input['contents'] != 'structure')
 		{
 			$query = $db->simple_select($table);
@@ -413,6 +415,7 @@ if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 			}
 		}
 		</script>";
+	
 	// Check if file is writable, before allowing submission
 	if(!is_writable(MYBB_ADMIN_DIR."/backups"))
 	{
@@ -442,6 +445,7 @@ if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 	echo "<tr>\n";
 	echo "<td class=\"$bgcolor\">".$lang->export_file_type."</td>\n";
 	echo "<td class=\"$bgcolor\">\n";
+	
 	if(function_exists("gzwrite") && function_exists("gzencode"))
 	{
 		echo "<label><input type=\"radio\" name=\"type\" value=\"gzip\" checked=\"checked\" /> ".$lang->gzip_compressed."</label><br />\n";

@@ -9,8 +9,10 @@
  * $Id$
  */
  
-define("MYBB_SQL", 20); // some digit here not in use by php's error numbers
-define("MYBB_TEMPLATE", 30); // some other digit here not in use by php's error numbers);
+// Define Custom MyBB error handler constants with a value not used by php's error handler
+define("MYBB_SQL", 20);
+define("MYBB_TEMPLATE", 30);
+define("MYBB_GENERAL", 40);
  
 class errorHandler {
 
@@ -32,7 +34,7 @@ class errorHandler {
 		E_USER_WARNING       => 'User Warning',
 		E_USER_NOTICE        => 'User Notice',
 		E_STRICT             => 'Runtime Notice',
-		E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+		E_RECOVERABLE_ERROR  => 'Catchable Fatal Error',
 		MYBB_SQL 			 => 'MyBB SQL Error', 
 		MYBB_TEMPLATE		 => 'MyBB Template Error',
 		MYBB_GENERAL		 => 'MyBB Error',
@@ -158,10 +160,10 @@ class errorHandler {
 	 * Triggers a user created error 
 	 * Example: $error_handler->trigger("Some Warning", E_USER_ERROR);
 	 *
-	 * @param string Warning message
-	 * @param string Warning type
+	 * @param string Message
+	 * @param string Type
 	 */
-	function trigger($message="", $type='E_USER_ERROR')
+	function trigger($message="", $type=E_USER_ERROR)
 	{
 		global $lang;
 		

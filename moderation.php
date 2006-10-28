@@ -1025,7 +1025,6 @@ switch($mybb->input['action'])
 			error($lang->error_inline_nopostsselected);
 		}
 		$inlineids = implode("|", $posts);
-		//clearinline($pid, "post");
 		clearinline($tid, "thread");
 
 		eval("\$multidelete = \"".$templates->get("moderation_inline_deleteposts")."\";");

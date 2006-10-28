@@ -54,10 +54,12 @@ var MyBB = {
 	popupWindow: function(url, name, width, height)
 	{
 		settings = "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes";
+		
 		if(width)
 		{
 			settings = settings+",width="+width;
 		}
+		
 		if(height)
 		{
 			settings = settings+",height="+height;
@@ -68,15 +70,18 @@ var MyBB = {
 	newPM: function()
 	{
 		confirmReturn = confirm(newpm_prompt);
-		if(confirmReturn == true) {
-			settings="toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=600,height=500";
-			NewWindow=window.open('private.php','pmPopup',settings);
+		
+		if(confirmReturn == true) 
+		{
+			settings = "toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=600,height=500";
+			NewWindow = window.open('private.php', 'pmPopup', settings);
 		}
 	},
 
 	deleteEvent: function(eid)
 	{
 		confirmReturn = confirm(deleteevent_confirm);
+		
 		if(confirmReturn == true)
 		{
 			form = document.createElement("form");
@@ -110,9 +115,10 @@ var MyBB = {
 
 	checkAll: function(formName)
 	{
-		for(var i=0;i<formName.elements.length;i++)
+		for(var i=0; i < formName.elements.length; ++i)
 		{
 			var element = formName.elements[i];
+			
 			if((element.name != "allbox") && (element.type == "checkbox"))
 			{
 				element.checked = formName.allbox.checked;
@@ -129,6 +135,7 @@ var MyBB = {
 	deleteReputation: function(uid, rid)
 	{
 		confirmReturn = confirm(delete_reputation_confirm);
+		
 		if(confirmReturn == true)
 		{
 			form = document.createElement("form");
@@ -168,7 +175,9 @@ var MyBB = {
 		{
 			defpage = 1;
 		}
+		
 		promptres = prompt("Quick Page Jump\nPlease enter a page number between 1 and "+pages+" to jump to.", defpage);
+		
 		if((promptres != null) && (promptres != "") & (promptres > 1) && (promptres <= pages))
 		{
 			window.location = "showthread.php?tid="+tid+"&page"+promotres;
@@ -189,7 +198,7 @@ var MyBB = {
 
 	arraySize: function(array_name)
 	{
-		for(var i=0;i<array_name.length;i++)
+		for(var i=0; i < array_name.length; ++i)
 		{
 			if(array_name[i] == "undefined" || array_name[i] == "" || array_name[i] == null)
 			{
@@ -215,7 +224,7 @@ var MyBB = {
 
 	inArray: function(item, array_name)
 	{
-		for(var i=0;i<array_name.length;i++)
+		for(var i=0; i < array_name.length; ++i)
 		{
 			if(array_name[i] == item)
 			{
@@ -253,39 +262,52 @@ var Cookie = {
 		cookies = document.cookie;
 		name = name+"=";
 		cookiePos = cookies.indexOf(name);
-		if(cookiePos != -1) {
+		
+		if(cookiePos != -1) 
+		{
 			cookieStart = cookiePos+name.length;
 			cookieEnd = cookies.indexOf(";", cookieStart);
-			if(cookieEnd == -1) {
+			
+			if(cookieEnd == -1) 
+			{
 				cookieEnd = cookies.length;
 			}
+			
 			return unescape(cookies.substring(cookieStart, cookieEnd));
 		}
 	},
 
 	set: function(name, value, expires)
 	{
-		if(!expires) {
+		if(!expires) 
+		{
 			expires = "; expires=Wed, 1 Jan 2020 00:00:00 GMT;"
-		} else {
+		} 
+		else 
+		{
 			expire = new Date();
 			expire.setTime(expire.getTime()+(expires*1000));
 			expires = "; expires="+expire.toGMTString();
 		}
-		if(cookieDomain) {
+		
+		if(cookieDomain) 
+		{
 			domain = "; domain="+cookieDomain;
 		}
 		else
 		{
 			domain = "";
 		}
-		if(cookiePath != "") {
+		
+		if(cookiePath != "") 
+		{
 			path = cookiePath;
 		}
 		else
 		{
 			path = "";
 		}
+		
 		document.cookie = name+"="+escape(value)+"; path="+path+domain+expires;
 	},
 
@@ -331,14 +353,17 @@ var DomLib = {
 	    strClassName = strClassName.replace(/\-/g, "\\-");
 	    var oRegExp = new RegExp("(^|\\s)" + strClassName + "(\\s|$)");
 	    var oElement;
-	    for(var i=0; i<arrElements.length; i++)
+		
+	    for(var i=0; i < arrElements.length; ++i)
 		{
 	        oElement = arrElements[i];
+			
 	        if(oRegExp.test(oElement.className))
 			{
 	            arrReturnElements.push(oElement);
 	        }
 	    }
+		
 	    return (arrReturnElements)
 	},
 
@@ -347,6 +372,7 @@ var DomLib = {
 	getPageScroll: function()
 	{
 		var yScroll;
+		
 		if(self.pageYOffset)
 		{
 			yScroll = self.pageYOffset;
@@ -359,7 +385,9 @@ var DomLib = {
 		{
 			yScroll = document.body.scrollTop;
 		}
+		
 		arrayPageScroll = new Array('',yScroll);
+		
 		return arrayPageScroll;
 	},
 
@@ -374,7 +402,7 @@ var DomLib = {
 			xScroll = document.body.scrollWidth;
 			yScroll = window.innerHeight + window.scrollMaxY;
 		}
-		else if(document.body.scrollHeight > document.body.offsetHeight) // all but Explorer Mac
+		else if(document.body.scrollHeight > document.body.offsetHeight) // All but Explorer Mac
 		{
 			xScroll = document.body.scrollWidth;
 			yScroll = document.body.scrollHeight;
@@ -403,7 +431,8 @@ var DomLib = {
 		}
 		
 		var pageHeight, pageWidth;
-		// for small pages with total height less then height of the viewport
+		
+		// For small pages with total height less then height of the viewport
 		if(yScroll < windowHeight)
 		{
 			pageHeight = windowHeight;
@@ -413,7 +442,7 @@ var DomLib = {
 			pageHeight = yScroll;
 		}
 
-		// for small pages with total width less then width of the viewport
+		// For small pages with total width less then width of the viewport
 		if(xScroll < windowWidth)
 		{
 			pageWidth = windowWidth;
@@ -422,7 +451,9 @@ var DomLib = {
 		{
 			pageWidth = xScroll;
 		}
+		
 		var arrayPageSize = new Array(pageWidth,pageHeight,windowWidth,windowHeight);
+		
 		return arrayPageSize;
 	}
 
@@ -435,14 +466,17 @@ var expandables = {
 		expanders = DomLib.getElementsByClassName(document, "img", "expander");
 		if(expanders.length > 0)
 		{
-			for(var i=0;i<expanders.length;i++)
+			for(var i=0; i < expanders.length; ++i)
 			{
 				var expander = expanders[i];
+				
 				if(!expander.id)
 				{
 					continue;
 				}
+				
 				Event.observe(expander, "click", this.expandCollapse.bindAsEventListener(this));
+				
 				if(MyBB.browser == "ie")
 				{
 					expander.style.cursor = "hand";
@@ -451,8 +485,10 @@ var expandables = {
 				{
 					expander.style.cursor = "pointer";
 				}
+				
 				expander.controls = expander.id.replace("_img", "");
 				var row = $(expander.controls);
+				
 				if(row)
 				{
 					Event.observe(row, "dblclick", this.expandCollapse.bindAsEventListener(this));
@@ -512,10 +548,11 @@ var expandables = {
 		var saved = new Array();
 		var newCollapsed = new Array();
 		var collapsed = Cookie.get("collapsed");
+		
 		if(collapsed)
 		{
 			saved = collapsed.split("|");
-			for(var i=0;i<saved.length;i++)
+			for(var i=0; i < saved.length; ++i)
 			{
 				if(saved[i] != id && saved[id] != "")
 				{
@@ -523,6 +560,7 @@ var expandables = {
 				}
 			}
 		}
+		
 		if(add == 1)
 		{
 			newCollapsed[newCollapsed.length] = id;
@@ -537,6 +575,7 @@ ActivityIndicator.prototype = {
 	initialize: function(owner, options)
 	{
 		var image;
+		
 		if(options && options.image)
 		{
 			image = "<img src=\""+options.image+"\" alt=\"\" />";
@@ -545,8 +584,10 @@ ActivityIndicator.prototype = {
 		{
 			image = "";
 		}
+		
 		this.height = options.height || 150;
 		this.width = options.width || 150;
+		
 		if(owner == "body")
 		{
 			arrayPageSize = DomLib.getPageSize();
@@ -561,8 +602,10 @@ ActivityIndicator.prototype = {
 			{
 				owner = $(owner);
 			}
+			
 			element = owner;
 			top = left = 0;
+			
 			do
 			{
 				top += element.offsetTop || 0;
@@ -573,6 +616,7 @@ ActivityIndicator.prototype = {
 			left += owner.offsetWidth;
 			top += owner.offsetHeight;
 		}
+		
 		this.spinner = document.createElement("div");
 		this.spinner.style.border = "1px solid #000000";
 		this.spinner.style.background = "#FFFFFF";

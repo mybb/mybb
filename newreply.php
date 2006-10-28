@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright � 2006 MyBB Group, All Rights Reserved
+ * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -213,8 +213,8 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				error($lang->error_usernametaken);
 			}
 			
-			//Checks to make sure the user can login; they haven't had too many tries at logging in.
-			//Is a fatal call if user has had too many tries
+			// Checks to make sure the user can login; they haven't had too many tries at logging in.
+			// Is a fatal call if user has had too many tries
 			$logins = login_attempt_check();		
 
 			// If the user specified a password but it is wrong, throw back invalid password.

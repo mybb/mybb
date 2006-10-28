@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright � 2006 MyBB Group, All Rights Reserved
+ * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -425,7 +425,7 @@ class postParser
 			{
 				if(!$badword['replacement']) $badword['replacement'] = "*****";
 				$badword['badword'] = preg_quote($badword['badword']);
-				$message = preg_replace("#\b".$badword['badword']."\b#i", $badword['replacement'], $message);
+				$message = preg_replace("#(\W|^)".$badword['badword']."(\W|$)#i", "\\1".$badword['replacement']."\\2", $message);
 			}
 		}
 		if($options['strip_tags'] == "yes")

@@ -192,8 +192,8 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 				error($lang->error_usernametaken);
 			}
 			
-			//Checks to make sure the user can login; they haven't had too many tries at logging in.
-			//Is a fatal call if user has had too many tries
+			// Checks to make sure the user can login; they haven't had too many tries at logging in.
+			// Is a fatal call if user has had too many tries
 			$logins = login_attempt_check();		
 
 			// If the user specified a password but it is wrong, throw back invalid password.

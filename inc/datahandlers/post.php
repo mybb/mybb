@@ -761,7 +761,7 @@ class PostDataHandler extends DataHandler
 			$now = time();
 			if($forum['usepostcounts'] != "no")
 			{
-					$queryadd = ",postnum=postnum+1";
+				$queryadd = ",postnum=postnum+1";
 			}
 			else
 			{

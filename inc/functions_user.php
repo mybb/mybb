@@ -128,9 +128,7 @@ function update_password($uid, $password, $salt="")
 
 	$newpassword = array();
 
-	//
 	// If no salt was specified, check in database first, if still doesn't exist, create one
-	//
 	if(!$salt)
 	{
 		$query = $db->simple_select("users", "salt", "uid='$uid'", array('limit' => 1));
@@ -146,19 +144,13 @@ function update_password($uid, $password, $salt="")
 		$newpassword['salt'] = $salt;
 	}
 
-	//
 	// Create new password based on salt
-	//
 	$saltedpw = salt_password($password, $salt);
 
-	//
 	// Generate new login key
-	//
 	$loginkey = generate_loginkey();
 
-	//
 	// Update password and login key in database
-	//
 	$newpassword['password'] = $saltedpw;
 	$newpassword['loginkey'] = $loginkey;
 	$db->update_query("users", $newpassword, "uid='$uid'", 1);
@@ -209,11 +201,13 @@ function generate_loginkey()
 function update_salt($uid)
 {
 	global $db;
+	
 	$salt = generate_salt();
 	$sql_array = array(
 		"salt" => $salt
 	);
-	$db->update_query("users", $sql_array, "uid = ".$uid, 1);
+	$db->update_query("users", $sql_array, "uid='{$uid}'", 1);
+	
 	return $salt;
 }
 
@@ -226,11 +220,13 @@ function update_salt($uid)
 function update_loginkey($uid)
 {
 	global $db;
+	
 	$loginkey = generate_loginkey();
 	$sql_array = array(
 		"loginkey" => $loginkey
 	);
-	$db->update_query("users", $sql_array, "uid = ".$uid, 1);
+	$db->update_query("users", $sql_array, "uid='{$uid}'", 1);
+	
 	return $loginkey;
 
 }
@@ -246,14 +242,17 @@ function update_loginkey($uid)
 function add_favorite_thread($tid, $uid="")
 {
 	global $mybb, $db;
+	
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
+	
 	if(!$uid)
 	{
 		return;
 	}
+	
 	$query = $db->simple_select("favorites", "*", "tid='".intval($tid)."' AND type='f' AND uid='".intval($uid)."'", array('limit' => 1));
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
@@ -265,6 +264,7 @@ function add_favorite_thread($tid, $uid="")
 		);
 		$db->insert_query("favorites", $insert_query);
 	}
+	
 	return true;
 }
 
@@ -279,15 +279,18 @@ function add_favorite_thread($tid, $uid="")
 function remove_favorite_thread($tid, $uid="")
 {
 	global $mybb, $db;
+	
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
+	
 	if(!$uid)
 	{
 		return;
 	}
 	$db->delete_query("favorites", "tid='".intval($tid)."' AND type='f' AND uid='".intval($uid)."'");
+	
 	return true;
 }
 
@@ -302,14 +305,17 @@ function remove_favorite_thread($tid, $uid="")
 function add_subscribed_thread($tid, $uid="")
 {
 	global $mybb, $db;
+	
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
+	
 	if(!$uid)
 	{
 		return;
 	}
+	
 	$query = $db->simple_select("favorites", "*", "tid='".intval($tid)."' AND type='s' AND uid='".intval($uid)."'", array('limit' => 1));
 	$favorite = $db->fetch_array($query);
 	if(!$favorite['tid'])
@@ -321,6 +327,7 @@ function add_subscribed_thread($tid, $uid="")
 		);
 		$db->insert_query("favorites", $insert_array);
 	}
+	
 	return true;
 }
 
@@ -335,15 +342,18 @@ function add_subscribed_thread($tid, $uid="")
 function remove_subscribed_thread($tid, $uid="")
 {
 	global $mybb, $db;
+	
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
+	
 	if(!$uid)
 	{
 		return;
 	}
-	$db->delete_query("favorites", "tid='".$tid."' AND type='s' AND uid='".$uid."'");
+	$db->delete_query("favorites", "tid='".$tid."' AND type='s' AND uid='{$uid}'");
+	
 	return true;
 }
 
@@ -358,10 +368,12 @@ function remove_subscribed_thread($tid, $uid="")
 function add_subscribed_forum($fid, $uid="")
 {
 	global $mybb, $db;
+	
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
+	
 	if(!$uid)
 	{
 		return;
@@ -370,7 +382,7 @@ function add_subscribed_forum($fid, $uid="")
 	$fid = intval($fid);
 	$uid = intval($uid);
 	
-	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='".$uid."'", array('limit' => 1));
+	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='{$uid}'", array('limit' => 1));
 	$fsubscription = $db->fetch_array($query);
 	if(!$fsubscription['fid'])
 	{
@@ -380,6 +392,7 @@ function add_subscribed_forum($fid, $uid="")
 		);
 		$db->insert_query("forumsubscriptions", $insert_array);
 	}
+	
 	return true;
 }
 
@@ -394,15 +407,18 @@ function add_subscribed_forum($fid, $uid="")
 function remove_subscribed_forum($fid, $uid="")
 {
 	global $mybb, $db;
+	
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
+	
 	if(!$uid)
 	{
 		return;
 	}
-	$db->delete_query("forumsubscriptions", "fid='".$fid."' AND uid='".$uid."'");
+	$db->delete_query("forumsubscriptions", "fid='".$fid."' AND uid='{$uid}'");
+	
 	return true;
 }
 
@@ -421,12 +437,11 @@ function usercp_menu()
 	{
 		$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
 	}
+	
 	$plugins->add_hook("usercp_menu", "usercp_menu_profile", 20);
 	$plugins->add_hook("usercp_menu", "usercp_menu_misc", 30);
 
-	//
 	// Run the plugin hooks
-	//
 	$plugins->run_hooks("usercp_menu");
 	global $usercpmenu;
 
@@ -450,6 +465,7 @@ function usercp_menu_messenger()
 		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
 		$folderlinks .= "<li class=\"pmfolders\"><a href=\"private.php?fid=$folderinfo[0]\">$folderinfo[1]</a></li>\n";
 	}
+	
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_messenger")."\";");
 }
 
@@ -465,6 +481,7 @@ function usercp_menu_profile()
 	{
 		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
 	}
+	
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");
 }
 
@@ -478,12 +495,13 @@ function usercp_menu_misc()
 
 	$query = $db->simple_select("posts", "COUNT(*) AS draftcount", "visible='-2' AND uid='".$mybb->user['uid']."'");
 	$count = $db->fetch_array($query);
-	$draftcount = "(".my_number_format($count['draftcount']).")";
+	$draftcount = "(".my_number_format($count['draftcount']).")";	
 	if($count['draftcount'] > 0)
 	{
 		$draftstart = "<strong>";
 		$draftend = "</strong>";
 	}
+	
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
 
@@ -496,6 +514,7 @@ function usercp_menu_misc()
 function get_usertitle($uid="")
 {
 	global $db, $mybb;
+	
 	if($mybb->user['uid'] == $uid)
 	{
 		$user = $mybb->user;
@@ -505,6 +524,7 @@ function get_usertitle($uid="")
 		$query = $db->simple_select("users", "usertitle,postnum", "uid='$uid'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 	}
+	
 	if($user['usertitle'])
 	{
 		return $user['usertitle'];
@@ -513,6 +533,7 @@ function get_usertitle($uid="")
 	{
 		$query = $db->simple_select("usertitles", "title", "posts<='".$user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'desc'));
 		$usertitle = $db->fetch_array($query);
+		
 		return $usertitle['title'];
 	}
 }
@@ -551,6 +572,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 		}
 		$lastvisit = $pm_lastvisit_cache[$uid];
 	}
+	
 	// Update total number of messages.
 	if($count_to_update & 1)
 	{
@@ -558,6 +580,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 		$total = $db->fetch_array($query);
 		$pmcount['totalpms'] = $total['pms_total'];
 	}
+	
 	// Update number of unread messages.
 	if($count_to_update & 2)
 	{
@@ -565,6 +588,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 		$unread = $db->fetch_array($query);
 		$pmcount['unreadpms'] = $unread['pms_unread'];
 	}
+	
 	if(is_array($pmcount))
 	{
 		$db->update_query("users", $pmcount, "uid='".intval($uid)."'");

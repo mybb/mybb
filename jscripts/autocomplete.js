@@ -19,6 +19,7 @@ autoComplete.prototype = {
 		this.currentIndex = -1;
 		this.valueSpan = options.valueSpan;
 		this.urlParam = options.urlParam;
+		
 		if(options.minChars)
 		{
 			this.minChars = options.minChars;
@@ -27,6 +28,7 @@ autoComplete.prototype = {
 		{
 			this.minChars = 3;
 		}
+		
 		if(options.delimChar)
 		{
 			this.delimChar = options.delimChar;
@@ -44,15 +46,18 @@ autoComplete.prototype = {
 		Event.observe(this.textbox, "keypress", this.onKeyPress.bindAsEventListener(this));
 		Event.observe(this.textbox, "keyup", this.onKeyUp.bindAsEventListener(this));
 		Event.observe(this.textbox, "keydown", this.onKeyDown.bindAsEventListener(this));
+		
 		if(this.textbox.form)
 		{
 			if(this.textbox.form.onsubmit)
 			{
 				this.oldOnSubmit = this.textbox.form.onsubmit;
 			}
+			
 			this.formSubmit = true;
 			this.textbox.form.onsubmit = this.onFormSubmit.bindAsEventListener(this);
 		}
+		
 		this.textbox.onsubmit = this.onFormSubmit.bindAsEventListener(this);
 		this.popup = document.createElement("div");
 		this.popup.style.position = "absolute";
@@ -98,6 +103,7 @@ autoComplete.prototype = {
 		{
 			clearTimeout(this.timeout);
 		}	
+		
 		switch(e.keyCode)
 		{
 			case Event.KEY_LEFT:
@@ -135,6 +141,7 @@ autoComplete.prototype = {
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
 					this.currentIndex = -1;
+					
 					if(this.delimChar)
 					{
 						Event.stop(e);
@@ -169,11 +176,13 @@ autoComplete.prototype = {
 		{
 			this.urlParam = "query";
 		}
+		
 		var separator = "?";
 		if(this.url.indexOf("?") >= 0)
 		{
 			separator = "&";
 		}
+		
 		return this.url+separator+this.urlParam+"="+encodeURIComponent(value);		
 	},
 	
@@ -183,10 +192,12 @@ autoComplete.prototype = {
 		{
 			return false;
 		}
+		
 		this.lastValue = this.textbox.value;
 		this.previousComplete = '';
 		value = this.textbox.value;
 		cacheValue = this.textbox.length+this.textbox.value;
+		
 		if(this.delimChar)
 		{
 			delimIndex = value.lastIndexOf(this.delimChar);
@@ -196,10 +207,12 @@ autoComplete.prototype = {
 				{
 					delimIndex += 1;
 				}
+				
 				this.previousComplete = value.substr(0, delimIndex+1);
 				value = value.substr(delimIndex+1);
 			}
 		}
+		
 		if(value.length >= this.minChars)
 		{	
 			if(this.cache[cacheValue])
@@ -234,22 +247,26 @@ autoComplete.prototype = {
 				}
 				return false;
 			}
+			
 			cacheValue = this.textbox.length+this.textbox.value;
 			this.popup.innerHTML = request.responseText;
 			this.cache[cacheValue] = this.popup.innerHTML;
 		}
+		
 		this.currentIndex = -1;
 		if(this.popup.childNodes.length < 1)
 		{
 			return false;
 		}
-		for(var i=0;i<this.popup.childNodes.length;i++)
+		
+		for(var i=0; i < this.popup.childNodes.length; ++i)
 		{
 			if (this.popup.childNodes[i].nodeType == 3 && !/\S/.test(this.popup.childNodes[i].nodeValue))	
 			{
 				this.popup.removeChild(this.popup.childNodes[i]);
 			}		
 		}
+		
 		if(this.popup.childNodes.length < 1)
 		{
 			if(this.popup.style.display != "none")
@@ -258,7 +275,8 @@ autoComplete.prototype = {
 			}
 			return false;
 		}
-		for(var i=0;i<this.popup.childNodes.length;i++)
+		
+		for(var i=0; i <this.popup.childNodes.length; ++i)
 		{
 			var item = this.popup.childNodes[i];
 			item.index = i;
@@ -292,9 +310,11 @@ autoComplete.prototype = {
 			this.popup.style.maxHeight = maxHeight+"px";
 			this.popup.style.overflow = "auto";
 		}
+		
 		this.popup.style.width = this.textbox.offsetWidth-2+"px";
 		element = this.textbox;
 		offsetTop = offsetLeft = 0;
+		
 		do
 		{
 			offsetTop += element.offsetTop || 0;
@@ -320,6 +340,7 @@ autoComplete.prototype = {
 		this.popup.style.display = "";
 		this.menuOpen = true;
 		this.overPopup = 0;
+		
 		if(this.currentKeyCode != 8 && this.currentKeyCode != 46)
 		{
 			this.highlightItem(0);
@@ -333,6 +354,7 @@ autoComplete.prototype = {
 		Event.stopObserving(this.textbox, "blur", this.hidePopup.bindAsEventListener(this));
 		Event.stopObserving(this.popup, "mouseover", this.popupOver.bindAsEventListener(this));
 		Event.stopObserving(this.popup, "mouseout", this.popupOut.bindAsEventListener(this));
+		
 		if(this.overPopup == 1 && this.currentIndex > -1)
 		{
 			this.updateValue(this.popup.childNodes[this.currentIndex]);
@@ -358,7 +380,7 @@ autoComplete.prototype = {
 			var items = selectedItem.getElementsByTagName("SPAN");
 			if(items)
 			{
-				for(var i=0;i<items.length;i++)
+				for(var i=0; i <items.length; ++i)
 				{
 					if(items[i].className == this.valueSpan)
 					{
@@ -378,6 +400,7 @@ autoComplete.prototype = {
 		{
 			textBoxValue = selectedItem;
 		}
+		
 		this.textbox.value = "";
 		if(this.delimChar)
 		{
@@ -425,10 +448,12 @@ autoComplete.prototype = {
 	scrollToItem: function(selectedItem)
 	{
 		newItem = this.popup.childNodes[selectedItem];
+		
 		if(!newItem)
 		{
 			return false;
 		}
+		
 		if(newItem.offsetTop+newItem.offsetHeight > this.popup.scrollTop+this.popup.offsetHeight)
 		{
 			this.popup.scrollTop = (newItem.offsetTop+newItem.offsetHeight) - this.popup.offsetHeight;
@@ -450,21 +475,25 @@ autoComplete.prototype = {
 	setTypeAhead: function(selectedItem, selectChanges)
 	{
 		selectedItem = this.popup.childNodes[selectedItem];
+		
 		if(!selectedItem || (!this.textbox.setSelectionRange && !this.textbox.createTextRange))
 		{
 			return false;
 		}
+		
 		if(selectChanges)
 		{
 			selectStart = this.textbox.value.length;
 		}
+		
 		newValue = this.updateValue(selectedItem);
 		selectEnd = this.textbox.value.length;
 		if(!selectChanges)
 		{
 			selectStart = selectEnd;
 		}
-		if(this.textbox.setSelectionRange)
+		
+		if(this.textbox.setSelectionange)
 		{
 			this.textbox.setSelectionRange(selectStart, selectEnd);
 		}
@@ -480,6 +509,7 @@ autoComplete.prototype = {
 	clearSelection: function()
 	{
 		selectEnd = this.textbox.value.length;
+		
 		if(this.textbox.setSelectionRange)
 		{
 			this.textbox.setSelectionRange(selectEnd, selectEnd);

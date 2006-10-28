@@ -823,9 +823,7 @@ elseif($mybb->input['action'] == "resetpassword")
 		$db->delete_query("awaitingactivation", "uid='".$user['uid']."' AND type='p'");
 		$username = $user['username'];
 
-		//
 		// Generate a new password, then update it
-		//
 		$password = random_str();
 		$logindetails = update_password($user['uid'], md5($password), $user['salt']);
 
@@ -853,8 +851,8 @@ else if($mybb->input['action'] == "login")
 {
 	$plugins->run_hooks("member_login");
 
-	//Checks to make sure the user can login; they haven't had too many tries at logging in.
-	//Is a fatal call if user has had too many tries
+	// Checks to make sure the user can login; they haven't had too many tries at logging in.
+	// Is a fatal call if user has had too many tries
 	login_attempt_check();
 
 	// Redirect to the page where the user came from, but not if that was the login page.
@@ -874,8 +872,8 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_login_start");
 
-	//Checks to make sure the user can login; they haven't had too many tries at logging in.
-	//Is a fatal call if user has had too many tries
+	// Checks to make sure the user can login; they haven't had too many tries at logging in.
+	// Is a fatal call if user has had too many tries
 	$logins = login_attempt_check();
 	$login_text = '';
 

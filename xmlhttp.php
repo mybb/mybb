@@ -25,7 +25,7 @@ define("IN_MYBB", 1);
 define("NO_ONLINE", 1);
 
 // Load MyBB core files
-require_once "./inc/init.php";
+require_once dirname(__FILE__)."/inc/init.php";
 
 $shutdown_queries = array();
 
@@ -125,6 +125,7 @@ if($mybb->input['action'] == "get_users")
 		"limit_start" => 0,
 		"limit" => 15
 	);
+	
 	$query = $db->simple_select("users", "uid, username", "username LIKE '".$db->escape_string($mybb->input['query'])."%'", $query_options);
 	while($user = $db->fetch_array($query))
 	{
@@ -344,6 +345,7 @@ else if($mybb->input['action'] == "edit_post")
 				$message = utf8_decode($message);
 			}
 		}
+		
 		//die(str_replace("&", "&amp;", $message));
 		if($debug_this == 1)
 		{
@@ -387,6 +389,7 @@ else if($mybb->input['action'] == "edit_post")
 			"allow_imgcode" => $forum['allowimgcode'],
 			"me_username" => $post['username']
 		);
+		
 		if($post['smilieoff'] == "yes")
 		{
 			$parser_options['allow_smilies'] = "no";
@@ -489,6 +492,8 @@ else if($mybb->input['action'] == "get_multiquoted")
 	echo $message;
 	exit;	
 }
+
+
 /**
  * Spits an XML Http based error message back to the browser
  *
