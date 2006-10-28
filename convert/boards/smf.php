@@ -1,7 +1,7 @@
 <?php
 // Board Name: SMF 1.0.8
 
-class convert_smf {
+class Convert_smf extends Converter {
 	var $bbname = "SMF";
 	var $modules = array("0" => array("name" => "Import SMF Users",
 									  "function" => "import_users",
@@ -15,34 +15,33 @@ class convert_smf {
 	{
 		global $mybb, $output, $session, $db, $olddb;
 		
-		$mybb->input['perusers'] = intval($mybb->input['perusers']);
-		
-		if(empty($mybb->input['perusers']))
+		if(!isset($session['start_users']))
 		{
+			$session['start_users'] = 0;
 			echo "<p>Please select how many users to import at a time:</p>
-<p><input type=\"text\" name=\"perusers\" value=\"\" /></p>";
+<p><input type=\"text\" name=\"users_per_screen\" value=\"\" /></p>";
 			$output->print_footer(0, 'module', 1);
 		}
 		else
 		{
-			$session['limit_start'] = $mybb->input['perusers'];
 			
-			if($mybb->input['perusers'])
+			// Get number of users per screen from form
+			if(isset($mybb->input['users_per_screen']))
 			{
-				$limit_start = 0;
-			}
-			else
-			{
-				$limit_start = $session['limit_start'];
+				$session['users_per_screen'] = intval($mybb->input['users_per_screen']);
 			}
 			
-			$old_table_prefix = $db->table_prefix;
-			
-			$db->set_table_prefix($session['tableprefix']);
-			
-			$query = $db->simple_select("members", "*", "", array('limit_start' => $limit_start, 'limit' => $session['limit_start']));
+			// Get number of members
+			if(!isset($session['total_members']))
+			{
+				$query = $olddb->simple_select("members", "COUNT(*) as count");
+				$session['total_members'] = $olddb->fetch_field($query, 'count');				
+			}
 
-			while($user = $db->fetch_array($query))
+			// Get members
+			$query = $olddb->simple_select("members", "*", "", array('limit_start' => $session['start_users'], 'limit' => $session['users_per_screen']));
+
+			while($user = $olddb->fetch_array($query))
 			{
 				echo "Adding user #{$user['ID_MEMBER']}... ";
 				$insert_user['usergroup'] = $this->get_group_id($user, 'ID_GROUP');
@@ -93,61 +92,49 @@ class convert_smf {
 				$insert_user['timeonline'] = $user['totalTimeLoggedIn'];
 				$insert_user['totalpms'] = $user['instantMessages'];
 				$insert_user['unreadpms'] = $user['unreadMessages'];
-				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';
-				
-				$db->set_table_prefix($old_table_prefix);				
-				insert_user($insert_user);				
-				$db->set_table_prefix($session['tableprefix']);
-				
+				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';		
+				$this->insert_user($insert_user);
 				echo "done.<br />\n";
 			}
-			
-			$db->set_table_prefix($old_table_prefix);
-			
-			if($db->num_rows($query) > $session['limit_start'])
+
+			// If there are more users to do, continue, or else, move onto next module
+			if($session['total_members'] > $session['start_users'] + $session['users_per_screen'])
 			{
-				$session['limit_start'] = $mybb->input['perusers']+20;
+				$session['start_users'] = $session['start_users'] + $session['users_per_screen'];
 				$output->print_footer(0, 'module', 1);
-			}
-			else
-			{
-				$output->print_footer($session['module']+1, 'module', 1);
 			}
 		}
 	}
 
 	function import_threads()
 	{
-		global $mybb, $output, $session, $db;
+		global $mybb, $output, $session, $db, $olddb;
 		
-		$mybb->input['perthreads'] = intval($mybb->input['perthreads']);
-		
-		if(empty($mybb->input['perthreads']))
+		if(!isset($session['start_threads']))
 		{
+			$session['start_threads'] = 0;
 			echo "<p>Please select how many threads to import at a time:</p>
-<p><input type=\"text\" name=\"perthreads\" value=\"\" /></p>";
+<p><input type=\"text\" name=\"threads_per_screen\" value=\"\" /></p>";
 			$output->print_footer(1, 'module', 1);
 		}
 		else
-		{
-			$session['limit_start'] = $mybb->input['perthreads'];
-			
-			if($mybb->input['perthreads'])
+		{	
+			// Get number of users per screen from form
+			if(isset($mybb->input['threads_per_screen']))
 			{
-				$limit_start = 0;
-			}
-			else
-			{
-				$limit_start = $session['limit_start'];
+				$session['threads_per_screen'] = intval($mybb->input['threads_per_screen']);
 			}
 			
-			$old_table_prefix = $db->table_prefix;
+			// Get number of threads
+			if(!isset($session['total_threads']))
+			{
+				$query = $olddb->simple_select("topics", "COUNT(*) as count");
+				$session['total_threads'] = $olddb->fetch_field($query, 'count');				
+			}
 			
-			$db->set_table_prefix($session['tableprefix']);
-			
-			$query = $db->simple_select("topics", "*", "", array('limit_start' => $limit_start, 'limit' => $session['limit_start']));
+			$query = $olddb->simple_select("topics", "*", "", array('limit_start' => $session['start_threads'], 'limit' => $session['threads_per_screen']));
 
-			while($thread = $db->fetch_array($query))
+			while($thread = $olddb->fetch_array($query))
 			{
 				echo "Inserting thread #{$thread['ID_TOPIC']}... ";
 				
@@ -176,20 +163,15 @@ class convert_smf {
 				$comma = '';
 				$count = 0;
 				
-				$query = $db->simple_select("messages", "ID_MSG", "ID_TOPIC='{$thread['ID_TOPIC']}'");
-				$rows = $db->num_rows($query);
-				while($post = $db->fetch_array($query))
+				$query1 = $olddb->simple_select("messages", "ID_MSG", "ID_TOPIC='{$thread['ID_TOPIC']}'");
+				while($post = $olddb->fetch_array($query1))
 				{
-					++$count;
-					$pids .= $post['ID_MSG'].$comma;
-					if($count < $rows)
-					{
-						$comma = ', ';
-					}
+					$pids .= $comma.$post['ID_MSG'];
+					$comma = ', ';
 				}
 				
-				$query = $db->simple_select("attachments", "COUNT(*) as numattachments", "ID_MSG IN($pids)");
-				$insert_thread['attachmentcount'] = $db->fetch_field($query, 'numattachments');
+				$query1 = $olddb->simple_select("attachments", "COUNT(*) as numattachments", "ID_MSG IN($pids)");
+				$insert_thread['attachmentcount'] = $db->fetch_field($query1, 'numattachments');
 				
 				$last_post = $this->get_post($thread['ID_LAST_MSG']);
 				$insert_thread['lastpost'] = $last_post['posterTime'];
@@ -201,38 +183,41 @@ class convert_smf {
 				
 				$member_started = $this->get_user($thread['ID_MEMBER_STARTED']);
 				$insert_thread['username'] = $member_started['memberName'];
-				
-				$db->set_table_prefix($old_table_prefix);		
-				insert_thread($insert_thread);	
-				$db->set_table_prefix($session['tableprefix']);				
+				$this->insert_thread($insert_thread);
+				echo "done.<br />\n";			
 			}
 			
-			$db->set_table_prefix($old_table_prefix);
-			
-			if($db->num_rows($query) > $session['limit_start'])
+			// If there are more threads to do, continue, or else, move onto next module
+			if($session['total_threads'] > $session['start_threads'] + $session['threads_per_screen'])
 			{
-				$session['limit_start'] = $mybb->input['perthreads']+20;
+				$session['start_threads'] = $session['start_threads'] + $session['threads_per_screen'];
 				$output->print_footer(1, 'module', 1);
-			}
-			else
-			{
-				$output->print_footer($session['module']+1, 'module', 1);
 			}
 		}			
 	}
 	
+	/**
+	 * Get a post from the SMF database
+	 * @param int Post ID
+	 * @return array The post
+	 */
 	function get_post($pid)
 	{
-		global $db;
+		global $olddb;
 		
-		$query = $db->simple_select("messages", "*", "ID_MSG='{$pid}'", array('limit' => 1));
+		$query = $olddb->simple_select("messages", "*", "ID_MSG='{$pid}'", array('limit' => 1));
 		
-		return $db->fetch_array($query);
+		return $olddb->fetch_array($query);
 	}
 	
+	/**
+	 * Get a user from the SMF database
+	 * @param int User ID
+	 * @return array If the uid is 0, returns an array of posterName and memberName as Guest.  Otherwise returns the user
+	 */
 	function get_user($uid)
 	{
-		global $db;
+		global $olddb;
 		
 		if($uid == 0)
 		{
@@ -242,23 +227,30 @@ class convert_smf {
 			);
 		}
 		
-		$query = $db->simple_select("members", "*", "ID_MEMBER='{$uid}'", array('limit' => 1));
+		$query = $olddb->simple_select("members", "*", "ID_MEMBER='{$uid}'", array('limit' => 1));
 		
-		return $db->fetch_array($query);
+		return $olddb->fetch_array($query);
 	}
 	
+	/**
+	 * Gets the time of the last post of a user from the SMF database
+	 * @param int User ID
+	 * @param int Last post time
+	 */
 	function get_last_post($uid)
 	{
-		global $db;
+		global $olddb;
 		
-		$query = $db->simple_select("messages", "posterTime", "ID_MEMBER='{$uid}'", array('order_by' => 'posterTime', 'order_dir' => 'DESC', 'limit' => 1));
-		return $db->fetch_field($query, "posterTime");
+		$query = $olddb->simple_select("messages", "posterTime", "ID_MEMBER='{$uid}'", array('order_by' => 'posterTime', 'order_dir' => 'DESC', 'limit' => 1));
+		return $olddb->fetch_field($query, "posterTime");
 	}
 	
-
+	/**
+	 * Convert a SMF group ID into a MyBB group ID
+	 */
 	function get_group_id($user, $row)
 	{
-		global $db;
+		global $olddb;
 		
 		if(empty($user[$row]))
 		{
@@ -275,18 +267,19 @@ class convert_smf {
 		}
 		
 		
-		$comma = '';
-		foreach($groups as $key => $group)
+		$comma = $group = '';
+		foreach($groups as $key => $smfgroup)
 		{
-			if($group == 1)
+			$group .= $comma;
+			if($smfgroup == 1)
 			{
 				$group .= 4;
 			}
-			elseif($group == 2)
+			elseif($smfgroup == 2)
 			{
 				$group .= 3;
 			}
-			elseif($group == 3)
+			elseif($smfgroup == 3)
 			{
 				$group .= 6;
 			}
@@ -294,7 +287,6 @@ class convert_smf {
 			{
 				return 5;
 			}
-			$group .= $comma;
 			$comma = ',';
 		}
 		

@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright Â© 2006 MyBB Group, All Rights Reserved
+ * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -10,7 +10,7 @@
  * NOT TO BE DISTRIBUTED WITH THE MYBB PACKAGE
  * INCLUDED FOR TESTING PURPOSES ONLY
  */
-error_reporting(E_ALL); //  & ~E_NOTICE
+error_reporting(E_ALL & ~E_NOTICE);
 
 
 // Load core files
@@ -35,8 +35,7 @@ $cache = new datacache;
 	
 require_once MYBB_ROOT."/inc/functions.php";
 require_once MYBB_ROOT."/inc/class_xml.php";
-require_once MYBB_ROOT."/inc/db_".$config['dbtype'].".php";
-$db = new databaseEngine();
+$db = db_connection($config);
 
 require_once MYBB_ROOT.'/inc/class_language.php';
 $lang = new MyLanguage();
@@ -46,24 +45,22 @@ $lang->load('language');
 require_once MYBB_ROOT."/inc/class_error.php";
 $error_handler = new errorHandler();
 
-// Include the installation resources
+// Include the converter resources
 require_once CONVERT_ROOT."/resources/functions.php";
 require_once CONVERT_ROOT.'/resources/output.php';
 $output = new converterOutput;
+require_once CONVERT_ROOT.'/resources/converter.class.php';
 
-// Include the necessary contants for installation
+// Include the necessary constants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
 
-$db->connect($config['hostname'], $config['username'], $config['password']);
-$db->select_db($config['database']);
-$db->set_table_prefix($config['table_prefix']);
 define('TABLE_PREFIX', $config['table_prefix']);
 
+// Set up db engine list
 $dboptions = array();
-
 if(function_exists('mysqli_connect'))
 {
 	$dboptions['mysqli'] = array(
@@ -80,6 +77,13 @@ if(function_exists('mysql_connect'))
 		'structure_file' => 'mysql_db_tables.php',
 		'population_file' => 'mysql_db_inserts.php'
 	);
+}
+
+// REMOVE BEFORE RELEASE
+// Temporary code to clear importcache
+if(isset($mybb->input['restart']))
+{
+	$db->delete_query("datacache", "title='importcache'", 1);
 }
 
 // Get the import session cache if exists
@@ -105,20 +109,14 @@ if(isset($mybb->input['board']))
 	$session['board'] = $mybb->input['board'];
 }
 
-// Check if converter is locked
-if(file_exists('lock'))
+
+if(file_exists('lock')) // Check if converter is locked
 {
 	$output->print_error($lang->locked);
 }
 elseif(!$session['board']) // Introductory steps & final step
 {
-	$output->steps = array(
-		'intro' => $lang->welcome,
-		'license' => $lang->license_agreement,
-		'database_info' => $lang->db_config,
-		'data_conversion' => $lang->data_conversion,
-		'final' => $lang->finish_setup,
-	);
+	$output->steps = get_converter_steps();
 	
 	if(!isset($mybb->input['action']))
 	{
@@ -155,69 +153,44 @@ elseif(isset($mybb->input['module']) || $session['module']) // In module
 	}
 	
 	// Attempt to connect to the db specified
-	require_once MYBB_ROOT."/inc/db_{$session['dbengine']}.php"; // FIXME: redeclaring class with same name
-	$olddb = new databaseEngine;
- 	//$olddb->error_reporting = 0;
-	$connection = $olddb->connect($session['dbhost'], $session['dbuser'], $session['dbpass']);
-	$dbselect = $olddb->select_db($mybb->input['dbname']);
-	$olddb->set_table_prefix($mybb->input['tableprefix']);
-	
-	
-	$db->set_table_prefix($config['table_prefix']);
+	$olddb = db_connection($session);
 	
 	// Make tables happy?
 	data_conversion();
 	
 	// Get the converter up.
 	require_once CONVERT_ROOT."/boards/".$session['board'].".php";
-	$classname = "convert_".$session['board'];
+	$classname = "Convert_".$session['board'];
 	$board = new $classname;
 	
-	$lang->data_conversion_old = $lang->data_conversion;
-	
-	$lang->data_conversion .= '</strong><ul>';
-	
 	// Make menu...
-	foreach($board->modules as $key => $module)
-	{
-		if($session['module'] == $key)
-		{
-			$lang->data_conversion .= "<li><strong>{$module['name']}</strong></li>";
-		}
-		else
-		{
-			$lang->data_conversion .= "<li>{$module['name']}</li>";
-		}
-	}
-	$lang->data_conversion .= '</ul><strong>';
-	
-	$output->steps = array(
-		'intro' => $lang->welcome,
-		'license' => $lang->license_agreement,
-		'database_info' => $lang->db_config,
-		'data_conversion' => $lang->data_conversion,
-		'final' => $lang->finish_setup,
-	);
+	$output->steps = get_converter_steps();
 	
 	$mybb->input['action'] = 'data_conversion';
 	
-	$output->print_header($lang->data_conversion_old, 'tablepopulate');
 
-	if($board->modules[$session['module']]) // Yeah rightio, we're now in a module
+
+	if(isset($board->modules[$session['module']])) // Yeah rightio, we're now in a module
 	{		
 		$function = $board->modules[$session['module']]['function'];
+		$module_name = $board->modules[$session['module']]['name'];
 	}
 	else // Just beginning, or an invalid module (who broke it?!)
 	{
 		$session['module'] = 0;
 		$function = $board->modules[0]['function'];
+		$module_name = $board->modules[0]['name'];
 	}
+
+	$output->print_header($module_name, 'data_conversion');
+	
 	$board->$function();
 	
 	// Continue to next module if one exists
 	if($board->modules[$session['module']+1])
 	{
-		$output->print_footer($session['module']+1, 'module', 1);
+		++$session['module'];
+		$output->print_footer($session['module'], 'module', 1);
 	}
 	else
 	{
@@ -228,15 +201,7 @@ elseif(isset($mybb->input['module']) || $session['module']) // In module
 }
 else // Start data conversion
 {
-	$output->steps = array(
-		'intro' => $lang->welcome,
-		'license' => $lang->license_agreement,
-		'database_info' => $lang->db_config,
-		'data_conversion' => $lang->data_conversion,
-		'final' => $lang->finish_setup,
-	);
-	
-	$output->print_header($lang->data_conversion, 'data_conversion');
+	$output->steps = get_converter_steps();
 	
 	if($mybb->input['board'])
 	{
@@ -245,7 +210,7 @@ else // Start data conversion
 	
 	$mybb->input['action'] = 'data_conversion';
 	
-	// Check if db engine exists
+	// Validate database information
 	if(!file_exists(MYBB_ROOT."/inc/db_{$mybb->input['dbengine']}.php"))
 	{
 		$errors[] = $lang->db_step_error_invalidengine;
@@ -255,7 +220,7 @@ else // Start data conversion
 	// Attempt to connect to the db specified
 	require_once MYBB_ROOT."/inc/db_{$mybb->input['dbengine']}.php"; // FIXME: redeclaring class with same name
 	$olddb = new databaseEngine;
- 	//$olddb->error_reporting = 0;
+ 	$olddb->error_reporting = 0;
 
 	// Check that connection to db being converted exists
 	$connection = $olddb->connect($mybb->input['dbhost'], $mybb->input['dbuser'], $mybb->input['dbpass']);
@@ -274,12 +239,12 @@ else // Start data conversion
 	$olddb->set_table_prefix($mybb->input['tableprefix']);
 	
 	// Remember the old database info
-	$session['tableprefix'] = $mybb->input['tableprefix'];
-	$session['dbname'] = $mybb->input['dbname'];
-	$session['dbhost'] = $mybb->input['dbhost'];
-	$session['dbuser'] = $mybb->input['dbuser'];
-	$session['dbpass'] = $mybb->input['dbpass'];
-	$session['dbengine'] = $mybb->input['dbengine'];
+	$session['table_prefix'] = $mybb->input['tableprefix'];
+	$session['database'] = $mybb->input['dbname'];
+	$session['hostname'] = $mybb->input['dbhost'];
+	$session['username'] = $mybb->input['dbuser'];
+	$session['password'] = $mybb->input['dbpass'];
+	$session['dbtype'] = $mybb->input['dbengine'];
 
 	// Send back for error fixing
 	if(is_array($errors))
@@ -292,15 +257,17 @@ else // Start data conversion
 	
 	// Make the converter
 	require_once CONVERT_ROOT."/boards/".$session['board'].".php";
-	$classname = "convert_".$session['board'];
+	$classname = "Convert_".$session['board'];
 	$board = new $classname;
-	$output->module_list();
+	//$output->module_list();
+	
+	$output->steps = get_converter_steps();
+	$output->print_header($board->modules[0]['name'], 'data_conversion');
 	
 	// Start the first one
 	$session['module'] = 0;
 	$function = $board->modules[0]['function'];
-	
-	$board->$function;
+	$board->$function();
 }
 
 /**
@@ -387,11 +354,11 @@ function database_info($errors='')
 	{
 		echo $lang->db_step_config_db;
 		$dbhost = 'localhost';
-		$tableprefix = 'mybb_';
+		$tableprefix = '';
 		$dbuser = '';
 		$dbname = '';
-		$boards = $output->print_boards();
 	}
+	$boards = $output->print_boards();
 
 	// Loop through database engines
 	foreach($dboptions as $dbfile => $dbtype)
@@ -530,6 +497,11 @@ function install_done()
 	$output->print_footer('');
 }
 
+/**
+ * Make a database connection
+ * @param array Database configuration
+ * @return databaseEngine Database Engine
+ */
 function db_connection($config)
 {
 	require_once MYBB_ROOT."/inc/db_{$config['dbtype']}.php";
@@ -539,10 +511,16 @@ function db_connection($config)
 	define('TABLE_PREFIX', $config['table_prefix']);
 	$db->connect($config['hostname'], $config['username'], $config['password']);
 	$db->select_db($config['database']);
-	$db->set_table_prefix(TABLE_PREFIX);
+	$db->set_table_prefix($config['table_prefix']);
 	return $db;
 }
 
+/**
+ * Return a formatted list of errors
+ * 
+ * @param array Errors
+ * @return string Formatted errors list
+ */
 function error_list($array)
 {
 	$string = "<ul>\n";
@@ -554,4 +532,55 @@ function error_list($array)
 	return $string;
 }
 
+/**
+ * Create the converter modules menu
+ * 
+ * @param array Module info array
+ * @param int Current module ID
+ * @return string Module nav bar list
+ */
+function make_data_conversion_menu($modules, $current_module=0)
+{
+	
+	$return = '';
+	foreach($modules as $key => $module)
+	{
+		if($key == $current_module)
+		{
+			$return .= "<li><strong>{$module['name']}</strong></li>";
+		}
+		else
+		{
+			$return .= "<li>{$module['name']}</li>";
+		}
+	}
+	
+	return $return;
+}
+
+/**
+ * Return an array of the steps for conversion
+ * 
+ * @return array Conversion steps
+ */
+function get_converter_steps()
+{
+	global $lang, $board, $session;
+	
+	if(isset($board->modules))
+	{
+		$lang->data_conversion_old = $lang->data_conversion;
+		$lang->data_conversion .= '</strong><ul>';
+		$lang->data_conversion .= make_data_conversion_menu($board->modules, $session['module']);
+		$lang->data_conversion .= '</ul><strong>';
+	}
+	
+	return array(
+		'intro' => $lang->welcome,
+		'license' => $lang->license_agreement,
+		'database_info' => $lang->db_config,
+		'data_conversion' => $lang->data_conversion,
+		'final' => $lang->finish_setup,
+	);
+}
 ?>

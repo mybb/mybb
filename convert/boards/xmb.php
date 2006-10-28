@@ -1,7 +1,7 @@
 <?php
 // Board Name: XMB
 
-class convert_xmb {
+class Convert_xmb extends Converter {
 	var $bbname = "XMB 1.8";
 	var $modules = array("0" => array("name" => "Source Database Configuration",
 									  "function" => "db_configuration",
