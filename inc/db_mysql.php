@@ -94,11 +94,11 @@ class databaseEngine
 	{
 		if($pconnect)
 		{
-			$this->link = @mysql_pconnect($hostname, $username, $password) or $this->dberror();
+			$this->link = @mysql_pconnect($hostname, $username, $password) or $this->error();
 		}
 		else
 		{
-			$this->link = @mysql_connect($hostname, $username, $password) or $this->dberror();
+			$this->link = @mysql_connect($hostname, $username, $password) or $this->error();
 		}
 		return $this->link;
 	}
@@ -111,7 +111,7 @@ class databaseEngine
 	 */
 	function select_db($database)
 	{
-		return @mysql_select_db($database, $this->link) or $this->dberror();
+		return @mysql_select_db($database, $this->link) or $this->error();
 	}
 	
 	/**
@@ -121,14 +121,14 @@ class databaseEngine
 	 * @param boolean 1 if hide errors, 0 if not.
 	 * @return resource The query data.
 	 */
-	function query($string, $hideerr=0)
+	function query($string, $hide_errors=0)
 	{
 		global $pagestarttime, $querytime, $db, $mybb;
 		$qtimer = new timer();
 		$query = @mysql_query($string, $this->link);
-		if($this->errno() && !$hideerr)
+		if($this->error_number() && !$hide_errors)
 		{
-			 $this->dberror($string);
+			 $this->error($string);
 			 exit;
 		}
 		$qtime = $qtimer->stop();
@@ -293,9 +293,9 @@ class databaseEngine
 	 *
 	 * @return int The error number of the current error.
 	 */
-	function errno()
+	function error_number()
 	{
-		return mysql_errno($this->link);
+		return @mysql_errno($this->link);
 	}
 
 	/**
@@ -303,7 +303,7 @@ class databaseEngine
 	 *
 	 * @return string The explanation for the current error.
 	 */
-	function error()
+	function error_string()
 	{
 		return mysql_error($this->link);
 	}
@@ -313,15 +313,15 @@ class databaseEngine
 	 *
 	 * @param string The string to present as an error.
 	 */
-	function dberror($string="")
+	function error($string="")
 	{
 		if($this->error_reporting)
 		{
 			global $error_handler;
 			
 			$error = array(
-				"error_no" => mysql_errno($this->link),
-				"error" => mysql_error($this->link),
+				"error_no" => $this->error_number($this->link),
+				"error" => $this->error_string($this->link),
 				"query" => $string
 			);
 			$error_handler->error(MYBB_SQL, $error);

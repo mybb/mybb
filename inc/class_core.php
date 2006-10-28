@@ -181,6 +181,12 @@ class MyBB {
 			$this->use_shutdown = true;
 			register_shutdown_function(array(&$this, "__destruct"));
 		}
+
+		if($this->input['action'] == "mybb_logo")
+		{
+			require_once dirname(__FILE__)."/mybb_group.php";
+			output_logo();
+		}
 		
 		if(isset($this->input['intcheck']) && $this->input['intcheck'] == 1)
 		{

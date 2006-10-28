@@ -90,7 +90,7 @@ class errorHandler {
 			return;
 		}
 		
-		if($mybb->settings['errortypemedium'] == "both" || strstr(strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']))
+		if(($mybb->settings['errortypemedium'] == "both" || !$mybb->settings['errortypemedium']) || strstr(strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']))
 		{
 			// Saving error to log file
 			if($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
@@ -106,17 +106,14 @@ class errorHandler {
 			
 			if($type == MYBB_SQL) 
 			{
-				echo "MyBB has experienced an internal SQL error and cannot continue.<br />\n";
-				if($mybb->usergroup['cancp'] == "yes")
-				{
-					echo "SQL Error: {$message['error_no']} - {$message['error']}<br />Query: {$message['query']}";
-				}
-				exit(1);
+				$this->output_error($type, $message, $file, $line);
 			}
 			else
 			{	
 				if(!strstr(strtolower($this->error_types[$type]), 'warning'))
 				{
+					$this->output_error($type, $message, $file, $line);
+					echo "<img src=\"{$SERVER['PHP_SELF']}?action=mybb_logo\" />";
 					echo "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.com\">MyBB Website</a>. If you are the administrator, please check your error logs for further details.<br /><br />\n\n";
 					echo "<b>{$this->error_types[$type]}</b> [$type] $message<br />\n";
 					echo "  Fatal error in line $line of file $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
@@ -248,5 +245,75 @@ class errorHandler {
 		@my_mail($mybb->settings['adminemail'], "MyBB error on {$mybb->settings['bbname']}", $err, $mybb->settings['adminemail']);
 	}
 
+	function output_error($type, $message, $file, $line)
+	{
+		global $mybb;
+		if($type == MYBB_SQL)
+		{
+			$title = "MyBB SQL Error";
+			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
+			$error_message .= "<dl>\n";
+			$error_message .= "<dt>SQL Error:</dt>\n<dd>{$message['error_no']} - {$message['error']}</dd>\n";
+			if($message['query'] != "")
+			{
+				$error_message .= "<dt>Query:</dt>\n<dd>{$message['query']}</dd>\n";
+			}
+			$error_message .= "</dl>\n";
+		}
+		else
+		{
+			$title = "MyBB Internal Error";
+			$error_message = "<p>MyBB has experienced an internal error and cannot continue.</p>";
+			$error_message .= "<dl>\n";
+			$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
+			$error_message .= "<dt>Error Message:</dt>\n<dd>{message}</dd>\n";
+			if($file)
+			{
+				$error_message .= "<dt>Location:</dt><dd>File: {$file}<br />Line: {$line}</dd>\n";
+			}
+			$error_message .= "</dl>\n";
+		}
+
+		echo <<<EOF
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>{$mybb->settings['bbname']} - Internal Error</title>
+	<style type="text/css">
+		body { background: #efefef; color: #000; font-family: Verdana; font-size: 12px; text-align: center; line-height: 1.4; }
+		a:link { color: #026CB1; text-decoration: none;	}
+		a:visited {	color: #026CB1;	text-decoration: none; }
+		a:hover, a:active {	color: #000; text-decoration: underline; }
+		#container { width: 600px; padding: 20px; background: #fff;	border: 1px solid #e4e4e4; margin: 100px auto; text-align: left; }
+		h1 { margin: 0; background: url({$_SERVER['PHP_SELF']}?action=mybb_logo) no-repeat;	height: 82px; width: 248px; }
+		#content { border: 1px solid #B60101; background: #fff; }
+		h2 { font-size: 12px; padding: 4px; background: #B60101; color: #fff; margin: 0; }
+		.invisible { display: none; }
+		#error { padding: 6px; }
+		#footer { font-size: 11px; border-top: 1px solid #ccc; padding-top: 10px; }
+		dt { font-weight: bold; }
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div id="logo">
+			<h1><span class="invisible">MyBB</span></a></h1>
+		</div>
+
+		<div id="content">
+			<h2>{$title}</h2>
+
+			<div id="error">
+				{$error_message}
+				<p id="footer">Please contact the <a href="http://www.mybboard.net">MyBB Group</a> for support.</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+EOF;
+		exit(1);
+	}
 }
 ?>

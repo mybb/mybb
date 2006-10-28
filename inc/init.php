@@ -82,6 +82,9 @@ elseif(!function_exists($config['dbtype']."_connect") && !function_exists($confi
 }
 */
 
+require_once MYBB_ROOT."inc/class_error.php";
+$error_handler = new errorHandler();
+
 require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine;
 
@@ -146,9 +149,6 @@ if(!defined("NO_PLUGINS"))
 {
 	$plugins->load();
 }
-
-require_once MYBB_ROOT."inc/class_error.php";
-$error_handler = new errorHandler();
 
 // Set up any shutdown functions we need to run globally
 add_shutdown('send_mail_queue');
