@@ -62,6 +62,11 @@ $lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
 
+if(function_exists('mb_internal_encoding'))
+{
+	mb_internal_encoding($lang->settings['charset']);
+}
+
 // Which thread mode is our user using?
 if(!isset($mybb->input['mode']))
 {
