@@ -57,33 +57,6 @@ if(function_exists('mysql_connect'))
 	);
 }
 
-if(function_exists('sqlite_open'))
-{
-	$dboptions['sqlite'] = array(
-		'title' => 'SQLite',
-		'structure_file' => 'sqlite_db_tables.php',
-		'population_file' => 'mysql_db_inserts.php'
-	);
-}
-
-if(function_exists('odbc_connect'))
-{
-	$dboptions['odbc'] = array(
-		'title' => 'ODBC',
-		'structure_file' => 'mysql_db_tables.php',
-		'population_file' => 'mysql_db_inserts.php'
-	);
-}
-
-if(function_exists('pg_connect'))
-{
-	$dboptions['pgsql'] = array(
-		'title' => 'PgSQL',
-		'structure_file' => 'mysql_db_tables.php',
-		'population_file' => 'mysql_db_inserts.php'
-	);
-}
-
 
 if(file_exists('lock'))
 {
