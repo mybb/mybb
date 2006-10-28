@@ -687,31 +687,31 @@ if($mybb->input['action'] == "do_email")
 		echo $lang->done;
 		echo "</td>\n</tr>\n";
 		endtable();
-		startform("users.php", '', "do_email");
-		if(is_array($search))
-		{
-			foreach($search as $key => $val)
-			{
-				if(is_array($val))
-				{
-					foreach($val as $subkey => $subval)
-					{
-						$hiddens .= "\n<input type=\"hidden\" name=\"search[$key][$subkey]\" value=\"$subval\" />";
-					}
-				}
-				else
-				{
-					$hiddens .= "\n<input type=\"hidden\" name=\"search[$key]\" value=\"$val\" />";
-				}
-			}
-		}
-		foreach($searchop as $key => $val)
-		{
-			$hiddens .= "\n<input type=\"hidden\" name=\"searchop[$key]\" value=\"$val\" />";
-		}
-		echo $hiddens;
 		if($num['results'] > $searchop['perpage'])
 		{
+			startform("users.php", '', "do_email");
+			if(is_array($search))
+			{
+				foreach($search as $key => $val)
+				{
+					if(is_array($val))
+					{
+						foreach($val as $subkey => $subval)
+						{
+							$hiddens .= "\n<input type=\"hidden\" name=\"search[$key][$subkey]\" value=\"".htmlspecialchars_uni($subval)."\" />";
+						}
+					}
+					else
+					{
+						$hiddens .= "\n<input type=\"hidden\" name=\"search[$key]\" value=\"".htmlspecialchars_uni($val)."\" />";
+					}
+				}
+			}
+			foreach($searchop as $key => $val)
+			{
+				$hiddens .= "\n<input type=\"hidden\" name=\"searchop[$key]\" value=\"".htmlspecialchars_uni($val)."\" />";
+			}
+			echo $hiddens;
 			endform($lang->next_page, '');
 		}
 		cpfooter();
