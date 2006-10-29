@@ -125,8 +125,12 @@ END;
 		{
 			$this->print_header();
 		}		
-		echo "<table border='1' width='100%'>";
-	
+		echo "<div class=\"border_wrapper\">\n";
+		echo "<div class=\"title\">Board Selection</div>\n";
+		echo "<table class=\"general\" cellspacing=\"0\">\n";
+		echo "<tr>\n";
+		echo "<th colspan=\"2\" class=\"first last\">Please select the board you wish to convert from.</th>\n";
+		echo "</tr>\n";
 		$dh = opendir(CONVERT_ROOT."/boards");
 		while(($file = readdir($dh)) !== false)
 		{
@@ -139,14 +143,15 @@ END;
 				if($version_info[1])
 				{
 					echo "<tr>\n";
-					echo "<td>{$version_info[1]}</td>\n";
-					echo "<td><input type=\"radio\" name=\"board\" value=\"$bb_name\" /></td>\n";
+					echo "<td><label for=\"$bb_name\">{$version_info[1]}</label></td>\n";
+					echo "<td><input type=\"radio\" name=\"board\" value=\"$bb_name\" id=\"$bb_name\" /></td>\n";
 					echo "</tr>\n";
 				}
 			}
 		}
 		closedir($dh);
-		echo "</table>";
+		echo "</table>\n";
+		echo "</div>\n";
 		$this->print_footer();
 	}
 		
