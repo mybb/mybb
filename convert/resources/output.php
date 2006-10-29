@@ -110,11 +110,11 @@ END;
 	{
 		global $board, $import_session;
 		
-		$this->print_header("Module Selecion", "", 0);
+		$this->print_header("Module Selection", "", 0);
 
 		$completed_modules = explode(",", $import_session['completed_modules']);
 
-		foreach($completedmodules as $mod)
+		foreach($completed_modules as $mod)
 		{
 			$completed[$mod] = 1;
 		}
