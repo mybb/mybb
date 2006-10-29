@@ -222,7 +222,7 @@ END;
 			echo "</td>";
 			echo "<td class=\"last\" width=\"1\">";
 			echo "<form method=\"post\" action=\"{$this->script}\">\n";
-			if($import_session['module'] == $module['name'])
+			if($import_session['module'] == $key)
 			{
 				echo "<input type=\"submit\" class=\"submit_button\" value=\"Resume &raquo;\" disabled=\"disabled\" />";
 			}

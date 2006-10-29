@@ -122,8 +122,8 @@ elseif($import_session['module'])
 	else
 	{
 		$import_session['module'] = "";
-		header("Location: index.php");
 		update_import_session();
+		header("Location: index.php");
 		exit;
 	}
 
@@ -136,8 +136,8 @@ elseif($import_session['module'])
 	{
 		$import_session['completed'][] = $import_session['module'];
 		$import_session['module'] = '';
-		header("Location: index.php");
 		update_import_session();
+		header("Location: index.php");
 		exit;
 	}
 }
@@ -148,7 +148,8 @@ else
 	require_once CONVERT_ROOT."/boards/".$import_session['board'].".php";
 	$classname = "convert_".$import_session['board'];
 	$board = new $classname;
-
+	
+	create_import_fields();
 	$output->module_list();
 }
 ?>

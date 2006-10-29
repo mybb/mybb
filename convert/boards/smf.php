@@ -180,7 +180,7 @@ EOF;
 		if($import_session['start_users'])
 		{
 			// If there are more users to do, continue, or else, move onto next module
-			if($import_session['total_members'] > $import_session['start_users'] + $import_session['users_per_screen'])
+			if($import_session['total_members'] <= $import_session['start_users'] + $import_session['users_per_screen'])
 			{
 				return "finished";
 			}
@@ -282,7 +282,7 @@ EOF;
 		if($import_session['start_cats'])
 		{
 			// If there are more categories to do, continue, or else, move onto next module
-			if($import_session['total_cats'] > $import_session['start_cats'] + $import_session['cats_per_screen'])
+			if($import_session['total_cats'] <= $import_session['start_cats'] + $import_session['cats_per_screen'])
 			{
 				return "finished";
 			}
@@ -381,11 +381,13 @@ EOF;
 		if($import_session['total_forums'])
 		{
 			// If there are more forums to do, continue, or else, move onto next module
-			if($import_session['total_forums'] > $import_session['start_forums'] + $import_session['forums_per_screen'])
+			if($import_session['total_forums'] <= $import_session['start_forums'] + $import_session['forums_per_screen'])
 			{
 				return "finished";
 			}
 		}
+		
+		$output->print_header();
 
 		// Get number of forums per screen from form
 		if(isset($mybb->input['forums_per_screen']))
@@ -459,7 +461,7 @@ EOF;
 			}
 		}
 		$import_session['start_forums'] += $import_session['forums_per_screen'];
-		$output->print_footer();		
+		$output->print_footer();	
 	}
 
 	function import_threads()
@@ -478,13 +480,13 @@ EOF;
 		if($import_session['total_threads'])
 		{
 			// If there are more threads to do, continue, or else, move onto next module
-			if($import_session['total_threads'] > $import_session['start_threads'] + $import_session['threads_per_screen'])
+			if($import_session['total_threads'] <= $import_session['start_threads'] + $import_session['threads_per_screen'])
 			{
-				$import_session['start_threads'] = $import_session['start_threads'] + $import_session['threads_per_screen'];
-				$output->print_footer($module_id, 'module', 1);
+				return "finished";
 			}
 		}
-
+		
+		$output->print_header();
 
 		// Get number of threads per screen from form
 		if(isset($mybb->input['threads_per_screen']))
@@ -558,6 +560,7 @@ EOF;
 		$import_session['start_threads'] += $import_session['threads_per_screen'];
 		$output->print_footer();
 	}
+	
 	function import_posts()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -574,12 +577,13 @@ EOF;
 		if($import_session['start_posts'])
 		{
 			// If there are more posts to do, continue, or else, move onto next module
-			if($import_session['total_posts'] > $import_session['start_posts'] + $import_session['posts_per_screen'])
+			if($import_session['total_posts'] <= $import_session['start_posts'] + $import_session['posts_per_screen'])
 			{
 				return "finished";
 			}
 		}
 
+		$output->print_header();
 
 		// Get number of posts per screen from form
 		if(isset($mybb->input['posts_per_screen']))

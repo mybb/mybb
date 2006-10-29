@@ -21,7 +21,8 @@ function update_import_session()
 		print_r($import_session);
 		echo "</pre>";
 	}
-
+	$import_session['completed'] = array_unique($import_session['completed']);
+	
 	$cache->update("import_cache", $import_session);
 }
 
