@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright Â© 2006 MyBB Group, All Rights Reserved
+ * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
@@ -13,6 +13,16 @@
 define("MYBB_SQL", 20);
 define("MYBB_TEMPLATE", 30);
 define("MYBB_GENERAL", 40);
+if(!defined("E_STRICT"))
+{
+	// This constant has been defined since PHP 5
+	define("E_STRICT", 2048);
+}
+if(!defined("E_RECOVERABLE_ERROR"))
+{
+	// This constant has been defined since PHP 5.2 (which hasn't even been released yet)
+	define("E_RECOVERABLE_ERROR", 4096);
+}
  
 class errorHandler {
 
