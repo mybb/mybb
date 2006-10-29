@@ -600,7 +600,7 @@ EOF;
 		}
 		else
 		{	
-			$query = $this->old_db->simple_select("messages", "*", "", array('limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
+			$query = $this->old_db->simple_select("messages", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
 			while($post = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting post #{$post['ID_MSG']}... ";
