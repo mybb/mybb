@@ -12,11 +12,6 @@
 class Converter
 {
 	/**
-	 * The database being converted
-	 */
-	var $olddb;
-	
-	/**
 	 * Cache for the new UIDs
 	 */
 	var $import_uids;

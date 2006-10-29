@@ -12,7 +12,7 @@
 class converterOutput {
 
 	var $doneheader;
-	var $openedform;
+	var $opened_form;
 	var $script = "index.php";
 	var $steps = array();
 	var $title = "MyBB Conversion Wizard";
@@ -35,7 +35,7 @@ END;
 		if($form)
 		{
 			echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";
-			$this->openedform = 1;
+			$this->opened_form = 1;
 		}
 		
 		echo <<<END
@@ -45,35 +45,8 @@ END;
 		</div>
 		<div id="inner_container">
 		<div id="header">$this->title</div>
+		<div id="content">
 END;
-		if(empty($this->steps))
-		{
-			$this->steps = array();
-		}
-		if(is_array($this->steps))
-		{
-			echo "\n		<div id=\"progress\">";
-			echo "\n			<ul>\n";
-			foreach($this->steps as $action => $step)
-			{
-				if($action == $mybb->input['action'])
-				{
-					echo "				<li class=\"active\"><strong>$step</strong></li>\n";
-				}
-				else
-				{
-					echo "				<li>$step</li>\n";
-				}
-			}
-			echo "			</ul>";
-			echo "\n		</div>";
-			echo "\n		<div id=\"content\">\n";
-		}
-		else
-		{
-			echo "\n		<div id=\"progress_error\"></div>";
-			echo "\n		<div id=\"content_error\">\n";
-		}
 		if($title != "")
 		{
 			echo <<<END
@@ -100,122 +73,136 @@ END;
 		echo "\n			</div>";
 		$this->print_footer();
 	}
-	
-	function print_boards()
+
+	function board_list()
 	{
-		$boardscripts = array();
+		if(!$this->doneheader)
+		{
+			$this->print_header();
+		}		
+		echo "<table border='1' width='100%'>";
 	
 		$dh = opendir(CONVERT_ROOT."/boards");
 		while(($file = readdir($dh)) !== false)
 		{
-			if($file != "." && $file != "..")
+			if($file != "." && $file != ".." && get_extension($file) == "php")
 			{
-				$boardscripts[] = str_replace('.php', '', $file);
+				$bb_name = str_replace(".php", "", $file);
+				$board_script = file_get_contents(CONVERT_ROOT."/boards/{$file}");
+				// Match out board name
+				preg_match("#Board Name:(.*)#i", $board_script, $version_info);
+				if($version_info[1])
+				{
+					echo "<tr>\n";
+					echo "<td>{$version_info[1]}</td>\n";
+					echo "<td><input type=\"radio\" name=\"board\" value=\"$bb_name\" /></td>\n";
+					echo "</tr>\n";
+				}
 			}
 		}
 		closedir($dh);
-		
-		foreach($boardscripts as $key => $file)
-		{
-			$boardscript = file_get_contents(CONVERT_ROOT."/boards/{$file}.php");
-			preg_match("#Board Name:(.*)#i", $boardscript, $verinfo);
-			if(!$boardscripts[$key+1])
-			{
-				$boards .= "<option value=\"$file\" selected=\"selected\">$verinfo[1]</option>\n";
-			}
-			else
-			{
-				$boards .= "<option value=\"$file\">$verinfo[1]</option>\n";
-			}
-		}
-		unset($boardscripts);
-		unset($boardscript);
-		
-		return $boards;
+		echo "</table>";
+		$this->print_footer();
 	}
-	
+		
+
 	function module_list()
 	{
-		global $board, $session;
+		global $board, $import_session;
 		
-		if(!$this->doneheader)
-		{
-			$this->print_header();
-		}
-		
-		echo "<table border='1' width='100%'>";
-		$completedmodules = explode(",", $session['completedmodules']);
-		
+		$this->print_header("Module Selecion", "", 0);
+
+		$completed_modules = explode(",", $import_session['completed_modules']);
+
 		foreach($completedmodules as $mod)
 		{
 			$completed[$mod] = 1;
 		}
 		
+		echo "<div class=\"border_wrapper\">\n";
+		echo "<div class=\"title\">Module Selection</div>\n";
+		echo "<table class=\"general\" cellspacing=\"0\">\n";
+		echo "<tr>\n";
+		echo "<th colspan=\"2\" class=\"first last\">Please select a module to run.</th>\n";
+		echo "</tr>\n";
+		$class = "first";
+		$i=0;
 		foreach($board->modules as $key => $module)
 		{
-			echo "<tr>";
-			echo "<td><b>".$module['name']."</b><br />".$module['description'];
-			echo $key." - ".$module['name']."<br />";
-			echo $module['description'];
-			$dependancies = explode(",", $module['dependancies']);
-			
-			if(is_array($dependancies))
+			++$i;
+			$dependancy_list = array();
+			if(count($board->modules) == $i)
 			{
-				echo "<br />Dependancies: ";
-				foreach($dependancies as $depend)
+				$class .= " last";
+			}
+			echo "<tr class=\"{$class}\">\n";
+			echo "<td class=\"first\"><strong>".$module['name']."</strong>";
+			if($module['description'])
+			{
+				echo "<br />".$module['description'];
+			}
+
+			// Fetch dependant modules
+			$dependancies = explode(",", $module['dependancies']);
+			if(count($dependancies) > 0)
+			{
+				foreach($dependancies as $dependancy)
 				{
-					if($depend == "")
-					{
-						break;
-					}
+					if($dependancy == "") break;
+					$dependancy_list[] = $board->modules[$dependancy]['name'];
 					
-					echo $board->modules[$depend]['name'].",";
-					
-					if(!$completed[$depend])
+					if(in_array($import_session['completed'], $dependancy))
 					{
-						$awaitingdepend = 1;
+						$awaiting_dependancies = 1;
 					}
 				}
 			}
+
+			if(count($dependancy_list) > 0)
+			{
+				echo "<br /><small>Dependancies: ".implode(", ", $dependancy_list)."</small>";
+			}
 			
 			echo "</td>";
-			echo "<td>";
-			
-			if($session['module'])
+			echo "<td class=\"last\" width=\"1\">";
+			echo "<form method=\"post\" action=\"{$this->script}\">\n";
+			if($import_session['module'] == $module['name'])
 			{
-				echo "RESUME";
+				echo "<input type=\"submit\" class=\"submit_button\" value=\"Resume &raquo;\" disabled=\"disabled\" />";
 			}
-			elseif($awaitingdepend)
+			elseif($awaiting_dependancies)
 			{
-				echo "AWAITING ON DEPENDANCIES TO BE COMPLETED";
+				echo "<input type=\"submit\" class=\"submit_button\" value=\"Run &raquo;\" disabled=\"disabled\" />";
 			}
 			else
 			{
-				echo "<a href=\"index.php?module=$key\">RUN MODULE</a>";
+				echo "<input type=\"submit\" class=\"submit_button\" value=\"Run &raquo;\" />";
 			}
+			echo "<input type=\"hidden\" name=\"module\" value=\"{$key}\" />";
+			echo "</form>";
 			echo "</td>";
 			echo "</tr>";
+			if($class == "alt_row")
+			{
+				$class = "";
+			}
+			else
+			{
+				$class = "alt_row";
+			}
 		}
-		echo "</table>";
+		echo "</table>\n";
+		echo "</div>\n";
 		$this->print_footer("", "", 1);
 	}
 
 
-	function print_footer($nextact="", $name="", $do_session=0)
+	function print_footer($next_action="", $name="", $do_session=1)
 	{
 		global $lang;
-		if($nextact !== "" && $this->openedform)
+		if($this->opened_form)
 		{
-			if(!$name)
-			{
-				$name = "action";
-			}
-			echo "\n			<input type=\"hidden\" name=\"$name\" value=\"$nextact\" />";
 			echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"".$lang->next." &raquo;\" /></div><br style=\"clear: both;\" />\n";
-			$formend = "</form>";
-		}
-		elseif(!$nextact && $this->openedform)
-		{
 			$formend = "</form>";
 		}
 		else
@@ -242,7 +229,7 @@ END;
 END;
 		if($do_session == 1)
 		{
-			update_session();
+			update_import_session();
 		}
 		exit;
 	}

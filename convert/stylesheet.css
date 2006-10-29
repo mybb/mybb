@@ -49,43 +49,14 @@ a:hover {
 /* Inner Container */
 
 #inner_container {
-	background: #ebebeb url('images/content_bg.gif');
+	background: #fff;
 	border: 1px solid #000;
-}
-
-/* Progress Side bar */
-
-#progress {
-	width: 160px;
-	float: left;
-	padding: 10px;
-	padding-right: 0px;
-	font-size: 11px;
-}
-#progress ul {
-	list-style: none;
-	padding: 0 0 0 10px;
-	margin: 0;
-}
-
-#progress li {
-	color: #535353;
-	font-weight: bold;
-	margin: 0;
-	padding: 0 0 3px 0;
-}
-
-#progress li.active {
-	list-style-image: url('images/bullet.gif');
-	color: #000;
 }
 
 /* Content Area */
 
 #content {
-	margin-left: 170px;
-	width: 570px;
-	padding: 10px 10px 10px 19px;
+	padding: 10px;
 }
 
 * html #content {
@@ -98,47 +69,6 @@ h2 {
 	margin: 0;
 	font-size: 24px;
 	height: 32px;
-	padding-left: 40px;
-}
-
-h2.welcome {
-	background: url('images/h2-welcome.gif') no-repeat;
-}
-
-h2.license {
-	background: url('images/h2-license.gif') no-repeat;
-}
-
-h2.requirements {
-	background: url('images/h2-requirements.gif') no-repeat;
-}
-
-h2.dbconfig {
-	background: url('images/h2-dbconfig.gif') no-repeat;
-}
-
-h2.createtables {
-	background: url('images/h2-createtables.gif') no-repeat;
-}
-
-h2.tablepopulate {
-	background: url('images/h2-tablepopulate.gif') no-repeat;
-}
-
-h2.theme {
-	background: url('images/h2-theme.gif') no-repeat;
-}
-
-h2.config {
-	background: url('images/h2-config.gif') no-repeat;
-}
-
-h2.admin {
-	background: url('images/h2-admin.gif') no-repeat;
-}
-
-h2.finish{
-	background: url('images/h2-finish.gif') no-repeat;
 }
 
 h3 {
@@ -149,23 +79,6 @@ h3 {
 h4 {
 	font-size: 12px;
 	margin: 5px 0;
-}
-
-/* License Agreement */
-
-.license_agreement {
-	margin: 10px auto;
-	padding: 10px;
-	overflow: scroll;
-	height: 400px;
-	width: 500px;
-	border: 1px solid #ccc;
-}
-
-
-.license_agreement ul {
-	padding: 0;
-	margin: 15px;
 }
 
 /* Next Button */

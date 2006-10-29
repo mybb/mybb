@@ -9,6 +9,22 @@
  * $Id$
  */
 
+function update_import_session()
+{
+	global $import_session, $cache;
+
+	// TEMPORARY
+	global $mybb;
+	if($mybb->input['debug'])
+	{
+		echo "<pre>";
+		print_r($import_session);
+		echo "</pre>";
+	}
+
+	$cache->update("import_cache", $import_session);
+}
+
 /**
  * Convert an integer 1/0 into text yes/no
  * @param int Integer to be converted
@@ -29,48 +45,6 @@ function int_to_yesno($var)
 }
 
 /**
- * Update the import session cache
- */
-function update_session()
-{
-	global $session, $db;
-	
-	$session = $db->escape_string(serialize($session));
-	$query = $db->simple_select("datacache", "*", "title='importcache'");
-	$sess = $db->fetch_array($query);
-	
-	if(!$sess['cache'])
-	{
-		$insertarray = array(
-			'title' => 'importcache',
-			'cache' => $session,
-		);
-		$db->insert_query("datacache", $insertarray);
-	} 
-	else
-	{
-		$db->update_query("datacache", array('cache' => $session), "title='importcache'");
-	}
-}
-
-/**
- * Make a database connection
- * @param array Database configuration
- * @return databaseEngine Database Engine
- */
-function db_connection($config)
-{
-	require_once MYBB_ROOT."/inc/db_{$config['dbtype']}.php";
-	$db = new databaseEngine;
-	
-	// Connect to Database
-	$db->connect($config['hostname'], $config['username'], $config['password']);
-	$db->select_db($config['database']);
-	$db->set_table_prefix($config['table_prefix']);
-	return $db;
-}
-
-/**
  * Return a formatted list of errors
  * 
  * @param array Errors
@@ -87,55 +61,40 @@ function error_list($array)
 	return $string;
 }
 
-/**
- * Create the converter modules menu
- * 
- * @param array Module info array
- * @param int Current module ID
- * @return string Module nav bar list
- */
-function make_data_conversion_menu($modules, $current_module=0)
-{
-	$return = '';
 
-	foreach($modules as $key => $module)
+/** TODO: This function should actually DROP those columns if they exist and then recreate them **/
+function create_import_fields()
+{
+	global $db;
+	
+	if(!$db->field_exists('importuid', "users"))
 	{
-		if($key == intval($current_module))
-		{
-			$return .= "<li class=\"active\">{$module['name']}</li>";
-		}
-		else
-		{
-			$return .= "<li>{$module['name']}</li>";
-		}
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD importuid int NOT NULL default '0' AFTER uid");
 	}
 	
-	return $return;
-}
-
-/**
- * Return an array of the steps for conversion
- * 
- * @return array Conversion steps
- */
-function get_converter_steps()
-{
-	global $lang, $board, $session;
-	
-	if(isset($board->modules))
+	if(!$db->field_exists('importfid', "forums"))
 	{
-		$lang->data_conversion_old = $lang->data_conversion;
-		$lang->data_conversion .= '</strong><ul>';
-		$lang->data_conversion .= make_data_conversion_menu($board->modules, $session['module']);
-		$lang->data_conversion .= '</ul><strong>';
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD importfid int NOT NULL default '0' AFTER fid");
 	}
 	
-	return array(
-		'intro' => $lang->welcome,
-		'license' => $lang->license_agreement,
-		'database_info' => $lang->db_config,
-		'data_conversion' => $lang->data_conversion,
-		'final' => $lang->finish_setup,
-	);
+	if(!$db->field_exists('importtid', "threads"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD importtid int NOT NULL default '0' AFTER tid");
+	}
+	
+	if(!$db->field_exists('importpid', "posts"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD importpid int NOT NULL default '0' AFTER pid");
+	}
+	
+	if(!$db->field_exists('importaid', "attachments"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments ADD importaid int NOT NULL default '0' AFTER aid");
+	}
+	
+	if(!$db->field_exists('importgid', "usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD importgid int NOT NULL default '0' AFTER gid");
+	}
 }
 ?>
