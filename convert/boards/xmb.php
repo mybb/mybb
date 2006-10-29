@@ -5,10 +5,10 @@ class Convert_xmb extends Converter {
 	var $bbname = "XMB 1.8";
 	var $modules = array("0" => array("name" => "Source Database Configuration",
 									  "function" => "db_configuration",
-									  "dependancies" => ""),
+									  "dependencies" => ""),
 						 "1" => array("name" => "Import XMB Users",
 									  "function" => "import_users",
-									  "dependancies" => "0")
+									  "dependencies" => "0")
 						);
 
 	function db_configuration()

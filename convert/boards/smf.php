@@ -4,17 +4,17 @@
 class Convert_smf extends Converter {
 	var $bbname = "SMF";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
-									"dependancies" => ""),
+									"dependencies" => ""),
 						 "import_users" => array("name" => "Import SMF Users",
-									  "dependancies" => "db_configuration"),
+									  "dependencies" => "db_configuration"),
 						 "import_categories" => array("name" => "Import SMF Categories",
-									  "dependancies" => "db_configuration"),
+									  "dependencies" => "db_configuration"),
 						 "import_forums" => array("name" => "Import SMF Forums",
-									  "dependancies" => "db_configuration"),
+									  "dependencies" => "db_configuration"),
 						 "import_threads" => array("name" => "Import SMF Threads",
-									  "dependancies" => "db_configuration"),
+									  "dependencies" => "db_configuration"),
 						 "import_posts" => array("name" => "Import SMF Posts",
-									  "dependancies" => "db_configuration,import_threads"),	
+									  "dependencies" => "db_configuration,import_threads"),	
 						);
 
 	function smf_db_connect()
@@ -69,6 +69,11 @@ class Convert_smf extends Converter {
 				}
 
 				// Need to check if SMF is actually installed here
+				$this->old_db->set_table_prefix($mybb->input['tableprefix']);
+				if(!$this->old_db->table_exists("members"))
+				{
+					$errors[] = "The SMF table '{$mybb->input['tableprefix']}members' could not be found in database '{$mybb->input['dbname']}'.  Please ensure SMF exists at this database and with this table prefix.";
+				}
 
 				// No errors? Save import DB info and then return finished
 				if(!is_array($errors))

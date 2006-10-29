@@ -195,6 +195,11 @@ input.submit_button {
 	margin-top: 4px;
 	margin-right: 3px;
 }
+input.submit_button_disabled {
+	border: 3px double #CCCCCC;
+	background: #fff url('images/submit_bg.gif') repeat-x top;
+	color: #CCCCCC;
+}
 
 label {
 	font-weight: bold;

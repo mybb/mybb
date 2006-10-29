@@ -9,14 +9,48 @@
  * $Id: output.php 2109 2006-08-18 05:15:51Z Tikitiki $
  */
 
+/**
+ * Class to create output from the converter scripts
+ */
 class converterOutput {
 
+	/**
+	 * This is set to 1 if the header has been called.
+	 * @var int 1 or 0
+	 */
 	var $doneheader;
+	
+	/**
+	 * This is set to 1 if a form has been opened.
+	 * @var int 1 or 0
+	 */
 	var $opened_form;
+	
+	/**
+	 * Script name
+	 * @var string  
+	 */
 	var $script = "index.php";
+	
+	/**
+	 * Steps for conversion
+	 * @var array
+	 */
 	var $steps = array();
+	
+	/**
+	 * Title of the system
+	 * @var string
+	 */
 	var $title = "MyBB Conversion Wizard";
 
+	/**
+	 * Method to print the converter header
+	 * @param string Page title
+	 * @param string Icon to be used
+	 * @param int Open a form 1/0
+	 * @param int Error???
+	 */
 	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
 		global $mybb, $lang;
@@ -55,11 +89,19 @@ END;
 		}
 	}
 
+	/**
+	 * Echo the contents out
+	 * @param string Contents to echo out
+	 */
 	function print_contents($contents)
 	{
 		echo $contents;
 	}
 
+	/**
+	 * Print an error block, and the footer.
+	 * @param string Error string
+	 */
 	function print_error($message)
 	{
 		global $lang;
@@ -74,6 +116,9 @@ END;
 		$this->print_footer();
 	}
 
+	/**
+	 * Print a list of possible boards to convert from, and the footer
+	 */
 	function board_list()
 	{
 		if(!$this->doneheader)
@@ -105,19 +150,14 @@ END;
 		$this->print_footer();
 	}
 		
-
+	/**
+	 * Print a list of modules and their dependencies for user to choose from, and the footer
+	 */
 	function module_list()
 	{
 		global $board, $import_session;
 		
 		$this->print_header("Module Selection", "", 0);
-
-		$completed_modules = explode(",", $import_session['completed_modules']);
-
-		foreach($completed_modules as $mod)
-		{
-			$completed[$mod] = 1;
-		}
 		
 		echo "<div class=\"border_wrapper\">\n";
 		echo "<div class=\"title\">Module Selection</div>\n";
@@ -130,7 +170,7 @@ END;
 		foreach($board->modules as $key => $module)
 		{
 			++$i;
-			$dependancy_list = array();
+			$dependency_list = array();
 			if(count($board->modules) == $i)
 			{
 				$class .= " last";
@@ -139,28 +179,44 @@ END;
 			echo "<td class=\"first\"><strong>".$module['name']."</strong>";
 			if($module['description'])
 			{
-				echo "<br />".$module['description'];
+				echo '<br />'.$module['description'];
 			}
-
-			// Fetch dependant modules
-			$dependancies = explode(",", $module['dependancies']);
-			if(count($dependancies) > 0)
+			
+			if(in_array($key, $import_session['completed']))
 			{
-				foreach($dependancies as $dependancy)
+				// Module has been completed.  Thus show.
+				echo '<br /><small class="pass">Completed</small>';
+			}
+			
+
+			// Fetch dependent modules
+			$dependencies = explode(',', $module['dependencies']);
+			if(count($dependencies) > 0)
+			{
+				foreach($dependencies as $dependency)
 				{
-					if($dependancy == "") break;
-					$dependancy_list[] = $board->modules[$dependancy]['name'];
-					
-					if(in_array($import_session['completed'], $dependancy))
+					if($dependency == '')
 					{
-						$awaiting_dependancies = 1;
+						break;	
+					}
+					
+					if(!in_array($dependency, $import_session['completed']))
+					{
+						// Cannot be run yet
+						$awaiting_dependencies = 1;
+						$dependency_list[] = $board->modules[$dependency]['name'];
+					}
+					else
+					{
+						// Dependency has been run
+						$dependency_list[] = '<del>'.$board->modules[$dependency]['name'].'</del>';
 					}
 				}
 			}
 
-			if(count($dependancy_list) > 0)
+			if(count($dependency_list) > 0)
 			{
-				echo "<br /><small>Dependancies: ".implode(", ", $dependancy_list)."</small>";
+				echo "<br /><small>Dependencies: ".implode(", ", $dependency_list)."</small>";
 			}
 			
 			echo "</td>";
@@ -170,9 +226,9 @@ END;
 			{
 				echo "<input type=\"submit\" class=\"submit_button\" value=\"Resume &raquo;\" disabled=\"disabled\" />";
 			}
-			elseif($awaiting_dependancies)
+			elseif($awaiting_dependencies)
 			{
-				echo "<input type=\"submit\" class=\"submit_button\" value=\"Run &raquo;\" disabled=\"disabled\" />";
+				echo "<input type=\"submit\" class=\"submit_button submit_button_disabled\" value=\"Run &raquo;\" disabled=\"disabled\" />";
 			}
 			else
 			{
@@ -196,7 +252,12 @@ END;
 		$this->print_footer("", "", 1);
 	}
 
-
+	/**
+	 * Print the footer of the page
+	 * @param string The next 'action'
+	 * @param string The name of the next action
+	 * @param int Do session update? 1/0
+	 */
 	function print_footer($next_action="", $name="", $do_session=1)
 	{
 		global $lang;

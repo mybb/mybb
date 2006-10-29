@@ -71,7 +71,7 @@ if(file_exists('lock'))
 if(isset($mybb->input['restart']))
 {
 	@unlink(CONVERT_ROOT.'/lock');
-	$db->delete_query("datacache", "title='importcache'", 1);
+	$db->delete_query("datacache", "title='import_cache'", 1);
 }
 
 // Get the import session cache if exists
@@ -134,8 +134,8 @@ elseif($import_session['module'])
 	// to blank so we go back to the module list
 	if($result == "finished")
 	{
-		$import_session['completed'][] = "db_configuration";
-		$import_session['module'] = "";
+		$import_session['completed'][] = $import_session['module'];
+		$import_session['module'] = '';
 		header("Location: index.php");
 		update_import_session();
 		exit;
