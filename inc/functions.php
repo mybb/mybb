@@ -3608,7 +3608,7 @@ function login_attempt_check($fatal = true)
 			$failedtime = $_COOKIE['failedlogin'];
 		}
 		
-		$secondsleft = ($mybb->settings['failedlogintime'] * 60 + $failedtime - $now;
+		$secondsleft = $mybb->settings['failedlogintime'] * 60 + $failedtime - $now;
 		$hoursleft = floor($secondsleft / 3600);
 		$minsleft = floor(($secondsleft / 60) % 60);
 		$secsleft = floor($secondsleft % 60);
