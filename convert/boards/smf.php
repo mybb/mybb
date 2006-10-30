@@ -5,6 +5,8 @@ class Convert_smf extends Converter {
 	var $bbname = "SMF";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									"dependencies" => ""),
+						 "import_usergroups" => array("name" => "Import SMF Usergroups",
+									  "dependencies" => "db_configuration"),
 						 "import_users" => array("name" => "Import SMF Users",
 									  "dependencies" => "db_configuration"),
 						 "import_categories" => array("name" => "Import SMF Categories",
@@ -14,7 +16,9 @@ class Convert_smf extends Converter {
 						 "import_threads" => array("name" => "Import SMF Threads",
 									  "dependencies" => "db_configuration,import_forums"),
 						 "import_posts" => array("name" => "Import SMF Posts",
-									  "dependencies" => "db_configuration,import_threads"),	
+									  "dependencies" => "db_configuration,import_threads"),
+						 "import_moderators" => array("name" => "Import SMF Moderators",
+									  "dependencies" => "db_configuration,import_forums,import_users"),
 						);
 
 	function smf_db_connect()
@@ -224,6 +228,9 @@ EOF;
 				$insert_user['usergroup'] = $this->get_group_id($user, 'ID_GROUP');
 				$insert_user['additionalgroups'] = $this->get_group_id($user, 'additionalGroups');
 				$insert_user['displaygroup'] = $insert_user['usergroup'];
+				$insert_user['import_usergroup'] = $user['ID_GROUP'];
+				$insert_user['import_additionalgroups'] = $user['additionalGroups'];
+				$insert_user['import_displaygroup'] = $user['ID_GROUP'];
 				$insert_user['import_uid'] = $user['ID_MEMBER'];
 				$insert_user['username'] = $user['memberName'];
 				$insert_user['email'] = $user['emailAddress'];
@@ -374,7 +381,7 @@ EOF;
 				
 				// Update parent list.
 				$update_array = array('parentlist' => $fid);
-				$db->update_query("forums", $update_array);
+				$db->update_query("forums", $update_array, "fid = '{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -473,7 +480,7 @@ EOF;
 				
 				// Update parent list.
 				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);
-				$db->update_query("forums", $update_array);
+				$db->update_query("forums", $update_array, "fid = {$fid}");
 				
 				echo "done.<br />\n";			
 			}
@@ -686,6 +693,216 @@ EOF;
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
 		$output->print_footer();
 	}
+	function import_moderators()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->smf_db_connect();
+
+		// Get number of moderators
+		if(!isset($import_session['total_mods']))
+		{
+			$query = $this->old_db->simple_select("moderators", "COUNT(*) as count");
+			$import_session['total_mods'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_mods'])
+		{
+			// If there are more moderators to do, continue, or else, move onto next module
+			if($import_session['total_mods'] <= $import_session['start_mods'] + $import_session['mods_per_screen'])
+			{
+				return "finished";
+			}
+		}
+
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of posts per screen from form
+		if(isset($mybb->input['mods_per_screen']))
+		{
+			$import_session['mods_per_screen'] = intval($mybb->input['mods_per_screen']);
+		}
+		
+		if(empty($import_session['mods_per_screen']))
+		{
+			$import_session['start_mods'] = 0;
+			echo "<p>Please select how many moderators to import at a time:</p>
+<p><input type=\"text\" name=\"mods_per_screen\" value=\"\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{	
+			$query = $this->old_db->simple_select("moderators", "*", "", array('limit_start' => $import_session['start_mods'], 'limit' => $import_session['mods_per_screen']));
+			while($mod = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting user #{$mod['ID_MEMBER']} as moderator to forum #{$mod['ID_BOARD']}... ";
+				
+				$insert_mod['fid'] = $this->get_import_fid($mod['ID_BOARD']);
+				$insert_mod['uid'] = $this->get_import_uid($mod['ID_MEMBER']);
+				$insert_mod['caneditposts'] = 'yes';
+				$insert_mod['candeleteposts'] = 'yes';
+				$insert_mod['canviewips'] = 'yes';
+				$insert_mod['canopenclosethreads'] = 'yes';
+				$insert_mod['canmanagethreads'] = 'yes';
+				$insert_mod['canmovetononmodforum'] = 'yes';
+
+				$this->insert_moderator($insert_mod);
+				
+				echo "done.<br />\n";			
+			}
+		}
+		$import_session['start_mods'] += $import_session['mods_per_screen'];
+		$output->print_footer();
+	}
+	function import_usergroups()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->smf_db_connect();
+
+		// Get number of usergroups
+		if(!isset($import_session['total_usergroups']))
+		{
+			$query = $this->old_db->simple_select("membergroups", "COUNT(*) as count");
+			$import_session['total_usergroups'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_usergroups'])
+		{
+			// If there are more usergroups to do, continue, or else, move onto next module
+			if($import_session['total_usergroups'] <= $import_session['start_usergroups'] + $import_session['usergroups_per_screen'])
+			{
+				return "finished";
+			}
+		}
+
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of posts per screen from form
+		if(isset($mybb->input['usergroups_per_screen']))
+		{
+			$import_session['usergroups_per_screen'] = intval($mybb->input['usergroups_per_screen']);
+		}
+		
+		if(empty($import_session['usergroups_per_screen']))
+		{
+			$import_session['start_usergroups'] = 0;
+			echo "<p>Please select how many usergroups to import at a time:</p>
+<p><input type=\"text\" name=\"usergroups_per_screen\" value=\"\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{	
+			// Cache permissions
+			$permissions = $this->get_group_permissions();
+			
+			// Get only non-staff groups.
+			$query = $this->old_db->simple_select("membergroups", "*", "ID_GROUP > 3", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
+			while($group = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting group #{$group['ID_GROUP']} as a ";
+				
+				if($group['minPosts'] == -1)
+				{
+					// Make this into a usergroup
+					$insert_group['import_gid'] = $group['ID_GROUP'];
+					$insert_group['type'] = 2;
+					$insert_group['title'] = $group['groupName'];
+					$insert_group['description'] = 'SMF-imported group';
+					if(!empty($group['onlineColor']))
+					{
+						$insert_group['namestyle'] = "<span style=\"color: {$group['onlineColor']}\">{username}</span>";
+					}
+					else
+					{
+						$insert_group['namestyle'] = '{username}';
+					}
+					$star_info = explode('#', $group['stars']);
+					$insert_group['stars'] = $star_info[0];
+					$insert_group['starimage'] = 'images/'.$star_info[1];
+					$insert_group['image'] = '';
+					$insert_group['disporder'] = 0;
+					$insert_group['isbannedgroup'] = 'no';
+					$insert_group['canview'] = 'yes';
+					$insert_group['canviewthreads'] = 'yes';
+					$insert_group['canviewprofiles'] = int_to_yesno($permissions[$group['ID_GROUP']]['profile_view_any']);
+					$insert_group['candlattachments'] = int_to_yesno($permissions[$group['ID_GROUP']]['view_attachments']);
+					$insert_group['canpostthreads'] = int_to_yesno($permissions[$group['ID_GROUP']]['post_new']);
+					$insert_group['canpostreplys'] = int_to_yesno($permissions[$group['ID_GROUP']]['post_reply_any']);
+					$insert_group['canpostattachments'] = int_to_yesno($permissions[$group['ID_GROUP']]['post_attachment']);
+					$insert_group['canratethreads'] = 'yes';
+					$insert_group['caneditposts'] = int_to_yesno($permissions[$group['ID_GROUP']]['modify_own']);
+					$insert_group['candeleteposts'] = int_to_yesno($permissions[$group['ID_GROUP']]['remove_own']);
+					$insert_group['candeletethreads'] = int_to_yesno($permissions[$group['ID_GROUP']]['delete_own']);
+					$insert_group['caneditattachments'] = int_to_yesno($permissions[$group['ID_GROUP']]['post_attachment']);
+					$insert_group['canpostpolls'] = int_to_yesno($permissions[$group['ID_GROUP']]['poll_post']);
+					$insert_group['canvotepolls'] = int_to_yesno($permissions[$group['ID_GROUP']]['poll_vote']);
+					$insert_group['canusepms'] = int_to_yesno($permissions[$group['ID_GROUP']]['pm_read']);
+					$insert_group['cansendpms'] = int_to_yesno($permissions[$group['ID_GROUP']]['pm_send']);
+					$insert_group['cantrackpms'] = 'yes';
+					$insert_group['candenypmreceipts'] = 'yes';
+					$insert_group['pmquota'] = '0';
+					$insert_group['maxpmrecipients'] = '5';
+					$insert_group['cansendemail'] = 'yes';
+					$insert_group['canviewmemberlist'] = int_to_yesno($permissions[$group['ID_GROUP']]['view_mlist']);
+					$insert_group['canviewcalendar'] = int_to_yesno($permissions[$group['ID_GROUP']]['calendar_view']);
+					$insert_group['canaddpublicevents'] = int_to_yesno($permissions[$group['ID_GROUP']]['calendar_post']);
+					$insert_group['canaddprivateevents'] = int_to_yesno($permissions[$group['ID_GROUP']]['calendar_post']);
+					$insert_group['canviewonline'] = int_to_yesno($permissions[$group['ID_GROUP']]['who_view']);
+					$insert_group['canviewwolinvis'] = 'no';
+					$insert_group['canviewonlineips'] = 'no';
+					$insert_group['cancp'] = int_to_yesno($permissions[$group['ID_GROUP']]['admin_forum']);
+					$insert_group['issupermod'] = int_to_yesno($permissions[$group['ID_GROUP']]['moderate_board']);
+					$insert_group['cansearch'] = int_to_yesno($permissions[$group['ID_GROUP']]['search_posts']);
+					$insert_group['canusercp'] = int_to_yesno($permissions[$group['ID_GROUP']]['profile_identity_own']);
+					$insert_group['canuploadavatars'] = 'yes';
+					$insert_group['canratemembers'] = 'yes';
+					$insert_group['canchangename'] = 'no';
+					$insert_group['showforumteam'] = 'no';
+					$insert_group['usereputationsystem'] = int_to_yesno($permissions[$group['ID_GROUP']]['karma_edit']);
+					$insert_group['cangivereputations'] = int_to_yesno($permissions[$group['ID_GROUP']]['karma_edit']);
+					$insert_group['reputationpower'] = '1';
+					$insert_group['maxreputationsday'] = '5';
+					$insert_group['candisplaygroup'] = 'yes';
+					$insert_group['attachquota'] = '0';
+					$insert_group['cancustomtitle'] = int_to_yesno($permissions[$group['ID_GROUP']]['profile_title_own']);
+					
+					echo "custom usergroup...";
+	
+					$gid = $this->insert_usergroup($insert_group);
+					
+					// Restore connections
+					$update_array = array('usergroup' => $gid);
+					$db->update_query("users", $update_array, "import_usergroup = '{$group['ID_GROUP']}'");
+					$db->update_query("users", $update_array, "import_displaygroup = '{$group['ID_GROUP']}'");
+					$query1 = $db->simple_select("users", "uid, import_additionalgroups AS additionalGroups", "CONCAT(',', import_additionalgroups, ',') LIKE '%,{$group['ID_GROUP']},%'");
+					$this->import_gids = null; // Force cache refresh
+					while($user = $db->fetch_array($query1))
+					{
+						$update_array = array('additionalgroups' => $this->get_group_id($user, 'additionalGroups'));
+						$db->update_array("users", $update_array, "uid = '{$user['uid']}'");
+					}
+				}
+				else
+				{
+					// Make this into a user title
+					$insert_title['posts'] = $group['minPosts'];
+					$insert_title['title'] = $group['groupName'];
+					$star_info = explode('#', $group['stars']);
+					$insert_title['stars'] = $star_info[0];
+					$insert_title['starimage'] = 'images/'.$star_info[1];
+					
+					echo "user title...";
+					
+					$this->insert_usertitle($insert_title);
+				}
+				
+				echo "done.<br />\n";			
+			}
+		}
+		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];
+		$output->print_footer();
+	}
 	
 	/**
 	 * Get a post from the SMF database
@@ -771,13 +988,44 @@ EOF;
 				case 3: // Moderator
 					$group .= 6;
 					break;
-				default: // The lot
-					$group .= 2;
+				default: 
+					if($this->get_import_gid($smfgroup) > 0)
+					{
+						// If there is an associated custom group...
+						$group .= $this->get_import_gid($smfgroup);
+					}
+					else
+					{
+						// The lot
+						$group .= 2;
+					}
+					
 			}
 			$comma = ',';
 		}
 		
 		return $group;
+	}
+	
+	/**
+	 * Get the usergroup permissions from SMF
+	 */
+	function get_group_permissions()
+	{
+		$query = $this->old_db->simple_select("permissions", "*", "addDeny = 1");
+		$permissions = array();
+		while($permission = $this->old_db->fetch_array($query))
+		{
+			$permissions[$permission['ID_GROUP']][$permission['permission']] = 1;
+		}
+		
+		$query = $this->old_db->simple_select("board_permissions", "ID_GROUP, permission", "addDeny = 1 AND ID_BOARD = 0");
+		$permissions = array();
+		while($permission = $this->old_db->fetch_array($query))
+		{
+			$permissions[$permission['ID_GROUP']][$permission['permission']] = 1;
+		}
+		return $permissions;
 	}
 
 }

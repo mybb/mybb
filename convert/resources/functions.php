@@ -74,6 +74,21 @@ function delete_import_fields()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP import_uid");
 	}
 	
+	if($db->field_exists('import_usergroup', "users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP import_usergroup");
+	}
+	
+	if($db->field_exists('import_additionalgroups', "users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP import_additionalgroups");
+	}
+	
+	if($db->field_exists('import_displaygroup', "users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP import_displaygroup");
+	}
+	
 	if($db->field_exists('import_fid', "forums"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forums DROP import_fid");
@@ -121,6 +136,9 @@ function create_import_fields()
 	delete_import_fields();
 	// Add to our heart's content
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD import_uid int NOT NULL default '0' AFTER uid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD import_usergroup int NOT NULL default '0' AFTER usergroup");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD import_additionalgroups text NOT NULL AFTER additionalgroups");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD import_displaygroup int NOT NULL default '0' AFTER displaygroup");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD import_fid int NOT NULL default '0' AFTER fid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD import_tid int NOT NULL default '0' AFTER tid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD import_uid int NOT NULL default '0' AFTER uid");

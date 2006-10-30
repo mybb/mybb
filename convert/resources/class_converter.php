@@ -25,6 +25,11 @@ class Converter
 	 * Cache for the new TIDs
 	 */
 	var $import_tids;
+
+	/**
+	 * Cache for the new GIDs
+	 */
+	var $import_gids;
 	
 	/**
 	 * Class constructor
@@ -120,6 +125,57 @@ class Converter
 		$pid = $db->insert_id();
 		
 		return $pid;
+	}
+	/**
+	 * Insert moderator into database
+	 */
+	function insert_moderator($mod)
+	{
+		global $db;
+	
+		foreach($mod as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+		
+		$query = $db->insert_query("moderators", $insertarray);
+		$mid = $db->insert_id();
+		
+		return $mid;
+	}
+	/**
+	 * Insert usergroup into database
+	 */
+	function insert_usergroup($group)
+	{
+		global $db;
+	
+		foreach($group as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+		
+		$query = $db->insert_query("usergroups", $insertarray);
+		$gid = $db->insert_id();
+		
+		return $gid;
+	}
+	/**
+	 * Insert user titles into database
+	 */
+	function insert_usertitle($title)
+	{
+		global $db;
+	
+		foreach($title as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+		
+		$query = $db->insert_query("usertitles", $insertarray);
+		$tid = $db->insert_id();
+		
+		return $tid;
 	}
 	
 	/**
@@ -275,7 +331,26 @@ class Converter
 		{
 			$usergroups[$usergroup['import_gid']] = $usergroup['gid'];
 		}
+		$this->import_gids = $usergroups;
 		return $usergroups;
+	}
+	
+	/**
+	 * Get the MyBB usergroup ID of an old GID.
+	 * @param int Group ID used before import
+	 * @return int Group ID in MyBB
+	 */
+	function get_import_gid($old_gid)
+	{
+		if(!is_array($this->import_gids))
+		{
+			$gid_array = $this->get_import_usergroups();
+		}
+		else
+		{
+			$gid_array = $this->import_gids;
+		}
+		return $gid_array[$old_gid];
 	}
 }
 ?>

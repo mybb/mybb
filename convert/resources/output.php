@@ -179,6 +179,7 @@ END;
 		{
 			++$i;
 			$dependency_list = array();
+			$awaiting_dependencies = 0;
 
 			// Fetch dependent modules
 			$dependencies = explode(',', $module['dependencies']);
