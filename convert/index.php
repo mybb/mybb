@@ -99,12 +99,23 @@ if($mybb->input['module'])
 {
 	$import_session['module'] = $mybb->input['module'];
 }
+
 // If no board is selected then we show the main page where users can select a board
 if(!$import_session['board'])
 {
 	$output->board_list();
 }
-
+// Perhaps we have selected to stop converting
+elseif(isset($mybb->input['action']) && $mybb->input['action'] == 'finish')
+{
+	// Delete import fields
+	delete_import_fields();
+	
+	// Delete import session cache
+	$import_session = null;
+	
+	$output->finish_conversion();
+}
 // Otherwise that means we've selected a module to run or we're in one
 elseif($import_session['module'])
 {
@@ -149,7 +160,6 @@ else
 	$classname = "convert_".$import_session['board'];
 	$board = new $classname;
 	
-	create_import_fields();
 	$output->module_list();
 }
 ?>

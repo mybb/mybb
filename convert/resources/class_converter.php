@@ -31,7 +31,7 @@ class Converter
 	 */
     function Converter()
     {
-    	// do nothing
+    	return 'MyBB'; 
     }
     
     /**
@@ -130,10 +130,10 @@ class Converter
 	{
 		global $db;
 	
-		$query = $db->simple_select("users", "uid, importuid");
+		$query = $db->simple_select("users", "uid, import_uid");
 		while($user = $db->fetch_array($query))
 		{
-			$users[$user['importuid']] = $user['uid'];
+			$users[$user['import_uid']] = $user['uid'];
 		}
 		$this->import_uids = $users;
 		return $users;
@@ -142,7 +142,7 @@ class Converter
 	/**
 	 * Get the MyBB UID of an old UID.
 	 * @param int User ID used before import
-	 * @return int User ID in MyBB
+	 * @return int User ID in MyBB or 0 if the old UID cannot be found
 	 */
 	function get_import_uid($old_uid)
 	{
@@ -153,6 +153,10 @@ class Converter
 		else
 		{
 			$uid_array = $this->import_uids;
+		}
+		if(!isset($uid_array[$old_uid]) || $old_uid == 0)
+		{
+			return 0;
 		}
 		return $uid_array[$old_uid];
 	}
@@ -165,10 +169,10 @@ class Converter
 	{
 		global $db;
 	
-		$query = $db->simple_select("forums", "fid, importfid");
+		$query = $db->simple_select("forums", "fid, import_fid");
 		while($forum = $db->fetch_array($query))
 		{
-			$forums[$forum['importfid']] = $forum['fid'];
+			$forums[$forum['import_fid']] = $forum['fid'];
 		}
 		$this->import_fids = $forums;
 		return $forums;
@@ -200,10 +204,10 @@ class Converter
 	{
 		global $db;
 		
-		$query = $db->simple_select("threads", "tid, importtid");
+		$query = $db->simple_select("threads", "tid, import_tid");
 		while($thread = $db->fetch_array($query))
 		{
-			$threads[$thread['importtid']] = $thread['tid'];
+			$threads[$thread['import_tid']] = $thread['tid'];
 		}
 		return $threads;
 	}
@@ -234,10 +238,10 @@ class Converter
 	{
 		global $db;
 		
-		$query = $db->simple_select("posts", "pid, importpid");
+		$query = $db->simple_select("posts", "pid, import_pid");
 		while($post = $db->fetch_array($query))
 		{
-			$posts[$post['importpid']] = $post['pid'];
+			$posts[$post['import_pid']] = $post['pid'];
 		}
 		return $posts;
 	}
@@ -250,10 +254,10 @@ class Converter
 	{
 		global $db;
 		
-		$query = $db->simple_select("attachments", "aid, importaid");
+		$query = $db->simple_select("attachments", "aid, import_aid");
 		while($attachment = $db->fetch_array($query))
 		{
-			$attachments[$attachment['importaid']] = $attachment['aid'];
+			$attachments[$attachment['import_aid']] = $attachment['aid'];
 		}
 		return $attachments;
 	}
@@ -266,10 +270,10 @@ class Converter
 	{
 		global $db;
 		
-		$query = $db->query("usergroups", "gid, importgid");
+		$query = $db->query("usergroups", "gid, import_gid");
 		while($usergroup = $db->fetch_array($query))
 		{
-			$usergroups[$usergroup['importgid']] = $usergroup['gid'];
+			$usergroups[$usergroup['import_gid']] = $usergroup['gid'];
 		}
 		return $usergroups;
 	}

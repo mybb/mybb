@@ -124,7 +124,10 @@ END;
 		if(!$this->doneheader)
 		{
 			$this->print_header();
-		}		
+		}
+		
+		echo "<p>Thank you for choosing MyBB.  This wizard will guide you through the process of converting from your existing bulletin board software to MyBB.";
+		
 		echo "<div class=\"border_wrapper\">\n";
 		echo "<div class=\"title\">Board Selection</div>\n";
 		echo "<table class=\"general\" cellspacing=\"0\">\n";
@@ -176,26 +179,10 @@ END;
 		{
 			++$i;
 			$dependency_list = array();
-			if(count($board->modules) == $i)
-			{
-				$class .= " last";
-			}
-			echo "<tr class=\"{$class}\">\n";
-			echo "<td class=\"first\"><strong>".$module['name']."</strong>";
-			if($module['description'])
-			{
-				echo '<br />'.$module['description'];
-			}
-			
-			if(in_array($key, $import_session['completed']))
-			{
-				// Module has been completed.  Thus show.
-				echo '<br /><small class="pass">Completed</small>';
-			}
-			
 
 			// Fetch dependent modules
 			$dependencies = explode(',', $module['dependencies']);
+			$icon = '';
 			if(count($dependencies) > 0)
 			{
 				foreach($dependencies as $dependency)
@@ -210,6 +197,7 @@ END;
 						// Cannot be run yet
 						$awaiting_dependencies = 1;
 						$dependency_list[] = $board->modules[$dependency]['name'];
+						$icon = ' awaiting';
 					}
 					else
 					{
@@ -218,10 +206,32 @@ END;
 					}
 				}
 			}
+			if(in_array($key, $import_session['completed']))
+			{
+				// Module has been completed.  Thus show.
+				$icon = ' completed';
+			}
+			
+			if(count($board->modules) == $i)
+			{
+				$class .= " last";
+			}
+			echo "<tr class=\"{$class}\">\n";
+			echo "<td class=\"first\"><div class=\"module{$icon}\">".$module['name']."</div>";
+			if($module['description'])
+			{
+				echo '<div class="module_description">'.$module['description'].'</div>';
+			}
+			
+			if(in_array($key, $import_session['completed']))
+			{
+				// Module has been completed.  Thus show.
+				echo '<div class="pass module_description">Completed</div>';
+			}
 
 			if(count($dependency_list) > 0)
 			{
-				echo "<br /><small>Dependencies: ".implode(", ", $dependency_list)."</small>";
+				echo '<div class="module_description">Dependencies: '.implode(', ', $dependency_list).'</small>';
 			}
 			
 			echo "</td>";
@@ -253,8 +263,26 @@ END;
 			}
 		}
 		echo "</table>\n";
-		echo "</div>\n";
-		$this->print_footer("", "", 1);
+		echo "</div><br />\n";
+		echo '<p>After you have run the modules you want, continue to the next step in the conversion process.  The cleanup step will remove any temporary data created during the conversion.';
+		echo "<form method=\"post\" action=\"{$this->script}\">\n";
+		echo '<input type="hidden" name="action" value="finish" />';
+		echo '<div style="text-align:right"><input type="submit" class="submit_button" value="Cleanup &raquo;" /></div>';
+		$this->print_footer('', '', 1);
+	}
+	
+	/**
+	 * Print final page
+	 */
+	function finish_conversion()
+	{
+		if(!$this->doneheader)
+		{
+			$this->print_header("Completion", '', 0);
+		}
+		echo '<p>The current conversion session has been finished.  You may now go to your copy of <a href="../">MyBB</a>.  It is recommended that you run the Rebuild and Recount tools in the Admin CP.</p>';
+		echo '<p>Please remove this directory if you are not planning on converting any other forums.</p>';
+		$this->print_footer('', '', 1);
 	}
 
 	/**

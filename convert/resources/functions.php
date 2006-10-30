@@ -62,40 +62,71 @@ function error_list($array)
 	return $string;
 }
 
+/**
+ * Remove the temporary importing data fields
+ */
+function delete_import_fields()
+{
+	global $db;
+	
+	if($db->field_exists('import_uid', "users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP import_uid");
+	}
+	
+	if($db->field_exists('import_fid', "forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums DROP import_fid");
+	}
+	
+	if($db->field_exists('import_tid', "threads"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP import_tid");
+	}
+	
+	if($db->field_exists('import_uid', "threads"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP import_uid");
+	}
+	
+	if($db->field_exists('import_pid', "posts"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP import_pid");
+	}
+	
+	if($db->field_exists('import_uid', "posts"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP import_uid");
+	}
+	
+	if($db->field_exists('import_aid', "attachments"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP import_aid");
+	}
+	
+	if($db->field_exists('import_gid', "usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP import_gid");
+	}
+}
 
-/** TODO: This function should actually DROP those columns if they exist and then recreate them **/
+/**
+ * Create the temporary importing data fields
+ */
 function create_import_fields()
 {
 	global $db;
 	
-	if(!$db->field_exists('importuid', "users"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD importuid int NOT NULL default '0' AFTER uid");
-	}
-	
-	if(!$db->field_exists('importfid', "forums"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD importfid int NOT NULL default '0' AFTER fid");
-	}
-	
-	if(!$db->field_exists('importtid', "threads"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD importtid int NOT NULL default '0' AFTER tid");
-	}
-	
-	if(!$db->field_exists('importpid', "posts"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD importpid int NOT NULL default '0' AFTER pid");
-	}
-	
-	if(!$db->field_exists('importaid', "attachments"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments ADD importaid int NOT NULL default '0' AFTER aid");
-	}
-	
-	if(!$db->field_exists('importgid', "usergroups"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD importgid int NOT NULL default '0' AFTER gid");
-	}
+	// First clear all.
+	delete_import_fields();
+	// Add to our heart's content
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD import_uid int NOT NULL default '0' AFTER uid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD import_fid int NOT NULL default '0' AFTER fid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD import_tid int NOT NULL default '0' AFTER tid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD import_uid int NOT NULL default '0' AFTER uid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD import_pid int NOT NULL default '0' AFTER pid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD import_uid int NOT NULL default '0' AFTER uid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."attachments ADD import_aid int NOT NULL default '0' AFTER aid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD import_gid int NOT NULL default '0' AFTER gid");
 }
 ?>

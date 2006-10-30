@@ -241,3 +241,21 @@ label {
 	padding: 3px 20px;
 	font-weight: bold;
 }
+
+/* Module List */
+div.module {
+	font-weight: bold;
+	padding-left: 20px;
+	height: 16px;
+	vertical-align: middle;
+}
+div.completed {
+	background: url(images/ok.gif) no-repeat;
+}
+div.awaiting {
+	background: url(images/awaiting.gif) no-repeat;
+}
+div.module_description {
+	padding-left: 20px;
+	font-size: x-small;
+}

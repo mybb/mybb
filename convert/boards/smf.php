@@ -10,9 +10,9 @@ class Convert_smf extends Converter {
 						 "import_categories" => array("name" => "Import SMF Categories",
 									  "dependencies" => "db_configuration"),
 						 "import_forums" => array("name" => "Import SMF Forums",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_categories"),
 						 "import_threads" => array("name" => "Import SMF Threads",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_forums"),
 						 "import_posts" => array("name" => "Import SMF Posts",
 									  "dependencies" => "db_configuration,import_threads"),	
 						);
@@ -84,6 +84,10 @@ class Convert_smf extends Converter {
 					$import_session['old_db_pass'] = $mybb->input['dbpass'];
 					$import_session['old_db_name'] = $mybb->input['dbname'];
 					$import_session['old_tbl_prefix'] = $mybb->input['tableprefix'];
+					
+					// Create temporary import data fields
+					create_import_fields();
+					
 					return "finished";
 				}
 			}
@@ -99,7 +103,7 @@ class Convert_smf extends Converter {
 			      <h3>Error</h3>
 				  <p>There seems to be one or more errors with the database configuration information that you supplied:</p>
 				  {$error_list}
-				  <p>Once the above are corrected, continue with the installation.</p>
+				  <p>Once the above are corrected, continue with the conversion.</p>
 				  </div>";
 			$dbhost = $mybb->input['dbhost'];
 			$dbuser = $mybb->input['dbuser'];
@@ -108,7 +112,7 @@ class Convert_smf extends Converter {
 		}
 		else
 		{
-			echo "<p>Here you're required to enter your database settings that you're currently using for SMF.</p>";
+			echo "<p>Please enter the database details for your current installation of SMF.</p>";
 			$dbhost = 'localhost';
 			$tableprefix = '';
 			$dbuser = '';
@@ -166,7 +170,7 @@ class Convert_smf extends Converter {
 </tr>
 </table>
 </div>
-<p>Once you've checked these details are correct, click next to continue.</p>
+<p>Once you have checked these details are correct, click next to continue.</p>
 EOF;
 		$output->print_footer();
 	}
@@ -194,7 +198,7 @@ EOF;
 			}
 		}
 
-		$output->print_header();
+		$output->print_header($this->modules[$import_session['module']]['name']);
 		
 		// Get number of users per screen from form
 		if(isset($mybb->input['users_per_screen']))
@@ -207,7 +211,7 @@ EOF;
 			$import_session['start_users'] = 0;
 			echo "<p>Please select how many users to import at a time:</p>
 <p><input type=\"text\" name=\"users_per_screen\" value=\"\" /></p>";
-			$output->print_footer($module_id, 'module', 1);
+			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
 		{
@@ -220,7 +224,7 @@ EOF;
 				$insert_user['usergroup'] = $this->get_group_id($user, 'ID_GROUP');
 				$insert_user['additionalgroups'] = $this->get_group_id($user, 'additionalGroups');
 				$insert_user['displaygroup'] = $insert_user['usergroup'];
-				$insert_user['importuid'] = $user['ID_MEMBER'];
+				$insert_user['import_uid'] = $user['ID_MEMBER'];
 				$insert_user['username'] = $user['memberName'];
 				$insert_user['email'] = $user['emailAddress'];
 				$insert_user['regdate'] = $user['dateRegistered'];
@@ -266,7 +270,13 @@ EOF;
 				$insert_user['totalpms'] = $user['instantMessages'];
 				$insert_user['unreadpms'] = $user['unreadMessages'];
 				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';		
-				$this->insert_user($insert_user);
+				$uid = $this->insert_user($insert_user);
+				
+				// Restore connections
+				$update_array = array('uid' => $uid);
+				$db->update_query("threads", $update_array, "import_uid = '{$user['ID_MEMBER']}'");
+				$db->update_query("posts", $update_array, "import_uid = '{$user['ID_MEMBER']}'");
+				
 				echo "done.<br />\n";
 			}
 		}
@@ -296,7 +306,7 @@ EOF;
 			}
 		}
 
-		$output->print_header();
+		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of categories per screen from form
 		if(isset($mybb->input['cats_per_screen']))
@@ -309,7 +319,7 @@ EOF;
 			$import_session['start_cats'] = 0;
 			echo "<p>Please select how many categories to import at a time:</p>
 <p><input type=\"text\" name=\"cats_per_screen\" value=\"\" /></p>";
-			$output->print_footer($module_id, 'module', 1);
+			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
 		{	
@@ -319,7 +329,7 @@ EOF;
 				echo "Inserting category #{$cat['ID_CAT']}... ";
 				
 				// Values from SMF
-				$insert_forum['importfid'] = (-1 * intval($cat['ID_CAT']));
+				$insert_forum['import_fid'] = (-1 * intval($cat['ID_CAT']));
 				$insert_forum['name'] = $cat['name'];
 				$insert_forum['disporder'] = $cat['catOrder'];
 				
@@ -395,7 +405,7 @@ EOF;
 			}
 		}
 		
-		$output->print_header();
+		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of forums per screen from form
 		if(isset($mybb->input['forums_per_screen']))
@@ -408,17 +418,17 @@ EOF;
 			$import_session['start_forums'] = 0;
 			echo "<p>Please select how many forums to import at a time:</p>
 <p><input type=\"text\" name=\"forums_per_screen\" value=\"\" /></p>";
-			$output->print_footer($module_id, 'module', 1);
+			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
 		{	
-			$query = $this->old_db->simple_select("boards", "*", "", array('limit_start' => $import_session['start_cats'], 'limit' => $import_session['cats_per_screen']));
+			$query = $this->old_db->simple_select("boards", "*", "", array('limit_start' => $import_session['start_forums'], 'limit' => $import_session['forums_per_screen']));
 			while($forum = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting forum #{$forum['ID_BOARD']}... ";
 				
 				// Values from SMF
-				$insert_forum['importfid'] = intval($forum['ID_BOARD']);
+				$insert_forum['import_fid'] = intval($forum['ID_BOARD']);
 				$insert_forum['name'] = $forum['name'];
 				$insert_forum['description'] = $forum['description'];
 				$insert_forum['pid'] = $this->get_import_fid((-1) * $forum['ID_CAT']);
@@ -494,7 +504,7 @@ EOF;
 			}
 		}
 		
-		$output->print_header();
+		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of threads per screen from form
 		if(isset($mybb->input['threads_per_screen']))
@@ -507,7 +517,7 @@ EOF;
 			$import_session['start_threads'] = 0;
 			echo "<p>Please select how many threads to import at a time:</p>
 <p><input type=\"text\" name=\"threads_per_screen\" value=\"\" /></p>";
-			$output->print_footer($module_id, 'module', 1);
+			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
 		{		
@@ -516,7 +526,7 @@ EOF;
 			{
 				echo "Inserting thread #{$thread['ID_TOPIC']}... ";
 				
-				$insert_thread['importtid'] = $thread['ID_TOPIC'];
+				$insert_thread['import_tid'] = $thread['ID_TOPIC'];
 				$insert_thread['sticky'] = $thread['isSticky'];
 				$insert_thread['fid'] = $this->get_import_fid($thread['ID_BOARD']);
 				$insert_thread['firstpost'] = $thread['ID_FIRST_MSG'];				
@@ -528,6 +538,7 @@ EOF;
 				
 				$insert_thread['poll'] = $thread['ID_POLL'];
 				$insert_thread['uid'] = $this->get_import_uid($thread['ID_MEMBER_STARTED']);
+				$insert_thread['import_uid'] = $thread['ID_MEMBER_STARTED'];
 				$insert_thread['views'] = $thread['numViews'];
 				$insert_thread['replies'] = $thread['numReplies'];
 				$insert_thread['closed'] = $thread['locked'];
@@ -591,7 +602,7 @@ EOF;
 			}
 		}
 
-		$output->print_header();
+		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of posts per screen from form
 		if(isset($mybb->input['posts_per_screen']))
@@ -604,7 +615,7 @@ EOF;
 			$import_session['start_posts'] = 0;
 			echo "<p>Please select how many posts to import at a time:</p>
 <p><input type=\"text\" name=\"posts_per_screen\" value=\"\" /></p>";
-			$output->print_footer($module_id, 'module', 1);
+			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
 		{	
@@ -613,7 +624,7 @@ EOF;
 			{
 				echo "Inserting post #{$post['ID_MSG']}... ";
 				
-				$insert_post['importpid'] = $post['ID_MSG'];
+				$insert_post['import_pid'] = $post['ID_MSG'];
 				$insert_post['tid'] = $this->get_import_tid($post['ID_TOPIC']);
 				
 				// Find if this is the first post in thread
@@ -633,7 +644,8 @@ EOF;
 				$insert_post['fid'] = $this->get_import_fid($post['ID_BOARD']);
 				$insert_post['subject'] = $post['subject'];
 				$insert_post['icon'] = 0;
-				$insert_post['uid'] = $post['ID_MEMBER'];
+				$insert_post['uid'] = $this->get_import_uid($post['ID_MEMBER']);
+				$insert_post['import_uid'] = $post['ID_MEMBER'];
 				$insert_post['username'] = $post['posterName'];
 				$insert_post['dateline'] = $post['posterTime'];
 				$insert_post['message'] = $post['body'];
@@ -664,6 +676,10 @@ EOF;
 				$insert_post['posthash'] = '';
 
 				$this->insert_post($insert_post);
+				
+				// Update thread count
+				update_thread_count($insert_post['tid']);
+				
 				echo "done.<br />\n";			
 			}
 		}
