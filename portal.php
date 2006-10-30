@@ -420,8 +420,8 @@ while($announcement = $db->fetch_array($query))
 	$plugins->run_hooks("portal_announcement");
 
 	$parser_options = array(
-		"allow_html" => $forum[$announcement['fid']]['allow_html'],
-		"allow_mycode" => $forum[$announcement['fid']]['allow_mycode'],
+		"allow_html" => $forum[$announcement['fid']]['allowhtml'],
+		"allow_mycode" => $forum[$announcement['fid']]['allowmycode'],
 		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
 		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode']
 	);

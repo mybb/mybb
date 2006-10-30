@@ -46,6 +46,11 @@ $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subje
 $tid = $thread['tid'];
 $fid = $thread['fid'];
 
+if(!$thread['username'])
+{
+	$thread['username'] = $lang->guest;
+}
+
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid) == "yes")
 {
@@ -567,9 +572,8 @@ if($mybb->input['action'] == "thread")
 
 		// Build the threaded post display tree.
 		$query = $db->query("
-            SELECT u.username, u.username AS userusername, p.pid, p.replyto, p.subject, p.dateline
+            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
             FROM ".TABLE_PREFIX."posts p
-            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
             WHERE p.tid='$tid' 
             $visible
             ORDER BY p.dateline
@@ -813,6 +817,7 @@ if($mybb->input['action'] == "thread")
 function buildtree($replyto="0", $indent="0")
 {
 	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser;
+	
 	if($indent)
 	{
 		$indentsize = 13 * $indent;
@@ -821,6 +826,7 @@ function buildtree($replyto="0", $indent="0")
 	{
 		$indentsize = 0;
 	}
+	
 	++$indent;
 	if(is_array($tree[$replyto]))
 	{
@@ -829,18 +835,14 @@ function buildtree($replyto="0", $indent="0")
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
+			
 			if(!$post['subject'])
 			{
 				$post['subject'] = "[".$lang->no_subject."]";
 			}
-			if($post['userusername'])
-			{
-				$post['profilelink'] = build_profile_link($post['userusername'], $post['uid']);
-			}
-			else
-			{
-				$post['profilelink'] = $post['username'];
-			}
+			
+			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
+			
 			if($mybb->input['pid'] == $post['pid'])
 			{
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bitactive")."\";");
@@ -849,6 +851,7 @@ function buildtree($replyto="0", $indent="0")
 			{
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bit")."\";");
 			}
+			
 			if($tree[$post['pid']])
 			{
 				$posts .= buildtree($post['pid'], $indent);

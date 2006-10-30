@@ -79,6 +79,10 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_mycode'] = $forum['allowmycode'];
 			$parser_options['allow_smilies'] = $forum['allowsmilies'];
 			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
+			if(!$post['username'])
+			{
+				$post['username'] = $lang->guest;
+			}
 			if($post['userusername'])
 			{
 				$parser_options['me_username'] = $post['userusername'];
