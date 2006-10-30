@@ -115,11 +115,19 @@ class Convert_smf extends Converter {
 			$dbname = '';
 		}
 
-		$dboptions['mysql'] = array("title" => "MySQL");
+		if(function_exists('mysqli_connect'))
+		{
+			$dboptions['mysqli'] = 'MySQL Improved';
+		}
+		
+		if(function_exists('mysql_connect'))
+		{
+			$dboptions['mysql'] = 'MySQL';
+		}
 
 		foreach($dboptions as $dbfile => $dbtype)
 		{
-			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype['title']}</option>";
+			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype}</option>";
 		}
 
 		echo <<<EOF
