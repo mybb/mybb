@@ -117,6 +117,7 @@ class databaseEngine
 	function query($string, $hide_errors=0)
 	{
 		global $pagestarttime, $querytime, $db, $mybb;
+
 		$qtimer = new timer();
 		$query = @mysqli_query($this->link, $string);
 
@@ -125,10 +126,12 @@ class databaseEngine
 			$this->error($string);
 			exit;
 		}
+		
 		$qtime = $qtimer->stop();
 		$querytime += $qtimer->totaltime;
 		$qtimer->remove();
 		$this->query_count++;
+		
 		if($mybb->debug)
 		{
 			$this->explain_query($string, $qtime);
@@ -363,6 +366,7 @@ class databaseEngine
 	function list_tables($database)
 	{
 		$query = $this->query("SHOW TABLES FROM `$database`");
+		
 		while(list($table) = mysqli_fetch_array($query))
 		{
 			$tables[] = $table;
@@ -383,6 +387,7 @@ class databaseEngine
 		$query = $this->query("SHOW TABLES LIKE '{$this->table_prefix}$table'");
 		$exists = $this->num_rows($query);
 		$this->error_reporting = $err;
+		
 		if($exists > 0)
 		{
 			return true;
@@ -407,6 +412,7 @@ class databaseEngine
 		$query = $this->query("SHOW COLUMNS FROM {$this->table_prefix}$table LIKE '$field'");
 		$exists = $this->num_rows($query);
 		$this->error_reporting = $err;
+		
 		if($exists > 0)
 		{
 			return true;
@@ -447,10 +453,12 @@ class databaseEngine
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
+		
 		if($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
 		}
+		
 		if(isset($options['order_by']))
 		{
 			$query .= " ORDER BY ".$options['order_by'];
@@ -459,14 +467,16 @@ class databaseEngine
 				$query .= " ".my_strtoupper($options['order_dir']);
 			}
 		}
+		
 		if(isset($options['limit_start']) && isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
 		}
-		elseif(isset($options['limit']))
+		else if(isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit'];
 		}
+		
 		return $this->query($query);
 	}
 	
@@ -480,19 +490,23 @@ class databaseEngine
 	function insert_query($table, $array)
 	{
 		$comma = $query1 = $query2 = "";
+		
 		if(!is_array($array))
 		{
 			return false;
 		}
+		
 		$comma = "";
 		$query1 = "";
 		$query2 = "";
+		
 		foreach($array as $field => $value)
 		{
 			$query1 .= $comma.$field;
 			$query2 .= $comma."'".$value."'";
 			$comma = ", ";
 		}
+		
 		return $this->query("INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");");
 	}
 
@@ -505,28 +519,42 @@ class databaseEngine
 	 * @param string An optional limit clause for the query.
 	 * @return resource The query data.
 	 */
-	function update_query($table, $array, $where="", $limit="")
+	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{
 		if(!is_array($array))
 		{
 			return false;
 		}
+		
 		$comma = "";
 		$query = "";
+		$quote = "'";
+		
+		if($no_quote == true)
+		{
+			$quote = "";
+		}
+		
 		foreach($array as $field => $value)
 		{
-			$query .= $comma.$field."='".$value."'";
+			$query .= $comma.$field."={$quote}{$value}{$quote}";
 			$comma = ", ";
 		}
+		
 		if(!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
+		
 		if(!empty($limit))
 		{
 			$query .= " LIMIT $limit";
 		}
-		return $this->query("UPDATE {$this->table_prefix}$table SET $query");
+
+		return $this->query("
+			UPDATE {$this->table_prefix}$table
+			SET $query
+		");
 	}
 
 	/**

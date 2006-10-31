@@ -126,6 +126,7 @@ class Converter
 		
 		return $pid;
 	}
+	
 	/**
 	 * Insert moderator into database
 	 */
@@ -143,6 +144,7 @@ class Converter
 		
 		return $mid;
 	}
+	
 	/**
 	 * Insert usergroup into database
 	 */
@@ -160,6 +162,7 @@ class Converter
 		
 		return $gid;
 	}
+	
 	/**
 	 * Insert user titles into database
 	 */
@@ -180,6 +183,7 @@ class Converter
 	
 	/**
 	 * Get an array of imported users
+	 *
 	 * @return array
 	 */
 	function get_import_users()
@@ -197,6 +201,7 @@ class Converter
 	
 	/**
 	 * Get the MyBB UID of an old UID.
+	 *
 	 * @param int User ID used before import
 	 * @return int User ID in MyBB or 0 if the old UID cannot be found
 	 */
@@ -219,6 +224,7 @@ class Converter
 	
 	/**
 	 * Get an array of imported forums
+	 *
 	 * @return array
 	 */
 	function get_import_forums()
@@ -236,6 +242,7 @@ class Converter
 	
 	/**
 	 * Get the MyBB FID of an old FID.
+	 *
 	 * @param int Forum ID used before import
 	 * @return int Forum ID in MyBB
 	 */
@@ -254,6 +261,7 @@ class Converter
 	
 	/**
 	 * Get an array of imported threads
+	 *
 	 * @return array
 	 */
 	function get_import_threads()
@@ -270,6 +278,7 @@ class Converter
 	
 	/**
 	 * Get the MyBB TID of an old TID.
+	 *
 	 * @param int Thread ID used before import
 	 * @return int Thread ID in MyBB
 	 */
@@ -288,6 +297,7 @@ class Converter
 	
 	/**
 	 * Get an array of imported posts
+	 *
 	 * @return array
 	 */
 	function get_import_posts()
@@ -304,6 +314,7 @@ class Converter
 	
 	/**
 	 * Get an array of imported attachments
+	 *
 	 * @return array
 	 */
 	function get_import_attachments()
@@ -320,6 +331,7 @@ class Converter
 	
 	/**
 	 * Get an array of imported usergroups
+	 *
 	 * @return array
 	 */
 	function get_import_usergroups()
@@ -337,6 +349,7 @@ class Converter
 	
 	/**
 	 * Get the MyBB usergroup ID of an old GID.
+	 *
 	 * @param int Group ID used before import
 	 * @return int Group ID in MyBB
 	 */

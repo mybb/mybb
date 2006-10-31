@@ -198,6 +198,7 @@ EOF;
 			// If there are more users to do, continue, or else, move onto next module
 			if($import_session['total_members'] <= $import_session['start_users'] + $import_session['users_per_screen'])
 			{
+				$import_session['disabled'][] = 'import_users';
 				return "finished";
 			}
 		}
@@ -309,6 +310,7 @@ EOF;
 			// If there are more categories to do, continue, or else, move onto next module
 			if($import_session['total_cats'] <= $import_session['start_cats'] + $import_session['cats_per_screen'])
 			{
+				$import_session['disabled'][] = 'import_categories';
 				return "finished";
 			}
 		}
@@ -408,6 +410,7 @@ EOF;
 			// If there are more forums to do, continue, or else, move onto next module
 			if($import_session['total_forums'] <= $import_session['start_forums'] + $import_session['forums_per_screen'])
 			{
+				$import_session['disabled'][] = 'import_forums';
 				return "finished";
 			}
 		}
@@ -507,6 +510,7 @@ EOF;
 			// If there are more threads to do, continue, or else, move onto next module
 			if($import_session['total_threads'] <= $import_session['start_threads'] + $import_session['threads_per_screen'])
 			{
+				$import_session['disabled'][] = 'import_threads';
 				return "finished";
 			}
 		}
@@ -605,6 +609,7 @@ EOF;
 			// If there are more posts to do, continue, or else, move onto next module
 			if($import_session['total_posts'] <= $import_session['start_posts'] + $import_session['posts_per_screen'])
 			{
+				$import_session['disabled'][] = 'import_posts';
 				return "finished";
 			}
 		}
@@ -655,9 +660,10 @@ EOF;
 				$insert_post['import_uid'] = $post['ID_MEMBER'];
 				$insert_post['username'] = $post['posterName'];
 				$insert_post['dateline'] = $post['posterTime'];
-				$insert_post['message'] = $post['body'];
+				$insert_post['message'] = str_replace('<br />', "\n", unhtmlentities($post['body']));
 				$insert_post['ipaddress'] = $post['posterIP'];
 				$insert_post['includesig'] = 'yes';
+				
 				if($post['smileysEnabled'] == '1')
 				{
 					$insert_post['smilieoff'] = 'no';					
@@ -682,7 +688,10 @@ EOF;
 				$insert_post['visible'] = 1;
 				$insert_post['posthash'] = '';
 
-				$this->insert_post($insert_post);
+				$pid = $this->insert_post($insert_post);
+				
+				$update_post['message'] = $db->escape_string(preg_replace('#\[quote author\=(.*?) link\=topic\=([0-9]*).msg([0-9]*)\#msg([0-9]*) date\=(.*?)\]#i', "[quote author=$1 link=topic={$insert_post['tid']}.msg{$pid}#msg{$pid} date=$5]", $insert_post['message']));
+				$db->update_query("posts", $update_post, "pid='{$pid}'");
 				
 				// Update thread count
 				update_thread_count($insert_post['tid']);
@@ -693,6 +702,7 @@ EOF;
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
 		$output->print_footer();
 	}
+	
 	function import_moderators()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -711,6 +721,7 @@ EOF;
 			// If there are more moderators to do, continue, or else, move onto next module
 			if($import_session['total_mods'] <= $import_session['start_mods'] + $import_session['mods_per_screen'])
 			{
+				$import_session['disabled'][] = 'import_moderators';
 				return "finished";
 			}
 		}
@@ -754,6 +765,7 @@ EOF;
 		$import_session['start_mods'] += $import_session['mods_per_screen'];
 		$output->print_footer();
 	}
+	
 	function import_usergroups()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -772,6 +784,7 @@ EOF;
 			// If there are more usergroups to do, continue, or else, move onto next module
 			if($import_session['total_usergroups'] <= $import_session['start_usergroups'] + $import_session['usergroups_per_screen'])
 			{
+				$import_session['disabled'][] = 'import_usergroups';
 				return "finished";
 			}
 		}
@@ -817,6 +830,7 @@ EOF;
 					{
 						$insert_group['namestyle'] = '{username}';
 					}
+					
 					$star_info = explode('#', $group['stars']);
 					$insert_group['stars'] = $star_info[0];
 					$insert_group['starimage'] = 'images/'.$star_info[1];
@@ -876,7 +890,9 @@ EOF;
 					$db->update_query("users", $update_array, "import_usergroup = '{$group['ID_GROUP']}'");
 					$db->update_query("users", $update_array, "import_displaygroup = '{$group['ID_GROUP']}'");
 					$query1 = $db->simple_select("users", "uid, import_additionalgroups AS additionalGroups", "CONCAT(',', import_additionalgroups, ',') LIKE '%,{$group['ID_GROUP']},%'");
+					
 					$this->import_gids = null; // Force cache refresh
+					
 					while($user = $db->fetch_array($query1))
 					{
 						$update_array = array('additionalgroups' => $this->get_group_id($user, 'additionalGroups'));
@@ -1029,6 +1045,5 @@ EOF;
 	}
 
 }
-
 
 ?>

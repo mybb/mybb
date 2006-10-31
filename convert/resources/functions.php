@@ -134,6 +134,7 @@ function create_import_fields()
 	
 	// First clear all.
 	delete_import_fields();
+	
 	// Add to our heart's content
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD import_uid int NOT NULL default '0' AFTER uid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD import_usergroup int NOT NULL default '0' AFTER usergroup");

@@ -132,7 +132,7 @@ elseif($import_session['module'])
 	// Otherwise we're trying to use an invalid module or we're still at the beginning
 	else
 	{
-		$import_session['module'] = "";
+		$import_session['module'] = '';
 		update_import_session();
 		header("Location: index.php");
 		exit;

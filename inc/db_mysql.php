@@ -124,21 +124,26 @@ class databaseEngine
 	function query($string, $hide_errors=0)
 	{
 		global $pagestarttime, $querytime, $db, $mybb;
+		
 		$qtimer = new timer();
 		$query = @mysql_query($string, $this->link);
+		
 		if($this->error_number() && !$hide_errors)
 		{
 			 $this->error($string);
 			 exit;
 		}
+		
 		$qtime = $qtimer->stop();
 		$querytime += $qtimer->totaltime;
 		$qtimer->remove();
 		$this->query_count++;
+		
 		if($mybb->debug)
 		{
 			$this->explain_query($string, $qtime);
 		}
+		
 		return $query;
 	}
 
@@ -514,27 +519,38 @@ class databaseEngine
 	 * @param string An optional limit clause for the query.
 	 * @return resource The query data.
 	 */
-	function update_query($table, $array, $where="", $limit="")
+	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{
 		if(!is_array($array))
 		{
 			return false;
 		}
+		
 		$comma = "";
 		$query = "";
+		$quote = "'";
+		
+		if($no_quote == true)
+		{
+			$quote = "";
+		}
+		
 		foreach($array as $field => $value)
 		{
-			$query .= $comma.$field."='".$value."'";
+			$query .= $comma.$field."={$quote}{$value}{$quote}";
 			$comma = ", ";
 		}
+		
 		if(!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
+		
 		if(!empty($limit))
 		{
 			$query .= " LIMIT $limit";
 		}
+		
 		return $this->query("
 			UPDATE {$this->table_prefix}$table 
 			SET $query

@@ -105,6 +105,7 @@ END;
 	function print_error($message)
 	{
 		global $lang;
+		
 		if(!$this->doneheader)
 		{
 			$this->print_header($lang->error, "", 0, 1);
@@ -113,6 +114,7 @@ END;
 		echo "<h3>".$lang->error."</h3>";
 		$this->print_contents($message);
 		echo "\n			</div>";
+		
 		$this->print_footer();
 	}
 
@@ -134,6 +136,7 @@ END;
 		echo "<tr>\n";
 		echo "<th colspan=\"2\" class=\"first last\">Please select the board you wish to convert from.</th>\n";
 		echo "</tr>\n";
+		
 		$dh = opendir(CONVERT_ROOT."/boards");
 		while(($file = readdir($dh)) !== false)
 		{
@@ -141,8 +144,10 @@ END;
 			{
 				$bb_name = str_replace(".php", "", $file);
 				$board_script = file_get_contents(CONVERT_ROOT."/boards/{$file}");
+				
 				// Match out board name
 				preg_match("#Board Name:(.*)#i", $board_script, $version_info);
+				
 				if($version_info[1])
 				{
 					echo "<tr>\n";
@@ -152,9 +157,11 @@ END;
 				}
 			}
 		}
+		
 		closedir($dh);
 		echo "</table>\n";
 		echo "</div>\n";
+		
 		$this->print_footer();
 	}
 		
@@ -173,8 +180,10 @@ END;
 		echo "<tr>\n";
 		echo "<th colspan=\"2\" class=\"first last\">Please select a module to run.</th>\n";
 		echo "</tr>\n";
+		
 		$class = "first";
 		$i=0;
+		
 		foreach($board->modules as $key => $module)
 		{
 			++$i;
@@ -203,10 +212,11 @@ END;
 					else
 					{
 						// Dependency has been run
-						$dependency_list[] = '<del>'.$board->modules[$dependency]['name'].'</del>';
+						$dependency_list[] = "<del>".$board->modules[$dependency]['name']."</del>\n";
 					}
 				}
 			}
+			
 			if(in_array($key, $import_session['completed']))
 			{
 				// Module has been completed.  Thus show.
@@ -217,43 +227,48 @@ END;
 			{
 				$class .= " last";
 			}
+			
 			echo "<tr class=\"{$class}\">\n";
-			echo "<td class=\"first\"><div class=\"module{$icon}\">".$module['name']."</div>";
+			echo "<td class=\"first\"><div class=\"module{$icon}\">".$module['name']."</div>\n";
+			
 			if($module['description'])
 			{
-				echo '<div class="module_description">'.$module['description'].'</div>';
+				echo "<div class=\"module_description\">".$module['description']."</div>\n";
 			}
 			
 			if(in_array($key, $import_session['completed']))
 			{
 				// Module has been completed.  Thus show.
-				echo '<div class="pass module_description">Completed</div>';
+				echo "<div class=\"pass module_description\">Completed</div>\n";
 			}
 
 			if(count($dependency_list) > 0)
 			{
-				echo '<div class="module_description">Dependencies: '.implode(', ', $dependency_list).'</small>';
+				echo "<div class=\"module_description\"><small>Dependencies: ".implode(', ', $dependency_list)."</small></div>\n";
 			}
 			
-			echo "</td>";
-			echo "<td class=\"last\" width=\"1\">";
+			echo "</td>\n";
+			echo "<td class=\"last\" width=\"1\">\n";
 			echo "<form method=\"post\" action=\"{$this->script}\">\n";
+			
 			if($import_session['module'] == $key)
 			{
-				echo "<input type=\"submit\" class=\"submit_button\" value=\"Resume &raquo;\" disabled=\"disabled\" />";
+				echo "<input type=\"submit\" class=\"submit_button\" value=\"Resume &raquo;\" disabled=\"disabled\" />\n";
 			}
-			elseif($awaiting_dependencies)
+			elseif($awaiting_dependencies || in_array($key, $import_session['disabled']))
 			{
-				echo "<input type=\"submit\" class=\"submit_button submit_button_disabled\" value=\"Run &raquo;\" disabled=\"disabled\" />";
+				echo "<input type=\"submit\" class=\"submit_button submit_button_disabled\" value=\"Run &raquo;\" disabled=\"disabled\" />\n";
 			}
 			else
 			{
-				echo "<input type=\"submit\" class=\"submit_button\" value=\"Run &raquo;\" />";
+				echo "<input type=\"submit\" class=\"submit_button\" value=\"Run &raquo;\" />\n";
 			}
-			echo "<input type=\"hidden\" name=\"module\" value=\"{$key}\" />";
-			echo "</form>";
-			echo "</td>";
-			echo "</tr>";
+			
+			echo "<input type=\"hidden\" name=\"module\" value=\"{$key}\" />\n";
+			echo "</form>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+			
 			if($class == "alt_row")
 			{
 				$class = "";
@@ -263,12 +278,14 @@ END;
 				$class = "alt_row";
 			}
 		}
+		
 		echo "</table>\n";
 		echo "</div><br />\n";
-		echo '<p>After you have run the modules you want, continue to the next step in the conversion process.  The cleanup step will remove any temporary data created during the conversion.';
+		echo '<p>After you have run the modules you want, continue to the next step in the conversion process.  The cleanup step will remove any temporary data created during the conversion.</p>';
 		echo "<form method=\"post\" action=\"{$this->script}\">\n";
 		echo '<input type="hidden" name="action" value="finish" />';
-		echo '<div style="text-align:right"><input type="submit" class="submit_button" value="Cleanup &raquo;" /></div>';
+		echo '<div style="text-align:right"><input type="submit" class="submit_button" value="Cleanup &raquo;" /></div></form>';
+		
 		$this->print_footer('', '', 1);
 	}
 	
@@ -277,12 +294,21 @@ END;
 	 */
 	function finish_conversion()
 	{
+		global $config;
+		
 		if(!$this->doneheader)
 		{
 			$this->print_header("Completion", '', 0);
 		}
-		echo '<p>The current conversion session has been finished.  You may now go to your copy of <a href="../">MyBB</a>.  It is recommended that you run the Rebuild and Recount tools in the Admin CP.</p>';
+		
+		if(!isset($config['admin_dir']))
+		{
+			$config['admin_dir'] = "admin";
+		}
+		
+		echo '<p>The current conversion session has been finished.  You may now go to your copy of <a href="../">MyBB</a> or your <a href="../'.$config['admin_dir'].'/index.php">Admin Control Panel</a>.  It is recommended that you run the Rebuild and Recount tools in the Admin CP.</p>';
 		echo '<p>Please remove this directory if you are not planning on converting any other forums.</p>';
+		
 		$this->print_footer('', '', 1);
 	}
 
@@ -295,6 +321,7 @@ END;
 	function print_footer($next_action="", $name="", $do_session=1)
 	{
 		global $lang;
+		
 		if($this->opened_form)
 		{
 			echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"".$lang->next." &raquo;\" /></div><br style=\"clear: both;\" />\n";
