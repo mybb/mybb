@@ -1111,7 +1111,7 @@ function my_unsetcookie($name)
 		return false;
 	}
 
-	$expires = time()-3600;
+	$expires = -3600;
 
 	my_setcookie($name, "", $expires);
 }
