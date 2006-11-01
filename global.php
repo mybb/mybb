@@ -187,6 +187,11 @@ else
 	$theme['css_url'] = $mybb->settings['bburl']."/css.php?theme={$theme['tid']}";
 }
 
+if(!@is_dir($theme['imgdir']))
+{
+	$theme['imgdir'] = "images";
+} 
+
 // If a language directory for the current language exists within the theme - we use it
 if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
 {

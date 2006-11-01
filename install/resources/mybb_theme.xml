@@ -449,6 +449,11 @@ form {
 
 .subject_new {
 	font-weight: bold;
+}
+
+.highlight {
+	color: #ffff00;
+	font-weight: bold;
 }]]></extracss>
 	</themebits>
 	<templates>

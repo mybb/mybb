@@ -1,4 +1,14 @@
 <?php
+/**
+ * MyBB 1.2
+ * Copyright © 2006 MyBB Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.com
+ * License: http://www.mybboard.com/eula.html
+ *
+ * $Id$
+ */
+ 
 // Board Name: SMF 1.0.8
 
 class Convert_smf extends Converter {

@@ -126,12 +126,14 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 		"order_by" => "title",
 		"order_dir" => "ASC"
 	);
+	
 	$query = $db->simple_select("settings", "value, name", "", $options);
 	while($setting = $db->fetch_array($query))
 	{
 		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
 		$settings[$setting['name']] = $setting['value'];
 	}
+	
 	if(function_exists('rebuildsettings'))
 	{
 		rebuildsettings();

@@ -3715,36 +3715,14 @@ function apply_highlight(&$item, $key)
 	
 	$item = htmlspecialchars_uni($item);
 
-	if(!$highlight_count)
-	{
-		$highlight_count = 0;
-	}
-	
-	if($highlight_count >= 7)
-	{
-		$highlight_count = 0;
-	}
-	
-	$highlight_colors = array(
-		'225, 225, 102',
-		'255, 0, 0',
-		'0, 255, 0',
-		'0, 0, 255',
-		'255, 255, 0',
-		'0, 255, 255',
-		'255, 0, 255',
-		'192, 192, 192'
-	);
-	
 	if(my_strlen($item) > 1)
 	{
-		if(stristr("<b style=\"color: black; background-color: rgb(".$highlight_colors[$highlight_count].");\"></b>", $item))
+		if(stristr("<span class=\"highlight\"></span>", $item))
 		{
 			unset($item);
 		}
 		
-		$item = "<b style=\"color: black; background-color: rgb(".$highlight_colors[$highlight_count].");\">$item</b>";
-		++$highlight_count;
+		$item = "<span class=\"highlight\">{$item}</span>";
 	}
 	else
 	{
