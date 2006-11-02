@@ -360,6 +360,9 @@ EOF;
 				echo "Inserting thread #{$thread['tid']}... ";				
 				
 				$thread['import_tid'] = $thread['tid'];
+				$thread['fid'] = $this->get_import_fid($thread['fid']);
+				$thread['uid'] = $this->get_import_uid($thread['uid']);
+				
 				unset($thread['tid']);
 				
 				$this->insert_thread($thread);
@@ -416,6 +419,10 @@ EOF;
 				echo "Inserting post #{$post['pid']}... ";
 				
 				$post['import_pid'] = $post['pid'];
+				$post['tid'] = $this->get_import_tid($post['tid']);
+				$post['fid'] = $this->get_import_fid($post['fid']);
+				$post['uid'] = $this->get_import_uid($post['uid']);
+								
 				unset($post['pid']);
 
 				$pid = $this->insert_post($post);
@@ -474,6 +481,9 @@ EOF;
 			while($mod = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting user #{$mod['uid']} as moderator to forum #{$mod['fid']}... ";
+				
+				$mod['fid'] = $this->get_import_fid($mod['fid']);
+				$mod['uid'] = $this->get_import_uid($mod['uid']);
 
 				$this->insert_moderator($mod);
 				
