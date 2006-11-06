@@ -359,7 +359,13 @@ class Moderation
 		$pidin = implode(",", $pids);
 		$first = 1;
 		// Get the messages to be merged
-		$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid='$tid' AND pid IN($pidin)", array('order_by' => 'dateline'));
+		$query = $db->query("
+			SELECT p.pid, p.uid, p.fid, p.tid, p.visible, p.message, f.usepostcounts
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
+			WHERE p.tid='$tid' AND p.pid IN($pidin)
+			ORDER BY dateline ASC
+		");
 		$num_unapproved_posts = 0;
 		$message = '';
 		while($post = $db->fetch_array($query))
@@ -380,7 +386,12 @@ class Moderation
 				{
 					$message .= "[hr]{$post['message']}";
 				}
-				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$post['uid']}'");
+				
+				if($post['usepostcounts'] != "no")
+				{
+					// Update post count of the user of the merged posts
+					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$post['uid']}'");
+				}
 			}
 		}
 		
@@ -450,6 +461,7 @@ class Moderation
 					"closed" => "moved|$tid",
 					"sticky" => $thread['sticky'],
 					"visible" => $thread['visible'],
+					"notes" => ''
 				);
 				$db->insert_query(TABLE_PREFIX."threads", $threadarray);
 				if($redirect_expire)
@@ -476,6 +488,7 @@ class Moderation
 					"sticky" => $thread['sticky'],
 					"visible" => $thread['visible'],
 					"unapprovedposts" => $thread['unapprovedposts'],
+					"notes" => ''
 				);
 				$plugins->run_hooks("moderation_do_move_copy");
 				$db->insert_query(TABLE_PREFIX."threads", $threadarray);
@@ -665,6 +678,7 @@ class Moderation
 			"lastposter" => $thread['lastposter'],
 			"replies" => count($pids)-1,
 			"visible" => "1",
+			"notes" => ''
 		);
 		$db->insert_query(TABLE_PREFIX."threads", $query);
 		$newtid = $db->insert_id();

@@ -176,7 +176,7 @@ class MyBB {
 		$this->clean_input();
 		
 		// Old version of PHP, need to register_shutdown_function
-		if(phpversion() < '5.0.5')
+		if(phpversion() < '5.0.5' || phpversion() == '5.2.0')
 		{
 			$this->use_shutdown = true;
 			register_shutdown_function(array(&$this, "__destruct"));

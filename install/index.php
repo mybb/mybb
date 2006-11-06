@@ -502,8 +502,8 @@ function insert_templates()
 
 	$db->query("DELETE FROM ".TABLE_PREFIX."themes");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates");
-	$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,css,cssbits,themebits,extracss) VALUES ('MyBB Master Style','0','','','','')");
-	$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,def,css,cssbits,themebits,extracss) VALUES ('MyBB Default','1','1','','','','')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,css,cssbits,themebits,extracss,allowedgroups) VALUES ('MyBB Master Style','0','','','','','')");
+	$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,def,css,cssbits,themebits,extracss,allowedgroups) VALUES ('MyBB Default','1','1','','','','','')");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('Default Templates');");
 	$templateset = $db->insert_id();
 

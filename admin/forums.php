@@ -202,6 +202,7 @@ if($mybb->input['action'] == "do_add")
 		"linkto" => $db->escape_string($mybb->input['linkto']),
 		"type" => $type,
 		"pid" => $pid,
+		"parentlist" => '',
 		"disporder" => intval($mybb->input['disporder']),
 		"active" => $db->escape_string($mybb->input['isactive']),
 		"open" => $db->escape_string($mybb->input['isopen']),

@@ -949,7 +949,8 @@ class PostDataHandler extends DataHandler
 				"lastposter" => $db->escape_string($thread['username']),
 				"views" => 0,
 				"replies" => 0,
-				"visible" => $visible
+				"visible" => $visible,
+				"notes" => ''
 			);
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread", $this);

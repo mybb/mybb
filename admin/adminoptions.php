@@ -103,7 +103,8 @@ if($mybb->input['action'] == "do_updateperms")
 	if(!isset($adminoptions['permsset']))
 	{
 		$options_update = array(
-			"uid" => $uid
+			"uid" => $uid,
+			"notes" => ""
 		);
 		$db->insert_query(TABLE_PREFIX."adminoptions", $options_update);
 	}
@@ -130,7 +131,7 @@ if($mybb->input['action'] == "do_updateperms")
 		"caneditlangs" => $db->escape_string($newperms['caneditlangs']),
 		"canrunmaint" => $db->escape_string($newperms['canrunmaint']),
 		"canrundbtools" => $db->escape_string($newperms['canrundbtools']),
-		);
+	);
 		
 	$plugins->run_hooks("admin_adminoptions_do_updateperms");
 	

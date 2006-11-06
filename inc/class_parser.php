@@ -421,7 +421,7 @@ class postParser
 			{
 				if(!$badword['replacement']) $badword['replacement'] = "*****";
 				$badword['badword'] = preg_quote($badword['badword']);
-				$message = preg_replace("#\b".$badword['badword']."\b#i", $badword['replacement'], $message);
+				preg_replace("#(\W|^)".$badword['badword']."(\W|$)#i", "\\1".$badword['replacement']."\\2", $message);
 			}
 		}
 		if($options['strip_tags'] == "yes")
