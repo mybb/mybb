@@ -839,7 +839,11 @@ class UserDataHandler extends DataHandler
 			"returndate" => $user['away']['returndate'],
 			"awayreason" => $db->escape_string($user['away']['awayreason']),
 			"notepad" => $db->escape_string($user['notepad']),
-			"referrer" => intval($user['referrer_uid'])
+			"referrer" => intval($user['referrer_uid']),
+			"buddylist" => '',
+			"ignorelist" => '',
+			"pmfolders" => '',
+			"notepad" => ''
 		);
 
 		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);

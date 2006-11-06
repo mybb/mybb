@@ -625,6 +625,11 @@ function multipage($count, $perpage, $page, $url)
 			$from = $page-1;
 		}
 		
+		if($from < 1)
+		{
+			$from = 1;
+		}
+		
 		if($page == $pages)
 		{
 			$to = $pages;
@@ -723,6 +728,7 @@ function usergroup_permissions($gid=0)
 	}
 	
 	$groups = explode(",", $gid);
+
 	
 	if(count($groups) == 1)
 	{

@@ -1060,9 +1060,15 @@ if($mybb->input['action'] == "changename")
 if($mybb->input['action'] == "favorites")
 {
 	$plugins->run_hooks("usercp_favorites_start");
+	
 	// Do Multi Pages
 	$query = $db->simple_select("favorites", "COUNT(tid) AS threads", "type='f' AND uid='".$mybb->user['uid']."'");
 	$threadcount = $db->fetch_field($query, "threads");
+	
+	if(!$mybb->settings['threadsperpage'])
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
 
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
@@ -1131,7 +1137,7 @@ if($mybb->input['action'] == "favorites")
 			}
 			if($favorite['lastpost'] > $mybb->user['lastvisit'])
 			{
-				$threadread = my_get_array_cookie("threadread", $favorite['tid']);
+				$threadread = my_get_array_cookie("threadread", $favorite['tid'].'-'.$favorite['fid']);
 				if($threadread < $favorite['lastpost'])
 				{
 					$folder = "new";
@@ -1166,6 +1172,11 @@ if($mybb->input['action'] == "subscriptions")
 	// Do Multi Pages
 	$query = $db->simple_select("favorites", "COUNT(tid) AS threads", "type='s' AND uid='".$mybb->user['uid']."'");
 	$threadcount = $db->fetch_field($query, "threads");
+
+	if(!$mybb->settings['threadsperpage'])
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
 
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
@@ -1233,7 +1244,7 @@ if($mybb->input['action'] == "subscriptions")
 			}
 			if($subscription['lastpost'] > $mybb->user['lastvisit'])
 			{
-				$threadread = my_get_array_cookie("threadread", $subscription['tid']);
+				$threadread = my_get_array_cookie("threadread", $subscription['tid'].'-'.$subscription['fid']);
 				if($threadread < $subcription['lastpost'])
 				{
 					$folder = "new";

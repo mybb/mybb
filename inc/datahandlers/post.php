@@ -682,7 +682,7 @@ class PostDataHandler extends DataHandler
 				FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u
 				WHERE f.type='s' AND f.tid='{$post['tid']}'
 				AND u.uid=f.uid
-				AND f.uid!='{$mybb->user['uid']}'
+				AND f.uid != '{$post['uid']}'
 				AND u.lastactive>'{$thread['lastpost']}'
 			");
 			while($subscribedmember = $db->fetch_array($query))
@@ -768,6 +768,26 @@ class PostDataHandler extends DataHandler
 				$queryadd = '';
 			}
 			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
+			
+			// If nobody has read the thread yet, but someones making a new post.
+			// You never know...
+			$query = $db->simple_select("threadsread", "dateline", "tid='{$post['tid']}' AND uid='{$post['uid']}'");
+			$dateline = $db->fetch_field($query, 'dateline');
+			
+			// Means the first time the user has viewed this thread
+			if($dateline == 0)
+			{
+				$datelinebit = ", dateline='".time()."'";
+			}
+			else
+			{
+				$datelinebit = ", dateline='".$dateline."'";
+			}
+			
+			// For registered users, store the information in the database.
+			$db->shutdown_query("
+				DELETE FROM ".TABLE_PREFIX."threadsread WHERE tid='{$post['tid']}'				
+			");
 		}
 
 		// Return the post's pid and whether or not it is visible.
@@ -948,7 +968,8 @@ class PostDataHandler extends DataHandler
 				"lastposter" => $db->escape_string($thread['username']),
 				"views" => 0,
 				"replies" => 0,
-				"visible" => $visible
+				"visible" => $visible,
+				"notes" => ''
 			);
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread", $this);

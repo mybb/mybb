@@ -103,7 +103,8 @@ if($mybb->input['action'] == "do_updateperms")
 	if(!isset($adminoptions['permsset']))
 	{
 		$options_update = array(
-			"uid" => $uid
+			"uid" => $uid,
+			"notes" => ""
 		);
 		$db->insert_query("adminoptions", $options_update);
 	}

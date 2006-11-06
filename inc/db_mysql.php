@@ -367,10 +367,12 @@ class databaseEngine
 			SHOW TABLES 
 			FROM `$database`
 		");
+		
 		while(list($table) = mysql_fetch_array($query))
 		{
 			$tables[] = $table;
 		}
+		
 		return $tables;
 	}
 

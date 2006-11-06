@@ -284,8 +284,12 @@ class session
         }
         else
         {
+			if($mybb->user['additionalgroups'])
+			{
+				$mybb->user['additionalgroups'] = ','.$mybb->user['additionalgroups'];
+			}
 			// Gather a full permission set for this user and the groups they are in.
-            $mybbgroups = $mybb->user['usergroup'].",".$mybb->user['additionalgroups'];
+            $mybbgroups = $mybb->user['usergroup'].$mybb->user['additionalgroups'];
         }
 
 		
@@ -295,6 +299,7 @@ class session
 		{
 			$mybb->user['displaygroup'] = $mybb->user['usergroup'];
 		}
+
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 

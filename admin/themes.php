@@ -58,6 +58,11 @@ if($mybb->input['action'] == "do_add")
 	$themearray = array(
 		"name" => $db->escape_string($mybb->input['name']),
 		"pid" => $mybb->input['pid'],
+		"css" => '',
+		"cssbits" => '',
+		"themebits" => '',
+		"extracss" => '',
+		"allowedgroups" => ''
 	);
 	$plugins->run_hooks("admin_themes_do_add");
 	$db->insert_query("themes", $themearray);
@@ -107,6 +112,10 @@ if($mybb->input['action'] == "do_edit")
 		"name" => $db->escape_string($mybb->input['name']),
 		"pid" => $mybb->input['pid'],
 		"allowedgroups" => $allowedgroups,
+		"css" => '',
+		"cssbits" => '',
+		"themebits" => '',
+		"extracss" => ''
 	);
 	$plugins->run_hooks("admin_themes_do_edit");
 	$db->update_query("themes", $themearray, "tid='".intval($mybb->input['tid'])."'");

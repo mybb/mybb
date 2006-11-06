@@ -824,6 +824,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	if($mybb->settings['threadreview'] != "off")
 	{
+		if(!$mybb->settings['postsperpage'])
+		{
+			$mybb->settings['postperpage'] = 20;
+		}
+		
 		if(is_moderator($fid) == "yes")
 		{
 			$visibility = "(visible='1' OR visible='0')";

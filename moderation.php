@@ -1282,6 +1282,11 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		
+		if(!$mybb->settings['threadsperpage'])
+		{
+			$mybb->settings['threadsperpage'] = 20;
+		}
+		
 		// Figure out if we need to display multiple pages.
 		$perpage = $mybb->settings['threadsperpage'];
 		if($mybb->input['page'] != "last")
@@ -1374,6 +1379,11 @@ switch($mybb->input['action'])
 		if(is_moderator() != "yes")
 		{
 			error_no_permission();
+		}
+		
+		if(!$mybb->settings['threadsperpage'])
+		{
+			$mybb->settings['threadsperpage'] = 20;
 		}
 		
 		// Figure out if we need to display multiple pages.

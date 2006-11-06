@@ -105,6 +105,11 @@ if($mybb->input['action'] == "results")
 	{
 		$order = "desc";
 	}
+	
+	if(!$mybb->settings['threadsperpage'])
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
 
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
@@ -316,6 +321,11 @@ if($mybb->input['action'] == "results")
 				$folder_label .= $lang->icon_lock;
 			}
 			$folder .= "folder";
+			
+			if(!$mybb->settings['postsperpage'])
+			{
+				$mybb->settings['postperpage'] = 20;
+			}
 
 			$thread['pages'] = 0;
 			$thread['multipage'] = '';
@@ -505,9 +515,10 @@ if($mybb->input['action'] == "results")
 					}
 				}
 			}
+			
 			if(!$lastread)
 			{
-				$readcookie = $threadread = my_get_array_cookie("threadread", $oist['tid']);
+				$readcookie = $threadread = my_get_array_cookie("threadread", $post['tid']);
 				if($readcookie > $forumread)
 				{
 					$lastread = $readcookie;

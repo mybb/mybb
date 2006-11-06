@@ -1149,6 +1149,11 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
 	$pmscount = $db->fetch_array($query);
 
+	if(!$mybb->settings['threadsperpage'])
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
+
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
 	

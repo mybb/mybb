@@ -46,6 +46,11 @@ $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subje
 $tid = $thread['tid'];
 $fid = $thread['fid'];
 
+if(!$thread['username'])
+{
+	$thread['username'] = $lang->guest;
+}
+
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid) == "yes")
 {
@@ -229,7 +234,7 @@ if($mybb->input['action'] == "newpost")
 		"order_by" => "dateline",
 		"order_dir" => "asc"
 	);
-	$query = $db->simple_select("posts", "pid", "tid=".$tid." AND dateline > '{$lastread}'");
+	$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline > '{$lastread}'");
 	$newpost = $db->fetch_array($query);
 	if($newpost['pid'])
 	{
@@ -250,6 +255,7 @@ if($mybb->input['action'] == "thread")
 	{
 		update_first_post($tid);
 	}
+	
 	// Does this thread have a poll?
 	if($thread['poll'])
 	{
@@ -405,18 +411,44 @@ if($mybb->input['action'] == "thread")
 	$forumjump = build_forum_jump("", $fid, 1);
 
 	// Mark this thread read for the currently logged in user.
-	if($mybb->settings['threadreadcut'] && ($mybb->user['uid'] != 0))
+	if($mybb->settings['threadreadcut'] && $mybb->user['uid'] != 0)
 	{
+		$query = $db->simple_select("threadsread", "dateline", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
+		$dateline = $db->fetch_field($query, 'dateline');
+		
+		// Means the first time the user has viewed this thread
+		if($dateline == 0)
+		{
+			$datelinebit = ", dateline='".time()."'";
+		}
+		else
+		{
+			$datelinebit = ", dateline='".$dateline."'";
+		}
+		
 		// For registered users, store the information in the database.
 		$db->shutdown_query("
 			REPLACE INTO ".TABLE_PREFIX."threadsread
-			SET tid='$tid', uid='".$mybb->user['uid']."', dateline='".time()."'
+			SET tid='{$tid}', fid='{$thread['fid']}', uid='{$mybb->user['uid']}'$datelinebit
 		");
 	}
 	else
-	{
+	{	
 		// For guests, store the information in a cookie.
-		my_set_array_cookie("threadread", $tid, time());
+		$prev_threadread_cookie = $_COOKIE['mybb']['threadread'];
+		if(!strstr($prev_threadread_cookie, "{$tid}-"))
+		{
+			my_setcookie('mybb[threadread]', $prev_threadread_cookie."{$tid}-".time().",");
+		}
+		else
+		{
+			preg_match("#([^0-9]*?)(,?)".$tid."-(.*?),#i", $prev_threadread_cookie, $matches);
+			
+			$match = str_replace($matches[3], time(), $matches[0]);
+			$prev_threadread_cookie = str_replace($matches[0], $match, $prev_threadread_cookie);
+			
+			my_setcookie('mybb[threadread]', $prev_threadread_cookie);
+		}
 	}
 
 	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
@@ -576,10 +608,9 @@ if($mybb->input['action'] == "thread")
 
 		// Build the threaded post display tree.
 		$query = $db->query("
-            SELECT u.username, u.username AS userusername, p.pid, p.replyto, p.subject, p.dateline
+            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
             FROM ".TABLE_PREFIX."posts p
-            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-            WHERE p.tid='$tid' 
+            WHERE p.tid='$tid'
             $visible
             ORDER BY p.dateline
         ");
@@ -602,13 +633,18 @@ if($mybb->input['action'] == "thread")
 			$showpost['highlight_replace'] = $highlight_replace;
 		}
 		
-		$threadedbits = buildtree();		
+		$threadedbits = buildtree();
 		$posts = build_postbit($showpost);
 		eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
 		$plugins->run_hooks("showthread_threaded");
 	}
 	else // Linear display
 	{
+		if(!$mybb->settings['postsperpage'])
+		{
+			$mybb->settings['postperpage'] = 20;
+		}
+		
 		// Figure out if we need to display multiple pages.
 		$perpage = $mybb->settings['postsperpage'];
 		if($mybb->input['page'] != "last")
@@ -834,6 +870,7 @@ if($mybb->input['action'] == "thread")
 function buildtree($replyto="0", $indent="0")
 {
 	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser;
+	
 	if($indent)
 	{
 		$indentsize = 13 * $indent;
@@ -842,6 +879,7 @@ function buildtree($replyto="0", $indent="0")
 	{
 		$indentsize = 0;
 	}
+	
 	++$indent;
 	if(is_array($tree[$replyto]))
 	{
@@ -850,18 +888,14 @@ function buildtree($replyto="0", $indent="0")
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
+			
 			if(!$post['subject'])
 			{
 				$post['subject'] = "[".$lang->no_subject."]";
 			}
-			if($post['userusername'])
-			{
-				$post['profilelink'] = build_profile_link($post['userusername'], $post['uid']);
-			}
-			else
-			{
-				$post['profilelink'] = $post['username'];
-			}
+			
+			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
+		
 			if($mybb->input['pid'] == $post['pid'])
 			{
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bitactive")."\";");
@@ -870,6 +904,7 @@ function buildtree($replyto="0", $indent="0")
 			{
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bit")."\";");
 			}
+			
 			if($tree[$post['pid']])
 			{
 				$posts .= buildtree($post['pid'], $indent);

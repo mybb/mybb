@@ -100,6 +100,11 @@ function build_postbit($post, $post_type=0)
 	{ // Used to show the # of the post
 		if($page > 1)
 		{
+			if(!$mybb->settings['postsperpage'])
+			{
+				$mybb->settings['postperpage'] = 20;
+			}
+			
 			$postcounter = $mybb->settings['postsperpage']*($page-1);
 		}
 		else

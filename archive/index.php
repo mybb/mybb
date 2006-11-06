@@ -204,6 +204,11 @@ switch($action)
 		// Build the archive header.
 		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid={$id}");
 
+		if(!$mybb->settings['threadsperpage'])
+		{
+			$mybb->settings['threadsperpage'] = 20;
+		}
+
 		$perpage = $mybb->settings['threadsperpage'];
 		$pages = ceil($threadcount/$perpage);
 		if($page > $pages)
