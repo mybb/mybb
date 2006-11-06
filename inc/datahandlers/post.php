@@ -898,7 +898,7 @@ class PostDataHandler extends DataHandler
 			$user_permisions = user_permissions($thread['uid']);
 
 			// Decide on the visibility of this post.
-			if($forum['modposts'] == "yes" && is_moderator($thread['fid'], "", $thread['uid']) != "yes")
+			if(($forum['modthreads'] == "yes" || $forum['modposts'] == "yes") && is_moderator($thread['fid'], "", $thread['uid']) != "yes")
 			{
 				$visible = 0;
 			}
@@ -911,7 +911,7 @@ class PostDataHandler extends DataHandler
 		// Have a post ID but not a thread ID - fetch thread ID
 		if($thread['pid'] && !$thread['tid'])
 		{
-			$db->simple_select("posts", "tid", "pid='{$thread['pid']}");
+			$query = $db->simple_select("posts", "tid", "pid='{$thread['pid']}");
 			$thread['tid'] = $db->fetch_field($query, "tid");
 		}
 
