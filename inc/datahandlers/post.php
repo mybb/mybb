@@ -767,27 +767,7 @@ class PostDataHandler extends DataHandler
 			{
 				$queryadd = '';
 			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
-			
-			// If nobody has read the thread yet, but someones making a new post.
-			// You never know...
-			$query = $db->simple_select("threadsread", "dateline", "tid='{$post['tid']}' AND uid='{$post['uid']}'");
-			$dateline = $db->fetch_field($query, 'dateline');
-			
-			// Means the first time the user has viewed this thread
-			if($dateline == 0)
-			{
-				$datelinebit = ", dateline='".time()."'";
-			}
-			else
-			{
-				$datelinebit = ", dateline='".$dateline."'";
-			}
-			
-			// For registered users, store the information in the database.
-			$db->shutdown_query("
-				DELETE FROM ".TABLE_PREFIX."threadsread WHERE tid='{$post['tid']}'				
-			");
+			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");			
 		}
 
 		// Return the post's pid and whether or not it is visible.

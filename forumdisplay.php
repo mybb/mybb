@@ -581,17 +581,14 @@ if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 // Read threads
 if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 {
-	$query = $db->simple_select("threadsread", "tid, dateline", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})"); // tid IN ({$tids})
+	$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})"); 
 	while($readthread = $db->fetch_array($query))
 	{
-		if(in_array($readthread['tid'], $threadcache))
-		{
-			if($moved_threads[$readthread['tid']])
-			{
-				$readthread['tid'] = $moved_threads[$readthread['tid']];
-			}
-			$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline'];
-		}
+		if($moved_threads[$readthread['tid']]) 
+		{ 
+	 		$readthread['tid'] = $moved_threads[$readthread['tid']]; 
+	 	} 
+	 	$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline']; 
 	}
 }
 
@@ -601,50 +598,6 @@ if($mybb->user['lastvisit'] > $forumread)
 	$forumread = $mybb->user['lastvisit'];
 }
 
-if($mybb->user['uid'] != 0)
-{
-	$query = $db->simple_select("threadsread", "COUNT(*) as threads_read", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
-	$total_threads_read = $db->fetch_field($query, 'threads_read');
-}
-else
-{
-	$threads_read = array();
-	$threadsread = $_COOKIE['mybb']['threadread'];
-	if(!$threadsread)
-	{
-		$total_threads_read = 0;
-	}
-	else
-	{
-		// Remove dateline bit for cookie value, so we can search just for tids
-		$threadsread_orig = $threadsread;
-		$threadsread = preg_replace("#-(.*?),#i", ',', $threadsread);
-
-		$query = $db->simple_select("threads", "lastpost,tid", "fid='{$fid}' AND tid IN({$threadsread}0)");
-		
-		$total_threads_read = 0;
-				
-		while($readthread = $db->fetch_array($query))
-		{
-			preg_match("#([^0-9]*?)(,?)".$readthread['tid']."-(.*?),#i", $threadsread_orig, $matches);
-		
-			if($readthread['lastpost'] < $matches[3])
-			{
-				++$total_threads_read;
-				$threads_read[] = $readthread['tid'];
-			}
-		}	
-	}
-}
-
-$query = $db->simple_select("threads", "COUNT(*) as total_threads", "fid='{$fid}'");
-$total_threads = $db->fetch_field($query, 'total_threads');
-
-$nothreadsread = false;
-if($total_threads_read < 1 && $total_threads > 0)
-{
-	$nothreadsread = true;
-}
 
 $unreadpost = 0;
 $threads = '';
@@ -814,29 +767,40 @@ if(is_array($threadcache))
 		$donenew = 0;
 		$lastread = 0;
 		
-		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
+		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
 		{
 			$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
 		}
 		
-		if($mybb->user['uid'] != 0)
+		if($thread['lastpost'] > $cutoff)
 		{
-			$query = $db->simple_select("threadsread", "COUNT(*) as threads_read", "fid='{$thread['fid']}' AND tid='{$thread['tid']}' AND uid='{$mybb->user['uid']}' AND newposts='0' AND dateline > '{$cutoff}'");
-			$thread_read = $db->fetch_field($query, 'threads_read');
-		}
-		else
-		{
-			if(in_array($thread['tid'], $threads_read))
+			if($thread['lastpost'] > $cutoff)
 			{
-				$thread_read = 1;
+				if($thread['lastread'])
+				{
+						$lastread = $thread['lastread'];
+				}
+				else
+				{
+						$lastread = 1;
+				}
+			}
+		} 
+		
+		if(!$lastread) 
+		{
+			$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']); 
+			if($readcookie > $forumread) 
+			{ 
+				$lastread = $readcookie; 
 			}
 			else
 			{
-				$thread_read = 0;
+				$lastread = $forumread;
 			}
 		}
 		
-		if($thread_read == 0 || $nothreadsread)
+		if($thread['lastpost'] > $lastread && $lastread)
 		{
 			$folder .= "new";
 			$folder_label .= $lang->icon_new;

@@ -342,15 +342,15 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	if($forumpermissions['canpostattachments'] != "no")
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		if($mybb->input['posthash'])
+		if($posthash)
 		{
-			$posthash = "posthash='{$posthash}' OR ";
+			$posthash_query = "posthash='{$posthash}' OR ";
 		}
 		else
 		{
-			$posthash = "";
+			$posthash_query = "";
 		}
-		$query = $db->simple_select("attachments", "*", "{$posthash}pid='{$pid}'");
+		$query = $db->simple_select("attachments", "*", "{$posthash_query}pid='{$pid}'");
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{

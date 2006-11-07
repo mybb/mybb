@@ -268,7 +268,7 @@ class session
 		}
 
 		// Check if this user is currently banned and if we have to lift it.
-		if($mybb->user['bandate'] && $mybb->user['banlifted'] && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
+		if(!empty($mybb->user['bandate']) && !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
 			// must have been good.. bans up :D
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."', additionalgroups='".$mybb->user['oldadditionalgroups']."', displaygroup='".$mybb->user['olddisplaygroup']."' WHERE uid='".$mybb->user['uid']."'");
@@ -278,7 +278,7 @@ class session
 			$mybb->user['displaygroup'] = $mybb->user['banolddisplaygroup']; 
 			$mybb->user['additionalgroups'] = $mybb->user['banoldadditionalgroups'];
 		}
-		elseif($mybb->user['bandate'] && (!$mybb->user['banlifted'] || $mybb->user['banlifted'] && $mybb->user['banlifted'] > $time))
+		elseif(!empty($mybb->user['bandate']) && (empty($mybb->user['banlifted']) || !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] > $time))
         {
             $mybbgroups = $mybb->user['usergroup'];
         }

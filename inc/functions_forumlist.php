@@ -312,56 +312,11 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 	}
 	else
 	{
-		if($mybb->settings['threadreadcut'] > 0)
-		{
-			$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
-		}
-		
-		if($mybb->user['uid'] != 0)
-		{
-			$query = $db->simple_select("threadsread", "dateline", "fid='{$forum['fid']}' AND uid='{$mybb->user['uid']}'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
-			$threads_read = $db->num_rows($query);
-			$dateline = $db->fetch_field($query, 'dateline');
-		}
-		else
-		{
-			$threadsread_orig = $_COOKIE['mybb']['threadread'];
-			$threadsread = preg_replace("#-(.*?),#i", ',', $threadsread_orig);
-			if(!$threadsread)
-			{
-				$threads_read = 0;
-			}
-			else
-			{
-				$query = $db->simple_select("threads", "lastpost,tid", "fid='{$forum['fid']}' AND tid IN({$threadsread}0)", array('order_by' => 'lastpost', 'order_dir' => 'DESC'));				
-				$threads_read = 0;
-				
-				while($readthread = $db->fetch_array($query))
-				{
-					preg_match("#([^0-9]*?)(,?)".$readthread['tid']."-(.*?),#i", $threadsread_orig, $matches);
-					
-					if($readthread['lastpost'] < $matches[3])
-					{
-						++$threads_read;
-					}
-				}
-				
-				$dateline = $db->fetch_field($query, 'lastpost');
-			}
-		}
-		
-		$query = $db->simple_select("threads", "COUNT(*) as total_threads", "fid='{$forum['fid']}'");
-		$total_threads = $db->fetch_field($query, 'total_threads');
-		
-	
-		// If all the posts have been read, or if there have been no read threads read, we have a new post.
-		if(($mybb->user['uid'] != 0 && $threads_read != $total_threads && $threads_read != 0 && $total_threads != 0 && $dateline > $cutoff) || ($threads_read == 0 && $total_threads != 0))
-		{
-			$folder = "on";
-			$altonoff = $lang->new_posts;
-		}
-		// Guests
-		elseif(($threads_read != $total_threads && $threads_read != 0 && $total_threads != 0) || ($threads_read == 0 && $total_threads != 0))
+		// Fetch the last read date for this forum 
+	 	$forumread = my_get_array_cookie("forumread", $forum['fid']); 
+	 	 
+ 	    // If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post 
+		if($lastpost['lastpost'] > $mybb->user['lastvisit'] && $lastpost['lastpost'] > $forumread && $lastpost['lastpost'] != 0) 
 		{
 			$folder = "on";
 			$altonoff = $lang->new_posts;

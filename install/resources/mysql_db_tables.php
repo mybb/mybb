@@ -625,10 +625,9 @@ $tables[] = "CREATE TABLE mybb_threads (
 $tables[] = "CREATE TABLE mybb_threadsread (
   tid int unsigned NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
-  fid int unsigned NOT NULL default '0',
   dateline int(10) NOT NULL default '0',
   KEY dateline (dateline),
-  UNIQUE KEY tid,uid (tid,uid)
+  UNIQUE KEY tid (tid,uid)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_userfields (
@@ -636,7 +635,7 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid1 text NOT NULL,
   fid2 text NOT NULL,
   fid3 text NOT NULL,
-  PRIMARY KEY  (ufid)
+  PRIMARY KEY (ufid)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_usergroups (

@@ -64,15 +64,6 @@ function upgrade6_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL default '' AFTER querycache");
 	}
 	
-	if(!$db->field_exists('fid', "threadsread"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsread ADD fid int unsigned NOT NULL default '0' AFTER uid");
-	}
-	
-	if(!$db->field_exists('newposts', "threadsread"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsread ADD newposts int(1) NOT NULL default '0' AFTER dateline");
-	}
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
