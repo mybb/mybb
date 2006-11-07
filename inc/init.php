@@ -35,6 +35,9 @@ if(!defined('MYBB_ROOT'))
 	define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 }
 
+require_once MYBB_ROOT."inc/class_error.php";
+$error_handler = new errorHandler();
+
 require_once MYBB_ROOT."inc/functions.php";
 
 require_once MYBB_ROOT."inc/class_timers.php";
@@ -81,9 +84,6 @@ elseif(!function_exists($config['dbtype']."_connect") && !function_exists($confi
 	$config['dbtype'] = "mysql";
 }
 */
-
-require_once MYBB_ROOT."inc/class_error.php";
-$error_handler = new errorHandler();
 
 require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine;

@@ -208,14 +208,24 @@ function upgradethemes()
 		
 		$insert_array = array(
 			'name' => 'MyBB Master Style',
-			'pid' => 0
+			'pid' => 0,
+			'css' => '',
+			'cssbits' => '',
+			'themebits' => '',
+			'extracss' => '',
+			'allowedgroups' => ''
 		);
 		$db->insert_query("themes", $insert_array);
 		
 		$insert_array = array(
 			'name' => 'MyBB Default',
 			'pid' => 1,
-			'def' => 1
+			'def' => 1,
+			'css' => '',
+			'cssbits' => '',
+			'themebits' => '',
+			'extracss' => '',
+			'allowedgroups' => ''
 		);
 		$db->insert_query("themes", $insert_array);
 		$sid = $db->insert_id();

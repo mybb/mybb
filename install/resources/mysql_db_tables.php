@@ -144,7 +144,7 @@ $tables[] = "CREATE TABLE mybb_captcha (
 
 $tables[] = "CREATE TABLE mybb_datacache (
   title varchar(50) NOT NULL default '',
-  cache mediumtext NOT NULL default '',
+  cache mediumtext NOT NULL,
   PRIMARY KEY(title)
 ) TYPE=MyISAM;";
 
