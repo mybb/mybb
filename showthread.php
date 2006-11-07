@@ -413,42 +413,16 @@ if($mybb->input['action'] == "thread")
 	// Mark this thread read for the currently logged in user.
 	if($mybb->settings['threadreadcut'] && $mybb->user['uid'] != 0)
 	{
-		$query = $db->simple_select("threadsread", "dateline", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
-		$dateline = $db->fetch_field($query, 'dateline');
-		
-		// Means the first time the user has viewed this thread
-		if($dateline == 0)
-		{
-			$datelinebit = ", dateline='".time()."'";
-		}
-		else
-		{
-			$datelinebit = ", dateline='".$dateline."'";
-		}
-		
 		// For registered users, store the information in the database.
 		$db->shutdown_query("
 			REPLACE INTO ".TABLE_PREFIX."threadsread
-			SET tid='{$tid}', fid='{$thread['fid']}', uid='{$mybb->user['uid']}'$datelinebit
+			SET tid='$tid', uid='".$mybb->user['uid']."', dateline='".time()."'
 		");
 	}
 	else
 	{	
 		// For guests, store the information in a cookie.
-		$prev_threadread_cookie = $_COOKIE['mybb']['threadread'];
-		if(!strstr($prev_threadread_cookie, "{$tid}-"))
-		{
-			my_setcookie('mybb[threadread]', $prev_threadread_cookie."{$tid}-".time().",");
-		}
-		else
-		{
-			preg_match("#([^0-9]*?)(,?)".$tid."-(.*?),#i", $prev_threadread_cookie, $matches);
-			
-			$match = str_replace($matches[3], time(), $matches[0]);
-			$prev_threadread_cookie = str_replace($matches[0], $match, $prev_threadread_cookie);
-			
-			my_setcookie('mybb[threadread]', $prev_threadread_cookie);
-		}
+		my_set_array_cookie("threadread", $tid, time());
 	}
 
 	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.

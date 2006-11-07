@@ -1137,7 +1137,7 @@ if($mybb->input['action'] == "favorites")
 			}
 			if($favorite['lastpost'] > $mybb->user['lastvisit'])
 			{
-				$threadread = my_get_array_cookie("threadread", $favorite['tid'].'-'.$favorite['fid']);
+				$threadread = my_get_array_cookie("threadread", $favorite['tid']);
 				if($threadread < $favorite['lastpost'])
 				{
 					$folder = "new";
@@ -1244,7 +1244,7 @@ if($mybb->input['action'] == "subscriptions")
 			}
 			if($subscription['lastpost'] > $mybb->user['lastvisit'])
 			{
-				$threadread = my_get_array_cookie("threadread", $subscription['tid'].'-'.$subscription['fid']);
+				$threadread = my_get_array_cookie("threadread", $subscription['tid']);
 				if($threadread < $subcription['lastpost'])
 				{
 					$folder = "new";
