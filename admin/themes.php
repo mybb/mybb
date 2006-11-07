@@ -112,10 +112,6 @@ if($mybb->input['action'] == "do_edit")
 		"name" => $db->escape_string($mybb->input['name']),
 		"pid" => $mybb->input['pid'],
 		"allowedgroups" => $allowedgroups,
-		"css" => '',
-		"cssbits" => '',
-		"themebits" => '',
-		"extracss" => ''
 	);
 	$plugins->run_hooks("admin_themes_do_edit");
 	$db->update_query(TABLE_PREFIX."themes", $themearray, "tid='".intval($mybb->input['tid'])."'");
@@ -385,6 +381,10 @@ if($mybb->input['action'] == "do_import")
 		"name" => $db->escape_string($name),
 		"pid" => $mybb->input['pid'],
 		"allowedgroups" => 'all',
+		"css" => '',
+		"cssbits" => '',
+		"themebits" => '',
+		"extracss" => ''
 	);
 
 	$db->insert_query(TABLE_PREFIX."themes", $themearray);

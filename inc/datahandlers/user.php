@@ -1029,7 +1029,13 @@ class UserDataHandler extends DataHandler
 			$fields = $db->fetch_array($query);
 			if(!$fields['ufid'])
 			{
-				$db->insert_query(TABLE_PREFIX."userfields", array('ufid' => $user['uid']));
+				$user_fields = array(
+					'ufid' => $user['uid'],
+					'fid1' => '',
+					'fid2' => '',
+					'fid3' => ''
+				);
+				$db->insert_query(TABLE_PREFIX."userfields", $user_fields);
 			}
 			$db->update_query(TABLE_PREFIX."userfields", $user['user_fields'], "ufid='{$user['uid']}'");
 		}

@@ -732,6 +732,7 @@ function install_done()
 		'yahoo' => '',
 		'msn' =>'',
 		'birthday' => '',
+		'signature' => '',
 		'allownotices' => 'yes',
 		'hideemail' => 'no',
 		'emailnotify' => 'no',
@@ -754,6 +755,10 @@ function install_done()
 		'tpp' => 0,
 		'ppp' => 0,
 		'referrer' => 0,
+		'buddylist' => '',
+		'ignorelist' => '',
+		'pmfolders' => '',
+		'notepad' => ''
 	);
 	$db->insert_query(TABLE_PREFIX.'users', $newuser);
 	$uid = $db->insert_id();
