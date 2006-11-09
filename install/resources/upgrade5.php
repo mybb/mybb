@@ -123,7 +123,7 @@ function upgrade5_dbchanges()
 	
 	if(!$db->field_exists('allowedgroups', TABLE_PREFIX."themes"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD allowedgroups text NOT NULL default '' AFTER extracss;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD allowedgroups text NOT NULL AFTER extracss;");
 	}
 	
 	if(!$db->field_exists('canmovetononmodforum', TABLE_PREFIX."moderators"))
@@ -304,7 +304,7 @@ function upgrade5_dbchanges()
 
 	if(!$db->field_exists('data', TABLE_PREFIX."moderatorlog"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL default '' AFTER action;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL AFTER action;");
 	}
 	
 	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."adminsessions");

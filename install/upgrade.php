@@ -197,16 +197,38 @@ function upgradethemes()
 		  name varchar(100) NOT NULL default '',
 		  pid smallint unsigned NOT NULL default '0',
 		  def smallint(1) NOT NULL default '0',
-		  css text NOT NULL default '',
-		  cssbits text NOT NULL default '',
-		  themebits text NOT NULL default '',
-		  extracss text NOT NULL default '',
-		  allowedgroups text NOT NULL default '',
+		  css text NOT NULL,
+		  cssbits text NOT NULL,
+		  themebits text NOT NULL,
+		  extracss text NOT NULL,
+		  allowedgroups text NOT NULL,
 		  csscached bigint(30) NOT NULL default '0',
 		  PRIMARY KEY  (tid)
 		) TYPE=MyISAM;");
-		$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid) VALUES ('MyBB Master Style','0')");
-		$db->query("INSERT INTO ".TABLE_PREFIX."themes (name,pid,def) VALUES ('MyBB Default','1','1')");
+
+		$insert_array = array(
+			'name' => 'MyBB Master Style',
+			'pid' => 0,
+			'css' => '',
+			'cssbits' => '',
+			'themebits' => '',
+			'extracss' => '',
+			'allowedgroups' => ''
+		);
+		$db->insert_query(TABLE_PREFIX."themes", $insert_array);
+		
+		$insert_array = array(
+			'name' => 'MyBB Default',
+			'pid' => 1,
+			'def' => 1,
+			'css' => '',
+			'cssbits' => '',
+			'themebits' => '',
+			'extracss' => '',
+			'allowedgroups' => ''
+		);
+		$db->insert_query(TABLE_PREFIX."themes", $insert_array);
+
 		$sid = $db->insert_id();
 		$db->query("UPDATE ".TABLE_PREFIX."users SET style='$sid'");
 		$db->query("UPDATE ".TABLE_PREFIX."forums SET style='0'");
