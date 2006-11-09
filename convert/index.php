@@ -126,7 +126,7 @@ elseif($import_session['module'])
 
 	// We've selected a module (or we're in one) that is valid
 	if($board->modules[$import_session['module']])
-	{
+	{		
 		$function = $import_session['module'];
 	}
 	// Otherwise we're trying to use an invalid module or we're still at the beginning
@@ -140,6 +140,7 @@ elseif($import_session['module'])
 
 	// Run the module
 	$result = $board->$function();
+
 
 	// If the module returns "finished" then it has finished everything it needs to do. We set the import session
 	// to blank so we go back to the module list

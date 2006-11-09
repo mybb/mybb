@@ -35,13 +35,32 @@ function int_to_yesno($var)
 {
 	$var = intval($var);
 	
-	if($var == 1)
+	if($var > 0)
 	{
 		return 'yes';
 	}
 	else
 	{
 		return 'no';
+	}
+}
+
+/**
+ * Convert an integer 1/0 into text no/yes
+ * @param int Integer to be converted
+ * @return string Correspondig no or yes
+ */
+function int_to_noyes($var)
+{
+	$var = intval($var);
+	
+	if($var > 0)
+	{
+		return 'no';
+	}
+	else
+	{
+		return 'yes';
 	}
 }
 
@@ -123,6 +142,11 @@ function delete_import_fields()
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP import_gid");
 	}
+	
+	if($db->field_exists('import_pmid', "privatemessages"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP import_pmid");
+	}
 }
 
 /**
@@ -147,5 +171,6 @@ function create_import_fields()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD import_uid int NOT NULL default '0' AFTER uid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."attachments ADD import_aid int NOT NULL default '0' AFTER aid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD import_gid int NOT NULL default '0' AFTER gid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD import_pmid int NOT NULL default '0' AFTER pmid");
 }
 ?>

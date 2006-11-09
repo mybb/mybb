@@ -182,6 +182,24 @@ class Converter
 	}
 	
 	/**
+	 * Insert privatemessages into database
+	 */
+	function insert_privatemessage($title)
+	{
+		global $db;
+	
+		foreach($title as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+		
+		$query = $db->insert_query("privatemessages", $insertarray);
+		$pmid = $db->insert_id();
+		
+		return $pmid;
+	}
+	
+	/**
 	 * Get an array of imported users
 	 *
 	 * @return array
@@ -215,6 +233,7 @@ class Converter
 		{
 			$uid_array = $this->import_uids;
 		}
+		
 		if(!isset($uid_array[$old_uid]) || $old_uid == 0)
 		{
 			return 0;

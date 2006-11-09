@@ -14,7 +14,7 @@
 class Convert_smf extends Converter {
 	var $bbname = "SMF";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
-									"dependencies" => ""),
+									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import SMF Usergroups",
 									  "dependencies" => "db_configuration"),
 						 "import_users" => array("name" => "Import SMF Users",
@@ -27,6 +27,8 @@ class Convert_smf extends Converter {
 									  "dependencies" => "db_configuration,import_forums"),
 						 "import_posts" => array("name" => "Import SMF Posts",
 									  "dependencies" => "db_configuration,import_threads"),
+						 "import_privatemessages" => array("name" => "Import SMF Private Messages",
+						 			  "dependencies" => "db_configuration,import_users"),
 						 "import_moderators" => array("name" => "Import SMF Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						);
@@ -45,6 +47,8 @@ class Convert_smf extends Converter {
 		$this->old_db->connect($import_session['old_db_host'], $import_session['old_db_user'], $import_session['old_db_pass']);
 		$this->old_db->select_db($import_session['old_db_name']);
 		$this->old_db->set_table_prefix($import_session['old_tbl_prefix']);
+		
+		define('SMF_TABLE_PREFIX', $import_session['old_tbl_prefix']);
 	}
 
 	function db_configuration()
@@ -230,12 +234,34 @@ EOF;
 		}
 		else
 		{
+			// Setup member array, for checking for duplicate members
+			$members_cache = array();
+						
+			$query = $db->simple_select("users", "username");
+			while($user = $db->fetch_array($query))
+			{
+				$members_cache[] = $user['username'];
+			}
+			
+			// Get a unique number to avoid more duplicates.
+			$member_dup_count = count($members_cache);
+			
 			// Get members
 			$query = $this->old_db->simple_select("members", "*", "", array('limit_start' => $import_session['start_users'], 'limit' => $import_session['users_per_screen']));
 
 			while($user = $this->old_db->fetch_array($query))
 			{
 				echo "Adding user #{$user['ID_MEMBER']}... ";
+				
+				// Check for duplicate members
+				if(in_array($user['memberName'], $members_cache))
+				{
+					++$member_dup_count;
+					$user['memberName'] .= "_smf_import".$member_dup_count;
+				}
+				
+				$members_cache[] = $user['memberName'];
+				
 				$insert_user['usergroup'] = $this->get_group_id($user, 'ID_GROUP');
 				$insert_user['additionalgroups'] = $this->get_group_id($user, 'additionalGroups');
 				$insert_user['displaygroup'] = $insert_user['usergroup'];
@@ -290,10 +316,11 @@ EOF;
 				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';		
 				$uid = $this->insert_user($insert_user);
 				
+				/* Don't need these */
 				// Restore connections
-				$update_array = array('uid' => $uid);
-				$db->update_query("threads", $update_array, "import_uid = '{$user['ID_MEMBER']}'");
-				$db->update_query("posts", $update_array, "import_uid = '{$user['ID_MEMBER']}'");
+				//$update_array = array('uid' => $uid);
+				//$db->update_query("threads", $update_array, "import_uid = '{$user['ID_MEMBER']}'");
+				//$db->update_query("posts", $update_array, "import_uid = '{$user['ID_MEMBER']}'");
 				
 				echo "done.<br />\n";
 			}
@@ -395,7 +422,7 @@ EOF;
 				$update_array = array('parentlist' => $fid);
 				$db->update_query("forums", $update_array, "fid = '{$fid}'");
 				
-				echo "done.<br />\n";			
+				echo "done.<br />\n";	
 			}
 		}			
 		$import_session['start_cats'] += $import_session['cats_per_screen'];
@@ -923,10 +950,92 @@ EOF;
 					$this->insert_usertitle($insert_title);
 				}
 				
-				echo "done.<br />\n";			
+				echo "done.<br />\n";	
 			}
 		}
 		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_privatemessages()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->smf_db_connect();
+
+		// Get number of usergroups
+		if(!isset($import_session['total_privatemessages']))
+		{
+			$query = $this->old_db->simple_select("personal_messages", "COUNT(*) as count");
+			$import_session['total_privatemessages'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_privatemessages'])
+		{
+			// If there are more usergroups to do, continue, or else, move onto next module
+			if($import_session['total_privatemessages'] <= $import_session['start_privatemessages'] + $import_session['privatemessages_per_screen'])
+			{
+				$import_session['disabled'][] = 'import_privatemessages';
+				return "finished";
+			}
+		}
+
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of posts per screen from form
+		if(isset($mybb->input['privatemessages_per_screen']))
+		{
+			$import_session['privatemessages_per_screen'] = intval($mybb->input['privatemessages_per_screen']);
+		}
+		
+		if(empty($import_session['privatemessages_per_screen']))
+		{
+			$import_session['start_privatemessages'] = 0;
+			echo "<p>Please select how many Private Messages to import at a time:</p>
+<p><input type=\"text\" name=\"privatemessages_per_screen\" value=\"\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			$query = $this->old_db->query("
+				SELECT * 
+				FROM ".SMF_TABLE_PREFIX."personal_messages p
+				LEFT JOIN ".SMF_TABLE_PREFIX."pm_recipients r ON(p.ID_PM=r.ID_PM)
+				LIMIT ".$import_session['start_privatemessages'].", ".$import_session['privatemessages_per_screen']
+			);
+			
+			while($pm = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting Private Message #{$pm['ID_PM']}... ";
+				$insert_pm['pmid'] = null;
+				$insert_pm['import_pmid'] = $pm['ID_PM'];
+				$insert_pm['uid'] = $this->get_import_uid($pm['ID_MEMBER_FROM']);
+				$insert_pm['fromid'] = $this->get_import_uid($pm['ID_MEMBER_FROM']);
+				$insert_pm['toid'] = $this->get_import_uid($pm['ID_MEMBER']);
+				$insert_pm['recipients'] = 'a:1:{s:2:"to";a:1:{i:0;s:'.strlen($insert_pm['toid']).':"'.$insert_pm['toid'].'";}}';
+				$insert_pm['folder'] = '1';
+				$insert_pm['subject'] = $pm['subject'];
+				$insert_pm['status'] = $pm['is_read'];
+				$insert_pm['dateline'] = $pm['msgtime'];
+				$insert_pm['message'] = $pm['body'];
+				$insert_pm['includesig'] = 'no';
+				$insert_pm['smilieoff'] = '';
+				$insert_pm['icon'] = '0';
+				if($insert_pm['status'] == '1')
+				{
+					$insert_pm['readtime'] = time();
+					$insert_pm['receipt'] = '2';
+				}
+				else
+				{
+					$insert_pm['readtime'] = '0';
+					$insert_pm['receipt'] = '0';
+				}
+				$this->insert_privatemessage($insert_pm);
+				echo "done.<br />\n";
+			}
+		}
+		$import_session['start_privatemessages'] += $import_session['privatemessages_per_screen'];
 		$output->print_footer();
 	}
 	
