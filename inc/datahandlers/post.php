@@ -875,9 +875,6 @@ class PostDataHandler extends DataHandler
 		else
 		{
 
-			// Fetch the permissions for this user
-			$user_permisions = user_permissions($thread['uid']);
-
 			// Decide on the visibility of this post.
 			if(($forum['modthreads'] == "yes" || $forum['modposts'] == "yes") && is_moderator($thread['fid'], "", $thread['uid']) != "yes")
 			{

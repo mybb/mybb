@@ -733,7 +733,7 @@ elseif($mybb->input['action'] == "getdaily")
 	{
 		$days = intval($mybb->input['days']);
 	}
-	$datecut = time()-(68400*$days);
+	$datecut = time()-(86400*$days);
 
 	$where_sql = "t.lastpost >='".$datecut."'";
 
