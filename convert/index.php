@@ -97,6 +97,7 @@ if($mybb->input['board'])
 
 if($mybb->input['module'])
 {
+	$resume_module = $import_session['module'];
 	$import_session['module'] = $mybb->input['module'];
 }
 
@@ -117,8 +118,8 @@ elseif(isset($mybb->input['action']) && $mybb->input['action'] == 'finish')
 	$output->finish_conversion();
 }
 // Otherwise that means we've selected a module to run or we're in one
-elseif($import_session['module'])
-{
+elseif($import_session['module'] && $mybb->input['action'] != 'module_list')
+{ 
 	// Get the converter up.
 	require_once CONVERT_ROOT."/boards/".$import_session['board'].".php";
 	$classname = "convert_".$import_session['board'];
@@ -132,7 +133,12 @@ elseif($import_session['module'])
 	// Otherwise we're trying to use an invalid module or we're still at the beginning
 	else
 	{
+		if($resume_module)
+		{
+			$import_session['resume_module'][] = $resume_module;
+		}
 		$import_session['module'] = '';
+		
 		update_import_session();
 		header("Location: index.php");
 		exit;
@@ -146,6 +152,12 @@ elseif($import_session['module'])
 	// to blank so we go back to the module list
 	if($result == "finished")
 	{
+		$key = array_search($import_session['module'], $import_session['resume_module']);
+		if(isset($key))
+		{
+			unset($import_session['resume_module'][$key]);
+		}
+		
 		$import_session['completed'][] = $import_session['module'];
 		$import_session['module'] = '';
 		update_import_session();

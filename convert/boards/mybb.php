@@ -13,9 +13,9 @@
 
 class Convert_mybb extends Converter
 {
-	var $bbname = "MyBB (Merge)";
+	var $bbname = "MyBB 1.4 (Merge)";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
-									"dependencies" => ""),
+									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import MyBB Usergroups",
 									  "dependencies" => "db_configuration"),
 						 "import_users" => array("name" => "Import MyBB Users",
@@ -241,12 +241,12 @@ EOF;
 				
 				$uid = $this->insert_user($user);
 				
-				// Restore connections
-				$update_array = array('uid' => $uid);
-				$db->update_query("threads", $update_array, "import_uid = '{$user['uid']}'");
-				$db->update_query("posts", $update_array, "import_uid = '{$user['uid']}'");
-				
 				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Users to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_users'] += $import_session['users_per_screen'];
@@ -309,6 +309,11 @@ EOF;
 				
 				echo "done.<br />\n";			
 			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Forums to import. Please press next to continue.";
+			}
 		}
 		$import_session['start_forums'] += $import_session['forums_per_screen'];
 		$output->print_footer();	
@@ -367,6 +372,11 @@ EOF;
 				
 				$this->insert_thread($thread);
 				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Threads to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_threads'] += $import_session['threads_per_screen'];
@@ -432,6 +442,11 @@ EOF;
 				
 				echo "done.<br />\n";			
 			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Threads to import. Please press next to continue.";
+			}
 		}
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
 		$output->print_footer();
@@ -489,6 +504,11 @@ EOF;
 				
 				echo "done.<br />\n";			
 			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Moderators to import. Please press next to continue.";
+			}
 		}
 		$import_session['start_mods'] += $import_session['mods_per_screen'];
 		$output->print_footer();
@@ -534,21 +554,16 @@ EOF;
 		}
 		else
 		{	
-			// Cache permissions
-			//$permissions = $this->get_group_permissions();
-			
 			// Get only non-staff groups.
 			$query = $this->old_db->simple_select("usergroups", "*", "", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
 			while($group = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting group #{$group['gid']} as a ";
+				echo "Inserting group #{$group['gid']}... ";
 				
 				// Make this into a usergroup
 				$group['import_gid'] = $group['gid'];
 				unset($group['gid']);
 				
-				echo "custom usergroup...";
-
 				$gid = $this->insert_usergroup($group);
 				
 				// Restore connections
@@ -558,7 +573,12 @@ EOF;
 				
 				$this->import_gids = null; // Force cache refresh
 				
-				echo "done.<br />\n";			
+				echo "done.<br />\n";		
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Usergroups to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];

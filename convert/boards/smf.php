@@ -316,13 +316,12 @@ EOF;
 				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';		
 				$uid = $this->insert_user($insert_user);
 				
-				/* Don't need these */
-				// Restore connections
-				//$update_array = array('uid' => $uid);
-				//$db->update_query("threads", $update_array, "import_uid = '{$user['ID_MEMBER']}'");
-				//$db->update_query("posts", $update_array, "import_uid = '{$user['ID_MEMBER']}'");
-				
 				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Users to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_users'] += $import_session['users_per_screen'];
@@ -424,6 +423,11 @@ EOF;
 				
 				echo "done.<br />\n";	
 			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Categories to import. Please press next to continue.";
+			}
 		}			
 		$import_session['start_cats'] += $import_session['cats_per_screen'];
 		$output->print_footer();
@@ -524,6 +528,11 @@ EOF;
 				
 				echo "done.<br />\n";			
 			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Forums to import. Please press next to continue.";
+			}
 		}
 		$import_session['start_forums'] += $import_session['forums_per_screen'];
 		$output->print_footer();	
@@ -589,7 +598,7 @@ EOF;
 				$insert_thread['import_uid'] = $thread['ID_MEMBER_STARTED'];
 				$insert_thread['views'] = $thread['numViews'];
 				$insert_thread['replies'] = $thread['numReplies'];
-				$insert_thread['closed'] = $thread['locked'];
+				$insert_thread['closed'] = int_to_yesno($thread['locked']);
 				$insert_thread['totalratings'] = '0';
 				$insert_thread['notes'] = '';
 				$insert_thread['visible'] = '1';
@@ -622,6 +631,11 @@ EOF;
 				$insert_thread['username'] = $member_started['memberName'];
 				$this->insert_thread($insert_thread);
 				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Threads to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_threads'] += $import_session['threads_per_screen'];
@@ -735,6 +749,11 @@ EOF;
 				
 				echo "done.<br />\n";			
 			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Posts to import. Please press next to continue.";
+			}
 		}
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
 		$output->print_footer();
@@ -797,6 +816,11 @@ EOF;
 				$this->insert_moderator($insert_mod);
 				
 				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Moderators to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_mods'] += $import_session['mods_per_screen'];
@@ -952,6 +976,11 @@ EOF;
 				
 				echo "done.<br />\n";	
 			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Usergroups to import. Please press next to continue.";
+			}
 		}
 		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];
 		$output->print_footer();
@@ -1033,6 +1062,11 @@ EOF;
 				}
 				$this->insert_privatemessage($insert_pm);
 				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Private Messages to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_privatemessages'] += $import_session['privatemessages_per_screen'];

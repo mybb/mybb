@@ -66,11 +66,6 @@ class converterOutput {
 </head>
 <body>
 END;
-		if($form)
-		{
-			echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";
-			$this->opened_form = 1;
-		}
 		
 		echo <<<END
 		<div id="container">
@@ -81,6 +76,12 @@ END;
 		<div id="header">$this->title</div>
 		<div id="content">
 END;
+		if($form)
+		{
+			echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";
+			$this->opened_form = 1;
+		}
+		
 		if($title != "")
 		{
 			echo <<<END
@@ -251,9 +252,9 @@ END;
 			echo "<td class=\"last\" width=\"1\">\n";
 			echo "<form method=\"post\" action=\"{$this->script}\">\n";
 			
-			if($import_session['module'] == $key)
+			if($import_session['module'] == $key || in_array($key, $import_session['resume_module']))
 			{
-				echo "<input type=\"submit\" class=\"submit_button\" value=\"Resume &raquo;\" disabled=\"disabled\" />\n";
+				echo "<input type=\"submit\" class=\"submit_button\" value=\"Resume &raquo;\" />\n";
 			}
 			elseif($awaiting_dependencies || in_array($key, $import_session['disabled']))
 			{
@@ -320,12 +321,23 @@ END;
 	 */
 	function print_footer($next_action="", $name="", $do_session=1)
 	{
-		global $lang;
+		global $lang, $import_session;
 		
 		if($this->opened_form)
 		{
-			echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"".$lang->next." &raquo;\" /></div><br style=\"clear: both;\" />\n";
-			$formend = "</form>";
+			echo "\n		<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"".$lang->next." &raquo;\" /></div>";
+			echo "\n	</form>\n";
+			
+			// Only if we're in a module
+			if($import_session['module'])
+			{
+				
+				echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";
+				echo "\n		<input type=\"hidden\" name=\"action\" value=\"module_list\" />\n";
+				echo "\n		<div id=\"back_button\"><input type=\"submit\" class=\"submit_button\" value=\"&laquo; Back\" /></div><br style=\"clear: both;\" />\n";
+				echo "\n	</form>\n";
+			}
+			
 		}
 		else
 		{
@@ -345,7 +357,6 @@ END;
 		</div>
 		</div>
 		</div>
-		$formend
 </body>
 </html>
 END;

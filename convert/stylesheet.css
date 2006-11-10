@@ -88,6 +88,13 @@ h4 {
 	width: auto;
 }
 
+/* Back Button */
+
+#back_button {
+	float: left;
+	width: auto;
+}
+
 /* Footer */
 
 #footer {
