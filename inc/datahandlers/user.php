@@ -851,7 +851,12 @@ class UserDataHandler extends DataHandler
 		$db->insert_query("users", $this->user_insert_data);
 		$this->uid = $db->insert_id();
 
-		$user['user_fields']['ufid'] = $this->uid;
+		$user['user_fields'] = array(
+			'ufid' => $this->uid,
+			'fid1' => '',
+			'fid2' => '',
+			'fid3' => ''
+		);
 		$db->insert_query("userfields", $user['user_fields']);
 
 		// Update forum stats
