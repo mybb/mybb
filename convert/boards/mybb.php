@@ -41,7 +41,7 @@ class Convert_mybb extends Converter
 		}
 		$this->old_db = new databaseEngine;
 
-		$this->old_db->connect($import_session['old_db_host'], $import_session['old_db_user'], $import_session['old_db_pass'], true);
+		$this->old_db->connect($import_session['old_db_host'], $import_session['old_db_user'], $import_session['old_db_pass'], 0, true);
 		$this->old_db->select_db($import_session['old_db_name']);
 		$this->old_db->set_table_prefix($import_session['old_tbl_prefix']);
 	}
