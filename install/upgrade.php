@@ -432,7 +432,7 @@ function sync_settings($redo=0)
 		  gid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
 		  title varchar(220) NOT NULL default '',
-		  description text NOT NULL default '',
+		  description text NOT NULL,
 		  disporder smallint unsigned NOT NULL default '0',
 		  isdefault char(3) NOT NULL default '',
 		  PRIMARY KEY  (gid)
