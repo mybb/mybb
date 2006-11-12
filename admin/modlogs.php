@@ -74,12 +74,12 @@ if($mybb->input['action'] == "view")
 	if($orderby == "nameasc")
 	{
 		$order = "u.username";
-		$orderby = "ASC";
+		$orderdir = "ASC";
 	}
 	else
 	{
 		$order = "l.dateline";
-		$orderby = "DESC";
+		$orderdir = "DESC";
 	}
 	$query = $db->simple_select("moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)", "COUNT(dateline) AS count", $squery);
 	$rescount = $db->fetch_field($query, "count");
