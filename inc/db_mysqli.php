@@ -87,10 +87,11 @@ class databaseEngine
 	 * @param string The database hostname.
 	 * @param string The database username.
 	 * @param string The database user's password.
-	 * @param boolean 1 if persistent connection, 0 if not.
+	 * @param integrer 1 if persistent connection, 0 if not.
+	 * @param boolean redundant for mysqli, it's there because of mysql.
 	 * @return resource The database connection resource.
 	 */
-	function connect($hostname="localhost", $username="root", $password="", $pconnect=0)
+	function connect($hostname="localhost", $username="root", $password="", $pconnect=0, $newlink=false)
 	{
 		$this->link = @mysqli_connect($hostname, $username, $password) or $this->error();
 		return $this->link;

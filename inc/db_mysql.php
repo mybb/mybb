@@ -87,14 +87,15 @@ class databaseEngine
 	 * @param string The database hostname.
 	 * @param string The database username.
 	 * @param string The database user's password.
-	 * @param boolean 1 if persistent connection, 0 if not.
+	 * @param integrer 1 if persistent connection, 0 if not.
+	 * @param boolean true if newlink, false if not. Only for non-persistent connections.
 	 * @return resource The database connection resource.
 	 */
 	function connect($hostname="localhost", $username="root", $password="", $pconnect=0, $newlink=false)
 	{
 		if($pconnect)
 		{
-			$this->link = @mysql_pconnect($hostname, $username, $password, $newlink) or $this->error();
+			$this->link = @mysql_pconnect($hostname, $username, $password) or $this->error();
 		}
 		else
 		{

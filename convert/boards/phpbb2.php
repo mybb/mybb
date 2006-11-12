@@ -71,7 +71,7 @@ class Convert_phpbb2 extends Converter {
 				$this->old_db = new databaseEngine;
 				$this->old_db->error_reporting = 0;
 
-				$connection = $this->old_db->connect($mybb->input['dbhost'], $mybb->input['dbuser'], $mybb->input['dbpass']);
+				$connection = $this->old_db->connect($mybb->input['dbhost'], $mybb->input['dbuser'], $mybb->input['dbpass'], 0, true);
 				if(!$connection)
 				{
 					$errors[]  = "Could not connect to the database server at '{$mybb->input['dbhost']} with the supplied username and password. Are you sure the hostname and user details are correct?";
