@@ -1430,7 +1430,7 @@ function update_thread_count($tid)
 	$update_array = array(
 		'username' => $firstpost['username'],
 		'uid' => intval($firstpost['uid']),
-		'lastpost' => $lastpost['dateline'],
+		'lastpost' => intval($lastpost['dateline']),
 		'lastposter' => $lastpost['username'],
 		'lastposteruid' => intval($lastpost['uid']),
 		'replies' => $treplies,
