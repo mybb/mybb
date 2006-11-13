@@ -273,7 +273,7 @@ class session
 		}
 
 		// Check if this user is currently banned and if we have to lift it.
-		if(!empty($mybb->user['bandate']) && !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
+		if((isset($mybb->user['bandate']) && $mybb->user['bandate'] != '') && (isset($mybb->user['banlifted']) && $mybb->user['banlifted'] != '') && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
 			// must have been good.. bans up :D
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user['uid']."'");
