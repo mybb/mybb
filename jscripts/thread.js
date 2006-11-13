@@ -93,11 +93,16 @@ var Thread = {
 		}
 		else if(request.responseText)
 		{
-			if($('message').value)
+			var id = 'message';
+			if(typeof clickableEditor != 'undefined')
 			{
-				$('message').value += "\n";
+				id = clickableEditor.textarea;
 			}
-			$('message').value += request.responseText;
+			if($(id).value)
+			{
+				$(id).value += "\n";
+			}
+			$(id).value += request.responseText;
 		}
 		Thread.clearMultiQuoted();
 		$('quickreply_multiquote').style.display = 'none';

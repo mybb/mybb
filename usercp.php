@@ -234,7 +234,6 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	{
 		$userhandler->update_user();
 
-		$db->update_query("users", $newprofile, "uid='".$mybb->user['uid']."'");
 		$plugins->run_hooks("usercp_do_profile_end");
 		redirect("usercp.php", $lang->redirect_profileupdated);
 	}
@@ -574,7 +573,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"receivepms" => $mybb->input['receivepms'],
 		"pmpopup" => $mybb->input['pmpopup'],
 		"daysprune" => $mybb->input['daysprune'],
-		"showcodebuttons" => $mybb->input['showcodebuttons'],
+		"showcodebuttons" => intval($mybb->input['showcodebuttons']),
 		"pmnotify" => $mybb->input['pmnotify'],
 		"showredirect" => $mybb->input['showredirect']
 	);
@@ -601,8 +600,6 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 	else
 	{
 		$userhandler->update_user();
-
-		$db->update_query("users", $updatedoptions, "uid='".$mybb->user['uid']."'");
 
 		// If the cookie settings are different, re-set the cookie
 		if($mybb->input['remember'] != $mybb->user['remember'])

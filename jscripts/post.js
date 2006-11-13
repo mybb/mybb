@@ -7,13 +7,13 @@ var Post = {
 	{
 		tid = document.input.tid.value;
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-		new ajax('xmlhttp.php?action=get_multiquoted&tid='+tid, {method: 'get', onComplete: function(request) {Post.multiQuotedLoaded(request); }});		
+		new ajax('xmlhttp.php?action=get_multiquoted&tid='+tid, {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});		
 	},
 	
 	loadMultiQuotedAll: function()
 	{
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-		new ajax('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) {Post.multiQuotedLoaded(request); }});		
+		new ajax('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});		
 	},
 	
 	multiQuotedLoaded: function(request)
@@ -29,11 +29,16 @@ var Post = {
 		}
 		else if(request.responseText)
 		{
-			if($('message').value)
+			var id = 'message';
+			if(typeof clickableEditor != 'undefined')
 			{
-				$('message').value += "\n";
+				id = clickableEditor.textarea;
 			}
-			$('message').value += request.responseText;
+			if($(id).value)
+			{
+				$(id).value += "\n";
+			}
+			$(id).value += request.responseText;
 		}
 		$('multiquote_unloaded').style.display = 'none';
 		document.input.quoted_ids.value = 'all';
