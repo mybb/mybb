@@ -273,17 +273,18 @@ class session
 		}
 
 		// Check if this user is currently banned and if we have to lift it.
-		if((isset($mybb->user['bandate']) && $mybb->user['bandate'] != '') && (isset($mybb->user['banlifted']) && $mybb->user['banlifted'] != '') && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
+		if(!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
 			// must have been good.. bans up :D
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user['uid']."'");
 			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
 			// we better do this..otherwise they have dodgy permissions
-			$query = $db->simple_select(TABLE_PREFIX."usergroups", "*", "gid='".$mybb->user['banoldgroup']."'", array('limit' => 1)); 
+			$query = $db->simple_select(TABLE_PREFIX."usergroups", "usergroup", "gid='".$mybb->user['banoldgroup']."'", array('limit' => 1)); 
 			$group = $db->fetch_array($query);
 			$mybb->user['usergroup'] = $group['usergroup'];
+			$mybbgroups = $mybb->user['usergroup'];
 		}
-		elseif(!empty($mybb->user['bandate']) && (empty($mybb->user['banlifted']) || !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] > $time))
+		else if(!empty($mybb->user['bandate']) && (empty($mybb->user['banlifted']) || !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] > $time))
         {
             $mybbgroups = $mybb->user['usergroup'];
         }
