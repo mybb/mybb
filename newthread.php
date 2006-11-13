@@ -404,6 +404,69 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 {
 
 	$plugins->run_hooks("newthread_start");
+	
+	$quote_ids = '';
+	// If this isn't a preview and we're not editing a draft, then handle quoted posts
+	if(!$mybb->input['previewpost'] && !$thread_errors && $mybb->input['action'] != "editdraft")
+	{
+		$message = '';
+		$quoted_posts = array();
+		// Handle multiquote
+		if($_COOKIE['multiquote'] && $mybb->settings['multiquote'] != "off")
+		{
+			$multiquoted = explode("|", $_COOKIE['multiquote']);
+			foreach($multiquoted as $post)
+			{
+				$quoted_posts[$post] = intval($post);
+			}
+		}
+
+		// Quoting more than one post - fetch them
+		if(count($quoted_posts) > 0)
+		{
+			$external_quotes = 0;
+			$quoted_posts = implode(",", $quoted_posts);
+			$unviewable_forums = get_unviewable_forums();
+			if($unviewable_forums)
+			{
+				$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
+			}
+			
+			if(is_moderator($fid))
+			{
+				$visible_where = "AND p.visible != 2";
+			}
+			else
+			{
+				$visible_where = "AND p.visible > 0";
+			}
+			
+			$query = $db->query("
+				SELECT COUNT(*) AS quotes
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+				WHERE p.pid IN ($quoted_posts) {$unviewable_forums} {$visible_where}
+			");
+			$external_quotes = $db->fetch_field($query, 'quotes');
+
+			if($external_quotes > 0)
+			{
+				if($external_quotes == 1)
+				{
+					$multiquote_text = $lang->multiquote_external_one;
+					$multiquote_deselect = $lang->multiquote_external_one_deselect;
+					$multiquote_quote = $lang->multiquote_external_one_quote;
+				}
+				else
+				{
+					$multiquote_text = sprintf($lang->multiquote_external, $external_quotes);
+					$multiquote_deselect = $lang->multiquote_external_deselect;
+					$multiquote_quote = $lang->multiquote_external_quote;
+				}
+				eval("\$multiquote_external = \"".$templates->get("newthread_multiquote_external")."\";");
+			}
+		}
+	}
 
 	// Check the various post options if we're
 	// a -> previewing a post

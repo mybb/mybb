@@ -10,6 +10,12 @@ var Post = {
 		new ajax('xmlhttp.php?action=get_multiquoted&tid='+tid, {method: 'get', onComplete: function(request) {Post.multiQuotedLoaded(request); }});		
 	},
 	
+	loadMultiQuotedAll: function()
+	{
+		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
+		new ajax('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) {Post.multiQuotedLoaded(request); }});		
+	},
+	
 	multiQuotedLoaded: function(request)
 	{
 		if(request.responseText.match(/<error>(.*)<\/error>/))

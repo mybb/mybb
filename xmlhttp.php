@@ -457,7 +457,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	else
 	{
 		$from_tid = '';
-	}	
+	}
 	// Query for any posts in the list which are not within the specified thread
 	$query = $db->query("
 		SELECT p.subject, p.message, p.pid, p.tid, p.username, t.fid, p.visible, u.username AS userusername

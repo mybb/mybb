@@ -558,7 +558,7 @@ form {
 		<template name="global_boardclosed_warning" version="120"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="trow1" align="center"><strong><font color="red">{$lang->bbclosed_warning}</font></strong></td>
+<td class="trow1" align="center"><strong><span style="color:#FF0000;">{$lang->bbclosed_warning}</span></strong></td>
 </tr>
 </table>
 <br />]]></template>
@@ -614,7 +614,7 @@ form {
 					<a href="#" onclick="MyBB.popupWindow('misc.php?action=buddypopup', 'buddyList', 170, 300);">{$lang->welcome_open_buddy_list}</a>
 				</span>
 				<a href="search.php?action=getnew">{$lang->welcome_newposts}</a> | <a href="search.php?action=getdaily">{$lang->welcome_todaysposts}</a> | <a href="private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}]]></template>
-		<template name="postbit_online" version="120"><![CDATA[<a href="online.php"><font color="#15A018"><strong>{$lang->postbit_status_online}</strong></font></a>]]></template>
+		<template name="postbit_online" version="120"><![CDATA[<a href="online.php"><span style="color:#15A018;"><strong>{$lang->postbit_status_online}</strong></span></a>]]></template>
 		<template name="showthread_moderationoptions" version="120"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -993,6 +993,7 @@ var inlineId = {$tid};
 <td class="trow2">
 <textarea name="message" id="message" rows="20" cols="70" tabindex="2">{$message}</textarea>
 {$codebuttons}
+{$multiquote_external}
 </td>
 </tr>
 <tr>
@@ -1535,7 +1536,7 @@ var inlineId = {$fid};
 </body>
 </html>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="postbit_away" version="120"><![CDATA[<a href="member.php?action=profile&amp;uid={$post['uid']}"><font color="maroon">{$lang->postbit_status_away}</font></a>]]></template>
+		<template name="postbit_away" version="120"><![CDATA[<a href="member.php?action=profile&amp;uid={$post['uid']}"><span style="color:#800000;">{$lang->postbit_status_away}</span></a>]]></template>
 		<template name="calendar_dayview_birthdays_bday" version="120"><![CDATA[{$comma}<a href="member.php?action=profile&amp;uid={$bdays['uid']}"><strong>{$bdays['username']}</strong></a>{$age}]]></template>
 		<template name="misc_imcenter_icq" version="120"><![CDATA[<html>
 <head>
@@ -5077,7 +5078,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="private_limitwarning" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="trow1" align="center"><span class="smalltext"><strong><font color="red">{$lang->reached_warning}</font></strong><br />{$lang->reached_warning2}</span></td>
+<td class="trow1" align="center"><span class="smalltext"><strong><span style="color:#FF0000;">{$lang->reached_warning}</span></strong><br />{$lang->reached_warning2}</span></td>
 </tr>
 </table>
 <br />]]></template>
@@ -5990,8 +5991,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<a href="showthread.php?action=lastpost&amp;tid={$similar_thread['tid']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 	</tr>]]></template>
-		<template name="calendar_eventbit_public" version="120"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$mybb->settings['publiceventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
-		<template name="calendar_eventbit_private" version="120"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext"><font color="{$mybb->settings['privateeventcolor']}">{$event['subject']}</font></span></a><br />]]></template>
+		<template name="calendar_eventbit_public" version="120"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['publiceventcolor']};">{$event['subject']}</span></a><br />]]></template>
+		<template name="calendar_eventbit_private" version="120"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['privateeventcolor']};">{$event['subject']}</span></a><br />]]></template>
 		<template name="calendar_daybit_today" version="120"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
 <strong><a href="calendar.php?action=dayview&amp;year={$year}&amp;month={$month}&amp;day={$i}">{$i}</a></strong>
 <br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
@@ -6327,7 +6328,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2"><strong>{$lang->event_end_time_recurring}</strong></td>
 <td class="trow2"><select name="end_time_hours">{$end_time_hours}</select> : <select name="end_time_mins">{$end_time_mins}</select></td>
 </tr>]]></template>
-		<template name="postbit_offline" version="120"><![CDATA[<font color="#C7C7C7"><strong>{$lang->postbit_status_offline}</strong></font>]]></template>
+		<template name="postbit_offline" version="120"><![CDATA[<span style="color:#C7C7C7;"><strong>{$lang->postbit_status_offline}</strong></span>]]></template>
 		<template name="postbit_editedby" version="120"><![CDATA[<p class="smalltext">{$post['editnote']} <a href="member.php?action=profile&amp;uid={$post['edituid']}">{$post['editusername']}</a>.</p>
 
 ]]></template>
@@ -6816,10 +6817,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="global_bannedwarning" version="120"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="trow1" align="center"><font color="red"><strong>{$lang->banned_warning}</strong><br />
+<td class="trow1" align="center"><span style="color:#FF0000;"><strong>{$lang->banned_warning}</strong><br />
 {$lang->banned_warning2}: {$reason}<br />
 {$lang->banned_warning3}: {$banlift}<br />
-</font></td>
+</span></td>
 </tr>
 </table>
 <br />]]></template>
@@ -6947,7 +6948,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 	<template name="post_captcha_hidden" version="120"><![CDATA[<input type="hidden" name="imagehash" value="{$imagehash}" />
 	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
-	<template name="newreply_multiquote_external" version="120"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext" />{$multiquote_text} <a href="javascript:Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
+	<template name="newreply_multiquote_external" version="120"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="javascript:Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
+	<template name="newthread_multiquote_external" version="120"><![CDATA[<input type="hidden" name="quoted_ids" value="" /><div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="javascript:Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
 	<template name="postbit_author_user" version="120"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
 <span class="smalltext">
 	{$post['usertitle']}<br />
