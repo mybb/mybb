@@ -87,7 +87,7 @@ class databaseEngine
 	 * @param string The database hostname.
 	 * @param string The database username.
 	 * @param string The database user's password.
-	 * @param integrer 1 if persistent connection, 0 if not.
+	 * @param integer 1 if persistent connection, 0 if not.
 	 * @param boolean true if newlink, false if not. Only for non-persistent connections.
 	 * @return resource The database connection resource.
 	 */
@@ -459,7 +459,7 @@ class databaseEngine
 	
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
-		$query = "SELECT ".$fields." FROM ".TABLE_PREFIX.$table;
+		$query = "SELECT ".$fields." FROM {$this->table_prefix}{$table}";
 		if($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
@@ -508,7 +508,7 @@ class databaseEngine
 		}
 		return $this->query("
 			INSERT 
-			INTO ".TABLE_PREFIX.$table." (".$query1.") 
+			INTO {$this->table_prefix}{$table} (".$query1.") 
 			VALUES (".$query2.")
 		");
 	}
@@ -633,7 +633,7 @@ class databaseEngine
 	 */
 	function optimize_table($table)
 	{
-		$this->query("OPTIMIZE TABLE ".TABLE_PREFIX.$table."");
+		$this->query("OPTIMIZE TABLE {$this->table_prefix}{$table}");
 	}
 	
 	/**
@@ -643,7 +643,7 @@ class databaseEngine
 	 */
 	function analyze_table($table)
 	{
-		$this->query("ANALYZE TABLE ".TABLE_PREFIX.$table."");
+		$this->query("ANALYZE TABLE {$this->table_prefix}{$table}");
 	}
 
 	/**
@@ -654,7 +654,7 @@ class databaseEngine
 	 */
 	function show_create_table($table)
 	{
-		$query = $this->query("SHOW CREATE TABLE ".TABLE_PREFIX.$table."");
+		$query = $this->query("SHOW CREATE TABLE {$this->table_prefix}{$table}");
 		$structure = $this->fetch_array($query);
 		return $structure['Create Table'];
 	}
@@ -667,7 +667,7 @@ class databaseEngine
 	 */
 	function show_fields_from($table)
 	{
-		$query = $this->query("SHOW FIELDS FROM ".TABLE_PREFIX.$table."");
+		$query = $this->query("SHOW FIELDS FROM {$this->table_prefix}{$table}");
 		while($field = $this->fetch_array($query))
 		{
 			$field_info[] = $field;

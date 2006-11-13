@@ -43,7 +43,7 @@ class Convert_punbb extends Converter {
 		$this->old_db->connect($import_session['old_db_host'], $import_session['old_db_user'], $import_session['old_db_pass'], 0, true);
 		$this->old_db->select_db($import_session['old_db_name']);
 		$this->old_db->set_table_prefix($import_session['old_tbl_prefix']);
-		
+
 		define('PUNBB_TABLE_PREFIX', $import_session['old_tbl_prefix']);
 	}
 
@@ -199,7 +199,7 @@ EOF;
 		if(!isset($import_session['total_members']))
 		{
 			$query = $this->old_db->simple_select("users", "COUNT(*) as count");
-			$import_session['total_members'] = $this->old_db->fetch_field($query, 'count');				
+			$import_session['total_members'] = $this->old_db->fetch_field($query, 'count');
 		}
 
 		if($import_session['start_users'])
@@ -220,7 +220,7 @@ EOF;
 			$import_session['users_per_screen'] = intval($mybb->input['users_per_screen']);
 		}
 		
-		if(empty($import_session['users_per_screen']))
+		if($import_session['users_per_screen'] == 0)
 		{
 			$import_session['start_users'] = 0;
 			echo "<p>Please select how many users to import at a time:</p>
@@ -231,7 +231,7 @@ EOF;
 		{
 			// Setup member array, for checking for duplicate members
 			$members_cache = array();
-						
+
 			$query = $db->simple_select("users", "username");
 			while($user = $db->fetch_array($query))
 			{
@@ -286,29 +286,31 @@ EOF;
 				$insert_user['receivepms'] = 'yes';
 				$insert_user['pmpopup'] = 'yes';
 				$insert_user['pmnotify'] = 'yes';
-				$insert_user['remember'] = "yes";
+				$insert_user['remember'] = 'yes';
 				$insert_user['showsigs'] = int_to_yesno($user['show_sig']);
 				$insert_user['showavatars'] = int_to_yesno($user['show_avatars']); // Check ?
-				$insert_user['showquickreply'] = "yes";
-				$insert_user['ppp'] = "0";
-				$insert_user['tpp'] = "0";
-				$insert_user['daysprune'] = "0";
-				$insert_user['timeformat'] = "d M";
+				$insert_user['showquickreply'] = 'yes';
+				$insert_user['ppp'] = 0;
+				$insert_user['tpp'] = 0;
+				$insert_user['daysprune'] = 0;
+				$insert_user['timeformat'] = 'd M';
 				$insert_user['timezone'] = $user['timezone'];
-				$insert_user['dst'] = "no";
-				$insert_user['buddylist'] = "";
-				$insert_user['ignorelist'] = "";
-				$insert_user['style'] = '0';
-				$insert_user['away'] = "no";
-				$insert_user['awaydate'] = "0";
-				$insert_user['returndate'] = "0";
-				$insert_user['referrer'] = "0";
-				$insert_user['reputation'] = "0";
+				$insert_user['dst'] = 'no';
+				$insert_user['buddylist'] = '';
+				$insert_user['ignorelist'] = '';
+				$insert_user['style'] = 0;
+				$insert_user['away'] = 'no';
+				$insert_user['awaydate'] = 0;
+				$insert_user['returndate'] = 0;
+				$insert_user['referrer'] = 0;
+				$insert_user['reputation'] = 0;
 				$insert_user['regip'] = $user['registration_ip'];
-				$insert_user['timeonline'] = "0";
-				$insert_user['totalpms'] = '0';
-				$insert_user['unreadpms'] = '0';
-				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';		
+				$insert_user['timeonline'] = 0;
+				$insert_user['totalpms'] = 0;
+				$insert_user['unreadpms'] = 0;
+				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';	
+				$insert_user['signature'] = '';
+				$insert_user['notepad'] = '';
 				$uid = $this->insert_user($insert_user);
 				
 				echo "done.<br />\n";
@@ -582,27 +584,27 @@ EOF;
 				echo "Inserting thread #{$thread['id']}... ";
 				
 				$insert_thread['import_tid'] = $thread['id'];
-				$insert_thread['sticky'] = int_to_yesno($thread['sticky']);
+				$insert_thread['sticky'] = $thread['sticky'];
 				$insert_thread['fid'] = $this->get_import_fid($thread['forum_id']);
 				//$insert_thread['firstpost'] = $thread['topic_first_post_id'];	// To do			
-				$insert_thread['icon'] = '';
+				$insert_thread['icon'] = 0;
 				$insert_thread['dateline'] = $thread['posted'];
 				$insert_thread['subject'] = $thread['subject'];
 				
 				$user = $this->get_user($thread['poster']);
 				
-				$insert_thread['poll'] = '';
+				$insert_thread['poll'] = 0;
 				$insert_thread['uid'] = $this->get_import_uid($user['id']);
 				$insert_thread['import_uid'] = $user['id'];
 				$insert_thread['views'] = $thread['num_views'];
 				$insert_thread['replies'] = $thread['num_replies'];
 				$insert_thread['closed'] = int_to_yesno($thread['closed']);
-				$insert_thread['totalratings'] = '0';
+				$insert_thread['totalratings'] = 0;
 				$insert_thread['notes'] = '';
-				$insert_thread['visible'] = '1';
-				$insert_thread['unapprovedposts'] = '0';
-				$insert_thread['numratings'] = '0';
-				$insert_thread['attachmentcount'] = '0';				
+				$insert_thread['visible'] = 1;
+				$insert_thread['unapprovedposts'] = 0;
+				$insert_thread['numratings'] = 0;
+				$insert_thread['attachmentcount'] = 0;				
 				$insert_thread['lastpost'] = $thread['last_post'];
 				$insert_thread['lastposter'] = $thread['last_poster'];
 				$insert_thread['username'] = $thread['poster'];
@@ -894,15 +896,8 @@ EOF;
 	 * @return array If the uid is 0, returns an array of username as Guest.  Otherwise returns the user
 	 */
 	function get_user($username)
-	{
-		if($uid == 0)
-		{
-			return array(
-				'username' => 'Guest',
-			);
-		}
-		
-		$query = $this->old_db->simple_select("users", "*", "username='{$username}'", array('limit' => 1));
+	{		
+		$query = $this->old_db->simple_select("users", "id, username", "username='{$username}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
 	}
@@ -923,7 +918,7 @@ EOF;
 	}
 	
 	/**
-	 * Convert a phpBB group ID into a MyBB group ID
+	 * Convert a punBB group ID into a MyBB group ID
 	 */
 	function get_group_id($gid, $not_multiple=false, $orig=false)
 	{
@@ -931,7 +926,7 @@ EOF;
 		if($not_mutliple == false)
 		{
 			$query = $this->old_db->simple_select("groups", "COUNT(*) as rows", "g_id='{$gid}'");
-			$settings = array('limit_start' => '1', $this->old_db->fetch_field($query, 'rows'));			
+			$settings = array('limit_start' => '1', $this->old_db->fetch_field($query, 'rows'));
 		}
 		
 		$query = $this->old_db->simple_select("groups", "*", "g_id='{$gid}'", $settings);
@@ -954,8 +949,8 @@ EOF;
 					case 2:
 						$group .= 6;
 						break;
-					case 3:
-						$group .= 1;
+					case 4:
+						$group .= 2;
 						break;	
 					default:
 						if($this->get_import_gid($punbbgroup) > 0)
@@ -966,15 +961,15 @@ EOF;
 						else
 						{
 							// The lot
-							$group .= 4;
-						}					
+							$group .= 2;
+						}
 				}			
 			}
 			$comma = ',';
 			
 			if(!$query)
 			{
-				return 4; // Return regular registered user.
+				return 2; // Return regular registered user.
 			}			
 	
 			return $group;
