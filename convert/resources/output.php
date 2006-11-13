@@ -53,7 +53,7 @@ class converterOutput {
 	 */
 	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
-		global $mybb, $lang;
+		global $mybb;
 		
 		$this->doneheader = 1;
 
@@ -105,14 +105,12 @@ END;
 	 */
 	function print_error($message)
 	{
-		global $lang;
-		
 		if(!$this->doneheader)
 		{
-			$this->print_header($lang->error, "", 0, 1);
+			$this->print_header('Error', "", 0, 1);
 		}
 		echo "			<div class=\"error\">\n				";
-		echo "<h3>".$lang->error."</h3>";
+		echo "<h3>Error</h3>";
 		$this->print_contents($message);
 		echo "\n			</div>";
 		
@@ -321,15 +319,15 @@ END;
 	 */
 	function print_footer($next_action="", $name="", $do_session=1)
 	{
-		global $lang, $import_session;
+		global $import_session;
 		
 		if($this->opened_form)
 		{
-			echo "\n		<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"".$lang->next." &raquo;\" /></div>";
+			echo "\n		<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"Next &raquo;\" /></div>";
 			echo "\n	</form>\n";
 			
 			// Only if we're in a module
-			if($import_session['module'])
+			if($import_session['module'] && $import_session['module'] != 'db_configuration')
 			{
 				
 				echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";

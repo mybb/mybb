@@ -10,6 +10,7 @@
  * NOT TO BE DISTRIBUTED WITH THE MYBB PACKAGE
  * INCLUDED FOR TESTING PURPOSES ONLY
  */
+ 
 error_reporting(E_ALL & ~E_NOTICE); 
 
 // Load core files
@@ -39,11 +40,6 @@ require_once MYBB_ROOT."/inc/functions.php";
 
 require_once MYBB_ROOT."/inc/class_xml.php";
 
-require_once MYBB_ROOT.'/inc/class_language.php';
-$lang = new MyLanguage();
-$lang->set_path(MYBB_ROOT.'/convert/resources/');
-$lang->load('language');
-
 // Include the converter resources
 require_once CONVERT_ROOT."/resources/functions.php";
 require_once CONVERT_ROOT.'/resources/output.php';
@@ -58,13 +54,6 @@ $db->connect($config['hostname'], $config['username'], $config['password']);
 $db->select_db($config['database']);
 $db->set_table_prefix($config['table_prefix']);
 define('TABLE_PREFIX', $config['table_prefix']);
-
-
-// Check if converter is locked
-if(file_exists('lock'))
-{
-	$output->print_error($lang->locked);
-}
 
 // REMOVE BEFORE RELEASE
 // Temporary code to clear importcache
