@@ -618,7 +618,6 @@ elseif($mybb->input['action'] == "findguest")
 		"searchtype" => "titles",
 		"resulttype" => "posts",
 		"querycache" => $db->escape_string($where_sql),
-		"keywords" => ''
 	);
 	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
@@ -650,7 +649,6 @@ elseif($mybb->input['action'] == "finduser")
 		"searchtype" => "titles",
 		"resulttype" => "posts",
 		"querycache" => $db->escape_string($where_sql),
-		"keywords" => ''
 	);
 	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
@@ -682,7 +680,6 @@ elseif($mybb->input['action'] == "finduserthreads")
 		"searchtype" => "titles",
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
-		"keywords" => ''
 	);
 	$plugins->run_hooks("search_do_search_process");
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
@@ -720,7 +717,6 @@ elseif($mybb->input['action'] == "getnew")
 		"searchtype" => "titles",
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
-		"keywords" => ''
 	);
 
 	$plugins->run_hooks("search_do_search_process");
@@ -769,7 +765,6 @@ elseif($mybb->input['action'] == "getdaily")
 		"searchtype" => "titles",
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
-		"keywords" => ''
 	);
 
 	$plugins->run_hooks("search_do_search_process");
@@ -850,7 +845,6 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		"searchtype" => $search_results['searchtype'],
 		"resulttype" => $resulttype,
 		"querycache" => $search_results['querycache'],
-		"keywords" => ''
 	);
 	$plugins->run_hooks("search_do_search_process");
 
