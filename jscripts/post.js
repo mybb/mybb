@@ -23,11 +23,16 @@ var Post = {
 		}
 		else if(request.responseText)
 		{
-			if($('message').value)
+			var id = 'message';
+			if(typeof clickableEditor != 'undefined')
 			{
-				$('message').value += "\n";
+				id = clickableEditor.textarea;
 			}
-			$('message').value += request.responseText;
+			if($(id).value)
+			{
+				$(id).value += "\n";
+			}
+			$(id).value += request.responseText;
 		}
 		$('multiquote_unloaded').style.display = 'none';
 		document.input.quoted_ids.value = 'all';
