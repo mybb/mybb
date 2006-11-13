@@ -268,17 +268,22 @@ class session
 		}
 
 		// Check if this user is currently banned and if we have to lift it.
-		if((isset($mybb->user['bandate']) && $mybb->user['bandate'] != '') && (isset($mybb->user['banlifted']) && $mybb->user['banlifted'] != '') && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
+		if(!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
 			// must have been good.. bans up :D
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."', additionalgroups='".$mybb->user['oldadditionalgroups']."', displaygroup='".$mybb->user['olddisplaygroup']."' WHERE uid='".$mybb->user['uid']."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".intval($mybb->user['banoldgroup'])."', additionalgroups='".$mybb->user['oldadditionalgroups']."', displaygroup='".intval($mybb->user['olddisplaygroup'])."' WHERE uid='".$mybb->user['uid']."'");
 			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
 			// we better do this..otherwise they have dodgy permissions 
-			$mybb->user['usergroup'] = $mybb->user['banoldgroup']; 
-			$mybb->user['displaygroup'] = $mybb->user['banolddisplaygroup']; 
+			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
+			$mybb->user['displaygroup'] = $mybb->user['banolddisplaygroup'];
 			$mybb->user['additionalgroups'] = $mybb->user['banoldadditionalgroups'];
+			if($mybb->user['additionalgroups'])
+			{
+				$mybb->user['additionalgroups'] = ','.$mybb->user['additionalgroups'];
+			}
+			$mybbgroups = $mybb->user['usergroup'].$mybb->user['additionalgroups'];
 		}
-		elseif(!empty($mybb->user['bandate']) && (empty($mybb->user['banlifted']) || !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] > $time))
+		else if(!empty($mybb->user['bandate']) && (empty($mybb->user['banlifted'])  || !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] > $time))
         {
             $mybbgroups = $mybb->user['usergroup'];
         }
@@ -291,8 +296,6 @@ class session
 			// Gather a full permission set for this user and the groups they are in.
             $mybbgroups = $mybb->user['usergroup'].$mybb->user['additionalgroups'];
         }
-
-		
 		
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		if(!$mybb->user['displaygroup'])

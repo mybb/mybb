@@ -101,7 +101,7 @@ class MyBB {
 	 *
 	 * @var array
 	 */
-	 var $ignore_clean_variables = array();
+	var $ignore_clean_variables = array();
 	
 	/**
 	 * Using built in shutdown functionality provided by register_shutdown_function for < PHP 5?
@@ -124,16 +124,16 @@ class MyBB {
 				die("Hacking attempt");
 			}
 		}
-				
-		if(defined("IGNORE_CLEAN_VARS")) 
-		{ 
-			if(!is_array(IGNORE_CLEAN_VARS)) 
-			{ 
-				$this->ignore_clean_variables = array(IGNORE_CLEAN_VARS); 
-			} 
-			else 
-			{ 
-				$this->ignore_clean_variables = IGNORE_CLEAN_VARS; 
+
+		if(defined("IGNORE_CLEAN_VARS"))
+		{
+			if(!is_array(IGNORE_CLEAN_VARS))
+			{
+				$this->ignore_clean_variables = array(IGNORE_CLEAN_VARS);
+			}
+			else
+			{
+				$this->ignore_clean_variables = IGNORE_CLEAN_VARS;
 			}
 		}
 
@@ -262,10 +262,10 @@ class MyBB {
 		{
 			foreach($variables as $var)
 			{
-				// If this variable is in the ignored array, skip and move to next 
-				if(in_array($var, $this->ignore_clean_variables)) 
+				// If this variable is in the ignored array, skip and move to next.
+				if(in_array($var, $this->ignore_clean_variables))
 				{
-					continue; 
+					continue;
 				}
 				
 				if($type == "int" && isset($this->input[$var]) && $this->input[$var] != "lastposter")

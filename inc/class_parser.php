@@ -85,7 +85,7 @@ class postParser
 		$this->options = $options;
 
 		// Get rid of cartridge returns for they are the workings of the devil
-		$message = str_replace("\r", "", $message);		
+		$message = str_replace("\r", "", $message);
 		
 		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
@@ -250,7 +250,7 @@ class postParser
 		$standard_mycode['size']['replacement'] = "<span style=\"font-size: $1;\">$2</span>";
 
 		$standard_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si";
-		$standard_mycode['size_int']['replacement'] = "<font size=\"$1\">$2</font>";
+		$standard_mycode['size_int']['replacement'] = "<span style=\"font-size: $1pt;\">$2</span>";
 
 		$standard_mycode['font']['regex'] = "#\[font=([a-z ]+?)\](.+?)\[/font\]#si";
 		$standard_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
@@ -308,7 +308,7 @@ class postParser
 		// Parse quotes first
 		$message = $this->mycode_parse_quotes($message);
 		
-		$message = $this->mycode_auto_url($message);		
+		$message = $this->mycode_auto_url($message);
 
 		$message = str_replace('$', '&#36;', $message);
 		

@@ -1741,7 +1741,6 @@ if($mybb->input['action'] == "do_manageban")
 			cperror($lang->error_not_banned);
 		}
 		$bancheck = $ban;
-
 	}
 	else
 	{
@@ -1757,7 +1756,7 @@ if($mybb->input['action'] == "do_manageban")
 		$uid = $user['uid'];
 	}
 
-	if(is_super_admin($user['uid']) && $mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid']))
+	if(is_super_admin($user['uid']) && ($mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid'])))
 	{
 		cperror($lang->cannot_perform_action_super_admin);
 	}
@@ -1783,7 +1782,7 @@ if($mybb->input['action'] == "do_manageban")
 		$banneduser = array(
 			"admin" => $mybbadmin['uid'],
 			"dateline" => time(),
-			"gid" => intval($mybb->input['gid']),
+			"gid" => intval($mybb->input['usergroup']),
 			"bantime" => $db->escape_string($mybb->input['liftafter']),
 			"lifted" => $liftdate,
 			"reason" => $db->escape_string($mybb->input['banreason'])
@@ -1797,8 +1796,10 @@ if($mybb->input['action'] == "do_manageban")
 		$banneduser = array(
 			"uid" => $user['uid'],
 			"admin" => $mybbadmin['uid'],
-			"gid" => $mybb->input['gid'],
+			"gid" => intval($mybb->input['usergroup']),
 			"oldgroup" => $user['usergroup'],
+			"olddisplaygroup" => $user['displaygroup'],
+			"oldadditionalgroups" => $user['additionalgroups'],
 			"dateline" => time(),
 			"bantime" => $db->escape_string($mybb->input['liftafter']),
 			"lifted" => $liftdate,
