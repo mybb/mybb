@@ -205,7 +205,7 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 		$success_text = sprintf($lang->leader_added, $usergroup['title']);
 	}
 
-	cpredirect("usergroups.php?".SID."&action=groupleaders&amp;gid=".$mybb->input['gid'], $success_text);
+	cpredirect("usergroups.php?".SID."&action=groupleaders&gid=".$mybb->input['gid'], $success_text);
 }
 
 if($mybb->input['action'] == "do_delete")
