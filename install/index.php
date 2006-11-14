@@ -809,6 +809,7 @@ function install_done()
 		'yahoo' => '',
 		'msn' =>'',
 		'birthday' => '',
+		'signature' => '',
 		'allownotices' => 'yes',
 		'hideemail' => 'no',
 		'emailnotify' => 'no',
@@ -831,6 +832,10 @@ function install_done()
 		'tpp' => 0,
 		'ppp' => 0,
 		'referrer' => 0,
+		'buddylist' => '',
+		'ignorelist' => '',
+		'pmfolders' => '',
+		'notepad' => ''
 	);
 	$db->insert_query('users', $newuser);
 	$uid = $db->insert_id();
@@ -855,7 +860,8 @@ function install_done()
 		'canedithelp' => 'yes',
 		'caneditlangs' => 'yes',
 		'canrunmaint' => 'yes',
-		'canrundbtools' => 'yes'
+		'canrundbtools' => 'yes',
+		'notes' => ''
 	);
 	$db->insert_query("adminoptions", $insert_array);
 

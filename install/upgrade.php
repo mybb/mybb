@@ -61,6 +61,7 @@ $db = new databaseEngine;
 define("TABLE_PREFIX", $config['table_prefix']);
 $db->connect($config['hostname'], $config['username'], $config['password']);
 $db->select_db($config['database']);
+$db->set_table_prefix(TABLE_PREFIX);
 
 
 if(file_exists("lock"))
@@ -197,11 +198,11 @@ function upgradethemes()
 		  name varchar(100) NOT NULL default '',
 		  pid smallint unsigned NOT NULL default '0',
 		  def smallint(1) NOT NULL default '0',
-		  css text NOT NULL default '',
-		  cssbits text NOT NULL default '',
-		  themebits text NOT NULL default '',
-		  extracss text NOT NULL default '',
-		  allowedgroups text NOT NULL default '',
+		  css text NOT NULL,
+		  cssbits text NOT NULL,
+		  themebits text NOT NULL,
+		  extracss text NOT NULL,
+		  allowedgroups text NOT NULL,
 		  csscached bigint(30) NOT NULL default '0',
 		  PRIMARY KEY  (tid)
 		) TYPE=MyISAM;");
@@ -449,7 +450,7 @@ function sync_settings($redo=0)
 		  gid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
 		  title varchar(220) NOT NULL default '',
-		  description text NOT NULL default '',
+		  description text NOT NULL,
 		  disporder smallint unsigned NOT NULL default '0',
 		  isdefault char(3) NOT NULL default '',
 		  PRIMARY KEY  (gid)

@@ -315,7 +315,7 @@ function upgrade3_dbchanges2()
 	}
 	if(!$db->field_exists("displaygroup", TABLE_PREFIX."users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD displaygroup smallint(6) NOT NULL default'0' AFTER additionalgroups;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD displaygroup smallint(6) NOT NULL default '0' AFTER additionalgroups;");
 	}
 	if(!$db->field_exists("candisplaygroup", TABLE_PREFIX."usergroups"))
 	{
@@ -451,7 +451,7 @@ function upgrade3_dbchanges2()
 	  disporder smallint(6) NOT NULL default '0',
 	  gid smallint(6) NOT NULL default '0',
 	  PRIMARY KEY  (sid)
-		) TYPE=MyISAM;");
+	) TYPE=MyISAM;");
 
 	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."datacache;");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."datacache (
@@ -776,9 +776,8 @@ function upgrade3_dbchanges3()
 
 	echo "Done</p>";
 	
-	$contents .= "<font color=\red\"><b>WARNING:</font> The next step will delete any custom themes or templates you have! Please back them up before continuing!</p>";
+	$contents .= "<span style=\"color: red; font-weight: bold;\">WARNING:</span> The next step will delete any custom themes or templates you have! Please back them up before continuing!</p>";
 	$output->print_contents($contents);
 	$output->print_footer("3_done");
 }
-
 ?>

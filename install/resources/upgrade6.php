@@ -30,13 +30,13 @@ function upgrade6_dbchanges()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 	
-	$db->query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE regex regex text NOT NULL default ''");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE replacement replacement text NOT NULL default ''");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE regex regex text NOT NULL");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE replacement replacement text NOT NULL");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
 	
 	if(!$db->field_exists('recipients', "privatemessages"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD recipients text NOT NULL default '' AFTER fromid");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD recipients text NOT NULL AFTER fromid");
 	}
 	
 	if(!$db->field_exists('maxpmrecipients', "usergroups"))
@@ -46,7 +46,7 @@ function upgrade6_dbchanges()
 	
 	if(!$db->field_exists('oldadditionalgroups', "banned"))
 	{	
-		$db->query("ALTER TABLE ".TABLE_PREFIX."banned ADD oldadditionalgroups text NOT NULL default '' AFTER oldgroup");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."banned ADD oldadditionalgroups text NOT NULL AFTER oldgroup");
 	}
 	
 	if(!$db->field_exists('olddisplaygroup', "banned"))
@@ -61,7 +61,7 @@ function upgrade6_dbchanges()
 	
 	if(!$db->field_exists('keywords', "searchlog"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL default '' AFTER querycache");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL AFTER querycache");
 	}
 	
 
@@ -70,5 +70,4 @@ function upgrade6_dbchanges()
 	$output->print_contents($contents);
 	$output->print_footer("6_done");
 }
-
 ?>

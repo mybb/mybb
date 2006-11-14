@@ -123,7 +123,7 @@ function upgrade5_dbchanges()
 	
 	if(!$db->field_exists('allowedgroups', "themes"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD allowedgroups text NOT NULL default '' AFTER extracss;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD allowedgroups text NOT NULL AFTER extracss;");
 	}
 	
 	if(!$db->field_exists('canmovetononmodforum', "moderators"))
@@ -148,9 +148,9 @@ function upgrade5_dbchanges()
 	$db->query("CREATE TABLE ".TABLE_PREFIX."mycode (
 		    cid int unsigned NOT NULL auto_increment,
 		    title varchar(100) NOT NULL default '',
-		    description text NOT NULL default '',
-		    regex text NOT NULL default '',
-		    replacement text NOT NULL default '',
+		    description text NOT NULL,
+		    regex text NOT NULL,
+		    replacement text NOT NULL,
 		    active char(3) NOT NULL default '',
 			PRIMARY KEY(cid)
 		) TYPE=MyISAM;");
@@ -196,11 +196,12 @@ function upgrade5_dbchanges()
 		  uid int unsigned NOT NULL default '0',
 		  dateline bigint(30) NOT NULL default '0',
 		  ipaddress varchar(120) NOT NULL default '',
-		  threads text NOT NULL default '',
-		  posts text NOT NULL default '',
+		  threads text NOT NULL,
+		  posts text NOT NULL,
 		  searchtype varchar(10) NOT NULL default '',
 		  resulttype varchar(10) NOT NULL default '',
-		  querycache text NOT NULL default '',
+		  querycache text NOT NULL,
+		  keywords text NOT NULL,
 		  PRIMARY KEY  (sid)
 		) TYPE=MyISAM;");
 
@@ -223,11 +224,11 @@ function upgrade5_dbchanges()
 	$bannedips = $db->fetch_field($query, 'sid');
 	$bannedips = explode(" ", $bannedips);
 	$bannedips = implode(",", $bannedips);
-	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedips)."' WHERE name='bannedips'");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedips)."' WHERE name='bannedips'");
 
-	$query = $db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."reputation");
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."reputation");
 
-	$query = $db->query("CREATE TABLE ".TABLE_PREFIX."reputation (
+	$db->query("CREATE TABLE ".TABLE_PREFIX."reputation (
 	  rid int unsigned NOT NULL auto_increment,
 	  uid int unsigned NOT NULL default '0',
 	  adduid int unsigned NOT NULL default '0',
@@ -238,7 +239,7 @@ function upgrade5_dbchanges()
 	) TYPE=MyISAM;");
 
 	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mailqueue");
-	$query = $db->query("CREATE TABLE ".TABLE_PREFIX."mailqueue (
+	$db->query("CREATE TABLE ".TABLE_PREFIX."mailqueue (
 		mid int unsigned NOT NULL auto_increment,
 		mailto varchar(200) NOT NULL,
 		mailfrom varchar(200) NOT NULL,
@@ -304,7 +305,7 @@ function upgrade5_dbchanges()
 
 	if(!$db->field_exists('data', "moderatorlog"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL default '' AFTER action;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL AFTER action;");
 	}
 	
 	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."adminsessions");
@@ -319,15 +320,15 @@ function upgrade5_dbchanges()
 
 	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."modtools");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."modtools (
-	tid smallint unsigned NOT NULL auto_increment,
-	name varchar(200) NOT NULL,
-	description text NOT NULL,
-	forums text NOT NULL,
-	type char(1) NOT NULL default '',
-	postoptions text NOT NULL,
-	threadoptions text NOT NULL,
-	PRIMARY KEY (tid)
-) TYPE=MyISAM;");
+		tid smallint unsigned NOT NULL auto_increment,
+		name varchar(200) NOT NULL,
+		description text NOT NULL,
+		forums text NOT NULL,
+		type char(1) NOT NULL default '',
+		postoptions text NOT NULL,
+		threadoptions text NOT NULL,
+		PRIMARY KEY (tid)
+	) TYPE=MyISAM;");
 
 	if(!$db->field_exists('disporder', "usergroups"))
 	{
