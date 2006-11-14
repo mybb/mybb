@@ -6678,6 +6678,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="member_register_regimage" version="120"><![CDATA[<br />
 <fieldset class="trow2">
+<script type="text/javascript" src="jscripts/captcha.js?ver=120"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -6685,11 +6686,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td rowspan="2" align="center"><img src="captcha.php?action=regimage&amp;imagehash={$imagehash}" alt="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span><br /><br /><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" /></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="imagestring" value="" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
+<td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
 </tr>
 </table>
-</fieldset>
-<script type="text/javascript" src="jscripts/captcha.js?ver=120"></script>]]></template>
+</fieldset>]]></template>
 		<template name="error_inline" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder"><tr>
 <td class="thead"><strong>{$title}</strong></td>
 </tr>
@@ -6787,7 +6787,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td>{$tzselect}</td>
 </tr>
 <tr>
-<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enabledst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledst">{$lang->enable_dst}</label></span>
+<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enabledst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledst">{$lang->enable_dst}</label></span></td>
 </tr>
 </table>
 </fieldset>
@@ -6936,18 +6936,18 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="post_captcha" version="120"><![CDATA[<tr>
 <td class="trow2" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow2">
+<script type="text/javascript" src="jscripts/captcha.js?ver=120"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span><br /><br /><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" /></td>
 		<td><span class="smalltext">{$lang->verification_note}</span></td>
 	</tr>
 	<tr>
-		<td><input type="text" class="textbox" name="imagestring" value="" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
+		<td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
 	</tr>
 </table>
 </td>
-</tr>
-<script type="text/javascript" src="jscripts/captcha.js?ver=120"></script>]]></template>
+</tr>]]></template>
 	<template name="post_captcha_hidden" version="120"><![CDATA[<input type="hidden" name="imagehash" value="{$imagehash}" />
 	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
 	<template name="newreply_multiquote_external" version="120"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="javascript:Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
