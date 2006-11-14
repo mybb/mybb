@@ -283,4 +283,5 @@ $l['warnings'] = "The following warnings occured:";
 
 $l['ajax_loading'] = "Loading. <br />Please Wait..";
 $l['saving_changes'] = "Saving changes..";
+$l['refresh'] = "Refresh";
 ?>

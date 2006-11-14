@@ -17,4 +17,5 @@ $l['edit_time_limit'] = "You can only edit messages for {1} minutes after they w
 $l['postbit_edited'] = "This post was last modified: {1} {2} by";
 $l['save_changes'] = "Save Changes";
 $l['cancel_edit'] = "Cancel Edit";
+$l['captcha_not_exists'] = "The captcha you are trying to refresh does not exist.";
 ?>

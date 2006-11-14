@@ -492,7 +492,26 @@ else if($mybb->input['action'] == "get_multiquoted")
 	echo $message;
 	exit;	
 }
-
+else if($mybb->input['action'] == "refresh_captcha")
+{
+	$imagehash = $db->escape_string($mybb->input['imagehash']);
+	$query = $db->simple_select("captcha", "dateline", "imagehash='$imagehash'");
+	if($db->num_rows($query) == 0)
+	{
+		xmlhttp_error($lang->captcha_not_exists);
+	}
+	$db->delete_query("captcha", "imagehash='$imagehash'");
+	$randomstr = random_str(5);
+	$imagehash = md5($randomstr);
+	$regimagearray = array(
+		"imagehash" => $imagehash,
+		"imagestring" => $randomstr,
+		"dateline" => time()
+	);
+	$db->insert_query("captcha", $regimagearray);
+	header("Content-type: text/plain; charset={$charset}");
+	echo $imagehash;
+}
 
 /**
  * Spits an XML Http based error message back to the browser

@@ -29,7 +29,6 @@ $l['aim_center'] = "AOL IM Center";
 $l['buddy_list'] = "Buddy List";
 $l['online'] = "Online";
 $l['offline'] = "Offline";
-$l['refresh'] = "Refresh";
 $l['delete_buddy'] = "X";
 $l['pm_buddy'] = "PM";
 
