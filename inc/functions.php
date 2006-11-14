@@ -1318,7 +1318,7 @@ function update_thread_count($tid)
 	update_thread_attachment_count($tid);
 	$db->query("
 		UPDATE ".TABLE_PREFIX."threads
-		SET username='".$firstpost['username']."', uid='".intval($firstpost['uid'])."', lastpost='".$lastpost['dateline']."', lastposter='".$lastpost['username']."', lastposteruid='".intval($lastpost['uid'])."', replies='$treplies', unapprovedposts='$nounposts'
+		SET username='".$firstpost['username']."', uid='".intval($firstpost['uid'])."', lastpost='".intval($lastpost['dateline'])."', lastposter='".$lastpost['username']."', lastposteruid='".intval($lastpost['uid'])."', replies='$treplies', unapprovedposts='$nounposts'
 		WHERE tid='$tid'
 	");
 }

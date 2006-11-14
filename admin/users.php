@@ -1783,7 +1783,7 @@ if($mybb->input['action'] == "do_manageban")
 		$banneduser = array(
 			"admin" => $mybbadmin['uid'],
 			"dateline" => time(),
-			"gid" => intval($mybb->input['gid']),
+			"gid" => intval($mybb->input['usergroup']),
 			"bantime" => $db->escape_string($mybb->input['liftafter']),
 			"lifted" => $liftdate,
 			"reason" => $db->escape_string($mybb->input['banreason'])
@@ -1797,7 +1797,7 @@ if($mybb->input['action'] == "do_manageban")
 		$banneduser = array(
 			"uid" => $user['uid'],
 			"admin" => $mybbadmin['uid'],
-			"gid" => $mybb->input['gid'],
+			"gid" => intval($mybb->input['usergroup']),
 			"oldgroup" => $user['usergroup'],
 			"dateline" => time(),
 			"bantime" => $db->escape_string($mybb->input['liftafter']),

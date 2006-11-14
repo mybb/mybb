@@ -6463,7 +6463,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td>{$tzselect}</td>
 </tr>
 <tr>
-<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enabledst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledst">{$lang->enable_dst}</label></span>
+<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enabledst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledst">{$lang->enable_dst}</label></span></td>
 </tr>
 </table>
 </fieldset>
