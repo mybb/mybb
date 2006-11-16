@@ -1363,6 +1363,7 @@ switch($mybb->input['action'])
 			$trow = alt_trow();
 			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
+			$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
 			eval("\$reports .= \"".$templates->get("moderation_reports_report")."\";");
 		}
 		if(!$reports)
@@ -1481,6 +1482,7 @@ switch($mybb->input['action'])
 			
 			if($report['threadsubject'])
 			{
+				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
 				$report['threadsubject'] = "<a href=\"showthread.php?tid={$report['tid']}\" target=\"_blank\">{$report['threadsubject']}</a>";
 			}
 			else
