@@ -1359,6 +1359,7 @@ switch($mybb->input['action'])
 			$trow = alt_trow();
 			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
+			$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
 			eval("\$reports .= \"".$templates->get("moderation_reports_report")."\";");
 		}
 		if(!$reports)
@@ -1451,6 +1452,7 @@ switch($mybb->input['action'])
 		{
 			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
+			$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
 			if($report['reportstatus'] == 0)
 			{
 				$trow = "trow_shaded";
