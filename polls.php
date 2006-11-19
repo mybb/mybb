@@ -41,6 +41,7 @@ if($mybb->input['preview'] || $mybb->input['updateoptions'])
 		$mybb->input['action'] = "newpoll";
 	}
 }
+
 if($mybb->input['action'] == "newpoll")
 {
 	// Form for new poll
@@ -127,6 +128,7 @@ if($mybb->input['action'] == "newpoll")
 	eval("\$newpoll = \"".$templates->get("polls_newpoll")."\";");
 	output_page($newpoll);
 }
+
 if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("polls_do_newpoll_start");
@@ -665,6 +667,7 @@ if($mybb->input['action'] == "showresults")
 
 	$plugins->run_hooks("polls_showresults_end");
 
+	$poll['question'] = htmlspecialchars_uni($poll['question']);
 	eval("\$showresults = \"".$templates->get("polls_showresults")."\";");
 	output_page($showresults);
 }
