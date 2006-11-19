@@ -703,6 +703,7 @@ if($mybb->input['action'] == "showresults")
 
 	$plugins->run_hooks("polls_showresults_end");
 
+	$poll['question'] = htmlspecialchars_uni($poll['question']);
 	eval("\$showresults = \"".$templates->get("polls_showresults")."\";");
 	output_page($showresults);
 }
