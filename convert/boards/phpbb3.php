@@ -9,25 +9,23 @@
  * $Id$
  */
  
-// Board Name: phpBB 2
+// Board Name: phpBB 3
 
-class Convert_phpbb2 extends Converter {
-	var $bbname = "phpBB 2";
+class Convert_phpbb3 extends Converter {
+	var $bbname = "phpBB 3";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
-						 "import_usergroups" => array("name" => "Import phpBB 2 Usergroups",
+						 "import_usergroups" => array("name" => "Import phpBB 3 Usergroups",
 									  "dependencies" => "db_configuration"),
-						 "import_categories" => array("name" => "Import phpBB 2 Categories",
+						 "import_forums" => array("name" => "Import phpBB 3 Forums",
 									  "dependencies" => "db_configuration"),
-						 "import_forums" => array("name" => "Import phpBB 2 Forums",
-									  "dependencies" => "db_configuration,import_categories"),
-						 "import_threads" => array("name" => "Import phpBB 2 Threads",
+						 "import_threads" => array("name" => "Import phpBB 3 Threads",
 									  "dependencies" => "db_configuration,import_forums"),
-						 "import_posts" => array("name" => "Import phpBB 2 Posts",
+						 "import_posts" => array("name" => "Import phpBB 3 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_users" => array("name" => "Import phpBB 2 Users",
+						 "import_users" => array("name" => "Import phpBB 3 Users",
 									  "dependencies" => "db_configuration,import_usergroups"),
-						 "import_privatemessages" => array("name" => "Import phpBB 2 Private Messages",
+						 "import_privatemessages" => array("name" => "Import phpBB 3 Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
 						);
 
@@ -109,7 +107,7 @@ class Convert_phpbb2 extends Converter {
 			}
 		}
 
-		$output->print_header("phpBB 2 Database Configuration");
+		$output->print_header("phpBB 3 Database Configuration");
 
 		// Check for errors
 		if(is_array($errors))
@@ -128,7 +126,7 @@ class Convert_phpbb2 extends Converter {
 		}
 		else
 		{
-			echo "<p>Please enter the database details for your current installation of phpBB 2.</p>";
+			echo "<p>Please enter the database details for your current installation of phpBB 3.</p>";
 			$dbhost = 'localhost';
 			$tableprefix = '';
 			$dbuser = '';
@@ -152,7 +150,7 @@ class Convert_phpbb2 extends Converter {
 
 		echo <<<EOF
 <div class="border_wrapper">
-<div class="title">phpBB 2 Database Configuration</div>
+<div class="title">phpBB 3 Database Configuration</div>
 <table class="general" cellspacing="0">
 <tr>
 	<th colspan="2" class="first last">Database Settings</th>
@@ -279,31 +277,32 @@ EOF;
 				$insert_user['lastactive'] = $user['user_lastvisit'];
 				$insert_user['lastvisit'] = $user['user_lastvisit'];
 				$insert_user['website'] = $user['user_website'];
-				//$user['avatardimensions']
-				//$user['avatartype']
-				$insert_user['lastpost'] = $this->get_last_post($user['user_id']);
-				$insert_user['birthday'] = '';
+				$insert_user['avatardimensions'] = $user['user_avatar_width'].'x'.$user['user_avatar_height'];
+				$insert_user['avatartype'] = $user['user_avatar_type'];
+				$insert_user['avatar'] = $user['avatar'];
+				$insert_user['lastpost'] = $user['user_lastpost_time'];
+				$insert_user['birthday'] = $user['user_birthday'];
 				$insert_user['icq'] = $user['user_icq'];
 				$insert_user['aim'] = $user['user_aim'];
 				$insert_user['yahoo'] = $user['user_yim'];
 				$insert_user['msn'] = $user['user_msnm'];
-				$insert_user['hideemail'] = int_to_yesno($user['hideEmail']);
+				$insert_user['hideemail'] = int_to_yesno($user['user_allow_viewemail']);
 				$insert_user['invisible'] = int_to_yesno($user['user_allow_viewonline']);
 				$insert_user['allownotices'] = int_to_yesno($user['user_notify']);
 				$insert_user['emailnotify'] = int_to_yesno($user['user_notify']);
 				$insert_user['receivepms'] = int_to_yesno($user['user_allow_pm']);
-				$insert_user['pmpopup'] = int_to_yesno($user['user_popup_pm']);
-				$insert_user['pmnotify'] = int_to_yesno($user['pm_email_notify']);
+				$insert_user['pmpopup'] = int_to_yesno($user['user_notify_pm']);
+				$insert_user['pmnotify'] = int_to_yesno($user['user_notify_pm']);
 				$insert_user['remember'] = "yes";
-				$insert_user['showsigs'] = int_to_yesno($user['user_attachsig']);
-				$insert_user['showavatars'] = int_to_yesno($user['user_allowavatar']); // Check ?
+				$insert_user['showsigs'] = 'yes';
+				$insert_user['showavatars'] = 'yes';
 				$insert_user['showquickreply'] = "yes";
 				$insert_user['ppp'] = "0";
 				$insert_user['tpp'] = "0";
 				$insert_user['daysprune'] = "0";
 				$insert_user['timeformat'] = $user['user_dateformat'];
 				$insert_user['timezone'] = $user['user_timezone'];
-				$insert_user['dst'] = "no";
+				$insert_user['dst'] = $user['user_dst'];
 				$insert_user['buddylist'] = "";
 				$insert_user['ignorelist'] = "";
 				$insert_user['style'] = $user['user_style'];
@@ -312,8 +311,7 @@ EOF;
 				$insert_user['returndate'] = "0";
 				$insert_user['referrer'] = "0";
 				$insert_user['reputation'] = "0";
-				$last_post = $this->get_last_post($user['user_id']);
-				$insert_user['regip'] = $last_post['poster_ip'];
+				$insert_user['regip'] = $user['user_ip'];
 				$insert_user['timeonline'] = "0";
 				$insert_user['totalpms'] = $this->get_private_messages($user['user_id']);
 				$insert_user['unreadpms'] = $user['user_unread_privmsg'];
@@ -329,111 +327,6 @@ EOF;
 			}
 		}
 		$import_session['start_users'] += $import_session['users_per_screen'];
-		$output->print_footer();
-	}
-	
-	function import_categories()
-	{
-		global $mybb, $output, $import_session, $db;
-
-		$this->phpbb_db_connect();
-
-		// Get number of categories
-		if(!isset($import_session['total_cats']))
-		{
-			$query = $this->old_db->simple_select("categories", "COUNT(*) as count");
-			$import_session['total_cats'] = $this->old_db->fetch_field($query, 'count');				
-		}
-
-		if($import_session['start_cats'])
-		{
-			// If there are more categories to do, continue, or else, move onto next module
-			if($import_session['total_cats'] <= $import_session['start_cats'] + $import_session['cats_per_screen'])
-			{
-				$import_session['disabled'][] = 'import_categories';
-				return "finished";
-			}
-		}
-
-		$output->print_header($this->modules[$import_session['module']]['name']);
-
-		// Get number of categories per screen from form
-		if(isset($mybb->input['cats_per_screen']))
-		{
-			$import_session['cats_per_screen'] = intval($mybb->input['cats_per_screen']);
-		}
-		
-		if(empty($import_session['cats_per_screen']))
-		{
-			$import_session['start_cats'] = 0;
-			echo "<p>Please select how many categories to import at a time:</p>
-<p><input type=\"text\" name=\"cats_per_screen\" value=\"\" /></p>";
-			$output->print_footer($import_session['module'], 'module', 1);
-		}
-		else
-		{	
-			$query = $this->old_db->simple_select("categories", "*", "", array('limit_start' => $import_session['start_cats'], 'limit' => $import_session['cats_per_screen']));
-			while($cat = $this->old_db->fetch_array($query))
-			{
-				echo "Inserting category #{$cat['cat_id']}... ";
-				
-				// Values from phpBB
-				$insert_forum['import_fid'] = (-1 * intval($cat['cat_id']));
-				$insert_forum['name'] = $cat['cat_title'];
-				$insert_forum['disporder'] = $cat['cat_order'];
-				
-				// Default values
-				$insert_forum['description'] = '';
-				$insert_forum['linkto'] = '';
-				$insert_forum['type'] = 'c';
-				$insert_forum['pid'] = '0';
-				$insert_forum['parentlist'] = '';
-				$insert_forum['active'] = 'yes';
-				$insert_forum['open'] = 'yes';
-				$insert_forum['threads'] = 0;
-				$insert_forum['posts'] = 0;
-				$insert_forum['lastpost'] = 0;
-				$insert_forum['lastposteruid'] = 0;
-				$insert_forum['lastposttid'] = 0;
-				$insert_forum['lastpostsubject'] = '';
-				$insert_forum['allowhtml'] = 'no';
-				$insert_forum['allowmycode'] = 'yes';
-				$insert_forum['allowsmilies'] = 'yes';
-				$insert_forum['allowimgcode'] = 'yes';
-				$insert_forum['allowpicons'] = 'yes';
-				$insert_forum['allowtratings'] = 'yes';
-				$insert_forum['status'] = 1;
-				$insert_forum['usepostcounts'] = 'yes';
-				$insert_forum['password'] = '';
-				$insert_forum['showinjump'] = 'yes';
-				$insert_forum['modposts'] = 'no';
-				$insert_forum['modthreads'] = 'no';
-				$insert_forum['modattachments'] = 'no';
-				$insert_forum['style'] = 0;
-				$insert_forum['overridestyle'] = 'no';
-				$insert_forum['rulestype'] = 0;
-				$insert_forum['rules'] = '';
-				$insert_forum['unapprovedthreads'] = 0;
-				$insert_forum['unapprovedposts'] = 0;
-				$insert_forum['defaultdatecut'] = 0;
-				$insert_forum['defaultsortby'] = '';
-				$insert_forum['defaultsortorder'] = '';
-	
-				$fid = $this->insert_forum($insert_forum);
-				
-				// Update parent list.
-				$update_array = array('parentlist' => $fid);
-				$db->update_query("forums", $update_array, "fid = '{$fid}'");
-				
-				echo "done.<br />\n";			
-			}
-			
-			if($this->old_db->num_rows($query) == 0)
-			{
-				echo "There are no Categories to import. Please press next to continue.";
-			}
-		}			
-		$import_session['start_cats'] += $import_session['cats_per_screen'];
 		$output->print_footer();
 	}
 	
@@ -485,22 +378,50 @@ EOF;
 				// Values from phpBB
 				$insert_forum['import_fid'] = intval($forum['forum_id']);
 				$insert_forum['name'] = $forum['forum_name'];
-				$insert_forum['description'] = $forum['forum_desc'];
-				$insert_forum['pid'] = $this->get_import_fid((-1) * $forum['cat_id']);
-				$insert_forum['disporder'] = $forum['forum_order'];
+				$insert_forum['description'] = $forum['forum_desc'];				
+				$insert_forum['disporder'] = $forum['left_id'];
 				$insert_forum['threads'] = $forum['forum_topics'];
 				$insert_forum['posts'] = $forum['forum_posts'];
+				$insert_forum['open'] = int_to_noyes($forum['forum_status']);
+				$insert_forum['style'] = $forum['forum_style'];
+				$insert_forum['password'] = $forum['forum_password'];
+				if($forum['forum_rules_link'])
+				{
+					$insert_forum['rules'] = $forum['forum_rules_link'];
+				}
+				else
+				{
+					$insert_forum['rules'] = $forum['forum_rules'];
+				}
+				$insert_forum['rulestype'] = 1;
+				
+				if($forum['forum_type'] == '0')
+				{
+					$insert_forum['type'] = 'c';
+					$insert_forum['import_fid'] = (-1 * intval($forum['forum_id']));
+					$insert_forum['lastpost'] = 0;
+					$insert_forum['lastposteruid'] = 0;
+					$insert_forum['lastposttid'] = 0;
+					$insert_forum['lastpostsubject'] = '';
+				}
+				else
+				{
+					if($forum['forum_type'] == '2')
+					{
+						$insert_forum['linkto'] = $forum['forum_link'];
+					}
+					$insert_forum['type'] = 'f';
+					$insert_forum['pid'] = $this->get_import_fid((-1) * $forum['forum_id']);
+					$insert_forum['lastpost'] = $forum['forum_last_post_time'];
+					$insert_forum['lastposteruid'] = $forum['forum_last_poster_id'];
+					$insert_forum['lastposttid'] = $forum['forum_last_post_id'];
+					$insert_forum['lastpostsubject'] = $forum['forum_last_post_subject'];
+				}
+				
 				
 				// Default values
-				$insert_forum['linkto'] = '';
-				$insert_forum['type'] = 'f';
 				$insert_forum['parentlist'] = '';
 				$insert_forum['active'] = 'yes';
-				$insert_forum['open'] = 'yes';
-				$insert_forum['lastpost'] = 0;
-				$insert_forum['lastposteruid'] = 0;
-				$insert_forum['lastposttid'] = 0;
-				$insert_forum['lastpostsubject'] = '';
 				$insert_forum['allowhtml'] = 'no';
 				$insert_forum['allowmycode'] = 'yes';
 				$insert_forum['allowsmilies'] = 'yes';
@@ -508,17 +429,13 @@ EOF;
 				$insert_forum['allowpicons'] = 'yes';
 				$insert_forum['allowtratings'] = 'yes';
 				$insert_forum['status'] = 1;
-				$insert_forum['password'] = '';
 				$insert_forum['showinjump'] = 'yes';
 				$insert_forum['modposts'] = 'no';
 				$insert_forum['modthreads'] = 'no';
 				$insert_forum['modattachments'] = 'no';
-				$insert_forum['style'] = 0;
 				$insert_forum['overridestyle'] = 'no';
-				$insert_forum['rulestype'] = 0;
-				$insert_forum['rules'] = '';
-				$insert_forum['unapprovedthreads'] = 0;
-				$insert_forum['unapprovedposts'] = 0;
+				$insert_forum['unapprovedthreads'] = $this->get_invisible_threads();
+				$insert_forum['unapprovedposts'] = $this->get_invisible_posts();
 				$insert_forum['defaultdatecut'] = 0;
 				$insert_forum['defaultsortby'] = '';
 				$insert_forum['defaultsortorder'] = '';
@@ -591,11 +508,11 @@ EOF;
 				$insert_thread['sticky'] = int_to_yesno($thread['topic_type']);
 				$insert_thread['fid'] = $this->get_import_fid($thread['forum_id']);
 				$insert_thread['firstpost'] = $thread['topic_first_post_id'];				
-				$insert_thread['icon'] = '';
+				$insert_thread['icon'] = $thread['icon_id'];
 				$insert_thread['dateline'] = $thread['topic_time'];
 				$insert_thread['subject'] = $thread['topic_title'];
 				
-				$insert_thread['poll'] = $thread['topic_vote'];
+				$insert_thread['poll'] = $this->get_poll_pid($thread['topic_id']);
 				$insert_thread['uid'] = $this->get_import_uid($thread['topic_poster']);
 				$insert_thread['import_uid'] = $thread['topic_poster'];
 				$insert_thread['views'] = $thread['topic_views'];
@@ -603,21 +520,16 @@ EOF;
 				$insert_thread['closed'] = int_to_yesno($thread['topic_status']);
 				$insert_thread['totalratings'] = '0';
 				$insert_thread['notes'] = '';
-				$insert_thread['visible'] = '1';
-				$insert_thread['unapprovedposts'] = '0';
+				$insert_thread['visible'] = $thread['topic_approved'];
+				$insert_thread['unapprovedposts'] = $this->get_invisible_posts($thread['topic_id']);
 				$insert_thread['numratings'] = '0';
 				$insert_thread['attachmentcount'] = '0';
 				
-				$last_post = $this->get_post($thread['topic_last_post_id']);
-				$insert_thread['lastpost'] = $last_post['post_time'];
-				$insert_thread['lastposteruid'] = $this->get_import_uid($last_post['user_id']);
+				$insert_thread['lastpost'] = $thread['topic_last_post_time'];
+				$insert_thread['lastposteruid'] = $this->get_import_uid($thread['topic_last_poster_id']);				
+				$insert_thread['lastposter'] = $thread['topic_last_poster_name'];				
+				$insert_thread['username'] = $thread['topic_first_poster_name'];
 				
-				$last_post_member = $this->get_user($last_post['topic_poster']);
-				$insert_thread['lastposter'] = $last_post_member['username'];
-				
-				$member_started = $this->get_post($thread['topic_first_post_id']);
-				$member_started = $this->get_user($member_started['poster_id']);
-				$insert_thread['username'] = $member_started['username'];
 				$this->insert_thread($insert_thread);
 				echo "done.<br />\n";			
 			}
@@ -631,6 +543,7 @@ EOF;
 		$output->print_footer();
 	}
 	
+	// To do from here
 	function import_posts()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -701,7 +614,7 @@ EOF;
 				// Check the last post for any NULL's, converted by phpBB's parser to a default topic
 				if($post['post_subject'] == 'NULL')
 				{
-					$post['post_subject'] = 'Welcome to phpBB 2';
+					$post['post_subject'] = 'Welcome to phpBB 3';
 				}
 				
 				// Get Username
@@ -957,6 +870,29 @@ EOF;
 		}
 		$import_session['start_privatemessages'] += $import_session['privatemessages_per_screen'];
 		$output->print_footer();
+	}
+	
+	function get_invisible_posts($tid='')
+	{
+		$tidbit = "";
+		if(!empty($tid))
+		{
+			$tidbit = " AND tid='".intval($tid)."'";
+		}
+		$query = $this->old_db->simple_select("posts", "COUNT(*) as invisible", "post_approved='0'$tidbit");
+		return $this->old_db->fetch_field($query, "invisible");
+	}
+	
+	function get_invisible_threads()
+	{
+		$query = $this->old_db->simple_select("topics", "COUNT(*) as invisible", "topic_approved='0'");
+		return $this->old_db->fetch_field($query, "invisible");
+	}
+	
+	function get_poll_pid($tid)
+	{
+		$query = $this->old_db->simple_select("poll_options", "poll_option_id", "topic_id='$tid'", array('limit' => 1));
+		return $this->old_db->fetch_field($query, "poll_option_id");
 	}
 	
 	/**

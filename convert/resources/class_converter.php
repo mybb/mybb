@@ -200,6 +200,24 @@ class Converter
 	}
 	
 	/**
+	 * Insert poll into database
+	 */
+	function insert_poll($title)
+	{
+		global $db;
+	
+		foreach($title as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+		
+		$query = $db->insert_query("polls", $insertarray);
+		$pollid = $db->insert_id();
+		
+		return $pollid;
+	}
+	
+	/**
 	 * Get an array of imported users
 	 *
 	 * @return array
@@ -214,6 +232,24 @@ class Converter
 			$users[$user['import_uid']] = $user['uid'];
 		}
 		$this->import_uids = $users;
+		return $users;
+	}
+	
+	/**
+	 * Get an array of imported usernames
+	 *
+	 * @return array
+	 */
+	function get_import_usernames()
+	{
+		global $db;
+	
+		$query = $db->simple_select("users", "username, import_uid");
+		while($user = $db->fetch_array($query))
+		{
+			$users[$user['import_uid']] = $user['username'];
+		}
+		$this->import_usernames = $users;
 		return $users;
 	}
 	
@@ -239,6 +275,30 @@ class Converter
 			return 0;
 		}
 		return $uid_array[$old_uid];
+	}
+	
+	/**
+	 * Get the MyBB Username of an old UID.
+	 *
+	 * @param int User ID used before import
+	 * @return int User ID in MyBB or 0 if the old UID cannot be found
+	 */
+	function get_import_username($old_uid)
+	{
+		if(!is_array($this->import_uids))
+		{
+			$username_array = $this->get_import_usernames();
+		}
+		else
+		{
+			$username_array = $this->import_usernames;
+		}
+		
+		if(!isset($username_array[$old_uid]) || $old_uid == 0)
+		{
+			return 0;
+		}
+		return $username_array[$old_uid];
 	}
 	
 	/**

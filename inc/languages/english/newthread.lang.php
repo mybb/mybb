@@ -32,8 +32,8 @@ $l['verification_subnote'] = "(case in-sensitive)";
 $l['invalid_captcha'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_post_already_submitted'] = "You have already posted this thread in this forum. Please visit the forum to see your thread.";
 
-$l['multiquote_external_one'] = "You have selected one post outside of this thread.";
-$l['multiquote_external'] = "You have selected {1} posts outside of this thread.";
+$l['multiquote_external_one'] = "You have selected one post from another thread.";
+$l['multiquote_external'] = "You have selected {1} posts from other threads.";
 $l['multiquote_external_one_deselect'] = "deselect this post";
 $l['multiquote_external_deselect'] = "deselect these posts";
 $l['multiquote_external_one_quote'] = "Quote this post too";

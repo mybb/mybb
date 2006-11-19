@@ -128,6 +128,11 @@ function delete_import_fields()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP import_pid");
 	}
 	
+	if($db->field_exists('import_tid', "polls"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."polls DROP import_tid");
+	}
+	
 	if($db->field_exists('import_uid', "posts"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP import_uid");
@@ -168,6 +173,7 @@ function create_import_fields()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD import_tid int NOT NULL default '0' AFTER tid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD import_uid int NOT NULL default '0' AFTER uid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD import_pid int NOT NULL default '0' AFTER pid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."polls ADD import_tid int NOT NULL default '0' AFTER tid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD import_uid int NOT NULL default '0' AFTER uid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."attachments ADD import_aid int NOT NULL default '0' AFTER aid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD import_gid int NOT NULL default '0' AFTER gid");
