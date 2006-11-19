@@ -671,6 +671,10 @@ if($mybb->input['action'] == "do_email")
 					'receipt' => 'no'
 				);
 				$db->insert_query(TABLE_PREFIX."privatemessages", $insert_pm);
+				
+				// Update private message count (total, new and unread) for recipient
+				update_pm_count($user['uid'], 7, $user['lastactive']);
+				
 				echo sprintf($lang->pm_sent, $user['username']);
 			}
 			elseif($user['email'] != '')

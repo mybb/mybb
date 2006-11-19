@@ -42,11 +42,27 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 	{
 		$charset = "utf-8";
 	}
+	
+	$dir = '';
+	if($lang->settings['rtl'] == 1)
+	{
+		$dir = " dir=\"rtl\"";
+	}
+	
+	if($lang->settings['htmllang'])
+	{
+		$htmllang = " xml:lang=\"".$lang->settings['htmllang']."\" lang=\"".$lang->settings['htmllang']."\"";
+	}
+	else
+	{
+		$htmllang = " xml:lang=\"en\" lang=\"en\"";
+	}
+	
 	$GLOBALS['fulltitle'] = $fulltitle;
 	$GLOBALS['fullurl'] = $fullurl;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"<?php echo $dir; echo $htmllang; ?>>
 <head>
 <title><?php echo $title; ?></title>
 <meta http-equiv="content-type" content="text/html; charset=<?php echo $charset; ?>" />
