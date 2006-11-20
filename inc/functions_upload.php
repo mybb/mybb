@@ -342,7 +342,7 @@ function upload_attachment($attachment)
 
 		// Check if the uploaded file type matches the correct image type (returned by getimagesize)
 		$img_dimensions = @getimagesize($mybb->settings['uploadspath']."/".$filename);
-		if(!is_array($img_dimensions) || $img_dimensions[2] != $img_type || $img_type == 0)
+		if(!is_array($img_dimensions) || $img_dimensions[2] != $img_type)
 		{
 			@unlink($mybb->settings['uploadspath']."/".$filename);
 			$ret['error'] = $lang->error_uploadfailed;
