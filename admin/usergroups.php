@@ -92,7 +92,7 @@ if($mybb->input['action'] == "do_add")
 	{
 		$mybb->input['type'] = "2";
 	}
-	if(strpos($mybb->input['namestyle'], "{username}") === false)
+	if(my_strpos($mybb->input['namestyle'], "{username}") === false)
 	{
 		$mybb->input['namestyle'] = "{username}";
 		$namenote = $lang->error_namenote;
@@ -251,7 +251,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$mybb->input['type'] = 1;
 	}
-	if(strpos($mybb->input['namestyle'], "{username}") === false)
+	if(my_strpos($mybb->input['namestyle'], "{username}") === false)
 	{
 		$mybb->input['namestyle'] = "{username}";
 		$namenote = $lang->error_namenote;

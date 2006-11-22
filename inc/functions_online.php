@@ -30,7 +30,7 @@ function fetch_wol_activity($location)
 	}
 	else
 	{
-		$filename = my_substr($split_loc[0], -strpos(strrev($split_loc[0]), "/"));
+		$filename = my_substr($split_loc[0], -my_strpos(strrev($split_loc[0]), "/"));
 	}
 	if($split_loc[1])
 	{

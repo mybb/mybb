@@ -1653,7 +1653,7 @@ if($mybb->input['action'] == "avatar")
 		{
 			$avatarmsg = "<br /><strong>".$lang->using_gallery_avatar."</strong>";
 		}
-		elseif($mybb->user['avatartype'] == "remote" || strstr(my_strtolower($mybb->user['avatar']), "http://") !== false)
+		elseif($mybb->user['avatartype'] == "remote" || my_strpos(my_strtolower($mybb->user['avatar']), "http://") !== false)
 		{
 			$avatarmsg = "<br /><strong>".$lang->using_remote_avatar."</strong>";
 			$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);
@@ -1888,7 +1888,7 @@ if($mybb->input['action'] == "usergroups")
 	// Changing our display group
 	if($mybb->input['displaygroup'])
 	{
-		if(!strstr($ingroups, ",".$mybb->input['displaygroup'].","))
+		if(!my_strpos($ingroups, ",".$mybb->input['displaygroup'].","))
 		{
 			error($lang->not_member_of_group);
 		}
@@ -1907,7 +1907,7 @@ if($mybb->input['action'] == "usergroups")
 	// Leaving a group
 	if($mybb->input['leavegroup'])
 	{
-		if(!strstr($ingroups, ",".$mybb->input['leavegroup'].","))
+		if(!my_strpos($ingroups, ",".$mybb->input['leavegroup'].","))
 		{
 			error($lang->not_member_of_group);
 		}
@@ -1938,7 +1938,7 @@ if($mybb->input['action'] == "usergroups")
 			error($lang->cannot_join_group);
 		}
 
-		if(strstr($ingroups, ",".intval($mybb->input['joingroup']).",") || $mybb->user['usergroup'] == $mybb->input['joingroup'] || $mybb->user['displaygroup'] == $mybb->input['joingroup'])
+		if(my_strpos($ingroups, ",".intval($mybb->input['joingroup']).",") || $mybb->user['usergroup'] == $mybb->input['joingroup'] || $mybb->user['displaygroup'] == $mybb->input['joingroup'])
 		{
 			error($lang->already_member_of_group);
 		}

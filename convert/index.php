@@ -66,6 +66,21 @@ if(isset($mybb->input['restart']))
 // Get the import session cache if exists
 $import_session = $cache->read("import_cache", 1);
 
+if(!$import_session['resume_module'])
+{
+	$import_session['resume_module'] = array();
+}
+
+if(!$import_session['disabled'])
+{
+	$import_session['disabled'] = array();
+}
+
+if(!$import_session['resume_module'])
+{
+	$import_session['resume_module'] = array();
+}
+
 // TEMPORARY
 if($mybb->input['debug'])
 {
@@ -98,6 +113,12 @@ if(!$import_session['board'])
 // Perhaps we have selected to stop converting
 elseif(isset($mybb->input['action']) && $mybb->input['action'] == 'finish')
 {
+	// Include the necessary contants for caching updating
+	$grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
+	$groupzerogreater = array('pmquota', 'maxreputationsday', 'attachquota');
+	$displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
+	$fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch');
+
 	// Delete import fields
 	delete_import_fields();
 	$cache->updatestats();
@@ -147,7 +168,7 @@ elseif($import_session['module'] && $mybb->input['action'] != 'module_list')
 	// If the module returns "finished" then it has finished everything it needs to do. We set the import session
 	// to blank so we go back to the module list
 	if($result == "finished")
-	{
+	{		
 		$key = array_search($import_session['module'], $import_session['resume_module']);
 		if(isset($key))
 		{

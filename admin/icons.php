@@ -354,7 +354,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		{
 			echo "<tr>";
 		}
-		if(strstr($icon['path'], "p://") || my_substr($icon[path],0,1) == "/")
+		if(my_strpos($icon['path'], "p://") || my_substr($icon[path],0,1) == "/")
 		{
 			$image = $icon['path'];
 		}

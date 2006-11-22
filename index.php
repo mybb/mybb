@@ -100,7 +100,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 				$doneusers[$user['uid']] = $user['time'];
 			}
 		}
-		elseif(strstr($user['sid'], "bot=") !== false && $session->bots[$botkey])
+		elseif(my_strpos($user['sid'], "bot=") !== false && $session->bots[$botkey])
 		{
 			// The user is a search bot.
 			$onlinemembers .= $comma.format_name($session->bots[$botkey], $session->botgroup);

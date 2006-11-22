@@ -599,6 +599,11 @@ EOF;
 				$insert_thread['views'] = $thread['num_views'];
 				$insert_thread['replies'] = $thread['num_replies'];
 				$insert_thread['closed'] = int_to_yesno($thread['closed']);
+				if($insert_thread['closed'] == "no")
+				{
+					$insert_thread['closed'] = '';
+				}
+				
 				$insert_thread['totalratings'] = 0;
 				$insert_thread['notes'] = '';
 				$insert_thread['visible'] = 1;
@@ -860,9 +865,7 @@ EOF;
 				
 				// Restore connections
 				$update_array = array('usergroup' => $gid);
-				$db->update_query("users", $update_array, "import_usergroup = '{$group['group_id']}'");
-				$db->update_query("users", $update_array, "import_displaygroup = '{$group['group_id']}'");
-				$query1 = $db->simple_select("users", "uid, import_additionalgroups AS additionalGroups", "CONCAT(',', import_additionalgroups, ',') LIKE '%,{$group['group_id']},%'");
+				$db->update_query("users", $update_array, "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
 				
 				$this->import_gids = null; // Force cache refresh
 				

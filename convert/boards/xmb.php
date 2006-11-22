@@ -699,7 +699,7 @@ EOF;
 					$insert_poll['numoptions'] = $numoptions;
 					$insert_poll['numvotes'] = $numvotes;
 					$insert_poll['timeout'] = 0;
-					$insert_poll['closed'] = 'no';
+					$insert_poll['closed'] = '';
 					$insert_poll['multiple'] = 'no';
 					$insert_poll['public'] = 'no';
 					$pollid = $this->insert_poll($insert_poll);

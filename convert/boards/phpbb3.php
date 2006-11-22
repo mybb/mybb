@@ -17,14 +17,14 @@ class Convert_phpbb3 extends Converter {
 									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import phpBB 3 Usergroups",
 									  "dependencies" => "db_configuration"),
+						 "import_users" => array("name" => "Import phpBB 3 Users",
+									  "dependencies" => "db_configuration,import_usergroups"),
 						 "import_forums" => array("name" => "Import phpBB 3 Forums",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_users"),
 						 "import_threads" => array("name" => "Import phpBB 3 Threads",
 									  "dependencies" => "db_configuration,import_forums"),
 						 "import_posts" => array("name" => "Import phpBB 3 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_users" => array("name" => "Import phpBB 3 Users",
-									  "dependencies" => "db_configuration,import_usergroups"),
 						 "import_privatemessages" => array("name" => "Import phpBB 3 Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
 						);
@@ -189,6 +189,131 @@ EOF;
 		$output->print_footer();
 	}
 	
+	function import_usergroups()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->phpbb_db_connect();
+
+		// Get number of usergroups
+		if(!isset($import_session['total_usergroups']))
+		{
+			$query = $this->old_db->simple_select("groups", "COUNT(*) as count");
+			$import_session['total_usergroups'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_usergroups'])
+		{
+			// If there are more usergroups to do, continue, or else, move onto next module
+			if($import_session['total_usergroups'] <= $import_session['start_usergroups'] + $import_session['usergroups_per_screen'])
+			{
+				$import_session['disabled'][] = 'import_usergroups';
+				return "finished";
+			}
+		}
+
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of posts per screen from form
+		if(isset($mybb->input['usergroups_per_screen']))
+		{
+			$import_session['usergroups_per_screen'] = intval($mybb->input['usergroups_per_screen']);
+		}
+		
+		if(empty($import_session['usergroups_per_screen']))
+		{
+			$import_session['start_usergroups'] = 0;
+			echo "<p>Please select how many usergroups to import at a time:</p>
+<p><input type=\"text\" name=\"usergroups_per_screen\" value=\"\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{	
+			// Get only non-staff groups.
+			$query = $this->old_db->simple_select("groups", "*", "group_id > 6", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
+			while($group = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting group #{$group['group_id']} as a ";
+				
+				// Make this into a usergroup
+				$insert_group['import_gid'] = $group['group_id'];
+				$insert_group['type'] = 2;
+				$insert_group['title'] = $group['group_name'];
+				$insert_group['description'] = $group['group_desc'];
+				
+				// Default values
+				$insert_group['namestyle'] = '{username}';
+				$insert_group['stars'] = 0;
+				$insert_group['starimage'] = 'images/star.gif';
+				$insert_group['image'] = '';
+				$insert_group['disporder'] = 0;
+				$insert_group['isbannedgroup'] = 'no';
+				$insert_group['canview'] = 'yes';
+				$insert_group['canviewthreads'] = 'yes';
+				$insert_group['canviewprofiles'] = 'yes';
+				$insert_group['candlattachments'] = 'yes';
+				$insert_group['canpostthreads'] = 'yes';
+				$insert_group['canpostreplys'] = 'yes';
+				$insert_group['canpostattachments'] = 'yes';
+				$insert_group['canratethreads'] = 'yes';
+				$insert_group['caneditposts'] = 'yes';
+				$insert_group['candeleteposts'] = 'yes';
+				$insert_group['candeletethreads'] = 'yes';
+				$insert_group['caneditattachments'] = 'yes';
+				$insert_group['canpostpolls'] = 'yes';
+				$insert_group['canvotepolls'] = 'yes';
+				$insert_group['canusepms'] = 'yes';
+				$insert_group['cansendpms'] = 'yes';
+				$insert_group['cantrackpms'] = 'yes';
+				$insert_group['candenypmreceipts'] = 'yes';
+				$insert_group['pmquota'] = '0';
+				$insert_group['maxpmrecipients'] = '5';
+				$insert_group['cansendemail'] = 'yes';
+				$insert_group['canviewmemberlist'] = 'yes';
+				$insert_group['canviewcalendar'] = 'yes';
+				$insert_group['canaddpublicevents'] = 'yes';
+				$insert_group['canaddprivateevents'] = 'yes';
+				$insert_group['canviewonline'] = 'yes';
+				$insert_group['canviewwolinvis'] = 'no';
+				$insert_group['canviewonlineips'] = 'no';
+				$insert_group['cancp'] = 'no';
+				$insert_group['issupermod'] = 'no';
+				$insert_group['cansearch'] = 'yes';
+				$insert_group['canusercp'] = 'yes';
+				$insert_group['canuploadavatars'] = 'yes';
+				$insert_group['canratemembers'] = 'yes';
+				$insert_group['canchangename'] = 'no';
+				$insert_group['showforumteam'] = 'no';
+				$insert_group['usereputationsystem'] = 'yes';
+				$insert_group['cangivereputations'] = 'yes';
+				$insert_group['reputationpower'] = '1';
+				$insert_group['maxreputationsday'] = '5';
+				$insert_group['candisplaygroup'] = 'yes';
+				$insert_group['attachquota'] = '0';
+				$insert_group['cancustomtitle'] = 'yes';
+				
+				echo "custom usergroup...";
+
+				$gid = $this->insert_usergroup($insert_group);
+				
+				// Restore connections
+				$update_array = array('usergroup' => $gid);
+				$db->update_query("users", $update_array, "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
+				
+				$this->import_gids = null; // Force cache refresh
+				
+				echo "done.<br />\n";	
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Usergroups to import. Please press next to continue.";
+			}
+		}
+		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];
+		$output->print_footer();
+	}
+	
 	function import_users()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -246,7 +371,7 @@ EOF;
 				SELECT * 
 				FROM ".PHPBB_TABLE_PREFIX."users u
 				LEFT JOIN ".PHPBB_TABLE_PREFIX."user_group ug ON(u.user_id=ug.user_id)
-				WHERE u.user_id > 0
+				WHERE u.user_id > 0 AND username != 'Alexa' AND username != 'Fastcrawler' AND username != 'Googlebot' AND username != 'Inktomi'
 				LIMIT ".$import_session['start_users'].", ".$import_session['users_per_screen']
 			);
 
@@ -258,7 +383,7 @@ EOF;
 				if(in_array($user['username'], $members_cache))
 				{
 					++$member_dup_count;
-					$user['username'] .= "_phpbb_import".$member_dup_count;
+					$user['username'] .= "_phpbb3_import".$member_dup_count;
 				}
 				
 				$members_cache[] = $user['username'];				
@@ -278,6 +403,10 @@ EOF;
 				$insert_user['lastvisit'] = $user['user_lastvisit'];
 				$insert_user['website'] = $user['user_website'];
 				$insert_user['avatardimensions'] = $user['user_avatar_width'].'x'.$user['user_avatar_height'];
+				if($insert_user['avatardimensions'] == '0x0')
+				{
+					$insert_user['avatardimensions'] = '';
+				}
 				$insert_user['avatartype'] = $user['user_avatar_type'];
 				$insert_user['avatar'] = $user['avatar'];
 				$insert_user['lastpost'] = $user['user_lastpost_time'];
@@ -398,7 +527,7 @@ EOF;
 				if($forum['forum_type'] == '0')
 				{
 					$insert_forum['type'] = 'c';
-					$insert_forum['import_fid'] = (-1 * intval($forum['forum_id']));
+					$insert_forum['import_fid'] = (-1 * $forum['forum_id']);
 					$insert_forum['lastpost'] = 0;
 					$insert_forum['lastposteruid'] = 0;
 					$insert_forum['lastposttid'] = 0;
@@ -411,11 +540,12 @@ EOF;
 						$insert_forum['linkto'] = $forum['forum_link'];
 					}
 					$insert_forum['type'] = 'f';
-					$insert_forum['pid'] = $this->get_import_fid((-1) * $forum['forum_id']);
+					$insert_forum['pid'] = $this->get_import_fid((-1) * $forum['parent_id']);
 					$insert_forum['lastpost'] = $forum['forum_last_post_time'];
-					$insert_forum['lastposteruid'] = $forum['forum_last_poster_id'];
-					$insert_forum['lastposttid'] = $forum['forum_last_post_id'];
+					$insert_forum['lastposteruid'] = $this->get_import_uid($forum['forum_last_poster_id']);
+					$insert_forum['lastposttid'] = ((-1) * $forum['forum_last_post_id']);
 					$insert_forum['lastpostsubject'] = $forum['forum_last_post_subject'];
+					$insert_forum['lastposter'] = $this->get_import_username($forum['forum_last_poster_id']);
 				}
 				
 				
@@ -444,7 +574,15 @@ EOF;
 				$fid = $this->insert_forum($insert_forum);
 				
 				// Update parent list.
-				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);
+				if($forum['forum_type'] == '0')
+				{
+					$update_array = array('parentlist' => $fid);					
+				}
+				else
+				{
+					$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);										
+				}
+				
 				$db->update_query("forums", $update_array, "fid = {$fid}");
 				
 				echo "done.<br />\n";			
@@ -499,7 +637,7 @@ EOF;
 		}
 		else
 		{		
-			$query = $this->old_db->simple_select("topics", "*", "", array('limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
+			$query = $this->old_db->simple_select("topics", "*", "", array('order_by' => 'topic_first_post_id', 'order_dir' => 'DESC', 'limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
 			while($thread = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting thread #{$thread['topic_id']}... ";
@@ -507,7 +645,7 @@ EOF;
 				$insert_thread['import_tid'] = $thread['topic_id'];
 				$insert_thread['sticky'] = int_to_yesno($thread['topic_type']);
 				$insert_thread['fid'] = $this->get_import_fid($thread['forum_id']);
-				$insert_thread['firstpost'] = $thread['topic_first_post_id'];				
+				$insert_thread['firstpost'] = ((-1) * $thread['topic_first_post_id']);			
 				$insert_thread['icon'] = $thread['icon_id'];
 				$insert_thread['dateline'] = $thread['topic_time'];
 				$insert_thread['subject'] = $thread['topic_title'];
@@ -517,7 +655,12 @@ EOF;
 				$insert_thread['import_uid'] = $thread['topic_poster'];
 				$insert_thread['views'] = $thread['topic_views'];
 				$insert_thread['replies'] = $thread['topic_replies'];
-				$insert_thread['closed'] = int_to_yesno($thread['topic_status']);
+				$insert_thread['closed'] = int_to_yesno($thread['topic_status']);				
+				if($insert_thread['closed'] == 'no')
+				{
+					$insert_thread['closed'] = '';
+				}
+				
 				$insert_thread['totalratings'] = '0';
 				$insert_thread['notes'] = '';
 				$insert_thread['visible'] = $thread['topic_approved'];
@@ -530,7 +673,10 @@ EOF;
 				$insert_thread['lastposter'] = $thread['topic_last_poster_name'];				
 				$insert_thread['username'] = $thread['topic_first_poster_name'];
 				
-				$this->insert_thread($insert_thread);
+				$tid = $this->insert_thread($insert_thread);
+				
+				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid='".((-1) * $import_post['tid'])."'");
+				
 				echo "done.<br />\n";			
 			}
 			
@@ -584,12 +730,7 @@ EOF;
 		}
 		else
 		{	
-			$query = $this->old_db->query("
-				SELECT * 
-				FROM ".PHPBB_TABLE_PREFIX."posts p
-				LEFT JOIN ".PHPBB_TABLE_PREFIX."posts_text pt ON(p.post_id=pt.post_id)
-				LIMIT ".$import_session['start_posts'].", ".$import_session['posts_per_screen']
-			);
+			$query = $this->old_db->simple_select("posts", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
 			while($post = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting post #{$post['post_id']}... ";
@@ -597,45 +738,20 @@ EOF;
 				$insert_post['import_pid'] = $post['post_id'];
 				$insert_post['tid'] = $this->get_import_tid($post['topic_id']);
 				
-				// Find if this is the first post in thread
-				$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
-				$first_post = $db->fetch_field($query1, "firstpost");
-				
-				// Make the replyto the first post of thread unless it is the first post
-				if($first_post == $post['post_id'])
-				{
-					$insert_post['replyto'] = 0;
-				}
-				else
-				{
-					$insert_post['replyto'] = $first_post;
-				}
-				
-				// Check the last post for any NULL's, converted by phpBB's parser to a default topic
-				if($post['post_subject'] == 'NULL')
-				{
-					$post['post_subject'] = 'Welcome to phpBB 3';
-				}
-				
 				// Get Username
 				$topic_poster = $this->get_user($post['poster_id']);
 				$post['username'] = $topic_poster['username'];
-				
-				// Check usernames for guests
-				if($post['username'] == 'NULL')
-				{
-					$post['username'] = 'Guest';
-				}
 
+				$insert_post['pid'] = 0;
 				$insert_post['fid'] = $this->get_import_fid($post['forum_id']);
 				$insert_post['subject'] = $post['post_subject'];
 				$insert_post['icon'] = 0;
 				$insert_post['uid'] = $this->get_import_uid($post['poster_id']);
 				$insert_post['import_uid'] = $post['poster_id'];
-				$insert_post['username'] = $post['username'];
+				$insert_post['username'] = $this->get_import_username($insert_post['import_uid']);
 				$insert_post['dateline'] = $post['post_time'];
 				$insert_post['message'] = str_replace($post['bbcode_uid'], '', htmlspecialchars_decode($post['post_text']));
-				$insert_post['ipaddress'] = $this->decode_ip($post['poster_ip']);
+				$insert_post['ipaddress'] = $post['poster_ip'];
 				$insert_post['includesig'] = int_to_yesno($post['enable_sig']);		
 				$insert_post['smilieoff'] = int_to_noyes($post['enable_smilies']);		
 				$insert_post['edituid'] = 0;				
@@ -648,6 +764,14 @@ EOF;
 				// Update thread count
 				update_thread_count($insert_post['tid']);
 				
+				$db->update_query("threads", array('firstpost' => $pid), "tid='{$insert_post['tid']}' AND firstpost='".((-1) * $import_post['pid'])."'");
+				if($db->affected_rows() == 0)
+				{
+					$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
+					$first_post = $db->fetch_field($query1, "firstpost");
+					$db->update_query("posts", array('replyto' => $first_post), "pid='{$pid}'");
+				}
+				
 				echo "done.<br />\n";			
 			}
 			
@@ -657,133 +781,6 @@ EOF;
 			}
 		}
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
-		$output->print_footer();
-	}
-	
-	function import_usergroups()
-	{
-		global $mybb, $output, $import_session, $db;
-
-		$this->phpbb_db_connect();
-
-		// Get number of usergroups
-		if(!isset($import_session['total_usergroups']))
-		{
-			$query = $this->old_db->simple_select("groups", "COUNT(*) as count");
-			$import_session['total_usergroups'] = $this->old_db->fetch_field($query, 'count');				
-		}
-
-		if($import_session['start_usergroups'])
-		{
-			// If there are more usergroups to do, continue, or else, move onto next module
-			if($import_session['total_usergroups'] <= $import_session['start_usergroups'] + $import_session['usergroups_per_screen'])
-			{
-				$import_session['disabled'][] = 'import_usergroups';
-				return "finished";
-			}
-		}
-
-		$output->print_header($this->modules[$import_session['module']]['name']);
-
-		// Get number of posts per screen from form
-		if(isset($mybb->input['usergroups_per_screen']))
-		{
-			$import_session['usergroups_per_screen'] = intval($mybb->input['usergroups_per_screen']);
-		}
-		
-		if(empty($import_session['usergroups_per_screen']))
-		{
-			$import_session['start_usergroups'] = 0;
-			echo "<p>Please select how many usergroups to import at a time:</p>
-<p><input type=\"text\" name=\"usergroups_per_screen\" value=\"\" /></p>";
-			$output->print_footer($import_session['module'], 'module', 1);
-		}
-		else
-		{	
-			// Get only non-staff groups.
-			$query = $this->old_db->simple_select("groups", "*", "group_id > 2", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
-			while($group = $this->old_db->fetch_array($query))
-			{
-				echo "Inserting group #{$group['group_id']} as a ";
-				
-				// Make this into a usergroup
-				$insert_group['import_gid'] = $group['group_id'];
-				$insert_group['type'] = 2;
-				$insert_group['title'] = $group['group_name'];
-				$insert_group['description'] = $group['group_description'];
-				
-				// Default values
-				$insert_group['namestyle'] = '{username}';
-				$insert_group['stars'] = 0;
-				$insert_group['starimage'] = 'images/star.gif';
-				$insert_group['image'] = '';
-				$insert_group['disporder'] = 0;
-				$insert_group['isbannedgroup'] = 'no';
-				$insert_group['canview'] = 'yes';
-				$insert_group['canviewthreads'] = 'yes';
-				$insert_group['canviewprofiles'] = 'yes';
-				$insert_group['candlattachments'] = 'yes';
-				$insert_group['canpostthreads'] = 'yes';
-				$insert_group['canpostreplys'] = 'yes';
-				$insert_group['canpostattachments'] = 'yes';
-				$insert_group['canratethreads'] = 'yes';
-				$insert_group['caneditposts'] = 'yes';
-				$insert_group['candeleteposts'] = 'yes';
-				$insert_group['candeletethreads'] = 'yes';
-				$insert_group['caneditattachments'] = 'yes';
-				$insert_group['canpostpolls'] = 'yes';
-				$insert_group['canvotepolls'] = 'yes';
-				$insert_group['canusepms'] = 'yes';
-				$insert_group['cansendpms'] = 'yes';
-				$insert_group['cantrackpms'] = 'yes';
-				$insert_group['candenypmreceipts'] = 'yes';
-				$insert_group['pmquota'] = '0';
-				$insert_group['maxpmrecipients'] = '5';
-				$insert_group['cansendemail'] = 'yes';
-				$insert_group['canviewmemberlist'] = 'yes';
-				$insert_group['canviewcalendar'] = 'yes';
-				$insert_group['canaddpublicevents'] = 'yes';
-				$insert_group['canaddprivateevents'] = 'yes';
-				$insert_group['canviewonline'] = 'yes';
-				$insert_group['canviewwolinvis'] = 'no';
-				$insert_group['canviewonlineips'] = 'no';
-				$insert_group['cancp'] = 'no';
-				$insert_group['issupermod'] = 'no';
-				$insert_group['cansearch'] = 'yes';
-				$insert_group['canusercp'] = 'yes';
-				$insert_group['canuploadavatars'] = 'yes';
-				$insert_group['canratemembers'] = 'yes';
-				$insert_group['canchangename'] = 'no';
-				$insert_group['showforumteam'] = 'no';
-				$insert_group['usereputationsystem'] = 'yes';
-				$insert_group['cangivereputations'] = 'yes';
-				$insert_group['reputationpower'] = '1';
-				$insert_group['maxreputationsday'] = '5';
-				$insert_group['candisplaygroup'] = 'yes';
-				$insert_group['attachquota'] = '0';
-				$insert_group['cancustomtitle'] = 'yes';
-				
-				echo "custom usergroup...";
-
-				$gid = $this->insert_usergroup($insert_group);
-				
-				// Restore connections
-				$update_array = array('usergroup' => $gid);
-				$db->update_query("users", $update_array, "import_usergroup = '{$group['group_id']}'");
-				$db->update_query("users", $update_array, "import_displaygroup = '{$group['group_id']}'");
-				$query1 = $db->simple_select("users", "uid, import_additionalgroups AS additionalGroups", "CONCAT(',', import_additionalgroups, ',') LIKE '%,{$group['group_id']},%'");
-				
-				$this->import_gids = null; // Force cache refresh
-				
-				echo "done.<br />\n";	
-			}
-			
-			if($this->old_db->num_rows($query) == 0)
-			{
-				echo "There are no Usergroups to import. Please press next to continue.";
-			}
-		}
-		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];
 		$output->print_footer();
 	}
 	
@@ -827,30 +824,25 @@ EOF;
 		}
 		else
 		{
-			$query = $this->old_db->query("
-				SELECT * 
-				FROM ".PHPBB_TABLE_PREFIX."privmsgs p
-				LEFT JOIN ".PHPBB_TABLE_PREFIX."privmsgs_text pt ON(p.privmsgs_id=pt.privmsgs_text_id)
-				LIMIT ".$import_session['start_privatemessages'].", ".$import_session['privatemessages_per_screen']
-			);
+			$query = $this->old_db->simple_select("privmsgs", "*", "", array('limit_start' => $import_session['start_privatemessages'], 'limit' => $import_session['privatemessages_per_screen']));
 			
 			while($pm = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting Private Message #{$pm['privmsgs_id']}... ";
+				echo "Inserting Private Message #{$pm['msg_id']}... ";
 				
 				$insert_pm['pmid'] = null;
-				$insert_pm['import_pmid'] = $pm['privmsgs_id'];
-				$insert_pm['uid'] = $this->get_import_uid($pm['privmsgs_from_userid']);
-				$insert_pm['fromid'] = $this->get_import_uid($pm['privmsgs_from_userid']);
-				$insert_pm['toid'] = $this->get_import_uid($pm['privmsgs_to_userid']);
+				$insert_pm['import_pmid'] = $pm['msg_id'];
+				$insert_pm['uid'] = $this->get_import_uid($pm['author_id']);
+				$insert_pm['fromid'] = $this->get_import_uid($pm['author_id']);
+				$insert_pm['toid'] = $this->get_import_uid($pm['to_address']);
 				$insert_pm['recipients'] = 'a:1:{s:2:"to";a:1:{i:0;s:'.strlen($insert_pm['toid']).':"'.$insert_pm['toid'].'";}}';
 				$insert_pm['folder'] = '1';
-				$insert_pm['subject'] = $pm['privmsgs_subject'];
-				$insert_pm['status'] = $pm['is_read'];
-				$insert_pm['dateline'] = $pm['privmsgs_date'];
-				$insert_pm['message'] = str_replace($pm['privmsgs_bbcode_uid'], '', htmlspecialchars_decode($pm['privmsgs_text']));
-				$insert_pm['includesig'] = int_to_yesno($pm['privmsgs_attach_sig']);
-				$insert_pm['smilieoff'] = int_to_noyes($pm['privmsgs_enable_smilies']);
+				$insert_pm['subject'] = $pm['message_subject'];
+				$insert_pm['status'] = '1';
+				$insert_pm['dateline'] = $pm['message_time'];
+				$insert_pm['message'] = str_replace($pm['bbcode_uid'], '', htmlspecialchars_decode($pm['message_text']));
+				$insert_pm['includesig'] = int_to_yesno($pm['enable_sig']);
+				$insert_pm['smilieoff'] = int_to_noyes($pm['enable_smilies']);
 				if($insert_pm['smilieoff'] == 'no')
 				{
 					$insert_pm['smilieoff'] = '';
@@ -877,7 +869,7 @@ EOF;
 		$tidbit = "";
 		if(!empty($tid))
 		{
-			$tidbit = " AND tid='".intval($tid)."'";
+			$tidbit = " AND topic_id='".intval($tid)."'";
 		}
 		$query = $this->old_db->simple_select("posts", "COUNT(*) as invisible", "post_approved='0'$tidbit");
 		return $this->old_db->fetch_field($query, "invisible");
@@ -902,7 +894,7 @@ EOF;
 	 */
 	 function get_private_messages($uid)
 	 {
-	 	$query = $this->old_db->simple_select("privmsgs", "COUNT(*) as pms", "privmsgs_to_userid = '$uid' OR privmsgs_from_userid = '$uid'");
+	 	$query = $this->old_db->simple_select("privmsgs", "COUNT(*) as pms", "to_address = '$uid' OR author_id = '$uid'");
 		
 		return $this->old_db->fetch_field($query, 'pms');
 	 }
@@ -914,14 +906,7 @@ EOF;
 	 */
 	function get_post($pid)
 	{		
-		$query = $this->old_db->query("
-			SELECT *
-			FROM ".PHPBB_TABLE_PREFIX."posts p
-			LEFT JOIN ".PHPBB_TABLE_PREFIX."posts_text pt ON (p.post_id=pt.post_id)
-			WHERE p.post_id='{$pid}'
-			LIMIT 1
-		");
-		
+		$query = $this->old_db->simple_select("posts", "*", "post_id='{$pid}'", array('limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
@@ -987,7 +972,18 @@ EOF;
 				$group .= $comma;
 				switch($phpbbgroup['group_id'])
 				{
-					case 2: // Administrator
+					case 1: // Guests
+					case 6: // Bots
+						$group .= 1;
+						break;
+					case 2: // Register
+					case 3: // Registered coppa
+						$group .= 2;
+						break;
+					case 4:
+						$group .= 3;
+						break;
+					case 5: // Administrator
 						$group .= 4;
 						break;
 					default:
@@ -1012,13 +1008,6 @@ EOF;
 	
 			return $group;
 		}
-	}
-	
-	// Decode function for phpBB's IP Addresses
-	function decode_ip($ip)
-	{
-		$hex_ip = explode('.', chunk_split($ip, 2, '.'));
-		return hexdec($hex_ip[0]). '.' . hexdec($hex_ip[1]) . '.' . hexdec($hex_ip[2]) . '.' . hexdec($hex_ip[3]);
 	}
 }
 

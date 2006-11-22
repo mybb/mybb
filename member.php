@@ -920,7 +920,7 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("member_do_login_end");
 
-	if($mybb->input['url'] != "" && strpos(basename($mybb->input['url']), 'member.php') === false)
+	if($mybb->input['url'] != "" && my_strpos(basename($mybb->input['url']), 'member.php') === false)
 	{
 		// Redirect to the URL if it is not member.php
 		redirect(htmlentities($mybb->input['url']), $lang->redirect_loggedin);
@@ -1032,7 +1032,7 @@ elseif($mybb->input['action'] == "profile")
 	$lang->users_forum_info = sprintf($lang->users_forum_info, $memprofile['username']);
 	$lang->users_contact_details = sprintf($lang->users_contact_details, $memprofile['username']);
 
-	if($mybb->settings['enablepms'] != "no" && $memprofile['receivepms'] != "no" && $memperms['canusepms'] != "no" && strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+	if($mybb->settings['enablepms'] != "no" && $memprofile['receivepms'] != "no" && $memperms['canusepms'] != "no" && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 	{
 		$lang->send_pm = sprintf($lang->send_pm, $memprofile['username']);
 	}

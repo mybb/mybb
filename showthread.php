@@ -100,7 +100,7 @@ if(!$mybb->input['action'])
 // Jump to the last post.
 if($mybb->input['action'] == "lastpost")
 {
-	if(strstr($thread['closed'], "moved|"))
+	if(my_strpos($thread['closed'], "moved|"))
 	{
 		$query = $db->query("
 			SELECT p.pid

@@ -356,7 +356,7 @@ function makeselectcode($title, $name, $table, $tableid, $optiondisp, $selected=
 	}
 	if($extra)
 	{
-		$eq_pos = strpos($extra, "=");
+		$eq_pos = my_strpos($extra, "=");
 		if($eq_pos !== false)
 		{
 			$exp = explode("=", $extra, 2);
@@ -2393,7 +2393,7 @@ function is_super_admin($uid)
 {
 	global $config;
 	$config['super_admins'] = str_replace(" ", "", $config['super_admins']);
-	if(strpos(",{$config['super_admins']},", ",{$uid},") === false)
+	if(my_strpos(",{$config['super_admins']},", ",{$uid},") === false)
 	{
 		return false;
 	}

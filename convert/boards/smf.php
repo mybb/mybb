@@ -9,10 +9,10 @@
  * $Id$
  */
  
-// Board Name: SMF 1.0.8
+// Board Name: SMF 1.1
 
 class Convert_smf extends Converter {
-	var $bbname = "SMF";
+	var $bbname = "SMF 1.1";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import SMF Usergroups",
@@ -586,7 +586,7 @@ EOF;
 				$insert_thread['import_tid'] = $thread['ID_TOPIC'];
 				$insert_thread['sticky'] = $thread['isSticky'];
 				$insert_thread['fid'] = $this->get_import_fid($thread['ID_BOARD']);
-				$insert_thread['firstpost'] = $thread['ID_FIRST_MSG'];				
+				$insert_thread['firstpost'] = $thread['ID_FIRST_MSG'];			
 
 				$first_post = $this->get_post($thread['ID_FIRST_MSG']);				
 				$insert_thread['icon'] = $first_post['icon'];
@@ -599,6 +599,11 @@ EOF;
 				$insert_thread['views'] = $thread['numViews'];
 				$insert_thread['replies'] = $thread['numReplies'];
 				$insert_thread['closed'] = int_to_yesno($thread['locked']);
+				if($insert_thread['closed'] == "no")
+				{
+					$insert_thread['closed'] = '';
+				}
+				
 				$insert_thread['totalratings'] = '0';
 				$insert_thread['notes'] = '';
 				$insert_thread['visible'] = '1';
@@ -948,8 +953,7 @@ EOF;
 					
 					// Restore connections
 					$update_array = array('usergroup' => $gid);
-					$db->update_query("users", $update_array, "import_usergroup = '{$group['ID_GROUP']}'");
-					$db->update_query("users", $update_array, "import_displaygroup = '{$group['ID_GROUP']}'");
+					$db->update_query("users", $update_array, "import_usergroup = '{$group['ID_GROUP']}' OR import_displaygroup = '{$group['ID_GROUP']}'");
 					$query1 = $db->simple_select("users", "uid, import_additionalgroups AS additionalGroups", "CONCAT(',', import_additionalgroups, ',') LIKE '%,{$group['ID_GROUP']},%'");
 					
 					$this->import_gids = null; // Force cache refresh

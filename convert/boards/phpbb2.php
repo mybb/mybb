@@ -17,16 +17,16 @@ class Convert_phpbb2 extends Converter {
 									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import phpBB 2 Usergroups",
 									  "dependencies" => "db_configuration"),
+						 "import_users" => array("name" => "Import phpBB 2 Users",
+									  "dependencies" => "db_configuration,import_usergroups"),
 						 "import_categories" => array("name" => "Import phpBB 2 Categories",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_users"),
 						 "import_forums" => array("name" => "Import phpBB 2 Forums",
 									  "dependencies" => "db_configuration,import_categories"),
 						 "import_threads" => array("name" => "Import phpBB 2 Threads",
 									  "dependencies" => "db_configuration,import_forums"),
 						 "import_posts" => array("name" => "Import phpBB 2 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_users" => array("name" => "Import phpBB 2 Users",
-									  "dependencies" => "db_configuration,import_usergroups"),
 						 "import_privatemessages" => array("name" => "Import phpBB 2 Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
 						);
@@ -260,7 +260,7 @@ EOF;
 				if(in_array($user['username'], $members_cache))
 				{
 					++$member_dup_count;
-					$user['username'] .= "_phpbb_import".$member_dup_count;
+					$user['username'] .= "_phpbb2_import".$member_dup_count;
 				}
 				
 				$members_cache[] = $user['username'];				
@@ -590,7 +590,7 @@ EOF;
 				$insert_thread['import_tid'] = $thread['topic_id'];
 				$insert_thread['sticky'] = int_to_yesno($thread['topic_type']);
 				$insert_thread['fid'] = $this->get_import_fid($thread['forum_id']);
-				$insert_thread['firstpost'] = $thread['topic_first_post_id'];				
+				$insert_thread['firstpost'] = ((-1) * $thread['topic_first_post_id']);	
 				$insert_thread['icon'] = '';
 				$insert_thread['dateline'] = $thread['topic_time'];
 				$insert_thread['subject'] = $thread['topic_title'];
@@ -601,6 +601,11 @@ EOF;
 				$insert_thread['views'] = $thread['topic_views'];
 				$insert_thread['replies'] = $thread['topic_replies'];
 				$insert_thread['closed'] = int_to_yesno($thread['topic_status']);
+				if($insert_thread['closed'] == "no")
+				{
+					$insert_thread['closed'] = '';
+				}
+				
 				$insert_thread['totalratings'] = '0';
 				$insert_thread['notes'] = '';
 				$insert_thread['visible'] = '1';
@@ -618,7 +623,11 @@ EOF;
 				$member_started = $this->get_post($thread['topic_first_post_id']);
 				$member_started = $this->get_user($member_started['poster_id']);
 				$insert_thread['username'] = $member_started['username'];
+				
 				$this->insert_thread($insert_thread);
+				
+				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid='".((-1) * $import_post['tid'])."'");
+				
 				echo "done.<br />\n";			
 			}
 			
@@ -684,20 +693,6 @@ EOF;
 				$insert_post['import_pid'] = $post['post_id'];
 				$insert_post['tid'] = $this->get_import_tid($post['topic_id']);
 				
-				// Find if this is the first post in thread
-				$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
-				$first_post = $db->fetch_field($query1, "firstpost");
-				
-				// Make the replyto the first post of thread unless it is the first post
-				if($first_post == $post['post_id'])
-				{
-					$insert_post['replyto'] = 0;
-				}
-				else
-				{
-					$insert_post['replyto'] = $first_post;
-				}
-				
 				// Check the last post for any NULL's, converted by phpBB's parser to a default topic
 				if($post['post_subject'] == 'NULL')
 				{
@@ -714,6 +709,7 @@ EOF;
 					$post['username'] = 'Guest';
 				}
 
+				$insert_post['pid'] = 0;
 				$insert_post['fid'] = $this->get_import_fid($post['forum_id']);
 				$insert_post['subject'] = $post['post_subject'];
 				$insert_post['icon'] = 0;
@@ -734,6 +730,14 @@ EOF;
 				
 				// Update thread count
 				update_thread_count($insert_post['tid']);
+				
+				$db->update_query("threads", array('firstpost' => $pid), "tid='{$insert_post['tid']}' AND firstpost='".((-1) * $import_post['pid'])."'");
+				if($db->affected_rows() == 0)
+				{
+					$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
+					$first_post = $db->fetch_field($query1, "firstpost");
+					$db->update_query("posts", array('replyto' => $first_post), "pid='{$pid}'");
+				}
 				
 				echo "done.<br />\n";			
 			}
@@ -856,9 +860,7 @@ EOF;
 				
 				// Restore connections
 				$update_array = array('usergroup' => $gid);
-				$db->update_query("users", $update_array, "import_usergroup = '{$group['group_id']}'");
-				$db->update_query("users", $update_array, "import_displaygroup = '{$group['group_id']}'");
-				$query1 = $db->simple_select("users", "uid, import_additionalgroups AS additionalGroups", "CONCAT(',', import_additionalgroups, ',') LIKE '%,{$group['group_id']},%'");
+				$db->update_query("users", $update_array, "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
 				
 				$this->import_gids = null; // Force cache refresh
 				

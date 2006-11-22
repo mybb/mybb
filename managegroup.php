@@ -209,7 +209,7 @@ else
 		$altbg = alt_trow();
 		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
 		$post = $user;
-		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes" && strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes" && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$sendpm = \"".$templates->get("postbit_pm")."\";");
 		}

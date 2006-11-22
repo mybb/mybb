@@ -38,7 +38,7 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 }
 
 // Do not use session system for defined pages
-if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || (isset($mybb->input['thumbnail']) && strstr($_SERVER["PHP_SELF"], 'attachment.php')))
+if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || (isset($mybb->input['thumbnail']) && my_strpos($_SERVER["PHP_SELF"], 'attachment.php')))
 {
 	define("NO_ONLINE", 1);
 }
@@ -371,7 +371,7 @@ if(is_array($bannedips))
 		if($bannedip != '')
 		{
 			// This address is banned, show an error and delete the session
-			if(strstr($session->ipaddress, $bannedip))
+			if(my_strpos($session->ipaddress, $bannedip))
 			{
 				$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
 				error($lang->error_banned);

@@ -270,7 +270,7 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['button_profile'] = \"".$templates->get("postbit_profile")."\";");
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
 		
-		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes" && strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes" && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
 		}
@@ -377,7 +377,7 @@ function build_postbit($post, $post_type=0)
 		// Inline moderation stuff
 		if($ismod)
 		{
-			if(strstr($_COOKIE[$inlinecookie], "|".$post['pid']."|"))
+			if(my_strpos($_COOKIE[$inlinecookie], "|".$post['pid']."|"))
 			{
 				$inlinecheck = "checked=\"checked\"";
 				$inlinecount++;

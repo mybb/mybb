@@ -34,7 +34,7 @@ function output_page($contents)
 		
 		$serverload = get_server_load();
 		
-		if(strstr(getenv("REQUEST_URI"), "?"))
+		if(my_strpos(getenv("REQUEST_URI"), "?"))
 		{
 			$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "&amp;debug=1";
 		}
@@ -1847,7 +1847,7 @@ function build_clickable_smilies()
  */
 function gzip_encode($contents, $level=1)
 {
-	if(function_exists("gzcompress") && function_exists("crc32") && !headers_sent() && !(ini_get('output_buffering') && strpos(' '.ini_get('output_handler'), 'ob_gzhandler')))
+	if(function_exists("gzcompress") && function_exists("crc32") && !headers_sent() && !(ini_get('output_buffering') && my_strpos(' '.ini_get('output_handler'), 'ob_gzhandler')))
 	{
 		$httpaccept_encoding = '';
 		
@@ -1856,12 +1856,12 @@ function gzip_encode($contents, $level=1)
 			$httpaccept_encoding = $_SERVER['HTTP_ACCEPT_ENCODING'];
 		}
 		
-		if(strpos(" ".$httpaccept_encoding, "x-gzip"))
+		if(my_strpos(" ".$httpaccept_encoding, "x-gzip"))
 		{
 			$encoding = "x-gzip";
 		}
 		
-		if(strpos(" ".$httpaccept_encoding, "gzip"))
+		if(my_strpos(" ".$httpaccept_encoding, "gzip"))
 		{
 			$encoding = "gzip";
 		}
@@ -3222,6 +3222,28 @@ function my_strtolower($string)
 }
 
 /**
+ * Finds a needle in a haystack and returns it position, mb strings accounted for
+ *
+ * @param string String to look in (haystack)
+ * @param string What to look for (needle)
+ * @param int (optional) How much to offset
+ * @return int false on needle not found, integer position if found
+ */
+function my_strpos($haystack, $needle, $offset=0)
+{
+	if(function_exists("mb_my_strpos"))
+	{
+		$position = mb_strpos($haystack, $needle, $offset);
+	}
+	else
+	{
+		$position = strpos($haystack, $needle, $offset);
+	}
+	
+	return $position;
+}
+
+/**
  * ups the case of a string, mb strings accounted for
  *
  * @param string The string to up.
@@ -3545,7 +3567,7 @@ function get_inactive_forums()
 			$inactive[] = $fid;
 			foreach($forum_cache as $fid1 => $forum1)
 			{
-				if(strpos(",".$forum1['parentlist'].",", ",".$fid.",") !== false && !in_array($fid1, $inactive))
+				if(my_strpos(",".$forum1['parentlist'].",", ",".$fid.",") !== false && !in_array($fid1, $inactive))
 				{					
 					$inactive[] = $fid1;
 				}
@@ -3793,7 +3815,7 @@ if(!function_exists("stripos"))
 {
 	function stripos($haystack, $needle, $offset=0)
 	{
-		return strpos(my_strtoupper($haystack), my_strtoupper($needle), $offset);
+		return my_strpos(my_strtoupper($haystack), my_strtoupper($needle), $offset);
 	}
 }
 

@@ -366,7 +366,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 			echo "<tr>\n";
 		}
 		$smilie['image'] = str_replace("{theme:imgdir}", $theme['imgdir'], $smilie['image']);
-		if(strstr($smilie['image'], "p://") || substr($smilie['image'],0,1) == "/") 
+		if(my_strpos($smilie['image'], "p://") || substr($smilie['image'],0,1) == "/") 
     {
 			$image = $smilie['image'];
 		}

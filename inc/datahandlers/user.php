@@ -84,7 +84,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check for certain characters in username (<, >, &, and slashes)
-		if(eregi("<", $username) || eregi(">", $username) || eregi("&", $username) || strpos($username, "\\") !== false || eregi(";", $username))
+		if(eregi("<", $username) || eregi(">", $username) || eregi("&", $username) || my_strpos($username, "\\") !== false || eregi(";", $username))
 		{
 			$this->set_error("bad_characters_username");
 			return false;
@@ -220,7 +220,7 @@ class UserDataHandler extends DataHandler
 				$bannedemail = my_strtolower(trim($bannedemail));
 				if($bannedemail != '')
 				{
-					if(strstr($user['email'], $bannedemail) != '')
+					if(my_strpos($user['email'], $bannedemail) != '')
 					{
 						$this->set_error('banned_email');
 						return false;

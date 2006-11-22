@@ -192,7 +192,7 @@ function clean_keywords_ft($keywords)
 	$keywords = preg_replace("#([\[\]\|\.\,:])#s", " ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
 
-	if(strpos($keywords, "\"") !== false)
+	if(my_strpos($keywords, "\"") !== false)
 	{
 		$inquote = false;
 		$keywords = explode("\"", $keywords);

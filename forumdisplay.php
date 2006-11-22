@@ -724,7 +724,7 @@ if(is_array($threadcache))
 
 		if($ismod)
 		{
-			if(strstr($_COOKIE[$inlinecookie], "|{$thread['tid']}|"))
+			if(my_strpos($_COOKIE[$inlinecookie], "|{$thread['tid']}|"))
 			{
 				$inlinecheck = "checked=\"checked\"";
 				++$inlinecount;

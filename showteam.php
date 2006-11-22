@@ -123,7 +123,7 @@ foreach($usergroups as $usergroup)
 			eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
 		}
 		
-		if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no' && strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no' && my_strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
 		}

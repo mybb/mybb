@@ -675,7 +675,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 				$foldername = $val;
 				$foldername = $db->escape_string(htmlspecialchars_uni($foldername));
 				
-				if(strpos($foldername, "$%%$") === false)
+				if(my_strpos($foldername, "$%%$") === false)
 				{
 					if($folders != '')
 					{

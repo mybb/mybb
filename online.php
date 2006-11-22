@@ -168,7 +168,7 @@ else
 			}
 		}
 		// Otherwise this session is a bot
-		else if(strstr($user['sid'], "bot=") !== false && $session->bots[$botkey])
+		else if(my_strpos($user['sid'], "bot=") !== false && $session->bots[$botkey])
 		{
 			$user['bot'] = $session->bots[$botkey];
 			$guests[] = $user;

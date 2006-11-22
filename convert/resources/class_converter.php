@@ -32,6 +32,11 @@ class Converter
 	var $import_gids;
 	
 	/**
+	 * Cache for the new Usernames
+	 */
+	var $import_usernames;
+	
+	/**
 	 * Class constructor
 	 */
     function Converter()
@@ -285,7 +290,7 @@ class Converter
 	 */
 	function get_import_username($old_uid)
 	{
-		if(!is_array($this->import_uids))
+		if(!is_array($this->import_usernames))
 		{
 			$username_array = $this->get_import_usernames();
 		}
