@@ -38,7 +38,7 @@ $l['field_type_radio'] = "Radio Buttons";
 $l['field_type_checkbox'] = "Check Boxes";
 $l['field_options'] = "Selectable Options<br /><small>Please enter each option on its own line, this only applies to the selectboxes, checkboxes, and radio box setting types</small>";
 $l['field_required'] = "Required?<br /><small>Require the field to be filled in during registration or profile editing?<br />Does not apply if 'hidden' is selected below.</small>";
-$l['field_editable'] = "Editable by User?<br /><small>Is the field editable by the user? If not, it can be edited by admins/mods can edit it.</small>";
+$l['field_editable'] = "Editable by User?<br /><small>Is the field editable by the user? If not, admins/mods can still edit it.</small>";
 $l['field_hidden'] = "Hidden on Profile?<br /><small>Is the field hidden from users and only viewable by admins/mods</small>";
 $l['add_field'] = "Add Field";
 

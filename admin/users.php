@@ -675,6 +675,40 @@ if($mybb->input['action'] == "do_email")
 				// Update private message count (total, new and unread) for recipient
 				update_pm_count($user['uid'], 7, $user['lastactive']);
 				
+				if($user['pmnotify'] == "yes")
+				{
+					if($user['language'] != "" && $lang->language_exists($user['language']))
+					{
+						$uselang = $user['language'];
+					}
+					elseif($mybb->settings['bblanguage'])
+					{
+						$uselang = $mybb->settings['bblanguage'];
+					}
+					else
+					{
+						$uselang = "english";
+					}
+					
+					if($uselang == $mybb->settings['bblanguage'])
+					{
+						$emailsubject = $lang->emailsubject_newpm;
+						$emailmessage = $lang->email_newpm;
+					}
+					else
+					{
+						$userlang = new MyLanguage;
+						$userlang->set_path("./inc/languages");
+						$userlang->set_language($uselang);
+						$userlang->load("messages");
+						$emailsubject = $userlang->emailsubject_newpm;
+						$emailmessage = $userlang->email_newpm;
+					}
+					$emailmessage = sprintf($emailmessage, $user['username'], $mybbadmin['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+					$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
+					my_mail($user['email'], $emailsubject, $emailmessage);
+				}
+				
 				echo sprintf($lang->pm_sent, $user['username']);
 			}
 			elseif($user['email'] != '')
@@ -921,7 +955,7 @@ if($mybb->input['action'] == "edit")
 	makeyesnocode($lang->email_notify, "emailnotify", $user['emailnotify']);
 	makeyesnocode($lang->enable_pms, "receivepms", $user['receivepms']);
 	makeyesnocode($lang->pm_popup, "pmpopup", $user['pmpopup']);
-	makeyesnocode($lang->pm_notify, "pmnotify", $user['pmnotify']);
+	makeyesnocode($lang->pm_notify, "emailpmnotify", $user['emailpmnotify']);
 	makeinputcode($lang->time_offset, "timezoneoffset", $user['timezone']);
 	if(!$user['style'])
 	{

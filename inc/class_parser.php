@@ -75,7 +75,7 @@ class postParser
 
 		if($this->base_url != "")
 		{
-			if(substr($this->base_url, strlen($this->base_url) -1) != "/")
+			if(my_substr($this->base_url, my_strlen($this->base_url) -1) != "/")
 			{
 				$this->base_url = $this->base_url."/";
 			}
@@ -108,6 +108,7 @@ class postParser
 				}
 				$message = preg_replace("#<base(.*)>#is", "&lt;base$1&gt;", $message);
 				$message = preg_replace("#<meta(.*)>#is", "&lt;meta$1&gt;", $message);
+				$message = str_replace(array('<?php', '<!--', '-->', '?>'), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;'), $message);
 			}
 		}
 		
@@ -150,11 +151,11 @@ class postParser
 						$text[2] = $this->parse_html($text[2]);
 					}
 					
-					if(strtolower($text[1]) == "code")
+					if(my_strtolower($text[1]) == "code")
 					{
 						$code = $this->mycode_parse_code($text[2]);
 					}
-					elseif(strtolower($text[1]) == "php")
+					elseif(my_strtolower($text[1]) == "php")
 					{
 						$code = $this->mycode_parse_php($text[2]);
 					}
@@ -305,9 +306,9 @@ class postParser
 		$message = $this->mycode_parse_quotes($message);
 		
 		$message = $this->mycode_auto_url($message);
-		
-		$message = str_replace('$', '&#36;', $message);		
 
+		$message = str_replace('$', '&#36;', $message);
+		
 		// Replace the rest
 		$message = preg_replace($this->mycode_cache['find'], $this->mycode_cache['replacement'], $message);
 
@@ -421,7 +422,7 @@ class postParser
 			{
 				if(!$badword['replacement']) $badword['replacement'] = "*****";
 				$badword['badword'] = preg_quote($badword['badword']);
-				preg_replace("#(\W|^)".$badword['badword']."(\W|$)#i", "\\1".$badword['replacement']."\\2", $message);
+				$message = preg_replace("#(\W|^)".$badword['badword']."(\W|$)#i", "\\1".$badword['replacement']."\\2", $message);
 			}
 		}
 		if($options['strip_tags'] == "yes")
@@ -475,6 +476,7 @@ class postParser
 		// Assign pattern and replace values.
 		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#si",
 						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
+						 
 
 		$replace = array("</p>\n<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote\n</div><div class=\"quote_body\">$2</div>\n<p>\n",
 						 "</p>\n<div class=\"quote_header\">$lang->quote\n</div><div class=\"quote_body\">$1</div>\n<p>\n");
@@ -622,9 +624,9 @@ class postParser
 		$fullurl = stripslashes($fullurl);
 		if($name == $url && $this->options['shorten_urls'] != "no")
 		{
-			if(strlen($url) > 55)
+			if(my_strlen($url) > 55)
 			{
-				$name = substr($url, 0, 40)."...".substr($url, -10);
+				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
 			}
 		}
 
