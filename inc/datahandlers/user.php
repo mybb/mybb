@@ -381,12 +381,18 @@ class UserDataHandler extends DataHandler
 		// Loop through profile fields checking if they exist or not and are filled in.
 		$userfields = array();
 		$comma = '';
+		$editable = '';
+		
+		if(!$this->data['profile_fields_editable'])
+		{
+			$editable = "editable='yes'";
+		}
 
 		// Fetch all profile fields first.
 		$options = array(
 			'order_by' => 'disporder'
 		);
-		$query = $db->simple_select('profilefields', 'name, type, fid, required', "editable='yes'", $options);
+		$query = $db->simple_select('profilefields', 'name, type, fid, required', $editable, $options);
 
 		// Then loop through the profile fields.
 		while($profilefield = $db->fetch_array($query))
