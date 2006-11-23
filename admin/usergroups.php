@@ -214,6 +214,7 @@ if($mybb->input['action'] == "do_delete")
 	if($mybb->input['deletesubmit'])
 	{
 		$plugins->run_hooks("admin_usergroups_do_delete");
+		$db->query("DELETE FROM ".TABLE_PREFIX."groupleaders WHERE gid='".intval($mybb->input['gid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."' AND type!='1'");
 		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='2' WHERE usergroup='".intval($mybb->input['gid'])."'");
 		$db->query("UPDATE ".TABLE_PREFIX."users SET displaygroup=usergroup WHERE displaygroup='".intval($mybb->input['gid'])."'");
