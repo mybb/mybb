@@ -470,6 +470,13 @@ if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 	$db->delete_query("threads", "deletetime != '0' AND deletetime < '".time()."'");
 }
 
+// Randomly clear out old guest sessions (older than 24 hours)
+if($rand > 4 && $rand < 8)
+{
+	$timecut = time()-60*60*24;
+	$db->delete_query("sessions", "uid=0 AND time<='$timecut'");
+}
+
 // Set the link to the archive.
 $archive_url = $mybb->settings['bburl']."/archive/index.php";
 

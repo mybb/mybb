@@ -277,9 +277,14 @@ messageEditor.prototype = {
 		areaContainer.style.clear = "both";
 
 		// Set the width/height of the area
-		subtract = subtract2 = parseInt(editor.style.padding)*2;
+		subtract = subtract2 = 0;
+		if(MyBB.browser == "mozilla")
+		{
+			subtract = subtract2 = 8;
+		}
 		areaContainer.style.height = parseInt(editor.style.height)-parseInt(toolBar.style.height)-parseInt(toolbar2.style.height)-subtract+"px";
-		areaContainer.style.width = (parseInt(editor.style.width)-subtract2)+"px";
+		areaContainer.style.width = parseInt(editor.style.width)-subtract2+"px";
+		
 		// Create text area
 		textInput = document.createElement("textarea");
 		textInput.id = this.textarea;
@@ -305,7 +310,10 @@ messageEditor.prototype = {
 			Event.observe(oldTextarea.form, "submit", this.closeTags.bindAsEventListener(this));
 		}
 		// Hide the old editor
-		oldTextarea.style.display = "none";
+		oldTextarea.style.visibility = "hidden";
+		oldTextarea.style.position = "absolute";
+		oldTextarea.style.top = "-1000px";
+		oldTextarea.id += "_old";
 		this.oldTextarea = oldTextarea;
 
 		// Append the new editor
