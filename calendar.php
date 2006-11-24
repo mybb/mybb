@@ -79,7 +79,7 @@ else
 		$month = my_date("n");
 	}
 	// Find the number of days in that month
-	$time = gmmktime(0, 0, 0, $month, 1, $year);
+	$time = mktime(0, 0, 0, $month, 1, $year);
 	$days = my_date("t", $time);
 	// Now the specific day
 	if(isset($mybb->input['day']) && $mybb->input['day'] >= 1 && $mybb->input['day'] <= $days)
@@ -177,7 +177,7 @@ if($mybb->input['action'] == "event")
 		$eventposter = $lang->guest;
 	}
 	$eventdate = explode("-", $event['date']);
-	$eventdate = gmmktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
+	$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
 	$eventdate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
 
 	add_breadcrumb($lang->nav_viewevent);
@@ -266,7 +266,7 @@ if($mybb->input['action'] == "dayview")
 			$eventposter = $lang_guest;
 		}
 		$eventdate = explode("-", $event['date']);
-		$eventdate = gmmktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
+		$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
 		$eventdate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
 		eval("\$events .= \"".$templates->get("calendar_dayview_event")."\";");
 	}
@@ -277,7 +277,7 @@ if($mybb->input['action'] == "dayview")
 	}
 	if($birthdays)
 	{
-		$eventdate = gmmktime(0, 0, 0, $month, $day, $year);
+		$eventdate = mktime(0, 0, 0, $month, $day, $year);
 		$bdaydate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
 		$lang->birthdays_on_day = sprintf($lang->birthdays_on_day, $bdaydate);
 		eval("\$bdaylist = \"".$templates->get("calendar_dayview_birthdays")."\";");
