@@ -25,9 +25,6 @@ $feedgenerator = new FeedGenerator();
 // Load the post parser
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
-$parser_options = array(
-	'allow_html' => "yes"
-);
 
 // Find out the thread limit.
 $thread_limit = intval($mybb->input['limit']);
@@ -111,10 +108,12 @@ if($all_forums)
 
 // Get the threads to syndicate.
 $query = $db->query("
-	SELECT t.*, f.name AS forumname, p.message AS postmessage
+	SELECT t.tid, t.dateline AS date, t.subject AS title, f.allowhtml, f.allowmycode, f.allowsmilies, f.allowimgcode,
+	f.name AS forumname, p.message AS description, u.username, p.smilieoff, f.fid
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
 	LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 	WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' ".$forumlist."
 	ORDER BY t.dateline DESC
 	LIMIT 0, ".$thread_limit
@@ -135,15 +134,10 @@ $feedgenerator->set_channel($channel);
 // Loop through all the threads.
 while($thread = $db->fetch_array($query))
 {
-	$item = array(
-		"title" => $thread['subject'],
-		"link" => $mybb->settings['bburl']."/showthread.php?tid=".$thread['tid'],
-		"description" => $parser->strip_mycode($thread['postmessage'], $parser_options),
-		"date" => $thread['dateline']
-	);
+	$thread['link'] = $mybb->settings['bburl']."/showthread.php?tid=".$thread['tid'];
 	if($forumcache[$thread['fid']])
 	{
-		$feedgenerator->add_item($item);
+		$feedgenerator->add_item($thread);
 	}
 }
 

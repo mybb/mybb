@@ -459,6 +459,17 @@ if($mybb->input['action'] == "results")
 				$readthreads[$readthread['tid']] = $readthread['dateline'];
 			}
 		}
+
+		$dot_icon = array();
+		if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] != 0)
+		{
+			$query = $db->simple_select(TABLE_PREFIX."posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$tids.")");
+			while($post = $db->fetch_array($query))
+			{
+				$dot_icon[$post['tid']] = true;
+			}
+		}
+
 		$query = $db->query("
 			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed
 			FROM ".TABLE_PREFIX."posts p
@@ -522,7 +533,13 @@ if($mybb->input['action'] == "results")
 					}
 				}
 			}
-			
+
+			if($dot_icon[$post['tid']])
+			{
+				$folder = "dot_";
+				$folder_label .= $lang->icon_dot;
+			}
+
 			if(!$lastread)
 			{
 				$readcookie = $threadread = my_get_array_cookie("threadread", $post['tid']);

@@ -87,6 +87,7 @@ class FeedGenerator
 	 */
 	function generate_feed()
 	{
+		global $parser;
 		// First, add the feed metadata.
 		switch($this->feed_format)
 		{
@@ -117,6 +118,17 @@ class FeedGenerator
 		// Now loop through all of the items and add them to the feed XML.
 		foreach($this->items as $item)
 		{
+			$parser_options = array();
+			$parser_options['allow_html'] = $item['allowhtml'];
+			$parser_options['allow_mycode'] = $item['allowmycode'];
+			$parser_options['allow_smilies'] = $item['allowsmilies'];
+			$parser_options['allow_imgcode'] = $item['allowimgcode'];
+			$parser_options['me_username'] = $item['username'];
+			if($item['smilieoff'] == "yes")
+			{
+				$parser_options['allow_smilies'] = "no";
+			}
+
 			if(!$item['date'])
 			{
 				$item['date'] = time();
@@ -139,7 +151,7 @@ class FeedGenerator
 					$this->xml .= "\t\t<modified>{$item['date']}</modified>\n";
 					$this->xml .= "\t\t<issued>{$item['date']}</issued>\n";
 					$this->xml .= "\t\t<summary type=\"text/plain\" mode=\"escaped\"><![CDATA[".strip_tags($item['description'])."]]></summary>\n";
-					$this->xml .= "\t\t<content type=\"text/html\" mode=\"escaped\" xml:base=\"".$item['link']."\"><![CDATA[{$item['description']}]]></content>\n";
+					$this->xml .= "\t\t<content type=\"text/html\" mode=\"escaped\" xml:base=\"".$item['link']."\"><![CDATA[".$parser->parse_message($item['description'], $parser_options)."]]></content>\n";
 					$this->xml .= "\t</entry>\n";
 					break;
 
@@ -155,7 +167,7 @@ class FeedGenerator
 						$this->xml .= "\t\t\t<dc:creator><![CDATA[".htmlspecialchars_uni($item['author'])."]]></dc:creator>\n";
 					}
 					$this->xml .= "\t\t\t<guid isPermaLink=\"false\">".$item['link']."</guid>\n";
-					$this->xml .= "\t\t\t<description><![CDATA[".strip_tags($item['description'])."]]></description>\n";
+					$this->xml .= "\t\t\t<description><![CDATA[".$parser->parse_message($item['description'], $parser_options)."]]></description>\n";
 					$this->xml .= "\t\t\t<content:encoded><![CDATA[".$item['description']."]]></content:encoded>\n";
 					$this->xml .= "\t\t</item>\n";
 					break;
