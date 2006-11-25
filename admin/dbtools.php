@@ -93,15 +93,15 @@ if($mybb->input['action'] == 'do_backup')
 		if($mybb->input['type'] == 'gzip')
 		{
 			// Send headers for gzip file (do ob_start too)
-			//header('Content-Encoding: x-gzip');
-			//header('Content-Type: application/x-gzip');
-			//header('Content-Disposition: attachment; filename="'.$file.'.gz"');
+			header('Content-Encoding: x-gzip');
+			header('Content-Type: application/x-gzip');
+			header('Content-Disposition: attachment; filename="'.$file.'.gz"');
 		}
 		else
 		{
 			// Send standard headers for .sql
-			//header('Content-Type: text/x-sql');
-			//header('Content-Disposition: attachment; filename="'.$file.'.sql"');
+			header('Content-Type: text/x-sql');
+			header('Content-Disposition: attachment; filename="'.$file.'.sql"');
 		}
 	}
 	
@@ -136,7 +136,7 @@ if($mybb->input['action'] == 'do_backup')
 				{
 					if(!isset($row[$field]) || trim($row[$field]) == "")
 					{
-						$insert .= $comma.'NULL';
+						$insert .= $comma."''";
 					}
 					else
 					{
@@ -144,7 +144,7 @@ if($mybb->input['action'] == 'do_backup')
 					}
 					$comma = ',';
 				}
-				$insert .= ")\n";
+				$insert .= ");\n";
 				$contents .= $insert;
 			}
 		}
@@ -180,15 +180,7 @@ if($mybb->input['action'] == 'do_backup')
 	{
 		if($mybb->input['type'] == 'gzip')
 		{
-			if(phpversion >= '4.2')
-			{
-
-				echo htmlspecialchars(gzencode($contents, 9));
-			}
-			else
-			{
-				echo gzencode($contents);
-			}
+			echo gzencode($contents);
 		}
 		else
 		{
