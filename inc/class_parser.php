@@ -151,11 +151,11 @@ class postParser
 						$text[2] = $this->parse_html($text[2]);
 					}
 					
-					if(my_strtolower($text[1]) == "code")
+					if(strtolower($text[1]) == "code")
 					{
 						$code = $this->mycode_parse_code($text[2]);
 					}
-					elseif(my_strtolower($text[1]) == "php")
+					elseif(strtolower($text[1]) == "php")
 					{
 						$code = $this->mycode_parse_php($text[2]);
 					}

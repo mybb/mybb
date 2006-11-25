@@ -133,7 +133,7 @@ if($mybb->input['action'] == 'do_backup')
 				{
 					if(!isset($row[$field]) || trim($row[$field]) == "")
 					{
-						$insert .= $comma.'NULL';
+						$insert .= $comma."''";
 					}
 					else
 					{
@@ -141,7 +141,7 @@ if($mybb->input['action'] == 'do_backup')
 					}
 					$comma = ',';
 				}
-				$insert .= ")\n";
+				$insert .= ");\n";
 				$contents .= $insert;
 			}
 		}
