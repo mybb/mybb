@@ -121,7 +121,7 @@ if($mybb->input['action'] == 'do_backup')
 		$table = str_replace(TABLE_PREFIX, '', $table);
 		if($mybb->input['contents'] != 'data')
 		{
-			$structure = $db->show_create_table($table)."\n";
+			$structure = $db->show_create_table($table).";\n";
 			$contents .= $structure;
 		}
 		
