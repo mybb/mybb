@@ -247,16 +247,16 @@ EOF;
 			while($user = $this->old_db->fetch_array($query))
 			{
 				echo "Adding user #{$user['id']}... ";
-					
+
 				// Check for duplicate members
 				if(in_array($user['username'], $members_cache))
 				{
 					++$member_dup_count;
 					$user['username'] .= "_punbb_import".$member_dup_count;
 				}
-				
-				$members_cache[] = $user['username'];				
-				
+
+				$members_cache[] = $user['username'];
+
 				$insert_user['usergroup'] = $this->get_group_id($user['id'], true);
 				$insert_user['additionalgroups'] = $this->get_group_id($user['id']);
 				$insert_user['displaygroup'] = $this->get_group_id($user['id'], true);
@@ -308,11 +308,11 @@ EOF;
 				$insert_user['timeonline'] = 0;
 				$insert_user['totalpms'] = 0;
 				$insert_user['unreadpms'] = 0;
-				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';	
+				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';
 				$insert_user['signature'] = '';
 				$insert_user['notepad'] = '';
 				$uid = $this->insert_user($insert_user);
-				
+
 				echo "done.<br />\n";
 			}
 			
@@ -324,7 +324,7 @@ EOF;
 		$import_session['start_users'] += $import_session['users_per_screen'];
 		$output->print_footer();
 	}
-	
+
 	function import_categories()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -355,7 +355,7 @@ EOF;
 		{
 			$import_session['cats_per_screen'] = intval($mybb->input['cats_per_screen']);
 		}
-		
+
 		if(empty($import_session['cats_per_screen']))
 		{
 			$import_session['start_cats'] = 0;
@@ -440,7 +440,7 @@ EOF;
 		if(!isset($import_session['total_forums']))
 		{
 			$query = $this->old_db->simple_select("forums", "COUNT(*) as count");
-			$import_session['total_forums'] = $this->old_db->fetch_field($query, 'count');				
+			$import_session['total_forums'] = $this->old_db->fetch_field($query, 'count');
 		}
 
 		if($import_session['total_forums'])
@@ -474,7 +474,7 @@ EOF;
 			while($forum = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting forum #{$forum['id']}... ";
-				
+
 				// Values from punBB
 				$insert_forum['import_fid'] = intval($forum['id']);
 				$insert_forum['name'] = $forum['forum_name'];
@@ -671,19 +671,19 @@ EOF;
 		}
 		else
 		{	
-			$query = $this->old_db->query("posts", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
+			$query = $this->old_db->simple_select("posts", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
 
 			while($post = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting post #{$post['id']}... ";
-				
+
 				$insert_post['import_pid'] = $post['id'];
 				$insert_post['tid'] = $this->get_import_tid($post['topic_id']);
-				
+
 				// Find if this is the first post in thread
 				$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
 				$first_post = $db->fetch_field($query1, "firstpost");
-				
+
 				// Make the replyto the first post of thread unless it is the first post
 				if($first_post == $post['post_id'])
 				{
@@ -693,12 +693,11 @@ EOF;
 				{
 					$insert_post['replyto'] = $first_post;
 				}
-				
-				// Check the last post for any NULL's, converted by phpBB's parser to a default topic
+
 				$query2 = $db->simple_select("threads", "*", "tid='".$this->get_import_tid($post['topic_id'])."'");
 				$thread = $db->fetch_array($query2);
 				$insert_post['subject'] = $thread['subject'];
-				
+
 				// Get Username
 				$topic_poster = $this->get_user($post['poster_id']);
 				$post['username'] = $topic_poster['username'];
@@ -717,7 +716,7 @@ EOF;
 				$insert_post['dateline'] = $post['posted'];
 				$insert_post['message'] = $post['message'];
 				$insert_post['ipaddress'] = $post['poster_ip'];
-				$insert_post['includesig'] = 'yes';		
+				$insert_post['includesig'] = 'yes';
 				$insert_post['smilieoff'] = int_to_yesno($post['hide_smilies']);
 				if($post['edited'] != 0)
 				{
@@ -727,7 +726,7 @@ EOF;
 				}
 				else
 				{	
-					$insert_post['edituid'] = 0;				
+					$insert_post['edituid'] = 0;
 					$insert_post['edittime'] = 0;
 				}
 				$insert_post['visible'] = 1;
@@ -738,7 +737,7 @@ EOF;
 				// Update thread count
 				update_thread_count($insert_post['tid']);
 				
-				echo "done.<br />\n";			
+				echo "done.<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -760,7 +759,7 @@ EOF;
 		if(!isset($import_session['total_usergroups']))
 		{
 			$query = $this->old_db->simple_select("groups", "COUNT(*) as count");
-			$import_session['total_usergroups'] = $this->old_db->fetch_field($query, 'count');				
+			$import_session['total_usergroups'] = $this->old_db->fetch_field($query, 'count');
 		}
 
 		if($import_session['start_usergroups'])
@@ -798,7 +797,7 @@ EOF;
 				{
 					continue;
 				}
-				
+
 				echo "Inserting group #{$group['g_id']} as a ";
 				// Make this into a usergroup
 				
@@ -824,7 +823,7 @@ EOF;
 				$insert_group['canvotepolls'] = 'yes';
 				$insert_group['cansearch'] = int_to_yesno($usergroup['g_search']);
 				$insert_group['canviewmemberlist'] = int_to_yesno($usergroup['g_search_users']);				
-				
+
 				// Default values
 				$insert_group['stars'] = 0;
 				$insert_group['starimage'] = 'images/star.gif';
@@ -858,17 +857,17 @@ EOF;
 				$insert_group['candisplaygroup'] = 'yes';
 				$insert_group['attachquota'] = '0';
 				$insert_group['cancustomtitle'] = 'yes';
-				
+
 				echo "custom usergroup...";
 
 				$gid = $this->insert_usergroup($insert_group);
-				
+
 				// Restore connections
 				$update_array = array('usergroup' => $gid);
 				$db->update_query("users", $update_array, "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
-				
+
 				$this->import_gids = null; // Force cache refresh
-				
+
 				echo "done.<br />\n";
 			}
 			
@@ -882,19 +881,19 @@ EOF;
 	}
 	
 	/**
-	 * Get a post from the phpBB database
+	 * Get a post from the punBB database
 	 * @param int Post ID
 	 * @return array The post
 	 */
 	function get_post($pid)
-	{		
+	{
 		$query = $this->old_db->simple_select("posts", "*", "id='{$pid}'");
 		
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
-	 * Get a user from the phpBB database
+	 * Get a user from the punBB database
 	 * @param string Username
 	 * @return array If the uid is 0, returns an array of username as Guest.  Otherwise returns the user
 	 */
@@ -906,7 +905,7 @@ EOF;
 	}
 	
 	/**
-	 * Gets the time of the last post of a user from the phpBB database
+	 * Gets the time of the last post of a user from the punBB database
 	 * @return array Post
 	 */
 	function get_last_post($fid)
@@ -969,12 +968,12 @@ EOF;
 				}			
 			}
 			$comma = ',';
-			
+
 			if(!$query)
 			{
 				return 2; // Return regular registered user.
-			}			
-	
+			}
+
 			return $group;
 		}
 	}	
