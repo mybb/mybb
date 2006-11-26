@@ -14,8 +14,8 @@
 error_reporting(E_ALL & ~E_NOTICE); 
 
 // Load core files
-define("MYBB_ROOT", dirname(dirname(__FILE__)));
-define("CONVERT_ROOT", dirname(__FILE__));
+define("MYBB_ROOT", dirname(dirname(__FILE__)).'/');
+define("CONVERT_ROOT", dirname(__FILE__).'/');
 
 require_once MYBB_ROOT."/inc/config.php";
 if(!isset($config['dbtype']))
@@ -33,7 +33,7 @@ $error_handler = new errorHandler();
 require_once MYBB_ROOT."/inc/class_timers.php";
 $timer = new timer;
 
-require_once MYBB_ROOT.'/inc/class_datacache.php';
+require_once MYBB_ROOT.'inc/class_datacache.php';
 $cache = new datacache;
 	
 require_once MYBB_ROOT."/inc/functions.php";
@@ -42,9 +42,9 @@ require_once MYBB_ROOT."/inc/class_xml.php";
 
 // Include the converter resources
 require_once CONVERT_ROOT."/resources/functions.php";
-require_once CONVERT_ROOT.'/resources/output.php';
+require_once CONVERT_ROOT.'resources/output.php';
 $output = new converterOutput;
-require_once CONVERT_ROOT.'/resources/class_converter.php';
+require_once CONVERT_ROOT.'resources/class_converter.php';
 
 require_once MYBB_ROOT."/inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine;
@@ -59,7 +59,7 @@ define('TABLE_PREFIX', $config['table_prefix']);
 // Temporary code to clear importcache
 if(isset($mybb->input['restart']))
 {
-	@unlink(CONVERT_ROOT.'/lock');
+	@unlink(CONVERT_ROOT.'lock');
 	$db->delete_query("datacache", "title='import_cache'", 1);
 }
 

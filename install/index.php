@@ -16,6 +16,9 @@ define("INSTALL_ROOT", dirname(__FILE__));
 require_once MYBB_ROOT.'inc/class_core.php';
 $mybb = new MyBB;
 
+require_once MYBB_ROOT.'inc/class_error.php';
+$error_handler = new errorHandler();
+
 // Include the files necessary for installation
 require_once MYBB_ROOT.'inc/class_timers.php';
 require_once MYBB_ROOT.'inc/functions.php';
@@ -34,7 +37,7 @@ $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 's
 $fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch');
 
 // Include the installation resources
-require_once INSTALL_ROOT.'/resources/output.php';
+require_once INSTALL_ROOT.'resources/output.php';
 $output = new installerOutput;
 
 $dboptions = array();
@@ -56,7 +59,6 @@ if(function_exists('mysql_connect'))
 		'population_file' => 'mysql_db_inserts.php'
 	);
 }
-
 
 if(file_exists('lock'))
 {
@@ -556,7 +558,7 @@ function insert_templates()
 	$db->insert_query("templatesets", $insert_array);
 	$templateset = $db->insert_id();
 
-	$contents = @file_get_contents(INSTALL_ROOT.'/resources/mybb_theme.xml');
+	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
@@ -573,7 +575,7 @@ function insert_templates()
 			'template' => $db->escape_string($template['value']),
 			'sid' => $sid,
 			'version' => $template['attributes']['version'],
-			'dateline' => time()
+			'dateline' => time(),
 		);
 			
 		$db->insert_query("templates", $insert_array);
@@ -638,14 +640,14 @@ function configure()
 		
 		if($currentlocation)
 		{
-			$cookiepath = my_substr($currentlocation, 0, strpos($currentlocation, '/install/')).'/';
+			$cookiepath = my_substr($currentlocation, 0, my_strpos($currentlocation, '/install/')).'/';
 		}
 		
 		$currentscript = $hostname.get_current_location();
 		
 		if($currentscript)
 		{
-			$bburl = my_substr($currentscript, 0, strpos($currentscript, '/install/'));
+			$bburl = my_substr($currentscript, 0, my_strpos($currentscript, '/install/'));
 		}
 		
 		if($_SERVER['SERVER_ADMIN'])
@@ -695,7 +697,7 @@ function create_admin_user()
 
 		echo $lang->admin_step_setupsettings;
 
-		$settings = file_get_contents(INSTALL_ROOT.'/resources/settings.xml');
+		$settings = file_get_contents(INSTALL_ROOT.'resources/settings.xml');
 		$parser = new XMLParser($settings);
 		$parser->collapse_dups = 0;
 		$tree = $parser->get_tree();
@@ -731,7 +733,7 @@ function create_admin_user()
 		}
 		echo sprintf($lang->admin_step_insertesettings, $settingcount, $groupcount);
 
-		if (my_substr($mybb->input['bburl'], -1, 1) == '/')
+		if(my_substr($mybb->input['bburl'], -1, 1) == '/')
 		{
 			$mybb->input['bburl'] = my_substr($mybb->input['bburl'], 0, -1);
 		}

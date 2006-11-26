@@ -23,6 +23,7 @@ require_once MYBB_ROOT."inc/class_xml.php";
 require_once MYBB_ROOT."inc/config.php";
 require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 require_once MYBB_ROOT.'inc/class_language.php';
+
 $lang = new MyLanguage();
 $lang->set_path(MYBB_ROOT.'install/resources/');
 $lang->load('language');
