@@ -119,7 +119,7 @@ if($mybb->input['action'] == 'do_backup')
 		$fields = implode(",", $field_list);
 		if($mybb->input['contents'] != 'data')
 		{
-			$structure = $db->show_create_table($table)."\n";
+			$structure = $db->show_create_table($table).";\n";
 			$contents .= $structure;
 		}
 		if($mybb->input['contents'] != 'structure')
