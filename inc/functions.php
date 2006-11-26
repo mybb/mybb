@@ -117,10 +117,13 @@ function run_shutdown()
 	if(!is_object($db))
 	{
 		require MYBB_ROOT."inc/config.php";
-		require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
-		$db = new databaseEngine;
-		$db->connect($config['hostname'], $config['username'], $config['password']);
-		$db->select_db($config['database']);
+		if(isset($config))
+		{
+			require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
+			$db = new databaseEngine;
+			$db->connect($config['hostname'], $config['username'], $config['password']);
+			$db->select_db($config['database']);
+		}
 	}
 	
 	// Cache object deconstructed? reconstruct
