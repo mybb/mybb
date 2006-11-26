@@ -106,12 +106,39 @@ function add_shutdown($name)
  */
 function run_shutdown()
 {
-	global $db, $cache, $shutdown_functions, $done_shutdown;
+	global $db, $cache, $plugins, $shutdown_functions, $done_shutdown;
 	
 	if($done_shutdown == true)
 	{
 		return;
 	}
+	
+	// If our DB has been deconstructed already (bad PHP 5.2.0), reconstruct
+	if(!is_object($db))
+	{
+		require_once MYBB_ROOT."inc/config.php";
+		require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
+		$db = new databaseEngine;
+		$db->connect($config['hostname'], $config['username'], $config['password']);
+		$db->select_db($config['database']);
+	}
+	
+	// Cache object deconstructed? reconstruct
+	if(!is_object($cache))
+	{
+		require_once MYBB_ROOT."inc/class_datacache.php";
+		$cache = new datacache;
+	}
+	
+	// And finaly.. we have the PHP developers to thank for this "hack" which fixes a problem THEY created
+	if(!is_object($plugins))
+	{
+		// Load plugins
+		if(!defined("NO_PLUGINS"))
+		{
+			$plugins->load();
+		}
+	}	
 
 	// We have some shutdown queries needing to be run
 	if(is_array($db->shutdown_queries))
@@ -142,7 +169,7 @@ function run_shutdown()
 function send_mail_queue($count=10)
 {
 	global $db, $cache, $plugins;
-
+	
 	$plugins->run_hooks("send_mail_queue_start");
 
 	// Check to see if the mail queue has messages needing to be sent
