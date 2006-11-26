@@ -11,7 +11,7 @@
 error_reporting(E_ALL & ~E_NOTICE);
 
 define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
-define("INSTALL_ROOT", dirname(__FILE__));
+define("INSTALL_ROOT", dirname(__FILE__)."/");
 
 require_once MYBB_ROOT.'inc/class_core.php';
 $mybb = new MyBB;
