@@ -148,9 +148,9 @@ function upgrade5_dbchanges()
 	$db->query("CREATE TABLE ".TABLE_PREFIX."mycode (
 		    cid int unsigned NOT NULL auto_increment,
 		    title varchar(100) NOT NULL default '',
-		    description text NOT NULL default '',
-		    regex text NOT NULL default '',
-		    replacement text NOT NULL default '',
+		    description text NOT NULL,
+		    regex text NOT NULL,
+		    replacement text NOT NULL,
 		    active char(3) NOT NULL default '',
 			PRIMARY KEY(cid)
 		) TYPE=MyISAM;");
@@ -196,11 +196,11 @@ function upgrade5_dbchanges()
 		  uid int unsigned NOT NULL default '0',
 		  dateline bigint(30) NOT NULL default '0',
 		  ipaddress varchar(120) NOT NULL default '',
-		  threads text NOT NULL default '',
-		  posts text NOT NULL default '',
+		  threads text NOT NULL,
+		  posts text NOT NULL,
 		  searchtype varchar(10) NOT NULL default '',
 		  resulttype varchar(10) NOT NULL default '',
-		  querycache text NOT NULL default '',
+		  querycache text NOT NULL,
 		  PRIMARY KEY  (sid)
 		) TYPE=MyISAM;");
 
@@ -223,11 +223,11 @@ function upgrade5_dbchanges()
 	$bannedips = $db->fetch_field($query, 'sid');
 	$bannedips = explode(" ", $bannedips);
 	$bannedips = implode(",", $bannedips);
-	$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedips)."' WHERE name='bannedips'");
+	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedips)."' WHERE name='bannedips'");
 
-	$query = $db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."reputation");
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."reputation");
 
-	$query = $db->query("CREATE TABLE ".TABLE_PREFIX."reputation (
+	$db->query("CREATE TABLE ".TABLE_PREFIX."reputation (
 	  rid int unsigned NOT NULL auto_increment,
 	  uid int unsigned NOT NULL default '0',
 	  adduid int unsigned NOT NULL default '0',
@@ -238,7 +238,7 @@ function upgrade5_dbchanges()
 	) TYPE=MyISAM;");
 
 	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mailqueue");
-	$query = $db->query("CREATE TABLE ".TABLE_PREFIX."mailqueue (
+	$db->query("CREATE TABLE ".TABLE_PREFIX."mailqueue (
 		mid int unsigned NOT NULL auto_increment,
 		mailto varchar(200) NOT NULL,
 		mailfrom varchar(200) NOT NULL,
@@ -372,7 +372,7 @@ function upgrade5_redoconfig()
 		exit;
 	}
 
-	$fh = @fopen(MYBB_ROOT."/inc/config.php", "w");
+	$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
 	if(!$fh)
 	{
 		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p><input type=\"hidden\" name=\"uid\" value=\"{$uid}\" />";
@@ -391,7 +391,7 @@ function upgrade5_redoconfig()
 	}
 	$configdata = "<?php
 /**
- * Daatabase configuration
+ * Database configuration
  */
 
 \$config['dbtype'] = '{$config['dbtype']}';
