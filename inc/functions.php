@@ -131,13 +131,11 @@ function run_shutdown()
 	}
 	
 	// And finaly.. we have the PHP developers to thank for this "hack" which fixes a problem THEY created
-	if(!is_object($plugins))
+	if(!is_object($plugins) && !defined("NO_PLUGINS"))
 	{
-		// Load plugins
-		if(!defined("NO_PLUGINS"))
-		{
-			$plugins->load();
-		}
+		require_once MYBB_ROOT."inc/class_plugins.php";
+		$plugins = new pluginSystem;			
+		$plugins->load();
 	}	
 
 	// We have some shutdown queries needing to be run
