@@ -42,7 +42,7 @@ if($mybb->input['action'] == "markread")
 		if($mybb->user['uid'] != 0)
 		{
 			$db->update_query("users", array('lastvisit' => time()), "uid='".$mybb->user['uid']."'");
-			require_once MYBB_ROOT."/inc/functions_user.php";
+			require_once MYBB_ROOT."inc/functions_user.php";
 			update_pm_count('', 2);
 		}
 		else
@@ -89,7 +89,7 @@ elseif($mybb->input['action'] == "rules")
 			$forum['rulestitle'] = sprintf($lang->forum_rules, $forum['name']);
 		}
 
-		require_once MYBB_ROOT."/inc/class_parser.php";
+		require_once MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser();
 		$parser_options = array(
 			"allow_html" => 'yes',

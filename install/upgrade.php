@@ -53,7 +53,7 @@ $displaygroupfields = array("title", "description", "namestyle", "usertitle", "s
 $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
 
 // Include the installation resources
-require_once INSTALL_ROOT."/resources/output.php";
+require_once INSTALL_ROOT."resources/output.php";
 $output = new installerOutput;
 $output->script = "upgrade.php";
 
@@ -96,7 +96,7 @@ else
 			PRIMARY KEY(title)
 		);");
 
-		$dh = opendir(INSTALL_ROOT."/resources");
+		$dh = opendir(INSTALL_ROOT."resources");
 		while(($file = readdir($dh)) !== false)
 		{
 			if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))
@@ -107,7 +107,7 @@ else
 		closedir($dh);
 		foreach($upgradescripts as $key => $file)
 		{
-			$upgradescript = file_get_contents(INSTALL_ROOT."/resources/$file");
+			$upgradescript = file_get_contents(INSTALL_ROOT."resources/$file");
 			preg_match("#Upgrade Script:(.*)#i", $upgradescript, $verinfo);
 			preg_match("#upgrade([0-9]+).php$#i", $file, $keynum);
 			if(trim($verinfo[1]))
@@ -246,7 +246,7 @@ function upgradethemes()
 	}
 	$sid = -2;
 
-	$arr = @file(INSTALL_ROOT."/resources/mybb_theme.xml");
+	$arr = @file(INSTALL_ROOT."resources/mybb_theme.xml");
 	$contents = @implode("", $arr);
 
 	$parser = new XMLParser($contents);
@@ -392,7 +392,7 @@ function next_function($from, $func="dbchanges")
 	else
 	{
 		$from = $from+1;
-		if(file_exists(INSTALL_ROOT."/resources/upgrade".$from.".php"))
+		if(file_exists(INSTALL_ROOT."resources/upgrade".$from.".php"))
 		{
 			$function = next_function($from);
 		}
@@ -408,7 +408,7 @@ function next_function($from, $func="dbchanges")
 function load_module($module)
 {
 	global $system_upgrade_detail, $currentscript;
-	require_once INSTALL_ROOT."/resources/".$module;
+	require_once INSTALL_ROOT."resources/".$module;
 	if($currentscript != $module)
 	{
 		foreach($upgrade_detail as $key => $val)
@@ -485,7 +485,7 @@ function sync_settings($redo=0)
 			$settinggroups[$group['name']] = $group['gid'];
 		}
 	}
-	$settings_xml = file_get_contents(INSTALL_ROOT."/resources/settings.xml");
+	$settings_xml = file_get_contents(INSTALL_ROOT."resources/settings.xml");
 	$parser = new XMLParser($settings_xml);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();

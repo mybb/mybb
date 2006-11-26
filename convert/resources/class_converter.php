@@ -50,7 +50,7 @@ class Converter
 	 */
 	function connect($config)
 	{
-		require_once MYBB_ROOT."/inc/db_{$config['dbtype']}.php";
+		require_once MYBB_ROOT."inc/db_{$config['dbtype']}.php";
 		$this->olddb = new databaseEngine;
 		
 		// Connect to Database

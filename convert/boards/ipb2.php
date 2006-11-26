@@ -38,7 +38,7 @@ class Convert_ipb2 extends Converter {
 		// TEMPORARY
 		if($import_session['old_db_engine'] != "mysql" && $import_session['old_db_engine'] != "mysqli")
 		{
-			require_once MYBB_ROOT."/inc/db_{$import_session['old_db_engine']}.php";
+			require_once MYBB_ROOT."inc/db_{$import_session['old_db_engine']}.php";
 		}
 		$this->old_db = new databaseEngine;
 
@@ -56,7 +56,7 @@ class Convert_ipb2 extends Converter {
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
 		{
-			if(!file_exists(MYBB_ROOT."/inc/db_{$mybb->input['dbengine']}.php"))
+			if(!file_exists(MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php"))
 			{
 				$errors[] = 'You have selected an invalid database engine. Please make your selection from the list below.';
 			}
@@ -66,7 +66,7 @@ class Convert_ipb2 extends Converter {
 				// TEMPORARY
 				if($mybb->input['dbengine'] != "mysql" && $mybb->input['dbengine'] != "mysqli")
 				{
-					require_once MYBB_ROOT."/inc/db_{$mybb->input['dbengine']}.php";
+					require_once MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php";
 				}
 				$this->old_db = new databaseEngine;
 				$this->old_db->error_reporting = 0;

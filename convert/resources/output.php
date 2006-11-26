@@ -136,13 +136,13 @@ END;
 		echo "<th colspan=\"2\" class=\"first last\">Please select the board you wish to convert from.</th>\n";
 		echo "</tr>\n";
 		
-		$dh = opendir(CONVERT_ROOT."/boards");
+		$dh = opendir(CONVERT_ROOT."boards");
 		while(($file = readdir($dh)) !== false)
 		{
 			if($file != "." && $file != ".." && get_extension($file) == "php")
 			{
 				$bb_name = str_replace(".php", "", $file);
-				$board_script = file_get_contents(CONVERT_ROOT."/boards/{$file}");
+				$board_script = file_get_contents(CONVERT_ROOT."boards/{$file}");
 				
 				// Match out board name
 				preg_match("#Board Name:(.*)#i", $board_script, $version_info);

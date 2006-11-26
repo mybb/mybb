@@ -17,36 +17,36 @@ error_reporting(E_ALL & ~E_NOTICE);
 define("MYBB_ROOT", dirname(dirname(__FILE__)).'/');
 define("CONVERT_ROOT", dirname(__FILE__).'/');
 
-require_once MYBB_ROOT."/inc/config.php";
+require_once MYBB_ROOT."inc/config.php";
 if(!isset($config['dbtype']))
 {
 	die('MyBB needs to be installed before you can convert.');
 }
 
-require_once MYBB_ROOT."/inc/class_core.php";
+require_once MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
 
-require_once MYBB_ROOT."/inc/class_error.php";
+require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
 // Include the files necessary for converting
-require_once MYBB_ROOT."/inc/class_timers.php";
+require_once MYBB_ROOT."inc/class_timers.php";
 $timer = new timer;
 
 require_once MYBB_ROOT.'inc/class_datacache.php';
 $cache = new datacache;
 	
-require_once MYBB_ROOT."/inc/functions.php";
+require_once MYBB_ROOT."inc/functions.php";
 
-require_once MYBB_ROOT."/inc/class_xml.php";
+require_once MYBB_ROOT."inc/class_xml.php";
 
 // Include the converter resources
-require_once CONVERT_ROOT."/resources/functions.php";
+require_once CONVERT_ROOT."resources/functions.php";
 require_once CONVERT_ROOT.'resources/output.php';
 $output = new converterOutput;
 require_once CONVERT_ROOT.'resources/class_converter.php';
 
-require_once MYBB_ROOT."/inc/db_".$config['dbtype'].".php";
+require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine;
 
 // Connect to the installed MyBB database
@@ -92,7 +92,7 @@ if($mybb->input['debug'])
 if($mybb->input['board'])
 {
 	$mybb->input['board'] = str_replace(".", "", $mybb->input['board']);
-	if(!file_exists(CONVERT_ROOT."/boards/".$mybb->input['board'].".php"))
+	if(!file_exists(CONVERT_ROOT."boards/".$mybb->input['board'].".php"))
 	{
 		$output->print_error("The board module you have selected does not exist.");
 	}
@@ -138,7 +138,7 @@ elseif(isset($mybb->input['action']) && $mybb->input['action'] == 'finish')
 elseif($import_session['module'] && $mybb->input['action'] != 'module_list')
 { 
 	// Get the converter up.
-	require_once CONVERT_ROOT."/boards/".$import_session['board'].".php";
+	require_once CONVERT_ROOT."boards/".$import_session['board'].".php";
 	$classname = "convert_".$import_session['board'];
 	$board = new $classname;
 
@@ -186,7 +186,7 @@ elseif($import_session['module'] && $mybb->input['action'] != 'module_list')
 else
 {
 	// Get the converter up.
-	require_once CONVERT_ROOT."/boards/".$import_session['board'].".php";
+	require_once CONVERT_ROOT."boards/".$import_session['board'].".php";
 	$classname = "convert_".$import_session['board'];
 	$board = new $classname;
 	

@@ -349,7 +349,7 @@ else if($mybb->input['action'] == "edit_post")
 		//die(str_replace("&", "&amp;", $message));
 		if($debug_this == 1)
 		{
-			$fp = fopen(MYBB_ROOT."/uploads/test.log", "a");
+			$fp = fopen(MYBB_ROOT."uploads/test.log", "a");
 			fwrite($fp, $message."\n\n\n");
 			fclose($fp);
 		}
@@ -404,7 +404,7 @@ else if($mybb->input['action'] == "edit_post")
 			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
 		}
 		
-		require_once MYBB_ROOT."/inc/functions_post.php";
+		require_once MYBB_ROOT."inc/functions_post.php";
 		
 		get_post_attachments($post['pid'], $post);
 		

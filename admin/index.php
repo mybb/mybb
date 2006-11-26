@@ -245,7 +245,7 @@ elseif($mybb->input['action'] == "vercheck")
 
 	$plugins->run_hooks("admin_index_vercheck");
 
-	require_once MYBB_ROOT."/inc/class_feedparser.php";
+	require_once MYBB_ROOT."inc/class_feedparser.php";
 	$feed_parser = new FeedParser();
 	$feed_parser->parse_feed("http://www.mybboard.com/latest_news.php");
 	echo $feed_parser->error;
