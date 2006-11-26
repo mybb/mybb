@@ -103,7 +103,7 @@ function upgrade3_convertattachments()
 		$lower = 1;
 	}
 
-	require_once MYBB_ROOT."/inc/settings.php";
+	require_once MYBB_ROOT."inc/settings.php";
 
 	$query = $db->query("SELECT COUNT(aid) AS attachcount FROM ".TABLE_PREFIX."attachments");
 	$cnt = $db->fetch_array($query);
@@ -156,7 +156,7 @@ function upgrade3_convertattachments()
 		unset($attachment['filedata']);
 		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 		{
-			require_once MYBB_ROOT."/inc/functions_image.php";
+			require_once MYBB_ROOT."inc/functions_image.php";
 			$thumbname = str_replace(".attach", "_thumb.$ext", $filename);
 			$thumbnail = generate_thumbnail("../uploads/".$filename, "../uploads", $thumbname, $settings['attachthumbh'], $settings['attachthumbw']);
 			if($thumbnail['code'] == 4)
@@ -229,7 +229,7 @@ function upgrade3_convertavatars()
 		$lower = 1;
 	}
 
-	require_once MYBB_ROOT."/inc/settings.php";
+	require_once MYBB_ROOT."inc/settings.php";
 
 	$query = $db->query("SELECT COUNT(uid) AS avatarcount FROM ".TABLE_PREFIX."avatars");
 	$cnt = $db->fetch_array($query);

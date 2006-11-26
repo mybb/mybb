@@ -373,7 +373,7 @@ function upgrade5_redoconfig()
 		exit;
 	}
 
-	$fh = @fopen(MYBB_ROOT."/inc/config.php", "w");
+	$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
 	if(!$fh)
 	{
 		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p><input type=\"hidden\" name=\"uid\" value=\"{$uid}\" />";
