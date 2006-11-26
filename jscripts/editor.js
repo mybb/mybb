@@ -308,6 +308,7 @@ messageEditor.prototype = {
 		if(oldTextarea.form)
 		{
 			Event.observe(oldTextarea.form, "submit", this.closeTags.bindAsEventListener(this));
+			Event.observe(oldTextarea.form, "submit", this.updateOldArea.bindAsEventListener(this));
 		}
 		// Hide the old editor
 		oldTextarea.style.visibility = "hidden";
@@ -320,6 +321,7 @@ messageEditor.prototype = {
 		oldTextarea.parentNode.appendChild(editor);
 
 		Event.observe(textInput, "keyup", this.updateOldArea.bindAsEventListener(this));
+		Event.observe(textInput, "blur", this.updateOldArea.bindAsEventListener(this));
 	},
 	
 	updateOldArea: function(e)

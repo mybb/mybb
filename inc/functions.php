@@ -126,7 +126,7 @@ function run_shutdown()
 	{
 		return;
 	}
-
+	
 	// We have some shutdown queries needing to be run
 	if(is_array($db->shutdown_queries))
 	{
