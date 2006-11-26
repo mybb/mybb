@@ -116,7 +116,7 @@ function run_shutdown()
 	// If our DB has been deconstructed already (bad PHP 5.2.0), reconstruct
 	if(!is_object($db))
 	{
-		require_once MYBB_ROOT."inc/config.php";
+		require MYBB_ROOT."inc/config.php";
 		require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 		$db = new databaseEngine;
 		$db->connect($config['hostname'], $config['username'], $config['password']);
