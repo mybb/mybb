@@ -123,7 +123,7 @@ class errorHandler {
 			}
 			else
 			{	
-				if(!my_strpos(strtolower($this->error_types[$type]), 'warning'))
+				if(my_strpos(strtolower($this->error_types[$type]), 'warning') != 0)
 				{
 					$this->output_error($type, $message, $file, $line);
 				}

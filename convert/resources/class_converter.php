@@ -301,7 +301,7 @@ class Converter
 		
 		if(!isset($username_array[$old_uid]) || $old_uid == 0)
 		{
-			return 0;
+			return 'Guest';
 		}
 		return $username_array[$old_uid];
 	}

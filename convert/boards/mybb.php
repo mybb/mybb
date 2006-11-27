@@ -313,6 +313,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Forums to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_forums'] += $import_session['forums_per_screen'];
@@ -377,6 +378,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Threads to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_threads'] += $import_session['threads_per_screen'];
@@ -446,6 +448,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Threads to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
@@ -508,6 +511,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Moderators to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_mods'] += $import_session['mods_per_screen'];
@@ -579,6 +583,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Usergroups to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];

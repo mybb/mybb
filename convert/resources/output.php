@@ -42,7 +42,7 @@ class converterOutput {
 	 * Title of the system
 	 * @var string
 	 */
-	var $title = "MyBB Conversion Wizard";
+	var $title = "MyBB Merge Wizard";
 
 	/**
 	 * Method to print the converter header
@@ -327,7 +327,7 @@ END;
 			echo "\n	</form>\n";
 			
 			// Only if we're in a module
-			if($import_session['module'] && $import_session['module'] != 'db_configuration')
+			if($import_session['module'] && $import_session['module'] != 'db_configuration' && (!defined('BACK_BUTTON') || BACK_BUTTON != false))
 			{
 				
 				echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";

@@ -15,18 +15,16 @@ class Convert_vbulletin3 extends Converter {
 	var $bbname = "vBulletin 3";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
+						 "import_users" => array("name" => "Import vBulletin 3 Users",
+									  "dependencies" => "db_configuration"),
 						 "import_usergroups" => array("name" => "Import vBulletin 3 Usergroups",
-									  "dependencies" => "db_configuration"),
-						 "import_categories" => array("name" => "Import vBulletin 3 Categories",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_users"),
 						 "import_forums" => array("name" => "Import vBulletin 3 Forums",
-									  "dependencies" => "db_configuration,import_categories"),
+									  "dependencies" => "db_configuration,import_users"),
 						 "import_threads" => array("name" => "Import vBulletin 3 Threads",
 									  "dependencies" => "db_configuration,import_forums"),
 						 "import_posts" => array("name" => "Import vBulletin 3 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_users" => array("name" => "Import vBulletin 3 Users",
-									  "dependencies" => "db_configuration,import_usergroups"),
 						 "import_privatemessages" => array("name" => "Import vBulletin 3 Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
 						);
@@ -84,11 +82,11 @@ class Convert_vbulletin3 extends Converter {
 					$errors[] = "Could not select the database '{$mybb->input['dbname']}'. Are you sure it exists and the specified username and password have access to it?";
 				}
 
-				// Need to check if phpBB is actually installed here
+				// Need to check if vB is actually installed here
 				$this->old_db->set_table_prefix($mybb->input['tableprefix']);
-				if(!$this->old_db->table_exists("users"))
+				if(!$this->old_db->table_exists("user"))
 				{
-					$errors[] = "The vBulletin table '{$mybb->input['tableprefix']}users' could not be found in database '{$mybb->input['dbname']}'.  Please ensure phpBB exists at this database and with this table prefix.";
+					$errors[] = "The vBulletin table '{$mybb->input['tableprefix']}user' could not be found in database '{$mybb->input['dbname']}'.  Please ensure vB exists at this database and with this table prefix.";
 				}
 
 				// No errors? Save import DB info and then return finished
@@ -195,7 +193,7 @@ EOF;
 	{
 		global $mybb, $output, $import_session, $db;
 
-		$this->vb_db_connect();
+		$this->vbulletin_db_connect();
 
 		// Get number of usergroups
 		if(!isset($import_session['total_usergroups']))
@@ -237,13 +235,14 @@ EOF;
 			{
 				echo "Inserting group #{$group['usergroupid']} as a ";
 				
-				// Make this into a usergroup
+				// vBulletin 3 values
 				$insert_group['import_gid'] = $group['usergroupid'];
 				$insert_group['type'] = 2;
 				$insert_group['title'] = $group['title'];
 				$insert_group['description'] = $group['description'];
 				$insert_group['pmquota'] = $group['pmquota'];
 				$insert_group['maxpmrecipients'] = $group['pmsendmax'];
+				$insert_group['attachquota'] = $group['attachlimit'];
 				
 				// Default values
 				$insert_group['namestyle'] = '{username}';
@@ -291,7 +290,6 @@ EOF;
 				$insert_group['reputationpower'] = '1';
 				$insert_group['maxreputationsday'] = '5';
 				$insert_group['candisplaygroup'] = 'yes';
-				$insert_group['attachquota'] = $group['attachlimit'];
 				$insert_group['cancustomtitle'] = 'yes';
 				
 				echo "custom usergroup...";
@@ -310,6 +308,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Usergroups to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];
@@ -320,7 +319,7 @@ EOF;
 	{
 		global $mybb, $output, $import_session, $db;
 		
-		$this->vb_db_connect();
+		$this->vbulletin_db_connect();
 		
 		// Get number of members
 		if(!isset($import_session['total_members']))
@@ -384,6 +383,7 @@ EOF;
 				
 				$members_cache[] = $user['username'];				
 				
+				// vBulletin 3 values
 				$insert_user['usergroup'] = $this->get_group_id($user['usergroupid'], true);
 				$insert_user['additionalgroups'] = str_replace($insert_user['usergroupid'], '', $this->get_group_id($user['usergroupid']));
 				$insert_user['displaygroup'] = $this->get_group_id($user['usergroupid'], true);
@@ -399,8 +399,7 @@ EOF;
 				$insert_user['lastvisit'] = $user['lastvisit'];
 				$insert_user['website'] = $user['homepage'];
 				$avatar = $this->get_avatar($user['avatarid']);
-				$insert_user['avatardimensions'] = ''; // to do
-				$insert_user['avatartype'] = '2';
+				$insert_user['avatardimensions'] = ''; // to do				
 				$insert_user['avatar'] = $avatar['avatarpath'];
 				$insert_user['lastpost'] = $user['lastpost'];
 				$insert_user['birthday'] = $user['birthday'];
@@ -408,6 +407,19 @@ EOF;
 				$insert_user['aim'] = $user['aim'];
 				$insert_user['yahoo'] = $user['yahoo'];
 				$insert_user['msn'] = $user['msn'];
+				if($user['avatarpath'] == '')
+				{
+					$user['avatarpath'] = 0;
+				}
+				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);						
+				$insert_user['timezone'] = $user['avatarpath'];				
+				$insert_user['style'] = $user['styleid'];				
+				$insert_user['referrer'] = $user['referrerid'];				
+				$insert_user['regip'] = $user['ipaddress'];				
+				$insert_user['totalpms'] = $user['pmtotal'];
+				$insert_user['unreadpms'] = $user['pmtotal'];
+				
+				// Default values
 				$insert_user['hideemail'] = 'yes';
 				$insert_user['invisible'] = 'no';
 				$insert_user['allownotices'] = 'yes';
@@ -423,21 +435,16 @@ EOF;
 				$insert_user['tpp'] = "0";
 				$insert_user['daysprune'] = "0";
 				$insert_user['timeformat'] = 'd-m-Y';
-				$insert_user['timezone'] = $user['avatarpath'];
 				$insert_user['dst'] = 'no';
 				$insert_user['buddylist'] = "";
 				$insert_user['ignorelist'] = "";
-				$insert_user['style'] = $user['styleid'];
 				$insert_user['away'] = "no";
 				$insert_user['awaydate'] = "0";
 				$insert_user['returndate'] = "0";
-				$insert_user['referrer'] = $user['referrerid'];
 				$insert_user['reputation'] = "0";
-				$insert_user['regip'] = $user['ipaddress'];
 				$insert_user['timeonline'] = "0";
-				$insert_user['totalpms'] = $user['pmtotal'];
-				$insert_user['unreadpms'] = $user['pmtotal'];
-				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';		
+				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';	
+				$insert_user['avatartype'] = '2';	
 				$uid = $this->insert_user($insert_user);
 				
 				echo "done.<br />\n";
@@ -446,23 +453,23 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Users to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_users'] += $import_session['users_per_screen'];
 		$output->print_footer();
 	}
 	
-	// to do from here
 	function import_forums()
 	{
 		global $mybb, $output, $import_session, $db;
 
-		$this->phpbb_db_connect();
+		$this->vbulletin_db_connect();
 
 		// Get number of forums
 		if(!isset($import_session['total_forums']))
 		{
-			$query = $this->old_db->simple_select("forums", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("forum", "COUNT(*) as count");
 			$import_session['total_forums'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -493,58 +500,59 @@ EOF;
 		}
 		else
 		{	
-			$query = $this->old_db->simple_select("forums", "*", "", array('limit_start' => $import_session['start_forums'], 'limit' => $import_session['forums_per_screen']));
+			$query = $this->old_db->simple_select("forum", "*", "", array('limit_start' => $import_session['start_forums'], 'limit' => $import_session['forums_per_screen']));
 			while($forum = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting forum #{$forum['forum_id']}... ";
+				echo "Inserting forum #{$forum['forumid']}... ";
 				
-				// Values from phpBB
-				$insert_forum['import_fid'] = intval($forum['forum_id']);
-				$insert_forum['name'] = $forum['forum_name'];
-				$insert_forum['description'] = $forum['forum_desc'];				
-				$insert_forum['disporder'] = $forum['left_id'];
-				$insert_forum['threads'] = $forum['forum_topics'];
-				$insert_forum['posts'] = $forum['forum_posts'];
-				$insert_forum['open'] = int_to_noyes($forum['forum_status']);
-				$insert_forum['style'] = $forum['forum_style'];
-				$insert_forum['password'] = $forum['forum_password'];
-				if($forum['forum_rules_link'])
+				// vBulletin 3 values
+				$insert_forum['import_fid'] = $forum['forumid'];
+				$insert_forum['name'] = $forum['title'];
+				$insert_forum['description'] = $forum['description'];				
+				$insert_forum['disporder'] = $forum['displayorder'];
+				$insert_forum['threads'] = $forum['threadcount'];
+				$insert_forum['posts'] = $forum['replycount'];
+				$insert_forum['style'] = $forum['styleid'];
+				$insert_forum['password'] = $forum['password'];
+				if($forum['defaultsortfield'] == 'lastpost')
 				{
-					$insert_forum['rules'] = $forum['forum_rules_link'];
+					$forum['defaultsortfield'] = '';
 				}
-				else
-				{
-					$insert_forum['rules'] = $forum['forum_rules'];
-				}
-				$insert_forum['rulestype'] = 1;
+				$insert_forum['defaultsortby'] = $forum['defaultsortfield'];
+				$insert_forum['defaultsortorder'] = $forum['defaultsortorder'];	
+				$insert_forum['unapprovedthreads'] = $this->get_invisible_threads();
+				$insert_forum['unapprovedposts'] = $this->get_invisible_posts();			
 				
-				if($forum['forum_type'] == '0')
+				// We have a category
+				if($forum['parentid'] == '-1')
 				{
 					$insert_forum['type'] = 'c';
-					$insert_forum['import_fid'] = (-1 * $forum['forum_id']);
+					$insert_forum['import_fid'] = (-1 * $forum['forumid']);
 					$insert_forum['lastpost'] = 0;
 					$insert_forum['lastposteruid'] = 0;
 					$insert_forum['lastposttid'] = 0;
 					$insert_forum['lastpostsubject'] = '';
 				}
+				// We have a forum
 				else
 				{
-					if($forum['forum_type'] == '2')
-					{
-						$insert_forum['linkto'] = $forum['forum_link'];
-					}
+					$insert_forum['linkto'] = $forum['link'];
 					$insert_forum['type'] = 'f';
-					$insert_forum['pid'] = $this->get_import_fid((-1) * $forum['parent_id']);
-					$insert_forum['lastpost'] = $forum['forum_last_post_time'];
-					$insert_forum['lastposteruid'] = $this->get_import_uid($forum['forum_last_poster_id']);
-					$insert_forum['lastposttid'] = ((-1) * $forum['forum_last_post_id']);
-					$insert_forum['lastpostsubject'] = $forum['forum_last_post_subject'];
-					$insert_forum['lastposter'] = $this->get_import_username($forum['forum_last_poster_id']);
+					$insert_forum['pid'] = $this->get_import_fid((-1) * $forum['parentid']);
+					$insert_forum['lastpost'] = $forum['lastpost'];
+					$thread = $this->get_thread($forum['lastthreadid']);
+					$insert_forum['lastposteruid'] = $this->get_import_uid($thread['postuserid']);
+					$insert_forum['lastposttid'] = ((-1) * $forum['lastthreadid']);
+					$insert_forum['lastpostsubject'] = $forum['lastthread'];
+					$insert_forum['lastposter'] = $this->get_import_username($thread['postusername']);
 				}
 				
 				
 				// Default values
 				$insert_forum['parentlist'] = '';
+				$insert_forum['open'] = 'yes';
+				$insert_forum['rules'] = '';
+				$insert_forum['rulestype'] = 1;
 				$insert_forum['active'] = 'yes';
 				$insert_forum['allowhtml'] = 'no';
 				$insert_forum['allowmycode'] = 'yes';
@@ -558,17 +566,13 @@ EOF;
 				$insert_forum['modthreads'] = 'no';
 				$insert_forum['modattachments'] = 'no';
 				$insert_forum['overridestyle'] = 'no';
-				$insert_forum['unapprovedthreads'] = $this->get_invisible_threads();
-				$insert_forum['unapprovedposts'] = $this->get_invisible_posts();
 				$insert_forum['defaultdatecut'] = 0;
-				$insert_forum['defaultsortby'] = '';
-				$insert_forum['defaultsortorder'] = '';
 				$insert_forum['usepostcounts'] = 'yes';
 	
 				$fid = $this->insert_forum($insert_forum);
 				
 				// Update parent list.
-				if($forum['forum_type'] == '0')
+				if($forum['parentid'] == '-1')
 				{
 					$update_array = array('parentlist' => $fid);					
 				}
@@ -577,7 +581,7 @@ EOF;
 					$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);										
 				}
 				
-				$db->update_query("forums", $update_array, "fid = {$fid}");
+				$db->update_query("forums", $update_array, "fid='{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -585,6 +589,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Forums to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_forums'] += $import_session['forums_per_screen'];
@@ -595,12 +600,12 @@ EOF;
 	{
 		global $mybb, $output, $import_session, $db;
 
-		$this->phpbb_db_connect();
+		$this->vbulletin_db_connect();
 
 		// Get number of threads
 		if(!isset($import_session['total_threads']))
 		{
-			$query = $this->old_db->simple_select("topics", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("thread", "COUNT(*) as count");
 			$import_session['total_threads'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -631,45 +636,44 @@ EOF;
 		}
 		else
 		{		
-			$query = $this->old_db->simple_select("topics", "*", "", array('order_by' => 'topic_first_post_id', 'order_dir' => 'DESC', 'limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
+			$query = $this->old_db->simple_select("thread", "*", "", array('order_by' => 'firstpostid', 'order_dir' => 'DESC', 'limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
 			while($thread = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting thread #{$thread['topic_id']}... ";
+				echo "Inserting thread #{$thread['threadid']}... ";
 				
-				$insert_thread['import_tid'] = $thread['topic_id'];
-				$insert_thread['sticky'] = int_to_yesno($thread['topic_type']);
-				$insert_thread['fid'] = $this->get_import_fid($thread['forum_id']);
-				$insert_thread['firstpost'] = ((-1) * $thread['topic_first_post_id']);			
-				$insert_thread['icon'] = $thread['icon_id'];
-				$insert_thread['dateline'] = $thread['topic_time'];
-				$insert_thread['subject'] = $thread['topic_title'];
-				
-				$insert_thread['poll'] = $this->get_poll_pid($thread['topic_id']);
-				$insert_thread['uid'] = $this->get_import_uid($thread['topic_poster']);
-				$insert_thread['import_uid'] = $thread['topic_poster'];
-				$insert_thread['views'] = $thread['topic_views'];
-				$insert_thread['replies'] = $thread['topic_replies'];
-				$insert_thread['closed'] = int_to_yesno($thread['topic_status']);				
+				// vBulletin 3 values
+				$insert_thread['import_tid'] = $thread['threadid'];
+				$insert_thread['sticky'] = int_to_yesno($thread['sticky']);
+				$insert_thread['fid'] = $this->get_import_fid($thread['forumid']);
+				$insert_thread['firstpost'] = ((-1) * $thread['firstpostid']);			
+				$insert_thread['icon'] = $thread['iconid'];
+				$insert_thread['dateline'] = $thread['dateline'];
+				$insert_thread['subject'] = $thread['title'];				
+				$insert_thread['poll'] = $thread['pollid'];
+				$insert_thread['uid'] = $this->get_import_uid($thread['postuserid']);
+				$insert_thread['import_uid'] = $thread['postuserid'];
+				$insert_thread['views'] = $thread['views'];
+				$insert_thread['replies'] = $thread['replycount'];
+				$insert_thread['closed'] = int_to_noyes($thread['open']);				
 				if($insert_thread['closed'] == 'no')
 				{
 					$insert_thread['closed'] = '';
 				}
-				
-				$insert_thread['totalratings'] = '0';
-				$insert_thread['notes'] = '';
-				$insert_thread['visible'] = $thread['topic_approved'];
-				$insert_thread['unapprovedposts'] = $this->get_invisible_posts($thread['topic_id']);
-				$insert_thread['numratings'] = '0';
-				$insert_thread['attachmentcount'] = '0';
-				
-				$insert_thread['lastpost'] = $thread['topic_last_post_time'];
-				$insert_thread['lastposteruid'] = $this->get_import_uid($thread['topic_last_poster_id']);				
-				$insert_thread['lastposter'] = $thread['topic_last_poster_name'];				
-				$insert_thread['username'] = $thread['topic_first_poster_name'];
+				$insert_thread['totalratings'] = $thread['votetotal'];
+				$insert_thread['notes'] = $thread['notes'];
+				$insert_thread['visible'] = $thread['visible'];
+				$insert_thread['unapprovedposts'] = $thread['hiddencount'];
+				$insert_thread['numratings'] = $thread['votenum'];
+				$insert_thread['attachmentcount'] = $thread['attach'];	
+				$insert_thread['lastpost'] = $thread['lastpost'];
+				$post = $this->get_post($thread['lastpostid']);
+				$insert_thread['lastposteruid'] = $this->get_import_uid($post['userid']);				
+				$insert_thread['lastposter'] = $this->get_import_username($post['userid']);
+				$insert_thread['username'] = $this->get_import_username($thread['postuserid']);
 				
 				$tid = $this->insert_thread($insert_thread);
 				
-				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid='".((-1) * $import_post['tid'])."'");
+				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid='".((-1) * $thread['threadtid'])."'");
 				
 				echo "done.<br />\n";			
 			}
@@ -677,23 +681,23 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Threads to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_threads'] += $import_session['threads_per_screen'];
 		$output->print_footer();
 	}
 	
-	// To do from here
 	function import_posts()
 	{
 		global $mybb, $output, $import_session, $db;
 
-		$this->phpbb_db_connect();
+		$this->vbulletin_db_connect();
 
 		// Get number of posts
 		if(!isset($import_session['total_posts']))
 		{
-			$query = $this->old_db->simple_select("posts", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("post", "COUNT(*) as count");
 			$import_session['total_posts'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -724,33 +728,32 @@ EOF;
 		}
 		else
 		{	
-			$query = $this->old_db->simple_select("posts", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
+			$query = $this->old_db->simple_select("post", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
 			while($post = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting post #{$post['post_id']}... ";
+				echo "Inserting post #{$post['postid']}... ";
 				
-				$insert_post['import_pid'] = $post['post_id'];
-				$insert_post['tid'] = $this->get_import_tid($post['topic_id']);
-				
-				// Get Username
-				$topic_poster = $this->get_user($post['poster_id']);
-				$post['username'] = $topic_poster['username'];
-
-				$insert_post['pid'] = 0;
-				$insert_post['fid'] = $this->get_import_fid($post['forum_id']);
-				$insert_post['subject'] = $post['post_subject'];
-				$insert_post['icon'] = 0;
+				// vBulletin 3 values
+				$insert_post['import_pid'] = $post['postid'];
+				$insert_post['tid'] = $this->get_import_tid($post['threadid']);			
+				$insert_post['pid'] = 0;				
+				$thread = $this->get_thread($post['threadid']);				
+				$insert_post['fid'] = $this->get_import_fid($thread['fid']);
+				$insert_post['subject'] = $thread['title'];
+				$insert_post['visible'] = $post['visible'];
 				$insert_post['uid'] = $this->get_import_uid($post['poster_id']);
-				$insert_post['import_uid'] = $post['poster_id'];
+				$insert_post['import_uid'] = $post['userid'];
 				$insert_post['username'] = $this->get_import_username($insert_post['import_uid']);
-				$insert_post['dateline'] = $post['post_time'];
-				$insert_post['message'] = str_replace($post['bbcode_uid'], '', htmlspecialchars_decode($post['post_text']));
-				$insert_post['ipaddress'] = $post['poster_ip'];
-				$insert_post['includesig'] = int_to_yesno($post['enable_sig']);		
-				$insert_post['smilieoff'] = int_to_noyes($post['enable_smilies']);		
+				$insert_post['dateline'] = $post['dateline'];
+				$insert_post['message'] = $post['pagetext'];
+				$insert_post['ipaddress'] = $post['ipaddress'];
+				$insert_post['includesig'] = int_to_yesno($post['showsignature']);		
+				$insert_post['smilieoff'] = int_to_noyes($post['allowsmilie']);	
+				
+				// Default values
+				$insert_post['icon'] = 0;	
 				$insert_post['edituid'] = 0;				
-				$insert_post['edittime'] = 0;
-				$insert_post['visible'] = 1;
+				$insert_post['edittime'] = 0;				
 				$insert_post['posthash'] = '';
 
 				$pid = $this->insert_post($insert_post);
@@ -758,6 +761,7 @@ EOF;
 				// Update thread count
 				update_thread_count($insert_post['tid']);
 				
+				// Restore first post connections
 				$db->update_query("threads", array('firstpost' => $pid), "tid='{$insert_post['tid']}' AND firstpost='".((-1) * $import_post['pid'])."'");
 				if($db->affected_rows() == 0)
 				{
@@ -772,6 +776,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Posts to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
@@ -782,12 +787,12 @@ EOF;
 	{
 		global $mybb, $output, $import_session, $db;
 
-		$this->phpbb_db_connect();
+		$this->vbulletin_db_connect();
 
 		// Get number of usergroups
 		if(!isset($import_session['total_privatemessages']))
 		{
-			$query = $this->old_db->simple_select("privmsgs", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("pm", "COUNT(*) as count");
 			$import_session['total_privatemessages'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -818,31 +823,57 @@ EOF;
 		}
 		else
 		{
-			$query = $this->old_db->simple_select("privmsgs", "*", "", array('limit_start' => $import_session['start_privatemessages'], 'limit' => $import_session['privatemessages_per_screen']));
+			$query = $this->old_db->query(
+				"SELECT * 
+				FROM ".VB_TABLE_PREFIX."pm p
+				LEFT JOIN ".VB_TABLE_PREFIX."pmtext pt ON(p.pmtextid=pt.pmtextid)
+				LIMIT ".$import_session['start_privatemessages'].", ".$import_session['privatemessages_per_screen']
+			);
 			
 			while($pm = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting Private Message #{$pm['msg_id']}... ";
+				echo "Inserting Private Message #{$pm['pmid']}... ";
 				
-				$insert_pm['pmid'] = null;
-				$insert_pm['import_pmid'] = $pm['msg_id'];
-				$insert_pm['uid'] = $this->get_import_uid($pm['author_id']);
-				$insert_pm['fromid'] = $this->get_import_uid($pm['author_id']);
-				$insert_pm['toid'] = $this->get_import_uid($pm['to_address']);
-				$insert_pm['recipients'] = 'a:1:{s:2:"to";a:1:{i:0;s:'.strlen($insert_pm['toid']).':"'.$insert_pm['toid'].'";}}';
-				$insert_pm['folder'] = '1';
-				$insert_pm['subject'] = $pm['message_subject'];
-				$insert_pm['status'] = '1';
-				$insert_pm['dateline'] = $pm['message_time'];
-				$insert_pm['message'] = str_replace($pm['bbcode_uid'], '', htmlspecialchars_decode($pm['message_text']));
-				$insert_pm['includesig'] = int_to_yesno($pm['enable_sig']);
-				$insert_pm['smilieoff'] = int_to_noyes($pm['enable_smilies']);
+				$insert_pm['pmid'] = '';
+				$insert_pm['import_pmid'] = $pm['pmid'];
+				$insert_pm['uid'] = $this->get_import_uid($pm['userid']);
+				$insert_pm['fromid'] = $this->get_import_uid($pm['fromuserid']);
+				$insert_pm['toid'] = $insert_pm['uid'];
+				$touserarray = unserialize($pm['touserarray']);
+
+				// Rebuild the recipients array
+				$recipients = array();
+				foreach($touserarray['cc'] as $key => $to)
+				{
+					$username = $this->get_username($to);					
+					$recipients['to'][] = $this->get_import_username($username['userid']);
+				}
+				$insert_pm['recipients'] = serialize($recipients);
+				if($pm['folderid'] == -1)
+				{
+					$insert_pm['folder'] = 2;
+				}
+				else
+				{
+					$insert_pm['folder'] = 0;
+				}
+				
+				$insert_pm['subject'] = $pm['title'];
+				$insert_pm['status'] = $pm['messageread'];
+				$insert_pm['dateline'] = $pm['dateline'];
+				$insert_pm['message'] = $pm['message'];
+				$insert_pm['includesig'] = int_to_yesno($pm['showsignature']);
+				$insert_pm['smilieoff'] = int_to_noyes($pm['allowsmilie']);
 				if($insert_pm['smilieoff'] == 'no')
 				{
 					$insert_pm['smilieoff'] = '';
 				}
-				$insert_pm['icon'] = '0';
-				$insert_pm['readtime'] = time();
+				
+				if($pm['messageread'] == 1)
+				{
+					$insert_pm['readtime'] = time();
+				}
+				$insert_pm['icon'] = $pm['iconid'];				
 				$insert_pm['receipt'] = '2';
 
 				$this->insert_privatemessage($insert_pm);
@@ -852,6 +883,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Private Messages to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_privatemessages'] += $import_session['privatemessages_per_screen'];
@@ -863,49 +895,42 @@ EOF;
 		$tidbit = "";
 		if(!empty($tid))
 		{
-			$tidbit = " AND topic_id='".intval($tid)."'";
+			$tidbit = " AND threadid='".intval($tid)."'";
 		}
-		$query = $this->old_db->simple_select("posts", "COUNT(*) as invisible", "post_approved='0'$tidbit");
+		$query = $this->old_db->simple_select("post", "COUNT(*) as invisible", "visible='0'$tidbit");
 		return $this->old_db->fetch_field($query, "invisible");
 	}
 	
 	function get_invisible_threads()
 	{
-		$query = $this->old_db->simple_select("topics", "COUNT(*) as invisible", "topic_approved='0'");
+		$query = $this->old_db->simple_select("thread", "COUNT(*) as invisible", "visible='0'");
 		return $this->old_db->fetch_field($query, "invisible");
 	}
 	
-	function get_poll_pid($tid)
-	{
-		$query = $this->old_db->simple_select("poll_options", "poll_option_id", "topic_id='$tid'", array('limit' => 1));
-		return $this->old_db->fetch_field($query, "poll_option_id");
-	}
-	
 	/**
-	 * Get total number of Private Messages the user has from the phpBB database
-	 * @param int User ID
-	 * @return int Number of Private Messages
-	 */
-	 function get_private_messages($uid)
-	 {
-	 	$query = $this->old_db->simple_select("privmsgs", "COUNT(*) as pms", "to_address = '$uid' OR author_id = '$uid'");
-		
-		return $this->old_db->fetch_field($query, 'pms');
-	 }
-	
-	/**
-	 * Get a post from the phpBB database
+	 * Get a post from the vB database
 	 * @param int Post ID
 	 * @return array The post
 	 */
 	function get_post($pid)
 	{		
-		$query = $this->old_db->simple_select("posts", "*", "post_id='{$pid}'", array('limit' => 1));
+		$query = $this->old_db->simple_select("post", "*", "postid='{$pid}'", array('limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
-	 * Get a user from the phpBB database
+	 * Get a thread from the vB database
+	 * @param int Thread ID
+	 * @return array The thread
+	 */
+	function get_thread($tid)
+	{		
+		$query = $this->old_db->simple_select("thread", "*", "threadid='{$tid}'", array('limit' => 1));
+		return $this->old_db->fetch_array($query);
+	}
+	
+	/**
+	 * Get a user from the vB database
 	 * @param int User ID
 	 * @return array If the uid is 0, returns an array of username as Guest.  Otherwise returns the user
 	 */
@@ -918,20 +943,28 @@ EOF;
 			);
 		}
 		
-		$query = $this->old_db->simple_select("users", "*", "user_id='{$uid}'", array('limit' => 1));
+		$query = $this->old_db->simple_select("user", "*", "userid='{$uid}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
-	 * Gets the time of the last post of a user from the phpBB database
-	 * @param int User ID
-	 * @return int Last post time
+	 * Get a user from the vB database
+	 * @param int Username
+	 * @return array If the username is empty, returns an array of username as Guest.  Otherwise returns the user
 	 */
-	function get_last_post($uid)
+	function get_username($username)
 	{
-		$query = $this->old_db->simple_select("posts", "post_time", "poster_id='{$uid}'", array('order_by' => 'post_time', 'order_dir' => 'DESC', 'limit' => 1));
-		return $this->old_db->fetch_field($query, "post_time");
+		if($uid == 0)
+		{
+			return array(
+				'username' => 'Guest',
+			);
+		}
+		
+		$query = $this->old_db->simple_select("user", "*", "username='{$username}'", array('limit' => 1));
+		
+		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
@@ -1000,6 +1033,11 @@ EOF;
 		}
 	}
 	
+	/**
+	 * Get a avatar from the vB database
+	 * @param int Avatar ID
+	 * @return array The avatar
+	 */
 	function get_avatar($aid)
 	{
 		$query = $this->old_db->simple_select("avatar", "*", "avatarid='$aid'");		

@@ -293,8 +293,9 @@ EOF;
 				$insert_user['ppp'] = 0;
 				$insert_user['tpp'] = 0;
 				$insert_user['daysprune'] = 0;
-				$insert_user['timeformat'] = 'd M';
+				$insert_user['timeformat'] = 'd M';				
 				$insert_user['timezone'] = $user['timezone'];
+				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);	
 				$insert_user['dst'] = 'no';
 				$insert_user['buddylist'] = '';
 				$insert_user['ignorelist'] = '';
@@ -319,6 +320,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Users to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_users'] += $import_session['users_per_screen'];
@@ -424,6 +426,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Categories to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}			
 		$import_session['start_cats'] += $import_session['cats_per_screen'];
@@ -532,6 +535,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Forums to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_forums'] += $import_session['forums_per_screen'];
@@ -624,6 +628,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Threads to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_threads'] += $import_session['threads_per_screen'];
@@ -743,6 +748,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Posts to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
@@ -874,6 +880,7 @@ EOF;
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no Usergroups to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];
