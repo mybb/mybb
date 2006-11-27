@@ -529,16 +529,24 @@ class postParser
 		{
 			return;
 		}
+		$str = str_replace('&amp;', '&', $str);
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
-		$str = str_replace('&amp;', '&', $str);
 		$original = $str;
+
 		// See if open and close tags are provided.
-		$added_open_close = false;
+		$added_open_tag = false;
 		if(!preg_match("#^\s*<\?#si", $str))
 		{
-			$added_open_close = true;
-			$str = "<?php \n".$str." \n?>";
+			$added_open_tag = true;
+			$str = "<?php \n".$str;
+		}
+		
+		$added_end_tag = false;
+		if(!preg_match("#\?>\s*$#si", $str))
+		{
+			$added_end_tag = true;
+			$str = $str." \n?>";
 		}
 		// If the PHP version < 4.2, catch highlight_string() output.
 		if(version_compare(PHP_VERSION, "4.2.0", "<"))
@@ -577,9 +585,13 @@ class postParser
 		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
 
 
-		if($added_open_close == true)
+		if($added_open_tag)
 		{
 			$code = preg_replace("#<code><span style=\"color: \#([A-Z0-9]{6})\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #$1\">", $code);
+		}
+
+		if($added_end_tag)
+		{
 			$code = str_replace("?&gt;</span></code>", "</span></code>", $code);
 		}
 
