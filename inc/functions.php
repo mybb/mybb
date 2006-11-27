@@ -3228,7 +3228,7 @@ function get_inactive_forums()
 			foreach($forum_cache as $fid1 => $forum1)
 			{
 				if(strpos(",".$forum1['parentlist'].",", ",".$fid.",") !== false && !in_array($fid1, $inactive))
-				{					
+				{
 					$inactive[] = $fid1;
 				}
 			}

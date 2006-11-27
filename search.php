@@ -45,7 +45,7 @@ $now = time();
 if($rand == 3)
 {
 	$timecut = time()-60*60*24*30;
-	$db->delete_query("searchlog", "dateline<='$timecut'");
+	$db->delete_query(TABLE_PREFIX."searchlog", "dateline<='$timecut'");
 }
 
 if($mybb->input['action'] == "results")
