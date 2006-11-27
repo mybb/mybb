@@ -467,7 +467,7 @@ if($rand > 8 || isset($mybb->input['force_thread_expiry']))
 if($rand > 4 && $rand < 8)
 {
 	$timecut = time()-60*60*24;
-	$db->delete_query("sessions", "uid=0 AND time<='$timecut'");
+	$db->delete_query(TABLE_PREFIX."sessions", "uid=0 AND time<='$timecut'");
 }
 
 
