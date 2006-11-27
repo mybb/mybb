@@ -310,7 +310,7 @@ if($mybb->input['action'] == "do_rebuildthumbnails")
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
-	require_once MYBB_ROOT."/inc/functions_image.php";
+	require_once MYBB_ROOT."inc/functions_image.php";
 	
 	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", '', array('order_by' => 'aid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
 	while($attachment = $db->fetch_array($query))
