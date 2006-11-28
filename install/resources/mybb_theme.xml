@@ -521,7 +521,7 @@ form {
 			<table width="100%" border="0">
 				<tr>
 					<td>
-						<table width="5%" cellspacing="0" cellpadding="2" style="white-space: nowrap; border: none">
+						<table cellspacing="0" cellpadding="2" style="white-space: nowrap; border: none">
 							<tr>
 								<td>
 								<img src="{$theme['imgdir']}/newfolder.gif" alt="{$lang->new_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->new_thread}</span><br />
@@ -5085,6 +5085,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="4"><span class="smalltext">{$lang->click_to_add}</span></td>
 </tr>
 {$smilies}
+<tr>
 <td class="thead" colspan="4" align="center"><span class="smalltext">[<a href="javascript:window.close();">{$lang->close_window}</a>]</span></td>
 </tr>
 </table>
@@ -6463,7 +6464,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td>{$tzselect}</td>
 </tr>
 <tr>
-<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enabledst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledst">{$lang->enable_dst}</label></span>
+<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enabledst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledst">{$lang->enable_dst}</label></span></td>
 </tr>
 </table>
 </fieldset>
