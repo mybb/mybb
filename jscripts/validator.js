@@ -190,7 +190,7 @@ FormValidator.prototype = {
 	
 	showSuccess: function(field, area, message)
 	{
-		$(area).classNae = "validation_success";
+		$(area).className = "validation_success";
 		$(field).className = "valid_field";
 		if(message)
 		{
