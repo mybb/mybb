@@ -234,7 +234,7 @@ if($mybb->input['action'] == "newpost")
 		"order_by" => "dateline",
 		"order_dir" => "asc"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid." AND dateline > '{$lastread}'");
+	$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid=".$tid." AND dateline > '{$lastread}'", $options);
 	$newpost = $db->fetch_array($query);
 	if($newpost['pid'])
 	{
