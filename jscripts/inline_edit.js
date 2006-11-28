@@ -20,16 +20,15 @@ inlineEditor.prototype = {
 			this.spinnerImage = options.spinnerImage;
 		}
 
-		this.elements = DomLib.getElementsByClassName(document, "*", options.className);
+		this.elements = document.getElementsByClassName(options.className);
 		if(this.elements)
 		{
-			for(var i = 0; i < this.elements.length; ++i)
-			{
-				if(this.elements[i].id)
+			this.elements.each(function(element) {
+				if(element.id)
 				{
-					this.makeEditable(this.elements[i]);
+					this.makeEditable(element);
 				}
-			}
+			}.bind(this));
 		}
 		return true;
 	},

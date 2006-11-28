@@ -27,7 +27,7 @@ messageEditor.prototype = {
 		}
 		
 		// Defines an array of fonts to be shown in the font drop down.
-		this.fonts = new Array();
+		this.fonts = new Object();
 		this.fonts["Arial"] = "Arial";
 		this.fonts["Courier"] = "Courier";
 		this.fonts["Impact"] = "Impact";
@@ -37,7 +37,7 @@ messageEditor.prototype = {
 		this.fonts["Verdana"] = "Verdana";
 
 		// An array of font sizes to be shown.
-		this.sizes = new Array();
+		this.sizes = new Object();
 		this.sizes["xx-small"] = this.options.lang.size_xx_small;
 		this.sizes["x-small"] = this.options.lang.size_x_small;
 		this.sizes["small"] = this.options.lang.size_small;
@@ -46,7 +46,7 @@ messageEditor.prototype = {
 		this.sizes["xx-large"] = this.options.lang.size_xx_large;
 
 		// An array of colours to be shown.
-		this.colors = new Array();
+		this.colors = new Object();
 		this.colors["white"] = this.options.lang.color_white;
 		this.colors["black"] = this.options.lang.color_black;
 		this.colors["red"] = this.options.lang.color_red;
@@ -146,11 +146,11 @@ messageEditor.prototype = {
 		fontSelect.style.margin = "2px";
 		fontSelect.id = "font";
 		fontSelect.options[fontSelect.options.length] = new Option(this.options.lang.font, "-");
-		
-		for(font in this.fonts)
-		{
-			fontSelect.options[fontSelect.options.length] = new Option(this.fonts[font], font);
-		}
+	
+		$H(this.fonts).each(function(font) {
+			fontSelect.options[fontSelect.options.length] = new Option(font.value, font.key)
+		}.bind(this));	
+
 		Event.observe(fontSelect, "change", this.changeFont.bindAsEventListener(this));
 		textFormatting.appendChild(fontSelect);
 
@@ -160,10 +160,10 @@ messageEditor.prototype = {
 		sizeSelect.id = "size";
 		sizeSelect.options[sizeSelect.options.length] = new Option(this.options.lang.size, "-");
 		
-		for(size in this.sizes)
-		{
-			sizeSelect.options[sizeSelect.options.length] = new Option(this.sizes[size], size);
-		}
+		$H(this.sizes).each(function(size) {
+			sizeSelect.options[sizeSelect.options.length] = new Option(size.value, size.key)
+		}.bind(this));
+		
 		Event.observe(sizeSelect, "change", this.changeSize.bindAsEventListener(this));
 		textFormatting.appendChild(sizeSelect);
 
@@ -173,12 +173,12 @@ messageEditor.prototype = {
 		colorSelect.id = "color";
 		colorSelect.options[colorSelect.options.length] = new Option(this.options.lang.color, "-");
 		
-		for(color in this.colors)
-		{
-			colorSelect.options[colorSelect.options.length] = new Option(this.colors[color], color);
-			colorSelect.options[colorSelect.options.length-1].style.backgroundColor = color;
-			colorSelect.options[colorSelect.options.length-1].style.color = color;
-		}
+		$H(this.colors).each(function(color) {
+			colorSelect.options[colorSelect.options.length] = new Option(color.value, color.key);
+			colorSelect.options[colorSelect.options.length-1].style.backgroundColor = color.key;
+			colorSelect.options[colorSelect.options.length-1].style.color = color.key;
+		}.bind(this));
+		
 		Event.observe(colorSelect, "change", this.changeColor.bindAsEventListener(this));
 		textFormatting.appendChild(colorSelect);
 		
@@ -596,33 +596,29 @@ messageEditor.prototype = {
 				}
 				
 				var newTags = new Array();
-				for(var i=0; i< this.openTags.length; ++i)
+				this.openTags.each(function(tag)
 				{
-					if(this.openTags[i])
+					exploded_tag = tag.split("_");
+					if(exploded_tag[0] == code)
 					{
-						exploded_tag = this.openTags[i].split("_");
-						
-						if(exploded_tag[0] == code)
+						already_open = true;
+						this.performInsert("[/"+exploded_tag[0]+"]", "", false);
+				
+						if($(tag))
 						{
-							already_open = true;
-							this.performInsert("[/"+exploded_tag[0]+"]", "", false);
-							
-							if($(this.openTags[i]))
-							{
-								$(this.openTags[i]).className = "toolbar_normal";
-							}
-							
-							if(this.openTags[i] == full_tag)
-							{
-								no_insert = true;
-							}
+							$(tag).className = "toolbar_normal";
 						}
-						else
+							
+						if(tag == full_tag)
 						{
-							newTags[newTags.length] = this.openTags[i];
+							no_insert = true;
 						}
 					}
-				}
+					else
+					{
+						newTags[newTags.length] = tag;
+					}
+				}.bind(this));
 				
 				this.openTags = newTags;
 				var do_insert = false;
@@ -833,16 +829,15 @@ messageEditor.prototype = {
 			return false;
 		}
 		
-		smilies = DomLib.getElementsByClassName($(id), "img", "smilie");
+		smilies = Element.getElementsByClassName($(id), "smilie");
 		
 		if(smilies.length > 0)
 		{
-			for(var i=0; i < smilies.length; ++i)
+			smilies.each(function(smilie)
 			{
-				var smilie = smilies[i];
 				smilie.onclick = this.insertSmilie.bindAsEventListener(this);
 				smilie.style.cursor = "pointer";
-			}
+			}.bind(this));
 		}
 	},
 	

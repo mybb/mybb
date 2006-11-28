@@ -115,15 +115,12 @@ var MyBB = {
 
 	checkAll: function(formName)
 	{
-		for(var i=0; i < formName.elements.length; ++i)
-		{
-			var element = formName.elements[i];
-			
+		formName.elements.each(function(element) {		
 			if((element.name != "allbox") && (element.type == "checkbox"))
 			{
 				element.checked = formName.allbox.checked;
-			}
-		}
+			}			
+		});
 	},
 
 	reputation: function(uid)
@@ -346,27 +343,6 @@ var DomLib = {
 		}
 	},
 
-	getElementsByClassName: function(oElm, strTagName, strClassName)
-	{
-	    var arrElements = (strTagName == "*" && document.all)? document.all : oElm.getElementsByTagName(strTagName);
-	    var arrReturnElements = new Array();
-	    strClassName = strClassName.replace(/\-/g, "\\-");
-	    var oRegExp = new RegExp("(^|\\s)" + strClassName + "(\\s|$)");
-	    var oElement;
-		
-	    for(var i=0; i < arrElements.length; ++i)
-		{
-	        oElement = arrElements[i];
-			
-	        if(oRegExp.test(oElement.className))
-			{
-	            arrReturnElements.push(oElement);
-	        }
-	    }
-		
-	    return (arrReturnElements)
-	},
-
 	// This function is from quirksmode.org
 	// Modified for use in MyBB
 	getPageScroll: function()
@@ -463,16 +439,13 @@ var expandables = {
 
 	init: function()
 	{
-		expanders = DomLib.getElementsByClassName(document, "img", "expander");
+		expanders = document.getElementsByClassName("expander", "img");
 		if(expanders.length > 0)
 		{
-			for(var i=0; i < expanders.length; ++i)
-			{
-				var expander = expanders[i];
-				
+			expanders.each(function(expander) {
 				if(!expander.id)
 				{
-					continue;
+					return;
 				}
 				
 				Event.observe(expander, "click", this.expandCollapse.bindAsEventListener(this));
@@ -494,7 +467,7 @@ var expandables = {
 					Event.observe(row, "dblclick", this.expandCollapse.bindAsEventListener(this));
 					row.controls = expander.id.replace("_img", "");
 				}
-			}
+			}.bind(this));
 		}
 	},
 
@@ -552,13 +525,12 @@ var expandables = {
 		if(collapsed)
 		{
 			saved = collapsed.split("|");
-			for(var i=0; i < saved.length; ++i)
-			{
-				if(saved[i] != id && saved[id] != "")
+			saved.each(function(item) {
+				if(item != id && item != "")
 				{
-					newCollapsed[newCollapsed.length] = saved[i];
+					newCollapsed[newCollapsed.length] = item;
 				}
-			}
+			});
 		}
 		
 		if(add == 1)

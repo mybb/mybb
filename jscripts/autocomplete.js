@@ -9,7 +9,7 @@ autoComplete.prototype = {
 			return false;
 		}
     		
-		this.cache = new Array();
+		this.cache = new Object();
 		this.lastValue = '';
 		this.lastKeycode = 0;
 		this.textbox = $(textbox);
@@ -258,14 +258,13 @@ autoComplete.prototype = {
 		{
 			return false;
 		}
-		
-		for(var i=0; i < this.popup.childNodes.length; ++i)
+		$A(this.popup.childNodes).each(function(node)
 		{
-			if (this.popup.childNodes[i].nodeType == 3 && !/\S/.test(this.popup.childNodes[i].nodeValue))	
+			if (node.nodeType == 3 && !/\S/.test(node.nodeValue))	
 			{
-				this.popup.removeChild(this.popup.childNodes[i]);
-			}		
-		}
+				this.popup.removeChild(node);
+			}					
+		}.bind(this));
 		
 		if(this.popup.childNodes.length < 1)
 		{
@@ -275,17 +274,15 @@ autoComplete.prototype = {
 			}
 			return false;
 		}
-		
-		for(var i=0; i <this.popup.childNodes.length; ++i)
+		$A(this.popup.childNodes).each(function(item, i)
 		{
-			var item = this.popup.childNodes[i];
 			item.index = i;
 			item.style.padding = "1px";
 			item.style.clear = "both";
 			//item.style.height = "1em";
 			Event.observe(item, "mouseover", this.itemOver.bindAsEventListener(this));
 			Event.observe(item, "click", this.itemClick.bindAsEventListener(this));
-		}
+		}.bind(this));
 		
 		// Clone to get offset height (not possible when display=none)
 	    var clone = this.popup.cloneNode(true);
@@ -380,14 +377,12 @@ autoComplete.prototype = {
 			var items = selectedItem.getElementsByTagName("SPAN");
 			if(items)
 			{
-				for(var i=0; i <items.length; ++i)
-				{
-					if(items[i].className == this.valueSpan)
+				$A(items).each(function(item) {
+					if(item.className == this.valueSpan)
 					{
-						textBoxValue = items[i].innerHTML;
-						break;
-					}
-				}
+						textBoxValue = item.innerHTML;
+					}			
+				}.bind(this));
 			}
 		}
 		

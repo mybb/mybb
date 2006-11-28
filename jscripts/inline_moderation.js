@@ -10,7 +10,6 @@
 		
 		inlineModeration.cookieName = "inlinemod_"+inlineType+inlineId;
 		inputs = document.getElementsByTagName("input");
-		
 		if(!inputs)
 		{
 			return false;
@@ -23,10 +22,9 @@
 			inlineIds = inlineCookie.split("|");
 		}
 		
-		for(var i=0; i < inputs.length; ++i)
+		for(var i=0;i<inputs.length;i++)
 		{
 			var element = inputs[i];
-			
 			if((element.name != "allbox") && (element.type == "checkbox") && (element.id.split("_")[0] == "inlinemod"))
 			{
 				Event.observe(element, "click", inlineModeration.checkItem);
@@ -54,13 +52,9 @@
 			if(inlineCookie)
 			{
 				var inlineCount = 0;
-				for(i=0; i < inlineIds.length; ++i)
-				{
-					if(inlineIds[i] != '')
-					{
-						inlineCount++;
-					}
-				}
+				inlineIds.each(function(item) {
+					if(item != '') inlineCount++;
+				});
 				inlineModeration.inlineCount = inlineCount;
 			}
 			goButton.value = go_text+" ("+(inlineModeration.inlineCount)+")";
@@ -91,16 +85,15 @@
 		if(inlineCookie)
 		{
 			inlineIds = inlineCookie.split("|");
-			for(i=0; i < inlineIds.length; ++i)
-			{
-				if(inlineIds[i] != "" && inlineIds != null)
+			inlineIds.each(function(item) {
+				if(item != "" && item != null)
 				{
-					if(inlineIds[i] != id)
+					if(item != id)
 					{
-						newIds[newIds.length] = inlineIds[i];
+						newIds[newIds.length] = item;
 					}
 				}
-			}
+			});
 		}
 		
 		if(element.checked == true)
@@ -135,15 +128,12 @@
 			return false;
 		}
 		
-		for(var i=0; i < inputs.length; ++i)
-		{
-			var element = inputs[i];
-			
+		inputs.each(function(element) {
 			if((element.name != "allbox") && (element.type == "checkbox") && (element.id.split("_")[0] == "inlinemod"))
 			{
 				element.checked = false;
 			}
-		}
+		});
 
 		inlineModeration.inlineCount = 0;
 		goButton = $("inline_go");
@@ -170,8 +160,7 @@
 		}
 		
 		var newIds = new Array();
-		for(var i=0; i < inputs.length; ++i)
-		{
+		inputs.each(function(element) {
 			var element = inputs[i];
 			inlineCheck = element.id.split("_");
 			
@@ -190,7 +179,7 @@
 					inlineModeration.inlineCount--;	
 				}
 			}
-		}
+		});
 		
 		inlineData = "|"+newIds.join("|")+"|";
 		goButton = $("inline_go");
