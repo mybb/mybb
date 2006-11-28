@@ -137,7 +137,7 @@ function makehoptolinks($links)
 	echo "<tr><td class=\"hoptobuttons\">";
 	if(!is_array($links))
 	{
-		$links[] = $links;
+		$links = array($links);
 	}
 	foreach($links as $key => $val)
 	{
@@ -390,7 +390,7 @@ function makeselectcode_array($title, $name, $options, $selected="", $blank="", 
 	}
 	if(!is_array($options))
 	{
-		$options[] = $options;
+		$options = array($options);
 	}
 	foreach($options as $value => $label)
 	{
