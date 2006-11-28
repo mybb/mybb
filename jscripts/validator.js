@@ -43,7 +43,7 @@ FormValidator.prototype = {
 		this.validateField(id);
 	},
 	
-	validateField: function(id)
+	validateField: function(id, twin_call)
 	{
 		if(!this.validation_fields[id])
 		{
@@ -74,11 +74,13 @@ FormValidator.prototype = {
 				ret = true;
 				this.showSuccess(id, options.status_field, options.success_message);
 				// Has match field
-				if(options.match_field && validation_field[i].validation_type != "matches")
+				if(options.match_field && !twin_call)
 				{
-					if($(options.match_field).value.length != 0)
+					if(validation_field[i].validation_type != "matches") return;
+					ret = this.validateField(options.match_field, 1);
+					if(ret == false)
 					{
-						ret = this.validateField(options.match_field);
+						$(id).className = "invalid_field";
 					}
 				}
 				return true;
