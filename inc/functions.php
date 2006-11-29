@@ -1167,13 +1167,8 @@ function get_post_icons()
  */
 function my_setcookie($name, $value="", $expires="", $httponly=false)
 {
-	global $mybb, $sent_header;
+	global $mybb;
 	
-	if($sent_header || headers_sent())
-	{
-		return false;
-	}
-
 	if(!$mybb->settings['cookiepath'])
 	{
 		$mybb->settings['cookiepath'] = "/";
@@ -1235,15 +1230,8 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
  */
 function my_unsetcookie($name)
 {
-	global $mybb, $sent_header;
-
-	if($sent_header)
-	{
-		return false;
-	}
-
+	global $mybb;
 	$expires = -3600;
-
 	my_setcookie($name, "", $expires);
 }
 

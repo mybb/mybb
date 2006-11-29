@@ -891,7 +891,7 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 		}
 		else
 		{
-			if($mybb->user['usergroup'] != "5")
+			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != "yes")
 			{
 				$activationcode = random_str();
 				$now = time();

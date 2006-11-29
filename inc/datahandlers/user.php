@@ -1026,6 +1026,11 @@ class UserDataHandler extends DataHandler
 		$old_user = get_user($user['uid']);
 
 		$plugins->run_hooks_by_ref("datahandler_user_update", $this);
+		
+		if(count($this->user_update_data) < 1) 
+		{ 
+			return false; 
+		}		
 
 		// Actual updating happens here.
 		$db->update_query("users", $this->user_update_data, "uid='{$user['uid']}'");
