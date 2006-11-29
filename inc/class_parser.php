@@ -520,9 +520,10 @@ class postParser
 	* Parses PHP code MyCode.
 	*
 	* @param string The message to be parsed
+	* @param boolean wether or not it should return it as pre-wrapped in a div or not.
 	* @return string The parsed message.
 	*/
-	function mycode_parse_php($str)
+	function mycode_parse_php($str, $bare_return = false)
 	{
 		global $lang;
 
@@ -603,6 +604,11 @@ class postParser
 		$code = str_replace("</code>", "</code></div>", $code);
 		$code = preg_replace("# *$#", "", $code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
+		
+		if($bare_return)
+		{
+			return $code;
+		}
 
 		// Send back the code all nice and pretty
 		return "</p>\n<div class=\"code_header\">$lang->php_code\n</div><div class=\"code_body\">".$code."</div>\n<p>\n";

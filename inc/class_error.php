@@ -279,9 +279,55 @@ class errorHandler {
 			$error_message .= "<dl>\n";
 			$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
 			$error_message .= "<dt>Error Message:</dt>\n<dd>{$message}</dd>\n";
-			if($file)
+			if(!empty($file))
 			{
 				$error_message .= "<dt>Location:</dt><dd>File: {$file}<br />Line: {$line}</dd>\n";
+				if(!@preg_match('#config\.php|settings\.php#', $file) && @file_exists($file))
+				{
+					$code_pre = @file($file);
+					
+					$code = "";
+
+					if(isset($code_pre[$line-4]))
+					{
+						$code .= $line-3 . ". ".$code_pre[$line-4];
+					}
+
+					if(isset($code_pre[$line-3]))
+					{
+						$code .= $line-2 . ". ".$code_pre[$line-3];
+					}
+
+					if(isset($code_pre[$line-2]))
+					{
+						$code .= $line-1 . ". ".$code_pre[$line-2];
+					}
+
+					$code .= $line . ". ".$code_pre[$line-1]; // The actual line.
+
+					if(isset($code_pre[$line]))
+					{
+						$code .= $line+1 . ". ".$code_pre[$line];
+					}
+
+					if(isset($code_pre[$line+1]))
+					{
+						$code .= $line+2 . ". ".$code_pre[$line+1];
+					}
+
+					if(isset($code_pre[$line+2]))
+					{
+						$code .= $line+3 . ". ".$code_pre[$line+2];
+					}
+
+					unset($code_pre);
+
+					@include_once MYBB_ROOT."inc/class_parser.php";
+					$parser = new postParser;
+					$code = $parser->mycode_parse_php($code, true);
+
+					$error_message .= "<dt>Code:</dt><dd>{$code}</dd>\n";
+				}
 			}
 			$error_message .= "</dl>\n";
 		}

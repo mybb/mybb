@@ -581,24 +581,26 @@ function redirect($url, $message="", $title="")
 	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 
 	$loadpmpopup = false;
-	
+
 	if(!$message)
 	{
 		$message = $lang->redirect;
 	}
-	
-	$timenow = my_date($mybb->settings['dateformat'], time()) . " " . my_date($mybb->settings['timeformat'], time());
+
+	$time = time();
+	$timenow = my_date($mybb->settings['dateformat'], $time) . " " . my_date($mybb->settings['timeformat'], $time);
 	$plugins->run_hooks("redirect");
-	
+
 	if(!$title)
 	{
 		$title = $mybb->settings['bbname'];
 	}
-	
+
 	if($mybb->settings['redirects'] == "on" && $mybb->user['showredirect'] != "no")
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars($url);
+
 		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
 		output_page($redirectpage);
 	}
@@ -607,10 +609,11 @@ function redirect($url, $message="", $title="")
 		$url = str_replace("#", "&#", $url);
 		$url = str_replace("&amp;", "&", $url);
 		$url = str_replace(array("\n","\r",";"), "", $url);
+
 		run_shutdown();
 		header("Location: $url");
 	}
-	
+
 	exit;
 }
 
