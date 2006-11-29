@@ -253,7 +253,7 @@ class errorHandler {
 
 	function output_error($type, $message, $file, $line)
 	{
-		global $mybb;
+		global $mybb, $parser;
 
 		if(!$mybb->settings['bbname'])
 		{
@@ -321,10 +321,31 @@ class errorHandler {
 					}
 
 					unset($code_pre);
-
-					@include_once MYBB_ROOT."inc/class_parser.php";
-					$parser = new postParser;
-					$code = $parser->mycode_parse_php($code, true);
+					
+					$parser_exists = false;
+					
+					if(!is_object($parser))
+					{
+						if(@file_exists(MYBB_ROOT."inc/class_parser.php"))
+						{
+							@include_once MYBB_ROOT."inc/class_parser.php";
+							$parser = new postParser;
+							$parser_exists = true;
+						}
+					}
+					else
+					{
+						$parser_exists = true;
+					}
+					
+					if($parser_exists)
+					{
+						$code = $parser->mycode_parse_php($code, true);
+					}
+					else
+					{
+						$code = @nl2br($code);
+					}
 
 					$error_message .= "<dt>Code:</dt><dd>{$code}</dd>\n";
 				}
