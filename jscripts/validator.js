@@ -150,6 +150,8 @@ FormValidator.prototype = {
 		errorFields = document.getElementsByClassName("invalid_field");
 		if(errorFields.length > 0)
 		{
+			// Focus on field with first error
+			errorFields[0].focus();
 			Event.stop(e);
 			return false;
 		}

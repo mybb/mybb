@@ -181,56 +181,6 @@ var MyBB = {
 		}
 	},
 
-	eventElement: function(event)
-	{
-		if(event.currentTarget)
-		{
-			return event.currentTarget;
-		}
-		else
-		{
-			return event.srcElement;
-		}
-	},
-
-	arraySize: function(array_name)
-	{
-		for(var i=0; i < array_name.length; ++i)
-		{
-			if(array_name[i] == "undefined" || array_name[i] == "" || array_name[i] == null)
-			{
-				return i;
-			}
-		}
-		return array_name.length;
-	},
-
-	arrayPush: function(array_name, array_value)
-	{
-		array_size = MyBB.arraySize(array_name);
-		array_name[array_size] = array_value;
-	},
-
-	arrayPop: function(array_name)
-	{
-		array_size = MyBB.arraySize(array_name);
-		array_value = array_name[array_size-1];
-		delete array_name[array_size-1];
-		return array_value;
-	},
-
-	inArray: function(item, array_name)
-	{
-		for(var i=0; i < array_name.length; ++i)
-		{
-			if(array_name[i] == item)
-			{
-				return true;
-			}
-		}
-		return false;
-	},
-
 	unHTMLchars: function(text)
 	{
 		text = text.replace(/&lt;/g, "<");
@@ -315,34 +265,6 @@ var Cookie = {
 }
 
 var DomLib = {
-
-	addClass: function(element, name)
-	{
-		if(element)
-		{
-			if(element.className != "")
-			{
-				element.className += " "+name;
-			}
-			else
-			{
-				element.className = name;
-			}
-		}
-	},
-
-	removeClass: function(element, name)
-	{
-		if(element.className == element.className.replace(" ", "-"))
-		{
-			element.className = element.className.replace(name, "");
-		}
-		else
-		{
-			element.className = element.className.replace(" "+name, "");
-		}
-	},
-
 	// This function is from quirksmode.org
 	// Modified for use in MyBB
 	getPageScroll: function()
@@ -473,7 +395,7 @@ var expandables = {
 
 	expandCollapse: function(e)
 	{
-		element = MyBB.eventElement(e)
+		element = Event.element(e)
 		if(!element || !element.controls)
 		{
 			return false;
@@ -611,5 +533,74 @@ ActivityIndicator.prototype = {
 		Element.remove(this.spinner);
 	}
 }
+
+/* additions for IE5 compatibility */ 
+if(!Array.prototype.shift) { 
+	Array.prototype.shift = function() 
+	{ 
+		firstElement = this[0]; 
+		this.reverse(); 
+		this.length = Math.max(this.length-1,0); 
+		this.reverse(); 
+		return firstElement; 
+	} 
+} 
+
+if(!Array.prototype.unshift) { 
+	Array.prototype.unshift = function() 
+	{ 
+		this.reverse(); 
+		for(var i=arguments.length-1;i>=0;i--) { 
+			this[this.length]=arguments[i] 
+		} 
+		this.reverse(); 
+		return this.length 
+	} 
+} 
+if(!Array.prototype.push) { 
+	Array.prototype.push = function() 
+	{ 
+		for(var i=0;i<arguments.length;i++){ 
+			this[this.length]=arguments[i] 
+		}; 
+		return this.length; 
+	} 
+} 
+
+if(!Array.prototype.pop) { 
+	Array.prototype.pop = function() {  
+		lastElement = this[this.length-1]; 
+		this.length = Math.max(this.length-1,0); 
+		return lastElement; 
+	} 
+} 
+
+if (!Function.prototype.apply) { 
+	Function.prototype.apply = function(oScope, args) { 
+		var sarg = []; 
+		var rtrn, call; 
+
+		if (!oScope) oScope = window; 
+		if (!args) args = []; 
+
+		for (var i = 0; i < args.length; i++) { 
+			sarg[i] = "args["+i+"]"; 
+		} 
+
+		call = "oScope.__applyTemp__(" + sarg.join(",") + ");"; 
+
+		oScope.__applyTemp__ = this; 
+		rtrn = eval(call); 
+		//delete oScope.__applyTemp__; 
+		return rtrn; 
+	} 
+} 
+
+if(!Function.prototype.call) { 
+	Function.prototype.call = function(obj, param) { 
+		obj.base = this; 
+		obj.base(param);   
+	}   
+} 
 
 MyBB.init();

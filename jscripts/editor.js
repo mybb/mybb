@@ -361,7 +361,7 @@ messageEditor.prototype = {
 
 	toolbarItemOut: function(e)
 	{
-		element = MyBB.eventElement(e);
+		element = Event.element(e);
 		
 		if(!element)
 		{
@@ -379,30 +379,30 @@ messageEditor.prototype = {
 				insertCode = element.insertText;
 			}
 			
-			if(MyBB.inArray(insertCode, this.openTags))
+			if(this.openTags.indexOf(insertCode) != -1)
 			{
-				DomLib.addClass(element, "toolbar_clicked");
+				Element.addClassName(element, "toolbar_clicked");
 			}
 		}
-		DomLib.removeClass(element, "toolbar_hover");
+		Element.removeClassName(element, "toolbar_hover");
 	},
 
 	toolbarItemHover: function(e)
 	{
-		element = MyBB.eventElement(e);
+		element = Event.element(e);
 		
 		if(!element)
 		{
 			return false;
 		}
 		
-		DomLib.addClass(element, "toolbar_hover");
+		Element.addClassName(element, "toolbar_hover");
 	},
 
 
 	toolbarItemClick: function(e)
 	{
-		element = MyBB.eventElement(e);
+		element = Event.element(e);
 		
 		if(!element)
 		{
@@ -421,7 +421,7 @@ messageEditor.prototype = {
 
 	changeFont: function(e)
 	{
-		element = MyBB.eventElement(e);
+		element = Event.element(e);
 		
 		if(!element)
 		{
@@ -438,7 +438,7 @@ messageEditor.prototype = {
 
 	changeSize: function(e)
 	{
-		element = MyBB.eventElement(e);
+		element = Event.element(e);
 		
 		if(!element)
 		{
@@ -455,7 +455,7 @@ messageEditor.prototype = {
 
 	changeColor: function(e)
 	{
-		element = MyBB.eventElement(e);
+		element = Event.element(e);
 		
 		if(!element)
 		{
@@ -640,12 +640,12 @@ messageEditor.prototype = {
 				{
 					if(!this.performInsert(start_tag, end_tag, true))
 					{
-						MyBB.arrayPush(this.openTags, full_tag);
+						this.openTags.push(full_tag);
 						$('close_tags').style.visibility = '';
 					}
 					else if($(full_tag))
 					{
-						DomLib.removeClass($(full_tag), "toolbar_clicked");
+						Element.removeClassName($(full_tag), "toolbar_clicked");
 					}
 				}
 		}
@@ -791,7 +791,7 @@ messageEditor.prototype = {
 		{
 			while(this.openTags[0])
 			{
-				tag = MyBB.arrayPop(this.openTags);
+				tag = this.openTags.pop();
 				exploded_tag = tag.split("_");
 				this.performInsert("[/"+exploded_tag[0]+"]", "", false);
 				
@@ -804,7 +804,7 @@ messageEditor.prototype = {
 					}
 					else
 					{
-						DomLib.removeClass($(tag), "toolbar_clicked");
+						Element.removeClassName($(tag), "toolbar_clicked");
 					}
 				}
 			}
@@ -848,7 +848,7 @@ messageEditor.prototype = {
 
 	insertSmilie: function(e)
 	{
-		element = MyBB.eventElement(e);
+		element = Event.element(e);
 		
 		if(!element || !element.alt)
 		{

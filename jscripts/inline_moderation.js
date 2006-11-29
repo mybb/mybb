@@ -35,7 +35,7 @@
 				inlineCheck = element.id.split("_");
 				id = inlineCheck[1];
 				
-				if(MyBB.inArray(id, inlineIds))
+				if(inlineIds.indexOf(id) != -1)
 				{
 					element.checked = true;
 				}
@@ -64,7 +64,7 @@
 
 	checkItem: function(e)
 	{
-		element = MyBB.eventElement(e);
+		element = Event.element(e);
 		
 		if(!element)
 		{
