@@ -4629,7 +4629,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="forumdisplay_nothreads" version="120"><![CDATA[<tr>
 <td colspan="{$colspan}" class="trow1">{$lang->nothreads}</td>
 </tr>]]></template>
-		<template name="usercp_password" version="120"><![CDATA[<html>
+		<template name="usercp_password" version="122"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_password}</title>
 {$headerinclude}
@@ -4641,6 +4641,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 {$usercpnav}
 <td valign="top">
+{$errors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->change_password}</strong></td>
@@ -4675,7 +4676,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_email" version="121"><![CDATA[<html>
+		<template name="usercp_email" version="122"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_email}</title>
 {$headerinclude}
@@ -4687,6 +4688,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 {$usercpnav}
 <td valign="top">
+{$errors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->change_email}</strong></td>
@@ -5339,7 +5341,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_changename" version="121"><![CDATA[<html>
+		<template name="usercp_changename" version="122"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_username}</title>
 {$headerinclude}
@@ -5351,9 +5353,19 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 {$usercpnav}
 <td valign="top">
+{$errors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->change_username}</strong></td>
+</tr>
+<tr>
+<td class="tcat" colspan="2"><strong>{$lang->current_password}</strong></td>
+</tr>
+<tr>
+<td class="trow1" colspan="2" align="center"><input type="password" class="textbox" name="password" size="25" /></td>
+</tr>
+<tr>
+<td class="tcat" colspan="2"><strong>{$lang->change_username}</strong></td>
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_username}</strong></td>

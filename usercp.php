@@ -864,80 +864,84 @@ if($mybb->input['action'] == "options")
 
 if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 {
+	$errors = array();
+
 	$plugins->run_hooks("usercp_do_email_start");
-	
-	$user = validate_password_from_uid($mybb->user['uid'], $mybb->input['password']); 
-	if(!$user['uid']) 
-	{ 
-		error($lang->error_invalidpassword); 
-	} 
-	if($mybb->input['email'] != $mybb->input['email2']) 
-	{ 
-		error($lang->error_emailmismatch); 
-	} 
+	if(validate_password_from_uid($mybb->user['uid'], $mybb->input['password']) == false)
+	{
+		$errors[] = $lang->error_invalidpassword;
+	}
+	else
+	{
+		// Set up user handler.
+		require_once "inc/datahandlers/user.php";
+		$userhandler = new UserDataHandler("update");
 
-	//Email Banning Code 
-	if($mybb->settings['emailkeep'] != "yes") 
-	{ 
-		$bannedemails = explode(" ", $mybb->settings['emailban']); 
-		if(is_array($bannedemails)) 
-		{ 
-			foreach($bannedemails as $key => $bannedemail) 
-			{ 
-				$bannedemail = trim($bannedemail); 
-				if($bannedemail != "") 
-				{ 
-					if(strstr($mybb->input['email'], $bannedemail) != "") 
-					{ 
-							error($lang->error_bannedemail); 
-					} 
-				} 
-			} 
-		} 
-	} 
-	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['email'])) 
-	{ 
-			error($lang->error_invalidemail); 
-	} 
-	if(function_exists("emailChanged")) 
-	{ 
-			emailChanged($mybb->user['uid'], $mybb->input['email']); 
-	} 
-
-	if($mybb->user['usergroup'] != "5") 
-	{ 
-		$activationcode = random_str(); 
-		$now = time(); 
-		$db->delete_query(TABLE_PREFIX."awaitingactivation", "uid='".$mybb->user['uid']."'"); 
-		$newactivation = array( 
+		$user = array(
 			"uid" => $mybb->user['uid'],
-			"dateline" => time(), 
-			"code" => $activationcode, 
-            "type" => "e", 
-            "oldgroup" => $mybb->user['usergroup'], 
-            "misc" => $db->escape_string($mybb->input['email']) 
+			"email" => $mybb->input['email'],
+			"email2" => $mybb->input['email2']
 		);
+
+		$userhandler->set_data($user);
+
+		if(!$userhandler->validate_user())
+		{
+			$errors = $userhandler->get_friendly_errors();
+		}
+		else
+		{
+			if($mybb->user['usergroup'] != "5")
+			{
+				$activationcode = random_str();
+				$now = time();
+				$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
+				$newactivation = array(
+					"uid" => $mybb->user['uid'],
+					"dateline" => time(),
+					"code" => $activationcode,
+					"type" => "e",
+					"oldgroup" => $mybb->user['usergroup'],
+					"misc" => $db->escape_string($mybb->input['email'])
+				);
+				$db->insert_query(TABLE_PREFIX."awaitingactivation", $newactivation);
 		
-		$db->insert_query(TABLE_PREFIX."awaitingactivation", $newactivation); 
-	 
-		$username = $mybb->user['username']; 
-		$uid = $mybb->user['uid']; 
-		$lang->emailsubject_changeemail = sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']); 
-		$lang->email_changeemail = sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->input['email'], $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']); 
-		my_mail($mybb->input['email'], $lang->emailsubject_changeemail, $lang->email_changeemail); 
-		$plugins->run_hooks("usercp_do_email_verify"); 
-		error($lang->redirect_changeemail_activation); 
-	} 
-	else 
-	{ 
-		$db->update_query(TABLE_PREFIX."users", array('email' => $db->escape_string($mybb->input['email'])), "uid='".$mybb->user['uid']."'"); 
-		$plugins->run_hooks("usercp_do_email_changed"); 
-		redirect("usercp.php", $lang->redirect_emailupdated); 
+				$username = $mybb->user['username'];
+				$uid = $mybb->user['uid'];
+				$lang->emailsubject_changeemail = sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
+				$lang->email_changeemail = sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->input['email'], $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
+				my_mail($mybb->input['email'], $lang->emailsubject_changeemail, $lang->email_changeemail);
+				$plugins->run_hooks("usercp_do_email_verify");
+				error($lang->redirect_changeemail_activation);
+			}
+			else
+			{
+				$userhandler->update_user();
+				$plugins->run_hooks("usercp_do_email_changed");
+				redirect("usercp.php", $lang->redirect_emailupdated);
+			}
+		}
+	}
+	if(count($errors) > 0)
+	{
+			$mybb->input['action'] = "email";
+			$errors = inline_error($errors);
 	}
 }
 
 if($mybb->input['action'] == "email")
 {
+	// Coming back to this page after one or more errors were experienced, show fields the user previously entered (with the exception of the password)
+	if($errors)
+	{
+		$email = htmlspecialchars_uni($mybb->input['email']);
+		$email2 = htmlspecialchars_uni($mybb->input['email2']);
+	}
+	else
+	{
+		$email = $email2 = '';
+	}
+
 	$plugins->run_hooks("usercp_email_start");
 	eval("\$changemail = \"".$templates->get("usercp_email")."\";");
 	$plugins->run_hooks("usercp_email_end");
@@ -946,25 +950,45 @@ if($mybb->input['action'] == "email")
 
 if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 {
-	$plugins->run_hooks("usercp_do_password_start");
-	if(validate_password_from_uid($mybb->user['uid'], $mybb->input['oldpassword']) == false)
-	{
-        error($lang->error_invalidpassword); 
-	} 
-	if($mybb->input['password'] == "") 
-	{ 
-		error($lang->error_invalidnewpassword); 
-	} 
-	if($mybb->input['password'] != $mybb->input['password2']) 
-	{ 
-		error($lang->error_passwordmismatch); 
-	} 
-	$plugins->run_hooks("usercp_do_password_process"); 
-	$logindetails = update_password($mybb->user['uid'], md5($mybb->input['password']), $mybb->user['salt']); 
-	
-	my_setcookie("mybbuser", $mybb->user['uid']."_".$logindetails['loginkey']); 
-	$plugins->run_hooks("usercp_do_password_end"); 
- 	redirect("usercp.php", $lang->redirect_passwordupdated); 
+		$errors = array();
+
+		$plugins->run_hooks("usercp_do_password_start");
+		if(validate_password_from_uid($mybb->user['uid'], $mybb->input['oldpassword']) == false)
+		{
+			$errors[] = $lang->error_invalidpassword;
+		}
+		else
+		{
+			// Set up user handler.
+			require_once "inc/datahandlers/user.php";
+			$userhandler = new UserDataHandler("update");
+
+			$user = array(
+				"uid" => $mybb->user['uid'],
+				"password" => $mybb->input['password'],
+				"password2" => $mybb->input['password2']
+			);
+
+			$userhandler->set_data($user);
+
+			if(!$userhandler->validate_user())
+			{
+				$errors = $userhandler->get_friendly_errors();
+			}
+			else
+			{
+				$userhandler->update_user();
+				my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey']);
+				$plugins->run_hooks("usercp_do_password_end");
+				redirect("usercp.php", $lang->redirect_passwordupdated);
+			}
+		}
+		if(count($errors) > 0)
+		{
+				$mybb->input['action'] = "password";
+				$errors = inline_error($errors);
+		}
+	}
 }
 
 if($mybb->input['action'] == "password")
@@ -983,22 +1007,40 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
-	if(!trim($mybb->input['username']) || eregi("<|>|&", $mybb->input['username'])) 
-	{ 
-		error($lang->error_bannedusername); 
-	} 
-	$query = $db->simple_select(TABLE_PREFIX."users", "username", "LOWER(username)='".strtolower($mybb->input['username'])."'"); 
-	
-	if($db->fetch_array($query)) 
-	{ 
-		error($lang->error_usernametaken); 
-	} 
-	$plugins->run_hooks("usercp_do_changename_process"); 
-	$db->update_query(TABLE_PREFIX."users", array('username' => $db->escape_string($mybb->input['username'])), "uid='".$mybb->user['uid']."'"); 
-	$db->update_query(TABLE_PREFIX."forums", array('lastposter' => $db->escape_string($mybb->input['username'])), "lastposter='".$mybb->user['username']."'"); 
-	$db->update_query(TABLE_PREFIX."threads", array('lastposter' => $db->escape_string($mybb->input['username'])), "lastposter='".$mybb->user['username']."'"); 
-	$plugins->run_hooks("usercp_do_changename_end"); 
-	redirect("usercp.php", $lang->redirect_namechanged); 
+	if(validate_password_from_uid($mybb->user['uid'], $mybb->input['password']) == false)
+	{
+		$errors[] = $lang->error_invalidpassword;
+	}
+	else
+	{
+		// Set up user handler.
+		require_once "inc/datahandlers/user.php";
+		$userhandler = new UserDataHandler("update");
+
+		$user = array(
+			"uid" => $mybb->user['uid'],
+			"username" => $mybb->input['username']
+		);
+
+		$userhandler->set_data($user);
+
+		if(!$userhandler->validate_user())
+		{
+			$errors = $userhandler->get_friendly_errors();
+		}
+		else
+		{
+			$userhandler->update_user();
+			$plugins->run_hooks("usercp_do_changename_end");
+			redirect("usercp.php", $lang->redirect_namechanged);
+
+		}
+	}
+	if(count($errors) > 0)
+	{
+		$errors = inline_error($errors);
+		$mybb->input['action'] = "changename";
+	}
 }
 
 if($mybb->input['action'] == "changename")
