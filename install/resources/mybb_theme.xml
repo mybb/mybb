@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<theme name="MyBB Master Style" version="121">
+<theme name="MyBB Master Style" version="122">
 	<cssbits>
 		<body>
 			<background><![CDATA[#efefef]]></background>
@@ -1446,7 +1446,7 @@ var inlineType = "forum";
 var inlineId = {$fid};
 </script>
 <br />]]></template>
-		<template name="report_thanks" version="121"><![CDATA[<html>
+		<template name="report_thanks" version="122"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
 {$headerinclude}
@@ -5062,7 +5062,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
 <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:clickableEditor.openGetMoreSmilies('clickableEditor');">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
-		<template name="misc_smilies_popup" version="120"><![CDATA[<html>
+		<template name="misc_smilies_popup" version="122"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->smilies_listing}</title>
 {$headerinclude}
@@ -6390,7 +6390,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 <br />]]></template>
-		<template name="member_register" version="120"><![CDATA[<html>
+		<template name="member_register" version="122"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
