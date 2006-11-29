@@ -217,7 +217,7 @@ class errorHandler {
 		$error_data .= "\t<message>".$message."</message>\n";
 		$error_data .= "</error>\n\n";
 
-		if(trim($mybb->settings['errorloglogaction']) != "")
+		if(trim($mybb->settings['errorloglocation']) != "")
 		{
 			error_log($error_data, 3, $mybb->settings['errorloglocation']);
 		}
@@ -285,7 +285,7 @@ class errorHandler {
 				if(!@preg_match('#config\.php|settings\.php#', $file) && @file_exists($file))
 				{
 					$code_pre = @file($file);
-					
+
 					$code = "";
 
 					if(isset($code_pre[$line-4]))
@@ -321,14 +321,14 @@ class errorHandler {
 					}
 
 					unset($code_pre);
-					
+
 					$parser_exists = false;
-					
+
 					if(!is_object($parser))
 					{
 						if(@file_exists(MYBB_ROOT."inc/class_parser.php"))
 						{
-							@include_once MYBB_ROOT."inc/class_parser.php";
+							@require_once MYBB_ROOT."inc/class_parser.php";
 							$parser = new postParser;
 							$parser_exists = true;
 						}
@@ -337,7 +337,7 @@ class errorHandler {
 					{
 						$parser_exists = true;
 					}
-					
+
 					if($parser_exists)
 					{
 						$code = $parser->mycode_parse_php($code, true);
