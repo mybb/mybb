@@ -891,11 +891,11 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 		}
 		else
 		{
-			if($mybb->user['usergroup'] != "5")
+			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != "yes")
 			{
 				$activationcode = random_str();
 				$now = time();
-				$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
+				$db->delete_query(TABLE_PREFIX."awaitingactivation", "uid='".$mybb->user['uid']."'");
 				$newactivation = array(
 					"uid" => $mybb->user['uid'],
 					"dateline" => time(),
@@ -950,44 +950,43 @@ if($mybb->input['action'] == "email")
 
 if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 {
-		$errors = array();
+	$errors = array();
 
-		$plugins->run_hooks("usercp_do_password_start");
-		if(validate_password_from_uid($mybb->user['uid'], $mybb->input['oldpassword']) == false)
+	$plugins->run_hooks("usercp_do_password_start");
+	if(validate_password_from_uid($mybb->user['uid'], $mybb->input['oldpassword']) == false)
+	{
+		$errors[] = $lang->error_invalidpassword;
+	}
+	else
+	{
+		// Set up user handler.
+		require_once "inc/datahandlers/user.php";
+		$userhandler = new UserDataHandler("update");
+
+		$user = array(
+			"uid" => $mybb->user['uid'],
+			"password" => $mybb->input['password'],
+			"password2" => $mybb->input['password2']
+		);
+
+		$userhandler->set_data($user);
+
+		if(!$userhandler->validate_user())
 		{
-			$errors[] = $lang->error_invalidpassword;
+			$errors = $userhandler->get_friendly_errors();
 		}
 		else
 		{
-			// Set up user handler.
-			require_once "inc/datahandlers/user.php";
-			$userhandler = new UserDataHandler("update");
-
-			$user = array(
-				"uid" => $mybb->user['uid'],
-				"password" => $mybb->input['password'],
-				"password2" => $mybb->input['password2']
-			);
-
-			$userhandler->set_data($user);
-
-			if(!$userhandler->validate_user())
-			{
-				$errors = $userhandler->get_friendly_errors();
-			}
-			else
-			{
-				$userhandler->update_user();
-				my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey']);
-				$plugins->run_hooks("usercp_do_password_end");
-				redirect("usercp.php", $lang->redirect_passwordupdated);
-			}
+			$userhandler->update_user();
+			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey']);
+			$plugins->run_hooks("usercp_do_password_end");
+			redirect("usercp.php", $lang->redirect_passwordupdated);
 		}
-		if(count($errors) > 0)
-		{
-				$mybb->input['action'] = "password";
-				$errors = inline_error($errors);
-		}
+	}
+	if(count($errors) > 0)
+	{
+			$mybb->input['action'] = "password";
+			$errors = inline_error($errors);
 	}
 }
 
