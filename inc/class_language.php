@@ -51,6 +51,7 @@ class MyLanguage
 	 */
 	function language_exists($language)
 	{
+		$language = str_replace(array("/", "\\", ".."), '', trim($language));
 		if(file_exists($this->path."/".$language.".php"))
 		{
 			return true;
@@ -70,7 +71,7 @@ class MyLanguage
 	function set_language($language="english", $area="user")
 	{
 		global $mybb;
-		$language = trim($language);
+		$language = str_replace(array("/", "\\", ".."), '', trim($language));
 
 		// Default language is English.
 		if($language == "")
