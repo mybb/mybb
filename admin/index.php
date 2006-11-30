@@ -181,7 +181,7 @@ elseif($mybb->input['action'] == "home")
 	tableheader($lang->mybb_credits);
 	tablesubheader($lang->contributed);
 	makelabelcode("<b>$lang->product_managers</b>", "<a href=\"http://www.surfionline.com\" target=\"_blank\">Chris Boulton</a>");
-	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com/\" target=\"_blank\">Chris Boulton</a><br /><a href=\"http://mods.mybboard.com/\" target=\"_blank\">Musicalmidget</a><br /><a href=\"http://www.dennistt.net/\" target=\"_blank\">DennisTT</a><br /><a href=\"http://www.peterakkies.com\" target=\"_blank\">Peter</a><br /><a href=\"http://www.tiki.rct3x.net\" target=\"_blank\">Tikitiki</a><br /><a href=\"http://www.decswxaqz.co.uk/\" target=\"_blank\">decswxaqz</a><br /><a href=\"http://www.mcdcpp.net/blog/\" target=\"_blank\">CraKteR</a>");
+	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com/\" target=\"_blank\">Chris Boulton</a><br /><a href=\"http://mods.mybboard.com/\" target=\"_blank\">Musicalmidget</a><br /><a href=\"http://www.dennistt.net/\" target=\"_blank\">DennisTT</a><br /><a href=\"http://www.peterakkies.com\" target=\"_blank\">Peter</a><br /><a href=\"http://www.tiki.rct3x.net\" target=\"_blank\">Tikitiki</a><br /><a href=\"http://www.decswxaqz.co.uk/\" target=\"_blank\">decswxaqz</a>");
 	makelabelcode("<b>$lang->graphics_and_style</b>", "<a href=\"http://www.surfionline.com\" target=\"_blank\">Chris Boulton</a><br /><a href=\"http://www.templatesforall.com\" target=\"_blank\">Scott Hough</a>");
 	endtable();
 
