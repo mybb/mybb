@@ -234,33 +234,31 @@ EOF;
 		}
 		else
 		{
-			// Setup member array, for checking for duplicate members
-			$members_cache = array();
-						
-			$query = $db->simple_select("users", "username");
-			while($user = $db->fetch_array($query))
-			{
-				$members_cache[] = $user['username'];
-			}
-			
-			// Get a unique number to avoid more duplicates.
-			$member_dup_count = count($members_cache);
+			// Count the total number of users so we can generate a unique id if we have a duplicate user
+			$query = $db->simple_select("users", "COUNT(*) as totalusers");
+			$total_users = $db->fetch_field($query, "totalusers");
 			
 			// Get members
 			$query = $this->old_db->simple_select("members", "*", "", array('limit_start' => $import_session['start_users'], 'limit' => $import_session['users_per_screen']));
 
 			while($user = $this->old_db->fetch_array($query))
 			{
-				echo "Adding user #{$user['ID_MEMBER']}... ";
-				
-				// Check for duplicate members
-				if(in_array($user['memberName'], $members_cache))
+				++$total_users;
+					
+				$query1 = $db->query("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['memberName']))."'");
+				$duplicate_user = $db->fetch_array($query1);
+				if($duplicate_user['username'] && strtolower($user['emailAddress']) == strtolower($duplicate_user['email']))
 				{
-					++$member_dup_count;
-					$user['memberName'] .= "_smf_import".$member_dup_count;
+					echo "Merging user #{$user['userid']} with user #{$duplicate_user['uid']}... done.";
+					continue;
+				}
+				else if($duplicate_user['username'])
+				{
+					
+				  	$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
 				}
 				
-				$members_cache[] = $user['memberName'];
+				echo "Adding user #{$user['userid']}... ";
 				
 				$insert_user['usergroup'] = $this->get_group_id($user, 'ID_GROUP');
 				$insert_user['additionalgroups'] = $this->get_group_id($user, 'additionalGroups');

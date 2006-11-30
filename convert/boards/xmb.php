@@ -227,36 +227,31 @@ EOF;
 		}
 		else
 		{
-			// Setup member array, for checking for duplicate members
-			$members_cache = array();
-						
-			$query = $db->simple_select("users", "username");
-			while($user = $db->fetch_array($query))
-			{
-				$members_cache[] = $user['username'];
-			}
-			
-			// Get a unique number to avoid more duplicates.
-			$member_dup_count = count($members_cache);
+			// Count the total number of users so we can generate a unique id if we have a duplicate user
+			$query = $db->simple_select("users", "COUNT(*) as totalusers");
+			$total_users = $db->fetch_field($query, "totalusers");
 			
 			// Get members
 			$query = $this->old_db->simple_select("members", "*", "", array('limit_start' => $import_session['start_users'], 'limit' => $import_session['users_per_screen']));
 
 			while($user = $this->old_db->fetch_array($query))
 			{
-				echo "Adding user #{$user['uid']}... ";
+				++$total_users;
 					
-				$query2 = $this->old_db->simple_select("posts", "dateline", "author='{$user['username']}'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
-				$insert_user['lastpost'] = $this->old_db->fetch_field($query2, 'dateline');
-				
-				// Check for duplicate members
-				if(in_array($user['username'], $members_cache))
+				$query = $db->query("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['username']))."'");
+				$duplicate_user = $db->fetch_array($query);
+				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
 				{
-					++$member_dup_count;
-					$user['username'] .= "_xmb_import".$member_dup_count;
+					echo "Merging user #{$user['userid']} with user #{$duplicate_user['uid']}... done.";
+					continue;
+				}
+				else if($duplicate_user['username'])
+				{
+					
+				  	$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
 				}
 				
-				$members_cache[] = $user['username'];				
+				echo "Adding user #{$user['userid']}... ";
 				
 				if($user['status'] == 'Super Administrator')
 				{

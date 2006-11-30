@@ -335,6 +335,10 @@ END;
 				echo "\n		<div id=\"back_button\"><input type=\"submit\" class=\"submit_button\" value=\"&laquo; Back\" /></div><br style=\"clear: both;\" />\n";
 				echo "\n	</form>\n";
 			}
+			else
+			{
+				echo "\n <br style=\"clear: both;\" />";
+			}
 			
 		}
 		else

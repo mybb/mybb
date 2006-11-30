@@ -229,12 +229,28 @@ EOF;
 		}
 		else
 		{
+			// Count the total number of users so we can generate a unique id if we have a duplicate user
+			$query = $db->simple_select("users", "COUNT(*) as totalusers");
+			$total_users = $db->fetch_field($query, "totalusers");
+			
 			// Get members
 			$query = $this->old_db->simple_select("users", "*", "", array('limit_start' => $import_session['start_users'], 'limit' => $import_session['users_per_screen']));
 
 			while($user = $this->old_db->fetch_array($query))
 			{
-				echo "Adding user #{$user['uid']}... ";
+				++$total_users;
+					
+				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['username']))."'");
+				$duplicate_user = $db->fetch_array($query1);
+				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
+				{
+					echo "Merging user #{$user['userid']} with user #{$duplicate_user['uid']}... done.";
+					continue;
+				}
+				else if($duplicate_user['username'])
+				{					
+					$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
+				}
 				
 				$user['import_uid'] = $user['uid'];
 				unset($user['uid']);

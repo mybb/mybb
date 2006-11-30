@@ -231,17 +231,9 @@ EOF;
 		}
 		else
 		{
-			// Setup member array, for checking for duplicate members
-			$members_cache = array();
-						
-			$query = $db->simple_select("users", "username");
-			while($user = $db->fetch_array($query))
-			{
-				$members_cache[] = $user['username'];
-			}
-			
-			// Get a unique number to avoid more duplicates.
-			$member_dup_count = count($members_cache);
+			// Count the total number of users so we can generate a unique id if we have a duplicate user
+			$query = $db->simple_select("users", "COUNT(*) as totalusers");
+			$total_users = $db->fetch_field($query, "totalusers");
 			
 			// Get members
 			$query = $this->old_db->query("
@@ -254,16 +246,21 @@ EOF;
 
 			while($user = $this->old_db->fetch_array($query))
 			{
-				echo "Adding user #{$user['user_id']}... ";
+				++$total_users;
 					
-				// Check for duplicate members
-				if(in_array($user['username'], $members_cache))
+				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['username']))."'");
+				$duplicate_user = $db->fetch_array($query1);
+				if($duplicate_user['username'] && strtolower($user['user_email']) == strtolower($duplicate_user['email']))
 				{
-					++$member_dup_count;
-					$user['username'] .= "_phpbb2_import".$member_dup_count;
+					echo "Merging user #{$user['userid']} with user #{$duplicate_user['uid']}... done.";
+					continue;
+				}
+				else if($duplicate_user['username'])
+				{					
+					$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
 				}
 				
-				$members_cache[] = $user['username'];				
+				echo "Adding user #{$user['userid']}... ";
 				
 				$insert_user['usergroup'] = $this->get_group_id($user['user_id'], true);
 				$insert_user['additionalgroups'] = str_replace($insert_user['usergroup'], '', $this->get_group_id($user['user_id']));
@@ -1030,7 +1027,7 @@ EOF;
 		if($not_mutliple == false)
 		{
 			$query = $this->old_db->simple_select("user_group", "COUNT(*) as rows", "user_id='{$uid}'");
-			$settings = array('limit_start' => '1', $this->old_db->fetch_field($query, 'rows'));
+			$settings = array('limit_start' => '1', 'limit' => $this->old_db->fetch_field($query, 'rows'));
 		}
 		
 		$query = $this->old_db->simple_select("user_group", "*", "user_id='{$uid}'", $settings);
