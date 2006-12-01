@@ -229,7 +229,7 @@ EOF;
 		{
 			$import_session['start_users'] = 0;
 			echo "<p>Please select how many users to import at a time:</p>
-<p><input type=\"text\" name=\"users_per_screen\" value=\"\" /></p>";
+<p><input type=\"text\" name=\"users_per_screen\" value=\"100\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -363,7 +363,7 @@ EOF;
 		{
 			$import_session['start_cats'] = 0;
 			echo "<p>Please select how many categories to import at a time:</p>
-<p><input type=\"text\" name=\"cats_per_screen\" value=\"\" /></p>";
+<p><input type=\"text\" name=\"cats_per_screen\" value=\"100\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -469,7 +469,7 @@ EOF;
 		{
 			$import_session['start_forums'] = 0;
 			echo "<p>Please select how many forums to import at a time:</p>
-<p><input type=\"text\" name=\"forums_per_screen\" value=\"\" /></p>";
+<p><input type=\"text\" name=\"forums_per_screen\" value=\"100\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -575,7 +575,7 @@ EOF;
 		{
 			$import_session['start_threads'] = 0;
 			echo "<p>Please select how many threads to import at a time:</p>
-<p><input type=\"text\" name=\"threads_per_screen\" value=\"\" /></p>";
+<p><input type=\"text\" name=\"threads_per_screen\" value=\"100\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -685,7 +685,7 @@ EOF;
 		{
 			$import_session['start_posts'] = 0;
 			echo "<p>Please select how many posts to import at a time:</p>
-<p><input type=\"text\" name=\"posts_per_screen\" value=\"\" /></p>";
+<p><input type=\"text\" name=\"posts_per_screen\" value=\"100\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -872,7 +872,7 @@ EOF;
 		{
 			$import_session['start_usergroups'] = 0;
 			echo "<p>Please select how many usergroups to import at a time:</p>
-<p><input type=\"text\" name=\"usergroups_per_screen\" value=\"\" /></p>";
+<p><input type=\"text\" name=\"usergroups_per_screen\" value=\"100\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1031,7 +1031,7 @@ EOF;
 		{
 			$import_session['start_privatemessages'] = 0;
 			echo "<p>Please select how many Private Messages to import at a time:</p>
-<p><input type=\"text\" name=\"privatemessages_per_screen\" value=\"\" /></p>";
+<p><input type=\"text\" name=\"privatemessages_per_screen\" value=\"100\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
