@@ -184,6 +184,7 @@ if($mybb->input['action'] == "do_addmultiple")
 				$db->insert_query("icons", $sqlarray);
 			}
 		}
+		$cache->updateposticons();
 		cpredirect("icons.php?".SID, $lang->icons_added);
 	}
 }

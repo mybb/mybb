@@ -181,7 +181,7 @@ if($mybb->input['action'] == "do_addmultiple")
 	{
 		$plugins->run_hooks("admin_smilies_do_addmultiple");
 		reset($mybb->input['smimport']);
-    $find = $mybb->input['smcode'];
+		$find = $mybb->input['smcode'];
 		$name = $mybb->input['smname'];
 		foreach($mybb->input['smimport'] as $image => $insert)
 		{
