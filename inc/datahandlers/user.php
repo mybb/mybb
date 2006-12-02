@@ -864,7 +864,7 @@ class UserDataHandler extends DataHandler
 			'ufid' => $this->uid
 		);
 
-		$query = $db->show_fields_from(TABLE_PREFIX."userfields");
+		$query = $db->query("SHOW FIELDS FROM ".TABLE_PREFIX."userfields");
 		while($field = $db->fetch_array($query))
 		{
 			if($field['Field'] == 'ufid')
@@ -1058,7 +1058,7 @@ class UserDataHandler extends DataHandler
 					'ufid' => $user['uid']
 				);
 
-				$query = $db->show_fields_from(TABLE_PREFIX."userfields");
+				$query = $db->query("SHOW FIELDS FROM ".TABLE_PREFIX."userfields");
 				while($field = $db->fetch_array($query))
 				{
 					if($field['Field'] == 'ufid')
