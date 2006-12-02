@@ -1058,7 +1058,7 @@ class PostDataHandler extends DataHandler
 				}
 
 				// Only update the table if we need to.
-				if(is_array($update_query))
+				if(!empty($update_query))
 				{
 					$update_query = implode(", ", $update_query);
 					$db->query("UPDATE ".TABLE_PREFIX."users SET $update_query WHERE uid='".$thread['uid']."'");
