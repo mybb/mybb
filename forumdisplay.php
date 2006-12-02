@@ -275,7 +275,7 @@ else
 	$ismod = false;
 }
 
-if(is_moderator($fid, "caneditposts") || $fpermissions['caneditposts'] == "yes")
+if(is_moderator($fid, "caneditposts") == "yes" || $fpermissions['caneditposts'] == "yes")
 {
 	$can_edit_titles = 1;
 }
