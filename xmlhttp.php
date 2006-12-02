@@ -468,7 +468,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{	
-		if(!is_moderator($quoted_post['fid']) && $quoted_post['visible'] == 0)
+		if(is_moderator($quoted_post['fid']) != "yes" && $quoted_post['visible'] == 0)
 		{
 			continue;
 		}
