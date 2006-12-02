@@ -733,12 +733,12 @@ EOF;
 				// vBulletin 3 values
 				$insert_post['import_pid'] = $post['postid'];
 				$insert_post['tid'] = $this->get_import_tid($post['threadid']);			
-				$insert_post['pid'] = 0;				
+				$insert_post['pid'] = 0;
 				$thread = $this->get_thread($post['threadid']);				
 				$insert_post['fid'] = $this->get_import_fid($thread['fid']);
 				$insert_post['subject'] = $thread['title'];
 				$insert_post['visible'] = $post['visible'];
-				$insert_post['uid'] = $this->get_import_uid($post['poster_id']);
+				$insert_post['uid'] = $this->get_import_uid($post['userid']);
 				$insert_post['import_uid'] = $post['userid'];
 				$insert_post['username'] = $this->get_import_username($insert_post['import_uid']);
 				$insert_post['dateline'] = $post['dateline'];
@@ -765,7 +765,7 @@ EOF;
 					$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
 					$first_post = $db->fetch_field($query1, "firstpost");
 					$db->update_query("posts", array('replyto' => $first_post), "pid='{$pid}'");
-				}
+				}				
 				
 				echo "done.<br />\n";			
 			}
