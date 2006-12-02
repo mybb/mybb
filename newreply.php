@@ -469,7 +469,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
 			}
-			if(is_moderator($fid))
+			if(is_moderator($fid) == "yes")
 			{
 				$visible_where = "AND p.visible != 2";
 			}
