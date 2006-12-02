@@ -142,19 +142,24 @@ END;
 			if($file != "." && $file != ".." && get_extension($file) == "php")
 			{
 				$bb_name = str_replace(".php", "", $file);
-				$board_script = file_get_contents(CONVERT_ROOT."boards/{$file}");
-				
+				$board_script = file_get_contents(CONVERT_ROOT."boards/{$file}");				
 				// Match out board name
 				preg_match("#Board Name:(.*)#i", $board_script, $version_info);
-				
 				if($version_info[1])
 				{
-					echo "<tr>\n";
-					echo "<td><label for=\"$bb_name\">{$version_info[1]}</label></td>\n";
-					echo "<td><input type=\"radio\" name=\"board\" value=\"$bb_name\" id=\"$bb_name\" /></td>\n";
-					echo "</tr>\n";
+					$board_array[$bb_name] = $version_info[1];
 				}
 			}
+		}
+		
+		asort($board_array);
+		
+		foreach($board_array as $bb_name => $version_info)
+		{			
+			echo "<tr>\n";
+			echo "<td><label for=\"$bb_name\">$version_info</label></td>\n";
+			echo "<td><input type=\"radio\" name=\"board\" value=\"$bb_name\" id=\"$bb_name\" /></td>\n";
+			echo "</tr>\n";
 		}
 		
 		closedir($dh);

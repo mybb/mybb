@@ -404,12 +404,11 @@ EOF;
 				$insert_user['aim'] = $user['aim'];
 				$insert_user['yahoo'] = $user['yahoo'];
 				$insert_user['msn'] = $user['msn'];
-				if($user['avatarpath'] == '')
+				if($avatar['avatar'] == '')
 				{
-					$user['avatarpath'] = 0;
+					$user['avatartype'] = 0;
 				}
 				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);						
-				$insert_user['timezone'] = $user['avatarpath'];				
 				$insert_user['style'] = $user['styleid'];				
 				$insert_user['referrer'] = $user['referrerid'];				
 				$insert_user['regip'] = $user['ipaddress'];				
@@ -670,7 +669,7 @@ EOF;
 				
 				$tid = $this->insert_thread($insert_thread);
 				
-				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid='".((-1) * $thread['threadtid'])."'");
+				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid='".((-1) * $thread['threadid'])."'");
 				
 				echo "done.<br />\n";			
 			}
@@ -759,7 +758,7 @@ EOF;
 				update_thread_count($insert_post['tid']);
 				
 				// Restore first post connections
-				$db->update_query("threads", array('firstpost' => $pid), "tid='{$insert_post['tid']}' AND firstpost='".((-1) * $import_post['pid'])."'");
+				$db->update_query("threads", array('firstpost' => $pid), "tid='{$insert_post['tid']}' AND firstpost='".((-1) * $post['pid'])."'");
 				if($db->affected_rows() == 0)
 				{
 					$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
@@ -835,7 +834,7 @@ EOF;
 				$insert_pm['import_pmid'] = $pm['pmid'];
 				$insert_pm['uid'] = $this->get_import_uid($pm['userid']);
 				$insert_pm['fromid'] = $this->get_import_uid($pm['fromuserid']);
-				$insert_pm['toid'] = $insert_pm['uid'];
+				$insert_pm['toid'] = $insert_pm['uid']; // need to fix
 				$touserarray = unserialize($pm['touserarray']);
 
 				// Rebuild the recipients array
