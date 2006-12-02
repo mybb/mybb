@@ -861,11 +861,19 @@ class UserDataHandler extends DataHandler
 		$this->uid = $db->insert_id();
 
 		$user['user_fields'] = array(
-			'ufid' => $this->uid,
-			'fid1' => '',
-			'fid2' => '',
-			'fid3' => ''
+			'ufid' => $this->uid
 		);
+
+		$query = $db->query("SHOW FIELDS FROM ".TABLE_PREFIX."userfields");
+		while($field = $db->fetch_array($query))
+		{
+			if($field['Field'] == 'ufid')
+			{
+				continue;
+			}
+			$user['user_fields'][$field['Field']] = '';
+		}
+
 		$db->insert_query(TABLE_PREFIX."userfields", $user['user_fields']);
 
 		// Update forum stats
@@ -1047,11 +1055,18 @@ class UserDataHandler extends DataHandler
 			if(!$fields['ufid'])
 			{
 				$user_fields = array(
-					'ufid' => $user['uid'],
-					'fid1' => '',
-					'fid2' => '',
-					'fid3' => ''
+					'ufid' => $user['uid']
 				);
+
+				$query = $db->query("SHOW FIELDS FROM ".TABLE_PREFIX."userfields");
+				while($field = $db->fetch_array($query))
+				{
+					if($field['Field'] == 'ufid')
+					{
+						continue;
+					}
+					$user_fields[$field['Field']] = '';
+				}
 				$db->insert_query(TABLE_PREFIX."userfields", $user_fields);
 			}
 			$db->update_query(TABLE_PREFIX."userfields", $user['user_fields'], "ufid='{$user['uid']}'");
