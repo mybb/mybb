@@ -676,14 +676,24 @@ class PostDataHandler extends DataHandler
 			$excerpt = $parser->strip_mycode($post['message']);
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 
+			// Get the forums the user is not allowed to see.
+			$unviewable = get_unviewable_forums();
+
+			// If there are any, add SQL to exclude them.
+			if($unviewable)
+			{
+				$unviewable = " AND t.fid NOT IN($unviewable)";
+			}
+
 			// Fetch any users subscribed to this thread and queue up their subscription notices
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language
-				FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u
+				FROM ".TABLE_PREFIX."favorites f
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=f.uid)
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=f.tid)
 				WHERE f.type='s' AND f.tid='{$post['tid']}'
-				AND u.uid=f.uid
 				AND f.uid != '{$post['uid']}'
-				AND u.lastactive>'{$thread['lastpost']}'
+				AND u.lastactive>'{$thread['lastpost']}'{$unviewable}
 			");
 			while($subscribedmember = $db->fetch_array($query))
 			{
@@ -731,7 +741,8 @@ class PostDataHandler extends DataHandler
 					"mailto" => $db->escape_string($subscribedmember['email']),
 					"mailfrom" => '',
 					"subject" => $db->escape_string($emailsubject),
-					"message" => $db->escape_string($emailmessage)
+					"message" => $db->escape_string($emailmessage),
+					"headers" => ''
 				);
 				$db->insert_query("mailqueue", $new_email);
 				unset($userlang);
@@ -767,7 +778,7 @@ class PostDataHandler extends DataHandler
 			{
 				$queryadd = '';
 			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");			
+			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
 		}
 
 		// Return the post's pid and whether or not it is visible.
@@ -1055,13 +1066,24 @@ class PostDataHandler extends DataHandler
 
 			// Queue up any forum subscription notices to users who are subscribed to this forum.
 			$excerpt = my_substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+			
+			// Get the forums the user is not allowed to see.
+			$unviewable = get_unviewable_forums();
+
+			// If there are any, add SQL to exclude them.
+			if($unviewable)
+			{
+				$unviewable = " AND fs.fid NOT IN($unviewable)";
+			}
+
+			// Fetch any users subscribed to this thread and queue up their subscription notices
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language
 				FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u
 				WHERE fs.fid='".intval($thread['fid'])."'
 				AND u.uid=fs.uid
 				AND fs.uid!='".intval($thread['uid'])."'
-				AND u.lastactive>'{$forum['lastpost']}'
+				AND u.lastactive>'{$forum['lastpost']}'{$unviewable}
 			");
 			while($subscribedmember = $db->fetch_array($query))
 			{
@@ -1110,7 +1132,8 @@ class PostDataHandler extends DataHandler
 					"mailto" => $db->escape_string($subscribedmember['email']),
 					"mailfrom" => '',
 					"subject" => $db->escape_string($emailsubject),
-					"message" => $db->escape_string($emailmessage)
+					"message" => $db->escape_string($emailmessage),
+					"headers" => ''
 				);
 				$db->insert_query("mailqueue", $new_email);
 				unset($userlang);
