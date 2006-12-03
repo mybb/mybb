@@ -266,6 +266,7 @@ function fetch_wol_activity($location)
 			}
 			$user_activity['activity'] = "sendthread";
 			$user_activity['tid'] = $parameters['tid'];
+		break;
 		case "showteam":
 			$user_activity['activity'] = "showteam";
 			break;
@@ -731,6 +732,10 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 		case "portal":
 			$location_name = $lang->viewing_portal;
+			break;
+		// sendthread.php functions
+		case "sendthread":
+			$locationname = $lang->sending_thread;
 			break;
 	}
 	
