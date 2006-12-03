@@ -259,7 +259,7 @@ END;
 			{
 				echo "<input type=\"submit\" class=\"submit_button\" value=\"Resume &raquo;\" />\n";
 			}
-			elseif($awaiting_dependencies || in_array($key, $import_session['disabled']))
+			elseif($awaiting_dependencies || in_array($key, $import_session['disabled']) || in_array($key, $import_session['completed']))
 			{
 				echo "<input type=\"submit\" class=\"submit_button submit_button_disabled\" value=\"Run &raquo;\" disabled=\"disabled\" />\n";
 			}

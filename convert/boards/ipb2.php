@@ -82,7 +82,7 @@ class Convert_ipb2 extends Converter {
 					$errors[] = "Could not select the database '{$mybb->input['dbname']}'. Are you sure it exists and the specified username and password have access to it?";
 				}
 
-				// Need to check if phpBB is actually installed here
+				// Need to check if IPB is actually installed here
 				$this->old_db->set_table_prefix($mybb->input['tableprefix']);
 				if(!$this->old_db->table_exists("members"))
 				{
@@ -235,7 +235,7 @@ EOF;
 			{
 				echo "Inserting group #{$group['g_id']} as a ";
 				
-				// vBulletin 3 values
+				// Invision Power Board 2 values
 				$insert_group['import_gid'] = $group['g_id'];
 				$insert_group['type'] = 2;
 				$insert_group['title'] = $group['g_title'];
@@ -385,7 +385,7 @@ EOF;
 				
 				echo "Adding user #{$user['id']}... ";
 						
-				// vBulletin 3 values
+				// Invision Power Board 2 values
 				$insert_user['usergroup'] = $this->get_group_id($user['mgroup'], true);
 				$insert_user['additionalgroups'] = str_replace($insert_user['mgroup'], '', $this->get_group_id($user['mgroup']));
 				$insert_user['displaygroup'] = $this->get_group_id($user['mgroup'], true);
@@ -403,7 +403,7 @@ EOF;
 				$insert_user['avatardimensions'] = $user['avatar_size'];		
 				$insert_user['avatar'] = $user['avatar_location'];
 				$insert_user['lastpost'] = $user['last_post'];
-				$insert_user['birthday'] = $user['birthday']; // to do
+				$insert_user['birthday'] = $user['bday_day'].'-'.$user['bday_month'].'-'.$user['bday_year'];
 				$insert_user['icq'] = $user['icq_number'];
 				$insert_user['aim'] = $user['aim_name'];
 				$insert_user['yahoo'] = $user['yahoo'];
@@ -501,7 +501,7 @@ EOF;
 			{
 				echo "Inserting forum #{$forum['id']}... ";
 				
-				// vBulletin 3 values
+				// Invision Power Board 2 values
 				$insert_forum['import_fid'] = $forum['id'];
 				$insert_forum['name'] = $forum['name'];
 				$insert_forum['description'] = $forum['description'];				
@@ -510,9 +510,9 @@ EOF;
 				$insert_forum['posts'] = $forum['posts'];
 				$insert_forum['style'] = $forum['skin_id'];
 				$insert_forum['password'] = $forum['password'];
-				if($forum['defaultsortfield'] == 'last_post')
+				if($forum['sort_key'] == 'last_post')
 				{
-					$forum['defaultsortfield'] = '';
+					$forum['sort_key'] = '';
 				}
 				$insert_forum['defaultsortby'] = $forum['sort_key'];
 				if($forum['sort_order'] = 'A-Z')
@@ -644,7 +644,7 @@ EOF;
 			{
 				echo "Inserting thread #{$thread['tid']}... ";
 				
-				// vBulletin 3 values
+				// Invision Power Board 2 values
 				$insert_thread['import_tid'] = $thread['tid'];
 				$insert_thread['sticky'] = int_to_yesno($thread['pinned']);
 				$insert_thread['fid'] = $this->get_import_fid($thread['forum_id']);
@@ -739,7 +739,7 @@ EOF;
 			{
 				echo "Inserting post #{$post['pid']}... ";
 				
-				// vBulletin 3 values
+				// Invision Power Board 2 values
 				$insert_post['import_pid'] = $post['pid'];
 				$insert_post['tid'] = $this->get_import_tid($post['topic_id']);			
 				$insert_post['pid'] = 0;
