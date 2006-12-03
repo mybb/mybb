@@ -586,6 +586,10 @@ function show($user)
 		case "portal":
 			$locationname = $lang->viewing_portal;
 			break;
+		// sendthread.php functions
+		case "sendthread":
+			$locationname = $lang->sending_thread;
+			break;
 	}
 	if($user['nopermission'] == 1)
 	{
@@ -878,6 +882,7 @@ function what($user)
 			}
 			$user['activity'] = "sendthread";
 			$user['tid'] = $parameters['tid'];
+			break;
 		case "showteam":
 			$user['activity'] = "showteam";
 			break;
