@@ -403,7 +403,7 @@ class UserDataHandler extends DataHandler
 			$field = "fid{$profilefield['fid']}";
 
 			// If the profile field is required, but not filled in, present error.
-			if(empty(trim($profile_fields[$field])) && $profilefield['required'] == "yes" && !$proferror)
+			if(trim($profile_fields[$field]) == "" && $profilefield['required'] == "yes" && !$proferror)
 			{
 				$this->set_error('missing_required_profile_field', array($profilefield['name']));
 			}
