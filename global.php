@@ -102,14 +102,13 @@ $valid = array(
 	"moderation.php"	
 );
 
+// This user has a custom theme set in their profile
+if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
+{
+	$loadstyle = "tid='".$mybb->user['style']."'";
+}
 if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 {
-	// This user has a custom theme set in their profile
-	if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
-	{
-		$loadstyle = "tid='".$mybb->user['style']."'";
-	}
-	
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
 	if(isset($mybb->input['pid']))
 	{
