@@ -250,7 +250,7 @@ class postParser
 		$standard_mycode['size']['replacement'] = "<span style=\"font-size: $1;\">$2</span>";
 
 		$standard_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si";
-		$standard_mycode['size_int']['replacement'] = "<span style=\"font-size: $1em;\">$2</span>";
+		$standard_mycode['size_int']['replacement'] = "<span style=\"font-size: $1pt;\">$2</span>";
 
 		$standard_mycode['font']['regex'] = "#\[font=([a-z ]+?)\](.+?)\[/font\]#si";
 		$standard_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
