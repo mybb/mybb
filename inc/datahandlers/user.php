@@ -860,14 +860,12 @@ class UserDataHandler extends DataHandler
 		$db->insert_query(TABLE_PREFIX."users", $this->user_insert_data);
 		$this->uid = $db->insert_id();
 
-		$user['user_fields'] = array(
-			'ufid' => $this->uid
-		);
-
+		$user['user_fields']['ufid'] = $this->uid;
+		
 		$query = $db->query("SHOW FIELDS FROM ".TABLE_PREFIX."userfields");
 		while($field = $db->fetch_array($query))
 		{
-			if($field['Field'] == 'ufid')
+			if($field['Field'] == 'ufid' || array_key_exists($field['Field'], $user['user_fields']))
 			{
 				continue;
 			}
