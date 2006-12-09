@@ -242,16 +242,15 @@ EOF;
 				$duplicate_user = $db->fetch_array($query);
 				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
 				{
-					echo "Merging user #{$user['userid']} with user #{$duplicate_user['uid']}... done.";
+					echo "Merging user #{$user['uid']} with user #{$duplicate_user['uid']}... done.<br />";
 					continue;
 				}
 				else if($duplicate_user['username'])
 				{
-					
-				  	$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
+					$import_user['username'] = $duplicate_user['username']."_xmb_import".$total_users;
 				}
 				
-				echo "Adding user #{$user['userid']}... ";
+				echo "Adding user #{$user['uid']}... ";
 				
 				if($user['status'] == 'Super Administrator')
 				{
@@ -396,16 +395,13 @@ EOF;
 				
 				$insert_forum['style'] = $cat['theme'];
 				$insert_forum['password'] = $cat['password'];
-				$insert_forum['import_fid'] = (-1 * intval($cat['fid']));
+				$insert_forum['import_fid'] = (-1 * intval($cat['fid']));	
 				
-				$lastpost = @explode('|', $cat['lastpost']);				
-				$insert_forum['lastpost'] = $lastpost[0];
-				$insert_forum['lastposteruid'] = $this->get_import_uid($lastpost[2]);
-				$query2 = $this->old_db->simple_select("posts", "tid,subject", "fid='{$cat['fid']}'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
-				$insert_forum['lastposttid'] = $this->old_db->fetch_field($query2, 'tid');
-				$insert_forum['lastpostsubject'] = $this->old_db->fetch_field($query2, 'subject');
-				
-				// Default values
+				// Default values			
+				$insert_forum['lastpost'] = '';
+				$insert_forum['lastposteruid'] = '';
+				$insert_forum['lastposttid'] = '';
+				$insert_forum['lastpostsubject'] = '';
 				$insert_forum['type'] = 'c';				
 				$insert_forum['lastpost'] = 0;
 				$insert_forum['lastposteruid'] = 0;
@@ -585,6 +581,7 @@ EOF;
 				$insert_forum['usepostcounts'] = 'yes';
 				
 				$fid = $this->insert_forum($insert_forum);
+				// do fix lastpost stuff
 				
 				// Update parent list.
 				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);

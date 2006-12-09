@@ -20,11 +20,11 @@ class Convert_ipb1 extends Converter {
 						 "import_users" => array("name" => "Import Invision Power Board 1 Users",
 									  "dependencies" => "db_configuration,import_usergroups"),
 						 "import_categories" => array("name" => "Import Invision Power Board 1 Categories",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_users"),
 						 "import_forums" => array("name" => "Import Invision Power Board 1 Forums",
 									  "dependencies" => "db_configuration,import_categories"),
 						 "import_threads" => array("name" => "Import Invision Power Board 1 Threads",
-									  "dependencies" => "db_configuration,import_forums,import_users"),
+									  "dependencies" => "db_configuration,import_forums"),
 						 "import_posts" => array("name" => "Import Invision Power Board 1 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_privatemessages" => array("name" => "Import Invision Power Board 1 Private Messages",
@@ -200,7 +200,7 @@ EOF;
 		// Get number of usergroups
 		if(!isset($import_session['total_usergroups']))
 		{
-			$query = $this->old_db->simple_select("groups", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("groups", "COUNT(*) as count", "g_id > 6");
 			$import_session['total_usergroups'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -326,7 +326,7 @@ EOF;
 		// Get number of members
 		if(!isset($import_session['total_members']))
 		{
-			$query = $this->old_db->simple_select("members", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("members", "COUNT(*) as count", "name != 'Guest'");
 			$import_session['total_members'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -362,7 +362,7 @@ EOF;
 			$total_users = $db->fetch_field($query, "totalusers");
 			
 			// Get members
-			$query = $this->old_db->simple_select("members", "*", "username != 'Guest'", array('limit_start' => $import_session['start_users'], 'limit' => $import_session['users_per_screen']));
+			$query = $this->old_db->simple_select("members", "*", "name != 'Guest'", array('limit_start' => $import_session['start_users'], 'limit' => $import_session['users_per_screen']));
 
 			while($user = $this->old_db->fetch_array($query))
 			{
@@ -372,7 +372,7 @@ EOF;
 				$duplicate_user = $db->fetch_array($query1);
 				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
 				{
-					echo "Merging user #{$user['id']} with user #{$duplicate_user['uid']}... done.";
+					echo "Merging user #{$user['id']} with user #{$duplicate_user['uid']}... done.<br />";
 					continue;
 				}
 				else if($duplicate_user['username'])
@@ -463,7 +463,7 @@ EOF;
 		// Get number of forums
 		if(!isset($import_session['total_cats']))
 		{
-			$query = $this->old_db->simple_select("categories", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("categories", "COUNT(*) as count", "id != '-1'");
 			$import_session['total_cats'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -494,7 +494,7 @@ EOF;
 		}
 		else
 		{	
-			$query = $this->old_db->simple_select("categories", "*", "", array('limit_start' => $import_session['start_forums'], 'limit' => $import_session['forums_per_screen']));
+			$query = $this->old_db->simple_select("categories", "*", "id != '-1'", array('limit_start' => $import_session['start_forums'], 'limit' => $import_session['forums_per_screen']));
 			while($cat = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting category #{$cat['id']}... ";

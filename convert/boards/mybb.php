@@ -244,7 +244,7 @@ EOF;
 				$duplicate_user = $db->fetch_array($query1);
 				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
 				{
-					echo "Merging user #{$user['userid']} with user #{$duplicate_user['uid']}... done.";
+					echo "Merging user #{$user['uid']} with user #{$duplicate_user['uid']}... done.<br />";
 					continue;
 				}
 				else if($duplicate_user['username'])

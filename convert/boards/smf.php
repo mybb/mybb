@@ -249,16 +249,15 @@ EOF;
 				$duplicate_user = $db->fetch_array($query1);
 				if($duplicate_user['username'] && strtolower($user['emailAddress']) == strtolower($duplicate_user['email']))
 				{
-					echo "Merging user #{$user['userid']} with user #{$duplicate_user['uid']}... done.";
+					echo "Merging user #{$user['ID_MEMBER']} with user #{$duplicate_user['uid']}... done.<br />";
 					continue;
 				}
 				else if($duplicate_user['username'])
 				{
-					
-				  	$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
+					$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
 				}
 				
-				echo "Adding user #{$user['userid']}... ";
+				echo "Adding user #{$user['ID_MEMBER']}... ";
 				
 				$insert_user['usergroup'] = $this->get_group_id($user, 'ID_GROUP');
 				$insert_user['additionalgroups'] = $this->get_group_id($user, 'additionalGroups');
@@ -524,8 +523,9 @@ EOF;
 				$fid = $this->insert_forum($insert_forum);
 				
 				// Update parent list.
-				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);
-				$db->update_query("forums", $update_array, "fid = {$fid}");
+				$lastpost = $this->get_last_post_fid($fid);
+				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid, 'lastpost' => $lastpost['posterTime'], 'lastposter' => $this->get_import_username($lastpost['ID_MEMBER']), 'lastposteruid' => $this->get_import_uid($lastpost['ID_MEMBER']), 'lastposttid' => (-1 * $lastpost['ID_TOPIC']), 'lastpostsubject' => $lastpost['subject']);
+				$db->update_query("forums", $update_array, "fid='{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -636,7 +636,11 @@ EOF;
 				
 				$member_started = $this->get_user($thread['ID_MEMBER_STARTED']);
 				$insert_thread['username'] = $member_started['memberName'];
-				$this->insert_thread($insert_thread);
+				$tid = $this->insert_thread($insert_thread);
+				
+				// Restore connections
+				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid='".(-1 * $thread['ID_TOPIC'])."'");				
+				
 				echo "done.<br />\n";			
 			}
 			
@@ -803,7 +807,7 @@ EOF;
 		{
 			$import_session['start_mods'] = 0;
 			echo "<p>Please select how many moderators to import at a time:</p>
-<p><input type=\"text\" name=\"mods_per_screen\" value=\"\" /></p>";
+<p><input type=\"text\" name=\"mods_per_screen\" value=\"100\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1123,8 +1127,19 @@ EOF;
 	 */
 	function get_last_post($uid)
 	{
-		$query = $this->old_db->simple_select("messages", "posterTime", "ID_MEMBER='{$uid}'", array('order_by' => 'posterTime', 'order_dir' => 'DESC', 'limit' => 1));
-		return $this->old_db->fetch_field($query, "posterTime");
+		$query = $this->old_db->simple_select("messages", "*", "ID_MEMBER='{$uid}'", array('order_by' => 'posterTime', 'order_dir' => 'DESC', 'limit' => 1));
+		return $this->old_db->fetch_array($query);
+	}
+	
+	/**
+	 * Gets the time of the last post of a forum from the SMF database
+	 * @param int Forum ID
+	 * @param int Last post time
+	 */
+	function get_last_post_fid($fid)
+	{
+		$query = $this->old_db->simple_select("messages", "*", "ID_BOARD='{$fid}'", array('order_by' => 'posterTime', 'order_dir' => 'DESC', 'limit' => 1));
+		return $this->old_db->fetch_array($query);
 	}
 	
 	/**

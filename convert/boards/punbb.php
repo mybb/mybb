@@ -244,7 +244,7 @@ EOF;
 				$duplicate_user = $db->fetch_array($query1);
 				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
 				{
-					echo "Merging user #{$user['userid']} with user #{$duplicate_user['uid']}... done.";
+					echo "Merging user #{$user['id']} with user #{$duplicate_user['uid']}... done.<br />";
 					continue;
 				}
 				else if($duplicate_user['username'])
@@ -252,7 +252,7 @@ EOF;
 					$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
 				}
 				
-				echo "Adding user #{$user['userid']}... ";
+				echo "Adding user #{$user['id']}... ";
 
 				$insert_user['usergroup'] = $this->get_group_id($user['id'], true);
 				$insert_user['additionalgroups'] = $this->get_group_id($user['id']);

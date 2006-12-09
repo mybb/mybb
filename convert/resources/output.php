@@ -155,7 +155,7 @@ END;
 		asort($board_array);
 		
 		foreach($board_array as $bb_name => $version_info)
-		{			
+		{
 			echo "<tr>\n";
 			echo "<td><label for=\"$bb_name\">$version_info</label></td>\n";
 			echo "<td><input type=\"radio\" name=\"board\" value=\"$bb_name\" id=\"$bb_name\" /></td>\n";
@@ -175,6 +175,12 @@ END;
 	function module_list()
 	{
 		global $board, $import_session;
+		
+		if(count($board->modules) == count($import_session['completed']))
+		{
+			header("Location: index.php?action=finish");
+			exit;
+		}
 		
 		$this->print_header("Module Selection", "", 0);
 		
