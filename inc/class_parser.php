@@ -529,9 +529,11 @@ class postParser
 		{
 			return;
 		}
+
 		$str = str_replace('&amp;', '&', $str);
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
+		$str = str_replace("\\", "'\\'", $str);
 		$original = $str;
 
 		// See if open and close tags are provided.
@@ -548,6 +550,7 @@ class postParser
 			$added_end_tag = true;
 			$str = $str." \n?>";
 		}
+
 		// If the PHP version < 4.2, catch highlight_string() output.
 		if(version_compare(PHP_VERSION, "4.2.0", "<"))
 		{
@@ -560,6 +563,7 @@ class postParser
 		{
 			$code = @highlight_string($str, true);
 		}
+
 		// If < PHP 5, make XHTML compatible.
 		if(version_compare(PHP_VERSION, "5", "<"))
 		{
@@ -581,9 +585,8 @@ class postParser
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
-		$code = str_replace("\\", '&#092;', $code);
+		$code = str_replace("'\\'", '&#092;', $code);
 		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
-
 
 		if($added_open_tag)
 		{
