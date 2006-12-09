@@ -19,9 +19,9 @@ class Convert_mybb extends Converter
 						 "import_usergroups" => array("name" => "Import MyBB Usergroups",
 									  "dependencies" => "db_configuration"),
 						 "import_users" => array("name" => "Import MyBB Users",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_usergroups"),
 						 "import_forums" => array("name" => "Import MyBB Forums",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_users"),
 						 "import_threads" => array("name" => "Import MyBB Threads",
 									  "dependencies" => "db_configuration,import_forums"),
 						 "import_posts" => array("name" => "Import MyBB Posts",
@@ -224,7 +224,7 @@ EOF;
 		{
 			$import_session['start_users'] = 0;
 			echo "<p>Please select how many users to import at a time:</p>
-<p><input type=\"text\" name=\"users_per_screen\" value=\"500\" /></p>";
+<p><input type=\"text\" name=\"users_per_screen\" value=\"100\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -315,13 +315,16 @@ EOF;
 				echo "Inserting forum #{$forum['fid']}... ";
 				
 				$forum['import_fid'] = $forum['fid'];
+				$forum['lastposter'] = $this->get_import_username($forum['lastposteruid']);
+				$forum['lastposteruid'] = $this->get_import_uid($forum['lastposteruid']);
+				$forum['lastposttid'] = (-1 * $forum['lastposttid']);
 				unset($forum['fid']);
 				
 				$fid = $this->insert_forum($forum);
 				
 				// Update parent list.
 				$update_array = array('parentlist' => $forum['pid'].','.$fid);
-				$db->update_query("forums", $update_array, "fid = {$fid}");
+				$db->update_query("forums", $update_array, "fid = '{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -384,10 +387,18 @@ EOF;
 				$thread['import_tid'] = $thread['tid'];
 				$thread['fid'] = $this->get_import_fid($thread['fid']);
 				$thread['uid'] = $this->get_import_uid($thread['uid']);
+				$thread['username'] = $this->get_import_username($thread['uid']);
+				$thread['lastposteruid'] = $this->get_import_uid($thread['lastposteruid']);
+				$thread['lastposter'] = $this->get_import_username($thread['lastposteruid']);
+				$thread['firstpost'] = (-1 * $thread['firstpost']);
 				
 				unset($thread['tid']);
 				
-				$this->insert_thread($thread);
+				$tid = $this->insert_thread($thread);
+				
+				// Restore connections
+				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid = '".(-1 * $thread['import_tid'])."'");
+				
 				echo "done.<br />\n";			
 			}
 			
@@ -450,6 +461,7 @@ EOF;
 				$post['tid'] = $this->get_import_tid($post['tid']);
 				$post['fid'] = $this->get_import_fid($post['fid']);
 				$post['uid'] = $this->get_import_uid($post['uid']);
+				$post['username'] = $this->get_import_username($post['uid']);
 								
 				unset($post['pid']);
 
@@ -457,6 +469,9 @@ EOF;
 				
 				// Update thread count
 				update_thread_count($post['tid']);
+				
+				// Restore firstpost connections
+				$db->update_query("threads", array('firstpost' => $pid), "firstpost = '".(-1 * $post['import_pid'])."'");
 				
 				echo "done.<br />\n";			
 			}
@@ -575,7 +590,7 @@ EOF;
 		else
 		{	
 			// Get only non-staff groups.
-			$query = $this->old_db->simple_select("usergroups", "*", "", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
+			$query = $this->old_db->simple_select("usergroups", "*", "gid > 7", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
 			while($group = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting group #{$group['gid']}... ";
