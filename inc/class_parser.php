@@ -538,7 +538,7 @@ class postParser
 		$str = str_replace('&amp;', '&', $str);
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
-		$str = str_replace("'\\'", "'&#92;'", $str);
+		$str = preg_replace("#'(.*?)\\\(.*?)'#m", "'\\1&#92;\\2'", $str);
 		$str = str_replace('\\', "'\\'", $str);
 		$original = $str;
 
