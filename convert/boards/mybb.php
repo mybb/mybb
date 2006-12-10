@@ -204,7 +204,7 @@ EOF;
 		if($import_session['start_usergroups'])
 		{
 			// If there are more usergroups to do, continue, or else, move onto next module
-			if($import_session['total_usergroups'] <= $import_session['start_usergroups'] + $import_session['usergroups_per_screen'])
+			if($import_session['total_usergroups'] - $import_session['start_usergroups'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_usergroups';
 				return "finished";
@@ -292,7 +292,7 @@ EOF;
 		if($import_session['start_users'])
 		{
 			// If there are more users to do, continue, or else, move onto next module
-			if($import_session['total_members'] <= $import_session['start_users'] + $import_session['users_per_screen'])
+			if($import_session['total_members'] - $import_session['start_users'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_users';
 				return "finished";
@@ -319,6 +319,8 @@ EOF;
 			// Count the total number of users so we can generate a unique id if we have a duplicate user
 			$query = $db->simple_select("users", "COUNT(*) as totalusers");
 			$total_users = $db->fetch_field($query, "totalusers");
+			
+			echo "There are ".($import_session['total_members']-$import_session['start_users'])." posts left to import and ".round((($import_session['total_members']-$import_session['start_users'])/$import_session['users_per_screen']))." pages left at a rate of {$import_session['users_per_screen']} per page.<br /><br />";
 			
 			// Get columns so we avoid any 'unknown column' errors
 			$field_info = $db->show_fields_from("users");			
@@ -389,7 +391,7 @@ EOF;
 		if($import_session['total_forums'])
 		{
 			// If there are more forums to do, continue, or else, move onto next module
-			if($import_session['total_forums'] <= $import_session['start_forums'] + $import_session['forums_per_screen'])
+			if($import_session['total_forums'] - $import_session['start_forums'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_forums';
 				return "finished";
@@ -475,7 +477,7 @@ EOF;
 		if($import_session['total_threads'])
 		{
 			// If there are more threads to do, continue, or else, move onto next module
-			if($import_session['total_threads'] <= $import_session['start_threads'] + $import_session['threads_per_screen'])
+			if($import_session['total_threads'] - $import_session['start_threads'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_threads';
 				return "finished";
@@ -563,7 +565,7 @@ EOF;
 		if($import_session['start_posts'])
 		{
 			// If there are more posts to do, continue, or else, move onto next module
-			if($import_session['total_posts'] <= $import_session['start_posts'] + $import_session['posts_per_screen'])
+			if($import_session['total_posts'] - $import_session['start_posts'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_posts';
 				return "finished";
@@ -588,7 +590,7 @@ EOF;
 		else
 		{	
 			// Maybe a neat idea, to show a bit of stats?
-			// echo "There are ".($import_session['total_posts']-$import_session['start_posts'])." posts left to import and ".round((($import_session['total_posts']-$import_session['start_posts'])/$import_session['posts_per_screen']))." pages left at a rate of {$import_session['posts_per_screen']} per page.<br /><br />";
+			echo "There are ".($import_session['total_posts']-$import_session['start_posts'])." posts left to import and ".round((($import_session['total_posts']-$import_session['start_posts'])/$import_session['posts_per_screen']))." pages left at a rate of {$import_session['posts_per_screen']} per page.<br /><br />";
 			
 			// Get columns so we avoid any 'unknown column' errors
 			$field_info = $db->show_fields_from("posts");
@@ -655,7 +657,7 @@ EOF;
 		if($import_session['start_mods'])
 		{
 			// If there are more moderators to do, continue, or else, move onto next module
-			if($import_session['total_mods'] <= $import_session['start_mods'] + $import_session['mods_per_screen'])
+			if($import_session['total_mods'] - $import_session['start_mods'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_moderators';
 				return "finished";

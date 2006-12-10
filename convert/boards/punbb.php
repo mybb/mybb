@@ -205,7 +205,7 @@ EOF;
 		if($import_session['start_users'])
 		{
 			// If there are more users to do, continue, or else, move onto next module
-			if($import_session['total_members'] <= $import_session['start_users'] + $import_session['users_per_screen'])
+			if($import_session['total_members'] - $import_session['start_users'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_users';
 				return "finished";
@@ -340,7 +340,7 @@ EOF;
 		if($import_session['start_cats'])
 		{
 			// If there are more categories to do, continue, or else, move onto next module
-			if($import_session['total_cats'] <= $import_session['start_cats'] + $import_session['cats_per_screen'])
+			if($import_session['total_cats'] - $import_session['start_cats'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_categories';
 				return "finished";
@@ -446,7 +446,7 @@ EOF;
 		if($import_session['total_forums'])
 		{
 			// If there are more forums to do, continue, or else, move onto next module
-			if($import_session['total_forums'] <= $import_session['start_forums'] + $import_session['forums_per_screen'])
+			if($import_session['total_forums'] - $import_session['start_forums'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_forums';
 				return "finished";
@@ -555,7 +555,7 @@ EOF;
 		if($import_session['total_threads'])
 		{
 			// If there are more threads to do, continue, or else, move onto next module
-			if($import_session['total_threads'] <= $import_session['start_threads'] + $import_session['threads_per_screen'])
+			if($import_session['total_threads'] - $import_session['start_threads'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_threads';
 				return "finished";
@@ -647,9 +647,8 @@ EOF;
 
 		if($import_session['start_posts'])
 		{
-
 			// If there are more posts to do, continue, or else, move onto next module
-			if($import_session['total_posts'] <= $import_session['start_posts'] + $import_session['posts_per_screen'])
+			if($import_session['total_posts'] - $import_session['start_posts'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_posts';
 				return "finished";
@@ -768,7 +767,7 @@ EOF;
 		if($import_session['start_usergroups'])
 		{
 			// If there are more usergroups to do, continue, or else, move onto next module
-			if($import_session['total_usergroups'] <= $import_session['start_usergroups'] + $import_session['usergroups_per_screen'])
+			if($import_session['total_usergroups'] - $import_session['start_usergroups'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_usergroups';
 				return "finished";
