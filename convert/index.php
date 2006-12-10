@@ -12,6 +12,7 @@
  */
  
 error_reporting(E_ALL & ~E_NOTICE); 
+set_time_limit(0);
 
 // Load core files
 define("MYBB_ROOT", dirname(dirname(__FILE__)).'/');
