@@ -229,6 +229,9 @@ EOF;
 		}
 		else
 		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_members']-$import_session['start_users'])." users left to import and ".round((($import_session['total_members']-$import_session['start_users'])/$import_session['users_per_screen']))." pages left at a rate of {$import_session['users_per_screen']} per page.<br /><br />";
+			
 			// Count the total number of users so we can generate a unique id if we have a duplicate user
 			$query = $db->simple_select("users", "COUNT(*) as totalusers");
 			$total_users = $db->fetch_field($query, "totalusers");
@@ -363,7 +366,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{	
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_cats']-$import_session['start_cats'])." categories left to import and ".round((($import_session['total_cats']-$import_session['start_cats'])/$import_session['cats_per_screen']))." pages left at a rate of {$import_session['cats_per_screen']} per page.<br /><br />";
+			
 			$query = $this->old_db->simple_select("categories", "*", "", array('limit_start' => $import_session['start_cats'], 'limit' => $import_session['cats_per_screen']));
 			while($cat = $this->old_db->fetch_array($query))
 			{
@@ -469,7 +475,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{	
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_forums']-$import_session['start_forums'])." forums left to import and ".round((($import_session['total_forums']-$import_session['start_forums'])/$import_session['forums_per_screen']))." pages left at a rate of {$import_session['forums_per_screen']} per page.<br /><br />";
+			
 			$query = $this->old_db->simple_select("forums", "*", "", array('limit_start' => $import_session['start_forums'], 'limit' => $import_session['forums_per_screen']));
 			while($forum = $this->old_db->fetch_array($query))
 			{
@@ -578,7 +587,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{		
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_threads']-$import_session['start_threads'])." threads left to import and ".round((($import_session['total_threads']-$import_session['start_threads'])/$import_session['threads_per_screen']))." threads left at a rate of {$import_session['threads_per_screen']} per page.<br /><br />";
+
 			$query = $this->old_db->simple_select("topics", "*", "", array('limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
 			while($thread = $this->old_db->fetch_array($query))
 			{
@@ -672,8 +684,10 @@ EOF;
 		}
 		else
 		{	
-			$query = $this->old_db->simple_select("posts", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_posts']-$import_session['start_posts'])." posts left to import and ".round((($import_session['total_posts']-$import_session['start_posts'])/$import_session['posts_per_screen']))." pages left at a rate of {$import_session['posts_per_screen']} per page.<br /><br />";
 
+			$query = $this->old_db->simple_select("posts", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
 			while($post = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting post #{$post['id']}... ";
@@ -790,7 +804,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{	
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_usegroups']-$import_session['start_usegroups'])." usegroups left to import and ".round((($import_session['total_usegroups']-$import_session['start_usegroups'])/$import_session['usegroups_per_screen']))." pages left at a rate of {$import_session['usegroups_per_screen']} per page.<br /><br />";
+			
 			// Get only non-staff groups.
 			$query = $this->old_db->simple_select("groups", "*", "g_id > 3", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
 			while($group = $this->old_db->fetch_array($query))
@@ -902,6 +919,14 @@ EOF;
 	 */
 	function get_user($username)
 	{		
+		if($username == '')
+		{
+			return array(
+				'username' => 'Guest',
+				'id' => 0,
+			);
+		}
+	
 		$query = $this->old_db->simple_select("users", "id, username", "username='{$username}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);

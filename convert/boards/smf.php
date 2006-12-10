@@ -234,6 +234,9 @@ EOF;
 		}
 		else
 		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_members']-$import_session['start_users'])." users left to import and ".round((($import_session['total_members']-$import_session['start_users'])/$import_session['users_per_screen']))." pages left at a rate of {$import_session['users_per_screen']} per page.<br /><br />";
+			
 			// Count the total number of users so we can generate a unique id if we have a duplicate user
 			$query = $db->simple_select("users", "COUNT(*) as totalusers");
 			$total_users = $db->fetch_field($query, "totalusers");
@@ -366,7 +369,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{	
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_cats']-$import_session['start_cats'])." categories left to import and ".round((($import_session['total_cats']-$import_session['start_cats'])/$import_session['cats_per_screen']))." pages left at a rate of {$import_session['cats_per_screen']} per page.<br /><br />";
+			
 			$query = $this->old_db->simple_select("categories", "*", "", array('limit_start' => $import_session['start_cats'], 'limit' => $import_session['cats_per_screen']));
 			while($cat = $this->old_db->fetch_array($query))
 			{
@@ -472,7 +478,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{	
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_forums']-$import_session['start_forums'])." forums left to import and ".round((($import_session['total_forums']-$import_session['start_forums'])/$import_session['forums_per_screen']))." pages left at a rate of {$import_session['forums_per_screen']} per page.<br /><br />";
+			
 			$query = $this->old_db->simple_select("boards", "*", "", array('limit_start' => $import_session['start_forums'], 'limit' => $import_session['forums_per_screen']));
 			while($forum = $this->old_db->fetch_array($query))
 			{
@@ -579,7 +588,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{		
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_threads']-$import_session['start_threads'])." threads left to import and ".round((($import_session['total_threads']-$import_session['start_threads'])/$import_session['threads_per_screen']))." threads left at a rate of {$import_session['threads_per_screen']} per page.<br /><br />";
+
 			$query = $this->old_db->simple_select("topics", "*", "", array('limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
 			while($thread = $this->old_db->fetch_array($query))
 			{
@@ -693,7 +705,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{	
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_posts']-$import_session['start_posts'])." posts left to import and ".round((($import_session['total_posts']-$import_session['start_posts'])/$import_session['posts_per_screen']))." pages left at a rate of {$import_session['posts_per_screen']} per page.<br /><br />";
+			
 			$query = $this->old_db->simple_select("messages", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
 			while($post = $this->old_db->fetch_array($query))
 			{
@@ -811,7 +826,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{	
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_mods']-$import_session['start_mods'])." moderators left to import and ".round((($import_session['total_mods']-$import_session['start_mods'])/$import_session['mods_per_screen']))." pages left at a rate of {$import_session['mods_per_screen']} per page.<br /><br />";
+			
 			$query = $this->old_db->simple_select("moderators", "*", "", array('limit_start' => $import_session['start_mods'], 'limit' => $import_session['mods_per_screen']));
 			while($mod = $this->old_db->fetch_array($query))
 			{
@@ -833,7 +851,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Moderators to import. Please press next to continue.";
+				echo "There are no moderators to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -880,7 +898,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{	
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_usegroups']-$import_session['start_usegroups'])." usegroups left to import and ".round((($import_session['total_usegroups']-$import_session['start_usegroups'])/$import_session['usegroups_per_screen']))." pages left at a rate of {$import_session['usegroups_per_screen']} per page.<br /><br />";
+			
 			// Cache permissions
 			$permissions = $this->get_group_permissions();
 			
@@ -1040,6 +1061,9 @@ EOF;
 		}
 		else
 		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_privatemessages']-$import_session['start_privatemessages'])." private messages left to import and ".round((($import_session['total_privatemessages']-$import_session['start_privatemessages'])/$import_session['privatemessages_per_screen']))." pages left at a rate of {$import_session['privatemessages_per_screen']} per page.<br /><br />";
+			
 			$query = $this->old_db->query("
 				SELECT * 
 				FROM ".SMF_TABLE_PREFIX."personal_messages p
@@ -1080,7 +1104,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Private Messages to import. Please press next to continue.";
+				echo "There are no private messages to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}

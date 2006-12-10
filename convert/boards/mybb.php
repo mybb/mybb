@@ -228,6 +228,9 @@ EOF;
 		}
 		else
 		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_usegroups']-$import_session['start_usegroups'])." usegroups left to import and ".round((($import_session['total_usegroups']-$import_session['start_usegroups'])/$import_session['usegroups_per_screen']))." pages left at a rate of {$import_session['usegroups_per_screen']} per page.<br /><br />";
+			
 			// Get columns so we avoid any 'unknown column' errors
 			$field_info = $db->show_fields_from("usergroups");
 			
@@ -320,7 +323,8 @@ EOF;
 			$query = $db->simple_select("users", "COUNT(*) as totalusers");
 			$total_users = $db->fetch_field($query, "totalusers");
 			
-			echo "There are ".($import_session['total_members']-$import_session['start_users'])." posts left to import and ".round((($import_session['total_members']-$import_session['start_users'])/$import_session['users_per_screen']))." pages left at a rate of {$import_session['users_per_screen']} per page.<br /><br />";
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_members']-$import_session['start_users'])." users left to import and ".round((($import_session['total_members']-$import_session['start_users'])/$import_session['users_per_screen']))." pages left at a rate of {$import_session['users_per_screen']} per page.<br /><br />";
 			
 			// Get columns so we avoid any 'unknown column' errors
 			$field_info = $db->show_fields_from("users");			
@@ -415,6 +419,9 @@ EOF;
 		}
 		else
 		{	
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_forums']-$import_session['start_forums'])." forums left to import and ".round((($import_session['total_forums']-$import_session['start_forums'])/$import_session['forums_per_screen']))." pages left at a rate of {$import_session['forums_per_screen']} per page.<br /><br />";
+		
 			// Get columns so we avoid any 'unknown column' errors
 			$field_info = $db->show_fields_from("forums");
 		
@@ -501,9 +508,12 @@ EOF;
 		}
 		else
 		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_threads']-$import_session['start_threads'])." threads left to import and ".round((($import_session['total_threads']-$import_session['start_threads'])/$import_session['threads_per_screen']))." pages left at a rate of {$import_session['threads_per_screen']} per page.<br /><br />";
+			
 			// Get columns so we avoid any 'unknown column' errors
 			$field_info = $db->show_fields_from("threads");
-			
+
 			$query = $this->old_db->simple_select("threads", "*", "", array('limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
 			while($thread = $this->old_db->fetch_array($query))
 			{
@@ -589,7 +599,7 @@ EOF;
 		}
 		else
 		{	
-			// Maybe a neat idea, to show a bit of stats?
+			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_posts']-$import_session['start_posts'])." posts left to import and ".round((($import_session['total_posts']-$import_session['start_posts'])/$import_session['posts_per_screen']))." pages left at a rate of {$import_session['posts_per_screen']} per page.<br /><br />";
 			
 			// Get columns so we avoid any 'unknown column' errors
@@ -680,7 +690,10 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{	
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_mods']-$import_session['start_mods'])." moderators left to import and ".round((($import_session['total_mods']-$import_session['start_mods'])/$import_session['mods_per_screen']))." pages left at a rate of {$import_session['mods_per_screen']} per page.<br /><br />";
+			
 			// Get columns so we avoid any 'unknown column' errors
 			$field_info = $db->show_fields_from("moderators");
 			
@@ -713,12 +726,128 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Moderators to import. Please press next to continue.";
+				echo "There are no moderators to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_mods'] += $import_session['mods_per_screen'];
 		$output->print_footer();
+	}
+	
+	function import_privatemessages()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->mybb_db_connect();
+
+		// Get number of usergroups
+		if(!isset($import_session['total_privatemessages']))
+		{
+			$query = $this->old_db->simple_select("personal_messages", "COUNT(*) as count");
+			$import_session['total_privatemessages'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_privatemessages'])
+		{
+			// If there are more usergroups to do, continue, or else, move onto next module
+			if($import_session['total_privatemessages'] - $import_session['start_privatemessages'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_privatemessages';
+				return "finished";
+			}
+		}
+
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of posts per screen from form
+		if(isset($mybb->input['privatemessages_per_screen']))
+		{
+			$import_session['privatemessages_per_screen'] = intval($mybb->input['privatemessages_per_screen']);
+		}
+		
+		if(empty($import_session['privatemessages_per_screen']))
+		{
+			$import_session['start_privatemessages'] = 0;
+			echo "<p>Please select how many Private Messages to import at a time:</p>
+<p><input type=\"text\" name=\"privatemessages_per_screen\" value=\"100\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_privatemessages']-$import_session['start_privatemessages'])." private messages left to import and ".round((($import_session['total_privatemessages']-$import_session['start_privatemessages'])/$import_session['privatemessages_per_screen']))." pages left at a rate of {$import_session['privatemessages_per_screen']} per page.<br /><br />";
+			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("moderators");
+			
+			$query = $this->old_db->simple_select("privatemessages", "*", "", array('limit_start' => $import_session['start_privatemessages'], 'limit' => $import_session['privatemessages_per_screen']));
+			
+			while($pm = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting Private Message #{$pm['pmid']}... ";
+				
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_pm[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($pm[$field['Field']]))
+					{
+						$insert_pm[$field['Field']] = $pm[$field['Field']];
+					}
+				}
+				
+				$insert_pm['import_pmid'] = $pm['pmid'];
+				$insert_pm['uid'] = $this->get_import_uid($pm['uid']);
+				$insert_pm['fromid'] = $this->get_import_uid($pm['fromid']);
+				$insert_pm['toid'] = $this->get_import_uid($pm['toid']);
+				
+				$touserarray = unserialize($pm['recipients']);
+				
+				// Rebuild the recipients array
+				$recipients = array();
+				foreach($touserarray['to'] as $key => $uid)
+				{
+					$username = $this->get_import_uid($uid);		
+					$recipients['to'][] = $this->get_import_username($username['uid']);
+				}
+				$insert_pm['recipients'] = serialize($recipients);
+
+				$this->insert_privatemessage($insert_pm);
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no private messages to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_privatemessages'] += $import_session['privatemessages_per_screen'];
+		$output->print_footer();
+	}
+	
+	/**
+	 * Get a user from the MyBB database
+	 * @param int Username
+	 * @return array If the username is empty, returns an array of username as Guest.  Otherwise returns the user
+	 */
+	function get_username($username)
+	{
+		if($username == '')
+		{
+			return array(
+				'username' => 'Guest',
+				'uid' => 0,
+			);
+		}
+		
+		$query = $this->old_db->simple_select("users", "*", "username='{$username}'", array('limit' => 1));
+		
+		return $this->old_db->fetch_array($query);
 	}
 }
 
