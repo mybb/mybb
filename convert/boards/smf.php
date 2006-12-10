@@ -245,7 +245,7 @@ EOF;
 			{
 				++$total_users;
 					
-				$query1 = $db->query("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['memberName']))."'");
+				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['memberName']))."'");
 				$duplicate_user = $db->fetch_array($query1);
 				if($duplicate_user['username'] && strtolower($user['emailAddress']) == strtolower($duplicate_user['email']))
 				{
@@ -254,7 +254,7 @@ EOF;
 				}
 				else if($duplicate_user['username'])
 				{
-					$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
+					$user['memberName'] = $duplicate_user['username']."_smf1.1_import".$total_users;
 				}
 				
 				echo "Adding user #{$user['ID_MEMBER']}... ";

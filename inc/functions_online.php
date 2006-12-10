@@ -370,7 +370,7 @@ function fetch_wol_activity($location)
  */
 function build_friendly_wol_location($user_activity, $return=false)
 {
-	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins;
+	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $parser;
 	static $threads, $forums, $forums_linkto, $posts, $events, $users;
 
 	// Fetch forum permissions for this user

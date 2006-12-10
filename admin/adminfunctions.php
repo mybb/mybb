@@ -1253,7 +1253,7 @@ function logadmin()
 	foreach($qstring as $key => $value)
 	{
 		$vale = explode("=", $value, 2);
-		if(trim($vale[0]) != "" && trim($vale[1]) != "")
+		if(my_trim($vale[0]) != "" && my_trim($vale[1]) != "")
 		{
 			if($vale[0] != "action" && $vale[0] != "adminsid")
 			{

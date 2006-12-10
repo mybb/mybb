@@ -188,7 +188,94 @@ EOF;
 		$output->print_footer();
 	}
 	
-	// Loop through database engines
+	function import_usergroups()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->mybb_db_connect();
+
+		// Get number of usergroups
+		if(!isset($import_session['total_usergroups']))
+		{
+			$query = $this->old_db->simple_select("usergroups", "COUNT(*) as count");
+			$import_session['total_usergroups'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_usergroups'])
+		{
+			// If there are more usergroups to do, continue, or else, move onto next module
+			if($import_session['total_usergroups'] <= $import_session['start_usergroups'] + $import_session['usergroups_per_screen'])
+			{
+				$import_session['disabled'][] = 'import_usergroups';
+				return "finished";
+			}
+		}
+
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of posts per screen from form
+		if(isset($mybb->input['usergroups_per_screen']))
+		{
+			$import_session['usergroups_per_screen'] = intval($mybb->input['usergroups_per_screen']);
+		}
+		
+		if(empty($import_session['usergroups_per_screen']))
+		{
+			$import_session['start_usergroups'] = 0;
+			echo "<p>Please select how many usergroups to import at a time:</p>
+<p><input type=\"text\" name=\"usergroups_per_screen\" value=\"100\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("usergroups");
+			
+			// Get only non-staff groups.
+			$query = $this->old_db->simple_select("usergroups", "*", "gid > 7", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
+			while($group = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting group #{$group['gid']}... ";
+				
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_group[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($group[$field['Field']]))
+					{
+						$insert_group[$field['Field']] = $group[$field['Field']];
+					}					
+				}
+				
+				// Make this into a usergroup
+				$insert_group['import_gid'] = $group['gid'];
+				
+				$gid = $this->insert_usergroup($insert_group);
+				
+				// Restore connections
+				$update_array = array('usergroup' => $gid);
+				$db->update_query("users", $update_array, "import_usergroup = '{$group['gid']}'");
+				$db->update_query("users", $update_array, "import_displaygroup = '{$group['gid']}'");
+				
+				$this->import_gids = null; // Force cache refresh
+				
+				echo "done.<br />\n";		
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no Usergroups to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];
+		$output->print_footer();
+	}
+	
 	function import_users()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -233,12 +320,29 @@ EOF;
 			$query = $db->simple_select("users", "COUNT(*) as totalusers");
 			$total_users = $db->fetch_field($query, "totalusers");
 			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("users");			
+			
 			// Get members
 			$query = $this->old_db->simple_select("users", "*", "", array('limit_start' => $import_session['start_users'], 'limit' => $import_session['users_per_screen']));
 
 			while($user = $this->old_db->fetch_array($query))
 			{
 				++$total_users;
+				
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_user[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($user[$field['Field']]))
+					{
+						$insert_user[$field['Field']] = $user[$field['Field']];
+					}
+				}
 					
 				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query1);
@@ -249,13 +353,13 @@ EOF;
 				}
 				else if($duplicate_user['username'])
 				{					
-					$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
+					$insert_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
 				}
+				echo "Adding user #{$user['uid']}... ";
 				
-				$user['import_uid'] = $user['uid'];
-				unset($user['uid']);
+				$insert_user['import_uid'] = $user['uid'];
 				
-				$uid = $this->insert_user($user);
+				$uid = $this->insert_user($insert_user);
 				
 				echo "done.<br />\n";
 			}
@@ -309,18 +413,34 @@ EOF;
 		}
 		else
 		{	
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("forums");
+		
 			$query = $this->old_db->simple_select("forums", "*", "", array('limit_start' => $import_session['start_forums'], 'limit' => $import_session['forums_per_screen']));
 			while($forum = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting forum #{$forum['fid']}... ";
 				
-				$forum['import_fid'] = $forum['fid'];
-				$forum['lastposter'] = $this->get_import_username($forum['lastposteruid']);
-				$forum['lastposteruid'] = $this->get_import_uid($forum['lastposteruid']);
-				$forum['lastposttid'] = (-1 * $forum['lastposttid']);
-				unset($forum['fid']);
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_forum[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($forum[$field['Field']]))
+					{
+						$insert_forum[$field['Field']] = $forum[$field['Field']];
+					}
+				}
 				
-				$fid = $this->insert_forum($forum);
+				$insert_forum['import_fid'] = $forum['fid'];
+				$insert_forum['lastposter'] = $this->get_import_username($forum['lastposteruid']);
+				$insert_forum['lastposteruid'] = $this->get_import_uid($forum['lastposteruid']);
+				$insert_forum['lastposttid'] = (-1 * $forum['lastposttid']);
+				
+				$fid = $this->insert_forum($insert_forum);
 				
 				// Update parent list.
 				$update_array = array('parentlist' => $forum['pid'].','.$fid);
@@ -378,26 +498,41 @@ EOF;
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
-		{		
+		{
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("threads");
+			
 			$query = $this->old_db->simple_select("threads", "*", "", array('limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
 			while($thread = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting thread #{$thread['tid']}... ";				
 				
-				$thread['import_tid'] = $thread['tid'];
-				$thread['fid'] = $this->get_import_fid($thread['fid']);
-				$thread['uid'] = $this->get_import_uid($thread['uid']);
-				$thread['username'] = $this->get_import_username($thread['uid']);
-				$thread['lastposteruid'] = $this->get_import_uid($thread['lastposteruid']);
-				$thread['lastposter'] = $this->get_import_username($thread['lastposteruid']);
-				$thread['firstpost'] = (-1 * $thread['firstpost']);
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_thread[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($thread[$field['Field']]))
+					{
+						$insert_thread[$field['Field']] = $thread[$field['Field']];
+					}
+				}
 				
-				unset($thread['tid']);
+				$insert_thread['import_tid'] = $thread['tid'];
+				$insert_thread['fid'] = $this->get_import_fid($thread['fid']);
+				$insert_thread['uid'] = $this->get_import_uid($thread['uid']);
+				$insert_thread['username'] = $this->get_import_username($thread['uid']);
+				$insert_thread['lastposteruid'] = $this->get_import_uid($thread['lastposteruid']);
+				$insert_thread['lastposter'] = $this->get_import_username($thread['lastposteruid']);
+				$insert_thread['firstpost'] = (-1 * $thread['firstpost']);
 				
-				$tid = $this->insert_thread($thread);
+				$tid = $this->insert_thread($insert_thread);
 				
 				// Restore connections
-				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid = '".(-1 * $thread['import_tid'])."'");
+				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid = '".(-1 * $thread['tid'])."'");
 				
 				echo "done.<br />\n";			
 			}
@@ -452,26 +587,44 @@ EOF;
 		}
 		else
 		{	
+			// Maybe a neat idea, to show a bit of stats?
+			// echo "There are ".($import_session['total_posts']-$import_session['start_posts'])." posts left to import and ".round((($import_session['total_posts']-$import_session['start_posts'])/$import_session['posts_per_screen']))." pages left at a rate of {$import_session['posts_per_screen']} per page.<br /><br />";
+			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("posts");
+			
 			$query = $this->old_db->simple_select("posts", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
 			while($post = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting post #{$post['pid']}... ";
 				
-				$post['import_pid'] = $post['pid'];
-				$post['tid'] = $this->get_import_tid($post['tid']);
-				$post['fid'] = $this->get_import_fid($post['fid']);
-				$post['uid'] = $this->get_import_uid($post['uid']);
-				$post['username'] = $this->get_import_username($post['uid']);
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_post[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($post[$field['Field']]))
+					{
+						$insert_post[$field['Field']] = $post[$field['Field']];
+					}
+				}
+				
+				$insert_post['import_pid'] = $post['pid'];
+				$insert_post['tid'] = $this->get_import_tid($post['tid']);
+				$insert_post['fid'] = $this->get_import_fid($post['fid']);
+				$insert_post['uid'] = $this->get_import_uid($post['uid']);
+				$insert_post['username'] = $this->get_import_username($post['uid']);
 								
-				unset($post['pid']);
-
-				$pid = $this->insert_post($post);
+				$pid = $this->insert_post($insert_post);
 				
 				// Update thread count
 				update_thread_count($post['tid']);
 				
 				// Restore firstpost connections
-				$db->update_query("threads", array('firstpost' => $pid), "firstpost = '".(-1 * $post['import_pid'])."'");
+				$db->update_query("threads", array('firstpost' => $pid), "firstpost = '".(-1 * $post['pid'])."'");
 				
 				echo "done.<br />\n";			
 			}
@@ -526,15 +679,32 @@ EOF;
 		}
 		else
 		{	
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("moderators");
+			
 			$query = $this->old_db->simple_select("moderators", "*", "", array('limit_start' => $import_session['start_mods'], 'limit' => $import_session['mods_per_screen']));
 			while($mod = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting user #{$mod['uid']} as moderator to forum #{$mod['fid']}... ";
 				
-				$mod['fid'] = $this->get_import_fid($mod['fid']);
-				$mod['uid'] = $this->get_import_uid($mod['uid']);
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_mod[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($mod[$field['Field']]))
+					{
+						$insert_mod[$field['Field']] = $mod[$field['Field']];
+					}
+				}
+				
+				$insert_mod['fid'] = $this->get_import_fid($mod['fid']);
+				$insert_mod['uid'] = $this->get_import_uid($mod['uid']);
 
-				$this->insert_moderator($mod);
+				$this->insert_moderator($insert_mod);
 				
 				echo "done.<br />\n";			
 			}
@@ -546,78 +716,6 @@ EOF;
 			}
 		}
 		$import_session['start_mods'] += $import_session['mods_per_screen'];
-		$output->print_footer();
-	}
-	
-	function import_usergroups()
-	{
-		global $mybb, $output, $import_session, $db;
-
-		$this->mybb_db_connect();
-
-		// Get number of usergroups
-		if(!isset($import_session['total_usergroups']))
-		{
-			$query = $this->old_db->simple_select("usergroups", "COUNT(*) as count");
-			$import_session['total_usergroups'] = $this->old_db->fetch_field($query, 'count');				
-		}
-
-		if($import_session['start_usergroups'])
-		{
-			// If there are more usergroups to do, continue, or else, move onto next module
-			if($import_session['total_usergroups'] <= $import_session['start_usergroups'] + $import_session['usergroups_per_screen'])
-			{
-				$import_session['disabled'][] = 'import_usergroups';
-				return "finished";
-			}
-		}
-
-		$output->print_header($this->modules[$import_session['module']]['name']);
-
-		// Get number of posts per screen from form
-		if(isset($mybb->input['usergroups_per_screen']))
-		{
-			$import_session['usergroups_per_screen'] = intval($mybb->input['usergroups_per_screen']);
-		}
-		
-		if(empty($import_session['usergroups_per_screen']))
-		{
-			$import_session['start_usergroups'] = 0;
-			echo "<p>Please select how many usergroups to import at a time:</p>
-<p><input type=\"text\" name=\"usergroups_per_screen\" value=\"100\" /></p>";
-			$output->print_footer($import_session['module'], 'module', 1);
-		}
-		else
-		{	
-			// Get only non-staff groups.
-			$query = $this->old_db->simple_select("usergroups", "*", "gid > 7", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
-			while($group = $this->old_db->fetch_array($query))
-			{
-				echo "Inserting group #{$group['gid']}... ";
-				
-				// Make this into a usergroup
-				$group['import_gid'] = $group['gid'];
-				unset($group['gid']);
-				
-				$gid = $this->insert_usergroup($group);
-				
-				// Restore connections
-				$update_array = array('usergroup' => $gid);
-				$db->update_query("users", $update_array, "import_usergroup = '{$group['gid']}'");
-				$db->update_query("users", $update_array, "import_displaygroup = '{$group['gid']}'");
-				
-				$this->import_gids = null; // Force cache refresh
-				
-				echo "done.<br />\n";		
-			}
-			
-			if($this->old_db->num_rows($query) == 0)
-			{
-				echo "There are no Usergroups to import. Please press next to continue.";
-				define('BACK_BUTTON', false);
-			}
-		}
-		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];
 		$output->print_footer();
 	}
 }

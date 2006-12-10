@@ -325,6 +325,12 @@ class databaseEngine
 		{
 			global $error_handler;
 			
+			if(!is_object($error_handler))
+			{
+				require MYBB_ROOT."inc/class_error.php";
+				$error_handler = new errorHandler();
+			}
+			
 			$error = array(
 				"error_no" => $this->error_number($this->link),
 				"error" => $this->error_string($this->link),
