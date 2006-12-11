@@ -18,7 +18,7 @@ $upgrade_detail = array(
 	"revert_all_templates" => 0,
 	"revert_all_themes" => 0,
 	"revert_all_settings" => 0
-	);
+);
 
 @set_time_limit(0);
 
@@ -62,19 +62,77 @@ function upgrade8_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL AFTER querycache");
 	}
 	
-	$db->query("CREATE TABLE ".TABLE_PREFIX."maillogs (
-		mid int unsigned NOT NULL auto_increment,
-		subject varchar(200) not null default '',
-		message text NOT NULL default '',
-		dateline bigint(30) NOT NULL default '0',
-		fromuid int unsigned NOT NULL default '0',
-		fromemail varchar(200) not null default '',
-		touid bigint(30) NOT NULL default '0',
-		toemail varchar(200) NOT NULL default '',
-		tid int unsigned NOT NULL default '0',
-		ipaddress varchar(20) NOT NULL default '',
-		PRIMARY KEY(mid)
-	);");
+	if(!$db->field_exists('start_day', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_day tinyint(2) unsigned NOT NULL");
+	}
+
+  	if(!$db->field_exists('start_month', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_month tinyint(2) unsigned NOT NULL");
+  	}
+	
+	if(!$db->field_exists('start_year', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_year smallint(4) unsigned NOT NULL");
+  	}
+	
+	if(!$db->field_exists('end_day', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_day tinyint(2) unsigned NOT NULL");
+  	}
+	
+	if(!$db->field_exists('end_month', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_month tinyint(2) unsigned NOT NULL");
+  	}
+	
+	if(!$db->field_exists('end_year', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_year smallint(4) unsigned NOT NULL");
+  	}
+	
+	if(!$db->field_exists('repeat_days', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD repeat_days varchar(20) NOT NULL");
+  	}
+	
+	if(!$db->field_exists('start_time_hours', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_time_hours varchar(2) NOT NULL");
+  	}
+	
+	if(!$db->field_exists('start_time_mins', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_time_mins varchar(2) NOT NULL");
+	}
+  	
+	if(!$db->field_exists('end_time_hours', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_time_hours varchar(2) NOT NULL");
+	}
+  	
+	if(!$db->field_exists('end_time_mins', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_time_mins varchar(2) NOT NULL");
+	}
+	
+	if(!$db->table_exists("maillogs"))
+	{
+		$db->query("CREATE TABLE ".TABLE_PREFIX."maillogs (
+			mid int unsigned NOT NULL auto_increment,
+			subject varchar(200) not null default '',
+			message text NOT NULL default '',
+			dateline bigint(30) NOT NULL default '0',
+			fromuid int unsigned NOT NULL default '0',
+			fromemail varchar(200) not null default '',
+			touid bigint(30) NOT NULL default '0',
+			toemail varchar(200) NOT NULL default '',
+			tid int unsigned NOT NULL default '0',
+			ipaddress varchar(20) NOT NULL default '',
+			PRIMARY KEY(mid)
+		);");
+	}
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
