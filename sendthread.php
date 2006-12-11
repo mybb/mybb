@@ -11,7 +11,8 @@
 
 define("IN_MYBB", 1);
 
-$templatelist = "sendthread,sendthread_guest,email_sendtofriend";
+$templatelist = "sendthread";
+
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -22,31 +23,40 @@ $lang->load("sendthread");
 
 // Get thread info
 $tid = intval($mybb->input['tid']);
-
 $thread = get_thread($tid);
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+
+// Invalid thread
 if(!$thread['tid'])
 {
 	error($lang->error_invalidthread);
+}
+
+// Guests cannot use this feature
+if(!$mybb->user['uid'])
+{
+	error_no_permission();
 }
 $fid = $thread['fid'];
 
 
 // Make navigation
-build_forum_breadcrumb($fid);
-add_breadcrumb($thread['subject'], "showthread.php?tid=$tid");
+build_forum_breadcrumb($thread['fid']);
+add_breadcrumb($thread['subject'], "showthread.php?tid={$thread['tid']}");
 add_breadcrumb($lang->nav_sendthread);
 
 // Get forum info
-$forum = get_forum($fid);
-
+$forum = get_forum($thread['fid']);
 $forumpermissions = forum_permissions($forum['fid']);
 
-if(!$forum || $forum['type'] != "f")
+// Invalid forum?
+if(!$forum['fid'] || $forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
-if($forumpermissions['canview'] != "yes")
+
+// This user can't view this forum or this thread
+if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] != "yes")
 {
 	error_no_permission();
 }
@@ -62,46 +72,74 @@ if($mybb->usergroup['cansendemail'] == "no")
 if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("sendthread_do_sendtofriend_start");
-	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['sendto']))
+	
+	if(!validate_email_format($mybb->input['email']))
 	{
-		error($lang->error_invalidemail);
+		$errors[] = $lang->error_invalidemail;
 	}
-	elseif(!$mybb->input['subject'] || !$mybb->input['message'])
+	
+	if(empty($mybb->input['subject']))
 	{
-		error($lang->error_incompletefields);
+		$errors[] = $lang->error_nosubject;
+	}	
+	
+	if(empty($mybb->input['message']))
+	{
+		$errors[] = $lang->error_nomessage;
 	}
-	elseif(!my_strpos($mybb->input['message'], "{$mybb->settings['bburl']}/showthread.php?tid=$tid"))
+
+	// No errors detected
+	if(count($errors) == 0)
 	{
-		error($lang->error_nothreadurl);
-	}
-	if($mybb->user['uid'] == 0)
-	{
-		if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['fromemail']))
-		{
-			error($lang->error_invalidemail);
-		}
-		elseif(!$mybb->input['fromname'])
-		{
-			error($lang->error_incompletefields);
-		}
-		$from = $mybb->input['fromname'] . " <" . $mybb->input['fromemail'] . ">";
+		$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
+		
+		$message = sprintf($lang->email_sendtofriend, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $thread['tid'], $mybb->input['message']);
+		
+		// Send the actual message
+		my_mail($mybb->input['email'], $mybb->input['subject'], $message, $from);
+		
+		// Log the message
+		$log_entry = array(
+			"subject" => $db->escape_string($mybb->input['subject']),
+			"message" => $db->escape_string($mybb->input['message']),
+			"dateline" => time(),
+			"fromuid" => $mybb->user['uid'],
+			"fromemail" => $db->escape_string($mybb->user['email']),
+			"touid" => 0,
+			"toemail" => $db->escape_string($mybb->input['email']),
+			"tid" => $thread['tid'],
+			"ipaddress" => $session->ipaddress
+		);
+		$db->insert_query("maillogs", $log_entry);
+
+		$plugins->run_hooks("sendthread_do_sendtofriend_end");
+		redirect("showthread.php?tid=$tid", $lang->redirect_emailsent);
 	}
 	else
 	{
-		$from = $mybb->user['username'] . " <" . $mybb->user['email'] . ">";
+		$mybb->input['action'] = '';
 	}
-	my_mail($mybb->input['sendto'], $mybb->input['subject'], $mybb->input['message'], $from);
-	$plugins->run_hooks("sendthread_do_sendtofriend_end");
-	redirect("showthread.php?tid=$tid", $lang->redirect_emailsent);
 }
-else
+
+if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("sendthread_start");
-	if($mybb->user['uid'] == 0)
+	
+	// Do we have some errors?
+	if(count($errors) >= 1)
 	{
-		eval("\$guestfields = \"".$templates->get("sendthread_guest")."\";");
+		$errors = inline_error($errors);
+		$email = htmlspecialchars_uni($mybb->input['email']);
+		$subject = htmlspecialchars_uni($mybb->input['subject']);
+		$message = htmlspecialchars_uni($mybb->input['message']);
 	}
-	$message = sprintf($lang->email_sendtofriend, $mybb->settings['bbname'], $mybb->settings['bburl'], $tid);
+	else
+	{
+		$errors = '';
+		$email = '';
+		$subject = sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
+		$message = '';
+	}
 	eval("\$sendtofriend = \"".$templates->get("sendthread")."\";");
 	$plugins->run_hooks("sendthread_end");
 	output_page($sendtofriend);

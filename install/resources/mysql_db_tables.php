@@ -301,6 +301,20 @@ $tables[] = "CREATE TABLE mybb_joinrequests (
   PRIMARY KEY  (rid)
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_maillogs (
+	mid int unsigned NOT NULL auto_increment,
+	subject varchar(200) not null default '',
+	message text NOT NULL default '',
+	dateline bigint(30) NOT NULL default '0',
+	fromuid int unsigned NOT NULL default '0',
+	fromemail varchar(200) not null default '',
+	touid bigint(30) NOT NULL default '0',
+	toemail varchar(200) NOT NULL default '',
+	tid int unsigned NOT NULL default '0',
+	ipaddress varchar(20) NOT NULL default '',
+	PRIMARY KEY(mid)
+);";
+
 $tables[] = "CREATE TABLE mybb_mailqueue (
 	mid int unsigned NOT NULL auto_increment,
 	mailto varchar(200) NOT NULL,

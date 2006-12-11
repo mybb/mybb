@@ -20,14 +20,15 @@ $l['ppp_option'] = "Show {1} posts per page";
 $l['account_activation'] = "Account Activation";
 $l['activate_account'] = "Activate Account";
 $l['activation_code'] = "Activation Code";
-$l['email_user'] = "Email User";
+
+$l['email_user'] = "Send {1} an Email";
 $l['email_subject'] = "Email Subject";
 $l['email_message'] = "Email Message";
 $l['send_email'] = "Send Email";
-$l['your_name'] = "Your Name:";
-$l['name_note'] = "You must provide a name so that the recipient knows who you are.";
-$l['your_email'] = "Your Email Address:";
-$l['email_note'] = "You must provide a valid email address so the recipient can reply.";
+$l['error_hideemail'] = "The recipient has chosen to hide their email address and as a result you cannot email them.";
+$l['error_no_email_subject'] = "You need to enter a subject for your email";
+$l['error_no_email_message'] = "You need to enter a message for your email";
+
 $l['login'] = "Login";
 $l['pw_note'] = "Please note that passwords are case sensitive.";
 $l['lostpw_note'] = "Lost your password?";
@@ -152,6 +153,13 @@ $l['error_invalidpworusername'] = "You have entered an invalid username or passw
 $l['error_bannedusername'] = "You have entered a username that is banned from registration.  Please choose another username.";
 $l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malacious Javascript was attempting to log you out automatically.  If you intended to logout, please click the Logout button at the top menu.";
 $l['error_regimageinvalid'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
-$l['error_hideemail'] = "The recipient has chosen to hide his/her e-mail address.";
 
+$l['js_validator_no_username'] = "You must enter a username";
+$l['js_validator_invalid_email'] = "You need to enter a valid email address";
+$l['js_validator_email_match'] = "You need to enter the same email address again";
+$l['js_validator_no_image_text'] = "You ned to enter the text in the image above";
+$l['js_validator_password_matches'] = "The passwords you enter must match";
+$l['js_validator_password_complexity'] = "Passwords must contain one or more symbols";
+$l['js_validator_password_length'] = "Your password must be {1} or more characters long";
+$l['js_validator_not_empty'] = "You must select or enter a value for this field";
 ?>

@@ -51,7 +51,12 @@ $cssselectors = array(
 	"reputation_positive" => ".reputation_positive",
 	"reputation_neutral" => ".reputation_neutral",
 	"reputation_negative" => ".reputation_negative",
-
+	"invalid_field" => ".invalid_field",
+	"valid_field" => ".valid_field",
+	"validation_error" => ".validation_error",
+	"validation_success" => ".validation_success",
+	"validation_loading" => ".validation_loading",
+	
 	// Link selectors
 	"a_link" => "a:link",
 	"a_visited" => "a:visited",
@@ -712,6 +717,72 @@ function makecssreputationedit($css)
 	endtable();
 }
 
+function makecssvalidationedit($css)
+{
+	/** YES THIS IS TEMPORARY CRAP CODE, NOT TRANSLATED - We're getting a new Admin CP, remember? **/
+	global $lang;
+	starttable();
+	tableheader("Inline Form Field Validation", "", 2);
+	echo "<tr>\n<td class=\"subheader\" align=\"center\">Valid Fields</td><td class=\"subheader\" align=\"center\">Invalid Fields</td></tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[valid_field][background]\" value=\"".htmlspecialchars_uni($css['valid_field']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[valid_field][border]\" value=\"".htmlspecialchars_uni($css['valid_field']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[valid_field][color]\" value=\"".htmlspecialchars_uni($css['valid_field']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "<td class=\"altbg1\" width=\"50%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[invalid_field][background]\" value=\"".htmlspecialchars_uni($css['invalid_field']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->border."</td>\n<td><input type=\"text\" name=\"css[invalid_field][border]\" value=\"".htmlspecialchars_uni($css['invalid_field']['border'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[invalid_field][color]\" value=\"".htmlspecialchars_uni($css['invalid_field']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	endtable();
+	starttable();
+	tableheader("Inline Form Field Validation 2", "", 3);
+	echo "<tr>\n<td class=\"subheader\" align=\"center\">Valid Status Messages</td><td class=\"subheader\" align=\"center\">Invalid Error Messages</td><td class=\"subheader\" align=\"center\">Loading Status Messages</td></tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[validation_success][background]\" value=\"".htmlspecialchars_uni($css['validation_success']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[validation_success][color]\" value=\"".htmlspecialchars_uni($css['validation_success']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"altbg1\" valign=\"top\" colspan=\"2\">\n";
+	echo "<textarea style=\"width: 98%; padding: 4px;\" rows=\"4\" name=\"css[validation_success][extra]\" class=\"$highlight\">".htmlspecialchars_uni($css['validation_success']['extra'])."</textarea>\n";
+	echo "</td>\n";
+	echo"</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[validation_error][background]\" value=\"".htmlspecialchars_uni($css['validation_error']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[validation_error][color]\" value=\"".htmlspecialchars_uni($css['validation_error']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"altbg1\" valign=\"top\" colspan=\"2\">\n";
+	echo "<textarea style=\"width: 98%; padding: 4px;\" rows=\"4\" name=\"css[validation_error][extra]\" class=\"$highlight\">".htmlspecialchars_uni($css['validation_error']['extra'])."</textarea>\n";
+	echo "</td>\n";
+	echo"</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "<td class=\"altbg1\" width=\"33%\" valign=\"top\">\n";
+	echo "<table width=\"100%\">\n";
+	echo "<tr>\n<td>".$lang->background."</td>\n<td><input type=\"text\" name=\"css[validation_loading][background]\" value=\"".htmlspecialchars_uni($css['validation_loading']['background'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n<td>".$lang->font_color."</td>\n<td><input type=\"text\" name=\"css[validation_loading][color]\" value=\"".htmlspecialchars_uni($css['validation_loading']['color'])."\" size=\"25\" class=\"inputbox\"/></td>\n</tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"altbg1\" valign=\"top\" colspan=\"2\">\n";
+	echo "<textarea style=\"width: 98%; padding: 4px;\" rows=\"4\" name=\"css[validation_loading][extra]\" class=\"$highlight\">".htmlspecialchars_uni($css['validation_loading']['extra'])."</textarea>\n";
+	echo "</td>\n";	
+	echo"</tr>\n";
+	echo "</table>\n";
+	echo "</td>\n";
+	echo "</td>\n";
+	echo "</tr>\n";	
+	endtable();
+}
 function makecssinputedit($css)
 {
 	global $lang, $tid, $tcache;

@@ -259,6 +259,38 @@ font-size: 13px;]]></extra>
 		<reputation_negative>
 			<color><![CDATA[red]]></color>
 		</reputation_negative>
+		<valid_field>
+			<border><![CDATA[1px solid #0c0]]></border>
+		</valid_field>
+		<invalid_field>
+			<border><![CDATA[1px solid #f30]]></border>
+			<color><![CDATA[#f30]]></color>
+		</invalid_field>
+		<validation_success>
+			<background><![CDATA[#0c0]]></background>
+			<color><![CDATA[#fff]]></color>
+			<extra><![CDATA[margin: 5px 0;
+padding: 5px;
+font-weight: bold;
+font-size: 11px;]]></extra>
+		</validation_success>
+		<validation_error>
+			<background><![CDATA[#f30]]></background>
+			<color><![CDATA[#fff]]></color>
+			<extra><![CDATA[margin: 5px 0;
+padding: 5px;
+font-weight: bold;
+font-size: 11px;]]></extra>
+		</validation_error>		
+		<validation_loading>
+			<background><![CDATA[url(images/spinner.gif) no-repeat center left]]></background>
+			<color><![CDATA[#555]]></color>
+			<extra><![CDATA[margin: 5px 0;
+padding: 5px;
+font-weight: bold;
+font-size: 11px;
+padding-left: 22px;]]></extra>
+		</validation_loading>		
 	</cssbits>
 	<themebits>
 		<templateset><![CDATA[1]]></templateset>
@@ -2031,11 +2063,11 @@ var inlineId = {$fid};
 <legend><strong>{$lang->referrer}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
-<td><span class="smalltext">{$lang->referrer_desc}</span></td>
+<td><span class="smalltext"><label for="referrer">{$lang->referrer_desc}</label></span></td>
 </tr>
 <tr>
 <td>
-<input type="text" class="textbox" name="referrername" value="{$referrername}" />
+<input type="text" class="textbox" name="referrername" id="referrer" value="{$referrername}" style="width: 100%;" />
 </td>
 </tr></table>
 </fieldset>
@@ -3908,27 +3940,24 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </head>
 <body>
 {$header}
+{$errors}
 <form action="member.php" method="post" name="input">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->email_user}</strong></td>
 </tr>
 <tr>
-<td width="40%" class="trow1"><strong>{$lang->username}</strong></td>
-<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="touser" value="{$emailto['username']}" /></td>
-</tr>
-{$guestfields}
-<tr>
 <td width="40%" class="trow2"><strong>{$lang->email_subject}</strong></td>
-<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" /></td>
+<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$subject}" /></td>
 </tr>
 <tr>
 <td valign="top" width="40%" class="trow1"><strong>{$lang->email_message}</strong></td>
-<td width="60%" class="trow1"><textarea cols="50" rows="10" name="message"></textarea></td>
+<td width="60%" class="trow1"><textarea cols="50" rows="10" name="message">{$message}</textarea></td>
 </tr>
 </table>
 <br />
 <input type="hidden" name="action" value="do_emailuser" />
+<input type="hidden" name="uid" value="{$to_user['uid']}" />
 <div align="center"><input type="submit" class="button" value="{$lang->send_email}" /></div>
 </form>
 {$footer}
@@ -3983,8 +4012,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td><span class="smalltext">{$lang->confirm_password}</span></td>
 </tr>
 <tr>
-<td><input type="password" class="textbox" name="password" size="20" /></td>
-<td><input type="password" class="textbox" name="password2" size="20" /></td>
+<td><input type="password" class="textbox" name="password" id="password" size="20" style="width: 100%;" /></td>
+<td><input type="password" class="textbox" name="password2" id="password2" size="20" style="width: 100%;" /></td>
+</tr>
+<tr>
+	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
 </tr>
 ]]></template>
 		<template name="usercp_forumsubscriptions_forum" version="120"><![CDATA[<tr>
@@ -5684,6 +5716,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </head>
 <body>
 {$header}
+{$errors}
 <form action="sendthread.php" method="post">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -5691,12 +5724,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td width="40%" class="trow1"><strong>{$lang->recipient}</strong><br /><span class="smalltext">{$lang->recipient_note}</span></td>
-<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="sendto" /></td>
+<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="email" value="{$email}" /></td>
 </tr>
 {$guestfields}
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->subject}</strong></td>
-<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$thread['subject']}" /></td>
+<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$subject}" /></td>
 </tr>
 <tr>
 <td valign="top" width="40%" class="trow1"><strong>{$lang->message}</strong></td>
@@ -5704,20 +5737,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 <br />
-<input type="hidden" name="action" value="do_sendtofriend" /><input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="action" value="do_sendtofriend" />
+<input type="hidden" name="tid" value="{$tid}" />
 <div align="center"><input type="submit" class="button" value="{$lang->send_thread}" /></div>
 </form>
 {$footer}
 </body>
 </html>]]></template>
-		<template name="sendthread_guest" version="120"><![CDATA[<tr>
-<td width="40%" class="trow2"><strong>{$lang->your_name}</strong><br /><span class="smalltext">{$lang->name_note}</span></td>
-<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="fromname" /></td>
-</tr>
-<tr>
-<td width="40%" class="trow1"><strong>{$lang->your_email}</strong><br /><span class="smalltext">{$lang->email_note}</span></td>
-<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail" /></td>
-</tr>]]></template>
 		<template name="usercp_editsig" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_sig}</title>
@@ -6686,7 +6712,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td rowspan="2" align="center"><img src="captcha.php?action=regimage&amp;imagehash={$imagehash}" alt="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span><br /><br /><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" /></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
+<td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" style="width: 100%;" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
+</tr>
+<tr>
+	<td id="imagestring_status"  style="display: none;" colspan="2">&nbsp;</td>
 </tr>
 </table>
 </fieldset>]]></template>
@@ -6706,11 +6735,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
+<script type="text/javascript" src="jscripts/validator.js"></script>
 </head>
 <body>
 {$header}
 <br />
-<form action="member.php" method="post">
+<form action="member.php" method="post" id="registration_form">
 {$regerrors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -6720,21 +6750,24 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td width="50%" class="trow1" valign="top">
 <fieldset class="trow2">
 <legend><strong>{$lang->account_details}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<table cellspacing="0" cellpadding="{$theme['tablespace']}" width="100%">
 <tr>
-<td colspan="2"><span class="smalltext">{$lang->username}</span></td>
+<td colspan="2"><span class="smalltext"><label for="username">{$lang->username}</label></span></td>
 </tr>
 <tr>
-<td colspan="2"><input type="text" class="textbox" name="username" size="40" value="{$username}" /></td>
+<td colspan="2"><input type="text" class="textbox" name="username" id="username" size="40" value="{$username}" style="width: 100%;" /></td>
 </tr>
 {$passboxes}
 <tr>
-<td><span class="smalltext">{$lang->email}</span></td>
-<td><span class="smalltext">{$lang->confirm_email}</span></td>
+<td><span class="smalltext"><label for="email">{$lang->email}</label></span></td>
+<td><span class="smalltext"><label for="email2">{$lang->confirm_email}</label></span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="email" size="20" maxlength="50" value="{$email}" /></td>
-<td><input type="text" class="textbox" name="email2" size="20" maxlength="50" value="{$email2}" /></td>
+<td><input type="text" class="textbox" name="email" id="email" size="20" maxlength="50" value="{$email}" style="width: 100%;" /></td>
+<td><input type="text" class="textbox" name="email2" id="email2" size="20" maxlength="50" value="{$email2}" style="width: 100%;" /></td>
+</tr>
+<tr>
+	<td colspan="2" style="display: none;" id="email_status">&nbsp;</td>
 </tr>
 </table>
 </fieldset>
@@ -6745,7 +6778,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td width="50%" class="trow1" valign="top">
 <fieldset class="trow2">
 <legend><strong>{$lang->account_prefs}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<table cellspacing="0" cellpadding="{$theme['tablespace']}" width="100%">
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="allownotices" id="allownotices" value="yes" {$allownoticescheck} /></td>
 <td valign="top"><span class="smalltext"><label for="allownotices">{$lang->allow_notices}</label></span></td>
@@ -6778,8 +6811,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </fieldset>
 <br />
 <fieldset class="trow2">
-<legend><strong>{$lang->time_offset}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<legend><strong><label for="timezone">{$lang->time_offset}</label></strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}" width="100%">
 <tr>
 <td colspan="2"><span class="smalltext">{$lang->time_offset_desc}</span></td>
 </tr>
@@ -6793,13 +6826,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </fieldset>
 <br />
 <fieldset class="trow2">
-<legend><strong>{$lang->lang_select}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<legend><strong><label for="language">{$lang->lang_select}</label></strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}" width="100%">
 <tr>
 <td colspan="2"><span class="smalltext">{$lang->lang_select_desc}</span></td>
 </tr>
 <tr>
-<td><select name="language"><option value="">{$lang->lang_select_default}</option><option value="">-----------</option>{$langoptions}</select></td>
+<td><select name="language" id="language"><option value="">{$lang->lang_select_default}</option><option value="">-----------</option>{$langoptions}</select></td>
 </tr>
 </table>
 </fieldset>
@@ -6812,6 +6845,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <input type="submit" class="button" name="regsubmit" value="{$lang->submit_registration}" />
 </div>
 </form>
+<script type="text/javascript">
+	regValidator = new FormValidator('registration_form');
+	regValidator.register('username', 'notEmpty', {failure_message:'{$lang->js_validator_no_username}'});
+	regValidator.register('email', 'regexp', {match_field:'email2', regexp:'^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$', failure_message:'{$lang->js_validator_invalid_email}'});
+	regValidator.register('email2', 'matches', {match_field:'email', status_field:'email_status', failure_message:'$lang->js_validator_email_match}'});
+	{$validator_extra}
+</script>
 {$footer}
 </body>
 </html>]]></template>

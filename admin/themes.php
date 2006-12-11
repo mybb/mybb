@@ -513,6 +513,7 @@ if($mybb->input['action'] == "edit")
 	makecssautocompleteedit($css);
 	makecsspopupmenuedit($css);
 	makecssreputationedit($css);
+	makecssvalidationedit($css);
 	starttable();
 	tableheader($lang->additional_css, "", 1);
 	tablesubheader($lang->additional_css_note, "", 1);

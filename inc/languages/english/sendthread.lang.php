@@ -6,16 +6,13 @@
  * $Id$
  */
 
-$l['nav_sendthread'] = "Send Thread to Friend";
+$l['nav_sendthread'] = "Send Thread to a Friend";
 
 $l['send_thread'] = "Send To Friend";
 $l['recipient'] = "Recipient:";
-$l['recipient_note'] = "Enter your friend's email address here.";
+$l['recipient_note'] = "Enter your friends email address here.";
 $l['subject'] = "Subject:";
 $l['message'] = "Message:";
-$l['your_name'] = "Your Name:";
-$l['name_note'] = "You must provide a name so that the recipient knows who you are.";
-$l['your_email'] = "Your Email Address:";
-$l['email_note'] = "You must provide a valid email address so the recipient can reply.";
-
+$l['error_nosubject'] = "You are required to enter a subject for the message to send your thread";
+$l['error_nomessage'] = "You are required to enter a message before you can send this thread to your friend";
 ?>

@@ -512,6 +512,22 @@ else if($mybb->input['action'] == "refresh_captcha")
 	header("Content-type: text/plain; charset={$charset}");
 	echo $imagehash;
 }
+else if($mybb->input['action'] == "username_availability")
+{
+	$query = $db->simple_select("users", "uid", "username='".$db->escape_string($mybb->input['value'])."'");
+	$user = $db->fetch_array($query);
+
+	header("Content-type: text/xml; charset={$charset}");
+	if($user['uid'])
+	{
+		echo "<fail>That username is already in use</fail>";
+	}
+	else
+	{
+		echo "<success>{$mybb->input['value']} is available</success>";
+	}
+	exit;
+}
 
 /**
  * Spits an XML Http based error message back to the browser

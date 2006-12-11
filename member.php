@@ -261,6 +261,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 	}
 }
+
 if($mybb->input['action'] == "register")
 {
 
@@ -274,6 +275,8 @@ if($mybb->input['action'] == "register")
 	else
 	{
 		$plugins->run_hooks("member_register_start");
+		
+		$validator_extra = '';
 
 		$bdaysel = '';
 		for($i = 1; $i <= 31; ++$i)
@@ -457,7 +460,7 @@ if($mybb->input['action'] == "register")
 					{
 						$profilefield['length'] = 3;
 					}
-					$code = "<select name=\"profile_fields[$field][]\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
+					$code = "<select name=\"profile_fields[$field][]\" id=\"{$field}\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
 				}
 			}
 			elseif($type == "select")
@@ -480,7 +483,7 @@ if($mybb->input['action'] == "register")
 					{
 						$profilefield['length'] = 1;
 					}
-					$code = "<select name=\"profile_fields[$field]\" size=\"{$profilefield['length']}\">$select</select>";
+					$code = "<select name=\"profile_fields[$field]\" id=\"{$field}\" size=\"{$profilefield['length']}\">$select</select>";
 				}
 			}
 			elseif($type == "radio")
@@ -495,7 +498,7 @@ if($mybb->input['action'] == "register")
 						{
 							$checked = "checked=\"checked\"";
 						}
-						$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
+						$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" id=\"{$field}{$key}\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
 					}
 				}
 			}
@@ -526,22 +529,33 @@ if($mybb->input['action'] == "register")
 						{
 							$checked = "checked=\"checked\"";
 						}
-						$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
+						$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" id=\"{$field}{$key}\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
 					}
 				}
 			}
 			elseif($type == "textarea")
 			{
 				$value = htmlspecialchars_uni($userfield);
-				$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
+				$code = "<textarea name=\"profile_fields[$field]\" id=\"{$field}\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
 			}
 			else
 			{
 				$value = htmlspecialchars_uni($userfield);
-				$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\" maxlength=\"{$profilefield['maxlength']}\" value=\"$value\" />";
+				$code = "<input type=\"text\" name=\"profile_fields[$field]\" id=\"{$field}\" class=\"textbox\" size=\"{$profilefield['length']}\" maxlength=\"{$profilefield['maxlength']}\" value=\"$value\" />";
 			}
 			if($profilefield['required'] == "yes")
 			{
+				// JS validator extra
+				if($type == "checkbox" || $type == "radio")
+				{
+					$id = "{$field}0";
+				}
+				else
+				{
+					$id = "field";
+				}
+				$validator_extra .= "regValidator.register('{$id}', 'notEmpty', {faulure_message:'{$lang->js_validator_not_empty}'});\n";
+				
 				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 			}
 			$code = '';
@@ -583,10 +597,24 @@ if($mybb->input['action'] == "register")
 			);
 			$db->insert_query("captcha", $regimagearray);
 			eval("\$regimage = \"".$templates->get("member_register_regimage")."\";");
+			
+			// JS validator extra
+			$validator_extra .= "regValidator.register('imagestring', 'notEmpty', {failure_message:'{$lang->js_validator_no_image_text}'});\n";
 		}
 		if($mybb->settings['regtype'] != "randompass")
 		{
 			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
+			
+			// JS validator extra
+			$lang->js_validator_password_length = sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
+			$validator_extra .= "regValidator.register('password', 'length', {match_field:'password2', min: {$mybb->settings['minpasswordlength']}, failure_message:'{$lang->js_validator_password_length}'});\n";
+			
+			// See if the board has "require complex passwords" enabled.
+			if($mybb->settings['requirecomplexpasswords'] == "yes")
+			{
+				$validator_extra .= "regValidator.register('password', 'regexp', {match_field:'password2', regexp:'[\W]+', failure_message:'{$lang->js_validator_password_complexity}'});\n";
+			}
+			$validator_extra .= "regValidator.register('password2', 'matches', {match_field:'password', status_field:'password_status', failure_message:'{$lang->js_validator_password_matches}'});\n";	
 		}
 
 		$languages = $lang->get_languages();
@@ -609,7 +637,8 @@ if($mybb->input['action'] == "register")
 		output_page($registration);
 	}
 }
-elseif($mybb->input['action'] == "activate")
+
+if($mybb->input['action'] == "activate")
 {
 	$plugins->run_hooks("member_activate_start");
 
@@ -655,22 +684,12 @@ elseif($mybb->input['action'] == "activate")
 				"email" => $db->escape_string($activation['misc']),
 				);
 			$db->update_query("users", $newemail, "uid='".$user['uid']."'");
-			if(function_exists("emailChanged"))
-			{
-				emailChanged($mybb->user['uid'], $email);
-			}
-
 			$plugins->run_hooks("member_activate_emailupdated");
 
 			redirect("usercp.php", $lang->redirect_emailupdated);
 		}
 		else
 		{
-			if(function_exists("accountActivated") && $activation['type'] == "r")
-			{
-				accountActivated($user['uid']);
-			}
-
 			$plugins->run_hooks("member_activate_accountactivated");
 
 			redirect("index.php", $lang->redirect_accountactivated);
@@ -684,7 +703,8 @@ elseif($mybb->input['action'] == "activate")
 		output_page($activate);
 	}
 }
-elseif($mybb->input['action'] == "resendactivation")
+
+if($mybb->input['action'] == "resendactivation")
 {
 	$plugins->run_hooks("member_resendactivation");
 
@@ -696,7 +716,8 @@ elseif($mybb->input['action'] == "resendactivation")
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
 	output_page($activate);
 }
-elseif($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "post")
+
+if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_resendactivation_start");
 
@@ -748,14 +769,16 @@ elseif($mybb->input['action'] == "do_resendactivation" && $mybb->request_method 
 		redirect("index.php", $lang->redirect_activationresent);
 	}
 }
-elseif($mybb->input['action'] == "lostpw")
+
+if($mybb->input['action'] == "lostpw")
 {
 	$plugins->run_hooks("member_lostpw");
 
 	eval("\$lostpw = \"".$templates->get("member_lostpw")."\";");
 	output_page($lostpw);
 }
-elseif($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
+
+if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_lostpw_start");
 
@@ -793,7 +816,8 @@ elseif($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 
 	redirect("index.php", $lang->redirect_lostpwsent);
 }
-elseif($mybb->input['action'] == "resetpassword")
+
+if($mybb->input['action'] == "resetpassword")
 {
 	$plugins->run_hooks("member_resetpassword_start");
 
@@ -847,7 +871,8 @@ elseif($mybb->input['action'] == "resetpassword")
 		output_page($activate);
 	}
 }
-else if($mybb->input['action'] == "login")
+
+if($mybb->input['action'] == "login")
 {
 	$plugins->run_hooks("member_login");
 
@@ -868,7 +893,8 @@ else if($mybb->input['action'] == "login")
 	eval("\$login = \"".$templates->get("member_login")."\";");
 	output_page($login);
 }
-else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
+
+if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_login_start");
 
@@ -930,7 +956,8 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		redirect("index.php", $lang->redirect_loggedin);
 	}
 }
-else if($mybb->input['action'] == "logout")
+
+if($mybb->input['action'] == "logout")
 {
 	$plugins->run_hooks("member_logout_start");
 
@@ -967,7 +994,8 @@ else if($mybb->input['action'] == "logout")
 		error($lang->error_notloggedout);
 	}
 }
-elseif($mybb->input['action'] == "profile")
+
+if($mybb->input['action'] == "profile")
 {
 	$plugins->run_hooks("member_profile_start");
 
@@ -1380,79 +1408,113 @@ elseif($mybb->input['action'] == "profile")
 	eval("\$profile = \"".$templates->get("member_profile")."\";");
 	output_page($profile);
 }
-elseif($mybb->input['action'] == "emailuser")
-{
-	$plugins->run_hooks("member_emailuser_start");
 
-	if($mybb->usergroup['cansendemail'] == "no")
-	{
-		error_no_permission();
-	}
-	if($mybb->input['uid'])
-	{
-		$query = $db->simple_select("users", "username, hideemail", "uid='".intval($mybb->input['uid'])."'");
-		$emailto = $db->fetch_array($query);
-		if(!$emailto['username'])
-		{
-			error($lang->error_invalidpmrecipient);
-		}
-		if($emailto['hideemail'] != "no")
-		{
-			error($lang->error_hideemail);
-		}
-	}
-	if($mybb->user['uid'] == 0)
-	{
-		eval("\$guestfields = \"".$templates->get("member_emailuser_guest")."\";");
-	}
-
-	$plugins->run_hooks("member_emailuser_end");
-
-	eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
-	output_page($emailuser);
-}
-elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
+if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_emailuser_start");
 
-	if($mybb->usergroup['cansendemail'] == "no")
+	// Guests or those without permission can't email other users
+	if($mybb->usergroup['cansendemail'] == "no" || !$mybb->user['uid'])
 	{
 		error_no_permission();
 	}
-	$query = $db->simple_select("users", "uid, username, email, hideemail", "username='".$db->escape_string($mybb->input['touser'])."'");
-	$emailto = $db->fetch_array($query);
-	if(!$emailto['username'])
+	
+	$query = $db->simple_select("users", "uid, username, email, hideemail", "uid='".intval($mybb->input['uid'])."'");
+	$to_user = $db->fetch_array($query);
+	
+	if(!$to_user['username'])
 	{
-		error($lang->error_invalidpmrecipient);
+		error($lang->error_invalidusername);
 	}
-	if($emailto['hideemail'] != "no")
+	
+	if($to_user['hideemail'] != "no")
 	{
 		error($lang->error_hideemail);
 	}
-	if(!$mybb->input['subject'] || !$mybb->input['message'])
+	
+	if(empty($mybb->input['subject']))
 	{
-		error($lang->error_incompletefields);
+		$errors[] = $lang->error_no_email_subject;
 	}
-	if($mybb->user['uid'] == 0)
+	
+	if(empty($mybb->input['message']))
 	{
-		if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['fromemail']))
-		{
-			error($lang->error_invalidemail);
-		}
-		if(!$mybb->input['fromname'])
-		{
-			error($lang->error_incompletefields);
-		}
-		$from = $mybb->input['fromname'] . " <" . $mybb->input['fromemail'] . ">";
+		$errors[] = $lang->error_no_email_message;
+	}
+
+	if(count($errors) == 0)
+	{
+		$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
+		
+		$message = sprintf($lang->email_emailuser, $to_user['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->input['message']);
+		
+		// Send the actual message
+		my_mail($mybb->input['email'], $mybb->input['subject'], $message, $from);
+		
+		// Log the message
+		$log_entry = array(
+			"subject" => $db->escape_string($mybb->input['subject']),
+			"message" => $db->escape_string($mybb->input['message']),
+			"dateline" => time(),
+			"fromuid" => $mybb->user['uid'],
+			"fromemail" => $db->escape_string($mybb->user['email']),
+			"touid" => $to_user['uid'],
+			"toemail" => $db->escape_string($to_user['email']),
+			"tid" => 0,
+			"ipaddress" => $session->ipaddress
+		);
+		$db->insert_query("maillogs", $log_entry);
+
+		$plugins->run_hooks("member_do_emailuser_end");
+
+		redirect("member.php?action=profile&uid={$to_user['uid']}", $lang->redirect_emailsent);
 	}
 	else
 	{
-		$from = $mybb->user['username'] . " <" . $mybb->user['email'] . ">";
+		$mybb->input['action'] = "emailuser";
 	}
-	my_mail($emailto['email'], $parser->parse_badwords($mybb->input['subject']), $parser->parse_badwords($mybb->input['message']), $from);
+}
 
-	$plugins->run_hooks("member_do_emailuser_end");
+if($mybb->input['action'] == "emailuser")
+{
+	$plugins->run_hooks("member_emailuser_start");
 
-	redirect("member.php?action=profile&uid={$emailto['uid']}", $lang->redirect_emailsent);
+	// Guests or those without permission can't email other users
+	if($mybb->usergroup['cansendemail'] == "no" || !$mybb->user['uid'])
+	{
+		error_no_permission();
+	}
+	
+	$query = $db->simple_select("users", "uid, username, email, hideemail", "uid='".intval($mybb->input['uid'])."'");
+	$to_user = $db->fetch_array($query);
+	
+	$lang->email_user = sprintf($lang->email_user, $to_user['username']);
+	
+	if(!$to_user['uid'])
+	{
+		error($lang->error_invaliduser);
+	}
+	
+	if($to_user['hideemail'] != "no")
+	{
+		error($lang->error_hideemail);
+	}
+	
+	if(count($errors) > 0)
+	{
+		$errors = inline_error($errors);
+		$subject = htmlspecialchars_uni($mybb->input['subject']);
+		$message = htmlspecialchars_uni($mybb->input['message']);
+	}
+	else
+	{
+		$errors = '';
+		$subject = '';
+		$message = '';
+	}
+	
+	eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
+	$plugins->run_hooks("member_emailuser_end");
+	output_page($emailuser);
 }
 ?>

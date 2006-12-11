@@ -82,6 +82,7 @@ $l['emailsubject_reportpost'] = "Reported post at {1}";
 $l['emailsubject_reachedpmquota'] = "Private Messaging Quota Reached at {1}";
 $l['emailsubject_changeemail'] = "Change of Email at {1}";
 $l['emailsubject_newpm'] = "New Private Message at {1}";
+$l['emailsubject_sendtofriend'] = "Interesting Web Page at {1}";
 $l['emailbit_viewthread'] = "... (visit the thread to read more..)";
 
 $l['email_lostpw'] = "{1},
@@ -143,10 +144,22 @@ It is recommended you change your password immediately after you login. You can 
 Thank you,
 {2} Staff";
 
-$l['email_sendtofriend'] = "Hello, I thought you might be interested in reading this thread from {1},
+$l['email_sendtofriend'] = "Hello,
 
-{2}/showthread.php?tid={3}
+{1} from {2} thought you may be interested in reading the following web page:
+
+{3}/showthread.php?tid={4}
+
+{1} included the following message:
+------------------------------------------
+{5}
+------------------------------------------
+
+Thank you,
+{2} Staff
+{3}
 ";
+
 $l['email_forumsubscription'] = "{1},
 
 {2} has just started a new thread in {3}
@@ -197,9 +210,9 @@ $l['email_subscription'] = "{1},
 {2} has just replied to a thread which you have subscribed to at {3}. This thread is titled {4}.
 
 Here is an excerpt of the message:
---
+------------------------------------------
 {5}
---
+------------------------------------------
 
 To view the thread, you can go to the following URL:
 {6}/showthread.php?action=newpost&tid={7}
@@ -267,4 +280,23 @@ You can disable new message notifications on your account options page:
 Thank you,
 {3} Staff
 {4}";
+
+$l['email_emailuser'] = "{1},
+
+{2} from {3} has sent you the following message:
+------------------------------------------
+{5}
+------------------------------------------
+
+Thank you,
+{2} Staff
+{3}
+
+------------------------------------------
+Don't want to receive email messages from other members?
+
+If you don't want other members to be able to email you please visit your User Control Panel and enable the option 'Hide your email from other members':
+{3}/usercp.php?action=options
+
+------------------------------------------";
 ?>
