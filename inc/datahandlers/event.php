@@ -226,7 +226,7 @@ class EventDataHandler extends DataHandler
 			$event['end_day'] = '';
 			$event['end_month'] = '';
 			$event['end_year'] = '';
-			$event['repeat_days'] = '';
+			$event['repeat_days'] = array();
 		}
 
 		if(count($this->get_errors()) > 0)
