@@ -162,4 +162,6 @@ $l['js_validator_password_matches'] = "The passwords you enter must match";
 $l['js_validator_password_complexity'] = "Passwords must contain one or more symbols";
 $l['js_validator_password_length'] = "Your password must be {1} or more characters long";
 $l['js_validator_not_empty'] = "You must select or enter a value for this field";
+$l['js_validator_checking_username'] = "Checking if username is available";
+$l['js_validator_username_length'] = "Usernames must be between {1} and {2} characters long";
 ?>

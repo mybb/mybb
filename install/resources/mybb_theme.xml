@@ -267,20 +267,22 @@ font-size: 13px;]]></extra>
 			<color><![CDATA[#f30]]></color>
 		</invalid_field>
 		<validation_success>
-			<background><![CDATA[#0c0]]></background>
-			<color><![CDATA[#fff]]></color>
+			<background><![CDATA[url(images/valid.gif) no-repeat center left]></background>
+			<color><![CDATA[#00b200]]></color>
 			<extra><![CDATA[margin: 5px 0;
 padding: 5px;
 font-weight: bold;
-font-size: 11px;]]></extra>
+font-size: 11px;
+padding-left: 22px;]]></extra>
 		</validation_success>
 		<validation_error>
-			<background><![CDATA[#f30]]></background>
-			<color><![CDATA[#fff]]></color>
+			<background><![CDATA[url(images/invalid.gif) no-repeat center left]]></background>
+			<color><![CDATA[#f30]]></color>
 			<extra><![CDATA[margin: 5px 0;
 padding: 5px;
 font-weight: bold;
-font-size: 11px;]]></extra>
+font-size: 11px;
+padding-left: 22px;]]></extra>
 		</validation_error>		
 		<validation_loading>
 			<background><![CDATA[url(images/spinner.gif) no-repeat center left]]></background>
@@ -6849,8 +6851,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	regValidator = new FormValidator('registration_form');
 	regValidator.register('username', 'notEmpty', {failure_message:'{$lang->js_validator_no_username}'});
 	regValidator.register('email', 'regexp', {match_field:'email2', regexp:'^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$', failure_message:'{$lang->js_validator_invalid_email}'});
-	regValidator.register('email2', 'matches', {match_field:'email', status_field:'email_status', failure_message:'$lang->js_validator_email_match}'});
+	regValidator.register('email2', 'matches', {match_field:'email', status_field:'email_status', failure_message:'{$lang->js_validator_email_match}'});
 	{$validator_extra}
+	regValidator.register('username', 'ajax', {url:'xmlhttp.php?action=username_availability', loading_message:'{$lang->js_validator_checking_username}'}); // needs to be last
 </script>
 {$footer}
 </body>

@@ -60,6 +60,7 @@ FormValidator.prototype = {
 					return false;
 				}
 			}
+			
 			result = this.checkValidation(id, validation_field[i].validation_type, validation_field[i].options, submit_call);
 			options = validation_field[i].options;
 			if(result == false)
@@ -71,7 +72,7 @@ FormValidator.prototype = {
 			else if(result == "loading")
 			{
 				this.showLoading(id, options.status_field, options.loading_message);
-				Element.removeClassName(id, "valid_field");
+				$(id).className = "";
 				return false;
 			}	
 			else
@@ -85,7 +86,7 @@ FormValidator.prototype = {
 					ret = this.validateField(options.match_field, 1);
 					if(ret == false)
 					{
-						Element.addClassName(id, "invalid_field");
+						$(id).className = "invalid_field";
 					}
 				}
 			}		
@@ -125,7 +126,8 @@ FormValidator.prototype = {
 				break;
 			case "regexp":
 				regexp = new RegExp(options.regexp);
-				if(!element.value.match(regexp)) return true;
+				if(!element.value.match(regexp)) return false;
+				return true;
 				break;
 			case "ajax":
 				if(!options.url) return false;
@@ -139,20 +141,15 @@ FormValidator.prototype = {
 	
 	ajaxValidateComplete: function(id, options, request)
 	{
-		if(!request.responseXML)
-		{
-			alert('DEBUG: No response XML returned');
-		}
 		if(request.responseXML.getElementsByTagName("success").length > 0)
 		{
-			response = request.responseXML.getElementsByTagName("success")[0].firstChild.data;
+			response = request.responseXML.getElementsByTagName("success")[0].firstChild;
 			this.showSuccess(id, options.status_field, response);
 		}
-		else
+		else if(request.responseXML.getElementsByTagName("fail").length > 0)
 		{
-			response = request.responseXML.getElementsByTagName("fail")[0].firstChild.data;
-			this.showError(id, options.status_field, response);
-			
+			response = request.responseXML.getElementsByTagName("fail")[0].firstChild;
+			this.showError(id, options.status_field, response);	
 		}
 	},
 	

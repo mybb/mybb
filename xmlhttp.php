@@ -514,19 +514,78 @@ else if($mybb->input['action'] == "refresh_captcha")
 }
 else if($mybb->input['action'] == "username_availability")
 {
-	$query = $db->simple_select("users", "uid", "username='".$db->escape_string($mybb->input['value'])."'");
+	require_once MYBB_ROOT."inc/functions_user.php";
+	$username = $mybb->input['value'];
+	
+	// Fix bad characters
+	$username = str_replace(array(chr(160), chr(173)), array(" ", "-"), $username);
+
+	// Remove multiple spaces from the username
+	$username = preg_replace("#\s{2,}#", " ", $username);
+	
+	header("Content-type: text/xml; charset={$charset}");
+
+	// Check if the username belongs to the list of banned usernames.
+	$bannedusernames = get_banned_usernames();
+	if(in_array($username, $bannedusernames))
+	{
+		echo "<fail>{$lang->banned_username}</fail>";
+		exit;
+	}
+
+	// Check for certain characters in username (<, >, &, and slashes)
+	if(eregi("<", $username) || eregi(">", $username) || eregi("&", $username) || my_strpos($username, "\\") !== false || eregi(";", $username))
+	{
+		echo "<fail>{$lang->banned_characters_username}</fail>";
+		exit;
+	}
+
+	// Check if the username is actually already in use
+	$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'");
 	$user = $db->fetch_array($query);
 
-	header("Content-type: text/xml; charset={$charset}");
 	if($user['uid'])
 	{
-		echo "<fail>That username is already in use</fail>";
+		$lang->username_taken = sprintf($lang->username_taken, $username);
+		echo "<fail>{$lang->username_taken}</fail>";
+		exit;		
 	}
 	else
 	{
-		echo "<success>{$mybb->input['value']} is available</success>";
+		$lang->username_available = sprintf($lang->username_available, $username);
+		echo "<success>{$lang->username_available}</success>";
+		exit;
 	}
-	exit;
+}
+
+else if($mybb->input['action'] == "username_exists")
+{
+	require_once MYBB_ROOT."inc/functions_user.php";
+	$username = $mybb->input['value'];
+	
+	header("Content-type: text/xml; charset={$charset}");
+	
+	if(!trim($username))
+	{
+		echo "<success></success>";
+		exit;
+	}
+
+	// Check if the username actually exists
+	$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'");
+	$user = $db->fetch_array($query);
+
+	if($user['uid'])
+	{
+		echo "<success></success>";
+		exit;		
+	}
+	else
+	{
+		$lang->invalid_username = sprintf($lang->invalid_username, $username);
+		echo "<fail>{$lang->invalid_username}</fail>";
+		exit;
+	}	
 }
 
 /**

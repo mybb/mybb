@@ -399,6 +399,9 @@ if($mybb->input['action'] == "register")
 			{
 				$refbg = "trow2";
 			}
+			// JS validator extra
+			$validator_extra .= "regValidator.register('referrer', 'ajax', {url:'xmlhttp.php?action=username_exists', loading_message:'{$lang->js_validator_checking_referrer}'});\n";
+			
 			eval("\$referrer = \"".$templates->get("member_register_referrer")."\";");
 		}
 		else
@@ -616,6 +619,14 @@ if($mybb->input['action'] == "register")
 			}
 			$validator_extra .= "regValidator.register('password2', 'matches', {match_field:'password', status_field:'password_status', failure_message:'{$lang->js_validator_password_matches}'});\n";	
 		}
+		
+		// JS validator extra
+		if($mybb->settings['maxnamelength'] > 0 && $mybb->settings['minnamelength'] > 0)
+		{
+			$lang->js_validator_username_length = sprintf($lang->js_validator_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
+			$validator_extra .= "regValidator.register('username', 'length', {min: {$mybb->settings['minnamelength']}, max: {$mybb->settings['maxnamelength']}, failure_message:'{$lang->js_validator_username_length}'});\n";
+		}
+		
 
 		$languages = $lang->get_languages();
 		$langoptions = '';

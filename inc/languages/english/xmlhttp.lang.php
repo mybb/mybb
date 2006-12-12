@@ -18,4 +18,9 @@ $l['postbit_edited'] = "This post was last modified: {1} {2} by";
 $l['save_changes'] = "Save Changes";
 $l['cancel_edit'] = "Cancel Edit";
 $l['captcha_not_exists'] = "The captcha you are trying to refresh does not exist.";
+$l['banned_username'] = "The username you entered has been disallowed by the administrator";
+$l['banned_characters_username'] = "Your username contains one or more invalid characters";
+$l['username_taken'] = "{1} is already registered by another member";
+$l['username_available'] = "{1} is available";
+$l['invalid_username'] = "{1} is not the username of a registered member";
 ?>
