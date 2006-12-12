@@ -210,9 +210,10 @@ else
 	$record_time = my_date($mybb->settings['timeformat'], $most_online['time']);
 
 	// Set automatic refreshing if enabled
-	if($mybb->settings['refreshwol'] != "no")
+	if($mybb->settings['refreshwol'] > 0)
 	{
-		$refresh = "<meta http-equiv=\"refresh\" content=\"60;URL=online.php$refresh_string\" />";
+		$refresh_time = $mybb->settings['refreshwol'] * 60;
+		$refresh = "<meta http-equiv=\"refresh\" content=\"{$refresh_time};URL=online.php{$refresh_string}\" />";
 	}
 
 	// Fetch language strings depending on counts being plural or singular
@@ -255,5 +256,4 @@ else
 	eval("\$online = \"".$templates->get("online")."\";");
 	output_page($online);
 }
-
 ?>

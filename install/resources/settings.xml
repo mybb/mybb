@@ -1200,6 +1200,14 @@ admin=Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="refreshwol">
+			<title>Refresh Who's online page Time (mins)</title>
+			<description><![CDATA[The number of minutes before the "Who's online" page refreshes. 0 is disabled.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="search" title="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads and posts in MyBB," disporder="14" isdefault="yes">
 		<setting name="searchtype">
