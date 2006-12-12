@@ -267,7 +267,7 @@ font-size: 13px;]]></extra>
 			<color><![CDATA[#f30]]></color>
 		</invalid_field>
 		<validation_success>
-			<background><![CDATA[url(images/valid.gif) no-repeat center left]></background>
+			<background><![CDATA[url(images/valid.gif) no-repeat center left]]></background>
 			<color><![CDATA[#00b200]]></color>
 			<extra><![CDATA[margin: 5px 0;
 padding: 5px;
