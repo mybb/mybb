@@ -2072,8 +2072,7 @@ var inlineId = {$fid};
 <input type="text" class="textbox" name="referrername" id="referrer" value="{$referrername}" style="width: 100%;" />
 </td>
 </tr></table>
-</fieldset>
-<br />]]></template>
+</fieldset>]]></template>
 		<template name="usercp_usergroups_joingroup" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->request_join_usergroup}</title>
@@ -6360,7 +6359,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="postbit_editedby" version="120"><![CDATA[<p class="smalltext">{$post['editnote']} <a href="member.php?action=profile&amp;uid={$post['edituid']}">{$post['editusername']}</a>.</p>
 
 ]]></template>
-		<template name="member_register_requiredfields" version="120"><![CDATA[<fieldset class="trow2">
+		<template name="member_register_requiredfields" version="120"><![CDATA[<br />
+<fieldset class="trow2">
 <legend><strong>{$lang->additional_info}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 {$requiredfields}
