@@ -144,11 +144,19 @@ FormValidator.prototype = {
 		if(request.responseXML.getElementsByTagName("success").length > 0)
 		{
 			response = request.responseXML.getElementsByTagName("success")[0].firstChild;
+			if(response)
+			{
+				response = response.data;
+			}
 			this.showSuccess(id, options.status_field, response);
 		}
 		else if(request.responseXML.getElementsByTagName("fail").length > 0)
 		{
 			response = request.responseXML.getElementsByTagName("fail")[0].firstChild;
+			if(response)
+			{
+				response = response.data;
+			}
 			this.showError(id, options.status_field, response);	
 		}
 	},

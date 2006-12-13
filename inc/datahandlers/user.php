@@ -76,8 +76,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check if the username belongs to the list of banned usernames.
-		$bannedusernames = get_banned_usernames();
-		if(in_array($username, $bannedusernames))
+		if(is_banned_username($username))
 		{
 			$this->set_error('banned_username');
 			return false;
@@ -212,21 +211,10 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check banned emails
-		$bannedemails = explode(" ", $mybb->settings['bannedemails']);
-		if(is_array($bannedemails))
+		if(is_banned_email($user['email']))
 		{
-			foreach($bannedemails as $bannedemail)
-			{
-				$bannedemail = my_strtolower(trim($bannedemail));
-				if($bannedemail != '')
-				{
-					if(my_strpos($user['email'], $bannedemail) != '')
-					{
-						$this->set_error('banned_email');
-						return false;
-					}
-				}
-			}
+			$this->set_error('banned_email');
+			return false;
 		}
 
 		// If we have an "email2", verify it matches the existing email

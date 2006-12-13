@@ -3825,6 +3825,106 @@ function dec_to_utf8($src)
 }
 
 /**
+ * Return a list of banned usernames.
+ *
+ * @return array The array of banned usernames.
+ */
+function get_banned_usernames()
+{
+	global $mybb;
+	$banned_usernames = explode(",", $mybb->settings['bannedusernames']);
+	$banned_usernames = array_map("trim", $banned_usernames);
+	$banned_usernames = array_map("my_strtolower", $banned_usernames);
+	return $banned_usernames;
+}
+
+/**
+ * Checks if a username has been disallowed for registration/use.
+ *
+ * @param string The username
+ * @return boolean True if banned, false if not banned
+ */
+function is_banned_username($username)
+{
+	$banned_usernames = get_banned_usernames();
+	if(in_array(my_strtolower($username), $banned_usernames))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+/**
+ * Return a list of banned email addresses.
+ *
+ * @return array The array of banned email addresses.
+ */
+function get_banned_emails()
+{
+	global $mybb;
+	$banned_emails = explode(",", $mybb->settings['bannedemails']);
+	$banned_emails = array_map("trim", $banned_emails);
+	$banned_emails = array_map("my_strtolower", $banned_emails);
+	return $banned_emails;
+}
+
+/**
+ * Check if a specific email address has been banned.
+ *
+ * @param string The email address.
+ * @return boolean True if banned, false if not banned
+ */
+function is_banned_email($email)
+{
+	$banned_emails = get_banned_emails();
+	$email = my_strtolower($email);
+	foreach($banned_emails as $banned_email)
+	{
+		if(my_strpos($email, $banned_email) !== false)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Return a list of banned IP addresses.
+ *
+ * @return array The array of banned IP addresses.
+ */
+function get_banned_ips()
+{
+	global $mybb;
+	$banned_ips = explode(",", $mybb->settings['bannedips']);
+	$banned_ips = array_map("trim", $banned_ips);
+	$banned_emails = array_map("my_strtolower", $banned_ips);
+	return $banned_ips;
+}
+
+/**
+ * Checks if a specific IP address has been banned.
+ *
+ * @param string The IP address.
+ * @return boolean True if banned, false if not banned.
+ */
+function is_banned_ip($ip_address)
+{
+	$banned_ips = get_banned_ips();
+	foreach($banned_ips as $banned_ip)
+	{
+		if(my_strpos($ip_address, $banned_ip) !== false)
+		{
+			return true;
+		}
+	}
+	return false;	
+}
+
+/**
  * Below are compatibility functions which replicate functions in newer versions of PHP.
  *
  * This allows MyBB to continue working on older installations of PHP without these functions.

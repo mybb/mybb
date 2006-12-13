@@ -45,7 +45,7 @@ Object.extend(Object, {
     for (var property in object)
       values.push(object[property]);
     return values;
-  },
+  }
 
 });
 
@@ -542,7 +542,7 @@ Object.extend(Element, {
 
 // IE is missing .innerHTML support for TABLE-related elements
 if(document.all){
-  Element.Methods.update = function(element, html) {
+  Element.update = function(element, html) {
     element = $(element);
     html = typeof html == 'undefined' ? '' : html.toString();
     var tagName = element.tagName.toUpperCase();
@@ -746,8 +746,7 @@ var Position = {
       element = element.offsetParent;
     } while (element);
     return [valueL, valueT];
-  },
-
+  }
 }
 
 // Safari returns margins on body which is incorrect if the child is absolutely

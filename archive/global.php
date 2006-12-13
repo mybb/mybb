@@ -160,20 +160,9 @@ $navbits[0]['name'] = $mybb->settings['bbname'];
 $navbits[0]['url'] = $mybb->settings['bburl']."/archive/index.php";
 
 // Check banned ip addresses
-$bannedips = explode(" ", $mybb->settings['bannedips']);
-if(is_array($bannedips))
+if(is_banned_ip($session->ipaddress))
 {
-	foreach($bannedips as $key => $bannedip)
-	{
-		$bannedip = trim($bannedip);
-		if($bannedip != "")
-		{
-			if(my_strpos($session->ipaddress, $bannedip))
-			{
-				archive_error($lang->error_banned);
-			}
-		}
-	}
+	archive_error($lang->error_banned);
 }
 
 // If our board is closed..
