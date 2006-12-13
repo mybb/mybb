@@ -354,22 +354,10 @@ $navbits[0]['name'] = $mybb->settings['bbname'];
 $navbits[0]['url'] = $mybb->settings['bburl']."/index.php";
 
 // Check banned ip addresses
-$bannedips = explode(",", $mybb->settings['bannedips']);
-if(is_array($bannedips))
+if(is_banned_ip($session->ipaddress))
 {
-	foreach($bannedips as $key => $bannedip)
-	{
-		$bannedip = trim($bannedip);
-		if($bannedip != '')
-		{
-			// This address is banned, show an error and delete the session
-			if(strstr($session->ipaddress, $bannedip))
-			{
-				$db->delete_query(TABLE_PREFIX."sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
-				error($lang->error_banned);
-			}
-		}
-	}
+	$db->delete_query(TABLE_PREFIX."sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
+	error($lang->error_banned);
 }
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
 if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && ($mybb->input['action'] == "login" || $mybb->input['action'] == "do_login" || $mybb->input['action'] == "logout")))

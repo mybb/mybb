@@ -562,17 +562,6 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 }
 
 /**
-* Return a list of banned usernames.
-*
-* @return array The array of banned usernames.
-*/
-function get_banned_usernames()
-{
-	$bannedusernames = explode(",", $mybb->settings['bannedusernames']);
-	return $bannedusernames;
-}
-
-/**
  * Return the language specific name for a PM folder.
  *
  * @param int The ID of the folder.
