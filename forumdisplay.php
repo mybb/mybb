@@ -123,14 +123,14 @@ if($fpermissions['canview'] != "yes")
 	error_no_permission();
 }
 
+// Password protected forums
+check_forum_password($fid, $foruminfo['password']);
+
 if($foruminfo['linkto'])
 {
 	header("Location: {$foruminfo['linkto']}");
 	exit;
 }
-
-// Password protected forums
-check_forum_password($fid, $foruminfo['password']);
 
 // Make forum jump...
 $forumjump = build_forum_jump("", $fid, 1);

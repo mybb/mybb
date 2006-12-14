@@ -277,7 +277,7 @@ if($mybb->input['action'] == "event")
 	{
 		$repeat_days = $comma = '';
 
-		$eventdate_end = mktime(0, 0, 0, $event['end_month'], $event['end_day'], $event['end_year']);
+		$eventdate_end = gmmktime(0, 0, 0, $event['end_month'], $event['end_day'], $event['end_year']);
 		$eventdate_end = my_date($mybb->settings['dateformat'], $eventdate_end, 0, 0);
 
 		$event_days = explode(',', $event['repeat_days']);

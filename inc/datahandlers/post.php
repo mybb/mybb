@@ -215,8 +215,8 @@ class PostDataHandler extends DataHandler
 		global $mybb;
 
 		$post = &$this->data;
-
 		$post['message'] = trim($post['message']);
+		
 		// Do we even have a message at all?
 		if(my_strlen($post['message']) == 0)
 		{

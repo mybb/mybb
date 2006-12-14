@@ -339,9 +339,17 @@ if($mybb->input['action'] == "do_import")
 		$lang->version_warning = sprintf($lang->version_warning, $mybb->version);
 		cperror($lang->version_warning);
 	}
-
-	$css = kill_tags($theme['cssbits']);
-	$themebits = kill_tags($theme['themebits']);
+	
+	if(is_array($theme['cssbits']))
+	{
+		$css = kill_tags($theme['cssbits']);
+	}
+	
+	if(is_array($theme['themebits']))
+	{
+		$themebits = kill_tags($theme['themebits']);
+	}
+	
 	$templates = $theme['templates']['template'];
 	if(is_array($templates))
 	{

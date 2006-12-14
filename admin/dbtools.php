@@ -246,7 +246,7 @@ if($mybb->input['action'] == 'existing')
 			$ext = get_extension($file);
 			if($ext == 'gz' || $ext == 'sql')
 			{
-				$backups[] = array(
+				$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
 					"file" => $file,
 					"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
 					"type" => $ext
@@ -256,6 +256,7 @@ if($mybb->input['action'] == 'existing')
 	}
 	
 	$count = count($backups);
+	ksort($backups);
 	
 	if($count != 0)
 	{

@@ -415,11 +415,11 @@ class UserDataHandler extends DataHandler
 					$options .= $db->escape_string($value);
 				}
 			}
-			else if($type == "select" || $type == "radio")
+			elseif($type == "select" || $type == "radio")
 			{
 				$expoptions = explode("\n", $thing[1]);
 				$expoptions = array_map('trim', $expoptions);
-				if(!in_array(htmlspecialchars_uni($profile_fields[$field]), $expoptions) && $profile_fields[$field] != "")
+				if(!in_array(htmlspecialchars_uni($profile_fields[$field]), $expoptions) && trim($profile_fields[$field]) != "")
 				{
 					$this->set_error('bad_profile_field_values', array($profilefield['name']));
 				}
@@ -845,14 +845,12 @@ class UserDataHandler extends DataHandler
 		$db->insert_query("users", $this->user_insert_data);
 		$this->uid = $db->insert_id();
 
-		$user['user_fields'] = array(
-			'ufid' => $this->uid
-		);
-
+		$user['user_fields']['ufid'] = $this->uid;
+		
 		$query = $db->query("SHOW FIELDS FROM ".TABLE_PREFIX."userfields");
 		while($field = $db->fetch_array($query))
 		{
-			if($field['Field'] == 'ufid')
+			if($field['Field'] == 'ufid' || array_key_exists($field['Field'], $user['user_fields']))
 			{
 				continue;
 			}

@@ -508,7 +508,7 @@ function sync_settings($redo=0)
 		else
 		{
 			$gid = $settinggroups[$settinggroup['attributes']['name']];
-			$db->update_query("settinggroups", $groupdata, "gid='{$gid}");
+			$db->update_query("settinggroups", $groupdata, "gid='{$gid}'");
 		}
 		if(!$gid)
 		{

@@ -65,7 +65,7 @@ class postParser
 	 * @param string The message to be parsed.
 	 * @param array Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username.
 	 * @return string The parsed message.
-	 */
+	 */	
 	function parse_message($message, $options=array())
 	{
 		global $plugins, $mybb;
@@ -83,10 +83,11 @@ class postParser
 		
 		// Set the options		
 		$this->options = $options;
-
+		
+		
 		// Get rid of cartridge returns for they are the workings of the devil
 		$message = str_replace("\r", "", $message);
-		
+				
 		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
 		{
@@ -514,6 +515,7 @@ class postParser
 		$code = trim($code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);
+
 		return "</p>\n<div class=\"code_header\">".$lang->code."\n</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n<p>\n";
 	}
 
@@ -526,10 +528,11 @@ class postParser
 	*/
 	function mycode_parse_php($str, $bare_return = false)
 	{
-		global $lang;
+		global $lang;		
 
-		// Clean the string before parsing.
+		// Clean the string before parsing.		
 		$str = trim($str);
+		
 		if(!$str)
 		{
 			return;
@@ -546,6 +549,7 @@ class postParser
 		$original = $str;
 
 		// See if open and close tags are provided.
+		
 		$added_open_tag = false;
 		if(!preg_match("#^\s*<\?#si", $str))
 		{
@@ -596,6 +600,7 @@ class postParser
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
 		$code = str_replace("'\\'", '&#092;', $code);
 		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
+		
 
 		if($added_open_tag)
 		{
@@ -611,13 +616,12 @@ class postParser
 		$code = str_replace("<code>", "<div dir=\"ltr\"><code>", $code);
 		$code = str_replace("</code>", "</code></div>", $code);
 		$code = preg_replace("# *$#", "", $code);
-		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
-		
+
 		if($bare_return)
 		{
 			return $code;
 		}
-
+		
 		// Send back the code all nice and pretty
 		return "</p>\n<div class=\"code_header\">$lang->php_code\n</div><div class=\"code_body\">".$code."</div>\n<p>\n";
 	}

@@ -1777,11 +1777,15 @@ function build_mycode_inserter($bind="message")
  */
 function build_clickable_smilies()
 {
-	global $db, $smiliecache, $theme, $templates, $lang, $mybb;
+	global $db, $smiliecache, $theme, $templates, $lang, $mybb, $smiliecount;
 
 	if($mybb->settings['smilieinserter'] != "off" && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 	{
-		$smiliecount = 0;
+		if(!$smiliecount)
+		{
+			$query = $db->simple_select("smilies", "COUNT(*) as smilies");
+			$smiliecount = $db->fetch_field($query, "smilies");
+		}
 		
 		if(!$smiliecache)
 		{
@@ -1790,7 +1794,6 @@ function build_clickable_smilies()
 			while($smilie = $db->fetch_array($query))
 			{
 				$smiliecache[$smilie['find']] = $smilie['image'];
-				$smiliecount++;
 			}
 		}
 		
@@ -2234,7 +2237,7 @@ function add_breadcrumb($name, $url="")
 	global $navbits;
 
 	$navsize = count($navbits);
-	$navbits[$navsize]['name'] = htmlspecialchars_uni($name);
+	$navbits[$navsize]['name'] = $name;
 	$navbits[$navsize]['url'] = $url;
 }
 
@@ -2832,13 +2835,14 @@ function get_current_location()
  */
 function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=0)
 {
-	global $db, $themeselect, $tcache, $lang, $mybb;
+	global $db, $themeselect, $tcache, $lang, $mybb, $limit;
 	
 	if($tid == 0)
 	{
 		$themeselect = "<select name=\"$name\">";
 		$themeselect .= "<option value=\"0\">".$lang->use_default."</option>\n";
 		$themeselect .= "<option value=\"0\">-----------</option>\n";
+		$tid = 1;
 	}
 	
 	if(!is_array($tcache))
@@ -2847,11 +2851,11 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		
 		while($theme = $db->fetch_array($query))
 		{
-			$tcache[$theme['pid']][] = $theme;
+			$tcache[$theme['pid']][$theme['tid']] = $theme;
 		}
 	}
 	
-	if(is_array($tcache))
+	if(is_array($tcache[$tid]))
 	{
 		// Figure out what groups this user is in
 		if($mybb->user['additionalgroups'])
@@ -2860,45 +2864,42 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 		$in_groups[] = $mybb->user['usergroup'];
 
-		foreach($tcache as $misc)
+		foreach($tcache[$tid] as $theme)
 		{
-			foreach($misc as $theme)
+			$sel = "";
+			// Make theme allowed groups into array
+			$is_allowed = false;
+			if($theme['allowedgroups'] != "all" && $theme['allowedgroups'] != "")
 			{
-				$sel = "";
-				// Make theme allowed groups into array
-				$is_allowed = false;
-				if($theme['allowedgroups'] != "all" && $theme['allowedgroups'] != "")
+				$allowed_groups = explode(",", $theme['allowedgroups']);
+				// See if groups user is in is allowed
+				foreach($allowed_groups as $agid)
 				{
-					$allowed_groups = explode(",", $theme['allowedgroups']);
-					// See if groups user is in is allowed
-					foreach($allowed_groups as $agid)
+					if(in_array($agid, $in_groups))
 					{
-						if(in_array($agid, $in_groups))
-						{
-							$is_allowed = true;
-							break;
-						}
+						$is_allowed = true;
+						break;
 					}
 				}
-				
-				// Show theme if allowed, or if override is on
-				if($is_allowed || $theme['allowedgroups'] == "all" || $usergroup_override == 1)
+			}
+			
+			// Show theme if allowed, or if override is on
+			if($is_allowed || $theme['allowedgroups'] == "all" || $theme['allowedgroups'] == "" || $usergroup_override == 1)
+			{
+				if($theme['tid'] == $selected)
 				{
-					if($theme['tid'] == $selected)
-					{
-						$sel = " selected=\"selected\"";
-					}
-					
-					if($theme['pid'] != 0)
-					{
-						$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.$theme['name']."</option>";
-						$depthit = $depth."--";
-					}
-					
-					if(array_key_exists($theme['tid'], $tcache))
-					{
-						build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override);
-					}
+					$sel = " selected=\"selected\"";
+				}
+				
+				if($theme['pid'] != 0)
+				{
+					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.$theme['name']."</option>";
+					$depthit = $depth."--";
+				}
+				
+				if(array_key_exists($theme['tid'], $tcache))
+				{
+					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override);
 				}
 			}
 		}
@@ -2921,9 +2922,9 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 function htmlspecialchars_uni($message)
 {
 	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
-	$message = str_replace("<","&lt;",$message);
-	$message = str_replace(">","&gt;",$message);
-	$message = str_replace("\"","&quot;",$message);
+	$message = str_replace("<","&lt;" ,$message);
+	$message = str_replace(">","&gt;", $message);
+	$message = str_replace("\"","&quot;", $message);
 	$message = str_replace("  ", "&nbsp;&nbsp;", $message);
 	
 	return $message;
@@ -3169,18 +3170,31 @@ function update_first_post($tid)
  */
 function my_strlen($string)
 {
-	$string = preg_replace("#&\#(0-9]+);#", "-", $string);
-	
-	if(function_exists("mb_strlen"))
-	{
-		$string_length = mb_strlen($string);
-	}
-	else
-	{
-		$string_length = strlen($string);
-	}
+    global $lang;
 
-	return $string_length;
+    $string = preg_replace("#&\#(0-9]+);#", "-", $string);
+	
+    if($lang->settings['charset'] == "UTF-8")
+    {
+        // Get rid of any excess RTL and LTR override for they are the workings of the devil
+        $string = str_replace(dec_to_utf8(8238), "", $string);
+        $string = str_replace(dec_to_utf8(8237), "", $string);
+        
+        // Remove dodgy whitspaces
+        $string = str_replace(chr(0xCA), "", $string);
+    }
+	$string = trim($string);
+	
+    if(function_exists("mb_strlen"))
+    {
+        $string_length = mb_strlen($string);
+    }
+    else
+    {
+        $string_length = strlen($string);
+    }
+	
+    return $string_length;
 }
 
 /**

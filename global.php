@@ -10,7 +10,7 @@
  */
 
 // Load main MyBB core file which begins all of the magic
-require_once dirname(__FILE__)."/inc/init.php";
+require_once "./inc/init.php";
 
 $shutdown_queries = array();
 

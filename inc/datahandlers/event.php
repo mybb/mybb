@@ -360,9 +360,13 @@ class EventDataHandler extends DataHandler
 			'end_time_hours' => $event['end_time_hours'],
 			'end_time_mins' => $event['end_time_mins'],
 			'description' => $db->escape_string($event['description']),
-			'repeat_days' => $db->escape_string(@implode(',', array_keys($event['repeat_days']))),
 			'private' => $event['private']
 		);
+		
+		if(is_array($event['repeat_days']))
+		{
+			$this->event_insert_data['repeat_days'] = $db->escape_string(@implode(',', array_keys($event['repeat_days'])));
+		}
 
 		$plugins->run_hooks_by_ref("datahandler_event_insert", $this);
 
