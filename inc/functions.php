@@ -3415,7 +3415,7 @@ function get_banned_usernames()
 	global $mybb;
 	$banned_usernames = explode(",", $mybb->settings['bannedusernames']);
 	$banned_usernames = array_map("trim", $banned_usernames);
-	$banned_usernames = array_map("my_strtolower", $banned_usernames);
+	$banned_usernames = array_map("strtolower", $banned_usernames);
 	return $banned_usernames;
 }
 
@@ -3448,7 +3448,7 @@ function get_banned_emails()
 	global $mybb;
 	$banned_emails = explode(",", $mybb->settings['bannedemails']);
 	$banned_emails = array_map("trim", $banned_emails);
-	$banned_emails = array_map("my_strtolower", $banned_emails);
+	$banned_emails = array_map("strtolower", $banned_emails);
 	return $banned_emails;
 }
 
@@ -3464,7 +3464,7 @@ function is_banned_email($email)
 	$email = my_strtolower($email);
 	foreach($banned_emails as $banned_email)
 	{
-		if(my_strpos($email, $banned_email) !== false)
+		if($banned_email != "" && strpos($email, $banned_email) !== false)
 		{
 			return true;
 		}
@@ -3482,7 +3482,7 @@ function get_banned_ips()
 	global $mybb;
 	$banned_ips = explode(",", $mybb->settings['bannedips']);
 	$banned_ips = array_map("trim", $banned_ips);
-	$banned_emails = array_map("my_strtolower", $banned_ips);
+	$banned_emails = array_map("strtolower", $banned_ips);
 	return $banned_ips;
 }
 
@@ -3497,7 +3497,7 @@ function is_banned_ip($ip_address)
 	$banned_ips = get_banned_ips();
 	foreach($banned_ips as $banned_ip)
 	{
-		if(my_strpos($ip_address, $banned_ip) !== false)
+		if($banned_ip != "" && strpos($ip_address, $banned_ip) !== false)
 		{
 			return true;
 		}
