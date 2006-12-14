@@ -294,6 +294,7 @@ if($mybb->input['action'] == "thread")
 		$votesarray = explode("||~|~||", $poll['votes']);
 		$poll['question'] = htmlspecialchars_uni($poll['question']);
 		$polloptions = '';
+		$totalvotes = 0;
 
 		for($i = 1; $i <= $poll['numoptions']; $i++)
 		{
@@ -313,6 +314,7 @@ if($mybb->input['action'] == "thread")
 
 			$option = $parser->parse_message($optionsarray[$i-1], $parser_options);
 			$votes = $votesarray[$i-1];
+			$totalvotes += $votes;
 			$number = $i;
 
 			// Mark the option the user voted for.
@@ -385,7 +387,7 @@ if($mybb->input['action'] == "thread")
 			{
 				$pollstatus = $lang->poll_closed;
 			}
-			$lang->total_votes = sprintf($lang->total_votes, $poll['numvotes']);
+			$lang->total_votes = sprintf($lang->total_votes, $totalvotes);
 			eval("\$pollbox = \"".$templates->get("showthread_poll_results")."\";");
 			$plugins->run_hooks("showthread_poll_results");
 		}

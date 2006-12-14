@@ -2876,17 +2876,31 @@ function update_first_post($tid)
  */
 function my_strlen($string)
 {
-	$string = preg_replace("#&\#(0-9]+);#", "-", $string);
-	if(function_exists("mb_strlen"))
-	{
-		$string_length = mb_strlen($string);
-	}
-	else
-	{
-		$string_length = strlen($string);
-	}
+    global $lang;
 
-	return $string_length;
+    $string = preg_replace("#&\#(0-9]+);#", "-", $string);
+	
+    if($lang->settings['charset'] == "UTF-8")
+    {
+        // Get rid of any excess RTL and LTR override for they are the workings of the devil
+        $string = str_replace(dec_to_utf8(8238), "", $string);
+        $string = str_replace(dec_to_utf8(8237), "", $string);
+        
+        // Remove dodgy whitspaces
+        $string = str_replace(chr(0xCA), "", $string);
+    }
+	$string = trim($string);
+	
+    if(function_exists("mb_strlen"))
+    {
+        $string_length = mb_strlen($string);
+    }
+    else
+    {
+        $string_length = strlen($string);
+    }
+	
+    return $string_length;
 }
 
 /**

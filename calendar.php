@@ -177,7 +177,7 @@ if($mybb->input['action'] == "event")
 		$eventposter = $lang->guest;
 	}
 	$eventdate = explode("-", $event['date']);
-	$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
+	$eventdate = gmmktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
 	$eventdate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
 
 	add_breadcrumb($lang->nav_viewevent);
