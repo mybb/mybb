@@ -562,7 +562,7 @@ function sync_settings($redo=0)
 function write_settings()
 {
 	global $db;
-	$query = $db->query('SELECT * FROM '.TABLE_PREFIX.'settings ORDER BY title ASC');
+	$query = $db->simple_select("settings", "*", "", array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{
 		$setting['value'] = $db->escape_string($setting['value']);

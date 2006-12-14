@@ -181,12 +181,7 @@ else
 	}
 		
 
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."users
-		WHERE CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'
-		ORDER BY username ASC
-	");
+	$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'", array('order_by' => 'username'));
 	$numusers = $db->num_rows($query);
 	/*if(!$numusers && !$numrequests)
 	{
@@ -213,6 +208,7 @@ else
 		{
 			eval("\$sendpm = \"".$templates->get("postbit_pm")."\";");
 		}
+		
 		if($user['hideemail'] != "yes")
 		{
 			eval("\$email = \"".$templates->get("postbit_email")."\";");

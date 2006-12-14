@@ -241,7 +241,7 @@ EOF;
 			{
 				++$total_users;
 					
-				$query = $db->query("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['username']))."'");
+				$query = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query);
 				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
 				{

@@ -422,7 +422,7 @@ class Converter
 	{
 		global $db;
 		
-		$query = $db->query("usergroups", "gid, import_gid");
+		$query = $db->simple_select("usergroups", "gid, import_gid");
 		while($usergroup = $db->fetch_array($query))
 		{
 			$usergroups[$usergroup['import_gid']] = $usergroup['gid'];
