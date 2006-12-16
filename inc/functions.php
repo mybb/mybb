@@ -3174,7 +3174,7 @@ function my_strlen($string)
 
     $string = preg_replace("#&\#(0-9]+);#", "-", $string);
 	
-    if($lang->settings['charset'] == "UTF-8")
+    if(strtolower($lang->settings['charset']) == "utf-8")
     {
         // Get rid of any excess RTL and LTR override for they are the workings of the devil
         $string = str_replace(dec_to_utf8(8238), "", $string);
@@ -3264,7 +3264,7 @@ function my_strtolower($string)
  */
 function my_strpos($haystack, $needle, $offset=0)
 {
-	if(function_exists("mb_my_strpos"))
+	if(function_exists("mb_strpos"))
 	{
 		$position = mb_strpos($haystack, $needle, $offset);
 	}
@@ -3897,7 +3897,7 @@ function is_banned_email($email)
 	$email = my_strtolower($email);
 	foreach($banned_emails as $banned_email)
 	{
-		if(my_strpos($email, $banned_email) !== false)
+		if($banned_email != "" && my_strpos($email, $banned_email) !== false)
 		{
 			return true;
 		}
@@ -3930,7 +3930,7 @@ function is_banned_ip($ip_address)
 	$banned_ips = get_banned_ips();
 	foreach($banned_ips as $banned_ip)
 	{
-		if(my_strpos($ip_address, $banned_ip) !== false)
+		if($banned_ip != "" && my_strpos($ip_address, $banned_ip) !== false)
 		{
 			return true;
 		}
