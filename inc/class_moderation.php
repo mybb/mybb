@@ -471,7 +471,7 @@ class Moderation
 				}
  				break;
 			case "copy":// copy thread
-				// we need to add code to copy attachments(?), polls, etc etc here
+				
 				$threadarray = array(
 					"fid" => $new_fid,
 					"subject" => $db->escape_string($thread['subject']),
@@ -490,22 +490,74 @@ class Moderation
 					"unapprovedposts" => $thread['unapprovedposts'],
 					"notes" => ''
 				);
+				
 				$plugins->run_hooks("moderation_do_move_copy");
 				$db->insert_query(TABLE_PREFIX."threads", $threadarray);
 				$newtid = $db->insert_id();
-				$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid='$tid'");
-				$postsql = '';
+				
+				if($thread['poll'] != 0)
+				{
+					$query = $db->simple_select(TABLE_PREFIX."polls", "*", "tid = '{$thread['tid']}'");
+					$poll = $db->fetch_array($query);
+					
+					$poll_array = array(
+						'tid' => $newtid,
+						'question' => $db->escape_string($poll['question']),
+						'dateline' => $poll['dateline'],
+						'options' => $db->escape_string($poll['options']),
+						'votes' => $poll['votes'],
+						'numoptions' => $poll['numoptions'],
+						'numvotes' => $poll['numvotes'],
+						'timeout' => $poll['timeout'],
+						'closed' => $poll['closed'],
+						'multiple' => $poll['multiple'],
+						'public' => $poll['public']
+					);
+					$db->insert_array(TABLE_PREFIX."polls", $poll_array);
+				}
+				
+				$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid = '$tid'");				
 				while($post = $db->fetch_array($query))
 				{
-					if($postssql != '')
+					$post_array = array(
+						'tid' => $newtid,
+						'fid' => $new_fid,
+						'subject' => $db->escape_string($post['subject']),
+						'icon' => $post['icon'],
+						'uid' => $post['uid'],
+						'username' => $db->escape_string($post['username']),
+						'dateline' => $post['dateline'],
+						'message' => $db->escape_string($post['message']),
+						'ipaddress' => $post['ipaddress'],
+						'includesig' => $post['includesig'],
+						'smilieoff' => $post['smilieoff'],
+						'edituid' => $post['edituid'],
+						'edittime' => $post['edittime'],
+						'visisble' => $post['visible']
+					);
+					$db->insert_query(TABLE_PREFIX."posts", $post_array);
+					$pid = $db->insert_id();
+					
+					// Insert attachments for this post
+					$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid = '$pid'");
+					while($attachment = $db->fetch_array($query))
 					{
-						$postssql .= ", ";
+						$attachment_array = array(
+							'pid' => $pid,
+							'posthash' => $db->escape_string($attachment['posthash']),
+							'uid' => $attachment['uid'],
+							'filename' => $db->escape_string($attachment['filename']),
+							'filetype' => $attachment['filetype'],
+							'filesize' => $attachment['filesize'],
+							'attachname' => $attachment['attachname'],
+							'downloads' => $attachment['downloads'],
+							'visible' => $attachment['visible'],
+							'thumbnail' => $attachment['thumbnail']
+						);
+						$db->insert_query(TABLE_PREFIX."attachments", $attachment_array);
 					}
-					$post['message'] = $db->escape_string($post['message']);
-					$postssql .= "('$newtid','$new_fid','{$post['subject']}','{$post['icon']}','{$post['uid']}','{$post['username']}','{$post['dateline']}','{$post['message']}','{$post['ipaddress']}','{$post['includesig']}','{$post['smilieoff']}','{$post['edituid']}','{$post['edittime']}','{$post['visible']}')";
 				}
-				$db->query("INSERT INTO ".TABLE_PREFIX."posts (tid,fid,subject,icon,uid,username,dateline,message,ipaddress,includesig,smilieoff,edituid,edittime,visible) VALUES $postssql");
-	
+				
 				update_first_post($newtid);
 				update_thread_count($newtid);
 	

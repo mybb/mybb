@@ -2880,7 +2880,7 @@ function my_strlen($string)
 
     $string = preg_replace("#&\#(0-9]+);#", "-", $string);
 	
-    if($lang->settings['charset'] == "UTF-8")
+    if(strtolower($lang->settings['charset']) == "utf-8")
     {
         // Get rid of any excess RTL and LTR override for they are the workings of the devil
         $string = str_replace(dec_to_utf8(8238), "", $string);
