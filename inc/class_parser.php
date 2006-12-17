@@ -65,7 +65,7 @@ class postParser
 	 * @param string The message to be parsed.
 	 * @param array Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username.
 	 * @return string The parsed message.
-	 */	
+	 */
 	function parse_message($message, $options=array())
 	{
 		global $plugins, $mybb;
@@ -83,11 +83,10 @@ class postParser
 		
 		// Set the options		
 		$this->options = $options;
-		
-		
+
 		// Get rid of cartridge returns for they are the workings of the devil
 		$message = str_replace("\r", "", $message);
-				
+
 		// Filter bad words if requested.
 		if($options['filter_badwords'] != "no")
 		{
@@ -528,9 +527,9 @@ class postParser
 	*/
 	function mycode_parse_php($str, $bare_return = false)
 	{
-		global $lang;		
+		global $lang;
 
-		// Clean the string before parsing.		
+		// Clean the string before parsing.
 		$str = trim($str);
 		
 		if(!$str)
@@ -541,11 +540,6 @@ class postParser
 		$str = str_replace('&amp;', '&', $str);
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
-		while(preg_match("#'(.*?)\\\(.*?)'#m", $str))
-		{
-			$str = preg_replace("#'(.*?)\\\(.*?)'#m", "'\\1&#92;\\2'", $str);
-		}
-		$str = str_replace('\\', "'\\'", $str);
 		$original = $str;
 
 		// See if open and close tags are provided.
@@ -598,9 +592,8 @@ class postParser
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
-		$code = str_replace("'\\'", '&#092;', $code);
+		$code = str_replace("\\", '&#092;', $code);
 		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
-		
 
 		if($added_open_tag)
 		{
