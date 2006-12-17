@@ -534,11 +534,6 @@ class postParser
 		$str = str_replace('&amp;', '&', $str);
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
-		while(preg_match("#'(.*?)\\\(.*?)'#m", $str))
-		{
-			$str = preg_replace("#'(.*?)\\\(.*?)'#m", "'\\1&#92;\\2'", $str);
-		}
-		$str = str_replace('\\', "'\\'", $str);
 		$original = $str;
 
 		// See if open and close tags are provided.
@@ -590,7 +585,7 @@ class postParser
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
-		$code = str_replace("'\\'", '&#092;', $code);
+		$code = str_replace("\\", '&#092;', $code);
 		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
 
 		if($added_open_tag)
