@@ -10,7 +10,7 @@ inlineEditor.prototype = {
 		this.options = options;
 		if(!options.className)
 		{
-			alert('You need to specify either a className in the options.');
+			alert('You need to specify a className in the options.');
 			return false;
 		}
 		
@@ -63,7 +63,7 @@ inlineEditor.prototype = {
 		}
 		this.currentElement = element.id;
 		this.timeout = setTimeout(this.showTextbox.bind(this), 1200);
-		element.onmouseup = this.onMouseUp.bindAsEventListener(this);
+		document.onmouseup = this.onMouseUp.bindAsEventListener(this);
 		return false;
 	},
 	
