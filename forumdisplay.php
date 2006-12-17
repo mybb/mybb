@@ -889,7 +889,7 @@ if($foruminfo['type'] != "c")
 	{
 		eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
 	}
-	$lang->rss_discovery_forum = sprintf($lang->rss_discovery_forum, $foruminfo['name']);
+	$lang->rss_discovery_forum = sprintf($lang->rss_discovery_forum, htmlspecialchars_uni($foruminfo['name']));
 	eval("\$rssdiscovery = \"".$templates->get("forumdisplay_rssdiscovery")."\";");
 	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");
 }
