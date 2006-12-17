@@ -79,7 +79,7 @@ else
 		$month = my_date("n");
 	}
 	// Find the number of days in that month
-	$time = mktime(0, 0, 0, $month, 1, $year);
+	$time = gmmktime(0, 0, 0, $month, 1, $year);
 	$days = my_date("t", $time);
 	// Now the specific day
 	if(isset($mybb->input['day']) && $mybb->input['day'] >= 1 && $mybb->input['day'] <= $days)
@@ -88,6 +88,7 @@ else
 	}
 	else
 	{
+		
 		// Make the day the last day of the month, if the user overshot the number of days in the month
 		if(isset($mybb->input['day']) && $mybb->input['day'] > $days)
 		{
@@ -205,6 +206,7 @@ if($mybb->input['action'] == "dayview")
 		$bday_where = "birthday LIKE '$day-$month-%' OR birthday LIKE '$day-$month'";
 		$feb_fix = 0;
 	}
+
 	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, birthday, usergroup, displaygroup", $bday_where);
 
 	$alterbg = $theme['trow1'];
@@ -213,6 +215,7 @@ if($mybb->input['action'] == "dayview")
 	while($bdays = $db->fetch_array($query))
 	{
 		$bday = explode("-", $bdays['birthday']);
+
 		if($bday[2] && $bday[2] < $year)
 		{
 			$age = $year - $bday[2];
@@ -266,7 +269,7 @@ if($mybb->input['action'] == "dayview")
 			$eventposter = $lang_guest;
 		}
 		$eventdate = explode("-", $event['date']);
-		$eventdate = mktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
+		$eventdate = gmmktime(0, 0, 0, $eventdate[1], $eventdate[0], $eventdate[2]);
 		$eventdate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
 		eval("\$events .= \"".$templates->get("calendar_dayview_event")."\";");
 	}
@@ -277,7 +280,7 @@ if($mybb->input['action'] == "dayview")
 	}
 	if($birthdays)
 	{
-		$eventdate = mktime(0, 0, 0, $month, $day, $year);
+		$eventdate = gmmktime(0, 0, 0, $month, $day, $year);
 		$bdaydate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
 		$lang->birthdays_on_day = sprintf($lang->birthdays_on_day, $bdaydate);
 		eval("\$bdaylist = \"".$templates->get("calendar_dayview_birthdays")."\";");
@@ -592,6 +595,7 @@ if($mybb->input['action'] == "calendar_main")
 			$bdays[$bday[0]]++;
 		}
 	}
+
 	$events = array();
 	// Load Events
 	$query = $db->simple_select(TABLE_PREFIX."events", "subject, private, date, eid", "date LIKE '%-{$month}-{$year}' AND ((author='{$mybb->user['uid']}' AND private='yes') OR (private!='yes'))");
