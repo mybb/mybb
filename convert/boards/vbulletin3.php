@@ -23,6 +23,10 @@ class Convert_vbulletin3 extends Converter {
 									  "dependencies" => "db_configuration,import_users"),
 						 "import_threads" => array("name" => "Import vBulletin 3 Threads",
 									  "dependencies" => "db_configuration,import_forums"),
+						 "import_polls" => array("name" => "Import phpBB 3 Polls",
+									  "dependencies" => "db_configuration,import_threads"),
+						 "import_pollvotes" => array("name" => "Import phpBB 3 Poll Votes",
+									  "dependencies" => "db_configuration,import_polls"),
 						 "import_posts" => array("name" => "Import vBulletin 3 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_privatemessages" => array("name" => "Import vBulletin 3 Private Messages",
@@ -372,11 +376,14 @@ EOF;
 			{
 				++$total_users;
 					
-				$query1 = $db->simple_select("users", "username,email,uid", "LOWER(username)='".$db->escape_string(strtolower($user['username']))."'");
+				$query1 = $db->simple_select("users", "username,email,uid", "LOWER(username)='".$db->escape_string(my_strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query1);
-				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
+				if($duplicate_user['username'] && my_strtolower($user['email']) == my_strtolower($duplicate_user['email']))
 				{
-					echo "Merging user #{$user['userid']} with user #{$duplicate_user['uid']}... done.<br />";
+					echo "Merging user #{$user['userid']} with user #{$duplicate_user['uid']}... ";
+					$db->update_query("users", array('import_uid' => $user['userid']), "uid = '{$duplicate_user['uid']}'");
+					echo "done.<br />";
+					
 					continue;
 				}
 				else if($duplicate_user['username'])
@@ -475,7 +482,7 @@ EOF;
 			$import_session['total_forums'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
-		if($import_session['total_forums'])
+		if($import_session['start_forums'])
 		{
 			// If there are more forums to do, continue, or else, move onto next module
 			if($import_session['total_forums'] - $import_session['start_forums'] <= 0)
@@ -614,7 +621,7 @@ EOF;
 			$import_session['total_threads'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
-		if($import_session['total_threads'])
+		if($import_session['start_threads'])
 		{
 			// If there are more threads to do, continue, or else, move onto next module
 			if($import_session['total_threads'] - $import_session['start_threads'] <= 0)
@@ -693,6 +700,167 @@ EOF;
 			}
 		}
 		$import_session['start_threads'] += $import_session['threads_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_polls()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->vbulletin_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_polls']))
+		{
+			$query = $this->old_db->simple_select("poll", "COUNT(*) as count");
+			$import_session['total_polls'] = $this->old_db->fetch_field($query, 'count');			
+		}
+
+		if($import_session['start_polls'])
+		{
+			// If there are more polls to do, continue, or else, move onto next module
+			if($import_session['total_polls'] - $import_session['start_polls'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_polls';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['polls_per_screen']))
+		{
+			$import_session['polls_per_screen'] = intval($mybb->input['polls_per_screen']);
+		}
+		
+		if(empty($import_session['polls_per_screen']))
+		{
+			$import_session['start_polls'] = 0;
+			echo "<p>Please select how many threads to import at a time:</p>
+<p><input type=\"text\" name=\"polls_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_polls']-$import_session['start_polls'])." polls left to import and ".round((($import_session['total_polls']-$import_session['start_polls'])/$import_session['polls_per_screen']))." pages left at a rate of {$import_session['polls_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("poll", "*", "", array('limit_start' => $import_session['start_polls'], 'limit' => $import_session['polls_per_screen']));
+			while($poll = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting poll #{$poll['pollid']}... ";		
+				
+				// Invision Power Board 2 values
+				$insert_poll['import_pid'] = $poll['pollid'];
+								
+				$query1 = $db->simple_select("threads", "dateline,tid", "import_poll = '{$poll['pollid']}'");
+				$thread = $db->fetch_array($query1);
+				
+				$insert_poll['tid'] = $thread['tid'];
+				$insert_poll['dateline'] = $thread['dateline'];
+				
+				$numvotes = 0;
+				
+				$votes = @explode('|||', $poll['votes']);
+				foreach($votes as $key => $vote)
+				{
+					$numvotes += $vote;
+				}
+
+				$insert_poll['question'] = $poll['question'];
+				$insert_poll['dateline'] = $poll['dateline'];
+				$insert_poll['options'] = str_replace('|||, ||~|~||', $poll['options']);
+				$insert_poll['votes'] = str_replace('|||, ||~|~||', $poll['votes']);
+				$insert_poll['numoptions'] = $poll['numberoptions'];
+				$insert_poll['numvotes'] = $numvotes;
+				$insert_poll['timeout'] = $poll['timeout'];
+				$insert_poll['multiple'] = int_to_yesno($poll['multiple']);
+				$insert_poll['closed'] = int_to_noyes($poll['active']);								
+				
+				$pid = $this->insert_poll($insert_poll);
+				
+				// Restore connections
+				$db->update_query("threads", array('poll' => $pid), "tid = '".$insert_poll['tid']."'");
+				
+				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no polls to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_polls'] += $import_session['polls_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_pollvotes()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->vbulletin_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_pollvotes']))
+		{
+			$query = $this->old_db->simple_select("pollvote", "COUNT(*) as count");
+			$import_session['total_pollvotes'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_pollvotes'])
+		{
+			// If there are more threads to do, continue, or else, move onto next module
+			if($import_session['total_pollvotes'] - $import_session['start_pollvotes'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_pollvotes';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of poll votes per screen from form
+		if(isset($mybb->input['pollvotes_per_screen']))
+		{
+			$import_session['pollvotes_per_screen'] = intval($mybb->input['pollvotes_per_screen']);
+		}
+		
+		if(empty($import_session['pollvotes_per_screen']))
+		{
+			$import_session['start_pollvotes'] = 0;
+			echo "<p>Please select how many threads to import at a time:</p>
+<p><input type=\"text\" name=\"pollvotes_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_pollvotes']-$import_session['start_pollvotes'])." poll votes left to import and ".round((($import_session['total_pollvotes']-$import_session['start_pollvotes'])/$import_session['pollvotes_per_screen']))." pages left at a rate of {$import_session['pollvotes_per_screen']} per page.<br /><br />";
+
+			$query = $this->old_db->simple_select("pollvote", "*", "", array('limit_start' => $import_session['start_pollvotes'], 'limit' => $import_session['pollvotes_per_screen']));
+			while($pollvote = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting poll vote #{$pollvote['pollvoteid']}... ";				
+				
+				$insert_pollvote['uid'] = $this->get_import_uid($pollvote['userid']);
+				$insert_pollvote['dateline'] = $pollvote['votedate'];
+				$insert_pollvote['voteoption'] = $pollvote['voteoption'];
+				$insert_pollvote['pid'] = $pollvote['pollid'];
+				
+				$this->insert_pollvote($insert_pollvote);
+				
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no poll votes to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_pollvotes'] += $import_session['pollvotes_per_screen'];
 		$output->print_footer();
 	}
 	

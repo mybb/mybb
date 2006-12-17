@@ -25,6 +25,10 @@ class Convert_phpbb2 extends Converter {
 									  "dependencies" => "db_configuration,import_categories"),
 						 "import_threads" => array("name" => "Import phpBB 2 Threads",
 									  "dependencies" => "db_configuration,import_forums"),
+						 "import_polls" => array("name" => "Import phpBB 2 Polls",
+									  "dependencies" => "db_configuration,import_threads"),
+						 "import_pollvotes" => array("name" => "Import phpBB 2 Poll Votes",
+									  "dependencies" => "db_configuration,import_polls"),
 						 "import_posts" => array("name" => "Import phpBB 2 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_privatemessages" => array("name" => "Import phpBB 2 Private Messages",
@@ -251,16 +255,19 @@ EOF;
 			{
 				++$total_users;
 					
-				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['username']))."'");
+				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(my_strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query1);
-				if($duplicate_user['username'] && strtolower($user['user_email']) == strtolower($duplicate_user['email']))
+				if($duplicate_user['username'] && my_strtolower($user['user_email']) == my_strtolower($duplicate_user['email']))
 				{
-					echo "Merging user #{$user['user_id']} with user #{$duplicate_user['uid']}... done.<br />";
+					echo "Merging user #{$user['user_id']} with user #{$duplicate_user['uid']}... ";
+					$db->update_query("users", array('import_uid' => $user['user_id']), "uid = '{$duplicate_user['uid']}'");
+					echo "done.<br />";
+					
 					continue;
 				}
 				else if($duplicate_user['username'])
 				{					
-					$import_user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
+					$import_user['username'] = $duplicate_user['username']."_phpbb2_import".$total_users;
 				}
 				
 				echo "Adding user #{$user['user_id']}... ";
@@ -453,7 +460,7 @@ EOF;
 			$import_session['total_forums'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
-		if($import_session['total_forums'])
+		if($import_session['start_forums'])
 		{
 			// If there are more forums to do, continue, or else, move onto next module
 			if($import_session['total_forums'] - $import_session['start_forums'] <= 0)
@@ -497,16 +504,26 @@ EOF;
 				$insert_forum['threads'] = $forum['forum_topics'];
 				$insert_forum['posts'] = $forum['forum_posts'];
 				
+				$lastpost = $this->get_post($forum['forum_last_post_id']);
+				
+				$insert_forum['lastpost'] = $lastpost['post_time'];
+				$insert_forum['lastposteruid'] = $this->get_import_uid($lastpost['poster_id']);
+				$insert_forum['lastposttid'] = ((-1) * $lastpost['topic_id']);
+				$insert_forum['lastposter'] = $this->get_import_username($lastpost['poster_id']);
+				
+				if($lastpost['post_subject'] == NULL)
+				{
+					$lastpost['post_subject'] = 'Welcome to phpBB 2';
+				}
+				
+				$insert_forum['lastpostsubject'] = $lastpost['post_subject'];
+				
 				// Default values
 				$insert_forum['linkto'] = '';
 				$insert_forum['type'] = 'f';
 				$insert_forum['parentlist'] = '';
 				$insert_forum['active'] = 'yes';
 				$insert_forum['open'] = 'yes';
-				$insert_forum['lastpost'] = 0;
-				$insert_forum['lastposteruid'] = 0;
-				$insert_forum['lastposttid'] = 0;
-				$insert_forum['lastpostsubject'] = '';
 				$insert_forum['allowhtml'] = 'no';
 				$insert_forum['allowmycode'] = 'yes';
 				$insert_forum['allowsmilies'] = 'yes';
@@ -534,7 +551,7 @@ EOF;
 				
 				// Update parent list.
 				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);
-				$db->update_query("forums", $update_array, "fid = {$fid}");
+				$db->update_query("forums", $update_array, "fid = '{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -561,7 +578,7 @@ EOF;
 			$import_session['total_threads'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
-		if($import_session['total_threads'])
+		if($import_session['start_threads'])
 		{
 			// If there are more threads to do, continue, or else, move onto next module
 			if($import_session['total_threads'] - $import_session['start_threads'] <= 0)
@@ -604,7 +621,7 @@ EOF;
 				$insert_thread['dateline'] = $thread['topic_time'];
 				$insert_thread['subject'] = $thread['topic_title'];
 				
-				$insert_thread['poll'] = $thread['topic_vote'];
+				$insert_thread['poll'] = 0;
 				$insert_thread['uid'] = $this->get_import_uid($thread['topic_poster']);
 				$insert_thread['import_uid'] = $thread['topic_poster'];
 				$insert_thread['views'] = $thread['topic_views'];
@@ -633,7 +650,7 @@ EOF;
 				$member_started = $this->get_user($member_started['poster_id']);
 				$insert_thread['username'] = $member_started['username'];
 				
-				$this->insert_thread($insert_thread);
+				$tid = $this->insert_thread($insert_thread);
 				
 				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid='".((-1) * $import_post['tid'])."'");
 				
@@ -648,6 +665,177 @@ EOF;
 		$import_session['start_threads'] += $import_session['threads_per_screen'];
 		$output->print_footer();
 	}
+	
+	function import_polls()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->phpbb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_polls']))
+		{
+			$query = $this->old_db->simple_select("vote_desc", "COUNT(*) as count");
+			$import_session['total_polls'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_polls'])
+		{
+			// If there are more polls to do, continue, or else, move onto next module
+			if($import_session['total_polls'] - $import_session['start_polls'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_polls';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['polls_per_screen']))
+		{
+			$import_session['polls_per_screen'] = intval($mybb->input['polls_per_screen']);
+		}
+		
+		if(empty($import_session['polls_per_screen']))
+		{
+			$import_session['start_polls'] = 0;
+			echo "<p>Please select how many threads to import at a time:</p>
+<p><input type=\"text\" name=\"polls_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_polls']-$import_session['start_polls'])." polls left to import and ".round((($import_session['total_polls']-$import_session['start_polls'])/$import_session['polls_per_screen']))." pages left at a rate of {$import_session['polls_per_screen']} per page.<br /><br />";
+
+			$query = $this->old_db->simple_select("vote_desc", "*", "", array('limit_start' => $import_session['start_polls'], 'limit' => $import_session['polls_per_screen']));
+			while($poll = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting poll #{$poll['vote_id']}... ";				
+				
+				// Invision Power Board 2 values
+				$insert_poll['import_pid'] = $poll['vote_id'];
+				$insert_poll['tid'] = $this->get_import_tid($poll['topic_id']);
+
+				$seperator = '';
+				$options = '';
+				$votes = '';
+				$vote_count = 0;
+				$options_count = 0;
+				
+				$query1 = $this->old_db->simple_select("vote_results", "*", "vote_id = '{$poll['vote_id']}'");
+				while($vote_result = $this->old_db->fetch_array($query1))
+				{
+					$options .= $seperator.$db->escape_string($vote_result['vote_option_text']);
+					$votes .= $seperator.$vote_result['vote_result'];
+					++$options_count;
+					$vote_count += $vote_result['vote_result'];
+					$seperator = '||~|~||';
+				}
+								
+				$insert_poll['question'] = $poll['vote_text'];
+				$insert_poll['dateline'] = $poll['vote_start'];
+				$insert_poll['options'] = $options;
+				$insert_poll['votes'] = $votes;
+				$insert_poll['numoptions'] = $options_count;
+				$insert_poll['numvotes'] = $vote_count;
+				$insert_poll['multiple'] = 'no';
+				
+				// Default values
+				$poll['timeout'] = '';
+				$poll['closed'] = '';				
+				
+				$pid = $this->insert_poll($insert_poll);
+				
+				// Restore connections
+				$db->update_query("threads", array('poll' => $pid), "tid = '".$insert_poll['tid']."'");
+				
+				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no polls to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_polls'] += $import_session['polls_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_pollvotes()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->phpbb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_pollvotes']))
+		{
+			$query = $this->old_db->simple_select("vote_voters", "COUNT(*) as count");
+			$import_session['total_pollvotes'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_pollvotes'])
+		{
+			// If there are more threads to do, continue, or else, move onto next module
+			if($import_session['total_pollvotes'] - $import_session['start_pollvotes'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_pollvotes';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of poll votes per screen from form
+		if(isset($mybb->input['pollvotes_per_screen']))
+		{
+			$import_session['pollvotes_per_screen'] = intval($mybb->input['pollvotes_per_screen']);
+		}
+		
+		if(empty($import_session['pollvotes_per_screen']))
+		{
+			$import_session['start_pollvotes'] = 0;
+			echo "<p>Please select how many threads to import at a time:</p>
+<p><input type=\"text\" name=\"pollvotes_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_pollvotes']-$import_session['start_pollvotes'])." poll votes left to import and ".round((($import_session['total_pollvotes']-$import_session['start_pollvotes'])/$import_session['pollvotes_per_screen']))." pages left at a rate of {$import_session['pollvotes_per_screen']} per page.<br /><br />";
+
+			$query = $this->old_db->simple_select("vote_voters", "*", "", array('limit_start' => $import_session['start_pollvotes'], 'limit' => $import_session['pollvotes_per_screen']));
+			while($pollvote = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting poll vote #{$pollvote['vote_id']}... ";				
+				
+				$query1 = $db->simple_select("polls", "*", "pid = '".$this->get_import_pid($pollvote['vote_id'])."'");
+				$poll = $db->fetch_array($query1);
+				
+				$insert_pollvote['uid'] = $this->get_import_uid($pollvote['vote_user_id']);
+				$insert_pollvote['dateline'] = $poll['vote_start'];
+				$insert_pollvote['voteoption'] = ''; // We dunno!
+				$insert_pollvote['pid'] = $poll['pid'];
+				
+				$this->insert_pollvote($insert_pollvote);
+				
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no poll votes to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_pollvotes'] += $import_session['pollvotes_per_screen'];
+		$output->print_footer();
+	}
+	
+	
 	
 	function import_posts()
 	{
@@ -729,7 +917,7 @@ EOF;
 				$insert_post['import_uid'] = $post['poster_id'];
 				$insert_post['username'] = $post['username'];
 				$insert_post['dateline'] = $post['post_time'];
-				$insert_post['message'] = str_replace($post['bbcode_uid'], '', htmlspecialchars_decode($post['post_text']));
+				$insert_post['message'] = str_replace(':'.$post['bbcode_uid'], '', htmlspecialchars_decode($post['post_text']));
 				$insert_post['ipaddress'] = $this->decode_ip($post['poster_ip']);
 				$insert_post['includesig'] = int_to_yesno($post['enable_sig']);		
 				$insert_post['smilieoff'] = int_to_noyes($post['enable_smilies']);		
@@ -804,7 +992,7 @@ EOF;
 		else
 		{
 			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_usegroups']-$import_session['start_usegroups'])." usegroups left to import and ".round((($import_session['total_usegroups']-$import_session['start_usegroups'])/$import_session['usegroups_per_screen']))." pages left at a rate of {$import_session['usegroups_per_screen']} per page.<br /><br />";
+			echo "There are ".($import_session['total_usegroups']-$import_session['start_usegroups'])." usegroups left to import and ".round((($import_session['total_usegroups']-$import_session['start_usegroups'])/$import_session['usegroups_per_screen']))." pages left at a rate of {$import_session['usergroups_per_screen']} per page.<br /><br />";
 			
 			// Get only non-staff groups.
 			$query = $this->old_db->simple_select("groups", "*", "group_id > 2", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));

@@ -243,11 +243,14 @@ EOF;
 			{
 				++$total_users;
 					
-				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['username']))."'");
+				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(my_strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query1);
-				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
+				if($duplicate_user['username'] && my_strtolower($user['email']) == my_strtolower($duplicate_user['email']))
 				{
-					echo "Merging user #{$user['id']} with user #{$duplicate_user['uid']}... done.<br />";
+					echo "Merging user #{$user['id']} with user #{$duplicate_user['uid']}... ";
+					$db->update_query("users", array('import_uid' => $user['ID_MEMBER']), "uid = '{$duplicate_user['uid']}'");
+					echo "done.<br />";
+					
 					continue;
 				}
 				else if($duplicate_user['username'])
@@ -449,7 +452,7 @@ EOF;
 			$import_session['total_forums'] = $this->old_db->fetch_field($query, 'count');
 		}
 
-		if($import_session['total_forums'])
+		if($import_session['start_forums'])
 		{
 			// If there are more forums to do, continue, or else, move onto next module
 			if($import_session['total_forums'] - $import_session['start_forums'] <= 0)
@@ -561,7 +564,7 @@ EOF;
 			$import_session['total_threads'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
-		if($import_session['total_threads'])
+		if($import_session['start_threads'])
 		{
 			// If there are more threads to do, continue, or else, move onto next module
 			if($import_session['total_threads'] - $import_session['start_threads'] <= 0)

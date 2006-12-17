@@ -223,6 +223,24 @@ class Converter
 	}
 	
 	/**
+	 * Insert poll vote into database
+	 */
+	function insert_pollvote($title)
+	{
+		global $db;
+	
+		foreach($title as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+		
+		$query = $db->insert_query("pollvotes", $insertarray);
+		$pollvoteid = $db->insert_id();
+		
+		return $pollvoteid;
+	}
+	
+	/**
 	 * Get an array of imported users
 	 *
 	 * @return array
@@ -256,6 +274,90 @@ class Converter
 		}
 		$this->import_usernames = $users;
 		return $users;
+	}
+	
+	/**
+	 * Get an array of imported polls
+	 *
+	 * @return array
+	 */
+	function get_import_polls()
+	{
+		global $db;
+	
+		$query = $db->simple_select("polls", "pid, import_pid");
+		while($poll = $db->fetch_array($query))
+		{
+			$polls[$poll['import_pid']] = $poll['pid'];
+		}
+		$this->import_pids = $polls;
+		return $polls;
+	}
+	
+	/**
+	 * Get an array of imported poll votes
+	 *
+	 * @return array
+	 */
+	function get_import_pollvotes()
+	{
+		global $db;
+	
+		$query = $db->simple_select("pollvotes", "vid, import_vid");
+		while($pollvote = $db->fetch_array($query))
+		{
+			$pollvotes[$pollvote['import_vid']] = $pollvote['vid'];
+		}
+		$this->import_pollvotes = $pollvotes;
+		return $pollvotes;
+	}
+	
+	/**
+	 * Get the MyBB PID of an old PID.
+	 *
+	 * @param int Poll ID used before import
+	 * @return int Poll ID in MyBB or 0 if the old PID cannot be found
+	 */
+	function get_import_pid($old_pid)
+	{
+		if(!is_array($this->import_pids))
+		{
+			$pid_array = $this->get_import_polls();
+		}
+		else
+		{
+			$pid_array = $this->import_pids;
+		}
+		
+		if(!isset($pid_array[$old_pid]) || $old_pid == 0)
+		{
+			return 0;
+		}
+		return $pid_array[$old_pid];
+	}
+	
+	/**
+	 * Get the MyBB VID of an old VID.
+	 *
+	 * @param int Vote ID used before import
+	 * @return int Vote ID in MyBB or 0 if the old VID cannot be found
+	 */
+	function get_import_vid($old_vid)
+	{
+		if(!is_array($this->import_vids))
+		{
+			$vid_array = $this->get_import_pollvotes();
+		}
+		else
+		{
+			$vid_array = $this->import_vids;
+		}
+		
+		if(!isset($vid_array[$old_vid]) || $old_vid == 0)
+		{
+			return 0;
+		}
+		return $vid_array[$old_vid];
 	}
 	
 	/**

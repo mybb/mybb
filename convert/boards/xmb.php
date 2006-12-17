@@ -9,7 +9,7 @@
  * $Id$
  */
  
-// Board Name: XMB
+// Board Name: XMB 1.9
 
 class Convert_xmb extends Converter {
 	var $bbname = "XMB";
@@ -241,11 +241,14 @@ EOF;
 			{
 				++$total_users;
 					
-				$query = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(strtolower($user['username']))."'");
+				$query = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(my_strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query);
-				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
+				if($duplicate_user['username'] && my_strtolower($user['email']) == my_strtolower($duplicate_user['email']))
 				{
-					echo "Merging user #{$user['uid']} with user #{$duplicate_user['uid']}... done.<br />";
+					echo "Merging user #{$user['uid']} with user #{$duplicate_user['uid']}... ";
+					$db->update_query("users", array('import_uid' => $user['ID_MEMBER']), "uid = '{$duplicate_user['uid']}'");
+					echo "done.<br />";
+					
 					continue;
 				}
 				else if($duplicate_user['username'])
@@ -347,7 +350,7 @@ EOF;
 			$import_session['total_cats'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
-		if($import_session['total_cats'])
+		if($import_session['start_cats'])
 		{
 			// If there are more forums to do, continue, or else, move onto next module
 			if($import_session['total_cats'] - $import_session['start_cats'] <= 0)
@@ -466,7 +469,7 @@ EOF;
 			$import_session['total_forums'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
-		if($import_session['total_forums'])
+		if($import_session['start_forums'])
 		{
 			// If there are more forums to do, continue, or else, move onto next module
 			if($import_session['total_forums'] - $import_session['start_forums'] <= 0)
@@ -622,7 +625,7 @@ EOF;
 			$import_session['total_threads'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
-		if($import_session['total_threads'])
+		if($import_session['start_threads'])
 		{
 			// If there are more threads to do, continue, or else, move onto next module
 			if($import_session['total_threads'] - $import_session['start_threads'] <= 0)
@@ -711,7 +714,16 @@ EOF;
 					$insert_poll['multiple'] = 'no';
 					$insert_poll['public'] = 'no';
 					$pollid = $this->insert_poll($insert_poll);
-					// Needto add to mybb_pollvote table here
+					
+					$voters = explode(' ', strstr($thread['pollopts'], '#|#    '));
+					foreach($voters as $key => $voter)
+					{
+						$insert_pollvote['uid'] = $this->get_import_username($voter);
+						$insert_pollvote['dateline'] = $insert_thread['dateline'];
+						$insert_pollvote['voteoption'] = 0; // We don't know what he voted for!
+						$insert_pollvote['pid'] = $pollid;
+						$this->insert_pollvote($insert_pollvote);
+					}
 					
 					$insert_thread['poll'] = $pollid;
 				}

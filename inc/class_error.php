@@ -103,7 +103,7 @@ class errorHandler {
 			return;
 		}
 		
-		if(($mybb->settings['errortypemedium'] == "both" || !$mybb->settings['errortypemedium']) || my_strpos(strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']))
+		if(($mybb->settings['errortypemedium'] == "both" || !$mybb->settings['errortypemedium']) || my_strpos(my_strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']))
 		{
 			// Saving error to log file
 			if($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
@@ -123,7 +123,7 @@ class errorHandler {
 			}
 			else
 			{	
-				if(my_strpos(strtolower($this->error_types[$type]), 'warning') != 0)
+				if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') != 0)
 				{
 					$this->output_error($type, $message, $file, $line);
 				}

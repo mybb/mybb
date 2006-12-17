@@ -538,7 +538,7 @@ $query = $db->query("
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 	WHERE t.fid='$fid' $visibleonly $datecutsql
-	ORDER BY t.sticky DESC, $sortfield $sortordernow
+	ORDER BY t.sticky DESC, t.$sortfield $sortordernow
 	LIMIT $start, $perpage
 ");
 while($thread = $db->fetch_array($query))

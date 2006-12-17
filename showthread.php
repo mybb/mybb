@@ -279,7 +279,7 @@ if($mybb->input['action'] == "thread")
 		{
 			$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
 			while($votecheck = $db->fetch_array($query))
-			{
+			{	
 				$alreadyvoted = 1;
 				$votedfor[$votecheck['voteoption']] = 1;
 			}
