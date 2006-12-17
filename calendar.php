@@ -1040,7 +1040,7 @@ if($mybb->input['action'] == "calendar_main")
 {
 	$plugins->run_hooks("calendar_start");
 
-	$time = gmmktime(0, 0, 0, $month, 1, $year);
+	$time = mktime(0, 0, 0, $month, 1, $year);
 	$days = date("t", $time);
 	$bdays = array();
 
