@@ -183,7 +183,6 @@ class session
 		}
 		else
 		{
-			$mybb->user['lastvisit'] = $mybb->user['lastvisit'];
 			$timespent = time() - $mybb->user['lastactive'];
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent $popupadd WHERE uid='".$mybb->user['uid']."'");
 		}
