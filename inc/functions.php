@@ -3428,7 +3428,7 @@ function get_banned_usernames()
 function is_banned_username($username)
 {
 	$banned_usernames = get_banned_usernames();
-	if(in_array(my_strtolower($username), $banned_usernames))
+	if(in_array(strtolower($username), $banned_usernames))
 	{
 		return true;
 	}
@@ -3461,7 +3461,7 @@ function get_banned_emails()
 function is_banned_email($email)
 {
 	$banned_emails = get_banned_emails();
-	$email = my_strtolower($email);
+	$email = strtolower($email);
 	foreach($banned_emails as $banned_email)
 	{
 		if($banned_email != "" && strpos($email, $banned_email) !== false)
