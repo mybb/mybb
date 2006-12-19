@@ -236,7 +236,7 @@ EOF;
 		else
 		{
 			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_usegroups']-$import_session['start_usegroups'])." usegroups left to import and ".round((($import_session['total_usegroups']-$import_session['start_usegroups'])/$import_session['usegroups_per_screen']))." pages left at a rate of {$import_session['usegroups_per_screen']} per page.<br /><br />";
+			echo "There are ".($import_session['total_usergroups']-$import_session['start_usergroups'])." usergroups left to import and ".round((($import_session['total_usergroups']-$import_session['start_usergroups'])/$import_session['usergroups_per_screen']))." pages left at a rate of {$import_session['usergroups_per_screen']} per page.<br /><br />";
 			
 			// Get only non-staff groups.
 			$query = $this->old_db->simple_select("usergroup", "*", "usergroupid > 8", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
@@ -660,7 +660,7 @@ EOF;
 				
 				// vBulletin 3 values
 				$insert_thread['import_tid'] = $thread['threadid'];
-				$insert_thread['sticky'] = int_to_yesno($thread['sticky']);
+				$insert_thread['sticky'] = $thread['sticky'];
 				$insert_thread['fid'] = $this->get_import_fid($thread['forumid']);
 				$insert_thread['firstpost'] = ((-1) * $thread['firstpostid']);			
 				$insert_thread['icon'] = $thread['iconid'];
@@ -671,11 +671,18 @@ EOF;
 				$insert_thread['import_uid'] = $thread['postuserid'];
 				$insert_thread['views'] = $thread['views'];
 				$insert_thread['replies'] = $thread['replycount'];
-				$insert_thread['closed'] = int_to_noyes($thread['open']);				
+				$insert_thread['closed'] = int_to_noyes($thread['open']);
+								
 				if($insert_thread['closed'] == 'no')
 				{
 					$insert_thread['closed'] = '';
 				}
+				
+				if($thread['open'] == '10')
+				{
+					$insert_thread['closed'] = 'moved|'.$this->get_import_tid($thread['pollid']);
+				}
+				
 				$insert_thread['totalratings'] = $thread['votetotal'];
 				$insert_thread['notes'] = $thread['notes'];
 				$insert_thread['visible'] = $thread['visible'];
@@ -683,6 +690,7 @@ EOF;
 				$insert_thread['numratings'] = $thread['votenum'];
 				$insert_thread['attachmentcount'] = $thread['attach'];	
 				$insert_thread['lastpost'] = $thread['lastpost'];
+				
 				$post = $this->get_post($thread['lastpostid']);
 				$insert_thread['lastposteruid'] = $this->get_import_uid($post['userid']);				
 				$insert_thread['lastposter'] = $this->get_import_username($post['userid']);
@@ -739,7 +747,7 @@ EOF;
 		if(empty($import_session['polls_per_screen']))
 		{
 			$import_session['start_polls'] = 0;
-			echo "<p>Please select how many threads to import at a time:</p>
+			echo "<p>Please select how many polls to import at a time:</p>
 <p><input type=\"text\" name=\"polls_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
@@ -832,7 +840,7 @@ EOF;
 		if(empty($import_session['pollvotes_per_screen']))
 		{
 			$import_session['start_pollvotes'] = 0;
-			echo "<p>Please select how many threads to import at a time:</p>
+			echo "<p>Please select how many poll votes to import at a time:</p>
 <p><input type=\"text\" name=\"pollvotes_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
@@ -1083,8 +1091,8 @@ EOF;
 		// Get number of moderators
 		if(!isset($import_session['total_mods']))
 		{
-			$query = $this->old_db->simple_select("moderator", "COUNT(*) as count");
-			$import_session['total_mods'] = $this->old_db->fetch_field($query, 'count');				
+			$query = $this->old_db->simple_select("moderator", "COUNT(*) as count", "forumid != '-1'");
+			$import_session['total_mods'] = $this->old_db->fetch_field($query, 'count');	
 		}
 
 		if($import_session['start_mods'])
@@ -1161,6 +1169,12 @@ EOF;
 	{
 		$query = $this->old_db->simple_select("thread", "COUNT(*) as invisible", "visible='0'");
 		return $this->old_db->fetch_field($query, "invisible");
+	}
+	
+	function get_moved_threads()
+	{
+		$query = $this->old_db->simple_select("thread", "threadid", "");
+		while($redirect
 	}
 	
 	/**
@@ -1249,7 +1263,7 @@ EOF;
 			else
 			{
 				$group .= $comma;
-				switch($vbgroup['group_id'])
+				switch($vbgroup['usergroupid'])
 				{
 					case 1: // Guests
 						$group .= 1;
@@ -1268,16 +1282,17 @@ EOF;
 						$group .= 4;
 						break;
 					default:
-						if($this->get_import_gid($vbgroup) > 0)
+						$gid = $this->get_import_gid($vbgroup['usergroupid']);
+						if($gid > 0)
 						{
 							// If there is an associated custom group...
-							$group .= $this->get_import_gid($vbgroup);
+							$group .= $gid;
 						}
 						else
 						{
 							// The lot
 							$group .= 2;
-						}					
+						}
 				}			
 			}
 			$comma = ',';
@@ -1286,7 +1301,7 @@ EOF;
 			{
 				return 2; // Return regular registered user.
 			}			
-	
+			
 			return $group;
 		}
 	}

@@ -614,7 +614,7 @@ EOF;
 				echo "Inserting thread #{$thread['topic_id']}... ";
 				
 				$insert_thread['import_tid'] = $thread['topic_id'];
-				$insert_thread['sticky'] = int_to_yesno($thread['topic_type']);
+				$insert_thread['sticky'] = $thread['topic_type'];
 				$insert_thread['fid'] = $this->get_import_fid($thread['forum_id']);
 				$insert_thread['firstpost'] = ((-1) * $thread['topic_first_post_id']);	
 				$insert_thread['icon'] = '';
@@ -700,7 +700,7 @@ EOF;
 		if(empty($import_session['polls_per_screen']))
 		{
 			$import_session['start_polls'] = 0;
-			echo "<p>Please select how many threads to import at a time:</p>
+			echo "<p>Please select how many polls to import at a time:</p>
 <p><input type=\"text\" name=\"polls_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
@@ -798,7 +798,7 @@ EOF;
 		if(empty($import_session['pollvotes_per_screen']))
 		{
 			$import_session['start_pollvotes'] = 0;
-			echo "<p>Please select how many threads to import at a time:</p>
+			echo "<p>Please select how many poll votes to import at a time:</p>
 <p><input type=\"text\" name=\"pollvotes_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
@@ -992,7 +992,7 @@ EOF;
 		else
 		{
 			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_usegroups']-$import_session['start_usegroups'])." usegroups left to import and ".round((($import_session['total_usegroups']-$import_session['start_usegroups'])/$import_session['usegroups_per_screen']))." pages left at a rate of {$import_session['usergroups_per_screen']} per page.<br /><br />";
+			echo "There are ".($import_session['total_usergroups']-$import_session['start_usergroups'])." usergroups left to import and ".round((($import_session['total_usergroups']-$import_session['start_usergroups'])/$import_session['usergroups_per_screen']))." pages left at a rate of {$import_session['usergroups_per_screen']} per page.<br /><br />";
 			
 			// Get only non-staff groups.
 			$query = $this->old_db->simple_select("groups", "*", "group_id > 2", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
@@ -1264,10 +1264,11 @@ EOF;
 						$group .= 4;
 						break;
 					default:
-						if($this->get_import_gid($phpbbgroup) > 0)
+						$gid = $this->get_import_gid($phpbbgroup['group_id']);
+						if($gid > 0)
 						{
 							// If there is an associated custom group...
-							$group .= $this->get_import_gid($phpbbgroup);
+							$group .= $gid;
 						}
 						else
 						{

@@ -70,6 +70,7 @@ if(function_exists('sqlite_open'))
 		'population_file' => 'mysql_db_inserts.php'
 	);
 }
+
 if(file_exists('lock'))
 {
 	$output->print_error($lang->locked);
@@ -88,10 +89,12 @@ else
 		'adminuser' => $lang->admin_user,
 		'final' => $lang->finish_setup,
 	);
+	
 	if(!isset($mybb->input['action']))
 	{
 		$mybb->input['action'] = 'intro';
 	}
+	
 	switch($mybb->input['action'])
 	{
 		case 'license':
@@ -344,6 +347,7 @@ function database_info()
 		$dbuser = $mybb->input['dbuser'];
 		$dbname = $mybb->input['dbname'];
 		$tableprefix = $mybb->input['tableprefix'];
+		$dbengine = $mybb->input['dbengine'];
 	}
 	else
 	{
@@ -352,12 +356,22 @@ function database_info()
 		$tableprefix = 'mybb_';
 		$dbuser = '';
 		$dbname = '';
+		$dbengine = '';
 	}
+	
+	echo $dbengine;
 
 	// Loop through database engines
 	foreach($dboptions as $dbfile => $dbtype)
 	{
-		$dbengines .= "<option value=\"{$dbfile}\">{$dbtype['title']}</option>";
+		if($dbengine != '' && $dbenginge == $dbfile)
+		{
+			$dbengines .= "<option value=\"{$dbfile}\" selected=\"selected\">{$dbtype['title']}</option>";
+		}
+		else
+		{
+			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype['title']}</option>";
+		}
 	}
 
 	echo sprintf($lang->db_step_config_table, $dbengines, $dbhost, $dbuser, $dbname, $tableprefix);

@@ -669,7 +669,7 @@ EOF;
 				}
 				
 				$insert_thread['import_tid'] = $thread['tid'];
-				$insert_thread['sticky'] = int_to_yesno($thread['topped']);
+				$insert_thread['sticky'] = $thread['topped'];
 				$insert_thread['fid'] = $this->get_import_fid($thread['fid']);
 				$insert_thread['username'] = $this->get_import_username($this->get_uid($thread['author']));
 				

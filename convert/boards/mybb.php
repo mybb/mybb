@@ -233,7 +233,7 @@ EOF;
 		else
 		{
 			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_usegroups']-$import_session['start_usegroups'])." usegroups left to import and ".round((($import_session['total_usegroups']-$import_session['start_usegroups'])/$import_session['usegroups_per_screen']))." pages left at a rate of {$import_session['usegroups_per_screen']} per page.<br /><br />";
+			echo "There are ".($import_session['total_usergroups']-$import_session['start_usergroups'])." usergroups left to import and ".round((($import_session['total_usergroups']-$import_session['start_usergroups'])/$import_session['usergroups_per_screen']))." pages left at a rate of {$import_session['usergroups_per_screen']} per page.<br /><br />";
 			
 			// Get columns so we avoid any 'unknown column' errors
 			$field_info = $db->show_fields_from("usergroups");
@@ -371,6 +371,7 @@ EOF;
 				echo "Adding user #{$user['uid']}... ";
 				
 				$insert_user['import_uid'] = $user['uid'];
+				// convert usergroups
 				
 				$uid = $this->insert_user($insert_user);
 				
@@ -604,7 +605,7 @@ EOF;
 		if(empty($import_session['polls_per_screen']))
 		{
 			$import_session['start_polls'] = 0;
-			echo "<p>Please select how many threads to import at a time:</p>
+			echo "<p>Please select how many polls to import at a time:</p>
 <p><input type=\"text\" name=\"polls_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
@@ -690,7 +691,7 @@ EOF;
 		if(empty($import_session['pollvotes_per_screen']))
 		{
 			$import_session['start_pollvotes'] = 0;
-			echo "<p>Please select how many threads to import at a time:</p>
+			echo "<p>Please select how many poll votes to import at a time:</p>
 <p><input type=\"text\" name=\"pollvotes_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}

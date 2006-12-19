@@ -27,12 +27,16 @@ class Convert_ipb2 extends Converter {
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_pollvotes" => array("name" => "Import Invision Power Board 2 Poll Votes",
 									  "dependencies" => "db_configuration,import_polls"),
+						 "import_icons" => array("name" => "Import Invision Power Board 1 Icons",
+									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import Invision Power Board 2 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_moderators" => array("name" => "Import Invision Power Board 2 Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_privatemessages" => array("name" => "Import Invision Power Board 2 Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
+						 "import_smilies" => array("name" => "Import Invision Power Board 1 Smilies",
+									  "dependencies" => "db_configuration"),
 						);
 
 	function ipb_db_connect()
@@ -236,7 +240,7 @@ EOF;
 		else
 		{
 			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_usegroups']-$import_session['start_usegroups'])." usegroups left to import and ".round((($import_session['total_usegroups']-$import_session['start_usegroups'])/$import_session['usegroups_per_screen']))." pages left at a rate of {$import_session['usegroups_per_screen']} per page.<br /><br />";
+			echo "There are ".($import_session['total_usergroups']-$import_session['start_usergroups'])." usergroups left to import and ".round((($import_session['total_usergroups']-$import_session['start_usergroups'])/$import_session['usergroups_per_screen']))." pages left at a rate of {$import_session['usergroups_per_screen']} per page.<br /><br />";
 			
 			// Get only non-staff groups.
 			$query = $this->old_db->simple_select("groups", "*", "g_id > 6", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
@@ -667,10 +671,10 @@ EOF;
 				
 				// Invision Power Board 2 values
 				$insert_thread['import_tid'] = $thread['tid'];
-				$insert_thread['sticky'] = int_to_yesno($thread['pinned']);
+				$insert_thread['sticky'] = $thread['pinned'];
 				$insert_thread['fid'] = $this->get_import_fid($thread['forum_id']);
 				$insert_thread['firstpost'] = ((-1) * $thread['topic_firstpost']);			
-				$insert_thread['icon'] = $thread['icon_id'];
+				$insert_thread['icon'] = ((-1) * $thread['icon_id']);
 				$insert_thread['dateline'] = $thread['start_date'];
 				$insert_thread['subject'] = $thread['title'];				
 				$insert_thread['uid'] = $this->get_import_uid($thread['starter_id']);
@@ -767,7 +771,7 @@ EOF;
 		if(empty($import_session['polls_per_screen']))
 		{
 			$import_session['start_polls'] = 0;
-			echo "<p>Please select how many threads to import at a time:</p>
+			echo "<p>Please select how many polls to import at a time:</p>
 <p><input type=\"text\" name=\"polls_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
@@ -869,7 +873,7 @@ EOF;
 		if(empty($import_session['pollvotes_per_screen']))
 		{
 			$import_session['start_pollvotes'] = 0;
-			echo "<p>Please select how many threads to import at a time:</p>
+			echo "<p>Please select how many poll votes to import at a time:</p>
 <p><input type=\"text\" name=\"pollvotes_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
@@ -1008,6 +1012,149 @@ EOF;
 			}
 		}
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_icons()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_icons']))
+		{
+			$query = $this->old_db->simple_select("emoticons", "COUNT(*) as count", "id > 20");
+			$import_session['total_icons'] = $this->old_db->fetch_field($query, 'count');			
+		}
+
+		if($import_session['start_icons'])
+		{
+			// If there are more polls to do, continue, or else, move onto next module
+			if($import_session['total_icons'] - $import_session['start_icons'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_icons';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['icons_per_screen']))
+		{
+			$import_session['icons_per_screen'] = intval($mybb->input['icons_per_screen']);
+		}
+		
+		if(empty($import_session['icons_per_screen']))
+		{
+			$import_session['start_icons'] = 0;
+			echo "<p>Please select how many icons to import at a time:</p>
+<p><input type=\"text\" name=\"icons_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_icons']-$import_session['start_icons'])." icons left to import and ".round((($import_session['total_icons']-$import_session['start_icons'])/$import_session['icons_per_screen']))." pages left at a rate of {$import_session['icons_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("emoticons", "*", "id > 20", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
+			while($icon = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting icon #{$icon['id']}... ";		
+				
+				// Invision Power Board 2 values
+				$insert_icon['import_iid'] = $icon['id'];
+				$insert_icon['name'] = $icon['typed'];
+				$insert_icon['path'] = 'images/icons/'.$icon['image'];
+				
+			
+				$iid = $this->insert_icon($insert_icon);
+				
+				// Restore connections
+				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['id'])."'");
+				
+				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no icons to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_icons'] += $import_session['icons_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_smilies()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_smilies']))
+		{
+			$query = $this->old_db->simple_select("emoticons", "COUNT(*) as count", "id > 20");
+			$import_session['total_smilies'] = $this->old_db->fetch_field($query, 'count');			
+		}
+
+		if($import_session['start_smilies'])
+		{
+			// If there are more polls to do, continue, or else, move onto next module
+			if($import_session['total_smilies'] - $import_session['start_smilies'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_smilies';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['smilies_per_screen']))
+		{
+			$import_session['smilies_per_screen'] = intval($mybb->input['smilies_per_screen']);
+		}
+		
+		if(empty($import_session['smilies_per_screen']))
+		{
+			$import_session['start_icons'] = 0;
+			echo "<p>Please select how many smilies to import at a time:</p>
+<p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_smilies']-$import_session['start_smilies'])." smilies left to import and ".round((($import_session['total_smilies']-$import_session['start_smilies'])/$import_session['smilies_per_screen']))." pages left at a rate of {$import_session['smilies_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("emoticons", "*", "id > 20", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
+			while($smilie = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting smilie #{$smilie['id']}... ";		
+				
+				// Invision Power Board 2 values
+				$insert_smilie['import_iid'] = $smilie['id'];
+				$insert_smilie['name'] = $smilie['typed'];
+				$insert_smilie['find'] = $smilie['typed'];
+				$insert_smilie['path'] = 'images/smilies/'.$smilie['image'];
+				$insert_smilie['disporder'] = $smilie['id'];
+				$insert_smilie['showclickable'] = int_to_yesno($smilie['clickable']);				
+			
+				$this->insert_smilie($insert_smilie);
+				
+				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no smilies to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_smilies'] += $import_session['smilies_per_screen'];
 		$output->print_footer();
 	}
 	
@@ -1268,12 +1415,12 @@ EOF;
 		{
 			if($orig == true)
 			{
-				$group .= $vbgroup['g_id'].$comma;
+				$group .= $ipbgroup['g_id'].$comma;
 			}
 			else
 			{
 				$group .= $comma;
-				switch($vbgroup['g_id'])
+				switch($ipbgroup['g_id'])
 				{
 					case 1: // Awaiting activation
 						$group .= 5;
@@ -1291,10 +1438,11 @@ EOF;
 						$group .= 4;
 						break;
 					default:
-						if($this->get_import_gid($ipbgroup) > 0)
+						$gid = $this->get_import_gid($ipbgroup['g_id']);
+						if($gid > 0)
 						{
 							// If there is an associated custom group...
-							$group .= $this->get_import_gid($ipbgroup);
+							$group .= $gid;
 						}
 						else
 						{

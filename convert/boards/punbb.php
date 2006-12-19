@@ -809,7 +809,7 @@ EOF;
 		else
 		{
 			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_usegroups']-$import_session['start_usegroups'])." usegroups left to import and ".round((($import_session['total_usegroups']-$import_session['start_usegroups'])/$import_session['usegroups_per_screen']))." pages left at a rate of {$import_session['usegroups_per_screen']} per page.<br /><br />";
+			echo "There are ".($import_session['total_usergroups']-$import_session['start_usergroups'])." usergroups left to import and ".round((($import_session['total_usergroups']-$import_session['start_usergroups'])/$import_session['usergroups_per_screen']))." pages left at a rate of {$import_session['usergroups_per_screen']} per page.<br /><br />";
 			
 			// Get only non-staff groups.
 			$query = $this->old_db->simple_select("groups", "*", "g_id > 3", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
@@ -986,10 +986,11 @@ EOF;
 						$group .= 2;
 						break;	
 					default:
-						if($this->get_import_gid($punbbgroup) > 0)
+						$gid = $this->get_import_gid($punbbgroup['g_id']);
+						if($gid > 0)
 						{
 							// If there is an associated custom group...
-							$group .= $this->get_import_gid($punbbgroup);
+							$group .= $gid;
 						}
 						else
 						{
