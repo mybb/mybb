@@ -1438,7 +1438,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		if($sent_count > $mybb->usergroup['maxemails'])
 		{
 			$lang->error_max_emails_day = sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
-			error($lang->error_max_emails_day)
+			error($lang->error_max_emails_day);
 		}
 	}
 	
@@ -1516,7 +1516,7 @@ if($mybb->input['action'] == "emailuser")
 		if($sent_count > $mybb->usergroup['maxemails'])
 		{
 			$lang->error_max_emails_day = sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
-			error($lang->error_max_emails_day)
+			error($lang->error_max_emails_day);
 		}
 	}	
 	
