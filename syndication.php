@@ -108,8 +108,8 @@ if($all_forums)
 
 // Get the threads to syndicate.
 $query = $db->query("
-	SELECT t.tid, t.dateline AS date, t.subject AS title, f.allowhtml, f.allowmycode, f.allowsmilies, f.allowimgcode,
-	f.name AS forumname, p.message AS description, u.username, p.smilieoff, f.fid
+	SELECT t.tid, t.dateline AS date, p.edittime AS updated, t.subject AS title, f.allowhtml, f.allowmycode, f.allowsmilies, f.allowimgcode,
+	f.name AS forumname, p.message AS description, u.username AS author, p.smilieoff, f.fid
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
 	LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
@@ -143,5 +143,4 @@ while($thread = $db->fetch_array($query))
 
 // Then output the feed XML.
 $feedgenerator->output_feed();
-
 ?>
