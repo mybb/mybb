@@ -463,7 +463,7 @@ if($mybb->input['action'] == "results")
 		$dot_icon = array();
 		if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] != 0)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$tids.")");
+			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$tids.")");
 			while($post = $db->fetch_array($query))
 			{
 				$dot_icon[$post['tid']] = true;
@@ -668,7 +668,7 @@ elseif($mybb->input['action'] == "findguest")
 elseif($mybb->input['action'] == "finduser")
 {
 	$where_sql = "p.uid='".intval($mybb->input['uid'])."'";
-
+	
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
 	{
