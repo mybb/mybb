@@ -1171,12 +1171,6 @@ EOF;
 		return $this->old_db->fetch_field($query, "invisible");
 	}
 	
-	function get_moved_threads()
-	{
-		$query = $this->old_db->simple_select("thread", "threadid", "");
-		while($redirect
-	}
-	
 	/**
 	 * Get a post from the vB database
 	 * @param int Post ID
