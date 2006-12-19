@@ -127,8 +127,7 @@ $channel = array(
 	"title" => $title,
 	"link" => $mybb->settings['bburl']."/",
 	"date" => time(),
-	"description" => $mybb->settings['bbname']." - ".$mybb->settings['bburl'],
-	"version" => $mybb->version
+	"description" => $mybb->settings['bbname']." - ".$mybb->settings['bburl']
 );
 $feedgenerator->set_channel($channel);
 
