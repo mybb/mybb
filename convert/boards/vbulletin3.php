@@ -29,6 +29,8 @@ class Convert_vbulletin3 extends Converter {
 									  "dependencies" => "db_configuration,import_polls"),
 						 "import_posts" => array("name" => "Import vBulletin 3 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
+						 "import_moderators" => array("name" => "Import vBulletin 3 Moderators",
+									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_privatemessages" => array("name" => "Import vBulletin 3 Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
 						);
@@ -1069,6 +1071,78 @@ EOF;
 			}
 		}
 		$import_session['start_privatemessages'] += $import_session['privatemessages_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_moderators()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->vbulletin_db_connect();
+
+		// Get number of moderators
+		if(!isset($import_session['total_mods']))
+		{
+			$query = $this->old_db->simple_select("moderator", "COUNT(*) as count");
+			$import_session['total_mods'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_mods'])
+		{
+			// If there are more moderators to do, continue, or else, move onto next module
+			if($import_session['total_mods'] - $import_session['start_mods'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_moderators';
+				return "finished";
+			}
+		}
+
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of posts per screen from form
+		if(isset($mybb->input['mods_per_screen']))
+		{
+			$import_session['mods_per_screen'] = intval($mybb->input['mods_per_screen']);
+		}
+		
+		if(empty($import_session['mods_per_screen']))
+		{
+			$import_session['start_mods'] = 0;
+			echo "<p>Please select how many moderators to import at a time:</p>
+<p><input type=\"text\" name=\"mods_per_screen\" value=\"100\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_mods']-$import_session['start_mods'])." moderators left to import and ".round((($import_session['total_mods']-$import_session['start_mods'])/$import_session['mods_per_screen']))." pages left at a rate of {$import_session['mods_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("moderator", "*", "forumid != '-1'", array('limit_start' => $import_session['start_mods'], 'limit' => $import_session['mods_per_screen']));
+			while($mod = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting user #{$mod['userid']} as moderator to forum #{$mod['forumid']}... ";
+				
+				$insert_mod['fid'] = $this->get_import_fid($mod['forumid']);
+				$insert_mod['uid'] = $this->get_import_uid($mod['userid']);
+				$insert_mod['caneditposts'] = 'yes';
+				$insert_mod['candeleteposts'] = 'yes';
+				$insert_mod['canviewips'] = 'yes';
+				$insert_mod['canopenclosethreads'] = 'yes';
+				$insert_mod['canmanagethreads'] = 'yes';
+				$insert_mod['canmovetononmodforum'] = 'yes';
+
+				$this->insert_moderator($insert_mod);
+				
+				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no moderators to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_mods'] += $import_session['mods_per_screen'];
 		$output->print_footer();
 	}
 	
