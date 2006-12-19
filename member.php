@@ -1430,6 +1430,18 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 	
+	// Check group limits
+	if($mybb->usergroup['maxemails'] > 0)
+	{
+		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "fromuid='{$mybb->user['uid']}'");
+		$sent_count = $db->fetch_field($query, "maillogs");
+		if($sent_count > $mybb->usergroup['maxemails'])
+		{
+			$lang->error_max_emails_day = sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
+			error($lang->error_max_emails_day)
+		}
+	}
+	
 	$query = $db->simple_select("users", "uid, username, email, hideemail", "uid='".intval($mybb->input['uid'])."'");
 	$to_user = $db->fetch_array($query);
 	
@@ -1495,6 +1507,18 @@ if($mybb->input['action'] == "emailuser")
 	{
 		error_no_permission();
 	}
+	
+	// Check group limits
+	if($mybb->usergroup['maxemails'] > 0)
+	{
+		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "fromuid='{$mybb->user['uid']}'");
+		$sent_count = $db->fetch_field($query, "maillogs");
+		if($sent_count > $mybb->usergroup['maxemails'])
+		{
+			$lang->error_max_emails_day = sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
+			error($lang->error_max_emails_day)
+		}
+	}	
 	
 	$query = $db->simple_select("users", "uid, username, email, hideemail", "uid='".intval($mybb->input['uid'])."'");
 	$to_user = $db->fetch_array($query);

@@ -69,6 +69,18 @@ if($mybb->usergroup['cansendemail'] == "no")
 	error_no_permission();
 }
 
+// Check group limits
+if($mybb->usergroup['maxemails'] > 0)
+{
+	$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "fromuid='{$mybb->user['uid']}'");
+	$sent_count = $db->fetch_field($query, "maillogs");
+	if($sent_count > $mybb->usergroup['maxemails'])
+	{
+		$lang->error_max_emails_day = sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
+		error($lang->error_max_emails_day)
+	}
+}
+
 if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("sendthread_do_sendtofriend_start");

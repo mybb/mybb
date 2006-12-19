@@ -98,6 +98,7 @@ $l['is_smod'] = "Is Super Moderator";
 $l['can_search_forums'] = "Can Search Forums";
 $l['can_view_mlist'] = "Can View Memberlist";
 $l['can_send_emails'] = "Can Send Emails";
+$l['max_emails_day']  = "Max. Emails per day<br /><small>The maximum number of emails users can send per day using the 'Email User' and 'Send Thread to Friend' features.</small>";
 $l['can_rate_members'] = "Can Rate Members";
 $l['error_namenote'] = "<br />Because you entered an invalid name style it has been reverted to the default.";
 $l['group_added'] = "The usergroup has successfully been added.";

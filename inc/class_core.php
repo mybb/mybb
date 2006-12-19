@@ -324,4 +324,31 @@ class MyBB {
 		}
 	}
 }
+
+/**
+ * Do this here because the core is used on every MyBB page
+ */
+
+$grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails");
+$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+// These are fields in the usergroups table that are also forum permission specific.
+$fpermfields = array(
+	'canview',
+	'canviewthreads',
+	'candlattachments',
+	'canpostthreads',
+	'canpostreplys',
+	'canpostattachments',
+	'canratethreads',
+	'caneditposts',
+	'candeleteposts',
+	'candeletethreads',
+	'caneditattachments',
+	'canpostpolls',
+	'canvotepolls',
+	'cansearch'
+);
+
 ?>

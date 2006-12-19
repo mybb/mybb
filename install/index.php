@@ -10,6 +10,8 @@
  */
 error_reporting(E_ALL & ~E_NOTICE);
 
+set_time_limit(0);
+
 define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 define("INSTALL_ROOT", dirname(__FILE__)."/");
 
@@ -60,6 +62,14 @@ if(function_exists('mysql_connect'))
 	);
 }
 
+if(function_exists('sqlite_open'))
+{
+	$dboptions['sqlite'] = array(
+		'title' => 'SQLite',
+		'structure_file' => 'sqlite_db_tables.php',
+		'population_file' => 'mysql_db_inserts.php'
+	);
+}
 if(file_exists('lock'))
 {
 	$output->print_error($lang->locked);
@@ -788,7 +798,36 @@ function install_done()
 
 	ob_start();
 	$output->print_header($lang->finish_setup, 'finish');
+	
+	echo $lang->done_step_usergroupsinserted;
+	
+	// Insert all of our user groups from the XML file	
+	$settings = file_get_contents(INSTALL_ROOT.'resources/usergroups.xml');
+	$parser = new XMLParser($settings);
+	$parser->collapse_dups = 0;
+	$tree = $parser->get_tree();
 
+	$admin_gid = '';
+	$group_count = 0;
+	foreach($tree['usergroups'][0]['usergroup'] as $usergroup)
+	{
+		// usergroup[cancp][0][value]
+		$new_group = array();
+		foreach($usergroup as $key => $value)
+		{
+			if($key == "gid" || !is_array($value)) continue;
+			$new_group[$key] = $db->escape_string($value[0]['value']);
+		}
+		$db->insert_query("usergroups", $new_group);
+		// If this group can access the admin CP and we haven't established the admin group - set it (just in case we ever change IDs)
+		if($new_group['cancp'] == "yes" && !$admin_gid)
+		{
+			$admin_gid = $db->insert_id();
+		}
+		$group_count++;
+	}
+	echo $lang->done . '</p>';
+	
 	echo $lang->done_step_admincreated;
 	$now = time();
 	$salt = random_str();
@@ -801,7 +840,7 @@ function install_done()
 		'salt' => $salt,
 		'loginkey' => $loginkey,
 		'email' => $db->escape_string($mybb->input['adminemail']),
-		'usergroup' => 4,
+		'usergroup' => $admin_gid, // assigned above
 		'regdate' => $now,
 		'lastactive' => $now,
 		'lastvisit' => $now,
@@ -870,9 +909,6 @@ function install_done()
 	// Automatic Login
 	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, true);
 	ob_end_flush();
-
-	echo $lang->done . '</p>';
-
 
 	// Make fulltext columns if supported
 	if($db->supports_fulltext('threads'))

@@ -3605,51 +3605,155 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tbody>
 </table>
 </form>]]></template>
-		<template name="memberlist" version="120"><![CDATA[<html>
+		<template name="memberlist" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
+{$multipage}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="6"><strong>{$lang->member_list}</strong></td>
+<td class="thead" colspan="5"><strong>{$lang->member_list}</strong></td>
 </tr>
 <tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->email}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->website}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->location}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->joined}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->posts}</strong></span></td>
+<td class="tcat" width="1"><strong>{$lang->avatar}</strong></td>
+<td class="tcat"><strong>{$lang->username}</strong></td>
+<td class="tcat" width="15%" align="center"><strong>{$lang->joined}</strong></td>
+<td class="tcat" width="15%" align="center"><strong>{$lang->lastvisit}</strong></td>
+<td class="tcat" width="10%" align="center"><strong>{$lang->posts}</strong></td>
 </tr>
-{$member}
+{$users}
+</table>
+<div class="float_right" style="padding-top: 4px;">
+	<a href="showteam.php"><strong>{$lang->forumteam}</strong></a>
+</div>
+{$multipage}
+<br style="clear: both;" />
+<br />
+<form method="post" action="memberlist.php">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td align="center" colspan="6" class="tfoot">
-<form action="memberlist.php" method="post">
-<input type="hidden" name="page" value="{$page}" />
-{$lang->sort_by} <select name="by">
-<option value="regdate"{$regdatesel}>{$lang->sort_regdate}</option>
-<option value="username"{$usernamesel}>{$lang->sort_username}</option>
-<option value="postnum"{$postnumsel}>{$lang->sort_posts}</option>
-</select> {$lang->sort_in} <select name="order">
-<option value="ASC"{$ascsel}>{$lang->sort_asc}</option>
-<option value="DESC"{$descsel}>{$lang->sort_desc}</option>
-</select> {$lang->order} {$lang->search_for} <input type="text" class="textbox" id="usersearch" name="usersearch" value="{$usersearch}" size="20" /> {$gobutton}
-</form>
-</td>
+<td class="thead" colspan="3"><strong>{$lang->search_members}</strong></td>
+</tr>
+<tr>
+	<td class="tcat"><strong><label for="username">{$lang->username}</label></strong></td>
+	<td class="tcat"><strong><label for="website">{$lang->website}</label></strong></td>
+	<td class="tcat"><strong><label for="sort">{$lang->sort_by}</label></td>
+</tr>
+<tr>
+	<td class="trow1" width="33%" style="vertical-align: top;">
+		{$lang->contains}<br />	
+		<input type="text" class="textbox" name="username" id="username" style="width: 99%; margin-top: 4px;" value="{$search_username}" />
+	</td>
+	<td class="trow1" width="33%" style="vertical-align: top;">
+		{$lang->contains}<br />
+		<input type="text" class="textbox" name="website" id="website" style="width: 99%; margin-top: 4px;" value="{$search_website}" />
+	</td>
+	<td class="trow1" width="33%">
+		<select name="sort" id="sort" style="width: 99%;">
+			<option value="username" {$sort_selected['username']}>{$lang->sort_by_username}</option>
+			<option value="regdate" {$sort_selected['regdate']}>{$lang->sort_by_regdate}</option>
+			<option value="lastvisit" {$sort_selected['lastvisit']}>{$lang->sort_by_lastvisit}</option>
+			<option value="posts" {$sort_selected['posts']}>{$lang->sort_by_posts}</option>
+		</select><br />
+		<span class="smalltext">
+		<input type="radio" class="radio" name="order" id="order_asc" value="asc" {$order_check['asc']} /> <label for="order_asc">{$lang->order_asc}</label><br />
+		<input type="radio" class="radio" name="order" id="order_desc" value="desc" {$order_check['desc']} /> <label for="order_desc">{$lang->order_desc}</label>
+		</span>
+	</td>
 </tr>
 </table>
-<table align="center" width="100%"><tr>
-<td><span class="smalltext">[<a href="showteam.php">{$lang->forumteam}</a>]</span></td>
-<td align="right">{$multipage}</td>
-</tr></table>
+<div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
+</form>
 {$footer}
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
-<script type="text/javascript">
-	new autoComplete("usersearch", "xmlhttp.php?action=get_users", {valueSpan: "username"});
-</script>
+</body>
+</html>]]></template>
+		<template name="memberlist_search" version="140"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form method="post" action="memberlist.php">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$lang->search_member_list}</strong></td>
+</tr>
+<tr>
+	<td class="tcat" colspan="2"><strong>{$lang->search_criteria}</strong></td>
+</tr>
+<tr>
+	<td class="trow1" style="vertical-align: top;" width="20%"><strong><label for="username">{$lang->username}</label></strong></td>
+	<td class="trow1">
+		<select name="username_match">
+			<option value="begins">{$lang->begins_with}</option>
+			<option value="contains">{$lang->username_contains}</option>
+		</select>
+		&nbsp;
+		<input type="text" class="textbox" name="username" id="username" />
+	</td>
+</tr>
+<tr>
+	<td class="trow2" width="20%"><strong><label for="website">{$lang->search_website}</label></strong></td>
+	<td class="trow2">
+		<input type="text" class="textbox" name="website" id="website" />
+	</td>
+</tr>
+<tr>
+	<td class="trow1" width="20%"><strong><label for="aim">{$lang->search_aim}</label></strong></td>
+	<td class="trow1">
+		<input type="text" class="textbox" name="aim" id="aim" />
+	</td>
+</tr>
+<tr>
+	<td class="trow1" width="20%"><strong><label for="msn">{$lang->search_msn}</label></strong></td>
+	<td class="trow1">
+		<input type="text" class="textbox" name="msn" id="msn" />
+	</td>
+</tr>
+<tr>
+	<td class="trow1" width="20%"><strong><label for="yahoo">{$lang->search_yahoo}</label></strong></td>
+	<td class="trow1">
+		<input type="text" class="textbox" name="yahoo" id="yahoo" />
+	</td>
+</tr>
+<tr>
+	<td class="trow1" width="20%"><strong><label for="icq">{$lang->search_icq}</label></strong></td>
+	<td class="trow1">
+		<input type="text" class="textbox" name="icq" id="icq" />
+	</td>
+</tr>
+<tr>
+	<td class="tcat" colspan="2"><strong>{$lang->search_options}</strong></td>
+</tr>
+<tr>
+	<td class="trow1" width="20%"><strong><label for="sort">{$lang->sort_by}</label></strong></td>
+	<td class="trow1">
+		<select name="sort" id="sort">
+			<option value="username">{$lang->sort_by_username}</option>
+			<option value="regdate">{$lang->sort_by_regdate}</option>
+			<option value="lastvisit">{$lang->sort_by_lastvisit}</option>
+			<option value="posts">{$lang->sort_by_posts}</option>
+		</select><br />
+		<span class="smalltext">
+		<input type="radio" class="radio" name="order" id="order_asc" value="asc" /> <label for="order_asc">{$lang->order_asc}</label><br />
+		<input type="radio" class="radio" name="order" id="order_desc" value="desc" /> <label for="order_desc">{$lang->order_desc}</label>
+		</span>
+	</td>
+</tr>
+<tr>
+	<td class="trow1" width="20%"><strong><label for="perpage">{$lang->per_page}</label></strong></td>
+	<td class="trow1">
+		<input type="text" class="textbox" size="4" name="perpage" id="perpage" value="15" />
+	</td>
+</tr>
+</table>
+<div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
+</form>
+{$footer}
 </body>
 </html>]]></template>
 		<template name="private" version="120"><![CDATA[<html>
@@ -4263,14 +4367,20 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$modann}
 </tr>
 ]]></template>
-		<template name="memberlist_row" version="120"><![CDATA[<tr>
-<td class="trow1"><a href="member.php?action=profile&amp;uid={$users['uid']}">{$users['username']}</a></td>
-<td class="trow2" align="center">{$useremail}</td>
-<td class="trow1" align="center">{$usersite}</td>
-<td class="trow2">{$users['location']}</td>
-<td class="trow1">{$users['regdate']}</td>
-<td class="trow2">{$users['postnum']}</td>
+		<template name="memberlist_user" version="140"><![CDATA[<tr>
+	<td class="{$alt_bg}">{$user['avatar']}</td>
+	<td class="{$alt_bg}">{$user['profilelink']}<br />
+<span class="smalltext">
+	{$user['usertitle']}<br />
+	{$usergroup['groupimage']}
+	{$user['userstars']}
+</span></td>
+	<td class="{$alt_bg}" align="center">{$user['regdate']}</td>
+	<td class="{$alt_bg}" align="center">{$user['lastvisit']}</td>
+	<td class="{$alt_bg}" align="center">{$user['postnum']}</td>
 </tr>]]></template>
+		<template name="memberlist_user_avatar" version="140"><![CDATA[<img src="{$user['avatar']}" alt="" {$avatar_width_height} />]]></template>
+		<template name="memberlist_user_groupimage" version="140"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" />]]></template>
 		<template name="index_loginform" version="120"><![CDATA[<br /><br />
 <form action="member.php" method="post">
 	<input type="hidden" name="action" value="do_login" />

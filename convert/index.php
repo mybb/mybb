@@ -114,12 +114,6 @@ if(!$import_session['board'])
 // Perhaps we have selected to stop converting
 elseif(isset($mybb->input['action']) && $mybb->input['action'] == 'finish')
 {
-	// Include the necessary contants for caching updating
-	$grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
-	$groupzerogreater = array('pmquota', 'maxreputationsday', 'attachquota');
-	$displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
-	$fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch');
-
 	// Delete import fields
 	delete_import_fields();
 	$cache->updatestats();

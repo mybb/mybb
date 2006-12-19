@@ -3264,6 +3264,7 @@ function my_strtolower($string)
  */
 function my_strpos($haystack, $needle, $offset=0)
 {
+	if($needle == '') return false;
 	if(function_exists("mb_strpos"))
 	{
 		$position = mb_strpos($haystack, $needle, $offset);

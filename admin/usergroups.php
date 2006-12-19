@@ -71,6 +71,37 @@ if($mybb->input['action'] == "disporder")
 	$mybb->input['action'] = 'modify';
 }
 
+if($mybb->input['action'] == "export")
+{
+	$gidwhere = "";
+	if($mybb->input['gid'])
+	{
+		$gidwhere = "WHERE gid='".intval($mybb->input['gid'])."'";
+	}
+	$plugins->run_hooks("admin_usergroups_export");
+	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\n";
+	$xml = "<usergroups version=\"".$mybb->version_code."\" exported=\"".time()."\">\n";
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups $gidwhere ORDER BY gid ASC");
+	while($usergroup = $db->fetch_array($query))
+	{
+		$xml .= "\t\t<usergroup>\n";
+		foreach($usergroup as $key => $value)
+		{
+			$xml .= "\t\t\t<{$key}><![CDATA[{$value}]]></{$key}>\n";
+		}
+		$xml .= "\t\t</usergroup>\n";
+	}
+	$xml .= "</usergroups>";
+	$mybb->settings['bbname'] = urlencode($mybb->settings['bbname']);
+	header("Content-disposition: filename=".$mybb->settings['bbname']."-usergroups.xml");
+	header("Content-Length: ".my_strlen($xml));
+	header("Content-type: unknown/unknown");
+	header("Pragma: no-cache");
+	header("Expires: 0");
+	echo $xml;
+	exit;	
+}
+
 if($mybb->input['action'] == "do_add")
 {
 	if(empty($mybb->input['title']))
@@ -133,6 +164,7 @@ if($mybb->input['action'] == "do_add")
 		"pmquota" => intval($mybb->input['pmquota']),
 		"maxpmrecipients" => intval($mybb->input['maxpmrecipients']),
 		"cansendemail" => $db->escape_string($mybb->input['cansendemail']),
+		"maxemails" => intval($mybb->input['maxemails']),
 		"canviewmemberlist" => $db->escape_string($mybb->input['canviewmemberlist']),
 		"canviewcalendar" => $db->escape_string($mybb->input['canviewcalendar']),
 		"canaddpublicevents" => $db->escape_string($mybb->input['canaddpublicevents']),
@@ -292,6 +324,7 @@ if($mybb->input['action'] == "do_edit")
 		"pmquota" => intval($mybb->input['pmquota']),
 		"maxpmrecipients" => intval($mybb->input['maxpmrecipients']),
 		"cansendemail" => $db->escape_string($mybb->input['cansendemail']),
+		"maxemails" => intval($mybb->input['maxemails']),		
 		"canviewmemberlist" => $db->escape_string($mybb->input['canviewmemberlist']),
 		"canviewcalendar" => $db->escape_string($mybb->input['canviewcalendar']),
 		"canaddpublicevents" => $db->escape_string($mybb->input['canaddpublicevents']),
@@ -414,6 +447,7 @@ if($mybb->input['action'] == "add")
 	tablesubheader($lang->perms_misc);
 	makeyesnocode($lang->can_view_mlist, "canviewmemberlist", "yes");
 	makeyesnocode($lang->can_send_emails, "cansendemail", "yes");
+	makeinputcode($lang->max_emails_day, "maxemails", 5, 4);
 	endtable();
 	endform($lang->add_group, $lang->reset_button);
 	cpfooter();
@@ -551,6 +585,7 @@ if($mybb->input['action'] == "edit")
 	tablesubheader($lang->perms_misc);
 	makeyesnocode($lang->can_view_mlist, "canviewmemberlist", $usergroup['canviewmemberlist']);
 	makeyesnocode($lang->can_send_emails, "cansendemail", $usergroup['cansendemail']);
+	makeinputcode($lang->max_emails_day, "maxemails", $usergroup['maxemails'], 4);	
 	endtable();
 	endform($lang->update_group, $lang->reset_button);
 	cpfooter();

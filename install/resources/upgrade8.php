@@ -131,7 +131,12 @@ function upgrade8_dbchanges()
 			tid int unsigned NOT NULL default '0',
 			ipaddress varchar(20) NOT NULL default '',
 			PRIMARY KEY(mid)
-		);");
+		) TYPE=MyISAM;");
+	}
+	
+	if(!$db->field_exists('maxemails' "usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxemails int(3) NOT NULL default '5' AFTER candsendemail");
 	}
 
 	$contents = "Done</p>";

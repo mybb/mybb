@@ -313,7 +313,7 @@ $tables[] = "CREATE TABLE mybb_maillogs (
 	tid int unsigned NOT NULL default '0',
 	ipaddress varchar(20) NOT NULL default '',
 	PRIMARY KEY(mid)
-);";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_mailqueue (
 	mid int unsigned NOT NULL auto_increment,
@@ -323,7 +323,7 @@ $tables[] = "CREATE TABLE mybb_mailqueue (
 	message text NOT NULL,
 	headers text NOT NULL,
 	PRIMARY KEY(mid)
-);";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_moderatorlog (
   uid int unsigned NOT NULL default '0',
@@ -685,6 +685,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   pmquota int(3) NOT NULL default '0',
   maxpmrecipients int(4) NOT NULL default '5',
   cansendemail char(3) NOT NULL default '',
+  maxemails int(3) NOT NULL default '5',
   canviewmemberlist char(3) NOT NULL default '',
   canviewcalendar char(3) NOT NULL default '',
   canaddpublicevents char(3) NOT NULL default '',

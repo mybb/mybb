@@ -281,7 +281,7 @@ $l['admin_step_error_nopassword'] = 'You did not enter a password for your Admin
 $l['admin_step_error_nomatch'] = 'The passwords you entered do not match.';
 $l['admin_step_error_noemail'] = 'You did not enter your email address for the Administrator\'s account.';
 
-
+$l['done_step_usergroupsinserted'] = "<p>Importing user groups...";
 $l['done_step_admincreated'] = '<p>Creating Administrator account...';
 $l['done_step_cachebuilding'] = '<p>Building data cache\'s...';
 $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully been installed and configured correctly.</p>
