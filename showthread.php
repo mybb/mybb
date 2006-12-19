@@ -33,6 +33,7 @@ if($mybb->input['pid'] && !$mybb->input['tid'])
 	);
 	$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid=".$mybb->input['pid'], $options);
 	$post = $db->fetch_array($query);
+	$pid = $mybb->input['pid'];
 	$mybb->input['tid'] = $post['tid'];
 }
 

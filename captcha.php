@@ -28,11 +28,15 @@ if($mybb->input['imagehash'] == "test")
 {
 	$imagestring = "MyBB";
 }
-else
+elseif($mybb->input['imagehash'])
 {
 	$query = $db->simple_select(TABLE_PREFIX."captcha", "*", "imagehash='".$db->escape_string($mybb->input['imagehash'])."'", array("limit" => 1));
 	$regimage = $db->fetch_array($query);
 	$imagestring = $regimage['imagestring'];
+}
+else
+{
+	return false;
 }
 	
 $ttf_fonts = array();
@@ -206,6 +210,11 @@ function draw_squares(&$im)
 function draw_string(&$im, $string)
 {
 	global $use_ttf, $min_size, $max_size, $min_angle, $max_angle, $ttf_fonts, $img_height, $img_width;
+	
+	if(empty($string))
+	{
+		return false;
+	}
 	
 	$spacing = $img_width / my_strlen($string);
 	$string_length = my_strlen($string);
