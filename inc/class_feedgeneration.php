@@ -104,12 +104,12 @@ class FeedGenerator
 			default:
 				$this->channel['date'] = date("D, d M Y H:i:s O", $this->channel['date']);
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-				$this->xml .= "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"	xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
+				$this->xml .= "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
 				$this->xml .= "\t<channel>\n";
 				$this->xml .= "\t\t<title><![CDATA[".htmlspecialchars_uni($this->channel['title'])."]]></title>\n";
-				$this->xml .= "\t\t<link>".$this->channel['link']."</link>\n";
+				$this->xml .= "\t\t<link>{$this->channel['link']}</link>\n";
 				$this->xml .= "\t\t<description>".htmlspecialchars_uni($this->channel['description'])."</description>\n";
-				$this->xml .= "\t\t<pubDate>".$this->channel['date']."</pubDate>\n";
+				$this->xml .= "\t\t<pubDate>{$this->channel['date']}</pubDate>\n";
 				$this->xml .= "\t\t<generator>MyBB</generator>\n";
 		}
 
@@ -164,6 +164,7 @@ class FeedGenerator
 				// The default is the RSS 2.0 format.
 				default:
 					$item['date'] = date("D, d M Y H:i:s O", $item['date']);
+					$item['description'] = $parser->parse_message($item['description'], $parser_options);
 					$this->xml .= "\t\t<item>\n";
 					$this->xml .= "\t\t\t<title><![CDATA[".htmlspecialchars_uni($item['title'])."]]></title>\n";
 					$this->xml .= "\t\t\t<link>{$item['link']}</link>\n";
@@ -173,7 +174,7 @@ class FeedGenerator
 						$this->xml .= "\t\t\t<dc:creator><![CDATA[".htmlspecialchars_uni($item['author'])."]]></dc:creator>\n";
 					}
 					$this->xml .= "\t\t\t<guid isPermaLink=\"false\">{$item['link']}</guid>\n";
-					$this->xml .= "\t\t\t<description><![CDATA[".$parser->parse_message($item['description'], $parser_options)."]]></description>\n";
+					$this->xml .= "\t\t\t<description><![CDATA[{$item['description']}]]></description>\n";
 					$this->xml .= "\t\t\t<content:encoded><![CDATA[{$item['description']}]]></content:encoded>\n";
 					$this->xml .= "\t\t</item>\n";
 					break;
