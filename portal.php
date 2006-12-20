@@ -284,7 +284,7 @@ if($mybb->settings['portal_showwol'] != "no")
 // Latest forum discussions
 if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_showdiscussionsnum'])
 {
-	$altbg = "trow1";
+	$altbg = alt_trow();
 	$threadlist = '';
 	$query = $db->query("
 		SELECT t.*, u.username
