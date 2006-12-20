@@ -28,10 +28,16 @@ class Convert_mybb extends Converter
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_pollvotes" => array("name" => "Import MyBB Poll Votes",
 									  "dependencies" => "db_configuration,import_polls"),
+						 "import_icons" => array("name" => "Import MyBB Icons",
+									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import MyBB Posts",
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_moderators" => array("name" => "Import MyBB Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
+						 "import_privatemessages" => array("name" => "Import MyBB Private Messages",
+						 			  "dependencies" => "db_configuration,import_users"),
+						 "import_smilies" => array("name" => "Import MyBB Smilies",
+									  "dependencies" => "db_configuration"),
 						);
 						
 	function mybb_db_connect()
@@ -275,7 +281,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Usergroups to import. Please press next to continue.";
+				echo "There are no usergroups to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -371,7 +377,11 @@ EOF;
 				echo "Adding user #{$user['uid']}... ";
 				
 				$insert_user['import_uid'] = $user['uid'];
-				// convert usergroups
+				$insert_user['usergroup'] = $this->get_group_id($user['usergroup'], true);
+				$insert_user['additionalgroups'] = str_replace($insert_user['usergroup'], '', $this->get_group_id($user['usergroup']));
+				$insert_user['displaygroup'] = $this->get_group_id($user['displaygroup'], true);
+				$insert_user['import_usergroup'] = $user['usergroup'];
+				$insert_user['import_additionalgroups'] = $user['additionalgroups'];
 				
 				$uid = $this->insert_user($insert_user);
 				
@@ -380,7 +390,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Users to import. Please press next to continue.";
+				echo "There are no users to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_users'] += $import_session['users_per_screen'];
@@ -468,7 +478,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Forums to import. Please press next to continue.";
+				echo "There are no forums to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -548,6 +558,8 @@ EOF;
 				$insert_thread['lastposteruid'] = $this->get_import_uid($thread['lastposteruid']);
 				$insert_thread['lastposter'] = $this->get_import_username($thread['lastposteruid']);
 				$insert_thread['firstpost'] = (-1 * $thread['firstpost']);
+				$insert_thread['icon']  (-1 * $thread['icon']);
+				
 				if($thread['poll'] != 0)
 				{
 					$insert_thread['poll'] = (-1 * $thread['pid']);
@@ -563,11 +575,154 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Threads to import. Please press next to continue.";
+				echo "There are no threads to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_threads'] += $import_session['threads_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_icons()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->mybb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_icons']))
+		{
+			$query = $this->old_db->simple_select("icons", "COUNT(*) as count", "iid > 16");
+			$import_session['total_icons'] = $this->old_db->fetch_field($query, 'count');			
+		}
+
+		if($import_session['start_icons'])
+		{
+			// If there are more polls to do, continue, or else, move onto next module
+			if($import_session['total_icons'] - $import_session['start_icons'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_icons';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['icons_per_screen']))
+		{
+			$import_session['icons_per_screen'] = intval($mybb->input['icons_per_screen']);
+		}
+		
+		if(empty($import_session['icons_per_screen']))
+		{
+			$import_session['start_icons'] = 0;
+			echo "<p>Please select how many icons to import at a time:</p>
+<p><input type=\"text\" name=\"icons_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_icons']-$import_session['start_icons'])." icons left to import and ".round((($import_session['total_icons']-$import_session['start_icons'])/$import_session['icons_per_screen']))." pages left at a rate of {$import_session['icons_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("icons", "*", "iid > 16", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
+			while($icon = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting icon #{$icon['iid']}... ";		
+				
+				// Invision Power Board 2 values
+				$insert_icon['import_iid'] = $icon['iid'];
+				$insert_icon['name'] = $icon['name'];
+				$insert_icon['path'] = $icon['path'];
+				
+			
+				$iid = $this->insert_icon($insert_icon);
+				
+				// Restore connections
+				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['iid'])."'");
+				
+				echo "done.<br />\n";	
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no icons to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_icons'] += $import_session['icons_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_smilies()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->mybb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_smilies']))
+		{
+			$query = $this->old_db->simple_select("smilies", "COUNT(*) as count", "sid > 9");
+			$import_session['total_smilies'] = $this->old_db->fetch_field($query, 'count');			
+		}
+
+		if($import_session['start_smilies'])
+		{
+			// If there are more polls to do, continue, or else, move onto next module
+			if($import_session['total_smilies'] - $import_session['start_smilies'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_smilies';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['smilies_per_screen']))
+		{
+			$import_session['smilies_per_screen'] = intval($mybb->input['smilies_per_screen']);
+		}
+		
+		if(empty($import_session['smilies_per_screen']))
+		{
+			$import_session['start_icons'] = 0;
+			echo "<p>Please select how many smilies to import at a time:</p>
+<p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_smilies']-$import_session['start_smilies'])." smilies left to import and ".round((($import_session['total_smilies']-$import_session['start_smilies'])/$import_session['smilies_per_screen']))." pages left at a rate of {$import_session['smilies_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("smilies", "*", "sid > 9", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
+			while($smilie = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting smilie #{$smilie['sid']}... ";		
+				
+				// Invision Power Board 2 values
+				$insert_smilie['import_iid'] = $smilie['sid'];
+				$insert_smilie['name'] = $smilie['name'];
+				$insert_smilie['find'] = $smilie['find'];
+				$insert_smilie['path'] = $smilie['path'];
+				$insert_smilie['disporder'] = $smilie['disporder'];
+				$insert_smilie['showclickable'] = $smilie['showclickable'];				
+			
+				$this->insert_smilie($insert_smilie);
+				
+				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no smilies to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_smilies'] += $import_session['smilies_per_screen'];
 		$output->print_footer();
 	}
 	
@@ -824,7 +979,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Threads to import. Please press next to continue.";
+				echo "There are no threads to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -1029,6 +1184,71 @@ EOF;
 		$query = $this->old_db->simple_select("users", "*", "username='{$username}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
+	}
+	
+	/**
+	 * Convert a MyBB group ID into a MyBB group ID (merge)
+	 */
+	function get_group_id($gid, $not_multiple=false, $orig=false)
+	{
+		$settings = array();
+		if($not_mutliple == false)
+		{
+			$query = $this->old_db->simple_select("usergroups", "COUNT(*) as rows", "gid='{$gid}'");
+			$settings = array('limit_start' => '1', 'limit' => $this->old_db->fetch_field($query, 'rows'));
+		}
+		
+		$query = $this->old_db->simple_select("usergroups", "*", "gid='{$gid}'", $settings);
+		
+		$comma = $group = '';
+		while($mybbgroup = $this->old_db->fetch_array($query))
+		{
+			if($orig == true)
+			{
+				$group .= $mybbgroup['gid'].$comma;
+			}
+			else
+			{
+				$group .= $comma;
+				switch($mybbgroup['gid'])
+				{
+					case 5: // Awaiting activation
+						$group .= 5;
+						break;
+					case 1: // Guests
+						$group .= 1;
+					case 2: // Registered
+						$group .= 2;
+						break;
+					case 7: // Banned
+						$group .= 7;
+						break;
+					case 4: // Administrator
+						$group .= 4;
+						break;
+					default:
+						$gid = $this->get_import_gid($mybbgroup['gid']);
+						if($gid > 0)
+						{
+							// If there is an associated custom group...
+							$group .= $gid;
+						}
+						else
+						{
+							// The lot
+							$group .= 2;
+						}					
+				}			
+			}
+			$comma = ',';
+			
+			if(!$query)
+			{
+				return 2; // Return regular registered user.
+			}			
+	
+			return $group;
+		}
 	}
 }
 

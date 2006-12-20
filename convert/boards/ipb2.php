@@ -320,7 +320,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Usergroups to import. Please press next to continue.";
+				echo "There are no usergroups to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -613,7 +613,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Forums to import. Please press next to continue.";
+				echo "There are no forums to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -1007,7 +1007,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Posts to import. Please press next to continue.";
+				echo "There are no posts to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}

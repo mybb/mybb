@@ -33,6 +33,8 @@ class Convert_phpbb2 extends Converter {
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_privatemessages" => array("name" => "Import phpBB 2 Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
+						 "import_smilies" => array("name" => "Import phpBB 2 Smilies",
+									  "dependencies" => "db_configuration"),
 						);
 
 	function phpbb_db_connect()
@@ -332,7 +334,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Users to import. Please press next to continue.";
+				echo "There are no users to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_users'] += $import_session['users_per_screen'];
@@ -440,7 +442,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Categories to import. Please press next to continue.";
+				echo "There are no categories to import. Please press next to continue.";
 			}
 		}			
 		$import_session['start_cats'] += $import_session['cats_per_screen'];
@@ -558,7 +560,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Forums to import. Please press next to continue.";
+				echo "There are no forums to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_forums'] += $import_session['forums_per_screen'];
@@ -659,7 +661,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Threads to import. Please press next to continue.";
+				echo "There are no threads to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_threads'] += $import_session['threads_per_screen'];
@@ -834,8 +836,77 @@ EOF;
 		$import_session['start_pollvotes'] += $import_session['pollvotes_per_screen'];
 		$output->print_footer();
 	}
-	
-	
+
+	function import_smilies()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->phpbb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_smilies']))
+		{
+			$query = $this->old_db->simple_select("smilies", "COUNT(*) as count", "smilies_id > 42");
+			$import_session['total_smilies'] = $this->old_db->fetch_field($query, 'count');			
+		}
+
+		if($import_session['start_smilies'])
+		{
+			// If there are more polls to do, continue, or else, move onto next module
+			if($import_session['total_smilies'] - $import_session['start_smilies'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_smilies';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['smilies_per_screen']))
+		{
+			$import_session['smilies_per_screen'] = intval($mybb->input['smilies_per_screen']);
+		}
+		
+		if(empty($import_session['smilies_per_screen']))
+		{
+			$import_session['start_icons'] = 0;
+			echo "<p>Please select how many smilies to import at a time:</p>
+<p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_smilies']-$import_session['start_smilies'])." smilies left to import and ".round((($import_session['total_smilies']-$import_session['start_smilies'])/$import_session['smilies_per_screen']))." pages left at a rate of {$import_session['smilies_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("smilies", "*", "smilies_id > 42", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
+			while($smilie = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting smilie #{$smilie['smilies_id']}... ";		
+				
+				// Invision Power Board 2 values
+				$insert_smilie['import_iid'] = $smilie['smilies_id'];
+				$insert_smilie['name'] = $smilie['emotion'];
+				$insert_smilie['find'] = $smilie['code'];
+				$insert_smilie['path'] = 'images/smilies/'.$smilie['smile_url'];
+				$insert_smilie['disporder'] = $smilie['smilies_id'];
+				$insert_smilie['showclickable'] = 'yes';				
+			
+				$this->insert_smilie($insert_smilie);
+				
+				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no smilies to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_smilies'] += $import_session['smilies_per_screen'];
+		$output->print_footer();
+	}
 	
 	function import_posts()
 	{
@@ -944,7 +1015,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Posts to import. Please press next to continue.";
+				echo "There are no posts to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
@@ -1072,7 +1143,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Usergroups to import. Please press next to continue.";
+				echo "There are no usergroups to import. Please press next to continue.";
 			}
 		}
 		$import_session['start_usergroups'] += $import_session['usergroups_per_screen'];

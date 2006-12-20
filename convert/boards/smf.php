@@ -333,7 +333,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Users to import. Please press next to continue.";
+				echo "There are no users to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -442,7 +442,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Categories to import. Please press next to continue.";
+				echo "There are no categories to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}			
@@ -558,7 +558,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Forums to import. Please press next to continue.";
+				echo "There are no forums to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -678,7 +678,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Threads to import. Please press next to continue.";
+				echo "There are no threads to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -1116,7 +1116,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Posts to import. Please press next to continue.";
+				echo "There are no posts to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -1350,7 +1350,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Usergroups to import. Please press next to continue.";
+				echo "There are no usergroups to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}

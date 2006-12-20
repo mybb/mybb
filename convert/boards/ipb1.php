@@ -322,7 +322,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Usergroups to import. Please press next to continue.";
+				echo "There are no usergroups to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -465,7 +465,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Users to import. Please press next to continue.";
+				echo "There are no users to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -573,7 +573,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Categories to import. Please press next to continue.";
+				echo "There are no categories to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -794,7 +794,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Threads to import. Please press next to continue.";
+				echo "There are no threads to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -1072,7 +1072,7 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Posts to import. Please press next to continue.";
+				echo "There are no posts to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -1139,7 +1139,7 @@ EOF;
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['id'])."'");
 				
-				echo "done.<br />\n";			
+				echo "done.<br />\n";	
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
