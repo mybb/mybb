@@ -828,7 +828,7 @@ if(is_array($threadcache))
 
 		if($moved[0] == "moved")
 		{
-			$folder .= "lock";
+			$folder = "move";
 			$gotounread = '';
 		}
 
