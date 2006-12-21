@@ -1395,7 +1395,7 @@ EOF;
 	function get_group_id($uid, $not_multiple=false, $orig=false)
 	{
 		$settings = array();
-		if($not_mutliple == false)
+		if($not_multiple == false)
 		{
 			$query = $this->old_db->simple_select("user_group", "COUNT(*) as rows", "user_id='{$uid}'");
 			$settings = array('limit_start' => '1', 'limit' => $this->old_db->fetch_field($query, 'rows'));
