@@ -27,7 +27,7 @@ if($mybb->input['action'] == "markread")
 	if($mybb->input['fid'])
 	{
 		$validforum = get_forum($db->escape_string($mybb->input['fid']));
-		if(!$validforum)
+		if(!$validforum && !$mybb->input['ajax'])
 		{
 			error($lang->error_invalidforum);
 		}
@@ -35,7 +35,15 @@ if($mybb->input['action'] == "markread")
 
 		$plugins->run_hooks("misc_markread_forum");
 
-		redirect("forumdisplay.php?fid=".$mybb->input['fid'], $lang->redirect_markforumread);
+		if(!$mybb->input['ajax'])
+		{
+			redirect("forumdisplay.php?fid=".$mybb->input['fid'], $lang->redirect_markforumread);
+		}
+		else
+		{
+			echo 1;
+			exit;
+		}
 	}
 	else
 	{

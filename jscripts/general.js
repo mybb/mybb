@@ -9,6 +9,16 @@ var MyBB = {
 	pageLoaded: function()
 	{
 		expandables.init();
+		mark_read_imgs = document.getElementsByClassName("ajax_mark_read", "img");
+		mark_read_imgs.each(function(element) {
+			Event.observe(element, "click", MyBB.markForumRead.bindAsEventListener(this));
+			element.style.cursor = 'pointer';
+			if(element.title)
+			{
+				element.title += " - ";
+			}
+			element.title += lang.click_mark_read;
+		});
 	},
 
 	detectBrowser: function()
@@ -178,6 +188,29 @@ var MyBB = {
 		if((promptres != null) && (promptres != "") & (promptres > 1) && (promptres <= pages))
 		{
 			window.location = "showthread.php?tid="+tid+"&page"+promotres;
+		}
+	},
+
+	markForumRead: function(event)
+	{
+		element = Event.element(event);
+		if(!element)
+		{
+			return false;
+		}
+		var fid = element.id.replace("mark_read_", "");
+		if(!fid)
+		{
+			return false;
+		}
+		new ajax('misc.php?action=markread&fid='+fid+'&ajax=1', {method: 'get', onComplete: function(request) {MyBB.forumMarkedRead(fid, request); }});
+	},
+
+	forumMarkedRead: function(fid, request)
+	{
+		if(request.responseText == 1)
+		{
+			$('mark_read_'+fid).src = $('mark_read_'+fid).src.replace("on.gif", "off.gif");
 		}
 	},
 
@@ -533,6 +566,11 @@ ActivityIndicator.prototype = {
 		Element.remove(this.spinner);
 	}
 }
+
+/* Lang this! */
+var lang = {
+
+};
 
 /* additions for IE5 compatibility */ 
 if(!Array.prototype.shift) { 

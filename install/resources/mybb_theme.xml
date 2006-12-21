@@ -601,6 +601,9 @@ form {
 <head>
 <title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
+<script type="text/javascript">
+lang.click_mark_read = "{$lang->click_mark_read}";
+</script>
 </head>
 <body>
 {$header}
@@ -1652,7 +1655,7 @@ var inlineId = {$fid};
 </table>
 <br />]]></template>
 		<template name="forumbit_depth2_forum" version="120"><![CDATA[<tr>
-<td class="{$bgcolor}" align="center" valign="top"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" /></td>
+<td class="{$bgcolor}" align="center" valign="top"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="ajax_mark_read" id="mark_read_{$forum['fid']}" /></td>
 <td class="{$bgcolor}" valign="top">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
 </td>
@@ -1661,7 +1664,7 @@ var inlineId = {$fid};
 <td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
 		<template name="forumbit_depth3" version="120"><![CDATA[{$comma}{$statusicon}<a href="{$forum_url}" title="{$forum_viewers_text}">{$forum['name']}</a>]]></template>
-		<template name="forumbit_depth3_statusicon" version="120"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" />]]></template>
+		<template name="forumbit_depth3_statusicon" version="120"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" class="ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
 		<template name="private_empty" version="120"><![CDATA[<html>
 <head>
