@@ -21,6 +21,8 @@ class Convert_punbb extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_forums" => array("name" => "Import punBB 1.2 Forums",
 									  "dependencies" => "db_configuration,import_categories"),
+						 "import_forumperms" => array("name" => "Import punBB 1.2 Forum Permissions",
+									  "dependencies" => "db_configuration,import_forums"),
 						 "import_threads" => array("name" => "Import punBB 1.2 Threads",
 									  "dependencies" => "db_configuration,import_forums"),
 						 "import_posts" => array("name" => "Import punBB 1.2 Posts",

@@ -23,6 +23,8 @@ class Convert_smf extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_forums" => array("name" => "Import SMF Forums",
 									  "dependencies" => "db_configuration,import_categories"),
+						 "import_forumperms" => array("name" => "Import SMF Forum Permissions",
+									  "dependencies" => "db_configuration,import_forums"),
 						 "import_threads" => array("name" => "Import SMF Threads",
 									  "dependencies" => "db_configuration,import_forums"),
 						 "import_polls" => array("name" => "Import SMF Polls",
