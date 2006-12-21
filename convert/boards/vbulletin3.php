@@ -21,13 +21,15 @@ class Convert_vbulletin3 extends Converter {
 									  "dependencies" => "db_configuration,import_users"),
 						 "import_forums" => array("name" => "Import vBulletin 3 Forums",
 									  "dependencies" => "db_configuration,import_users"),
+						 "import_forumperms" => array("name" => "Import vBulletin 3 Forum Permissions",
+									  "dependencies" => "db_configuration,import_forums"),
 						 "import_threads" => array("name" => "Import vBulletin 3 Threads",
 									  "dependencies" => "db_configuration,import_forums"),
 						 "import_polls" => array("name" => "Import vBulletin 3 Polls",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_pollvotes" => array("name" => "Import vBulletin Poll Votes",
+						 "import_pollvotes" => array("name" => "Import vBulletin 3 Poll Votes",
 									  "dependencies" => "db_configuration,import_polls"),
-						 "import_icons" => array("name" => "Import XMB Icons",
+						 "import_icons" => array("name" => "Import vBulletin 3 Icons",
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import vBulletin 3 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
@@ -35,7 +37,7 @@ class Convert_vbulletin3 extends Converter {
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_privatemessages" => array("name" => "Import vBulletin 3 Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
-						 "import_smilies" => array("name" => "Import vBulletin Smilies",
+						 "import_smilies" => array("name" => "Import vBulletin 3 Smilies",
 									  "dependencies" => "db_configuration"),
 						);
 
@@ -612,6 +614,101 @@ EOF;
 		}
 		$import_session['start_forums'] += $import_session['forums_per_screen'];
 		$output->print_footer();	
+	}
+	
+	function import_forumperms()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->vbulletin_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_forumperms']))
+		{
+			$query = $this->old_db->simple_select("forumpermission", "COUNT(*) as count");
+			$import_session['total_forumperms'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_forumperms'])
+		{
+			// If there are more threads to do, continue, or else, move onto next module
+			if($import_session['total_forumperms'] - $import_session['start_forumperms'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_forumperms';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of threads per screen from form
+		if(isset($mybb->input['forumperms_per_screen']))
+		{
+			$import_session['forumperms_per_screen'] = intval($mybb->input['forumperms_per_screen']);
+		}
+		
+		if(empty($import_session['forumperms_per_screen']))
+		{
+			$import_session['start_forumperms'] = 0;
+			echo "<p>Please select how many forum permissions to import at a time:</p>
+<p><input type=\"text\" name=\"forumperms_per_screen\" value=\"100\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_forumperms']-$import_session['start_forumperms'])." forum permissions left to import and ".round((($import_session['total_forumperms']-$import_session['start_forumperms'])/$import_session['forumperms_per_screen']))." forum permissions left at a rate of {$import_session['forumperms_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("forumpermission", "*", "", array('limit_start' => $import_session['start_forumperms'], 'limit' => $import_session['forumperms_per_screen']));
+			while($perm = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting permission for forum #{$perm['forumid']}... ";
+				
+				$insert_perm['fid'] = $this->get_import_fid($perm['forumid']);
+				$insert_perm['gid'] = $this->get_group_id($perm['usergroupid'], true);
+				
+				$perm_bits = array(
+					"canview" => 1, 
+					"canviewthreads" => 2,
+					"candlattachments" => 4096,
+					"canpostthreads" => 16,
+					"canpostreplys" => 64,
+					"canpostattachments" => 8192,
+					"canratethreads" => 65536,
+					"caneditposts" => 128,
+					"candeleteposts" => 256,
+					"candeletethreads" => 512,
+					"caneditattachments" => 8192,
+					"canpostpolls" => 16384,
+					"canvotepolls" => 32768,
+					"cansearch" => 4
+				);
+				
+				foreach($perm_bits as $key => $val) 
+				{
+					if($perm['forumpermissions'] & $val) 
+					{
+						$insert_perm[$key] = "yes"; 
+					} 
+					else 
+					{ 
+						$insert_perm[$key] = "no"; 
+					}
+				}
+					
+				$this->insert_forumpermission($insert_perm);
+				
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no forum permissions to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_forumperms'] += $import_session['forumperms_per_screen'];
+		$output->print_footer();
 	}
 	
 	function import_threads()

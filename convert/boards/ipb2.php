@@ -730,11 +730,7 @@ EOF;
 					$insert_perm['canpostattachments'] = $perm2['upload_perms'];
 					$insert_perm['canviewthreads'] = $perm2['read_perms'];
 					$insert_perm['canview'] = $perm2['show_perms'];
-					
-					echo "<pre>";
-					print_r($insert_perm);
-					echo "</pre>";
-					
+
 					$this->insert_forumpermission($insert_perm);
 				}
 			
