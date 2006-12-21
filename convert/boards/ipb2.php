@@ -21,6 +21,8 @@ class Convert_ipb2 extends Converter {
 									  "dependencies" => "db_configuration,import_usergroups"),
 						 "import_forums" => array("name" => "Import Invision Power Board 2 Forums",
 									  "dependencies" => "db_configuration,import_users"),
+						 "import_forumperms" => array("name" => "Import Invision Power Board 2 Forum Permissions",
+									  "dependencies" => "db_configuration,import_forums"),
 						 "import_threads" => array("name" => "Import Invision Power Board 2 Threads",
 									  "dependencies" => "db_configuration,import_forums"),
 						 "import_polls" => array("name" => "Import Invision Power Board 2 Polls",
@@ -619,6 +621,134 @@ EOF;
 		}
 		$import_session['start_forums'] += $import_session['forums_per_screen'];
 		$output->print_footer();	
+	}
+	
+	function import_forumperms()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_forumperms']))
+		{
+			$query = $this->old_db->simple_select("forums", "COUNT(*) as count");
+			$import_session['total_forumperms'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_forumperms'])
+		{
+			// If there are more threads to do, continue, or else, move onto next module
+			if($import_session['total_forumperms'] - $import_session['start_forumperms'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_forumperms';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of threads per screen from form
+		if(isset($mybb->input['forumperms_per_screen']))
+		{
+			$import_session['forumperms_per_screen'] = intval($mybb->input['forumperms_per_screen']);
+		}
+		
+		if(empty($import_session['forumperms_groups']))
+		{
+			$query = $this->old_db->query("
+				SELECT p.perm_id, g.g_perm_id, g.g_id FROM ".IPB_TABLE_PREFIX."forum_perms p
+				LEFT JOIN ".IPB_TABLE_PREFIX."groups g ON (p.perm_id=g.g_perm_id)
+			");
+			
+			while($permgroup = $db->fetch_array($query))
+			{
+				$import_session['forumperms_groups'][$permgroup['g_perm_id']] = $permgroup;
+			}
+			$import_session['forumperms_groups_count'] = count($import_session['forumperms_groups']);
+		}
+		
+		if(empty($import_session['forumperms_per_screen']))
+		{
+			$import_session['start_forumperms'] = 0;
+			echo "<p>Please select how many forum permissions to import at a time:</p>
+<p><input type=\"text\" name=\"forumperms_per_screen\" value=\"100\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_forumperms']-$import_session['start_forumperms'])." forum permissions left to import and ".round((($import_session['total_forumperms']-$import_session['start_forumperms'])/$import_session['forumperms_per_screen']))." forum permissions left at a rate of {$import_session['forumperms_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("forums", "permission_array,id", "", array('limit_start' => $import_session['start_forumperms'], 'limit' => $import_session['forumperms_per_screen']));
+			while($perm = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting permission for forum #{$perm['id']}... ";
+				
+				$permission_array = unserialize(stripslashes($perm['permission_array']));
+				
+				foreach($permission_array as $key => $permission)
+				{
+					// All permissions are on (global)
+					if($permission == '*')
+					{
+						continue;
+					}
+					else
+					{						
+						$perm_split = explode(',', $permission);						
+						foreach($perm_split as $key2 => $gid)
+						{
+							$new_perms[$this->get_group_id($gid, true)][$key] = "yes";
+						}
+					}
+				}
+				
+				$insert_perm['fid'] = $this->get_import_fid($perm['id']);
+				$insert_perm['canratethreads'] = "yes";
+				$insert_perm['caneditposts'] = "yes";
+				$insert_perm['candeleteposts'] = "yes";
+				$insert_perm['candeletethreads'] = "yes";
+				$insert_perm['caneditattachments'] = "yes";
+				$insert_perm['canpostpolls'] = "yes";
+				$insert_perm['canvotepolls'] = "yes";
+				$insert_perm['cansearch'] = "yes";
+				
+				foreach($new_perms as $gid => $perm2)
+				{
+					foreach($permission_array as $key => $value)
+					{
+						if(!array_key_exists($key, $perm2))
+						{
+							$perm2[$key] = "no";
+						}
+					}
+					$insert_perm['gid'] = $gid;
+					$insert_perm['canpostthreads'] = $perm2['start_perms'];
+					$insert_perm['canpostreplys'] = $perm2['reply_perms'];
+					$insert_perm['candlattachments'] = $perm2['download_perms'];
+					$insert_perm['canpostattachments'] = $perm2['upload_perms'];
+					$insert_perm['canviewthreads'] = $perm2['read_perms'];
+					$insert_perm['canview'] = $perm2['show_perms'];
+					
+					echo "<pre>";
+					print_r($insert_perm);
+					echo "</pre>";
+					
+					$this->insert_forumpermission($insert_perm);
+				}
+			
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no forum permissions to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_forumperms'] += $import_session['forumperms_per_screen'];
+		$output->print_footer();
 	}
 	
 	function import_threads()
@@ -1401,15 +1531,17 @@ EOF;
 	 */
 	function get_group_id($gid, $not_multiple=false, $orig=false)
 	{
-		$settings = array();
-		if($not_mutliple == false)
+	
+		if($not_multiple != true)
 		{
 			$query = $this->old_db->simple_select("groups", "COUNT(*) as rows", "g_id='{$gid}'");
-			$settings = array('limit_start' => '1', 'limit' => $this->old_db->fetch_field($query, 'rows'));
+			$query = $this->old_db->simple_select("groups", "*", "g_id='{$gid}'", array('limit_start' => '1', 'limit' => $this->old_db->fetch_field($query, 'rows')));
 		}
-		
-		$query = $this->old_db->simple_select("groups", "*", "g_id='{$gid}'", $settings);
-		
+		else
+		{
+			$query = $this->old_db->simple_select("groups", "*", "g_id='{$gid}'");
+		}		
+				
 		$comma = $group = '';
 		while($ipbgroup = $this->old_db->fetch_array($query))
 		{
@@ -1427,6 +1559,7 @@ EOF;
 						break;
 					case 2: // Guests
 						$group .= 1;
+						break;
 					case 3: // Registered
 						$group .= 2;
 						break;
@@ -1437,7 +1570,7 @@ EOF;
 					case 6: // Administrator
 						$group .= 4;
 						break;
-					default:
+					default:						
 						$gid = $this->get_import_gid($ipbgroup['g_id']);
 						if($gid > 0)
 						{
@@ -1448,7 +1581,7 @@ EOF;
 						{
 							// The lot
 							$group .= 2;
-						}					
+						}
 				}			
 			}
 			$comma = ',';

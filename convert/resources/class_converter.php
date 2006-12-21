@@ -205,6 +205,24 @@ class Converter
 	}
 	
 	/**
+	 * Insert forumpermissions into database
+	 */
+	function insert_forumpermission($title)
+	{
+		global $db;
+	
+		foreach($title as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+		
+		$query = $db->insert_query("forumpermissions", $insertarray);
+		$fpid = $db->insert_id();
+		
+		return $fpid;
+	}
+	
+	/**
 	 * Insert poll into database
 	 */
 	function insert_poll($title)

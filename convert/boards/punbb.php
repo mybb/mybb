@@ -551,6 +551,86 @@ EOF;
 		$output->print_footer();	
 	}
 	
+	function import_forumperms()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_forumperms']))
+		{
+			$query = $this->old_db->simple_select("forum_perms", "COUNT(*) as count");
+			$import_session['total_forumperms'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_forumperms'])
+		{
+			// If there are more threads to do, continue, or else, move onto next module
+			if($import_session['total_forumperms'] - $import_session['start_forumperms'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_forumperms';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of threads per screen from form
+		if(isset($mybb->input['forumperms_per_screen']))
+		{
+			$import_session['forumperms_per_screen'] = intval($mybb->input['forumperms_per_screen']);
+		}
+		
+		if(empty($import_session['forumperms_per_screen']))
+		{
+			$import_session['start_forumperms'] = 0;
+			echo "<p>Please select how many forum permissions to import at a time:</p>
+<p><input type=\"text\" name=\"forumperms_per_screen\" value=\"100\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_forumperms']-$import_session['start_forumperms'])." forum permissions left to import and ".round((($import_session['total_forumperms']-$import_session['start_forumperms'])/$import_session['forumperms_per_screen']))." forum permissions left at a rate of {$import_session['forumperms_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("forum_perms", "*", "", array('limit_start' => $import_session['start_forumperms'], 'limit' => $import_session['forumperms_per_screen']));
+			while($perm = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting permission for forum #{$perm['forum_id']}... ";
+				
+				$insert_perm['fid'] = $this->get_import_fid($perm['forum_id']);
+				$insert_perm['canratethreads'] = "yes";
+				$insert_perm['caneditposts'] = "yes";
+				$insert_perm['candeleteposts'] = "yes";
+				$insert_perm['candeletethreads'] = "yes";
+				$insert_perm['caneditattachments'] = "yes";
+				$insert_perm['canpostpolls'] = "yes";
+				$insert_perm['canvotepolls'] = "yes";
+				$insert_perm['cansearch'] = "yes";
+				$insert_perm['gid'] = $this->get_group_id($perm['group_id']);
+				$insert_perm['canpostthreads'] = int_to_yesno($perm['post_topics']);
+				$insert_perm['canpostreplys'] = int_to_yesno($perm['post_replies']);
+				$insert_perm['candlattachments'] = "yes";
+				$insert_perm['canpostattachments'] = "yes";
+				$insert_perm['canviewthreads'] = "yes";
+				$insert_perm['canview'] = int_to_yesno($perm['read_forum']);
+				
+				$this->insert_forumpermission($insert_perm);
+			
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no forum permissions to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_forumperms'] += $import_session['forumperms_per_screen'];
+		$output->print_footer();
+	}
+	
 	function import_threads()
 	{
 		global $mybb, $output, $import_session, $db;
