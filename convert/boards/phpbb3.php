@@ -37,6 +37,8 @@ class Convert_phpbb3 extends Converter {
 						 			  "dependencies" => "db_configuration,import_users"),
 						 "import_smilies" => array("name" => "Import phpBB 3 Smilies",
 									  "dependencies" => "db_configuration"),
+						 "import_settings" => array("name" => "Import phpBB 3 Settings",
+									  "dependencies" => "db_configuration"),
 						);
 
 	function phpbb_db_connect()
@@ -986,7 +988,7 @@ EOF;
 
 		$this->phpbb_db_connect();
 
-		// Get number of threads
+		// Get number of smilies
 		if(!isset($import_session['total_smilies']))
 		{
 			$query = $this->old_db->simple_select("smilies", "COUNT(*) as count", "smiley_id > 23");
@@ -1013,7 +1015,7 @@ EOF;
 		
 		if(empty($import_session['smilies_per_screen']))
 		{
-			$import_session['start_icons'] = 0;
+			$import_session['start_smilies'] = 0;
 			echo "<p>Please select how many smilies to import at a time:</p>
 <p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
@@ -1023,12 +1025,12 @@ EOF;
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_smilies']-$import_session['start_smilies'])." smilies left to import and ".round((($import_session['total_smilies']-$import_session['start_smilies'])/$import_session['smilies_per_screen']))." pages left at a rate of {$import_session['smilies_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->simple_select("smilies", "*", "smiley_id > 23", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
+			$query = $this->old_db->simple_select("smilies", "*", "smiley_id > 23", array('limit_start' => $import_session['start_smilies'], 'limit' => $import_session['smilies_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting smilie #{$smilie['smiley_id']}... ";		
 				
-				// Invision Power Board 2 values
+				// phpBB 3 values
 				$insert_smilie['import_iid'] = $smilie['smiley_id'];
 				$insert_smilie['name'] = $smilie['emotion'];
 				$insert_smilie['find'] = $smilie['code'];
@@ -1038,7 +1040,7 @@ EOF;
 			
 				$this->insert_smilie($insert_smilie);
 				
-				echo "done.<br />\n";			
+				echo "done.<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1050,7 +1052,79 @@ EOF;
 		$import_session['start_smilies'] += $import_session['smilies_per_screen'];
 		$output->print_footer();
 	}
-	
+
+	function import_settings()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->phpbb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_settings']))
+		{
+			$query = $this->old_db->simple_select("config", "COUNT(*) as count");
+			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');
+		}
+
+		if($import_session['start_settings'])
+		{
+			// If there are more settings to do, continue, or else, move onto next module
+			if($import_session['total_settings'] - $import_session['start_settings'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_settings';
+				rebuildsettings();
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of settings per screen from form
+		if(isset($mybb->input['settings_per_screen']))
+		{
+			$import_session['settings_per_screen'] = intval($mybb->input['settings_per_screen']);
+		}
+
+		if(empty($import_session['settings_per_screen']))
+		{
+			$import_session['start_settings'] = 0;
+			echo "<p>Please select how many settings to modify at a time:</p>
+<p><input type=\"text\" name=\"settings_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
+
+			$query = $this->old_db->simple_select("config", "config_name, config_value", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+			while($setting = $this->old_db->fetch_array($query))
+			{
+				echo "Updating setting {$setting['config_name']} from phpBB database... ";
+
+				// phpBB 3 values
+				$name = $value = "";
+
+				switch($setting['config_name'])
+				{
+					case '':
+				}
+			
+				$this->update_setting($name, $value);
+				
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no settings to update. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_settings'] += $import_session['settings_per_screen'];
+		$output->print_footer();
+	}
+
 	function import_posts()
 	{
 		global $mybb, $output, $import_session, $db;

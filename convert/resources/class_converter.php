@@ -37,6 +37,11 @@ class Converter
 	var $import_usernames;
 	
 	/**
+	 * Cache for the new Settinggroups
+	 */
+	var $import_settinggroups;
+	
+	/**
 	 * Class constructor
 	 */
     function Converter()
@@ -72,7 +77,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 		
-		$query = $db->insert_query("users", $insertarray);
+		$db->insert_query("users", $insertarray);
 		$uid = $db->insert_id();
 		
 		return $uid;
@@ -90,7 +95,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 		
-		$query = $db->insert_query("threads", $insertarray);
+		$db->insert_query("threads", $insertarray);
 		$tid = $db->insert_id();
 		
 		return $tid;
@@ -108,7 +113,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 		
-		$query = $db->insert_query("forums", $insertarray);
+		$db->insert_query("forums", $insertarray);
 		$fid = $db->insert_id();
 		
 		return $fid;
@@ -126,7 +131,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 		
-		$query = $db->insert_query("posts", $insertarray);
+		$db->insert_query("posts", $insertarray);
 		$pid = $db->insert_id();
 		
 		return $pid;
@@ -144,7 +149,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 		
-		$query = $db->insert_query("moderators", $insertarray);
+		$db->insert_query("moderators", $insertarray);
 		$mid = $db->insert_id();
 		
 		return $mid;
@@ -162,7 +167,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 		
-		$query = $db->insert_query("usergroups", $insertarray);
+		$db->insert_query("usergroups", $insertarray);
 		$gid = $db->insert_id();
 		
 		return $gid;
@@ -180,7 +185,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 		
-		$query = $db->insert_query("usertitles", $insertarray);
+		$db->insert_query("usertitles", $insertarray);
 		$tid = $db->insert_id();
 		
 		return $tid;
@@ -198,7 +203,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 		
-		$query = $db->insert_query("privatemessages", $insertarray);
+		$db->insert_query("privatemessages", $insertarray);
 		$pmid = $db->insert_id();
 		
 		return $pmid;
@@ -234,7 +239,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 		
-		$query = $db->insert_query("polls", $insertarray);
+		$db->insert_query("polls", $insertarray);
 		$pollid = $db->insert_id();
 		
 		return $pollid;
@@ -252,10 +257,59 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 		
-		$query = $db->insert_query("pollvotes", $insertarray);
+		$db->insert_query("pollvotes", $insertarray);
 		$pollvoteid = $db->insert_id();
 		
 		return $pollvoteid;
+	}
+
+	/**
+	 * Insert setting into database
+	 */
+	function insert_setting($setting)
+	{
+		global $db;
+	
+		foreach($setting as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+		
+		$db->insert_query("settings", $insertarray);
+		$sid = $db->insert_id();
+		
+		return $sid;
+	}
+
+	/**
+	 * Insert settinggroup into database
+	 */
+	function insert_settinggroup($settinggroup)
+	{
+		global $db;
+
+		foreach($settinggroup as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+
+		$db->insert_query("settinggroups", $insertarray);
+		$gid = $db->insert_id();
+		
+		return $gid;
+	}
+
+	/**
+	 * Update setting in the database
+	 */
+	function update_setting($name, $value)
+	{
+		global $db;
+
+		$modify = array(
+			'value' => $db->escape_string($value)
+		);
+		$db->update_query("settings", $modify, "name='{$name}'");
 	}
 	
 	/**
@@ -462,7 +516,7 @@ class Converter
 		}
 		return $fid_array[$old_fid];
 	}
-	
+
 	/**
 	 * Get an array of imported threads
 	 *
@@ -477,9 +531,10 @@ class Converter
 		{
 			$threads[$thread['import_tid']] = $thread['tid'];
 		}
+		$this->import_tids = $threads;
 		return $threads;
 	}
-	
+
 	/**
 	 * Get the MyBB TID of an old TID.
 	 *
@@ -566,6 +621,43 @@ class Converter
 		else
 		{
 			$gid_array = $this->import_gids;
+		}
+		return $gid_array[$old_gid];
+	}
+	
+	/**
+	 * Get an array of imported settinggroups
+	 *
+	 * @return array
+	 */
+	function get_import_settinggroups()
+	{
+		global $db;
+
+		$query = $db->simple_select("settinggroups", "gid, import_gid");
+		while($settinggroup = $db->fetch_array($query))
+		{
+			$settinggroups[$settinggroup['import_gid']] = $settinggroup['gid'];
+		}
+		$this->import_settinggroups = $settinggroups;
+		return $settinggroups;
+	}
+	
+	/**
+	 * Get the MyBB settinggroups ID of an old GID.
+	 *
+	 * @param int Group ID used before import
+	 * @return int Group ID in MyBB
+	 */
+	function get_import_settinggroup($old_gid)
+	{
+		if(!is_array($this->import_settinggroups))
+		{
+			$gid_array = $this->get_import_settinggroups();
+		}
+		else
+		{
+			$gid_array = $this->import_settinggroups;
 		}
 		return $gid_array[$old_gid];
 	}

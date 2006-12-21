@@ -39,6 +39,8 @@ class Convert_ipb1 extends Converter {
 						 			  "dependencies" => "db_configuration,import_users"),
 						 "import_smilies" => array("name" => "Import Invision Power Board 1 Smilies",
 									  "dependencies" => "db_configuration"),
+						 "import_settings" => array("name" => "Import Invision Power Board 1 Settings",
+									  "dependencies" => "db_configuration"),
 						);
 
 	function ipb_db_connect()
@@ -1220,6 +1222,78 @@ EOF;
 			}
 		}
 		$import_session['start_smilies'] += $import_session['smilies_per_screen'];
+		$output->print_footer();
+	}
+
+	function import_settings()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+
+		// Get number of settings
+		if(!isset($import_session['total_settings']))
+		{
+			$query = $this->old_db->simple_select("config", "COUNT(*) as count");
+			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');		
+		}
+
+		if($import_session['start_settings'])
+		{
+			// If there are more settings to do, continue, or else, move onto next module
+			if($import_session['total_settings'] - $import_session['start_settings'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_settings';
+				rebuildsettings();
+				return "finished";
+			}
+		}
+
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of settings per screen from form
+		if(isset($mybb->input['settings_per_screen']))
+		{
+			$import_session['settings_per_screen'] = intval($mybb->input['settings_per_screen']);
+		}
+
+		if(empty($import_session['settings_per_screen']))
+		{
+			$import_session['start_settings'] = 0;
+			echo "<p>Please select how many settings to modify at a time:</p>
+<p><input type=\"text\" name=\"settings_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
+
+			$query = $this->old_db->simple_select("config", "config_name, config_value", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+			while($setting = $this->old_db->fetch_array($query))
+			{
+				echo "Updating setting {$setting['config_name']} from phpBB database... ";
+
+				// Invision Power Board 1 values
+				$name = $value = "";
+
+				switch($setting['config_name'])
+				{
+					case '':
+				}
+			
+				$this->update_setting($name, $value);
+				
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no settings to update. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_settings'] += $import_session['settings_per_screen'];
 		$output->print_footer();
 	}
 	

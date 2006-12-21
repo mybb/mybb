@@ -168,6 +168,11 @@ function delete_import_fields()
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."polls DROP import_pid");
 	}
+	
+	if($db->field_exists('import_gid', "settinggroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."settinggroups DROP import_gid");
+	}
 }
 
 /**
@@ -196,5 +201,6 @@ function create_import_fields()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD import_gid int NOT NULL default '0' AFTER gid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD import_pmid int NOT NULL default '0' AFTER pmid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."polls ADD import_pid int NOT NULL default '0' AFTER pid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."settinggroups ADD import_gid int NOT NULL default '0' AFTER gid");
 }
 ?>
