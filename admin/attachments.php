@@ -271,7 +271,7 @@ if($mybb->input['action'] == "do_search")
 		echo "<td class=\"$altbg\" align=\"center\"><input type=\"checkbox\" name=\"check[$result[aid]]\" value=\"$result[aid]\"></td>\n";
 		echo "<td class=\"$altbg\"><a href=\"../attachment.php?aid=$result[aid]\">$filename</a></td>\n";
 		echo "<td class=\"$altbg\"><a href=\"../member.php?action=profile&amp;uid=$result[uid]\">$result[username]</a></td>\n";
-		echo "<td class=\"$altbg\"><a href=\"../forumdisplay.php?fid=$result[fid]\">$result[name]</a> &raquo; <a href=\"../showthread.php?tid=$result[tid]&amp;pid=$result[pid]#pid$result[pid]\">$result[subject]</a></td>\n";
+		echo "<td class=\"$altbg\"><a href=\"../forumdisplay.php?fid=$result[fid]\">$result[name]</a> &raquo; <a href=\"../".get_post_link($result['pid'])."#pid$result[pid]\">$result[subject]</a></td>\n";
 		echo "<td class=\"$altbg\">$result[filetype]</td>\n";
 		echo "<td class=\"$altbg\">$filesize</td>\n";
 		echo "<td class=\"$altbg\">$result[downloads]</td>\n";
@@ -544,7 +544,7 @@ if($mybb->input['action'] == "stats")
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&amp;pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../".get_post_link($attachment['pid'])."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&amp;uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['downloads']."</td>\n";
 			echo "</tr>\n";
@@ -574,7 +574,7 @@ if($mybb->input['action'] == "stats")
 			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&amp;pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../".get_post_link($attachment['pid'])."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&amp;uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['filesize']."</td>\n";
 			echo "</tr>\n";

@@ -85,7 +85,7 @@ switch($action)
 		build_forum_breadcrumb($forum['fid'], 1);
 		add_breadcrumb($thread['subject']);
 
-		archive_header($thread['subject'], $thread['subject'], $mybb->settings['bburl']."/showthread.php?tid=$id");
+		archive_header($thread['subject'], $thread['subject'], $mybb->settings['bburl'].get_thread_link($tid));
 
 		// Paginate this thread
 		$perpage = $mybb->settings['postsperpage'];

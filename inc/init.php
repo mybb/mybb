@@ -162,11 +162,25 @@ add_shutdown('send_mail_queue');
 $rand = rand(0, 10);
 
 /* URL Definitions */
-define('PROFILE_URL', "member.php?action=profile&amp;uid={uid}");
 define('FORUM_URL', "forumdisplay.php?fid={fid}");
 define('FORUM_URL_PAGED', "forumdisplay.php?fid={fid}&page={page}");
 define('THREAD_URL', "showthread.php?tid={tid}");
 define('THREAD_URL_PAGED', "showthread.php?tid={tid}&page={page}");
-define('INDEX_URL', "index.php");
-
+define('THREAD_URL_ACTION', 'showthread.php?tid={tid}&action={action}');
+define('THREAD_URL_POST', 'showthread.php?tid={tid}&pid={pid}');
+define('POST_URL', "showthread.php?pid={pid}");
+define('PROFILE_URL', "member.php?action=profile&uid={uid}");
+define('ANNOUNCEMENT_URL', "announcements.php?aid={aid}");
+define('INDEX_URL', "index.php"); 
+/*
+define('FORUM_URL', "forum{fid}.html");
+define('FORUM_URL_PAGED', "forum{fid}-{page}.html");
+define('THREAD_URL', "thread{tid}.html");
+define('THREAD_URL_PAGED', "thread{tid}-{page}.html");
+define('THREAD_URL_ACTION', 'thread{tid}-{action}.html');
+define('THREAD_URL_POST', 'thread{tid}-p{pid}.html');
+define('POST_URL', "post{pid}.html");
+define('PROFILE_URL', "user{uid}.html");
+define('ANNOUNCEMENT_URL', "announcement{aid}.html");
+define('INDEX_URL', "index.php"); */
 ?>

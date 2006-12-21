@@ -501,6 +501,7 @@ function usercp_menu_misc()
 		$draftstart = "<strong>";
 		$draftend = "</strong>";
 	}
+	$profile_link = get_profile_link($mybb->user['uid']);
 	
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }

@@ -493,6 +493,7 @@ if($mybb->input['action'] == "tracking")
 	while($readmessage = $db->fetch_array($query))
 	{
 		$readmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($readmessage['subject']));
+		$readmessage['profilelink'] = get_profile_link($readmessage['tousername'], $readmessage['toid']);
 		$readdate = my_date($mybb->settings['dateformat'], $readmessage['readtime']);
 		$readtime = my_date($mybb->settings['timeformat'], $readmessage['readtime']);
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
@@ -508,6 +509,7 @@ if($mybb->input['action'] == "tracking")
 	while($unreadmessage = $db->fetch_array($query))
 	{
 		$unreadmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($unreadmessage['subject']));
+		$unreadmessage['profilelink'] = get_profile_link($unreadmessage['tousername'], $unreadmessage['toid']);		
 		$senddate = my_date($mybb->settings['dateformat'], $unreadmessage['dateline']);
 		$sendtime = my_date($mybb->settings['timeformat'], $unreadmessage['dateline']);
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");

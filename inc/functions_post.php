@@ -347,6 +347,7 @@ function build_postbit($post, $post_type=0)
 			$post['editdate'] = my_date($mybb->settings['dateformat'], $post['edittime']);
 			$post['edittime'] = my_date($mybb->settings['timeformat'], $post['edittime']);
 			$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
+			$post['editedprofilelink'] = build_profile_link($post['editusername'], $post['edituid']);
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
 		
@@ -398,7 +399,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['inlinecheck'] = "";
 		}
-		
+		$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 		

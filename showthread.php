@@ -72,7 +72,7 @@ $archive_url = build_archive_link("thread", $tid);
 
 // Build the navigation.
 build_forum_breadcrumb($fid);
-add_breadcrumb($thread['subject'], "showthread.php?tid=$tid");
+add_breadcrumb($thread['subject'], get_thread_link($thread['tid']));
 
 // Does the thread belong to a valid forum?
 $forum = get_forum($fid);
@@ -123,7 +123,7 @@ if($mybb->input['action'] == "lastpost")
 		$query = $db->simple_select('posts', 'pid', "tid={$tid}", $options);
 		$pid = $db->fetch_field($query, "pid");
 	}
-	header("Location:showthread.php?tid={$tid}&pid={$pid}#pid{$pid}");
+	header("Location:".get_post_link($pid, $tid)."#pid{$pid}");
 	exit;
 }
 
@@ -153,7 +153,7 @@ if($mybb->input['action'] == "nextnewest")
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
-	header("Location:showthread.php?tid={$nextthread['tid']}&pid={$pid}#pid{$pid}");
+	header("Location:".get_post_link($pid, $nextthread['tid'])."#pid{$pid}");
 }
 
 // Jump to the next oldest posts.
@@ -183,7 +183,7 @@ if($mybb->input['action'] == "nextoldest")
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
-	header("Location:showthread.php?tid={$nextthread['tid']}&pid=$pid#pid$pid");
+	header("Location:".get_post_link($pid, $nextthread['tid'])."#pid{$pid}");
 }
 
 // Jump to the unread posts.
@@ -239,11 +239,11 @@ if($mybb->input['action'] == "newpost")
 	$newpost = $db->fetch_array($query);
 	if($newpost['pid'])
 	{
-		header("Location:showthread.php?tid={$tid}&pid={$newpost['pid']}#pid{$newpost['pid']}");
+		header("Location:".get_post_link($newpost['pid'], $tid)."#pid{$newpost['pid']}");
 	}
 	else
 	{
-		header("Location:showthread.php?action=lastpost&tid={$tid}");
+		header("Location:".get_thread_link($tid, 0, "lastpost"));
 	}
 }
 
@@ -412,6 +412,10 @@ if($mybb->input['action'] == "thread")
 
 	// Create the forum jump dropdown box.
 	$forumjump = build_forum_jump("", $fid, 1);
+	
+	// Fetch some links
+	$next_oldest_link = get_thread_link($tid, 0, "nextoldest");
+	$next_newest_link = get_thread_link($tid, 0, "nextnewest");
 
 	// Mark this thread read for the currently logged in user.
 	if($mybb->settings['threadreadcut'] && $mybb->user['uid'] != 0)
@@ -677,7 +681,7 @@ if($mybb->input['action'] == "thread")
 		}
 		$upper = $start+$perpage;
 
-		$multipage = multipage($postcount, $perpage, $page, "showthread.php?tid=$tid");
+		$multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED));
 		if($postcount > $perpage)
 		{
 			eval("\$threadpages = \"".$templates->get("showthread_multipage")."\";");
@@ -776,6 +780,8 @@ if($mybb->input['action'] == "thread")
 			}
 			$similar_thread['subject'] = $parser->parse_badwords($similar_thread['subject']);
 			$similar_thread['subject'] = htmlspecialchars_uni($similar_thread['subject']);
+			$similar_thread['threadlink'] = get_thread_link($similar_thread['tid']);
+			$similar_thread['lastpostlink'] = get_thread_link($similar_thread['tid'], 0, "lastpost");
 
 			$lastpostdate = my_date($mybb->settings['dateformat'], $similar_thread['lastpost']);
 			$lastposttime = my_date($mybb->settings['timeformat'], $similar_thread['lastpost']);

@@ -76,6 +76,8 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] =
 // Password protected forums ......... yhummmmy!
 check_forum_password($fid, $forum['password']);
 
+$thread['threadlink'] = get_thread_link($tid);
+
 $postrows = '';
 $query = $db->query("
 	SELECT u.*, u.username AS userusername, p.*
@@ -93,6 +95,7 @@ while($postrow = $db->fetch_array($query))
 	$postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
 	$postrow['date'] = my_date($mybb->settings['dateformat'], $postrow['dateline']);
 	$postrow['time'] = my_date($mybb->settings['timeformat'], $postrow['dateline']);
+	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
 	$parser_options = array(
 		"allow_html" => $forum['allowhtml'],
 		"allow_mycode" => $forum['allowmycode'],

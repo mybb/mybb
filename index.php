@@ -93,6 +93,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 
 					// Properly format the username and assign the template.
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 					eval("\$onlinemembers .= \"".$templates->get("index_whosonline_memberbit", 1, 0)."\";");
 					$comma = ", ";
 				}
@@ -182,6 +183,7 @@ if($mybb->settings['showbirthdays'] != "no")
 		{
 			$age = '';
 		}
+		$bdayuser['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
 		eval("\$bdays .= \"".$templates->get("index_birthdays_birthday", 1, 0)."\";");
 		++$bdaycount;
 		$comma = ", ";

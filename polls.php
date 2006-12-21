@@ -58,7 +58,7 @@ if($mybb->input['action'] == "newpoll")
 	}
 	// Make navigation
 	build_forum_breadcrumb($fid);
-	add_breadcrumb(htmlspecialchars_uni($thread['subject']), "showthread.php?tid={$thread['tid']}");
+	add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
 	add_breadcrumb($lang->nav_postpoll);
 
 	// No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
@@ -249,11 +249,11 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 
 	if($thread['visible'] == 1)
 	{
-		redirect("showthread.php?tid=".$thread['tid'], $lang->redirect_pollposted);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_pollposted);
 	}
 	else
 	{
-		redirect("forumdisplay.php?fid=".$thread['fid'], $lang->redirect_pollpostedmoderated);
+		redirect(get_forum_link($forum['fid']), $lang->redirect_pollpostedmoderated);
 	}
 }
 
@@ -273,7 +273,7 @@ if($mybb->input['action'] == "editpoll")
 
 	// Make navigation
 	build_forum_breadcrumb($fid);
-	add_breadcrumb(htmlspecialchars_uni($thread['subject']), "showthread.php?tid=$tid");
+	add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
 	add_breadcrumb($lang->nav_editpoll);
 
 
@@ -547,7 +547,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("polls_do_editpoll_end");
 
-	redirect("showthread.php?tid=".$thread['tid'], $lang->redirect_pollupdated);
+	redirect(get_thread_link($thread['tid']), $lang->redirect_pollupdated);
 }
 
 if($mybb->input['action'] == "showresults")
@@ -587,7 +587,7 @@ if($mybb->input['action'] == "showresults")
 
 	// Make navigation
 	build_forum_breadcrumb($fid);
-	add_breadcrumb(htmlspecialchars_uni($thread['subject']), "showthread.php?tid={$thread['tid']}");
+	add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
 	add_breadcrumb($lang->nav_pollresults);
 
 	$voters = array();
@@ -821,7 +821,7 @@ if($mybb->input['action'] == "vote")
 
 	$plugins->run_hooks("polls_vote_end");
 
-	redirect("showthread.php?tid=".$poll['tid'], $lang->redirect_votethanks);
+	redirect(get_thread_link($poll['tid']), $lang->redirect_votethanks);
 }
 
 ?>

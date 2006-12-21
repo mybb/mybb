@@ -125,19 +125,19 @@ if($endpart != "index.php")
 // Define the full MyBB version location of this page.
 if($action == "thread")
 {
-	define(MYBB_LOCATION, "showthread.php?tid={$id}");
+	define(MYBB_LOCATION, get_thread_link($id));
 }
 elseif($action == "forum")
 {
-	define(MYBB_LOCATION, "forumdisplay.php?fid={$id}");
+	define(MYBB_LOCATION, get_forum_link($id));
 }
 elseif($action == "announcement")
 {
-	define(MYBB_LOCATION, "announcement.php?aid={$id}");
+	define(MYBB_LOCATION, get_announcement_link($id));
 }
 else
 {
-	define(MYBB_LOCATION, "index.php");
+	define(MYBB_LOCATION, INDEX_URL);
 }
 
 // Initialise session

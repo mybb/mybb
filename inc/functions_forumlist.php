@@ -184,7 +184,7 @@ function build_forumbits($pid=0, $depth=1)
 
 					// Set up the last poster, last post thread id, last post subject and format appropriately
 					$lastpost_profilelink = build_profile_link($lastpost_data['lastposter'], $lastpost_data['lastposteruid']);
-					$lastposttid = $lastpost_data['lastposttid'];
+					$lastpost_link = get_thread_link($lastpost_data['lastposttid'], 0, "lastpost");
 					$lastpost_subject = $full_lastpost_subject = $parser->parse_badwords($lastpost_data['lastpostsubject']);
 					if(my_strlen($lastpost_subject) > 25)
 					{

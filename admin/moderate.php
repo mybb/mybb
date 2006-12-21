@@ -210,8 +210,8 @@ if($mybb->input['action'] == "attachments")
 			$attachment['postsubject'] = $lang->no_subject;
 		}
 		makelabelcode($lang->attachment, "$attachment[filename] ($lang->size $attachment[filesize]) ".makelinkcode($lang->view, "../attachment.php?tid=$attachment[tid]&amp;pid=$attachment[pid]", 1));
-		makelabelcode($lang->post, "<a href=\"../showthread.php?tid=$attachment[tid]&amp;pid=$attachment[postpid]#pid$attachment[postpid]\" target=\"_blank\">$attachment[postsubject]</a>");
-		makelabelcode($lang->thread, "<a href=\"../showthread.php?tid=$attachment[tid]\" target=\"_blank\">$attachment[threadsubject]</a>");
+		makelabelcode($lang->post, "<a href=\"../".get_post_link($attachment['postpid'])."#pid$attachment[postpid]\" target=\"_blank\">$attachment[postsubject]</a>");
+		makelabelcode($lang->thread, "<a href=\"../".get_thread_link($attachment['tid'])."\" target=\"_blank\">$attachment[threadsubject]</a>");
 		makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&amp;uid=$attachment[postuid]\" target=\"_blank\">$attachment[postusername]</a>");
 		makelabelcode($lang->forum, "<a href=\"../forumdisplay.php?fid=$attachment[fid]\" target=\"_blank\">$attachment[forumname]</a>");
 		makeyesnocode($lang->validate_attachment, "attachvalidate[$attachment[aid]]");
@@ -324,7 +324,7 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 			$done = 1;
 			$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 			makeinputcode($lang->post_subject, "postsubject[$post[pid]]", "$post[subject]");	
-			makelabelcode($lang->thread, "<a href=\"../showthread.php?tid=$post[tid]\" target=\"_blank\">$post[threadsubject]</a>");	
+			makelabelcode($lang->thread, "<a href=\"../".get_thread_link($post['tid'])."\" target=\"_blank\">$post[threadsubject]</a>");	
 			makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&amp;uid=$post[uid]\" target=\"_blank\">$post[username]</a>");
 			makelabelcode($lang->forum, "<a href=\"../forumdisplay.php?fid=$post[fid]\" target=\"_blank\">$post[forumname]</a>");
 			maketextareacode($lang->message, "postmessage[$post[pid]]", $post[message], 5);

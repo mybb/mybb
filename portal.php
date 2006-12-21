@@ -255,6 +255,7 @@ if($mybb->settings['portal_showwol'] != "no")
 						$invisiblemark = '';
 					}
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['profilelink'] = get_profile_link($user['uid']);
 					eval("\$onlinemembers .= \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
 					$comma = ", ";
 				}
@@ -312,6 +313,7 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 			$thread['subject'] = my_substr($thread['subject'], 0, 25) . "...";
 		}
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+		$thread['threadlink'] = get_thread_link($thread['tid']);
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
 		$altbg = alt_trow();
 	}
@@ -380,7 +382,8 @@ while($announcement = $db->fetch_array($query))
 {
 	$announcement['message'] = $posts[$announcement['tid']]['message'];
 	$announcement['pid'] = $posts[$announcement['tid']]['pid'];
-	$announcement['author'] = $announcement['uid'];
+	$announcement['threadlink'] = get_thread_link($announcement['tid']);
+	$announcement['profilelink'] = get_profile_link($announcement['uid']);
 	if(!$announcement['username'])
 	{
 		$announcement['username'] = $announcement['threadusername'];

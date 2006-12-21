@@ -60,6 +60,7 @@ $query = $db->simple_select("threads", "tid, subject, replies", $fidnot, array('
 while($thread = $db->fetch_array($query))
 {
 	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+	$thread['threadlink'] = get_thread_link($thread['tid']);
 	$numberbit = my_number_format($thread['replies']);
 	$numbertype = $lang->replies;
 	eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
@@ -70,6 +71,7 @@ $query = $db->simple_select("threads", "tid, subject, views", $fidnot, array('or
 while($thread = $db->fetch_array($query))
 {
 	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+	$thread['threadlink'] = get_thread_link($thread['tid']);	
 	$numberbit = my_number_format($thread['views']);
 	$numbertype = $lang->views;
 	eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");
@@ -135,6 +137,7 @@ $lang->popular_forum = sprintf($lang->popular_forum, $topforum, my_number_format
 $stats['numposts'] = my_number_format($stats['numposts']);
 $stats['numthreads'] = my_number_format($stats['numthreads']);
 $stats['numusers'] = my_number_format($stats['numusers']);
+$stats['newest_user'] = build_profile_link($stats['lastusername'], $stats['lastuid']);
 
 eval("\$stats = \"".$templates->get("stats")."\";");
 $plugins->run_hooks("stats_end");

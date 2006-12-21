@@ -63,7 +63,7 @@ if(!$forum)
 // Make navigation
 build_forum_breadcrumb($fid);
 $thread['subject'] = htmlspecialchars_uni($thread['subject']);
-add_breadcrumb($thread['subject'], "showthread.php?tid={$thread['tid']}");
+add_breadcrumb($thread['subject'], get_thread_link($thread['tid']));
 add_breadcrumb($lang->nav_newreply);
 
 $forumpermissions = forum_permissions($fid);
@@ -384,13 +384,13 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		{
 			// Visible post
 			$lang->redirect_newreply .= $lang->redirect_newreply_post;
-			$url = "showthread.php?tid=$tid&pid=$pid#pid$pid";
+			$url = get_post_link($pid, $tid)."#pid{$pid}";
 		}
 		else
 		{
 			// Moderated post
 			$lang->redirect_newreply .= $lang->redirect_newreply_moderation;
-			$url = "showthread.php?tid=$tid";
+			$url = get_thread_link($tid);
 		}
 
 		// Mark any quoted posts so they're no longer selected - attempts to maintain those which weren't selected

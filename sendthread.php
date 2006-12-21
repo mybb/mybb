@@ -42,7 +42,7 @@ $fid = $thread['fid'];
 
 // Make navigation
 build_forum_breadcrumb($thread['fid']);
-add_breadcrumb($thread['subject'], "showthread.php?tid={$thread['tid']}");
+add_breadcrumb($thread['subject'], get_thread_link($thread['tid']));
 add_breadcrumb($lang->nav_sendthread);
 
 // Get forum info
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 		$db->insert_query("maillogs", $log_entry);
 
 		$plugins->run_hooks("sendthread_do_sendtofriend_end");
-		redirect("showthread.php?tid=$tid", $lang->redirect_emailsent);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_emailsent);
 	}
 	else
 	{

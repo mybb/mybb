@@ -378,7 +378,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		{
 			// Moderated thread
 			$lang->redirect_newthread .= $lang->redirect_newthread_moderation;
-			$url = "forumdisplay.php?fid=$fid";
+			$url = get_forum_link($fid);
 		}
 
 		// This is just a normal thread - send them to it.
@@ -386,7 +386,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		{
 			// Visible thread
 			$lang->redirect_newthread .= $lang->redirect_newthread_thread;
-			$url = "showthread.php?tid=$tid";
+			$url = get_thread_link($tid);
 		}
 
 		$plugins->run_hooks("newthread_do_newthread_end");

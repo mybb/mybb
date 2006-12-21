@@ -78,9 +78,11 @@ while($user = $db->fetch_array($query))
 		{
 			if($forum_permissions[$forum['fid']]['canview'] == "yes")
 			{
+				$forum_url = get_forum_link($forum['fid']);
 				eval("\$forumlist .= \"".$templates->get("showteam_moderators_forum")."\";");
 			}
 		}
+		$user['profilelink'] = get_profile_link($user['uid']);
 		$user['forumlist'] = $forumlist;
 		$forumlist = '';
 		$usergroups[6]['user_list'][$user['uid']] = $user;

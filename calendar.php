@@ -341,6 +341,7 @@ if($mybb->input['action'] == "dayview")
 		}
 		
 		$bdays['username'] = format_name($bdays['username'], $bdays['usergroup'], $bdays['displaygroup']);
+		$bday['profilelink'] = build_profile_link($bdays['username'], $bdays['uid']);
 		eval("\$birthdays .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
 
 		if($alterbg == $theme['trow1'])

@@ -367,6 +367,7 @@ if($mybb->input['action'] == "results")
 			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 			$lastposter = $thread['lastposter'];
+			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 			$lastposteruid = $thread['lastposteruid'];
 
 			// Don't link to guest's profiles (they have no profile).

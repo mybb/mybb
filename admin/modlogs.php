@@ -147,7 +147,7 @@ if($mybb->input['action'] == "view")
 		echo "<td class=\"$bgcolor\">";
 		if($logitem['tsubject'])
 		{
-			echo "<b>$lang->thread</b> <a href=\"../showthread.php?tid=$logitem[tid]\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
+			echo "<b>$lang->thread</b> <a href=\"../".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 		}
 		if($logitem['fname'])
 		{
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "view")
 		}
 		if($logitem['psubject'])
 		{
-			echo "<b>$lang->post</b> <a href=\"../showthread.php?tid=$logitem[tid]&amp;pid=$logitem[pid]#pid$logitem[pid]\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+			echo "<b>$lang->post</b> <a href=\"../".get_post_link($logitem['pid'])."#pid$logitem[pid]\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 		echo "</td>";
 		echo "<td class=\"$bgcolor\" align=\"center\" valign=\"top\">$logitem[ipaddress]</td>";

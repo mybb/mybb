@@ -101,5 +101,5 @@ else
 	}
 }
 $plugins->run_hooks("ratethread_end");
-redirect("showthread.php?tid=".$mybb->input['tid'], $lang->redirect_threadrated);
+redirect(get_thread_link($thread['tid']), $lang->redirect_threadrated);
 ?>

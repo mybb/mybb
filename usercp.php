@@ -1105,19 +1105,12 @@ if($mybb->input['action'] == "favorites")
 		{
 			$lastpostdate = my_date($mybb->settings['dateformat'], $favorite['lastpost']);
 			$lastposttime = my_date($mybb->settings['timeformat'], $favorite['lastpost']);
-			if($favorite['lastposteruid'] == 0)
-			{
-				$lastposterlink = $favorite['lastposter'];
-			}
-			else
-			{
-				$lastposterlink = build_profile_link($favorite['lastposter'], $favorite['lastposteruid']);
-			}
-			$favorite['author'] = $favorite['uid'];
+			$lastposterlink = build_profile_link($favorite['lastposter'], $favorite['lastposteruid']);
 			if(!$favorite['username'])
 			{
 				$favorite['username'] = $favorite['threadusername'];
 			}
+			$favorite['profilelink'] = build_profile_link($favorite['username'], $favorite['uid']);
 			$favorite['subject'] = htmlspecialchars_uni($parser->parse_badwords($favorite['subject']));
 			if($favorite['icon'] > 0 && $icon_cache[$favorite['icon']])
 			{
@@ -1151,6 +1144,7 @@ if($mybb->input['action'] == "favorites")
 			$folder .= "folder";
 			$favorite['replies'] = my_number_format($favorite['replies']);
 			$favorite['views'] = my_number_format($favorite['views']);
+			$favorite['threadlink'] = get_thread_link($favorite['tid']);
 			eval("\$threads .= \"".$templates->get("usercp_favorites_thread")."\";");
 			$folder = "";
 		}
@@ -1211,20 +1205,12 @@ if($mybb->input['action'] == "subscriptions")
 		{
 			$lastpostdate = my_date($mybb->settings['dateformat'], $subscription['lastpost']);
 			$lastposttime = my_date($mybb->settings['timeformat'], $subscription['lastpost']);
-			// Don't link to guest's profiles (they have no profile).
-			if($subscription['lastposteruid'] == 0)
-			{
-				$lastposterlink = $subscription['lastposter'];
-			}
-			else
-			{
-				$lastposterlink = build_profile_link($subscription['lastposter'], $subscription['lastposteruid']);
-			}
-			$subscription['author'] = $subscription['uid'];
+			$lastposterlink = build_profile_link($subscription['lastposter'], $subscription['lastposteruid']);
 			if(!$subscription['username'])
 			{
 				$subscription['username'] = $subscription['threadusername'];
 			}
+			$subscription['profilelink'] = build_profile_link($subscription['username'], $subscription['uid']);
 			$subscription['subject'] = htmlspecialchars_uni($parser->parse_badwords($subscription['subject']));
 			if($subscription['icon'] > 0 && $icon_cache[$subscription['icon']])
 			{
@@ -1258,6 +1244,7 @@ if($mybb->input['action'] == "subscriptions")
 			$folder .= "folder";
 			$subscription['replies'] = my_number_format($subscription['replies']);
 			$subscription['views'] = my_number_format($subscription['views']);
+			$subscription['threadlink'] = get_thread_link($subscription['tid']);
 			eval("\$threads .= \"".$templates->get("usercp_subscriptions_thread")."\";");
 			$folder = "";
 		}
@@ -1294,6 +1281,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 	$forums = '';
 	while($forum = $db->fetch_array($query))
 	{
+		$forum_url = get_forum_link($forum['fid']);
 		$forumpermissions = $fpermissions[$forum['fid']];
 		if($forumpermissions['canview'] != "no")
 		{
@@ -1321,6 +1309,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 				{
 					$lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
 				}
+				$lastpostlink = get_thread_link($forum['lastposttid'], 0, "lastpost");
 				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost")."\";");
 			}
 		}
@@ -1808,14 +1797,14 @@ if($mybb->input['action'] == "drafts")
 		$trow = alt_trow();
 		if($draft['threadvisible'] == 1) // We're looking at a draft post
 		{
-			$detail = $lang->thread." <a href=\"showthread.php?tid=".$draft['tid']."\">".htmlspecialchars_uni($draft['threadsubject'])."</a>";
+			$detail = $lang->thread." <a href=\"".get_thread_link($draft['tid'])."\">".htmlspecialchars_uni($draft['threadsubject'])."</a>";
 			$editurl = "newreply.php?action=editdraft&amp;pid={$draft['pid']}";
 			$id = $draft['pid'];
 			$type = "post";
 		}
 		elseif($draft['threadvisible'] == -2) // We're looking at a draft thread
 		{
-			$detail = $lang->forum." <a href=\"forumdisplay.php?fid=".$draft['fid']."\">".htmlspecialchars_uni($draft['forumname'])."</a>";
+			$detail = $lang->forum." <a href=\"".get_forum_link($draft['fid'])."\">".htmlspecialchars_uni($draft['forumname'])."</a>";
 			$editurl = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
 			$id = $draft['tid'];
 			$type = "thread";
@@ -2176,6 +2165,8 @@ if($mybb->input['action'] == "attachments")
 		if($attachment['dateline'] && $attachment['tid'])
 		{
 			$attachment['subject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['subject']));
+			$attachment['postlink'] = get_post_link($attachment['pid'], $attachment['tid']);
+			$attachment['threadlink'] = get_thread_link($attachment['tid']);
 			$attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
 			$size = get_friendly_size($attachment['filesize']);
 			$icon = get_attachment_icon(get_extension($attachment['filename']));

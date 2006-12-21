@@ -156,6 +156,7 @@ foreach($parentlistexploded as $mfid)
 		foreach($moderatorcache[$mfid] as $moderator)
 		{
 			$moderator['username'] = format_name($moderator['username'], $moderator['usergroup'], $moderator['displaygroup']);
+			$moderator['profilelink'] = build_profile_link($moderator['username'], $moderator['uid']);
 			eval("\$modlist .= \"".$templates->get("forumdisplay_moderatedby_moderator", 1, 0)."\";");
 			$modcomma=", ";
 		}
@@ -208,6 +209,7 @@ if($mybb->settings['browsingthisforum'] != "off")
 				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] =="yes" || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 					eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
 					$comma = ", ";
 				}
@@ -364,6 +366,8 @@ if(!isset($mybb->input['sortby']) && !empty($foruminfo['defaultsortby']))
 {
 	$mybb->input['sortby'] = $foruminfo['defaultsortby'];
 }
+
+$sortby = $mybb->input['sortby'];
 switch($mybb->input['sortby'])
 {
 	case "subject":
@@ -385,12 +389,11 @@ switch($mybb->input['sortby'])
 		$sortfield = "dateline";
 		break;
 	default:
-		$mybb->input['sortby'] = "lastpost";
+		$sortby = "lastpost";
 		$sortfield = "lastpost";
 		break;
 }
 
-$sortby = $mybb->input['sortby'];
 $sortsel[$mybb->input['sortby']] = "selected=\"selected\"";
 
 // Are we viewing a specific page?
@@ -442,7 +445,16 @@ if($upper > $threadcount)
 	$upper = $threadcount;
 }
 
-$multipage = multipage($threadcount, $perpage, $page, "forumdisplay.php?fid=$fid&amp;sortby=$sortby&amp;order=$sortordernow&amp;datecut=$datecut");
+// Assemble page URL
+if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) // Ugly URL
+{
+	$page_url = "forumdisplay.php?fid=$fid&sortby=$sortby&order=$sortordernow&datecut=$datecut";
+}
+else
+{
+	$page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
+}
+$multipage = multipage($threadcount, $perpage, $page, $page_url);
 
 if($foruminfo['allowtratings'] != "no")
 {
@@ -495,6 +507,8 @@ while($announcement = $db->fetch_array($query))
 		$folder = "folder.gif";
 	}
 	
+	$announcement['announcementlink'] = get_announcement_link($announcement['aid']);
+	$announcement['profilelink'] = build_profile_link($announcement['uid']);
 	$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 	$postdate = my_date($mybb->settings['dateformat'], $announcement['startdate']);
@@ -633,6 +647,8 @@ if(is_array($threadcache))
 		
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+		$thread['threadlink'] = get_thread_link($thread['tid']);
+		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 		
 		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 		{
@@ -701,6 +717,7 @@ if(is_array($threadcache))
 			if($thread['pages'] > 4)
 			{
 				$pagesstop = 4;
+				$page_link = get_thread_link($thread['tid'], "last");				
 				eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
 			}
 			else
@@ -710,6 +727,7 @@ if(is_array($threadcache))
 			
 			for($i = 1; $i <= $pagesstop; ++$i)
 			{
+				$page_link = get_thread_link($thread['tid'], $i);
 				eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
 			}
 			
@@ -805,6 +823,7 @@ if(is_array($threadcache))
 			$folder .= "new";
 			$folder_label .= $lang->icon_new;
 			$new_class = "subject_new";
+			$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
 			eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
 			$unreadpost = 1;
 		}

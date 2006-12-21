@@ -62,7 +62,7 @@ if($forum['open'] == "no")
 
 // Make navigation
 build_forum_breadcrumb($fid);
-add_breadcrumb($thread['subject'], "showthread.php?tid={$thread['tid']}");
+add_breadcrumb($thread['subject'], get_thread_link($thread['tid']));
 add_breadcrumb($lang->nav_editpost);
 
 $forumpermissions = forum_permissions($fid);
@@ -228,11 +228,11 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				$next_post = $db->fetch_array($query);
 				if($next_post['pid'])
 				{
-					$redir = "showthread.php?tid={$tid}&pid={$next_post['pid']}#pid{$next_post['pid']}";
+					$redir = get_post_link($next_post['pid'], $tid)."#pid{$next_post['pid']}";
 				}
 				else
 				{
-					$redir = "showthread.php?tid={$tid}";
+					$redir = get_thread_link($tid);
 				}
 				redirect($redir, $lang->redirect_postdeleted);
 			}
@@ -302,7 +302,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		// Otherwise, send them back to their post
 		else
 		{
-			$url = "showthread.php?tid=$tid&pid=$pid#pid$pid";
+			$url = get_post_link($pid, $tid)."#pid$pid";
 			$redirect = $lang->redirect_postedited;
 		}
 		$plugins->run_hooks("editpost_do_editpost_end");

@@ -72,7 +72,7 @@ $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subje
 
 if($tid)
 {
-	add_breadcrumb($thread['subject'], "showthread.php?tid={$thread['tid']}");
+	add_breadcrumb($thread['subject'], get_thread_link($thread['tid']));
 	$modlogdata['tid'] = $tid;
 }
 
@@ -123,7 +123,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->mod_process);
 
-		redirect("showthread.php?tid=$tid", $redirect);
+		redirect(get_thread_link($thread['tid']), $redirect);
 		break;
 
 	// Stick or unstick that post to the top bab!
@@ -152,7 +152,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->mod_process);
 
-		redirect("showthread.php?tid=$tid", $redirect);
+		redirect(get_thread_link($thread['tid']), $redirect);
 		break;
 
 	// Remove redirects to a specific thread
@@ -167,7 +167,7 @@ switch($mybb->input['action'])
 		$moderation->remove_redirects($tid);
 
 		log_moderator_action($modlogdata, $lang->redirects_removed);
-		redirect("showthread.php?tid=$tid", $lang->redirect_redirectsremoved);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_redirectsremoved);
 		break;
 
 	// Delete thread confirmation page
@@ -267,7 +267,7 @@ switch($mybb->input['action'])
 
 		$moderation->delete_poll($poll['pid']);
 
-		redirect("showthread.php?tid=$tid", $lang->redirect_polldeleted);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_polldeleted);
 		break;
 
 	// Approve a thread
@@ -286,7 +286,7 @@ switch($mybb->input['action'])
 
 		$moderation->approve_threads($tid, $fid);
 
-		redirect("showthread.php?tid=$tid", $lang->redirect_threadapproved);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_threadapproved);
 		break;
 
 	// Unapprove a thread
@@ -305,7 +305,7 @@ switch($mybb->input['action'])
 
 		$moderation->unapprove_threads($tid, $fid);
 
-		redirect("showthread.php?tid=$tid", $lang->redirect_threadunapproved);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_threadunapproved);
 		break;
 
 	// Delete selective posts in a thread
@@ -385,7 +385,7 @@ switch($mybb->input['action'])
 		else
 		{
 			update_thread_count($tid);
-			$url = "showthread.php?tid=$tid";
+			$url = get_thread_link($thread['tid'])
 			mark_reports($tid, "thread");
 		}
 		$lang->deleted_selective_posts = sprintf($lang->deleted_selective_posts, $deletecount);
@@ -460,7 +460,7 @@ switch($mybb->input['action'])
 
 		mark_reports($plist, "posts");
 		log_moderator_action($modlogdata, $lang->merged_selective_posts);
-		redirect("showthread.php?tid=$tid", $lang->redirect_mergeposts);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_mergeposts);
 		break;
 
 	// Move a thread
@@ -531,7 +531,7 @@ switch($mybb->input['action'])
 				break;
 		}
 
-		redirect("showthread.php?tid=$newtid", $lang->redirect_threadmoved);
+		redirect(get_thread_link($newtid), $lang->redirect_threadmoved);
 		break;
 
 	// Thread notes editor
@@ -557,18 +557,19 @@ switch($mybb->input['action'])
 		while($modaction = $db->fetch_array($query))
 		{
 			$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
+			$modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
 			$info = '';
 			if($modaction['tsubject'])
 			{
-				$info .= "<strong>$lang->thread</strong> <a href=\"showthread.php?tid=".$modaction['tid']."\">".$modaction['tsubject']."</a><br />";
+				$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".$modaction['tsubject']."</a><br />";
 			}
 			if($modaction['fname'])
 			{
-				$info .= "<strong>$lang->forum</strong> <a href=\"forumdisplay.php?fid=".$modaction['fid']."\">".$modaction['fname']."</a><br />";
+				$info .= "<strong>$lang->forum</strong> <a href=\"".get_forum_link($modaction['fid'])."\">".$modaction['fname']."</a><br />";
 			}
 			if($modaction['psubject'])
 			{
-				$info .= "<strong>$lang->post</strong> <a href=\"showthread.php?tid=".$modaction['tid']."&pid=".$modaction['pid']."#pid".$modaction['pid']."\">".$modaction['psubject']."</a>";
+				$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".$modaction['psubject']."</a>";
 			}
 
 			eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
@@ -599,7 +600,7 @@ switch($mybb->input['action'])
 			"notes" => $db->escape_string($mybb->input['threadnotes']),
 			);
 		$db->update_query("threads", $sqlarray, "tid='$tid'");
-		redirect("showthread.php?tid=$tid", $lang->redirect_threadnotesupdated);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_threadnotesupdated);
 		break;
 
 	// Lets look up the ip address of a post
@@ -797,7 +798,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->thread_split);
 
-		redirect("showthread.php?tid=$newtid", $lang->redirect_threadsplit);
+		redirect(get_thread_link($newtid), $lang->redirect_threadsplit);
 		break;
 
 	// Delete Threads - Inline moderation
@@ -1058,7 +1059,7 @@ switch($mybb->input['action'])
 		{
 			update_thread_count($tid);
 			mark_reports($plist, "posts");
-			$url = "showthread.php?tid=$tid";
+			$url = get_thread_link($thread['tid']);
 		}
 		$lang->deleted_selective_posts = sprintf($lang->deleted_selective_posts, $deletecount);
 		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
@@ -1102,7 +1103,7 @@ switch($mybb->input['action'])
 
 		mark_reports($plist, "posts");
 		log_moderator_action($modlogdata, $lang->merged_selective_posts);
-		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsmerged);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsmerged);
 		break;
 
 	// Split posts - Inline moderation
@@ -1183,7 +1184,7 @@ switch($mybb->input['action'])
 		$lang->split_selective_posts = sprintf($lang->split_selective_posts, $pid_list, $newtid);
 		log_moderator_action($modlogdata, $lang->split_selective_posts);
 
-		redirect("showthread.php?tid=$newtid", $lang->redirect_threadsplit);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_threadsplit);
 		break;
 
 	// Approve posts - Inline moderation
@@ -1208,7 +1209,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->multi_approve_posts);
 		clearinline($tid, "thread");
-		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsapproved);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsapproved);
 		break;
 
 	// Unapprove posts - Inline moderation
@@ -1232,7 +1233,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->multi_unapprove_posts);
 		clearinline($tid, "thread");
-		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsunapproved);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsunapproved);
 		break;
 
 	// Manage selected reported posts
@@ -1361,6 +1362,10 @@ switch($mybb->input['action'])
 		while($report = $db->fetch_array($query))
 		{
 			$trow = alt_trow();
+			$report['postlink'] = get_post_link($report['pid'], $report['tid']);
+			$report['threadlink'] = get_thread_link($report['tid']);
+			$report['posterlink'] = get_profile_link($report['postuid']);
+			$report['reporterlink'] = get_profile_link($report['uid']);
 			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
 			$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
@@ -1459,6 +1464,11 @@ switch($mybb->input['action'])
 		");
 		while($report = $db->fetch_array($query))
 		{
+			$report['postlink'] = get_post_link($report['pid'], $report['tid']);
+			$report['threadlink'] = get_thread_link($report['tid']);
+			$report['posterlink'] = get_profile_link($report['postuid']);
+			$report['reporterlink'] = get_profile_link($report['uid']);
+
 			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
 			
@@ -1483,7 +1493,7 @@ switch($mybb->input['action'])
 			if($report['threadsubject'])
 			{
 				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
-				$report['threadsubject'] = "<a href=\"showthread.php?tid={$report['tid']}\" target=\"_blank\">{$report['threadsubject']}</a>";
+				$report['threadsubject'] = "<a href=\"".get_thread_link($report['tid'])."\" target=\"_blank\">{$report['threadsubject']}</a>";
 			}
 			else
 			{
@@ -1528,12 +1538,12 @@ switch($mybb->input['action'])
 				if($ret == 'forum')
 				{
 					$lang->redirect_customtool_forum = sprintf($lang->redirect_customtool_forum, $tool['name']);
-					redirect("forumdisplay.php?fid=$fid", $lang->redirect_customtool_forum);
+					redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
 				}
 				else
 				{
 					$lang->redirect_customtool_thread = sprintf($lang->redirect_customtool_thread, $tool['name']);
-					redirect("showthread.php?tid=$tid", $lang->redirect_customtool_thread);
+					redirect(get_thread_link($thread['tid']), $lang->redirect_customtool_thread);
 				}
 				break;
 			}

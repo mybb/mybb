@@ -116,6 +116,7 @@ elseif($mybb->input['action'] == "joinrequests")
 		$user['reason'] = htmlspecialchars_uni($user['reason']);
 		$altbg = alt_trow();
 		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
+		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 		eval("\$users .= \"".$templates->get("managegroup_joinrequests_request")."\";");
 	}
 	if(!$users)
@@ -220,6 +221,7 @@ else
 		$query1 = $db->simple_select("groupleaders", "uid", "uid='{$user['uid']}' AND gid='{$gid}'");
 		$isleader = $db->fetch_array($query1);
 		$user['username'] = format_name($user['username'], $user['usergroup']);
+		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 		if($isleader['uid'])
 		{
 			$leader = $lang->leader;

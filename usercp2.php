@@ -42,7 +42,7 @@ if($mybb->input['action'] == "addfavorite")
 	}
 	else
 	{
-		$url = "showthread.php?tid=".$thread['tid'];
+		$url = get_thread_link($thread['tid']);
 	}
 	redirect($url, $lang->redirect_favoriteadded);
 }
@@ -108,7 +108,7 @@ elseif($mybb->input['action'] == "addsubscription")
 		}
 		else
 		{
-			$url = "showthread.php?tid=".$thread['tid'];
+			$url = get_thread_link($thread['tid']);
 		}
 		redirect($url, $lang->redirect_subscriptionadded);
 	}

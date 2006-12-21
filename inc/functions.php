@@ -623,13 +623,13 @@ function redirect($url, $message="", $title="")
  * @param int The number of items
  * @param int The number of items to be shown per page
  * @param int The current page number
- * @param string The URL to have page numbers tacked on to
+ * @param string The URL to have page numbers tacked on to (If {page} is specified, the value will be replaced with the page #)
  * @return string The generated pagination
  */
 function multipage($count, $perpage, $page, $url)
 {
 	global $theme, $templates, $lang, $mybb;
-
+	
 	if($count > $perpage)
 	{
 		$pages = $count / $perpage;
@@ -638,12 +638,14 @@ function multipage($count, $perpage, $page, $url)
 		if($page > 1)
 		{
 			$prev = $page - 1;
+			$page_url = fetch_page_url($url, $prev);
 			eval("\$prevpage = \"".$templates->get("multipage_prevpage")."\";");
 		}
 		
 		if($page < $pages)
 		{
 			$next = $page + 1;
+			$page_url = fetch_page_url($url, $next);
 			eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
 		}
 		
@@ -684,17 +686,48 @@ function multipage($count, $perpage, $page, $url)
 		
 		for($i = $from; $i <= $to; ++$i)
 		{
+			$page_url = fetch_page_url($url, $i);
 			$plate = "multipage_page".(($i==$page) ? "_current":"");
 			eval("\$mppage .= \"".$templates->get($plate)."\";");
 		}
 		
 		$lang->multipage_pages = sprintf($lang->multipage_pages, $pages);
+		$page_url = fetch_page_url($url, 1);
 		eval("\$start = \"".$templates->get("multipage_start")."\";");
+		$page_url = fetch_page_url($url, $pages);		
 		eval("\$end = \"".$templates->get("multipage_end")."\";");
 		eval("\$multipage = \"".$templates->get("multipage")."\";");
 		
 		return $multipage;
 	}
+}
+
+/**
+ * Generate a page URL for use by the multipage function
+ *
+ * @param string The URL being passed
+ * @param int The page number
+ */
+function fetch_page_url($url, $page)
+{
+	// If no page identifier is specified we tack it on to the end of the URL
+	if(strpos($url, "{page}") === false)
+	{
+		if(strpos($url, "?") === false)
+		{
+			$url .= "?";
+		}
+		else
+		{
+			$url .= "&";
+		}
+		$url .= "page=$page";
+	}
+	else
+	{
+		$url = str_replace("{page}", $page, $url);
+	}
+	return $url;	
 }
 
 /**
@@ -2765,41 +2798,30 @@ function get_current_location()
 		return MYBB_LOCATION;
 	}
 	
-	if(isset($_SERVER['REQUEST_URI']))
+	if(isset($_SERVER['PATH_INFO']))
 	{
-		$location = $_SERVER['REQUEST_URI'];
+		$location = $_SERVER['PATH_INFO'];
 	}
-	elseif(isset($ENV_['REQUEST_URI']))
+	elseif(isset($_ENV['PATH_INFO']))
 	{
-		$location = $ENV['REQUEST_URI'];
+		$location = $_SERVER['PATH_INFO'];
+	}
+	elseif(isset($_ENV['PHP_SELF']))
+	{
+		$location = $_ENV['PHP_SELF'];
 	}
 	else
 	{
-		if(isset($_SERVER['PATH_INFO']))
-		{
-			$location = $_SERVER['PATH_INFO'];
-		}
-		elseif(isset($_ENV['PATH_INFO']))
-		{
-			$location = $_SERVER['PATH_INFO'];
-		}
-		elseif(isset($_ENV['PHP_SELF']))
-		{
-			$location = $_ENV['PHP_SELF'];
-		}
-		else
-		{
-			$location = $_SERVER['PHP_SELF'];
-		}
-		
-		if(isset($_SERVER['QUERY_STRING']))
-		{
-			$location .= "?".$_SERVER['QUERY_STRING'];
-		}
-		else if(isset($_ENV['QUERY_STRING']))
-		{
-			$location = "?".$_ENV['QUERY_STRING'];
-		}
+		$location = $_SERVER['PHP_SELF'];
+	}
+	
+	if(isset($_SERVER['QUERY_STRING']))
+	{
+		$location .= "?".$_SERVER['QUERY_STRING'];
+	}
+	else if(isset($_ENV['QUERY_STRING']))
+	{
+		$location = "?".$_ENV['QUERY_STRING'];
 	}
 
 	if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
@@ -3366,7 +3388,6 @@ function get_event_date($event)
 function get_profile_link($uid=0)
 {
 	$link = str_replace("{uid}", $uid, PROFILE_URL);
-	
 	return $link;
 }
 
@@ -3430,19 +3451,56 @@ function get_forum_link($fid, $page=0)
  *
  * @param int The thread id of the thread.
  * @param int (Optional) The page number of the thread.
+ * @param string (Optional) The action we're performing (ex, lastpost, newpost, etc)
  * @return string The url to the thread.
  */
-function get_thread_link($tid, $page=0)
+function get_thread_link($tid, $page=0, $action='')
 {
-	if($page > 0)
+	if($page > 1)
 	{
-		$thread_link = str_replace("{tid}", $tid, THREAD_URL_PAGED);
-		
+		if($action)
+		{
+			$link = THREAD_URL_PAGED_ACTION;
+		}
+		else
+		{
+			$link = THREAD_URL_PAGED;
+		}
+		$thread_link = str_replace("{tid}", $tid, $link);
+		$thread_link = str_replace("{action}", $action, $thread_link);				
 		return str_replace("{page}", $page, $thread_link);
 	}
 	else
 	{
-		return str_replace("{tid}", $tid, THREAD_URL);
+		if($action)
+		{
+			$link = THREAD_URL_ACTION;
+		}
+		else
+		{
+			$link = THREAD_URL;
+		}
+		$link = str_replace("{action}", $action, $link);
+		return str_replace("{tid}", $tid, $link);
+	}
+}
+
+/**
+ * Build the post link.
+ *
+ * @param int The post ID of the post
+ * @param int The thread id of the post.
+ */
+function get_post_link($pid, $tid=0)
+{
+	if($tid > 0)
+	{
+		$post_link = str_replace("{tid}", $tid, THREAD_URL_POST);
+		return str_replace("{pid}", $pid, $post_link);
+	}
+	else
+	{
+		return str_replace("{pid}", $pid, POST_URL);
 	}
 }
 
