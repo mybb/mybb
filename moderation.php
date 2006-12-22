@@ -385,7 +385,7 @@ switch($mybb->input['action'])
 		else
 		{
 			update_thread_count($tid);
-			$url = get_thread_link($thread['tid'])
+			$url = get_thread_link($thread['tid']);
 			mark_reports($tid, "thread");
 		}
 		$lang->deleted_selective_posts = sprintf($lang->deleted_selective_posts, $deletecount);

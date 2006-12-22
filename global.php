@@ -270,7 +270,7 @@ else
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->usergroup['gid'] == 6)
+if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->user['usergroup'] == 6)
 {
 	// Read the reported posts cache
 	$reported = $cache->read("reportedposts");
