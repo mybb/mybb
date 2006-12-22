@@ -514,6 +514,7 @@ class postParser
 		$code = trim($code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);
+		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
 
 		return "</p>\n<div class=\"code_header\">".$lang->code."\n</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n<p>\n";
 	}
