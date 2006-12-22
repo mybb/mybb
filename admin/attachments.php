@@ -203,7 +203,7 @@ if($mybb->input['action'] == "do_search")
 	$plugins->run_hooks("admin_attachments_do_search");
 	// Get attachments from database list
 	$query = $db->query("
-		SELECT a.*, p.tid, p.fid, t.subject, f.name, u.uid, u.username 
+		SELECT a.*, p.tid, p.fid, t.subject, f.name, u.uid, u.username AS userusername
 		FROM ".TABLE_PREFIX."attachments a 
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) 
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) 
@@ -265,13 +265,18 @@ if($mybb->input['action'] == "do_search")
 			$filename = "<em>".$filename."</em>";
 		}
 		
+		if($result['userusername'])
+		{
+			$result['username'] = $result['userusername'];
+		}
+		
 		$filesize = get_friendly_size($result['filesize']);
 
 		echo "<tr>\n";
 		echo "<td class=\"$altbg\" align=\"center\"><input type=\"checkbox\" name=\"check[$result[aid]]\" value=\"$result[aid]\"></td>\n";
 		echo "<td class=\"$altbg\"><a href=\"../attachment.php?aid=$result[aid]\">$filename</a></td>\n";
-		echo "<td class=\"$altbg\"><a href=\"../member.php?action=profile&amp;uid=$result[uid]\">$result[username]</a></td>\n";
-		echo "<td class=\"$altbg\"><a href=\"../forumdisplay.php?fid=$result[fid]\">$result[name]</a> &raquo; <a href=\"../".get_post_link($result['pid'])."#pid$result[pid]\">$result[subject]</a></td>\n";
+		echo "<td class=\"$altbg\">".build_profile_link($result['username'], $result['uid'])."</td>\n";
+		echo "<td class=\"$altbg\"><a href=\"../".get_forum_link($result['fid'])."\">$result[name]</a> &raquo; <a href=\"../".get_post_link($result['pid'])."#pid$result[pid]\">$result[subject]</a></td>\n";
 		echo "<td class=\"$altbg\">$result[filetype]</td>\n";
 		echo "<td class=\"$altbg\">$filesize</td>\n";
 		echo "<td class=\"$altbg\">$result[downloads]</td>\n";
@@ -538,14 +543,18 @@ if($mybb->input['action'] == "stats")
 			"limit" => "5"
 		);
 		
-		$query = $db->simple_select("attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)", "a.*, p.tid, p.subject, u.username", "", $options);
+		$query = $db->simple_select("attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)", "a.*, p.tid, p.subject, p.username, u.username AS userusername", "", $options);
 		while($attachment = $db->fetch_array($query))
 		{
+			if($attachment['userusername'])
+			{
+				$attachment['username'] = $attachment['userusername'];
+			}
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../".get_post_link($attachment['pid'])."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&amp;uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\">".build_profile_link($attachment['username'], $attachment['uid'])."</td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['downloads']."</td>\n";
 			echo "</tr>\n";
 		}
@@ -567,15 +576,19 @@ if($mybb->input['action'] == "stats")
 			"limit" => "5"
 		);
 		
-		$query = $db->simple_select("attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)", "a.*, p.tid, p.subject, u.username", "", $options);
+		$query = $db->simple_select("attachments a LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid) LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)", "a.*, p.tid, p.subject, u.username AS userusername, p.username", "", $options);
 		while($attachment = $db->fetch_array($query))
 		{
+			if($attachment['userusername'])
+			{
+				$attachment['username'] = $attachment['userusername'];
+			}			
 			$bgcolor = getaltbg();
 			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../".get_post_link($attachment['pid'])."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
-			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../member.php?action=profile&amp;uid=".$attachment['uid']."\">".$attachment['username']."</a></td>\n";
+			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"".build_profile_link($attachment['username'], $attachment['uid'])."\">".$attachment['username']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\">".$attachment['filesize']."</td>\n";
 			echo "</tr>\n";
 		}
@@ -590,7 +603,7 @@ if($mybb->input['action'] == "stats")
 		echo "</tr>\n";
 
 		$query = $db->query("
-			SELECT a.*, u.uid, u.username, SUM(a.filesize) as totalsize
+			SELECT a.*, u.uid, SUM(a.filesize) as totalsize
 			FROM ".TABLE_PREFIX."attachments a  
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 			GROUP BY a.uid
@@ -603,7 +616,7 @@ if($mybb->input['action'] == "stats")
 			$bgcolor = getaltbg();
 			$user['totalsize'] = get_friendly_size($user['totalsize']);
 			echo "<tr>\n";
-			echo "<td class=\"$bgcolor\"><a href=\"../member.php?action=profile&amp;uid=".$user['uid']."\">".$user['username']."</a></td>\n";
+			echo "<td class=\"$bgcolor\">".build_profile_link($user['username'], $user['uid'])."</td>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"attachments.php?".SID."&amp;action=do_search&amp;username=".urlencode($user['username'])."\">".$user['totalsize']."</a></td>\n";
 			echo "</tr>\n";
 		}

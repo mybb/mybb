@@ -2325,7 +2325,7 @@ function build_forum_breadcrumb($fid, $archive=0)
 				}
 				else
 				{
-					$navbits[$navsize]['url'] = "forumdisplay.php?fid=".$forumnav['fid'];
+					$navbits[$navsize]['url'] = get_forum_link($forumnav['fid']);
 				}
 			}
 		}
@@ -3352,15 +3352,8 @@ function unhtmlentities($string)
  */
 function get_event_poster($event)
 {
-	if($event['username'])
-	{
-		$event_poster = "<a href=\"member.php?action=profile&amp;uid=".$event['author']."\">" . format_name($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
-	}
-	else
-	{
-		$event_poster = $lang->guest;
-	}
-
+	$event['username'] = format_name($event['username'], $event['usergroup'], $event['displaygroup']);
+	$event_poster = build_profile_link($event['username'], $event['author']);
 	return $event_poster;
 }
 
@@ -3501,6 +3494,42 @@ function get_post_link($pid, $tid=0)
 	else
 	{
 		return str_replace("{pid}", $pid, POST_URL);
+	}
+}
+
+/**
+ * Build the event link.
+ *
+ * @param int The event ID of the event
+ * @return string The URL of the event
+ */
+function get_event_link($eid)
+{
+	return str_replace("{eid}", $eid, EVENT_URL);
+}
+
+/**
+ * Build the link to a specified date on the calendar
+ *
+ * @param int The year
+ * @param int The month
+ * @param int The day (optional)
+ * @return string The URL of the calendar
+ */
+function get_calendar_link($year, $month, $day=0)
+{
+	if($day > 0)
+	{
+		$link = str_replace("{month}", $month, CALENDAR_URL_DAY);
+		$link = str_replace("{year}", $year, $link);
+		$link = str_replace("{day}", $day, $link);
+		return $link;
+	}
+	else
+	{
+		$link = str_replace("{month}", $month, CALENDAR_URL);
+		$link = str_replace("{year}", $year, $link);
+		return $link;
 	}
 }
 

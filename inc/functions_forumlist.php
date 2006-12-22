@@ -233,7 +233,7 @@ function build_forumbits($pid=0, $depth=1)
 						// Fetch each moderator from the cache and format it, appending it to the list
 						foreach($moderatorcache[$mfid] as $moderator)
 						{
-							$moderators .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$moderator['uid']}\">{$moderator['username']}</a>";
+							$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['uid'])."\">{$moderator['username']}</a>";
 							$comma = ", ";
 						}
 					}

@@ -136,7 +136,7 @@ function makeprintablenav($pid="0", $depth="--")
 	{
 		foreach($pforumcache[$pid] as $key => $forumnav)
 		{
-			$forums .= "+".$depth." $lang->forum {$forumnav['name']} (<i>".$mybb->settings['bburl']."/forumdisplay.php?fid={$forumnav['fid']}</i>)<br />\n";
+			$forums .= "+".$depth." $lang->forum {$forumnav['name']} (<i>".$mybb->settings['bburl']."/".get_forum_link($forumnav['fid'])."</i>)<br />\n";
 			if($pforumcache[$forumnav['fid']])
 			{
 				$newdepth = $depth."-";

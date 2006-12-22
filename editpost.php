@@ -204,7 +204,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				{
 					log_moderator_action($modlogdata, "Deleted Thread");
 				}
-				redirect("forumdisplay.php?fid=$fid", $lang->redirect_threaddeleted);
+				redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
 			}
 			else
 			{

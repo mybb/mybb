@@ -212,8 +212,8 @@ if($mybb->input['action'] == "attachments")
 		makelabelcode($lang->attachment, "$attachment[filename] ($lang->size $attachment[filesize]) ".makelinkcode($lang->view, "../attachment.php?tid=$attachment[tid]&amp;pid=$attachment[pid]", 1));
 		makelabelcode($lang->post, "<a href=\"../".get_post_link($attachment['postpid'])."#pid$attachment[postpid]\" target=\"_blank\">$attachment[postsubject]</a>");
 		makelabelcode($lang->thread, "<a href=\"../".get_thread_link($attachment['tid'])."\" target=\"_blank\">$attachment[threadsubject]</a>");
-		makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&amp;uid=$attachment[postuid]\" target=\"_blank\">$attachment[postusername]</a>");
-		makelabelcode($lang->forum, "<a href=\"../forumdisplay.php?fid=$attachment[fid]\" target=\"_blank\">$attachment[forumname]</a>");
+		makelabelcode($lang->posted_by, build_profile_link($attachment['postusername'], $attachment['postuid']));
+		makelabelcode($lang->forum, "<a href=\"../".get_forum_link($attachment['fid'])."\" target=\"_blank\">$attachment[forumname]</a>");
 		makeyesnocode($lang->validate_attachment, "attachvalidate[$attachment[aid]]");
 		makeyesnocode($lang->delete_attachment, "attachdelete[$attachment[aid]]", "no");
 		makehiddencode("attachpid[$attachment[aid]]", "$attachment[postpid]");
@@ -258,8 +258,8 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 		$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 		$done = 1;
 		makeinputcode($lang->thread_subject, "threadsubject[$thread[tid]]", "$thread[subject]");		
-		makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&amp;uid=$thread[uid]\" target=\"_blank\">$thread[username]</a>");
-		makelabelcode($lang->forum, "<a href=\"../forumdisplay.php?fid=$thread[fid]\" target=\"_blank\">$thread[forumname]</a>");
+		makelabelcode($lang->posted_by, build_profile_link($thread['username'], $thread['uid']));
+		makelabelcode($lang->forum, "<a href=\"../".get_forum_link($attachment['fid'])."\" target=\"_blank\">$thread[forumname]</a>");
 		maketextareacode($lang->message, "threadmessage[$thread[tid]]", $thread['postmessage'], 5);
 		makeyesnocode($lang->validate_thread, "threadvalidate[$thread[tid]]");
 		makeyesnocode($lang->delete_thread, "threaddelete[$thread[tid]]", "no");
@@ -325,8 +325,8 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 			$thread['subject'] = htmlspecialchars_uni(stripslashes($thread['subject']));
 			makeinputcode($lang->post_subject, "postsubject[$post[pid]]", "$post[subject]");	
 			makelabelcode($lang->thread, "<a href=\"../".get_thread_link($post['tid'])."\" target=\"_blank\">$post[threadsubject]</a>");	
-			makelabelcode($lang->posted_by, "<a href=\"../member.php?action=profile&amp;uid=$post[uid]\" target=\"_blank\">$post[username]</a>");
-			makelabelcode($lang->forum, "<a href=\"../forumdisplay.php?fid=$post[fid]\" target=\"_blank\">$post[forumname]</a>");
+			makelabelcode($lang->posted_by, build_profile_link($post['username'], $post['uid']));
+			makelabelcode($lang->forum, "<a href=\"../".get_forum_link($post['fid'])."\" target=\"_blank\">$post[forumname]</a>");
 			maketextareacode($lang->message, "postmessage[$post[pid]]", $post[message], 5);
 			makeyesnocode($lang->validate_post, "postvalidate[$post[pid]]");
 			makeyesnocode($lang->delete_post, "postdelete[$post[pid]]", "no");

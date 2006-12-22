@@ -151,7 +151,7 @@ if($mybb->input['action'] == "view")
 		}
 		if($logitem['fname'])
 		{
-			echo "<b>$lang->forum</b> <a href=\"../forumdisplay.php?fid=$logitem[fid]\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
+			echo "<b>$lang->forum</b> <a href=\"../".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
 		}
 		if($logitem['psubject'])
 		{

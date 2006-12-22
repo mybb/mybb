@@ -212,7 +212,7 @@ switch($mybb->input['action'])
 		$moderation->delete_thread($tid);
 
 		mark_reports($tid, "thread");
-		redirect("forumdisplay.php?fid=$fid", $lang->redirect_threaddeleted);
+		redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
 		break;
 
 	// Delete the poll from a thread confirmation page
@@ -379,7 +379,7 @@ switch($mybb->input['action'])
 		if($deletethread)
 		{
 			$moderation->delete_thread($tid);
-			$url = "forumdisplay.php?fid=$fid";
+			$url = get_forum_link($fid);
 			mark_reports($plist, "posts");
 		}
 		else
@@ -835,7 +835,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_deleted_threads);
 		clearinline($fid, "forum");
 		mark_reports($tlist, "threads");
-		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsdeleted);
+		redirect(get_forum_link($fid), $lang->redirect_inline_threadsdeleted);
 		break;
 
 	// Open threads - Inline moderation
@@ -854,7 +854,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->multi_opened_threads);
 		clearinline($fid, "forum");
-		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsopened);
+		redirect(get_forum_link($fid), $lang->redirect_inline_threadsopened);
 		break;
 
 	// Close threads - Inline moderation
@@ -873,7 +873,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->multi_closed_threads);
 		clearinline($fid, "forum");
-		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsclosed);
+		redirect(get_forum_link($fid), $lang->redirect_inline_threadsclosed);
 		break;
 
 	// Approve threads - Inline moderation
@@ -893,7 +893,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_approved_threads);
 		clearinline($fid, "forum");
 		$cache->updatestats();
-		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsapproved);
+		redirect(get_forum_link($fid), $lang->redirect_inline_threadsapproved);
 		break;
 
 	// Unapprove threads - Inline moderation
@@ -913,7 +913,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_unapproved_threads);
 		clearinline($fid, "forum");
 		$cache->updatestats();
-		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsunapproved);
+		redirect(get_forum_link($fid), $lang->redirect_inline_threadsunapproved);
 		break;
 
 	// Stick threads - Inline moderation
@@ -932,7 +932,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->multi_stuck_threads);
 		clearinline($fid, "forum");
-		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsstuck);
+		redirect(get_forum_link($fid), $lang->redirect_inline_threadsstuck);
 		break;
 
 	// Unstick threads - Inline moderaton
@@ -951,7 +951,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->multi_unstuck_threads);
 		clearinline($fid, "forum");
-		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsunstuck);
+		redirect(get_forum_link($fid), $lang->redirect_inline_threadsunstuck);
 		break;
 
 	// Move threads - Inline moderation
@@ -1010,7 +1010,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->multi_moved_threads);
 
-		redirect("forumdisplay.php?fid=$moveto", $lang->redirect_inline_threadsmoved);
+		redirect(get_forum_link($moveto), $lang->redirect_inline_threadsmoved);
 		break;
 
 	// Delete posts - Inline moderation
@@ -1053,7 +1053,7 @@ switch($mybb->input['action'])
 		{
 			$moderation->delete_thread($tid);
 			mark_reports($tid, "thread");
-			$url = "forumdisplay.php?fid=$fid";
+			$url = get_forum_link($fid);
 		}
 		else
 		{
@@ -1481,15 +1481,8 @@ switch($mybb->input['action'])
 				$trow = alt_trow();
 			}
 			
-			if($report['postusername'])
-			{
-				$report['postusername'] = "<a href=\"member.php?action=profile&amp;uid={$report['postuid']}\" target=\"_blank\">{$report['postusername']}</a>";
-			}
-			else
-			{
-				$report['postusername'] = $lang->na;
-			}
-			
+			$report['postusername'] = build_profile_link($report['postusername'], $report['postuid']);
+
 			if($report['threadsubject'])
 			{
 				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
@@ -1527,7 +1520,7 @@ switch($mybb->input['action'])
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				clearinline($fid, "forum");
 				$lang->redirect_customtool_forum = sprintf($lang->redirect_customtool_forum, $tool['name']);
-				redirect("forumdisplay.php?fid=$fid", $lang->redirect_customtool_forum);
+				redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
 				break;
 			}
 			elseif($tool['type'] == 't' && $mybb->input['modtype'] == 'thread')
@@ -1557,12 +1550,12 @@ switch($mybb->input['action'])
 				if($ret == 'forum')
 				{
 					$lang->redirect_customtool_forum = sprintf($lang->redirect_customtool_forum, $tool['name']);
-					redirect("forumdisplay.php?fid=$fid", $lang->redirect_customtool_forum);
+					redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
 				}
 				else
 				{
 					$lang->redirect_customtool_thread = sprintf($lang->redirect_customtool_thread, $tool['name']);
-					redirect("showthread.php?tid=$tid", $lang->redirect_customtool_thread);
+					redirect(get_thread_link($tid), $lang->redirect_customtool_thread);
 				}
 				break;
 			}

@@ -1490,7 +1490,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 
 		$plugins->run_hooks("member_do_emailuser_end");
 
-		redirect("member.php?action=profile&uid={$to_user['uid']}", $lang->redirect_emailsent);
+		redirect(get_profile_link($to_user['uid']), $lang->redirect_emailsent);
 	}
 	else
 	{

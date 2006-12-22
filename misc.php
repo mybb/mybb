@@ -37,7 +37,7 @@ if($mybb->input['action'] == "markread")
 
 		if(!$mybb->input['ajax'])
 		{
-			redirect("forumdisplay.php?fid=".$mybb->input['fid'], $lang->redirect_markforumread);
+			redirect(get_forum_link($mybb->input['fid']), $lang->redirect_markforumread);
 		}
 		else
 		{

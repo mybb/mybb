@@ -3482,8 +3482,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 
 	<table width="100%" align="center">
 		<tr>
-			<td><span class="smalltext"><a href="calendar.php?year={$prevyear}&amp;month={$prevmonth}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span></td>
-			<td align="right"><span class="smalltext"><a href="calendar.php?year={$nextyear}&amp;month={$nextmonth}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
+			<td><span class="smalltext"><a href="$prev_link">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span></td>
+			<td align="right"><span class="smalltext"><a href="$next_link">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
 		</tr>
 	</table>
 
@@ -6115,14 +6115,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<a href="{$similar_thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 	</tr>]]></template>
-		<template name="calendar_eventbit_public" version="120"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['publiceventcolor']};">{$event['subject']}</span></a><br />]]></template>
-		<template name="calendar_eventbit_private" version="120"><![CDATA[<a href="calendar.php?action=event&amp;eid={$event['eid']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['privateeventcolor']};">{$event['subject']}</span></a><br />]]></template>
+		<template name="calendar_eventbit_public" version="120"><![CDATA[<a href="{$event['eventlink']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['publiceventcolor']};">{$event['subject']}</span></a><br />]]></template>
+		<template name="calendar_eventbit_private" version="120"><![CDATA[<a href="{$event['eventlink']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['privateeventcolor']};">{$event['subject']}</span></a><br />]]></template>
 		<template name="calendar_daybit_today" version="120"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
-<strong><a href="calendar.php?action=dayview&amp;year={$year}&amp;month={$month}&amp;day={$i}">{$i}</a></strong>
+<strong><a href="$day_url">{$i}</a></strong>
 <br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
 </td>]]></template>
 		<template name="calendar_daybit" version="120"><![CDATA[<td width="14%" height="90" class="trow1" valign="top">
-<strong><a href="calendar.php?action=dayview&amp;year={$year}&amp;month={$month}&amp;day={$i}">{$i}</a></strong>
+<strong><a href="$day_url">{$i}</a></strong>
 <br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
 </td>]]></template>
 		<template name="polls_newpoll_option" version="120"><![CDATA[<tr>

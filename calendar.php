@@ -213,7 +213,7 @@ add_breadcrumb($lang->nav_calendar, "calendar.php");
 
 if($month && $year)
 {
-	add_breadcrumb("$monthnames[$month] $year", "calendar.php?month={$month}&amp;year={$year}");
+	add_breadcrumb("$monthnames[$month] $year", get_calendar_link($year, $month));
 }
 
 // No weird actions allowed.
@@ -256,14 +256,8 @@ if($mybb->input['action'] == "event")
 	$event['subject'] = htmlspecialchars_uni($event['subject']);
 	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 	
-	if($event['username'])
-	{
-		$eventposter = "<a href=\"member.php?action=profile&amp;uid={$event['author']}\">".format_name($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
-	}
-	else
-	{
-		$eventposter = $lang->guest;
-	}
+	$event['username'] = format_name($event['username'], $event['usergroup'], $event['displaygroup']);
+	$eventposter = build_profile_link($event['username'], $event['author']);
 
 	$eventdate = gmmktime(0, 0, 0, $event['start_month'], $event['start_day'], $event['start_year']);
 	$eventdate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
@@ -393,14 +387,8 @@ if($mybb->input['action'] == "dayview")
 		$event['subject'] = htmlspecialchars_uni($event['subject']);
 		$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 		
-		if($event['username'])
-		{
-			$eventposter = "<a href=\"member.php?action=profile&amp;uid={$event['author']}\">" . format_name($event['username'], $event['usergroup'], $event['displaygroup']) . "</a>";
-		}
-		else
-		{
-			$eventposter = $lang->guest;
-		}
+		$event['username'] = format_name($event['username'], $event['usergroup'], $event['displaygroup']);
+		$eventposter = build_profile_link($event['username'], $event['author']);
 
 		$eventdate = gmmktime(0, 0, 0, $event['start_month'], $event['start_day'], $event['start_year']);
 		$eventdate = my_date($mybb->settings['dateformat'], $eventdate, 0, 0);
@@ -539,7 +527,7 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 	{
 		$details = $eventhandler->insert_event();
 		$plugins->run_hooks("calendar_do_addevent_end");
-		redirect("calendar.php?action=event&eid=".$details['eid'], $lang->redirect_eventadded);
+		redirect(get_event_link($details['eid']), $lang->redirect_eventadded);
 	}
 }
 
@@ -809,7 +797,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 		{
 			$eventhandler->update_event();
 			$plugins->run_hooks("calendar_do_editevent_end");
-			redirect("calendar.php?action=event&eid=$eid", $lang->redirect_eventupdated);
+			redirect(get_event_link($eid), $lang->redirect_eventupdated);
 		}
 	}
 }
@@ -1100,6 +1088,8 @@ if($mybb->input['action'] == "calendar_main")
 		{
 			$event['subject'] .= " {$event['start_time_hours']}:{$event['start_time_mins']} - {$event['end_time_hours']}:{$event['end_time_mins']}";
 		}
+		
+		$event['eventlink'] = get_event_link($event['eid']);
 
 		if(empty($event['repeat_days']))
 		{
@@ -1170,11 +1160,11 @@ if($mybb->input['action'] == "calendar_main")
 		{
 			if($bdays[$i] > 1)
 			{
-				$birthdays = "<a href=\"calendar.php?action=dayview&amp;year={$year}&amp;month={$month}&amp;day={$i}\">{$bdays[$i]} {$lang->birthdays}</a><br />\n";
+				$birthdays = "<a href=\"".get_calendar_link($year, $month, $i)."\">{$bdays[$i]} {$lang->birthdays}</a><br />\n";
 			}
 			else
 			{
-				$birthdays = "<a href=\"calendar.php?action=dayview&amp;year={$year}&amp;month={$month}&amp;day={$i}\">{$bdays[$i]} {$lang->birthday}</a><br />\n";
+				$birthdays = "<a href=\"".get_calendar_link($year, $month, $i)."\">{$bdays[$i]} {$lang->birthday}</a><br />\n";
 			}
 		}
 		else
@@ -1187,6 +1177,7 @@ if($mybb->input['action'] == "calendar_main")
 			$events[$i] = "&nbsp;";
 		}
 		
+		$day_url = get_calendar_link($year, $month, $i);
 		if((my_date("d") == $i) && (my_date("n") == $month) && (my_date("Y") == $year))
 		{
 			eval("\$daybits .= \"".$templates->get("calendar_daybit_today")."\";");
@@ -1250,7 +1241,9 @@ if($mybb->input['action'] == "calendar_main")
 		$prevmonth = $month-1;
 		$prevyear = $year;
 	}
-
+	
+	$prev_link = get_calendar_link($prevmonth, $prevyear);
+	$next_link = get_calendar_link($nextmonth, $nextyear);
 
 	$yearsel = '';
 	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)

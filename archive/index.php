@@ -166,8 +166,9 @@ switch($action)
 			// Damn thats a lot of parsing, now to determine which username to show..
 			if($post['userusername'])
 			{
-				$post['username'] = "<a href=\"".$mybb->settings['bburl']."/member.php?action=profile&amp;uid=".$post['uid']."\">".$post['userusername']."</a>";
+				$post['username'] = $post['userusername'];
 			}
+			$post['username'] = build_profile_link($post['username'], $post['uid']);
 
 			// Finally show the post
 			echo "<div class=\"post\">\n<div class=\"header\">\n<div class=\"author\"><h2>{$post['username']}</h2></div>";
@@ -197,12 +198,12 @@ switch($action)
 		// No threads and not a category? Error!
 		if($threadcount < 1 && $forum['type'] != 'c')
 		{
-			archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid={$id}");
+			archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id)."");
 			archive_error($lang->error_nothreads);
 		}
 
 		// Build the archive header.
-		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/forumdisplay.php?fid={$id}");
+		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id."");
 
 		if(!$mybb->settings['threadsperpage'])
 		{

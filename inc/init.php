@@ -162,25 +162,36 @@ add_shutdown('send_mail_queue');
 $rand = rand(0, 10);
 
 /* URL Definitions */
-define('FORUM_URL', "forumdisplay.php?fid={fid}");
-define('FORUM_URL_PAGED', "forumdisplay.php?fid={fid}&page={page}");
-define('THREAD_URL', "showthread.php?tid={tid}");
-define('THREAD_URL_PAGED', "showthread.php?tid={tid}&page={page}");
-define('THREAD_URL_ACTION', 'showthread.php?tid={tid}&action={action}');
-define('THREAD_URL_POST', 'showthread.php?tid={tid}&pid={pid}');
-define('POST_URL', "showthread.php?pid={pid}");
-define('PROFILE_URL', "member.php?action=profile&uid={uid}");
-define('ANNOUNCEMENT_URL', "announcements.php?aid={aid}");
-define('INDEX_URL', "index.php"); 
-/*
-define('FORUM_URL', "forum{fid}.html");
-define('FORUM_URL_PAGED', "forum{fid}-{page}.html");
-define('THREAD_URL', "thread{tid}.html");
-define('THREAD_URL_PAGED', "thread{tid}-{page}.html");
-define('THREAD_URL_ACTION', 'thread{tid}-{action}.html');
-define('THREAD_URL_POST', 'thread{tid}-p{pid}.html');
-define('POST_URL', "post{pid}.html");
-define('PROFILE_URL', "user{uid}.html");
-define('ANNOUNCEMENT_URL', "announcement{aid}.html");
-define('INDEX_URL', "index.php"); */
+if($mybb->settings['seourls'] == "yes")
+{
+	define('FORUM_URL', "forum{fid}.html");
+	define('FORUM_URL_PAGED', "forum{fid}-{page}.html");
+	define('THREAD_URL', "thread{tid}.html");
+	define('THREAD_URL_PAGED', "thread{tid}-{page}.html");
+	define('THREAD_URL_ACTION', 'thread{tid}-{action}.html');
+	define('THREAD_URL_POST', 'thread{tid}-p{pid}.html');
+	define('POST_URL', "post{pid}.html");
+	define('PROFILE_URL', "user{uid}.html");
+	define('ANNOUNCEMENT_URL', "announcement{aid}.html");
+	define('CALENDAR_URL', "calendar{year}-{month}.html");
+	define('CALENDAR_URL_DAY', 'calendar{year}-{month}-{day}.html');
+	define('EVENT_URL', "event{eid}.html");
+	define('INDEX_URL', "index.php");
+}
+else
+{
+	define('FORUM_URL', "forumdisplay.php?fid={fid}");
+	define('FORUM_URL_PAGED', "forumdisplay.php?fid={fid}&page={page}");
+	define('THREAD_URL', "showthread.php?tid={tid}");
+	define('THREAD_URL_PAGED', "showthread.php?tid={tid}&page={page}");
+	define('THREAD_URL_ACTION', 'showthread.php?tid={tid}&action={action}');
+	define('THREAD_URL_POST', 'showthread.php?tid={tid}&pid={pid}');
+	define('POST_URL', "showthread.php?pid={pid}");
+	define('PROFILE_URL', "member.php?action=profile&uid={uid}");
+	define('ANNOUNCEMENT_URL', "announcements.php?aid={aid}");
+	define('CALENDAR_URL', "calendar.php?year={year}&month={month}");
+	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&year={year}&month={month}&day={day}');
+	define('EVENT_URL', "calendar.php?action=event&eid={eid}");
+	define('INDEX_URL', "index.php");
+}
 ?>

@@ -634,7 +634,7 @@ if($mybb->input['action'] == "groupleaders")
 		$edit = makelinkcode($lang->edit_leader, "usergroups.php?".SID."&action=editgroupleader&lid=".$leader['lid']);
 		$delete = makelinkcode($lang->delete_leader, "usergroups.php?".SID."&action=do_deletegroupleader&gid=".$mybb->input['gid']."&uid=".$leader['uid']);
 		$editprofile = makelinkcode($lang->edit_profile, "users.php?".SID."&action=edit&uid=".$leader['uid']);
-		makelabelcode("<a href=\"../member.php?action=profile&uid=".$leader['uid']."\">".$leader['username']."</a>", "$edit $delete $editprofile");
+		makelabelcode(build_profile_link($leader['username'], $leader['uid']), "$edit $delete $editprofile");
 	}
 	if(!$editprofile) // Talk about cheating!
 	{
@@ -727,7 +727,7 @@ function radioAll(formName, value)
 	{
 		$bgcolor = getaltbg();
 		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\" width=\"25%\"><a href=\"../member.php?action=profile&uid=".$user['uid']."\">".$user['username']."</a></td>\n";
+		echo "<td class=\"$bgcolor\" width=\"25%\">".build_profile_link($user['username'], $user['uid'])."</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"30%\">".$user['reason']."</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"15%\"><input type=\"radio\" name=\"request[".$user['uid']."]\" value=\"accept\" /></td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\" width=\"15%\"><input type=\"radio\" name=\"request[".$user['uid']."]\" value=\"ignore\" checked=\"checked\" /></td>\n";
