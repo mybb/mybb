@@ -515,6 +515,11 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				echo $post;
 				exit;				
 			}
+			// Post is in the moderation queue
+			else
+			{
+				redirect(get_thread_link($tid, 0, "lastpost"), $lang->redirect_newreply_moderation);				
+			}
 		}
 		else
 		{
