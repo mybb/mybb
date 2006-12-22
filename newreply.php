@@ -26,6 +26,12 @@ $lang->load("newreply");
 $pid = $mybb->input['pid'];
 $tid = $mybb->input['tid'];
 
+// AJAX quick reply?
+if($mybb->input['ajax'])
+{
+	unset($mybb->input['previewpost']);
+}
+
 // Edit a draft post.
 $draft_pid = 0;
 $editdraftpid = '';
@@ -432,9 +438,89 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 
 		$plugins->run_hooks("newreply_do_newreply_end");
+		
+		// This was a post made via the ajax quick reply - we need to do some special things here
+		if($mybb->input['ajax'])
+		{
+			// Visible post
+			if($visible == 1)
+			{
+				// Set post counter
+				$postcounter = $thread['replies'] + 1;
+								
+				// Was there a new post since we hit the quick reply button?
+				if($mybb->input['lastpid'])
+				{
+					$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND pid!='{$pid}'", array("order_by" => "dateline", "order_dir" => "desc"));
+					$new_post = $db->fetch_array($query);
+					if($new_post['pid'] != $mybb->input['lastpid'])
+					{
+						redirect(get_thread_link($tid, 0, "lastpost"));
+					}
+				}
+				// Lets see if this post is on the same page as the one we're viewing or not
+				// if it isn't, redirect us
+				
+				if((($postcounter+1) % $perpage) == 0)
+				{
+					$post_page = ($postcounter+1) / $mybb->settings['postsperpage'];
+				}
+				else
+				{
+					$post_page = intval(($postcounter+1) / $mybb->settings['postsperpage']) + 1;
+				}
+				if($mybb->input['from_page'] && $post_page > $mybb->input['from_page'])
+				{
+					redirect(get_thread_link($tid, 0, "lastpost"));
+				}
+				// Return the post HTML and display it inline
+				$query = $db->query("
+					SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+					FROM ".TABLE_PREFIX."posts p
+					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+					LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+					LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
+					WHERE p.pid='{$pid}'
+				");
+				$post = $db->fetch_array($query);
 
-		$lang->redirect_newreply .= sprintf($lang->redirect_return_forum, $fid);
-		redirect($url, $lang->redirect_newreply);
+				// Now lets fetch all of the attachments for this post
+				$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
+				while($attachment = $db->fetch_array($query))
+				{
+					$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+				}
+				
+				// Is the currently logged in user a moderator of this forum?
+				if(is_moderator($fid) == "yes")
+				{
+					$ismod = true;
+				}
+				else
+				{
+					$ismod = false;
+				}
+				
+				// Establish altbg - may seem like this is backwards, but build_postbit reverses it
+				if(($postcounter - $mybb->settings['postsperpage']) % 2 != 0)
+				{
+					$altbg = "trow1";
+				}
+				else
+				{
+					$altbg = "trow2";
+				}
+				require_once MYBB_ROOT."inc/functions_post.php";
+				$post = build_postbit($post);
+				echo $post;
+				exit;				
+			}
+		}
+		else
+		{
+			$lang->redirect_newreply .= sprintf($lang->redirect_return_forum, $fid);
+			redirect($url, $lang->redirect_newreply);
+		}
 	}
 }
 

@@ -94,8 +94,6 @@ else
 	}
 }
 
-$charset = $lang->settings['charset'];
-
 $lang->load("global");
 $lang->load("xmlhttp");
 
@@ -346,13 +344,6 @@ else if($mybb->input['action'] == "edit_post")
 			}
 		}
 		
-		//die(str_replace("&", "&amp;", $message));
-		if($debug_this == 1)
-		{
-			$fp = fopen(MYBB_ROOT."uploads/test.log", "a");
-			fwrite($fp, $message."\n\n\n");
-			fclose($fp);
-		}
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("update");
@@ -491,6 +482,163 @@ else if($mybb->input['action'] == "get_multiquoted")
 	header("Content-type: text/plain; charset={$charset}");
 	echo $message;
 	exit;	
+}
+else if($mybb->input['action'] == "quick_reply")
+{
+	// Fetch the thread
+	$thread = get_thread($post['tid']);
+
+	// Fetch the specific forum this thread/post is in.
+	$forum = get_forum($thread['fid']);
+
+	// Missing thread, invalid forum? Error.
+	if(!$thread['tid'] || !$forum['fid'] || $forum['type'] != "f")
+	{
+		xmlhttp_error($lang->thread_doesnt_exist);
+	}
+	
+	// Fetch forum permissions.
+	$forumpermissions = forum_permissions($forum['fid']);
+	
+	if($forumpermissions['canview'] == "no" || $forumpermissions['canpostreplys'] == "no")
+	{
+		xmlhttp_error($lang->no_permission_reply);
+	}
+	
+	$message = strval($mybb->input['message']);
+	if(my_strtolower($charset) != "utf-8")
+	{
+		if(function_exists("iconv"))
+		{
+			$message = iconv("UTF-8", $charset, $message);
+		}
+		else if(function_exists("mb_convert_encoding"))
+		{
+			$message = mb_convert_encoding($message, $charset, "UTF-8");
+		}
+		else if(my_strtolower($charset) == "iso-8859-1")
+		{
+			$message = utf8_decode($message);
+		}
+	}	
+
+	// Set up posthandler.
+	require_once MYBB_ROOT."inc/datahandlers/post.php";
+	$posthandler = new PostDataHandler("insert");
+
+	// Set the post data that came from the input to the $post array.
+	$post = array(
+		"tid" => $mybb->input['tid'],
+		"replyto" => $mybb->input['replyto'],
+		"fid" => $thread['fid'],
+		"uid" => $mybb->user['uid'],
+		"username" => $mybb->user['username'],
+		"message" => $message,
+		"ipaddress" => get_ip(),
+	);
+
+	// Set up the post options from the input.
+	$post['options'] = array(
+		"signature" => $mybb->input['postoptions']['signature'],
+		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
+		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
+	);
+
+	// Apply moderation options if we have them
+	$post['modoptions'] = $mybb->input['modoptions'];
+
+	$posthandler->set_data($post);
+
+	// Now let the post handler do all the hard work.
+	$valid_post = $posthandler->validate_post();
+
+	$post_errors = array();
+	// Fetch friendly error messages if this is an invalid post
+	if(!$valid_post)
+	{
+		$post_errors = $posthandler->get_friendly_errors();
+		$errors = implode("\n\n", $post_errors);
+		xmlhttp_error($errors);
+	}
+
+	// Send our headers.
+	header("Content-type: text/html; charset={$charset}");
+	
+	$postinfo = $posthandler->insert_post();
+	$pid = $postinfo['pid'];
+	$visible = $postinfo['visible'];
+
+	// Mark any quoted posts so they're no longer selected - attempts to maintain those which weren't selected
+	if($mybb->input['quoted_ids'] && $_COOKIE['multiquote'] && $mybb->settings['multiquote'] != "off")
+	{
+		// We quoted all posts - remove the entire cookie
+		if($mybb->input['quoted_ids'] == "all")
+		{
+			my_unsetcookie("multiquote");
+		}
+		// Only quoted a few - attempt to remove them from the cookie
+		else
+		{
+			$quoted_ids = explode("|", $mybb->input['quoted_ids']);
+			$multiquote = explode("|", $_COOKIE['multiquote']);
+			if(is_array($multiquote) && is_array($quoted_ids))
+			{
+				foreach($multiquote as $key => $quoteid)
+				{
+					// If this ID was quoted, remove it from the multiquote list
+					if(in_array($quoteid, $quoted_ids))
+					{
+						unset($multiquote[$key]);
+					}
+				}
+				// Still have an array - set the new cookie
+				if(is_array($multiquote))
+				{
+					$new_multiquote = implode(",", $multiquote);
+					my_setcookie("multiquote", $new_multiquote);
+				}
+				// Otherwise, unset it
+				else
+				{
+					my_unsetcookie("multiquote");
+				}
+			}
+		}
+	}
+	
+	// Deciding the fate
+	if($visible == 1)
+	{
+		$query = $db->query("
+			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
+			WHERE p.pid='{$pid}'
+		");
+		$post = $db->fetch_array($query);
+		
+		// Now lets fetch all of the attachments for this post
+		$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
+		while($attachment = $db->fetch_array($query))
+		{
+			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+		}
+
+		require_once MYBB_ROOT."inc/functions_post.php";
+		$post = build_postbit($post);
+		echo $post;
+		exit;
+	}
+	else
+	{
+		echo "<script type=\"text/javascript\">\n";
+		echo "alert('{$lang->quick_reply_post_moderation}')\n";
+		echo "window.location= '".get_thread_link($tid)."';";
+		echo "</script>\n";
+		exit;
+	}
 }
 else if($mybb->input['action'] == "refresh_captcha")
 {

@@ -731,7 +731,7 @@ var inlineId = {$tid};
 	{$newreply}{$newthread}
 </div>
 {$multipage}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;" id="post_list">
 <tr>
 <td class="thead" colspan="2">
 	<div style="float: right;">
@@ -747,6 +747,7 @@ var inlineId = {$tid};
 <td class="tcat" width="85%"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 </tr>
 {$posts}
+<!-- mybb:quickreply -->
 {$threadpages}
 <tr>
 <td colspan="2" class="tfoot">
@@ -2779,16 +2780,13 @@ function showBcc()
 </table>
 <br />]]></template>
 		<template name="postbit_edit" version="120"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" alt="{$lang->postbit_edit}" title="{$lang->postbit_edit}" /></a>
-<script type="text/javascript">
-	document.write('<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}<\/a><\/div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}<\/a><\/div><\/div>');
-	new PopupMenu("edit_post_{$post['pid']}");
-</script>]]></template>
+<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
+<script type="text/javascript">new PopupMenu("edit_post_{$post['pid']}");</script>]]></template>
 		<template name="postbit_email" version="120"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_email.gif" alt="{$lang->postbit_email}" title="{$lang->postbit_email}" /></a>]]></template>
 		<template name="postbit_find" version="120"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_find.gif" alt="{$lang->postbit_find}" title="{$lang->postbit_find}" /></a>]]></template>
 		<template name="postbit_pm" version="120"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_pm.gif" alt="{$lang->postbit_pm}" title="{$lang->postbit_pm}" /></a>]]></template>
-		<template name="postbit_quickdelete" version="120"><![CDATA[<script type="text/javascript">
-document.write('<a href="javascript:Thread.deletePost({$post['pid']});"><img src="{$theme['imglangdir']}\/postbit_delete.gif" alt="{$lang->postbit_qdelete}" title="{$lang->postbit_qdelete}" \/><\/a>');
-</script>]]></template>
+		<template name="postbit_quickdelete" version="120"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->postbit_qdelete}" title="{$lang->postbit_qdelete}" /></a>
+<script type="text/javascript">document.getElementById('quick_delete_{$post['pid']}').style.display='';</script>]]></template>
 		<template name="postbit_quote" version="120"><![CDATA[<a href="newreply.php?tid={$tid}&amp;pid={$post['pid']}"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->postbit_quote}" title="{$lang->postbit_quote}" /></a>]]></template>
 		<template name="postbit_report" version="120"><![CDATA[<a href="javascript:Thread.reportPost({$post['pid']});"><img src="{$theme['imglangdir']}/postbit_report.gif" alt="{$lang->postbit_report}" title="{$lang->postbit_report}" /></a>]]></template>
 		<template name="postbit_www" version="120"><![CDATA[<a href="{$post['website']}" target="_blank"><img src="{$theme['imglangdir']}/postbit_www.gif" alt="{$lang->postbit_website}" title="{$lang->postbit_website}" /></a>]]></template>
@@ -3570,12 +3568,14 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	clickableEditor.bindSmilieInserter("clickable_smilies");
 </script>]]></template>
 		<template name="showthread_quickreply" version="120"><![CDATA[<br />
-<form method="post" action="newreply.php?tid={$tid}&amp;proccessed=1" name="input">
+<form method="post" action="newreply.php?tid={$tid}&amp;proccessed=1" name="input" id="quick_reply_form">
 <input type="hidden" name="subject" value="RE: {$thread['subject']}" />
 <input type="hidden" name="action" value="do_newreply" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="quoted_ids" value="" />
+<input type="hidden" name="lastpid" value="{$last_pid}" id="lastpid" />
+<input type="hidden" name="from_page" value="{$page}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
@@ -3860,7 +3860,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="forumdisplay_threads_sep" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="{$colspan}">{$lang->normal_threads}</td>
 </tr>]]></template>
-		<template name="postbit" version="120"><![CDATA[<tr>
+		<template name="postbit" version="120"><![CDATA[<tr id="post_{$post['pid']}">
 <td class="{$altbg}" width="15%" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 {$post['user_details']}
 </td>
@@ -6966,7 +6966,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 <br />]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
-		<template name="postbit_multiquote" version="120"><![CDATA[<script type="text/javascript">document.write("<a href=\"javascript:Thread.multiQuote({$post['pid']});\"><img src=\"{$theme['imglangdir']}/postbit_multiquote.gif\" alt=\"{$lang->postbit_multiquote}\" title=\"{$lang->postbit_multiquote}\" id=\"multiquote_{$post['pid']}\" /><\/a>");</script>]]></template>
+		<template name="postbit_multiquote" version="120"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_multiquote.gif" alt="{$lang->postbit_multiquote}" title="{$lang->postbit_multiquote}" id="multiquote_{$post['pid']}" /></a>
+<script type="text/javascript">document.getElementById('multiquote_link_{$post['pid']}').style.display='';</script>]]></template>
 		<template name="private_send_autocomplete" version="120"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
 <script type="text/javascript">
 	new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});

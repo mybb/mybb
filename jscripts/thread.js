@@ -3,8 +3,9 @@ var Thread = {
 	{
 		Thread.qeCache = new Array();
 		Thread.initMultiQuote();
+		Thread.initQuickReply();
 	},
-	
+
 	initMultiQuote: function()
 	{
 		var quoted = Cookie.get("multiquote");
@@ -239,6 +240,64 @@ var Thread = {
 		Thread.qeCache[pid] = "";
 		this.spinner.destroy();
 		this.spinner = '';
+	},
+	
+	initQuickReply: function()
+	{
+		if($('quick_reply_form'))
+		{
+			Event.observe($('quick_reply_form'), "submit", Thread.quickReply.bindAsEventListener(this));
+		}
+	},
+	
+	quickReply: function(e)
+	{
+		Event.stop(e);
+		if(this.quick_replying)
+		{
+			return false;
+		}
+		this.quick_replying = 1;
+		var post_body = Form.serialize('quick_reply_form');
+		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
+		new ajax('newreply.php?ajax=1', {method: 'post', postBody: post_body, onComplete: function(request) { Thread.quickReplyDone(request); }});
+		return false;
+	},
+	
+	quickReplyDone: function(request)
+	{
+		if(request.responseText.match(/<error>(.*)<\/error>/))
+		{
+			message = request.responseText.match(/<error>(.*)<\/error>/);
+			if(!message[1])
+			{
+				message[1] = "An unknown error occurred.";
+			}
+			alert('There was an error posting your reply:\n\n'+message[1]);
+		}
+		else if(request.responseText.match(/id="post_([0-9]+)"/))
+		{
+			var pid = request.responseText.match(/id="post_([0-9]+)"/)[1];
+			$('post_list').innerHTML = $('post_list').innerHTML.replace("<!-- mybb:quickreply -->", request.responseText+"<!-- mybb:quickreply -->");
+			request.responseText.evalScripts();
+			Form.reset('quick_reply_form');
+			if($('lastpid'))
+			{
+				$('lastpid').value = pid;
+			}
+		}
+		else
+		{
+			request.responseText.evalScripts();
+		}
+		if(this.spinner)
+		{
+			this.spinner.destroy();
+			this.spinner = '';
+		}
+		this.quick_replying = 0;
 	}
+	
+	
 }
 Event.observe(window, 'load', Thread.init);

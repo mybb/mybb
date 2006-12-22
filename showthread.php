@@ -483,27 +483,6 @@ if($mybb->input['action'] == "thread")
 		$inlinemod = "";
 	}
 
-	// Decide whether or not to include signatures.
-	if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no")
-	{
-		if($mybb->user['signature'])
-		{
-			$postoptionschecked['signature'] = "checked";
-		}
-		if($mybb->user['emailnotify'] == "yes")
-		{
-			$postoptionschecked['emailnotify'] = "checked";
-		}
-	    mt_srand((double) microtime() * 1000000);
-	    $posthash = md5($mybb->user['uid'].mt_rand());
-		
-		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
-	}
-	else
-	{
-		$quickreply = "";
-	}
-
 	// Increment the thread view.
 	$db->shutdown_query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='$tid'");
 	++$thread['views'];
@@ -807,6 +786,30 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
+	// Decide whether or not to include signatures.
+	if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no")
+	{
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "dateline", "order_dir" => "desc"));
+		$last_pid = $db->fetch_field($query, "pid");
+		
+		if($mybb->user['signature'])
+		{
+			$postoptionschecked['signature'] = "checked";
+		}
+		if($mybb->user['emailnotify'] == "yes")
+		{
+			$postoptionschecked['emailnotify'] = "checked";
+		}
+	    mt_srand((double) microtime() * 1000000);
+	    $posthash = md5($mybb->user['uid'].mt_rand());
+		
+		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
+	}
+	else
+	{
+		$quickreply = "";
+	}
+	
 	// If the user is a moderator, show the moderation tools.
 	if($ismod)
 	{

@@ -9,6 +9,7 @@
 // note: Stripped down for use within MyBB. Full version available at the above URL
 
 var Prototype = {
+  ScriptFragment: '(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)',
   emptyFunction: function() {},
   K: function(x) { return x }
 }
@@ -767,3 +768,160 @@ if (/Konqueror|Safari|KHTML/.test(navigator.userAgent)) {
     return [valueL, valueT];
   }
 }
+
+var Form = {
+  reset: function(form) {
+    $(form).reset();
+    return form;
+  }
+};
+
+Object.extend(Form, {
+  serialize: function(form) {
+    var elements = Form.getElements($(form));
+    var queryComponents = new Array();
+
+    for (var i = 0; i < elements.length; i++) {
+      var queryComponent = Form.Element.serialize(elements[i]);
+      if (queryComponent)
+        queryComponents.push(queryComponent);
+    }
+
+    return queryComponents.join('&');
+  },
+
+  getElements: function(form) {
+    form = $(form);
+    var elements = new Array();
+
+    for (var tagName in Form.Element.Serializers) {
+      var tagElements = form.getElementsByTagName(tagName);
+      for (var j = 0; j < tagElements.length; j++)
+        elements.push(tagElements[j]);
+    }
+    return elements;
+  },
+
+  getInputs: function(form, typeName, name) {
+    form = $(form);
+    var inputs = form.getElementsByTagName('input');
+
+    if (!typeName && !name)
+      return inputs;
+
+    var matchingInputs = new Array();
+    for (var i = 0; i < inputs.length; i++) {
+      var input = inputs[i];
+      if ((typeName && input.type != typeName) ||
+          (name && input.name != name))
+        continue;
+      matchingInputs.push(input);
+    }
+
+    return matchingInputs;
+  }
+});
+
+Form.Element = {
+  focus: function(element) {
+    $(element).focus();
+    return element;
+  },
+
+  select: function(element) {
+    $(element).select();
+    return element;
+  }
+};
+
+Object.extend(Form.Element, {
+  serialize: function(element) {
+    element = $(element);
+    var method = element.tagName.toLowerCase();
+    var parameter = Form.Element.Serializers[method](element);
+
+    if (parameter) {
+      var key = encodeURIComponent(parameter[0]);
+      if (key.length == 0) return;
+
+      if (parameter[1].constructor != Array)
+        parameter[1] = [parameter[1]];
+
+      return parameter[1].map(function(value) {
+        return key + '=' + encodeURIComponent(value);
+      }).join('&');
+    }
+  },
+
+  getValue: function(element) {
+    element = $(element);
+    var method = element.tagName.toLowerCase();
+    var parameter = Form.Element.Serializers[method](element);
+
+    if (parameter)
+      return parameter[1];
+  }
+});
+
+var Field = Form.Element;
+
+Form.Element.Serializers = {
+  input: function(element) {
+    switch (element.type.toLowerCase()) {
+      case 'checkbox':
+      case 'radio':
+        return Form.Element.Serializers.inputSelector(element);
+      default:
+        return Form.Element.Serializers.textarea(element);
+    }
+    return false;
+  },
+
+  inputSelector: function(element) {
+    if (element.checked)
+      return [element.name, element.value];
+  },
+
+  textarea: function(element) {
+    return [element.name, element.value];
+  },
+
+  select: function(element) {
+    return Form.Element.Serializers[element.type == 'select-one' ?
+      'selectOne' : 'selectMany'](element);
+  },
+
+  selectOne: function(element) {
+    var value = '', opt, index = element.selectedIndex;
+    if (index >= 0) {
+      opt = element.options[index];
+      value = opt.value || opt.text;
+    }
+    return [element.name, value];
+  },
+
+  selectMany: function(element) {
+    var value = [];
+    for (var i = 0; i < element.length; i++) {
+      var opt = element.options[i];
+      if (opt.selected)
+        value.push(opt.value || opt.text);
+    }
+    return [element.name, value];
+  }
+}
+
+
+Object.extend(String.prototype, {	
+  extractScripts: function() {
+    var matchAll = new RegExp(Prototype.ScriptFragment, 'img');
+    var matchOne = new RegExp(Prototype.ScriptFragment, 'im');
+    return (this.match(matchAll) || []).map(function(scriptTag) {
+      return (scriptTag.match(matchOne) || ['', ''])[1];
+    });
+  },
+
+  evalScripts: function() {
+    return this.extractScripts().map(function(script) { return eval(script) });
+  }
+});	

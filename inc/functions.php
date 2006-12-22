@@ -491,6 +491,15 @@ function error($error="", $title="")
 		$error = $lang->unknown_error;
 	}
 	
+	// AJAX error message?
+	if($mybb->input['ajax'])
+	{
+		// Send our headers.
+		header("Content-type: text/html; charset={$lang->settings['charset']}");		
+		echo "<error>{$error}</error>\n";
+		exit;
+	}
+	
 	if(!$title)
 	{
 		$title = $mybb->settings['bbname'];
@@ -527,6 +536,16 @@ function inline_error($errors, $title="")
 		$errors = array($errors);
 	}
 	
+	// AJAX error message?
+	if($mybb->input['ajax'])
+	{
+		$error = implode("\n\n", $errors);
+		// Send our headers.
+		header("Content-type: text/html; charset={$lang->settings['charset']}");		
+		echo "<error>{$error}</error>\n";
+		exit;
+	}	
+	
 	foreach($errors as $error)
 	{
 		$errorlist .= "<li>".$error."</li>\n";
@@ -557,6 +576,11 @@ function error_no_permission()
 	$url = $_SERVER['REQUEST_URI'];
 	$url = str_replace("&", "&amp;", $url);
 	
+	if($mybb->input['ajax'])
+	{
+		exit;
+	}
+
 	if($mybb->user['uid'])
 	{
 		$lang->error_nopermission_user_5 = sprintf($lang->error_nopermission_user_5, $mybb->user['username']);
@@ -582,6 +606,21 @@ function redirect($url, $message="", $title="")
 
 	$loadpmpopup = false;
 
+	
+	if($mybb->input['ajax'])
+	{
+		// Send our headers.
+		header("Content-type: text/html; charset={$lang->settings['charset']}");
+		echo "<script type=\"text/javascript\">\n";
+		if($message != "")
+		{
+			echo "alert('{$message}');\n";
+		}
+		echo "window.location = '{$url}';\n";
+		echo "</script>\n";
+		exit;
+	}
+	
 	if(!$message)
 	{
 		$message = $lang->redirect;
