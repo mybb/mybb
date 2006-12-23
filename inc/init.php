@@ -48,11 +48,11 @@ $mybb = new MyBB;
 
 // Include the required core files
 require_once MYBB_ROOT."inc/config.php";
-if(!isset($config['dbtype']))
+if(empty($config['dbtype']))
 {
 	$mybb->trigger_generic_error("board_not_installed", true);
 }
-if(!isset($config['admin_dir']))
+if(empty($config['admin_dir']))
 {
 	$config['admin_dir'] = "admin";
 }

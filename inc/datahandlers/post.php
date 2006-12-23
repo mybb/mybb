@@ -303,8 +303,8 @@ class PostDataHandler extends DataHandler
 		// Are we even turned on?
 		if(empty($mybb->settings['postmergehrs']))
 		{
-						return true;
-		}		
+			return true;
+		}
 		
 		// Assign a default seperator if none is specified
 		if(trim($mybb->settings['postmergesep']) == "")
@@ -361,8 +361,8 @@ class PostDataHandler extends DataHandler
 			return true;
 		}
 		
-		// Otherwise return false
-		return false;
+		$query = $db->simple_select("posts", "pid,message,visible", "uid='".$post['uid']."' AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
+		return $db->fetch_array($query);
 	}
 
 	/**
@@ -673,20 +673,18 @@ class PostDataHandler extends DataHandler
 			}
 		}
 		
-		if($this->method != "update" && $visible != -2 && $this->verify_post_merge() != true)
+		if($this->method != "update" && $visible != -2)
 		{
-			$query = $db->simple_select("posts", "pid,message,visible", "uid='".$post['uid']."' AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
-			$double_post = $db->fetch_array($query);
-			
-			// Only combine if they are both invisible (mod queue'd forum) or both visible
-			if($double_post['visible'] == $visible)
-			{	
+			$double_post = $this->verify_post_merge();
+	if($double_post !== true && $double_post['visible'] == $visible)
+			{
+				// Only combine if they are both invisible (mod queue'd forum) or both visible
 				$double_post['message'] .= $mybb->settings['postmergesep'].$db->escape_string($post['message']);
 				$update_query = array(
 					"message" => $double_post['message']
 				);
 				$query = $db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
-				
+			
 				// Return the post's pid and whether or not it is visible.
 				return array(
 					"pid" => $double_post['pid'],
