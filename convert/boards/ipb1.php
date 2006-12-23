@@ -41,6 +41,8 @@ class Convert_ipb1 extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_settings" => array("name" => "Import Invision Power Board 1 Settings",
 									  "dependencies" => "db_configuration"),
+						 "import_events" => array("name" => "Import Invision Power Board 1 Calendar Events",
+									  "dependencies" => "db_configuration"),
 						);
 
 	function ipb_db_connect()
@@ -1457,6 +1459,87 @@ EOF;
 		$import_session['start_privatemessages'] += $import_session['privatemessages_per_screen'];
 		$output->print_footer();
 	}
+	
+	function import_events()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_events']))
+		{
+			$query = $this->old_db->simple_select("calendar_events", "COUNT(*) as count");
+			$import_session['total_events'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_events'])
+		{
+			// If there are more polls to do, continue, or else, move onto next module
+			if($import_session['total_events'] - $import_session['start_events'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_events';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['events_per_screen']))
+		{
+			$import_session['events_per_screen'] = intval($mybb->input['events_per_screen']);
+		}
+		
+		if(empty($import_session['events_per_screen']))
+		{
+			$import_session['start_events'] = 0;
+			echo "<p>Please select how many events to import at a time:</p>
+<p><input type=\"text\" name=\"events_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_events']-$import_session['start_events'])." events left to import and ".round((($import_session['total_events']-$import_session['start_events'])/$import_session['events_per_screen']))." pages left at a rate of {$import_session['events_per_screen']} per page.<br /><br />";
+			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("events");
+
+			$query = $this->old_db->simple_select("calendar_events", "*", "", array('limit_start' => $import_session['start_events'], 'limit' => $import_session['events_per_screen']));
+			while($event = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting event #{$event['eventid']}... ";				
+
+				$insert_event['import_eid'] = $event['eventid'];
+				$insert_event['subject'] = $event['title'];
+				$insert_event['author'] = $this->get_import_uid($event['userid']);
+				$insert_event['date'] = date('j-n-Y', $event['unix_stamp']);
+				$insert_event['description'] = $event['event_text'];
+				$insert_event['private'] = int_to_yesno($event['priv_event']);				
+				$insert_event['start_day'] = $event['mday'];
+				$insert_event['start_month'] = $event['month'];
+				$insert_event['start_year'] = $event['year'];
+				$insert_event['end_day'] = $event['end_day'];
+				$insert_event['end_month'] = $event['end_month'];
+				$insert_event['end_year'] = $event['event_year'];
+				$insert_event['repeat_days'] = $event['repeat_unit'];
+
+				$this->insert_event($insert_event);
+
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no events to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_events'] += $import_session['events_per_screen'];
+		$output->print_footer();
+	}
+	
 	
 	function get_firstpost($tid)
 	{

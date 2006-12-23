@@ -158,6 +158,7 @@ function upload_avatar()
 		case "image/x-jpg":
 		case "image/x-jpeg":
 		case "image/pjpeg":
+		case "image/jpg":
 			$img_type = 2;
 			break;
 		case "image/png":
@@ -336,6 +337,7 @@ function upload_attachment($attachment)
 			case "image/x-jpg":
 			case "image/x-jpeg":
 			case "image/pjpeg":
+			case "image/jpg":
 				$img_type = 2;
 				break;
 			case "image/png":
