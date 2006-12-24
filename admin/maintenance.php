@@ -266,7 +266,7 @@ if($mybb->input['action'] == "do_recountpostcounts")
 	
 	while($user = $db->fetch_array($query))
 	{
-		$query2 = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS post_count", "uid='{$user['uid']}' AND visible>0");
+		$query2 = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS post_count", "uid='{$user['uid']}' AND visible>0{$fids}");
 		$num_posts = $db->fetch_field($query2, "post_count");
 		$db->update_query(TABLE_PREFIX."users", array("postnum" => intval($num_posts)), "uid='{$user['uid']}'");
 	}
