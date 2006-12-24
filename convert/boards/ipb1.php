@@ -42,7 +42,7 @@ class Convert_ipb1 extends Converter {
 						 "import_settings" => array("name" => "Import Invision Power Board 1 Settings",
 									  "dependencies" => "db_configuration"),
 						 "import_events" => array("name" => "Import Invision Power Board 1 Calendar Events",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_users"),
 						);
 
 	function ipb_db_connect()

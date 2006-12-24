@@ -42,7 +42,7 @@ class Convert_vbulletin3 extends Converter {
 						 "import_settings" => array("name" => "Import vBulletin 3 Settings",
 									  "dependencies" => "db_configuration"),
 						 "import_events" => array("name" => "Import vBulletin 3 Calendar Events",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_users"),
 						);
 
 	function vbulletin_db_connect()
