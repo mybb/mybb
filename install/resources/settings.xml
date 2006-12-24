@@ -612,7 +612,7 @@ DESC=Descending]]></optionscode>
 		</setting>		
 		<setting name="postmergemins">
 			<title>Post Merge Time</title>
-			<description><![CDATA[With this enabled, posts posted within x minutes by the same author right after each other, will be merged. Set the time limit (in hours) to merge posts. Set to 0 or leave blank to disable this feature. Default: 60]]></description>
+			<description><![CDATA[With this enabled, posts posted within x minutes by the same author right after each other, will be merged. Set the time limit (in minutes) to merge posts. Set to 0 or leave blank to disable this feature. Default: 60]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
