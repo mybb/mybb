@@ -2317,9 +2317,8 @@ function add_breadcrumb($name, $url="")
  * Build the forum breadcrumb nagiation (the navigation to a specific forum including all parent forums)
  *
  * @param int The forum ID to build the navigation for
- * @param int 1 if we're in archive mode, 0 if not
  */
-function build_forum_breadcrumb($fid, $archive=0)
+function build_forum_breadcrumb($fid)
 {
 	global $pforumcache, $db, $currentitem, $forum_cache, $navbits, $lang, $base_url, $archiveurl;
 
@@ -2350,7 +2349,7 @@ function build_forum_breadcrumb($fid, $archive=0)
 				$navsize = count($navbits);
 				$navbits[$navsize]['name'] = $forumnav['name'];
 
-				if($archive == 1)
+				if(IN_ARCHIVE == 1)
 				{
 					// Set up link to forum in breadcrumb.
 					if($pforumcache[$fid][$forumnav['pid']]['type'] == 'f' || $pforumcache[$fid][$forumnav['pid']]['type'] == 'c')
