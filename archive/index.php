@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define("IN_ARCHIVE", 1);
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -36,9 +37,9 @@ switch($action)
 				archive_error_no_permission();
 			}
 		}
-		
+
 		$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
-		
+
 		$parser_options = array(
 			"allow_html" => $announcement['allowhtml'],
 			"allow_mycode" => $announcement['allowmycode'],
@@ -105,15 +106,15 @@ switch($action)
 			$start = 0;
 			$page = 1;
 		}
-		
-		$pids = array();		
+
+		$pids = array();
 		// Fetch list of post IDs to be shown
 		$query = $db->simple_select("posts", "pid", "tid='{$id}' AND visible='1'", array('limit_start' => $start, 'limit' => $perpage));
 		while($post = $db->fetch_array($query))
 		{
 			$pids[$post['pid']] = $post['pid'];
 		}
-		
+
 		$pids = implode(",", $pids);
 
 		// Build attachments cache
@@ -138,7 +139,7 @@ switch($action)
 			{
 				$post['username'] = $post['userusername'];
 			}
-			
+
 			// Parse the message
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
@@ -203,7 +204,7 @@ switch($action)
 		}
 
 		// Build the archive header.
-		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id."");
+		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id.""), 1);
 
 		if(!$mybb->settings['threadsperpage'])
 		{
@@ -293,7 +294,7 @@ switch($action)
 					else
 					{
 						$lang_reply_text = $lang->archive_reply;
-					}					
+					}
 					echo "<li><a href=\"{$base_url}thread-{$sticky['tid']}.html\">{$sticky['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$sticky['replies']} {$lang_reply_text})</span></li>";
 				}
