@@ -648,9 +648,9 @@ lang.click_mark_read = "{$lang->click_mark_read}";
 		<template name="header_welcomeblock_member" version="120"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
 		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;uid={$mybb->user['uid']}">{$lang->welcome_logout}</a>)<br />
 				<span class="links">
-					<a href="#" onclick="MyBB.popupWindow('misc.php?action=buddypopup', 'buddyList', 170, 300);">{$lang->welcome_open_buddy_list}</a>
+					<a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', 'buddyList', 170, 300);">{$lang->welcome_open_buddy_list}</a>
 				</span>
-				<a href="search.php?action=getnew">{$lang->welcome_newposts}</a> | <a href="search.php?action=getdaily">{$lang->welcome_todaysposts}</a> | <a href="private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}]]></template>
+				<a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a> | <a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a> | <a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}]]></template>
 		<template name="postbit_online" version="120"><![CDATA[<a href="online.php"><span style="color:#15A018;"><strong>{$lang->postbit_status_online}</strong></span></a>]]></template>
 		<template name="showthread_moderationoptions" version="120"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
