@@ -265,7 +265,6 @@ if($mybb->input['action'] == "event")
 	if(empty($event['repeat_days']))
 	{
 		eval("\$event_dates = \"".$templates->get("calendar_eventbit_dates")."\";");
-
 	}
 	else
 	{

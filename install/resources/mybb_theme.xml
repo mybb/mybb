@@ -2247,10 +2247,10 @@ var inlineId = {$fid};
 		<template name="headerinclude" version="120"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
-<script type="text/javascript" src="jscripts/prototype.lite.js?ver=120"></script>
-<script type="text/javascript" src="jscripts/moo.ajax.js?ver=120"></script>
-<script type="text/javascript" src="jscripts/general.js?ver=120"></script>
-<script type="text/javascript" src="jscripts/popup_menu.js?ver=120"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.lite.js?ver=120"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/moo.ajax.js?ver=120"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=120"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=120"></script>
 <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" />
 <script language="Javascript" type="text/javascript">
 <!--
@@ -2399,16 +2399,16 @@ var inlineId = {$fid};
 ]]></template>
 		<template name="header_welcomeblock_guest" version="120"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
 		{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)]]></template>
-		<template name="header" version="120"><![CDATA[	<a name="top" id="top"></a>
-	<div id="container">
+		<template name="header" version="120"><![CDATA[	<div id="container">
+		<a name="top" id="top"></a>
 		<div id="header">
-			<div class="logo"><a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" /></a></div>
+			<div class="logo"><a href="{$mybb->settings['bburl']}/index.php"><img src="{$mybb->settings['bburl']}/{$theme['logo']}" alt="{$mybb->settings['bbname']}" /></a></div>
 			<div class="menu">
 				<ul>
-					<li><a href="{$mybb->settings['bburl']}/search.php"><img src="{$theme['imgdir']}/toplinks/search.gif" alt="" />{$lang->toplinks_search}</a></li>
-					<li><a href="{$mybb->settings['bburl']}/memberlist.php"><img src="{$theme['imgdir']}/toplinks/memberlist.gif" alt="" />{$lang->toplinks_memberlist}</a></li>
-					<li><a href="{$mybb->settings['bburl']}/calendar.php"><img src="{$theme['imgdir']}/toplinks/calendar.gif" alt="" />{$lang->toplinks_calendar}</a></li>
-					<li><a href="{$mybb->settings['bburl']}/misc.php?action=help"><img src="{$theme['imgdir']}/toplinks/help.gif" alt="" />{$lang->toplinks_help}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/search.php"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/toplinks/search.gif" alt="" />{$lang->toplinks_search}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/memberlist.php"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/toplinks/memberlist.gif" alt="" />{$lang->toplinks_memberlist}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/calendar.php"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/toplinks/calendar.gif" alt="" />{$lang->toplinks_calendar}</a></li>
+					<li><a href="{$mybb->settings['bburl']}/misc.php?action=help"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/toplinks/help.gif" alt="" />{$lang->toplinks_help}</a></li>
 				</ul>
 			</div>
 			<hr class="hidden" />
