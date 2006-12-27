@@ -2140,7 +2140,7 @@ var inlineId = {$fid};
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_avatar_gallery" version="120"><![CDATA[<html>
+		<template name="usercp_avatar_gallery" version="123"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
 {$headerinclude}
@@ -2151,6 +2151,7 @@ var inlineId = {$fid};
 <tr>
 {$usercpnav}
 <td valign="top">
+{$avatar_error}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->change_avatar}</strong></td>

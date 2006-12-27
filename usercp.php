@@ -1438,25 +1438,33 @@ if($mybb->input['action'] == "editsig")
             remove_avatars($mybb->user['uid']); 
 		} 
 		elseif($mybb->input['gallery']) // Gallery avatar 
-        { 
-	        if($mybb->input['gallery'] == "default") 
-            { 
-            	$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['avatar']); 
-			} 
-            else 
-		    { 
-	            $avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['gallery']."/".$mybb->input['avatar']); 
-            } 
-            if(file_exists($avatarpath)) 
-            { 
-	            $updated_avatar = array( 
-	                "avatar" => $avatarpath, 
-                    "avatardimensions" => "", 
-                    "avatartype" => "gallery" 
-               ); 
-               $db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'"); 
-            } 
-            remove_avatars($mybb->user['uid']); 
+        {
+			if(empty($mybb->input['avatar']))
+			{
+				$avatar_error = $lang->error_noavatar;
+			}
+			
+			if(empty($avatar_error))
+			{
+		        if($mybb->input['gallery'] == "default") 
+	            { 
+	            	$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['avatar']); 
+				} 
+	            else 
+			    { 
+		            $avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['gallery']."/".$mybb->input['avatar']); 
+	            } 
+	            if(file_exists($avatarpath)) 
+	            { 
+		            $updated_avatar = array( 
+		                "avatar" => $avatarpath, 
+	                    "avatardimensions" => "", 
+	                    "avatartype" => "gallery" 
+	               ); 
+	               $db->update_query(TABLE_PREFIX."users", $updated_avatar, "uid='".$mybb->user['uid']."'"); 
+	            } 
+	            remove_avatars($mybb->user['uid']);
+			}
 		} 
         elseif($_FILES['avatarupload']['name']) // upload avatar 
         { 
