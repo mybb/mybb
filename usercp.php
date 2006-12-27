@@ -1434,6 +1434,9 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("usercp_do_avatar_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
+	
+	$avatar_error = "";
+
 	if($mybb->input['remove']) // remove avatar
 	{
 		$updated_avatar = array(
@@ -1446,24 +1449,33 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	}
 	elseif($mybb->input['gallery']) // Gallery avatar
 	{
-		if($mybb->input['gallery'] == "default")
+		if(empty($mybb->input['avatar']))
 		{
-			$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['avatar']);
+			$avatar_error = $lang->error_noavatar;
 		}
-		else
+		
+		if(empty($avatar_error))
 		{
-			$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['gallery']."/".$mybb->input['avatar']);
+			if($mybb->input['gallery'] == "default")
+			{
+				$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['avatar']);
+			}
+			else
+			{
+				$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['gallery']."/".$mybb->input['avatar']);
+			}
+
+			if(file_exists($avatarpath))
+			{
+				$updated_avatar = array(
+					"avatar" => $avatarpath,
+					"avatardimensions" => "",
+					"avatartype" => "gallery"
+				);
+				$db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
+			}
+			remove_avatars($mybb->user['uid']);
 		}
-		if(file_exists($avatarpath))
-		{
-			$updated_avatar = array(
-				"avatar" => $avatarpath,
-				"avatardimensions" => "",
-				"avatartype" => "gallery"
-			);
-			$db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
-		}
-		remove_avatars($mybb->user['uid']);
 	}
 	elseif($_FILES['avatarupload']['name']) // upload avatar
 	{
@@ -1502,7 +1514,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			$avatar_error = $lang->error_invalidavatarurl;
 		}
 
-		if(!$avatar_error)
+		if(empty($avatar_error))
 		{
 			if($width && $height && $mybb->settings['maxavatardims'] != "")
 			{
@@ -1515,7 +1527,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			}
 		}
 		
-		if(!$avatar_error)
+		if(empty($avatar_error))
 		{
 			if($width > 0 && $height > 0)
 			{
@@ -1530,6 +1542,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			remove_avatars($mybb->user['uid']);
 		}
 	}
+
 	if(empty($avatar_error))
 	{
 		$plugins->run_hooks("usercp_do_avatar_end");

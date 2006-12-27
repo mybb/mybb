@@ -3304,7 +3304,6 @@ function my_strtolower($string)
 	if(function_exists("mb_strtolower"))
 	{
 		$string = mb_strtolower($string);
-
 	}
 	else
 	{
@@ -3352,7 +3351,6 @@ function my_strtoupper($string)
 	if(function_exists("mb_strtoupper"))
 	{
 		$string = mb_strtoupper($string);
-
 	}
 	else
 	{
@@ -3361,7 +3359,6 @@ function my_strtoupper($string)
 
 	return $string;
 }
-
 
 /**
  * Returns any html entities to their original character
