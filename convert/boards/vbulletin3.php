@@ -174,7 +174,7 @@ class Convert_vbulletin3 extends Converter {
 	<th colspan="2" class="first last">Database Settings</th>
 </tr>
 <tr class="first">
-	<td class="first"><label for="dbengine">Database Enginie:</label></td>
+	<td class="first"><label for="dbengine">Database Engine:</label></td>
 	<td class="last alt_col"><select name="dbengine" id="dbengine">{$dbengines}</select></td>
 </tr>
 
