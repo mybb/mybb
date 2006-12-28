@@ -478,25 +478,18 @@ if(!$mybb->input['action'])
 		// Format the username of this poster
 		$reputation_vote['username'] = format_name($reputation_vote['username'], $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
 		$reputation_vote['username'] = build_profile_link($reputation_vote['username'], $reputation_vote['uid']);
-
-		if($reptuation_vote['reputation'] != 0)
-		{
-			if(substr($reputation_vote['reputation'], 0, 1 != "-"))
-			{
-				$vote_reputation = "+{$reputation_vote['reputation']}";
-			}
-		}
-		$vote_reputation = "({$vote_reputation})";
+		
+		$vote_reputation = intval($reputation_vote['reputation']);
 
 		// This is a negative reputation
-		if($reputation_vote['reputation'] < 0)
+		if($vote_reputation < 0)
 		{
 			$status_class = "trow_reputation_negative";
 			$vote_type_class = "reputation_negative";
 			$vote_type = $lang->negative;
 		}
 		// This is a neutral reputation
-		else if($reputation_vote['reputation'] == 0)
+		else if($vote_reputation == 0)
 		{
 			$status_class = "trow_reputation_neutral";
 			$vote_type_class = "reputation_neutral";
@@ -505,10 +498,17 @@ if(!$mybb->input['action'])
 		// Otherwise, this is a positive reputation
 		else
 		{
+			if($vote_reputation{0} != "-")
+			{
+				$vote_reputation = "+{$vote_reputation}";
+			}
 			$status_class = "trow_reputation_positive";
 			$vote_type_class = "reputation_positive";
 			$vote_type = $lang->positive;
 		}
+		
+		$vote_reputation = "({$vote_reputation})";
+
 		// Get the reputation for the user who posted this comment
 		if($reputation_vote['adduid'] == 0)
 		{
