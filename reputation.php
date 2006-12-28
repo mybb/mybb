@@ -498,10 +498,7 @@ if(!$mybb->input['action'])
 		// Otherwise, this is a positive reputation
 		else
 		{
-			if($vote_reputation{0} != "-")
-			{
-				$vote_reputation = "+{$vote_reputation}";
-			}
+			$vote_reputation = "+{$vote_reputation}";
 			$status_class = "trow_reputation_positive";
 			$vote_type_class = "reputation_positive";
 			$vote_type = $lang->positive;
