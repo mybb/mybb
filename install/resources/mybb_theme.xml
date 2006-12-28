@@ -1574,8 +1574,8 @@ var inlineId = {$fid};
 </body>
 </html>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="postbit_away" version="120"><![CDATA[<a href="{$post['profilelink']}"><span style="color:#800000;">{$lang->postbit_status_away}</span></a>]]></template>
-		<template name="calendar_dayview_birthdays_bday" version="120"><![CDATA[{$comma}<a href="{$bdays['profilelink']}{$age}]]></template>
+		<template name="postbit_away" version="120"><![CDATA[<a href="{$post['profilelink_plain']}"><span style="color:#800000;">{$lang->postbit_status_away}</span></a>]]></template>
+		<template name="calendar_dayview_birthdays_bday" version="120"><![CDATA[{$comma}<a href="{$bdays['profilelink']}">{$age}</a>]]></template>
 		<template name="misc_imcenter_icq" version="120"><![CDATA[<html>
 <head>
 <title>{$lang->icq_message_center}</title>

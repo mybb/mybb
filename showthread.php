@@ -53,7 +53,7 @@ if(!$thread['username'])
 }
 
 // Is the currently logged in user a moderator of this forum?
-if(is_moderator($fid) == "yes")
+if(is_moderator($fid))
 {
 	$ismod = true;
 }
@@ -369,7 +369,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Check if user is allowed to edit posts; if so, show "edit poll" link.
-		if(is_moderator($fid, 'caneditposts') != 'yes')
+		if(!is_moderator($fid, 'caneditposts'))
 		{
 			$edit_poll = '';
 		}
@@ -787,7 +787,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Decide whether or not to include signatures.
-	if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no")
+	if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid)) && $mybb->settings['quickreply'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no")
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "dateline", "order_dir" => "desc"));
 		$last_pid = $db->fetch_field($query, "pid");

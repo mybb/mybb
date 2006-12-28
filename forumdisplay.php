@@ -273,7 +273,7 @@ $bgcolor = "trow1";
 $visibleonly = "AND visible='1'";
 
 // Check if the active user is a moderator and get the inline moderation tools.
-if(is_moderator($fid) == "yes")
+if(is_moderator($fid))
 {
 	eval("\$inlinemodcol = \"".$templates->get("forumdisplay_inlinemoderation_col")."\";");
 	$ismod = true;
@@ -287,7 +287,7 @@ else
 	$ismod = false;
 }
 
-if(is_moderator($fid, "caneditposts") == "yes" || $fpermissions['caneditposts'] == "yes")
+if(is_moderator($fid, "caneditposts") || $fpermissions['caneditposts'] == "yes")
 {
 	$can_edit_titles = 1;
 }

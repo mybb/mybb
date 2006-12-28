@@ -31,7 +31,7 @@ $fid = $thread['fid'];
 $tid = $thread['tid'];
 
 // Is the currently logged in user a moderator of this forum?
-if(is_moderator($fid) == "yes")
+if(is_moderator($fid))
 {
 	$ismod = true;
 }

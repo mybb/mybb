@@ -432,7 +432,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
 			}
 			
-			if(is_moderator($fid) == "yes")
+			if(is_moderator($fid))
 			{
 				$visible_where = "AND p.visible != 2";
 			}
@@ -660,7 +660,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 
 	// Show the moderator options
-	if(is_moderator($fid) == "yes")
+	if(is_moderator($fid))
 	{
 		$modoptions = $mybb->input['modoptions'];
 		if($modoptions['closethread'] == "yes")

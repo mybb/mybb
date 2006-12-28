@@ -348,7 +348,7 @@ function get_forum_unapproved($forum)
 	$unapproved_threads = $unapproved_posts = '';
 
 	// If the user is a moderator we need to fetch the count
-	if(is_moderator($forum['fid']) == "yes")
+	if(is_moderator($forum['fid']))
 	{
 		// Forum has one or more unaproved posts, format language string accordingly
 		if($forum['unapprovedposts'])

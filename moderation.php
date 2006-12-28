@@ -99,7 +99,7 @@ switch($mybb->input['action'])
 {
 	// Open or close a thread
 	case "openclosethread":
-		if(is_moderator($fid, "canopenclosethreads") != "yes")
+		if(!is_moderator($fid, "canopenclosethreads"))
 		{
 			error_no_permission();
 		}
@@ -128,7 +128,7 @@ switch($mybb->input['action'])
 
 	// Stick or unstick that post to the top bab!
 	case "stick";
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -157,7 +157,7 @@ switch($mybb->input['action'])
 
 	// Remove redirects to a specific thread
 	case "removeredirects":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -174,7 +174,7 @@ switch($mybb->input['action'])
 	case "deletethread":
 		add_breadcrumb($lang->nav_deletethread);
 
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
 			{
@@ -192,7 +192,7 @@ switch($mybb->input['action'])
 
 	// Delete the actual thread here
 	case "do_deletethread":
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
 			{
@@ -219,7 +219,7 @@ switch($mybb->input['action'])
 	case "deletepoll":
 		add_breadcrumb($lang->nav_deletepoll);
 
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
 			{
@@ -246,7 +246,7 @@ switch($mybb->input['action'])
 		{
 			error($lang->redirect_pollnotdeleted);
 		}
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
 			{
@@ -272,7 +272,7 @@ switch($mybb->input['action'])
 
 	// Approve a thread
 	case "approvethread":
-		if(is_moderator($fid, "canopenclosethreads") != "yes")
+		if(!is_moderator($fid, "canopenclosethreads"))
 		{
 			error_no_permission();
 		}
@@ -291,7 +291,7 @@ switch($mybb->input['action'])
 
 	// Unapprove a thread
 	case "unapprovethread":
-		if(is_moderator($fid, "canopenclosethreads") != "yes")
+		if(!is_moderator($fid, "canopenclosethreads"))
 		{
 			error_no_permission();
 		}
@@ -311,7 +311,7 @@ switch($mybb->input['action'])
 	// Delete selective posts in a thread
 	case "deleteposts":
 		add_breadcrumb($lang->nav_deleteposts);
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			error_no_permission();
 		}
@@ -353,7 +353,7 @@ switch($mybb->input['action'])
 
 	// Lets delete those selected posts!
 	case "do_deleteposts":
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			error_no_permission();
 		}
@@ -398,7 +398,7 @@ switch($mybb->input['action'])
 	case "mergeposts":
 		add_breadcrumb($lang->nav_mergeposts);
 
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -439,7 +439,7 @@ switch($mybb->input['action'])
 
 	// Lets merge those selected posts!
 	case "do_mergeposts":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -466,7 +466,7 @@ switch($mybb->input['action'])
 	// Move a thread
 	case "move":
 		add_breadcrumb($lang->nav_move);
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -483,17 +483,17 @@ switch($mybb->input['action'])
 		$moveto = intval($mybb->input['moveto']);
 		$method = $mybb->input['method'];
 
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
 		// Check if user has moderator permission to move to destination
-		if(is_moderator($moveto, "canmanagethreads") != "yes" && is_moderator($fid, "canmovetononmodforum") != "yes")
+		if(!is_moderator($moveto, "canmanagethreads") && !is_moderator($fid, "canmovetononmodforum"))
 		{
 			error_no_permission();
 		}
 		$newperms = forum_permissions($moveto);
-		if($newperms['canview'] == "no" && is_moderator($fid, "canmovetononmodforum") != "yes")
+		if($newperms['canview'] == "no" && !is_moderator($fid, "canmovetononmodforum"))
 		{
 			error_no_permission();
 		}
@@ -537,7 +537,7 @@ switch($mybb->input['action'])
 	// Thread notes editor
 	case "threadnotes":
 		add_breadcrumb($lang->nav_threadnotes);
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -588,7 +588,7 @@ switch($mybb->input['action'])
 
 	// Update the thread notes!
 	case "do_threadnotes":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -606,7 +606,7 @@ switch($mybb->input['action'])
 	// Lets look up the ip address of a post
 	case "getip":
 		add_breadcrumb($lang->nav_getip);
-		if(is_moderator($fid, "canviewips") != "yes")
+		if(!is_moderator($fid, "canviewips"))
 		{
 			error_no_permission();
 		}
@@ -631,7 +631,7 @@ switch($mybb->input['action'])
 	// Merge threads
 	case "merge":
 		add_breadcrumb($lang->nav_merge);
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -644,7 +644,7 @@ switch($mybb->input['action'])
 
 	// Lets get those threads together baby! (Merge threads)
 	case "do_merge":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -680,7 +680,7 @@ switch($mybb->input['action'])
 		{ // sanity check
 			error($lang->error_mergewithself);
 		}
-		if(is_moderator($mergethread['fid'], "canmanagethreads") != "yes")
+		if(!is_moderator($mergethread['fid'], "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -703,7 +703,7 @@ switch($mybb->input['action'])
 	// Divorce the posts in this thread (Split!)
 	case "split":
 		add_breadcrumb($lang->nav_split);
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -751,7 +751,7 @@ switch($mybb->input['action'])
 
 	// Lets break them up buddy! (Do the split)
 	case "do_split":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -804,7 +804,7 @@ switch($mybb->input['action'])
 	// Delete Threads - Inline moderation
 	case "multideletethreads":
 		add_breadcrumb($lang->nav_multi_deletethreads);
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			error_no_permission();
 		}
@@ -821,7 +821,7 @@ switch($mybb->input['action'])
 
 	// Actually delete the threads - Inline moderation
 	case "do_multideletethreads":
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			error_no_permission();
 		}
@@ -840,7 +840,7 @@ switch($mybb->input['action'])
 
 	// Open threads - Inline moderation
 	case "multiopenthreads":
-		if(is_moderator($fid, "canopenclosethreads") != "yes")
+		if(!is_moderator($fid, "canopenclosethreads"))
 		{
 			error_no_permission();
 		}
@@ -859,7 +859,7 @@ switch($mybb->input['action'])
 
 	// Close threads - Inline moderation
 	case "multiclosethreads":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -878,7 +878,7 @@ switch($mybb->input['action'])
 
 	// Approve threads - Inline moderation
 	case "multiapprovethreads":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -898,7 +898,7 @@ switch($mybb->input['action'])
 
 	// Unapprove threads - Inline moderation
 	case "multiunapprovethreads":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -918,7 +918,7 @@ switch($mybb->input['action'])
 
 	// Stick threads - Inline moderation
 	case "multistickthreads":
-		if(is_moderator($fid, "canopenclosethreads") != "yes")
+		if(!is_moderator($fid, "canopenclosethreads"))
 		{
 			error_no_permission();
 		}
@@ -937,7 +937,7 @@ switch($mybb->input['action'])
 
 	// Unstick threads - Inline moderaton
 	case "multiunstickthreads":
-		if(is_moderator($fid, "canopenclosethreads") != "yes")
+		if(!is_moderator($fid, "canopenclosethreads"))
 		{
 			error_no_permission();
 		}
@@ -965,7 +965,7 @@ switch($mybb->input['action'])
 		$inlineids = implode("|", $threads);
 		clearinline($fid, "forum");
 
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -976,7 +976,7 @@ switch($mybb->input['action'])
 
 	// Actually move the threads in Inline moderation
 	case "do_multimovethreads":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -986,12 +986,12 @@ switch($mybb->input['action'])
 		{
 			$tids[] = $tid;
 		}
-		if(is_moderator($moveto, "canmanagethreads") != "yes" && is_moderator($fid, "canmovetononmodforum") != "yes")
+		if(!is_moderator($moveto, "canmanagethreads") && !is_moderator($fid, "canmovetononmodforum"))
 		{
 			error_no_permission();
 		}
 		$newperms = forum_permissions($moveto);
-		if($newperms['canview'] == "no" && is_moderator($fid, "canmovetononmodforum") != "yes")
+		if($newperms['canview'] == "no" && !is_moderator($fid, "canmovetononmodforum"))
 		{
 			error_no_permission();
 		}
@@ -1016,7 +1016,7 @@ switch($mybb->input['action'])
 	// Delete posts - Inline moderation
 	case "multideleteposts":
 		add_breadcrumb($lang->nav_multi_deleteposts);
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			error_no_permission();
 		}
@@ -1034,7 +1034,7 @@ switch($mybb->input['action'])
 
 	// Actually delete the posts in inline moderation
 	case "do_multideleteposts":
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			error_no_permission();
 		}
@@ -1070,7 +1070,7 @@ switch($mybb->input['action'])
 	// Merge posts - Inline moderation
 	case "multimergeposts":
 		add_breadcrumb($lang->nav_multi_mergeposts);
-		if(is_moderator($fid, "candeleteposts") != "yes")
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			error_no_permission();
 		}
@@ -1088,7 +1088,7 @@ switch($mybb->input['action'])
 
 	// Actually merge the posts - Inline moderation
 	case "do_multimergeposts":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -1109,7 +1109,7 @@ switch($mybb->input['action'])
 	// Split posts - Inline moderation
 	case "multisplitposts":
 		add_breadcrumb($lang->nav_multi_splitposts);
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -1153,7 +1153,7 @@ switch($mybb->input['action'])
 
 	// Actually split the posts - Inline moderation
 	case "do_multisplitposts":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -1189,7 +1189,7 @@ switch($mybb->input['action'])
 
 	// Approve posts - Inline moderation
 	case "multiapproveposts":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -1214,7 +1214,7 @@ switch($mybb->input['action'])
 
 	// Unapprove posts - Inline moderation
 	case "multiunapproveposts":
-		if(is_moderator($fid, "canmanagethreads") != "yes")
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -1238,7 +1238,7 @@ switch($mybb->input['action'])
 
 	// Manage selected reported posts
 	case "do_reports":
-		if(is_moderator() != "yes")
+		if(!is_moderator())
 		{
 			error_no_permission();
 		}
@@ -1278,7 +1278,7 @@ switch($mybb->input['action'])
 
 	// Show a listing of the reported posts
 	case "reports":
-		if(is_moderator() != "yes")
+		if(!is_moderator())
 		{
 			error_no_permission();
 		}
@@ -1382,7 +1382,7 @@ switch($mybb->input['action'])
 		output_page($reportedposts);
 		break;
 	case "allreports":
-		if(is_moderator() != "yes")
+		if(!is_moderator())
 		{
 			error_no_permission();
 		}

@@ -62,7 +62,7 @@ if($mybb->input['action'] == "newpoll")
 	add_breadcrumb($lang->nav_postpoll);
 
 	// No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
-	if(($thread['uid'] != $mybb->user['uid'] && is_moderator($fid) != "yes") || ($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no" || $forumpermissions['canpostpolls'] == "no"))
+	if(($thread['uid'] != $mybb->user['uid'] && !is_moderator($fid)) || ($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no" || $forumpermissions['canpostpolls'] == "no"))
 	{
 		error_no_permission();
 	}
@@ -141,7 +141,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 
 	// No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
-	if(($thread['uid'] != $mybb->user['uid'] && is_moderator($fid) != "yes") || ($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no" || $forumpermissions['canpostpolls'] == "no"))
+	if(($thread['uid'] != $mybb->user['uid'] && !is_moderator($fid)) || ($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no" || $forumpermissions['canpostpolls'] == "no"))
 	{
 		error_no_permission();
 	}
@@ -288,7 +288,7 @@ if($mybb->input['action'] == "editpoll")
 		error($lang->error_invalidthread);
 	}
 	
-	if(is_moderator($fid, "caneditposts") != "yes")
+	if(!is_moderator($fid, "caneditposts"))
 	{
 		error_no_permission();
 	}
@@ -436,7 +436,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		error($lang->error_invalidthread);
 	}
 	
-	if(is_moderator($thread['fid'], "caneditposts") != "yes")
+	if(!is_moderator($thread['fid'], "caneditposts"))
 	{
 		error_no_permission();
 	}

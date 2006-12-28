@@ -1149,7 +1149,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 
 	if($mybb->usergroup['issupermod'] == "yes")
 	{
-		return "yes";
+		return true;
 	}
 	else
 	{
@@ -1160,11 +1160,11 @@ function is_moderator($fid="0", $action="", $uid="0")
 
 			if($modcheck['mid'])
 			{
-				return "yes";
+				return true;
 			}
 			else
 			{
-				return "no";
+				return false;
 			}
 		}
 		else
@@ -1173,17 +1173,17 @@ function is_moderator($fid="0", $action="", $uid="0")
 
 			if(!$action && $modperms)
 			{
-				return "yes";
+				return true;
 			}
 			else
 			{
 				if($modperms[$action] == "yes")
 				{
-					return "yes";
+					return true;
 				}
 				else
 				{
-					return "no";
+					return false;
 				}
 			}
 		}

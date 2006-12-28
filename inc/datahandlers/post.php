@@ -225,14 +225,14 @@ class PostDataHandler extends DataHandler
 		}
 
 		// If this board has a maximum message length check if we're over it.
-		else if(my_strlen($post['message']) > $mybb->settings['maxmessagelength'] && $mybb->settings['maxmessagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
+		else if(my_strlen($post['message']) > $mybb->settings['maxmessagelength'] && $mybb->settings['maxmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
 		{
 			$this->set_error("message_too_long", array($mybb->settings['maxmessagelength']));
 			return false;
 		}
 
 		// And if we've got a minimum message length do we meet that requirement too?
-		else if(my_strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && is_moderator($post['fid'], "", $post['uid']) != "yes")
+		else if(my_strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
 		{
 			$this->set_error("message_too_short", array($mybb->settings['minmessagelength']));
 			return false;
@@ -275,7 +275,7 @@ class PostDataHandler extends DataHandler
 			$user = get_user($post['uid']);
 
 			// A little bit of calculation magic and moderator status checking.
-			if(time()-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && is_moderator($post['fid'], "", $user['uid']) != "yes")
+			if(time()-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && !is_moderator($post['fid'], "", $user['uid']))
 			{
 				// Oops, user has been flooding - throw back error message.
 				$time_to_wait = ($mybb->settings['postfloodsecs'] - (time()-$user['lastpost'])) + 1;
@@ -607,7 +607,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(is_moderator($post['fid'], "", $post['uid']) == "yes")
+			if(is_moderator($post['fid'], "", $post['uid']))
 			{
 				// Fetch the thread
 				$thread = get_thread($post['tid']);
@@ -663,7 +663,7 @@ class PostDataHandler extends DataHandler
 			$forum = get_forum($post['fid']);
 
 			// Decide on the visibility of this post.
-			if($forum['modposts'] == "yes" && is_moderator($thread['fid'], "", $thread['uid']) != "yes")
+			if($forum['modposts'] == "yes" && !is_moderator($thread['fid'], "", $thread['uid']))
 			{
 				$visible = 0;
 			}
@@ -967,7 +967,7 @@ class PostDataHandler extends DataHandler
 		{
 
 			// Decide on the visibility of this post.
-			if(($forum['modthreads'] == "yes" || $forum['modposts'] == "yes") && is_moderator($thread['fid'], "", $thread['uid']) != "yes")
+			if(($forum['modthreads'] == "yes" || $forum['modposts'] == "yes") && !is_moderator($thread['fid'], "", $thread['uid']))
 			{
 				$visible = 0;
 			}
@@ -1087,7 +1087,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(is_moderator($thread['fid'], "", $thread['uid']) == "yes" && is_array($thread['modoptions']))
+			if(is_moderator($thread['fid'], "", $thread['uid']) && is_array($thread['modoptions']))
 			{
 				$modoptions = $thread['modoptions'];
 				$modlogdata['fid'] = $this->tid;
@@ -1353,7 +1353,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// If we need to show the edited by, let's do so.
-		if(($mybb->settings['showeditedby'] == "yes" && is_moderator($post['fid'], "caneditposts", $post['edit_uid']) != "yes") || ($mybb->settings['showeditedbyadmin'] == "yes" && is_moderator($post['fid'], "caneditposts", $post['edit_uid']) == "yes"))
+		if(($mybb->settings['showeditedby'] == "yes" && !is_moderator($post['fid'], "caneditposts", $post['edit_uid'])) || ($mybb->settings['showeditedbyadmin'] == "yes" && is_moderator($post['fid'], "caneditposts", $post['edit_uid'])))
 		{
 			$this->post_update_data['edituid'] = intval($post['edit_uid']);
 			$this->post_update_data['edittime'] = time();

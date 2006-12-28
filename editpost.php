@@ -84,7 +84,7 @@ if(!$mybb->input['action'] || $mybb->input['previewpost'])
 
 if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
-	if(is_moderator($fid, "candeleteposts") != "yes")
+	if(!is_moderator($fid, "candeleteposts"))
 	{
 		if($thread['closed'] == "yes")
 		{
@@ -102,7 +102,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 }
 else
 {
-	if(is_moderator($fid, "caneditposts") != "yes")
+	if(!is_moderator($fid, "caneditposts"))
 	{
 		if($thread['closed'] == "yes")
 		{
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				delete_thread($tid);
 				update_forum_count($fid);
 				mark_reports($tid, "thread");
-				if(is_moderator($fid, "candeleteposts") != "yes")
+				if(!is_moderator($fid, "candeleteposts"))
 				{
 					log_moderator_action($modlogdata, "Deleted Thread");
 				}
@@ -220,7 +220,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				update_thread_count($tid);
 				update_forum_count($fid);
 				mark_reports($pid, "post");
-				if(is_moderator($fid, "candeleteposts") != "yes")
+				if(!is_moderator($fid, "candeleteposts"))
 				{
 					log_moderator_action($modlogdata, "Deleted Post");
 				}
@@ -362,7 +362,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			}
 			// Moderating options
 			$attach_mod_options = '';
-			if(is_moderator($fid) == "yes")
+			if(is_moderator($fid))
 			{
 				if($attachment['visible'] == 1)
 				{

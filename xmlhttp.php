@@ -180,7 +180,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	$forumpermissions = forum_permissions($forum['fid']);
 	
 	// If this user is not a moderator with "caneditposts" permissions.
-	if(is_moderator($forum['fid'], "caneditposts") != "yes")
+	if(!is_moderator($forum['fid'], "caneditposts"))
 	{
 		// Thread is closed - no editing allowed.
 		if($thread['closed'] == "yes")
@@ -293,7 +293,7 @@ else if($mybb->input['action'] == "edit_post")
 	$forumpermissions = forum_permissions($forum['fid']);
 	
 	// If this user is not a moderator with "caneditposts" permissions.
-	if(is_moderator($forum['fid'], "caneditposts") != "yes")
+	if(!is_moderator($forum['fid'], "caneditposts"))
 	{
 		// Thread is closed - no editing allowed.
 		if($thread['closed'] == "yes")
@@ -459,7 +459,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{	
-		if(is_moderator($quoted_post['fid']) != "yes" && $quoted_post['visible'] == 0)
+		if(!is_moderator($quoted_post['fid']) && $quoted_post['visible'] == 0)
 		{
 			continue;
 		}

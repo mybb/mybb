@@ -182,6 +182,7 @@ function build_postbit($post, $post_type=0)
 	{ // This post was made by a registered user
 
 		$post['username'] = $post['userusername'];
+		$post['profilelink_plain'] = get_profile_link($post['uid']);
 		$post['profilelink'] = build_profile_link(format_name($post['username'], $post['usergroup'], $post['displaygroup']), $post['uid']);
 		
 		if(trim($post['usertitle']) != "")
@@ -351,7 +352,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
 		
-		if((is_moderator($fid, "caneditposts") == "yes" || ($forumpermissions['caneditposts'] == 'yes' && $mybb->user['uid'] == $post['uid'])) && $mybb->user['uid'] != 0)
+		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 'yes' && $mybb->user['uid'] == $post['uid'])) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
@@ -370,7 +371,7 @@ function build_postbit($post, $post_type=0)
 			}
 		}
 		
-		if((is_moderator($fid, "candeleteposts") == "yes" || $can_delete == "yes") && $mybb->user['uid'] != 0)
+		if((is_moderator($fid, "candeleteposts") || $can_delete == "yes") && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
 		}
@@ -403,12 +404,12 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 		
-		if($forum['open'] != "no" && ($thread['closed'] != "yes" || is_moderator($forum['fid']) == "yes"))
+		if($forum['open'] != "no" && ($thread['closed'] != "yes" || is_moderator($forum['fid'])))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
 		
-		if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['multiquote'] != "off" && $forum['open'] != "no" && !$post_type)
+		if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid)) && $mybb->settings['multiquote'] != "off" && $forum['open'] != "no" && !$post_type)
 		{
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
@@ -585,7 +586,7 @@ function get_post_attachments($id, &$post)
 				$validationcount++;
 			}
 		}
-		if($validationcount > 0 && is_moderator($post['fid']) == 'yes')
+		if($validationcount > 0 && is_moderator($post['fid']))
 		{
 			if($validationcount == 1)
 			{

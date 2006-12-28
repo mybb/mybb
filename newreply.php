@@ -75,11 +75,11 @@ add_breadcrumb($lang->nav_newreply);
 $forumpermissions = forum_permissions($fid);
 
 // See if everything is valid up to here.
-if(isset($post) && (($post['visible'] == 0 && is_moderator($fid) != "yes") || $post['visible'] == 0))
+if(isset($post) && (($post['visible'] == 0 && !is_moderator($fid)) || $post['visible'] == 0))
 {
 	error($lang->error_invalidpost);
 }
-if(!$thread['subject'] || (($thread['visible'] == 0 && is_moderator($fid) != "yes") || $thread['visible'] < 0))
+if(!$thread['subject'] || (($thread['visible'] == 0 && !is_moderator($fid)) || $thread['visible'] < 0))
 {
 	error($lang->error_invalidthread);
 }
@@ -123,7 +123,7 @@ else
 }
 
 // Check to see if the thread is closed, and if the user is a mod.
-if(is_moderator($fid, "caneditposts") != "yes")
+if(!is_moderator($fid, "caneditposts"))
 {
 	if($thread['closed'] == "yes")
 	{
@@ -492,7 +492,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				}
 				
 				// Is the currently logged in user a moderator of this forum?
-				if(is_moderator($fid) == "yes")
+				if(is_moderator($fid))
 				{
 					$ismod = true;
 				}
@@ -565,7 +565,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
 			}
-			if(is_moderator($fid) == "yes")
+			if(is_moderator($fid))
 			{
 				$visible_where = "AND p.visible != 2";
 			}
@@ -920,7 +920,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$mybb->settings['postperpage'] = 20;
 		}
 		
-		if(is_moderator($fid) == "yes")
+		if(is_moderator($fid))
 		{
 			$visibility = "(visible='1' OR visible='0')";
 		}
@@ -1012,7 +1012,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
 	}
 	// Show the moderator options.
-	if(is_moderator($fid) == "yes")
+	if(is_moderator($fid))
 	{
 		if($thread['closed'] == "yes")
 		{

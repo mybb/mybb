@@ -422,7 +422,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 		$query = $db->simple_select("threads", "fid,tid,subject,visible", "tid IN($tid_sql) $fidnot $visible");
 		while($thread = $db->fetch_array($query))
 		{
-			if(is_moderator($thread['fid']) != "no" || $thread['visible'] != '0')
+			if(is_moderator($thread['fid']) || $thread['visible'] != '0')
 			{
 				$threads[$thread['tid']] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 				$fid_list[] = $thread['fid'];
