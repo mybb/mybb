@@ -280,10 +280,19 @@ class postParser
 			$mycode = $standard_mycode;
 		}
 
+		if(strtolower($lang->settings['charset']) == 'utf-8')
+		{
+			$extra_modifier = 'u';
+		}
+		else
+		{
+			$extra_modifier = '';
+		}
+
 		// Assign the MyCode to the cache.
 		foreach($mycode as $code)
 		{
-			$this->mycode_cache['find'][] = $code['regex'];
+			$this->mycode_cache['find'][] = $code['regex'] . $extra_modifier;
 			$this->mycode_cache['replacement'][] = $code['replacement'];
 		}
 	}
