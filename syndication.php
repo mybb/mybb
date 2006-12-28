@@ -134,7 +134,7 @@ $feedgenerator->set_channel($channel);
 // Loop through all the threads.
 while($thread = $db->fetch_array($query))
 {
-	$thread['link'] = $mybb->settings['bburl'].get_thread_link($thread['tid']);
+	$thread['link'] = $channel['link'] . get_thread_link($thread['tid']);
 	if($forumcache[$thread['fid']])
 	{
 		$feedgenerator->add_item($thread);
