@@ -31,6 +31,8 @@ class Convert_phpbb3 extends Converter {
 									  "dependencies" => "db_configuration,import_polls"),
 						 "import_posts" => array("name" => "Import phpBB 3 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
+						 "import_attachments" => array("name" => "Import phpBB 3 Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						 "import_moderators" => array("name" => "Import phpBB 3 Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_privatemessages" => array("name" => "Import phpBB 3 Private Messages",
@@ -1224,6 +1226,104 @@ EOF;
 			}
 		}
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_attachments()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->phpbb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_attachments']))
+		{
+			$query = $this->old_db->simple_select("attachments", "COUNT(*) as count");
+			$import_session['total_attachments'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_attachments'])
+		{
+			// If there are more attachments to do, continue, or else, move onto next module
+			if($import_session['total_attachments'] - $import_session['start_attachments'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_attachments';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['attachments_per_screen']))
+		{
+			$import_session['attachments_per_screen'] = intval($mybb->input['attachments_per_screen']);
+		}
+		
+		if(empty($import_session['attachments_per_screen']))
+		{
+			$import_session['start_attachments'] = 0;
+			echo "<p>Please select how many attachments to import at a time:</p>
+<p><input type=\"text\" name=\"attachments_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_attachments']-$import_session['start_attachments'])." attachments left to import and ".round((($import_session['total_attachments']-$import_session['start_attachments'])/$import_session['attachments_per_screen']))." pages left at a rate of {$import_session['attachments_per_screen']} per page.<br /><br />";
+			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("attachments");
+
+			$query = $this->old_db->simple_select("attachments", "*", "", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
+			while($attachment = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting attachment #{$attachment['attach_id']}... ";				
+								
+				
+
+				$insert_event['import_aid'] = $event['attach_id'];
+				$insert_event['pid'] = $this->get_import_pid($event['post_msg_id']);
+				
+				$insert_event['uid'] = $this->get_import_uid($event['poster_id']);
+				$insert_event['filename'] = $event['real_filename'];
+				$insert_event['attachname'] = $event['physical_filename'];
+				$insert_event['filetype'] = $event['mimetype'];
+				$insert_event['filesize'] = $event['filesize'];
+				$insert_event['downloads'] = $event['download_count'];
+				$insert_event['visible'] = 'yes';
+				$insert_event['thumbnail'] = '';
+				
+				$query2 = $db->simple_select("posts", "posthash", "pid = '{$insert_event['pid']}'");
+				$poshhash = $db->fetch_field($query2, "posthash");
+				if($posthash)
+				{
+					$insert_event['posthash'] = $posthash;
+				}
+				else
+				{
+					mt_srand ((double) microtime() * 1000000);
+					$insert_event['posthash'] = md5($thread['tid'].$mybb->user['uid'].mt_rand());
+				}
+
+				$this->insert_event($insert_event);
+				
+				if(!$posthash)
+				{
+					// Restore connection
+					$db->update_query("posts", array('posthash' => $insert_event['posthash']), "pid = '{$insert_event['pid']}'");
+				}
+				
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no attachments to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_attachments'] += $import_session['attachments_per_screen'];
 		$output->print_footer();
 	}
 	

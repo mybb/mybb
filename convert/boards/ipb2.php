@@ -33,6 +33,8 @@ class Convert_ipb2 extends Converter {
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import Invision Power Board 2 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
+						 "import_attachments" => array("name" => "Import Invision Power Board 2 Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						 "import_moderators" => array("name" => "Import Invision Power Board 2 Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_privatemessages" => array("name" => "Import Invision Power Board 2 Private Messages",
@@ -42,7 +44,7 @@ class Convert_ipb2 extends Converter {
 						 "import_settings" => array("name" => "Import Invision Power Board 2 Settings",
 									  "dependencies" => "db_configuration"),
 						 "import_events" => array("name" => "Import Invision Power Board 2 Calendar Events",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_users"),
 						);
 
 	function ipb_db_connect()
@@ -1530,6 +1532,87 @@ EOF;
 		$output->print_footer();
 	}
 	
+	function import_attachments()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_attachments']))
+		{
+			$query = $this->old_db->simple_select("attachments", "COUNT(*) as count");
+			$import_session['total_attachments'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_attachments'])
+		{
+			// If there are more attachments to do, continue, or else, move onto next module
+			if($import_session['total_attachments'] - $import_session['start_attachments'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_attachments';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['attachments_per_screen']))
+		{
+			$import_session['attachments_per_screen'] = intval($mybb->input['attachments_per_screen']);
+		}
+		
+		if(empty($import_session['attachments_per_screen']))
+		{
+			$import_session['start_attachments'] = 0;
+			echo "<p>Please select how many attachments to import at a time:</p>
+<p><input type=\"text\" name=\"attachments_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_attachments']-$import_session['start_attachments'])." attachments left to import and ".round((($import_session['total_attachments']-$import_session['start_attachments'])/$import_session['attachments_per_screen']))." pages left at a rate of {$import_session['attachments_per_screen']} per page.<br /><br />";
+			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("attachments");
+
+			$query = $this->old_db->simple_select("attachments", "*", "", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
+			while($attachment = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting attachment #{$attachment['attach_id']}... ";				
+
+				$insert_event['import_aid'] = $event['attach_id'];
+				$insert_event['pid'] = $this->get_import_pid($event['attach_pid']);
+				$insert_event['posthash'] = $event['attach_post_key'];
+				$insert_event['uid'] = $this->get_import_uid($event['attach_member_id']);
+				$insert_event['filename'] = $event['attach_file'];
+				$insert_event['attachname'] = strstr('/', $event['attach_location']);
+				$insert_event['filetype'] = get_attach_type($event['attach_ext']);
+				$insert_event['filesize'] = $event['attach_filesize'];
+				$insert_event['downloads'] = $event['attach_hits'];
+				$insert_event['visible'] = $event['attach_approved'];
+				$insert_event['thumbnail'] = strstr('/', $event['attach_thumb_location']);
+
+				$this->insert_event($insert_event);
+				
+				// Restore connection
+				$db->update_query("posts", array('posthash' => $insert_event['posthash']), "pid = '{$insert_event['pid']}'");
+				
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no attachments to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_attachments'] += $import_session['attachments_per_screen'];
+		$output->print_footer();
+	}
+	
 	function import_events()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -1608,6 +1691,17 @@ EOF;
 		}
 		$import_session['start_events'] += $import_session['events_per_screen'];
 		$output->print_footer();
+	}
+	
+	/**
+	 * Get a attachment mime type from the IPB database
+	 * @param string Extension
+	 * @return string The mime type
+	 */
+	function get_attach_type($ext)
+	{
+		$query = $this->old_db->simple_select("attachments_type", "atype_mimetype", "atype_extension = '{$ext}'");
+		return $this->old_db->fetch_field($query, "atype_mimetype");
 	}
 	
 	/**

@@ -27,6 +27,8 @@ class Convert_xmb extends Converter {
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import XMB Posts",
 									  "dependencies" => "db_configuration,import_threads"),
+						 "import_attachments" => array("name" => "Import XMB Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						 "import_moderators" => array("name" => "Import XMB Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_smilies" => array("name" => "Import XMB Smilies",

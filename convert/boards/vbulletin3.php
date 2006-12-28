@@ -33,6 +33,8 @@ class Convert_vbulletin3 extends Converter {
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import vBulletin 3 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
+						 "import_attachments" => array("name" => "Import vBulletin 3 Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						 "import_moderators" => array("name" => "Import vBulletin 3 Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_privatemessages" => array("name" => "Import vBulletin 3 Private Messages",
@@ -172,9 +174,10 @@ class Convert_vbulletin3 extends Converter {
 	<th colspan="2" class="first last">Database Settings</th>
 </tr>
 <tr class="first">
-	<td class="first"><label for="dbengine">Database Engine:</label></td>
+	<td class="first"><label for="dbengine">Database Enginie:</label></td>
 	<td class="last alt_col"><select name="dbengine" id="dbengine">{$dbengines}</select></td>
 </tr>
+
 <tr class="alt_row">
 	<td class="first"><label for="dbhost">Database Host:</label></td>
 	<td class="last alt_col"><input type="text" class="text_input" name="dbhost" id="dbhost" value="{$dbhost}" /></td>

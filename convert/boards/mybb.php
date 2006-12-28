@@ -32,6 +32,8 @@ class Convert_mybb extends Converter
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import MyBB Posts",
 									  "dependencies" => "db_configuration,import_threads"),
+						 "import_attachments" => array("name" => "Import MyBB Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						 "import_moderators" => array("name" => "Import MyBB Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_privatemessages" => array("name" => "Import MyBB Private Messages",
@@ -43,7 +45,7 @@ class Convert_mybb extends Converter
 						 "import_settings" => array("name" => "Import MyBB Settings",
 									  "dependencies" => "db_configuration,import_settinggroups"),
 						 "import_events" => array("name" => "Import MyBB Calendar Events",
-									  "dependencies" => "db_configuration"),
+									  "dependencies" => "db_configuration,import_users"),
 						);
 						
 	function mybb_db_connect()
