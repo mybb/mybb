@@ -97,7 +97,7 @@ if($mybb->input['action'] == "edit")
 	maketextareacode($lang->mycode_description_label, "description", $mycode['description']);
 	maketextareacode($lang->mycode_regex_label, "regex", $mycode['regex'], "4", "80");
 	maketextareacode($lang->mycode_replacement_label, "replacement", $mycode['replacement'], "4", "80");
-	makeinputcode($lang->parse_order, "parseorder", $mycode['disporder'], "4", $lang->parse_order_description);
+	makeinputcode($lang->parse_order, "parseorder", $mycode['parseorder'], "4", $lang->parse_order_description);
 	makeyesnocode($lang->mycode_active_label, "active", $mycode['active']);
 	endtable();
 	endform($lang->update_mycode);
