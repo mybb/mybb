@@ -48,14 +48,17 @@ $mybb = new MyBB;
 
 // Include the required core files
 require_once MYBB_ROOT."inc/config.php";
-if(empty($config['dbtype']))
+
+if(!isset($config['dbtype']))
 {
 	$mybb->trigger_generic_error("board_not_installed", true);
 }
+
 if(empty($config['admin_dir']))
 {
 	$config['admin_dir'] = "admin";
 }
+
 $mybb->config = $config;
 
 // This stuff is killing me for the moment. We need a better way of checking :S

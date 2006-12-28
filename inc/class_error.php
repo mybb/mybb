@@ -122,8 +122,8 @@ class errorHandler {
 				$this->output_error($type, $message, $file, $line);
 			}
 			else
-			{	
-				if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') != 0)
+			{
+				if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') == false)
 				{
 					$this->output_error($type, $message, $file, $line);
 				}
@@ -145,14 +145,14 @@ class errorHandler {
 	function show_warnings()
 	{
 		global $lang, $templates;
-		
+
 		if($this->warnings != "")
 		{
 			if(!$lang->warnings)
 			{
 				$lang->warnings = "The following warnings occured:";
 			}
-			
+
 			if(defined("IN_ADMINCP"))
 			{
 				$warning = makeacpphpwarning($this->warnings);
@@ -161,7 +161,7 @@ class errorHandler {
 			{
 				eval("\$warning = \"".$templates->get("warnings")."\";");
 			}
-			
+
 			return $warning;
 		}
 	}
@@ -176,12 +176,12 @@ class errorHandler {
 	function trigger($message="", $type=E_USER_ERROR)
 	{
 		global $lang;
-		
+
 		if(!$message)
 		{
 			$message = $lang->unknown_user_trigger;
 		}
-		
+
 		if($type == MYBB_SQL || $type == MYBB_TEMPLATE || $type == MYBB_GENERAL)
 		{
 			$this->error($type, $message);
