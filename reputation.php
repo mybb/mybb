@@ -101,11 +101,19 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	$plugins->run_hooks("reputation_do_add_start");
 
 	// Check if the reputation power they're trying to give is within their "power limit"
-	$reputation = $mybb->input['reputation'];
-	$reputation = intval(str_replace("-", "", $reputation));
-	if($mybb->input['reputation'] == "neutral")
+	$reputation = str_replace("-", "", $mybb->input['reputation']);
+
+	if($mybb->input['reputation_type'] == "neutral")
 	{
-		$mybb->input['reputation'] = 0;
+		$reputation_value = 0;
+	}
+	else if($mybb->input['reputation_type'] == "negative")
+	{
+		$reputation_value = intval("-" . $reputation);
+	}
+	else
+	{
+		$reputation_value = intval($reputation);
 	}
 
 	// Deleting our current reputation of this user.
@@ -133,7 +141,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	}
 
 	// The power for the reputation they specified was invalid.
-	if($reputation > $mybb->usergroup['reputationpower'] || !is_numeric($mybb->input['reputation']))
+	if(intval($reputation) > $mybb->usergroup['reputationpower'] || !is_numeric($reputation_value))
 	{
 		$show_back = 1;
 		$message = $lang->add_invalidpower;
@@ -146,7 +154,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	$reputation = array(
 		"uid" => intval($mybb->input['uid']),
 		"adduid" => $mybb->user['uid'],
-		"reputation" => $db->escape_string($mybb->input['reputation']),
+		"reputation" => $reputation_value,
 		"dateline" => time(),
 		"comments" => $db->escape_string($mybb->input['comments'])
 	);
@@ -210,21 +218,33 @@ if($mybb->input['action'] == "add")
 	$lang->user_comments = sprintf($lang->user_comments, $user['username']);
 
 	// Draw the "power" options
-	$positive_power = '';
-	$negative_power = '';
 	$vote_check = '';
+	$reputation_value = $mybb->usergroup['reputationpower'];
 	if($existing_reputation['uid'])
 	{
-		$vote_check[$existing_reputation['reputation']] = "checked=\"checked\"";
+		if($existing_reputation['reputation'] > 0)
+		{
+			$vote_check['positive'] = "checked=\"checked\"";
+		}
+		else if($existing_reputation['reputation'] < 0)
+		{
+			$vote_check['negative'] = "checked=\"checked\"";
+		}
+		else
+		{
+			$vote_check['neutral'] = "checked=\"checked\"";
+		}
+		
+		$reputation_value = intval(str_replace("-", "", $existing_reputation['reputation']));
 	}
-	$neutral_power = "&nbsp;&nbsp;<input type=\"radio\" name=\"reputation\" value=\"neutral\" id=\"neutral\" {$vote_check[0]} /> <label for=\"neutral\">{$lang->power_neutral}</label><br />";
-	$reputationpower = $mybb->usergroup['reputationpower'];
-	for($i = 1; $i <= $reputationpower; ++$i)
+
+	if($mybb->usergroup['reputationpower'] == 1)
 	{
-		$positive_title = sprintf($lang->power_positive, "+".$i);
-		$positive_power = "&nbsp;&nbsp;<input type=\"radio\" name=\"reputation\" value=\"+{$i}\" id=\"pos{$i}\" {$vote_check[+$i]} /> <label for=\"pos{$i}\">{$positive_title}</label><br />".$positive_power;
-		$negative_title = sprintf($lang->power_negative, "-".$i);
-		$negative_power .= "&nbsp;&nbsp;<input type=\"radio\" name=\"reputation\" value=\"-{$i}\" id=\"neg{$i}\" {$vote_check[-$i]} /> <label for=\"neg{$i}\">{$negative_title}</label><br />";
+		$reputationpower = $lang->reputation_point;
+	}
+	else
+	{
+		$reputationpower = sprintf($lang->reputation_points, $mybb->usergroup['reputationpower']);
 	}
 
 	eval("\$reputation_add = \"".$templates->get("reputation_add")."\";");
