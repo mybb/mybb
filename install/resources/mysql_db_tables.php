@@ -369,6 +369,7 @@ $tables[] = "CREATE TABLE mybb_mycode (
   regex text NOT NULL,
   replacement text NOT NULL,
   active char(3) NOT NULL default '',
+  parseorder smallint unsigned NOT NULL default '0',
   PRIMARY KEY(cid)
 ) TYPE=MyISAM;";
 

@@ -138,6 +138,11 @@ function upgrade8_dbchanges()
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxemails int(3) NOT NULL default '5' AFTER candsendemail");
 	}
+	
+	if(!$db->field_exists('parseorder' "mycode"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."mycode ADD parseorder smallint unsigned NOT NULL default '0' AFTER active");
+	}
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

@@ -395,7 +395,7 @@ class datacache
 	function updatemycode()
 	{
 		global $db;
-		$query = $db->simple_select("mycode", "regex, replacement", "active='yes'");
+		$query = $db->simple_select("mycode", "regex, replacement", "active='yes'", array('order_by' => 'parseorder'));
 		while($mycode = $db->fetch_array($query))
 		{
 			$mycodes[] = $mycode;

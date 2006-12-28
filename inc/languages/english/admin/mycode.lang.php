@@ -35,4 +35,7 @@ $l['delete'] = "Delete";
 $l['invalid_mycode'] = "You have specified an invalid MyCode.";
 $l['delete_mycode'] = "Delete Custom MyCode";
 $l['delete_confirm'] = "Are you sure you wish to delete the selected custom MyCode?";
+
+$l['parse_order'] = "Parse Order:";
+$l['parse_order_description'] = "<small>Order of which MyCode should parse first.</small>";
 ?>

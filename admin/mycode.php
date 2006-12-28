@@ -48,6 +48,7 @@ if($mybb->input['action'] == "add")
 	maketextareacode($lang->mycode_description_label, "description");
 	maketextareacode($lang->mycode_regex_label, "regex", "", "4", "80");
 	maketextareacode($lang->mycode_replacement_label, "replacement", "", "4", "80");
+	makeinputcode($lang->parse_order, "parseorder", "1", "4", $lang->parse_order_description);
 	makeyesnocode($lang->mycode_active_label, "active", "yes");
 	endtable();
 	endform($lang->insert_mycode);
@@ -65,7 +66,8 @@ if($mybb->input['action'] == "do_add")
 		"description" => $db->escape_string($mybb->input['description']),
 		"regex" => $db->escape_string($mybb->input['regex']),
 		"replacement" => $db->escape_string($mybb->input['replacement']),
-		"active" => $db->escape_string($mybb->input['active'])
+		"active" => $db->escape_string($mybb->input['active']),
+		"parseorder" => intval($mybb->input['parseorder'])
 	);
 	$plugins->run_hooks("admin_mycode_do_add");
 	$db->insert_query("mycode", $newmycode);
@@ -95,6 +97,7 @@ if($mybb->input['action'] == "edit")
 	maketextareacode($lang->mycode_description_label, "description", $mycode['description']);
 	maketextareacode($lang->mycode_regex_label, "regex", $mycode['regex'], "4", "80");
 	maketextareacode($lang->mycode_replacement_label, "replacement", $mycode['replacement'], "4", "80");
+	makeinputcode($lang->parse_order, "parseorder", $mycode['disporder'], "4", $lang->parse_order_description);
 	makeyesnocode($lang->mycode_active_label, "active", $mycode['active']);
 	endtable();
 	endform($lang->update_mycode);
@@ -112,7 +115,8 @@ if($mybb->input['action'] == "do_edit")
 		"description" => $db->escape_string($mybb->input['description']),
 		"regex" => $db->escape_string($mybb->input['regex']),
 		"replacement" => $db->escape_string($mybb->input['replacement']),
-		"active" => $db->escape_string($mybb->input['active'])
+		"active" => $db->escape_string($mybb->input['active']),
+		"parseorder" => intval($mybb->input['parseorder'])
 	);
 	
 	$plugins->run_hooks("admin_mycode_do_edit");
