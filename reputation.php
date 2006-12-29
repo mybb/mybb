@@ -33,12 +33,13 @@ if($mybb->usergroup['canview'] != "yes")
 }
 
 // If we have a specified incoming username, validate it and fetch permissions for it
-$user = get_user($mybb->input['uid']);
+$uid = intval($mybb->input['uid']);
+$user = get_user($uid);
 if(!$user['uid'])
 {
 	error($lang->add_no_uid);
 }
-$user_permissions = user_permissions(intval($mybb->input['uid']));
+$user_permissions = user_permissions($uid);
 
 $show_back = '0';
 
@@ -65,7 +66,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	}
 
 	// Is this user trying to give themself a reputation?
-	if($mybb->input['uid'] == $mybb->user['uid'])
+	if($uid == $mybb->user['uid'])
 	{
 		$message = $lang->add_yours;
 		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
@@ -91,7 +92,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	}
 
 	// Fetch the existing reputation for this user given by our current user if there is one.
-	$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND uid='".intval($mybb->input['uid'])."'");
+	$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND uid='{$uid}'");
 	$existing_reputation = $db->fetch_array($query);
 }
 
@@ -101,31 +102,18 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	$plugins->run_hooks("reputation_do_add_start");
 
 	// Check if the reputation power they're trying to give is within their "power limit"
-	$reputation = str_replace("-", "", $mybb->input['reputation']);
-
-	if($mybb->input['reputation_type'] == "neutral")
-	{
-		$reputation_value = 0;
-	}
-	else if($mybb->input['reputation_type'] == "negative")
-	{
-		$reputation_value = intval("-" . $reputation);
-	}
-	else
-	{
-		$reputation_value = intval($reputation);
-	}
+	$reputation = intval(str_replace("-", "", $mybb->input['reputation']));
 
 	// Deleting our current reputation of this user.
 	if($mybb->input['delete'])
 	{
-		$db->delete_query("reputation", "uid='".intval($mybb->input['uid'])."' AND adduid='".$mybb->user['uid']."'");
+		$db->delete_query("reputation", "uid='{$uid}' AND adduid='".$mybb->user['uid']."'");
 
 		// Recount the reputation of this user - keep it in sync.
-		$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
-		$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='".intval($mybb->input['uid'])."'");
+		$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
 		eval("\$error = \"".$templates->get("reputation_deleted")."\";");
 		output_page($error);
 		exit;
@@ -141,7 +129,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	}
 
 	// The power for the reputation they specified was invalid.
-	if(intval($reputation) > $mybb->usergroup['reputationpower'] || !is_numeric($reputation_value))
+	if($reputation > $mybb->usergroup['reputationpower'] || !is_numeric($mybb->input['reputation']))
 	{
 		$show_back = 1;
 		$message = $lang->add_invalidpower;
@@ -152,9 +140,9 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 
 	// Build array of reputation data.
 	$reputation = array(
-		"uid" => intval($mybb->input['uid']),
+		"uid" => $uid,
 		"adduid" => $mybb->user['uid'],
-		"reputation" => $reputation_value,
+		"reputation" => intval($mybb->input['reputation']),
 		"dateline" => time(),
 		"comments" => $db->escape_string($mybb->input['comments'])
 	);
@@ -167,10 +155,10 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$db->update_query("reputation", $reputation, "rid='".$existing_reputation['rid']."'");
 
 		// Recount the reputation of this user - keep it in sync.
-		$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
-		$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='".intval($mybb->input['uid'])."'");
+		$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
 
 		$lang->vote_added = $lang->vote_updated;
 		$lang->vote_added_message = $lang->vote_updated_message;
@@ -181,10 +169,10 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$db->insert_query("reputation", $reputation);
 
 		// Recount the reputation of this user - keep it in sync.
-		$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
-		$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='".intval($mybb->input['uid'])."'");
+		$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
 	}
 
 	$plugins->run_hooks("reputation_do_add_end");
@@ -218,33 +206,20 @@ if($mybb->input['action'] == "add")
 	$lang->user_comments = sprintf($lang->user_comments, $user['username']);
 
 	// Draw the "power" options
+	$positive_power = '';
+	$negative_power = '';
 	$vote_check = '';
-	$reputation_value = $mybb->usergroup['reputationpower'];
 	if($existing_reputation['uid'])
 	{
-		if($existing_reputation['reputation'] > 0)
-		{
-			$vote_check['positive'] = "checked=\"checked\"";
-		}
-		else if($existing_reputation['reputation'] < 0)
-		{
-			$vote_check['negative'] = "checked=\"checked\"";
-		}
-		else
-		{
-			$vote_check['neutral'] = "checked=\"checked\"";
-		}
-		
-		$reputation_value = intval(str_replace("-", "", $existing_reputation['reputation']));
+		$vote_check[$existing_reputation['reputation']] = " selected=\"selected\"";
 	}
-
-	if($mybb->usergroup['reputationpower'] == 1)
+	$reputationpower = $mybb->usergroup['reputationpower'];
+	for($i = 1; $i <= $reputationpower; ++$i)
 	{
-		$reputationpower = $lang->reputation_point;
-	}
-	else
-	{
-		$reputationpower = sprintf($lang->reputation_points, $mybb->usergroup['reputationpower']);
+		$positive_title = sprintf($lang->power_positive, "+".$i);
+		$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"$('reputation').className='reputation_positive'\"{$vote_check[$i]}>{$positive_title}</option>\n".$positive_power;
+		$negative_title = sprintf($lang->power_negative, "-".$i);
+		$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"$('reputation').className='reputation_negative'\"{$vote_check[-$i]}>{$negative_title}</option>\n";
 	}
 
 	eval("\$reputation_add = \"".$templates->get("reputation_add")."\";");
@@ -258,7 +233,7 @@ if($mybb->input['action'] == "delete")
 	// Fetch the existing reputation for this user given by our current user if there is one.
 	$query = $db->simple_select("reputation", "*", "rid='".intval($mybb->input['rid'])."'");
 	$existing_reputation = $db->fetch_array($query);
-	
+
 	// Only administrators as well as users who gave a specifc vote can delete one.
 	if($mybb->usergroup['cancp'] != "yes" || $existing_reputation['adduid'] != $mybb->user['uid'])
 	{
@@ -266,15 +241,15 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// Delete the specified reputation
-	$db->delete_query("reputation", "uid='".intval($mybb->input['uid'])."'AND rid='".intval($mybb->input['rid'])."'");
+	$db->delete_query("reputation", "uid='{$uid}' AND rid='".intval($mybb->input['rid'])."'");
 
 	// Recount the reputation of this user - keep it in sync.
-	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='".intval($mybb->input['uid'])."'");
+	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
 	$reputation_value = $db->fetch_field($query, "reputation_count");
 
-	$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='".intval($mybb->input['uid'])."'");
+	$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
 
-	redirect("reputation.php?uid=".intval($mybb->input['uid']), $lang->vote_deleted_message);
+	redirect("reputation.php?uid={$uid}", $lang->vote_deleted_message);
 }
 
 // Otherwise, show a listing of reputations for the given user.

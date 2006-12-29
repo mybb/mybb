@@ -406,9 +406,7 @@ if($mybb->input['action'] == "add")
 	tablesubheader($lang->perms_reputations);
 	makeyesnocode($lang->show_reputations, "usereputationsystem", "yes");
 	makeyesnocode($lang->can_give_reputations, "cangivereputations", "yes");
-	$reputation_power = array(1 => 1, 2 => 2, 3 => 3);
-	makeselectcode_array($lang->reputation_points, "reputationpower", $reputation_power, 1);
-	makeinputcode($lang->reputation_points, "reputationpower", 1, 4);
+	makeinputcode($lang->reputation_points, "reputationpower", "3", 4);
 	makeinputcode($lang->max_reputations_day, "maxreputationsday", "5", 4);
 
 	tablesubheader($lang->perms_polls);
@@ -546,8 +544,7 @@ if($mybb->input['action'] == "edit")
 
 	makeyesnocode($lang->show_reputations, "usereputationsystem", $usergroup['usereputationsystem']);
 	makeyesnocode($lang->can_give_reputations, "cangivereputations", $usergroup['cangivereputations']);
-	$reputation_power = array(1 => 1, 2 => 2, 3 => 3);
-	makeselectcode_array($lang->reputation_points, "reputationpower", $reputation_power, $usergroup['reputationpower']);
+	makeinputcode($lang->reputation_points, "reputationpower", $usergroup['reputationpower'], 4);
 	makeinputcode($lang->max_reputations_day, "maxreputationsday", $usergroup['maxreputationsday'], 4);
 
 	tablesubheader($lang->perms_polls);

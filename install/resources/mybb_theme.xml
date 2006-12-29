@@ -5127,12 +5127,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<form action="reputation.php" method="post">
 				<input type="hidden" name="action" value="do_add" />
 				<input type="hidden" name="uid" value="{$user['uid']}" />
-				&nbsp;&nbsp;<input type="radio" name="reputation_type" value="positive" id="positive" {$vote_check['positive']} onclick="$('reputation').disabled = false;" /> <label for=\"positive\">{$lang->power_positive}</label><br />
-				&nbsp;&nbsp;<input type="radio" name="reputation_type" value="neutral" id="neutral" {$vote_check['neutral']} onclick="$('reputation').disabled = true;" /> <label for="neutral">{$lang->power_neutral}</label><br />
-				&nbsp;&nbsp;<input type="radio" name="reputation_type" value="negative" id="negative" {$vote_check['negative']} onclick="$('reputation').disabled = false;" /> <label for="negative">{$lang->power_negative}</label><br /><br />
-				<span class="smalltext">{$reputationpower}</span>
-				<br />
-				<input type="text" class="textbox" name="reputation" id="reputation" size="10" value="{$reputation_value}" />
+				<select name="reputation" id="reputation">
+					{$positive_power}
+					<option value="0" class="reputation_neutral" onclick="$('reputation').className='reputation_neutral'"{$vote_check[0]}>{$lang->power_neutral}</option>
+					{$negative_power}
+				</select>
 				<br /><br />
 				<span class="smalltext">{$lang->user_comments}</span>
 				<br />
