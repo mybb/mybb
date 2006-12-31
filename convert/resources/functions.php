@@ -178,6 +178,11 @@ function delete_import_fields()
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP import_aid");
 	}
+
+	if($db->field_exists('import_atid', "attachtypes"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes DROP import_atid");
+	}
 }
 
 /**
@@ -208,6 +213,6 @@ function create_import_fields()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."polls ADD import_pid int NOT NULL default '0' AFTER pid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."settinggroups ADD import_gid int NOT NULL default '0' AFTER gid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD import_eid int NOT NULL default '0' AFTER eid");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."attachments ADD import_aid int NOT NULL default '0' AFTER aid");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes ADD import_atid int NOT NULL default '0' AFTER atid");
 }
 ?>

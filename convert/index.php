@@ -60,8 +60,9 @@ define('TABLE_PREFIX', $config['table_prefix']);
 // Temporary code to clear importcache
 if(isset($mybb->input['restart']))
 {
-	@unlink(CONVERT_ROOT.'lock');
+	//@unlink(CONVERT_ROOT.'lock');
 	$db->delete_query("datacache", "title='import_cache'", 1);
+	delete_import_fields();
 }
 
 // Get the import session cache if exists

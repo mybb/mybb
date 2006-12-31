@@ -52,6 +52,11 @@ class Converter
 	var $import_attachments;
 	
 	/**
+	 * Cache for the new Attachment Types
+	 */
+	var $import_attachtypes;
+	
+	/**
 	 * Class constructor
 	 */
     function Converter()
@@ -343,6 +348,24 @@ class Converter
 		$eid = $db->insert_id();
 		
 		return $eid;
+	}
+	
+	/**
+	 * Insert attachment type into database
+	 */
+	function insert_attachtype($attachtype)
+	{
+		global $db;
+
+		foreach($attachtype as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+
+		$db->insert_query("attachtypes", $insertarray);
+		$atid = $db->insert_id();
+		
+		return $atid;
 	}
 
 	/**
@@ -762,6 +785,43 @@ class Converter
 			$eid_array = $this->import_events;
 		}
 		return $eid_array[$old_eid];
+	}
+
+	/**
+	 * Get an array of imported attachment types
+	 *
+	 * @return array
+	 */
+	function get_import_attachtypes()
+	{
+		global $db;
+		
+		$query = $db->simple_select("attachtypes", "atid, import_atid");
+		while($type = $db->fetch_array($query))
+		{
+			$attachtypes[$type['import_atid']] = $type['atid'];
+		}
+		$this->import_attachtypes = $attachtypes;
+		return $attachtypes;
+	}
+	
+	/**
+	 * Get the MyBB attachment type ID of an old attachment type id.
+	 *
+	 * @param int Attachment Type ID used before import
+	 * @return int Attachment Type ID in MyBB
+	 */
+	function get_import_atid($old_atid)
+	{
+		if(!is_array($this->import_attachtypes))
+		{
+			$atid_array = $this->get_import_attachtypes();
+		}
+		else
+		{
+			$atid_array = $this->import_attachtypes;
+		}
+		return $atid_array[$old_atid];
 	}
 }
 ?>

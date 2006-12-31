@@ -301,6 +301,7 @@ END;
 	
 	function print_database_details_table($name)
 	{
+		global $dbengines;
 		echo <<<EOF
 <div class="border_wrapper">
 <div class="title">$name Database Configuration</div>

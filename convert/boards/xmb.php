@@ -35,6 +35,8 @@ class Convert_xmb extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_settings" => array("name" => "Import XMB Settings",
 									  "dependencies" => "db_configuration"),
+						 "import_attachtypes" => array("name" => "Import XMB Attachment Types",
+									  "dependencies" => "db_configuration"),
 						);
 
 	function xmb_db_connect()

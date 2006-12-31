@@ -41,6 +41,8 @@ class Convert_phpbb3 extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_settings" => array("name" => "Import phpBB 3 Settings",
 									  "dependencies" => "db_configuration"),
+						 "import_attachtypes" => array("name" => "Import phpBB3 Attachment Types",
+									  "dependencies" => "db_configuration"),
 						);
 
 	function phpbb_db_connect()
@@ -63,7 +65,7 @@ class Convert_phpbb3 extends Converter {
 
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions;
+		global $mybb, $output, $import_session, $db, $dboptions, $dbengines;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -1447,6 +1449,108 @@ class Convert_phpbb3 extends Converter {
 		$import_session['start_settings'] += $import_session['settings_per_screen'];
 		$output->print_footer();
 	}
+
+	function import_attachtypes()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->phpbb_db_connect();
+
+		// Get number of attachment types
+		if(!isset($import_session['total_attachtypes']))
+		{
+			$query = $this->old_db->simple_select("extensions", "COUNT(*) as count");
+			$import_session['total_attachtypes'] = $this->old_db->fetch_field($query, 'count');
+		}
+
+		if($import_session['start_attachtypes'])
+		{
+			// If there are more attachment types to do, continue, or else, move onto next module
+			if($import_session['total_attachtypes'] - $import_session['start_attachtypes'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_attachtypes';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of attachment types per screen from form
+		if(isset($mybb->input['attachtypes_per_screen']))
+		{
+			$import_session['attachtypes_per_screen'] = intval($mybb->input['attachtypes_per_screen']);
+		}
+		
+		if(empty($import_session['attachtypes_per_screen']))
+		{
+			$import_session['start_attachtypes'] = 0;
+			echo "<p>Please select how many attachment types to import at a time:</p>
+<p><input type=\"text\" name=\"attachtypes_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_attachtypes']-$import_session['start_attachtypes'])." attachment types left to import and ".round((($import_session['total_attachtypes']-$import_session['start_attachtypes'])/$import_session['attachtypes_per_screen']))." pages left at a rate of {$import_session['attachtypes_per_screen']} per page.<br /><br />";
+			
+			// Get existing attachment types
+			$query = $db->simple_select("attachtypes", "extension");
+			while($row = $db->fetch_array($query))
+			{
+				$existing_types[$row['extension']] = true;
+			}
+			
+			// Get default max filesize
+			$query = $this->old_db->simple_select("config", "config_value", "config_name='max_filesize'");
+			$default_max_filesize = $this->old_db->fetch_field($query, 'config_value');
+			$default_max_filesize = round(intval($default_max_filesize) / 1000);
+			
+			$query = $this->old_db->query("SELECT e.*, g.* FROM ({$this->old_db->table_prefix}extensions e, {$this->old_db->table_prefix}extension_groups g) WHERE e.group_id = g.group_id LIMIT {$import_session['start_attachtypes']}, {$import_session['attachtypes_per_screen']}");
+			while($type = $this->old_db->fetch_array($query))
+			{
+
+				echo "Inserting attachment type #{$type['extension_id']}... ";				
+
+				$insert_attachtype['import_atid'] = $type['extension_id'];
+				$insert_attachtype['name'] = $type['extension'].' - '.$type['group_name'];
+				$insert_attachtype['mimetype'] = '';
+				$insert_attachtype['extension'] = $type['extension'];
+				if($type['max_filesize'] == 0)
+				{
+					$insert_attachtype['maxsize'] = $default_max_filesize;
+				}
+				else
+				{
+					$insert_attachtype['maxsize'] = round($type['max_filesize'] / 1000);
+				}
+				$insert_attachtype['icon'] = '';
+				if(!empty($type['upload_icon']))
+				{
+					$insert_attachtype['icon'] = 'images/attachtypes/'.$type['upload_icon'];
+				}
+				
+				$this->insert_attachtype($insert_attachtype);
+
+				echo "done.";
+					
+				if(isset($existing_types[$type['extension']]))
+				{
+					echo " (Note: extension already exists)\n";
+				}
+				
+				echo "<br />\n";
+				++$i;
+			}
+			
+			if($import_session['total_attachtypes'] == 0)
+			{
+				echo "There are no attachment types to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_attachtypes'] += $import_session['attachtypes_per_screen'];
+		$output->print_footer();
+	}
 	
 	/**
 	 * Count number of invisible posts from the phpBB 3 database
@@ -1505,12 +1609,12 @@ class Convert_phpbb3 extends Converter {
 	 * @param int User ID
 	 * @return int Number of Private Messages
 	 */
-	 function get_private_messages($uid)
-	 {
-	 	$query = $this->old_db->simple_select("privmsgs", "COUNT(*) as pms", "to_address = '$uid' OR author_id = '$uid'");
+	function get_private_messages($uid)
+	{
+		$query = $this->old_db->simple_select("privmsgs", "COUNT(*) as pms", "to_address = '$uid' OR author_id = '$uid'");
 		
 		return $this->old_db->fetch_field($query, 'pms');
-	 }
+	}
 	
 	/**
 	 * Get a post from the phpBB database
@@ -1605,7 +1709,7 @@ class Convert_phpbb3 extends Converter {
 						$group .= 4;
 						break;
 					default:
-						$gid = $this->get_import_gid($phpbbgroup['group_id'])
+						$gid = $this->get_import_gid($phpbbgroup['group_id']);
 						if($gid > 0)
 						{
 							// If there is an associated custom group...

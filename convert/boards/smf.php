@@ -47,6 +47,8 @@ class Convert_smf extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_events" => array("name" => "Import SMF Calendar Events",
 									  "dependencies" => "db_configuration,import_posts"),
+						 "import_attachtypes" => array("name" => "Import SMF Attachment Types",
+									  "dependencies" => "db_configuration"),
 						);
 
 	function smf_db_connect()
@@ -69,7 +71,7 @@ class Convert_smf extends Converter {
 
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions;
+		global $mybb, $output, $import_session, $db, $dboptions, $dbengines;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -162,7 +164,8 @@ class Convert_smf extends Converter {
 		{
 			$dboptions['mysql'] = 'MySQL';
 		}
-
+		
+		$dbengines = '';
 		foreach($dboptions as $dbfile => $dbtype)
 		{
 			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype}</option>";
@@ -548,7 +551,7 @@ class Convert_smf extends Converter {
 				
 				$insert_perm['fid'] = $this->get_import_fid($perm['ID_BOARD']);
 				$insert_perm['gid'] = $this->get_group_id($perm['ID_GROUP']);			
-				$insert_perm[$perm2mybb[$perm['permission']] = "yes";				
+				$insert_perm[$perm2mybb[$perm['permission']]] = "yes";				
 				
 				$done_array[] = $perm['ID_GROUP'];
 				
@@ -1761,6 +1764,107 @@ class Convert_smf extends Converter {
 			}
 		}
 		$import_session['start_events'] += $import_session['events_per_screen'];
+		$output->print_footer();
+	}
+
+	function import_attachtypes()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->smf_db_connect();
+
+		// Get number of attachment types
+		if(!isset($import_session['total_attachtypes']))
+		{
+			$query = $this->old_db->simple_select("settings", "value", "variable='attachmentExtensions'");
+			$types = $this->old_db->fetch_field($query, 'value');
+			$types = explode(',', $types);
+			$import_session['total_attachtypes'] = count($types);
+		}
+
+		if($import_session['start_attachtypes'])
+		{
+			// If there are more attachment types to do, continue, or else, move onto next module
+			if($import_session['total_attachtypes'] - $import_session['start_attachtypes'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_attachtypes';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of attachment types per screen from form
+		if(isset($mybb->input['attachtypes_per_screen']))
+		{
+			$import_session['attachtypes_per_screen'] = intval($mybb->input['attachtypes_per_screen']);
+		}
+		
+		if(empty($import_session['attachtypes_per_screen']))
+		{
+			$import_session['start_attachtypes'] = 0;
+			echo "<p>Please select how many attachment types to import at a time:</p>
+<p><input type=\"text\" name=\"attachtypes_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_attachtypes']-$import_session['start_attachtypes'])." attachment types left to import and ".round((($import_session['total_attachtypes']-$import_session['start_attachtypes'])/$import_session['attachtypes_per_screen']))." pages left at a rate of {$import_session['attachtypes_per_screen']} per page.<br /><br />";
+			
+			// Get attachment types
+			$query = $this->old_db->simple_select("settings", "value", "variable='attachmentExtensions'");
+			$types = $this->old_db->fetch_field($query, 'value');
+			$types = explode(',', $types);
+			
+			// Get max size
+			$query = $this->old_db->simple_select("settings", "value", "variable='attachmentSizeLimit'");
+			$max_size = $this->old_db->fetch_field($query, 'value');
+			
+			// Get existing attachment types
+			$query = $db->simple_select("attachtypes", "extension");
+			while($row = $db->fetch_array($query))
+			{
+				$existing_types[$row['extension']] = true;
+			}
+			
+			$start = $import_session['start_attachtypes'];
+			$end = $import_session['start_attachtypes']+$import_session['attachtypes_per_screen'];
+			if($end > $import_session['total_attachtypes'])
+			{
+				$end = $import_session['total_attachtypes'];
+			}
+			for($i = $start; $i < $end; $i++)
+			{
+				$i_present = $i + 1;
+				echo "Inserting attachment type #{$i_present}... ";				
+
+				$insert_attachtype['import_atid'] = $i_present;
+				$insert_attachtype['name'] = $types[$i].' file';
+				$insert_attachtype['mimetype'] = '';
+				$insert_attachtype['extension'] = $types[$i];
+				$insert_attachtype['maxsize'] = $max_size;
+				$insert_attachtype['icon'] = '';
+				
+				$this->insert_attachtype($insert_attachtype);
+
+				echo "done.";
+					
+				if(isset($existing_types[$types[$i]]))
+				{
+					echo " (Note: extension already exists)\n";
+				}
+				
+				echo "<br />\n";
+			}
+			
+			if($import_session['total_attachtypes'] == 0)
+			{
+				echo "There are no attachment types to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_attachtypes'] += $import_session['attachtypes_per_screen'];
 		$output->print_footer();
 	}
 	

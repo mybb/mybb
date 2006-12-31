@@ -43,6 +43,8 @@ class Convert_ipb1 extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_events" => array("name" => "Import Invision Power Board 1 Calendar Events",
 									  "dependencies" => "db_configuration,import_users"),
+						 "import_attachtypes" => array("name" => "Import Invision Power Board 1 Attachment Types",
+									  "dependencies" => "db_configuration"),
 						);
 
 	function ipb_db_connect()
@@ -65,7 +67,7 @@ class Convert_ipb1 extends Converter {
 
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions;
+		global $mybb, $output, $import_session, $db, $dboptions, $dbengines;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -1501,6 +1503,126 @@ class Convert_ipb1 extends Converter {
 			}
 		}
 		$import_session['start_events'] += $import_session['events_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_attachtypes()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+
+		// Get number of attachment types
+		if(!isset($import_session['total_attachtypes']) && isset($import_session['ipb_conf_global']))
+		{
+			require($import_session['ipb_conf_global']);
+			$types = $INFO['img_ext'];
+			$types = explode('|', $types);
+			$import_session['total_attachtypes'] = count($types);
+		}
+
+		if($import_session['start_attachtypes'])
+		{
+			// If there are more attachment types to do, continue, or else, move onto next module
+			if($import_session['total_attachtypes'] - $import_session['start_attachtypes'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_attachtypes';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of attachment types per screen from form
+		if(isset($mybb->input['attachtypes_per_screen']))
+		{
+			$import_session['attachtypes_per_screen'] = intval($mybb->input['attachtypes_per_screen']);
+		}
+		
+		// Validate IPB configuration file location
+		$conf_global_not_found = false;
+		if(isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global']))
+		{
+			unset($import_session['attachtypes_per_screen']);
+			$conf_global_not_found = true;
+		}
+		elseif(isset($mybb->input['ipb_conf_global']))
+		{
+			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
+			require($import_session['ipb_conf_global']);
+			$types = $INFO['img_ext'];
+			$types = explode('|', $types);
+			$import_session['total_attachtypes'] = count($types);
+		}
+		
+		if(empty($import_session['attachtypes_per_screen']))
+		{
+			$import_session['start_attachtypes'] = 0;
+			echo "<p>Please select how many attachment types to import at a time:</p>
+<p><input type=\"text\" name=\"attachtypes_per_screen\" value=\"200\" /></p>";
+			$conf_global = dirname($_SERVER['SCRIPT_FILENAME']).'/conf_global.php';
+			if($conf_global_not_found)
+			{
+				echo '<p style="color: red">The file specified was not found.</p>';
+			}
+			echo "<p>Please enter the path to the IPB1 conf_global.php file:</p>
+<p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_attachtypes']-$import_session['start_attachtypes'])." attachment types left to import and ".round((($import_session['total_attachtypes']-$import_session['start_attachtypes'])/$import_session['attachtypes_per_screen']))." pages left at a rate of {$import_session['attachtypes_per_screen']} per page.<br /><br />";
+			
+			// Get attachment types
+			require($import_session['ipb_conf_global']);
+			$types = $INFO['img_ext'];
+			$types = explode('|', $types);
+			
+			// Get existing attachment types
+			$query = $db->simple_select("attachtypes", "extension");
+			while($row = $db->fetch_array($query))
+			{
+				$existing_types[$row['extension']] = true;
+			}
+			
+			$start = $import_session['start_attachtypes'];
+			$end = $import_session['start_attachtypes']+$import_session['attachtypes_per_screen'];
+			if($end > $import_session['total_attachtypes'])
+			{
+				$end = $import_session['total_attachtypes'];
+			}
+			for($i = $start; $i < $end; $i++)
+			{
+				$i_present = $i + 1;
+				echo "Inserting attachment type #{$i_present}... ";				
+
+				$insert_attachtype['import_atid'] = ($i_present);
+				$insert_attachtype['name'] = $types[$i].' file';
+				$insert_attachtype['mimetype'] = '';
+				$insert_attachtype['extension'] = $types[$i];
+				$insert_attachtype['maxsize'] = 512;
+				$insert_attachtype['icon'] = '';
+				
+				$this->insert_attachtype($insert_attachtype);
+
+				echo "done.";
+					
+				if(isset($existing_types[$types[$i]]))
+				{
+					echo " (Note: extension already exists)\n";
+				}
+				
+				echo "<br />\n";
+			}
+			
+			if($import_session['total_attachtypes'] == 0)
+			{
+				echo "There are no attachment types to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_attachtypes'] += $import_session['attachtypes_per_screen'];
 		$output->print_footer();
 	}
 	
