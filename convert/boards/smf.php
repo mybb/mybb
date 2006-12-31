@@ -1657,7 +1657,7 @@ class Convert_smf extends Converter {
 			$query = $this->old_db->simple_select("config", "config_name, config_value", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
 			while($setting = $this->old_db->fetch_array($query))
 			{
-				echo "Updating setting {$setting['config_name']} from phpBB database... ";
+				echo "Updating setting {$setting['config_name']} from the SMF database... ";
 
 				// SMF values
 				$name = $value = "";
