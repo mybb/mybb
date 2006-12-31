@@ -149,11 +149,6 @@ function delete_import_fields()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP import_uid");
 	}
 	
-	if($db->field_exists('import_aid', "attachments"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP import_aid");
-	}
-	
 	if($db->field_exists('import_gid', "usergroups"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP import_gid");

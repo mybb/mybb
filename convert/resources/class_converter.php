@@ -42,6 +42,16 @@ class Converter
 	var $import_settinggroups;
 	
 	/**
+	 * Cache for the new Events
+	 */
+	var $import_events;
+	
+	/**
+	 * Cache for the new Attachments
+	 */
+	var $import_attachments;
+	
+	/**
 	 * Class constructor
 	 */
     function Converter()
@@ -297,6 +307,42 @@ class Converter
 		$gid = $db->insert_id();
 		
 		return $gid;
+	}
+	
+	/**
+	 * Insert attachment into database
+	 */
+	function insert_attachment($attachment)
+	{
+		global $db;
+
+		foreach($attachment as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+
+		$db->insert_query("attachments", $insertarray);
+		$aid = $db->insert_id();
+		
+		return $aid;
+	}
+	
+	/**
+	 * Insert attachment into database
+	 */
+	function insert_event($event)
+	{
+		global $db;
+
+		foreach($event as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+
+		$db->insert_query("events", $insertarray);
+		$eid = $db->insert_id();
+		
+		return $eid;
 	}
 
 	/**
@@ -607,6 +653,24 @@ class Converter
 	}
 	
 	/**
+	 * Get an array of imported events
+	 *
+	 * @return array
+	 */
+	function get_import_events()
+	{
+		global $db;
+		
+		$query = $db->simple_select("events", "eid, import_eid");
+		while($event = $db->fetch_array($query))
+		{
+			$events[$event['import_eid']] = $event['eid'];
+		}
+		$this->import_eids = $events;
+		return $events;
+	}
+	
+	/**
 	 * Get the MyBB usergroup ID of an old GID.
 	 *
 	 * @param int Group ID used before import
@@ -660,6 +724,44 @@ class Converter
 			$gid_array = $this->import_settinggroups;
 		}
 		return $gid_array[$old_gid];
+	}
+	
+	/**
+	 * Get the MyBB attachments ID of an old AID.
+	 *
+	 * @param int Attachment ID used before import
+	 * @return int Attachment ID in MyBB
+	 */
+	function get_import_aid($old_aid)
+	{
+		if(!is_array($this->import_attachments))
+		{
+			$aid_array = $this->get_import_attachments();
+		}
+		else
+		{
+			$aid_array = $this->import_attachments;
+		}
+		return $aid_array[$old_aid];
+	}
+	
+	/**
+	 * Get the MyBB event ID of an old EID.
+	 *
+	 * @param int Event ID used before import
+	 * @return int Event ID in MyBB
+	 */
+	function get_import_eid($old_eid)
+	{
+		if(!is_array($this->import_events))
+		{
+			$eid_array = $this->get_import_events();
+		}
+		else
+		{
+			$eid_array = $this->import_events;
+		}
+		return $eid_array[$old_eid];
 	}
 }
 ?>

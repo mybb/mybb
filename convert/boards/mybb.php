@@ -165,44 +165,8 @@ class Convert_mybb extends Converter
 			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype}</option>";
 		}
 
-		echo <<<EOF
-<div class="border_wrapper">
-<div class="title">MyBB Database Configuration</div>
-<table class="general" cellspacing="0">
-<tr>
-	<th colspan="2" class="first last">Database Settings</th>
-</tr>
-<tr class="first">
-	<td class="first"><label for="dbengine">Database Engine:</label></td>
-	<td class="last alt_col"><select name="dbengine" id="dbengine">{$dbengines}</select></td>
-</tr>
-<tr class="alt_row">
-	<td class="first"><label for="dbhost">Database Host:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="dbhost" id="dbhost" value="{$dbhost}" /></td>
-</tr>
-<tr>
-	<td class="first"><label for="dbuser">Database Username:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="dbuser" id="dbuser" value="{$dbuser}" /></td>
-</tr>
-<tr class="alt_row">
-	<td class="first"><label for="dbpass">Database Password:</label></td>
-	<td class="last alt_col"><input type="password" class="text_input" name="dbpass" id="dbpass" value="" /></td>
-</tr>
-<tr class="last">
-	<td class="first"><label for="dbname">Database Name:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="dbname" id="dbname" value="{$dbname}" /></td>
-</tr>
-<tr>
-	<th colspan="2" class="first last">Table Settings</th>
-</tr>
-<tr class="last">
-	<td class="first"><label for="tableprefix">Table Prefix:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="tableprefix" id="tableprefix" value="{$tableprefix}" /></td>
-</tr>
-</table>
-</div>
-<p>Once you have checked these details are correct, click next to continue.</p>
-EOF;
+		$output->print_database_details_table("MyBB");
+		
 		$output->print_footer();
 	}
 	
@@ -669,250 +633,7 @@ EOF;
 		$import_session['start_icons'] += $import_session['icons_per_screen'];
 		$output->print_footer();
 	}
-	
-	function import_smilies()
-	{
-		global $mybb, $output, $import_session, $db;
-
-		$this->mybb_db_connect();
-
-		// Get number of threads
-		if(!isset($import_session['total_smilies']))
-		{
-			$query = $this->old_db->simple_select("smilies", "COUNT(*) as count", "sid > 9");
-			$import_session['total_smilies'] = $this->old_db->fetch_field($query, 'count');			
-		}
-
-		if($import_session['start_smilies'])
-		{
-			// If there are more polls to do, continue, or else, move onto next module
-			if($import_session['total_smilies'] - $import_session['start_smilies'] <= 0)
-			{
-				$import_session['disabled'][] = 'import_smilies';
-				return "finished";
-			}
-		}
 		
-		$output->print_header($this->modules[$import_session['module']]['name']);
-
-		// Get number of polls per screen from form
-		if(isset($mybb->input['smilies_per_screen']))
-		{
-			$import_session['smilies_per_screen'] = intval($mybb->input['smilies_per_screen']);
-		}
-		
-		if(empty($import_session['smilies_per_screen']))
-		{
-			$import_session['start_icons'] = 0;
-			echo "<p>Please select how many smilies to import at a time:</p>
-<p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
-			$output->print_footer($import_session['module'], 'module', 1);
-		}
-		else
-		{
-			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_smilies']-$import_session['start_smilies'])." smilies left to import and ".round((($import_session['total_smilies']-$import_session['start_smilies'])/$import_session['smilies_per_screen']))." pages left at a rate of {$import_session['smilies_per_screen']} per page.<br /><br />";
-			
-			$query = $this->old_db->simple_select("smilies", "*", "sid > 9", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
-			while($smilie = $this->old_db->fetch_array($query))
-			{
-				echo "Inserting smilie #{$smilie['sid']}... ";		
-				
-				// Invision Power Board 2 values
-				$insert_smilie['import_iid'] = $smilie['sid'];
-				$insert_smilie['name'] = $smilie['name'];
-				$insert_smilie['find'] = $smilie['find'];
-				$insert_smilie['path'] = $smilie['path'];
-				$insert_smilie['disporder'] = $smilie['disporder'];
-				$insert_smilie['showclickable'] = $smilie['showclickable'];				
-			
-				$this->insert_smilie($insert_smilie);
-				
-				echo "done.<br />\n";			
-			}
-			
-			if($this->old_db->num_rows($query) == 0)
-			{
-				echo "There are no smilies to import. Please press next to continue.";
-				define('BACK_BUTTON', false);
-			}
-		}
-		$import_session['start_smilies'] += $import_session['smilies_per_screen'];
-		$output->print_footer();
-	}
-
-	function import_settings()
-	{
-		global $mybb, $output, $import_session, $db;
-
-		$this->mybb_db_connect();
-
-		// Get number of settings
-		if(!isset($import_session['total_settings']))
-		{
-			$query = $this->old_db->simple_select("settings", "COUNT(*) as count");
-			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');		
-		}
-
-		if($import_session['start_settings'])
-		{
-			// If there are more settings to do, continue, or else, move onto next module
-			if($import_session['total_settings'] - $import_session['start_settings'] <= 0)
-			{
-				$import_session['disabled'][] = 'import_settings';
-				rebuildsettings();
-				return "finished";
-			}
-		}
-
-		$output->print_header($this->modules[$import_session['module']]['name']);
-
-		// Get number of settings per screen from form
-		if(isset($mybb->input['settings_per_screen']))
-		{
-			$import_session['settings_per_screen'] = intval($mybb->input['settings_per_screen']);
-		}
-
-		if(empty($import_session['settings_per_screen']))
-		{
-			$import_session['start_settings'] = 0;
-			echo "<p>Please select how many settings to modify at a time:</p>
-<p><input type=\"text\" name=\"settings_per_screen\" value=\"200\" /></p>";
-			$output->print_footer($import_session['module'], 'module', 1);
-		}
-		else
-		{
-			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
-
-			$x = 0;
-
-			$query = $this->old_db->simple_select("settings", "name, value", "sid < 149", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
-			while($setting = $this->old_db->fetch_array($query))
-			{
-				echo "Updating setting {$setting['name']} from your other MyBB database... ";
-			
-				$this->update_setting($setting['name'], $setting['value']);
-				
-				echo "done.<br />\n";
-				++$x;
-			}
-	
-			if($this->old_db->num_rows($query) == 0)
-			{
-				$no_settings = true;
-			}
-			else
-			{
-				$no_settings = false;
-			}
-
-			if($x < $import_session['settings_per_screen'])
-			{
-				$query = $this->old_db->simple_select("settings", "name, value", "sid > 148", array('limit_start' => $import_session['start_settings']+$x, 'limit' => $import_session['settings_per_screen']-$x));
-				while($setting = $this->old_db->fetch_array($query))
-				{
-					echo "Inserting setting {$setting['name']} from your other MyBB database... ";
-
-					$insert_setting['name'] = $setting['name'];
-					$insert_setting['title'] = $setting['title'];
-					$insert_setting['description'] = $setting['description'];
-					$insert_setting['optionscode'] = $setting['optionscode'];
-					$insert_setting['value'] = $setting['value'];
-					$insert_setting['disporder'] = $setting['disporder'];
-					$insert_setting['gid'] = $this->get_import_settinggroup($setting['gid']);
-
-					$this->insert_setting($insert_setting);
-
-					echo "done.<br />\n";
-				}
-
-				if($this->old_db->num_rows($query) > 0)
-				{
-					$no_settings = false;
-				}
-			}
-
-			if($no_settings)
-			{
-				echo "There are no settings to update. Please press next to continue.";
-				define('BACK_BUTTON', false);
-			}
-		}
-		$import_session['start_settings'] += $import_session['settings_per_screen'];
-		$output->print_footer();
-	}
-	
-	function import_settinggroups()
-	{
-		global $mybb, $output, $import_session, $db;
-
-		$this->mybb_db_connect();
-
-		// Get number of settings
-		if(!isset($import_session['total_settinggroups']))
-		{
-			$query = $this->old_db->simple_select("settinggroups", "COUNT(*) as count");
-			$import_session['total_settinggroups'] = $this->old_db->fetch_field($query, 'count');		
-		}
-
-		if($import_session['start_settinggroups'])
-		{
-			// If there are more settings to do, continue, or else, move onto next module
-			if($import_session['total_settinggroups'] - $import_session['start_settinggroups'] <= 0)
-			{
-				$import_session['disabled'][] = 'import_settinggroups';
-				return "finished";
-			}
-		}
-
-		$output->print_header($this->modules[$import_session['module']]['name']);
-
-		// Get number of settings per screen from form
-		if(isset($mybb->input['settinggroups_per_screen']))
-		{
-			$import_session['settinggroups_per_screen'] = intval($mybb->input['settinggroups_per_screen']);
-		}
-
-		if(empty($import_session['settinggroups_per_screen']))
-		{
-			$import_session['start_settinggroups'] = 0;
-			echo "<p>Please select how many settinggroups to insert at a time:</p>
-<p><input type=\"text\" name=\"settinggroups_per_screen\" value=\"200\" /></p>";
-			$output->print_footer($import_session['module'], 'module', 1);
-		}
-		else
-		{
-			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_settinggroups']-$import_session['start_settinggroups'])." settings left to import and ".round((($import_session['total_settinggroups']-$import_session['start_settinggroups'])/$import_session['settinggroups_per_screen']))." pages left at a rate of {$import_session['settinggroups_per_screen']} per page.<br /><br />";
-
-			$query = $this->old_db->simple_select("settinggroups", "*", "isdefault != 'yes'", array('limit_start' => $import_session['start_settinggroups'], 'limit' => $import_session['settinggroups_per_screen']));
-			while($settinggroup = $this->old_db->fetch_array($query))
-			{
-				echo "Inserting setting group {$settinggroup['name']} from your other MyBB database... ";
-
-				$insert_settinggroup['import_gid'] = $settinggroup['gid'];
-				$insert_settinggroup['name'] = $settinggroup['name'];
-				$insert_settinggroup['title'] = $settinggroup['title'];
-				$insert_settinggroup['description'] = $settinggroup['description'];
-				$insert_settinggroup['disporder'] = $settinggroup['disporder'];
-				$insert_settinggroup['isdefault'] = $settinggroup['isdefault'];
-
-				$this->insert_settinggroup($insert_settinggroup);
-
-				echo "done.<br />\n";
-			}
-
-			if($this->old_db->num_rows($query) == 0)
-			{
-				echo "There are no custom setting groups to insert. Please press next to continue.";
-				define('BACK_BUTTON', false);
-			}
-		}
-		$import_session['start_settinggroups'] += $import_session['settinggroups_per_screen'];
-		$output->print_footer();
-	}
-	
 	function import_polls()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -1166,11 +887,99 @@ EOF;
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no threads to import. Please press next to continue.";
+				echo "There are no posts to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
 		$import_session['start_posts'] += $import_session['posts_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_attachments()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->mybb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_attachments']))
+		{
+			$query = $this->old_db->simple_select("attachments", "COUNT(*) as count");
+			$import_session['total_attachments'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_attachments'])
+		{
+			// If there are more attachments to do, continue, or else, move onto next module
+			if($import_session['total_attachments'] - $import_session['start_attachments'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_attachments';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['attachments_per_screen']))
+		{
+			$import_session['attachments_per_screen'] = intval($mybb->input['attachments_per_screen']);
+		}
+		
+		if(empty($import_session['attachments_per_screen']))
+		{
+			$import_session['start_attachments'] = 0;
+			echo "<p>Please select how many attachments to import at a time:</p>
+<p><input type=\"text\" name=\"attachments_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_attachments']-$import_session['start_attachments'])." attachments left to import and ".round((($import_session['total_attachments']-$import_session['start_attachments'])/$import_session['attachments_per_screen']))." pages left at a rate of {$import_session['attachments_per_screen']} per page.<br /><br />";
+			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("attachments");
+
+			$query = $this->old_db->simple_select("attachments", "*", "", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
+			while($attachment = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting attachment #{$attachment['aid']}... ";				
+				
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_attachment[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($attachment[$field['Field']]))
+					{
+						$insert_attachment[$field['Field']] = $attachment[$field['Field']];
+					}
+				}
+
+				$insert_attachment['import_aid'] = $attachment['aid'];
+				$insert_attachment['pid'] = $this->get_import_pid($attachment['pid']);
+				$insert_attachment['uid'] = $this->get_import_uid($attachment['uid']);
+				
+
+				$this->insert_attachment($insert_attachment);
+				
+				// Restore connection
+				$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
+				
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no attachments to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_attachments'] += $import_session['attachments_per_screen'];
 		$output->print_footer();
 	}
 	
@@ -1351,6 +1160,249 @@ EOF;
 		}
 		$import_session['start_privatemessages'] += $import_session['privatemessages_per_screen'];
 		$output->print_footer();
+	}	
+	
+	function import_smilies()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->mybb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_smilies']))
+		{
+			$query = $this->old_db->simple_select("smilies", "COUNT(*) as count", "sid > 9");
+			$import_session['total_smilies'] = $this->old_db->fetch_field($query, 'count');			
+		}
+
+		if($import_session['start_smilies'])
+		{
+			// If there are more polls to do, continue, or else, move onto next module
+			if($import_session['total_smilies'] - $import_session['start_smilies'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_smilies';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['smilies_per_screen']))
+		{
+			$import_session['smilies_per_screen'] = intval($mybb->input['smilies_per_screen']);
+		}
+		
+		if(empty($import_session['smilies_per_screen']))
+		{
+			$import_session['start_icons'] = 0;
+			echo "<p>Please select how many smilies to import at a time:</p>
+<p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_smilies']-$import_session['start_smilies'])." smilies left to import and ".round((($import_session['total_smilies']-$import_session['start_smilies'])/$import_session['smilies_per_screen']))." pages left at a rate of {$import_session['smilies_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("smilies", "*", "sid > 9", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
+			while($smilie = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting smilie #{$smilie['sid']}... ";		
+				
+				// Invision Power Board 2 values
+				$insert_smilie['import_iid'] = $smilie['sid'];
+				$insert_smilie['name'] = $smilie['name'];
+				$insert_smilie['find'] = $smilie['find'];
+				$insert_smilie['path'] = $smilie['path'];
+				$insert_smilie['disporder'] = $smilie['disporder'];
+				$insert_smilie['showclickable'] = $smilie['showclickable'];				
+			
+				$this->insert_smilie($insert_smilie);
+				
+				echo "done.<br />\n";			
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no smilies to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_smilies'] += $import_session['smilies_per_screen'];
+		$output->print_footer();
+	}
+
+	function import_settings()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->mybb_db_connect();
+
+		// Get number of settings
+		if(!isset($import_session['total_settings']))
+		{
+			$query = $this->old_db->simple_select("settings", "COUNT(*) as count");
+			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');		
+		}
+
+		if($import_session['start_settings'])
+		{
+			// If there are more settings to do, continue, or else, move onto next module
+			if($import_session['total_settings'] - $import_session['start_settings'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_settings';
+				rebuildsettings();
+				return "finished";
+			}
+		}
+
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of settings per screen from form
+		if(isset($mybb->input['settings_per_screen']))
+		{
+			$import_session['settings_per_screen'] = intval($mybb->input['settings_per_screen']);
+		}
+
+		if(empty($import_session['settings_per_screen']))
+		{
+			$import_session['start_settings'] = 0;
+			echo "<p>Please select how many settings to modify at a time:</p>
+<p><input type=\"text\" name=\"settings_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
+
+			$x = 0;
+
+			$query = $this->old_db->simple_select("settings", "name, value", "sid < 149", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+			while($setting = $this->old_db->fetch_array($query))
+			{
+				echo "Updating setting {$setting['name']} from your other MyBB database... ";
+			
+				$this->update_setting($setting['name'], $setting['value']);
+				
+				echo "done.<br />\n";
+				++$x;
+			}
+	
+			if($this->old_db->num_rows($query) == 0)
+			{
+				$no_settings = true;
+			}
+			else
+			{
+				$no_settings = false;
+			}
+
+			if($x < $import_session['settings_per_screen'])
+			{
+				$query = $this->old_db->simple_select("settings", "name, value", "sid > 148", array('limit_start' => $import_session['start_settings']+$x, 'limit' => $import_session['settings_per_screen']-$x));
+				while($setting = $this->old_db->fetch_array($query))
+				{
+					echo "Inserting setting {$setting['name']} from your other MyBB database... ";
+
+					$insert_setting['name'] = $setting['name'];
+					$insert_setting['title'] = $setting['title'];
+					$insert_setting['description'] = $setting['description'];
+					$insert_setting['optionscode'] = $setting['optionscode'];
+					$insert_setting['value'] = $setting['value'];
+					$insert_setting['disporder'] = $setting['disporder'];
+					$insert_setting['gid'] = $this->get_import_settinggroup($setting['gid']);
+
+					$this->insert_setting($insert_setting);
+
+					echo "done.<br />\n";
+				}
+
+				if($this->old_db->num_rows($query) > 0)
+				{
+					$no_settings = false;
+				}
+			}
+
+			if($no_settings)
+			{
+				echo "There are no settings to update. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_settings'] += $import_session['settings_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_settinggroups()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->mybb_db_connect();
+
+		// Get number of settings
+		if(!isset($import_session['total_settinggroups']))
+		{
+			$query = $this->old_db->simple_select("settinggroups", "COUNT(*) as count");
+			$import_session['total_settinggroups'] = $this->old_db->fetch_field($query, 'count');		
+		}
+
+		if($import_session['start_settinggroups'])
+		{
+			// If there are more settings to do, continue, or else, move onto next module
+			if($import_session['total_settinggroups'] - $import_session['start_settinggroups'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_settinggroups';
+				return "finished";
+			}
+		}
+
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of settings per screen from form
+		if(isset($mybb->input['settinggroups_per_screen']))
+		{
+			$import_session['settinggroups_per_screen'] = intval($mybb->input['settinggroups_per_screen']);
+		}
+
+		if(empty($import_session['settinggroups_per_screen']))
+		{
+			$import_session['start_settinggroups'] = 0;
+			echo "<p>Please select how many settinggroups to insert at a time:</p>
+<p><input type=\"text\" name=\"settinggroups_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_settinggroups']-$import_session['start_settinggroups'])." settings left to import and ".round((($import_session['total_settinggroups']-$import_session['start_settinggroups'])/$import_session['settinggroups_per_screen']))." pages left at a rate of {$import_session['settinggroups_per_screen']} per page.<br /><br />";
+
+			$query = $this->old_db->simple_select("settinggroups", "*", "isdefault != 'yes'", array('limit_start' => $import_session['start_settinggroups'], 'limit' => $import_session['settinggroups_per_screen']));
+			while($settinggroup = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting setting group {$settinggroup['name']} from your other MyBB database... ";
+
+				$insert_settinggroup['import_gid'] = $settinggroup['gid'];
+				$insert_settinggroup['name'] = $settinggroup['name'];
+				$insert_settinggroup['title'] = $settinggroup['title'];
+				$insert_settinggroup['description'] = $settinggroup['description'];
+				$insert_settinggroup['disporder'] = $settinggroup['disporder'];
+				$insert_settinggroup['isdefault'] = $settinggroup['isdefault'];
+
+				$this->insert_settinggroup($insert_settinggroup);
+
+				echo "done.<br />\n";
+			}
+
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no custom setting groups to insert. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_settinggroups'] += $import_session['settinggroups_per_screen'];
+		$output->print_footer();
 	}
 	
 	function import_events()
@@ -1457,6 +1509,10 @@ EOF;
 	
 	/**
 	 * Convert a MyBB group ID into a MyBB group ID (merge)
+	 * @param int Group ID
+	 * @param boolean single group or multiple?
+	 * @param boolean original group values?
+	 * @return mixed group id(s)
 	 */
 	function get_group_id($gid, $not_multiple=false, $orig=false)
 	{

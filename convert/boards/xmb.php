@@ -156,44 +156,8 @@ class Convert_xmb extends Converter {
 			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype}</option>";
 		}
 
-		echo <<<EOF
-<div class="border_wrapper">
-<div class="title">XMB Database Configuration</div>
-<table class="general" cellspacing="0">
-<tr>
-	<th colspan="2" class="first last">Database Settings</th>
-</tr>
-<tr class="first">
-	<td class="first"><label for="dbengine">Database Engine:</label></td>
-	<td class="last alt_col"><select name="dbengine" id="dbengine">{$dbengines}</select></td>
-</tr>
-<tr class="alt_row">
-	<td class="first"><label for="dbhost">Database Host:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="dbhost" id="dbhost" value="{$dbhost}" /></td>
-</tr>
-<tr>
-	<td class="first"><label for="dbuser">Database Username:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="dbuser" id="dbuser" value="{$dbuser}" /></td>
-</tr>
-<tr class="alt_row">
-	<td class="first"><label for="dbpass">Database Password:</label></td>
-	<td class="last alt_col"><input type="password" class="text_input" name="dbpass" id="dbpass" value="" /></td>
-</tr>
-<tr class="last">
-	<td class="first"><label for="dbname">Database Name:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="dbname" id="dbname" value="{$dbname}" /></td>
-</tr>
-<tr>
-	<th colspan="2" class="first last">Table Settings</th>
-</tr>
-<tr class="last">
-	<td class="first"><label for="tableprefix">Table Prefix:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="tableprefix" id="tableprefix" value="{$tableprefix}" /></td>
-</tr>
-</table>
-</div>
-<p>Once you have checked these details are correct, click next to continue.</p>
-EOF;
+		$output->print_database_details_table("XMB");
+		
 		$output->print_footer();
 	}
 	
@@ -681,7 +645,7 @@ EOF;
 				$insert_thread['fid'] = $this->get_import_fid($thread['fid']);
 				$insert_thread['username'] = $this->get_import_username($this->get_uid($thread['author']));
 				
-				$firstpost = $this->get_firstpost($thread['fid']);
+				$firstpost = $this->get_firstpost($thread['tid']);
 				$insert_thread['firstpost'] = (-1 * intval($firstpost['pid']));
 				$insert_thread['icon'] = ((-1) * $thread['icon']);
 				$insert_thread['dateline'] = $firstpost['dateline'];
@@ -956,6 +920,103 @@ EOF;
 		$output->print_footer();
 	}
 	
+	function import_attachments()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->xmb_db_connect();
+
+		// Get number of threads
+		if(!isset($import_session['total_attachments']))
+		{
+			$query = $this->old_db->simple_select("attachments", "COUNT(*) as count");
+			$import_session['total_attachments'] = $this->old_db->fetch_field($query, 'count');				
+		}
+
+		if($import_session['start_attachments'])
+		{
+			// If there are more attachments to do, continue, or else, move onto next module
+			if($import_session['total_attachments'] - $import_session['start_attachments'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_attachments';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of polls per screen from form
+		if(isset($mybb->input['attachments_per_screen']))
+		{
+			$import_session['attachments_per_screen'] = intval($mybb->input['attachments_per_screen']);
+		}
+		
+		if(empty($import_session['attachments_per_screen']))
+		{
+			$import_session['start_attachments'] = 0;
+			echo "<p>Please select how many attachments to import at a time:</p>
+<p><input type=\"text\" name=\"attachments_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_attachments']-$import_session['start_attachments'])." attachments left to import and ".round((($import_session['total_attachments']-$import_session['start_attachments'])/$import_session['attachments_per_screen']))." pages left at a rate of {$import_session['attachments_per_screen']} per page.<br /><br />";
+
+			$query = $this->old_db->simple_select("attachments", "*", "", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
+			while($attachment = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting attachment #{$attachment['aid']}... ";				
+
+				$insert_attachment['import_aid'] = $attachment['aid'];
+				$insert_attachment['pid'] = $this->get_import_pid($attachment['pid']);
+				$insert_attachment['uid'] = $this->get_import_uid($attachment['uid']);
+				$insert_attachment['filename'] = $attachment['filename'];
+				$insert_attachment['attachname'] = "post_".$mybb->user['uid']."_".time().".attach";
+				$insert_attachment['filetype'] = $attachment['filetype'];
+				$insert_attachment['filesize'] = $attachment['filesize'];
+				$insert_attachment['downloads'] = $attachment['downloads'];
+				$insert_attachment['visible'] = 'yes';
+				$insert_attachment['thumbnail'] = '';
+				
+				mt_srand ((double) microtime() * 1000000);
+				$insert_attachment['posthash'] = md5($this->get_import_tid($attachment['tid']).$mybb->user['uid'].mt_rand());
+
+				$query2 = $db->simple_select("posts", "posthash, tid", "pid = '{$insert_attachment['pid']}'");
+				$poshhash = $db->fetch_field($query2, "posthash");
+				if($posthash)
+				{
+					$insert_attachment['posthash'] = $posthash;
+				}
+				else
+				{
+					mt_srand ((double) microtime() * 1000000);
+					$insert_attachment['posthash'] = md5($this->get_import_tid($posthash['tid']).$mybb->user['uid'].mt_rand());
+				}
+
+				$this->insert_attachment($insert_attachment);
+				
+				if(!$posthash)
+				{
+					// Restore connection
+					$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
+				}
+				
+				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachcount = attachcount + 1 WHERE import_tid = '".$attachment['tid']."'");				
+				
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no attachments to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_attachments'] += $import_session['attachments_per_screen'];
+		$output->print_footer();
+	}
+	
 	function import_moderators()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -1172,18 +1233,33 @@ EOF;
 		$output->print_footer();
 	}
 	
+	/**
+	 * Get the last post from a forum in the XMB database
+	 * @param int Forum ID
+	 * @return array The last post
+	 */
 	function get_lastpost($fid)
 	{
 		$query = $this->old_db->simple_select("posts", "tid,subject", "fid='{$fid}'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
-	function get_firstpost($fid)
+	/**
+	 * Get the first post from a thread in the XMB database
+	 * @param int Thread ID
+	 * @return array The first post
+	 */
+	function get_firstpost($tid)
 	{
-		$query = $this->old_db->simple_select("posts", "pid,dateline", "fid='{$fid}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
+		$query = $this->old_db->simple_select("posts", "pid,dateline", "tid='{$tid}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
+	/**
+	 * Get a user id from the XMB database
+	 * @param int Username
+	 * @return int The user id
+	 */
 	function get_uid($username)
 	{
 		if($username == 'Guest')

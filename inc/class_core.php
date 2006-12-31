@@ -119,7 +119,7 @@ class MyBB {
 		$protected = array("_GET", "_POST", "_SERVER", "_COOKIE", "_FILES", "_SERVER", "_ENV", "GLOBALS");
 		foreach($protected as $var)
 		{
-			if($_REQUEST[$var] || $_FILES[$var] || $_COOKIE[$var])
+			if(isset($_REQUEST[$var]) || isset($_FILES[$var]) || isset($_COOKIE[$var]))
 			{
 				die("Hacking attempt");
 			}
@@ -182,7 +182,7 @@ class MyBB {
 			register_shutdown_function(array(&$this, "__destruct"));
 		}
 
-		if($this->input['action'] == "mybb_logo")
+		if(isset($this->input['action']) && $this->input['action'] == "mybb_logo")
 		{
 			require_once dirname(__FILE__)."/mybb_group.php";
 			output_logo();

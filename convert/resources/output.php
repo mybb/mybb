@@ -299,6 +299,49 @@ END;
 		$this->print_footer('', '', 1);
 	}
 	
+	function print_database_details_table($name)
+	{
+		echo <<<EOF
+<div class="border_wrapper">
+<div class="title">$name Database Configuration</div>
+<table class="general" cellspacing="0">
+<tr>
+	<th colspan="2" class="first last">Database Settings</th>
+</tr>
+<tr class="first">
+	<td class="first"><label for="dbengine">Database Engine:</label></td>
+	<td class="last alt_col"><select name="dbengine" id="dbengine">{$dbengines}</select></td>
+</tr>
+
+<tr class="alt_row">
+	<td class="first"><label for="dbhost">Database Host:</label></td>
+	<td class="last alt_col"><input type="text" class="text_input" name="dbhost" id="dbhost" value="{$dbhost}" /></td>
+</tr>
+<tr>
+	<td class="first"><label for="dbuser">Database Username:</label></td>
+	<td class="last alt_col"><input type="text" class="text_input" name="dbuser" id="dbuser" value="{$dbuser}" /></td>
+</tr>
+<tr class="alt_row">
+	<td class="first"><label for="dbpass">Database Password:</label></td>
+	<td class="last alt_col"><input type="password" class="text_input" name="dbpass" id="dbpass" value="" /></td>
+</tr>
+<tr class="last">
+	<td class="first"><label for="dbname">Database Name:</label></td>
+	<td class="last alt_col"><input type="text" class="text_input" name="dbname" id="dbname" value="{$dbname}" /></td>
+</tr>
+<tr>
+	<th colspan="2" class="first last">Table Settings</th>
+</tr>
+<tr class="last">
+	<td class="first"><label for="tableprefix">Table Prefix:</label></td>
+	<td class="last alt_col"><input type="text" class="text_input" name="tableprefix" id="tableprefix" value="{$tableprefix}" /></td>
+</tr>
+</table>
+</div>
+<p>Once you have checked these details are correct, click next to continue.</p>
+EOF;
+	}
+	
 	/**
 	 * Print final page
 	 */
