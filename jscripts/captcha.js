@@ -29,5 +29,12 @@ var captcha = {
 		}
 		this.spinner.destroy();
 		this.spinner = '';
+
+		Element.removeClassName('imagestring_status', "validation_success");
+		Element.removeClassName('imagestring_status', "validation_error");
+		Element.removeClassName('imagestring_status', "validation_loading");
+		$('imagestring_status').innerHTML = '';
+		$('imagestring_status').style.display = "none";
+		$('imagestring').className = "textbox";
 	}
 };

@@ -9,6 +9,10 @@ FormValidator.prototype = {
 
 	old_type: null,
 
+	failure_message: null,
+
+	success_message: null,
+
 	initialize: function(form, options)
 	{
 		if(!$(form))
@@ -71,6 +75,10 @@ FormValidator.prototype = {
 			options = validation_field[i].options;
 			if(this.returned == false)
 			{
+				if(this.failure_message != null)
+				{
+					options.failure_message = this.failure_message;
+				}
 				this.showError(id, options.status_field, options.failure_message);
 				// don't run any further validation routines
 				return false;
@@ -83,6 +91,10 @@ FormValidator.prototype = {
 			}
 			else
 			{
+				if(this.success_message != null)
+				{
+					options.success_message = this.success_message;
+				}
 				ret = true;
 				this.showSuccess(id, options.status_field, options.success_message);
 				// Has match field
@@ -216,6 +228,7 @@ FormValidator.prototype = {
 				response = response.data;
 			}
 			this.showSuccess(id, options.status_field, response);
+			this.success_message = response;
 			this.returned = true;
 		}
 		else if(request.responseXML.getElementsByTagName("fail").length > 0)
@@ -226,6 +239,7 @@ FormValidator.prototype = {
 				response = response.data;
 			}
 			this.showError(id, options.status_field, response);
+			this.failure_message = response;
 			this.returned = false;
 		}
 	},
@@ -310,7 +324,7 @@ FormValidator.prototype = {
 		}
 
 		$(area).innerHTML = message;
-		$(area).style.display = "";	
+		$(area).style.display = "";
 	},
 	
 	getValue: function(element)
@@ -362,9 +376,21 @@ FormValidator.prototype = {
 	/* Fetch the text value from a series of radio or checkbuttons. Pass one of the radio or check buttons within a group */
 	getCheckedValue: function(element)
 	{
-		if(typeof element == "string") element = $(element);
-		if(!element) return false;
-		if(!element.parentNode) return false;
+		if(typeof element == "string")
+		{
+			element = $(element);
+		}
+
+		if(!element)
+		{
+			return false;
+		}
+
+		if(!element.parentNode)
+		{
+			return false;
+		}
+
 		var value = new Array();
 		inputs = element.parentNode.getElementsByTagName('INPUT');
 		for(var i=0;i<inputs.length;i++)

@@ -26,4 +26,5 @@ $l['banned_characters_username'] = "Your username contains one or more invalid c
 $l['username_taken'] = "{1} is already registered by another member";
 $l['username_available'] = "{1} is available";
 $l['invalid_username'] = "{1} is not the username of a registered member";
+$l['valid_username'] = "{1} is a valid referrer.";
 ?>

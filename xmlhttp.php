@@ -599,8 +599,9 @@ else if($mybb->input['action'] == "username_exists")
 
 	if($user['uid'])
 	{
-		echo "<success></success>";
-		exit;		
+		$lang->valid_username = sprintf($lang->valid_username, $username);
+		echo "<success>{$lang->valid_username}</success>";
+		exit;
 	}
 	else
 	{
