@@ -7,6 +7,8 @@ FormValidator.prototype = {
 
 	old_value: null,
 
+	old_type: null,
+
 	initialize: function(form, options)
 	{
 		if(!$(form))
@@ -120,14 +122,17 @@ FormValidator.prototype = {
 			value = this.getValue(id);
 		}
 
-		if(this.old_value != null && this.old_value == value)
+		type = type.toLowerCase();
+
+		if(this.old_value != null && this.old_type == type && this.old_value == value)
 		{
 			return this.returned;
 		}
 
 		this.old_value = value;
+		this.old_type = type;
 
-		switch(type.toLowerCase())
+		switch(type)
 		{
 			case "notempty":
 				if(value == null || value.length == 0)
@@ -189,7 +194,7 @@ FormValidator.prototype = {
 						extra += "&" + options.extra_body[x] + "=" + this.getValue(options.extra_body[x]);
 					}
 				}
-				else
+				else if(typeof options.extra_body != "undefined")
 				{
 					extra = "&" + options.extra_body + "=" + this.getValue(options.extra_body);
 				}

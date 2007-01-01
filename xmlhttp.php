@@ -46,8 +46,6 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
 header("Cache-Control: no-cache, must-revalidate");
 header("Pragma: no-cache");
 
-$charset = $lang->settings['charset'];
-
 // Create the session
 require_once MYBB_ROOT."inc/class_session.php";
 $session = new session;
@@ -93,6 +91,16 @@ else
 	{
 		$theme['imglangdir'] = $theme['imgdir'];
 	}
+}
+
+if($lang->settings['charset'])
+{
+	$charset = $lang->settings['charset'];
+}
+// If not, revert to UTF-8
+else
+{
+	$charset = "UTF-8";
 }
 
 $lang->load("global");
@@ -531,13 +539,13 @@ else if($mybb->input['action'] == "username_availability")
 {
 	require_once MYBB_ROOT."inc/functions_user.php";
 	$username = $mybb->input['value'];
-	
+
 	// Fix bad characters
 	$username = str_replace(array(chr(160), chr(173)), array(" ", "-"), $username);
 
 	// Remove multiple spaces from the username
 	$username = preg_replace("#\s{2,}#", " ", $username);
-	
+
 	header("Content-type: text/xml; charset={$charset}");
 
 	// Check if the username belongs to the list of banned usernames.
@@ -599,7 +607,7 @@ else if($mybb->input['action'] == "username_exists")
 		$lang->invalid_username = sprintf($lang->invalid_username, $username);
 		echo "<fail>{$lang->invalid_username}</fail>";
 		exit;
-	}	
+	}
 }
 
 /**
