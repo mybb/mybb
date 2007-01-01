@@ -11,9 +11,7 @@ FormValidator.prototype = {
 	
 	old_id: null,
 
-	failure_message: null,
-
-	success_message: null,
+	is_same: false,
 
 	initialize: function(form, options)
 	{
@@ -77,11 +75,10 @@ FormValidator.prototype = {
 			options = validation_field[i].options;
 			if(this.returned == false)
 			{
-				if(this.failure_message != null && id == this.old_id)
+				if(this.is_same == false)
 				{
-					options.failure_message = this.failure_message;
+					this.showError(id, options.status_field, options.failure_message);
 				}
-				this.showError(id, options.status_field, options.failure_message);
 				this.old_id = id;
 				// don't run any further validation routines
 				return false;
@@ -95,12 +92,11 @@ FormValidator.prototype = {
 			}
 			else
 			{
-				if(this.success_message != null && id == this.old_id)
-				{
-					options.success_message = this.success_message;
-				}
 				ret = true;
-				this.showSuccess(id, options.status_field, options.success_message);
+				if(this.is_same == false)
+				{
+					this.showSuccess(id, options.status_field, options.success_message);
+				}
 				this.old_id = id;
 				// Has match field
 				if(options.match_field && !twin_call)
@@ -141,9 +137,14 @@ FormValidator.prototype = {
 
 		type = type.toLowerCase();
 
-		if(this.old_value != null && this.old_type == type && this.old_value == value && id == this.old_id)
+		if(this.old_value != null && this.old_type == type && this.old_value == value && this.old_id == id)
 		{
+			this.is_same = true;
 			return this.returned;
+		}
+		else
+		{
+			this.is_same = false;
 		}
 
 		this.old_value = value;
@@ -233,7 +234,6 @@ FormValidator.prototype = {
 				response = response.data;
 			}
 			this.showSuccess(id, options.status_field, response);
-			this.success_message = response;
 			this.returned = true;
 		}
 		else if(request.responseXML.getElementsByTagName("fail").length > 0)
@@ -244,7 +244,6 @@ FormValidator.prototype = {
 				response = response.data;
 			}
 			this.showError(id, options.status_field, response);
-			this.failure_message = response;
 			this.returned = false;
 		}
 	},
