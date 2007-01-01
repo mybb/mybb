@@ -142,8 +142,8 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	if($mybb->settings['captchaimage'] == "on" && function_exists("imagecreatefrompng"))
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
-		$imagestring = $db->escape_string($mybb->input['imagestring']);
-		$query = $db->simple_select("captcha", "*", "imagehash='$imagehash' AND imagestring='$imagestring'");
+		$imagestring = $db->escape_string(my_strtolower($mybb->input['imagestring']));
+		$query = $db->simple_select("captcha", "*", "imagehash='$imagehash' AND LOWER(imagestring)='$imagestring'");
 		$imgcheck = $db->fetch_array($query);
 		if(!$imgcheck['dateline'])
 		{
@@ -264,7 +264,6 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "register")
 {
-
 	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
 	{
 		$plugins->run_hooks("member_register_agreement");
@@ -400,7 +399,7 @@ if($mybb->input['action'] == "register")
 				$refbg = "trow2";
 			}
 			// JS validator extra
-			$validator_extra .= "regValidator.register('referrer', 'ajax', {url:'xmlhttp.php?action=username_exists', loading_message:'{$lang->js_validator_checking_referrer}'});\n";
+			$validator_extra .= "\tregValidator.register('referrer', 'ajax', {url:'xmlhttp.php?action=username_exists', loading_message:'{$lang->js_validator_checking_referrer}'});\n";
 			
 			eval("\$referrer = \"".$templates->get("member_register_referrer")."\";");
 		}
@@ -557,7 +556,7 @@ if($mybb->input['action'] == "register")
 				{
 					$id = "field";
 				}
-				$validator_extra .= "regValidator.register('{$id}', 'notEmpty', {faulure_message:'{$lang->js_validator_not_empty}'});\n";
+				$validator_extra .= "\tregValidator.register('{$id}', 'notEmpty', {faulure_message:'{$lang->js_validator_not_empty}'});\n";
 				
 				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 			}
@@ -600,33 +599,32 @@ if($mybb->input['action'] == "register")
 			);
 			$db->insert_query("captcha", $regimagearray);
 			eval("\$regimage = \"".$templates->get("member_register_regimage")."\";");
-			
+
 			// JS validator extra
-			$validator_extra .= "regValidator.register('imagestring', 'notEmpty', {failure_message:'{$lang->js_validator_no_image_text}'});\n";
+			$validator_extra .= "\tregValidator.register('imagestring', 'ajax', {url:'xmlhttp.php?action=validate_captcha', extra_body: 'imagehash', loading_message:'{$lang->js_validator_captcha_valid}', failure_message:'{$lang->js_validator_no_image_text}'});\n";
 		}
 		if($mybb->settings['regtype'] != "randompass")
 		{
 			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
-			
+
 			// JS validator extra
 			$lang->js_validator_password_length = sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
-			$validator_extra .= "regValidator.register('password', 'length', {match_field:'password2', min: {$mybb->settings['minpasswordlength']}, failure_message:'{$lang->js_validator_password_length}'});\n";
-			
+			$validator_extra .= "\tregValidator.register('password', 'length', {match_field:'password2', min: {$mybb->settings['minpasswordlength']}, failure_message:'{$lang->js_validator_password_length}'});\n";
+
 			// See if the board has "require complex passwords" enabled.
 			if($mybb->settings['requirecomplexpasswords'] == "yes")
 			{
-				$validator_extra .= "regValidator.register('password', 'regexp', {match_field:'password2', regexp:'[\W]+', failure_message:'{$lang->js_validator_password_complexity}'});\n";
+				$validator_extra .= "\tregValidator.register('password', 'regexp', {match_field:'password2', regexp:'[\W]+', failure_message:'{$lang->js_validator_password_complexity}'});\n";
 			}
-			$validator_extra .= "regValidator.register('password2', 'matches', {match_field:'password', status_field:'password_status', failure_message:'{$lang->js_validator_password_matches}'});\n";	
+			$validator_extra .= "\tregValidator.register('password2', 'matches', {match_field:'password', status_field:'password_status', failure_message:'{$lang->js_validator_password_matches}'});\n";
 		}
-		
+
 		// JS validator extra
 		if($mybb->settings['maxnamelength'] > 0 && $mybb->settings['minnamelength'] > 0)
 		{
 			$lang->js_validator_username_length = sprintf($lang->js_validator_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
-			$validator_extra .= "regValidator.register('username', 'length', {min: {$mybb->settings['minnamelength']}, max: {$mybb->settings['maxnamelength']}, failure_message:'{$lang->js_validator_username_length}'});\n";
+			$validator_extra .= "\tregValidator.register('username', 'length', {min: {$mybb->settings['minnamelength']}, max: {$mybb->settings['maxnamelength']}, failure_message:'{$lang->js_validator_username_length}'});\n";
 		}
-		
 
 		$languages = $lang->get_languages();
 		$langoptions = '';

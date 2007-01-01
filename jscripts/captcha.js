@@ -29,6 +29,5 @@ var captcha = {
 		}
 		this.spinner.destroy();
 		this.spinner = '';
-		$('imagestring').focus();
 	}
 };

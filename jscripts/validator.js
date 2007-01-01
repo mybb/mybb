@@ -2,7 +2,11 @@ var FormValidator = Class.create();
 
 FormValidator.prototype = {
 	validation_fields: new Object(),
-	
+
+	returned: false,
+
+	old_value: null,
+
 	initialize: function(form, options)
 	{
 		if(!$(form))
@@ -11,7 +15,7 @@ FormValidator.prototype = {
 		}
 		Event.observe($(form), "submit", this.onSubmit.bindAsEventListener(this));
 	},
-	
+
 	register: function(field, validation_type, customOptions)
 	{
 		options = {
@@ -34,14 +38,14 @@ FormValidator.prototype = {
 		validation_field = {field: field, validation_type: validation_type, options: options};
 		this.validation_fields[field][this.validation_fields[field].length] = validation_field;	
 	},
-	
+
 	onBlur: function(e)
 	{
 		element = Event.element(e);
 		id = element.id;
 		this.validateField(id);
 	},
-	
+
 	validateField: function(id, twin_call, submit_call)
 	{
 		if(!this.validation_fields[id])
@@ -49,8 +53,8 @@ FormValidator.prototype = {
 			return false;
 		}
 		validation_field = this.validation_fields[id];
-	
-		for(i=0;i<validation_field.length;i++)
+
+		for(i = 0; i < validation_field.length; ++i)
 		{
 			if(validation_field[i].validation_type == "matches")
 			{
@@ -61,20 +65,20 @@ FormValidator.prototype = {
 				}
 			}
 			
-			result = this.checkValidation(id, validation_field[i].validation_type, validation_field[i].options, submit_call);
+			this.returned = this.checkValidation(id, validation_field[i].validation_type, validation_field[i].options, submit_call);
 			options = validation_field[i].options;
-			if(result == false)
+			if(this.returned == false)
 			{
 				this.showError(id, options.status_field, options.failure_message);
 				// don't run any further validation routines
 				return false;
 			}
-			else if(result == "loading")
+			else if(this.returned == "loading")
 			{
 				this.showLoading(id, options.status_field, options.loading_message);
 				$(id).className = "";
 				return false;
-			}	
+			}
 			else
 			{
 				ret = true;
@@ -82,7 +86,11 @@ FormValidator.prototype = {
 				// Has match field
 				if(options.match_field && !twin_call)
 				{
-					if(validation_field[i].validation_type != "matches") return true;
+					if(validation_field[i].validation_type != "matches")
+					{
+						return true;
+					}
+
 					ret = this.validateField(options.match_field, 1);
 					if(ret == false)
 					{
@@ -92,15 +100,17 @@ FormValidator.prototype = {
 			}		
 		}
 	},
-	
+
 	checkValidation: function(id, type, options, submit_call)
 	{
 		element = $(id);
 		field_type = element.type.toLowerCase();
+
 		if(typeof type == "function")
 		{
 			return type(id, this);
 		}
+
 		if(field_type == "radio" || field_type == "checkbox")
 		{
 			value = this.getCheckedValue(id);
@@ -109,36 +119,88 @@ FormValidator.prototype = {
 		{
 			value = this.getValue(id);
 		}
+
+		if(this.old_value != null && this.old_value == value)
+		{
+			return this.returned;
+		}
+
+		this.old_value = value;
+
 		switch(type.toLowerCase())
 		{
 			case "notempty":
-				if(value == null || value.length == 0) return false;
+				if(value == null || value.length == 0)
+				{
+					return false;
+				}
+
 				return true;
 				break;
 			case "length":
-				if((options.min && value.length < options.min) || (options.max && value.length > options.max)) return false;
+				if((options.min && value.length < options.min) || (options.max && value.length > options.max))
+				{
+					return false;
+				}
+
 				return true;
 				break;
 			case "matches":
-				if(!options.match_field) return false;
-				if(value != this.getValue(options.match_field))	return false;
+				if(!options.match_field)
+				{
+					return false;
+				}
+
+				if(value != this.getValue(options.match_field))
+				{
+					return false;
+				}
+
 				return true;
 				break;
 			case "regexp":
 				regexp = new RegExp(options.regexp);
-				if(!element.value.match(regexp)) return false;
+
+				if(!element.value.match(regexp))
+				{
+					return false;
+				}
+
 				return true;
 				break;
 			case "ajax":
-				if(!options.url) return false;
+				if(!options.url)
+				{
+					return false;
+				}
+
 				// don't ajax validate on submit
-				if(submit_call) return true;
-				new ajax(options.url, {method:'post', postBody:"value="+value, onComplete: function(request) { this.ajaxValidateComplete(id, options, request); }.bind(this)});
+				if(submit_call)
+				{
+					return true;
+				}
+
+				extra = "";
+
+				if(typeof options.extra_body == "object")
+				{
+					for(x = 0; x < options.extra_body.length; ++x)
+					{
+						extra += "&" + options.extra_body[x] + "=" + this.getValue(options.extra_body[x]);
+					}
+				}
+				else
+				{
+					extra = "&" + options.extra_body + "=" + this.getValue(options.extra_body);
+				}
+
+				new ajax(options.url, {method:'post', postBody:"value=" + value + extra, onComplete: function(request) { this.ajaxValidateComplete(id, options, request); }.bind(this)});
+
 				return "loading";
 				break;
 		}
 	},
-	
+
 	ajaxValidateComplete: function(id, options, request)
 	{
 		if(request.responseXML.getElementsByTagName("success").length > 0)
@@ -149,6 +211,7 @@ FormValidator.prototype = {
 				response = response.data;
 			}
 			this.showSuccess(id, options.status_field, response);
+			this.returned = true;
 		}
 		else if(request.responseXML.getElementsByTagName("fail").length > 0)
 		{
@@ -157,10 +220,11 @@ FormValidator.prototype = {
 			{
 				response = response.data;
 			}
-			this.showError(id, options.status_field, response);	
+			this.showError(id, options.status_field, response);
+			this.returned = false;
 		}
 	},
-	
+
 	onSubmit: function(e)
 	{
 		$H(this.validation_fields).each(function(validation_field) {
@@ -180,7 +244,7 @@ FormValidator.prototype = {
 			return true;
 		}
 	},
-	
+
 	createStatusField: function(id)
 	{
 		element = $(id);
@@ -197,11 +261,11 @@ FormValidator.prototype = {
 				element.parentNode.insertBefore(status_field, element.nextSibling);
 		}
 	},
-	
+
 	showError: function(field, area, message)
 	{
 		Element.removeClassName(area, "validation_success");
-		Element.removeClassName(area, "validation_loading");		
+		Element.removeClassName(area, "validation_loading");
 		Element.addClassName(area, "validation_error");
 		$(field).className = "invalid_field";
 		if(!message)
@@ -209,43 +273,53 @@ FormValidator.prototype = {
 			message = "The value you entered is invalid";
 		}
 		$(area).innerHTML = message;
-		$(area).style.display = "";	
+		$(area).style.display = "";
 	},
-	
+
 	showSuccess: function(field, area, message)
 	{
 		Element.removeClassName(area, "validation_error");
-		Element.removeClassName(area, "validation_loading");		
+		Element.removeClassName(area, "validation_loading");
 		Element.addClassName(area, "validation_success");
 		$(field).className = "valid_field";
 		if(message)
 		{
 			$(area).innerHTML = message;
-			$(area).style.display = "";		
+			$(area).style.display = "";
 		}
 		else
 		{
 			$(area).style.display = "none";
 		}
 	},
-	
+
 	showLoading: function(field, area, message)
 	{
 		Element.removeClassName(area, "validation_success");
-		Element.removeClassName(area, "validation_error");		
+		Element.removeClassName(area, "validation_error");
 		Element.addClassName(area, "validation_loading");
+
 		if(!message)
 		{
 			message = "Checking for validity...";
 		}
+
 		$(area).innerHTML = message;
 		$(area).style.display = "";	
 	},
 	
 	getValue: function(element)
 	{
-		if(typeof element == "string") element = $(element);
-		if(!element) return false;
+		if(typeof element == "string")
+		{
+			element = $(element);
+		}
+
+		if(!element)
+		{
+			return false;
+		}
+
 		switch(element.type.toLowerCase())
 		{
 			case "text":

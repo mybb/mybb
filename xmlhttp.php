@@ -46,6 +46,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
 header("Cache-Control: no-cache, must-revalidate");
 header("Pragma: no-cache");
 
+$charset = $lang->settings['charset'];
 
 // Create the session
 require_once MYBB_ROOT."inc/class_session.php";
@@ -503,6 +504,29 @@ else if($mybb->input['action'] == "refresh_captcha")
 	header("Content-type: text/plain; charset={$charset}");
 	echo $imagehash;
 }
+else if($mybb->input['action'] == "validate_captcha")
+{
+	header("Content-type: text/xml; charset={$charset}");
+	$imagehash = $db->escape_string($mybb->input['imagehash']);
+	$query = $db->simple_select("captcha", "imagestring", "imagehash='$imagehash'");
+	if($db->num_rows($query) == 0)
+	{
+		echo "<fail>{$lang->captcha_valid_not_exists}</fail>";
+		exit;
+	}
+	$imagestring = $db->fetch_field($query, 'imagestring');
+
+	if(my_strtolower($imagestring) == my_strtolower($mybb->input['value']))
+	{
+		echo "<success>{$lang->captcha_matches}</success>";
+		exit;
+	}
+	else
+	{
+		echo "<fail>{$lang->captcha_does_not_match}</fail>";
+		exit;
+	}
+}
 else if($mybb->input['action'] == "username_availability")
 {
 	require_once MYBB_ROOT."inc/functions_user.php";
@@ -548,14 +572,13 @@ else if($mybb->input['action'] == "username_availability")
 		exit;
 	}
 }
-
 else if($mybb->input['action'] == "username_exists")
 {
 	require_once MYBB_ROOT."inc/functions_user.php";
 	$username = $mybb->input['value'];
-	
+
 	header("Content-type: text/xml; charset={$charset}");
-	
+
 	if(!trim($username))
 	{
 		echo "<success></success>";
