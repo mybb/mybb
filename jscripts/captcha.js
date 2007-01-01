@@ -36,5 +36,6 @@ var captcha = {
 		$('imagestring_status').innerHTML = '';
 		$('imagestring_status').style.display = "none";
 		$('imagestring').className = "textbox";
+		$('imagestring').value = "";
 	}
 };

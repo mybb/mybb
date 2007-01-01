@@ -8,6 +8,8 @@ FormValidator.prototype = {
 	old_value: null,
 
 	old_type: null,
+	
+	old_id: null,
 
 	failure_message: null,
 
@@ -75,11 +77,12 @@ FormValidator.prototype = {
 			options = validation_field[i].options;
 			if(this.returned == false)
 			{
-				if(this.failure_message != null)
+				if(this.failure_message != null && id == this.old_id)
 				{
 					options.failure_message = this.failure_message;
 				}
 				this.showError(id, options.status_field, options.failure_message);
+				this.old_id = id;
 				// don't run any further validation routines
 				return false;
 			}
@@ -87,16 +90,18 @@ FormValidator.prototype = {
 			{
 				this.showLoading(id, options.status_field, options.loading_message);
 				$(id).className = "";
+				this.old_id = id;
 				return false;
 			}
 			else
 			{
-				if(this.success_message != null)
+				if(this.success_message != null && id == this.old_id)
 				{
 					options.success_message = this.success_message;
 				}
 				ret = true;
 				this.showSuccess(id, options.status_field, options.success_message);
+				this.old_id = id;
 				// Has match field
 				if(options.match_field && !twin_call)
 				{
@@ -111,7 +116,7 @@ FormValidator.prototype = {
 						$(id).className = "invalid_field";
 					}
 				}
-			}		
+			}
 		}
 	},
 
@@ -136,7 +141,7 @@ FormValidator.prototype = {
 
 		type = type.toLowerCase();
 
-		if(this.old_value != null && this.old_type == type && this.old_value == value)
+		if(this.old_value != null && this.old_type == type && this.old_value == value && id == this.old_id)
 		{
 			return this.returned;
 		}
