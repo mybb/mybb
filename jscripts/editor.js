@@ -12,20 +12,20 @@ messageEditor.prototype = {
 			return false;
 		}
 		this.options = options;
-		
+
 		if(this.options)
 		{
 			if(!this.options.lang)
 			{
 				return false;
 			}
-			
+
 			if(!this.options.rtl)
 			{
-				this.options.trl = 0;
+				this.options.rtl = 0;
 			}
 		}
-		
+
 		// Defines an array of fonts to be shown in the font drop down.
 		this.fonts = new Object();
 		this.fonts["Arial"] = "Arial";
@@ -62,14 +62,14 @@ messageEditor.prototype = {
 		this.colors["navy"] = this.options.lang.color_navy;
 		this.colors["maroon"] = this.options.lang.color_maroon;
 		this.colors["limegreen"] = this.options.lang.color_limegreen;
-	
+
 		// Here we get the ID of the textarea we're replacing and store it.
 		this.textarea = textarea;
-		
+
 		// Only swap it over once the page has loaded (add event)
 		Event.observe(window, "load", this.showEditor.bindAsEventListener(this));
 	},
-	
+
 	showEditor: function()
 	{
 		// Assign the old textarea to a variable for later use.
@@ -101,7 +101,7 @@ messageEditor.prototype = {
 		{
 			w = "560px";
 		}
-		
+
 		if(this.options && this.options.height)
 		{
 			w = this.options.height;
@@ -126,11 +126,11 @@ messageEditor.prototype = {
 		toolBar = document.createElement("div");
 		toolBar.style.height = "26px";
 		toolBar.style.position = "relative";
-		
+
 		// Create text font/color/size toolbar
 		textFormatting = document.createElement("div");
 		textFormatting.style.position = "absolute";
-		
+
 		if(this.options.rtl == 1)
 		{
 			textFormatting.style.right = 0;
@@ -146,10 +146,10 @@ messageEditor.prototype = {
 		fontSelect.style.margin = "2px";
 		fontSelect.id = "font";
 		fontSelect.options[fontSelect.options.length] = new Option(this.options.lang.font, "-");
-	
+
 		$H(this.fonts).each(function(font) {
 			fontSelect.options[fontSelect.options.length] = new Option(font.value, font.key)
-		}.bind(this));	
+		}.bind(this));
 
 		Event.observe(fontSelect, "change", this.changeFont.bindAsEventListener(this));
 		textFormatting.appendChild(fontSelect);
@@ -159,11 +159,11 @@ messageEditor.prototype = {
 		sizeSelect.style.margin = "2px";
 		sizeSelect.id = "size";
 		sizeSelect.options[sizeSelect.options.length] = new Option(this.options.lang.size, "-");
-		
+
 		$H(this.sizes).each(function(size) {
 			sizeSelect.options[sizeSelect.options.length] = new Option(size.value, size.key)
 		}.bind(this));
-		
+
 		Event.observe(sizeSelect, "change", this.changeSize.bindAsEventListener(this));
 		textFormatting.appendChild(sizeSelect);
 
@@ -172,20 +172,20 @@ messageEditor.prototype = {
 		colorSelect.style.margin = "2px";
 		colorSelect.id = "color";
 		colorSelect.options[colorSelect.options.length] = new Option(this.options.lang.color, "-");
-		
+
 		$H(this.colors).each(function(color) {
 			colorSelect.options[colorSelect.options.length] = new Option(color.value, color.key);
 			colorSelect.options[colorSelect.options.length-1].style.backgroundColor = color.key;
 			colorSelect.options[colorSelect.options.length-1].style.color = color.key;
 		}.bind(this));
-		
+
 		Event.observe(colorSelect, "change", this.changeColor.bindAsEventListener(this));
 		textFormatting.appendChild(colorSelect);
-		
+
 		// Create close tags button
 		closeBar = document.createElement("div");
 		closeBar.style.position = "absolute";
-		
+
 		if(this.options.rtl == 1)
 		{
 			closeBar.style.left = 0;
@@ -194,7 +194,7 @@ messageEditor.prototype = {
 		{
 			closeBar.style.right = 0;
 		}
-		
+
 		var closeButton = document.createElement("img");
 		closeButton.id = "close_tags";
 		closeButton.src = "images/codebuttons/close_tags.gif";
@@ -209,7 +209,7 @@ messageEditor.prototype = {
 		Event.observe(closeButton, "click", this.toolbarItemClick.bindAsEventListener(this));
 		closeBar.appendChild(closeButton);
 		toolBar.appendChild(closeBar);
-	
+
 		// Append first toolbar to the editor
 		editor.appendChild(toolBar);
 
@@ -223,7 +223,7 @@ messageEditor.prototype = {
 		formatting.style.position = "absolute";
 		formatting.style.width = "100%";
 		formatting.style.whiteSpace = "nowrap";
-		
+
 		if(this.options.rtl == 1)
 		{
 			formatting.style.right = 0;
@@ -247,7 +247,7 @@ messageEditor.prototype = {
 		// Create insertable elements section of second toolbar.
 		elements = document.createElement("div");
 		elements.style.position = "absolute";
-		
+
 		if(this.options.rtl == 1)
 		{
 			elements.style.left = 0;
@@ -284,27 +284,27 @@ messageEditor.prototype = {
 		}
 		areaContainer.style.height = parseInt(editor.style.height)-parseInt(toolBar.style.height)-parseInt(toolbar2.style.height)-subtract+"px";
 		areaContainer.style.width = parseInt(editor.style.width)-subtract2+"px";
-		
+
 		// Create text area
 		textInput = document.createElement("textarea");
 		textInput.id = this.textarea;
 		textInput.name = oldTextarea.name+"_new";
 		textInput.style.height = parseInt(areaContainer.style.height)+"px";
 		textInput.style.width = parseInt(areaContainer.style.width)+"px";
-		
+
 		if(oldTextarea.value != '')
 		{
 			textInput.value = oldTextarea.value;
 		}
-		
+
 		if(oldTextarea.tabIndex)
 		{
 			textInput.tabIndex = oldTextarea.tabIndex;
 		}
-		
+
 		areaContainer.appendChild(textInput);
 		editor.appendChild(areaContainer);
-		
+
 		if(oldTextarea.form)
 		{
 			Event.observe(oldTextarea.form, "submit", this.closeTags.bindAsEventListener(this));
@@ -323,12 +323,11 @@ messageEditor.prototype = {
 		Event.observe(textInput, "keyup", this.updateOldArea.bindAsEventListener(this));
 		Event.observe(textInput, "blur", this.updateOldArea.bindAsEventListener(this));
 	},
-	
+
 	updateOldArea: function(e)
 	{
 		this.oldTextarea.value = $(this.textarea).value;
 	},
-
 
 	insertStandardButton: function(into, id, src, insertText, insertExtra, alt)
 	{
@@ -362,12 +361,12 @@ messageEditor.prototype = {
 	toolbarItemOut: function(e)
 	{
 		element = Event.element(e);
-		
+
 		if(!element)
 		{
 			return false;
 		}
-		
+
 		if(element.insertText)
 		{
 			if(element.insertExtra)
@@ -378,7 +377,7 @@ messageEditor.prototype = {
 			{
 				insertCode = element.insertText;
 			}
-			
+
 			if(this.openTags.indexOf(insertCode) != -1)
 			{
 				Element.addClassName(element, "toolbar_clicked");
@@ -390,25 +389,24 @@ messageEditor.prototype = {
 	toolbarItemHover: function(e)
 	{
 		element = Event.element(e);
-		
+
 		if(!element)
 		{
 			return false;
 		}
-		
+
 		Element.addClassName(element, "toolbar_hover");
 	},
-
 
 	toolbarItemClick: function(e)
 	{
 		element = Event.element(e);
-		
+
 		if(!element)
 		{
 			return false;
 		}
-		
+
 		if(element.id == "close_tags")
 		{
 			this.closeTags();
@@ -422,14 +420,14 @@ messageEditor.prototype = {
 	changeFont: function(e)
 	{
 		element = Event.element(e);
-		
+
 		if(!element)
 		{
 			return false;
 		}
-		
+
 		this.insertMyCode("font", element.options[element.selectedIndex].value);
-		
+
 		if(this.getSelectedText($(this.textarea)))
 		{
 			element.selectedIndex = 0;
@@ -439,14 +437,14 @@ messageEditor.prototype = {
 	changeSize: function(e)
 	{
 		element = Event.element(e);
-		
+
 		if(!element)
 		{
 			return false;
 		}
-		
+
 		this.insertMyCode("size", element.options[element.selectedIndex].value);
-		
+
 		if(this.getSelectedText($(this.textarea)))
 		{
 			element.selectedIndex = 0;
@@ -456,14 +454,14 @@ messageEditor.prototype = {
 	changeColor: function(e)
 	{
 		element = Event.element(e);
-		
+
 		if(!element)
 		{
 			return false;
 		}
-		
+
 		this.insertMyCode("color", element.options[element.selectedIndex].value);
-		
+
 		if(this.getSelectedText($(this.textarea)))
 		{
 			element.selectedIndex = 0;
@@ -473,23 +471,23 @@ messageEditor.prototype = {
 	insertList: function(type)
 	{
 		list = "";
-		
+
 		do
 		{
 			listItem = prompt(this.options.lang.enter_list_item, "");
-			
+
 			if(listItem != "" && listItem != null)
 			{
 				list = list+"[*]"+listItem+"\n";
 			}
 		}
 		while(listItem != "" && listItem != null);
-		
+
 		if(list == "")
 		{
 			return false;
 		}
-		
+
 		if(type)
 		{
 			list = "[list="+type+"]\n"+list;
@@ -498,7 +496,7 @@ messageEditor.prototype = {
 		{
 			list = "[list]\n"+list;
 		}
-		
+
 		list = list+"[/list]\n";
 		this.performInsert(list, "", true, false);
 	},
@@ -507,7 +505,7 @@ messageEditor.prototype = {
 	{
 		selectedText = this.getSelectedText($(this.textarea));
 		url = prompt(this.options.lang.enter_url, "http://");
-		
+
 		if(url)
 		{
 			if(!selectedText)
@@ -518,7 +516,7 @@ messageEditor.prototype = {
 			{
 				title = selectedText;
 			}
-			
+
 			if(title)
 			{
 				this.performInsert("[url="+url+"]"+title+"[/url]", "", true, false);
@@ -534,7 +532,7 @@ messageEditor.prototype = {
 	{
 		selectedText = this.getSelectedText($(this.textarea));
 		email = prompt(this.options.lang.enter_email, "");
-		
+
 		if(email)
 		{
 			if(!selectedText)
@@ -545,7 +543,7 @@ messageEditor.prototype = {
 			{
 				title = selectedText;
 			}
-			
+
 			if(title)
 			{
 				this.performInsert("[email="+email+"]"+title+"[/email]", "", true, false);
@@ -560,7 +558,7 @@ messageEditor.prototype = {
 	insertIMG: function()
 	{
 		image = prompt(this.options.lang.enter_image, "http://");
-		
+
 		if(image)
 		{
 			this.performInsert("[img]"+image+"[/img]", "", true);
@@ -568,7 +566,7 @@ messageEditor.prototype = {
 	},
 
 	insertMyCode: function(code, extra)
-	{	
+	{
 		switch(code)
 		{
 			case "list":
@@ -594,7 +592,7 @@ messageEditor.prototype = {
 				{
 					var full_tag = code;
 				}
-				
+
 				var newTags = new Array();
 				this.openTags.each(function(tag)
 				{
@@ -603,12 +601,12 @@ messageEditor.prototype = {
 					{
 						already_open = true;
 						this.performInsert("[/"+exploded_tag[0]+"]", "", false);
-				
+
 						if($(tag))
 						{
 							$(tag).className = "toolbar_normal";
 						}
-							
+
 						if(tag == full_tag)
 						{
 							no_insert = true;
@@ -619,10 +617,10 @@ messageEditor.prototype = {
 						newTags[newTags.length] = tag;
 					}
 				}.bind(this));
-				
+
 				this.openTags = newTags;
 				var do_insert = false;
-				
+
 				if(extra != "" && extra != "-" && no_insert == false)
 				{
 					start_tag = "["+code+"="+extra+"]";
@@ -685,24 +683,24 @@ messageEditor.prototype = {
 		{
 			var ignore_selection = false;
 		}
-		
+
 		if(!close_tag)
 		{
 			var close_tag = "";
 		}
 		var textarea = $(this.textarea);
 		textarea.focus();
-		
+
 		if(document.selection)
 		{
 			var selection = document.selection;
 			var range = selection.createRange();
-			
+
 			if(ignore_selection != false)
 			{
 				selection.collapse;
 			}
-			
+
 			if((selection.type == "Text" || selection.type == "None") && range != null && ignore_selection != true)
 			{
 				if(close_tag != "" && range.text.length > 0)
@@ -732,16 +730,16 @@ messageEditor.prototype = {
 			var select_start = textarea.selectionStart;
 			var select_end = textarea.selectionEnd;
 			var scroll_top = textarea.scrollTop;
-			
+
 			if(select_end <= 2)
 			{
 				select_end = textarea.textLength;
 			}
-			
+
 			var start = textarea.value.substring(0, select_start);
 			var middle = textarea.value.substring(select_start, select_end);
 			var end = textarea.value.substring(select_end, textarea.textLength);
-			
+
 			if(select_end - select_start > 0 && ignore_selection != true && close_tag != "")
 			{
 				var keep_selected = true;
@@ -756,9 +754,9 @@ messageEditor.prototype = {
 				}
 				middle = open_tag;
 			}
-			
+
 			textarea.value = start+middle+end;
-			
+
 			if(keep_selected == true && ignore_selection != true)
 			{
 				textarea.selectionStart = select_start;
@@ -774,7 +772,7 @@ messageEditor.prototype = {
 		else
 		{
 			textarea.value += open_tag;
-			
+
 			if(is_single)
 			{
 				is_closed = false;
@@ -794,7 +792,7 @@ messageEditor.prototype = {
 				tag = this.openTags.pop();
 				exploded_tag = tag.split("_");
 				this.performInsert("[/"+exploded_tag[0]+"]", "", false);
-				
+
 				if($(exploded_tag[0]))
 				{
 					tag = $(exploded_tag[0]);
@@ -828,9 +826,9 @@ messageEditor.prototype = {
 		{
 			return false;
 		}
-		
+
 		smilies = Element.getElementsByClassName($(id), "smilie");
-		
+
 		if(smilies.length > 0)
 		{
 			smilies.each(function(smilie)
@@ -840,7 +838,7 @@ messageEditor.prototype = {
 			}.bind(this));
 		}
 	},
-	
+
 	openGetMoreSmilies: function(editor)
 	{
 		MyBB.popupWindow('misc.php?action=smilies&popup=true&editor='+editor, 'sminsert', 240, 280);
@@ -849,14 +847,14 @@ messageEditor.prototype = {
 	insertSmilie: function(e)
 	{
 		element = Event.element(e);
-		
+
 		if(!element || !element.alt)
 		{
 			return false;
 		}
 		this.performInsert(element.alt, "", true, false);
 	},
-	
+
 	insertAttachment: function(aid)
 	{
 		this.performInsert("[attachment="+aid+"]", "", true, false);

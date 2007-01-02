@@ -2262,6 +2262,7 @@ var inlineId = {$fid};
 	var removeattach_confirm = "{$lang->removeattach_confirm}";
 	var loading_text = '{$lang->ajax_loading}';
 	var saving_changes = '{$lang->saving_changes}';
+	var use_xmlhttprequest = "{$mybb->settings['use_xmlhttprequest']}";
 // -->
 </script>
 {$newpmmsg}]]></template>
@@ -2782,7 +2783,14 @@ function showBcc()
 <br />]]></template>
 		<template name="postbit_edit" version="120"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" alt="{$lang->postbit_edit}" title="{$lang->postbit_edit}" /></a>
 <div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
-<script type="text/javascript">new PopupMenu("edit_post_{$post['pid']}");</script>]]></template>
+<script type="text/javascript">
+<!--
+if(use_xmlhttprequest == "yes")
+{
+	new PopupMenu("edit_post_{$post['pid']}");
+}
+// -->
+</script>]]></template>
 		<template name="postbit_email" version="120"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_email.gif" alt="{$lang->postbit_email}" title="{$lang->postbit_email}" /></a>]]></template>
 		<template name="postbit_find" version="120"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_find.gif" alt="{$lang->postbit_find}" title="{$lang->postbit_find}" /></a>]]></template>
 		<template name="postbit_pm" version="120"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_pm.gif" alt="{$lang->postbit_pm}" title="{$lang->postbit_pm}" /></a>]]></template>
@@ -3599,7 +3607,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	<div>
 		<textarea style="width: 90%; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
 	</div>
-	<script type="text/javascript">document.write('<div class="editor_control_bar" style="width: 90%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote"><span class="smalltext">{$lang->quickreply_multiquote_selected} <a href="javascript:Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}<\/a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}<\/a>.<\/span><\/div>');</script>
+	<script type="text/javascript">document.write('<div class="editor_control_bar" style="width: 90%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote"><span class="smalltext">{$lang->quickreply_multiquote_selected} <a href="javascript:Thread.loadMultiQuoted(\'{$tid}\');">{$lang->quickreply_multiquote_now}<\/a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}<\/a>.<\/span><\/div>');</script>
 </td>
 </tr>
 <tr>
@@ -3999,7 +4007,12 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$footer}
 <script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
 <script type="text/javascript">
+<!--
+if(use_xmlhttprequest == "yes")
+{
 	new autoComplete("author", "xmlhttp.php?action=get_users", {valueSpan: "username"});
+}
+// -->
 </script>
 </body>
 </html>
@@ -6811,7 +6824,16 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
 <td><span class="smalltext">{$lang->verification_note}</span></td>
-<td rowspan="2" align="center"><img src="captcha.php?action=regimage&amp;imagehash={$imagehash}" alt="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span><br /><br /><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" /></td>
+<td rowspan="2" align="center"><img src="captcha.php?action=regimage&amp;imagehash={$imagehash}" alt="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
+<script language="Javascript" type="text/javascript">
+<!--
+	if(use_xmlhttprequest == "yes")
+	{
+		document.write('<br \/><br \/><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
+	}
+// -->
+</script>
+</td>
 </tr>
 <tr>
 <td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" style="width: 100%;" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
@@ -6973,15 +6995,25 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <script type="text/javascript">document.getElementById('multiquote_link_{$post['pid']}').style.display='';</script>]]></template>
 		<template name="private_send_autocomplete" version="120"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
 <script type="text/javascript">
+<!--
+if(use_xmlhttprequest == "yes")
+{
 	new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
 	if($('bcc'))
 	{
 		new autoComplete("bcc", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});	
 	}
+}
+// -->
 </script>]]></template>
 		<template name="forumdisplay_threadlist_inlineedit_js" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=120"></script>
 <script type="text/javascript">
+<!--
+if(use_xmlhttprequest == "yes")
+{
 	new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif", lang_click_edit: "{$lang->click_hold_edit}"});
+}
+// -->
 </script>]]></template>
 		<template name="xmlhttp_inline_post_editor" version="120"><![CDATA[<br />
 		<div style="clear: both;">
@@ -7083,7 +7115,16 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <script type="text/javascript" src="jscripts/captcha.js?ver=120"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
-		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span><br /><br /><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" /></td>
+		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
+		<script language="Javascript" type="text/javascript">
+		<!--
+			if(use_xmlhttprequest == "yes")
+			{
+				document.write('<br \/><br \/><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
+			}
+		// -->
+		</script>
+		</td>
 		<td><span class="smalltext">{$lang->verification_note}</span></td>
 	</tr>
 	<tr>

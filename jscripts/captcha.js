@@ -16,10 +16,12 @@ var captcha = {
 		if(request.responseText.match(/<error>(.*)<\/error>/))
 		{
 			message = request.responseText.match(/<error>(.*)<\/error>/);
+
 			if(!message[1])
 			{
 				message[1] = "An unknown error occurred.";
 			}
+
 			alert('There was an error fetching the new captcha.\n\n'+message[1]);
 		}
 		else if(request.responseText)

@@ -152,6 +152,40 @@ FormValidator.prototype = {
 
 		switch(type)
 		{
+			case "ajax":
+				if(use_xmlhttprequest == "yes")
+				{
+					if(!options.url)
+					{
+						return false;
+					}
+
+					// don't ajax validate on submit
+					if(submit_call)
+					{
+						return true;
+					}
+
+					extra = "";
+
+					if(typeof options.extra_body == "object")
+					{
+						for(x = 0; x < options.extra_body.length; ++x)
+						{
+							extra += "&" + options.extra_body[x] + "=" + this.getValue(options.extra_body[x]);
+						}
+					}
+					else if(typeof options.extra_body != "undefined")
+					{
+						extra = "&" + options.extra_body + "=" + this.getValue(options.extra_body);
+					}
+
+					new ajax(options.url, {method:'post', postBody:"value=" + value + extra, onComplete: function(request) { this.ajaxValidateComplete(id, options, request); }.bind(this)});
+
+					return "loading";
+					break;
+				}
+				type = "notempty";
 			case "notempty":
 				if(value == null || value.length == 0)
 				{
@@ -190,36 +224,6 @@ FormValidator.prototype = {
 				}
 
 				return true;
-				break;
-			case "ajax":
-				if(!options.url)
-				{
-					return false;
-				}
-
-				// don't ajax validate on submit
-				if(submit_call)
-				{
-					return true;
-				}
-
-				extra = "";
-
-				if(typeof options.extra_body == "object")
-				{
-					for(x = 0; x < options.extra_body.length; ++x)
-					{
-						extra += "&" + options.extra_body[x] + "=" + this.getValue(options.extra_body[x]);
-					}
-				}
-				else if(typeof options.extra_body != "undefined")
-				{
-					extra = "&" + options.extra_body + "=" + this.getValue(options.extra_body);
-				}
-
-				new ajax(options.url, {method:'post', postBody:"value=" + value + extra, onComplete: function(request) { this.ajaxValidateComplete(id, options, request); }.bind(this)});
-
-				return "loading";
 				break;
 		}
 	},

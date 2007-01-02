@@ -26,7 +26,7 @@ var Thread = {
 		}
 		return true;
 	},
-	
+
 	multiQuote: function(pid)
 	{
 		var new_post_ids = new Array();
@@ -69,13 +69,20 @@ var Thread = {
 		}
 		Cookie.set("multiquote", new_post_ids.join("|"));
 	},
-	
-	loadMultiQuoted: function()
+
+	loadMultiQuoted: function(tid)
 	{
-		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-		new ajax('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) {Thread.multiQuotedLoaded(request); }});		
+		if(use_xmlhttprequest == "yes")
+		{
+			this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
+			new ajax('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) {Thread.multiQuotedLoaded(request); }});
+		}
+		else
+		{
+			document.location = './newreply.php?tid=' + tid;
+		}
 	},
-	
+
 	multiQuotedLoaded: function(request)
 	{
 		if(request.responseText.match(/<error>(.*)<\/error>/))
@@ -107,7 +114,7 @@ var Thread = {
 		this.spinner = '';
 		$('message').focus();	
 	},
-	
+
 	clearMultiQuoted: function()
 	{
 		$('quickreply_multiquote').style.display = 'none';
@@ -145,12 +152,12 @@ var Thread = {
 			form.submit();
 		}
 	},
-	
+
 	reportPost: function(pid)
 	{
 		MyBB.popupWindow("report.php?pid="+pid, "reportPost", 400, 300)
 	},
-	
+
 	quickEdit: function(pid)
 	{
 		if(!$("pid_"+pid))
@@ -166,7 +173,7 @@ var Thread = {
 		new ajax('xmlhttp.php?action=edit_post&do=get_post&pid='+pid, {method: 'get', onComplete: function(request) { Thread.quickEditLoaded(request, pid); }});
 		return false;
 	},
-	
+
 	quickEditLoaded: function(request, pid)
 	{
 		if(request.responseText.match(/<error>(.*)<\/error>/))
@@ -197,7 +204,7 @@ var Thread = {
 		this.spinner.destroy();	
 		this.spinner = '';	
 	},
-	
+
 	quickEditSave: function(pid)
 	{
 		message = $("quickedit_"+pid).value;
@@ -208,9 +215,9 @@ var Thread = {
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 		
 		postData = "value="+encodeURIComponent(message).replace(/\+/g, "%2B");
-		new ajax('xmlhttp.php?action=edit_post&do=update_post&pid='+pid, {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});		
+		new ajax('xmlhttp.php?action=edit_post&do=update_post&pid='+pid, {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});
 	},
-	
+
 	quickEditCancel: function(pid)
 	{
 		$("pid_"+pid).innerHTML = Thread.qeCache[pid];
@@ -221,7 +228,7 @@ var Thread = {
 			this.spinner = '';
 		}
 	},
-	
+
 	quickEditSaved: function(request, pid)
 	{
 		if(request.responseText.match(/<error>(.*)<\/error>/))
@@ -241,38 +248,42 @@ var Thread = {
 		this.spinner.destroy();
 		this.spinner = '';
 	},
-	
+
 	initQuickReply: function()
 	{
-		if($('quick_reply_form'))
+		if($('quick_reply_form') && use_xmlhttprequest == "yes")
 		{
 			Event.observe($('quick_reply_form'), "submit", Thread.quickReply.bindAsEventListener(this));
 		}
 	},
-	
+
 	quickReply: function(e)
 	{
 		Event.stop(e);
+
 		if(this.quick_replying)
 		{
 			return false;
 		}
+
 		this.quick_replying = 1;
 		var post_body = Form.serialize('quick_reply_form');
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 		new ajax('newreply.php?ajax=1', {method: 'post', postBody: post_body, onComplete: function(request) { Thread.quickReplyDone(request); }});
 		return false;
 	},
-	
+
 	quickReplyDone: function(request)
 	{
 		if(request.responseText.match(/<error>(.*)<\/error>/))
 		{
 			message = request.responseText.match(/<error>(.*)<\/error>/);
+
 			if(!message[1])
 			{
 				message[1] = "An unknown error occurred.";
 			}
+
 			alert('There was an error posting your reply:\n\n'+message[1]);
 		}
 		else if(request.responseText.match(/id="post_([0-9]+)"/))
@@ -297,7 +308,5 @@ var Thread = {
 		}
 		this.quick_replying = 0;
 	}
-	
-	
-}
+};
 Event.observe(window, 'load', Thread.init);

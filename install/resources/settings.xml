@@ -875,10 +875,18 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="use_xmlhttprequest">
+			<title>Enable XMLHttp request features?</title>
+			<description><![CDATA[This will enable or disable the XMLHttp request features.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[yes]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="useshutdownfunc">
 			<title>Use PHP's Shutdown Functionality</title>
 			<description><![CDATA[This setting for the most part is best left at the default which is detected upon installation. If thread indicators are not updating as well as other meta information, set this setting to 'No']]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[no]]></settingvalue>
 			<helpkey></helpkey>
@@ -886,7 +894,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="cssmedium">
 			<title>CSS Medium</title>
 			<description><![CDATA[Please select from the list how you want the theme and CSS data to be stored and retrieved.]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[php
 <input type=\"radio\" name=\"upsetting[{$setting['sid']}]\" value=\"db\" ".($setting['value'] == 'db' || !is_writable(MYBB_ROOT."css")?"checked=\"checked\"":"")." /> ".($lang->setting_cssmedium_db?$lang->setting_cssmedium_db:"Database")."<br />
 <input type=\"radio\" name=\"upsetting[{$setting['sid']}]\" value=\"file\" ".($setting['value'] == 'file' && is_writable(MYBB_ROOT."css")?"checked=\"checked\"":"").(!is_writable(MYBB_ROOT."css")?" disabled=\"disabled\"":"")." /> ".($lang->setting_cssmedium_file?$lang->setting_cssmedium_file:"Stored in the file system (In the 'css' folder)").(!is_writable(MYBB_ROOT."css")?"<br /><br />".($lang->setting_cssmedium_file?$lang->setting_cssmedium_file:"To cache CSS to the file system, the CSS folder must be made writable."):"")."]]></optionscode>
@@ -896,14 +904,14 @@ show=Show to all Users]]></optionscode>
 		<setting name="extraadmininfo">
 			<title>Advanced Stats / Debug information</title>
 			<description><![CDATA[Shows Server load, parse time, generation time, Gzip compression, etc on the bottom of all pages in the root folder. Please note that only administrators see this information.]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 		</setting>
 		<setting name="uploadspath">
 			<title>Uploads Path</title>
 			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on Unix servers).]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
 			<helpkey></helpkey>
@@ -911,7 +919,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="useerrorhandling">
 			<title>Use Error Handling</title>
 			<description><![CDATA[If you do not wish to use the integrated error handling for MyBB, you may turn this option off. However, it is reccommended that it stay on]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[on]]></settingvalue>
 			<helpkey></helpkey>
@@ -919,7 +927,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="errorlogmedium">
 			<title>Error Logging Medium</title>
 			<description><![CDATA[The type of the error handling to use.]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[select
 log=Log errors
 email=Email errors
@@ -931,7 +939,7 @@ both=Log and email errors
 		<setting name="errortypemedium">
 			<title>Error Type Medium</title>
 			<description><![CDATA[The type of errors to show.]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[select
 warning=Warnings
 error=Errors
@@ -943,7 +951,7 @@ both=Warnings and Errors
 		<setting name="errorloglocation">
 			<title>Error Logging Location</title>
 			<description><![CDATA[The location of the log to send errors to, if specified.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./error.log]]></settingvalue>
 			<helpkey></helpkey>
