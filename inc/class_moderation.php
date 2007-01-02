@@ -533,7 +533,7 @@ class Moderation
 						'smilieoff' => $post['smilieoff'],
 						'edituid' => $post['edituid'],
 						'edittime' => $post['edittime'],
-						'visisble' => $post['visible']
+						'visible' => $post['visible']
 					);
 					$db->insert_query(TABLE_PREFIX."posts", $post_array);
 					$pid = $db->insert_id();
