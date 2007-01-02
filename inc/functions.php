@@ -1790,7 +1790,7 @@ function log_moderator_action($data, $action="")
 		"tid" => $tid,
 		"action" => $db->escape_string($action),
 		"data" => $db->escape_string($data),
-		"ipaddress" => $session->ipaddress
+		"ipaddress" => $db->escape_string($session->ipaddress)
 	);
 	$db->insert_query(TABLE_PREFIX."moderatorlog", $sql_array);
 }

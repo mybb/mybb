@@ -902,7 +902,7 @@ else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	}
 
 	my_setcookie('loginattempts', 1);
-	$db->delete_query(TABLE_PREFIX."sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
+	$db->delete_query(TABLE_PREFIX."sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
 		"loginattempts" => 1,

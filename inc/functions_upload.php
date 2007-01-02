@@ -244,7 +244,7 @@ function upload_attachment($attachment)
 	}
 	$ext = get_extension($attachment['name']);
 	// Check if we have a valid extension
-	$query = $db->simple_select(TABLE_PREFIX."attachtypes", "*", "extension='$ext'");
+	$query = $db->simple_select(TABLE_PREFIX."attachtypes", "*", "extension='".$db->escape_string($ext)."'");
 	$attachtype = $db->fetch_array($query);
 	if(!$attachtype['atid'])
 	{

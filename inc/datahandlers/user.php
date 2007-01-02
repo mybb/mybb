@@ -828,7 +828,7 @@ class UserDataHandler extends DataHandler
 			"daysprune" => intval($user['options']['daysprune']),
 			"dateformat" => $db->escape_string($user['dateformat']),
 			"timeformat" => $db->escape_string($user['timeformat']),
-			"regip" => $user['regip'],
+			"regip" => $db->escape_string($user['regip']),
 			"language" => $db->escape_string($user['language']),
 			"showcodebuttons" => $user['options']['showcodebuttons'],
 			"away" => $user['away']['away'],
