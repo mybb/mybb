@@ -307,6 +307,7 @@ elseif ($mybb->input['action'] == "navigation")
 echo "<html ".($lang->settings['rtl'] ? "dir=\"rtl\" " : "")."lang=\"".($lang->settings['htmllang'])."\">\n";
 echo "<head>\n";
 echo "<title>$lang->mybb_admin</title>\n";
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang->settings['charset']}\" />\n";
 ?>
 <base target="body" />
 <link type="text/css" rel="stylesheet" href="<?php echo $style; ?>" />
