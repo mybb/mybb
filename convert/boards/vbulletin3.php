@@ -33,8 +33,6 @@ class Convert_vbulletin3 extends Converter {
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import vBulletin 3 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_attachments" => array("name" => "Import vBulletin 3 Attachments",
-									  "dependencies" => "db_configuration,import_posts"),
 						 "import_moderators" => array("name" => "Import vBulletin 3 Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_privatemessages" => array("name" => "Import vBulletin 3 Private Messages",
@@ -47,6 +45,8 @@ class Convert_vbulletin3 extends Converter {
 									  "dependencies" => "db_configuration,import_users"),
 						 "import_attachtypes" => array("name" => "Import vBulletin 3 Attachment Types",
 									  "dependencies" => "db_configuration"),
+						 "import_attachments" => array("name" => "Import vBulletin 3 Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						);
 
 	function vbulletin_db_connect()
@@ -69,7 +69,7 @@ class Convert_vbulletin3 extends Converter {
 
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions, $dbengines;
+		global $mybb, $output, $import_session, $db, $dboptions;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -1169,14 +1169,14 @@ class Convert_vbulletin3 extends Converter {
 				$insert_attachment['pid'] = $this->get_import_pid($attachment['postid']);
 				$insert_attachment['uid'] = $this->get_import_uid($attachment['userid']);
 				$insert_attachment['filename'] = $attachment['filename'];
-				$insert_attachment['attachname'] = "post_".$import_attachment['uid']."_".time().".attach";
+				$insert_attachment['attachname'] = "post_".$import_attachment['uid']."_".$attachment['dateline'].".attach";
 				$insert_attachment['filetype'] = $this->get_attach_type($attachment['extension']);
 				$insert_attachment['filesize'] = $attachment['filesize'];
 				$insert_attachment['downloads'] = $attachment['counter'];
 				$insert_attachment['visible'] = int_to_yesno($attachment['visible']);
-				$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.{$attachment['extension']}", $insert_attachment['attachname']);
+				$insert_attachment['thumbnail'] = '';
 				
-				$query2 = $db->simple_select("posts", "posthash, tid", "pid = '{$insert_attachment['pid']}'");
+				$query2 = $db->simple_select("posts", "posthash, tid, uid", "pid = '{$insert_attachment['pid']}'");
 				$poshhash = $db->fetch_field($query2, "posthash");
 				if($posthash)
 				{
@@ -1185,11 +1185,24 @@ class Convert_vbulletin3 extends Converter {
 				else
 				{
 					mt_srand ((double) microtime() * 1000000);
-					$insert_attachment['posthash'] = md5($this->get_import_tid($attachment['tid']).$mybb->user['uid'].mt_rand());
+					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
+				}
+				
+				if($attachment['thumbnail'])
+				{
+					$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.{$attachment['extension']}", $insert_attachment['attachname']);
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
+					fwrite($file, $attachment['thumbnail']);
+					fclose($file);
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);					
 				}
 				
 				$this->insert_attachment($insert_attachment);
-							
+				
+				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+				fwrite($file, $attachment['filedata']);
+				fclose($file);
+				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
 				
 				if(!$posthash)
 				{

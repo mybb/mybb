@@ -35,8 +35,6 @@ class Convert_smf extends Converter {
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import SMF Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_attachments" => array("name" => "Import SMF Attachments",
-									  "dependencies" => "db_configuration,import_posts"),
 						 "import_privatemessages" => array("name" => "Import SMF Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
 						 "import_moderators" => array("name" => "Import SMF Moderators",
@@ -49,6 +47,8 @@ class Convert_smf extends Converter {
 									  "dependencies" => "db_configuration,import_posts"),
 						 "import_attachtypes" => array("name" => "Import SMF Attachment Types",
 									  "dependencies" => "db_configuration"),
+						 "import_attachments" => array("name" => "Import SMF Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						);
 
 	function smf_db_connect()
@@ -71,7 +71,7 @@ class Convert_smf extends Converter {
 
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions, $dbengines;
+		global $mybb, $output, $import_session, $db, $dboptions;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -1284,7 +1284,14 @@ class Convert_smf extends Converter {
 	{
 		global $mybb, $output, $import_session, $db;
 
-		$this->phpbb_db_connect();
+		$this->smf_db_connect();
+		
+		// Set uploads path
+		if(!isset($import_session['uploadspath']))
+		{
+			$query = $this->old_db->query("settings", "value", "variable = 'attachmentUploadDir'", array('limit' => 1));
+			$import_session['uploadspath'] = $this->old_db->fetch_field($query, 'value');
+		}		
 
 		// Get number of threads
 		if(!isset($import_session['total_attachments']))
@@ -1320,27 +1327,34 @@ class Convert_smf extends Converter {
 		}
 		else
 		{
+			$thumbs = array();
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_attachments']-$import_session['start_attachments'])." attachments left to import and ".round((($import_session['total_attachments']-$import_session['start_attachments'])/$import_session['attachments_per_screen']))." pages left at a rate of {$import_session['attachments_per_screen']} per page.<br /><br />";
 
 			$query = $this->old_db->simple_select("attachments", "*", "", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
 			while($attachment = $this->old_db->fetch_array($query))
 			{
+				if(in_array($attachment['ID_ATTACH'], $thumbs))
+				{
+					continue;
+				}
+				
 				echo "Inserting attachment #{$attachment['ID_ATTACH']}... ";				
 
 				$insert_attachment['import_aid'] = $attachment['ID_ATTACH'];
 				$insert_attachment['pid'] = $this->get_import_pid($attachment['ID_MSG']);
 				
 				$insert_attachment['uid'] = $this->get_import_uid($attachment['ID_MEMBER']);
-				$insert_attachment['filename'] = $attachment['real_filename'];
-				$insert_attachment['attachname'] = $attachment['physical_filename'];
-				$insert_attachment['filetype'] = $attachment['mimetype'];
+				$insert_attachment['filename'] = $attachment['filename'];
+				$insert_attachment['attachname'] = "post_".$insert_attachment['uid']."_".time().".attach";
+				$extension = get_extension($attachment['filename']);
+				$insert_attachment['filetype'] = '';
 				$insert_attachment['filesize'] = $attachment['size'];
-				$insert_attachment['downloads'] = $attachment['download_count'];
+				$insert_attachment['downloads'] = $attachment['downloads'];
 				$insert_attachment['visible'] = 'yes';
 				$insert_attachment['thumbnail'] = '';
 				
-				$query2 = $db->simple_select("posts", "posthash, tid", "pid = '{$insert_attachment['pid']}'");
+				$query2 = $db->simple_select("posts", "posthash, tid, uid", "pid = '{$insert_attachment['pid']}'");
 				$poshhash = $db->fetch_field($query2, "posthash");
 				if($posthash)
 				{
@@ -1349,10 +1363,30 @@ class Convert_smf extends Converter {
 				else
 				{
 					mt_srand ((double) microtime() * 1000000);
-					$insert_attachment['posthash'] = md5($this->get_import_tid($posthash['tid']).$mybb->user['uid'].mt_rand());
+					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
 				}
 
-				$this->insert_attachment($insert_attachment);
+				if($attachment['ID_THUMB'] != 0)
+				{
+					$thumbs[] = $attachment['ID_THUMB'];
+					$query3 = $this->old_db->simple_select("attachments", "filename", "ID_ATTACH = '{$attachment['ID_THUMB']}'");
+					$thumbnail = $this->old_db->fetch_array($query3, "filename");
+					$ext = get_extension($thumbnail['filename']);
+					$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.$ext", $insert_attachment['attachname']);
+					$thumbattachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['filename']);
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
+					fwrite($file, $thumbattachmentdata);
+					fclose($file);
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
+				}
+				
+				$this->insert_attachment($insert_attachment);				
+								
+				$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['filename']);
+				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+				fwrite($file, $attachmentdata);
+				fclose($file);
+				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
 				
 				if(!$posthash)
 				{
@@ -1867,7 +1901,7 @@ class Convert_smf extends Converter {
 		$import_session['start_attachtypes'] += $import_session['attachtypes_per_screen'];
 		$output->print_footer();
 	}
-	
+
 	/**
 	 * Get a post from the SMF database
 	 * @param int Post ID

@@ -31,8 +31,6 @@ class Convert_phpbb3 extends Converter {
 									  "dependencies" => "db_configuration,import_polls"),
 						 "import_posts" => array("name" => "Import phpBB 3 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_attachments" => array("name" => "Import phpBB 3 Attachments",
-									  "dependencies" => "db_configuration,import_posts"),
 						 "import_privatemessages" => array("name" => "Import phpBB 3 Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
 						 "import_moderators" => array("name" => "Import phpBB 3 Moderators",
@@ -43,6 +41,8 @@ class Convert_phpbb3 extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_attachtypes" => array("name" => "Import phpBB3 Attachment Types",
 									  "dependencies" => "db_configuration"),
+						 "import_attachments" => array("name" => "Import phpBB 3 Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						);
 
 	function phpbb_db_connect()
@@ -65,7 +65,7 @@ class Convert_phpbb3 extends Converter {
 
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions, $dbengines;
+		global $mybb, $output, $import_session, $db, $dboptions;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -1057,7 +1057,15 @@ class Convert_phpbb3 extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->phpbb_db_connect();
+		
+		// Set uploads path
+		if(!isset($import_session['uploadspath']))
+		{
+			$query = $this->old_db->query("settings", "value", "name = 'uploadspath'", array('limit' => 1));
+			$import_session['uploadspath'] = $this->old_db->fetch_field($query, 'value');
+		}
 
+		
 		// Get number of threads
 		if(!isset($import_session['total_attachments']))
 		{
@@ -1103,18 +1111,17 @@ class Convert_phpbb3 extends Converter {
 				
 
 				$insert_attachment['import_aid'] = $attachment['attach_id'];
-				$insert_attachment['pid'] = $this->get_import_pid($attachment['post_msg_id']);
-				
+				$insert_attachment['pid'] = $this->get_import_pid($attachment['post_msg_id']);				
 				$insert_attachment['uid'] = $this->get_import_uid($attachment['poster_id']);
 				$insert_attachment['filename'] = $attachment['real_filename'];
-				$insert_attachment['attachname'] = $attachment['physical_filename'];
+				$insert_attachment['attachname'] = "post_".$insert_attachment['uid']."_".$attachment['filetime'].".attach";;
 				$insert_attachment['filetype'] = $attachment['mimetype'];
 				$insert_attachment['filesize'] = $attachment['filesize'];
 				$insert_attachment['downloads'] = $attachment['download_count'];
 				$insert_attachment['visible'] = 'yes';
 				$insert_attachment['thumbnail'] = '';
 				
-				$query2 = $db->simple_select("posts", "posthash, tid", "pid = '{$insert_attachment['pid']}'");
+				$query2 = $db->simple_select("posts", "posthash, tid, uid", "pid = '{$insert_attachment['pid']}'");
 				$poshhash = $db->fetch_field($query2, "posthash");
 				if($posthash)
 				{
@@ -1123,10 +1130,16 @@ class Convert_phpbb3 extends Converter {
 				else
 				{
 					mt_srand ((double) microtime() * 1000000);
-					$insert_attachment['posthash'] = md5($posthash['tid'].$mybb->user['uid'].mt_rand());
+					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
 				}
 
-				$this->insert_attachment($insert_attachment);
+				$this->insert_attachment($insert_attachment);				
+				
+				$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['real_filename']);
+				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+				fwrite($file, $attachmentdata);
+				fclose($file);
+				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
 				
 				if(!$posthash)
 				{
@@ -1505,7 +1518,12 @@ class Convert_phpbb3 extends Converter {
 			$default_max_filesize = $this->old_db->fetch_field($query, 'config_value');
 			$default_max_filesize = round(intval($default_max_filesize) / 1000);
 			
-			$query = $this->old_db->query("SELECT e.*, g.* FROM ({$this->old_db->table_prefix}extensions e, {$this->old_db->table_prefix}extension_groups g) WHERE e.group_id = g.group_id LIMIT {$import_session['start_attachtypes']}, {$import_session['attachtypes_per_screen']}");
+			$query = $this->old_db->query("
+				SELECT e.*, g.* 
+				FROM {$this->old_db->table_prefix}extensions e
+				LEFT JOIN {$this->old_db->table_prefix}extension_groups g ON (e.group_id = g.group_id)
+				LIMIT {$import_session['start_attachtypes']}, {$import_session['attachtypes_per_screen']}
+			");
 			while($type = $this->old_db->fetch_array($query))
 			{
 

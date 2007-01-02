@@ -32,8 +32,6 @@ class Convert_mybb extends Converter
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import MyBB Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_attachments" => array("name" => "Import MyBB Attachments",
-									  "dependencies" => "db_configuration,import_posts"),
 						 "import_moderators" => array("name" => "Import MyBB Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_privatemessages" => array("name" => "Import MyBB Private Messages",
@@ -48,6 +46,8 @@ class Convert_mybb extends Converter
 									  "dependencies" => "db_configuration,import_users"),
 						 "import_attachtypes" => array("name" => "Import MyBB Attachment Types",
 									  "dependencies" => "db_configuration"),
+						 "import_attachments" => array("name" => "Import MyBB Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						);
 						
 	function mybb_db_connect()
@@ -68,7 +68,7 @@ class Convert_mybb extends Converter
 	
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions, $dbengines;
+		global $mybb, $output, $import_session, $db, $dboptions;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -903,6 +903,13 @@ class Convert_mybb extends Converter
 
 		$this->mybb_db_connect();
 
+		// Set uploads path
+		if(!isset($import_session['uploadspath']))
+		{
+			$query = $this->old_db->query("settings", "value", "name = 'uploadspath'", array('limit' => 1));
+			$import_session['uploadspath'] = $this->old_db->fetch_field($query, 'value');
+		}
+
 		// Get number of threads
 		if(!isset($import_session['total_attachments']))
 		{
@@ -965,9 +972,27 @@ class Convert_mybb extends Converter
 				$insert_attachment['import_aid'] = $attachment['aid'];
 				$insert_attachment['pid'] = $this->get_import_pid($attachment['pid']);
 				$insert_attachment['uid'] = $this->get_import_uid($attachment['uid']);
+				$attachname_array = explode('_', $attachment['attachname']);
+				$insert_attachment['attachname'] = 'post_'.$this->get_import_uid($attachname_array[1]).'_'.$attachname_array[2].'.attach';
 				
+				if($attachment['thumbnail'])
+				{
+					$ext = get_extension($attachment['thumbnail']);
+					$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.$ext", $insert_attachment['attachname']);
+					$thumbattachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attach_thumb_location']);
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
+					fwrite($file, $thumbattachmentdata);
+					fclose($file);
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
+				}
 
-				$this->insert_attachment($insert_attachment);
+				$this->insert_attachment($insert_attachment);				
+				
+				$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attachname']);
+				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+				fwrite($file, $attachmentdata);
+				fclose($file);
+				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
 				
 				// Restore connection
 				$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
@@ -1210,15 +1235,24 @@ class Convert_mybb extends Converter
 			$query = $this->old_db->simple_select("smilies", "*", "sid > 9", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting smilie #{$smilie['sid']}... ";		
+				echo "Inserting smilie #{$smilie['sid']}... ";	
 				
-				// Invision Power Board 2 values
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_smilie[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($smilie[$field['Field']]))
+					{
+						$insert_smilie[$field['Field']] = $smilie[$field['Field']];
+					}
+				}
+				
+				// MyBB values
 				$insert_smilie['import_iid'] = $smilie['sid'];
-				$insert_smilie['name'] = $smilie['name'];
-				$insert_smilie['find'] = $smilie['find'];
-				$insert_smilie['path'] = $smilie['path'];
-				$insert_smilie['disporder'] = $smilie['disporder'];
-				$insert_smilie['showclickable'] = $smilie['showclickable'];				
 			
 				$this->insert_smilie($insert_smilie);
 				
@@ -1543,14 +1577,23 @@ class Convert_mybb extends Converter
 			while($type = $this->old_db->fetch_array($query))
 			{
 
-				echo "Inserting attachment type #{$type['atid']}... ";				
+				echo "Inserting attachment type #{$type['atid']}... ";
+				
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_attachtype[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($type[$field['Field']]))
+					{
+						$insert_attachtype[$field['Field']] = $type[$field['Field']];
+					}					
+				}		
 
 				$insert_attachtype['import_atid'] = $type['atid'];
-				$insert_attachtype['name'] = $type['name'];
-				$insert_attachtype['mimetype'] = $type['mimetype'];
-				$insert_attachtype['extension'] = $type['extension'];
-				$insert_attachtype['maxsize'] = $type['maxsize'];
-				$insert_attachtype['icon'] = $type['icon'];
 				
 				$this->insert_attachtype($insert_attachtype);
 

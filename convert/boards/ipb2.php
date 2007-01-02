@@ -1081,7 +1081,7 @@ class Convert_ipb2 extends Converter {
 				$insert_post['edituid'] = $this->get_import_uid($this->get_uid_from_username($post['edit_name']));		
 				$insert_post['edittime'] = $post['edit_time'];				
 				$insert_post['icon'] = $post['icon_id'];
-				$insert_post['posthash'] = '';
+				$insert_post['posthash'] = $post['post_key'];
 				
 
 				$pid = $this->insert_post($insert_post);
@@ -1358,6 +1358,13 @@ class Convert_ipb2 extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->ipb_db_connect();
+		
+		// Set uploads path
+		if(!isset($import_session['uploadspath']))
+		{
+			$query = $this->old_db->query("conf_settings", "conf_value", "conf_key = 'upload_url'", array('limit' => 1));
+			$import_session['uploadspath'] = $this->old_db->fetch_field($query, 'conf_value');
+		}
 
 		// Get number of threads
 		if(!isset($import_session['total_attachments']))
@@ -1406,18 +1413,32 @@ class Convert_ipb2 extends Converter {
 				$insert_attachment['posthash'] = $attachment['attach_post_key'];
 				$insert_attachment['uid'] = $this->get_import_uid($attachment['attach_member_id']);
 				$insert_attachment['filename'] = $attachment['attach_file'];
-				$insert_attachment['attachname'] = strstr('/', $attachment['attach_location']);
+				$insert_attachment['attachname'] = "post_".$insert_attachment['uid']."_".$attachment['attach_date'].".attach";
 				$insert_attachment['filetype'] = get_attach_type($attachment['attach_ext']);
 				$insert_attachment['filesize'] = $attachment['attach_filesize'];
 				$insert_attachment['downloads'] = $attachment['attach_hits'];
 				$insert_attachment['visible'] = $attachment['attach_approved'];
-				$insert_attachment['thumbnail'] = strstr('/', $attachment['attach_thumb_location']);
-
-				$this->insert_attachment($insert_attachment);
+				$insert_attachment['thumbnail'] = '';
 				
-				// Restore connection
-				$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
+				if($attachment['attach_thumb_location'])
+				{
+					$ext = get_extension($attachment['attach_thumb_location']);
+					$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.$ext", $insert_attachment['attachname']);
+					$thumbattachmentdata = file_get_contents($import_session['upload_path'].'/'.$attachment['attach_thumb_location']);
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
+					fwrite($file, $thumbattachmentdata);
+					fclose($file);
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
+				}
+				
+				$this->insert_attachment($insert_attachment);				
 								
+				$attachmentdata = file_get_contents($import_session['upload_path'].'/'.$attachment['attach_location']);
+				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+				fwrite($file, $attachmentdata);
+				fclose($file);
+				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				
 				echo "done.<br />\n";
 			}
 			

@@ -27,8 +27,6 @@ class Convert_xmb extends Converter {
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import XMB Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_attachments" => array("name" => "Import XMB Attachments",
-									  "dependencies" => "db_configuration,import_posts"),
 						 "import_moderators" => array("name" => "Import XMB Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_smilies" => array("name" => "Import XMB Smilies",
@@ -37,6 +35,8 @@ class Convert_xmb extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_attachtypes" => array("name" => "Import XMB Attachment Types",
 									  "dependencies" => "db_configuration"),
+						 "import_attachments" => array("name" => "Import XMB Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						);
 
 	function xmb_db_connect()
@@ -974,7 +974,7 @@ class Convert_xmb extends Converter {
 				$insert_attachment['pid'] = $this->get_import_pid($attachment['pid']);
 				$insert_attachment['uid'] = $this->get_import_uid($attachment['uid']);
 				$insert_attachment['filename'] = $attachment['filename'];
-				$insert_attachment['attachname'] = "post_".$mybb->user['uid']."_".time().".attach";
+				$insert_attachment['attachname'] = "post_".$insert_attachment['uid']."_".time().".attach";
 				$insert_attachment['filetype'] = $attachment['filetype'];
 				$insert_attachment['filesize'] = $attachment['filesize'];
 				$insert_attachment['downloads'] = $attachment['downloads'];
@@ -984,7 +984,7 @@ class Convert_xmb extends Converter {
 				mt_srand ((double) microtime() * 1000000);
 				$insert_attachment['posthash'] = md5($this->get_import_tid($attachment['tid']).$mybb->user['uid'].mt_rand());
 
-				$query2 = $db->simple_select("posts", "posthash, tid", "pid = '{$insert_attachment['pid']}'");
+				$query2 = $db->simple_select("posts", "posthash, tid, uid", "pid = '{$insert_attachment['pid']}'");
 				$poshhash = $db->fetch_field($query2, "posthash");
 				if($posthash)
 				{
@@ -993,10 +993,15 @@ class Convert_xmb extends Converter {
 				else
 				{
 					mt_srand ((double) microtime() * 1000000);
-					$insert_attachment['posthash'] = md5($this->get_import_tid($posthash['tid']).$mybb->user['uid'].mt_rand());
+					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
 				}
-
-				$this->insert_attachment($insert_attachment);
+	
+				$this->insert_attachment($insert_attachment);				
+								
+				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+				fwrite($file, $attachment['attachment']);
+				fclose($file);
+				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
 				
 				if(!$posthash)
 				{

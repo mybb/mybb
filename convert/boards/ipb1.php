@@ -67,7 +67,7 @@ class Convert_ipb1 extends Converter {
 
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions, $dbengines;
+		global $mybb, $output, $import_session, $db, $dboptions;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -1541,12 +1541,12 @@ class Convert_ipb1 extends Converter {
 		
 		// Validate IPB configuration file location
 		$conf_global_not_found = false;
-		if(isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global']))
+		if(!isset($mybb->input['ipb_conf_global']) || (isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global'])))
 		{
 			unset($import_session['attachtypes_per_screen']);
 			$conf_global_not_found = true;
 		}
-		elseif(isset($mybb->input['ipb_conf_global']))
+		else if(isset($mybb->input['ipb_conf_global']))
 		{
 			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
 			require($import_session['ipb_conf_global']);
@@ -1623,6 +1623,133 @@ class Convert_ipb1 extends Converter {
 			}
 		}
 		$import_session['start_attachtypes'] += $import_session['attachtypes_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_attachments()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+
+		// Get number of attachments
+		if(empty($import_session['total_attachments']))
+		{
+			$query = $db->simple_select("posts", "COUNT(*) as attachments", "attach_id != ''");
+			$import_session['total_attachments'] = $this->old_db->fetch_field($query, "attachments");
+		}
+
+		if($import_session['start_attachments'])
+		{
+			// If there are more attachments to do, continue, or else, move onto next module
+			if($import_session['total_attachments'] - $import_session['start_attachments'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_attachments';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of attachment types per screen from form
+		if(isset($mybb->input['attachments_per_screen']))
+		{
+			$import_session['attachments_per_screen'] = intval($mybb->input['attachments_per_screen']);
+		}
+		
+		// Validate IPB configuration file location
+		$conf_global_not_found = false;
+		if(!isset($mybb->input['ipb_conf_global']) || (isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global'])))
+		{
+			unset($import_session['attachments_per_screen']);
+			$conf_global_not_found = true;
+		}
+		
+		if(empty($import_session['attachments_per_screen']))
+		{
+			$import_session['start_attachments'] = 0;
+			echo "<p>Please select how many attachments to import at a time:</p>
+<p><input type=\"text\" name=\"attachments_per_screen\" value=\"200\" /></p>";
+			$conf_global = dirname($_SERVER['SCRIPT_FILENAME']).'/conf_global.php';
+			if($conf_global_not_found)
+			{
+				echo '<p style="color: red">The file specified was not found.</p>';
+			}
+			echo "<p>Please enter the path to the IPB1 conf_global.php file:</p>
+<p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			$i_present = $import_session['start_attachments'];
+			
+			// Get upload path
+			if(!isset($import_session['uploadspath'])
+			{
+				require($import_session['ipb_conf_global']);
+				$import_session['uploadspath'] = $INFO['upload_dir'];
+			}
+			
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_attachments']-$import_session['start_attachments'])." attachments left to import and ".round((($import_session['total_attachments']-$import_session['start_attachments'])/$import_session['attachments_per_screen']))." pages left at a rate of {$import_session['attachments_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("posts", "attach_id,attach_hits,attach_type,attach_file,pid,author_id,", "attach_id != ''", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
+			while($attachment = $this->old_db->fetch_array($query))
+			{
+				$i_present = $i++;
+				echo "Inserting attachment #{$i_present}... ";
+				
+				$attachname_array = explode('-', $attachment['attach_id']);
+				
+				$insert_attachment['import_aid'] = $i_present;
+				$insert_attachment['pid'] = $this->get_import_pid($attachment['pid']);
+				$insert_attachment['filetype'] = $attachment['attach_type'];
+				$insert_attachment['uid'] = $this->get_import_uid($attachment['author_id']);
+				$insert_attachment['filename'] = $attachment['attach_file'];
+				$insert_attachment['attachname'] = "post_".$insert_attachment['uid']."_".$attachname_array[2].".attach";
+				$insert_attachment['downloads'] = $attachment['attach_hits'];
+				$insert_attachment['filesize'] = filesize($import_session['uploadspath'].'/'.$attachment['attach_id']);
+				$insert_attachment['visible'] = 1;
+				$insert_attachment['thumbnail'] = '';
+				
+				$query2 = $db->simple_select("posts", "posthash, tid, uid", "pid = '{$insert_attachment['pid']}'");
+				$poshhash = $db->fetch_field($query2, "posthash");
+				if($posthash)
+				{
+					$insert_attachment['posthash'] = $posthash;
+				}
+				else
+				{
+					mt_srand ((double) microtime() * 1000000);
+					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
+				}
+
+				$this->insert_attachment($insert_attachment);
+				
+				if(!$posthash)
+				{
+					// Restore connection
+					$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
+				}
+				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachcount = attachcount + 1 WHERE tid = '".$posthash['tid']."'");
+				
+				$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attach_id']);
+				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+				fwrite($file, $attachmentdata);
+				fclose($file);
+				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				
+				clearstatcache();
+				echo "done.<br />\n";
+			}
+			
+			if($import_session['total_attachments'] == 0)
+			{
+				echo "There are no attachments to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_attachments'] += $import_session['attachments_per_screen'];
 		$output->print_footer();
 	}
 	
