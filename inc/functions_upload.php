@@ -52,7 +52,7 @@ function remove_attachments($pid, $posthash="")
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "" && !$pid)
 	{
-	  	$query = $db->simple_select("attachments", "*", "posthash='$posthash'");
+		$query = $db->simple_select("attachments", "*", "posthash='$posthash'");
 	}
 	else
 	{
@@ -249,7 +249,7 @@ function upload_attachment($attachment)
 	
 	$ext = get_extension($attachment['name']);
 	// Check if we have a valid extension
-	$query = $db->simple_select("attachtypes", "*", "extension='$ext'");
+	$query = $db->simple_select("attachtypes", "*", "extension='".$db->escape_string($ext)."'");
 	$attachtype = $db->fetch_array($query);
 	if(!$attachtype['atid'])
 	{

@@ -255,7 +255,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 	else
 	{
-		$user_check = "p.ipaddress='{$session->ipaddress}'";
+		$user_check = "p.ipaddress='".$db->escape_string($session->ipaddress)."'";
 	}
 	if(!$mybb->input['savedraft'] && !$pid)
 	{
@@ -325,7 +325,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	if(!$valid_thread)
 	{
 		$post_errors = $posthandler->get_friendly_errors();
-	}	
+	}
 	
 	// Check captcha image
 	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])

@@ -120,7 +120,7 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 			"touid" => 0,
 			"toemail" => $db->escape_string($mybb->input['email']),
 			"tid" => $thread['tid'],
-			"ipaddress" => $session->ipaddress
+			"ipaddress" => $db->escape_string($session->ipaddress)
 		);
 		$db->insert_query("maillogs", $log_entry);
 
@@ -136,7 +136,7 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("sendthread_start");
-	
+
 	// Do we have some errors?
 	if(count($errors) >= 1)
 	{
@@ -152,6 +152,7 @@ if(!$mybb->input['action'])
 		$subject = sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
 		$message = '';
 	}
+
 	eval("\$sendtofriend = \"".$templates->get("sendthread")."\";");
 	$plugins->run_hooks("sendthread_end");
 	output_page($sendtofriend);

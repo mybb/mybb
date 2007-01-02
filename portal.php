@@ -30,12 +30,10 @@ require_once MYBB_ROOT."inc/functions_user.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
-global $theme, $templates;
-
 // Load global language phrases
 $lang->load("portal");
 
-// Fetch the current URL 
+// Fetch the current URL
 $portal_url = get_current_location();
 
 add_breadcrumb($lang->nav_portal, "portal.php");
@@ -73,7 +71,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	}
 
 	my_setcookie('loginattempts', 1);
-	$db->delete_query("sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
+	$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
 		"loginattempts" => 1,

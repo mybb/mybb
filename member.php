@@ -935,7 +935,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	}
 
 	my_setcookie('loginattempts', 1);
-	$db->delete_query("sessions", "ip='".$session->ipaddress."' AND sid != '".$session->sid."'");
+	$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
 		"loginattempts" => 1,
@@ -1482,7 +1482,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 			"touid" => $to_user['uid'],
 			"toemail" => $db->escape_string($to_user['email']),
 			"tid" => 0,
-			"ipaddress" => $session->ipaddress
+			"ipaddress" => $db->escape_string($session->ipaddress)
 		);
 		$db->insert_query("maillogs", $log_entry);
 

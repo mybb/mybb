@@ -282,7 +282,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	else
 	{
-		$user_check = "p.ipaddress='{$session->ipaddress}'";
+		$user_check = "p.ipaddress='".$db->escape_string($session->ipaddress)."'";
 	}
 	if(!$mybb->input['savedraft'])
 	{
