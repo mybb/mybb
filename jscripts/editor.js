@@ -22,7 +22,7 @@ messageEditor.prototype = {
 			
 			if(!this.options.rtl)
 			{
-				this.options.trl = 0;
+				this.options.rtl = 0;
 			}
 		}
 		
