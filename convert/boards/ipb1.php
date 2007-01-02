@@ -45,6 +45,8 @@ class Convert_ipb1 extends Converter {
 									  "dependencies" => "db_configuration,import_users"),
 						 "import_attachtypes" => array("name" => "Import Invision Power Board 1 Attachment Types",
 									  "dependencies" => "db_configuration"),
+						 "import_attachments" => array("name" => "Import Invision Power Board 1 Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						);
 
 	function ipb_db_connect()
