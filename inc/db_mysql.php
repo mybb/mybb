@@ -83,7 +83,7 @@ class databaseEngine
 	 * @param boolean 1 if persistent connection, 0 if not.
 	 * @return resource The database connection resource.
 	 */
-	function connect($hostname="localhost", $username="root", $password="", $pconnect=0)
+	function connect($hostname="localhost", $username="root", $password="", $pconnect=0, $newlink=false)
 	{
 		if($pconnect)
 		{
@@ -91,7 +91,7 @@ class databaseEngine
 		}
 		else
 		{
-			$this->link = @mysql_connect($hostname, $username, $password) or $this->dberror();
+			$this->link = @mysql_connect($hostname, $username, $password, $newlink) or $this->dberror();
 		}
 		return $this->link;
 	}
