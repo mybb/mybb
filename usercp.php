@@ -80,7 +80,15 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		$sig_length = my_strlen($parsed_sig);
 		if($sig_length > $mybb->settings['siglength'])
 		{
-			$lang->sig_too_long = sprintf($lang->sig_too_long, $mybb->settings['siglength'], $sig_length-$mybb->settings['sig_length']);
+			$lang->sig_too_long = sprintf($lang->sig_too_long, $mybb->settings['siglength']);
+			if($sig_length - $mybb->settings['siglength'] > 1)
+			{
+				$lang->sig_too_long .= sprintf($lang->sig_remove_chars_plural, $sig_length-$mybb->settings['siglength']);
+			}
+			else
+			{
+				$lang->sig_too_long .= $lang->sig_remove_chars_singular;
+			}
 			$error = inline_error($lang->sig_too_long);
 		}
 	}
