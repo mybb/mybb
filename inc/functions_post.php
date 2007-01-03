@@ -341,6 +341,13 @@ function build_postbit($post, $post_type=0)
 	$post['button_quickquote'] = '';
 	$post['button_report'] = '';
 	
+	if($post_type == 2)
+	{
+		eval("\$post['button_reply_pm'] = \"".$templates->get("postbit_reply_pm")."\";");
+		eval("\$post['button_forward_pm'] = \"".$templates->get("postbit_forward_pm")."\";");
+		eval("\$post['button_delete_pm'] = \"".$templates->get("postbit_delete_pm")."\";");
+	}
+	
 	if(!$post_type)
 	{
 		if($post['edituid'] != "" && $post['edittime'] != "" && $post['editusername'] != "")

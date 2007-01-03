@@ -283,7 +283,7 @@ padding: 5px;
 font-weight: bold;
 font-size: 11px;
 padding-left: 22px;]]></extra>
-		</validation_error>		
+		</validation_error>
 		<validation_loading>
 			<background><![CDATA[url(images/spinner.gif) no-repeat center left]]></background>
 			<color><![CDATA[#555]]></color>
@@ -292,7 +292,7 @@ padding: 5px;
 font-weight: bold;
 font-size: 11px;
 padding-left: 22px;]]></extra>
-		</validation_loading>		
+		</validation_loading>
 	</cssbits>
 	<themebits>
 		<templateset><![CDATA[1]]></templateset>
@@ -2662,7 +2662,7 @@ var inlineId = {$fid};
 <input type="hidden" name="do" value="{$do}" />
 <div style="text-align: center;">
 <input type="submit" class="button" name="submit" value="{$lang->send_message}" tabindex="9" accesskey="s" />
-<input type="submit" class="button" name="saveasdraft" value="{$lang->save_draft}" tabindex="10" /> 
+<input type="submit" class="button" name="saveasdraft" value="{$lang->save_draft}" tabindex="10" />
 <input type="submit" class="button" name="preview" value="{$lang->preview}" tabindex="11" />
 </div>
 </td>
@@ -3655,7 +3655,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 <tr>
 	<td class="trow1" width="33%" style="vertical-align: top;">
-		{$lang->contains}<br />	
+		{$lang->contains}<br />
 		<input type="text" class="textbox" name="username" id="username" style="width: 99%; margin-top: 4px;" value="{$search_username}" />
 	</td>
 	<td class="trow1" width="33%" style="vertical-align: top;">
@@ -3806,7 +3806,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$messagelist}
 <tr>
 <td class="tfoot" align="right" colspan="6">
-<input type="submit" class="button" name="moveto" value="{$lang->move_to}" /> {$folderoplist} {$lang->or} 
+<input type="submit" class="button" name="moveto" value="{$lang->move_to}" /> {$folderoplist} {$lang->or}
 <input type="submit" class="button" name="delete" value="{$lang->delete}" /> {$lang->selected_messages}
 </td>
 </tr>
@@ -3820,7 +3820,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1">{$multipage}</td>
 <td class="trow1" align="right">
 <span class="smalltext">
-<strong>{$lang->jump_folder} {$folderjump} 
+<strong>{$lang->jump_folder} {$folderjump}
 <input type="submit" class="button" name="hop" value="{$lang->go}" />
 </strong>
 </span>
@@ -3898,7 +3898,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr valign="bottom">
 		<td align="left" ><span class="smalltext">{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}</span></td>
-		<td align="right"><span class="smalltext">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}</span></td>
+		<td align="right"><span class="smalltext">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_reply_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}</span></td>
 	</tr>
 	</table>
 </td>
@@ -5926,9 +5926,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2">
-<span style="float: right;">
-	<a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a>
-</span>
 <strong>{$pm['subject']}</strong>
 </td>
 </tr>
@@ -5957,7 +5954,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 {$message}
 <tr>
-<td class="tfoot" colspan="2"><span style="float: right;"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></span><strong>{$pm['subject']}</strong>
+<td class="tfoot" colspan="2"><strong>{$pm['subject']}</strong>
 </td>
 </tr>
 </table>
@@ -7001,7 +6998,7 @@ if(use_xmlhttprequest == "yes")
 	new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
 	if($('bcc'))
 	{
-		new autoComplete("bcc", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});	
+		new autoComplete("bcc", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
 	}
 }
 // -->
@@ -7165,5 +7162,8 @@ if(use_xmlhttprequest == "yes")
 <td class="trow1"><span class="smalltext">{$this->warnings}</span><br /></td>
 </tr>
 </table><br /><br />]]></template>
+	<template name="postbit_delete_pm" version="140"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}"><img src="{$theme['imglangdir']}/pm_delete.gif" alt="{$lang->delete}" title="{$lang->delete_title}" /></a>]]></template>
+	<template name="postbit_forward_pm" version="140"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward"><img src="{$theme['imglangdir']}/pm_forward.gif" alt="{$lang->forward}" title="{$lang->forward_title}" /></a>]]></template>
+	<template name="postbit_reply_pm" version="140"><![[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->reply}" title="{$lang->reply_title}" /></a>]]></template>
 	</templates>
 </theme>

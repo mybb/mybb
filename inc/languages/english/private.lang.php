@@ -118,6 +118,9 @@ $l['details'] = "Details";
 $l['message'] = "Message";
 $l['multiple_recpients'] = "<em>Multiple recipients</em>";
 $l['bcc'] = "BCC:";
+$l['reply_title'] = "Reply to this private message";
+$l['forward_title'] = "Forward this private message to another user";
+$l['delete_title'] = "Delete this private message";
 
 $l['error_nopmsarchive'] = "Sorry, but there are no private messages matching the criteria you specified.";
 $l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";
