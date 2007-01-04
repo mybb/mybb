@@ -7164,6 +7164,6 @@ if(use_xmlhttprequest == "yes")
 </table><br /><br />]]></template>
 	<template name="postbit_delete_pm" version="140"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}"><img src="{$theme['imglangdir']}/pm_delete.gif" alt="{$lang->delete}" title="{$lang->delete_title}" /></a>]]></template>
 	<template name="postbit_forward_pm" version="140"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward"><img src="{$theme['imglangdir']}/pm_forward.gif" alt="{$lang->forward}" title="{$lang->forward_title}" /></a>]]></template>
-	<template name="postbit_reply_pm" version="140"><![[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->reply}" title="{$lang->reply_title}" /></a>]]></template>
+	<template name="postbit_reply_pm" version="140"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->reply}" title="{$lang->reply_title}" /></a>]]></template>
 	</templates>
 </theme>
