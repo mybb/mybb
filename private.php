@@ -188,7 +188,6 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		{
 			redirect("private.php", $lang->redirect_pmsent);
 		}
-
 	}
 }
 
@@ -298,6 +297,37 @@ if($mybb->input['action'] == "send")
 			if($pm['receipt'])
 			{
 				$optionschecked['readreceipt'] = "checked";
+			}
+
+			// Get list of recipients
+			$recipients = unserialize($pm['recipients']);
+			$comma = "";
+			$recipientids = "";
+			foreach($recipients['to'] as $recipient)
+			{
+				$recipient_list['to'][] = $recipient;
+				$recipientids .= $comma.$recipient;
+				$comma = ",";
+			}
+
+			foreach($recipients['bcc'] as $recipient)
+			{
+				$recipient_list['bcc'][] = $recipient;
+				$recipientids .= $comma.$recipient;
+				$comma = ",";
+			}
+
+			$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
+			while($user = $db->fetch_array($query))
+			{
+				if(in_array($user['uid'], $recipient_list['bcc']))
+				{
+					$bcc .= $user['username'].", ";
+				}
+				else
+				{
+					$to .= $user['username'].", ";
+				}
 			}
 		}
 		else
@@ -1227,7 +1257,7 @@ if(!$mybb->input['action'])
 				$recipients = unserialize($message['recipients']);
 				if(count($recipients['to']) > 1)
 				{
-					$tofromusername = $lang->multiple_users;
+					$tofromusername = $lang->multiple_recipients;
 				}
 				else if($message['toid'])
 				{

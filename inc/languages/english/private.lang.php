@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * MyBB 1.2 English Language Pack
  * Copyright © 2006 MyBB Group, All Rights Reserved
@@ -116,7 +116,7 @@ $l['at'] = "at";
 $l['nomessages'] = "There are no private messages in this folder.";
 $l['details'] = "Details";
 $l['message'] = "Message";
-$l['multiple_recpients'] = "<em>Multiple recipients</em>";
+$l['multiple_recipients'] = "<em>Multiple recipients</em>";
 $l['bcc'] = "BCC:";
 $l['reply_title'] = "Reply to this private message";
 $l['forward_title'] = "Forward this private message to another user";
