@@ -5312,7 +5312,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="private_tracking_readmessage" version="120"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="{$theme['imgdir']}/old_pm.gif" alt="" /></td>
 <td class="trow2">{$readmessage['subject']}</td>
-<td class="trow1">$readmessage['profilelink']}</td>
+<td class="trow1">{$readmessage['profilelink']}</td>
 <td class="trow2" align="right"><span class="smalltext">{$readdate}<br />{$readtime}</span></td>
 <td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="yes" /></td>
 </tr>]]></template>
