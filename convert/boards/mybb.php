@@ -68,7 +68,7 @@ class Convert_mybb extends Converter
 	
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions;
+		global $mybb, $output, $import_session, $db, $dboptions, $dbengines, $dbhost, $dbuser, $dbname, $tableprefix;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -939,7 +939,7 @@ class Convert_mybb extends Converter
 		{
 			$import_session['start_attachments'] = 0;
 			echo "<p>Please select how many attachments to import at a time:</p>
-<p><input type=\"text\" name=\"attachments_per_screen\" value=\"200\" /></p>";
+<p><input type=\"text\" name=\"attachments_per_screen\" value=\"10\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else

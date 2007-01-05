@@ -9,6 +9,9 @@
  * $Id$
  */
  
+// Set to 1 if recieving a blank page (template failure) 
+define("MANUAL_WARNINGS", 0);
+ 
 // Define Custom MyBB error handler constants with a value not used by php's error handler
 define("MYBB_SQL", 20);
 define("MYBB_TEMPLATE", 30);
@@ -123,7 +126,7 @@ class errorHandler {
 			}
 			else
 			{
-				if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') == false)
+				if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') === false)
 				{
 					$this->output_error($type, $message, $file, $line);
 				}
@@ -145,25 +148,47 @@ class errorHandler {
 	function show_warnings()
 	{
 		global $lang, $templates;
-
-		if($this->warnings != "")
+		
+		// Incase a template fails and we're recieving a blank page
+		if(MANUAL_WARNINGS)
 		{
-			if(!$lang->warnings)
-			{
-				$lang->warnings = "The following warnings occured:";
-			}
+			echo $this->warnings."<br />";
+		}
 
-			if(defined("IN_ADMINCP"))
+		if(!$lang->warnings)
+		{
+			$lang->warnings = "The following warnings occured:";
+		}
+	
+		if(defined("IN_ADMINCP"))
+		{
+			$warning = makeacpphpwarning($this->warnings);
+		}
+		else
+		{
+			$parser_exists = false;
+			
+			if(!is_object($templates) || !method_exists($templates, 'get'))
 			{
-				$warning = makeacpphpwarning($this->warnings);
+				if(@file_exists(MYBB_ROOT."inc/class_templates.php"))
+				{
+					@require_once MYBB_ROOT."inc/class_templates.php";
+					$templates = new templates;
+					$parser_exists = true;
+				}
 			}
 			else
 			{
+				$parser_exists = true;
+			}
+			
+			if($parser_exists == true)
+			{
 				eval("\$warning = \"".$templates->get("warnings")."\";");
 			}
-
-			return $warning;
 		}
+	
+		return $warning;
 	}
 	
 	/**
@@ -324,7 +349,7 @@ class errorHandler {
 
 					$parser_exists = false;
 
-					if(!is_object($parser))
+					if(!is_object($parser) || !method_exists($parser, 'mycode_parse_php'))
 					{
 						if(@file_exists(MYBB_ROOT."inc/class_parser.php"))
 						{

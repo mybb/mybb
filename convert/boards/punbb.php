@@ -53,7 +53,7 @@ class Convert_punbb extends Converter {
 
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions;
+		global $mybb, $output, $import_session, $db, $dboptions, $dbengines, $dbhost, $dbuser, $dbname, $tableprefix;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])

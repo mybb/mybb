@@ -63,7 +63,7 @@ $lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
 
-if(function_exists('mb_internal_encoding'))
+if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {
 	mb_internal_encoding($lang->settings['charset']);
 }

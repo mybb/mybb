@@ -65,7 +65,7 @@ class Convert_phpbb3 extends Converter {
 
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions;
+		global $mybb, $output, $import_session, $db, $dboptions, $dbengines, $dbhost, $dbuser, $dbname, $tableprefix;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -221,7 +221,7 @@ class Convert_phpbb3 extends Converter {
 				SELECT * 
 				FROM ".PHPBB_TABLE_PREFIX."users u
 				LEFT JOIN ".PHPBB_TABLE_PREFIX."user_group ug ON(u.user_id=ug.user_id)
-				WHERE u.user_id > 0 AND username != 'Alexa' AND username != 'Fastcrawler' AND username != 'Googlebot' AND username != 'Inktomi'
+				WHERE u.user_id > 0 AND u.username != 'Alexa' AND u.username != 'Fastcrawler' AND u.username != 'Googlebot' AND u.username != 'Inktomi'
 				LIMIT ".$import_session['start_users'].", ".$import_session['users_per_screen']
 			);
 
@@ -700,7 +700,7 @@ class Convert_phpbb3 extends Converter {
 	{
 		global $mybb, $output, $import_session, $db;
 
-		$this->ipb_db_connect();
+		$this->phpbb_db_connect();
 
 		// Get number of threads
 		if(!isset($import_session['total_icons']))
@@ -1056,15 +1056,7 @@ class Convert_phpbb3 extends Converter {
 	{
 		global $mybb, $output, $import_session, $db;
 
-		$this->phpbb_db_connect();
-		
-		// Set uploads path
-		if(!isset($import_session['uploadspath']))
-		{
-			$query = $this->old_db->query("settings", "value", "name = 'uploadspath'", array('limit' => 1));
-			$import_session['uploadspath'] = $this->old_db->fetch_field($query, 'value');
-		}
-
+		$this->phpbb_db_connect();		
 		
 		// Get number of threads
 		if(!isset($import_session['total_attachments']))
@@ -1091,11 +1083,53 @@ class Convert_phpbb3 extends Converter {
 			$import_session['attachments_per_screen'] = intval($mybb->input['attachments_per_screen']);
 		}
 		
-		if(empty($import_session['attachments_per_screen']))
+		$error_phpbbpath = false;
+		
+		if(!empty($mybb->input['phpbbpath']))
+		{
+			$import_session['phpbbpath'] = $mybb->input['phpbbpath'];
+			if($import_session['phpbbpath']{strlen($import_session['phpbbpath'])-1} != '/') 
+			{
+				$import_session['phpbbpath'] .= '/';
+			}
+			 
+			// bah... this crapola piece of code never works!
+			/*
+			if($this->url_exists($import_session['phpbbpath'].'adm/index.php') === false)
+			{
+				echo $import_session['phpbbpath'].'adm/index.php';
+				echo "<p><span style=\"color: red;\">The link you provided is not correct. Please enter in a valid url.</span></p>";
+				$error_phpbbpath = true;
+			}
+			*/
+			
+			//clearstatcache();
+			
+		}
+		
+		// Set uploads path
+		if(!isset($import_session['uploadspath']) && !empty($import_session['phpbbpath']) && !$error_phpbbpath)
+		{
+			$query = $this->old_db->simple_select("config", "config_value", "config_name = 'upload_path'", array('limit' => 1));
+			$import_session['uploadspath'] = $import_session['phpbbpath'].$this->old_db->fetch_field($query, 'config_value');
+		}
+					
+		$phpbbpath = false;
+		
+		if(empty($import_session['phpbbpath']) || $error_phpbbpath)
+		{
+			echo "<p>Please input the link to your phpBB 3 installation. This should be the url you use to access your phpBB 3 forum:</p>
+<p><input type=\"text\" name=\"phpbbpath\" value=\"{$import_session['phpbbpath']}\" /></p>";
+
+			$phpbbpath = true;
+		}
+		
+		if(empty($import_session['attachments_per_screen']) || $phpbbpath)
 		{
 			$import_session['start_attachments'] = 0;
 			echo "<p>Please select how many attachments to import at a time:</p>
-<p><input type=\"text\" name=\"attachments_per_screen\" value=\"200\" /></p>";
+<p><input type=\"text\" name=\"attachments_per_screen\" value=\"10\" /></p>";
+			
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1106,9 +1140,8 @@ class Convert_phpbb3 extends Converter {
 			$query = $this->old_db->simple_select("attachments", "*", "", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
 			while($attachment = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting attachment #{$attachment['attach_id']}... ";				
-								
-				
+				echo "Inserting attachment #{$attachment['attach_id']}... ";
+				flush(); // We do this to show status because the transfer of the file might take a while. Otherwise the user will just think the script froze.
 
 				$insert_attachment['import_aid'] = $attachment['attach_id'];
 				$insert_attachment['pid'] = $this->get_import_pid($attachment['post_msg_id']);				
@@ -1122,33 +1155,46 @@ class Convert_phpbb3 extends Converter {
 				$insert_attachment['thumbnail'] = '';
 				
 				$query2 = $db->simple_select("posts", "posthash, tid, uid", "pid = '{$insert_attachment['pid']}'");
-				$poshhash = $db->fetch_field($query2, "posthash");
-				if($posthash)
+				$posthash = $db->fetch_array($query2);
+				if($posthash['posthash'])
 				{
-					$insert_attachment['posthash'] = $posthash;
+					$insert_attachment['posthash'] = $posthash['posthash'];
 				}
 				else
 				{
 					mt_srand ((double) microtime() * 1000000);
 					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
 				}
-
-				$this->insert_attachment($insert_attachment);				
 				
-				$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['real_filename']);
-				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
-				fwrite($file, $attachmentdata);
-				fclose($file);
-				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				$this->insert_attachment($insert_attachment);
+				
+				$file_not_transfered = "";
+				if(file_exists($import_session['uploadspath'].'/'.$attachment['physical_filename']))
+				{
+					// Get the contents
+					$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['physical_filename']);
+					
+					// Put the contents
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+					fwrite($file, $attachmentdata);
+					fclose($file);
+					
+					// Give permissions
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				}
+				else
+				{
+					$file_not_transfered = " (Note: The file could not be found)";
+				}
 				
 				if(!$posthash)
 				{
 					// Restore connection
 					$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
 				}
-				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachcount = attachcount + 1 WHERE tid = '".$posthash['tid']."'");
+				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachmentcount = attachmentcount + 1 WHERE tid = '".$posthash['tid']."'");
 				
-				echo "done.<br />\n";
+				echo "done. {$file_not_transfered}<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1257,7 +1303,7 @@ class Convert_phpbb3 extends Converter {
 		// Get number of moderators
 		if(!isset($import_session['total_mods']))
 		{
-			$query = $this->old_db->simple_select("moderators", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("moderator_cache", "COUNT(*) as count");
 			$import_session['total_mods'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -1663,6 +1709,23 @@ class Convert_phpbb3 extends Converter {
 		$query = $this->old_db->simple_select("users", "*", "user_id='{$uid}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
+	}
+	
+	/**
+	 * Checks if a URL exists (if it is correct or not)
+	 * @param string url to check
+	 * @return boolean true if the url is correct, false otherwise
+	 */
+	function url_exists($url)
+	{
+		$handle = @fopen($url, "r");
+ 		if ($handle === false)
+		{
+  			return false;
+		}
+		
+ 		fclose($handle);		
+ 		return true;
 	}
 	
 	/**

@@ -69,7 +69,7 @@ class Convert_ipb1 extends Converter {
 
 	function db_configuration()
 	{
-		global $mybb, $output, $import_session, $db, $dboptions;
+		global $mybb, $output, $import_session, $db, $dboptions, $dbengines, $dbhost, $dbuser, $dbname, $tableprefix;
 
 		// Just posted back to this form?
 		if($mybb->input['dbengine'])
@@ -1671,7 +1671,7 @@ class Convert_ipb1 extends Converter {
 		{
 			$import_session['start_attachments'] = 0;
 			echo "<p>Please select how many attachments to import at a time:</p>
-<p><input type=\"text\" name=\"attachments_per_screen\" value=\"200\" /></p>";
+<p><input type=\"text\" name=\"attachments_per_screen\" value=\"10\" /></p>";
 			$conf_global = dirname($_SERVER['SCRIPT_FILENAME']).'/conf_global.php';
 			if($conf_global_not_found)
 			{
@@ -1715,10 +1715,10 @@ class Convert_ipb1 extends Converter {
 				$insert_attachment['thumbnail'] = '';
 				
 				$query2 = $db->simple_select("posts", "posthash, tid, uid", "pid = '{$insert_attachment['pid']}'");
-				$poshhash = $db->fetch_field($query2, "posthash");
-				if($posthash)
+				$posthash = $db->fetch_array($query2);
+				if($posthash['posthash'])
 				{
-					$insert_attachment['posthash'] = $posthash;
+					$insert_attachment['posthash'] = $posthash['posthash'];
 				}
 				else
 				{
