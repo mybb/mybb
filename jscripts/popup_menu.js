@@ -27,7 +27,6 @@ PopupMenu.prototype = {
 
 	openMenu: function(e)
 	{
-		alert('open');
 		Event.stop(e);
 		if(document.currentMenu == this.id)
 		{

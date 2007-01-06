@@ -289,11 +289,8 @@ var Thread = {
 		else if(request.responseText.match(/id="post_([0-9]+)"/))
 		{
 			var pid = request.responseText.match(/id="post_([0-9]+)"/)[1];
-	alert(request.responseText.firstChild);
-	//			$('post_list').innerHTML = $('post_list').innerHTML.replace("<!-- mybb:quickreply -->", request.responseText+"<!-- mybb:quickreply -->");				
-	//		}
-			//document.getElementsByTagName("body")[9].innerHTML = $('post_list').innerHTML.replace("<!-- mybb:quickreply -->", request.responseText+"<!-- mybb:quickreply -->");
-			//request.responseText.evalScripts();
+			$('post_list').innerHTML = $('post_list').innerHTML.replace("<!-- mybb:quickreply -->", request.responseText+"<!-- mybb:quickreply -->");				
+			request.responseText.evalScripts();
 			new PopupMenu("edit_post_"+pid);
 			Form.reset('quick_reply_form');
 			if($('lastpid'))
