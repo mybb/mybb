@@ -21,11 +21,13 @@ PopupMenu.prototype = {
 
 		this.menu = $(popupMenu);
 		//this.menu.style.display = "none";
-		element.onclick = this.openMenu.bindAsEventListener(this);
+		Event.observe(element, "click", this.openMenu.bindAsEventListener(this));
+		//element.onclick = this.openMenu.bindAsEventListener(this);
 	},
 
 	openMenu: function(e)
 	{
+		alert('open');
 		Event.stop(e);
 		if(document.currentMenu == this.id)
 		{

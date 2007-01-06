@@ -1222,10 +1222,21 @@ admin=Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="avatarresizing">
+			<title>Avatar Resizing Mode</title>
+			<description><![CDATA[If you wish to automatically resize all large avatars, provide users the option of resizing their avatar, or not resize avatars at all you can change this setting.]]></description>
+			<disporder>23</disporder>
+			<optionscode><![CDATA[select
+auto=Automatically resize large avatars
+user=Give users the choice of resizing large avatars
+disabled=Disable this feature]]></optionscode>
+			<settingvalue><![CDATA[auto]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>		
 		<setting name="avatardir">
 			<title>Avatar Directory</title>
 			<description><![CDATA[The directory where your avatars are stored. These are used in the avatar list in the User CP.]]></description>
-			<disporder>23</disporder>
+			<disporder>24</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[images/avatars]]></settingvalue>
 			<helpkey></helpkey>
@@ -1233,7 +1244,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="avataruploadpath">
 			<title>Avatar Upload Path</title>
 			<description><![CDATA[This is the path where custom avatars will be uploaded to. This directory <b>must be chmod 777</b> (writable) for uploads to work.]]></description>
-			<disporder>24</disporder>
+			<disporder>25</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
 			<helpkey></helpkey>

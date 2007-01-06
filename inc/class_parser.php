@@ -479,9 +479,10 @@ class postParser
 	* Parses quote MyCode.
 	*
 	* @param string The message to be parsed
+	* @param boolean Are we formatting as text?
 	* @return string The parsed message.
 	*/
-	function mycode_parse_quotes($message)
+	function mycode_parse_quotes($message, $text_only=false)
 	{
 		global $lang;
 
@@ -490,23 +491,34 @@ class postParser
 						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
 						 
 
-		$replace = array("</p>\n<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote\n</div><div class=\"quote_body\">$2</div>\n<p>\n",
-						 "</p>\n<div class=\"quote_header\">$lang->quote\n</div><div class=\"quote_body\">$1</div>\n<p>\n");
-
+		if($text_only == false)
+		{
+			$replace = array("</p>\n<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote\n</div><div class=\"quote_body\">$2</div>\n<p>\n",
+						 	"</p>\n<div class=\"quote_header\">$lang->quote\n</div><div class=\"quote_body\">$1</div>\n<p>\n");
+		}
+		else
+		{
+			$replace = array("\n".htmlentities('\\1')." $lang->wrote\n--\n$2\n--\n",
+							"\n{$lang->quote}\n--\n$1\n--\n");
+		}
+		
 		while(preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
 		{
 			$message = preg_replace($pattern, $replace, $message);
 		}
-		$find = array(
-			"#<div class=\"quote_body\">(\r\n?|\n?)#",
-			"#(\r\n?|\n?)</div>#"
-		);
+		if($text_only == false)
+		{
+			$find = array(
+				"#<div class=\"quote_body\">(\r\n?|\n?)#",
+				"#(\r\n?|\n?)</div>#"
+				);
 
-		$replace = array(
-			"<div class=\"quote_body\">",
-			"</div>"
-		);
-		$message = preg_replace($find, $replace, $message);
+				$replace = array(
+					"<div class=\"quote_body\">",
+				"</div>"
+				);
+				$message = preg_replace($find, $replace, $message);
+		}
 		return $message;
 
 	}
@@ -515,11 +527,18 @@ class postParser
 	* Parses code MyCode.
 	*
 	* @param string The message to be parsed
+	* @param boolean Are we formatting as text?
 	* @return string The parsed message.
 	*/
-	function mycode_parse_code($code)
+	function mycode_parse_code($code, $text_only=false)
 	{
 		global $lang;
+		
+		if($text_only == true)
+		{
+			return "\n{$lang->code}\n--\n{$code}\n--\n";
+		}
+		
 		$code = trim($code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);
@@ -533,11 +552,17 @@ class postParser
 	*
 	* @param string The message to be parsed
 	* @param boolean wether or not it should return it as pre-wrapped in a div or not.
+	* @param boolean Are we formatting as text?
 	* @return string The parsed message.
 	*/
-	function mycode_parse_php($str, $bare_return = false)
+	function mycode_parse_php($str, $bare_return = false, $text_only = false)
 	{
 		global $lang;
+		
+		if($text_only == true)
+		{
+			return "\n{$lang->php_code}\n--\n$str\n--\n";
+		}
 
 		// Clean the string before parsing.
 		$str = trim($str);
@@ -734,10 +759,17 @@ class postParser
 	* Parses list MyCode.
 	*
 	* @param string The message to be parsed
+	* @param string The list type
+	* @param boolean Are we formatting as text?
 	* @return string The parsed message.
 	*/
-	function mycode_parse_list($message, $type="")
+	function mycode_parse_list($message, $type="", $text_only = false)
 	{
+		if($text_only == true)
+		{
+			$message = preg_replace("#\[\*\]\s?#", "* ", $message);
+			return $message;
+		}
 		$message = str_replace('\"', '"', $message);
 		$message = preg_replace("#\[\*\]\s?#", "</li><li>", $message);
 		$message .= "</li>";
@@ -774,23 +806,59 @@ class postParser
 	}
 
 	/**
-	 * Strips MyCode.
+	 * Parses message to plain text equivilents of MyCode.
 	 *
 	 * @param string The message to be parsed
 	 * @return string The parsed message.
 	 */
-	function strip_mycode($message, $options=array())
+	function text_parse_message($message, $options=array())
 	{
-		if($options['allow_html'] != "yes")
+		global $plugins;
+		
+		// Filter bad words if requested.
+		if($options['filter_badwords'] != "no")
 		{
-			$options['allow_html'] = "no";
+			$message = $this->parse_badwords($message);
 		}
-		$options['allow_smilies'] = "no";
-		$options['allow_mycode'] = "yes";
-		$options['nl2br'] = "no";
-		$options['filter_badwords'] = "no";
-		$message = $this->parse_message($message, $options);
-		$message = strip_tags($message);
+
+		if($options['safe_html'] == "yes")
+		{
+			$message = $this->parse_html($message);
+		}
+
+		// Parse quotes first
+		$message = $this->mycode_parse_quotes($message, true);
+
+		$find = array(
+			"#\[(b|u|i|s|url|email|color|img)\](.*?)\[/\\1\]#is",
+			"#\[code\](.*?)\[/code\](\r\n?|\n?)#ise",
+			"#\[php\](.*?)\[/php\](\r\n?|\n?)#ise",
+			"#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is"
+		);
+		
+		$replace = array(
+			"$2",
+			"\$this->mycode_parse_php('$1', false, true)",
+			"\$this->mycode_parse_code('$1', true)",
+			"$4"
+		);
+		$message = preg_replace($find, $replace, $message);
+
+		// Special code requiring special attention
+		while(preg_match("#\[list\](.*?)\[/list\]#si", $message))
+		{
+			$message = preg_replace("#\[list\](.*?)\[/list\](\r\n?|\n?)#esi", "\$this->mycode_parse_list('$1', '', true)\n", $message);
+		}
+
+		// Replace lists.
+		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\](\r\n?|\n?)#esi", $message))
+		{
+			$message = preg_replace("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "\$this->mycode_parse_list('$2', '$1', true)\n", $message);
+		}
+
+		// Run plugin hooks
+		$message = $plugins->run_hooks("text_parse_message", $message);
+		
 		return $message;
 	}
 }

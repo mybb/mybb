@@ -70,7 +70,7 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 	{
 		if($mybb->settings['sigcountmycode'] == "yes")
 		{
-			$parsed_sig = $parser->strip_mycode($mybb->input['signature']);
+			$parsed_sig = $parser->text_parse_message($mybb->input['signature']);
 		}
 		else
 		{
@@ -1693,6 +1693,15 @@ if($mybb->input['action'] == "avatar")
 			$maxsize = get_friendly_size($mybb->settings['avatarsize']*1024);
 			$lang->avatar_note .= "<br />".sprintf($lang->avatar_note_size, $maxsize);
 		}
+		if($mybb->settings['avatarresizing'] == "auto")
+		{
+			$auto_resize = "<br /><span class=\"smalltext\">{$lang->avatar_auto_resize_note}</span>\n";
+		}
+		else if($mybb->settings['avatarresizing'] == "user")
+		{
+			$auto_resize = "<br /><span class=\"smalltext\"><input type=\"checkbox\" name=\"auto_resize\" value=\"1\" checked=\"checked\" id=\"auto_resize\" /> <label for=\"auto_resize\">{$lang->avatar_auto_resize_option}</label></span>";
+		}
+
 		eval("\$avatar = \"".$templates->get("usercp_avatar")."\";");
 		$plugins->run_hooks("usercp_avatar_end");
 		output_page($avatar);

@@ -117,21 +117,15 @@ function upload_avatar()
 		$ret['error'] = $lang->error_avatartype;
 		return $ret;
 	}
-
-	// Next check the file size
-	if($avatar['size'] > ($mybb->settings['avatarsize']*1024) && $mybb->settings['avatarsize'] > 0)
-	{
-		$ret['error'] = $lang->error_uploadsize;
-		return $ret;
-	}
-
+	
 	$filename = "avatar_".$mybb->user['uid'].".".$ext;
 	$file = upload_file($avatar, $mybb->settings['avataruploadpath'], $filename);
 	if($file['error'])
 	{
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
-	}
+	}	
+
 
 	// Lets just double check that it exists
 	if(!file_exists($mybb->settings['avataruploadpath']."/".$filename))
@@ -139,15 +133,63 @@ function upload_avatar()
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
-
+	
 	// Check if this is a valid image or not
 	$img_dimensions = @getimagesize($mybb->settings['avataruploadpath']."/".$filename);
 	if(!is_array($img_dimensions))
 	{
+		@unlink($mybb->settings['avataruploadpath']."/".$filename);
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
 	
+	// Check avatar dimensions
+	if($mybb->settings['maxavatardims'] != '')
+	{
+		list($maxwidth, $maxheight) = @explode("x", $mybb->settings['maxavatardims']);
+		if(($maxwidth && $img_dimensions[0] > $maxwidth) || ($maxheight && $img_dimensions[1] > $maxheight))
+		{
+			// Automatic resizing enabled?
+			if($mybb->settings['avatarresizing'] == "auto" || ($mybb->settings['avatarresizing'] == "user" && $mybb->input['auto_resize'] == 1))
+			{
+				require_once MYBB_ROOT."inc/functions_image.php";
+				$thumbnail = generate_thumbnail($mybb->settings['avataruploadpath']."/".$filename, $mybb->settings['avataruploadpath'], $filename, $maxheight, $maxwidth);
+				if(!$thumbnail['filename'])
+				{
+					$ret['error'] = sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
+					$ret['error'] .= "<br /><br />".$lang->error_avatarresizefailed;
+					@unlink($mybb->settings['avataruploadpath']."/".$filename);
+					return $ret;				
+				}
+				else
+				{
+					// Reset filesize
+					$avatar['size'] = filesize($mybb->settings['avataruploadpath']."/".$filename);
+					// Reset dimensions
+					$img_dimensions = @getimagesize($mybb->settings['avataruploadpath']."/".$filename);
+				}
+			}
+			else
+			{
+				$ret['error'] = sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
+				if($mybb->settings['avatarresizing'] == "user")
+				{
+					$ret['error'] .= "<br /<br />".$lang->error_avataruserresize;
+				}
+				@unlink($mybb->settings['avataruploadpath']."/".$filename);
+				return $ret;
+			}			
+		}
+	}
+	
+	// Next check the file size
+	if($avatar['size'] > ($mybb->settings['avatarsize']*1024) && $mybb->settings['avatarsize'] > 0)
+	{
+		@unlink($mybb->settings['avataruploadpath']."/".$filename);
+		$ret['error'] = $lang->error_uploadsize;
+		return $ret;
+	}	
+
 	// Check a list of known MIME types to establish what kind of avatar we're uploading
 	switch(my_strtolower($avatar['type']))
 	{
@@ -174,19 +216,6 @@ function upload_avatar()
 	{
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;		
-	}
-	
-
-	// If we've got this far check dimensions
-	if($mybb->settings['maxavatardims'] != "")
-	{
-		list($maxwidth, $maxheight) = @explode("x", $mybb->settings['maxavatardims']);
-		if(($maxwidth && $img_dimensions[0] > $maxwidth) || ($maxheight && $img_dimensions[1] > $maxheight))
-		{
-			$ret['error'] = sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
-			@unlink($mybb->settings['avataruploadpath']."/".$filename);
-			return $ret;
-		}
 	}
 	// Everything is okay so lets delete old avatars for this user
 	remove_avatars($mybb->user['uid'], $filename);

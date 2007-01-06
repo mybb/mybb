@@ -666,7 +666,7 @@ if($mybb->input['action'] == "showresults")
 		$guest_comma = '';
 		$userlist = '';
 		$guest_count = 0;
-		if($poll['public'] == 'yes')
+		if($poll['public'] == 'yes' || is_moderator($fid))
 		{
 			if(is_array($voters[$number]))
 			{
