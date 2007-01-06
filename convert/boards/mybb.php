@@ -975,29 +975,50 @@ class Convert_mybb extends Converter
 				$attachname_array = explode('_', $attachment['attachname']);
 				$insert_attachment['attachname'] = 'post_'.$this->get_import_uid($attachname_array[1]).'_'.$attachname_array[2].'.attach';
 				
+				$thumb_not_exists = "";
 				if($attachment['thumbnail'])
 				{
 					$ext = get_extension($attachment['thumbnail']);
 					$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.$ext", $insert_attachment['attachname']);
-					$thumbattachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attach_thumb_location']);
-					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
-					fwrite($file, $thumbattachmentdata);
-					fclose($file);
-					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
+					if(file_exists($import_session['uploadspath'].'/'.$attachment['attach_thumb_location']))
+					{
+						$thumbattachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attach_thumb_location']);
+						$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
+						fwrite($file, $thumbattachmentdata);
+						fclose($file);
+						@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
+					}
+					else
+					{
+						$thumb_not_exists = "Could not find the attachment thumbnail.";
+					}
 				}
 
-				$this->insert_attachment($insert_attachment);				
-				
-				$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attachname']);
-				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
-				fwrite($file, $attachmentdata);
-				fclose($file);
-				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				$this->insert_attachment($insert_attachment);
+							
+				$attach_not_exists = "";	
+				if(file_exists($import_session['uploadspath'].'/'.$attachment['attachname']))
+				{
+					$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attachname']);
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+					fwrite($file, $attachmentdata);
+					fclose($file);
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				}
+				else
+				{
+					$attach_not_exists = "Could not find the attachment.";
+				}
 				
 				// Restore connection
 				$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
 				
-				echo "done.<br />\n";
+				$error_notice = "";
+				if($attach_not_exists || $thumb_not_exists)
+				{
+					$error_notice = "(Note: $attach_not_exists $thumb_not_exists)";
+				}
+				echo "done.{$error_notice}<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)

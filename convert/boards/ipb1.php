@@ -1735,14 +1735,23 @@ class Convert_ipb1 extends Converter {
 				}
 				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachcount = attachcount + 1 WHERE tid = '".$posthash['tid']."'");
 				
-				$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attach_id']);
-				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
-				fwrite($file, $attachmentdata);
-				fclose($file);
-				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				if(file_exists($import_session['uploadspath'].'/'.$attachment['attach_id']))
+				{
+					$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attach_id']);
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+					fwrite($file, $attachmentdata);
+					fclose($file);
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+					
+					echo "done.<br />\n";
+				}
+				else
+				{
+					echo "done. (Note: The attachment was not found)<br />\n";
+				}
 				
 				clearstatcache();
-				echo "done.<br />\n";
+				
 			}
 			
 			if($import_session['total_attachments'] == 0)

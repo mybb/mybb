@@ -997,11 +997,19 @@ class Convert_xmb extends Converter {
 				}
 	
 				$this->insert_attachment($insert_attachment);				
-								
-				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
-				fwrite($file, $attachment['attachment']);
-				fclose($file);
-				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				
+				$error_notce = "";
+				if(file_exists($import_session['uploadspath'].'/'.$attachment['attachname']))
+				{
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+					fwrite($file, $attachment['attachment']);
+					fclose($file);
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				}
+				else
+				{
+					$error_notce = "(Note: Could not find attachment.)";
+				}
 				
 				if(!$posthash)
 				{
@@ -1011,7 +1019,7 @@ class Convert_xmb extends Converter {
 				
 				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachcount = attachcount + 1 WHERE import_tid = '".$attachment['tid']."'");				
 				
-				echo "done.<br />\n";
+				echo "done.{$error_notice}<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)

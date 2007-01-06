@@ -1188,21 +1188,37 @@ class Convert_vbulletin3 extends Converter {
 					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
 				}
 				
+				$thumb_not_exists = "";
 				if($attachment['thumbnail'])
 				{
 					$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.{$attachment['extension']}", $insert_attachment['attachname']);
-					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
-					fwrite($file, $attachment['thumbnail']);
-					fclose($file);
-					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);					
+					if(file_exists($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail']))
+					{
+						$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
+						fwrite($file, $attachment['thumbnail']);
+						fclose($file);
+						@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
+					}
+					else
+					{
+						$thumb_not_exists = "Could not find the attachment thumbnail.";
+					}		
 				}
 				
 				$this->insert_attachment($insert_attachment);
 				
-				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
-				fwrite($file, $attachment['filedata']);
-				fclose($file);
-				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				$attach_not_exists = "";
+				if(file_exists($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname']))
+				{
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+					fwrite($file, $attachment['filedata']);
+					fclose($file);
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				}
+				else
+				{
+					$attach_not_exists = "Could not find the attachment.";
+				}
 				
 				if(!$posthash)
 				{
@@ -1210,7 +1226,12 @@ class Convert_vbulletin3 extends Converter {
 					$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
 				}
 				
-				echo "done.<br />\n";
+				$error_notice = "";
+				if($attach_not_exists || $thumb_not_exists)
+				{
+					$error_notice = "(Note: $attach_not_exists $thumb_not_exists)";
+				}
+				echo "done.{$error_notice}<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)

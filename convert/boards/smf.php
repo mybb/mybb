@@ -1366,6 +1366,7 @@ class Convert_smf extends Converter {
 					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
 				}
 
+				$thumb_not_exists = "";
 				if($attachment['ID_THUMB'] != 0)
 				{
 					$thumbs[] = $attachment['ID_THUMB'];
@@ -1373,20 +1374,37 @@ class Convert_smf extends Converter {
 					$thumbnail = $this->old_db->fetch_array($query3, "filename");
 					$ext = get_extension($thumbnail['filename']);
 					$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.$ext", $insert_attachment['attachname']);
-					$thumbattachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['filename']);
-					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
-					fwrite($file, $thumbattachmentdata);
-					fclose($file);
-					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
+					
+					if(file_exists($import_session['uploadspath'].'/'.$thumbnail))
+					{
+						$thumbattachmentdata = file_get_contents($import_session['uploadspath'].'/'.$thumbnail);
+						$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
+						fwrite($file, $thumbattachmentdata);
+						fclose($file);
+						@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
+					}
+					else
+					{
+						$thumb_not_exists = "Could not find the attachment thumbnail.";
+					}
 				}
 				
 				$this->insert_attachment($insert_attachment);				
-								
-				$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['filename']);
-				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
-				fwrite($file, $attachmentdata);
-				fclose($file);
-				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				
+				$attach_not_exists = "";
+				if(file_exists($import_session['uploadspath'].'/'.$attachment['filename']))
+				{				
+					$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['filename']);
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+					fwrite($file, $attachmentdata);
+					fclose($file);
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				}
+				else
+				{
+					$attach_not_exists = "Could not find the attachment.";
+				}
+				
 				
 				if(!$posthash)
 				{
@@ -1397,7 +1415,12 @@ class Convert_smf extends Converter {
 				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachmentcount = attachmentcount + 1 WHERE tid = '".$posthash['tid']."'");
 				
 				
-				echo "done.<br />\n";
+				$error_notice = "";
+				if($attach_not_exists || $thumb_not_exists)
+				{
+					$error_notice = "(Note: $attach_not_exists $thumb_not_exists)";
+				}
+				echo "done.{$error_notice}<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)

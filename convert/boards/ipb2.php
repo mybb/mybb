@@ -33,8 +33,6 @@ class Convert_ipb2 extends Converter {
 									  "dependencies" => "db_configuration,import_threads"),
 						 "import_posts" => array("name" => "Import Invision Power Board 2 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_attachments" => array("name" => "Import Invision Power Board 2 Attachments",
-									  "dependencies" => "db_configuration,import_posts"),
 						 "import_moderators" => array("name" => "Import Invision Power Board 2 Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
 						 "import_privatemessages" => array("name" => "Import Invision Power Board 2 Private Messages",
@@ -45,6 +43,8 @@ class Convert_ipb2 extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_events" => array("name" => "Import Invision Power Board 2 Calendar Events",
 									  "dependencies" => "db_configuration,import_users"),
+						 "import_attachments" => array("name" => "Import Invision Power Board 2 Attachments",
+									  "dependencies" => "db_configuration,import_posts"),
 						);
 
 	function ipb_db_connect()
@@ -1420,26 +1420,48 @@ class Convert_ipb2 extends Converter {
 				$insert_attachment['visible'] = $attachment['attach_approved'];
 				$insert_attachment['thumbnail'] = '';
 				
+				$thumb_not_exists = "";
 				if($attachment['attach_thumb_location'])
 				{
 					$ext = get_extension($attachment['attach_thumb_location']);
 					$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.$ext", $insert_attachment['attachname']);
-					$thumbattachmentdata = file_get_contents($import_session['upload_path'].'/'.$attachment['attach_thumb_location']);
-					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
-					fwrite($file, $thumbattachmentdata);
-					fclose($file);
-					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
+					
+					if(file_exists($import_session['upload_path'].'/'.$attachment['attach_thumb_location']))
+					{
+						$thumbattachmentdata = file_get_contents($import_session['upload_path'].'/'.$attachment['attach_thumb_location']);
+						$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
+						fwrite($file, $thumbattachmentdata);
+						fclose($file);
+						@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
+					}
+					else
+					{
+						$thumb_not_exists = "Could not find the attachment thumbnail.";
+					}
 				}
 				
 				$this->insert_attachment($insert_attachment);				
-								
-				$attachmentdata = file_get_contents($import_session['upload_path'].'/'.$attachment['attach_location']);
-				$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
-				fwrite($file, $attachmentdata);
-				fclose($file);
-				@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
 				
-				echo "done.<br />\n";
+				$attach_not_exists = "";
+				if(file_exists($import_session['upload_path'].'/'.$attachment['attach_location']))
+				{
+					$attachmentdata = file_get_contents($import_session['upload_path'].'/'.$attachment['attach_location']);
+					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 'w');
+					fwrite($file, $attachmentdata);
+					fclose($file);
+					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+				}
+				else
+				{
+					$attach_not_exists = "Could not find the attachment.";
+				}
+				
+				$error_notice = "";
+				if($attach_not_exists || $thumb_not_exists)
+				{
+					$error_notice = "(Note: $attach_not_exists $thumb_not_exists)";
+				}
+				echo "done.{$error_notice}<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
